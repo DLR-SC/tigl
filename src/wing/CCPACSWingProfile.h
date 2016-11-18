@@ -59,16 +59,6 @@ public:
     // Read CPACS wing profile file
     TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) override;
 
-
-    // Returns the name of the wing profile
-    TIGL_EXPORT const std::string& GetName(void) const;
-
-    // Returns the description of the wing profile
-    TIGL_EXPORT const std::string& GetDescription(void) const;
-
-    // Returns the uid of the wing profile
-    TIGL_EXPORT const std::string& GetUID(void) const;
-
     // Invalidates internal wing profile state
     TIGL_EXPORT void Invalidate();
 

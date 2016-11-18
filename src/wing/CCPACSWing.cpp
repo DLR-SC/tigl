@@ -24,7 +24,9 @@
 */
 
 #include <iostream>
+#include <algorithm>
 
+#include "generated/CPACSRotorBlades.h"
 #include "CCPACSWing.h"
 #include "CCPACSWingSection.h"
 #include "CCPACSConfiguration.h"
@@ -54,11 +56,6 @@ namespace tigl
 
 namespace
 {
-    inline double max(double a, double b)
-    {
-        return a > b? a : b;
-    }
-    
     TopoDS_Wire transformToWingCoords(const tigl::CCPACSWingConnection& wingConnection, const TopoDS_Wire& origWire)
     {
         TopoDS_Shape resultWire(origWire);
@@ -122,19 +119,6 @@ namespace
     }
 }
 
-
-// Constructor
-CCPACSWing::CCPACSWing(CCPACSConfiguration* config)
-    : generated::CPACSWing(config->GetWings())
-    , CTiglAbstractPhysicalComponent(m_transformation)
-    , configuration(config)
-    , rebuildFusedSegments(true)
-    , rebuildFusedSegWEdge(true)
-    , rebuildShells(true)
-{
-    Cleanup();
-}
-
 CCPACSWing::CCPACSWing(CCPACSWings* parent)
     : generated::CPACSWing(parent)
     , CTiglAbstractPhysicalComponent(m_transformation)
@@ -144,9 +128,12 @@ CCPACSWing::CCPACSWing(CCPACSWings* parent)
     , rebuildShells(true) {
     Cleanup();
 }
-CCPACSWing::CCPACSWing(generated::CPACSRotorBlades* parent)
+CCPACSWing::CCPACSWing(CPACSRotorBlades* parent)
     : generated::CPACSWing(parent)
-    , CTiglAbstractPhysicalComponent(m_transformation) {
+    , CTiglAbstractPhysicalComponent(m_transformation)
+    , rebuildFusedSegments(true)
+    , rebuildFusedSegWEdge(true)
+    , rebuildShells(true) {
     throw std::logic_error("Instantiating CCPACSWing with CPACSRotorBlades as parent is not implemented");
 }
 
@@ -556,7 +543,7 @@ double CCPACSWing::GetWingspan()
         double yw = ymax - ymin;
         double zw = zmax - zmin;
 
-        return max(xw, max(yw, zw));
+        return std::max(xw, std::max(yw, zw));
     }
     else {
         for (int i = 1; i <= GetSegmentCount(); ++i) {

@@ -61,35 +61,8 @@
 namespace tigl
 {
 
-CCPACSWingRibsDefinition::CCPACSWingRibsDefinition(CCPACSWingCSStructure* structure)
-: structure(*structure),
-  ribsPositioning(NULL),
-  explicitRibPositioning(NULL),
-  ribCrossSection(*this)
-{
-    Cleanup();
-}
-
-CCPACSWingRibsDefinition::~CCPACSWingRibsDefinition()
-{
-    Cleanup();
-}
-
-void CCPACSWingRibsDefinition::Cleanup()
-{
-    uid.clear();
-    name.clear();
-    description.clear();
-    ribPositioningType = UNDEFINED_POSITIONING;
-    if (ribsPositioning) {
-        delete ribsPositioning;
-        ribsPositioning = NULL;
-    }
-    if (explicitRibPositioning) {
-        delete explicitRibPositioning;
-        explicitRibPositioning = NULL;
-    }
-    ribCrossSection.Cleanup();
+CCPACSWingRibsDefinition::CCPACSWingRibsDefinition(CCPACSWingRibsDefinitions* parent)
+: generated::CPACSWingRibsDefinition(parent), structure(*parent->GetParent()) {
     Invalidate();
 }
 
@@ -102,107 +75,23 @@ void CCPACSWingRibsDefinition::Invalidate(void)
     ribCapsCache.valid = false;
 }
 
-void CCPACSWingRibsDefinition::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& ribsDefinitionXPath)
-{
-    Cleanup();
-
-    // Get attribute "uID"
-    char* ptrUID = NULL;
-    if (tixiGetTextAttribute(tixiHandle, ribsDefinitionXPath.c_str(), "uID", &ptrUID) == SUCCESS) {
-        uid = ptrUID;
-    }
-
-    // Get subelement "name"
-    char* ptrName = NULL;
-    if (tixiGetTextElement(tixiHandle, (ribsDefinitionXPath + "/name").c_str(), &ptrName) != SUCCESS) {
-        LOG(ERROR) << "Missing name";
-        throw CTiglError("Error: Missing name in CCPACSWingRibsDefinition::ReadCPACS!", TIGL_XML_ERROR);
-    }
-    name = ptrName;
-
-    // Get subelement "description"
-    char* ptrDescription = NULL;
-    if (tixiGetTextElement(tixiHandle, (ribsDefinitionXPath + "/description").c_str(), &ptrDescription) == SUCCESS) {
-        description = ptrDescription;
-    }
-
-    // Get subelement ribsPositioning or ribExplicitPositioning
-    const std::string ribsPositioningPath = ribsDefinitionXPath + "/ribsPositioning";
-    const std::string ribExplicitPositioningPath = ribsDefinitionXPath + "/ribExplicitPositioning";
-    if (tixiCheckElement(tixiHandle, ribsPositioningPath.c_str()) == SUCCESS) {
-        ribsPositioning = new CCPACSWingRibsPositioning(*this);
-        ribsPositioning->ReadCPACS(tixiHandle, ribsPositioningPath);
-        ribPositioningType = RIBS_POSITIONING;
-    }
-    else if (tixiCheckElement(tixiHandle, ribExplicitPositioningPath.c_str()) == SUCCESS) {
-        explicitRibPositioning = new CCPACSWingRibExplicitPositioning(*this);
-        explicitRibPositioning->ReadCPACS(tixiHandle, ribsDefinitionXPath + "/ribExplicitPositioning");
-        ribPositioningType = RIB_EXPLICIT_POSITIONING;
-    }
-    else {
-        LOG(ERROR) << "Missing node ribsPositioning or ribExplicitPositioning";
-        throw CTiglError("Error: Missing node ribsPositioning or ribExplicitPositioning in CCPACSWingRibsDefinition::ReadCPACS!", TIGL_XML_ERROR);
-    }
-
-    // Get subelement ribsCrossSection
-    const std::string ribCrossSectionPath = ribsDefinitionXPath + "/ribCrossSection";
-    if (tixiCheckElement(tixiHandle, ribCrossSectionPath.c_str()) != SUCCESS) {
-        LOG(ERROR) << "Missing node ribCrossSection";
-        throw CTiglError("Error: Missing node ribCrossSection in CCPACSWingRibsDefinition::ReadCPACS!", TIGL_XML_ERROR);
-    }
-    ribCrossSection.ReadCPACS(tixiHandle, ribCrossSectionPath);
-}
-
-void CCPACSWingRibsDefinition::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& ribsDefinitionXPath) const
-{
-    TixiSaveExt::TixiSaveTextAttribute(tixiHandle, ribsDefinitionXPath.c_str(), "uID", uid.c_str());
-    TixiSaveExt::TixiSaveTextElement(tixiHandle, ribsDefinitionXPath.c_str(), "name", name.c_str());
-    TixiSaveExt::TixiSaveTextElement(tixiHandle, ribsDefinitionXPath.c_str(), "description", description.c_str());
-
-    switch (ribPositioningType) {
-    case RIBS_POSITIONING:
-        TixiSaveExt::TixiSaveElement(tixiHandle, ribsDefinitionXPath.c_str(), "ribsPositioning");
-        ribsPositioning->WriteCPACS(tixiHandle, ribsDefinitionXPath + "/ribsPositioning");
-        break;
-    case RIB_EXPLICIT_POSITIONING:
-        TixiSaveExt::TixiSaveElement(tixiHandle, ribsDefinitionXPath.c_str(), "ribExplicitPositioning");
-        explicitRibPositioning->WriteCPACS(tixiHandle, ribsDefinitionXPath + "/ribExplicitPositioning");
-        break;
-    default:
-        throw CTiglError("Invalid ribPositioningType found in CCPACSWingRibsDefinition::WriteCPACS");
-    }
-
-    TixiSaveExt::TixiSaveElement(tixiHandle, ribsDefinitionXPath.c_str(), "ribCrossSection");
-    ribCrossSection.WriteCPACS(tixiHandle, ribsDefinitionXPath + "/ribCrossSection");
-}
-
-const std::string& CCPACSWingRibsDefinition::GetUID() const
-{
-    return uid;
-}
-
-const std::string& CCPACSWingRibsDefinition::GetName() const
-{
-    return name;
-}
-
-const std::string& CCPACSWingRibsDefinition::GetDescription() const
-{
-    return description;
-}
-
 CCPACSWingRibsDefinition::RibPositioningType CCPACSWingRibsDefinition::GetRibPositioningType() const
 {
-    return ribPositioningType;
+    if (HasRibsPositioning_choice1())
+        return RibPositioningType::RIBS_POSITIONING;
+    else if (HasRibExplicitPositioning_choice2())
+        return RibPositioningType::RIB_EXPLICIT_POSITIONING;
+    else
+        return RibPositioningType::UNDEFINED_POSITIONING;
 }
 
 const CCPACSWingRibsPositioning& CCPACSWingRibsDefinition::GetRibsPositioning() const
 {
-    if (ribPositioningType != RIBS_POSITIONING) {
-        LOG(ERROR) << "CCPACSWingRibsDefinition is not defined via ribsPositioning!";
-        throw CTiglError("CCPACSWingRibsDefinition is not defined via ribsPositioning! Please check first via GetRibPositioningType");
+    if (m_ribsPositioning_choice1) {
+        LOG(ERROR) << "CCPACSWingRibsDefinition is not defined via m_ribsPositioning_choice1!";
+        throw CTiglError("CCPACSWingRibsDefinition is not defined via m_ribsPositioning_choice1! Please check first via GetRibPositioningType()");
     }
-    return *ribsPositioning;
+    return *m_ribsPositioning_choice1;
 }
 
 CCPACSWingRibsPositioning& CCPACSWingRibsDefinition::GetRibsPositioning()
@@ -213,27 +102,17 @@ CCPACSWingRibsPositioning& CCPACSWingRibsDefinition::GetRibsPositioning()
 
 const CCPACSWingRibExplicitPositioning& CCPACSWingRibsDefinition::GetRibExplicitPositioning() const
 {
-    if (ribPositioningType != RIB_EXPLICIT_POSITIONING) {
+    if (m_ribExplicitPositioning_choice2) {
         LOG(ERROR) << "CCPACSWingRibsDefinition is not defined via ribExplicitPositioning!";
-        throw CTiglError("CCPACSWingRibsDefinition is not defined via ribExplicitPositioning! Please check first via GetRibPositioningType!");
+        throw CTiglError("CCPACSWingRibsDefinition is not defined via ribExplicitPositioning! Please check first via GetRibPositioningType()!");
     }
-    return *explicitRibPositioning;
+    return *m_ribExplicitPositioning_choice2;
 }
 
 CCPACSWingRibExplicitPositioning& CCPACSWingRibsDefinition::GetRibExplicitPositioning()
 {
     // forward call to const method
     return const_cast<CCPACSWingRibExplicitPositioning&>(static_cast<const CCPACSWingRibsDefinition&>(*this).GetRibExplicitPositioning());
-}
-
-const CCPACSWingRibCrossSection& CCPACSWingRibsDefinition::GetRibCrossSection() const
-{
-    return ribCrossSection;
-}
-
-CCPACSWingRibCrossSection& CCPACSWingRibsDefinition::GetRibCrossSection()
-{
-    return ribCrossSection;
 }
 
 const CCPACSWingCSStructure& CCPACSWingRibsDefinition::GetStructure() const
@@ -249,7 +128,7 @@ CCPACSWingCSStructure& CCPACSWingRibsDefinition::GetStructure()
 int CCPACSWingRibsDefinition::GetNumberOfRibs() const
 {
     int numberOfRibs = 0;
-    switch (ribPositioningType) {
+    switch (GetRibPositioningType()) {
     case RIB_EXPLICIT_POSITIONING:
         numberOfRibs = 1;
         break;
@@ -261,7 +140,7 @@ int CCPACSWingRibsDefinition::GetNumberOfRibs() const
         numberOfRibs = ribSetDataCache.numberOfRibs;
         break;
     default:
-        throw CTiglError("Unknown ribPositioningType found in CCPACSWingRibsDefinition::GetNumberOfRibs()!");
+        throw CTiglError("Unknown GetRibPositioningType() found in CCPACSWingRibsDefinition::GetNumberOfRibs()!");
     }
     return numberOfRibs;
 }
@@ -275,7 +154,7 @@ void CCPACSWingRibsDefinition::GetRibMidplanePoints(int ribNumber, gp_Pnt& start
 
     int index = ribNumber - 1;
     if (index < 0 || index >= GetNumberOfRibs()) {
-        throw CTiglError("Invalid rib number requested in ribs definition \"" + uid + "\"");
+        throw CTiglError("Invalid rib number requested in ribs definition \"" + m_uID + "\"");
     }
     startPoint = auxGeomCache.midplanePoints[index].startPnt;
     endPoint = auxGeomCache.midplanePoints[index].endPnt;
@@ -367,14 +246,14 @@ TopoDS_Shape CCPACSWingRibsDefinition::GetSplittedRibsGeometry(TiglCoordinateSys
 
 bool CCPACSWingRibsDefinition::HasCaps() const
 {
-    return (ribCrossSection.HasUpperCap() || ribCrossSection.HasLowerCap());
+    return (m_ribCrossSection.HasUpperCap() || m_ribCrossSection.HasLowerCap());
 }
 
 TopoDS_Shape CCPACSWingRibsDefinition::GetRibCapsGeometry(RibCapSide side, TiglCoordinateSystem referenceCS) const
 {
     if (!HasCaps()) {
-        LOG(ERROR) << "No rib caps are defined for ribs definition " << uid;
-        throw CTiglError("Error in CCPACSWingRibsDefinition::GetRibCapsGeometry(): No rib caps are defined for ribs definition " + uid + "!");
+        LOG(ERROR) << "No rib caps are defined for ribs definition " << m_uID;
+        throw CTiglError("Error in CCPACSWingRibsDefinition::GetRibCapsGeometry(): No rib caps are defined for ribs definition " + m_uID + "!");
     }
 
     if (!ribCapsCache.valid) {
@@ -404,8 +283,8 @@ TopoDS_Shape CCPACSWingRibsDefinition::GetRibCapsGeometry(RibCapSide side, TiglC
 
 void CCPACSWingRibsDefinition::UpdateRibSetDataCache() const
 {
-    // ensure that this is only called when ribsPositioning is used!!!
-    assert(ribPositioningType == RIBS_POSITIONING);
+    // ensure that this is only called when m_ribsPositioning_choice1 is used!!!
+    assert(GetRibPositioningType() == RIBS_POSITIONING);
 
     ribSetDataCache.valid = false;
 
@@ -427,7 +306,7 @@ void CCPACSWingRibsDefinition::BuildAuxiliaryGeometry() const
     auxGeomCache.valid = false;
     auxGeomCache.clear();
 
-    switch (ribPositioningType) {
+    switch (GetRibPositioningType()) {
     case RIBS_POSITIONING:
         BuildAuxGeomRibsPositioning();
         break;
@@ -435,8 +314,8 @@ void CCPACSWingRibsDefinition::BuildAuxiliaryGeometry() const
         BuildAuxGeomExplicitRibPositioning();
         break;
     default:
-        LOG(ERROR) << "Invalid ribPositioningType found in CCPACSWingRibsDefinition::BuildAuxiliaryGeometry!";
-        throw CTiglError("Invalid ribPositioningType found in CCPACSWingRibsDefinition::BuildAuxiliaryGeometry!");
+        LOG(ERROR) << "Invalid GetRibPositioningType() found in CCPACSWingRibsDefinition::BuildAuxiliaryGeometry!";
+        throw CTiglError("Invalid GetRibPositioningType() found in CCPACSWingRibsDefinition::BuildAuxiliaryGeometry!");
     }
 
     auxGeomCache.valid = true;
@@ -457,20 +336,20 @@ void CCPACSWingRibsDefinition::BuildAuxGeomRibsPositioning() const
 
         // STEP 3: determine elementUID or sparPositionUID where rib should be placed
         std::string elementUID = "";
-        if (i == 0 && ribsPositioning->GetStartDefinitionType() == CCPACSWingRibsPositioning::ELEMENT_START) {
-            elementUID = ribsPositioning->GetElementStartUID();
+        if (i == 0 && m_ribsPositioning_choice1->GetStartDefinitionType() == CCPACSWingRibsPositioning::ELEMENT_START) {
+            elementUID = m_ribsPositioning_choice1->GetElementStartUID();
         }
         // NOTE: we have to check the eta difference here (instead of the index) to support spacing definitions
-        else if (fabs(ribSetDataCache.referenceEtaEnd - currentEta) <= Precision::Confusion() && ribsPositioning->GetEndDefinitionType() == CCPACSWingRibsPositioning::ELEMENT_END) {
-            elementUID = ribsPositioning->GetElementEndUID();
+        else if (fabs(ribSetDataCache.referenceEtaEnd - currentEta) <= Precision::Confusion() && m_ribsPositioning_choice1->GetEndDefinitionType() == CCPACSWingRibsPositioning::ELEMENT_END) {
+            elementUID = m_ribsPositioning_choice1->GetElementEndUID();
         }
         std::string sparPositionUID = "";
-        if (i == 0 && ribsPositioning->GetStartDefinitionType() == CCPACSWingRibsPositioning::SPARPOSITION_START) {
-            sparPositionUID = ribsPositioning->GetSparPositionStartUID();
+        if (i == 0 && m_ribsPositioning_choice1->GetStartDefinitionType() == CCPACSWingRibsPositioning::SPARPOSITION_START) {
+            sparPositionUID = m_ribsPositioning_choice1->GetSparPositionStartUID();
         }
         // NOTE: we have to check the eta difference here (instead of the index) to support spacing definitions
-        else if (fabs(ribSetDataCache.referenceEtaEnd - currentEta) <= Precision::Confusion() && ribsPositioning->GetEndDefinitionType() == CCPACSWingRibsPositioning::SPARPOSITION_END) {
-            sparPositionUID = ribsPositioning->GetSparPositionEndUID();
+        else if (fabs(ribSetDataCache.referenceEtaEnd - currentEta) <= Precision::Confusion() && m_ribsPositioning_choice1->GetEndDefinitionType() == CCPACSWingRibsPositioning::SPARPOSITION_END) {
+            sparPositionUID = m_ribsPositioning_choice1->GetSparPositionEndUID();
         }
 
         // STEP 4: build the rib cut geometry based on the current eta value
@@ -482,9 +361,9 @@ void CCPACSWingRibsDefinition::BuildAuxGeomRibsPositioning() const
 
 CCPACSWingRibsDefinition::CutGeometry CCPACSWingRibsDefinition::BuildRibCutGeometry(double currentEta, const std::string& elementUID, const std::string& sparPositionUID) const
 {
-    std::string ribStart = ribsPositioning->GetRibStart();
-    std::string ribEnd = ribsPositioning->GetRibEnd();
-    std::string ribReference = ribsPositioning->GetRibReference();
+    std::string ribStart = m_ribsPositioning_choice1->GetRibStart();
+    std::string ribEnd = m_ribsPositioning_choice1->GetRibEnd();
+    std::string ribReference = m_ribsPositioning_choice1->GetRibReference();
 
     // handle case when rib lies within a section element (elementUID defined)
     if (!elementUID.empty()) {
@@ -511,13 +390,13 @@ CCPACSWingRibsDefinition::CutGeometry CCPACSWingRibsDefinition::BuildRibCutGeome
     gp_Pnt referencePnt = GetReferencePoint(structure, ribReference, currentEta);
 
     // STEP 2: compute the up vector for the rib cut face without x rotation
-    gp_Vec upVec = GetUpVectorWithoutXRotation(ribsPositioning->GetRibReference(), currentEta, referencePnt, sparPositionUID, structure);
+    gp_Vec upVec = GetUpVectorWithoutXRotation(m_ribsPositioning_choice1->GetRibReference(), currentEta, referencePnt, sparPositionUID, structure);
 
     // STEP 3: compute direction vector of rib (points from start point to end point)
     gp_Vec ribDir = GetRibDirection(currentEta, referencePnt, upVec);
 
     // STEP 4: apply x rotation to up vector, negative to be identical to section rotation
-    ApplyXRotationToUpVector(ribCrossSection.GetXRotation(), upVec, ribDir);
+    ApplyXRotationToUpVector(m_ribCrossSection.GetXRotation(), upVec, ribDir);
 
     // STEP 5: build the rib cut face
     TopoDS_Face ribCutFace = BuildRibCutFace(referencePnt, ribDir, ribStart, ribEnd, upVec, upVec);
@@ -536,11 +415,11 @@ void CCPACSWingRibsDefinition::BuildAuxGeomExplicitRibPositioning() const
     gp_Pnt startPnt, endPnt;
     const CTiglWingStructureReference& wingStructureReference = structure.GetWingStructureReference();
 
-    // get values from explicitRibPositioning
-    std::string startReference = explicitRibPositioning->GetStartReference();
-    std::string endReference = explicitRibPositioning->GetEndReference();
-    double startEta = explicitRibPositioning->GetStartEta();
-    double endEta = explicitRibPositioning->GetEndEta();
+    // get values from m_ribExplicitPositioning_choice2
+    std::string startReference = m_ribExplicitPositioning_choice2->GetStartReference();
+    std::string endReference = m_ribExplicitPositioning_choice2->GetEndReference();
+    double startEta = m_ribExplicitPositioning_choice2->GetEtaStart();
+    double endEta = m_ribExplicitPositioning_choice2->GetEtaEnd();
 
     // Step 1: get start point of rib on midplane
     startPnt = GetReferencePoint(structure, startReference, startEta);
@@ -637,7 +516,7 @@ void CCPACSWingRibsDefinition::BuildAuxGeomExplicitRibPositioning() const
     // NOTE: we need to use the global x-axis here for allowing ribs to be
     // connected, otherwise those would be rotated around different axis
     // NOTE: up-vector is already perpendicular to midplane, so rotation angle is decreased by 90 deg
-    double xRotation = (ribCrossSection.GetXRotation() - 90) * M_PI / 180.0;
+    double xRotation = (m_ribCrossSection.GetXRotation() - 90) * M_PI / 180.0;
     upVecStart.Rotate(gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0)), -xRotation);
     upVecEnd.Rotate(gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0)), -xRotation);
 
@@ -751,7 +630,7 @@ void CCPACSWingRibsDefinition::BuildRibCapsGeometry() const
     }
 
     // build caps shape for upper cap
-    if (ribCrossSection.HasUpperCap()) {
+    if (m_ribCrossSection.HasUpperCap()) {
         TopoDS_Shape loft = structure.GetWingStructureReference().GetUpperShape();
         TopoDS_Shape cutResult = CutShapes(loft, ribCuttingCompound);
         // Get the cutting edge of the rib cutting plane and the loft
@@ -764,7 +643,7 @@ void CCPACSWingRibsDefinition::BuildRibCapsGeometry() const
         ribCapsCache.upperCapsShape = capEdges;
     }
     // build caps shape for lower cap
-    if (ribCrossSection.HasLowerCap()) {
+    if (m_ribCrossSection.HasLowerCap()) {
         TopoDS_Shape loft = structure.GetWingStructureReference().GetLowerShape();
         TopoDS_Shape cutResult = CutShapes(loft, ribCuttingCompound);
         // Get the cutting edge of the rib cutting plane and the loft
@@ -784,7 +663,7 @@ TopoDS_Wire CCPACSWingRibsDefinition::GetReferenceLine() const
 {
     const CTiglWingStructureReference& wingStructureReference = structure.GetWingStructureReference();
     TopoDS_Wire referenceLine;
-    std::string ribReference = ribsPositioning->GetRibReference();
+    std::string ribReference = m_ribsPositioning_choice1->GetRibReference();
     if (ribReference == "leadingEdge") {
         referenceLine = wingStructureReference.GetLeadingEdgeLine();
     }
@@ -792,7 +671,7 @@ TopoDS_Wire CCPACSWingRibsDefinition::GetReferenceLine() const
         referenceLine = wingStructureReference.GetTrailingEdgeLine();
     }
     else {
-        // find spar with uid
+        // find spar with m_uID
         CCPACSWingSparSegment& sparSegment = structure.GetSparSegment(ribReference);
         referenceLine = sparSegment.GetSparMidplaneLine();
     }
@@ -801,17 +680,17 @@ TopoDS_Wire CCPACSWingRibsDefinition::GetReferenceLine() const
 
 double CCPACSWingRibsDefinition::ComputeReferenceEtaStart() const
 {
-    assert(ribPositioningType == RIBS_POSITIONING);
+    assert(GetRibPositioningType() == RIBS_POSITIONING);
 
     const CTiglWingStructureReference& wingStructureReference = structure.GetWingStructureReference();
-    if (ribsPositioning->GetStartDefinitionType() == CCPACSWingRibsPositioning::ETA_START) {
-        return ribsPositioning->GetEtaStart();
+    if (m_ribsPositioning_choice1->GetStartDefinitionType() == CCPACSWingRibsPositioning::ETA_START) {
+        return m_ribsPositioning_choice1->GetEtaStart();
     }
-    else if (ribsPositioning->GetStartDefinitionType() == CCPACSWingRibsPositioning::ELEMENT_START) {
-        return ComputeSectionElementEta(ribsPositioning->GetElementStartUID());
+    else if (m_ribsPositioning_choice1->GetStartDefinitionType() == CCPACSWingRibsPositioning::ELEMENT_START) {
+        return ComputeSectionElementEta(m_ribsPositioning_choice1->GetElementStartUID());
     }
-    else if (ribsPositioning->GetStartDefinitionType() == CCPACSWingRibsPositioning::SPARPOSITION_START) {
-        return ComputeSparPositionEta(ribsPositioning->GetSparPositionStartUID());
+    else if (m_ribsPositioning_choice1->GetStartDefinitionType() == CCPACSWingRibsPositioning::SPARPOSITION_START) {
+        return ComputeSparPositionEta(m_ribsPositioning_choice1->GetSparPositionStartUID());
     }
     else {
         throw CTiglError("Unknown StartDefinitionType found for RibsPositioning in CCPACSWingRibsDefinition::GetEtaStart");
@@ -820,17 +699,17 @@ double CCPACSWingRibsDefinition::ComputeReferenceEtaStart() const
 
 double CCPACSWingRibsDefinition::ComputeReferenceEtaEnd() const
 {
-    assert(ribPositioningType == RIBS_POSITIONING);
+    assert(GetRibPositioningType() == RIBS_POSITIONING);
 
     const CTiglWingStructureReference& wingStructureReference = structure.GetWingStructureReference();
-    if (ribsPositioning->GetEndDefinitionType() == CCPACSWingRibsPositioning::ETA_END) {
-        return ribsPositioning->GetEtaEnd();
+    if (m_ribsPositioning_choice1->GetEndDefinitionType() == CCPACSWingRibsPositioning::ETA_END) {
+        return m_ribsPositioning_choice1->GetEtaEnd();
     }
-    else if (ribsPositioning->GetEndDefinitionType() == CCPACSWingRibsPositioning::ELEMENT_END) {
-        return ComputeSectionElementEta(ribsPositioning->GetElementEndUID());
+    else if (m_ribsPositioning_choice1->GetEndDefinitionType() == CCPACSWingRibsPositioning::ELEMENT_END) {
+        return ComputeSectionElementEta(m_ribsPositioning_choice1->GetElementEndUID());
     }
-    else if (ribsPositioning->GetEndDefinitionType() == CCPACSWingRibsPositioning::SPARPOSITION_END) {
-        return ComputeSparPositionEta(ribsPositioning->GetSparPositionEndUID());
+    else if (m_ribsPositioning_choice1->GetEndDefinitionType() == CCPACSWingRibsPositioning::SPARPOSITION_END) {
+        return ComputeSparPositionEta(m_ribsPositioning_choice1->GetSparPositionEndUID());
     }
     else {
         throw CTiglError("Unknown EndDefinitionType found for RibsPositioning in CCPACSWingRibsDefinition::GetEtaEnd");
@@ -861,12 +740,12 @@ double CCPACSWingRibsDefinition::ComputeSectionElementEta(const std::string& sec
 
 double CCPACSWingRibsDefinition::ComputeSparPositionEta(const std::string& sparPositionUID) const
 {
-    // ensure that this is only called when ribsPositioning is used!!!
-    assert(ribPositioningType == RIBS_POSITIONING);
+    // ensure that this is only called when m_ribsPositioning_choice1 is used!!!
+    assert(GetRibPositioningType() == RIBS_POSITIONING);
 
     // NOTE: definition of start/end of rib via spar position not conform with CPACS format (v2.3)
     // ensure that the spar position is part of the spar reference line!!!
-    CheckSparPositionOnReference(sparPositionUID, ribsPositioning->GetRibReference(), structure);
+    CheckSparPositionOnReference(sparPositionUID, m_ribsPositioning_choice1->GetRibReference(), structure);
 
     // get componentSegment required for getting section element face
     CCPACSWingSpars& spars = structure.GetSpars();
@@ -886,18 +765,18 @@ double CCPACSWingRibsDefinition::ComputeSparPositionEta(const std::string& sparP
 
 int CCPACSWingRibsDefinition::ComputeNumberOfRibs(double etaStart, double etaEnd) const
 {
-    // ensure that this is only called when ribsPositioning is used!!!
-    assert(ribPositioningType == RIBS_POSITIONING);
+    // ensure that this is only called when m_ribsPositioning_choice1 is used!!!
+    assert(GetRibPositioningType() == RIBS_POSITIONING);
 
     int numberOfRibs = 0;
 
     // check whether the number is defined in the ribs positioning
-    if (ribsPositioning->GetRibCountDefinitionType() == CCPACSWingRibsPositioning::NUMBER_OF_RIBS) {
-        numberOfRibs = ribsPositioning->GetNumberOfRibs();
+    if (m_ribsPositioning_choice1->GetRibCountDefinitionType() == CCPACSWingRibsPositioning::NUMBER_OF_RIBS) {
+        numberOfRibs = m_ribsPositioning_choice1->GetNumberOfRibs();
     }
-    else if (ribsPositioning->GetRibCountDefinitionType() == CCPACSWingRibsPositioning::SPACING) {
+    else if (m_ribsPositioning_choice1->GetRibCountDefinitionType() == CCPACSWingRibsPositioning::SPACING) {
         // otherwise compute the number based on the spacing
-        double spacing = ribsPositioning->GetSpacing();
+        double spacing = m_ribsPositioning_choice1->GetSpacing();
 
         // handle the case when start and end eta are identical
         double deltaEta = fabs(etaEnd - etaStart);
@@ -906,7 +785,7 @@ int CCPACSWingRibsDefinition::ComputeNumberOfRibs(double etaStart, double etaEnd
         }
         else {
             // get the length of the reference line between the two points
-            double length = GetRibReferenceLength(ribsPositioning->GetRibReference(), structure) * fabs(etaEnd - etaStart);
+            double length = GetRibReferenceLength(m_ribsPositioning_choice1->GetRibReference(), structure) * fabs(etaEnd - etaStart);
             // finally compute the number of ribs by dividing the length by the spacing
             // NOTE: adding of Precision::Confusion in order to avoid floating point problems
             numberOfRibs = (int)((length + Precision::Confusion()) / spacing) + 1;
@@ -922,13 +801,13 @@ int CCPACSWingRibsDefinition::ComputeNumberOfRibs(double etaStart, double etaEnd
 
 double CCPACSWingRibsDefinition::ComputeEtaOffset(double etaStart, double etaEnd) const
 {
-    assert(ribPositioningType == RIBS_POSITIONING);
+    assert(GetRibPositioningType() == RIBS_POSITIONING);
 
     double etaOffset;
 
     // check whether number of ribs is defined, or spacing is defined
-    if (ribsPositioning->GetRibCountDefinitionType() == CCPACSWingRibsPositioning::NUMBER_OF_RIBS) {
-        int numberOfRibs = ribsPositioning->GetNumberOfRibs();
+    if (m_ribsPositioning_choice1->GetRibCountDefinitionType() == CCPACSWingRibsPositioning::NUMBER_OF_RIBS) {
+        int numberOfRibs = m_ribsPositioning_choice1->GetNumberOfRibs();
         // in case only 1 rib is defined define eta offset as 0
         if (numberOfRibs == 1) {
             etaOffset = 0;
@@ -937,10 +816,10 @@ double CCPACSWingRibsDefinition::ComputeEtaOffset(double etaStart, double etaEnd
             etaOffset = fabs(etaEnd - etaStart) / (numberOfRibs - 1);
         }
     }
-    else if (ribsPositioning->GetRibCountDefinitionType() == CCPACSWingRibsPositioning::SPACING) {
-        double spacing = ribsPositioning->GetSpacing();
+    else if (m_ribsPositioning_choice1->GetRibCountDefinitionType() == CCPACSWingRibsPositioning::SPACING) {
+        double spacing = m_ribsPositioning_choice1->GetSpacing();
         // get the length of the rib reference line between the two eta points
-        double referenceLength = GetRibReferenceLength(ribsPositioning->GetRibReference(), structure);
+        double referenceLength = GetRibReferenceLength(m_ribsPositioning_choice1->GetRibReference(), structure);
         etaOffset = spacing / referenceLength;
     }
     else {
@@ -974,7 +853,7 @@ TopoDS_Face CCPACSWingRibsDefinition::GetSectionRibGeometry(const std::string& e
 
     // cut rib face in case it starts at spar
     if (ribStart != "leadingEdge" && ribStart != "trailingEdge") {
-        // find spar with uid
+        // find spar with m_uID
         CCPACSWingSparSegment& sparSegment = structure.GetSparSegment(ribStart);
         // split rib with spar cut shape
         TopoDS_Shape cutShape = sparSegment.GetSparCutGeometry(WING_COORDINATE_SYSTEM);
@@ -985,7 +864,7 @@ TopoDS_Face CCPACSWingRibsDefinition::GetSectionRibGeometry(const std::string& e
     
     // cut rib face in case it ends at spar
     if (ribEnd != "leadingEdge" && ribEnd != "trailingEdge") {
-        // find spar with uid
+        // find spar with m_uID
         CCPACSWingSparSegment& sparSegment = structure.GetSparSegment(ribEnd);
         // split rib with spar cut shape
         TopoDS_Shape cutShape = sparSegment.GetSparCutGeometry(WING_COORDINATE_SYSTEM);
@@ -1002,22 +881,25 @@ gp_Vec CCPACSWingRibsDefinition::GetRibDirection(double currentEta, const gp_Pnt
     gp_Vec ribDir;
     const CTiglWingStructureReference& wingStructureReference = structure.GetWingStructureReference();
 
-    std::string ribReference = ribsPositioning->GetRibReference();
-    std::string ribRotationReference = ribsPositioning->GetRibRotation().GetRibRotationReference();
-    double zRotation = ribsPositioning->GetRibRotation().GetZRotation() * M_PI / 180.0;
+    std::string ribReference = m_ribsPositioning_choice1->GetRibReference();
+    double zRotation = m_ribsPositioning_choice1->GetRibRotation().GetZ() * M_PI / 180.0;
 
-    if (ribRotationReference.empty()) {
+    boost::optional<generated::CPACSRibRotation_ribRotationReference_SimpleContent> ribRotationReference;
+    if(m_ribsPositioning_choice1->GetRibRotation().HasRibRotationReference())
+        ribRotationReference = m_ribsPositioning_choice1->GetRibRotation().GetRibRotationReference().GetSimpleContent();
+
+    if (!ribRotationReference) {
         double midplaneEta, dummy;
         wingStructureReference.GetMidplaneEtaXsi(startPnt, midplaneEta, dummy);
         ribDir = wingStructureReference.GetMidplaneEtaDir(midplaneEta);
     }
-    else if (ribRotationReference == "LeadingEdge") {
+    if (ribRotationReference == generated::CPACSRibRotation_ribRotationReference_SimpleContent::LeadingEdge) {
         ribDir = wingStructureReference.GetLeadingEdgeDirection(startPnt);
     }
-    else if (ribRotationReference == "TrailingEdge") {
+    else if (ribRotationReference == generated::CPACSRibRotation_ribRotationReference_SimpleContent::TrailingEdge) {
         ribDir = wingStructureReference.GetTrailingEdgeDirection(startPnt);
     }
-    else if (ribRotationReference == "globalY") {
+    else if (ribRotationReference == generated::CPACSRibRotation_ribRotationReference_SimpleContent::globalY) {
         // rotate y-axis around z-axis by zRotation in order to get rib direction
         ribDir = gp_Vec(0, 1, 0);
     }
@@ -1025,17 +907,18 @@ gp_Vec CCPACSWingRibsDefinition::GetRibDirection(double currentEta, const gp_Pnt
         // rotation computation only implemented for ribs which have the
         // reference point in the same spar, otherwise computation could
         // be difficult
-        if (ribReference != ribRotationReference) {
+        const std::string ribRotationReferenceStr = generated::CPACSRibRotation_ribRotationReference_SimpleContentToString(*ribRotationReference);
+        if (ribReference != ribRotationReferenceStr) {
             LOG(ERROR) << "using spar as rib rotation reference but not as rib reference is not supported!";
             throw CTiglError("ERROR: using spar as rib rotation reference but not as rib reference is not supported!");
         }
-        CCPACSWingSparSegment& sparSegment = structure.GetSparSegment(ribRotationReference);
+        CCPACSWingSparSegment& sparSegment = structure.GetSparSegment(ribRotationReferenceStr);
         ribDir = sparSegment.GetDirection(currentEta);
     }
 
     // rotate rib direction by z rotation around up vector
     // special handling for globalY, by default the zRotation defines the rotation around the up-vector
-    if (ribRotationReference == "globalY") {
+    if (ribRotationReference == generated::CPACSRibRotation_ribRotationReference_SimpleContent::globalY) {
         ribDir.Rotate(gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), zRotation);
     }
     else {
@@ -1092,7 +975,7 @@ TopoDS_Face CCPACSWingRibsDefinition::BuildRibCutFace(const gp_Pnt& startPnt, co
     if (ribEnd != "leadingEdge" && ribEnd != "trailingEdge") {
         // get geometry of spar
         std::string sparUid = ribEnd;
-        // find spar with uid
+        // find spar with m_uID
         CCPACSWingSparSegment& sparSegment = structure.GetSparSegment(sparUid);
         TopoDS_Shape sparGeometry = sparSegment.GetSparGeometry(WING_COORDINATE_SYSTEM);
 

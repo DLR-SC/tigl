@@ -16,10 +16,7 @@
 #ifndef CCPACSWINGSPARWEB_H
 #define CCPACSWINGSPARWEB_H
 
-#include <string>
-
-#include <tixi.h>
-
+#include "generated/CPACSWeb.h"
 #include "CCPACSMaterial.h"
 #include "tigl_internal.h"
 
@@ -27,29 +24,10 @@
 namespace tigl
 {
 
-class CCPACSWingSparWeb
+class CCPACSWingSparWeb : public generated::CPACSWeb
 {
 public:
     TIGL_EXPORT CCPACSWingSparWeb();
-    TIGL_EXPORT virtual ~CCPACSWingSparWeb();
-
-    TIGL_EXPORT void Cleanup();
-
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & sparWebXPath);
-    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string & sparWebXPath) const;
-
-    TIGL_EXPORT const CCPACSMaterial& GetMaterial() const;
-    TIGL_EXPORT CCPACSMaterial& GetMaterial();
-
-    TIGL_EXPORT double GetRelPos() const;
-
-private:
-    CCPACSWingSparWeb(const CCPACSWingSparWeb&);
-    void operator=(const CCPACSWingSparWeb&);
-
-private:
-    double relPos;
-    CCPACSMaterial material;
 };
 
 } // end namespace tigl

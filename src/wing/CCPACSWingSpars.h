@@ -16,14 +16,9 @@
 #ifndef CCPACSWINGSPARS_H
 #define CCPACSWINGSPARS_H
 
-#include <string>
-
-#include <tixi.h>
-
+#include "generated/CPACSWingSpar.h"
 #include "CCPACSWingSparPositions.h"
 #include "CCPACSWingSparSegments.h"
-#include "tigl_internal.h"
-
 
 namespace tigl
 {
@@ -32,39 +27,15 @@ namespace tigl
 class CCPACSWingCSStructure;
 
 
-class CCPACSWingSpars
+class CCPACSWingSpars : public generated::CPACSWingSpar
 {
 public:
-    TIGL_EXPORT CCPACSWingSpars(CCPACSWingCSStructure& structure);
-    TIGL_EXPORT virtual ~CCPACSWingSpars();
+    TIGL_EXPORT CCPACSWingSpars(CCPACSWingCSStructure* structure);
 
     TIGL_EXPORT void Invalidate();
 
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & sparsXPath);
-    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string & sparsXPath) const;
-
     TIGL_EXPORT const CCPACSWingCSStructure& GetStructure() const;
     TIGL_EXPORT CCPACSWingCSStructure& GetStructure();
-
-    TIGL_EXPORT const CCPACSWingSparSegments& GetSparSegments() const;
-    TIGL_EXPORT CCPACSWingSparSegments& GetSparSegments();
-
-    TIGL_EXPORT const CCPACSWingSparPositions& GetSparPositions() const;
-    TIGL_EXPORT CCPACSWingSparPositions& GetSparPositions();
-
-protected:
-    void Cleanup();
-
-private:
-    CCPACSWingSpars(const CCPACSWingSpars&);
-    void operator=(const CCPACSWingSpars&);
-
-private:
-    CCPACSWingCSStructure& structure;
-
-    CCPACSWingSparPositions sparPositions;
-    CCPACSWingSparSegments sparSegments;
-
 };
 
 } // end namespace tigl

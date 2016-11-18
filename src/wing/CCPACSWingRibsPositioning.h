@@ -16,13 +16,8 @@
 #ifndef CCPACSWINGRIBSPOSITIONING_H
 #define CCPACSWINGRIBSPOSITIONING_H
 
-#include <string>
-
-#include <tixi.h>
-
+#include "generated/CPACSWingRibsPositioning.h"
 #include "CCPACSWingRibRotation.h"
-#include "tigl_internal.h"
-
 
 namespace tigl
 {
@@ -30,16 +25,16 @@ namespace tigl
 // forward declaration
 class CCPACSWingRibsDefinition;
 
-class CCPACSWingRibsPositioning
+class CCPACSWingRibsPositioning : public generated::CPACSWingRibsPositioning
 {
 public:
-    enum CrossingBehaviour 
+    enum CrossingBehaviour
     { 
         CROSSING_CROSS,
         CROSSING_END
     };
     // NOTE: definition of start/end of rib via spar position not conform with CPACS format (v2.3)
-    enum StartDefinitionType 
+    enum StartDefinitionType
     { 
         ELEMENT_START,
         ETA_START,
@@ -58,14 +53,10 @@ public:
     };
 
 public:
-    TIGL_EXPORT CCPACSWingRibsPositioning(CCPACSWingRibsDefinition& parent);
-    TIGL_EXPORT virtual ~CCPACSWingRibsPositioning();
+    TIGL_EXPORT CCPACSWingRibsPositioning(CCPACSWingRibsDefinition* parent);
 
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & ribsPositioningXPath);
-    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string & ribsPositioningXPath) const;
-
-    TIGL_EXPORT const std::string& GetRibReference() const;
-    TIGL_EXPORT void SetRibReference(const std::string&);
+    TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string & xpath) override;
+    TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string & xpath) const override;
 
     TIGL_EXPORT StartDefinitionType GetStartDefinitionType() const;
     
@@ -91,12 +82,6 @@ public:
     TIGL_EXPORT const std::string& GetSparPositionEndUID() const;
     TIGL_EXPORT void SetSparPositionEndUID(const std::string&);
 
-    TIGL_EXPORT const std::string& GetRibStart() const;
-    TIGL_EXPORT void SetRibStart(const std::string&);
-
-    TIGL_EXPORT const std::string& GetRibEnd() const;
-    TIGL_EXPORT void SetRibEnd(const std::string&);
-
     TIGL_EXPORT RibCountDefinitionType GetRibCountDefinitionType() const;
 
     TIGL_EXPORT int GetNumberOfRibs() const;
@@ -108,34 +93,24 @@ public:
     TIGL_EXPORT CrossingBehaviour GetRibCrossingBehaviour() const;
     TIGL_EXPORT void SetRibCrossingBehaviour(CrossingBehaviour);
 
-    TIGL_EXPORT const CCPACSWingRibRotation& GetRibRotation() const;
-    TIGL_EXPORT CCPACSWingRibRotation& GetRibRotation();
-
-protected:
-    void Cleanup();
-
 private:
-    CCPACSWingRibsPositioning(const CCPACSWingRibsPositioning&);
-    void operator=(const CCPACSWingRibsPositioning&);
-
-private:
-    CCPACSWingRibsDefinition& parent;
-    std::string ribReference;
-    StartDefinitionType startDefinitionType;
-    double etaStart;
-    std::string elementStartUID;
-    std::string sparPositionStartUID;
-    EndDefinitionType endDefinitionType;
-    double etaEnd;
-    std::string elementEndUID;
-    std::string sparPositionEndUID;
-    std::string ribStart;
-    std::string ribEnd;
-    RibCountDefinitionType ribCountDefinitionType;
-    int numberOfRibs;
-    double spacing;
-    CrossingBehaviour ribCrossingBehaviour;
-    CCPACSWingRibRotation ribRotation;
+    //CCPACSWingRibsDefinition& parent;
+    //std::string ribReference;
+    //StartDefinitionType startDefinitionType;
+    //double etaStart;
+    //std::string elementStartUID;
+    Optional<std::string> m_sparPositionStartUID_choice3;
+    //EndDefinitionType endDefinitionType;
+    //double etaEnd;
+    //std::string elementEndUID;
+    Optional<std::string> m_sparPositionEndUID_choice3;
+    //std::string ribStart;
+    //std::string ribEnd;
+    //RibCountDefinitionType ribCountDefinitionType;
+    //int numberOfRibs;
+    //double spacing;
+    //CrossingBehaviour ribCrossingBehaviour;
+    //CCPACSWingRibRotation ribRotation;
 };
 
 } // end namespace tigl

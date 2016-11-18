@@ -28,10 +28,9 @@
 namespace tigl 
 {
 
-CCPACSWingShell::CCPACSWingShell(CCPACSWingCSStructure& parent, TiglLoftSide side)
-    : side(side)
+CCPACSWingShell::CCPACSWingShell(CCPACSWingCSStructure* parent)
+    : generated::CPACSWingShell(parent)
 {
-    Reset();
 }
 
 int CCPACSWingShell::GetCellCount() const
@@ -55,7 +54,7 @@ CCPACSWingCell& CCPACSWingShell::GetCell(int index)
 
 const CCPACSMaterial& CCPACSWingShell::GetMaterial() const
 {
-    return material;
+    return m_skin.GetMaterial();
 }
 
 CCPACSMaterial& CCPACSWingShell::GetMaterial()
@@ -65,17 +64,16 @@ CCPACSMaterial& CCPACSWingShell::GetMaterial()
 
 const CCPACSWingCSStructure& CCPACSWingShell::GetStructure() const
 {
-    return parent;
+    return *m_parent;
 }
 
 CCPACSWingCSStructure& CCPACSWingShell::GetStructure()
 {
-    return parent;
+    return *m_parent;
 }
 
 void CCPACSWingShell::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string &shellXPath)
 {
-    Reset();
     generated::CPACSWingShell::ReadCPACS(tixiHandle, shellXPath);
 }
 
@@ -102,7 +100,11 @@ void CCPACSWingShell::Update() const
 
 TiglLoftSide CCPACSWingShell::GetLoftSide() const
 {
-    return side;
+    if (&GetParent()->GetLowerShell() == this)
+        return TiglLoftSide::LOWER_SIDE;
+    if (&GetParent()->GetUpperShell() == this)
+        return TiglLoftSide::UPPER_SIDE;
+    throw std::logic_error("Cannot determine loft side, this shell is neither lower nor upper shell of parent");
 }
 
 } // namespace tigl

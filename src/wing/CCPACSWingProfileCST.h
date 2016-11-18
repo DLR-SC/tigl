@@ -61,14 +61,7 @@ public:
     TIGL_EXPORT void Update();
 
     // Returns the profile points as read from TIXI.
-    TIGL_EXPORT virtual std::vector<const CTiglPoint*> GetSamplePoints() const override; // TODO: why do we need those anyway, they just return an empty vector?
-    TIGL_EXPORT virtual const std::vector<CTiglPoint>& GetSamplePoints2() const override; // TODO: why do we need those anyway, they just return an empty vector?
-
-    // get profiles CPACS XML path, TODO: do we really need this method?
-    DEPRECATED TIGL_EXPORT const std::string & GetProfileDataXPath() const;
-
-    // set profiles CPACS XML path, TODO: do we really need this method?
-    TIGL_EXPORT void SetProfileDataXPath(const std::string& xpath);
+    TIGL_EXPORT virtual const std::vector<CTiglPoint>& GetSamplePoints() const override; // TODO: why do we need those anyway, they just return an empty vector?
 
     // get upper wing profile wire
     TIGL_EXPORT const TopoDS_Edge & GetUpperWire() const;
@@ -108,7 +101,6 @@ protected:
     void BuildWires();
 
 private:
-    std::string               ProfileDataXPath;   /**< CPACS path to profile data (pointList or cst2D) */
     TopoDS_Edge               upperWire;          /**< wire of the upper wing profile */
     TopoDS_Edge               lowerWire;          /**< wire of the lower wing profile */
     TopoDS_Edge               upperLowerEdge;     /**< edge consisting of upper and lower wing profile */

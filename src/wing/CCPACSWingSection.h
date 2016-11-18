@@ -62,13 +62,13 @@ public:
     TIGL_EXPORT CTiglTransformation GetSectionTransformation() const;
 
     // Gets the section translation
-    TIGL_EXPORT CTiglPoint GetTranslation() const;
+    TIGL_EXPORT const CTiglPoint& GetTranslation() const;
 
     // Gets the section rotation
-    TIGL_EXPORT CTiglPoint GetRotation() const;
+    TIGL_EXPORT const CTiglPoint& GetRotation() const;
 
     // Gets the section scaling
-    TIGL_EXPORT CTiglPoint GetScaling() const;
+    TIGL_EXPORT const CTiglPoint& GetScaling() const;
 
     // Setter for translation
     TIGL_EXPORT void SetTranslation(const CTiglPoint& trans);

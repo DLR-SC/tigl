@@ -34,23 +34,11 @@ namespace tigl
 // Constructor
 CCPACSFuselageSectionElement::CCPACSFuselageSectionElement()
 {
-    Cleanup();
-}
-
-// Cleanup routine
-void CCPACSFuselageSectionElement::Cleanup()
-{
-    m_name         = "";
-    m_description  = "";
-    m_uID          = "";
-    m_profileUID   = "";
-    m_transformation.Reset();
 }
 
 // Read CPACS section elements
 void CCPACSFuselageSectionElement::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& elementXPath)
 {
-    Cleanup();
     generated::CPACSFuselageElement::ReadCPACS(tixiHandle, elementXPath);
 }
 
@@ -64,6 +52,36 @@ std::string CCPACSFuselageSectionElement::GetProfileIndex() const
 CTiglTransformation CCPACSFuselageSectionElement::GetSectionElementTransformation() const
 {
     return m_transformation.AsTransformation();
+}
+
+CTiglPoint CCPACSFuselageSectionElement::GetTranslation(void) const
+{
+    return m_transformation.GetTranslation();
+}
+
+void CCPACSFuselageSectionElement::SetTranslation(const CTiglPoint& translation)
+{
+    m_transformation.SetTranslation(translation);
+}
+
+CTiglPoint CCPACSFuselageSectionElement::GetRotation(void) const
+{
+    return m_transformation.GetRotation();
+}
+
+void CCPACSFuselageSectionElement::SetRotation(const CTiglPoint& rotation)
+{
+    m_transformation.SetRotation(rotation);
+}
+
+CTiglPoint CCPACSFuselageSectionElement::GetScaling(void) const
+{
+    return m_transformation.GetScaling();
+}
+
+void CCPACSFuselageSectionElement::SetScaling(const CTiglPoint& scaling)
+{
+    m_transformation.SetScaling(scaling);
 }
 
 } // end namespace tigl

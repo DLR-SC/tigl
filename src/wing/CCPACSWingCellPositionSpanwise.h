@@ -21,28 +21,38 @@
 #ifndef CCPACSWINGCELLPOSITIONSPANWISE_H
 #define CCPACSWINGCELLPOSITIONSPANWISE_H
 
-#include "CTiglWingSpanwiseBorder.h"
+#include "generated/CPACSCellPositioningSpanwise.h"
 
-
-namespace tigl 
+namespace tigl
 {
 
 // forward declarations
 class CCPACSWingCell;
 
-class CCPACSWingCellPositionSpanwise : public CTiglWingSpanwiseBorder
+class CCPACSWingCellPositionSpanwise : public generated::CPACSCellPositioningSpanwise
 {
 public:
+    enum /* class */ InputType {
+        Eta,
+        Rib,
+        None
+    };
+
     TIGL_EXPORT CCPACSWingCellPositionSpanwise(CCPACSWingCell* parent);
+    TIGL_EXPORT CCPACSWingCellPositionSpanwise(CPACSWingIntermediateStructureCell* parent);
+
+    TIGL_EXPORT InputType GetInputType() const;
+
+    TIGL_EXPORT void GetEta(double& eta1, double& eta2) const;
+    TIGL_EXPORT std::pair<double, double> GetEta() const;
+    TIGL_EXPORT void SetEta(double eta1, double eta2);
+
+    TIGL_EXPORT void GetRib(std::string& ribUid, int& ribNumber) const;
+    TIGL_EXPORT std::pair<std::string, int> GetRib() const;
+    TIGL_EXPORT void SetRib(const std::string& ribUid, int ribNumber);
 
 protected:
     void invalidateParent();
-
-private:
-    CCPACSWingCellPositionSpanwise(const CCPACSWingCellPositionSpanwise&); // = delete;
-    void operator=(const CCPACSWingCellPositionSpanwise&); // = delete;
-
-    CCPACSWingCell* m_parent;
 };
 
 } // end namespace tigl

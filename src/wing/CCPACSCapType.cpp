@@ -37,7 +37,6 @@ CCPACSCapType::~CCPACSCapType()
 void CCPACSCapType::Cleanup()
 {
     area = 0;
-    material.Cleanup();
 }
 
 void CCPACSCapType::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& sparCapXPath)

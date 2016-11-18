@@ -35,9 +35,6 @@ CCPACSGuideCurve::CCPACSGuideCurve()
     Cleanup();
 }
 
-CCPACSGuideCurve::CCPACSGuideCurve(const std::string& xpath)
-    : ctorXPath(xpath) {}
-
 // Destructor
 CCPACSGuideCurve::~CCPACSGuideCurve()
 {
@@ -53,10 +50,6 @@ void CCPACSGuideCurve::Cleanup()
     m_fromGuideCurveUID_choice1.destroy();
     m_fromRelativeCircumference_choice2.destroy();
     fromRelativeCircumferenceIsSet = true;
-}
-
-void CCPACSGuideCurve::ReadCPACS(const TixiDocumentHandle& tixiHandle) {
-    ReadCPACS(tixiHandle, ctorXPath);
 }
 
 // Read guide curve file

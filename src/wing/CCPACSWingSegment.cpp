@@ -202,8 +202,7 @@ namespace
 CCPACSWingSegment::CCPACSWingSegment(CCPACSWingSegments* parent)
     : generated::CPACSWingSegment(parent)
     , CTiglAbstractSegment(parent->GetSegmentCount() + 1, dummyTrans) // TODO: this is a hack, as we depend on the implementation of the vector reader in generated::CCPACSWingSegments::ReadCPACS() but the current CodeGen does not support passing indices into ctors
-    , wing(parent->GetParent<CCPACSWing>())
-    , surfacesAreValid(false) {
+    , wing(parent->GetParent<CCPACSWing>()) {
     Cleanup();
 }
 

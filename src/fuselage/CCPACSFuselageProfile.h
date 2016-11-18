@@ -58,18 +58,6 @@ public:
     // Write CPACS fuselage profile file
     TIGL_EXPORT void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-    // Returns the filename of the fuselage profile file
-    //TIGL_EXPORT const std::string& GetFileName() const;
-
-    //// Returns the name of the fuselage profile
-    //TIGL_EXPORT const std::string& GetName() const;
-
-    //// Returns the UID of the fuselage profile
-    //TIGL_EXPORT const std::string& GetUID() const;
-    //
-    //// Returns the name of the fuselage profile
-    //TIGL_EXPORT const std::string& GetDescription() const;
-    //
     // Returns the name of the fuselage profile
     TIGL_EXPORT const int GetNumPoints() const;
 

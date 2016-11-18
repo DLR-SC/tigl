@@ -20,6 +20,7 @@
 
 #include <tixi.h>
 
+#include "generated/CPACSWingRibCrossSection.h"
 #include "CCPACSMaterial.h"
 #include "tigl_internal.h"
 
@@ -28,46 +29,16 @@ namespace tigl
 {
 
 // forward declarations
-class CCPACSCapType;
 class CCPACSWingRibsDefinition;
 
-class CCPACSWingRibCrossSection
+class CCPACSWingRibCrossSection : public generated::CPACSWingRibCrossSection
 {
 public:
-    TIGL_EXPORT CCPACSWingRibCrossSection(CCPACSWingRibsDefinition& parent);
-    TIGL_EXPORT virtual ~CCPACSWingRibCrossSection();
-
-    TIGL_EXPORT void Cleanup();
-
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & ribCrossSectionXPath);
-    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string & ribCrossSectionXPath) const;
-
-    TIGL_EXPORT const CCPACSMaterial& GetMaterial() const;
-    TIGL_EXPORT CCPACSMaterial& GetMaterial();
+    TIGL_EXPORT CCPACSWingRibCrossSection(CPACSPylonRibsDefinition* parent);
+    TIGL_EXPORT CCPACSWingRibCrossSection(CCPACSWingRibsDefinition* parent);
 
     TIGL_EXPORT double GetXRotation() const;
     TIGL_EXPORT void SetXRotation(double);
-
-    TIGL_EXPORT bool HasUpperCap() const;
-    TIGL_EXPORT const CCPACSCapType& GetUpperCap() const;
-    TIGL_EXPORT CCPACSCapType& GetUpperCap();
-
-    TIGL_EXPORT bool HasLowerCap() const;
-    TIGL_EXPORT const CCPACSCapType& GetLowerCap() const;
-    TIGL_EXPORT CCPACSCapType& GetLowerCap();
-
-private:
-    CCPACSWingRibCrossSection(const CCPACSWingRibCrossSection&);
-    void operator=(const CCPACSWingRibCrossSection&);
-
-private:
-    CCPACSWingRibsDefinition& parent;
-    CCPACSMaterial material;
-    double xRotation;
-    CCPACSCapType* lowerCap;
-    CCPACSCapType* upperCap;
-
-    // TODO: support for RibCell not implemented yet!
 };
 
 } // end namespace tigl

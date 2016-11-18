@@ -257,19 +257,19 @@ private:
     struct SurfaceCache
     {
         bool                 valid;
-    double               mySurfaceArea;        /**< Surface area of this segment            */
-    TopoDS_Shape         upperShape;           /**< Upper shape of this segment             */
-    TopoDS_Shape         lowerShape;           /**< Lower shape of this segment             */
-    TopoDS_Shape         upperShapeLocal;      /**< Upper shape of this segment in wing coordinate system */
-    TopoDS_Shape         lowerShapeLocal;      /**< Lower shape of this segment in wing coordinate system */
-    TopoDS_Shape         upperShapeOpened;
-    TopoDS_Shape         lowerShapeOpened;
-    TopoDS_Shape         trailingEdgeShape;
-    Handle(Geom_Surface) upperSurface;
-    Handle(Geom_Surface) lowerSurface;
-    Handle(Geom_Surface) upperSurfaceLocal;
-    Handle(Geom_Surface) lowerSurfaceLocal;
-    CTiglPointTranslator cordSurface;
+        double               mySurfaceArea;    /**< Surface area of this segment            */
+        TopoDS_Shape         upperShape;       /**< Upper shape of this segment             */
+        TopoDS_Shape         lowerShape;       /**< Lower shape of this segment             */
+        TopoDS_Shape         upperShapeLocal;  /**< Upper shape of this segment in wing coordinate system */
+        TopoDS_Shape         lowerShapeLocal;  /**< Lower shape of this segment in wing coordinate system */
+        TopoDS_Shape         upperShapeOpened;
+        TopoDS_Shape         lowerShapeOpened;
+        TopoDS_Shape         trailingEdgeShape;
+        Handle(Geom_Surface) upperSurface;
+        Handle(Geom_Surface) lowerSurface;
+        Handle(Geom_Surface) upperSurfaceLocal;
+        Handle(Geom_Surface) lowerSurfaceLocal;
+        CTiglPointTranslator cordSurface;
     };
     mutable SurfaceCache surfaceCache;
 };
