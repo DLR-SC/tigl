@@ -1,117 +1,18 @@
 #pragma once
 
 #include <string>
-#include <algorithm>
-#include <stdexcept>
-#include <unordered_map>
-
-#include "Tables.h"
-#include "Variant.hpp"
-#include "SchemaParser.h"
 
 namespace tigl {
-    enum class Cardinality {
-        Optional,
-        Mandatory,
-        Vector
-    };
-
-    inline auto toString(const Cardinality& c) -> std::string {
-        switch (c) {
-            case Cardinality::Optional:  return "Optional";
-            case Cardinality::Mandatory: return "Mandatory";
-            case Cardinality::Vector:    return "Vector";
-            default: throw std::logic_error("No toString defined");
-        }
-    }
-
-    enum class XMLConstruct {
-        Element,
-        Attribute,
-        SimpleContent,
-        FundamentalTypeBase
-    };
-
+    struct Field;
     struct Class;
     struct Enum;
-
-    struct Field {
-        Variant<const Attribute*, const Element*, const SimpleContent*> origin;
-        std::string cpacsName;
-        std::string typeName;
-        //Variant<Class*, Enum*> type;
-        XMLConstruct xmlType;
-        Cardinality cardinality;
-
-        std::string customFieldName;
-
-        auto name() const -> const std::string& {
-            if (!customFieldName.empty())
-                return customFieldName;
-            else
-                return cpacsName;
-        }
-
-            auto fieldName() const -> std::string {
-            return "m_" + name();
-        }
-    };
-
-    struct ClassDependencies {
-        // non owning
-        std::vector<Class*> bases;
-        std::vector<Class*> deriveds;
-        std::vector<Class*> parents;
-        std::vector<Class*> children;
-        std::vector<Enum*> enumChildren;
-    };
-
-    struct Class {
-        const ComplexType* origin;
-        std::string name;
-        std::string base;
-        std::vector<Field> fields;
-
-        ClassDependencies deps;
-    };
-
-    struct EnumValue {
-        std::string name;
-
-        EnumValue() = default;
-        EnumValue(const std::string& name)
-            : name(name) {}
-
-        friend auto operator==(const EnumValue& a, const EnumValue& b) -> bool {
-            return a.name == b.name;
-        }
-    };
-
-    struct EnumDependencies {
-        std::vector<Class*> parents;
-    };
-
-    struct Enum {
-        const SimpleType* origin;
-        std::string name;
-        std::vector<EnumValue> values;
-
-        EnumDependencies deps;
-    };
-
-    struct Types {
-        std::unordered_map<std::string, Class> classes;
-        std::unordered_map<std::string, Enum> enums;
-
-        void buildTypeSystem();
-    };
-
-    class IndentingStreamWrapper;
+    class TypeSystem;
     class Tables;
+    class IndentingStreamWrapper;
 
     class CodeGen {
     public:
-        CodeGen(const std::string& outputLocation, Types types, Tables& tables);
+        CodeGen(const std::string& outputLocation, TypeSystem& types, Tables& tables);
     private:
         struct Includes {
             std::vector<std::string> hppIncludes;
@@ -120,8 +21,8 @@ namespace tigl {
             std::vector<std::string> cppIncludes;
         };
 
-        Types   m_types;
-        Tables& m_tables;
+        TypeSystem& m_types;
+        Tables&     m_tables;
 
         auto getterSetterType(const Field& field) const -> std::string;
         auto fieldType(const Field& field) const -> std::string;

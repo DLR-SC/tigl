@@ -4,9 +4,11 @@
 #include <algorithm>
 #include <sstream>
 
+#include "SchemaParser.h"
+#include "Tables.h"
+#include "TypeSystem.h"
 #include "NotImplementedException.h"
 #include "IndentingStreamWrapper.h"
-#include "Tables.h"
 #include "CodeGen.h"
 
 namespace tigl {
@@ -1004,71 +1006,6 @@ namespace tigl {
         hpp << "";
     }
 
-    namespace {
-        // TODO: replace by lambda when C++14 is available
-        struct SortAndUnique {
-            template <typename T>
-            void operator()(T& con) {
-                std::sort(std::begin(con), std::end(con));
-                con.erase(std::unique(std::begin(con), std::end(con)), std::end(con));
-            }
-        };
-    }
-
-    void Types::buildTypeSystem() {
-        for (auto& p : classes) {
-            auto& c = p.second;
-
-            // base
-            if (!c.base.empty()) {
-                const auto it = classes.find(c.base);
-                if (it != std::end(classes)) {
-                    c.deps.bases.push_back(&it->second);
-                    it->second.deps.deriveds.push_back(&c);
-                } else
-                    std::cerr << "Warning: class " << c.name << " has non-class base: " << c.base << std::endl;
-            }
-
-            // fields
-            for (auto& f : c.fields) {
-                const auto eit = enums.find(f.typeName);
-                if (eit != std::end(enums)) {
-                    //f.type = &eit->second;
-                    c.deps.enumChildren.push_back(&eit->second);
-                    eit->second.deps.parents.push_back(&c);
-                } else {
-                    const auto cit = classes.find(f.typeName);
-                    if (cit != std::end(classes)) {
-                        //f.type = &cit->second;
-                        c.deps.children.push_back(&cit->second);
-                        cit->second.deps.parents.push_back(&c);
-                    }
-                }
-            }
-        }
-
-        //auto sortAndUnique = [](auto& con) {
-        //	std::sort(std::begin(con), std::end(con));
-        //	con.erase(std::unique(std::begin(con), std::end(con)), std::end(con));
-        //};
-        SortAndUnique sortAndUnique;
-
-        // sort and unique
-        for (auto& p : classes) {
-            auto& c = p.second;
-            sortAndUnique(c.deps.bases);
-            sortAndUnique(c.deps.children);
-            sortAndUnique(c.deps.deriveds);
-            sortAndUnique(c.deps.enumChildren);
-            sortAndUnique(c.deps.parents);
-        }
-
-        for (auto& p : enums) {
-            auto& e = p.second;
-            sortAndUnique(e.deps.parents);
-        }
-    }
-
     class WriteIfDifferentFile {
     public:
         static std::size_t written;
@@ -1124,7 +1061,7 @@ namespace tigl {
     std::size_t WriteIfDifferentFile::overwritten = 0;
     std::size_t WriteIfDifferentFile::skipped = 0;
 
-    CodeGen::CodeGen(const std::string& outputLocation, Types types, Tables& m_tables)
+    CodeGen::CodeGen(const std::string& outputLocation, TypeSystem& types, Tables& m_tables)
         : m_types(std::move(types)), m_tables(m_tables) {
 
         // output directory should already have been created by cmake when runtime files were copied
