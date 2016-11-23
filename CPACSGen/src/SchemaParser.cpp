@@ -4,390 +4,390 @@
 #include "SchemaParser.h"
 
 namespace tigl {
-	SchemaParser::SchemaParser(const std::string& cpacsLocation)
-		: document(cpacsLocation) {
-		document.forEachChild("/xsd:schema/xsd:simpleType", [&](const std::string& xpath) {
-			readSimpleType(xpath);
-		});
+    SchemaParser::SchemaParser(const std::string& cpacsLocation)
+        : document(cpacsLocation) {
+        document.forEachChild("/xsd:schema/xsd:simpleType", [&](const std::string& xpath) {
+            readSimpleType(xpath);
+        });
 
-		document.forEachChild("/xsd:schema/xsd:complexType", [&](const std::string& xpath) {
-			readComplexType(xpath);
-		});
+        document.forEachChild("/xsd:schema/xsd:complexType", [&](const std::string& xpath) {
+            readComplexType(xpath);
+        });
 
-		document.forEachChild("/xsd:schema/xsd:element", [&](const std::string& xpath) {
-			readElement(xpath);
-		});
-	}
+        document.forEachChild("/xsd:schema/xsd:element", [&](const std::string& xpath) {
+            readElement(xpath);
+        });
+    }
 
-	Group SchemaParser::readGroup(const std::string& xpath, const std::string& containingTypeName) {
-		throw NotImplementedException("XSD group is not implemented");
-		return Group();
-	}
+    Group SchemaParser::readGroup(const std::string& xpath, const std::string& containingTypeName) {
+        throw NotImplementedException("XSD group is not implemented");
+        return Group();
+    }
 
-	All SchemaParser::readAll(const std::string& xpath, const std::string& containingTypeName) {
-		// <all
-		// id = ID
-		// maxOccurs = 1
-		// minOccurs = 0 | 1
-		// any attributes
-		// >
-		// (annotation? , element*)
-		// </all>
-		All all;
-		all.xpath = xpath;
-		document.forEachChild(xpath + "/xsd:element", [&](const std::string& xpath) {
-			all.elements.push_back(readElement(xpath, containingTypeName));
-		});
-		return all;
-	}
+    All SchemaParser::readAll(const std::string& xpath, const std::string& containingTypeName) {
+        // <all
+        // id = ID
+        // maxOccurs = 1
+        // minOccurs = 0 | 1
+        // any attributes
+        // >
+        // (annotation? , element*)
+        // </all>
+        All all;
+        all.xpath = xpath;
+        document.forEachChild(xpath + "/xsd:element", [&](const std::string& xpath) {
+            all.elements.push_back(readElement(xpath, containingTypeName));
+        });
+        return all;
+    }
 
-	Choice SchemaParser::readChoice(const std::string& xpath, const std::string& containingTypeName) {
-		// <choice
-		// id=ID
-		// maxOccurs=nonNegativeInteger|unbounded
-		// minOccurs=nonNegativeInteger
-		// any attributes
-		// >
-		// (annotation?,(element|group|choice|sequence|any)*)
-		// </choice>
-		Choice ch;
-		ch.xpath;
-		document.forEachChild(xpath + "/xsd:element", [&](const std::string& xpath) {
-			ch.elements.push_back(readElement(xpath, containingTypeName));
-		});
-		document.forEachChild(xpath + "/xsd:group", [&](const std::string& xpath) {
-			ch.elements.push_back(readGroup(xpath, containingTypeName));
-		});
-		document.forEachChild(xpath + "/xsd:choice", [&](const std::string& xpath) {
-			ch.elements.push_back(readChoice(xpath, containingTypeName));
-		});
-		document.forEachChild(xpath + "/xsd:sequence", [&](const std::string& xpath) {
-			ch.elements.push_back(readSequence(xpath, containingTypeName));
-		});
-		document.forEachChild(xpath + "/xsd:any", [&](const std::string& xpath) {
-			ch.elements.push_back(readAny(xpath, containingTypeName));
-		});
-		return ch;
-	}
+    Choice SchemaParser::readChoice(const std::string& xpath, const std::string& containingTypeName) {
+        // <choice
+        // id=ID
+        // maxOccurs=nonNegativeInteger|unbounded
+        // minOccurs=nonNegativeInteger
+        // any attributes
+        // >
+        // (annotation?,(element|group|choice|sequence|any)*)
+        // </choice>
+        Choice ch;
+        ch.xpath;
+        document.forEachChild(xpath + "/xsd:element", [&](const std::string& xpath) {
+            ch.elements.push_back(readElement(xpath, containingTypeName));
+        });
+        document.forEachChild(xpath + "/xsd:group", [&](const std::string& xpath) {
+            ch.elements.push_back(readGroup(xpath, containingTypeName));
+        });
+        document.forEachChild(xpath + "/xsd:choice", [&](const std::string& xpath) {
+            ch.elements.push_back(readChoice(xpath, containingTypeName));
+        });
+        document.forEachChild(xpath + "/xsd:sequence", [&](const std::string& xpath) {
+            ch.elements.push_back(readSequence(xpath, containingTypeName));
+        });
+        document.forEachChild(xpath + "/xsd:any", [&](const std::string& xpath) {
+            ch.elements.push_back(readAny(xpath, containingTypeName));
+        });
+        return ch;
+    }
 
-	Sequence SchemaParser::readSequence(const std::string& xpath, const std::string& containingTypeName) {
-		// <sequence
-		// id=ID
-		// maxOccurs=nonNegativeInteger|unbounded
-		// minOccurs=nonNegativeInteger
-		// any attributes
-		// >
-		// (annotation?,(element|group|choice|sequence|any)*)
-		// </sequence>
-		Sequence seq;
-		seq.xpath = xpath;
-		document.forEachChild(xpath + "/xsd:element", [&](const std::string& xpath) {
-			seq.elements.push_back(readElement(xpath, containingTypeName));
-		});
-		document.forEachChild(xpath + "/xsd:group", [&](const std::string& xpath) {
-			seq.elements.push_back(readGroup(xpath, containingTypeName));
-		});
-		document.forEachChild(xpath + "/xsd:choice", [&](const std::string& xpath) {
-			seq.elements.push_back(readChoice(xpath, containingTypeName));
-		});
-		document.forEachChild(xpath + "/xsd:sequence", [&](const std::string& xpath) {
-			seq.elements.push_back(readSequence(xpath, containingTypeName));
-		});
-		document.forEachChild(xpath + "/xsd:any", [&](const std::string& xpath) {
-			seq.elements.push_back(readAny(xpath, containingTypeName));
-		});
-		return seq;
-	}
+    Sequence SchemaParser::readSequence(const std::string& xpath, const std::string& containingTypeName) {
+        // <sequence
+        // id=ID
+        // maxOccurs=nonNegativeInteger|unbounded
+        // minOccurs=nonNegativeInteger
+        // any attributes
+        // >
+        // (annotation?,(element|group|choice|sequence|any)*)
+        // </sequence>
+        Sequence seq;
+        seq.xpath = xpath;
+        document.forEachChild(xpath + "/xsd:element", [&](const std::string& xpath) {
+            seq.elements.push_back(readElement(xpath, containingTypeName));
+        });
+        document.forEachChild(xpath + "/xsd:group", [&](const std::string& xpath) {
+            seq.elements.push_back(readGroup(xpath, containingTypeName));
+        });
+        document.forEachChild(xpath + "/xsd:choice", [&](const std::string& xpath) {
+            seq.elements.push_back(readChoice(xpath, containingTypeName));
+        });
+        document.forEachChild(xpath + "/xsd:sequence", [&](const std::string& xpath) {
+            seq.elements.push_back(readSequence(xpath, containingTypeName));
+        });
+        document.forEachChild(xpath + "/xsd:any", [&](const std::string& xpath) {
+            seq.elements.push_back(readAny(xpath, containingTypeName));
+        });
+        return seq;
+    }
 
-	Any SchemaParser::readAny(const std::string& xpath, const std::string& containingTypeName) {
-		// <any
-		// id=ID
-		// maxOccurs=nonNegativeInteger|unbounded
-		// minOccurs=nonNegativeInteger
-		// namespace=namespace
-		// processContents=lax|skip|strict
-		// any attributes
-		// >
-		// (annotation?)
-		// </any>
-		throw NotImplementedException("XSD any is not implemented");
-		return Any();
-	}
+    Any SchemaParser::readAny(const std::string& xpath, const std::string& containingTypeName) {
+        // <any
+        // id=ID
+        // maxOccurs=nonNegativeInteger|unbounded
+        // minOccurs=nonNegativeInteger
+        // namespace=namespace
+        // processContents=lax|skip|strict
+        // any attributes
+        // >
+        // (annotation?)
+        // </any>
+        throw NotImplementedException("XSD any is not implemented");
+        return Any();
+    }
 
-	void SchemaParser::readExtension(const std::string& xpath, ComplexType& type) {
-		type.base = document.textAttribute(xpath, "base");
-		readComplexTypeElementConfiguration(xpath, type);
-	}
+    void SchemaParser::readExtension(const std::string& xpath, ComplexType& type) {
+        type.base = document.textAttribute(xpath, "base");
+        readComplexTypeElementConfiguration(xpath, type);
+    }
 
-	void SchemaParser::readSimpleContent(const std::string& xpath, ComplexType& type) {
-		// <simpleContent
-		// id=ID
-		// any attributes
-		// >
-		// (annotation?,(restriction|extension))
-		// </simpleContent>
+    void SchemaParser::readSimpleContent(const std::string& xpath, ComplexType& type) {
+        // <simpleContent
+        // id=ID
+        // any attributes
+        // >
+        // (annotation?,(restriction|extension))
+        // </simpleContent>
 
-		if (document.checkElement(xpath + "/xsd:restriction")) {
-			if (document.checkElement(xpath + "/xsd:restriction/xsd:enumeration")) {
-				// generating an additional type for this enum
-				SimpleType stype;
-				stype.xpath = xpath;
-				stype.name = stripTypeSuffix(type.name) + "_SimpleContentType";
-				readRestriction(xpath + "/xsd:restriction", stype);
-				m_types[stype.name] = stype;
+        if (document.checkElement(xpath + "/xsd:restriction")) {
+            if (document.checkElement(xpath + "/xsd:restriction/xsd:enumeration")) {
+                // generating an additional type for this enum
+                SimpleType stype;
+                stype.xpath = xpath;
+                stype.name = stripTypeSuffix(type.name) + "_SimpleContentType";
+                readRestriction(xpath + "/xsd:restriction", stype);
+                m_types[stype.name] = stype;
 
-				SimpleContent sc;
-				sc.xpath = xpath;
-				sc.type = stype.name;
-				type.content = sc;
+                SimpleContent sc;
+                sc.xpath = xpath;
+                sc.type = stype.name;
+                type.content = sc;
 
-			} else {
-				// we ignore other kinds of restrictions as those are hard to support
-				std::cerr << "Warning: restricted simpleContent is not an enum: " << type.name << std::endl;
-			}
-		} else if (document.checkElement(xpath + "/xsd:extension")) {
-			// we simplify this case be creating a field for the value of the simpleContent
-			SimpleContent sc;
-			sc.xpath = xpath;
-			sc.type = document.textAttribute(xpath + "/xsd:extension", "base");
-			type.content = sc;
-		}
-	}
+            } else {
+                // we ignore other kinds of restrictions as those are hard to support
+                std::cerr << "Warning: restricted simpleContent is not an enum: " << type.name << std::endl;
+            }
+        } else if (document.checkElement(xpath + "/xsd:extension")) {
+            // we simplify this case be creating a field for the value of the simpleContent
+            SimpleContent sc;
+            sc.xpath = xpath;
+            sc.type = document.textAttribute(xpath + "/xsd:extension", "base");
+            type.content = sc;
+        }
+    }
 
-	void SchemaParser::readComplexContent(const std::string& xpath, ComplexType& type) {
-		// <complexContent
-		// id=ID
-		// mixed=true|false
-		// any attributes
-		// >
-		// (annotation?,(restriction|extension))
-		// </complexContent>
+    void SchemaParser::readComplexContent(const std::string& xpath, ComplexType& type) {
+        // <complexContent
+        // id=ID
+        // mixed=true|false
+        // any attributes
+        // >
+        // (annotation?,(restriction|extension))
+        // </complexContent>
 
-		if (document.checkElement(xpath + "/xsd:restriction"))
-			throw NotImplementedException("XSD complexType complexContent restriction is not implemented");
-		else if (document.checkElement(xpath + "/xsd:extension"))
-			readExtension(xpath + "/xsd:extension", type);
-	}
+        if (document.checkElement(xpath + "/xsd:restriction"))
+            throw NotImplementedException("XSD complexType complexContent restriction is not implemented");
+        else if (document.checkElement(xpath + "/xsd:extension"))
+            readExtension(xpath + "/xsd:extension", type);
+    }
 
-	void SchemaParser::readComplexTypeElementConfiguration(const std::string& xpath, ComplexType& type) {
-		     if (document.checkElement(xpath + "/xsd:all"))      type.content = readAll     (xpath + "/xsd:all",      stripTypeSuffix(type.name));
-		else if (document.checkElement(xpath + "/xsd:sequence")) type.content = readSequence(xpath + "/xsd:sequence", stripTypeSuffix(type.name));
-		else if (document.checkElement(xpath + "/xsd:choice"))   type.content = readChoice  (xpath + "/xsd:choice",   stripTypeSuffix(type.name));
-		else if (document.checkElement(xpath + "/xsd:group"))    throw NotImplementedException("XSD complexType group is not implemented");
-		else if (document.checkElement(xpath + "/xsd:any"))      throw NotImplementedException("XSD complexType any is not implemented");
+    void SchemaParser::readComplexTypeElementConfiguration(const std::string& xpath, ComplexType& type) {
+             if (document.checkElement(xpath + "/xsd:all"))      type.content = readAll     (xpath + "/xsd:all",      stripTypeSuffix(type.name));
+        else if (document.checkElement(xpath + "/xsd:sequence")) type.content = readSequence(xpath + "/xsd:sequence", stripTypeSuffix(type.name));
+        else if (document.checkElement(xpath + "/xsd:choice"))   type.content = readChoice  (xpath + "/xsd:choice",   stripTypeSuffix(type.name));
+        else if (document.checkElement(xpath + "/xsd:group"))    throw NotImplementedException("XSD complexType group is not implemented");
+        else if (document.checkElement(xpath + "/xsd:any"))      throw NotImplementedException("XSD complexType any is not implemented");
 
-		     if (document.checkElement(xpath + "/xsd:complexContent")) readComplexContent(xpath + "/xsd:complexContent", type);
-		else if (document.checkElement(xpath + "/xsd:simpleContent"))  readSimpleContent (xpath + "/xsd:simpleContent",  type);
-	}
+             if (document.checkElement(xpath + "/xsd:complexContent")) readComplexContent(xpath + "/xsd:complexContent", type);
+        else if (document.checkElement(xpath + "/xsd:simpleContent"))  readSimpleContent (xpath + "/xsd:simpleContent",  type);
+    }
 
-	Attribute SchemaParser::readAttribute(const std::string& xpath, const std::string& containingTypeName) {
-		Attribute att;
-		att.xpath = xpath;
-		att.name = document.textAttribute(xpath, "name");
+    Attribute SchemaParser::readAttribute(const std::string& xpath, const std::string& containingTypeName) {
+        Attribute att;
+        att.xpath = xpath;
+        att.name = document.textAttribute(xpath, "name");
 
-		if (document.checkAttribute(xpath, "type"))
-			// referencing other type
-			att.type = document.textAttribute(xpath, "type");
-		else
-			// type defined inline
-			att.type = readInlineType(xpath, containingTypeName + "_" + att.name);
+        if (document.checkAttribute(xpath, "type"))
+            // referencing other type
+            att.type = document.textAttribute(xpath, "type");
+        else
+            // type defined inline
+            att.type = readInlineType(xpath, containingTypeName + "_" + att.name);
 
-		if (document.checkAttribute(xpath, "use")) {
-			const auto use = document.textAttribute(xpath, "use");
-			if (use == "optional")
-				att.optional = true;
-			else if (use == "required")
-				att.optional = false;
-			else
-				throw std::runtime_error("Invalid value for optional attribute at xpath: " + xpath);
-		} else {
-			att.optional = false;
-		}
+        if (document.checkAttribute(xpath, "use")) {
+            const auto use = document.textAttribute(xpath, "use");
+            if (use == "optional")
+                att.optional = true;
+            else if (use == "required")
+                att.optional = false;
+            else
+                throw std::runtime_error("Invalid value for optional attribute at xpath: " + xpath);
+        } else {
+            att.optional = false;
+        }
 
-		if (document.checkAttribute(xpath, "default"))
-			att.defaultValue = document.textAttribute(xpath, "default");
-		if (document.checkAttribute(xpath, "fixed"))
-			att.fixed = document.textAttribute(xpath, "fixed");
+        if (document.checkAttribute(xpath, "default"))
+            att.defaultValue = document.textAttribute(xpath, "default");
+        if (document.checkAttribute(xpath, "fixed"))
+            att.fixed = document.textAttribute(xpath, "fixed");
 
-		return att;
-	}
+        return att;
+    }
 
-	std::string SchemaParser::readComplexType(const std::string& xpath, const std::string& nameHint) {
-		// <complexType
-		// id=ID
-		// name=NCName
-		// abstract=true|false
-		// mixed=true|false
-		// block=(#all|list of (extension|restriction))
-		// final=(#all|list of (extension|restriction))
-		// any attributes
-		// >
-		// (annotation?,(simpleContent|complexContent|((group|all|choice|sequence)?,((attribute|attributeGroup)*,anyAttribute?))))
-		// </complexType>
+    std::string SchemaParser::readComplexType(const std::string& xpath, const std::string& nameHint) {
+        // <complexType
+        // id=ID
+        // name=NCName
+        // abstract=true|false
+        // mixed=true|false
+        // block=(#all|list of (extension|restriction))
+        // final=(#all|list of (extension|restriction))
+        // any attributes
+        // >
+        // (annotation?,(simpleContent|complexContent|((group|all|choice|sequence)?,((attribute|attributeGroup)*,anyAttribute?))))
+        // </complexType>
 
-			// read or generate type name
-		const std::string name = [&] {
-			if (document.checkAttribute(xpath, "name"))
-				return document.textAttribute(xpath, "name");
-			else
-				return generateUniqueTypeName(nameHint);
-		}();
+            // read or generate type name
+        const std::string name = [&] {
+            if (document.checkAttribute(xpath, "name"))
+                return document.textAttribute(xpath, "name");
+            else
+                return generateUniqueTypeName(nameHint);
+        }();
 
-		if (m_types.find(name) != std::end(m_types))
-			throw std::runtime_error("Type with name " + name + " already exists");
+        if (m_types.find(name) != std::end(m_types))
+            throw std::runtime_error("Type with name " + name + " already exists");
 
-		ComplexType type;
-		type.xpath = xpath;
-		type.name = name;
+        ComplexType type;
+        type.xpath = xpath;
+        type.name = name;
 
-		if (document.checkAttribute(xpath, "id"))
-			throw NotImplementedException("XSD complextype id is not implemented");
-		if (document.checkAttribute(xpath, "abstract"))
-			throw NotImplementedException("XSD complextype abstract is not implemented");
-		if (document.checkAttribute(xpath, "mixed"))
-			throw NotImplementedException("XSD complextype mixed is not implemented");
-		if (document.checkAttribute(xpath, "block"))
-			throw NotImplementedException("XSD complextype block is not implemented");
-		if (document.checkAttribute(xpath, "final"))
-			throw NotImplementedException("XSD complextype final is not implemented");
+        if (document.checkAttribute(xpath, "id"))
+            throw NotImplementedException("XSD complextype id is not implemented");
+        if (document.checkAttribute(xpath, "abstract"))
+            throw NotImplementedException("XSD complextype abstract is not implemented");
+        if (document.checkAttribute(xpath, "mixed"))
+            throw NotImplementedException("XSD complextype mixed is not implemented");
+        if (document.checkAttribute(xpath, "block"))
+            throw NotImplementedException("XSD complextype block is not implemented");
+        if (document.checkAttribute(xpath, "final"))
+            throw NotImplementedException("XSD complextype final is not implemented");
 
-		// read element configuration
-		readComplexTypeElementConfiguration(xpath, type);
+        // read element configuration
+        readComplexTypeElementConfiguration(xpath, type);
 
-		// read attributes
-		for (auto path : {
-			xpath,
-			xpath + "/xsd:complexContent/xsd:restriction",
-			xpath + "/xsd:complexContent/xsd:extension",
-			xpath + "/xsd:simpleContent/xsd:restriction",
-			xpath + "/xsd:simpleContent/xsd:extension",
-		}) {
-			if (document.checkElement(path)) {
-				document.forEachChild(path + "/xsd:attribute", [&](const std::string& xpath) {
-					type.attributes.push_back(readAttribute(xpath, name));
-				});
-				if (document.checkElement(xpath + "/xsd:attributeGroup")) {
-					throw NotImplementedException("XSD complexType attributeGroup is not implemented");
-				}
-			}
-		}
+        // read attributes
+        for (auto path : {
+            xpath,
+            xpath + "/xsd:complexContent/xsd:restriction",
+            xpath + "/xsd:complexContent/xsd:extension",
+            xpath + "/xsd:simpleContent/xsd:restriction",
+            xpath + "/xsd:simpleContent/xsd:extension",
+        }) {
+            if (document.checkElement(path)) {
+                document.forEachChild(path + "/xsd:attribute", [&](const std::string& xpath) {
+                    type.attributes.push_back(readAttribute(xpath, name));
+                });
+                if (document.checkElement(xpath + "/xsd:attributeGroup")) {
+                    throw NotImplementedException("XSD complexType attributeGroup is not implemented");
+                }
+            }
+        }
 
-		// add
-		m_types[name] = type;
+        // add
+        m_types[name] = type;
 
-		return name;
-	}
+        return name;
+    }
 
-	void SchemaParser::readRestriction(const std::string& xpath, SimpleType& type) {
-		type.base = document.textAttribute(xpath, "base");
+    void SchemaParser::readRestriction(const std::string& xpath, SimpleType& type) {
+        type.base = document.textAttribute(xpath, "base");
 
-		document.forEachChild(xpath + "/xsd:enumeration", [&](const std::string& expath) {
-			const auto enumValue = document.textAttribute(expath, "value");
-			type.restrictionValues.push_back(enumValue);
-		});
+        document.forEachChild(xpath + "/xsd:enumeration", [&](const std::string& expath) {
+            const auto enumValue = document.textAttribute(expath, "value");
+            type.restrictionValues.push_back(enumValue);
+        });
 
-		if (type.restrictionValues.size() == 0)
-			std::cerr << "XSD restriction without enumeration is not implemented: " << xpath << std::endl;
-		//throw NotImplementedException("XSD restriction without enumeration is not implemented");
-	}
+        if (type.restrictionValues.size() == 0)
+            std::cerr << "XSD restriction without enumeration is not implemented: " << xpath << std::endl;
+        //throw NotImplementedException("XSD restriction without enumeration is not implemented");
+    }
 
-	std::string SchemaParser::readSimpleType(const std::string& xpath, const std::string& nameHint) {
-		// <simpleType
-		// id=ID
-		// name=NCName
-		// any attributes
-		// >
-		// (annotation?,(restriction|list|union))
-		// </simpleType>
+    std::string SchemaParser::readSimpleType(const std::string& xpath, const std::string& nameHint) {
+        // <simpleType
+        // id=ID
+        // name=NCName
+        // any attributes
+        // >
+        // (annotation?,(restriction|list|union))
+        // </simpleType>
 
-		// read or generate type name
-		const std::string name = [&] {
-			if (document.checkAttribute(xpath, "name"))
-				return document.textAttribute(xpath, "name");
-			else {
-				return generateUniqueTypeName(nameHint);
-			}
-		}();
+        // read or generate type name
+        const std::string name = [&] {
+            if (document.checkAttribute(xpath, "name"))
+                return document.textAttribute(xpath, "name");
+            else {
+                return generateUniqueTypeName(nameHint);
+            }
+        }();
 
-		if (m_types.find(name) != std::end(m_types))
-			throw std::runtime_error("Type with name " + name + " already exists");
+        if (m_types.find(name) != std::end(m_types))
+            throw std::runtime_error("Type with name " + name + " already exists");
 
-		SimpleType type;
-		type.xpath = xpath;
-		type.name = name;
+        SimpleType type;
+        type.xpath = xpath;
+        type.name = name;
 
-		if (document.checkAttribute(xpath, "id"))
-			throw NotImplementedException("XSD complextype id is not implemented");
+        if (document.checkAttribute(xpath, "id"))
+            throw NotImplementedException("XSD complextype id is not implemented");
 
-		     if (document.checkElement(xpath + "/xsd:restriction")) readRestriction(xpath + "/xsd:restriction", type);
-		else if (document.checkElement(xpath + "/xsd:list"))        throw NotImplementedException("XSD simpleType list is not implemented");
-		else if (document.checkElement(xpath + "/xsd:union"))       throw NotImplementedException("XSD simpleType union is not implemented");
+        if (document.checkElement(xpath + "/xsd:restriction")) readRestriction(xpath + "/xsd:restriction", type);
+        else if (document.checkElement(xpath + "/xsd:list"))        throw NotImplementedException("XSD simpleType list is not implemented");
+        else if (document.checkElement(xpath + "/xsd:union"))       throw NotImplementedException("XSD simpleType union is not implemented");
 
-		// add
-		m_types[name] = type;
+        // add
+        m_types[name] = type;
 
-		return name;
-	}
+        return name;
+    }
 
-	std::string SchemaParser::readInlineType(const std::string& xpath, const std::string& nameHint) {
-		     if (document.checkElement(xpath + "/xsd:complexType")) return readComplexType(xpath + "/xsd:complexType", nameHint);
-		else if (document.checkElement(xpath + "/xsd:simpleType" )) return readSimpleType (xpath + "/xsd:simpleType",  nameHint);
-		else throw std::runtime_error("Unexpected type or no type at xpath: " + xpath);
-	}
+    std::string SchemaParser::readInlineType(const std::string& xpath, const std::string& nameHint) {
+             if (document.checkElement(xpath + "/xsd:complexType")) return readComplexType(xpath + "/xsd:complexType", nameHint);
+        else if (document.checkElement(xpath + "/xsd:simpleType" )) return readSimpleType (xpath + "/xsd:simpleType",  nameHint);
+        else throw std::runtime_error("Unexpected type or no type at xpath: " + xpath);
+    }
 
-	Element SchemaParser::readElement(const std::string& xpath, const std::string& containingTypeName) {
-		Element element;
-		element.xpath = xpath;
-		element.name = document.textAttribute(xpath, "name");
+    Element SchemaParser::readElement(const std::string& xpath, const std::string& containingTypeName) {
+        Element element;
+        element.xpath = xpath;
+        element.name = document.textAttribute(xpath, "name");
 
-		// minOccurs
-		if (!document.checkAttribute(xpath, "minOccurs"))
-			element.minOccurs = 1;
-		else {
-			const auto minOccurs = document.textAttribute(xpath, "minOccurs");
-			element.minOccurs = std::stoi(minOccurs);
-		}
+        // minOccurs
+        if (!document.checkAttribute(xpath, "minOccurs"))
+            element.minOccurs = 1;
+        else {
+            const auto minOccurs = document.textAttribute(xpath, "minOccurs");
+            element.minOccurs = std::stoi(minOccurs);
+        }
 
-		// maxOccurs
-		if (!document.checkAttribute(xpath, "maxOccurs"))
-			element.maxOccurs = 1;
-		else {
-			const auto maxOccurs = document.textAttribute(xpath, "maxOccurs");
-			if (maxOccurs == "unbounded")
-				element.maxOccurs = std::numeric_limits<decltype(element.maxOccurs)>::max();
-			else
-				element.maxOccurs = std::stoi(maxOccurs);
-		}
+        // maxOccurs
+        if (!document.checkAttribute(xpath, "maxOccurs"))
+            element.maxOccurs = 1;
+        else {
+            const auto maxOccurs = document.textAttribute(xpath, "maxOccurs");
+            if (maxOccurs == "unbounded")
+                element.maxOccurs = std::numeric_limits<decltype(element.maxOccurs)>::max();
+            else
+                element.maxOccurs = std::stoi(maxOccurs);
+        }
 
-		if (document.checkAttribute(xpath, "type"))
-			// referencing other type
-			element.type = document.textAttribute(xpath, "type");
-		else
-			element.type = readInlineType(xpath, containingTypeName + "_" + element.name);
+        if (document.checkAttribute(xpath, "type"))
+            // referencing other type
+            element.type = document.textAttribute(xpath, "type");
+        else
+            element.type = readInlineType(xpath, containingTypeName + "_" + element.name);
 
-		assert(!element.type.empty());
+        assert(!element.type.empty());
 
-		return element;
-	}
+        return element;
+    }
 
-	std::string SchemaParser::generateUniqueTypeName(const std::string& newNameSuggestion) {
-		auto toString = [](unsigned int id) {
-			if (id == 0)
-				return std::string();
-			else
-				return std::to_string(id);
-		};
+    std::string SchemaParser::generateUniqueTypeName(const std::string& newNameSuggestion) {
+        auto toString = [](unsigned int id) {
+            if (id == 0)
+                return std::string();
+            else
+                return std::to_string(id);
+        };
 
-		unsigned int id = 0;
-		while (m_types.find(newNameSuggestion + "Type" + toString(id)) != std::end(m_types))
-			id++;
-		const auto n = newNameSuggestion + "Type" + toString(id);
-		return n;
-	}
+        unsigned int id = 0;
+        while (m_types.find(newNameSuggestion + "Type" + toString(id)) != std::end(m_types))
+            id++;
+        const auto n = newNameSuggestion + "Type" + toString(id);
+        return n;
+    }
 
-	std::string stripTypeSuffix(std::string name) {
-		if (name.size() > 4 && name.compare(name.size() - 4, 4, "Type") == 0)
-			name.erase(std::end(name) - 4, std::end(name));
-		return name;
-	}
+    std::string stripTypeSuffix(std::string name) {
+        if (name.size() > 4 && name.compare(name.size() - 4, 4, "Type") == 0)
+            name.erase(std::end(name) - 4, std::end(name));
+        return name;
+    }
 }
