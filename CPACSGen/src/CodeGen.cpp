@@ -739,7 +739,7 @@ namespace tigl {
                 cpp.raw() << " {";
                 {
                     Scope s(cpp);
-                    cpp << "assert(parent != nullptr);";
+                    cpp << "//assert(parent != nullptr);";
                     cpp << "m_parent = parent;";
                 }
                 cpp << "}";
@@ -752,7 +752,7 @@ namespace tigl {
                     cpp.raw() << " {";
                     {
                         Scope s(cpp);
-                        cpp << "assert(parent != nullptr);";
+                        cpp << "//assert(parent != nullptr);";
                         cpp << "m_parent = parent;";
                         cpp << "m_parentType = &typeid(" << rn << ");";
                     }

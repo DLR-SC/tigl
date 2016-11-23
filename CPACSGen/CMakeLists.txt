@@ -54,6 +54,7 @@ endif (NOT WIN32)
 
 # copy runtime files used by generated code
 set(RUNTIME_FILES
+	${CMAKE_CURRENT_SOURCE_DIR}/src/TixiDocument.h
 	${CMAKE_CURRENT_SOURCE_DIR}/src/TixiHelper.h
 	${CMAKE_CURRENT_SOURCE_DIR}/src/TixiHelper.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/Optional.hpp
