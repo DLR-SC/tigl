@@ -2,15 +2,12 @@
 #include <sstream>
 #include <regex>
 
-#include "Table.h"
+#include "Tables.h"
 
 namespace tigl {
     MappingTable::MappingTable(const std::string& filename) {
         read(filename);
     }
-
-    MappingTable::MappingTable(std::initializer_list<std::pair<const std::string, std::string>> init)
-        : m_map(init) {}
 
     void MappingTable::read(const std::string& filename) {
         std::ifstream f(filename);
@@ -58,9 +55,6 @@ namespace tigl {
         read(filename);
     }
 
-    Table::Table(std::initializer_list<std::string> init)
-        : m_set(init) {}
-
     void Table::read(const std::string& filename) {
         std::ifstream f(filename);
         if (!f)
@@ -84,4 +78,11 @@ namespace tigl {
     bool Table::contains(const std::string& key) const {
         return m_set.find(key) != std::end(m_set);
     }
+
+    Tables::Tables(const std::string& inputDirectory) :
+        m_customTypes      (inputDirectory + "/CustomTypes.txt"     ),
+        m_fundamentalTypes (inputDirectory + "/FundamentalTypes.txt"),
+        m_typeSubstitutions(inputDirectory + "/TypeSubstitution.txt"),
+        m_parentPointers   (inputDirectory + "/ParentPointer.txt"   ),
+        m_reservedNames    (inputDirectory + "/ReservedNames.txt"   ) {}
 }
