@@ -36,12 +36,12 @@ source_group(" " FILES ${ALL_SRCS} ${ALL_HEADERS})
 
 # add post build step to generate files side by side to TIGL source
 set(GENERATOR_OUTPUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../src/generated CACHE PATH "The output directory for the generated CPACS classes")
-set(CPACS_SCHEMA_FILE ${CMAKE_CURRENT_SOURCE_DIR}/schema/cpacs_schema.xsd CACHE FILEPATH "The location of the XML schema file specifying CPACS")
+set(GENERATOR_INPUT_DIR  ${CMAKE_CURRENT_SOURCE_DIR}/input            CACHE PATH "The location of the input files (CPACS schema, tables ...)")
 
 # generate target
 add_custom_target(
 	generate
-	COMMAND ${PROJECT_NAME} ${CPACS_SCHEMA_FILE} ${GENERATOR_OUTPUT_DIR}
+	COMMAND ${PROJECT_NAME} ${GENERATOR_INPUT_DIR} ${GENERATOR_OUTPUT_DIR}
 	COMMENT Running CPACSGen
 	VERBATIM
 )

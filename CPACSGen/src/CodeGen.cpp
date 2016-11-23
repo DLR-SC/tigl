@@ -6,6 +6,7 @@
 
 #include "NotImplementedException.h"
 #include "IndentingStreamWrapper.h"
+#include "Tables.h"
 #include "CodeGen.h"
 
 namespace tigl {
@@ -19,8 +20,8 @@ namespace tigl {
 	}
 
 	namespace {
-		auto customReplacedType(const std::string& type) -> const std::string& {
-			const auto p = s_customTypes.find(type);
+		auto customReplacedType(const std::string& type, Tables& tables) -> const std::string& {
+			const auto p = tables.m_customTypes.find(type);
 			return p ? *p : type;
 		}
 
@@ -33,17 +34,36 @@ namespace tigl {
 			return str;
 		}
 
-		auto enumToStringFunc(const Enum& e) -> std::string {
-			return customReplacedType(e.name) + "ToString";
+		auto enumToStringFunc(const Enum& e, Tables& tables) -> std::string {
+			return customReplacedType(e.name, tables) + "ToString";
 		}
 
-		auto stringToEnumFunc(const Enum& e) -> std::string {
-			return "stringTo" + CapitalizeFirstLetter(customReplacedType(e.name));
+		auto stringToEnumFunc(const Enum& e, Tables& tables) -> std::string {
+			return "stringTo" + CapitalizeFirstLetter(customReplacedType(e.name, tables));
+		}
+
+		auto enumCppName(std::string name, Tables& tables) {
+			// prefix numbers with "num" and replace minus with "neg"
+			if (std::isdigit(name[0]))
+				name = "_" + name;
+			if (name[0] == '-' && name.size() > 1 && std::isdigit(name[1]))
+				name = "_neg" + name.substr(1);
+
+			// replace some chars which are not allowed in C++
+			std::replace_if(std::begin(name), std::end(name), [](char c) {
+				return !std::isalnum(c);
+			}, '_');
+
+			// prefix reserved identifiers
+			if (tables.m_reservedNames.contains(name))
+				name = "_" + name;
+
+			return name;
 		}
 	}
 
 	auto CodeGen::getterSetterType(const Field& field) const -> std::string {
-		const auto typeName = customReplacedType(field.typeName);
+		const auto typeName = customReplacedType(field.typeName, m_tables);
 		switch (field.cardinality) {
 			case Cardinality::Optional:
 			case Cardinality::Mandatory:
@@ -158,7 +178,7 @@ namespace tigl {
 	}
 
 	void CodeGen::writeParentPointerGetters(IndentingStreamWrapper& hpp, const Class& c) {
-		if (s_parentPointers.contains(c.name)) {
+		if (m_tables.m_parentPointers.contains(c.name)) {
 			if (c.deps.parents.size() > 1) {
 				hpp << "// getter for parent classes";
 				hpp << "template<typename P>";
@@ -177,7 +197,7 @@ namespace tigl {
 					for (const auto& dep : c.deps.parents) {
 						if (&dep != &c.deps.parents[0])
 							hpp.raw() << " || ";
-						hpp.raw() << "std::is_same<P, " << customReplacedType(dep->name) << ">::value";
+						hpp.raw() << "std::is_same<P, " << customReplacedType(dep->name, m_tables) << ">::value";
 					}
 					hpp.raw() << ", \"template argument for P is not a parent class of " << c.name << "\");";
 					hpp << "if (m_parent == nullptr) {";
@@ -197,16 +217,16 @@ namespace tigl {
 				hpp << "}";
 			} else if (c.deps.parents.size() == 1) {
 				hpp << "// getter for parent class";
-				hpp << customReplacedType(c.deps.parents[0]->name) << "* GetParent() const;";
+				hpp << customReplacedType(c.deps.parents[0]->name, m_tables) << "* GetParent() const;";
 			}
 			hpp << "";
 		}
 	}
 
 	void CodeGen::writeParentPointerGetterImplementation(IndentingStreamWrapper& cpp, const Class& c) {
-		if (s_parentPointers.contains(c.name)) {
+		if (m_tables.m_parentPointers.contains(c.name)) {
 			if (c.deps.parents.size() == 1) {
-				cpp << customReplacedType(c.deps.parents[0]->name) << "* " << c.name << "::GetParent() const {";
+				cpp << customReplacedType(c.deps.parents[0]->name, m_tables) << "* " << c.name << "::GetParent() const {";
 				{
 					Scope s(cpp);
 					cpp << "return m_parent;";
@@ -252,7 +272,7 @@ namespace tigl {
 		const bool isAtt = isAttribute(f.xmlType);
 
 		// fundamental types
-		const auto pf = s_fundamentalTypes.find(f.typeName);
+		const auto pf = m_tables.m_fundamentalTypes.find(f.typeName);
 		if (pf) {
 			const auto& type = *pf;
 			switch (f.cardinality) {
@@ -284,7 +304,7 @@ namespace tigl {
 		// enums
 		const auto itE = m_types.enums.find(f.typeName);
 		if (itE != std::end(m_types.enums)) {
-			const auto& readFunc = stringToEnumFunc(itE->second);
+			const auto& readFunc = stringToEnumFunc(itE->second, m_tables);
 			switch (f.cardinality) {
 				case Cardinality::Optional:
 				case Cardinality::Mandatory:
@@ -302,7 +322,7 @@ namespace tigl {
 		// classes
 		if (f.xmlType != XMLConstruct::Attribute && f.xmlType != XMLConstruct::FundamentalTypeBase) {
 			const auto itC = m_types.classes.find(f.typeName);
-			const bool requiresParentPointer = s_parentPointers.contains(f.typeName);
+			const bool requiresParentPointer = m_tables.m_parentPointers.contains(f.typeName);
 			if (itC != std::end(m_types.classes)) {
 				switch (f.cardinality) {
 					case Cardinality::Optional:
@@ -333,7 +353,7 @@ namespace tigl {
 						cpp << tixiHelperNamespace << "::TixiReadElements(tixiHandle, xpath + \"/" << f.cpacsName << "\", " << f.fieldName() << ", [&](const std::string& childXPath) {";
 						{
 							Scope s(cpp);
-							cpp << "auto child = std_make_unique<" << customReplacedType(f.typeName) << ">(" << (requiresParentPointer ? parentPointerThis(c) : "") << ");";
+							cpp << "auto child = std_make_unique<" << customReplacedType(f.typeName, m_tables) << ">(" << (requiresParentPointer ? parentPointerThis(c) : "") << ");";
 							cpp << "child->ReadCPACS(tixiHandle, childXPath);";
 							cpp << "return child;";
 						}
@@ -351,7 +371,7 @@ namespace tigl {
 		const auto isAtt = isAttribute(f.xmlType);
 
 		// fundamental types
-		if (s_fundamentalTypes.contains(f.typeName)) {
+		if (m_tables.m_fundamentalTypes.contains(f.typeName)) {
 			switch (f.cardinality) {
 				case Cardinality::Optional:
 				case Cardinality::Mandatory:
@@ -365,7 +385,7 @@ namespace tigl {
 				case Cardinality::Vector:
 					if (f.xmlType == XMLConstruct::Attribute || f.xmlType == XMLConstruct::SimpleContent || f.xmlType == XMLConstruct::FundamentalTypeBase)
 						throw std::runtime_error("Attributes, simpleContents and bases cannot be vectors");
-					cpp << tixiHelperNamespace << "::TixiSaveElements(tixiHandle, xpath + \"/" << f.cpacsName << "\", " << f.fieldName() << ", [&](const std::string& childXPath, const " << customReplacedType(f.typeName) << "& child) {";
+					cpp << tixiHelperNamespace << "::TixiSaveElements(tixiHandle, xpath + \"/" << f.cpacsName << "\", " << f.fieldName() << ", [&](const std::string& childXPath, const " << customReplacedType(f.typeName, m_tables) << "& child) {";
 					{
 						Scope s(cpp);
 						assert(!isAtt);
@@ -384,7 +404,7 @@ namespace tigl {
 			switch (f.cardinality) {
 				case Cardinality::Optional:
 				case Cardinality::Mandatory:
-					cpp << tixiHelperNamespace << "::TixiSave" << (isAtt ? "Attribute" : "Element") << "(tixiHandle, xpath" << (isAtt ? ", \"" : " + \"/") << f.cpacsName + "\", " << enumToStringFunc(itE->second) << "(" << (f.cardinality == Cardinality::Optional ? "*" : "") << f.fieldName() << "));";
+					cpp << tixiHelperNamespace << "::TixiSave" << (isAtt ? "Attribute" : "Element") << "(tixiHandle, xpath" << (isAtt ? ", \"" : " + \"/") << f.cpacsName + "\", " << enumToStringFunc(itE->second, m_tables) << "(" << (f.cardinality == Cardinality::Optional ? "*" : "") << f.fieldName() << "));";
 					break;
 				case Cardinality::Vector:
 					throw NotImplementedException("Writing enum vectors is not implemented");
@@ -409,7 +429,7 @@ namespace tigl {
 						cpp << f.fieldName() << ".WriteCPACS(tixiHandle, xpath + \"/" + f.cpacsName + "\");";
 						break;
 					case Cardinality::Vector:
-						cpp << tixiHelperNamespace << "::TixiSaveElements(tixiHandle, xpath + \"/" << f.cpacsName << "\", " << f.fieldName() << ", [&](const std::string& childXPath, const std::unique_ptr<" << customReplacedType(f.typeName) << ">& child) {";
+						cpp << tixiHelperNamespace << "::TixiSaveElements(tixiHandle, xpath + \"/" << f.cpacsName << "\", " << f.fieldName() << ", [&](const std::string& childXPath, const std::unique_ptr<" << customReplacedType(f.typeName, m_tables) << ">& child) {";
 						{
 							Scope s(cpp);
 							cpp << "child->WriteCPACS(tixiHandle, childXPath);";
@@ -426,7 +446,7 @@ namespace tigl {
 
 	void CodeGen::writeReadBaseImplementation(IndentingStreamWrapper& cpp, const std::string& type) {
 		// fundamental types
-		const auto pf = s_fundamentalTypes.find(type);
+		const auto pf = m_tables.m_fundamentalTypes.find(type);
 		if (pf) {
 			// reading a base class which is a fundamental type is very cricital
 			// this case basically covers the case where the base is std::string, as other fundamental types cannot be inherited (int etc.)
@@ -446,7 +466,7 @@ namespace tigl {
 
 	void CodeGen::writeWriteBaseImplementation(IndentingStreamWrapper& cpp, const std::string& type) {
 		// fundamental types
-		if (s_fundamentalTypes.contains(type)) {
+		if (m_tables.m_fundamentalTypes.contains(type)) {
 			cpp << tixiHelperNamespace << "::TixiSaveElement(tixiHandle, xpath, *this);";
 			return;
 		}
@@ -595,7 +615,7 @@ namespace tigl {
 				m_types.classes.find(f.typeName) != std::end(m_types.classes)) {
 				// this is a class or enum type, include it
 
-				const auto p = s_customTypes.find(f.typeName);
+				const auto p = m_tables.m_customTypes.find(f.typeName);
 				if (!p) {
 					switch (f.cardinality) {
 						case Cardinality::Optional:
@@ -624,10 +644,10 @@ namespace tigl {
 		}
 
 		// parent pointers
-		if (s_parentPointers.contains(c.name)) {
+		if (m_tables.m_parentPointers.contains(c.name)) {
 			deps.cppIncludes.push_back("<cassert>");
 			for (const auto& dep : c.deps.parents) {
-				const auto p = s_customTypes.find(dep->name);
+				const auto p = m_tables.m_customTypes.find(dep->name);
 				if (p) {
 					deps.hppCustomForwards.push_back(*p);
 					deps.cppIncludes.push_back("\"" + *p + ".h\"");
@@ -647,11 +667,11 @@ namespace tigl {
 	}
 
 	void CodeGen::writeCtors(IndentingStreamWrapper& hpp, const Class& c) {
-		if (s_parentPointers.contains(c.name)) {
+		if (m_tables.m_parentPointers.contains(c.name)) {
 			if (c_generateDefaultCtorsForParentPointerTypes)
 				hpp << "TIGL_EXPORT " << c.name << "();";
 			for (const auto& dep : c.deps.parents)
-				hpp << "TIGL_EXPORT " << c.name << "(" << customReplacedType(dep->name) << "* parent);";
+				hpp << "TIGL_EXPORT " << c.name << "(" << customReplacedType(dep->name, m_tables) << "* parent);";
 			hpp << "";
 		} else {
 			hpp << "TIGL_EXPORT " << c.name << "();";
@@ -659,21 +679,21 @@ namespace tigl {
 	}
 
 	void CodeGen::writeParentPointerFields(IndentingStreamWrapper& hpp, const Class& c) {
-		if (s_parentPointers.contains(c.name)) {
+		if (m_tables.m_parentPointers.contains(c.name)) {
 			if (c.deps.parents.size() > 1) {
 				hpp << "// pointer to parent classes";
 				hpp << "void* m_parent;";
 				hpp << "const std::type_info* m_parentType;";
 			} else if (c.deps.parents.size() == 1) {
 				hpp << "// pointer to parent class";
-				hpp << customReplacedType(c.deps.parents[0]->name) << "* m_parent;";
+				hpp << customReplacedType(c.deps.parents[0]->name, m_tables) << "* m_parent;";
 			}
 			hpp << "";
 		}
 	}
 
 	auto CodeGen::parentPointerThis(const Class& c) const -> std::string {
-		const auto cust = s_customTypes.find(c.name);
+		const auto cust = m_tables.m_customTypes.find(c.name);
 		if (cust)
 			return "reinterpret_cast<" + *cust + "*>(this)";
 		else
@@ -685,7 +705,7 @@ namespace tigl {
 			Scope s(cpp);
 			bool first = true;
 			for (const auto& f : c.fields) {
-				if (f.cardinality == Cardinality::Mandatory && s_parentPointers.contains(f.typeName)) {
+				if (f.cardinality == Cardinality::Mandatory && m_tables.m_parentPointers.contains(f.typeName)) {
 					if (first) {
 						cpp.raw() << " :";
 						first = false;
@@ -697,7 +717,7 @@ namespace tigl {
 		};
 
 		// if this class holds parent pointers, we have to provide corresponding ctor overloads
-		if (s_parentPointers.contains(c.name)) {
+		if (m_tables.m_parentPointers.contains(c.name)) {
 			if (c_generateDefaultCtorsForParentPointerTypes) {
 				cpp << c.name << "::" << c.name << "()";
 				writeParentPointerFieldInitializers();
@@ -712,7 +732,7 @@ namespace tigl {
 				cpp << "";
 			}
 			if (c.deps.parents.size() == 1) {
-				cpp << c.name << "::" << c.name << "(" << customReplacedType(c.deps.parents[0]->name) << "* parent)";
+				cpp << c.name << "::" << c.name << "(" << customReplacedType(c.deps.parents[0]->name, m_tables) << "* parent)";
 				writeParentPointerFieldInitializers();
 				cpp.raw() << " {";
 				{
@@ -724,7 +744,7 @@ namespace tigl {
 				cpp << "";
 			} else {
 				for (const auto& dep : c.deps.parents) {
-					const auto rn = customReplacedType(dep->name);
+					const auto rn = customReplacedType(dep->name, m_tables);
 					cpp << c.name << "::" << c.name << "(" << rn << "* parent)";
 					writeParentPointerFieldInitializers();
 					cpp.raw() << " {";
@@ -838,7 +858,7 @@ namespace tigl {
 			}
 			hpp << "}";
 			// export non-custom types into tigl namespace
-			if (!s_customTypes.contains(c.name)) {
+			if (!m_tables.m_customTypes.contains(c.name)) {
 				hpp << "";
 				hpp << "// This type is not customized, export it into tigl namespace";
 				hpp << "using generated::" << c.name << ";";
@@ -940,20 +960,20 @@ namespace tigl {
 
 					// values
 					for (const auto& v : e.values)
-						hpp << v.cppName << (&v != &e.values.back() ? "," : "") << "";
+						hpp << enumCppName(v.name, m_tables) << (&v != &e.values.back() ? "," : "") << "";
 				}
 				hpp << "};";
 				hpp << "";
 
 				// enum to string function
-				hpp << "inline std::string " << enumToStringFunc(e) << "(const " << e.name << "& value) {";
+				hpp << "inline std::string " << enumToStringFunc(e, m_tables) << "(const " << e.name << "& value) {";
 				{
 					Scope s(hpp);
 					hpp << "switch(value) {";
 					{
 						Scope s(hpp);
 						for (const auto& v : e.values)
-							hpp << "case " << e.name << "::" << v.cppName << ": return \"" << v.name << "\";";
+							hpp << "case " << e.name << "::" << enumCppName(v.name, m_tables) << ": return \"" << v.name << "\";";
 						hpp << "default: throw std::runtime_error(\"Invalid enum value \\\"\" + std::to_string(static_cast<int>(value)) + \"\\\" for enum type " << e.name << "\");";
 					}
 					hpp << "}";
@@ -961,17 +981,17 @@ namespace tigl {
 				hpp << "}";
 
 				// string to enum function
-				hpp << "inline " << e.name << " " << stringToEnumFunc(e) << "(const std::string& value) {";
+				hpp << "inline " << e.name << " " << stringToEnumFunc(e, m_tables) << "(const std::string& value) {";
 				{
 					Scope s(hpp);
 					if (c_generateCaseSensitiveStringToEnumConversion) {
 						for (const auto& v : e.values)
-							hpp << "if (value == \"" << v.name << "\") return " << e.name << "::" << v.cppName << ";";
+							hpp << "if (value == \"" << v.name << "\") return " << e.name << "::" << enumCppName(v.name, m_tables) << ";";
 					} else {
 						auto toLower = [](std::string str) { for (char& c : str) c = std::tolower(c); return str; };
 						hpp << "auto toLower = [](std::string str) { for (char& c : str) c = std::tolower(c); return str; };";
 						for (const auto& v : e.values)
-							hpp << "if (toLower(value) == \"" << toLower(v.name) << "\") return " << e.name << "::" << v.cppName << ";";
+							hpp << "if (toLower(value) == \"" << toLower(v.name) << "\") return " << e.name << "::" << enumCppName(v.name, m_tables) << ";";
 					}
 
 					hpp << "throw std::runtime_error(\"Invalid string value \\\"\" + value + \"\\\" for enum type " << e.name << "\");";
@@ -1104,8 +1124,8 @@ namespace tigl {
 	std::size_t WriteIfDifferentFile::overwritten = 0;
 	std::size_t WriteIfDifferentFile::skipped = 0;
 
-	CodeGen::CodeGen(const std::string& outputLocation, Types types)
-		: m_types(std::move(types)) {
+	CodeGen::CodeGen(const std::string& outputLocation, Types types, Tables& m_tables)
+		: m_types(std::move(types)), m_tables(m_tables) {
 
 		// output directory should already have been created by cmake when runtime files were copied
 		//boost::filesystem::create_directories(outputLocation);

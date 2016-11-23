@@ -28,13 +28,13 @@ namespace tigl {
 		return name;
 	}
 
-	auto resolveType(const SchemaParser& schema, const std::string& name) -> std::string {
+	auto resolveType(const SchemaParser& schema, const std::string& name, Tables& tables) -> std::string {
 		const auto& types = schema.types();
 
 		// search simple and complex types
 		const auto cit = types.find(name);
 		if (cit != std::end(types)) {
-			const auto p = s_typeSubstitutions.find(name);
+			const auto p = tables.m_typeSubstitutions.find(name);
 			if (p)
 				return *p;
 			else
@@ -42,14 +42,14 @@ namespace tigl {
 		}
 
 		// search predefined xml schema types and replace them
-			const auto p = s_typeSubstitutions.find(name);
-			if (p)
-				return *p;
+		const auto p = tables.m_typeSubstitutions.find(name);
+		if (p)
+			return *p;
 
 		throw std::runtime_error("Unknown type: " + name);
 	}
 
-	auto buildFieldList(const SchemaParser& schema, const ComplexType& type) -> std::vector<Field> {
+	auto buildFieldList(const SchemaParser& schema, const ComplexType& type, Tables& tables) -> std::vector<Field> {
 		std::vector<Field> members;
 
 		// attributes
@@ -57,7 +57,7 @@ namespace tigl {
 			Field m;
 			m.origin = &a;
 			m.cpacsName = a.name;
-			m.typeName = resolveType(schema, a.type);
+			m.typeName = resolveType(schema, a.type, tables);
 			m.xmlType = XMLConstruct::Attribute;
 			if (a.optional)
 				m.cardinality = Cardinality::Optional;
@@ -68,14 +68,14 @@ namespace tigl {
 
 		// elements
 		struct ContentVisitor : public boost::static_visitor<> {
-			ContentVisitor(const SchemaParser& schema, std::vector<Field>& members)
-				: schema(schema), members(members) {}
+			ContentVisitor(const SchemaParser& schema, std::vector<Field>& members, Tables& tables)
+				: schema(schema), members(members), tables(tables) {}
 
 			void operator()(const Element& e) const {
 				Field m;
 				m.origin = &e;
 				m.cpacsName = e.name;
-				m.typeName = resolveType(schema, e.type);
+				m.typeName = resolveType(schema, e.type, tables);
 				m.xmlType = XMLConstruct::Element;
 				if (e.minOccurs == 0 && e.maxOccurs == 1)
 					m.cardinality = Cardinality::Optional;
@@ -97,7 +97,7 @@ namespace tigl {
 				for (const auto& v : c.elements) {
 					// collect members of one choice
 					std::vector<Field> choiceMembers;
-					v.visit(ContentVisitor(schema, choiceMembers));
+					v.visit(ContentVisitor(schema, choiceMembers, tables));
 
 					// make all optional
 					for (auto& f : choiceMembers)
@@ -133,7 +133,7 @@ namespace tigl {
 
 			void operator()(const Sequence& s) const {
 				for (const auto& v : s.elements)
-					v.visit(ContentVisitor(schema, members));
+					v.visit(ContentVisitor(schema, members, tables));
 			}
 
 			void operator()(const All& a) const {
@@ -155,7 +155,7 @@ namespace tigl {
 				m.cpacsName = "";
 				m.customFieldName = "simpleContent";
 				m.cardinality = Cardinality::Mandatory;
-				m.typeName = resolveType(schema, g.type);
+				m.typeName = resolveType(schema, g.type, tables);
 				m.xmlType = XMLConstruct::SimpleContent;
 				members.push_back(m);
 			}
@@ -163,9 +163,10 @@ namespace tigl {
 		private:
 			const SchemaParser& schema;
 			std::vector<Field>& members;
+			Tables& tables;
 		};
 
-		type.content.visit(ContentVisitor(schema, members));
+		type.content.visit(ContentVisitor(schema, members, tables));
 
 		return members;
 	}
@@ -255,7 +256,10 @@ namespace tigl {
 			types.enums[e.name] = std::move(e);
 	}
 
-	void run(const std::string& cpacsLocation, const std::string& outputDirectory) {
+	void run(const std::string& inputDirectory, const std::string& outputDirectory) {
+		Tables tables(inputDirectory);
+		const auto& cpacsLocation = inputDirectory + "/cpacs_schema.xsd";
+
 		// read types and elements
 		std::cout << "Parsing " << cpacsLocation << std::endl;
 		SchemaParser schema(cpacsLocation);
@@ -266,19 +270,19 @@ namespace tigl {
 			const auto& type = p.second;
 
 			struct TypeVisitor {
-				TypeVisitor(SchemaParser& schema, Types& types)
-					: schema(schema), types(types) {}
+				TypeVisitor(SchemaParser& schema, Types& types, Tables& tables)
+					: schema(schema), types(types), tables(tables) {}
 
 				void operator()(const ComplexType& type) {
 					Class c;
 					c.origin = &type;
 					c.name = makeClassName(type.name);
-					c.fields = buildFieldList(schema, type);
+					c.fields = buildFieldList(schema, type, tables);
 					if (!type.base.empty()) {
-						c.base = resolveType(schema, type.base);
+						c.base = resolveType(schema, type.base, tables);
 
 						// make base a field if fundamental type
-						if (s_fundamentalTypes.contains(c.base)) {
+						if (tables.m_fundamentalTypes.contains(c.base)) {
 							Field f;
 							f.cpacsName = "";
 							f.customFieldName = "base";
@@ -310,9 +314,10 @@ namespace tigl {
 			private:
 				SchemaParser& schema;
 				Types& types;
+				Tables& tables;
 			};
 
-			type.visit(TypeVisitor(schema, types));
+			type.visit(TypeVisitor(schema, types, tables));
 		};
 
 		// build dependencies
@@ -323,22 +328,22 @@ namespace tigl {
 
 		// generate code
 		std::cout << "Generating classes" << std::endl;
-		CodeGen codegen(outputDirectory, types);
+		CodeGen codegen(outputDirectory, types, tables);
 	}
 }
 
 int main(int argc, char* argv[]) {
 	// parse command line arguments
 	if (argc != 3) {
-		std::cerr << "Usage: CPACSGen cpacsSchemaLocation outputDirectory" << std::endl;
+		std::cerr << "Usage: CPACSGen inputDirectory outputDirectory" << std::endl;
 		return -1;
 	}
 
-	const std::string cpacsSchemaLocation = argv[1];
-	const std::string outputDirectory     = argv[2];
+	const std::string inputDirectory  = argv[1];
+	const std::string outputDirectory = argv[2];
 
 	try {
-		tigl::run(cpacsSchemaLocation, outputDirectory);
+		tigl::run(inputDirectory, outputDirectory);
 		return 0;
 	} catch (const std::exception& e) {
 		std::cerr << "Exception: " << e.what() << std::endl;

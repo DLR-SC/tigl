@@ -3,11 +3,20 @@
 #include "Table.h"
 
 namespace tigl {
-	extern MappingTable s_customTypes;
-	extern MappingTable s_fundamentalTypes;
-	extern MappingTable s_typeSubstitutions;
-	extern MappingTable s_xsdTypes;
+    class Tables {
+    public:
+        Tables(const std::string& inputDirectory) :
+            m_customTypes(inputDirectory + "/CustomTypes.txt"),
+            m_fundamentalTypes(inputDirectory + "/FundamentalTypes.txt"),
+            m_typeSubstitutions(inputDirectory + "/TypeSubstitution.txt"),
+            m_parentPointers(inputDirectory + "/ParentPointer.txt"),
+            m_reservedNames(inputDirectory + "/ReservedNames.txt") {}
 
-	extern Table s_parentPointers;
-	extern Table s_reservedNames;
+        MappingTable m_customTypes;
+        MappingTable m_fundamentalTypes;
+        MappingTable m_typeSubstitutions;
+
+        Table m_parentPointers;
+        Table m_reservedNames;
+    };
 }

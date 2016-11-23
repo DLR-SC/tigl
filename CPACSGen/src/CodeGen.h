@@ -77,28 +77,10 @@ namespace tigl {
 
 	struct EnumValue {
 		std::string name;
-		std::string cppName;
 
 		EnumValue() = default;
 		EnumValue(const std::string& name)
-			: name(name) {
-			cppName = name;
-
-			// prefix numbers with "num" and replace minus with "neg"
-			if (std::isdigit(cppName[0]))
-				cppName = "_" + cppName;
-			if (cppName[0] == '-' && cppName.size() > 1 && std::isdigit(cppName[1]))
-				cppName = "_neg" + cppName.substr(1);
-
-			// replace some chars which are not allowed in C++ for cppName
-			std::replace_if(std::begin(cppName), std::end(cppName), [](char c) {
-				return !std::isalnum(c);
-			}, '_');
-
-			// prefix reserved identifiers
-			if (s_reservedNames.contains(cppName))
-				cppName = "_" + cppName;
-		}
+			: name(name) {}
 
 		friend auto operator==(const EnumValue& a, const EnumValue& b) -> bool {
 			return a.name == b.name;
@@ -125,10 +107,11 @@ namespace tigl {
 	};
 
 	class IndentingStreamWrapper;
+	class Tables;
 
 	class CodeGen {
 	public:
-		CodeGen(const std::string& outputLocation, Types types);
+		CodeGen(const std::string& outputLocation, Types types, Tables& tables);
 	private:
 		struct Includes {
 			std::vector<std::string> hppIncludes;
@@ -137,7 +120,8 @@ namespace tigl {
 			std::vector<std::string> cppIncludes;
 		};
 
-		Types m_types;
+		Types   m_types;
+		Tables& m_tables;
 
 		auto getterSetterType(const Field& field) const -> std::string;
 		auto fieldType(const Field& field) const -> std::string;
