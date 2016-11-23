@@ -25,9 +25,8 @@ namespace tigl {
         }
 
         auto resolveType(const SchemaParser& schema, const std::string& name, Tables& tables) -> std::string {
-            const auto& types = schema.types();
-
             // search simple and complex types
+            const auto& types = schema.types();
             const auto cit = types.find(name);
             if (cit != std::end(types)) {
                 const auto p = tables.m_typeSubstitutions.find(name);

@@ -1,6 +1,7 @@
 #include <fstream>
 #include <sstream>
 #include <regex>
+#include <iostream>
 
 #include "Tables.h"
 
@@ -14,6 +15,8 @@ namespace tigl {
         if (!f)
             throw std::ios::failure("Failed to open file " + filename + " for reading");
 
+        std::cout << "Reading mapping table " << filename << std::endl;
+
         std::string line;
         while (std::getline(f, line)) {
             // skip empty lines and comments
@@ -26,9 +29,7 @@ namespace tigl {
             std::string second;
             ss >> first >> second;
 
-            if (first.empty() || second.empty())
-                continue;
-
+            std::cout << "\t" << first << " -> " << second << std::endl;
             m_map.insert(std::make_pair(first, second));
         }
     }
@@ -60,6 +61,8 @@ namespace tigl {
         if (!f)
             throw std::ios::failure("Failed to open file " + filename + " for reading");
 
+        std::cout << "Reading table " << filename << std::endl;
+
         std::string line;
         while (std::getline(f, line)) {
             // skip empty lines and comments
@@ -71,6 +74,7 @@ namespace tigl {
             std::string name;
             ss >> name;
 
+            std::cout << "\t" << name << std::endl;
             m_set.insert(name);
         }
     }
