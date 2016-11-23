@@ -50,9 +50,6 @@ void CCPACSFuselageProfiles::ReadCPACS(const TixiDocumentHandle& tixiHandle, con
 {
     // we replace generated::CPACSFuselageProfiles::ReadCPACS and not call it to allow instantiation of CCPACSFuselageProfile instead of generated::CPACSProfileGeometry
 
-    // read base
-    CPACSComplexBase::ReadCPACS(tixiHandle, xpath);
-
     // read element fuselageProfile
     if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/fuselageProfile")) {
         tixihelper::TixiReadElements(tixiHandle, xpath + "/fuselageProfile", m_fuselageProfile, [&](const std::string& childXPath) {
