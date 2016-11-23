@@ -185,6 +185,8 @@ namespace tigl {
 
                         // make base a field if fundamental type
                         if (tables.m_fundamentalTypes.contains(c.base)) {
+                            std::cout << "Warning: Type " << type.name << " has base class " << c.base << " which is a fundamental type. Generated field 'base' instead" << std::endl;
+
                             Field f;
                             f.cpacsName = "";
                             f.customFieldName = "base";
@@ -245,7 +247,8 @@ namespace tigl {
                     c.deps.bases.push_back(&it->second);
                     it->second.deps.deriveds.push_back(&c);
                 } else
-                    std::cerr << "Warning: class " << c.name << " has non-class base: " << c.base << std::endl;
+                    // this exception should be prevented by earlier code
+                    throw std::runtime_error("Class " + c.name + " has non-class base: " + c.base);
             }
 
             // fields
