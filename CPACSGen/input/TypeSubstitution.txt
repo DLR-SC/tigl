@@ -5,6 +5,7 @@ stringBaseType    std::string
 doubleBaseType    double
 integerBaseType   int
 booleanBaseType   bool
+complexBaseType
 
 // maps xsd types to C++ types
 
