@@ -42,14 +42,9 @@ namespace tigl {
 		}
 
 		// search predefined xml schema types and replace them
-		const auto xp = s_xsdTypes.find(name);
-		if (xp) {
 			const auto p = s_typeSubstitutions.find(name);
 			if (p)
 				return *p;
-			else
-				return *xp;
-		}
 
 		throw std::runtime_error("Unknown type: " + name);
 	}
