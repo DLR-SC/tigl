@@ -5,7 +5,7 @@
 
 namespace tigl {
     SchemaParser::SchemaParser(const std::string& cpacsLocation)
-        : document(cpacsLocation) {
+        : document(tixihelper::TixiDocument::createFromFile(cpacsLocation)) {
         document.forEachChild("/xsd:schema/xsd:simpleType", [&](const std::string& xpath) {
             readSimpleType(xpath);
         });

@@ -32,12 +32,18 @@ namespace tigl {
 
         SplitXPath splitXPath(const std::string& xpath);
 
-        void RegisterNamespaces(const TixiDocumentHandle& tixiHandle);
+        TixiDocumentHandle TixiCreateDocument(const std::string& rootElement);
+        TixiDocumentHandle TixiOpenDocument(const std::string& filename);
+        TixiDocumentHandle TixiImportFromString(const std::string& xml);
+
+        void TixiAddCpacsHeader(const TixiDocumentHandle& tixiHandle, const std::string& name, const std::string& creator, const std::string& version, const std::string& description, const std::string& cpacsVersion);
 
         bool TixiCheckAttribute(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& attribute);
         bool TixiCheckElement  (const TixiDocumentHandle& tixiHandle, const std::string& xpath);
 
         int TixiGetNamedChildrenCount(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+
+        std::vector<std::string> TixiGetAttributeNames(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
 
         std::string TixiGetTextAttribute  (const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& attribute);
         double      TixiGetDoubleAttribute(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& attribute);
@@ -50,6 +56,7 @@ namespace tigl {
         int         TixiGetIntElement   (const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         std::time_t TixiGetTimeTElement (const TixiDocumentHandle& tixiHandle, const std::string& xpath);
 
+        void TixiSaveAttribute(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& attribute, const char*        value);
         void TixiSaveAttribute(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& attribute, const std::string& value);
         void TixiSaveAttribute(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& attribute, double             value);
         void TixiSaveAttribute(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& attribute, bool               value);
@@ -60,8 +67,9 @@ namespace tigl {
             if (value) TixiSaveAttribute(tixiHandle, xpath, attribute, *value);
         }
 
+        void TixiSaveElement(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const char*        value);
         void TixiSaveElement(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& value);
-        void TixiSaveElement(const TixiDocumentHandle& tixiHandle, const std::string& xpath, double             value);
+        void TixiSaveElement(const TixiDocumentHandle& tixiHandle, const std::string& xpath, double             value, const std::string& format = "%g");
         void TixiSaveElement(const TixiDocumentHandle& tixiHandle, const std::string& xpath, bool               value);
         void TixiSaveElement(const TixiDocumentHandle& tixiHandle, const std::string& xpath, int                value);
         void TixiSaveElement(const TixiDocumentHandle& tixiHandle, const std::string& xpath, std::time_t        value);
@@ -72,6 +80,22 @@ namespace tigl {
                 TixiSaveElement(tixiHandle, xpath, *value);
             }
         }
+
+        inline void TixiSaveElement(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const Optional<double>& value, const std::string& format = "%g") {
+            if (value) {
+                TixiSaveElement(tixiHandle, xpath, *value, format);
+            }
+        }
+
+        void TixiCreateElement (const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+        void TixiCreateElements(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+
+        void TixiRemoveAttribute(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& attribute);
+        void TixiRemoveElement  (const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+
+        std::string TixiExportDocumentAsString(const TixiDocumentHandle& tixiHandle);
+
+        void TixiRegisterNamespacesFromDocument(const TixiDocumentHandle& tixiHandle);
 
         template<typename ChildType, typename ReadChildFunc>
         void TixiReadElements(const TixiDocumentHandle& tixiHandle, const std::string& xpath, std::vector<ChildType>& children, ReadChildFunc readChild, int minOccurs = -1, int maxOccurs = -1) {
