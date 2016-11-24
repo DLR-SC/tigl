@@ -36,6 +36,7 @@ namespace tigl {
         MappingTable m_fundamentalTypes;
         MappingTable m_typeSubstitutions;
 
+        Table m_pruneList;
         Table m_parentPointers;
         Table m_reservedNames;
     };

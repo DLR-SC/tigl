@@ -24,6 +24,8 @@ namespace tigl {
         // apply a few reductions and cleanups
         typeSystem.collapseEnums();
 
+        typeSystem.runPruneList();
+
         // generate code
         std::cout << "Generating classes" << std::endl;
         CodeGen codegen(outputDirectory, typeSystem, tables);

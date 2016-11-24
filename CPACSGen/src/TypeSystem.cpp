@@ -167,7 +167,10 @@ namespace tigl {
         }
     }
 
-    TypeSystem::TypeSystem(SchemaParser& schema, Tables& tables) {
+    TypeSystem::TypeSystem(SchemaParser& schema, Tables& tables)
+        : tables(tables) {
+        std::cout << "Creating type system" << std::endl;
+
         for (const auto& p : schema.types()) {
             const auto& type = p.second;
 
@@ -237,6 +240,8 @@ namespace tigl {
     }
 
     void TypeSystem::buildDependencies() {
+        std::cout << "Building dependencies" << std::endl;
+
         for (auto& p : classes) {
             auto& c = p.second;
 
@@ -292,6 +297,8 @@ namespace tigl {
     }
 
     void TypeSystem::collapseEnums() {
+        return; // TODO: this modifies the enum collection and invalidates the dependency pointers !!!!
+
         // convert enum map to vector for easier processing
         std::vector<Enum> enums;
         enums.reserve(this->enums.size());
@@ -373,5 +380,74 @@ namespace tigl {
         this->enums.reserve(enums.size());
         for (auto& e : enums)
             this->enums[e.name] = std::move(e);
+    }
+
+    namespace {
+        void includeNode(Enum& e, Table& pruneList) {
+            // if this enum is already marked, return
+            if (e.pruned == false)
+                return;
+
+            // if this enum is on the prune list, just leave it
+            if (pruneList.contains(e.name))
+                return;
+
+            // enum is not pruned, mark it
+            e.pruned = false;
+        }
+
+        void includeNode(Class& cls, Table& pruneList) {
+            // if this class is already marked, return
+            if (cls.pruned == false)
+                return;
+
+            // if this class is on the prune list, just leave it and all its sub element types pruned
+            if (pruneList.contains(cls.name))
+                return;
+
+            // class is not pruned, mark it
+            cls.pruned = false;
+
+            auto& deps = cls.deps;
+
+            // try to include all bases
+            for (auto& b : deps.bases)
+                includeNode(*b, pruneList);
+
+            // try to include all field classes
+            for (auto& c : deps.children)
+                includeNode(*c, pruneList);
+
+            // try to include all field enums
+            for (auto& e : deps.enumChildren)
+                includeNode(*e, pruneList);
+        }
+    }
+
+    void TypeSystem::runPruneList() {
+        std::cout << "Running prune list" << std::endl;
+
+        // mark all types as pruned
+        for (auto& p : classes)
+            p.second.pruned = true;
+        for (auto& p : enums)
+            p.second.pruned = true;
+
+        // find root type
+        const auto rootElementTypeName = std::string("CPACSCpacs");
+        const auto it = classes.find(rootElementTypeName);
+        if (it == std::end(classes))
+            throw std::runtime_error("Could not find root element. Expected: " + rootElementTypeName);
+        auto& root = it->second;
+
+        includeNode(root, tables.m_pruneList);
+
+        std::cout << "The following types have been pruned:" << std::endl;
+        for (auto& p : classes)
+            if(p.second.pruned)
+                std::cout << "\tClass: " << p.second.name << std::endl;
+        for (auto& p : enums)
+            if (p.second.pruned)
+                std::cout << "\tEnum: " << p.second.name << std::endl;
     }
 }

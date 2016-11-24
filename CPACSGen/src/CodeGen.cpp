@@ -1069,6 +1069,9 @@ namespace tigl {
 
         for (const auto& p : m_types.classes) {
             const auto c = p.second;
+            if (c.pruned)
+                continue;
+
             WriteIfDifferentFile hppFile(outputLocation + "/" + c.name + ".h");
             IndentingStreamWrapper hpp(hppFile.stream());
 
@@ -1080,6 +1083,9 @@ namespace tigl {
 
         for (const auto& p : m_types.enums) {
             const auto e = p.second;
+            if (e.pruned)
+                continue;
+
             WriteIfDifferentFile hppFile(outputLocation + "/" + e.name + ".h");
             IndentingStreamWrapper hpp(hppFile.stream());
 

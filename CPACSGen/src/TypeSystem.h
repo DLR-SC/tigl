@@ -63,10 +63,13 @@ namespace tigl {
         }
     };
 
+    // non owning
     struct ClassDependencies {
-        // non owning
+        // in the context of inheritance
         std::vector<Class*> bases;
         std::vector<Class*> deriveds;
+
+        // in the context of the XML tree
         std::vector<Class*> parents;
         std::vector<Class*> children;
         std::vector<Enum*> enumChildren;
@@ -77,6 +80,7 @@ namespace tigl {
         std::string name;
         std::string base;
         std::vector<Field> fields;
+        bool pruned;
 
         ClassDependencies deps;
     };
@@ -101,6 +105,7 @@ namespace tigl {
         const SimpleType* origin;
         std::string name;
         std::vector<EnumValue> values;
+        bool pruned;
 
         EnumDependencies deps;
     };
@@ -111,7 +116,9 @@ namespace tigl {
 
         void buildDependencies();
         void collapseEnums();
+        void runPruneList();
 
+        Tables& tables;
         std::unordered_map<std::string, Class> classes;
         std::unordered_map<std::string, Enum> enums;
     };
