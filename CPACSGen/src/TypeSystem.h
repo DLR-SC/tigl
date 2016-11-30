@@ -3,6 +3,7 @@
 #include <string>
 #include <algorithm>
 #include <unordered_map>
+#include <vector>
 #include <stdexcept>
 
 #include "Variant.hpp"

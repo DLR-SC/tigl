@@ -232,9 +232,13 @@ namespace tigl {
         // TODO: replace by lambda when C++14 is available
         struct SortAndUnique {
             template <typename T>
-            void operator()(T& con) {
-                std::sort(std::begin(con), std::end(con));
-                con.erase(std::unique(std::begin(con), std::end(con)), std::end(con));
+            void operator()(std::vector<T*>& con) {
+                std::sort(std::begin(con), std::end(con), [](const T* a, const T* b) {
+                    return a->name < b->name;
+                });
+                con.erase(std::unique(std::begin(con), std::end(con), [](const T* a, const T* b) {
+                    return a->name == b->name;
+                }), std::end(con));
             }
         };
     }
@@ -299,7 +303,7 @@ namespace tigl {
     void TypeSystem::collapseEnums() {
         return; // TODO: this modifies the enum collection and invalidates the dependency pointers !!!!
 
-        // convert enum map to vector for easier processing
+        // convert enum unordered_map to vector for easier processing
         std::vector<Enum> enums;
         enums.reserve(this->enums.size());
         for (const auto& p : this->enums)
@@ -377,7 +381,6 @@ namespace tigl {
 
         // fill enum back again from vector
         this->enums.clear();
-        this->enums.reserve(enums.size());
         for (auto& e : enums)
             this->enums[e.name] = std::move(e);
     }
@@ -442,12 +445,12 @@ namespace tigl {
 
         includeNode(root, tables.m_pruneList);
 
-        std::cout << "The following types have been pruned:" << std::endl;
-        for (auto& p : classes)
-            if(p.second.pruned)
-                std::cout << "\tClass: " << p.second.name << std::endl;
-        for (auto& p : enums)
-            if (p.second.pruned)
-                std::cout << "\tEnum: " << p.second.name << std::endl;
+        //std::cout << "The following types have been pruned:" << std::endl;
+        //for (auto& p : classes)
+        //    if(p.second.pruned)
+        //        std::cout << "\tClass: " << p.second.name << std::endl;
+        //for (auto& p : enums)
+        //    if (p.second.pruned)
+        //        std::cout << "\tEnum: " << p.second.name << std::endl;
     }
 }
