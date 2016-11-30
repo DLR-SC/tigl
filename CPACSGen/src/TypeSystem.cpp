@@ -278,10 +278,6 @@ namespace tigl {
             }
         }
 
-        //auto sortAndUnique = [](auto& con) {
-        //	std::sort(std::begin(con), std::end(con));
-        //	con.erase(std::unique(std::begin(con), std::end(con)), std::end(con));
-        //};
         SortAndUnique sortAndUnique;
 
         // sort and unique
@@ -445,12 +441,12 @@ namespace tigl {
 
         includeNode(root, tables.m_pruneList);
 
-        //std::cout << "The following types have been pruned:" << std::endl;
-        //for (auto& p : classes)
-        //    if(p.second.pruned)
-        //        std::cout << "\tClass: " << p.second.name << std::endl;
-        //for (auto& p : enums)
-        //    if (p.second.pruned)
-        //        std::cout << "\tEnum: " << p.second.name << std::endl;
+        std::cout << "The following types have been pruned:" << std::endl;
+        for (auto& p : classes)
+            if(p.second.pruned)
+                std::cout << "\tClass: " << p.second.name << std::endl;
+        for (auto& p : enums)
+            if (p.second.pruned)
+                std::cout << "\tEnum: " << p.second.name << std::endl;
     }
 }
