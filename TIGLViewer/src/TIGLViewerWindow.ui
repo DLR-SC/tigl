@@ -176,6 +176,7 @@
      <addaction name="drawFusedWingAction"/>
      <addaction name="drawWingShellAction"/>
      <addaction name="drawWingComponentSegmentAction"/>
+     <addaction name="drawWingStructureAction"/>
      <addaction name="drawWingTriangulationAction"/>
      <addaction name="drawWingProfilesAction"/>
      <addaction name="drawWingGuideCurvesAction"/>
@@ -1373,6 +1374,11 @@
   <action name="drawSystemsAction">
    <property name="text">
     <string>Draw Systems</string>
+   </property>
+  </action>
+  <action name="drawWingStructureAction">
+   <property name="text">
+    <string>Show Wing Structure</string>
    </property>
   </action>
  </widget>

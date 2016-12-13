@@ -76,6 +76,9 @@
 #include "tiglcommonfunctions.h"
 #include "CTiglPoint.h"
 #include "CTiglExportCollada.h"
+#include "CCPACSWingCSStructure.h"
+#include "CCPACSWingSparSegment.h"
+#include "CCPACSWingRibsDefinition.h"
 
 #define max(a,b) ((a) > (b) ? (a) : (b))
 
@@ -1901,6 +1904,56 @@ void TIGLViewerDocument::drawWingShells()
     catch (tigl::CTiglError& ex) {
         std::cerr << ex.getError() << std::endl;
     }
+}
+
+void TIGLViewerDocument::drawWingStructure()
+{
+    QString csUid = dlgGetWingComponentSegmentSelection();
+    if (csUid == "") {
+        return;
+    }
+
+    // find component segment first
+    tigl::CCPACSWingComponentSegment* cs = NULL;
+    for (int i = 1; i <= GetConfiguration().GetWingCount();++i) {
+        tigl::CCPACSWing& wing = GetConfiguration().GetWing(i);
+        for (int j = 1; j <= wing.GetComponentSegmentCount();++j) {
+            tigl::CTiglAbstractSegment& segment = wing.GetComponentSegment(j);
+            if (segment.GetUID() == csUid.toStdString()) {
+                cs = static_cast<tigl::CCPACSWingComponentSegment*>(&segment);
+                break;
+            }
+        }
+    }
+
+    if (!cs || !cs->HasStructure()) {
+        return;
+    }
+
+    START_COMMAND();
+
+    app->getScene()->deleteAllObjects();
+
+    // display component segment shape with transparency
+    app->getScene()->displayShape(cs->GetLoft()->Shape(), Quantity_NOC_ShapeCol, 0.5);
+
+    const tigl::CCPACSWingCSStructure& structure = cs->GetStructure();
+
+    // draw spars
+    for (int ispar = 1; ispar <= structure.GetSparSegmentCount(); ++ispar) {
+        const tigl::CCPACSWingSparSegment& spar = structure.GetSparSegment(ispar);
+        TopoDS_Shape sparGeom = spar.GetSparGeometry();
+        app->getScene()->displayShape(sparGeom, Quantity_NOC_RED);
+    }
+
+    // draw ribs
+    for (int irib = 1; irib <=structure.GetRibsDefinitionCount(); ++irib) {
+        const tigl::CCPACSWingRibsDefinition& rib = structure.GetRibsDefinition(irib);
+        TopoDS_Shape ribGeom = rib.GetRibsGeometry();
+        app->getScene()->displayShape(ribGeom, Quantity_NOC_RED);
+    }
+
+
 }
 
 void TIGLViewerDocument::drawFarField()
