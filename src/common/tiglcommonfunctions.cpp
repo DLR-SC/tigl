@@ -424,7 +424,8 @@ Standard_Real ProjectPointOnLine(gp_Pnt p, gp_Pnt lineStart, gp_Pnt lineStop)
     return gp_Vec(lineStart, p) * gp_Vec(lineStart, lineStop) / gp_Vec(lineStart, lineStop).SquareMagnitude();
 }
 
-IntStatus IntersectLinePlane(gp_Pnt p1, gp_Pnt p2, gp_Pln plane, gp_Pnt& result) {
+IntStatus IntersectLinePlane(gp_Pnt p1, gp_Pnt p2, gp_Pln plane, gp_Pnt& result)
+{
     gp_Vec normal = plane.Axis().Direction();
     gp_Pnt center = plane.Axis().Location();
 
@@ -690,6 +691,7 @@ TopoDS_Face BuildRuledFace(const TopoDS_Wire& wire1, const TopoDS_Wire& wire2)
     // Get approximated curve
     if (!approx1.IsDone() || !approx1.HasResult() ||
         !approx2.IsDone() || !approx2.HasResult()) {
+
         LOG(ERROR) << "unable to approximate wires by curves for building face";
         throw tigl::CTiglError("Error: unable to approximate wires by curves for building face!");
     }
@@ -1102,6 +1104,7 @@ TopoDS_Shape RemoveDuplicateEdges(const TopoDS_Shape& shape)
                 p1Last.Distance(p2Last) < Precision::Confusion()) ||
                 (p1First.Distance(p2Last) < Precision::Confusion() &&
                 p1Last.Distance(p2First) < Precision::Confusion())) {
+
                 // now check for identical mid point
                 Handle(Geom_Curve) curve;
                 Standard_Real uStart, uEnd;

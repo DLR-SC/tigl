@@ -34,7 +34,8 @@
 namespace
 {
     // Symmetrizes two control points along the x-z plane
-    void symPole(Handle(Geom_BSplineCurve) c, int i1, int i2) {
+    void symPole(Handle(Geom_BSplineCurve) c, int i1, int i2)
+    {
         gp_Pnt p1 = c->Pole(i1);
         gp_Pnt p2 = c->Pole(i2);
 

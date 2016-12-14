@@ -56,7 +56,8 @@ TIGL_EXPORT Standard_Real ProjectPointOnWire(const TopoDS_Wire& wire, gp_Pnt p);
 // projects a point onto the line (lineStart<->lineStop) and returns the projection parameter
 TIGL_EXPORT Standard_Real ProjectPointOnLine(gp_Pnt p, gp_Pnt lineStart, gp_Pnt lineStop);
 
-enum IntStatus {
+enum IntStatus
+{
     BetweenPoints, // The intersection point lies between p1 and p2
     OutsideBefore, // The intersection point lies before p1
     OutsideAfter,  // The intersection point lies after p2
