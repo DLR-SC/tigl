@@ -1870,7 +1870,7 @@ void TIGLViewerDocument::drawWingComponentSegment()
     for (int i = 1; i <= GetConfiguration().GetWingCount();++i) {
         tigl::CCPACSWing& wing = GetConfiguration().GetWing(i);
         for (int j = 1; j <= wing.GetComponentSegmentCount();++j) {
-            tigl::CTiglAbstractSegment& segment = wing.GetComponentSegment(j);
+            tigl::CCPACSWingComponentSegment& segment = static_cast<tigl::CCPACSWingComponentSegment&>(wing.GetComponentSegment(j));
             if (segment.GetUID() == csUid.toStdString()) {
                 drawWingComponentSegment(segment);
                 break;
@@ -1935,7 +1935,9 @@ void TIGLViewerDocument::drawWingStructure()
     app->getScene()->deleteAllObjects();
 
     // display component segment shape with transparency
-    app->getScene()->displayShape(cs->GetLoft()->Shape(), Quantity_NOC_ShapeCol, 0.5);
+    const tigl::CTiglTransformation trafo = cs->GetWing().GetTransformation();
+    TopoDS_Shape loft = trafo.Transform(cs->GetLoft()->Shape());
+    app->getScene()->displayShape(loft, Quantity_NOC_ShapeCol, 0.5);
 
     const tigl::CCPACSWingCSStructure& structure = cs->GetStructure();
 
@@ -2081,7 +2083,7 @@ void TIGLViewerDocument::drawRotorBladeComponentSegment()
     for (int i = 1; i <= GetConfiguration().GetWingCount();++i) {
         tigl::CCPACSWing& wing = GetConfiguration().GetWing(i);
         for (int j = 1; j <= wing.GetComponentSegmentCount();++j) {
-            tigl::CTiglAbstractSegment& segment = wing.GetComponentSegment(j);
+            tigl::CCPACSWingComponentSegment& segment = static_cast<tigl::CCPACSWingComponentSegment&>(wing.GetComponentSegment(j));
             if (segment.GetUID() == csUid.toStdString()) {
                 drawWingComponentSegment(segment);
                 break;
@@ -2464,11 +2466,17 @@ void TIGLViewerDocument::drawFusedWing(tigl::CCPACSWing& wing)
 /*
  * Draw the input wing component segment
  */
-void TIGLViewerDocument::drawWingComponentSegment(tigl::CTiglAbstractSegment& segment)
+void TIGLViewerDocument::drawWingComponentSegment(tigl::CCPACSWingComponentSegment& segment)
 {
     START_COMMAND();
     app->getScene()->deleteAllObjects();
-    app->getScene()->displayShape(segment.GetLoft()->Shape());
+
+    // the component segment shape is given in local wing coordinates.
+    // Move to global coordinates
+    const tigl::CTiglTransformation trafo = segment.GetWing().GetTransformation();
+    TopoDS_Shape loft = trafo.Transform(segment.GetLoft()->Shape());
+
+    app->getScene()->displayShape(loft);
 }
 
 /*

@@ -170,7 +170,7 @@ private:
     void drawWingTriangulation(tigl::CCPACSWing& wing);
     void drawWingSamplePoints(tigl::CCPACSWing& wing);
     void drawFusedWing(tigl::CCPACSWing& wing);
-    void drawWingComponentSegment(tigl::CTiglAbstractSegment& segment);
+    void drawWingComponentSegment(tigl::CCPACSWingComponentSegment& segment);
     void drawWingComponentSegmentPoint(const std::string& csUID, const double& eta, const double& xsi);
     void drawWingShells(tigl::CCPACSWing& wing);
 
