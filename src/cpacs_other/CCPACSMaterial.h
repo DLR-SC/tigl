@@ -24,6 +24,13 @@
 #include "tigl_internal.h"
 #include "CTiglPoint.h"
 
+/**
+ * The orthropy direction changed to the 2.3.0
+ * release from a x,y,t vector to a double,
+ * which contains now a rotation angle.
+ */
+#define CPACS_VERSION VERSION_HEX_CODE(2,3,0)
+
 namespace tigl
 {
 
@@ -50,9 +57,17 @@ public:
 
     TIGL_EXPORT double GetThicknessScaling() const;
 
+#if CPACS_VERSION >= VERSION_HEX_CODE(2,3,0)
+    TIGL_EXPORT void SetOrthotropyDirection(double);
+#else
     TIGL_EXPORT void SetOrthotropyDirection(CTiglPoint);
+#endif
 
+#if CPACS_VERSION >= VERSION_HEX_CODE(2,3,0)
+    TIGL_EXPORT double GetOrthotropyDirection() const;
+#else
     TIGL_EXPORT const CTiglPoint& GetOrthotropyDirection() const;
+#endif
 
     TIGL_EXPORT void SetUID(const std::string& uid);
 
@@ -65,7 +80,11 @@ private:
     std::string uid;
     double thickness;
     double thicknessScaling;
+#if CPACS_VERSION >= VERSION_HEX_CODE(2,3,0)
+    double orthotropyDirection;
+#else
     CTiglPoint orthotropyDirection;
+#endif
     
     bool isvalid;
     bool is_composite; // whether the material is a composite

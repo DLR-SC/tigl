@@ -37,7 +37,11 @@ void CCPACSMaterial::Cleanup()
     thicknessScaling = 1.;
     isvalid = false;
     is_composite = false;
+#if CPACS_VERSION >= VERSION_HEX_CODE(2,3,0)
+    orthotropyDirection = 0.;
+#else
     orthotropyDirection = CTiglPoint();
+#endif
 }
 
 void CCPACSMaterial::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string &materialXPath)
@@ -85,13 +89,19 @@ void CCPACSMaterial::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string 
         }
     }
     
-    // handle orthotropy direction
     if (isComposite()) {
+        // handle orthotropy direction
         path = materialXPath + "/orthotropyDirection";
         if (tixiCheckElement(tixiHandle, path.c_str()) == SUCCESS) {
+#if CPACS_VERSION >= VERSION_HEX_CODE(2,3,0)
+            if (tixiGetDoubleElement(tixiHandle, (materialXPath + "/orthotropyDirection").c_str(), &orthotropyDirection) != SUCCESS) {
+                LOG(ERROR) << "Invalid composite orthotropy direction in " << materialXPath;
+            }
+#else
             if (tixiGetPoint(tixiHandle, path.c_str(), &(orthotropyDirection.x), &(orthotropyDirection.y), &(orthotropyDirection.z)) != SUCCESS) {
                 throw CTiglError("Error: XML error while reading <orthotropyDirection/> in CCPACSMaterial::ReadCPACS", TIGL_XML_ERROR);
             }
+#endif
         }
     }
 
@@ -109,11 +119,15 @@ void CCPACSMaterial::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string
     else {
         TixiSaveExt::TixiSaveTextElement(tixiHandle, xpath.c_str(), "compositeUID", GetUID().c_str());
         TixiSaveExt::TixiSaveDoubleElement(tixiHandle, xpath.c_str(), "thicknessScaling", GetThicknessScaling(), NULL);
+#if CPACS_VERSION >= VERSION_HEX_CODE(2,3,0)
+        TixiSaveExt::TixiSaveDoubleElement(tixiHandle, xpath.c_str(), "orthotropyDirection", orthotropyDirection, NULL);
+#else
         TixiSaveExt::TixiSaveElement(tixiHandle, xpath.c_str(), "orthotropyDirection");
         const std::string subpath = xpath + "/orthotropyDirection";
         TixiSaveExt::TixiSaveDoubleElement(tixiHandle, subpath.c_str(), "x", orthotropyDirection.x, NULL);
         TixiSaveExt::TixiSaveDoubleElement(tixiHandle, subpath.c_str(), "y", orthotropyDirection.y, NULL);
         TixiSaveExt::TixiSaveDoubleElement(tixiHandle, subpath.c_str(), "z", orthotropyDirection.z, NULL);
+#endif
     }
 }
 
@@ -152,12 +166,20 @@ double CCPACSMaterial::GetThicknessScaling() const
     return thicknessScaling;
 }
 
+#if CPACS_VERSION >= VERSION_HEX_CODE(2,3,0)
+void CCPACSMaterial::SetOrthotropyDirection(double direction)
+#else
 void CCPACSMaterial::SetOrthotropyDirection(tigl::CTiglPoint direction)
+#endif
 {
     orthotropyDirection = direction;
 }
 
+#if CPACS_VERSION >= VERSION_HEX_CODE(2,3,0)
+double CCPACSMaterial::GetOrthotropyDirection() const
+#else
 const CTiglPoint& CCPACSMaterial::GetOrthotropyDirection() const
+#endif
 {
     return orthotropyDirection;
 }
