@@ -34,12 +34,14 @@ struct ExportOptions
 public:
     ExportOptions()
         : deflection(0.1)
-        , fuseMode(HALF_PLANE_TRIMMED_FF)
+        , applySymmetries(false)
+        , includeFarField(true)
     {
     }
 
     double deflection;
-    TiglFuseResultMode fuseMode;
+    bool applySymmetries;
+    bool includeFarField;
 };
 
 /**

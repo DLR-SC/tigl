@@ -22,6 +22,7 @@
 #include "CCPACSConfiguration.h"
 #include "CCPACSWingSegment.h"
 #include "CCPACSFuselageSegment.h"
+#include "CCPACSExternalObject.h"
 
 #include <string>
 #include <cassert>
@@ -53,6 +54,10 @@ void CTiglCADExporter::AddConfiguration(CCPACSConfiguration& config, ExportOptio
             CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
             PNamedShape loft = segment.GetLoft();
             AddShape(loft, options);
+
+            if (options.applySymmetries && segment.GetSymmetryAxis() != TIGL_NO_SYMMETRY) {
+                AddShape(segment.GetMirroredLoft(), options);
+            }
         }
     }
 
@@ -64,23 +69,45 @@ void CTiglCADExporter::AddConfiguration(CCPACSConfiguration& config, ExportOptio
             CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(i);
             PNamedShape loft = segment.GetLoft();
             AddShape(loft, options);
+
+            if (options.applySymmetries && segment.GetSymmetryAxis() != TIGL_NO_SYMMETRY) {
+                AddShape(segment.GetMirroredLoft(), options);
+            }
         }
     }
 
+    // Export external objects
     for (int e = 1; e <= config.GetExternalObjectCount(); e++) {
         CCPACSExternalObject& obj = config.GetExternalObject(e);
+        PNamedShape loft = obj.GetLoft();
+        AddShape(loft, options);
+
+        if (options.applySymmetries && obj.GetSymmetryAxis() != TIGL_NO_SYMMETRY) {
+            AddShape(obj.GetMirroredLoft(), options);
+        }
     }
 
-    CCPACSFarField& farfield = config.GetFarField();
-    if (farfield.GetFieldType() != NONE) {
-        AddShape(farfield.GetLoft(),options);
+    if (options.includeFarField) {
+        CCPACSFarField& farfield = config.GetFarField();
+        if (farfield.GetFieldType() != NONE) {
+            AddShape(farfield.GetLoft(),options);
+        }
     }
 }
 
 void CTiglCADExporter::AddFusedConfiguration(CCPACSConfiguration &config, ExportOptions options)
 {
     PTiglFusePlane fuser = config.AircraftFusingAlgo();
-    fuser->SetResultMode(options.fuseMode);
+
+    TiglFuseResultMode mode = HALF_PLANE_TRIMMED_FF;
+    if (options.applySymmetries) {
+        mode = options.includeFarField ? FULL_PLANE_TRIMMED_FF : FULL_PLANE;
+    }
+    else {
+        mode = options.includeFarField ? HALF_PLANE_TRIMMED_FF : HALF_PLANE;
+    }
+
+    fuser->SetResultMode(mode);
     assert(fuser);
 
     PNamedShape fusedAirplane = fuser->FusedPlane();
