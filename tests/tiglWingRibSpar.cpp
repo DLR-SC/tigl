@@ -116,7 +116,7 @@ TEST_F(WingCellRibSpar2, computeSparXsi) {
 
     const double arr[] = { 0.2, 0.225, 0.25, 0.275, 0.3, 0.325, 0.35, 0.375, 0.4, 0.41, 0.42, 0.43, 0.44, 0.45, 0.46, 0.47, 0.48, 0.49, 0.5, 0.4, 0.3 };
     std::vector<double> expectedXsis (arr, arr + sizeof(arr) / sizeof(arr[0]));
-    for (int i = 0; i < expectedXsis.size(); ++i) {
+    for (size_t i = 0; i < expectedXsis.size(); ++i) {
         // minus one since we have 21 points, but i goes from 0 to 20
         double eta = (double)i / (expectedXsis.size() - 1);
         double expect = expectedXsis.at(i);

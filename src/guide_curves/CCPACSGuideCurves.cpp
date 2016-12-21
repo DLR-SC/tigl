@@ -57,7 +57,7 @@ void CCPACSGuideCurves::ReadCPACS(TixiDocumentHandle tixiHandle, const std::stri
 
     std::vector<CCPACSGuideCurve*> curves;
     ReadContainerElement(tixiHandle, segmentXPath + "/guideCurves", "guideCurve", 1, curves);
-    for (int i = 0; i < curves.size(); i++) {
+    for (size_t i = 0; i < curves.size(); i++) {
         guideCurves[curves[i]->GetUID()] = PCCPACSGuideCurve(curves[i]);
     }
 }

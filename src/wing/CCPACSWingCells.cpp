@@ -57,7 +57,7 @@ void CCPACSWingCells::Cleanup()
 
 void CCPACSWingCells::Invalidate()
 {
-    for (int i = 0; i < cells.size(); i++) {
+    for (size_t i = 0; i < cells.size(); i++) {
         cells[i]->Invalidate();
     }
 }
