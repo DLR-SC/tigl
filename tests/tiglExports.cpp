@@ -206,9 +206,9 @@ TEST_F(tiglExportSimple, export_wing_collada)
 
     tigl::CTiglExportCollada colladaWriter;
     colladaWriter.AddShape(wing.GetLoft(), 0.001);
-    TiglReturnCode ret = colladaWriter.Write("TestData/export/simpletest_wing.dae");
+    bool ret = colladaWriter.Write("TestData/export/simpletest_wing.dae");
 
-    ASSERT_EQ(TIGL_SUCCESS, ret);
+    ASSERT_EQ(true, ret);
 }
 
 

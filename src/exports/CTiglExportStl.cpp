@@ -47,41 +47,23 @@ CTiglExportStl::CTiglExportStl()
 {
 }
 
-void CTiglExportStl::AddShape(PNamedShape shape, double deflection)
-{
-    if (!shape) {
-        return;
-    }
-    
-    BRepMesh_IncrementalMesh(shape->Shape(), deflection);
-    _shapes.push_back(shape);
-}
 
-void CTiglExportStl::AddConfiguration(CCPACSConfiguration &config, double deflection)
+bool CTiglExportStl::WriteImpl(const std::string& filename) const
 {
-    PTiglFusePlane fuser = config.AircraftFusingAlgo();
-    assert(fuser);
-    fuser->SetResultMode(FULL_PLANE);
-
-    // get/compute shape
-    PNamedShape ac = fuser->FusedPlane();
-    if (!ac) {
-        throw CTiglError("Error computing fused geometry in CTiglExportStl::addConfiguration", TIGL_ERROR);
+    for (size_t ishape = 0; ishape < NShapes(); ++ishape) {
+        PNamedShape shape = GetShape(ishape);
+        if (shape) {
+            BRepMesh_IncrementalMesh(shape->Shape(), GetOptions(ishape).deflection);
+        }
     }
 
-    AddShape(ac, deflection);
-}
-
-
-TiglReturnCode CTiglExportStl::Write(const std::string& filename)
-{
-    if (_shapes.size() > 1) {
+    if (NShapes() > 1) {
         TopoDS_Compound c;
         BRep_Builder b;
         b.MakeCompound(c);
         
-        for (ListPNamedShape::const_iterator it = _shapes.begin(); it != _shapes.end(); ++it) {
-            PNamedShape shape = *it;
+        for (size_t ishape = 0; ishape < NShapes(); ++ishape) {
+            PNamedShape shape = GetShape(ishape);
             if (shape) {
                 b.Add(c, shape->Shape());
             }
@@ -91,17 +73,17 @@ TiglReturnCode CTiglExportStl::Write(const std::string& filename)
         StlAPI_Writer StlWriter;
         StlWriter.Write(c, const_cast<char*>(filename.c_str()));
         
-        return TIGL_SUCCESS;
+        return true;
     }
-    else if ( _shapes.size() == 1) {
-        PNamedShape shape = _shapes[0];
+    else if (NShapes() == 1) {
+        PNamedShape shape = GetShape(0);
         StlAPI_Writer StlWriter;
         StlWriter.Write(shape->Shape(), const_cast<char*>(filename.c_str()));
         
-        return TIGL_SUCCESS;
+        return true;
     }
     else {
-        return TIGL_ERROR;
+        return false;
     }
 }
 

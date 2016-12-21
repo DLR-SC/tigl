@@ -4822,7 +4822,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingSTL(TiglCPACSConfiguration
         
         tigl::CTiglExportStl exporter;
         exporter.AddShape(loft, deflection);
-        return exporter.Write(filenamePtr);
+        bool ret = exporter.Write(filenamePtr);
+        return ret ? TIGL_SUCCESS : TIGL_WRITE_FAILED;
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what() << std::endl;
@@ -4864,7 +4865,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingSTLByUID(TiglCPACSConfigur
                 
                 tigl::CTiglExportStl exporter;
                 exporter.AddShape(loft, deflection);
-                return exporter.Write(filenamePtr);
+                bool ret = exporter.Write(filenamePtr);
+                return ret ? TIGL_SUCCESS : TIGL_WRITE_FAILED;
             }
         }
         
@@ -4909,7 +4911,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageSTL(TiglCPACSConfigura
         
         tigl::CTiglExportStl exporter;
         exporter.AddShape(loft, deflection);
-        return exporter.Write(filenamePtr);
+        bool ret = exporter.Write(filenamePtr);
+        return ret ? TIGL_SUCCESS : TIGL_WRITE_FAILED;
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what() << std::endl;
@@ -4953,7 +4956,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageSTLByUID(TiglCPACSConf
                 
                 tigl::CTiglExportStl exporter;
                 exporter.AddShape(loft, deflection);
-                return exporter.Write(filenamePtr);
+                bool ret = exporter.Write(filenamePtr);
+                return ret ? TIGL_SUCCESS : TIGL_WRITE_FAILED;
             }
         }
         
@@ -4988,8 +4992,14 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedGeometrySTL(TiglCPACSConfigura
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CTiglExportStl exporter;
-        exporter.AddConfiguration(config, deflection);
-        return exporter.Write(filenamePtr);
+        tigl::ExportOptions options;
+        options.deflection = deflection;
+        options.applySymmetries = true;
+        options.includeFarField = false;
+
+        exporter.AddConfiguration(config, options);
+        bool ret = exporter.Write(filenamePtr);
+        return ret ? TIGL_SUCCESS : TIGL_WRITE_FAILED;
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what() << std::endl;
@@ -5308,7 +5318,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportFuselageColladaByUID(const TiglCPACS
         tigl::CCPACSFuselage& fuselage = config.GetFuselage(fuselageUID);
         tigl::CTiglExportCollada colladaWriter;
         colladaWriter.AddShape(fuselage.GetLoft(), deflection);
-        return colladaWriter.Write(filenamePtr);
+        bool ret = colladaWriter.Write(filenamePtr);
+        return ret ? TIGL_SUCCESS : TIGL_WRITE_FAILED;
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what() << std::endl;
@@ -5343,7 +5354,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportWingColladaByUID(const TiglCPACSConf
         tigl::CCPACSWing& wing = config.GetWing(wingUID);
         tigl::CTiglExportCollada colladaWriter;
         colladaWriter.AddShape(wing.GetLoft(), deflection);
-        return colladaWriter.Write(filenamePtr);
+        bool ret = colladaWriter.Write(filenamePtr);
+        return ret ? TIGL_SUCCESS : TIGL_WRITE_FAILED;
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what() << std::endl;

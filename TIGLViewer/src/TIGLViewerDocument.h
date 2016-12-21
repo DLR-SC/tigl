@@ -110,6 +110,7 @@ public slots:
     void exportAsStepFused();
     void exportMeshedWingSTL();
     void exportMeshedFuselageSTL();
+    void exportMeshedConfigSTL();
     void exportMeshedWingVTK();
     void exportMeshedWingVTKsimple();
     void exportMeshedFuselageVTK();

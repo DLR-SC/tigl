@@ -27,43 +27,27 @@
 #define CTIGLEXPORTSTL_H
 
 #include "tigl_internal.h"
-#include "CTiglUIDManager.h"
-#include "CCPACSHeader.h"
-#include "CCPACSWings.h"
-#include "CCPACSWingProfile.h"
-#include "CCPACSFuselages.h"
-#include "CCPACSFuselageProfile.h"
-#include "ListPNamedShape.h"
+#include "CTiglCADExporter.h"
+
+
 
 
 namespace tigl 
 {
 
-class CTiglExportStl
+class CTiglExportStl : public CTiglCADExporter
 {
 
 public:
     // Constructor
     TIGL_EXPORT CTiglExportStl();
 
-    // Empty destructor
-    TIGL_EXPORT ~CTiglExportStl(void) { /* empty */}
-
-    // Adds a shape
-    TIGL_EXPORT void AddShape(PNamedShape shape, double deflection);
-    
-    // Adds a whole geometry, boolean fused and meshed
-    TIGL_EXPORT void AddConfiguration(CCPACSConfiguration& config, double deflection = 0.1);
-    
-    TIGL_EXPORT TiglReturnCode Write(const std::string& filename);
-
-protected:
-
 private:
+
+    bool WriteImpl(const std::string& filename) const;
+
     // Assignment operator
     void operator=(const CTiglExportStl& ) { /* Do nothing */ }
-
-    ListPNamedShape _shapes;
 };
 
 } // end namespace tigl

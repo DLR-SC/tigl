@@ -58,16 +58,6 @@ CTiglExportCollada::CTiglExportCollada()
 {
 }
 
-void CTiglExportCollada::AddShape(PNamedShape shape, double deflection)
-{
-    if (!shape) {
-        return;
-    }
-    
-    _shapes.push_back(shape);
-    _deflects.push_back(deflection);
-}
-
 
 bool writeHeader(TixiDocumentHandle handle)
 {
@@ -281,11 +271,11 @@ bool writeSceneNode(TixiDocumentHandle handle, std::string scenePath, std::strin
 }
 
 
-TiglReturnCode CTiglExportCollada::Write(const std::string& filename)
+bool CTiglExportCollada::WriteImpl(const std::string& filename) const
 {
     TixiDocumentHandle handle = -1;  
     if (tixiCreateDocument("COLLADA", &handle) != SUCCESS) {
-        return TIGL_ERROR;
+        return false;
     }
     
     writeHeader(handle);
@@ -295,10 +285,10 @@ TiglReturnCode CTiglExportCollada::Write(const std::string& filename)
 
     // write object mesh info
     int geomIndex = 1;
-    for (unsigned int i = 0; i < _shapes.size(); ++i) {
+    for (unsigned int i = 0; i < NShapes(); ++i) {
         // Do the meshing
-        PNamedShape pshape = _shapes[i];
-        double deflection = _deflects[i];
+        PNamedShape pshape = GetShape(i);
+        double deflection = GetOptions(i).deflection;
         CTiglTriangularizer polyData(pshape->Shape(), deflection);
         
         writeGeometryMesh(handle, polyData, pshape->Name(), geomIndex);
@@ -311,8 +301,8 @@ TiglReturnCode CTiglExportCollada::Write(const std::string& filename)
 
     // add each object to the scene
     int nodeIndex = 1;
-    for (unsigned int i = 0; i < _shapes.size(); ++i) {
-        PNamedShape pshape = _shapes[i];
+    for (unsigned int i = 0; i < NShapes(); ++i) {
+        PNamedShape pshape = GetShape(i);
         // Todo: insert transformation matrix also
         writeSceneNode(handle, "/COLLADA/library_visual_scenes/visual_scene", pshape->Name(), pshape->Name(), nodeIndex);
     }
@@ -320,10 +310,10 @@ TiglReturnCode CTiglExportCollada::Write(const std::string& filename)
 
     if (tixiSaveDocument(handle, filename.c_str()) != SUCCESS) {
         LOG(ERROR) << "Cannot save collada file " << filename;
-        return TIGL_ERROR;
+        return false;
     }
 
-    return TIGL_SUCCESS;
+    return true;
 }
 
 } // namespace tigl

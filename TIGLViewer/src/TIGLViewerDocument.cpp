@@ -1254,9 +1254,27 @@ void TIGLViewerDocument::exportMeshedFuselageSTL()
 
     if (!fileName.isEmpty()) {
         START_COMMAND();
-        TiglReturnCode err = tiglExportMeshedFuselageSTLByUID(m_cpacsHandle, qstringToCstring(fuselageUid), qstringToCstring(fileName), 0.01);
+        TiglReturnCode err = tiglExportMeshedFuselageSTLByUID(m_cpacsHandle, qstringToCstring(fuselageUid), qstringToCstring(fileName), TIGLViewerSettings::Instance().triangulationAccuracy());
         if (err != TIGL_SUCCESS) {
             displayError(QString("Error in function <u>tiglExportMeshedFuselageSTLByUID</u>. Error code: %1").arg(err), "TIGL Error");
+        }
+    }
+}
+
+void TIGLViewerDocument::exportMeshedConfigSTL()
+{
+    QString     fileName;
+
+
+    writeToStatusBar(tr("Saving meshed Configuration as STL file with TIGL..."));
+
+    fileName = QFileDialog::getSaveFileName(app, tr("Save as..."), myLastFolder, tr("Export STL(*.stl)"));
+
+    if (!fileName.isEmpty()) {
+        START_COMMAND();
+        TiglReturnCode err = tiglExportMeshedGeometrySTL(m_cpacsHandle, qstringToCstring(fileName), TIGLViewerSettings::Instance().triangulationAccuracy());
+        if (err != TIGL_SUCCESS) {
+            displayError(QString("Error in function <u>tiglExportMeshedGeometrySTL</u>. Error code: %1").arg(err), "TIGL Error");
         }
     }
 }
@@ -1370,28 +1388,19 @@ void TIGLViewerDocument::exportConfigCollada()
         START_COMMAND();
         TIGLViewerSettings& settings = TIGLViewerSettings::Instance();
         double relDeflect = settings.triangulationAccuracy();
-        
+        tigl::ExportOptions options;
+        options.deflection = relDeflect;
+        options.includeFarField = false;
+
         tigl::CTiglExportCollada exporter;
         tigl::CCPACSConfiguration& config = GetConfiguration();
-        for (int ifusel = 1; ifusel <= config.GetFuselageCount(); ++ifusel) {
-            tigl::CCPACSFuselage& fusel = config.GetFuselage(ifusel);
-            writeToStatusBar(tr("Computing ") + fusel.GetUID().c_str() + ".");
-            PNamedShape fshape = fusel.GetLoft();
-            exporter.AddShape(fshape, getAbsDeflection(fshape->Shape(), relDeflect));
-        }
-        
-        for (int iwing = 1; iwing <= config.GetWingCount(); ++iwing) {
-            tigl::CCPACSWing& wing = config.GetWing(iwing);
-            writeToStatusBar(tr("Computing ") + wing.GetUID().c_str() + ".");
-            PNamedShape wshape = wing.GetLoft();
-            exporter.AddShape(wshape, getAbsDeflection(wshape->Shape(), relDeflect));
-        }
-        
+        exporter.AddConfiguration(config, options);
+
         writeToStatusBar(tr("Meshing and writing COLLADA file ") + fileName + ".");
-        TiglReturnCode err = exporter.Write(fileName.toStdString());
+        bool okay = exporter.Write(fileName.toStdString());
         writeToStatusBar("");
-        if (err != TIGL_SUCCESS) {
-            displayError(QString("Error while exporting to COLLADA. Error code: %1").arg(err), "TIGL Error");
+        if (!okay) {
+            displayError(QString("Error while exporting to COLLADA."), "TIGL Error");
         }
     }
 }

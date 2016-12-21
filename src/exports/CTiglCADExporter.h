@@ -39,6 +39,14 @@ public:
     {
     }
 
+    // allow implicit conversion
+    ExportOptions(double deflect)
+        : deflection(deflect)
+        , applySymmetries(false)
+        , includeFarField(true)
+    {
+    }
+
     double deflection;
     bool applySymmetries;
     bool includeFarField;
