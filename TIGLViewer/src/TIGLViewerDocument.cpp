@@ -1936,6 +1936,7 @@ void TIGLViewerDocument::drawWingStructure()
     }
 
     if (!cs || !cs->HasStructure()) {
+        displayError("This wing has no structure defined.", "Information");
         return;
     }
 
