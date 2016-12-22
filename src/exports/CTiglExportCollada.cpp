@@ -61,8 +61,8 @@ CTiglExportCollada::CTiglExportCollada()
 
 bool writeHeader(TixiDocumentHandle handle)
 {
-    tixiAddTextAttribute(handle, "/COLLADA", "xmlns", "http://www.collada.org/2008/03/COLLADASchema");
-    tixiAddTextAttribute(handle, "/COLLADA", "version", "1.5.0");
+    tixiAddTextAttribute(handle, "/COLLADA", "xmlns", "http://www.collada.org/2005/11/COLLADASchema");
+    tixiAddTextAttribute(handle, "/COLLADA", "version", "1.4.1");
 
     tixiCreateElement(handle, "/COLLADA", "asset");
 
@@ -76,11 +76,12 @@ bool writeHeader(TixiDocumentHandle handle)
     strftime (buffer,80,"%Y-%m-%dT%H:%S:%MZ",timeinfo);
     tixiAddTextElement(handle, "/COLLADA/asset","created",  buffer);
     tixiAddTextElement(handle, "/COLLADA/asset","modified", buffer); 
-    tixiAddTextElement(handle, "/COLLADA/asset","up_axis", "Z_UP");
     
     tixiCreateElement(handle, "/COLLADA/asset", "unit");
     tixiAddTextAttribute(handle, "/COLLADA/asset/unit", "name", "meters");
     tixiAddDoubleAttribute(handle, "/COLLADA/asset/unit", "meter", 1.0, "%f");
+
+    tixiAddTextElement(handle, "/COLLADA/asset","up_axis", "Z_UP");
     
     return true;
 }
@@ -142,7 +143,6 @@ bool writeGeometryMesh(TixiDocumentHandle handle, CTiglPolyData& polyData, std::
         CTiglPolyObject& obj = polyData.switchObject(i);
 
         unsigned long nvert = obj.getNVertices();
-        count_vert+=nvert;
         for (unsigned long jvert = 0; jvert < nvert; ++jvert) {
             const CTiglPoint& v = obj.getVertexPoint(jvert);
             const CTiglPoint& n = obj.getVertexNormal(jvert);
@@ -291,7 +291,7 @@ bool CTiglExportCollada::WriteImpl(const std::string& filename) const
         double deflection = GetOptions(i).deflection;
         CTiglTriangularizer polyData(pshape->Shape(), deflection);
         
-        writeGeometryMesh(handle, polyData, pshape->Name(), geomIndex);
+        writeGeometryMesh(handle, polyData, std::string(pshape->Name()) + "-geom", geomIndex);
     }
     
     // write the scene and link object to geometry
@@ -304,9 +304,13 @@ bool CTiglExportCollada::WriteImpl(const std::string& filename) const
     for (unsigned int i = 0; i < NShapes(); ++i) {
         PNamedShape pshape = GetShape(i);
         // Todo: insert transformation matrix also
-        writeSceneNode(handle, "/COLLADA/library_visual_scenes/visual_scene", pshape->Name(), pshape->Name(), nodeIndex);
+        writeSceneNode(handle, "/COLLADA/library_visual_scenes/visual_scene", pshape->Name(), std::string(pshape->Name()) + "-geom", nodeIndex);
     }
 
+    // Write Default scene entry
+    tixiCreateElement(handle, "/COLLADA", "scene");
+    tixiCreateElement(handle, "/COLLADA/scene", "instance_visual_scene");
+    tixiAddTextAttribute(handle, "/COLLADA/scene/instance_visual_scene", "url", "#DefaultScene");
 
     if (tixiSaveDocument(handle, filename.c_str()) != SUCCESS) {
         LOG(ERROR) << "Cannot save collada file " << filename;
