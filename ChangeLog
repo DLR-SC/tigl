@@ -13,7 +13,7 @@ Version 2.2.0
           for modifications. Using the internal API, modifications are already possible.
 
     - New API functions:
-        - New API function ``tiglSaveCPACSConfiguration`` for writing the CPACS configuration into a file.
+        - New API function ``::tiglSaveCPACSConfiguration`` for writing the CPACS configuration into a file.
 
     - TiGLViewer:
         - Visualization of the wing structure.
