@@ -134,4 +134,37 @@ CTiglTransformation CCPACSFuselageSectionElement::GetSectionElementTransformatio
     return transformation.getTransformationMatrix();
 }
 
+CTiglPoint CCPACSFuselageSectionElement::GetTranslation() const
+{
+    return transformation.getTranslationVector();
+}
+
+CTiglPoint CCPACSFuselageSectionElement::GetRotation() const
+{
+    return transformation.getRotation();
+}
+
+CTiglPoint CCPACSFuselageSectionElement::GetScaling() const
+{
+    return transformation.getScaling();
+}
+
+void CCPACSFuselageSectionElement::SetTranslation(const CTiglPoint &translation)
+{
+    transformation.setTranslation(translation, ABS_LOCAL);
+    transformation.updateMatrix();
+}
+
+void CCPACSFuselageSectionElement::SetRotation(const CTiglPoint &rotation)
+{
+    transformation.setRotation(rotation);
+    transformation.updateMatrix();
+}
+
+void CCPACSFuselageSectionElement::SetScaling(const CTiglPoint &scaling)
+{
+    transformation.setScaling(scaling);
+    transformation.updateMatrix();
+}
+
 } // end namespace tigl
