@@ -1,3 +1,26 @@
+Version 2.2.0
+--------------
+23/12/2016
+
+    - Major changes:
+        - Added modelling of the wing structure, including ribs and spars . This code was part of a large
+          pull request by Airbus D&S. Currently, the structure is only accessible by the TiGL Viewer.
+          In future releases, we plan to make the structure accessible from the API.
+        - Improved Collada export: The export is now conforming with the collada schema
+          and can be displayed with OS X preview.
+        - External shapes are added to the exports.
+        - Added writing of modified CPACS files. Still, we do not offer yet API functions
+          for modifications. Using the internal API, modifications are already possible.
+
+    - New API functions:
+        - New API function ``tiglSaveCPACSConfiguration`` for writing the CPACS configuration into a file.
+
+    - TiGLViewer:
+        - Visualization of the wing structure.
+        - Improved linking and compilation with Qt.
+        - Added STL export of the whole aircraft configuration.
+
+
 Version 2.1.7
 --------------
 22/09/2016
