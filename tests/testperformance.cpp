@@ -100,11 +100,15 @@ TEST_F(TestPerformance, fuselageGetPoint)
     int nsegs = 0;
     ASSERT_EQ(TIGL_SUCCESS, tiglFuselageGetSegmentCount(tiglHandle, 1, &nsegs));
 
+    // we are using a cached version, we must activat the cache
+    double px, py, pz;
+    ASSERT_EQ(TIGL_SUCCESS, tiglFuselageGetPoint(tiglHandle, 1, 1, 0.2, 0.5, &px, &py, &pz));
+
+
     clock_t start = clock();
 
     for (int irun = 0; irun < nruns; ++irun) {
-        int segIndex = rand() % nsegs + 1;
-        double px, py, pz;
+        int segIndex = 1;
         double eta = static_cast <double> (rand()) / static_cast <double> (RAND_MAX);
         double xsi = static_cast <double> (rand()) / static_cast <double> (RAND_MAX);
 
