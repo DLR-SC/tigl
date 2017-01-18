@@ -1104,12 +1104,12 @@ TEST_F(WingSegmentSimple, wingGetEtaXsiBug1)
 TEST_F(WingSegmentSimple, saveCPACS)
 {
 
-    ASSERT_EQ(SUCCESS, tiglSaveCPACSConfiguration("simpletest-saved", tiglSimpleHandle));
+    ASSERT_EQ(TIGL_SUCCESS, tiglSaveCPACSConfiguration("simpletest-saved", tiglSimpleHandle));
     ASSERT_EQ(SUCCESS, tixiSaveDocument(tixiSimpleHandle, "TestData/simpltest-saved.cpacs.xml"));
 
     // try to reopen document
     TiglCPACSConfigurationHandle tmpHandle = 0;
-    EXPECT_EQ(SUCCESS, tiglOpenCPACSConfiguration(tixiSimpleHandle, "", &tmpHandle));
+    EXPECT_EQ(TIGL_SUCCESS, tiglOpenCPACSConfiguration(tixiSimpleHandle, "", &tmpHandle));
 
     if (tmpHandle > 0) {
         tiglCloseCPACSConfiguration(tmpHandle);

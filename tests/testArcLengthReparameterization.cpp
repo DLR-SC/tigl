@@ -73,8 +73,10 @@ TEST_F(TestArcLengthReparameterization, accuracy)
 
     ASSERT_TRUE(repa.isInitialized());
 
+    GeomAdaptor_Curve adaptor(curve);
+
     // total Lenght
-    double totalLen = GCPnts_AbscissaPoint::Length(GeomAdaptor_Curve(curve));
+    double totalLen = GCPnts_AbscissaPoint::Length(adaptor);
 
     EXPECT_NEAR(totalLen, repa.totalLength(), 1e-6);
 
@@ -86,7 +88,7 @@ TEST_F(TestArcLengthReparameterization, accuracy)
     EXPECT_NEAR(0.3, repa.parameter(totalLen*0.5), 1e-2);
 
     for (double parm = 0.0; parm <= 1.0; parm += 0.05) {
-        double arcLength = GCPnts_AbscissaPoint::Length(GeomAdaptor_Curve(curve), 0.0, parm);
+        double arcLength = GCPnts_AbscissaPoint::Length(adaptor, 0.0, parm);
 
         double parmComputed = repa.parameter(arcLength);
 
