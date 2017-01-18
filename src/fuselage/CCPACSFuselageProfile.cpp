@@ -41,6 +41,7 @@
 #include "BRepBuilderAPI_MakeEdge.hxx"
 #include "BRepBuilderAPI_MakeWire.hxx"
 #include "Geom_TrimmedCurve.hxx"
+#include "GeomConvert.hxx"
 #include "Geom_Plane.hxx"
 #include "GCE2d_MakeSegment.hxx"
 #include "Geom2d_Line.hxx"
@@ -439,8 +440,6 @@ gp_Pnt CCPACSFuselageProfile::GetPoint(double zeta)
         throw CTiglError("Error: Parameter zeta not in the range 0.0 <= zeta <= 1.0 in CCPACSFuselageProfile::GetPoint", TIGL_ERROR);
     }
 
-    double length = wireLength * zeta;
-
     // Get the first edge of the wire
     BRepTools_WireExplorer wireExplorer(wireOriginal);
     if (!wireExplorer.More()) {
@@ -452,39 +451,13 @@ gp_Pnt CCPACSFuselageProfile::GetPoint(double zeta)
     wireExplorer.Next();
     Handle(Geom_Curve) curve = BRep_Tool::Curve(edge, firstParam, lastParam);
 
-    // Length of current edge
-    GeomAdaptor_Curve adaptorCurve;
-    adaptorCurve.Load(curve);
-    double currLength = GCPnts_AbscissaPoint::Length(adaptorCurve);
-
-    // Length of complete wire up to now
-    double sumLength = currLength;
-
-    while (length > sumLength) {
-        if (!wireExplorer.More()) {
-            break;
-        }
-        edge = wireExplorer.Current();
-        wireExplorer.Next();
-
-        curve = BRep_Tool::Curve(edge, firstParam, lastParam);
-        adaptorCurve.Load(curve);
-
-        // Length of current edge
-        currLength = GCPnts_AbscissaPoint::Length(adaptorCurve);
-
-        // Length of complete wire up to now
-        sumLength += currLength;
+    if (!reparOriginal.isInitialized()) {
+        // load the curve
+        reparOriginal.init(GeomConvert::CurveToBSplineCurve(curve), 1e-4);
     }
 
-    // Distance of searched point from end point of current edge
-    double currEndDelta = std::max((sumLength - length), 0.0);
-
-    // Distance of searched point from start point of current edge
-    double currDist = std::max((currLength - currEndDelta), 0.0);
-
-    GCPnts_AbscissaPoint abscissaPoint(adaptorCurve, currDist, adaptorCurve.FirstParameter());
-    gp_Pnt point = adaptorCurve.Value(abscissaPoint.Parameter());
+    double parameter = reparOriginal.parameter(zeta*reparOriginal.totalLength());
+    gp_Pnt point = curve->Value(parameter);
 
     return point;
 }
