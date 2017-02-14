@@ -99,11 +99,11 @@ private:
     //StartDefinitionType startDefinitionType;
     //double etaStart;
     //std::string elementStartUID;
-    Optional<std::string> m_sparPositionStartUID_choice3;
+    boost::optional<std::string> m_sparPositionStartUID_choice3;
     //EndDefinitionType endDefinitionType;
     //double etaEnd;
     //std::string elementEndUID;
-    Optional<std::string> m_sparPositionEndUID_choice3;
+    boost::optional<std::string> m_sparPositionEndUID_choice3;
     //std::string ribStart;
     //std::string ribEnd;
     //RibCountDefinitionType ribCountDefinitionType;

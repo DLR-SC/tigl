@@ -33,7 +33,7 @@ CCPACSWingSparPositions::CCPACSWingSparPositions(CCPACSWingSpars* parent)
 
 const CCPACSWingSparPosition& CCPACSWingSparPositions::GetSparPosition(const std::string uid) const
 {
-    for (std::vector<std::unique_ptr<CCPACSWingSparPosition>>::const_iterator it = m_sparPosition.begin(); it != m_sparPosition.end(); ++it) {
+    for (std::vector<unique_ptr<CCPACSWingSparPosition>>::const_iterator it = m_sparPosition.begin(); it != m_sparPosition.end(); ++it) {
         if ((*it)->GetUID() == uid) {
             return *(*it);
         }

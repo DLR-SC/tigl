@@ -33,6 +33,7 @@
 #include <vector>
 #include <string>
 
+#include "generated/UniquePtr.h"
 #include "tixi.h"
 #include "tigl_internal.h"
 #include "ITiglWireAlgorithm.h"
@@ -135,7 +136,7 @@ private:
     bool                      profileIsClosed;
 
     std::vector<CTiglPoint>             coordinates;    /**< Coordinates of a wing profile element */
-    std::unique_ptr<ITiglWireAlgorithm> profileWireAlgo;/**< Pointer to wire algorithm (e.g. CTiglInterpolateBsplineWire) */
+    unique_ptr<ITiglWireAlgorithm> profileWireAlgo;/**< Pointer to wire algorithm (e.g. CTiglInterpolateBsplineWire) */
     const CCPACSWingProfile&            profileRef;     /**< Reference to the wing profile */
 
     std::string                         ProfileDataXPath; /**< CPACS path to profile data (pointList or cst2D) */

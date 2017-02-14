@@ -32,7 +32,7 @@
 
 #include <memory>
 #include "generated/CPACSProfileGeometry.h"
-#include "generated/Optional.hpp"
+#include "generated/UniquePtr.h"
 #include "tigl_internal.h"
 #include "TopoDS_Wire.hxx"
 #include "TopoDS_Edge.hxx"
@@ -153,7 +153,7 @@ private:
     std::string               uid;            /**< CPACS wing profile UID */
     bool                                        invalidated;    /**< Flag if element is invalid */
     ITiglWingProfileAlgo*                       profileAlgo; // points to the current profile algo (non-owning)
-    std::unique_ptr<CCPACSWingProfilePointList> pointListAlgo; // is created in case the wing profile alg is a point list, otherwise cst2d constructed in the base class is used
+    unique_ptr<CCPACSWingProfilePointList> pointListAlgo; // is created in case the wing profile alg is a point list, otherwise cst2d constructed in the base class is used
 
 }; // class CCPACSWingProfile
 

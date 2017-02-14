@@ -47,7 +47,7 @@ double CCPACSWingRibCrossSection::GetXRotation() const
 void CCPACSWingRibCrossSection::SetXRotation(double rotation)
 {
     if (!m_ribRotation)
-        m_ribRotation.construct();
+        m_ribRotation = boost::in_place();
     m_ribRotation->SetX(rotation);
 
     // invalidate whole component segment structure, since rib could be referenced anywher

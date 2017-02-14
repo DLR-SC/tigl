@@ -170,13 +170,13 @@ private:
     void operator=(const CCPACSConfiguration&);
 
 private:
-    Optional<CCPACSModel>              cpacsModel;           /**< Root component for the CTiglUIDManager */
+    boost::optional<CCPACSModel>              cpacsModel;           /**< Root component for the CTiglUIDManager */
     TixiDocumentHandle                 tixiDocumentHandle;   /**< Handle for internal TixiDocument */
     CCPACSHeader                       header;               /**< Configuration header element */
     CCPACSFarField                     farField;             /**< Far field configuration for CFD tools */
-    Optional<CCPACSWingProfiles>       wingProfiles;
-    Optional<CCPACSFuselageProfiles>   fuselageProfiles;
-    Optional<CCPACSGuideCurveProfiles> guideCurveProfiles;   /**< Guide curve profiles */
+    boost::optional<CCPACSWingProfiles>       wingProfiles;
+    boost::optional<CCPACSFuselageProfiles>   fuselageProfiles;
+    boost::optional<CCPACSGuideCurveProfiles> guideCurveProfiles;   /**< Guide curve profiles */
     CTiglUIDManager                    uidManager;           /**< Stores the unique ids of the components */
     PTiglFusePlane                     aircraftFuser;        /**< The aircraft fusing algo */
     std::string                        configUID;            /**< UID of the opened configuration   */
