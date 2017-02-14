@@ -46,7 +46,7 @@ void CCPACSWingCellPositionChordwise::SetXsi(double xsi1, double xsi2)
 {
     m_xsi1_choice2 = xsi1;
     m_xsi2_choice2 = xsi2;
-    m_sparUID_choice1.destroy();
+    m_sparUID_choice1 = boost::none;
 
     GetParent<CCPACSWingCell>()->Invalidate();
 }
@@ -69,8 +69,8 @@ std::pair<double, double> CCPACSWingCellPositionChordwise::GetXsi() const
 
 void CCPACSWingCellPositionChordwise::SetSparUId(std::string sparUId)
 {
-    m_xsi1_choice2.destroy();
-    m_xsi2_choice2.destroy();
+    m_xsi1_choice2 = boost::none;
+    m_xsi2_choice2 = boost::none;
     m_sparUID_choice1 = sparUId;
 
     GetParent<CCPACSWingCell>()->Invalidate();

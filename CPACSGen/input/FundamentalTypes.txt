@@ -1,7 +1,0 @@
-// maps fundamental types to their Tixi IO functions
-
-std::string Text
-double      Double
-bool        Bool
-int         Int
-time_t      TimeT

@@ -5,17 +5,19 @@
 #include "generated/CPACSPointListRelXYZVector.h"
 #include "CTiglPoint.h"
 
-namespace tigl {
-	class CCPACSPointListRelXYZ : public generated::CPACSPointListRelXYZVector {
-	public:
-		TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string &xpath) override;
-		TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const override;
+namespace tigl
+{
+    class CCPACSPointListRelXYZ : public generated::CPACSPointListRelXYZVector
+    {
+    public:
+        TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string &xpath) override;
+        TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const override;
 
-		TIGL_EXPORT const std::vector<CTiglPoint>& AsVector() const;
-		TIGL_EXPORT std::vector<CTiglPoint>& AsVector();
+        TIGL_EXPORT const std::vector<CTiglPoint>& AsVector() const;
+        TIGL_EXPORT std::vector<CTiglPoint>& AsVector();
 
-	private:
-		// cache
-		std::vector<CTiglPoint> m_vec;
-	};
+    private:
+        // cache
+        std::vector<CTiglPoint> m_vec;
+    };
 }

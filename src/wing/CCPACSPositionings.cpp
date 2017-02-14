@@ -94,7 +94,7 @@ void CCPACSPositionings::Update()
         // fromSectionUID element may be present but empty
         if (actPos->HasFromSectionUID() && !actPos->GetFromSectionUID().empty()) {
             const std::string fromUID = actPos->GetFromSectionUID();
-            const auto pos = std::find_if(std::begin(m_positioning), std::end(m_positioning), [&](const std::unique_ptr<CCPACSPositioning>& p) {
+            const auto pos = std::find_if(std::begin(m_positioning), std::end(m_positioning), [&](const unique_ptr<CCPACSPositioning>& p) {
                 return p->GetOuterSectionIndex() == fromUID;
             });
             if (pos != std::end(m_positioning)) {

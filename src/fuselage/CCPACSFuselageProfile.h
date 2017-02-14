@@ -119,7 +119,7 @@ private:
     TopoDS_Wire                         wireOriginal;   /**< Original fuselage profile wire */
     TopoDS_Wire                         wireClosed;     /**< Forced closed fuselage profile wire */
     double                              wireLength;     /**< Length of fuselage profile wire */
-    std::unique_ptr<ITiglWireAlgorithm> profileWireAlgo;
+    unique_ptr<ITiglWireAlgorithm> profileWireAlgo;
     gp_Pnt                              startDiameterPoint;
     gp_Pnt                              endDiameterPoint;
 

@@ -197,7 +197,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
     }
 
     return Try("tiglOpenCPACSConfiguration", TIGL_OPEN_FAILED, [&]{
-        std::unique_ptr<tigl::CCPACSConfiguration> config(new tigl::CCPACSConfiguration(tixiHandle));
+        tigl::unique_ptr<tigl::CCPACSConfiguration> config(new tigl::CCPACSConfiguration(tixiHandle));
         // Build CPACS memory structure
         config->ReadCPACS(configurationUID.c_str());
         // Store configuration in handle container

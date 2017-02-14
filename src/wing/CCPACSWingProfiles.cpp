@@ -32,7 +32,7 @@
 #include "CCPACSWingProfiles.h"
 #include "CTiglError.h"
 #include "generated/TixiHelper.h"
-#include "std_make_unique.h"
+#include "generated/UniquePtr.h"
 #include "TixiSaveExt.h"
 #include "IOHelper.h"
 
@@ -61,11 +61,7 @@ void CCPACSWingProfiles::ImportCPACS(const TixiDocumentHandle& tixiHandle, const
 
     // read element wingAirfoil
     if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/wingAirfoil")) {
-        tixihelper::TixiReadElements(tixiHandle, xpath + "/wingAirfoil", m_wingAirfoil, [&](const std::string& childXPath) {
-            auto child = std_make_unique<CCPACSWingProfile>();
-            child->ReadCPACS(tixiHandle, childXPath);
-            return child;
-        });
+        tixihelper::TixiReadElements(tixiHandle, xpath + "/wingAirfoil", m_wingAirfoil, tixihelper::ChildReader<CCPACSWingProfile>());
     }
 }
 
@@ -79,7 +75,7 @@ void CCPACSWingProfiles::AddProfile(CCPACSWingProfile* profile)
 
 void CCPACSWingProfiles::DeleteProfile(std::string uid)
 {
-    const auto it = std::find_if(std::begin(m_wingAirfoil), std::end(m_wingAirfoil), [&](const std::unique_ptr<generated::CPACSProfileGeometry>& pg) {
+    const auto it = std::find_if(std::begin(m_wingAirfoil), std::end(m_wingAirfoil), [&](const unique_ptr<generated::CPACSProfileGeometry>& pg) {
         return pg->GetUID() == uid;
     });
     if (it != std::end(m_wingAirfoil))

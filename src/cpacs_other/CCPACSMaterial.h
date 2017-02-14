@@ -61,7 +61,7 @@ public:
 
     TIGL_EXPORT void SetThicknessScaling(double thicknessScaling);
 private:
-    Optional<tigl::CTiglPoint> orthotropyDirection; // TODO: orthotropyDirection is just a double in CPACS ...
+    boost::optional<tigl::CTiglPoint> orthotropyDirection; // TODO: orthotropyDirection is just a double in CPACS ...
 
     bool isvalid;
     bool is_composite; // whether the material is a composite

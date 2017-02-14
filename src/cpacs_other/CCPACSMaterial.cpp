@@ -41,7 +41,7 @@ void CCPACSMaterial::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string&
 
     const std::string orthoPath = xpath + "/orthotropyDirection";
     if (tixiCheckElement(tixiHandle, orthoPath.c_str())) {
-        orthotropyDirection.construct();
+        orthotropyDirection = boost::in_place();
         CTiglPoint& p = *orthotropyDirection;
         tixiGetPoint(tixiHandle, orthoPath.c_str(), &p.x, &p.y, &p.z);
     }

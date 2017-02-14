@@ -1,9 +1,0 @@
-// in <cpacs>
-CPACSAirports
-CPACSFleets
-CPACSMissions
-CPACSToolspecific
-
-// in <vehicles>
-CPACSEngines
-CPACSFuels

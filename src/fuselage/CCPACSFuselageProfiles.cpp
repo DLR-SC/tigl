@@ -26,7 +26,7 @@
 #include <sstream>
 #include <iostream>
 #include <algorithm>
-#include "std_make_unique.h"
+#include "generated/UniquePtr.h"
 
 #include "generated/TixiHelper.h"
 #include "CCPACSFuselageProfile.h"
@@ -52,11 +52,7 @@ void CCPACSFuselageProfiles::ReadCPACS(const TixiDocumentHandle& tixiHandle, con
 
     // read element fuselageProfile
     if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/fuselageProfile")) {
-        tixihelper::TixiReadElements(tixiHandle, xpath + "/fuselageProfile", m_fuselageProfile, [&](const std::string& childXPath) {
-            auto child = std_make_unique<CCPACSFuselageProfile>();
-            child->ReadCPACS(tixiHandle, childXPath);
-            return child;
-        });
+        tixihelper::TixiReadElements(tixiHandle, xpath + "/fuselageProfile", m_fuselageProfile, tixihelper::ChildReader<CCPACSFuselageProfile>());
     }
 }
 
@@ -78,7 +74,7 @@ void CCPACSFuselageProfiles::AddProfile(CCPACSFuselageProfile* profile)
 
 void CCPACSFuselageProfiles::DeleteProfile( std::string uid )
 {
-    const auto it = std::find_if(std::begin(m_fuselageProfile), std::end(m_fuselageProfile), [&](const std::unique_ptr<generated::CPACSProfileGeometry>& pg) {
+    const auto it = std::find_if(std::begin(m_fuselageProfile), std::end(m_fuselageProfile), [&](const unique_ptr<generated::CPACSProfileGeometry>& pg) {
         return pg->GetUID() == uid;
     });
     if (it != std::end(m_fuselageProfile))

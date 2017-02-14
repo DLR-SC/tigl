@@ -37,7 +37,7 @@ void CCPACSGuideCurves::ReadCPACS(const TixiDocumentHandle& tixiHandle, const st
 
     // sort by uid as some unit tests rely on this (TODO: should we fix the tests?)
     // WARN: this destroys the order of the guide curves as stored in the CPACS file
-    std::sort(std::begin(m_guideCurve), std::end(m_guideCurve), [](const std::unique_ptr<CCPACSGuideCurve>& a, const std::unique_ptr<CCPACSGuideCurve>& b) {
+    std::sort(std::begin(m_guideCurve), std::end(m_guideCurve), [](const unique_ptr<CCPACSGuideCurve>& a, const unique_ptr<CCPACSGuideCurve>& b) {
         return a->GetUID() < b->GetUID();
     });
 }
