@@ -43,8 +43,8 @@ void CCPACSWingCellPositionSpanwise::SetEta(double eta1, double eta2) {
     m_eta1_choice1 = eta1;
     m_eta2_choice1 = eta2;
 
-    m_ribNumber_choice2.destroy();
-    m_ribDefinitionUID_choice2.destroy();
+    m_ribNumber_choice2 = boost::none;
+    m_ribDefinitionUID_choice2 = boost::none;
 
     invalidateParent();
 }
@@ -64,8 +64,8 @@ std::pair<double, double> CCPACSWingCellPositionSpanwise::GetEta() const {
 }
 
 void CCPACSWingCellPositionSpanwise::SetRib(const std::string& ribUId, int nRib) {
-    m_eta1_choice1.destroy();
-    m_eta2_choice1.destroy();
+    m_eta1_choice1 = boost::none;
+    m_eta2_choice1 = boost::none;
 
     m_ribNumber_choice2 = nRib;
     m_ribDefinitionUID_choice2 = ribUId;

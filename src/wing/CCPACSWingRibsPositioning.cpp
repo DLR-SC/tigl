@@ -105,8 +105,8 @@ void CCPACSWingRibsPositioning::SetEtaStart(double value)
 {
     m_etaStart_choice1 = value;
 
-    m_elementStartUID_choice2.destroy();
-    m_sparPositionStartUID_choice3.destroy();
+    m_elementStartUID_choice2 = boost::none;
+    m_sparPositionStartUID_choice3 = boost::none;
 
     // invalidate whole component segment structure, since cells could reference the ribs
     GetParent()->GetStructure().Invalidate();
@@ -124,8 +124,8 @@ void CCPACSWingRibsPositioning::SetElementStartUID(const std::string& uid)
 {
     m_elementStartUID_choice2 = uid;
 
-    m_etaStart_choice1.destroy();
-    m_sparPositionStartUID_choice3.destroy();
+    m_etaStart_choice1 = boost::none;
+    m_sparPositionStartUID_choice3 = boost::none;
 
     GetParent()->GetStructure().Invalidate();
 }
@@ -142,8 +142,8 @@ void CCPACSWingRibsPositioning::SetSparPositionStartUID(const std::string& uid)
 {
     m_sparPositionStartUID_choice3 = uid;
 
-    m_etaStart_choice1.destroy();
-    m_elementStartUID_choice2.destroy();
+    m_etaStart_choice1 = boost::none;
+    m_elementStartUID_choice2 = boost::none;
 
     GetParent()->GetStructure().Invalidate();
 }
@@ -171,8 +171,8 @@ void CCPACSWingRibsPositioning::SetEtaEnd(double value)
 {
     m_etaEnd_choice1 = value;
 
-    m_elementEndUID_choice2.destroy();
-    m_sparPositionEndUID_choice3.destroy();
+    m_elementEndUID_choice2 = boost::none;
+    m_sparPositionEndUID_choice3 = boost::none;
 
     GetParent()->GetStructure().Invalidate();
 }
@@ -189,8 +189,8 @@ void CCPACSWingRibsPositioning::SetElementEndUID(const std::string& uid)
 {
     m_elementEndUID_choice2 = uid;
 
-    m_etaEnd_choice1.destroy();
-    m_sparPositionEndUID_choice3.destroy();
+    m_etaEnd_choice1 = boost::none;
+    m_sparPositionEndUID_choice3 = boost::none;
 
     GetParent()->GetStructure().Invalidate();
 }
@@ -207,8 +207,8 @@ void CCPACSWingRibsPositioning::SetSparPositionEndUID(const std::string& uid)
 {
     m_sparPositionEndUID_choice3 = uid;
 
-    m_etaEnd_choice1.destroy();
-    m_elementEndUID_choice2.destroy();
+    m_etaEnd_choice1 = boost::none;
+    m_elementEndUID_choice2 = boost::none;
 
     GetParent()->GetStructure().Invalidate();
 }
@@ -234,7 +234,7 @@ void CCPACSWingRibsPositioning::SetNumberOfRibs(int numRibs)
 {
     m_numberOfRibs_choice2 = numRibs;
 
-    m_spacing_choice1.destroy();
+    m_spacing_choice1 = boost::none;
 
     GetParent()->GetStructure().Invalidate();
 }
@@ -251,7 +251,7 @@ void CCPACSWingRibsPositioning::SetSpacing(double value)
 {
     m_spacing_choice1 = value;
 
-    m_numberOfRibs_choice2.destroy();
+    m_numberOfRibs_choice2 = boost::none;
 
     GetParent()->GetStructure().Invalidate();
 }

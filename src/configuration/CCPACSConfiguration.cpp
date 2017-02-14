@@ -101,20 +101,20 @@ void CCPACSConfiguration::ReadCPACS(const std::string& configurationUID)
     }
     if (tixihelper::TixiCheckElement(tixiDocumentHandle, fuselageProfilesXPath)) {
         if (fuselageProfiles)
-            fuselageProfiles.destroy();
-        fuselageProfiles.construct();
+            fuselageProfiles = boost::none;
+        fuselageProfiles = boost::in_place();
         fuselageProfiles->ReadCPACS(tixiDocumentHandle, fuselageProfilesXPath);
     }
     if (tixihelper::TixiCheckElement(tixiDocumentHandle, wingAirfoilsXPath)) {
         if (wingProfiles)
-            wingProfiles.destroy();
-        wingProfiles.construct();
+            wingProfiles = boost::none;
+        wingProfiles = boost::in_place();
         wingProfiles->ReadCPACS(tixiDocumentHandle, wingAirfoilsXPath);
     }
     if (tixihelper::TixiCheckElement(tixiDocumentHandle, guideCurveProfilesXPath)) {
         if (guideCurveProfiles)
-            guideCurveProfiles.destroy();
-        guideCurveProfiles.construct();
+            guideCurveProfiles = boost::none;
+        guideCurveProfiles = boost::in_place();
         guideCurveProfiles->ReadCPACS(tixiDocumentHandle, guideCurveProfilesXPath);
     }
     if (tixihelper::TixiCheckElement(tixiDocumentHandle, farFieldXPath)) {
@@ -123,9 +123,9 @@ void CCPACSConfiguration::ReadCPACS(const std::string& configurationUID)
 
     // create new root component for CTiglUIDManager
     if (cpacsModel) {
-        cpacsModel.destroy();
+        cpacsModel = boost::none;
     }
-    cpacsModel.construct(this);
+    cpacsModel = boost::in_place(this);
     cpacsModel->SetUID(configurationUID);
     uidManager.SetRootComponent(&*cpacsModel);
 

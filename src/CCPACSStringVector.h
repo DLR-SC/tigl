@@ -3,17 +3,19 @@
 #include <vector>
 #include "generated/CPACSStringVectorBase.h"
 
-namespace tigl {
-	class CCPACSStringVector : private generated::CPACSStringVectorBase {
-	public:
-		TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string &xpath) override;
-		TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const override;
+namespace tigl
+{
+    class CCPACSStringVector : private generated::CPACSStringVectorBase
+    {
+    public:
+        TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string &xpath) override;
+        TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const override;
 
-		TIGL_EXPORT const std::vector<double>& AsVector() const;
-		TIGL_EXPORT std::vector<double>& AsVector();
+        TIGL_EXPORT const std::vector<double>& AsVector() const;
+        TIGL_EXPORT std::vector<double>& AsVector();
 
-	private:
-		// cache
-		std::vector<double> m_vec;
-	};
+    private:
+        // cache
+        std::vector<double> m_vec;
+    };
 }
