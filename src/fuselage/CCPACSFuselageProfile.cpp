@@ -27,6 +27,12 @@
 #include "CCPACSFuselageProfile.h"
 #include "CTiglError.h"
 #include "CTiglTransformation.h"
+#include "CTiglInterpolateBsplineWire.h"
+#include "CTiglSymetricSplineBuilder.h"
+#include "tiglcommonfunctions.h"
+#include "CTiglLogging.h"
+#include "TixiSaveExt.h"
+
 #include "TopoDS.hxx"
 #include "TopoDS_Wire.hxx"
 #include "gp_Pnt2d.hxx"
@@ -36,6 +42,8 @@
 #include "BRepBuilderAPI_MakeEdge.hxx"
 #include "BRepBuilderAPI_MakeWire.hxx"
 #include "Geom_TrimmedCurve.hxx"
+#include "GeomConvert.hxx"
+#include "Geom_Plane.hxx"
 #include "GCE2d_MakeSegment.hxx"
 #include "Geom2d_Line.hxx"
 #include "TopExp_Explorer.hxx"
@@ -50,17 +58,13 @@
 #include "BRepTools_WireExplorer.hxx"
 #include "GeomAdaptor_Curve.hxx"
 #include "GCPnts_AbscissaPoint.hxx"
-#include "CTiglInterpolateBsplineWire.h"
-#include "tiglcommonfunctions.h"
-#include "CTiglLogging.h"
-#include "TixiSaveExt.h"
+#include "GeomAPI_IntCS.hxx"
 
 #include "math.h"
 #include <iostream>
 #include <limits>
 #include <sstream>
 #include <algorithm>
-
 
 namespace tigl
 {
@@ -223,6 +227,7 @@ void CCPACSFuselageProfile::BuildWires()
         }
     }
 
+
     // we always want to include the endpoint, if it's the same as the startpoint
     // we use the startpoint to enforce closing of the spline
     gp_Pnt pStart =  coordinates.front().Get_gp_Pnt();
@@ -234,34 +239,54 @@ void CCPACSFuselageProfile::BuildWires()
         points.push_back(pEnd);
     }
 
-    // Build wire from fuselage profile points
-    auto pSplineBuilder = dynamic_cast<CTiglInterpolateBsplineWire*>(profileWireAlgo.get());
-    if (pSplineBuilder) {
-        pSplineBuilder->setEndpointContinuity(C1);
+    TopoDS_Wire tempWireClosed, tempWireOriginal;
+
+    bool mirrorAlgorithmSuccess = true;
+    if (mirrorSymmetry) {
+        try {
+            CTiglSymetricSplineBuilder builder(points);
+            Handle(Geom_BSplineCurve) c = builder.GetBSpline();
+
+            TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(c);
+            gp_Pnt pstart = c->Value(c->FirstParameter());
+            gp_Pnt pend   = c->Value(c->LastParameter());
+
+            tempWireOriginal = BRepBuilderAPI_MakeWire(edge);
+            tempWireClosed   = BRepBuilderAPI_MakeWire(
+                                   edge,
+                                   BRepBuilderAPI_MakeEdge(pend, pstart));
+
+            mirrorAlgorithmSuccess = true;
+        }
+        catch (CTiglError&) {
+            LOG(WARNING) << "The points in fuselage profile " << GetUID() << " can not be used to create a symmetric half profile."
+                         << "The y value of the first point must be zero!";
+            mirrorAlgorithmSuccess = false;
+        }
     }
 
-    TopoDS_Wire tempWireClosed   = profileWireAlgo->BuildWire(points, true);
-    TopoDS_Wire tempWireOriginal = profileWireAlgo->BuildWire(points, false);
-    if (pSplineBuilder) {
-        pSplineBuilder->setEndpointContinuity(C0);
+
+    if (!mirrorSymmetry || !mirrorAlgorithmSuccess) {
+        // Build wire from fuselage profile points
+        const ITiglWireAlgorithm& wireBuilder = *profileWireAlgo;
+        const CTiglInterpolateBsplineWire* pSplineBuilder = dynamic_cast<const CTiglInterpolateBsplineWire*>(&wireBuilder);
+        if (pSplineBuilder) {
+            const_cast<CTiglInterpolateBsplineWire*>(pSplineBuilder)->setEndpointContinuity(C1);
+        }
+
+        tempWireClosed   = wireBuilder.BuildWire(points, true);
+        tempWireOriginal = wireBuilder.BuildWire(points, false);
+        if (pSplineBuilder) {
+            const_cast<CTiglInterpolateBsplineWire*>(pSplineBuilder)->setEndpointContinuity(C0);
+        }
+
+        if (tempWireClosed.IsNull() == Standard_True || tempWireOriginal.IsNull() == Standard_True) {
+            throw CTiglError("Error: TopoDS_Wire is null in CCPACSFuselageProfile::BuildWire", TIGL_ERROR);
+        }
     }
 
-    if (tempWireClosed.IsNull() == Standard_True || tempWireOriginal.IsNull() == Standard_True) {
-        throw CTiglError("Error: TopoDS_Wire is null in CCPACSFuselageProfile::BuildWire", TIGL_ERROR);
-    }
-
-    // Apply fuselage profile transformation to wire
-    CTiglTransformation transformation;
-    TopoDS_Shape tempShapeClosed   = transformation.Transform(tempWireClosed);
-    TopoDS_Shape tempShapeOriginal = transformation.Transform(tempWireOriginal);
-
-    // Cast shapes to wires, see OpenCascade documentation
-    if (tempShapeClosed.ShapeType() != TopAbs_WIRE || tempShapeOriginal.ShapeType() != TopAbs_WIRE) {
-        throw CTiglError("Error: Wrong shape type in CCPACSFuselageProfile::BuildWire", TIGL_ERROR);
-    }
-
-    wireClosed   = TopoDS::Wire(tempShapeClosed);
-    wireOriginal = TopoDS::Wire(tempShapeOriginal);
+    wireClosed   = tempWireClosed;
+    wireOriginal = tempWireOriginal;
 
     wireLength = GetWireLength(wireOriginal);
 }
@@ -284,8 +309,6 @@ gp_Pnt CCPACSFuselageProfile::GetPoint(double zeta)
         throw CTiglError("Error: Parameter zeta not in the range 0.0 <= zeta <= 1.0 in CCPACSFuselageProfile::GetPoint", TIGL_ERROR);
     }
 
-    double length = wireLength * zeta;
-
     // Get the first edge of the wire
     BRepTools_WireExplorer wireExplorer(wireOriginal);
     if (!wireExplorer.More()) {
@@ -297,39 +320,13 @@ gp_Pnt CCPACSFuselageProfile::GetPoint(double zeta)
     wireExplorer.Next();
     Handle(Geom_Curve) curve = BRep_Tool::Curve(edge, firstParam, lastParam);
 
-    // Length of current edge
-    GeomAdaptor_Curve adaptorCurve;
-    adaptorCurve.Load(curve);
-    double currLength = GCPnts_AbscissaPoint::Length(adaptorCurve);
-
-    // Length of complete wire up to now
-    double sumLength = currLength;
-
-    while (length > sumLength) {
-        if (!wireExplorer.More()) {
-            break;
+    if (!reparOriginal.isInitialized()) {
+        // load the curve
+        reparOriginal.init(GeomConvert::CurveToBSplineCurve(curve), 1e-4);
         }
-        edge = wireExplorer.Current();
-        wireExplorer.Next();
 
-        curve = BRep_Tool::Curve(edge, firstParam, lastParam);
-        adaptorCurve.Load(curve);
-
-        // Length of current edge
-        currLength = GCPnts_AbscissaPoint::Length(adaptorCurve);
-
-        // Length of complete wire up to now
-        sumLength += currLength;
-    }
-
-    // Distance of searched point from end point of current edge
-    double currEndDelta = std::max((sumLength - length), 0.0);
-
-    // Distance of searched point from start point of current edge
-    double currDist = std::max((currLength - currEndDelta), 0.0);
-
-    GCPnts_AbscissaPoint abscissaPoint(adaptorCurve, currDist, adaptorCurve.FirstParameter());
-    gp_Pnt point = adaptorCurve.Value(abscissaPoint.Parameter());
+    double parameter = reparOriginal.parameter(zeta*reparOriginal.totalLength());
+    gp_Pnt point = curve->Value(parameter);
 
     return point;
 }

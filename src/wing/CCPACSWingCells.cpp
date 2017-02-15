@@ -32,6 +32,12 @@ namespace tigl
 CCPACSWingCells::CCPACSWingCells(CCPACSWingShell* parent)
     : generated::CPACSWingCells(parent) {}
 
+void CCPACSWingCells::Invalidate()
+{
+    for (size_t i = 0; i < cells.size(); i++) {
+        cells[i]->Invalidate();
+    }
+}
 int CCPACSWingCells::GetCellCount() const
 {
     return static_cast<int>(m_cell.size());
@@ -50,6 +56,19 @@ CCPACSWingCell& CCPACSWingCells::GetCell(int index) const
 CCPACSWingShell* CCPACSWingCells::GetParentElement() const
 {
     return GetParent();
+}
+
+CCPACSWingCell &CCPACSWingCells::GetCell(const std::string &UID) const
+{
+    for (int i=0; i < GetCellCount(); i++) {
+        const std::string tmpUID(cells[i]->GetUID());
+        if (tmpUID == UID) {
+            return (*cells[i]);
+        }
+    }
+
+    // UID not there
+    throw CTiglError("Error: Invalid UID in CCPACSWingCells::GetCell", TIGL_UID_ERROR);
 }
 
 

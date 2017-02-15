@@ -56,6 +56,17 @@ TIGL_EXPORT Standard_Real ProjectPointOnWire(const TopoDS_Wire& wire, gp_Pnt p);
 // projects a point onto the line (lineStart<->lineStop) and returns the projection parameter
 TIGL_EXPORT Standard_Real ProjectPointOnLine(gp_Pnt p, gp_Pnt lineStart, gp_Pnt lineStop);
 
+enum IntStatus
+{
+    BetweenPoints, // The intersection point lies between p1 and p2
+    OutsideBefore, // The intersection point lies before p1
+    OutsideAfter,  // The intersection point lies after p2
+    NoIntersection // the plane and the line are parallel to each other
+};
+
+// returns the intersection point between a line (p1-p2) and the plane
+TIGL_EXPORT IntStatus IntersectLinePlane(gp_Pnt p1, gp_Pnt p2, gp_Pln plane, gp_Pnt& result);
+
 // returns the number of edges of the current shape
 TIGL_EXPORT unsigned int GetNumberOfEdges(const TopoDS_Shape& shape);
 
@@ -66,7 +77,7 @@ TIGL_EXPORT TopoDS_Edge GetEdge(const TopoDS_Shape& shape, int iEdge);
 
 TIGL_EXPORT TopoDS_Face GetFace(const TopoDS_Shape& shape, int iFace);
 
-TIGL_EXPORT Handle_Geom_BSplineCurve GetBSplineCurve(const TopoDS_Edge& e);
+TIGL_EXPORT Handle(Geom_BSplineCurve) GetBSplineCurve(const TopoDS_Edge& e);
 
 // Returns the number of subshapes, if the shape is a compound
 TIGL_EXPORT unsigned int GetNumberOfSubshapes(const TopoDS_Shape& shape);
@@ -99,6 +110,12 @@ TIGL_EXPORT TopoDS_Face GetSingleFace(const TopoDS_Shape& shape);
 
 // Builds a face out of 4 points
 TIGL_EXPORT TopoDS_Face BuildFace(const gp_Pnt& p1, const gp_Pnt& p2, const gp_Pnt& p3, const gp_Pnt& p4);
+
+// Returns true, if a path is relative
+TIGL_EXPORT bool IsPathRelative(const std::string&);
+
+// Returns true, if a file is readable
+TIGL_EXPORT bool IsFileReadable(const std::string& filename);
 
 // Method for building a face out of two wires
 TIGL_EXPORT TopoDS_Face BuildFace(const TopoDS_Wire& wire1, const TopoDS_Wire& wire2);

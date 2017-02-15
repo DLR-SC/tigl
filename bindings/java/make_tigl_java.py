@@ -5,6 +5,7 @@ Created on Wed May 01 11:44:49 2013
 @author: Martin Siggel <martin.siggel@dlr.de>
 """
 
+from __future__ import print_function
 import sys, os 
 from datetime import date
 
@@ -67,17 +68,17 @@ if __name__ == '__main__':
     pg.postconstr = postconstr
 
     
-    print 'Creating python interface... ',
+    print('Creating java interface... ', end=' ')
     wrapper = pg.create_native_interface(parser)
-    print 'done'
+    print('done')
     
     # write file
     directory = 'src/de/dlr/sc/tigl'
     filename = directory + '/TiglNativeInterface.java'
-    print 'Write tigl java interface to file "%s" ... ' % filename, 
+    print('Write tigl java interface to file "%s" ... ' % filename, end=' ') 
     fop = open(filename, 'w')
     fop.write(wrapper)
-    print 'done'
+    print('done')
     
     pg.write_enums(parser, directory)
     

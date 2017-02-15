@@ -183,7 +183,7 @@ void ReadContainerElement(const TixiDocumentHandle& tixiHandle, const std::strin
 
 template<typename Container, typename ChildCtorArg1, typename ChildCtorArg2>
 void ReadContainerElement(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& parentName, const std::string& childName, const std::size_t minimumChildren, Container& children,
-    ChildCtorArg1 arg1, ChildCtorArg2 arg2)
+                          ChildCtorArg1 arg1, ChildCtorArg2 arg2)
 {
     ReadContainerElement(tixiHandle, xpath, parentName, childName, minimumChildren, children, arg1, arg2, internal::UnusedTag());
 }

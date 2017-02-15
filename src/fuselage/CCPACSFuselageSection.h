@@ -30,7 +30,7 @@
 #include "tigl_internal.h"
 #include "tixi.h"
 #include "CCPACSFuselageSectionElements.h"
-#include "CTiglTransformation.h"
+#include "CCPACSTransformation.h"
 #include <string>
 
 namespace tigl

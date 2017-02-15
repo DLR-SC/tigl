@@ -5,6 +5,7 @@ Created on Sat Apr 27 22:38:05 2013
 @author: Martin Siggel <martin.siggel@dlr.de>
 """
 
+from __future__ import print_function
 import re
 import copy
 
@@ -32,8 +33,8 @@ class CHeaderFileParser(object):
         self.read_header(filename)
         self.parse_defines()
         self.parse_methods()
-        print 'Parsed %d functions, %d enums, and %d typedefs'\
-            % (len(self.declarations), len(self.enums), len(self.typedefs))
+        print('Parsed %d functions, %d enums, and %d typedefs'\
+            % (len(self.declarations), len(self.enums), len(self.typedefs)))
     
     def read_header(self, filename):
         fop = open( filename, 'r')
@@ -174,6 +175,7 @@ class Annotation(object):
         self.outargs = {}
         self.uses_handle = True
         self.returns_error = True
+        self.raw_string = string
         
         if string:
             self.parse_string(string)
@@ -334,7 +336,7 @@ class CFunctionArg(object):
         
         regex = r'(?P<const>const\s)?(?P<name>[\w\s]+)(?P<pointer>[*]+)?'
         
-        basictypes    = ['int', 'long', 'float', 'double', 'char', 'void', 'size_t']
+        basictypes    = ['int', 'long', 'float', 'double', 'char', 'void']
 
         match = re.search(regex, mytype)
         name = match.group('name')
@@ -358,6 +360,8 @@ class CFunctionDec(object):
         self.returns_error = True
         self.method_name = ''
         self.uses_handle = True
+        self.raw_string = ''
+        self.raw_annotation = None
         
     def parse_method_header(self, string, typedeflist = None, enumlist = None,  handle_str = None, returncode_str = None):
         '''
@@ -378,6 +382,7 @@ class CFunctionDec(object):
         self.return_value.name = 'ret'
         self.returns_error =  returncode_str == self.return_value.rawtype
         self.method_name  = res.group('name') 
+        self.raw_string = string
         
         # print 'Parsed function %s' % self.method_name    
         
@@ -431,13 +436,16 @@ class CFunctionDec(object):
         the roles of the arguments (in, outs, arrays, arraysizes...)
         '''
         
+        # store raw annotation string for debugging
+        self.raw_annotation = annotation.raw_string
+
         if annotation.returns_error:
             self.returns_error = True
         else:
             self.returns_error = False
         
         # apply outpt args
-        for index, outarg in annotation.outargs.iteritems():
+        for index, outarg in annotation.outargs.items():
             if index >= len(self.arguments):
                 raise Exception('annotation index is too large for function %s'\
                     % self.method_name)
@@ -456,7 +464,7 @@ class CFunctionDec(object):
                     self.arguments[sizeindex].size_ref = index
             
         # apply input args
-        for index, inarg in annotation.inargs.iteritems():
+        for index, inarg in annotation.inargs.items():
             if index >= len(self.arguments):
                 raise Exception('annotation index is too large for function %s'\
                     % self.method_name)

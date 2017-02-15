@@ -29,6 +29,7 @@
 #include "tigl_internal.h"
 #include "CCPACSImportExport.h"
 #include "ListPNamedShape.h"
+#include "CTiglCADExporter.h"
 
 class STEPControl_Writer;
 
@@ -37,35 +38,24 @@ namespace tigl
 
 class CCPACSConfiguration;
 
-class CTiglExportStep
+class CTiglExportStep : public CTiglCADExporter
 {
 
 public:
     // Constructor
-    TIGL_EXPORT CTiglExportStep(CCPACSConfiguration& _config);
-
-    // Virtual Destructor
-    TIGL_EXPORT virtual ~CTiglExportStep();
-
-    // Exports the whole configuration as IGES file
-    TIGL_EXPORT void ExportStep(const std::string& filename) const;
-
-    // Exports the whole configuration, boolean fused, as IGES file
-    TIGL_EXPORT void ExportFusedStep(const std::string& filename);
-
-    // Save a sequence of shapes in IGES Format
-    TIGL_EXPORT void ExportShapes(const ListPNamedShape& shapes, const std::string& filename) const;
+    TIGL_EXPORT CTiglExportStep();
 
     // Sets the type of storing shapes to iges
     TIGL_EXPORT void SetGroupMode(ShapeGroupMode mode);
 
-protected:
 
 private:
+    // Writes the step file
+    TIGL_EXPORT bool WriteImpl(const std::string& filename) const;
+
     // Assignment operator
     void operator=(const CTiglExportStep& ) { /* Do nothing */ }
 
-    CCPACSConfiguration&          _config;       /**< TIGL configuration object */
     ShapeGroupMode                _groupMode;    /**< Type specifying how to group faces in the step file */
     void AddToStep(PNamedShape shape, STEPControl_Writer &writer) const;
 };

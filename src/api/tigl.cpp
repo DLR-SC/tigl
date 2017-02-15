@@ -46,6 +46,7 @@
 #include "CTiglExportStl.h"
 #include "CTiglExportVtk.h"
 #include "CTiglExportCollada.h"
+#include "CTiglExportBrep.h"
 #include "CTiglLogging.h"
 #include "CCPACSFuselageSection.h"
 #include "CCPACSFuselageSectionElement.h"
@@ -68,25 +69,64 @@ namespace
         TIGL_VERSION_STRING;
 }
 
-void tiglCleanup(void);
-bool tiglInit(void);
+TixiPrintMsgFnc oldTixiMessageHandler = NULL;
+
+namespace
+{
+
+    void tiglCleanup(void);
+    bool tiglInit(void);
+    void TixiMessageHandler(MessageType type, const char *message);
+
+
+    bool tiglInit(void)
+    {
+        atexit(tiglCleanup);
+    
+        // Initialize logger
+        tigl::CTiglLogging::Instance();
+        // Register dynamic tigl types
+        tigl::CTiglTypeRegistry::Init();
+        if (tixiGetPrintMsgFunc() != TixiMessageHandler) {
+            oldTixiMessageHandler = tixiGetPrintMsgFunc();
+        }
+        tixiSetPrintMsgFunc(TixiMessageHandler);
+        return true;
+    }
+    
+    void tiglCleanup(void)
+    {
+    }
+    
+    // This function pulls all tixi messages, puts them into the tigl
+    // log and pushes them back to tixi
+    void TixiMessageHandler(MessageType type, const char *message)
+    {
+        std::string cppMessage(message);
+
+        // reroute back to tixi
+        if (oldTixiMessageHandler && oldTixiMessageHandler != TixiMessageHandler) {
+            oldTixiMessageHandler(type, cppMessage.c_str());
+        }
+
+        cppMessage = "[TiXI] " + cppMessage;
+
+        if (type == MESSAGETYPE_ERROR) {
+            LOG(ERROR) << cppMessage;
+        }
+        else if (type == MESSAGETYPE_WARNING) {
+            LOG(WARNING) << cppMessage;
+        }
+        else {
+            LOG(INFO) << cppMessage;
+        }
+
+    }
+
+}
 
 // make tigl initialize on start
 const bool tiglInitialized = tiglInit();
-
-bool tiglInit(void)
-{
-    atexit(tiglCleanup);
-
-    // Initialize logger
-    tigl::CTiglLogging::Instance();
-    // Register dynamic tigl types
-    return true;
-}
-
-void tiglCleanup(void)
-{
-}
 
 template<typename Func>
 TiglReturnCode Try(const std::string& funcname, const TiglReturnCode& errorCode, Func func) throw() {
@@ -116,6 +156,8 @@ TiglReturnCode Try(const std::string& funcname, const TiglReturnCode& errorCode,
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle tixiHandle, const char* configurationUID_cstr, TiglCPACSConfigurationHandle* cpacsHandlePtr)
 {
+    tiglInit();
+
     std::string configurationUID;
     if (configurationUID_cstr) {
         configurationUID = configurationUID_cstr;
@@ -150,8 +192,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
             return TIGL_WRONG_CPACS_VERSION;
         }
         else {
-            if (dcpacsVersion < (double) TIGL_VERSION_MAJOR) {
-                LOG(ERROR) << "Too old CPACS dataset. CPACS version has to be at least " << (double) TIGL_VERSION_MAJOR << "!" << std::endl;
+            if (dcpacsVersion < (double) TIGL_MAJOR_VERSION) {
+                LOG(ERROR) << "Too old CPACS dataset. CPACS version has to be at least " << (double) TIGL_MAJOR_VERSION << "!" << std::endl;
                 return TIGL_WRONG_CPACS_VERSION;
             }
             else if (dcpacsVersion > atof(tiglGetVersion())) {
@@ -164,18 +206,21 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
     /* configuration automatically */
     if (configurationUID == "") {
         ReturnCode    tixiRet;
-        int sectionCount = 0;
+        int modelCount = 0;
 
-        tixiRet = tixiGetNamedChildrenCount(tixiHandle, "/cpacs/vehicles/aircraft", "model", &sectionCount);
+        tixiRet = tixiGetNamedChildrenCount(tixiHandle, "/cpacs/vehicles/aircraft|/cpacs/vehicles/rotorcraft", "model", &modelCount);
         if (tixiRet != SUCCESS) {
             LOG(ERROR) << "No configuration specified!" << std::endl;
             return TIGL_ERROR;
         }
         char * tmpConfUID = NULL;
-        tixiGetTextAttribute(tixiHandle, "/cpacs/vehicles/aircraft/model", "uID", &tmpConfUID);
+        tixiRet = tixiGetTextAttribute(tixiHandle, "/cpacs/vehicles/aircraft/model[1]", "uID", &tmpConfUID);
         if (tixiRet != SUCCESS) {
+            tixiRet = tixiGetTextAttribute(tixiHandle, "/cpacs/vehicles/rotorcraft/model[1]", "uID", &tmpConfUID);
+            if (tixiRet != SUCCESS) {
             LOG(ERROR) << "Problems reading configuration-uid!" << std::endl;
             return TIGL_ERROR;
+        }
         }
         configurationUID = tmpConfUID;
     }
@@ -386,7 +431,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglProfileGetBSplineDataSizes(TiglCPACSConfig
         // profile found, lets get bspline data
         
         if (!e.IsNull()) {
-             Handle_Geom_BSplineCurve bspl = GetBSplineCurve(e);
+             Handle(Geom_BSplineCurve) bspl = GetBSplineCurve(e);
              *degree = bspl->Degree();
              *ncontrolPoints = bspl->NbPoles();
              
@@ -472,7 +517,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglProfileGetBSplineData(TiglCPACSConfigurati
         // profile found, lets get bspline data
         
         if (!e.IsNull()) {
-            Handle_Geom_BSplineCurve bspl = GetBSplineCurve(e);
+            Handle(Geom_BSplineCurve) bspl = GetBSplineCurve(e);
             // check correct sizes
             if (ncp != bspl->NbPoles()) {
                 return TIGL_ERROR;
@@ -515,8 +560,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglProfileGetBSplineData(TiglCPACSConfigurati
 }
 
 
-/**********************************************************************************************/
-
+/******************************************************************************/
+/* Wing Functions                                                             */
+/******************************************************************************/
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetUpperPoint(TiglCPACSConfigurationHandle cpacsHandle,
                                                         int wingIndex,
@@ -1160,15 +1206,11 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetIndex(TiglCPACSConfigurationHandle 
         return TIGL_NULL_POINTER;
     }
 
+    *wingIndexPtr = -1;
     return Try("tiglWingGetIndex", TIGL_ERROR, [&]{
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
-        
-        int nwings = config.GetWingCount();
-        for (int iwing = 1; iwing <= nwings; ++iwing) {
-            tigl::CCPACSWing& wing = config.GetWing(iwing);
-            if (wing.GetUID() == std::string(wingUID)) {
-                *wingIndexPtr = iwing;
+        *wingIndexPtr = config.GetWingIndex(std::string(wingUID));
                 return TIGL_SUCCESS;
             }
         }
@@ -1356,11 +1398,16 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentFindSegment(TiglCPACSC
                 tigl::CCPACSWingComponentSegment& cs = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(componentSegment);
                 if ( cs.GetUID() == componentSegmentUID) {
                     gp_Pnt nearestPointOnSegment;
-                    const tigl::CTiglAbstractSegment* segment =  cs.findSegment(x, y, z, nearestPointOnSegment);
+                    double distance = 0;
+                    const tigl::CTiglAbstractSegment* segment =  cs.findSegment(x, y, z, nearestPointOnSegment, distance);
                     if (!segment) {
+                        LOG(ERROR) << "Can not find any segment that does belong to the provided point.";
+                        return TIGL_NOT_FOUND;
+                    }
+                    if (distance > 1e-2) {
                         // point does not lie on component segment
                         LOG(ERROR) << "Given point does not lie on component segment within 1cm tolerance."
-                                   << " Diviation is " << nearestPointOnSegment.Distance(gp_Pnt(x,y,z))*1000. << " mm.";
+                                   << " Diviation is " << distance*1000. << " mm.";
                         return TIGL_NOT_FOUND;
                     }
 
@@ -1423,17 +1470,24 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetPoint(TiglCPACSConf
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentPointGetSegmentEtaXsi(TiglCPACSConfigurationHandle cpacsHandle,
                                                                                 const char *componentSegmentUID, double eta, double xsi,
                                                                                 char** wingUID, char** segmentUID,
-                                                                                double *segmentEta, double *segmentXsi)
+                                                                                double *segmentEta, double *segmentXsi,
+                                                                                double *errorDistance)
 {
     if (segmentUID == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for segmentUID ";
-        LOG(ERROR) << "in function call to tiglWingComponentSegmentPointGetSegmentEtaXsi." << std::endl;
+        LOG(ERROR) << "Error: Null pointer argument for segmentUID "
+                   << "in function call to tiglWingComponentSegmentPointGetSegmentEtaXsi.";
         return TIGL_NULL_POINTER;
     }
 
     if (wingUID == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for wingUID ";
-        LOG(ERROR) << "in function call to tiglWingComponentSegmentPointGetSegmentEtaXsi." << std::endl;
+        LOG(ERROR) << "Error: Null pointer argument for wingUID "
+                   << "in function call to tiglWingComponentSegmentPointGetSegmentEtaXsi.";
+        return TIGL_NULL_POINTER;
+    }
+    
+    if (errorDistance == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for errorDistance "
+                   << "in function call to tiglWingComponentSegmentPointGetSegmentEtaXsi.";
         return TIGL_NULL_POINTER;
     }
 
@@ -1455,17 +1509,17 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentPointGetSegmentEtaXsi(
 
 
                     gp_Pnt nearestPoint;
-                    tigl::CCPACSWingSegment* segment = (tigl::CCPACSWingSegment*) compSeg.findSegment(pnt.X(), pnt.Y(), pnt.Z(), nearestPoint);
-                    double deviation = nearestPoint.Distance(pnt);
+                    double tmp = 0;
+                    tigl::CCPACSWingSegment* segment = (tigl::CCPACSWingSegment*) compSeg.findSegment(pnt.X(), pnt.Y(), pnt.Z(), nearestPoint, tmp);
                     if (!segment) {
-                        LOG(ERROR) << "Given point does not lie on component segment within 1cm tolerance."
-                                   << " The actual diviation is " << deviation*1000. << " mm.";
+                        LOG(ERROR) << "Can not find any segment that does belong to the provided point.";
                         return TIGL_MATH_ERROR;
                     }
+                    *errorDistance = nearestPoint.Distance(pnt);
                     // warn if cs point is more than 1mm outside from segment
-                    if ( deviation > 1e-3) {
+                    if ( *errorDistance > 1e-3) {
                         LOG(WARNING) << "Given point is located more than 1mm from the wing component segment body."
-                                     << " The actual diviation is " << deviation*1000.  << " mm."
+                                     << " The actual diviation is " << *errorDistance*1000.  << " mm."
                                      << " The point will be projected onto the wing segment.";
                         segment->GetEtaXsi(nearestPoint, *segmentEta, *segmentXsi);
                     }
@@ -1552,8 +1606,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetSegmentIntersection
                                                                                  const char* segmentUID,
                                                                                  double csEta1, double csXsi1,
                                                                                  double csEta2, double csXsi2,
-                                                                                 double   segmentEta, 
-                                                                                 double * segmentXsi) 
+                                                                                 double   segmentEta,
+                                                                                 double * segmentXsi,
+                                                                                 TiglBoolean* hasWarning)
 {
     if (segmentUID == 0) {
         LOG(ERROR) << "Error: Null pointer argument for segmentUID ";
@@ -1584,6 +1639,17 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetSegmentIntersection
             try {
                 tigl::CCPACSWingComponentSegment & compSeg = (tigl::CCPACSWingComponentSegment &) wing.GetComponentSegment(componentSegmentUID);
                 compSeg.GetSegmentIntersection(segmentUID, csEta1, csXsi1, csEta2, csXsi2, segmentEta, *segmentXsi);
+
+                // check if xsi is valid
+                if (hasWarning) {
+                    if (*segmentXsi < 0. || *segmentXsi > 1.) {
+                        *hasWarning = TIGL_TRUE;
+                    }
+                    else {
+                        *hasWarning = TIGL_FALSE;
+                    }
+                }
+
                 return TIGL_SUCCESS;
             }
             catch (tigl::CTiglError& err){
@@ -1600,6 +1666,81 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetSegmentIntersection
         LOG(ERROR) << "Error: Invalid component segment uid in tiglWingComponentSegmentGetSegmentIntersection" << std::endl;
         return TIGL_UID_ERROR;
     });
+}
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentComputeEtaIntersection(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                                 const char* componentSegmentUID,
+                                                                                 double csEta1, double csXsi1,
+                                                                                 double csEta2, double csXsi2,
+                                                                                 double eta,
+                                                                                 double* xsi,
+                                                                                 TiglBoolean* hasWarning)
+{
+    if (componentSegmentUID == 0) {
+        LOG(ERROR) << "Error: Null pointer for argument componentSegmentUID ";
+        LOG(ERROR) << "in function call to tiglWingComponentSegmentComputeEtaIntersection." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+
+    if (xsi == 0) {
+        LOG(ERROR) << "Error: Null pointer for argument xsi ";
+        LOG(ERROR) << "in function call to tiglWingComponentSegmentComputeEtaIntersection." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+
+        // search for component segment
+        int nwings = config.GetWingCount();
+        for (int iwing = 1; iwing <= nwings; ++iwing) {
+            tigl::CCPACSWing& wing = config.GetWing(iwing);
+            try {
+                tigl::CCPACSWingComponentSegment & compSeg = (tigl::CCPACSWingComponentSegment &) wing.GetComponentSegment(componentSegmentUID);
+                double xsiTemp = 0.;
+                double distanceTmp = 0.;
+                compSeg.InterpolateOnLine(csEta1, csXsi1, csEta2, csXsi2, eta, xsiTemp, distanceTmp);
+                *xsi = xsiTemp;
+
+                // check if xsi is valid
+                if (hasWarning) {
+                    if (*xsi < 0. || *xsi > 1.) {
+                        *hasWarning = TIGL_TRUE;
+                    }
+                    else {
+                        *hasWarning = TIGL_FALSE;
+                    }
+                }
+
+                return TIGL_SUCCESS;
+            }
+            catch (tigl::CTiglError& err){
+                if (err.getCode() == TIGL_UID_ERROR) {
+                    continue;
+                }
+                else {
+                    throw;
+                }
+            }
+        }
+
+        // the component segment was not found
+        LOG(ERROR) << "Error: Invalid component segment uid in tiglWingComponentSegmentComputeEtaIntersection" << std::endl;
+        return TIGL_UID_ERROR;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an unknown exception in tiglWingComponentSegmentComputeEtaIntersection!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetNumberOfSegments(TiglCPACSConfigurationHandle cpacsHandle,
@@ -1701,8 +1842,10 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetSegmentUID(TiglCPAC
     });
 }
 
-/**********************************************************************************************/
 
+/******************************************************************************/
+/* Fuselage Functions                                                         */
+/******************************************************************************/
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglGetFuselageCount(TiglCPACSConfigurationHandle cpacsHandle, int* fuselageCountPtr)
 {
@@ -2252,12 +2395,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetIndex(TiglCPACSConfigurationHan
     return Try("tiglFuselageGetIndex", TIGL_ERROR, [&]{
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
-
-        int nfuselages = config.GetFuselageCount();
-        for (int ifuselage = 1; ifuselage <= nfuselages; ++ifuselage) {
-            tigl::CCPACSFuselage& fuselage = config.GetFuselage(ifuselage);
-            if (fuselage.GetUID() == std::string(fuselageUID)) {
-                *fuselageIndexPtr = ifuselage;
+        *fuselageIndexPtr = config.GetFuselageIndex(std::string(fuselageUID));
                 return TIGL_SUCCESS;
             }
         }
@@ -2449,8 +2587,922 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetMinumumDistanceToGround(TiglCPA
 }
 
 
-/*****************************************************************************************************/
+/******************************************************************************/
+/* Rotor Functions                                                            */
+/******************************************************************************/
 
+TIGL_COMMON_EXPORT TiglReturnCode tiglGetRotorCount(TiglCPACSConfigurationHandle cpacsHandle,
+                                                    int* rotorCountPtr)
+{
+    if (rotorCountPtr == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for rotorCountPtr ";
+        LOG(ERROR) << "in function call to tiglGetRotorCount." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        *rotorCountPtr = config.GetRotorCount();
+        return TIGL_SUCCESS;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglGetRotorCount!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetUID(TiglCPACSConfigurationHandle cpacsHandle,
+                                                  int rotorIndex,
+                                                  char** uidNamePtr)
+{
+    if (uidNamePtr == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for uidNamePtr ";
+        LOG(ERROR) << "in function call to tiglRotorGetUID." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+
+    if (rotorIndex < 1) {
+        LOG(ERROR) << "Error: Rotor index is less than one ";
+        LOG(ERROR) << "in function call to tiglRotorGetUID." << std::endl;
+        return TIGL_INDEX_ERROR;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::CCPACSRotor& rotor = config.GetRotor(rotorIndex);
+        *uidNamePtr = const_cast<char*> (rotor.GetUID().c_str());
+        return TIGL_SUCCESS;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglRotorGetUID!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetIndex(TiglCPACSConfigurationHandle cpacsHandle,
+                                                    const char* rotorUID,
+                                                    int* rotorIndexPtr)
+{
+    if (rotorUID == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for rotorUID ";
+        LOG(ERROR) << "in function call to tiglRotorGetIndex." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+    if (rotorIndexPtr == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for rotorIndexPtr ";
+        LOG(ERROR) << "in function call to tiglRotorGetIndex." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        *rotorIndexPtr = config.GetRotorIndex(std::string(rotorUID));
+        return TIGL_SUCCESS;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        *rotorIndexPtr = -1;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        *rotorIndexPtr = -1;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglRotorGetIndex!" << std::endl;
+        *rotorIndexPtr = -1;
+        return TIGL_ERROR;
+    }
+}
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetRadius(TiglCPACSConfigurationHandle cpacsHandle,
+                                                     int rotorIndex,
+                                                     double *radiusPtr)
+{
+    if (radiusPtr == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for radiusPtr ";
+        LOG(ERROR) << "in function call to tiglRotorGetRadius." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+    if (rotorIndex < 1) {
+        LOG(ERROR) << "Error: rotor index is less than one "
+                   << "in function call to tiglRotorGetRadius.";
+        return TIGL_INDEX_ERROR;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::CCPACSRotor& rotor = config.GetRotor(rotorIndex);
+        *radiusPtr = rotor.GetRadius();
+        return TIGL_SUCCESS;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglRotorGetRadius!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetReferenceArea(TiglCPACSConfigurationHandle cpacsHandle,
+                                                            int rotorIndex,
+                                                            double *referenceAreaPtr)
+{
+    if (referenceAreaPtr == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for referenceAreaPtr ";
+        LOG(ERROR) << "in function call to tiglRotorGetReferenceArea." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+    if (rotorIndex < 1) {
+        LOG(ERROR) << "Error: rotor index is less than one "
+                   << "in function call to tiglrotorGetReferenceArea.";
+        return TIGL_INDEX_ERROR;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::CCPACSRotor& rotor = config.GetRotor(rotorIndex);
+        *referenceAreaPtr = rotor.GetReferenceArea();
+        return TIGL_SUCCESS;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglRotorGetReferenceArea!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetTotalBladePlanformArea(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                     int rotorIndex,
+                                                                     double *totalBladePlanformAreaPtr)
+{
+    if (totalBladePlanformAreaPtr == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for totalBladePlanformAreaPtr ";
+        LOG(ERROR) << "in function call to tiglRotorGetTotalBladePlanformArea." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+    if (rotorIndex < 1) {
+        LOG(ERROR) << "Error: rotor index is less than one "
+                   << "in function call to tiglRotorGetTotalBladePlanformArea.";
+        return TIGL_INDEX_ERROR;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::CCPACSRotor& rotor = config.GetRotor(rotorIndex);
+        *totalBladePlanformAreaPtr = rotor.GetTotalBladePlanformArea();
+        return TIGL_SUCCESS;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglRotorGetTotalBladePlanformArea!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetSolidity(TiglCPACSConfigurationHandle cpacsHandle,
+                                                       int rotorIndex,
+                                                       double *solidityPtr)
+{
+    if (solidityPtr == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for solidityPtr ";
+        LOG(ERROR) << "in function call to tiglRotorGetSolidity." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+    if (rotorIndex < 1) {
+        LOG(ERROR) << "Error: rotor index is less than one "
+                   << "in function call to tiglRotorGetSolidity.";
+        return TIGL_INDEX_ERROR;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::CCPACSRotor& rotor = config.GetRotor(rotorIndex);
+        *solidityPtr = rotor.GetSolidity();
+        return TIGL_SUCCESS;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglRotorGetSolidity!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetSurfaceArea(TiglCPACSConfigurationHandle cpacsHandle, 
+                                                          int rotorIndex,
+                                                          double *surfaceAreaPtr)
+{
+    if (surfaceAreaPtr == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for surfaceAreaPtr ";
+        LOG(ERROR) << "in function call to tiglRotorGetSurfaceArea." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+    if (rotorIndex < 1) {
+        LOG(ERROR) << "Error: Rotor index is less than one ";
+        LOG(ERROR) << "in function call to tiglRotorGetSurfaceArea." << std::endl;
+        return TIGL_INDEX_ERROR;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::CCPACSRotor& rotor = config.GetRotor(rotorIndex);
+        *surfaceAreaPtr = rotor.GetSurfaceArea();
+        return TIGL_SUCCESS;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglRotorGetSurfaceArea!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetVolume(TiglCPACSConfigurationHandle cpacsHandle, 
+                                                     int rotorIndex,
+                                                     double *volumePtr)
+{
+    if (volumePtr == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for volumePtr ";
+        LOG(ERROR) << "in function call to tiglRotorGetVolume." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+    if (rotorIndex < 1) {
+        LOG(ERROR) << "Error: rotor index is less than one ";
+        LOG(ERROR) << "in function call to tiglrotorGetVolume." << std::endl;
+        return TIGL_INDEX_ERROR;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::CCPACSRotor& rotor = config.GetRotor(rotorIndex);
+        *volumePtr = rotor.GetVolume();
+        return TIGL_SUCCESS;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglrotorGetVolume!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetTipSpeed(TiglCPACSConfigurationHandle cpacsHandle,
+                                                       int rotorIndex,
+                                                       double *tipSpeedPtr)
+{
+    if (tipSpeedPtr == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for tipSpeedPtr ";
+        LOG(ERROR) << "in function call to tiglRotorGetTipSpeed." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+    if (rotorIndex < 1) {
+        LOG(ERROR) << "Error: rotor index is less than one "
+                   << "in function call to tiglRotorGetTipSpeed.";
+        return TIGL_INDEX_ERROR;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::CCPACSRotor& rotor = config.GetRotor(rotorIndex);
+        *tipSpeedPtr = rotor.GetTipSpeed();
+        return TIGL_SUCCESS;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglRotorGetTipSpeed!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
+
+/******************************************************************************/
+/* Rotor Blade Functions                                                      */
+/******************************************************************************/
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetRotorBladeCount(TiglCPACSConfigurationHandle cpacsHandle,
+                                                              int rotorIndex,
+                                                              int* rotorBladeCountPtr)
+{
+    if (rotorBladeCountPtr == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for rotorBladeCountPtr ";
+        LOG(ERROR) << "in function call to tiglRotorGetRotorBladeCount." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+    if (rotorIndex < 1) {
+        LOG(ERROR) << "Error: rotor index is less than one "
+                   << "in function call to tiglRotorGetRotorBladeCount.";
+        return TIGL_INDEX_ERROR;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::CCPACSRotor& rotor = config.GetRotor(rotorIndex);
+        *rotorBladeCountPtr = rotor.GetRotorBladeCount();
+        return TIGL_SUCCESS;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglRotorGetRotorBladeCount!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetWingIndex(TiglCPACSConfigurationHandle cpacsHandle,
+                                                             int rotorIndex,
+                                                             int rotorBladeIndex,
+                                                             int* wingIndexPtr)
+{
+    if (wingIndexPtr == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for wingIndexPtr ";
+        LOG(ERROR) << "in function call to tiglRotorBladeGetWingIndex." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+    if (rotorIndex < 1) {
+        LOG(ERROR) << "Error: rotor index is less than one "
+                   << "in function call to tiglRotorBladeGetWingIndex.";
+        return TIGL_INDEX_ERROR;
+    }
+    if (rotorBladeIndex < 1) {
+        LOG(ERROR) << "Error: rotor blade index is less than one "
+                   << "in function call to tiglRotorBladeGetWingIndex.";
+        return TIGL_INDEX_ERROR;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::CCPACSRotor& rotor = config.GetRotor(rotorIndex);
+        tigl::CCPACSRotorBlade& rotorBlade = rotor.GetRotorBlade(rotorBladeIndex);
+        tigl::CCPACSRotorBladeAttachment& rotorBladeAttachment = rotorBlade.GetRotorBladeAttachment();
+        *wingIndexPtr = rotorBladeAttachment.GetWingIndex();
+        return TIGL_SUCCESS;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglRotorBladeGetWingIndex!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetWingUID(TiglCPACSConfigurationHandle cpacsHandle,
+                                                           int rotorIndex,
+                                                           int rotorBladeIndex,
+                                                           char** wingUIDPtr)
+{
+    if (wingUIDPtr == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for wingUIDPtr ";
+        LOG(ERROR) << "in function call to tiglRotorBladeGetWingUID." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+    if (rotorIndex < 1) {
+        LOG(ERROR) << "Error: rotor index is less than one "
+                   << "in function call to tiglRotorBladeGetWingUID.";
+        return TIGL_INDEX_ERROR;
+    }
+    if (rotorBladeIndex < 1) {
+        LOG(ERROR) << "Error: rotor blade index is less than one "
+                   << "in function call to tiglRotorBladeGetWingUID.";
+        return TIGL_INDEX_ERROR;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::CCPACSRotor& rotor = config.GetRotor(rotorIndex);
+        tigl::CCPACSRotorBlade& rotorBlade = rotor.GetRotorBlade(rotorBladeIndex);
+        tigl::CCPACSRotorBladeAttachment& rotorBladeAttachment = rotorBlade.GetRotorBladeAttachment();
+        *wingUIDPtr = const_cast<char*> (rotorBladeAttachment.GetWingUID().c_str());
+        return TIGL_SUCCESS;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglRotorBladeGetWingUID!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetAzimuthAngle(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                int rotorIndex,
+                                                                int rotorBladeIndex,
+                                                                double* azimuthAnglePtr)
+{
+    if (azimuthAnglePtr == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for azimuthAnglePtr ";
+        LOG(ERROR) << "in function call to tiglRotorBladeGetAzimuthAngle." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+    if (rotorIndex < 1) {
+        LOG(ERROR) << "Error: rotor index is less than one "
+                   << "in function call to tiglRotorBladeGetAzimuthAngle.";
+        return TIGL_INDEX_ERROR;
+    }
+    if (rotorBladeIndex < 1) {
+        LOG(ERROR) << "Error: rotor blade index is less than one "
+                   << "in function call to tiglRotorBladeGetAzimuthAngle.";
+        return TIGL_INDEX_ERROR;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::CCPACSRotor& rotor = config.GetRotor(rotorIndex);
+        tigl::CCPACSRotorBlade& rotorBlade = rotor.GetRotorBlade(rotorBladeIndex);
+        *azimuthAnglePtr = rotorBlade.GetAzimuthAngle();
+        return TIGL_SUCCESS;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglRotorBladeGetAzimuthAngle!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetRadius(TiglCPACSConfigurationHandle cpacsHandle,
+                                                          int rotorIndex,
+                                                          int rotorBladeIndex,
+                                                          double* radiusPtr)
+{
+    if (radiusPtr == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for radiusPtr ";
+        LOG(ERROR) << "in function call to tiglRotorBladeGetRadius." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+    if (rotorIndex < 1) {
+        LOG(ERROR) << "Error: rotor index is less than one "
+                   << "in function call to tiglRotorBladeGetRadius.";
+        return TIGL_INDEX_ERROR;
+    }
+    if (rotorBladeIndex < 1) {
+        LOG(ERROR) << "Error: rotor blade index is less than one "
+                   << "in function call to tiglRotorBladeGetRadius.";
+        return TIGL_INDEX_ERROR;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::CCPACSRotor& rotor = config.GetRotor(rotorIndex);
+        tigl::CCPACSRotorBlade& rotorBlade = rotor.GetRotorBlade(rotorBladeIndex);
+        *radiusPtr = rotorBlade.GetRadius();
+        return TIGL_SUCCESS;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglRotorBladeGetRadius!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetPlanformArea(TiglCPACSConfigurationHandle cpacsHandle, 
+                                                                int rotorIndex,
+                                                                int rotorBladeIndex,
+                                                                double *planformAreaPtr)
+{
+    if (planformAreaPtr == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for planformAreaPtr ";
+        LOG(ERROR) << "in function call to tiglRotorBladeGetPlanformArea." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+    if (rotorIndex < 1) {
+        LOG(ERROR) << "Error: rotor index is less than one "
+                   << "in function call to tiglRotorBladeGetPlanformArea.";
+        return TIGL_INDEX_ERROR;
+    }
+    if (rotorBladeIndex < 1) {
+        LOG(ERROR) << "Error: rotor blade index is less than one "
+                   << "in function call to tiglRotorBladeGetPlanformArea.";
+        return TIGL_INDEX_ERROR;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::CCPACSRotor& rotor = config.GetRotor(rotorIndex);
+        tigl::CCPACSRotorBlade& rotorBlade = rotor.GetRotorBlade(rotorBladeIndex);
+        *planformAreaPtr = rotorBlade.GetPlanformArea();
+        return TIGL_SUCCESS;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglRotorBladeGetPlanformArea!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetSurfaceArea(TiglCPACSConfigurationHandle cpacsHandle,
+                                                               int rotorIndex,
+                                                               int rotorBladeIndex,
+                                                               double *surfaceAreaPtr)
+{
+    if (surfaceAreaPtr == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for surfaceAreaPtr ";
+        LOG(ERROR) << "in function call to tiglRotorBladeGetSurfaceArea." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+    if (rotorIndex < 1) {
+        LOG(ERROR) << "Error: rotor index is less than one "
+                   << "in function call to tiglRotorBladeGetSurfaceArea.";
+        return TIGL_INDEX_ERROR;
+    }
+    if (rotorBladeIndex < 1) {
+        LOG(ERROR) << "Error: rotor blade index is less than one "
+                   << "in function call to tiglRotorBladeGetSurfaceArea.";
+        return TIGL_INDEX_ERROR;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::CCPACSRotor& rotor = config.GetRotor(rotorIndex);
+        tigl::CCPACSRotorBlade& rotorBlade = rotor.GetRotorBlade(rotorBladeIndex);
+        *surfaceAreaPtr = rotorBlade.GetSurfaceArea();
+        return TIGL_SUCCESS;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglRotorBladeGetSurfaceArea!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetVolume(TiglCPACSConfigurationHandle cpacsHandle, 
+                                                          int rotorIndex,
+                                                          int rotorBladeIndex,
+                                                          double *volumePtr)
+{
+    if (volumePtr == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for volumePtr ";
+        LOG(ERROR) << "in function call to tiglRotorBladeGetVolume." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+    if (rotorIndex < 1) {
+        LOG(ERROR) << "Error: rotor index is less than one "
+                   << "in function call to tiglRotorBladeGetVolume.";
+        return TIGL_INDEX_ERROR;
+    }
+    if (rotorBladeIndex < 1) {
+        LOG(ERROR) << "Error: rotor blade index is less than one "
+                   << "in function call to tiglRotorBladeGetVolume.";
+        return TIGL_INDEX_ERROR;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::CCPACSRotor& rotor = config.GetRotor(rotorIndex);
+        tigl::CCPACSRotorBlade& rotorBlade = rotor.GetRotorBlade(rotorBladeIndex);
+        *volumePtr = rotorBlade.GetVolume();
+        return TIGL_SUCCESS;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglRotorBladeGetVolume!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetTipSpeed(TiglCPACSConfigurationHandle cpacsHandle,
+                                                            int rotorIndex,
+                                                            int rotorBladeIndex,
+                                                            double* tipSpeedPtr)
+{
+    if (tipSpeedPtr == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for tipSpeedPtr ";
+        LOG(ERROR) << "in function call to tiglRotorBladeGetTipSpeed." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+    if (rotorIndex < 1) {
+        LOG(ERROR) << "Error: rotor index is less than one "
+                   << "in function call to tiglRotorBladeGetTipSpeed.";
+        return TIGL_INDEX_ERROR;
+    }
+    if (rotorBladeIndex < 1) {
+        LOG(ERROR) << "Error: rotor blade index is less than one "
+                   << "in function call to tiglRotorBladeGetTipSpeed.";
+        return TIGL_INDEX_ERROR;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::CCPACSRotor& rotor = config.GetRotor(rotorIndex);
+        tigl::CCPACSRotorBlade& rotorBlade = rotor.GetRotorBlade(rotorBladeIndex);
+        *tipSpeedPtr = rotorBlade.GetTipSpeed();
+        return TIGL_SUCCESS;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglRotorBladeGetTipSpeed!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetLocalRadius(TiglCPACSConfigurationHandle cpacsHandle,
+                                                               int rotorIndex,
+                                                               int rotorBladeIndex,
+                                                               int segmentIndex,
+                                                               double eta,
+                                                               double* radiusPtr)
+{
+    if (radiusPtr == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for radiusPtr ";
+        LOG(ERROR) << "in function call to tiglRotorBladeGetLocalRadius." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+    if (rotorIndex < 1) {
+        LOG(ERROR) << "Error: rotor index is less than one "
+                   << "in function call to tiglRotorBladeGetLocalRadius.";
+        return TIGL_INDEX_ERROR;
+    }
+    if (rotorBladeIndex < 1) {
+        LOG(ERROR) << "Error: rotor blade index is less than one "
+                   << "in function call to tiglRotorBladeGetLocalRadius.";
+        return TIGL_INDEX_ERROR;
+    }
+    if (segmentIndex < 1) {
+        LOG(ERROR) << "Error: segment index is less than one "
+                   << "in function call to tiglRotorBladeGetLocalRadius.";
+        return TIGL_INDEX_ERROR;
+    }
+    if ((eta < 0.) || (eta > 1.)) {
+        LOG(ERROR) << "Error: eta not in range [0,1] "
+                   << "in function call to tiglRotorBladeGetLocalRadius.";
+        return TIGL_ERROR;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::CCPACSRotor& rotor = config.GetRotor(rotorIndex);
+        tigl::CCPACSRotorBlade& rotorBlade = rotor.GetRotorBlade(rotorBladeIndex);
+        *radiusPtr = rotorBlade.GetLocalRadius(segmentIndex, eta);
+        return TIGL_SUCCESS;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglRotorBladeGetLocalRadius!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetLocalChord(TiglCPACSConfigurationHandle cpacsHandle,
+                                                              int rotorIndex,
+                                                              int rotorBladeIndex,
+                                                              int segmentIndex,
+                                                              double eta,
+                                                              double* chordPtr)
+{
+    if (chordPtr == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for chordPtr ";
+        LOG(ERROR) << "in function call to tiglRotorBladeGetLocalChord." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+    if (rotorIndex < 1) {
+        LOG(ERROR) << "Error: rotor index is less than one "
+                   << "in function call to tiglRotorBladeGetLocalChord.";
+        return TIGL_INDEX_ERROR;
+    }
+    if (rotorBladeIndex < 1) {
+        LOG(ERROR) << "Error: rotor blade index is less than one "
+                   << "in function call to tiglRotorBladeGetLocalChord.";
+        return TIGL_INDEX_ERROR;
+    }
+    if (segmentIndex < 1) {
+        LOG(ERROR) << "Error: segment index is less than one "
+                   << "in function call to tiglRotorBladeGetLocalChord.";
+        return TIGL_INDEX_ERROR;
+    }
+    if ((eta < 0.) || (eta > 1.)) {
+        LOG(ERROR) << "Error: eta not in range [0,1] "
+                   << "in function call to tiglRotorBladeGetLocalChord.";
+        return TIGL_ERROR;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::CCPACSRotor& rotor = config.GetRotor(rotorIndex);
+        tigl::CCPACSRotorBlade& rotorBlade = rotor.GetRotorBlade(rotorBladeIndex);
+        *chordPtr = rotorBlade.GetLocalChord(segmentIndex, eta);
+        return TIGL_SUCCESS;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglRotorBladeGetLocalChord!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetLocalTwistAngle(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                   int rotorIndex,
+                                                                   int rotorBladeIndex,
+                                                                   int segmentIndex,
+                                                                   double eta,
+                                                                   double* twistAnglePtr)
+{
+    if (twistAnglePtr == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for twistAnglePtr ";
+        LOG(ERROR) << "in function call to tiglRotorBladeGetLocalTwistAngle." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+    if (rotorIndex < 1) {
+        LOG(ERROR) << "Error: rotor index is less than one "
+                   << "in function call to tiglRotorBladeGetLocalTwistAngle.";
+        return TIGL_INDEX_ERROR;
+    }
+    if (rotorBladeIndex < 1) {
+        LOG(ERROR) << "Error: rotor blade index is less than one "
+                   << "in function call to tiglRotorBladeGetLocalTwistAngle.";
+        return TIGL_INDEX_ERROR;
+    }
+    if (segmentIndex < 1) {
+        LOG(ERROR) << "Error: segment index is less than one "
+                   << "in function call to tiglRotorBladeGetLocalTwistAngle.";
+        return TIGL_INDEX_ERROR;
+    }
+    if ((eta < 0.) || (eta > 1.)) {
+        LOG(ERROR) << "Error: eta not in range [0,1] "
+                   << "in function call to tiglRotorBladeGetLocalTwistAngle.";
+        return TIGL_ERROR;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::CCPACSRotor& rotor = config.GetRotor(rotorIndex);
+        tigl::CCPACSRotorBlade& rotorBlade = rotor.GetRotorBlade(rotorBladeIndex);
+        *twistAnglePtr = rotorBlade.GetLocalTwistAngle(segmentIndex, eta);
+        return TIGL_SUCCESS;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglRotorBladeGetLocalTwistAngle!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
+
+/******************************************************************************/
+/* Boolean Functions                                                          */
+/******************************************************************************/
 
 // DEPRECATED
 TIGL_COMMON_EXPORT TiglReturnCode tiglComponentIntersectionPoint(TiglCPACSConfigurationHandle cpacsHandle,
@@ -2757,10 +3809,10 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportIGES(TiglCPACSConfigurationHandle cp
     return Try("tiglExportIGES", TIGL_ERROR, [&]{
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
-        tigl::CTiglExportIges exporter(config);
-        std::string filename = filenamePtr;
-        exporter.ExportIGES(filename);
-        return TIGL_SUCCESS;
+        tigl::CTiglExportIges exporter;
+        exporter.AddConfiguration(config);
+        bool ret = exporter.Write(filenamePtr);
+        return ret ? TIGL_SUCCESS : TIGL_WRITE_FAILED;
     });
 }
 
@@ -2777,10 +3829,10 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportFusedWingFuselageIGES(TiglCPACSConfi
     return Try("tiglExportFusedWingFuselageIGES", TIGL_ERROR, [&]{
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
-        tigl::CTiglExportIges exporter(config);
-        std::string filename = filenamePtr;
-        exporter.ExportFusedIGES(filename);
-        return TIGL_SUCCESS;
+        tigl::CTiglExportIges exporter;
+        exporter.AddFusedConfiguration(config);
+        bool ret = exporter.Write(filenamePtr);
+        return ret ? TIGL_SUCCESS : TIGL_WRITE_FAILED;
     });
 }
 
@@ -2796,10 +3848,10 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportSTEP(TiglCPACSConfigurationHandle cp
     return Try("tiglExportSTEP", TIGL_ERROR, [&]{
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
-        tigl::CTiglExportStep exporter(config);
-        std::string filename = filenamePtr;
-        exporter.ExportStep(filename);
-        return TIGL_SUCCESS;
+        tigl::CTiglExportStep exporter;
+        exporter.AddConfiguration(config);
+        bool ret = exporter.Write(filenamePtr);
+        return ret ? TIGL_SUCCESS : TIGL_WRITE_FAILED;
     });
 }
 
@@ -2814,10 +3866,10 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportFusedSTEP(TiglCPACSConfigurationHand
     return Try("tiglExportFusedSTEP", TIGL_ERROR, [&]{
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
-        tigl::CTiglExportStep exporter(config);
-        std::string filename = filenamePtr;
-        exporter.ExportFusedStep(filename);
-        return TIGL_SUCCESS;
+        tigl::CTiglExportStep exporter;
+        exporter.AddFusedConfiguration(config);
+        bool ret = exporter.Write(filenamePtr);
+        return ret ? TIGL_SUCCESS : TIGL_WRITE_FAILED;
     });
 }
 
@@ -2839,10 +3891,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingSTL(TiglCPACSConfiguration
     return Try("tiglExportMeshedWingSTL", TIGL_ERROR, [&]{
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
-        tigl::CTiglExportStl exporter(config);
-        std::string filename = filenamePtr;
-        exporter.ExportMeshedWingSTL(wingIndex, filename, deflection);
-        return TIGL_SUCCESS;
+        tigl::CCPACSWing& wing = config.GetWing(wingIndex);
+        PNamedShape loft = wing.GetLoft();
+        
+        tigl::CTiglExportStl exporter;
+        exporter.AddShape(loft, deflection);
+        bool ret = exporter.Write(filenamePtr);
+        return ret ? TIGL_SUCCESS : TIGL_WRITE_FAILED;
     });
 }
 
@@ -2865,13 +3920,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingSTLByUID(TiglCPACSConfigur
     return Try("tiglExportMeshedWingSTLByUID", TIGL_ERROR, [&]{
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
-        tigl::CTiglExportStl exporter(config);
-        std::string filename = filenamePtr;
         for (int iWing = 1; iWing <= config.GetWingCount(); ++iWing) {
             tigl::CCPACSWing& wing = config.GetWing(iWing);
             if (wing.GetUID() == wingUID) {
-                exporter.ExportMeshedWingSTL(iWing, filename, deflection);
-                return TIGL_SUCCESS;
+                PNamedShape loft = wing.GetLoft();
+                
+                tigl::CTiglExportStl exporter;
+                exporter.AddShape(loft, deflection);
+                bool ret = exporter.Write(filenamePtr);
+                return ret ? TIGL_SUCCESS : TIGL_WRITE_FAILED;
             }
         }
         
@@ -2899,10 +3956,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageSTL(TiglCPACSConfigura
     return Try("tiglExportMeshedFuselageSTL", TIGL_ERROR, [&]{
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
-        tigl::CTiglExportStl exporter(config);
-        std::string filename = filenamePtr;
-        exporter.ExportMeshedFuselageSTL(fuselageIndex, filename, deflection);
-        return TIGL_SUCCESS;
+        tigl::CCPACSFuselage& fuselage = config.GetFuselage(fuselageIndex);
+        PNamedShape loft = fuselage.GetLoft();
+        
+        tigl::CTiglExportStl exporter;
+        exporter.AddShape(loft, deflection);
+        bool ret = exporter.Write(filenamePtr);
+        return ret ? TIGL_SUCCESS : TIGL_WRITE_FAILED;
     });
 }
 
@@ -2926,14 +3986,16 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageSTLByUID(TiglCPACSConf
     return Try("tiglExportMeshedFuselageSTLByUID", TIGL_ERROR, [&]{
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
-        tigl::CTiglExportStl exporter(config);
-        std::string filename = filenamePtr;
         
         for (int ifusel = 1; ifusel <= config.GetFuselageCount(); ++ifusel) {
             tigl::CCPACSFuselage& fuselage = config.GetFuselage(ifusel);
             if (fuselage.GetUID() == fuselageUID) {
-                exporter.ExportMeshedFuselageSTL(ifusel, filename, deflection);
-                return TIGL_SUCCESS;
+                PNamedShape loft = fuselage.GetLoft();
+                
+                tigl::CTiglExportStl exporter;
+                exporter.AddShape(loft, deflection);
+                bool ret = exporter.Write(filenamePtr);
+                return ret ? TIGL_SUCCESS : TIGL_WRITE_FAILED;
             }
         }
         
@@ -2955,10 +4017,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedGeometrySTL(TiglCPACSConfigura
     return Try("tiglExportMeshedGeometrySTL", TIGL_ERROR, [&]{
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
-        tigl::CTiglExportStl exporter(config);
-        std::string filename = filenamePtr;
-        exporter.ExportMeshedGeometrySTL(filename, deflection);
-        return TIGL_SUCCESS;
+        tigl::CTiglExportStl exporter;
+        tigl::ExportOptions options;
+        options.deflection = deflection;
+        options.applySymmetries = true;
+        options.includeFarField = false;
+
+        exporter.AddConfiguration(config, options);
+        bool ret = exporter.Write(filenamePtr);
+        return ret ? TIGL_SUCCESS : TIGL_WRITE_FAILED;
     });
 }
 
@@ -3143,7 +4210,10 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportFuselageColladaByUID(const TiglCPACS
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSFuselage& fuselage = config.GetFuselage(fuselageUID);
-        return tigl::CTiglExportCollada::write(fuselage.GetLoft(), filenamePtr, deflection);
+        tigl::CTiglExportCollada colladaWriter;
+        colladaWriter.AddShape(fuselage.GetLoft(), deflection);
+        bool ret = colladaWriter.Write(filenamePtr);
+        return ret ? TIGL_SUCCESS : TIGL_WRITE_FAILED;
     });
 }
 
@@ -3164,7 +4234,10 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportWingColladaByUID(const TiglCPACSConf
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingUID);
-        return tigl::CTiglExportCollada::write(wing.GetLoft(), filenamePtr, deflection);
+        tigl::CTiglExportCollada colladaWriter;
+        colladaWriter.AddShape(wing.GetLoft(), deflection);
+        bool ret = colladaWriter.Write(filenamePtr);
+        return ret ? TIGL_SUCCESS : TIGL_WRITE_FAILED;
     });
 }
 
@@ -3188,7 +4261,35 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedGeometryVTKSimple(const TiglCP
     });
 }
 
+TIGL_COMMON_EXPORT TiglReturnCode tiglExportFusedBREP(TiglCPACSConfigurationHandle cpacsHandle, const char* filename)
+{
+    if (filename == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for filename";
+        LOG(ERROR) << "in function call to tiglExportFusedBREP." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
 
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::CTiglExportBrep exporter;
+        exporter.AddFusedConfiguration(config);
+        bool ret = exporter.Write(filename);
+        return ret == true? TIGL_SUCCESS : TIGL_WRITE_FAILED;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglExportFusedBREP!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
 
 
 /*****************************************************************************************************/

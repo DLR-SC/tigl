@@ -68,6 +68,9 @@ public:
     // Returns the total count of wings in a configuration
     TIGL_EXPORT int GetWingCount() const;
 
+    // Returns the count of wings in a configuration with the property isRotorBlade set to true
+    TIGL_EXPORT int GetRotorBladeCount(void) const;
+
     // Returns the wing for a given index.
     TIGL_EXPORT CCPACSWing& GetWing(int index) const;
 
@@ -76,6 +79,10 @@ public:
     
     // Adds a wing to the wing list
     TIGL_EXPORT void AddWing(CCPACSWing* wing);
+
+    // Returns the wing index for a given UID.
+    TIGL_EXPORT int GetWingIndex(const std::string& UID) const;
+
 };
 
 } // end namespace tigl

@@ -127,7 +127,6 @@ private:
     bool IsUniform() const;
 
     double m_matrix[4][4];
-    
 };
 
 } // end namespace tigl

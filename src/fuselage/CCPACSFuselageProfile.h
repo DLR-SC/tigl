@@ -28,9 +28,9 @@
 #include "generated/CPACSProfileGeometry.h"
 #include "tigl_internal.h"
 #include "tixi.h"
+#include "CTiglArcLengthReparameterization.h"
 #include "TopoDS_Wire.hxx"
 
-#include <Handle_Geom2d_TrimmedCurve.hxx>
 #include <gp_Pnt.hxx>
 
 #include <vector>
@@ -122,6 +122,7 @@ private:
     unique_ptr<ITiglWireAlgorithm> profileWireAlgo;
     gp_Pnt                              startDiameterPoint;
     gp_Pnt                              endDiameterPoint;
+    CTiglArcLengthReparameterization reparOriginal;
 
 };
 

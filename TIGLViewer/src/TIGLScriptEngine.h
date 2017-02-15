@@ -23,12 +23,12 @@
 
 #include <QtCore/QString>
 #include <QtCore/QObject>
-#include <QtGui/QLineEdit>
+#include <QLineEdit>
 #include <QtScript>
 
-#include "TIGLScriptProxy.h"
-#include "TIXIScriptProxy.h"
-#include "TIGLViewerWindow.h"
+class TIGLViewerWindow;
+class TIGLScriptProxy;
+class TIXIScriptProxy;
 
 class TIGLScriptEngine :public QObject
 {

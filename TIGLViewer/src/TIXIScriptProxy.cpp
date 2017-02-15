@@ -21,7 +21,7 @@
 
 #include "TIXIScriptProxy.h"
 
-#include <QtGui/QWidget>
+#include <QWidget>
 
 TIXIScriptProxy::TIXIScriptProxy()
 {
@@ -36,8 +36,7 @@ TixiDocumentHandle TIXIScriptProxy::GetConfiguration() const
 
 char* TIXIScriptProxy::qString2char(QString str)
 {
-    QByteArray ba = str.toLocal8Bit();
-    return (ba.data());
+    return (str.toLatin1().data());
 }
 
 void TIXIScriptProxy::registerClass(QScriptEngine* engine)

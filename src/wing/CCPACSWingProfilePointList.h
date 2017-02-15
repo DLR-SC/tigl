@@ -104,6 +104,10 @@ public:
     // get trailing edge point();
     TIGL_EXPORT const gp_Pnt& GetTEPoint() const;
 
+    // Checks, whether the trailing edge is blunt or
+    // not by comparing first and last point.
+    TIGL_EXPORT bool HasBluntTE() const;
+
 protected:
     // Builds the wing profile wires.
     void BuildWires();

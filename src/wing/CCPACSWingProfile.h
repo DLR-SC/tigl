@@ -39,8 +39,8 @@
 #include "PTiglWingProfileAlgo.h"
 
 #include <gp_Pnt.hxx>
-#include <Handle_Geom2d_TrimmedCurve.hxx>
 
+#include <Geom2d_TrimmedCurve.hxx>
 
 namespace tigl 
 {
@@ -58,6 +58,9 @@ public:
 
     // Read CPACS wing profile file
     TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) override;
+
+    // Returns whether the profile is a rotor profile
+    TIGL_EXPORT bool IsRotorProfile(void) const;
 
     // Invalidates internal wing profile state
     TIGL_EXPORT void Invalidate();
@@ -123,6 +126,9 @@ public:
     TIGL_EXPORT ITiglWingProfileAlgo* GetProfileAlgo();
     TIGL_EXPORT const ITiglWingProfileAlgo* GetProfileAlgo() const;
 
+    // Checks, whether the trailing edge is blunt or not
+    TIGL_EXPORT bool HasBluntTE(void) const;
+
 protected:
     // Cleanup routine
     void Cleanup();
@@ -151,6 +157,7 @@ private:
     std::string               name;           /**< CPACS wing profile name */
     std::string               description;    /**< CPACS wing profile description */
     std::string               uid;            /**< CPACS wing profile UID */
+    bool                      isRotorProfile; /**< Indicates if this profile is a rotor profile */
     bool                                        invalidated;    /**< Flag if element is invalid */
     ITiglWingProfileAlgo*                       profileAlgo; // points to the current profile algo (non-owning)
     unique_ptr<CCPACSWingProfilePointList> pointListAlgo; // is created in case the wing profile alg is a point list, otherwise cst2d constructed in the base class is used

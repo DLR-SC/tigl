@@ -80,6 +80,8 @@ CCPACSWingProfile::~CCPACSWingProfile()
 // Cleanup routine
 void CCPACSWingProfile::Cleanup()
 {
+    isRotorProfile = false;
+
     if (profileAlgo) {
         profileAlgo->Cleanup();
     }
@@ -91,6 +93,10 @@ void CCPACSWingProfile::Cleanup()
 void CCPACSWingProfile::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
 {
     Cleanup();
+
+    if (xpath.find("rotorAirfoil") != std::string::npos) {
+        isRotorProfile = true;
+    }
     generated::CPACSProfileGeometry::ReadCPACS(tixiHandle, xpath);
     if (HasPointList_choice1()) {
         // in case the wing profile algorithm is a point list, create the additional algorithm instance
@@ -103,6 +109,12 @@ void CCPACSWingProfile::ReadCPACS(const TixiDocumentHandle& tixiHandle, const st
     }
     // TODO: we don't need to create profile algo, as it is already created in base class 
     //profileAlgo = CCPACSWingProfileFactory::Instance().CreateProfileAlgo(tixiHandle, *this, xpath);
+}
+
+// Returns whether the profile is a rotor profile
+bool CCPACSWingProfile::IsRotorProfile(void) const
+{
+    return isRotorProfile;
 }
 
 // Invalidates internal wing profile state
@@ -411,6 +423,15 @@ ITiglWingProfileAlgo* CCPACSWingProfile::GetProfileAlgo() {
 const ITiglWingProfileAlgo* CCPACSWingProfile::GetProfileAlgo() const
 {
     return profileAlgo;
+}
+
+bool CCPACSWingProfile::HasBluntTE() const
+{
+    PTiglWingProfileAlgo algo = GetProfileAlgo();
+    if (!algo) {
+        throw CTiglError("No wing profile algorithm regsitered in CCPACSWingProfile::HasBluntTE()!");
+    }
+    return algo->HasBluntTE();
 }
 
 } // end namespace tigl

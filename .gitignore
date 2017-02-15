@@ -1,5 +1,5 @@
 /bin
-/build
+/build*
 /docs
 /CPACSGen/build
 /src/generated

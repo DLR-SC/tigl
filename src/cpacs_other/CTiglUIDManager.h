@@ -35,6 +35,7 @@ namespace tigl
 {
 
 typedef std::map<const std::string, ITiglGeometricComponent*> ShapeContainerType;
+typedef std::map<const std::string, CTiglAbstractPhysicalComponent*> UIDStoreContainerType;
 
 class CTiglUIDManager
 {
@@ -58,6 +59,9 @@ public:
     // Returns the root component of the geometric topology.
     TIGL_EXPORT CTiglAbstractPhysicalComponent* GetRootComponent();
 
+    // Returns the container with all root components of the geometric topology that have children.
+    TIGL_EXPORT const UIDStoreContainerType& GetAllRootComponentsWithChildren(void);
+
     // Returns the contianer with all registered shapes
     TIGL_EXPORT const ShapeContainerType& GetShapeContainer();
 
@@ -74,6 +78,9 @@ protected:
        // Update internal UID manager data.
     void Update();
 
+    // Returns the root component of the geometric topology.
+    void FindRootComponents(void);
+
     // Builds the parent child relationships.
     void BuildParentChildTree();
     
@@ -82,7 +89,6 @@ protected:
     TIGL_EXPORT CTiglAbstractPhysicalComponent* GetPhysicalComponent(const std::string& uid);
 
 private:
-    typedef std::map<const std::string, CTiglAbstractPhysicalComponent*> UIDStoreContainerType;
 
     // Copy constructor
     CTiglUIDManager(const CTiglUIDManager& );
@@ -90,11 +96,12 @@ private:
     // Assignment operator
     void operator=(const CTiglUIDManager& );
 
-    UIDStoreContainerType           physicalShapes;
-    ShapeContainerType              allShapes;
+    UIDStoreContainerType               physicalShapes;                 /**< All physical components of the configuration */
+    ShapeContainerType                  allShapes;                      /**< All components of the configuration */
+    UIDStoreContainerType               allRootComponentsWithChildren;  /**< All root components that have children */
+    CTiglAbstractPhysicalComponent*     rootComponent;                  /**< Ptr to the root component of the component tree */
+    int                                 rootComponentCnt;               /**< Number of root components found */
     bool                            invalidated;          /**< Internal state flag */
-    CTiglAbstractPhysicalComponent* rootComponent;        /**< Ptr to the root component of the component tree */
-
 };
 
 } // end namespace tigl

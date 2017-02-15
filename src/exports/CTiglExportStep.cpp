@@ -79,7 +79,7 @@ namespace
     /**
      * @brief WriteSTEPProductName writes the shape names as the step product identifier
      */
-    void WriteStepProductName(Handle_Transfer_FinderProcess FP, const PNamedShape shape)
+    void WriteStepProductName(Handle(Transfer_FinderProcess) FP, const PNamedShape shape)
     {
         if (!shape) {
             return;
@@ -108,7 +108,7 @@ namespace
         product->SetName ( str );
     }
     
-    void WriteStepSolidName(Handle_Transfer_FinderProcess FP, const PNamedShape shape)
+    void WriteStepSolidName(Handle(Transfer_FinderProcess) FP, const PNamedShape shape)
     {
         if (!shape) {
             return;
@@ -130,7 +130,7 @@ namespace
         }
     }
     
-    void WriteStepWireName(Handle_Transfer_FinderProcess FP, const PNamedShape shape)
+    void WriteStepWireName(Handle(Transfer_FinderProcess) FP, const PNamedShape shape)
     {
         if (!shape) {
             return;
@@ -155,14 +155,14 @@ namespace
             // name edges
             for (int i = 1; i <= SGC->NbElements(); ++i) {
                 StepShape_GeometricSetSelect elem = SGC->ElementsValue(i);
-                Handle_StepGeom_Curve curve = Handle(StepGeom_Curve)::DownCast(elem.Value());
+                Handle(StepGeom_Curve) curve = Handle(StepGeom_Curve)::DownCast(elem.Value());
                 
                 if (!curve.IsNull()) {
                     curve->SetName(str);
                 }
                 
                 // CATIA does only show the basis curves. Hence we must name them too
-                Handle_StepGeom_TrimmedCurve tcurve = Handle(StepGeom_TrimmedCurve)::DownCast(elem.Value());
+                Handle(StepGeom_TrimmedCurve) tcurve = Handle(StepGeom_TrimmedCurve)::DownCast(elem.Value());
                 if (!tcurve.IsNull() && !tcurve->BasisCurve().IsNull()) {
                     tcurve->BasisCurve()->SetName(str);
                 }
@@ -170,7 +170,7 @@ namespace
         }
     }
     
-    void WriteStepShellName(Handle_Transfer_FinderProcess FP, const PNamedShape shape)
+    void WriteStepShellName(Handle(Transfer_FinderProcess) FP, const PNamedShape shape)
     {
         if (!shape) {
             return;
@@ -201,7 +201,7 @@ namespace
      * @brief WriteSTEPFaceNames takes the names of each face and writes it into the STEP model
      * as an advanced face property
      */
-    void WriteStepFaceNames(Handle_Transfer_FinderProcess FP, const PNamedShape shape)
+    void WriteStepFaceNames(Handle(Transfer_FinderProcess) FP, const PNamedShape shape)
     {
         if (!shape) {
             return;
@@ -223,7 +223,7 @@ namespace
         }
     }
 
-    void WriteStepNames(Handle_Transfer_FinderProcess FP, const PNamedShape shape)
+    void WriteStepNames(Handle(Transfer_FinderProcess) FP, const PNamedShape shape)
     {
         WriteStepFaceNames(FP, shape);
         WriteStepShellName(FP, shape);
@@ -237,15 +237,9 @@ namespace tigl
 {
 
 // Constructor
-CTiglExportStep::CTiglExportStep(CCPACSConfiguration& config)
-:_config(config)
+CTiglExportStep::CTiglExportStep()
 {
     SetGroupMode(NAMED_COMPOUNDS);
-}
-
-// Destructor
-CTiglExportStep::~CTiglExportStep()
-{
 }
 
 /**
@@ -294,129 +288,35 @@ void CTiglExportStep::AddToStep(PNamedShape shape, STEPControl_Writer& writer) c
     }
 }
 
-// Exports the whole configuration as STEP file
-// All wing- and fuselage segments are exported as single bodys
-void CTiglExportStep::ExportStep(const std::string& filename) const
-{
-    if ( filename.empty()) {
-       LOG(ERROR) << "Error: Empty filename in ExportStep.";
-       return;
-    }
-
-    ListPNamedShape shapes;
-
-    // Export all wings of the configuration
-    for (int w = 1; w <= _config.GetWingCount(); w++) {
-        CCPACSWing& wing = _config.GetWing(w);
-
-        for (int i = 1; i <= wing.GetSegmentCount(); i++) {
-            CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
-            PNamedShape loft = segment.GetLoft();
-            shapes.push_back(loft);
-        }
-    }
-
-    // Export all fuselages of the configuration
-    for (int f = 1; f <= _config.GetFuselageCount(); f++) {
-        CCPACSFuselage& fuselage = _config.GetFuselage(f);
-
-        for (int i = 1; i <= fuselage.GetSegmentCount(); i++) {
-            CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(i);
-            PNamedShape loft = segment.GetLoft();
-            shapes.push_back(loft);
-        }
-    }
-
-    CCPACSFarField& farfield = _config.GetFarField();
-    if (farfield.GetFieldType() != TiglFarFieldType::NONE) {
-        shapes.push_back(farfield.GetLoft());
-    }
-
-    // write step
-    try {
-        ExportShapes(shapes, filename);
-    }
-    catch (CTiglError&) {
-        LOG(ERROR) << "Cannot export airplane in CTiglExportStep";
-        throw CTiglError("Cannot export airplane in CTiglExportStep", TIGL_ERROR);
-    }
-}
-
-
-// Exports the whole configuration as one fused part to an STEP file
-void CTiglExportStep::ExportFusedStep(const std::string& filename)
-{
-    if (filename.empty()) {
-       LOG(ERROR) << "Error: Empty filename in ExportFusedStep.";
-       return;
-    }
-
-    PTiglFusePlane fuser = _config.AircraftFusingAlgo();
-    fuser->SetResultMode(HALF_PLANE_TRIMMED_FF);
-    assert(fuser);
-
-    PNamedShape fusedAirplane = fuser->FusedPlane();
-    PNamedShape farField      = fuser->FarField();
-    if (!fusedAirplane) {
-        LOG(ERROR) << "Error computing fused airplane.";
-        throw CTiglError("Error computing fused airplane.", TIGL_NULL_POINTER);
-    }
-
-    try {
-        ListPNamedShape l;
-        l.push_back(fusedAirplane);
-        l.push_back(farField);
-
-        // add intersections
-        const ListPNamedShape& ints = fuser->Intersections();
-        ListPNamedShape::const_iterator it;
-        for (it = ints.begin(); it != ints.end(); ++it) {
-            l.push_back(*it);
-        }
-
-        ExportShapes(l, filename);
-    }
-    catch (CTiglError&) {
-        LOG(ERROR) << "Cannot export fused Airplane as STEP";
-        throw CTiglError("Cannot export fused Airplane as STEP", TIGL_ERROR);
-    }
-}
-
-
-
 
 // Save a sequence of shapes in STEP Format
-void CTiglExportStep::ExportShapes(const ListPNamedShape& shapes, const std::string& filename) const
+bool CTiglExportStep::WriteImpl(const std::string& filename) const
 {
+    if ( filename.empty()) {
+       LOG(ERROR) << "Error: Empty filename in CTiglExportStep::Write.";
+       return false;
+    }
+
     STEPControl_Controller::Init();
     Interface_Static::SetCVal("xstep.cascade.unit", "M");
     Interface_Static::SetCVal("write.step.unit", "M");
 
-    if ( filename.empty()) {
-       LOG(ERROR) << "Error: Empty filename in ExportShapes.";
-       return;
-    }
-
-    ListPNamedShape::const_iterator it;
     ListPNamedShape list;
-    for (it = shapes.begin(); it != shapes.end(); ++it) {
-        ListPNamedShape templist = GroupFaces(*it, _groupMode);
+    for (size_t ishape = 0; ishape < NShapes(); ++ishape) {
+        ListPNamedShape templist = GroupFaces(GetShape(ishape), _groupMode);
         for (ListPNamedShape::iterator it2 = templist.begin(); it2 != templist.end(); ++it2) {
             list.push_back(*it2);
         }
     }
 
     STEPControl_Writer stepWriter;
-    
-    for (it = list.begin(); it != list.end(); ++it) {
+
+    for (ListPNamedShape::iterator it = list.begin(); it != list.end(); ++it) {
         PNamedShape pshape = *it;
         AddToStep(pshape, stepWriter);
     }
-    
-    if (stepWriter.Write(const_cast<char*>(filename.c_str())) > IFSelect_RetDone) {
-        LOG(ERROR) << "Error: Export of shapes to STEP file failed in CTiglExportStep::ExportShapes";
-        throw CTiglError("Error: Export of shapes to STEP file failed in CTiglExportStep::ExportShapes", TIGL_ERROR);
-    }
+
+    return stepWriter.Write(const_cast<char*>(filename.c_str())) <= IFSelect_RetDone;
 }
 
 void CTiglExportStep::SetGroupMode(ShapeGroupMode mode)

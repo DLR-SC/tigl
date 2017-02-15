@@ -21,6 +21,15 @@
  * data structures.
  */
 
+#define NOMINMAX
+
+#if defined _WIN32 || defined __WIN32__
+#include <Shlwapi.h>
+#include <io.h>
+#else
+#include <unistd.h>
+#endif
+
 #include "tiglcommonfunctions.h"
 
 #include "CTiglError.h"
@@ -71,6 +80,8 @@
 #include <Geom2dAPI_InterCurveCurve.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <GeomConvert.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
 #include <GEOMAlgo_Splitter.hxx>
 #include <ShapeFix_Wire.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
@@ -106,7 +117,7 @@ Standard_Real GetWireLength(const TopoDS_Wire& wire)
 Standard_Real GetEdgeLength(const TopoDS_Edge &edge)
 {
     Standard_Real umin, umax;
-    Handle_Geom_Curve curve = BRep_Tool::Curve(edge, umin, umax);
+    Handle(Geom_Curve) curve = BRep_Tool::Curve(edge, umin, umax);
     GeomAdaptor_Curve adaptorCurve(curve, umin, umax);
     Standard_Real length = GCPnts_AbscissaPoint::Length(adaptorCurve, umin, umax);
     return length;
@@ -195,7 +206,7 @@ void EdgeGetPointTangent(const TopoDS_Edge& edge, double alpha, gp_Pnt& point, g
     }
     // ETA 3D point
     Standard_Real umin, umax;
-    Handle_Geom_Curve curve = BRep_Tool::Curve(edge, umin, umax);
+    Handle(Geom_Curve) curve = BRep_Tool::Curve(edge, umin, umax);
     GeomAdaptor_Curve adaptorCurve(curve, umin, umax);
     Standard_Real len =  GCPnts_AbscissaPoint::Length( adaptorCurve, umin, umax );
     GCPnts_AbscissaPoint algo(adaptorCurve, len*alpha, umin);
@@ -267,14 +278,14 @@ gp_Pnt GetCentralFacePoint(const TopoDS_Face& face)
 
     gp_Pnt p;
 
-    Handle_Geom_Surface surface = BRep_Tool::Surface(face);
+    Handle(Geom_Surface) surface = BRep_Tool::Surface(face);
     BRepTools::UVBounds(face, umin, umax, vmin, vmax);
     Standard_Real umean = 0.5*(umin+umax);
     Standard_Real vmean = 0.5*(vmin+vmax);
 
 
     // compute intersection of u-iso line with face boundaries
-    Handle_Geom2d_Curve uiso = new Geom2d_Line(
+    Handle(Geom2d_Curve) uiso = new Geom2d_Line(
                 gp_Pnt2d(umean,0.),
                 gp_Dir2d(0., 1.)
                 );
@@ -286,7 +297,7 @@ gp_Pnt GetCentralFacePoint(const TopoDS_Face& face)
         Standard_Real first, last;
 
         // Get geomteric curve from edge
-        Handle_Geom2d_Curve hcurve = BRep_Tool::CurveOnSurface(edge, face, first, last);
+        Handle(Geom2d_Curve) hcurve = BRep_Tool::CurveOnSurface(edge, face, first, last);
         hcurve = new Geom2d_TrimmedCurve(hcurve, first, last);
 
         Geom2dAPI_InterCurveCurve intersector(uiso, hcurve);
@@ -413,6 +424,31 @@ Standard_Real ProjectPointOnLine(gp_Pnt p, gp_Pnt lineStart, gp_Pnt lineStop)
     return gp_Vec(lineStart, p) * gp_Vec(lineStart, lineStop) / gp_Vec(lineStart, lineStop).SquareMagnitude();
 }
 
+IntStatus IntersectLinePlane(gp_Pnt p1, gp_Pnt p2, gp_Pln plane, gp_Pnt& result)
+{
+    gp_Vec normal = plane.Axis().Direction();
+    gp_Pnt center = plane.Axis().Location();
+
+    double denominator = gp_Vec(p2.XYZ() - p1.XYZ())*normal;
+    if (fabs(denominator) < 1e-8) {
+        return NoIntersection;
+    }
+
+    double alpha = gp_Vec(center.XYZ() - p1.XYZ())*normal / denominator ;
+    result = p1.XYZ() + alpha*(p2.XYZ()-p1.XYZ());
+
+    if (alpha >= 0. && alpha <= 1.) {
+        return BetweenPoints;
+    }
+    else if (alpha < 0.){
+        return OutsideBefore;
+    }
+    else {
+        // alpha > 1.
+        return OutsideAfter;
+    }
+}
+
 // Returns the coordinates of the bounding box of the shape
 void GetShapeExtension(const TopoDS_Shape& shape,
                        double& minx, double& maxx,
@@ -463,14 +499,14 @@ TopoDS_Face GetFace(const TopoDS_Shape &shape, int iFace)
     }
 }
 
-Handle_Geom_BSplineCurve GetBSplineCurve(const TopoDS_Edge& e)
+Handle(Geom_BSplineCurve) GetBSplineCurve(const TopoDS_Edge& e)
 {
     double u1, u2;
-    Handle_Geom_Curve curve = BRep_Tool::Curve(e, u1, u2);
+    Handle(Geom_Curve) curve = BRep_Tool::Curve(e, u1, u2);
     curve = new Geom_TrimmedCurve(curve, u1, u2);
     
     // convert to bspline
-    Handle_Geom_BSplineCurve bspl =  GeomConvert::CurveToBSplineCurve(curve);
+    Handle(Geom_BSplineCurve) bspl =  GeomConvert::CurveToBSplineCurve(curve);
     return bspl;
 }
 
@@ -533,6 +569,29 @@ TopoDS_Face BuildFace(const gp_Pnt& p1, const gp_Pnt& p2, const gp_Pnt& p3, cons
 
     TopoDS_Face face = BRepFill::Face(e1, e2);
     return face;
+}
+
+bool IsPathRelative(const std::string& path)
+{
+#if defined _WIN32 || defined __WIN32__
+    return PathIsRelative(path.c_str()) == 1;
+#else
+    if (path.size() > 0 && path[0] == '/') {
+        return false;
+    }
+    else {
+        return true;
+    }
+#endif
+}
+
+bool IsFileReadable(const std::string& filename)
+{
+#ifdef _MSC_VER
+    return _access(filename.c_str(), 4) == 0;
+#else
+    return access(filename.c_str(), R_OK) == 0;
+#endif
 }
 
 TopoDS_Face BuildFace(const TopoDS_Wire& wire1, const TopoDS_Wire& wire2)
@@ -632,6 +691,7 @@ TopoDS_Face BuildRuledFace(const TopoDS_Wire& wire1, const TopoDS_Wire& wire2)
     // Get approximated curve
     if (!approx1.IsDone() || !approx1.HasResult() ||
         !approx2.IsDone() || !approx2.HasResult()) {
+
         LOG(ERROR) << "unable to approximate wires by curves for building face";
         throw tigl::CTiglError("Error: unable to approximate wires by curves for building face!");
     }
@@ -1044,6 +1104,7 @@ TopoDS_Shape RemoveDuplicateEdges(const TopoDS_Shape& shape)
                 p1Last.Distance(p2Last) < Precision::Confusion()) ||
                 (p1First.Distance(p2Last) < Precision::Confusion() &&
                 p1Last.Distance(p2First) < Precision::Confusion())) {
+
                 // now check for identical mid point
                 Handle(Geom_Curve) curve;
                 Standard_Real uStart, uEnd;

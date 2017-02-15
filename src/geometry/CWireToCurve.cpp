@@ -62,7 +62,7 @@ CWireToCurve::CWireToCurve(const TopoDS_Wire& w, bool parByLength, double t)
  * @param umax LastParameter of the resulting curve
  * @return 
  */
-Handle_Geom_BSplineCurve CWireToCurve::ShiftCurveRange(Handle_Geom_BSplineCurve curve, double umin, double umax)
+Handle(Geom_BSplineCurve) CWireToCurve::ShiftCurveRange(Handle(Geom_BSplineCurve) curve, double umin, double umax)
 {
     double u1 = curve->FirstParameter();
     double u2 = curve->LastParameter();
@@ -84,12 +84,12 @@ Handle_Geom_BSplineCurve CWireToCurve::ShiftCurveRange(Handle_Geom_BSplineCurve 
         knots.SetValue(iknot, unew);
     }
     
-    Handle_Geom_BSplineCurve result = new Geom_BSplineCurve(cp, weights, knots, mults, curve->Degree(), curve->IsPeriodic());
+    Handle(Geom_BSplineCurve) result = new Geom_BSplineCurve(cp, weights, knots, mults, curve->Degree(), curve->IsPeriodic());
     
     return result;
 }
 
-Handle_Geom_BSplineCurve CWireToCurve::curve()
+Handle(Geom_BSplineCurve) CWireToCurve::curve()
 {
     if (_wire.IsNull()) {
         LOG(ERROR) << "Wire is null in CWireToCurve::curve";
@@ -104,7 +104,7 @@ Handle_Geom_BSplineCurve CWireToCurve::curve()
     
     TopoDS_Wire theWire = wireFixer.Wire();
 
-    std::vector<Handle_Geom_BSplineCurve> curves;
+    std::vector<Handle(Geom_BSplineCurve)> curves;
     std::vector<double> lengths;
     double totalLen  = 0;
     int    maxDegree = 0;
@@ -116,14 +116,14 @@ Handle_Geom_BSplineCurve CWireToCurve::curve()
         TopoDS_Edge e = TopoDS::Edge(exp.Current());
 
         double u1, u2;
-        Handle_Geom_Curve curve = BRep_Tool::Curve(e, u1, u2);
+        Handle(Geom_Curve) curve = BRep_Tool::Curve(e, u1, u2);
         curve = new Geom_TrimmedCurve(curve, u1, u2);
         if (e.Orientation() == TopAbs_REVERSED) {
             curve->Reverse();
         }
 
         // convert to bspline
-        Handle_Geom_BSplineCurve bspl = GeomConvert::CurveToBSplineCurve(curve);
+        Handle(Geom_BSplineCurve) bspl = GeomConvert::CurveToBSplineCurve(curve);
         curves.push_back(bspl);
 
         if (_parByLength) {
@@ -151,8 +151,8 @@ Handle_Geom_BSplineCurve CWireToCurve::curve()
 
     // check connectivities
     for (unsigned int icurve = 1; icurve < curves.size(); ++icurve) {
-        Handle_Geom_BSplineCurve c1 = curves[icurve-1];
-        Handle_Geom_BSplineCurve c2 = curves[icurve];
+        Handle(Geom_BSplineCurve) c1 = curves[icurve-1];
+        Handle(Geom_BSplineCurve) c2 = curves[icurve];
 
         gp_Pnt p1 = c1->Pole(c1->NbPoles());
         gp_Pnt p2 = c2->Pole(1);
@@ -166,14 +166,14 @@ Handle_Geom_BSplineCurve CWireToCurve::curve()
 
     // elevate degree of all curves to maxDegree
     for (unsigned int icurve = 0; icurve < curves.size(); ++icurve) {
-        Handle_Geom_BSplineCurve curve = curves[icurve];
+        Handle(Geom_BSplineCurve) curve = curves[icurve];
         curve->IncreaseDegree(maxDegree);
     }
 
 #ifdef DEBUG
     // check that each curve is at maxDegree
     for (unsigned int icurve = 0; icurve < curves.size(); ++icurve) {
-        Handle_Geom_BSplineCurve curve = curves[icurve];
+        Handle(Geom_BSplineCurve) curve = curves[icurve];
         assert(curve->Degree() == maxDegree);
     }
 #endif
@@ -181,7 +181,7 @@ Handle_Geom_BSplineCurve CWireToCurve::curve()
     // shift knots of curves
     double startPar = 0;
     for (unsigned int icurve = 0; icurve < curves.size(); ++icurve) {
-        Handle_Geom_BSplineCurve curve = curves[icurve];
+        Handle(Geom_BSplineCurve) curve = curves[icurve];
         double stopPar = startPar;
         if (_parByLength) {
             stopPar += lengths[icurve]/totalLen;
@@ -199,7 +199,7 @@ Handle_Geom_BSplineCurve CWireToCurve::curve()
     int nbknots = 1;
     int nbcp    = 1;
     for (unsigned int icurve = 0; icurve < curves.size(); ++icurve) {
-        Handle_Geom_BSplineCurve curve = curves[icurve];
+        Handle(Geom_BSplineCurve) curve = curves[icurve];
         nbknots += curve->NbKnots() - 1;
         nbcp    += curve->NbPoles() - 1;
     }
@@ -213,7 +213,7 @@ Handle_Geom_BSplineCurve CWireToCurve::curve()
     // concatenate everything
     int iknotT = 1, imultT = 1, icpT = 1, iweightT = 1;
     for (unsigned int icurve = 0; icurve < curves.size(); ++icurve) {
-        Handle_Geom_BSplineCurve curve = curves[icurve];
+        Handle(Geom_BSplineCurve) curve = curves[icurve];
 
         // special handling of the first knot, control point
         knots.SetValue(iknotT++, curve->Knot(1));
@@ -229,7 +229,7 @@ Handle_Geom_BSplineCurve CWireToCurve::curve()
 
             // compute midpoint between endpoint of previous 
             // curve and startpoint of current curve
-            Handle_Geom_BSplineCurve lastCurve = curves[icurve-1];
+            Handle(Geom_BSplineCurve) lastCurve = curves[icurve-1];
             gp_Pnt endPoint   = lastCurve->Pole(lastCurve->NbPoles());
             gp_Pnt startPoint = curve->Pole(1);
             gp_Pnt midPoint = (endPoint.XYZ() + startPoint.XYZ())/2.;
@@ -255,7 +255,7 @@ Handle_Geom_BSplineCurve CWireToCurve::curve()
     }
 
     // special handling of the last point and knot
-    Handle_Geom_BSplineCurve lastCurve = curves[curves.size()-1];
+    Handle(Geom_BSplineCurve) lastCurve = curves[curves.size()-1];
     knots.SetValue(iknotT, lastCurve->Knot(lastCurve->NbKnots()));
     mults.SetValue(imultT,  lastCurve->Multiplicity(lastCurve->NbKnots()));
     cpoints.SetValue(icpT, lastCurve->Pole(lastCurve->NbPoles()));
@@ -273,11 +273,11 @@ Handle_Geom_BSplineCurve CWireToCurve::curve()
 #endif
 
     // build the resulting B-Spline
-    Handle_Geom_BSplineCurve result = new Geom_BSplineCurve(cpoints, weights, knots, mults, maxDegree, false);
+    Handle(Geom_BSplineCurve) result = new Geom_BSplineCurve(cpoints, weights, knots, mults, maxDegree, false);
     return result;
 }
 
-CWireToCurve::operator Handle_Geom_BSplineCurve()
+CWireToCurve::operator Handle(Geom_BSplineCurve)()
 {
     return curve();
 }

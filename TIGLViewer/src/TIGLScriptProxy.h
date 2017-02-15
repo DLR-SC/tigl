@@ -18,17 +18,21 @@
 #ifndef TIGLSCRIPTPOXY_H
 #define TIGLSCRIPTPOXY_H
 
+#include "TIGLScriptProxy.h"
+#include "tigl.h"
+
 #include <QtCore/QString>
 #include <QtCore/QObject>
 
 #include <QtScript>
 #include <QString>
 
-#include "tigl.h"
-#include "tixi.h"
-#include "CCPACSConfiguration.h"
-#include "CCPACSConfigurationManager.h"
-#include "TIGLViewerWindow.h"
+namespace tigl
+{
+class CCPACSConfiguration;
+}
+
+class TIGLViewerWindow;
 
 class TIGLScriptProxy :public QObject, public QScriptable
 {
@@ -78,8 +82,11 @@ public slots:
     QScriptValue wingGetLowerPointAtDirection(int wingIndex, int segmentIndex, double eta, double xsi, double dirx, double diry, double dirz);
     QScriptValue wingGetChordPoint(int wingIndex, int segmentIndex, double eta, double xsi);
     QScriptValue wingGetChordNormal(int wingIndex, int segmentIndex, double eta, double xsi);
+    QScriptValue wingComponentSegmentGetPoint(QString compSegUID, double eta, double xsi);
     QScriptValue wingGetSegmentCount(int wingIndex);
     QScriptValue wingGetSegmentUID(int wingIndex, int segmentIndex);
+    QScriptValue wingGetSpan(QString wingUID);
+    
     QString      getErrorString(int errorCode);
     QScriptValue getShape(QString uid);
     

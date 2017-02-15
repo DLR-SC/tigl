@@ -34,6 +34,8 @@
 #include <TopoDS_Wire.hxx>
 
 #include <tixi.h>
+#include "tigl_config.h"
+#include "tigl_internal.h"
 
 #include "CCPACSMaterial.h"
 #include "CCPACSWingConnection.h"
@@ -41,8 +43,7 @@
 #include "CCPACSWingShell.h"
 #include "CTiglAbstractSegment.h"
 #include "CTiglPoint.h"
-#include "tigl_config.h"
-#include "tigl_internal.h"
+#include "CTiglPointTranslator.h"
 #include "CCPACSTransformation.h"
 
 
@@ -136,7 +137,7 @@ public:
 
     // Returns the segment to a given point on the componentSegment and the nearest point projected onto the loft.
     // Returns null if the point is not an that wing, i.e. deviates more than 1 cm from the wing
-    TIGL_EXPORT const CCPACSWingSegment* findSegment(double x, double y, double z, gp_Pnt& nearestPoint) const;
+    TIGL_EXPORT const CCPACSWingSegment* findSegment(double x, double y, double z, gp_Pnt& nearestPoint, double& deviation) const;
 
     TIGL_EXPORT TiglGeometricComponentType GetComponentType() { return TIGL_COMPONENT_WINGCOMPSEGMENT | TIGL_COMPONENT_SEGMENT | TIGL_COMPONENT_LOGICAL; }
 
@@ -192,6 +193,8 @@ public:
     TIGL_EXPORT const CCPACSWingShell& GetLowerShell() const;
     TIGL_EXPORT CCPACSWingShell& GetLowerShell();
 
+    // computes the xsi coordinate on a straight line in global space, given an eta coordinate
+    TIGL_EXPORT void InterpolateOnLine(double csEta1, double csXsi1, double csEta2, double csXsi2, double eta, double &xsi, double &errorDistance);
 protected:
     // Cleanup routine
     void Cleanup();
@@ -219,13 +222,14 @@ private:
 
     std::vector<int> findPath(const std::string& fromUid, const::std::string& toUID, const std::vector<int>& curPath, bool forward) const;
 
-    void UpdateProjectedLeadingEdge() const;
-
     // Returns the leading edge direction of the segment with the passed UID
     gp_Vec GetLeadingEdgeDirection(const std::string& segmentUID) const;
 
     // Returns the trailing edge direction of the segment with the passed UID
     gp_Vec GetTrailingEdgeDirection(const std::string& segmentUID) const;
+
+    void UpdateProjectedLeadingEdge() const;
+    void UpdateExtendedChordFaces();
 
 
 private:
@@ -236,10 +240,12 @@ private:
     double               mySurfaceArea;        /**< Surface area of this segment            */
     TopoDS_Shape         upperShape;           /**< Upper shape of this componentSegment    */
     TopoDS_Shape         lowerShape;           /**< Lower shape of this componentSegment    */
-    mutable TopoDS_Wire  projLeadingEdge;      /**< (Extended) Leading edge projected into y-z plane */
+    mutable Handle(Geom_Curve) projLeadingEdge;/**< (Extended) Leading edge projected into y-z plane */
     mutable SegmentList  wingSegments;         /**< List of segments belonging to the component segment */
     TopoDS_Face          innerFace;            /**< [[CAS_AES]] added inner segment face    */
     TopoDS_Face          outerFace;            /**< [[CAS_AES]] added outer segment face    */
+    CTiglPointTranslator extendedOuterChord;   /**< Extended outer segment chord face */
+    CTiglPointTranslator extendedInnerChord;   /**< Extended inner segment chord face */
     Handle(Geom_Surface) upperSurface;
     Handle(Geom_Surface) lowerSurface;
     bool                 surfacesAreValid;

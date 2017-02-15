@@ -1,16 +1,11 @@
-find_package(Java 1.7.0 COMPONENTS Development)
+option(TIGL_BINDINGS_JAVA "Build the java bindings of tigl (requires java)" OFF)
 
-if (JAVA_FOUND)
+if (TIGL_BINDINGS_JAVA)
+	find_package(Java 1.7.0 COMPONENTS Development REQUIRED)
 
 	set(TIGLJAVA_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 	configure_file(${CMAKE_CURRENT_SOURCE_DIR}/build.gradle.in ${CMAKE_CURRENT_BINARY_DIR}/build.gradle)
-
-	if(NOT WIN32)
-		set(GRADLE_CMD "gradlew")
-	else()
-		set(GRADLE_CMD "gradlew.bat")	
-	endif()
 
 	file(GLOB_RECURSE TIGL_JAVA_SRC "*.java")
 
@@ -20,8 +15,8 @@ if (JAVA_FOUND)
 		OUTPUT  ${TIGL_JAR}
 		DEPENDS ${TIGL_JAVA_SRC}
 		WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-		COMMAND   ${CMAKE_CURRENT_SOURCE_DIR}/${GRADLE_CMD}
-		ARGS      "assemble" 
+		COMMAND   ${Java_JAVA_EXECUTABLE}
+		ARGS      -classpath ${CMAKE_CURRENT_SOURCE_DIR}/gradle/wrapper/gradle-wrapper.jar org.gradle.wrapper.GradleWrapperMain assemble
 	)
 	
 	ADD_CUSTOM_TARGET(

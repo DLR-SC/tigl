@@ -89,6 +89,7 @@
 #include "Geom_BSplineCurve.hxx"
 #include "GeomAPI_PointsToBSpline.hxx"
 #include "GeomAdaptor_HCurve.hxx"
+#include "GeomFill.hxx"
 #include "GeomFill_SimpleBound.hxx"
 #include "GeomFill_BSplineCurves.hxx"
 #include "GeomFill_FillingStyle.hxx"
@@ -118,15 +119,17 @@ namespace
         gp_Pnt transformedPoint(pointOnProfile);
 
         // Do section element transformation on points
-        transformedPoint = connection.GetSectionElementTransformation().Transform(transformedPoint);
+        CTiglTransformation trafo = connection.GetSectionElementTransformation();
 
         // Do section transformations
-        transformedPoint = connection.GetSectionTransformation().Transform(transformedPoint);
+        trafo.PreMultiply(connection.GetSectionTransformation());
 
         // Do positioning transformations
-        transformedPoint = connection.GetPositioningTransformation().Transform(transformedPoint);
+        trafo.PreMultiply(connection.GetPositioningTransformation());
 
-        transformedPoint = wingTransform.Transform(transformedPoint);
+        trafo.PreMultiply(wingTransform);
+
+        transformedPoint = trafo.Transform(transformedPoint);
 
         return transformedPoint;
     }
@@ -136,15 +139,17 @@ namespace
         TopoDS_Shape transformedWire(wire);
 
         // Do section element transformation on points
-        transformedWire = connection.GetSectionElementTransformation().Transform(transformedWire);
+        CTiglTransformation trafo = connection.GetSectionElementTransformation();
 
         // Do section transformations
-        transformedWire = connection.GetSectionTransformation().Transform(transformedWire);
+        trafo.PreMultiply(connection.GetSectionTransformation());
 
         // Do positioning transformations
-        transformedWire = connection.GetPositioningTransformation().Transform(transformedWire);
+        trafo.PreMultiply(connection.GetPositioningTransformation());
 
-        transformedWire = wingTransform.Transform(transformedWire);
+        trafo.PreMultiply(wingTransform);
+
+        transformedWire = trafo.Transform(transformedWire);
 
         return transformedWire;
     }
@@ -187,7 +192,7 @@ namespace
      */
     TopoDS_Edge getFaceTrimmingEdge(const TopoDS_Face& face, double ustart, double vstart, double uend, double vend)
     {
-        Handle_Geom_Surface surf = BRep_Tool::Surface(face);
+        Handle(Geom_Surface) surf = BRep_Tool::Surface(face);
         Handle(Geom2d_TrimmedCurve) line = GCE2d_MakeSegment(gp_Pnt2d(ustart,vstart), gp_Pnt2d(uend,vend));
     
         BRepBuilderAPI_MakeEdge edgemaker(line, surf);
@@ -226,6 +231,7 @@ void CCPACSWingSegment::Invalidate()
 {
     CTiglAbstractSegment::Invalidate();
     surfaceCache.valid = false;
+    surfaceCache.chordsurfaceValid = false;
     guideCurveWires.Clear();
 }
 
@@ -238,6 +244,7 @@ void CCPACSWingSegment::Cleanup()
     surfaceCache.lowerShape.Nullify();
     surfaceCache.trailingEdgeShape.Nullify();
     surfaceCache.valid = false;
+    surfaceCache.chordsurfaceValid = false;
     CTiglAbstractSegment::Cleanup();
 }
 
@@ -259,8 +266,8 @@ void CCPACSWingSegment::ReadCPACS(TixiDocumentHandle tixiHandle, const std::stri
     outerConnection = CCPACSWingConnection(m_toElementUID, this);
 
     // check that the profiles are consistent
-    if (GetNumberOfEdges(GetInnerWire()) !=
-        GetNumberOfEdges(GetOuterWire())) {
+    if (innerConnection.GetProfile().HasBluntTE() !=
+        outerConnection.GetProfile().HasBluntTE()) {
 
         throw CTiglError("The wing profiles " + innerConnection.GetProfile().GetUID() +
                          " and " + outerConnection.GetProfile().GetUID() +
@@ -567,7 +574,7 @@ void CCPACSWingSegment::etaXsiToUV(bool isFromUpper, double eta, double xsi, dou
 {
     gp_Pnt pnt = GetPoint(eta,xsi, isFromUpper);
 
-    Handle_Geom_Surface surf;
+    Handle(Geom_Surface) surf;
     if (isFromUpper) {
         surf = surfaceCache.upperSurface;
     }
@@ -787,7 +794,7 @@ gp_Pnt CCPACSWingSegment::GetPointDirection(double eta, double xsi, double dirx,
     }
 
     CTiglPoint tiglPoint;
-    surfaceCache.cordSurface.translate(eta, xsi, &tiglPoint);
+    ChordFace().translate(eta, xsi, &tiglPoint);
 
     gp_Dir direction(dirx, diry, dirz);
     gp_Lin line(tiglPoint.Get_gp_Pnt(), direction);
@@ -829,20 +836,16 @@ gp_Pnt CCPACSWingSegment::GetPointDirection(double eta, double xsi, double dirx,
 
 gp_Pnt CCPACSWingSegment::GetChordPoint(double eta, double xsi) const
 {
-    MakeSurfaces();
-
     CTiglPoint profilePoint; 
-    surfaceCache.cordSurface.translate(eta,xsi, &profilePoint);
+    ChordFace().translate(eta,xsi, &profilePoint);
 
     return profilePoint.Get_gp_Pnt();
 }
 
 gp_Pnt CCPACSWingSegment::GetChordNormal(double eta, double xsi) const
 {
-    MakeSurfaces();
-
     CTiglPoint normal; 
-    surfaceCache.cordSurface.getNormal(eta,xsi, &normal);
+    ChordFace().getNormal(eta,xsi, &normal);
 
     return normal.Get_gp_Pnt();
 }
@@ -903,9 +906,8 @@ double CCPACSWingSegment::GetXsi(gp_Pnt pnt, bool isUpper) const
 // Returns xsi as parametric distance from a given point on the surface
 void CCPACSWingSegment::GetEtaXsi(gp_Pnt pnt, double& eta, double& xsi) const
 {
-    MakeSurfaces();
     CTiglPoint tmpPnt(pnt.XYZ());
-    if (surfaceCache.cordSurface.translate(tmpPnt, &eta, &xsi) != TIGL_SUCCESS) {
+    if (ChordFace().translate(tmpPnt, &eta, &xsi) != TIGL_SUCCESS) {
         throw tigl::CTiglError("Cannot determine eta, xsi coordinates of current point in CCPACSWingSegment::GetEtaXsi!", TIGL_MATH_ERROR);
     }
 }
@@ -924,12 +926,31 @@ bool CCPACSWingSegment::GetIsOnTop(gp_Pnt pnt) const
     }
 }
 
-// Builds upper/lower surfaces as shapes
-// we split the wing profile into upper and lower wire.
-// To do so, we have to determine, what is up
-void CCPACSWingSegment::MakeSurfaces() const
+
+bool CCPACSWingSegment::GetIsOn(const gp_Pnt& pnt)
 {
-    if (surfaceCache.valid) {
+    bool isOnLoft = CTiglAbstractSegment::GetIsOn(pnt);
+
+    if (isOnLoft) {
+        return true;
+    }
+
+    MakeChordSurface();
+
+    // check if point on chord surface
+    double tolerance = 0.03;
+    GeomAPI_ProjectPointOnSurf Proj(pnt, surfaceCache.cordFace);
+    if (Proj.NbPoints() > 0 && Proj.LowerDistance() < tolerance) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+void CCPACSWingSegment::MakeChordSurface() const
+{
+    if (surfaceCache.chordsurfaceValid) {
         return;
     }
     
@@ -947,8 +968,33 @@ void CCPACSWingSegment::MakeSurfaces() const
     inner_tep = transformProfilePoint(wing->GetTransformation(), innerConnection, inner_tep);
     outer_lep = transformProfilePoint(wing->GetTransformation(), outerConnection, outer_lep);
     outer_tep = transformProfilePoint(wing->GetTransformation(), outerConnection, outer_tep);
-        
+
     surfaceCache.cordSurface.setQuadriangle(inner_lep.XYZ(), outer_lep.XYZ(), inner_tep.XYZ(), outer_tep.XYZ());
+
+    Handle(Geom_TrimmedCurve) innerEdge = GC_MakeSegment(inner_lep, inner_tep).Value();
+    Handle(Geom_TrimmedCurve) outerEdge = GC_MakeSegment(outer_lep, outer_tep).Value();
+    surfaceCache.cordFace = GeomFill::Surface(innerEdge, outerEdge);
+
+    surfaceCache.chordsurfaceValid = true;
+}
+
+CTiglPointTranslator& CCPACSWingSegment::ChordFace() const
+{
+    if (!surfaceCache.chordsurfaceValid) {
+        MakeChordSurface();
+    }
+
+    return surfaceCache.cordSurface;
+}
+
+// Builds upper/lower surfaces as shapes
+// we split the wing profile into upper and lower wire.
+// To do so, we have to determine, what is up
+void CCPACSWingSegment::MakeSurfaces() const
+{
+    if (surfaceCache.valid) {
+        return;
+    }
 
     TopoDS_Edge iu_wire = innerConnection.GetProfile().GetUpperWire();
     TopoDS_Edge ou_wire = outerConnection.GetProfile().GetUpperWire();
@@ -1067,6 +1113,9 @@ void CCPACSWingSegment::MakeSurfaces() const
     assert(faceExplorer.More());
 #endif
     surfaceCache.lowerShapeOpened = faceExplorer.Current();
+
+    CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
+    CCPACSWingProfile& outerProfile = outerConnection.GetProfile();
 
     // get trailing edge wires from inner and outer profile
     TopoDS_Edge innerTEWire = innerProfile.GetTrailingEdgeOpened();

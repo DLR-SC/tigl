@@ -22,7 +22,7 @@
 * @file
 * @brief  Implementation of CPACS fuselage handling routines.
 */
-
+#include <cmath>
 #include <iostream>
 
 #include "tigl_config.h"
@@ -32,6 +32,7 @@
 #include "CCPACSConfiguration.h"
 #include "CCPACSWingSegment.h"
 #include "tiglcommonfunctions.h"
+#include "TixiSaveExt.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "BRepAlgoAPI_Fuse.hxx"
@@ -48,8 +49,6 @@
 #include "GC_MakeSegment.hxx"
 #include "BRepExtrema_DistShapeShape.hxx"
 
-#define _USE_MATH_DEFINES
-#include <cmath>
 
 namespace tigl
 {
@@ -88,6 +87,7 @@ void CCPACSFuselage::Invalidate()
 void CCPACSFuselage::Cleanup()
 {
     m_name = "";
+    transformation.reset();
 
     // Calls ITiglGeometricComponent interface Reset to delete e.g. all childs.
     Reset();
@@ -207,7 +207,7 @@ PNamedShape CCPACSFuselage::BuildLoft()
 // Gets the fuselage transformation
 CTiglTransformation CCPACSFuselage::GetFuselageTransformation()
 {
-    return m_transformation.AsTransformation();
+    return transformation.getTransformationMatrix();
 }
 
 // Get the positioning transformation for a given section index

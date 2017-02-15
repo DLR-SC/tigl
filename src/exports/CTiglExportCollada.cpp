@@ -58,21 +58,11 @@ CTiglExportCollada::CTiglExportCollada()
 {
 }
 
-void CTiglExportCollada::addShape(PNamedShape shape, double deflection)
-{
-    if (!shape) {
-        return;
-    }
-    
-    _shapes.push_back(shape);
-    _deflects.push_back(deflection);
-}
-
 
 bool writeHeader(TixiDocumentHandle handle)
 {
-    tixiAddTextAttribute(handle, "/COLLADA", "xmlns", "http://www.collada.org/2008/03/COLLADASchema");
-    tixiAddTextAttribute(handle, "/COLLADA", "version", "1.5.0");
+    tixiAddTextAttribute(handle, "/COLLADA", "xmlns", "http://www.collada.org/2005/11/COLLADASchema");
+    tixiAddTextAttribute(handle, "/COLLADA", "version", "1.4.1");
 
     tixiCreateElement(handle, "/COLLADA", "asset");
 
@@ -86,11 +76,12 @@ bool writeHeader(TixiDocumentHandle handle)
     strftime (buffer,80,"%Y-%m-%dT%H:%S:%MZ",timeinfo);
     tixiAddTextElement(handle, "/COLLADA/asset","created",  buffer);
     tixiAddTextElement(handle, "/COLLADA/asset","modified", buffer); 
-    tixiAddTextElement(handle, "/COLLADA/asset","up_axis", "Z_UP");
     
     tixiCreateElement(handle, "/COLLADA/asset", "unit");
     tixiAddTextAttribute(handle, "/COLLADA/asset/unit", "name", "meters");
     tixiAddDoubleAttribute(handle, "/COLLADA/asset/unit", "meter", 1.0, "%f");
+
+    tixiAddTextElement(handle, "/COLLADA/asset","up_axis", "Z_UP");
     
     return true;
 }
@@ -152,7 +143,6 @@ bool writeGeometryMesh(TixiDocumentHandle handle, CTiglPolyData& polyData, std::
         CTiglPolyObject& obj = polyData.switchObject(i);
 
         unsigned long nvert = obj.getNVertices();
-        count_vert+=nvert;
         for (unsigned long jvert = 0; jvert < nvert; ++jvert) {
             const CTiglPoint& v = obj.getVertexPoint(jvert);
             const CTiglPoint& n = obj.getVertexNormal(jvert);
@@ -281,11 +271,11 @@ bool writeSceneNode(TixiDocumentHandle handle, std::string scenePath, std::strin
 }
 
 
-TiglReturnCode CTiglExportCollada::write(const std::string& filename)
+bool CTiglExportCollada::WriteImpl(const std::string& filename) const
 {
     TixiDocumentHandle handle = -1;  
     if (tixiCreateDocument("COLLADA", &handle) != SUCCESS) {
-        return TIGL_ERROR;
+        return false;
     }
     
     writeHeader(handle);
@@ -295,13 +285,13 @@ TiglReturnCode CTiglExportCollada::write(const std::string& filename)
 
     // write object mesh info
     int geomIndex = 1;
-    for (unsigned int i = 0; i < _shapes.size(); ++i) {
+    for (unsigned int i = 0; i < NShapes(); ++i) {
         // Do the meshing
-        PNamedShape pshape = _shapes[i];
-        double deflection = _deflects[i];
+        PNamedShape pshape = GetShape(i);
+        double deflection = GetOptions(i).deflection;
         CTiglTriangularizer polyData(pshape->Shape(), deflection);
         
-        writeGeometryMesh(handle, polyData, pshape->Name(), geomIndex);
+        writeGeometryMesh(handle, polyData, std::string(pshape->Name()) + "-geom", geomIndex);
     }
     
     // write the scene and link object to geometry
@@ -311,26 +301,23 @@ TiglReturnCode CTiglExportCollada::write(const std::string& filename)
 
     // add each object to the scene
     int nodeIndex = 1;
-    for (unsigned int i = 0; i < _shapes.size(); ++i) {
-        PNamedShape pshape = _shapes[i];
+    for (unsigned int i = 0; i < NShapes(); ++i) {
+        PNamedShape pshape = GetShape(i);
         // Todo: insert transformation matrix also
-        writeSceneNode(handle, "/COLLADA/library_visual_scenes/visual_scene", pshape->Name(), pshape->Name(), nodeIndex);
+        writeSceneNode(handle, "/COLLADA/library_visual_scenes/visual_scene", pshape->Name(), std::string(pshape->Name()) + "-geom", nodeIndex);
     }
 
+    // Write Default scene entry
+    tixiCreateElement(handle, "/COLLADA", "scene");
+    tixiCreateElement(handle, "/COLLADA/scene", "instance_visual_scene");
+    tixiAddTextAttribute(handle, "/COLLADA/scene/instance_visual_scene", "url", "#DefaultScene");
 
     if (tixiSaveDocument(handle, filename.c_str()) != SUCCESS) {
         LOG(ERROR) << "Cannot save collada file " << filename;
-        return TIGL_ERROR;
+        return false;
     }
 
-    return TIGL_SUCCESS;
-}
-
-TiglReturnCode CTiglExportCollada::write(PNamedShape shape, const std::string& filename, double deflection)
-{
-    CTiglExportCollada exporter;
-    exporter.addShape(shape, deflection);
-    return exporter.write(filename);
+    return true;
 }
 
 } // namespace tigl
