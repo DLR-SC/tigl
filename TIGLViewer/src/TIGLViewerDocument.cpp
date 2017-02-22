@@ -79,6 +79,7 @@
 #include "CCPACSWingCSStructure.h"
 #include "CCPACSWingSparSegment.h"
 #include "CCPACSWingRibsDefinition.h"
+#include "CTiglAttachedRotorBlade.h"
 
 #define max(a,b) ((a) > (b) ? (a) : (b))
 
@@ -2212,7 +2213,7 @@ void TIGLViewerDocument::showRotorProperties()
 
         if (rotor.GetRotorBladeCount() > 0) {
             propertiesText += "<br/>";
-            tigl::CCPACSRotorBlade& blade = rotor.GetRotorBlade(1);
+            tigl::CTiglAttachedRotorBlade& blade = rotor.GetRotorBlade(1);
 
             ADD_PROPERTY_TEXT("Blade 1 Root Radius", QString::number(blade.GetLocalRadius(1, 0.)));
             ADD_PROPERTY_TEXT("Blade 1 Tip Radius",
@@ -2268,13 +2269,13 @@ void TIGLViewerDocument::drawAirfoil(tigl::CCPACSWingProfile& profile)
     }
 
     // display points in case of a few sample points
-    std::vector<tigl::CTiglPoint*> fewPointList=profile.GetProfileAlgo()->GetSamplePoints();
+    const std::vector<tigl::CTiglPoint>& fewPointList = profile.GetProfileAlgo()->GetSamplePoints();
     if (fewPointList.size() < 15 && fewPointList.size() > 0) {
         for (unsigned int i = 0; i<fewPointList.size(); ++i) {
-            tigl::CTiglPoint * p = fewPointList.at(i);
+            const tigl::CTiglPoint& p = fewPointList.at(i);
             std::stringstream str;
-            str << i << ": (" << p->x << ", " << p->y << ", " << p->z << ")";
-            gp_Pnt pnt = p->Get_gp_Pnt();
+            str << i << ": (" << p.x << ", " << p.y << ", " << p.z << ")";
+            gp_Pnt pnt = p.Get_gp_Pnt();
             app->getScene()->displayPoint(pnt, str.str().c_str(), Standard_False, 0., 0., 0., 6.);
         }
     }
@@ -2333,7 +2334,7 @@ void TIGLViewerDocument::drawWingOverlayProfilePoints(tigl::CCPACSWing& wing)
         // Get inner profile point list
         tigl::CCPACSWingConnection& innerConnection = segment.GetInnerConnection();
         tigl::CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
-        std::vector<tigl::CTiglPoint*> innerProfilePointList=innerProfile.GetProfileAlgo()->GetSamplePoints();
+        const std::vector<tigl::CTiglPoint>& innerProfilePointList = innerProfile.GetProfileAlgo()->GetSamplePoints();
         // get points and transform them
         tigl::CTiglTransformation innerT = innerConnection.GetSectionElementTransformation();
         innerT.PreMultiply(innerConnection.GetSectionTransformation());
@@ -2341,7 +2342,7 @@ void TIGLViewerDocument::drawWingOverlayProfilePoints(tigl::CCPACSWing& wing)
         innerT.PreMultiply(wing.GetWingTransformation());
         for (std::vector<tigl::CTiglPoint*>::size_type i = 0; i < innerProfilePointList.size(); i++) {
 
-            gp_Pnt pnt = innerProfilePointList[i]->Get_gp_Pnt();
+            gp_Pnt pnt = innerProfilePointList[i].Get_gp_Pnt();
             pnt = innerT.Transform(pnt);
 
             app->getScene()->displayPoint(pnt, "", Standard_False, 0.0, 0.0, 0.0, 2.0);
@@ -2350,7 +2351,7 @@ void TIGLViewerDocument::drawWingOverlayProfilePoints(tigl::CCPACSWing& wing)
         // Get outer profile point list
         tigl::CCPACSWingConnection& outerConnection = segment.GetOuterConnection();
         tigl::CCPACSWingProfile& outerProfile = outerConnection.GetProfile();
-        std::vector<tigl::CTiglPoint*> outerProfilePointList=outerProfile.GetProfileAlgo()->GetSamplePoints();
+        const std::vector<tigl::CTiglPoint>& outerProfilePointList = outerProfile.GetProfileAlgo()->GetSamplePoints();
 
         // get points and transform them
         tigl::CTiglTransformation outerT = outerConnection.GetSectionElementTransformation();
@@ -2359,7 +2360,7 @@ void TIGLViewerDocument::drawWingOverlayProfilePoints(tigl::CCPACSWing& wing)
         outerT.PreMultiply(wing.GetWingTransformation());
         for (std::vector<tigl::CTiglPoint*>::size_type i = 0; i < outerProfilePointList.size(); i++) {
 
-            gp_Pnt pnt = outerProfilePointList[i]->Get_gp_Pnt();
+            gp_Pnt pnt = outerProfilePointList[i].Get_gp_Pnt();
             pnt = outerT.Transform(pnt);
 
             app->getScene()->displayPoint(pnt, "", Standard_False, 0.0, 0.0, 0.0, 2.0);
