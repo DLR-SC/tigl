@@ -72,7 +72,7 @@ void CCPACSRotor::Update(void)
 
     // Update all rotor blade transformations
     for (int i=1; i<=GetRotorBladeAttachmentCount(); ++i) {
-        for (int j=1; j<=GetRotorBladeAttachment(i).GetAttachedRotorBladeCount(); ++j) {
+        for (int j=1; j<=GetRotorBladeAttachment(i).GetNumberOfBlades(); ++j) {
             GetRotorBladeAttachment(i).GetAttachedRotorBlade(j).Invalidate();
             GetRotorBladeAttachment(i).GetAttachedRotorBlade(j).Update();
         }
@@ -159,7 +159,7 @@ PNamedShape CCPACSRotor::GetRotorDisk(void)
     // Create the rotor disk
     TopoDS_Shape rotorDisk;
     if (GetRotorBladeAttachmentCount() > 0) {
-        if (GetRotorBladeAttachment(1).GetAttachedRotorBladeCount() > 0) {
+        if (GetRotorBladeAttachment(1).GetNumberOfBlades() > 0) {
             rotorDisk = GetRotorBladeAttachment(1).GetAttachedRotorBlade(1).GetRotorDisk();
         }
     }
@@ -177,7 +177,7 @@ PNamedShape CCPACSRotor::BuildLoft(void)
     aBuilder.MakeCompound(rotorGeometry);
     for (int iAttach=1; iAttach <= m_rotorHub.GetRotorBladeAttachmentCount(); ++iAttach) {
         CCPACSRotorBladeAttachment& attach = m_rotorHub.GetRotorBladeAttachment(iAttach);
-        for (int iBlade=1; iBlade <= attach.GetAttachedRotorBladeCount(); ++iBlade) {
+        for (int iBlade=1; iBlade <= attach.GetNumberOfBlades(); ++iBlade) {
             // Add the transformed rotor blade to the rotor assembly
             TopoDS_Shape bladeShape = attach.GetAttachedRotorBlade(iBlade).GetLoft()->Shape();
             aBuilder.Add(rotorGeometry, bladeShape);
@@ -227,7 +227,7 @@ double CCPACSRotor::GetRadius(void)
     double rotorRadius = 0.0;
     // Get the blade maximum rotor radius
     for (int i=1; i<=GetRotorBladeAttachmentCount(); ++i) {
-        if (GetRotorBladeAttachment(i).GetAttachedRotorBladeCount() > 0) {
+        if (GetRotorBladeAttachment(i).GetNumberOfBlades() > 0) {
             rotorRadius = std::max(GetRotorBladeAttachment(i).GetAttachedRotorBlade(1).GetRadius(), rotorRadius);
         }
     }
@@ -247,8 +247,8 @@ double CCPACSRotor::GetTotalBladePlanformArea(void)
     double totalRotorBladeArea = 0.0;
     // Add rotor blade planform areas
     for (int i=1; i<=GetRotorBladeAttachmentCount(); ++i) {
-        if (GetRotorBladeAttachment(i).GetAttachedRotorBladeCount() > 0) {
-            totalRotorBladeArea += GetRotorBladeAttachment(i).GetAttachedRotorBladeCount() * GetRotorBladeAttachment(i).GetAttachedRotorBlade(1).GetPlanformArea();
+        if (GetRotorBladeAttachment(i).GetNumberOfBlades() > 0) {
+            totalRotorBladeArea += GetRotorBladeAttachment(i).GetNumberOfBlades() * GetRotorBladeAttachment(i).GetAttachedRotorBlade(1).GetPlanformArea();
         }
     }
     return totalRotorBladeArea;

@@ -149,7 +149,7 @@ void CCPACSConfiguration::WriteCPACS(const std::string& configurationUID)
     if (aircraftModel)
         aircraftModel->WriteCPACS(tixiDocumentHandle, path);
     if (rotorcraftModel)
-        aircraftModel->WriteCPACS(tixiDocumentHandle, path);
+        rotorcraftModel->WriteCPACS(tixiDocumentHandle, path);
     if (profiles)
         profiles->WriteCPACS(tixiDocumentHandle, profilesXPath);
 }
@@ -310,7 +310,7 @@ CCPACSWing& CCPACSConfiguration::GetWing(int index) const
 CCPACSWing& CCPACSConfiguration::GetWing(const std::string& UID) const
 {
     if (aircraftModel)
-        return rotorcraftModel->GetWings().GetWing(UID);
+        return aircraftModel->GetWings().GetWing(UID);
     else if (rotorcraftModel)
         return rotorcraftModel->GetWings().GetWing(UID);
     else

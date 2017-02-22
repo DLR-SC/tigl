@@ -88,9 +88,6 @@ public:
     // Returns the hinge for a given index
     TIGL_EXPORT CCPACSRotorHinge& GetHinge(int index) const;
 
-    // Get rotor blade count
-    TIGL_EXPORT int GetAttachedRotorBladeCount(void) const;
-
     // Returns the rotor blade for a given index
     TIGL_EXPORT CTiglAttachedRotorBlade& GetAttachedRotorBlade(int index);
     TIGL_EXPORT const CTiglAttachedRotorBlade& GetAttachedRotorBlade(int index) const;
@@ -102,6 +99,8 @@ public:
     TIGL_EXPORT CCPACSConfiguration& GetConfiguration(void) const;
 
 private:
+	void lazyCreateAttachedRotorBlades();
+
     std::vector<unique_ptr<CTiglAttachedRotorBlade>> attachedRotorBlades;
     std::vector<double>                              cachedAzimuthAngles;
     bool                                             invalidated;              /**< Internal state flag  */

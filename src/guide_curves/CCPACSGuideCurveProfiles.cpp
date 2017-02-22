@@ -32,7 +32,7 @@
 namespace tigl
 {
 void CCPACSGuideCurveProfiles::ReadCPACS(const TixiDocumentHandle& tixiHandle) {
-    ReadCPACS(tixiHandle, "/cpacs/vehicles/profiles/guideCurveProfiles");
+    ReadCPACS(tixiHandle, "/cpacs/vehicles/profiles/guideCurves");
 }
 
 void CCPACSGuideCurveProfiles::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) {

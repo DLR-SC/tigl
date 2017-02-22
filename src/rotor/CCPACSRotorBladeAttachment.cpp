@@ -158,12 +158,6 @@ CCPACSRotorHinge& CCPACSRotorBladeAttachment::GetHinge(const int index) const
     return m_hinges->GetRotorHinge(index);
 }
 
-// Get rotor blade count
-int CCPACSRotorBladeAttachment::GetAttachedRotorBladeCount(void) const
-{
-    return static_cast<int>(attachedRotorBlades.size());
-}
-
 // Returns the rotor blade for a given index
 CTiglAttachedRotorBlade& CCPACSRotorBladeAttachment::GetAttachedRotorBlade(int index)
 {
