@@ -26,8 +26,6 @@ namespace tigl
 {
 
 // register all dynamic types to prevent linker optimization
-REGISTER_TYPE(CCPACSWingProfileCST)
-REGISTER_TYPE(CCPACSWingProfilePointList)
 REGISTER_TYPE(CTiglStepReader)
 
 

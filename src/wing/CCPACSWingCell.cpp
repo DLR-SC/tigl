@@ -107,6 +107,11 @@ CCPACSWingCell::~CCPACSWingCell()
     Reset();
 }
 
+const std::string& CCPACSWingCell::GetUID() const
+{
+    return m_uID;
+}
+
 void CCPACSWingCell::Invalidate()
 {
     cache.valid = false;

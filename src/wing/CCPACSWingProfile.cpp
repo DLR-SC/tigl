@@ -107,8 +107,6 @@ void CCPACSWingProfile::ReadCPACS(const TixiDocumentHandle& tixiHandle, const st
     } else {
         throw std::runtime_error("no profile algorithm");
     }
-    // TODO: we don't need to create profile algo, as it is already created in base class 
-    //profileAlgo = CCPACSWingProfileFactory::Instance().CreateProfileAlgo(tixiHandle, *this, xpath);
 }
 
 // Returns whether the profile is a rotor profile

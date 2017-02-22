@@ -22,10 +22,9 @@
 
 namespace tigl
 {
-namespace  external_object_private
+namespace external_object_private
 {
     std::string getPathRelativeToApp(const std::string& cpacsPath, const std::string& linkedFilePath);
-    bool fileTypeSupported(const std::string& fileType);
 }
 }
 
