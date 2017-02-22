@@ -26,10 +26,7 @@
 #ifndef CCPACSROTORBLADEATTACHMENTS_H
 #define CCPACSROTORBLADEATTACHMENTS_H
 
-#include "tixi.h"
-#include "CCPACSRotorBladeAttachment.h"
-#include <string>
-#include <vector>
+#include "generated/CPACSRotorBladeAttachments.h"
 
 namespace tigl
 {
@@ -37,24 +34,14 @@ namespace tigl
 class CCPACSConfiguration;
 class CCPACSRotor;
 
-class CCPACSRotorBladeAttachments
+class CCPACSRotorBladeAttachments : public generated::CPACSRotorBladeAttachments
 {
-private:
-    // Typedef for a CCPACSRotorBladeAttachment container to store the rotor blade attachments of a rotor hub.
-    typedef std::vector<CCPACSRotorBladeAttachment*> CCPACSRotorBladeAttachmentContainer;
-
 public:
     // Constructor
-    TIGL_EXPORT CCPACSRotorBladeAttachments(CCPACSRotor* rotor);
-
-    // Virtual Destructor
-    TIGL_EXPORT virtual ~CCPACSRotorBladeAttachments(void);
+    TIGL_EXPORT CCPACSRotorBladeAttachments(CCPACSRotorHub* parent);
 
     // Invalidates internal state
     TIGL_EXPORT void Invalidate(void);
-
-    // Read CPACS rotorBladeAttachments elements
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string rotorBladeAttachmentsXPath, const std::string rotorBladeAttachmentElementName="rotorBladeAttachment");
 
     // Returns the total count of rotor blade attachments in a rotor hub
     TIGL_EXPORT int GetRotorBladeAttachmentCount(void) const;
@@ -67,22 +54,6 @@ public:
 
     // Returns the parent configuration
     TIGL_EXPORT CCPACSConfiguration& GetConfiguration(void) const;
-
-protected:
-    // Cleanup routine
-    void Cleanup(void);
-
-private:
-    // Copy constructor
-    CCPACSRotorBladeAttachments(const CCPACSRotorBladeAttachments&);
-
-    // Assignment operator
-    void operator=(const CCPACSRotorBladeAttachments&);
-
-private:
-    CCPACSRotorBladeAttachmentContainer rotorBladeAttachments;  /**< RotorBladeAttachment elements   */
-    CCPACSRotor* rotor;                                         /**< Pointer to parent rotor */
-
 };
 
 } // end namespace tigl

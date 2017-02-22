@@ -259,9 +259,9 @@ void CCPACSWingRibsPositioning::SetSpacing(double value)
 CCPACSWingRibsPositioning::CrossingBehaviour CCPACSWingRibsPositioning::GetRibCrossingBehaviour() const
 {
     switch (m_ribCrossingBehaviour.GetSimpleContent()) {
-        case generated::CPACSWingRibsPositioning_ribCrossingBehaviour_SimpleContent::cross:
+        case generated::CPACSRibCrossingBehaviour::cross:
             return CrossingBehaviour::CROSSING_CROSS;
-        case generated::CPACSWingRibsPositioning_ribCrossingBehaviour_SimpleContent::end:
+        case generated::CPACSRibCrossingBehaviour::end:
             return CrossingBehaviour::CROSSING_END;
         default: throw std::logic_error("Unknown crossing behaviour");
     }
@@ -271,9 +271,9 @@ void CCPACSWingRibsPositioning::SetRibCrossingBehaviour(CCPACSWingRibsPositionin
 {
     switch (behaviour) {
         case CrossingBehaviour::CROSSING_CROSS:
-            m_ribCrossingBehaviour.SetSimpleContent(generated::CPACSWingRibsPositioning_ribCrossingBehaviour_SimpleContent::cross);
+            m_ribCrossingBehaviour.SetSimpleContent(generated::CPACSRibCrossingBehaviour::cross);
         case CrossingBehaviour::CROSSING_END:
-            m_ribCrossingBehaviour.SetSimpleContent(generated::CPACSWingRibsPositioning_ribCrossingBehaviour_SimpleContent::end);
+            m_ribCrossingBehaviour.SetSimpleContent(generated::CPACSRibCrossingBehaviour::end);
         default: throw std::logic_error("Unknown crossing behaviour");
     }
 

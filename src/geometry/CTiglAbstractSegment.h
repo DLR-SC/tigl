@@ -47,7 +47,8 @@ class CTiglAbstractSegment : public CTiglAbstractGeometricComponent
 {
 
 public:
-    TIGL_EXPORT CTiglAbstractSegment(int segIndex, CCPACSTransformation& trans);
+    TIGL_EXPORT CTiglAbstractSegment(int segIndex, CCPACSTransformation& trans, TiglSymmetryAxis& axis);
+    TIGL_EXPORT CTiglAbstractSegment(int segIndex, CCPACSTransformation& trans, boost::optional<TiglSymmetryAxis>& axis);
 
     // Invalidates internal state
     TIGL_EXPORT virtual void Invalidate();

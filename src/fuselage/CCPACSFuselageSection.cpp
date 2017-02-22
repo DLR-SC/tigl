@@ -36,7 +36,7 @@ void CCPACSFuselageSection::Cleanup()
 {
     m_name = "";
     m_uID = "";
-    transformation.reset();
+    m_transformation.reset();
 }
 
 
@@ -62,7 +62,7 @@ CCPACSFuselageSectionElement& CCPACSFuselageSection::GetSectionElement(int index
 // Gets the section transformation
 CTiglTransformation CCPACSFuselageSection::GetSectionTransformation() const
 {
-    return transformation.getTransformationMatrix();
+    return m_transformation.getTransformationMatrix();
 }
 
 } // end namespace tigl

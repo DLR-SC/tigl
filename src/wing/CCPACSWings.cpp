@@ -28,7 +28,7 @@
 #include "CTiglError.h"
 #include "TixiSaveExt.h"
 #include "IOHelper.h"
-#include "CCPACSModel.h"
+#include "CCPACSAircraftModel.h"
 #include <iostream>
 #include <sstream>
 
@@ -44,55 +44,13 @@ void CCPACSWings::Invalidate()
     }
 }
 
-CCPACSWings::CCPACSWings(generated::CPACSRotorcraftModel* parent)
+CCPACSWings::CCPACSWings(CCPACSRotorcraftModel* parent)
     : generated::CPACSWings(parent) {
     throw std::logic_error("Instantiating CCPACSWings with CPACSRotorcraftModel as parent is not implemented");
 }
 
-CCPACSWings::CCPACSWings(CCPACSModel* parent)
+CCPACSWings::CCPACSWings(CCPACSAircraftModel* parent)
     : generated::CPACSWings(parent) {}
-
-// Read CPACS wings element
-void CCPACSWings::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& xpath)
-{
-    generated::CPACSWings::ReadCPACS(tixiHandle, xpath);
-	// TODO(bgruber)
-    if (configuration->IsRotorcraft()) {
-         // read rotor blades
-         const std::string rotorbladeXPath = std::string(tmpString) + "[@uID=\"" + configurationUID + "\"]/rotorBlades";
-         if (tixiCheckElement(tixiHandle, rotorbladeXPath.c_str()) == SUCCESS) {
-            ReadContainerElement(tixiHandle, rotorbladeXPath, "rotorBlade", 1, wings, configuration);
-         }
-    }
-}
-
-
-// Write CPACS wings elements
-void CCPACSWings::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& xpath) const
-{
-    generated::CPACSWings::WriteCPACS(tixiHandle, xpath);
-	// TODO(bgruber)
-    // determine, which are wings and which are rotorbaldes
-    CCPACSWingContainer theWings, theRotorblades;
-
-    for (CCPACSWingContainer::iterator iter = wings.begin(); iter != wings.end(); ++iter) {
-        CCPACSWing* wing = *iter;
-        if (wing->IsRotorBlade()) {
-            theRotorblades.push_back(wing);
-        }
-        else {
-            theWings.push_back(wing);
-        }
-    }
-    // write wings
-    std::string xpath = std::string(tmpString) + "[@uID=\"" + configurationUID + "\"]/wings";
-    WriteContainerElement(tixiHandle, xpath, "wing", theWings);
-
-    // write rotorblades
-    xpath = std::string(tmpString) + "[@uID=\"" + configurationUID + "\"]/rotorBlades";
-    WriteContainerElement(tixiHandle, xpath, "rotorBlade", theRotorblades);
-
-}
 
 bool CCPACSWings::HasProfile(std::string uid) const
 {
@@ -107,11 +65,11 @@ int CCPACSWings::GetProfileCount() const
 
 CCPACSWingProfiles& CCPACSWings::GetProfiles()
 {
-    return static_cast<CCPACSModel*>(m_parent)->GetConfiguration().GetWingProfiles();
+    return static_cast<CCPACSAircraftModel*>(m_parent)->GetConfiguration().GetWingProfiles();
 }
 
 const CCPACSWingProfiles& CCPACSWings::GetProfiles() const {
-    return static_cast<CCPACSModel*>(m_parent)->GetConfiguration().GetWingProfiles();
+    return static_cast<CCPACSAircraftModel*>(m_parent)->GetConfiguration().GetWingProfiles();
 }
 
 
@@ -158,14 +116,14 @@ CCPACSWing& CCPACSWings::GetWing(int index) const
 // Returns the wing for a given UID.
 CCPACSWing& CCPACSWings::GetWing(const std::string& UID) const
 {
-    return (*wings[GetWingIndex(UID)-1]);
+    return *m_wing[GetWingIndex(UID)-1];
 }
 
 // Returns the wing index for a given UID.
 int CCPACSWings::GetWingIndex(const std::string& UID) const
 {
     for (int i=0; i < GetWingCount(); i++) {
-        const std::string tmpUID(wings[i]->GetUID());
+        const std::string tmpUID(m_wing[i]->GetUID());
         if (tmpUID == UID) {
             return i+1;
         }

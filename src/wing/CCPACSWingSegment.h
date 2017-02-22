@@ -69,9 +69,6 @@ public:
     TIGL_EXPORT virtual const std::string& GetUID() const override;
     TIGL_EXPORT virtual void SetUID(const std::string& uid) override;
 
-    TIGL_EXPORT virtual TiglSymmetryAxis GetSymmetryAxis() override;
-    TIGL_EXPORT virtual void SetSymmetryAxis(const TiglSymmetryAxis& axis) override;
-
     // Returns the wing this segment belongs to
     TIGL_EXPORT CCPACSWing& GetWing() const;
 
@@ -258,6 +255,7 @@ private:
     void etaXsiToUV(bool isFromUpper, double eta, double xsi, double& u, double& v) const;
 
     CCPACSTransformation dummyTrans; // TODO: CCPACSWingSegment must provide a CCPACSTransformation as it is a CTiglAbstractGeometricalComponent, is this correct? Can we remove the base class CTiglAbstractGeometricalComponent?
+    TiglSymmetryAxis dummySymmetry;
     CCPACSWingConnection innerConnection;      /**< Inner segment connection (root)         */
     CCPACSWingConnection outerConnection;      /**< Outer segment connection (tip)          */
     mutable TopTools_SequenceOfShape guideCurveWires;  /**< container for the guide curve wires     */

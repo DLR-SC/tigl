@@ -25,7 +25,7 @@
 
 #include "CCPACSFuselages.h"
 #include "CCPACSFuselage.h"
-#include "CCPACSModel.h"
+#include "CCPACSAircraftModel.h"
 #include "CCPACSFuselageProfiles.h"
 #include "CCPACSConfiguration.h"
 #include "CTiglError.h"
@@ -35,10 +35,10 @@
 
 namespace tigl
 {
-CCPACSFuselages::CCPACSFuselages(CCPACSModel* parent)
+CCPACSFuselages::CCPACSFuselages(CCPACSAircraftModel* parent)
     : generated::CPACSFuselages(parent) {}
 
-CCPACSFuselages::CCPACSFuselages(generated::CPACSRotorcraftModel* parent)
+CCPACSFuselages::CCPACSFuselages(CCPACSRotorcraftModel* parent)
     : generated::CPACSFuselages(parent) {
     throw std::logic_error("Instantiating CCPACSFuselages with CPACSRotorcraftModel as parent is not implemented");
 }
@@ -77,11 +77,11 @@ int CCPACSFuselages::GetProfileCount() const
 
 CCPACSFuselageProfiles& CCPACSFuselages::GetProfiles() 
 {
-    return static_cast<CCPACSModel*>(m_parent)->GetConfiguration().GetFuselageProfiles();
+    return static_cast<CCPACSAircraftModel*>(m_parent)->GetConfiguration().GetFuselageProfiles();
 }
 
 const CCPACSFuselageProfiles& CCPACSFuselages::GetProfiles() const {
-    return static_cast<const CCPACSModel*>(m_parent)->GetConfiguration().GetFuselageProfiles();
+    return static_cast<const CCPACSAircraftModel*>(m_parent)->GetConfiguration().GetFuselageProfiles();
 }
 
 // Returns the fuselage profile for a given index.
@@ -115,14 +115,14 @@ CCPACSFuselage& CCPACSFuselages::GetFuselage(int index) const
 // Returns the fuselage for a given UID.
 CCPACSFuselage& CCPACSFuselages::GetFuselage(const std::string& UID) const
 {
-    return (*fuselages[GetFuselageIndex(UID)-1]);
+    return *m_fuselage[GetFuselageIndex(UID) - 1];
 }
 
 // Returns the fuselage index for a given UID.
 int CCPACSFuselages::GetFuselageIndex(const std::string& UID) const
 {
     for (int i=0; i < GetFuselageCount(); i++) {
-        const std::string tmpUID(fuselages[i]->GetUID());
+        const std::string tmpUID(m_fuselage[i]->GetUID());
         if (tmpUID == UID) {
             return i+1;
         }

@@ -48,7 +48,7 @@ public:
     TIGL_EXPORT void Invalidate(void);
 
     // Read CPACS generic system elements
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const char* configurationUID);
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& configurationUID);
 
     // Returns the total count of wings in a configuration
     TIGL_EXPORT int GetGenericSystemCount(void) const;

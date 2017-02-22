@@ -27,51 +27,8 @@
 namespace tigl
 {
 
-CCPACSExternalObjects::CCPACSExternalObjects(CCPACSConfiguration* config)
-    : _config(config)
-{
-}
-
-CCPACSExternalObjects::~CCPACSExternalObjects()
-{
-    Cleanup();
-}
-
-void CCPACSExternalObjects::ReadCPACS(TixiDocumentHandle tixiHandle, const char* configurationUID)
-{
-    Cleanup();
-    char *tmpString = NULL;
-
-    if (tixiUIDGetXPath(tixiHandle, configurationUID, &tmpString) != SUCCESS) {
-        throw CTiglError("XML error: tixiUIDGetXPath failed in CCPACSExternalObjects::ReadCPACS", TIGL_XML_ERROR);
-    }
-
-    std::string componentXPath= tmpString;
-    componentXPath += "[@uID=\"";
-    componentXPath += configurationUID;
-    componentXPath += "\"]/";
-    componentXPath += CPACS_EXTERNAL_COMPONENTS_NODE;
-
-    if (tixiCheckElement(tixiHandle, componentXPath.c_str()) != SUCCESS) {
-        return;
-    }
-
-    /* Get external object count */
-    int objectCount;
-    if (tixiGetNamedChildrenCount(tixiHandle, componentXPath.c_str(), CPACS_EXTERNAL_COMPONENT_NODE, &objectCount) != SUCCESS) {
-        throw CTiglError("XML error: tixiGetNamedChildrenCount failed in CCPACSExternalObjects::ReadCPACS", TIGL_XML_ERROR);
-    }
-
-    // Loop over all component
-    for (int i = 1; i <= objectCount; i++) {
-        CCPACSExternalObject* obj = new CCPACSExternalObject(_config);
-        _objects.push_back(obj);
-
-        std::ostringstream xpath;
-        xpath << componentXPath << "/" + std::string(CPACS_EXTERNAL_COMPONENT_NODE) + "[" << i << "]";
-        obj->ReadCPACS(tixiHandle, xpath.str());
-    }
-}
+CCPACSExternalObjects::CCPACSExternalObjects(CCPACSAircraftModel* parent)
+    : generated::CPACSGenericGeometryComponents(parent) {}
 
 CCPACSExternalObject&CCPACSExternalObjects::GetObject(int index) const
 {
@@ -79,21 +36,12 @@ CCPACSExternalObject&CCPACSExternalObjects::GetObject(int index) const
     if (index < 0 || index >= GetObjectCount()) {
         throw CTiglError("Error: Invalid index in CCPACSExternalObjects::GetObject", TIGL_INDEX_ERROR);
     }
-    return (*_objects[index]);
+    return *m_genericGeometryComponent[index];
 }
 
 int CCPACSExternalObjects::GetObjectCount() const
 {
-    return _objects.size();
-}
-
-    // Cleanup routine
-void CCPACSExternalObjects::Cleanup()
-{
-    for (CCPACSExtObjectContainer::size_type i = 0; i < _objects.size(); i++) {
-        delete _objects[i];
-    }
-    _objects.clear();
+    return static_cast<int>(m_genericGeometryComponent.size());
 }
 
 }

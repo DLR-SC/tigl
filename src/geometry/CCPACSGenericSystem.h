@@ -45,6 +45,9 @@ public:
     // Virtual destructor
     TIGL_EXPORT virtual ~CCPACSGenericSystem(void);
 
+    TIGL_EXPORT virtual const std::string& GetUID() const override;
+    TIGL_EXPORT virtual void SetUID(const std::string& uid) override;
+
     // Invalidates internal state
     TIGL_EXPORT void Invalidate(void);
 
@@ -57,13 +60,8 @@ public:
     // Returns the parent configuration
     TIGL_EXPORT CCPACSConfiguration & GetConfiguration(void) const;
 
-    // Get the Transformation object
-    TIGL_EXPORT CTiglTransformation GetTransformation(void);
-        
     // Sets a Transformation object
     TIGL_EXPORT void Translate(CTiglPoint trans);
-
-    TIGL_EXPORT virtual void SetSymmetryAxis(const std::string& axis);
 
     // Returns the Component Type TIGL_COMPONENT_GENERICSYSTEM.
     TIGL_EXPORT TiglGeometricComponentType GetComponentType(void) {return TIGL_COMPONENT_GENERICSYSTEM | TIGL_COMPONENT_PHYSICAL;}
@@ -90,8 +88,11 @@ private:
     void operator=(const CCPACSGenericSystem & );
 
 private:
+    std::string                    uid;
     std::string                    name;                     /**< System name         */
     std::string                    geometricBaseType;        /**< Geometric base type */
+    TiglSymmetryAxis               symmetryAxis;
+    CCPACSTransformation           transformation;
     CCPACSConfiguration*           configuration;            /**< Parent configuration*/
     bool                           invalidated;              /**< Internal state flag */
 };

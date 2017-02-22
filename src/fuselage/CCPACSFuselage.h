@@ -69,8 +69,7 @@ public:
     TIGL_EXPORT virtual const std::string& GetUID() const override;
     TIGL_EXPORT virtual void SetUID(const std::string& uid) override;
 
-    TIGL_EXPORT virtual TiglSymmetryAxis GetSymmetryAxis() override;
-    TIGL_EXPORT virtual void SetSymmetryAxis(const TiglSymmetryAxis& axis) override;
+    using CTiglAbstractPhysicalComponent::GetTransformation;
 
     // Get section count
     TIGL_EXPORT int GetSectionCount() const;

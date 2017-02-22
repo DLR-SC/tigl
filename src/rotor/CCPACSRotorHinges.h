@@ -26,9 +26,8 @@
 #ifndef CCPACSROTORHINGES_H
 #define CCPACSROTORHINGES_H
 
-#include "tixi.h"
+#include "generated/CPACSRotorHubHinges.h"
 #include "CCPACSRotorHinge.h"
-#include <vector>
 
 namespace tigl
 {
@@ -37,33 +36,16 @@ class CCPACSConfiguration;
 class CCPACSRotor;
 class CCPACSRotorBladeAttachment;
 
-class CCPACSRotorHinges
+class CCPACSRotorHinges : public generated::CPACSRotorHubHinges
 {
-private:
-    // Typedef for a CCPACSRotorHinge container to store the rotor hinges of a configuration.
-    typedef std::vector<CCPACSRotorHinge*> CCPACSRotorHingeContainer;
-
 public:
-    // Constructor
-    TIGL_EXPORT CCPACSRotorHinges(CCPACSRotorBladeAttachment* rotorBladeAttachment);
-
-    // Virtual Destructor
-    TIGL_EXPORT virtual ~CCPACSRotorHinges(void);
-
-    // Invalidates internal state
-    TIGL_EXPORT void Invalidate(void);
-
-    // Read CPACS rotorHinges elements
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string rotorHingesLibraryXPath, const std::string rotorHingeElementName="hinge");
+    TIGL_EXPORT CCPACSRotorHinges(CCPACSRotorBladeAttachment* parent);
 
     // Returns the total count of rotor hinges in a rotor blade attachment
     TIGL_EXPORT int GetRotorHingeCount(void) const;
 
     // Returns the rotor hinge for a given index.
     TIGL_EXPORT CCPACSRotorHinge& GetRotorHinge(int index) const;
-
-    // Returns the rotor hinge for a given UID.
-    TIGL_EXPORT CCPACSRotorHinge& GetRotorHinge(const std::string& UID) const;
 
     // Returns the parent configuration
     TIGL_EXPORT CCPACSConfiguration& GetConfiguration(void) const;
@@ -73,22 +55,6 @@ public:
 
     // Returns the parent rotor blade attachment
     TIGL_EXPORT CCPACSRotorBladeAttachment& GetRotorBladeAttachment(void) const;
-
-protected:
-    // Cleanup routine
-    void Cleanup(void);
-
-private:
-    // Copy constructor
-    CCPACSRotorHinges(const CCPACSRotorHinges&);
-
-    // Assignment operator
-    void operator=(const CCPACSRotorHinges&);
-
-private:
-    CCPACSRotorHingeContainer   rotorHinges;            /**< RotorHinge elements */
-    CCPACSRotorBladeAttachment* rotorBladeAttachment;   /**< Pointer to parent rotor blade attachment */
-
 };
 
 } // end namespace tigl

@@ -27,7 +27,7 @@ namespace tigl
 CCPACSMaterial::CCPACSMaterial()
     : isvalid(false) { }
 
-void CCPACSMaterial::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& xpath)
+void CCPACSMaterial::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
 {
     generated::CPACSMaterialDefinition::ReadCPACS(tixiHandle, xpath);
 
@@ -39,24 +39,7 @@ void CCPACSMaterial::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string&
         throw CTiglError("Neither materialUID nor compositeUID specified in " + xpath, TIGL_ERROR);
     }
 
-    const std::string orthoPath = xpath + "/orthotropyDirection";
-    if (tixiCheckElement(tixiHandle, orthoPath.c_str())) {
-        orthotropyDirection = boost::in_place();
-        CTiglPoint& p = *orthotropyDirection;
-        tixiGetPoint(tixiHandle, orthoPath.c_str(), &p.x, &p.y, &p.z);
-    }
-
     isvalid = true;
-}
-
-void CCPACSMaterial::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& xpath) const {
-    generated::CPACSMaterialDefinition::WriteCPACS(tixiHandle, xpath);
-
-    const std::string orthoPath = xpath + "/orthotropyDirection";
-    if (orthotropyDirection) {
-        const CTiglPoint& p = *orthotropyDirection;
-        tixiAddPoint(tixiHandle, orthoPath.c_str(), p.x, p.y, p.z, nullptr);
-    }
 }
 
 void CCPACSMaterial::Invalidate()
@@ -87,50 +70,12 @@ const std::string& CCPACSMaterial::GetUID() const
         return GetMaterialUID_choice2();
 }
 
-double CCPACSMaterial::GetThickness() const
-{
-    return GetThickness_choice2();
-}
-
-double CCPACSMaterial::GetThicknessScaling() const
-{
-    return GetThicknessScaling_choice1();
-}
-
-#if CPACS_VERSION >= VERSION_HEX_CODE(2,3,0)
-void CCPACSMaterial::SetOrthotropyDirection(double direction)
-#else
-void CCPACSMaterial::SetOrthotropyDirection(tigl::CTiglPoint direction)
-#endif
-{
-    orthotropyDirection = direction;
-}
-
-#if CPACS_VERSION >= VERSION_HEX_CODE(2,3,0)
-double CCPACSMaterial::GetOrthotropyDirection() const
-#else
-const CTiglPoint& CCPACSMaterial::GetOrthotropyDirection() const
-#endif
-{
-    return *orthotropyDirection;
-}
-
 void CCPACSMaterial::SetUID(const std::string& uid)
 {
     if (isComposite())
         return SetCompositeUID_choice1(uid);
     else
         return SetMaterialUID_choice2(uid);
-}
-
-void CCPACSMaterial::SetThickness(double thickness)
-{
-    SetThickness_choice2(thickness);
-}
-
-void CCPACSMaterial::SetThicknessScaling(double thicknessScaling)
-{
-    SetThicknessScaling_choice1(thicknessScaling);
 }
 
 } // namespace tigl

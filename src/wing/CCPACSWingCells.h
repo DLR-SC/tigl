@@ -31,6 +31,8 @@ public:
     // Constructor
     TIGL_EXPORT CCPACSWingCells(CCPACSWingShell* parent);
     
+    TIGL_EXPORT void Invalidate();
+
     // Virtual Destructor
     TIGL_EXPORT virtual ~CCPACSWingCells() {}
 
@@ -42,6 +44,8 @@ public:
 
     // Get parent wing shell element
     TIGL_EXPORT CCPACSWingShell* GetParentElement() const;
+
+    TIGL_EXPORT CCPACSWingCell& GetCell(const std::string& UID) const;
 };
 
 } // end namespace tigl

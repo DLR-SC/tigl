@@ -29,10 +29,11 @@
 namespace tigl
 {
 
-CTiglAbstractSegment::CTiglAbstractSegment(int segindex, CCPACSTransformation& trans)
-    : CTiglAbstractGeometricComponent(trans), mySegmentIndex(segindex), invalidated(true), continuity(C0)
-{
-}
+CTiglAbstractSegment::CTiglAbstractSegment(int segindex, CCPACSTransformation& trans, TiglSymmetryAxis& axis)
+    : CTiglAbstractGeometricComponent(trans, axis), mySegmentIndex(segindex), invalidated(true), continuity(C0) {}
+
+CTiglAbstractSegment::CTiglAbstractSegment(int segindex, CCPACSTransformation& trans, boost::optional<TiglSymmetryAxis>& axis)
+    : CTiglAbstractGeometricComponent(trans, axis), mySegmentIndex(segindex), invalidated(true), continuity(C0) {}
 
 void CTiglAbstractSegment::Invalidate()
 {

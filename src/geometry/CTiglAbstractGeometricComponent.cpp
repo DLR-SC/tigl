@@ -39,15 +39,45 @@ namespace tigl
 {
 
 // Constructor
-CTiglAbstractGeometricComponent::CTiglAbstractGeometricComponent(CCPACSTransformation& trans)
-    : transformation(trans) {}
+CTiglAbstractGeometricComponent::CTiglAbstractGeometricComponent(CCPACSTransformation& trans, TiglSymmetryAxis& symmetryAxis)
+    : transformation(trans), symmetryAxis(symmetryAxis) {}
+
+CTiglAbstractGeometricComponent::CTiglAbstractGeometricComponent(CCPACSTransformation& trans, boost::optional<TiglSymmetryAxis>& symmetryAxis)
+    : transformation(trans), symmetryAxis(symmetryAxis) {}
 
 void CTiglAbstractGeometricComponent::Reset()
 {
     SetUID("");
     SetSymmetryAxis(TiglSymmetryAxis::TIGL_NO_SYMMETRY);
     transformation.reset();
-    transformation.Reset();
+}
+
+TiglSymmetryAxis CTiglAbstractGeometricComponent::GetSymmetryAxis() {
+	struct Visitor : boost::static_visitor<TiglSymmetryAxis> {
+		TiglSymmetryAxis operator()(const TiglSymmetryAxis& s) {
+			return s;
+		}
+		TiglSymmetryAxis operator()(const boost::optional<TiglSymmetryAxis>& s) {
+			return *s;
+		}
+	} visitor;
+	return symmetryAxis.apply_visitor(visitor);
+}
+
+void CTiglAbstractGeometricComponent::SetSymmetryAxis(const TiglSymmetryAxis& axis) {
+	struct Visitor : boost::static_visitor<> {
+		Visitor(const TiglSymmetryAxis& axis)
+			: axis(axis) {}
+		void operator()(TiglSymmetryAxis& s) {
+			s = axis;
+		}
+		void operator()(boost::optional<TiglSymmetryAxis>& s) {
+			s = axis;
+		}
+	private:
+		const TiglSymmetryAxis& axis;
+	} visitor(axis);
+	symmetryAxis.apply_visitor(visitor);
 }
 
 std::string CTiglAbstractGeometricComponent::GetSymmetryAxisString() {
@@ -59,11 +89,6 @@ void CTiglAbstractGeometricComponent::SetSymmetryAxis(const std::string& axis) {
 }
 
 CTiglTransformation CTiglAbstractGeometricComponent::GetTransformation() const
-{
-    return transformation.AsTransformation();
-}
-
-CTiglTransformation CTiglAbstractGeometricComponent::GetTransformation()
 {
     return transformation.getTransformationMatrix();
 }

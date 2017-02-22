@@ -29,9 +29,6 @@
 
 namespace tigl
 {
-
-
-
 class CCPACSFarField : public generated::CPACSFarField, public CTiglAbstractGeometricComponent
 {
 public:
@@ -41,9 +38,6 @@ public:
 
     TIGL_EXPORT virtual const std::string& GetUID() const override;
     TIGL_EXPORT virtual void SetUID(const std::string& uid) override;
-
-    TIGL_EXPORT virtual TiglSymmetryAxis GetSymmetryAxis() override;
-    TIGL_EXPORT virtual void SetSymmetryAxis(const TiglSymmetryAxis& axis) override;
 
     // Returns the Geometric type of this component, e.g. Wing or Fuselage
     TIGL_EXPORT virtual TiglGeometricComponentType GetComponentType();
@@ -58,6 +52,7 @@ private:
     void init();
 
     CCPACSTransformation dummyTrans; // TODO: CCPACSFarField must provide a CCPACSTransformation as it is a CTiglAbstractGeometricalComponent, is this correct? Can we remove the base class CTiglAbstractGeometricalComponent?
+    TiglSymmetryAxis dummySymmetry;
 };
 
 } // namespace tigl

@@ -26,13 +26,8 @@
 #ifndef CCPACSROTORBLADEATTACHMENT_H
 #define CCPACSROTORBLADEATTACHMENT_H
 
-#include <string>
-#include <vector>
-
-#include "tixi.h"
-#include "CCPACSRotorBlades.h"
-#include "CCPACSRotorHinges.h"
-
+#include "generated/CPACSRotorBladeAttachment.h"
+#include "CTiglAttachedRotorBlade.h"
 
 namespace tigl
 {
@@ -40,36 +35,49 @@ namespace tigl
 class CCPACSConfiguration;
 class CCPACSRotor;
 
-class CCPACSRotorBladeAttachment
+class CCPACSRotorBladeAttachment : private generated::CPACSRotorBladeAttachment
 {
 
 public:
-    // Constructor
-    TIGL_EXPORT CCPACSRotorBladeAttachment(CCPACSRotor* rotor);
+    CCPACSRotorBladeAttachment(CCPACSRotorBladeAttachments* parent);
 
-    // Virtual destructor
-    TIGL_EXPORT virtual ~CCPACSRotorBladeAttachment(void);
+    using generated::CPACSRotorBladeAttachment::GetParent;
+
+    using generated::CPACSRotorBladeAttachment::ReadCPACS;
+    using generated::CPACSRotorBladeAttachment::WriteCPACS;
+
+    using generated::CPACSRotorBladeAttachment::HasUID;
+    using generated::CPACSRotorBladeAttachment::GetUID;
+    using generated::CPACSRotorBladeAttachment::SetUID;
+
+    using generated::CPACSRotorBladeAttachment::HasName;
+    using generated::CPACSRotorBladeAttachment::GetName;
+    using generated::CPACSRotorBladeAttachment::SetName;
+
+    using generated::CPACSRotorBladeAttachment::HasDescription;
+    using generated::CPACSRotorBladeAttachment::GetDescription;
+    using generated::CPACSRotorBladeAttachment::SetDescription;
+
+    using generated::CPACSRotorBladeAttachment::HasHinges;
+    using generated::CPACSRotorBladeAttachment::GetHinges;
+
+    using generated::CPACSRotorBladeAttachment::GetRotorBladeUID;
+    using generated::CPACSRotorBladeAttachment::SetRotorBladeUID;
 
     // Invalidates internal state
     TIGL_EXPORT void Invalidate(void);
 
     // Read CPACS rotor elements
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& rotorBladeAttachmentXPath);
+    TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& rotorBladeAttachmentXPath) override;
 
     // Builds and returns the transformation matrix for an attached rotor blade
     TIGL_EXPORT CTiglTransformation GetRotorBladeTransformationMatrix(double thetaDeg=0., double bladeDeltaThetaDeg=0., bool doHingeTransformation=true, bool doRotationDirTransformation=true, bool doRotorTransformation=false);
-
-    // Returns the UID of the rotor blade attachment
-    TIGL_EXPORT const std::string& GetUID(void) const;
 
     // Returns the number of attached rotor blades
     TIGL_EXPORT int GetNumberOfBlades(void) const;
 
     // Returns the azimuth angle of the attached rotor blade with the given index
     TIGL_EXPORT const double& GetAzimuthAngle(int index) const;
-
-    // Returns the UID of the referenced wing definition
-    TIGL_EXPORT const std::string& GetWingUID(void) const;
 
     // Returns the index of the referenced wing definition
     TIGL_EXPORT int GetWingIndex(void) const;
@@ -81,10 +89,11 @@ public:
     TIGL_EXPORT CCPACSRotorHinge& GetHinge(int index) const;
 
     // Get rotor blade count
-    TIGL_EXPORT int GetRotorBladeCount(void) const;
+    TIGL_EXPORT int GetAttachedRotorBladeCount(void) const;
 
     // Returns the rotor blade for a given index
-    TIGL_EXPORT CCPACSRotorBlade& GetRotorBlade(int index) const;
+    TIGL_EXPORT CTiglAttachedRotorBlade& GetAttachedRotorBlade(int index);
+    TIGL_EXPORT const CTiglAttachedRotorBlade& GetAttachedRotorBlade(int index) const;
 
     // Returns the parent rotor
     TIGL_EXPORT CCPACSRotor& GetRotor(void) const;
@@ -92,28 +101,10 @@ public:
     // Returns the parent configuration
     TIGL_EXPORT CCPACSConfiguration& GetConfiguration(void) const;
 
-protected:
-    // Cleanup routine
-    void Cleanup(void);
-
-    // Update internal rotor blade attachment data
-    void Update(void);
-
 private:
-    // Copy constructor
-    CCPACSRotorBladeAttachment(const CCPACSRotorBladeAttachment&);
-
-    // Assignment operator
-    void operator=(const CCPACSRotorBladeAttachment&);
-
-private:
-    std::string                    uID;                      /**< Rotor hub uID        */
-    std::vector<double>            azimuthAngles;            /**< Rotor hub type       */
-    std::string                    rotorBladeUID;            /**< Rotor blade uID      */
-    CCPACSRotorHinges              hinges;                   /**< Hinges               */
-    CCPACSRotorBlades              rotorBlades;              /**< Rotor blades         */
-    CCPACSRotor*                   rotor;                    /**< Parent rotor         */
-    bool                           invalidated;              /**< Internal state flag  */
+    std::vector<unique_ptr<CTiglAttachedRotorBlade>> attachedRotorBlades;
+    std::vector<double>                              cachedAzimuthAngles;
+    bool                                             invalidated;              /**< Internal state flag  */
 };
 
 } // end namespace tigl

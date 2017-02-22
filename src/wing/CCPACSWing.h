@@ -50,7 +50,7 @@ class CCPACSWing : public generated::CPACSWing, public CTiglAbstractPhysicalComp
 public:
     // Constructor
     TIGL_EXPORT CCPACSWing(CCPACSWings* parent);
-    TIGL_EXPORT CCPACSWing(CPACSRotorBlades* parent);
+    TIGL_EXPORT CCPACSWing(CCPACSRotorBlades* parent);
 
     // Virtual destructor
     TIGL_EXPORT virtual ~CCPACSWing();
@@ -64,8 +64,7 @@ public:
     TIGL_EXPORT virtual const std::string& GetUID() const override;
     TIGL_EXPORT virtual void SetUID(const std::string& uid) override;
 
-    TIGL_EXPORT virtual TiglSymmetryAxis GetSymmetryAxis() override;
-    TIGL_EXPORT virtual void SetSymmetryAxis(const TiglSymmetryAxis& axis) override;
+    using CTiglAbstractPhysicalComponent::GetTransformation;
 
     // Returns whether this wing is a rotor blade
     TIGL_EXPORT bool IsRotorBlade(void) const;
@@ -117,9 +116,6 @@ public:
     // Gets the volume of this wing
     TIGL_EXPORT double GetVolume();
 
-    // Get the Transformation object
-    TIGL_EXPORT CTiglTransformation GetTransformation();
-        
     // Sets a Transformation object
     TIGL_EXPORT virtual void Translate(CTiglPoint trans) override;
 

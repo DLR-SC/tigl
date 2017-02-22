@@ -62,12 +62,12 @@ void CCPACSGenericSystems::Cleanup(void)
 }
 
 // Read CPACS generic system element
-void CCPACSGenericSystems::ReadCPACS(TixiDocumentHandle tixiHandle, const char* configurationUID)
+void CCPACSGenericSystems::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& configurationUID)
 {
     Cleanup();
     char *tmpString = NULL;
 
-    if (tixiUIDGetXPath(tixiHandle, configurationUID, &tmpString) != SUCCESS) {
+    if (tixiUIDGetXPath(tixiHandle, configurationUID.c_str(), &tmpString) != SUCCESS) {
         throw CTiglError("XML error: tixiUIDGetXPath failed in CCPACSGenericSystems::ReadCPACS", TIGL_XML_ERROR);
     }
 

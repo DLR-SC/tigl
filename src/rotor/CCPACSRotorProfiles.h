@@ -23,19 +23,17 @@
 * @brief  Implementation of CPACS wing profiles handling routines.
 */
 
-#ifndef CCPACSWINGPROFILES_H
-#define CCPACSWINGPROFILES_H
+#ifndef CCPACSROTORPROFILES_H
+#define CCPACSROTORPROFILES_H
 
-#include "generated/CPACSWingAirfoils.h"
+#include "generated/CPACSRotorAirfoils.h"
 #include "tigl_internal.h"
-#include "CCPACSWingProfile.h"
-#include <string>
-#include <map>
 
 namespace tigl
 {
+class CCPACSWingProfile;
 
-class CCPACSWingProfiles : public generated::CPACSWingAirfoils
+class CCPACSRotorProfiles : public generated::CPACSRotorAirfoils
 {
 public:
     // Read CPACS wing profiles
@@ -68,4 +66,4 @@ public:
 
 } // end namespace tigl
 
-#endif // CCPACSWINGPROFILES_H
+#endif // CCPACSROTORPROFILES_H
