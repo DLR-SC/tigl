@@ -38,17 +38,11 @@ namespace tigl
 class CCPACSWings : public generated::CPACSWings
 {
 public:
-    TIGL_EXPORT CCPACSWings(CPACSRotorcraftModel* parent);
-    TIGL_EXPORT CCPACSWings(CCPACSModel* parent);
+    TIGL_EXPORT CCPACSWings(CCPACSRotorcraftModel* parent);
+    TIGL_EXPORT CCPACSWings(CCPACSAircraftModel* parent);
 
     // Invalidates internal state
     TIGL_EXPORT void Invalidate();
-
-    // Read CPACS wings elements
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& xpath);
-
-    // Write CPACS wings elements
-    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& xpath) const;
 
     DEPRECATED TIGL_EXPORT bool HasProfile(std::string uid) const;
 

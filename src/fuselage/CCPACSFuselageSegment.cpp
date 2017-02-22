@@ -136,7 +136,8 @@ namespace tigl
 
 CCPACSFuselageSegment::CCPACSFuselageSegment(CCPACSFuselageSegments* parent)
     : generated::CPACSFuselageSegment(parent)
-    , CTiglAbstractSegment(parent->GetSegmentCount() + 1, dummyTrans) // TODO: this is a hack, as we depend on the implementation of the vector reader in generated::CPACSFuselageSegments::ReadCPACS() but the current CodeGen does not support passing indices into ctors
+    , CTiglAbstractSegment(parent->GetSegmentCount() + 1, dummyTrans, dummySymmetry) // TODO: this is a hack, as we depend on the implementation of the vector reader in generated::CPACSFuselageSegments::ReadCPACS() but the current CodeGen does not support passing indices into ctors
+    , dummySymmetry(TIGL_NO_SYMMETRY)
     , fuselage(parent->GetParent())
 {
     Cleanup();
@@ -145,7 +146,8 @@ CCPACSFuselageSegment::CCPACSFuselageSegment(CCPACSFuselageSegments* parent)
 // Constructor
 CCPACSFuselageSegment::CCPACSFuselageSegment(CCPACSFuselage* aFuselage, int aSegmentIndex)
     : generated::CPACSFuselageSegment(&aFuselage->GetSegments())
-    , CTiglAbstractSegment(aSegmentIndex, dummyTrans)
+    , CTiglAbstractSegment(aSegmentIndex, dummyTrans, dummySymmetry)
+    , dummySymmetry(TIGL_NO_SYMMETRY)
     , fuselage(aFuselage)
 {
     Cleanup();
@@ -215,12 +217,6 @@ const std::string& CCPACSFuselageSegment::GetUID() const {
 void CCPACSFuselageSegment::SetUID(const std::string& uid) {
     return generated::CPACSFuselageSegment::SetUID(uid);
 }
-
-TiglSymmetryAxis CCPACSFuselageSegment::GetSymmetryAxis() {
-    return fuselage->GetSymmetryAxis();
-}
-
-void CCPACSFuselageSegment::SetSymmetryAxis(const TiglSymmetryAxis& axis) {}
 
 // Returns the fuselage this segment belongs to
 CCPACSFuselage& CCPACSFuselageSegment::GetFuselage() const

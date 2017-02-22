@@ -26,6 +26,9 @@
 #ifndef CTIGLABSTRACTGEOMETRICCOMPONENT_H
 #define CTIGLABSTRACTGEOMETRICCOMPONENT_H
 
+#include <boost/variant.hpp>
+#include <boost/optional.hpp>
+
 #include "tigl_internal.h"
 
 #include <list>
@@ -43,7 +46,8 @@ class CTiglAbstractGeometricComponent : public ITiglGeometricComponent
 {
 public:
     // Constructor
-    TIGL_EXPORT CTiglAbstractGeometricComponent(CCPACSTransformation& trans);
+    TIGL_EXPORT CTiglAbstractGeometricComponent(CCPACSTransformation& trans, TiglSymmetryAxis& symmetryAxis);
+    TIGL_EXPORT CTiglAbstractGeometricComponent(CCPACSTransformation& trans, boost::optional<TiglSymmetryAxis>& symmetryAxis);
 
     // Gets the loft of a geometric component
     TIGL_EXPORT virtual PNamedShape GetLoft();
@@ -52,10 +56,10 @@ public:
     TIGL_EXPORT virtual PNamedShape GetMirroredLoft();
 
     // Gets symmetry axis
-    TIGL_EXPORT virtual TiglSymmetryAxis GetSymmetryAxis() = 0;
+    TIGL_EXPORT TiglSymmetryAxis GetSymmetryAxis();
 
     // Sets symmetry axis
-    TIGL_EXPORT virtual void SetSymmetryAxis(const TiglSymmetryAxis& axis) = 0;
+    TIGL_EXPORT void SetSymmetryAxis(const TiglSymmetryAxis& axis);
 
     // Gets symmetry axis as string
     DEPRECATED TIGL_EXPORT std::string GetSymmetryAxisString();
@@ -91,8 +95,9 @@ protected:
     
     virtual PNamedShape BuildLoft() = 0;
 
-    CCPACSTransformation&        transformation; // references down to the transformation of the derived class
-    PNamedShape                loft;
+    CCPACSTransformation& transformation;                                                 // references down to the transformation of the derived class
+    boost::variant<TiglSymmetryAxis&, boost::optional<TiglSymmetryAxis>&> symmetryAxis;   // references down to the symmetryAxis of the derived class
+    PNamedShape           loft;
 
 private:
     // Copy constructor

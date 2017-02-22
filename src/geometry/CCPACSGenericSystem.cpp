@@ -22,6 +22,7 @@
 */
 
 #include <iostream>
+#include <algorithm>
 
 #include "CCPACSGenericSystem.h"
 #include "CCPACSConfiguration.h"
@@ -37,18 +38,9 @@
 namespace tigl
 {
 
-namespace
-{
-    inline double max(double a, double b)
-    {
-        return a > b? a : b;
-    }
-}
-
-
 // Constructor
 CCPACSGenericSystem::CCPACSGenericSystem(CCPACSConfiguration* config)
-    : configuration(config)
+    : CTiglAbstractPhysicalComponent(transformation, symmetryAxis), configuration(config)
 {
     Cleanup();
 }
@@ -57,6 +49,14 @@ CCPACSGenericSystem::CCPACSGenericSystem(CCPACSConfiguration* config)
 CCPACSGenericSystem::~CCPACSGenericSystem(void)
 {
     Cleanup();
+}
+
+const std::string& CCPACSGenericSystem::GetUID() const {
+    return uid;
+}
+
+void CCPACSGenericSystem::SetUID(const std::string& uid) {
+    this->uid = uid;
 }
 
 // Invalidates internal state
@@ -212,24 +212,12 @@ std::string CCPACSGenericSystem::GetShortShapeName()
     return "UNKNOWN";
 }
 
-// Get the Transformation object (general interface implementation)
-CTiglTransformation CCPACSGenericSystem::GetTransformation(void)
-{
-    return transformation.getTransformationMatrix();
-}
-
 // Sets the Transformation object
 void CCPACSGenericSystem::Translate(CTiglPoint trans)
 {
     CTiglAbstractGeometricComponent::Translate(trans);
     invalidated = true;
     Update();
-}
-
-// sets the symmetry plane for all childs, segments and component segments
-void CCPACSGenericSystem::SetSymmetryAxis(const std::string& axis)
-{
-    CTiglAbstractGeometricComponent::SetSymmetryAxis(axis);
 }
 
 } // end namespace tigl

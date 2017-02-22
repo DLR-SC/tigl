@@ -46,7 +46,7 @@ public:
     TIGL_EXPORT void Invalidate(void);
 
     // Read CPACS aircraft systems elements
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const char* configurationUID);
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& configurationUID);
 
     // Returns the generic systems object.
     TIGL_EXPORT CCPACSGenericSystems& GetGenericSystems(void);

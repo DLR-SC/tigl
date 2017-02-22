@@ -46,7 +46,8 @@ public:
     // Container type to store a components children
     typedef std::list<CTiglAbstractPhysicalComponent*> ChildContainerType;
 
-    TIGL_EXPORT CTiglAbstractPhysicalComponent(CCPACSTransformation& trans);
+    TIGL_EXPORT CTiglAbstractPhysicalComponent(CCPACSTransformation& trans, TiglSymmetryAxis& symmetryAxis);
+    TIGL_EXPORT CTiglAbstractPhysicalComponent(CCPACSTransformation& trans, boost::optional<TiglSymmetryAxis>& symmetryAxis);
 
     // Returns the parent unique id
     TIGL_EXPORT virtual std::string& GetParentUID();

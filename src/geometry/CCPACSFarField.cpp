@@ -36,7 +36,7 @@ namespace tigl
 {
 
 CCPACSFarField::CCPACSFarField()
-    : CTiglAbstractGeometricComponent(dummyTrans) {
+    : CTiglAbstractGeometricComponent(dummyTrans, dummySymmetry), dummySymmetry(TIGL_NO_SYMMETRY) {
     init();
 }
 
@@ -57,13 +57,9 @@ const std::string& CCPACSFarField::GetUID() const {
     return s_uid;
 }
 
-void CCPACSFarField::SetUID(const std::string& uid) { }
-
-TiglSymmetryAxis CCPACSFarField::GetSymmetryAxis() {
-    return TiglSymmetryAxis::TIGL_NO_SYMMETRY;
+void CCPACSFarField::SetUID(const std::string& uid) {
+    throw CTiglError("not supported");
 }
-
-void CCPACSFarField::SetSymmetryAxis(const TiglSymmetryAxis& axis) {}
 
 PNamedShape CCPACSFarField::BuildLoft()
 {

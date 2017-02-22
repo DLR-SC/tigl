@@ -31,20 +31,25 @@
 namespace tigl
 {
 
-class CCPACSWing;
 class CCPACSConfiguration;
 class CCPACSRotor;
 class CCPACSRotorBladeAttachment;
+class CCPACSWing;
 
-class CCPACSRotorBlade : public CTiglAbstractPhysicalComponent
+class CTiglAttachedRotorBlade : public CTiglAbstractPhysicalComponent
 {
 
 public:
     // Constructor
-    TIGL_EXPORT CCPACSRotorBlade(CCPACSRotorBladeAttachment* rotorBladeAttachment, CCPACSWing* wing, int rotorBladeIndex);
+    TIGL_EXPORT CTiglAttachedRotorBlade(CCPACSRotorBladeAttachment* parent, CCPACSWing& rotorBlade, int index);
 
     // Virtual Destructor
-    TIGL_EXPORT virtual ~CCPACSRotorBlade(void);
+    TIGL_EXPORT virtual ~CTiglAttachedRotorBlade(void);
+
+    TIGL_EXPORT virtual const std::string& GetUID() const override;
+    TIGL_EXPORT virtual void SetUID(const std::string& uid) override;
+
+    TIGL_EXPORT virtual CTiglTransformation GetTransformation() const override;
 
     // Invalidates internal state
     TIGL_EXPORT void Invalidate(void);
@@ -71,7 +76,7 @@ public:
     TIGL_EXPORT CCPACSConfiguration& GetConfiguration(void) const;
 
     // Returns the azimuth angle of this rotor blade
-    TIGL_EXPORT double GetAzimuthAngle(void);
+    TIGL_EXPORT double GetAzimuthAngle(void) const;
 
     // Returns the volume of this rotor blade
     TIGL_EXPORT double GetVolume(void);
@@ -99,8 +104,6 @@ public:
 
     // Returns the rotor disk geometry
     TIGL_EXPORT TopoDS_Shape GetRotorDisk(void);
-    
-    TIGL_EXPORT CTiglTransformation GetTransformation();
 
 protected:
     // Cleanup routine
@@ -114,15 +117,15 @@ protected:
 
 private:
     // Copy constructor
-    CCPACSRotorBlade(const CCPACSRotorBlade&);
+    CTiglAttachedRotorBlade(const CTiglAttachedRotorBlade&);
 
     // Assignment operator
-    void operator=(const CCPACSRotorBlade&);
+    void operator=(const CTiglAttachedRotorBlade&);
 
     // Creates a rotor disk (only using information of the current blade)
     TopoDS_Shape BuildRotorDisk(void);
 
-    CCPACSRotorBladeAttachment*  rotorBladeAttachment; /**< Parent rotor blade attachment           */
+    CCPACSRotorBladeAttachment*  parent;               /**< Parent rotor blade attachment           */
     CCPACSWing*                  rotorBlade;           /**< Original unattached rotor blade         */
     int                          rotorBladeIndex;      /**< Index of the rotor blade in the rotor blade attachment */
     bool                         invalidated;          /**< Internal state flag */
@@ -132,6 +135,8 @@ private:
     double                       myVolume;             /**< Volume of this rotor blade              */
     double                       mySurfaceArea;        /**< Surface area of this rotor blade        */
     CTiglTransformation          transformationMatrix;
+    CCPACSTransformation         dummyTrans;
+    TiglSymmetryAxis             dummySymmetry;
 };
 
 } // end namespace tigl

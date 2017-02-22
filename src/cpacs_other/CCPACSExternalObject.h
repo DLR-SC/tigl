@@ -19,39 +19,36 @@
 #ifndef CCPACSEXTERNALOBJECT_H
 #define CCPACSEXTERNALOBJECT_H
 
-#include "tixi.h"
-#include "tigl_internal.h"
-
+#include "generated/CPACSGenericGeometricComponent.h"
 #include "CTiglAbstractPhysicalComponent.h"
 
-
-
-namespace  tigl
+namespace tigl
 {
 
 class CCPACSConfiguration;
 
-class CCPACSExternalObject : public CTiglAbstractPhysicalComponent
+class CCPACSExternalObject : public generated::CPACSGenericGeometricComponent, public CTiglAbstractPhysicalComponent
 {
 public:
-    TIGL_EXPORT CCPACSExternalObject(CCPACSConfiguration* config = NULL);
+    TIGL_EXPORT CCPACSExternalObject(CCPACSExternalObjects* parent);
     
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& objectXPath);
+    TIGL_EXPORT virtual const std::string& GetUID() const override;
+    TIGL_EXPORT virtual void SetUID(const std::string& uid) override;
+
+    using CTiglAbstractPhysicalComponent::GetTransformation;
+
+    TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& objectXPath) override;
     
-    TIGL_EXPORT std::string GetFilePath() const;
+    TIGL_EXPORT const std::string& GetFilePath() const;
     
     TIGL_EXPORT TiglGeometricComponentType GetComponentType(void);
-    
-    TIGL_EXPORT ~CCPACSExternalObject();
-    
+
 private:
     /// reads in the CAD file
-    virtual PNamedShape BuildLoft(void);
+    virtual PNamedShape BuildLoft(void) override;
 
-    
-    CCPACSConfiguration* _config;
-    std::string _filePath, _fileType;
- 
+    std::string _filePath;
+	TiglSymmetryAxis dummySymmetry;
 };
 
 } // namespace tigl

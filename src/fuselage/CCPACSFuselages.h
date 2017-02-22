@@ -40,8 +40,8 @@ class CCPACSFuselages : public generated::CPACSFuselages
 {
 public:
     //TIGL_EXPORT CCPACSFuselages();
-    TIGL_EXPORT CCPACSFuselages(CCPACSModel* parent);
-    TIGL_EXPORT CCPACSFuselages(generated::CPACSRotorcraftModel* parent);
+    TIGL_EXPORT CCPACSFuselages(CCPACSAircraftModel* parent);
+    TIGL_EXPORT CCPACSFuselages(CCPACSRotorcraftModel* parent);
 
     // Invalidates internal state
     TIGL_EXPORT void Invalidate();
@@ -55,15 +55,15 @@ public:
     DEPRECATED TIGL_EXPORT bool HasProfile(std::string uid) const;
 
     // Returns the total count of fuselage profiles in this configuration
-	DEPRECATED TIGL_EXPORT int GetProfileCount() const;
+    DEPRECATED TIGL_EXPORT int GetProfileCount() const;
         
     // Returns the wing profiles in this configuration
-	DEPRECATED TIGL_EXPORT CCPACSFuselageProfiles& GetProfiles();
-	DEPRECATED TIGL_EXPORT const CCPACSFuselageProfiles& GetProfiles() const;
+    DEPRECATED TIGL_EXPORT CCPACSFuselageProfiles& GetProfiles();
+    DEPRECATED TIGL_EXPORT const CCPACSFuselageProfiles& GetProfiles() const;
 
     // Returns the fuselage profile for a given index.
-	DEPRECATED TIGL_EXPORT CCPACSFuselageProfile& GetProfile(int index) const;
-	DEPRECATED TIGL_EXPORT CCPACSFuselageProfile& GetProfile(std::string uid) const;
+    DEPRECATED TIGL_EXPORT CCPACSFuselageProfile& GetProfile(int index) const;
+    DEPRECATED TIGL_EXPORT CCPACSFuselageProfile& GetProfile(std::string uid) const;
 
     // Returns the total count of fuselages in a configuration
     TIGL_EXPORT int GetFuselageCount() const;

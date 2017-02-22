@@ -30,13 +30,12 @@
 
 #include "CTiglUIDManager.h"
 #include "CTiglLogging.h"
+#include "CCPACSAircraftModel.h"
+#include "CCPACSRotorcraftModel.h"
 #include "CCPACSHeader.h"
 #include "CCPACSWings.h"
-#include "CCPACSWingProfiles.h"
 #include "CCPACSRotors.h"
 #include "CCPACSFuselages.h"
-#include "CCPACSFuselageProfiles.h"
-#include "CCPACSExternalObjects.h"
 #include "CCPACSACSystems.h"
 #include "CCPACSFarField.h"
 #include "CCPACSGuideCurveProfiles.h"
@@ -45,7 +44,7 @@
 #include "CTiglShapeCache.h"
 #include "CTiglMemoryPool.h"
 #include "CSharedPtr.h"
-#include "CCPACSModel.h"
+#include "CCPACSProfiles.h"
 
 
 namespace tigl
@@ -80,21 +79,25 @@ public:
     // Returns whether this configuration is a rotorcraft
     TIGL_EXPORT bool IsRotorcraft(void) const;
 
-    // Returns the total count of wing profiles in this configuration
+    // Returns the total count of wing and rotor profiles in this configuration
     TIGL_EXPORT int GetWingProfileCount() const;
 
+    // Returns true if a wing or rotor profile with the given uid exists
     TIGL_EXPORT bool HasWingProfile(std::string uid) const;
 
     // Returns the class which holds all wing profiles
     TIGL_EXPORT CCPACSWingProfiles& GetWingProfiles();
     
+    // Returns the class which holds all rotor profiles
+    TIGL_EXPORT CCPACSRotorProfiles& GetRotorProfiles();
+
     // Returns the class which holds all wing profiles
     TIGL_EXPORT CCPACSFuselageProfiles& GetFuselageProfiles();
 
-    // Returns the wing profile for a given index
+    // Returns the wing or rotor profile for a given index
     DEPRECATED TIGL_EXPORT CCPACSWingProfile& GetWingProfile(int index) const;
 
-    // Returns the wing profile for a given uid.
+    // Returns the wing or rotor profile for a given uid.
     TIGL_EXPORT CCPACSWingProfile& GetWingProfile(std::string uid) const;
 
     // Returns the total count of wings in a configuration
@@ -214,22 +217,17 @@ private:
     void operator=(const CCPACSConfiguration&);
 
 private:
-    boost::optional<CCPACSModel>              cpacsModel;           /**< Root component for the CTiglUIDManager */
-    TixiDocumentHandle                 tixiDocumentHandle;   /**< Handle for internal TixiDocument */
-    bool                         isRotorcraft;         /**< Indicates whether this configuration is a rotorcraft */
-    CCPACSHeader                       header;               /**< Configuration header element */
-    CCPACSACSystems              acSystems;            /**< Configuration aircraft systems element */
-    CCPACSRotors                 rotors;               /**< Configuration rotors element */
-    CCPACSFarField                     farField;             /**< Far field configuration for CFD tools */
-    CCPACSExternalObjects        externalObjects;      /**< External loaded CAD components */
-    boost::optional<CCPACSWingProfiles>       wingProfiles;
-    boost::optional<CCPACSFuselageProfiles>   fuselageProfiles;
-    boost::optional<CCPACSGuideCurveProfiles> guideCurveProfiles;   /**< Guide curve profiles */
-    CTiglUIDManager                    uidManager;           /**< Stores the unique ids of the components */
-    PTiglFusePlane                     aircraftFuser;        /**< The aircraft fusing algo */
-    std::string                        configUID;            /**< UID of the opened configuration   */
-    CTiglShapeCache                    shapeCache;
-    CTiglMemoryPool                    memoryPool;
+    boost::optional<CCPACSAircraftModel>   aircraftModel;        /**< Root component for the CTiglUIDManager */
+    boost::optional<CCPACSRotorcraftModel> rotorcraftModel;      /**< Root component for the CTiglUIDManager */
+    boost::optional<CCPACSProfiles>        profiles;             /**< Wing airfoils, fuselage profiles, rotor airfoils, guide curve profiles */
+    TixiDocumentHandle                     tixiDocumentHandle;   /**< Handle for internal TixiDocument */
+    CCPACSHeader                           header;               /**< Configuration header element */
+    CCPACSACSystems                        acSystems;            /**< Configuration aircraft systems element */
+    CCPACSFarField                         farField;             /**< Far field configuration for CFD tools */
+    CTiglUIDManager                        uidManager;           /**< Stores the unique ids of the components */
+    PTiglFusePlane                         aircraftFuser;        /**< The aircraft fusing algo */
+    CTiglShapeCache                        shapeCache;
+    CTiglMemoryPool                        memoryPool;
 };
 
 } // end namespace tigl

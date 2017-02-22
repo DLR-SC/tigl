@@ -206,7 +206,8 @@ namespace
 
 CCPACSWingSegment::CCPACSWingSegment(CCPACSWingSegments* parent)
     : generated::CPACSWingSegment(parent)
-    , CTiglAbstractSegment(parent->GetSegmentCount() + 1, dummyTrans) // TODO: this is a hack, as we depend on the implementation of the vector reader in generated::CCPACSWingSegments::ReadCPACS() but the current CodeGen does not support passing indices into ctors
+    , CTiglAbstractSegment(parent->GetSegmentCount() + 1, dummyTrans, dummySymmetry) // TODO: this is a hack, as we depend on the implementation of the vector reader in generated::CCPACSWingSegments::ReadCPACS() but the current CodeGen does not support passing indices into ctors
+    , dummySymmetry(TIGL_NO_SYMMETRY)
     , wing(parent->GetParent<CCPACSWing>()) {
     Cleanup();
 }
@@ -214,7 +215,8 @@ CCPACSWingSegment::CCPACSWingSegment(CCPACSWingSegments* parent)
 // Constructor
 CCPACSWingSegment::CCPACSWingSegment(CCPACSWing* aWing, int aSegmentIndex)
     : generated::CPACSWingSegment(&aWing->GetSegments())
-    , CTiglAbstractSegment(aSegmentIndex, dummyTrans)
+    , CTiglAbstractSegment(aSegmentIndex, dummyTrans, dummySymmetry)
+    , dummySymmetry(TIGL_NO_SYMMETRY)
     , wing(aWing)
 {
     Cleanup();
@@ -286,12 +288,6 @@ const std::string& CCPACSWingSegment::GetUID() const {
 void CCPACSWingSegment::SetUID(const std::string& uid) {
     generated::CPACSWingSegment::SetUID(uid);
 }
-
-TiglSymmetryAxis CCPACSWingSegment::GetSymmetryAxis() {
-    return wing->GetSymmetryAxis();
-}
-
-void CCPACSWingSegment::SetSymmetryAxis(const TiglSymmetryAxis& axis) {}
 
 // Returns the wing this segment belongs to
 CCPACSWing& CCPACSWingSegment::GetWing() const

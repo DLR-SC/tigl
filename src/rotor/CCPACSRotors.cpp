@@ -24,25 +24,19 @@
 */
 
 #include "CCPACSRotors.h"
-#include "CTiglError.h"
+
 #include <iostream>
 #include <sstream>
+
+#include "CCPACSRotorcraftModel.h"
+#include "CTiglError.h"
 
 namespace tigl
 {
 
 // Constructor
-CCPACSRotors::CCPACSRotors(CCPACSConfiguration* config)
-    : configuration(config)
-{
-    Cleanup();
-}
-
-// Destructor
-CCPACSRotors::~CCPACSRotors(void)
-{
-    Cleanup();
-}
+CCPACSRotors::CCPACSRotors(CCPACSRotorcraftModel* parent)
+    : generated::CPACSRotors(parent) {}
 
 // Invalidates internal state
 void CCPACSRotors::Invalidate(void)
@@ -52,53 +46,10 @@ void CCPACSRotors::Invalidate(void)
     }
 }
 
-// Cleanup routine
-void CCPACSRotors::Cleanup(void)
-{
-    for (CCPACSRotorContainer::size_type i = 0; i < rotors.size(); i++) {
-        delete rotors[i];
-    }
-    rotors.clear();
-}
-
-// Read CPACS rotors element
-void CCPACSRotors::ReadCPACS(TixiDocumentHandle tixiHandle, const char* configurationUID, const std::string rotorsLibraryName, const std::string rotorElementName, const std::string rotorProfilesLibraryPath, const std::string rotorProfileElementName)
-{
-    Cleanup();
-    std::string rotorXPathPrt;
-    char* tmpString = NULL;
-
-    if (tixiUIDGetXPath(tixiHandle, configurationUID, &tmpString) != SUCCESS) {
-        throw CTiglError("XML error: tixiUIDGetXPath failed in CCPACSRotors::ReadCPACS", TIGL_XML_ERROR);
-    }
-
-    rotorXPathPrt = std::string(tmpString) + "[@uID=\"" + std::string(configurationUID) + "\"]/" + rotorsLibraryName;
-
-    if (tixiCheckElement(tixiHandle, rotorXPathPrt.c_str()) != SUCCESS) {
-        return;
-    }
-
-    /* Get rotor element count */
-    int rotorCount;
-    if (tixiGetNamedChildrenCount(tixiHandle, rotorXPathPrt.c_str(), rotorElementName.c_str(), &rotorCount) != SUCCESS) {
-        throw CTiglError("XML error: tixiGetNamedChildrenCount failed in CCPACSRotors::ReadCPACS", TIGL_XML_ERROR);
-    }
-
-    // Loop over all rotors
-    for (int i = 1; i <= rotorCount; i++) {
-        CCPACSRotor* rotor = new CCPACSRotor(configuration);
-        rotors.push_back(rotor);
-
-        std::ostringstream xpath;
-        xpath << rotorXPathPrt << "/" << rotorElementName << "[" << i << "]";
-        rotor->ReadCPACS(tixiHandle, xpath.str());
-    }
-}
-
 // Returns the total count of rotors in a configuration
 int CCPACSRotors::GetRotorCount(void) const
 {
-    return (static_cast<int>(rotors.size()));
+    return (static_cast<int>(m_rotor.size()));
 }
 
 // Returns the rotor for a given index.
@@ -108,20 +59,20 @@ CCPACSRotor& CCPACSRotors::GetRotor(int index) const
     if (index < 0 || index >= GetRotorCount()) {
         throw CTiglError("Error: Invalid index in CCPACSRotors::GetRotor", TIGL_INDEX_ERROR);
     }
-    return (*rotors[index]);
+    return (*m_rotor[index]);
 }
 
 // Returns the rotor for a given UID.
 CCPACSRotor& CCPACSRotors::GetRotor(const std::string& UID) const
 {
-    return (*rotors[GetRotorIndex(UID)-1]);
+    return (*m_rotor[GetRotorIndex(UID)-1]);
 }
 
 // Returns the rotor index for a given UID.
 int CCPACSRotors::GetRotorIndex(const std::string& UID) const
 {
     for (int i=0; i < GetRotorCount(); i++) {
-        const std::string tmpUID(rotors[i]->GetUID());
+        const std::string tmpUID(m_rotor[i]->GetUID());
         if (tmpUID == UID) {
             return i+1;
         }
@@ -135,7 +86,7 @@ int CCPACSRotors::GetRotorIndex(const std::string& UID) const
 // Returns the parent configuration
 CCPACSConfiguration& CCPACSRotors::GetConfiguration(void) const
 {
-    return *configuration;
+    return m_parent->GetConfiguration();
 }
 
 } // end namespace tigl

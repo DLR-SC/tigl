@@ -2,7 +2,7 @@
 * Copyright (C) 2014 Airbus Defense and Space
 *
 * Created: 2014-09-19 Roland Landertshamer <roland.landertshamer@risc-software.at>
-* Changed: $Id: CCPACSModel.cpp 1434 2016-04-15 15:41:53Z rlandert $ 
+* Changed: $Id: CCPACSAircraftModel.cpp 1434 2016-04-15 15:41:53Z rlandert $ 
 *
 * Version: $Revision: 1434 $
 *
@@ -23,50 +23,44 @@
 * @brief  Implementation of Model for use as root component in CTiglUIDManager
 */
 
-#include "CCPACSModel.h"
+#include "CCPACSAircraftModel.h"
 
 namespace tigl
 {
-CCPACSModel::CCPACSModel()
-    : CTiglAbstractPhysicalComponent(dummyTrans), config(nullptr) {}
+CCPACSAircraftModel::CCPACSAircraftModel()
+    : CTiglAbstractPhysicalComponent(dummyTrans, dummySymmetry), dummySymmetry(TIGL_NO_SYMMETRY), config(nullptr) {}
 
-CCPACSModel::CCPACSModel(CCPACSConfiguration* config)
-    : CTiglAbstractPhysicalComponent(dummyTrans), config(config) {}
+CCPACSAircraftModel::CCPACSAircraftModel(CCPACSConfiguration* config)
+    : CTiglAbstractPhysicalComponent(dummyTrans, dummySymmetry), dummySymmetry(TIGL_NO_SYMMETRY), config(config) {}
 
-const std::string& CCPACSModel::GetUID() const {
+const std::string& CCPACSAircraftModel::GetUID() const {
     return generated::CPACSAircraftModel::GetUID();
 }
 
-void CCPACSModel::SetUID(const std::string& uid) {
+void CCPACSAircraftModel::SetUID(const std::string& uid) {
     generated::CPACSAircraftModel::SetUID(uid);
 }
 
-TiglSymmetryAxis CCPACSModel::GetSymmetryAxis() {
-    return TiglSymmetryAxis::TIGL_NO_SYMMETRY;
-}
-
-void CCPACSModel::SetSymmetryAxis(const TiglSymmetryAxis& axis) {}
-
 // Returns the Geometric type of this component, e.g. Wing or Fuselage
-TiglGeometricComponentType CCPACSModel::GetComponentType()
+TiglGeometricComponentType CCPACSAircraftModel::GetComponentType()
 {
     return (TIGL_COMPONENT_PHYSICAL | TIGL_COMPONENT_PLANE);
 }
 
-PNamedShape CCPACSModel::BuildLoft()
+PNamedShape CCPACSAircraftModel::BuildLoft()
 {
     // return empty loft
     return loft;
 }
 
-void CCPACSModel::Invalidate() {
+void CCPACSAircraftModel::Invalidate() {
     if (m_wings)
         m_wings->Invalidate();
     if (m_fuselages)
         m_fuselages;
 }
 
-CCPACSConfiguration& CCPACSModel::GetConfiguration() const {
+CCPACSConfiguration& CCPACSAircraftModel::GetConfiguration() const {
     return *config;
 }
 

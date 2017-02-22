@@ -1,8 +1,4 @@
-/*
-* Copyright (C) 2015 German Aerospace Center (DLR/SC)
-*
-* Created: 2015-05-19 Martin Siggel <Martin.Siggel@dlr.de>
-*
+/* 
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
@@ -16,22 +12,19 @@
 * limitations under the License.
 */
 
-#ifndef CCPACSEXTERNALOBJECTS_H
-#define CCPACSEXTERNALOBJECTS_H
+#ifndef CCPACSPROFILES_H
+#define CCPACSPROFILES_H
 
-#include "generated/CPACSGenericGeometryComponents.h"
+#include "generated/CPACSProfiles.h"
 
 namespace tigl
 {
-class CCPACSExternalObjects : public generated::CPACSGenericGeometryComponents
+class CCPACSProfiles : public generated::CPACSProfiles
 {
 public:
-    TIGL_EXPORT CCPACSExternalObjects(CCPACSAircraftModel* parent);
-
-    TIGL_EXPORT CCPACSExternalObject& GetObject(int index) const;
-    TIGL_EXPORT int GetObjectCount(void) const;
+    TIGL_EXPORT void Invalidate();
 };
 
-} //namespace tigl
+} // end namespace tigl
 
-#endif // CCPACSEXTERNALOBJECTS_H
+#endif // CCPACSPROFILES_H

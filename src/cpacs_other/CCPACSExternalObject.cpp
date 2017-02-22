@@ -26,9 +26,8 @@
 namespace tigl
 {
 
-namespace external_object_private
+namespace
 {
-
     TIGL_EXPORT std::string getPathRelativeToApp(const std::string& cpacsPath, const std::string& linkedFilePath)
     {
         if (IsPathRelative(linkedFilePath)) {
@@ -56,89 +55,42 @@ namespace external_object_private
     {
         return CTiglImporterFactory::Instance().ImporterSupported(fileType);
     }
+}
 
-} // internal
+CCPACSExternalObject::CCPACSExternalObject(CCPACSExternalObjects* parent)
+    : generated::CPACSGenericGeometricComponent(parent), CTiglAbstractPhysicalComponent(m_transformation, dummySymmetry), dummySymmetry(TIGL_NO_SYMMETRY) {}
 
-using namespace external_object_private;
+const std::string& CCPACSExternalObject::GetUID() const {
+    return generated::CPACSGenericGeometricComponent::GetUID();
+}
 
-CCPACSExternalObject::CCPACSExternalObject(CCPACSConfiguration* config)
-    : _config(config)
-{
-    
+void CCPACSExternalObject::SetUID(const std::string& uid) {
+    generated::CPACSGenericGeometricComponent::SetUID(uid);
 }
 
 // Read CPACS wing element
-void CCPACSExternalObject::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& objectXPath)
+void CCPACSExternalObject::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& objectXPath)
 {
     Reset();
+    generated::CPACSGenericGeometricComponent::ReadCPACS(tixiHandle, objectXPath);
 
-    std::string tempString;
+    char* cCPACSPath = NULL;
+    tixiGetDocumentPath(tixiHandle, &cCPACSPath);
+    _filePath = getPathRelativeToApp(cCPACSPath ? cCPACSPath : "", m_linkToFile.GetBase());
 
-    // Get attribute "uid"
-    char* cUID = NULL;
-    tempString   = "uID";
-    if (tixiGetTextAttribute(tixiHandle, objectXPath.c_str(), tempString.c_str(), &cUID) == SUCCESS) {
-        SetUID(cUID);
-    }
-
-    // Get subelement "parent_uid"
-    char* cParentUID = NULL;
-    tempString         = objectXPath + "/parentUID";
-    if (tixiCheckElement(tixiHandle, tempString.c_str()) == SUCCESS && tixiGetTextElement(tixiHandle, tempString.c_str(), &cParentUID) == SUCCESS) {
-        SetParentUID(cParentUID);
-    }
-
-    // Get Transformation
-    transformation.ReadCPACS(tixiHandle, objectXPath);
-
-    // Get File Path, and type
-    std::string fileXPath  = objectXPath + "/linkToFile";
-    if (tixiCheckElement(tixiHandle, fileXPath.c_str()) == SUCCESS) {
-        char *cFilePath = NULL, *cCPACSPath = NULL;
-
-        tixiGetDocumentPath(tixiHandle, &cCPACSPath);
-        std::string cpacsPath = cCPACSPath ? cCPACSPath : "";
-
-        if (tixiGetTextElement(tixiHandle, fileXPath.c_str(), &cFilePath) == SUCCESS) {
-            _filePath = getPathRelativeToApp(cpacsPath, cFilePath);
-        }
-        else {
-            throw tigl::CTiglError("No file specified in " + objectXPath + " !");
-        }
-        
-        // test if file can be read
-        if (!IsFileReadable(_filePath)) {
-            throw tigl::CTiglError("File " + _filePath + " can not be read!", TIGL_OPEN_FAILED);
-        }
-        
-        char* cFileType = NULL;
-        if (tixiGetTextAttribute(tixiHandle, fileXPath.c_str(), "format", &cFileType) == SUCCESS) {
-            _fileType = cFileType;
-            if (!fileTypeSupported(_fileType)) {
-                throw tigl::CTiglError("File format " + _fileType + " not supported for external components!");
-            }
-        }
-        else {
-            throw tigl::CTiglError("No file format attribute specified in " + fileXPath + " !");
-        }
+    // test if file can be read
+    if (!IsFileReadable(_filePath)) {
+        throw tigl::CTiglError("File " + _filePath + " can not be read!", TIGL_OPEN_FAILED);
     }
 
     // Register ourself at the unique id manager
-    if (_config) {
-        _config->GetUIDManager().AddUID(cUID, this);
-    }\
-
-    // Get symmetry axis attribute, has to be done, when segments are build
-    char* ptrSym = NULL;
-    tempString   = "symmetry";
-    if (tixiGetTextAttribute(tixiHandle, const_cast<char*>(objectXPath.c_str()), const_cast<char*>(tempString.c_str()), &ptrSym) == SUCCESS) {
-        SetSymmetryAxis(ptrSym);
+    if (m_parent) {
+        CCPACSConfiguration& config = m_parent->GetParent()->GetConfiguration();
+        config.GetUIDManager().AddUID(m_uID, this);
     }
-    
-    
 }
 
-std::string CCPACSExternalObject::GetFilePath() const
+const std::string& CCPACSExternalObject::GetFilePath() const
 {
     return _filePath;
 }
@@ -148,15 +100,10 @@ TiglGeometricComponentType CCPACSExternalObject::GetComponentType()
     return TIGL_COMPONENT_PHYSICAL;
 }
 
-CCPACSExternalObject::~CCPACSExternalObject()
-{
-    
-}
-
-
 PNamedShape CCPACSExternalObject::BuildLoft()
 {
-    PTiglCADImporter importer = CTiglImporterFactory::Instance().Create(_fileType);
+    const std::string& fileType = CPACSLinkToFileType_formatToString(m_linkToFile.GetFormat());
+    PTiglCADImporter importer = CTiglImporterFactory::Instance().Create(fileType);
     if (importer) {
         ListPNamedShape shapes = importer->Read(_filePath);
         PNamedShape shapeGroup = CGroupShapes(shapes);
@@ -172,7 +119,7 @@ PNamedShape CCPACSExternalObject::BuildLoft()
         return shapeGroup;
     }
     else {
-        throw CTiglError("Cannot open externalComponent. Unknown file format " + _fileType);
+        throw CTiglError("Cannot open externalComponent. Unknown file format " + fileType);
     }
 }
 

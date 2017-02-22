@@ -56,7 +56,7 @@ namespace tigl
 // Constructor
 CCPACSFuselage::CCPACSFuselage(CCPACSConfiguration* config)
     : generated::CPACSFuselage(&config->GetFuselages())
-    , CTiglAbstractPhysicalComponent(m_transformation)
+    , CTiglAbstractPhysicalComponent(m_transformation, m_symmetry)
     , configuration(config)
 {
     Cleanup();
@@ -64,8 +64,8 @@ CCPACSFuselage::CCPACSFuselage(CCPACSConfiguration* config)
 
 CCPACSFuselage::CCPACSFuselage(CCPACSFuselages* parent)
     : generated::CPACSFuselage(parent)
-    , CTiglAbstractPhysicalComponent(m_transformation)
-    , configuration(&parent->GetParent<CCPACSModel>()->GetConfiguration()) {
+    , CTiglAbstractPhysicalComponent(m_transformation, m_symmetry)
+    , configuration(&parent->GetParent<CCPACSAircraftModel>()->GetConfiguration()) {
     Cleanup();
 }
 
@@ -116,14 +116,6 @@ const std::string& CCPACSFuselage::GetUID() const {
 
 void CCPACSFuselage::SetUID(const std::string& uid) {
     return generated::CPACSFuselage::SetUID(uid);
-}
-
-TiglSymmetryAxis CCPACSFuselage::GetSymmetryAxis() {
-    return *m_symmetry;
-}
-
-void CCPACSFuselage::SetSymmetryAxis(const TiglSymmetryAxis& axis) {
-    m_symmetry = axis;
 }
 
 // Get section count

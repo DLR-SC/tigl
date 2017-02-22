@@ -33,7 +33,7 @@
 #include "CTiglAbstractSegment.h"
 #include "CCPACSWingSegment.h"
 #include "CCPACSWings.h"
-#include "CCPACSModel.h"
+#include "CCPACSAircraftModel.h"
 #include "CTiglError.h"
 #include "tiglcommonfunctions.h"
 #include "TixiSaveExt.h"
@@ -148,20 +148,20 @@ namespace
 
 CCPACSWing::CCPACSWing(CCPACSWings* parent)
     : generated::CPACSWing(parent)
-    , CTiglAbstractPhysicalComponent(m_transformation)
-    , configuration(&parent->GetParent<CCPACSModel>()->GetConfiguration())
+    , CTiglAbstractPhysicalComponent(m_transformation, m_symmetry)
+    , configuration(&parent->GetParent<CCPACSAircraftModel>()->GetConfiguration())
     , rebuildFusedSegments(true)
     , rebuildFusedSegWEdge(true)
     , rebuildShells(true) {
     Cleanup();
 }
-CCPACSWing::CCPACSWing(CPACSRotorBlades* parent)
+CCPACSWing::CCPACSWing(CCPACSRotorBlades* parent)
     : generated::CPACSWing(parent)
-    , CTiglAbstractPhysicalComponent(m_transformation)
+    , CTiglAbstractPhysicalComponent(m_transformation, m_symmetry)
     , rebuildFusedSegments(true)
     , rebuildFusedSegWEdge(true)
     , rebuildShells(true) {
-    throw std::logic_error("Instantiating CCPACSWing with CPACSRotorBlades as parent is not implemented");
+    Cleanup();
 }
 
 // Destructor
@@ -229,14 +229,6 @@ const std::string& CCPACSWing::GetUID() const {
 
 void CCPACSWing::SetUID(const std::string& uid) {
     generated::CPACSWing::SetUID(uid);
-}
-
-TiglSymmetryAxis CCPACSWing::GetSymmetryAxis() {
-    return *m_symmetry;
-}
-
-void CCPACSWing::SetSymmetryAxis(const TiglSymmetryAxis& axis) {
-    m_symmetry = axis;
 }
 
 // Returns whether this wing is a rotor blade
@@ -455,12 +447,6 @@ double CCPACSWing::GetVolume()
     return myVolume;
 }
 
-// Get the Transformation object (general interface implementation)
-CTiglTransformation CCPACSWing::GetTransformation()
-{
-    return GetWingTransformation();
-}
-
 // Sets the Transformation object
 void CCPACSWing::Translate(CTiglPoint trans)
 {
@@ -540,7 +526,7 @@ double CCPACSWing::GetWingspan()
         gp_XYZ cumulatedSpanDirection(0, 0, 0);
         gp_XYZ cumulatedDepthDirection(0, 0, 0);
         for (int i = 1; i <= GetSegmentCount(); ++i) {
-            CCPACSWingSegment& segment = segments.GetSegment(i);
+            CCPACSWingSegment& segment = m_segments.GetSegment(i);
             const TopoDS_Shape& segmentShape = segment.GetLoft()->Shape();
             BRepBndLib::Add(segmentShape, boundingBox);
 
@@ -551,7 +537,7 @@ double CCPACSWing::GetWingspan()
             cumulatedSpanDirection += dirSpan;
             cumulatedDepthDirection += dirDepth;
         }
-        CCPACSWingSegment& outerSegment = segments.GetSegment(GetSegmentCount());
+        CCPACSWingSegment& outerSegment = m_segments.GetSegment(GetSegmentCount());
         gp_XYZ dirDepth = outerSegment.GetChordPoint(1,1).XYZ() - outerSegment.GetChordPoint(1,0).XYZ();
         dirDepth = gp_XYZ(fabs(dirDepth.X()), fabs(dirDepth.Y()), fabs(dirDepth.Z()));
         cumulatedDepthDirection += dirDepth;

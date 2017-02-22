@@ -46,40 +46,40 @@ std::string CCPACSWingSectionElement::GetProfileUID() const
 // Gets the section element transformation
 CTiglTransformation CCPACSWingSectionElement::GetSectionElementTransformation(void) const
 {
-    return transformation.getTransformationMatrix();
+    return m_transformation.getTransformationMatrix();
 }
 
-const CTiglPoint &CCPACSWingSectionElement::GetTranslation() const
+CTiglPoint CCPACSWingSectionElement::GetTranslation() const
 {
-    return transformation.getTranslationVector();
+    return m_transformation.getTranslationVector();
 }
 
-const CTiglPoint &CCPACSWingSectionElement::GetRotation() const
+CTiglPoint CCPACSWingSectionElement::GetRotation() const
 {
-    return transformation.getRotation();
+    return m_transformation.getRotation();
 }
 
-const CTiglPoint &CCPACSWingSectionElement::GetScaling() const
+CTiglPoint CCPACSWingSectionElement::GetScaling() const
 {
-    return transformation.getScaling();
+    return m_transformation.getScaling();
 }
 
 void CCPACSWingSectionElement::SetTranslation(const CTiglPoint &trans)
 {
-    transformation.setTranslation(trans, ABS_LOCAL);
-    transformation.updateMatrix();
+    m_transformation.setTranslation(trans, ABS_LOCAL);
+    m_transformation.updateMatrix();
 }
 
 void CCPACSWingSectionElement::SetRotation(const CTiglPoint &rot)
 {
-    transformation.setRotation(rot);
-    transformation.updateMatrix();
+    m_transformation.setRotation(rot);
+    m_transformation.updateMatrix();
 }
 
 void CCPACSWingSectionElement::SetScaling(const CTiglPoint &scaling)
 {
-    transformation.setScaling(scaling);
-    transformation.updateMatrix();
+    m_transformation.setScaling(scaling);
+    m_transformation.updateMatrix();
 }
 
 } // end namespace tigl

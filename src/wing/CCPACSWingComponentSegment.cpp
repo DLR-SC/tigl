@@ -81,6 +81,7 @@
 #include <ShapeAnalysis_Curve.hxx>
 #include <TopExp.hxx>
 
+#include "CTiglLogging.h"
 #include <cassert>
 
 namespace tigl
@@ -153,7 +154,8 @@ namespace
 
 CCPACSWingComponentSegment::CCPACSWingComponentSegment(CCPACSWingComponentSegments* parent)
     : generated::CPACSComponentSegment(parent)
-    , CTiglAbstractSegment(parent->GetComponentSegmentCount() + 1, dummyTrans) // TODO: this is a hack, as we depend on the implementation of the vector reader in generated::CCPACSWingComponentSegments::ReadCPACS() but the current CodeGen does not support passing indices into ctors
+    , CTiglAbstractSegment(parent->GetComponentSegmentCount() + 1, dummyTrans, dummySymmetry) // TODO: this is a hack, as we depend on the implementation of the vector reader in generated::CCPACSWingComponentSegments::ReadCPACS() but the current CodeGen does not support passing indices into ctors
+    , dummySymmetry(TIGL_NO_SYMMETRY)
     , wing(parent->GetParent())
     , surfacesAreValid(false)
 {
@@ -164,7 +166,8 @@ CCPACSWingComponentSegment::CCPACSWingComponentSegment(CCPACSWingComponentSegmen
 // Constructor
 CCPACSWingComponentSegment::CCPACSWingComponentSegment(CCPACSWing* aWing, int aSegmentIndex)
     : generated::CPACSComponentSegment(&aWing->GetComponentSegments())
-    , CTiglAbstractSegment(aSegmentIndex, dummyTrans)
+    , CTiglAbstractSegment(aSegmentIndex, dummyTrans, dummySymmetry)
+    , dummySymmetry(TIGL_NO_SYMMETRY)
     , wing(aWing)
     , surfacesAreValid(false)
 {
@@ -227,12 +230,6 @@ const std::string& CCPACSWingComponentSegment::GetUID() const {
 void CCPACSWingComponentSegment::SetUID(const std::string& uid) {
     generated::CPACSComponentSegment::SetUID(uid);
 }
-
-TiglSymmetryAxis CCPACSWingComponentSegment::GetSymmetryAxis() {
-    return wing->GetSymmetryAxis();
-}
-
-void CCPACSWingComponentSegment::SetSymmetryAxis(const TiglSymmetryAxis& axis) {}
 
 // Returns whether a structure is defined or not
 bool CCPACSWingComponentSegment::HasStructure() const {

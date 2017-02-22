@@ -427,7 +427,7 @@ const ITiglWingProfileAlgo* CCPACSWingProfile::GetProfileAlgo() const
 
 bool CCPACSWingProfile::HasBluntTE() const
 {
-    PTiglWingProfileAlgo algo = GetProfileAlgo();
+    const ITiglWingProfileAlgo* algo = GetProfileAlgo();
     if (!algo) {
         throw CTiglError("No wing profile algorithm regsitered in CCPACSWingProfile::HasBluntTE()!");
     }
