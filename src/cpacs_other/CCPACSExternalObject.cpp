@@ -26,7 +26,7 @@
 namespace tigl
 {
 
-namespace
+namespace external_object_private
 {
     TIGL_EXPORT std::string getPathRelativeToApp(const std::string& cpacsPath, const std::string& linkedFilePath)
     {
@@ -56,6 +56,7 @@ namespace
         return CTiglImporterFactory::Instance().ImporterSupported(fileType);
     }
 }
+using namespace external_object_private;
 
 CCPACSExternalObject::CCPACSExternalObject(CCPACSExternalObjects* parent)
     : generated::CPACSGenericGeometricComponent(parent), CTiglAbstractPhysicalComponent(m_transformation, dummySymmetry), dummySymmetry(TIGL_NO_SYMMETRY) {}

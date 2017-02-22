@@ -56,8 +56,8 @@ void CCPACSRotorBladeAttachment::ReadCPACS(const TixiDocumentHandle& tixiHandle,
 
     // Create wrappers for attached rotor blades
     CCPACSWing& blade = GetConfiguration().GetWing(m_rotorBladeUID);
-    for (int i = 0; i < GetNumberOfBlades(); i++) {
-        attachedRotorBlades.push_back(make_unique<CTiglAttachedRotorBlade>(this, blade, i + 1));
+    for (int i = 1; i <= GetNumberOfBlades(); i++) {
+        attachedRotorBlades.push_back(make_unique<CTiglAttachedRotorBlade>(this, blade, i));
     }
 }
 
