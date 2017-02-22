@@ -2390,6 +2390,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetIndex(TiglCPACSConfigurationHan
         return TIGL_NULL_POINTER;
     }
 
+    *fuselageIndexPtr = -1;
     return Try("tiglFuselageGetIndex", TIGL_ERROR, [&]{
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);

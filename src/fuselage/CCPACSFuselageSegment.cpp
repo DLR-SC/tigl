@@ -826,7 +826,7 @@ TopTools_SequenceOfShape& CCPACSFuselageSegment::BuildGuideCurves()
         double outerScale = GetWireLength(outerChordLineWire);
 
         // loop through all guide curves and construct the corresponding wires
-        int nGuideCurves = m_guideCurves->GetGuideCurveCount();
+        int nGuideCurves = m_guideCurves ? m_guideCurves->GetGuideCurveCount() : 0;
         for (int i=0; i!=nGuideCurves; i++) {
             // get guide curve
             const CCPACSGuideCurve& guideCurve = m_guideCurves->GetGuideCurve(i+1);

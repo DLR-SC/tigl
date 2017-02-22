@@ -66,7 +66,7 @@ int CCPACSRotorHub::GetRotorBladeCount(void) const
 {
     int rotorBladeCount = 0;
     for (int i=1; i<=GetRotorBladeAttachmentCount(); i++) {
-        rotorBladeCount += GetRotorBladeAttachment(i).GetAttachedRotorBladeCount();
+        rotorBladeCount += GetRotorBladeAttachment(i).GetNumberOfBlades();
     }
     return rotorBladeCount;
 }
@@ -76,8 +76,8 @@ CTiglAttachedRotorBlade& CCPACSRotorHub::GetRotorBlade(int index) const
 {
     int rotorBladeIndex = index;
     int rotorBladeAttachmentIndex = 1;
-    while (rotorBladeIndex > GetRotorBladeAttachment(rotorBladeAttachmentIndex).GetAttachedRotorBladeCount()) {
-        rotorBladeIndex -= GetRotorBladeAttachment(rotorBladeAttachmentIndex).GetAttachedRotorBladeCount();
+    while (rotorBladeIndex > GetRotorBladeAttachment(rotorBladeAttachmentIndex).GetNumberOfBlades()) {
+        rotorBladeIndex -= GetRotorBladeAttachment(rotorBladeAttachmentIndex).GetNumberOfBlades();
         rotorBladeAttachmentIndex++;
     }
     return GetRotorBladeAttachment(rotorBladeAttachmentIndex).GetAttachedRotorBlade(rotorBladeIndex);

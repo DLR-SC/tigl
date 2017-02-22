@@ -5,8 +5,8 @@
 		<description>Simple Test Model for Guide Curve Unit Testing</description>
 		<creator>Tobias Stollenwerk</creator>
 		<timestamp>2014-02-10T14:28:00</timestamp>
-		<version>1.0</version>
-		<cpacsVersion>2.1</cpacsVersion>
+		<version>1.1</version>
+		<cpacsVersion>2.3</cpacsVersion>
 	</header>
 	<vehicles>
 		<aircraft>
@@ -570,7 +570,7 @@
 					</pointList>
 				</wingAirfoil>
 			</wingAirfoils>
-			<guideCurveProfiles>
+			<guideCurves>
 				<guideCurveProfile uID="GuideCurveModel_Fuselage_GuideCurveProfile_Lower_Linear">
 					<name>Linear Lower Guide Curve Profile for GuideCurveModel - Fuselage</name>
 					<description>Linear Lower Guide Curve Profile for GuideCurveModel - Fuselage</description>
@@ -648,7 +648,7 @@
 						<rX mapType="vector">-0.5;-0.55;-0.6;-0.55;-0.48;-0.44;-0.4;-0.35;-0.37</rX><rY mapType="vector">0.1;0.2;0.3;0.4;0.5;0.6;0.7;0.8;0.9</rY><rZ mapType="vector">-0.02;-0.04;-0.02;0.00;0.04;0.08;0.12;0.08;0.04</rZ>
 					</pointList>
 				</guideCurveProfile>
-			</guideCurveProfiles>
+			</guideCurves>
 		    </profiles>
 	</vehicles>
 </cpacs>
