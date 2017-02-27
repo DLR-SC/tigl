@@ -28,23 +28,7 @@
 
 namespace tigl
 {
-CCPACSGuideCurveProfile::CCPACSGuideCurveProfile() {}
-
-
-// Read guide curve file
-void CCPACSGuideCurveProfile::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
-{
-    generated::CPACSGuideCurveProfileGeometry::ReadCPACS(tixiHandle, xpath);
-
-    // convert to point vector
-    coordinates = m_pointList.AsVector();
-}
-
 const std::vector<CTiglPoint>& CCPACSGuideCurveProfile::GetGuideCurveProfilePoints() {
-    return coordinates;
+    return m_pointList.AsVector();
 }
-
 } // end namespace tigl
-
-
-
