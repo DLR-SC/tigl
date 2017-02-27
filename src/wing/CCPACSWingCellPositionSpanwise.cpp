@@ -35,7 +35,7 @@ CCPACSWingCellPositionSpanwise::InputType CCPACSWingCellPositionSpanwise::GetInp
         return InputType::Eta;
     if (m_ribDefinitionUID_choice2 && m_ribNumber_choice2)
         return InputType::Rib;
-    throw std::logic_error("Invalid input combination of etas and ribs");
+    return InputType::None;
 }
 
 // get and set Eta definition
@@ -57,7 +57,7 @@ void CCPACSWingCellPositionSpanwise::GetEta(double& eta1, double& eta2) const {
 }
 
 std::pair<double, double> CCPACSWingCellPositionSpanwise::GetEta() const {
-    if (!m_eta1_choice1 || !m_eta2_choice1) {
+    if (GetInputType() != InputType::Eta) {
         throw CTiglError("CCPACSWingCellPositionSpanwise::GetEta method called, but position is defined via ribDefinitionUID!");
     }
     return std::make_pair(*m_eta1_choice1, *m_eta2_choice1);
@@ -81,7 +81,7 @@ void CCPACSWingCellPositionSpanwise::GetRib(std::string& ribUid, int& ribNumber)
 }
 
 std::pair<std::string, int> CCPACSWingCellPositionSpanwise::GetRib() const {
-    if (!m_ribNumber_choice2 || !m_ribDefinitionUID_choice2) {
+    if (GetInputType() != InputType::Rib) {
         throw CTiglError("CCPACSWingCellPositionSpanwise::GetRib method called, but position is defined via eta1/eta2!");
     }
     return std::make_pair(*m_ribDefinitionUID_choice2, *m_ribNumber_choice2);
