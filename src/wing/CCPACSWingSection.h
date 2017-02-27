@@ -40,18 +40,6 @@ class CCPACSWingSection : public generated::CPACSWingSection
 {
 
 public:
-    // Constructor
-    TIGL_EXPORT CCPACSWingSection();
-
-    // Virtual Destructor
-    TIGL_EXPORT virtual ~CCPACSWingSection();
-
-    // Read CPACS section elements
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& sectionXPath);
-
-    // Write CPACS section elements
-    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& sectionXPath);
-
     // Get element count for this section
     TIGL_EXPORT int GetSectionElementCount() const;
 
@@ -62,13 +50,13 @@ public:
     TIGL_EXPORT CTiglTransformation GetSectionTransformation() const;
 
     // Gets the section translation
-    TIGL_EXPORT const CTiglPoint& GetTranslation() const;
+    TIGL_EXPORT CTiglPoint GetTranslation() const;
 
     // Gets the section rotation
-    TIGL_EXPORT const CTiglPoint& GetRotation() const;
+    TIGL_EXPORT CTiglPoint GetRotation() const;
 
     // Gets the section scaling
-    TIGL_EXPORT const CTiglPoint& GetScaling() const;
+    TIGL_EXPORT CTiglPoint GetScaling() const;
 
     // Setter for translation
     TIGL_EXPORT void SetTranslation(const CTiglPoint& trans);
@@ -78,23 +66,6 @@ public:
 
     // Setter for scaling
     TIGL_EXPORT void SetScaling(const CTiglPoint& scaling);
-
-protected:
-    // Cleanup routine
-    void Cleanup();
-
-private:
-    // Copy constructor
-    CCPACSWingSection(const CCPACSWingSection& );
-
-    // Assignment operator
-    void operator=(const CCPACSWingSection& );
-
-private:
-
-    CCPACSTransformation      transformation; /**< Section transfromation   */
-    CCPACSWingSectionElements elements;       /**< Section elements         */
-
 };
 
 } // end namespace tigl

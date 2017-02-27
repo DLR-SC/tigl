@@ -31,42 +31,6 @@
 namespace tigl
 {
 
-// Constructor
-CCPACSWingSection::CCPACSWingSection()
-{
-    Cleanup();
-}
-
-// Destructor
-CCPACSWingSection::~CCPACSWingSection()
-{
-    Cleanup();
-}
-
-// Cleanup routine
-void CCPACSWingSection::Cleanup()
-{
-    m_name = "";
-    m_uID  = "";
-    m_description = "";
-    transformation.reset();
-}
-
-// Read CPACS section elements
-void CCPACSWingSection::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& sectionXPath)
-{
-    Cleanup();
-    generated::CPACSWingSection::ReadCPACS(tixiHandle, sectionXPath);
-
-
-}
-
-// Write CPACS section elements
-void CCPACSWingSection::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& sectionXPath)
-{
-    generated::CPACSWingSection::WriteCPACS(tixiHandle, sectionXPath);
-}
-
 // Get profile count for this section
 int CCPACSWingSection::GetSectionElementCount() const
 {
@@ -82,47 +46,47 @@ const CCPACSWingSectionElement& CCPACSWingSection::GetSectionElement(int index) 
 // Gets the section transformation
 CTiglTransformation CCPACSWingSection::GetSectionTransformation() const
 {
-    return transformation.getTransformationMatrix();
+    return m_transformation.getTransformationMatrix();
 }
 
 // Gets the section translation
-const CTiglPoint& CCPACSWingSection::GetTranslation() const
+CTiglPoint CCPACSWingSection::GetTranslation() const
 {
-    return transformation.getTranslationVector();
+    return m_transformation.getTranslationVector();
 }
 
 // Gets the section rotation
-const CTiglPoint& CCPACSWingSection::GetRotation() const
+CTiglPoint CCPACSWingSection::GetRotation() const
 {
-    return transformation.getRotation();
+    return m_transformation.getRotation();
 }
 
 // Gets the section scaling
-const CTiglPoint& CCPACSWingSection::GetScaling() const
+CTiglPoint CCPACSWingSection::GetScaling() const
 {
-    return transformation.getScaling();
+    return m_transformation.getScaling();
 }
 
 // Setter for translation
 void CCPACSWingSection::SetTranslation(const CTiglPoint& trans)
 {
-    transformation.setTranslation(trans, ABS_LOCAL);
-    transformation.updateMatrix();
+    m_transformation.setTranslation(trans, ABS_LOCAL);
+    m_transformation.updateMatrix();
 
 }
 
 // Setter for rotation
 void CCPACSWingSection::SetRotation(const CTiglPoint& rot)
 {
-    transformation.setRotation(rot);
-    transformation.updateMatrix();
+    m_transformation.setRotation(rot);
+    m_transformation.updateMatrix();
 }
 
 // Setter for scaling
 void CCPACSWingSection::SetScaling(const CTiglPoint& scale)
 {
-    transformation.setScaling(scale);
-    transformation.updateMatrix();
+    m_transformation.setScaling(scale);
+    m_transformation.updateMatrix();
 }
 
 } // end namespace tigl
