@@ -28,10 +28,7 @@ CCPACSWingCellPositionChordwise::CCPACSWingCellPositionChordwise(CCPACSWingCell*
     : generated::CPACSCellPositioningChordwise(parent) {}
 
 CCPACSWingCellPositionChordwise::CCPACSWingCellPositionChordwise(CPACSWingIntermediateStructureCell* parent)
-    : generated::CPACSCellPositioningChordwise(parent)
-{
-    throw std::logic_error("CPACSWingIntermediateStructureCell as parent is not implemented");
-}
+    : generated::CPACSCellPositioningChordwise(parent) {}
 
 CCPACSWingCellPositionChordwise::InputType CCPACSWingCellPositionChordwise::GetInputType() const
 {
@@ -39,7 +36,7 @@ CCPACSWingCellPositionChordwise::InputType CCPACSWingCellPositionChordwise::GetI
         return InputType::Xsi;
     if (m_sparUID_choice1)
         return InputType::Spar;
-    throw std::runtime_error("Invalid input combination of xsi and sparUid");
+    return InputType::None;
 }
 
 void CCPACSWingCellPositionChordwise::SetXsi(double xsi1, double xsi2)
@@ -48,7 +45,8 @@ void CCPACSWingCellPositionChordwise::SetXsi(double xsi1, double xsi2)
     m_xsi2_choice2 = xsi2;
     m_sparUID_choice1 = boost::none;
 
-    GetParent<CCPACSWingCell>()->Invalidate();
+    if (IsParent<CCPACSWingCell>())
+        GetParent<CCPACSWingCell>()->Invalidate();
 }
 
 void CCPACSWingCellPositionChordwise::GetXsi(double& xsi1, double& xsi2) const
@@ -61,7 +59,7 @@ void CCPACSWingCellPositionChordwise::GetXsi(double& xsi1, double& xsi2) const
 
 std::pair<double, double> CCPACSWingCellPositionChordwise::GetXsi() const
 {
-    if (!m_xsi1_choice2 || !m_xsi2_choice2) {
+    if (GetInputType() != InputType::Xsi) {
         throw CTiglError("CCPACSWingCellPositionChordwise::GetXsi method called, but position is defined via sparUID!");
     }
     return std::make_pair(*m_xsi1_choice2, *m_xsi2_choice2);
@@ -73,12 +71,13 @@ void CCPACSWingCellPositionChordwise::SetSparUId(std::string sparUId)
     m_xsi2_choice2 = boost::none;
     m_sparUID_choice1 = sparUId;
 
-    GetParent<CCPACSWingCell>()->Invalidate();
+    if (IsParent<CCPACSWingCell>())
+        GetParent<CCPACSWingCell>()->Invalidate();
 }
 
 const std::string& CCPACSWingCellPositionChordwise::GetSparUId() const
 {
-    if (!m_sparUID_choice1) {
+    if (GetInputType() != InputType::Spar) {
         throw CTiglError("CCPACSWingCellPositionChordwise::GetSparUId method called, but position is defined via xsi1/xsi2!");
     }
     return *m_sparUID_choice1;
