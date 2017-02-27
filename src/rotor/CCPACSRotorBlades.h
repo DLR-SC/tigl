@@ -52,6 +52,11 @@ public:
     // Returns the rotor blade for a given index.
     TIGL_EXPORT CCPACSWing& GetRotorBlade(int index) const;
 
+    // Returns the rotor blade for a given index.
+    TIGL_EXPORT CCPACSWing& GetRotorBlade(const std::string& uid) const;
+
+    TIGL_EXPORT int GetRotorBladeIndex(const std::string& uid) const;
+
     // Returns the parent configuration
     TIGL_EXPORT CCPACSConfiguration& GetConfiguration(void) const;
 };

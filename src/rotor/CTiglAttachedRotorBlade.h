@@ -43,9 +43,6 @@ public:
     // Constructor
     TIGL_EXPORT CTiglAttachedRotorBlade(CCPACSRotorBladeAttachment* parent, CCPACSWing& rotorBlade, int index);
 
-    // Virtual Destructor
-    TIGL_EXPORT virtual ~CTiglAttachedRotorBlade(void);
-
     TIGL_EXPORT virtual const std::string& GetUID() const override;
     TIGL_EXPORT virtual void SetUID(const std::string& uid) override;
 

@@ -77,6 +77,7 @@ public:
     // Returns the wing index for a given UID.
     TIGL_EXPORT int GetWingIndex(const std::string& UID) const;
 
+    TIGL_EXPORT bool HasWing(const std::string& uid) const;
 };
 
 } // end namespace tigl

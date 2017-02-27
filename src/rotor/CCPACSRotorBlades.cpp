@@ -64,6 +64,25 @@ CCPACSWing& CCPACSRotorBlades::GetRotorBlade(int index) const
     return *m_rotorBlade[index];
 }
 
+CCPACSWing& CCPACSRotorBlades::GetRotorBlade(const std::string& uid) const
+{
+    return *m_rotorBlade[GetRotorBladeIndex(uid) - 1];
+}
+
+// Returns the wing index for a given UID.
+int CCPACSRotorBlades::GetRotorBladeIndex(const std::string& UID) const
+{
+    for (int i = 0; i < GetRotorBladeCount(); i++) {
+        const std::string tmpUID(m_rotorBlade[i]->GetUID());
+        if (tmpUID == UID) {
+            return i + 1;
+        }
+    }
+
+    // UID not there
+    throw CTiglError("Error: Invalid UID in CCPACSRotorBlades::GetRotorBladeIndex", TIGL_UID_ERROR);
+}
+
 // Returns the parent configuration
 CCPACSConfiguration& CCPACSRotorBlades::GetConfiguration(void) const
 {

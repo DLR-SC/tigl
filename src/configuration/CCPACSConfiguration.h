@@ -100,19 +100,19 @@ public:
     // Returns the wing or rotor profile for a given uid.
     TIGL_EXPORT CCPACSWingProfile& GetWingProfile(std::string uid) const;
 
-    // Returns the total count of wings in a configuration
+    // Returns the total count of wings (including rotor blades) in a configuration
     TIGL_EXPORT int GetWingCount() const;
 
-    // Returns the count of wings in a configuration with the property isRotorBlade set to true
+    // Returns the count of rotor blade wings in a configuration
     TIGL_EXPORT int GetRotorBladeCount(void) const;
 
-    // Returns the wing for a given index.
+    // Returns the wing (or rotor blade) for a given index.
     TIGL_EXPORT CCPACSWing& GetWing(int index) const;
 
-    // Returns the wing for a given UID.
+    // Returns the wing (or rotor blade) for a given UID.
     TIGL_EXPORT CCPACSWing& GetWing(const std::string& UID) const;
 
-    // Returns the wing index for a given UID.
+    // Returns the wing (or rotor blade) index for a given UID.
     TIGL_EXPORT int GetWingIndex(const std::string& UID) const;
 
     // Returns the total count of generic systems in a configuration

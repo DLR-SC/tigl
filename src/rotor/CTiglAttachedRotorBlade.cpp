@@ -45,16 +45,10 @@ CTiglAttachedRotorBlade::CTiglAttachedRotorBlade(CCPACSRotorBladeAttachment* par
     , dummySymmetry(TIGL_NO_SYMMETRY)
     , parent(parent)
     , rotorBlade(&rotorBlade)
-    , rotorBladeIndex(rotorBladeIndex)
+    , rotorBladeIndex(index)
+    , rebuildRotorDisk(true)
 {
-    Cleanup();
     Update();
-}
-
-// Destructor
-CTiglAttachedRotorBlade::~CTiglAttachedRotorBlade(void)
-{
-    Cleanup();
 }
 
 const std::string& CTiglAttachedRotorBlade::GetUID() const {
