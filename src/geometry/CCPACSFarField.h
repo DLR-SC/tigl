@@ -50,9 +50,6 @@ protected:
 
 private:
     void init();
-
-    CCPACSTransformation dummyTrans; // TODO: CCPACSFarField must provide a CCPACSTransformation as it is a CTiglAbstractGeometricalComponent, is this correct? Can we remove the base class CTiglAbstractGeometricalComponent?
-    TiglSymmetryAxis dummySymmetry;
 };
 
 } // namespace tigl

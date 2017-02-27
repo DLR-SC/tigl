@@ -56,7 +56,7 @@ namespace tigl
 // Constructor
 CCPACSFuselage::CCPACSFuselage(CCPACSConfiguration* config)
     : generated::CPACSFuselage(&config->GetFuselages())
-    , CTiglAbstractPhysicalComponent(m_transformation, m_symmetry)
+    , CTiglAbstractPhysicalComponent(&m_transformation, &m_symmetry)
     , configuration(config)
 {
     Cleanup();
@@ -64,7 +64,7 @@ CCPACSFuselage::CCPACSFuselage(CCPACSConfiguration* config)
 
 CCPACSFuselage::CCPACSFuselage(CCPACSFuselages* parent)
     : generated::CPACSFuselage(parent)
-    , CTiglAbstractPhysicalComponent(m_transformation, m_symmetry)
+    , CTiglAbstractPhysicalComponent(&m_transformation, &m_symmetry)
     , configuration(&parent->GetParent<CCPACSAircraftModel>()->GetConfiguration()) {
     Cleanup();
 }
@@ -87,7 +87,6 @@ void CCPACSFuselage::Invalidate()
 void CCPACSFuselage::Cleanup()
 {
     m_name = "";
-    transformation.reset();
 
     // Calls ITiglGeometricComponent interface Reset to delete e.g. all childs.
     Reset();
@@ -199,7 +198,7 @@ PNamedShape CCPACSFuselage::BuildLoft()
 // Gets the fuselage transformation
 CTiglTransformation CCPACSFuselage::GetFuselageTransformation()
 {
-    return transformation.getTransformationMatrix();
+    return m_transformation.getTransformationMatrix();
 }
 
 // Get the positioning transformation for a given section index

@@ -36,10 +36,16 @@
 namespace tigl 
 {
 
-CTiglAbstractPhysicalComponent::CTiglAbstractPhysicalComponent(CCPACSTransformation& trans, TiglSymmetryAxis& symmetryAxis)
+CTiglAbstractPhysicalComponent::CTiglAbstractPhysicalComponent(TiglSymmetryAxis* symmetryAxis)
+    : CTiglAbstractGeometricComponent(NULL, symmetryAxis) {}
+
+CTiglAbstractPhysicalComponent::CTiglAbstractPhysicalComponent(boost::optional<TiglSymmetryAxis>* symmetryAxis)
+    : CTiglAbstractGeometricComponent(NULL, symmetryAxis) {}
+
+CTiglAbstractPhysicalComponent::CTiglAbstractPhysicalComponent(CCPACSTransformation* trans, TiglSymmetryAxis* symmetryAxis)
     : CTiglAbstractGeometricComponent(trans, symmetryAxis) {}
 
-CTiglAbstractPhysicalComponent::CTiglAbstractPhysicalComponent(CCPACSTransformation& trans, boost::optional<TiglSymmetryAxis>& symmetryAxis)
+CTiglAbstractPhysicalComponent::CTiglAbstractPhysicalComponent(CCPACSTransformation* trans, boost::optional<TiglSymmetryAxis>* symmetryAxis)
     : CTiglAbstractGeometricComponent(trans, symmetryAxis) {}
 
 // Adds a child to this geometric component.

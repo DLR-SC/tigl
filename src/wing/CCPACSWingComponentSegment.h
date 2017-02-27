@@ -230,8 +230,6 @@ private:
 
 
 private:
-    CCPACSTransformation dummyTrans; // TODO: CCPACSWingComponentSegment must provide a CCPACSTransformation as it is a CTiglAbstractGeometricalComponent, is this correct? Can we remove the base class CTiglAbstractGeometricalComponent?
-    TiglSymmetryAxis     dummySymmetry;
     std::string          toElementUID;         /**< Outer segment uid (tip)                 */
     CCPACSWing*          wing;                 /**< Parent wing                             */
     double               myVolume;             /**< Volume of this segment                  */

@@ -59,7 +59,7 @@ namespace external_object_private
 using namespace external_object_private;
 
 CCPACSExternalObject::CCPACSExternalObject(CCPACSExternalObjects* parent)
-    : generated::CPACSGenericGeometricComponent(parent), CTiglAbstractPhysicalComponent(m_transformation, dummySymmetry), dummySymmetry(TIGL_NO_SYMMETRY) {}
+    : generated::CPACSGenericGeometricComponent(parent), CTiglAbstractPhysicalComponent(&m_transformation) {}
 
 const std::string& CCPACSExternalObject::GetUID() const {
     return generated::CPACSGenericGeometricComponent::GetUID();

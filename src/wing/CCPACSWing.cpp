@@ -149,7 +149,7 @@ namespace
 
 CCPACSWing::CCPACSWing(CCPACSWings* parent)
     : generated::CPACSWing(parent)
-    , CTiglAbstractPhysicalComponent(m_transformation, m_symmetry)
+    , CTiglAbstractPhysicalComponent(&m_transformation, &m_symmetry)
     , configuration(&parent->GetParent<CCPACSAircraftModel>()->GetConfiguration())
     , rebuildFusedSegments(true)
     , rebuildFusedSegWEdge(true)
@@ -166,7 +166,7 @@ CCPACSWing::CCPACSWing(CCPACSWings* parent)
 }
 CCPACSWing::CCPACSWing(CCPACSRotorBlades* parent)
     : generated::CPACSWing(parent)
-    , CTiglAbstractPhysicalComponent(m_transformation, m_symmetry)
+    , CTiglAbstractPhysicalComponent(&m_transformation, &m_symmetry)
     , configuration(&parent->GetConfiguration())
     , rebuildFusedSegments(true)
     , rebuildFusedSegWEdge(true)
@@ -197,7 +197,7 @@ void CCPACSWing::Cleanup()
     m_name = "";
     m_description = "";
     isRotorBlade = false;
-    transformation.reset();
+    m_transformation.reset();
 
     // Calls ITiglGeometricComponent interface Reset to delete e.g. all childs.
     Reset();
@@ -212,7 +212,7 @@ void CCPACSWing::Update()
         return;
     }
 
-    transformation.updateMatrix();
+    m_transformation.updateMatrix();
     invalidated = false;
     rebuildFusedSegments = true;    // forces a rebuild of all segments with regards to the updated translation
     rebuildShells = true;
@@ -418,7 +418,7 @@ void CCPACSWing::BuildUpperLowerShells()
 // Gets the wing transformation (original wing implementation, but see GetTransformation)
 CTiglTransformation CCPACSWing::GetWingTransformation()
 {
-    return transformation.getTransformationMatrix();
+    return m_transformation.getTransformationMatrix();
 }
 
 // Get the positioning transformation for a given section-uid

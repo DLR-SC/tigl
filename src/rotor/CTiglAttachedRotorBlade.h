@@ -132,8 +132,6 @@ private:
     double                       myVolume;             /**< Volume of this rotor blade              */
     double                       mySurfaceArea;        /**< Surface area of this rotor blade        */
     CTiglTransformation          transformationMatrix;
-    CCPACSTransformation         dummyTrans;
-    TiglSymmetryAxis             dummySymmetry;
 };
 
 } // end namespace tigl

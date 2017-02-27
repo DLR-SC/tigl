@@ -48,7 +48,6 @@ private:
     virtual PNamedShape BuildLoft(void) override;
 
     std::string _filePath;
-	TiglSymmetryAxis dummySymmetry;
 };
 
 } // namespace tigl

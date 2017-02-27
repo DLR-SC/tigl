@@ -46,8 +46,10 @@ class CTiglAbstractGeometricComponent : public ITiglGeometricComponent
 {
 public:
     // Constructor
-    TIGL_EXPORT CTiglAbstractGeometricComponent(CCPACSTransformation& trans, TiglSymmetryAxis& symmetryAxis);
-    TIGL_EXPORT CTiglAbstractGeometricComponent(CCPACSTransformation& trans, boost::optional<TiglSymmetryAxis>& symmetryAxis);
+    TIGL_EXPORT CTiglAbstractGeometricComponent(TiglSymmetryAxis* symmetryAxis = NULL);
+    TIGL_EXPORT CTiglAbstractGeometricComponent(boost::optional<TiglSymmetryAxis>* symmetryAxis);
+    TIGL_EXPORT CTiglAbstractGeometricComponent(CCPACSTransformation* trans, TiglSymmetryAxis* symmetryAxis = NULL);
+    TIGL_EXPORT CTiglAbstractGeometricComponent(CCPACSTransformation* trans, boost::optional<TiglSymmetryAxis>* symmetryAxis);
 
     // Gets the loft of a geometric component
     TIGL_EXPORT virtual PNamedShape GetLoft();
@@ -95,8 +97,6 @@ protected:
     
     virtual PNamedShape BuildLoft() = 0;
 
-    CCPACSTransformation& transformation;                                                 // references down to the transformation of the derived class
-    boost::variant<TiglSymmetryAxis&, boost::optional<TiglSymmetryAxis>&> symmetryAxis;   // references down to the symmetryAxis of the derived class
     PNamedShape           loft;
 
 private:
@@ -105,6 +105,10 @@ private:
 
     // Assignment operator
     void operator=(const CTiglAbstractGeometricComponent& ) = delete;
+
+private:
+    CCPACSTransformation* transformation;                                                 // references down to the transformation of the derived class (may be empty in case derived class does not have transformation)
+    boost::variant<TiglSymmetryAxis*, boost::optional<TiglSymmetryAxis>*> symmetryAxis;   // references down to the symmetryAxis of the derived class (may be empty in case derived class does not have symmetry)
 };
 
 } // end namespace tigl

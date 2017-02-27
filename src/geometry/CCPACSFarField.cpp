@@ -35,8 +35,7 @@
 namespace tigl
 {
 
-CCPACSFarField::CCPACSFarField()
-    : CTiglAbstractGeometricComponent(dummyTrans, dummySymmetry), dummySymmetry(TIGL_NO_SYMMETRY) {
+CCPACSFarField::CCPACSFarField() {
     init();
 }
 

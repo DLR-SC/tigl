@@ -40,7 +40,7 @@ namespace tigl
 
 // Constructor
 CCPACSGenericSystem::CCPACSGenericSystem(CCPACSConfiguration* config)
-    : CTiglAbstractPhysicalComponent(transformation, symmetryAxis), configuration(config)
+    : CTiglAbstractPhysicalComponent(&transformation, &symmetryAxis), configuration(config)
 {
     Cleanup();
 }

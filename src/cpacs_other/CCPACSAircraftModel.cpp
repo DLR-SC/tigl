@@ -27,11 +27,8 @@
 
 namespace tigl
 {
-CCPACSAircraftModel::CCPACSAircraftModel()
-    : CTiglAbstractPhysicalComponent(dummyTrans, dummySymmetry), dummySymmetry(TIGL_NO_SYMMETRY), config(nullptr) {}
-
 CCPACSAircraftModel::CCPACSAircraftModel(CCPACSConfiguration* config)
-    : CTiglAbstractPhysicalComponent(dummyTrans, dummySymmetry), dummySymmetry(TIGL_NO_SYMMETRY), config(config) {}
+    : config(config) {}
 
 const std::string& CCPACSAircraftModel::GetUID() const {
     return generated::CPACSAircraftModel::GetUID();

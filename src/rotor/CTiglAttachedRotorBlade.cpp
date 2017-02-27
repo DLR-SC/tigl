@@ -41,9 +41,7 @@ namespace tigl
 
 // Constructor
 CTiglAttachedRotorBlade::CTiglAttachedRotorBlade(CCPACSRotorBladeAttachment* parent, CCPACSWing& rotorBlade, int index)
-    : CTiglAbstractPhysicalComponent(dummyTrans, dummySymmetry)
-    , dummySymmetry(TIGL_NO_SYMMETRY)
-    , parent(parent)
+    : parent(parent)
     , rotorBlade(&rotorBlade)
     , rotorBladeIndex(index)
     , rebuildRotorDisk(true)
@@ -69,7 +67,6 @@ void CTiglAttachedRotorBlade::Invalidate(void)
 void CTiglAttachedRotorBlade::Cleanup(void)
 {
     transformationMatrix.SetIdentity();
-    transformation.reset();
 
     // Calls ITiglGeometricComponent interface Reset to delete e.g. all childs.
     Reset();

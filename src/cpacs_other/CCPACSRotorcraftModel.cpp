@@ -20,11 +20,8 @@
 
 namespace tigl
 {
-CCPACSRotorcraftModel::CCPACSRotorcraftModel()
-    : CTiglAbstractPhysicalComponent(dummyTrans, dummySymmetry), dummySymmetry(TIGL_NO_SYMMETRY), config(nullptr) {}
-
 CCPACSRotorcraftModel::CCPACSRotorcraftModel(CCPACSConfiguration* config)
-    : CTiglAbstractPhysicalComponent(dummyTrans, dummySymmetry), config(config) {}
+    : config(config) {}
 
 const std::string& CCPACSRotorcraftModel::GetUID() const {
     return generated::CPACSRotorcraftModel::GetUID();

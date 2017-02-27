@@ -38,46 +38,74 @@
 namespace tigl
 {
 
-// Constructor
-CTiglAbstractGeometricComponent::CTiglAbstractGeometricComponent(CCPACSTransformation& trans, TiglSymmetryAxis& symmetryAxis)
+CTiglAbstractGeometricComponent::CTiglAbstractGeometricComponent(TiglSymmetryAxis* symmetryAxis)
+    : transformation(NULL), symmetryAxis(symmetryAxis) {}
+
+CTiglAbstractGeometricComponent::CTiglAbstractGeometricComponent(boost::optional<TiglSymmetryAxis>* symmetryAxis)
+    : transformation(NULL), symmetryAxis(symmetryAxis) {}
+
+CTiglAbstractGeometricComponent::CTiglAbstractGeometricComponent(CCPACSTransformation* trans, TiglSymmetryAxis* symmetryAxis)
     : transformation(trans), symmetryAxis(symmetryAxis) {}
 
-CTiglAbstractGeometricComponent::CTiglAbstractGeometricComponent(CCPACSTransformation& trans, boost::optional<TiglSymmetryAxis>& symmetryAxis)
+CTiglAbstractGeometricComponent::CTiglAbstractGeometricComponent(CCPACSTransformation* trans, boost::optional<TiglSymmetryAxis>* symmetryAxis)
     : transformation(trans), symmetryAxis(symmetryAxis) {}
 
 void CTiglAbstractGeometricComponent::Reset()
 {
     SetUID("");
-    SetSymmetryAxis(TiglSymmetryAxis::TIGL_NO_SYMMETRY);
-    transformation.reset();
+    struct Visitor : boost::static_visitor<> {
+        void operator()(TiglSymmetryAxis* s) {
+            if (s)
+                *s = TiglSymmetryAxis::TIGL_NO_SYMMETRY;
+        }
+        void operator()(boost::optional<TiglSymmetryAxis>* s) {
+            if (s)
+                s->reset();
+        }
+    } visitor;
+    symmetryAxis.apply_visitor(visitor);
+    if (transformation)
+        transformation->reset();
 }
 
 TiglSymmetryAxis CTiglAbstractGeometricComponent::GetSymmetryAxis() {
-	struct Visitor : boost::static_visitor<TiglSymmetryAxis> {
-		TiglSymmetryAxis operator()(const TiglSymmetryAxis& s) {
-			return s;
-		}
-		TiglSymmetryAxis operator()(const boost::optional<TiglSymmetryAxis>& s) {
-			return *s;
-		}
-	} visitor;
-	return symmetryAxis.apply_visitor(visitor);
+    struct Visitor : boost::static_visitor<TiglSymmetryAxis> {
+        TiglSymmetryAxis operator()(const TiglSymmetryAxis* s) {
+            if (s)
+                return *s;
+            else
+                return TiglSymmetryAxis::TIGL_NO_SYMMETRY;
+        }
+        TiglSymmetryAxis operator()(const boost::optional<TiglSymmetryAxis>* s) {
+            if (s)
+                return s->get_value_or(TiglSymmetryAxis::TIGL_NO_SYMMETRY);
+            else
+                return TiglSymmetryAxis::TIGL_NO_SYMMETRY;
+        }
+    } visitor;
+    return symmetryAxis.apply_visitor(visitor);
 }
 
 void CTiglAbstractGeometricComponent::SetSymmetryAxis(const TiglSymmetryAxis& axis) {
-	struct Visitor : boost::static_visitor<> {
-		Visitor(const TiglSymmetryAxis& axis)
-			: axis(axis) {}
-		void operator()(TiglSymmetryAxis& s) {
-			s = axis;
-		}
-		void operator()(boost::optional<TiglSymmetryAxis>& s) {
-			s = axis;
-		}
-	private:
-		const TiglSymmetryAxis& axis;
-	} visitor(axis);
-	symmetryAxis.apply_visitor(visitor);
+    struct Visitor : boost::static_visitor<> {
+        Visitor(const TiglSymmetryAxis& axis)
+            : axis(axis) {}
+        void operator()(TiglSymmetryAxis* s) {
+            if (s)
+                *s = axis;
+            else
+                throw std::runtime_error("Type does not have a symmetry");
+        }
+        void operator()(boost::optional<TiglSymmetryAxis>* s) {
+            if (s)
+                *s = axis;
+            else
+                throw std::runtime_error("Type does not have a symmetry");
+        }
+    private:
+        const TiglSymmetryAxis& axis;
+    } visitor(axis);
+    symmetryAxis.apply_visitor(visitor);
 }
 
 std::string CTiglAbstractGeometricComponent::GetSymmetryAxisString() {
@@ -90,35 +118,51 @@ void CTiglAbstractGeometricComponent::SetSymmetryAxis(const std::string& axis) {
 
 CTiglTransformation CTiglAbstractGeometricComponent::GetTransformation() const
 {
-    return transformation.getTransformationMatrix();
+    if (transformation)
+        return transformation->getTransformationMatrix();
+    else
+        return CTiglTransformation();
 }
 
 CTiglPoint CTiglAbstractGeometricComponent::GetTranslation() const
 {
-    return transformation.getTranslationVector();
+    if (transformation)
+        return transformation->getTranslationVector();
+    else
+        return CTiglPoint(0, 0, 0);
 }
 
 ECPACSTranslationType CTiglAbstractGeometricComponent::GetTranslationType(void) const
 {
-    return transformation.getTranslationType();
+    if (transformation)
+        return transformation->getTranslationType();
+    else
+        return ECPACSTranslationType::ABS_LOCAL; // TODO(bgruber): is this a valid default?
 }
 
 CTiglPoint CTiglAbstractGeometricComponent::GetRotation() const
 {
-    return transformation.getRotation();
+    if (transformation)
+        return transformation->getRotation();
+    else
+        return CTiglPoint(0, 0, 0);
 }
 
 CTiglPoint CTiglAbstractGeometricComponent::GetScaling() const
 {
-    return transformation.getScaling();
+    if (transformation)
+        return transformation->getScaling();
+    else
+        return CTiglPoint(1, 1, 1);
 }
 
 void CTiglAbstractGeometricComponent::Translate(CTiglPoint trans)
 {
-    CTiglPoint newTrans(transformation.getTranslationVector());
-    newTrans += trans;
-    transformation.setTranslation(newTrans, transformation.getTranslationType());
-    transformation.updateMatrix();
+    if (transformation) {
+        transformation->setTranslation(GetTranslation() + trans, GetTranslationType());
+        transformation->updateMatrix();
+    } else
+        throw std::runtime_error("Type does not have a transformation");
 }
 
 PNamedShape CTiglAbstractGeometricComponent::GetLoft()
