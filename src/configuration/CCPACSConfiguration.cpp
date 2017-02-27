@@ -141,15 +141,17 @@ void CCPACSConfiguration::ReadCPACS(const std::string& configurationUID)
 // Write CPACS structure to tixiHandle
 void CCPACSConfiguration::WriteCPACS(const std::string& configurationUID)
 {
-    char* path;
-    if (tixiUIDGetXPath(tixiDocumentHandle, configurationUID.c_str(), &path) != SUCCESS) {
-        throw CTiglError("Error: XML error while reading in CCPACSConfiguration::ReadCPACS", TIGL_XML_ERROR);
-    }
     header.WriteCPACS(tixiDocumentHandle, "/cpacs/header");
-    if (aircraftModel)
-        aircraftModel->WriteCPACS(tixiDocumentHandle, path);
-    if (rotorcraftModel)
-        rotorcraftModel->WriteCPACS(tixiDocumentHandle, path);
+    if (aircraftModel) {
+        tixihelper::TixiSaveAttribute(tixiDocumentHandle, "/cpacs/vehicles/aircraft/model", "uID", configurationUID); // patch uid in tixi, so xpath below is valid
+        aircraftModel->SetUID(configurationUID);
+        aircraftModel->WriteCPACS(tixiDocumentHandle, "/cpacs/vehicles/aircraft/model[@uID=\"" + configurationUID + "\"]");
+    }
+    if (rotorcraftModel) {
+        tixihelper::TixiSaveAttribute(tixiDocumentHandle, "/cpacs/vehicles/rotorcraft/model", "uID", configurationUID); // patch uid in tixi, so xpath below is valid
+        rotorcraftModel->SetUID(configurationUID);
+        rotorcraftModel->WriteCPACS(tixiDocumentHandle, "/cpacs/vehicles/rotorcraft/model[@uID=\"" + configurationUID + "\"]");
+    }
     if (profiles)
         profiles->WriteCPACS(tixiDocumentHandle, profilesXPath);
 }
