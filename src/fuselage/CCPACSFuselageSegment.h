@@ -176,8 +176,6 @@ private:
     // get short name for loft
     std::string GetShortShapeName();
 
-    CCPACSTransformation dummyTrans; // TODO: CCPACSFuselageSegment must provide a CCPACSTransformation as it is a CTiglAbstractGeometricalComponent, is this correct? Can we remove the base class CTiglAbstractGeometricalComponent?
-    TiglSymmetryAxis     dummySymmetry;
     CCPACSFuselageConnection startConnection;      /**< Start segment connection                */
     CCPACSFuselageConnection endConnection;        /**< End segment connection                  */
     CCPACSFuselage*          fuselage;             /**< Parent fuselage                         */

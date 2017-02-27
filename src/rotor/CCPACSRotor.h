@@ -76,7 +76,7 @@ public:
     TIGL_EXPORT CTiglPoint GetTranslation(void);
 
     // Returns the type of the rotor
-    TIGL_EXPORT const TiglRotorType& GetType(void) const;
+    TIGL_EXPORT TiglRotorType GetType(void) const;
 
     // Returns the rotor blade attachment count
     TIGL_EXPORT int GetRotorBladeAttachmentCount(void) const;
@@ -128,9 +128,6 @@ protected:
     // Cleanup routine
     void Cleanup(void);
 
-    // Build transformation matrix for the rotor
-    void BuildMatrix(void);
-
     // Update internal rotor data
     void Update(void);
 
@@ -139,7 +136,6 @@ protected:
     PNamedShape BuildLoft(void);
 
 private:
-    TiglRotorType          type;                        /**< Rotor type           */
     bool                   invalidated;                 /**< Internal state flag  */
     bool                   rebuildGeometry;             /**< Indicates if geometry needs to be rebuilt */
 };

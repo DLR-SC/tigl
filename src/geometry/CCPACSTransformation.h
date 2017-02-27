@@ -38,7 +38,6 @@ public:
     TIGL_EXPORT void setTranslation(const CTiglPoint& translation, ECPACSTranslationType);
     TIGL_EXPORT void setRotation(const CTiglPoint& rotation);
     TIGL_EXPORT void setScaling(const CTiglPoint& scale);
-    TIGL_EXPORT void setTransformationMatrix(const CTiglTransformation& matrix);
     
     /// this function must be called explitly after the previous setters
     TIGL_EXPORT void updateMatrix();

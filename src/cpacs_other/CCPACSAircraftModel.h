@@ -37,8 +37,7 @@ class CCPACSAircraftModel : public generated::CPACSAircraftModel, public CTiglAb
 {
 public:
     // Construct
-    TIGL_EXPORT CCPACSAircraftModel();
-    TIGL_EXPORT CCPACSAircraftModel(CCPACSConfiguration* config);
+    TIGL_EXPORT CCPACSAircraftModel(CCPACSConfiguration* config = NULL);
 
     TIGL_EXPORT virtual const std::string& GetUID() const override;
     TIGL_EXPORT virtual void SetUID(const std::string& uid) override;
@@ -53,9 +52,7 @@ public:
 protected:
     PNamedShape BuildLoft();
 
-    CCPACSTransformation dummyTrans; // TODO: CCPACSAircraftModel must provide a CCPACSTransformation as it is a CTiglAbstractGeometricalComponent, is this correct? Can we remove the base class CTiglAbstractGeometricalComponent?
-	TiglSymmetryAxis dummySymmetry;
-	CCPACSConfiguration* config;
+    CCPACSConfiguration* config;
 };
 
 } // end namespace tigl

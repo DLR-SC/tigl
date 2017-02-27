@@ -68,10 +68,6 @@ void CCPACSTransformation::setScaling(const CTiglPoint& scale)
     m_scaling->SetAsPoint(scale);
 }
 
-void CCPACSTransformation::setTransformationMatrix(const CTiglTransformation & matrix) {
-    _transformationMatrix = matrix;
-}
-
 void CCPACSTransformation::updateMatrix()
 {
     _transformationMatrix.SetIdentity();

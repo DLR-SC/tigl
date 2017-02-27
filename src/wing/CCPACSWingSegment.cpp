@@ -206,8 +206,7 @@ namespace
 
 CCPACSWingSegment::CCPACSWingSegment(CCPACSWingSegments* parent)
     : generated::CPACSWingSegment(parent)
-    , CTiglAbstractSegment(parent->GetSegmentCount() + 1, dummyTrans, dummySymmetry) // TODO: this is a hack, as we depend on the implementation of the vector reader in generated::CCPACSWingSegments::ReadCPACS() but the current CodeGen does not support passing indices into ctors
-    , dummySymmetry(TIGL_NO_SYMMETRY)
+    , CTiglAbstractSegment(parent->GetSegmentCount() + 1) // TODO: this is a hack, as we depend on the implementation of the vector reader in generated::CCPACSWingSegments::ReadCPACS() but the current CodeGen does not support passing indices into ctors
     , wing(parent->GetParent<CCPACSWing>()) {
     Cleanup();
 }
@@ -215,8 +214,7 @@ CCPACSWingSegment::CCPACSWingSegment(CCPACSWingSegments* parent)
 // Constructor
 CCPACSWingSegment::CCPACSWingSegment(CCPACSWing* aWing, int aSegmentIndex)
     : generated::CPACSWingSegment(&aWing->GetSegments())
-    , CTiglAbstractSegment(aSegmentIndex, dummyTrans, dummySymmetry)
-    , dummySymmetry(TIGL_NO_SYMMETRY)
+    , CTiglAbstractSegment(aSegmentIndex)
     , wing(aWing)
 {
     Cleanup();

@@ -41,7 +41,7 @@ namespace tigl
 // Constructor
 CCPACSRotor::CCPACSRotor(CCPACSRotors* parent)
     : generated::CPACSRotor(parent)
-    , CTiglAbstractPhysicalComponent(m_transformation, m_symmetry)
+    , CTiglAbstractPhysicalComponent(&m_transformation, &m_symmetry)
     , rebuildGeometry(true) {}
 
 // Invalidates internal state
@@ -66,7 +66,7 @@ void CCPACSRotor::Update(void)
         return;
     }
 
-    transformation.updateMatrix();
+    m_transformation.updateMatrix();
     invalidated = false;
     rebuildGeometry = true;
 
@@ -99,7 +99,7 @@ void CCPACSRotor::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::str
 CTiglTransformation CCPACSRotor::GetTransformation(void) const
 {
     const_cast<CCPACSRotor*>(this)->Update();   // create new transformation matrix if scaling, rotation or translation was changed, TODO: hack
-    return transformation.getTransformationMatrix();
+    return m_transformation.getTransformationMatrix();
 }
 
 // Sets the Transformation object
@@ -114,13 +114,22 @@ void CCPACSRotor::Translate(CTiglPoint trans)
 CTiglPoint CCPACSRotor::GetTranslation(void)
 {
     Update();
-    return transformation.getTranslationVector();
+    return m_transformation.getTranslationVector();
 }
 
 // Returns the type of the rotor
-const TiglRotorType& CCPACSRotor::GetType(void) const
+TiglRotorType CCPACSRotor::GetType(void) const
 {
-    return type;
+    if (!m_type)
+        return TiglRotorType::TIGLROTOR_UNDEFINED;
+
+    switch (*m_type) {
+        case generated::CPACSRotor_type::fenestron: return TiglRotorType::TIGLROTOR_FENESTRON;
+        case generated::CPACSRotor_type::mainRotor: return TiglRotorType::TIGLROTOR_MAIN_ROTOR;
+        case generated::CPACSRotor_type::propeller: return TiglRotorType::TIGLROTOR_PROPELLER;
+        case generated::CPACSRotor_type::tailRotor: return TiglRotorType::TIGLROTOR_TAIL_ROTOR;
+        default: throw std::logic_error("unknown rotor type");
+    }
 }
 
 // Returns the rotor blade attachment count

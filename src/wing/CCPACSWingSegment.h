@@ -254,8 +254,6 @@ private:
     // converts segment eta xsi coordinates to face uv koordinates
     void etaXsiToUV(bool isFromUpper, double eta, double xsi, double& u, double& v) const;
 
-    CCPACSTransformation dummyTrans; // TODO: CCPACSWingSegment must provide a CCPACSTransformation as it is a CTiglAbstractGeometricalComponent, is this correct? Can we remove the base class CTiglAbstractGeometricalComponent?
-    TiglSymmetryAxis dummySymmetry;
     CCPACSWingConnection innerConnection;      /**< Inner segment connection (root)         */
     CCPACSWingConnection outerConnection;      /**< Outer segment connection (tip)          */
     mutable TopTools_SequenceOfShape guideCurveWires;  /**< container for the guide curve wires     */
