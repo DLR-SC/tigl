@@ -38,6 +38,7 @@ CCPACSRotorBladeAttachment::CCPACSRotorBladeAttachment(CCPACSRotorBladeAttachmen
 void CCPACSRotorBladeAttachment::Invalidate(void)
 {
     invalidated = true;
+    lazyCreateAttachedRotorBlades();
     for (int i = 0; i < attachedRotorBlades.size(); i++) {
         attachedRotorBlades[i]->Invalidate();
     }
@@ -52,12 +53,6 @@ void CCPACSRotorBladeAttachment::ReadCPACS(const TixiDocumentHandle& tixiHandle,
         for (int i = 0; i < *m_numberOfBlades_choice2; i++) {
             cachedAzimuthAngles.push_back(i * 360.0 / static_cast<double>(*m_numberOfBlades_choice2));
         }
-    }
-
-    // Create wrappers for attached rotor blades
-    CCPACSWing& blade = GetConfiguration().GetWing(m_rotorBladeUID);
-    for (int i = 1; i <= GetNumberOfBlades(); i++) {
-        attachedRotorBlades.push_back(make_unique<CTiglAttachedRotorBlade>(this, blade, i));
     }
 }
 
@@ -161,6 +156,7 @@ CCPACSRotorHinge& CCPACSRotorBladeAttachment::GetHinge(const int index) const
 // Returns the rotor blade for a given index
 CTiglAttachedRotorBlade& CCPACSRotorBladeAttachment::GetAttachedRotorBlade(int index)
 {
+    lazyCreateAttachedRotorBlades();
     index--;
     if (index < 0 || index >= GetNumberOfBlades()) {
         throw CTiglError("Error: Invalid index in CCPACSRotorBladeAttachment::GetAttachedRotorBlade", TIGL_INDEX_ERROR);
@@ -183,6 +179,21 @@ CCPACSRotor& CCPACSRotorBladeAttachment::GetRotor(void) const
 CCPACSConfiguration& CCPACSRotorBladeAttachment::GetConfiguration(void) const
 {
     return m_parent->GetConfiguration();
+}
+
+void CCPACSRotorBladeAttachment::lazyCreateAttachedRotorBlades()
+{
+    // Create wrappers for attached rotor blades
+    // We have to do these lazily, as we do not have control of the order in which CPACS elements are read
+    // (wings may not be loaded yet, when ReadCPACS of this class is called)
+    CCPACSRotorcraftModel& rotorcraft = *m_parent->GetParent()->GetParent()->GetParent()->GetParent();
+    const int count = GetNumberOfBlades();
+    if (attachedRotorBlades.size() == 0 && attachedRotorBlades.size() < count) {
+        CCPACSWing& blade = rotorcraft.GetRotorBlades().GetRotorBlade(m_rotorBladeUID);
+        for (int i = 1; i <= count; i++) {
+            attachedRotorBlades.push_back(make_unique<CTiglAttachedRotorBlade>(this, blade, i));
+        }
+    }
 }
 
 } // end namespace tigl

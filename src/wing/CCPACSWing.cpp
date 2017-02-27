@@ -34,6 +34,7 @@
 #include "CCPACSWingSegment.h"
 #include "CCPACSWings.h"
 #include "CCPACSAircraftModel.h"
+#include "CCPACSRotorcraftModel.h"
 #include "CTiglError.h"
 #include "tiglcommonfunctions.h"
 #include "TixiSaveExt.h"
@@ -153,11 +154,20 @@ CCPACSWing::CCPACSWing(CCPACSWings* parent)
     , rebuildFusedSegments(true)
     , rebuildFusedSegWEdge(true)
     , rebuildShells(true) {
+
+    if (parent->IsParent<CCPACSAircraftModel>())
+        configuration = &parent->GetParent<CCPACSAircraftModel>()->GetConfiguration();
+    else if (parent->IsParent<CCPACSRotorcraftModel>())
+        configuration = &parent->GetParent<CCPACSRotorcraftModel>()->GetConfiguration();
+    else
+        throw std::logic_error("Unknown parent");
+
     Cleanup();
 }
 CCPACSWing::CCPACSWing(CCPACSRotorBlades* parent)
     : generated::CPACSWing(parent)
     , CTiglAbstractPhysicalComponent(m_transformation, m_symmetry)
+    , configuration(&parent->GetConfiguration())
     , rebuildFusedSegments(true)
     , rebuildFusedSegWEdge(true)
     , rebuildShells(true) {
@@ -414,7 +424,10 @@ CTiglTransformation CCPACSWing::GetWingTransformation()
 // Get the positioning transformation for a given section-uid
 CTiglTransformation CCPACSWing::GetPositioningTransformation(std::string sectionUID)
 {
-    return m_positionings->GetPositioningTransformation(sectionUID);
+    if (m_positionings)
+        return m_positionings->GetPositioningTransformation(sectionUID);
+    else
+        return CTiglTransformation(); // return identity if no positioning transformation is given
 }
 
 // Gets the upper point in absolute (world) coordinates for a given segment, eta, xsi

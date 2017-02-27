@@ -70,13 +70,13 @@ void CCPACSRotor::Update(void)
     invalidated = false;
     rebuildGeometry = true;
 
-    // Update all rotor blade transformations
-    for (int i=1; i<=GetRotorBladeAttachmentCount(); ++i) {
-        for (int j=1; j<=GetRotorBladeAttachment(i).GetNumberOfBlades(); ++j) {
-            GetRotorBladeAttachment(i).GetAttachedRotorBlade(j).Invalidate();
-            GetRotorBladeAttachment(i).GetAttachedRotorBlade(j).Update();
-        }
-    }
+    //// Update all rotor blade transformations
+    //for (int i=1; i<=GetRotorBladeAttachmentCount(); ++i) {
+    //    for (int j=1; j<=GetRotorBladeAttachment(i).GetNumberOfBlades(); ++j) {
+    //        GetRotorBladeAttachment(i).GetAttachedRotorBlade(j).Invalidate();
+    //        GetRotorBladeAttachment(i).GetAttachedRotorBlade(j).Update();
+    //    }
+    //}
 }
 
 const std::string& CCPACSRotor::GetUID() const {

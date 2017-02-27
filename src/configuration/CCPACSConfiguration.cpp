@@ -246,16 +246,18 @@ CCPACSFuselageProfiles& CCPACSConfiguration::GetFuselageProfiles()
 // Returns the wing profile for a given uid.
 CCPACSWingProfile& CCPACSConfiguration::GetWingProfile(std::string uid) const
 {
-    if(profiles->GetWingAirfoils().HasProfile(uid))
+    if (profiles->HasWingAirfoils() && profiles->GetWingAirfoils().HasProfile(uid))
         return profiles->GetWingAirfoils().GetProfile(uid);
-    else
+    else if (profiles->HasRotorAirfoils() && profiles->GetRotorAirfoils().HasProfile(uid))
         return profiles->GetRotorAirfoils().GetProfile(uid);
+    else
+        throw CTiglError("Profile " + uid + " does not exists");
 }
 
 // Returns the wing profile for a given index
 CCPACSWingProfile& CCPACSConfiguration::GetWingProfile(int index) const
 {
-    const int wingProfiles = profiles->GetWingAirfoils().GetProfileCount();
+    const int wingProfiles = profiles->HasWingAirfoils() ? profiles->GetWingAirfoils().GetProfileCount() : 0;
     if (index <= wingProfiles)
         return profiles->GetWingAirfoils().GetProfile(index);
     else
@@ -268,63 +270,69 @@ CCPACSACSystems& CCPACSConfiguration::GetACSystems()
     return acSystems;
 }
 
-// Returns the total count of wings in a configuration
+// Returns the total count of wings (including rotor blades) in a configuration
 int CCPACSConfiguration::GetWingCount() const
 {
-    if (aircraftModel) {
-        if (aircraftModel->HasWings())
-            return aircraftModel->GetWings().GetWingCount();
-        else
-            return 0;
+    if (aircraftModel && aircraftModel->HasWings()) {
+        return aircraftModel->GetWings().GetWingCount();
     } else if (rotorcraftModel) {
-        if (rotorcraftModel->HasWings())
-            return rotorcraftModel->GetWings().GetWingCount();
-        else
-            return 0;
+        return
+            (rotorcraftModel->HasWings() ? rotorcraftModel->GetWings().GetWingCount() : 0) +
+            (rotorcraftModel->HasRotorBlades() ? rotorcraftModel->GetRotorBlades().GetRotorBladeCount() : 0);
     } else
         return 0;
 }
 
-// Returns the count of wings in a configuration with the property isRotorBlade set to true
+// Returns the count of rotor blade wings in a configuration
 int CCPACSConfiguration::GetRotorBladeCount(void) const
 {
-    if (aircraftModel)
-        return aircraftModel->GetWings().GetRotorBladeCount();
-    else if (rotorcraftModel)
-        return rotorcraftModel->GetWings().GetRotorBladeCount();
+    if (rotorcraftModel && rotorcraftModel->HasRotorBlades())
+        return rotorcraftModel->GetRotorBlades().GetRotorBladeCount();
     else
         return 0;
 }
 
-// Returns the wing for a given index.
+// Returns the wing (or rotor blade) for a given index.
 CCPACSWing& CCPACSConfiguration::GetWing(int index) const
 {
     if (aircraftModel)
         return aircraftModel->GetWings().GetWing(index);
-    else if (rotorcraftModel)
-        return rotorcraftModel->GetWings().GetWing(index);
-    else
+    else if (rotorcraftModel) {
+        const int wingCount = rotorcraftModel->HasWings() ? rotorcraftModel->GetWings().GetWingCount() : 0;
+        if (index <= wingCount)
+            return rotorcraftModel->GetWings().GetWing(index);
+        else
+            return rotorcraftModel->GetRotorBlades().GetRotorBlade(index - wingCount);
+
+    } else
         throw CTiglError("No configuration loaded");
 }
-// Returns the wing for a given UID.
+// Returns the wing (or rotor blade) for a given UID.
 CCPACSWing& CCPACSConfiguration::GetWing(const std::string& UID) const
 {
     if (aircraftModel)
         return aircraftModel->GetWings().GetWing(UID);
-    else if (rotorcraftModel)
-        return rotorcraftModel->GetWings().GetWing(UID);
-    else
+    else if (rotorcraftModel) {
+        if(rotorcraftModel->HasWings() && rotorcraftModel->GetWings().HasWing(UID))
+            return rotorcraftModel->GetWings().GetWing(UID);
+        else
+            return rotorcraftModel->GetRotorBlades().GetRotorBlade(UID);
+    } else
         throw CTiglError("No configuration loaded");
 }
 
-// Returns the wing index for a given UID.
+// Returns the wing (or rotor blade) index for a given UID.
 int CCPACSConfiguration::GetWingIndex(const std::string& UID) const
 {
     if (aircraftModel)
         return aircraftModel->GetWings().GetWingIndex(UID);
-    else if (rotorcraftModel)
-        return rotorcraftModel->GetWings().GetWingIndex(UID);
-    else
+    else if (rotorcraftModel) {
+        if (rotorcraftModel->HasWings() && rotorcraftModel->GetWings().HasWing(UID))
+            return rotorcraftModel->GetWings().GetWingIndex(UID);
+        else
+            // offset rotor blade indices by wing count
+            return (rotorcraftModel->HasWings() ? rotorcraftModel->GetWings().GetWingCount() : 0) + rotorcraftModel->GetRotorBlades().GetRotorBladeIndex(UID);
+    } else
         throw CTiglError("No configuration loaded");
 }
 

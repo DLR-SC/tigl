@@ -133,6 +133,14 @@ int CCPACSWings::GetWingIndex(const std::string& UID) const
     throw CTiglError("Error: Invalid UID in CCPACSWings::GetWingIndex", TIGL_UID_ERROR);
 }
 
+bool CCPACSWings::HasWing(const std::string & uid) const
+{
+    for (std::size_t i = 0; i < m_wing.size(); i++)
+        if (m_wing[i]->GetUID() == uid)
+            return true;
+    return false;
+}
+
 void CCPACSWings::AddWing(CCPACSWing* wing)
 {
     // Check whether the same wing already exists if yes remove it before adding the new one
