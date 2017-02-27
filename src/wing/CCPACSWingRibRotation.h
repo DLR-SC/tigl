@@ -24,6 +24,8 @@ class CCPACSWingRibRotation : public generated::CPACSRibRotation
 {
 public:
     TIGL_EXPORT CCPACSWingRibRotation(CCPACSWingRibsPositioning* parent);
+
+    TIGL_EXPORT void SetZ(const double& value);
 };
 
 } // end namespace tigl

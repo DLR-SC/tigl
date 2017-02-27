@@ -87,7 +87,7 @@ CCPACSWingRibsDefinition::RibPositioningType CCPACSWingRibsDefinition::GetRibPos
 
 const CCPACSWingRibsPositioning& CCPACSWingRibsDefinition::GetRibsPositioning() const
 {
-    if (m_ribsPositioning_choice1) {
+    if (!m_ribsPositioning_choice1) {
         LOG(ERROR) << "CCPACSWingRibsDefinition is not defined via m_ribsPositioning_choice1!";
         throw CTiglError("CCPACSWingRibsDefinition is not defined via m_ribsPositioning_choice1! Please check first via GetRibPositioningType()");
     }
@@ -102,7 +102,7 @@ CCPACSWingRibsPositioning& CCPACSWingRibsDefinition::GetRibsPositioning()
 
 const CCPACSWingRibExplicitPositioning& CCPACSWingRibsDefinition::GetRibExplicitPositioning() const
 {
-    if (m_ribExplicitPositioning_choice2) {
+    if (!m_ribExplicitPositioning_choice2) {
         LOG(ERROR) << "CCPACSWingRibsDefinition is not defined via ribExplicitPositioning!";
         throw CTiglError("CCPACSWingRibsDefinition is not defined via ribExplicitPositioning! Please check first via GetRibPositioningType()!");
     }
@@ -892,8 +892,7 @@ gp_Vec CCPACSWingRibsDefinition::GetRibDirection(double currentEta, const gp_Pnt
         double midplaneEta, dummy;
         wingStructureReference.GetMidplaneEtaXsi(startPnt, midplaneEta, dummy);
         ribDir = wingStructureReference.GetMidplaneEtaDir(midplaneEta);
-    }
-    if (ribRotationReference == generated::CPACSRibRotation_ribRotationReference_SimpleContent::LeadingEdge) {
+    } else if (ribRotationReference == generated::CPACSRibRotation_ribRotationReference_SimpleContent::LeadingEdge) {
         ribDir = wingStructureReference.GetLeadingEdgeDirection(startPnt);
     }
     else if (ribRotationReference == generated::CPACSRibRotation_ribRotationReference_SimpleContent::TrailingEdge) {
