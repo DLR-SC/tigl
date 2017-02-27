@@ -80,6 +80,8 @@ void CCPACSWingShell::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string
 void CCPACSWingShell::Invalidate()
 {
     geometryCache.valid = false;
+    if (m_cells)
+        m_cells->Invalidate();
 }
 
 bool CCPACSWingShell::IsValid() const

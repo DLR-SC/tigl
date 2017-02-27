@@ -94,23 +94,8 @@ public:
     TIGL_EXPORT void SetRibCrossingBehaviour(CrossingBehaviour);
 
 private:
-    //CCPACSWingRibsDefinition& parent;
-    //std::string ribReference;
-    //StartDefinitionType startDefinitionType;
-    //double etaStart;
-    //std::string elementStartUID;
     boost::optional<std::string> m_sparPositionStartUID_choice3;
-    //EndDefinitionType endDefinitionType;
-    //double etaEnd;
-    //std::string elementEndUID;
     boost::optional<std::string> m_sparPositionEndUID_choice3;
-    //std::string ribStart;
-    //std::string ribEnd;
-    //RibCountDefinitionType ribCountDefinitionType;
-    //int numberOfRibs;
-    //double spacing;
-    //CrossingBehaviour ribCrossingBehaviour;
-    //CCPACSWingRibRotation ribRotation;
 };
 
 } // end namespace tigl
