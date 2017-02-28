@@ -41,7 +41,6 @@ namespace tigl
 // forward declaration
 class CCPACSWingRibsPositioning;
 class CCPACSWingRibCrossSection;
-class CCPACSWingRibExplicitPositioning;
 class CCPACSWingSparPosition;
 
 class CCPACSWingRibsDefinition : public generated::CPACSWingRibsDefinition

@@ -32,7 +32,6 @@
 #include "CCPACSConfiguration.h"
 #include "CCPACSWingSegment.h"
 #include "tiglcommonfunctions.h"
-#include "TixiSaveExt.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "BRepAlgoAPI_Fuse.hxx"

@@ -41,7 +41,6 @@
 #include "CTiglApproximateBsplineWire.h"
 #include "CPointsToLinearBSpline.h"
 #include "tiglcommonfunctions.h"
-#include "TixiSaveExt.h"
 #include "CCPACSWingCSStructure.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"

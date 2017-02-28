@@ -20,7 +20,6 @@
 
 #include "CTiglError.h"
 #include "CTiglLogging.h"
-#include "TixiSaveExt.h"
 
 #include "CCPACSWingCell.h"
 #include "CCPACSWingSpars.h"

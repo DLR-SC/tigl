@@ -37,7 +37,6 @@
 #include "CCPACSRotorcraftModel.h"
 #include "CTiglError.h"
 #include "tiglcommonfunctions.h"
-#include "TixiSaveExt.h"
 #include "tiglmathfunctions.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"

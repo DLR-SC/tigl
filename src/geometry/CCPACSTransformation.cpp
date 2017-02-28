@@ -18,7 +18,6 @@
 
 #include "CCPACSTransformation.h"
 #include "CTiglError.h"
-#include "TixiSaveExt.h"
 
 namespace tigl
 {

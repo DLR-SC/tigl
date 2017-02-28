@@ -25,12 +25,7 @@
 
 #include "CCPACSFuselageSections.h"
 
-#include "CCPACSFuselageSection.h"
 #include "CTiglError.h"
-#include "TixiSaveExt.h"
-
-#include <iostream>
-#include <sstream>
 
 namespace tigl
 {

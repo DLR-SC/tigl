@@ -23,16 +23,11 @@
 * @brief  Implementation of CPACS fuselage profiles handling routines.
 */
 
-#include <sstream>
-#include <iostream>
-#include <algorithm>
 #include "generated/UniquePtr.h"
-
 #include "generated/TixiHelper.h"
 #include "CCPACSFuselageProfile.h"
 #include "CCPACSFuselageProfiles.h"
 #include "CTiglError.h"
-#include "TixiSaveExt.h"
 
 namespace tigl
 {

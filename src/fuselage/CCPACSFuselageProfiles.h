@@ -27,11 +27,7 @@
 #define CCPACSFUSELAGEPROFILES_H
 
 #include "generated/CPACSFuselageProfiles.h"
-#include "tigl_internal.h"
-#include "tixi.h"
 #include "CCPACSFuselageProfile.h"
-#include <string>
-#include <map>
 
 namespace tigl
 {

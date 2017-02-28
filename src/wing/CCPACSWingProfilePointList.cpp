@@ -36,7 +36,6 @@
 #include "math.h"
 #include "CCPACSWingProfile.h"
 #include "tiglcommonfunctions.h"
-#include "TixiSaveExt.h"
 
 #include "gp_Pnt2d.hxx"
 #include "gp_Vec2d.hxx"

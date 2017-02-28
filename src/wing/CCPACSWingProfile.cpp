@@ -59,7 +59,6 @@
 #include "CTiglInterpolateLinearWire.h"
 #include "ITiglWingProfileAlgo.h"
 #include "CCPACSWingProfile.h"
-#include "TixiSaveExt.h"
 
 namespace tigl 
 {

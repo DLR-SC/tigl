@@ -31,7 +31,6 @@
 #include "CTiglSymetricSplineBuilder.h"
 #include "tiglcommonfunctions.h"
 #include "CTiglLogging.h"
-#include "TixiSaveExt.h"
 
 #include "TopoDS.hxx"
 #include "TopoDS_Wire.hxx"

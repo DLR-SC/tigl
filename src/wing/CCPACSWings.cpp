@@ -26,11 +26,7 @@
 #include "CCPACSWings.h"
 #include "CCPACSConfiguration.h"
 #include "CTiglError.h"
-#include "TixiSaveExt.h"
-#include "IOHelper.h"
 #include "CCPACSAircraftModel.h"
-#include <iostream>
-#include <sstream>
 
 namespace tigl
 {

@@ -25,10 +25,6 @@
 
 #include "CCPACSWingSectionElements.h"
 #include "CTiglError.h"
-#include "TixiSaveExt.h"
-#include "IOHelper.h"
-#include <iostream>
-#include <sstream>
 
 namespace tigl
 {

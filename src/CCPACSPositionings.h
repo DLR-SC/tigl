@@ -23,12 +23,12 @@
 * @brief  Implementation of CPACS wing positionings handling routines.
 */
 
-#ifndef CCPACSWINGPOSITIONINGS_H
-#define CCPACSWINGPOSITIONINGS_H
+#ifndef CCPACSPositioningS_H
+#define CCPACSPositioningS_H
 
-#include "tixi.h"
+#include "generated/CPACSPositionings.h"
 #include "tigl_internal.h"
-#include "CCPACSWingPositioning.h"
+#include "CCPACSPositioning.h"
 #include "CTiglError.h"
 #include <string>
 #include <vector>
@@ -37,58 +37,40 @@
 namespace tigl
 {
 
-class CCPACSWingPositionings
+class CCPACSPositionings : public generated::CPACSPositionings
 {
 
 public:
-    // Typedef for a CCPACSWingPositioning container to store the positionings.
-    typedef std::map<std::string, CCPACSWingPositioning*> CCPACSWingPositioningContainer;
-    typedef CCPACSWingPositioningContainer::iterator CCPACSWingPositioningIterator;
-
-public:
     // Constructor
-    TIGL_EXPORT CCPACSWingPositionings(void);
+    TIGL_EXPORT CCPACSPositionings();
 
     // Virtual Destructor
-    TIGL_EXPORT virtual ~CCPACSWingPositionings(void);
+    TIGL_EXPORT virtual ~CCPACSPositionings();
 
     // Read CPACS positionings element
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& wingXPath);
 
-    // Write CPACS positionings element
-    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& wingXPath) const;
-
     // Invalidates internal state
-    TIGL_EXPORT void Invalidate(void);
+    TIGL_EXPORT void Invalidate();
 
     // Returns the positioning matrix for a given section-uid
     TIGL_EXPORT CTiglTransformation GetPositioningTransformation(std::string sectionIndex);
 
     // Cleanup routine
-    TIGL_EXPORT void Cleanup(void);
-
-    TIGL_EXPORT CCPACSWingPositioningContainer& GetPositionings();
+    TIGL_EXPORT void Cleanup();
 
 protected:
     // Update internal positioning structure
-    void Update(void);
+    void Update();
 
     // Update connected positionings recursive
-    void UpdateNextPositioning(CCPACSWingPositioning*, int depth);
+    void UpdateNextPositioning(CCPACSPositioning*, int depth);
 
 private:
-    // Copy constructor
-    CCPACSWingPositionings(const CCPACSWingPositionings& );
-
-    // Assignment operator
-    void operator=(const CCPACSWingPositionings& );
-
-private:
-    CCPACSWingPositioningContainer positionings;      /**< Positioning elements */
     bool                           invalidated;       /**< Internal state flag  */
 
 };
 
 } // end namespace tigl
 
-#endif // CCPACSWINGPOSITIONINGS_H
+#endif // CCPACSPositioningS_H

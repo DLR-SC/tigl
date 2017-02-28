@@ -18,13 +18,8 @@
 
 #include "CCPACSWingCells.h"
 
-#include <sstream>
-
 #include "CCPACSWingCell.h"
 #include "CTiglError.h"
-#include "CTiglLogging.h"
-#include "TixiSaveExt.h"
-#include "IOHelper.h"
 
 namespace tigl
 {

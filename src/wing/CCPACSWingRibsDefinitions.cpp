@@ -19,8 +19,6 @@
 #include "CCPACSWingRibsDefinition.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
-#include "IOHelper.h"
-#include "TixiSaveExt.h"
 
 
 namespace tigl 

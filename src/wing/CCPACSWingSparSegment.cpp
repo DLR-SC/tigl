@@ -43,7 +43,6 @@
 #include "CTiglWingStructureReference.h"
 #include "tiglcommonfunctions.h"
 #include "tigletaxsifunctions.h"
-#include "TixiSaveExt.h"
 
 
 // TODO: const sparsNode
