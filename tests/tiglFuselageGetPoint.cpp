@@ -176,7 +176,6 @@ TEST(TiglFuselageGetPointBugs, getPointAngle)
 */
 TEST(TiglFuselageGetPointBugs, getPointAngleTranslated)
 {
-    // TODO: this test failes as the test data contains an invalid value (spoilerSpar1) for a ribRotationReference (/cpacs/vehicles/aircraft/model/wings/wing[1]/componentSegments/componentSegment[1]/controlSurfaces/spoilers/spoiler[2]/structure/ribsDefinitions/ribsDefinition[1]/ribsPositioning/ribRotation/ribRotationReference)
     const char* filename = "TestData/D150_v201.xml";
 
     TiglCPACSConfigurationHandle tiglHandle = -1;

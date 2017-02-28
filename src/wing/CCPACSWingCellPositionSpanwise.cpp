@@ -26,9 +26,7 @@ CCPACSWingCellPositionSpanwise::CCPACSWingCellPositionSpanwise(CCPACSWingCell* p
     : generated::CPACSCellPositioningSpanwise(parent) {}
 
 CCPACSWingCellPositionSpanwise::CCPACSWingCellPositionSpanwise(CPACSWingIntermediateStructureCell* parent)
-    : generated::CPACSCellPositioningSpanwise(parent) {
-    throw std::logic_error("CPACSWingIntermediateStructureCell as parent is not implemented");
-}
+    : generated::CPACSCellPositioningSpanwise(parent) {}
 
 CCPACSWingCellPositionSpanwise::InputType CCPACSWingCellPositionSpanwise::GetInputType() const {
     if (m_eta1_choice1 && m_eta2_choice1)
@@ -88,7 +86,8 @@ std::pair<std::string, int> CCPACSWingCellPositionSpanwise::GetRib() const {
 }
 void CCPACSWingCellPositionSpanwise::invalidateParent()
 {
-    GetParent<CCPACSWingCell>()->Invalidate();
+    if (IsParent<CCPACSWingCell>())
+        GetParent<CCPACSWingCell>()->Invalidate();
 }
 
 }
