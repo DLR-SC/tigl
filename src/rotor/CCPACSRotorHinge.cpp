@@ -37,25 +37,25 @@ CCPACSRotorHinge::CCPACSRotorHinge(CCPACSRotorHinges* parent)
     : generated::CPACSRotorHubHinge(parent) {}
 
 // Gets the rotor hinge transformation
-CTiglTransformation CCPACSRotorHinge::GetTransformation(void) const
+CTiglTransformation CCPACSRotorHinge::GetTransformation() const
 {
     return m_transformation.getTransformationMatrix();
 }
 
 // Gets the scaling vector of the rotor hinge transformation
-CTiglPoint CCPACSRotorHinge::GetScaling(void) const
+CTiglPoint CCPACSRotorHinge::GetScaling() const
 {
     return m_transformation.GetScaling().AsPoint();
 }
 
 // Gets the rotation vector of the rotor hinge transformation
-CTiglPoint CCPACSRotorHinge::GetRotation(void) const
+CTiglPoint CCPACSRotorHinge::GetRotation() const
 {
     return m_transformation.GetRotation().AsPoint();
 }
 
 // Gets the translation vector of the rotor hinge transformation
-CTiglPoint CCPACSRotorHinge::GetTranslation(void) const
+CTiglPoint CCPACSRotorHinge::GetTranslation() const
 {
     return m_transformation.GetTranslation().AsPoint();
 }
@@ -75,19 +75,19 @@ double CCPACSRotorHinge::GetHingeAngle(double thetaDeg, double a0, std::vector<d
 }
 
 // Returns the parent configuration
-CCPACSConfiguration& CCPACSRotorHinge::GetConfiguration(void) const
+CCPACSConfiguration& CCPACSRotorHinge::GetConfiguration() const
 {
     return m_parent->GetConfiguration();
 }
 
 // Returns the parent rotor
-CCPACSRotor& CCPACSRotorHinge::GetRotor(void) const
+CCPACSRotor& CCPACSRotorHinge::GetRotor() const
 {
     return m_parent->GetRotor();
 }
 
 // Returns the parent rotor blade attachment
-CCPACSRotorBladeAttachment& CCPACSRotorHinge::GetRotorBladeAttachment(void) const
+CCPACSRotorBladeAttachment& CCPACSRotorHinge::GetRotorBladeAttachment() const
 {
     return *m_parent->GetParent();
 }

@@ -37,19 +37,19 @@ CCPACSACSystems::CCPACSACSystems(CCPACSConfiguration* config)
 }
 
 // Destructor
-CCPACSACSystems::~CCPACSACSystems(void)
+CCPACSACSystems::~CCPACSACSystems()
 {
     Cleanup();
 }
 
 // Invalidates internal state
-void CCPACSACSystems::Invalidate(void)
+void CCPACSACSystems::Invalidate()
 {
     genericSystems.Invalidate();
 }
 
 // Cleanup routine
-void CCPACSACSystems::Cleanup(void)
+void CCPACSACSystems::Cleanup()
 {
     Invalidate();
 }
@@ -70,7 +70,7 @@ void CCPACSACSystems::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string
 }
 
 // Returns the genericSystems object.
-CCPACSGenericSystems& CCPACSACSystems::GetGenericSystems(void)
+CCPACSGenericSystems& CCPACSACSystems::GetGenericSystems()
 {
     return genericSystems;
 }

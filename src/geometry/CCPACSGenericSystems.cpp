@@ -39,13 +39,13 @@ CCPACSGenericSystems::CCPACSGenericSystems(CCPACSConfiguration* config)
 }
 
 // Destructor
-CCPACSGenericSystems::~CCPACSGenericSystems(void)
+CCPACSGenericSystems::~CCPACSGenericSystems()
 {
     Cleanup();
 }
 
 // Invalidates internal state
-void CCPACSGenericSystems::Invalidate(void)
+void CCPACSGenericSystems::Invalidate()
 {
     for (int i = 1; i <= GetGenericSystemCount(); i++) {
         GetGenericSystem(i).Invalidate();
@@ -53,7 +53,7 @@ void CCPACSGenericSystems::Invalidate(void)
 }
 
 // Cleanup routine
-void CCPACSGenericSystems::Cleanup(void)
+void CCPACSGenericSystems::Cleanup()
 {
     for (CCPACSGenericSystemContainer::size_type i = 0; i < systems.size(); i++) {
         delete systems[i];
@@ -98,7 +98,7 @@ void CCPACSGenericSystems::ReadCPACS(TixiDocumentHandle tixiHandle, const std::s
 }
 
 // Returns the total count of generic systems in a configuration
-int CCPACSGenericSystems::GetGenericSystemCount(void) const
+int CCPACSGenericSystems::GetGenericSystemCount() const
 {
     return (static_cast<int>(systems.size()));
 }

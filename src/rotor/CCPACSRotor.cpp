@@ -45,13 +45,13 @@ CCPACSRotor::CCPACSRotor(CCPACSRotors* parent)
     , rebuildGeometry(true) {}
 
 // Invalidates internal state
-void CCPACSRotor::Invalidate(void)
+void CCPACSRotor::Invalidate()
 {
     invalidated = true;
 }
 
 // Cleanup routine
-void CCPACSRotor::Cleanup(void)
+void CCPACSRotor::Cleanup()
 {
     // Calls ITiglGeometricComponent interface Reset to delete e.g. all childs.
     Reset();
@@ -60,7 +60,7 @@ void CCPACSRotor::Cleanup(void)
 }
 
 // Update internal rotor data
-void CCPACSRotor::Update(void)
+void CCPACSRotor::Update()
 {
     if (!invalidated) {
         return;
@@ -96,7 +96,7 @@ void CCPACSRotor::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::str
 }
 
 // Get the Transformation object
-CTiglTransformation CCPACSRotor::GetTransformation(void) const
+CTiglTransformation CCPACSRotor::GetTransformation() const
 {
     const_cast<CCPACSRotor*>(this)->Update();   // create new transformation matrix if scaling, rotation or translation was changed, TODO: hack
     return m_transformation.getTransformationMatrix();
@@ -111,14 +111,14 @@ void CCPACSRotor::Translate(CTiglPoint trans)
 }
 
 // Get Translation
-CTiglPoint CCPACSRotor::GetTranslation(void)
+CTiglPoint CCPACSRotor::GetTranslation()
 {
     Update();
     return m_transformation.getTranslationVector();
 }
 
 // Returns the type of the rotor
-TiglRotorType CCPACSRotor::GetType(void) const
+TiglRotorType CCPACSRotor::GetType() const
 {
     if (!m_type)
         return TiglRotorType::TIGLROTOR_UNDEFINED;
@@ -133,7 +133,7 @@ TiglRotorType CCPACSRotor::GetType(void) const
 }
 
 // Returns the rotor blade attachment count
-int CCPACSRotor::GetRotorBladeAttachmentCount(void) const
+int CCPACSRotor::GetRotorBladeAttachmentCount() const
 {
     return m_rotorHub.GetRotorBladeAttachmentCount();
 }
@@ -145,7 +145,7 @@ CCPACSRotorBladeAttachment& CCPACSRotor::GetRotorBladeAttachment(int index) cons
 }
 
 // Returns the rotor blade count
-int CCPACSRotor::GetRotorBladeCount(void) const
+int CCPACSRotor::GetRotorBladeCount() const
 {
     return m_rotorHub.GetRotorBladeCount();
 }
@@ -157,13 +157,13 @@ CTiglAttachedRotorBlade& CCPACSRotor::GetRotorBlade(int index) const
 }
 
 // Returns the parent configuration
-CCPACSConfiguration& CCPACSRotor::GetConfiguration(void) const
+CCPACSConfiguration& CCPACSRotor::GetConfiguration() const
 {
     return m_parent->GetConfiguration();
 }
 
 // Returns the rotor disk geometry (of the first attached blade)
-PNamedShape CCPACSRotor::GetRotorDisk(void)
+PNamedShape CCPACSRotor::GetRotorDisk()
 {
     // Create the rotor disk
     TopoDS_Shape rotorDisk;
@@ -178,7 +178,7 @@ PNamedShape CCPACSRotor::GetRotorDisk(void)
 }
 
 // Returns the geometry of the whole rotor (assembly of all rotor blades)
-PNamedShape CCPACSRotor::BuildLoft(void)
+PNamedShape CCPACSRotor::BuildLoft()
 {
     // Create rotor assembly
     TopoDS_Compound rotorGeometry;
@@ -199,7 +199,7 @@ PNamedShape CCPACSRotor::BuildLoft(void)
 }
 
 // Returns the volume of this rotor
-double CCPACSRotor::GetVolume(void)
+double CCPACSRotor::GetVolume()
 {
     TopoDS_Shape fusedRotorBlades = GetLoft()->Shape();
 
@@ -211,7 +211,7 @@ double CCPACSRotor::GetVolume(void)
 }
 
 // Returns the surface area of this rotor
-double CCPACSRotor::GetSurfaceArea(void)
+double CCPACSRotor::GetSurfaceArea()
 {
     TopoDS_Shape fusedRotorBlades = GetLoft()->Shape();
 
@@ -224,14 +224,14 @@ double CCPACSRotor::GetSurfaceArea(void)
 
 // Returns the reference area of this rotor
 // Here, we always take the reference rotor disk area projected to a plane normal to the rotor hub direction
-double CCPACSRotor::GetReferenceArea(void)
+double CCPACSRotor::GetReferenceArea()
 {
     double r = GetRadius();
     return M_PI * r*r;
 }
 
 // Returns the radius of this rotor
-double CCPACSRotor::GetRadius(void)
+double CCPACSRotor::GetRadius()
 {
     double rotorRadius = 0.0;
     // Get the blade maximum rotor radius
@@ -244,14 +244,14 @@ double CCPACSRotor::GetRadius(void)
 }
 
 // Returns the tip speed this rotor
-double CCPACSRotor::GetTipSpeed(void)
+double CCPACSRotor::GetTipSpeed()
 {
     // return GetNominalRotationsPerMinute()/60. * 2.*M_PI*GetRadius();
     return GetNominalRotationsPerMinute()/30. * M_PI*GetRadius();
 }
 
 // Returns the sum of all blade planform areas of a rotor
-double CCPACSRotor::GetTotalBladePlanformArea(void)
+double CCPACSRotor::GetTotalBladePlanformArea()
 {
     double totalRotorBladeArea = 0.0;
     // Add rotor blade planform areas
@@ -264,7 +264,7 @@ double CCPACSRotor::GetTotalBladePlanformArea(void)
 }
 
 // Returns the rotor solidity
-double CCPACSRotor::GetSolidity(void)
+double CCPACSRotor::GetSolidity()
 {
     return GetTotalBladePlanformArea()/GetReferenceArea();
 }

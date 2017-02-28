@@ -241,7 +241,7 @@ void CCPACSWing::SetUID(const std::string& uid) {
 }
 
 // Returns whether this wing is a rotor blade
-bool CCPACSWing::IsRotorBlade(void) const
+bool CCPACSWing::IsRotorBlade() const
 {
     return isRotorBlade;
 }

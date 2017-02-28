@@ -67,7 +67,7 @@ public:
     using CTiglAbstractPhysicalComponent::GetTransformation;
 
     // Returns whether this wing is a rotor blade
-    TIGL_EXPORT bool IsRotorBlade(void) const;
+    TIGL_EXPORT bool IsRotorBlade() const;
 
     // Returns the parent configuration
     TIGL_EXPORT CCPACSConfiguration & GetConfiguration() const;
@@ -133,7 +133,7 @@ public:
     TIGL_EXPORT double GetWingspan();
 
     // Returns the aspect ratio of the wing
-    TIGL_EXPORT double GetAspectRatio(void);
+    TIGL_EXPORT double GetAspectRatio();
 
     // Returns the mean aerodynamic chord of the wing
     TIGL_EXPORT void  GetWingMAC(double& mac_chord, double& mac_x, double& mac_y, double& mac_z);

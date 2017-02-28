@@ -84,7 +84,7 @@ public:
     TIGL_EXPORT CCPACSWing& GetWing() const;
 
     // Getter for upper Shape
-    TIGL_EXPORT TopoDS_Shape GetUpperShape(void);
+    TIGL_EXPORT TopoDS_Shape GetUpperShape();
 
     // Getter for lower Shape
     TIGL_EXPORT TopoDS_Shape GetLowerShape();

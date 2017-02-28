@@ -36,7 +36,7 @@ CCPACSRotorBladeAttachments::CCPACSRotorBladeAttachments(CCPACSRotorHub* parent)
     : generated::CPACSRotorBladeAttachments(parent) {}
 
 // Invalidates internal state
-void CCPACSRotorBladeAttachments::Invalidate(void)
+void CCPACSRotorBladeAttachments::Invalidate()
 {
     for (int i = 1; i <= GetRotorBladeAttachmentCount(); i++) {
         GetRotorBladeAttachment(i).Invalidate();
@@ -44,7 +44,7 @@ void CCPACSRotorBladeAttachments::Invalidate(void)
 }
 
 // Returns the total count of rotor blade attachments in a rotor hub
-int CCPACSRotorBladeAttachments::GetRotorBladeAttachmentCount(void) const
+int CCPACSRotorBladeAttachments::GetRotorBladeAttachmentCount() const
 {
     return static_cast<int>(m_rotorBladeAttachment.size());
 }
@@ -60,13 +60,13 @@ CCPACSRotorBladeAttachment& CCPACSRotorBladeAttachments::GetRotorBladeAttachment
 }
 
 // Returns the parent rotor
-CCPACSRotor& CCPACSRotorBladeAttachments::GetRotor(void) const
+CCPACSRotor& CCPACSRotorBladeAttachments::GetRotor() const
 {
     return *m_parent->GetParent();
 }
 
 // Returns the parent configuration
-CCPACSConfiguration& CCPACSRotorBladeAttachments::GetConfiguration(void) const
+CCPACSConfiguration& CCPACSRotorBladeAttachments::GetConfiguration() const
 {
     return m_parent->GetConfiguration();
 }

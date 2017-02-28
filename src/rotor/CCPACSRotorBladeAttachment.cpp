@@ -35,7 +35,7 @@ CCPACSRotorBladeAttachment::CCPACSRotorBladeAttachment(CCPACSRotorBladeAttachmen
 
 
 // Invalidates internal state
-void CCPACSRotorBladeAttachment::Invalidate(void)
+void CCPACSRotorBladeAttachment::Invalidate()
 {
     invalidated = true;
     lazyCreateAttachedRotorBlades();
@@ -111,7 +111,7 @@ CTiglTransformation CCPACSRotorBladeAttachment::GetRotorBladeTransformationMatri
 }
 
 // Returns the number of attached rotor blades
-int CCPACSRotorBladeAttachment::GetNumberOfBlades(void) const
+int CCPACSRotorBladeAttachment::GetNumberOfBlades() const
 {
     if (m_numberOfBlades_choice2)
         return *m_numberOfBlades_choice2;
@@ -133,13 +133,13 @@ const double& CCPACSRotorBladeAttachment::GetAzimuthAngle(int index) const
 }
 
 // Returns the index of the referenced wing definition
-int CCPACSRotorBladeAttachment::GetWingIndex(void) const
+int CCPACSRotorBladeAttachment::GetWingIndex() const
 {
     return GetConfiguration().GetWingIndex(m_rotorBladeUID);
 }
 
 // Get hinge count
-int CCPACSRotorBladeAttachment::GetHingeCount(void) const
+int CCPACSRotorBladeAttachment::GetHingeCount() const
 {
     if (m_hinges)
         return m_hinges->GetRotorHingeCount();
@@ -170,13 +170,13 @@ const CTiglAttachedRotorBlade& CCPACSRotorBladeAttachment::GetAttachedRotorBlade
 }
 
 // Returns the parent rotor
-CCPACSRotor& CCPACSRotorBladeAttachment::GetRotor(void) const
+CCPACSRotor& CCPACSRotorBladeAttachment::GetRotor() const
 {
     return *m_parent->GetParent()->GetParent();
 }
 
 // Returns the parent configuration
-CCPACSConfiguration& CCPACSRotorBladeAttachment::GetConfiguration(void) const
+CCPACSConfiguration& CCPACSRotorBladeAttachment::GetConfiguration() const
 {
     return m_parent->GetConfiguration();
 }

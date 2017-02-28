@@ -42,16 +42,16 @@ public:
     TIGL_EXPORT CCPACSGenericSystems(CCPACSConfiguration* config);
 
     // Virtual Destructor
-    TIGL_EXPORT virtual ~CCPACSGenericSystems(void);
+    TIGL_EXPORT virtual ~CCPACSGenericSystems();
 
     // Invalidates internal state
-    TIGL_EXPORT void Invalidate(void);
+    TIGL_EXPORT void Invalidate();
 
     // Read CPACS generic system elements
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& configurationUID);
 
     // Returns the total count of wings in a configuration
-    TIGL_EXPORT int GetGenericSystemCount(void) const;
+    TIGL_EXPORT int GetGenericSystemCount() const;
 
     // Returns the wing for a given index.
     TIGL_EXPORT CCPACSGenericSystem& GetGenericSystem(int index) const;
@@ -61,7 +61,7 @@ public:
 
 protected:
     // Cleanup routine
-    void Cleanup(void);
+    void Cleanup();
 
 private:
     // Copy constructor

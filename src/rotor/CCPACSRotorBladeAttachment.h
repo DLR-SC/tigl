@@ -65,7 +65,7 @@ public:
     using generated::CPACSRotorBladeAttachment::SetRotorBladeUID;
 
     // Invalidates internal state
-    TIGL_EXPORT void Invalidate(void);
+    TIGL_EXPORT void Invalidate();
 
     // Read CPACS rotor elements
     TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& rotorBladeAttachmentXPath) override;
@@ -74,16 +74,16 @@ public:
     TIGL_EXPORT CTiglTransformation GetRotorBladeTransformationMatrix(double thetaDeg=0., double bladeDeltaThetaDeg=0., bool doHingeTransformation=true, bool doRotationDirTransformation=true, bool doRotorTransformation=false);
 
     // Returns the number of attached rotor blades
-    TIGL_EXPORT int GetNumberOfBlades(void) const;
+    TIGL_EXPORT int GetNumberOfBlades() const;
 
     // Returns the azimuth angle of the attached rotor blade with the given index
     TIGL_EXPORT const double& GetAzimuthAngle(int index) const;
 
     // Returns the index of the referenced wing definition
-    TIGL_EXPORT int GetWingIndex(void) const;
+    TIGL_EXPORT int GetWingIndex() const;
 
     // Get hinge count
-    TIGL_EXPORT int GetHingeCount(void) const;
+    TIGL_EXPORT int GetHingeCount() const;
 
     // Returns the hinge for a given index
     TIGL_EXPORT CCPACSRotorHinge& GetHinge(int index) const;
@@ -93,10 +93,10 @@ public:
     TIGL_EXPORT const CTiglAttachedRotorBlade& GetAttachedRotorBlade(int index) const;
 
     // Returns the parent rotor
-    TIGL_EXPORT CCPACSRotor& GetRotor(void) const;
+    TIGL_EXPORT CCPACSRotor& GetRotor() const;
 
     // Returns the parent configuration
-    TIGL_EXPORT CCPACSConfiguration& GetConfiguration(void) const;
+    TIGL_EXPORT CCPACSConfiguration& GetConfiguration() const;
 
 private:
 	void lazyCreateAttachedRotorBlades();

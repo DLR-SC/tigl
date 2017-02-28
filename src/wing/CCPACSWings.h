@@ -63,7 +63,7 @@ public:
     TIGL_EXPORT int GetWingCount() const;
 
     // Returns the count of wings in a configuration with the property isRotorBlade set to true
-    TIGL_EXPORT int GetRotorBladeCount(void) const;
+    TIGL_EXPORT int GetRotorBladeCount() const;
 
     // Returns the wing for a given index.
     TIGL_EXPORT CCPACSWing& GetWing(int index) const;

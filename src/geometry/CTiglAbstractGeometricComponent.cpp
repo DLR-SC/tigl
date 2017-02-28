@@ -132,7 +132,7 @@ CTiglPoint CTiglAbstractGeometricComponent::GetTranslation() const
         return CTiglPoint(0, 0, 0);
 }
 
-ECPACSTranslationType CTiglAbstractGeometricComponent::GetTranslationType(void) const
+ECPACSTranslationType CTiglAbstractGeometricComponent::GetTranslationType() const
 {
     if (transformation)
         return transformation->getTranslationType();

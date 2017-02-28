@@ -58,13 +58,13 @@ void CTiglAttachedRotorBlade::SetUID(const std::string& uid) {
 }
 
 // Invalidates internal state
-void CTiglAttachedRotorBlade::Invalidate(void)
+void CTiglAttachedRotorBlade::Invalidate()
 {
     rebuildRotorDisk = true;
 }
 
 // Cleanup routine
-void CTiglAttachedRotorBlade::Cleanup(void)
+void CTiglAttachedRotorBlade::Cleanup()
 {
     transformationMatrix.SetIdentity();
 
@@ -75,7 +75,7 @@ void CTiglAttachedRotorBlade::Cleanup(void)
 }
 
 // Builds transformation matrix for the rotor blade including rotor transformation
-void CTiglAttachedRotorBlade::BuildMatrix(void)
+void CTiglAttachedRotorBlade::BuildMatrix()
 {
     double thetaDeg = 0.; // current azimuthal position of the rotor in degrees
 
@@ -83,7 +83,7 @@ void CTiglAttachedRotorBlade::BuildMatrix(void)
 }
 
 // Update internal rotor blade data
-void CTiglAttachedRotorBlade::Update(void)
+void CTiglAttachedRotorBlade::Update()
 {
     if (!invalidated) {
         return;
@@ -94,37 +94,37 @@ void CTiglAttachedRotorBlade::Update(void)
 }
 
 // Returns the original unattached rotor blade
-CCPACSWing& CTiglAttachedRotorBlade::GetUnattachedRotorBlade(void) const
+CCPACSWing& CTiglAttachedRotorBlade::GetUnattachedRotorBlade() const
 {
     return *rotorBlade;
 }
 
 // Returns the parent rotor blade attachment this rotor blade belongs to
-CCPACSRotorBladeAttachment& CTiglAttachedRotorBlade::GetRotorBladeAttachment(void) const
+CCPACSRotorBladeAttachment& CTiglAttachedRotorBlade::GetRotorBladeAttachment() const
 {
     return *parent;
 }
 
 // Returns the parent rotor
-CCPACSRotor& CTiglAttachedRotorBlade::GetRotor(void) const
+CCPACSRotor& CTiglAttachedRotorBlade::GetRotor() const
 {
     return parent->GetRotor();
 }
 
 // Returns the parent configuration
-CCPACSConfiguration& CTiglAttachedRotorBlade::GetConfiguration(void) const
+CCPACSConfiguration& CTiglAttachedRotorBlade::GetConfiguration() const
 {
     return parent->GetConfiguration();
 }
 
 // Returns the azimuth angle of this rotor blade
-double CTiglAttachedRotorBlade::GetAzimuthAngle(void) const
+double CTiglAttachedRotorBlade::GetAzimuthAngle() const
 {
     return parent->GetAzimuthAngle(rotorBladeIndex);
 }
 
 // Returns the volume of this rotor blade
-double CTiglAttachedRotorBlade::GetVolume(void)
+double CTiglAttachedRotorBlade::GetVolume()
 {
     TopoDS_Shape fusedSegments = GetLoft()->Shape();
 
@@ -136,7 +136,7 @@ double CTiglAttachedRotorBlade::GetVolume(void)
 }
 
 // Returns the surface area of this rotor blade
-double CTiglAttachedRotorBlade::GetSurfaceArea(void)
+double CTiglAttachedRotorBlade::GetSurfaceArea()
 {
     TopoDS_Shape fusedSegments = GetLoft()->Shape();
 
@@ -148,7 +148,7 @@ double CTiglAttachedRotorBlade::GetSurfaceArea(void)
 }
 
 // Returns the planform area of this rotor blade
-double CTiglAttachedRotorBlade::GetPlanformArea(void)
+double CTiglAttachedRotorBlade::GetPlanformArea()
 {
     double planformArea = 0.0;
 
@@ -183,7 +183,7 @@ double CTiglAttachedRotorBlade::GetPlanformArea(void)
 }
 
 // Returns the radius of this rotor blade by calculating the maximum distance of quarter chord points from the rotor axis
-double CTiglAttachedRotorBlade::GetRadius(void)
+double CTiglAttachedRotorBlade::GetRadius()
 {
     double rotorRadius = 0.0;
 
@@ -214,7 +214,7 @@ double CTiglAttachedRotorBlade::GetRadius(void)
 }
 
 // Returns the tip speed this rotor blade
-double CTiglAttachedRotorBlade::GetTipSpeed(void)
+double CTiglAttachedRotorBlade::GetTipSpeed()
 {
     // return GetRotor().GetNominalRotationsPerMinute()/60. * 2.*M_PI*GetRadius();
     return GetRotor().GetNominalRotationsPerMinute()/30. * M_PI*GetRadius();
@@ -284,7 +284,7 @@ double CTiglAttachedRotorBlade::GetLocalTwistAngle(const int& segmentIndex, cons
 
 
 // Create the rotor blade geometry by copying and transforming the original unattached rotor blade geometry
-PNamedShape CTiglAttachedRotorBlade::BuildLoft(void)
+PNamedShape CTiglAttachedRotorBlade::BuildLoft()
 {
     // Create a new instance of the referenced unattached rotor blade and apply the transformations to it
     PNamedShape rotorBladeCopy = rotorBlade->GetLoft()->DeepCopy();
@@ -294,7 +294,7 @@ PNamedShape CTiglAttachedRotorBlade::BuildLoft(void)
 }
 
 // Returns the rotor disk geometry
-TopoDS_Shape CTiglAttachedRotorBlade::GetRotorDisk(void)
+TopoDS_Shape CTiglAttachedRotorBlade::GetRotorDisk()
 {
     if (rebuildRotorDisk) {
         rotorDisk = BuildRotorDisk();

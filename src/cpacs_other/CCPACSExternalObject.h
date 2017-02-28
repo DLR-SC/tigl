@@ -41,11 +41,11 @@ public:
     
     TIGL_EXPORT const std::string& GetFilePath() const;
     
-    TIGL_EXPORT TiglGeometricComponentType GetComponentType(void);
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType();
 
 private:
     /// reads in the CAD file
-    virtual PNamedShape BuildLoft(void) override;
+    virtual PNamedShape BuildLoft() override;
 
     std::string _filePath;
 };

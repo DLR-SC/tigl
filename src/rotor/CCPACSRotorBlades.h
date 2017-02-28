@@ -41,13 +41,13 @@ public:
     TIGL_EXPORT CCPACSRotorBlades(CCPACSRotorcraftModel* parent);
 
     // Invalidates internal state
-    TIGL_EXPORT void Invalidate(void);
+    TIGL_EXPORT void Invalidate();
 
     // Adds a rotor blade to the  rotor blade container
     TIGL_EXPORT void AddRotorBlade(CCPACSWing* rotorBlade);
 
     // Returns the total count of rotor blades of a rotor blade attachment
-    TIGL_EXPORT int GetRotorBladeCount(void) const;
+    TIGL_EXPORT int GetRotorBladeCount() const;
 
     // Returns the rotor blade for a given index.
     TIGL_EXPORT CCPACSWing& GetRotorBlade(int index) const;
@@ -58,7 +58,7 @@ public:
     TIGL_EXPORT int GetRotorBladeIndex(const std::string& uid) const;
 
     // Returns the parent configuration
-    TIGL_EXPORT CCPACSConfiguration& GetConfiguration(void) const;
+    TIGL_EXPORT CCPACSConfiguration& GetConfiguration() const;
 };
 
 } // end namespace tigl

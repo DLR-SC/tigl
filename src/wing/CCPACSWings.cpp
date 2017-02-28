@@ -88,7 +88,7 @@ int CCPACSWings::GetWingCount() const
 }
 
 // Returns the count of wings in a configuration with the property isRotorBlade set to true
-int CCPACSWings::GetRotorBladeCount(void) const
+int CCPACSWings::GetRotorBladeCount() const
 {
     int nRotorBlades = 0;
     for (int i = 1; i <= GetWingCount(); i++) {

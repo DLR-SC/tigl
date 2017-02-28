@@ -41,19 +41,19 @@ public:
     TIGL_EXPORT CCPACSRotorBladeAttachments(CCPACSRotorHub* parent);
 
     // Invalidates internal state
-    TIGL_EXPORT void Invalidate(void);
+    TIGL_EXPORT void Invalidate();
 
     // Returns the total count of rotor blade attachments in a rotor hub
-    TIGL_EXPORT int GetRotorBladeAttachmentCount(void) const;
+    TIGL_EXPORT int GetRotorBladeAttachmentCount() const;
 
     // Returns the rotor blade attachment for a given index.
     TIGL_EXPORT CCPACSRotorBladeAttachment& GetRotorBladeAttachment(int index) const;
 
     // Returns the parent rotor
-    TIGL_EXPORT CCPACSRotor& GetRotor(void) const;
+    TIGL_EXPORT CCPACSRotor& GetRotor() const;
 
     // Returns the parent configuration
-    TIGL_EXPORT CCPACSConfiguration& GetConfiguration(void) const;
+    TIGL_EXPORT CCPACSConfiguration& GetConfiguration() const;
 };
 
 } // end namespace tigl

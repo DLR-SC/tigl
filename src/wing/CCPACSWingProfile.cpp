@@ -109,7 +109,7 @@ void CCPACSWingProfile::ReadCPACS(const TixiDocumentHandle& tixiHandle, const st
 }
 
 // Returns whether the profile is a rotor profile
-bool CCPACSWingProfile::IsRotorProfile(void) const
+bool CCPACSWingProfile::IsRotorProfile() const
 {
     return isRotorProfile;
 }

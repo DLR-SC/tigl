@@ -35,7 +35,7 @@ CCPACSRotorHinges::CCPACSRotorHinges(CCPACSRotorBladeAttachment* parent)
     : generated::CPACSRotorHubHinges(parent) {}
 
 // Returns the total count of rotor hinges in a rotor blade attachment
-int CCPACSRotorHinges::GetRotorHingeCount(void) const
+int CCPACSRotorHinges::GetRotorHingeCount() const
 {
     return static_cast<int>(m_hinge.size());
 }
@@ -51,19 +51,19 @@ CCPACSRotorHinge& CCPACSRotorHinges::GetRotorHinge(int index) const
 }
 
 // Returns the parent configuration
-CCPACSConfiguration& CCPACSRotorHinges::GetConfiguration(void) const
+CCPACSConfiguration& CCPACSRotorHinges::GetConfiguration() const
 {
     return m_parent->GetConfiguration();
 }
 
 // Returns the parent rotor
-CCPACSRotor& CCPACSRotorHinges::GetRotor(void) const
+CCPACSRotor& CCPACSRotorHinges::GetRotor() const
 {
     return m_parent->GetRotor();
 }
 
 // Returns the parent rotor blade attachment
-CCPACSRotorBladeAttachment& CCPACSRotorHinges::GetRotorBladeAttachment(void) const
+CCPACSRotorBladeAttachment& CCPACSRotorHinges::GetRotorBladeAttachment() const
 {
     return *m_parent;
 }
