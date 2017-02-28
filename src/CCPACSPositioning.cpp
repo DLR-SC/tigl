@@ -23,12 +23,9 @@
 * @brief  Implementation of CPACS wing positioning handling routines.
 */
 
-#include "tigl.h"
 #include "CCPACSPositioning.h"
 #include "CTiglError.h"
-#include "TixiSaveExt.h"
 #include "gp_Pnt.hxx"
-#include <iostream>
 
 namespace tigl
 {

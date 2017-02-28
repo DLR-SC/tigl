@@ -24,10 +24,6 @@
 */
 
 #include "CCPACSPositionings.h"
-#include "TixiSaveExt.h"
-#include <iostream>
-#include <sstream>
-#include <algorithm>
 
 namespace tigl
 {
