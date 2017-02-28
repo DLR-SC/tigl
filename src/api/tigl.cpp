@@ -233,17 +233,14 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        delete config;
         LOG(ERROR) << ex.what() << std::endl;
         return TIGL_OPEN_FAILED;
     }
     catch (tigl::CTiglError& ex) {
-        delete config;
         LOG(ERROR) << ex.getError() << std::endl;
         return TIGL_OPEN_FAILED;
     }
     catch (...) {
-        delete config;
         LOG(ERROR) << "Caught an exception in tiglOpenCPACSConfiguration!" << std::endl;
         return TIGL_OPEN_FAILED;
     }
