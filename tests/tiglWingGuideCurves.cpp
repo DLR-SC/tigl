@@ -110,7 +110,6 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSGuideCurveProfile)
     guideCurve.ReadCPACS(tixiHandle, "/cpacs/vehicles/profiles/guideCurves/guideCurveProfile[7]");
     ASSERT_EQ(guideCurve.GetUID(), "GuideCurveModel_Wing_GuideCurveProfile_LeadingEdge_NonLinear");
     ASSERT_EQ(guideCurve.GetName(), "NonLinear Leading Edge Guide Curve Profile for GuideCurveModel - Wing");
-    //ASSERT_EQ(guideCurve.GetFileName(), "/cpacs/vehicles/profiles/guideCurves/guideCurveProfile[7]");
 }
 
 /**
@@ -124,7 +123,6 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSGuideCurveProfiles)
     tigl::CCPACSGuideCurveProfile& guideCurve = guideCurves.GetGuideCurveProfile("GuideCurveModel_Wing_GuideCurveProfile_LeadingEdge_NonLinear");
     ASSERT_EQ(guideCurve.GetUID(), "GuideCurveModel_Wing_GuideCurveProfile_LeadingEdge_NonLinear");
     ASSERT_EQ(guideCurve.GetName(), "NonLinear Leading Edge Guide Curve Profile for GuideCurveModel - Wing");
-    //ASSERT_EQ(guideCurve.GetFileName(), "/cpacs/vehicles/profiles/guideCurves/guideCurveProfile[7]");
 }
 
 /**
