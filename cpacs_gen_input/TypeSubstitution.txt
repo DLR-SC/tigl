@@ -1,0 +1,26 @@
+// contains types from the schema which should be substituted instantly
+
+stringUIDBaseType std::string
+stringBaseType    std::string
+doubleBaseType    double
+integerBaseType   int
+booleanBaseType   bool
+complexBaseType
+
+// maps xsd types to C++ types
+
+xsd:byte          int8_t
+xsd:unsignedByte  uint8_t
+xsd:short         int16_t
+xsd:unsignedShort uint16_t
+xsd:int           int32_t
+xsd:unsignedInt   uint32_t
+xsd:long          int64_t
+xsd:unsignedLong  uint64_t
+xsd:integer       int
+xsd:boolean       bool
+xsd:float         float
+xsd:double        double
+xsd:decimal       double  // TODO: implement custom type?
+xsd:dateTime      time_t
+xsd:string        std::string
