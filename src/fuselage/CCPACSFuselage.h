@@ -138,6 +138,8 @@ private:
     TopoDS_Compound            aCompound;
     BRep_Builder               aBuilder;
     double                     myVolume;             /**< Volume of this fuselage              */
+
+    friend class CCPACSFuselageSegment;
 };
 
 } // end namespace tigl

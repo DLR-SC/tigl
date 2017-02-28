@@ -153,7 +153,7 @@ namespace
 
 CCPACSWingComponentSegment::CCPACSWingComponentSegment(CCPACSWingComponentSegments* parent)
     : generated::CPACSComponentSegment(parent)
-    , CTiglAbstractSegment(parent->GetComponentSegmentCount() + 1) // TODO: this is a hack, as we depend on the implementation of the vector reader in generated::CCPACSWingComponentSegments::ReadCPACS() but the current CodeGen does not support passing indices into ctors
+    , CTiglAbstractSegment(parent->GetComponentSegmentCount() + 1, &parent->GetParent()->m_symmetry) // TODO: this is a hack, as we depend on the implementation of the vector reader in generated::CCPACSWingComponentSegments::ReadCPACS() but the current CodeGen does not support passing indices into ctors
     , wing(parent->GetParent())
     , surfacesAreValid(false)
 {
