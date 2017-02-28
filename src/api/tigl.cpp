@@ -32,6 +32,7 @@
 #include "tigl_config.h"
 #include "tiglcommonfunctions.h"
 #include "tigl_error_strings.h"
+#include "CTiglTypeRegistry.h"
 #include "CTiglError.h"
 #include "CTiglIntersectionCalculation.h"
 #include "CCPACSConfiguration.h"
@@ -53,7 +54,6 @@
 #include "CCPACSFuselageSegment.h"
 #include "PNamedShape.h"
 #include "CNamedShape.h"
-#include "CTiglTypeRegistry.h"
 #include "CCPACSRotor.h"
 #include "CCPACSRotorBladeAttachment.h"
 #include "CTiglAttachedRotorBlade.h"
@@ -78,12 +78,12 @@ TixiPrintMsgFnc oldTixiMessageHandler = NULL;
 namespace
 {
 
-    void tiglCleanup(void);
-    bool tiglInit(void);
+    void tiglCleanup();
+    bool tiglInit();
     void TixiMessageHandler(MessageType type, const char *message);
 
 
-    bool tiglInit(void)
+    bool tiglInit()
     {
         atexit(tiglCleanup);
     
@@ -98,7 +98,7 @@ namespace
         return true;
     }
     
-    void tiglCleanup(void)
+    void tiglCleanup()
     {
     }
     
@@ -131,28 +131,6 @@ namespace
 
 // make tigl initialize on start
 const bool tiglInitialized = tiglInit();
-
-template<typename Func>
-TiglReturnCode Try(const std::string& funcname, const TiglReturnCode& errorCode, Func func) throw() {
-    try {
-        return func();
-    } catch (const tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
-        return ex.getCode();
-    } catch (const std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
-        return errorCode;
-    } catch (char *str) {
-        LOG(ERROR) << str << std::endl;
-        return errorCode;
-    } catch (std::string& str) {
-        LOG(ERROR) << str << std::endl;
-        return errorCode;
-    } catch (...) {
-        LOG(ERROR) << "Caught an exception in " << funcname << "!" << std::endl;
-        return errorCode;
-    }
-}
 
 /*****************************************************************************/
 /* Public visible functions.                                                 */
@@ -222,9 +200,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
         if (tixiRet != SUCCESS) {
             tixiRet = tixiGetTextAttribute(tixiHandle, "/cpacs/vehicles/rotorcraft/model[1]", "uID", &tmpConfUID);
             if (tixiRet != SUCCESS) {
-            LOG(ERROR) << "Problems reading configuration-uid!" << std::endl;
-            return TIGL_ERROR;
-        }
+                LOG(ERROR) << "Problems reading configuration-uid!" << std::endl;
+                return TIGL_ERROR;
+            }
         }
         configurationUID = tmpConfUID;
     }
@@ -245,7 +223,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
         }
     }
 
-    return Try("tiglOpenCPACSConfiguration", TIGL_OPEN_FAILED, [&]{
+    try {
         tigl::unique_ptr<tigl::CCPACSConfiguration> config(new tigl::CCPACSConfiguration(tixiHandle));
         // Build CPACS memory structure
         config->ReadCPACS(configurationUID.c_str());
@@ -253,7 +231,22 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         *cpacsHandlePtr = manager.AddConfiguration(config.release());
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        delete config;
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_OPEN_FAILED;
+    }
+    catch (tigl::CTiglError& ex) {
+        delete config;
+        LOG(ERROR) << ex.getError() << std::endl;
+        return TIGL_OPEN_FAILED;
+    }
+    catch (...) {
+        delete config;
+        LOG(ERROR) << "Caught an exception in tiglOpenCPACSConfiguration!" << std::endl;
+        return TIGL_OPEN_FAILED;
+    }
 }
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglSaveCPACSConfiguration(const char* configurationUID, TiglCPACSConfigurationHandle cpacsHandle)
@@ -265,22 +258,46 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglSaveCPACSConfiguration(const char* configu
         return TIGL_UNINITIALIZED;
     }
 
+    tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
 
-    return Try("tiglSaveCPACSConfiguration", TIGL_ERROR, [&]{
-        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+    try {
         config.WriteCPACS(configurationUID);
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglSaveCPACSConfiguration!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglCloseCPACSConfiguration(TiglCPACSConfigurationHandle cpacsHandle)
 {
-    return Try("tiglCloseCPACSConfiguration", TIGL_CLOSE_FAILED, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         manager.DeleteConfiguration(cpacsHandle);
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_CLOSE_FAILED;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return TIGL_CLOSE_FAILED;
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglCloseCPACSConfiguration!" << std::endl;
+        return TIGL_CLOSE_FAILED;
+    }
 }
 
 
@@ -291,22 +308,46 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetCPACSTixiHandle(TiglCPACSConfigurationH
         return TIGL_NULL_POINTER;
     }
 
-    return Try("tiglGetCPACSTixiHandle", TIGL_NOT_FOUND, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         *tixiHandlePtr = config.GetTixiDocumentHandle();
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_NOT_FOUND;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return TIGL_NOT_FOUND;
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglGetCPACSTixiHandle!" << std::endl;
+        return TIGL_NOT_FOUND;
+    }
 }
 
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglIsCPACSConfigurationHandleValid(TiglCPACSConfigurationHandle cpacsHandle, TiglBoolean* isValidPtr)
 {
-    return Try("tiglIsCPACSConfigurationHandleValid", TIGL_NOT_FOUND, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         *isValidPtr = (manager.IsValid(cpacsHandle) == true) ? TIGL_TRUE : TIGL_FALSE;
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_NOT_FOUND;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return TIGL_NOT_FOUND;
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglIsCPACSConfigurationHandleValid!" << std::endl;
+        return TIGL_NOT_FOUND;
+    }
 }
 
 
@@ -335,7 +376,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglProfileGetBSplineCount(TiglCPACSConfigurat
         return TIGL_NULL_POINTER;
     }
     
-    return Try("tiglProfileGetBSplineCount", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration & config = manager.GetConfiguration(cpacsHandle);
         
@@ -358,7 +399,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglProfileGetBSplineCount(TiglCPACSConfigurat
             LOG(ERROR) << "Profile " << profileUID << " not found in cpacs file.";
             return TIGL_UID_ERROR;
         }
-    });
+    }
+    catch (tigl::CTiglError& err) {
+        LOG(ERROR) << err.getError();
+        return err.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Unknown error in tiglProfileGetBSplineCount";
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -391,7 +440,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglProfileGetBSplineDataSizes(TiglCPACSConfig
         return TIGL_INDEX_ERROR;
     }
     
-    return Try("tiglProfileGetBSplineDataSizes", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration & config = manager.GetConfiguration(cpacsHandle);
         
@@ -449,7 +498,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglProfileGetBSplineDataSizes(TiglCPACSConfig
             // this should normally not happen
             return TIGL_ERROR;
         }
-    });
+    }
+    catch (tigl::CTiglError& err) {
+        LOG(ERROR) << err.getError();
+        return err.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Unknown error in tiglProfileGetBSplineCount";
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -477,7 +534,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglProfileGetBSplineData(TiglCPACSConfigurati
         return TIGL_INDEX_ERROR;
     }
     
-    return Try("tiglProfileGetBSplineData", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration & config = manager.GetConfiguration(cpacsHandle);
         
@@ -560,7 +617,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglProfileGetBSplineData(TiglCPACSConfigurati
             // this should normally not happen
             return TIGL_ERROR;
         }
-    });
+    }
+    catch (tigl::CTiglError& err) {
+        LOG(ERROR) << err.getError();
+        return err.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Unknown error in tiglProfileGetBSplineCount";
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -583,7 +648,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetUpperPoint(TiglCPACSConfigurationHa
         return TIGL_NULL_POINTER;
     }
 
-    return Try("tiglWingGetUpperPoint", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration & config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
@@ -592,7 +657,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetUpperPoint(TiglCPACSConfigurationHa
         *pointYPtr = point.Y();
         *pointZPtr = point.Z();
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an unknown exception in tiglWingGetUpperPoint" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -611,7 +688,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetLowerPoint(TiglCPACSConfigurationHa
         return TIGL_NULL_POINTER;
     }
 
-    return Try("tiglWingGetLowerPoint", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
@@ -620,7 +697,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetLowerPoint(TiglCPACSConfigurationHa
         *pointYPtr = point.Y();
         *pointZPtr = point.Z();
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglWingGetLowerPoint!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetChordPoint(TiglCPACSConfigurationHandle cpacsHandle,
@@ -638,7 +727,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetChordPoint(TiglCPACSConfigurationHa
         return TIGL_NULL_POINTER;
     }
 
-    return Try("tiglWingGetChordPoint", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
@@ -649,7 +738,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetChordPoint(TiglCPACSConfigurationHa
         *pointYPtr = point.Y();
         *pointZPtr = point.Z();
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglWingGetChordPoint!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetChordNormal(TiglCPACSConfigurationHandle cpacsHandle,
@@ -667,7 +768,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetChordNormal(TiglCPACSConfigurationH
         return TIGL_NULL_POINTER;
     }
 
-    return Try("tiglWingGetChordNormal", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
@@ -686,7 +787,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetChordNormal(TiglCPACSConfigurationH
         *normalYPtr = normal.Y()/len;
         *normalZPtr = normal.Z()/len;
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglWingGetChordNormal!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetUpperPointAtDirection(TiglCPACSConfigurationHandle cpacsHandle,
@@ -713,7 +826,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetUpperPointAtDirection(TiglCPACSConf
         return TIGL_NULL_POINTER;
     }
 
-    return Try("tiglWingGetUpperPointAtDirection", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration & config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
@@ -730,7 +843,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetUpperPointAtDirection(TiglCPACSConf
         *pointZPtr = point.Z();
         
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an unknown exception in tiglWingGetUpperPointAtDirection" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetLowerPointAtDirection(TiglCPACSConfigurationHandle cpacsHandle,
@@ -757,7 +882,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetLowerPointAtDirection(TiglCPACSConf
         return TIGL_NULL_POINTER;
     }
 
-    return Try("tiglWingGetLowerPointAtDirection", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration & config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
@@ -773,7 +898,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetLowerPointAtDirection(TiglCPACSConf
         }
 
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an unknown exception in tiglWingGetLowerPointAtDirection" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentEtaXsi(TiglCPACSConfigurationHandle cpacsHandle,
@@ -792,7 +929,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentEtaXsi(TiglCPACSConfiguratio
         return TIGL_NULL_POINTER;
     }
 
-    return Try("tiglWingGetSegmentEtaXsi", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration & config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
@@ -804,7 +941,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentEtaXsi(TiglCPACSConfiguratio
         *isOnTop = onTop;
 
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an unknown exception in tiglWingGetSegmentEtaXsi" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -816,12 +965,24 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetWingCount(TiglCPACSConfigurationHandle 
         return TIGL_NULL_POINTER;
     }
 
-    return Try("tiglGetWingCount", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         *wingCountPtr = config.GetWingCount();
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglGetWingCount!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -835,13 +996,25 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentCount(TiglCPACSConfiguration
         return TIGL_NULL_POINTER;
     }
 
-    return Try("tiglWingGetSegmentCount", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
         *segmentCountPtr = wing.GetSegmentCount();
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglWingGetSegmentCount!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetComponentSegmentCount(TiglCPACSConfigurationHandle cpacsHandle,
@@ -854,13 +1027,25 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetComponentSegmentCount(TiglCPACSConf
         return TIGL_NULL_POINTER;
     }
 
-    return Try("tiglWingGetComponentSegmentCount", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
         *compSegmentCountPtr = wing.GetComponentSegmentCount();
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglWingGetComponentSegmentCount!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetComponentSegmentUID(TiglCPACSConfigurationHandle cpacsHandle,
@@ -880,14 +1065,26 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetComponentSegmentUID(TiglCPACSConfig
         return TIGL_INDEX_ERROR;
     }
 
-    return Try("tiglWingGetComponentSegmentUID", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
         tigl::CCPACSWingComponentSegment& segment = (tigl::CCPACSWingComponentSegment &) wing.GetComponentSegment(compSegmentIndex);
         *uidNamePtr = const_cast<char*>(segment.GetUID().c_str());
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglWingGetComponentSegmentUID!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetComponentSegmentIndex(TiglCPACSConfigurationHandle cpacsHandle,
@@ -906,7 +1103,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetComponentSegmentIndex(TiglCPACSConf
         return TIGL_NULL_POINTER;
     }
 
-    return Try("tiglWingGetComponentSegmentIndex", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
@@ -924,7 +1121,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetComponentSegmentIndex(TiglCPACSConf
                    << compSegmentUID << "!" << std::endl;
         *segmentIndex = -1;
         return TIGL_UID_ERROR;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglWingComponentGetSegmentIndex!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetInnerConnectedSegmentCount(TiglCPACSConfigurationHandle cpacsHandle,
@@ -938,14 +1147,26 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetInnerConnectedSegmentCount(TiglCPAC
         return TIGL_NULL_POINTER;
     }
 
-    return Try("tiglWingGetInnerConnectedSegmentCount", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
         tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(segmentIndex);
         *segmentCountPtr = segment.GetInnerConnectedSegmentCount();
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglWingGetInnerConnectedSegmentCount!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -960,14 +1181,26 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetOuterConnectedSegmentCount(TiglCPAC
         return TIGL_NULL_POINTER;
     }
 
-    return Try("tiglWingGetOuterConnectedSegmentCount", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
         tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(segmentIndex);
         *segmentCountPtr = segment.GetOuterConnectedSegmentCount();
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglWingGetOuterConnectedSegmentCount!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -983,14 +1216,26 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetInnerConnectedSegmentIndex(TiglCPAC
         return TIGL_NULL_POINTER;
     }
 
-    return Try("tiglWingGetInnerConnectedSegmentIndex", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
         tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(segmentIndex);
         *connectedIndexPtr = segment.GetInnerConnectedSegmentIndex(n);
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglWingGetInnerConnectedSegmentIndex!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -1006,14 +1251,26 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetOuterConnectedSegmentIndex(TiglCPAC
         return TIGL_NULL_POINTER;
     }
 
-    return Try("tiglWingGetOuterConnectedSegmentIndex", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
         tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(segmentIndex);
         *connectedIndexPtr = segment.GetOuterConnectedSegmentIndex(n);
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglWingGetOuterConnectedSegmentIndex!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -1035,7 +1292,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetInnerSectionAndElementIndex(TiglCPA
         return TIGL_NULL_POINTER;
     }
 
-    return Try("tiglWingGetInnerSectionAndElementIndex", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
@@ -1044,7 +1301,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetInnerSectionAndElementIndex(TiglCPA
         *elementIndexPtr = segment.GetInnerSectionElementIndex();
 
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglWingGetInnerSectionAndElementIndex!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -1066,7 +1335,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetOuterSectionAndElementIndex(TiglCPA
         return TIGL_NULL_POINTER;
     }
 
-    return Try("tiglWingGetOuterSectionAndElementIndex", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
@@ -1075,7 +1344,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetOuterSectionAndElementIndex(TiglCPA
         *elementIndexPtr = segment.GetOuterSectionElementIndex();
 
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglWingGetOuterSectionAndElementIndex!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -1093,7 +1374,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetInnerSectionAndElementUID(TiglCPACS
         return TIGL_INDEX_ERROR;
     }
 
-    return Try("tiglWingGetInnerSectionAndElementUID", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
@@ -1104,7 +1385,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetInnerSectionAndElementUID(TiglCPACS
         *elementUIDPtr = (char *) segment.GetInnerSectionElementUID().c_str();
 
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglWingGetInnerSectionAndElementIndex!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -1121,7 +1414,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetOuterSectionAndElementUID(TiglCPACS
         return TIGL_INDEX_ERROR;
     }
 
-    return Try("tiglWingGetOuterSectionAndElementUID", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
@@ -1131,7 +1424,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetOuterSectionAndElementUID(TiglCPACS
         *elementUIDPtr = (char *) segment.GetOuterSectionElementUID().c_str();
 
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglWingGetOuterSectionAndElementIndex!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -1153,7 +1458,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetProfileName(TiglCPACSConfigurationH
         return TIGL_INDEX_ERROR;
     }
 
-    return Try("tiglWingGetProfileName", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
@@ -1165,7 +1470,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetProfileName(TiglCPACSConfigurationH
         *profileNamePtr = const_cast<char*>(profile.GetName().c_str());
 
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglWingGetProfileName!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -1186,13 +1503,25 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetUID(TiglCPACSConfigurationHandle cp
         return TIGL_INDEX_ERROR;
     }
 
-    return Try("tiglWingGetUID", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
         *uidNamePtr = const_cast<char*> (wing.GetUID().c_str());
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglWingGetUID!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetIndex(TiglCPACSConfigurationHandle cpacsHandle,
@@ -1211,12 +1540,25 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetIndex(TiglCPACSConfigurationHandle 
     }
 
     *wingIndexPtr = -1;
-    return Try("tiglWingGetIndex", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         *wingIndexPtr = config.GetWingIndex(std::string(wingUID));
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        *wingIndexPtr = -1;
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglWingGetIndex!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentUID(TiglCPACSConfigurationHandle cpacsHandle,
@@ -1236,14 +1578,26 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentUID(TiglCPACSConfigurationHa
         return TIGL_INDEX_ERROR;
     }
 
-    return Try("tiglWingGetSegmentUID", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
         tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(segmentIndex);
         *uidNamePtr = const_cast<char*>(segment.GetUID().c_str());
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglWingGetSegmentUID!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentIndex(TiglCPACSConfigurationHandle cpacsHandle,
@@ -1267,7 +1621,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentIndex(TiglCPACSConfiguration
         return TIGL_NULL_POINTER;
     }
 
-    return Try("tiglWingGetSegmentIndex", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         
@@ -1288,7 +1642,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentIndex(TiglCPACSConfiguration
         *segmentIndex = -1;
         *wingIndex = -1;
         return TIGL_UID_ERROR;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglWingGetSegmentIndex!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -1308,13 +1674,25 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSectionCount(TiglCPACSConfiguration
         return TIGL_INDEX_ERROR;
     }
 
-    return Try("tiglWingGetSectionCount", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
         *sectionCount = wing.GetSectionCount();
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglWingGetSectionCount!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -1335,14 +1713,26 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSectionUID(TiglCPACSConfigurationHa
         return TIGL_INDEX_ERROR;
     }
 
-    return Try("tiglWingGetSectionUID", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
         const tigl::CCPACSWingSection& section = wing.GetSection(sectionIndex);
         *uidNamePtr = const_cast<char*>(section.GetUID().c_str());
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglWingGetSectionUID!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -1357,13 +1747,25 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSymmetry(TiglCPACSConfigurationHand
         return TIGL_INDEX_ERROR;
     }
 
-    return Try("tiglWingGetSymmetry", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
         *symmetryAxisPtr = wing.GetSymmetryAxis();
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglGetWingSymmetry!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -1383,7 +1785,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentFindSegment(TiglCPACSC
         return TIGL_NULL_POINTER;
     }
 
-    return Try("tiglWingComponentSegmentFindSegment", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
 
@@ -1417,7 +1819,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentFindSegment(TiglCPACSC
             }
         }
         return TIGL_ERROR;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglWingComponentSegmentFindSegment!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetPoint(TiglCPACSConfigurationHandle cpacsHandle,
@@ -1436,7 +1850,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetPoint(TiglCPACSConf
         return TIGL_NULL_POINTER;
     }
     
-    return Try("tiglWingComponentSegmentGetPoint", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
 
@@ -1462,7 +1876,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetPoint(TiglCPACSConf
         // the component segment was not found
         LOG(ERROR) << "Error: Invalid uid in tiglWingComponentSegmentPointGetPoint" << std::endl;
         return TIGL_UID_ERROR;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglWingComponentSegmentPointGetPoint!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentPointGetSegmentEtaXsi(TiglCPACSConfigurationHandle cpacsHandle,
@@ -1489,7 +1915,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentPointGetSegmentEtaXsi(
         return TIGL_NULL_POINTER;
     }
 
-    return Try("tiglWingComponentSegmentPointGetSegmentEtaXsi", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
 
@@ -1536,7 +1962,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentPointGetSegmentEtaXsi(
         // the component segment was not found
         LOG(ERROR) << "Error: Invalid uid in tiglWingComponentSegmentPointGetSegmentEtaXsi" << std::endl;
         return TIGL_UID_ERROR;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglWingComponentSegmentPointGetSegmentEtaXsi!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingSegmentPointGetComponentSegmentEtaXsi(TiglCPACSConfigurationHandle cpacsHandle,
@@ -1569,7 +2007,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingSegmentPointGetComponentSegmentEtaXsi(
         return TIGL_NULL_POINTER;
     }
     
-    return Try("tiglWingSegmentPointGetComponentSegmentEtaXsi", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
 
@@ -1596,7 +2034,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingSegmentPointGetComponentSegmentEtaXsi(
         // the component segment was not found
         LOG(ERROR) << "Error: Invalid component segment uid in tiglWingSegmentPointGetComponentSegmentEtaXsi" << std::endl;
         return TIGL_UID_ERROR;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglWingSegmentPointGetComponentSegmentEtaXsi!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetSegmentIntersection(TiglCPACSConfigurationHandle cpacsHandle,
@@ -1626,7 +2076,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetSegmentIntersection
         return TIGL_NULL_POINTER;
     }
     
-    return Try("tiglWingComponentSegmentGetSegmentIntersection", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         
@@ -1663,7 +2113,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetSegmentIntersection
         // the component segment was not found
         LOG(ERROR) << "Error: Invalid component segment uid in tiglWingComponentSegmentGetSegmentIntersection" << std::endl;
         return TIGL_UID_ERROR;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an unknown exception in tiglWingComponentSegmentGetSegmentIntersection!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentComputeEtaIntersection(TiglCPACSConfigurationHandle cpacsHandle,
@@ -1727,13 +2189,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentComputeEtaIntersection
         LOG(ERROR) << "Error: Invalid component segment uid in tiglWingComponentSegmentComputeEtaIntersection" << std::endl;
         return TIGL_UID_ERROR;
     }
-    catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
-        return ex.getCode();
-    }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what() << std::endl;
         return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
     }
     catch (...) {
         LOG(ERROR) << "Caught an unknown exception in tiglWingComponentSegmentComputeEtaIntersection!" << std::endl;
@@ -1758,7 +2220,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetNumberOfSegments(Ti
         return TIGL_NULL_POINTER;
     }
     
-    return Try("tiglWingComponentSegmentGetNumberOfSegments", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
 
@@ -1784,7 +2246,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetNumberOfSegments(Ti
         // the component segment was not found
         LOG(ERROR) << "Error: Invalid component segment uid in tiglWingComponentSegmentGetNumberOfSegments" << std::endl;
         return TIGL_UID_ERROR;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglWingComponentSegmentGetNumberOfSegments!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -1806,7 +2280,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetSegmentUID(TiglCPAC
         return TIGL_NULL_POINTER;
     }
     
-    return Try("tiglWingComponentSegmentGetSegmentUID", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
 
@@ -1837,7 +2311,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetSegmentUID(TiglCPAC
         // the component segment was not found
         LOG(ERROR) << "Error: Invalid component segment uid in tiglWingComponentSegmentGetSegmentUID" << std::endl;
         return TIGL_UID_ERROR;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglWingComponentSegmentGetSegmentUID!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -1853,12 +2339,24 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetFuselageCount(TiglCPACSConfigurationHan
         return TIGL_NULL_POINTER;
     }
 
-    return Try("tiglGetFuselageCount", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         *fuselageCountPtr = config.GetFuselageCount();
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglGetFuselageCount!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -1872,13 +2370,25 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentCount(TiglCPACSConfigura
         return TIGL_NULL_POINTER;
     }
 
-    return Try("tiglFuselageGetSegmentCount", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSFuselage& fuselage = config.GetFuselage(fuselageIndex);
         *segmentCountPtr = fuselage.GetSegmentCount();
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetSegmentCount!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -1897,7 +2407,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetPoint(TiglCPACSConfigurationHan
         return TIGL_NULL_POINTER;
     }
 
-    return Try("tiglFuselageGetPoint", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSFuselage& fuselage = config.GetFuselage(fuselageIndex);
@@ -1906,7 +2416,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetPoint(TiglCPACSConfigurationHan
         *pointYPtr = point.Y();
         *pointZPtr = point.Z();
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetPoint!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -1926,7 +2448,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetPointAngle(TiglCPACSConfigurati
         return TIGL_NULL_POINTER;
     }
 
-    return Try("tiglFuselageGetPointAngle", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSFuselage& fuselage = config.GetFuselage(fuselageIndex);
@@ -1939,7 +2461,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetPointAngle(TiglCPACSConfigurati
         *pointYPtr = point.Y();
         *pointZPtr = point.Z();
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetPointAngle!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -1960,7 +2494,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetPointAngleTranslated(TiglCPACSC
         return TIGL_NULL_POINTER;
     }
 
-    return Try("tiglFuselageGetPointAngleTranslated", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSFuselage& fuselage = config.GetFuselage(fuselageIndex);
@@ -1973,7 +2507,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetPointAngleTranslated(TiglCPACSC
         *pointYPtr = point.Y();
         *pointZPtr = point.Z();
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetPointAngleTranslated!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -1993,7 +2539,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetPointOnXPlane(TiglCPACSConfigur
         return TIGL_NULL_POINTER;
     }
 
-    return Try("tiglFuselageGetPointOnXPlane", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSFuselage& fuselage = config.GetFuselage(fuselageIndex);
@@ -2003,7 +2549,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetPointOnXPlane(TiglCPACSConfigur
         *pointYPtr = point.Y();
         *pointZPtr = point.Z();
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetPointOnXPlane!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -2024,7 +2582,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetPointOnYPlane(TiglCPACSConfigur
         return TIGL_NULL_POINTER;
     }
 
-    return Try("tiglFuselageGetPointOnYPlane", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSFuselage& fuselage = config.GetFuselage(fuselageIndex);
@@ -2034,7 +2592,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetPointOnYPlane(TiglCPACSConfigur
         *pointYPtr = point.Y();
         *pointZPtr = point.Z();
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetPointOnYPlane!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -2051,14 +2621,26 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetNumPointsOnXPlane(TiglCPACSConf
         return TIGL_NULL_POINTER;
     }
 
-    return Try("tiglFuselageGetNumPointsOnXPlane", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSFuselage& fuselage = config.GetFuselage(fuselageIndex);
         tigl::CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment&) fuselage.GetSegment(segmentIndex);
         *numPointsPtr = segment.GetNumPointsOnYPlane(eta, xpos);
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetNumPointsOnXPlane!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -2075,14 +2657,26 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetNumPointsOnYPlane(TiglCPACSConf
         return TIGL_NULL_POINTER;
     }
 
-    return Try("tiglFuselageGetNumPointsOnYPlane", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSFuselage& fuselage = config.GetFuselage(fuselageIndex);
         tigl::CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment&) fuselage.GetSegment(segmentIndex);
         *numPointsPtr = segment.GetNumPointsOnYPlane(eta, ypos);
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetNumPointsOnYPlane!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -2098,13 +2692,25 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetCircumference(TiglCPACSConfigur
          return TIGL_NULL_POINTER;
      }
 
-     return Try("tiglFuselageGetCircumference", TIGL_ERROR, [&]{
+     try {
          tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
          tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
          tigl::CCPACSFuselage& fuselage = config.GetFuselage(fuselageIndex);
          *circumferencePtr = fuselage.GetCircumference(segmentIndex, eta);
          return TIGL_SUCCESS;
-     });
+     }
+     catch (std::exception& ex) {
+         LOG(ERROR) << ex.what() << std::endl;
+         return TIGL_ERROR;
+     }
+     catch (tigl::CTiglError& ex) {
+         LOG(ERROR) << ex.getError() << std::endl;
+         return ex.getCode();
+     }
+     catch (...) {
+         LOG(ERROR) << "Caught an exception in tiglFuselageGetCircumference!" << std::endl;
+         return TIGL_ERROR;
+     }
 }
 
 
@@ -2121,14 +2727,26 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetStartConnectedSegmentCount(Tigl
         return TIGL_NULL_POINTER;
     }
 
-    return Try("tiglFuselageGetStartConnectedSegmentCount", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSFuselage& fuselage = config.GetFuselage(fuselageIndex);
         tigl::CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(segmentIndex);
         *segmentCountPtr = segment.GetStartConnectedSegmentCount();
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetStartConnectedSegmentCount!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -2143,14 +2761,26 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetEndConnectedSegmentCount(TiglCP
         return TIGL_NULL_POINTER;
     }
 
-    return Try("tiglFuselageGetEndConnectedSegmentCount", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSFuselage& fuselage = config.GetFuselage(fuselageIndex);
         tigl::CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(segmentIndex);
         *segmentCountPtr = segment.GetEndConnectedSegmentCount();
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetEndConnectedSegmentCount!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -2166,14 +2796,26 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetStartConnectedSegmentIndex(Tigl
         return TIGL_NULL_POINTER;
     }
 
-    return Try("tiglFuselageGetStartConnectedSegmentIndex", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSFuselage& fuselage = config.GetFuselage(fuselageIndex);
         tigl::CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(segmentIndex);
         *connectedIndexPtr = segment.GetStartConnectedSegmentIndex(n);
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetStartConnectedSegmentIndex!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -2189,14 +2831,26 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetEndConnectedSegmentIndex(TiglCP
         return TIGL_NULL_POINTER;
     }
 
-    return Try("tiglFuselageGetEndConnectedSegmentIndex", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSFuselage& fuselage = config.GetFuselage(fuselageIndex);
         tigl::CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(segmentIndex);
         *connectedIndexPtr = segment.GetEndConnectedSegmentIndex(n);
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetEndConnectedSegmentIndex!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetStartSectionAndElementUID(TiglCPACSConfigurationHandle cpacsHandle,
@@ -2212,7 +2866,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetStartSectionAndElementUID(TiglC
         return TIGL_INDEX_ERROR;
     }
 
-    return Try("tiglFuselageGetStartSectionAndElementUID", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSFuselage& fuselage = config.GetFuselage(fuselageIndex);
@@ -2223,7 +2877,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetStartSectionAndElementUID(TiglC
         *elementUIDPtr = (char *)segment.GetStartSectionElementUID().c_str();
 
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetStartSectionAndElementIndex!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -2241,7 +2907,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetEndSectionAndElementUID(TiglCPA
         return TIGL_INDEX_ERROR;
     }
 
-    return Try("tiglFuselageGetEndSectionAndElementUID", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSFuselage& fuselage = config.GetFuselage(fuselageIndex);
@@ -2251,7 +2917,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetEndSectionAndElementUID(TiglCPA
         *elementUIDPtr = (char *) segment.GetEndSectionElementUID().c_str();
 
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetEndSectionAndElementIndex!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -2273,7 +2951,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetStartSectionAndElementIndex (Ti
         return TIGL_NULL_POINTER;
     }
 
-    return Try("tiglFuselageGetStartSectionAndElementIndex", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSFuselage& fuselage = config.GetFuselage(fuselageIndex);
@@ -2282,7 +2960,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetStartSectionAndElementIndex (Ti
         *elementIndexPtr = segment.GetStartSectionElementIndex();
 
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetStartSectionAndElementIndex!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -2303,7 +2993,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetEndSectionAndElementIndex(TiglC
         return TIGL_NULL_POINTER;
     }
 
-    return Try("tiglFuselageGetEndSectionAndElementIndex", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSFuselage& fuselage = config.GetFuselage(fuselageIndex);
@@ -2312,7 +3002,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetEndSectionAndElementIndex(TiglC
         *elementIndexPtr = segment.GetEndSectionElementIndex();
 
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetEndSectionAndElementIndex!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -2334,7 +3036,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetProfileName(TiglCPACSConfigurat
         return TIGL_INDEX_ERROR;
     }
 
-    return Try("tiglFuselageGetProfileName", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSFuselage& fuselage = config.GetFuselage(fuselageIndex);
@@ -2346,7 +3048,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetProfileName(TiglCPACSConfigurat
         *profileNamePtr = const_cast<char*>(profile.GetName().c_str());
         
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetProfileName!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -2366,13 +3080,25 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetUID(TiglCPACSConfigurationHandl
         return TIGL_INDEX_ERROR;
     }
 
-    return Try("tiglFuselageGetUID", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSFuselage& fuselage = config.GetFuselage(fuselageIndex);
         *uidNamePtr = const_cast<char*>(fuselage.GetUID().c_str());
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetUID!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetIndex(TiglCPACSConfigurationHandle cpacsHandle,
@@ -2391,12 +3117,25 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetIndex(TiglCPACSConfigurationHan
     }
 
     *fuselageIndexPtr = -1;
-    return Try("tiglFuselageGetIndex", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         *fuselageIndexPtr = config.GetFuselageIndex(std::string(fuselageUID));
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        *fuselageIndexPtr = -1;
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetIndex!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -2417,14 +3156,26 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentUID(TiglCPACSConfigurati
         return TIGL_INDEX_ERROR;
     }
 
-    return Try("tiglFuselageGetSegmentUID", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSFuselage& fuselage = config.GetFuselage(fuselageIndex);
         tigl::CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment&) fuselage.GetSegment(segmentIndex);
         *uidNamePtr = const_cast<char*>(segment.GetUID().c_str());
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetSegmentUID!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -2449,7 +3200,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentIndex(TiglCPACSConfigura
         return TIGL_NULL_POINTER;
     }
 
-    return Try("tiglFuselageGetSegmentIndex", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
 
@@ -2470,7 +3221,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentIndex(TiglCPACSConfigura
         *segmentIndex = -1;
         *fuselageIndex = -1;
         return TIGL_UID_ERROR;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetSegmentIndex!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -2490,13 +3253,25 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSectionCount(TiglCPACSConfigura
         return TIGL_INDEX_ERROR;
     }
 
-    return Try("tiglFuselageGetSectionCount", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSFuselage& fuselage = config.GetFuselage(fuselageIndex);
         *sectionCount = fuselage.GetSectionCount();
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetSectionCount!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -2517,15 +3292,34 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSectionUID(TiglCPACSConfigurati
         return TIGL_INDEX_ERROR;
     }
 
-    return Try("tiglFuselageGetSectionUID", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSFuselage& fuselage = config.GetFuselage(fuselageIndex);
         tigl::CCPACSFuselageSection& section = fuselage.GetSection(sectionIndex);
         *uidNamePtr = const_cast<char*>(section.GetUID().c_str());
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetSectionUID!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
+
+
+
+
+
+
+
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSymmetry(TiglCPACSConfigurationHandle cpacsHandle, int fuselageIndex,
                                                           TiglSymmetryAxis* symmetryAxisPtr)
@@ -2536,14 +3330,29 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSymmetry(TiglCPACSConfiguration
         return TIGL_INDEX_ERROR;
     }
 
-    return Try("tiglFuselageGetSymmetry", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSFuselage& fuselage = config.GetFuselage(fuselageIndex);
         *symmetryAxisPtr = fuselage.GetSymmetryAxis();
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglGetFuselageSymmetry!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
+
+
+
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetMinumumDistanceToGround(TiglCPACSConfigurationHandle cpacsHandle,
                                                                          char *fuselageUID,
@@ -2567,7 +3376,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetMinumumDistanceToGround(TiglCPA
     // Definition of the axis of rotation
     gp_Ax1 RAxis(gp_Pnt(axisPntX, axisPntY, axisPntZ), gp_Dir(axisDirX, axisDirY, axisDirZ));
 
-    return Try("tiglFuselageGetMinumumDistanceToGround", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSFuselage& fuselage = config.GetFuselage(fuselageUID);
@@ -2576,7 +3385,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetMinumumDistanceToGround(TiglCPA
         *pointYPtr = point.Y();
         *pointZPtr = point.Z();
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetPointOnYPlane!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -2599,13 +3420,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetRotorCount(TiglCPACSConfigurationHandle
         *rotorCountPtr = config.GetRotorCount();
         return TIGL_SUCCESS;
     }
-    catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
-        return ex.getCode();
-    }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what() << std::endl;
         return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglGetRotorCount!" << std::endl;
@@ -2636,13 +3457,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetUID(TiglCPACSConfigurationHandle c
         *uidNamePtr = const_cast<char*> (rotor.GetUID().c_str());
         return TIGL_SUCCESS;
     }
-    catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
-        return ex.getCode();
-    }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what() << std::endl;
         return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglRotorGetUID!" << std::endl;
@@ -2671,15 +3492,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetIndex(TiglCPACSConfigurationHandle
         *rotorIndexPtr = config.GetRotorIndex(std::string(rotorUID));
         return TIGL_SUCCESS;
     }
-    catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
-        *rotorIndexPtr = -1;
-        return ex.getCode();
-    }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what() << std::endl;
         *rotorIndexPtr = -1;
         return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        *rotorIndexPtr = -1;
+        return ex.getCode();
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglRotorGetIndex!" << std::endl;
@@ -2710,13 +3531,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetRadius(TiglCPACSConfigurationHandl
         *radiusPtr = rotor.GetRadius();
         return TIGL_SUCCESS;
     }
-    catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
-        return ex.getCode();
-    }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what() << std::endl;
         return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglRotorGetRadius!" << std::endl;
@@ -2782,13 +3603,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetTotalBladePlanformArea(TiglCPACSCo
         *totalBladePlanformAreaPtr = rotor.GetTotalBladePlanformArea();
         return TIGL_SUCCESS;
     }
-    catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
-        return ex.getCode();
-    }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what() << std::endl;
         return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglRotorGetTotalBladePlanformArea!" << std::endl;
@@ -2818,13 +3639,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetSolidity(TiglCPACSConfigurationHan
         *solidityPtr = rotor.GetSolidity();
         return TIGL_SUCCESS;
     }
-    catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
-        return ex.getCode();
-    }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what() << std::endl;
         return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglRotorGetSolidity!" << std::endl;
@@ -2854,13 +3675,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetSurfaceArea(TiglCPACSConfiguration
         *surfaceAreaPtr = rotor.GetSurfaceArea();
         return TIGL_SUCCESS;
     }
-    catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
-        return ex.getCode();
-    }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what() << std::endl;
         return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglRotorGetSurfaceArea!" << std::endl;
@@ -2890,13 +3711,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetVolume(TiglCPACSConfigurationHandl
         *volumePtr = rotor.GetVolume();
         return TIGL_SUCCESS;
     }
-    catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
-        return ex.getCode();
-    }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what() << std::endl;
         return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglrotorGetVolume!" << std::endl;
@@ -2926,13 +3747,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetTipSpeed(TiglCPACSConfigurationHan
         *tipSpeedPtr = rotor.GetTipSpeed();
         return TIGL_SUCCESS;
     }
-    catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
-        return ex.getCode();
-    }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what() << std::endl;
         return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglRotorGetTipSpeed!" << std::endl;
@@ -2967,13 +3788,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetRotorBladeCount(TiglCPACSConfigura
         *rotorBladeCountPtr = rotor.GetRotorBladeCount();
         return TIGL_SUCCESS;
     }
-    catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
-        return ex.getCode();
-    }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what() << std::endl;
         return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglRotorGetRotorBladeCount!" << std::endl;
@@ -3011,13 +3832,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetWingIndex(TiglCPACSConfigurat
         *wingIndexPtr = rotorBladeAttachment.GetWingIndex();
         return TIGL_SUCCESS;
     }
-    catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
-        return ex.getCode();
-    }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what() << std::endl;
         return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglRotorBladeGetWingIndex!" << std::endl;
@@ -3055,13 +3876,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetWingUID(TiglCPACSConfiguratio
         *wingUIDPtr = const_cast<char*> (rotorBladeAttachment.GetRotorBladeUID().c_str());
         return TIGL_SUCCESS;
     }
-    catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
-        return ex.getCode();
-    }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what() << std::endl;
         return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglRotorBladeGetWingUID!" << std::endl;
@@ -3098,13 +3919,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetAzimuthAngle(TiglCPACSConfigu
         *azimuthAnglePtr = rotorBlade.GetAzimuthAngle();
         return TIGL_SUCCESS;
     }
-    catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
-        return ex.getCode();
-    }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what() << std::endl;
         return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglRotorBladeGetAzimuthAngle!" << std::endl;
@@ -3141,13 +3962,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetRadius(TiglCPACSConfiguration
         *radiusPtr = rotorBlade.GetRadius();
         return TIGL_SUCCESS;
     }
-    catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
-        return ex.getCode();
-    }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what() << std::endl;
         return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglRotorBladeGetRadius!" << std::endl;
@@ -3184,13 +4005,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetPlanformArea(TiglCPACSConfigu
         *planformAreaPtr = rotorBlade.GetPlanformArea();
         return TIGL_SUCCESS;
     }
-    catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
-        return ex.getCode();
-    }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what() << std::endl;
         return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglRotorBladeGetPlanformArea!" << std::endl;
@@ -3227,13 +4048,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetSurfaceArea(TiglCPACSConfigur
         *surfaceAreaPtr = rotorBlade.GetSurfaceArea();
         return TIGL_SUCCESS;
     }
-    catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
-        return ex.getCode();
-    }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what() << std::endl;
         return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglRotorBladeGetSurfaceArea!" << std::endl;
@@ -3270,13 +4091,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetVolume(TiglCPACSConfiguration
         *volumePtr = rotorBlade.GetVolume();
         return TIGL_SUCCESS;
     }
-    catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
-        return ex.getCode();
-    }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what() << std::endl;
         return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglRotorBladeGetVolume!" << std::endl;
@@ -3313,13 +4134,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetTipSpeed(TiglCPACSConfigurati
         *tipSpeedPtr = rotorBlade.GetTipSpeed();
         return TIGL_SUCCESS;
     }
-    catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
-        return ex.getCode();
-    }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what() << std::endl;
         return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglRotorBladeGetTipSpeed!" << std::endl;
@@ -3368,13 +4189,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetLocalRadius(TiglCPACSConfigur
         *radiusPtr = rotorBlade.GetLocalRadius(segmentIndex, eta);
         return TIGL_SUCCESS;
     }
-    catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
-        return ex.getCode();
-    }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what() << std::endl;
         return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglRotorBladeGetLocalRadius!" << std::endl;
@@ -3423,13 +4244,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetLocalChord(TiglCPACSConfigura
         *chordPtr = rotorBlade.GetLocalChord(segmentIndex, eta);
         return TIGL_SUCCESS;
     }
-    catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
-        return ex.getCode();
-    }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what() << std::endl;
         return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglRotorBladeGetLocalChord!" << std::endl;
@@ -3478,13 +4299,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetLocalTwistAngle(TiglCPACSConf
         *twistAnglePtr = rotorBlade.GetLocalTwistAngle(segmentIndex, eta);
         return TIGL_SUCCESS;
     }
-    catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
-        return ex.getCode();
-    }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what() << std::endl;
         return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglRotorBladeGetLocalTwistAngle!" << std::endl;
@@ -3522,7 +4343,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglComponentIntersectionPoint(TiglCPACSConfig
     }
 
 
-    return Try("tiglComponentIntersectionPoint", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
 
@@ -3537,7 +4358,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglComponentIntersectionPoint(TiglCPACSConfig
         *pointYPtr = point.Y();
         *pointZPtr = point.Z();
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglComponentIntersectionPoint!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 // DEPRECATED
@@ -3572,7 +4405,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglComponentIntersectionPoints(TiglCPACSConfi
     }
 
 
-    return Try("tiglComponentIntersectionPoints", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
 
@@ -3590,7 +4423,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglComponentIntersectionPoints(TiglCPACSConfi
             pointZArray[i] = point.Z();
         }
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglComponentIntersectionPoints!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 // DEPRECATED
@@ -3607,7 +4452,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglComponentIntersectionLineCount(TiglCPACSCo
         return TIGL_NULL_POINTER;
     }
 
-    return Try("tiglComponentIntersectionLineCount", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
 
@@ -3619,7 +4464,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglComponentIntersectionLineCount(TiglCPACSCo
         tigl::CTiglIntersectionCalculation Intersector(&config.GetShapeCache(), componentUidOne, componentUidTwo, compoundOne, compoundTwo);
         *numWires = Intersector.GetCountIntersectionLines();
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglFuselageWingSurfaceIntersectionLineCount!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectComponents(TiglCPACSConfigurationHandle cpacsHandle,
@@ -3640,7 +4497,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectComponents(TiglCPACSConfiguration
         return TIGL_NULL_POINTER;
     }
     
-    return Try("tiglIntersectComponents", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CTiglUIDManager& uidManager = config.GetUIDManager();
@@ -3666,7 +4523,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectComponents(TiglCPACSConfiguration
             LOG(ERROR) << "UID can not be found in tiglIntersectComponents.";
             return TIGL_UID_ERROR;
         }
-    });
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError();
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglIntersectComponents!";
+        return TIGL_ERROR;
+    }
 }
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectWithPlane(TiglCPACSConfigurationHandle cpacsHandle,
@@ -3688,7 +4553,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectWithPlane(TiglCPACSConfigurationH
         return TIGL_MATH_ERROR;
     }
     
-    return Try("tiglIntersectWithPlane", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CTiglUIDManager& uidManager = config.GetUIDManager();
@@ -3713,7 +4578,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectWithPlane(TiglCPACSConfigurationH
             LOG(ERROR) << "UID can not be found in tiglIntersectWithPlane.";
             return TIGL_UID_ERROR;
         }
-    });
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError();
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglIntersectWithPlane!";
+        return TIGL_ERROR;
+    }
 }
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectGetLineCount(TiglCPACSConfigurationHandle cpacsHandle,
@@ -3729,7 +4602,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectGetLineCount(TiglCPACSConfigurati
         return TIGL_NULL_POINTER;
     }
     
-    return Try("tiglIntersectGetLineCount", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CTiglShapeCache& cache = config.GetShapeCache();
@@ -3738,7 +4611,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectGetLineCount(TiglCPACSConfigurati
         *lineCount = Intersector.GetCountIntersectionLines();
         
         return TIGL_SUCCESS;
-    });
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError();
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglIntersectComponents!";
+        return TIGL_ERROR;
+    }
 }
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectGetPoint(TiglCPACSConfigurationHandle cpacsHandle,
@@ -3770,7 +4651,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectGetPoint(TiglCPACSConfigurationHa
         return TIGL_MATH_ERROR;
     }
     
-    return Try("tiglIntersectGetPoint", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CTiglShapeCache& cache = config.GetShapeCache();
@@ -3783,7 +4664,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectGetPoint(TiglCPACSConfigurationHa
         *pointZ = p.Z();
         
         return TIGL_SUCCESS;
-    });
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError();
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglIntersectComponents!";
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -3799,14 +4688,26 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportIGES(TiglCPACSConfigurationHandle cp
         return TIGL_NULL_POINTER;
     }
 
-    return Try("tiglExportIGES", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CTiglExportIges exporter;
         exporter.AddConfiguration(config);
         bool ret = exporter.Write(filenamePtr);
         return ret ? TIGL_SUCCESS : TIGL_WRITE_FAILED;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglExportIGES!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -3819,14 +4720,26 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportFusedWingFuselageIGES(TiglCPACSConfi
         return TIGL_NULL_POINTER;
     }
 
-    return Try("tiglExportFusedWingFuselageIGES", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CTiglExportIges exporter;
         exporter.AddFusedConfiguration(config);
         bool ret = exporter.Write(filenamePtr);
         return ret ? TIGL_SUCCESS : TIGL_WRITE_FAILED;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglExportFusedWingFuselageIGES!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -3838,14 +4751,26 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportSTEP(TiglCPACSConfigurationHandle cp
         return TIGL_NULL_POINTER;
     }
 
-    return Try("tiglExportSTEP", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CTiglExportStep exporter;
         exporter.AddConfiguration(config);
         bool ret = exporter.Write(filenamePtr);
         return ret ? TIGL_SUCCESS : TIGL_WRITE_FAILED;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglExportSTEP!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportFusedSTEP(TiglCPACSConfigurationHandle cpacsHandle, const char* filenamePtr)
@@ -3856,14 +4781,26 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportFusedSTEP(TiglCPACSConfigurationHand
         return TIGL_NULL_POINTER;
     }
 
-    return Try("tiglExportFusedSTEP", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CTiglExportStep exporter;
         exporter.AddFusedConfiguration(config);
         bool ret = exporter.Write(filenamePtr);
         return ret ? TIGL_SUCCESS : TIGL_WRITE_FAILED;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglExportFusedSTEP!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -3881,7 +4818,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingSTL(TiglCPACSConfiguration
         return TIGL_INDEX_ERROR;
     }
 
-    return Try("tiglExportMeshedWingSTL", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
@@ -3891,7 +4828,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingSTL(TiglCPACSConfiguration
         exporter.AddShape(loft, deflection);
         bool ret = exporter.Write(filenamePtr);
         return ret ? TIGL_SUCCESS : TIGL_WRITE_FAILED;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglExportMeshedWingSTL!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingSTLByUID(TiglCPACSConfigurationHandle cpacsHandle, 
@@ -3910,7 +4859,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingSTLByUID(TiglCPACSConfigur
         return TIGL_NULL_POINTER;
     }
 
-    return Try("tiglExportMeshedWingSTLByUID", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         for (int iWing = 1; iWing <= config.GetWingCount(); ++iWing) {
@@ -3928,7 +4877,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingSTLByUID(TiglCPACSConfigur
         LOG(ERROR) << "Wing with UID " << wingUID << " not found"
                    << "in function call to tiglExportMeshedWingSTLByUID." << std::endl;
         return TIGL_UID_ERROR;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglExportMeshedWingSTLByUID!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -3946,7 +4907,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageSTL(TiglCPACSConfigura
         return TIGL_INDEX_ERROR;
     }
 
-    return Try("tiglExportMeshedFuselageSTL", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSFuselage& fuselage = config.GetFuselage(fuselageIndex);
@@ -3956,7 +4917,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageSTL(TiglCPACSConfigura
         exporter.AddShape(loft, deflection);
         bool ret = exporter.Write(filenamePtr);
         return ret ? TIGL_SUCCESS : TIGL_WRITE_FAILED;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglExportMeshedFuselageSTL!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -3976,7 +4949,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageSTLByUID(TiglCPACSConf
         return TIGL_NULL_POINTER;
     }
 
-    return Try("tiglExportMeshedFuselageSTLByUID", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         
@@ -3995,7 +4968,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageSTLByUID(TiglCPACSConf
         LOG(ERROR) << "Fuselage with UID " << fuselageUID << " not found"
                    << "in function call to tiglExportMeshedFuselageSTLByUID." << std::endl;
         return TIGL_UID_ERROR;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglExportMeshedFuselageSTLByUID!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -4007,7 +4992,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedGeometrySTL(TiglCPACSConfigura
         return TIGL_NULL_POINTER;
     }
 
-    return Try("tiglExportMeshedGeometrySTL", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CTiglExportStl exporter;
@@ -4019,8 +5004,21 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedGeometrySTL(TiglCPACSConfigura
         exporter.AddConfiguration(config, options);
         bool ret = exporter.Write(filenamePtr);
         return ret ? TIGL_SUCCESS : TIGL_WRITE_FAILED;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglExportMeshedGeometrySTL!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
+
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingVTKByIndex(const TiglCPACSConfigurationHandle cpacsHandle, const int wingIndex,
                                                                  const char* filenamePtr, const double deflection)
@@ -4036,15 +5034,37 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingVTKByIndex(const TiglCPACS
         return TIGL_INDEX_ERROR;
     }
 
-    return Try("tiglExportMeshedWingVTKByIndex", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CTiglExportVtk exporter(config);
         std::string filename = filenamePtr;
         exporter.ExportMeshedWingVTKByIndex(wingIndex, filename, deflection);
         return TIGL_SUCCESS;
-    });
+    }
+    // all exceptions from the standard library 
+    catch (std::exception & ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError & ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch(char *str) {
+        LOG(ERROR) << str << std::endl;
+        return TIGL_ERROR;
+    }
+    catch(std::string& str) {
+        LOG(ERROR) << str << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an unknown exception in tiglExportMeshedWingVTKByIndex" << std::endl;
+        return TIGL_ERROR;
+    }
 }
+
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingVTKByUID(const TiglCPACSConfigurationHandle cpacsHandle, const char* wingUID,
                                                                const char* filenamePtr, double deflection)
@@ -4060,15 +5080,37 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingVTKByUID(const TiglCPACSCo
         return TIGL_NULL_POINTER;
     }
 
-    return Try("tiglExportMeshedWingVTKByUID", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CTiglExportVtk exporter(config);
         std::string filename = filenamePtr;
         exporter.ExportMeshedWingVTKByUID(wingUID, filename, deflection);
         return TIGL_SUCCESS;
-    });
+    }
+    // all exceptions from the standard library
+    catch (std::exception & ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError & ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch(char *str) {
+        LOG(ERROR) << str << std::endl;
+        return TIGL_ERROR;
+    }
+    catch(std::string& str) {
+        LOG(ERROR) << str << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an unknown exception in tiglExportMeshedWingVTKByUID" << std::endl;
+        return TIGL_ERROR;
+    }
 }
+
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageVTKByIndex(const TiglCPACSConfigurationHandle cpacsHandle, const int fuselageIndex,
                                                                      const char* filenamePtr, double deflection)
@@ -4084,15 +5126,28 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageVTKByIndex(const TiglC
         return TIGL_INDEX_ERROR;
     }
 
-    return Try("tiglExportMeshedFuselageVTKByIndex", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CTiglExportVtk exporter(config);
         std::string filename = filenamePtr;
         exporter.ExportMeshedFuselageVTKByIndex(fuselageIndex, filename, deflection);
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglExportMeshedFuselageVTKByIndex!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
+
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageVTKByUID(const TiglCPACSConfigurationHandle cpacsHandle, const char* fuselageUID,
                                                                    const char* filenamePtr, double deflection)
@@ -4108,15 +5163,29 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageVTKByUID(const TiglCPA
         return TIGL_INDEX_ERROR;
     }
 
-    return Try("tiglExportMeshedFuselageVTKByUID", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CTiglExportVtk exporter(config);
         std::string filename = filenamePtr;
         exporter.ExportMeshedFuselageVTKByUID(fuselageUID, filename, deflection);
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglExportMeshedFuselageVTKByUID!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
+
+
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedGeometryVTK(const TiglCPACSConfigurationHandle cpacsHandle, const char* filenamePtr, double deflection)
 {
@@ -4126,15 +5195,30 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedGeometryVTK(const TiglCPACSCon
         return TIGL_NULL_POINTER;
     }
 
-    return Try("tiglExportMeshedGeometryVTK", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CTiglExportVtk exporter(config);
         std::string filename = filenamePtr;
         exporter.ExportMeshedGeometryVTK(filename, deflection);
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglExportMeshedGeometryVTK!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
+
+
+
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingVTKSimpleByUID(const TiglCPACSConfigurationHandle cpacsHandle, const char* wingUID,
                                                                      const char* filenamePtr, double deflection)
@@ -4150,14 +5234,35 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingVTKSimpleByUID(const TiglC
         return TIGL_NULL_POINTER;
     }
 
-    return Try("tiglExportMeshedWingVTKSimpleByUID", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CTiglExportVtk exporter(config);
         std::string filename = filenamePtr;
         exporter.ExportMeshedWingVTKSimpleByUID(wingUID, filename, deflection);
         return TIGL_SUCCESS;
-    });
+    }
+    // all exceptions from the standard library
+    catch (std::exception & ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError & ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch(char *str) {
+        LOG(ERROR) << str << std::endl;
+        return TIGL_ERROR;
+    }
+    catch(std::string& str) {
+        LOG(ERROR) << str << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an unknown exception in tiglExportMeshedWingVTKSimpleByUID" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -4176,14 +5281,26 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageVTKSimpleByUID(const T
         return TIGL_INDEX_ERROR;
     }
 
-    return Try("tiglExportMeshedFuselageVTKSimpleByUID", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CTiglExportVtk exporter(config);
         std::string filename = filenamePtr;
         exporter.ExportMeshedFuselageVTKSimpleByUID(fuselageUID, filename, deflection);
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglExportMeshedFuselageVTKSimpleByUID!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportFuselageColladaByUID(const TiglCPACSConfigurationHandle cpacsHandle, const char* fuselageUID, const char* filenamePtr, double deflection) 
@@ -4199,7 +5316,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportFuselageColladaByUID(const TiglCPACS
         return TIGL_INDEX_ERROR;
     }
 
-    return Try("tiglExportFuselageColladaByUID", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSFuselage& fuselage = config.GetFuselage(fuselageUID);
@@ -4207,7 +5324,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportFuselageColladaByUID(const TiglCPACS
         colladaWriter.AddShape(fuselage.GetLoft(), deflection);
         bool ret = colladaWriter.Write(filenamePtr);
         return ret ? TIGL_SUCCESS : TIGL_WRITE_FAILED;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglExportFuselageColladaByUID!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportWingColladaByUID(const TiglCPACSConfigurationHandle cpacsHandle, const char* wingUID, const char* filenamePtr, double deflection) 
@@ -4223,7 +5352,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportWingColladaByUID(const TiglCPACSConf
         return TIGL_INDEX_ERROR;
     }
 
-    return Try("tiglExportWingColladaByUID", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingUID);
@@ -4231,7 +5360,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportWingColladaByUID(const TiglCPACSConf
         colladaWriter.AddShape(wing.GetLoft(), deflection);
         bool ret = colladaWriter.Write(filenamePtr);
         return ret ? TIGL_SUCCESS : TIGL_WRITE_FAILED;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglExportWingColladaByUID!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -4244,14 +5385,26 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedGeometryVTKSimple(const TiglCP
         return TIGL_NULL_POINTER;
     }
 
-    return Try("tiglExportMeshedGeometryVTKSimple", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CTiglExportVtk exporter(config);
         std::string filename = filenamePtr;
         exporter.ExportMeshedGeometryVTKSimple(filename, deflection);
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglExportMeshedGeometryVTKSimple!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportFusedBREP(TiglCPACSConfigurationHandle cpacsHandle, const char* filename)
@@ -4270,13 +5423,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportFusedBREP(TiglCPACSConfigurationHand
         bool ret = exporter.Write(filename);
         return ret == true? TIGL_SUCCESS : TIGL_WRITE_FAILED;
     }
-    catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
-        return ex.getCode();
-    }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what() << std::endl;
         return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglExportFusedBREP!" << std::endl;
@@ -4306,7 +5459,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetMaterialCount(TiglC
         return TIGL_NULL_POINTER;
     }
 
-    return Try("tiglWingComponentSegmentGetMaterialCount", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
 
@@ -4335,7 +5488,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetMaterialCount(TiglC
         // the component segment was not found
         LOG(ERROR) << "Error: Invalid uid in tiglWingComponentSegmentGetMaterialCount" << std::endl;
         return TIGL_UID_ERROR;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglWingComponentSegmentGetMaterialCount!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetMaterialUID(TiglCPACSConfigurationHandle cpacsHandle,
@@ -4357,7 +5522,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetMaterialUID(TiglCPA
         return TIGL_NULL_POINTER;
     }
 
-    return Try("tiglWingComponentSegmentGetMaterialUID", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
 
@@ -4398,7 +5563,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetMaterialUID(TiglCPA
         // the component segment was not found
         LOG(ERROR) << "Error: Invalid uid in tiglWingComponentSegmentGetMaterialUID" << std::endl;
         return TIGL_UID_ERROR;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglWingComponentSegmentGetMaterialUID!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetMaterialThickness(TiglCPACSConfigurationHandle cpacsHandle,
@@ -4420,7 +5597,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetMaterialThickness(T
         return TIGL_NULL_POINTER;
     }
 
-    return Try("tiglWingComponentSegmentGetMaterialThickness", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
 
@@ -4465,7 +5642,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetMaterialThickness(T
         // the component segment was not found
         LOG(ERROR) << "Error: Invalid uid in tiglWingComponentSegmentGetMaterialThickness" << std::endl;
         return TIGL_UID_ERROR;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglWingComponentSegmentGetMaterialThickness!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 /*****************************************************************************************************/
@@ -4481,13 +5670,25 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetVolume(TiglCPACSConfigurationHa
         return TIGL_INDEX_ERROR;
     }
 
-    return Try("tiglFuselageGetVolume", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSFuselage& fuselage = config.GetFuselage(fuselageIndex);
         *volumePtr = fuselage.GetVolume();
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetVolume!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -4500,13 +5701,25 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetVolume(TiglCPACSConfigurationHandle
         return TIGL_INDEX_ERROR;
     }
 
-    return Try("tiglWingGetVolume", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
         *volumePtr = wing.GetVolume();
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglWingGetVolume!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -4527,14 +5740,26 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentVolume(TiglCPACSConfiguratio
         return TIGL_INDEX_ERROR;
     }
 
-    return Try("tiglWingGetSegmentVolume", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
         tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(segmentIndex);
         *volumePtr = segment.GetVolume();
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglWingGetSegmentVolume!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentVolume(TiglCPACSConfigurationHandle cpacsHandle,
@@ -4554,14 +5779,26 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentVolume(TiglCPACSConfigur
         return TIGL_INDEX_ERROR;
     }
 
-    return Try("tiglFuselageGetSegmentVolume", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSFuselage& fuselage = config.GetFuselage(fuselageIndex);
         tigl::CCPACSFuselageSegment& segment =(tigl::CCPACSFuselageSegment &)  fuselage.GetSegment(segmentIndex);
         *volumePtr = segment.GetVolume();
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetSegmentVolume!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 /*****************************************************************************************************/
@@ -4577,13 +5814,25 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSurfaceArea(TiglCPACSConfigurationH
         return TIGL_INDEX_ERROR;
     }
 
-    return Try("tiglWingGetSurfaceArea", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
         *surfaceAreaPtr = wing.GetSurfaceArea();
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglWingGetSurfaceArea!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -4596,13 +5845,25 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSurfaceArea(TiglCPACSConfigurat
         return TIGL_INDEX_ERROR;
     }
 
-    return Try("tiglFuselageGetSurfaceArea", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSFuselage& fuselage = config.GetFuselage(fuselageIndex);
         *surfaceAreaPtr = fuselage.GetSurfaceArea();
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetSurfaceArea!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -4623,14 +5884,26 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentSurfaceArea(TiglCPACSConfigu
         return TIGL_INDEX_ERROR;
     }
 
-    return Try("tiglWingGetSegmentSurfaceArea", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
         tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment&) wing.GetSegment(segmentIndex);
         *surfaceAreaPtr = segment.GetSurfaceArea();
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglWingGetSegmentSurfaceArea!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -4651,14 +5924,26 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentSurfaceArea(TiglCPACSCon
         return TIGL_INDEX_ERROR;
     }
 
-    return Try("tiglFuselageGetSegmentSurfaceArea", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSFuselage& fuselage = config.GetFuselage(fuselageIndex);
         tigl::CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment&) fuselage.GetSegment(segmentIndex);
         *surfaceAreaPtr = segment.GetSurfaceArea();
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetSegmentSurfaceArea!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentUpperSurfaceAreaTrimmed(TiglCPACSConfigurationHandle cpacsHandle,
@@ -4682,7 +5967,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentUpperSurfaceAreaTrimmed(Tigl
         return TIGL_INDEX_ERROR;
     }
     
-    return Try("tiglWingGetSegmentUpperSurfaceAreaTrimmed", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
@@ -4693,7 +5978,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentUpperSurfaceAreaTrimmed(Tigl
                                               eta3, xsi3,
                                               eta4, xsi4);
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglWingGetSegmentUpperSurfaceAreaTrimmed!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentLowerSurfaceAreaTrimmed(TiglCPACSConfigurationHandle cpacsHandle,
@@ -4717,7 +6014,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentLowerSurfaceAreaTrimmed(Tigl
         return TIGL_INDEX_ERROR;
     }
     
-    return Try("tiglWingGetSegmentLowerSurfaceAreaTrimmed", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
@@ -4728,7 +6025,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentLowerSurfaceAreaTrimmed(Tigl
                                               eta3, xsi3,
                                               eta4, xsi4);
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglWingGetSegmentLowerSurfaceAreaTrimmed!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -4748,13 +6057,25 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetReferenceArea(TiglCPACSConfiguratio
         return TIGL_ERROR;
     }
 
-    return Try("tiglWingGetReferenceArea", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
         *referenceAreaPtr = wing.GetReferenceArea(symPlane);
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglWingGetReferenceArea!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -4787,13 +6108,25 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetMAC(TiglCPACSConfigurationHandle cp
         return TIGL_NULL_POINTER;
     }
 
-    return Try("tiglWingGetMAC", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingUID);
         wing.GetWingMAC( *mac_chord,  *mac_x,  *mac_y,  *mac_z);
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglConfigurationGetLength!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -4806,14 +6139,26 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetWettedArea(TiglCPACSConfigurationHa
         return TIGL_NULL_POINTER;
     }
 
-    return Try("tiglWingGetWettedArea", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingUID);
         TopoDS_Shape parent = config.GetParentLoft(wingUID);
         *wettedAreaPtr = wing.GetWettedArea(parent);
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglWingGetWettedArea!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 
@@ -4840,7 +6185,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglComponentGetHashCode(TiglCPACSConfiguratio
         return TIGL_NULL_POINTER;
     }
 
-    return Try("tiglComponentGetHashCode", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
 
@@ -4856,7 +6201,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglComponentGetHashCode(TiglCPACSConfiguratio
         }
 
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglComponentGetHashCode!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 TIGL_COMMON_EXPORT const char * tiglGetErrorString(TiglReturnCode code)
@@ -4875,12 +6232,24 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglConfigurationGetLength(TiglCPACSConfigurat
         return TIGL_NULL_POINTER;
     }
 
-    return Try("tiglConfigurationGetLength", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         *pLength = config.GetAirplaneLenth();
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglConfigurationGetLength!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSpan(TiglCPACSConfigurationHandle cpacsHandle, const char* wingUID, double * pSpan)
@@ -4895,13 +6264,25 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSpan(TiglCPACSConfigurationHandle c
         return TIGL_NULL_POINTER;
     }
 
-    return Try("tiglWingGetSpan", TIGL_ERROR, [&]{
+    try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingUID);
         *pSpan = wing.GetWingspan();
         return TIGL_SUCCESS;
-    });
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglConfigurationGetLength!" << std::endl;
+        return TIGL_ERROR;
+    }
 }
 
 /*****************************************************************************/
@@ -4909,70 +6290,97 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSpan(TiglCPACSConfigurationHandle c
 /*****************************************************************************/
 TIGL_COMMON_EXPORT TiglReturnCode tiglLogToFileEnabled(const char *filePrefix) 
 {
+    tigl::CTiglLogging& logger = tigl::CTiglLogging::Instance();
     if (filePrefix == NULL) {
         LOG(ERROR) << "Error: argument filePrefix is NULL in tiglLogToFileEnabled!";
         return TIGL_NULL_POINTER;
     }
 
-    return Try("tiglLogToFileEnabled", TIGL_ERROR, [&]{
-        tigl::CTiglLogging& logger = tigl::CTiglLogging::Instance();
+    try {
         logger.LogToFile(filePrefix);
-        return TIGL_SUCCESS;
-    });
+    }
+    catch (tigl::CTiglError& err) {
+        return err.getCode();
+    }
+
+    return TIGL_SUCCESS;
 }
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglLogToFileStreamEnabled(FILE * fp) 
 {
+    tigl::CTiglLogging& logger = tigl::CTiglLogging::Instance();
     if (fp == NULL) {
         LOG(ERROR) << "Error: argument fp is NULL in tiglLogToFileStreamEnabled!";
         return TIGL_NULL_POINTER;
     }
 
-    return Try("tiglLogToFileStreamEnabled", TIGL_ERROR, [&]{
-        tigl::CTiglLogging& logger = tigl::CTiglLogging::Instance();
+    try {
         logger.LogToStream(fp);
-        return TIGL_SUCCESS;
-    });
+    }
+    catch (tigl::CTiglError& err) {
+        return err.getCode();
+    }
+
+    return TIGL_SUCCESS;
 }
 
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglLogSetFileEnding(const char *ending) 
 {
+    tigl::CTiglLogging& logger = tigl::CTiglLogging::Instance();
     if (ending == NULL) {
         LOG(ERROR) << "Error: argument ending is NULL in tiglLogSetFileEnding!";
         return TIGL_NULL_POINTER;
     }
 
-    return Try("tiglLogSetFileEnding", TIGL_ERROR, [&]{
-        tigl::CTiglLogging& logger = tigl::CTiglLogging::Instance();
+    try {
         logger.SetLogFileEnding(ending);
-        return TIGL_SUCCESS;
-    });
+    }
+    catch (tigl::CTiglError& err) {
+        return err.getCode();
+    }
+
+    return TIGL_SUCCESS;
 }
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglLogSetTimeInFilenameEnabled(TiglBoolean enabled) 
 {
-    return Try("tiglLogSetTimeInFilenameEnabled", TIGL_ERROR, [&]{
-        tigl::CTiglLogging& logger = tigl::CTiglLogging::Instance();
+    tigl::CTiglLogging& logger = tigl::CTiglLogging::Instance();
+
+    try {
         logger.SetTimeIdInFilenameEnabled(enabled > 0);
-        return TIGL_SUCCESS;
-    });
+    }
+    catch (tigl::CTiglError& err) {
+        return err.getCode();
+    }
+
+    return TIGL_SUCCESS;
 }
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglLogToFileDisabled() 
 {
-    return Try("tiglLogToFileDisabled", TIGL_ERROR, [&]{
-        tigl::CTiglLogging& logger = tigl::CTiglLogging::Instance();
+    tigl::CTiglLogging& logger = tigl::CTiglLogging::Instance();
+
+    try {
         logger.LogToConsole();
-        return TIGL_SUCCESS;
-    });
+    }
+    catch (tigl::CTiglError& err) {
+        return err.getCode();
+    }
+
+    return TIGL_SUCCESS;
 }
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglLogSetVerbosity(TiglLogLevel consoleVerbosity) 
 {
-    return Try("tiglLogSetVerbosity", TIGL_ERROR, [&]{
-        tigl::CTiglLogging& logger = tigl::CTiglLogging::Instance();
+    tigl::CTiglLogging& logger = tigl::CTiglLogging::Instance();
+
+    try {
         logger.SetConsoleVerbosity(consoleVerbosity);
-        return TIGL_SUCCESS;
-    });
+    }
+    catch (tigl::CTiglError& err) {
+        return err.getCode();
+    }
+
+    return TIGL_SUCCESS;
 }
