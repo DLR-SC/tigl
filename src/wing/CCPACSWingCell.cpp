@@ -54,9 +54,7 @@
 #include "CCPACSWingSparSegment.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
-#include "IOHelper.h"
 #include "tigletaxsifunctions.h"
-#include "TixiSaveExt.h"
 #include "to_string.h"
 
 

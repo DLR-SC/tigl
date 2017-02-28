@@ -33,8 +33,6 @@
 #include "CTiglError.h"
 #include "generated/TixiHelper.h"
 #include "generated/UniquePtr.h"
-#include "TixiSaveExt.h"
-#include "IOHelper.h"
 #include "CTiglLogging.h"
 
 namespace tigl

@@ -24,21 +24,12 @@
 #include "CTiglError.h"
 #include "CTiglPoint.h"
 #include "CTiglLogging.h"
-#include "IOHelper.h"
 #include <sstream>
 #include <iostream>
 #include <fstream>
 
 namespace tigl
 {
-void CCPACSGuideCurveProfiles::ReadCPACS(const TixiDocumentHandle& tixiHandle) {
-    ReadCPACS(tixiHandle, "/cpacs/vehicles/profiles/guideCurves");
-}
-
-void CCPACSGuideCurveProfiles::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) {
-    generated::CPACSGuideCurveProfiles::ReadCPACS(tixiHandle, xpath);
-}
-
 // Returns the total count of guide curves in this configuration
 int CCPACSGuideCurveProfiles::GetGuideCurveProfileCount() const
 {

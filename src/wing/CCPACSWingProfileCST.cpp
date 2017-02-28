@@ -31,7 +31,6 @@
 #include "CTiglLogging.h"
 #include "CTiglTransformation.h"
 #include "CWireToCurve.h"
-#include "TixiSaveExt.h"
 #include "math.h"
 
 #include <TopoDS.hxx>

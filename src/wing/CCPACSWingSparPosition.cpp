@@ -19,8 +19,6 @@
 #include "CCPACSWingCSStructure.h"
 #include "CCPACSWingSpars.h"
 #include "CTiglError.h"
-#include "CTiglLogging.h"
-#include "TixiSaveExt.h"
 
 
 namespace tigl

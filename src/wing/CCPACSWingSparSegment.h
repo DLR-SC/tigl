@@ -22,9 +22,7 @@
 
 #include "generated/CPACSSparSegment.h"
 #include "CCPACSWingSparPositionUIDs.h"
-#include "CCPACSWingSparCrossSection.h"
 #include "tigl.h"
-
 
 // forward declarations
 class gp_Pnt;

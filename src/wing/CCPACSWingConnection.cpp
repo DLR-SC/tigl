@@ -31,7 +31,6 @@
 #include "CCPACSWingSection.h"
 #include "CCPACSWingSegment.h"
 #include "CCPACSConfiguration.h"
-#include "TixiSaveExt.h"
 
 namespace tigl
 {

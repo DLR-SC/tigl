@@ -45,7 +45,6 @@
 
 #include "CCPACSWing.h"
 #include "CCPACSWingRibCrossSection.h"
-#include "CCPACSWingRibExplicitPositioning.h"
 #include "CCPACSWingRibRotation.h"
 #include "CCPACSWingRibsPositioning.h"
 #include "CCPACSWingSparPosition.h"
@@ -55,7 +54,6 @@
 #include "CTiglLogging.h"
 #include "tiglcommonfunctions.h"
 #include "tiglwingribhelperfunctions.h"
-#include "TixiSaveExt.h"
 
 
 namespace tigl

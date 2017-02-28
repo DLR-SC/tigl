@@ -24,7 +24,6 @@
 #include "CTiglError.h"
 #include "CTiglPoint.h"
 #include "CTiglLogging.h"
-#include "IOHelper.h"
 #include <sstream>
 #include <iostream>
 #include <fstream>

@@ -29,9 +29,6 @@
 #include "CCPACSFuselageProfiles.h"
 #include "CCPACSConfiguration.h"
 #include "CTiglError.h"
-#include "TixiSaveExt.h"
-#include <iostream>
-#include <sstream>
 
 namespace tigl
 {
