@@ -188,6 +188,9 @@ private:
     bool                           rebuildShells;
     FusedElementsContainerType     fusedElements;            /**< Stores already fused segments */
     double                         myVolume;                 /**< Volume of this Wing           */
+
+    friend class CCPACSWingSegment;
+    friend class CCPACSWingComponentSegment;
 };
 
 } // end namespace tigl

@@ -135,7 +135,7 @@ namespace tigl
 
 CCPACSFuselageSegment::CCPACSFuselageSegment(CCPACSFuselageSegments* parent)
     : generated::CPACSFuselageSegment(parent)
-    , CTiglAbstractSegment(parent->GetSegmentCount() + 1) // TODO: this is a hack, as we depend on the implementation of the vector reader in generated::CPACSFuselageSegments::ReadCPACS() but the current CodeGen does not support passing indices into ctors
+    , CTiglAbstractSegment(parent->GetSegmentCount() + 1, &parent->GetParent()->m_symmetry) // TODO: this is a hack, as we depend on the implementation of the vector reader in generated::CPACSFuselageSegments::ReadCPACS() but the current CodeGen does not support passing indices into ctors
     , fuselage(parent->GetParent())
 {
     Cleanup();
