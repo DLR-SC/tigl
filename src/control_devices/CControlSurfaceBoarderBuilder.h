@@ -47,6 +47,7 @@ public:
      * @param xsiLower Lower skin point, where xsi=1 is the flap leading edge, and xsi=0 the trailing edge
      */
     TopoDS_Wire boarderWithLEShape(double rLEHeight, double xsiNose, double xsiUpper, double xsiLower);
+    TopoDS_Wire boarderWithInnerShape(double rTEHeight, double xsiTail, double xsiTEUpper, double xsiTELower);
     TopoDS_Wire boarderSimple(double xsiUpper, double xsiLower);
 
     gp_Pnt2d upperPoint();

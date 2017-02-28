@@ -25,6 +25,7 @@
 #include "CTiglError.h"
 #include "tigl_internal.h"
 #include "CCPACSControlSurfaceDeviceBorderLeadingEdgeShape.h"
+#include "CCPACSControlSurfaceDeviceBorderInnerShape.h"
 #include "CTiglControlSurfaceBorderCoordinateSystem.h"
 #include "CCPACSControlSurfaceDeviceAirfoil.h"
 #include "PNamedShape.h"
@@ -57,6 +58,8 @@ public:
 
     TIGL_EXPORT CCPACSControlSurfaceDeviceBorderLeadingEdgeShapePtr getLeadingEdgeShape() const;
 
+    TIGL_EXPORT CCPACSControlSurfaceDeviceBorderInnerShapePtr getInnerShape() const;
+
     TIGL_EXPORT CCPACSControlSurfaceDeviceAirfoilPtr getAirfoil() const;
 
     TIGL_EXPORT void setUID(const std::string& uid);
@@ -79,8 +82,11 @@ private:
     double etaTE;
     double xsiLE;
     double xsiTE;
+    double xsiTEUpper;
+    double xsiTELower;
 
     CCPACSControlSurfaceDeviceBorderLeadingEdgeShapePtr leadingEdgeShape;
+    CCPACSControlSurfaceDeviceBorderInnerShapePtr innerShape;
     CCPACSControlSurfaceDeviceAirfoilPtr airfoil;
 
     // helpers
