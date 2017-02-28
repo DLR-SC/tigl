@@ -64,7 +64,7 @@ CCPACSWingRibsDefinition::CCPACSWingRibsDefinition(CCPACSWingRibsDefinitions* pa
     Invalidate();
 }
 
-void CCPACSWingRibsDefinition::Invalidate(void)
+void CCPACSWingRibsDefinition::Invalidate()
 {
     ribSetDataCache.valid = false;
     auxGeomCache.valid = false;

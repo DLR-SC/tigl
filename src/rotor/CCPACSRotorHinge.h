@@ -56,28 +56,28 @@ public:
     TIGL_EXPORT CCPACSRotorHinge(CCPACSRotorHinges* parent);
 
     // Returns the rotor hinge transformation
-    TIGL_EXPORT CTiglTransformation GetTransformation(void) const;
+    TIGL_EXPORT CTiglTransformation GetTransformation() const;
 
     // Returns the scaling vector of the rotor hinge transformation
-    TIGL_EXPORT CTiglPoint GetScaling(void) const;
+    TIGL_EXPORT CTiglPoint GetScaling() const;
 
     // Returns the rotation vector of the rotor hinge transformation
-    TIGL_EXPORT CTiglPoint GetRotation(void) const;
+    TIGL_EXPORT CTiglPoint GetRotation() const;
 
     // Returns the translation vector of the rotor hinge transformation
-    TIGL_EXPORT CTiglPoint GetTranslation(void) const;
+    TIGL_EXPORT CTiglPoint GetTranslation() const;
 
     // Returns the rotor hinge angle
     TIGL_EXPORT double GetHingeAngle(double thetaDeg=0., double a0=0., std::vector<double> aSin=std::vector<double>(), std::vector<double> aCos=std::vector<double>()) const;
 
     // Returns the parent configuration
-    TIGL_EXPORT CCPACSConfiguration& GetConfiguration(void) const;
+    TIGL_EXPORT CCPACSConfiguration& GetConfiguration() const;
 
     // Returns the parent rotor
-    TIGL_EXPORT CCPACSRotor& GetRotor(void) const;
+    TIGL_EXPORT CCPACSRotor& GetRotor() const;
 
     // Returns the parent rotor blade attachment
-    TIGL_EXPORT CCPACSRotorBladeAttachment& GetRotorBladeAttachment(void) const;
+    TIGL_EXPORT CCPACSRotorBladeAttachment& GetRotorBladeAttachment() const;
 };
 
 } // end namespace tigl

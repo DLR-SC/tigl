@@ -162,14 +162,14 @@ CTiglAbstractPhysicalComponent* CTiglUIDManager::GetRootComponent()
 }
 
 // Returns the container with all root components of the geometric topology that have children.
-const UIDStoreContainerType& CTiglUIDManager::GetAllRootComponentsWithChildren(void)
+const UIDStoreContainerType& CTiglUIDManager::GetAllRootComponentsWithChildren()
 {
     Update();
     return allRootComponentsWithChildren;
 }
 
 // Finds and saves all root components and the main root component of the geometric topology.
-void CTiglUIDManager::FindRootComponents(void)
+void CTiglUIDManager::FindRootComponents()
 {
     rootComponent = 0;
     rootComponentCnt = 0;

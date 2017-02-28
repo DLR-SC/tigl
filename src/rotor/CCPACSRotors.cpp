@@ -39,7 +39,7 @@ CCPACSRotors::CCPACSRotors(CCPACSRotorcraftModel* parent)
     : generated::CPACSRotors(parent) {}
 
 // Invalidates internal state
-void CCPACSRotors::Invalidate(void)
+void CCPACSRotors::Invalidate()
 {
     for (int i = 1; i <= GetRotorCount(); i++) {
         GetRotor(i).Invalidate();
@@ -47,7 +47,7 @@ void CCPACSRotors::Invalidate(void)
 }
 
 // Returns the total count of rotors in a configuration
-int CCPACSRotors::GetRotorCount(void) const
+int CCPACSRotors::GetRotorCount() const
 {
     return (static_cast<int>(m_rotor.size()));
 }
@@ -84,7 +84,7 @@ int CCPACSRotors::GetRotorIndex(const std::string& UID) const
 }
 
 // Returns the parent configuration
-CCPACSConfiguration& CCPACSRotors::GetConfiguration(void) const
+CCPACSConfiguration& CCPACSRotors::GetConfiguration() const
 {
     return m_parent->GetConfiguration();
 }

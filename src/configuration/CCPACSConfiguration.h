@@ -77,7 +77,7 @@ public:
     TIGL_EXPORT TixiDocumentHandle GetTixiDocumentHandle() const;
 
     // Returns whether this configuration is a rotorcraft
-    TIGL_EXPORT bool IsRotorcraft(void) const;
+    TIGL_EXPORT bool IsRotorcraft() const;
 
     // Returns the total count of wing and rotor profiles in this configuration
     TIGL_EXPORT int GetWingProfileCount() const;
@@ -104,7 +104,7 @@ public:
     TIGL_EXPORT int GetWingCount() const;
 
     // Returns the count of rotor blade wings in a configuration
-    TIGL_EXPORT int GetRotorBladeCount(void) const;
+    TIGL_EXPORT int GetRotorBladeCount() const;
 
     // Returns the wing (or rotor blade) for a given index.
     TIGL_EXPORT CCPACSWing& GetWing(int index) const;
@@ -116,7 +116,7 @@ public:
     TIGL_EXPORT int GetWingIndex(const std::string& UID) const;
 
     // Returns the total count of generic systems in a configuration
-    TIGL_EXPORT int GetGenericSystemCount(void);
+    TIGL_EXPORT int GetGenericSystemCount();
 
     // Returns the generic system for a given index.
     TIGL_EXPORT CCPACSGenericSystem& GetGenericSystem(int index);
@@ -125,7 +125,7 @@ public:
     TIGL_EXPORT CCPACSGenericSystem& GetGenericSystem(const std::string& UID);
 
     // Returns the total count of rotors in a configuration
-    TIGL_EXPORT int GetRotorCount(void) const;
+    TIGL_EXPORT int GetRotorCount() const;
 
     // Returns the rotor for a given index.
     TIGL_EXPORT CCPACSRotor& GetRotor(int index) const;
@@ -168,7 +168,7 @@ public:
     TIGL_EXPORT CCPACSFarField& GetFarField();
 
     // Returns the number of external objects (i.e. linked CAD files like STEP, IGES)
-    TIGL_EXPORT int GetExternalObjectCount(void) const;
+    TIGL_EXPORT int GetExternalObjectCount() const;
 
     TIGL_EXPORT CCPACSExternalObject& GetExternalObject(int index) const;
 
@@ -203,7 +203,7 @@ public:
     /** Getter for member wings */
     TIGL_EXPORT CCPACSWings* GetWings();
 
-    TIGL_EXPORT CCPACSACSystems& GetACSystems(void);
+    TIGL_EXPORT CCPACSACSystems& GetACSystems();
 
 protected:
     // transform all components relative to their parents

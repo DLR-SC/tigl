@@ -60,7 +60,7 @@ CCPACSWingSparSegment::CCPACSWingSparSegment(CCPACSWingSparSegments* sparSegment
     Invalidate();
 }
 
-void CCPACSWingSparSegment::Invalidate(void)
+void CCPACSWingSparSegment::Invalidate()
 {
     auxGeomCache.valid = false;
     geometryCache.valid = false;
@@ -356,7 +356,7 @@ void CCPACSWingSparSegment::BuildAuxiliaryGeometry() const
     auxGeomCache.valid = true;
 }
 
-void CCPACSWingSparSegment::BuildGeometry(void) const
+void CCPACSWingSparSegment::BuildGeometry() const
 {
     const CTiglWingStructureReference& wingStructureReference = sparsNode.GetStructure().GetWingStructureReference();
 

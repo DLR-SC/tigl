@@ -36,7 +36,7 @@ CCPACSRotorHub::CCPACSRotorHub(CCPACSRotor* parent)
     : generated::CPACSRotorHub(parent) {}
 
 // Returns the type of the rotor hub
-TiglRotorHubType CCPACSRotorHub::GetType(void) const
+TiglRotorHubType CCPACSRotorHub::GetType() const
 {
     if (!m_type)
         return TiglRotorHubType::TIGLROTORHUB_UNDEFINED;
@@ -50,7 +50,7 @@ TiglRotorHubType CCPACSRotorHub::GetType(void) const
 }
 
 // Returns the rotor blade attachment count
-int CCPACSRotorHub::GetRotorBladeAttachmentCount(void) const
+int CCPACSRotorHub::GetRotorBladeAttachmentCount() const
 {
     return m_rotorBladeAttachments.GetRotorBladeAttachmentCount();
 }
@@ -62,7 +62,7 @@ CCPACSRotorBladeAttachment& CCPACSRotorHub::GetRotorBladeAttachment(int index) c
 }
 
 // Returns the rotor blade count
-int CCPACSRotorHub::GetRotorBladeCount(void) const
+int CCPACSRotorHub::GetRotorBladeCount() const
 {
     int rotorBladeCount = 0;
     for (int i=1; i<=GetRotorBladeAttachmentCount(); i++) {
@@ -84,13 +84,13 @@ CTiglAttachedRotorBlade& CCPACSRotorHub::GetRotorBlade(int index) const
 }
 
 // Returns the parent configuration
-CCPACSConfiguration& CCPACSRotorHub::GetConfiguration(void) const
+CCPACSConfiguration& CCPACSRotorHub::GetConfiguration() const
 {
     return m_parent->GetConfiguration();
 }
 
 // Returns the parent rotor
-CCPACSRotor& CCPACSRotorHub::GetRotor(void) const
+CCPACSRotor& CCPACSRotorHub::GetRotor() const
 {
     return *m_parent;
 }

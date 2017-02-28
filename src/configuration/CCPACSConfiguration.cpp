@@ -206,7 +206,7 @@ bool CCPACSConfiguration::HasWingProfile(std::string uid) const
 }
 
 // Returns whether this configuration is a rotorcraft
-bool CCPACSConfiguration::IsRotorcraft(void) const
+bool CCPACSConfiguration::IsRotorcraft() const
 {
     if (aircraftModel)
         return false;
@@ -286,7 +286,7 @@ int CCPACSConfiguration::GetWingCount() const
 }
 
 // Returns the count of rotor blade wings in a configuration
-int CCPACSConfiguration::GetRotorBladeCount(void) const
+int CCPACSConfiguration::GetRotorBladeCount() const
 {
     if (rotorcraftModel && rotorcraftModel->HasRotorBlades())
         return rotorcraftModel->GetRotorBlades().GetRotorBladeCount();
@@ -339,7 +339,7 @@ int CCPACSConfiguration::GetWingIndex(const std::string& UID) const
 }
 
 // Returns the total count of generic systems in a configuration
-int CCPACSConfiguration::GetGenericSystemCount(void)
+int CCPACSConfiguration::GetGenericSystemCount()
 {
     return acSystems.GetGenericSystems().GetGenericSystemCount();
 }
@@ -356,7 +356,7 @@ CCPACSGenericSystem& CCPACSConfiguration::GetGenericSystem(const std::string& UI
 }
 
 // Returns the total count of rotors in a configuration
-int CCPACSConfiguration::GetRotorCount(void) const
+int CCPACSConfiguration::GetRotorCount() const
 {
     if (rotorcraftModel)
         return rotorcraftModel->GetRotors().GetRotorCount();

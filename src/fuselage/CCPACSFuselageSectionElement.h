@@ -48,11 +48,11 @@ public:
     // Gets the section element transformation
     TIGL_EXPORT CTiglTransformation GetSectionElementTransformation() const;
 
-    TIGL_EXPORT CTiglPoint GetTranslation(void) const;
+    TIGL_EXPORT CTiglPoint GetTranslation() const;
 
-    TIGL_EXPORT CTiglPoint GetRotation(void) const;
+    TIGL_EXPORT CTiglPoint GetRotation() const;
 
-    TIGL_EXPORT CTiglPoint GetScaling(void) const;
+    TIGL_EXPORT CTiglPoint GetScaling() const;
 
     TIGL_EXPORT void SetTranslation(const CTiglPoint& translation);
 

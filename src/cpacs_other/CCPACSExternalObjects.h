@@ -29,7 +29,7 @@ public:
     TIGL_EXPORT CCPACSExternalObjects(CCPACSAircraftModel* parent);
 
     TIGL_EXPORT CCPACSExternalObject& GetObject(int index) const;
-    TIGL_EXPORT int GetObjectCount(void) const;
+    TIGL_EXPORT int GetObjectCount() const;
 };
 
 } //namespace tigl

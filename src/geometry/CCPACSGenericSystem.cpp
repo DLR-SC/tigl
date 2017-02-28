@@ -46,7 +46,7 @@ CCPACSGenericSystem::CCPACSGenericSystem(CCPACSConfiguration* config)
 }
 
 // Destructor
-CCPACSGenericSystem::~CCPACSGenericSystem(void)
+CCPACSGenericSystem::~CCPACSGenericSystem()
 {
     Cleanup();
 }
@@ -60,13 +60,13 @@ void CCPACSGenericSystem::SetUID(const std::string& uid) {
 }
 
 // Invalidates internal state
-void CCPACSGenericSystem::Invalidate(void)
+void CCPACSGenericSystem::Invalidate()
 {
     invalidated = true;
 }
 
 // Cleanup routine
-void CCPACSGenericSystem::Cleanup(void)
+void CCPACSGenericSystem::Cleanup()
 {
     name = "";
     transformation.reset();
@@ -78,7 +78,7 @@ void CCPACSGenericSystem::Cleanup(void)
 }
 
 // Update internal generic system data
-void CCPACSGenericSystem::Update(void)
+void CCPACSGenericSystem::Update()
 {
     if (!invalidated) {
         return;
@@ -144,13 +144,13 @@ void CCPACSGenericSystem::ReadCPACS(TixiDocumentHandle tixiHandle, const std::st
 }
 
 // Returns the name of the generic system
-const std::string& CCPACSGenericSystem::GetName(void) const
+const std::string& CCPACSGenericSystem::GetName() const
 {
     return name;
 }
 
 // Returns the parent configuration
-CCPACSConfiguration& CCPACSGenericSystem::GetConfiguration(void) const
+CCPACSConfiguration& CCPACSGenericSystem::GetConfiguration() const
 {
     return *configuration;
 }

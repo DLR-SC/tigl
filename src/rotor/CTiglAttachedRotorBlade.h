@@ -49,46 +49,46 @@ public:
     TIGL_EXPORT virtual CTiglTransformation GetTransformation() const override;
 
     // Invalidates internal state
-    TIGL_EXPORT void Invalidate(void);
+    TIGL_EXPORT void Invalidate();
 
     // Update internal data
-    TIGL_EXPORT void Update(void);
+    TIGL_EXPORT void Update();
 
     // Returns the Component Type TIGL_COMPONENT_ROTORBLADE
-    TIGL_EXPORT TiglGeometricComponentType GetComponentType(void)
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType()
     {
         return TIGL_COMPONENT_ROTORBLADE;
     }
 
     // Returns the original unattached rotor blade
-    TIGL_EXPORT CCPACSWing& GetUnattachedRotorBlade(void) const;
+    TIGL_EXPORT CCPACSWing& GetUnattachedRotorBlade() const;
 
     // Returns the parent rotor blade attachment this rotor blade belongs to
-    TIGL_EXPORT CCPACSRotorBladeAttachment& GetRotorBladeAttachment(void) const;
+    TIGL_EXPORT CCPACSRotorBladeAttachment& GetRotorBladeAttachment() const;
 
     // Returns the parent rotor
-    TIGL_EXPORT CCPACSRotor& GetRotor(void) const;
+    TIGL_EXPORT CCPACSRotor& GetRotor() const;
 
     // Returns the parent configuration
-    TIGL_EXPORT CCPACSConfiguration& GetConfiguration(void) const;
+    TIGL_EXPORT CCPACSConfiguration& GetConfiguration() const;
 
     // Returns the azimuth angle of this rotor blade
-    TIGL_EXPORT double GetAzimuthAngle(void) const;
+    TIGL_EXPORT double GetAzimuthAngle() const;
 
     // Returns the volume of this rotor blade
-    TIGL_EXPORT double GetVolume(void);
+    TIGL_EXPORT double GetVolume();
 
     // Returns the surface area of this rotor blade
-    TIGL_EXPORT double GetSurfaceArea(void);
+    TIGL_EXPORT double GetSurfaceArea();
 
     // Returns the planform area of this rotor blade
-    TIGL_EXPORT double GetPlanformArea(void);
+    TIGL_EXPORT double GetPlanformArea();
 
     // Returns the radius of this rotor blade
-    TIGL_EXPORT double GetRadius(void);
+    TIGL_EXPORT double GetRadius();
 
     // Returns the tip speed of this rotor blade
-    TIGL_EXPORT double GetTipSpeed(void);
+    TIGL_EXPORT double GetTipSpeed();
 
     // Returns the radius of a point on the rotor blade quarter chord line for a given segment index and eta
     TIGL_EXPORT double GetLocalRadius(const int& segmentIndex, const double& eta);
@@ -100,17 +100,17 @@ public:
     TIGL_EXPORT double GetLocalTwistAngle(const int& segmentIndex, const double& eta);
 
     // Returns the rotor disk geometry
-    TIGL_EXPORT TopoDS_Shape GetRotorDisk(void);
+    TIGL_EXPORT TopoDS_Shape GetRotorDisk();
 
 protected:
     // Cleanup routine
-    void Cleanup(void);
+    void Cleanup();
 
     // Builds transformation matrix for the rotor blade including rotor transformation
-    void BuildMatrix(void);
+    void BuildMatrix();
 
     // Create the rotor blade geometry by copying and transforming the original unattached rotor blade geometry
-    PNamedShape BuildLoft(void);
+    PNamedShape BuildLoft();
 
 private:
     // Copy constructor
@@ -120,7 +120,7 @@ private:
     void operator=(const CTiglAttachedRotorBlade&);
 
     // Creates a rotor disk (only using information of the current blade)
-    TopoDS_Shape BuildRotorDisk(void);
+    TopoDS_Shape BuildRotorDisk();
 
     CCPACSRotorBladeAttachment*  parent;               /**< Parent rotor blade attachment           */
     CCPACSWing*                  rotorBlade;           /**< Original unattached rotor blade         */

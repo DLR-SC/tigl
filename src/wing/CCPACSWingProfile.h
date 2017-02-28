@@ -60,7 +60,7 @@ public:
     TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) override;
 
     // Returns whether the profile is a rotor profile
-    TIGL_EXPORT bool IsRotorProfile(void) const;
+    TIGL_EXPORT bool IsRotorProfile() const;
 
     // Invalidates internal wing profile state
     TIGL_EXPORT void Invalidate();
@@ -127,7 +127,7 @@ public:
     TIGL_EXPORT const ITiglWingProfileAlgo* GetProfileAlgo() const;
 
     // Checks, whether the trailing edge is blunt or not
-    TIGL_EXPORT bool HasBluntTE(void) const;
+    TIGL_EXPORT bool HasBluntTE() const;
 
 protected:
     // Cleanup routine

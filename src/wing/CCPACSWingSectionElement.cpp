@@ -41,7 +41,7 @@ std::string CCPACSWingSectionElement::GetProfileUID() const
 
 
 // Gets the section element transformation
-CTiglTransformation CCPACSWingSectionElement::GetSectionElementTransformation(void) const
+CTiglTransformation CCPACSWingSectionElement::GetSectionElementTransformation() const
 {
     return m_transformation.getTransformationMatrix();
 }

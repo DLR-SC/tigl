@@ -40,20 +40,20 @@ public:
     TIGL_EXPORT CCPACSACSystems(CCPACSConfiguration* config);
 
     // Virtual Destructor
-    TIGL_EXPORT virtual ~CCPACSACSystems(void);
+    TIGL_EXPORT virtual ~CCPACSACSystems();
 
     // Invalidates internal state
-    TIGL_EXPORT void Invalidate(void);
+    TIGL_EXPORT void Invalidate();
 
     // Read CPACS aircraft systems elements
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& configurationUID);
 
     // Returns the generic systems object.
-    TIGL_EXPORT CCPACSGenericSystems& GetGenericSystems(void);
+    TIGL_EXPORT CCPACSGenericSystems& GetGenericSystems();
 
 protected:
     // Cleanup routine
-    void Cleanup(void);
+    void Cleanup();
 
 private:
     // Copy constructor

@@ -32,7 +32,7 @@ class CCPACSWingSparSegments : public generated::CPACSSparSegments
 public:
     TIGL_EXPORT CCPACSWingSparSegments(CCPACSWingSpars* parent);
 
-    TIGL_EXPORT void Invalidate(void);
+    TIGL_EXPORT void Invalidate();
 
     TIGL_EXPORT int GetSparSegmentCount() const;
     TIGL_EXPORT CCPACSWingSparSegment& GetSparSegment(int index) const;

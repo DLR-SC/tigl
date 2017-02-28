@@ -49,7 +49,7 @@ public:
 public:
     TIGL_EXPORT CCPACSWingSparSegment(CCPACSWingSparSegments* sparSegments);
 
-    TIGL_EXPORT void Invalidate(void);
+    TIGL_EXPORT void Invalidate();
 
     TIGL_EXPORT int GetSparPositionUIDCount() const;
     TIGL_EXPORT const std::string& GetSparPositionUID(int) const;

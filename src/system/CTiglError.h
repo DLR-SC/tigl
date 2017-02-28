@@ -33,7 +33,7 @@
 namespace tigl 
 {
 
-class CTiglError : public std::exception
+class CTiglError // TODO(bgruber): inherit from std::exception
 {
 
 public:
@@ -49,7 +49,7 @@ public:
     // Returns the error string as C string (char*)
     TIGL_EXPORT virtual const char* getError() const throw();
 
-    virtual const char* what() const throw() override;
+    //TIGL_EXPORT virtual const char* what() const throw() override;
 
     // Returns the error code
     TIGL_EXPORT virtual TiglReturnCode getCode() const throw();

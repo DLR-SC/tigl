@@ -30,7 +30,7 @@ CCPACSWingSparSegments::CCPACSWingSparSegments(CCPACSWingSpars* parent)
 {
 }
 
-void CCPACSWingSparSegments::Invalidate(void)
+void CCPACSWingSparSegments::Invalidate()
 {
     for (std::vector<unique_ptr<CCPACSWingSparSegment>>::iterator it = m_sparSegment.begin(); it != m_sparSegment.end(); ++it) {
         (*it)->Invalidate();

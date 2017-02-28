@@ -41,10 +41,10 @@ public:
     TIGL_EXPORT CCPACSRotors(CCPACSRotorcraftModel* parent);
 
     // Invalidates internal state
-    TIGL_EXPORT void Invalidate(void);
+    TIGL_EXPORT void Invalidate();
 
     // Returns the total count of rotors in a configuration
-    TIGL_EXPORT int GetRotorCount(void) const;
+    TIGL_EXPORT int GetRotorCount() const;
 
     // Returns the rotor for a given index.
     TIGL_EXPORT CCPACSRotor& GetRotor(int index) const;
@@ -56,7 +56,7 @@ public:
     TIGL_EXPORT int GetRotorIndex(const std::string& UID) const;
 
     // Returns the parent configuration
-    TIGL_EXPORT CCPACSConfiguration& GetConfiguration(void) const;
+    TIGL_EXPORT CCPACSConfiguration& GetConfiguration() const;
 };
 } // end namespace tigl
 

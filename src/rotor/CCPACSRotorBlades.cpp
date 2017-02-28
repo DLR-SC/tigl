@@ -35,7 +35,7 @@ CCPACSRotorBlades::CCPACSRotorBlades(CCPACSRotorcraftModel* parent)
     : generated::CPACSRotorBlades(parent) {}
 
 // Invalidates internal state
-void CCPACSRotorBlades::Invalidate(void)
+void CCPACSRotorBlades::Invalidate()
 {
     for (int i = 1; i <= GetRotorBladeCount(); i++) {
         GetRotorBlade(i).Invalidate();
@@ -49,7 +49,7 @@ void CCPACSRotorBlades::AddRotorBlade(CCPACSWing* rotorBlade)
 }
 
 // Returns the total count of rotor blades of a rotor blade attachment
-int CCPACSRotorBlades::GetRotorBladeCount(void) const
+int CCPACSRotorBlades::GetRotorBladeCount() const
 {
     return (static_cast<int>(m_rotorBlade.size()));
 }
@@ -84,7 +84,7 @@ int CCPACSRotorBlades::GetRotorBladeIndex(const std::string& UID) const
 }
 
 // Returns the parent configuration
-CCPACSConfiguration& CCPACSRotorBlades::GetConfiguration(void) const
+CCPACSConfiguration& CCPACSRotorBlades::GetConfiguration() const
 {
     return m_parent->GetConfiguration();
 }
