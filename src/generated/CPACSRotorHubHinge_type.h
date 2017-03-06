@@ -71,7 +71,7 @@ namespace tigl
         }
         inline CPACSRotorHubHinge_type stringToCPACSRotorHubHinge_type(const std::string& value)
         {
-            auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
+            struct ToLower { std::string operator()(std::string str) { for (char& c : str) { c = std::tolower(c); } return str; } } toLower;
             if (toLower(value) == "flap") { return flap; }
             if (toLower(value) == "pitch") { return pitch; }
             if (toLower(value) == "leadlag") { return leadLag; }

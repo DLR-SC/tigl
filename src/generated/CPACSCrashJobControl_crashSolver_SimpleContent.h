@@ -63,7 +63,7 @@ namespace tigl
         }
         inline CPACSCrashJobControl_crashSolver_SimpleContent stringToCPACSCrashJobControl_crashSolver_SimpleContent(const std::string& value)
         {
-            auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
+            struct ToLower { std::string operator()(std::string str) { for (char& c : str) { c = std::tolower(c); } return str; } } toLower;
             if (toLower(value) == "pam-crash") { return Pam_Crash; }
             throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSCrashJobControl_crashSolver_SimpleContent");
         }

@@ -109,11 +109,14 @@ void CCPACSFuselageProfile::ReadCPACS(const TixiDocumentHandle& tixiHandle, cons
 
         // points with maximal/minimal y-component
         coordinates = m_pointList_choice1->AsVector();
-        const auto minmax = std::minmax_element(std::begin(coordinates), std::end(coordinates), [](const CTiglPoint& a, const CTiglPoint& b) {
-            return a.y < b.y;
-        });
-        const auto minYIndex = minmax.first  - std::begin(coordinates);
-        const auto maxYIndex = minmax.second - std::begin(coordinates);
+        struct PointCompare {
+            bool operator()(const CTiglPoint& a, const CTiglPoint& b) {
+                return a.y < b.y;
+            }
+        };
+        const std::pair<std::vector<CTiglPoint>::const_iterator, std::vector<CTiglPoint>::const_iterator> minmax = std::minmax_element(std::begin(coordinates), std::end(coordinates), PointCompare());
+        const std::size_t minYIndex = minmax.first  - std::begin(coordinates);
+        const std::size_t maxYIndex = minmax.second - std::begin(coordinates);
 
         // check if points with maximal/minimal y-component were calculated correctly
         if (maxYIndex == minYIndex) {
@@ -137,9 +140,9 @@ void CCPACSFuselageProfile::WriteCPACS(const TixiDocumentHandle& tixiHandle, con
 {
     // update point lists from coordinates
     if (m_pointList_choice1) {
-        auto& xs = const_cast<std::vector<double>&>(m_pointList_choice1->GetX().AsVector());
-        auto& ys = const_cast<std::vector<double>&>(m_pointList_choice1->GetY().AsVector());
-        auto& zs = const_cast<std::vector<double>&>(m_pointList_choice1->GetZ().AsVector());
+        std::vector<double>& xs = const_cast<std::vector<double>&>(m_pointList_choice1->GetX().AsVector());
+        std::vector<double>& ys = const_cast<std::vector<double>&>(m_pointList_choice1->GetY().AsVector());
+        std::vector<double>& zs = const_cast<std::vector<double>&>(m_pointList_choice1->GetZ().AsVector());
 
         xs.resize(coordinates.size());
         ys.resize(coordinates.size());
@@ -349,7 +352,7 @@ void CCPACSFuselageProfile::BuildDiameterPoints()
 
         // find the point with the max dist to starting point
         endDiameterPoint = startDiameterPoint;
-        for (auto it = coordinates.begin(); it != coordinates.end(); ++it) {
+        for (std::vector<CTiglPoint>::iterator it = coordinates.begin(); it != coordinates.end(); ++it) {
             gp_Pnt point = it->Get_gp_Pnt();
             if (startDiameterPoint.Distance(point) > startDiameterPoint.Distance(endDiameterPoint)) {
                 endDiameterPoint = point;

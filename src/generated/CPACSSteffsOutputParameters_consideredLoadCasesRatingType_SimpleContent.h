@@ -67,7 +67,7 @@ namespace tigl
         }
         inline CPACSSteffsOutputParameters_consideredLoadCasesRatingType_SimpleContent stringToCPACSSteffsOutputParameters_consideredLoadCasesRatingType_SimpleContent(const std::string& value)
         {
-            auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
+            struct ToLower { std::string operator()(std::string str) { for (char& c : str) { c = std::tolower(c); } return str; } } toLower;
             if (toLower(value) == "relative") { return relative; }
             if (toLower(value) == "absolute") { return absolute; }
             throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSSteffsOutputParameters_consideredLoadCasesRatingType_SimpleContent");

@@ -39,10 +39,9 @@ int CCPACSGuideCurveProfiles::GetGuideCurveProfileCount() const
 // Returns the guide curve for a given uid.
 CCPACSGuideCurveProfile& CCPACSGuideCurveProfiles::GetGuideCurveProfile(const std::string& uid) const
 {
-    for (const auto& p : m_guideCurveProfile) {
-        if (p->GetUID() == uid)
-            return *p;
-    }
+    for (std::vector<unique_ptr<CCPACSGuideCurveProfile>>::const_iterator it = m_guideCurveProfile.begin(); it != m_guideCurveProfile.end(); ++it)
+        if ((*it)->GetUID() == uid)
+            return **it;
 
     LOG(ERROR) << "Guide curve \"" + uid + "\" not found in CPACS file!" << endl;
     throw CTiglError("Guide curve \"" + uid + "\" not found in CPACS file!", TIGL_UID_ERROR);

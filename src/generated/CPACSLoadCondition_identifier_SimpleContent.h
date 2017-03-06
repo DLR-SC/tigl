@@ -95,7 +95,7 @@ namespace tigl
         }
         inline CPACSLoadCondition_identifier_SimpleContent stringToCPACSLoadCondition_identifier_SimpleContent(const std::string& value)
         {
-            auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
+            struct ToLower { std::string operator()(std::string str) { for (char& c : str) { c = std::tolower(c); } return str; } } toLower;
             if (toLower(value) == "symmetric trim horizontal") { return Symmetric_Trim_Horizontal; }
             if (toLower(value) == "symmetric trim nz") { return Symmetric_Trim_NZ; }
             if (toLower(value) == "roll trim steady") { return Roll_Trim_Steady; }

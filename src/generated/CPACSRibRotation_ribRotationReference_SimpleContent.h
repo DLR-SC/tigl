@@ -87,7 +87,7 @@ namespace tigl
         }
         inline CPACSRibRotation_ribRotationReference_SimpleContent stringToCPACSRibRotation_ribRotationReference_SimpleContent(const std::string& value)
         {
-            auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
+            struct ToLower { std::string operator()(std::string str) { for (char& c : str) { c = std::tolower(c); } return str; } } toLower;
             if (toLower(value) == "leadingedge") { return LeadingEdge; }
             if (toLower(value) == "trailingedge") { return TrailingEdge; }
             if (toLower(value) == "frontspar") { return FrontSpar; }

@@ -67,7 +67,7 @@ namespace tigl
         }
         inline CPACSTailplaneAttachmentArea_tailplaneAttachmentType_SimpleContent stringToCPACSTailplaneAttachmentArea_tailplaneAttachmentType_SimpleContent(const std::string& value)
         {
-            auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
+            struct ToLower { std::string operator()(std::string str) { for (char& c : str) { c = std::tolower(c); } return str; } } toLower;
             if (toLower(value) == "type1") { return Type1; }
             if (toLower(value) == "type2") { return Type2; }
             throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSTailplaneAttachmentArea_tailplaneAttachmentType_SimpleContent");

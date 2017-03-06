@@ -133,7 +133,7 @@ int CCPACSFuselages::GetFuselageIndex(const std::string& UID) const
 void CCPACSFuselages::AddFuselage(CCPACSFuselage* fuselage)
 {
     // Check whether the same fuselage already exists if yes remove it before adding the new one
-    for (auto it = m_fuselage.begin(); it != m_fuselage.end(); ++it) {
+    for (std::vector<unique_ptr<CCPACSFuselage>>::const_iterator it = m_fuselage.begin(); it != m_fuselage.end(); ++it) {
         if ((*it)->GetUID() == fuselage->GetUID()) {
             m_fuselage.erase(it);
             break;

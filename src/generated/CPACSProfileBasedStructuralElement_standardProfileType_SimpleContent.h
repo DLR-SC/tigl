@@ -95,7 +95,7 @@ namespace tigl
         }
         inline CPACSProfileBasedStructuralElement_standardProfileType_SimpleContent stringToCPACSProfileBasedStructuralElement_standardProfileType_SimpleContent(const std::string& value)
         {
-            auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
+            struct ToLower { std::string operator()(std::string str) { for (char& c : str) { c = std::tolower(c); } return str; } } toLower;
             if (toLower(value) == "c") { return C; }
             if (toLower(value) == "t") { return T; }
             if (toLower(value) == "z") { return Z; }

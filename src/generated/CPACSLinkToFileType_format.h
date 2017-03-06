@@ -71,7 +71,7 @@ namespace tigl
         }
         inline CPACSLinkToFileType_format stringToCPACSLinkToFileType_format(const std::string& value)
         {
-            auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
+            struct ToLower { std::string operator()(std::string str) { for (char& c : str) { c = std::tolower(c); } return str; } } toLower;
             if (toLower(value) == "step") { return Step; }
             if (toLower(value) == "iges") { return Iges; }
             if (toLower(value) == "stl") { return Stl; }

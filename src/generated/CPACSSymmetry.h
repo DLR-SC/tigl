@@ -81,7 +81,7 @@ namespace tigl
         }
         inline CPACSSymmetry stringToTiglSymmetryAxis(const std::string& value)
         {
-            auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
+            struct ToLower { std::string operator()(std::string str) { for (char& c : str) { c = std::tolower(c); } return str; } } toLower;
             if (toLower(value) == "x-y-plane") { return x_y_plane; }
             if (toLower(value) == "x-z-plane") { return x_z_plane; }
             if (toLower(value) == "y-z-plane") { return y_z_plane; }

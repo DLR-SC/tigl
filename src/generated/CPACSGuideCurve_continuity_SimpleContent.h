@@ -79,7 +79,7 @@ namespace tigl
         }
         inline CPACSGuideCurve_continuity_SimpleContent stringToCPACSGuideCurve_continuity_SimpleContent(const std::string& value)
         {
-            auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
+            struct ToLower { std::string operator()(std::string str) { for (char& c : str) { c = std::tolower(c); } return str; } } toLower;
             if (toLower(value) == "c0") { return C0; }
             if (toLower(value) == "c1 from previous") { return C1_from_previous; }
             if (toLower(value) == "c2 from previous") { return C2_from_previous; }

@@ -30,8 +30,8 @@ namespace tigl
 // Invalidates internal state
 void CCPACSRotorProfiles::Invalidate()
 {
-    for (auto& p : m_rotorAirfoil) {
-        static_cast<CCPACSWingProfile&>(*p).Invalidate();
+    for (int i = 1; i < GetProfileCount(); i++) {
+        GetProfile(i).Invalidate();
     }
 }
 
@@ -63,44 +63,44 @@ void CCPACSRotorProfiles::AddProfile(CCPACSWingProfile* profile)
 
 void CCPACSRotorProfiles::DeleteProfile(std::string uid)
 {
-    const auto it = std::find_if(std::begin(m_rotorAirfoil), std::end(m_rotorAirfoil), [&](const unique_ptr<generated::CPACSProfileGeometry>& pg) {
-        return pg->GetUID() == uid;
-    });
-    if (it != std::end(m_rotorAirfoil))
-        m_rotorAirfoil.erase(it);
+    for (std::vector<unique_ptr<CPACSProfileGeometry>>::const_iterator it = m_rotorAirfoil.begin(); it != m_rotorAirfoil.end(); ++it) {
+        if ((*it)->GetUID() == uid) {
+            m_rotorAirfoil.erase(it);
+            return;
+        }
+    }
 }
 
 // Returns the total count of wing profiles in this configuration
 int CCPACSRotorProfiles::GetProfileCount() const {
-	return static_cast<int>(m_rotorAirfoil.size());
+    return static_cast<int>(m_rotorAirfoil.size());
 }
 
 bool CCPACSRotorProfiles::HasProfile(std::string uid) const
 {
-    for (const auto& p : m_rotorAirfoil)
-        if (p->GetUID() == uid)
+    for (std::vector<unique_ptr<CCPACSProfileGeometry>>::const_iterator it = m_rotorAirfoil.begin(); it != m_rotorAirfoil.end(); ++it)
+        if ((*it)->GetUID() == uid)
             return true;
-
     return false;
 }
 
 // Returns the wing profile for a given uid.
 CCPACSWingProfile& CCPACSRotorProfiles::GetProfile(std::string uid) const
 {
-    for (const auto& p : m_rotorAirfoil)
-        if (p->GetUID() == uid)
-            return static_cast<CCPACSWingProfile&>(*p);
+    for (std::vector<unique_ptr<CCPACSProfileGeometry>>::const_iterator it = m_rotorAirfoil.begin(); it != m_rotorAirfoil.end(); ++it)
+        if ((*it)->GetUID() == uid)
+            return static_cast<CCPACSWingProfile&>(**it);
 
     throw CTiglError("Rotor profile \"" + uid + "\" not found in CPACS file!", TIGL_UID_ERROR);
 }
 
 // Returns the wing profile for a given index - TODO: depricated function!
 CCPACSWingProfile& CCPACSRotorProfiles::GetProfile(int index) const {
-	index--;
-	if (index < 0 || index >= GetProfileCount()) {
-		throw CTiglError("Illegal index in CCPACSRotorProfiles::GetProfile", TIGL_INDEX_ERROR);
-	}
-	return static_cast<CCPACSWingProfile&>(*m_rotorAirfoil[index]);
+    index--;
+    if (index < 0 || index >= GetProfileCount()) {
+        throw CTiglError("Illegal index in CCPACSRotorProfiles::GetProfile", TIGL_INDEX_ERROR);
+    }
+    return static_cast<CCPACSWingProfile&>(*m_rotorAirfoil[index]);
 }
 
 } // end namespace tigl

@@ -71,7 +71,7 @@ namespace tigl
         }
         inline CPACSSheet_continuityAtP1_SimpleContent stringToCPACSSheet_continuityAtP1_SimpleContent(const std::string& value)
         {
-            auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
+            struct ToLower { std::string operator()(std::string str) { for (char& c : str) { c = std::tolower(c); } return str; } } toLower;
             if (toLower(value) == "0") { return _0; }
             if (toLower(value) == "1") { return _1; }
             if (toLower(value) == "2") { return _2; }

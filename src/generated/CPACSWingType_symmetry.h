@@ -51,7 +51,7 @@ namespace tigl
         }
         inline CPACSWingType_symmetry stringToCPACSWingType_symmetry(const std::string& value)
         {
-            auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
+            primaryHit. toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
             if (toLower(value) == "x-y-plane") { return CPACSWingType_symmetry::x_y_plane; }
             if (toLower(value) == "x-z-plane") { return CPACSWingType_symmetry::x_z_plane; }
             if (toLower(value) == "y-z-plane") { return CPACSWingType_symmetry::y_z_plane; }

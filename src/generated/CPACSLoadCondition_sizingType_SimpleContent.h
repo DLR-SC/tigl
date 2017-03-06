@@ -67,7 +67,7 @@ namespace tigl
         }
         inline CPACSLoadCondition_sizingType_SimpleContent stringToCPACSLoadCondition_sizingType_SimpleContent(const std::string& value)
         {
-            auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
+            struct ToLower { std::string operator()(std::string str) { for (char& c : str) { c = std::tolower(c); } return str; } } toLower;
             if (toLower(value) == "limit") { return limit; }
             if (toLower(value) == "fatigue") { return fatigue; }
             throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSLoadCondition_sizingType_SimpleContent");

@@ -88,11 +88,14 @@ CCPACSWingProfilePointList::CCPACSWingProfilePointList(const CCPACSWingProfile& 
 
     // points with maximal/minimal y-component
     coordinates = cpacsPointList.AsVector();
-    const auto minmax = std::minmax_element(std::begin(coordinates), std::end(coordinates), [](const CTiglPoint& a, const CTiglPoint& b) {
-        return a.z < b.z;
-    });
-    const auto minZIndex = minmax.first - std::begin(coordinates);
-    const auto maxZIndex = minmax.second - std::begin(coordinates);
+    struct PointCompare {
+        bool operator()(const CTiglPoint& a, const CTiglPoint& b) {
+            return a.y < b.y;
+        }
+    };
+    const std::pair<std::vector<CTiglPoint>::const_iterator, std::vector<CTiglPoint>::const_iterator> minmax = std::minmax_element(std::begin(coordinates), std::end(coordinates), PointCompare());
+    const std::size_t minZIndex = minmax.first - std::begin(coordinates);
+    const std::size_t maxZIndex = minmax.second - std::begin(coordinates);
 
     // check if points with maximal/minimal z-component were calculated correctly
     if (maxZIndex == minZIndex) {
@@ -128,8 +131,8 @@ void CCPACSWingProfilePointList::BuildWires()
     ITiglWireAlgorithm::CPointContainer points;
     ITiglWireAlgorithm::CPointContainer openPoints, closedPoints;
 
-    for (const auto& p : coordinates) {
-        points.push_back(p.Get_gp_Pnt());
+	for (std::vector<CTiglPoint>::const_iterator it = coordinates.begin(); it != coordinates.end(); ++it) {
+        points.push_back(it->Get_gp_Pnt());
     }
     // special handling for supporting opened and closed profiles
     if (points.size() < 2) {
@@ -254,8 +257,8 @@ void CCPACSWingProfilePointList::BuildLETEPoints()
 
     // find the point with the max dist to TE point
     lePoint = tePoint;
-    for (const auto& p : coordinates) {
-        gp_Pnt point = p.Get_gp_Pnt();
+	for (std::vector<CTiglPoint>::const_iterator it = coordinates.begin(); it != coordinates.end(); ++it) {
+        gp_Pnt point = it->Get_gp_Pnt();
         if (tePoint.Distance(point) > tePoint.Distance(lePoint)) {
             lePoint = point;
         }

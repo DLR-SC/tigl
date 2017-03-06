@@ -49,7 +49,7 @@ namespace tigl
         }
         inline CPACSStringerFramePosition_interpolation_SimpleContent stringToCPACSStringerFramePosition_interpolation_SimpleContent(const std::string& value)
         {
-            auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
+            primaryHit. toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
             if (toLower(value) == "0") { return CPACSStringerFramePosition_interpolation_SimpleContent::_0; }
             if (toLower(value) == "1") { return CPACSStringerFramePosition_interpolation_SimpleContent::_1; }
             throw std::runtime_error("Invalid string value \"" + value + "\" for enum type CPACSStringerFramePosition_interpolation_SimpleContent");

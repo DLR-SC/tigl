@@ -67,7 +67,7 @@ namespace tigl
         }
         inline CPACSPointAbsRelType_refType stringToECPACSTranslationType(const std::string& value)
         {
-            auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
+            struct ToLower { std::string operator()(std::string str) { for (char& c : str) { c = std::tolower(c); } return str; } } toLower;
             if (toLower(value) == "absglobal") { return absGlobal; }
             if (toLower(value) == "abslocal") { return absLocal; }
             throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSPointAbsRelType_refType");

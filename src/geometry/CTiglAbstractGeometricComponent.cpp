@@ -178,7 +178,7 @@ PNamedShape CTiglAbstractGeometricComponent::GetLoft()
 
 PNamedShape CTiglAbstractGeometricComponent::GetMirroredLoft()
 {
-    const auto symmetryAxis = GetSymmetryAxis();
+    const TiglSymmetryAxis& symmetryAxis = GetSymmetryAxis();
     if (symmetryAxis == TIGL_NO_SYMMETRY) {
         PNamedShape nullShape;
         nullShape.reset();
@@ -245,7 +245,7 @@ bool CTiglAbstractGeometricComponent::GetIsOn(const gp_Pnt& pnt)
 
 bool CTiglAbstractGeometricComponent::GetIsOnMirrored(const gp_Pnt& pnt) 
 {
-    const auto symmetryAxis = GetSymmetryAxis();
+    const TiglSymmetryAxis& symmetryAxis = GetSymmetryAxis();
     if (symmetryAxis == TIGL_NO_SYMMETRY) {
         return false;
     }
