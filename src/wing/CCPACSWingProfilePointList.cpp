@@ -88,12 +88,12 @@ CCPACSWingProfilePointList::CCPACSWingProfilePointList(const CCPACSWingProfile& 
 
     // points with maximal/minimal y-component
     coordinates = cpacsPointList.AsVector();
-    struct PointCompare {
+    struct PointZCompare {
         bool operator()(const CTiglPoint& a, const CTiglPoint& b) {
-            return a.y < b.y;
+            return a.z < b.z;
         }
     };
-    const std::pair<std::vector<CTiglPoint>::const_iterator, std::vector<CTiglPoint>::const_iterator> minmax = std::minmax_element(std::begin(coordinates), std::end(coordinates), PointCompare());
+    const std::pair<std::vector<CTiglPoint>::const_iterator, std::vector<CTiglPoint>::const_iterator> minmax = std::minmax_element(std::begin(coordinates), std::end(coordinates), PointZCompare());
     const std::size_t minZIndex = minmax.first - std::begin(coordinates);
     const std::size_t maxZIndex = minmax.second - std::begin(coordinates);
 

@@ -53,17 +53,19 @@ CTiglAbstractGeometricComponent::CTiglAbstractGeometricComponent(CCPACSTransform
 void CTiglAbstractGeometricComponent::Reset()
 {
     SetUID("");
-    struct Visitor : boost::static_visitor<> {
-        void operator()(TiglSymmetryAxis* s) {
-            if (s)
-                *s = TiglSymmetryAxis::TIGL_NO_SYMMETRY;
-        }
-        void operator()(boost::optional<TiglSymmetryAxis>* s) {
-            if (s)
-                s->reset();
-        }
-    } visitor;
-    symmetryAxis.apply_visitor(visitor);
+    // resetting symmetry may introduce bugs, as the symmetry element may not be owned by the actual subclass
+    // e.g. symmetry of CCPACSWingSegment references symmetry member of CCPACSWing
+    //struct Visitor : boost::static_visitor<> {
+    //    void operator()(TiglSymmetryAxis* s) {
+    //        if (s)
+    //            *s = TiglSymmetryAxis::TIGL_NO_SYMMETRY;
+    //    }
+    //    void operator()(boost::optional<TiglSymmetryAxis>* s) {
+    //        if (s)
+    //            s->reset();
+    //    }
+    //} visitor;
+    //symmetryAxis.apply_visitor(visitor);
     if (transformation)
         transformation->reset();
 }

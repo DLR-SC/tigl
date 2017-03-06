@@ -95,7 +95,7 @@ void CCPACSPositionings::Update()
         if (actPos->HasFromSectionUID() && !actPos->GetFromSectionUID().empty()) {
             const std::string fromUID = actPos->GetFromSectionUID();
             bool found = false;
-            for (std::vector<unique_ptr<CCPACSPositioning>>::iterator it2 = m_positioning.begin(); it != m_positioning.end(); ++it) {
+            for (std::vector<unique_ptr<CCPACSPositioning>>::iterator it2 = m_positioning.begin(); it2 != m_positioning.end(); ++it2) {
                 if ((*it2)->GetOuterSectionIndex() == fromUID) {
                     (*it2)->ConnectChildPositioning(actPos);
                     found = true;

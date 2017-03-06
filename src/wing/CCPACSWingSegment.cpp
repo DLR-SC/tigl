@@ -237,8 +237,6 @@ void CCPACSWingSegment::Invalidate()
 // Cleanup routine
 void CCPACSWingSegment::Cleanup()
 {
-    m_name = "";
-    m_description = "";
     surfaceCache.upperShape.Nullify();
     surfaceCache.lowerShape.Nullify();
     surfaceCache.trailingEdgeShape.Nullify();

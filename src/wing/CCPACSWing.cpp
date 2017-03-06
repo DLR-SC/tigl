@@ -149,7 +149,6 @@ namespace
 CCPACSWing::CCPACSWing(CCPACSWings* parent)
     : generated::CPACSWing(parent)
     , CTiglAbstractPhysicalComponent(&m_transformation, &m_symmetry)
-    , configuration(&parent->GetParent<CCPACSAircraftModel>()->GetConfiguration())
     , rebuildFusedSegments(true)
     , rebuildFusedSegWEdge(true)
     , rebuildShells(true) {
