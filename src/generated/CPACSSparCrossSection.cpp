@@ -29,14 +29,14 @@ namespace tigl
     {
         CPACSSparCrossSection::CPACSSparCrossSection(CPACSMainGearSupportBeam* parent)
         {
-            //assert(parent != nullptr);
+            //assert(parent != NULL);
             m_parent = parent;
             m_parentType = &typeid(CPACSMainGearSupportBeam);
         }
         
         CPACSSparCrossSection::CPACSSparCrossSection(CCPACSWingSparSegment* parent)
         {
-            //assert(parent != nullptr);
+            //assert(parent != NULL);
             m_parent = parent;
             m_parentType = &typeid(CCPACSWingSparSegment);
         }

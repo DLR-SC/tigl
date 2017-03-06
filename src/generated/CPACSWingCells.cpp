@@ -29,7 +29,7 @@ namespace tigl
     {
         CPACSWingCells::CPACSWingCells(CCPACSWingShell* parent)
         {
-            //assert(parent != nullptr);
+            //assert(parent != NULL);
             m_parent = parent;
         }
         

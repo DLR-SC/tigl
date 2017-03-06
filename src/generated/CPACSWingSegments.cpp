@@ -30,14 +30,14 @@ namespace tigl
     {
         CPACSWingSegments::CPACSWingSegments(CPACSEnginePylon* parent)
         {
-            //assert(parent != nullptr);
+            //assert(parent != NULL);
             m_parent = parent;
             m_parentType = &typeid(CPACSEnginePylon);
         }
         
         CPACSWingSegments::CPACSWingSegments(CCPACSWing* parent)
         {
-            //assert(parent != nullptr);
+            //assert(parent != NULL);
             m_parent = parent;
             m_parentType = &typeid(CCPACSWing);
         }

@@ -29,7 +29,7 @@ namespace tigl
         CPACSSparSegment::CPACSSparSegment(CCPACSWingSparSegments* parent) :
             m_sparCrossSection(reinterpret_cast<CCPACSWingSparSegment*>(this))
         {
-            //assert(parent != nullptr);
+            //assert(parent != NULL);
             m_parent = parent;
         }
         

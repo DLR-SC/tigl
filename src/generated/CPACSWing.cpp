@@ -30,7 +30,7 @@ namespace tigl
         CPACSWing::CPACSWing(CCPACSRotorBlades* parent) :
             m_segments(reinterpret_cast<CCPACSWing*>(this))
         {
-            //assert(parent != nullptr);
+            //assert(parent != NULL);
             m_parent = parent;
             m_parentType = &typeid(CCPACSRotorBlades);
         }
@@ -38,7 +38,7 @@ namespace tigl
         CPACSWing::CPACSWing(CCPACSWings* parent) :
             m_segments(reinterpret_cast<CCPACSWing*>(this))
         {
-            //assert(parent != nullptr);
+            //assert(parent != NULL);
             m_parent = parent;
             m_parentType = &typeid(CCPACSWings);
         }

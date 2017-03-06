@@ -30,14 +30,14 @@ namespace tigl
     {
         CPACSFuselages::CPACSFuselages(CCPACSAircraftModel* parent)
         {
-            //assert(parent != nullptr);
+            //assert(parent != NULL);
             m_parent = parent;
             m_parentType = &typeid(CCPACSAircraftModel);
         }
         
         CPACSFuselages::CPACSFuselages(CCPACSRotorcraftModel* parent)
         {
-            //assert(parent != nullptr);
+            //assert(parent != NULL);
             m_parent = parent;
             m_parentType = &typeid(CCPACSRotorcraftModel);
         }

@@ -65,7 +65,7 @@ namespace tigl
 
 // Constructor
 CCPACSWingProfile::CCPACSWingProfile()
-    : invalidated(true), profileAlgo(nullptr)
+    : invalidated(true), profileAlgo(NULL)
 {
     Cleanup();
 }

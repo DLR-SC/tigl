@@ -29,7 +29,7 @@ namespace tigl
         CPACSWingRibsPositioning::CPACSWingRibsPositioning(CCPACSWingRibsDefinition* parent) :
             m_ribRotation(reinterpret_cast<CCPACSWingRibsPositioning*>(this))
         {
-            //assert(parent != nullptr);
+            //assert(parent != NULL);
             m_parent = parent;
         }
         

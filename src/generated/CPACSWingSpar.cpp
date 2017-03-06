@@ -30,7 +30,7 @@ namespace tigl
             m_sparPositions(reinterpret_cast<CCPACSWingSpars*>(this)), 
             m_sparSegments(reinterpret_cast<CCPACSWingSpars*>(this))
         {
-            //assert(parent != nullptr);
+            //assert(parent != NULL);
             m_parent = parent;
         }
         

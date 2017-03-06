@@ -48,7 +48,7 @@ namespace tigl
             template<typename P>
             TIGL_EXPORT bool IsParent() const
             {
-                return m_parentType != nullptr && *m_parentType == typeid(P);
+                return m_parentType != NULL && *m_parentType == typeid(P);
             }
             
             template<typename P>

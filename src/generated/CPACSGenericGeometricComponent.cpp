@@ -28,7 +28,7 @@ namespace tigl
     {
         CPACSGenericGeometricComponent::CPACSGenericGeometricComponent(CCPACSExternalObjects* parent)
         {
-            //assert(parent != nullptr);
+            //assert(parent != NULL);
             m_parent = parent;
         }
         

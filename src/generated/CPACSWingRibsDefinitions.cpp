@@ -29,7 +29,7 @@ namespace tigl
     {
         CPACSWingRibsDefinitions::CPACSWingRibsDefinitions(CCPACSWingCSStructure* parent)
         {
-            //assert(parent != nullptr);
+            //assert(parent != NULL);
             m_parent = parent;
         }
         

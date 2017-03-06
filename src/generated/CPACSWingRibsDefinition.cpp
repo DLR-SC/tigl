@@ -29,7 +29,7 @@ namespace tigl
         CPACSWingRibsDefinition::CPACSWingRibsDefinition(CCPACSWingRibsDefinitions* parent) :
             m_ribCrossSection(reinterpret_cast<CCPACSWingRibsDefinition*>(this))
         {
-            //assert(parent != nullptr);
+            //assert(parent != NULL);
             m_parent = parent;
         }
         

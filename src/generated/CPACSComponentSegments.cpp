@@ -29,7 +29,7 @@ namespace tigl
     {
         CPACSComponentSegments::CPACSComponentSegments(CCPACSWing* parent)
         {
-            //assert(parent != nullptr);
+            //assert(parent != NULL);
             m_parent = parent;
         }
         

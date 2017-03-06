@@ -28,7 +28,7 @@ namespace tigl
     {
         CPACSSparPosition::CPACSSparPosition(CCPACSWingSparPositions* parent)
         {
-            //assert(parent != nullptr);
+            //assert(parent != NULL);
             m_parent = parent;
         }
         

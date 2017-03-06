@@ -33,7 +33,7 @@ namespace tigl
             m_upperShell(reinterpret_cast<CCPACSWingCSStructure*>(this)), 
             m_lowerShell(reinterpret_cast<CCPACSWingCSStructure*>(this))
         {
-            //assert(parent != nullptr);
+            //assert(parent != NULL);
             m_parent = parent;
             m_parentType = &typeid(CCPACSWingComponentSegment);
         }
@@ -42,7 +42,7 @@ namespace tigl
             m_upperShell(reinterpret_cast<CCPACSWingCSStructure*>(this)), 
             m_lowerShell(reinterpret_cast<CCPACSWingCSStructure*>(this))
         {
-            //assert(parent != nullptr);
+            //assert(parent != NULL);
             m_parent = parent;
             m_parentType = &typeid(CPACSLeadingEdgeDevice);
         }
@@ -51,7 +51,7 @@ namespace tigl
             m_upperShell(reinterpret_cast<CCPACSWingCSStructure*>(this)), 
             m_lowerShell(reinterpret_cast<CCPACSWingCSStructure*>(this))
         {
-            //assert(parent != nullptr);
+            //assert(parent != NULL);
             m_parent = parent;
             m_parentType = &typeid(CPACSSpoiler);
         }
@@ -60,7 +60,7 @@ namespace tigl
             m_upperShell(reinterpret_cast<CCPACSWingCSStructure*>(this)), 
             m_lowerShell(reinterpret_cast<CCPACSWingCSStructure*>(this))
         {
-            //assert(parent != nullptr);
+            //assert(parent != NULL);
             m_parent = parent;
             m_parentType = &typeid(CPACSTrailingEdgeDevice);
         }
