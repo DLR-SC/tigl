@@ -71,20 +71,6 @@ namespace tigl
                 }
             }
             
-            // read element structuralElements
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/structuralElements")) {
-                m_structuralElements = boost::in_place();
-                try {
-                    m_structuralElements->ReadCPACS(tixiHandle, xpath + "/structuralElements");
-                } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read structuralElements at xpath << " << xpath << ": " << e.what();
-                    m_structuralElements = boost::none;
-                } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read structuralElements at xpath << " << xpath << ": " << e.getError();
-                    m_structuralElements = boost::none;
-                }
-            }
-            
             // read element materials
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/materials")) {
                 m_materials = boost::in_place();
@@ -119,12 +105,6 @@ namespace tigl
             if (m_profiles) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/profiles");
                 m_profiles->WriteCPACS(tixiHandle, xpath + "/profiles");
-            }
-            
-            // write element structuralElements
-            if (m_structuralElements) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/structuralElements");
-                m_structuralElements->WriteCPACS(tixiHandle, xpath + "/structuralElements");
             }
             
             // write element materials
@@ -178,21 +158,6 @@ namespace tigl
         CCPACSProfiles& CPACSVehicles::GetProfiles()
         {
             return *m_profiles;
-        }
-        
-        bool CPACSVehicles::HasStructuralElements() const
-        {
-            return static_cast<bool>(m_structuralElements);
-        }
-        
-        const CPACSStructuralElements& CPACSVehicles::GetStructuralElements() const
-        {
-            return *m_structuralElements;
-        }
-        
-        CPACSStructuralElements& CPACSVehicles::GetStructuralElements()
-        {
-            return *m_structuralElements;
         }
         
         bool CPACSVehicles::HasMaterials() const

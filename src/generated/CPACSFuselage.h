@@ -26,7 +26,6 @@
 #include <CCPACSFuselageSections.h>
 #include <CCPACSPositionings.h>
 #include <CCPACSFuselageSegments.h>
-#include "CPACSFuselageStructure.h"
 #include "CPACSFuselageFuelTanks.h"
 #include "CPACSFuselageCutOuts.h"
 
@@ -82,10 +81,6 @@ namespace tigl
             TIGL_EXPORT const CCPACSFuselageSegments& GetSegments() const;
             TIGL_EXPORT CCPACSFuselageSegments& GetSegments();
             
-            TIGL_EXPORT bool HasStructure() const;
-            TIGL_EXPORT const CPACSFuselageStructure& GetStructure() const;
-            TIGL_EXPORT CPACSFuselageStructure& GetStructure();
-            
             TIGL_EXPORT bool HasFuelTanks() const;
             TIGL_EXPORT const CPACSFuselageFuelTanks& GetFuelTanks() const;
             TIGL_EXPORT CPACSFuselageFuelTanks& GetFuelTanks();
@@ -106,7 +101,6 @@ namespace tigl
             CCPACSFuselageSections                  m_sections;
             CCPACSPositionings                      m_positionings;
             CCPACSFuselageSegments                  m_segments;
-            boost::optional<CPACSFuselageStructure> m_structure;
             boost::optional<CPACSFuselageFuelTanks> m_fuelTanks;
             boost::optional<CPACSFuselageCutOuts>   m_cutOuts;
             

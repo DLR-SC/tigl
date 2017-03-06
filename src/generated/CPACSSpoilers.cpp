@@ -15,7 +15,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "CPACSSpoiler.h"
 #include "TixiHelper.h"
 #include "CTiglLogging.h"
 #include "CTiglError.h"
@@ -30,28 +29,10 @@ namespace tigl
         
         void CPACSSpoilers::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
-            // read element spoiler
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/spoiler")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/spoiler", m_spoiler);
-            }
-            
         }
         
         void CPACSSpoilers::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
-            // write element spoiler
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/spoiler", m_spoiler);
-            
-        }
-        
-        const std::vector<unique_ptr<CPACSSpoiler>>& CPACSSpoilers::GetSpoiler() const
-        {
-            return m_spoiler;
-        }
-        
-        std::vector<unique_ptr<CPACSSpoiler>>& CPACSSpoilers::GetSpoiler()
-        {
-            return m_spoiler;
         }
         
     }

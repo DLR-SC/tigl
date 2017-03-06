@@ -16,7 +16,6 @@
 // limitations under the License.
 
 #include <sstream>
-#include <chrono>
 
 #include "TixiHelper.h"
 
@@ -189,12 +188,14 @@ namespace tigl
             std::vector<std::string> names;
             names.reserve(count);
             for (int i = 1; i <= count; i++) {
-                char* name = nullptr;
+                char* name = NULL;
                 const ReturnCode ret = tixiGetAttributeName(tixiHandle, xpath.c_str(), i, &name);
                 if (ret != ReturnCode::SUCCESS) {
+                    std::stringstream ss;
+                    ss << i;
                     throw TixiError(ret,
                         "Failed to get the name an attribute\n"
-                        "Index: " + std::to_string(i) + "\n"
+                        "Index: " + ss.str() + "\n"
                         "xpath: " + xpath
                     );
                 }
@@ -339,17 +340,17 @@ namespace tigl
 
         void TixiSaveAttribute(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& attribute, double value)
         {
-            TixiSaveAttributeInternal(tixiHandle, xpath, attribute, tixiAddDoubleAttribute, value, nullptr);
+            TixiSaveAttributeInternal(tixiHandle, xpath, attribute, tixiAddDoubleAttribute, value, (const char*)NULL);
         }
 
         void TixiSaveAttribute(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& attribute, bool value)
         {
-            TixiSaveAttributeInternal(tixiHandle, xpath, attribute, tixiAddIntegerAttribute, value ? 1 : 0, nullptr); // TODO: no tixiAddBooleanAttribute in Tixi
+            TixiSaveAttributeInternal(tixiHandle, xpath, attribute, tixiAddIntegerAttribute, value ? 1 : 0, (const char*)0); // TODO: no tixiAddBooleanAttribute in Tixi
         }
 
         void TixiSaveAttribute(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& attribute, int value)
         {
-            TixiSaveAttributeInternal(tixiHandle, xpath, attribute, tixiAddIntegerAttribute, value, nullptr);
+            TixiSaveAttributeInternal(tixiHandle, xpath, attribute, tixiAddIntegerAttribute, value, (const char*)0);
         }
 
         namespace
@@ -462,7 +463,7 @@ namespace tigl
 
         void TixiSaveElement(const TixiDocumentHandle& tixiHandle, const std::string& xpath, int value)
         {
-            TixiSaveElementInternal(tixiHandle, xpath, tixiUpdateIntegerElement, tixiAddIntegerElement, value, nullptr);
+            TixiSaveElementInternal(tixiHandle, xpath, tixiUpdateIntegerElement, tixiAddIntegerElement, value, (const char*)NULL);
         }
 
         void TixiSaveElement(const TixiDocumentHandle& tixiHandle, const std::string& xpath, std::time_t value)

@@ -15,7 +15,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "CPACSLeadingEdgeDevice.h"
 #include "TixiHelper.h"
 #include "CTiglLogging.h"
 #include "CTiglError.h"
@@ -30,28 +29,10 @@ namespace tigl
         
         void CPACSLeadingEdgeDevices::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
-            // read element leadingEdgeDevice
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/leadingEdgeDevice")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/leadingEdgeDevice", m_leadingEdgeDevice);
-            }
-            
         }
         
         void CPACSLeadingEdgeDevices::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
-            // write element leadingEdgeDevice
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/leadingEdgeDevice", m_leadingEdgeDevice);
-            
-        }
-        
-        const std::vector<unique_ptr<CPACSLeadingEdgeDevice>>& CPACSLeadingEdgeDevices::GetLeadingEdgeDevice() const
-        {
-            return m_leadingEdgeDevice;
-        }
-        
-        std::vector<unique_ptr<CPACSLeadingEdgeDevice>>& CPACSLeadingEdgeDevices::GetLeadingEdgeDevice()
-        {
-            return m_leadingEdgeDevice;
         }
         
     }

@@ -19,16 +19,12 @@
 
 #include <tixi.h>
 #include <string>
-#include <vector>
-#include "UniquePtr.h"
 #include "tigl_internal.h"
 
 namespace tigl
 {
     namespace generated
     {
-        class CPACSSpoiler;
-        
         // This class is used in:
         // CPACSControlSurfaces
         
@@ -42,12 +38,7 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT const std::vector<unique_ptr<CPACSSpoiler>>& GetSpoiler() const;
-            TIGL_EXPORT std::vector<unique_ptr<CPACSSpoiler>>& GetSpoiler();
-            
         protected:
-            std::vector<unique_ptr<CPACSSpoiler>> m_spoiler;
-            
         private:
             #ifdef HAVE_CPP11
             CPACSSpoilers(const CPACSSpoilers&) = delete;
@@ -68,6 +59,4 @@ namespace tigl
     #else
     typedef generated::CPACSSpoilers CCPACSSpoilers;
     #endif
-    
-    using generated::CPACSSpoiler;
 }

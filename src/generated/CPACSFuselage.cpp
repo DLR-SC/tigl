@@ -105,20 +105,6 @@ namespace tigl
                 LOG(ERROR) << "Required element segments is missing";
             }
             
-            // read element structure
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/structure")) {
-                m_structure = boost::in_place();
-                try {
-                    m_structure->ReadCPACS(tixiHandle, xpath + "/structure");
-                } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read structure at xpath << " << xpath << ": " << e.what();
-                    m_structure = boost::none;
-                } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read structure at xpath << " << xpath << ": " << e.getError();
-                    m_structure = boost::none;
-                }
-            }
-            
             // read element fuelTanks
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/fuelTanks")) {
                 m_fuelTanks = boost::in_place();
@@ -192,12 +178,6 @@ namespace tigl
             // write element segments
             tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/segments");
             m_segments.WriteCPACS(tixiHandle, xpath + "/segments");
-            
-            // write element structure
-            if (m_structure) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/structure");
-                m_structure->WriteCPACS(tixiHandle, xpath + "/structure");
-            }
             
             // write element fuelTanks
             if (m_fuelTanks) {
@@ -316,21 +296,6 @@ namespace tigl
         CCPACSFuselageSegments& CPACSFuselage::GetSegments()
         {
             return m_segments;
-        }
-        
-        bool CPACSFuselage::HasStructure() const
-        {
-            return static_cast<bool>(m_structure);
-        }
-        
-        const CPACSFuselageStructure& CPACSFuselage::GetStructure() const
-        {
-            return *m_structure;
-        }
-        
-        CPACSFuselageStructure& CPACSFuselage::GetStructure()
-        {
-            return *m_structure;
         }
         
         bool CPACSFuselage::HasFuelTanks() const
