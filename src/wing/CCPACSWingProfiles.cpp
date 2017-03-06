@@ -40,8 +40,8 @@ namespace tigl
 // Invalidates internal state
 void CCPACSWingProfiles::Invalidate()
 {
-    for (auto& p : m_wingAirfoil) {
-        static_cast<CCPACSWingProfile&>(*p).Invalidate();
+    for (int i = 1; i < GetProfileCount(); i++) {
+        GetProfile(i).Invalidate();
     }
 }
 
@@ -73,11 +73,12 @@ void CCPACSWingProfiles::AddProfile(CCPACSWingProfile* profile)
 
 void CCPACSWingProfiles::DeleteProfile(std::string uid)
 {
-    const auto it = std::find_if(std::begin(m_wingAirfoil), std::end(m_wingAirfoil), [&](const unique_ptr<generated::CPACSProfileGeometry>& pg) {
-        return pg->GetUID() == uid;
-    });
-    if (it != std::end(m_wingAirfoil))
-        m_wingAirfoil.erase(it);
+    for (std::vector<unique_ptr<CPACSProfileGeometry>>::const_iterator it = m_wingAirfoil.begin(); it != m_wingAirfoil.end(); ++it) {
+        if ((*it)->GetUID() == uid) {
+            m_wingAirfoil.erase(it);
+            return;
+        }
+    }
 }
 
 // Returns the total count of wing profiles in this configuration
@@ -88,8 +89,8 @@ int CCPACSWingProfiles::GetProfileCount() const
 
 bool CCPACSWingProfiles::HasProfile(std::string uid) const
 {
-    for (const auto& p : m_wingAirfoil)
-        if (p->GetUID() == uid)
+    for (std::vector<unique_ptr<CPACSProfileGeometry>>::const_iterator it = m_wingAirfoil.begin(); it != m_wingAirfoil.end(); ++it)
+        if ((*it)->GetUID() == uid)
             return true;
 
     return false;
@@ -98,11 +99,10 @@ bool CCPACSWingProfiles::HasProfile(std::string uid) const
 // Returns the wing profile for a given uid.
 CCPACSWingProfile& CCPACSWingProfiles::GetProfile(std::string uid) const
 {
-    for (const auto& p : m_wingAirfoil)
-        if (p->GetUID() == uid)
-            return static_cast<CCPACSWingProfile&>(*p);
-
-    throw CTiglError("Wing profile \"" + uid + "\" not found in CPACS file!", TIGL_UID_ERROR);
+    for (std::vector<unique_ptr<CPACSProfileGeometry>>::const_iterator it = m_wingAirfoil.begin(); it != m_wingAirfoil.end(); ++it)
+        if ((*it)->GetUID() == uid)
+            return static_cast<CCPACSWingProfile&>(**it);
+    throw CTiglError("Fuselage profile \"" + uid + "\" not found in CPACS file!", TIGL_UID_ERROR);
 }
 
 // Returns the wing profile for a given index - TODO: depricated function!

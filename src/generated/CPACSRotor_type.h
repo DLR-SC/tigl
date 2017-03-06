@@ -75,7 +75,7 @@ namespace tigl
         }
         inline CPACSRotor_type stringToCPACSRotor_type(const std::string& value)
         {
-            auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
+            struct ToLower { std::string operator()(std::string str) { for (char& c : str) { c = std::tolower(c); } return str; } } toLower;
             if (toLower(value) == "mainrotor") { return mainRotor; }
             if (toLower(value) == "tailrotor") { return tailRotor; }
             if (toLower(value) == "fenestron") { return fenestron; }

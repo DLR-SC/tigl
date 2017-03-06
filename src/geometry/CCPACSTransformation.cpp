@@ -71,17 +71,17 @@ void CCPACSTransformation::updateMatrix()
 {
     _transformationMatrix.SetIdentity();
     if (m_scaling) {
-        const auto& s = m_scaling->AsPoint();
+        const CTiglPoint& s = m_scaling->AsPoint();
         _transformationMatrix.AddScaling(s.x, s.y, s.z);
     }
     if (m_rotation) {
-        const auto& r = m_rotation->AsPoint();
+        const CTiglPoint& r = m_rotation->AsPoint();
         _transformationMatrix.AddRotationZ(r.z);
         _transformationMatrix.AddRotationY(r.y);
         _transformationMatrix.AddRotationX(r.x);
     }
     if (m_translation) {
-        const auto& t = m_translation->AsPoint();
+        const CTiglPoint& t = m_translation->AsPoint();
         _transformationMatrix.AddTranslation(t.x, t.y, t.z);
     }
 }

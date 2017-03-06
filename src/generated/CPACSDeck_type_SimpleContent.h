@@ -75,7 +75,7 @@ namespace tigl
         }
         inline CPACSDeck_type_SimpleContent stringToCPACSDeck_type_SimpleContent(const std::string& value)
         {
-            auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
+            struct ToLower { std::string operator()(std::string str) { for (char& c : str) { c = std::tolower(c); } return str; } } toLower;
             if (toLower(value) == "passenger") { return passenger; }
             if (toLower(value) == "vip") { return VIP; }
             if (toLower(value) == "cargo") { return cargo; }

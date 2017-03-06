@@ -63,7 +63,7 @@ namespace tigl
         }
         inline CPACSAtmosphericConditions_model_SimpleContent stringToCPACSAtmosphericConditions_model_SimpleContent(const std::string& value)
         {
-            auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
+            struct ToLower { std::string operator()(std::string str) { for (char& c : str) { c = std::tolower(c); } return str; } } toLower;
             if (toLower(value) == "isa") { return ISA; }
             throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSAtmosphericConditions_model_SimpleContent");
         }

@@ -71,7 +71,7 @@ namespace tigl
         }
         inline CPACSSheet_continuityAtP2_SimpleContent stringToCPACSSheet_continuityAtP2_SimpleContent(const std::string& value)
         {
-            auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
+            struct ToLower { std::string operator()(std::string str) { for (char& c : str) { c = std::tolower(c); } return str; } } toLower;
             if (toLower(value) == "cpacssheet_continuityatp2_simplecontent_0") { return CPACSSheet_continuityAtP2_SimpleContent_0; }
             if (toLower(value) == "cpacssheet_continuityatp2_simplecontent_1") { return CPACSSheet_continuityAtP2_SimpleContent_1; }
             if (toLower(value) == "cpacssheet_continuityatp2_simplecontent_2") { return CPACSSheet_continuityAtP2_SimpleContent_2; }

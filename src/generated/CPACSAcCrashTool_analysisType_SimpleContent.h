@@ -75,7 +75,7 @@ namespace tigl
         }
         inline CPACSAcCrashTool_analysisType_SimpleContent stringToCPACSAcCrashTool_analysisType_SimpleContent(const std::string& value)
         {
-            auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
+            struct ToLower { std::string operator()(std::string str) { for (char& c : str) { c = std::tolower(c); } return str; } } toLower;
             if (toLower(value) == "sectionmodelling") { return sectionModelling; }
             if (toLower(value) == "sectiondrop") { return sectionDrop; }
             if (toLower(value) == "fuselagemodelling") { return fuselageModelling; }

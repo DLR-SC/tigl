@@ -29,7 +29,7 @@ namespace tigl
 
     inline TiglFarFieldType stringToTiglFarFieldType(const std::string& value)
     {
-        auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
+        struct ToLower { std::string operator()(std::string str) { for (char& c : str) { c = std::tolower(c); } return str; } } toLower;
         if (toLower(value) == "halfsphere") { return TiglFarFieldType::HALF_SPHERE; }
         if (toLower(value) == "fullsphere") { return TiglFarFieldType::FULL_SPHERE; }
         if (toLower(value) == "halfcube")   { return TiglFarFieldType::HALF_CUBE;   }

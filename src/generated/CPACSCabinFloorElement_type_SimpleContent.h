@@ -71,7 +71,7 @@ namespace tigl
         }
         inline CPACSCabinFloorElement_type_SimpleContent stringToCPACSCabinFloorElement_type_SimpleContent(const std::string& value)
         {
-            auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
+            struct ToLower { std::string operator()(std::string str) { for (char& c : str) { c = std::tolower(c); } return str; } } toLower;
             if (toLower(value) == "toilet") { return toilet; }
             if (toLower(value) == "kitchen") { return kitchen; }
             if (toLower(value) == "miscellaneous") { return miscellaneous; }

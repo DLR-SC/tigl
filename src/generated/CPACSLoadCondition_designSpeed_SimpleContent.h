@@ -95,7 +95,7 @@ namespace tigl
         }
         inline CPACSLoadCondition_designSpeed_SimpleContent stringToCPACSLoadCondition_designSpeed_SimpleContent(const std::string& value)
         {
-            auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
+            struct ToLower { std::string operator()(std::string str) { for (char& c : str) { c = std::tolower(c); } return str; } } toLower;
             if (toLower(value) == "va") { return VA; }
             if (toLower(value) == "vb") { return VB; }
             if (toLower(value) == "vc") { return VC; }

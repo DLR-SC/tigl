@@ -69,7 +69,7 @@ namespace tigl
         }
         inline CPACSInterpolation stringToCPACSInterpolation(const std::string& value)
         {
-            auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
+            struct ToLower { std::string operator()(std::string str) { for (char& c : str) { c = std::tolower(c); } return str; } } toLower;
             if (toLower(value) == "cpacsinterpolation_0") { return CPACSInterpolation_0; }
             if (toLower(value) == "cpacsinterpolation_1") { return CPACSInterpolation_1; }
             throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSInterpolation");

@@ -60,7 +60,8 @@ void CCPACSPositionings::Cleanup()
 CTiglTransformation CCPACSPositionings::GetPositioningTransformation(std::string sectionIndex)
 {
     Update();
-    for (const auto& p : m_positioning) {
+    for (std::vector<unique_ptr<CCPACSPositioning>>::const_iterator it = m_positioning.begin(); it != m_positioning.end(); ++it) {
+        CCPACSPositioning* p = it->get();
         if (p->GetOuterSectionIndex() == sectionIndex) {
             return p->GetOuterTransformation();
         }
@@ -93,12 +94,15 @@ void CCPACSPositionings::Update()
         // fromSectionUID element may be present but empty
         if (actPos->HasFromSectionUID() && !actPos->GetFromSectionUID().empty()) {
             const std::string fromUID = actPos->GetFromSectionUID();
-            const auto pos = std::find_if(std::begin(m_positioning), std::end(m_positioning), [&](const unique_ptr<CCPACSPositioning>& p) {
-                return p->GetOuterSectionIndex() == fromUID;
-            });
-            if (pos != std::end(m_positioning)) {
-                (*pos)->ConnectChildPositioning(actPos);
-            } else {
+            bool found = false;
+            for (std::vector<unique_ptr<CCPACSPositioning>>::iterator it2 = m_positioning.begin(); it != m_positioning.end(); ++it) {
+                if ((*it2)->GetOuterSectionIndex() == fromUID) {
+                    (*it2)->ConnectChildPositioning(actPos);
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
                 // invalid from UID
                 throw CTiglError("Positioning fromSectionUID " + fromUID + " does not exist");
             }

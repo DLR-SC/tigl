@@ -1271,7 +1271,7 @@ void CCPACSWingSegment::BuildGuideCurveWires() const
 {
     guideCurveWires.Clear();
     if (HasGuideCurves()) {
-        const auto& wingTransform = GetWing().GetTransformation();
+        const tigl::CTiglTransformation& wingTransform = GetWing().GetTransformation();
 
         // get upper and lower part of inner profile in world coordinates
         CCPACSWingProfile& innerProfile = innerConnection.GetProfile();

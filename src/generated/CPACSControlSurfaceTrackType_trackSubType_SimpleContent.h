@@ -87,7 +87,7 @@ namespace tigl
         }
         inline CPACSControlSurfaceTrackType_trackSubType_SimpleContent stringToCPACSControlSurfaceTrackType_trackSubType_SimpleContent(const std::string& value)
         {
-            auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
+            struct ToLower { std::string operator()(std::string str) { for (char& c : str) { c = std::tolower(c); } return str; } } toLower;
             if (toLower(value) == "tracksubtype1") { return trackSubType1; }
             if (toLower(value) == "tracksubtype2") { return trackSubType2; }
             if (toLower(value) == "tracksubtype3") { return trackSubType3; }

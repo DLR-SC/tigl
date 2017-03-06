@@ -75,7 +75,7 @@ namespace tigl
         }
         inline CPACSRotorHub_type stringToCPACSRotorHub_type(const std::string& value)
         {
-            auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
+            struct ToLower { std::string operator()(std::string str) { for (char& c : str) { c = std::tolower(c); } return str; } } toLower;
             if (toLower(value) == "semirigid") { return semiRigid; }
             if (toLower(value) == "rigid") { return rigid; }
             if (toLower(value) == "articulated") { return articulated; }

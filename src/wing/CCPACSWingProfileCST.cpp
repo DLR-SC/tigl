@@ -92,10 +92,9 @@ void CCPACSWingProfileCST::BuildWires()
     upperWire = BRepBuilderAPI_MakeEdge(upperCurve);
     
     // Build lower curve
-    std::vector<double> binv;
-    const auto& lb = m_lowerB.AsVector();
-    for (unsigned int i = 0; i < lb.size(); ++i) {
-        binv.push_back(-lb[i]);
+    std::vector<double> binv = m_lowerB.AsVector();
+    for (unsigned int i = 0; i < binv.size(); ++i) {
+        binv[i] = -binv[i];
     }
     
     CCSTCurveBuilder lowerBuilder(m_lowerN1, m_lowerN2, binv);

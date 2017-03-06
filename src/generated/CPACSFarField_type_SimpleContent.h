@@ -75,7 +75,7 @@ namespace tigl
         }
         inline CPACSFarField_type_SimpleContent stringToTiglFarFieldType(const std::string& value)
         {
-            auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
+            struct ToLower { std::string operator()(std::string str) { for (char& c : str) { c = std::tolower(c); } return str; } } toLower;
             if (toLower(value) == "halfsphere") { return halfSphere; }
             if (toLower(value) == "fullsphere") { return fullSphere; }
             if (toLower(value) == "halfcube") { return halfCube; }

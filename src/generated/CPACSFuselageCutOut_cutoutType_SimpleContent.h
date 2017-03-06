@@ -83,7 +83,7 @@ namespace tigl
         }
         inline CPACSFuselageCutOut_cutoutType_SimpleContent stringToCPACSFuselageCutOut_cutoutType_SimpleContent(const std::string& value)
         {
-            auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
+            struct ToLower { std::string operator()(std::string str) { for (char& c : str) { c = std::tolower(c); } return str; } } toLower;
             if (toLower(value) == "window") { return window; }
             if (toLower(value) == "door") { return door; }
             if (toLower(value) == "paxdoor") { return paxDoor; }

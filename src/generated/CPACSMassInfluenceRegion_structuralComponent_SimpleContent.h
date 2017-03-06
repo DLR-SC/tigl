@@ -79,7 +79,7 @@ namespace tigl
         }
         inline CPACSMassInfluenceRegion_structuralComponent_SimpleContent stringToCPACSMassInfluenceRegion_structuralComponent_SimpleContent(const std::string& value)
         {
-            auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
+            struct ToLower { std::string operator()(std::string str) { for (char& c : str) { c = std::tolower(c); } return str; } } toLower;
             if (toLower(value) == "all") { return all; }
             if (toLower(value) == "surface") { return surface; }
             if (toLower(value) == "floor") { return floor; }

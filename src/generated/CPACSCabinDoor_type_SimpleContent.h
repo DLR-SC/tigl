@@ -67,7 +67,7 @@ namespace tigl
         }
         inline CPACSCabinDoor_type_SimpleContent stringToCPACSCabinDoor_type_SimpleContent(const std::string& value)
         {
-            auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
+            struct ToLower { std::string operator()(std::string str) { for (char& c : str) { c = std::tolower(c); } return str; } } toLower;
             if (toLower(value) == "boarding") { return boarding; }
             if (toLower(value) == "evacuation") { return evacuation; }
             throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSCabinDoor_type_SimpleContent");
