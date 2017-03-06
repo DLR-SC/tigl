@@ -29,7 +29,7 @@ namespace tigl
         CPACSFuselage::CPACSFuselage(CCPACSFuselages* parent) :
             m_segments(reinterpret_cast<CCPACSFuselage*>(this))
         {
-            //assert(parent != nullptr);
+            //assert(parent != NULL);
             m_parent = parent;
         }
         

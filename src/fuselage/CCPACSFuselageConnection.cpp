@@ -34,7 +34,7 @@
 namespace tigl
 {
 
-CCPACSFuselageConnection::CCPACSFuselageConnection() : elementUID(nullptr), segment(nullptr) {}
+CCPACSFuselageConnection::CCPACSFuselageConnection() : elementUID(NULL), segment(NULL) {}
 
 // Constructor
 CCPACSFuselageConnection::CCPACSFuselageConnection(const std::string& elementUID, CCPACSFuselageSegment* aSegment)

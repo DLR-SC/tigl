@@ -28,7 +28,7 @@ namespace tigl
     {
         CPACSRotorBladeAttachment::CPACSRotorBladeAttachment(CCPACSRotorBladeAttachments* parent)
         {
-            //assert(parent != nullptr);
+            //assert(parent != NULL);
             m_parent = parent;
         }
         

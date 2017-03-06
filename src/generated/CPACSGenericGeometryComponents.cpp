@@ -29,7 +29,7 @@ namespace tigl
     {
         CPACSGenericGeometryComponents::CPACSGenericGeometryComponents(CCPACSAircraftModel* parent)
         {
-            //assert(parent != nullptr);
+            //assert(parent != NULL);
             m_parent = parent;
         }
         

@@ -29,14 +29,14 @@ namespace tigl
     {
         CPACSWingRibCrossSection::CPACSWingRibCrossSection(CPACSPylonRibsDefinition* parent)
         {
-            //assert(parent != nullptr);
+            //assert(parent != NULL);
             m_parent = parent;
             m_parentType = &typeid(CPACSPylonRibsDefinition);
         }
         
         CPACSWingRibCrossSection::CPACSWingRibCrossSection(CCPACSWingRibsDefinition* parent)
         {
-            //assert(parent != nullptr);
+            //assert(parent != NULL);
             m_parent = parent;
             m_parentType = &typeid(CCPACSWingRibsDefinition);
         }

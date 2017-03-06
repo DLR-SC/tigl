@@ -32,7 +32,7 @@ namespace tigl
             m_positioningInnerBorder(reinterpret_cast<CCPACSWingCell*>(this)), 
             m_positioningOuterBorder(reinterpret_cast<CCPACSWingCell*>(this))
         {
-            //assert(parent != nullptr);
+            //assert(parent != NULL);
             m_parent = parent;
         }
         

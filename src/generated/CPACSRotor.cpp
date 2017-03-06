@@ -29,7 +29,7 @@ namespace tigl
         CPACSRotor::CPACSRotor(CCPACSRotors* parent) :
             m_rotorHub(reinterpret_cast<CCPACSRotor*>(this))
         {
-            //assert(parent != nullptr);
+            //assert(parent != NULL);
             m_parent = parent;
         }
         

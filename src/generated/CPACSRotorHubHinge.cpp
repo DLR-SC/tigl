@@ -28,7 +28,7 @@ namespace tigl
     {
         CPACSRotorHubHinge::CPACSRotorHubHinge(CCPACSRotorHinges* parent)
         {
-            //assert(parent != nullptr);
+            //assert(parent != NULL);
             m_parent = parent;
         }
         

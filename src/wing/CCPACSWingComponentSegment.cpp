@@ -157,7 +157,7 @@ CCPACSWingComponentSegment::CCPACSWingComponentSegment(CCPACSWingComponentSegmen
     , wing(parent->GetParent())
     , surfacesAreValid(false)
 {
-    assert(wing != nullptr);
+    assert(wing != NULL);
     Cleanup();
 }
 
@@ -168,7 +168,7 @@ CCPACSWingComponentSegment::CCPACSWingComponentSegment(CCPACSWing* aWing, int aS
     , wing(aWing)
     , surfacesAreValid(false)
 {
-    assert(wing != nullptr);
+    assert(wing != NULL);
     Cleanup();
 }
 

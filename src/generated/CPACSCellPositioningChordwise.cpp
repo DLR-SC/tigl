@@ -29,14 +29,14 @@ namespace tigl
     {
         CPACSCellPositioningChordwise::CPACSCellPositioningChordwise(CCPACSWingCell* parent)
         {
-            //assert(parent != nullptr);
+            //assert(parent != NULL);
             m_parent = parent;
             m_parentType = &typeid(CCPACSWingCell);
         }
         
         CPACSCellPositioningChordwise::CPACSCellPositioningChordwise(CPACSWingIntermediateStructureCell* parent)
         {
-            //assert(parent != nullptr);
+            //assert(parent != NULL);
             m_parent = parent;
             m_parentType = &typeid(CPACSWingIntermediateStructureCell);
         }

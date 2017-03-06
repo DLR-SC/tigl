@@ -35,7 +35,7 @@
 namespace tigl
 {
 
-TIGL_EXPORT CCPACSWingConnection::CCPACSWingConnection() : elementUID(nullptr), segment(nullptr) {}
+TIGL_EXPORT CCPACSWingConnection::CCPACSWingConnection() : elementUID(NULL), segment(NULL) {}
 
 // Constructor
 CCPACSWingConnection::CCPACSWingConnection(const std::string& euid, CCPACSWingSegment* aSegment)
