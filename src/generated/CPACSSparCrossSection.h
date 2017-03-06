@@ -33,38 +33,18 @@ namespace tigl
     
     namespace generated
     {
-        class CPACSMainGearSupportBeam;
-        
         // This class is used in:
-        // CPACSMainGearSupportBeam
         // CPACSSparSegment
         
         // generated from /xsd:schema/xsd:complexType[785]
         class CPACSSparCrossSection
         {
         public:
-            TIGL_EXPORT CPACSSparCrossSection(CPACSMainGearSupportBeam* parent);
             TIGL_EXPORT CPACSSparCrossSection(CCPACSWingSparSegment* parent);
             
             TIGL_EXPORT virtual ~CPACSSparCrossSection();
             
-            template<typename P>
-            TIGL_EXPORT bool IsParent() const
-            {
-                return m_parentType != NULL && *m_parentType == typeid(P);
-            }
-            
-            template<typename P>
-            TIGL_EXPORT P* GetParent() const
-            {
-                #ifdef HAVE_CPP11
-                static_assert(std::is_same<P, CPACSMainGearSupportBeam>::value || std::is_same<P, CCPACSWingSparSegment>::value, "template argument for P is not a parent class of CPACSSparCrossSection");
-                #endif
-                if (!IsParent<P>()) {
-                    throw CTiglError("bad parent");
-                }
-                return static_cast<P*>(m_parent);
-            }
+            TIGL_EXPORT CCPACSWingSparSegment* GetParent() const;
             
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
@@ -92,8 +72,7 @@ namespace tigl
             TIGL_EXPORT void SetRotation(const double& value);
             
         protected:
-            void* m_parent;
-            const std::type_info* m_parentType;
+            CCPACSWingSparSegment* m_parent;
             
             boost::optional<CPACSCap>       m_upperCap;
             boost::optional<CPACSCap>       m_lowerCap;
@@ -122,6 +101,4 @@ namespace tigl
     #else
     typedef generated::CPACSSparCrossSection CCPACSSparCrossSection;
     #endif
-    
-    using generated::CPACSMainGearSupportBeam;
 }

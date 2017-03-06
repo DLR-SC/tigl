@@ -27,7 +27,6 @@ namespace tigl
     namespace generated
     {
         // This enum is used in:
-        // CPACSPylonRibsPositioning_ribCrossingBehaviour
         // CPACSWingRibsPositioning_ribCrossingBehaviour
         
         // generated from /xsd:schema/xsd:complexType[916]/xsd:complexContent/xsd:extension/xsd:sequence/xsd:element[4]/xsd:complexType/xsd:simpleContent

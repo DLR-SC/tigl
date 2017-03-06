@@ -57,7 +57,7 @@ public:
     TIGL_EXPORT virtual ~CCPACSWingProfile();
 
     // Read CPACS wing profile file
-    TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) override;
+    TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) OVERRIDE;
 
     // Returns whether the profile is a rotor profile
     TIGL_EXPORT bool IsRotorProfile() const;

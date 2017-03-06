@@ -40,7 +40,7 @@ class CCPACSMaterial : public generated::CPACSMaterialDefinition
 public:
     TIGL_EXPORT CCPACSMaterial();
     
-    TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& materialXPath) override;
+    TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& materialXPath) OVERRIDE;
 
     TIGL_EXPORT void Invalidate();
     

@@ -28,9 +28,6 @@ namespace tigl
     {
         // This class is used in:
         // CPACSAttachmentPin
-        // CPACSEngineInlet
-        // CPACSPointListYZ
-        // CPACSPylonPin
         
         // generated from /xsd:schema/xsd:complexType[695]
         class CPACSPointYZ

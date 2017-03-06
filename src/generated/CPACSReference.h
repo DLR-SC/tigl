@@ -28,11 +28,7 @@ namespace tigl
     {
         // This class is used in:
         // CPACSAircraftModel
-        // CPACSAirfoilAeroPerformance
-        // CPACSFuselageAeroPerformance
-        // CPACSGlobalAeroPerformance
         // CPACSRotorcraftModel
-        // CPACSWingAeroPerformance
         
         // generated from /xsd:schema/xsd:complexType[727]
         class CPACSReference

@@ -32,8 +32,8 @@ public:
     // Construct
     TIGL_EXPORT CCPACSRotorcraftModel(CCPACSConfiguration* config = NULL);
 
-    TIGL_EXPORT virtual const std::string& GetUID() const override;
-    TIGL_EXPORT virtual void SetUID(const std::string& uid) override;
+    TIGL_EXPORT virtual const std::string& GetUID() const OVERRIDE;
+    TIGL_EXPORT virtual void SetUID(const std::string& uid) OVERRIDE;
 
     // Returns the Geometric type of this component, e.g. Wing or Fuselage
     TIGL_EXPORT TiglGeometricComponentType GetComponentType();

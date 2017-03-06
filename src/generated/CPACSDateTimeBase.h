@@ -27,8 +27,6 @@ namespace tigl
     namespace generated
     {
         // This class is used in:
-        // CPACSAirportFeesTool
-        // CPACSAirportFlightplanSlot
         // CPACSHeader
         // CPACSUpdate
         

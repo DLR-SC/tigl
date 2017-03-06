@@ -16,7 +16,6 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CPACSPylonRibsDefinition.h"
 #include "CCPACSWingRibsDefinition.h"
 #include "TixiHelper.h"
 #include "CTiglLogging.h"
@@ -27,21 +26,18 @@ namespace tigl
 {
     namespace generated
     {
-        CPACSWingRibCrossSection::CPACSWingRibCrossSection(CPACSPylonRibsDefinition* parent)
-        {
-            //assert(parent != NULL);
-            m_parent = parent;
-            m_parentType = &typeid(CPACSPylonRibsDefinition);
-        }
-        
         CPACSWingRibCrossSection::CPACSWingRibCrossSection(CCPACSWingRibsDefinition* parent)
         {
             //assert(parent != NULL);
             m_parent = parent;
-            m_parentType = &typeid(CCPACSWingRibsDefinition);
         }
         
         CPACSWingRibCrossSection::~CPACSWingRibCrossSection() {}
+        
+        CCPACSWingRibsDefinition* CPACSWingRibCrossSection::GetParent() const
+        {
+            return m_parent;
+        }
         
         void CPACSWingRibCrossSection::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {

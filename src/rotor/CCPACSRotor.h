@@ -61,13 +61,13 @@ public:
     // Invalidates internal state
     TIGL_EXPORT void Invalidate();
 
-    TIGL_EXPORT virtual const std::string& GetUID() const override;
-    TIGL_EXPORT virtual void SetUID(const std::string& uid) override;
+    TIGL_EXPORT virtual const std::string& GetUID() const OVERRIDE;
+    TIGL_EXPORT virtual void SetUID(const std::string& uid) OVERRIDE;
 
-    TIGL_EXPORT virtual CTiglTransformation GetTransformation() const override;
+    TIGL_EXPORT virtual CTiglTransformation GetTransformation() const OVERRIDE;
 
     // Read CPACS rotor elements
-    TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& rotorXPath) override;
+    TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& rotorXPath) OVERRIDE;
 
     // Sets the Translation object
     TIGL_EXPORT void Translate(CTiglPoint trans);

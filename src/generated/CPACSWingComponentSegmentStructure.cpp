@@ -17,8 +17,6 @@
 
 #include <cassert>
 #include "CCPACSWingComponentSegment.h"
-#include "CPACSLeadingEdgeDevice.h"
-#include "CPACSSpoiler.h"
 #include "CPACSTrailingEdgeDevice.h"
 #include "TixiHelper.h"
 #include "CTiglLogging.h"
@@ -36,24 +34,6 @@ namespace tigl
             //assert(parent != NULL);
             m_parent = parent;
             m_parentType = &typeid(CCPACSWingComponentSegment);
-        }
-        
-        CPACSWingComponentSegmentStructure::CPACSWingComponentSegmentStructure(CPACSLeadingEdgeDevice* parent) :
-            m_upperShell(reinterpret_cast<CCPACSWingCSStructure*>(this)), 
-            m_lowerShell(reinterpret_cast<CCPACSWingCSStructure*>(this))
-        {
-            //assert(parent != NULL);
-            m_parent = parent;
-            m_parentType = &typeid(CPACSLeadingEdgeDevice);
-        }
-        
-        CPACSWingComponentSegmentStructure::CPACSWingComponentSegmentStructure(CPACSSpoiler* parent) :
-            m_upperShell(reinterpret_cast<CCPACSWingCSStructure*>(this)), 
-            m_lowerShell(reinterpret_cast<CCPACSWingCSStructure*>(this))
-        {
-            //assert(parent != NULL);
-            m_parent = parent;
-            m_parentType = &typeid(CPACSSpoiler);
         }
         
         CPACSWingComponentSegmentStructure::CPACSWingComponentSegmentStructure(CPACSTrailingEdgeDevice* parent) :

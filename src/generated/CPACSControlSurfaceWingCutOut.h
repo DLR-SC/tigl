@@ -33,8 +33,6 @@ namespace tigl
     namespace generated
     {
         // This class is used in:
-        // CPACSLeadingEdgeDevice
-        // CPACSSpoiler
         // CPACSTrailingEdgeDevice
         
         // generated from /xsd:schema/xsd:complexType[192]

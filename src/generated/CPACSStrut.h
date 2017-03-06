@@ -28,12 +28,6 @@ namespace tigl
     {
         // This class is used in:
         // CPACSAttachmentPin
-        // CPACSAxle
-        // CPACSGearComponents
-        // CPACSPylonPin
-        // CPACSPylonStruts
-        // CPACSTangentLinks
-        // CPACSUpperLinks
         
         // generated from /xsd:schema/xsd:complexType[816]
         class CPACSStrut

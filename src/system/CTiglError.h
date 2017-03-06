@@ -49,7 +49,7 @@ public:
     // Returns the error string as C string (char*)
     TIGL_EXPORT virtual const char* getError() const throw();
 
-    //TIGL_EXPORT virtual const char* what() const throw() override;
+    //TIGL_EXPORT virtual const char* what() const throw() OVERRIDE;
 
     // Returns the error code
     TIGL_EXPORT virtual TiglReturnCode getCode() const throw();

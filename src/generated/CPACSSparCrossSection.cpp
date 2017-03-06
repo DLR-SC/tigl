@@ -16,7 +16,6 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CPACSMainGearSupportBeam.h"
 #include "CCPACSWingSparSegment.h"
 #include "TixiHelper.h"
 #include "CTiglLogging.h"
@@ -27,21 +26,18 @@ namespace tigl
 {
     namespace generated
     {
-        CPACSSparCrossSection::CPACSSparCrossSection(CPACSMainGearSupportBeam* parent)
-        {
-            //assert(parent != NULL);
-            m_parent = parent;
-            m_parentType = &typeid(CPACSMainGearSupportBeam);
-        }
-        
         CPACSSparCrossSection::CPACSSparCrossSection(CCPACSWingSparSegment* parent)
         {
             //assert(parent != NULL);
             m_parent = parent;
-            m_parentType = &typeid(CCPACSWingSparSegment);
         }
         
         CPACSSparCrossSection::~CPACSSparCrossSection() {}
+        
+        CCPACSWingSparSegment* CPACSSparCrossSection::GetParent() const
+        {
+            return m_parent;
+        }
         
         void CPACSSparCrossSection::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {

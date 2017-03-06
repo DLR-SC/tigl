@@ -34,7 +34,6 @@ class CCPACSWingRibsDefinition;
 class CCPACSWingRibCrossSection : public generated::CPACSWingRibCrossSection
 {
 public:
-    TIGL_EXPORT CCPACSWingRibCrossSection(CPACSPylonRibsDefinition* parent);
     TIGL_EXPORT CCPACSWingRibCrossSection(CCPACSWingRibsDefinition* parent);
 
     TIGL_EXPORT double GetXRotation() const;

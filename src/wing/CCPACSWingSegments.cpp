@@ -39,9 +39,6 @@ namespace tigl
 CCPACSWingSegments::CCPACSWingSegments(CCPACSWing* parent)
     : generated::CPACSWingSegments(parent) {}
 
-CCPACSWingSegments::CCPACSWingSegments(CPACSEnginePylon* parent)
-    : generated::CPACSWingSegments(parent) {}
-
 // Invalidates internal state
 void CCPACSWingSegments::Invalidate()
 {

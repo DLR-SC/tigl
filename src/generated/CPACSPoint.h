@@ -27,21 +27,10 @@ namespace tigl
     namespace generated
     {
         // This class is used in:
-        // CPACSAeroToolReference
-        // CPACSAeroelasticStaticMaxDisplacement
         // CPACSControlSurfaceStep
-        // CPACSEngineMount
         // CPACSFuselageFuelTank
-        // CPACSGenericMass
-        // CPACSGeogenReference
-        // CPACSLgDesignGeometryPoints
-        // CPACSMassAndCoG
-        // CPACSMicrophone
-        // CPACSPointList
         // CPACSReference
-        // CPACSSeatModule
         // CPACSTransformation
-        // CPACSTransformationPolar
         
         // generated from /xsd:schema/xsd:complexType[689]
         class CPACSPoint

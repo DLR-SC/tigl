@@ -30,8 +30,6 @@ namespace tigl
         class CPACSControlSurfaceTrackType;
         
         // This class is used in:
-        // CPACSLeadingEdgeDevice
-        // CPACSSpoiler
         // CPACSTrailingEdgeDevice
         
         // generated from /xsd:schema/xsd:complexType[191]

@@ -29,14 +29,7 @@ namespace tigl
     namespace generated
     {
         // This class is used in:
-        // CPACSFlightPoint
-        // CPACSOperationalCase
         // CPACSProfileGeometry
-        // CPACSWeightAndBalanceFuel
-        // CPACSWeightAndBalanceFuelInTank
-        // CPACSWeightAndBalancePayload
-        // CPACSWeightAndBalancemCargos
-        // CPACSWeightAndBalancemPaxx
         
         // generated from /xsd:schema/xsd:complexType[685]
         class CPACSPointListXYZVector
