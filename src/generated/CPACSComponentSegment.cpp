@@ -134,34 +134,6 @@ namespace tigl
                 }
             }
             
-            // read element wingWingAttachments
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/wingWingAttachments")) {
-                m_wingWingAttachments = boost::in_place();
-                try {
-                    m_wingWingAttachments->ReadCPACS(tixiHandle, xpath + "/wingWingAttachments");
-                } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read wingWingAttachments at xpath << " << xpath << ": " << e.what();
-                    m_wingWingAttachments = boost::none;
-                } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read wingWingAttachments at xpath << " << xpath << ": " << e.getError();
-                    m_wingWingAttachments = boost::none;
-                }
-            }
-            
-            // read element wingFuelTanks
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/wingFuelTanks")) {
-                m_wingFuelTanks = boost::in_place();
-                try {
-                    m_wingFuelTanks->ReadCPACS(tixiHandle, xpath + "/wingFuelTanks");
-                } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read wingFuelTanks at xpath << " << xpath << ": " << e.what();
-                    m_wingFuelTanks = boost::none;
-                } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read wingFuelTanks at xpath << " << xpath << ": " << e.getError();
-                    m_wingFuelTanks = boost::none;
-                }
-            }
-            
             // read element wingStructuralMounts
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/wingStructuralMounts")) {
                 m_wingStructuralMounts = boost::in_place();
@@ -224,18 +196,6 @@ namespace tigl
             if (m_wingFuselageAttachments) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/wingFuselageAttachments");
                 m_wingFuselageAttachments->WriteCPACS(tixiHandle, xpath + "/wingFuselageAttachments");
-            }
-            
-            // write element wingWingAttachments
-            if (m_wingWingAttachments) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/wingWingAttachments");
-                m_wingWingAttachments->WriteCPACS(tixiHandle, xpath + "/wingWingAttachments");
-            }
-            
-            // write element wingFuelTanks
-            if (m_wingFuelTanks) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/wingFuelTanks");
-                m_wingFuelTanks->WriteCPACS(tixiHandle, xpath + "/wingFuelTanks");
             }
             
             // write element wingStructuralMounts
@@ -359,36 +319,6 @@ namespace tigl
         CPACSWingFuselageAttachments& CPACSComponentSegment::GetWingFuselageAttachments()
         {
             return *m_wingFuselageAttachments;
-        }
-        
-        bool CPACSComponentSegment::HasWingWingAttachments() const
-        {
-            return static_cast<bool>(m_wingWingAttachments);
-        }
-        
-        const CPACSWingWingAttachments& CPACSComponentSegment::GetWingWingAttachments() const
-        {
-            return *m_wingWingAttachments;
-        }
-        
-        CPACSWingWingAttachments& CPACSComponentSegment::GetWingWingAttachments()
-        {
-            return *m_wingWingAttachments;
-        }
-        
-        bool CPACSComponentSegment::HasWingFuelTanks() const
-        {
-            return static_cast<bool>(m_wingFuelTanks);
-        }
-        
-        const CPACSWingFuelTanks& CPACSComponentSegment::GetWingFuelTanks() const
-        {
-            return *m_wingFuelTanks;
-        }
-        
-        CPACSWingFuelTanks& CPACSComponentSegment::GetWingFuelTanks()
-        {
-            return *m_wingFuelTanks;
         }
         
         bool CPACSComponentSegment::HasWingStructuralMounts() const

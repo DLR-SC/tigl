@@ -85,20 +85,6 @@ namespace tigl
                 }
             }
             
-            // read element structuralProfiles
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/structuralProfiles")) {
-                m_structuralProfiles = boost::in_place();
-                try {
-                    m_structuralProfiles->ReadCPACS(tixiHandle, xpath + "/structuralProfiles");
-                } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read structuralProfiles at xpath << " << xpath << ": " << e.what();
-                    m_structuralProfiles = boost::none;
-                } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read structuralProfiles at xpath << " << xpath << ": " << e.getError();
-                    m_structuralProfiles = boost::none;
-                }
-            }
-            
         }
         
         void CPACSProfiles::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
@@ -125,12 +111,6 @@ namespace tigl
             if (m_rotorAirfoils) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/rotorAirfoils");
                 m_rotorAirfoils->WriteCPACS(tixiHandle, xpath + "/rotorAirfoils");
-            }
-            
-            // write element structuralProfiles
-            if (m_structuralProfiles) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/structuralProfiles");
-                m_structuralProfiles->WriteCPACS(tixiHandle, xpath + "/structuralProfiles");
             }
             
         }
@@ -193,21 +173,6 @@ namespace tigl
         CCPACSRotorProfiles& CPACSProfiles::GetRotorAirfoils()
         {
             return *m_rotorAirfoils;
-        }
-        
-        bool CPACSProfiles::HasStructuralProfiles() const
-        {
-            return static_cast<bool>(m_structuralProfiles);
-        }
-        
-        const CPACSStructuralProfiles& CPACSProfiles::GetStructuralProfiles() const
-        {
-            return *m_structuralProfiles;
-        }
-        
-        CPACSStructuralProfiles& CPACSProfiles::GetStructuralProfiles()
-        {
-            return *m_structuralProfiles;
         }
         
     }

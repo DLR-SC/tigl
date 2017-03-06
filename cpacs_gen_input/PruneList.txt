@@ -1,9 +1,9 @@
-// in <cpacs>
+// in cpacs
 CPACSAirports
 CPACSFleets
 CPACSMissions
 
-// in <toolspecific>
+// in toolspecific
 CPACSAcCrashTool
 CPACSAeroFuseTool
 CPACSAeroPoleTool
@@ -41,11 +41,13 @@ CPACSTWDatTool
 CPACSVampZeroTool
 CPACSVSAeroTool
 
-
-
-// in <vehicles>
+// in vehicles
 CPACSEngines
 CPACSFuels
+CPACSStructuralElements
+
+// in profiles
+CPACSStructuralProfiles
 
 // in aircraft model
 CPACSAircraftAnalyses
@@ -66,7 +68,15 @@ CPACSSystems
 
 // in fuselage
 CPACSDecks
+CPACSFuselageStructure
 
 // in wing
 CPACSDynamicAircraftModel
 
+// in component segment
+CPACSWingWingAttachments
+CPACSWingFuelTanks
+
+// in control surfaces
+CPACSLeadingEdgeDevice
+CPACSSpoiler

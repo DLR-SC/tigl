@@ -25,8 +25,6 @@
 #include "CPACSControlSurfaces.h"
 #include "CPACSComponentSegmentPath.h"
 #include "CPACSWingFuselageAttachments.h"
-#include "CPACSWingWingAttachments.h"
-#include "CPACSWingFuelTanks.h"
 #include "CPACSWingStructuralMounts.h"
 
 namespace tigl
@@ -83,14 +81,6 @@ namespace tigl
             TIGL_EXPORT const CPACSWingFuselageAttachments& GetWingFuselageAttachments() const;
             TIGL_EXPORT CPACSWingFuselageAttachments& GetWingFuselageAttachments();
             
-            TIGL_EXPORT bool HasWingWingAttachments() const;
-            TIGL_EXPORT const CPACSWingWingAttachments& GetWingWingAttachments() const;
-            TIGL_EXPORT CPACSWingWingAttachments& GetWingWingAttachments();
-            
-            TIGL_EXPORT bool HasWingFuelTanks() const;
-            TIGL_EXPORT const CPACSWingFuelTanks& GetWingFuelTanks() const;
-            TIGL_EXPORT CPACSWingFuelTanks& GetWingFuelTanks();
-            
             TIGL_EXPORT bool HasWingStructuralMounts() const;
             TIGL_EXPORT const CPACSWingStructuralMounts& GetWingStructuralMounts() const;
             TIGL_EXPORT CPACSWingStructuralMounts& GetWingStructuralMounts();
@@ -107,8 +97,6 @@ namespace tigl
             boost::optional<CPACSControlSurfaces>         m_controlSurfaces;
             boost::optional<CPACSComponentSegmentPath>    m_path;
             boost::optional<CPACSWingFuselageAttachments> m_wingFuselageAttachments;
-            boost::optional<CPACSWingWingAttachments>     m_wingWingAttachments;
-            boost::optional<CPACSWingFuelTanks>           m_wingFuelTanks;
             boost::optional<CPACSWingStructuralMounts>    m_wingStructuralMounts;
             
         private:

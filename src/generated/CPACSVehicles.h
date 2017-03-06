@@ -24,7 +24,6 @@
 #include "CPACSAircraft.h"
 #include "CPACSRotorcraft.h"
 #include <CCPACSProfiles.h>
-#include "CPACSStructuralElements.h"
 #include "CPACSMaterials.h"
 
 namespace tigl
@@ -56,20 +55,15 @@ namespace tigl
             TIGL_EXPORT const CCPACSProfiles& GetProfiles() const;
             TIGL_EXPORT CCPACSProfiles& GetProfiles();
             
-            TIGL_EXPORT bool HasStructuralElements() const;
-            TIGL_EXPORT const CPACSStructuralElements& GetStructuralElements() const;
-            TIGL_EXPORT CPACSStructuralElements& GetStructuralElements();
-            
             TIGL_EXPORT bool HasMaterials() const;
             TIGL_EXPORT const CPACSMaterials& GetMaterials() const;
             TIGL_EXPORT CPACSMaterials& GetMaterials();
             
         protected:
-            boost::optional<CPACSAircraft>           m_aircraft;
-            boost::optional<CPACSRotorcraft>         m_rotorcraft;
-            boost::optional<CCPACSProfiles>          m_profiles;
-            boost::optional<CPACSStructuralElements> m_structuralElements;
-            boost::optional<CPACSMaterials>          m_materials;
+            boost::optional<CPACSAircraft>   m_aircraft;
+            boost::optional<CPACSRotorcraft> m_rotorcraft;
+            boost::optional<CCPACSProfiles>  m_profiles;
+            boost::optional<CPACSMaterials>  m_materials;
             
         private:
             #ifdef HAVE_CPP11

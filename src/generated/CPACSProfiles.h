@@ -25,7 +25,6 @@
 #include <CCPACSWingProfiles.h>
 #include <CCPACSGuideCurveProfiles.h>
 #include <CCPACSRotorProfiles.h>
-#include "CPACSStructuralProfiles.h"
 
 namespace tigl
 {
@@ -60,16 +59,11 @@ namespace tigl
             TIGL_EXPORT const CCPACSRotorProfiles& GetRotorAirfoils() const;
             TIGL_EXPORT CCPACSRotorProfiles& GetRotorAirfoils();
             
-            TIGL_EXPORT bool HasStructuralProfiles() const;
-            TIGL_EXPORT const CPACSStructuralProfiles& GetStructuralProfiles() const;
-            TIGL_EXPORT CPACSStructuralProfiles& GetStructuralProfiles();
-            
         protected:
             boost::optional<CCPACSFuselageProfiles>   m_fuselageProfiles;
             boost::optional<CCPACSWingProfiles>       m_wingAirfoils;
             boost::optional<CCPACSGuideCurveProfiles> m_guideCurves;
             boost::optional<CCPACSRotorProfiles>      m_rotorAirfoils;
-            boost::optional<CPACSStructuralProfiles>  m_structuralProfiles;
             
         private:
             #ifdef HAVE_CPP11
