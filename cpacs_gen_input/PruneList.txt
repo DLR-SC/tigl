@@ -4,7 +4,7 @@ CPACSFleets
 CPACSMissions
 
 // in <toolspecific>
-CPACSSectmeshPamcrashTool
+CPACSAcCrashTool
 CPACSAeroFuseTool
 CPACSAeroPoleTool
 CPACSAirportFeesTool
@@ -32,14 +32,41 @@ CPACSModGenTool
 CPACSPanamTool
 CPACSParamamSbotTool
 CPACSRofumaTool
-CPACSSBotTool
-CPACSSteffs
+CPACSSBotPlusTool
+CPACSSectmeshPamcrashTool
+CPACSSteffsTool
 CPACSTornadoTool
 CPACSTrafumoTool
 CPACSTWDatTool
 CPACSVampZeroTool
 CPACSVSAeroTool
 
+
+
 // in <vehicles>
 CPACSEngines
 CPACSFuels
+
+// in aircraft model
+CPACSAircraftAnalyses
+CPACSAircraftGlobal
+CPACSMassBreakdown
+
+// in rotorcraft model
+CPACSRotorcraftAnalyses
+CPACSRotorcraftGlobal
+CPACSRotorcraftMassBreakdown
+CPACSDriveSystems
+CPACSLandingGear
+
+// in rotorcraft and aircraft model
+CPACSEnginePylons
+CPACSEnginePositions
+CPACSSystems
+
+// in fuselage
+CPACSDecks
+
+// in wing
+CPACSDynamicAircraftModel
+

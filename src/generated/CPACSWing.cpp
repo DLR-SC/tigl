@@ -130,20 +130,6 @@ namespace tigl
                 }
             }
             
-            // read element dynamicAircraftModel
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/dynamicAircraftModel")) {
-                m_dynamicAircraftModel = boost::in_place();
-                try {
-                    m_dynamicAircraftModel->ReadCPACS(tixiHandle, xpath + "/dynamicAircraftModel");
-                } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read dynamicAircraftModel at xpath << " << xpath << ": " << e.what();
-                    m_dynamicAircraftModel = boost::none;
-                } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read dynamicAircraftModel at xpath << " << xpath << ": " << e.getError();
-                    m_dynamicAircraftModel = boost::none;
-                }
-            }
-            
         }
         
         void CPACSWing::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
@@ -196,12 +182,6 @@ namespace tigl
             if (m_componentSegments) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/componentSegments");
                 m_componentSegments->WriteCPACS(tixiHandle, xpath + "/componentSegments");
-            }
-            
-            // write element dynamicAircraftModel
-            if (m_dynamicAircraftModel) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/dynamicAircraftModel");
-                m_dynamicAircraftModel->WriteCPACS(tixiHandle, xpath + "/dynamicAircraftModel");
             }
             
         }
@@ -329,21 +309,6 @@ namespace tigl
         CCPACSWingComponentSegments& CPACSWing::GetComponentSegments()
         {
             return *m_componentSegments;
-        }
-        
-        bool CPACSWing::HasDynamicAircraftModel() const
-        {
-            return static_cast<bool>(m_dynamicAircraftModel);
-        }
-        
-        const CPACSDynamicAircraftModel& CPACSWing::GetDynamicAircraftModel() const
-        {
-            return *m_dynamicAircraftModel;
-        }
-        
-        CPACSDynamicAircraftModel& CPACSWing::GetDynamicAircraftModel()
-        {
-            return *m_dynamicAircraftModel;
         }
         
     }

@@ -21,10 +21,7 @@
 #include <string>
 #include <boost/optional.hpp>
 #include "tigl_internal.h"
-#include "CPACSAcCrashTool.h"
 #include "CPACSCFDTool.h"
-#include "CPACSSBotPlusTool.h"
-#include "CPACSSteffsTool.h"
 
 namespace tigl
 {
@@ -43,27 +40,12 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT bool HasAcCrash() const;
-            TIGL_EXPORT const CPACSAcCrashTool& GetAcCrash() const;
-            TIGL_EXPORT CPACSAcCrashTool& GetAcCrash();
-            
             TIGL_EXPORT bool HasCFD() const;
             TIGL_EXPORT const CPACSCFDTool& GetCFD() const;
             TIGL_EXPORT CPACSCFDTool& GetCFD();
             
-            TIGL_EXPORT bool HasSBotPlus() const;
-            TIGL_EXPORT const CPACSSBotPlusTool& GetSBotPlus() const;
-            TIGL_EXPORT CPACSSBotPlusTool& GetSBotPlus();
-            
-            TIGL_EXPORT bool HasSteffs() const;
-            TIGL_EXPORT const CPACSSteffsTool& GetSteffs() const;
-            TIGL_EXPORT CPACSSteffsTool& GetSteffs();
-            
         protected:
-            boost::optional<CPACSAcCrashTool>  m_acCrash;
-            boost::optional<CPACSCFDTool>      m_cFD;
-            boost::optional<CPACSSBotPlusTool> m_sBotPlus;
-            boost::optional<CPACSSteffsTool>   m_steffs;
+            boost::optional<CPACSCFDTool> m_cFD;
             
         private:
             #ifdef HAVE_CPP11

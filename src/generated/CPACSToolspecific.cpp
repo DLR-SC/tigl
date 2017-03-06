@@ -29,20 +29,6 @@ namespace tigl
         
         void CPACSToolspecific::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
-            // read element acCrash
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/acCrash")) {
-                m_acCrash = boost::in_place();
-                try {
-                    m_acCrash->ReadCPACS(tixiHandle, xpath + "/acCrash");
-                } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read acCrash at xpath << " << xpath << ": " << e.what();
-                    m_acCrash = boost::none;
-                } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read acCrash at xpath << " << xpath << ": " << e.getError();
-                    m_acCrash = boost::none;
-                }
-            }
-            
             // read element cFD
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/cFD")) {
                 m_cFD = boost::in_place();
@@ -57,77 +43,16 @@ namespace tigl
                 }
             }
             
-            // read element sBotPlus
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/sBotPlus")) {
-                m_sBotPlus = boost::in_place();
-                try {
-                    m_sBotPlus->ReadCPACS(tixiHandle, xpath + "/sBotPlus");
-                } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read sBotPlus at xpath << " << xpath << ": " << e.what();
-                    m_sBotPlus = boost::none;
-                } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read sBotPlus at xpath << " << xpath << ": " << e.getError();
-                    m_sBotPlus = boost::none;
-                }
-            }
-            
-            // read element steffs
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/steffs")) {
-                m_steffs = boost::in_place();
-                try {
-                    m_steffs->ReadCPACS(tixiHandle, xpath + "/steffs");
-                } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read steffs at xpath << " << xpath << ": " << e.what();
-                    m_steffs = boost::none;
-                } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read steffs at xpath << " << xpath << ": " << e.getError();
-                    m_steffs = boost::none;
-                }
-            }
-            
         }
         
         void CPACSToolspecific::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
-            // write element acCrash
-            if (m_acCrash) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/acCrash");
-                m_acCrash->WriteCPACS(tixiHandle, xpath + "/acCrash");
-            }
-            
             // write element cFD
             if (m_cFD) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/cFD");
                 m_cFD->WriteCPACS(tixiHandle, xpath + "/cFD");
             }
             
-            // write element sBotPlus
-            if (m_sBotPlus) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/sBotPlus");
-                m_sBotPlus->WriteCPACS(tixiHandle, xpath + "/sBotPlus");
-            }
-            
-            // write element steffs
-            if (m_steffs) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/steffs");
-                m_steffs->WriteCPACS(tixiHandle, xpath + "/steffs");
-            }
-            
-        }
-        
-        bool CPACSToolspecific::HasAcCrash() const
-        {
-            return static_cast<bool>(m_acCrash);
-        }
-        
-        const CPACSAcCrashTool& CPACSToolspecific::GetAcCrash() const
-        {
-            return *m_acCrash;
-        }
-        
-        CPACSAcCrashTool& CPACSToolspecific::GetAcCrash()
-        {
-            return *m_acCrash;
         }
         
         bool CPACSToolspecific::HasCFD() const
@@ -143,36 +68,6 @@ namespace tigl
         CPACSCFDTool& CPACSToolspecific::GetCFD()
         {
             return *m_cFD;
-        }
-        
-        bool CPACSToolspecific::HasSBotPlus() const
-        {
-            return static_cast<bool>(m_sBotPlus);
-        }
-        
-        const CPACSSBotPlusTool& CPACSToolspecific::GetSBotPlus() const
-        {
-            return *m_sBotPlus;
-        }
-        
-        CPACSSBotPlusTool& CPACSToolspecific::GetSBotPlus()
-        {
-            return *m_sBotPlus;
-        }
-        
-        bool CPACSToolspecific::HasSteffs() const
-        {
-            return static_cast<bool>(m_steffs);
-        }
-        
-        const CPACSSteffsTool& CPACSToolspecific::GetSteffs() const
-        {
-            return *m_steffs;
-        }
-        
-        CPACSSteffsTool& CPACSToolspecific::GetSteffs()
-        {
-            return *m_steffs;
         }
         
     }

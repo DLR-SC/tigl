@@ -119,34 +119,6 @@ namespace tigl
                 }
             }
             
-            // read element decks
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/decks")) {
-                m_decks = boost::in_place();
-                try {
-                    m_decks->ReadCPACS(tixiHandle, xpath + "/decks");
-                } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read decks at xpath << " << xpath << ": " << e.what();
-                    m_decks = boost::none;
-                } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read decks at xpath << " << xpath << ": " << e.getError();
-                    m_decks = boost::none;
-                }
-            }
-            
-            // read element dynamicAircraftModel
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/dynamicAircraftModel")) {
-                m_dynamicAircraftModel = boost::in_place();
-                try {
-                    m_dynamicAircraftModel->ReadCPACS(tixiHandle, xpath + "/dynamicAircraftModel");
-                } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read dynamicAircraftModel at xpath << " << xpath << ": " << e.what();
-                    m_dynamicAircraftModel = boost::none;
-                } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read dynamicAircraftModel at xpath << " << xpath << ": " << e.getError();
-                    m_dynamicAircraftModel = boost::none;
-                }
-            }
-            
             // read element fuelTanks
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/fuelTanks")) {
                 m_fuelTanks = boost::in_place();
@@ -225,18 +197,6 @@ namespace tigl
             if (m_structure) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/structure");
                 m_structure->WriteCPACS(tixiHandle, xpath + "/structure");
-            }
-            
-            // write element decks
-            if (m_decks) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/decks");
-                m_decks->WriteCPACS(tixiHandle, xpath + "/decks");
-            }
-            
-            // write element dynamicAircraftModel
-            if (m_dynamicAircraftModel) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/dynamicAircraftModel");
-                m_dynamicAircraftModel->WriteCPACS(tixiHandle, xpath + "/dynamicAircraftModel");
             }
             
             // write element fuelTanks
@@ -371,36 +331,6 @@ namespace tigl
         CPACSFuselageStructure& CPACSFuselage::GetStructure()
         {
             return *m_structure;
-        }
-        
-        bool CPACSFuselage::HasDecks() const
-        {
-            return static_cast<bool>(m_decks);
-        }
-        
-        const CPACSDecks& CPACSFuselage::GetDecks() const
-        {
-            return *m_decks;
-        }
-        
-        CPACSDecks& CPACSFuselage::GetDecks()
-        {
-            return *m_decks;
-        }
-        
-        bool CPACSFuselage::HasDynamicAircraftModel() const
-        {
-            return static_cast<bool>(m_dynamicAircraftModel);
-        }
-        
-        const CPACSDynamicAircraftModel& CPACSFuselage::GetDynamicAircraftModel() const
-        {
-            return *m_dynamicAircraftModel;
-        }
-        
-        CPACSDynamicAircraftModel& CPACSFuselage::GetDynamicAircraftModel()
-        {
-            return *m_dynamicAircraftModel;
         }
         
         bool CPACSFuselage::HasFuelTanks() const

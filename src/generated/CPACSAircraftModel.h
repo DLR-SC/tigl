@@ -24,13 +24,7 @@
 #include "CPACSReference.h"
 #include <CCPACSFuselages.h>
 #include <CCPACSWings.h>
-#include "CPACSEnginePositions.h"
-#include "CPACSEnginePylons.h"
-#include "CPACSLandingGear.h"
-#include "CPACSSystems.h"
 #include <CCPACSExternalObjects.h>
-#include "CPACSAircraftGlobal.h"
-#include "CPACSAircraftAnalyses.h"
 
 namespace tigl
 {
@@ -71,33 +65,9 @@ namespace tigl
             TIGL_EXPORT const CCPACSWings& GetWings() const;
             TIGL_EXPORT CCPACSWings& GetWings();
             
-            TIGL_EXPORT bool HasEngines() const;
-            TIGL_EXPORT const CPACSEnginePositions& GetEngines() const;
-            TIGL_EXPORT CPACSEnginePositions& GetEngines();
-            
-            TIGL_EXPORT bool HasEnginePylons() const;
-            TIGL_EXPORT const CPACSEnginePylons& GetEnginePylons() const;
-            TIGL_EXPORT CPACSEnginePylons& GetEnginePylons();
-            
-            TIGL_EXPORT bool HasLandingGear() const;
-            TIGL_EXPORT const CPACSLandingGear& GetLandingGear() const;
-            TIGL_EXPORT CPACSLandingGear& GetLandingGear();
-            
-            TIGL_EXPORT bool HasSystems() const;
-            TIGL_EXPORT const CPACSSystems& GetSystems() const;
-            TIGL_EXPORT CPACSSystems& GetSystems();
-            
             TIGL_EXPORT bool HasGenericGeometryComponents() const;
             TIGL_EXPORT const CCPACSExternalObjects& GetGenericGeometryComponents() const;
             TIGL_EXPORT CCPACSExternalObjects& GetGenericGeometryComponents();
-            
-            TIGL_EXPORT bool HasGlobal() const;
-            TIGL_EXPORT const CPACSAircraftGlobal& GetGlobal() const;
-            TIGL_EXPORT CPACSAircraftGlobal& GetGlobal();
-            
-            TIGL_EXPORT bool HasAnalyses() const;
-            TIGL_EXPORT const CPACSAircraftAnalyses& GetAnalyses() const;
-            TIGL_EXPORT CPACSAircraftAnalyses& GetAnalyses();
             
         protected:
             std::string                            m_uID;
@@ -106,13 +76,7 @@ namespace tigl
             boost::optional<CPACSReference>        m_reference;
             boost::optional<CCPACSFuselages>       m_fuselages;
             boost::optional<CCPACSWings>           m_wings;
-            boost::optional<CPACSEnginePositions>  m_engines;
-            boost::optional<CPACSEnginePylons>     m_enginePylons;
-            boost::optional<CPACSLandingGear>      m_landingGear;
-            boost::optional<CPACSSystems>          m_systems;
             boost::optional<CCPACSExternalObjects> m_genericGeometryComponents;
-            boost::optional<CPACSAircraftGlobal>   m_global;
-            boost::optional<CPACSAircraftAnalyses> m_analyses;
             
         private:
             #ifdef HAVE_CPP11

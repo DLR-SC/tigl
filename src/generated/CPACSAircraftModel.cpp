@@ -92,62 +92,6 @@ namespace tigl
                 }
             }
             
-            // read element engines
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/engines")) {
-                m_engines = boost::in_place();
-                try {
-                    m_engines->ReadCPACS(tixiHandle, xpath + "/engines");
-                } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read engines at xpath << " << xpath << ": " << e.what();
-                    m_engines = boost::none;
-                } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read engines at xpath << " << xpath << ": " << e.getError();
-                    m_engines = boost::none;
-                }
-            }
-            
-            // read element enginePylons
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/enginePylons")) {
-                m_enginePylons = boost::in_place();
-                try {
-                    m_enginePylons->ReadCPACS(tixiHandle, xpath + "/enginePylons");
-                } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read enginePylons at xpath << " << xpath << ": " << e.what();
-                    m_enginePylons = boost::none;
-                } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read enginePylons at xpath << " << xpath << ": " << e.getError();
-                    m_enginePylons = boost::none;
-                }
-            }
-            
-            // read element landingGear
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/landingGear")) {
-                m_landingGear = boost::in_place();
-                try {
-                    m_landingGear->ReadCPACS(tixiHandle, xpath + "/landingGear");
-                } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read landingGear at xpath << " << xpath << ": " << e.what();
-                    m_landingGear = boost::none;
-                } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read landingGear at xpath << " << xpath << ": " << e.getError();
-                    m_landingGear = boost::none;
-                }
-            }
-            
-            // read element systems
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/systems")) {
-                m_systems = boost::in_place();
-                try {
-                    m_systems->ReadCPACS(tixiHandle, xpath + "/systems");
-                } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read systems at xpath << " << xpath << ": " << e.what();
-                    m_systems = boost::none;
-                } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read systems at xpath << " << xpath << ": " << e.getError();
-                    m_systems = boost::none;
-                }
-            }
-            
             // read element genericGeometryComponents
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/genericGeometryComponents")) {
                 m_genericGeometryComponents = boost::in_place(reinterpret_cast<CCPACSAircraftModel*>(this));
@@ -159,34 +103,6 @@ namespace tigl
                 } catch(const CTiglError& e) {
                     LOG(ERROR) << "Failed to read genericGeometryComponents at xpath << " << xpath << ": " << e.getError();
                     m_genericGeometryComponents = boost::none;
-                }
-            }
-            
-            // read element global
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/global")) {
-                m_global = boost::in_place();
-                try {
-                    m_global->ReadCPACS(tixiHandle, xpath + "/global");
-                } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read global at xpath << " << xpath << ": " << e.what();
-                    m_global = boost::none;
-                } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read global at xpath << " << xpath << ": " << e.getError();
-                    m_global = boost::none;
-                }
-            }
-            
-            // read element analyses
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/analyses")) {
-                m_analyses = boost::in_place();
-                try {
-                    m_analyses->ReadCPACS(tixiHandle, xpath + "/analyses");
-                } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read analyses at xpath << " << xpath << ": " << e.what();
-                    m_analyses = boost::none;
-                } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read analyses at xpath << " << xpath << ": " << e.getError();
-                    m_analyses = boost::none;
                 }
             }
             
@@ -226,46 +142,10 @@ namespace tigl
                 m_wings->WriteCPACS(tixiHandle, xpath + "/wings");
             }
             
-            // write element engines
-            if (m_engines) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/engines");
-                m_engines->WriteCPACS(tixiHandle, xpath + "/engines");
-            }
-            
-            // write element enginePylons
-            if (m_enginePylons) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/enginePylons");
-                m_enginePylons->WriteCPACS(tixiHandle, xpath + "/enginePylons");
-            }
-            
-            // write element landingGear
-            if (m_landingGear) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/landingGear");
-                m_landingGear->WriteCPACS(tixiHandle, xpath + "/landingGear");
-            }
-            
-            // write element systems
-            if (m_systems) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/systems");
-                m_systems->WriteCPACS(tixiHandle, xpath + "/systems");
-            }
-            
             // write element genericGeometryComponents
             if (m_genericGeometryComponents) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/genericGeometryComponents");
                 m_genericGeometryComponents->WriteCPACS(tixiHandle, xpath + "/genericGeometryComponents");
-            }
-            
-            // write element global
-            if (m_global) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/global");
-                m_global->WriteCPACS(tixiHandle, xpath + "/global");
-            }
-            
-            // write element analyses
-            if (m_analyses) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/analyses");
-                m_analyses->WriteCPACS(tixiHandle, xpath + "/analyses");
             }
             
         }
@@ -350,66 +230,6 @@ namespace tigl
             return *m_wings;
         }
         
-        bool CPACSAircraftModel::HasEngines() const
-        {
-            return static_cast<bool>(m_engines);
-        }
-        
-        const CPACSEnginePositions& CPACSAircraftModel::GetEngines() const
-        {
-            return *m_engines;
-        }
-        
-        CPACSEnginePositions& CPACSAircraftModel::GetEngines()
-        {
-            return *m_engines;
-        }
-        
-        bool CPACSAircraftModel::HasEnginePylons() const
-        {
-            return static_cast<bool>(m_enginePylons);
-        }
-        
-        const CPACSEnginePylons& CPACSAircraftModel::GetEnginePylons() const
-        {
-            return *m_enginePylons;
-        }
-        
-        CPACSEnginePylons& CPACSAircraftModel::GetEnginePylons()
-        {
-            return *m_enginePylons;
-        }
-        
-        bool CPACSAircraftModel::HasLandingGear() const
-        {
-            return static_cast<bool>(m_landingGear);
-        }
-        
-        const CPACSLandingGear& CPACSAircraftModel::GetLandingGear() const
-        {
-            return *m_landingGear;
-        }
-        
-        CPACSLandingGear& CPACSAircraftModel::GetLandingGear()
-        {
-            return *m_landingGear;
-        }
-        
-        bool CPACSAircraftModel::HasSystems() const
-        {
-            return static_cast<bool>(m_systems);
-        }
-        
-        const CPACSSystems& CPACSAircraftModel::GetSystems() const
-        {
-            return *m_systems;
-        }
-        
-        CPACSSystems& CPACSAircraftModel::GetSystems()
-        {
-            return *m_systems;
-        }
-        
         bool CPACSAircraftModel::HasGenericGeometryComponents() const
         {
             return static_cast<bool>(m_genericGeometryComponents);
@@ -423,36 +243,6 @@ namespace tigl
         CCPACSExternalObjects& CPACSAircraftModel::GetGenericGeometryComponents()
         {
             return *m_genericGeometryComponents;
-        }
-        
-        bool CPACSAircraftModel::HasGlobal() const
-        {
-            return static_cast<bool>(m_global);
-        }
-        
-        const CPACSAircraftGlobal& CPACSAircraftModel::GetGlobal() const
-        {
-            return *m_global;
-        }
-        
-        CPACSAircraftGlobal& CPACSAircraftModel::GetGlobal()
-        {
-            return *m_global;
-        }
-        
-        bool CPACSAircraftModel::HasAnalyses() const
-        {
-            return static_cast<bool>(m_analyses);
-        }
-        
-        const CPACSAircraftAnalyses& CPACSAircraftModel::GetAnalyses() const
-        {
-            return *m_analyses;
-        }
-        
-        CPACSAircraftAnalyses& CPACSAircraftModel::GetAnalyses()
-        {
-            return *m_analyses;
         }
         
     }
