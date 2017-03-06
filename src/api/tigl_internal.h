@@ -45,6 +45,7 @@
 #define DEPRECATED
 #endif
 
+// override
 
 #ifndef HAVE_CPP11
 #define override
