@@ -33,38 +33,18 @@ namespace tigl
     
     namespace generated
     {
-        class CPACSPylonRibsDefinition;
-        
         // This class is used in:
-        // CPACSPylonRibsDefinition
         // CPACSWingRibsDefinition
         
         // generated from /xsd:schema/xsd:complexType[912]
         class CPACSWingRibCrossSection
         {
         public:
-            TIGL_EXPORT CPACSWingRibCrossSection(CPACSPylonRibsDefinition* parent);
             TIGL_EXPORT CPACSWingRibCrossSection(CCPACSWingRibsDefinition* parent);
             
             TIGL_EXPORT virtual ~CPACSWingRibCrossSection();
             
-            template<typename P>
-            TIGL_EXPORT bool IsParent() const
-            {
-                return m_parentType != NULL && *m_parentType == typeid(P);
-            }
-            
-            template<typename P>
-            TIGL_EXPORT P* GetParent() const
-            {
-                #ifdef HAVE_CPP11
-                static_assert(std::is_same<P, CPACSPylonRibsDefinition>::value || std::is_same<P, CCPACSWingRibsDefinition>::value, "template argument for P is not a parent class of CPACSWingRibCrossSection");
-                #endif
-                if (!IsParent<P>()) {
-                    throw CTiglError("bad parent");
-                }
-                return static_cast<P*>(m_parent);
-            }
+            TIGL_EXPORT CCPACSWingRibsDefinition* GetParent() const;
             
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
@@ -89,8 +69,7 @@ namespace tigl
             TIGL_EXPORT CPACSCap& GetLowerCap();
             
         protected:
-            void* m_parent;
-            const std::type_info* m_parentType;
+            CCPACSWingRibsDefinition* m_parent;
             
             CCPACSMaterial                    m_material;
             boost::optional<CPACSPointX>      m_ribRotation;
@@ -113,6 +92,4 @@ namespace tigl
     }
     
     // This type is customized, use type CCPACSWingRibCrossSection
-    
-    using generated::CPACSPylonRibsDefinition;
 }

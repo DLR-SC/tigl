@@ -49,10 +49,10 @@ public:
     DEPRECATED TIGL_EXPORT static std::string CPACSID();
 
     // Read CPACS wing profile file
-    TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& profileXPath) override;
+    TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& profileXPath) OVERRIDE;
 
     // Write CPACS wing profile
-    TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& profileXPath) const override;
+    TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& profileXPath) const OVERRIDE;
 
     // Cleanup routine
     TIGL_EXPORT void Cleanup();
@@ -61,7 +61,7 @@ public:
     TIGL_EXPORT void Update();
 
     // Returns the profile points as read from TIXI.
-    TIGL_EXPORT virtual const std::vector<CTiglPoint>& GetSamplePoints() const override; // TODO: why do we need those anyway, they just return an empty vector?
+    TIGL_EXPORT virtual const std::vector<CTiglPoint>& GetSamplePoints() const OVERRIDE; // TODO: why do we need those anyway, they just return an empty vector?
 
     // get upper wing profile wire
     TIGL_EXPORT const TopoDS_Edge & GetUpperWire() const;

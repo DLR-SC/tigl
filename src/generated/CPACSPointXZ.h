@@ -28,7 +28,6 @@ namespace tigl
     {
         // This class is used in:
         // CPACSControlSurfaceStep
-        // CPACSPointListXZ
         
         // generated from /xsd:schema/xsd:complexType[693]
         class CPACSPointXZ

@@ -30,21 +30,12 @@ namespace tigl
     namespace generated
     {
         // This class is used in:
-        // CPACSEnginePosition
-        // CPACSEnginePylon
         // CPACSFuselage
         // CPACSFuselageElement
         // CPACSFuselageSection
         // CPACSGenericGeometricComponent
-        // CPACSGeogenRotorBlade
-        // CPACSGeogenWing
-        // CPACSMainGear
-        // CPACSNacelleOuterShape
-        // CPACSNoseGear
-        // CPACSPylonShell
         // CPACSRotor
         // CPACSRotorHubHinge
-        // CPACSTransmission
         // CPACSWing
         // CPACSWingElement
         // CPACSWingSection

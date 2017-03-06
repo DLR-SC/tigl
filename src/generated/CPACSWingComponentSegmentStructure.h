@@ -33,14 +33,10 @@ namespace tigl
     
     namespace generated
     {
-        class CPACSLeadingEdgeDevice;
-        class CPACSSpoiler;
         class CPACSTrailingEdgeDevice;
         
         // This class is used in:
         // CPACSComponentSegment
-        // CPACSLeadingEdgeDevice
-        // CPACSSpoiler
         // CPACSTrailingEdgeDevice
         
         // generated from /xsd:schema/xsd:complexType[895]
@@ -48,8 +44,6 @@ namespace tigl
         {
         public:
             TIGL_EXPORT CPACSWingComponentSegmentStructure(CCPACSWingComponentSegment* parent);
-            TIGL_EXPORT CPACSWingComponentSegmentStructure(CPACSLeadingEdgeDevice* parent);
-            TIGL_EXPORT CPACSWingComponentSegmentStructure(CPACSSpoiler* parent);
             TIGL_EXPORT CPACSWingComponentSegmentStructure(CPACSTrailingEdgeDevice* parent);
             
             TIGL_EXPORT virtual ~CPACSWingComponentSegmentStructure();
@@ -64,7 +58,7 @@ namespace tigl
             TIGL_EXPORT P* GetParent() const
             {
                 #ifdef HAVE_CPP11
-                static_assert(std::is_same<P, CCPACSWingComponentSegment>::value || std::is_same<P, CPACSLeadingEdgeDevice>::value || std::is_same<P, CPACSSpoiler>::value || std::is_same<P, CPACSTrailingEdgeDevice>::value, "template argument for P is not a parent class of CPACSWingComponentSegmentStructure");
+                static_assert(std::is_same<P, CCPACSWingComponentSegment>::value || std::is_same<P, CPACSTrailingEdgeDevice>::value, "template argument for P is not a parent class of CPACSWingComponentSegmentStructure");
                 #endif
                 if (!IsParent<P>()) {
                     throw CTiglError("bad parent");
@@ -119,7 +113,5 @@ namespace tigl
     
     // This type is customized, use type CCPACSWingCSStructure
     
-    using generated::CPACSLeadingEdgeDevice;
-    using generated::CPACSSpoiler;
     using generated::CPACSTrailingEdgeDevice;
 }

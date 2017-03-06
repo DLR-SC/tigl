@@ -29,20 +29,10 @@ namespace tigl
         // This class is used in:
         // CPACSActuatorFuselageWing
         // CPACSAttachmentPin
-        // CPACSAttitudeAndMotion
-        // CPACSBkOperationalCase
         // CPACSComponentSegmentPath
         // CPACSComponentSegmentStep
-        // CPACSConnectivity
-        // CPACSCrashLoadcase
         // CPACSFuselageCutOut
         // CPACSGuideCurve
-        // CPACSLoadCaseState
-        // CPACSLoadCaseTranslation
-        // CPACSLoadReference
-        // CPACSPylonPin
-        // CPACSTopologyEntry
-        // CPACSVSAeroReference
         
         // generated from /xsd:schema/xsd:complexType[692]
         class CPACSPointXYZ

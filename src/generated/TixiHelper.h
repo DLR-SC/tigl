@@ -38,7 +38,7 @@ namespace tigl
             TixiError(ReturnCode ret);
             TixiError(ReturnCode ret, const std::string& message);
 
-            virtual const char* what() const throw() override;
+            virtual const char* what() const throw() /*override*/;
 
         private:
             ReturnCode m_ret;

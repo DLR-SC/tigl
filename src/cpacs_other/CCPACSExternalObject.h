@@ -32,12 +32,12 @@ class CCPACSExternalObject : public generated::CPACSGenericGeometricComponent, p
 public:
     TIGL_EXPORT CCPACSExternalObject(CCPACSExternalObjects* parent);
     
-    TIGL_EXPORT virtual const std::string& GetUID() const override;
-    TIGL_EXPORT virtual void SetUID(const std::string& uid) override;
+    TIGL_EXPORT virtual const std::string& GetUID() const OVERRIDE;
+    TIGL_EXPORT virtual void SetUID(const std::string& uid) OVERRIDE;
 
     using CTiglAbstractPhysicalComponent::GetTransformation;
 
-    TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& objectXPath) override;
+    TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& objectXPath) OVERRIDE;
     
     TIGL_EXPORT const std::string& GetFilePath() const;
     
@@ -45,7 +45,7 @@ public:
 
 private:
     /// reads in the CAD file
-    virtual PNamedShape BuildLoft() override;
+    virtual PNamedShape BuildLoft() OVERRIDE;
 
     std::string _filePath;
 };

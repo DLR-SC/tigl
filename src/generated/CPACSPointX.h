@@ -27,9 +27,6 @@ namespace tigl
     namespace generated
     {
         // This class is used in:
-        // CPACSEngineInlet
-        // CPACSEngineNacelle
-        // CPACSEngineSpinner
         // CPACSWingRibCell
         // CPACSWingRibCrossSection
         

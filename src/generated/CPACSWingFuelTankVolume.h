@@ -28,7 +28,6 @@ namespace tigl
     {
         // This class is used in:
         // CPACSFuselageFuelTank
-        // CPACSWingFuelTank
         
         // generated from /xsd:schema/xsd:complexType[901]
         class CPACSWingFuelTankVolume

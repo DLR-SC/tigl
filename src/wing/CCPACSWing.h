@@ -61,8 +61,8 @@ public:
     // Read CPACS wing elements
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & wingXPath);
 
-    TIGL_EXPORT virtual const std::string& GetUID() const override;
-    TIGL_EXPORT virtual void SetUID(const std::string& uid) override;
+    TIGL_EXPORT virtual const std::string& GetUID() const OVERRIDE;
+    TIGL_EXPORT virtual void SetUID(const std::string& uid) OVERRIDE;
 
     using CTiglAbstractPhysicalComponent::GetTransformation;
 
@@ -117,7 +117,7 @@ public:
     TIGL_EXPORT double GetVolume();
 
     // Sets a Transformation object
-    TIGL_EXPORT virtual void Translate(CTiglPoint trans) override;
+    TIGL_EXPORT virtual void Translate(CTiglPoint trans) OVERRIDE;
 
     // Gets the surfade area of this wing
     TIGL_EXPORT double GetSurfaceArea();

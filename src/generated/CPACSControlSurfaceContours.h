@@ -30,8 +30,6 @@ namespace tigl
         class CPACSControlSurfaceAirfoil;
         
         // This class is used in:
-        // CPACSControlSurfaceOuterShapeLeadingEdge
-        // CPACSControlSurfaceOuterShapeSpoiler
         // CPACSControlSurfaceOuterShapeTrailingEdge
         
         // generated from /xsd:schema/xsd:complexType[172]

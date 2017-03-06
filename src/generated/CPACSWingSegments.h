@@ -30,38 +30,18 @@ namespace tigl
     
     namespace generated
     {
-        class CPACSEnginePylon;
-        
         // This class is used in:
-        // CPACSEnginePylon
         // CPACSWing
         
         // generated from /xsd:schema/xsd:complexType[923]
         class CPACSWingSegments
         {
         public:
-            TIGL_EXPORT CPACSWingSegments(CPACSEnginePylon* parent);
             TIGL_EXPORT CPACSWingSegments(CCPACSWing* parent);
             
             TIGL_EXPORT virtual ~CPACSWingSegments();
             
-            template<typename P>
-            TIGL_EXPORT bool IsParent() const
-            {
-                return m_parentType != NULL && *m_parentType == typeid(P);
-            }
-            
-            template<typename P>
-            TIGL_EXPORT P* GetParent() const
-            {
-                #ifdef HAVE_CPP11
-                static_assert(std::is_same<P, CPACSEnginePylon>::value || std::is_same<P, CCPACSWing>::value, "template argument for P is not a parent class of CPACSWingSegments");
-                #endif
-                if (!IsParent<P>()) {
-                    throw CTiglError("bad parent");
-                }
-                return static_cast<P*>(m_parent);
-            }
+            TIGL_EXPORT CCPACSWing* GetParent() const;
             
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
@@ -70,8 +50,7 @@ namespace tigl
             TIGL_EXPORT std::vector<unique_ptr<CCPACSWingSegment>>& GetSegment();
             
         protected:
-            void* m_parent;
-            const std::type_info* m_parentType;
+            CCPACSWing* m_parent;
             
             std::vector<unique_ptr<CCPACSWingSegment>> m_segment;
             
@@ -90,6 +69,4 @@ namespace tigl
     }
     
     // This type is customized, use type CCPACSWingSegments
-    
-    using generated::CPACSEnginePylon;
 }

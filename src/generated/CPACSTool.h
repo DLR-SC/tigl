@@ -26,42 +26,7 @@ namespace tigl
     namespace generated
     {
         // This class is used in:
-        // CPACSAcCrashTool
-        // CPACSAeroFuseTool
-        // CPACSAeroPerformanceMapRC
-        // CPACSAeroPoleTool
-        // CPACSAirportFeesTool
-        // CPACSBoxBeamTool
         // CPACSCFDTool
-        // CPACSCabinTool
-        // CPACSCmuTool
-        // CPACSComradeTool
-        // CPACSDelisToolspecific
-        // CPACSDirectOC
-        // CPACSELWiSTool
-        // CPACSFDSTool
-        // CPACSFDesignRCTool
-        // CPACSFDesignTool
-        // CPACSGeogenTool
-        // CPACSHandbookAeroTool
-        // CPACSHaremTool
-        // CPACSHostTool
-        // CPACSLgDesignTool
-        // CPACSLiftingLineTool
-        // CPACSMapet2CTool
-        // CPACSMaseratiTool
-        // CPACSMisSimTool
-        // CPACSModGenTool
-        // CPACSPanamTool
-        // CPACSParamamSbotTool
-        // CPACSRofumaTool
-        // CPACSSBotPlusTool
-        // CPACSSteffsTool
-        // CPACSTWDatTool
-        // CPACSTornadoTool
-        // CPACSTrafumoTool
-        // CPACSVSAeroTool
-        // CPACSVampZeroTool
         
         // generated from /xsd:schema/xsd:complexType[826]
         class CPACSTool

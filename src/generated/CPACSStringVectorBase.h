@@ -27,56 +27,10 @@ namespace tigl
     namespace generated
     {
         // This class is used in:
-        // CPACSAeroFusePolars
-        // CPACSAeroLandingGear
-        // CPACSAeroPerformanceMap
-        // CPACSAeroPerformanceMapRC
-        // CPACSAeroToolPerformanceMap
-        // CPACSCabGeometry
-        // CPACSCabinAisle
-        // CPACSCabinSeatElement
-        // CPACSCabinSpace
-        // CPACSCockpitControl
-        // CPACSControlElement
-        // CPACSControlInput
-        // CPACSControlSurfaceDeflectionVector
-        // CPACSControlSurfaceHingeMomentMap
-        // CPACSControlSurfacePerformanceMap
         // CPACSCst2D
-        // CPACSCutLoad
-        // CPACSCutLoadIntegrationPoints
-        // CPACSDeltaTemperature
-        // CPACSDynamicAircraftModelPoints
-        // CPACSEnginePerformanceMap
-        // CPACSFlightDynamicsLinearModel
-        // CPACSFlightDynamicsModel
-        // CPACSFlightPoint
-        // CPACSFqLateral
-        // CPACSFqLongitudinal
-        // CPACSGearDeflectionVector
-        // CPACSHandbookAeroPerformanceMap
-        // CPACSHingeMomentsMap
-        // CPACSLateralFlightPlan
-        // CPACSMapet2CCase1
-        // CPACSMapet2CCase2
-        // CPACSMapet2CCase3
-        // CPACSMassInertiaVector
-        // CPACSMissionConstraints
-        // CPACSModGenOptions
-        // CPACSModGenTool
-        // CPACSNodalLoad
-        // CPACSOperationalCase
         // CPACSPointListRelXYZVector
         // CPACSPointListXYZVector
-        // CPACSRadiativeForcing
         // CPACSRotorBladeAttachment
-        // CPACSSubLoad
-        // CPACSWeightAndBalanceCase
-        // CPACSWeightAndBalanceFuel
-        // CPACSWeightAndBalanceFuelInTank
-        // CPACSWeightAndBalancePayload
-        // CPACSWeightAndBalancemCargos
-        // CPACSWeightAndBalancemPaxx
         
         // generated from /xsd:schema/xsd:complexType[807]
         class CPACSStringVectorBase

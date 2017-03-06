@@ -33,12 +33,6 @@ namespace tigl
 CCPACSWingCSStructure::CCPACSWingCSStructure(CCPACSWingComponentSegment* parent)
     : generated::CPACSWingComponentSegmentStructure(parent) {}
 
-CCPACSWingCSStructure::CCPACSWingCSStructure(CPACSLeadingEdgeDevice* parent)
-    : generated::CPACSWingComponentSegmentStructure(parent) {}
-
-CCPACSWingCSStructure::CCPACSWingCSStructure(CPACSSpoiler* parent)
-    : generated::CPACSWingComponentSegmentStructure(parent) {}
-
 CCPACSWingCSStructure::CCPACSWingCSStructure(CPACSTrailingEdgeDevice* parent)
     : generated::CPACSWingComponentSegmentStructure(parent) {}
 

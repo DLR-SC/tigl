@@ -30,7 +30,6 @@ namespace tigl
     namespace generated
     {
         // This class is used in:
-        // CPACSEnginePylon
         // CPACSFuselage
         // CPACSWing
         

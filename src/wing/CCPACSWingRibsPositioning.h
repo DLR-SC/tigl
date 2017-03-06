@@ -55,8 +55,8 @@ public:
 public:
     TIGL_EXPORT CCPACSWingRibsPositioning(CCPACSWingRibsDefinition* parent);
 
-    TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string & xpath) override;
-    TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string & xpath) const override;
+    TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string & xpath) OVERRIDE;
+    TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string & xpath) const OVERRIDE;
 
     TIGL_EXPORT StartDefinitionType GetStartDefinitionType() const;
     

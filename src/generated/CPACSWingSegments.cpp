@@ -17,7 +17,6 @@
 
 #include <CCPACSWingSegment.h>
 #include <cassert>
-#include "CPACSEnginePylon.h"
 #include "CCPACSWing.h"
 #include "TixiHelper.h"
 #include "CTiglLogging.h"
@@ -28,21 +27,18 @@ namespace tigl
 {
     namespace generated
     {
-        CPACSWingSegments::CPACSWingSegments(CPACSEnginePylon* parent)
-        {
-            //assert(parent != NULL);
-            m_parent = parent;
-            m_parentType = &typeid(CPACSEnginePylon);
-        }
-        
         CPACSWingSegments::CPACSWingSegments(CCPACSWing* parent)
         {
             //assert(parent != NULL);
             m_parent = parent;
-            m_parentType = &typeid(CCPACSWing);
         }
         
         CPACSWingSegments::~CPACSWingSegments() {}
+        
+        CCPACSWing* CPACSWingSegments::GetParent() const
+        {
+            return m_parent;
+        }
         
         void CPACSWingSegments::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {

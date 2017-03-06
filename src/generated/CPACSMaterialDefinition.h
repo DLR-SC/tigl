@@ -35,10 +35,6 @@ namespace tigl
         // CPACSCruiseRoller
         // CPACSInterConnectionStrutAttachment
         // CPACSInterconnectionStrut
-        // CPACSPylonAttachment
-        // CPACSPylonShackle
-        // CPACSPylonShell
-        // CPACSSheetBasedStructuralElement
         // CPACSTrackActuator
         // CPACSTrackCar
         // CPACSTrackFairing

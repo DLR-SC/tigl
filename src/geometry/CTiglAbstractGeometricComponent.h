@@ -70,11 +70,11 @@ public:
     DEPRECATED TIGL_EXPORT void SetSymmetryAxis(const std::string& axis);
 
     // Get transformation object
-    TIGL_EXPORT virtual CTiglTransformation GetTransformation() const override;
+    TIGL_EXPORT virtual CTiglTransformation GetTransformation() const OVERRIDE;
 
     // Get component translation
-    TIGL_EXPORT virtual CTiglPoint GetTranslation() const override;
-    TIGL_EXPORT virtual ECPACSTranslationType GetTranslationType() const override;
+    TIGL_EXPORT virtual CTiglPoint GetTranslation() const OVERRIDE;
+    TIGL_EXPORT virtual ECPACSTranslationType GetTranslationType() const OVERRIDE;
 
     // Get component rotation
     TIGL_EXPORT virtual CTiglPoint GetRotation() const;
@@ -83,7 +83,7 @@ public:
     TIGL_EXPORT virtual CTiglPoint GetScaling() const;
 
     // Set transformation object
-    TIGL_EXPORT virtual void Translate(CTiglPoint trans) override;
+    TIGL_EXPORT virtual void Translate(CTiglPoint trans) OVERRIDE;
 
     // return if pnt lies on the loft
     TIGL_EXPORT virtual bool GetIsOn(const gp_Pnt &pnt);

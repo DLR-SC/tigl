@@ -27,16 +27,11 @@ namespace tigl
     namespace generated
     {
         // This enum is used in:
-        // CPACSEnginePosition
         // CPACSFuselage
         // CPACSGenericGeometricComponent
-        // CPACSGeogenWingOutputOptions_symmetry
         // CPACSGuideCurveProfileGeometry
-        // CPACSMainGear
-        // CPACSNoseGear
         // CPACSProfileGeometry
         // CPACSRotor
-        // CPACSSkidGear
         // CPACSWing
         
         // generated from /xsd:schema/xsd:complexType[412]/xsd:complexContent/xsd:extension/xsd:all/xsd:element[3]/xsd:complexType/xsd:simpleContent
