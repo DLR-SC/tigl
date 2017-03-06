@@ -26,12 +26,6 @@
 #include <CCPACSWings.h>
 #include <CCPACSRotors.h>
 #include <CCPACSRotorBlades.h>
-#include "CPACSEnginePositions.h"
-#include "CPACSDriveSystems.h"
-#include "CPACSLandingGear.h"
-#include "CPACSSystems.h"
-#include "CPACSRotorcraftGlobal.h"
-#include "CPACSRotorcraftAnalyses.h"
 
 namespace tigl
 {
@@ -80,45 +74,15 @@ namespace tigl
             TIGL_EXPORT const CCPACSRotorBlades& GetRotorBlades() const;
             TIGL_EXPORT CCPACSRotorBlades& GetRotorBlades();
             
-            TIGL_EXPORT bool HasEngines() const;
-            TIGL_EXPORT const CPACSEnginePositions& GetEngines() const;
-            TIGL_EXPORT CPACSEnginePositions& GetEngines();
-            
-            TIGL_EXPORT bool HasDriveSystems() const;
-            TIGL_EXPORT const CPACSDriveSystems& GetDriveSystems() const;
-            TIGL_EXPORT CPACSDriveSystems& GetDriveSystems();
-            
-            TIGL_EXPORT bool HasLandingGear() const;
-            TIGL_EXPORT const CPACSLandingGear& GetLandingGear() const;
-            TIGL_EXPORT CPACSLandingGear& GetLandingGear();
-            
-            TIGL_EXPORT bool HasSystems() const;
-            TIGL_EXPORT const CPACSSystems& GetSystems() const;
-            TIGL_EXPORT CPACSSystems& GetSystems();
-            
-            TIGL_EXPORT bool HasGlobal() const;
-            TIGL_EXPORT const CPACSRotorcraftGlobal& GetGlobal() const;
-            TIGL_EXPORT CPACSRotorcraftGlobal& GetGlobal();
-            
-            TIGL_EXPORT bool HasAnalyses() const;
-            TIGL_EXPORT const CPACSRotorcraftAnalyses& GetAnalyses() const;
-            TIGL_EXPORT CPACSRotorcraftAnalyses& GetAnalyses();
-            
         protected:
-            std::string                              m_uID;
-            std::string                              m_name;
-            boost::optional<std::string>             m_description;
-            boost::optional<CPACSReference>          m_reference;
-            boost::optional<CCPACSFuselages>         m_fuselages;
-            boost::optional<CCPACSWings>             m_wings;
-            boost::optional<CCPACSRotors>            m_rotors;
-            boost::optional<CCPACSRotorBlades>       m_rotorBlades;
-            boost::optional<CPACSEnginePositions>    m_engines;
-            boost::optional<CPACSDriveSystems>       m_driveSystems;
-            boost::optional<CPACSLandingGear>        m_landingGear;
-            boost::optional<CPACSSystems>            m_systems;
-            boost::optional<CPACSRotorcraftGlobal>   m_global;
-            boost::optional<CPACSRotorcraftAnalyses> m_analyses;
+            std::string                        m_uID;
+            std::string                        m_name;
+            boost::optional<std::string>       m_description;
+            boost::optional<CPACSReference>    m_reference;
+            boost::optional<CCPACSFuselages>   m_fuselages;
+            boost::optional<CCPACSWings>       m_wings;
+            boost::optional<CCPACSRotors>      m_rotors;
+            boost::optional<CCPACSRotorBlades> m_rotorBlades;
             
         private:
             #ifdef HAVE_CPP11

@@ -27,8 +27,6 @@
 #include <CCPACSPositionings.h>
 #include <CCPACSFuselageSegments.h>
 #include "CPACSFuselageStructure.h"
-#include "CPACSDecks.h"
-#include "CPACSDynamicAircraftModel.h"
 #include "CPACSFuselageFuelTanks.h"
 #include "CPACSFuselageCutOuts.h"
 
@@ -88,14 +86,6 @@ namespace tigl
             TIGL_EXPORT const CPACSFuselageStructure& GetStructure() const;
             TIGL_EXPORT CPACSFuselageStructure& GetStructure();
             
-            TIGL_EXPORT bool HasDecks() const;
-            TIGL_EXPORT const CPACSDecks& GetDecks() const;
-            TIGL_EXPORT CPACSDecks& GetDecks();
-            
-            TIGL_EXPORT bool HasDynamicAircraftModel() const;
-            TIGL_EXPORT const CPACSDynamicAircraftModel& GetDynamicAircraftModel() const;
-            TIGL_EXPORT CPACSDynamicAircraftModel& GetDynamicAircraftModel();
-            
             TIGL_EXPORT bool HasFuelTanks() const;
             TIGL_EXPORT const CPACSFuselageFuelTanks& GetFuelTanks() const;
             TIGL_EXPORT CPACSFuselageFuelTanks& GetFuelTanks();
@@ -107,20 +97,18 @@ namespace tigl
         protected:
             CCPACSFuselages* m_parent;
             
-            std::string                                m_uID;
-            boost::optional<TiglSymmetryAxis>          m_symmetry;
-            std::string                                m_name;
-            boost::optional<std::string>               m_description;
-            boost::optional<std::string>               m_parentUID;
-            CCPACSTransformation                       m_transformation;
-            CCPACSFuselageSections                     m_sections;
-            CCPACSPositionings                         m_positionings;
-            CCPACSFuselageSegments                     m_segments;
-            boost::optional<CPACSFuselageStructure>    m_structure;
-            boost::optional<CPACSDecks>                m_decks;
-            boost::optional<CPACSDynamicAircraftModel> m_dynamicAircraftModel;
-            boost::optional<CPACSFuselageFuelTanks>    m_fuelTanks;
-            boost::optional<CPACSFuselageCutOuts>      m_cutOuts;
+            std::string                             m_uID;
+            boost::optional<TiglSymmetryAxis>       m_symmetry;
+            std::string                             m_name;
+            boost::optional<std::string>            m_description;
+            boost::optional<std::string>            m_parentUID;
+            CCPACSTransformation                    m_transformation;
+            CCPACSFuselageSections                  m_sections;
+            CCPACSPositionings                      m_positionings;
+            CCPACSFuselageSegments                  m_segments;
+            boost::optional<CPACSFuselageStructure> m_structure;
+            boost::optional<CPACSFuselageFuelTanks> m_fuelTanks;
+            boost::optional<CPACSFuselageCutOuts>   m_cutOuts;
             
         private:
             #ifdef HAVE_CPP11

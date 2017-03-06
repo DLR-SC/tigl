@@ -27,7 +27,6 @@
 #include <CCPACSPositionings.h>
 #include <CCPACSWingSegments.h>
 #include <CCPACSWingComponentSegments.h>
-#include "CPACSDynamicAircraftModel.h"
 
 namespace tigl
 {
@@ -105,10 +104,6 @@ namespace tigl
             TIGL_EXPORT const CCPACSWingComponentSegments& GetComponentSegments() const;
             TIGL_EXPORT CCPACSWingComponentSegments& GetComponentSegments();
             
-            TIGL_EXPORT bool HasDynamicAircraftModel() const;
-            TIGL_EXPORT const CPACSDynamicAircraftModel& GetDynamicAircraftModel() const;
-            TIGL_EXPORT CPACSDynamicAircraftModel& GetDynamicAircraftModel();
-            
         protected:
             void* m_parent;
             const std::type_info* m_parentType;
@@ -123,7 +118,6 @@ namespace tigl
             boost::optional<CCPACSPositionings>          m_positionings;
             CCPACSWingSegments                           m_segments;
             boost::optional<CCPACSWingComponentSegments> m_componentSegments;
-            boost::optional<CPACSDynamicAircraftModel>   m_dynamicAircraftModel;
             
         private:
             #ifdef HAVE_CPP11
