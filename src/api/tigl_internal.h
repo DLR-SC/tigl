@@ -46,4 +46,8 @@
 #endif
 
 
+#ifndef HAVE_CPP11
+#define override
+#endif
+
 #endif // TIGL_INTERNAL_H
