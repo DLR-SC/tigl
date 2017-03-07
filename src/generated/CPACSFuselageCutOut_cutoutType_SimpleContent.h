@@ -21,6 +21,7 @@
 #include <cctype>
 
 #include "CTiglError.h"
+#include "to_string.h"
 
 namespace tigl
 {
@@ -54,7 +55,7 @@ namespace tigl
             case CPACSFuselageCutOut_cutoutType_SimpleContent::emergencyDoor: return "emergencyDoor";
             case CPACSFuselageCutOut_cutoutType_SimpleContent::cargoDoor: return "cargoDoor";
             case CPACSFuselageCutOut_cutoutType_SimpleContent::ramp: return "ramp";
-            default: throw CTiglError("Invalid enum value \"" + std::to_string(static_cast<int>(value)) + "\" for enum type CPACSFuselageCutOut_cutoutType_SimpleContent");
+            default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSFuselageCutOut_cutoutType_SimpleContent");
             }
         }
         inline CPACSFuselageCutOut_cutoutType_SimpleContent stringToCPACSFuselageCutOut_cutoutType_SimpleContent(const std::string& value)
@@ -78,12 +79,12 @@ namespace tigl
             case emergencyDoor: return "emergencyDoor";
             case cargoDoor: return "cargoDoor";
             case ramp: return "ramp";
-            default: throw CTiglError("Invalid enum value \"" + std::to_string(static_cast<int>(value)) + "\" for enum type CPACSFuselageCutOut_cutoutType_SimpleContent");
+            default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSFuselageCutOut_cutoutType_SimpleContent");
             }
         }
         inline CPACSFuselageCutOut_cutoutType_SimpleContent stringToCPACSFuselageCutOut_cutoutType_SimpleContent(const std::string& value)
         {
-            struct ToLower { std::string operator()(std::string str) { for (char& c : str) { c = std::tolower(c); } return str; } } toLower;
+            struct ToLower { std::string operator()(std::string str) { for (std::size_t i = 0; i < str.length(); i++) { str[i] = std::tolower(str[i]); } return str; } } toLower;
             if (toLower(value) == "window") { return window; }
             if (toLower(value) == "door") { return door; }
             if (toLower(value) == "paxdoor") { return paxDoor; }

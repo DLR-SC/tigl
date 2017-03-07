@@ -101,10 +101,10 @@ protected:
 
 private:
     // Copy constructor
-    CTiglAbstractGeometricComponent(const CTiglAbstractGeometricComponent&) = delete;
+    CTiglAbstractGeometricComponent(const CTiglAbstractGeometricComponent&);
 
     // Assignment operator
-    void operator=(const CTiglAbstractGeometricComponent& ) = delete;
+    void operator=(const CTiglAbstractGeometricComponent& );
 
 private:
     CCPACSTransformation* transformation;                                                 // references down to the transformation of the derived class (may be empty in case derived class does not have transformation)

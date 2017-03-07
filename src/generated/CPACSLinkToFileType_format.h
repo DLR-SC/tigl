@@ -21,6 +21,7 @@
 #include <cctype>
 
 #include "CTiglError.h"
+#include "to_string.h"
 
 namespace tigl
 {
@@ -48,7 +49,7 @@ namespace tigl
             case CPACSLinkToFileType_format::Step: return "Step";
             case CPACSLinkToFileType_format::Iges: return "Iges";
             case CPACSLinkToFileType_format::Stl: return "Stl";
-            default: throw CTiglError("Invalid enum value \"" + std::to_string(static_cast<int>(value)) + "\" for enum type CPACSLinkToFileType_format");
+            default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSLinkToFileType_format");
             }
         }
         inline CPACSLinkToFileType_format stringToCPACSLinkToFileType_format(const std::string& value)
@@ -66,12 +67,12 @@ namespace tigl
             case Step: return "Step";
             case Iges: return "Iges";
             case Stl: return "Stl";
-            default: throw CTiglError("Invalid enum value \"" + std::to_string(static_cast<int>(value)) + "\" for enum type CPACSLinkToFileType_format");
+            default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSLinkToFileType_format");
             }
         }
         inline CPACSLinkToFileType_format stringToCPACSLinkToFileType_format(const std::string& value)
         {
-            struct ToLower { std::string operator()(std::string str) { for (char& c : str) { c = std::tolower(c); } return str; } } toLower;
+            struct ToLower { std::string operator()(std::string str) { for (std::size_t i = 0; i < str.length(); i++) { str[i] = std::tolower(str[i]); } return str; } } toLower;
             if (toLower(value) == "step") { return Step; }
             if (toLower(value) == "iges") { return Iges; }
             if (toLower(value) == "stl") { return Stl; }

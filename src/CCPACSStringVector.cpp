@@ -1,4 +1,5 @@
 #include <sstream>
+#include <cstdlib>
 
 #include "CCPACSStringVector.h"
 
@@ -14,7 +15,7 @@ namespace tigl
             std::vector<double> r;
             std::string d;
             while (std::getline(ss, d, sep)) {
-                r.push_back(std::stod(d));
+                r.push_back(std::strtod(d.c_str(), NULL));
             }
             return r;
         }
@@ -22,9 +23,9 @@ namespace tigl
         std::string toString(const std::vector<double>& v)
         {
             std::stringstream ss;
-            for (const double& d : v) {
-                ss << d;
-                if (&d != &v.back()) {
+            for (std::vector<double>::const_iterator it = v.begin(); it != v.end(); ++it) {
+                ss << *it;
+                if (it != v.end() - 1) {
                     ss << sep;
                 }
             }

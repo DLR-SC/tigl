@@ -21,6 +21,7 @@
 #include <cctype>
 
 #include "CTiglError.h"
+#include "to_string.h"
 
 namespace tigl
 {
@@ -56,7 +57,7 @@ namespace tigl
             case CPACSControlSurfaceTrackType_trackType_SimpleContent::trackType5: return "trackType5";
             case CPACSControlSurfaceTrackType_trackType_SimpleContent::trackType6: return "trackType6";
             case CPACSControlSurfaceTrackType_trackType_SimpleContent::trackType7: return "trackType7";
-            default: throw CTiglError("Invalid enum value \"" + std::to_string(static_cast<int>(value)) + "\" for enum type CPACSControlSurfaceTrackType_trackType_SimpleContent");
+            default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSControlSurfaceTrackType_trackType_SimpleContent");
             }
         }
         inline CPACSControlSurfaceTrackType_trackType_SimpleContent stringToCPACSControlSurfaceTrackType_trackType_SimpleContent(const std::string& value)
@@ -82,12 +83,12 @@ namespace tigl
             case trackType5: return "trackType5";
             case trackType6: return "trackType6";
             case trackType7: return "trackType7";
-            default: throw CTiglError("Invalid enum value \"" + std::to_string(static_cast<int>(value)) + "\" for enum type CPACSControlSurfaceTrackType_trackType_SimpleContent");
+            default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSControlSurfaceTrackType_trackType_SimpleContent");
             }
         }
         inline CPACSControlSurfaceTrackType_trackType_SimpleContent stringToCPACSControlSurfaceTrackType_trackType_SimpleContent(const std::string& value)
         {
-            struct ToLower { std::string operator()(std::string str) { for (char& c : str) { c = std::tolower(c); } return str; } } toLower;
+            struct ToLower { std::string operator()(std::string str) { for (std::size_t i = 0; i < str.length(); i++) { str[i] = std::tolower(str[i]); } return str; } } toLower;
             if (toLower(value) == "tracktype1") { return trackType1; }
             if (toLower(value) == "tracktype2") { return trackType2; }
             if (toLower(value) == "tracktype3") { return trackType3; }

@@ -20,6 +20,8 @@
 * @brief  Implementation of a CPACS guide curve
 */
 
+#include <cstdlib>
+
 #include "tigl.h"
 #include "CCPACSGuideCurve.h"
 #include "CTiglError.h"
@@ -78,13 +80,13 @@ bool CCPACSGuideCurve::GetFromRelativeCircumferenceIsSet() const
 // Returns the relative circumference of the starting profile
 double CCPACSGuideCurve::GetFromRelativeCircumference() const
 {
-    return std::stod(*m_fromRelativeCircumference_choice2);
+    return std::strtod(m_fromRelativeCircumference_choice2->c_str(), NULL);
 }
 
 // Returns the relative circumference of the end profile
 double CCPACSGuideCurve::GetToRelativeCircumference() const
 {
-    return std::stod(m_toRelativeCircumference);
+    return std::strtod(m_toRelativeCircumference.c_str(), NULL);
 }
 
 const std::string& CCPACSGuideCurve::GetFromGuideCurveUID() const {

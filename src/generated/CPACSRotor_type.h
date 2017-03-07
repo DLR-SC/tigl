@@ -21,6 +21,7 @@
 #include <cctype>
 
 #include "CTiglError.h"
+#include "to_string.h"
 
 namespace tigl
 {
@@ -50,7 +51,7 @@ namespace tigl
             case CPACSRotor_type::tailRotor: return "tailRotor";
             case CPACSRotor_type::fenestron: return "fenestron";
             case CPACSRotor_type::propeller: return "propeller";
-            default: throw CTiglError("Invalid enum value \"" + std::to_string(static_cast<int>(value)) + "\" for enum type CPACSRotor_type");
+            default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSRotor_type");
             }
         }
         inline CPACSRotor_type stringToCPACSRotor_type(const std::string& value)
@@ -70,12 +71,12 @@ namespace tigl
             case tailRotor: return "tailRotor";
             case fenestron: return "fenestron";
             case propeller: return "propeller";
-            default: throw CTiglError("Invalid enum value \"" + std::to_string(static_cast<int>(value)) + "\" for enum type CPACSRotor_type");
+            default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSRotor_type");
             }
         }
         inline CPACSRotor_type stringToCPACSRotor_type(const std::string& value)
         {
-            struct ToLower { std::string operator()(std::string str) { for (char& c : str) { c = std::tolower(c); } return str; } } toLower;
+            struct ToLower { std::string operator()(std::string str) { for (std::size_t i = 0; i < str.length(); i++) { str[i] = std::tolower(str[i]); } return str; } } toLower;
             if (toLower(value) == "mainrotor") { return mainRotor; }
             if (toLower(value) == "tailrotor") { return tailRotor; }
             if (toLower(value) == "fenestron") { return fenestron; }

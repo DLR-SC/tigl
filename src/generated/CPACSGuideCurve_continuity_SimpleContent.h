@@ -21,6 +21,7 @@
 #include <cctype>
 
 #include "CTiglError.h"
+#include "to_string.h"
 
 namespace tigl
 {
@@ -52,7 +53,7 @@ namespace tigl
             case CPACSGuideCurve_continuity_SimpleContent::C2_from_previous: return "C2 from previous";
             case CPACSGuideCurve_continuity_SimpleContent::C1_to_previous: return "C1 to previous";
             case CPACSGuideCurve_continuity_SimpleContent::C2_to_previous: return "C2 to previous";
-            default: throw CTiglError("Invalid enum value \"" + std::to_string(static_cast<int>(value)) + "\" for enum type CPACSGuideCurve_continuity_SimpleContent");
+            default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSGuideCurve_continuity_SimpleContent");
             }
         }
         inline CPACSGuideCurve_continuity_SimpleContent stringToCPACSGuideCurve_continuity_SimpleContent(const std::string& value)
@@ -74,12 +75,12 @@ namespace tigl
             case C2_from_previous: return "C2 from previous";
             case C1_to_previous: return "C1 to previous";
             case C2_to_previous: return "C2 to previous";
-            default: throw CTiglError("Invalid enum value \"" + std::to_string(static_cast<int>(value)) + "\" for enum type CPACSGuideCurve_continuity_SimpleContent");
+            default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSGuideCurve_continuity_SimpleContent");
             }
         }
         inline CPACSGuideCurve_continuity_SimpleContent stringToCPACSGuideCurve_continuity_SimpleContent(const std::string& value)
         {
-            struct ToLower { std::string operator()(std::string str) { for (char& c : str) { c = std::tolower(c); } return str; } } toLower;
+            struct ToLower { std::string operator()(std::string str) { for (std::size_t i = 0; i < str.length(); i++) { str[i] = std::tolower(str[i]); } return str; } } toLower;
             if (toLower(value) == "c0") { return C0; }
             if (toLower(value) == "c1 from previous") { return C1_from_previous; }
             if (toLower(value) == "c2 from previous") { return C2_from_previous; }

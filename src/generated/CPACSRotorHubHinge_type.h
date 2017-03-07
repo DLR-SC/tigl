@@ -21,6 +21,7 @@
 #include <cctype>
 
 #include "CTiglError.h"
+#include "to_string.h"
 
 namespace tigl
 {
@@ -48,7 +49,7 @@ namespace tigl
             case CPACSRotorHubHinge_type::flap: return "flap";
             case CPACSRotorHubHinge_type::pitch: return "pitch";
             case CPACSRotorHubHinge_type::leadLag: return "leadLag";
-            default: throw CTiglError("Invalid enum value \"" + std::to_string(static_cast<int>(value)) + "\" for enum type CPACSRotorHubHinge_type");
+            default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSRotorHubHinge_type");
             }
         }
         inline CPACSRotorHubHinge_type stringToCPACSRotorHubHinge_type(const std::string& value)
@@ -66,12 +67,12 @@ namespace tigl
             case flap: return "flap";
             case pitch: return "pitch";
             case leadLag: return "leadLag";
-            default: throw CTiglError("Invalid enum value \"" + std::to_string(static_cast<int>(value)) + "\" for enum type CPACSRotorHubHinge_type");
+            default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSRotorHubHinge_type");
             }
         }
         inline CPACSRotorHubHinge_type stringToCPACSRotorHubHinge_type(const std::string& value)
         {
-            struct ToLower { std::string operator()(std::string str) { for (char& c : str) { c = std::tolower(c); } return str; } } toLower;
+            struct ToLower { std::string operator()(std::string str) { for (std::size_t i = 0; i < str.length(); i++) { str[i] = std::tolower(str[i]); } return str; } } toLower;
             if (toLower(value) == "flap") { return flap; }
             if (toLower(value) == "pitch") { return pitch; }
             if (toLower(value) == "leadlag") { return leadLag; }

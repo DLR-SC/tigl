@@ -21,6 +21,7 @@
 #include <cctype>
 
 #include "CTiglError.h"
+#include "to_string.h"
 
 namespace tigl
 {
@@ -56,7 +57,7 @@ namespace tigl
             case CPACSRibRotation_ribRotationReference_SimpleContent::globalX: return "globalX";
             case CPACSRibRotation_ribRotationReference_SimpleContent::globalY: return "globalY";
             case CPACSRibRotation_ribRotationReference_SimpleContent::globalZ: return "globalZ";
-            default: throw CTiglError("Invalid enum value \"" + std::to_string(static_cast<int>(value)) + "\" for enum type CPACSRibRotation_ribRotationReference_SimpleContent");
+            default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSRibRotation_ribRotationReference_SimpleContent");
             }
         }
         inline CPACSRibRotation_ribRotationReference_SimpleContent stringToCPACSRibRotation_ribRotationReference_SimpleContent(const std::string& value)
@@ -82,12 +83,12 @@ namespace tigl
             case globalX: return "globalX";
             case globalY: return "globalY";
             case globalZ: return "globalZ";
-            default: throw CTiglError("Invalid enum value \"" + std::to_string(static_cast<int>(value)) + "\" for enum type CPACSRibRotation_ribRotationReference_SimpleContent");
+            default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSRibRotation_ribRotationReference_SimpleContent");
             }
         }
         inline CPACSRibRotation_ribRotationReference_SimpleContent stringToCPACSRibRotation_ribRotationReference_SimpleContent(const std::string& value)
         {
-            struct ToLower { std::string operator()(std::string str) { for (char& c : str) { c = std::tolower(c); } return str; } } toLower;
+            struct ToLower { std::string operator()(std::string str) { for (std::size_t i = 0; i < str.length(); i++) { str[i] = std::tolower(str[i]); } return str; } } toLower;
             if (toLower(value) == "leadingedge") { return LeadingEdge; }
             if (toLower(value) == "trailingedge") { return TrailingEdge; }
             if (toLower(value) == "frontspar") { return FrontSpar; }

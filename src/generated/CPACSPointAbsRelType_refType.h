@@ -21,6 +21,7 @@
 #include <cctype>
 
 #include "CTiglError.h"
+#include "to_string.h"
 
 namespace tigl
 {
@@ -46,7 +47,7 @@ namespace tigl
             switch(value) {
             case CPACSPointAbsRelType_refType::absGlobal: return "absGlobal";
             case CPACSPointAbsRelType_refType::absLocal: return "absLocal";
-            default: throw CTiglError("Invalid enum value \"" + std::to_string(static_cast<int>(value)) + "\" for enum type CPACSPointAbsRelType_refType");
+            default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSPointAbsRelType_refType");
             }
         }
         inline CPACSPointAbsRelType_refType stringToECPACSTranslationType(const std::string& value)
@@ -62,12 +63,12 @@ namespace tigl
             switch(value) {
             case absGlobal: return "absGlobal";
             case absLocal: return "absLocal";
-            default: throw CTiglError("Invalid enum value \"" + std::to_string(static_cast<int>(value)) + "\" for enum type CPACSPointAbsRelType_refType");
+            default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSPointAbsRelType_refType");
             }
         }
         inline CPACSPointAbsRelType_refType stringToECPACSTranslationType(const std::string& value)
         {
-            struct ToLower { std::string operator()(std::string str) { for (char& c : str) { c = std::tolower(c); } return str; } } toLower;
+            struct ToLower { std::string operator()(std::string str) { for (std::size_t i = 0; i < str.length(); i++) { str[i] = std::tolower(str[i]); } return str; } } toLower;
             if (toLower(value) == "absglobal") { return absGlobal; }
             if (toLower(value) == "abslocal") { return absLocal; }
             throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSPointAbsRelType_refType");

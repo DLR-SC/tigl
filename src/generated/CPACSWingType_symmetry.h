@@ -20,6 +20,8 @@
 #include <stdexcept>
 #include <string>
 #include <cctype>
+#include "to_string.h"
+
 
 namespace tigl
 {
@@ -46,7 +48,7 @@ namespace tigl
             case CPACSWingType_symmetry::x_y_plane: return "x-y-plane";
             case CPACSWingType_symmetry::x_z_plane: return "x-z-plane";
             case CPACSWingType_symmetry::y_z_plane: return "y-z-plane";
-            default: throw std::runtime_error("Invalid enum value \"" + std::to_string(static_cast<int>(value)) + "\" for enum type CPACSWingType_symmetry");
+            default: throw std::runtime_error("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSWingType_symmetry");
             }
         }
         inline CPACSWingType_symmetry stringToCPACSWingType_symmetry(const std::string& value)

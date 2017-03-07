@@ -191,11 +191,9 @@ namespace tigl
                 char* name = NULL;
                 const ReturnCode ret = tixiGetAttributeName(tixiHandle, xpath.c_str(), i, &name);
                 if (ret != ReturnCode::SUCCESS) {
-                    std::stringstream ss;
-                    ss << i;
                     throw TixiError(ret,
                         "Failed to get the name an attribute\n"
-                        "Index: " + ss.str() + "\n"
+                        "Index: " + to_string(i) + "\n"
                         "xpath: " + xpath
                     );
                 }

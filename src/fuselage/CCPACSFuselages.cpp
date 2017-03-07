@@ -141,7 +141,7 @@ void CCPACSFuselages::AddFuselage(CCPACSFuselage* fuselage)
     }
 
     // Add the new fuselage to the fuselage list
-    m_fuselage.emplace_back(fuselage);
+    m_fuselage.push_back(unique_ptr<CCPACSFuselage>(fuselage));
 }
 
 } // end namespace tigl

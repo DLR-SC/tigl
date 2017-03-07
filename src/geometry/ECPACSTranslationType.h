@@ -19,6 +19,8 @@
 #ifndef ECPACSTRANSLATIONTYPE
 #define ECPACSTRANSLATIONTYPE
 
+#include "to_string.h"
+
 namespace tigl
 {
 
@@ -32,7 +34,7 @@ inline std::string ECPACSTranslationTypeToString(const ECPACSTranslationType& va
     switch (value) {
         case ABS_LOCAL:  return "absLocal";
         case ABS_GLOBAL: return "absGlobal";
-        default: throw std::runtime_error("Invalid enum value \"" + std::to_string(static_cast<int>(value)) + "\" for enum type ECPACSTranslationType");
+        default: throw std::runtime_error("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type ECPACSTranslationType");
     }
 }
 
