@@ -109,14 +109,17 @@ void CCPACSFuselageProfile::ReadCPACS(const TixiDocumentHandle& tixiHandle, cons
 
         // points with maximal/minimal y-component
         coordinates = m_pointList_choice1->AsVector();
-        struct PointYCompare {
-            bool operator()(const CTiglPoint& a, const CTiglPoint& b) {
-                return a.y < b.y;
+
+        std::size_t minYIndex = 0;
+        std::size_t maxYIndex = 0;
+        for (std::size_t i = 1; i < coordinates.size(); i++) {
+            if (coordinates[i].y < coordinates[minYIndex].y) {
+                minYIndex = i;
             }
-        };
-        const std::pair<std::vector<CTiglPoint>::const_iterator, std::vector<CTiglPoint>::const_iterator> minmax = std::minmax_element(std::begin(coordinates), std::end(coordinates), PointYCompare());
-        const std::size_t minYIndex = minmax.first  - std::begin(coordinates);
-        const std::size_t maxYIndex = minmax.second - std::begin(coordinates);
+            if (coordinates[i].y > coordinates[maxYIndex].y) {
+                maxYIndex = i;
+            }
+        }
 
         // check if points with maximal/minimal y-component were calculated correctly
         if (maxYIndex == minYIndex) {

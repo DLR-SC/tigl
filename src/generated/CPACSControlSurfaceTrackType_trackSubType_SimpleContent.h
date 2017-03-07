@@ -21,6 +21,7 @@
 #include <cctype>
 
 #include "CTiglError.h"
+#include "to_string.h"
 
 namespace tigl
 {
@@ -56,7 +57,7 @@ namespace tigl
             case CPACSControlSurfaceTrackType_trackSubType_SimpleContent::trackSubType5: return "trackSubType5";
             case CPACSControlSurfaceTrackType_trackSubType_SimpleContent::trackSubType6: return "trackSubType6";
             case CPACSControlSurfaceTrackType_trackSubType_SimpleContent::trackSubType7: return "trackSubType7";
-            default: throw CTiglError("Invalid enum value \"" + std::to_string(static_cast<int>(value)) + "\" for enum type CPACSControlSurfaceTrackType_trackSubType_SimpleContent");
+            default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSControlSurfaceTrackType_trackSubType_SimpleContent");
             }
         }
         inline CPACSControlSurfaceTrackType_trackSubType_SimpleContent stringToCPACSControlSurfaceTrackType_trackSubType_SimpleContent(const std::string& value)
@@ -82,12 +83,12 @@ namespace tigl
             case trackSubType5: return "trackSubType5";
             case trackSubType6: return "trackSubType6";
             case trackSubType7: return "trackSubType7";
-            default: throw CTiglError("Invalid enum value \"" + std::to_string(static_cast<int>(value)) + "\" for enum type CPACSControlSurfaceTrackType_trackSubType_SimpleContent");
+            default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSControlSurfaceTrackType_trackSubType_SimpleContent");
             }
         }
         inline CPACSControlSurfaceTrackType_trackSubType_SimpleContent stringToCPACSControlSurfaceTrackType_trackSubType_SimpleContent(const std::string& value)
         {
-            struct ToLower { std::string operator()(std::string str) { for (char& c : str) { c = std::tolower(c); } return str; } } toLower;
+            struct ToLower { std::string operator()(std::string str) { for (std::size_t i = 0; i < str.length(); i++) { str[i] = std::tolower(str[i]); } return str; } } toLower;
             if (toLower(value) == "tracksubtype1") { return trackSubType1; }
             if (toLower(value) == "tracksubtype2") { return trackSubType2; }
             if (toLower(value) == "tracksubtype3") { return trackSubType3; }

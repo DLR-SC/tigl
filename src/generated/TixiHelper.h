@@ -21,6 +21,7 @@
 
 #include <vector>
 #include <string>
+#include <sstream>
 #include <iostream>
 #include <ctime>
 
@@ -30,6 +31,13 @@ namespace tigl
 {
     namespace tixihelper
     {
+        template <typename T>
+        std::string to_string(const T& t) {
+            std::stringstream s;
+            s << t;
+            return s.str();
+        }
+
         std::string errorToString(ReturnCode ret);
 
         class TixiError : public std::exception
@@ -144,7 +152,7 @@ namespace tigl
 
             // read child nodes
             for (int i = 0; i < childCount; i++) {
-                children.push_back(readChild(tixiHandle, xpath + "[" + std::to_string(i + 1) + "]"));
+                children.push_back(readChild(tixiHandle, xpath + "[" + to_string(i + 1) + "]"));
             }
         }
 
@@ -215,7 +223,7 @@ namespace tigl
                 // iteratore over all child nodes
                 for (std::size_t i = 0; i < children.size(); i++) {
                     // if child node does not exist, create it
-                    const std::string& childPath = xpath + "[" + std::to_string(i + 1) + "]";
+                    const std::string& childPath = xpath + "[" + to_string(i + 1) + "]";
                     if (!TixiCheckElement(tixiHandle, childPath)) {
                         TixiCreateElement(tixiHandle, xpath);
                     }
@@ -226,8 +234,8 @@ namespace tigl
             }
             
             // delete old children which where not overwritten
-            for (std::size_t i = children.size() + 1; i <= childCount; i++) {
-                TixiRemoveElement(tixiHandle, xpath + "[" + std::to_string(i) + "]");
+            for (std::size_t i = children.size() + 1; i <= static_cast<std::size_t>(childCount); i++) {
+                TixiRemoveElement(tixiHandle, xpath + "[" + to_string(i) + "]");
             }
             
             // remove parent node if there are no child nodes

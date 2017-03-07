@@ -21,6 +21,7 @@
 #include <cctype>
 
 #include "CTiglError.h"
+#include "to_string.h"
 
 namespace tigl
 {
@@ -50,7 +51,7 @@ namespace tigl
             case CPACSFarField_type_SimpleContent::fullSphere: return "fullSphere";
             case CPACSFarField_type_SimpleContent::halfCube: return "halfCube";
             case CPACSFarField_type_SimpleContent::fullCube: return "fullCube";
-            default: throw CTiglError("Invalid enum value \"" + std::to_string(static_cast<int>(value)) + "\" for enum type CPACSFarField_type_SimpleContent");
+            default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSFarField_type_SimpleContent");
             }
         }
         inline CPACSFarField_type_SimpleContent stringToTiglFarFieldType(const std::string& value)
@@ -70,12 +71,12 @@ namespace tigl
             case fullSphere: return "fullSphere";
             case halfCube: return "halfCube";
             case fullCube: return "fullCube";
-            default: throw CTiglError("Invalid enum value \"" + std::to_string(static_cast<int>(value)) + "\" for enum type CPACSFarField_type_SimpleContent");
+            default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSFarField_type_SimpleContent");
             }
         }
         inline CPACSFarField_type_SimpleContent stringToTiglFarFieldType(const std::string& value)
         {
-            struct ToLower { std::string operator()(std::string str) { for (char& c : str) { c = std::tolower(c); } return str; } } toLower;
+            struct ToLower { std::string operator()(std::string str) { for (std::size_t i = 0; i < str.length(); i++) { str[i] = std::tolower(str[i]); } return str; } } toLower;
             if (toLower(value) == "halfsphere") { return halfSphere; }
             if (toLower(value) == "fullsphere") { return fullSphere; }
             if (toLower(value) == "halfcube") { return halfCube; }

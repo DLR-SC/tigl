@@ -148,7 +148,7 @@ void CCPACSWings::AddWing(CCPACSWing* wing)
     }
 
     // Add the new wing to the wing list
-    m_wing.emplace_back(wing);
+    m_wing.push_back(unique_ptr<CCPACSWing>(wing));
 }
 
 } // end namespace tigl

@@ -20,6 +20,8 @@
 #include <stdexcept>
 #include <string>
 #include <cctype>
+#include "to_string.h"
+
 
 namespace tigl
 {
@@ -44,7 +46,7 @@ namespace tigl
             switch(value) {
             case CPACSStringerFramePosition_continuity_SimpleContent::_0: return "0";
             case CPACSStringerFramePosition_continuity_SimpleContent::_2: return "2";
-            default: throw std::runtime_error("Invalid enum value \"" + std::to_string(static_cast<int>(value)) + "\" for enum type CPACSStringerFramePosition_continuity_SimpleContent");
+            default: throw std::runtime_error("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSStringerFramePosition_continuity_SimpleContent");
             }
         }
         inline CPACSStringerFramePosition_continuity_SimpleContent stringToCPACSStringerFramePosition_continuity_SimpleContent(const std::string& value)

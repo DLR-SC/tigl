@@ -37,14 +37,16 @@ namespace tigl
     public:
         explicit unique_ptr(T* p = NULL) throw() : std::auto_ptr<T>(p) {}
 
-        unique_ptr(unique_ptr& other) throw() : std::auto_ptr<T>(other) {}
+        // NOTE: const is a hack to allow std::vector<unique_ptr<T>>
+        unique_ptr(const unique_ptr& other) throw() : std::auto_ptr<T>(const_cast<unique_ptr&>(other)) {}
 
         template <typename U>
         unique_ptr(unique_ptr<U>& other) throw() : std::auto_ptr<T>(other) {}
 
-        unique_ptr& operator=(unique_ptr& other) throw()
+        // NOTE: const is a hack to allow std::vector<unique_ptr<T>>
+        unique_ptr& operator=(const unique_ptr& other) throw()
         {
-            std::auto_ptr<T>::operator=(other);
+            std::auto_ptr<T>::operator=(const_cast<unique_ptr&>(other));
             return *this;
         }
 

@@ -3,6 +3,7 @@
 #include <string>
 #include <stdexcept>
 #include <cctype>
+#include "to_string.h"
 
 namespace tigl
 {
@@ -23,13 +24,13 @@ namespace tigl
             case TiglFarFieldType::HALF_CUBE:   return "halfCube";
             case TiglFarFieldType::FULL_CUBE:   return "fullCube";
             case TiglFarFieldType::NONE:        return "none";
-            default: throw std::runtime_error("Invalid enum value \"" + std::to_string(static_cast<int>(value)) + "\" for enum type TiglFarFieldType");
+            default: throw std::runtime_error("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type TiglFarFieldType");
         }
     }
 
     inline TiglFarFieldType stringToTiglFarFieldType(const std::string& value)
     {
-        struct ToLower { std::string operator()(std::string str) { for (char& c : str) { c = std::tolower(c); } return str; } } toLower;
+        struct ToLower { std::string operator()(std::string str) { for (std::size_t i = 0; i < str.length(); i++) {str[i] = std::tolower(str[i]); } return str; } } toLower;
         if (toLower(value) == "halfsphere") { return TiglFarFieldType::HALF_SPHERE; }
         if (toLower(value) == "fullsphere") { return TiglFarFieldType::FULL_SPHERE; }
         if (toLower(value) == "halfcube")   { return TiglFarFieldType::HALF_CUBE;   }

@@ -21,6 +21,7 @@
 #include <cctype>
 
 #include "CTiglError.h"
+#include "to_string.h"
 
 namespace tigl
 {
@@ -53,7 +54,7 @@ namespace tigl
             case CPACSSymmetry::x_y_plane: return "x-y-plane";
             case CPACSSymmetry::x_z_plane: return "x-z-plane";
             case CPACSSymmetry::y_z_plane: return "y-z-plane";
-            default: throw CTiglError("Invalid enum value \"" + std::to_string(static_cast<int>(value)) + "\" for enum type CPACSSymmetry");
+            default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSSymmetry");
             }
         }
         inline CPACSSymmetry stringToTiglSymmetryAxis(const std::string& value)
@@ -71,12 +72,12 @@ namespace tigl
             case x_y_plane: return "x-y-plane";
             case x_z_plane: return "x-z-plane";
             case y_z_plane: return "y-z-plane";
-            default: throw CTiglError("Invalid enum value \"" + std::to_string(static_cast<int>(value)) + "\" for enum type CPACSSymmetry");
+            default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSSymmetry");
             }
         }
         inline CPACSSymmetry stringToTiglSymmetryAxis(const std::string& value)
         {
-            struct ToLower { std::string operator()(std::string str) { for (char& c : str) { c = std::tolower(c); } return str; } } toLower;
+            struct ToLower { std::string operator()(std::string str) { for (std::size_t i = 0; i < str.length(); i++) { str[i] = std::tolower(str[i]); } return str; } } toLower;
             if (toLower(value) == "x-y-plane") { return x_y_plane; }
             if (toLower(value) == "x-z-plane") { return x_z_plane; }
             if (toLower(value) == "y-z-plane") { return y_z_plane; }

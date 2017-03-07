@@ -57,7 +57,7 @@ void CCPACSRotorProfiles::AddProfile(CCPACSWingProfile* profile)
 {
     // free memory for existing profiles
     DeleteProfile(profile->GetUID());
-    m_rotorAirfoil.emplace_back(profile);
+    m_rotorAirfoil.push_back(unique_ptr<CCPACSWingProfile>(profile));
 }
 
 

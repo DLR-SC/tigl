@@ -64,7 +64,7 @@ void CCPACSFuselageProfiles::AddProfile(CCPACSFuselageProfile* profile)
 {
     // free memory for existing profiles
     DeleteProfile(profile->GetUID());
-    m_fuselageProfile.emplace_back(profile);
+    m_fuselageProfile.push_back(unique_ptr<CCPACSFuselageProfile>(profile));
 }
 
 void CCPACSFuselageProfiles::DeleteProfile( std::string uid )
