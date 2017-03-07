@@ -26,9 +26,6 @@ namespace tigl
 CCPACSWingCellPositionChordwise::CCPACSWingCellPositionChordwise(CCPACSWingCell* parent)
     : generated::CPACSCellPositioningChordwise(parent) {}
 
-CCPACSWingCellPositionChordwise::CCPACSWingCellPositionChordwise(CPACSWingIntermediateStructureCell* parent)
-    : generated::CPACSCellPositioningChordwise(parent) {}
-
 CCPACSWingCellPositionChordwise::InputType CCPACSWingCellPositionChordwise::GetInputType() const
 {
     if (m_xsi1_choice2 && m_xsi2_choice2)
@@ -44,8 +41,9 @@ void CCPACSWingCellPositionChordwise::SetXsi(double xsi1, double xsi2)
     m_xsi2_choice2 = xsi2;
     m_sparUID_choice1 = boost::none;
 
-    if (IsParent<CCPACSWingCell>())
-        GetParent<CCPACSWingCell>()->Invalidate();
+    //if (IsParent<CCPACSWingCell>())
+    //    GetParent<CCPACSWingCell>()->Invalidate();
+    GetParent()->Invalidate();
 }
 
 void CCPACSWingCellPositionChordwise::GetXsi(double& xsi1, double& xsi2) const
@@ -70,8 +68,9 @@ void CCPACSWingCellPositionChordwise::SetSparUId(std::string sparUId)
     m_xsi2_choice2 = boost::none;
     m_sparUID_choice1 = sparUId;
 
-    if (IsParent<CCPACSWingCell>())
-        GetParent<CCPACSWingCell>()->Invalidate();
+    //if (IsParent<CCPACSWingCell>())
+    //    GetParent<CCPACSWingCell>()->Invalidate();
+    GetParent()->Invalidate();
 }
 
 const std::string& CCPACSWingCellPositionChordwise::GetSparUId() const

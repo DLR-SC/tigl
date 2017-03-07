@@ -33,12 +33,13 @@ namespace tigl
 CCPACSWingCSStructure::CCPACSWingCSStructure(CCPACSWingComponentSegment* parent)
     : generated::CPACSWingComponentSegmentStructure(parent) {}
 
-CCPACSWingCSStructure::CCPACSWingCSStructure(CPACSTrailingEdgeDevice* parent)
-    : generated::CPACSWingComponentSegmentStructure(parent) {}
+//CCPACSWingCSStructure::CCPACSWingCSStructure(CPACSTrailingEdgeDevice* parent)
+//    : generated::CPACSWingComponentSegmentStructure(parent) {}
 
 CTiglWingStructureReference CCPACSWingCSStructure::GetWingStructureReference() {
-    if (IsParent<CCPACSWingComponentSegment>()) return CTiglWingStructureReference(*GetParent<CCPACSWingComponentSegment>());
-    throw std::logic_error("Unknown parent type of CCPACSWingCSStructure when retrieving CTiglWingStructureReference");
+    //if (IsParent<CCPACSWingComponentSegment>()) return CTiglWingStructureReference(*GetParent<CCPACSWingComponentSegment>());
+    //throw std::logic_error("Unknown parent type of CCPACSWingCSStructure when retrieving CTiglWingStructureReference");
+    return CTiglWingStructureReference(*GetParent());
 }
 
 const CTiglWingStructureReference CCPACSWingCSStructure::GetWingStructureReference() const {

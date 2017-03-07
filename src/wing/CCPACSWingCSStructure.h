@@ -37,7 +37,7 @@ class CCPACSWingCSStructure : public generated::CPACSWingComponentSegmentStructu
 {
 public:
     TIGL_EXPORT CCPACSWingCSStructure(CCPACSWingComponentSegment* parent);
-    TIGL_EXPORT CCPACSWingCSStructure(CPACSTrailingEdgeDevice* parent);
+    //TIGL_EXPORT CCPACSWingCSStructure(CPACSTrailingEdgeDevice* parent);
 
     TIGL_EXPORT CTiglWingStructureReference GetWingStructureReference();
     TIGL_EXPORT const CTiglWingStructureReference GetWingStructureReference() const;

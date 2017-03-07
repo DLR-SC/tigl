@@ -39,7 +39,6 @@ public:
     };
 
     TIGL_EXPORT CCPACSWingCellPositionSpanwise(CCPACSWingCell* parent);
-    TIGL_EXPORT CCPACSWingCellPositionSpanwise(CPACSWingIntermediateStructureCell* parent);
 
     TIGL_EXPORT InputType GetInputType() const;
 
