@@ -17,7 +17,6 @@
 
 #include <cassert>
 #include "CCPACSWingCell.h"
-#include "CPACSWingIntermediateStructureCell.h"
 #include "TixiHelper.h"
 #include "CTiglLogging.h"
 #include "CTiglError.h"
@@ -31,17 +30,14 @@ namespace tigl
         {
             //assert(parent != NULL);
             m_parent = parent;
-            m_parentType = &typeid(CCPACSWingCell);
-        }
-        
-        CPACSCellPositioningSpanwise::CPACSCellPositioningSpanwise(CPACSWingIntermediateStructureCell* parent)
-        {
-            //assert(parent != NULL);
-            m_parent = parent;
-            m_parentType = &typeid(CPACSWingIntermediateStructureCell);
         }
         
         CPACSCellPositioningSpanwise::~CPACSCellPositioningSpanwise() {}
+        
+        CCPACSWingCell* CPACSCellPositioningSpanwise::GetParent() const
+        {
+            return m_parent;
+        }
         
         void CPACSCellPositioningSpanwise::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {

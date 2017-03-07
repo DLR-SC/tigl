@@ -26,7 +26,6 @@
 #include <CCPACSFuselageSections.h>
 #include <CCPACSPositionings.h>
 #include <CCPACSFuselageSegments.h>
-#include "CPACSFuselageFuelTanks.h"
 #include "CPACSFuselageCutOuts.h"
 
 namespace tigl
@@ -81,10 +80,6 @@ namespace tigl
             TIGL_EXPORT const CCPACSFuselageSegments& GetSegments() const;
             TIGL_EXPORT CCPACSFuselageSegments& GetSegments();
             
-            TIGL_EXPORT bool HasFuelTanks() const;
-            TIGL_EXPORT const CPACSFuselageFuelTanks& GetFuelTanks() const;
-            TIGL_EXPORT CPACSFuselageFuelTanks& GetFuelTanks();
-            
             TIGL_EXPORT bool HasCutOuts() const;
             TIGL_EXPORT const CPACSFuselageCutOuts& GetCutOuts() const;
             TIGL_EXPORT CPACSFuselageCutOuts& GetCutOuts();
@@ -92,17 +87,16 @@ namespace tigl
         protected:
             CCPACSFuselages* m_parent;
             
-            std::string                             m_uID;
-            boost::optional<TiglSymmetryAxis>       m_symmetry;
-            std::string                             m_name;
-            boost::optional<std::string>            m_description;
-            boost::optional<std::string>            m_parentUID;
-            CCPACSTransformation                    m_transformation;
-            CCPACSFuselageSections                  m_sections;
-            CCPACSPositionings                      m_positionings;
-            CCPACSFuselageSegments                  m_segments;
-            boost::optional<CPACSFuselageFuelTanks> m_fuelTanks;
-            boost::optional<CPACSFuselageCutOuts>   m_cutOuts;
+            std::string                           m_uID;
+            boost::optional<TiglSymmetryAxis>     m_symmetry;
+            std::string                           m_name;
+            boost::optional<std::string>          m_description;
+            boost::optional<std::string>          m_parentUID;
+            CCPACSTransformation                  m_transformation;
+            CCPACSFuselageSections                m_sections;
+            CCPACSPositionings                    m_positionings;
+            CCPACSFuselageSegments                m_segments;
+            boost::optional<CPACSFuselageCutOuts> m_cutOuts;
             
         private:
             #ifdef HAVE_CPP11

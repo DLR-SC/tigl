@@ -21,7 +21,6 @@
 #include <string>
 #include "tigl_internal.h"
 #include "CPACSWingSkin.h"
-#include "CPACSWingStringer.h"
 #include <CCPACSWingCellPositionChordwise.h>
 #include <CCPACSWingCellPositionChordwise.h>
 #include <CCPACSWingCellPositionSpanwise.h>
@@ -55,9 +54,6 @@ namespace tigl
             TIGL_EXPORT const CPACSWingSkin& GetSkin() const;
             TIGL_EXPORT CPACSWingSkin& GetSkin();
             
-            TIGL_EXPORT const CPACSWingStringer& GetStringer() const;
-            TIGL_EXPORT CPACSWingStringer& GetStringer();
-            
             TIGL_EXPORT const CCPACSWingCellPositionChordwise& GetPositioningLeadingEdge() const;
             TIGL_EXPORT CCPACSWingCellPositionChordwise& GetPositioningLeadingEdge();
             
@@ -75,7 +71,6 @@ namespace tigl
             
             std::string                     m_uID;
             CPACSWingSkin                   m_skin;
-            CPACSWingStringer               m_stringer;
             CCPACSWingCellPositionChordwise m_positioningLeadingEdge;
             CCPACSWingCellPositionChordwise m_positioningTrailingEdge;
             CCPACSWingCellPositionSpanwise  m_positioningInnerBorder;

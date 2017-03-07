@@ -57,20 +57,6 @@ namespace tigl
                 LOG(ERROR) << "Required element skin is missing";
             }
             
-            // read element stringer
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/stringer")) {
-                m_stringer = boost::in_place();
-                try {
-                    m_stringer->ReadCPACS(tixiHandle, xpath + "/stringer");
-                } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read stringer at xpath << " << xpath << ": " << e.what();
-                    m_stringer = boost::none;
-                } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read stringer at xpath << " << xpath << ": " << e.getError();
-                    m_stringer = boost::none;
-                }
-            }
-            
             // read element cells
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/cells")) {
                 m_cells = boost::in_place(reinterpret_cast<CCPACSWingShell*>(this));
@@ -96,12 +82,6 @@ namespace tigl
             // write element skin
             tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/skin");
             m_skin.WriteCPACS(tixiHandle, xpath + "/skin");
-            
-            // write element stringer
-            if (m_stringer) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/stringer");
-                m_stringer->WriteCPACS(tixiHandle, xpath + "/stringer");
-            }
             
             // write element cells
             if (m_cells) {
@@ -129,21 +109,6 @@ namespace tigl
         CPACSWingSkin& CPACSWingShell::GetSkin()
         {
             return m_skin;
-        }
-        
-        bool CPACSWingShell::HasStringer() const
-        {
-            return static_cast<bool>(m_stringer);
-        }
-        
-        const CPACSWingStringer& CPACSWingShell::GetStringer() const
-        {
-            return *m_stringer;
-        }
-        
-        CPACSWingStringer& CPACSWingShell::GetStringer()
-        {
-            return *m_stringer;
         }
         
         bool CPACSWingShell::HasCells() const

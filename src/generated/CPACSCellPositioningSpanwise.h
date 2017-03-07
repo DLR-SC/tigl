@@ -28,38 +28,18 @@ namespace tigl
     
     namespace generated
     {
-        class CPACSWingIntermediateStructureCell;
-        
         // This class is used in:
         // CPACSWingCell
-        // CPACSWingIntermediateStructureCell
         
         // generated from /xsd:schema/xsd:complexType[118]
         class CPACSCellPositioningSpanwise
         {
         public:
             TIGL_EXPORT CPACSCellPositioningSpanwise(CCPACSWingCell* parent);
-            TIGL_EXPORT CPACSCellPositioningSpanwise(CPACSWingIntermediateStructureCell* parent);
             
             TIGL_EXPORT virtual ~CPACSCellPositioningSpanwise();
             
-            template<typename P>
-            TIGL_EXPORT bool IsParent() const
-            {
-                return m_parentType != NULL && *m_parentType == typeid(P);
-            }
-            
-            template<typename P>
-            TIGL_EXPORT P* GetParent() const
-            {
-                #ifdef HAVE_CPP11
-                static_assert(std::is_same<P, CCPACSWingCell>::value || std::is_same<P, CPACSWingIntermediateStructureCell>::value, "template argument for P is not a parent class of CPACSCellPositioningSpanwise");
-                #endif
-                if (!IsParent<P>()) {
-                    throw CTiglError("bad parent");
-                }
-                return static_cast<P*>(m_parent);
-            }
+            TIGL_EXPORT CCPACSWingCell* GetParent() const;
             
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
@@ -81,8 +61,7 @@ namespace tigl
             TIGL_EXPORT void SetRibDefinitionUID_choice2(const std::string& value);
             
         protected:
-            void* m_parent;
-            const std::type_info* m_parentType;
+            CCPACSWingCell* m_parent;
             
             boost::optional<double>      m_eta1_choice1;
             boost::optional<double>      m_eta2_choice1;
@@ -104,6 +83,4 @@ namespace tigl
     }
     
     // This type is customized, use type CCPACSWingCellPositionSpanwise
-    
-    using generated::CPACSWingIntermediateStructureCell;
 }

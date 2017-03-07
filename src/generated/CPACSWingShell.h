@@ -22,7 +22,6 @@
 #include <boost/optional.hpp>
 #include "tigl_internal.h"
 #include "CPACSWingSkin.h"
-#include "CPACSWingStringer.h"
 #include <CCPACSWingCells.h>
 
 namespace tigl
@@ -53,10 +52,6 @@ namespace tigl
             TIGL_EXPORT const CPACSWingSkin& GetSkin() const;
             TIGL_EXPORT CPACSWingSkin& GetSkin();
             
-            TIGL_EXPORT bool HasStringer() const;
-            TIGL_EXPORT const CPACSWingStringer& GetStringer() const;
-            TIGL_EXPORT CPACSWingStringer& GetStringer();
-            
             TIGL_EXPORT bool HasCells() const;
             TIGL_EXPORT const CCPACSWingCells& GetCells() const;
             TIGL_EXPORT CCPACSWingCells& GetCells();
@@ -64,10 +59,9 @@ namespace tigl
         protected:
             CCPACSWingCSStructure* m_parent;
             
-            std::string                        m_uID;
-            CPACSWingSkin                      m_skin;
-            boost::optional<CPACSWingStringer> m_stringer;
-            boost::optional<CCPACSWingCells>   m_cells;
+            std::string                      m_uID;
+            CPACSWingSkin                    m_skin;
+            boost::optional<CCPACSWingCells> m_cells;
             
         private:
             #ifdef HAVE_CPP11

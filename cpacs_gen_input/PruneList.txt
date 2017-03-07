@@ -65,18 +65,27 @@ CPACSLandingGear
 CPACSEnginePylons
 CPACSEnginePositions
 CPACSSystems
+CPACSReference
 
 // in fuselage
 CPACSDecks
+CPACSFuselateCutOuts
+CPACSFuselageFuelTanks
 CPACSFuselageStructure
 
 // in wing
 CPACSDynamicAircraftModel
 
 // in component segment
-CPACSWingWingAttachments
+CPACSComponentSegmentPath
+CPACSControlSurfaces
 CPACSWingFuelTanks
+CPACSWingFuselageAttachments
+CPACSWingStructuralMounts
+CPACSWingWingAttachments
 
-// in control surfaces
-CPACSLeadingEdgeDevice
-CPACSSpoiler
+// in component segment structure
+CPACSWingIntermediateStructureCells
+
+// in component segment structure shell/cell
+CPACSWingStringer
