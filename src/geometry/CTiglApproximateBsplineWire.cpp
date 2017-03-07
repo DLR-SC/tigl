@@ -46,7 +46,7 @@ CTiglApproximateBsplineWire::CTiglApproximateBsplineWire()
 }
 
 // Destructor
-CTiglApproximateBsplineWire::~CTiglApproximateBsplineWire(void)
+CTiglApproximateBsplineWire::~CTiglApproximateBsplineWire()
 {
 }
 
@@ -106,7 +106,7 @@ TopoDS_Wire CTiglApproximateBsplineWire::BuildWire(const CPointContainer& points
 }
 
 // Returns the algorithm code identifier for an algorithm
-TiglAlgorithmCode CTiglApproximateBsplineWire::GetAlgorithmCode(void) const
+TiglAlgorithmCode CTiglApproximateBsplineWire::GetAlgorithmCode() const
 {
     return TIGL_APPROXIMATE_BSPLINE_WIRE;
 }

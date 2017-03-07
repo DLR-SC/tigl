@@ -116,12 +116,12 @@ double CTiglPoint::norm2() const
 }
 
 // Destructor
-CTiglPoint::~CTiglPoint(void)
+CTiglPoint::~CTiglPoint()
 {
 }
 
 // Convert a CTiglPoint to a OpenCascade gp_Pnt
-gp_Pnt CTiglPoint::Get_gp_Pnt(void) const
+gp_Pnt CTiglPoint::Get_gp_Pnt() const
 {
     return gp_Pnt(x, y, z);
 }

@@ -54,7 +54,7 @@ CTiglExportVtk::CTiglExportVtk(CCPACSConfiguration& config)
 }
 
 // Destructor
-CTiglExportVtk::~CTiglExportVtk(void)
+CTiglExportVtk::~CTiglExportVtk()
 {
 }
 

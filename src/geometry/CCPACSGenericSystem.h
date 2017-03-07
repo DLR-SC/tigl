@@ -43,45 +43,43 @@ public:
     TIGL_EXPORT CCPACSGenericSystem(CCPACSConfiguration* config);
 
     // Virtual destructor
-    TIGL_EXPORT virtual ~CCPACSGenericSystem(void);
+    TIGL_EXPORT virtual ~CCPACSGenericSystem();
+
+    TIGL_EXPORT virtual const std::string& GetUID() const OVERRIDE;
+    TIGL_EXPORT virtual void SetUID(const std::string& uid) OVERRIDE;
 
     // Invalidates internal state
-    TIGL_EXPORT void Invalidate(void);
+    TIGL_EXPORT void Invalidate();
 
     // Read CPACS generic system elements
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & genericSysXPath);
 
     // Returns the name of the generic system
-    TIGL_EXPORT const std::string & GetName(void) const;
+    TIGL_EXPORT const std::string & GetName() const;
 
     // Returns the parent configuration
-    TIGL_EXPORT CCPACSConfiguration & GetConfiguration(void) const;
+    TIGL_EXPORT CCPACSConfiguration & GetConfiguration() const;
 
-    // Get the Transformation object
-    TIGL_EXPORT CTiglTransformation GetTransformation(void);
-        
     // Sets a Transformation object
     TIGL_EXPORT void Translate(CTiglPoint trans);
 
-    TIGL_EXPORT virtual void SetSymmetryAxis(const std::string& axis);
-
     // Returns the Component Type TIGL_COMPONENT_GENERICSYSTEM.
-    TIGL_EXPORT TiglGeometricComponentType GetComponentType(void) {return TIGL_COMPONENT_GENERICSYSTEM | TIGL_COMPONENT_PHYSICAL;}
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() {return TIGL_COMPONENT_GENERICSYSTEM | TIGL_COMPONENT_PHYSICAL;}
 
 
 protected:
     // Cleanup routine
-    void Cleanup(void);
+    void Cleanup();
 
     // Update internal wing data
-    void Update(void);
+    void Update();
         
     // Build the shape of the system
-    PNamedShape BuildLoft(void);
+    PNamedShape BuildLoft();
 
 private:
     // get short name for loft
-    std::string GetShortShapeName(void);
+    std::string GetShortShapeName();
 
     // Copy constructor
     CCPACSGenericSystem(const CCPACSGenericSystem & );
@@ -90,8 +88,11 @@ private:
     void operator=(const CCPACSGenericSystem & );
 
 private:
+    std::string                    uid;
     std::string                    name;                     /**< System name         */
     std::string                    geometricBaseType;        /**< Geometric base type */
+    TiglSymmetryAxis               symmetryAxis;
+    CCPACSTransformation           transformation;
     CCPACSConfiguration*           configuration;            /**< Parent configuration*/
     bool                           invalidated;              /**< Internal state flag */
 };

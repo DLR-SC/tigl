@@ -29,18 +29,25 @@
 namespace tigl
 {
 
-CTiglAbstractSegment::CTiglAbstractSegment(int segindex)
-    : mySegmentIndex(segindex), invalidated(true), continuity(C0)
-{
-}
+CTiglAbstractSegment::CTiglAbstractSegment(int segindex, TiglSymmetryAxis* axis)
+    : CTiglAbstractGeometricComponent(NULL, axis), mySegmentIndex(segindex), invalidated(true), continuity(C0) {}
 
-void CTiglAbstractSegment::Invalidate(void)
+CTiglAbstractSegment::CTiglAbstractSegment(int segindex, boost::optional<TiglSymmetryAxis>* axis)
+    : CTiglAbstractGeometricComponent(NULL, axis), mySegmentIndex(segindex), invalidated(true), continuity(C0) {}
+
+CTiglAbstractSegment::CTiglAbstractSegment(int segindex, CCPACSTransformation* trans, TiglSymmetryAxis* axis)
+    : CTiglAbstractGeometricComponent(trans, axis), mySegmentIndex(segindex), invalidated(true), continuity(C0) {}
+
+CTiglAbstractSegment::CTiglAbstractSegment(int segindex, CCPACSTransformation* trans, boost::optional<TiglSymmetryAxis>* axis)
+    : CTiglAbstractGeometricComponent(trans, axis), mySegmentIndex(segindex), invalidated(true), continuity(C0) {}
+
+void CTiglAbstractSegment::Invalidate()
 {
     loft.reset();
     invalidated = true;
 }
 
-void CTiglAbstractSegment::Cleanup(void)
+void CTiglAbstractSegment::Cleanup()
 {
     CTiglAbstractGeometricComponent::Reset();
     Invalidate();
@@ -48,7 +55,7 @@ void CTiglAbstractSegment::Cleanup(void)
 }
 
 // Returns the segment index of this segment
-int CTiglAbstractSegment::GetSegmentIndex(void) const
+int CTiglAbstractSegment::GetSegmentIndex() const
 {
     return mySegmentIndex;
 }

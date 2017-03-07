@@ -22,6 +22,7 @@
 */
 
 #include <iostream>
+#include <algorithm>
 
 #include "CCPACSGenericSystem.h"
 #include "CCPACSConfiguration.h"
@@ -37,36 +38,35 @@
 namespace tigl
 {
 
-namespace
-{
-    inline double max(double a, double b)
-    {
-        return a > b? a : b;
-    }
-}
-
-
 // Constructor
 CCPACSGenericSystem::CCPACSGenericSystem(CCPACSConfiguration* config)
-    : configuration(config)
+    : CTiglAbstractPhysicalComponent(&transformation, &symmetryAxis), configuration(config)
 {
     Cleanup();
 }
 
 // Destructor
-CCPACSGenericSystem::~CCPACSGenericSystem(void)
+CCPACSGenericSystem::~CCPACSGenericSystem()
 {
     Cleanup();
 }
 
+const std::string& CCPACSGenericSystem::GetUID() const {
+    return uid;
+}
+
+void CCPACSGenericSystem::SetUID(const std::string& uid) {
+    this->uid = uid;
+}
+
 // Invalidates internal state
-void CCPACSGenericSystem::Invalidate(void)
+void CCPACSGenericSystem::Invalidate()
 {
     invalidated = true;
 }
 
 // Cleanup routine
-void CCPACSGenericSystem::Cleanup(void)
+void CCPACSGenericSystem::Cleanup()
 {
     name = "";
     transformation.reset();
@@ -78,7 +78,7 @@ void CCPACSGenericSystem::Cleanup(void)
 }
 
 // Update internal generic system data
-void CCPACSGenericSystem::Update(void)
+void CCPACSGenericSystem::Update()
 {
     if (!invalidated) {
         return;
@@ -144,13 +144,13 @@ void CCPACSGenericSystem::ReadCPACS(TixiDocumentHandle tixiHandle, const std::st
 }
 
 // Returns the name of the generic system
-const std::string& CCPACSGenericSystem::GetName(void) const
+const std::string& CCPACSGenericSystem::GetName() const
 {
     return name;
 }
 
 // Returns the parent configuration
-CCPACSConfiguration& CCPACSGenericSystem::GetConfiguration(void) const
+CCPACSConfiguration& CCPACSGenericSystem::GetConfiguration() const
 {
     return *configuration;
 }
@@ -212,24 +212,12 @@ std::string CCPACSGenericSystem::GetShortShapeName()
     return "UNKNOWN";
 }
 
-// Get the Transformation object (general interface implementation)
-CTiglTransformation CCPACSGenericSystem::GetTransformation(void)
-{
-    return transformation.getTransformationMatrix();
-}
-
 // Sets the Transformation object
 void CCPACSGenericSystem::Translate(CTiglPoint trans)
 {
     CTiglAbstractGeometricComponent::Translate(trans);
     invalidated = true;
     Update();
-}
-
-// sets the symmetry plane for all childs, segments and component segments
-void CCPACSGenericSystem::SetSymmetryAxis(const std::string& axis)
-{
-    CTiglAbstractGeometricComponent::SetSymmetryAxis(axis);
 }
 
 } // end namespace tigl

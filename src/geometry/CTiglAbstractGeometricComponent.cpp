@@ -26,6 +26,8 @@
 #include "CTiglAbstractGeometricComponent.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "TiglSymmetryAxis.h"
+#include "CCPACSTransformation.h"
 
 // OCCT defines
 #include <BRepBuilderAPI_Transform.hxx>
@@ -33,109 +35,141 @@
 #include <Bnd_Box.hxx>
 #include <BRepBndLib.hxx>
 
-namespace tigl 
+namespace tigl
 {
 
-// Constructor
-CTiglAbstractGeometricComponent::CTiglAbstractGeometricComponent(void)
-    : myUID("")
-    , mySymmetryAxis(TIGL_NO_SYMMETRY)
-{
-    Reset();
-}
+CTiglAbstractGeometricComponent::CTiglAbstractGeometricComponent(TiglSymmetryAxis* symmetryAxis)
+    : transformation(NULL), symmetryAxis(symmetryAxis) {}
+
+CTiglAbstractGeometricComponent::CTiglAbstractGeometricComponent(boost::optional<TiglSymmetryAxis>* symmetryAxis)
+    : transformation(NULL), symmetryAxis(symmetryAxis) {}
+
+CTiglAbstractGeometricComponent::CTiglAbstractGeometricComponent(CCPACSTransformation* trans, TiglSymmetryAxis* symmetryAxis)
+    : transformation(trans), symmetryAxis(symmetryAxis) {}
+
+CTiglAbstractGeometricComponent::CTiglAbstractGeometricComponent(CCPACSTransformation* trans, boost::optional<TiglSymmetryAxis>* symmetryAxis)
+    : transformation(trans), symmetryAxis(symmetryAxis) {}
 
 void CTiglAbstractGeometricComponent::Reset()
 {
     SetUID("");
-    mySymmetryAxis = TIGL_NO_SYMMETRY;
-    transformation.reset();
+    // resetting symmetry may introduce bugs, as the symmetry element may not be owned by the actual subclass
+    // e.g. symmetry of CCPACSWingSegment references symmetry member of CCPACSWing
+    //struct Visitor : boost::static_visitor<> {
+    //    void operator()(TiglSymmetryAxis* s) {
+    //        if (s)
+    //            *s = TiglSymmetryAxis::TIGL_NO_SYMMETRY;
+    //    }
+    //    void operator()(boost::optional<TiglSymmetryAxis>* s) {
+    //        if (s)
+    //            s->reset();
+    //    }
+    //} visitor;
+    //symmetryAxis.apply_visitor(visitor);
+    if (transformation)
+        transformation->reset();
 }
 
-// Destructor
-CTiglAbstractGeometricComponent::~CTiglAbstractGeometricComponent(void)
-{
+TiglSymmetryAxis CTiglAbstractGeometricComponent::GetSymmetryAxis() {
+    struct Visitor : boost::static_visitor<TiglSymmetryAxis> {
+        TiglSymmetryAxis operator()(const TiglSymmetryAxis* s) {
+            if (s)
+                return *s;
+            else
+                return TiglSymmetryAxis::TIGL_NO_SYMMETRY;
+        }
+        TiglSymmetryAxis operator()(const boost::optional<TiglSymmetryAxis>* s) {
+            if (s)
+                return s->get_value_or(TiglSymmetryAxis::TIGL_NO_SYMMETRY);
+            else
+                return TiglSymmetryAxis::TIGL_NO_SYMMETRY;
+        }
+    } visitor;
+    return symmetryAxis.apply_visitor(visitor);
 }
 
-// Gets the component uid
-const std::string &CTiglAbstractGeometricComponent::GetUID(void) const
-{
-    return myUID;
+void CTiglAbstractGeometricComponent::SetSymmetryAxis(const TiglSymmetryAxis& axis) {
+    struct Visitor : boost::static_visitor<> {
+        Visitor(const TiglSymmetryAxis& axis)
+            : axis(axis) {}
+        void operator()(TiglSymmetryAxis* s) {
+            if (s)
+                *s = axis;
+            else
+                throw std::runtime_error("Type does not have a symmetry");
+        }
+        void operator()(boost::optional<TiglSymmetryAxis>* s) {
+            if (s)
+                *s = axis;
+            else
+                throw std::runtime_error("Type does not have a symmetry");
+        }
+    private:
+        const TiglSymmetryAxis& axis;
+    } visitor(axis);
+    symmetryAxis.apply_visitor(visitor);
 }
 
-// Sets the component uid
-void CTiglAbstractGeometricComponent::SetUID(const std::string& uid)
-{
-    myUID = uid;
+std::string CTiglAbstractGeometricComponent::GetSymmetryAxisString() {
+    return TiglSymmetryAxisToString(GetSymmetryAxis());
 }
 
-// Gets symmetry axis
-TiglSymmetryAxis CTiglAbstractGeometricComponent::GetSymmetryAxis(void)
-{
-    return mySymmetryAxis;
+void CTiglAbstractGeometricComponent::SetSymmetryAxis(const std::string& axis) {
+    SetSymmetryAxis(stringToTiglSymmetryAxis(axis));
 }
 
-// Gets symmetry axis as string
-const char* CTiglAbstractGeometricComponent::GetSymmetryAxisString(void) const
+CTiglTransformation CTiglAbstractGeometricComponent::GetTransformation() const
 {
-    switch (mySymmetryAxis) {
-    case TIGL_X_Z_PLANE: return "x-z-plane";
-    case TIGL_X_Y_PLANE: return "x-y-plane";
-    case TIGL_Y_Z_PLANE: return "y-z-plane";
-    case TIGL_NO_SYMMETRY: return "";
-    default: throw CTiglError("GetSymmetryAxisString is not defined for the current value of symmetry");
-    }
-}
-
-// Gets symmetry axis
-void CTiglAbstractGeometricComponent::SetSymmetryAxis(const std::string& axis)
-{
-    if (axis == "x-z-plane") {
-        mySymmetryAxis = TIGL_X_Z_PLANE;
-    } else if (axis == "x-y-plane") {
-        mySymmetryAxis = TIGL_X_Y_PLANE;
-    } else if (axis == "y-z-plane") {
-        mySymmetryAxis = TIGL_Y_Z_PLANE;
-    } else {
-        mySymmetryAxis = TIGL_NO_SYMMETRY;
-    }
-}
-
-CTiglTransformation CTiglAbstractGeometricComponent::GetTransformation()
-{
-    return transformation.getTransformationMatrix();
+    if (transformation)
+        return transformation->getTransformationMatrix();
+    else
+        return CTiglTransformation();
 }
 
 CTiglPoint CTiglAbstractGeometricComponent::GetTranslation() const
 {
-    return transformation.getTranslationVector();
+    if (transformation)
+        return transformation->getTranslationVector();
+    else
+        return CTiglPoint(0, 0, 0);
 }
 
-ECPACSTranslationType CTiglAbstractGeometricComponent::GetTranslationType(void) const
+ECPACSTranslationType CTiglAbstractGeometricComponent::GetTranslationType() const
 {
-    return transformation.getTranslationType();
+    if (transformation)
+        return transformation->getTranslationType();
+    else
+        return ECPACSTranslationType::ABS_LOCAL; // TODO(bgruber): is this a valid default?
 }
 
 CTiglPoint CTiglAbstractGeometricComponent::GetRotation() const
 {
-    return transformation.getRotation();
+    if (transformation)
+        return transformation->getRotation();
+    else
+        return CTiglPoint(0, 0, 0);
 }
 
 CTiglPoint CTiglAbstractGeometricComponent::GetScaling() const
 {
-    return transformation.getScaling();
+    if (transformation)
+        return transformation->getScaling();
+    else
+        return CTiglPoint(1, 1, 1);
 }
 
 void CTiglAbstractGeometricComponent::Translate(CTiglPoint trans)
 {
-    CTiglPoint newTrans(transformation.getTranslationVector());
-    newTrans += trans;
-    transformation.setTranslation(newTrans, transformation.getTranslationType());
-    transformation.updateMatrix();
+    if (transformation) {
+        transformation->setTranslation(GetTranslation() + trans, GetTranslationType());
+        transformation->updateMatrix();
+    } else
+        throw std::runtime_error("Type does not have a transformation");
 }
 
-PNamedShape CTiglAbstractGeometricComponent::GetLoft(void)
+PNamedShape CTiglAbstractGeometricComponent::GetLoft()
 {
-    if (!(loft)) {
+    if (!loft) {
 #ifdef DEBUG
         LOG(INFO) << "Building loft " << GetUID();
 #endif
@@ -144,22 +178,23 @@ PNamedShape CTiglAbstractGeometricComponent::GetLoft(void)
     return loft;
 }
 
-PNamedShape CTiglAbstractGeometricComponent::GetMirroredLoft(void)
+PNamedShape CTiglAbstractGeometricComponent::GetMirroredLoft()
 {
-    if (mySymmetryAxis == TIGL_NO_SYMMETRY) {
+    const TiglSymmetryAxis& symmetryAxis = GetSymmetryAxis();
+    if (symmetryAxis == TIGL_NO_SYMMETRY) {
         PNamedShape nullShape;
         nullShape.reset();
         return nullShape;
     }
 
     gp_Ax2 mirrorPlane;
-    if (mySymmetryAxis == TIGL_X_Z_PLANE) {
+    if (symmetryAxis == TIGL_X_Z_PLANE) {
         mirrorPlane = gp_Ax2(gp_Pnt(0,0,0),gp_Dir(0.,1.,0.));
     }
-    else if (mySymmetryAxis == TIGL_X_Y_PLANE) {
+    else if (symmetryAxis == TIGL_X_Y_PLANE) {
         mirrorPlane = gp_Ax2(gp_Pnt(0,0,0),gp_Dir(0.,0.,1.));
     }
-    else if (mySymmetryAxis == TIGL_Y_Z_PLANE) {
+    else if (symmetryAxis == TIGL_Y_Z_PLANE) {
         mirrorPlane = gp_Ax2(gp_Pnt(0,0,0),gp_Dir(1.,0.,0.));
     }
 
@@ -212,18 +247,19 @@ bool CTiglAbstractGeometricComponent::GetIsOn(const gp_Pnt& pnt)
 
 bool CTiglAbstractGeometricComponent::GetIsOnMirrored(const gp_Pnt& pnt) 
 {
-    if (mySymmetryAxis == TIGL_NO_SYMMETRY) {
+    const TiglSymmetryAxis& symmetryAxis = GetSymmetryAxis();
+    if (symmetryAxis == TIGL_NO_SYMMETRY) {
         return false;
     }
 
     gp_Pnt mirroredPnt(pnt);
-    if (mySymmetryAxis == TIGL_X_Z_PLANE) {
+    if (symmetryAxis == TIGL_X_Z_PLANE) {
         mirroredPnt.SetY(-mirroredPnt.Y());
     }
-    else if (mySymmetryAxis == TIGL_X_Y_PLANE) {
+    else if (symmetryAxis == TIGL_X_Y_PLANE) {
         mirroredPnt.SetZ(-mirroredPnt.Z());
     }
-    else if (mySymmetryAxis == TIGL_Y_Z_PLANE) {
+    else if (symmetryAxis == TIGL_Y_Z_PLANE) {
         mirroredPnt.SetX(-mirroredPnt.X());
     }
     

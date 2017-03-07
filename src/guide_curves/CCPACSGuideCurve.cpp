@@ -20,6 +20,8 @@
 * @brief  Implementation of a CPACS guide curve
 */
 
+#include <cstdlib>
+
 #include "tigl.h"
 #include "CCPACSGuideCurve.h"
 #include "CTiglError.h"
@@ -36,130 +38,59 @@ CCPACSGuideCurve::CCPACSGuideCurve()
 }
 
 // Destructor
-CCPACSGuideCurve::~CCPACSGuideCurve(void)
+CCPACSGuideCurve::~CCPACSGuideCurve()
 {
     Cleanup();
 }
 
 // Cleanup routine
-void CCPACSGuideCurve::Cleanup(void)
+void CCPACSGuideCurve::Cleanup()
 {
-    name       = "";
-    uid        = "";
-    description= "";
-    fromGuideCurveUID = "";
+    m_name       = "";
+    m_uID        = "";
+    m_description= "";
+    m_fromGuideCurveUID_choice1 = boost::none;
+    m_fromRelativeCircumference_choice2 = boost::none;
     fromRelativeCircumferenceIsSet = true;
 }
 
 // Read guide curve file
-void CCPACSGuideCurve::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& xpath)
+void CCPACSGuideCurve::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
 {
     Cleanup();
+    generated::CPACSGuideCurve::ReadCPACS(tixiHandle, xpath);
 
-    std::string namePath                  = xpath + "/name";
-    std::string describtionPath           = xpath + "/description";
-    std::string fromGuideCurveUIDPath     = xpath + "/fromGuideCurveUID";
-    std::string guideCurveProfileUIDPath  = xpath + "/guideCurveProfileUID";
-
-    // Get subelement "name"
-    char* ptrName = NULL;
-    if (tixiGetTextElement(tixiHandle, namePath.c_str(), &ptrName) == SUCCESS) {
-        name = ptrName;
-    }
-
-    // Get guide curve "uid"
-    char* ptrUID = NULL;
-    if (tixiGetTextAttribute(tixiHandle, xpath.c_str(), "uID", &ptrUID) == SUCCESS) {
-        uid = ptrUID;
-    }
-
-    // Get subelement "description"
-    char* ptrDescription = NULL;
-    if (tixiGetTextElement(tixiHandle, describtionPath.c_str(), &ptrDescription) == SUCCESS) {
-        description = ptrDescription;
-    }
-
-    // Get guide curve profile UID
-    char* ptrGuideCurveProfileUID = NULL;
-    if (tixiGetTextElement(tixiHandle, (xpath+"/guideCurveProfileUID").c_str(), &ptrGuideCurveProfileUID) != SUCCESS) {
-        throw CTiglError("Error: XML error while reading guideCurveProfileUID in CCPACSGuideCurve::ReadCPACS", TIGL_XML_ERROR);
-    }
-    profileUID = ptrGuideCurveProfileUID;
-
-    // check if fromRelativeCircumference or fromGuideCurveUID is set
-    bool foundFromRelativeCircumference = (tixiCheckElement(tixiHandle, (xpath + "/fromRelativeCircumference").c_str()) == SUCCESS);
-    bool foundFromGuideCurveUID = (tixiCheckElement(tixiHandle, (xpath + "/fromGuideCurveUID").c_str()) == SUCCESS);
-    if (foundFromRelativeCircumference && foundFromGuideCurveUID) {
+    if (HasFromRelativeCircumference_choice2() && HasFromGuideCurveUID_choice1()) {
         throw CTiglError("Error: It is forbidden to give fromRelativeCircumference AND fromGuideCurveUID in CCPACSGuideCurve::ReadCPACS", TIGL_XML_ERROR);
-    }
-    else if (foundFromRelativeCircumference) {
+    } else if (HasFromRelativeCircumference_choice2()) {
         fromRelativeCircumferenceIsSet = true;
-        if (tixiGetDoubleElement(tixiHandle, (xpath + "/fromRelativeCircumference").c_str(), &fromRelativeCircumference) != SUCCESS) {
-            throw CTiglError("Error: XML error while reading fromRelativeCircumference in CCPACSGuideCurve::ReadCPACS", TIGL_XML_ERROR);
-        }
-    }
-    else if (foundFromGuideCurveUID) {
+    } else if (HasFromGuideCurveUID_choice1()) {
         fromRelativeCircumferenceIsSet = false;
-        char* ptrFromGuideCurveUID = NULL;
-        if (tixiGetTextElement(tixiHandle, (xpath+"/fromGuideCurveUID").c_str(), &ptrFromGuideCurveUID) != SUCCESS) {
-            throw CTiglError("Error: XML error while reading fromGuideCurveUID in CCPACSGuideCurve::ReadCPACS", TIGL_XML_ERROR);
-        }
-        fromGuideCurveUID = ptrFromGuideCurveUID;
-    }
-    else {
+    } else {
         throw CTiglError("Error: Attribute fromRelativeCircumference OR fromGuideCurveUID missing in CCPACSGuideCurve::ReadCPACS", TIGL_XML_ERROR);
     }
-    // read in toRelativeCircumference
-    if (tixiGetDoubleElement(tixiHandle, (xpath + "/toRelativeCircumference").c_str(), &toRelativeCircumference) != SUCCESS) {
-        throw CTiglError("Error: XML error while reading toRelativeCircumference in CCPACSGuideCurve::ReadCPACS", TIGL_XML_ERROR);
-    }
-}
-
-// Returns the name of the guide curve
-const std::string& CCPACSGuideCurve::GetName(void) const
-{
-    return name;
-}
-
-const std::string& CCPACSGuideCurve::GetDescription(void) const
-{
-    return description;
-}
-
-// Returns the UID of the guide curve
-const std::string& CCPACSGuideCurve::GetUID(void) const
-{
-    return uid;
-}
-
-// Returns the profile UID of the guide curve
-const std::string& CCPACSGuideCurve::GetGuideCurveProfileUID(void) const
-{
-    return profileUID;
 }
 
 // Check if fromRelativeCircumference is set
-bool CCPACSGuideCurve::GetFromRelativeCircumferenceIsSet(void) const
+bool CCPACSGuideCurve::GetFromRelativeCircumferenceIsSet() const
 {
     return fromRelativeCircumferenceIsSet;
 }
 
-// Returns the UID of the neighboring guide curve
-const std::string& CCPACSGuideCurve::GetFromGuideCurveUID(void) const
-{
-    return fromGuideCurveUID;
-}
-
 // Returns the relative circumference of the starting profile
-const double& CCPACSGuideCurve::GetFromRelativeCircumference(void) const
+double CCPACSGuideCurve::GetFromRelativeCircumference() const
 {
-    return fromRelativeCircumference;
+    return std::strtod(m_fromRelativeCircumference_choice2->c_str(), NULL);
 }
 
 // Returns the relative circumference of the end profile
-const double& CCPACSGuideCurve::GetToRelativeCircumference(void) const
+double CCPACSGuideCurve::GetToRelativeCircumference() const
 {
-    return toRelativeCircumference;
+    return std::strtod(m_toRelativeCircumference.c_str(), NULL);
+}
+
+const std::string& CCPACSGuideCurve::GetFromGuideCurveUID() const {
+    return GetFromGuideCurveUID_choice1();
 }
 
 } // end namespace tigl

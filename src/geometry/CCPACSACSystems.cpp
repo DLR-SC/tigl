@@ -37,40 +37,40 @@ CCPACSACSystems::CCPACSACSystems(CCPACSConfiguration* config)
 }
 
 // Destructor
-CCPACSACSystems::~CCPACSACSystems(void)
+CCPACSACSystems::~CCPACSACSystems()
 {
     Cleanup();
 }
 
 // Invalidates internal state
-void CCPACSACSystems::Invalidate(void)
+void CCPACSACSystems::Invalidate()
 {
     genericSystems.Invalidate();
 }
 
 // Cleanup routine
-void CCPACSACSystems::Cleanup(void)
+void CCPACSACSystems::Cleanup()
 {
     Invalidate();
 }
 
 // Read CPACS systems element
-void CCPACSACSystems::ReadCPACS(TixiDocumentHandle tixiHandle, const char* configurationUID)
+void CCPACSACSystems::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& configurationUID)
 {
     Cleanup();
     char *tmpString = NULL;
 
-    if (tixiUIDGetXPath(tixiHandle, configurationUID, &tmpString) != SUCCESS) {
+    if (tixiUIDGetXPath(tixiHandle, configurationUID.c_str(), &tmpString) != SUCCESS) {
         throw CTiglError("XML error: tixiUIDGetXPath failed in CCPACSACSystems::ReadCPACS", TIGL_XML_ERROR);
     }
 
     // Read genericSystems
-    genericSystems.ReadCPACS(tixiHandle, configurationUID);
+    genericSystems.ReadCPACS(tixiHandle, configurationUID.c_str());
 
 }
 
 // Returns the genericSystems object.
-CCPACSGenericSystems& CCPACSACSystems::GetGenericSystems(void)
+CCPACSGenericSystems& CCPACSACSystems::GetGenericSystems()
 {
     return genericSystems;
 }

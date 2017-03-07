@@ -41,7 +41,7 @@ class CTiglUIDManager
 {
 public:
     // Constructor
-    TIGL_EXPORT CTiglUIDManager(void);
+    TIGL_EXPORT CTiglUIDManager();
 
     // Function to add a UID and a geometric component to the uid store.
     TIGL_EXPORT void AddUID(const std::string& uid, ITiglGeometricComponent* componentPtr);
@@ -57,32 +57,32 @@ public:
     TIGL_EXPORT CTiglAbstractPhysicalComponent* GetParentComponent(const std::string& uid);
 
     // Returns the root component of the geometric topology.
-    TIGL_EXPORT CTiglAbstractPhysicalComponent* GetRootComponent(void);
+    TIGL_EXPORT CTiglAbstractPhysicalComponent* GetRootComponent();
 
     // Returns the container with all root components of the geometric topology that have children.
-    TIGL_EXPORT const UIDStoreContainerType& GetAllRootComponentsWithChildren(void);
+    TIGL_EXPORT const UIDStoreContainerType& GetAllRootComponentsWithChildren();
 
     // Returns the contianer with all registered shapes
     TIGL_EXPORT const ShapeContainerType& GetShapeContainer();
 
     // Clears the uid store
-    TIGL_EXPORT void Clear(void);
+    TIGL_EXPORT void Clear();
 
     // Sets the root component
     TIGL_EXPORT void SetRootComponent(CTiglAbstractPhysicalComponent* rootComponent);
 
     // Virtual Destructor
-    TIGL_EXPORT virtual ~CTiglUIDManager(void);
+    TIGL_EXPORT virtual ~CTiglUIDManager();
 
 protected:
     // Update internal UID manager data.
-    void Update(void);
+    void Update();
 
     // Returns the root component of the geometric topology.
-    void FindRootComponents(void);
+    void FindRootComponents();
 
     // Builds the parent child relationships.
-    void BuildParentChildTree(void);
+    void BuildParentChildTree();
     
     
     // Returns a pointer to the geometric component for the given unique id.

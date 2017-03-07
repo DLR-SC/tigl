@@ -115,6 +115,15 @@ INCLUDE(CheckCXXSourceCompiles)
 SET(SRC1 "#include <memory>\nint main(){\n std::shared_ptr<int> a(new int)\;\n return 0\;\n}\n")
 CHECK_CXX_SOURCE_COMPILES(${SRC1} HAVE_STDSHARED_PTR)
 
+# enable parallel builds in Visual Studio
+if (MSVC)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
+endif()
+
+# enable C++11 on non Visual Studio compilers (Visual Studio uses most recent C++ standard automatically)
+if (NOT MSVC)
+	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+endif (NOT MSVC)
 
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/src/tigl_config.h.in ${CMAKE_CURRENT_BINARY_DIR}/src/tigl_config.h)
 

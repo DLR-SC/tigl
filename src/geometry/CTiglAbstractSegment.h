@@ -47,13 +47,16 @@ class CTiglAbstractSegment : public CTiglAbstractGeometricComponent
 {
 
 public:
-    TIGL_EXPORT CTiglAbstractSegment(int segIndex);
+    TIGL_EXPORT CTiglAbstractSegment(int segIndex, TiglSymmetryAxis* axis = NULL);
+    TIGL_EXPORT CTiglAbstractSegment(int segIndex, boost::optional<TiglSymmetryAxis>* axis);
+    TIGL_EXPORT CTiglAbstractSegment(int segIndex, CCPACSTransformation* trans, TiglSymmetryAxis* axis = NULL);
+    TIGL_EXPORT CTiglAbstractSegment(int segIndex, CCPACSTransformation* trans, boost::optional<TiglSymmetryAxis>* axis);
 
     // Invalidates internal state
-    TIGL_EXPORT virtual void Invalidate(void);
+    TIGL_EXPORT virtual void Invalidate();
 
     // Returns the segment index of this segment
-    TIGL_EXPORT int GetSegmentIndex(void) const;
+    TIGL_EXPORT int GetSegmentIndex() const;
 
     // Returns the continuityof the connection to the next segment
     TIGL_EXPORT TiglContinuity GetContinuity() const;
@@ -63,8 +66,6 @@ protected:
     int                  mySegmentIndex;       /**< Index of this segment                   */
     bool                 invalidated;          /**< Internal state flag                     */
     TiglContinuity       continuity;           /**< Continuity of the connection to the next segment */
-
-    CTiglAbstractSegment(){} /* do nothing */
 
 };  // end class CTiglAbstractSegment
 

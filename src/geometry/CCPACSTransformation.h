@@ -19,10 +19,8 @@
 #ifndef CCPACSTRANSFORMATION_H
 #define CCPACSTRANSFORMATION_H
 
-#include "tigl_config.h"
-#include "tixi.h"
+#include "generated/CPACSTransformation.h"
 
-#include "CTiglPoint.h"
 #include "CTiglTransformation.h"
 #include "ECPACSTranslationType.h"
 
@@ -30,7 +28,7 @@ namespace tigl
 {
 
 
-class CCPACSTransformation
+class CCPACSTransformation : public generated::CPACSTransformation
 {
 public:
     TIGL_EXPORT CCPACSTransformation();
@@ -44,9 +42,9 @@ public:
     /// this function must be called explitly after the previous setters
     TIGL_EXPORT void updateMatrix();
     
-    TIGL_EXPORT const CTiglPoint& getTranslationVector() const;
-    TIGL_EXPORT const CTiglPoint& getRotation() const;
-    TIGL_EXPORT const CTiglPoint& getScaling() const;
+    TIGL_EXPORT CTiglPoint getTranslationVector() const;
+    TIGL_EXPORT CTiglPoint getRotation() const;
+    TIGL_EXPORT CTiglPoint getScaling() const;
     TIGL_EXPORT ECPACSTranslationType getTranslationType() const;
     TIGL_EXPORT CTiglTransformation getTransformationMatrix() const;
     
@@ -55,16 +53,11 @@ public:
     * @param tixiHandle Handle to the xml document
     * @param transformationXPath XPath to the parent object
     */
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& transformationXPath);
-
-    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& transformationXPath);
-    
-    TIGL_EXPORT ~CCPACSTransformation();
+    TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& transformationXPath) OVERRIDE;
 
 private:
+    // caches the transformation created from scaling, rotation and translation
     CTiglTransformation _transformationMatrix;
-    CTiglPoint _translation, _rotation, _scaling;
-    ECPACSTranslationType _translationType;
 };
 
 } // namespace tigl

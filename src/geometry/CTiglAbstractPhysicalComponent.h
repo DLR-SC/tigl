@@ -37,20 +37,22 @@
 #include "CTiglTransformation.h"
 #include "CTiglPoint.h"
 
-namespace tigl 
+namespace tigl
 {
 
 class CTiglAbstractPhysicalComponent : public CTiglAbstractGeometricComponent
 {
-
 public:
     // Container type to store a components children
     typedef std::list<CTiglAbstractPhysicalComponent*> ChildContainerType;
 
-    TIGL_EXPORT CTiglAbstractPhysicalComponent();
+    TIGL_EXPORT CTiglAbstractPhysicalComponent(TiglSymmetryAxis* symmetryAxis = NULL);
+    TIGL_EXPORT CTiglAbstractPhysicalComponent(boost::optional<TiglSymmetryAxis>* symmetryAxis);
+    TIGL_EXPORT CTiglAbstractPhysicalComponent(CCPACSTransformation* trans, TiglSymmetryAxis* symmetryAxis = NULL);
+    TIGL_EXPORT CTiglAbstractPhysicalComponent(CCPACSTransformation* trans, boost::optional<TiglSymmetryAxis>* symmetryAxis);
 
     // Returns the parent unique id
-    TIGL_EXPORT virtual std::string& GetParentUID(void);
+    TIGL_EXPORT virtual std::string& GetParentUID();
 
     // Sets the parent uid.
     TIGL_EXPORT virtual void SetParentUID(const std::string& parentUID);
@@ -61,14 +63,12 @@ public:
     // Returns a pointer to the list of children of a component.
     TIGL_EXPORT virtual ChildContainerType GetChildren(bool recursive);
 
-    TIGL_EXPORT virtual void SetSymmetryAxis(const std::string& axis);
-
 protected:
     // Define a std::map to store the indices of already fused segments
     typedef std::map<int, int> FusedElementsContainerType;
 
     // Resets the geometric component.
-    virtual void Reset(void);
+    virtual void Reset();
 
     ChildContainerType childContainer;
     std::string        parentUID;       /**< UID of the parent of this component */

@@ -26,6 +26,9 @@
 #ifndef CTIGLABSTRACTGEOMETRICCOMPONENT_H
 #define CTIGLABSTRACTGEOMETRICCOMPONENT_H
 
+#include <boost/variant.hpp>
+#include <boost/optional.hpp>
+
 #include "tigl_internal.h"
 
 #include <list>
@@ -35,49 +38,43 @@
 
 #include "ITiglGeometricComponent.h"
 
-
-namespace tigl 
+namespace tigl
 {
+class CCPACSTransformation;
 
 class CTiglAbstractGeometricComponent : public ITiglGeometricComponent
 {
-
 public:
     // Constructor
-    TIGL_EXPORT CTiglAbstractGeometricComponent(void);
+    TIGL_EXPORT CTiglAbstractGeometricComponent(TiglSymmetryAxis* symmetryAxis = NULL);
+    TIGL_EXPORT CTiglAbstractGeometricComponent(boost::optional<TiglSymmetryAxis>* symmetryAxis);
+    TIGL_EXPORT CTiglAbstractGeometricComponent(CCPACSTransformation* trans, TiglSymmetryAxis* symmetryAxis = NULL);
+    TIGL_EXPORT CTiglAbstractGeometricComponent(CCPACSTransformation* trans, boost::optional<TiglSymmetryAxis>* symmetryAxis);
 
-    // Virtual Destructor
-    TIGL_EXPORT virtual ~CTiglAbstractGeometricComponent(void);
-
-       // Gets the loft of a geometric component
-    TIGL_EXPORT virtual PNamedShape GetLoft(void);
+    // Gets the loft of a geometric component
+    TIGL_EXPORT virtual PNamedShape GetLoft();
 
     // Get the loft mirrored at the mirror plane
-    TIGL_EXPORT virtual PNamedShape GetMirroredLoft(void);
-
-    // Gets the component uid
-    TIGL_EXPORT virtual const std::string& GetUID(void) const;
-
-    // Sets the component uid
-    TIGL_EXPORT virtual void SetUID(const std::string& uid);
+    TIGL_EXPORT virtual PNamedShape GetMirroredLoft();
 
     // Gets symmetry axis
-    TIGL_EXPORT virtual TiglSymmetryAxis GetSymmetryAxis(void);
-
-    // Gets symmetry axis as string
-    TIGL_EXPORT virtual const char* GetSymmetryAxisString(void) const;
+    TIGL_EXPORT TiglSymmetryAxis GetSymmetryAxis();
 
     // Sets symmetry axis
-    TIGL_EXPORT virtual void SetSymmetryAxis(const std::string& axis);
+    TIGL_EXPORT void SetSymmetryAxis(const TiglSymmetryAxis& axis);
+
+    // Gets symmetry axis as string
+    DEPRECATED TIGL_EXPORT std::string GetSymmetryAxisString();
+
+    // Sets symmetry axis as string
+    DEPRECATED TIGL_EXPORT void SetSymmetryAxis(const std::string& axis);
 
     // Get transformation object
-    TIGL_EXPORT virtual CTiglTransformation GetTransformation(void);
+    TIGL_EXPORT virtual CTiglTransformation GetTransformation() const OVERRIDE;
 
     // Get component translation
-    TIGL_EXPORT virtual CTiglPoint GetTranslation(void) const;
-    
-    // Get type of translation (global or local)
-    TIGL_EXPORT virtual ECPACSTranslationType GetTranslationType(void) const;
+    TIGL_EXPORT virtual CTiglPoint GetTranslation() const OVERRIDE;
+    TIGL_EXPORT virtual ECPACSTranslationType GetTranslationType() const OVERRIDE;
 
     // Get component rotation
     TIGL_EXPORT virtual CTiglPoint GetRotation() const;
@@ -86,8 +83,8 @@ public:
     TIGL_EXPORT virtual CTiglPoint GetScaling() const;
 
     // Set transformation object
-    TIGL_EXPORT virtual void Translate(CTiglPoint trans);
-    
+    TIGL_EXPORT virtual void Translate(CTiglPoint trans) OVERRIDE;
+
     // return if pnt lies on the loft
     TIGL_EXPORT virtual bool GetIsOn(const gp_Pnt &pnt);
     
@@ -96,22 +93,22 @@ public:
     TIGL_EXPORT bool GetIsOnMirrored(const gp_Pnt &pnt);
 protected:
     // Resets the geometric component.
-    virtual void Reset(void);
+    virtual void Reset();
     
-    virtual PNamedShape BuildLoft(void) = 0;
+    virtual PNamedShape BuildLoft() = 0;
 
-    CCPACSTransformation       transformation;
-    PNamedShape                loft;
+    PNamedShape           loft;
 
 private:
     // Copy constructor
-    CTiglAbstractGeometricComponent(const CTiglAbstractGeometricComponent& ) { /* Do nothing */ }
+    CTiglAbstractGeometricComponent(const CTiglAbstractGeometricComponent&);
 
     // Assignment operator
     void operator=(const CTiglAbstractGeometricComponent& );
 
-    std::string        myUID;           /**< UID of this component               */
-    TiglSymmetryAxis   mySymmetryAxis;  /**< SymmetryAxis of this component      */
+private:
+    CCPACSTransformation* transformation;                                                 // references down to the transformation of the derived class (may be empty in case derived class does not have transformation)
+    boost::variant<TiglSymmetryAxis*, boost::optional<TiglSymmetryAxis>*> symmetryAxis;   // references down to the symmetryAxis of the derived class (may be empty in case derived class does not have symmetry)
 };
 
 } // end namespace tigl

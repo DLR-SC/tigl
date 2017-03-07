@@ -36,11 +36,17 @@
 namespace tigl 
 {
 
-CTiglAbstractPhysicalComponent::CTiglAbstractPhysicalComponent()
-    : CTiglAbstractGeometricComponent()
-{
-    childContainer.clear();
-}
+CTiglAbstractPhysicalComponent::CTiglAbstractPhysicalComponent(TiglSymmetryAxis* symmetryAxis)
+    : CTiglAbstractGeometricComponent(NULL, symmetryAxis) {}
+
+CTiglAbstractPhysicalComponent::CTiglAbstractPhysicalComponent(boost::optional<TiglSymmetryAxis>* symmetryAxis)
+    : CTiglAbstractGeometricComponent(NULL, symmetryAxis) {}
+
+CTiglAbstractPhysicalComponent::CTiglAbstractPhysicalComponent(CCPACSTransformation* trans, TiglSymmetryAxis* symmetryAxis)
+    : CTiglAbstractGeometricComponent(trans, symmetryAxis) {}
+
+CTiglAbstractPhysicalComponent::CTiglAbstractPhysicalComponent(CCPACSTransformation* trans, boost::optional<TiglSymmetryAxis>* symmetryAxis)
+    : CTiglAbstractGeometricComponent(trans, symmetryAxis) {}
 
 // Adds a child to this geometric component.
 void CTiglAbstractPhysicalComponent::AddChild(CTiglAbstractPhysicalComponent* componentPtr)
@@ -73,7 +79,7 @@ CTiglAbstractPhysicalComponent::ChildContainerType CTiglAbstractPhysicalComponen
 }
 
 // Resets the geometric component.
-void CTiglAbstractPhysicalComponent::Reset(void)
+void CTiglAbstractPhysicalComponent::Reset()
 {
     CTiglAbstractGeometricComponent::Reset();
     childContainer.clear();
@@ -81,7 +87,7 @@ void CTiglAbstractPhysicalComponent::Reset(void)
 }
 
 // Returns the parent unique id
-std::string& CTiglAbstractPhysicalComponent::GetParentUID(void)
+std::string& CTiglAbstractPhysicalComponent::GetParentUID()
 {
     return parentUID;
 }
@@ -91,20 +97,6 @@ void CTiglAbstractPhysicalComponent::SetParentUID(const std::string& parentUID)
 {
     this->parentUID = parentUID;
 }
-
-void CTiglAbstractPhysicalComponent::SetSymmetryAxis(const std::string& axis)
-{
-    CTiglAbstractGeometricComponent::SetSymmetryAxis(axis);
-
-    ChildContainerType::iterator it = childContainer.begin();
-    for (; it != childContainer.end(); ++it) {
-        CTiglAbstractPhysicalComponent * pChild = *it;
-        if (pChild) {
-            pChild->SetSymmetryAxis(axis);
-        }
-    }
-}
-
 
 } // namespace tigl
 

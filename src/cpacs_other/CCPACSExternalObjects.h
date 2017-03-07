@@ -19,35 +19,17 @@
 #ifndef CCPACSEXTERNALOBJECTS_H
 #define CCPACSEXTERNALOBJECTS_H
 
-#include "tigl_internal.h"
-#include "tixi.h"
-
-#include <vector>
+#include "generated/CPACSGenericGeometryComponents.h"
 
 namespace tigl
 {
-
-class CCPACSExternalObject;
-class CCPACSConfiguration;
-
-class CCPACSExternalObjects
+class CCPACSExternalObjects : public generated::CPACSGenericGeometryComponents
 {
 public:
-    TIGL_EXPORT CCPACSExternalObjects(CCPACSConfiguration* config = 0);
-    TIGL_EXPORT ~CCPACSExternalObjects();
-    
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const char* configurationUID);
-    
-    TIGL_EXPORT CCPACSExternalObject& GetObject(int index) const;
-    TIGL_EXPORT int GetObjectCount(void) const;
+    TIGL_EXPORT CCPACSExternalObjects(CCPACSAircraftModel* parent);
 
-protected:
-    void Cleanup(void);
-    
-private:
-    typedef std::vector<CCPACSExternalObject*> CCPACSExtObjectContainer;
-    CCPACSExtObjectContainer _objects;
-    CCPACSConfiguration* _config;
+    TIGL_EXPORT CCPACSExternalObject& GetObject(int index) const;
+    TIGL_EXPORT int GetObjectCount() const;
 };
 
 } //namespace tigl

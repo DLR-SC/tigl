@@ -16,11 +16,7 @@
 #ifndef CCPACSWINGSPARSEGMENTS_H
 #define CCPACSWINGSPARSEGMENTS_H
 
-#include <string>
-#include <vector>
-
-#include <tixi.h>
-
+#include "generated/CPACSSparSegments.h"
 #include "tigl_internal.h"
 
 
@@ -31,32 +27,16 @@ namespace tigl
 class CCPACSWingSparSegment;
 class CCPACSWingSpars;
 
-class CCPACSWingSparSegments
+class CCPACSWingSparSegments : public generated::CPACSSparSegments
 {
-private:
-    typedef std::vector<CCPACSWingSparSegment*> CCPACSWingSparSegmentContainer;
-    
 public:
-    TIGL_EXPORT CCPACSWingSparSegments(CCPACSWingSpars& parent);
-    TIGL_EXPORT virtual ~CCPACSWingSparSegments(void);
+    TIGL_EXPORT CCPACSWingSparSegments(CCPACSWingSpars* parent);
 
-    TIGL_EXPORT void Cleanup(void);
-    TIGL_EXPORT void Invalidate(void);
-
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & sparSegmentsXPath);
-    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string & sparSegmentsXPath) const;
+    TIGL_EXPORT void Invalidate();
 
     TIGL_EXPORT int GetSparSegmentCount() const;
     TIGL_EXPORT CCPACSWingSparSegment& GetSparSegment(int index) const;
     TIGL_EXPORT CCPACSWingSparSegment& GetSparSegment(const std::string& uid) const;
-
-private:
-    CCPACSWingSparSegments(const CCPACSWingSparSegments&);
-    void operator=(const CCPACSWingSparSegments&);
-
-private:
-    CCPACSWingSparSegmentContainer sparSegments;
-    CCPACSWingSpars& parent;
 };
 
 } // end namespace tigl

@@ -31,7 +31,7 @@ namespace tigl
 {
 
 // Constructor
-CTiglUIDManager::CTiglUIDManager(void) : 
+CTiglUIDManager::CTiglUIDManager() : 
     invalidated(true),
     rootComponent(0),
     rootComponentCnt(0)
@@ -39,13 +39,13 @@ CTiglUIDManager::CTiglUIDManager(void) :
 }
 
 // Destructor
-CTiglUIDManager::~CTiglUIDManager(void)
+CTiglUIDManager::~CTiglUIDManager()
 {
     Clear();
 }
 
 // Update internal UID manager data.
-void CTiglUIDManager::Update(void)
+void CTiglUIDManager::Update()
 {
     if (!invalidated) {
         return;
@@ -128,7 +128,7 @@ CTiglAbstractPhysicalComponent* CTiglUIDManager::GetPhysicalComponent(const std:
 
 
 // Clears the uid store
-void CTiglUIDManager::Clear(void) 
+void CTiglUIDManager::Clear() 
 {
     physicalShapes.clear();
     allShapes.clear();
@@ -155,21 +155,21 @@ CTiglAbstractPhysicalComponent* CTiglUIDManager::GetParentComponent(const std::s
 }
 
 // Returns the root component of the geometric topology.
-CTiglAbstractPhysicalComponent* CTiglUIDManager::GetRootComponent(void)
+CTiglAbstractPhysicalComponent* CTiglUIDManager::GetRootComponent()
 {
     Update();
     return rootComponent;
 }
 
 // Returns the container with all root components of the geometric topology that have children.
-const UIDStoreContainerType& CTiglUIDManager::GetAllRootComponentsWithChildren(void)
+const UIDStoreContainerType& CTiglUIDManager::GetAllRootComponentsWithChildren()
 {
     Update();
     return allRootComponentsWithChildren;
 }
 
 // Finds and saves all root components and the main root component of the geometric topology.
-void CTiglUIDManager::FindRootComponents(void)
+void CTiglUIDManager::FindRootComponents()
 {
     rootComponent = 0;
     rootComponentCnt = 0;
@@ -194,7 +194,7 @@ void CTiglUIDManager::FindRootComponents(void)
 }
 
 // Builds the parent child relationships.
-void CTiglUIDManager::BuildParentChildTree(void)
+void CTiglUIDManager::BuildParentChildTree()
 {
     // root component must be set manually, error if not
     if (!rootComponent) {

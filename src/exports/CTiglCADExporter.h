@@ -62,7 +62,7 @@ public:
     TIGL_EXPORT CTiglCADExporter(){}
 
     // Empty destructor
-    TIGL_EXPORT virtual ~CTiglCADExporter(void) { /* empty */}
+    TIGL_EXPORT virtual ~CTiglCADExporter() { /* empty */}
 
     /// Adds a shape
     TIGL_EXPORT void AddShape(PNamedShape shape, ExportOptions options = ExportOptions());

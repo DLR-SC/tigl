@@ -30,10 +30,9 @@
 #ifndef CCPACSWINGPROFILE_H
 #define CCPACSWINGPROFILE_H
 
-#include <vector>
-#include <string>
-
-#include "tixi.h"
+#include <memory>
+#include "generated/CPACSProfileGeometry.h"
+#include "generated/UniquePtr.h"
 #include "tigl_internal.h"
 #include "TopoDS_Wire.hxx"
 #include "TopoDS_Edge.hxx"
@@ -45,8 +44,9 @@
 
 namespace tigl 
 {
+class CCPACSWingProfilePointList;
 
-class CCPACSWingProfile
+class CCPACSWingProfile : public generated::CPACSProfileGeometry
 {
 
 public:
@@ -54,28 +54,16 @@ public:
     TIGL_EXPORT CCPACSWingProfile();
 
     // Virtual Destructor
-    TIGL_EXPORT virtual ~CCPACSWingProfile(void);
+    TIGL_EXPORT virtual ~CCPACSWingProfile();
 
     // Read CPACS wing profile file
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& profileXPath);
-
-    // Write CPACS wing profile file
-    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& profileXPath) const;
-
-    // Returns the name of the wing profile
-    TIGL_EXPORT const std::string& GetName(void) const;
-
-    // Returns the description of the wing profile
-    TIGL_EXPORT const std::string& GetDescription(void) const;
-
-    // Returns the uid of the wing profile
-    TIGL_EXPORT const std::string& GetUID(void) const;
+    TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) OVERRIDE;
 
     // Returns whether the profile is a rotor profile
-    TIGL_EXPORT bool IsRotorProfile(void) const;
+    TIGL_EXPORT bool IsRotorProfile() const;
 
     // Invalidates internal wing profile state
-    TIGL_EXPORT void Invalidate(void);
+    TIGL_EXPORT void Invalidate();
 
     // Returns the wing profile wire, splitted at the leading edge
     TIGL_EXPORT TopoDS_Wire GetSplitWire();
@@ -107,11 +95,11 @@ public:
 
     // Returns the leading edge point of the wing profile wire. The leading edge point
     // is already transformed by the wing profile element transformation.
-    TIGL_EXPORT gp_Pnt GetLEPoint(void);
+    TIGL_EXPORT gp_Pnt GetLEPoint();
 
     // Returns the trailing edge point of the wing profile wire. The trailing edge point
     // is already transformed by the wing profile element transformation.
-    TIGL_EXPORT gp_Pnt GetTEPoint(void);
+    TIGL_EXPORT gp_Pnt GetTEPoint();
 
     // Returns the chord line as a wire
     TIGL_EXPORT TopoDS_Wire GetChordLineWire();
@@ -135,17 +123,18 @@ public:
     TIGL_EXPORT gp_Pnt GetLowerPoint(double xsi);
 
     // get profile algorithm type
-    TIGL_EXPORT PTiglWingProfileAlgo GetProfileAlgo(void) const;
+    TIGL_EXPORT ITiglWingProfileAlgo* GetProfileAlgo();
+    TIGL_EXPORT const ITiglWingProfileAlgo* GetProfileAlgo() const;
 
     // Checks, whether the trailing edge is blunt or not
-    TIGL_EXPORT bool HasBluntTE(void) const;
+    TIGL_EXPORT bool HasBluntTE() const;
 
 protected:
     // Cleanup routine
-    void Cleanup(void);
+    void Cleanup();
 
     // Update the internal state, i.g. recalculates wire and le, te points
-    void Update(void);
+    void Update();
 
     // Returns an upper or lower point on the wing profile in
     // dependence of parameter xsi, which ranges from 0.0 to 1.0.
@@ -156,7 +145,6 @@ protected:
 
     // Helper function to determine the chord line between leading and trailing edge in the profile plane
     Handle(Geom2d_TrimmedCurve) GetChordLine();
-
 
 private:
     // Copy constructor
@@ -170,8 +158,9 @@ private:
     std::string               description;    /**< CPACS wing profile description */
     std::string               uid;            /**< CPACS wing profile UID */
     bool                      isRotorProfile; /**< Indicates if this profile is a rotor profile */
-    bool                      invalidated;    /**< Flag if element is invalid */
-    PTiglWingProfileAlgo      profileAlgo;    /**< Pointer to wing profile algorithm (pointList, CST, etc.) */
+    bool                                        invalidated;    /**< Flag if element is invalid */
+    ITiglWingProfileAlgo*                       profileAlgo; // points to the current profile algo (non-owning)
+    unique_ptr<CCPACSWingProfilePointList> pointListAlgo; // is created in case the wing profile alg is a point list, otherwise cst2d constructed in the base class is used
 
 }; // class CCPACSWingProfile
 

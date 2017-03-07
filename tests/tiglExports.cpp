@@ -151,7 +151,7 @@ TiglCPACSConfigurationHandle tiglExportRectangularWing::tiglRectangularWingHandl
 
 /******************************************************************************/
 
-//void tiglxEportMeshedWingVTK_small_example(void)
+//void tiglxEportMeshedWingVTK_small_example()
 //{
 //    const BRepPrimAPI_MakeCylinder cone(/* radius */ 2.0, /* height */ 8.0);
 //    const CTiglExportVtk writer(config);

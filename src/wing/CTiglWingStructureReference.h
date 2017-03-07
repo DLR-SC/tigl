@@ -52,7 +52,7 @@ public:
     TIGL_EXPORT bool HasStructure() const;
     TIGL_EXPORT CCPACSWingCSStructure& GetStructure();
     TIGL_EXPORT const CCPACSWingCSStructure& GetStructure() const;
-    TIGL_EXPORT PNamedShape GetLoft(void) const;
+    TIGL_EXPORT PNamedShape GetLoft() const;
     TIGL_EXPORT gp_Pnt GetPoint(double eta, double xsi) const;
     TIGL_EXPORT double GetLeadingEdgeLength() const;
     TIGL_EXPORT double GetTrailingEdgeLength() const;
@@ -67,10 +67,10 @@ public:
     TIGL_EXPORT gp_Vec GetMidplaneNormal(double eta) const;
     TIGL_EXPORT gp_Pnt GetMidplaneOrChordlinePoint(double eta, double xsi) const;
     TIGL_EXPORT TopoDS_Shape GetMidplaneShape() const;
-    TIGL_EXPORT TopoDS_Shape GetUpperShape(void) const;
-    TIGL_EXPORT TopoDS_Shape GetLowerShape(void) const;
-    TIGL_EXPORT TopoDS_Face GetInnerFace(void) const;
-    TIGL_EXPORT TopoDS_Face GetOuterFace(void) const;
+    TIGL_EXPORT TopoDS_Shape GetUpperShape() const;
+    TIGL_EXPORT TopoDS_Shape GetLowerShape() const;
+    TIGL_EXPORT TopoDS_Face GetInnerFace() const;
+    TIGL_EXPORT TopoDS_Face GetOuterFace() const;
     TIGL_EXPORT TopoDS_Wire GetMidplaneLine(const gp_Pnt& startPoint, const gp_Pnt& endPoint) const;
     TIGL_EXPORT const std::string& GetUID() const;
 
