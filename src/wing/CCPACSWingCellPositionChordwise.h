@@ -45,7 +45,6 @@ public:
     };
 
     TIGL_EXPORT CCPACSWingCellPositionChordwise(CCPACSWingCell* parent);
-    TIGL_EXPORT CCPACSWingCellPositionChordwise(CPACSWingIntermediateStructureCell* parent);
 
     using generated::CPACSCellPositioningChordwise::ReadCPACS;
     using generated::CPACSCellPositioningChordwise::WriteCPACS;

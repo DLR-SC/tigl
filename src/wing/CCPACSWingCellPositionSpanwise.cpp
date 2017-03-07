@@ -25,9 +25,6 @@ namespace tigl
 CCPACSWingCellPositionSpanwise::CCPACSWingCellPositionSpanwise(CCPACSWingCell* parent)
     : generated::CPACSCellPositioningSpanwise(parent) {}
 
-CCPACSWingCellPositionSpanwise::CCPACSWingCellPositionSpanwise(CPACSWingIntermediateStructureCell* parent)
-    : generated::CPACSCellPositioningSpanwise(parent) {}
-
 CCPACSWingCellPositionSpanwise::InputType CCPACSWingCellPositionSpanwise::GetInputType() const {
     if (m_eta1_choice1 && m_eta2_choice1)
         return InputType::Eta;
@@ -86,8 +83,9 @@ std::pair<std::string, int> CCPACSWingCellPositionSpanwise::GetRib() const {
 }
 void CCPACSWingCellPositionSpanwise::invalidateParent()
 {
-    if (IsParent<CCPACSWingCell>())
-        GetParent<CCPACSWingCell>()->Invalidate();
+    //if (IsParent<CCPACSWingCell>())
+    //    GetParent<CCPACSWingCell>()->Invalidate();
+    GetParent()->Invalidate();
 }
 
 }
