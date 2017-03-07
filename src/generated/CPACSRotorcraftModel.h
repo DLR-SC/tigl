@@ -21,7 +21,6 @@
 #include <string>
 #include <boost/optional.hpp>
 #include "tigl_internal.h"
-#include "CPACSReference.h"
 #include <CCPACSFuselages.h>
 #include <CCPACSWings.h>
 #include <CCPACSRotors.h>
@@ -54,10 +53,6 @@ namespace tigl
             TIGL_EXPORT const std::string& GetDescription() const;
             TIGL_EXPORT void SetDescription(const std::string& value);
             
-            TIGL_EXPORT bool HasReference() const;
-            TIGL_EXPORT const CPACSReference& GetReference() const;
-            TIGL_EXPORT CPACSReference& GetReference();
-            
             TIGL_EXPORT bool HasFuselages() const;
             TIGL_EXPORT const CCPACSFuselages& GetFuselages() const;
             TIGL_EXPORT CCPACSFuselages& GetFuselages();
@@ -78,7 +73,6 @@ namespace tigl
             std::string                        m_uID;
             std::string                        m_name;
             boost::optional<std::string>       m_description;
-            boost::optional<CPACSReference>    m_reference;
             boost::optional<CCPACSFuselages>   m_fuselages;
             boost::optional<CCPACSWings>       m_wings;
             boost::optional<CCPACSRotors>      m_rotors;

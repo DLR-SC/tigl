@@ -17,7 +17,6 @@
 
 #include <cassert>
 #include "CCPACSWingComponentSegment.h"
-#include "CPACSTrailingEdgeDevice.h"
 #include "TixiHelper.h"
 #include "CTiglLogging.h"
 #include "CTiglError.h"
@@ -33,19 +32,14 @@ namespace tigl
         {
             //assert(parent != NULL);
             m_parent = parent;
-            m_parentType = &typeid(CCPACSWingComponentSegment);
-        }
-        
-        CPACSWingComponentSegmentStructure::CPACSWingComponentSegmentStructure(CPACSTrailingEdgeDevice* parent) :
-            m_upperShell(reinterpret_cast<CCPACSWingCSStructure*>(this)), 
-            m_lowerShell(reinterpret_cast<CCPACSWingCSStructure*>(this))
-        {
-            //assert(parent != NULL);
-            m_parent = parent;
-            m_parentType = &typeid(CPACSTrailingEdgeDevice);
         }
         
         CPACSWingComponentSegmentStructure::~CPACSWingComponentSegmentStructure() {}
+        
+        CCPACSWingComponentSegment* CPACSWingComponentSegmentStructure::GetParent() const
+        {
+            return m_parent;
+        }
         
         void CPACSWingComponentSegmentStructure::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
@@ -63,20 +57,6 @@ namespace tigl
             }
             else {
                 LOG(ERROR) << "Required element lowerShell is missing";
-            }
-            
-            // read element intermediateStructure
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/intermediateStructure")) {
-                m_intermediateStructure = boost::in_place();
-                try {
-                    m_intermediateStructure->ReadCPACS(tixiHandle, xpath + "/intermediateStructure");
-                } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read intermediateStructure at xpath << " << xpath << ": " << e.what();
-                    m_intermediateStructure = boost::none;
-                } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read intermediateStructure at xpath << " << xpath << ": " << e.getError();
-                    m_intermediateStructure = boost::none;
-                }
             }
             
             // read element ribsDefinitions
@@ -119,12 +99,6 @@ namespace tigl
             tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/lowerShell");
             m_lowerShell.WriteCPACS(tixiHandle, xpath + "/lowerShell");
             
-            // write element intermediateStructure
-            if (m_intermediateStructure) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/intermediateStructure");
-                m_intermediateStructure->WriteCPACS(tixiHandle, xpath + "/intermediateStructure");
-            }
-            
             // write element ribsDefinitions
             if (m_ribsDefinitions) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ribsDefinitions");
@@ -157,21 +131,6 @@ namespace tigl
         CCPACSWingShell& CPACSWingComponentSegmentStructure::GetLowerShell()
         {
             return m_lowerShell;
-        }
-        
-        bool CPACSWingComponentSegmentStructure::HasIntermediateStructure() const
-        {
-            return static_cast<bool>(m_intermediateStructure);
-        }
-        
-        const CPACSWingIntermediateStructureCells& CPACSWingComponentSegmentStructure::GetIntermediateStructure() const
-        {
-            return *m_intermediateStructure;
-        }
-        
-        CPACSWingIntermediateStructureCells& CPACSWingComponentSegmentStructure::GetIntermediateStructure()
-        {
-            return *m_intermediateStructure;
         }
         
         bool CPACSWingComponentSegmentStructure::HasRibsDefinitions() const

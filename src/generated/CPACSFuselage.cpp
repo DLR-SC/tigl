@@ -105,20 +105,6 @@ namespace tigl
                 LOG(ERROR) << "Required element segments is missing";
             }
             
-            // read element fuelTanks
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/fuelTanks")) {
-                m_fuelTanks = boost::in_place();
-                try {
-                    m_fuelTanks->ReadCPACS(tixiHandle, xpath + "/fuelTanks");
-                } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read fuelTanks at xpath << " << xpath << ": " << e.what();
-                    m_fuelTanks = boost::none;
-                } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read fuelTanks at xpath << " << xpath << ": " << e.getError();
-                    m_fuelTanks = boost::none;
-                }
-            }
-            
             // read element cutOuts
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/cutOuts")) {
                 m_cutOuts = boost::in_place();
@@ -178,12 +164,6 @@ namespace tigl
             // write element segments
             tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/segments");
             m_segments.WriteCPACS(tixiHandle, xpath + "/segments");
-            
-            // write element fuelTanks
-            if (m_fuelTanks) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/fuelTanks");
-                m_fuelTanks->WriteCPACS(tixiHandle, xpath + "/fuelTanks");
-            }
             
             // write element cutOuts
             if (m_cutOuts) {
@@ -296,21 +276,6 @@ namespace tigl
         CCPACSFuselageSegments& CPACSFuselage::GetSegments()
         {
             return m_segments;
-        }
-        
-        bool CPACSFuselage::HasFuelTanks() const
-        {
-            return static_cast<bool>(m_fuelTanks);
-        }
-        
-        const CPACSFuselageFuelTanks& CPACSFuselage::GetFuelTanks() const
-        {
-            return *m_fuelTanks;
-        }
-        
-        CPACSFuselageFuelTanks& CPACSFuselage::GetFuelTanks()
-        {
-            return *m_fuelTanks;
         }
         
         bool CPACSFuselage::HasCutOuts() const

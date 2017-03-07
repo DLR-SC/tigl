@@ -27,26 +27,11 @@ namespace tigl
     namespace generated
     {
         // This class is used in:
-        // CPACSActuatorControlSurfaceAttachment
-        // CPACSActuatorFuselageWingAttachment
-        // CPACSActuatorParentAttachment
-        // CPACSAttachmentPin
         // CPACSCap
-        // CPACSCruiseRoller
-        // CPACSInterConnectionStrutAttachment
-        // CPACSInterconnectionStrut
-        // CPACSTrackActuator
-        // CPACSTrackCar
-        // CPACSTrackFairing
-        // CPACSTrackStructure
-        // CPACSTrackStrut1
-        // CPACSTrackStrut2
         // CPACSWeb
-        // CPACSWingIntermediateStructureCell
         // CPACSWingRibCell
         // CPACSWingRibCrossSection
         // CPACSWingSkin
-        // CPACSZCoupling
         
         // generated from /xsd:schema/xsd:complexType[640]
         class CPACSMaterialDefinition

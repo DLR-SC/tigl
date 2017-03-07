@@ -23,7 +23,6 @@
 #include "tigl_internal.h"
 #include <CCPACSWingShell.h>
 #include <CCPACSWingShell.h>
-#include "CPACSWingIntermediateStructureCells.h"
 #include <CCPACSWingRibsDefinitions.h>
 #include <CCPACSWingSpars.h>
 
@@ -33,38 +32,18 @@ namespace tigl
     
     namespace generated
     {
-        class CPACSTrailingEdgeDevice;
-        
         // This class is used in:
         // CPACSComponentSegment
-        // CPACSTrailingEdgeDevice
         
         // generated from /xsd:schema/xsd:complexType[895]
         class CPACSWingComponentSegmentStructure
         {
         public:
             TIGL_EXPORT CPACSWingComponentSegmentStructure(CCPACSWingComponentSegment* parent);
-            TIGL_EXPORT CPACSWingComponentSegmentStructure(CPACSTrailingEdgeDevice* parent);
             
             TIGL_EXPORT virtual ~CPACSWingComponentSegmentStructure();
             
-            template<typename P>
-            TIGL_EXPORT bool IsParent() const
-            {
-                return m_parentType != NULL && *m_parentType == typeid(P);
-            }
-            
-            template<typename P>
-            TIGL_EXPORT P* GetParent() const
-            {
-                #ifdef HAVE_CPP11
-                static_assert(std::is_same<P, CCPACSWingComponentSegment>::value || std::is_same<P, CPACSTrailingEdgeDevice>::value, "template argument for P is not a parent class of CPACSWingComponentSegmentStructure");
-                #endif
-                if (!IsParent<P>()) {
-                    throw CTiglError("bad parent");
-                }
-                return static_cast<P*>(m_parent);
-            }
+            TIGL_EXPORT CCPACSWingComponentSegment* GetParent() const;
             
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
@@ -75,10 +54,6 @@ namespace tigl
             TIGL_EXPORT const CCPACSWingShell& GetLowerShell() const;
             TIGL_EXPORT CCPACSWingShell& GetLowerShell();
             
-            TIGL_EXPORT bool HasIntermediateStructure() const;
-            TIGL_EXPORT const CPACSWingIntermediateStructureCells& GetIntermediateStructure() const;
-            TIGL_EXPORT CPACSWingIntermediateStructureCells& GetIntermediateStructure();
-            
             TIGL_EXPORT bool HasRibsDefinitions() const;
             TIGL_EXPORT const CCPACSWingRibsDefinitions& GetRibsDefinitions() const;
             TIGL_EXPORT CCPACSWingRibsDefinitions& GetRibsDefinitions();
@@ -88,14 +63,12 @@ namespace tigl
             TIGL_EXPORT CCPACSWingSpars& GetSpars();
             
         protected:
-            void* m_parent;
-            const std::type_info* m_parentType;
+            CCPACSWingComponentSegment* m_parent;
             
-            CCPACSWingShell                                      m_upperShell;
-            CCPACSWingShell                                      m_lowerShell;
-            boost::optional<CPACSWingIntermediateStructureCells> m_intermediateStructure;
-            boost::optional<CCPACSWingRibsDefinitions>           m_ribsDefinitions;
-            boost::optional<CCPACSWingSpars>                     m_spars;
+            CCPACSWingShell                            m_upperShell;
+            CCPACSWingShell                            m_lowerShell;
+            boost::optional<CCPACSWingRibsDefinitions> m_ribsDefinitions;
+            boost::optional<CCPACSWingSpars>           m_spars;
             
         private:
             #ifdef HAVE_CPP11
@@ -112,6 +85,4 @@ namespace tigl
     }
     
     // This type is customized, use type CCPACSWingCSStructure
-    
-    using generated::CPACSTrailingEdgeDevice;
 }

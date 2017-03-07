@@ -50,20 +50,6 @@ namespace tigl
                 m_description = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
             }
             
-            // read element reference
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/reference")) {
-                m_reference = boost::in_place();
-                try {
-                    m_reference->ReadCPACS(tixiHandle, xpath + "/reference");
-                } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read reference at xpath << " << xpath << ": " << e.what();
-                    m_reference = boost::none;
-                } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read reference at xpath << " << xpath << ": " << e.getError();
-                    m_reference = boost::none;
-                }
-            }
-            
             // read element fuselages
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/fuselages")) {
                 m_fuselages = boost::in_place(reinterpret_cast<CCPACSRotorcraftModel*>(this));
@@ -138,12 +124,6 @@ namespace tigl
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
             }
             
-            // write element reference
-            if (m_reference) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/reference");
-                m_reference->WriteCPACS(tixiHandle, xpath + "/reference");
-            }
-            
             // write element fuselages
             if (m_fuselages) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/fuselages");
@@ -203,21 +183,6 @@ namespace tigl
         void CPACSRotorcraftModel::SetDescription(const std::string& value)
         {
             m_description = value;
-        }
-        
-        bool CPACSRotorcraftModel::HasReference() const
-        {
-            return static_cast<bool>(m_reference);
-        }
-        
-        const CPACSReference& CPACSRotorcraftModel::GetReference() const
-        {
-            return *m_reference;
-        }
-        
-        CPACSReference& CPACSRotorcraftModel::GetReference()
-        {
-            return *m_reference;
         }
         
         bool CPACSRotorcraftModel::HasFuselages() const

@@ -61,14 +61,6 @@ namespace tigl
                 LOG(ERROR) << "Required element skin is missing";
             }
             
-            // read element stringer
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/stringer")) {
-                m_stringer.ReadCPACS(tixiHandle, xpath + "/stringer");
-            }
-            else {
-                LOG(ERROR) << "Required element stringer is missing";
-            }
-            
             // read element positioningLeadingEdge
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/positioningLeadingEdge")) {
                 m_positioningLeadingEdge.ReadCPACS(tixiHandle, xpath + "/positioningLeadingEdge");
@@ -113,10 +105,6 @@ namespace tigl
             tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/skin");
             m_skin.WriteCPACS(tixiHandle, xpath + "/skin");
             
-            // write element stringer
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/stringer");
-            m_stringer.WriteCPACS(tixiHandle, xpath + "/stringer");
-            
             // write element positioningLeadingEdge
             tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/positioningLeadingEdge");
             m_positioningLeadingEdge.WriteCPACS(tixiHandle, xpath + "/positioningLeadingEdge");
@@ -153,16 +141,6 @@ namespace tigl
         CPACSWingSkin& CPACSWingCell::GetSkin()
         {
             return m_skin;
-        }
-        
-        const CPACSWingStringer& CPACSWingCell::GetStringer() const
-        {
-            return m_stringer;
-        }
-        
-        CPACSWingStringer& CPACSWingCell::GetStringer()
-        {
-            return m_stringer;
         }
         
         const CCPACSWingCellPositionChordwise& CPACSWingCell::GetPositioningLeadingEdge() const

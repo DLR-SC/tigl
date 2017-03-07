@@ -27,10 +27,6 @@ namespace tigl
     namespace generated
     {
         // This class is used in:
-        // CPACSActuatorFuselageWing
-        // CPACSAttachmentPin
-        // CPACSComponentSegmentPath
-        // CPACSComponentSegmentStep
         // CPACSFuselageCutOut
         // CPACSGuideCurve
         

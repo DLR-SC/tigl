@@ -22,10 +22,6 @@
 #include <boost/optional.hpp>
 #include "tigl_internal.h"
 #include <CCPACSWingCSStructure.h>
-#include "CPACSControlSurfaces.h"
-#include "CPACSComponentSegmentPath.h"
-#include "CPACSWingFuselageAttachments.h"
-#include "CPACSWingStructuralMounts.h"
 
 namespace tigl
 {
@@ -69,35 +65,15 @@ namespace tigl
             TIGL_EXPORT const CCPACSWingCSStructure& GetStructure() const;
             TIGL_EXPORT CCPACSWingCSStructure& GetStructure();
             
-            TIGL_EXPORT bool HasControlSurfaces() const;
-            TIGL_EXPORT const CPACSControlSurfaces& GetControlSurfaces() const;
-            TIGL_EXPORT CPACSControlSurfaces& GetControlSurfaces();
-            
-            TIGL_EXPORT bool HasPath() const;
-            TIGL_EXPORT const CPACSComponentSegmentPath& GetPath() const;
-            TIGL_EXPORT CPACSComponentSegmentPath& GetPath();
-            
-            TIGL_EXPORT bool HasWingFuselageAttachments() const;
-            TIGL_EXPORT const CPACSWingFuselageAttachments& GetWingFuselageAttachments() const;
-            TIGL_EXPORT CPACSWingFuselageAttachments& GetWingFuselageAttachments();
-            
-            TIGL_EXPORT bool HasWingStructuralMounts() const;
-            TIGL_EXPORT const CPACSWingStructuralMounts& GetWingStructuralMounts() const;
-            TIGL_EXPORT CPACSWingStructuralMounts& GetWingStructuralMounts();
-            
         protected:
             CCPACSWingComponentSegments* m_parent;
             
-            std::string                                   m_uID;
-            std::string                                   m_name;
-            boost::optional<std::string>                  m_description;
-            std::string                                   m_fromElementUID;
-            std::string                                   m_toElementUID;
-            boost::optional<CCPACSWingCSStructure>        m_structure;
-            boost::optional<CPACSControlSurfaces>         m_controlSurfaces;
-            boost::optional<CPACSComponentSegmentPath>    m_path;
-            boost::optional<CPACSWingFuselageAttachments> m_wingFuselageAttachments;
-            boost::optional<CPACSWingStructuralMounts>    m_wingStructuralMounts;
+            std::string                            m_uID;
+            std::string                            m_name;
+            boost::optional<std::string>           m_description;
+            std::string                            m_fromElementUID;
+            std::string                            m_toElementUID;
+            boost::optional<CCPACSWingCSStructure> m_structure;
             
         private:
             #ifdef HAVE_CPP11

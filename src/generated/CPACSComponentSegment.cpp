@@ -92,62 +92,6 @@ namespace tigl
                 }
             }
             
-            // read element controlSurfaces
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/controlSurfaces")) {
-                m_controlSurfaces = boost::in_place();
-                try {
-                    m_controlSurfaces->ReadCPACS(tixiHandle, xpath + "/controlSurfaces");
-                } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read controlSurfaces at xpath << " << xpath << ": " << e.what();
-                    m_controlSurfaces = boost::none;
-                } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read controlSurfaces at xpath << " << xpath << ": " << e.getError();
-                    m_controlSurfaces = boost::none;
-                }
-            }
-            
-            // read element path
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/path")) {
-                m_path = boost::in_place();
-                try {
-                    m_path->ReadCPACS(tixiHandle, xpath + "/path");
-                } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read path at xpath << " << xpath << ": " << e.what();
-                    m_path = boost::none;
-                } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read path at xpath << " << xpath << ": " << e.getError();
-                    m_path = boost::none;
-                }
-            }
-            
-            // read element wingFuselageAttachments
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/wingFuselageAttachments")) {
-                m_wingFuselageAttachments = boost::in_place();
-                try {
-                    m_wingFuselageAttachments->ReadCPACS(tixiHandle, xpath + "/wingFuselageAttachments");
-                } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read wingFuselageAttachments at xpath << " << xpath << ": " << e.what();
-                    m_wingFuselageAttachments = boost::none;
-                } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read wingFuselageAttachments at xpath << " << xpath << ": " << e.getError();
-                    m_wingFuselageAttachments = boost::none;
-                }
-            }
-            
-            // read element wingStructuralMounts
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/wingStructuralMounts")) {
-                m_wingStructuralMounts = boost::in_place();
-                try {
-                    m_wingStructuralMounts->ReadCPACS(tixiHandle, xpath + "/wingStructuralMounts");
-                } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read wingStructuralMounts at xpath << " << xpath << ": " << e.what();
-                    m_wingStructuralMounts = boost::none;
-                } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read wingStructuralMounts at xpath << " << xpath << ": " << e.getError();
-                    m_wingStructuralMounts = boost::none;
-                }
-            }
-            
         }
         
         void CPACSComponentSegment::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
@@ -178,30 +122,6 @@ namespace tigl
             if (m_structure) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/structure");
                 m_structure->WriteCPACS(tixiHandle, xpath + "/structure");
-            }
-            
-            // write element controlSurfaces
-            if (m_controlSurfaces) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/controlSurfaces");
-                m_controlSurfaces->WriteCPACS(tixiHandle, xpath + "/controlSurfaces");
-            }
-            
-            // write element path
-            if (m_path) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/path");
-                m_path->WriteCPACS(tixiHandle, xpath + "/path");
-            }
-            
-            // write element wingFuselageAttachments
-            if (m_wingFuselageAttachments) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/wingFuselageAttachments");
-                m_wingFuselageAttachments->WriteCPACS(tixiHandle, xpath + "/wingFuselageAttachments");
-            }
-            
-            // write element wingStructuralMounts
-            if (m_wingStructuralMounts) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/wingStructuralMounts");
-                m_wingStructuralMounts->WriteCPACS(tixiHandle, xpath + "/wingStructuralMounts");
             }
             
         }
@@ -274,66 +194,6 @@ namespace tigl
         CCPACSWingCSStructure& CPACSComponentSegment::GetStructure()
         {
             return *m_structure;
-        }
-        
-        bool CPACSComponentSegment::HasControlSurfaces() const
-        {
-            return static_cast<bool>(m_controlSurfaces);
-        }
-        
-        const CPACSControlSurfaces& CPACSComponentSegment::GetControlSurfaces() const
-        {
-            return *m_controlSurfaces;
-        }
-        
-        CPACSControlSurfaces& CPACSComponentSegment::GetControlSurfaces()
-        {
-            return *m_controlSurfaces;
-        }
-        
-        bool CPACSComponentSegment::HasPath() const
-        {
-            return static_cast<bool>(m_path);
-        }
-        
-        const CPACSComponentSegmentPath& CPACSComponentSegment::GetPath() const
-        {
-            return *m_path;
-        }
-        
-        CPACSComponentSegmentPath& CPACSComponentSegment::GetPath()
-        {
-            return *m_path;
-        }
-        
-        bool CPACSComponentSegment::HasWingFuselageAttachments() const
-        {
-            return static_cast<bool>(m_wingFuselageAttachments);
-        }
-        
-        const CPACSWingFuselageAttachments& CPACSComponentSegment::GetWingFuselageAttachments() const
-        {
-            return *m_wingFuselageAttachments;
-        }
-        
-        CPACSWingFuselageAttachments& CPACSComponentSegment::GetWingFuselageAttachments()
-        {
-            return *m_wingFuselageAttachments;
-        }
-        
-        bool CPACSComponentSegment::HasWingStructuralMounts() const
-        {
-            return static_cast<bool>(m_wingStructuralMounts);
-        }
-        
-        const CPACSWingStructuralMounts& CPACSComponentSegment::GetWingStructuralMounts() const
-        {
-            return *m_wingStructuralMounts;
-        }
-        
-        CPACSWingStructuralMounts& CPACSComponentSegment::GetWingStructuralMounts()
-        {
-            return *m_wingStructuralMounts;
         }
         
     }
