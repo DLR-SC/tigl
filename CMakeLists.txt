@@ -69,7 +69,7 @@ set (OCC_LIBS
 )
 
 set (OCC_VISU_LIBS
-	TKV3d TKMesh TKHLR TKService
+    TKV3d TKMesh TKHLR TKService
 )
 
 # search OCE. If OCE is not found, search for standard OpenCASCADE
@@ -110,10 +110,22 @@ if(TIGL_USE_GLOG)
     endif()
 endif(TIGL_USE_GLOG)
 
-# check for include files and other functions
-INCLUDE(CheckCXXSourceCompiles)
-SET(SRC1 "#include <memory>\nint main(){\n std::shared_ptr<int> a(new int)\;\n return 0\;\n}\n")
-CHECK_CXX_SOURCE_COMPILES(${SRC1} HAVE_STDSHARED_PTR)
+# enable C++11 support if available
+include(CheckCXXCompilerFlag)
+include(CheckCXXSourceCompiles)
+CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
+CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
+if(COMPILER_SUPPORTS_CXX11)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+elseif(COMPILER_SUPPORTS_CXX0X)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+endif()
+
+# check features
+file(READ cmake/cpp11featureTest.cpp src_cpp11_features)
+set(src_shared_ptr "#include <memory>\nint main(){\n std::shared_ptr<int> a(new int)\;\n return 0\;\n}\n")
+CHECK_CXX_SOURCE_COMPILES("${src_cpp11_features}" HAVE_CPP11)
+CHECK_CXX_SOURCE_COMPILES(${src_shared_ptr} HAVE_STDSHARED_PTR)
 
 # enable parallel builds in Visual Studio
 if (MSVC)
@@ -197,7 +209,7 @@ elseif(APPLE)
 endif()
 
 # set generators
-if(CPACK_GENERATOR)	
+if(CPACK_GENERATOR)    
     #already set
 elseif(APPLE)
     set(CPACK_GENERATOR DragNDrop)
@@ -217,7 +229,7 @@ else()
 endif()
 
 set(CPACK_PACKAGE_EXECUTABLES 
-	"TIGLViewer" "TIGL Viewer"
+    "TIGLViewer" "TIGL Viewer"
 )
 
 include(CPack)
