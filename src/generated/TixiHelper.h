@@ -45,6 +45,7 @@ namespace tigl
         public:
             TixiError(ReturnCode ret);
             TixiError(ReturnCode ret, const std::string& message);
+            ~TixiError() throw() {}
 
             virtual const char* what() const throw() /*override*/;
 
@@ -183,7 +184,7 @@ namespace tigl
         };
 
         template<typename T>
-        void TixiReadElements(const TixiDocumentHandle& tixiHandle, const std::string& xpath, std::vector<unique_ptr<T> >& children, int minOccurs = -1, int maxOccurs = -1)
+        void TixiReadElements(const TixiDocumentHandle& tixiHandle, const std::string& xpath, std::vector<unique_ptr<T>>& children, int minOccurs = -1, int maxOccurs = -1)
         {
             TixiReadElements(tixiHandle, xpath, children, ChildReader<T>(), minOccurs, maxOccurs);
         }
@@ -205,7 +206,7 @@ namespace tigl
         };
 
         template<typename T, typename Parent>
-        void TixiReadElements(const TixiDocumentHandle& tixiHandle, const std::string& xpath, std::vector<unique_ptr<T> >& children, Parent* parent, int minOccurs = -1, int maxOccurs = -1)
+        void TixiReadElements(const TixiDocumentHandle& tixiHandle, const std::string& xpath, std::vector<unique_ptr<T>>& children, Parent* parent, int minOccurs = -1, int maxOccurs = -1)
         {
             TixiReadElements(tixiHandle, xpath, children, ChildWithParentReader<T, Parent>(parent), minOccurs, maxOccurs);
         }
@@ -269,7 +270,7 @@ namespace tigl
         };
 
         template<typename T>
-        void TixiSaveElements(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::vector<unique_ptr<T> >& children)
+        void TixiSaveElements(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::vector<unique_ptr<T>>& children)
         {
             TixiSaveElements(tixiHandle, xpath, children, ChildWriter<T>());
         }
