@@ -24,7 +24,6 @@
 
 #include <limits.h>
 
-#include <AIS_Drawer.hxx>
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_InteractiveObject.hxx>
 #include <AIS_ListOfInteractive.hxx>
@@ -38,7 +37,6 @@
 #include <Aspect_GridType.hxx>
 #include <Aspect_RectangularGrid.hxx>
 #include <Aspect_TypeOfLine.hxx>
-#include <Aspect_TypeOfText.hxx>
 #include <Aspect_WidthOfLine.hxx>
 #include <Aspect_Window.hxx>
 
@@ -121,13 +119,10 @@
 #include <Quantity_PhysicalQuantity.hxx>
 #include <Quantity_PlaneAngle.hxx>
 #include <Quantity_TypeOfColor.hxx>
-#include <SelectBasics_BasicTool.hxx>
-#include <SelectBasics_ListOfBox2d.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <SelectMgr_SelectableObject.hxx>
 #include <SelectMgr_Selection.hxx>
 #include <SelectMgr_SelectionManager.hxx>
-#include <ShapeSchema.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_ErrorHandler.hxx>
@@ -159,12 +154,9 @@
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_HSequenceOfShape.hxx>
 #include <UnitsAPI.hxx>
-#include <V3d_ColorScale.hxx>
 #include <V3d_RectangularGrid.hxx>
 #include <V3d_View.hxx>
 #include <V3d_Viewer.hxx>
-#include <Visual3d_View.hxx>
-#include <Visual3d_ViewManager.hxx>
 
 // specific to ISession2D_Shape
 #include <TopTools_ListOfShape.hxx>
@@ -198,17 +190,6 @@
 #include <IGESControl_Reader.hxx>
 #include <IGESToBRep_Actor.hxx>
 #include <IGESToBRep_Reader.hxx>
-
-// specific CSFDB
-#include <FSD_File.hxx>
-#include <MgtBRep.hxx>
-#include <PTColStd_PersistentTransientMap.hxx>
-#include <PTColStd_TransientPersistentMap.hxx>
-#include <PTopoDS_HShape.hxx>
-#include <Storage_Data.hxx>
-#include <Storage_Error.hxx>
-#include <Storage_HSeqOfRoot.hxx>
-#include <Storage_Root.hxx>
 
 // specific STL
 #include <StlAPI_Writer.hxx>

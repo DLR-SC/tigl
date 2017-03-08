@@ -17,7 +17,7 @@
 */
 
 /* 
-* This file is automatically created from tigl.h on 2015-01-30.
+* This file is automatically created from tigl.h on 2016-01-06.
 * If you experience any bugs please contact the authors
 */
 
@@ -68,9 +68,10 @@ public class TiglNativeInterface {
     public static native int tiglWingGetSymmetry(int cpacsHandle, int wingIndex, IntByReference symmetryAxisPtr);
     public static native int tiglWingComponentSegmentFindSegment(int cpacsHandle, String componentSegmentUID, double x, double y, double z, PointerByReference segmentUID, PointerByReference wingUID);
     public static native int tiglWingComponentSegmentGetPoint(int cpacsHandle, String componentSegmentUID, double eta, double xsi, DoubleByReference x, DoubleByReference y, DoubleByReference z);
-    public static native int tiglWingComponentSegmentPointGetSegmentEtaXsi(int cpacsHandle, String componentSegmentUID, double eta, double xsi, PointerByReference wingUID, PointerByReference segmentUID, DoubleByReference segmentEta, DoubleByReference segmentXsi);
+    public static native int tiglWingComponentSegmentPointGetSegmentEtaXsi(int cpacsHandle, String componentSegmentUID, double eta, double xsi, PointerByReference wingUID, PointerByReference segmentUID, DoubleByReference segmentEta, DoubleByReference segmentXsi, DoubleByReference errorDistance);
     public static native int tiglWingSegmentPointGetComponentSegmentEtaXsi(int cpacsHandle, String segmentUID, String componentSegmentUID, double segmentEta, double segmentXsi, DoubleByReference eta, DoubleByReference xsi);
-    public static native int tiglWingComponentSegmentGetSegmentIntersection(int cpacsHandle, String componentSegmentUID, String segmentUID, double csEta1, double csXsi1, double csEta2, double csXsi2, double segmentEta, DoubleByReference segmentXsi);
+    public static native int tiglWingComponentSegmentGetSegmentIntersection(int cpacsHandle, String componentSegmentUID, String segmentUID, double csEta1, double csXsi1, double csEta2, double csXsi2, double segmentEta, DoubleByReference segmentXsi, IntByReference hasWarning);
+    public static native int tiglWingComponentSegmentComputeEtaIntersection(int cpacsHandle, String componentSegmentUID, double csEta1, double csXsi1, double csEta2, double csXsi2, double eta, DoubleByReference xsi, IntByReference hasWarning);
     public static native int tiglWingComponentSegmentGetNumberOfSegments(int cpacsHandle, String componentSegmentUID, IntByReference nsegments);
     public static native int tiglWingComponentSegmentGetSegmentUID(int cpacsHandle, String componentSegmentUID, int segmentIndex, PointerByReference segmentUID);
     public static native int tiglGetFuselageCount(int cpacsHandle, IntByReference fuselageCountPtr);
@@ -126,6 +127,7 @@ public class TiglNativeInterface {
     public static native int tiglExportMeshedGeometryVTKSimple(int cpacsHandle, String filenamePtr, double deflection);
     public static native int tiglExportFuselageColladaByUID(int cpacsHandle, String fuselageUID, String filename, double deflection);
     public static native int tiglExportWingColladaByUID(int cpacsHandle, String wingUID, String filename, double deflection);
+    public static native int tiglExportFusedBREP(int cpacsHandle, String filename);
     public static native int tiglWingComponentSegmentGetMaterialCount(int cpacsHandle, String compSegmentUID, int structureType, double eta, double xsi, IntByReference materialCount);
     public static native int tiglWingComponentSegmentGetMaterialUID(int cpacsHandle, String compSegmentUID, int structureType, double eta, double xsi, int materialIndex, PointerByReference uid);
     public static native int tiglWingComponentSegmentGetMaterialThickness(int cpacsHandle, String compSegmentUID, int structureType, double eta, double xsi, int materialIndex, DoubleByReference thickness);

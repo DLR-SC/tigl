@@ -46,7 +46,7 @@ void CTiglAbstractGeometricComponent::Reset()
 {
     SetUID("");
     SetSymmetryAxis(TiglSymmetryAxis::TIGL_NO_SYMMETRY);
-    //backTransformation.SetIdentity();
+    transformation.reset();
     transformation.Reset();
 }
 
@@ -63,32 +63,37 @@ CTiglTransformation CTiglAbstractGeometricComponent::GetTransformation() const
     return transformation.AsTransformation();
 }
 
-CTiglPoint CTiglAbstractGeometricComponent::GetTranslation() const
+CTiglTransformation CTiglAbstractGeometricComponent::GetTransformation()
 {
-    return transformation.GetTranslation();
+    return transformation.getTransformationMatrix();
 }
 
-ECPACSTranslationType CTiglAbstractGeometricComponent::GetTranslationType() const {
-    return transformation.GetTranslationType();
+CTiglPoint CTiglAbstractGeometricComponent::GetTranslation() const
+{
+    return transformation.getTranslationVector();
+}
+
+ECPACSTranslationType CTiglAbstractGeometricComponent::GetTranslationType(void) const
+{
+    return transformation.getTranslationType();
 }
 
 CTiglPoint CTiglAbstractGeometricComponent::GetRotation() const
 {
-    return transformation.GetRotation();
+    return transformation.getRotation();
 }
 
 CTiglPoint CTiglAbstractGeometricComponent::GetScaling() const
 {
-    return transformation.GetScaling();
+    return transformation.getScaling();
 }
 
 void CTiglAbstractGeometricComponent::Translate(CTiglPoint trans)
 {
-    auto t = transformation.GetTranslation();
-    t.x += trans.x;
-    t.y += trans.y;
-    t.z += trans.z;
-    transformation.SetTranslation(t);
+    CTiglPoint newTrans(transformation.getTranslationVector());
+    newTrans += trans;
+    transformation.setTranslation(newTrans, transformation.getTranslationType());
+    transformation.updateMatrix();
 }
 
 PNamedShape CTiglAbstractGeometricComponent::GetLoft()

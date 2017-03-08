@@ -27,7 +27,7 @@
 #define CCPACSFUSELAGESECTIONELEMENT_H
 
 #include "generated/CPACSFuselageElement.h"
-#include "CTiglTransformation.h"
+#include "CCPACSTransformation.h"
 #include "CTiglPoint.h"
 
 namespace tigl

@@ -146,6 +146,18 @@ CTiglPoint CTiglPoint::cross_prod(const CTiglPoint& a, const CTiglPoint& b)
     return c;
 }
 
+// scalar projection of a vector a onto a nonzero vector b
+double CTiglPoint::scalar_projection(const CTiglPoint& a, const CTiglPoint& b)
+{
+    return CTiglPoint::inner_prod(a,b)/b.norm2();
+}
+
+// vector projection of a vector a onto a nonzero vector b
+CTiglPoint CTiglPoint::vector_projection(const CTiglPoint& a, const CTiglPoint& b)
+{
+    return b * (CTiglPoint::inner_prod(a,b)/b.norm2Sqr());
+}
+
 double CTiglPoint::distance2(const CTiglPoint &p) const 
 {
     return (x-p.x)*(x-p.x) + (y-p.y)*(y-p.y) + (z-p.z)*(z-p.z);

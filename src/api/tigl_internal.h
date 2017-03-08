@@ -20,7 +20,9 @@
 #define TIGL_INTERNAL_H
 
 #if defined(WIN32)
-  #if defined (TIGL_EXPORTS)
+  // define TIGL_INTERNAL_EXPORTS, if you want to expose the internal 
+  // api to the dll interface (just for testing purposes!)
+  #if defined (TIGL_INTERNAL_EXPORTS)
     #define TIGL_EXPORT __declspec (dllexport)
   #else
     #define TIGL_EXPORT

@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="cpacs_2_01.xsl"?>
+<cpacs xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation = "cpacs_schema_v201.xsd">
+    <header>
+        <name>D150 for CPACS 1.3</name>
+        <description>copied some stuff from other versions. Mission is just an example as the D150 might not make it to Newark with Mach 0.84</description>
+        <creator>Daniel Boehnke, DLR-LK</creator>
+        <timestamp>2010-07-07T12:00:00</timestamp>
+        <version>1.0</version>
+        <cpacsVersion>2.0</cpacsVersion>
+	</header>
+    <vehicles>
+        <aircraft>
+            <model uID = "D150modelID">
+                <name>DLR's D150 Release Bird for CPACS 2.0</name>
+                <description>Conventional medium range public jet transport aircraft</description>
+                <reference>
+                    <area>122.4</area>
+                    <length>4.2</length>
+                    <point>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                    </point>
+                </reference>
+                <wings>
+                    <wing symmetry = "x-z-plane" uID = "D150_wing_1ID">
+                        <name>D150_wing_1</name>
+                        <description>imported from P2C</description>
+                        <transformation>
+                            <scaling>
+                                <x>1.0</x>
+                                <y>1.0</y>
+                                <z>1.0</z>
+                            </scaling>
+                            <rotation>
+                                <x>0</x>
+                                <y>0</y>
+                                <z>0</z>
+                            </rotation>
+                            <translation refType = "absLocal">
+                                <x>0</x>
+                                <y>0</y>
+                                <z>0</z>
+                            </translation>
+                        </transformation>
+                        <sections>
+                            <section uID = "D150_wing_1Section1ID">
+                                <name>D150_wing_1Section1</name>
+                                <transformation>
+                                    <scaling>
+                                        <x>1.4142135624</x>
+                                        <y>1</y>
+                                        <z>1</z>
+                                    </scaling>
+                                    <rotation>
+                                        <x>0</x>
+                                        <y>0.0</y>
+                                        <z>45.</z>
+                                    </rotation>
+                                    <translation refType = "absLocal">
+                                        <x>0</x>
+                                        <y>0</y>
+                                        <z>0</z>
+                                    </translation>
+                                </transformation>
+                                <elements>
+                                    <element uID = "D150_wing_1Section1IDElement1">
+                                        <name>D150_wing_1Section1</name>
+                                        <airfoilUID>Profile_wing_1</airfoilUID>
+                                        <transformation>
+                                            <scaling>
+                                                <x>10.</x>
+                                                <y>10.</y>
+                                                <z>10.</z>
+                                            </scaling>
+                                            <rotation>
+                                                <x>0.0</x>
+                                                <y>0</y>
+                                                <z>0</z>
+                                            </rotation>
+                                            <translation refType = "absLocal">
+                                                <x>0</x>
+                                                <y>0</y>
+                                                <z>0</z>
+                                            </translation>
+                                        </transformation>
+                                    </element>
+                                </elements>
+                            </section>
+                            <section uID = "D150_wing_1Section2ID">
+                                <name>D150_wing_1Section2</name>
+                                <transformation>
+                                    <scaling>
+                                        <x>1</x>
+                                        <y>1</y>
+                                        <z>1</z>
+                                    </scaling>
+                                    <rotation>
+                                        <x>0</x>
+                                        <y>0.0</y>
+                                        <z>0</z>
+                                    </rotation>
+                                    <translation refType = "absLocal">
+                                        <x>0</x>
+                                        <y>0</y>
+                                        <z>0</z>
+                                    </translation>
+                                </transformation>
+                                <elements>
+                                    <element uID = "D150_wing_1Section2IDElement1">
+                                        <name>D150_wing_1Section2</name>
+                                        <airfoilUID>Profile_wing_1</airfoilUID>
+                                        <transformation>
+                                            <scaling>
+                                                <x>10.0</x>
+                                                <y>10.0</y>
+                                                <z>10.0</z>
+                                            </scaling>
+                                            <rotation>
+                                                <x>0.0</x>
+                                                <y>0</y>
+                                                <z>0</z>
+                                            </rotation>
+                                            <translation refType = "absLocal">
+                                                <x>0</x>
+                                                <y>0</y>
+                                                <z>0</z>
+                                            </translation>
+                                        </transformation>
+                                    </element>
+                                </elements>
+                            </section>
+                            <section uID = "D150_wing_1Section3ID">
+                                <name>D150_wing_1Section3</name>
+                                <transformation>
+                                    <scaling>
+                                        <x>1.4142135624</x>
+                                        <y>1</y>
+                                        <z>1</z>
+                                    </scaling>
+                                    <rotation>
+                                        <x>0</x>
+                                        <y>0.0</y>
+                                        <z>45.0</z>
+                                    </rotation>
+                                    <translation refType = "absLocal">
+                                        <x>0</x>
+                                        <y>0</y>
+                                        <z>0</z>
+                                    </translation>
+                                </transformation>
+                                <elements>
+                                    <element uID = "D150_wing_1Section3IDElement1">
+                                        <name>D150_wing_1Section3</name>
+                                        <airfoilUID>Profile_wing_1</airfoilUID>
+                                        <transformation>
+                                            <scaling>
+                                                <x>10.0</x>
+                                                <y>10.0</y>
+                                                <z>10.0</z>
+                                            </scaling>
+                                            <rotation>
+                                                <x>0.0</x>
+                                                <y>0</y>
+                                                <z>0</z>
+                                            </rotation>
+                                            <translation refType = "absLocal">
+                                                <x>0</x>
+                                                <y>0</y>
+                                                <z>0</z>
+                                            </translation>
+                                        </transformation>
+                                    </element>
+                                </elements>
+                            </section>
+                        </sections>
+                        <positionings>
+                            <positioning uID = "D150_wing_1Positioning1ID">
+                                <name>D150_wing_1Positioning1</name>
+                                <length>0.0</length>
+                                <sweepAngle>0.0</sweepAngle>
+                                <dihedralAngle>0.0</dihedralAngle>
+                                <toSectionUID>D150_wing_1Section1ID</toSectionUID>
+                            </positioning>
+                            <positioning uID = "D150_wing_1Positioning2ID">
+                                <name>D150_wing_1Positioning2</name>
+                                <length>20</length>
+                                <sweepAngle>0.0</sweepAngle>
+                                <dihedralAngle>0.0</dihedralAngle>
+                                <fromSectionUID>D150_wing_1Section1ID</fromSectionUID>
+                                <toSectionUID>D150_wing_1Section2ID</toSectionUID>
+                            </positioning>
+                            <positioning uID = "D150_wing_1Positioning3ID">
+                                <name>D150_wing_1Positioning3</name>
+                                <length>10</length>
+                                <sweepAngle>0</sweepAngle>
+                                <dihedralAngle>0</dihedralAngle>
+                                <fromSectionUID>D150_wing_1Section2ID</fromSectionUID>
+                                <toSectionUID>D150_wing_1Section3ID</toSectionUID>
+                            </positioning>
+                        </positionings>
+                        <segments>
+                            <segment uID = "D150_wing_1Segment2ID">
+                                <name>D150_wing_1Segment2ID</name>
+                                <fromElementUID>D150_wing_1Section1IDElement1</fromElementUID>
+                                <toElementUID>D150_wing_1Section2IDElement1</toElementUID>
+                            </segment>
+                            <segment uID = "D150_wing_1Segment3ID">
+                                <name>D150_wing_1Segment3ID</name>
+                                <fromElementUID>D150_wing_1Section2IDElement1</fromElementUID>
+                                <toElementUID>D150_wing_1Section3IDElement1</toElementUID>
+                            </segment>
+                        </segments>
+                        <componentSegments>
+                            <componentSegment uID = "D150_wing_CS">
+                                <name>D150_wing</name>
+                                <fromElementUID>D150_wing_1Section1IDElement1</fromElementUID>
+                                <toElementUID>D150_wing_1Section3IDElement1</toElementUID>
+							</componentSegment>
+                        </componentSegments>
+					</wing>
+                </wings>
+			</model>
+        </aircraft>
+		<profiles>
+			<wingAirfoils>
+                <wingAirfoil uID = "Profile_wing_1">
+                    <name>NameProfile_wing_1</name>
+                    <description>Profile generated automaticallz bz WingLib</description>
+                    <pointList>
+                        <x mapType = "vector">1.0;0.99318065;0.97290862;0.93973687;0.89457025;0.83864078;0.77347407;0.7008477;0.62274273;0.54128966;0.45871032;0.37725724;0.29915227;0.22652591;0.1613592;0.10542973;0.06026312;0.02709137;0.00681934;0.0;0.00681934;0.02709137;0.06026312;0.10542973;0.1613592;0.22652591;0.29915227;0.37725724;0.45871032;0.54128966;0.62274273;0.7008477;0.77347407;0.83864078;0.89457025;0.93973687;0.97290862;0.99318065;1.0</x>
+                        <y mapType = "vector">0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0</y>
+                        <z mapType = "vector">0.0;0.00156842;0.00478703;0.01009993;0.01704458;0.02471343;0.03240848;0.03960558;0.04610725;0.0520147;0.05732852;0.06187089;0.06527812;0.06697582;0.06600959;0.06200228;0.05427176;0.04144676;0.02344718;0.0;-0.02033238;-0.0377444;-0.05467523;-0.06753082;-0.07701615;-0.08345515;-0.08659188;-0.08618776;-0.08202661;-0.07386881;-0.06198569;-0.0477972;-0.03348007;-0.02095115;-0.01177135;-0.00582898;-0.00238273;-0.00057906;0.0</z>
+                    </pointList>
+                </wingAirfoil>
+            </wingAirfoils>
+		</profiles>
+	</vehicles>
+</cpacs>

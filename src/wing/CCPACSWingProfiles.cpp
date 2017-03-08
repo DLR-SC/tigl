@@ -35,6 +35,7 @@
 #include "generated/UniquePtr.h"
 #include "TixiSaveExt.h"
 #include "IOHelper.h"
+#include "CTiglLogging.h"
 
 namespace tigl
 {
@@ -58,6 +59,10 @@ void CCPACSWingProfiles::ReadCPACS(const TixiDocumentHandle& tixiHandle, const s
 void CCPACSWingProfiles::ImportCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
 {
     // we replace generated::CPACSWingAirfoils::ReadCPACS and not call it to allow instantiation of CCPACSWingProfile instead of generated::CPACSProfileGeometry
+	// TODO(bgruber): rotor airfoils
+    if (tixiCheckElement(tixiHandle, (xpath + "/rotorAirfoils").c_str()) == SUCCESS) {
+        ReadContainerElement(tixiHandle, xpath, "rotorAirfoil", 0, children);
+    }
 
     // read element wingAirfoil
     if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/wingAirfoil")) {

@@ -19,8 +19,10 @@
 #ifndef FUNCTIONTOBSPLINE_H
 #define FUNCTIONTOBSPLINE_H
 
-#include <Handle_Geom_BSplineCurve.hxx>
 #include "tiglmathfunctions.h"
+#include "tigl_internal.h"
+
+#include <Geom_BSplineCurve.hxx>
 
 namespace tigl
 {
@@ -32,23 +34,20 @@ namespace tigl
  * The function to approximate is given by 3 separate functions, one for the x values,
  * one for y-values and one for the z-values.
  */
-class CFunctionToBspline
+class TIGL_EXPORT CFunctionToBspline
 {
 public:
     /**
      * @brief CFunctionToBspline - Constructor
      *
-     * @param x Function returning the x values of the curve
-     * @param y Function returning the y values of the curve
-     * @param z Function returning the z values of the curve
-     * @param obj Additional obj that is passed to the x,y,z functions (May be NULL, depending the the functions)
+     * @param f Function returning the values of the curve
      * @param umin Start parameter of the function to approximate
      * @param umax End parameter of the function to approximate
      * @param degree Degree of the resulting B-Spline
      * @param tolerance Maximum approximation error
      * @param maxDepth Maximum depth of curve splitting -> Influences resulting segment number
      */
-    CFunctionToBspline(MathFunc x, MathFunc y, MathFunc z, void* obj,
+    CFunctionToBspline(MathFunc3d& f,
                        double umin, double umax,
                        int degree,
                        double tolerance=1e-5,
@@ -57,7 +56,7 @@ public:
     ~CFunctionToBspline();
 
     /// Computes the B-Spline approximation
-    Handle_Geom_BSplineCurve Curve();
+    Handle(Geom_BSplineCurve) Curve();
 
     /// returns the error made by spline approximation
     double ApproxError();

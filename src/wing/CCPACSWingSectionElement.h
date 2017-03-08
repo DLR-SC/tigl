@@ -27,7 +27,7 @@
 #define CCPACSWINGSECTIONELEMENT_H
 
 #include "generated/CPACSWingElement.h"
-#include "CTiglTransformation.h"
+#include "CCPACSTransformation.h"
 #include "CTiglPoint.h"
 
 namespace tigl

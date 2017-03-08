@@ -1,0 +1,3142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cpacs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="cpacs_schema.xsd">
+  <header>
+    <name>CST_BWB_Research</name>
+    <description>BWB geometry described by CST, Copyright DLR</description>
+    <creator>Pier Davide Ciampa, Thomas Zill</creator>
+    <timestamp>2014-11-03T12:00:00</timestamp>
+    <version>0.1</version>
+    <cpacsVersion>2.1</cpacsVersion>
+  </header>
+  <vehicles>
+    <aircraft>
+      <model uID="CST_BWB_2010">
+        <name>BWB</name>
+        <description>BWB-model derived from CST-parametrization</description>
+        <wings>
+          <wing symmetry="x-z-plane" uID="BWB_CST_wingID">
+            <name>BWB_CST_wing</name>
+            <description>created by CST</description>
+            <transformation uID="BWB_CST_Wing1_Transf">
+              <scaling>
+                <x>1</x>
+                <y>1</y>
+                <z>1</z>
+              </scaling>
+              <rotation>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+              </rotation>
+              <translation refType="absGlobal">
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+              </translation>
+            </transformation>
+            <sections>
+              <section uID="BWB_CST_wingSection1ID">
+                <name>BWB_CST_wingSection1</name>
+                <transformation uID="BWB_CST_wingSection1ID_Transf">
+                  <scaling uID="BWB_CST_wingSection1ID_Sca">
+                    <x>1</x>
+                    <y>1.0</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation uID="BWB_CST_wingSection1ID_Rot">
+                    <x>0</x>
+                    <y>0.0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absGlobal" uID="BWB_CST_wingSection1ID_Transl">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="BWB_CST_wingSection1IDElement1">
+                    <name>BWB_CST_wingSection1</name>
+                    <airfoilUID>profile_0.000</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>39.6</x>
+                        <y>39.6</y>
+                        <z>39.6</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absGlobal" uID="BWB_CST_wingSection1IDElement1_Transl">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="BWB_CST_wingSection2ID">
+                <name>BWB_CST_wingSection2</name>
+                <transformation uID="BWB_CST_wingSection2ID_Transf">
+                  <scaling>
+                    <x>1</x>
+                    <y>1.0</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation>
+                    <x>0</x>
+                    <y>0.0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="BWB_CST_wingSection2IDElement1">
+                    <name>BWB_CST_wingSection2</name>
+                    <airfoilUID>profile_0.000</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>39.4542</x>
+                        <y>39.4542</y>
+                        <z>39.4542</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="BWB_CST_wingSection3ID">
+                <name>BWB_CST_wingSection3</name>
+                <transformation uID="BWB_CST_wingSection3ID_Transf">
+                  <scaling>
+                    <x>1</x>
+                    <y>1.0</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation>
+                    <x>0</x>
+                    <y>0.0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="BWB_CST_wingSection3IDElement1">
+                    <name>BWB_CST_wingSection3</name>
+                    <airfoilUID>profile_0.000</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>39.2408</x>
+                        <y>39.2408</y>
+                        <z>39.2408</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="BWB_CST_wingSection4ID">
+                <name>BWB_CST_wingSection4</name>
+                <transformation uID="BWB_CST_wingSection4ID_Transf">
+                  <scaling>
+                    <x>1</x>
+                    <y>1.0</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation>
+                    <x>0</x>
+                    <y>0.0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="BWB_CST_wingSection4IDElement1">
+                    <name>BWB_CST_wingSection4</name>
+                    <airfoilUID>profile_0.000</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>38.4341</x>
+                        <y>38.4341</y>
+                        <z>38.4341</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="BWB_CST_wingSection5ID">
+                <name>BWB_CST_wingSection5</name>
+                <transformation uID="BWB_CST_wingSection5ID_Transf">
+                  <scaling>
+                    <x>1</x>
+                    <y>1.0</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation>
+                    <x>0</x>
+                    <y>0.0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="BWB_CST_wingSection5IDElement1">
+                    <name>BWB_CST_wingSection5</name>
+                    <airfoilUID>profile_0.000</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>37.0656</x>
+                        <y>37.0656</y>
+                        <z>37.0656</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="BWB_CST_wingSection6ID">
+                <name>BWB_CST_wingSection6</name>
+                <transformation uID="BWB_CST_wingSection6ID_Transf">
+                  <scaling>
+                    <x>1</x>
+                    <y>1.0</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation>
+                    <x>0</x>
+                    <y>0.0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="BWB_CST_wingSection6IDElement1">
+                    <name>BWB_CST_wingSection6</name>
+                    <airfoilUID>profile_0.000</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>35.5157</x>
+                        <y>35.5157</y>
+                        <z>35.5157</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="BWB_CST_wingSection7ID">
+                <name>BWB_CST_wingSection7</name>
+                <transformation uID="BWB_CST_wingSection7ID_Transf">
+                  <scaling>
+                    <x>1</x>
+                    <y>1.0</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation>
+                    <x>0</x>
+                    <y>0.0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="BWB_CST_wingSection7IDElement1">
+                    <name>BWB_CST_wingSection7</name>
+                    <airfoilUID>profile_0.000</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>34.7049</x>
+                        <y>34.7049</y>
+                        <z>34.7049</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="BWB_CST_wingSection8ID">
+                <name>BWB_CST_wingSection8</name>
+                <transformation uID="BWB_CST_wingSection8ID_Transf">
+                  <scaling>
+                    <x>1</x>
+                    <y>1.0</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation>
+                    <x>0</x>
+                    <y>0.0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="BWB_CST_wingSection8IDElement1">
+                    <name>BWB_CST_wingSection8</name>
+                    <airfoilUID>profile_0.000</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>32.9983</x>
+                        <y>32.9983</y>
+                        <z>32.9983</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="BWB_CST_wingSection9ID">
+                <name>BWB_CST_wingSection9</name>
+                <transformation uID="BWB_CST_wingSection9ID_Transf">
+                  <scaling>
+                    <x>1</x>
+                    <y>1.0</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation>
+                    <x>0</x>
+                    <y>0.0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="BWB_CST_wingSection9IDElement1">
+                    <name>BWB_CST_wingSection9</name>
+                    <airfoilUID>profile_0.000</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>32.1021</x>
+                        <y>32.1021</y>
+                        <z>32.1021</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="BWB_CST_wingSection10ID">
+                <name>BWB_CST_wingSection10</name>
+                <transformation uID="BWB_CST_wingSection10ID_Transf">
+                  <scaling>
+                    <x>1</x>
+                    <y>1.0</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation>
+                    <x>0</x>
+                    <y>0.0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="BWB_CST_wingSection10IDElement1">
+                    <name>BWB_CST_wingSection10</name>
+                    <airfoilUID>profile_0.000</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>30.2395</x>
+                        <y>30.2395</y>
+                        <z>30.2395</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="BWB_CST_wingSection11ID">
+                <name>BWB_CST_wingSection11</name>
+                <transformation uID="BWB_CST_wingSection11ID_Transf">
+                  <scaling>
+                    <x>1</x>
+                    <y>1.0</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation>
+                    <x>0</x>
+                    <y>0.0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="BWB_CST_wingSection11IDElement1">
+                    <name>BWB_CST_wingSection11</name>
+                    <airfoilUID>profile_0.000</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>28.3173</x>
+                        <y>28.3173</y>
+                        <z>28.3173</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="BWB_CST_wingSection12ID">
+                <name>BWB_CST_wingSection12</name>
+                <transformation uID="BWB_CST_wingSection12ID_Transf">
+                  <scaling>
+                    <x>1</x>
+                    <y>1.0</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation>
+                    <x>0</x>
+                    <y>0.0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="BWB_CST_wingSection12IDElement1">
+                    <name>BWB_CST_wingSection12</name>
+                    <airfoilUID>profile_0.000</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>26.35</x>
+                        <y>26.35</y>
+                        <z>26.35</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="BWB_CST_wingSection13ID">
+                <name>BWB_CST_wingSection13</name>
+                <transformation uID="BWB_CST_wingSection13ID_Transf">
+                  <scaling>
+                    <x>1</x>
+                    <y>1.0</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation>
+                    <x>0</x>
+                    <y>0.0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="BWB_CST_wingSection13IDElement1">
+                    <name>BWB_CST_wingSection13</name>
+                    <airfoilUID>profile_0.000</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>25.3446</x>
+                        <y>25.3446</y>
+                        <z>25.3446</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="BWB_CST_wingSection14ID">
+                <name>BWB_CST_wingSection14</name>
+                <transformation uID="BWB_CST_wingSection14ID_Transf">
+                  <scaling>
+                    <x>1</x>
+                    <y>1.0</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation>
+                    <x>0</x>
+                    <y>0.0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="BWB_CST_wingSection14IDElement1">
+                    <name>BWB_CST_wingSection14</name>
+                    <airfoilUID>profile_0.000</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>23.2587</x>
+                        <y>23.2587</y>
+                        <z>23.2587</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="BWB_CST_wingSection15ID">
+                <name>BWB_CST_wingSection15</name>
+                <transformation uID="BWB_CST_wingSection15ID_Transf">
+                  <scaling>
+                    <x>1</x>
+                    <y>1.0</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation>
+                    <x>0</x>
+                    <y>0.0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="BWB_CST_wingSection15IDElement1">
+                    <name>BWB_CST_wingSection15</name>
+                    <airfoilUID>profile_0.000</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>22.1729</x>
+                        <y>22.1729</y>
+                        <z>22.1729</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="BWB_CST_wingSection16ID">
+                <name>BWB_CST_wingSection16</name>
+                <transformation uID="BWB_CST_wingSection16ID_Transf">
+                  <scaling>
+                    <x>1</x>
+                    <y>1.0</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation>
+                    <x>0</x>
+                    <y>0.0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="BWB_CST_wingSection16IDElement1">
+                    <name>BWB_CST_wingSection16</name>
+                    <airfoilUID>profile_0.000</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>19.9391</x>
+                        <y>19.9391</y>
+                        <z>19.9391</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="BWB_CST_wingSection17ID">
+                <name>BWB_CST_wingSection17</name>
+                <transformation uID="BWB_CST_wingSection17ID_Transf">
+                  <scaling>
+                    <x>1</x>
+                    <y>1.0</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation>
+                    <x>0</x>
+                    <y>0.0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="BWB_CST_wingSection17IDElement1">
+                    <name>BWB_CST_wingSection17</name>
+                    <airfoilUID>profile_0.000</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>17.6468</x>
+                        <y>17.6468</y>
+                        <z>17.6468</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="BWB_CST_wingSection18ID">
+                <name>BWB_CST_wingSection18</name>
+                <transformation uID="BWB_CST_wingSection18ID_Transf">
+                  <scaling>
+                    <x>1</x>
+                    <y>1.0</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation>
+                    <x>0</x>
+                    <y>0.0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="BWB_CST_wingSection18IDElement1">
+                    <name>BWB_CST_wingSection18</name>
+                    <airfoilUID>profile_0.000</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>15.3064</x>
+                        <y>15.3064</y>
+                        <z>15.3064</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="BWB_CST_wingSection19ID">
+                <name>BWB_CST_wingSection19</name>
+                <transformation uID="BWB_CST_wingSection19ID_Transf">
+                  <scaling>
+                    <x>1</x>
+                    <y>1.0</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation>
+                    <x>0</x>
+                    <y>0.0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="BWB_CST_wingSection19IDElement1">
+                    <name>BWB_CST_wingSection19</name>
+                    <airfoilUID>profile_0.000</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>14.1244</x>
+                        <y>14.1244</y>
+                        <z>14.1244</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="BWB_CST_wingSection20ID">
+                <name>BWB_CST_wingSection20</name>
+                <transformation uID="BWB_CST_wingSection20ID_Transf">
+                  <scaling>
+                    <x>1</x>
+                    <y>1.0</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation>
+                    <x>0</x>
+                    <y>0.0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="BWB_CST_wingSection20IDElement1">
+                    <name>BWB_CST_wingSection20</name>
+                    <airfoilUID>profile_0.000</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>12.2998</x>
+                        <y>12.2998</y>
+                        <z>12.2998</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="BWB_CST_wingSection21ID">
+                <name>BWB_CST_wingSection21</name>
+                <transformation uID="BWB_CST_wingSection21ID_Transf">
+                  <scaling>
+                    <x>1</x>
+                    <y>1.0</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation>
+                    <x>0</x>
+                    <y>0.0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="BWB_CST_wingSection21IDElement1">
+                    <name>BWB_CST_wingSection21</name>
+                    <airfoilUID>profile_0.000</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>11.7086</x>
+                        <y>11.7086</y>
+                        <z>11.7086</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="BWB_CST_wingSection22ID">
+                <name>BWB_CST_wingSection22</name>
+                <transformation uID="BWB_CST_wingSection22ID_Transf">
+                  <scaling>
+                    <x>1</x>
+                    <y>1.0</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation>
+                    <x>0</x>
+                    <y>0.0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="BWB_CST_wingSection22IDElement1">
+                    <name>BWB_CST_wingSection22</name>
+                    <airfoilUID>profile_0.000</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>10.7253</x>
+                        <y>10.7253</y>
+                        <z>10.7253</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="BWB_CST_wingSection23ID">
+                <name>BWB_CST_wingSection23</name>
+                <transformation uID="BWB_CST_wingSection23ID_Transf">
+                  <scaling>
+                    <x>1</x>
+                    <y>1.0</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation>
+                    <x>0</x>
+                    <y>0.0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="BWB_CST_wingSection23IDElement1">
+                    <name>BWB_CST_wingSection23</name>
+                    <airfoilUID>profile_0.000</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>10.0003</x>
+                        <y>10.0003</y>
+                        <z>10.0003</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="BWB_CST_wingSection24ID">
+                <name>BWB_CST_wingSection24</name>
+                <transformation uID="BWB_CST_wingSection24ID_Transf">
+                  <scaling>
+                    <x>1</x>
+                    <y>1.0</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation>
+                    <x>0</x>
+                    <y>0.0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="BWB_CST_wingSection24IDElement1">
+                    <name>BWB_CST_wingSection24</name>
+                    <airfoilUID>profile_0.000</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>9.4853</x>
+                        <y>9.4853</y>
+                        <z>9.4853</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="BWB_CST_wingSection25ID">
+                <name>BWB_CST_wingSection25</name>
+                <transformation uID="BWB_CST_wingSection25ID_Transf">
+                  <scaling>
+                    <x>1</x>
+                    <y>1.0</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation>
+                    <x>0</x>
+                    <y>0.0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="BWB_CST_wingSection25IDElement1">
+                    <name>BWB_CST_wingSection25</name>
+                    <airfoilUID>profile_0.000</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>9.2864</x>
+                        <y>9.2864</y>
+                        <z>9.2864</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="BWB_CST_wingSection26ID">
+                <name>BWB_CST_wingSection26</name>
+                <transformation uID="BWB_CST_wingSection26ID_Transf">
+                  <scaling>
+                    <x>1</x>
+                    <y>1.0</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation>
+                    <x>0</x>
+                    <y>0.0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="BWB_CST_wingSection26IDElement1">
+                    <name>BWB_CST_wingSection26</name>
+                    <airfoilUID>profile_0.000</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>8.9438</x>
+                        <y>8.9438</y>
+                        <z>8.9438</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="BWB_CST_wingSection27ID">
+                <name>BWB_CST_wingSection27</name>
+                <transformation uID="BWB_CST_wingSection27ID_Transf">
+                  <scaling>
+                    <x>1</x>
+                    <y>1.0</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation>
+                    <x>0</x>
+                    <y>0.0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="BWB_CST_wingSection27IDElement1">
+                    <name>BWB_CST_wingSection27</name>
+                    <airfoilUID>profile_0.000</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>8.7804</x>
+                        <y>8.7804</y>
+                        <z>8.7804</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="BWB_CST_wingSection28ID">
+                <name>BWB_CST_wingSection28</name>
+                <transformation uID="BWB_CST_wingSection28ID_Transf">
+                  <scaling>
+                    <x>1</x>
+                    <y>1.0</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation>
+                    <x>0</x>
+                    <y>0.0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="BWB_CST_wingSection28IDElement1">
+                    <name>BWB_CST_wingSection28</name>
+                    <airfoilUID>profile_0.000</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>8.4634</x>
+                        <y>8.4634</y>
+                        <z>8.4634</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="BWB_CST_wingSection29ID">
+                <name>BWB_CST_wingSection29</name>
+                <transformation uID="BWB_CST_wingSection29ID_Transf">
+                  <scaling>
+                    <x>1</x>
+                    <y>1.0</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation>
+                    <x>0</x>
+                    <y>0.0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="BWB_CST_wingSection29IDElement1">
+                    <name>BWB_CST_wingSection29</name>
+                    <airfoilUID>profile_0.000</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>8.1565</x>
+                        <y>8.1565</y>
+                        <z>8.1565</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="BWB_CST_wingSection30ID">
+                <name>BWB_CST_wingSection30</name>
+                <transformation uID="BWB_CST_wingSection30ID_Transf">
+                  <scaling>
+                    <x>1</x>
+                    <y>1.0</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation>
+                    <x>0</x>
+                    <y>0.0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="BWB_CST_wingSection30IDElement1">
+                    <name>BWB_CST_wingSection30</name>
+                    <airfoilUID>profile_0.000</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>7.8568</x>
+                        <y>7.8568</y>
+                        <z>7.8568</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="BWB_CST_wingSection31ID">
+                <name>BWB_CST_wingSection31</name>
+                <transformation uID="BWB_CST_wingSection31ID_Transf">
+                  <scaling>
+                    <x>1</x>
+                    <y>1.0</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation>
+                    <x>0</x>
+                    <y>0.0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="BWB_CST_wingSection31IDElement1">
+                    <name>BWB_CST_wingSection31</name>
+                    <airfoilUID>profile_0.000</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>7.7089</x>
+                        <y>7.7089</y>
+                        <z>7.7089</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="BWB_CST_wingSection32ID">
+                <name>BWB_CST_wingSection32</name>
+                <transformation uID="BWB_CST_wingSection32ID_Transf">
+                  <scaling>
+                    <x>1</x>
+                    <y>1.0</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation>
+                    <x>0</x>
+                    <y>0.0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="BWB_CST_wingSection32IDElement1">
+                    <name>BWB_CST_wingSection32</name>
+                    <airfoilUID>profile_0.000</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>7.4157</x>
+                        <y>7.4157</y>
+                        <z>7.4157</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="BWB_CST_wingSection33ID">
+                <name>BWB_CST_wingSection33</name>
+                <transformation uID="BWB_CST_wingSection33ID_Transf">
+                  <scaling>
+                    <x>1</x>
+                    <y>1.0</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation>
+                    <x>0</x>
+                    <y>0.0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="BWB_CST_wingSection33IDElement1">
+                    <name>BWB_CST_wingSection33</name>
+                    <airfoilUID>profile_0.000</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>7.2702</x>
+                        <y>7.2702</y>
+                        <z>7.2702</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="BWB_CST_wingSection34ID">
+                <name>BWB_CST_wingSection34</name>
+                <transformation uID="BWB_CST_wingSection34ID_Transf">
+                  <scaling>
+                    <x>1</x>
+                    <y>1.0</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation>
+                    <x>0</x>
+                    <y>-0.00179289952608</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="BWB_CST_wingSection34IDElement1">
+                    <name>BWB_CST_wingSection34</name>
+                    <airfoilUID>profile_0.000</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>6.9803</x>
+                        <y>6.9803</y>
+                        <z>6.9803</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="BWB_CST_wingSection35ID">
+                <name>BWB_CST_wingSection35</name>
+                <transformation uID="BWB_CST_wingSection35ID_Transf">
+                  <scaling>
+                    <x>1</x>
+                    <y>1.0</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation>
+                    <x>0</x>
+                    <y>-0.0589310360347</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="BWB_CST_wingSection35IDElement1">
+                    <name>BWB_CST_wingSection35</name>
+                    <airfoilUID>profile_0.000</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>6.6916</x>
+                        <y>6.6916</y>
+                        <z>6.6916</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="BWB_CST_wingSection36ID">
+                <name>BWB_CST_wingSection36</name>
+                <transformation uID="BWB_CST_wingSection36ID_Transf">
+                  <scaling>
+                    <x>1</x>
+                    <y>1.0</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation>
+                    <x>0</x>
+                    <y>-0.194153749328</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="BWB_CST_wingSection36IDElement1">
+                    <name>BWB_CST_wingSection36</name>
+                    <airfoilUID>profile_0.000</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>6.4034</x>
+                        <y>6.4034</y>
+                        <z>6.4034</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="BWB_CST_wingSection37ID">
+                <name>BWB_CST_wingSection37</name>
+                <transformation uID="BWB_CST_wingSection37ID_Transf">
+                  <scaling>
+                    <x>1</x>
+                    <y>1.0</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation>
+                    <x>0</x>
+                    <y>-0.290093671426</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="BWB_CST_wingSection37IDElement1">
+                    <name>BWB_CST_wingSection37</name>
+                    <airfoilUID>profile_0.000</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>6.2592</x>
+                        <y>6.2592</y>
+                        <z>6.2592</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="BWB_CST_wingSection38ID">
+                <name>BWB_CST_wingSection38</name>
+                <transformation uID="BWB_CST_wingSection38ID_Transf">
+                  <scaling>
+                    <x>1</x>
+                    <y>1.0</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation>
+                    <x>0</x>
+                    <y>-0.53672434484</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="BWB_CST_wingSection38IDElement1">
+                    <name>BWB_CST_wingSection38</name>
+                    <airfoilUID>profile_0.000</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>5.9698</x>
+                        <y>5.9698</y>
+                        <z>5.9698</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="BWB_CST_wingSection39ID">
+                <name>BWB_CST_wingSection39</name>
+                <transformation uID="BWB_CST_wingSection39ID_Transf">
+                  <scaling>
+                    <x>1</x>
+                    <y>1.0</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation>
+                    <x>0</x>
+                    <y>-0.686652575481</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="BWB_CST_wingSection39IDElement1">
+                    <name>BWB_CST_wingSection39</name>
+                    <airfoilUID>profile_0.000</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>5.8244</x>
+                        <y>5.8244</y>
+                        <z>5.8244</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="BWB_CST_wingSection40ID">
+                <name>BWB_CST_wingSection40</name>
+                <transformation uID="BWB_CST_wingSection40ID_Transf">
+                  <scaling>
+                    <x>1</x>
+                    <y>1.0</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation>
+                    <x>0</x>
+                    <y>-1.03782852295</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="BWB_CST_wingSection40IDElement1">
+                    <name>BWB_CST_wingSection40</name>
+                    <airfoilUID>profile_0.000</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>5.5314</x>
+                        <y>5.5314</y>
+                        <z>5.5314</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="BWB_CST_wingSection41ID">
+                <name>BWB_CST_wingSection41</name>
+                <transformation uID="BWB_CST_wingSection41ID_Transf">
+                  <scaling>
+                    <x>1</x>
+                    <y>1.0</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation>
+                    <x>0</x>
+                    <y>-1.45488871641</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="BWB_CST_wingSection41IDElement1">
+                    <name>BWB_CST_wingSection41</name>
+                    <airfoilUID>profile_0.000</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>5.2344</x>
+                        <y>5.2344</y>
+                        <z>5.2344</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="BWB_CST_wingSection42ID">
+                <name>BWB_CST_wingSection42</name>
+                <transformation uID="BWB_CST_wingSection42ID_Transf">
+                  <scaling>
+                    <x>1</x>
+                    <y>1.0</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation>
+                    <x>0</x>
+                    <y>-1.93478307317</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="BWB_CST_wingSection42IDElement1">
+                    <name>BWB_CST_wingSection42</name>
+                    <airfoilUID>profile_0.000</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>4.9318</x>
+                        <y>4.9318</y>
+                        <z>4.9318</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="BWB_CST_wingSection43ID">
+                <name>BWB_CST_wingSection43</name>
+                <transformation uID="BWB_CST_wingSection43ID_Transf">
+                  <scaling>
+                    <x>1</x>
+                    <y>1.0</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation>
+                    <x>0</x>
+                    <y>-2.19733991195</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="BWB_CST_wingSection43IDElement1">
+                    <name>BWB_CST_wingSection43</name>
+                    <airfoilUID>profile_0.000</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>4.778</x>
+                        <y>4.778</y>
+                        <z>4.778</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="BWB_CST_wingSection44ID">
+                <name>BWB_CST_wingSection44</name>
+                <transformation uID="BWB_CST_wingSection44ID_Transf">
+                  <scaling>
+                    <x>1</x>
+                    <y>1.0</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation>
+                    <x>0</x>
+                    <y>-2.76576660861</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="BWB_CST_wingSection44IDElement1">
+                    <name>BWB_CST_wingSection44</name>
+                    <airfoilUID>profile_0.000</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>4.4641</x>
+                        <y>4.4641</y>
+                        <z>4.4641</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="BWB_CST_wingSection45ID">
+                <name>BWB_CST_wingSection45</name>
+                <transformation uID="BWB_CST_wingSection45ID_Transf">
+                  <scaling>
+                    <x>1</x>
+                    <y>1.0</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation>
+                    <x>0</x>
+                    <y>-3.07087394581</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="BWB_CST_wingSection45IDElement1">
+                    <name>BWB_CST_wingSection45</name>
+                    <airfoilUID>profile_0.000</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>4.3036</x>
+                        <y>4.3036</y>
+                        <z>4.3036</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="BWB_CST_wingSection46ID">
+                <name>BWB_CST_wingSection46</name>
+                <transformation uID="BWB_CST_wingSection46ID_Transf">
+                  <scaling>
+                    <x>1</x>
+                    <y>1.0</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation>
+                    <x>0</x>
+                    <y>-3.7209702963</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="BWB_CST_wingSection46IDElement1">
+                    <name>BWB_CST_wingSection46</name>
+                    <airfoilUID>profile_0.000</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>3.9742</x>
+                        <y>3.9742</y>
+                        <z>3.9742</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="BWB_CST_wingSection47ID">
+                <name>BWB_CST_wingSection47</name>
+                <transformation uID="BWB_CST_wingSection47ID_Transf">
+                  <scaling>
+                    <x>1</x>
+                    <y>1.0</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation>
+                    <x>0</x>
+                    <y>-4.42170047929</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="BWB_CST_wingSection47IDElement1">
+                    <name>BWB_CST_wingSection47</name>
+                    <airfoilUID>profile_0.000</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>3.6318</x>
+                        <y>3.6318</y>
+                        <z>3.6318</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="BWB_CST_wingSection48ID">
+                <name>BWB_CST_wingSection48</name>
+                <transformation uID="BWB_CST_wingSection48ID_Transf">
+                  <scaling>
+                    <x>1</x>
+                    <y>1.0</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation>
+                    <x>0</x>
+                    <y>-5.1700144121</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="BWB_CST_wingSection48IDElement1">
+                    <name>BWB_CST_wingSection48</name>
+                    <airfoilUID>profile_0.000</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>3.2738</x>
+                        <y>3.2738</y>
+                        <z>3.2738</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="BWB_CST_wingSection49ID">
+                <name>BWB_CST_wingSection49</name>
+                <transformation uID="BWB_CST_wingSection49ID_Transf">
+                  <scaling>
+                    <x>1</x>
+                    <y>1.0</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation>
+                    <x>0</x>
+                    <y>-5.56106213385</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="BWB_CST_wingSection49IDElement1">
+                    <name>BWB_CST_wingSection49</name>
+                    <airfoilUID>profile_0.000</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>3.0882</x>
+                        <y>3.0882</y>
+                        <z>3.0882</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="BWB_CST_wingSection50ID">
+                <name>BWB_CST_wingSection50</name>
+                <transformation uID="BWB_CST_wingSection50ID_Transf">
+                  <scaling>
+                    <x>1</x>
+                    <y>1.0</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation>
+                    <x>0</x>
+                    <y>-6.37503278632</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="BWB_CST_wingSection50IDElement1">
+                    <name>BWB_CST_wingSection50</name>
+                    <airfoilUID>profile_0.000</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>2.7019</x>
+                        <y>2.7019</y>
+                        <z>2.7019</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="BWB_CST_wingSection51ID">
+                <name>BWB_CST_wingSection51</name>
+                <transformation uID="BWB_CST_wingSection51ID_Transf">
+                  <scaling>
+                    <x>1</x>
+                    <y>1.0</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation>
+                    <x>0</x>
+                    <y>-6.79719319638</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="BWB_CST_wingSection51IDElement1">
+                    <name>BWB_CST_wingSection51</name>
+                    <airfoilUID>profile_0.000</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>2.5004</x>
+                        <y>2.5004</y>
+                        <z>2.5004</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="BWB_CST_wingSection52ID">
+                <name>BWB_CST_wingSection52</name>
+                <transformation uID="BWB_CST_wingSection52ID_Transf">
+                  <scaling>
+                    <x>1</x>
+                    <y>1.0</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation>
+                    <x>0</x>
+                    <y>-7.66995788246</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="BWB_CST_wingSection52IDElement1">
+                    <name>BWB_CST_wingSection52</name>
+                    <airfoilUID>profile_0.000</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>2.0786</x>
+                        <y>2.0786</y>
+                        <z>2.0786</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="BWB_CST_wingSection53ID">
+                <name>BWB_CST_wingSection53</name>
+                <transformation uID="BWB_CST_wingSection53ID_Transf">
+                  <scaling>
+                    <x>1</x>
+                    <y>1.0</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation>
+                    <x>0</x>
+                    <y>-8.57810598756</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="BWB_CST_wingSection53IDElement1">
+                    <name>BWB_CST_wingSection53</name>
+                    <airfoilUID>profile_0.000</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.6284</x>
+                        <y>1.6284</y>
+                        <z>1.6284</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="BWB_CST_wingSection54ID">
+                <name>BWB_CST_wingSection54</name>
+                <transformation uID="BWB_CST_wingSection54ID_Transf">
+                  <scaling>
+                    <x>1</x>
+                    <y>1.0</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation>
+                    <x>0</x>
+                    <y>-9.518587429</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="BWB_CST_wingSection54IDElement1">
+                    <name>BWB_CST_wingSection54</name>
+                    <airfoilUID>profile_0.000</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.1456</x>
+                        <y>1.1456</y>
+                        <z>1.1456</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="BWB_CST_wingSection55ID">
+                <name>BWB_CST_wingSection55</name>
+                <transformation uID="BWB_CST_wingSection55ID_Transf">
+                  <scaling>
+                    <x>1</x>
+                    <y>1.0</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation>
+                    <x>0</x>
+                    <y>-10.0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="BWB_CST_wingSection55IDElement1">
+                    <name>BWB_CST_wingSection55</name>
+                    <airfoilUID>profile_0.000</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>0.89049</x>
+                        <y>0.89049</y>
+                        <z>0.89049</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+            </sections>
+            <positionings>
+              <positioning uID="BWB_CST_wingPositioning1ID">
+                <name>BWB_CST_wingPositioning1</name>
+                <length>0</length>
+                <sweepAngle>0.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <toSectionUID>BWB_CST_wingSection1ID</toSectionUID>
+              </positioning>
+              <positioning uID="BWB_CST_wingPositioning2ID">
+                <name>BWB_CST_wingPositioning2</name>
+                <length>0.71314</length>
+                <sweepAngle>5.0</sweepAngle>
+                <dihedralAngle>0.290898388952</dihedralAngle>
+                <fromSectionUID>BWB_CST_wingSection1ID</fromSectionUID>
+                <toSectionUID>BWB_CST_wingSection2ID</toSectionUID>
+              </positioning>
+              <positioning uID="BWB_CST_wingPositioning3ID">
+                <name>BWB_CST_wingPositioning3</name>
+                <length>0.40648</length>
+                <sweepAngle>29.086937072</sweepAngle>
+                <dihedralAngle>0.438803655982</dihedralAngle>
+                <fromSectionUID>BWB_CST_wingSection2ID</fromSectionUID>
+                <toSectionUID>BWB_CST_wingSection3ID</toSectionUID>
+              </positioning>
+              <positioning uID="BWB_CST_wingPositioning4ID">
+                <name>BWB_CST_wingPositioning4</name>
+                <length>0.94027</length>
+                <sweepAngle>40.9214898921</sweepAngle>
+                <dihedralAngle>0.739411233609</dihedralAngle>
+                <fromSectionUID>BWB_CST_wingSection3ID</fromSectionUID>
+                <toSectionUID>BWB_CST_wingSection4ID</toSectionUID>
+              </positioning>
+              <positioning uID="BWB_CST_wingPositioning5ID">
+                <name>BWB_CST_wingPositioning5</name>
+                <length>1.3719</length>
+                <sweepAngle>58.8077039097</sweepAngle>
+                <dihedralAngle>1.0462614006</dihedralAngle>
+                <fromSectionUID>BWB_CST_wingSection4ID</fromSectionUID>
+                <toSectionUID>BWB_CST_wingSection5ID</toSectionUID>
+              </positioning>
+              <positioning uID="BWB_CST_wingPositioning6ID">
+                <name>BWB_CST_wingPositioning6</name>
+                <length>1.5728</length>
+                <sweepAngle>63.14025759</sweepAngle>
+                <dihedralAngle>1.35916999451</dihedralAngle>
+                <fromSectionUID>BWB_CST_wingSection5ID</fromSectionUID>
+                <toSectionUID>BWB_CST_wingSection6ID</toSectionUID>
+              </positioning>
+              <positioning uID="BWB_CST_wingPositioning7ID">
+                <name>BWB_CST_wingPositioning7</name>
+                <length>0.79653</length>
+                <sweepAngle>63.5062968577</sweepAngle>
+                <dihedralAngle>1.51783865078</dihedralAngle>
+                <fromSectionUID>BWB_CST_wingSection6ID</fromSectionUID>
+                <toSectionUID>BWB_CST_wingSection7ID</toSectionUID>
+              </positioning>
+              <positioning uID="BWB_CST_wingPositioning8ID">
+                <name>BWB_CST_wingPositioning8</name>
+                <length>1.6026</length>
+                <sweepAngle>63.6707713373</sweepAngle>
+                <dihedralAngle>1.83948958042</dihedralAngle>
+                <fromSectionUID>BWB_CST_wingSection7ID</fromSectionUID>
+                <toSectionUID>BWB_CST_wingSection8ID</toSectionUID>
+              </positioning>
+              <positioning uID="BWB_CST_wingPositioning9ID">
+                <name>BWB_CST_wingPositioning9</name>
+                <length>0.80976</length>
+                <sweepAngle>63.9646051022</sweepAngle>
+                <dihedralAngle>2.00242581317</dihedralAngle>
+                <fromSectionUID>BWB_CST_wingSection8ID</fromSectionUID>
+                <toSectionUID>BWB_CST_wingSection9ID</toSectionUID>
+              </positioning>
+              <positioning uID="BWB_CST_wingPositioning10ID">
+                <name>BWB_CST_wingPositioning10</name>
+                <length>1.6274</length>
+                <sweepAngle>64.0947544333</sweepAngle>
+                <dihedralAngle>2.332404713</dihedralAngle>
+                <fromSectionUID>BWB_CST_wingSection9ID</fromSectionUID>
+                <toSectionUID>BWB_CST_wingSection10ID</toSectionUID>
+              </positioning>
+              <positioning uID="BWB_CST_wingPositioning11ID">
+                <name>BWB_CST_wingPositioning11</name>
+                <length>1.6414</length>
+                <sweepAngle>64.3234931069</sweepAngle>
+                <dihedralAngle>2.66770538989</dihedralAngle>
+                <fromSectionUID>BWB_CST_wingSection10ID</fromSectionUID>
+                <toSectionUID>BWB_CST_wingSection11ID</toSectionUID>
+              </positioning>
+              <positioning uID="BWB_CST_wingPositioning12ID">
+                <name>BWB_CST_wingPositioning12</name>
+                <length>1.6532</length>
+                <sweepAngle>64.5127852816</sweepAngle>
+                <dihedralAngle>3.00814368135</dihedralAngle>
+                <fromSectionUID>BWB_CST_wingSection11ID</fromSectionUID>
+                <toSectionUID>BWB_CST_wingSection12ID</toSectionUID>
+              </positioning>
+              <positioning uID="BWB_CST_wingPositioning13ID">
+                <name>BWB_CST_wingPositioning13</name>
+                <length>0.83141</length>
+                <sweepAngle>64.6657911404</sweepAngle>
+                <dihedralAngle>3.18023188179</dihedralAngle>
+                <fromSectionUID>BWB_CST_wingSection12ID</fromSectionUID>
+                <toSectionUID>BWB_CST_wingSection13ID</toSectionUID>
+              </positioning>
+              <positioning uID="BWB_CST_wingPositioning14ID">
+                <name>BWB_CST_wingPositioning14</name>
+                <length>1.6673</length>
+                <sweepAngle>64.7296742584</sweepAngle>
+                <dihedralAngle>3.52803129051</dihedralAngle>
+                <fromSectionUID>BWB_CST_wingSection13ID</fromSectionUID>
+                <toSectionUID>BWB_CST_wingSection14ID</toSectionUID>
+              </positioning>
+              <positioning uID="BWB_CST_wingPositioning15ID">
+                <name>BWB_CST_wingPositioning15</name>
+                <length>0.83706</length>
+                <sweepAngle>64.834175986</sweepAngle>
+                <dihedralAngle>3.70369645819</dihedralAngle>
+                <fromSectionUID>BWB_CST_wingSection14ID</fromSectionUID>
+                <toSectionUID>BWB_CST_wingSection15ID</toSectionUID>
+              </positioning>
+              <positioning uID="BWB_CST_wingPositioning16ID">
+                <name>BWB_CST_wingPositioning16</name>
+                <length>1.6774</length>
+                <sweepAngle>64.8755846414</sweepAngle>
+                <dihedralAngle>4.05844261862</dihedralAngle>
+                <fromSectionUID>BWB_CST_wingSection15ID</fromSectionUID>
+                <toSectionUID>BWB_CST_wingSection16ID</toSectionUID>
+              </positioning>
+              <positioning uID="BWB_CST_wingPositioning17ID">
+                <name>BWB_CST_wingPositioning17</name>
+                <length>1.6821</length>
+                <sweepAngle>64.9386926494</sweepAngle>
+                <dihedralAngle>4.41758974379</dihedralAngle>
+                <fromSectionUID>BWB_CST_wingSection16ID</fromSectionUID>
+                <toSectionUID>BWB_CST_wingSection17ID</toSectionUID>
+              </positioning>
+              <positioning uID="BWB_CST_wingPositioning18ID">
+                <name>BWB_CST_wingPositioning18</name>
+                <length>1.6855</length>
+                <sweepAngle>64.9781550731</sweepAngle>
+                <dihedralAngle>4.78095367122</dihedralAngle>
+                <fromSectionUID>BWB_CST_wingSection17ID</fromSectionUID>
+                <toSectionUID>BWB_CST_wingSection18ID</toSectionUID>
+              </positioning>
+              <positioning uID="BWB_CST_wingPositioning19ID">
+                <name>BWB_CST_wingPositioning19</name>
+                <length>0.84357</length>
+                <sweepAngle>64.9971320952</sweepAngle>
+                <dihedralAngle>4.96415938502</dihedralAngle>
+                <fromSectionUID>BWB_CST_wingSection18ID</fromSectionUID>
+                <toSectionUID>BWB_CST_wingSection19ID</toSectionUID>
+              </positioning>
+              <positioning uID="BWB_CST_wingPositioning20ID">
+                <name>BWB_CST_wingPositioning20</name>
+                <length>1.6883</length>
+                <sweepAngle>64.9999261378</sweepAngle>
+                <dihedralAngle>5.33482898164</dihedralAngle>
+                <fromSectionUID>BWB_CST_wingSection19ID</fromSectionUID>
+                <toSectionUID>BWB_CST_wingSection20ID</toSectionUID>
+              </positioning>
+              <positioning uID="BWB_CST_wingPositioning21ID">
+                <name>BWB_CST_wingPositioning21</name>
+                <length>0.42551</length>
+                <sweepAngle>33.0004064376</sweepAngle>
+                <dihedralAngle>5.52281849655</dihedralAngle>
+                <fromSectionUID>BWB_CST_wingSection20ID</fromSectionUID>
+                <toSectionUID>BWB_CST_wingSection21ID</toSectionUID>
+              </positioning>
+              <positioning uID="BWB_CST_wingPositioning22ID">
+                <name>BWB_CST_wingPositioning22</name>
+                <length>0.85161</length>
+                <sweepAngle>33.0015335091</sweepAngle>
+                <dihedralAngle>5.90408918023</dihedralAngle>
+                <fromSectionUID>BWB_CST_wingSection21ID</fromSectionUID>
+                <toSectionUID>BWB_CST_wingSection22ID</toSectionUID>
+              </positioning>
+              <positioning uID="BWB_CST_wingPositioning23ID">
+                <name>BWB_CST_wingPositioning23</name>
+                <length>0.85228</length>
+                <sweepAngle>33.0077394907</sweepAngle>
+                <dihedralAngle>6.29237134285</dihedralAngle>
+                <fromSectionUID>BWB_CST_wingSection22ID</fromSectionUID>
+                <toSectionUID>BWB_CST_wingSection23ID</toSectionUID>
+              </positioning>
+              <positioning uID="BWB_CST_wingPositioning24ID">
+                <name>BWB_CST_wingPositioning24</name>
+                <length>0.85309</length>
+                <sweepAngle>33.0220208952</sweepAngle>
+                <dihedralAngle>6.687612113</dihedralAngle>
+                <fromSectionUID>BWB_CST_wingSection23ID</fromSectionUID>
+                <toSectionUID>BWB_CST_wingSection24ID</toSectionUID>
+              </positioning>
+              <positioning uID="BWB_CST_wingPositioning25ID">
+                <name>BWB_CST_wingPositioning25</name>
+                <length>0.42685</length>
+                <sweepAngle>33.0477452885</sweepAngle>
+                <dihedralAngle>6.88782545357</dihedralAngle>
+                <fromSectionUID>BWB_CST_wingSection24ID</fromSectionUID>
+                <toSectionUID>BWB_CST_wingSection25ID</toSectionUID>
+              </positioning>
+              <positioning uID="BWB_CST_wingPositioning26ID">
+                <name>BWB_CST_wingPositioning26</name>
+                <length>0.85462</length>
+                <sweepAngle>33.0659509702</sweepAngle>
+                <dihedralAngle>7.29340500106</dihedralAngle>
+                <fromSectionUID>BWB_CST_wingSection25ID</fromSectionUID>
+                <toSectionUID>BWB_CST_wingSection26ID</toSectionUID>
+              </positioning>
+              <positioning uID="BWB_CST_wingPositioning27ID">
+                <name>BWB_CST_wingPositioning27</name>
+                <length>0.42775</length>
+                <sweepAngle>33.1151540326</sweepAngle>
+                <dihedralAngle>7.49875799013</dihedralAngle>
+                <fromSectionUID>BWB_CST_wingSection26ID</fromSectionUID>
+                <toSectionUID>BWB_CST_wingSection27ID</toSectionUID>
+              </positioning>
+              <positioning uID="BWB_CST_wingPositioning28ID">
+                <name>BWB_CST_wingPositioning28</name>
+                <length>0.85665</length>
+                <sweepAngle>33.1469933046</sweepAngle>
+                <dihedralAngle>7.91455735427</dihedralAngle>
+                <fromSectionUID>BWB_CST_wingSection27ID</fromSectionUID>
+                <toSectionUID>BWB_CST_wingSection28ID</toSectionUID>
+              </positioning>
+              <positioning uID="BWB_CST_wingPositioning29ID">
+                <name>BWB_CST_wingPositioning29</name>
+                <length>0.85834</length>
+                <sweepAngle>33.2272520593</sweepAngle>
+                <dihedralAngle>8.33710384021</dihedralAngle>
+                <fromSectionUID>BWB_CST_wingSection28ID</fromSectionUID>
+                <toSectionUID>BWB_CST_wingSection29ID</toSectionUID>
+              </positioning>
+              <positioning uID="BWB_CST_wingPositioning30ID">
+                <name>BWB_CST_wingPositioning30</name>
+                <length>0.86034</length>
+                <sweepAngle>33.3324240661</sweepAngle>
+                <dihedralAngle>8.76634457654</dihedralAngle>
+                <fromSectionUID>BWB_CST_wingSection29ID</fromSectionUID>
+                <toSectionUID>BWB_CST_wingSection30ID</toSectionUID>
+              </positioning>
+              <positioning uID="BWB_CST_wingPositioning31ID">
+                <name>BWB_CST_wingPositioning31</name>
+                <length>0.43109</length>
+                <sweepAngle>33.4658768909</sweepAngle>
+                <dihedralAngle>8.98345876627</dihedralAngle>
+                <fromSectionUID>BWB_CST_wingSection30ID</fromSectionUID>
+                <toSectionUID>BWB_CST_wingSection31ID</toSectionUID>
+              </positioning>
+              <positioning uID="BWB_CST_wingPositioning32ID">
+                <name>BWB_CST_wingPositioning32</name>
+                <length>0.86403</length>
+                <sweepAngle>33.5442609744</sweepAngle>
+                <dihedralAngle>9.42264174425</dihedralAngle>
+                <fromSectionUID>BWB_CST_wingSection31ID</fromSectionUID>
+                <toSectionUID>BWB_CST_wingSection32ID</toSectionUID>
+              </positioning>
+              <positioning uID="BWB_CST_wingPositioning33ID">
+                <name>BWB_CST_wingPositioning33</name>
+                <length>0.43321</length>
+                <sweepAngle>33.7264492121</sweepAngle>
+                <dihedralAngle>9.64469731463</dihedralAngle>
+                <fromSectionUID>BWB_CST_wingSection32ID</fromSectionUID>
+                <toSectionUID>BWB_CST_wingSection33ID</toSectionUID>
+              </positioning>
+              <positioning uID="BWB_CST_wingPositioning34ID">
+                <name>BWB_CST_wingPositioning34</name>
+                <length>0.86867</length>
+                <sweepAngle>33.8310952579</sweepAngle>
+                <dihedralAngle>10.0937012933</dihedralAngle>
+                <fromSectionUID>BWB_CST_wingSection33ID</fromSectionUID>
+                <toSectionUID>BWB_CST_wingSection34ID</toSectionUID>
+              </positioning>
+              <positioning uID="BWB_CST_wingPositioning35ID">
+                <name>BWB_CST_wingPositioning35</name>
+                <length>0.87237</length>
+                <sweepAngle>34.0695959318</sweepAngle>
+                <dihedralAngle>10.5491321105</dihedralAngle>
+                <fromSectionUID>BWB_CST_wingSection34ID</fromSectionUID>
+                <toSectionUID>BWB_CST_wingSection35ID</toSectionUID>
+              </positioning>
+              <positioning uID="BWB_CST_wingPositioning36ID">
+                <name>BWB_CST_wingPositioning36</name>
+                <length>0.87662</length>
+                <sweepAngle>34.3498476872</sweepAngle>
+                <dihedralAngle>11.0109652775</dihedralAngle>
+                <fromSectionUID>BWB_CST_wingSection35ID</fromSectionUID>
+                <toSectionUID>BWB_CST_wingSection36ID</toSectionUID>
+              </positioning>
+              <positioning uID="BWB_CST_wingPositioning37ID">
+                <name>BWB_CST_wingPositioning37</name>
+                <length>0.44038</length>
+                <sweepAngle>34.6752180898</sweepAngle>
+                <dihedralAngle>11.244287736</dihedralAngle>
+                <fromSectionUID>BWB_CST_wingSection36ID</fromSectionUID>
+                <toSectionUID>BWB_CST_wingSection37ID</toSectionUID>
+              </positioning>
+              <positioning uID="BWB_CST_wingPositioning38ID">
+                <name>BWB_CST_wingPositioning38</name>
+                <length>0.88416</length>
+                <sweepAngle>34.8558751481</sweepAngle>
+                <dihedralAngle>11.7157543904</dihedralAngle>
+                <fromSectionUID>BWB_CST_wingSection37ID</fromSectionUID>
+                <toSectionUID>BWB_CST_wingSection38ID</toSectionUID>
+              </positioning>
+              <positioning uID="BWB_CST_wingPositioning39ID">
+                <name>BWB_CST_wingPositioning39</name>
+                <length>0.44463</length>
+                <sweepAngle>35.2552377076</sweepAngle>
+                <dihedralAngle>11.9539025814</dihedralAngle>
+                <fromSectionUID>BWB_CST_wingSection38ID</fromSectionUID>
+                <toSectionUID>BWB_CST_wingSection39ID</toSectionUID>
+              </positioning>
+              <positioning uID="BWB_CST_wingPositioning40ID">
+                <name>BWB_CST_wingPositioning40</name>
+                <length>0.89331</length>
+                <sweepAngle>35.4747851002</sweepAngle>
+                <dihedralAngle>12.4350386785</dihedralAngle>
+                <fromSectionUID>BWB_CST_wingSection39ID</fromSectionUID>
+                <toSectionUID>BWB_CST_wingSection40ID</toSectionUID>
+              </positioning>
+              <positioning uID="BWB_CST_wingPositioning41ID">
+                <name>BWB_CST_wingPositioning41</name>
+                <length>0.90044</length>
+                <sweepAngle>35.9557168397</sweepAngle>
+                <dihedralAngle>12.9226410458</dihedralAngle>
+                <fromSectionUID>BWB_CST_wingSection40ID</fromSectionUID>
+                <toSectionUID>BWB_CST_wingSection41ID</toSectionUID>
+              </positioning>
+              <positioning uID="BWB_CST_wingPositioning42ID">
+                <name>BWB_CST_wingPositioning42</name>
+                <length>0.9085</length>
+                <sweepAngle>36.4952374898</sweepAngle>
+                <dihedralAngle>13.4167256634</dihedralAngle>
+                <fromSectionUID>BWB_CST_wingSection41ID</fromSectionUID>
+                <toSectionUID>BWB_CST_wingSection42ID</toSectionUID>
+              </positioning>
+              <positioning uID="BWB_CST_wingPositioning43ID">
+                <name>BWB_CST_wingPositioning43</name>
+                <length>0.45831</length>
+                <sweepAngle>37.0967146165</sweepAngle>
+                <dihedralAngle>13.6662038098</dihedralAngle>
+                <fromSectionUID>BWB_CST_wingSection42ID</fromSectionUID>
+                <toSectionUID>BWB_CST_wingSection43ID</toSectionUID>
+              </positioning>
+              <positioning uID="BWB_CST_wingPositioning44ID">
+                <name>BWB_CST_wingPositioning44</name>
+                <length>0.9226</length>
+                <sweepAngle>37.4217392228</sweepAngle>
+                <dihedralAngle>14.1700417655</dihedralAngle>
+                <fromSectionUID>BWB_CST_wingSection43ID</fromSectionUID>
+                <toSectionUID>BWB_CST_wingSection44ID</toSectionUID>
+              </positioning>
+              <positioning uID="BWB_CST_wingPositioning45ID">
+                <name>BWB_CST_wingPositioning45</name>
+                <length>0.46622</length>
+                <sweepAngle>38.1224652502</sweepAngle>
+                <dihedralAngle>14.4244055698</dihedralAngle>
+                <fromSectionUID>BWB_CST_wingSection44ID</fromSectionUID>
+                <toSectionUID>BWB_CST_wingSection45ID</toSectionUID>
+              </positioning>
+              <positioning uID="BWB_CST_wingPositioning46ID">
+                <name>BWB_CST_wingPositioning46</name>
+                <length>0.93949</length>
+                <sweepAngle>38.4990085627</sweepAngle>
+                <dihedralAngle>14.9380328187</dihedralAngle>
+                <fromSectionUID>BWB_CST_wingSection45ID</fromSectionUID>
+                <toSectionUID>BWB_CST_wingSection46ID</toSectionUID>
+              </positioning>
+              <positioning uID="BWB_CST_wingPositioning47ID">
+                <name>BWB_CST_wingPositioning47</name>
+                <length>0.95259</length>
+                <sweepAngle>39.306560514</sweepAngle>
+                <dihedralAngle>15.4582062383</dihedralAngle>
+                <fromSectionUID>BWB_CST_wingSection46ID</fromSectionUID>
+                <toSectionUID>BWB_CST_wingSection47ID</toSectionUID>
+              </positioning>
+              <positioning uID="BWB_CST_wingPositioning48ID">
+                <name>BWB_CST_wingPositioning48</name>
+                <length>0.96737</length>
+                <sweepAngle>40.1895392052</sweepAngle>
+                <dihedralAngle>15.9849418087</dihedralAngle>
+                <fromSectionUID>BWB_CST_wingSection47ID</fromSectionUID>
+                <toSectionUID>BWB_CST_wingSection48ID</toSectionUID>
+              </positioning>
+              <positioning uID="BWB_CST_wingPositioning49ID">
+                <name>BWB_CST_wingPositioning49</name>
+                <length>0.49137</length>
+                <sweepAngle>41.1513122022</sweepAngle>
+                <dihedralAngle>16.2507753941</dihedralAngle>
+                <fromSectionUID>BWB_CST_wingSection48ID</fromSectionUID>
+                <toSectionUID>BWB_CST_wingSection49ID</toSectionUID>
+              </positioning>
+              <positioning uID="BWB_CST_wingPositioning50ID">
+                <name>BWB_CST_wingPositioning50</name>
+                <length>0.99327</length>
+                <sweepAngle>41.6627989297</sweepAngle>
+                <dihedralAngle>16.7873841532</dihedralAngle>
+                <fromSectionUID>BWB_CST_wingSection49ID</fromSectionUID>
+                <toSectionUID>BWB_CST_wingSection50ID</toSectionUID>
+              </positioning>
+              <positioning uID="BWB_CST_wingPositioning51ID">
+                <name>BWB_CST_wingPositioning51</name>
+                <length>0.50597</length>
+                <sweepAngle>42.7490775713</sweepAngle>
+                <dihedralAngle>17.0581633219</dihedralAngle>
+                <fromSectionUID>BWB_CST_wingSection50ID</fromSectionUID>
+                <toSectionUID>BWB_CST_wingSection51ID</toSectionUID>
+              </positioning>
+              <positioning uID="BWB_CST_wingPositioning52ID">
+                <name>BWB_CST_wingPositioning52</name>
+                <length>1.0245</length>
+                <sweepAngle>43.3247113769</sweepAngle>
+                <dihedralAngle>17.6046812249</dihedralAngle>
+                <fromSectionUID>BWB_CST_wingSection51ID</fromSectionUID>
+                <toSectionUID>BWB_CST_wingSection52ID</toSectionUID>
+              </positioning>
+              <positioning uID="BWB_CST_wingPositioning53ID">
+                <name>BWB_CST_wingPositioning53</name>
+                <length>1.049</length>
+                <sweepAngle>44.5430726862</sweepAngle>
+                <dihedralAngle>18.1578251991</dihedralAngle>
+                <fromSectionUID>BWB_CST_wingSection52ID</fromSectionUID>
+                <toSectionUID>BWB_CST_wingSection53ID</toSectionUID>
+              </positioning>
+              <positioning uID="BWB_CST_wingPositioning54ID">
+                <name>BWB_CST_wingPositioning54</name>
+                <length>1.0769</length>
+                <sweepAngle>45.8536985647</sweepAngle>
+                <dihedralAngle>18.7176112244</dihedralAngle>
+                <fromSectionUID>BWB_CST_wingSection53ID</fromSectionUID>
+                <toSectionUID>BWB_CST_wingSection54ID</toSectionUID>
+              </positioning>
+              <positioning uID="BWB_CST_wingPositioning55ID">
+                <name>BWB_CST_wingPositioning55</name>
+                <length>0.55354</length>
+                <sweepAngle>47.2599565783</sweepAngle>
+                <dihedralAngle>19.0</dihedralAngle>
+                <fromSectionUID>BWB_CST_wingSection54ID</fromSectionUID>
+                <toSectionUID>BWB_CST_wingSection55ID</toSectionUID>
+              </positioning>
+            </positionings>
+            <segments>
+              <segment uID="BWB_CST_wingSegment2ID">
+                <name>BWB_CST_wingSegment2ID</name>
+                <fromElementUID>BWB_CST_wingSection1IDElement1</fromElementUID>
+                <toElementUID>BWB_CST_wingSection2IDElement1</toElementUID>
+              </segment>
+              <segment uID="BWB_CST_wingSegment3ID">
+                <name>BWB_CST_wingSegment3ID</name>
+                <fromElementUID>BWB_CST_wingSection2IDElement1</fromElementUID>
+                <toElementUID>BWB_CST_wingSection3IDElement1</toElementUID>
+              </segment>
+              <segment uID="BWB_CST_wingSegment4ID">
+                <name>BWB_CST_wingSegment4ID</name>
+                <fromElementUID>BWB_CST_wingSection3IDElement1</fromElementUID>
+                <toElementUID>BWB_CST_wingSection4IDElement1</toElementUID>
+              </segment>
+              <segment uID="BWB_CST_wingSegment5ID">
+                <name>BWB_CST_wingSegment5ID</name>
+                <fromElementUID>BWB_CST_wingSection4IDElement1</fromElementUID>
+                <toElementUID>BWB_CST_wingSection5IDElement1</toElementUID>
+              </segment>
+              <segment uID="BWB_CST_wingSegment6ID">
+                <name>BWB_CST_wingSegment6ID</name>
+                <fromElementUID>BWB_CST_wingSection5IDElement1</fromElementUID>
+                <toElementUID>BWB_CST_wingSection6IDElement1</toElementUID>
+              </segment>
+              <segment uID="BWB_CST_wingSegment7ID">
+                <name>BWB_CST_wingSegment7ID</name>
+                <fromElementUID>BWB_CST_wingSection6IDElement1</fromElementUID>
+                <toElementUID>BWB_CST_wingSection7IDElement1</toElementUID>
+              </segment>
+              <segment uID="BWB_CST_wingSegment8ID">
+                <name>BWB_CST_wingSegment8ID</name>
+                <fromElementUID>BWB_CST_wingSection7IDElement1</fromElementUID>
+                <toElementUID>BWB_CST_wingSection8IDElement1</toElementUID>
+              </segment>
+              <segment uID="BWB_CST_wingSegment9ID">
+                <name>BWB_CST_wingSegment9ID</name>
+                <fromElementUID>BWB_CST_wingSection8IDElement1</fromElementUID>
+                <toElementUID>BWB_CST_wingSection9IDElement1</toElementUID>
+              </segment>
+              <segment uID="BWB_CST_wingSegment10ID">
+                <name>BWB_CST_wingSegment10ID</name>
+                <fromElementUID>BWB_CST_wingSection9IDElement1</fromElementUID>
+                <toElementUID>BWB_CST_wingSection10IDElement1</toElementUID>
+              </segment>
+              <segment uID="BWB_CST_wingSegment11ID">
+                <name>BWB_CST_wingSegment11ID</name>
+                <fromElementUID>BWB_CST_wingSection10IDElement1</fromElementUID>
+                <toElementUID>BWB_CST_wingSection11IDElement1</toElementUID>
+              </segment>
+              <segment uID="BWB_CST_wingSegment12ID">
+                <name>BWB_CST_wingSegment12ID</name>
+                <fromElementUID>BWB_CST_wingSection11IDElement1</fromElementUID>
+                <toElementUID>BWB_CST_wingSection12IDElement1</toElementUID>
+              </segment>
+              <segment uID="BWB_CST_wingSegment13ID">
+                <name>BWB_CST_wingSegment13ID</name>
+                <fromElementUID>BWB_CST_wingSection12IDElement1</fromElementUID>
+                <toElementUID>BWB_CST_wingSection13IDElement1</toElementUID>
+              </segment>
+              <segment uID="BWB_CST_wingSegment14ID">
+                <name>BWB_CST_wingSegment14ID</name>
+                <fromElementUID>BWB_CST_wingSection13IDElement1</fromElementUID>
+                <toElementUID>BWB_CST_wingSection14IDElement1</toElementUID>
+              </segment>
+              <segment uID="BWB_CST_wingSegment15ID">
+                <name>BWB_CST_wingSegment15ID</name>
+                <fromElementUID>BWB_CST_wingSection14IDElement1</fromElementUID>
+                <toElementUID>BWB_CST_wingSection15IDElement1</toElementUID>
+              </segment>
+              <segment uID="BWB_CST_wingSegment16ID">
+                <name>BWB_CST_wingSegment16ID</name>
+                <fromElementUID>BWB_CST_wingSection15IDElement1</fromElementUID>
+                <toElementUID>BWB_CST_wingSection16IDElement1</toElementUID>
+              </segment>
+              <segment uID="BWB_CST_wingSegment17ID">
+                <name>BWB_CST_wingSegment17ID</name>
+                <fromElementUID>BWB_CST_wingSection16IDElement1</fromElementUID>
+                <toElementUID>BWB_CST_wingSection17IDElement1</toElementUID>
+              </segment>
+              <segment uID="BWB_CST_wingSegment18ID">
+                <name>BWB_CST_wingSegment18ID</name>
+                <fromElementUID>BWB_CST_wingSection17IDElement1</fromElementUID>
+                <toElementUID>BWB_CST_wingSection18IDElement1</toElementUID>
+              </segment>
+              <segment uID="BWB_CST_wingSegment19ID">
+                <name>BWB_CST_wingSegment19ID</name>
+                <fromElementUID>BWB_CST_wingSection18IDElement1</fromElementUID>
+                <toElementUID>BWB_CST_wingSection19IDElement1</toElementUID>
+              </segment>
+              <segment uID="BWB_CST_wingSegment20ID">
+                <name>BWB_CST_wingSegment20ID</name>
+                <fromElementUID>BWB_CST_wingSection19IDElement1</fromElementUID>
+                <toElementUID>BWB_CST_wingSection20IDElement1</toElementUID>
+              </segment>
+              <segment uID="BWB_CST_wingSegment21ID">
+                <name>BWB_CST_wingSegment21ID</name>
+                <fromElementUID>BWB_CST_wingSection20IDElement1</fromElementUID>
+                <toElementUID>BWB_CST_wingSection21IDElement1</toElementUID>
+              </segment>
+              <segment uID="BWB_CST_wingSegment22ID">
+                <name>BWB_CST_wingSegment22ID</name>
+                <fromElementUID>BWB_CST_wingSection21IDElement1</fromElementUID>
+                <toElementUID>BWB_CST_wingSection22IDElement1</toElementUID>
+              </segment>
+              <segment uID="BWB_CST_wingSegment23ID">
+                <name>BWB_CST_wingSegment23ID</name>
+                <fromElementUID>BWB_CST_wingSection22IDElement1</fromElementUID>
+                <toElementUID>BWB_CST_wingSection23IDElement1</toElementUID>
+              </segment>
+              <segment uID="BWB_CST_wingSegment24ID">
+                <name>BWB_CST_wingSegment24ID</name>
+                <fromElementUID>BWB_CST_wingSection23IDElement1</fromElementUID>
+                <toElementUID>BWB_CST_wingSection24IDElement1</toElementUID>
+              </segment>
+              <segment uID="BWB_CST_wingSegment25ID">
+                <name>BWB_CST_wingSegment25ID</name>
+                <fromElementUID>BWB_CST_wingSection24IDElement1</fromElementUID>
+                <toElementUID>BWB_CST_wingSection25IDElement1</toElementUID>
+              </segment>
+              <segment uID="BWB_CST_wingSegment26ID">
+                <name>BWB_CST_wingSegment26ID</name>
+                <fromElementUID>BWB_CST_wingSection25IDElement1</fromElementUID>
+                <toElementUID>BWB_CST_wingSection26IDElement1</toElementUID>
+              </segment>
+              <segment uID="BWB_CST_wingSegment27ID">
+                <name>BWB_CST_wingSegment27ID</name>
+                <fromElementUID>BWB_CST_wingSection26IDElement1</fromElementUID>
+                <toElementUID>BWB_CST_wingSection27IDElement1</toElementUID>
+              </segment>
+              <segment uID="BWB_CST_wingSegment28ID">
+                <name>BWB_CST_wingSegment28ID</name>
+                <fromElementUID>BWB_CST_wingSection27IDElement1</fromElementUID>
+                <toElementUID>BWB_CST_wingSection28IDElement1</toElementUID>
+              </segment>
+              <segment uID="BWB_CST_wingSegment29ID">
+                <name>BWB_CST_wingSegment29ID</name>
+                <fromElementUID>BWB_CST_wingSection28IDElement1</fromElementUID>
+                <toElementUID>BWB_CST_wingSection29IDElement1</toElementUID>
+              </segment>
+              <segment uID="BWB_CST_wingSegment30ID">
+                <name>BWB_CST_wingSegment30ID</name>
+                <fromElementUID>BWB_CST_wingSection29IDElement1</fromElementUID>
+                <toElementUID>BWB_CST_wingSection30IDElement1</toElementUID>
+              </segment>
+              <segment uID="BWB_CST_wingSegment31ID">
+                <name>BWB_CST_wingSegment31ID</name>
+                <fromElementUID>BWB_CST_wingSection30IDElement1</fromElementUID>
+                <toElementUID>BWB_CST_wingSection31IDElement1</toElementUID>
+              </segment>
+              <segment uID="BWB_CST_wingSegment32ID">
+                <name>BWB_CST_wingSegment32ID</name>
+                <fromElementUID>BWB_CST_wingSection31IDElement1</fromElementUID>
+                <toElementUID>BWB_CST_wingSection32IDElement1</toElementUID>
+              </segment>
+              <segment uID="BWB_CST_wingSegment33ID">
+                <name>BWB_CST_wingSegment33ID</name>
+                <fromElementUID>BWB_CST_wingSection32IDElement1</fromElementUID>
+                <toElementUID>BWB_CST_wingSection33IDElement1</toElementUID>
+              </segment>
+              <segment uID="BWB_CST_wingSegment34ID">
+                <name>BWB_CST_wingSegment34ID</name>
+                <fromElementUID>BWB_CST_wingSection33IDElement1</fromElementUID>
+                <toElementUID>BWB_CST_wingSection34IDElement1</toElementUID>
+              </segment>
+              <segment uID="BWB_CST_wingSegment35ID">
+                <name>BWB_CST_wingSegment35ID</name>
+                <fromElementUID>BWB_CST_wingSection34IDElement1</fromElementUID>
+                <toElementUID>BWB_CST_wingSection35IDElement1</toElementUID>
+              </segment>
+              <segment uID="BWB_CST_wingSegment36ID">
+                <name>BWB_CST_wingSegment36ID</name>
+                <fromElementUID>BWB_CST_wingSection35IDElement1</fromElementUID>
+                <toElementUID>BWB_CST_wingSection36IDElement1</toElementUID>
+              </segment>
+              <segment uID="BWB_CST_wingSegment37ID">
+                <name>BWB_CST_wingSegment37ID</name>
+                <fromElementUID>BWB_CST_wingSection36IDElement1</fromElementUID>
+                <toElementUID>BWB_CST_wingSection37IDElement1</toElementUID>
+              </segment>
+              <segment uID="BWB_CST_wingSegment38ID">
+                <name>BWB_CST_wingSegment38ID</name>
+                <fromElementUID>BWB_CST_wingSection37IDElement1</fromElementUID>
+                <toElementUID>BWB_CST_wingSection38IDElement1</toElementUID>
+              </segment>
+              <segment uID="BWB_CST_wingSegment39ID">
+                <name>BWB_CST_wingSegment39ID</name>
+                <fromElementUID>BWB_CST_wingSection38IDElement1</fromElementUID>
+                <toElementUID>BWB_CST_wingSection39IDElement1</toElementUID>
+              </segment>
+              <segment uID="BWB_CST_wingSegment40ID">
+                <name>BWB_CST_wingSegment40ID</name>
+                <fromElementUID>BWB_CST_wingSection39IDElement1</fromElementUID>
+                <toElementUID>BWB_CST_wingSection40IDElement1</toElementUID>
+              </segment>
+              <segment uID="BWB_CST_wingSegment41ID">
+                <name>BWB_CST_wingSegment41ID</name>
+                <fromElementUID>BWB_CST_wingSection40IDElement1</fromElementUID>
+                <toElementUID>BWB_CST_wingSection41IDElement1</toElementUID>
+              </segment>
+              <segment uID="BWB_CST_wingSegment42ID">
+                <name>BWB_CST_wingSegment42ID</name>
+                <fromElementUID>BWB_CST_wingSection41IDElement1</fromElementUID>
+                <toElementUID>BWB_CST_wingSection42IDElement1</toElementUID>
+              </segment>
+              <segment uID="BWB_CST_wingSegment43ID">
+                <name>BWB_CST_wingSegment43ID</name>
+                <fromElementUID>BWB_CST_wingSection42IDElement1</fromElementUID>
+                <toElementUID>BWB_CST_wingSection43IDElement1</toElementUID>
+              </segment>
+              <segment uID="BWB_CST_wingSegment44ID">
+                <name>BWB_CST_wingSegment44ID</name>
+                <fromElementUID>BWB_CST_wingSection43IDElement1</fromElementUID>
+                <toElementUID>BWB_CST_wingSection44IDElement1</toElementUID>
+              </segment>
+              <segment uID="BWB_CST_wingSegment45ID">
+                <name>BWB_CST_wingSegment45ID</name>
+                <fromElementUID>BWB_CST_wingSection44IDElement1</fromElementUID>
+                <toElementUID>BWB_CST_wingSection45IDElement1</toElementUID>
+              </segment>
+              <segment uID="BWB_CST_wingSegment46ID">
+                <name>BWB_CST_wingSegment46ID</name>
+                <fromElementUID>BWB_CST_wingSection45IDElement1</fromElementUID>
+                <toElementUID>BWB_CST_wingSection46IDElement1</toElementUID>
+              </segment>
+              <segment uID="BWB_CST_wingSegment47ID">
+                <name>BWB_CST_wingSegment47ID</name>
+                <fromElementUID>BWB_CST_wingSection46IDElement1</fromElementUID>
+                <toElementUID>BWB_CST_wingSection47IDElement1</toElementUID>
+              </segment>
+              <segment uID="BWB_CST_wingSegment48ID">
+                <name>BWB_CST_wingSegment48ID</name>
+                <fromElementUID>BWB_CST_wingSection47IDElement1</fromElementUID>
+                <toElementUID>BWB_CST_wingSection48IDElement1</toElementUID>
+              </segment>
+              <segment uID="BWB_CST_wingSegment49ID">
+                <name>BWB_CST_wingSegment49ID</name>
+                <fromElementUID>BWB_CST_wingSection48IDElement1</fromElementUID>
+                <toElementUID>BWB_CST_wingSection49IDElement1</toElementUID>
+              </segment>
+              <segment uID="BWB_CST_wingSegment50ID">
+                <name>BWB_CST_wingSegment50ID</name>
+                <fromElementUID>BWB_CST_wingSection49IDElement1</fromElementUID>
+                <toElementUID>BWB_CST_wingSection50IDElement1</toElementUID>
+              </segment>
+              <segment uID="BWB_CST_wingSegment51ID">
+                <name>BWB_CST_wingSegment51ID</name>
+                <fromElementUID>BWB_CST_wingSection50IDElement1</fromElementUID>
+                <toElementUID>BWB_CST_wingSection51IDElement1</toElementUID>
+              </segment>
+              <segment uID="BWB_CST_wingSegment52ID">
+                <name>BWB_CST_wingSegment52ID</name>
+                <fromElementUID>BWB_CST_wingSection51IDElement1</fromElementUID>
+                <toElementUID>BWB_CST_wingSection52IDElement1</toElementUID>
+              </segment>
+              <segment uID="BWB_CST_wingSegment53ID">
+                <name>BWB_CST_wingSegment53ID</name>
+                <fromElementUID>BWB_CST_wingSection52IDElement1</fromElementUID>
+                <toElementUID>BWB_CST_wingSection53IDElement1</toElementUID>
+              </segment>
+              <segment uID="BWB_CST_wingSegment54ID">
+                <name>BWB_CST_wingSegment54ID</name>
+                <fromElementUID>BWB_CST_wingSection53IDElement1</fromElementUID>
+                <toElementUID>BWB_CST_wingSection54IDElement1</toElementUID>
+              </segment>
+              <segment uID="BWB_CST_wingSegment55ID">
+                <name>BWB_CST_wingSegment55ID</name>
+                <fromElementUID>BWB_CST_wingSection54IDElement1</fromElementUID>
+                <toElementUID>BWB_CST_wingSection55IDElement1</toElementUID>
+              </segment>
+            </segments>
+            <componentSegments>
+              <componentSegment uID="BWB_CST_wing_CS">
+                <name>BWB_CST_wing</name>
+                <fromElementUID>BWB_CST_wingSection1IDElement1</fromElementUID>
+                <toElementUID>BWB_CST_wingSection55IDElement1</toElementUID>
+              </componentSegment>
+            </componentSegments>
+          </wing>
+        </wings>
+      </model>
+    </aircraft>
+    <profiles>
+      <wingAirfoils>
+        <wingAirfoil uID="profile_0.000">
+          <name>Profile profile_0.000</name>
+          <description>Profile generated automatically from CST</description>
+          <pointList>
+            <x mapType="vector">1.000000;0.990000;0.980000;0.970000;0.960000;0.950000;0.940000;0.930000;0.920000;0.910000;0.900000;0.880000;0.860000;0.840000;0.820000;0.800000;0.780000;0.760000;0.740000;0.720000;0.700000;0.680000;0.660000;0.640000;0.620000;0.600000;0.580000;0.560000;0.540000;0.520000;0.500000;0.480000;0.460000;0.440000;0.420000;0.400000;0.380000;0.360000;0.340000;0.320000;0.300000;0.280000;0.260000;0.240000;0.220000;0.200000;0.180000;0.160000;0.140000;0.120000;0.100000;0.090000;0.080000;0.070000;0.060000;0.050000;0.040000;0.030000;0.020000;0.010000;0.000000;0.000000;0.010000;0.020000;0.030000;0.040000;0.050000;0.060000;0.070000;0.080000;0.090000;0.100000;0.120000;0.140000;0.160000;0.180000;0.200000;0.220000;0.240000;0.260000;0.280000;0.300000;0.320000;0.340000;0.360000;0.380000;0.400000;0.420000;0.440000;0.460000;0.480000;0.500000;0.520000;0.540000;0.560000;0.580000;0.600000;0.620000;0.640000;0.660000;0.680000;0.700000;0.720000;0.740000;0.760000;0.780000;0.800000;0.820000;0.840000;0.860000;0.880000;0.900000;0.910000;0.920000;0.930000;0.940000;0.950000;0.960000;0.970000;0.980000;0.990000;1.000000</x>
+            <y mapType="vector">0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000;0.000000</y>
+            <z mapType="vector">0.000000;-0.002900;-0.005700;-0.008400;-0.011000;-0.013500;-0.015900;-0.018300;-0.020600;-0.022800;-0.024900;-0.029000;-0.032900;-0.036600;-0.040100;-0.043300;-0.046400;-0.049300;-0.052100;-0.054600;-0.057000;-0.059200;-0.061200;-0.063100;-0.064800;-0.066400;-0.067700;-0.069000;-0.070000;-0.070900;-0.071700;-0.072400;-0.072900;-0.073200;-0.073500;-0.073600;-0.073600;-0.073500;-0.073300;-0.073000;-0.072600;-0.072100;-0.071400;-0.070500;-0.069500;-0.068300;-0.066800;-0.065000;-0.062800;-0.060100;-0.056700;-0.054700;-0.052500;-0.050000;-0.047100;-0.043800;-0.039900;-0.035200;-0.029200;-0.021000;0.000000;0.000000;0.023100;0.032700;0.040000;0.046100;0.051400;0.056000;0.060100;0.063800;0.067100;0.070100;0.075200;0.079400;0.082700;0.085200;0.087200;0.088600;0.089600;0.090100;0.090300;0.090200;0.089800;0.089100;0.088300;0.087200;0.086100;0.084700;0.083200;0.081600;0.079900;0.078000;0.076000;0.073900;0.071700;0.069400;0.067000;0.064500;0.061800;0.059100;0.056200;0.053200;0.050200;0.047000;0.043800;0.040500;0.037100;0.033700;0.030200;0.026600;0.023000;0.019400;0.017500;0.015700;0.013800;0.011900;0.010000;0.008000;0.006100;0.004100;0.002100;0.000000</z>
+          </pointList>
+        </wingAirfoil>
+      </wingAirfoils>
+    </profiles>
+  </vehicles>
+</cpacs>

@@ -136,7 +136,7 @@
               </segment>
             </segments>
             <componentSegments>
-            	<componentSegment>
+            	<componentSegment uID="CS1">
             		<name>Wing_CS</name>
             		<fromElementUID>Wing_section1_element1</fromElementUID>
             		<toElementUID>Wing_section2_element1</toElementUID>

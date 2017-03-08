@@ -88,7 +88,7 @@ void CCPACSWingProfileCST::BuildWires()
     
     // Build upper wire
     CCSTCurveBuilder upperBuilder(m_upperN1, m_upperN2, m_upperB.AsVector());
-    Handle_Geom_BSplineCurve upperCurve = upperBuilder.Curve();
+    Handle(Geom_BSplineCurve) upperCurve = upperBuilder.Curve();
     upperCurve->Transform(yzSwitch);
     upperWire = BRepBuilderAPI_MakeEdge(upperCurve);
     
@@ -100,7 +100,7 @@ void CCPACSWingProfileCST::BuildWires()
     }
     
     CCSTCurveBuilder lowerBuilder(m_lowerN1, m_lowerN2, binv);
-    Handle_Geom_BSplineCurve lowerCurve = lowerBuilder.Curve();
+    Handle(Geom_BSplineCurve) lowerCurve = lowerBuilder.Curve();
     lowerCurve->Transform(yzSwitch);
     lowerCurve->Reverse();
     lowerWire = BRepBuilderAPI_MakeEdge(lowerCurve);
@@ -109,7 +109,7 @@ void CCPACSWingProfileCST::BuildWires()
     TopoDS_Wire upperLowerWire = upperLowerWireMaker.Wire();
     
     // conatenate wire
-    Handle_Geom_Curve upperLowerCurve = CWireToCurve(upperLowerWire).curve();
+    Handle(Geom_Curve) upperLowerCurve = CWireToCurve(upperLowerWire).curve();
     upperLowerEdge = BRepBuilderAPI_MakeEdge(upperLowerCurve);
     
     tePoint = gp_Pnt(1,0,0);

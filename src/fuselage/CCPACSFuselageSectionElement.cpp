@@ -51,37 +51,40 @@ std::string CCPACSFuselageSectionElement::GetProfileIndex() const
 // Gets the section element transformation
 CTiglTransformation CCPACSFuselageSectionElement::GetSectionElementTransformation() const
 {
-    return m_transformation.AsTransformation();
+    return transformation.getTransformationMatrix();
 }
 
-CTiglPoint CCPACSFuselageSectionElement::GetTranslation(void) const
+CTiglPoint CCPACSFuselageSectionElement::GetTranslation() const
 {
-    return m_transformation.GetTranslation();
+    return transformation.getTranslationVector();
 }
 
-void CCPACSFuselageSectionElement::SetTranslation(const CTiglPoint& translation)
+CTiglPoint CCPACSFuselageSectionElement::GetRotation() const
 {
-    m_transformation.SetTranslation(translation);
+    return transformation.getRotation();
 }
 
-CTiglPoint CCPACSFuselageSectionElement::GetRotation(void) const
+CTiglPoint CCPACSFuselageSectionElement::GetScaling() const
 {
-    return m_transformation.GetRotation();
+    return transformation.getScaling();
 }
 
-void CCPACSFuselageSectionElement::SetRotation(const CTiglPoint& rotation)
+void CCPACSFuselageSectionElement::SetTranslation(const CTiglPoint &translation)
 {
-    m_transformation.SetRotation(rotation);
+    transformation.setTranslation(translation, ABS_LOCAL);
+    transformation.updateMatrix();
 }
 
-CTiglPoint CCPACSFuselageSectionElement::GetScaling(void) const
+void CCPACSFuselageSectionElement::SetRotation(const CTiglPoint &rotation)
 {
-    return m_transformation.GetScaling();
+    transformation.setRotation(rotation);
+    transformation.updateMatrix();
 }
 
-void CCPACSFuselageSectionElement::SetScaling(const CTiglPoint& scaling)
+void CCPACSFuselageSectionElement::SetScaling(const CTiglPoint &scaling)
 {
-    m_transformation.SetScaling(scaling);
+    transformation.setScaling(scaling);
+    transformation.updateMatrix();
 }
 
 } // end namespace tigl

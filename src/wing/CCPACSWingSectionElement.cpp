@@ -42,46 +42,44 @@ std::string CCPACSWingSectionElement::GetProfileUID() const
     return m_airfoilUID;
 }
 
+
 // Gets the section element transformation
-CTiglTransformation CCPACSWingSectionElement::GetSectionElementTransformation() const
+CTiglTransformation CCPACSWingSectionElement::GetSectionElementTransformation(void) const
 {
-    return m_transformation.AsTransformation();
+    return transformation.getTransformationMatrix();
 }
 
-// Getter for translation
-CTiglPoint CCPACSWingSectionElement::GetTranslation() const
+const CTiglPoint &CCPACSWingSectionElement::GetTranslation() const
 {
-    return m_transformation.GetTranslation();
+    return transformation.getTranslationVector();
 }
 
-// Getter for rotation
-CTiglPoint CCPACSWingSectionElement::GetRotation() const
+const CTiglPoint &CCPACSWingSectionElement::GetRotation() const
 {
-    return m_transformation.GetRotation();
+    return transformation.getRotation();
 }
 
-// Getter for scaling
-CTiglPoint CCPACSWingSectionElement::GetScaling() const
+const CTiglPoint &CCPACSWingSectionElement::GetScaling() const
 {
-    return m_transformation.GetScaling();
+    return transformation.getScaling();
 }
 
-// Setter for translation
-void CCPACSWingSectionElement::SetTranslation(const CTiglPoint& trans)
+void CCPACSWingSectionElement::SetTranslation(const CTiglPoint &trans)
 {
-    m_transformation.SetTranslation(trans);
+    transformation.setTranslation(trans, ABS_LOCAL);
+    transformation.updateMatrix();
 }
 
-// Setter for rotation
-void CCPACSWingSectionElement::SetRotation(const CTiglPoint& rot)
+void CCPACSWingSectionElement::SetRotation(const CTiglPoint &rot)
 {
-    m_transformation.SetRotation(rot);
+    transformation.setRotation(rot);
+    transformation.updateMatrix();
 }
 
-// Setter for scaling
-void CCPACSWingSectionElement::SetScaling(const CTiglPoint& scale)
+void CCPACSWingSectionElement::SetScaling(const CTiglPoint &scaling)
 {
-    m_transformation.SetScaling(scale);
+    transformation.setScaling(scaling);
+    transformation.updateMatrix();
 }
 
 } // end namespace tigl

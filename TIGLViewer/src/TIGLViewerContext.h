@@ -22,6 +22,8 @@
 #define TIGLVIEWERCONTEXT_H
 
 #include <AIS_Shape.hxx>
+#include <AIS_InteractiveContext.hxx>
+#include <V3d_Viewer.hxx>
 #include <QObject>
 #include "TIGLViewer.h"
 #include "TIGLViewerColors.h"
@@ -68,7 +70,7 @@ public:
                        Standard_Real TextScale);
 
 public slots:
-    void displayShape(const TopoDS_Shape& loft, Quantity_Color color = Quantity_NOC_ShapeCol);
+    void displayShape(const TopoDS_Shape& loft, Quantity_Color color = Quantity_NOC_ShapeCol, double transparency=0.);
     void drawPoint(double x, double y, double z);
     void drawVector(double x, double y, double z, double dirx, double diry, double dirz);
     void deleteAllObjects();

@@ -191,42 +191,6 @@ TEST(TiglPointTranslator, consistency){
     ASSERT_NEAR( xsi_orig, xsi, precision);
 }
 
-TEST(TiglPointTranslator, performance){
-    int nruns = 100000;
-    
-    CTiglPoint x1(0,4,0);
-    CTiglPoint x2(8,4,0);
-    CTiglPoint x3(0,0,0);
-    CTiglPoint x4(4,0,0);
-
-    CTiglPoint p(3,2,1);
-
-    double eta, xsi;
-    double x = 0.;
-
-    CTiglPointTranslator trans(x1, x2, x3, x4 );
-
-    clock_t start = clock();
-
-    for(int i = 0; i < nruns; ++i){
-        trans.translate(p, &eta, &xsi) ;
-        //just some dummy to prevent compiler optimization
-        x = x + 1.0;
-    }
-
-    clock_t stop = clock();
-
-    ASSERT_EQ((double)nruns, x);
-    ASSERT_NEAR(0.5, eta, abs_error);
-    ASSERT_NEAR(0.5, xsi, abs_error);
-        
-    double time_elapsed = (double)(stop - start)/(double)CLOCKS_PER_SEC/(double)nruns;
-    time_elapsed *= 1000000.;
-    printf("Elapsed average time: %f [us]\n", time_elapsed);
-    
-    ASSERT_TRUE(true);
-}
-
 TEST(TiglPointTranslator, Bug1){
     CTiglPoint x1(15.080271828981320681,6.3331944636655546077,-0.82588659024004418274);
     CTiglPoint x2(20.620103026537961455,16.956343945599122947,-0.089370094291781887463);
@@ -292,5 +256,29 @@ TEST(TiglPointTranslator, Bug4){
     CTiglPointTranslator trans(x1, x2, x3, x4 );
 
     ASSERT_EQ ( TIGL_SUCCESS,  trans.translate(p, &eta, &xsi) );
+}
+
+
+/**
+ * This bug occured because of the different scale. In this case,
+ * the tolerance of the gradient was chosen too small.
+ * The gradient is quadratic in the scale, hence, the tolerance
+ * must be adapted.
+ */
+TEST(TiglPointTranslator, Bug5){
+    CTiglPoint x1(4000.0000000000000, 0.00000000000000000, 3000.0000000000000);
+    CTiglPoint x2(6893.7199999999993, 4250.0000000000000, 3000.0000000000000);
+    CTiglPoint x3(7554.9955629914994, 0.00000000000000000, 3017.7749461533222);
+    CTiglPoint x4(8693.7789747175666, 4250.0000000000000, 3006.3001935476932);
+
+    CTiglPoint p(7060.6260619422628, 1062.5000000000005, 3011.1796935014363);
+
+    double eta, xsi;
+
+    CTiglPointTranslator trans(x1, x2, x3, x4);
+
+    ASSERT_EQ ( TIGL_SUCCESS, trans.translate(p, &eta, &xsi) );
+    ASSERT_NEAR(0.25, eta, 1e-5);
+    ASSERT_NEAR(0.75, xsi, 1e-5);
 }
 

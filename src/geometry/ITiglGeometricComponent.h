@@ -33,12 +33,13 @@
 #include "tigl.h"
 #include "PNamedShape.h"
 #include "tigl_config.h"
-#include "CTiglTransformation.h"
+#include "CCPACSTransformation.h"
 #include "ECPACSTranslationType.h"
-
 
 namespace tigl 
 {
+
+
 class ITiglGeometricComponent
 {
 public:

@@ -97,12 +97,20 @@ double CCPACSMaterial::GetThicknessScaling() const
     return GetThicknessScaling_choice1();
 }
 
+#if CPACS_VERSION >= VERSION_HEX_CODE(2,3,0)
+void CCPACSMaterial::SetOrthotropyDirection(double direction)
+#else
 void CCPACSMaterial::SetOrthotropyDirection(tigl::CTiglPoint direction)
+#endif
 {
     orthotropyDirection = direction;
 }
 
+#if CPACS_VERSION >= VERSION_HEX_CODE(2,3,0)
+double CCPACSMaterial::GetOrthotropyDirection() const
+#else
 const CTiglPoint& CCPACSMaterial::GetOrthotropyDirection() const
+#endif
 {
     return *orthotropyDirection;
 }

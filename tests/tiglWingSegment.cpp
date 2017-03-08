@@ -913,11 +913,11 @@ TEST_F(WingSegmentSpecial, getCompSegEtaXsi)
 {
     double eta, xsi;
     ASSERT_EQ(TIGL_SUCCESS, tiglWingSegmentPointGetComponentSegmentEtaXsi(tiglSpecialHandle, "Aircraft1_Wing1_Seg3", "Aircraft1_Wing1_CompSeg1", 1.0, 0.25, &eta, &xsi));
-    ASSERT_EQ(eta, 1.0);
-    ASSERT_EQ(xsi, 0.25);
+    ASSERT_NEAR(1.0,  eta, 1e-7);
+    ASSERT_NEAR(0.25, xsi, 1e-7);
     ASSERT_EQ(TIGL_SUCCESS, tiglWingSegmentPointGetComponentSegmentEtaXsi(tiglSpecialHandle, "Aircraft1_Wing1_Seg3", "Aircraft1_Wing1_CompSeg1", 1.0, 1.0, &eta, &xsi));
-    ASSERT_EQ(eta, 1.0);
-    ASSERT_EQ(xsi, 1.0);
+    ASSERT_NEAR(1.0, eta, 1e-7);
+    ASSERT_NEAR(1.0, xsi, 1e-7);
 }
 
 TEST_F(WingSegmentSimple, getSurfacArea)
@@ -1092,15 +1092,24 @@ TEST_F(WingSegmentSimple, getSurfaceAreaTrimmedLower_Errors)
                                                                     &lowerArea));
 }
 
+TEST_F(WingSegmentSimple, wingGetEtaXsiBug1)
+{
+    int idx = -1, onTop;
+    double eta = 0., xsi = 0.;
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetSegmentEtaXsi(tiglSimpleHandle, 1, 0.5, 1.0005, 0.0, &idx, &eta, &xsi, &onTop));
+    ASSERT_EQ(2, idx);
+    ASSERT_NEAR(0.0005, eta, 1e-8);
+}
+
 TEST_F(WingSegmentSimple, saveCPACS)
 {
 
-    ASSERT_EQ(SUCCESS, tiglSaveCPACSConfiguration("simpletest-saved", tiglSimpleHandle));
+    ASSERT_EQ(TIGL_SUCCESS, tiglSaveCPACSConfiguration("simpletest-saved", tiglSimpleHandle));
     ASSERT_EQ(SUCCESS, tixiSaveDocument(tixiSimpleHandle, "TestData/simpltest-saved.cpacs.xml"));
 
     // try to reopen document
     TiglCPACSConfigurationHandle tmpHandle = 0;
-    EXPECT_EQ(SUCCESS, tiglOpenCPACSConfiguration(tixiSimpleHandle, "", &tmpHandle));
+    EXPECT_EQ(TIGL_SUCCESS, tiglOpenCPACSConfiguration(tixiSimpleHandle, "", &tmpHandle));
 
     if (tmpHandle > 0) {
         tiglCloseCPACSConfiguration(tmpHandle);

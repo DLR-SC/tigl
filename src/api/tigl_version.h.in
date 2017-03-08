@@ -33,6 +33,11 @@
 
 #define TIGL_VERSION_STRING      "@TIGL_VERSION@"
 #define TIGL_REVISION            "@TIGL_REVISION@"
+
+/** TIGL_VERSION_HEX returns a unique integer which is increasing with each release 
+ *  This can be e.g. used in ifdefs
+ */
+#define TIGL_VERSION_HEX (TIGL_MAJOR_VERSION << 16 | TIGL_MINOR_VERSION << 8 | TIGL_PATCHLEVEL)
 /*@}*/
 
 

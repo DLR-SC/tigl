@@ -1,0 +1,5 @@
+# Use this makefile, to create the MATLAB bindings for tigl
+# It requires a MATLAB installation and MATLAB's mex command must be in PATH
+
+all:
+	mex tiglmatlab.c -I../../../include -L../../../@CMAKE_INSTALL_LIBDIR@ -lTIGL -output tigl_matlab

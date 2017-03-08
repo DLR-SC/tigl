@@ -67,6 +67,9 @@ public:
     TIGL_EXPORT virtual TiglSymmetryAxis GetSymmetryAxis() override;
     TIGL_EXPORT virtual void SetSymmetryAxis(const TiglSymmetryAxis& axis) override;
 
+    // Returns whether this wing is a rotor blade
+    TIGL_EXPORT bool IsRotorBlade(void) const;
+
     // Returns the parent configuration
     TIGL_EXPORT CCPACSConfiguration & GetConfiguration() const;
 
@@ -102,6 +105,9 @@ public:
     // Gets the upper point in absolute (world) coordinates for a given segment, eta, xsi
     TIGL_EXPORT gp_Pnt GetLowerPoint(int segmentIndex, double eta, double xsi);
 
+    // Gets a point on the chord surface in absolute (world) coordinates for a given segment, eta, xsi
+    TIGL_EXPORT gp_Pnt GetChordPoint(int segmentIndex, double eta, double xsi);
+
     // Gets the loft of the whole wing
     TIGL_EXPORT TopoDS_Shape & GetLoftWithLeadingEdge();
         
@@ -117,15 +123,6 @@ public:
     // Sets a Transformation object
     TIGL_EXPORT virtual void Translate(CTiglPoint trans) override;
 
-    // Setter for translation
-    TIGL_EXPORT void SetTranslation(const CTiglPoint& translation);
-
-    // Setter for translation
-    TIGL_EXPORT void SetRotation(const CTiglPoint& rotation);
-
-    // Setter for translation
-    TIGL_EXPORT void SetScaling(const CTiglPoint& scaling);
-
     // Gets the surfade area of this wing
     TIGL_EXPORT double GetSurfaceArea();
 
@@ -139,6 +136,9 @@ public:
     // Returns the wingspan of the wing
     TIGL_EXPORT double GetWingspan();
 
+    // Returns the aspect ratio of the wing
+    TIGL_EXPORT double GetAspectRatio(void);
+
     // Returns the mean aerodynamic chord of the wing
     TIGL_EXPORT void  GetWingMAC(double& mac_chord, double& mac_x, double& mac_y, double& mac_z);
 
@@ -148,7 +148,7 @@ public:
     TIGL_EXPORT int GetSegmentEtaXsi(const gp_Pnt& xyz, double& eta, double& xsi, bool &onTop);
 
     // Returns the Component Type TIGL_COMPONENT_WING.
-    TIGL_EXPORT TiglGeometricComponentType GetComponentType() {return TIGL_COMPONENT_WING | TIGL_COMPONENT_PHYSICAL;}
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType();
 
     // Returns the lower Surface of a Segment
     TIGL_EXPORT Handle(Geom_Surface) GetLowerSegmentSurface(int index);
@@ -166,9 +166,6 @@ protected:
     // Cleanup routine
     void Cleanup();
 
-    // Build transformation matrix for the wing
-    //void BuildMatrix();
-
     // Update internal wing data
     void Update();
 
@@ -184,6 +181,7 @@ private:
     std::string GetShortShapeName();
 
 private:
+    bool                           isRotorBlade;             /**< Indicates if this wing is a rotor blade */
     CCPACSConfiguration*           configuration;            /**< Parent configuration*/
     TopoDS_Shape                   fusedSegmentWithEdge;     /**< All Segments in one shape plus modelled leading edge */ 
     TopoDS_Shape                   upperShape;
@@ -197,6 +195,5 @@ private:
 };
 
 } // end namespace tigl
-
 
 #endif // CCPACSWING_H

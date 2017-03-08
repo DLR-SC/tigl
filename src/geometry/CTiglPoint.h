@@ -87,6 +87,12 @@ public:
     // cross product
     TIGL_EXPORT static CTiglPoint cross_prod(const CTiglPoint& a, const CTiglPoint& b);
 
+    // scalar projection of a vector a onto a nonzero vector b
+    TIGL_EXPORT static double scalar_projection(const CTiglPoint& a, const CTiglPoint& b);
+
+    // vector projection of a vector a onto a nonzero vector b
+    TIGL_EXPORT static CTiglPoint vector_projection(const CTiglPoint& a, const CTiglPoint& b);
+
     // square distance to another point
     TIGL_EXPORT double distance2(const CTiglPoint& point) const;
 

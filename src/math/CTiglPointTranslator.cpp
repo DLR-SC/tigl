@@ -135,6 +135,7 @@ void CTiglPointTranslator::SegmentProjection::getHessian(const double * x, doubl
     TIGL_MATRIX2D(hess,2,0,0) = 2.*acb.norm2Sqr();
     TIGL_MATRIX2D(hess,2,1,1) = 2.*bca.norm2Sqr();
     TIGL_MATRIX2D(hess,2,0,1) = 2.*CTiglPoint::inner_prod(bca, acb) + 2.*CTiglPoint::inner_prod(p, _c);
+    TIGL_MATRIX2D(hess,2,1,0) = TIGL_MATRIX2D(hess,2,0,1);
 }
 
 TiglReturnCode CTiglPointTranslator::translate(const CTiglPoint& p, double* eta, double * xsi)
@@ -162,7 +163,14 @@ TiglReturnCode CTiglPointTranslator::translate(const CTiglPoint& p, double* eta,
     assert(initialized);
     projector.setProjectionPoint(p);
 
-    TiglReturnCode ret = CTiglOptimizer::optNewton2d(projector, etaxsi, 1e-6, 1e-8);
+    // Scale of the whole problem. Must be
+    // Computed to make convergence independent of scale
+    double scale = a.norm2() * b.norm2();
+    if (scale < 1.0) {
+        scale = 1.0;
+    }
+
+    TiglReturnCode ret = CTiglOptimizer::optNewton2d(projector, etaxsi, 1e-7*scale, 1e-8);
     if (ret != TIGL_SUCCESS){
         // show some debuggin info
         CTiglPoint x1 = d;

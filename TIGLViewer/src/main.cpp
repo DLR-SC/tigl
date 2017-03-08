@@ -29,6 +29,8 @@
 #include "TIGLViewerWindow.h"
 #include "CommandLineParameters.h"
 
+#include <Standard_Version.hxx>
+
 using namespace std;
 
 int parseArguments(QStringList);
@@ -39,11 +41,7 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
     
 #ifdef __APPLE__
-    if (!getenv("CSF_GraphicShr")){
-        static char env[64];
-        strcpy(env,"CSF_GraphicShr=@executable_path/libTKOpenGl.dylib");
-        putenv(env);
-    }
+    app.setAttribute(Qt::AA_DontCreateNativeWidgetSiblings, true);
 #endif
 
 #if defined __linux__
@@ -53,6 +51,37 @@ int main(int argc, char *argv[])
 #elif defined __APPLE__
     setlocale(LC_NUMERIC, "C");
 #endif
+    
+    // set shader file location
+    QString shaderDir = QCoreApplication::applicationDirPath();
+#ifdef __APPLE__
+    shaderDir += "/../Resources";
+#else
+    shaderDir += "/../share/tigl/shaders";
+#endif
+    
+    QByteArray envVar = qgetenv("CSF_ShadersDirectory");
+    if (envVar.isNull()) {
+        qputenv("CSF_ShadersDirectory", shaderDir.toUtf8());
+    }
+    else {
+        shaderDir = envVar;
+    }
+    
+#if OCC_VERSION_HEX >= 0x060900
+    // check existance of shader dir
+    // This is only required for OpenCASCADE 6.9.0 and newer
+    if (!QFile(shaderDir+"/PhongShading.fs").exists()) {
+        std::stringstream str;
+        str << "Illegal or non existing shader directory "
+            << "<p><b>" << shaderDir.toStdString() << "</b></p>"
+            << "Set the enviroment variable <b>CSF_ShadersDirectory</b> to provide a path for the OpenCASCADE shaders.";
+        QMessageBox::critical(0, "Startup error...",
+                                  str.str().c_str(),
+                                  QMessageBox::Ok );
+        return 1;
+    }
+#endif
 
     int retval = parseArguments(app.arguments());
     if (retval != 0) {
@@ -60,35 +89,24 @@ int main(int argc, char *argv[])
         return retval;
     }
 
-    TIGLViewerWindow *window = new TIGLViewerWindow();
-    window->show();
+    TIGLViewerWindow window;
+    window.show();
 
     if (!PARAMS.controlFile.isEmpty()){
-        if (window->getViewer()) {
-            window->getViewer()->repaint();
-        }
-        window->setInitialControlFile(PARAMS.controlFile);
+        window.setInitialControlFile(PARAMS.controlFile);
     }
 
     // if a filename is given, open the configuration
     if (!PARAMS.initialFilename.isEmpty()) {
-        if (window->getViewer()) {
-            window->getViewer()->repaint();
-        }
-        window->openFile(PARAMS.initialFilename);
+        window.openFile(PARAMS.initialFilename);
     }
     
     // if a script is given
     if (!PARAMS.initialScript.isEmpty()) {
-        if (window->getViewer()) {
-            window->getViewer()->repaint();
-        }
-        window->openScript(PARAMS.initialScript);
+        window.openScript(PARAMS.initialScript);
     }
 
     retval = app.exec();
-    window->hide();
-    delete window;
     return retval;
 }
 

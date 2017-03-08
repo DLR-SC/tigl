@@ -30,7 +30,7 @@
 #include "tigl_internal.h"
 #include "tixi.h"
 #include "CCPACSWingSectionElements.h"
-#include "CTiglTransformation.h"
+#include "CCPACSTransformation.h"
 #include <string>
 
 namespace tigl
@@ -83,12 +83,6 @@ protected:
     // Cleanup routine
     void Cleanup();
 
-    // Build transformation matrix for the section
-    void BuildMatrix();
-
-    // Update internal section data
-    void Update();
-
 private:
     // Copy constructor
     CCPACSWingSection(const CCPACSWingSection& );
@@ -97,8 +91,8 @@ private:
     void operator=(const CCPACSWingSection& );
 
 private:
-    // value cached from m_transformation
-    CTiglTransformation transformationMatrix; /**< Section transfromation   */
+
+    CCPACSTransformation      transformation; /**< Section transfromation   */
     CCPACSWingSectionElements elements;       /**< Section elements         */
 
 };

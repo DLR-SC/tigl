@@ -145,7 +145,7 @@ void CCPACSWingSparSegment::GetEtaXsi(int positionIndex, double& eta, double& xs
         gp_Pnt sparPositionPoint = GetMidplanePoint(sparPositionUID);
         double dummy;
         sparsNode.GetStructure().GetWingStructureReference().GetMidplaneEtaXsi(sparPositionPoint, eta, dummy);
-        assert(std::abs(dummy - xsi) < 1.E-6);
+        assert(fabs(dummy - xsi) < 1.E-6);
     }
     else {
         throw CTiglError("Unknown SparPosition-InputType found in CCPACSWingSparSegment::GetEtaXsi");

@@ -25,50 +25,59 @@
 
 namespace
 {
-    /// we reparameterize the cst curve to achieve correct leading and trailing edge
-    /// interpolation
-    double fx(double t, void* p)
-    {
-        assert(p);
-        tigl::CCSTCurveBuilder* builder = (tigl::CCSTCurveBuilder*) p;
-        
-        /// determine x parameterization depending on N1 and N2
-        double N1 = builder->N1();
-        double N2 = builder->N2();
-        
-        if (N1 >= 1. && N2 >= 1.) {
-            // hypersonic biconvex airfoil
-            return t;
-        }
-        else if (N1 < 1 && N2 >= 1.) {
-            // classical airfoil
-            return t*t;
-        }
-        else if (N1 >= 1 && N2 < 1) {
-            // inverted airfoil
-            return -t*t + 2*t;
-        }
-        else {
-            // N1 < 1 && N2 < 1
-            // elliptic body
-            return -2.*t*t*t + 3*t*t;
-        }
-    }
 
-    double fy(double t, void* p)
+    class CSTFunction : public tigl::MathFunc3d
     {
-        double x = fx(t, p);
-        
-        assert(p);
-        tigl::CCSTCurveBuilder* builder = (tigl::CCSTCurveBuilder*) p;
-        
-        return tigl::cstcurve(builder->N1(), builder->N2(), builder->B(), x);
-    }
-    
-    double fz(double /*t*/, void*)
-    {
-        return 0;
-    }
+    public:
+        CSTFunction(tigl::CCSTCurveBuilder* b)
+            : builder(b)
+        {
+        }
+
+        /// we reparameterize the cst curve to achieve correct leading and trailing edge
+        /// interpolation
+        double valueX(double t)
+        {
+
+            /// determine x parameterization depending on N1 and N2
+            double N1 = builder->N1();
+            double N2 = builder->N2();
+
+            if (N1 >= 1. && N2 >= 1.) {
+                // hypersonic biconvex airfoil
+                return t;
+            }
+            else if (N1 < 1 && N2 >= 1.) {
+                // classical airfoil
+                return t*t;
+            }
+            else if (N1 >= 1 && N2 < 1) {
+                // inverted airfoil
+                return -t*t + 2*t;
+            }
+            else {
+                // N1 < 1 && N2 < 1
+                // elliptic body
+                return -2.*t*t*t + 3*t*t;
+            }
+        }
+
+        double valueY(double t)
+        {
+            double x = valueX(t);
+
+
+            return tigl::cstcurve(builder->N1(), builder->N2(), builder->B(), x);
+        }
+
+        double valueZ(double /*t*/)
+        {
+            return 0;
+        }
+
+    private:
+        tigl::CCSTCurveBuilder* builder;
+    };
 }
 
 namespace tigl
@@ -94,9 +103,10 @@ std::vector<double> CCSTCurveBuilder::B() const
     return _b;
 }
 
-Handle_Geom_BSplineCurve CCSTCurveBuilder::Curve()
+Handle(Geom_BSplineCurve) CCSTCurveBuilder::Curve()
 {
-    CFunctionToBspline approximator(fx,fy,fz, this, 0., 1., 4, 1e-5, 10);
+    CSTFunction function(this);
+    CFunctionToBspline approximator(function, 0., 1., 4, 1e-5, 10);
     return approximator.Curve();
 }
 

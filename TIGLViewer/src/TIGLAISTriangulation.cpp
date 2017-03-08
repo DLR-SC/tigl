@@ -15,7 +15,8 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-#include <AIS_Drawer.hxx>
+#include "tigl_internal.h"
+
 #include <TIGLAISTriangulation.h>
 #include <AIS_InteractiveObject.hxx>
 #include <Standard_DefineHandle.hxx>
@@ -38,6 +39,11 @@
 #include <Prs3d_LineAspect.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
 #include <Prs3d_Presentation.hxx>
+#include <Standard_Version.hxx>
+
+#if OCC_VERSION_HEX < VERSION_HEX_CODE(6,9,0)
+#include <AIS_Drawer.hxx>
+#endif
 
 IMPLEMENT_STANDARD_HANDLE(TIGLAISTriangulation, AIS_InteractiveObject)
 IMPLEMENT_STANDARD_RTTIEXT(TIGLAISTriangulation, AIS_InteractiveObject)
@@ -164,7 +170,7 @@ void TIGLAISTriangulation::Compute(const Handle(PrsMgr_PresentationManager3d)& a
         case 0: {
             const TColgp_Array1OfPnt& nodes = myTriangulation->Nodes();
             const Poly_Array1OfTriangle& triangles = myTriangulation->Triangles();
-            Handle_Graphic3d_AspectLine3d aspect = myDrawer->WireAspect()->Aspect();
+            Handle(Graphic3d_AspectLine3d) aspect = myDrawer->WireAspect()->Aspect();
      
             Handle(Graphic3d_ArrayOfPrimitives) segments =  new Graphic3d_ArrayOfSegments(nodes.Length(),triangles.Length()*6);
             for (Standard_Integer i = nodes.Lower(); i <= nodes.Upper(); i++ ) {
@@ -198,7 +204,7 @@ void TIGLAISTriangulation::ComputeSelection(const Handle(SelectMgr_Selection)& a
     Handle(SelectMgr_EntityOwner) eown = new SelectMgr_EntityOwner(this,0);
 
     TopLoc_Location loc;
-    Handle_Select3D_SensitiveTriangulation aSensitiveTria = new Select3D_SensitiveTriangulation(eown, myTriangulation, loc);
+    Handle(Select3D_SensitiveTriangulation) aSensitiveTria = new Select3D_SensitiveTriangulation(eown, myTriangulation, loc);
     aSelection->Add(aSensitiveTria);
 }
 

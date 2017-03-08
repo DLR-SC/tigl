@@ -76,6 +76,10 @@ public:
 
     // Adds a new fuselage to the list of fuselages
     TIGL_EXPORT void AddFuselage(CCPACSFuselage* fuselage);
+
+    // Returns the fuselage index for a given UID.
+    TIGL_EXPORT int GetFuselageIndex(const std::string& UID) const;
+
 };
 
 } // end namespace tigl
