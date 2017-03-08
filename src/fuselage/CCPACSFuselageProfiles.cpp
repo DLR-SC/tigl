@@ -53,7 +53,7 @@ void CCPACSFuselageProfiles::ReadCPACS(const TixiDocumentHandle& tixiHandle, con
 
 bool CCPACSFuselageProfiles::HasProfile(std::string uid) const
 {
-    for (std::vector<unique_ptr<CPACSProfileGeometry>>::const_iterator it = m_fuselageProfile.begin(); it != m_fuselageProfile.end(); ++it)
+    for (std::vector<unique_ptr<CPACSProfileGeometry> >::const_iterator it = m_fuselageProfile.begin(); it != m_fuselageProfile.end(); ++it)
         if ((*it)->GetUID() == uid)
             return true;
 
@@ -69,7 +69,7 @@ void CCPACSFuselageProfiles::AddProfile(CCPACSFuselageProfile* profile)
 
 void CCPACSFuselageProfiles::DeleteProfile( std::string uid )
 {
-    for (std::vector<unique_ptr<CPACSProfileGeometry>>::const_iterator it = m_fuselageProfile.begin(); it != m_fuselageProfile.end(); ++it) {
+    for (std::vector<unique_ptr<CPACSProfileGeometry> >::iterator it = m_fuselageProfile.begin(); it != m_fuselageProfile.end(); ++it) {
         if ((*it)->GetUID() == uid) {
             m_fuselageProfile.erase(it);
             return;
@@ -86,7 +86,7 @@ int CCPACSFuselageProfiles::GetProfileCount() const
 // Returns the fuselage profile for a given uid.
 CCPACSFuselageProfile& CCPACSFuselageProfiles::GetProfile(std::string uid) const
 {
-    for (std::vector<unique_ptr<CPACSProfileGeometry>>::const_iterator it = m_fuselageProfile.begin(); it != m_fuselageProfile.end(); ++it)
+    for (std::vector<unique_ptr<CPACSProfileGeometry> >::const_iterator it = m_fuselageProfile.begin(); it != m_fuselageProfile.end(); ++it)
         if ((*it)->GetUID() == uid)
             return static_cast<CCPACSFuselageProfile&>(**it);
     throw CTiglError("Fuselage profile \"" + uid + "\" not found in CPACS file!", TIGL_UID_ERROR);

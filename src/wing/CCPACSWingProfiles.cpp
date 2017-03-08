@@ -73,7 +73,7 @@ void CCPACSWingProfiles::AddProfile(CCPACSWingProfile* profile)
 
 void CCPACSWingProfiles::DeleteProfile(std::string uid)
 {
-    for (std::vector<unique_ptr<CPACSProfileGeometry> >::const_iterator it = m_wingAirfoil.begin(); it != m_wingAirfoil.end(); ++it) {
+    for (std::vector<unique_ptr<CPACSProfileGeometry> >::iterator it = m_wingAirfoil.begin(); it != m_wingAirfoil.end(); ++it) {
         if ((*it)->GetUID() == uid) {
             m_wingAirfoil.erase(it);
             return;

@@ -63,7 +63,7 @@ void CCPACSRotorProfiles::AddProfile(CCPACSWingProfile* profile)
 
 void CCPACSRotorProfiles::DeleteProfile(std::string uid)
 {
-    for (std::vector<unique_ptr<CPACSProfileGeometry> >::const_iterator it = m_rotorAirfoil.begin(); it != m_rotorAirfoil.end(); ++it) {
+    for (std::vector<unique_ptr<CPACSProfileGeometry> >::iterator it = m_rotorAirfoil.begin(); it != m_rotorAirfoil.end(); ++it) {
         if ((*it)->GetUID() == uid) {
             m_rotorAirfoil.erase(it);
             return;
