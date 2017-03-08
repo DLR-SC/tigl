@@ -19,6 +19,7 @@
 #ifndef ECPACSTRANSLATIONTYPE
 #define ECPACSTRANSLATIONTYPE
 
+#include <stdexcept>
 #include "to_string.h"
 
 namespace tigl
