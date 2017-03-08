@@ -32,7 +32,7 @@ CCPACSWingSparSegments::CCPACSWingSparSegments(CCPACSWingSpars* parent)
 
 void CCPACSWingSparSegments::Invalidate()
 {
-    for (std::vector<unique_ptr<CCPACSWingSparSegment>>::iterator it = m_sparSegment.begin(); it != m_sparSegment.end(); ++it) {
+    for (std::vector<unique_ptr<CCPACSWingSparSegment> >::iterator it = m_sparSegment.begin(); it != m_sparSegment.end(); ++it) {
         (*it)->Invalidate();
     }
 }
@@ -54,7 +54,7 @@ CCPACSWingSparSegment& CCPACSWingSparSegments::GetSparSegment(int index) const
 
 CCPACSWingSparSegment& CCPACSWingSparSegments::GetSparSegment(const std::string& uid) const
 {
-    for (std::vector<unique_ptr<CCPACSWingSparSegment>>::const_iterator it = m_sparSegment.begin(); it != m_sparSegment.end(); ++it) {
+    for (std::vector<unique_ptr<CCPACSWingSparSegment> >::const_iterator it = m_sparSegment.begin(); it != m_sparSegment.end(); ++it) {
         CCPACSWingSparSegment& sparSegment = **it;
         if (sparSegment.GetUID() == uid) {
             return sparSegment;

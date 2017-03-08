@@ -63,7 +63,7 @@ void CCPACSRotorProfiles::AddProfile(CCPACSWingProfile* profile)
 
 void CCPACSRotorProfiles::DeleteProfile(std::string uid)
 {
-    for (std::vector<unique_ptr<CPACSProfileGeometry>>::const_iterator it = m_rotorAirfoil.begin(); it != m_rotorAirfoil.end(); ++it) {
+    for (std::vector<unique_ptr<CPACSProfileGeometry> >::const_iterator it = m_rotorAirfoil.begin(); it != m_rotorAirfoil.end(); ++it) {
         if ((*it)->GetUID() == uid) {
             m_rotorAirfoil.erase(it);
             return;
@@ -78,7 +78,7 @@ int CCPACSRotorProfiles::GetProfileCount() const {
 
 bool CCPACSRotorProfiles::HasProfile(std::string uid) const
 {
-    for (std::vector<unique_ptr<CCPACSProfileGeometry>>::const_iterator it = m_rotorAirfoil.begin(); it != m_rotorAirfoil.end(); ++it)
+    for (std::vector<unique_ptr<CCPACSProfileGeometry> >::const_iterator it = m_rotorAirfoil.begin(); it != m_rotorAirfoil.end(); ++it)
         if ((*it)->GetUID() == uid)
             return true;
     return false;
@@ -87,7 +87,7 @@ bool CCPACSRotorProfiles::HasProfile(std::string uid) const
 // Returns the wing profile for a given uid.
 CCPACSWingProfile& CCPACSRotorProfiles::GetProfile(std::string uid) const
 {
-    for (std::vector<unique_ptr<CCPACSProfileGeometry>>::const_iterator it = m_rotorAirfoil.begin(); it != m_rotorAirfoil.end(); ++it)
+    for (std::vector<unique_ptr<CCPACSProfileGeometry> >::const_iterator it = m_rotorAirfoil.begin(); it != m_rotorAirfoil.end(); ++it)
         if ((*it)->GetUID() == uid)
             return static_cast<CCPACSWingProfile&>(**it);
 
