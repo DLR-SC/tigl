@@ -128,10 +128,10 @@ bool IsOuterSparPointInSection(const std::string& sparUid, double eta, const CCP
         return false;
     }
     CCPACSWingSparPosition& pos = sparSegment.GetSparPosition(sparSegment.GetSparPositionUID(sparPositionIndex));
-    if (pos.GetInputType() == CCPACSWingSparPosition::ElementUID) {
+    if (pos.GetInputType() == ENUM_VALUE_NS(CCPACSWingSparPosition, InputType, ElementUID)) {
         return true;
     }
-    else if (pos.GetInputType() == CCPACSWingSparPosition::Eta &&
+    else if (pos.GetInputType() == ENUM_VALUE_NS(CCPACSWingSparPosition, InputType, Eta) &&
              (pos.GetEta() < Precision::Confusion() || pos.GetEta() > 1 - Precision::Confusion())) {
         return true;
     }
@@ -281,11 +281,11 @@ gp_Pnt GetSparMidplanePoint(const CCPACSWingSparPosition& sparPos, const CCPACSW
 {
     const CTiglWingStructureReference& wingStructureReference = structure.GetWingStructureReference();
     gp_Pnt midplanePoint;
-    if (sparPos.GetInputType() == CCPACSWingSparPosition::ElementUID) {
+    if (sparPos.GetInputType() == ENUM_VALUE_NS(CCPACSWingSparPosition, InputType, ElementUID)) {
         CCPACSWingComponentSegment& componentSegment = wingStructureReference.GetWingComponentSegment();
         midplanePoint = getSectionElementChordlinePoint(componentSegment, sparPos.GetElementUID(), sparPos.GetXsi());
     }
-    else if (sparPos.GetInputType() == CCPACSWingSparPosition::Eta) {
+    else if (sparPos.GetInputType() == ENUM_VALUE_NS(CCPACSWingSparPosition, InputType, Eta)) {
         midplanePoint = wingStructureReference.GetMidplaneOrChordlinePoint(sparPos.GetEta(), sparPos.GetXsi());
     }
     else {

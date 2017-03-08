@@ -4,12 +4,17 @@
 #include <stdexcept>
 #include <cctype>
 #include "to_string.h"
+#include "tigl_internal.h"
 
 namespace tigl
 {
+#ifdef HAVE_CPP11
+    enum class TiglFarFieldType
+#else
     enum TiglFarFieldType
+#endif
     {
-        NONE,
+        NONE, // TODO(bgruber) not part of CPACS
         HALF_SPHERE,
         FULL_SPHERE,
         HALF_CUBE,
@@ -19,11 +24,11 @@ namespace tigl
     inline std::string TiglFarFieldTypeToString(const TiglFarFieldType& value)
     {
         switch (value) {
-            case TiglFarFieldType::HALF_SPHERE: return "halfSphere";
-            case TiglFarFieldType::FULL_SPHERE: return "fullSphere";
-            case TiglFarFieldType::HALF_CUBE:   return "halfCube";
-            case TiglFarFieldType::FULL_CUBE:   return "fullCube";
-            case TiglFarFieldType::NONE:        return "none";
+            case ENUM_VALUE(TiglFarFieldType, HALF_SPHERE): return "halfSphere";
+            case ENUM_VALUE(TiglFarFieldType, FULL_SPHERE): return "fullSphere";
+            case ENUM_VALUE(TiglFarFieldType, HALF_CUBE):   return "halfCube";
+            case ENUM_VALUE(TiglFarFieldType, FULL_CUBE):   return "fullCube";
+            case ENUM_VALUE(TiglFarFieldType, NONE):        return "none";
             default: throw std::runtime_error("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type TiglFarFieldType");
         }
     }
@@ -31,11 +36,11 @@ namespace tigl
     inline TiglFarFieldType stringToTiglFarFieldType(const std::string& value)
     {
         struct ToLower { std::string operator()(std::string str) { for (std::size_t i = 0; i < str.length(); i++) {str[i] = std::tolower(str[i]); } return str; } } toLower;
-        if (toLower(value) == "halfsphere") { return TiglFarFieldType::HALF_SPHERE; }
-        if (toLower(value) == "fullsphere") { return TiglFarFieldType::FULL_SPHERE; }
-        if (toLower(value) == "halfcube")   { return TiglFarFieldType::HALF_CUBE;   }
-        if (toLower(value) == "fullcube")   { return TiglFarFieldType::FULL_CUBE;   }
-        if (toLower(value) == "none")       { return TiglFarFieldType::NONE;        }
+        if (toLower(value) == "halfsphere") { return ENUM_VALUE(TiglFarFieldType, HALF_SPHERE); }
+        if (toLower(value) == "fullsphere") { return ENUM_VALUE(TiglFarFieldType, FULL_SPHERE); }
+        if (toLower(value) == "halfcube")   { return ENUM_VALUE(TiglFarFieldType, HALF_CUBE);   }
+        if (toLower(value) == "fullcube")   { return ENUM_VALUE(TiglFarFieldType, FULL_CUBE);   }
+        if (toLower(value) == "none")       { return ENUM_VALUE(TiglFarFieldType, NONE);        }
         throw std::runtime_error("Invalid string value \"" + value + "\" for enum type TiglFarFieldType");
     }
 }

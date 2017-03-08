@@ -56,12 +56,12 @@ namespace tigl
             
         }
         
-        const std::vector<unique_ptr<CCPACSWingSegment>>& CPACSWingSegments::GetSegment() const
+        const std::vector<unique_ptr<CCPACSWingSegment> >& CPACSWingSegments::GetSegment() const
         {
             return m_segment;
         }
         
-        std::vector<unique_ptr<CCPACSWingSegment>>& CPACSWingSegments::GetSegment()
+        std::vector<unique_ptr<CCPACSWingSegment> >& CPACSWingSegments::GetSegment()
         {
             return m_segment;
         }

@@ -101,9 +101,9 @@ void CCPACSWingShell::Update() const
 TiglLoftSide CCPACSWingShell::GetLoftSide() const
 {
     if (&GetParent()->GetLowerShell() == this)
-        return TiglLoftSide::LOWER_SIDE;
+        return ENUM_VALUE(TiglLoftSide, LOWER_SIDE);
     if (&GetParent()->GetUpperShell() == this)
-        return TiglLoftSide::UPPER_SIDE;
+        return ENUM_VALUE(TiglLoftSide, UPPER_SIDE);
     throw std::logic_error("Cannot determine loft side, this shell is neither lower nor upper shell of parent");
 }
 

@@ -42,11 +42,11 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT const std::vector<unique_ptr<CCPACSAircraftModel>>& GetModel() const;
-            TIGL_EXPORT std::vector<unique_ptr<CCPACSAircraftModel>>& GetModel();
+            TIGL_EXPORT const std::vector<unique_ptr<CCPACSAircraftModel> >& GetModel() const;
+            TIGL_EXPORT std::vector<unique_ptr<CCPACSAircraftModel> >& GetModel();
             
         protected:
-            std::vector<unique_ptr<CCPACSAircraftModel>> m_model;
+            std::vector<unique_ptr<CCPACSAircraftModel> > m_model;
             
         private:
             #ifdef HAVE_CPP11
@@ -63,7 +63,7 @@ namespace tigl
     }
     
     // This type is not customized, create alias in tigl namespace
-    #ifdef CPP11
+    #ifdef HAVE_CPP11
     using CCPACSAircraft = generated::CPACSAircraft;
     #else
     typedef generated::CPACSAircraft CCPACSAircraft;

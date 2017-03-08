@@ -42,11 +42,11 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT const std::vector<unique_ptr<CPACSProfileGeometry>>& GetRotorAirfoil() const;
-            TIGL_EXPORT std::vector<unique_ptr<CPACSProfileGeometry>>& GetRotorAirfoil();
+            TIGL_EXPORT const std::vector<unique_ptr<CPACSProfileGeometry> >& GetRotorAirfoil() const;
+            TIGL_EXPORT std::vector<unique_ptr<CPACSProfileGeometry> >& GetRotorAirfoil();
             
         protected:
-            std::vector<unique_ptr<CPACSProfileGeometry>> m_rotorAirfoil;
+            std::vector<unique_ptr<CPACSProfileGeometry> > m_rotorAirfoil;
             
         private:
             #ifdef HAVE_CPP11

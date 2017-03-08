@@ -41,7 +41,7 @@ CCPACSFarField::CCPACSFarField() {
 
 void CCPACSFarField::init()
 {
-    SetFieldType(TiglFarFieldType::NONE);
+    SetFieldType(ENUM_VALUE(TiglFarFieldType, NONE));
     loft.reset();
 }
 
@@ -69,18 +69,18 @@ PNamedShape CCPACSFarField::BuildLoft()
     gp_Pnt center(0,0,0);
 
     switch (GetFieldType()) {
-    case TiglFarFieldType::FULL_SPHERE:
+    case ENUM_VALUE(TiglFarFieldType, FULL_SPHERE):
         shape = BRepPrimAPI_MakeSphere(center, fieldSize).Shape();
         break;
-    case TiglFarFieldType::FULL_CUBE:
+    case ENUM_VALUE(TiglFarFieldType, FULL_CUBE):
         shape = BRepPrimAPI_MakeBox(gp_Pnt(center.X()-fieldSize, center.Y()-fieldSize, center.Z()-fieldSize),
                                     fieldSize*2., fieldSize*2., fieldSize*2.).Shape();
         break;
-    case TiglFarFieldType::HALF_CUBE:
+    case ENUM_VALUE(TiglFarFieldType, HALF_CUBE):
         shape = BRepPrimAPI_MakeBox(gp_Pnt(center.X()-fieldSize, center.Y(), center.Z()-fieldSize),
                                     fieldSize*2., fieldSize, fieldSize*2.).Shape();
         break;
-    case TiglFarFieldType::HALF_SPHERE:
+    case ENUM_VALUE(TiglFarFieldType, HALF_SPHERE):
         shape = BRepPrimAPI_MakeSphere(gp_Ax2(center, gp_Dir(0,1,0)), fieldSize, 0., M_PI_2).Shape();
         break;
     default:

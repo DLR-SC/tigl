@@ -44,12 +44,12 @@ namespace tigl
             
         }
         
-        const std::vector<unique_ptr<CCPACSGuideCurve>>& CPACSGuideCurves::GetGuideCurve() const
+        const std::vector<unique_ptr<CCPACSGuideCurve> >& CPACSGuideCurves::GetGuideCurve() const
         {
             return m_guideCurve;
         }
         
-        std::vector<unique_ptr<CCPACSGuideCurve>>& CPACSGuideCurves::GetGuideCurve()
+        std::vector<unique_ptr<CCPACSGuideCurve> >& CPACSGuideCurves::GetGuideCurve()
         {
             return m_guideCurve;
         }

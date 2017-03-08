@@ -46,13 +46,13 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT const std::vector<unique_ptr<CCPACSExternalObject>>& GetGenericGeometryComponent() const;
-            TIGL_EXPORT std::vector<unique_ptr<CCPACSExternalObject>>& GetGenericGeometryComponent();
+            TIGL_EXPORT const std::vector<unique_ptr<CCPACSExternalObject> >& GetGenericGeometryComponent() const;
+            TIGL_EXPORT std::vector<unique_ptr<CCPACSExternalObject> >& GetGenericGeometryComponent();
             
         protected:
             CCPACSAircraftModel* m_parent;
             
-            std::vector<unique_ptr<CCPACSExternalObject>> m_genericGeometryComponent;
+            std::vector<unique_ptr<CCPACSExternalObject> > m_genericGeometryComponent;
             
         private:
             #ifdef HAVE_CPP11

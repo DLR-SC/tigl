@@ -56,12 +56,12 @@ namespace tigl
             
         }
         
-        const std::vector<unique_ptr<CCPACSRotorHinge>>& CPACSRotorHubHinges::GetHinge() const
+        const std::vector<unique_ptr<CCPACSRotorHinge> >& CPACSRotorHubHinges::GetHinge() const
         {
             return m_hinge;
         }
         
-        std::vector<unique_ptr<CCPACSRotorHinge>>& CPACSRotorHubHinges::GetHinge()
+        std::vector<unique_ptr<CCPACSRotorHinge> >& CPACSRotorHubHinges::GetHinge()
         {
             return m_hinge;
         }

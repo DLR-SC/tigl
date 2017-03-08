@@ -60,12 +60,12 @@ namespace tigl
             
         }
         
-        const std::vector<unique_ptr<CCPACSWing>>& CPACSWings::GetWing() const
+        const std::vector<unique_ptr<CCPACSWing> >& CPACSWings::GetWing() const
         {
             return m_wing;
         }
         
-        std::vector<unique_ptr<CCPACSWing>>& CPACSWings::GetWing()
+        std::vector<unique_ptr<CCPACSWing> >& CPACSWings::GetWing()
         {
             return m_wing;
         }

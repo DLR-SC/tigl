@@ -144,12 +144,12 @@ namespace tigl
             m_offset = value;
         }
         
-        const std::vector<unique_ptr<CPACSCompositeLayer>>& CPACSComposite::GetCompositeLayer() const
+        const std::vector<unique_ptr<CPACSCompositeLayer> >& CPACSComposite::GetCompositeLayer() const
         {
             return m_compositeLayer;
         }
         
-        std::vector<unique_ptr<CPACSCompositeLayer>>& CPACSComposite::GetCompositeLayer()
+        std::vector<unique_ptr<CPACSCompositeLayer> >& CPACSComposite::GetCompositeLayer()
         {
             return m_compositeLayer;
         }

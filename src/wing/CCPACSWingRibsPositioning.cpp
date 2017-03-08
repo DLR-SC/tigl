@@ -22,30 +22,26 @@
 
 #include "generated/TixiHelper.h"
 
-std::string toString(tigl::CCPACSWingRibsPositioning::CrossingBehaviour crossingBehaviour)
-{
-    switch (crossingBehaviour) {
-    case tigl::CCPACSWingRibsPositioning::CROSSING_CROSS:
-        return "cross";
-        break;
-    case tigl::CCPACSWingRibsPositioning::CROSSING_END:
-        return "end";
-        break;
-    default:
-        throw tigl::CTiglError("Unknown CrossingBehaviour can not be converted to string!");
-    }
-}
-
-tigl::CCPACSWingRibsPositioning::CrossingBehaviour ribCrossingFromString(const std::string& crossingBehaviour)
-{
-    if (crossingBehaviour == "cross") {
-        return tigl::CCPACSWingRibsPositioning::CROSSING_CROSS;
-    }
-    else if (crossingBehaviour == "end") {
-        return tigl::CCPACSWingRibsPositioning::CROSSING_END;
-    }
-    throw tigl::CTiglError("Unknown CrossingBehaviour " + crossingBehaviour + " found in CCPACSWingRibsPositioning!");
-}
+//std::string toString(tigl::CCPACSWingRibsPositioning::CrossingBehaviour crossingBehaviour)
+//{
+//    switch (crossingBehaviour) {
+//    case ENUM_VALUE_NS(CCPACSWingRibsPositioning::CrossingBehaviour, CROSSING_CROSS): return "cross";
+//    case ENUM_VALUE_NS(CCPACSWingRibsPositioning::CrossingBehaviour, CROSSING_END): return "end";
+//    default:
+//        throw tigl::CTiglError("Unknown CrossingBehaviour can not be converted to string!");
+//    }
+//}
+//
+//tigl::CCPACSWingRibsPositioning::CrossingBehaviour ribCrossingFromString(const std::string& crossingBehaviour)
+//{
+//    if (crossingBehaviour == "cross") {
+//        return tigl::CCPACSWingRibsPositioning::CROSSING_CROSS;
+//    }
+//    else if (crossingBehaviour == "end") {
+//        return tigl::CCPACSWingRibsPositioning::CROSSING_END;
+//    }
+//    throw tigl::CTiglError("Unknown CrossingBehaviour " + crossingBehaviour + " found in CCPACSWingRibsPositioning!");
+//}
 
 
 namespace tigl
@@ -85,11 +81,11 @@ void CCPACSWingRibsPositioning::WriteCPACS(const TixiDocumentHandle& tixiHandle,
 CCPACSWingRibsPositioning::StartDefinitionType CCPACSWingRibsPositioning::GetStartDefinitionType() const
 {
     if (m_etaStart_choice1)
-        return StartDefinitionType::ETA_START;
+        return ENUM_VALUE(StartDefinitionType, ETA_START);
     if (m_elementStartUID_choice2)
-        return StartDefinitionType::ELEMENT_START;
+        return ENUM_VALUE(StartDefinitionType, ELEMENT_START);
     if (m_sparPositionStartUID_choice3)
-        return StartDefinitionType::SPARPOSITION_START;
+        return ENUM_VALUE(StartDefinitionType, SPARPOSITION_START);
     throw std::logic_error("Invalid start definition");
 }
 
@@ -151,11 +147,11 @@ void CCPACSWingRibsPositioning::SetSparPositionStartUID(const std::string& uid)
 CCPACSWingRibsPositioning::EndDefinitionType CCPACSWingRibsPositioning::GetEndDefinitionType() const
 {
     if (m_etaEnd_choice1)
-        return EndDefinitionType::ETA_END;
+        return ENUM_VALUE(EndDefinitionType, ETA_END);
     if (m_elementEndUID_choice2)
-        return EndDefinitionType::ELEMENT_END;
+        return ENUM_VALUE(EndDefinitionType, ELEMENT_END);
     if (m_sparPositionEndUID_choice3)
-        return EndDefinitionType::SPARPOSITION_END;
+        return ENUM_VALUE(EndDefinitionType, SPARPOSITION_END);
     throw std::logic_error("Invalid end definition");
 }
 
@@ -216,9 +212,9 @@ void CCPACSWingRibsPositioning::SetSparPositionEndUID(const std::string& uid)
 CCPACSWingRibsPositioning::RibCountDefinitionType CCPACSWingRibsPositioning::GetRibCountDefinitionType() const
 {
     if (m_spacing_choice1)
-        return RibCountDefinitionType::SPACING;
+        return ENUM_VALUE(RibCountDefinitionType, SPACING);
     if (m_numberOfRibs_choice2)
-        return RibCountDefinitionType::NUMBER_OF_RIBS;
+        return ENUM_VALUE(RibCountDefinitionType, NUMBER_OF_RIBS);
     throw std::logic_error("Invalid rib count definition");
 }
 
@@ -259,10 +255,8 @@ void CCPACSWingRibsPositioning::SetSpacing(double value)
 CCPACSWingRibsPositioning::CrossingBehaviour CCPACSWingRibsPositioning::GetRibCrossingBehaviour() const
 {
     switch (m_ribCrossingBehaviour.GetSimpleContent()) {
-        case generated::CPACSRibCrossingBehaviour::cross:
-            return CrossingBehaviour::CROSSING_CROSS;
-        case generated::CPACSRibCrossingBehaviour::end:
-            return CrossingBehaviour::CROSSING_END;
+        case ENUM_VALUE_NS(generated, CPACSRibCrossingBehaviour, cross): return ENUM_VALUE(CrossingBehaviour, CROSSING_CROSS);
+        case ENUM_VALUE_NS(generated, CPACSRibCrossingBehaviour, end):   return ENUM_VALUE(CrossingBehaviour, CROSSING_END);
         default: throw std::logic_error("Unknown crossing behaviour");
     }
 }
@@ -270,10 +264,8 @@ CCPACSWingRibsPositioning::CrossingBehaviour CCPACSWingRibsPositioning::GetRibCr
 void CCPACSWingRibsPositioning::SetRibCrossingBehaviour(CCPACSWingRibsPositioning::CrossingBehaviour behaviour)
 {
     switch (behaviour) {
-        case CrossingBehaviour::CROSSING_CROSS:
-            m_ribCrossingBehaviour.SetSimpleContent(generated::CPACSRibCrossingBehaviour::cross);
-        case CrossingBehaviour::CROSSING_END:
-            m_ribCrossingBehaviour.SetSimpleContent(generated::CPACSRibCrossingBehaviour::end);
+        case ENUM_VALUE(CrossingBehaviour, CROSSING_CROSS): m_ribCrossingBehaviour.SetSimpleContent(ENUM_VALUE_NS(generated, CPACSRibCrossingBehaviour, cross));
+        case ENUM_VALUE(CrossingBehaviour, CROSSING_END):   m_ribCrossingBehaviour.SetSimpleContent(ENUM_VALUE_NS(generated, CPACSRibCrossingBehaviour, end));
         default: throw std::logic_error("Unknown crossing behaviour");
     }
 

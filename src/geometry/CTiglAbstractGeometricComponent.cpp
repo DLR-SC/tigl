@@ -58,7 +58,7 @@ void CTiglAbstractGeometricComponent::Reset()
     //struct Visitor : boost::static_visitor<> {
     //    void operator()(TiglSymmetryAxis* s) {
     //        if (s)
-    //            *s = TiglSymmetryAxis::TIGL_NO_SYMMETRY;
+    //            *s = ENUM_VALUE(TiglSymmetryAxis, TIGL_NO_SYMMETRY);
     //    }
     //    void operator()(boost::optional<TiglSymmetryAxis>* s) {
     //        if (s)
@@ -76,13 +76,13 @@ TiglSymmetryAxis CTiglAbstractGeometricComponent::GetSymmetryAxis() {
             if (s)
                 return *s;
             else
-                return TiglSymmetryAxis::TIGL_NO_SYMMETRY;
+                return ENUM_VALUE(TiglSymmetryAxis, TIGL_NO_SYMMETRY);
         }
         TiglSymmetryAxis operator()(const boost::optional<TiglSymmetryAxis>* s) {
             if (s)
-                return s->get_value_or(TiglSymmetryAxis::TIGL_NO_SYMMETRY);
+                return s->get_value_or(ENUM_VALUE(TiglSymmetryAxis, TIGL_NO_SYMMETRY));
             else
-                return TiglSymmetryAxis::TIGL_NO_SYMMETRY;
+                return ENUM_VALUE(TiglSymmetryAxis, TIGL_NO_SYMMETRY);
         }
     } visitor;
     return symmetryAxis.apply_visitor(visitor);
@@ -139,7 +139,7 @@ ECPACSTranslationType CTiglAbstractGeometricComponent::GetTranslationType() cons
     if (transformation)
         return transformation->getTranslationType();
     else
-        return ECPACSTranslationType::ABS_LOCAL; // TODO(bgruber): is this a valid default?
+        return ENUM_VALUE(ECPACSTranslationType, ABS_LOCAL); // TODO(bgruber): is this a valid default?
 }
 
 CTiglPoint CTiglAbstractGeometricComponent::GetRotation() const

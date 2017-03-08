@@ -44,12 +44,12 @@ namespace tigl
             
         }
         
-        const std::vector<unique_ptr<CPACSComposite>>& CPACSComposites::GetComposite() const
+        const std::vector<unique_ptr<CPACSComposite> >& CPACSComposites::GetComposite() const
         {
             return m_composite;
         }
         
-        std::vector<unique_ptr<CPACSComposite>>& CPACSComposites::GetComposite()
+        std::vector<unique_ptr<CPACSComposite> >& CPACSComposites::GetComposite()
         {
             return m_composite;
         }

@@ -44,12 +44,12 @@ namespace tigl
             
         }
         
-        const std::vector<unique_ptr<CPACSProfileGeometry>>& CPACSFuselageProfiles::GetFuselageProfile() const
+        const std::vector<unique_ptr<CPACSProfileGeometry> >& CPACSFuselageProfiles::GetFuselageProfile() const
         {
             return m_fuselageProfile;
         }
         
-        std::vector<unique_ptr<CPACSProfileGeometry>>& CPACSFuselageProfiles::GetFuselageProfile()
+        std::vector<unique_ptr<CPACSProfileGeometry> >& CPACSFuselageProfiles::GetFuselageProfile()
         {
             return m_fuselageProfile;
         }

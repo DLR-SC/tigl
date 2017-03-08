@@ -56,12 +56,12 @@ namespace tigl
             
         }
         
-        const std::vector<unique_ptr<CCPACSWingSparPosition>>& CPACSSparPositions::GetSparPosition() const
+        const std::vector<unique_ptr<CCPACSWingSparPosition> >& CPACSSparPositions::GetSparPosition() const
         {
             return m_sparPosition;
         }
         
-        std::vector<unique_ptr<CCPACSWingSparPosition>>& CPACSSparPositions::GetSparPosition()
+        std::vector<unique_ptr<CCPACSWingSparPosition> >& CPACSSparPositions::GetSparPosition()
         {
             return m_sparPosition;
         }

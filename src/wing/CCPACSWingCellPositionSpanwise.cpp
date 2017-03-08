@@ -27,10 +27,10 @@ CCPACSWingCellPositionSpanwise::CCPACSWingCellPositionSpanwise(CCPACSWingCell* p
 
 CCPACSWingCellPositionSpanwise::InputType CCPACSWingCellPositionSpanwise::GetInputType() const {
     if (m_eta1_choice1 && m_eta2_choice1)
-        return InputType::Eta;
+        return ENUM_VALUE(InputType, Eta);
     if (m_ribDefinitionUID_choice2 && m_ribNumber_choice2)
-        return InputType::Rib;
-    return InputType::None;
+        return ENUM_VALUE(InputType, Rib);
+    return ENUM_VALUE(InputType, None);
 }
 
 // get and set Eta definition
@@ -52,7 +52,7 @@ void CCPACSWingCellPositionSpanwise::GetEta(double& eta1, double& eta2) const {
 }
 
 std::pair<double, double> CCPACSWingCellPositionSpanwise::GetEta() const {
-    if (GetInputType() != InputType::Eta) {
+    if (GetInputType() != ENUM_VALUE(InputType, Eta)) {
         throw CTiglError("CCPACSWingCellPositionSpanwise::GetEta method called, but position is defined via ribDefinitionUID!");
     }
     return std::make_pair(*m_eta1_choice1, *m_eta2_choice1);
@@ -76,7 +76,7 @@ void CCPACSWingCellPositionSpanwise::GetRib(std::string& ribUid, int& ribNumber)
 }
 
 std::pair<std::string, int> CCPACSWingCellPositionSpanwise::GetRib() const {
-    if (GetInputType() != InputType::Rib) {
+    if (GetInputType() != ENUM_VALUE(InputType, Rib)) {
         throw CTiglError("CCPACSWingCellPositionSpanwise::GetRib method called, but position is defined via eta1/eta2!");
     }
     return std::make_pair(*m_ribDefinitionUID_choice2, *m_ribNumber_choice2);

@@ -57,13 +57,21 @@ public:
         bool isTargetFace;
     };
 
+#ifdef HAVE_CPP11
+    enum class RibCapSide
+#else
     enum RibCapSide
+#endif
     {
         UPPER,
         LOWER
     };
 
+#ifdef HAVE_CPP11
+    enum class RibPositioningType
+#else
     enum RibPositioningType
+#endif
     {
         RIB_EXPLICIT_POSITIONING,
         RIBS_POSITIONING,

@@ -44,12 +44,12 @@ namespace tigl
             
         }
         
-        const std::vector<unique_ptr<CPACSUpdate>>& CPACSUpdates::GetUpdate() const
+        const std::vector<unique_ptr<CPACSUpdate> >& CPACSUpdates::GetUpdate() const
         {
             return m_update;
         }
         
-        std::vector<unique_ptr<CPACSUpdate>>& CPACSUpdates::GetUpdate()
+        std::vector<unique_ptr<CPACSUpdate> >& CPACSUpdates::GetUpdate()
         {
             return m_update;
         }

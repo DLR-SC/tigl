@@ -19,6 +19,8 @@
 #ifndef TIGL_INTERNAL_H
 #define TIGL_INTERNAL_H
 
+#include "tigl_config.h"
+
 #if defined(WIN32)
   // define TIGL_INTERNAL_EXPORTS, if you want to expose the internal 
   // api to the dll interface (just for testing purposes!)
@@ -51,6 +53,15 @@
 #define OVERRIDE override
 #else
 #define OVERRIDE
+#endif
+
+// scoped enum value helper, use these if you want to retain backward compatibility with non-C++11 compilers
+#ifdef HAVE_CPP11
+#define ENUM_VALUE(e, v) e::v
+#define ENUM_VALUE_NS(n, e, v) n::e::v
+#else
+#define ENUM_VALUE(e, v) v
+#define ENUM_VALUE_NS(n, e, v) n::v
 #endif
 
 #endif // TIGL_INTERNAL_H

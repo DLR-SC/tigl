@@ -89,7 +89,7 @@ namespace tigl
     }
     
     // This type is not customized, create alias in tigl namespace
-    #ifdef CPP11
+    #ifdef HAVE_CPP11
     using CCPACSProfileGeometry = generated::CPACSProfileGeometry;
     #else
     typedef generated::CPACSProfileGeometry CCPACSProfileGeometry;

@@ -56,12 +56,12 @@ namespace tigl
             
         }
         
-        const std::vector<unique_ptr<CCPACSWingCell>>& CPACSWingCells::GetCell() const
+        const std::vector<unique_ptr<CCPACSWingCell> >& CPACSWingCells::GetCell() const
         {
             return m_cell;
         }
         
-        std::vector<unique_ptr<CCPACSWingCell>>& CPACSWingCells::GetCell()
+        std::vector<unique_ptr<CCPACSWingCell> >& CPACSWingCells::GetCell()
         {
             return m_cell;
         }

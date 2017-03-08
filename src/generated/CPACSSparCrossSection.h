@@ -96,7 +96,7 @@ namespace tigl
     }
     
     // This type is not customized, create alias in tigl namespace
-    #ifdef CPP11
+    #ifdef HAVE_CPP11
     using CCPACSSparCrossSection = generated::CPACSSparCrossSection;
     #else
     typedef generated::CPACSSparCrossSection CCPACSSparCrossSection;

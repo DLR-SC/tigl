@@ -71,7 +71,7 @@ namespace tigl
     }
     
     // This type is not customized, create alias in tigl namespace
-    #ifdef CPP11
+    #ifdef HAVE_CPP11
     using CCPACSCpacs = generated::CPACSCpacs;
     #else
     typedef generated::CPACSCpacs CCPACSCpacs;

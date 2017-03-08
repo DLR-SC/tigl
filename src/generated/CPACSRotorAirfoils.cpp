@@ -44,12 +44,12 @@ namespace tigl
             
         }
         
-        const std::vector<unique_ptr<CPACSProfileGeometry>>& CPACSRotorAirfoils::GetRotorAirfoil() const
+        const std::vector<unique_ptr<CPACSProfileGeometry> >& CPACSRotorAirfoils::GetRotorAirfoil() const
         {
             return m_rotorAirfoil;
         }
         
-        std::vector<unique_ptr<CPACSProfileGeometry>>& CPACSRotorAirfoils::GetRotorAirfoil()
+        std::vector<unique_ptr<CPACSProfileGeometry> >& CPACSRotorAirfoils::GetRotorAirfoil()
         {
             return m_rotorAirfoil;
         }

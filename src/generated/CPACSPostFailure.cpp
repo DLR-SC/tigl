@@ -203,12 +203,12 @@ namespace tigl
             m_plasticEliminationStrain_choice1 = value;
         }
         
-        const std::vector<unique_ptr<CPACSPlasticityCurvePoint>>& CPACSPostFailure::GetPlasticityCurvePoint_choice1() const
+        const std::vector<unique_ptr<CPACSPlasticityCurvePoint> >& CPACSPostFailure::GetPlasticityCurvePoint_choice1() const
         {
             return m_plasticityCurvePoint_choice1;
         }
         
-        std::vector<unique_ptr<CPACSPlasticityCurvePoint>>& CPACSPostFailure::GetPlasticityCurvePoint_choice1()
+        std::vector<unique_ptr<CPACSPlasticityCurvePoint> >& CPACSPostFailure::GetPlasticityCurvePoint_choice1()
         {
             return m_plasticityCurvePoint_choice1;
         }

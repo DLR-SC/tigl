@@ -28,25 +28,41 @@ class CCPACSWingRibsDefinition;
 class CCPACSWingRibsPositioning : public generated::CPACSWingRibsPositioning
 {
 public:
+#ifdef HAVE_CPP11
+    enum class CrossingBehaviour
+#else
     enum CrossingBehaviour
+#endif
     { 
         CROSSING_CROSS,
         CROSSING_END
     };
     // NOTE: definition of start/end of rib via spar position not conform with CPACS format (v2.3)
+#ifdef HAVE_CPP11
+    enum class StartDefinitionType
+#else
     enum StartDefinitionType
+#endif
     { 
         ELEMENT_START,
         ETA_START,
         SPARPOSITION_START
     };
+#ifdef HAVE_CPP11
+    enum class EndDefinitionType
+#else
     enum EndDefinitionType
+#endif
     {
         ELEMENT_END,
         ETA_END,
         SPARPOSITION_END
     };
+#ifdef HAVE_CPP11
+    enum class RibCountDefinitionType
+#else
     enum RibCountDefinitionType
+#endif
     {
         NUMBER_OF_RIBS,
         SPACING

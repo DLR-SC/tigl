@@ -60,7 +60,7 @@ namespace tigl
     }
     
     // This type is not customized, create alias in tigl namespace
-    #ifdef CPP11
+    #ifdef HAVE_CPP11
     using CCPACSFuselageCutOut_cutoutType = generated::CPACSFuselageCutOut_cutoutType;
     #else
     typedef generated::CPACSFuselageCutOut_cutoutType CCPACSFuselageCutOut_cutoutType;

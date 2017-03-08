@@ -64,12 +64,12 @@ namespace tigl
             
         }
         
-        const std::vector<unique_ptr<CPACSMaterial>>& CPACSMaterials::GetMaterial() const
+        const std::vector<unique_ptr<CPACSMaterial> >& CPACSMaterials::GetMaterial() const
         {
             return m_material;
         }
         
-        std::vector<unique_ptr<CPACSMaterial>>& CPACSMaterials::GetMaterial()
+        std::vector<unique_ptr<CPACSMaterial> >& CPACSMaterials::GetMaterial()
         {
             return m_material;
         }

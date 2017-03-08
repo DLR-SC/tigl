@@ -1973,7 +1973,7 @@ void TIGLViewerDocument::drawFarField()
 {
     START_COMMAND();
     tigl::CCPACSFarField& farField = GetConfiguration().GetFarField();
-    if (farField.GetFieldType() != tigl::NONE) {
+    if (farField.GetFieldType() != ENUM_VALUE_NS(tigl, TiglFarFieldType, NONE)) {
         Handle(AIS_Shape) shape = new AIS_Shape(farField.GetLoft()->Shape());
         shape->SetMaterial(Graphic3d_NOM_PEWTER);
         shape->SetTransparency(0.6);

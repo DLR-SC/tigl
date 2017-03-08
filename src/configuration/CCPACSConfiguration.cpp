@@ -168,7 +168,7 @@ void CCPACSConfiguration::transformAllComponents(CTiglAbstractPhysicalComponent*
     CTiglPoint parentTranslation = parent->GetTranslation();
     for (pIter = children.begin(); pIter != children.end(); ++pIter) {
         CTiglAbstractPhysicalComponent* child = *pIter;
-        if (child->GetTranslationType() == ABS_LOCAL) {
+        if (child->GetTranslationType() == ENUM_VALUE(ECPACSTranslationType, ABS_LOCAL)) {
             child->Translate(parentTranslation);
         }
         transformAllComponents(child);

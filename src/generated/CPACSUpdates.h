@@ -42,11 +42,11 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT const std::vector<unique_ptr<CPACSUpdate>>& GetUpdate() const;
-            TIGL_EXPORT std::vector<unique_ptr<CPACSUpdate>>& GetUpdate();
+            TIGL_EXPORT const std::vector<unique_ptr<CPACSUpdate> >& GetUpdate() const;
+            TIGL_EXPORT std::vector<unique_ptr<CPACSUpdate> >& GetUpdate();
             
         protected:
-            std::vector<unique_ptr<CPACSUpdate>> m_update;
+            std::vector<unique_ptr<CPACSUpdate> > m_update;
             
         private:
             #ifdef HAVE_CPP11
@@ -63,7 +63,7 @@ namespace tigl
     }
     
     // This type is not customized, create alias in tigl namespace
-    #ifdef CPP11
+    #ifdef HAVE_CPP11
     using CCPACSUpdates = generated::CPACSUpdates;
     #else
     typedef generated::CPACSUpdates CCPACSUpdates;

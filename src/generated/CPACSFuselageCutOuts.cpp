@@ -44,12 +44,12 @@ namespace tigl
             
         }
         
-        const std::vector<unique_ptr<CPACSFuselageCutOut>>& CPACSFuselageCutOuts::GetElement() const
+        const std::vector<unique_ptr<CPACSFuselageCutOut> >& CPACSFuselageCutOuts::GetElement() const
         {
             return m_element;
         }
         
-        std::vector<unique_ptr<CPACSFuselageCutOut>>& CPACSFuselageCutOuts::GetElement()
+        std::vector<unique_ptr<CPACSFuselageCutOut> >& CPACSFuselageCutOuts::GetElement()
         {
             return m_element;
         }

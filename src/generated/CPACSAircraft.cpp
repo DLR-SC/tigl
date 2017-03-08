@@ -44,12 +44,12 @@ namespace tigl
             
         }
         
-        const std::vector<unique_ptr<CCPACSAircraftModel>>& CPACSAircraft::GetModel() const
+        const std::vector<unique_ptr<CCPACSAircraftModel> >& CPACSAircraft::GetModel() const
         {
             return m_model;
         }
         
-        std::vector<unique_ptr<CCPACSAircraftModel>>& CPACSAircraft::GetModel()
+        std::vector<unique_ptr<CCPACSAircraftModel> >& CPACSAircraft::GetModel()
         {
             return m_model;
         }

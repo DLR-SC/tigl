@@ -555,12 +555,12 @@ namespace tigl
             m_fatigueFactor = value;
         }
         
-        const std::vector<unique_ptr<CPACSPostFailure>>& CPACSMaterial::GetPostFailure() const
+        const std::vector<unique_ptr<CPACSPostFailure> >& CPACSMaterial::GetPostFailure() const
         {
             return m_postFailure;
         }
         
-        std::vector<unique_ptr<CPACSPostFailure>>& CPACSMaterial::GetPostFailure()
+        std::vector<unique_ptr<CPACSPostFailure> >& CPACSMaterial::GetPostFailure()
         {
             return m_postFailure;
         }

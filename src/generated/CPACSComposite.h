@@ -58,15 +58,15 @@ namespace tigl
             TIGL_EXPORT const double& GetOffset() const;
             TIGL_EXPORT void SetOffset(const double& value);
             
-            TIGL_EXPORT const std::vector<unique_ptr<CPACSCompositeLayer>>& GetCompositeLayer() const;
-            TIGL_EXPORT std::vector<unique_ptr<CPACSCompositeLayer>>& GetCompositeLayer();
+            TIGL_EXPORT const std::vector<unique_ptr<CPACSCompositeLayer> >& GetCompositeLayer() const;
+            TIGL_EXPORT std::vector<unique_ptr<CPACSCompositeLayer> >& GetCompositeLayer();
             
         protected:
-            boost::optional<std::string>                 m_uID;
-            std::string                                  m_name;
-            boost::optional<std::string>                 m_description;
-            boost::optional<double>                      m_offset;
-            std::vector<unique_ptr<CPACSCompositeLayer>> m_compositeLayer;
+            boost::optional<std::string>                  m_uID;
+            std::string                                   m_name;
+            boost::optional<std::string>                  m_description;
+            boost::optional<double>                       m_offset;
+            std::vector<unique_ptr<CPACSCompositeLayer> > m_compositeLayer;
             
         private:
             #ifdef HAVE_CPP11
@@ -83,7 +83,7 @@ namespace tigl
     }
     
     // This type is not customized, create alias in tigl namespace
-    #ifdef CPP11
+    #ifdef HAVE_CPP11
     using CCPACSComposite = generated::CPACSComposite;
     #else
     typedef generated::CPACSComposite CCPACSComposite;

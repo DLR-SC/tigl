@@ -76,11 +76,11 @@ void CCPACSWingRibsDefinition::Invalidate()
 CCPACSWingRibsDefinition::RibPositioningType CCPACSWingRibsDefinition::GetRibPositioningType() const
 {
     if (HasRibsPositioning_choice1())
-        return RibPositioningType::RIBS_POSITIONING;
+        return ENUM_VALUE(RibPositioningType, RIBS_POSITIONING);
     else if (HasRibExplicitPositioning_choice2())
-        return RibPositioningType::RIB_EXPLICIT_POSITIONING;
+        return ENUM_VALUE(RibPositioningType, RIB_EXPLICIT_POSITIONING);
     else
-        return RibPositioningType::UNDEFINED_POSITIONING;
+        return ENUM_VALUE(RibPositioningType, UNDEFINED_POSITIONING);
 }
 
 const CCPACSWingRibsPositioning& CCPACSWingRibsDefinition::GetRibsPositioning() const
@@ -127,10 +127,10 @@ int CCPACSWingRibsDefinition::GetNumberOfRibs() const
 {
     int numberOfRibs = 0;
     switch (GetRibPositioningType()) {
-    case RIB_EXPLICIT_POSITIONING:
+    case ENUM_VALUE(RibPositioningType, RIB_EXPLICIT_POSITIONING):
         numberOfRibs = 1;
         break;
-    case RIBS_POSITIONING:
+    case ENUM_VALUE(RibPositioningType, RIBS_POSITIONING):
         if (!ribSetDataCache.valid) {
             UpdateRibSetDataCache();
         }
@@ -260,7 +260,7 @@ TopoDS_Shape CCPACSWingRibsDefinition::GetRibCapsGeometry(RibCapSide side, TiglC
     assert(ribCapsCache.valid);
 
     TopoDS_Shape capsShape;
-    if (side == UPPER) {
+    if (side == ENUM_VALUE(RibCapSide, UPPER)) {
         capsShape = ribCapsCache.upperCapsShape;
     }
     else { // side == LOWER
@@ -282,7 +282,7 @@ TopoDS_Shape CCPACSWingRibsDefinition::GetRibCapsGeometry(RibCapSide side, TiglC
 void CCPACSWingRibsDefinition::UpdateRibSetDataCache() const
 {
     // ensure that this is only called when m_ribsPositioning_choice1 is used!!!
-    assert(GetRibPositioningType() == RIBS_POSITIONING);
+    assert(GetRibPositioningType() == ENUM_VALUE(RibPositioningType, RIBS_POSITIONING));
 
     ribSetDataCache.valid = false;
 
@@ -305,10 +305,10 @@ void CCPACSWingRibsDefinition::BuildAuxiliaryGeometry() const
     auxGeomCache.clear();
 
     switch (GetRibPositioningType()) {
-    case RIBS_POSITIONING:
+    case ENUM_VALUE(RibPositioningType, RIBS_POSITIONING):
         BuildAuxGeomRibsPositioning();
         break;
-    case RIB_EXPLICIT_POSITIONING:
+    case ENUM_VALUE(RibPositioningType, RIB_EXPLICIT_POSITIONING):
         BuildAuxGeomExplicitRibPositioning();
         break;
     default:
@@ -334,19 +334,19 @@ void CCPACSWingRibsDefinition::BuildAuxGeomRibsPositioning() const
 
         // STEP 3: determine elementUID or sparPositionUID where rib should be placed
         std::string elementUID = "";
-        if (i == 0 && m_ribsPositioning_choice1->GetStartDefinitionType() == CCPACSWingRibsPositioning::ELEMENT_START) {
+        if (i == 0 && m_ribsPositioning_choice1->GetStartDefinitionType() == ENUM_VALUE_NS(CCPACSWingRibsPositioning, StartDefinitionType, ELEMENT_START)) {
             elementUID = m_ribsPositioning_choice1->GetElementStartUID();
         }
         // NOTE: we have to check the eta difference here (instead of the index) to support spacing definitions
-        else if (fabs(ribSetDataCache.referenceEtaEnd - currentEta) <= Precision::Confusion() && m_ribsPositioning_choice1->GetEndDefinitionType() == CCPACSWingRibsPositioning::ELEMENT_END) {
+        else if (fabs(ribSetDataCache.referenceEtaEnd - currentEta) <= Precision::Confusion() && m_ribsPositioning_choice1->GetEndDefinitionType() == ENUM_VALUE_NS(CCPACSWingRibsPositioning, EndDefinitionType, ELEMENT_END)) {
             elementUID = m_ribsPositioning_choice1->GetElementEndUID();
         }
         std::string sparPositionUID = "";
-        if (i == 0 && m_ribsPositioning_choice1->GetStartDefinitionType() == CCPACSWingRibsPositioning::SPARPOSITION_START) {
+        if (i == 0 && m_ribsPositioning_choice1->GetStartDefinitionType() == ENUM_VALUE_NS(CCPACSWingRibsPositioning, StartDefinitionType, SPARPOSITION_START)) {
             sparPositionUID = m_ribsPositioning_choice1->GetSparPositionStartUID();
         }
         // NOTE: we have to check the eta difference here (instead of the index) to support spacing definitions
-        else if (fabs(ribSetDataCache.referenceEtaEnd - currentEta) <= Precision::Confusion() && m_ribsPositioning_choice1->GetEndDefinitionType() == CCPACSWingRibsPositioning::SPARPOSITION_END) {
+        else if (fabs(ribSetDataCache.referenceEtaEnd - currentEta) <= Precision::Confusion() && m_ribsPositioning_choice1->GetEndDefinitionType() == ENUM_VALUE_NS(CCPACSWingRibsPositioning, EndDefinitionType, SPARPOSITION_END)) {
             sparPositionUID = m_ribsPositioning_choice1->GetSparPositionEndUID();
         }
 
@@ -678,16 +678,16 @@ TopoDS_Wire CCPACSWingRibsDefinition::GetReferenceLine() const
 
 double CCPACSWingRibsDefinition::ComputeReferenceEtaStart() const
 {
-    assert(GetRibPositioningType() == RIBS_POSITIONING);
+    assert(GetRibPositioningType() == ENUM_VALUE(RibPositioningType, RIBS_POSITIONING));
 
     const CTiglWingStructureReference& wingStructureReference = structure.GetWingStructureReference();
-    if (m_ribsPositioning_choice1->GetStartDefinitionType() == CCPACSWingRibsPositioning::ETA_START) {
+    if (m_ribsPositioning_choice1->GetStartDefinitionType() == ENUM_VALUE_NS(CCPACSWingRibsPositioning, StartDefinitionType, ETA_START)) {
         return m_ribsPositioning_choice1->GetEtaStart();
     }
-    else if (m_ribsPositioning_choice1->GetStartDefinitionType() == CCPACSWingRibsPositioning::ELEMENT_START) {
+    else if (m_ribsPositioning_choice1->GetStartDefinitionType() == ENUM_VALUE_NS(CCPACSWingRibsPositioning, StartDefinitionType, ELEMENT_START)) {
         return ComputeSectionElementEta(m_ribsPositioning_choice1->GetElementStartUID());
     }
-    else if (m_ribsPositioning_choice1->GetStartDefinitionType() == CCPACSWingRibsPositioning::SPARPOSITION_START) {
+    else if (m_ribsPositioning_choice1->GetStartDefinitionType() == ENUM_VALUE_NS(CCPACSWingRibsPositioning, StartDefinitionType, SPARPOSITION_START)) {
         return ComputeSparPositionEta(m_ribsPositioning_choice1->GetSparPositionStartUID());
     }
     else {
@@ -697,16 +697,16 @@ double CCPACSWingRibsDefinition::ComputeReferenceEtaStart() const
 
 double CCPACSWingRibsDefinition::ComputeReferenceEtaEnd() const
 {
-    assert(GetRibPositioningType() == RIBS_POSITIONING);
+    assert(GetRibPositioningType() == ENUM_VALUE(RibPositioningType, RIBS_POSITIONING));
 
     const CTiglWingStructureReference& wingStructureReference = structure.GetWingStructureReference();
-    if (m_ribsPositioning_choice1->GetEndDefinitionType() == CCPACSWingRibsPositioning::ETA_END) {
+    if (m_ribsPositioning_choice1->GetEndDefinitionType() == ENUM_VALUE_NS(CCPACSWingRibsPositioning, EndDefinitionType, ETA_END)) {
         return m_ribsPositioning_choice1->GetEtaEnd();
     }
-    else if (m_ribsPositioning_choice1->GetEndDefinitionType() == CCPACSWingRibsPositioning::ELEMENT_END) {
+    else if (m_ribsPositioning_choice1->GetEndDefinitionType() == ENUM_VALUE_NS(CCPACSWingRibsPositioning, EndDefinitionType, ELEMENT_END)) {
         return ComputeSectionElementEta(m_ribsPositioning_choice1->GetElementEndUID());
     }
-    else if (m_ribsPositioning_choice1->GetEndDefinitionType() == CCPACSWingRibsPositioning::SPARPOSITION_END) {
+    else if (m_ribsPositioning_choice1->GetEndDefinitionType() == ENUM_VALUE_NS(CCPACSWingRibsPositioning, EndDefinitionType, SPARPOSITION_END)) {
         return ComputeSparPositionEta(m_ribsPositioning_choice1->GetSparPositionEndUID());
     }
     else {
@@ -739,7 +739,7 @@ double CCPACSWingRibsDefinition::ComputeSectionElementEta(const std::string& sec
 double CCPACSWingRibsDefinition::ComputeSparPositionEta(const std::string& sparPositionUID) const
 {
     // ensure that this is only called when m_ribsPositioning_choice1 is used!!!
-    assert(GetRibPositioningType() == RIBS_POSITIONING);
+    assert(GetRibPositioningType() == ENUM_VALUE(RibPositioningType, RIBS_POSITIONING));
 
     // NOTE: definition of start/end of rib via spar position not conform with CPACS format (v2.3)
     // ensure that the spar position is part of the spar reference line!!!
@@ -764,15 +764,15 @@ double CCPACSWingRibsDefinition::ComputeSparPositionEta(const std::string& sparP
 int CCPACSWingRibsDefinition::ComputeNumberOfRibs(double etaStart, double etaEnd) const
 {
     // ensure that this is only called when m_ribsPositioning_choice1 is used!!!
-    assert(GetRibPositioningType() == RIBS_POSITIONING);
+    assert(GetRibPositioningType() == ENUM_VALUE(RibPositioningType, RIBS_POSITIONING));
 
     int numberOfRibs = 0;
 
     // check whether the number is defined in the ribs positioning
-    if (m_ribsPositioning_choice1->GetRibCountDefinitionType() == CCPACSWingRibsPositioning::NUMBER_OF_RIBS) {
+    if (m_ribsPositioning_choice1->GetRibCountDefinitionType() == ENUM_VALUE_NS(CCPACSWingRibsPositioning, RibCountDefinitionType, NUMBER_OF_RIBS)) {
         numberOfRibs = m_ribsPositioning_choice1->GetNumberOfRibs();
     }
-    else if (m_ribsPositioning_choice1->GetRibCountDefinitionType() == CCPACSWingRibsPositioning::SPACING) {
+    else if (m_ribsPositioning_choice1->GetRibCountDefinitionType() == ENUM_VALUE_NS(CCPACSWingRibsPositioning, RibCountDefinitionType, SPACING)) {
         // otherwise compute the number based on the spacing
         double spacing = m_ribsPositioning_choice1->GetSpacing();
 
@@ -799,12 +799,12 @@ int CCPACSWingRibsDefinition::ComputeNumberOfRibs(double etaStart, double etaEnd
 
 double CCPACSWingRibsDefinition::ComputeEtaOffset(double etaStart, double etaEnd) const
 {
-    assert(GetRibPositioningType() == RIBS_POSITIONING);
+    assert(GetRibPositioningType() == ENUM_VALUE(RibPositioningType, RIBS_POSITIONING));
 
     double etaOffset;
 
     // check whether number of ribs is defined, or spacing is defined
-    if (m_ribsPositioning_choice1->GetRibCountDefinitionType() == CCPACSWingRibsPositioning::NUMBER_OF_RIBS) {
+    if (m_ribsPositioning_choice1->GetRibCountDefinitionType() == ENUM_VALUE_NS(CCPACSWingRibsPositioning, RibCountDefinitionType, NUMBER_OF_RIBS)) {
         int numberOfRibs = m_ribsPositioning_choice1->GetNumberOfRibs();
         // in case only 1 rib is defined define eta offset as 0
         if (numberOfRibs == 1) {
@@ -814,7 +814,7 @@ double CCPACSWingRibsDefinition::ComputeEtaOffset(double etaStart, double etaEnd
             etaOffset = fabs(etaEnd - etaStart) / (numberOfRibs - 1);
         }
     }
-    else if (m_ribsPositioning_choice1->GetRibCountDefinitionType() == CCPACSWingRibsPositioning::SPACING) {
+    else if (m_ribsPositioning_choice1->GetRibCountDefinitionType() == ENUM_VALUE_NS(CCPACSWingRibsPositioning, RibCountDefinitionType, SPACING)) {
         double spacing = m_ribsPositioning_choice1->GetSpacing();
         // get the length of the rib reference line between the two eta points
         double referenceLength = GetRibReferenceLength(m_ribsPositioning_choice1->GetRibReference(), structure);

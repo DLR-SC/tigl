@@ -74,7 +74,7 @@ namespace tigl
     }
     
     // This type is not customized, create alias in tigl namespace
-    #ifdef CPP11
+    #ifdef HAVE_CPP11
     using CCPACSPointXYZ = generated::CPACSPointXYZ;
     #else
     typedef generated::CPACSPointXYZ CCPACSPointXYZ;

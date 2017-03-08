@@ -56,12 +56,12 @@ namespace tigl
             
         }
         
-        const std::vector<unique_ptr<CCPACSRotorBladeAttachment>>& CPACSRotorBladeAttachments::GetRotorBladeAttachment() const
+        const std::vector<unique_ptr<CCPACSRotorBladeAttachment> >& CPACSRotorBladeAttachments::GetRotorBladeAttachment() const
         {
             return m_rotorBladeAttachment;
         }
         
-        std::vector<unique_ptr<CCPACSRotorBladeAttachment>>& CPACSRotorBladeAttachments::GetRotorBladeAttachment()
+        std::vector<unique_ptr<CCPACSRotorBladeAttachment> >& CPACSRotorBladeAttachments::GetRotorBladeAttachment()
         {
             return m_rotorBladeAttachment;
         }

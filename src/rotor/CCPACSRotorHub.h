@@ -34,8 +34,11 @@
 
 namespace tigl
 {
-
+#ifdef HAVE_CPP11
+enum class TiglRotorHubType
+#else
 enum TiglRotorHubType
+#endif
 {
     TIGLROTORHUB_UNDEFINED,
     TIGLROTORHUB_SEMI_RIGID,

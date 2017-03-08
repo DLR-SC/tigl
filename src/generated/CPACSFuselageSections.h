@@ -42,11 +42,11 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT const std::vector<unique_ptr<CCPACSFuselageSection>>& GetSection() const;
-            TIGL_EXPORT std::vector<unique_ptr<CCPACSFuselageSection>>& GetSection();
+            TIGL_EXPORT const std::vector<unique_ptr<CCPACSFuselageSection> >& GetSection() const;
+            TIGL_EXPORT std::vector<unique_ptr<CCPACSFuselageSection> >& GetSection();
             
         protected:
-            std::vector<unique_ptr<CCPACSFuselageSection>> m_section;
+            std::vector<unique_ptr<CCPACSFuselageSection> > m_section;
             
         private:
             #ifdef HAVE_CPP11

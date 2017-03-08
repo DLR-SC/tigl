@@ -44,12 +44,12 @@ namespace tigl
             
         }
         
-        const std::vector<unique_ptr<CCPACSPositioning>>& CPACSPositionings::GetPositioning() const
+        const std::vector<unique_ptr<CCPACSPositioning> >& CPACSPositionings::GetPositioning() const
         {
             return m_positioning;
         }
         
-        std::vector<unique_ptr<CCPACSPositioning>>& CPACSPositionings::GetPositioning()
+        std::vector<unique_ptr<CCPACSPositioning> >& CPACSPositionings::GetPositioning()
         {
             return m_positioning;
         }

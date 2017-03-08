@@ -71,8 +71,8 @@ namespace tigl
             TIGL_EXPORT const double& GetFatigueFactor() const;
             TIGL_EXPORT void SetFatigueFactor(const double& value);
             
-            TIGL_EXPORT const std::vector<unique_ptr<CPACSPostFailure>>& GetPostFailure() const;
-            TIGL_EXPORT std::vector<unique_ptr<CPACSPostFailure>>& GetPostFailure();
+            TIGL_EXPORT const std::vector<unique_ptr<CPACSPostFailure> >& GetPostFailure() const;
+            TIGL_EXPORT std::vector<unique_ptr<CPACSPostFailure> >& GetPostFailure();
             
             TIGL_EXPORT bool HasSig11_choice1() const;
             TIGL_EXPORT const double& GetSig11_choice1() const;
@@ -191,44 +191,44 @@ namespace tigl
             TIGL_EXPORT void SetTau23_choice3(const double& value);
             
         protected:
-            boost::optional<std::string>              m_uID;
-            std::string                               m_name;
-            boost::optional<std::string>              m_description;
-            double                                    m_rho;
-            double                                    m_k11;
-            double                                    m_k12;
-            boost::optional<double>                   m_maxStrain;
-            boost::optional<double>                   m_fatigueFactor;
-            std::vector<unique_ptr<CPACSPostFailure>> m_postFailure;
-            boost::optional<double>                   m_sig11_choice1;
-            boost::optional<double>                   m_tau12_choice1;
-            boost::optional<double>                   m_sig11yieldT_choice1;
-            boost::optional<double>                   m_sig11yieldC_choice1;
-            boost::optional<double>                   m_k22_choice2;
-            boost::optional<double>                   m_k23_choice2;
-            boost::optional<double>                   m_k66_choice2;
-            boost::optional<double>                   m_sig11t_choice2;
-            boost::optional<double>                   m_sig11c_choice2;
-            boost::optional<double>                   m_sig22t_choice2;
-            boost::optional<double>                   m_sig22c_choice2;
-            boost::optional<double>                   m_tau12_choice2;
-            boost::optional<double>                   m_tau23_choice2;
-            boost::optional<double>                   m_k13_choice3;
-            boost::optional<double>                   m_k22_choice3;
-            boost::optional<double>                   m_k23_choice3;
-            boost::optional<double>                   m_k33_choice3;
-            boost::optional<double>                   m_k44_choice3;
-            boost::optional<double>                   m_k55_choice3;
-            boost::optional<double>                   m_k66_choice3;
-            boost::optional<double>                   m_sig11t_choice3;
-            boost::optional<double>                   m_sig11c_choice3;
-            boost::optional<double>                   m_sig22t_choice3;
-            boost::optional<double>                   m_sig22c_choice3;
-            boost::optional<double>                   m_sig33t_choice3;
-            boost::optional<double>                   m_sig33c_choice3;
-            boost::optional<double>                   m_tau12_choice3;
-            boost::optional<double>                   m_tau13_choice3;
-            boost::optional<double>                   m_tau23_choice3;
+            boost::optional<std::string>               m_uID;
+            std::string                                m_name;
+            boost::optional<std::string>               m_description;
+            double                                     m_rho;
+            double                                     m_k11;
+            double                                     m_k12;
+            boost::optional<double>                    m_maxStrain;
+            boost::optional<double>                    m_fatigueFactor;
+            std::vector<unique_ptr<CPACSPostFailure> > m_postFailure;
+            boost::optional<double>                    m_sig11_choice1;
+            boost::optional<double>                    m_tau12_choice1;
+            boost::optional<double>                    m_sig11yieldT_choice1;
+            boost::optional<double>                    m_sig11yieldC_choice1;
+            boost::optional<double>                    m_k22_choice2;
+            boost::optional<double>                    m_k23_choice2;
+            boost::optional<double>                    m_k66_choice2;
+            boost::optional<double>                    m_sig11t_choice2;
+            boost::optional<double>                    m_sig11c_choice2;
+            boost::optional<double>                    m_sig22t_choice2;
+            boost::optional<double>                    m_sig22c_choice2;
+            boost::optional<double>                    m_tau12_choice2;
+            boost::optional<double>                    m_tau23_choice2;
+            boost::optional<double>                    m_k13_choice3;
+            boost::optional<double>                    m_k22_choice3;
+            boost::optional<double>                    m_k23_choice3;
+            boost::optional<double>                    m_k33_choice3;
+            boost::optional<double>                    m_k44_choice3;
+            boost::optional<double>                    m_k55_choice3;
+            boost::optional<double>                    m_k66_choice3;
+            boost::optional<double>                    m_sig11t_choice3;
+            boost::optional<double>                    m_sig11c_choice3;
+            boost::optional<double>                    m_sig22t_choice3;
+            boost::optional<double>                    m_sig22c_choice3;
+            boost::optional<double>                    m_sig33t_choice3;
+            boost::optional<double>                    m_sig33c_choice3;
+            boost::optional<double>                    m_tau12_choice3;
+            boost::optional<double>                    m_tau13_choice3;
+            boost::optional<double>                    m_tau23_choice3;
             
         private:
             #ifdef HAVE_CPP11
@@ -245,7 +245,7 @@ namespace tigl
     }
     
     // This type is not customized, create alias in tigl namespace
-    #ifdef CPP11
+    #ifdef HAVE_CPP11
     using CCPACSMaterial = generated::CPACSMaterial;
     #else
     typedef generated::CPACSMaterial CCPACSMaterial;

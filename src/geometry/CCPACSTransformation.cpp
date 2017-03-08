@@ -37,7 +37,7 @@ void CCPACSTransformation::reset()
     if (m_translation) {
         m_translation->SetAsPoint(CTiglPoint(0, 0, 0));
         if (m_translation->HasRefType())
-            m_translation->SetRefType(ABS_LOCAL);
+            m_translation->SetRefType(ENUM_VALUE(ECPACSTranslationType, ABS_LOCAL));
     }
     _transformationMatrix.SetIdentity();
 }

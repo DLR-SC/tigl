@@ -43,11 +43,11 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT const std::vector<unique_ptr<CCPACSGuideCurve>>& GetGuideCurve() const;
-            TIGL_EXPORT std::vector<unique_ptr<CCPACSGuideCurve>>& GetGuideCurve();
+            TIGL_EXPORT const std::vector<unique_ptr<CCPACSGuideCurve> >& GetGuideCurve() const;
+            TIGL_EXPORT std::vector<unique_ptr<CCPACSGuideCurve> >& GetGuideCurve();
             
         protected:
-            std::vector<unique_ptr<CCPACSGuideCurve>> m_guideCurve;
+            std::vector<unique_ptr<CCPACSGuideCurve> > m_guideCurve;
             
         private:
             #ifdef HAVE_CPP11

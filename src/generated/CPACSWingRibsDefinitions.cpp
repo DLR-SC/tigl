@@ -56,12 +56,12 @@ namespace tigl
             
         }
         
-        const std::vector<unique_ptr<CCPACSWingRibsDefinition>>& CPACSWingRibsDefinitions::GetRibsDefinition() const
+        const std::vector<unique_ptr<CCPACSWingRibsDefinition> >& CPACSWingRibsDefinitions::GetRibsDefinition() const
         {
             return m_ribsDefinition;
         }
         
-        std::vector<unique_ptr<CCPACSWingRibsDefinition>>& CPACSWingRibsDefinitions::GetRibsDefinition()
+        std::vector<unique_ptr<CCPACSWingRibsDefinition> >& CPACSWingRibsDefinitions::GetRibsDefinition()
         {
             return m_ribsDefinition;
         }

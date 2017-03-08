@@ -56,12 +56,12 @@ namespace tigl
             
         }
         
-        const std::vector<unique_ptr<CCPACSExternalObject>>& CPACSGenericGeometryComponents::GetGenericGeometryComponent() const
+        const std::vector<unique_ptr<CCPACSExternalObject> >& CPACSGenericGeometryComponents::GetGenericGeometryComponent() const
         {
             return m_genericGeometryComponent;
         }
         
-        std::vector<unique_ptr<CCPACSExternalObject>>& CPACSGenericGeometryComponents::GetGenericGeometryComponent()
+        std::vector<unique_ptr<CCPACSExternalObject> >& CPACSGenericGeometryComponents::GetGenericGeometryComponent()
         {
             return m_genericGeometryComponent;
         }

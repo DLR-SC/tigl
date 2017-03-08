@@ -44,12 +44,12 @@ namespace tigl
             
         }
         
-        const std::vector<unique_ptr<CPACSSparCell>>& CPACSSparCells::GetSparCell() const
+        const std::vector<unique_ptr<CPACSSparCell> >& CPACSSparCells::GetSparCell() const
         {
             return m_sparCell;
         }
         
-        std::vector<unique_ptr<CPACSSparCell>>& CPACSSparCells::GetSparCell()
+        std::vector<unique_ptr<CPACSSparCell> >& CPACSSparCells::GetSparCell()
         {
             return m_sparCell;
         }

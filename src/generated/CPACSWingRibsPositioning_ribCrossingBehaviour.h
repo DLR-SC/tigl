@@ -60,7 +60,7 @@ namespace tigl
     }
     
     // This type is not customized, create alias in tigl namespace
-    #ifdef CPP11
+    #ifdef HAVE_CPP11
     using CCPACSWingRibsPositioning_ribCrossingBehaviour = generated::CPACSWingRibsPositioning_ribCrossingBehaviour;
     #else
     typedef generated::CPACSWingRibsPositioning_ribCrossingBehaviour CCPACSWingRibsPositioning_ribCrossingBehaviour;
