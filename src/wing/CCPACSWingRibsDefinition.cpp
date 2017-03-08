@@ -890,13 +890,13 @@ gp_Vec CCPACSWingRibsDefinition::GetRibDirection(double currentEta, const gp_Pnt
         double midplaneEta, dummy;
         wingStructureReference.GetMidplaneEtaXsi(startPnt, midplaneEta, dummy);
         ribDir = wingStructureReference.GetMidplaneEtaDir(midplaneEta);
-    } else if (ribRotationReference == generated::CPACSRibRotation_ribRotationReference_SimpleContent::LeadingEdge) {
+    } else if (ribRotationReference == ENUM_VALUE_NS(generated, CPACSRibRotation_ribRotationReference_SimpleContent, LeadingEdge)) {
         ribDir = wingStructureReference.GetLeadingEdgeDirection(startPnt);
     }
-    else if (ribRotationReference == generated::CPACSRibRotation_ribRotationReference_SimpleContent::TrailingEdge) {
+    else if (ribRotationReference == ENUM_VALUE_NS(generated, CPACSRibRotation_ribRotationReference_SimpleContent, TrailingEdge)) {
         ribDir = wingStructureReference.GetTrailingEdgeDirection(startPnt);
     }
-    else if (ribRotationReference == generated::CPACSRibRotation_ribRotationReference_SimpleContent::globalY) {
+    else if (ribRotationReference == ENUM_VALUE_NS(generated, CPACSRibRotation_ribRotationReference_SimpleContent, globalY)) {
         // rotate y-axis around z-axis by zRotation in order to get rib direction
         ribDir = gp_Vec(0, 1, 0);
     }
