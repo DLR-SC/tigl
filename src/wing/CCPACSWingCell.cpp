@@ -18,13 +18,47 @@
 
 #include "CCPACSWingCell.h"
 
-#include "tixi.h"
+#include <cassert>
+#include <cmath>
+#include <sstream>
 
+#include <Bnd_Box.hxx>
+#include <BRep_Builder.hxx>
+#include <BRepAdaptor_Curve.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <BRepBndLib.hxx>
+#include <BRepBuilderAPI_MakeEdge.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
+#include <BRepExtrema_DistShapeShape.hxx>
+#include <BRepTools.hxx>
+#include <Geom_Surface.hxx>
+#include <gp_Ax3.hxx>
+#include <gp_Pln.hxx>
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopExp.hxx>
+#include <TopoDS.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
+
+#include <tixi.h>
+
+#include "CCPACSWing.h"
+#include "CCPACSWingCells.h"
+#include "CCPACSWingComponentSegment.h"
+#include "CCPACSWingRibsDefinition.h"
+#include "CCPACSWingRibsDefinitions.h"
+#include "CCPACSWingRibsPositioning.h"
+#include "CCPACSWingShell.h"
+#include "CCPACSWingSpars.h"
+#include "CCPACSWingSparSegments.h"
+#include "CCPACSWingSparSegment.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "IOHelper.h"
+#include "tigletaxsifunctions.h"
 #include "TixiSaveExt.h"
+#include "to_string.h"
 
-#include <cmath>
 
 namespace tigl
 {
@@ -63,22 +97,41 @@ namespace WingCellInternal
 
 using namespace WingCellInternal;
 
-CCPACSWingCell::CCPACSWingCell()
+CCPACSWingCell::CCPACSWingCell(CCPACSWingCells* parentCells)
+: parent(parentCells),
+  positionLeadingEdge(this),
+  positionTrailingEdge(this),
+  positionInnerBorder(this),
+  positionOuterBorder(this)
 {
-    reset();
+    Reset();
 }
 
-void CCPACSWingCell::reset()
+CCPACSWingCell::~CCPACSWingCell()
 {
-    m_positioningInnerBorder.SetEta1_choice1(0);
-    m_positioningInnerBorder.SetEta1_choice1(0);
-    m_positioningOuterBorder.SetEta1_choice1(0);
-    m_positioningOuterBorder.SetEta2_choice1(0);
-    m_positioningLeadingEdge.SetXsi1_choice2(0);
-    m_positioningLeadingEdge.SetXsi2_choice2(0);
-    m_positioningTrailingEdge.SetXsi1_choice2(0);
-    m_positioningTrailingEdge.SetXsi2_choice2(0);
-    m_uID = "";
+    Reset();
+}
+
+const std::string& CCPACSWingCell::GetUID() const
+{
+    return uid;
+}
+
+void CCPACSWingCell::Invalidate()
+{
+    cache.valid = false;
+}
+
+void CCPACSWingCell::Reset()
+{
+    uid = "";
+    
+    cache.valid = false;
+
+    positionLeadingEdge.Reset();
+    positionTrailingEdge.Reset();
+    positionInnerBorder.Reset();
+    positionOuterBorder.Reset();
 }
 
 bool CCPACSWingCell::IsConvex() const
@@ -158,7 +211,7 @@ bool CCPACSWingCell::IsInside(double eta, double xsi) const
 
 void CCPACSWingCell::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string &cellXPath)
 {
-    reset();
+    Reset();
     generated::CPACSWingCell::ReadCPACS(tixiHandle, cellXPath);
 
     // TODO: implement check that sparUID is not supported yet
@@ -257,57 +310,197 @@ void CCPACSWingCell::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string 
     //trailingEdgeXsi2 = tEX2;
 }
 
-void CCPACSWingCell::SetLeadingEdgeInnerPoint(double eta, double xsi)
-{
-    m_positioningLeadingEdge.SetXsi1_choice2(xsi);
-    m_positioningInnerBorder.SetEta1_choice1(eta);
-}
-
-void CCPACSWingCell::SetLeadingEdgeOuterPoint(double eta, double xsi)
-{
-    m_positioningLeadingEdge.SetXsi2_choice2(xsi);
-    m_positioningOuterBorder.SetEta1_choice1(eta);
-}
-
-void CCPACSWingCell::SetTrailingEdgeInnerPoint(double eta, double xsi)
-{
-    m_positioningTrailingEdge.SetXsi1_choice2(xsi);
-    m_positioningInnerBorder.SetEta2_choice1(eta);
-}
-
-void CCPACSWingCell::SetTrailingEdgeOuterPoint(double eta, double xsi)
-{
-    m_positioningTrailingEdge.SetXsi2_choice2(xsi);
-    m_positioningOuterBorder.SetEta2_choice1(eta);
-}
-
 void CCPACSWingCell::GetLeadingEdgeInnerPoint(double* eta, double* xsi) const
 {
-    *xsi = m_positioningLeadingEdge.GetXsi1_choice2();
-    *eta = m_positioningInnerBorder.GetEta1_choice1();
+    UpdateCache();
+    *eta = cache.innerLeadingEdgePoint.eta;
+    *xsi = cache.innerLeadingEdgePoint.xsi;
 }
 
 void CCPACSWingCell::GetLeadingEdgeOuterPoint(double* eta, double* xsi) const
 {
-    *xsi = m_positioningLeadingEdge.GetXsi2_choice2();
-    *eta = m_positioningOuterBorder.GetEta1_choice1();
+    UpdateCache();
+    *eta = cache.outerLeadingEdgePoint.eta;
+    *xsi = cache.outerLeadingEdgePoint.xsi;
 }
 
 void CCPACSWingCell::GetTrailingEdgeInnerPoint(double* eta, double* xsi) const
 {
-    *xsi = m_positioningTrailingEdge.GetXsi1_choice2();
-    *eta = m_positioningInnerBorder.GetEta2_choice1();
+    UpdateCache();
+    *eta = cache.innerTrailingEdgePoint.eta;
+    *xsi = cache.innerTrailingEdgePoint.xsi;
 }
 
 void CCPACSWingCell::GetTrailingEdgeOuterPoint(double* eta, double* xsi) const
 {
-    *xsi = m_positioningTrailingEdge.GetXsi2_choice2();
-    *eta = m_positioningOuterBorder.GetEta2_choice1();
+    UpdateCache();
+    *eta = cache.outerTrailingEdgePoint.eta;
+    *xsi = cache.outerTrailingEdgePoint.xsi;
+}
+
+void CCPACSWingCell::SetLeadingEdgeInnerPoint(double eta, double xsi)
+{
+    UpdateCache();
+    positionInnerBorder.SetEta(eta, cache.innerTrailingEdgePoint.eta);
+    positionLeadingEdge.SetXsi(xsi, cache.outerLeadingEdgePoint.xsi);
+}
+
+void CCPACSWingCell::SetLeadingEdgeOuterPoint(double eta, double xsi)
+{
+    UpdateCache();
+    positionOuterBorder.SetEta(eta, cache.outerTrailingEdgePoint.eta);
+    positionLeadingEdge.SetXsi(cache.innerLeadingEdgePoint.xsi, xsi);
+}
+
+void CCPACSWingCell::SetTrailingEdgeInnerPoint(double eta, double xsi)
+{
+    UpdateCache();
+    positionInnerBorder.SetEta(cache.innerLeadingEdgePoint.eta, eta);
+    positionTrailingEdge.SetXsi(xsi, cache.outerTrailingEdgePoint.xsi);
+}
+
+void CCPACSWingCell::SetTrailingEdgeOuterPoint(double eta, double xsi)
+{
+    UpdateCache();
+    positionOuterBorder.SetEta(cache.outerLeadingEdgePoint.eta, eta);
+    positionTrailingEdge.SetXsi(cache.innerTrailingEdgePoint.xsi, xsi);
+}
+
+void CCPACSWingCell::SetLeadingEdgeSpar(const std::string& sparUID)
+{
+    positionLeadingEdge.SetSparUId(sparUID);
+}
+
+void CCPACSWingCell::SetTrailingEdgeSpar(const std::string& sparUID)
+{
+    positionTrailingEdge.SetSparUId(sparUID);
+}
+
+void CCPACSWingCell::SetInnerBorderRib(const std::string& ribDefinitionUID, int ribNumber)
+{
+    positionInnerBorder.SetRib(ribDefinitionUID, ribNumber);
+}
+
+void CCPACSWingCell::SetOuterBorderRib(const std::string& ribDefinitionUID, int ribNumber)
+{
+    positionOuterBorder.SetRib(ribDefinitionUID, ribNumber);
 }
 
 const CCPACSMaterial &CCPACSWingCell::GetMaterial()
 {
     return m_skin.GetMaterial();
+}
+
+const CCPACSMaterial &CCPACSWingCell::GetMaterial() const
+{
+    return material;
+}
+
+void CCPACSWingCell::UpdateCache() const
+{
+    if (!cache.valid) {
+        UpdateEtaXsiValues();
+    }
+    assert(cache.valid);
+}
+
+
+std::pair<double, double> CCPACSWingCell::computePositioningEtaXsi(const CCPACSWingCellPositionSpanwise& spanwisePos,
+                                                                   const CCPACSWingCellPositionChordwise& chordwisePos, 
+                                                                   bool inner, bool front) const
+{
+    double eta, xsi;
+
+    if (spanwisePos.GetInputType() == CCPACSWingCellPositionSpanwise::Eta &&
+        chordwisePos.GetInputType() == CCPACSWingCellPositionChordwise::Xsi) {
+        if (front) {
+            eta = spanwisePos.GetEta().first;
+        }
+        else {
+            eta = spanwisePos.GetEta().second;
+        }
+        if (inner) {
+            xsi = chordwisePos.GetXsi().first;
+        }
+        else {
+            xsi = chordwisePos.GetXsi().second;
+        }
+    }
+    else if (spanwisePos.GetInputType() == CCPACSWingCellPositionSpanwise::Eta &&
+             chordwisePos.GetInputType() == CCPACSWingCellPositionChordwise::Spar) {
+        if (front) {
+            eta = spanwisePos.GetEta().first;
+        }
+        else {
+            eta = spanwisePos.GetEta().second;
+        }
+        // get the spar from the wing structure
+        const CCPACSWingCSStructure& structure = parent->GetParentElement()->GetStructure();
+        CCPACSWingSparSegment& spar = structure.GetSparSegment(chordwisePos.GetSparUId());
+        xsi = computeSparXsiValue(structure.GetWingStructureReference(), spar, eta);
+    }
+    else if (spanwisePos.GetInputType() == CCPACSWingCellPositionSpanwise::Rib &&
+             chordwisePos.GetInputType() == CCPACSWingCellPositionChordwise::Xsi) {
+        std::string ribUid;
+        int ribIndex;
+        // get the ribs definition from the wing structure reference
+        spanwisePos.GetRib(ribUid, ribIndex);
+        const CCPACSWingCSStructure& structure = parent->GetParentElement()->GetStructure();
+        CCPACSWingRibsDefinition& ribsDefinition = structure.GetRibsDefinition(ribUid);
+        if (inner) {
+            xsi = chordwisePos.GetXsi().first;
+        }
+        else {
+            xsi = chordwisePos.GetXsi().second;
+        }
+        eta = computeRibEtaValue(structure.GetWingStructureReference(), ribsDefinition, ribIndex, xsi);
+    }
+    else if (spanwisePos.GetInputType() == CCPACSWingCellPositionSpanwise::Rib &&
+             chordwisePos.GetInputType() == CCPACSWingCellPositionChordwise::Spar) {
+        // get the spar from the wing structure reference
+        const CCPACSWingCSStructure& structure = parent->GetParentElement()->GetStructure();
+        CTiglWingStructureReference wsr = structure.GetWingStructureReference();
+        CCPACSWingSparSegment& spar = structure.GetSparSegment(chordwisePos.GetSparUId());
+        // get the ribs definition from the wing structure reference
+        std::string ribUid;
+        int ribIndex;
+        spanwisePos.GetRib(ribUid, ribIndex);
+        CCPACSWingRibsDefinition& ribsDefinition = structure.GetRibsDefinition(ribUid);
+
+        tigl::EtaXsi result = computeRibSparIntersectionEtaXsi(wsr, ribsDefinition, ribIndex, spar);
+        eta = result.eta;
+        xsi = result.xsi;
+    }
+
+    return std::make_pair(eta, xsi);
+}
+
+void CCPACSWingCell::UpdateEtaXsiValues() const
+{
+    cache.valid = false;
+
+    std::pair<double, double> innerLePoint = computePositioningEtaXsi(positionInnerBorder, positionLeadingEdge, true, true);
+    cache.innerLeadingEdgePoint.eta = innerLePoint.first;
+    cache.innerLeadingEdgePoint.xsi = innerLePoint.second;
+
+    std::pair<double, double> outerLePoint = computePositioningEtaXsi(positionOuterBorder, positionLeadingEdge, false, true);
+    cache.outerLeadingEdgePoint.eta = outerLePoint.first;
+    cache.outerLeadingEdgePoint.xsi = outerLePoint.second;
+
+    std::pair<double, double> innerTePoint = computePositioningEtaXsi(positionInnerBorder, positionTrailingEdge, true, false);
+    cache.innerTrailingEdgePoint.eta = innerTePoint.first;
+    cache.innerTrailingEdgePoint.xsi = innerTePoint.second;
+
+    std::pair<double, double> outerTePoint = computePositioningEtaXsi(positionOuterBorder, positionTrailingEdge, false, false);
+    cache.outerTrailingEdgePoint.eta = outerTePoint.first;
+    cache.outerTrailingEdgePoint.xsi = outerTePoint.second;
+
+    cache.valid = true;
+}
+
+void CCPACSWingCell::Update() const
+{
+    // TODO: update geometry
 }
 
 } // namespace tigl

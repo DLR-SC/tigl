@@ -31,7 +31,7 @@ class CScopedLock
 public:
     TIGL_EXPORT CScopedLock(CMutex &);
     TIGL_EXPORT ~CScopedLock();
-
+    // TODO: prevent copy ctor and copy assignment
 private:
     CMutex& _mutex;
 };

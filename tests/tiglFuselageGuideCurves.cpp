@@ -120,8 +120,8 @@ protected:
 */
 TEST_F(FuselageGuideCurve, tiglFuselageGuideCurve_CCPACSGuideCurveProfile)
 {
-    tigl::CCPACSGuideCurveProfile guideCurve("/cpacs/vehicles/profiles/guideCurveProfiles/guideCurveProfile[2]");
-    guideCurve.ReadCPACS(tixiHandle);
+    tigl::CCPACSGuideCurveProfile guideCurve;
+    guideCurve.ReadCPACS(tixiHandle, "/cpacs/vehicles/profiles/guideCurveProfiles/guideCurveProfile[2]");
     ASSERT_EQ(guideCurve.GetUID(), "GuideCurveModel_Fuselage_GuideCurveProfile_Middle_NonLinear");
     ASSERT_EQ(guideCurve.GetName(), "NonLinear Middle Guide Curve Profile for GuideCurveModel - Fuselage");
     ASSERT_EQ(guideCurve.GetFileName(), "/cpacs/vehicles/profiles/guideCurveProfiles/guideCurveProfile[2]");
@@ -321,8 +321,8 @@ TEST_F(FuselageGuideCurve, tiglFuselageGuideCurve_CCPACSGuideCurveAlgo)
     wireContainer2.Append(wire2);
 
     // get guide curve profile
-    tigl::CCPACSGuideCurveProfile guideCurveProfile("/cpacs/vehicles/profiles/guideCurveProfiles/guideCurveProfile[2]");
-    guideCurveProfile.ReadCPACS(tixiHandle);
+    tigl::CCPACSGuideCurveProfile guideCurveProfile;
+    guideCurveProfile.ReadCPACS(tixiHandle, "/cpacs/vehicles/profiles/guideCurveProfiles/guideCurveProfile[2]");
 
     TopoDS_Wire guideCurveWire;
     // instantiate guideCurveAlgo

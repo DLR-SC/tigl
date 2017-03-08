@@ -248,7 +248,7 @@ void CCPACSWingProfilePointList::BuildLETEPoints()
     // compute TE point
     gp_Pnt firstPnt = coordinates[0].Get_gp_Pnt();
     gp_Pnt lastPnt = coordinates[coordinates.size() - 1].Get_gp_Pnt();
-    double x = (firstPnt.X() + lastPnt.X())/2.;
+    double x = (firstPnt.X() + lastPnt.X()) / 2.;
     double y = (firstPnt.Y() + lastPnt.Y())/2.;
     double z = (firstPnt.Z() + lastPnt.Z())/2.;
     tePoint = gp_Pnt(x,y,z);

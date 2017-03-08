@@ -6094,6 +6094,7 @@
 									</lowerShell>
 									<ribsDefinitions>
 										<ribsDefinition uID="rib_winglet_1">
+											<name/>
 											<ribsPositioning>
 												<ribReference>leadingEdge</ribReference>
 												<etaStart>0</etaStart>
@@ -6118,6 +6119,7 @@
 											</ribCrossSection>
 										</ribsDefinition>
 										<ribsDefinition uID="rib_winglet_2_6">
+											<name/>
 											<ribsPositioning>
 												<ribReference>leadingEdge</ribReference>
 												<etaStart>0.2</etaStart>

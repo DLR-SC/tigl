@@ -39,7 +39,6 @@ CTiglFileLogger::CTiglFileLogger(FILE * file) : logFileStream(file), mutex(new C
 
 CTiglFileLogger::CTiglFileLogger(const char* filename) :  mutex(new CMutex) , verbosity(TILOG_DEBUG4)
 {
-
     logFileStream = fopen(filename,"w");
     if (!logFileStream) {
         throw CTiglError("Log file can not be created CTiglLogFile", TIGL_OPEN_FAILED);
@@ -49,7 +48,7 @@ CTiglFileLogger::CTiglFileLogger(const char* filename) :  mutex(new CMutex) , ve
     // timestamp
     time_t rawtime;
     time (&rawtime);
-    struct tm *timeinfo = localtime (&rawtime);
+    tm *timeinfo = localtime (&rawtime);
     char buffer [160];
     strftime (buffer,160,"TiGL log file created at: %y/%m/%d %H:%M:%S",timeinfo);
     

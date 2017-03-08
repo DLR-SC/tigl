@@ -106,8 +106,8 @@ protected:
 */
 TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSGuideCurveProfile)
 {
-    tigl::CCPACSGuideCurveProfile guideCurve("/cpacs/vehicles/profiles/guideCurveProfiles/guideCurveProfile[7]");
-    guideCurve.ReadCPACS(tixiHandle);
+    tigl::CCPACSGuideCurveProfile guideCurve;
+    guideCurve.ReadCPACS(tixiHandle, "/cpacs/vehicles/profiles/guideCurveProfiles/guideCurveProfile[7]");
     ASSERT_EQ(guideCurve.GetUID(), "GuideCurveModel_Wing_GuideCurveProfile_LeadingEdge_NonLinear");
     ASSERT_EQ(guideCurve.GetName(), "NonLinear Leading Edge Guide Curve Profile for GuideCurveModel - Wing");
     ASSERT_EQ(guideCurve.GetFileName(), "/cpacs/vehicles/profiles/guideCurveProfiles/guideCurveProfile[7]");
@@ -132,8 +132,8 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSGuideCurveProfiles)
 */
 TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSGuideCurve)
 {
-    tigl::CCPACSGuideCurve guideCurve("/cpacs/vehicles/aircraft/model/wings/wing/segments/segment[1]/guideCurves/guideCurve[1]");
-    guideCurve.ReadCPACS(tixiHandle);
+    tigl::CCPACSGuideCurve guideCurve;
+    guideCurve.ReadCPACS(tixiHandle, "/cpacs/vehicles/aircraft/model/wings/wing/segments/segment[1]/guideCurves/guideCurve[1]");
     ASSERT_EQ(guideCurve.GetUID(), "GuideCurveModel_Wing_Seg_1_2_GuideCurve_TrailingEdgeLower");
     ASSERT_EQ(guideCurve.GetName(), "Lower Trailing Edge GuideCurve from GuideCurveModel - Wing Section 1 Main Element to GuideCurveModel - Wing Section 2 Main Element ");
     ASSERT_EQ(guideCurve.GetGuideCurveProfileUID(), "GuideCurveModel_Wing_GuideCurveProfile_TrailingEdgeLower_NonLinear");
@@ -361,8 +361,8 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSGuideCurveAlgo)
     outerWireContainer.Append(outerUpperEdge);
 
     // get guide curve profile
-    tigl::CCPACSGuideCurveProfile guideCurveProfile("/cpacs/vehicles/profiles/guideCurveProfiles/guideCurveProfile[7]");
-    guideCurveProfile.ReadCPACS(tixiHandle);
+    tigl::CCPACSGuideCurveProfile guideCurveProfile;
+    guideCurveProfile.ReadCPACS(tixiHandle, "/cpacs/vehicles/profiles/guideCurveProfiles/guideCurveProfile[7]");
 
     TopoDS_Wire guideCurveWire;
     // instantiate guideCurveAlgo

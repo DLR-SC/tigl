@@ -33,8 +33,9 @@ class CCPACSMaterial : public generated::CPACSMaterialDefinition
 public:
     TIGL_EXPORT CCPACSMaterial();
     
-	TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string &materialXPath);
-	TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string &materialXPath) const;
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string &materialXPath);
+
+    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string &materialXPath) const;
 
     TIGL_EXPORT void Invalidate();
     
