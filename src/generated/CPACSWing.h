@@ -20,6 +20,7 @@
 #include <tixi.h>
 #include <string>
 #include <boost/optional.hpp>
+#include "CTiglError.h"
 #include "tigl_internal.h"
 #include <TiglSymmetryAxis.h>
 #include <CCPACSTransformation.h>

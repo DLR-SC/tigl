@@ -101,7 +101,7 @@ public:
 private:
 	void lazyCreateAttachedRotorBlades();
 
-    std::vector<unique_ptr<CTiglAttachedRotorBlade>> attachedRotorBlades;
+    std::vector<unique_ptr<CTiglAttachedRotorBlade> > attachedRotorBlades;
     std::vector<double>                              cachedAzimuthAngles;
     bool                                             invalidated;              /**< Internal state flag  */
 };

@@ -140,7 +140,7 @@ bool CCPACSWings::HasWing(const std::string & uid) const
 void CCPACSWings::AddWing(CCPACSWing* wing)
 {
     // Check whether the same wing already exists if yes remove it before adding the new one
-    for (std::vector<unique_ptr<CCPACSWing>>::const_iterator it = m_wing.begin(); it != m_wing.end(); ++it) {
+    for (std::vector<unique_ptr<CCPACSWing> >::iterator it = m_wing.begin(); it != m_wing.end(); ++it) {
         if ((*it)->GetUID() == wing->GetUID()) {
             m_wing.erase(it);
             break;

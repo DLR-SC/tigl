@@ -44,7 +44,7 @@ CCPACSPositionings::~CCPACSPositionings()
 void CCPACSPositionings::Invalidate()
 {
     invalidated = true;
-    for (std::vector<unique_ptr<CCPACSPositioning>>::iterator it = m_positioning.begin(); it != m_positioning.end(); ++it) {
+    for (std::vector<unique_ptr<CCPACSPositioning> >::iterator it = m_positioning.begin(); it != m_positioning.end(); ++it) {
         CCPACSPositioning* actPos = it->get();
         actPos->Invalidate();
     }
@@ -60,7 +60,7 @@ void CCPACSPositionings::Cleanup()
 CTiglTransformation CCPACSPositionings::GetPositioningTransformation(std::string sectionIndex)
 {
     Update();
-    for (std::vector<unique_ptr<CCPACSPositioning>>::const_iterator it = m_positioning.begin(); it != m_positioning.end(); ++it) {
+    for (std::vector<unique_ptr<CCPACSPositioning> >::const_iterator it = m_positioning.begin(); it != m_positioning.end(); ++it) {
         CCPACSPositioning* p = it->get();
         if (p->GetOuterSectionIndex() == sectionIndex) {
             return p->GetOuterTransformation();
@@ -81,7 +81,7 @@ void CCPACSPositionings::Update()
     // reset all position base points
 
     // diconnect and reset
-    for (std::vector<unique_ptr<CCPACSPositioning>>::iterator it = m_positioning.begin(); it != m_positioning.end(); ++it) {
+    for (std::vector<unique_ptr<CCPACSPositioning> >::iterator it = m_positioning.begin(); it != m_positioning.end(); ++it) {
         CCPACSPositioning* actPos = it->get();
         actPos->DisconnectChilds();
         actPos->SetInnerPoint(CTiglPoint(0,0,0));
@@ -89,13 +89,13 @@ void CCPACSPositionings::Update()
     
     // connect positionings, find roots
     std::vector<CCPACSPositioning*> rootNodes;
-    for (std::vector<unique_ptr<CCPACSPositioning>>::iterator it = m_positioning.begin(); it != m_positioning.end(); ++it) {
+    for (std::vector<unique_ptr<CCPACSPositioning> >::iterator it = m_positioning.begin(); it != m_positioning.end(); ++it) {
         CCPACSPositioning* actPos = it->get();
         // fromSectionUID element may be present but empty
         if (actPos->HasFromSectionUID() && !actPos->GetFromSectionUID().empty()) {
             const std::string fromUID = actPos->GetFromSectionUID();
             bool found = false;
-            for (std::vector<unique_ptr<CCPACSPositioning>>::iterator it2 = m_positioning.begin(); it2 != m_positioning.end(); ++it2) {
+            for (std::vector<unique_ptr<CCPACSPositioning> >::iterator it2 = m_positioning.begin(); it2 != m_positioning.end(); ++it2) {
                 if ((*it2)->GetOuterSectionIndex() == fromUID) {
                     (*it2)->ConnectChildPositioning(actPos);
                     found = true;

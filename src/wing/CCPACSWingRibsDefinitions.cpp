@@ -31,7 +31,7 @@ CCPACSWingRibsDefinitions::CCPACSWingRibsDefinitions(CCPACSWingCSStructure* stru
 
 void CCPACSWingRibsDefinitions::Invalidate()
 {
-    for (std::vector<unique_ptr<CCPACSWingRibsDefinition>>::iterator it = m_ribsDefinition.begin(); it != m_ribsDefinition.end(); ++it) {
+    for (std::vector<unique_ptr<CCPACSWingRibsDefinition> >::iterator it = m_ribsDefinition.begin(); it != m_ribsDefinition.end(); ++it) {
         (*it)->Invalidate();
     }
 }
@@ -59,7 +59,7 @@ CCPACSWingRibsDefinition& CCPACSWingRibsDefinitions::GetRibsDefinition(const int
 
 const CCPACSWingRibsDefinition& CCPACSWingRibsDefinitions::GetRibsDefinition(const std::string& uid) const
 {
-    for (std::vector<unique_ptr<CCPACSWingRibsDefinition>>::const_iterator it = m_ribsDefinition.begin(); it != m_ribsDefinition.end(); ++it) {
+    for (std::vector<unique_ptr<CCPACSWingRibsDefinition> >::const_iterator it = m_ribsDefinition.begin(); it != m_ribsDefinition.end(); ++it) {
         const unique_ptr<CCPACSWingRibsDefinition>& tempRib = *it;
         if (tempRib->GetUID() == uid) {
             return *tempRib;

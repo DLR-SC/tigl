@@ -73,7 +73,7 @@ void CCPACSWingProfiles::AddProfile(CCPACSWingProfile* profile)
 
 void CCPACSWingProfiles::DeleteProfile(std::string uid)
 {
-    for (std::vector<unique_ptr<CPACSProfileGeometry>>::const_iterator it = m_wingAirfoil.begin(); it != m_wingAirfoil.end(); ++it) {
+    for (std::vector<unique_ptr<CPACSProfileGeometry> >::iterator it = m_wingAirfoil.begin(); it != m_wingAirfoil.end(); ++it) {
         if ((*it)->GetUID() == uid) {
             m_wingAirfoil.erase(it);
             return;
@@ -89,7 +89,7 @@ int CCPACSWingProfiles::GetProfileCount() const
 
 bool CCPACSWingProfiles::HasProfile(std::string uid) const
 {
-    for (std::vector<unique_ptr<CPACSProfileGeometry>>::const_iterator it = m_wingAirfoil.begin(); it != m_wingAirfoil.end(); ++it)
+    for (std::vector<unique_ptr<CPACSProfileGeometry> >::const_iterator it = m_wingAirfoil.begin(); it != m_wingAirfoil.end(); ++it)
         if ((*it)->GetUID() == uid)
             return true;
 
@@ -99,7 +99,7 @@ bool CCPACSWingProfiles::HasProfile(std::string uid) const
 // Returns the wing profile for a given uid.
 CCPACSWingProfile& CCPACSWingProfiles::GetProfile(std::string uid) const
 {
-    for (std::vector<unique_ptr<CPACSProfileGeometry>>::const_iterator it = m_wingAirfoil.begin(); it != m_wingAirfoil.end(); ++it)
+    for (std::vector<unique_ptr<CPACSProfileGeometry> >::const_iterator it = m_wingAirfoil.begin(); it != m_wingAirfoil.end(); ++it)
         if ((*it)->GetUID() == uid)
             return static_cast<CCPACSWingProfile&>(**it);
     throw CTiglError("Fuselage profile \"" + uid + "\" not found in CPACS file!", TIGL_UID_ERROR);

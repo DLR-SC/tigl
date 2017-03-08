@@ -21,6 +21,7 @@
 #include <string>
 #include <vector>
 #include "UniquePtr.h"
+#include "CTiglError.h"
 #include "tigl_internal.h"
 
 namespace tigl
