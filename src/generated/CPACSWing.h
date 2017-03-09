@@ -21,6 +21,7 @@
 #include <string>
 #include <boost/optional.hpp>
 #include "CTiglError.h"
+#include <typeinfo>
 #include "tigl_internal.h"
 #include <TiglSymmetryAxis.h>
 #include <CCPACSTransformation.h>

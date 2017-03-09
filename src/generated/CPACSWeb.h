@@ -20,6 +20,7 @@
 #include <tixi.h>
 #include <string>
 #include "CTiglError.h"
+#include <typeinfo>
 #include "tigl_internal.h"
 #include <CCPACSMaterial.h>
 
