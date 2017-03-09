@@ -21,7 +21,7 @@
 #include <string>
 #include <boost/optional.hpp>
 #include "tigl_internal.h"
-#include <CCPACSHeader.h>
+#include "CPACSHeader.h"
 #include "CPACSVehicles.h"
 #include "CPACSToolspecific.h"
 
@@ -40,8 +40,8 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT const CCPACSHeader& GetHeader() const;
-            TIGL_EXPORT CCPACSHeader& GetHeader();
+            TIGL_EXPORT const CPACSHeader& GetHeader() const;
+            TIGL_EXPORT CPACSHeader& GetHeader();
             
             TIGL_EXPORT bool HasVehicles() const;
             TIGL_EXPORT const CPACSVehicles& GetVehicles() const;
@@ -52,7 +52,7 @@ namespace tigl
             TIGL_EXPORT CPACSToolspecific& GetToolspecific();
             
         protected:
-            CCPACSHeader                       m_header;
+            CPACSHeader                        m_header;
             boost::optional<CPACSVehicles>     m_vehicles;
             boost::optional<CPACSToolspecific> m_toolspecific;
             

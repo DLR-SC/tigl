@@ -32,7 +32,7 @@
 #include "CTiglLogging.h"
 #include "CCPACSAircraftModel.h"
 #include "CCPACSRotorcraftModel.h"
-#include "CCPACSHeader.h"
+#include "generated/CPACSHeader.h"
 #include "CCPACSWings.h"
 #include "CCPACSRotors.h"
 #include "CCPACSFuselages.h"

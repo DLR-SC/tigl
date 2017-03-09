@@ -7,7 +7,6 @@ CPACSPointAbsRelType_refType       ECPACSTranslationType
 CPACSFarField_type_SimpleContent   TiglFarFieldType
 
 // classes
-CPACSHeader                        CCPACSHeader
 CPACSAircraftModel                 CCPACSAircraftModel
 CPACSRotorcraftModel               CCPACSRotorcraftModel
 CPACSProfiles                      CCPACSProfiles

@@ -47,7 +47,7 @@ namespace tigl
             
             // read element timestamp
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/timestamp")) {
-                m_timestamp.ReadCPACS(tixiHandle, xpath + "/timestamp");
+                m_timestamp = tixihelper::TixiGetElement<std::time_t>(tixiHandle, xpath + "/timestamp");
             }
             else {
                 LOG(ERROR) << "Required element timestamp is missing";
@@ -83,7 +83,7 @@ namespace tigl
             
             // write element timestamp
             tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/timestamp");
-            m_timestamp.WriteCPACS(tixiHandle, xpath + "/timestamp");
+            tixihelper::TixiSaveElement(tixiHandle, xpath + "/timestamp", m_timestamp);
             
             // write element version
             tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/version");
@@ -115,14 +115,14 @@ namespace tigl
             m_creator = value;
         }
         
-        const CPACSDateTimeBase& CPACSUpdate::GetTimestamp() const
+        const std::time_t& CPACSUpdate::GetTimestamp() const
         {
             return m_timestamp;
         }
         
-        CPACSDateTimeBase& CPACSUpdate::GetTimestamp()
+        void CPACSUpdate::SetTimestamp(const std::time_t& value)
         {
-            return m_timestamp;
+            m_timestamp = value;
         }
         
         const std::string& CPACSUpdate::GetVersion() const

@@ -28,7 +28,6 @@
 
 #include "tigl.h"
 #include "tigl_internal.h"
-#include "CCPACSHeader.h"
 #include "CCPACSWings.h"
 #include "CCPACSWingProfile.h"
 #include "CCPACSFuselages.h"

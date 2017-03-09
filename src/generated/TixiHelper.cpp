@@ -15,6 +15,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#define BOOST_DATE_TIME_NO_LIB
+#include <boost/date_time/posix_time/posix_time.hpp>
 #include <sstream>
 #include <stdexcept>
 
@@ -278,11 +280,24 @@ namespace tigl
             return TixiGetElementInternal<int>(tixiHandle, xpath, tixiGetIntegerElement);
         }
 
+        namespace fromboost
+        {
+            std::time_t to_time_t(boost::posix_time::ptime pt)
+            {
+                boost::posix_time::time_duration dur = pt - boost::posix_time::ptime(boost::gregorian::date(1970, 1, 1));
+                return std::time_t(dur.total_seconds());
+            }
+
+            boost::posix_time::ptime from_iso_extended_string(const std::string& s)
+            {
+                return boost::date_time::parse_delimited_time<boost::posix_time::ptime>(s, 'T');
+            }
+        }
+
         std::time_t TixiGetTimeTElement(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
-            const std::string str = TixiGetTextElement(tixiHandle, xpath);
-            // TODO: implement conversion
-            return std::time_t();
+            //return boost::posix_time::to_time_t(boost::posix_time::from_iso_extended_string(TixiGetTextElement(tixiHandle, xpath))); // enable, when Boost >= 1.62 is available
+            return fromboost::to_time_t(fromboost::from_iso_extended_string(TixiGetTextElement(tixiHandle, xpath)));
         }
 
         namespace
@@ -467,9 +482,7 @@ namespace tigl
 
         void TixiSaveElement(const TixiDocumentHandle& tixiHandle, const std::string& xpath, std::time_t value)
         {
-            std::string str = "date saving not implemented";
-            // TODO: implement conversion
-            TixiSaveElement(tixiHandle, xpath, str);
+            TixiSaveElement(tixiHandle, xpath, boost::posix_time::to_iso_extended_string(boost::posix_time::from_time_t(value)));
         }
 
         void TixiCreateElement(const TixiDocumentHandle& tixiHandle, const std::string& xpath)

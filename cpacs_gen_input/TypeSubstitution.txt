@@ -5,6 +5,7 @@ stringBaseType    std::string
 doubleBaseType    double
 integerBaseType   int
 booleanBaseType   bool
+dateTimeBaseType  std::time_t
 complexBaseType
 
 // maps xsd types to C++ types
@@ -22,5 +23,5 @@ xsd:boolean       bool
 xsd:float         float
 xsd:double        double
 xsd:decimal       double  // TODO: implement custom type?
-xsd:dateTime      time_t
+xsd:dateTime      std::time_t
 xsd:string        std::string

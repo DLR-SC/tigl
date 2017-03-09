@@ -30,12 +30,17 @@ include_directories(${OpenCASCADE_INCLUDE_DIR}
                     ${TIGL_INCLUDES}
 )
 
+# boost
+include_directories(${PROJECT_SOURCE_DIR}/thirdparty/boost_1_55_0)
+file(GLOB_RECURSE BOOST_SRC ${PROJECT_SOURCE_DIR}/thirdparty/boost_1_55_0/libs/*)
+
 file(GLOB_RECURSE TIGL_SRC
     "*.h"
     "*.hxx"
     "*.cpp"
     "*.cxx"
 )
+set(TIGL_SRC ${TIGL_SRC} ${BOOST_SRC})
 
 if(MSVC)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS=1 /wd4355 -DTIGL_INTERNAL_EXPORTS)
@@ -53,9 +58,6 @@ if(GLOG_FOUND)
   include_directories(${GLOG_INCLUDE_DIR})
   target_link_libraries (TIGL ${GLOG_LIBRARIES})
 endif(GLOG_FOUND)
-
-# boost
-include_directories(${PROJECT_SOURCE_DIR}/thirdparty/boost_1_55_0)
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
   add_definitions(-DDEBUG)

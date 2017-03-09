@@ -20,8 +20,8 @@
 #include <tixi.h>
 #include <string>
 #include <boost/optional.hpp>
+#include <ctime>
 #include "tigl_internal.h"
-#include "CPACSDateTimeBase.h"
 #include "CPACSUpdates.h"
 
 namespace tigl
@@ -51,8 +51,8 @@ namespace tigl
             TIGL_EXPORT const std::string& GetCreator() const;
             TIGL_EXPORT void SetCreator(const std::string& value);
             
-            TIGL_EXPORT const CPACSDateTimeBase& GetTimestamp() const;
-            TIGL_EXPORT CPACSDateTimeBase& GetTimestamp();
+            TIGL_EXPORT const std::time_t& GetTimestamp() const;
+            TIGL_EXPORT void SetTimestamp(const std::time_t& value);
             
             TIGL_EXPORT const std::string& GetVersion() const;
             TIGL_EXPORT void SetVersion(const std::string& value);
@@ -68,7 +68,7 @@ namespace tigl
             std::string                   m_name;
             boost::optional<std::string>  m_description;
             std::string                   m_creator;
-            CPACSDateTimeBase             m_timestamp;
+            std::time_t                   m_timestamp;
             std::string                   m_version;
             std::string                   m_cpacsVersion;
             boost::optional<CPACSUpdates> m_updates;
@@ -87,5 +87,10 @@ namespace tigl
         };
     }
     
-    // This type is customized, use type CCPACSHeader
+    // This type is not customized, create alias in tigl namespace
+    #ifdef HAVE_CPP11
+    using CCPACSHeader = generated::CPACSHeader;
+    #else
+    typedef generated::CPACSHeader CCPACSHeader;
+    #endif
 }

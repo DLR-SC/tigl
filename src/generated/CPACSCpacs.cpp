@@ -87,12 +87,12 @@ namespace tigl
             
         }
         
-        const CCPACSHeader& CPACSCpacs::GetHeader() const
+        const CPACSHeader& CPACSCpacs::GetHeader() const
         {
             return m_header;
         }
         
-        CCPACSHeader& CPACSCpacs::GetHeader()
+        CPACSHeader& CPACSCpacs::GetHeader()
         {
             return m_header;
         }

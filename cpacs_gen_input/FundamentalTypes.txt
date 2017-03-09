@@ -4,4 +4,4 @@ std::string
 double
 bool
 int
-time_t
+std::time_t
