@@ -19,8 +19,8 @@
 #ifndef ECPACSTRANSLATIONTYPE
 #define ECPACSTRANSLATIONTYPE
 
-#include <stdexcept>
 #include "to_string.h"
+#include "CTiglError.h"
 
 namespace tigl
 {
@@ -38,14 +38,14 @@ inline std::string ECPACSTranslationTypeToString(const ECPACSTranslationType& va
     switch (value) {
         case ENUM_VALUE(ECPACSTranslationType, ABS_LOCAL):  return "absLocal";
         case ENUM_VALUE(ECPACSTranslationType, ABS_GLOBAL): return "absGlobal";
-        default: throw std::runtime_error("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type ECPACSTranslationType");
+        default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type ECPACSTranslationType");
     }
 }
 
 inline ECPACSTranslationType stringToECPACSTranslationType(const std::string& value) {
     if (value == "absLocal")  { return ENUM_VALUE(ECPACSTranslationType, ABS_LOCAL);  }
     if (value == "absGlobal") { return ENUM_VALUE(ECPACSTranslationType, ABS_GLOBAL); }
-    throw std::runtime_error("Invalid string value \"" + value + "\" for enum type ECPACSTranslationType");
+    throw CTiglError("Invalid string value \"" + value + "\" for enum type ECPACSTranslationType");
 }
 
 }

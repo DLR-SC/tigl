@@ -70,8 +70,8 @@ void CTiglAbstractGeometricComponent::Reset()
         transformation->reset();
 }
 
-TiglSymmetryAxis CTiglAbstractGeometricComponent::GetSymmetryAxis() {
-    struct Visitor : boost::static_visitor<TiglSymmetryAxis> {
+namespace {
+    struct GetSymmetryVisitor : boost::static_visitor<TiglSymmetryAxis> {
         TiglSymmetryAxis operator()(const TiglSymmetryAxis* s) {
             if (s)
                 return *s;
@@ -84,29 +84,37 @@ TiglSymmetryAxis CTiglAbstractGeometricComponent::GetSymmetryAxis() {
             else
                 return ENUM_VALUE(TiglSymmetryAxis, TIGL_NO_SYMMETRY);
         }
-    } visitor;
+    };
+}
+
+TiglSymmetryAxis CTiglAbstractGeometricComponent::GetSymmetryAxis() {
+    GetSymmetryVisitor visitor;
     return symmetryAxis.apply_visitor(visitor);
 }
 
-void CTiglAbstractGeometricComponent::SetSymmetryAxis(const TiglSymmetryAxis& axis) {
-    struct Visitor : boost::static_visitor<> {
-        Visitor(const TiglSymmetryAxis& axis)
+namespace {
+    struct SetSymmetryVisitor : boost::static_visitor<> {
+        SetSymmetryVisitor(const TiglSymmetryAxis& axis)
             : axis(axis) {}
         void operator()(TiglSymmetryAxis* s) {
             if (s)
                 *s = axis;
             else
-                throw std::runtime_error("Type does not have a symmetry");
+                throw CTiglError("Type does not have a symmetry");
         }
         void operator()(boost::optional<TiglSymmetryAxis>* s) {
             if (s)
                 *s = axis;
             else
-                throw std::runtime_error("Type does not have a symmetry");
+                throw CTiglError("Type does not have a symmetry");
         }
     private:
         const TiglSymmetryAxis& axis;
-    } visitor(axis);
+    };
+}
+
+void CTiglAbstractGeometricComponent::SetSymmetryAxis(const TiglSymmetryAxis& axis) {
+    SetSymmetryVisitor visitor(axis);
     symmetryAxis.apply_visitor(visitor);
 }
 
@@ -164,7 +172,7 @@ void CTiglAbstractGeometricComponent::Translate(CTiglPoint trans)
         transformation->setTranslation(GetTranslation() + trans, GetTranslationType());
         transformation->updateMatrix();
     } else
-        throw std::runtime_error("Type does not have a transformation");
+        throw CTiglError("Type does not have a transformation");
 }
 
 PNamedShape CTiglAbstractGeometricComponent::GetLoft()

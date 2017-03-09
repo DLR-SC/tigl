@@ -16,6 +16,7 @@
 // limitations under the License.
 
 #include <sstream>
+#include <stdexcept>
 
 #include "TixiHelper.h"
 

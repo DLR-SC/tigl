@@ -104,7 +104,7 @@ TiglLoftSide CCPACSWingShell::GetLoftSide() const
         return ENUM_VALUE(TiglLoftSide, LOWER_SIDE);
     if (&GetParent()->GetUpperShell() == this)
         return ENUM_VALUE(TiglLoftSide, UPPER_SIDE);
-    throw std::logic_error("Cannot determine loft side, this shell is neither lower nor upper shell of parent");
+    throw CTiglError("Cannot determine loft side, this shell is neither lower nor upper shell of parent");
 }
 
 } // namespace tigl

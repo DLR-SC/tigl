@@ -42,7 +42,7 @@ void CCPACSWings::Invalidate()
 
 CCPACSWings::CCPACSWings(CCPACSRotorcraftModel* parent)
     : generated::CPACSWings(parent) {
-    throw std::logic_error("Instantiating CCPACSWings with CPACSRotorcraftModel as parent is not implemented");
+    throw CTiglError("Instantiating CCPACSWings with CPACSRotorcraftModel as parent is not implemented");
 }
 
 CCPACSWings::CCPACSWings(CCPACSAircraftModel* parent)

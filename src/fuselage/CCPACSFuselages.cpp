@@ -37,7 +37,7 @@ CCPACSFuselages::CCPACSFuselages(CCPACSAircraftModel* parent)
 
 CCPACSFuselages::CCPACSFuselages(CCPACSRotorcraftModel* parent)
     : generated::CPACSFuselages(parent) {
-    throw std::logic_error("Instantiating CCPACSFuselages with CPACSRotorcraftModel as parent is not implemented");
+    throw CTiglError("Instantiating CCPACSFuselages with CPACSRotorcraftModel as parent is not implemented");
 }
 
 // Invalidates internal state

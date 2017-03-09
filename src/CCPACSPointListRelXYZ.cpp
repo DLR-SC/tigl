@@ -12,7 +12,7 @@ namespace tigl
         const std::vector<double>& ys = GetRY().AsVector();
         const std::vector<double>& zs = GetRZ().AsVector();
         if (xs.size() != ys.size() || ys.size() != zs.size()) {
-            throw std::runtime_error("component vectors in CCPACSPointListRelXYZ must all have the same number of elements");
+            throw CTiglError("component vectors in CCPACSPointListRelXYZ must all have the same number of elements");
         }
         m_vec.clear();
         for (std::size_t i = 0; i < xs.size(); i++) {

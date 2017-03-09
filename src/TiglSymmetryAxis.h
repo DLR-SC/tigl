@@ -3,8 +3,8 @@
 #include "tigl.h"
 
 #include <string>
-#include <stdexcept>
 #include "to_string.h"
+#include "CTiglError.h"
 
 
 namespace tigl
@@ -18,7 +18,7 @@ namespace tigl
             case TIGL_X_Y_PLANE:   return "x-y-plane";
             case TIGL_X_Z_PLANE:   return "x-z-plane";
             case TIGL_Y_Z_PLANE:   return "y-z-plane";
-            default: throw std::runtime_error("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type TiglSymmetryAxis");
+            default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type TiglSymmetryAxis");
         }
     }
 

@@ -45,7 +45,7 @@ TiglRotorHubType CCPACSRotorHub::GetType() const
         case ENUM_VALUE_NS(generated, CPACSRotorHub_type, hingeless):   return ENUM_VALUE(TiglRotorHubType, TIGLROTORHUB_HINGELESS);
         case ENUM_VALUE_NS(generated, CPACSRotorHub_type, rigid):       return ENUM_VALUE(TiglRotorHubType, TIGLROTORHUB_RIGID);
         case ENUM_VALUE_NS(generated, CPACSRotorHub_type, semiRigid):   return ENUM_VALUE(TiglRotorHubType, TIGLROTORHUB_SEMI_RIGID);
-        default: throw std::logic_error("unrecognized enum");
+        default: throw CTiglError("unrecognized enum");
     }
 }
 

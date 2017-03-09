@@ -128,7 +128,7 @@ TiglRotorType CCPACSRotor::GetType() const
         case ENUM_VALUE_NS(generated, CPACSRotor_type, mainRotor): return ENUM_VALUE(TiglRotorType, TIGLROTOR_MAIN_ROTOR);
         case ENUM_VALUE_NS(generated, CPACSRotor_type, propeller): return ENUM_VALUE(TiglRotorType, TIGLROTOR_PROPELLER);
         case ENUM_VALUE_NS(generated, CPACSRotor_type, tailRotor): return ENUM_VALUE(TiglRotorType, TIGLROTOR_TAIL_ROTOR);
-        default: throw std::logic_error("unknown rotor type");
+        default: throw CTiglError("unknown rotor type");
     }
 }
 

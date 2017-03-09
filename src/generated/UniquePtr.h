@@ -17,6 +17,7 @@
 
 #pragma once
 
+#include <cstddef>
 #include <memory>
 
 #ifndef CPACS_GEN
@@ -44,8 +45,9 @@ namespace tigl
         // NOTE: const is a hack to allow std::vector<unique_ptr<T>>
         unique_ptr(const unique_ptr& other) throw() : std::auto_ptr<T>(const_cast<unique_ptr&>(other)) {}
 
+        // NOTE: const is a hack to allow std::vector<unique_ptr<T>>
         template <typename U>
-        unique_ptr(unique_ptr<U>& other) throw() : std::auto_ptr<T>(other) {}
+        unique_ptr(const unique_ptr<U>& other) throw() : std::auto_ptr<T>(const_cast<unique_ptr<U>&>(other)) {}
 
         // NOTE: const is a hack to allow std::vector<unique_ptr<T>>
         unique_ptr& operator=(const unique_ptr& other) throw()
@@ -54,10 +56,11 @@ namespace tigl
             return *this;
         }
 
+        // NOTE: const is a hack to allow std::vector<unique_ptr<T>>
         template <typename U>
-        unique_ptr& operator=(unique_ptr<U>& other) throw()
+        unique_ptr& operator=(const unique_ptr<U>& other) throw()
         {
-            std::auto_ptr<T>::operator=(other);
+            std::auto_ptr<T>::operator=(const_cast<unique_ptr<U>&>(other));
             return *this;
         }
     };

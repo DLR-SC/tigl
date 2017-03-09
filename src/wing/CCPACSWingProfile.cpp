@@ -104,7 +104,7 @@ void CCPACSWingProfile::ReadCPACS(const TixiDocumentHandle& tixiHandle, const st
     } else if (m_cst2D_choice2) {
         profileAlgo = &*m_cst2D_choice2;
     } else {
-        throw std::runtime_error("no profile algorithm");
+        throw CTiglError("no profile algorithm");
     }
 }
 

@@ -1,10 +1,10 @@
 #pragma once
 
 #include <string>
-#include <stdexcept>
 #include <cctype>
 #include "to_string.h"
 #include "tigl_internal.h"
+#include "CTiglError.h"
 
 namespace tigl
 {
@@ -29,7 +29,7 @@ namespace tigl
             case ENUM_VALUE(TiglFarFieldType, HALF_CUBE):   return "halfCube";
             case ENUM_VALUE(TiglFarFieldType, FULL_CUBE):   return "fullCube";
             case ENUM_VALUE(TiglFarFieldType, NONE):        return "none";
-            default: throw std::runtime_error("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type TiglFarFieldType");
+            default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type TiglFarFieldType");
         }
     }
 
@@ -41,6 +41,6 @@ namespace tigl
         if (toLower(value) == "halfcube")   { return ENUM_VALUE(TiglFarFieldType, HALF_CUBE);   }
         if (toLower(value) == "fullcube")   { return ENUM_VALUE(TiglFarFieldType, FULL_CUBE);   }
         if (toLower(value) == "none")       { return ENUM_VALUE(TiglFarFieldType, NONE);        }
-        throw std::runtime_error("Invalid string value \"" + value + "\" for enum type TiglFarFieldType");
+        throw CTiglError("Invalid string value \"" + value + "\" for enum type TiglFarFieldType");
     }
 }

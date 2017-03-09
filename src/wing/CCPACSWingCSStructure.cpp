@@ -38,7 +38,7 @@ CCPACSWingCSStructure::CCPACSWingCSStructure(CCPACSWingComponentSegment* parent)
 
 CTiglWingStructureReference CCPACSWingCSStructure::GetWingStructureReference() {
     //if (IsParent<CCPACSWingComponentSegment>()) return CTiglWingStructureReference(*GetParent<CCPACSWingComponentSegment>());
-    //throw std::logic_error("Unknown parent type of CCPACSWingCSStructure when retrieving CTiglWingStructureReference");
+    //throw CTiglError("Unknown parent type of CCPACSWingCSStructure when retrieving CTiglWingStructureReference");
     return CTiglWingStructureReference(*GetParent());
 }
 

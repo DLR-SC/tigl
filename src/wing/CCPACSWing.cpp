@@ -158,7 +158,7 @@ CCPACSWing::CCPACSWing(CCPACSWings* parent)
     else if (parent->IsParent<CCPACSRotorcraftModel>())
         configuration = &parent->GetParent<CCPACSRotorcraftModel>()->GetConfiguration();
     else
-        throw std::logic_error("Unknown parent");
+        throw CTiglError("Unknown parent");
 
     Cleanup();
 }

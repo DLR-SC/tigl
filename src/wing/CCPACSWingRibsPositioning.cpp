@@ -86,7 +86,7 @@ CCPACSWingRibsPositioning::StartDefinitionType CCPACSWingRibsPositioning::GetSta
         return ENUM_VALUE(StartDefinitionType, ELEMENT_START);
     if (m_sparPositionStartUID_choice3)
         return ENUM_VALUE(StartDefinitionType, SPARPOSITION_START);
-    throw std::logic_error("Invalid start definition");
+    throw CTiglError("Invalid start definition");
 }
 
 double CCPACSWingRibsPositioning::GetEtaStart() const
@@ -152,7 +152,7 @@ CCPACSWingRibsPositioning::EndDefinitionType CCPACSWingRibsPositioning::GetEndDe
         return ENUM_VALUE(EndDefinitionType, ELEMENT_END);
     if (m_sparPositionEndUID_choice3)
         return ENUM_VALUE(EndDefinitionType, SPARPOSITION_END);
-    throw std::logic_error("Invalid end definition");
+    throw CTiglError("Invalid end definition");
 }
 
 double CCPACSWingRibsPositioning::GetEtaEnd() const
@@ -215,7 +215,7 @@ CCPACSWingRibsPositioning::RibCountDefinitionType CCPACSWingRibsPositioning::Get
         return ENUM_VALUE(RibCountDefinitionType, SPACING);
     if (m_numberOfRibs_choice2)
         return ENUM_VALUE(RibCountDefinitionType, NUMBER_OF_RIBS);
-    throw std::logic_error("Invalid rib count definition");
+    throw CTiglError("Invalid rib count definition");
 }
 
 int CCPACSWingRibsPositioning::GetNumberOfRibs() const
@@ -257,7 +257,7 @@ CCPACSWingRibsPositioning::CrossingBehaviour CCPACSWingRibsPositioning::GetRibCr
     switch (m_ribCrossingBehaviour.GetSimpleContent()) {
         case ENUM_VALUE_NS(generated, CPACSRibCrossingBehaviour, cross): return ENUM_VALUE(CrossingBehaviour, CROSSING_CROSS);
         case ENUM_VALUE_NS(generated, CPACSRibCrossingBehaviour, end):   return ENUM_VALUE(CrossingBehaviour, CROSSING_END);
-        default: throw std::logic_error("Unknown crossing behaviour");
+        default: throw CTiglError("Unknown crossing behaviour");
     }
 }
 
@@ -266,7 +266,7 @@ void CCPACSWingRibsPositioning::SetRibCrossingBehaviour(CCPACSWingRibsPositionin
     switch (behaviour) {
         case ENUM_VALUE(CrossingBehaviour, CROSSING_CROSS): m_ribCrossingBehaviour.SetSimpleContent(ENUM_VALUE_NS(generated, CPACSRibCrossingBehaviour, cross));
         case ENUM_VALUE(CrossingBehaviour, CROSSING_END):   m_ribCrossingBehaviour.SetSimpleContent(ENUM_VALUE_NS(generated, CPACSRibCrossingBehaviour, end));
-        default: throw std::logic_error("Unknown crossing behaviour");
+        default: throw CTiglError("Unknown crossing behaviour");
     }
 
     GetParent()->GetStructure().Invalidate();

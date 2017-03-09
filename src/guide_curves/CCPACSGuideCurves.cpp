@@ -31,16 +31,20 @@
 
 namespace tigl
 {
-void CCPACSGuideCurves::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) {
-    generated::CPACSGuideCurves::ReadCPACS(tixiHandle, xpath);
 
-    // sort by uid as some unit tests rely on this (TODO: should we fix the tests?)
-    // WARN: this destroys the order of the guide curves as stored in the CPACS file
+namespace {
     struct UidCompare {
         bool operator()(const unique_ptr<CCPACSGuideCurve>& a, const unique_ptr<CCPACSGuideCurve>& b) {
             return a->GetUID() < b->GetUID();
         }
     };
+}
+
+void CCPACSGuideCurves::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) {
+    generated::CPACSGuideCurves::ReadCPACS(tixiHandle, xpath);
+
+    // sort by uid as some unit tests rely on this (TODO: should we fix the tests?)
+    // WARN: this destroys the order of the guide curves as stored in the CPACS file
     std::sort(m_guideCurve.begin(), m_guideCurve.end(), UidCompare());
 }
 

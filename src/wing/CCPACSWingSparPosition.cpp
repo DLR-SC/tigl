@@ -35,7 +35,7 @@ CCPACSWingSparPosition::InputType CCPACSWingSparPosition::GetInputType() const
         return ENUM_VALUE(InputType, Eta);
     if (m_elementUID_choice2)
         return ENUM_VALUE(InputType, ElementUID);
-    throw std::logic_error("Invalid input type");
+    throw CTiglError("Invalid input type");
 }
 
 const std::string& CCPACSWingSparPosition::GetElementUID() const
