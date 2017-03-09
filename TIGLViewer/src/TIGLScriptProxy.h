@@ -55,7 +55,6 @@ public slots:
     QScriptValue getWingCount();
     QString getVersion();
     QScriptValue componentGetHashCode (QString componentUID);
-    QScriptValue componentIntersectionLineCount (QString componentUidOne, QString componentUidTwo);
     
     // exports
     QScriptValue exportFusedWingFuselageIGES (QString filename);
