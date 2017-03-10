@@ -28,6 +28,7 @@
 #include "CCPACSConfiguration.h"
 #include "CTiglError.h"
 #include "tiglcommonfunctions.h"
+#include "CNamedShape.h"
 
 #include "BRepBuilderAPI_GTransform.hxx"
 #include <BRepPrimAPI_MakeCylinder.hxx>
@@ -40,7 +41,7 @@ namespace tigl
 
 // Constructor
 CCPACSGenericSystem::CCPACSGenericSystem(CCPACSConfiguration* config)
-    : CTiglAbstractPhysicalComponent(&transformation, &symmetryAxis), configuration(config)
+    : CTiglRelativeComponent(NULL, &transformation, &symmetryAxis), configuration(config)
 {
     Cleanup();
 }
@@ -137,7 +138,7 @@ void CCPACSGenericSystem::ReadCPACS(TixiDocumentHandle tixiHandle, const std::st
     char* ptrSym = NULL;
     tempString   = "symmetry";
     if (tixiGetTextAttribute(tixiHandle, const_cast<char*>(genericSysXPath.c_str()), const_cast<char*>(tempString.c_str()), &ptrSym) == SUCCESS) {
-        SetSymmetryAxis(ptrSym);
+        SetSymmetryAxis(stringToTiglSymmetryAxis(ptrSym));
     }
 
     Update();
@@ -215,7 +216,7 @@ std::string CCPACSGenericSystem::GetShortShapeName()
 // Sets the Transformation object
 void CCPACSGenericSystem::Translate(CTiglPoint trans)
 {
-    CTiglAbstractGeometricComponent::Translate(trans);
+    CTiglRelativeComponent::Translate(trans);
     invalidated = true;
     Update();
 }

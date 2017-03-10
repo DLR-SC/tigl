@@ -27,15 +27,15 @@
 
 #include "tixi.h"
 #include "tigl_internal.h"
-#include "CTiglAbstractPhysicalComponent.h"
-
+#include "CTiglRelativeComponent.h"
+#include "CCPACSTransformation.h"
 
 namespace tigl
 {
 
 class CCPACSConfiguration;
 
-class CCPACSGenericSystem : public CTiglAbstractPhysicalComponent
+class CCPACSGenericSystem : public CTiglRelativeComponent
 {
 
 public:
@@ -46,7 +46,7 @@ public:
     TIGL_EXPORT virtual ~CCPACSGenericSystem();
 
     TIGL_EXPORT virtual const std::string& GetUID() const OVERRIDE;
-    TIGL_EXPORT virtual void SetUID(const std::string& uid) OVERRIDE;
+    TIGL_EXPORT void SetUID(const std::string& uid);
 
     // Invalidates internal state
     TIGL_EXPORT void Invalidate();
@@ -61,10 +61,10 @@ public:
     TIGL_EXPORT CCPACSConfiguration & GetConfiguration() const;
 
     // Sets a Transformation object
-    TIGL_EXPORT void Translate(CTiglPoint trans);
+    TIGL_EXPORT virtual void Translate(CTiglPoint trans) OVERRIDE;
 
     // Returns the Component Type TIGL_COMPONENT_GENERICSYSTEM.
-    TIGL_EXPORT TiglGeometricComponentType GetComponentType() {return TIGL_COMPONENT_GENERICSYSTEM | TIGL_COMPONENT_PHYSICAL;}
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const {return TIGL_COMPONENT_GENERICSYSTEM | TIGL_COMPONENT_PHYSICAL;}
 
 
 protected:

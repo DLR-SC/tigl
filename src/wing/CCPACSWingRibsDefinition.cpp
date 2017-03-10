@@ -54,6 +54,7 @@
 #include "CTiglLogging.h"
 #include "tiglcommonfunctions.h"
 #include "tiglwingribhelperfunctions.h"
+#include "CNamedShape.h"
 
 
 namespace tigl

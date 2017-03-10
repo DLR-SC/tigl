@@ -25,21 +25,26 @@
 
 #include "CCPACSAircraftModel.h"
 
+#include "CCPACSConfiguration.h"
+
 namespace tigl
 {
 CCPACSAircraftModel::CCPACSAircraftModel(CCPACSConfiguration* config)
-    : config(config) {}
+    : CTiglRelativeComponent(NULL, NULL), config(config) {}
+
+void CCPACSAircraftModel::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) {
+    generated::CPACSAircraftModel::ReadCPACS(tixiHandle, xpath);
+    if (config) {
+        config->GetUIDManager().AddUID(m_uID, this);
+    }
+}
 
 const std::string& CCPACSAircraftModel::GetUID() const {
     return generated::CPACSAircraftModel::GetUID();
 }
 
-void CCPACSAircraftModel::SetUID(const std::string& uid) {
-    generated::CPACSAircraftModel::SetUID(uid);
-}
-
 // Returns the Geometric type of this component, e.g. Wing or Fuselage
-TiglGeometricComponentType CCPACSAircraftModel::GetComponentType()
+TiglGeometricComponentType CCPACSAircraftModel::GetComponentType() const
 {
     return (TIGL_COMPONENT_PHYSICAL | TIGL_COMPONENT_PLANE);
 }

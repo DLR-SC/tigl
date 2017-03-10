@@ -19,6 +19,7 @@
 #include "test.h"
 #include "CCPACSExternalObject.h"
 #include "CTiglError.h"
+#include "CNamedShape.h"
 
 namespace tigl
 {

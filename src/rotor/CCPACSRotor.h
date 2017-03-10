@@ -31,7 +31,7 @@
 #include "generated/CPACSRotor.h"
 #include "tigl_config.h"
 #include "CTiglTransformation.h"
-#include "CTiglAbstractPhysicalComponent.h"
+#include "CTiglRelativeComponent.h"
 #include "CCPACSRotorHub.h"
 
 #include "TopoDS_Shape.hxx"
@@ -51,7 +51,7 @@ enum TiglRotorType
 
 class CCPACSConfiguration;
 
-class CCPACSRotor : public generated::CPACSRotor, public CTiglAbstractPhysicalComponent
+class CCPACSRotor : public generated::CPACSRotor, public CTiglRelativeComponent
 {
 
 public:
@@ -62,7 +62,6 @@ public:
     TIGL_EXPORT void Invalidate();
 
     TIGL_EXPORT virtual const std::string& GetUID() const OVERRIDE;
-    TIGL_EXPORT virtual void SetUID(const std::string& uid) OVERRIDE;
 
     TIGL_EXPORT virtual CTiglTransformation GetTransformation() const OVERRIDE;
 
@@ -70,7 +69,7 @@ public:
     TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& rotorXPath) OVERRIDE;
 
     // Sets the Translation object
-    TIGL_EXPORT void Translate(CTiglPoint trans);
+    TIGL_EXPORT virtual void Translate(CTiglPoint trans) OVERRIDE;
 
     // Returns the Translation
     TIGL_EXPORT CTiglPoint GetTranslation();
@@ -119,7 +118,7 @@ public:
     TIGL_EXPORT double GetSolidity();
 
     // Returns the Component Type TIGL_COMPONENT_ROTOR.
-    TIGL_EXPORT TiglGeometricComponentType GetComponentType()
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const
     {
         return TIGL_COMPONENT_ROTOR | TIGL_COMPONENT_PHYSICAL;
     }

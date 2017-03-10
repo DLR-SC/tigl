@@ -50,12 +50,11 @@ namespace tigl
 
 class CCPACSWing;
 
-class CCPACSWingSegment : public generated::CPACSWingSegment, public CTiglAbstractSegment
+class CCPACSWingSegment : public generated::CPACSWingSegment, public CTiglAbstractSegment<CCPACSWingSegment>
 {
 public:
     // Constructor
     TIGL_EXPORT CCPACSWingSegment(CCPACSWingSegments* parent);
-    TIGL_EXPORT CCPACSWingSegment(CCPACSWing* aWing, int aSegmentIndex);
 
     // Virtual Destructor
     TIGL_EXPORT virtual ~CCPACSWingSegment();
@@ -67,7 +66,6 @@ public:
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& segmentXPath);
 
     TIGL_EXPORT virtual const std::string& GetUID() const OVERRIDE;
-    TIGL_EXPORT virtual void SetUID(const std::string& uid) OVERRIDE;
 
     // Returns the wing this segment belongs to
     TIGL_EXPORT CCPACSWing& GetWing() const;
@@ -216,7 +214,7 @@ public:
     // starting at a point on the chord face with the given direction dir.
     TIGL_EXPORT gp_Pnt GetPointDirection(double eta, double xsi, double dirx, double diry, double dirz, bool fromUpper, double& deviation) const;
 
-    TIGL_EXPORT TiglGeometricComponentType GetComponentType()
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const
     {
         return TIGL_COMPONENT_WINGSEGMENT | TIGL_COMPONENT_SEGMENT | TIGL_COMPONENT_LOGICAL;
     }

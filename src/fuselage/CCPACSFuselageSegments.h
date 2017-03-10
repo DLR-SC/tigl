@@ -35,10 +35,12 @@ class CCPACSFuselageSegment;
 class CCPACSFuselageSegments : public generated::CPACSFuselageSegments
 {
 public:
-	TIGL_EXPORT CCPACSFuselageSegments(CCPACSFuselage* parent);
+    TIGL_EXPORT CCPACSFuselageSegments(CCPACSFuselage* parent);
 
     // Invalidates internal state
     TIGL_EXPORT void Invalidate();
+
+    using generated::CPACSFuselageSegments::GetSegment;
 
     // Gets a segment by index.
     TIGL_EXPORT CCPACSFuselageSegment& GetSegment(int index);

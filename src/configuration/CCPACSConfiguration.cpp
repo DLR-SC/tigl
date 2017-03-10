@@ -111,13 +111,11 @@ void CCPACSConfiguration::ReadCPACS(const std::string& configurationUID)
     if (isRotorcraft) {
         aircraftModel = boost::none;
         rotorcraftModel = boost::in_place(this);
-        uidManager.SetRootComponent(&*rotorcraftModel);
         // TODO(bgruber): why can't we just write "/cpacs/vehicles/rotorcraft/model[" + configurationUID + "]" ?
         rotorcraftModel->ReadCPACS(tixiDocumentHandle, path); // reads everything underneath /cpacs/vehicles/rotorcraft/model
     } else {
         rotorcraftModel = boost::none;
         aircraftModel = boost::in_place(this);
-        uidManager.SetRootComponent(&*aircraftModel);
         // TODO(bgruber): why can't we just write "/cpacs/vehicles/aircraft/model[" + configurationUID + "]" ?
         aircraftModel->ReadCPACS(tixiDocumentHandle, path); // reads everything underneath /cpacs/vehicles/aircraft/model
     }
@@ -127,11 +125,10 @@ void CCPACSConfiguration::ReadCPACS(const std::string& configurationUID)
     // Now do parent <-> child transformations. Child should use the
     // parent coordinate system as root.
     try {
-        const UIDStoreContainerType& allRootComponentsWithChildren = uidManager.GetAllRootComponentsWithChildren();
-        for (UIDStoreContainerType::const_iterator pIter = allRootComponentsWithChildren.begin(); pIter != allRootComponentsWithChildren.end(); ++pIter) {
-            CTiglAbstractPhysicalComponent* rootComponent = pIter->second;
-            transformAllComponents(rootComponent);
-    }
+        const RelativeComponentContainerType& allRootComponentsWithChildren = uidManager.GetAllRootComponents();
+        for (RelativeComponentContainerType::const_iterator it = allRootComponentsWithChildren.begin(); it != allRootComponentsWithChildren.end(); ++it) {
+            transformAllComponents(it->second);
+        }
     }
     catch (tigl::CTiglError& ex) {
         LOG(ERROR) << ex.getError() << std::endl;
@@ -157,17 +154,17 @@ void CCPACSConfiguration::WriteCPACS(const std::string& configurationUID)
 }
 
 // transform all components relative to their parents
-void CCPACSConfiguration::transformAllComponents(CTiglAbstractPhysicalComponent* parent)
+void CCPACSConfiguration::transformAllComponents(CTiglRelativeComponent* parent)
 {
     if (!parent) {
         return;
     }
 
-    CTiglAbstractPhysicalComponent::ChildContainerType children = parent->GetChildren(false);
-    CTiglAbstractPhysicalComponent::ChildContainerType::iterator pIter;
+    CTiglRelativeComponent::ChildContainerType children = parent->GetChildren(false);
+    CTiglRelativeComponent::ChildContainerType::iterator pIter;
     CTiglPoint parentTranslation = parent->GetTranslation();
     for (pIter = children.begin(); pIter != children.end(); ++pIter) {
-        CTiglAbstractPhysicalComponent* child = *pIter;
+        CTiglRelativeComponent* child = *pIter;
         if (child->GetTranslationType() == ENUM_VALUE(ECPACSTranslationType, ABS_LOCAL)) {
             child->Translate(parentTranslation);
         }

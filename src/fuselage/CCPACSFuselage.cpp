@@ -32,6 +32,7 @@
 #include "CCPACSConfiguration.h"
 #include "CCPACSWingSegment.h"
 #include "tiglcommonfunctions.h"
+#include "CNamedShape.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "BRepAlgoAPI_Fuse.hxx"
@@ -48,14 +49,13 @@
 #include "GC_MakeSegment.hxx"
 #include "BRepExtrema_DistShapeShape.hxx"
 
-
 namespace tigl
 {
 
 // Constructor
 CCPACSFuselage::CCPACSFuselage(CCPACSConfiguration* config)
     : generated::CPACSFuselage(&config->GetFuselages())
-    , CTiglAbstractPhysicalComponent(&m_transformation, &m_symmetry)
+    , CTiglRelativeComponent(&m_parentUID, &m_transformation, &m_symmetry)
     , configuration(config)
 {
     Cleanup();
@@ -63,7 +63,7 @@ CCPACSFuselage::CCPACSFuselage(CCPACSConfiguration* config)
 
 CCPACSFuselage::CCPACSFuselage(CCPACSFuselages* parent)
     : generated::CPACSFuselage(parent)
-    , CTiglAbstractPhysicalComponent(&m_transformation, &m_symmetry)
+    , CTiglRelativeComponent(&m_parentUID, &m_transformation, &m_symmetry)
     , configuration(&parent->GetParent<CCPACSAircraftModel>()->GetConfiguration()) {
     Cleanup();
 }
@@ -110,10 +110,6 @@ CCPACSConfiguration& CCPACSFuselage::GetConfiguration() const
 
 const std::string& CCPACSFuselage::GetUID() const {
     return generated::CPACSFuselage::GetUID();
-}
-
-void CCPACSFuselage::SetUID(const std::string& uid) {
-    return generated::CPACSFuselage::SetUID(uid);
 }
 
 // Get section count

@@ -20,23 +20,24 @@
 #define CCPACSROTORCRAFTMODEL_H
 
 #include "generated/CPACSRotorcraftModel.h"
-#include "CTiglAbstractPhysicalComponent.h"
+#include "CTiglRelativeComponent.h"
 
 namespace tigl
 {
 class CCPACSConfiguration;
 
-class CCPACSRotorcraftModel : public generated::CPACSRotorcraftModel, public CTiglAbstractPhysicalComponent
+class CCPACSRotorcraftModel : public generated::CPACSRotorcraftModel, public CTiglRelativeComponent
 {
 public:
     // Construct
     TIGL_EXPORT CCPACSRotorcraftModel(CCPACSConfiguration* config = NULL);
 
+    TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) OVERRIDE;
+
     TIGL_EXPORT virtual const std::string& GetUID() const OVERRIDE;
-    TIGL_EXPORT virtual void SetUID(const std::string& uid) OVERRIDE;
 
     // Returns the Geometric type of this component, e.g. Wing or Fuselage
-    TIGL_EXPORT TiglGeometricComponentType GetComponentType();
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const;
 
     TIGL_EXPORT CCPACSConfiguration& GetConfiguration() const;
 

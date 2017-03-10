@@ -35,7 +35,7 @@
 #include "CCPACSFuselageSections.h"
 #include "CCPACSFuselageSegments.h"
 #include "CCPACSPositionings.h"
-#include "CTiglAbstractPhysicalComponent.h"
+#include "CTiglRelativeComponent.h"
 #include "CCPACSGuideCurve.h"
 
 #include "TopoDS_Shape.hxx"
@@ -45,9 +45,8 @@
 namespace tigl
 {
 class CCPACSConfiguration;
-class CTiglAbstractSegment;
 
-class CCPACSFuselage : public generated::CPACSFuselage, public CTiglAbstractPhysicalComponent
+class CCPACSFuselage : public generated::CPACSFuselage, public CTiglRelativeComponent
 {
 public:
     // Constructor
@@ -67,9 +66,8 @@ public:
     TIGL_EXPORT CCPACSConfiguration & GetConfiguration() const;
 
     TIGL_EXPORT virtual const std::string& GetUID() const OVERRIDE;
-    TIGL_EXPORT virtual void SetUID(const std::string& uid) OVERRIDE;
 
-    using CTiglAbstractPhysicalComponent::GetTransformation;
+    using CTiglRelativeComponent::GetTransformation;
 
     // Get section count
     TIGL_EXPORT int GetSectionCount() const;
@@ -111,7 +109,7 @@ public:
     TIGL_EXPORT double GetCircumference(int segmentIndex, double eta);
 
     // Returns the Component Type TIGL_COMPONENT_FUSELAGE
-    TIGL_EXPORT TiglGeometricComponentType GetComponentType() {return TIGL_COMPONENT_FUSELAGE | TIGL_COMPONENT_PHYSICAL;}
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const {return TIGL_COMPONENT_FUSELAGE | TIGL_COMPONENT_PHYSICAL;}
 
     // Returns the point where the distance between the selected fuselage and the ground is at minimum.
     // The Fuselage could be turned with a given angle at at given axis, specified by a point and a direction.

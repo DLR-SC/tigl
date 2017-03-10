@@ -37,10 +37,9 @@ public:
     TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
 
     TIGL_EXPORT virtual const std::string& GetUID() const OVERRIDE;
-    TIGL_EXPORT virtual void SetUID(const std::string& uid) OVERRIDE;
 
     // Returns the Geometric type of this component, e.g. Wing or Fuselage
-    TIGL_EXPORT virtual TiglGeometricComponentType GetComponentType();
+    TIGL_EXPORT virtual TiglGeometricComponentType GetComponentType() const;
 
     TIGL_EXPORT TiglFarFieldType GetFieldType();
     TIGL_EXPORT void SetFieldType(const TiglFarFieldType& value);

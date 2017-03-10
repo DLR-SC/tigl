@@ -38,6 +38,7 @@
 #include "CTiglError.h"
 #include "tiglcommonfunctions.h"
 #include "tiglmathfunctions.h"
+#include "CNamedShape.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "BRepAlgoAPI_Fuse.hxx"
@@ -148,7 +149,7 @@ namespace
 
 CCPACSWing::CCPACSWing(CCPACSWings* parent)
     : generated::CPACSWing(parent)
-    , CTiglAbstractPhysicalComponent(&m_transformation, &m_symmetry)
+    , CTiglRelativeComponent(&m_parentUID, &m_transformation, &m_symmetry)
     , rebuildFusedSegments(true)
     , rebuildFusedSegWEdge(true)
     , rebuildShells(true) {
@@ -164,7 +165,7 @@ CCPACSWing::CCPACSWing(CCPACSWings* parent)
 }
 CCPACSWing::CCPACSWing(CCPACSRotorBlades* parent)
     : generated::CPACSWing(parent)
-    , CTiglAbstractPhysicalComponent(&m_transformation, &m_symmetry)
+    , CTiglRelativeComponent(&m_parentUID, &m_transformation, &m_symmetry)
     , configuration(&parent->GetConfiguration())
     , rebuildFusedSegments(true)
     , rebuildFusedSegWEdge(true)
@@ -233,10 +234,6 @@ void CCPACSWing::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& win
 
 const std::string& CCPACSWing::GetUID() const {
     return generated::CPACSWing::GetUID();
-}
-
-void CCPACSWing::SetUID(const std::string& uid) {
-    generated::CPACSWing::SetUID(uid);
 }
 
 // Returns whether this wing is a rotor blade
@@ -461,7 +458,7 @@ double CCPACSWing::GetVolume()
 // Sets the Transformation object
 void CCPACSWing::Translate(CTiglPoint trans)
 {
-    CTiglAbstractGeometricComponent::Translate(trans);
+    CTiglRelativeComponent::Translate(trans);
     invalidated = true;
     m_segments.Invalidate();
     if(m_componentSegments)
@@ -578,7 +575,7 @@ double CCPACSWing::GetWingspan()
     }
     else {
         for (int i = 1; i <= GetSegmentCount(); ++i) {
-            CTiglAbstractSegment& segment = GetSegment(i);
+            CCPACSWingSegment& segment = GetSegment(i);
             TopoDS_Shape segmentShape = segment.GetLoft()->Shape();
             BRepBndLib::Add(segmentShape, boundingBox);
             TopoDS_Shape segmentMirroredShape = segment.GetMirroredLoft()->Shape();

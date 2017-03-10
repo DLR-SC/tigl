@@ -276,13 +276,13 @@ void CCPACSFuselageProfile::BuildWires()
         const ITiglWireAlgorithm& wireBuilder = *profileWireAlgo;
         const CTiglInterpolateBsplineWire* pSplineBuilder = dynamic_cast<const CTiglInterpolateBsplineWire*>(&wireBuilder);
         if (pSplineBuilder) {
-            const_cast<CTiglInterpolateBsplineWire*>(pSplineBuilder)->setEndpointContinuity(C1);
+            const_cast<CTiglInterpolateBsplineWire*>(pSplineBuilder)->setEndpointContinuity(_C1);
         }
 
         tempWireClosed   = wireBuilder.BuildWire(points, true);
         tempWireOriginal = wireBuilder.BuildWire(points, false);
         if (pSplineBuilder) {
-            const_cast<CTiglInterpolateBsplineWire*>(pSplineBuilder)->setEndpointContinuity(C0);
+            const_cast<CTiglInterpolateBsplineWire*>(pSplineBuilder)->setEndpointContinuity(_C0);
         }
 
         if (tempWireClosed.IsNull() == Standard_True || tempWireOriginal.IsNull() == Standard_True) {

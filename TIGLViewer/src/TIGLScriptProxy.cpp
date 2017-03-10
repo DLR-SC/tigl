@@ -26,6 +26,7 @@
 #include "TIGLScriptEngine.h"
 #include "TIGLViewerWindow.h"
 #include "CCPACSConfigurationManager.h"
+#include "CNamedShape.h"
 
 #include <QWidget>
 
@@ -415,14 +416,8 @@ QScriptValue TIGLScriptProxy::getShape(QString uid)
         tigl::CCPACSConfiguration& config = _app->getDocument()->GetConfiguration();
         tigl::CTiglUIDManager& manager = config.GetUIDManager();
         if (manager.HasUID(uid.toStdString()) ) {
-            tigl::ITiglGeometricComponent* component = manager.GetComponent(uid.toStdString());
-            if (component) {
-                TopoDS_Shape shape = component->GetLoft()->Shape();
-                return engine()->newVariant(QVariant::fromValue(shape));
-            }
-            else {
-                return QScriptValue::UndefinedValue;
-            }
+            TopoDS_Shape shape = manager.GetComponent(uid.toStdString()).GetLoft()->Shape();
+            return engine()->newVariant(QVariant::fromValue(shape));
         }
         else {
             return context()->throwError("No shape '" + uid + "'' on cpacs configuration.");

@@ -26,12 +26,16 @@
 #ifndef CTIGLABTRACTSEGMENT_H
 #define CTIGLABTRACTSEGMENT_H
 
-#include <string>
+#include <boost/optional/optional.hpp>
+#include <cassert>
+#include <vector>
+#include <algorithm>
+#include "generated/UniquePtr.h"
 #include "tigl.h"
 #include "tigl_internal.h"
 #include "CTiglAbstractGeometricComponent.h"
 
-namespace tigl 
+namespace tigl
 {
 
 // Enumeration for segment types
@@ -43,29 +47,40 @@ enum SegmentType
     INNER_OUTER_SEGMENT
 };
 
+template <typename SegmentType>
 class CTiglAbstractSegment : public CTiglAbstractGeometricComponent
 {
-
 public:
-    TIGL_EXPORT CTiglAbstractSegment(int segIndex, TiglSymmetryAxis* axis = NULL);
-    TIGL_EXPORT CTiglAbstractSegment(int segIndex, boost::optional<TiglSymmetryAxis>* axis);
-    TIGL_EXPORT CTiglAbstractSegment(int segIndex, CCPACSTransformation* trans, TiglSymmetryAxis* axis = NULL);
-    TIGL_EXPORT CTiglAbstractSegment(int segIndex, CCPACSTransformation* trans, boost::optional<TiglSymmetryAxis>* axis);
-
-    // Invalidates internal state
-    TIGL_EXPORT virtual void Invalidate();
+    TIGL_EXPORT CTiglAbstractSegment(const std::vector<unique_ptr<SegmentType>>& segments, const boost::optional<TiglSymmetryAxis>& parentSymmetry)
+        : _segments(segments), _parentSymmetry(parentSymmetry), _continuity(C0) {}
 
     // Returns the segment index of this segment
-    TIGL_EXPORT int GetSegmentIndex() const;
+    TIGL_EXPORT int GetSegmentIndex() const
+    {
+        for (std::size_t i = 0; i < _segments.size(); i++)
+            if (_segments[i].get() == static_cast<const SegmentType*>(this))
+                return static_cast<int>(i + 1);
+        throw CTiglError("Invalid parent?"); // cannot happen, this is always part of the container of its parent class
+    }
+
+    TIGL_EXPORT virtual TiglSymmetryAxis GetSymmetryAxis() const OVERRIDE
+    {
+        if (_parentSymmetry)
+            return *_parentSymmetry;
+        else
+            return TIGL_NO_SYMMETRY;
+    }
 
     // Returns the continuityof the connection to the next segment
-    TIGL_EXPORT TiglContinuity GetContinuity() const;
-protected:
-    void Cleanup();
+    TIGL_EXPORT TiglContinuity GetContinuity() const
+    {
+        return _continuity;
+    }
 
-    int                  mySegmentIndex;       /**< Index of this segment                   */
-    bool                 invalidated;          /**< Internal state flag                     */
-    TiglContinuity       continuity;           /**< Continuity of the connection to the next segment */
+protected:
+    const std::vector<unique_ptr<SegmentType>>& _segments;       /**< References the segment collection of the parent container element in the CPACS tree */
+    const boost::optional<TiglSymmetryAxis>&    _parentSymmetry; /**< References the symmetry of a parent element in the CPACS tree */
+    TiglContinuity                              _continuity;     /**< Continuity of the connection to the next segment */
 
 };  // end class CTiglAbstractSegment
 

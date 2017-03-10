@@ -31,7 +31,7 @@
 #include "generated/CPACSWing.h"
 #include "tigl_config.h"
 #include "CTiglTransformation.h"
-#include "CTiglAbstractPhysicalComponent.h"
+#include "CTiglRelativeComponent.h"
 #include "CCPACSWingSections.h"
 #include "CCPACSWingSegments.h"
 #include "CCPACSWingComponentSegments.h"
@@ -45,7 +45,7 @@ namespace tigl
 {
 class CCPACSConfiguration;
 
-class CCPACSWing : public generated::CPACSWing, public CTiglAbstractPhysicalComponent
+class CCPACSWing : public generated::CPACSWing, public CTiglRelativeComponent
 {
 public:
     // Constructor
@@ -62,9 +62,8 @@ public:
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & wingXPath);
 
     TIGL_EXPORT virtual const std::string& GetUID() const OVERRIDE;
-    TIGL_EXPORT virtual void SetUID(const std::string& uid) OVERRIDE;
 
-    using CTiglAbstractPhysicalComponent::GetTransformation;
+    using CTiglRelativeComponent::GetTransformation;
 
     // Returns whether this wing is a rotor blade
     TIGL_EXPORT bool IsRotorBlade() const;
@@ -144,7 +143,7 @@ public:
     TIGL_EXPORT int GetSegmentEtaXsi(const gp_Pnt& xyz, double& eta, double& xsi, bool &onTop);
 
     // Returns the Component Type TIGL_COMPONENT_WING.
-    TIGL_EXPORT TiglGeometricComponentType GetComponentType() { return TIGL_COMPONENT_WING | TIGL_COMPONENT_PHYSICAL; }
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const { return TIGL_COMPONENT_WING | TIGL_COMPONENT_PHYSICAL; }
 
     // Returns the lower Surface of a Segment
     TIGL_EXPORT Handle(Geom_Surface) GetLowerSegmentSurface(int index);

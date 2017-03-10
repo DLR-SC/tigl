@@ -360,7 +360,7 @@ QString TIGLViewerDocument::dlgGetWingComponentSegmentSelection()
         }
 
         for (int j = 1; j <= wing.GetComponentSegmentCount(); ++j) {
-            tigl::CTiglAbstractSegment& segment = wing.GetComponentSegment(j);
+            tigl::CCPACSWingComponentSegment& segment = wing.GetComponentSegment(j);
             std::string name = segment.GetUID();
             if (name == "") {
                 name = "Unknown component segment";
@@ -394,7 +394,7 @@ QString TIGLViewerDocument::dlgGetWingSegmentSelection()
             continue;
         }
         for (int j = 1; j <= wing.GetSegmentCount(); ++j) {
-            tigl::CTiglAbstractSegment& segment = wing.GetSegment(j);
+            tigl::CCPACSWingSegment& segment = wing.GetSegment(j);
             std::string name = segment.GetUID();
             if (name == "") {
                 name = "Unknown segment";
@@ -510,7 +510,7 @@ QString TIGLViewerDocument::dlgGetRotorBladeComponentSegmentSelection()
         tigl::CCPACSWing& wing = config.GetWing(i);
         if (wing.IsRotorBlade()) {
             for (int j = 1; j <= wing.GetComponentSegmentCount(); ++j) {
-                tigl::CTiglAbstractSegment& segment = wing.GetComponentSegment(j);
+                tigl::CCPACSWingComponentSegment& segment = wing.GetComponentSegment(j);
                 std::string name = segment.GetUID();
                 if (name == "") {
                     name = "Unknown component segment";
@@ -542,7 +542,7 @@ QString TIGLViewerDocument::dlgGetRotorBladeSegmentSelection()
         tigl::CCPACSWing& wing = config.GetWing(i);
         if (wing.IsRotorBlade()) {
             for (int j = 1; j <= wing.GetSegmentCount(); ++j) {
-                tigl::CTiglAbstractSegment& segment = wing.GetSegment(j);
+                tigl::CCPACSWingSegment& segment = wing.GetSegment(j);
                 std::string name = segment.GetUID();
                 if (name == "") {
                     name = "Unknown segment";
@@ -627,7 +627,7 @@ QString TIGLViewerDocument::dlgGetFuselageSegmentSelection()
     for (int i = 1; i <= fuselageCount; i++) {
         tigl::CCPACSFuselage& fuselage = config.GetFuselage(i);
         for (int j = 1; j <= fuselage.GetSegmentCount(); ++j) {
-            tigl::CTiglAbstractSegment& segment = fuselage.GetSegment(j);
+            tigl::CCPACSFuselageSegment& segment = fuselage.GetSegment(j);
             std::string name = segment.GetUID();
             if (name == "") {
                 name = "Unknown segment";
@@ -881,10 +881,10 @@ void TIGLViewerDocument::drawFuselageGuideCurves()
         tigl::CCPACSFuselage& fuselage = config.GetFuselage(i);
         std::string fuselageUid = fuselage.GetUID();
         for (int j = 1; j <= fuselage.GetSegmentCount(); ++j) {
-            tigl::CTiglAbstractSegment& segment = fuselage.GetSegment(j);
+            tigl::CCPACSFuselageSegment& segment = fuselage.GetSegment(j);
             std::string fuselageSegUid = segment.GetUID();
             tigl::CCPACSFuselage& fuselage = GetConfiguration().GetFuselage(fuselageUid);
-            tigl::CCPACSFuselageSegment& fuselageSeg = (tigl::CCPACSFuselageSegment&) fuselage.GetSegment(fuselageSegUid);
+            tigl::CCPACSFuselageSegment& fuselageSeg = fuselage.GetSegment(fuselageSegUid);
 
             TopTools_SequenceOfShape& guideCurveContainer = fuselageSeg.BuildGuideCurves();
             for (int i=1; i<=guideCurveContainer.Length(); i++) {
@@ -1820,9 +1820,9 @@ void TIGLViewerDocument::drawIntersectionLine()
         std::string uid1 = dialog.GetShape1UID().toStdString();
         std::string uid2 = dialog.GetShape2UID().toStdString();
         writeToStatusBar(QString(tr("Calculating %1 ...")).arg(uid1.c_str()));
-        const TopoDS_Shape& compoundOne = uidManager.GetComponent(uid1)->GetLoft()->Shape();
+        const TopoDS_Shape& compoundOne = uidManager.GetComponent(uid1).GetLoft()->Shape();
         writeToStatusBar(QString(tr("Calculating %1 ...")).arg(uid2.c_str()));
-        const TopoDS_Shape& compoundTwo = uidManager.GetComponent(uid2)->GetLoft()->Shape();
+        const TopoDS_Shape& compoundTwo = uidManager.GetComponent(uid2).GetLoft()->Shape();
 
         writeToStatusBar(tr("Calculating intersection... This may take a while!"));
         Intersector = new tigl::CTiglIntersectionCalculation(&config.GetShapeCache(),uid1, uid2, compoundOne, compoundTwo);
@@ -1831,7 +1831,7 @@ void TIGLViewerDocument::drawIntersectionLine()
         // shape - plane
         std::string uid = dialog.GetShapeUID().toStdString();
         writeToStatusBar(QString(tr("Calculating %1 ...")).arg(uid.c_str()));
-        const TopoDS_Shape& compoundOne = uidManager.GetComponent(uid)->GetLoft()->Shape();
+        const TopoDS_Shape& compoundOne = uidManager.GetComponent(uid).GetLoft()->Shape();
 
         gp_Pnt p = dialog.GetPoint().Get_gp_Pnt();
         tigl::CTiglPoint normal = dialog.GetNormal();
@@ -1928,7 +1928,7 @@ void TIGLViewerDocument::drawWingStructure()
     for (int i = 1; i <= GetConfiguration().GetWingCount();++i) {
         tigl::CCPACSWing& wing = GetConfiguration().GetWing(i);
         for (int j = 1; j <= wing.GetComponentSegmentCount();++j) {
-            tigl::CTiglAbstractSegment& segment = wing.GetComponentSegment(j);
+            tigl::CCPACSWingComponentSegment& segment = wing.GetComponentSegment(j);
             if (segment.GetUID() == csUid.toStdString()) {
                 cs = static_cast<tigl::CCPACSWingComponentSegment*>(&segment);
                 break;

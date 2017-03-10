@@ -41,6 +41,7 @@
 #include "tiglcommonfunctions.h"
 #include "tigl_config.h"
 #include "math/tiglmathfunctions.h"
+#include "CNamedShape.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "TopExp_Explorer.hxx"
@@ -205,17 +206,8 @@ namespace
 
 CCPACSWingSegment::CCPACSWingSegment(CCPACSWingSegments* parent)
     : generated::CPACSWingSegment(parent)
-    , CTiglAbstractSegment(parent->GetSegmentCount() + 1, &parent->GetParent()->m_symmetry) // TODO: this is a hack, as we depend on the implementation of the vector reader in generated::CCPACSWingSegments::ReadCPACS() but the current CodeGen does not support passing indices into ctors
+    , CTiglAbstractSegment(parent->GetSegment(), parent->GetParent()->m_symmetry)
     , wing(parent->GetParent()) {
-    Cleanup();
-}
-
-// Constructor
-CCPACSWingSegment::CCPACSWingSegment(CCPACSWing* aWing, int aSegmentIndex)
-    : generated::CPACSWingSegment(&aWing->GetSegments())
-    , CTiglAbstractSegment(aSegmentIndex)
-    , wing(aWing)
-{
     Cleanup();
 }
 
@@ -228,7 +220,7 @@ CCPACSWingSegment::~CCPACSWingSegment()
 // Invalidates internal state
 void CCPACSWingSegment::Invalidate()
 {
-    CTiglAbstractSegment::Invalidate();
+    CTiglAbstractSegment::Reset();
     surfaceCache.valid = false;
     surfaceCache.chordsurfaceValid = false;
     guideCurveWires.Clear();
@@ -242,7 +234,7 @@ void CCPACSWingSegment::Cleanup()
     surfaceCache.trailingEdgeShape.Nullify();
     surfaceCache.valid = false;
     surfaceCache.chordsurfaceValid = false;
-    CTiglAbstractSegment::Cleanup();
+    CTiglAbstractSegment::Reset();
 }
 
 // Update internal segment data
@@ -278,10 +270,6 @@ void CCPACSWingSegment::ReadCPACS(TixiDocumentHandle tixiHandle, const std::stri
 
 const std::string& CCPACSWingSegment::GetUID() const {
     return generated::CPACSWingSegment::GetUID();
-}
-
-void CCPACSWingSegment::SetUID(const std::string& uid) {
-    generated::CPACSWingSegment::SetUID(uid);
 }
 
 // Returns the wing this segment belongs to
@@ -428,7 +416,7 @@ std::string CCPACSWingSegment::GetShortShapeName ()
         if (wing->GetUID() == w.GetUID()) {
             windex = i;
             for (int j = 1; j <= w.GetSegmentCount(); j++) {
-                tigl::CTiglAbstractSegment& ws = w.GetSegment(j);
+                CCPACSWingSegment& ws = w.GetSegment(j);
                 if (GetUID() == ws.GetUID()) {
                     wsindex = j;
                     std::stringstream shortName;
@@ -637,7 +625,7 @@ int CCPACSWingSegment::GetInnerConnectedSegmentCount() const
     int count = 0;
     for (int i = 1; i <= GetWing().GetSegmentCount(); i++) {
         CCPACSWingSegment& nextSegment = (CCPACSWingSegment&) GetWing().GetSegment(i);
-        if (nextSegment.GetSegmentIndex() == mySegmentIndex) {
+        if (nextSegment.GetSegmentIndex() == GetSegmentIndex()) {
             continue;
         }
         if (nextSegment.GetInnerSectionUID() == GetInnerSectionUID() ||
@@ -655,7 +643,7 @@ int CCPACSWingSegment::GetOuterConnectedSegmentCount() const
     int count = 0;
     for (int i = 1; i <= GetWing().GetSegmentCount(); i++) {
         CCPACSWingSegment& nextSegment = (CCPACSWingSegment&) GetWing().GetSegment(i);
-        if (nextSegment.GetSegmentIndex() == mySegmentIndex) {
+        if (nextSegment.GetSegmentIndex() == GetSegmentIndex()) {
             continue;
         }
         if (nextSegment.GetInnerSectionUID() == GetOuterSectionUID() ||
@@ -677,7 +665,7 @@ int CCPACSWingSegment::GetInnerConnectedSegmentIndex(int n) const
 
     for (int i = 1, count = 0; i <= GetWing().GetSegmentCount(); i++) {
         CCPACSWingSegment& nextSegment = (CCPACSWingSegment&) GetWing().GetSegment(i);
-        if (nextSegment.GetSegmentIndex() == mySegmentIndex) {
+        if (nextSegment.GetSegmentIndex() == GetSegmentIndex()) {
             continue;
         }
         if (nextSegment.GetInnerSectionUID() == GetInnerSectionUID() ||
@@ -702,7 +690,7 @@ int CCPACSWingSegment::GetOuterConnectedSegmentIndex(int n) const
 
     for (int i = 1, count = 0; i <= GetWing().GetSegmentCount(); i++) {
         CCPACSWingSegment& nextSegment = (CCPACSWingSegment&) GetWing().GetSegment(i);
-        if (nextSegment.GetSegmentIndex() == mySegmentIndex) {
+        if (nextSegment.GetSegmentIndex() == GetSegmentIndex()) {
             continue;
         }
         if (nextSegment.GetInnerSectionUID() == GetOuterSectionUID() ||

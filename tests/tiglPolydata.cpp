@@ -29,6 +29,7 @@
 #include "CCPACSConfiguration.h"
 #include "CCPACSWingSegment.h"
 #include "CTiglTriangularizer.h"
+#include "CNamedShape.h"
 
 #include <BRepMesh.hxx>
 #include <TopoDS_CompSolid.hxx>

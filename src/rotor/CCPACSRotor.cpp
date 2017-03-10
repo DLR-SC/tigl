@@ -30,6 +30,7 @@
 #include "CCPACSRotorBladeAttachment.h"
 #include "CCPACSConfiguration.h"
 #include "CTiglError.h"
+#include "CNamedShape.h"
 
 #include "GProp_GProps.hxx"
 #include "BRepGProp.hxx"
@@ -41,7 +42,7 @@ namespace tigl
 // Constructor
 CCPACSRotor::CCPACSRotor(CCPACSRotors* parent)
     : generated::CPACSRotor(parent)
-    , CTiglAbstractPhysicalComponent(&m_transformation, &m_symmetry)
+    , CTiglRelativeComponent(&m_parentUID, &m_transformation, &m_symmetry)
     , rebuildGeometry(true) {}
 
 // Invalidates internal state
@@ -66,25 +67,12 @@ void CCPACSRotor::Update()
         return;
     }
 
-    m_transformation.updateMatrix();
     invalidated = false;
     rebuildGeometry = true;
-
-    //// Update all rotor blade transformations
-    //for (int i=1; i<=GetRotorBladeAttachmentCount(); ++i) {
-    //    for (int j=1; j<=GetRotorBladeAttachment(i).GetNumberOfBlades(); ++j) {
-    //        GetRotorBladeAttachment(i).GetAttachedRotorBlade(j).Invalidate();
-    //        GetRotorBladeAttachment(i).GetAttachedRotorBlade(j).Update();
-    //    }
-    //}
 }
 
 const std::string& CCPACSRotor::GetUID() const {
     return generated::CPACSRotor::GetUID();
-}
-
-void CCPACSRotor::SetUID(const std::string& uid) {
-    generated::CPACSRotor::SetUID(uid);
 }
 
 // Read CPACS rotor element
@@ -92,6 +80,7 @@ void CCPACSRotor::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::str
 {
     Cleanup();
     generated::CPACSRotor::ReadCPACS(tixiHandle, rotorXPath);
+    m_parent->GetConfiguration().GetUIDManager().AddUID(m_uID, this);
     Update();
 }
 
@@ -105,7 +94,7 @@ CTiglTransformation CCPACSRotor::GetTransformation() const
 // Sets the Transformation object
 void CCPACSRotor::Translate(CTiglPoint trans)
 {
-    CTiglAbstractGeometricComponent::Translate(trans);
+    CTiglRelativeComponent::Translate(trans);
     Invalidate();
     Update();
 }

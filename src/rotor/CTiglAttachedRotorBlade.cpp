@@ -29,6 +29,7 @@
 #include "CCPACSWing.h"
 #include "CCPACSRotor.h"
 #include "CTiglError.h"
+#include "CNamedShape.h"
 #include "math/tiglmathfunctions.h"
 
 #include "GProp_GProps.hxx"
@@ -41,7 +42,8 @@ namespace tigl
 
 // Constructor
 CTiglAttachedRotorBlade::CTiglAttachedRotorBlade(CCPACSRotorBladeAttachment* parent, CCPACSWing& rotorBlade, int index)
-    : parent(parent)
+    : CTiglRelativeComponent(NULL, &transformation)
+    , parent(parent)
     , rotorBlade(&rotorBlade)
     , rotorBladeIndex(index)
     , rebuildRotorDisk(true)
@@ -53,10 +55,6 @@ const std::string& CTiglAttachedRotorBlade::GetUID() const {
     return rotorBlade->GetUID();
 }
 
-void CTiglAttachedRotorBlade::SetUID(const std::string& uid) {
-    throw CTiglError("not supported");
-}
-
 // Invalidates internal state
 void CTiglAttachedRotorBlade::Invalidate()
 {
@@ -66,11 +64,7 @@ void CTiglAttachedRotorBlade::Invalidate()
 // Cleanup routine
 void CTiglAttachedRotorBlade::Cleanup()
 {
-    transformationMatrix.SetIdentity();
-
-    // Calls ITiglGeometricComponent interface Reset to delete e.g. all childs.
     Reset();
-
     Invalidate();
 }
 
@@ -79,7 +73,7 @@ void CTiglAttachedRotorBlade::BuildMatrix()
 {
     double thetaDeg = 0.; // current azimuthal position of the rotor in degrees
 
-    transformationMatrix = parent->GetRotorBladeTransformationMatrix(thetaDeg, GetAzimuthAngle(), true, true, true);
+    transformation.setTransformationMatrix(parent->GetRotorBladeTransformationMatrix(thetaDeg, GetAzimuthAngle(), true, true, true));
 }
 
 // Update internal rotor blade data
@@ -288,7 +282,7 @@ PNamedShape CTiglAttachedRotorBlade::BuildLoft()
 {
     // Create a new instance of the referenced unattached rotor blade and apply the transformations to it
     PNamedShape rotorBladeCopy = rotorBlade->GetLoft()->DeepCopy();
-    TopoDS_Shape transformedShape = transformationMatrix.Transform(rotorBladeCopy->Shape());
+    TopoDS_Shape transformedShape = transformation.getTransformationMatrix().Transform(rotorBladeCopy->Shape());
     rotorBladeCopy->SetShape(transformedShape);
     return rotorBladeCopy;
 }
@@ -306,7 +300,7 @@ CTiglTransformation CTiglAttachedRotorBlade::GetTransformation() const
 {
     const_cast<CTiglAttachedRotorBlade*>(this)->Update(); // TODO: hack
     
-    return transformationMatrix;
+    return transformation.getTransformationMatrix();
 }
 
 // Creates a rotor disk (only using information of the current blade)

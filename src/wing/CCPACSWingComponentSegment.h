@@ -56,7 +56,7 @@ class CCPACSWingSegment;
 typedef std::vector<const CCPACSMaterial*>    MaterialList;
 typedef std::vector<CCPACSWingSegment*>       SegmentList;
 
-class CCPACSWingComponentSegment : public generated::CPACSComponentSegment, public CTiglAbstractSegment
+class CCPACSWingComponentSegment : public generated::CPACSComponentSegment, public CTiglAbstractSegment<CCPACSWingComponentSegment>
 {
 public:
     // Constructor
@@ -136,7 +136,7 @@ public:
     // Returns null if the point is not an that wing, i.e. deviates more than 1 cm from the wing
     TIGL_EXPORT const CCPACSWingSegment* findSegment(double x, double y, double z, gp_Pnt& nearestPoint, double& deviation) const;
 
-    TIGL_EXPORT TiglGeometricComponentType GetComponentType() { return TIGL_COMPONENT_WINGCOMPSEGMENT | TIGL_COMPONENT_SEGMENT | TIGL_COMPONENT_LOGICAL; }
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const { return TIGL_COMPONENT_WINGCOMPSEGMENT | TIGL_COMPONENT_SEGMENT | TIGL_COMPONENT_LOGICAL; }
 
     TIGL_EXPORT MaterialList GetMaterials(double eta, double xsi, TiglStructureType);
 

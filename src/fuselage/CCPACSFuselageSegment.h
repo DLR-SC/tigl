@@ -43,28 +43,26 @@ namespace tigl
 {
 class CCPACSFuselage;
 
-class CCPACSFuselageSegment : public generated::CPACSFuselageSegment, public CTiglAbstractSegment
+class CCPACSFuselageSegment : public generated::CPACSFuselageSegment, public CTiglAbstractSegment<CCPACSFuselageSegment>
 {
 
 public:
     // Constructor
     TIGL_EXPORT CCPACSFuselageSegment(CCPACSFuselageSegments* parent);
-    TIGL_EXPORT CCPACSFuselageSegment(CCPACSFuselage* aFuselage, int aSegmentIndex);
 
     // Virtual Destructor
     TIGL_EXPORT virtual ~CCPACSFuselageSegment();
+
+    // Invalidates internal state
+    TIGL_EXPORT void Invalidate();
 
     // Read CPACS segment elements
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& segmentXPath);
 
     TIGL_EXPORT virtual const std::string& GetUID() const OVERRIDE;
-    TIGL_EXPORT virtual void SetUID(const std::string& uid) OVERRIDE;
 
     // Returns the fuselage this segment belongs to
     TIGL_EXPORT CCPACSFuselage& GetFuselage() const;
-
-    // Returns the segment index of this segment
-    TIGL_EXPORT int GetSegmentIndex() const;
 
     // Returns the start section UID of this segment
     TIGL_EXPORT const std::string& GetStartSectionUID();
@@ -151,7 +149,7 @@ public:
     // Returns the outer profile points as read from TIXI. The points are already transformed.
     TIGL_EXPORT std::vector<CTiglPoint*> GetRawEndProfilePoints();
 
-    TIGL_EXPORT TiglGeometricComponentType GetComponentType(){return TIGL_COMPONENT_FUSELSEGMENT | TIGL_COMPONENT_SEGMENT | TIGL_COMPONENT_LOGICAL;}
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const { return TIGL_COMPONENT_FUSELSEGMENT | TIGL_COMPONENT_SEGMENT | TIGL_COMPONENT_LOGICAL; }
 
     // builds all guide curve wires
     TIGL_EXPORT TopTools_SequenceOfShape& BuildGuideCurves();
@@ -165,9 +163,6 @@ public:
 protected:
     // Cleanup routine
     void Cleanup();
-
-    // Update internal segment data
-    void Update();
 
     // Builds the loft between the two segment sections
     PNamedShape BuildLoft();

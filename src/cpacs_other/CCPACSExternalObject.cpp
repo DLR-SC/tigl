@@ -22,6 +22,7 @@
 #include "CTiglImporterFactory.h"
 #include "CGroupShapes.h"
 #include "tiglcommonfunctions.h"
+#include "CNamedShape.h"
 
 namespace tigl
 {
@@ -59,14 +60,10 @@ namespace external_object_private
 using namespace external_object_private;
 
 CCPACSExternalObject::CCPACSExternalObject(CCPACSExternalObjects* parent)
-    : generated::CPACSGenericGeometricComponent(parent), CTiglAbstractPhysicalComponent(&m_transformation) {}
+    : generated::CPACSGenericGeometricComponent(parent), CTiglRelativeComponent(&m_parentUID, &m_transformation) {}
 
 const std::string& CCPACSExternalObject::GetUID() const {
     return generated::CPACSGenericGeometricComponent::GetUID();
-}
-
-void CCPACSExternalObject::SetUID(const std::string& uid) {
-    generated::CPACSGenericGeometricComponent::SetUID(uid);
 }
 
 // Read CPACS wing element
@@ -96,7 +93,7 @@ const std::string& CCPACSExternalObject::GetFilePath() const
     return _filePath;
 }
 
-TiglGeometricComponentType CCPACSExternalObject::GetComponentType()
+TiglGeometricComponentType CCPACSExternalObject::GetComponentType() const
 {
     return TIGL_COMPONENT_PHYSICAL;
 }

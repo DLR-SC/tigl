@@ -43,6 +43,7 @@
 #include "CTiglWingStructureReference.h"
 #include "tiglcommonfunctions.h"
 #include "tigletaxsifunctions.h"
+#include "CNamedShape.h"
 
 
 // TODO: const sparsNode

@@ -28,6 +28,7 @@
 #include "CTiglLogging.h"
 #include "TiglSymmetryAxis.h"
 #include "CCPACSTransformation.h"
+#include "CNamedShape.h"
 
 // OCCT defines
 #include <BRepBuilderAPI_Transform.hxx>
@@ -37,142 +38,16 @@
 
 namespace tigl
 {
+CTiglAbstractGeometricComponent::CTiglAbstractGeometricComponent() {}
 
-CTiglAbstractGeometricComponent::CTiglAbstractGeometricComponent(TiglSymmetryAxis* symmetryAxis)
-    : transformation(NULL), symmetryAxis(symmetryAxis) {}
 
-CTiglAbstractGeometricComponent::CTiglAbstractGeometricComponent(boost::optional<TiglSymmetryAxis>* symmetryAxis)
-    : transformation(NULL), symmetryAxis(symmetryAxis) {}
+void CTiglAbstractGeometricComponent::Reset() {
+    loft.reset();
+}
 
-CTiglAbstractGeometricComponent::CTiglAbstractGeometricComponent(CCPACSTransformation* trans, TiglSymmetryAxis* symmetryAxis)
-    : transformation(trans), symmetryAxis(symmetryAxis) {}
-
-CTiglAbstractGeometricComponent::CTiglAbstractGeometricComponent(CCPACSTransformation* trans, boost::optional<TiglSymmetryAxis>* symmetryAxis)
-    : transformation(trans), symmetryAxis(symmetryAxis) {}
-
-void CTiglAbstractGeometricComponent::Reset()
+TiglSymmetryAxis CTiglAbstractGeometricComponent::GetSymmetryAxis() const
 {
-    SetUID("");
-    // resetting symmetry may introduce bugs, as the symmetry element may not be owned by the actual subclass
-    // e.g. symmetry of CCPACSWingSegment references symmetry member of CCPACSWing
-    //struct Visitor : boost::static_visitor<> {
-    //    void operator()(TiglSymmetryAxis* s) {
-    //        if (s)
-    //            *s = ENUM_VALUE(TiglSymmetryAxis, TIGL_NO_SYMMETRY);
-    //    }
-    //    void operator()(boost::optional<TiglSymmetryAxis>* s) {
-    //        if (s)
-    //            s->reset();
-    //    }
-    //} visitor;
-    //symmetryAxis.apply_visitor(visitor);
-    if (transformation)
-        transformation->reset();
-}
-
-namespace {
-    struct GetSymmetryVisitor : boost::static_visitor<TiglSymmetryAxis> {
-        TiglSymmetryAxis operator()(const TiglSymmetryAxis* s) {
-            if (s)
-                return *s;
-            else
-                return ENUM_VALUE(TiglSymmetryAxis, TIGL_NO_SYMMETRY);
-        }
-        TiglSymmetryAxis operator()(const boost::optional<TiglSymmetryAxis>* s) {
-            if (s)
-                return s->get_value_or(ENUM_VALUE(TiglSymmetryAxis, TIGL_NO_SYMMETRY));
-            else
-                return ENUM_VALUE(TiglSymmetryAxis, TIGL_NO_SYMMETRY);
-        }
-    };
-}
-
-TiglSymmetryAxis CTiglAbstractGeometricComponent::GetSymmetryAxis() {
-    GetSymmetryVisitor visitor;
-    return symmetryAxis.apply_visitor(visitor);
-}
-
-namespace {
-    struct SetSymmetryVisitor : boost::static_visitor<> {
-        SetSymmetryVisitor(const TiglSymmetryAxis& axis)
-            : axis(axis) {}
-        void operator()(TiglSymmetryAxis* s) {
-            if (s)
-                *s = axis;
-            else
-                throw CTiglError("Type does not have a symmetry");
-        }
-        void operator()(boost::optional<TiglSymmetryAxis>* s) {
-            if (s)
-                *s = axis;
-            else
-                throw CTiglError("Type does not have a symmetry");
-        }
-    private:
-        const TiglSymmetryAxis& axis;
-    };
-}
-
-void CTiglAbstractGeometricComponent::SetSymmetryAxis(const TiglSymmetryAxis& axis) {
-    SetSymmetryVisitor visitor(axis);
-    symmetryAxis.apply_visitor(visitor);
-}
-
-std::string CTiglAbstractGeometricComponent::GetSymmetryAxisString() {
-    return TiglSymmetryAxisToString(GetSymmetryAxis());
-}
-
-void CTiglAbstractGeometricComponent::SetSymmetryAxis(const std::string& axis) {
-    SetSymmetryAxis(stringToTiglSymmetryAxis(axis));
-}
-
-CTiglTransformation CTiglAbstractGeometricComponent::GetTransformation() const
-{
-    if (transformation)
-        return transformation->getTransformationMatrix();
-    else
-        return CTiglTransformation();
-}
-
-CTiglPoint CTiglAbstractGeometricComponent::GetTranslation() const
-{
-    if (transformation)
-        return transformation->getTranslationVector();
-    else
-        return CTiglPoint(0, 0, 0);
-}
-
-ECPACSTranslationType CTiglAbstractGeometricComponent::GetTranslationType() const
-{
-    if (transformation)
-        return transformation->getTranslationType();
-    else
-        return ENUM_VALUE(ECPACSTranslationType, ABS_LOCAL); // TODO(bgruber): is this a valid default?
-}
-
-CTiglPoint CTiglAbstractGeometricComponent::GetRotation() const
-{
-    if (transformation)
-        return transformation->getRotation();
-    else
-        return CTiglPoint(0, 0, 0);
-}
-
-CTiglPoint CTiglAbstractGeometricComponent::GetScaling() const
-{
-    if (transformation)
-        return transformation->getScaling();
-    else
-        return CTiglPoint(1, 1, 1);
-}
-
-void CTiglAbstractGeometricComponent::Translate(CTiglPoint trans)
-{
-    if (transformation) {
-        transformation->setTranslation(GetTranslation() + trans, GetTranslationType());
-        transformation->updateMatrix();
-    } else
-        throw CTiglError("Type does not have a transformation");
+    return TIGL_NO_SYMMETRY;
 }
 
 PNamedShape CTiglAbstractGeometricComponent::GetLoft()
@@ -190,9 +65,7 @@ PNamedShape CTiglAbstractGeometricComponent::GetMirroredLoft()
 {
     const TiglSymmetryAxis& symmetryAxis = GetSymmetryAxis();
     if (symmetryAxis == TIGL_NO_SYMMETRY) {
-        PNamedShape nullShape;
-        nullShape.reset();
-        return nullShape;
+        return PNamedShape();
     }
 
     gp_Ax2 mirrorPlane;
@@ -208,14 +81,15 @@ PNamedShape CTiglAbstractGeometricComponent::GetMirroredLoft()
 
     gp_Trsf theTransformation;
     theTransformation.SetMirror(mirrorPlane);
-    BRepBuilderAPI_Transform myBRepTransformation(GetLoft()->Shape(), theTransformation);
-    std::string mirrorName = GetLoft()->Name();
+    PNamedShape& loft = GetLoft();
+    BRepBuilderAPI_Transform myBRepTransformation(loft->Shape(), theTransformation);
+    std::string mirrorName = loft->Name();
     mirrorName += "M";
-    std::string mirrorShortName = GetLoft()->ShortName();
+    std::string mirrorShortName = loft->ShortName();
     mirrorShortName += "M";
     TopoDS_Shape mirroredShape = myBRepTransformation.Shape();
     
-    PNamedShape mirroredPNamedShape(new CNamedShape(*GetLoft()));
+    PNamedShape mirroredPNamedShape(new CNamedShape(*loft));
     mirroredPNamedShape->SetShape(mirroredShape);
     mirroredPNamedShape->SetName(mirrorName.c_str());
     mirroredPNamedShape->SetShortName(mirrorShortName.c_str());

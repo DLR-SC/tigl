@@ -26,22 +26,25 @@
 #include "CTiglUIDManager.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "to_string.h"
 
 namespace tigl 
 {
 
 // Constructor
-CTiglUIDManager::CTiglUIDManager() : 
-    invalidated(true),
-    rootComponent(0),
-    rootComponentCnt(0)
-{
-}
+CTiglUIDManager::CTiglUIDManager()
+    : invalidated(true), rootComponent(NULL) {}
 
-// Destructor
-CTiglUIDManager::~CTiglUIDManager()
-{
-    Clear();
+namespace {
+    void writeComponent(CTiglRelativeComponent* c, int level = 0) {
+        std::string indentation;
+        for (int i = 0; i < level; i++)
+            indentation += '\t';
+        LOG(INFO) << indentation << c->GetUID() << std::endl;
+        const CTiglRelativeComponent::ChildContainerType& children = c->GetChildren(false);
+        for (CTiglRelativeComponent::ChildContainerType::const_iterator it = children.begin(); it != children.end(); ++it)
+            writeComponent(*it, level + 1);
+    }
 }
 
 // Update internal UID manager data.
@@ -51,16 +54,12 @@ void CTiglUIDManager::Update()
         return;
     }
     
-    BuildParentChildTree();
-    FindRootComponents();
+    BuildTree();
     invalidated = false;
 
-    if (rootComponentCnt == 0) {
-        LOG(ERROR) << "No root component found in CTiglUIDManager::FindRootComponents";
-    }
-    else if (rootComponentCnt > 1) {
-        LOG(ERROR) << "More than one root component found in CTiglUIDManager::FindRootComponents";
-    }
+    LOG(INFO) << "Relative component trees:" << std::endl;
+    for (RelativeComponentContainerType::const_iterator it = rootComponents.begin(); it != rootComponents.end(); ++it)
+        writeComponent(it->second);
 }
 
 // Function to add a UID and a geometric component to the uid store.
@@ -74,13 +73,13 @@ void CTiglUIDManager::AddUID(const std::string& uid, ITiglGeometricComponent* co
         throw CTiglError("Duplicate UID " + uid + " in CPACS file (CTiglUIDManager::AddUID)", TIGL_XML_ERROR);
     }
 
-    if (componentPtr == 0) {
+    if (componentPtr == NULL) {
         throw CTiglError("Null pointer for component in CTiglUIDManager::AddUID", TIGL_NULL_POINTER);
     }
 
-    CTiglAbstractPhysicalComponent* tmp = dynamic_cast<CTiglAbstractPhysicalComponent*>(componentPtr);
+    CTiglRelativeComponent* tmp = dynamic_cast<CTiglRelativeComponent*>(componentPtr);
     if (tmp && (componentPtr->GetComponentType() & TIGL_COMPONENT_PHYSICAL) ) {
-        physicalShapes[uid] = tmp;
+        relativeComponents[uid] = tmp;
     }
     allShapes[uid] = componentPtr;
     invalidated = true;
@@ -97,128 +96,95 @@ bool CTiglUIDManager::HasUID(const std::string& uid) const
 }
 
 // Returns a pointer to the geometric component for the given unique id.
-ITiglGeometricComponent* CTiglUIDManager::GetComponent(const std::string& uid)
+ITiglGeometricComponent& CTiglUIDManager::GetComponent(const std::string& uid) const
 {
     if (uid.empty()) {
         throw CTiglError("Empty UID in CTiglUIDManager::GetComponent", TIGL_UID_ERROR);
     }
 
     if (!HasUID(uid)) {
-        std::stringstream stream;
-        stream << "UID " << uid << " not found in CTiglUIDManager::GetComponent";
-        throw CTiglError(stream.str(), TIGL_UID_ERROR);
+        throw CTiglError("UID " + std_to_string(uid) + " not found in CTiglUIDManager::GetComponent", TIGL_UID_ERROR);
     }
 
-    return allShapes[uid];
+    return *allShapes.find(uid)->second;
 }
 
 // Returns a pointer to the geometric component for the given unique id.
-CTiglAbstractPhysicalComponent* CTiglUIDManager::GetPhysicalComponent(const std::string& uid)
+CTiglRelativeComponent& CTiglUIDManager::GetRelativeComponent(const std::string& uid) const
 {
     if (uid.empty()) {
         throw CTiglError("Empty UID in CTiglUIDManager::GetComponent", TIGL_XML_ERROR);
     }
 
-    if (physicalShapes.find(uid) == physicalShapes.end()) {
+    const RelativeComponentContainerType::const_iterator it = relativeComponents.find(uid);
+    if (it == relativeComponents.end()) {
         throw CTiglError("UID '"+uid+"' not found in CTiglUIDManager::GetComponent", TIGL_XML_ERROR);
     }
 
-    return physicalShapes[uid];
+    return *it->second;
 }
 
 
 // Clears the uid store
-void CTiglUIDManager::Clear() 
+void CTiglUIDManager::Clear()
 {
-    physicalShapes.clear();
+    relativeComponents.clear();
     allShapes.clear();
-    allRootComponentsWithChildren.clear();
-    rootComponent = 0;
-    rootComponentCnt = 0;
-    invalidated = true;
-}
-
-// Sets the root component
-void CTiglUIDManager::SetRootComponent(CTiglAbstractPhysicalComponent* rootComponent)
-{
-    this->rootComponent = rootComponent;
+    rootComponents.clear();
     invalidated = true;
 }
 
 // Returns the parent component for a component or a null pointer
 // if there is no parent.
-CTiglAbstractPhysicalComponent* CTiglUIDManager::GetParentComponent(const std::string& uid)
+CTiglRelativeComponent* CTiglUIDManager::GetParentComponent(const std::string& uid) const
 {
-    CTiglAbstractPhysicalComponent* component = GetPhysicalComponent(uid);
-    std::string parentUID = component->GetParentUID();
-    return (parentUID.empty() ? 0 : GetPhysicalComponent(parentUID));
-}
-
-// Returns the root component of the geometric topology.
-CTiglAbstractPhysicalComponent* CTiglUIDManager::GetRootComponent()
-{
-    Update();
-    return rootComponent;
+    CTiglRelativeComponent& component = GetRelativeComponent(uid);
+    const boost::optional<const std::string&> parentUID = component.GetParentUID();
+    return parentUID ? NULL : &GetRelativeComponent(*parentUID);
 }
 
 // Returns the container with all root components of the geometric topology that have children.
-const UIDStoreContainerType& CTiglUIDManager::GetAllRootComponentsWithChildren()
+const RelativeComponentContainerType& CTiglUIDManager::GetAllRootComponents() const
 {
-    Update();
-    return allRootComponentsWithChildren;
-}
-
-// Finds and saves all root components and the main root component of the geometric topology.
-void CTiglUIDManager::FindRootComponents()
-{
-    rootComponent = 0;
-    rootComponentCnt = 0;
-    int childCnt = 0;
-    int maxChildCnt = -1;
-
-    for (UIDStoreContainerType::iterator pIter = physicalShapes.begin(); pIter != physicalShapes.end(); ++pIter) {
-        CTiglAbstractPhysicalComponent* component = pIter->second;
-        if (component->GetParentUID().empty()) {
-            // Select the component with the maximum number of children as root component if there are multiple components without parentUID in the dataset
-            childCnt = component->GetChildren(true).size();
-            if (childCnt > maxChildCnt) {
-                maxChildCnt = childCnt;
-                rootComponent = component;
-            }
-            if (childCnt > 0) {
-                allRootComponentsWithChildren[pIter->first] = component;
-            }
-            rootComponentCnt++;
-        }
-    }
+    const_cast<CTiglUIDManager&>(*this).Update(); // TODO(bgruber): hack to keep up logical constness, think about mutable members
+    return rootComponents;
 }
 
 // Builds the parent child relationships.
-void CTiglUIDManager::BuildParentChildTree()
+void CTiglUIDManager::BuildTree()
 {
-    // root component must be set manually, error if not
-    if (!rootComponent) {
-        throw CTiglError("CTiglUIDManager::BuildParentChildTree(); no root component set!");
+    // clear all relations
+    for (RelativeComponentContainerType::iterator it = relativeComponents.begin(); it != relativeComponents.end(); ++it) {
+        it->second->ClearChildren();
     }
 
-    UIDStoreContainerType::iterator pIter;
-
-    for (pIter = physicalShapes.begin(); pIter != physicalShapes.end(); ++pIter) {
-        CTiglAbstractPhysicalComponent* component = pIter->second;
-
-        // TODO: when this method is called more than once the components will be added 
-        //       multiple times as childs
-        if (!component->GetParentUID().empty() && component->GetParentUID() != rootComponent->GetUID()) {
-            CTiglAbstractPhysicalComponent* parent = GetPhysicalComponent(component->GetParentUID());
-            parent->AddChild(component);
+    // build relations
+    for (RelativeComponentContainerType::iterator it = relativeComponents.begin(); it != relativeComponents.end(); ++it) {
+        CTiglRelativeComponent& c = *it->second;
+        const boost::optional<const std::string&> parentUid = c.GetParentUID();
+        if (parentUid) {
+            CTiglRelativeComponent& p = GetRelativeComponent(*parentUid);
+            p.AddChild(c);
+            c.SetParent(p);
         }
-        else {
-            rootComponent->AddChild(component);
+    }
+
+    // find all components without a parent uid and find component with most children
+    std::size_t count = 0;
+    for (RelativeComponentContainerType::iterator it = relativeComponents.begin(); it != relativeComponents.end(); ++it) {
+        CTiglRelativeComponent* c = it->second;
+        if (!c->GetParentUID()) {
+            rootComponents[it->first] = c;
+        }
+        const std::size_t childCount = c->GetChildren(true).size();
+        if (childCount > count) {
+            count = childCount;
+            rootComponent = c;
         }
     }
 }
 
-const ShapeContainerType& CTiglUIDManager::GetShapeContainer()
+const ShapeContainerType& CTiglUIDManager::GetShapeContainer() const
 {
     return allShapes;
 }

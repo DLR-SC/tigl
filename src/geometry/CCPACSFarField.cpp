@@ -21,6 +21,7 @@
 #include "CTiglLogging.h"
 #include "CCPACSConfiguration.h"
 #include "tiglcommonfunctions.h"
+#include "CNamedShape.h"
 
 #include <string>
 #include <cmath>
@@ -54,10 +55,6 @@ void CCPACSFarField::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::
 const std::string& CCPACSFarField::GetUID() const {
     static const std::string s_uid = "FarField";
     return s_uid;
-}
-
-void CCPACSFarField::SetUID(const std::string& uid) {
-    throw CTiglError("not supported");
 }
 
 PNamedShape CCPACSFarField::BuildLoft()
@@ -108,7 +105,7 @@ PNamedShape CCPACSFarField::BuildLoft()
     return loft;
 }
 
-TiglGeometricComponentType CCPACSFarField::GetComponentType()
+TiglGeometricComponentType CCPACSFarField::GetComponentType() const
 {
     return TIGL_COMPONENT_LOGICAL;
 }

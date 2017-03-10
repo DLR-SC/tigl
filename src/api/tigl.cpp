@@ -42,6 +42,7 @@
 #include "CCPACSWing.h"
 #include "CCPACSWingSection.h"
 #include "CCPACSWingSegment.h"
+#include "CCPACSWingComponentSegment.h"
 #include "CTiglExportIges.h"
 #include "CTiglExportStep.h"
 #include "CTiglExportStl.h"
@@ -1107,7 +1108,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetComponentSegmentIndex(TiglCPACSConf
 
         int nseg = wing.GetComponentSegmentCount();
         for (int i = 1; i <= nseg; ++i) {
-            tigl::CTiglAbstractSegment& actSegment = wing.GetComponentSegment(i);
+            tigl::CCPACSWingComponentSegment& actSegment = wing.GetComponentSegment(i);
             if ( actSegment.GetUID() == std::string(compSegmentUID)) {
                 *segmentIndex = i;
                 return TIGL_SUCCESS;
@@ -1796,7 +1797,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentFindSegment(TiglCPACSC
                 if ( cs.GetUID() == componentSegmentUID) {
                     gp_Pnt nearestPointOnSegment;
                     double distance = 0;
-                    const tigl::CTiglAbstractSegment* segment =  cs.findSegment(x, y, z, nearestPointOnSegment, distance);
+                    const tigl::CCPACSWingSegment* segment =  cs.findSegment(x, y, z, nearestPointOnSegment, distance);
                     if (!segment) {
                         LOG(ERROR) << "Can not find any segment that does belong to the provided point.";
                         return TIGL_NOT_FOUND;
@@ -4346,8 +4347,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglComponentIntersectionPoint(TiglCPACSConfig
 
         tigl::CTiglUIDManager& uidManager = config.GetUIDManager();
 
-        TopoDS_Shape compoundOne = uidManager.GetComponent(componentUidOne)->GetLoft()->Shape();
-        TopoDS_Shape compoundTwo = uidManager.GetComponent(componentUidTwo)->GetLoft()->Shape();
+        TopoDS_Shape compoundOne = uidManager.GetComponent(componentUidOne).GetLoft()->Shape();
+        TopoDS_Shape compoundTwo = uidManager.GetComponent(componentUidTwo).GetLoft()->Shape();
 
         tigl::CTiglIntersectionCalculation Intersector(&config.GetShapeCache(), componentUidOne, componentUidTwo, compoundOne, compoundTwo);
         gp_Pnt point = Intersector.GetPoint(eta, lineID);
@@ -4408,8 +4409,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglComponentIntersectionPoints(TiglCPACSConfi
 
         tigl::CTiglUIDManager& uidManager = config.GetUIDManager();
 
-        TopoDS_Shape compoundOne = uidManager.GetComponent(componentUidOne)->GetLoft()->Shape();
-        TopoDS_Shape compoundTwo = uidManager.GetComponent(componentUidTwo)->GetLoft()->Shape();
+        TopoDS_Shape compoundOne = uidManager.GetComponent(componentUidOne).GetLoft()->Shape();
+        TopoDS_Shape compoundTwo = uidManager.GetComponent(componentUidTwo).GetLoft()->Shape();
 
         tigl::CTiglIntersectionCalculation Intersector(&config.GetShapeCache(), componentUidOne, componentUidTwo, compoundOne, compoundTwo);
         
@@ -4455,8 +4456,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglComponentIntersectionLineCount(TiglCPACSCo
 
         tigl::CTiglUIDManager& uidManager = config.GetUIDManager();
 
-        TopoDS_Shape compoundOne = uidManager.GetComponent(componentUidOne)->GetLoft()->Shape();
-        TopoDS_Shape compoundTwo = uidManager.GetComponent(componentUidTwo)->GetLoft()->Shape();
+        TopoDS_Shape compoundOne = uidManager.GetComponent(componentUidOne).GetLoft()->Shape();
+        TopoDS_Shape compoundTwo = uidManager.GetComponent(componentUidTwo).GetLoft()->Shape();
 
         tigl::CTiglIntersectionCalculation Intersector(&config.GetShapeCache(), componentUidOne, componentUidTwo, compoundOne, compoundTwo);
         *numWires = Intersector.GetCountIntersectionLines();
@@ -4499,11 +4500,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectComponents(TiglCPACSConfiguration
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CTiglUIDManager& uidManager = config.GetUIDManager();
 
-        tigl::ITiglGeometricComponent* c1 = uidManager.GetComponent(componentUidOne);
-        tigl::ITiglGeometricComponent* c2 = uidManager.GetComponent(componentUidTwo);
-        if (c1 && c2) {
-            TopoDS_Shape compoundOne = c1->GetLoft()->Shape();
-            TopoDS_Shape compoundTwo = c2->GetLoft()->Shape();
+        if (uidManager.HasUID(componentUidOne) && uidManager.HasUID(componentUidTwo)) {
+            TopoDS_Shape compoundOne = uidManager.GetComponent(componentUidOne).GetLoft()->Shape();
+            TopoDS_Shape compoundTwo = uidManager.GetComponent(componentUidTwo).GetLoft()->Shape();
             
             tigl::CTiglIntersectionCalculation Intersector(&config.GetShapeCache(),
                                                            componentUidOne, 
@@ -4555,9 +4554,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectWithPlane(TiglCPACSConfigurationH
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CTiglUIDManager& uidManager = config.GetUIDManager();
 
-        tigl::ITiglGeometricComponent* component = uidManager.GetComponent(componentUid);
-        if (component) {
-            TopoDS_Shape shape = component->GetLoft()->Shape();
+        if (uidManager.HasUID(componentUid)) {
+            TopoDS_Shape shape = uidManager.GetComponent(componentUid).GetLoft()->Shape();
             gp_Pnt p(px, py, pz);
             gp_Dir n(nx, ny, nz);
             
@@ -6188,9 +6186,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglComponentGetHashCode(TiglCPACSConfiguratio
 
         tigl::CTiglUIDManager& uidManager = config.GetUIDManager();
 
-        tigl::ITiglGeometricComponent* component = uidManager.GetComponent(componentUID);
-        if (component) {
-            int hash = GetComponentHashCode(*component);
+        if (uidManager.HasUID(componentUID)) {
+            int hash = GetComponentHashCode(uidManager.GetComponent(componentUID));
             *hashCodePtr = hash;
         }
         else {

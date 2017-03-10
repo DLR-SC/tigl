@@ -207,7 +207,7 @@ public:
 
 protected:
     // transform all components relative to their parents
-    void transformAllComponents(CTiglAbstractPhysicalComponent* parent);
+    void transformAllComponents(CTiglRelativeComponent* parent);
 
 private:
     // Copy constructor

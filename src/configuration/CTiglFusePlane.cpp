@@ -82,34 +82,27 @@ void CTiglFusePlane::Invalidate()
     _farfield.reset();
 }
 
-PNamedShape CTiglFusePlane::FuseWithChilds(CTiglAbstractPhysicalComponent* parent)
+
+PNamedShape CTiglFusePlane::FuseWithChilds(CTiglRelativeComponent* parent, const std::vector<CTiglRelativeComponent*>& children)
 {
-    assert(parent != NULL);
-    
-    PNamedShape parentShape (parent->GetLoft());
-    if (parentShape) {
-        if (_mymode == FULL_PLANE || _mymode == FULL_PLANE_TRIMMED_FF) {
-            PNamedShape rootShapeMirr = parent->GetMirroredLoft();
-            parentShape = CMergeShapes(parentShape, rootShapeMirr);
+    PNamedShape parentShape;
+    if (parent) {
+        parentShape = parent->GetLoft();
+        if (parentShape) {
+            if (_mymode == FULL_PLANE || _mymode == FULL_PLANE_TRIMMED_FF) {
+                PNamedShape rootShapeMirr = parent->GetMirroredLoft();
+                parentShape = CMergeShapes(parentShape, rootShapeMirr);
+            }
         }
     }
 
-    CTiglAbstractPhysicalComponent::ChildContainerType childs = parent->GetChildren(false);
-    CTiglAbstractPhysicalComponent::ChildContainerType::iterator childIt;
-    
-    if (childs.size() == 0) {
+    if (children.size() == 0) {
         return parentShape;
     }
 
     ListPNamedShape childShapes;
-    for (childIt = childs.begin(); childIt != childs.end(); ++childIt) {
-        CTiglAbstractPhysicalComponent* child = *childIt;
-        if (!child) {
-            continue;
-        }
-
-        PNamedShape childShape = FuseWithChilds(child);
-        childShapes.push_back(childShape);
+    for (std::vector<CTiglRelativeComponent*>::const_iterator it = children.begin(); it != children.end(); ++it) {
+        childShapes.push_back(FuseWithChilds(*it, (*it)->GetChildren(false)));
     }
     CFuseShapes fuser(parentShape, childShapes);
     PNamedShape result = fuser.NamedShape();
@@ -156,17 +149,16 @@ void CTiglFusePlane::Perform()
     }
 
     CTiglUIDManager& uidManager = _myconfig.GetUIDManager();
-    CTiglAbstractPhysicalComponent* rootComponent = uidManager.GetRootComponent();
-    if (!rootComponent) {
-        LOG(ERROR) << "Root component of plane not found. Cannot create fused plane.";
-        return;
-    }
-
-    _result = FuseWithChilds(rootComponent);
+    std::vector<CTiglRelativeComponent*> rootComponentPtrs;
+    const RelativeComponentContainerType& rootComponents = uidManager.GetAllRootComponents();
+    for (RelativeComponentContainerType::const_iterator it = rootComponents.begin(); it != rootComponents.end(); ++it)
+        rootComponentPtrs.push_back(it->second);
+    _result = FuseWithChilds(NULL, rootComponentPtrs);
 
     CCPACSFarField& farfield = _myconfig.GetFarField();
     if (farfield.GetFieldType() != ENUM_VALUE(TiglFarFieldType, NONE) && (_mymode == FULL_PLANE_TRIMMED_FF || _mymode == HALF_PLANE_TRIMMED_FF)) {
         PNamedShape ff = farfield.GetLoft();
+        assert(_result);
 
         BOPCol_ListOfShape aLS;
         aLS.Append(_result->Shape());

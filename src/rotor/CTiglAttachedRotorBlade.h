@@ -26,7 +26,8 @@
 #ifndef CCPACSROTORBLADE_H
 #define CCPACSROTORBLADE_H
 
-#include "CTiglAbstractPhysicalComponent.h"
+#include "CTiglRelativeComponent.h"
+#include "CCPACSTransformation.h"
 
 namespace tigl
 {
@@ -36,7 +37,7 @@ class CCPACSRotor;
 class CCPACSRotorBladeAttachment;
 class CCPACSWing;
 
-class CTiglAttachedRotorBlade : public CTiglAbstractPhysicalComponent
+class CTiglAttachedRotorBlade : public CTiglRelativeComponent
 {
 
 public:
@@ -44,7 +45,6 @@ public:
     TIGL_EXPORT CTiglAttachedRotorBlade(CCPACSRotorBladeAttachment* parent, CCPACSWing& rotorBlade, int index);
 
     TIGL_EXPORT virtual const std::string& GetUID() const OVERRIDE;
-    TIGL_EXPORT virtual void SetUID(const std::string& uid) OVERRIDE;
 
     TIGL_EXPORT virtual CTiglTransformation GetTransformation() const OVERRIDE;
 
@@ -55,7 +55,7 @@ public:
     TIGL_EXPORT void Update();
 
     // Returns the Component Type TIGL_COMPONENT_ROTORBLADE
-    TIGL_EXPORT TiglGeometricComponentType GetComponentType()
+    TIGL_EXPORT virtual TiglGeometricComponentType GetComponentType() const OVERRIDE
     {
         return TIGL_COMPONENT_ROTORBLADE;
     }
@@ -131,7 +131,7 @@ private:
     TopoDS_Shape                 rotorDisk;            /**< Rotor disk geometry of the rotor blade */
     double                       myVolume;             /**< Volume of this rotor blade              */
     double                       mySurfaceArea;        /**< Surface area of this rotor blade        */
-    CTiglTransformation          transformationMatrix;
+    CCPACSTransformation         transformation;       // TODO(bgruber): a CTiglTransformation would be better here, but CTiglRelativeComponent requires CCPACSTransformation to allow manipulations
 };
 
 } // end namespace tigl

@@ -20,28 +20,27 @@
 #define CCPACSEXTERNALOBJECT_H
 
 #include "generated/CPACSGenericGeometricComponent.h"
-#include "CTiglAbstractPhysicalComponent.h"
+#include "CTiglRelativeComponent.h"
 
 namespace tigl
 {
 
 class CCPACSConfiguration;
 
-class CCPACSExternalObject : public generated::CPACSGenericGeometricComponent, public CTiglAbstractPhysicalComponent
+class CCPACSExternalObject : public generated::CPACSGenericGeometricComponent, public CTiglRelativeComponent
 {
 public:
     TIGL_EXPORT CCPACSExternalObject(CCPACSExternalObjects* parent);
     
     TIGL_EXPORT virtual const std::string& GetUID() const OVERRIDE;
-    TIGL_EXPORT virtual void SetUID(const std::string& uid) OVERRIDE;
 
-    using CTiglAbstractPhysicalComponent::GetTransformation;
+    using CTiglRelativeComponent::GetTransformation;
 
     TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& objectXPath) OVERRIDE;
     
     TIGL_EXPORT const std::string& GetFilePath() const;
     
-    TIGL_EXPORT TiglGeometricComponentType GetComponentType();
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const;
 
 private:
     /// reads in the CAD file

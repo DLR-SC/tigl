@@ -18,7 +18,7 @@
 
 #include "CTiglTriangularizer.h"
 #include "ITiglGeometricComponent.h"
-#include "CTiglAbstractPhysicalComponent.h"
+#include "CTiglRelativeComponent.h"
 #include "CCPACSWing.h"
 #include "CCPACSWingSegment.h"
 #include "CCPACSConfiguration.h"
@@ -103,18 +103,16 @@ int CTiglTriangularizer::triangularizeShape(const TopoDS_Shape& shape)
     return 0;
 }
 
-CTiglTriangularizer::CTiglTriangularizer(CTiglAbstractPhysicalComponent& comp, double deflection, ComponentTraingMode mode) 
+CTiglTriangularizer::CTiglTriangularizer(CTiglRelativeComponent& comp, double deflection, ComponentTraingMode mode) 
 {
     useMultipleObjects(false);
     LOG(INFO) << "Calculating fused plane";
     triangularizeComponent(comp, false, comp.GetLoft()->Shape(), deflection, mode);
 }
 
-CTiglTriangularizer::CTiglTriangularizer(CCPACSConfiguration &config, bool fuseShapes, double deflection, ComponentTraingMode mode) 
+CTiglTriangularizer::CTiglTriangularizer(CCPACSConfiguration& config, bool fuseShapes, double deflection, ComponentTraingMode mode) 
 {
     if (fuseShapes){
-        CTiglAbstractPhysicalComponent* pRoot =  config.GetUIDManager().GetRootComponent();
-
         PTiglFusePlane fuser = config.AircraftFusingAlgo();
         fuser->SetResultMode(FULL_PLANE);
         if (!fuser->FusedPlane()) {
@@ -124,7 +122,11 @@ CTiglTriangularizer::CTiglTriangularizer(CCPACSConfiguration &config, bool fuseS
         TopoDS_Shape planeShape = fuser->FusedPlane()->Shape();
 
         useMultipleObjects(false);
-        triangularizeComponent(*pRoot, true, planeShape, deflection, mode);
+        std::vector<CTiglRelativeComponent*> rootComponentPtrs;
+        const RelativeComponentContainerType& rootComponents = config.GetUIDManager().GetAllRootComponents();
+        for (RelativeComponentContainerType::const_iterator it = rootComponents.begin(); it != rootComponents.end(); ++it)
+            rootComponentPtrs.push_back(it->second);
+        triangularizeComponent(rootComponentPtrs, true, planeShape, deflection, mode);
     }
     else {
         useMultipleObjects(false);
@@ -173,11 +175,20 @@ bool isValidCoord(double c)
     }
 }
 
-int CTiglTriangularizer::triangularizeComponent(CTiglAbstractPhysicalComponent & component, bool include_childs, const TopoDS_Shape& shape, double deflection, ComponentTraingMode mode)
+int CTiglTriangularizer::triangularizeComponent(CTiglRelativeComponent& component, bool include_childs, const TopoDS_Shape& shape, double deflection, ComponentTraingMode mode)
+{
+    return triangularizeComponent(std::vector<CTiglRelativeComponent*>(1, &component), include_childs, shape, deflection, mode);
+}
+
+int CTiglTriangularizer::triangularizeComponent(const std::vector<CTiglRelativeComponent*>& components, bool include_childs, const TopoDS_Shape& shape, double deflection, ComponentTraingMode mode)
 {
     // create list of child components
-    CTiglAbstractPhysicalComponent::ChildContainerType allcomponents = component.GetChildren(true);
-    allcomponents.push_front(&component);
+    CTiglRelativeComponent::ChildContainerType allcomponents;
+    for (std::vector<CTiglRelativeComponent*>::const_iterator it = components.begin(); it != components.end(); ++it) {
+        CTiglRelativeComponent::ChildContainerType children = (*it)->GetChildren(true);
+        allcomponents.push_back(*it);
+        allcomponents.insert(allcomponents.end(), children.begin(), children.end());
+    }
     
     BRepTools::Clean (shape);
     BRepMesh_IncrementalMesh(shape, deflection);
@@ -204,9 +215,9 @@ int CTiglTriangularizer::triangularizeComponent(CTiglAbstractPhysicalComponent &
             
             // search to which component the current face belongs to
             bool found = false;
-            CTiglAbstractPhysicalComponent::ChildContainerType::iterator compit;
+            CTiglRelativeComponent::ChildContainerType::iterator compit;
             for (compit = allcomponents.begin(); compit != allcomponents.end(); ++compit) {
-                CTiglAbstractPhysicalComponent& curcomp = *(*compit);
+                CTiglRelativeComponent& curcomp = *(*compit);
                 if (curcomp.GetComponentType() & TIGL_COMPONENT_WING){
                     // check to which segment this face belongs
                     CCPACSWing& wing = dynamic_cast<CCPACSWing&>(curcomp);

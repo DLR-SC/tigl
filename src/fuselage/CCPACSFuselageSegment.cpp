@@ -37,6 +37,7 @@
 #include "CTiglLogging.h"
 #include "CCPACSConfiguration.h"
 #include "tiglcommonfunctions.h"
+#include "CNamedShape.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "TopExp_Explorer.hxx"
@@ -135,17 +136,8 @@ namespace tigl
 
 CCPACSFuselageSegment::CCPACSFuselageSegment(CCPACSFuselageSegments* parent)
     : generated::CPACSFuselageSegment(parent)
-    , CTiglAbstractSegment(parent->GetSegmentCount() + 1, &parent->GetParent()->m_symmetry) // TODO: this is a hack, as we depend on the implementation of the vector reader in generated::CPACSFuselageSegments::ReadCPACS() but the current CodeGen does not support passing indices into ctors
+    , CTiglAbstractSegment(parent->GetSegment(), parent->GetParent()->m_symmetry)
     , fuselage(parent->GetParent())
-{
-    Cleanup();
-}
-
-// Constructor
-CCPACSFuselageSegment::CCPACSFuselageSegment(CCPACSFuselage* aFuselage, int aSegmentIndex)
-    : generated::CPACSFuselageSegment(&aFuselage->GetSegments())
-    , CTiglAbstractSegment(aSegmentIndex)
-    , fuselage(aFuselage)
 {
     Cleanup();
 }
@@ -163,14 +155,13 @@ void CCPACSFuselageSegment::Cleanup()
     myVolume      = 0.;
     mySurfaceArea = 0.;
     myWireLength  = 0.;
-    continuity    = C2;
-    CTiglAbstractSegment::Cleanup();
+    _continuity    = C2;
+    CTiglAbstractGeometricComponent::Reset();
 }
 
-// Update internal segment data
-void CCPACSFuselageSegment::Update()
+void CCPACSFuselageSegment::Invalidate()
 {
-    Invalidate();
+    CTiglAbstractSegment::Reset();
 }
 
 // Read CPACS segment elements
@@ -204,27 +195,17 @@ void CCPACSFuselageSegment::ReadCPACS(TixiDocumentHandle tixiHandle, const std::
     //    continuity = C2;
     //}
 
-    Update();
+    Invalidate();
 }
 
 const std::string& CCPACSFuselageSegment::GetUID() const {
     return generated::CPACSFuselageSegment::GetUID();
 }
 
-void CCPACSFuselageSegment::SetUID(const std::string& uid) {
-    return generated::CPACSFuselageSegment::SetUID(uid);
-}
-
 // Returns the fuselage this segment belongs to
 CCPACSFuselage& CCPACSFuselageSegment::GetFuselage() const
 {
     return *fuselage;
-}
-
-// Returns the segment index of this segment
-int CCPACSFuselageSegment::GetSegmentIndex() const
-{
-    return mySegmentIndex;
 }
 
 // helper function to get the wire of the start section
@@ -251,7 +232,7 @@ std::string CCPACSFuselageSegment::GetShortShapeName()
         if (fuselage->GetUID() == f.GetUID()) {
             findex = i;
             for (int j = 1; j <= f.GetSegmentCount(); j++) {
-                tigl::CTiglAbstractSegment& fs = f.GetSegment(j);
+                CCPACSFuselageSegment& fs = f.GetSegment(j);
                 if (GetUID() == fs.GetUID()) {
                     fsindex = j;
                     std::stringstream shortName;
@@ -372,7 +353,7 @@ int CCPACSFuselageSegment::GetStartConnectedSegmentCount()
     int count = 0;
     for (int i = 1; i <= GetFuselage().GetSegmentCount(); i++) {
         CCPACSFuselageSegment& nextSegment = GetFuselage().GetSegment(i);
-        if (nextSegment.GetSegmentIndex() == mySegmentIndex) {
+        if (nextSegment.GetSegmentIndex() == GetSegmentIndex()) {
             continue;
         }
         if (nextSegment.GetStartSectionUID() == GetStartSectionUID() ||
@@ -390,7 +371,7 @@ int CCPACSFuselageSegment::GetEndConnectedSegmentCount()
     int count = 0;
     for (int i = 1; i <= GetFuselage().GetSegmentCount(); i++) {
         CCPACSFuselageSegment& nextSegment = GetFuselage().GetSegment(i);
-        if (nextSegment.GetSegmentIndex() == mySegmentIndex) {
+        if (nextSegment.GetSegmentIndex() == GetSegmentIndex()) {
             continue;
         }
         if (nextSegment.GetStartSectionUID() == GetEndSectionUID() ||
@@ -412,7 +393,7 @@ int CCPACSFuselageSegment::GetStartConnectedSegmentIndex(int n)
 
     for (int i = 1, count = 0; i <= GetFuselage().GetSegmentCount(); i++) {
         CCPACSFuselageSegment& nextSegment = GetFuselage().GetSegment(i);
-        if (nextSegment.GetSegmentIndex() == mySegmentIndex) {
+        if (nextSegment.GetSegmentIndex() == GetSegmentIndex()) {
             continue;
         }
         if (nextSegment.GetStartSectionUID() == GetStartSectionUID() ||
@@ -437,7 +418,7 @@ int CCPACSFuselageSegment::GetEndConnectedSegmentIndex(int n)
 
     for (int i = 1, count = 0; i <= GetFuselage().GetSegmentCount(); i++) {
         CCPACSFuselageSegment& nextSegment = (CCPACSFuselageSegment &) GetFuselage().GetSegment(i);
-        if (nextSegment.GetSegmentIndex() == mySegmentIndex) {
+        if (nextSegment.GetSegmentIndex() == GetSegmentIndex()) {
             continue;
         }
         if (nextSegment.GetStartSectionUID() == GetEndSectionUID() ||

@@ -42,6 +42,7 @@
 #include "CPointsToLinearBSpline.h"
 #include "tiglcommonfunctions.h"
 #include "CCPACSWingCSStructure.h"
+#include "CNamedShape.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "TopoDS_Edge.hxx"
@@ -153,19 +154,8 @@ namespace
 
 CCPACSWingComponentSegment::CCPACSWingComponentSegment(CCPACSWingComponentSegments* parent)
     : generated::CPACSComponentSegment(parent)
-    , CTiglAbstractSegment(parent->GetComponentSegmentCount() + 1, &parent->GetParent()->m_symmetry) // TODO: this is a hack, as we depend on the implementation of the vector reader in generated::CCPACSWingComponentSegments::ReadCPACS() but the current CodeGen does not support passing indices into ctors
+    , CTiglAbstractSegment(parent->GetComponentSegment(), parent->GetParent()->m_symmetry)
     , wing(parent->GetParent())
-    , surfacesAreValid(false)
-{
-    assert(wing != NULL);
-    Cleanup();
-}
-
-// Constructor
-CCPACSWingComponentSegment::CCPACSWingComponentSegment(CCPACSWing* aWing, int aSegmentIndex)
-    : generated::CPACSComponentSegment(&aWing->GetComponentSegments())
-    , CTiglAbstractSegment(aSegmentIndex)
-    , wing(aWing)
     , surfacesAreValid(false)
 {
     assert(wing != NULL);
@@ -182,7 +172,7 @@ CCPACSWingComponentSegment::~CCPACSWingComponentSegment()
 void CCPACSWingComponentSegment::Invalidate()
 {
     // call parent class instead of directly setting invalidated flag
-    CTiglAbstractSegment::Invalidate();
+    CTiglAbstractSegment::Reset();
     surfacesAreValid = false;
     projLeadingEdge.Nullify();
     wingSegments.clear();
@@ -201,7 +191,7 @@ void CCPACSWingComponentSegment::Cleanup()
     mySurfaceArea  = 0.;
     surfacesAreValid = false;
     linesAreValid = false;
-    CTiglAbstractSegment::Cleanup();
+    CTiglAbstractSegment::Reset();
     projLeadingEdge.Nullify();
     wingSegments.clear();
 }
@@ -356,7 +346,7 @@ TopoDS_Face CCPACSWingComponentSegment::GetSectionElementFace(const std::string&
 // Getter for the normalized leading edge direction
 gp_Vec CCPACSWingComponentSegment::GetLeadingEdgeDirection(const std::string& segmentUID) const
 {
-    tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing->GetSegment(segmentUID);
+    tigl::CCPACSWingSegment& segment = wing->GetSegment(segmentUID);
     gp_Pnt pl0 = segment.GetPoint(0, 0, false, WING_COORDINATE_SYSTEM);
     gp_Pnt pl1 = segment.GetPoint(1, 0, false, WING_COORDINATE_SYSTEM);
 
@@ -375,7 +365,7 @@ gp_Vec CCPACSWingComponentSegment::GetLeadingEdgeDirection(const gp_Pnt& point, 
     std::string segmentUID = defaultSegmentUID;
     gp_Pnt dummy;
     double deviation = 0;
-    const CTiglAbstractSegment* segment = findSegment(globalPnt.X(), globalPnt.Y(), globalPnt.Z(), dummy, deviation);
+    const CCPACSWingSegment* segment = findSegment(globalPnt.X(), globalPnt.Y(), globalPnt.Z(), dummy, deviation);
     if (segment != NULL) {
         segmentUID = segment->GetUID();
     }
@@ -385,7 +375,7 @@ gp_Vec CCPACSWingComponentSegment::GetLeadingEdgeDirection(const gp_Pnt& point, 
 // Getter for the normalized trailing edge direction
 gp_Vec CCPACSWingComponentSegment::GetTrailingEdgeDirection(const std::string& segmentUID) const
 {
-    tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing->GetSegment(segmentUID);
+    tigl::CCPACSWingSegment& segment = wing->GetSegment(segmentUID);
     gp_Pnt pt0 = segment.GetPoint(0, 1, false, WING_COORDINATE_SYSTEM);
     gp_Pnt pt1 = segment.GetPoint(1, 1, false, WING_COORDINATE_SYSTEM);
 
@@ -404,7 +394,7 @@ gp_Vec CCPACSWingComponentSegment::GetTrailingEdgeDirection(const gp_Pnt& point,
     std::string segmentUID = defaultSegmentUID;
     gp_Pnt dummy;
     double deviation = 0.;
-    const CTiglAbstractSegment* segment = findSegment(globalPnt.X(), globalPnt.Y(), globalPnt.Z(), dummy, deviation);
+    const CCPACSWingSegment* segment = findSegment(globalPnt.X(), globalPnt.Y(), globalPnt.Z(), dummy, deviation);
     if (segment != NULL) {
         segmentUID = segment->GetUID();
     }
@@ -446,11 +436,11 @@ TopoDS_Wire CCPACSWingComponentSegment::GetMidplaneLine(const gp_Pnt& startPoint
     std::string startSegmentUID, endSegmentUID;
     gp_Pnt dummy;
     double deviation = 0.;
-    const CTiglAbstractSegment* startSegment = findSegment(globalStartPnt.X(), globalStartPnt.Y(), globalStartPnt.Z(), dummy, deviation);
+    const CCPACSWingSegment* startSegment = findSegment(globalStartPnt.X(), globalStartPnt.Y(), globalStartPnt.Z(), dummy, deviation);
     if (startSegment != NULL) {
         startSegmentUID = startSegment->GetUID();
     }
-    const CTiglAbstractSegment* endSegment = findSegment(globalEndPnt.X(), globalEndPnt.Y(), globalEndPnt.Z(), dummy, deviation);
+    const CCPACSWingSegment* endSegment = findSegment(globalEndPnt.X(), globalEndPnt.Y(), globalEndPnt.Z(), dummy, deviation);
     if (endSegment != NULL) {
         endSegmentUID = endSegment->GetUID();
     }
@@ -803,7 +793,7 @@ std::string CCPACSWingComponentSegment::GetShortShapeName()
         if (wing->GetUID() == w.GetUID()) {
             windex = i;
             for (int j = 1; j <= w.GetComponentSegmentCount(); j++) {
-                tigl::CTiglAbstractSegment& wcs = w.GetComponentSegment(j);
+                CCPACSWingComponentSegment& wcs = w.GetComponentSegment(j);
                 if (GetUID() == wcs.GetUID()) {
                     wcsindex = j;
                     std::stringstream shortName;

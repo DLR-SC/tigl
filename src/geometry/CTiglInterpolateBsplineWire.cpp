@@ -42,7 +42,7 @@ namespace tigl
 // Constructor
 CTiglInterpolateBsplineWire::CTiglInterpolateBsplineWire()
 {
-    continuity = C0;
+    continuity = _C0;
 }
 
 // Destructor
@@ -53,7 +53,7 @@ CTiglInterpolateBsplineWire::~CTiglInterpolateBsplineWire()
 // Builds the wire from the given points
 TopoDS_Wire CTiglInterpolateBsplineWire::BuildWire(const CPointContainer& points, bool forceClosed) const
 {
-    bool endTangency = (continuity == C1);
+    bool endTangency = (continuity == _C1);
 
     if (points.size() < 2) {
         throw CTiglError("Error: To less points to build a curve in CTiglInterpolateBsplineWire::BuildCurve", TIGL_ERROR);

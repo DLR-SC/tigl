@@ -26,49 +26,25 @@
 #ifndef ITIGLGEOMETRICCOMPONENT_H
 #define ITIGLGEOMETRICCOMPONENT_H
 
-#include <map>
-#include <list>
 #include <string>
 
 #include "tigl.h"
+#include "tigl_internal.h"
 #include "PNamedShape.h"
-#include "tigl_config.h"
-#include "CCPACSTransformation.h"
-#include "ECPACSTranslationType.h"
 
 namespace tigl 
 {
-
-
 class ITiglGeometricComponent
 {
 public:
-       // Gets the loft of a geometric component
-    virtual PNamedShape GetLoft() = 0;
-
     // Returns the unique id of this component
-    virtual const std::string& GetUID() const = 0;
+    TIGL_EXPORT virtual const std::string& GetUID() const = 0;
 
-    // Sets the unique id of this component
-    virtual void SetUID(const std::string&) = 0;
-
-    // Get transformation object
-    virtual CTiglTransformation GetTransformation() const = 0;
-    
-    // Set transformation object
-    virtual void Translate(CTiglPoint trans) = 0;
-
-    // Get component translation
-    virtual CTiglPoint GetTranslation() const = 0;
-    
-    virtual ECPACSTranslationType GetTranslationType() const = 0;
+    // Gets the loft of a geometric component
+    TIGL_EXPORT virtual PNamedShape GetLoft() = 0;
 
     // Returns the Geometric type of this component, e.g. Wing or Fuselage
-    virtual TiglGeometricComponentType GetComponentType() = 0;
-
-protected:
-    // Resets the geometric component.
-    virtual void Reset() = 0;
+    TIGL_EXPORT virtual TiglGeometricComponentType GetComponentType() const = 0;
 };
 
 } // end namespace tigl
