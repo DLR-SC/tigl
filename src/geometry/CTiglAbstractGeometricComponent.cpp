@@ -81,7 +81,7 @@ PNamedShape CTiglAbstractGeometricComponent::GetMirroredLoft()
 
     gp_Trsf theTransformation;
     theTransformation.SetMirror(mirrorPlane);
-    PNamedShape& loft = GetLoft();
+    const PNamedShape& loft = GetLoft();
     BRepBuilderAPI_Transform myBRepTransformation(loft->Shape(), theTransformation);
     std::string mirrorName = loft->Name();
     mirrorName += "M";
