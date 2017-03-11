@@ -35,7 +35,7 @@
 #include "CCPACSFuselageSections.h"
 #include "CCPACSFuselageSegments.h"
 #include "CCPACSPositionings.h"
-#include "CTiglRelativeComponent.h"
+#include "CTiglRelativelyPositionedComponent.h"
 #include "CCPACSGuideCurve.h"
 
 #include "TopoDS_Shape.hxx"
@@ -46,7 +46,7 @@ namespace tigl
 {
 class CCPACSConfiguration;
 
-class CCPACSFuselage : public generated::CPACSFuselage, public CTiglRelativeComponent
+class CCPACSFuselage : public generated::CPACSFuselage, public CTiglRelativelyPositionedComponent
 {
 public:
     // Constructor
@@ -67,7 +67,7 @@ public:
 
     TIGL_EXPORT virtual const std::string& GetUID() const OVERRIDE;
 
-    using CTiglRelativeComponent::GetTransformation;
+    using CTiglRelativelyPositionedComponent::GetTransformation;
 
     // Get section count
     TIGL_EXPORT int GetSectionCount() const;

@@ -27,7 +27,7 @@
 #define CTIGLUIDMANAGER_H
 
 #include "tigl_internal.h"
-#include "CTiglRelativeComponent.h"
+#include "CTiglRelativelyPositionedComponent.h"
 #include <map>
 #include <string>
 
@@ -35,7 +35,7 @@ namespace tigl
 {
 
 typedef std::map<const std::string, ITiglGeometricComponent*> ShapeContainerType;
-typedef std::map<const std::string, CTiglRelativeComponent*> RelativeComponentContainerType;
+typedef std::map<const std::string, CTiglRelativelyPositionedComponent*> RelativeComponentContainerType;
 
 class CTiglUIDManager
 {
@@ -53,7 +53,7 @@ public:
     TIGL_EXPORT ITiglGeometricComponent& GetComponent(const std::string& uid) const;
 
     // Returns the parent component for a component or a null pointer if there is no parent.
-    TIGL_EXPORT CTiglRelativeComponent* GetParentComponent(const std::string& uid) const;
+    TIGL_EXPORT CTiglRelativelyPositionedComponent* GetParentComponent(const std::string& uid) const;
 
     // Returns the container with all root components of the geometric topology that have children.
     TIGL_EXPORT const RelativeComponentContainerType& GetAllRootComponents() const;
@@ -72,7 +72,7 @@ protected:
     void BuildTree();
 
     // Returns a pointer to the geometric component for the given unique id.
-    CTiglRelativeComponent& GetRelativeComponent(const std::string& uid) const;
+    CTiglRelativelyPositionedComponent& GetRelativeComponent(const std::string& uid) const;
 
 private:
 
@@ -84,7 +84,7 @@ private:
 
     RelativeComponentContainerType      relativeComponents;             /**< All relative components of the configuration */
     ShapeContainerType                  allShapes;                      /**< All components of the configuration */
-    CTiglRelativeComponent*             rootComponent;                  /**< Root component injected by configuration */
+    CTiglRelativelyPositionedComponent*             rootComponent;                  /**< Root component injected by configuration */
     RelativeComponentContainerType      rootComponents;                 /**< All root components that have children */
     bool                                invalidated;                    /**< Internal state flag */
 };

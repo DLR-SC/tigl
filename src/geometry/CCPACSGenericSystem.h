@@ -27,7 +27,7 @@
 
 #include "tixi.h"
 #include "tigl_internal.h"
-#include "CTiglRelativeComponent.h"
+#include "CTiglRelativelyPositionedComponent.h"
 #include "CCPACSTransformation.h"
 
 namespace tigl
@@ -35,7 +35,7 @@ namespace tigl
 
 class CCPACSConfiguration;
 
-class CCPACSGenericSystem : public CTiglRelativeComponent
+class CCPACSGenericSystem : public CTiglRelativelyPositionedComponent
 {
 
 public:

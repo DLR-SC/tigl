@@ -20,21 +20,21 @@
 #define CCPACSEXTERNALOBJECT_H
 
 #include "generated/CPACSGenericGeometricComponent.h"
-#include "CTiglRelativeComponent.h"
+#include "CTiglRelativelyPositionedComponent.h"
 
 namespace tigl
 {
 
 class CCPACSConfiguration;
 
-class CCPACSExternalObject : public generated::CPACSGenericGeometricComponent, public CTiglRelativeComponent
+class CCPACSExternalObject : public generated::CPACSGenericGeometricComponent, public CTiglRelativelyPositionedComponent
 {
 public:
     TIGL_EXPORT CCPACSExternalObject(CCPACSExternalObjects* parent);
     
     TIGL_EXPORT virtual const std::string& GetUID() const OVERRIDE;
 
-    using CTiglRelativeComponent::GetTransformation;
+    using CTiglRelativelyPositionedComponent::GetTransformation;
 
     TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& objectXPath) OVERRIDE;
     

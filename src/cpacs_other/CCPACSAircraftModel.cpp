@@ -30,7 +30,7 @@
 namespace tigl
 {
 CCPACSAircraftModel::CCPACSAircraftModel(CCPACSConfiguration* config)
-    : CTiglRelativeComponent(NULL, NULL), config(config) {}
+    : CTiglRelativelyPositionedComponent(NULL, NULL), config(config) {}
 
 void CCPACSAircraftModel::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) {
     generated::CPACSAircraftModel::ReadCPACS(tixiHandle, xpath);

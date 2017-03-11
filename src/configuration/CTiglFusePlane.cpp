@@ -83,7 +83,7 @@ void CTiglFusePlane::Invalidate()
 }
 
 
-PNamedShape CTiglFusePlane::FuseWithChilds(CTiglRelativeComponent* parent, const std::vector<CTiglRelativeComponent*>& children)
+PNamedShape CTiglFusePlane::FuseWithChilds(CTiglRelativelyPositionedComponent* parent, const std::vector<CTiglRelativelyPositionedComponent*>& children)
 {
     PNamedShape parentShape;
     if (parent) {
@@ -101,7 +101,7 @@ PNamedShape CTiglFusePlane::FuseWithChilds(CTiglRelativeComponent* parent, const
     }
 
     ListPNamedShape childShapes;
-    for (std::vector<CTiglRelativeComponent*>::const_iterator it = children.begin(); it != children.end(); ++it) {
+    for (std::vector<CTiglRelativelyPositionedComponent*>::const_iterator it = children.begin(); it != children.end(); ++it) {
         childShapes.push_back(FuseWithChilds(*it, (*it)->GetChildren(false)));
     }
     CFuseShapes fuser(parentShape, childShapes);
@@ -149,7 +149,7 @@ void CTiglFusePlane::Perform()
     }
 
     CTiglUIDManager& uidManager = _myconfig.GetUIDManager();
-    std::vector<CTiglRelativeComponent*> rootComponentPtrs;
+    std::vector<CTiglRelativelyPositionedComponent*> rootComponentPtrs;
     const RelativeComponentContainerType& rootComponents = uidManager.GetAllRootComponents();
     for (RelativeComponentContainerType::const_iterator it = rootComponents.begin(); it != rootComponents.end(); ++it)
         rootComponentPtrs.push_back(it->second);

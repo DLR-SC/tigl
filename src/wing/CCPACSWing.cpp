@@ -149,7 +149,7 @@ namespace
 
 CCPACSWing::CCPACSWing(CCPACSWings* parent)
     : generated::CPACSWing(parent)
-    , CTiglRelativeComponent(&m_parentUID, &m_transformation, &m_symmetry)
+    , CTiglRelativelyPositionedComponent(&m_parentUID, &m_transformation, &m_symmetry)
     , rebuildFusedSegments(true)
     , rebuildFusedSegWEdge(true)
     , rebuildShells(true) {
@@ -165,7 +165,7 @@ CCPACSWing::CCPACSWing(CCPACSWings* parent)
 }
 CCPACSWing::CCPACSWing(CCPACSRotorBlades* parent)
     : generated::CPACSWing(parent)
-    , CTiglRelativeComponent(&m_parentUID, &m_transformation, &m_symmetry)
+    , CTiglRelativelyPositionedComponent(&m_parentUID, &m_transformation, &m_symmetry)
     , configuration(&parent->GetConfiguration())
     , rebuildFusedSegments(true)
     , rebuildFusedSegWEdge(true)
@@ -458,7 +458,7 @@ double CCPACSWing::GetVolume()
 // Sets the Transformation object
 void CCPACSWing::Translate(CTiglPoint trans)
 {
-    CTiglRelativeComponent::Translate(trans);
+    CTiglRelativelyPositionedComponent::Translate(trans);
     invalidated = true;
     m_segments.Invalidate();
     if(m_componentSegments)

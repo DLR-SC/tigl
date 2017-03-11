@@ -23,7 +23,7 @@
 * @brief  Implementation of an abstract class for phyical components (fuselage, wing, wheels etc...).
 */
 
-#include "CTiglRelativeComponent.h"
+#include "CTiglRelativelyPositionedComponent.h"
 #include "CTiglError.h"
 #include "CTiglIntersectionCalculation.h"
 #include "CCPACSConfiguration.h"
@@ -35,17 +35,17 @@
 
 namespace tigl
 {
-CTiglRelativeComponent::CTiglRelativeComponent(boost::optional<std::string>* parentUid, CCPACSTransformation* trans)
+CTiglRelativelyPositionedComponent::CTiglRelativelyPositionedComponent(boost::optional<std::string>* parentUid, CCPACSTransformation* trans)
     : _transformation(trans), _symmetryAxis(static_cast<TiglSymmetryAxis*>(NULL)), _parentUID(parentUid), _parent(NULL) {}
 
-CTiglRelativeComponent::CTiglRelativeComponent(boost::optional<std::string>* parentUid, CCPACSTransformation* trans, TiglSymmetryAxis* symmetryAxis)
+CTiglRelativelyPositionedComponent::CTiglRelativelyPositionedComponent(boost::optional<std::string>* parentUid, CCPACSTransformation* trans, TiglSymmetryAxis* symmetryAxis)
     : _transformation(trans), _symmetryAxis(symmetryAxis), _parentUID(parentUid), _parent(NULL) {}
 
-CTiglRelativeComponent::CTiglRelativeComponent(boost::optional<std::string>* parentUid, CCPACSTransformation* trans, boost::optional<TiglSymmetryAxis>* symmetryAxis)
+CTiglRelativelyPositionedComponent::CTiglRelativelyPositionedComponent(boost::optional<std::string>* parentUid, CCPACSTransformation* trans, boost::optional<TiglSymmetryAxis>* symmetryAxis)
     : _transformation(trans), _symmetryAxis(symmetryAxis), _parentUID(parentUid), _parent(NULL) {}
 
 
-void CTiglRelativeComponent::Reset()
+void CTiglRelativelyPositionedComponent::Reset()
 {
     CTiglAbstractGeometricComponent::Reset();
     if (_transformation)
@@ -54,7 +54,7 @@ void CTiglRelativeComponent::Reset()
 
 namespace {
     struct GetSymmetryVisitor : boost::static_visitor<TiglSymmetryAxis> {
-        GetSymmetryVisitor(CTiglRelativeComponent* parent)
+        GetSymmetryVisitor(CTiglRelativelyPositionedComponent* parent)
             : _parent(parent) {}
 
         TiglSymmetryAxis operator()(const TiglSymmetryAxis* s) {
@@ -75,11 +75,11 @@ namespace {
         }
 
     private:
-        CTiglRelativeComponent* _parent;
+        CTiglRelativelyPositionedComponent* _parent;
     };
 }
 
-TiglSymmetryAxis CTiglRelativeComponent::GetSymmetryAxis() const {
+TiglSymmetryAxis CTiglRelativelyPositionedComponent::GetSymmetryAxis() const {
     GetSymmetryVisitor visitor(_parent);
     return _symmetryAxis.apply_visitor(visitor);
 }
@@ -105,12 +105,12 @@ namespace {
     };
 }
 
-void CTiglRelativeComponent::SetSymmetryAxis(const TiglSymmetryAxis& axis) {
+void CTiglRelativelyPositionedComponent::SetSymmetryAxis(const TiglSymmetryAxis& axis) {
     SetSymmetryVisitor visitor(axis);
     _symmetryAxis.apply_visitor(visitor);
 }
 
-CTiglTransformation CTiglRelativeComponent::GetTransformation() const
+CTiglTransformation CTiglRelativelyPositionedComponent::GetTransformation() const
 {
     if (_transformation)
         return _transformation->getTransformationMatrix();
@@ -118,7 +118,7 @@ CTiglTransformation CTiglRelativeComponent::GetTransformation() const
         return CTiglTransformation();
 }
 
-CTiglPoint CTiglRelativeComponent::GetRotation() const
+CTiglPoint CTiglRelativelyPositionedComponent::GetRotation() const
 {
     if (_transformation)
         return _transformation->getRotation();
@@ -126,7 +126,7 @@ CTiglPoint CTiglRelativeComponent::GetRotation() const
         return CTiglPoint(0, 0, 0);
 }
 
-CTiglPoint CTiglRelativeComponent::GetScaling() const
+CTiglPoint CTiglRelativelyPositionedComponent::GetScaling() const
 {
     if (_transformation)
         return _transformation->getScaling();
@@ -134,7 +134,7 @@ CTiglPoint CTiglRelativeComponent::GetScaling() const
         return CTiglPoint(1, 1, 1);
 }
 
-CTiglPoint CTiglRelativeComponent::GetTranslation() const
+CTiglPoint CTiglRelativelyPositionedComponent::GetTranslation() const
 {
     if (_transformation)
         return _transformation->getTranslationVector();
@@ -142,7 +142,7 @@ CTiglPoint CTiglRelativeComponent::GetTranslation() const
         return CTiglPoint(0, 0, 0);
 }
 
-ECPACSTranslationType CTiglRelativeComponent::GetTranslationType() const
+ECPACSTranslationType CTiglRelativelyPositionedComponent::GetTranslationType() const
 {
     if (_transformation)
         return _transformation->getTranslationType();
@@ -150,7 +150,7 @@ ECPACSTranslationType CTiglRelativeComponent::GetTranslationType() const
         return ENUM_VALUE(ECPACSTranslationType, ABS_GLOBAL); // TODO(bgruber): is this a valid default?
 }
 
-void CTiglRelativeComponent::Translate(CTiglPoint trans)
+void CTiglRelativelyPositionedComponent::Translate(CTiglPoint trans)
 {
     if (_transformation) {
         _transformation->setTranslation(GetTranslation() + trans, GetTranslationType());
@@ -162,7 +162,7 @@ void CTiglRelativeComponent::Translate(CTiglPoint trans)
 
 
 // Returns a pointer to the list of children of a component.
-CTiglRelativeComponent::ChildContainerType CTiglRelativeComponent::GetChildren(bool recursive)
+CTiglRelativelyPositionedComponent::ChildContainerType CTiglRelativelyPositionedComponent::GetChildren(bool recursive)
 {
     if (!recursive) {
         return _children;
@@ -179,7 +179,7 @@ CTiglRelativeComponent::ChildContainerType CTiglRelativeComponent::GetChildren(b
 }
 
 // Returns the parent unique id
-boost::optional<const std::string&> CTiglRelativeComponent::GetParentUID() const
+boost::optional<const std::string&> CTiglRelativelyPositionedComponent::GetParentUID() const
 {
     if (!_parentUID || !*_parentUID)
         return boost::optional<const std::string&>();
@@ -187,25 +187,25 @@ boost::optional<const std::string&> CTiglRelativeComponent::GetParentUID() const
 }
 
 // Sets the parent uid.
-void CTiglRelativeComponent::SetParentUID(const std::string& parentUID)
+void CTiglRelativelyPositionedComponent::SetParentUID(const std::string& parentUID)
 {
     if (!_parentUID)
         throw CTiglError("Derived type does not have a parentUID field");
     **_parentUID = parentUID;
 }
 
-void CTiglRelativeComponent::SetParent(CTiglRelativeComponent& parent)
+void CTiglRelativelyPositionedComponent::SetParent(CTiglRelativelyPositionedComponent& parent)
 {
     _parent = &parent;
 }
 
 // Adds a child to this geometric component.
-void CTiglRelativeComponent::AddChild(CTiglRelativeComponent& child)
+void CTiglRelativelyPositionedComponent::AddChild(CTiglRelativelyPositionedComponent& child)
 {
     _children.push_back(&child);
 }
 
-void CTiglRelativeComponent::ClearChildren()
+void CTiglRelativelyPositionedComponent::ClearChildren()
 {
     _children.clear();
 }

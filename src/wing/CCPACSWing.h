@@ -31,7 +31,7 @@
 #include "generated/CPACSWing.h"
 #include "tigl_config.h"
 #include "CTiglTransformation.h"
-#include "CTiglRelativeComponent.h"
+#include "CTiglRelativelyPositionedComponent.h"
 #include "CCPACSWingSections.h"
 #include "CCPACSWingSegments.h"
 #include "CCPACSWingComponentSegments.h"
@@ -45,7 +45,7 @@ namespace tigl
 {
 class CCPACSConfiguration;
 
-class CCPACSWing : public generated::CPACSWing, public CTiglRelativeComponent
+class CCPACSWing : public generated::CPACSWing, public CTiglRelativelyPositionedComponent
 {
 public:
     // Constructor
@@ -63,7 +63,7 @@ public:
 
     TIGL_EXPORT virtual const std::string& GetUID() const OVERRIDE;
 
-    using CTiglRelativeComponent::GetTransformation;
+    using CTiglRelativelyPositionedComponent::GetTransformation;
 
     // Returns whether this wing is a rotor blade
     TIGL_EXPORT bool IsRotorBlade() const;

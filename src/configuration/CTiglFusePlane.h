@@ -28,7 +28,7 @@ namespace tigl
 {
 
 class CCPACSConfiguration;
-class CTiglRelativeComponent;
+class CTiglRelativelyPositionedComponent;
 
 enum TiglFuseResultMode
 {
@@ -51,7 +51,7 @@ public:
     TIGL_EXPORT const ListPNamedShape& Intersections();
 
 private:
-    PNamedShape FuseWithChilds(CTiglRelativeComponent* parent, const std::vector<CTiglRelativeComponent*>& children);
+    PNamedShape FuseWithChilds(CTiglRelativelyPositionedComponent* parent, const std::vector<CTiglRelativelyPositionedComponent*>& children);
     
     void Invalidate();
     void Perform();

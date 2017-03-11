@@ -26,7 +26,7 @@
 #ifndef CCPACSROTORBLADE_H
 #define CCPACSROTORBLADE_H
 
-#include "CTiglRelativeComponent.h"
+#include "CTiglRelativelyPositionedComponent.h"
 #include "CCPACSTransformation.h"
 
 namespace tigl
@@ -37,7 +37,7 @@ class CCPACSRotor;
 class CCPACSRotorBladeAttachment;
 class CCPACSWing;
 
-class CTiglAttachedRotorBlade : public CTiglRelativeComponent
+class CTiglAttachedRotorBlade : public CTiglRelativelyPositionedComponent
 {
 
 public:
@@ -131,7 +131,7 @@ private:
     TopoDS_Shape                 rotorDisk;            /**< Rotor disk geometry of the rotor blade */
     double                       myVolume;             /**< Volume of this rotor blade              */
     double                       mySurfaceArea;        /**< Surface area of this rotor blade        */
-    CCPACSTransformation         transformation;       // TODO(bgruber): a CTiglTransformation would be better here, but CTiglRelativeComponent requires CCPACSTransformation to allow manipulations
+    CCPACSTransformation         transformation;       // TODO(bgruber): a CTiglTransformation would be better here, but CTiglRelativelyPositionedComponent requires CCPACSTransformation to allow manipulations
 };
 
 } // end namespace tigl

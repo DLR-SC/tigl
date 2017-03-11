@@ -31,7 +31,7 @@
 #include "generated/CPACSRotor.h"
 #include "tigl_config.h"
 #include "CTiglTransformation.h"
-#include "CTiglRelativeComponent.h"
+#include "CTiglRelativelyPositionedComponent.h"
 #include "CCPACSRotorHub.h"
 
 #include "TopoDS_Shape.hxx"
@@ -51,7 +51,7 @@ enum TiglRotorType
 
 class CCPACSConfiguration;
 
-class CCPACSRotor : public generated::CPACSRotor, public CTiglRelativeComponent
+class CCPACSRotor : public generated::CPACSRotor, public CTiglRelativelyPositionedComponent
 {
 
 public:

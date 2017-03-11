@@ -42,7 +42,7 @@ namespace tigl
 
 // Constructor
 CTiglAttachedRotorBlade::CTiglAttachedRotorBlade(CCPACSRotorBladeAttachment* parent, CCPACSWing& rotorBlade, int index)
-    : CTiglRelativeComponent(NULL, &transformation)
+    : CTiglRelativelyPositionedComponent(NULL, &transformation)
     , parent(parent)
     , rotorBlade(&rotorBlade)
     , rotorBladeIndex(index)

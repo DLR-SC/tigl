@@ -45,14 +45,14 @@ namespace tigl
 class CTiglUIDManager;
 
 // Base class for all CPACS objects which can be placed relatively to another one
-class CTiglRelativeComponent : public CTiglAbstractGeometricComponent
+class CTiglRelativelyPositionedComponent : public CTiglAbstractGeometricComponent
 {
 public:
-    typedef std::vector<CTiglRelativeComponent*> ChildContainerType;
+    typedef std::vector<CTiglRelativelyPositionedComponent*> ChildContainerType;
 
-    TIGL_EXPORT CTiglRelativeComponent(boost::optional<std::string>* parentUid, CCPACSTransformation* trans);
-    TIGL_EXPORT CTiglRelativeComponent(boost::optional<std::string>* parentUid, CCPACSTransformation* trans, TiglSymmetryAxis* symmetryAxis);
-    TIGL_EXPORT CTiglRelativeComponent(boost::optional<std::string>* parentUid, CCPACSTransformation* trans, boost::optional<TiglSymmetryAxis>* symmetryAxis);
+    TIGL_EXPORT CTiglRelativelyPositionedComponent(boost::optional<std::string>* parentUid, CCPACSTransformation* trans);
+    TIGL_EXPORT CTiglRelativelyPositionedComponent(boost::optional<std::string>* parentUid, CCPACSTransformation* trans, TiglSymmetryAxis* symmetryAxis);
+    TIGL_EXPORT CTiglRelativelyPositionedComponent(boost::optional<std::string>* parentUid, CCPACSTransformation* trans, boost::optional<TiglSymmetryAxis>* symmetryAxis);
 
     TIGL_EXPORT void Reset();
 
@@ -79,12 +79,12 @@ protected:
 
 private:
     friend class CTiglUIDManager;
-    TIGL_EXPORT void SetParent(CTiglRelativeComponent& parent);
-    TIGL_EXPORT void AddChild(CTiglRelativeComponent& child);
+    TIGL_EXPORT void SetParent(CTiglRelativelyPositionedComponent& parent);
+    TIGL_EXPORT void AddChild(CTiglRelativelyPositionedComponent& child);
     TIGL_EXPORT void ClearChildren();
 
 private:
-    CTiglRelativeComponent* _parent;
+    CTiglRelativelyPositionedComponent* _parent;
     ChildContainerType _children;
     boost::optional<std::string>* _parentUID; ///< UID of the parent of this component, if supported by derived type
 

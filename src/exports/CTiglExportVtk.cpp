@@ -29,7 +29,7 @@
 #include "CTiglLogging.h"
 #include "CTiglExportVtk.h"
 #include "CCPACSConfiguration.h"
-#include "CTiglRelativeComponent.h"
+#include "CTiglRelativelyPositionedComponent.h"
 #include "CTiglAbstractSegment.h"
 #include "CCPACSWing.h"
 #include "CCPACSConfiguration.h"
@@ -79,14 +79,14 @@ void CTiglExportVtk::ExportMeshedWingVTKByUID(const std::string& wingUID, const 
 // Exports a by index selected fuselage, boolean fused and meshed, as VTK file
 void CTiglExportVtk::ExportMeshedFuselageVTKByIndex(const int fuselageIndex, const std::string& filename, const double deflection)
 {
-    CTiglRelativeComponent & component = myConfig.GetFuselage(fuselageIndex);
+    CTiglRelativelyPositionedComponent & component = myConfig.GetFuselage(fuselageIndex);
     ExportMeshedFuselageVTKByUID(component.GetUID(), filename, deflection);
 }
 
 // Exports a by UID selected fuselage, boolean fused and meshed, as VTK file
 void CTiglExportVtk::ExportMeshedFuselageVTKByUID(const std::string& fuselageUID, const std::string& filename, const double deflection)
 {
-    CTiglRelativeComponent & component = myConfig.GetFuselage(fuselageUID);
+    CTiglRelativelyPositionedComponent & component = myConfig.GetFuselage(fuselageUID);
     const TopoDS_Shape& shape = component.GetLoft()->Shape();
     CTiglTriangularizer trian(shape, deflection, false);
     trian.writeVTK(filename.c_str());
@@ -121,7 +121,7 @@ void CTiglExportVtk::ExportMeshedWingVTKSimpleByIndex(const int wingIndex, const
 // Exports a by UID selected fuselage, boolean fused and meshed, as VTK file
 void CTiglExportVtk::ExportMeshedFuselageVTKSimpleByUID(const std::string& fuselageUID, const std::string& filename, const double deflection)
 {
-    CTiglRelativeComponent & component = myConfig.GetFuselage(fuselageUID);
+    CTiglRelativelyPositionedComponent & component = myConfig.GetFuselage(fuselageUID);
     const TopoDS_Shape& shape = component.GetLoft()->Shape();
     CTiglTriangularizer loftTrian(shape, deflection);
     loftTrian.writeVTK(filename.c_str());

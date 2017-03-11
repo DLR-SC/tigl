@@ -154,17 +154,17 @@ void CCPACSConfiguration::WriteCPACS(const std::string& configurationUID)
 }
 
 // transform all components relative to their parents
-void CCPACSConfiguration::transformAllComponents(CTiglRelativeComponent* parent)
+void CCPACSConfiguration::transformAllComponents(CTiglRelativelyPositionedComponent* parent)
 {
     if (!parent) {
         return;
     }
 
-    CTiglRelativeComponent::ChildContainerType children = parent->GetChildren(false);
-    CTiglRelativeComponent::ChildContainerType::iterator pIter;
+    CTiglRelativelyPositionedComponent::ChildContainerType children = parent->GetChildren(false);
+    CTiglRelativelyPositionedComponent::ChildContainerType::iterator pIter;
     CTiglPoint parentTranslation = parent->GetTranslation();
     for (pIter = children.begin(); pIter != children.end(); ++pIter) {
-        CTiglRelativeComponent* child = *pIter;
+        CTiglRelativelyPositionedComponent* child = *pIter;
         if (child->GetTranslationType() == ENUM_VALUE(ECPACSTranslationType, ABS_LOCAL)) {
             child->Translate(parentTranslation);
         }

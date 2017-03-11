@@ -18,7 +18,7 @@
 
 #include "CTiglTriangularizer.h"
 #include "ITiglGeometricComponent.h"
-#include "CTiglRelativeComponent.h"
+#include "CTiglRelativelyPositionedComponent.h"
 #include "CCPACSWing.h"
 #include "CCPACSWingSegment.h"
 #include "CCPACSConfiguration.h"
@@ -103,7 +103,7 @@ int CTiglTriangularizer::triangularizeShape(const TopoDS_Shape& shape)
     return 0;
 }
 
-CTiglTriangularizer::CTiglTriangularizer(CTiglRelativeComponent& comp, double deflection, ComponentTraingMode mode) 
+CTiglTriangularizer::CTiglTriangularizer(CTiglRelativelyPositionedComponent& comp, double deflection, ComponentTraingMode mode) 
 {
     useMultipleObjects(false);
     LOG(INFO) << "Calculating fused plane";
@@ -122,7 +122,7 @@ CTiglTriangularizer::CTiglTriangularizer(CCPACSConfiguration& config, bool fuseS
         TopoDS_Shape planeShape = fuser->FusedPlane()->Shape();
 
         useMultipleObjects(false);
-        std::vector<CTiglRelativeComponent*> rootComponentPtrs;
+        std::vector<CTiglRelativelyPositionedComponent*> rootComponentPtrs;
         const RelativeComponentContainerType& rootComponents = config.GetUIDManager().GetAllRootComponents();
         for (RelativeComponentContainerType::const_iterator it = rootComponents.begin(); it != rootComponents.end(); ++it)
             rootComponentPtrs.push_back(it->second);
@@ -175,17 +175,17 @@ bool isValidCoord(double c)
     }
 }
 
-int CTiglTriangularizer::triangularizeComponent(CTiglRelativeComponent& component, bool include_childs, const TopoDS_Shape& shape, double deflection, ComponentTraingMode mode)
+int CTiglTriangularizer::triangularizeComponent(CTiglRelativelyPositionedComponent& component, bool include_childs, const TopoDS_Shape& shape, double deflection, ComponentTraingMode mode)
 {
-    return triangularizeComponent(std::vector<CTiglRelativeComponent*>(1, &component), include_childs, shape, deflection, mode);
+    return triangularizeComponent(std::vector<CTiglRelativelyPositionedComponent*>(1, &component), include_childs, shape, deflection, mode);
 }
 
-int CTiglTriangularizer::triangularizeComponent(const std::vector<CTiglRelativeComponent*>& components, bool include_childs, const TopoDS_Shape& shape, double deflection, ComponentTraingMode mode)
+int CTiglTriangularizer::triangularizeComponent(const std::vector<CTiglRelativelyPositionedComponent*>& components, bool include_childs, const TopoDS_Shape& shape, double deflection, ComponentTraingMode mode)
 {
     // create list of child components
-    CTiglRelativeComponent::ChildContainerType allcomponents;
-    for (std::vector<CTiglRelativeComponent*>::const_iterator it = components.begin(); it != components.end(); ++it) {
-        CTiglRelativeComponent::ChildContainerType children = (*it)->GetChildren(true);
+    CTiglRelativelyPositionedComponent::ChildContainerType allcomponents;
+    for (std::vector<CTiglRelativelyPositionedComponent*>::const_iterator it = components.begin(); it != components.end(); ++it) {
+        CTiglRelativelyPositionedComponent::ChildContainerType children = (*it)->GetChildren(true);
         allcomponents.push_back(*it);
         allcomponents.insert(allcomponents.end(), children.begin(), children.end());
     }
@@ -215,9 +215,9 @@ int CTiglTriangularizer::triangularizeComponent(const std::vector<CTiglRelativeC
             
             // search to which component the current face belongs to
             bool found = false;
-            CTiglRelativeComponent::ChildContainerType::iterator compit;
+            CTiglRelativelyPositionedComponent::ChildContainerType::iterator compit;
             for (compit = allcomponents.begin(); compit != allcomponents.end(); ++compit) {
-                CTiglRelativeComponent& curcomp = *(*compit);
+                CTiglRelativelyPositionedComponent& curcomp = *(*compit);
                 if (curcomp.GetComponentType() & TIGL_COMPONENT_WING){
                     // check to which segment this face belongs
                     CCPACSWing& wing = dynamic_cast<CCPACSWing&>(curcomp);

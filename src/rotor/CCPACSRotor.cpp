@@ -42,7 +42,7 @@ namespace tigl
 // Constructor
 CCPACSRotor::CCPACSRotor(CCPACSRotors* parent)
     : generated::CPACSRotor(parent)
-    , CTiglRelativeComponent(&m_parentUID, &m_transformation, &m_symmetry)
+    , CTiglRelativelyPositionedComponent(&m_parentUID, &m_transformation, &m_symmetry)
     , rebuildGeometry(true) {}
 
 // Invalidates internal state
@@ -94,7 +94,7 @@ CTiglTransformation CCPACSRotor::GetTransformation() const
 // Sets the Transformation object
 void CCPACSRotor::Translate(CTiglPoint trans)
 {
-    CTiglRelativeComponent::Translate(trans);
+    CTiglRelativelyPositionedComponent::Translate(trans);
     Invalidate();
     Update();
 }

@@ -41,7 +41,7 @@ namespace tigl
 
 // Constructor
 CCPACSGenericSystem::CCPACSGenericSystem(CCPACSConfiguration* config)
-    : CTiglRelativeComponent(NULL, &transformation, &symmetryAxis), configuration(config)
+    : CTiglRelativelyPositionedComponent(NULL, &transformation, &symmetryAxis), configuration(config)
 {
     Cleanup();
 }
@@ -216,7 +216,7 @@ std::string CCPACSGenericSystem::GetShortShapeName()
 // Sets the Transformation object
 void CCPACSGenericSystem::Translate(CTiglPoint trans)
 {
-    CTiglRelativeComponent::Translate(trans);
+    CTiglRelativelyPositionedComponent::Translate(trans);
     invalidated = true;
     Update();
 }

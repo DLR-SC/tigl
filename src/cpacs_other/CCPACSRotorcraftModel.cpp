@@ -23,7 +23,7 @@
 namespace tigl
 {
 CCPACSRotorcraftModel::CCPACSRotorcraftModel(CCPACSConfiguration* config)
-    : CTiglRelativeComponent(NULL, NULL), config(config) {}
+    : CTiglRelativelyPositionedComponent(NULL, NULL), config(config) {}
 
 void CCPACSRotorcraftModel::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) {
     generated::CPACSRotorcraftModel::ReadCPACS(tixiHandle, xpath);

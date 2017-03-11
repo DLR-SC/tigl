@@ -60,7 +60,7 @@ namespace external_object_private
 using namespace external_object_private;
 
 CCPACSExternalObject::CCPACSExternalObject(CCPACSExternalObjects* parent)
-    : generated::CPACSGenericGeometricComponent(parent), CTiglRelativeComponent(&m_parentUID, &m_transformation) {}
+    : generated::CPACSGenericGeometricComponent(parent), CTiglRelativelyPositionedComponent(&m_parentUID, &m_transformation) {}
 
 const std::string& CCPACSExternalObject::GetUID() const {
     return generated::CPACSGenericGeometricComponent::GetUID();

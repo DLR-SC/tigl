@@ -27,13 +27,13 @@
 #define CCPACSAIRCRAFTMODEL_H
 
 #include "generated/CPACSAircraftModel.h"
-#include "CTiglRelativeComponent.h"
+#include "CTiglRelativelyPositionedComponent.h"
 
 namespace tigl
 {
 class CCPACSConfiguration;
 
-class CCPACSAircraftModel : public generated::CPACSAircraftModel, public CTiglRelativeComponent
+class CCPACSAircraftModel : public generated::CPACSAircraftModel, public CTiglRelativelyPositionedComponent
 {
 public:
     // Construct

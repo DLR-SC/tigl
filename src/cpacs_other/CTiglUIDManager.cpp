@@ -36,13 +36,13 @@ CTiglUIDManager::CTiglUIDManager()
     : invalidated(true), rootComponent(NULL) {}
 
 namespace {
-    void writeComponent(CTiglRelativeComponent* c, int level = 0) {
+    void writeComponent(CTiglRelativelyPositionedComponent* c, int level = 0) {
         std::string indentation;
         for (int i = 0; i < level; i++)
             indentation += '\t';
         LOG(INFO) << indentation << c->GetUID() << std::endl;
-        const CTiglRelativeComponent::ChildContainerType& children = c->GetChildren(false);
-        for (CTiglRelativeComponent::ChildContainerType::const_iterator it = children.begin(); it != children.end(); ++it)
+        const CTiglRelativelyPositionedComponent::ChildContainerType& children = c->GetChildren(false);
+        for (CTiglRelativelyPositionedComponent::ChildContainerType::const_iterator it = children.begin(); it != children.end(); ++it)
             writeComponent(*it, level + 1);
     }
 }
@@ -77,7 +77,7 @@ void CTiglUIDManager::AddUID(const std::string& uid, ITiglGeometricComponent* co
         throw CTiglError("Null pointer for component in CTiglUIDManager::AddUID", TIGL_NULL_POINTER);
     }
 
-    CTiglRelativeComponent* tmp = dynamic_cast<CTiglRelativeComponent*>(componentPtr);
+    CTiglRelativelyPositionedComponent* tmp = dynamic_cast<CTiglRelativelyPositionedComponent*>(componentPtr);
     if (tmp && (componentPtr->GetComponentType() & TIGL_COMPONENT_PHYSICAL) ) {
         relativeComponents[uid] = tmp;
     }
@@ -110,7 +110,7 @@ ITiglGeometricComponent& CTiglUIDManager::GetComponent(const std::string& uid) c
 }
 
 // Returns a pointer to the geometric component for the given unique id.
-CTiglRelativeComponent& CTiglUIDManager::GetRelativeComponent(const std::string& uid) const
+CTiglRelativelyPositionedComponent& CTiglUIDManager::GetRelativeComponent(const std::string& uid) const
 {
     if (uid.empty()) {
         throw CTiglError("Empty UID in CTiglUIDManager::GetComponent", TIGL_XML_ERROR);
@@ -136,9 +136,9 @@ void CTiglUIDManager::Clear()
 
 // Returns the parent component for a component or a null pointer
 // if there is no parent.
-CTiglRelativeComponent* CTiglUIDManager::GetParentComponent(const std::string& uid) const
+CTiglRelativelyPositionedComponent* CTiglUIDManager::GetParentComponent(const std::string& uid) const
 {
-    CTiglRelativeComponent& component = GetRelativeComponent(uid);
+    CTiglRelativelyPositionedComponent& component = GetRelativeComponent(uid);
     const boost::optional<const std::string&> parentUID = component.GetParentUID();
     return parentUID ? NULL : &GetRelativeComponent(*parentUID);
 }
@@ -160,10 +160,10 @@ void CTiglUIDManager::BuildTree()
 
     // build relations
     for (RelativeComponentContainerType::iterator it = relativeComponents.begin(); it != relativeComponents.end(); ++it) {
-        CTiglRelativeComponent& c = *it->second;
+        CTiglRelativelyPositionedComponent& c = *it->second;
         const boost::optional<const std::string&> parentUid = c.GetParentUID();
         if (parentUid) {
-            CTiglRelativeComponent& p = GetRelativeComponent(*parentUid);
+            CTiglRelativelyPositionedComponent& p = GetRelativeComponent(*parentUid);
             p.AddChild(c);
             c.SetParent(p);
         }
@@ -172,7 +172,7 @@ void CTiglUIDManager::BuildTree()
     // find all components without a parent uid and find component with most children
     std::size_t count = 0;
     for (RelativeComponentContainerType::iterator it = relativeComponents.begin(); it != relativeComponents.end(); ++it) {
-        CTiglRelativeComponent* c = it->second;
+        CTiglRelativelyPositionedComponent* c = it->second;
         if (!c->GetParentUID()) {
             rootComponents[it->first] = c;
         }
