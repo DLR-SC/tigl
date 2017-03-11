@@ -41,21 +41,14 @@ class ITiglWingProfileAlgo
 {
 public:
     // Clean up 
-    virtual void Cleanup(void)  = 0;
+    virtual void Cleanup()  = 0;
 
-    virtual void Update(void)   = 0;
+    virtual void Update()   = 0;
 
-    // Returns the algorithm code identifier for an algorithm
-    virtual void ReadCPACS(TixiDocumentHandle tixiHandle)  = 0;
-
-    // Saves the profile data
-    virtual void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& profileXPath) = 0;
 
     // Returns points on profile.
-    virtual std::vector<CTiglPoint*> GetSamplePoints() const = 0;
 
-    // get profiles CPACS XML path
-    virtual const std::string & GetProfileDataXPath() const = 0;
+    virtual const std::vector<CTiglPoint>& GetSamplePoints() const = 0;
 
     // get upper wing profile wire
     virtual const TopoDS_Edge & GetUpperWire() const = 0;

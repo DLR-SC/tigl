@@ -28,7 +28,7 @@
 #include "PNamedShape.h"
 #include "ListPNamedShape.h"
 #include "CCPACSConfiguration.h"
-#include "CTiglAbstractPhysicalComponent.h"
+#include "CTiglRelativelyPositionedComponent.h"
 #include <TopoDS_Edge.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <TopTools_ListOfShape.hxx>

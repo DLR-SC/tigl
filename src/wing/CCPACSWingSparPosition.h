@@ -16,12 +16,7 @@
 #ifndef CCPACSWINGSPARPOSITION_H
 #define CCPACSWINGSPARPOSITION_H
 
-#include <string>
-
-#include <tixi.h>
-
-#include "tigl_internal.h"
-
+#include "generated/CPACSSparPosition.h"
 
 namespace tigl
 {
@@ -30,24 +25,21 @@ namespace tigl
 class CCPACSWingSpars;
 
 
-class CCPACSWingSparPosition
+class CCPACSWingSparPosition : public generated::CPACSSparPosition
 {
 public:
-    enum /* class */ InputType
+#ifdef HAVE_CPP11
+    enum class InputType
+#else
+    enum InputType
+#endif
     {
         ElementUID,
         Eta,
         None
     };
 
-    TIGL_EXPORT CCPACSWingSparPosition(CCPACSWingSpars* spars);
-
-    TIGL_EXPORT virtual ~CCPACSWingSparPosition();
-
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & sparPositionXPath);
-    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string & sparPositionXPath) const;
-
-    TIGL_EXPORT const std::string & GetUID() const;
+    TIGL_EXPORT CCPACSWingSparPosition(CCPACSWingSparPositions* sparPositions);
 
     TIGL_EXPORT InputType GetInputType() const;
 
@@ -55,25 +47,7 @@ public:
     TIGL_EXPORT void SetElementUID(const std::string&);
 
     TIGL_EXPORT double GetEta() const;
-    TIGL_EXPORT void  SetEta(double);
-
-    TIGL_EXPORT double GetXsi() const;
-    TIGL_EXPORT void SetXsi(double);
-
-protected:
-    void Cleanup();
-
-private:
-    CCPACSWingSparPosition(const CCPACSWingSparPosition&);
-    void operator=(const CCPACSWingSparPosition&);
-
-private:
-    CCPACSWingSpars& spars;
-    InputType inputType;
-    std::string uid;
-    std::string elementUID;
-    double eta;
-    double xsi;
+    TIGL_EXPORT void SetEta(double);
 };
 
 } // end namespace tigl

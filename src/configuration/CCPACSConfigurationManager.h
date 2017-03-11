@@ -46,7 +46,7 @@ private:
 
 public:
     // Returns a reference to the only instance of this class
-    TIGL_EXPORT static CCPACSConfigurationManager& GetInstance(void);
+    TIGL_EXPORT static CCPACSConfigurationManager& GetInstance();
 
     // Adds a configuration to the configuration container and returns a handle for it.
     TIGL_EXPORT TiglCPACSConfigurationHandle AddConfiguration(CCPACSConfiguration* config);
@@ -61,14 +61,14 @@ public:
     TIGL_EXPORT bool IsValid(TiglCPACSConfigurationHandle handle) const;
 
     // Invalidates all configurations and forces recalculation of wires/points etc.
-    TIGL_EXPORT void Invalidate(void);
+    TIGL_EXPORT void Invalidate();
 
     // Destructor
-    TIGL_EXPORT ~CCPACSConfigurationManager(void);
+    TIGL_EXPORT ~CCPACSConfigurationManager();
 
 private:
     // Constructor
-    CCPACSConfigurationManager(void);
+    CCPACSConfigurationManager();
 
     // Copy constructor
     CCPACSConfigurationManager(const CCPACSConfigurationManager& );

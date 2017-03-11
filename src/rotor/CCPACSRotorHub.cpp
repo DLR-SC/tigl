@@ -25,179 +25,74 @@
 
 #include "CCPACSRotorHub.h"
 #include "CCPACSRotor.h"
+#include "CCPACSRotorBladeAttachment.h"
 #include "CTiglError.h"
 
 namespace tigl
 {
 
 // Constructor
-CCPACSRotorHub::CCPACSRotorHub(CCPACSRotor* rotor)
-    : rotor(rotor)
-    , rotorBladeAttachments(rotor)
-{
-    Cleanup();
-}
-
-// Virtual destructor
-CCPACSRotorHub::~CCPACSRotorHub(void)
-{
-    Cleanup();
-}
-
-// Cleanup routine
-void CCPACSRotorHub::Cleanup(void)
-{
-    uID = "";
-    name = "";
-    description = "";
-    type = TIGLROTORHUB_UNDEFINED;
-    //rotorBladeAttachments.Cleanup();
-
-    Invalidate();
-}
-
-// Update internal rotor hub data
-void CCPACSRotorHub::Update(void)
-{
-    if (!invalidated) {
-        return;
-    }
-
-    invalidated = false;
-}
-
-// Invalidates internal state
-void CCPACSRotorHub::Invalidate(void)
-{
-    invalidated = true;
-}
-
-// Read CPACS rotorHub elements
-void CCPACSRotorHub::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& rotorHubXPath)
-{
-    Cleanup();
-
-    std::string tempString;
-
-    // Get attribute "uID"
-    char* ptrUID  = NULL;
-    if (tixiGetTextAttribute(tixiHandle, rotorHubXPath.c_str(), "uID", &ptrUID) == SUCCESS) {
-        uID = ptrUID;
-    }
-
-    // Get subelement "name"
-    char* ptrName = NULL;
-    tempString    = rotorHubXPath + "/name";
-    if (tixiGetTextElement(tixiHandle, tempString.c_str(), &ptrName) == SUCCESS) {
-        name = ptrName;
-    }
-
-    // Get subelement "description"
-    char* ptrDescription = NULL;
-    tempString    = rotorHubXPath + "/description";
-    if (tixiGetTextElement(tixiHandle, tempString.c_str(), &ptrDescription) == SUCCESS) {
-        description = ptrDescription;
-    }
-
-    // Get subelement "type"
-    char* ptrType = NULL;
-    tempString    = rotorHubXPath + "/type";
-    if (tixiGetTextElement(tixiHandle, tempString.c_str(), &ptrType) == SUCCESS) {
-        std::string strType(ptrType);
-        if (strType == "semiRigid") {
-            type = TIGLROTORHUB_SEMI_RIGID;
-        }
-        else if (strType == "rigid") {
-            type = TIGLROTORHUB_RIGID;
-        }
-        else if (strType == "articulated") {
-            type = TIGLROTORHUB_ARTICULATED;
-        }
-        else if (strType == "hingeless") {
-            type = TIGLROTORHUB_HINGELESS;
-        }
-        else {
-            throw CTiglError("Error: XML error while reading <type> in CCPACSRotorHub::ReadCPACS: illegal value", TIGL_XML_ERROR);
-        }
-    }
-    else {
-        type = TIGLROTORHUB_UNDEFINED;
-    }
-
-    // Get subelement "rotorBladeAttachments"
-    rotorBladeAttachments.ReadCPACS(tixiHandle, rotorHubXPath + "/rotorBladeAttachments", "rotorBladeAttachment");
-
-    Update();
-}
-
-// Returns the UID of the rotor hub
-std::string CCPACSRotorHub::GetUID(void) const
-{
-    return uID;
-}
-
-// Returns the name of the rotor hub
-const std::string& CCPACSRotorHub::GetName(void) const
-{
-    return name;
-}
-
-// Returns the description of the rotor hub
-const std::string& CCPACSRotorHub::GetDescription(void) const
-{
-    return description;
-}
+CCPACSRotorHub::CCPACSRotorHub(CCPACSRotor* parent)
+    : generated::CPACSRotorHub(parent) {}
 
 // Returns the type of the rotor hub
-const TiglRotorHubType& CCPACSRotorHub::GetType(void) const
+TiglRotorHubType CCPACSRotorHub::GetType() const
 {
-    return type;
+    if (!m_type)
+        return ENUM_VALUE(TiglRotorHubType, TIGLROTORHUB_UNDEFINED);
+    switch (*m_type) {
+        case ENUM_VALUE_NS(generated, CPACSRotorHub_type, articulated): return ENUM_VALUE(TiglRotorHubType, TIGLROTORHUB_ARTICULATED);
+        case ENUM_VALUE_NS(generated, CPACSRotorHub_type, hingeless):   return ENUM_VALUE(TiglRotorHubType, TIGLROTORHUB_HINGELESS);
+        case ENUM_VALUE_NS(generated, CPACSRotorHub_type, rigid):       return ENUM_VALUE(TiglRotorHubType, TIGLROTORHUB_RIGID);
+        case ENUM_VALUE_NS(generated, CPACSRotorHub_type, semiRigid):   return ENUM_VALUE(TiglRotorHubType, TIGLROTORHUB_SEMI_RIGID);
+        default: throw CTiglError("unrecognized enum");
+    }
 }
 
 // Returns the rotor blade attachment count
-int CCPACSRotorHub::GetRotorBladeAttachmentCount(void) const
+int CCPACSRotorHub::GetRotorBladeAttachmentCount() const
 {
-    return rotorBladeAttachments.GetRotorBladeAttachmentCount();
+    return m_rotorBladeAttachments.GetRotorBladeAttachmentCount();
 }
 
 // Returns the rotor blade attachment for a given index
 CCPACSRotorBladeAttachment& CCPACSRotorHub::GetRotorBladeAttachment(int index) const
 {
-    return rotorBladeAttachments.GetRotorBladeAttachment(index);
+    return m_rotorBladeAttachments.GetRotorBladeAttachment(index);
 }
 
 // Returns the rotor blade count
-int CCPACSRotorHub::GetRotorBladeCount(void) const
+int CCPACSRotorHub::GetRotorBladeCount() const
 {
     int rotorBladeCount = 0;
     for (int i=1; i<=GetRotorBladeAttachmentCount(); i++) {
-        rotorBladeCount += GetRotorBladeAttachment(i).GetRotorBladeCount();
+        rotorBladeCount += GetRotorBladeAttachment(i).GetNumberOfBlades();
     }
     return rotorBladeCount;
 }
 
 // Returns the rotor blade for a given index
-CCPACSRotorBlade& CCPACSRotorHub::GetRotorBlade(int index) const
+CTiglAttachedRotorBlade& CCPACSRotorHub::GetRotorBlade(int index) const
 {
     int rotorBladeIndex = index;
     int rotorBladeAttachmentIndex = 1;
-    while (rotorBladeIndex > GetRotorBladeAttachment(rotorBladeAttachmentIndex).GetRotorBladeCount()) {
-        rotorBladeIndex -= GetRotorBladeAttachment(rotorBladeAttachmentIndex).GetRotorBladeCount();
+    while (rotorBladeIndex > GetRotorBladeAttachment(rotorBladeAttachmentIndex).GetNumberOfBlades()) {
+        rotorBladeIndex -= GetRotorBladeAttachment(rotorBladeAttachmentIndex).GetNumberOfBlades();
         rotorBladeAttachmentIndex++;
     }
-    return GetRotorBladeAttachment(rotorBladeAttachmentIndex).GetRotorBlade(rotorBladeIndex);
+    return GetRotorBladeAttachment(rotorBladeAttachmentIndex).GetAttachedRotorBlade(rotorBladeIndex);
 }
 
 // Returns the parent configuration
-CCPACSConfiguration& CCPACSRotorHub::GetConfiguration(void) const
+CCPACSConfiguration& CCPACSRotorHub::GetConfiguration() const
 {
-    return rotor->GetConfiguration();
+    return m_parent->GetConfiguration();
 }
 
 // Returns the parent rotor
-CCPACSRotor& CCPACSRotorHub::GetRotor(void) const
+CCPACSRotor& CCPACSRotorHub::GetRotor() const
 {
-    return *rotor;
+    return *m_parent;
 }
 
 } // end namespace tigl

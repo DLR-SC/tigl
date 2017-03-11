@@ -31,80 +31,47 @@
 
 #include "CCPACSWingSegment.h"
 #include "CTiglError.h"
-#include "IOHelper.h"
-#include "TixiSaveExt.h"
 
-namespace tigl 
+namespace tigl
 {
 
 // Constructor
-CCPACSWingSegments::CCPACSWingSegments(CCPACSWing* aWing)
-    : segments()
-    , wing(aWing)
-{
-}
-
-// Destructor
-CCPACSWingSegments::~CCPACSWingSegments(void)
-{
-    Cleanup();
-}
+CCPACSWingSegments::CCPACSWingSegments(CCPACSWing* parent)
+    : generated::CPACSWingSegments(parent) {}
 
 // Invalidates internal state
-void CCPACSWingSegments::Invalidate(void)
+void CCPACSWingSegments::Invalidate()
 {
-    for (int i = 1; i <= GetSegmentCount(); i++) {
-        GetSegment(i).Invalidate();
+    for (std::size_t i = 0; i < m_segment.size(); i++) {
+        m_segment[i]->Invalidate();
     }
-}
-
-// Cleanup routine
-void CCPACSWingSegments::Cleanup(void)
-{
-    for (CCPACSWingSegmentContainer::size_type i = 0; i < segments.size(); i++) {
-        delete segments[i];
-    }
-    segments.clear();
 }
 
 // Gets a segment by index. 
-CCPACSWingSegment & CCPACSWingSegments::GetSegment(const int index)
+CCPACSWingSegment& CCPACSWingSegments::GetSegment(int index)
 {
-    const int idx = index - 1;
-    if (idx < 0 || idx >= GetSegmentCount()) {
+    index--;
+    if (index < 0 || index >= GetSegmentCount()) {
         throw CTiglError("Error: Invalid index value in CCPACSWingSegments::GetSegment", TIGL_INDEX_ERROR);
     }
-    return (CCPACSWingSegment &) (*(segments[idx]));
+    return *m_segment[index];
 }
 
 // Gets a segment by uid. 
-CCPACSWingSegment & CCPACSWingSegments::GetSegment(const std::string& segmentUID)
+CCPACSWingSegment& CCPACSWingSegments::GetSegment(const std::string& segmentUID)
 {
-    for (CCPACSWingSegmentContainer::size_type i = 0; i < segments.size(); i++) {
-        if (segments[i]->GetUID() == segmentUID) {
-            return (CCPACSWingSegment &) (*(segments[i]));
+    for (std::size_t i = 0; i < m_segment.size(); i++) {
+        if (m_segment[i]->GetUID() == segmentUID) {
+            return *m_segment[i];
         }
     }
     throw CTiglError("Error: Invalid uid in CCPACSWingSegments::GetSegment", TIGL_UID_ERROR);
 }
 
 // Gets total segment count
-int CCPACSWingSegments::GetSegmentCount(void) const
+int CCPACSWingSegments::GetSegmentCount() const
 {
-    return static_cast<int>(segments.size());
-}
-
-// Read CPACS segments element
-void CCPACSWingSegments::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& xpath)
-{
-    Cleanup();
-    ReadContainerElement(tixiHandle, xpath, "segment", 1, segments, wing, ContainerElementIndex);
-}
-
-// Write CPACS segments element
-void CCPACSWingSegments::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& xpath) const
-{
-    WriteContainerElement(tixiHandle, xpath, "segment", segments);
+    return static_cast<int>(m_segment.size());
 }
 
 } // end namespace tigl

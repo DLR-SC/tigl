@@ -26,6 +26,7 @@
 #include "TIGLScriptEngine.h"
 #include "TIGLViewerWindow.h"
 #include "CCPACSConfigurationManager.h"
+#include "CNamedShape.h"
 
 #include <QWidget>
 
@@ -40,13 +41,13 @@ TIGLScriptProxy::TIGLScriptProxy(TIGLViewerWindow* app)
 }
 
 // Returns the CPACS configuration
-tigl::CCPACSConfiguration& TIGLScriptProxy::GetConfiguration(void)
+tigl::CCPACSConfiguration& TIGLScriptProxy::GetConfiguration()
 {
     tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
     return manager.GetConfiguration(getTiglHandle());
 }
 
-TiglCPACSConfigurationHandle TIGLScriptProxy::getTiglHandle(void)
+TiglCPACSConfigurationHandle TIGLScriptProxy::getTiglHandle()
 {
     if (!_app->getDocument()) {
         return -1;
@@ -415,14 +416,8 @@ QScriptValue TIGLScriptProxy::getShape(QString uid)
         tigl::CCPACSConfiguration& config = _app->getDocument()->GetConfiguration();
         tigl::CTiglUIDManager& manager = config.GetUIDManager();
         if (manager.HasUID(uid.toStdString()) ) {
-            tigl::ITiglGeometricComponent* component = manager.GetComponent(uid.toStdString());
-            if (component) {
-                TopoDS_Shape shape = component->GetLoft()->Shape();
-                return engine()->newVariant(QVariant::fromValue(shape));
-            }
-            else {
-                return QScriptValue::UndefinedValue;
-            }
+            TopoDS_Shape shape = manager.GetComponent(uid.toStdString()).GetLoft()->Shape();
+            return engine()->newVariant(QVariant::fromValue(shape));
         }
         else {
             return context()->throwError("No shape '" + uid + "'' on cpacs configuration.");

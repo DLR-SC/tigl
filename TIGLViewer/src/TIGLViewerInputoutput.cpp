@@ -36,11 +36,11 @@
 #include <Geom_Plane.hxx>
 #include <Geom_Line.hxx>
 
-TIGLViewerInputOutput::TIGLViewerInputOutput(void)
+TIGLViewerInputOutput::TIGLViewerInputOutput()
 {
 }
 
-TIGLViewerInputOutput::~TIGLViewerInputOutput(void)
+TIGLViewerInputOutput::~TIGLViewerInputOutput()
 {
 }
 

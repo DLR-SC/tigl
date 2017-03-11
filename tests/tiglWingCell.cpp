@@ -256,7 +256,7 @@ TEST_F(WingCellRibSpar, etaXsi) {
     tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
     tigl::CCPACSWing& wing = config.GetWing(1);
     tigl::CCPACSWingComponentSegment& componentSegment = static_cast<tigl::CCPACSWingComponentSegment&>(wing.GetComponentSegment(1));
-    const tigl::CCPACSWingCSStructure& structure = componentSegment.GetStructure();
+    tigl::CCPACSWingCSStructure& structure = componentSegment.GetStructure();
 
     tigl::CCPACSWingCell& cell = componentSegment.GetUpperShell().GetCell(1);
     checkCellEtaXsis(cell, expectedEtaXsi);
@@ -269,7 +269,7 @@ TEST_F(WingCellRibSpar, etaXsi) {
 
     // next we change the z-rotation of the rib
     // See: cell_rib_spar_test_2.png for placement of cells
-    structure.GetRibsDefinition(1).GetRibsPositioning().GetRibRotation().SetZRotation(75);
+    structure.GetRibsDefinition(1).GetRibsPositioning().GetRibRotation().SetZ(75);
     const std::pair<double, double> arr3[] = { DP(0.16, 0.28), DP(0.74, 0.47), DP(0.09, 0.8), DP(0.67, 1.0) };
     expectedEtaXsi = std::vector< std::pair<double, double> > (arr3, arr3 + sizeof(arr3) / sizeof(arr3[0]));
     // precision at 1E-2 since expected values are estimated based on geometric inspection

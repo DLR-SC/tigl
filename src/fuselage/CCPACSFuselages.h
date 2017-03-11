@@ -26,10 +26,9 @@
 #ifndef CCPACSFUSELAGES_H
 #define CCPACSFUSELAGES_H
 
+#include "generated/CPACSFuselages.h"
 #include "tigl_internal.h"
-#include <vector>
 
-#include "tixi.h"
 #include "CCPACSFuselage.h"
 #include "CCPACSFuselageProfile.h"
 #include "CCPACSFuselageProfiles.h"
@@ -37,46 +36,37 @@
 
 namespace tigl
 {
-
-class CCPACSConfiguration;
-
-class CCPACSFuselages
+class CCPACSFuselages : public generated::CPACSFuselages
 {
-
-private:
-    // Typedef for a CCPACSFuselage container to store the fuselages of a configuration.
-    typedef std::vector<CCPACSFuselage*> CCPACSFuselageContainer;
-
 public:
-    // Constructor
-    TIGL_EXPORT CCPACSFuselages(CCPACSConfiguration* config);
-
-    // Virtual Destructor
-    TIGL_EXPORT virtual ~CCPACSFuselages(void);
+    //TIGL_EXPORT CCPACSFuselages();
+    TIGL_EXPORT CCPACSFuselages(CCPACSAircraftModel* parent);
+    TIGL_EXPORT CCPACSFuselages(CCPACSRotorcraftModel* parent);
 
     // Invalidates internal state
-    TIGL_EXPORT void Invalidate(void);
+    TIGL_EXPORT void Invalidate();
 
     // Read CPACS fuselage elements
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const char* configurationUID);
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& xpath);
 
     // Write CPACS fuselage elements
-    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& configurationUID);
+    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& xpath) const;
 
-    TIGL_EXPORT bool HasProfile(std::string uid) const;
+    DEPRECATED TIGL_EXPORT bool HasProfile(std::string uid) const;
 
     // Returns the total count of fuselage profiles in this configuration
-    TIGL_EXPORT int GetProfileCount(void) const;
+    DEPRECATED TIGL_EXPORT int GetProfileCount() const;
         
     // Returns the wing profiles in this configuration
-    TIGL_EXPORT CCPACSFuselageProfiles& GetProfiles(void);
+    DEPRECATED TIGL_EXPORT CCPACSFuselageProfiles& GetProfiles();
+    DEPRECATED TIGL_EXPORT const CCPACSFuselageProfiles& GetProfiles() const;
 
     // Returns the fuselage profile for a given index.
-    TIGL_EXPORT CCPACSFuselageProfile& GetProfile(int index) const;
-    TIGL_EXPORT CCPACSFuselageProfile& GetProfile(std::string uid) const;
+    DEPRECATED TIGL_EXPORT CCPACSFuselageProfile& GetProfile(int index) const;
+    DEPRECATED TIGL_EXPORT CCPACSFuselageProfile& GetProfile(std::string uid) const;
 
     // Returns the total count of fuselages in a configuration
-    TIGL_EXPORT int GetFuselageCount(void) const;
+    TIGL_EXPORT int GetFuselageCount() const;
 
     // Returns the fuselage for a given index.
     TIGL_EXPORT CCPACSFuselage& GetFuselage(int index) const;
@@ -89,22 +79,6 @@ public:
 
     // Returns the fuselage index for a given UID.
     TIGL_EXPORT int GetFuselageIndex(const std::string& UID) const;
-
-protected:
-    // Cleanup routine
-    void Cleanup(void);
-
-private:
-    // Copy constructor
-    CCPACSFuselages(const CCPACSFuselages& );
-
-    // Assignment operator
-    void operator=(const CCPACSFuselages& );
-
-private:
-    CCPACSFuselageProfiles   profiles;      /**< Fuselage profile elements */
-    CCPACSFuselageContainer  fuselages;     /**< Fuselage elements */
-    CCPACSConfiguration*     configuration; /**< Pointer to parent configuration */
 
 };
 

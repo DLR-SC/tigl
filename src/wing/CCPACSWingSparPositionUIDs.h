@@ -16,37 +16,18 @@
 #ifndef CCPACSWINGSPARPOSITIONUIDS_H
 #define CCPACSWINGSPARPOSITIONUIDS_H
 
-#include <string>
-#include <vector>
-
-#include <tixi.h>
-
-#include "tigl_internal.h"
-
+#include "generated/CPACSSparPositionUIDs.h"
 
 namespace tigl
 {
 
-class CCPACSWingSparPositionUIDs
+class CCPACSWingSparPositionUIDs : public generated::CPACSSparPositionUIDs
 {
 public:
     TIGL_EXPORT CCPACSWingSparPositionUIDs();
-    TIGL_EXPORT virtual ~CCPACSWingSparPositionUIDs();
-
-    TIGL_EXPORT void Cleanup(void);
-
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & positionUIDsXPath);
-    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string & positionUIDsXPath) const;
 
     TIGL_EXPORT int GetSparPositionUIDCount() const;
     TIGL_EXPORT const std::string& GetSparPositionUID(int index) const;
-
-private:
-    CCPACSWingSparPositionUIDs(const CCPACSWingSparPositionUIDs&);
-    void operator=(const CCPACSWingSparPositionUIDs&);
-
-private:
-    std::vector<std::string> positionUIDs;
 };
 
 } // end namespace tigl

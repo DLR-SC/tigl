@@ -26,92 +26,47 @@
 #ifndef CTIGLABSTRACTGEOMETRICCOMPONENT_H
 #define CTIGLABSTRACTGEOMETRICCOMPONENT_H
 
-#include "tigl_internal.h"
-
-#include <list>
+#include <gp_Pnt.hxx>
 #include <string>
-#include "CNamedShape.h"
-#include "PNamedShape.h"
 
+#include "PNamedShape.h"
 #include "ITiglGeometricComponent.h"
 
-
-namespace tigl 
+namespace tigl
 {
+class CCPACSTransformation;
 
+// TODO(bgruber): think about merging CTiglAbstractGeometricComponent into ITiglGeometricComponent, I don't think we need a separate interface
 class CTiglAbstractGeometricComponent : public ITiglGeometricComponent
 {
-
 public:
-    // Constructor
-    TIGL_EXPORT CTiglAbstractGeometricComponent(void);
+    CTiglAbstractGeometricComponent();
 
-    // Virtual Destructor
-    TIGL_EXPORT virtual ~CTiglAbstractGeometricComponent(void);
+    TIGL_EXPORT void Reset();
 
-       // Gets the loft of a geometric component
-    TIGL_EXPORT virtual PNamedShape GetLoft(void);
+    TIGL_EXPORT virtual TiglSymmetryAxis GetSymmetryAxis() const;
+
+    // Gets the loft of a geometric component
+    TIGL_EXPORT virtual PNamedShape GetLoft();
 
     // Get the loft mirrored at the mirror plane
-    TIGL_EXPORT virtual PNamedShape GetMirroredLoft(void);
+    TIGL_EXPORT virtual PNamedShape GetMirroredLoft();
 
-    // Gets the component uid
-    TIGL_EXPORT virtual const std::string& GetUID(void) const;
-
-    // Sets the component uid
-    TIGL_EXPORT virtual void SetUID(const std::string& uid);
-
-    // Gets symmetry axis
-    TIGL_EXPORT virtual TiglSymmetryAxis GetSymmetryAxis(void);
-
-    // Gets symmetry axis as string
-    TIGL_EXPORT virtual const char* GetSymmetryAxisString(void) const;
-
-    // Sets symmetry axis
-    TIGL_EXPORT virtual void SetSymmetryAxis(const std::string& axis);
-
-    // Get transformation object
-    TIGL_EXPORT virtual CTiglTransformation GetTransformation(void);
-
-    // Get component translation
-    TIGL_EXPORT virtual CTiglPoint GetTranslation(void) const;
-    
-    // Get type of translation (global or local)
-    TIGL_EXPORT virtual ECPACSTranslationType GetTranslationType(void) const;
-
-    // Get component rotation
-    TIGL_EXPORT virtual CTiglPoint GetRotation() const;
-
-    // Get component scaling
-    TIGL_EXPORT virtual CTiglPoint GetScaling() const;
-
-    // Set transformation object
-    TIGL_EXPORT virtual void Translate(CTiglPoint trans);
-    
     // return if pnt lies on the loft
     TIGL_EXPORT virtual bool GetIsOn(const gp_Pnt &pnt);
     
     // return if pnt lies on the mirrored loft
     // if the loft as no symmetry, false is returned
     TIGL_EXPORT bool GetIsOnMirrored(const gp_Pnt &pnt);
-protected:
-    // Resets the geometric component.
-    virtual void Reset(void);
-    
-    virtual PNamedShape BuildLoft(void) = 0;
 
-    CCPACSTransformation       transformation;
-    PNamedShape                loft;
+protected:
+    virtual PNamedShape BuildLoft() = 0;
+
+    PNamedShape loft;
 
 private:
-    // Copy constructor
-    CTiglAbstractGeometricComponent(const CTiglAbstractGeometricComponent& ) { /* Do nothing */ }
-
-    // Assignment operator
-    void operator=(const CTiglAbstractGeometricComponent& );
-
-    std::string        myUID;           /**< UID of this component               */
-    TiglSymmetryAxis   mySymmetryAxis;  /**< SymmetryAxis of this component      */
+    CTiglAbstractGeometricComponent(const CTiglAbstractGeometricComponent&);
+    void operator=(const CTiglAbstractGeometricComponent&);
 };
 
 } // end namespace tigl

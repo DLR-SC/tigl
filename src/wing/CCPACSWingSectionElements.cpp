@@ -25,62 +25,23 @@
 
 #include "CCPACSWingSectionElements.h"
 #include "CTiglError.h"
-#include "TixiSaveExt.h"
-#include "IOHelper.h"
-#include <iostream>
-#include <sstream>
 
 namespace tigl
 {
-
-// Constructor
-CCPACSWingSectionElements::CCPACSWingSectionElements(void)
-{
-    Cleanup();
-}
-
-// Destructor
-CCPACSWingSectionElements::~CCPACSWingSectionElements(void)
-{
-    Cleanup();
-}
-
-// Cleanup routine
-void CCPACSWingSectionElements::Cleanup(void)
-{
-    for (CCPACSWingSectionElementContainer::size_type i = 0; i < elements.size(); i++) {
-        delete elements[i];
-    }
-    elements.clear();
-}
-
-// Read CPACS wing section elements
-void CCPACSWingSectionElements::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& xpath)
-{
-    Cleanup();
-    ReadContainerElement(tixiHandle, xpath, "element", 1, elements);
-}
-
-// Write CPACS wing section elements
-void CCPACSWingSectionElements::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& xpath) const
-{
-    WriteContainerElement(tixiHandle, xpath, "element", elements);
-}
-
 // Get element count for this section
-int CCPACSWingSectionElements::GetSectionElementCount(void) const
+int CCPACSWingSectionElements::GetSectionElementCount() const
 {
-    return static_cast<int>(elements.size());
+    return static_cast<int>(m_element.size());
 }
 
 // Get element for a given index
 CCPACSWingSectionElement& CCPACSWingSectionElements::GetSectionElement(int index) const
 {
-    index--;
+	index--;
     if (index < 0 || index >= GetSectionElementCount()) {
         throw CTiglError("Error: Invalid index in CCPACSWingSectionElements::GetSectionElement", TIGL_INDEX_ERROR);
     }
-    return (*elements[index]);
+    return *m_element[index];
 }
 
 

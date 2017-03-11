@@ -19,6 +19,8 @@
 #ifndef CTIGLFUSEPLANE_H
 #define CTIGLFUSEPLANE_H
 
+#include <vector>
+
 #include "CNamedShape.h"
 #include "ListPNamedShape.h"
 
@@ -26,7 +28,7 @@ namespace tigl
 {
 
 class CCPACSConfiguration;
-class CTiglAbstractPhysicalComponent;
+class CTiglRelativelyPositionedComponent;
 
 enum TiglFuseResultMode
 {
@@ -49,7 +51,7 @@ public:
     TIGL_EXPORT const ListPNamedShape& Intersections();
 
 private:
-    PNamedShape FuseWithChilds(CTiglAbstractPhysicalComponent* parent);
+    PNamedShape FuseWithChilds(CTiglRelativelyPositionedComponent* parent, const std::vector<CTiglRelativelyPositionedComponent*>& children);
     
     void Invalidate();
     void Perform();

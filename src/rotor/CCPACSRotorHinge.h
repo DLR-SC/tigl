@@ -26,10 +26,9 @@
 #ifndef CCPACSROTORHINGE_H
 #define CCPACSROTORHINGE_H
 
-#include <string>
 #include <vector>
 
-#include "tixi.h"
+#include "generated/CPACSRotorHubHinge.h"
 #include "CTiglPoint.h"
 #include "CTiglTransformation.h"
 
@@ -49,102 +48,36 @@ class CCPACSConfiguration;
 class CCPACSRotor;
 class CCPACSRotorBladeAttachment;
 
-class CCPACSRotorHinge
+class CCPACSRotorHinge : public generated::CPACSRotorHubHinge
 {
 
 public:
     // Constructor
-    TIGL_EXPORT CCPACSRotorHinge(CCPACSRotorBladeAttachment* rotorBladeAttachment);
-
-    // Virtual destructor
-    TIGL_EXPORT virtual ~CCPACSRotorHinge(void);
-
-    // Invalidates internal state
-    TIGL_EXPORT void Invalidate(void);
-
-    // Read CPACS rotorHinge elements
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& rotorHingeXPath);
-
-    // Returns the UID of the rotor blade attachment
-    TIGL_EXPORT const std::string& GetUID(void) const;
-
-    // Returns the name of the rotor blade attachment
-    TIGL_EXPORT const std::string& GetName(void) const;
-
-    // Returns the description of the rotor blade attachment
-    TIGL_EXPORT const std::string& GetDescription(void) const;
-
-    // Returns the type of the rotor blade attachment
-    TIGL_EXPORT const TiglRotorHingeType& GetType(void) const;
+    TIGL_EXPORT CCPACSRotorHinge(CCPACSRotorHinges* parent);
 
     // Returns the rotor hinge transformation
-    TIGL_EXPORT const CTiglTransformation& GetTransformation(void) const;
+    TIGL_EXPORT CTiglTransformation GetTransformation() const;
 
     // Returns the scaling vector of the rotor hinge transformation
-    TIGL_EXPORT const CTiglPoint& GetScaling(void) const;
+    TIGL_EXPORT CTiglPoint GetScaling() const;
 
     // Returns the rotation vector of the rotor hinge transformation
-    TIGL_EXPORT const CTiglPoint& GetRotation(void) const;
+    TIGL_EXPORT CTiglPoint GetRotation() const;
 
     // Returns the translation vector of the rotor hinge transformation
-    TIGL_EXPORT const CTiglPoint& GetTranslation(void) const;
-
-    // Returns the rotor hinge neutral position
-    TIGL_EXPORT const double& GetNeutralPosition(void) const;
-
-    // Returns the rotor hinge static stiffness
-    TIGL_EXPORT const double& GetStaticStiffness(void) const;
-
-    // Returns the rotor hinge dynamic stiffness
-    TIGL_EXPORT const double& GetDynamicStiffness(void) const;
-
-    // Returns the rotor hinge damping
-    TIGL_EXPORT const double& GetDamping(void) const;
+    TIGL_EXPORT CTiglPoint GetTranslation() const;
 
     // Returns the rotor hinge angle
     TIGL_EXPORT double GetHingeAngle(double thetaDeg=0., double a0=0., std::vector<double> aSin=std::vector<double>(), std::vector<double> aCos=std::vector<double>()) const;
 
     // Returns the parent configuration
-    TIGL_EXPORT CCPACSConfiguration& GetConfiguration(void) const;
+    TIGL_EXPORT CCPACSConfiguration& GetConfiguration() const;
 
     // Returns the parent rotor
-    TIGL_EXPORT CCPACSRotor& GetRotor(void) const;
+    TIGL_EXPORT CCPACSRotor& GetRotor() const;
 
     // Returns the parent rotor blade attachment
-    TIGL_EXPORT CCPACSRotorBladeAttachment& GetRotorBladeAttachment(void) const;
-
-protected:
-    // Cleanup routine
-    void Cleanup(void);
-
-    // Build transformation matrix for the hinge
-    void BuildMatrix(void);
-
-    // Update internal hinge data
-    void Update(void);
-
-private:
-    // Copy constructor
-    CCPACSRotorHinge(const CCPACSRotorHinge&);
-
-    // Assignment operator
-    void operator=(const CCPACSRotorHinge&);
-
-private:
-    std::string                 uID;                    /**< Hinge uID            */
-    std::string                 name;                   /**< Hinge name           */
-    std::string                 description;            /**< Hinge description    */
-    CTiglTransformation         transformation;         /**< Hinge transformation */
-    CTiglPoint                  translation;            /**< Hinge transformation: translation */
-    CTiglPoint                  scaling;                /**< Hinge transformation: scaling */
-    CTiglPoint                  rotation;               /**< Hinge transformation: rotation */
-    TiglRotorHingeType          type;                   /**< Hinge type           */
-    double                      neutralPosition;        /**< Neutral position of the hinge */
-    double                      staticStiffness;        /**< Static stiffness of the hinge */
-    double                      dynamicStiffness;       /**< Dynamic stiffness of the hinge */
-    double                      damping;                /**< Damping of the hinge */
-    CCPACSRotorBladeAttachment* rotorBladeAttachment;   /**< Parent configuration */
-    bool                        invalidated;            /**< Internal state flag  */
+    TIGL_EXPORT CCPACSRotorBladeAttachment& GetRotorBladeAttachment() const;
 };
 
 } // end namespace tigl

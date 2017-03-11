@@ -24,63 +24,27 @@
 #include "CTiglError.h"
 #include "CTiglPoint.h"
 #include "CTiglLogging.h"
-#include "IOHelper.h"
 #include <sstream>
 #include <iostream>
 #include <fstream>
 
 namespace tigl
 {
-
-// Constructor
-CCPACSGuideCurveProfiles::CCPACSGuideCurveProfiles(void)
-{
-    Cleanup();
-}
-
-// Destructor
-CCPACSGuideCurveProfiles::~CCPACSGuideCurveProfiles(void)
-{
-    Cleanup();
-}
-
-// Cleanup routine
-void CCPACSGuideCurveProfiles::Cleanup(void)
-{
-    guideCurves.clear();
-}
-
-// Read CPACS guide curves
-void CCPACSGuideCurveProfiles::ReadCPACS(TixiDocumentHandle tixiHandle)
-{
-    Cleanup();
-    const std::string xpath = "/cpacs/vehicles/profiles/guideCurveProfiles";
-    std::vector<CCPACSGuideCurveProfile*> children;
-    if (tixiCheckElement(tixiHandle, xpath.c_str()) == SUCCESS) {
-        ReadContainerElement(tixiHandle, xpath, "guideCurveProfile", 1, children);
-        for (std::size_t i = 0; i < children.size(); i++) {
-            guideCurves[children[i]->GetUID()].reset(children[i]);
-        }
-    }
-}
-
 // Returns the total count of guide curves in this configuration
-int CCPACSGuideCurveProfiles::GetGuideCurveProfileCount(void) const
+int CCPACSGuideCurveProfiles::GetGuideCurveProfileCount() const
 {
-    return (static_cast<int>(guideCurves.size()));
+    return static_cast<int>(m_guideCurveProfile.size());
 }
 
 // Returns the guide curve for a given uid.
-CCPACSGuideCurveProfile& CCPACSGuideCurveProfiles::GetGuideCurveProfile(std::string uid) const
+CCPACSGuideCurveProfile& CCPACSGuideCurveProfiles::GetGuideCurveProfile(const std::string& uid) const
 {
-    CCPACSGuideCurveProfileContainer::const_iterator it = guideCurves.find(uid);
-    if (it != guideCurves.end() && it->second) {
-        return *(it->second);
-    }
-    else {
-        LOG(ERROR) << "Guide curve \"" + uid + "\" not found in CPACS file!" << endl;
-        throw CTiglError("Guide curve \"" + uid + "\" not found in CPACS file!", TIGL_UID_ERROR);
-    }
+    for (std::vector<unique_ptr<CCPACSGuideCurveProfile> >::const_iterator it = m_guideCurveProfile.begin(); it != m_guideCurveProfile.end(); ++it)
+        if ((*it)->GetUID() == uid)
+            return **it;
+
+    LOG(ERROR) << "Guide curve \"" + uid + "\" not found in CPACS file!" << endl;
+    throw CTiglError("Guide curve \"" + uid + "\" not found in CPACS file!", TIGL_UID_ERROR);
 }
 
 } // end namespace tigl

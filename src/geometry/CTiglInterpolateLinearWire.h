@@ -38,16 +38,16 @@ class CTiglInterpolateLinearWire : public ITiglWireAlgorithm
 
 public:
     // Constructor
-    TIGL_EXPORT CTiglInterpolateLinearWire(void);
+    TIGL_EXPORT CTiglInterpolateLinearWire();
 
     // Destructor
-    TIGL_EXPORT virtual ~CTiglInterpolateLinearWire(void);
+    TIGL_EXPORT virtual ~CTiglInterpolateLinearWire();
 
     // Builds the wire from the given points
     TIGL_EXPORT virtual TopoDS_Wire BuildWire(const CPointContainer& points, bool forceClosed = false) const;
 
     // Returns the algorithm code identifier for an algorithm
-    TIGL_EXPORT virtual TiglAlgorithmCode GetAlgorithmCode(void) const;
+    TIGL_EXPORT virtual TiglAlgorithmCode GetAlgorithmCode() const;
 
     // Returns the point on the wire with the smallest x value
     TIGL_EXPORT virtual gp_Pnt GetPointWithMinX(const CPointContainer& points) const;

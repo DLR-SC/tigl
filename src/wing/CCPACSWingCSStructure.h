@@ -19,6 +19,7 @@
 #ifndef CCPACSWINGCSSTRUCTURE_H
 #define CCPACSWINGCSSTRUCTURE_H
 
+#include "generated/CPACSWingComponentSegmentStructure.h"
 #include "tigl_internal.h"
 #include "CCPACSWingShell.h"
 #include "CTiglWingStructureReference.h"
@@ -31,37 +32,33 @@ namespace tigl
 class CCPACSWingSpars;
 class CCPACSWingRibsDefinitions;
 
-class CCPACSWingCSStructure // shouldn't his be CCPACSWingComponentSegmentStructure
+// shouldn't his be CCPACSWingComponentSegmentStructure
+class CCPACSWingCSStructure : public generated::CPACSWingComponentSegmentStructure
 {
 public:
-    TIGL_EXPORT CCPACSWingCSStructure(CTiglWingStructureReference parent);
-    
-    TIGL_EXPORT virtual ~CCPACSWingCSStructure(void);
+    TIGL_EXPORT CCPACSWingCSStructure(CCPACSWingComponentSegment* parent);
+    //TIGL_EXPORT CCPACSWingCSStructure(CPACSTrailingEdgeDevice* parent);
 
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& structureXPath);
-    
-    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string & structureXPath) const;
+    TIGL_EXPORT CTiglWingStructureReference GetWingStructureReference();
+    TIGL_EXPORT const CTiglWingStructureReference GetWingStructureReference() const;
 
-    TIGL_EXPORT CTiglWingStructureReference& GetWingStructureReference();
-    TIGL_EXPORT const CTiglWingStructureReference& GetWingStructureReference() const;
-
-    TIGL_EXPORT CCPACSWingShell& GetLowerShell();
-    TIGL_EXPORT CCPACSWingShell& GetUpperShell();
-    
     // Check if subnode spars is present
     TIGL_EXPORT bool HasSpars() const;
 
     // Returns a reference to the spars sub-element
-    TIGL_EXPORT CCPACSWingSpars& GetSpars() const;
+    TIGL_EXPORT CCPACSWingSpars& GetSpars();
+    TIGL_EXPORT const CCPACSWingSpars& GetSpars() const;
 
     // Returns number of spar segments
     TIGL_EXPORT int GetSparSegmentCount() const;
 
     // Returns spar segment with passed index
-    TIGL_EXPORT CCPACSWingSparSegment& GetSparSegment(int index) const;
+    TIGL_EXPORT CCPACSWingSparSegment& GetSparSegment(int index);
+    TIGL_EXPORT const CCPACSWingSparSegment& GetSparSegment(int index) const;
 
     // Returns spar segment with passed uid
-    TIGL_EXPORT CCPACSWingSparSegment& GetSparSegment(const std::string& uid) const;
+    TIGL_EXPORT CCPACSWingSparSegment& GetSparSegment(const std::string& uid);
+    TIGL_EXPORT const CCPACSWingSparSegment& GetSparSegment(const std::string& uid) const;
 
     // Check if subnode ribsDefinitions is present
     TIGL_EXPORT bool HasRibsDefinitions() const;
@@ -70,26 +67,14 @@ public:
     TIGL_EXPORT int GetRibsDefinitionCount() const;
 
     // Returns ribs definition with passed index
-    TIGL_EXPORT CCPACSWingRibsDefinition& GetRibsDefinition(int index) const;
+    TIGL_EXPORT CCPACSWingRibsDefinition& GetRibsDefinition(int index);
+    TIGL_EXPORT const CCPACSWingRibsDefinition& GetRibsDefinition(int index) const;
 
     // Returns ribs definition with passed uid
-    TIGL_EXPORT CCPACSWingRibsDefinition& GetRibsDefinition(const std::string& uid) const;
+    TIGL_EXPORT CCPACSWingRibsDefinition& GetRibsDefinition(const std::string& uid);
+    TIGL_EXPORT const CCPACSWingRibsDefinition& GetRibsDefinition(const std::string& uid) const;
 
-    TIGL_EXPORT void Cleanup();
     TIGL_EXPORT void Invalidate();
-    TIGL_EXPORT bool IsValid() const;
-
-private:
-    CCPACSWingCSStructure(const CCPACSWingCSStructure&);
-    void operator=(const CCPACSWingCSStructure&);
-
-private:
-    CCPACSWingShell upperShell, lowerShell;
-    CCPACSWingSpars*            spars;             /**< subnode spars*/
-    CCPACSWingRibsDefinitions*  ribsDefinitions;   /**< subnode ribsDefinitions*/
-    CTiglWingStructureReference wingStructureReference;
-
-    bool isvalid;
 };
 
 } // namespace tigl

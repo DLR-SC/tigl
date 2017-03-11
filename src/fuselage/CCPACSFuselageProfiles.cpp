@@ -23,42 +23,17 @@
 * @brief  Implementation of CPACS fuselage profiles handling routines.
 */
 
+#include "generated/UniquePtr.h"
+#include "generated/TixiHelper.h"
+#include "CCPACSFuselageProfile.h"
 #include "CCPACSFuselageProfiles.h"
 #include "CTiglError.h"
-#include "TixiSaveExt.h"
-#include <sstream>
-#include <iostream>
 
 namespace tigl
 {
 
-// Constructor
-CCPACSFuselageProfiles::CCPACSFuselageProfiles(void)
-{
-    Cleanup();
-}
-
-// Destructor
-CCPACSFuselageProfiles::~CCPACSFuselageProfiles(void)
-{
-    Cleanup();
-}
-
-// Cleanup routine
-void CCPACSFuselageProfiles::Cleanup(void)
-{
-    librarypath = "";
-
-    CCPACSFuselageProfileContainer::iterator p;
-    for (p = profiles.begin(); p!=profiles.end(); ++p) {
-        CCPACSFuselageProfile *pro = p->second;
-        delete pro;
-    }
-    profiles.clear();
-}
-
 // Invalidates internal state
-void CCPACSFuselageProfiles::Invalidate(void)
+void CCPACSFuselageProfiles::Invalidate()
 {
     for (int i = 1; i < GetProfileCount(); i++) {
         GetProfile(i).Invalidate();
@@ -66,129 +41,65 @@ void CCPACSFuselageProfiles::Invalidate(void)
 }
 
 // Read CPACS fuselage profiles
-void CCPACSFuselageProfiles::ReadCPACS(TixiDocumentHandle tixiHandle)
+void CCPACSFuselageProfiles::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
 {
-    Cleanup();
+    // we replace generated::CPACSFuselageProfiles::ReadCPACS and not call it to allow instantiation of CCPACSFuselageProfile instead of generated::CPACSProfileGeometry
 
-    if (tixiCheckElement(tixiHandle, "/cpacs/vehicles/profiles/fuselageProfiles") != SUCCESS) {
-        return;
-    }
-
-    /* Get <geometry> element count */
-    int geometryCount;
-    if (tixiGetNamedChildrenCount(tixiHandle, "/cpacs/vehicles/profiles/fuselageProfiles", "fuselageProfile", &geometryCount) != SUCCESS) {
-        throw CTiglError("Error: tixiGetNamedChildrenCount failed in CCPACSFuselageProfiles::ReadCPACS", TIGL_XML_ERROR);
-    }
-
-    // Loop over all <fuselageProfile> elements
-    for (int i = 1; i <= geometryCount; i++) {
-        std::ostringstream xpath;
-        xpath << "/cpacs/vehicles/profiles/fuselageProfiles/fuselageProfile[" << i << "]";
-
-        CCPACSFuselageProfile* profile = new CCPACSFuselageProfile(xpath.str());
-        profile->ReadCPACS(tixiHandle);
-        profiles[profile->GetUID()] = profile;
-    }
-}
-
-// Write CPACS fuselage profiles
-void CCPACSFuselageProfiles::WriteCPACS(TixiDocumentHandle tixiHandle)
-{
-    const char* elementPath = "/cpacs/vehicles/profiles/fuselageProfiles";
-    std::string path;
-    ReturnCode tixiRet;
-    int fuselageProfileCount, test;
-    
-    TixiSaveExt::TixiSaveElement(tixiHandle, "/cpacs/vehicles", "profiles");
-    TixiSaveExt::TixiSaveElement(tixiHandle, "/cpacs/vehicles/profiles", "fuselageProfiles");
-    
-    if (tixiGetNamedChildrenCount(tixiHandle, elementPath, "fuselageProfile", &test) != SUCCESS) {
-        throw CTiglError("XML error: tixiGetNamedChildrenCount failed in CCPACSFuselageProfiles::WriteCPACS", TIGL_XML_ERROR);
-    }
-
-    fuselageProfileCount = GetProfileCount();
-
-    for (int i = 1; i <= fuselageProfileCount; i++) {
-        std::stringstream ss;
-        ss << elementPath << "/fuselageProfile[" << i << "]";
-        path = ss.str();
-        CCPACSFuselageProfile& fuselageProfile = GetProfile(i);
-        if ((tixiRet = tixiCheckElement(tixiHandle, path.c_str())) == ELEMENT_NOT_FOUND) {
-            if ((tixiRet = tixiCreateElement(tixiHandle, elementPath, "fuselageProfile")) != SUCCESS) {
-                throw CTiglError("XML error: tixiCreateElement failed in CCPACSFuselageProfiles::WriteCPACS", TIGL_XML_ERROR);
-            }
-        }
-        fuselageProfile.WriteCPACS(tixiHandle, path);
-    }
-
-    for (int i = fuselageProfileCount + 1; i <= test; i++) {
-        std::stringstream ss;
-        ss << elementPath << "/fuselageProfile[" << fuselageProfileCount + 1 << "]";
-        path = ss.str();
-        tixiRet = tixiRemoveElement(tixiHandle, path.c_str());
+    // read element fuselageProfile
+    if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/fuselageProfile")) {
+        tixihelper::TixiReadElements(tixiHandle, xpath + "/fuselageProfile", m_fuselageProfile, tixihelper::ChildReader<CCPACSFuselageProfile>());
     }
 }
 
 bool CCPACSFuselageProfiles::HasProfile(std::string uid) const
 {
-    CCPACSFuselageProfileContainer::const_iterator it = profiles.find(uid);
-    if (it != profiles.end() && it->second) {
-        return true;
-    }
-    else {
-        return false;
-    }
+    for (std::vector<unique_ptr<CPACSProfileGeometry> >::const_iterator it = m_fuselageProfile.begin(); it != m_fuselageProfile.end(); ++it)
+        if ((*it)->GetUID() == uid)
+            return true;
+
+    return false;
 }
 
 void CCPACSFuselageProfiles::AddProfile(CCPACSFuselageProfile* profile)
 {
     // free memory for existing profiles
-    if (profiles.find(profile->GetUID()) != profiles.end()) {
-        delete profiles[profile->GetUID()];
-    }
-    profiles[profile->GetUID()] = profile;
+    DeleteProfile(profile->GetUID());
+    m_fuselageProfile.push_back(unique_ptr<CCPACSFuselageProfile>(profile));
 }
 
 void CCPACSFuselageProfiles::DeleteProfile( std::string uid )
 {
-    // free memory for existing profiles
-    if (profiles.find( uid ) != profiles.end()) {
-        profiles[ uid ]->Invalidate();
-        delete profiles[ uid ];
-        profiles.erase( uid );
+    for (std::vector<unique_ptr<CPACSProfileGeometry> >::iterator it = m_fuselageProfile.begin(); it != m_fuselageProfile.end(); ++it) {
+        if ((*it)->GetUID() == uid) {
+            m_fuselageProfile.erase(it);
+            return;
+        }
     }
 }
 
 // Returns the total count of fuselage profiles in this configuration
-int CCPACSFuselageProfiles::GetProfileCount(void) const
+int CCPACSFuselageProfiles::GetProfileCount() const
 {
-    return (static_cast<int>(profiles.size()));
+    return static_cast<int>(m_fuselageProfile.size());
 }
 
 // Returns the fuselage profile for a given uid.
 CCPACSFuselageProfile& CCPACSFuselageProfiles::GetProfile(std::string uid) const
 {
-    CCPACSFuselageProfileContainer::const_iterator it = profiles.find(uid);
-    if (it != profiles.end() && it->second) {
-        return *(it->second);
-    }
-    else {
-        throw CTiglError("Fuselage profile \"" + uid + "\" not found in CPACS file!", TIGL_UID_ERROR);
-    }
+    for (std::vector<unique_ptr<CPACSProfileGeometry> >::const_iterator it = m_fuselageProfile.begin(); it != m_fuselageProfile.end(); ++it)
+        if ((*it)->GetUID() == uid)
+            return static_cast<CCPACSFuselageProfile&>(**it);
+    throw CTiglError("Fuselage profile \"" + uid + "\" not found in CPACS file!", TIGL_UID_ERROR);
 }
 
 // Returns the fuselage profile for a given index - TODO: depricated function!
 CCPACSFuselageProfile& CCPACSFuselageProfiles::GetProfile(int index) const
 {
-    int i = 0;
-    CCPACSFuselageProfileContainer::const_iterator p;
-    for (p = profiles.begin(); p!=profiles.end(); ++p) {
-        if (i == index-1) {
-            break;
-        }
-        i++;
+    index--;
+    if (index < 0 || index >= GetProfileCount()) {
+        throw CTiglError("Error: Invalid index in CCPACSFuselageProfiles::GetProfile", TIGL_INDEX_ERROR);
     }
-    return (*p->second);
+    return static_cast<CCPACSFuselageProfile&>(*m_fuselageProfile[index]);
 }
 
 

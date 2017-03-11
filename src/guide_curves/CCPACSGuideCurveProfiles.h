@@ -23,6 +23,7 @@
 #ifndef CCPACSGUIDECURVEPROFILES_H
 #define CCPACSGUIDECURVEPROFILES_H
 
+#include "generated/CPACSGuideCurveProfiles.h"
 #include "tigl_internal.h"
 #include "tixi.h"
 #include "CSharedPtr.h"
@@ -32,53 +33,14 @@
 
 namespace tigl
 {
-
-typedef CSharedPtr<CCPACSGuideCurveProfile> PCCPACSGuideCurveProfile;
-
-// Typedef for a container to store the guide curves.
-typedef std::map<std::string, PCCPACSGuideCurveProfile> CCPACSGuideCurveProfileContainer;
-
-class CCPACSGuideCurveProfiles
+class CCPACSGuideCurveProfiles : public generated::CPACSGuideCurveProfiles
 {
-
-private:
-
 public:
-    // Constructor
-    TIGL_EXPORT CCPACSGuideCurveProfiles(void);
-
-    // Virtual Destructor
-    TIGL_EXPORT virtual ~CCPACSGuideCurveProfiles(void);
-
-    // Read CPACS guide curves
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle);
-
     // Returns the total count of guide curves in this configuration
-    TIGL_EXPORT int GetGuideCurveProfileCount(void) const;
+    TIGL_EXPORT int GetGuideCurveProfileCount() const;
 
     // Returns the guide curve for a given uid.
-    TIGL_EXPORT CCPACSGuideCurveProfile& GetGuideCurveProfile(std::string uid) const;
-
-protected:
-    // Cleanup routine
-    void Cleanup(void);
-
-private:
-    // Copy constructor
-    CCPACSGuideCurveProfiles(const CCPACSGuideCurveProfiles&)
-    {
-        /* Do nothing */
-    }
-
-    // Assignment operator
-    void operator=(const CCPACSGuideCurveProfiles&)
-    {
-        /* Do nothing */
-    }
-
-private:
-    CCPACSGuideCurveProfileContainer guideCurves;     // All guide curves
-
+    TIGL_EXPORT CCPACSGuideCurveProfile& GetGuideCurveProfile(const std::string& uid) const;
 };
 
 } // end namespace tigl

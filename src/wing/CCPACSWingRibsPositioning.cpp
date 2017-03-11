@@ -19,475 +19,257 @@
 #include "CCPACSWingRibsDefinition.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
-#include "TixiSaveExt.h"
 
+#include "generated/TixiHelper.h"
 
-std::string toString(tigl::CCPACSWingRibsPositioning::CrossingBehaviour crossingBehaviour)
-{
-    switch (crossingBehaviour) {
-    case tigl::CCPACSWingRibsPositioning::CROSSING_CROSS:
-        return "cross";
-        break;
-    case tigl::CCPACSWingRibsPositioning::CROSSING_END:
-        return "end";
-        break;
-    default:
-        throw tigl::CTiglError("Unknown CrossingBehaviour can not be converted to string!");
-    }
-}
-
-tigl::CCPACSWingRibsPositioning::CrossingBehaviour ribCrossingFromString(const std::string& crossingBehaviour)
-{
-    if (crossingBehaviour == "cross") {
-        return tigl::CCPACSWingRibsPositioning::CROSSING_CROSS;
-    }
-    else if (crossingBehaviour == "end") {
-        return tigl::CCPACSWingRibsPositioning::CROSSING_END;
-    }
-    throw tigl::CTiglError("Unknown CrossingBehaviour " + crossingBehaviour + " found in CCPACSWingRibsPositioning!");
-}
+//std::string toString(tigl::CCPACSWingRibsPositioning::CrossingBehaviour crossingBehaviour)
+//{
+//    switch (crossingBehaviour) {
+//    case ENUM_VALUE_NS(CCPACSWingRibsPositioning::CrossingBehaviour, CROSSING_CROSS): return "cross";
+//    case ENUM_VALUE_NS(CCPACSWingRibsPositioning::CrossingBehaviour, CROSSING_END): return "end";
+//    default:
+//        throw tigl::CTiglError("Unknown CrossingBehaviour can not be converted to string!");
+//    }
+//}
+//
+//tigl::CCPACSWingRibsPositioning::CrossingBehaviour ribCrossingFromString(const std::string& crossingBehaviour)
+//{
+//    if (crossingBehaviour == "cross") {
+//        return tigl::CCPACSWingRibsPositioning::CROSSING_CROSS;
+//    }
+//    else if (crossingBehaviour == "end") {
+//        return tigl::CCPACSWingRibsPositioning::CROSSING_END;
+//    }
+//    throw tigl::CTiglError("Unknown CrossingBehaviour " + crossingBehaviour + " found in CCPACSWingRibsPositioning!");
+//}
 
 
 namespace tigl
 {
 
-CCPACSWingRibsPositioning::CCPACSWingRibsPositioning(CCPACSWingRibsDefinition& parent)
-: parent(parent),
-  ribRotation(parent)
+CCPACSWingRibsPositioning::CCPACSWingRibsPositioning(CCPACSWingRibsDefinition* parent)
+: generated::CPACSWingRibsPositioning(parent)
 {
-    Cleanup();
 }
 
-CCPACSWingRibsPositioning::~CCPACSWingRibsPositioning()
+void CCPACSWingRibsPositioning::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
 {
-    Cleanup();
+    generated::CPACSWingRibsPositioning::ReadCPACS(tixiHandle, xpath);
+
+    // read element sparPositionStartUID
+    if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/sparPositionStartUID")) {
+        m_sparPositionStartUID_choice3 = tixihelper::TixiGetTextElement(tixiHandle, xpath + "/sparPositionStartUID");
+    }
+
+    // read element sparPositionEndUID
+    if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/sparPositionEndUID")) {
+        m_sparPositionEndUID_choice3 = tixihelper::TixiGetTextElement(tixiHandle, xpath + "/sparPositionEndUID");
+    }
 }
 
-void CCPACSWingRibsPositioning::Cleanup()
+void CCPACSWingRibsPositioning::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
 {
-    ribReference.clear();
-    startDefinitionType = ETA_START;
-    etaStart = 0.;
-    elementStartUID.clear();
-    sparPositionStartUID.clear();
-    endDefinitionType = ETA_END;
-    etaEnd = 0.;
-    elementEndUID.clear();
-    sparPositionEndUID.clear();
-    ribStart.clear();
-    ribEnd.clear();
-    ribCountDefinitionType = NUMBER_OF_RIBS;
-    numberOfRibs = 0;
-    spacing = 0.;
-    ribCrossingBehaviour = CROSSING_CROSS;
-    ribRotation.Cleanup();
-}
+    generated::CPACSWingRibsPositioning::WriteCPACS(tixiHandle, xpath);
 
-void CCPACSWingRibsPositioning::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& ribsPositioningXPath)
-{
-    Cleanup();
+    // write element sparPositionStartUID
+    tixihelper::TixiSaveElement(tixiHandle, xpath + "/sparPositionStartUID", m_sparPositionStartUID_choice3);
 
-    // Get subelement "ribReference"
-    char* ptrRibReference = NULL;
-    if (tixiGetTextElement(tixiHandle, (ribsPositioningXPath + "/ribReference").c_str(), &ptrRibReference) != SUCCESS) {
-        LOG(ERROR) << "Missing ribReference";
-        throw CTiglError("Error: Missing ribReference in CCPACSWingRibsPositioning::ReadCPACS!", TIGL_XML_ERROR);
-    }
-    ribReference = ptrRibReference;
-
-    // Get start definition of rib
-    const std::string etaStartElementPath = ribsPositioningXPath + "/etaStart";
-    const std::string elementStartUIDElementPath = ribsPositioningXPath + "/elementStartUID";
-    // NOTE: definition of start/end of rib via spar position not conform with CPACS format (v2.3)
-    const std::string sparPositionStartUIDElementPath = ribsPositioningXPath + "/sparPositionStartUID";
-    if (tixiCheckElement(tixiHandle, etaStartElementPath.c_str()) == SUCCESS) {                    // etaStart
-        if (tixiGetDoubleElement(tixiHandle, etaStartElementPath.c_str(), &etaStart) != SUCCESS) {
-            LOG(ERROR) << "Missing etaStart";
-            throw CTiglError("Error: Missing etaStart in CCPACSWingRibsPositioning::ReadCPACS!", TIGL_XML_ERROR);
-        }
-        startDefinitionType = ETA_START;
-    }
-    else if (tixiCheckElement(tixiHandle, elementStartUIDElementPath.c_str()) == SUCCESS) {        // elementStartUID
-        char* ptrElementUID = NULL;
-        if (tixiGetTextElement(tixiHandle, elementStartUIDElementPath.c_str(), &ptrElementUID) != SUCCESS) {
-            LOG(ERROR) << "Missing elementStartUID";
-            throw CTiglError("Error: Missing elementStartUID in CCPACSWingRibsPositioning::ReadCPACS!", TIGL_XML_ERROR);
-        }
-        elementStartUID = ptrElementUID;
-        startDefinitionType = ELEMENT_START;
-    }
-    // NOTE: definition of start/end of rib via spar position not conform with CPACS format (v2.3)
-    else if (tixiCheckElement(tixiHandle, (ribsPositioningXPath + "/sparPositionStartUID").c_str()) == SUCCESS) {
-        char* ptrSparPositionStartUID;
-        if (tixiGetTextElement(tixiHandle, (ribsPositioningXPath + "/sparPositionStartUID").c_str(), &ptrSparPositionStartUID) != SUCCESS) {
-            LOG(ERROR) << "Missing sparPositionStartUID";
-            throw CTiglError("Error: Missing sparPositionStartUID in CCPACSWingRibsPositioning::ReadCPACS!", TIGL_XML_ERROR);
-        }
-        sparPositionStartUID = ptrSparPositionStartUID;
-        startDefinitionType = SPARPOSITION_START;
-    }
-    else {
-        LOG(ERROR) << "Missing etaStart or elementStartUID";
-        throw CTiglError("Error: Missing etaStart or elementStartUID in CCPACSWingRibsPositioning::ReadCPACS!", TIGL_XML_ERROR);
-    }
-
-    // Get end definition of rib
-    const std::string etaEndElementPath = ribsPositioningXPath + "/etaEnd";
-    const std::string elementEndUIDElementPath = ribsPositioningXPath + "/elementEndUID";
-    // NOTE: definition of start/end of rib via spar position not conform with CPACS format (v2.3)
-    const std::string sparPositionEndUIDElementPath = ribsPositioningXPath + "/sparPositionEndUID";
-    if (tixiCheckElement(tixiHandle, etaEndElementPath.c_str()) == SUCCESS) {
-        if (tixiGetDoubleElement(tixiHandle, etaEndElementPath.c_str(), &etaEnd) != SUCCESS) {
-            LOG(ERROR) << "Missing etaEnd";
-            throw CTiglError("Error: Missing etaEnd in CCPACSWingRibsPositioning::ReadCPACS!", TIGL_XML_ERROR);
-        }
-        endDefinitionType = ETA_END;
-    }
-    else if (tixiCheckElement(tixiHandle, elementEndUIDElementPath.c_str()) == SUCCESS) {
-        char* ptrElementUID = NULL;
-        if (tixiGetTextElement(tixiHandle, elementEndUIDElementPath.c_str(), &ptrElementUID) != SUCCESS) {
-            LOG(ERROR) << "Missing elementEndUID";
-            throw CTiglError("Error: Missing elementEndUID in CCPACSWingRibsPositioning::ReadCPACS!", TIGL_XML_ERROR);
-        }
-        elementEndUID = ptrElementUID;
-        endDefinitionType = ELEMENT_END;
-    }
-    // NOTE: definition of start/end of rib via spar position not conform with CPACS format (v2.3)
-    else if (tixiCheckElement(tixiHandle, (ribsPositioningXPath + "/sparPositionEndUID").c_str()) == SUCCESS) {
-        char* ptrSparPositionEndUID;
-        if (tixiGetTextElement(tixiHandle, (ribsPositioningXPath + "/sparPositionEndUID").c_str(), &ptrSparPositionEndUID) != SUCCESS) {
-            LOG(ERROR) << "Missing sparPositionEndUID";
-            throw CTiglError("Error: Missing sparPositionEndUID in CCPACSWingRibsPositioning::ReadCPACS!", TIGL_XML_ERROR);
-        }
-        sparPositionEndUID = ptrSparPositionEndUID;
-        endDefinitionType = SPARPOSITION_END;
-    }
-    else {
-        LOG(ERROR) << "Missing etaEnd or elementEndUID";
-        throw CTiglError("Error: Missing etaEnd or elementEndUID in CCPACSWingRibsPositioning::ReadCPACS!", TIGL_XML_ERROR);
-    }
-
-    // Get subelement "ribStart"
-    char* ptrRibStart = NULL;
-    if (tixiGetTextElement(tixiHandle, (ribsPositioningXPath + "/ribStart").c_str(), &ptrRibStart) != SUCCESS) {
-        LOG(ERROR) << "Missing ribStart";
-        throw CTiglError("Error: Missing ribStart in CCPACSWingRibsPositioning::ReadCPACS!", TIGL_XML_ERROR);
-    }
-    ribStart = ptrRibStart;
-
-    // Get subelement "ribEnd"
-    char* ptrRibEnd = NULL;
-    if (tixiGetTextElement(tixiHandle, (ribsPositioningXPath + "/ribEnd").c_str(), &ptrRibEnd) != SUCCESS) {
-        LOG(ERROR) << "Missing ribEnd";
-        throw CTiglError("Error: Missing ribEnd in CCPACSWingRibsPositioning::ReadCPACS!", TIGL_XML_ERROR);
-    }
-    ribEnd = ptrRibEnd;
-
-    // Get subelement "numberOfRibs" OR "spacing"
-    const std::string numRibsElementPath = (ribsPositioningXPath + "/numberOfRibs").c_str();
-    const std::string spacingElementPath = (ribsPositioningXPath + "/spacing").c_str();
-    if (tixiCheckElement(tixiHandle, numRibsElementPath.c_str()) == SUCCESS) {
-        if (tixiGetIntegerElement(tixiHandle, numRibsElementPath.c_str(), &numberOfRibs) != SUCCESS) {
-            throw CTiglError("Error reading numberOfRibs in CCPACSWingRibsPositioning::ReadCPACS!");
-        }
-        ribCountDefinitionType = NUMBER_OF_RIBS;
-    } else if (tixiCheckElement(tixiHandle, spacingElementPath.c_str()) == SUCCESS) {
-        if (tixiGetDoubleElement(tixiHandle, spacingElementPath.c_str(), &spacing) != SUCCESS) {
-            throw CTiglError("Error reading spacing in CCPACSWingRibsPositioning::ReadCPACS!");
-        }
-        ribCountDefinitionType = SPACING;
-    } else {
-        LOG(ERROR) << "Missing numberOfRibs OR spacing";
-        throw CTiglError("Error: Missing numberOfRibs OR spacing in CCPACSWingRibsPositioning::ReadCPACS!", TIGL_XML_ERROR);
-    }
-
-    // Get subelement "ribCrossingBehaviour"
-    char* ptrRibCrossing = NULL;
-    if (tixiGetTextElement(tixiHandle, (ribsPositioningXPath + "/ribCrossingBehaviour").c_str(), &ptrRibCrossing) != SUCCESS) {
-        LOG(ERROR) << "Missing ribCrossingBehaviour";
-        throw CTiglError("Error: Missing ribCrossingBehaviour in CCPACSWingRibsPositioning::ReadCPACS!", TIGL_XML_ERROR);
-    }
-    ribCrossingBehaviour = ribCrossingFromString(ptrRibCrossing);
-
-    // Get subelement ribRotation
-    if (tixiCheckElement(tixiHandle, (ribsPositioningXPath + "/ribRotation").c_str()) != SUCCESS) {
-        LOG(ERROR) << "Missing node ribRotation";
-        throw CTiglError("Error: Missing node ribRotation in CCPACSWingRibsDefinition::ReadCPACS!", TIGL_XML_ERROR);
-    }
-    ribRotation.ReadCPACS(tixiHandle, ribsPositioningXPath + "/ribRotation");
-}
-
-void CCPACSWingRibsPositioning::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& ribsPositioningXPath) const
-{
-    TixiSaveExt::TixiSaveTextElement(tixiHandle, ribsPositioningXPath.c_str(), "ribReference", ribReference.c_str());
-
-    switch (startDefinitionType) {
-    case ETA_START:
-        TixiSaveExt::TixiSaveDoubleElement(tixiHandle, ribsPositioningXPath.c_str(), "etaStart", etaStart, NULL);
-        break;
-    case ELEMENT_START:
-        TixiSaveExt::TixiSaveTextElement(tixiHandle, ribsPositioningXPath.c_str(), "elementStartUID", elementStartUID.c_str());
-        break;
-    case SPARPOSITION_START:
-        TixiSaveExt::TixiSaveTextElement(tixiHandle, ribsPositioningXPath.c_str(), "sparPositionStartUID", sparPositionStartUID.c_str());
-        break;
-    default:
-        throw CTiglError("Unknown StartDefinitionType found in CCPACSWingRibsPositioning::WriteCPACS");
-    }
-
-    switch (endDefinitionType) {
-    case ETA_END:
-        TixiSaveExt::TixiSaveDoubleElement(tixiHandle, ribsPositioningXPath.c_str(), "etaEnd", etaEnd, NULL);
-        break;
-    case ELEMENT_END:
-        TixiSaveExt::TixiSaveTextElement(tixiHandle, ribsPositioningXPath.c_str(), "elementEndUID", elementEndUID.c_str());
-        break;
-    case SPARPOSITION_END:
-        TixiSaveExt::TixiSaveTextElement(tixiHandle, ribsPositioningXPath.c_str(), "sparPositionEndUID", sparPositionEndUID.c_str());
-        break;
-    default:
-        throw CTiglError("Unknown EndDefinitionType found in CCPACSWingRibsPositioning::WriteCPACS");
-    }
-
-    TixiSaveExt::TixiSaveTextElement(tixiHandle, ribsPositioningXPath.c_str(), "ribStart", ribStart.c_str());
-    TixiSaveExt::TixiSaveTextElement(tixiHandle, ribsPositioningXPath.c_str(), "ribEnd", ribEnd.c_str());
-
-    switch (ribCountDefinitionType) {
-    case NUMBER_OF_RIBS:
-        TixiSaveExt::TixiSaveIntElement(tixiHandle, ribsPositioningXPath.c_str(), "numberOfRibs", numberOfRibs);
-        break;
-    case SPACING:
-        TixiSaveExt::TixiSaveDoubleElement(tixiHandle, ribsPositioningXPath.c_str(), "spacing", spacing, NULL);
-        break;
-    default:
-        throw CTiglError("Unknown RibCountDefinitionType found in CCPACSWingRibsPositioning::WriteCPACS");
-    }
-
-    TixiSaveExt::TixiSaveTextElement(tixiHandle, ribsPositioningXPath.c_str(), "ribCrossingBehaviour", toString(ribCrossingBehaviour).c_str());
-
-    TixiSaveExt::TixiSaveElement(tixiHandle, ribsPositioningXPath.c_str(), "ribRotation");
-    ribRotation.WriteCPACS(tixiHandle, ribsPositioningXPath + "/ribRotation");
-}
-
-const std::string& CCPACSWingRibsPositioning::GetRibReference() const
-{
-    return ribReference;
-}
-
-void CCPACSWingRibsPositioning::SetRibReference(const std::string& ref)
-{
-    ribReference = ref;
-    // invalidate whole component segment structure, since cells could reference the ribs
-    parent.GetStructure().Invalidate();
+    // write element sparPositionEndUID
+    tixihelper::TixiSaveElement(tixiHandle, xpath + "/sparPositionEndUID", m_sparPositionEndUID_choice3);
 }
 
 CCPACSWingRibsPositioning::StartDefinitionType CCPACSWingRibsPositioning::GetStartDefinitionType() const
 {
-    return startDefinitionType;
+    if (m_etaStart_choice1)
+        return ENUM_VALUE(StartDefinitionType, ETA_START);
+    if (m_elementStartUID_choice2)
+        return ENUM_VALUE(StartDefinitionType, ELEMENT_START);
+    if (m_sparPositionStartUID_choice3)
+        return ENUM_VALUE(StartDefinitionType, SPARPOSITION_START);
+    throw CTiglError("Invalid start definition");
 }
 
 double CCPACSWingRibsPositioning::GetEtaStart() const
 {
-    if (startDefinitionType != ETA_START) {
+    if (!m_etaStart_choice1) {
         throw CTiglError("RibsPositioning is not defined via etaStart. Please check StartDefinitionType first before calling CCPACSWingRibsPositioning::GetEtaStart()");
     }
-    return etaStart;
+    return *m_etaStart_choice1;
 }
 
 void CCPACSWingRibsPositioning::SetEtaStart(double value)
 {
-    etaStart = value;
+    m_etaStart_choice1 = value;
 
-    elementStartUID.clear();
-    sparPositionStartUID.clear();
-    startDefinitionType = ETA_START;
+    m_elementStartUID_choice2 = boost::none;
+    m_sparPositionStartUID_choice3 = boost::none;
 
     // invalidate whole component segment structure, since cells could reference the ribs
-    parent.GetStructure().Invalidate();
+    GetParent()->GetStructure().Invalidate();
 }
 
 const std::string& CCPACSWingRibsPositioning::GetElementStartUID() const
 {
-    if (startDefinitionType != ELEMENT_START) {
+    if (!m_elementStartUID_choice2) {
         throw CTiglError("RibsPositioning is not defined via elementStartUID. Please check StartDefinitionType first before calling CCPACSWingRibsPositioning::GetElementStartUID()");
     }
-    return elementStartUID;
+    return *m_elementStartUID_choice2;
 }
 
 void CCPACSWingRibsPositioning::SetElementStartUID(const std::string& uid)
 {
-    elementStartUID = uid;
+    m_elementStartUID_choice2 = uid;
 
-    etaStart = 0.;
-    sparPositionStartUID.clear();
-    startDefinitionType = ELEMENT_START;
+    m_etaStart_choice1 = boost::none;
+    m_sparPositionStartUID_choice3 = boost::none;
 
-    parent.GetStructure().Invalidate();
+    GetParent()->GetStructure().Invalidate();
 }
 
 const std::string& CCPACSWingRibsPositioning::GetSparPositionStartUID() const
 {
-    if (startDefinitionType != SPARPOSITION_START) {
+    if (!m_sparPositionStartUID_choice3) {
         throw CTiglError("RibsPositioning is not defined via sparPositionStartUID. Please check StartDefinitionType first before calling CCPACSWingRibsPositioning::GetSparPositionStartUID()");
     }
-    return sparPositionStartUID;
+    return *m_sparPositionStartUID_choice3;
 }
 
 void CCPACSWingRibsPositioning::SetSparPositionStartUID(const std::string& uid)
 {
-    sparPositionStartUID = uid;
+    m_sparPositionStartUID_choice3 = uid;
 
-    etaStart = 0.;
-    elementStartUID.clear();
-    startDefinitionType = SPARPOSITION_START;
+    m_etaStart_choice1 = boost::none;
+    m_elementStartUID_choice2 = boost::none;
 
-    parent.GetStructure().Invalidate();
+    GetParent()->GetStructure().Invalidate();
 }
 
 CCPACSWingRibsPositioning::EndDefinitionType CCPACSWingRibsPositioning::GetEndDefinitionType() const
 {
-    return endDefinitionType;
+    if (m_etaEnd_choice1)
+        return ENUM_VALUE(EndDefinitionType, ETA_END);
+    if (m_elementEndUID_choice2)
+        return ENUM_VALUE(EndDefinitionType, ELEMENT_END);
+    if (m_sparPositionEndUID_choice3)
+        return ENUM_VALUE(EndDefinitionType, SPARPOSITION_END);
+    throw CTiglError("Invalid end definition");
 }
 
 double CCPACSWingRibsPositioning::GetEtaEnd() const
 {
-    if (endDefinitionType != ETA_END) {
+    if (!m_etaEnd_choice1) {
         throw CTiglError("RibsPositioning is not defined via etaEnd. Please check EndDefinitionType first before calling CCPACSWingRibsPositioning::GetEtaEnd()");
     }
-    return etaEnd;
+    return *m_etaEnd_choice1;
 }
 
 void CCPACSWingRibsPositioning::SetEtaEnd(double value)
 {
-    etaEnd = value;
+    m_etaEnd_choice1 = value;
 
-    elementEndUID.clear();
-    sparPositionEndUID.clear();
-    endDefinitionType = ETA_END;
+    m_elementEndUID_choice2 = boost::none;
+    m_sparPositionEndUID_choice3 = boost::none;
 
-    parent.GetStructure().Invalidate();
+    GetParent()->GetStructure().Invalidate();
 }
 
 const std::string& CCPACSWingRibsPositioning::GetElementEndUID() const
 {
-    if (endDefinitionType != ELEMENT_END) {
+    if (!m_elementEndUID_choice2) {
         throw CTiglError("RibsPositioning is not defined via elementEndUID. Please check EndDefinitionType first before calling CCPACSWingRibsPositioning::GetElementEndUID()");
     }
-    return elementEndUID;
+    return *m_elementEndUID_choice2;
 }
 
 void CCPACSWingRibsPositioning::SetElementEndUID(const std::string& uid)
 {
-    elementEndUID = uid;
+    m_elementEndUID_choice2 = uid;
 
-    etaEnd = 0.;
-    sparPositionEndUID.clear();
-    endDefinitionType = ELEMENT_END;
+    m_etaEnd_choice1 = boost::none;
+    m_sparPositionEndUID_choice3 = boost::none;
 
-    parent.GetStructure().Invalidate();
+    GetParent()->GetStructure().Invalidate();
 }
 
 const std::string& CCPACSWingRibsPositioning::GetSparPositionEndUID() const
 {
-    if (endDefinitionType != SPARPOSITION_END) {
+    if (!m_sparPositionEndUID_choice3) {
         throw CTiglError("RibsPositioning is not defined via sparPositionEndUID. Please check EndDefinitionType first before calling CCPACSWingRibsPositioning::GetSparPositionEndUID()");
     }
-    return sparPositionEndUID;
+    return *m_sparPositionEndUID_choice3;
 }
 
 void CCPACSWingRibsPositioning::SetSparPositionEndUID(const std::string& uid)
 {
-    sparPositionEndUID = uid;
+    m_sparPositionEndUID_choice3 = uid;
 
-    etaEnd = 0.;
-    elementEndUID.clear();
-    endDefinitionType = SPARPOSITION_END;
+    m_etaEnd_choice1 = boost::none;
+    m_elementEndUID_choice2 = boost::none;
 
-    parent.GetStructure().Invalidate();
-}
-
-const std::string& CCPACSWingRibsPositioning::GetRibStart() const
-{
-    return ribStart;
-}
-
-void CCPACSWingRibsPositioning::SetRibStart(const std::string& str)
-{
-    ribStart = str;
-    parent.GetStructure().Invalidate();
-}
-
-const std::string& CCPACSWingRibsPositioning::GetRibEnd() const
-{
-    return ribEnd;
-}
-
-void CCPACSWingRibsPositioning::SetRibEnd(const std::string& str)
-{
-    ribEnd = str;
-    parent.GetStructure().Invalidate();
+    GetParent()->GetStructure().Invalidate();
 }
 
 CCPACSWingRibsPositioning::RibCountDefinitionType CCPACSWingRibsPositioning::GetRibCountDefinitionType() const
 {
-    return ribCountDefinitionType;
+    if (m_spacing_choice1)
+        return ENUM_VALUE(RibCountDefinitionType, SPACING);
+    if (m_numberOfRibs_choice2)
+        return ENUM_VALUE(RibCountDefinitionType, NUMBER_OF_RIBS);
+    throw CTiglError("Invalid rib count definition");
 }
 
 int CCPACSWingRibsPositioning::GetNumberOfRibs() const
 {
-    if (ribCountDefinitionType != NUMBER_OF_RIBS) {
+    if (!m_numberOfRibs_choice2) {
         throw CTiglError("RibsPositioning is not defined via numberOfRibs. Please check RibCountDefinitionType first before calling CCPACSWingRibsPositioning::GetNumberOfRibs()");
     }
-    return numberOfRibs;
+    return *m_numberOfRibs_choice2;
 }
 
 void CCPACSWingRibsPositioning::SetNumberOfRibs(int numRibs)
 {
-    numberOfRibs = numRibs;
+    m_numberOfRibs_choice2 = numRibs;
 
-    spacing = 0.;
-    ribCountDefinitionType = NUMBER_OF_RIBS;
+    m_spacing_choice1 = boost::none;
 
-    parent.GetStructure().Invalidate();
+    GetParent()->GetStructure().Invalidate();
 }
 
 double CCPACSWingRibsPositioning::GetSpacing() const
 {
-    if (ribCountDefinitionType != SPACING) {
+    if (!m_spacing_choice1) {
         throw CTiglError("RibsPositioning is not defined via spacing. Please check RibCountDefinitionType first before calling CCPACSWingRibsPositioning::GetSpacing()");
     }
-    return spacing;
+    return *m_spacing_choice1;
 }
 
 void CCPACSWingRibsPositioning::SetSpacing(double value)
 {
-    spacing = value;
+    m_spacing_choice1 = value;
 
-    numberOfRibs = 0;
-    ribCountDefinitionType = SPACING;
+    m_numberOfRibs_choice2 = boost::none;
 
-    parent.GetStructure().Invalidate();
+    GetParent()->GetStructure().Invalidate();
 }
 
 CCPACSWingRibsPositioning::CrossingBehaviour CCPACSWingRibsPositioning::GetRibCrossingBehaviour() const
 {
-    return ribCrossingBehaviour;
+    switch (m_ribCrossingBehaviour.GetSimpleContent()) {
+        case ENUM_VALUE_NS(generated, CPACSRibCrossingBehaviour, cross): return ENUM_VALUE(CrossingBehaviour, CROSSING_CROSS);
+        case ENUM_VALUE_NS(generated, CPACSRibCrossingBehaviour, end):   return ENUM_VALUE(CrossingBehaviour, CROSSING_END);
+        default: throw CTiglError("Unknown crossing behaviour");
+    }
 }
 
 void CCPACSWingRibsPositioning::SetRibCrossingBehaviour(CCPACSWingRibsPositioning::CrossingBehaviour behaviour)
 {
-    ribCrossingBehaviour = behaviour;
-    parent.GetStructure().Invalidate();
-}
+    switch (behaviour) {
+        case ENUM_VALUE(CrossingBehaviour, CROSSING_CROSS): m_ribCrossingBehaviour.SetSimpleContent(ENUM_VALUE_NS(generated, CPACSRibCrossingBehaviour, cross));
+        case ENUM_VALUE(CrossingBehaviour, CROSSING_END):   m_ribCrossingBehaviour.SetSimpleContent(ENUM_VALUE_NS(generated, CPACSRibCrossingBehaviour, end));
+        default: throw CTiglError("Unknown crossing behaviour");
+    }
 
-const CCPACSWingRibRotation& CCPACSWingRibsPositioning::GetRibRotation() const
-{
-    return ribRotation;
-}
-
-CCPACSWingRibRotation& CCPACSWingRibsPositioning::GetRibRotation()
-{
-    return ribRotation;
+    GetParent()->GetStructure().Invalidate();
 }
 
 } // end namespace tigl

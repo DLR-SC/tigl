@@ -26,13 +26,13 @@
 namespace tigl 
 {
 
-ITiglObjectiveFunction::ITiglObjectiveFunction(void)
+ITiglObjectiveFunction::ITiglObjectiveFunction()
 {
     h = 1.e-10;
 }
 
 
-ITiglObjectiveFunction::~ITiglObjectiveFunction(void)
+ITiglObjectiveFunction::~ITiglObjectiveFunction()
 {
 }
 

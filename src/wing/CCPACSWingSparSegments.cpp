@@ -21,55 +21,25 @@
 #include "CCPACSWingSparSegment.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
-#include "IOHelper.h"
-#include "TixiSaveExt.h"
-
 
 namespace tigl
 {
 
-CCPACSWingSparSegments::CCPACSWingSparSegments(CCPACSWingSpars& parent)
-: parent(parent)
+CCPACSWingSparSegments::CCPACSWingSparSegments(CCPACSWingSpars* parent)
+: generated::CPACSSparSegments(parent)
 {
-    Cleanup();
 }
 
-CCPACSWingSparSegments::~CCPACSWingSparSegments(void)
+void CCPACSWingSparSegments::Invalidate()
 {
-    Cleanup();
-}
-
-void CCPACSWingSparSegments::Invalidate(void)
-{
-    CCPACSWingSparSegmentContainer::iterator it;
-    for (it = sparSegments.begin(); it != sparSegments.end(); ++it) {
+    for (std::vector<unique_ptr<CCPACSWingSparSegment> >::iterator it = m_sparSegment.begin(); it != m_sparSegment.end(); ++it) {
         (*it)->Invalidate();
     }
 }
 
-void CCPACSWingSparSegments::Cleanup(void)
-{
-    CCPACSWingSparSegmentContainer::iterator it;
-    for (it = sparSegments.begin(); it != sparSegments.end(); ++it) {
-        delete *it;
-    }
-    sparSegments.clear();
-}
-
-void CCPACSWingSparSegments::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& xpath)
-{
-    Cleanup();
-    ReadContainerElement(tixiHandle, xpath, "sparSegment", 1, sparSegments, &parent);
-}
-
-void CCPACSWingSparSegments::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& xpath) const
-{
-    WriteContainerElement(tixiHandle, xpath, "sparSegment", sparSegments);
-}
-
 int CCPACSWingSparSegments::GetSparSegmentCount() const
 {
-    return static_cast<int>(sparSegments.size());
+    return static_cast<int>(m_sparSegment.size());
 }
 
 CCPACSWingSparSegment& CCPACSWingSparSegments::GetSparSegment(int index) const
@@ -79,19 +49,18 @@ CCPACSWingSparSegment& CCPACSWingSparSegments::GetSparSegment(int index) const
         LOG(ERROR) << "Invalid index value";
         throw CTiglError("Error: Invalid index value in CCPACSWingSparSegments::getSparSegment", TIGL_INDEX_ERROR);
     }
-    return (*(sparSegments[idx]));
+    return (*(m_sparSegment[idx]));
 }
 
 CCPACSWingSparSegment& CCPACSWingSparSegments::GetSparSegment(const std::string& uid) const
 {
-    CCPACSWingSparSegmentContainer::const_iterator it;
-    for (it = sparSegments.begin(); it != sparSegments.end(); ++it) {
-        CCPACSWingSparSegment* sparSegment = *it;
-        if (sparSegment->GetUID() == uid) {
-            return *sparSegment;
+    for (std::vector<unique_ptr<CCPACSWingSparSegment> >::const_iterator it = m_sparSegment.begin(); it != m_sparSegment.end(); ++it) {
+        CCPACSWingSparSegment& sparSegment = **it;
+        if (sparSegment.GetUID() == uid) {
+            return sparSegment;
         }
     }
-    std::string referenceUID = parent.GetStructure().GetWingStructureReference().GetUID();
+    std::string referenceUID = GetParent()->GetStructure().GetWingStructureReference().GetUID();
     LOG(ERROR) << "Spar Segment \"" << uid << "\" not found in component segment or trailing edge device with UID \"" << referenceUID << "\"";
     throw CTiglError("Error: Spar Segment \"" + uid + "\" not found in component segment or trailing edge device with UID \"" + referenceUID + "\". Please check the CPACS document!", TIGL_ERROR);
 }

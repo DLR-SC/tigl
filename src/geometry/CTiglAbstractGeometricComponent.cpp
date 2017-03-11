@@ -26,6 +26,9 @@
 #include "CTiglAbstractGeometricComponent.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "TiglSymmetryAxis.h"
+#include "CCPACSTransformation.h"
+#include "CNamedShape.h"
 
 // OCCT defines
 #include <BRepBuilderAPI_Transform.hxx>
@@ -33,109 +36,23 @@
 #include <Bnd_Box.hxx>
 #include <BRepBndLib.hxx>
 
-namespace tigl 
+namespace tigl
 {
+CTiglAbstractGeometricComponent::CTiglAbstractGeometricComponent() {}
 
-// Constructor
-CTiglAbstractGeometricComponent::CTiglAbstractGeometricComponent(void)
-    : myUID("")
-    , mySymmetryAxis(TIGL_NO_SYMMETRY)
-{
-    Reset();
+
+void CTiglAbstractGeometricComponent::Reset() {
+    loft.reset();
 }
 
-void CTiglAbstractGeometricComponent::Reset()
+TiglSymmetryAxis CTiglAbstractGeometricComponent::GetSymmetryAxis() const
 {
-    SetUID("");
-    mySymmetryAxis = TIGL_NO_SYMMETRY;
-    transformation.reset();
+    return TIGL_NO_SYMMETRY;
 }
 
-// Destructor
-CTiglAbstractGeometricComponent::~CTiglAbstractGeometricComponent(void)
+PNamedShape CTiglAbstractGeometricComponent::GetLoft()
 {
-}
-
-// Gets the component uid
-const std::string &CTiglAbstractGeometricComponent::GetUID(void) const
-{
-    return myUID;
-}
-
-// Sets the component uid
-void CTiglAbstractGeometricComponent::SetUID(const std::string& uid)
-{
-    myUID = uid;
-}
-
-// Gets symmetry axis
-TiglSymmetryAxis CTiglAbstractGeometricComponent::GetSymmetryAxis(void)
-{
-    return mySymmetryAxis;
-}
-
-// Gets symmetry axis as string
-const char* CTiglAbstractGeometricComponent::GetSymmetryAxisString(void) const
-{
-    switch (mySymmetryAxis) {
-    case TIGL_X_Z_PLANE: return "x-z-plane";
-    case TIGL_X_Y_PLANE: return "x-y-plane";
-    case TIGL_Y_Z_PLANE: return "y-z-plane";
-    case TIGL_NO_SYMMETRY: return "";
-    default: throw CTiglError("GetSymmetryAxisString is not defined for the current value of symmetry");
-    }
-}
-
-// Gets symmetry axis
-void CTiglAbstractGeometricComponent::SetSymmetryAxis(const std::string& axis)
-{
-    if (axis == "x-z-plane") {
-        mySymmetryAxis = TIGL_X_Z_PLANE;
-    } else if (axis == "x-y-plane") {
-        mySymmetryAxis = TIGL_X_Y_PLANE;
-    } else if (axis == "y-z-plane") {
-        mySymmetryAxis = TIGL_Y_Z_PLANE;
-    } else {
-        mySymmetryAxis = TIGL_NO_SYMMETRY;
-    }
-}
-
-CTiglTransformation CTiglAbstractGeometricComponent::GetTransformation()
-{
-    return transformation.getTransformationMatrix();
-}
-
-CTiglPoint CTiglAbstractGeometricComponent::GetTranslation() const
-{
-    return transformation.getTranslationVector();
-}
-
-ECPACSTranslationType CTiglAbstractGeometricComponent::GetTranslationType(void) const
-{
-    return transformation.getTranslationType();
-}
-
-CTiglPoint CTiglAbstractGeometricComponent::GetRotation() const
-{
-    return transformation.getRotation();
-}
-
-CTiglPoint CTiglAbstractGeometricComponent::GetScaling() const
-{
-    return transformation.getScaling();
-}
-
-void CTiglAbstractGeometricComponent::Translate(CTiglPoint trans)
-{
-    CTiglPoint newTrans(transformation.getTranslationVector());
-    newTrans += trans;
-    transformation.setTranslation(newTrans, transformation.getTranslationType());
-    transformation.updateMatrix();
-}
-
-PNamedShape CTiglAbstractGeometricComponent::GetLoft(void)
-{
-    if (!(loft)) {
+    if (!loft) {
 #ifdef DEBUG
         LOG(INFO) << "Building loft " << GetUID();
 #endif
@@ -144,35 +61,35 @@ PNamedShape CTiglAbstractGeometricComponent::GetLoft(void)
     return loft;
 }
 
-PNamedShape CTiglAbstractGeometricComponent::GetMirroredLoft(void)
+PNamedShape CTiglAbstractGeometricComponent::GetMirroredLoft()
 {
-    if (mySymmetryAxis == TIGL_NO_SYMMETRY) {
-        PNamedShape nullShape;
-        nullShape.reset();
-        return nullShape;
+    const TiglSymmetryAxis& symmetryAxis = GetSymmetryAxis();
+    if (symmetryAxis == TIGL_NO_SYMMETRY) {
+        return PNamedShape();
     }
 
     gp_Ax2 mirrorPlane;
-    if (mySymmetryAxis == TIGL_X_Z_PLANE) {
+    if (symmetryAxis == TIGL_X_Z_PLANE) {
         mirrorPlane = gp_Ax2(gp_Pnt(0,0,0),gp_Dir(0.,1.,0.));
     }
-    else if (mySymmetryAxis == TIGL_X_Y_PLANE) {
+    else if (symmetryAxis == TIGL_X_Y_PLANE) {
         mirrorPlane = gp_Ax2(gp_Pnt(0,0,0),gp_Dir(0.,0.,1.));
     }
-    else if (mySymmetryAxis == TIGL_Y_Z_PLANE) {
+    else if (symmetryAxis == TIGL_Y_Z_PLANE) {
         mirrorPlane = gp_Ax2(gp_Pnt(0,0,0),gp_Dir(1.,0.,0.));
     }
 
     gp_Trsf theTransformation;
     theTransformation.SetMirror(mirrorPlane);
-    BRepBuilderAPI_Transform myBRepTransformation(GetLoft()->Shape(), theTransformation);
-    std::string mirrorName = GetLoft()->Name();
+    const PNamedShape& loft = GetLoft();
+    BRepBuilderAPI_Transform myBRepTransformation(loft->Shape(), theTransformation);
+    std::string mirrorName = loft->Name();
     mirrorName += "M";
-    std::string mirrorShortName = GetLoft()->ShortName();
+    std::string mirrorShortName = loft->ShortName();
     mirrorShortName += "M";
     TopoDS_Shape mirroredShape = myBRepTransformation.Shape();
     
-    PNamedShape mirroredPNamedShape(new CNamedShape(*GetLoft()));
+    PNamedShape mirroredPNamedShape(new CNamedShape(*loft));
     mirroredPNamedShape->SetShape(mirroredShape);
     mirroredPNamedShape->SetName(mirrorName.c_str());
     mirroredPNamedShape->SetShortName(mirrorShortName.c_str());
@@ -212,18 +129,19 @@ bool CTiglAbstractGeometricComponent::GetIsOn(const gp_Pnt& pnt)
 
 bool CTiglAbstractGeometricComponent::GetIsOnMirrored(const gp_Pnt& pnt) 
 {
-    if (mySymmetryAxis == TIGL_NO_SYMMETRY) {
+    const TiglSymmetryAxis& symmetryAxis = GetSymmetryAxis();
+    if (symmetryAxis == TIGL_NO_SYMMETRY) {
         return false;
     }
 
     gp_Pnt mirroredPnt(pnt);
-    if (mySymmetryAxis == TIGL_X_Z_PLANE) {
+    if (symmetryAxis == TIGL_X_Z_PLANE) {
         mirroredPnt.SetY(-mirroredPnt.Y());
     }
-    else if (mySymmetryAxis == TIGL_X_Y_PLANE) {
+    else if (symmetryAxis == TIGL_X_Y_PLANE) {
         mirroredPnt.SetZ(-mirroredPnt.Z());
     }
-    else if (mySymmetryAxis == TIGL_Y_Z_PLANE) {
+    else if (symmetryAxis == TIGL_Y_Z_PLANE) {
         mirroredPnt.SetX(-mirroredPnt.X());
     }
     

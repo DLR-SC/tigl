@@ -19,6 +19,8 @@
 #ifndef TIGL_INTERNAL_H
 #define TIGL_INTERNAL_H
 
+#include "tigl_config.h"
+
 #if defined(WIN32)
   // define TIGL_INTERNAL_EXPORTS, if you want to expose the internal 
   // api to the dll interface (just for testing purposes!)
@@ -32,5 +34,34 @@
 #endif
 
 #define VERSION_HEX_CODE(MAJOR, MINOR, PATCH) ((MAJOR) << 16 | (MINOR) << 8 | (PATCH))
+
+// defines the DEPRECATED macro
+
+// from: http://stackoverflow.com/questions/295120/c-mark-as-deprecated/21265197#21265197
+#if defined(_MSC_VER)
+#define DEPRECATED __declspec(deprecated)
+#elif defined(__GNUC__)
+#define DEPRECATED __attribute__((deprecated))
+#else
+#pragma message("WARNING: You need to implement DEPRECATED for this compiler")
+#define DEPRECATED
+#endif
+
+// override
+
+#ifdef HAVE_CPP11
+#define OVERRIDE override
+#else
+#define OVERRIDE
+#endif
+
+// scoped enum value helper, use these if you want to retain backward compatibility with non-C++11 compilers
+#ifdef HAVE_CPP11
+#define ENUM_VALUE(e, v) e::v
+#define ENUM_VALUE_NS(n, e, v) n::e::v
+#else
+#define ENUM_VALUE(e, v) v
+#define ENUM_VALUE_NS(n, e, v) n::v
+#endif
 
 #endif // TIGL_INTERNAL_H

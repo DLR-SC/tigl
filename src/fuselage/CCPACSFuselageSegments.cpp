@@ -34,133 +34,42 @@
 
 namespace tigl
 {
-
-// Constructor
-CCPACSFuselageSegments::CCPACSFuselageSegments(CCPACSFuselage* aFuselage)
-    : segments()
-    , fuselage(aFuselage)
-{
-}
-
-// Destructor
-CCPACSFuselageSegments::~CCPACSFuselageSegments(void)
-{
-    Cleanup();
-}
+CCPACSFuselageSegments::CCPACSFuselageSegments(CCPACSFuselage* parent)
+    : generated::CPACSFuselageSegments(parent) {}
 
 // Invalidates internal state
-void CCPACSFuselageSegments::Invalidate(void)
+void CCPACSFuselageSegments::Invalidate()
 {
     for (int i = 1; i <= GetSegmentCount(); i++) {
         GetSegment(i).Invalidate();
     }
 }
 
-// Cleanup routine
-void CCPACSFuselageSegments::Cleanup(void)
-{
-    for (CCPACSFuselageSegmentContainer::size_type i = 0; i < segments.size(); i++) {
-        delete segments[i];
-    }
-    segments.clear();
-}
-
 // Gets a segment by index. 
-CCPACSFuselageSegment & CCPACSFuselageSegments::GetSegment(const int index)
+CCPACSFuselageSegment & CCPACSFuselageSegments::GetSegment(int index)
 {
-    const int idx = index - 1;
-    if (idx < 0 || idx >= GetSegmentCount()) {
+    index--;
+    if (index < 0 || index >= GetSegmentCount()) {
         throw CTiglError("Error: Invalid index value in CCPACSFuselageSegments::GetSegment", TIGL_INDEX_ERROR);
     }
-    return (CCPACSFuselageSegment &) (*(segments[idx]));
+    return *m_segment[index];
 }
 
 // Gets a segment by uid. 
 CCPACSFuselageSegment & CCPACSFuselageSegments::GetSegment(const std::string& segmentUID)
 {
-    for (CCPACSFuselageSegmentContainer::size_type i = 0; i < segments.size(); i++) {
-        if (segments[i]->GetUID() == segmentUID) {
-            return (CCPACSFuselageSegment &) (*(segments[i]));
+    for (std::size_t i = 0; i < m_segment.size(); i++) {
+        if (m_segment[i]->GetUID() == segmentUID) {
+            return *m_segment[i];
         }
     }
     throw CTiglError("Error: Invalid uid in CCPACSFuselageSegments::GetSegment", TIGL_UID_ERROR);
 }
 
 // Gets total segment count
-int CCPACSFuselageSegments::GetSegmentCount(void) const
+int CCPACSFuselageSegments::GetSegmentCount() const
 {
-    return static_cast<int>(segments.size());
-}
-
-// Read CPACS segments element
-void CCPACSFuselageSegments::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& fuselageXPath)
-{
-    Cleanup();
-
-    ReturnCode    tixiRet;
-    int           segmentCount;
-    std::string   tempString;
-    char*         elementPath;
-
-    /* Get segment element count */
-    tempString  = fuselageXPath + "/segments";
-    elementPath = const_cast<char*>(tempString.c_str());
-    tixiRet = tixiGetNamedChildrenCount(tixiHandle, elementPath, "segment", &segmentCount);
-    if (tixiRet != SUCCESS) {
-        throw CTiglError("XML error: tixiGetNamedChildrenCount failed in CCPACSFuselageSegments::ReadCPACS", TIGL_XML_ERROR);
-    }
-
-    // Loop over all segments
-    for (int i = 1; i <= segmentCount; i++) {
-        CCPACSFuselageSegment* segment = new CCPACSFuselageSegment(fuselage, i);
-        segments.push_back(segment);
-
-        tempString = fuselageXPath + "/segments/segment[";
-        std::ostringstream xpath;
-        xpath << tempString << i << "]"; 
-        segment->ReadCPACS(tixiHandle, xpath.str());
-    }
-
-}
-
-// Write CPACS segments element
-void CCPACSFuselageSegments::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& fuselageXPath)
-{
-    std::string elementPath;
-    std::string xpath;
-    ReturnCode    tixiRet;
-    int           segmentCount, test;
-
-    elementPath = fuselageXPath + "/segments";
-    if ((tixiRet = tixiCheckElement(tixiHandle, elementPath.c_str())) == ELEMENT_NOT_FOUND) {
-        if ((tixiRet = tixiCreateElement(tixiHandle, fuselageXPath.c_str(), "segments")) != SUCCESS) {
-            throw CTiglError("XML error: tixiCreateElement failed in CCPACSWings::WriteCPACS", TIGL_XML_ERROR);
-        }
-    }
-    else if (tixiRet != SUCCESS) {
-        return;
-    }
-    tixiRet = tixiGetNamedChildrenCount(tixiHandle, elementPath.c_str(), "segment", &test);
-    segmentCount = GetSegmentCount();
-
-    for (int i = 1; i <= segmentCount; i++) {
-        CCPACSFuselageSegment& segment = GetSegment(i);
-        std::stringstream ss;
-        ss << elementPath << "/segment[" << i << "]";
-        xpath = ss.str();
-        if ((tixiRet = tixiCheckElement(tixiHandle, xpath.c_str())) == ELEMENT_NOT_FOUND) {
-            if ((tixiRet = tixiCreateElement(tixiHandle, elementPath.c_str(), "segment")) != SUCCESS) {
-                throw CTiglError("XML error: tixiCreateElement failed in CCPACSWingsPositionnings::WriteCPACS", TIGL_XML_ERROR);
-            }
-        }
-        segment.WriteCPACS(tixiHandle, xpath);
-    }
-    for (int i = segmentCount + 1; i <= test; i++) {
-        std::stringstream ss;
-        ss << elementPath << "/segment[" << segmentCount + 1 << "]";
-        xpath = ss.str();
-        tixiRemoveElement(tixiHandle, xpath.c_str());
-    }
+    return static_cast<int>(m_segment.size());
 }
 
 } // end namespace tigl

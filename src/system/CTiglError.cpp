@@ -38,18 +38,22 @@ CTiglError::CTiglError(std::string error, TiglReturnCode errorCode) throw()
 }
 
 // Destructor
-CTiglError::~CTiglError(void) throw()
+CTiglError::~CTiglError() throw()
 {
 }
 
 // Returns the error string as C string (char*)
-const char* CTiglError::getError(void) const throw() 
+const char* CTiglError::getError() const throw() 
 { 
     return err.c_str(); 
 }
 
+//const char* CTiglError::what() const throw() {
+//   return err.c_str();
+//}
+
 // Returns the error code
-TiglReturnCode CTiglError::getCode(void) const throw() 
+TiglReturnCode CTiglError::getCode() const throw() 
 { 
     return code; 
 }

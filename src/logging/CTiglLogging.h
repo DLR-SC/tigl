@@ -107,7 +107,7 @@ class CTiglLogging
 {
 public:
     // Returns a reference to the only instance of this class
-    TIGL_EXPORT static CTiglLogging& Instance(void);
+    TIGL_EXPORT static CTiglLogging& Instance();
     
     // convenience functions that insert the appropriate loggers
     TIGL_EXPORT void LogToFile(const char* filePrefix);
@@ -125,14 +125,14 @@ public:
     TIGL_EXPORT PTiglLogger GetLogger();
 
     // Destructor
-    TIGL_EXPORT ~CTiglLogging(void);
+    TIGL_EXPORT ~CTiglLogging();
 
 private:
     // Constructor
-    CTiglLogging(void);
+    CTiglLogging();
 
     // Logger Initialize with defaults
-    void initLogger(void);
+    void initLogger();
 
     // Copy constructor
     CTiglLogging(const CTiglLogging& )                { /* Do nothing */ }

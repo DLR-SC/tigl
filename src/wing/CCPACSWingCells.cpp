@@ -18,87 +18,47 @@
 
 #include "CCPACSWingCells.h"
 
-#include <sstream>
-
 #include "CCPACSWingCell.h"
 #include "CTiglError.h"
-#include "CTiglLogging.h"
-#include "TixiSaveExt.h"
-#include "IOHelper.h"
 
 namespace tigl
 {
 
 CCPACSWingCells::CCPACSWingCells(CCPACSWingShell* parent)
-: parentShell(parent)
-{
-    Reset();
-}
-
-CCPACSWingCells::~CCPACSWingCells()
-{
-    Cleanup();
-}
-
-void CCPACSWingCells::Reset()
-{
-    Cleanup();
-}
-
-void CCPACSWingCells::Cleanup()
-{
-    CCPACSWingCellContainer::iterator cellit;
-    for (cellit = cells.begin(); cellit != cells.end(); ++cellit) {
-        delete (*cellit);
-        *cellit = NULL;
-    }
-    cells.clear();
-}
+    : generated::CPACSWingCells(parent) {}
 
 void CCPACSWingCells::Invalidate()
 {
-    for (size_t i = 0; i < cells.size(); i++) {
-        cells[i]->Invalidate();
+    for (size_t i = 0; i < m_cell.size(); i++) {
+        m_cell[i]->Invalidate();
     }
 }
-
-void CCPACSWingCells::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string &xpath)
-{
-    Cleanup();
-    ReadContainerElement(tixiHandle, xpath, "cell", 1, cells, this);
-}
-
-void CCPACSWingCells::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& xpath) const
-{
-    WriteContainerElement(tixiHandle, xpath, "cell", cells);
-}
-
 int CCPACSWingCells::GetCellCount() const
 {
-    return static_cast<int>(cells.size());
+    return static_cast<int>(m_cell.size());
 }
 
 CCPACSWingCell& CCPACSWingCells::GetCell(int index) const
 {
-    if (index < 1 || index > GetCellCount()) {
+    index--;;
+    if (index < 0 || index >= GetCellCount()) {
         throw CTiglError("Illegal index in CCPACSWingCells::GetCell", TIGL_INDEX_ERROR);
     }
-    
-    return *cells.at(index-1);
+    return *m_cell[index];
 }
 
 // Get parent wing shell element
 CCPACSWingShell* CCPACSWingCells::GetParentElement() const
 {
-    return parentShell;
+    return GetParent();
 }
 
 CCPACSWingCell &CCPACSWingCells::GetCell(const std::string &UID) const
 {
     for (int i=0; i < GetCellCount(); i++) {
-        const std::string tmpUID(cells[i]->GetUID());
+        const std::string tmpUID(m_cell[i]->GetUID());
         if (tmpUID == UID) {
-            return (*cells[i]);
+            return *m_cell[i];
         }
     }
 
