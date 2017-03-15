@@ -38,6 +38,8 @@ install:
       md c:\oce -Force | Out-Null
       md c:\tixi -Force | Out-Null
       md c:\Qt\5.4.1 -Force | Out-Null
+      dir c:\Qt\5.4.1
+      Write-Output "Qt Dir: c:\Qt\5.4.1\$qtdist"
       If (!(Test-Path -Path "c:\oce\$ocedist")) {
         Write-Output "Downloading OCE"
         (new-object System.Net.WebClient).Downloadfile("https://sourceforge.net/projects/tigl/files/Thirdparty/$ocedist.7z", "c:\$ocedist.7z")
