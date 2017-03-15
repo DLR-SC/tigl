@@ -20,7 +20,7 @@ artifacts:
 install:
   - ps: cinst doxygen.install
   - ps: cinst vcredist2010
-  - ps: more C:\ProgramData\chocolatey\logs\chocolatey.log
+  - ps: dir C:\ProgramData\chocolatey\lib\vcredist2010
   - ps: |
       Write-Output "Configuration: $env:CONFIGURATION"
       Write-Output "Platform: $env:PLATFORM"
