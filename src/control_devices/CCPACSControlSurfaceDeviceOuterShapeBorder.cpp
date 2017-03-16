@@ -91,18 +91,19 @@ void CCPACSControlSurfaceDeviceOuterShapeBorder::ReadCPACS(
         if (tixiGetDoubleElement(tixiHandle, elementPath, &xsiTE) != SUCCESS) {
             // couldnt read xsiTE
             // error
+            // xsiTE = 1;
         }
         tempString = BorderXPath + "/xsiTEUpper";
         elementPath = const_cast<char*>(tempString.c_str());
         if (tixiGetDoubleElement(tixiHandle, elementPath, &xsiTEUpper) != SUCCESS) {
             // couldnt read xsiTEUpper
-            xsiTEUpper = xsiTE;
+            xsiTEUpper = 0;
         }
         tempString = BorderXPath + "/xsiTELower";
         elementPath = const_cast<char*>(tempString.c_str());
         if (tixiGetDoubleElement(tixiHandle, elementPath, &xsiTELower) != SUCCESS) {
             // couldnt read xsiTELower
-            xsiTELower = xsiTE;
+            xsiTELower = 0;
         }
         tempString = BorderXPath + "/innerShape";
         elementPath = const_cast<char*>(tempString.c_str());
@@ -187,7 +188,7 @@ TopoDS_Wire CCPACSControlSurfaceDeviceOuterShapeBorder::getWire(PNamedShape wing
                                           leadingEdgeShape->getXsiLowerSkin());
     }
     else if (innerShape) {
-        wire = builder.boarderWithInnerShape(innerShape->getRelHeightTE(), xsiTE, xsiTEUpper, xsiTELower);
+        wire = builder.boarderWithInnerShape(innerShape->getRelHeightTE(), innerShape->getXsiTE(), xsiTEUpper, xsiTELower);
     }
     else if (airfoil) {
         wire = airfoil->GetWire(coords);
