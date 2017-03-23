@@ -20,7 +20,7 @@ artifacts:
 install:
   - ps: cinst doxygen.install
   - ps: cinst vcredist2010
-  - ps: dir C:\ProgramData\chocolatey\lib\vcredist2010\tools
+  - ps: dir c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC
   - ps: |
       Write-Output "Configuration: $env:CONFIGURATION"
       Write-Output "Platform: $env:PLATFORM"
