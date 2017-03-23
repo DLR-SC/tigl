@@ -30,13 +30,12 @@
 
 #include "CTiglUIDManager.h"
 #include "CTiglLogging.h"
-#include "CCPACSHeader.h"
+#include "CCPACSAircraftModel.h"
+#include "CCPACSRotorcraftModel.h"
+#include "generated/CPACSHeader.h"
 #include "CCPACSWings.h"
-#include "CCPACSWingProfile.h"
 #include "CCPACSRotors.h"
 #include "CCPACSFuselages.h"
-#include "CCPACSFuselageProfile.h"
-#include "CCPACSExternalObjects.h"
 #include "CCPACSACSystems.h"
 #include "CCPACSFarField.h"
 #include "CCPACSGuideCurveProfiles.h"
@@ -45,7 +44,7 @@
 #include "CTiglShapeCache.h"
 #include "CTiglMemoryPool.h"
 #include "CSharedPtr.h"
-#include "CCPACSModel.h"
+#include "CCPACSProfiles.h"
 
 
 namespace tigl
@@ -62,58 +61,62 @@ public:
     TIGL_EXPORT CCPACSConfiguration(TixiDocumentHandle tixiHandle);
 
     // Virtual Destructor
-    TIGL_EXPORT virtual ~CCPACSConfiguration(void);
+    TIGL_EXPORT virtual ~CCPACSConfiguration();
 
     // Invalidates the internal state of the configuration and forces
     // recalculation of wires, lofts etc.
-    TIGL_EXPORT void Invalidate(void);
+    TIGL_EXPORT void Invalidate();
 
     // Read CPACS configuration
-    TIGL_EXPORT void ReadCPACS(const char* configurationUID);
+    TIGL_EXPORT void ReadCPACS(const std::string& configurationUID);
 
     // Write CPACS configuration
     TIGL_EXPORT void WriteCPACS(const std::string& configurationUID);
 
     // Returns the underlying tixi document handle used by a CPACS configuration
-    TIGL_EXPORT TixiDocumentHandle GetTixiDocumentHandle(void) const;
+    TIGL_EXPORT TixiDocumentHandle GetTixiDocumentHandle() const;
 
     // Returns whether this configuration is a rotorcraft
-    TIGL_EXPORT bool IsRotorcraft(void) const;
+    TIGL_EXPORT bool IsRotorcraft() const;
 
-    // Returns the total count of wing profiles in this configuration
-    TIGL_EXPORT int GetWingProfileCount(void) const;
+    // Returns the total count of wing and rotor profiles in this configuration
+    TIGL_EXPORT int GetWingProfileCount() const;
 
+    // Returns true if a wing or rotor profile with the given uid exists
     TIGL_EXPORT bool HasWingProfile(std::string uid) const;
 
     // Returns the class which holds all wing profiles
-    TIGL_EXPORT CCPACSWingProfiles& GetWingProfiles(void);
+    TIGL_EXPORT CCPACSWingProfiles& GetWingProfiles();
     
+    // Returns the class which holds all rotor profiles
+    TIGL_EXPORT CCPACSRotorProfiles& GetRotorProfiles();
+
     // Returns the class which holds all wing profiles
-    TIGL_EXPORT CCPACSFuselageProfiles& GetFuselageProfiles(void);
+    TIGL_EXPORT CCPACSFuselageProfiles& GetFuselageProfiles();
 
-    // Returns the wing profile for a given index - TODO: depricated!
-    TIGL_EXPORT CCPACSWingProfile& GetWingProfile(int index) const;
+    // Returns the wing or rotor profile for a given index
+    DEPRECATED TIGL_EXPORT CCPACSWingProfile& GetWingProfile(int index) const;
 
-    // Returns the wing profile for a given uid.
+    // Returns the wing or rotor profile for a given uid.
     TIGL_EXPORT CCPACSWingProfile& GetWingProfile(std::string uid) const;
 
-    // Returns the total count of wings in a configuration
-    TIGL_EXPORT int GetWingCount(void) const;
+    // Returns the total count of wings (including rotor blades) in a configuration
+    TIGL_EXPORT int GetWingCount() const;
 
-    // Returns the count of wings in a configuration with the property isRotorBlade set to true
-    TIGL_EXPORT int GetRotorBladeCount(void) const;
+    // Returns the count of rotor blade wings in a configuration
+    TIGL_EXPORT int GetRotorBladeCount() const;
 
-    // Returns the wing for a given index.
+    // Returns the wing (or rotor blade) for a given index.
     TIGL_EXPORT CCPACSWing& GetWing(int index) const;
 
-    // Returns the wing for a given UID.
+    // Returns the wing (or rotor blade) for a given UID.
     TIGL_EXPORT CCPACSWing& GetWing(const std::string& UID) const;
 
-    // Returns the wing index for a given UID.
+    // Returns the wing (or rotor blade) index for a given UID.
     TIGL_EXPORT int GetWingIndex(const std::string& UID) const;
 
     // Returns the total count of generic systems in a configuration
-    TIGL_EXPORT int GetGenericSystemCount(void);
+    TIGL_EXPORT int GetGenericSystemCount();
 
     // Returns the generic system for a given index.
     TIGL_EXPORT CCPACSGenericSystem& GetGenericSystem(int index);
@@ -122,7 +125,7 @@ public:
     TIGL_EXPORT CCPACSGenericSystem& GetGenericSystem(const std::string& UID);
 
     // Returns the total count of rotors in a configuration
-    TIGL_EXPORT int GetRotorCount(void) const;
+    TIGL_EXPORT int GetRotorCount() const;
 
     // Returns the rotor for a given index.
     TIGL_EXPORT CCPACSRotor& GetRotor(int index) const;
@@ -138,7 +141,7 @@ public:
     TIGL_EXPORT bool HasFuselageProfile(std::string uid) const;
 
     // Returns the total count of fuselage profiles in this configuration
-    TIGL_EXPORT int GetFuselageProfileCount(void) const;
+    TIGL_EXPORT int GetFuselageProfileCount() const;
 
     // Returns the fuselage profile for a given index.
     TIGL_EXPORT CCPACSFuselageProfile& GetFuselageProfile(int index) const;
@@ -147,7 +150,7 @@ public:
     TIGL_EXPORT CCPACSFuselageProfile& GetFuselageProfile(std::string uid) const;
 
     // Returns the total count of fuselages in a configuration
-    TIGL_EXPORT int GetFuselageCount(void) const;
+    TIGL_EXPORT int GetFuselageCount() const;
 
     // Returns the fuselage for a given index.
     TIGL_EXPORT CCPACSFuselage& GetFuselage(int index) const;
@@ -165,7 +168,7 @@ public:
     TIGL_EXPORT CCPACSFarField& GetFarField();
 
     // Returns the number of external objects (i.e. linked CAD files like STEP, IGES)
-    TIGL_EXPORT int GetExternalObjectCount(void) const;
+    TIGL_EXPORT int GetExternalObjectCount() const;
 
     TIGL_EXPORT CCPACSExternalObject& GetExternalObject(int index) const;
 
@@ -173,26 +176,26 @@ public:
     TIGL_EXPORT CCPACSGuideCurveProfile& GetGuideCurveProfile(std::string UID) const;
 
     // Returns the uid manager
-    TIGL_EXPORT CTiglUIDManager& GetUIDManager(void);
+    TIGL_EXPORT CTiglUIDManager& GetUIDManager();
 
     // Returns the algorithm for fusing the aircraft
-    TIGL_EXPORT PTiglFusePlane AircraftFusingAlgo(void);
+    TIGL_EXPORT PTiglFusePlane AircraftFusingAlgo();
 
     // Returns the length of the airplane
-    TIGL_EXPORT double GetAirplaneLenth(void);
+    TIGL_EXPORT double GetAirplaneLenth();
 
     // Returns the UID of the loaded configuration.
-    TIGL_EXPORT const std::string& GetUID(void) const;
+    TIGL_EXPORT const std::string& GetUID() const;
 
-    TIGL_EXPORT CTiglShapeCache& GetShapeCache(void);
+    TIGL_EXPORT CTiglShapeCache& GetShapeCache();
 
-    TIGL_EXPORT CTiglMemoryPool& GetMemoryPool(void);
+    TIGL_EXPORT CTiglMemoryPool& GetMemoryPool();
 
     /** Getter/Setter for member name */
-    TIGL_EXPORT std::string GetName(void) const;
+    TIGL_EXPORT std::string GetName() const;
 
     /** Getter/Setter for member description */
-    TIGL_EXPORT std::string GetDescription(void) const;
+    TIGL_EXPORT std::string GetDescription() const;
 
     /** Getter for member header */
     TIGL_EXPORT CCPACSHeader* GetHeader();
@@ -200,11 +203,11 @@ public:
     /** Getter for member wings */
     TIGL_EXPORT CCPACSWings* GetWings();
 
-    TIGL_EXPORT CCPACSACSystems& GetACSystems(void);
+    TIGL_EXPORT CCPACSACSystems& GetACSystems();
 
 protected:
     // transform all components relative to their parents
-    void transformAllComponents(CTiglAbstractPhysicalComponent* parent);
+    void transformAllComponents(CTiglRelativelyPositionedComponent* parent);
 
 private:
     // Copy constructor
@@ -214,24 +217,17 @@ private:
     void operator=(const CCPACSConfiguration&);
 
 private:
-    std::string                  name;                 /**< Configuration name */
-    std::string                  description;          /**< Configuration description */
-    CCPACSModel*                 cpacsModel;           /**< Root component for the CTiglUIDManager */
-    TixiDocumentHandle           tixiDocumentHandle;   /**< Handle for internal TixiDocument */
-    bool                         isRotorcraft;         /**< Indicates whether this configuration is a rotorcraft */
-    CCPACSHeader                 header;               /**< Configuration header element */
-    CCPACSWings                  wings;                /**< Configuration wings element */
-    CCPACSFuselages              fuselages;            /**< Configuration fuselages element */
-    CCPACSACSystems              acSystems;            /**< Configuration aircraft systems element */
-    CCPACSRotors                 rotors;               /**< Configuration rotors element */
-    CCPACSFarField               farField;             /**< Far field configuration for CFD tools */
-    CCPACSExternalObjects        externalObjects;      /**< External loaded CAD components */
-    CCPACSGuideCurveProfiles     guideCurveProfiles;   /**< Guide curve profiles */
-    CTiglUIDManager              uidManager;           /**< Stores the unique ids of the components */
-    PTiglFusePlane               aircraftFuser;        /**< The aircraft fusing algo */
-    std::string                  configUID;            /**< UID of the opened configuration   */
-    CTiglShapeCache              shapeCache;
-    CTiglMemoryPool              memoryPool;
+    boost::optional<CCPACSAircraftModel>   aircraftModel;        /**< Root component for the CTiglUIDManager */
+    boost::optional<CCPACSRotorcraftModel> rotorcraftModel;      /**< Root component for the CTiglUIDManager */
+    boost::optional<CCPACSProfiles>        profiles;             /**< Wing airfoils, fuselage profiles, rotor airfoils, guide curve profiles */
+    TixiDocumentHandle                     tixiDocumentHandle;   /**< Handle for internal TixiDocument */
+    CCPACSHeader                           header;               /**< Configuration header element */
+    CCPACSACSystems                        acSystems;            /**< Configuration aircraft systems element */
+    CCPACSFarField                         farField;             /**< Far field configuration for CFD tools */
+    CTiglUIDManager                        uidManager;           /**< Stores the unique ids of the components */
+    PTiglFusePlane                         aircraftFuser;        /**< The aircraft fusing algo */
+    CTiglShapeCache                        shapeCache;
+    CTiglMemoryPool                        memoryPool;
 };
 
 } // end namespace tigl

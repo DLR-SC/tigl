@@ -87,7 +87,7 @@ gp_Pnt GetReferencePoint(const CCPACSWingCSStructure& structure, const std::stri
     }
     else {
         // find spar with uid
-        CCPACSWingSparSegment& sparSegment = structure.GetSparSegment(reference);
+        const CCPACSWingSparSegment& sparSegment = structure.GetSparSegment(reference);
         referencePnt = sparSegment.GetPoint(currentEta);
     }
     return referencePnt;
@@ -105,7 +105,7 @@ double GetRibReferenceLength(const std::string& reference, const CCPACSWingCSStr
     }
     else {
         // find spar with uid
-        CCPACSWingSparSegment& sparSegment = structure.GetSparSegment(reference);
+        const CCPACSWingSparSegment& sparSegment = structure.GetSparSegment(reference);
         referenceLength = sparSegment.GetSparLength();
     }
     return referenceLength;
@@ -116,7 +116,7 @@ double GetRibReferenceLength(const std::string& reference, const CCPACSWingCSStr
 bool IsOuterSparPointInSection(const std::string& sparUid, double eta, const CCPACSWingCSStructure& structure)
 {
     // check whether spar point lies within a section
-    CCPACSWingSparSegment& sparSegment = structure.GetSparSegment(sparUid);
+    const CCPACSWingSparSegment& sparSegment = structure.GetSparSegment(sparUid);
     int sparPositionIndex;
     if (eta < Precision::Confusion()) {
         sparPositionIndex = 1;
@@ -128,10 +128,10 @@ bool IsOuterSparPointInSection(const std::string& sparUid, double eta, const CCP
         return false;
     }
     CCPACSWingSparPosition& pos = sparSegment.GetSparPosition(sparSegment.GetSparPositionUID(sparPositionIndex));
-    if (pos.GetInputType() == CCPACSWingSparPosition::ElementUID) {
+    if (pos.GetInputType() == ENUM_VALUE_NS(CCPACSWingSparPosition, InputType, ElementUID)) {
         return true;
     }
-    else if (pos.GetInputType() == CCPACSWingSparPosition::Eta &&
+    else if (pos.GetInputType() == ENUM_VALUE_NS(CCPACSWingSparPosition, InputType, Eta) &&
              (pos.GetEta() < Precision::Confusion() || pos.GetEta() > 1 - Precision::Confusion())) {
         return true;
     }
@@ -267,7 +267,7 @@ gp_Pnt GetRibDefinitionPoint(const std::string& definition, const TopoDS_Face& r
     else {
         // get spar
         std::string sparUid = definition;
-        CCPACSWingSparSegment& sparSegment = structure.GetSparSegment(sparUid);
+        const CCPACSWingSparSegment& sparSegment = structure.GetSparSegment(sparUid);
         TopoDS_Wire sparMidplaneLine = sparSegment.GetSparMidplaneLine();
         if (!GetIntersectionPoint(ribCutFace, sparMidplaneLine, definitionPoint)) {
             LOG(ERROR) << "Unable to determine rib definition point!";
@@ -281,11 +281,11 @@ gp_Pnt GetSparMidplanePoint(const CCPACSWingSparPosition& sparPos, const CCPACSW
 {
     const CTiglWingStructureReference& wingStructureReference = structure.GetWingStructureReference();
     gp_Pnt midplanePoint;
-    if (sparPos.GetInputType() == CCPACSWingSparPosition::ElementUID) {
+    if (sparPos.GetInputType() == ENUM_VALUE_NS(CCPACSWingSparPosition, InputType, ElementUID)) {
         CCPACSWingComponentSegment& componentSegment = wingStructureReference.GetWingComponentSegment();
         midplanePoint = getSectionElementChordlinePoint(componentSegment, sparPos.GetElementUID(), sparPos.GetXsi());
     }
-    else if (sparPos.GetInputType() == CCPACSWingSparPosition::Eta) {
+    else if (sparPos.GetInputType() == ENUM_VALUE_NS(CCPACSWingSparPosition, InputType, Eta)) {
         midplanePoint = wingStructureReference.GetMidplaneOrChordlinePoint(sparPos.GetEta(), sparPos.GetXsi());
     }
     else {
@@ -311,7 +311,7 @@ void CheckSparPositionOnReference(const std::string& sparPositionUID, const std:
     }
 
     // next ensure that the spar position is part of the spar segment
-    CCPACSWingSparSegment& sparSegment = structure.GetSparSegment(sparSegmentIndex);
+    const CCPACSWingSparSegment& sparSegment = structure.GetSparSegment(sparSegmentIndex);
     int numSparPositions = sparSegment.GetSparPositionUIDCount();
     int sparPositionIndex = 1;
     for (; sparPositionIndex <= numSparPositions; ++sparPositionIndex) {

@@ -19,13 +19,13 @@
 #include "test.h"
 #include "CCPACSExternalObject.h"
 #include "CTiglError.h"
+#include "CNamedShape.h"
 
 namespace tigl
 {
-namespace  external_object_private
+namespace external_object_private
 {
     std::string getPathRelativeToApp(const std::string& cpacsPath, const std::string& linkedFilePath);
-    bool fileTypeSupported(const std::string& fileType);
 }
 }
 
@@ -54,7 +54,7 @@ protected:
 
 TEST_F(TiglExternalComponent, getFileNameRelative)
 {
-    tigl::CCPACSExternalObject object;
+    tigl::CCPACSExternalObject object(NULL);
     object.ReadCPACS(tixiHandle, "/root/genericGeometryComponent[1]");
     
     ASSERT_STREQ("TestData/nacelle.stp", object.GetFilePath().c_str());
@@ -62,7 +62,7 @@ TEST_F(TiglExternalComponent, getFileNameRelative)
 
 TEST_F(TiglExternalComponent, getShape)
 {
-    tigl::CCPACSExternalObject object;
+    tigl::CCPACSExternalObject object(NULL);
     object.ReadCPACS(tixiHandle, "/root/genericGeometryComponent[1]");
     
     PNamedShape shape = object.GetLoft();
@@ -72,7 +72,7 @@ TEST_F(TiglExternalComponent, getShape)
 
 TEST_F(TiglExternalComponent, invalidFiletype)
 {
-    tigl::CCPACSExternalObject object;
+    tigl::CCPACSExternalObject object(NULL);
     ASSERT_THROW(object.ReadCPACS(tixiHandle, "/root/genericGeometryComponent[2]"), tigl::CTiglError);
 }
 

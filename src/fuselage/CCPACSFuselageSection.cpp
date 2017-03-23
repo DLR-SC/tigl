@@ -25,105 +25,43 @@
 
 #include "CCPACSFuselageSection.h"
 #include "CTiglError.h"
-#include "TixiSaveExt.h"
 #include <iostream>
 
 namespace tigl
 {
 
-// Constructor
-CCPACSFuselageSection::CCPACSFuselageSection()
-{
-    Cleanup();
-}
-
-// Destructor
-CCPACSFuselageSection::~CCPACSFuselageSection(void)
-{
-    Cleanup();
-}
-
 // Cleanup routine
-void CCPACSFuselageSection::Cleanup(void)
+void CCPACSFuselageSection::Cleanup()
 {
-    name = "";
-    uid = "";
-    transformation.reset();
+    m_name = "";
+    m_uID = "";
+    m_transformation.reset();
 }
+
 
 // Read CPACS section elements
 void CCPACSFuselageSection::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& sectionXPath)
 {
     Cleanup();
-
-    char*       elementPath;
-    std::string tempString;
-
-    // Get subelement "name"
-    char* ptrName = NULL;
-    tempString    = sectionXPath + "/name";
-    elementPath   = const_cast<char*>(tempString.c_str());
-    if (tixiGetTextElement(tixiHandle, elementPath, &ptrName) == SUCCESS) {
-        name = ptrName;
-    }
-
-    // Get subelement "description"
-    char* ptrDescription = NULL;
-    tempString    = sectionXPath + "/description";
-    if (tixiGetTextElement(tixiHandle, tempString.c_str(), &ptrDescription) == SUCCESS) {
-        description = ptrDescription;
-    }
-
-    // Get attribute "uID"
-    char* ptrUID  = NULL;
-    tempString    = sectionXPath;
-    elementPath   = const_cast<char*>(tempString.c_str());
-    if (tixiGetTextAttribute(tixiHandle, elementPath, "uID", &ptrUID) == SUCCESS) {
-        uid = ptrUID;
-    }
-
-    // Get Transformation
-    transformation.ReadCPACS(tixiHandle, sectionXPath);
-
-    // Get subelement "elements", which means the section elements
-    elements.ReadCPACS(tixiHandle, sectionXPath);
-}
-
-// Write CPACS section elements
-void CCPACSFuselageSection::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& sectionXPath)
-{
-
-    TixiSaveExt::TixiSaveTextAttribute(tixiHandle, sectionXPath.c_str(), "uID", uid.c_str());
-    TixiSaveExt::TixiSaveTextElement(tixiHandle, sectionXPath.c_str(), "name", name.c_str());
-    TixiSaveExt::TixiSaveTextElement(tixiHandle, sectionXPath.c_str(), "description", description.c_str());
-
-    transformation.WriteCPACS(tixiHandle, sectionXPath);
-
-    elements.WriteCPACS(tixiHandle, sectionXPath);
+    generated::CPACSFuselageSection::ReadCPACS(tixiHandle, sectionXPath);
 }
 
 // Get profile count for this section
-int CCPACSFuselageSection::GetSectionElementCount(void) const
+int CCPACSFuselageSection::GetSectionElementCount() const
 {
-    return elements.GetSectionElementCount();
-}
-
-// Get the UID of this FuselageSection
-const std::string& CCPACSFuselageSection::GetUID(void) const
-{
-    return uid;
+    return m_elements.GetSectionElementCount();
 }
 
 // Get element for a given index
 CCPACSFuselageSectionElement& CCPACSFuselageSection::GetSectionElement(int index) const
 {
-    return elements.GetSectionElement(index);
+    return m_elements.GetSectionElement(index);
 }
 
 // Gets the section transformation
-CTiglTransformation CCPACSFuselageSection::GetSectionTransformation(void) const
+CTiglTransformation CCPACSFuselageSection::GetSectionTransformation() const
 {
-    return transformation.getTransformationMatrix();
+    return m_transformation.getTransformationMatrix();
 }
 
 } // end namespace tigl

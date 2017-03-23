@@ -21,6 +21,7 @@
 #include "CTiglLogging.h"
 #include "CCPACSConfiguration.h"
 #include "tiglcommonfunctions.h"
+#include "CNamedShape.h"
 
 #include <string>
 #include <cmath>
@@ -35,100 +36,48 @@
 namespace tigl
 {
 
-CCPACSFarField::CCPACSFarField()
-{
+CCPACSFarField::CCPACSFarField() {
     init();
 }
-
-CCPACSFarField::~CCPACSFarField() {}
 
 void CCPACSFarField::init()
 {
-    fieldType = NONE;
-    fieldSize = 0.;
+    SetFieldType(ENUM_VALUE(TiglFarFieldType, NONE));
     loft.reset();
-    SetUID("FarField");
 }
 
-TiglFarFieldType CCPACSFarField::GetFieldType()
-{
-    return fieldType;
-}
-
-void CCPACSFarField::ReadCPACS(TixiDocumentHandle tixiHandle)
+void CCPACSFarField::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
 {
     init();
-
-    const std::string prefix = "/cpacs/toolspecific/cFD/farField";
-    if (tixiCheckElement(tixiHandle, prefix.c_str()) != SUCCESS) {
-        LOG(INFO) << "No far-field defined.";
-        fieldType = NONE;
-        return;
-    }
-
-    // get field type
-    char * tmpstr = NULL;
-    if (tixiGetTextElement(tixiHandle, (prefix + "/type").c_str(), &tmpstr) != SUCCESS) {
-        fieldType = NONE;
-        return;
-    }
-    else {
-        if (strcmp(tmpstr, "halfSphere") == 0){
-            fieldType = HALF_SPHERE;
-        }
-        else if (strcmp(tmpstr, "fullSphere") == 0){
-            fieldType = FULL_SPHERE;
-        }
-        else if (strcmp(tmpstr, "halfCube") == 0){
-            fieldType = HALF_CUBE;
-        }
-        else if (strcmp(tmpstr, "fullCube") == 0){
-            fieldType = FULL_CUBE;
-        }
-        else {
-            fieldType = NONE;
-            return;
-        }
-    }
-
-    // get reference length
-    if (tixiGetDoubleElement(tixiHandle, (prefix + "/referenceLength").c_str(), &fieldSize) != SUCCESS) {
-        fieldSize = 0.;
-        throw tigl::CTiglError("No reference length defined for far-field!");
-    }
-
-    // get multiplier
-    double multiplier = 1.;
-    if (tixiGetDoubleElement(tixiHandle, (prefix + "/multiplier").c_str(), &multiplier) != SUCCESS) {
-        fieldSize = 0.;
-        throw tigl::CTiglError("No multiplier defined for far-field!");
-    }
-    else {
-        fieldSize *= multiplier;
-    }
+    generated::CPACSFarField::ReadCPACS(tixiHandle, xpath);
 }
 
-PNamedShape CCPACSFarField::BuildLoft(void)
+const std::string& CCPACSFarField::GetUID() const {
+    static const std::string s_uid = "FarField";
+    return s_uid;
+}
+
+PNamedShape CCPACSFarField::BuildLoft()
 {
+    const double fieldSize = m_referenceLength * m_multiplier;
+
     TopoDS_Shape shape;
     shape.Nullify();
     gp_Pnt center(0,0,0);
 
-    switch (fieldType) {
-    case NONE:
-        shape.Nullify();
-    case FULL_SPHERE:
+    switch (GetFieldType()) {
+    case ENUM_VALUE(TiglFarFieldType, FULL_SPHERE):
         shape = BRepPrimAPI_MakeSphere(center, fieldSize).Shape();
         break;
-    case FULL_CUBE:
+    case ENUM_VALUE(TiglFarFieldType, FULL_CUBE):
         shape = BRepPrimAPI_MakeBox(gp_Pnt(center.X()-fieldSize, center.Y()-fieldSize, center.Z()-fieldSize),
                                     fieldSize*2., fieldSize*2., fieldSize*2.).Shape();
         break;
-    case HALF_CUBE:
+    case ENUM_VALUE(TiglFarFieldType, HALF_CUBE):
         shape = BRepPrimAPI_MakeBox(gp_Pnt(center.X()-fieldSize, center.Y(), center.Z()-fieldSize),
                                     fieldSize*2., fieldSize, fieldSize*2.).Shape();
         break;
-    case HALF_SPHERE:
+    case ENUM_VALUE(TiglFarFieldType, HALF_SPHERE):
         shape = BRepPrimAPI_MakeSphere(gp_Ax2(center, gp_Dir(0,1,0)), fieldSize, 0., M_PI_2).Shape();
         break;
     default:
@@ -156,9 +105,18 @@ PNamedShape CCPACSFarField::BuildLoft(void)
     return loft;
 }
 
-TiglGeometricComponentType CCPACSFarField::GetComponentType(void)
+TiglGeometricComponentType CCPACSFarField::GetComponentType() const
 {
     return TIGL_COMPONENT_LOGICAL;
+}
+
+
+TiglFarFieldType CCPACSFarField::GetFieldType() {
+    return m_type.GetSimpleContent();
+}
+
+void CCPACSFarField::SetFieldType(const TiglFarFieldType& value) {
+    m_type.SetSimpleContent(value);
 }
 
 } // namespace tigl

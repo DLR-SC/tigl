@@ -26,36 +26,25 @@
 #ifndef CCPACSROTORS_H
 #define CCPACSROTORS_H
 
-#include "tixi.h"
+#include "generated/CPACSRotors.h"
 #include "CCPACSRotor.h"
-#include <vector>
 
 namespace tigl
 {
 
 class CCPACSConfiguration;
 
-class CCPACSRotors
+class CCPACSRotors : public generated::CPACSRotors
 {
-private:
-    // Typedef for a CCPACSRotor container to store the rotors of a configuration.
-    typedef std::vector<CCPACSRotor*> CCPACSRotorContainer;
-
 public:
     // Constructor
-    TIGL_EXPORT CCPACSRotors(CCPACSConfiguration* config);
-
-    // Virtual Destructor
-    TIGL_EXPORT virtual ~CCPACSRotors(void);
+    TIGL_EXPORT CCPACSRotors(CCPACSRotorcraftModel* parent);
 
     // Invalidates internal state
-    TIGL_EXPORT void Invalidate(void);
-
-    // Read CPACS rotors elements
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const char* configurationUID, const std::string rotorsLibraryName="rotors", const std::string rotorElementName="rotor", const std::string rotorProfilesLibraryPath="/cpacs/vehicles/profiles/rotorAirfoils", const std::string rotorProfileElementName="rotorAirfoil");
+    TIGL_EXPORT void Invalidate();
 
     // Returns the total count of rotors in a configuration
-    TIGL_EXPORT int GetRotorCount(void) const;
+    TIGL_EXPORT int GetRotorCount() const;
 
     // Returns the rotor for a given index.
     TIGL_EXPORT CCPACSRotor& GetRotor(int index) const;
@@ -67,25 +56,8 @@ public:
     TIGL_EXPORT int GetRotorIndex(const std::string& UID) const;
 
     // Returns the parent configuration
-    TIGL_EXPORT CCPACSConfiguration& GetConfiguration(void) const;
-
-protected:
-    // Cleanup routine
-    void Cleanup(void);
-
-private:
-    // Copy constructor
-    CCPACSRotors(const CCPACSRotors&);
-
-    // Assignment operator
-    void operator=(const CCPACSRotors&);
-
-private:
-    CCPACSRotorContainer rotors;        /**< Rotor elements */
-    CCPACSConfiguration* configuration; /**< Pointer to parent configuration */
-
+    TIGL_EXPORT CCPACSConfiguration& GetConfiguration() const;
 };
-
 } // end namespace tigl
 
 #endif // CCPACSROTORS_H

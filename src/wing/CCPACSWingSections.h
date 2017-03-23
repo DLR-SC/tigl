@@ -26,56 +26,21 @@
 #ifndef CCPACSWINGSECTIONS_H
 #define CCPACSWINGSECTIONS_H
 
-#include "tigl_internal.h"
-#include "tixi.h"
-#include "CCPACSWingSection.h"
-#include "CTiglError.h"
-#include <string>
-#include <vector>
+#include "generated/CPACSWingSections.h"
 
 namespace tigl
 {
 
-class CCPACSWingSections
+class CCPACSWingSections : public generated::CPACSWingSections
 {
-
-private:
-    // Typedef for a CCPACSWingSection container to store the sections of a wing.
-    typedef std::vector<CCPACSWingSection*> CCPACSWingSectionContainer;
-
 public:
-    // Constructor
-    TIGL_EXPORT CCPACSWingSections(void);
-
-    // Virtual Destructor
-    TIGL_EXPORT virtual ~CCPACSWingSections(void);
-
-    // Read CPACS wing sections element
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& wingXPath);
-
-    // Write CPACS wing sections element
-    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& wingXPath) const;
-
     // Get section count
-    TIGL_EXPORT int GetSectionCount(void) const;
+    TIGL_EXPORT int GetSectionCount() const;
 
     // Returns the section for a given index
     TIGL_EXPORT CCPACSWingSection& GetSection(int index) const;
 
-protected:
-    // Cleanup routine
-    void Cleanup(void);
-
-private:
-    // Copy constructor
-    CCPACSWingSections(const CCPACSWingSections& ) { /* Do nothing */ }
-
-    // Assignment operator
-    void operator=(const CCPACSWingSections& ) { /* Do nothing */ }
-
-private:
-    CCPACSWingSectionContainer sections;       /**< Section elements */
-
+    using generated::CPACSWingSections::GetSection;
 };
 
 } // end namespace tigl

@@ -28,6 +28,7 @@
 
 #include <string>
 
+#include "generated/CPACSWingSegment.h"
 #include "tigl_config.h"
 #include "tigl_internal.h"
 #include "tixi.h"
@@ -35,6 +36,7 @@
 #include "CCPACSGuideCurves.h"
 #include "CTiglPoint.h"
 #include "CTiglAbstractSegment.h"
+#include "CCPACSTransformation.h"
 #include "math/CTiglPointTranslator.h"
 
 #include "TopoDS_Shape.hxx"
@@ -48,32 +50,25 @@ namespace tigl
 
 class CCPACSWing;
 
-class CCPACSWingSegment : public CTiglAbstractSegment
+class CCPACSWingSegment : public generated::CPACSWingSegment, public CTiglAbstractSegment<CCPACSWingSegment>
 {
 public:
     // Constructor
-    TIGL_EXPORT CCPACSWingSegment(CCPACSWing* aWing, int aSegmentIndex);
+    TIGL_EXPORT CCPACSWingSegment(CCPACSWingSegments* parent);
 
     // Virtual Destructor
-    TIGL_EXPORT virtual ~CCPACSWingSegment(void);
+    TIGL_EXPORT virtual ~CCPACSWingSegment();
 
     // Invalidates internal state
-    TIGL_EXPORT void Invalidate(void);
+    TIGL_EXPORT void Invalidate();
 
     // Read CPACS segment elements
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& segmentXPath);
 
-    // Write CPACS segment elements
-    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string & segmentXPath) const;
-
-    // Gets the segment name
-    TIGL_EXPORT const std::string& GetName() const;
-
-    // Getter for the member description
-    TIGL_EXPORT const std::string& GetDescription() const;
+    TIGL_EXPORT virtual const std::string& GetUID() const OVERRIDE;
 
     // Returns the wing this segment belongs to
-    TIGL_EXPORT CCPACSWing& GetWing(void) const;
+    TIGL_EXPORT CCPACSWing& GetWing() const;
 
     TIGL_EXPORT TopoDS_Shape GetInnerClosure(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
     TIGL_EXPORT TopoDS_Shape GetOuterClosure(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
@@ -91,40 +86,40 @@ public:
     TIGL_EXPORT gp_Pnt GetChordNormal(double eta, double xsi) const;
 
     // Returns the inner section UID of this segment
-    TIGL_EXPORT const std::string& GetInnerSectionUID(void) const;
+    TIGL_EXPORT const std::string& GetInnerSectionUID() const;
 
     // Returns the outer section UID of this segment
-    TIGL_EXPORT const std::string& GetOuterSectionUID(void) const;
+    TIGL_EXPORT const std::string& GetOuterSectionUID() const;
 
     // Returns the inner section element UID of this segment
-    TIGL_EXPORT const std::string& GetInnerSectionElementUID(void) const;
+    TIGL_EXPORT const std::string& GetInnerSectionElementUID() const;
 
     // Returns the outer section element UID of this segment
-    TIGL_EXPORT const std::string& GetOuterSectionElementUID(void) const;
+    TIGL_EXPORT const std::string& GetOuterSectionElementUID() const;
 
     // Returns the inner section index of this segment
-    TIGL_EXPORT int GetInnerSectionIndex(void) const;
+    TIGL_EXPORT int GetInnerSectionIndex() const;
 
     // Returns the outer section index of this segment
-    TIGL_EXPORT int GetOuterSectionIndex(void) const;
+    TIGL_EXPORT int GetOuterSectionIndex() const;
 
     // Returns the inner section element index of this segment
-    TIGL_EXPORT int GetInnerSectionElementIndex(void) const;
+    TIGL_EXPORT int GetInnerSectionElementIndex() const;
 
     // Returns the outer section element index of this segment
-    TIGL_EXPORT int GetOuterSectionElementIndex(void) const;
+    TIGL_EXPORT int GetOuterSectionElementIndex() const;
 
     // Returns the starting(inner) Segment Connection
-    TIGL_EXPORT CCPACSWingConnection& GetInnerConnection(void);
+    TIGL_EXPORT CCPACSWingConnection& GetInnerConnection();
 
     // Return the end(outer) Segment Connection
-    TIGL_EXPORT CCPACSWingConnection& GetOuterConnection(void);
+    TIGL_EXPORT CCPACSWingConnection& GetOuterConnection();
 
     // Gets the count of segments connected to the inner section of this segment
-    TIGL_EXPORT int GetInnerConnectedSegmentCount(void) const;
+    TIGL_EXPORT int GetInnerConnectedSegmentCount() const;
 
     // Gets the count of segments connected to the outer section of this segment
-    TIGL_EXPORT int GetOuterConnectedSegmentCount(void) const;
+    TIGL_EXPORT int GetOuterConnectedSegmentCount() const;
 
     // Gets the index (number) of the n-th segment connected to the inner section
     // of this segment. n starts at 1.
@@ -196,7 +191,7 @@ public:
     TIGL_EXPORT TopTools_SequenceOfShape& GetGuideCurveWires() const;
 
     // get guide curve for given UID
-    TIGL_EXPORT CCPACSGuideCurve& GetGuideCurve(std::string UID) const;
+    TIGL_EXPORT const CCPACSGuideCurve& GetGuideCurve(std::string UID) const;
 
     // check if guide curve with a given UID exists
     TIGL_EXPORT bool GuideCurveExists(std::string UID) const;
@@ -219,7 +214,7 @@ public:
     // starting at a point on the chord face with the given direction dir.
     TIGL_EXPORT gp_Pnt GetPointDirection(double eta, double xsi, double dirx, double diry, double dirz, bool fromUpper, double& deviation) const;
 
-    TIGL_EXPORT TiglGeometricComponentType GetComponentType()
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const
     {
         return TIGL_COMPONENT_WINGSEGMENT | TIGL_COMPONENT_SEGMENT | TIGL_COMPONENT_LOGICAL;
     }
@@ -229,26 +224,20 @@ public:
 
 protected:
     // Cleanup routine
-    void Cleanup(void);
+    void Cleanup();
 
     // Update internal segment data
-    void Update(void);
+    void Update();
 
     // builds all guide curve wires
-    void BuildGuideCurveWires(void) const;
+    void BuildGuideCurveWires() const;
 
     // Builds the loft between the two segment sections
-    PNamedShape BuildLoft(void);
+    PNamedShape BuildLoft();
 
 private:
-    // Copy constructor
-    CCPACSWingSegment(const CCPACSWingSegment&);
-
-    // Assignment operator
-    void operator=(const CCPACSWingSegment&);
-
     // get short name for loft
-    std::string GetShortShapeName (void);
+    std::string GetShortShapeName ();
 
     // Builds upper and lower surfaces
     void MakeSurfaces() const;
@@ -263,11 +252,8 @@ private:
     // converts segment eta xsi coordinates to face uv koordinates
     void etaXsiToUV(bool isFromUpper, double eta, double xsi, double& u, double& v) const;
 
-    std::string          name;                 /**< Segment name                            */
-    std::string          description;          /**< Segment description                     */
     CCPACSWingConnection innerConnection;      /**< Inner segment connection (root)         */
     CCPACSWingConnection outerConnection;      /**< Outer segment connection (tip)          */
-    CCPACSGuideCurves    guideCurves;          /**< Guide curve container                   */
     mutable TopTools_SequenceOfShape guideCurveWires;  /**< container for the guide curve wires     */
     CCPACSWing*          wing;                 /**< Parent wing                             */
     double               myVolume;             /**< Volume of this segment                  */
@@ -292,9 +278,6 @@ private:
         Handle(Geom_Surface) cordFace;
     };
     mutable SurfaceCache surfaceCache;
-
-    bool                 guideCurvesPresent;   /**< If guide curves are not present, lofted surface is possible */
-
 };
 
 } // end namespace tigl

@@ -20,46 +20,28 @@
 
 #include "CCPACSWingCSStructure.h"
 #include "CTiglError.h"
-#include "CTiglLogging.h"
-#include "TixiSaveExt.h"
 #include "CCPACSWingCell.h"
 
 
 namespace tigl 
 {
 
-CCPACSWingShell::CCPACSWingShell(CCPACSWingCSStructure& parent, TiglLoftSide side)
-    : parent(parent),
-    side(side),
-    cells(this)
+CCPACSWingShell::CCPACSWingShell(CCPACSWingCSStructure* parent)
+    : generated::CPACSWingShell(parent)
 {
-    Reset();
-}
-
-CCPACSWingShell::~CCPACSWingShell()
-{
-    Reset();
-}
-
-void CCPACSWingShell::Reset()
-{
-    cells.Reset();
-    Invalidate();
-}
-
-const std::string& CCPACSWingShell::GetUID() const
-{
-    return uid;
 }
 
 int CCPACSWingShell::GetCellCount() const
 {
-    return cells.GetCellCount();
+    if (m_cells)
+        return m_cells->GetCellCount();
+    else
+        return 0;
 }
 
 const CCPACSWingCell& CCPACSWingShell::GetCell(int index) const
 {
-    return cells.GetCell(index);
+    return m_cells->GetCell(index);
 }
 
 CCPACSWingCell& CCPACSWingShell::GetCell(int index)
@@ -70,77 +52,34 @@ CCPACSWingCell& CCPACSWingShell::GetCell(int index)
 
 const CCPACSMaterial& CCPACSWingShell::GetMaterial() const
 {
-    return material;
+    return m_skin.GetMaterial();
 }
 
 CCPACSMaterial& CCPACSWingShell::GetMaterial()
 {
-    return material;
+    return m_skin.GetMaterial();
 }
 
 const CCPACSWingCSStructure& CCPACSWingShell::GetStructure() const
 {
-    return parent;
+    return *m_parent;
 }
 
 CCPACSWingCSStructure& CCPACSWingShell::GetStructure()
 {
-    return parent;
+    return *m_parent;
 }
 
 void CCPACSWingShell::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string &shellXPath)
 {
-    Reset();
-    
-    // check path
-    if ( tixiCheckElement(tixiHandle, shellXPath.c_str()) != SUCCESS) {
-        LOG(ERROR) << "Wing Shell " << shellXPath << " not found in CPACS file!" << std::endl;
-        return;
-    }
-
-    // Get UID
-    char* ptrUID = NULL;
-    if (tixiGetTextAttribute(tixiHandle, shellXPath.c_str(), "uID", &ptrUID) == SUCCESS) {
-        uid = ptrUID;
-    }
-
-    // read cell data
-    const std::string cellpath = shellXPath + "/cells";
-    if (tixiCheckElement(tixiHandle, cellpath.c_str()) == SUCCESS) {
-        cells.ReadCPACS(tixiHandle, cellpath.c_str());
-    }
-    
-    // read material
-    const std::string materialString = shellXPath + "/skin/material";
-    if ( tixiCheckElement(tixiHandle, materialString.c_str()) == SUCCESS) {
-        material.ReadCPACS(tixiHandle, materialString.c_str());
-    }
-    else {
-        // @todo: should that be an error?
-        LOG(WARNING) << "No material definition found for shell " << shellXPath;
-    }
-}
-
-// Write CPACS segment elements
-void CCPACSWingShell::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& shellDefinitionXPath) const
-{
-    TixiSaveExt::TixiSaveElement(tixiHandle, shellDefinitionXPath.c_str(), "skin", 1);
-
-    if (material.GetUID() != "UID_NOTSET") {
-        TixiSaveExt::TixiSaveElement(tixiHandle, (shellDefinitionXPath + "/skin").c_str(), "material");
-        material.WriteCPACS(tixiHandle, shellDefinitionXPath + "/skin/material");
-    }
-
-    if (cells.GetCellCount() > 0) {
-        TixiSaveExt::TixiSaveElement(tixiHandle, shellDefinitionXPath.c_str(), "cells");
-        cells.WriteCPACS(tixiHandle, shellDefinitionXPath + "/cells");
-    }
+    generated::CPACSWingShell::ReadCPACS(tixiHandle, shellXPath);
 }
 
 void CCPACSWingShell::Invalidate()
 {
     geometryCache.valid = false;
-    cells.Invalidate();
+    if (m_cells)
+        m_cells->Invalidate();
 }
 
 bool CCPACSWingShell::IsValid() const
@@ -161,7 +100,11 @@ void CCPACSWingShell::Update() const
 
 TiglLoftSide CCPACSWingShell::GetLoftSide() const
 {
-    return side;
+    if (&GetParent()->GetLowerShell() == this)
+        return ENUM_VALUE(TiglLoftSide, LOWER_SIDE);
+    if (&GetParent()->GetUpperShell() == this)
+        return ENUM_VALUE(TiglLoftSide, UPPER_SIDE);
+    throw CTiglError("Cannot determine loft side, this shell is neither lower nor upper shell of parent");
 }
 
 } // namespace tigl

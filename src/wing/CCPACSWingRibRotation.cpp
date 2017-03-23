@@ -17,78 +17,21 @@
 
 #include "CCPACSWingCSStructure.h"
 #include "CCPACSWingRibsDefinition.h"
-#include "CTiglError.h"
-#include "CTiglLogging.h"
-#include "TixiSaveExt.h"
 
 
 namespace tigl
 {
 
-CCPACSWingRibRotation::CCPACSWingRibRotation(CCPACSWingRibsDefinition& parent)
-: parent(parent)
+CCPACSWingRibRotation::CCPACSWingRibRotation(CCPACSWingRibsPositioning* parent)
+    : generated::CPACSRibRotation(parent)
 {
-    Cleanup();
+    m_z = 90;
 }
 
-CCPACSWingRibRotation::~CCPACSWingRibRotation()
-{
-    Cleanup();
-}
-
-void CCPACSWingRibRotation::Cleanup()
-{
-    ribRotationReference.clear();
-    zRotation = 90.0;
-}
-
-void CCPACSWingRibRotation::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& ribRotationXPath)
-{
-    Cleanup();
-
-    // Get subelement "ribRotationReference"
-    char* ptrRibRotationReference = NULL;
-    if (tixiGetTextElement(tixiHandle, (ribRotationXPath + "/ribRotationReference").c_str(), &ptrRibRotationReference) == SUCCESS) {
-        ribRotationReference = ptrRibRotationReference;
-    }
-
-    // Get subelement "z"
-    if (tixiGetDoubleElement(tixiHandle, (ribRotationXPath + "/z").c_str(), &zRotation) != SUCCESS) {
-        LOG(ERROR) << "Missing z";
-        throw CTiglError("Error: Missing z in CCPACSWingRibRotation::ReadCPACS!", TIGL_XML_ERROR);
-    }
-}
-
-void CCPACSWingRibRotation::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& ribRotationXPath) const
-{
-    if (!ribRotationReference.empty()) {
-        TixiSaveExt::TixiSaveTextElement(tixiHandle, ribRotationXPath.c_str(), "ribRotationReference", ribRotationReference.c_str());
-    }
-    TixiSaveExt::TixiSaveDoubleElement(tixiHandle, ribRotationXPath.c_str(), "z", zRotation, NULL);
-}
-
-const std::string& CCPACSWingRibRotation::GetRibRotationReference() const
-{
-    return ribRotationReference;
-}
-
-void CCPACSWingRibRotation::SetRibRotationReference(const std::string& reference)
-{
-    ribRotationReference = reference;
+void CCPACSWingRibRotation::SetZ(const double & value) {
+    generated::CPACSRibRotation::SetZ(value);
     // invalidate whole component segment structure since rib may be referenced anywhere
-    parent.GetStructure().Invalidate();
-}
-
-double CCPACSWingRibRotation::GetZRotation() const
-{
-    return zRotation;
-}
-
-void CCPACSWingRibRotation::SetZRotation(double value)
-{
-    zRotation = value;
-    // invalidate whole component segment structure since rib may be referenced anywhere
-    parent.GetStructure().Invalidate();
+    m_parent->GetParent()->GetStructure().Invalidate();
 }
 
 } // end namespace tigl

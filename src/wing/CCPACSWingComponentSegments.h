@@ -26,8 +26,7 @@
 #ifndef CCPACSWINGCOMPONENTSEGMENTS_H
 #define CCPACSWINGCOMPONENTSEGMENTS_H
 
-#include <string>
-#include <vector>
+#include "generated/CPACSComponentSegments.h"
 
 #include "tixi.h"
 #include "tigl_internal.h"
@@ -39,50 +38,23 @@ namespace tigl
 
 class CCPACSWing;
 
-class CCPACSWingComponentSegments
+class CCPACSWingComponentSegments : public generated::CPACSComponentSegments
 {
-private:
-    // Typedef for a CCPACSWingSegment container to store the segments of a wing.
-    typedef std::vector<CCPACSWingComponentSegment*> CCPACSWingComponentSegmentContainer;
-
 public:
     // Constructor
-    TIGL_EXPORT CCPACSWingComponentSegments(CCPACSWing* aWing);
-
-    // Virtual Destructor
-    TIGL_EXPORT virtual ~CCPACSWingComponentSegments(void);
+    TIGL_EXPORT CCPACSWingComponentSegments(CCPACSWing* parent);
 
     // Invalidates internal state
-    TIGL_EXPORT void Invalidate(void);
+    TIGL_EXPORT void Invalidate();
 
-    // Read CPACS segments element
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& wingXPath);
+    using generated::CPACSComponentSegments::GetComponentSegment;
 
-    // Write CPACS segments element
-    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& wingXPath);
-
-    // Gets a segment by index. 
-    TIGL_EXPORT CCPACSWingComponentSegment & GetComponentSegment(const int index);
+    // Gets a segment by index
+    TIGL_EXPORT CCPACSWingComponentSegment & GetComponentSegment(int index);
     TIGL_EXPORT CCPACSWingComponentSegment & GetComponentSegment(const std::string& componentSegmentUID);
 
     // Gets total segment count
-    TIGL_EXPORT int GetComponentSegmentCount(void);
-
-protected:
-    // Cleanup routine
-    void Cleanup(void);
-
-private:
-    // Copy constructor
-    CCPACSWingComponentSegments(const CCPACSWingComponentSegments& );
-
-    // Assignment operator
-    void operator=(const CCPACSWingComponentSegments& );
-
-private:
-    CCPACSWingComponentSegmentContainer componentSegments;       /**< ComponentSegment elements        */
-    CCPACSWing*                         wing;                    /**< Parent wing                      */
-
+    TIGL_EXPORT int GetComponentSegmentCount();
 };
 
 } // end namespace tigl

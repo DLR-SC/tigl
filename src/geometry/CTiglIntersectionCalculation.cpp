@@ -239,7 +239,7 @@ CTiglIntersectionCalculation::~CTiglIntersectionCalculation( void )
 
 
 // returns total number of intersection lines
-int CTiglIntersectionCalculation::GetCountIntersectionLines(void)
+int CTiglIntersectionCalculation::GetCountIntersectionLines()
 {
     TopExp_Explorer wireExplorer(intersectionResult, TopAbs_WIRE);
     int nwires = 0;

@@ -46,7 +46,7 @@ public:
     TIGL_EXPORT CTiglExportVtk(class CCPACSConfiguration & config);
 
     // Virtual Destructor
-    TIGL_EXPORT virtual ~CTiglExportVtk(void);
+    TIGL_EXPORT virtual ~CTiglExportVtk();
 
     // Exports a by index selected wing, boolean fused and meshed, as VTK file
     TIGL_EXPORT void ExportMeshedWingVTKByIndex(const int wingIndex, const std::string& filename, const double deflection = 0.1);

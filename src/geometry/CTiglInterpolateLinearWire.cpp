@@ -43,7 +43,7 @@ CTiglInterpolateLinearWire::CTiglInterpolateLinearWire()
 }
 
 // Destructor
-CTiglInterpolateLinearWire::~CTiglInterpolateLinearWire(void)
+CTiglInterpolateLinearWire::~CTiglInterpolateLinearWire()
 {
 }
 
@@ -110,7 +110,7 @@ TopoDS_Wire CTiglInterpolateLinearWire::BuildWire(const CPointContainer& points,
 }
 
 // Returns the algorithm code identifier for an algorithm
-TiglAlgorithmCode CTiglInterpolateLinearWire::GetAlgorithmCode(void) const
+TiglAlgorithmCode CTiglInterpolateLinearWire::GetAlgorithmCode() const
 {
     return TIGL_INTERPOLATE_LINEAR_WIRE;
 }

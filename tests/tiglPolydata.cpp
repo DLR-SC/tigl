@@ -27,7 +27,9 @@
 #include "CTiglPolyData.h"
 #include "CCPACSConfigurationManager.h"
 #include "CCPACSConfiguration.h"
+#include "CCPACSWingSegment.h"
 #include "CTiglTriangularizer.h"
+#include "CNamedShape.h"
 
 #include <BRepMesh.hxx>
 #include <TopoDS_CompSolid.hxx>

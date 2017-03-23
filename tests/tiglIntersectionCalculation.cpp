@@ -31,6 +31,7 @@
 #include "CCPACSConfigurationManager.h"
 #include "CCPACSWing.h"
 #include "CCPACSFuselage.h"
+#include "CNamedShape.h"
 
 class TiglIntersectionCalculation : public ::testing::Test
 {

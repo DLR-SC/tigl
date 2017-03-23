@@ -19,69 +19,33 @@
 #ifndef CCPACSWINGCELLS_H
 #define CCPACSWINGCELLS_H
 
-#include <vector>
-#include "tixi.h"
-#include "tigl_internal.h"
-
-#include <string>
+#include "generated/CPACSWingCells.h"
 
 namespace tigl
 {
-
-class CCPACSWingCell;
 class CCPACSWingShell;
 
-class CCPACSWingCells
+class CCPACSWingCells : public generated::CPACSWingCells
 {
-private:
-    // Typedef for a CCPACSWing container to store the wings of a configuration.
-    typedef std::vector<CCPACSWingCell*> CCPACSWingCellContainer;
-    
 public:
     // Constructor
     TIGL_EXPORT CCPACSWingCells(CCPACSWingShell* parent);
     
-    // Virtual Destructor
-    TIGL_EXPORT virtual ~CCPACSWingCells(void);
-    
-    TIGL_EXPORT void Reset();
-
     TIGL_EXPORT void Invalidate();
-    
-    // Read CPACS wings elements
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& cellsXPath);
-    
-    // Writing CPACS wing cells
-    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& cellsXPath) const;
-    
+
+    // Virtual Destructor
+    TIGL_EXPORT virtual ~CCPACSWingCells() {}
+
     // Returns the total count of wing cells for that wing component segment
-    TIGL_EXPORT int GetCellCount(void) const;
+    TIGL_EXPORT int GetCellCount() const;
     
     // Returns the wing cell for a given index.
     TIGL_EXPORT CCPACSWingCell& GetCell(int index) const;
-    
-    // Returns the wing cell for a given UID.
-    TIGL_EXPORT CCPACSWingCell& GetCell(const std::string& UID) const;
 
     // Get parent wing shell element
     TIGL_EXPORT CCPACSWingShell* GetParentElement() const;
 
-protected:
-    // Cleanup routine
-    void Cleanup(void);
-    
-private:
-    // Copy constructor
-    CCPACSWingCells(const CCPACSWingCells&);
-    
-    // Assignment operator
-    void operator=(const CCPACSWingCells&);
-    
-private:
-    CCPACSWingCellContainer cells;         /**< Wing Cell elements */
-    
-    CCPACSWingShell* parentShell;
-
+    TIGL_EXPORT CCPACSWingCell& GetCell(const std::string& UID) const;
 };
 
 } // end namespace tigl

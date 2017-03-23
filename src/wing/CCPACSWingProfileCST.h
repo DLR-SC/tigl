@@ -23,6 +23,7 @@
 * geometry representation method.
 */
 
+#include "generated/CPACSCst2D.h"
 #include "tigl_internal.h"
 #include "ITiglWingProfileAlgo.h"
 
@@ -36,39 +37,31 @@ namespace tigl
 {
 class CCPACSWingProfile;
 
-class CCPACSWingProfileCST : public ITiglWingProfileAlgo
+class CCPACSWingProfileCST : public generated::CPACSCst2D, public ITiglWingProfileAlgo
 {
-
-private:
-    // Typedef for a container to store the coordinates of a wing profile element.
-    typedef std::vector<CTiglPoint*> CCPACSCoordinateContainer;
-
 public:
     // Constructor
-    TIGL_EXPORT CCPACSWingProfileCST(const CCPACSWingProfile& profile, const std::string& aFilename);
+    TIGL_EXPORT CCPACSWingProfileCST();
 
     // Destructor
-    TIGL_EXPORT ~CCPACSWingProfileCST(void);
+    TIGL_EXPORT ~CCPACSWingProfileCST();
 
-    TIGL_EXPORT static std::string CPACSID();
-
-    // Cleanup routine
-    TIGL_EXPORT void Cleanup(void);
-
-    // Update of wire points ...
-    TIGL_EXPORT void Update(void);
+    DEPRECATED TIGL_EXPORT static std::string CPACSID();
 
     // Read CPACS wing profile file
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle);
+    TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& profileXPath) OVERRIDE;
 
     // Write CPACS wing profile
-    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& profileXPath);
+    TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& profileXPath) const OVERRIDE;
+
+    // Cleanup routine
+    TIGL_EXPORT void Cleanup();
+
+    // Update of wire points ...
+    TIGL_EXPORT void Update();
 
     // Returns the profile points as read from TIXI.
-    TIGL_EXPORT std::vector<CTiglPoint*> GetSamplePoints() const;
-
-    // get profiles CPACS XML path
-    TIGL_EXPORT const std::string & GetProfileDataXPath() const;
+    TIGL_EXPORT virtual const std::vector<CTiglPoint>& GetSamplePoints() const OVERRIDE; // TODO: why do we need those anyway, they just return an empty vector?
 
     // get upper wing profile wire
     TIGL_EXPORT const TopoDS_Edge & GetUpperWire() const;
@@ -111,26 +104,12 @@ protected:
     void BuildWires();
 
 private:
-    // Copy constructor
-    CCPACSWingProfileCST(const CCPACSWingProfileCST& );
-
-    // Assignment operator
-    void operator=(const CCPACSWingProfileCST& );
-
-private:
-    std::string               ProfileDataXPath;   /**< CPACS path to profile data (pointList or cst2D) */
     TopoDS_Edge               upperWire;          /**< wire of the upper wing profile */
     TopoDS_Edge               lowerWire;          /**< wire of the lower wing profile */
     TopoDS_Edge               upperLowerEdge;     /**< edge consisting of upper and lower wing profile */
     TopoDS_Edge               trailingEdge;       /**< wire of the trailing edge */
     gp_Pnt                    lePoint;            /**< Leading edge point */
     gp_Pnt                    tePoint;            /**< Trailing edge point */
-    double                    upperN1;            /**< CST parameter N1 */
-    double                    upperN2;            /**< CST parameter N2 */
-    std::vector<double>       upperB;             /**< CST parameter B */
-    double                    lowerN1;            /**< CST parameter N1 */
-    double                    lowerN2;            /**< CST parameter N2 */
-    std::vector<double>       lowerB;             /**< CST parameter B */
 };
 
 } // end namespace tigl

@@ -27,6 +27,7 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Edge.hxx>
 
+#include "generated/CPACSWingCell.h"
 #include "CCPACSMaterial.h"
 #include "CCPACSWingCellPositionChordwise.h"
 #include "CCPACSWingCellPositionSpanwise.h"
@@ -42,7 +43,7 @@ namespace tigl
 class CCPACSWingCells;
 
 
-class CCPACSWingCell
+class CCPACSWingCell : public generated::CPACSWingCell
 {
 public:
     TIGL_EXPORT CCPACSWingCell(CCPACSWingCells* parentCells);
@@ -61,7 +62,6 @@ public:
     TIGL_EXPORT bool IsConvex() const;
     
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& cellXPath);
-    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string & cellXPath) const;
 
     // get corner coordinates of cell
     TIGL_EXPORT void GetLeadingEdgeInnerPoint (double* eta, double* xsi) const;
@@ -100,16 +100,6 @@ private:
 
     void Reset();
 
-    std::string uid;
-    CCPACSMaterial material;
-
-    CCPACSWingCellPositionChordwise positionLeadingEdge;
-    CCPACSWingCellPositionChordwise positionTrailingEdge;
-    CCPACSWingCellPositionSpanwise positionInnerBorder;
-    CCPACSWingCellPositionSpanwise positionOuterBorder;
-
-    CCPACSWingCells* parent;
-    
     struct Cache
     {
         Cache() : valid(false) {};

@@ -25,6 +25,7 @@
 #ifndef CCPACSFUSELAGEPROFILE_H
 #define CCPACSFUSELAGEPROFILE_H
 
+#include "generated/CPACSProfileGeometry.h"
 #include "tigl_internal.h"
 #include "tixi.h"
 #include "CTiglArcLengthReparameterization.h"
@@ -34,6 +35,7 @@
 
 #include <vector>
 #include <string>
+#include <memory>
 
 namespace tigl
 {
@@ -41,48 +43,29 @@ namespace tigl
 class CTiglPoint;
 class ITiglWireAlgorithm;
 
-typedef ITiglWireAlgorithm* WireAlgoPointer;
-
-class CCPACSFuselageProfile
+class CCPACSFuselageProfile : public generated::CPACSProfileGeometry
 {
-
-private:
-    // Typedef for a container to store the coordinates of a fuselage profile element.
-    typedef std::vector<CTiglPoint*> CCPACSCoordinateContainer;
-
 public:
     // Constructor
-    TIGL_EXPORT CCPACSFuselageProfile(const std::string& path);
+    TIGL_EXPORT CCPACSFuselageProfile();
 
     // Virtual Destructor
-    TIGL_EXPORT virtual ~CCPACSFuselageProfile(void);
+    TIGL_EXPORT virtual ~CCPACSFuselageProfile();
 
     // Read CPACS fuselage profile file
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle);
+    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
 
     // Write CPACS fuselage profile file
-    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& profileXPath);
-
-    // Returns the filename of the fuselage profile file
-    TIGL_EXPORT const std::string& GetFileName(void) const;
+    TIGL_EXPORT void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
     // Returns the name of the fuselage profile
-    TIGL_EXPORT const std::string& GetName(void) const;
-
-    // Returns the UID of the fuselage profile
-    TIGL_EXPORT const std::string& GetUID(void) const;
-    
-    // Returns the name of the fuselage profile
-    TIGL_EXPORT const std::string& GetDescription(void) const;
-    
-    // Returns the name of the fuselage profile
-    TIGL_EXPORT const int GetNumPoints(void) const;
+    TIGL_EXPORT const int GetNumPoints() const;
 
     // Returns the flag for the mirror symmetry with respect to the x-z-plane in the fuselage profile
-    TIGL_EXPORT bool GetMirrorSymmetry(void) const;
+    TIGL_EXPORT bool GetMirrorSymmetry() const;
 
     // Invalidates internal fuselage profile state
-    TIGL_EXPORT void Invalidate(void);
+    TIGL_EXPORT void Invalidate();
 
     // Returns the fuselage profile wire. The wire is already transformed by the
     // fuselage profile element transformation.
@@ -101,17 +84,17 @@ public:
 
 protected:
     // Cleanup routine
-    void Cleanup(void);
+    void Cleanup();
 
     // Update the internal state, i.g. recalculates wire
-    void Update(void);
+    void Update();
 
     // Transforms a point by the fuselage profile transformation
     gp_Pnt TransformPoint(const gp_Pnt& aPoint) const;
 
     // Builds the fuselage profile wires. The wires are already transformed by the
     // fuselage profile transformation.
-    void BuildWires(void);
+    void BuildWires();
 
     // Helper function to determine the "diameter" (the wing profile chord line equivalent) 
     // which is defined as the line intersecting Point1 and Point2
@@ -123,32 +106,22 @@ protected:
     // In the case of a mirror symmetric profile we have
     // Point1: First point in the profile point list
     // Point2: Last point in the profile point list
-    void BuildDiameterPoints(void);
+    void BuildDiameterPoints();
 
 private:
-    // Copy constructor
-    CCPACSFuselageProfile(const CCPACSFuselageProfile&);
-
-    // Assignment operator
-    void operator=(const CCPACSFuselageProfile&);
-
     // Checks is two point are the same, or nearly the same.
     bool checkSamePoints(gp_Pnt pointA, gp_Pnt pointB);
 
 private:
-    std::string               ProfileXPath;   /**< The XPath to this profile in cpacs */
-    std::string               name;           /**< The Name of the profile */
-    std::string               description;    /**< The description of the profile */
-    std::string               uid;            /**< The UID of this profile */
-    bool                      mirrorSymmetry; /**< Mirror symmetry with repect to the x-z plane */
-    CCPACSCoordinateContainer coordinates;    /**< Coordinates of a fuselage profile element */
-    bool                      invalidated;    /**< Flag if element is invalid */
-    TopoDS_Wire               wireOriginal;   /**< Original fuselage profile wire */
-    TopoDS_Wire               wireClosed;     /**< Forced closed fuselage profile wire */
-    double                    wireLength;     /**< Length of fuselage profile wire */
-    WireAlgoPointer           profileWireAlgo;
-    gp_Pnt                    startDiameterPoint; 
-    gp_Pnt                    endDiameterPoint;  
+    bool                                mirrorSymmetry; /**< Mirror symmetry with repect to the x-z plane */
+    std::vector<CTiglPoint>             coordinates;    /**< Coordinates of a fuselage profile element */
+    bool                                invalidated;    /**< Flag if element is invalid */
+    TopoDS_Wire                         wireOriginal;   /**< Original fuselage profile wire */
+    TopoDS_Wire                         wireClosed;     /**< Forced closed fuselage profile wire */
+    double                              wireLength;     /**< Length of fuselage profile wire */
+    unique_ptr<ITiglWireAlgorithm> profileWireAlgo;
+    gp_Pnt                              startDiameterPoint;
+    gp_Pnt                              endDiameterPoint;
     CTiglArcLengthReparameterization reparOriginal;
 
 };

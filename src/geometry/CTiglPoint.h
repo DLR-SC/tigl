@@ -73,10 +73,10 @@ public:
     TIGL_EXPORT double norm2() const;
 
     // Virtual Destructor
-    TIGL_EXPORT virtual ~CTiglPoint(void);
+    TIGL_EXPORT virtual ~CTiglPoint();
 
     // Convert a CTiglPoint to a OpenCascade gp_Pnt
-    TIGL_EXPORT gp_Pnt Get_gp_Pnt(void) const;
+    TIGL_EXPORT gp_Pnt Get_gp_Pnt() const;
 
     // Dump internal point data
     TIGL_EXPORT void Dump(std::ostream& aStream) const;

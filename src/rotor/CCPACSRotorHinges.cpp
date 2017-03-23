@@ -31,63 +31,13 @@
 
 namespace tigl
 {
-
-// Constructor
-CCPACSRotorHinges::CCPACSRotorHinges(CCPACSRotorBladeAttachment* rotorBladeAttachment)
-    : rotorBladeAttachment(rotorBladeAttachment)
-{
-    Cleanup();
-}
-
-// Virtual Destructor
-CCPACSRotorHinges::~CCPACSRotorHinges(void)
-{
-    Cleanup();
-}
-
-// Cleanup routine
-void CCPACSRotorHinges::Cleanup(void)
-{
-    for (CCPACSRotorHingeContainer::size_type i = 0; i < rotorHinges.size(); i++) {
-        delete rotorHinges[i];
-    }
-    rotorHinges.clear();
-}
-
-// Invalidates internal state
-void CCPACSRotorHinges::Invalidate(void)
-{
-    for (int i = 1; i <= GetRotorHingeCount(); i++) {
-        GetRotorHinge(i).Invalidate();
-    }
-}
-
-// Read CPACS rotorHinges elements
-void CCPACSRotorHinges::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string rotorHingesXPath, const std::string rotorHingeElementName)
-{
-    Cleanup();
-
-    /* Get rotorHinge element count */
-    int elementCount;
-    if (tixiGetNamedChildrenCount(tixiHandle, rotorHingesXPath.c_str(), rotorHingeElementName.c_str(), &elementCount) != SUCCESS) {
-        throw CTiglError("XML error: tixiGetNamedChildrenCount failed in CCPACSRotorHinges::ReadCPACS", TIGL_XML_ERROR);
-    }
-
-    // Loop over all rotorHinge elements
-    for (int i = 1; i <= elementCount; i++) {
-        CCPACSRotorHinge* rotorHinge = new CCPACSRotorHinge(rotorBladeAttachment);
-        rotorHinges.push_back(rotorHinge);
-
-        std::ostringstream xpath;
-        xpath << rotorHingesXPath << "/" << rotorHingeElementName << "[" << i << "]";
-        rotorHinge->ReadCPACS(tixiHandle, xpath.str());
-    }
-}
+CCPACSRotorHinges::CCPACSRotorHinges(CCPACSRotorBladeAttachment* parent)
+    : generated::CPACSRotorHubHinges(parent) {}
 
 // Returns the total count of rotor hinges in a rotor blade attachment
-int CCPACSRotorHinges::GetRotorHingeCount(void) const
+int CCPACSRotorHinges::GetRotorHingeCount() const
 {
-    return static_cast<int>(rotorHinges.size());
+    return static_cast<int>(m_hinge.size());
 }
 
 // Returns the rotor hinge for a given index.
@@ -97,25 +47,25 @@ CCPACSRotorHinge& CCPACSRotorHinges::GetRotorHinge(int index) const
     if (index < 0 || index >= GetRotorHingeCount()) {
         throw CTiglError("Error: Invalid index in CCPACSRotorHinges::GetRotorHinge", TIGL_INDEX_ERROR);
     }
-    return (*rotorHinges[index]);
+    return *m_hinge[index];
 }
 
 // Returns the parent configuration
-CCPACSConfiguration& CCPACSRotorHinges::GetConfiguration(void) const
+CCPACSConfiguration& CCPACSRotorHinges::GetConfiguration() const
 {
-    return rotorBladeAttachment->GetConfiguration();
+    return m_parent->GetConfiguration();
 }
 
 // Returns the parent rotor
-CCPACSRotor& CCPACSRotorHinges::GetRotor(void) const
+CCPACSRotor& CCPACSRotorHinges::GetRotor() const
 {
-    return rotorBladeAttachment->GetRotor();
+    return m_parent->GetRotor();
 }
 
 // Returns the parent rotor blade attachment
-CCPACSRotorBladeAttachment& CCPACSRotorHinges::GetRotorBladeAttachment(void) const
+CCPACSRotorBladeAttachment& CCPACSRotorHinges::GetRotorBladeAttachment() const
 {
-    return *rotorBladeAttachment;
+    return *m_parent;
 }
 
 } // end namespace tigl

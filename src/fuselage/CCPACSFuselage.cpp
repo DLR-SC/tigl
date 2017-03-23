@@ -30,8 +30,9 @@
 #include "CCPACSFuselage.h"
 #include "CCPACSFuselageSegment.h"
 #include "CCPACSConfiguration.h"
+#include "CCPACSWingSegment.h"
 #include "tiglcommonfunctions.h"
-#include "TixiSaveExt.h"
+#include "CNamedShape.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "BRepAlgoAPI_Fuse.hxx"
@@ -48,37 +49,43 @@
 #include "GC_MakeSegment.hxx"
 #include "BRepExtrema_DistShapeShape.hxx"
 
-
 namespace tigl
 {
 
 // Constructor
 CCPACSFuselage::CCPACSFuselage(CCPACSConfiguration* config)
-    : segments(this)
+    : generated::CPACSFuselage(&config->GetFuselages())
+    , CTiglRelativelyPositionedComponent(&m_parentUID, &m_transformation, &m_symmetry)
     , configuration(config)
 {
     Cleanup();
 }
 
+CCPACSFuselage::CCPACSFuselage(CCPACSFuselages* parent)
+    : generated::CPACSFuselage(parent)
+    , CTiglRelativelyPositionedComponent(&m_parentUID, &m_transformation, &m_symmetry)
+    , configuration(&parent->GetParent<CCPACSAircraftModel>()->GetConfiguration()) {
+    Cleanup();
+}
+
 // Destructor
-CCPACSFuselage::~CCPACSFuselage(void)
+CCPACSFuselage::~CCPACSFuselage()
 {
     Cleanup();
 }
 
 // Invalidates internal state
-void CCPACSFuselage::Invalidate(void)
+void CCPACSFuselage::Invalidate()
 {
     loft.reset();
-    segments.Invalidate();
-    positionings.Invalidate();
+    m_segments.Invalidate();
+    m_positionings.Invalidate();
 }
 
 // Cleanup routine
-void CCPACSFuselage::Cleanup(void)
+void CCPACSFuselage::Cleanup()
 {
-    name = "";
-    transformation.reset();
+    m_name = "";
 
     // Calls ITiglGeometricComponent interface Reset to delete e.g. all childs.
     Reset();
@@ -90,137 +97,49 @@ void CCPACSFuselage::Cleanup(void)
 void CCPACSFuselage::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& fuselageXPath)
 {
     Cleanup();
-
-    char*       elementPath;
-    std::string tempString;
-
-    // Get subelement "name"
-    char* ptrName = NULL;
-    tempString    = fuselageXPath + "/name";
-    elementPath   = const_cast<char*>(tempString.c_str());
-    if (tixiGetTextElement(tixiHandle, elementPath, &ptrName)==SUCCESS) {
-        name = ptrName;
-    }
-
-    // Get subelement "description"
-    char* ptrDescription = NULL;
-    tempString    = fuselageXPath + "/description";
-    if (tixiGetTextElement(tixiHandle, tempString.c_str(), &ptrDescription) == SUCCESS) {
-        description = ptrDescription;
-    }
-
-    // Get attribue "uID"
-    char* ptrUID = NULL;
-    tempString   = "uID";
-    elementPath  = const_cast<char*>(tempString.c_str());
-    if (tixiGetTextAttribute(tixiHandle, const_cast<char*>(fuselageXPath.c_str()), const_cast<char*>(tempString.c_str()), &ptrUID) == SUCCESS) {
-        SetUID(ptrUID);
-    }
-
-    // Get subelement "parent_uid"
-    char* ptrParentUID = NULL;
-    tempString         = fuselageXPath + "/parentUID";
-    elementPath        = const_cast<char*>(tempString.c_str());
-    if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS  && 
-        tixiGetTextElement(tixiHandle, elementPath, &ptrParentUID) == SUCCESS ) {
-
-        SetParentUID(ptrParentUID);
-    }
-
-    transformation.ReadCPACS(tixiHandle, fuselageXPath);
-
-    // Get subelement "sections"
-    sections.ReadCPACS(tixiHandle, fuselageXPath);
-
-    // Get subelement "positionings"
-    positionings.ReadCPACS(tixiHandle, fuselageXPath);
-
-    // Get subelement "segments"
-    segments.ReadCPACS(tixiHandle, fuselageXPath);
-
+    generated::CPACSFuselage::ReadCPACS(tixiHandle, fuselageXPath);
     // Register ourself at the unique id manager
-    configuration->GetUIDManager().AddUID(ptrUID, this);
-
-    // Get symmetry axis attribute
-    char* ptrSym = NULL;
-    tempString   = "symmetry";
-    if (tixiGetTextAttribute(tixiHandle, const_cast<char*>(fuselageXPath.c_str()), const_cast<char*>(tempString.c_str()), &ptrSym) == SUCCESS) {
-        SetSymmetryAxis(ptrSym);
-    }
-}
-
-// Write CPACS fuselage elements
-void CCPACSFuselage::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& fuselageXPath)
-{
-    std::string elementPath;
-    std::string subelementPath;
-    std::string structurePath;
-
-    // Set subelement "name"
-    TixiSaveExt::TixiSaveTextElement(tixiHandle, fuselageXPath.c_str(), "name", GetName().c_str());
-
-    // Set subelement "uID" attribute
-    TixiSaveExt::TixiSaveTextAttribute(tixiHandle, fuselageXPath.c_str(), "uID", GetUID().c_str());
-
-    // Set subelement "name"
-    TixiSaveExt::TixiSaveTextElement(tixiHandle, fuselageXPath.c_str(), "description", description.c_str());
-
-    // Set subelement "parent_uid"
-    TixiSaveExt::TixiSaveTextElement(tixiHandle, fuselageXPath.c_str(), "parentUID", GetParentUID().c_str());
-
-    // Set subelement transformation
-    transformation.WriteCPACS(tixiHandle, fuselageXPath);
-
-    // Set subelement "sections"
-    sections.WriteCPACS(tixiHandle, fuselageXPath);
-
-    // Set subelement "positionings"
-    positionings.WriteCPACS(tixiHandle, fuselageXPath);
-
-    // Set subelement "segments"
-    segments.WriteCPACS(tixiHandle, fuselageXPath);
-}
-
-// Returns the name of the fuselage
-std::string CCPACSFuselage::GetName(void) const
-{
-    return name;
+    configuration->GetUIDManager().AddUID(m_uID, this);
 }
 
 // Returns the parent configuration
-CCPACSConfiguration& CCPACSFuselage::GetConfiguration(void) const
+CCPACSConfiguration& CCPACSFuselage::GetConfiguration() const
 {
     return *configuration;
 }
 
+const std::string& CCPACSFuselage::GetUID() const {
+    return generated::CPACSFuselage::GetUID();
+}
+
 // Get section count
-int CCPACSFuselage::GetSectionCount(void) const
+int CCPACSFuselage::GetSectionCount() const
 {
-    return sections.GetSectionCount();
+    return m_sections.GetSectionCount();
 }
 
 // Returns the section for a given index
 CCPACSFuselageSection& CCPACSFuselage::GetSection(int index) const
 {
-    return sections.GetSection(index);
+    return m_sections.GetSection(index);
 }
 
 // Get segment count
-int CCPACSFuselage::GetSegmentCount(void) const
+int CCPACSFuselage::GetSegmentCount() const
 {
-    return segments.GetSegmentCount();
+    return m_segments.GetSegmentCount();
 }
 
 // Returns the segment for a given index
-CTiglAbstractSegment & CCPACSFuselage::GetSegment(const int index)
+CCPACSFuselageSegment& CCPACSFuselage::GetSegment(const int index)
 {
-    return (CTiglAbstractSegment &) segments.GetSegment(index);
+    return m_segments.GetSegment(index);
 }
 
 // Returns the segment for a given uid
-CTiglAbstractSegment & CCPACSFuselage::GetSegment(std::string uid)
+CCPACSFuselageSegment& CCPACSFuselage::GetSegment(std::string uid)
 {
-    return (CTiglAbstractSegment &) segments.GetSegment(uid);
+    return m_segments.GetSegment(uid);
 }
 
 // get short name for loft
@@ -240,11 +159,11 @@ std::string CCPACSFuselage::GetShortShapeName ()
 }
 
 // Builds a fused shape of all fuselage segments
-PNamedShape CCPACSFuselage::BuildLoft(void)
+PNamedShape CCPACSFuselage::BuildLoft()
 {
     // Get Continuity of first segment
     // TODO: adapt lofting to have multiple different continuities
-    TiglContinuity cont = segments.GetSegment(1).GetContinuity();
+    TiglContinuity cont = m_segments.GetSegment(1).GetContinuity();
     Standard_Boolean ruled = (cont == C0? true : false);
 
 
@@ -254,10 +173,10 @@ PNamedShape CCPACSFuselage::BuildLoft(void)
     // This has to be reverted, as soon as the bug is fixed!!!
     BRepOffsetAPI_ThruSections generator(Standard_True, ruled, Precision::Confusion() );
 
-    for (int i=1; i <= segments.GetSegmentCount(); i++) {
-        generator.AddWire(segments.GetSegment(i).GetStartWire());
+    for (int i=1; i <= m_segments.GetSegmentCount(); i++) {
+        generator.AddWire(m_segments.GetSegment(i).GetStartWire());
     }
-    generator.AddWire(segments.GetSegment(segments.GetSegmentCount()).GetEndWire());
+    generator.AddWire(m_segments.GetSegment(m_segments.GetSegmentCount()).GetEndWire());
         
     generator.SetMaxDegree(2); //surfaces will be C1-continuous
     generator.SetParType(Approx_Centripetal);
@@ -272,15 +191,15 @@ PNamedShape CCPACSFuselage::BuildLoft(void)
 
 
 // Gets the fuselage transformation
-CTiglTransformation CCPACSFuselage::GetFuselageTransformation(void)
+CTiglTransformation CCPACSFuselage::GetFuselageTransformation()
 {
-    return transformation.getTransformationMatrix();
+    return m_transformation.getTransformationMatrix();
 }
 
 // Get the positioning transformation for a given section index
 CTiglTransformation CCPACSFuselage::GetPositioningTransformation(const std::string &sectionUID)
 {
-    return positionings.GetPositioningTransformation(sectionUID);
+    return m_positionings.GetPositioningTransformation(sectionUID);
 }
 
 // Gets a point on the given fuselage segment in dependence of a parameters eta and zeta with
@@ -294,7 +213,7 @@ gp_Pnt CCPACSFuselage::GetPoint(int segmentIndex, double eta, double zeta)
 
 
 // Returns the volume of this fuselage
-double CCPACSFuselage::GetVolume(void)
+double CCPACSFuselage::GetVolume()
 {
     const TopoDS_Shape& fusedSegments = GetLoft()->Shape();
 
@@ -306,7 +225,7 @@ double CCPACSFuselage::GetVolume(void)
 }
 
 // Get the Transformation object
-CTiglTransformation CCPACSFuselage::GetTransformation(void)
+CTiglTransformation CCPACSFuselage::GetTransformation()
 {
     return GetFuselageTransformation();
 }
@@ -314,11 +233,11 @@ CTiglTransformation CCPACSFuselage::GetTransformation(void)
 // Returns the circumference of the segment "segmentIndex" at a given eta
 double CCPACSFuselage::GetCircumference(const int segmentIndex, const double eta)
 {
-    return ((CCPACSFuselageSegment &) GetSegment(segmentIndex)).GetCircumference(eta);
+    return static_cast<CCPACSFuselageSegment&>(GetSegment(segmentIndex)).GetCircumference(eta);
 }
     
 // Returns the surface area of this fuselage
-double CCPACSFuselage::GetSurfaceArea(void)
+double CCPACSFuselage::GetSurfaceArea()
 {
     const TopoDS_Shape& fusedSegments = GetLoft()->Shape();
     // Calculate surface area
@@ -368,22 +287,11 @@ gp_Pnt CCPACSFuselage::GetMinumumDistanceToGround(gp_Ax1 RAxis, double angle)
     return extrema.PointOnShape1(1);
 }
 
-// sets the symmetry plane for all childs, segments and component segments
-void CCPACSFuselage::SetSymmetryAxis(const std::string& axis)
-{
-    CTiglAbstractGeometricComponent::SetSymmetryAxis(axis);
-
-    for (int i = 1; i <= segments.GetSegmentCount(); ++i) {
-        CCPACSFuselageSegment& segment = segments.GetSegment(i);
-        segment.SetSymmetryAxis(axis);
-    }
-}
-
 // Get the guide curve with a given UID
-CCPACSGuideCurve& CCPACSFuselage::GetGuideCurve(std::string uid)
+const CCPACSGuideCurve& CCPACSFuselage::GetGuideCurve(std::string uid)
 {
-    for (int i=1; i <= segments.GetSegmentCount(); i++) {
-        CCPACSFuselageSegment& segment = segments.GetSegment(i);
+    for (int i=1; i <= m_segments.GetSegmentCount(); i++) {
+        CCPACSFuselageSegment& segment = m_segments.GetSegment(i);
         if (segment.GuideCurveExists(uid)) {
             return segment.GetGuideCurve(uid);
         }

@@ -27,7 +27,6 @@
 #include <limits>
 
 #include "CTiglError.h"
-#include "CTiglTypeRegistry.h"
 #include "CTiglLogging.h"
 #include "CTiglInterpolateBsplineWire.h"
 #include "CTiglInterpolateLinearWire.h"
@@ -36,9 +35,7 @@
 #include "CTiglTransformation.h"
 #include "math.h"
 #include "CCPACSWingProfile.h"
-#include "CCPACSWingProfileFactory.h"
 #include "tiglcommonfunctions.h"
-#include "TixiSaveExt.h"
 
 #include "gp_Pnt2d.hxx"
 #include "gp_Vec2d.hxx"
@@ -85,30 +82,33 @@ namespace tigl
 const double CCPACSWingProfilePointList::c_trailingEdgeRelGap = 1E-2;
 const double CCPACSWingProfilePointList::c_blendingDistance = 0.1;
 
-// type creation function used by factory
-PTiglWingProfileAlgo CreateProfilePointList(const CCPACSWingProfile& profile, const std::string& cpacsPath)
-{
-    return PTiglWingProfileAlgo(new CCPACSWingProfilePointList(profile, cpacsPath));
-}
-
-// register algo at factory
-AUTORUN(CCPACSWingProfilePointList)
-{
-    return CCPACSWingProfileFactory::Instance().RegisterAlgo(CCPACSWingProfilePointList::CPACSID(), CreateProfilePointList);
-}
-
 // Constructor
-CCPACSWingProfilePointList::CCPACSWingProfilePointList(const CCPACSWingProfile& profile, const std::string& path)
-    : profileRef(profile)
-{
-    ProfileDataXPath=path + "/" + CPACSID();
-    profileWireAlgo = WireAlgoPointer(new CTiglInterpolateBsplineWire);
-}
+CCPACSWingProfilePointList::CCPACSWingProfilePointList(const CCPACSWingProfile& profile, const CCPACSPointListXYZ& cpacsPointList, const std::string& xpath)
+    : profileRef(profile), profileWireAlgo(new CTiglInterpolateBsplineWire), ProfileDataXPath(xpath) {
 
-// Destructor
-CCPACSWingProfilePointList::~CCPACSWingProfilePointList(void)
-{
-    delete profileWireAlgo;
+    // points with maximal/minimal y-component
+    coordinates = cpacsPointList.AsVector();
+
+    std::size_t minZIndex = 0;
+    std::size_t maxZIndex = 0;
+    for (std::size_t i = 1; i < coordinates.size(); i++) {
+        if (coordinates[i].z < coordinates[minZIndex].z) {
+            minZIndex = i;
+        }
+        if (coordinates[i].z > coordinates[maxZIndex].z) {
+            maxZIndex = i;
+        }
+    }
+
+    // check if points with maximal/minimal z-component were calculated correctly
+    if (maxZIndex == minZIndex) {
+        throw CTiglError("Error: CCPACSWingProfilePointList::ReadCPACS: Unable to separate upper and lower wing profile from point list", TIGL_XML_ERROR);
+    }
+    // force order of points to run through the lower profile first and then through the upper profile
+    if (minZIndex > maxZIndex) {
+        LOG(WARNING) << "The points in profile " << profileRef.GetUID() << " don't seem to be ordered in a mathematical positive sense.";
+        std::reverse(coordinates.begin(), coordinates.end());
+    }
 }
 
 std::string CCPACSWingProfilePointList::CPACSID()
@@ -117,111 +117,14 @@ std::string CCPACSWingProfilePointList::CPACSID()
 }
 
 // Cleanup routine
-void CCPACSWingProfilePointList::Cleanup(void)
+void CCPACSWingProfilePointList::Cleanup()
 {
-    for (CCPACSCoordinateContainer::size_type i = 0; i < coordinates.size(); i++) {
-        delete coordinates[i];
-    }
     coordinates.clear();
 }
 
-void CCPACSWingProfilePointList::Update(void)
+void CCPACSWingProfilePointList::Update()
 {
     BuildWires();
-}
-
-// Read wing profile file
-void CCPACSWingProfilePointList::ReadCPACS(TixiDocumentHandle tixiHandle)
-{
-    // check if deprecated CPACS point definition is included in the CPACS file and give warning
-    if (tixiCheckElement(tixiHandle, (ProfileDataXPath + "/point[1]").c_str()) == SUCCESS) {
-        LOG(WARNING) << "Deprecated point definition in wing profile " << profileRef.GetUID() <<  " will be ignored" << endl;
-    }
-
-    const std::string xXpath = ProfileDataXPath +"/x";
-    const std::string yXpath = ProfileDataXPath +"/y";
-    const std::string zXpath = ProfileDataXPath +"/z";
-
-    // check the number of elements in all three vectors. It has to be the same, otherwise cancel
-    int countX;
-    if (tixiGetVectorSize(tixiHandle, xXpath.c_str(), &countX) != SUCCESS) {
-        throw CTiglError("Error: XML error while reading point vector <x> in CCPACSWingProfilePointList::ReadCPACS", TIGL_XML_ERROR);
-    }
-    int countY;
-    if (tixiGetVectorSize(tixiHandle, yXpath.c_str(), &countY) != SUCCESS) {
-        throw CTiglError("Error: XML error while reading point vector <y> in CCPACSWingProfilePointList::ReadCPACS", TIGL_XML_ERROR);
-    }
-    int countZ;
-    if (tixiGetVectorSize(tixiHandle, zXpath.c_str(), &countZ) != SUCCESS) {
-        throw CTiglError("Error: XML error while reading point vector <z> in CCPACSWingProfilePointList::ReadCPACS", TIGL_XML_ERROR);
-    }
-
-    if (countX != countY || countX != countZ || countY != countZ) {
-        throw CTiglError("Error: Vector size for profile points are not eqal in CCPACSWingProfilePointList::ReadCPACS", TIGL_XML_ERROR);
-    }
-
-    // read in vectors, vectors are allocated and freed by tixi
-    double* xCoordinates = NULL;
-    if (tixiGetFloatVector(tixiHandle, xXpath.c_str(), &xCoordinates, countX) != SUCCESS) {
-        throw CTiglError("Error: XML error while reading point vector <x> in CCPACSWingProfilePointList::ReadCPACS", TIGL_XML_ERROR);
-    }
-    double* yCoordinates = NULL;
-    if (tixiGetFloatVector(tixiHandle, yXpath.c_str(), &yCoordinates, countY) != SUCCESS) {
-        throw CTiglError("Error: XML error while reading point vector <y> in CCPACSWingProfilePointList::ReadCPACS", TIGL_XML_ERROR);
-    }
-    double* zCoordinates = NULL;
-    if (tixiGetFloatVector(tixiHandle, zXpath.c_str(), &zCoordinates, countZ) != SUCCESS) {
-        throw CTiglError("Error: XML error while reading point vector <z> in CCPACSWingProfilePointList::ReadCPACS", TIGL_XML_ERROR);
-    }
-
-    // points with maximal/minimal z-component
-    double maxZ = -std::numeric_limits<double>::max();
-    double minZ = std::numeric_limits<double>::max();
-    int maxZIndex=-1;
-    int minZIndex=-1;
-    // Loop over all points in the vector
-    for (int i = 0; i < countX; i++) {
-        CTiglPoint* point = new CTiglPoint(xCoordinates[i], yCoordinates[i], zCoordinates[i]);
-        coordinates.push_back(point);
-        if (zCoordinates[i]>maxZ) {
-            maxZ = zCoordinates[i];
-            maxZIndex = i;
-        }
-        if (zCoordinates[i]<minZ) {
-            minZ = zCoordinates[i];
-            minZIndex = i;
-        }
-    }
-    // check if points with maximal/minimal z-component were calculated correctly
-    if (maxZIndex==-1 || minZIndex==-1 || maxZIndex==minZIndex) {
-        throw CTiglError("Error: CCPACSWingProfilePointList::ReadCPACS: Unable to separate upper and lower wing profile from point list", TIGL_XML_ERROR);
-    }
-    // force order of points to run through the lower profile first and then through the upper profile
-    if (minZIndex>maxZIndex) {
-        LOG(WARNING) << "The points in profile " << profileRef.GetUID() <<  " don't seem to be ordered in a mathematical positive sense.";
-        std::reverse(coordinates.begin(), coordinates.end());
-    }
-}
-
-void CCPACSWingProfilePointList::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& profileXPath)
-{
-    TixiSaveExt::TixiSaveElement(tixiHandle, profileXPath.c_str(), "pointList");
-
-    // store points as vectors
-    std::vector<double> point_X(coordinates.size());
-    std::vector<double> point_Y(coordinates.size());
-    std::vector<double> point_Z(coordinates.size());
-
-    for (unsigned int j = 0; j < coordinates.size(); j++) {
-        point_X[j] = coordinates[j]->x;
-        point_Y[j] = coordinates[j]->y;
-        point_Z[j] = coordinates[j]->z;
-    }
-
-    const std::string path = profileXPath + "/pointList";
-    TixiSaveExt::TixiSaveVector(tixiHandle, path, "x", point_X);
-    TixiSaveExt::TixiSaveVector(tixiHandle, path, "y", point_Y);
-    TixiSaveExt::TixiSaveVector(tixiHandle, path, "z", point_Z);
 }
 
 // Builds the wing profile wire. The returned wire is already transformed by the
@@ -231,8 +134,8 @@ void CCPACSWingProfilePointList::BuildWires()
     ITiglWireAlgorithm::CPointContainer points;
     ITiglWireAlgorithm::CPointContainer openPoints, closedPoints;
 
-    for (CCPACSCoordinateContainer::size_type i = 0; i < coordinates.size(); i++) {
-        points.push_back(coordinates[i]->Get_gp_Pnt());
+	for (std::vector<CTiglPoint>::const_iterator it = coordinates.begin(); it != coordinates.end(); ++it) {
+        points.push_back(it->Get_gp_Pnt());
     }
     // special handling for supporting opened and closed profiles
     if (points.size() < 2) {
@@ -345,11 +248,11 @@ void CCPACSWingProfilePointList::BuildWires()
 // which is located farmost from the trailing edge point.
 // Finally, we correct the trailing edge to make sure, that the GetPoint
 // functions work correctly.
-void CCPACSWingProfilePointList::BuildLETEPoints(void)
+void CCPACSWingProfilePointList::BuildLETEPoints()
 {
     // compute TE point
-    gp_Pnt firstPnt = coordinates[0]->Get_gp_Pnt();
-    gp_Pnt lastPnt = coordinates[coordinates.size() - 1]->Get_gp_Pnt();
+    gp_Pnt firstPnt = coordinates[0].Get_gp_Pnt();
+    gp_Pnt lastPnt = coordinates[coordinates.size() - 1].Get_gp_Pnt();
     double x = (firstPnt.X() + lastPnt.X()) / 2.;
     double y = (firstPnt.Y() + lastPnt.Y())/2.;
     double z = (firstPnt.Z() + lastPnt.Z())/2.;
@@ -357,9 +260,8 @@ void CCPACSWingProfilePointList::BuildLETEPoints(void)
 
     // find the point with the max dist to TE point
     lePoint = tePoint;
-    CCPACSCoordinateContainer::iterator pit = coordinates.begin();
-    for (; pit != coordinates.end(); ++pit) {
-        gp_Pnt point = (*pit)->Get_gp_Pnt();
+	for (std::vector<CTiglPoint>::const_iterator it = coordinates.begin(); it != coordinates.end(); ++it) {
+        gp_Pnt point = it->Get_gp_Pnt();
         if (tePoint.Distance(point) > tePoint.Distance(lePoint)) {
             lePoint = point;
         }
@@ -379,9 +281,7 @@ void CCPACSWingProfilePointList::BuildLETEPoints(void)
     tePoint = lePoint.XYZ() + alphamin*(vchord.XYZ());
 }
 
-// Returns the profile points as read from TIXI.
-std::vector<CTiglPoint*> CCPACSWingProfilePointList::GetSamplePoints() const
-{
+const std::vector<CTiglPoint>& CCPACSWingProfilePointList::GetSamplePoints() const {
     return coordinates;
 }
 
@@ -593,8 +493,8 @@ void CCPACSWingProfilePointList::trimUpperLowerCurve(Handle(Geom_TrimmedCurve) l
 
 bool CCPACSWingProfilePointList::HasBluntTE() const
 {
-    gp_Pnt firstPnt = coordinates[0]->Get_gp_Pnt();
-    gp_Pnt lastPnt  = coordinates[coordinates.size() - 1]->Get_gp_Pnt();
+    gp_Pnt firstPnt = coordinates[0].Get_gp_Pnt();
+    gp_Pnt lastPnt  = coordinates[coordinates.size() - 1].Get_gp_Pnt();
     return firstPnt.Distance(lastPnt) > Precision::Confusion();
 }
 

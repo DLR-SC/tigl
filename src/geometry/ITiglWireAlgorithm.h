@@ -46,7 +46,7 @@ public:
     virtual TopoDS_Wire BuildWire(const CPointContainer& points, bool forceClosed = false) const = 0;
     
     // Returns the algorithm code identifier for an algorithm
-    virtual TiglAlgorithmCode GetAlgorithmCode(void) const = 0;
+    virtual TiglAlgorithmCode GetAlgorithmCode() const = 0;
     
     // Returns the point on the wire with the smallest x value
     virtual gp_Pnt GetPointWithMinX(const CPointContainer& points) const = 0;
@@ -61,7 +61,7 @@ public:
     virtual gp_Pnt GetPointWithMaxY(const CPointContainer& points) const = 0;
     
     // Destructor
-    virtual ~ITiglWireAlgorithm(void) { /* Do nothing */ }
+    virtual ~ITiglWireAlgorithm() { /* Do nothing */ }
 };
 
 } // end namespace tigl

@@ -514,7 +514,7 @@ void CTiglPolyData::writeVTKPiece(TixiDocumentHandle& handle, unsigned int iObje
         stream3 << endl << "        ";
         std::string tmpPath = piecepath + "/Polys";
         tixiAddTextElement(handle, tmpPath.c_str(), "DataArray", stream3.str().c_str());
-        tmpPath += "DataArray[2]";
+        tmpPath += "/DataArray[2]";
         tixiAddTextAttribute(handle, tmpPath.c_str(), "type", "Int32");
         tixiAddTextAttribute(handle, tmpPath.c_str(), "Name", "offsets");
         tixiAddIntegerAttribute(handle, tmpPath.c_str(), "RangeMin", co.getNPointsOfPolygon(0) ,"%d");

@@ -19,6 +19,7 @@
 #ifndef CCPACSWINGSHELL_H
 #define CCPACSWINGSHELL_H
 
+#include "generated/CPACSWingShell.h"
 #include "tigl_internal.h"
 #include "CCPACSWingCells.h"
 #include "CCPACSMaterial.h"
@@ -30,23 +31,16 @@
 #include <string>
 
 
-namespace tigl 
+namespace tigl
 {
 
 // forward declarations
 class CCPACSWingCSStructure;
 
-
-class CCPACSWingShell
+class CCPACSWingShell : public generated::CPACSWingShell
 {
 public:
-    TIGL_EXPORT CCPACSWingShell(CCPACSWingCSStructure& parent, TiglLoftSide side);
-
-    TIGL_EXPORT virtual ~CCPACSWingShell();
-
-    TIGL_EXPORT void Reset();
-    
-    TIGL_EXPORT const std::string& GetUID() const;
+    TIGL_EXPORT CCPACSWingShell(CCPACSWingCSStructure* parent);
 
     TIGL_EXPORT int GetCellCount() const;
 
@@ -61,8 +55,6 @@ public:
 
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& shellXPath);
 
-    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string & shellDefinitionXPath) const;
-
     TIGL_EXPORT void Invalidate();
     TIGL_EXPORT bool IsValid() const;
 
@@ -71,16 +63,6 @@ public:
     TIGL_EXPORT TiglLoftSide GetLoftSide() const;
 
 private:
-    CCPACSWingShell(const CCPACSWingShell&);
-    void operator=(const CCPACSWingShell&);
-
-private:
-    CCPACSWingCSStructure& parent;
-    std::string uid;
-    // Information whether the shell is located on the upper or lower side of the loft
-    TiglLoftSide side;
-    CCPACSWingCells cells;
-    CCPACSMaterial material;
     //@todo stringers
 
     struct GeometryCache

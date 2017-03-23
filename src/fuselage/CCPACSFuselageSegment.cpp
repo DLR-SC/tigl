@@ -37,7 +37,7 @@
 #include "CTiglLogging.h"
 #include "CCPACSConfiguration.h"
 #include "tiglcommonfunctions.h"
-#include "TixiSaveExt.h"
+#include "CNamedShape.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "TopExp_Explorer.hxx"
@@ -134,140 +134,89 @@ namespace
 namespace tigl
 {
 
-// Constructor
-CCPACSFuselageSegment::CCPACSFuselageSegment(CCPACSFuselage* aFuselage, int aSegmentIndex)
-    : CTiglAbstractSegment(aSegmentIndex)
-    , startConnection(this)
-    , endConnection(this)
-    , fuselage(aFuselage)
-    , guideCurvesPresent(false)
+CCPACSFuselageSegment::CCPACSFuselageSegment(CCPACSFuselageSegments* parent)
+    : generated::CPACSFuselageSegment(parent)
+    , CTiglAbstractSegment(parent->GetSegment(), parent->GetParent()->m_symmetry)
+    , fuselage(parent->GetParent())
 {
     Cleanup();
 }
 
 // Destructor
-CCPACSFuselageSegment::~CCPACSFuselageSegment(void)
+CCPACSFuselageSegment::~CCPACSFuselageSegment()
 {
     Cleanup();
 }
 
 // Cleanup routine
-void CCPACSFuselageSegment::Cleanup(void)
+void CCPACSFuselageSegment::Cleanup()
 {
-    name = "";
+    m_name = "";
     myVolume      = 0.;
     mySurfaceArea = 0.;
     myWireLength  = 0.;
-    continuity    = C2;
-    guideCurvesPresent = false;
-    CTiglAbstractSegment::Cleanup();
+    _continuity    = C2;
+    CTiglAbstractGeometricComponent::Reset();
 }
 
-// Update internal segment data
-void CCPACSFuselageSegment::Update(void)
+void CCPACSFuselageSegment::Invalidate()
 {
-    Invalidate();
+    CTiglAbstractSegment::Reset();
 }
 
 // Read CPACS segment elements
 void CCPACSFuselageSegment::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& segmentXPath)
 {
     Cleanup();
+    generated::CPACSFuselageSegment::ReadCPACS(tixiHandle, segmentXPath);
 
-    char*       elementPath;
-    std::string tempString;
+    startConnection = CCPACSFuselageConnection(m_fromElementUID, this);
+    endConnection = CCPACSFuselageConnection(m_toElementUID, this);
 
-    // Get subelement "name"
-    char* ptrName = NULL;
-    tempString    = segmentXPath + "/name";
-    elementPath   = const_cast<char*>(tempString.c_str());
-    if (tixiGetTextElement(tixiHandle, elementPath, &ptrName) == SUCCESS) {
-        name = ptrName;
-    }
+    // TODO: continuity does not exist in CPACS spec
 
-    // Get attribute "uid"
-    char* ptrUID = NULL;
-    tempString   = "uID";
-    if (tixiGetTextAttribute(tixiHandle, const_cast<char*>(segmentXPath.c_str()), const_cast<char*>(tempString.c_str()), &ptrUID) == SUCCESS) {
-        SetUID(ptrUID);
-        GetFuselage().GetConfiguration().GetUIDManager().AddUID(GetUID(), this);
-    }
+    //// Continuity
+    //char* ptrCont = NULL;
+    //if (tixiGetTextElement(tixiHandle, (segmentXPath + "/continuity").c_str(); , &ptrCont) == SUCCESS) {
+    //    if (strcmp(ptrCont, "C0") == 0) {
+    //        continuity = TiglContinuity(C0);
+    //    }
+    //    else if (strcmp(ptrCont, "C1") == 0) {
+    //        continuity = TiglContinuity(C1);
+    //    }
+    //    else if (strcmp(ptrCont, "C2") == 0) {
+    //        continuity = TiglContinuity(C2);
+    //    }
+    //    else {
+    //        LOG(ERROR) << "Invalid continuity specifier " << ptrCont << " for UID " << GetUID();
+    //        continuity = C2;
+    //    }
+    //} else {
+    //    continuity = C2;
+    //}
 
-    // Start connection
-    tempString = segmentXPath + "/fromElementUID";
-    startConnection.ReadCPACS(tixiHandle, tempString);
-
-    // End connection
-    tempString = segmentXPath + "/toElementUID";
-    endConnection.ReadCPACS(tixiHandle, tempString);
-
-    // Continuity
-    tempString = segmentXPath + "/continuity";
-    elementPath   = const_cast<char*>(tempString.c_str());
-    char* ptrCont = NULL;
-    if (tixiGetTextElement(tixiHandle, elementPath, &ptrCont) == SUCCESS) {
-        if (strcmp(ptrCont, "C0") == 0) {
-            continuity = TiglContinuity(C0);
-        }
-        else if (strcmp(ptrCont, "C1") == 0) {
-            continuity = TiglContinuity(C1);
-        }
-        else if (strcmp(ptrCont, "C2") == 0) {
-            continuity = TiglContinuity(C2);
-        }
-        else {
-            LOG(ERROR) << "Invalid continuity specifier " << ptrCont << " for UID " << GetUID();
-            continuity = C2;
-        }
-    }
-    else {
-        continuity = C2;
-    }
-
-    // Get guide Curves
-    if (tixiCheckElement(tixiHandle, (segmentXPath + "/guideCurves").c_str()) == SUCCESS) {
-        guideCurvesPresent = true;
-        guideCurves.ReadCPACS(tixiHandle, segmentXPath);
-    }
-    else {
-        guideCurvesPresent = false;
-    }
-
-    Update();
+    Invalidate();
 }
 
-// Write CPACS segment elements
-void CCPACSFuselageSegment::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& segmentXPath)
-{
-    TixiSaveExt::TixiSaveTextAttribute(tixiHandle, segmentXPath.c_str(), "uID", GetUID().c_str());
-    TixiSaveExt::TixiSaveTextElement(tixiHandle, segmentXPath.c_str(), "name", name.c_str());
-    TixiSaveExt::TixiSaveTextElement(tixiHandle, segmentXPath.c_str(), "description", name.c_str());
-    
-    TixiSaveExt::TixiSaveTextElement(tixiHandle, segmentXPath.c_str(), "fromElementUID", startConnection.GetSectionElementUID().c_str());
-    TixiSaveExt::TixiSaveTextElement(tixiHandle, segmentXPath.c_str(), "toElementUID", endConnection.GetSectionElementUID().c_str());
+const std::string& CCPACSFuselageSegment::GetUID() const {
+    return generated::CPACSFuselageSegment::GetUID();
 }
 
 // Returns the fuselage this segment belongs to
-CCPACSFuselage& CCPACSFuselageSegment::GetFuselage(void) const
+CCPACSFuselage& CCPACSFuselageSegment::GetFuselage() const
 {
     return *fuselage;
 }
 
-// Returns the segment index of this segment
-int CCPACSFuselageSegment::GetSegmentIndex(void) const
-{
-    return mySegmentIndex;
-}
-
 // helper function to get the wire of the start section
-TopoDS_Wire CCPACSFuselageSegment::GetStartWire(void)
+TopoDS_Wire CCPACSFuselageSegment::GetStartWire()
 {
     CCPACSFuselageProfile& startProfile = startConnection.GetProfile();
     return transformProfileWire(GetFuselage().GetTransformation(), startConnection, startProfile.GetWire(true));
 }
 
 // helper function to get the wire of the end section
-TopoDS_Wire CCPACSFuselageSegment::GetEndWire(void)
+TopoDS_Wire CCPACSFuselageSegment::GetEndWire()
 {
     CCPACSFuselageProfile& endProfile = endConnection.GetProfile();
     return transformProfileWire(GetFuselage().GetTransformation(), endConnection, endProfile.GetWire(true));
@@ -283,7 +232,7 @@ std::string CCPACSFuselageSegment::GetShortShapeName()
         if (fuselage->GetUID() == f.GetUID()) {
             findex = i;
             for (int j = 1; j <= f.GetSegmentCount(); j++) {
-                tigl::CTiglAbstractSegment& fs = f.GetSegment(j);
+                CCPACSFuselageSegment& fs = f.GetSegment(j);
                 if (GetUID() == fs.GetUID()) {
                     fsindex = j;
                     std::stringstream shortName;
@@ -297,7 +246,7 @@ std::string CCPACSFuselageSegment::GetShortShapeName()
 }
 
 // Builds the loft between the two segment sections
-PNamedShape CCPACSFuselageSegment::BuildLoft(void)
+PNamedShape CCPACSFuselageSegment::BuildLoft()
 {
     // Build loft
     //BRepOffsetAPI_ThruSections generator(Standard_False, Standard_False, Precision::Confusion());
@@ -326,85 +275,85 @@ PNamedShape CCPACSFuselageSegment::BuildLoft(void)
 
 
 // Returns the start section UID of this segment
-const std::string& CCPACSFuselageSegment::GetStartSectionUID(void)
+const std::string& CCPACSFuselageSegment::GetStartSectionUID()
 {
     return startConnection.GetSectionUID();
 }
 
 // Returns the end section UID of this segment
-const std::string& CCPACSFuselageSegment::GetEndSectionUID(void)
+const std::string& CCPACSFuselageSegment::GetEndSectionUID()
 {
     return endConnection.GetSectionUID();
 }
 
 // Returns the start section index of this segment
-int CCPACSFuselageSegment::GetStartSectionIndex(void)
+int CCPACSFuselageSegment::GetStartSectionIndex()
 {
     return startConnection.GetSectionIndex();
 }
 
 // Returns the end section index of this segment
-int CCPACSFuselageSegment::GetEndSectionIndex(void)
+int CCPACSFuselageSegment::GetEndSectionIndex()
 {
     return endConnection.GetSectionIndex();
 }
 
 // Returns the start section element UID of this segment
-const std::string& CCPACSFuselageSegment::GetStartSectionElementUID(void)
+const std::string& CCPACSFuselageSegment::GetStartSectionElementUID()
 {
     return startConnection.GetSectionElementUID();
 }
 
 // Returns the end section element UID of this segment
-const std::string& CCPACSFuselageSegment::GetEndSectionElementUID(void)
+const std::string& CCPACSFuselageSegment::GetEndSectionElementUID()
 {
     return endConnection.GetSectionElementUID();
 }
 
 // Returns the start section element index of this segment
-int CCPACSFuselageSegment::GetStartSectionElementIndex(void)
+int CCPACSFuselageSegment::GetStartSectionElementIndex()
 {
     return startConnection.GetSectionElementIndex();
 }
 
 // Returns the end section element index of this segment
-int CCPACSFuselageSegment::GetEndSectionElementIndex(void)
+int CCPACSFuselageSegment::GetEndSectionElementIndex()
 {
     return endConnection.GetSectionElementIndex();
 }
 
 // Returns the start section element index of this segment
-CCPACSFuselageConnection& CCPACSFuselageSegment::GetStartConnection(void)
+CCPACSFuselageConnection& CCPACSFuselageSegment::GetStartConnection()
 {
     return( startConnection );
 }
 
 // Returns the end section element index of this segment
-CCPACSFuselageConnection& CCPACSFuselageSegment::GetEndConnection(void)
+CCPACSFuselageConnection& CCPACSFuselageSegment::GetEndConnection()
 {
     return( endConnection );
 }
 
 // Returns the volume of this segment
-double CCPACSFuselageSegment::GetVolume(void)
+double CCPACSFuselageSegment::GetVolume()
 {
     return( myVolume );
 }
 
 // Returns the surface area of this segment
-double CCPACSFuselageSegment::GetSurfaceArea(void)
+double CCPACSFuselageSegment::GetSurfaceArea()
 {
     return( mySurfaceArea );
 }
 
 
 // Gets the count of segments connected to the start section of this segment
-int CCPACSFuselageSegment::GetStartConnectedSegmentCount(void)
+int CCPACSFuselageSegment::GetStartConnectedSegmentCount()
 {
     int count = 0;
     for (int i = 1; i <= GetFuselage().GetSegmentCount(); i++) {
-        CCPACSFuselageSegment& nextSegment = (CCPACSFuselageSegment &) GetFuselage().GetSegment(i);
-        if (nextSegment.GetSegmentIndex() == mySegmentIndex) {
+        CCPACSFuselageSegment& nextSegment = GetFuselage().GetSegment(i);
+        if (nextSegment.GetSegmentIndex() == GetSegmentIndex()) {
             continue;
         }
         if (nextSegment.GetStartSectionUID() == GetStartSectionUID() ||
@@ -417,12 +366,12 @@ int CCPACSFuselageSegment::GetStartConnectedSegmentCount(void)
 }
 
 // Gets the count of segments connected to the end section of this segment
-int CCPACSFuselageSegment::GetEndConnectedSegmentCount(void)
+int CCPACSFuselageSegment::GetEndConnectedSegmentCount()
 {
     int count = 0;
     for (int i = 1; i <= GetFuselage().GetSegmentCount(); i++) {
-        CCPACSFuselageSegment& nextSegment = (CCPACSFuselageSegment &) GetFuselage().GetSegment(i);
-        if (nextSegment.GetSegmentIndex() == mySegmentIndex) {
+        CCPACSFuselageSegment& nextSegment = GetFuselage().GetSegment(i);
+        if (nextSegment.GetSegmentIndex() == GetSegmentIndex()) {
             continue;
         }
         if (nextSegment.GetStartSectionUID() == GetEndSectionUID() ||
@@ -443,8 +392,8 @@ int CCPACSFuselageSegment::GetStartConnectedSegmentIndex(int n)
     }
 
     for (int i = 1, count = 0; i <= GetFuselage().GetSegmentCount(); i++) {
-        CCPACSFuselageSegment& nextSegment = (CCPACSFuselageSegment &) GetFuselage().GetSegment(i);
-        if (nextSegment.GetSegmentIndex() == mySegmentIndex) {
+        CCPACSFuselageSegment& nextSegment = GetFuselage().GetSegment(i);
+        if (nextSegment.GetSegmentIndex() == GetSegmentIndex()) {
             continue;
         }
         if (nextSegment.GetStartSectionUID() == GetStartSectionUID() ||
@@ -469,7 +418,7 @@ int CCPACSFuselageSegment::GetEndConnectedSegmentIndex(int n)
 
     for (int i = 1, count = 0; i <= GetFuselage().GetSegmentCount(); i++) {
         CCPACSFuselageSegment& nextSegment = (CCPACSFuselageSegment &) GetFuselage().GetSegment(i);
-        if (nextSegment.GetSegmentIndex() == mySegmentIndex) {
+        if (nextSegment.GetSegmentIndex() == GetSegmentIndex()) {
             continue;
         }
         if (nextSegment.GetStartSectionUID() == GetEndSectionUID() ||
@@ -813,22 +762,22 @@ double CCPACSFuselageSegment::GetCircumference(const double eta)
 }
 
 // get guide curve for given UID
-CCPACSGuideCurve& CCPACSFuselageSegment::GetGuideCurve(std::string UID)
+const CCPACSGuideCurve& CCPACSFuselageSegment::GetGuideCurve(std::string UID)
 {
-    return guideCurves.GetGuideCurve(UID);
+    return m_guideCurves->GetGuideCurve(UID);
 }
 
 // check if guide curve with a given UID exists
 bool CCPACSFuselageSegment::GuideCurveExists(std::string UID)
 {
-    return guideCurves.GuideCurveExists(UID);
+    return m_guideCurves->GuideCurveExists(UID);
 }
 
 // Creates all guide curves
-TopTools_SequenceOfShape& CCPACSFuselageSegment::BuildGuideCurves(void)
+TopTools_SequenceOfShape& CCPACSFuselageSegment::BuildGuideCurves()
 {
     guideCurveWires.Clear();
-    if (guideCurvesPresent) {
+    if (HasGuideCurves()) {
 
         // get start and end profile
         CCPACSFuselageProfile& startProfile = startConnection.GetProfile();
@@ -855,10 +804,10 @@ TopTools_SequenceOfShape& CCPACSFuselageSegment::BuildGuideCurves(void)
         double outerScale = GetWireLength(outerChordLineWire);
 
         // loop through all guide curves and construct the corresponding wires
-        int nGuideCurves = guideCurves.GetGuideCurveCount();
+        int nGuideCurves = m_guideCurves ? m_guideCurves->GetGuideCurveCount() : 0;
         for (int i=0; i!=nGuideCurves; i++) {
             // get guide curve
-            CCPACSGuideCurve& guideCurve = guideCurves.GetGuideCurve(i+1);
+            const CCPACSGuideCurve& guideCurve = m_guideCurves->GetGuideCurve(i+1);
             double fromRelativeCircumference;
             // check if fromRelativeCircumference is given in the current guide curve
             if (guideCurve.GetFromRelativeCircumferenceIsSet()) {
@@ -867,9 +816,9 @@ TopTools_SequenceOfShape& CCPACSFuselageSegment::BuildGuideCurves(void)
             // otherwise get relative circumference from neighboring segment guide curve
             else {
                 // get neighboring guide curve UID
-                std::string neighborGuideCurveUID = guideCurve.GetFromGuideCurveUID();
+                std::string neighborGuideCurveUID = guideCurve.GetFromGuideCurveUID_choice1();
                 // get neighboring guide curve
-                CCPACSGuideCurve& neighborGuideCurve = fuselage->GetGuideCurve(neighborGuideCurveUID);
+                const CCPACSGuideCurve& neighborGuideCurve = fuselage->GetGuideCurve(neighborGuideCurveUID);
                 // get relative circumference from neighboring guide curve
                 fromRelativeCircumference = neighborGuideCurve.GetToRelativeCircumference();
             }

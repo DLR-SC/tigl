@@ -1,0 +1,91 @@
+// in cpacs
+CPACSAirports
+CPACSFleets
+CPACSMissions
+
+// in toolspecific
+CPACSAcCrashTool
+CPACSAeroFuseTool
+CPACSAeroPoleTool
+CPACSAirportFeesTool
+CPACSBoxBeamTool
+CPACSCabinTool
+//CPACSCFDTool
+CPACSCmuTool
+CPACSComradeTool
+CPACSDelisToolspecific
+CPACSDirectOC
+CPACSELWiSTool
+CPACSFDesignTool
+CPACSFDesignRCTool
+CPACSFDSTool
+CPACSGeogenTool
+CPACSHandbookAeroTool
+CPACSHaremTool
+CPACSHostTool
+CPACSLgDesignTool
+CPACSLiftingLineTool
+CPACSMapet2CTool
+CPACSMaseratiTool
+CPACSMisSimTool
+CPACSModGenTool
+CPACSPanamTool
+CPACSParamamSbotTool
+CPACSRofumaTool
+CPACSSBotPlusTool
+CPACSSectmeshPamcrashTool
+CPACSSteffsTool
+CPACSTornadoTool
+CPACSTrafumoTool
+CPACSTWDatTool
+CPACSVampZeroTool
+CPACSVSAeroTool
+
+// in vehicles
+CPACSEngines
+CPACSFuels
+CPACSStructuralElements
+
+// in profiles
+CPACSStructuralProfiles
+
+// in aircraft model
+CPACSAircraftAnalyses
+CPACSAircraftGlobal
+CPACSMassBreakdown
+
+// in rotorcraft model
+CPACSRotorcraftAnalyses
+CPACSRotorcraftGlobal
+CPACSRotorcraftMassBreakdown
+CPACSDriveSystems
+CPACSLandingGear
+
+// in rotorcraft and aircraft model
+CPACSEnginePylons
+CPACSEnginePositions
+CPACSSystems
+CPACSReference
+
+// in fuselage
+CPACSDecks
+CPACSFuselateCutOuts
+CPACSFuselageFuelTanks
+CPACSFuselageStructure
+
+// in wing
+CPACSDynamicAircraftModel
+
+// in component segment
+CPACSComponentSegmentPath
+CPACSControlSurfaces
+CPACSWingFuelTanks
+CPACSWingFuselageAttachments
+CPACSWingStructuralMounts
+CPACSWingWingAttachments
+
+// in component segment structure
+CPACSWingIntermediateStructureCells
+
+// in component segment structure shell/cell
+CPACSWingStringer

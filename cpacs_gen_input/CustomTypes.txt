@@ -1,0 +1,79 @@
+// custom types in Tigl which should inherit from the generated ones (except enums)
+// maps generated types to actual tigl types
+
+// enums
+CPACSSymmetry                      TiglSymmetryAxis
+CPACSPointAbsRelType_refType       ECPACSTranslationType
+CPACSFarField_type_SimpleContent   TiglFarFieldType
+
+// classes
+CPACSAircraftModel                 CCPACSAircraftModel
+CPACSRotorcraftModel               CCPACSRotorcraftModel
+CPACSProfiles                      CCPACSProfiles
+CPACSMaterialDefinition            CCPACSMaterial
+CPACSFarField                      CCPACSFarField
+CPACSGuideCurve                    CCPACSGuideCurve
+CPACSGuideCurves                   CCPACSGuideCurves
+CPACSGuideCurveProfileGeometry     CCPACSGuideCurveProfile
+CPACSGuideCurveProfiles            CCPACSGuideCurveProfiles
+CPACSPositioning                   CCPACSPositioning
+CPACSPositionings                  CCPACSPositionings
+CPACSPoint                         CCPACSPoint
+CPACSPointAbsRel                   CCPACSPointAbsRel
+CPACSTransformation                CCPACSTransformation
+CPACSStringVectorBase              CCPACSStringVector
+CPACSPointListXYZVector            CCPACSPointListXYZ
+CPACSPointListRelXYZVector         CCPACSPointListRelXYZ
+CPACSGenericGeometricComponent     CCPACSExternalObject
+CPACSGenericGeometryComponents     CCPACSExternalObjects
+
+CPACSFuselage                      CCPACSFuselage
+CPACSFuselages                     CCPACSFuselages
+CPACSFuselageProfiles              CCPACSFuselageProfiles
+CPACSFuselageSegment               CCPACSFuselageSegment
+CPACSFuselageSegments              CCPACSFuselageSegments
+CPACSFuselageSection               CCPACSFuselageSection
+CPACSFuselageSections              CCPACSFuselageSections
+CPACSFuselageElement               CCPACSFuselageSectionElement
+CPACSFuselageElements              CCPACSFuselageSectionElements
+
+CPACSComponentSegment              CCPACSWingComponentSegment
+CPACSComponentSegments             CCPACSWingComponentSegments
+CPACSWing                          CCPACSWing
+CPACSWings                         CCPACSWings
+CPACSWingAirfoils                  CCPACSWingProfiles
+CPACSWingCell                      CCPACSWingCell
+CPACSWingCells                     CCPACSWingCells
+CPACSWingRibCrossSection           CCPACSWingRibCrossSection
+CPACSRibRotation                   CCPACSWingRibRotation
+CPACSWingRibsDefinition            CCPACSWingRibsDefinition
+CPACSWingRibsDefinitions           CCPACSWingRibsDefinitions
+CPACSWingRibsPositioning           CCPACSWingRibsPositioning
+CPACSWingElement                   CCPACSWingSectionElement
+CPACSWingElements                  CCPACSWingSectionElements
+CPACSWingSection                   CCPACSWingSection
+CPACSWingSections                  CCPACSWingSections
+CPACSWingComponentSegmentStructure CCPACSWingCSStructure
+CPACSWingShell                     CCPACSWingShell
+CPACSWingSegment                   CCPACSWingSegment
+CPACSWingSegments                  CCPACSWingSegments
+CPACSWingSpar                      CCPACSWingSpars
+CPACSSparPosition                  CCPACSWingSparPosition
+CPACSSparPositions                 CCPACSWingSparPositions
+CPACSSparPositionUIDs              CCPACSWingSparPositionUIDs
+CPACSSparSegment                   CCPACSWingSparSegment
+CPACSSparSegments                  CCPACSWingSparSegments
+CPACSCst2D                         CCPACSWingProfileCST
+CPACSCellPositioningSpanwise       CCPACSWingCellPositionSpanwise
+CPACSCellPositioningChordwise      CCPACSWingCellPositionChordwise
+
+CPACSRotor                         CCPACSRotor
+CPACSRotors                        CCPACSRotors
+CPACSRotorAirfoils                 CCPACSRotorProfiles
+CPACSRotorBladeAttachment          CCPACSRotorBladeAttachment
+CPACSRotorBladeAttachments         CCPACSRotorBladeAttachments
+CPACSRotorBlade                    CCPACSRotorBlade
+CPACSRotorBlades                   CCPACSRotorBlades
+CPACSRotorHub                      CCPACSRotorHub
+CPACSRotorHubHinge                 CCPACSRotorHinge
+CPACSRotorHubHinges                CCPACSRotorHinges

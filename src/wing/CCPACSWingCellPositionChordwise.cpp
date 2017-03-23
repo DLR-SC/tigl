@@ -18,91 +18,32 @@
 #include "CCPACSWingCellPositionChordwise.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
-#include "TixiSaveExt.h"
 
 
 namespace tigl
 {
 
 CCPACSWingCellPositionChordwise::CCPACSWingCellPositionChordwise(CCPACSWingCell* parent)
-: m_parent(parent)
-{
-    Reset();
-}
-
-void CCPACSWingCellPositionChordwise::Reset()
-{
-    m_inputType = None;
-    m_xsi1 = 0;
-    m_xsi2 = 0;
-    m_sparUID.clear();
-}
-
-void CCPACSWingCellPositionChordwise::ReadCPACS(TixiDocumentHandle tixiHandle,  const std::string& xpath)
-{
-    Reset();
-
-    // Get subelement "xsi1, xsi2" or Spar Uid (choice)
-    const std::string sparUIdString  = xpath + "/sparUID";
-    const std::string xsi1String     = xpath + "/xsi1";
-
-    if (tixiCheckElement(tixiHandle, xsi1String.c_str()) == SUCCESS) {
-        m_inputType = Xsi;
-        if (tixiGetDoubleElement(tixiHandle, xsi1String.c_str(), &m_xsi1) != SUCCESS) {
-            LOG(ERROR) << "Error during read of <xsi1>";
-            throw CTiglError("Error: Error during read of <xsi1> in CCPACSWingCellPositionChordwise::ReadCPACS!", TIGL_XML_ERROR);
-        }
-        if (tixiGetDoubleElement(tixiHandle, (xpath + "/xsi2").c_str(), &m_xsi2) != SUCCESS) {
-            LOG(ERROR) << "Error during read of <xsi2>";
-            throw CTiglError("Error: Error during read of <xsi2> in CCPACSWingCellPositionChordwise::ReadCPACS!", TIGL_XML_ERROR);
-        }
-    }
-    else if (tixiCheckElement(tixiHandle, sparUIdString.c_str()) == SUCCESS) {
-        m_inputType = Spar;
-        char* ptrSUId = NULL;
-        if (tixiGetTextElement(tixiHandle, sparUIdString.c_str(), &ptrSUId) != SUCCESS) {
-            LOG(ERROR) << "Error during read of <sparUID>";
-            throw CTiglError("Error: Error during read of <sparUID> in CCPACSWingCellPositionChordwise::ReadCPACS!", TIGL_XML_ERROR);
-        }
-        m_sparUID = ptrSUId;
-
-    }
-    else {
-        LOG(ERROR) << "Missing element <xsi1> or <sparUID>";
-        throw CTiglError("Error: Missing element <xsi1> or <sparUID> in CCPACSWingCellPositionChordwise::ReadCPACS!", TIGL_XML_ERROR);
-    }
-}
-
-void CCPACSWingCellPositionChordwise::WriteCPACS(TixiDocumentHandle tixiHandle,  const std::string& xpath) const
-{
-    switch (m_inputType) {
-    case Xsi:
-        TixiSaveExt::TixiSaveDoubleElement(tixiHandle, xpath.c_str(), "xsi1", m_xsi1, NULL);
-        TixiSaveExt::TixiSaveDoubleElement(tixiHandle, xpath.c_str(), "xsi2", m_xsi2, NULL);
-        break;
-    case Spar:
-        TixiSaveExt::TixiSaveTextElement(tixiHandle, xpath.c_str(), "sparUID", this->m_sparUID.c_str());
-        break;
-    default:
-        LOG(ERROR) << "Missing element <xsi1> or <sparUID>";
-        throw CTiglError("Error: Missing element <xsi1> or <sparUID> in CCPACSWingCellPositionChordwise::WriteCPACS!", TIGL_XML_ERROR);
-    }
-}
+    : generated::CPACSCellPositioningChordwise(parent) {}
 
 CCPACSWingCellPositionChordwise::InputType CCPACSWingCellPositionChordwise::GetInputType() const
 {
-    return m_inputType;
+    if (m_xsi1_choice2 && m_xsi2_choice2)
+        return ENUM_VALUE(InputType, Xsi);
+    if (m_sparUID_choice1)
+        return ENUM_VALUE(InputType, Spar);
+    return ENUM_VALUE(InputType, None);
 }
 
 void CCPACSWingCellPositionChordwise::SetXsi(double xsi1, double xsi2)
 {
-    m_inputType = Xsi;
+    m_xsi1_choice2 = xsi1;
+    m_xsi2_choice2 = xsi2;
+    m_sparUID_choice1 = boost::none;
 
-    m_xsi1 = xsi1;
-    m_xsi2 = xsi2;
-    m_sparUID.clear();
-
-    m_parent->Invalidate();
+    //if (IsParent<CCPACSWingCell>())
+    //    GetParent<CCPACSWingCell>()->Invalidate();
+    GetParent()->Invalidate();
 }
 
 void CCPACSWingCellPositionChordwise::GetXsi(double& xsi1, double& xsi2) const
@@ -115,29 +56,29 @@ void CCPACSWingCellPositionChordwise::GetXsi(double& xsi1, double& xsi2) const
 
 std::pair<double, double> CCPACSWingCellPositionChordwise::GetXsi() const
 {
-    if (m_inputType != Xsi) {
+    if (GetInputType() != ENUM_VALUE(InputType, Xsi)) {
         throw CTiglError("CCPACSWingCellPositionChordwise::GetXsi method called, but position is defined via sparUID!");
     }
-    return std::make_pair(m_xsi1, m_xsi2);
+    return std::make_pair(*m_xsi1_choice2, *m_xsi2_choice2);
 }
 
 void CCPACSWingCellPositionChordwise::SetSparUId(std::string sparUId)
 {
-    m_inputType = Spar;
+    m_xsi1_choice2 = boost::none;
+    m_xsi2_choice2 = boost::none;
+    m_sparUID_choice1 = sparUId;
 
-    m_xsi1 = 0.;
-    m_xsi2 = 0.;
-    m_sparUID = sparUId;
-
-    m_parent->Invalidate();
+    //if (IsParent<CCPACSWingCell>())
+    //    GetParent<CCPACSWingCell>()->Invalidate();
+    GetParent()->Invalidate();
 }
 
 const std::string& CCPACSWingCellPositionChordwise::GetSparUId() const
 {
-    if (m_inputType != Spar) {
+    if (GetInputType() != ENUM_VALUE(InputType, Spar)) {
         throw CTiglError("CCPACSWingCellPositionChordwise::GetSparUId method called, but position is defined via xsi1/xsi2!");
     }
-    return m_sparUID;
+    return *m_sparUID_choice1;
 }
 
 }

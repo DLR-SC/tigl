@@ -20,228 +20,142 @@
 
 #include "CTiglError.h"
 #include "CTiglLogging.h"
-#include "TixiSaveExt.h"
 
 #include "CCPACSWingCell.h"
 #include "CCPACSWingSpars.h"
 #include "CCPACSWingSparSegment.h"
 #include "CCPACSWingSparSegments.h"
 #include "CCPACSWingRibsDefinitions.h"
+//#include "CCPACSTrailingEdgeDevice.h"
 
 namespace tigl
 {
+CCPACSWingCSStructure::CCPACSWingCSStructure(CCPACSWingComponentSegment* parent)
+    : generated::CPACSWingComponentSegmentStructure(parent) {}
 
+//CCPACSWingCSStructure::CCPACSWingCSStructure(CPACSTrailingEdgeDevice* parent)
+//    : generated::CPACSWingComponentSegmentStructure(parent) {}
 
-CCPACSWingCSStructure::CCPACSWingCSStructure(CTiglWingStructureReference parent)
-: wingStructureReference(parent),
-  spars(NULL),
-  ribsDefinitions(NULL),
-  lowerShell(*this, LOWER_SIDE),
-  upperShell(*this, UPPER_SIDE)
-{
-    Cleanup();
+CTiglWingStructureReference CCPACSWingCSStructure::GetWingStructureReference() {
+    //if (IsParent<CCPACSWingComponentSegment>()) return CTiglWingStructureReference(*GetParent<CCPACSWingComponentSegment>());
+    //throw CTiglError("Unknown parent type of CCPACSWingCSStructure when retrieving CTiglWingStructureReference");
+    return CTiglWingStructureReference(*GetParent());
 }
 
-CCPACSWingCSStructure::~CCPACSWingCSStructure(void)
-{
-    Cleanup();
+const CTiglWingStructureReference CCPACSWingCSStructure::GetWingStructureReference() const {
+    return const_cast<CCPACSWingCSStructure&>(*this).GetWingStructureReference();
 }
 
-void CCPACSWingCSStructure::Cleanup()
-{
-    upperShell.Reset();
-    lowerShell.Reset();
-    if (spars != NULL) {
-        delete spars;
-        spars = NULL;
-    }
-    if (ribsDefinitions != NULL) {
-        delete ribsDefinitions;
-        ribsDefinitions = NULL;
-    }
-    isvalid = false;
+bool CCPACSWingCSStructure::HasSpars() const {
+    return static_cast<bool>(m_spars);
 }
 
-void CCPACSWingCSStructure::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string &structureXPath)
-{
-    Cleanup();
-    
-    // check path
-    if (tixiCheckElement(tixiHandle, structureXPath.c_str()) != SUCCESS) {
-        LOG(WARNING) << "Wing structure " << structureXPath << " not found in CPACS file!" << std::endl;
-        return;
-    }
-
-    // spars
-    const std::string sparsPath = structureXPath + "/spars";
-    if ( tixiCheckElement(tixiHandle, sparsPath.c_str()) == SUCCESS){
-        spars = new CCPACSWingSpars(*this);
-        spars->ReadCPACS(tixiHandle, sparsPath);
-    }
-
-    // ribs
-    const std::string ribsPath = structureXPath + "/ribsDefinitions";
-    if ( tixiCheckElement(tixiHandle, ribsPath.c_str()) == SUCCESS){
-        ribsDefinitions = new CCPACSWingRibsDefinitions(*this);
-        ribsDefinitions->ReadCPACS(tixiHandle, ribsPath);
-    }
-
-    // lower shell
-    std::string upperShellPath = structureXPath + "/upperShell";
-    if ( tixiCheckElement(tixiHandle, upperShellPath.c_str()) == SUCCESS){
-        upperShell.ReadCPACS(tixiHandle, upperShellPath.c_str());
-    }
-    
-    std::string lowerShellPath = structureXPath + "/lowerShell";
-    if ( tixiCheckElement(tixiHandle, lowerShellPath.c_str()) == SUCCESS){
-        lowerShell.ReadCPACS(tixiHandle, lowerShellPath.c_str());
-    }
-    
-    isvalid = true;
-}
-
-// Write CPACS structure elements
-void CCPACSWingCSStructure::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& structureXPath) const
-{
-    // for each element, if it exist in the model, the function call the saving subfunction
-    // if not existing in the model, it try to remove an eventuel pre-existing subsection (no error if not pre-existing)
-    // create the subelement Spars
-    TixiSaveExt::TixiSaveElement(tixiHandle,structureXPath.c_str(), "upperShell");
-    upperShell.WriteCPACS(tixiHandle, structureXPath + "/upperShell");
-
-    // create the subelement Spars
-    TixiSaveExt::TixiSaveElement(tixiHandle,structureXPath.c_str(), "lowerShell");
-    lowerShell.WriteCPACS(tixiHandle, structureXPath + "/lowerShell");
-
-    const std::string sparsPath = structureXPath + "/spars";
-    if (HasSpars()) {
-        // create the subelement Spars
-        TixiSaveExt::TixiSaveElement(tixiHandle,structureXPath.c_str(), "spars");
-        spars->WriteCPACS(tixiHandle, sparsPath);
-    }
-    else {
-        tixiRemoveElement(tixiHandle, sparsPath.c_str());
-    }
-
-    const std::string ribsPath = structureXPath + "/ribsDefinitions";
-    if (HasRibsDefinitions()) {
-        // create the subelement RibsDefinitions
-        TixiSaveExt::TixiSaveElement(tixiHandle, structureXPath.c_str(), "ribsDefinitions");
-        ribsDefinitions->WriteCPACS(tixiHandle, ribsPath);
-    }
-    else {
-        tixiRemoveElement(tixiHandle, ribsPath.c_str());
-    }
-}
-
-CTiglWingStructureReference& CCPACSWingCSStructure::GetWingStructureReference()
-{
-    return wingStructureReference;
-}
-
-const CTiglWingStructureReference& CCPACSWingCSStructure::GetWingStructureReference() const
-{
-    return wingStructureReference;
-}
-
-CCPACSWingShell& CCPACSWingCSStructure::GetLowerShell()
-{
-    return lowerShell;
-}
-
-CCPACSWingShell& CCPACSWingCSStructure::GetUpperShell()
-{
-    return upperShell;
-}
-
-bool CCPACSWingCSStructure::HasSpars() const
-{
-    return (spars != NULL);
-}
-
-CCPACSWingSpars& CCPACSWingCSStructure::GetSpars() const
-{
-    if (!spars) {
+CCPACSWingSpars& CCPACSWingCSStructure::GetSpars() {
+    if (!m_spars) {
         throw CTiglError("Error: spars not available but requested in CCPACSWingCSStructure::GetSpars!");
     }
-    return *spars;
+    return *m_spars;
 }
 
-int CCPACSWingCSStructure::GetSparSegmentCount() const
-{
+const CCPACSWingSpars& CCPACSWingCSStructure::GetSpars() const {
+    if (!m_spars) {
+        throw CTiglError("Error: spars not available but requested in CCPACSWingCSStructure::GetSpars!");
+    }
+    return *m_spars;
+}
+
+int CCPACSWingCSStructure::GetSparSegmentCount() const {
     int sparSegmentCount = 0;
 
-    if (spars) {
-        sparSegmentCount = spars->GetSparSegments().GetSparSegmentCount();
+    if (m_spars) {
+        sparSegmentCount = m_spars->GetSparSegments().GetSparSegmentCount();
     }
 
     return sparSegmentCount;
 }
 
-CCPACSWingSparSegment& CCPACSWingCSStructure::GetSparSegment(int index) const
-{
-    if (!spars) {
+CCPACSWingSparSegment& CCPACSWingCSStructure::GetSparSegment(int index) {
+    if (!m_spars) {
         throw CTiglError("Error: no spars existing in CCPACSWingCSStructure::GetSparSegment!");
     }
-    return spars->GetSparSegments().GetSparSegment(index);
+    return m_spars->GetSparSegments().GetSparSegment(index);
 }
 
-CCPACSWingSparSegment& CCPACSWingCSStructure::GetSparSegment(const std::string& uid) const
-{
-    if (!spars) {
+CCPACSWingSparSegment& CCPACSWingCSStructure::GetSparSegment(const std::string& uid) {
+    if (!m_spars) {
         throw CTiglError("Error: no spars existing in CCPACSWingCSStructure::GetSparSegment!");
     }
-    return spars->GetSparSegments().GetSparSegment(uid);
+    return m_spars->GetSparSegments().GetSparSegment(uid);
 }
 
-bool CCPACSWingCSStructure::HasRibsDefinitions() const
-{
-    return (ribsDefinitions != NULL);
+const CCPACSWingSparSegment& CCPACSWingCSStructure::GetSparSegment(int index) const {
+    if (!m_spars) {
+        throw CTiglError("Error: no spars existing in CCPACSWingCSStructure::GetSparSegment!");
+    }
+    return m_spars->GetSparSegments().GetSparSegment(index);
 }
 
-int CCPACSWingCSStructure::GetRibsDefinitionCount() const
-{
+const CCPACSWingSparSegment& CCPACSWingCSStructure::GetSparSegment(const std::string& uid) const {
+    if (!m_spars) {
+        throw CTiglError("Error: no spars existing in CCPACSWingCSStructure::GetSparSegment!");
+    }
+    return m_spars->GetSparSegments().GetSparSegment(uid);
+}
+
+bool CCPACSWingCSStructure::HasRibsDefinitions() const {
+    return static_cast<bool>(m_ribsDefinitions);
+}
+
+int CCPACSWingCSStructure::GetRibsDefinitionCount() const {
     int ribsDefinitionCount = 0;
 
-    if (ribsDefinitions) {
-        ribsDefinitionCount = ribsDefinitions->GetRibsDefinitionCount();
+    if (m_ribsDefinitions) {
+        ribsDefinitionCount = m_ribsDefinitions->GetRibsDefinitionCount();
     }
 
     return ribsDefinitionCount;
 }
 
-CCPACSWingRibsDefinition& CCPACSWingCSStructure::GetRibsDefinition(int index) const
-{
-    if (!ribsDefinitions) {
+CCPACSWingRibsDefinition& CCPACSWingCSStructure::GetRibsDefinition(int index) {
+    if (!m_ribsDefinitions) {
         throw CTiglError("Error: no ribsDefinitions existing in CCPACSWingCSStructure::GetRibsDefinition!");
     }
-    return ribsDefinitions->GetRibsDefinition(index);
+    return m_ribsDefinitions->GetRibsDefinition(index);
 }
 
-CCPACSWingRibsDefinition& CCPACSWingCSStructure::GetRibsDefinition(const std::string& uid) const
-{
-    if (!ribsDefinitions) {
+CCPACSWingRibsDefinition& CCPACSWingCSStructure::GetRibsDefinition(const std::string& uid) {
+    if (!m_ribsDefinitions) {
         throw CTiglError("Error: no ribsDefinitions existing in CCPACSWingCSStructure::GetRibsDefinition!");
     }
-    return ribsDefinitions->GetRibsDefinition(uid);
+    return m_ribsDefinitions->GetRibsDefinition(uid);
 }
+
+const CCPACSWingRibsDefinition& CCPACSWingCSStructure::GetRibsDefinition(int index) const {
+    if (!m_ribsDefinitions) {
+        throw CTiglError("Error: no ribsDefinitions existing in CCPACSWingCSStructure::GetRibsDefinition!");
+    }
+    return m_ribsDefinitions->GetRibsDefinition(index);
+}
+
+const CCPACSWingRibsDefinition& CCPACSWingCSStructure::GetRibsDefinition(const std::string& uid) const {
+    if (!m_ribsDefinitions) {
+        throw CTiglError("Error: no ribsDefinitions existing in CCPACSWingCSStructure::GetRibsDefinition!");
+    }
+    return m_ribsDefinitions->GetRibsDefinition(uid);
+}
+
 
 void CCPACSWingCSStructure::Invalidate()
 {
     // forward invalidation
-    if (spars != NULL) {
-        spars->Invalidate();
+    if (m_spars) {
+        m_spars->Invalidate();
     }
-    if (ribsDefinitions != NULL) {
-        ribsDefinitions->Invalidate();
+    if (m_ribsDefinitions) {
+        m_ribsDefinitions->Invalidate();
     }
-    upperShell.Invalidate();
-    lowerShell.Invalidate();
-}
-
-bool CCPACSWingCSStructure::IsValid() const
-{
-    return isvalid;
+    m_upperShell.Invalidate();
+    m_lowerShell.Invalidate();
 }
 
 } // namespace tigl

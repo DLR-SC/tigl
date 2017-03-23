@@ -20,6 +20,7 @@
 #define CONFIG_H
 
 // include files and other standard functionality
+#cmakedefine HAVE_CPP11
 #cmakedefine HAVE_STDSHARED_PTR
 
 // optional libraries

@@ -29,7 +29,7 @@ TIXIScriptProxy::TIXIScriptProxy()
 }
 
 // Returns the tixi handle
-TixiDocumentHandle TIXIScriptProxy::GetConfiguration(void) const
+TixiDocumentHandle TIXIScriptProxy::GetConfiguration() const
 {
     return tixiHandle;
 }

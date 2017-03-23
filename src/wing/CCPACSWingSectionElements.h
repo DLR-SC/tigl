@@ -26,6 +26,7 @@
 #ifndef CCPACSWINGSECTIONELEMENTS_H
 #define CCPACSWINGSECTIONELEMENTS_H
 
+#include "generated/CPACSWingElements.h"
 #include "tigl_internal.h"
 #include "tixi.h"
 #include "CCPACSWingSectionElement.h"
@@ -35,45 +36,14 @@
 namespace tigl
 {
 
-class CCPACSWingSectionElements
+class CCPACSWingSectionElements : public generated::CPACSWingElements
 {
-private:
-    // Typedef for a CCPACSWingSectionElement container to store the profiles of a section.
-    typedef std::vector<CCPACSWingSectionElement*> CCPACSWingSectionElementContainer;
-
 public:
-    // Constructor
-    TIGL_EXPORT CCPACSWingSectionElements(void);
-
-    // Virtual Destructor
-    TIGL_EXPORT virtual ~CCPACSWingSectionElements(void);
-
-    // Read CPACS section elements
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& sectionXPath);
-
-    // Write CPACS section elements
-    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& sectionXPath) const;
-
     // Get element count for this section
-    TIGL_EXPORT int GetSectionElementCount(void) const;
+    TIGL_EXPORT int GetSectionElementCount() const;
 
     // Get element for a given index
     TIGL_EXPORT CCPACSWingSectionElement& GetSectionElement(int index) const;
-
-protected:
-    // Cleanup routine
-    void Cleanup(void);
-
-private:
-    // Copy constructor
-    CCPACSWingSectionElements(const CCPACSWingSectionElements& ) { /* Do nothing */ }
-
-    // Assignment operator
-    void operator=(const CCPACSWingSectionElements& ) { /* Do nothing */ }
-
-private:
-    CCPACSWingSectionElementContainer elements; /**< Section elements */
-
 };
 
 } // end namespace tigl

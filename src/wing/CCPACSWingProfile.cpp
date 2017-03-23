@@ -29,6 +29,7 @@
 
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CCPACSWingProfilePointList.h"
 #include "math.h"
 
 #include "gp_Pnt2d.hxx"
@@ -58,31 +59,26 @@
 #include "CTiglInterpolateLinearWire.h"
 #include "ITiglWingProfileAlgo.h"
 #include "CCPACSWingProfile.h"
-#include "CCPACSWingProfileFactory.h"
-#include "TixiSaveExt.h"
 
 namespace tigl 
 {
 
 // Constructor
 CCPACSWingProfile::CCPACSWingProfile()
-    : invalidated(true)
+    : invalidated(true), profileAlgo(NULL)
 {
     Cleanup();
 }
 
 // Destructor
-CCPACSWingProfile::~CCPACSWingProfile(void)
+CCPACSWingProfile::~CCPACSWingProfile()
 {
     Cleanup();
 }
 
 // Cleanup routine
-void CCPACSWingProfile::Cleanup(void)
+void CCPACSWingProfile::Cleanup()
 {
-    name = "";
-    description = "";
-    uid = "";
     isRotorProfile = false;
 
     if (profileAlgo) {
@@ -93,80 +89,39 @@ void CCPACSWingProfile::Cleanup(void)
 }
 
 // Read wing profile file
-void CCPACSWingProfile::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& xpath)
+void CCPACSWingProfile::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
 {
     Cleanup();
 
     if (xpath.find("rotorAirfoil") != std::string::npos) {
         isRotorProfile = true;
     }
-
-    // Get profiles "uid"
-    char* ptrUID = NULL;
-    if (tixiGetTextAttribute(tixiHandle, xpath.c_str(), "uID", &ptrUID) == SUCCESS) {
-        uid = ptrUID;
+    generated::CPACSProfileGeometry::ReadCPACS(tixiHandle, xpath);
+    if (HasPointList_choice1()) {
+        // in case the wing profile algorithm is a point list, create the additional algorithm instance
+        pointListAlgo.reset(new CCPACSWingProfilePointList(*this, *m_pointList_choice1, xpath + "/pointList"));
+        profileAlgo = &*pointListAlgo;
+    } else if (m_cst2D_choice2) {
+        profileAlgo = &*m_cst2D_choice2;
+    } else {
+        throw CTiglError("no profile algorithm");
     }
-
-    // Get subelement "name"
-    char* ptrName = NULL;
-    if (tixiGetTextElement(tixiHandle, (xpath + "/name").c_str(), &ptrName) == SUCCESS) {
-        name = ptrName;
-    }
-
-    // Get subelement "description"
-    char* ptrDescription = NULL;
-    if (tixiGetTextElement(tixiHandle, (xpath + "/description").c_str(), &ptrDescription) == SUCCESS) {
-        description = ptrDescription;
-    }
-
-    // create wing profile algorithm via factory
-    profileAlgo = CCPACSWingProfileFactory::Instance().CreateProfileAlgo(tixiHandle, *this, xpath);
-
-    // read in wing profile data
-    profileAlgo->ReadCPACS(tixiHandle);
-}
-
-// Write CPACS wing profile file
-void CCPACSWingProfile::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& ProfileXPath) const
-{
-    TixiSaveExt::TixiSaveTextAttribute(tixiHandle, ProfileXPath.c_str(), "uID", uid.c_str());
-    TixiSaveExt::TixiSaveTextElement(tixiHandle, ProfileXPath.c_str(), "name", name.c_str());
-    TixiSaveExt::TixiSaveTextElement(tixiHandle, ProfileXPath.c_str(), "description", description.c_str());
-    profileAlgo->WriteCPACS(tixiHandle, ProfileXPath);
-}
-
-// Returns the name of the wing profile
-const std::string& CCPACSWingProfile::GetName(void) const
-{
-    return name;
-}
-
-// Returns the describtion of the wing profile
-const std::string& CCPACSWingProfile::GetDescription(void) const
-{
-    return description;
-}
-
-// Returns the UID of the wing profile
-const std::string& CCPACSWingProfile::GetUID(void) const
-{
-    return uid;
 }
 
 // Returns whether the profile is a rotor profile
-bool CCPACSWingProfile::IsRotorProfile(void) const
+bool CCPACSWingProfile::IsRotorProfile() const
 {
     return isRotorProfile;
 }
 
 // Invalidates internal wing profile state
-void CCPACSWingProfile::Invalidate(void)
+void CCPACSWingProfile::Invalidate()
 {
     invalidated = true;
 }
 
 // Update the internal state, i.g. recalculates wire and le, te points
-void CCPACSWingProfile::Update(void)
+void CCPACSWingProfile::Update()
 {
     if (!invalidated) {
         return;
@@ -287,7 +242,7 @@ TopoDS_Wire CCPACSWingProfile::GetWireClosed()
 
 // Returns the leading edge point of the wing profile wire. The leading edge point
 // is already transformed by the wing profile transformation.
-gp_Pnt CCPACSWingProfile::GetLEPoint(void)
+gp_Pnt CCPACSWingProfile::GetLEPoint()
 {
     Update();
     return profileAlgo->GetLEPoint();
@@ -295,7 +250,7 @@ gp_Pnt CCPACSWingProfile::GetLEPoint(void)
 
 // Returns the trailing edge point of the wing profile wire. The trailing edge point
 // is already transformed by the wing profile transformation.
-gp_Pnt CCPACSWingProfile::GetTEPoint(void)
+gp_Pnt CCPACSWingProfile::GetTEPoint()
 {
     Update();
     return profileAlgo->GetTEPoint();
@@ -458,15 +413,18 @@ Handle(Geom2d_TrimmedCurve) CCPACSWingProfile::GetChordLine()
     return chordLine;
 }
 
-// get pointer to profile algorithm
-PTiglWingProfileAlgo CCPACSWingProfile::GetProfileAlgo(void) const
+ITiglWingProfileAlgo* CCPACSWingProfile::GetProfileAlgo() {
+    return profileAlgo;
+}
+
+const ITiglWingProfileAlgo* CCPACSWingProfile::GetProfileAlgo() const
 {
     return profileAlgo;
 }
 
 bool CCPACSWingProfile::HasBluntTE() const
 {
-    PTiglWingProfileAlgo algo = GetProfileAlgo();
+    const ITiglWingProfileAlgo* algo = GetProfileAlgo();
     if (!algo) {
         throw CTiglError("No wing profile algorithm regsitered in CCPACSWingProfile::HasBluntTE()!");
     }

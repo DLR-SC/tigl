@@ -22,6 +22,7 @@
 #ifndef CTIGLTRIANGULARIZER_H
 #define CTIGLTRIANGULARIZER_H
 
+#include <vector>
 #include "tigl_internal.h"
 #include "CTiglPolyData.h"
 #include <gp_Pnt.hxx>
@@ -31,6 +32,9 @@ class TopoDS_Face;
 
 namespace tigl 
 {
+class CTiglRelativelyPositionedComponent;
+class CCPACSConfiguration;
+class CCPACSWingSegment;
 
 enum ComponentTraingMode 
 {
@@ -43,17 +47,17 @@ class CTiglTriangularizer : public CTiglPolyData
 public:
     TIGL_EXPORT CTiglTriangularizer();
     TIGL_EXPORT CTiglTriangularizer(const TopoDS_Shape&, double deflection, bool useMultipleObjects = false);
-    TIGL_EXPORT CTiglTriangularizer(class CTiglAbstractPhysicalComponent &comp, double deflection, ComponentTraingMode mode);
-    TIGL_EXPORT CTiglTriangularizer(class CCPACSConfiguration& config, bool fuseShapes, double deflection, ComponentTraingMode mode);
+    TIGL_EXPORT CTiglTriangularizer(CTiglRelativelyPositionedComponent& comp, double deflection, ComponentTraingMode mode);
+    TIGL_EXPORT CTiglTriangularizer(CCPACSConfiguration& config, bool fuseShapes, double deflection, ComponentTraingMode mode);
     
     TIGL_EXPORT void useMultipleObjects(bool);
     
 private:
-    int triangularizeComponent(class CTiglAbstractPhysicalComponent &, bool includeChilds, const TopoDS_Shape& shape, double deflection, ComponentTraingMode = NO_INFO);
-    int triangularizeShape(const TopoDS_Shape &);
-    void annotateWingSegment(class CCPACSWingSegment &segment, gp_Pnt centralP, bool pointOnMirroredShape, unsigned long iPolyLow, unsigned long iPolyUp);
-    int triangularizeFace(const TopoDS_Face &, unsigned long& nVertices, unsigned long& iPolyLow, unsigned long& iPolyUp);
-    int computeVTKMetaData(class CCPACSWing&);
+    int triangularizeComponent(CTiglRelativelyPositionedComponent& component, bool includeChilds, const TopoDS_Shape& shape, double deflection, ComponentTraingMode = NO_INFO);
+    int triangularizeComponent(const std::vector<CTiglRelativelyPositionedComponent*>& components, bool includeChilds, const TopoDS_Shape& shape, double deflection, ComponentTraingMode = NO_INFO);
+    int triangularizeShape(const TopoDS_Shape&);
+    void annotateWingSegment(CCPACSWingSegment& segment, gp_Pnt centralP, bool pointOnMirroredShape, unsigned long iPolyLow, unsigned long iPolyUp);
+    int triangularizeFace(const TopoDS_Face&, unsigned long& nVertices, unsigned long& iPolyLow, unsigned long& iPolyUp);
     
     bool _useMultipleObjects;
 };

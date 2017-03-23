@@ -26,6 +26,7 @@
 #ifndef CCPACSWINGSECTION_H
 #define CCPACSWINGSECTION_H
 
+#include "generated/CPACSWingSection.h"
 #include "tigl_internal.h"
 #include "tixi.h"
 #include "CCPACSWingSectionElements.h"
@@ -35,48 +36,27 @@
 namespace tigl
 {
 
-class CCPACSWingSection
+class CCPACSWingSection : public generated::CPACSWingSection
 {
 
 public:
-    // Constructor
-    TIGL_EXPORT CCPACSWingSection();
-
-    // Virtual Destructor
-    TIGL_EXPORT virtual ~CCPACSWingSection(void);
-
-    // Read CPACS section elements
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& sectionXPath);
-
-    // Write CPACS section elements
-    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& sectionXPath);
-
     // Get element count for this section
-    TIGL_EXPORT int GetSectionElementCount(void) const;
-
-    // Get the UID of this WingSection
-    TIGL_EXPORT const std::string& GetUID(void) const;
-
-    // Get name of this WingSection
-    TIGL_EXPORT const std::string& GetName() const;
-
-    // Get description of this WingSection
-    TIGL_EXPORT const std::string& GetDescription(void) const;
+    TIGL_EXPORT int GetSectionElementCount() const;
 
     // Get element for a given index
-    TIGL_EXPORT CCPACSWingSectionElement& GetSectionElement(int index) const;
+    TIGL_EXPORT const CCPACSWingSectionElement& GetSectionElement(int index) const;
 
     // Gets the section transformation
-    TIGL_EXPORT CTiglTransformation GetSectionTransformation(void) const;
+    TIGL_EXPORT CTiglTransformation GetSectionTransformation() const;
 
     // Gets the section translation
-    TIGL_EXPORT const CTiglPoint& GetTranslation() const;
+    TIGL_EXPORT CTiglPoint GetTranslation() const;
 
     // Gets the section rotation
-    TIGL_EXPORT const CTiglPoint& GetRotation() const;
+    TIGL_EXPORT CTiglPoint GetRotation() const;
 
     // Gets the section scaling
-    TIGL_EXPORT const CTiglPoint& GetScaling() const;
+    TIGL_EXPORT CTiglPoint GetScaling() const;
 
     // Setter for translation
     TIGL_EXPORT void SetTranslation(const CTiglPoint& trans);
@@ -86,25 +66,6 @@ public:
 
     // Setter for scaling
     TIGL_EXPORT void SetScaling(const CTiglPoint& scaling);
-
-protected:
-    // Cleanup routine
-    void Cleanup(void);
-
-private:
-    // Copy constructor
-    CCPACSWingSection(const CCPACSWingSection& );
-
-    // Assignment operator
-    void operator=(const CCPACSWingSection& );
-
-private:
-    std::string               name;           /**< Section name             */
-    std::string               uID;            /**< Section uid              */
-    std::string               description;    /**< Section description      */
-    CCPACSTransformation      transformation; /**< Section transfromation   */
-    CCPACSWingSectionElements elements;       /**< Section elements         */
-
 };
 
 } // end namespace tigl

@@ -16,44 +16,16 @@
 #ifndef CCPACSWINGRIBROTATION_H
 #define CCPACSWINGRIBROTATION_H
 
-#include <string>
-
-#include <tixi.h>
-
-#include "tigl_internal.h"
-
+#include "generated/CPACSRibRotation.h"
 
 namespace tigl
 {
-
-// forward declarations
-class CCPACSWingRibsDefinition;
-
-class CCPACSWingRibRotation
+class CCPACSWingRibRotation : public generated::CPACSRibRotation
 {
 public:
-    TIGL_EXPORT CCPACSWingRibRotation(CCPACSWingRibsDefinition& parent);
-    TIGL_EXPORT virtual ~CCPACSWingRibRotation();
+    TIGL_EXPORT CCPACSWingRibRotation(CCPACSWingRibsPositioning* parent);
 
-    TIGL_EXPORT void Cleanup();
-
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & ribRotationXPath);
-    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string & ribRotationXPath) const;
-
-    TIGL_EXPORT const std::string& GetRibRotationReference() const;
-    TIGL_EXPORT void SetRibRotationReference(const std::string&);
-
-    TIGL_EXPORT double GetZRotation() const;
-    TIGL_EXPORT void SetZRotation(double);
-
-private:
-    CCPACSWingRibRotation(const CCPACSWingRibRotation&);
-    void operator=(const CCPACSWingRibRotation&);
-
-private:
-    CCPACSWingRibsDefinition& parent;
-    std::string ribRotationReference;
-    double zRotation;
+    TIGL_EXPORT void SetZ(const double& value);
 };
 
 } // end namespace tigl

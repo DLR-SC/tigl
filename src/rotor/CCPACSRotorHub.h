@@ -28,14 +28,17 @@
 
 #include <string>
 
-#include "tixi.h"
+#include "generated/CPACSRotorHub.h"
 #include "CCPACSRotorBladeAttachments.h"
 
 
 namespace tigl
 {
-
+#ifdef HAVE_CPP11
+enum class TiglRotorHubType
+#else
 enum TiglRotorHubType
+#endif
 {
     TIGLROTORHUB_UNDEFINED,
     TIGLROTORHUB_SEMI_RIGID,
@@ -46,75 +49,35 @@ enum TiglRotorHubType
 
 class CCPACSConfiguration;
 class CCPACSRotor;
+class CTiglAttachedRotorBlade;
 
-class CCPACSRotorHub
+class CCPACSRotorHub : public generated::CPACSRotorHub
 {
 
 public:
     // Constructor
-    TIGL_EXPORT CCPACSRotorHub(CCPACSRotor* rotor);
-
-    // Virtual destructor
-    TIGL_EXPORT virtual ~CCPACSRotorHub(void);
-
-    // Invalidates internal state
-    TIGL_EXPORT void Invalidate(void);
-
-    // Read CPACS rotorHub elements
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& rotorHubXPath);
-
-    // Returns the UID of the rotor hub
-    TIGL_EXPORT std::string GetUID(void) const;
-
-    // Returns the name of the rotor hub
-    TIGL_EXPORT const std::string& GetName(void) const;
-
-    // Returns the description of the rotor hub
-    TIGL_EXPORT const std::string& GetDescription(void) const;
+    TIGL_EXPORT CCPACSRotorHub(CCPACSRotor* parent);
 
     // Returns the type of the rotor hub
-    TIGL_EXPORT const TiglRotorHubType& GetType(void) const;
+    TIGL_EXPORT TiglRotorHubType GetType() const;
 
     // Returns the rotor blade attachment count
-    TIGL_EXPORT int GetRotorBladeAttachmentCount(void) const;
+    TIGL_EXPORT int GetRotorBladeAttachmentCount() const;
 
     // Returns the rotor blade attachment for a given index
     TIGL_EXPORT CCPACSRotorBladeAttachment& GetRotorBladeAttachment(int index) const;
 
     // Returns the rotor blade count
-    TIGL_EXPORT int GetRotorBladeCount(void) const;
+    TIGL_EXPORT int GetRotorBladeCount() const;
 
     // Returns the rotor blade for a given index
-    TIGL_EXPORT CCPACSRotorBlade& GetRotorBlade(int index) const;
+    TIGL_EXPORT CTiglAttachedRotorBlade& GetRotorBlade(int index) const;
 
     // Returns the parent configuration
-    TIGL_EXPORT CCPACSConfiguration& GetConfiguration(void) const;
+    TIGL_EXPORT CCPACSConfiguration& GetConfiguration() const;
 
     // Returns the parent rotor
-    TIGL_EXPORT CCPACSRotor& GetRotor(void) const;
-
-protected:
-    // Cleanup routine
-    void Cleanup(void);
-
-    // Update internal rotor hub data
-    void Update(void);
-
-private:
-    // Copy constructor
-    CCPACSRotorHub(const CCPACSRotorHub&);
-
-    // Assignment operator
-    void operator=(const CCPACSRotorHub&);
-
-private:
-    std::string                    uID;                     /**< Rotor hub uID        */
-    std::string                    name;                    /**< Rotor hub name       */
-    std::string                    description;             /**< Rotor hub description*/
-    TiglRotorHubType               type;                    /**< Rotor hub type       */
-    CCPACSRotorBladeAttachments    rotorBladeAttachments;   /**< Rotor blade attachments of the rotor hub */
-    CCPACSRotor*                   rotor;                   /**< Parent rotor */
-    bool                           invalidated;             /**< Internal state flag  */
+    TIGL_EXPORT CCPACSRotor& GetRotor() const;
 };
 
 } // end namespace tigl

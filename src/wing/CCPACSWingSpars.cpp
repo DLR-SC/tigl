@@ -16,92 +16,27 @@
 
 #include "CCPACSWingSpars.h"
 
-#include "CTiglError.h"
-#include "CTiglLogging.h"
-#include "TixiSaveExt.h"
-
-
 namespace tigl
 {
 
-CCPACSWingSpars::CCPACSWingSpars(CCPACSWingCSStructure& structure)
-: structure(structure),
-  sparSegments(*this),
-  sparPositions(*this)
+CCPACSWingSpars::CCPACSWingSpars(CCPACSWingCSStructure* structure)
+: generated::CPACSWingSpar(structure)
 {
-    Cleanup();
-}
-
-CCPACSWingSpars::~CCPACSWingSpars()
-{
-    Cleanup();
 }
 
 void CCPACSWingSpars::Invalidate()
 {
-    sparSegments.Invalidate();
-}
-
-void CCPACSWingSpars::Cleanup()
-{
-    sparPositions.Cleanup();
-    sparSegments.Cleanup();
-}
-
-void CCPACSWingSpars::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& sparsXPath)
-{
-    Cleanup();
-
-    if (tixiCheckElement(tixiHandle, (sparsXPath + "/sparPositions").c_str()) != SUCCESS) {
-        LOG(ERROR) << "Missing sparPositions";
-        throw CTiglError("Error: Missing sparPositions in CCPACSWingSpars::ReadCPACS!", TIGL_XML_ERROR);
-    }
-    sparPositions.ReadCPACS(tixiHandle, sparsXPath + "/sparPositions");
-
-    if (tixiCheckElement(tixiHandle, (sparsXPath + "/sparSegments").c_str()) != SUCCESS) {
-        LOG(ERROR) << "Missing sparSegments";
-        throw CTiglError("Error: Missing sparSegments in CCPACSWingSpars::ReadCPACS!", TIGL_XML_ERROR);
-    }
-    sparSegments.ReadCPACS(tixiHandle, sparsXPath + "/sparSegments");
-}
-
-void CCPACSWingSpars::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& sparsXPath) const
-{
-    TixiSaveExt::TixiSaveElement(tixiHandle, sparsXPath.c_str(), "sparPositions");
-    sparPositions.WriteCPACS(tixiHandle, (sparsXPath + "/sparPositions").c_str());
-
-    TixiSaveExt::TixiSaveElement(tixiHandle, sparsXPath.c_str(), "sparSegments");
-    sparSegments.WriteCPACS(tixiHandle, (sparsXPath + "/sparSegments").c_str());
+    m_sparSegments.Invalidate();
 }
 
 const CCPACSWingCSStructure& CCPACSWingSpars::GetStructure() const
 {
-    return structure;
+    return *GetParent();
 }
 
 CCPACSWingCSStructure& CCPACSWingSpars::GetStructure()
 {
-    return structure;
-}
-
-const CCPACSWingSparSegments& CCPACSWingSpars::GetSparSegments() const
-{
-    return sparSegments;
-}
-
-CCPACSWingSparSegments& CCPACSWingSpars::GetSparSegments()
-{
-    return sparSegments;
-}
-
-const CCPACSWingSparPositions& CCPACSWingSpars::GetSparPositions() const
-{
-    return sparPositions;
-}
-
-CCPACSWingSparPositions& CCPACSWingSpars::GetSparPositions()
-{
-    return sparPositions;
+    return *GetParent();
 }
 
 } // end namespace tigl

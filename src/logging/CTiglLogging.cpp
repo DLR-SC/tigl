@@ -46,7 +46,7 @@ namespace tigl
 {
 
 
-CTiglLogging::CTiglLogging(void)
+CTiglLogging::CTiglLogging()
 {
     initLogger();
     _fileEnding = "log";
@@ -60,7 +60,7 @@ CTiglLogging::CTiglLogging(void)
     _consoleLogger=_myLogger;
 }
 
-CTiglLogging::~CTiglLogging(void)
+CTiglLogging::~CTiglLogging()
 {
 #ifdef GLOG_FOUND
     google::ShutdownGoogleLogging();
@@ -88,13 +88,13 @@ void CTiglLogging::SetLogger(PTiglLogger logger)
 #endif
 }
 
-CTiglLogging& CTiglLogging::Instance(void)
+CTiglLogging& CTiglLogging::Instance()
 {
     static CTiglLogging instance;
     return instance;
 }
 
-void CTiglLogging::initLogger(void)
+void CTiglLogging::initLogger()
 {
 #ifdef GLOG_FOUND
     // Initialize Google's logging library.

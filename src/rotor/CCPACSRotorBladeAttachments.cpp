@@ -24,70 +24,29 @@
 */
 
 #include "CCPACSRotorBladeAttachments.h"
-#include "CCPACSRotor.h"
+#include "CCPACSRotorBladeAttachment.h"
+#include "CCPACSRotorHub.h"
 #include "CTiglError.h"
-#include <iostream>
-#include <sstream>
 
 namespace tigl
 {
 
 // Constructor
-CCPACSRotorBladeAttachments::CCPACSRotorBladeAttachments(CCPACSRotor* rotor)
-    : rotor(rotor)
-{
-    Cleanup();
-}
-
-// Destructor
-CCPACSRotorBladeAttachments::~CCPACSRotorBladeAttachments(void)
-{
-    Cleanup();
-}
-
-// Cleanup routine
-void CCPACSRotorBladeAttachments::Cleanup(void)
-{
-    for (CCPACSRotorBladeAttachmentContainer::size_type i = 0; i < rotorBladeAttachments.size(); i++) {
-        delete rotorBladeAttachments[i];
-    }
-    rotorBladeAttachments.clear();
-}
+CCPACSRotorBladeAttachments::CCPACSRotorBladeAttachments(CCPACSRotorHub* parent)
+    : generated::CPACSRotorBladeAttachments(parent) {}
 
 // Invalidates internal state
-void CCPACSRotorBladeAttachments::Invalidate(void)
+void CCPACSRotorBladeAttachments::Invalidate()
 {
     for (int i = 1; i <= GetRotorBladeAttachmentCount(); i++) {
         GetRotorBladeAttachment(i).Invalidate();
     }
 }
 
-// Read CPACS rotorBladeAttachments elements
-void CCPACSRotorBladeAttachments::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string rotorBladeAttachmentsXPath, const std::string rotorBladeAttachmentElementName)
-{
-    Cleanup();
-
-    /* Get rotorBladeAttachment element count */
-    int elementCount;
-    if (tixiGetNamedChildrenCount(tixiHandle, rotorBladeAttachmentsXPath.c_str(), rotorBladeAttachmentElementName.c_str(), &elementCount) != SUCCESS) {
-        throw CTiglError("XML error: tixiGetNamedChildrenCount failed in CCPACSRotorBladeAttachments::ReadCPACS", TIGL_XML_ERROR);
-    }
-
-    // Loop over all rotorBladeAttachment elements
-    for (int i = 1; i <= elementCount; i++) {
-        CCPACSRotorBladeAttachment* rotorBladeAttachment = new CCPACSRotorBladeAttachment(rotor);
-        rotorBladeAttachments.push_back(rotorBladeAttachment);
-
-        std::ostringstream xpath;
-        xpath << rotorBladeAttachmentsXPath << "/" << rotorBladeAttachmentElementName << "[" << i << "]";
-        rotorBladeAttachment->ReadCPACS(tixiHandle, xpath.str());
-    }
-}
-
 // Returns the total count of rotor blade attachments in a rotor hub
-int CCPACSRotorBladeAttachments::GetRotorBladeAttachmentCount(void) const
+int CCPACSRotorBladeAttachments::GetRotorBladeAttachmentCount() const
 {
-    return static_cast<int>(rotorBladeAttachments.size());
+    return static_cast<int>(m_rotorBladeAttachment.size());
 }
 
 // Returns the rotor blade attachment for a given index.
@@ -97,19 +56,19 @@ CCPACSRotorBladeAttachment& CCPACSRotorBladeAttachments::GetRotorBladeAttachment
     if (index < 0 || index >= GetRotorBladeAttachmentCount()) {
         throw CTiglError("Error: Invalid index in CCPACSRotorBladeAttachments::GetRotorBladeAttachment", TIGL_INDEX_ERROR);
     }
-    return (*rotorBladeAttachments[index]);
+    return *m_rotorBladeAttachment[index];
 }
 
 // Returns the parent rotor
-CCPACSRotor& CCPACSRotorBladeAttachments::GetRotor(void) const
+CCPACSRotor& CCPACSRotorBladeAttachments::GetRotor() const
 {
-    return *rotor;
+    return *m_parent->GetParent();
 }
 
 // Returns the parent configuration
-CCPACSConfiguration& CCPACSRotorBladeAttachments::GetConfiguration(void) const
+CCPACSConfiguration& CCPACSRotorBladeAttachments::GetConfiguration() const
 {
-    return rotor->GetConfiguration();
+    return m_parent->GetConfiguration();
 }
 
 } // end namespace tigl

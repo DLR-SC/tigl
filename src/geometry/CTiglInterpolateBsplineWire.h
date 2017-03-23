@@ -33,11 +33,11 @@
 
 namespace tigl 
 {
-
+// TODO(bgruber): prefixed _ as these enum values name clash with the one's of enum TiglContinuity
 enum ETiglContinuity
 {
-    C0,
-    C1
+    _C0,
+    _C1
 };
 
 class CTiglInterpolateBsplineWire : public ITiglWireAlgorithm
@@ -45,10 +45,10 @@ class CTiglInterpolateBsplineWire : public ITiglWireAlgorithm
 
 public:
     // Constructor
-    TIGL_EXPORT CTiglInterpolateBsplineWire(void);
+    TIGL_EXPORT CTiglInterpolateBsplineWire();
 
     // Destructor
-    TIGL_EXPORT virtual ~CTiglInterpolateBsplineWire(void);
+    TIGL_EXPORT virtual ~CTiglInterpolateBsplineWire();
 
     // Builds the wire from the given points
     TIGL_EXPORT virtual TopoDS_Wire BuildWire(const CPointContainer& points, bool forceClosed = false) const;
@@ -58,7 +58,7 @@ public:
     TIGL_EXPORT virtual void setEndpointContinuity(enum ETiglContinuity cont) { continuity = cont; }
 
     // Returns the algorithm code identifier for an algorithm
-    TIGL_EXPORT virtual TiglAlgorithmCode GetAlgorithmCode(void) const;
+    TIGL_EXPORT virtual TiglAlgorithmCode GetAlgorithmCode() const;
 
     // Returns the point on the wire with the smallest x value
     TIGL_EXPORT virtual gp_Pnt GetPointWithMinX(const CPointContainer& points) const;
