@@ -34,7 +34,7 @@ namespace tigl
                 m_type.ReadCPACS(tixiHandle, xpath + "/type");
             }
             else {
-                LOG(ERROR) << "Required element type is missing";
+                LOG(ERROR) << "Required element type is missing at xpath " << xpath;
             }
             
             // read element referenceLength
@@ -42,7 +42,7 @@ namespace tigl
                 m_referenceLength = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/referenceLength");
             }
             else {
-                LOG(ERROR) << "Required element referenceLength is missing";
+                LOG(ERROR) << "Required element referenceLength is missing at xpath " << xpath;
             }
             
             // read element multiplier
@@ -50,7 +50,7 @@ namespace tigl
                 m_multiplier = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/multiplier");
             }
             else {
-                LOG(ERROR) << "Required element multiplier is missing";
+                LOG(ERROR) << "Required element multiplier is missing at xpath " << xpath;
             }
             
         }

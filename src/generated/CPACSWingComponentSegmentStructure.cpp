@@ -48,7 +48,7 @@ namespace tigl
                 m_upperShell.ReadCPACS(tixiHandle, xpath + "/upperShell");
             }
             else {
-                LOG(ERROR) << "Required element upperShell is missing";
+                LOG(ERROR) << "Required element upperShell is missing at xpath " << xpath;
             }
             
             // read element lowerShell
@@ -56,7 +56,7 @@ namespace tigl
                 m_lowerShell.ReadCPACS(tixiHandle, xpath + "/lowerShell");
             }
             else {
-                LOG(ERROR) << "Required element lowerShell is missing";
+                LOG(ERROR) << "Required element lowerShell is missing at xpath " << xpath;
             }
             
             // read element ribsDefinitions

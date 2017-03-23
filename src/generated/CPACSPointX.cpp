@@ -39,7 +39,7 @@ namespace tigl
                 m_x = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/x");
             }
             else {
-                LOG(ERROR) << "Required element x is missing";
+                LOG(ERROR) << "Required element x is missing at xpath " << xpath;
             }
             
         }

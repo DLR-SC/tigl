@@ -39,7 +39,7 @@ namespace tigl
                 m_name = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
             }
             else {
-                LOG(ERROR) << "Required element name is missing";
+                LOG(ERROR) << "Required element name is missing at xpath " << xpath;
             }
             
             // read element description
@@ -52,7 +52,7 @@ namespace tigl
                 m_length = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/length");
             }
             else {
-                LOG(ERROR) << "Required element length is missing";
+                LOG(ERROR) << "Required element length is missing at xpath " << xpath;
             }
             
             // read element sweepAngle
@@ -60,7 +60,7 @@ namespace tigl
                 m_sweepAngle = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/sweepAngle");
             }
             else {
-                LOG(ERROR) << "Required element sweepAngle is missing";
+                LOG(ERROR) << "Required element sweepAngle is missing at xpath " << xpath;
             }
             
             // read element dihedralAngle
@@ -68,7 +68,7 @@ namespace tigl
                 m_dihedralAngle = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/dihedralAngle");
             }
             else {
-                LOG(ERROR) << "Required element dihedralAngle is missing";
+                LOG(ERROR) << "Required element dihedralAngle is missing at xpath " << xpath;
             }
             
             // read element fromSectionUID
@@ -81,7 +81,7 @@ namespace tigl
                 m_toSectionUID = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/toSectionUID");
             }
             else {
-                LOG(ERROR) << "Required element toSectionUID is missing";
+                LOG(ERROR) << "Required element toSectionUID is missing at xpath " << xpath;
             }
             
         }

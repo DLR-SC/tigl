@@ -34,7 +34,7 @@ namespace tigl
                 m_tangentModulus = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/tangentModulus");
             }
             else {
-                LOG(ERROR) << "Required element tangentModulus is missing";
+                LOG(ERROR) << "Required element tangentModulus is missing at xpath " << xpath;
             }
             
             // read element trueStress
@@ -42,7 +42,7 @@ namespace tigl
                 m_trueStress = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/trueStress");
             }
             else {
-                LOG(ERROR) << "Required element trueStress is missing";
+                LOG(ERROR) << "Required element trueStress is missing at xpath " << xpath;
             }
             
         }

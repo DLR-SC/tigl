@@ -47,7 +47,7 @@ namespace tigl
                 m_ribReference = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/ribReference");
             }
             else {
-                LOG(ERROR) << "Required element ribReference is missing";
+                LOG(ERROR) << "Required element ribReference is missing at xpath " << xpath;
             }
             
             // read element ribStart
@@ -55,7 +55,7 @@ namespace tigl
                 m_ribStart = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/ribStart");
             }
             else {
-                LOG(ERROR) << "Required element ribStart is missing";
+                LOG(ERROR) << "Required element ribStart is missing at xpath " << xpath;
             }
             
             // read element ribEnd
@@ -63,7 +63,7 @@ namespace tigl
                 m_ribEnd = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/ribEnd");
             }
             else {
-                LOG(ERROR) << "Required element ribEnd is missing";
+                LOG(ERROR) << "Required element ribEnd is missing at xpath " << xpath;
             }
             
             // read element ribCrossingBehaviour
@@ -71,7 +71,7 @@ namespace tigl
                 m_ribCrossingBehaviour.ReadCPACS(tixiHandle, xpath + "/ribCrossingBehaviour");
             }
             else {
-                LOG(ERROR) << "Required element ribCrossingBehaviour is missing";
+                LOG(ERROR) << "Required element ribCrossingBehaviour is missing at xpath " << xpath;
             }
             
             // read element ribRotation
@@ -79,7 +79,7 @@ namespace tigl
                 m_ribRotation.ReadCPACS(tixiHandle, xpath + "/ribRotation");
             }
             else {
-                LOG(ERROR) << "Required element ribRotation is missing";
+                LOG(ERROR) << "Required element ribRotation is missing at xpath " << xpath;
             }
             
             // read element etaStart

@@ -34,7 +34,7 @@ namespace tigl
                 m_name = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
             }
             else {
-                LOG(ERROR) << "Required element name is missing";
+                LOG(ERROR) << "Required element name is missing at xpath " << xpath;
             }
             
             // read element version
@@ -42,7 +42,7 @@ namespace tigl
                 m_version = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/version");
             }
             else {
-                LOG(ERROR) << "Required element version is missing";
+                LOG(ERROR) << "Required element version is missing at xpath " << xpath;
             }
             
         }

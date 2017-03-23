@@ -34,7 +34,7 @@ namespace tigl
                 m_uID = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
             }
             else {
-                LOG(ERROR) << "Required attribute uID is missing";
+                LOG(ERROR) << "Required attribute uID is missing at xpath " << xpath;
             }
             
             // read element name
@@ -42,7 +42,7 @@ namespace tigl
                 m_name = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
             }
             else {
-                LOG(ERROR) << "Required element name is missing";
+                LOG(ERROR) << "Required element name is missing at xpath " << xpath;
             }
             
             // read element description
@@ -55,7 +55,7 @@ namespace tigl
                 m_guideCurveProfileUID = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/guideCurveProfileUID");
             }
             else {
-                LOG(ERROR) << "Required element guideCurveProfileUID is missing";
+                LOG(ERROR) << "Required element guideCurveProfileUID is missing at xpath " << xpath;
             }
             
             // read element fromGuideCurveUID
@@ -101,7 +101,7 @@ namespace tigl
                 m_toRelativeCircumference = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/toRelativeCircumference");
             }
             else {
-                LOG(ERROR) << "Required element toRelativeCircumference is missing";
+                LOG(ERROR) << "Required element toRelativeCircumference is missing at xpath " << xpath;
             }
             
             // read element tangent

@@ -46,7 +46,7 @@ namespace tigl
                 m_uID = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
             }
             else {
-                LOG(ERROR) << "Required attribute uID is missing";
+                LOG(ERROR) << "Required attribute uID is missing at xpath " << xpath;
             }
             
             // read element xsi
@@ -54,7 +54,7 @@ namespace tigl
                 m_xsi = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/xsi");
             }
             else {
-                LOG(ERROR) << "Required element xsi is missing";
+                LOG(ERROR) << "Required element xsi is missing at xpath " << xpath;
             }
             
             // read element eta

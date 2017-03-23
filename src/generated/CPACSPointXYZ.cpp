@@ -39,7 +39,7 @@ namespace tigl
                 m_x = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/x");
             }
             else {
-                LOG(ERROR) << "Required element x is missing";
+                LOG(ERROR) << "Required element x is missing at xpath " << xpath;
             }
             
             // read element y
@@ -47,7 +47,7 @@ namespace tigl
                 m_y = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/y");
             }
             else {
-                LOG(ERROR) << "Required element y is missing";
+                LOG(ERROR) << "Required element y is missing at xpath " << xpath;
             }
             
             // read element z
@@ -55,7 +55,7 @@ namespace tigl
                 m_z = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/z");
             }
             else {
-                LOG(ERROR) << "Required element z is missing";
+                LOG(ERROR) << "Required element z is missing at xpath " << xpath;
             }
             
         }

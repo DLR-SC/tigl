@@ -60,7 +60,7 @@ namespace tigl
                 m_z = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/z");
             }
             else {
-                LOG(ERROR) << "Required element z is missing";
+                LOG(ERROR) << "Required element z is missing at xpath " << xpath;
             }
             
         }

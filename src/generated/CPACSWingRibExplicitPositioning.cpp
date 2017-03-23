@@ -46,7 +46,7 @@ namespace tigl
                 m_startReference = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/startReference");
             }
             else {
-                LOG(ERROR) << "Required element startReference is missing";
+                LOG(ERROR) << "Required element startReference is missing at xpath " << xpath;
             }
             
             // read element etaStart
@@ -54,7 +54,7 @@ namespace tigl
                 m_etaStart = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/etaStart");
             }
             else {
-                LOG(ERROR) << "Required element etaStart is missing";
+                LOG(ERROR) << "Required element etaStart is missing at xpath " << xpath;
             }
             
             // read element endReference
@@ -62,7 +62,7 @@ namespace tigl
                 m_endReference = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/endReference");
             }
             else {
-                LOG(ERROR) << "Required element endReference is missing";
+                LOG(ERROR) << "Required element endReference is missing at xpath " << xpath;
             }
             
             // read element etaEnd
@@ -70,7 +70,7 @@ namespace tigl
                 m_etaEnd = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/etaEnd");
             }
             else {
-                LOG(ERROR) << "Required element etaEnd is missing";
+                LOG(ERROR) << "Required element etaEnd is missing at xpath " << xpath;
             }
             
         }

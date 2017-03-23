@@ -44,7 +44,7 @@ namespace tigl
                 m_thickness = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/thickness");
             }
             else {
-                LOG(ERROR) << "Required element thickness is missing";
+                LOG(ERROR) << "Required element thickness is missing at xpath " << xpath;
             }
             
             // read element phi
@@ -52,7 +52,7 @@ namespace tigl
                 m_phi = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/phi");
             }
             else {
-                LOG(ERROR) << "Required element phi is missing";
+                LOG(ERROR) << "Required element phi is missing at xpath " << xpath;
             }
             
             // read element materialUID
@@ -60,7 +60,7 @@ namespace tigl
                 m_materialUID = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/materialUID");
             }
             else {
-                LOG(ERROR) << "Required element materialUID is missing";
+                LOG(ERROR) << "Required element materialUID is missing at xpath " << xpath;
             }
             
         }

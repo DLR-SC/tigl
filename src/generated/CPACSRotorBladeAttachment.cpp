@@ -75,7 +75,7 @@ namespace tigl
                 m_rotorBladeUID = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/rotorBladeUID");
             }
             else {
-                LOG(ERROR) << "Required element rotorBladeUID is missing";
+                LOG(ERROR) << "Required element rotorBladeUID is missing at xpath " << xpath;
             }
             
             // read element azimuthAngles

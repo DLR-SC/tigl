@@ -34,7 +34,7 @@ namespace tigl
                 m_psi.ReadCPACS(tixiHandle, xpath + "/psi");
             }
             else {
-                LOG(ERROR) << "Required element psi is missing";
+                LOG(ERROR) << "Required element psi is missing at xpath " << xpath;
             }
             
             // read element upperN1
@@ -42,7 +42,7 @@ namespace tigl
                 m_upperN1 = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/upperN1");
             }
             else {
-                LOG(ERROR) << "Required element upperN1 is missing";
+                LOG(ERROR) << "Required element upperN1 is missing at xpath " << xpath;
             }
             
             // read element upperN2
@@ -50,7 +50,7 @@ namespace tigl
                 m_upperN2 = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/upperN2");
             }
             else {
-                LOG(ERROR) << "Required element upperN2 is missing";
+                LOG(ERROR) << "Required element upperN2 is missing at xpath " << xpath;
             }
             
             // read element upperB
@@ -58,7 +58,7 @@ namespace tigl
                 m_upperB.ReadCPACS(tixiHandle, xpath + "/upperB");
             }
             else {
-                LOG(ERROR) << "Required element upperB is missing";
+                LOG(ERROR) << "Required element upperB is missing at xpath " << xpath;
             }
             
             // read element lowerN1
@@ -66,7 +66,7 @@ namespace tigl
                 m_lowerN1 = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/lowerN1");
             }
             else {
-                LOG(ERROR) << "Required element lowerN1 is missing";
+                LOG(ERROR) << "Required element lowerN1 is missing at xpath " << xpath;
             }
             
             // read element lowerN2
@@ -74,7 +74,7 @@ namespace tigl
                 m_lowerN2 = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/lowerN2");
             }
             else {
-                LOG(ERROR) << "Required element lowerN2 is missing";
+                LOG(ERROR) << "Required element lowerN2 is missing at xpath " << xpath;
             }
             
             // read element lowerB
@@ -82,7 +82,7 @@ namespace tigl
                 m_lowerB.ReadCPACS(tixiHandle, xpath + "/lowerB");
             }
             else {
-                LOG(ERROR) << "Required element lowerB is missing";
+                LOG(ERROR) << "Required element lowerB is missing at xpath " << xpath;
             }
             
             // read element trailingEdgeThickness

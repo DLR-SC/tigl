@@ -34,7 +34,7 @@ namespace tigl
                 m_header.ReadCPACS(tixiHandle, xpath + "/header");
             }
             else {
-                LOG(ERROR) << "Required element header is missing";
+                LOG(ERROR) << "Required element header is missing at xpath " << xpath;
             }
             
             // read element vehicles

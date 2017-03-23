@@ -74,7 +74,7 @@ namespace tigl
                 m_web1.ReadCPACS(tixiHandle, xpath + "/web1");
             }
             else {
-                LOG(ERROR) << "Required element web1 is missing";
+                LOG(ERROR) << "Required element web1 is missing at xpath " << xpath;
             }
             
             // read element web2
@@ -110,7 +110,7 @@ namespace tigl
                 m_rotation = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/rotation");
             }
             else {
-                LOG(ERROR) << "Required element rotation is missing";
+                LOG(ERROR) << "Required element rotation is missing at xpath " << xpath;
             }
             
         }

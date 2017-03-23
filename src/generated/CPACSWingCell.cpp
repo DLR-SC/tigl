@@ -50,7 +50,7 @@ namespace tigl
                 m_uID = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
             }
             else {
-                LOG(ERROR) << "Required attribute uID is missing";
+                LOG(ERROR) << "Required attribute uID is missing at xpath " << xpath;
             }
             
             // read element skin
@@ -58,7 +58,7 @@ namespace tigl
                 m_skin.ReadCPACS(tixiHandle, xpath + "/skin");
             }
             else {
-                LOG(ERROR) << "Required element skin is missing";
+                LOG(ERROR) << "Required element skin is missing at xpath " << xpath;
             }
             
             // read element positioningLeadingEdge
@@ -66,7 +66,7 @@ namespace tigl
                 m_positioningLeadingEdge.ReadCPACS(tixiHandle, xpath + "/positioningLeadingEdge");
             }
             else {
-                LOG(ERROR) << "Required element positioningLeadingEdge is missing";
+                LOG(ERROR) << "Required element positioningLeadingEdge is missing at xpath " << xpath;
             }
             
             // read element positioningTrailingEdge
@@ -74,7 +74,7 @@ namespace tigl
                 m_positioningTrailingEdge.ReadCPACS(tixiHandle, xpath + "/positioningTrailingEdge");
             }
             else {
-                LOG(ERROR) << "Required element positioningTrailingEdge is missing";
+                LOG(ERROR) << "Required element positioningTrailingEdge is missing at xpath " << xpath;
             }
             
             // read element positioningInnerBorder
@@ -82,7 +82,7 @@ namespace tigl
                 m_positioningInnerBorder.ReadCPACS(tixiHandle, xpath + "/positioningInnerBorder");
             }
             else {
-                LOG(ERROR) << "Required element positioningInnerBorder is missing";
+                LOG(ERROR) << "Required element positioningInnerBorder is missing at xpath " << xpath;
             }
             
             // read element positioningOuterBorder
@@ -90,7 +90,7 @@ namespace tigl
                 m_positioningOuterBorder.ReadCPACS(tixiHandle, xpath + "/positioningOuterBorder");
             }
             else {
-                LOG(ERROR) << "Required element positioningOuterBorder is missing";
+                LOG(ERROR) << "Required element positioningOuterBorder is missing at xpath " << xpath;
             }
             
         }

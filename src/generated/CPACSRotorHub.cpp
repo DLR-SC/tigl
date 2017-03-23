@@ -67,7 +67,7 @@ namespace tigl
                 m_rotorBladeAttachments.ReadCPACS(tixiHandle, xpath + "/rotorBladeAttachments");
             }
             else {
-                LOG(ERROR) << "Required element rotorBladeAttachments is missing";
+                LOG(ERROR) << "Required element rotorBladeAttachments is missing at xpath " << xpath;
             }
             
         }
