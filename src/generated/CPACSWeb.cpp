@@ -34,7 +34,7 @@ namespace tigl
                 m_material.ReadCPACS(tixiHandle, xpath + "/material");
             }
             else {
-                LOG(ERROR) << "Required element material is missing";
+                LOG(ERROR) << "Required element material is missing at xpath " << xpath;
             }
             
             // read element relPos
@@ -42,7 +42,7 @@ namespace tigl
                 m_relPos = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/relPos");
             }
             else {
-                LOG(ERROR) << "Required element relPos is missing";
+                LOG(ERROR) << "Required element relPos is missing at xpath " << xpath;
             }
             
         }

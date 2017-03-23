@@ -34,7 +34,7 @@ namespace tigl
                 m_uID = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
             }
             else {
-                LOG(ERROR) << "Required attribute uID is missing";
+                LOG(ERROR) << "Required attribute uID is missing at xpath " << xpath;
             }
             
             // read element name
@@ -42,7 +42,7 @@ namespace tigl
                 m_name = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
             }
             else {
-                LOG(ERROR) << "Required element name is missing";
+                LOG(ERROR) << "Required element name is missing at xpath " << xpath;
             }
             
             // read element description
@@ -55,7 +55,7 @@ namespace tigl
                 m_airfoilUID = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/airfoilUID");
             }
             else {
-                LOG(ERROR) << "Required element airfoilUID is missing";
+                LOG(ERROR) << "Required element airfoilUID is missing at xpath " << xpath;
             }
             
             // read element transformation
@@ -63,7 +63,7 @@ namespace tigl
                 m_transformation.ReadCPACS(tixiHandle, xpath + "/transformation");
             }
             else {
-                LOG(ERROR) << "Required element transformation is missing";
+                LOG(ERROR) << "Required element transformation is missing at xpath " << xpath;
             }
             
         }

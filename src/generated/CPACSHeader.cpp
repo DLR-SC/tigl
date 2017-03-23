@@ -34,7 +34,7 @@ namespace tigl
                 m_name = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
             }
             else {
-                LOG(ERROR) << "Required element name is missing";
+                LOG(ERROR) << "Required element name is missing at xpath " << xpath;
             }
             
             // read element description
@@ -47,7 +47,7 @@ namespace tigl
                 m_creator = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/creator");
             }
             else {
-                LOG(ERROR) << "Required element creator is missing";
+                LOG(ERROR) << "Required element creator is missing at xpath " << xpath;
             }
             
             // read element timestamp
@@ -55,7 +55,7 @@ namespace tigl
                 m_timestamp = tixihelper::TixiGetElement<std::time_t>(tixiHandle, xpath + "/timestamp");
             }
             else {
-                LOG(ERROR) << "Required element timestamp is missing";
+                LOG(ERROR) << "Required element timestamp is missing at xpath " << xpath;
             }
             
             // read element version
@@ -63,7 +63,7 @@ namespace tigl
                 m_version = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/version");
             }
             else {
-                LOG(ERROR) << "Required element version is missing";
+                LOG(ERROR) << "Required element version is missing at xpath " << xpath;
             }
             
             // read element cpacsVersion
@@ -71,7 +71,7 @@ namespace tigl
                 m_cpacsVersion = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/cpacsVersion");
             }
             else {
-                LOG(ERROR) << "Required element cpacsVersion is missing";
+                LOG(ERROR) << "Required element cpacsVersion is missing at xpath " << xpath;
             }
             
             // read element updates

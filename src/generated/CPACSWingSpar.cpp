@@ -48,7 +48,7 @@ namespace tigl
                 m_sparPositions.ReadCPACS(tixiHandle, xpath + "/sparPositions");
             }
             else {
-                LOG(ERROR) << "Required element sparPositions is missing";
+                LOG(ERROR) << "Required element sparPositions is missing at xpath " << xpath;
             }
             
             // read element sparSegments
@@ -56,7 +56,7 @@ namespace tigl
                 m_sparSegments.ReadCPACS(tixiHandle, xpath + "/sparSegments");
             }
             else {
-                LOG(ERROR) << "Required element sparSegments is missing";
+                LOG(ERROR) << "Required element sparSegments is missing at xpath " << xpath;
             }
             
         }

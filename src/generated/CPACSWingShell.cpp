@@ -46,7 +46,7 @@ namespace tigl
                 m_uID = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
             }
             else {
-                LOG(ERROR) << "Required attribute uID is missing";
+                LOG(ERROR) << "Required attribute uID is missing at xpath " << xpath;
             }
             
             // read element skin
@@ -54,7 +54,7 @@ namespace tigl
                 m_skin.ReadCPACS(tixiHandle, xpath + "/skin");
             }
             else {
-                LOG(ERROR) << "Required element skin is missing";
+                LOG(ERROR) << "Required element skin is missing at xpath " << xpath;
             }
             
             // read element cells

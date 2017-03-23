@@ -34,7 +34,7 @@ namespace tigl
                 m_uID = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
             }
             else {
-                LOG(ERROR) << "Required attribute uID is missing";
+                LOG(ERROR) << "Required attribute uID is missing at xpath " << xpath;
             }
             
             // read element fromEta
@@ -42,7 +42,7 @@ namespace tigl
                 m_fromEta = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/fromEta");
             }
             else {
-                LOG(ERROR) << "Required element fromEta is missing";
+                LOG(ERROR) << "Required element fromEta is missing at xpath " << xpath;
             }
             
             // read element toEta
@@ -50,7 +50,7 @@ namespace tigl
                 m_toEta = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/toEta");
             }
             else {
-                LOG(ERROR) << "Required element toEta is missing";
+                LOG(ERROR) << "Required element toEta is missing at xpath " << xpath;
             }
             
             // read element upperCap
@@ -58,7 +58,7 @@ namespace tigl
                 m_upperCap.ReadCPACS(tixiHandle, xpath + "/upperCap");
             }
             else {
-                LOG(ERROR) << "Required element upperCap is missing";
+                LOG(ERROR) << "Required element upperCap is missing at xpath " << xpath;
             }
             
             // read element lowerCap
@@ -66,7 +66,7 @@ namespace tigl
                 m_lowerCap.ReadCPACS(tixiHandle, xpath + "/lowerCap");
             }
             else {
-                LOG(ERROR) << "Required element lowerCap is missing";
+                LOG(ERROR) << "Required element lowerCap is missing at xpath " << xpath;
             }
             
             // read element web1
@@ -74,7 +74,7 @@ namespace tigl
                 m_web1.ReadCPACS(tixiHandle, xpath + "/web1");
             }
             else {
-                LOG(ERROR) << "Required element web1 is missing";
+                LOG(ERROR) << "Required element web1 is missing at xpath " << xpath;
             }
             
             // read element web2
@@ -96,7 +96,7 @@ namespace tigl
                 m_rotation = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/rotation");
             }
             else {
-                LOG(ERROR) << "Required element rotation is missing";
+                LOG(ERROR) << "Required element rotation is missing at xpath " << xpath;
             }
             
         }

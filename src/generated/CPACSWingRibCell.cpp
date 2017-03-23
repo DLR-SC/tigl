@@ -34,7 +34,7 @@ namespace tigl
                 m_uID = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
             }
             else {
-                LOG(ERROR) << "Required attribute uID is missing";
+                LOG(ERROR) << "Required attribute uID is missing at xpath " << xpath;
             }
             
             // read element fromRib
@@ -42,7 +42,7 @@ namespace tigl
                 m_fromRib = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/fromRib");
             }
             else {
-                LOG(ERROR) << "Required element fromRib is missing";
+                LOG(ERROR) << "Required element fromRib is missing at xpath " << xpath;
             }
             
             // read element toRib
@@ -50,7 +50,7 @@ namespace tigl
                 m_toRib = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/toRib");
             }
             else {
-                LOG(ERROR) << "Required element toRib is missing";
+                LOG(ERROR) << "Required element toRib is missing at xpath " << xpath;
             }
             
             // read element ribRotation
@@ -58,7 +58,7 @@ namespace tigl
                 m_ribRotation.ReadCPACS(tixiHandle, xpath + "/ribRotation");
             }
             else {
-                LOG(ERROR) << "Required element ribRotation is missing";
+                LOG(ERROR) << "Required element ribRotation is missing at xpath " << xpath;
             }
             
             // read element material
@@ -66,7 +66,7 @@ namespace tigl
                 m_material.ReadCPACS(tixiHandle, xpath + "/material");
             }
             else {
-                LOG(ERROR) << "Required element material is missing";
+                LOG(ERROR) << "Required element material is missing at xpath " << xpath;
             }
             
             // read element upperCap
@@ -74,7 +74,7 @@ namespace tigl
                 m_upperCap.ReadCPACS(tixiHandle, xpath + "/upperCap");
             }
             else {
-                LOG(ERROR) << "Required element upperCap is missing";
+                LOG(ERROR) << "Required element upperCap is missing at xpath " << xpath;
             }
             
             // read element lowerCap
@@ -82,7 +82,7 @@ namespace tigl
                 m_lowerCap.ReadCPACS(tixiHandle, xpath + "/lowerCap");
             }
             else {
-                LOG(ERROR) << "Required element lowerCap is missing";
+                LOG(ERROR) << "Required element lowerCap is missing at xpath " << xpath;
             }
             
         }

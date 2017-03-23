@@ -34,7 +34,7 @@ namespace tigl
                 m_uID = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
             }
             else {
-                LOG(ERROR) << "Required attribute uID is missing";
+                LOG(ERROR) << "Required attribute uID is missing at xpath " << xpath;
             }
             
             // read element name
@@ -52,7 +52,7 @@ namespace tigl
                 m_positionX = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/positionX");
             }
             else {
-                LOG(ERROR) << "Required element positionX is missing";
+                LOG(ERROR) << "Required element positionX is missing at xpath " << xpath;
             }
             
             // read element referenceY
@@ -60,7 +60,7 @@ namespace tigl
                 m_referenceY = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/referenceY");
             }
             else {
-                LOG(ERROR) << "Required element referenceY is missing";
+                LOG(ERROR) << "Required element referenceY is missing at xpath " << xpath;
             }
             
             // read element referenceZ
@@ -68,7 +68,7 @@ namespace tigl
                 m_referenceZ = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/referenceZ");
             }
             else {
-                LOG(ERROR) << "Required element referenceZ is missing";
+                LOG(ERROR) << "Required element referenceZ is missing at xpath " << xpath;
             }
             
             // read element referenceAngle
@@ -76,7 +76,7 @@ namespace tigl
                 m_referenceAngle = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/referenceAngle");
             }
             else {
-                LOG(ERROR) << "Required element referenceAngle is missing";
+                LOG(ERROR) << "Required element referenceAngle is missing at xpath " << xpath;
             }
             
             // read element orientationVector
@@ -84,7 +84,7 @@ namespace tigl
                 m_orientationVector.ReadCPACS(tixiHandle, xpath + "/orientationVector");
             }
             else {
-                LOG(ERROR) << "Required element orientationVector is missing";
+                LOG(ERROR) << "Required element orientationVector is missing at xpath " << xpath;
             }
             
             // read element alignmentVector
@@ -106,7 +106,7 @@ namespace tigl
                 m_deltaY = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/deltaY");
             }
             else {
-                LOG(ERROR) << "Required element deltaY is missing";
+                LOG(ERROR) << "Required element deltaY is missing at xpath " << xpath;
             }
             
             // read element deltaZ
@@ -114,7 +114,7 @@ namespace tigl
                 m_deltaZ = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/deltaZ");
             }
             else {
-                LOG(ERROR) << "Required element deltaZ is missing";
+                LOG(ERROR) << "Required element deltaZ is missing at xpath " << xpath;
             }
             
             // read element deltaY1
@@ -132,7 +132,7 @@ namespace tigl
                 m_filletRadius = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/filletRadius");
             }
             else {
-                LOG(ERROR) << "Required element filletRadius is missing";
+                LOG(ERROR) << "Required element filletRadius is missing at xpath " << xpath;
             }
             
             // read element cutoutType
@@ -140,7 +140,7 @@ namespace tigl
                 m_cutoutType.ReadCPACS(tixiHandle, xpath + "/cutoutType");
             }
             else {
-                LOG(ERROR) << "Required element cutoutType is missing";
+                LOG(ERROR) << "Required element cutoutType is missing at xpath " << xpath;
             }
             
         }

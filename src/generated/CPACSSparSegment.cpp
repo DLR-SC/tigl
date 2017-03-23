@@ -47,7 +47,7 @@ namespace tigl
                 m_uID = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
             }
             else {
-                LOG(ERROR) << "Required attribute uID is missing";
+                LOG(ERROR) << "Required attribute uID is missing at xpath " << xpath;
             }
             
             // read element name
@@ -55,7 +55,7 @@ namespace tigl
                 m_name = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
             }
             else {
-                LOG(ERROR) << "Required element name is missing";
+                LOG(ERROR) << "Required element name is missing at xpath " << xpath;
             }
             
             // read element description
@@ -63,7 +63,7 @@ namespace tigl
                 m_description = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
             }
             else {
-                LOG(ERROR) << "Required element description is missing";
+                LOG(ERROR) << "Required element description is missing at xpath " << xpath;
             }
             
             // read element sparPositionUIDs
@@ -71,7 +71,7 @@ namespace tigl
                 m_sparPositionUIDs.ReadCPACS(tixiHandle, xpath + "/sparPositionUIDs");
             }
             else {
-                LOG(ERROR) << "Required element sparPositionUIDs is missing";
+                LOG(ERROR) << "Required element sparPositionUIDs is missing at xpath " << xpath;
             }
             
             // read element sparCrossSection
@@ -79,7 +79,7 @@ namespace tigl
                 m_sparCrossSection.ReadCPACS(tixiHandle, xpath + "/sparCrossSection");
             }
             else {
-                LOG(ERROR) << "Required element sparCrossSection is missing";
+                LOG(ERROR) << "Required element sparCrossSection is missing at xpath " << xpath;
             }
             
         }

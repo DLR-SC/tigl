@@ -34,7 +34,7 @@ namespace tigl
                 m_base = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath);
             }
             else {
-                LOG(ERROR) << "Required fundamental type base class  is missing";
+                LOG(ERROR) << "Required fundamental type base class  is missing at xpath " << xpath;
             }
             
             // read attribute format
@@ -42,7 +42,7 @@ namespace tigl
                 m_format = stringToCPACSLinkToFileType_format(tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "format"));
             }
             else {
-                LOG(ERROR) << "Required attribute format is missing";
+                LOG(ERROR) << "Required attribute format is missing at xpath " << xpath;
             }
             
         }

@@ -34,7 +34,7 @@ namespace tigl
                 m_rX.ReadCPACS(tixiHandle, xpath + "/rX");
             }
             else {
-                LOG(ERROR) << "Required element rX is missing";
+                LOG(ERROR) << "Required element rX is missing at xpath " << xpath;
             }
             
             // read element rY
@@ -42,7 +42,7 @@ namespace tigl
                 m_rY.ReadCPACS(tixiHandle, xpath + "/rY");
             }
             else {
-                LOG(ERROR) << "Required element rY is missing";
+                LOG(ERROR) << "Required element rY is missing at xpath " << xpath;
             }
             
             // read element rZ
@@ -50,7 +50,7 @@ namespace tigl
                 m_rZ.ReadCPACS(tixiHandle, xpath + "/rZ");
             }
             else {
-                LOG(ERROR) << "Required element rZ is missing";
+                LOG(ERROR) << "Required element rZ is missing at xpath " << xpath;
             }
             
         }

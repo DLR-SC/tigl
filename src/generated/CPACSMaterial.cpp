@@ -40,7 +40,7 @@ namespace tigl
                 m_name = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
             }
             else {
-                LOG(ERROR) << "Required element name is missing";
+                LOG(ERROR) << "Required element name is missing at xpath " << xpath;
             }
             
             // read element description
@@ -53,7 +53,7 @@ namespace tigl
                 m_rho = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/rho");
             }
             else {
-                LOG(ERROR) << "Required element rho is missing";
+                LOG(ERROR) << "Required element rho is missing at xpath " << xpath;
             }
             
             // read element k11
@@ -61,7 +61,7 @@ namespace tigl
                 m_k11 = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/k11");
             }
             else {
-                LOG(ERROR) << "Required element k11 is missing";
+                LOG(ERROR) << "Required element k11 is missing at xpath " << xpath;
             }
             
             // read element k12
@@ -69,7 +69,7 @@ namespace tigl
                 m_k12 = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/k12");
             }
             else {
-                LOG(ERROR) << "Required element k12 is missing";
+                LOG(ERROR) << "Required element k12 is missing at xpath " << xpath;
             }
             
             // read element maxStrain

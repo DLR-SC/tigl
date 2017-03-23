@@ -34,7 +34,7 @@ namespace tigl
                 m_tool.ReadCPACS(tixiHandle, xpath + "/tool");
             }
             else {
-                LOG(ERROR) << "Required element tool is missing";
+                LOG(ERROR) << "Required element tool is missing at xpath " << xpath;
             }
             
             // read element aircraftModelUID
@@ -42,7 +42,7 @@ namespace tigl
                 m_aircraftModelUID = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/aircraftModelUID");
             }
             else {
-                LOG(ERROR) << "Required element aircraftModelUID is missing";
+                LOG(ERROR) << "Required element aircraftModelUID is missing at xpath " << xpath;
             }
             
             // read element farField
@@ -50,7 +50,7 @@ namespace tigl
                 m_farField.ReadCPACS(tixiHandle, xpath + "/farField");
             }
             else {
-                LOG(ERROR) << "Required element farField is missing";
+                LOG(ERROR) << "Required element farField is missing at xpath " << xpath;
             }
             
         }

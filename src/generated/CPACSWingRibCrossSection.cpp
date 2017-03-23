@@ -46,7 +46,7 @@ namespace tigl
                 m_material.ReadCPACS(tixiHandle, xpath + "/material");
             }
             else {
-                LOG(ERROR) << "Required element material is missing";
+                LOG(ERROR) << "Required element material is missing at xpath " << xpath;
             }
             
             // read element ribRotation

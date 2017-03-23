@@ -34,7 +34,7 @@ namespace tigl
                 m_simpleContent = stringToCPACSGuideCurve_continuity_SimpleContent(tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/"));
             }
             else {
-                LOG(ERROR) << "Required simpleContent  is missing";
+                LOG(ERROR) << "Required simpleContent  is missing at xpath " << xpath;
             }
             
         }

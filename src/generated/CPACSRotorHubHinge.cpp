@@ -61,7 +61,7 @@ namespace tigl
                 m_transformation.ReadCPACS(tixiHandle, xpath + "/transformation");
             }
             else {
-                LOG(ERROR) << "Required element transformation is missing";
+                LOG(ERROR) << "Required element transformation is missing at xpath " << xpath;
             }
             
             // read element type
@@ -69,7 +69,7 @@ namespace tigl
                 m_type = stringToCPACSRotorHubHinge_type(tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/type"));
             }
             else {
-                LOG(ERROR) << "Required element type is missing";
+                LOG(ERROR) << "Required element type is missing at xpath " << xpath;
             }
             
             // read element neutralPosition

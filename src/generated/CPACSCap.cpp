@@ -34,7 +34,7 @@ namespace tigl
                 m_area = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/area");
             }
             else {
-                LOG(ERROR) << "Required element area is missing";
+                LOG(ERROR) << "Required element area is missing at xpath " << xpath;
             }
             
             // read element material
@@ -42,7 +42,7 @@ namespace tigl
                 m_material.ReadCPACS(tixiHandle, xpath + "/material");
             }
             else {
-                LOG(ERROR) << "Required element material is missing";
+                LOG(ERROR) << "Required element material is missing at xpath " << xpath;
             }
             
         }

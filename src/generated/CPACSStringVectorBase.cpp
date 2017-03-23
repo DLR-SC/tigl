@@ -34,7 +34,7 @@ namespace tigl
                 m_mapType = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "mapType");
             }
             else {
-                LOG(ERROR) << "Required attribute mapType is missing";
+                LOG(ERROR) << "Required attribute mapType is missing at xpath " << xpath;
             }
             
             // read attribute uncertaintyFunctionName
@@ -82,7 +82,7 @@ namespace tigl
                 m_simpleContent = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath);
             }
             else {
-                LOG(ERROR) << "Required simpleContent  is missing";
+                LOG(ERROR) << "Required simpleContent  is missing at xpath " << xpath;
             }
             
         }

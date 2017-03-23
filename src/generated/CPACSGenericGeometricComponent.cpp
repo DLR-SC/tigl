@@ -46,7 +46,7 @@ namespace tigl
                 m_uID = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
             }
             else {
-                LOG(ERROR) << "Required attribute uID is missing";
+                LOG(ERROR) << "Required attribute uID is missing at xpath " << xpath;
             }
             
             // read attribute symmetry
@@ -59,7 +59,7 @@ namespace tigl
                 m_name = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
             }
             else {
-                LOG(ERROR) << "Required element name is missing";
+                LOG(ERROR) << "Required element name is missing at xpath " << xpath;
             }
             
             // read element description
@@ -77,7 +77,7 @@ namespace tigl
                 m_transformation.ReadCPACS(tixiHandle, xpath + "/transformation");
             }
             else {
-                LOG(ERROR) << "Required element transformation is missing";
+                LOG(ERROR) << "Required element transformation is missing at xpath " << xpath;
             }
             
             // read element linkToFile
@@ -85,7 +85,7 @@ namespace tigl
                 m_linkToFile.ReadCPACS(tixiHandle, xpath + "/linkToFile");
             }
             else {
-                LOG(ERROR) << "Required element linkToFile is missing";
+                LOG(ERROR) << "Required element linkToFile is missing at xpath " << xpath;
             }
             
         }
