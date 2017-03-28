@@ -41,6 +41,7 @@
 #include <AIS_InteractiveContext.hxx>
 #include <V3d_View.hxx>
 #include <AIS_Shape.hxx>
+#include <Graphic3d_ShaderProgram.hxx>
 #if OCC_VERSION_HEX < 0x070000
 #include <Visual3d_Layer.hxx>
 #else
@@ -51,6 +52,7 @@
 class TopoDS_Shape;
 class gp_Pnt;
 class gp_Vec;
+class TIGLViewerContext;
 
 class QOCC_DECLSPEC TIGLViewerWidget : public QWidget
 {
@@ -90,14 +92,10 @@ public:
 public:
     TIGLViewerWidget(QWidget*);
 
-    TIGLViewerWidget( const Handle_AIS_InteractiveContext& aContext = NULL,
-                      QWidget *parent = NULL, 
-                      Qt::WindowFlags wflags = 0 );
-
     ~TIGLViewerWidget();
 
     // the scene context must be set before first use
-    void setContext(const Handle_AIS_InteractiveContext& aContext);
+    void setContext(TIGLViewerContext* aContext);
 
     Handle_V3d_View                  getView( void )    { return myView; }
 
@@ -146,11 +144,7 @@ public slots:
     void viewGrid();
     void viewReset();
     void setReset();
-    void eraseSelected();
     void setTransparency();
-    void setTransparency(int);
-    void setObjectsWireframe();
-    void setObjectsShading();
     void setObjectsColor();
     void setObjectsMaterial();
     bool makeScreenshot(const QString& filename, bool whiteBGEnabled = true, int width=0, int height=0, int quality=90);
@@ -172,7 +166,7 @@ private: // members
 
     Handle_V3d_View                 myView;
     Handle_V3d_Viewer               myViewer;
-    Handle_AIS_InteractiveContext   myContext;
+
 #if OCC_VERSION_HEX < 0x070000
     Handle_Visual3d_Layer           myLayer;
 #else
@@ -200,6 +194,7 @@ private: // members
     Qt::MouseButton                 myButtonFlags;
     QCursor                         myCrossCursor;
     QColor                          myBGColor;
+    TIGLViewerContext*              viewerContext;
 
 private: // methods
     void initialize();

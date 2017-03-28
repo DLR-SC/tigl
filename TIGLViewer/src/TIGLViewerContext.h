@@ -21,6 +21,8 @@
 #ifndef TIGLVIEWERCONTEXT_H
 #define TIGLVIEWERCONTEXT_H
 
+#include "tigl_internal.h"
+
 #include <AIS_Shape.hxx>
 #include <AIS_InteractiveContext.hxx>
 #include <V3d_Viewer.hxx>
@@ -28,6 +30,10 @@
 #include "TIGLViewer.h"
 #include "TIGLViewerColors.h"
 #include <QMetaType>
+#include <Standard_Version.hxx>
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(6,7,0)
+  #include <Graphic3d_ShaderProgram.hxx>
+#endif
 
 class TopoDS_Shape;
 class gp_Pnt;
@@ -83,6 +89,13 @@ public slots:
     void gridRect   ( void );
     void gridCirc   ( void );
     void wireFrame  ( bool );
+    void eraseSelected();
+    void setTransparency(int tr);
+    void setObjectsWireframe();
+    void setObjectsShading();
+    void setObjectsMaterial(Graphic3d_NameOfMaterial material);
+    void setReflectionlinesEnabled(bool);
+    void setObjectsColor(const QColor &color);
 
 signals:
 
@@ -96,7 +109,11 @@ private:
     Aspect_GridDrawMode             myGridMode;
     Quantity_NameOfColor            myGridColor;
     Quantity_NameOfColor            myGridTenthColor;
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(6,7,0)
+    Handle(Graphic3d_ShaderProgram) myShader;
+#endif
 
+    void initShaders();
 };
 
 Q_DECLARE_METATYPE(TIGLViewerContext*)

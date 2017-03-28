@@ -36,7 +36,8 @@
 
 #include "TIGLViewerInternal.h"
 #include "TIGLQAspectWindow.h"
-#include "TIGLViewerDocument.h"
+//#include "TIGLViewerDocument.h"
+#include "TIGLViewerContext.h"
 #include "TIGLViewerSettings.h"
 #include "ISession_Point.h"
 #include "ISession_Direction.h"
@@ -74,14 +75,7 @@
 #define TIGLVIEWER_ZOOM_STEP 1.10
 
 TIGLViewerWidget::TIGLViewerWidget(QWidget * parent)
-    : QWidget(parent)
-{
-    initialize();
-}
-
-TIGLViewerWidget::TIGLViewerWidget( const Handle(AIS_InteractiveContext)& aContext,
-                                    QWidget *parent, 
-                                    Qt::WindowFlags f ) :
+    : QWidget(parent),
     myView            ( NULL ),
     myViewer          ( NULL ),
 #if OCC_VERSION_HEX < 0x070000
@@ -98,11 +92,12 @@ TIGLViewerWidget::TIGLViewerWidget( const Handle(AIS_InteractiveContext)& aConte
     myPrecision       ( 0.001 ),
     myViewPrecision   ( 0.0 ),
     myKeyboardFlags   ( Qt::NoModifier ),
-    myButtonFlags     ( Qt::NoButton )
+    myButtonFlags     ( Qt::NoButton ),
+    viewerContext     (NULL)
 {
     initialize();
-    myContext = aContext;
 }
+
 
 void TIGLViewerWidget::initialize()
 {
@@ -163,17 +158,16 @@ TIGLViewerWidget::~TIGLViewerWidget()
 {
 }
 
-void TIGLViewerWidget::setContext(const Handle(AIS_InteractiveContext)& aContext)
+void TIGLViewerWidget::setContext(TIGLViewerContext* aContext)
 {
-    myContext = aContext;
+    viewerContext = aContext;
 }
 
 
 void TIGLViewerWidget::initializeOCC(const Handle(AIS_InteractiveContext)& aContext)
 {
     if (myView.IsNull()) {
-        myContext = aContext;
-        myViewer  = myContext->CurrentViewer();
+        myViewer  = aContext->CurrentViewer();
         myView    = myViewer->CreateView();
 
         Handle_Aspect_Window myWindow;
@@ -236,7 +230,7 @@ void TIGLViewerWidget::paintEvent ( QPaintEvent * /* e */)
 {
     if ( !myViewInitialized ) {
         if ( winId() ) {
-            initializeOCC( myContext );
+            initializeOCC( viewerContext->getContext() );
         }
     }
     if ( !myViewer.IsNull() ) {
@@ -297,6 +291,7 @@ void TIGLViewerWidget::mouseMoveEvent(QMouseEvent* e)
     Standard_Real X, Y, Z;
     
     myCurrentPoint = e->pos();
+    Handle(AIS_InteractiveContext) myContext = viewerContext->getContext();
     //Check if the grid is active and that we're snapping to it
     if ( myContext->CurrentViewer()->Grid()->IsActive() && myGridSnap ) {
         myView->ConvertToGrid( myCurrentPoint.x(),
@@ -354,7 +349,7 @@ void TIGLViewerWidget::wheelEvent ( QWheelEvent* e )
 void TIGLViewerWidget::keyPressEvent(QKeyEvent* e)
 {
     if (e->key() == Qt::Key_Delete) {
-        eraseSelected();
+        viewerContext->eraseSelected();
     }
     else {
         QWidget::keyPressEvent(e);
@@ -619,17 +614,6 @@ void TIGLViewerWidget::setBGImage(const QString& filename)
     }
 }
 
-void TIGLViewerWidget::eraseSelected()
-{
-    if (!myView.IsNull()) {
-        myContext->EraseSelected(Standard_False);
-
-        myContext->ClearCurrents();
-        myContext->UpdateCurrentViewer();
-    }
-}
-
-
 void TIGLViewerWidget::setTransparency()
 {
     bool ok;
@@ -639,59 +623,18 @@ void TIGLViewerWidget::setTransparency()
     dialog->setInputMode(QInputDialog::IntInput);
     connect(dialog, SIGNAL(intValueChanged(int)), this, SLOT(setTransparency(int)));
     transparency = dialog->getInt(this, tr("Select transparency level"), tr("Transparency:"), 25, 0, 100, 1, &ok);
-    setTransparency(transparency);
-}
-
-void TIGLViewerWidget::setTransparency(int tr)
-{
-    Standard_Real transparency = 0.1;
-    if ( (tr < 0) || (tr > 100)) {
-        return;
-    }
-    transparency = tr * 0.01;
-
-    if (!myView.IsNull()) {
-        for (myContext->InitCurrent(); myContext->MoreCurrent(); myContext->NextCurrent()) {
-            myContext->SetTransparency(myContext->Current(), transparency, Standard_True);
-        }
-    }
-}
-
-void TIGLViewerWidget::setObjectsWireframe()
-{
-    if (!myView.IsNull()) {
-        for (myContext->InitCurrent(); myContext->MoreCurrent(); myContext->NextCurrent()) {
-            myContext->SetDisplayMode(myContext->Current(), 0);
-        }
-    }
-}
-
-void TIGLViewerWidget::setObjectsShading()
-{
-    if (!myView.IsNull()) {
-        for (myContext->InitCurrent(); myContext->MoreCurrent(); myContext->NextCurrent()) {
-            myContext->SetDisplayMode(myContext->Current(), 1);
-        }
-    }
+    viewerContext->setTransparency(transparency);
 }
 
 void TIGLViewerWidget::setObjectsColor()
 {
     QColor color = QColorDialog::getColor(Qt::green, this);
-    if (color.isValid()) {
-        for (myContext->InitCurrent(); myContext->MoreCurrent(); myContext->NextCurrent()) {
-            myContext->SetColor (myContext->Current(),Quantity_Color(color.red()/255., color.green()/255., color.blue()/255., Quantity_TOC_RGB));
-        }
-    }
+    viewerContext->setObjectsColor(color);
 }
 
 void TIGLViewerWidget::setObjectsMaterial()
 {
-    if (myContext.IsNull()) {
-        return;
-    }
-
-    bool ok;
+    bool ok = false;
     QStringList items;
 
     QMap<QString, Graphic3d_NameOfMaterial> materialMap;
@@ -722,10 +665,10 @@ void TIGLViewerWidget::setObjectsMaterial()
         items << i.key();
     }
     QString item = QInputDialog::getItem(this, tr("Select Material"), tr("Material:"), items, 0, false, &ok);
+
     if (ok && !item.isEmpty()) {
-        for (myContext->InitCurrent(); myContext->MoreCurrent(); myContext->NextCurrent()) {
-             myContext->SetMaterial (myContext->Current(),  materialMap[item]);
-        }
+        Graphic3d_NameOfMaterial material = materialMap[item];
+        viewerContext->setObjectsMaterial(material);
     }
 }
 
@@ -935,10 +878,11 @@ void TIGLViewerWidget::onMouseMove( Qt::MouseButtons buttons,
 AIS_StatusOfDetection TIGLViewerWidget::moveEvent( QPoint point )
 {
     AIS_StatusOfDetection status = AIS_SOD_Error;
-    if (myContext.IsNull()) {
+    if (!viewerContext) {
         return status;
     }
 
+    Handle(AIS_InteractiveContext) myContext = viewerContext->getContext();
     status = myContext->MoveTo( point.x(), point.y(), myView );
     return status;
 }
@@ -950,9 +894,10 @@ AIS_StatusOfPick TIGLViewerWidget::dragEvent( const QPoint startPoint, const QPo
     using namespace std;
     AIS_StatusOfPick pick = AIS_SOP_NothingSelected;
 
-    if (myContext.IsNull()) {
+    if (!viewerContext) {
         return pick;
     }
+    Handle(AIS_InteractiveContext) myContext = viewerContext->getContext();
 
     if (multi) {
         pick = myContext->ShiftSelect( min (startPoint.x(), endPoint.x()),
@@ -978,9 +923,10 @@ AIS_StatusOfPick TIGLViewerWidget::inputEvent( bool multi )
 {
     AIS_StatusOfPick pick = AIS_SOP_NothingSelected;
 
-    if (myContext.IsNull()) {
+    if (!viewerContext) {
         return pick;
     }
+    Handle(AIS_InteractiveContext) myContext = viewerContext->getContext();
 
     if (multi) {
         pick = myContext->ShiftSelect();

@@ -78,6 +78,13 @@ find_package(OCE 0.15 COMPONENTS ${OCC_LIBS} QUIET)
 if(OCE_FOUND)
   set(OpenCASCADE_LIBRARIES ${OCC_LIBS})
   set(OpenCASCADE_INCLUDE_DIR ${OCE_INCLUDE_DIRS})
+
+  # set shaders directory
+  if (NOT ${OCE_VERSION} VERSION_LESS "0.17")
+      set(OpenCASCADE_SHADER_DIRECTORY ${OCE_INCLUDE_DIRS}/../../share/oce/src/Shaders)
+  endif()
+
+
   # get opencascade version
   IF(EXISTS "${OpenCASCADE_INCLUDE_DIR}/Standard_Version.hxx")
     FILE(STRINGS "${OpenCASCADE_INCLUDE_DIR}/Standard_Version.hxx" occ_version_str REGEX "^#define[\t ]+OCC_VERSION_COMPLETE[\t ]+\".*\"")
