@@ -113,11 +113,13 @@ IF( OpenCASCADE_FOUND )
       MESSAGE(STATUS "OCC Version: ${OCC_VERSION_STRING}")
   ENDIF( _firsttime STREQUAL TRUE )  
    
-  # We need to find the shader directory for OCCT 6.9.0 and newer
-  IF ( NOT OCC_VERSION_STRING VERSION_LESS "6.9.0" )
+  # We need to find the shader directory for OCCT 6.7.0 and newer
+  IF ( NOT OCC_VERSION_STRING VERSION_LESS "6.7.0" )
       FIND_PATH(OpenCASCADE_SHADER_DIRECTORY
                 NAMES PhongShading.fs
                 PATH_SUFFIXES src/Shaders share/opencascade-${OCC_VERSION_STRING}/resources/Shaders share/opencascade-${OCC_VERSION_STRING}.beta/resources/Shaders
+                # try also to find the installed oce shaders
+                share/oce-0.17/src/Shaders
                 HINTS ${CASROOT}
       )
       IF(OpenCASCADE_SHADER_DIRECTORY STREQUAL OpenCASCADE_SHADER_DIRECTORY-NOTFOUND)
