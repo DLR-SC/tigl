@@ -81,7 +81,11 @@ if(OCE_FOUND)
 
   # set shaders directory
   if (NOT ${OCE_VERSION} VERSION_LESS "0.17")
-      set(OpenCASCADE_SHADER_DIRECTORY ${OCE_INCLUDE_DIRS}/../../share/oce/src/Shaders)
+      FIND_PATH(OpenCASCADE_SHADER_DIRECTORY
+                NAMES PhongShading.fs
+                PATH_SUFFIXES share/oce/src/Shaders share/oce-${OCE_VERSION}/src/Shaders
+                HINTS ${CASROOT} ${OCE_INCLUDE_DIRS}/../../
+      )
   endif()
 
 
