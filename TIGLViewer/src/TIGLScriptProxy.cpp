@@ -87,18 +87,6 @@ QScriptValue TIGLScriptProxy::componentGetHashCode (QString componentUID)
     }
 }
 
-QScriptValue TIGLScriptProxy::componentIntersectionLineCount (QString componentUidOne, QString componentUidTwo)
-{
-    int numWires;
-    TiglReturnCode ret = ::tiglComponentIntersectionLineCount (getTiglHandle(), qString2char(componentUidOne), qString2char(componentUidTwo), &numWires);
-    if (ret != TIGL_SUCCESS) {
-        return context()->throwError(tiglGetErrorString(ret));
-    }
-    else {
-        return numWires;
-    }
-}
-
 QScriptValue TIGLScriptProxy::exportFusedWingFuselageIGES (QString filenamePtr)
 {
     TiglReturnCode ret = ::tiglExportFusedWingFuselageIGES(getTiglHandle(), qString2char(filenamePtr));
