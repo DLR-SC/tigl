@@ -68,9 +68,9 @@ int main(int argc, char *argv[])
         shaderDir = envVar;
     }
     
-#if OCC_VERSION_HEX >= 0x060900
+#if OCC_VERSION_HEX >= 0x060700
     // check existance of shader dir
-    // This is only required for OpenCASCADE 6.9.0 and newer
+    // This is only required for OpenCASCADE 6.7.0 and newer
     if (!QFile(shaderDir+"/PhongShading.fs").exists()) {
         std::stringstream str;
         str << "Illegal or non existing shader directory "

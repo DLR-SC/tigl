@@ -260,6 +260,7 @@
      <addaction name="separator"/>
      <addaction name="showConsoleAction"/>
      <addaction name="showWireframeAction"/>
+     <addaction name="showReflectionLinesAction"/>
     </widget>
     <widget class="QMenu" name="viewActionsMenu">
      <property name="title">
@@ -1385,6 +1386,17 @@
   <action name="tiglExportMeshedConfigSTL">
    <property name="text">
     <string>Export Configuration</string>
+   </property>
+  </action>
+  <action name="showReflectionLinesAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Reflection lines</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+R</string>
    </property>
   </action>
  </widget>

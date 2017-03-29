@@ -20,6 +20,8 @@
 */
 #include "tigl_config.h"
 
+#include <QTextStream>
+#include <QFile>
 #include <qnamespace.h>
 #include "TIGLViewerContext.h"
 #include "TIGLViewerInternal.h"
@@ -31,6 +33,28 @@
 #include "ISession_Direction.h"
 
 #include <OpenGl_GraphicDriver.hxx>
+// Shader related stuff
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(6,7,0)
+  #include <Prs3d_ShadingAspect.hxx>
+  #include <Graphic3d_AspectFillArea3d.hxx>
+  #include <Graphic3d_ShaderObject.hxx>
+#endif
+
+/// Loads a shader file from the resource system
+QString getShaderFile(const QString& filename)
+{
+    QString result;
+
+    QFile inFile(":/shaders/" + filename);
+    if (!inFile.open(QFile::ReadOnly | QFile::Text)) {
+        return "";
+    }
+
+    QTextStream stream(&inFile);
+    result = stream.readAll();
+
+    return result;
+}
 
 TIGLViewerContext::TIGLViewerContext()
 {
@@ -49,11 +73,37 @@ TIGLViewerContext::TIGLViewerContext()
     myContext->SetHilightColor(Quantity_NOC_WHITE);
     myContext->SetIsoNumber(0);
 
+
+    // load shader
+    initShaders();
+
     setGridOffset (0.0);
     gridXY();
     gridOn();
 }
 
+void TIGLViewerContext::initShaders()
+{
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(6,7,0)
+    myShader = new Graphic3d_ShaderProgram();
+
+    // Attach vertex shader
+    myShader->AttachShader (
+        Graphic3d_ShaderObject::CreateFromSource(
+            Graphic3d_TOS_VERTEX,
+            getShaderFile("PhongShading.vs").toStdString().c_str()
+    ));
+
+    // Attach fragment shader
+    myShader->AttachShader (
+        Graphic3d_ShaderObject::CreateFromSource(
+            Graphic3d_TOS_FRAGMENT,
+            getShaderFile("PhongShading.fs").toStdString().c_str()
+    ));
+
+    myShader->PushVariable ("enableZebra", 0);
+#endif
+}
 
 TIGLViewerContext::~TIGLViewerContext()
 {
@@ -232,6 +282,13 @@ void TIGLViewerContext::displayShape(const TopoDS_Shape& loft, Quantity_Color co
     myContext->SetColor(shape, color, Standard_False);
     myContext->SetTransparency(shape, transparency, Standard_False);
     shape->SetOwnDeviationCoefficient(settings.tesselationAccuracy());
+
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(6,7,0)
+    if (!myShader.IsNull()) {
+        shape->Attributes()->ShadingAspect()->Aspect()->SetShaderProgram (myShader);
+    }
+#endif
+
     myContext->Display(shape, Standard_True);
     
     if (settings.enumerateFaces()) {
@@ -294,5 +351,82 @@ void TIGLViewerContext::drawVector(double x, double y, double z, double dirx, do
 {
     displayVector(gp_Pnt(x,y,z), gp_Vec(dirx, diry, dirz), "", Standard_True, 0,0,0, 1.0);
 }
+
+void TIGLViewerContext::eraseSelected()
+{
+    if (!myContext.IsNull()) {
+        myContext->EraseSelected(Standard_False);
+
+        myContext->ClearCurrents();
+        myContext->UpdateCurrentViewer();
+    }
+}
+
+void TIGLViewerContext::setTransparency(int tr)
+{
+    Standard_Real transparency = 0.1;
+    if ( (tr < 0) || (tr > 100)) {
+        return;
+    }
+    transparency = tr * 0.01;
+
+    if (!myContext.IsNull()) {
+        for (myContext->InitCurrent(); myContext->MoreCurrent(); myContext->NextCurrent()) {
+            myContext->SetTransparency(myContext->Current(), transparency, Standard_True);
+        }
+    }
+}
+
+void TIGLViewerContext::setObjectsWireframe()
+{
+    if (!myContext.IsNull()) {
+        for (myContext->InitCurrent(); myContext->MoreCurrent(); myContext->NextCurrent()) {
+            myContext->SetDisplayMode(myContext->Current(), 0);
+        }
+    }
+}
+
+void TIGLViewerContext::setObjectsShading()
+{
+    if (!myContext.IsNull()) {
+        for (myContext->InitCurrent(); myContext->MoreCurrent(); myContext->NextCurrent()) {
+            myContext->SetDisplayMode(myContext->Current(), 1);
+        }
+    }
+}
+
+void TIGLViewerContext::setObjectsMaterial(Graphic3d_NameOfMaterial material)
+{
+    if (!myContext.IsNull()) {
+        for (myContext->InitCurrent(); myContext->MoreCurrent(); myContext->NextCurrent()) {
+             myContext->SetMaterial (myContext->Current(),  material);
+        }
+    }
+}
+
+
+void TIGLViewerContext::setReflectionlinesEnabled(bool enable)
+{
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(6,7,0)
+    int value = enable? 1 : 0;
+
+    if (!myShader.IsNull()) {
+        myShader->PushVariable("enableZebra", value);
+    }
+    myContext->UpdateCurrentViewer();
+#else
+    LOG(ERROR) << "Reflection lines are only available from OpenCASCADE 6.7.0 and newer!" << std::endl;
+#endif
+}
+
+void TIGLViewerContext::setObjectsColor(const QColor& color)
+{
+    if (color.isValid() && !myContext.IsNull()) {
+        for (myContext->InitCurrent(); myContext->MoreCurrent(); myContext->NextCurrent()) {
+            myContext->SetColor (myContext->Current(),Quantity_Color(color.red()/255., color.green()/255., color.blue()/255., Quantity_TOC_RGB));
+        }
+    }
+}
+
 
 
