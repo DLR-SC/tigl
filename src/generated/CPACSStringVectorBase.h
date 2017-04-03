@@ -48,37 +48,37 @@ namespace tigl
             TIGL_EXPORT const std::string& GetMapType() const;
             TIGL_EXPORT void SetMapType(const std::string& value);
             
-            TIGL_EXPORT bool HasUncertaintyFunctionName() const;
-            TIGL_EXPORT const std::string& GetUncertaintyFunctionName() const;
+            TIGL_EXPORT const boost::optional<std::string>& GetUncertaintyFunctionName() const;
             TIGL_EXPORT void SetUncertaintyFunctionName(const std::string& value);
+            TIGL_EXPORT void SetUncertaintyFunctionName(const boost::optional<std::string>& value);
             
-            TIGL_EXPORT bool HasMu() const;
-            TIGL_EXPORT const std::string& GetMu() const;
+            TIGL_EXPORT const boost::optional<std::string>& GetMu() const;
             TIGL_EXPORT void SetMu(const std::string& value);
+            TIGL_EXPORT void SetMu(const boost::optional<std::string>& value);
             
-            TIGL_EXPORT bool HasDelta() const;
-            TIGL_EXPORT const std::string& GetDelta() const;
+            TIGL_EXPORT const boost::optional<std::string>& GetDelta() const;
             TIGL_EXPORT void SetDelta(const std::string& value);
+            TIGL_EXPORT void SetDelta(const boost::optional<std::string>& value);
             
-            TIGL_EXPORT bool HasA() const;
-            TIGL_EXPORT const std::string& GetA() const;
+            TIGL_EXPORT const boost::optional<std::string>& GetA() const;
             TIGL_EXPORT void SetA(const std::string& value);
+            TIGL_EXPORT void SetA(const boost::optional<std::string>& value);
             
-            TIGL_EXPORT bool HasB() const;
-            TIGL_EXPORT const std::string& GetB() const;
+            TIGL_EXPORT const boost::optional<std::string>& GetB() const;
             TIGL_EXPORT void SetB(const std::string& value);
+            TIGL_EXPORT void SetB(const boost::optional<std::string>& value);
             
-            TIGL_EXPORT bool HasC() const;
-            TIGL_EXPORT const std::string& GetC() const;
+            TIGL_EXPORT const boost::optional<std::string>& GetC() const;
             TIGL_EXPORT void SetC(const std::string& value);
+            TIGL_EXPORT void SetC(const boost::optional<std::string>& value);
             
-            TIGL_EXPORT bool HasV() const;
-            TIGL_EXPORT const std::string& GetV() const;
+            TIGL_EXPORT const boost::optional<std::string>& GetV() const;
             TIGL_EXPORT void SetV(const std::string& value);
+            TIGL_EXPORT void SetV(const boost::optional<std::string>& value);
             
-            TIGL_EXPORT bool HasW() const;
-            TIGL_EXPORT const std::string& GetW() const;
+            TIGL_EXPORT const boost::optional<std::string>& GetW() const;
             TIGL_EXPORT void SetW(const std::string& value);
+            TIGL_EXPORT void SetW(const boost::optional<std::string>& value);
             
             TIGL_EXPORT const std::string& GetSimpleContent() const;
             TIGL_EXPORT void SetSimpleContent(const std::string& value);

@@ -55,19 +55,14 @@ namespace tigl
             
         }
         
-        bool CPACSToolspecific::HasCFD() const
+        const boost::optional<CPACSCFDTool>& CPACSToolspecific::GetCFD() const
         {
-            return static_cast<bool>(m_cFD);
+            return m_cFD;
         }
         
-        const CPACSCFDTool& CPACSToolspecific::GetCFD() const
+        boost::optional<CPACSCFDTool>& CPACSToolspecific::GetCFD()
         {
-            return *m_cFD;
-        }
-        
-        CPACSCFDTool& CPACSToolspecific::GetCFD()
-        {
-            return *m_cFD;
+            return m_cFD;
         }
         
     }

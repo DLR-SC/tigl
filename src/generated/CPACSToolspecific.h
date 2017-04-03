@@ -41,9 +41,8 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT bool HasCFD() const;
-            TIGL_EXPORT const CPACSCFDTool& GetCFD() const;
-            TIGL_EXPORT CPACSCFDTool& GetCFD();
+            TIGL_EXPORT const boost::optional<CPACSCFDTool>& GetCFD() const;
+            TIGL_EXPORT boost::optional<CPACSCFDTool>& GetCFD();
             
         protected:
             boost::optional<CPACSCFDTool> m_cFD;

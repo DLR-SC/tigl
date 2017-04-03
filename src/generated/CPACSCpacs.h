@@ -44,13 +44,11 @@ namespace tigl
             TIGL_EXPORT const CPACSHeader& GetHeader() const;
             TIGL_EXPORT CPACSHeader& GetHeader();
             
-            TIGL_EXPORT bool HasVehicles() const;
-            TIGL_EXPORT const CPACSVehicles& GetVehicles() const;
-            TIGL_EXPORT CPACSVehicles& GetVehicles();
+            TIGL_EXPORT const boost::optional<CPACSVehicles>& GetVehicles() const;
+            TIGL_EXPORT boost::optional<CPACSVehicles>& GetVehicles();
             
-            TIGL_EXPORT bool HasToolspecific() const;
-            TIGL_EXPORT const CPACSToolspecific& GetToolspecific() const;
-            TIGL_EXPORT CPACSToolspecific& GetToolspecific();
+            TIGL_EXPORT const boost::optional<CPACSToolspecific>& GetToolspecific() const;
+            TIGL_EXPORT boost::optional<CPACSToolspecific>& GetToolspecific();
             
         protected:
             CPACSHeader                        m_header;

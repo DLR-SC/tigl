@@ -151,34 +151,24 @@ namespace tigl
             
         }
         
-        bool CPACSSparCrossSection::HasUpperCap() const
+        const boost::optional<CPACSCap>& CPACSSparCrossSection::GetUpperCap() const
         {
-            return static_cast<bool>(m_upperCap);
+            return m_upperCap;
         }
         
-        const CPACSCap& CPACSSparCrossSection::GetUpperCap() const
+        boost::optional<CPACSCap>& CPACSSparCrossSection::GetUpperCap()
         {
-            return *m_upperCap;
+            return m_upperCap;
         }
         
-        CPACSCap& CPACSSparCrossSection::GetUpperCap()
+        const boost::optional<CPACSCap>& CPACSSparCrossSection::GetLowerCap() const
         {
-            return *m_upperCap;
+            return m_lowerCap;
         }
         
-        bool CPACSSparCrossSection::HasLowerCap() const
+        boost::optional<CPACSCap>& CPACSSparCrossSection::GetLowerCap()
         {
-            return static_cast<bool>(m_lowerCap);
-        }
-        
-        const CPACSCap& CPACSSparCrossSection::GetLowerCap() const
-        {
-            return *m_lowerCap;
-        }
-        
-        CPACSCap& CPACSSparCrossSection::GetLowerCap()
-        {
-            return *m_lowerCap;
+            return m_lowerCap;
         }
         
         const CPACSWeb& CPACSSparCrossSection::GetWeb1() const
@@ -191,34 +181,24 @@ namespace tigl
             return m_web1;
         }
         
-        bool CPACSSparCrossSection::HasWeb2() const
+        const boost::optional<CPACSWeb>& CPACSSparCrossSection::GetWeb2() const
         {
-            return static_cast<bool>(m_web2);
+            return m_web2;
         }
         
-        const CPACSWeb& CPACSSparCrossSection::GetWeb2() const
+        boost::optional<CPACSWeb>& CPACSSparCrossSection::GetWeb2()
         {
-            return *m_web2;
+            return m_web2;
         }
         
-        CPACSWeb& CPACSSparCrossSection::GetWeb2()
+        const boost::optional<CPACSSparCells>& CPACSSparCrossSection::GetSparCells() const
         {
-            return *m_web2;
+            return m_sparCells;
         }
         
-        bool CPACSSparCrossSection::HasSparCells() const
+        boost::optional<CPACSSparCells>& CPACSSparCrossSection::GetSparCells()
         {
-            return static_cast<bool>(m_sparCells);
-        }
-        
-        const CPACSSparCells& CPACSSparCrossSection::GetSparCells() const
-        {
-            return *m_sparCells;
-        }
-        
-        CPACSSparCells& CPACSSparCrossSection::GetSparCells()
-        {
-            return *m_sparCells;
+            return m_sparCells;
         }
         
         const double& CPACSSparCrossSection::GetRotation() const

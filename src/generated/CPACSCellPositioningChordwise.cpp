@@ -80,14 +80,9 @@ namespace tigl
             
         }
         
-        bool CPACSCellPositioningChordwise::HasSparUID_choice1() const
+        const boost::optional<std::string>& CPACSCellPositioningChordwise::GetSparUID_choice1() const
         {
-            return static_cast<bool>(m_sparUID_choice1);
-        }
-        
-        const std::string& CPACSCellPositioningChordwise::GetSparUID_choice1() const
-        {
-            return *m_sparUID_choice1;
+            return m_sparUID_choice1;
         }
         
         void CPACSCellPositioningChordwise::SetSparUID_choice1(const std::string& value)
@@ -95,14 +90,14 @@ namespace tigl
             m_sparUID_choice1 = value;
         }
         
-        bool CPACSCellPositioningChordwise::HasXsi1_choice2() const
+        void CPACSCellPositioningChordwise::SetSparUID_choice1(const boost::optional<std::string>& value)
         {
-            return static_cast<bool>(m_xsi1_choice2);
+            m_sparUID_choice1 = value;
         }
         
-        const double& CPACSCellPositioningChordwise::GetXsi1_choice2() const
+        const boost::optional<double>& CPACSCellPositioningChordwise::GetXsi1_choice2() const
         {
-            return *m_xsi1_choice2;
+            return m_xsi1_choice2;
         }
         
         void CPACSCellPositioningChordwise::SetXsi1_choice2(const double& value)
@@ -110,17 +105,22 @@ namespace tigl
             m_xsi1_choice2 = value;
         }
         
-        bool CPACSCellPositioningChordwise::HasXsi2_choice2() const
+        void CPACSCellPositioningChordwise::SetXsi1_choice2(const boost::optional<double>& value)
         {
-            return static_cast<bool>(m_xsi2_choice2);
+            m_xsi1_choice2 = value;
         }
         
-        const double& CPACSCellPositioningChordwise::GetXsi2_choice2() const
+        const boost::optional<double>& CPACSCellPositioningChordwise::GetXsi2_choice2() const
         {
-            return *m_xsi2_choice2;
+            return m_xsi2_choice2;
         }
         
         void CPACSCellPositioningChordwise::SetXsi2_choice2(const double& value)
+        {
+            m_xsi2_choice2 = value;
+        }
+        
+        void CPACSCellPositioningChordwise::SetXsi2_choice2(const boost::optional<double>& value)
         {
             m_xsi2_choice2 = value;
         }

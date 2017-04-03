@@ -138,17 +138,17 @@ namespace tigl
             m_uID = value;
         }
         
-        bool CPACSGenericGeometricComponent::HasSymmetry() const
+        const boost::optional<TiglSymmetryAxis>& CPACSGenericGeometricComponent::GetSymmetry() const
         {
-            return static_cast<bool>(m_symmetry);
-        }
-        
-        const TiglSymmetryAxis& CPACSGenericGeometricComponent::GetSymmetry() const
-        {
-            return *m_symmetry;
+            return m_symmetry;
         }
         
         void CPACSGenericGeometricComponent::SetSymmetry(const TiglSymmetryAxis& value)
+        {
+            m_symmetry = value;
+        }
+        
+        void CPACSGenericGeometricComponent::SetSymmetry(const boost::optional<TiglSymmetryAxis>& value)
         {
             m_symmetry = value;
         }
@@ -163,14 +163,9 @@ namespace tigl
             m_name = value;
         }
         
-        bool CPACSGenericGeometricComponent::HasDescription() const
+        const boost::optional<std::string>& CPACSGenericGeometricComponent::GetDescription() const
         {
-            return static_cast<bool>(m_description);
-        }
-        
-        const std::string& CPACSGenericGeometricComponent::GetDescription() const
-        {
-            return *m_description;
+            return m_description;
         }
         
         void CPACSGenericGeometricComponent::SetDescription(const std::string& value)
@@ -178,17 +173,22 @@ namespace tigl
             m_description = value;
         }
         
-        bool CPACSGenericGeometricComponent::HasParentUID() const
+        void CPACSGenericGeometricComponent::SetDescription(const boost::optional<std::string>& value)
         {
-            return static_cast<bool>(m_parentUID);
+            m_description = value;
         }
         
-        const std::string& CPACSGenericGeometricComponent::GetParentUID() const
+        const boost::optional<std::string>& CPACSGenericGeometricComponent::GetParentUID() const
         {
-            return *m_parentUID;
+            return m_parentUID;
         }
         
         void CPACSGenericGeometricComponent::SetParentUID(const std::string& value)
+        {
+            m_parentUID = value;
+        }
+        
+        void CPACSGenericGeometricComponent::SetParentUID(const boost::optional<std::string>& value)
         {
             m_parentUID = value;
         }

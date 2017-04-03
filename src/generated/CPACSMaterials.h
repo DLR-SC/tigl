@@ -48,9 +48,8 @@ namespace tigl
             TIGL_EXPORT const std::vector<unique_ptr<CPACSMaterial> >& GetMaterials() const;
             TIGL_EXPORT std::vector<unique_ptr<CPACSMaterial> >& GetMaterials();
             
-            TIGL_EXPORT bool HasComposites() const;
-            TIGL_EXPORT const CPACSComposites& GetComposites() const;
-            TIGL_EXPORT CPACSComposites& GetComposites();
+            TIGL_EXPORT const boost::optional<CPACSComposites>& GetComposites() const;
+            TIGL_EXPORT boost::optional<CPACSComposites>& GetComposites();
             
         protected:
             std::vector<unique_ptr<CPACSMaterial> > m_materials;

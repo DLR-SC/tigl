@@ -148,14 +148,9 @@ namespace tigl
             
         }
         
-        bool CPACSRotorHubHinge::HasUID() const
+        const boost::optional<std::string>& CPACSRotorHubHinge::GetUID() const
         {
-            return static_cast<bool>(m_uID);
-        }
-        
-        const std::string& CPACSRotorHubHinge::GetUID() const
-        {
-            return *m_uID;
+            return m_uID;
         }
         
         void CPACSRotorHubHinge::SetUID(const std::string& value)
@@ -163,14 +158,14 @@ namespace tigl
             m_uID = value;
         }
         
-        bool CPACSRotorHubHinge::HasName() const
+        void CPACSRotorHubHinge::SetUID(const boost::optional<std::string>& value)
         {
-            return static_cast<bool>(m_name);
+            m_uID = value;
         }
         
-        const std::string& CPACSRotorHubHinge::GetName() const
+        const boost::optional<std::string>& CPACSRotorHubHinge::GetName() const
         {
-            return *m_name;
+            return m_name;
         }
         
         void CPACSRotorHubHinge::SetName(const std::string& value)
@@ -178,17 +173,22 @@ namespace tigl
             m_name = value;
         }
         
-        bool CPACSRotorHubHinge::HasDescription() const
+        void CPACSRotorHubHinge::SetName(const boost::optional<std::string>& value)
         {
-            return static_cast<bool>(m_description);
+            m_name = value;
         }
         
-        const std::string& CPACSRotorHubHinge::GetDescription() const
+        const boost::optional<std::string>& CPACSRotorHubHinge::GetDescription() const
         {
-            return *m_description;
+            return m_description;
         }
         
         void CPACSRotorHubHinge::SetDescription(const std::string& value)
+        {
+            m_description = value;
+        }
+        
+        void CPACSRotorHubHinge::SetDescription(const boost::optional<std::string>& value)
         {
             m_description = value;
         }
@@ -213,14 +213,9 @@ namespace tigl
             m_type = value;
         }
         
-        bool CPACSRotorHubHinge::HasNeutralPosition() const
+        const boost::optional<double>& CPACSRotorHubHinge::GetNeutralPosition() const
         {
-            return static_cast<bool>(m_neutralPosition);
-        }
-        
-        const double& CPACSRotorHubHinge::GetNeutralPosition() const
-        {
-            return *m_neutralPosition;
+            return m_neutralPosition;
         }
         
         void CPACSRotorHubHinge::SetNeutralPosition(const double& value)
@@ -228,14 +223,14 @@ namespace tigl
             m_neutralPosition = value;
         }
         
-        bool CPACSRotorHubHinge::HasStaticStiffness() const
+        void CPACSRotorHubHinge::SetNeutralPosition(const boost::optional<double>& value)
         {
-            return static_cast<bool>(m_staticStiffness);
+            m_neutralPosition = value;
         }
         
-        const double& CPACSRotorHubHinge::GetStaticStiffness() const
+        const boost::optional<double>& CPACSRotorHubHinge::GetStaticStiffness() const
         {
-            return *m_staticStiffness;
+            return m_staticStiffness;
         }
         
         void CPACSRotorHubHinge::SetStaticStiffness(const double& value)
@@ -243,14 +238,14 @@ namespace tigl
             m_staticStiffness = value;
         }
         
-        bool CPACSRotorHubHinge::HasDynamicStiffness() const
+        void CPACSRotorHubHinge::SetStaticStiffness(const boost::optional<double>& value)
         {
-            return static_cast<bool>(m_dynamicStiffness);
+            m_staticStiffness = value;
         }
         
-        const double& CPACSRotorHubHinge::GetDynamicStiffness() const
+        const boost::optional<double>& CPACSRotorHubHinge::GetDynamicStiffness() const
         {
-            return *m_dynamicStiffness;
+            return m_dynamicStiffness;
         }
         
         void CPACSRotorHubHinge::SetDynamicStiffness(const double& value)
@@ -258,17 +253,22 @@ namespace tigl
             m_dynamicStiffness = value;
         }
         
-        bool CPACSRotorHubHinge::HasDamping() const
+        void CPACSRotorHubHinge::SetDynamicStiffness(const boost::optional<double>& value)
         {
-            return static_cast<bool>(m_damping);
+            m_dynamicStiffness = value;
         }
         
-        const double& CPACSRotorHubHinge::GetDamping() const
+        const boost::optional<double>& CPACSRotorHubHinge::GetDamping() const
         {
-            return *m_damping;
+            return m_damping;
         }
         
         void CPACSRotorHubHinge::SetDamping(const double& value)
+        {
+            m_damping = value;
+        }
+        
+        void CPACSRotorHubHinge::SetDamping(const boost::optional<double>& value)
         {
             m_damping = value;
         }

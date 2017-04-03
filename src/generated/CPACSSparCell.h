@@ -62,9 +62,8 @@ namespace tigl
             TIGL_EXPORT const CPACSWeb& GetWeb1() const;
             TIGL_EXPORT CPACSWeb& GetWeb1();
             
-            TIGL_EXPORT bool HasWeb2() const;
-            TIGL_EXPORT const CPACSWeb& GetWeb2() const;
-            TIGL_EXPORT CPACSWeb& GetWeb2();
+            TIGL_EXPORT const boost::optional<CPACSWeb>& GetWeb2() const;
+            TIGL_EXPORT boost::optional<CPACSWeb>& GetWeb2();
             
             TIGL_EXPORT const double& GetRotation() const;
             TIGL_EXPORT void SetRotation(const double& value);

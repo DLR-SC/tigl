@@ -55,13 +55,11 @@ namespace tigl
             TIGL_EXPORT const CCPACSWingShell& GetLowerShell() const;
             TIGL_EXPORT CCPACSWingShell& GetLowerShell();
             
-            TIGL_EXPORT bool HasRibsDefinitions() const;
-            TIGL_EXPORT const CCPACSWingRibsDefinitions& GetRibsDefinitions() const;
-            TIGL_EXPORT CCPACSWingRibsDefinitions& GetRibsDefinitions();
+            TIGL_EXPORT const boost::optional<CCPACSWingRibsDefinitions>& GetRibsDefinitions() const;
+            TIGL_EXPORT boost::optional<CCPACSWingRibsDefinitions>& GetRibsDefinitions();
             
-            TIGL_EXPORT bool HasSpars() const;
-            TIGL_EXPORT const CCPACSWingSpars& GetSpars() const;
-            TIGL_EXPORT CCPACSWingSpars& GetSpars();
+            TIGL_EXPORT const boost::optional<CCPACSWingSpars>& GetSpars() const;
+            TIGL_EXPORT boost::optional<CCPACSWingSpars>& GetSpars();
             
         protected:
             CCPACSWingComponentSegment* m_parent;

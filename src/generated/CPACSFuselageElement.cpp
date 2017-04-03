@@ -114,17 +114,17 @@ namespace tigl
             m_name = value;
         }
         
-        bool CPACSFuselageElement::HasDescription() const
+        const boost::optional<std::string>& CPACSFuselageElement::GetDescription() const
         {
-            return static_cast<bool>(m_description);
-        }
-        
-        const std::string& CPACSFuselageElement::GetDescription() const
-        {
-            return *m_description;
+            return m_description;
         }
         
         void CPACSFuselageElement::SetDescription(const std::string& value)
+        {
+            m_description = value;
+        }
+        
+        void CPACSFuselageElement::SetDescription(const boost::optional<std::string>& value)
         {
             m_description = value;
         }

@@ -45,21 +45,21 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT bool HasEta1_choice1() const;
-            TIGL_EXPORT const double& GetEta1_choice1() const;
+            TIGL_EXPORT const boost::optional<double>& GetEta1_choice1() const;
             TIGL_EXPORT void SetEta1_choice1(const double& value);
+            TIGL_EXPORT void SetEta1_choice1(const boost::optional<double>& value);
             
-            TIGL_EXPORT bool HasEta2_choice1() const;
-            TIGL_EXPORT const double& GetEta2_choice1() const;
+            TIGL_EXPORT const boost::optional<double>& GetEta2_choice1() const;
             TIGL_EXPORT void SetEta2_choice1(const double& value);
+            TIGL_EXPORT void SetEta2_choice1(const boost::optional<double>& value);
             
-            TIGL_EXPORT bool HasRibNumber_choice2() const;
-            TIGL_EXPORT const int& GetRibNumber_choice2() const;
+            TIGL_EXPORT const boost::optional<int>& GetRibNumber_choice2() const;
             TIGL_EXPORT void SetRibNumber_choice2(const int& value);
+            TIGL_EXPORT void SetRibNumber_choice2(const boost::optional<int>& value);
             
-            TIGL_EXPORT bool HasRibDefinitionUID_choice2() const;
-            TIGL_EXPORT const std::string& GetRibDefinitionUID_choice2() const;
+            TIGL_EXPORT const boost::optional<std::string>& GetRibDefinitionUID_choice2() const;
             TIGL_EXPORT void SetRibDefinitionUID_choice2(const std::string& value);
+            TIGL_EXPORT void SetRibDefinitionUID_choice2(const boost::optional<std::string>& value);
             
         protected:
             CCPACSWingCell* m_parent;

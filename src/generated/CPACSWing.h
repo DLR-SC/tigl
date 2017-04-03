@@ -75,20 +75,20 @@ namespace tigl
             TIGL_EXPORT const std::string& GetUID() const;
             TIGL_EXPORT void SetUID(const std::string& value);
             
-            TIGL_EXPORT bool HasSymmetry() const;
-            TIGL_EXPORT const TiglSymmetryAxis& GetSymmetry() const;
+            TIGL_EXPORT const boost::optional<TiglSymmetryAxis>& GetSymmetry() const;
             TIGL_EXPORT void SetSymmetry(const TiglSymmetryAxis& value);
+            TIGL_EXPORT void SetSymmetry(const boost::optional<TiglSymmetryAxis>& value);
             
             TIGL_EXPORT const std::string& GetName() const;
             TIGL_EXPORT void SetName(const std::string& value);
             
-            TIGL_EXPORT bool HasDescription() const;
-            TIGL_EXPORT const std::string& GetDescription() const;
+            TIGL_EXPORT const boost::optional<std::string>& GetDescription() const;
             TIGL_EXPORT void SetDescription(const std::string& value);
+            TIGL_EXPORT void SetDescription(const boost::optional<std::string>& value);
             
-            TIGL_EXPORT bool HasParentUID() const;
-            TIGL_EXPORT const std::string& GetParentUID() const;
+            TIGL_EXPORT const boost::optional<std::string>& GetParentUID() const;
             TIGL_EXPORT void SetParentUID(const std::string& value);
+            TIGL_EXPORT void SetParentUID(const boost::optional<std::string>& value);
             
             TIGL_EXPORT const CCPACSTransformation& GetTransformation() const;
             TIGL_EXPORT CCPACSTransformation& GetTransformation();
@@ -96,16 +96,14 @@ namespace tigl
             TIGL_EXPORT const CCPACSWingSections& GetSections() const;
             TIGL_EXPORT CCPACSWingSections& GetSections();
             
-            TIGL_EXPORT bool HasPositionings() const;
-            TIGL_EXPORT const CCPACSPositionings& GetPositionings() const;
-            TIGL_EXPORT CCPACSPositionings& GetPositionings();
+            TIGL_EXPORT const boost::optional<CCPACSPositionings>& GetPositionings() const;
+            TIGL_EXPORT boost::optional<CCPACSPositionings>& GetPositionings();
             
             TIGL_EXPORT const CCPACSWingSegments& GetSegments() const;
             TIGL_EXPORT CCPACSWingSegments& GetSegments();
             
-            TIGL_EXPORT bool HasComponentSegments() const;
-            TIGL_EXPORT const CCPACSWingComponentSegments& GetComponentSegments() const;
-            TIGL_EXPORT CCPACSWingComponentSegments& GetComponentSegments();
+            TIGL_EXPORT const boost::optional<CCPACSWingComponentSegments>& GetComponentSegments() const;
+            TIGL_EXPORT boost::optional<CCPACSWingComponentSegments>& GetComponentSegments();
             
         protected:
             void* m_parent;

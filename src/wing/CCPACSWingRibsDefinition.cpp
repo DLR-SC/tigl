@@ -76,9 +76,9 @@ void CCPACSWingRibsDefinition::Invalidate()
 
 CCPACSWingRibsDefinition::RibPositioningType CCPACSWingRibsDefinition::GetRibPositioningType() const
 {
-    if (HasRibsPositioning_choice1())
+    if (m_ribsPositioning_choice1)
         return ENUM_VALUE(RibPositioningType, RIBS_POSITIONING);
-    else if (HasRibExplicitPositioning_choice2())
+    else if (m_ribExplicitPositioning_choice2)
         return ENUM_VALUE(RibPositioningType, RIB_EXPLICIT_POSITIONING);
     else
         return ENUM_VALUE(RibPositioningType, UNDEFINED_POSITIONING);
@@ -245,7 +245,7 @@ TopoDS_Shape CCPACSWingRibsDefinition::GetSplittedRibsGeometry(TiglCoordinateSys
 
 bool CCPACSWingRibsDefinition::HasCaps() const
 {
-    return (m_ribCrossSection.HasUpperCap() || m_ribCrossSection.HasLowerCap());
+    return (m_ribCrossSection.GetUpperCap() || m_ribCrossSection.GetLowerCap());
 }
 
 TopoDS_Shape CCPACSWingRibsDefinition::GetRibCapsGeometry(RibCapSide side, TiglCoordinateSystem referenceCS) const
@@ -629,7 +629,7 @@ void CCPACSWingRibsDefinition::BuildRibCapsGeometry() const
     }
 
     // build caps shape for upper cap
-    if (m_ribCrossSection.HasUpperCap()) {
+    if (m_ribCrossSection.GetUpperCap()) {
         TopoDS_Shape loft = structure.GetWingStructureReference().GetUpperShape();
         TopoDS_Shape cutResult = CutShapes(loft, ribCuttingCompound);
         // Get the cutting edge of the rib cutting plane and the loft
@@ -642,7 +642,7 @@ void CCPACSWingRibsDefinition::BuildRibCapsGeometry() const
         ribCapsCache.upperCapsShape = capEdges;
     }
     // build caps shape for lower cap
-    if (m_ribCrossSection.HasLowerCap()) {
+    if (m_ribCrossSection.GetLowerCap()) {
         TopoDS_Shape loft = structure.GetWingStructureReference().GetLowerShape();
         TopoDS_Shape cutResult = CutShapes(loft, ribCuttingCompound);
         // Get the cutting edge of the rib cutting plane and the loft
@@ -884,8 +884,8 @@ gp_Vec CCPACSWingRibsDefinition::GetRibDirection(double currentEta, const gp_Pnt
     double zRotation = m_ribsPositioning_choice1->GetRibRotation().GetZ() * M_PI / 180.0;
 
     boost::optional<generated::CPACSRibRotation_ribRotationReference_SimpleContent> ribRotationReference;
-    if(m_ribsPositioning_choice1->GetRibRotation().HasRibRotationReference())
-        ribRotationReference = m_ribsPositioning_choice1->GetRibRotation().GetRibRotationReference().GetSimpleContent();
+    if(m_ribsPositioning_choice1->GetRibRotation().GetRibRotationReference())
+        ribRotationReference = m_ribsPositioning_choice1->GetRibRotation().GetRibRotationReference()->GetSimpleContent();
 
     if (!ribRotationReference) {
         double midplaneEta, dummy;

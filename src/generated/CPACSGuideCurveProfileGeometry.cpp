@@ -93,17 +93,17 @@ namespace tigl
             
         }
         
-        bool CPACSGuideCurveProfileGeometry::HasSymmetry() const
+        const boost::optional<TiglSymmetryAxis>& CPACSGuideCurveProfileGeometry::GetSymmetry() const
         {
-            return static_cast<bool>(m_symmetry);
-        }
-        
-        const TiglSymmetryAxis& CPACSGuideCurveProfileGeometry::GetSymmetry() const
-        {
-            return *m_symmetry;
+            return m_symmetry;
         }
         
         void CPACSGuideCurveProfileGeometry::SetSymmetry(const TiglSymmetryAxis& value)
+        {
+            m_symmetry = value;
+        }
+        
+        void CPACSGuideCurveProfileGeometry::SetSymmetry(const boost::optional<TiglSymmetryAxis>& value)
         {
             m_symmetry = value;
         }
@@ -128,17 +128,17 @@ namespace tigl
             m_name = value;
         }
         
-        bool CPACSGuideCurveProfileGeometry::HasDescription() const
+        const boost::optional<std::string>& CPACSGuideCurveProfileGeometry::GetDescription() const
         {
-            return static_cast<bool>(m_description);
-        }
-        
-        const std::string& CPACSGuideCurveProfileGeometry::GetDescription() const
-        {
-            return *m_description;
+            return m_description;
         }
         
         void CPACSGuideCurveProfileGeometry::SetDescription(const std::string& value)
+        {
+            m_description = value;
+        }
+        
+        void CPACSGuideCurveProfileGeometry::SetDescription(const boost::optional<std::string>& value)
         {
             m_description = value;
         }

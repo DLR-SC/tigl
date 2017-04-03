@@ -146,17 +146,17 @@ namespace tigl
             m_name = value;
         }
         
-        bool CPACSFuselageSegment::HasDescription() const
+        const boost::optional<std::string>& CPACSFuselageSegment::GetDescription() const
         {
-            return static_cast<bool>(m_description);
-        }
-        
-        const std::string& CPACSFuselageSegment::GetDescription() const
-        {
-            return *m_description;
+            return m_description;
         }
         
         void CPACSFuselageSegment::SetDescription(const std::string& value)
+        {
+            m_description = value;
+        }
+        
+        void CPACSFuselageSegment::SetDescription(const boost::optional<std::string>& value)
         {
             m_description = value;
         }
@@ -181,19 +181,14 @@ namespace tigl
             m_toElementUID = value;
         }
         
-        bool CPACSFuselageSegment::HasGuideCurves() const
+        const boost::optional<CCPACSGuideCurves>& CPACSFuselageSegment::GetGuideCurves() const
         {
-            return static_cast<bool>(m_guideCurves);
+            return m_guideCurves;
         }
         
-        const CCPACSGuideCurves& CPACSFuselageSegment::GetGuideCurves() const
+        boost::optional<CCPACSGuideCurves>& CPACSFuselageSegment::GetGuideCurves()
         {
-            return *m_guideCurves;
-        }
-        
-        CCPACSGuideCurves& CPACSFuselageSegment::GetGuideCurves()
-        {
-            return *m_guideCurves;
+            return m_guideCurves;
         }
         
     }

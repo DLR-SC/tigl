@@ -50,24 +50,20 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT bool HasUpperCap() const;
-            TIGL_EXPORT const CPACSCap& GetUpperCap() const;
-            TIGL_EXPORT CPACSCap& GetUpperCap();
+            TIGL_EXPORT const boost::optional<CPACSCap>& GetUpperCap() const;
+            TIGL_EXPORT boost::optional<CPACSCap>& GetUpperCap();
             
-            TIGL_EXPORT bool HasLowerCap() const;
-            TIGL_EXPORT const CPACSCap& GetLowerCap() const;
-            TIGL_EXPORT CPACSCap& GetLowerCap();
+            TIGL_EXPORT const boost::optional<CPACSCap>& GetLowerCap() const;
+            TIGL_EXPORT boost::optional<CPACSCap>& GetLowerCap();
             
             TIGL_EXPORT const CPACSWeb& GetWeb1() const;
             TIGL_EXPORT CPACSWeb& GetWeb1();
             
-            TIGL_EXPORT bool HasWeb2() const;
-            TIGL_EXPORT const CPACSWeb& GetWeb2() const;
-            TIGL_EXPORT CPACSWeb& GetWeb2();
+            TIGL_EXPORT const boost::optional<CPACSWeb>& GetWeb2() const;
+            TIGL_EXPORT boost::optional<CPACSWeb>& GetWeb2();
             
-            TIGL_EXPORT bool HasSparCells() const;
-            TIGL_EXPORT const CPACSSparCells& GetSparCells() const;
-            TIGL_EXPORT CPACSSparCells& GetSparCells();
+            TIGL_EXPORT const boost::optional<CPACSSparCells>& GetSparCells() const;
+            TIGL_EXPORT boost::optional<CPACSSparCells>& GetSparCells();
             
             TIGL_EXPORT const double& GetRotation() const;
             TIGL_EXPORT void SetRotation(const double& value);

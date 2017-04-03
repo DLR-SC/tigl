@@ -46,13 +46,13 @@ namespace tigl
             TIGL_EXPORT const std::string& GetUID() const;
             TIGL_EXPORT void SetUID(const std::string& value);
             
-            TIGL_EXPORT bool HasName() const;
-            TIGL_EXPORT const std::string& GetName() const;
+            TIGL_EXPORT const boost::optional<std::string>& GetName() const;
             TIGL_EXPORT void SetName(const std::string& value);
+            TIGL_EXPORT void SetName(const boost::optional<std::string>& value);
             
-            TIGL_EXPORT bool HasDescription() const;
-            TIGL_EXPORT const std::string& GetDescription() const;
+            TIGL_EXPORT const boost::optional<std::string>& GetDescription() const;
             TIGL_EXPORT void SetDescription(const std::string& value);
+            TIGL_EXPORT void SetDescription(const boost::optional<std::string>& value);
             
             TIGL_EXPORT const double& GetPositionX() const;
             TIGL_EXPORT void SetPositionX(const double& value);
@@ -69,9 +69,8 @@ namespace tigl
             TIGL_EXPORT const CPACSPointXYZ& GetOrientationVector() const;
             TIGL_EXPORT CPACSPointXYZ& GetOrientationVector();
             
-            TIGL_EXPORT bool HasAlignmentVector() const;
-            TIGL_EXPORT const CPACSPointXYZ& GetAlignmentVector() const;
-            TIGL_EXPORT CPACSPointXYZ& GetAlignmentVector();
+            TIGL_EXPORT const boost::optional<CPACSPointXYZ>& GetAlignmentVector() const;
+            TIGL_EXPORT boost::optional<CPACSPointXYZ>& GetAlignmentVector();
             
             TIGL_EXPORT const double& GetDeltaY() const;
             TIGL_EXPORT void SetDeltaY(const double& value);
@@ -79,13 +78,13 @@ namespace tigl
             TIGL_EXPORT const double& GetDeltaZ() const;
             TIGL_EXPORT void SetDeltaZ(const double& value);
             
-            TIGL_EXPORT bool HasDeltaY1() const;
-            TIGL_EXPORT const double& GetDeltaY1() const;
+            TIGL_EXPORT const boost::optional<double>& GetDeltaY1() const;
             TIGL_EXPORT void SetDeltaY1(const double& value);
+            TIGL_EXPORT void SetDeltaY1(const boost::optional<double>& value);
             
-            TIGL_EXPORT bool HasDeltaZ1() const;
-            TIGL_EXPORT const double& GetDeltaZ1() const;
+            TIGL_EXPORT const boost::optional<double>& GetDeltaZ1() const;
             TIGL_EXPORT void SetDeltaZ1(const double& value);
+            TIGL_EXPORT void SetDeltaZ1(const boost::optional<double>& value);
             
             TIGL_EXPORT const double& GetFilletRadius() const;
             TIGL_EXPORT void SetFilletRadius(const double& value);

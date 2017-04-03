@@ -79,14 +79,9 @@ namespace tigl
             
         }
         
-        bool CPACSPoint::HasUID() const
+        const boost::optional<std::string>& CPACSPoint::GetUID() const
         {
-            return static_cast<bool>(m_uID);
-        }
-        
-        const std::string& CPACSPoint::GetUID() const
-        {
-            return *m_uID;
+            return m_uID;
         }
         
         void CPACSPoint::SetUID(const std::string& value)
@@ -94,14 +89,14 @@ namespace tigl
             m_uID = value;
         }
         
-        bool CPACSPoint::HasX() const
+        void CPACSPoint::SetUID(const boost::optional<std::string>& value)
         {
-            return static_cast<bool>(m_x);
+            m_uID = value;
         }
         
-        const double& CPACSPoint::GetX() const
+        const boost::optional<double>& CPACSPoint::GetX() const
         {
-            return *m_x;
+            return m_x;
         }
         
         void CPACSPoint::SetX(const double& value)
@@ -109,14 +104,14 @@ namespace tigl
             m_x = value;
         }
         
-        bool CPACSPoint::HasY() const
+        void CPACSPoint::SetX(const boost::optional<double>& value)
         {
-            return static_cast<bool>(m_y);
+            m_x = value;
         }
         
-        const double& CPACSPoint::GetY() const
+        const boost::optional<double>& CPACSPoint::GetY() const
         {
-            return *m_y;
+            return m_y;
         }
         
         void CPACSPoint::SetY(const double& value)
@@ -124,17 +119,22 @@ namespace tigl
             m_y = value;
         }
         
-        bool CPACSPoint::HasZ() const
+        void CPACSPoint::SetY(const boost::optional<double>& value)
         {
-            return static_cast<bool>(m_z);
+            m_y = value;
         }
         
-        const double& CPACSPoint::GetZ() const
+        const boost::optional<double>& CPACSPoint::GetZ() const
         {
-            return *m_z;
+            return m_z;
         }
         
         void CPACSPoint::SetZ(const double& value)
+        {
+            m_z = value;
+        }
+        
+        void CPACSPoint::SetZ(const boost::optional<double>& value)
         {
             m_z = value;
         }

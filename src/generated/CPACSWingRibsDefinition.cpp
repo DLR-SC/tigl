@@ -155,17 +155,17 @@ namespace tigl
             m_name = value;
         }
         
-        bool CPACSWingRibsDefinition::HasDescription() const
+        const boost::optional<std::string>& CPACSWingRibsDefinition::GetDescription() const
         {
-            return static_cast<bool>(m_description);
-        }
-        
-        const std::string& CPACSWingRibsDefinition::GetDescription() const
-        {
-            return *m_description;
+            return m_description;
         }
         
         void CPACSWingRibsDefinition::SetDescription(const std::string& value)
+        {
+            m_description = value;
+        }
+        
+        void CPACSWingRibsDefinition::SetDescription(const boost::optional<std::string>& value)
         {
             m_description = value;
         }
@@ -180,34 +180,24 @@ namespace tigl
             return m_ribCrossSection;
         }
         
-        bool CPACSWingRibsDefinition::HasRibsPositioning_choice1() const
+        const boost::optional<CCPACSWingRibsPositioning>& CPACSWingRibsDefinition::GetRibsPositioning_choice1() const
         {
-            return static_cast<bool>(m_ribsPositioning_choice1);
+            return m_ribsPositioning_choice1;
         }
         
-        const CCPACSWingRibsPositioning& CPACSWingRibsDefinition::GetRibsPositioning_choice1() const
+        boost::optional<CCPACSWingRibsPositioning>& CPACSWingRibsDefinition::GetRibsPositioning_choice1()
         {
-            return *m_ribsPositioning_choice1;
+            return m_ribsPositioning_choice1;
         }
         
-        CCPACSWingRibsPositioning& CPACSWingRibsDefinition::GetRibsPositioning_choice1()
+        const boost::optional<CPACSWingRibExplicitPositioning>& CPACSWingRibsDefinition::GetRibExplicitPositioning_choice2() const
         {
-            return *m_ribsPositioning_choice1;
+            return m_ribExplicitPositioning_choice2;
         }
         
-        bool CPACSWingRibsDefinition::HasRibExplicitPositioning_choice2() const
+        boost::optional<CPACSWingRibExplicitPositioning>& CPACSWingRibsDefinition::GetRibExplicitPositioning_choice2()
         {
-            return static_cast<bool>(m_ribExplicitPositioning_choice2);
-        }
-        
-        const CPACSWingRibExplicitPositioning& CPACSWingRibsDefinition::GetRibExplicitPositioning_choice2() const
-        {
-            return *m_ribExplicitPositioning_choice2;
-        }
-        
-        CPACSWingRibExplicitPositioning& CPACSWingRibsDefinition::GetRibExplicitPositioning_choice2()
-        {
-            return *m_ribExplicitPositioning_choice2;
+            return m_ribExplicitPositioning_choice2;
         }
         
     }

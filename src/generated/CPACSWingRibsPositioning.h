@@ -62,29 +62,29 @@ namespace tigl
             TIGL_EXPORT const CCPACSWingRibRotation& GetRibRotation() const;
             TIGL_EXPORT CCPACSWingRibRotation& GetRibRotation();
             
-            TIGL_EXPORT bool HasEtaStart_choice1() const;
-            TIGL_EXPORT const double& GetEtaStart_choice1() const;
+            TIGL_EXPORT const boost::optional<double>& GetEtaStart_choice1() const;
             TIGL_EXPORT void SetEtaStart_choice1(const double& value);
+            TIGL_EXPORT void SetEtaStart_choice1(const boost::optional<double>& value);
             
-            TIGL_EXPORT bool HasElementStartUID_choice2() const;
-            TIGL_EXPORT const std::string& GetElementStartUID_choice2() const;
+            TIGL_EXPORT const boost::optional<std::string>& GetElementStartUID_choice2() const;
             TIGL_EXPORT void SetElementStartUID_choice2(const std::string& value);
+            TIGL_EXPORT void SetElementStartUID_choice2(const boost::optional<std::string>& value);
             
-            TIGL_EXPORT bool HasEtaEnd_choice1() const;
-            TIGL_EXPORT const double& GetEtaEnd_choice1() const;
+            TIGL_EXPORT const boost::optional<double>& GetEtaEnd_choice1() const;
             TIGL_EXPORT void SetEtaEnd_choice1(const double& value);
+            TIGL_EXPORT void SetEtaEnd_choice1(const boost::optional<double>& value);
             
-            TIGL_EXPORT bool HasElementEndUID_choice2() const;
-            TIGL_EXPORT const std::string& GetElementEndUID_choice2() const;
+            TIGL_EXPORT const boost::optional<std::string>& GetElementEndUID_choice2() const;
             TIGL_EXPORT void SetElementEndUID_choice2(const std::string& value);
+            TIGL_EXPORT void SetElementEndUID_choice2(const boost::optional<std::string>& value);
             
-            TIGL_EXPORT bool HasSpacing_choice1() const;
-            TIGL_EXPORT const double& GetSpacing_choice1() const;
+            TIGL_EXPORT const boost::optional<double>& GetSpacing_choice1() const;
             TIGL_EXPORT void SetSpacing_choice1(const double& value);
+            TIGL_EXPORT void SetSpacing_choice1(const boost::optional<double>& value);
             
-            TIGL_EXPORT bool HasNumberOfRibs_choice2() const;
-            TIGL_EXPORT const int& GetNumberOfRibs_choice2() const;
+            TIGL_EXPORT const boost::optional<int>& GetNumberOfRibs_choice2() const;
             TIGL_EXPORT void SetNumberOfRibs_choice2(const int& value);
+            TIGL_EXPORT void SetNumberOfRibs_choice2(const boost::optional<int>& value);
             
         protected:
             CCPACSWingRibsDefinition* m_parent;

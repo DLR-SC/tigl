@@ -58,17 +58,17 @@ namespace tigl
             
         }
         
-        bool CPACSPointX::HasUID() const
+        const boost::optional<std::string>& CPACSPointX::GetUID() const
         {
-            return static_cast<bool>(m_uID);
-        }
-        
-        const std::string& CPACSPointX::GetUID() const
-        {
-            return *m_uID;
+            return m_uID;
         }
         
         void CPACSPointX::SetUID(const std::string& value)
+        {
+            m_uID = value;
+        }
+        
+        void CPACSPointX::SetUID(const boost::optional<std::string>& value)
         {
             m_uID = value;
         }

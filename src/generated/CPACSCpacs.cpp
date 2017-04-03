@@ -97,34 +97,24 @@ namespace tigl
             return m_header;
         }
         
-        bool CPACSCpacs::HasVehicles() const
+        const boost::optional<CPACSVehicles>& CPACSCpacs::GetVehicles() const
         {
-            return static_cast<bool>(m_vehicles);
+            return m_vehicles;
         }
         
-        const CPACSVehicles& CPACSCpacs::GetVehicles() const
+        boost::optional<CPACSVehicles>& CPACSCpacs::GetVehicles()
         {
-            return *m_vehicles;
+            return m_vehicles;
         }
         
-        CPACSVehicles& CPACSCpacs::GetVehicles()
+        const boost::optional<CPACSToolspecific>& CPACSCpacs::GetToolspecific() const
         {
-            return *m_vehicles;
+            return m_toolspecific;
         }
         
-        bool CPACSCpacs::HasToolspecific() const
+        boost::optional<CPACSToolspecific>& CPACSCpacs::GetToolspecific()
         {
-            return static_cast<bool>(m_toolspecific);
-        }
-        
-        const CPACSToolspecific& CPACSCpacs::GetToolspecific() const
-        {
-            return *m_toolspecific;
-        }
-        
-        CPACSToolspecific& CPACSCpacs::GetToolspecific()
-        {
-            return *m_toolspecific;
+            return m_toolspecific;
         }
         
     }

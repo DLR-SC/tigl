@@ -183,17 +183,17 @@ namespace tigl
             m_uID = value;
         }
         
-        bool CPACSFuselage::HasSymmetry() const
+        const boost::optional<TiglSymmetryAxis>& CPACSFuselage::GetSymmetry() const
         {
-            return static_cast<bool>(m_symmetry);
-        }
-        
-        const TiglSymmetryAxis& CPACSFuselage::GetSymmetry() const
-        {
-            return *m_symmetry;
+            return m_symmetry;
         }
         
         void CPACSFuselage::SetSymmetry(const TiglSymmetryAxis& value)
+        {
+            m_symmetry = value;
+        }
+        
+        void CPACSFuselage::SetSymmetry(const boost::optional<TiglSymmetryAxis>& value)
         {
             m_symmetry = value;
         }
@@ -208,14 +208,9 @@ namespace tigl
             m_name = value;
         }
         
-        bool CPACSFuselage::HasDescription() const
+        const boost::optional<std::string>& CPACSFuselage::GetDescription() const
         {
-            return static_cast<bool>(m_description);
-        }
-        
-        const std::string& CPACSFuselage::GetDescription() const
-        {
-            return *m_description;
+            return m_description;
         }
         
         void CPACSFuselage::SetDescription(const std::string& value)
@@ -223,17 +218,22 @@ namespace tigl
             m_description = value;
         }
         
-        bool CPACSFuselage::HasParentUID() const
+        void CPACSFuselage::SetDescription(const boost::optional<std::string>& value)
         {
-            return static_cast<bool>(m_parentUID);
+            m_description = value;
         }
         
-        const std::string& CPACSFuselage::GetParentUID() const
+        const boost::optional<std::string>& CPACSFuselage::GetParentUID() const
         {
-            return *m_parentUID;
+            return m_parentUID;
         }
         
         void CPACSFuselage::SetParentUID(const std::string& value)
+        {
+            m_parentUID = value;
+        }
+        
+        void CPACSFuselage::SetParentUID(const boost::optional<std::string>& value)
         {
             m_parentUID = value;
         }
@@ -278,19 +278,14 @@ namespace tigl
             return m_segments;
         }
         
-        bool CPACSFuselage::HasCutOuts() const
+        const boost::optional<CPACSFuselageCutOuts>& CPACSFuselage::GetCutOuts() const
         {
-            return static_cast<bool>(m_cutOuts);
+            return m_cutOuts;
         }
         
-        const CPACSFuselageCutOuts& CPACSFuselage::GetCutOuts() const
+        boost::optional<CPACSFuselageCutOuts>& CPACSFuselage::GetCutOuts()
         {
-            return *m_cutOuts;
-        }
-        
-        CPACSFuselageCutOuts& CPACSFuselage::GetCutOuts()
-        {
-            return *m_cutOuts;
+            return m_cutOuts;
         }
         
     }

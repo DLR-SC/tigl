@@ -149,64 +149,44 @@ namespace tigl
             return m_material;
         }
         
-        bool CPACSWingRibCrossSection::HasRibRotation() const
+        const boost::optional<CPACSPointX>& CPACSWingRibCrossSection::GetRibRotation() const
         {
-            return static_cast<bool>(m_ribRotation);
+            return m_ribRotation;
         }
         
-        const CPACSPointX& CPACSWingRibCrossSection::GetRibRotation() const
+        boost::optional<CPACSPointX>& CPACSWingRibCrossSection::GetRibRotation()
         {
-            return *m_ribRotation;
+            return m_ribRotation;
         }
         
-        CPACSPointX& CPACSWingRibCrossSection::GetRibRotation()
+        const boost::optional<CPACSWingRibCell>& CPACSWingRibCrossSection::GetRibCell() const
         {
-            return *m_ribRotation;
+            return m_ribCell;
         }
         
-        bool CPACSWingRibCrossSection::HasRibCell() const
+        boost::optional<CPACSWingRibCell>& CPACSWingRibCrossSection::GetRibCell()
         {
-            return static_cast<bool>(m_ribCell);
+            return m_ribCell;
         }
         
-        const CPACSWingRibCell& CPACSWingRibCrossSection::GetRibCell() const
+        const boost::optional<CPACSCap>& CPACSWingRibCrossSection::GetUpperCap() const
         {
-            return *m_ribCell;
+            return m_upperCap;
         }
         
-        CPACSWingRibCell& CPACSWingRibCrossSection::GetRibCell()
+        boost::optional<CPACSCap>& CPACSWingRibCrossSection::GetUpperCap()
         {
-            return *m_ribCell;
+            return m_upperCap;
         }
         
-        bool CPACSWingRibCrossSection::HasUpperCap() const
+        const boost::optional<CPACSCap>& CPACSWingRibCrossSection::GetLowerCap() const
         {
-            return static_cast<bool>(m_upperCap);
+            return m_lowerCap;
         }
         
-        const CPACSCap& CPACSWingRibCrossSection::GetUpperCap() const
+        boost::optional<CPACSCap>& CPACSWingRibCrossSection::GetLowerCap()
         {
-            return *m_upperCap;
-        }
-        
-        CPACSCap& CPACSWingRibCrossSection::GetUpperCap()
-        {
-            return *m_upperCap;
-        }
-        
-        bool CPACSWingRibCrossSection::HasLowerCap() const
-        {
-            return static_cast<bool>(m_lowerCap);
-        }
-        
-        const CPACSCap& CPACSWingRibCrossSection::GetLowerCap() const
-        {
-            return *m_lowerCap;
-        }
-        
-        CPACSCap& CPACSWingRibCrossSection::GetLowerCap()
-        {
-            return *m_lowerCap;
+            return m_lowerCap;
         }
         
     }

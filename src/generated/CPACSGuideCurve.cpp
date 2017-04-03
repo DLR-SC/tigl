@@ -196,17 +196,17 @@ namespace tigl
             m_name = value;
         }
         
-        bool CPACSGuideCurve::HasDescription() const
+        const boost::optional<std::string>& CPACSGuideCurve::GetDescription() const
         {
-            return static_cast<bool>(m_description);
-        }
-        
-        const std::string& CPACSGuideCurve::GetDescription() const
-        {
-            return *m_description;
+            return m_description;
         }
         
         void CPACSGuideCurve::SetDescription(const std::string& value)
+        {
+            m_description = value;
+        }
+        
+        void CPACSGuideCurve::SetDescription(const boost::optional<std::string>& value)
         {
             m_description = value;
         }
@@ -221,14 +221,9 @@ namespace tigl
             m_guideCurveProfileUID = value;
         }
         
-        bool CPACSGuideCurve::HasFromGuideCurveUID_choice1() const
+        const boost::optional<std::string>& CPACSGuideCurve::GetFromGuideCurveUID_choice1() const
         {
-            return static_cast<bool>(m_fromGuideCurveUID_choice1);
-        }
-        
-        const std::string& CPACSGuideCurve::GetFromGuideCurveUID_choice1() const
-        {
-            return *m_fromGuideCurveUID_choice1;
+            return m_fromGuideCurveUID_choice1;
         }
         
         void CPACSGuideCurve::SetFromGuideCurveUID_choice1(const std::string& value)
@@ -236,29 +231,24 @@ namespace tigl
             m_fromGuideCurveUID_choice1 = value;
         }
         
-        bool CPACSGuideCurve::HasContinuity_choice1() const
+        void CPACSGuideCurve::SetFromGuideCurveUID_choice1(const boost::optional<std::string>& value)
         {
-            return static_cast<bool>(m_continuity_choice1);
+            m_fromGuideCurveUID_choice1 = value;
         }
         
-        const CPACSGuideCurve_continuity& CPACSGuideCurve::GetContinuity_choice1() const
+        const boost::optional<CPACSGuideCurve_continuity>& CPACSGuideCurve::GetContinuity_choice1() const
         {
-            return *m_continuity_choice1;
+            return m_continuity_choice1;
         }
         
-        CPACSGuideCurve_continuity& CPACSGuideCurve::GetContinuity_choice1()
+        boost::optional<CPACSGuideCurve_continuity>& CPACSGuideCurve::GetContinuity_choice1()
         {
-            return *m_continuity_choice1;
+            return m_continuity_choice1;
         }
         
-        bool CPACSGuideCurve::HasFromRelativeCircumference_choice2() const
+        const boost::optional<std::string>& CPACSGuideCurve::GetFromRelativeCircumference_choice2() const
         {
-            return static_cast<bool>(m_fromRelativeCircumference_choice2);
-        }
-        
-        const std::string& CPACSGuideCurve::GetFromRelativeCircumference_choice2() const
-        {
-            return *m_fromRelativeCircumference_choice2;
+            return m_fromRelativeCircumference_choice2;
         }
         
         void CPACSGuideCurve::SetFromRelativeCircumference_choice2(const std::string& value)
@@ -266,19 +256,19 @@ namespace tigl
             m_fromRelativeCircumference_choice2 = value;
         }
         
-        bool CPACSGuideCurve::HasTangent_choice2() const
+        void CPACSGuideCurve::SetFromRelativeCircumference_choice2(const boost::optional<std::string>& value)
         {
-            return static_cast<bool>(m_tangent_choice2);
+            m_fromRelativeCircumference_choice2 = value;
         }
         
-        const CPACSPointXYZ& CPACSGuideCurve::GetTangent_choice2() const
+        const boost::optional<CPACSPointXYZ>& CPACSGuideCurve::GetTangent_choice2() const
         {
-            return *m_tangent_choice2;
+            return m_tangent_choice2;
         }
         
-        CPACSPointXYZ& CPACSGuideCurve::GetTangent_choice2()
+        boost::optional<CPACSPointXYZ>& CPACSGuideCurve::GetTangent_choice2()
         {
-            return *m_tangent_choice2;
+            return m_tangent_choice2;
         }
         
         const std::string& CPACSGuideCurve::GetToRelativeCircumference() const
@@ -291,19 +281,14 @@ namespace tigl
             m_toRelativeCircumference = value;
         }
         
-        bool CPACSGuideCurve::HasTangent() const
+        const boost::optional<CPACSPointXYZ>& CPACSGuideCurve::GetTangent() const
         {
-            return static_cast<bool>(m_tangent);
+            return m_tangent;
         }
         
-        const CPACSPointXYZ& CPACSGuideCurve::GetTangent() const
+        boost::optional<CPACSPointXYZ>& CPACSGuideCurve::GetTangent()
         {
-            return *m_tangent;
-        }
-        
-        CPACSPointXYZ& CPACSGuideCurve::GetTangent()
-        {
-            return *m_tangent;
+            return m_tangent;
         }
         
     }

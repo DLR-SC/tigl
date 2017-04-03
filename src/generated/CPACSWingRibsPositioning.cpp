@@ -224,14 +224,9 @@ namespace tigl
             return m_ribRotation;
         }
         
-        bool CPACSWingRibsPositioning::HasEtaStart_choice1() const
+        const boost::optional<double>& CPACSWingRibsPositioning::GetEtaStart_choice1() const
         {
-            return static_cast<bool>(m_etaStart_choice1);
-        }
-        
-        const double& CPACSWingRibsPositioning::GetEtaStart_choice1() const
-        {
-            return *m_etaStart_choice1;
+            return m_etaStart_choice1;
         }
         
         void CPACSWingRibsPositioning::SetEtaStart_choice1(const double& value)
@@ -239,14 +234,14 @@ namespace tigl
             m_etaStart_choice1 = value;
         }
         
-        bool CPACSWingRibsPositioning::HasElementStartUID_choice2() const
+        void CPACSWingRibsPositioning::SetEtaStart_choice1(const boost::optional<double>& value)
         {
-            return static_cast<bool>(m_elementStartUID_choice2);
+            m_etaStart_choice1 = value;
         }
         
-        const std::string& CPACSWingRibsPositioning::GetElementStartUID_choice2() const
+        const boost::optional<std::string>& CPACSWingRibsPositioning::GetElementStartUID_choice2() const
         {
-            return *m_elementStartUID_choice2;
+            return m_elementStartUID_choice2;
         }
         
         void CPACSWingRibsPositioning::SetElementStartUID_choice2(const std::string& value)
@@ -254,14 +249,14 @@ namespace tigl
             m_elementStartUID_choice2 = value;
         }
         
-        bool CPACSWingRibsPositioning::HasEtaEnd_choice1() const
+        void CPACSWingRibsPositioning::SetElementStartUID_choice2(const boost::optional<std::string>& value)
         {
-            return static_cast<bool>(m_etaEnd_choice1);
+            m_elementStartUID_choice2 = value;
         }
         
-        const double& CPACSWingRibsPositioning::GetEtaEnd_choice1() const
+        const boost::optional<double>& CPACSWingRibsPositioning::GetEtaEnd_choice1() const
         {
-            return *m_etaEnd_choice1;
+            return m_etaEnd_choice1;
         }
         
         void CPACSWingRibsPositioning::SetEtaEnd_choice1(const double& value)
@@ -269,14 +264,14 @@ namespace tigl
             m_etaEnd_choice1 = value;
         }
         
-        bool CPACSWingRibsPositioning::HasElementEndUID_choice2() const
+        void CPACSWingRibsPositioning::SetEtaEnd_choice1(const boost::optional<double>& value)
         {
-            return static_cast<bool>(m_elementEndUID_choice2);
+            m_etaEnd_choice1 = value;
         }
         
-        const std::string& CPACSWingRibsPositioning::GetElementEndUID_choice2() const
+        const boost::optional<std::string>& CPACSWingRibsPositioning::GetElementEndUID_choice2() const
         {
-            return *m_elementEndUID_choice2;
+            return m_elementEndUID_choice2;
         }
         
         void CPACSWingRibsPositioning::SetElementEndUID_choice2(const std::string& value)
@@ -284,14 +279,14 @@ namespace tigl
             m_elementEndUID_choice2 = value;
         }
         
-        bool CPACSWingRibsPositioning::HasSpacing_choice1() const
+        void CPACSWingRibsPositioning::SetElementEndUID_choice2(const boost::optional<std::string>& value)
         {
-            return static_cast<bool>(m_spacing_choice1);
+            m_elementEndUID_choice2 = value;
         }
         
-        const double& CPACSWingRibsPositioning::GetSpacing_choice1() const
+        const boost::optional<double>& CPACSWingRibsPositioning::GetSpacing_choice1() const
         {
-            return *m_spacing_choice1;
+            return m_spacing_choice1;
         }
         
         void CPACSWingRibsPositioning::SetSpacing_choice1(const double& value)
@@ -299,17 +294,22 @@ namespace tigl
             m_spacing_choice1 = value;
         }
         
-        bool CPACSWingRibsPositioning::HasNumberOfRibs_choice2() const
+        void CPACSWingRibsPositioning::SetSpacing_choice1(const boost::optional<double>& value)
         {
-            return static_cast<bool>(m_numberOfRibs_choice2);
+            m_spacing_choice1 = value;
         }
         
-        const int& CPACSWingRibsPositioning::GetNumberOfRibs_choice2() const
+        const boost::optional<int>& CPACSWingRibsPositioning::GetNumberOfRibs_choice2() const
         {
-            return *m_numberOfRibs_choice2;
+            return m_numberOfRibs_choice2;
         }
         
         void CPACSWingRibsPositioning::SetNumberOfRibs_choice2(const int& value)
+        {
+            m_numberOfRibs_choice2 = value;
+        }
+        
+        void CPACSWingRibsPositioning::SetNumberOfRibs_choice2(const boost::optional<int>& value)
         {
             m_numberOfRibs_choice2 = value;
         }

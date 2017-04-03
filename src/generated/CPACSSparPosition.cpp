@@ -113,14 +113,9 @@ namespace tigl
             m_xsi = value;
         }
         
-        bool CPACSSparPosition::HasEta_choice1() const
+        const boost::optional<double>& CPACSSparPosition::GetEta_choice1() const
         {
-            return static_cast<bool>(m_eta_choice1);
-        }
-        
-        const double& CPACSSparPosition::GetEta_choice1() const
-        {
-            return *m_eta_choice1;
+            return m_eta_choice1;
         }
         
         void CPACSSparPosition::SetEta_choice1(const double& value)
@@ -128,17 +123,22 @@ namespace tigl
             m_eta_choice1 = value;
         }
         
-        bool CPACSSparPosition::HasElementUID_choice2() const
+        void CPACSSparPosition::SetEta_choice1(const boost::optional<double>& value)
         {
-            return static_cast<bool>(m_elementUID_choice2);
+            m_eta_choice1 = value;
         }
         
-        const std::string& CPACSSparPosition::GetElementUID_choice2() const
+        const boost::optional<std::string>& CPACSSparPosition::GetElementUID_choice2() const
         {
-            return *m_elementUID_choice2;
+            return m_elementUID_choice2;
         }
         
         void CPACSSparPosition::SetElementUID_choice2(const std::string& value)
+        {
+            m_elementUID_choice2 = value;
+        }
+        
+        void CPACSSparPosition::SetElementUID_choice2(const boost::optional<std::string>& value)
         {
             m_elementUID_choice2 = value;
         }

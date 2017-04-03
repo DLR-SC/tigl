@@ -143,14 +143,9 @@ namespace tigl
             
         }
         
-        bool CPACSPostFailure::HasName() const
+        const boost::optional<std::string>& CPACSPostFailure::GetName() const
         {
-            return static_cast<bool>(m_name);
-        }
-        
-        const std::string& CPACSPostFailure::GetName() const
-        {
-            return *m_name;
+            return m_name;
         }
         
         void CPACSPostFailure::SetName(const std::string& value)
@@ -158,14 +153,14 @@ namespace tigl
             m_name = value;
         }
         
-        bool CPACSPostFailure::HasDescription() const
+        void CPACSPostFailure::SetName(const boost::optional<std::string>& value)
         {
-            return static_cast<bool>(m_description);
+            m_name = value;
         }
         
-        const std::string& CPACSPostFailure::GetDescription() const
+        const boost::optional<std::string>& CPACSPostFailure::GetDescription() const
         {
-            return *m_description;
+            return m_description;
         }
         
         void CPACSPostFailure::SetDescription(const std::string& value)
@@ -173,14 +168,14 @@ namespace tigl
             m_description = value;
         }
         
-        bool CPACSPostFailure::HasMaterialLaw() const
+        void CPACSPostFailure::SetDescription(const boost::optional<std::string>& value)
         {
-            return static_cast<bool>(m_materialLaw);
+            m_description = value;
         }
         
-        const std::string& CPACSPostFailure::GetMaterialLaw() const
+        const boost::optional<std::string>& CPACSPostFailure::GetMaterialLaw() const
         {
-            return *m_materialLaw;
+            return m_materialLaw;
         }
         
         void CPACSPostFailure::SetMaterialLaw(const std::string& value)
@@ -188,17 +183,22 @@ namespace tigl
             m_materialLaw = value;
         }
         
-        bool CPACSPostFailure::HasPlasticEliminationStrain_choice1() const
+        void CPACSPostFailure::SetMaterialLaw(const boost::optional<std::string>& value)
         {
-            return static_cast<bool>(m_plasticEliminationStrain_choice1);
+            m_materialLaw = value;
         }
         
-        const double& CPACSPostFailure::GetPlasticEliminationStrain_choice1() const
+        const boost::optional<double>& CPACSPostFailure::GetPlasticEliminationStrain_choice1() const
         {
-            return *m_plasticEliminationStrain_choice1;
+            return m_plasticEliminationStrain_choice1;
         }
         
         void CPACSPostFailure::SetPlasticEliminationStrain_choice1(const double& value)
+        {
+            m_plasticEliminationStrain_choice1 = value;
+        }
+        
+        void CPACSPostFailure::SetPlasticEliminationStrain_choice1(const boost::optional<double>& value)
         {
             m_plasticEliminationStrain_choice1 = value;
         }
@@ -213,14 +213,9 @@ namespace tigl
             return m_plasticityCurvePoint_choice1s;
         }
         
-        bool CPACSPostFailure::HasInitialEquivalentShearStrain_choice2() const
+        const boost::optional<double>& CPACSPostFailure::GetInitialEquivalentShearStrain_choice2() const
         {
-            return static_cast<bool>(m_initialEquivalentShearStrain_choice2);
-        }
-        
-        const double& CPACSPostFailure::GetInitialEquivalentShearStrain_choice2() const
-        {
-            return *m_initialEquivalentShearStrain_choice2;
+            return m_initialEquivalentShearStrain_choice2;
         }
         
         void CPACSPostFailure::SetInitialEquivalentShearStrain_choice2(const double& value)
@@ -228,14 +223,14 @@ namespace tigl
             m_initialEquivalentShearStrain_choice2 = value;
         }
         
-        bool CPACSPostFailure::HasIntermediateEquivalentShearStrain_choice2() const
+        void CPACSPostFailure::SetInitialEquivalentShearStrain_choice2(const boost::optional<double>& value)
         {
-            return static_cast<bool>(m_intermediateEquivalentShearStrain_choice2);
+            m_initialEquivalentShearStrain_choice2 = value;
         }
         
-        const double& CPACSPostFailure::GetIntermediateEquivalentShearStrain_choice2() const
+        const boost::optional<double>& CPACSPostFailure::GetIntermediateEquivalentShearStrain_choice2() const
         {
-            return *m_intermediateEquivalentShearStrain_choice2;
+            return m_intermediateEquivalentShearStrain_choice2;
         }
         
         void CPACSPostFailure::SetIntermediateEquivalentShearStrain_choice2(const double& value)
@@ -243,14 +238,14 @@ namespace tigl
             m_intermediateEquivalentShearStrain_choice2 = value;
         }
         
-        bool CPACSPostFailure::HasUltimateEquivalentShearStrain_choice2() const
+        void CPACSPostFailure::SetIntermediateEquivalentShearStrain_choice2(const boost::optional<double>& value)
         {
-            return static_cast<bool>(m_ultimateEquivalentShearStrain_choice2);
+            m_intermediateEquivalentShearStrain_choice2 = value;
         }
         
-        const double& CPACSPostFailure::GetUltimateEquivalentShearStrain_choice2() const
+        const boost::optional<double>& CPACSPostFailure::GetUltimateEquivalentShearStrain_choice2() const
         {
-            return *m_ultimateEquivalentShearStrain_choice2;
+            return m_ultimateEquivalentShearStrain_choice2;
         }
         
         void CPACSPostFailure::SetUltimateEquivalentShearStrain_choice2(const double& value)
@@ -258,14 +253,14 @@ namespace tigl
             m_ultimateEquivalentShearStrain_choice2 = value;
         }
         
-        bool CPACSPostFailure::HasIntermediateDamage_choice2() const
+        void CPACSPostFailure::SetUltimateEquivalentShearStrain_choice2(const boost::optional<double>& value)
         {
-            return static_cast<bool>(m_intermediateDamage_choice2);
+            m_ultimateEquivalentShearStrain_choice2 = value;
         }
         
-        const double& CPACSPostFailure::GetIntermediateDamage_choice2() const
+        const boost::optional<double>& CPACSPostFailure::GetIntermediateDamage_choice2() const
         {
-            return *m_intermediateDamage_choice2;
+            return m_intermediateDamage_choice2;
         }
         
         void CPACSPostFailure::SetIntermediateDamage_choice2(const double& value)
@@ -273,17 +268,22 @@ namespace tigl
             m_intermediateDamage_choice2 = value;
         }
         
-        bool CPACSPostFailure::HasUltimateDamage_choice2() const
+        void CPACSPostFailure::SetIntermediateDamage_choice2(const boost::optional<double>& value)
         {
-            return static_cast<bool>(m_ultimateDamage_choice2);
+            m_intermediateDamage_choice2 = value;
         }
         
-        const double& CPACSPostFailure::GetUltimateDamage_choice2() const
+        const boost::optional<double>& CPACSPostFailure::GetUltimateDamage_choice2() const
         {
-            return *m_ultimateDamage_choice2;
+            return m_ultimateDamage_choice2;
         }
         
         void CPACSPostFailure::SetUltimateDamage_choice2(const double& value)
+        {
+            m_ultimateDamage_choice2 = value;
+        }
+        
+        void CPACSPostFailure::SetUltimateDamage_choice2(const boost::optional<double>& value)
         {
             m_ultimateDamage_choice2 = value;
         }

@@ -2196,11 +2196,11 @@ void TIGLViewerDocument::showRotorProperties()
         ADD_PROPERTY_TEXT("UID", QString::fromStdString(rotor.GetUID()));
         ADD_PROPERTY_TEXT("Type", QString::number(rotor.GetType()));
         ADD_PROPERTY_TEXT("Name", QString::fromStdString(rotor.GetName()));
-        ADD_PROPERTY_TEXT("Description", QString::fromStdString(rotor.GetDescription()));
+        ADD_PROPERTY_TEXT("Description", QString::fromStdString(rotor.GetDescription().get_value_or("")));
 
         tmpPoint = rotor.GetTranslation();
         ADD_PROPERTY_TEXT("Translation", "(" + QString::number(tmpPoint.x) + "; " + QString::number(tmpPoint.y) + "; " + QString::number(tmpPoint.z) + ")")
-        ADD_PROPERTY_TEXT("RPM", QString::number(rotor.GetNominalRotationsPerMinute()));
+        ADD_PROPERTY_TEXT("RPM", QString::number(rotor.GetNominalRotationsPerMinute().get_value_or(0)));
         ADD_PROPERTY_TEXT("Tip Speed", QString::number(rotor.GetTipSpeed()));
         ADD_PROPERTY_TEXT("RotorBladeAttachmentCount", QString::number(rotor.GetRotorBladeAttachmentCount()));
         ADD_PROPERTY_TEXT("RotorBladeCount", QString::number(rotor.GetRotorBladeCount()));

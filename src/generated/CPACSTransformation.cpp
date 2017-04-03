@@ -106,14 +106,9 @@ namespace tigl
             
         }
         
-        bool CPACSTransformation::HasUID() const
+        const boost::optional<std::string>& CPACSTransformation::GetUID() const
         {
-            return static_cast<bool>(m_uID);
-        }
-        
-        const std::string& CPACSTransformation::GetUID() const
-        {
-            return *m_uID;
+            return m_uID;
         }
         
         void CPACSTransformation::SetUID(const std::string& value)
@@ -121,49 +116,39 @@ namespace tigl
             m_uID = value;
         }
         
-        bool CPACSTransformation::HasScaling() const
+        void CPACSTransformation::SetUID(const boost::optional<std::string>& value)
         {
-            return static_cast<bool>(m_scaling);
+            m_uID = value;
         }
         
-        const CCPACSPoint& CPACSTransformation::GetScaling() const
+        const boost::optional<CCPACSPoint>& CPACSTransformation::GetScaling() const
         {
-            return *m_scaling;
+            return m_scaling;
         }
         
-        CCPACSPoint& CPACSTransformation::GetScaling()
+        boost::optional<CCPACSPoint>& CPACSTransformation::GetScaling()
         {
-            return *m_scaling;
+            return m_scaling;
         }
         
-        bool CPACSTransformation::HasRotation() const
+        const boost::optional<CCPACSPoint>& CPACSTransformation::GetRotation() const
         {
-            return static_cast<bool>(m_rotation);
+            return m_rotation;
         }
         
-        const CCPACSPoint& CPACSTransformation::GetRotation() const
+        boost::optional<CCPACSPoint>& CPACSTransformation::GetRotation()
         {
-            return *m_rotation;
+            return m_rotation;
         }
         
-        CCPACSPoint& CPACSTransformation::GetRotation()
+        const boost::optional<CCPACSPointAbsRel>& CPACSTransformation::GetTranslation() const
         {
-            return *m_rotation;
+            return m_translation;
         }
         
-        bool CPACSTransformation::HasTranslation() const
+        boost::optional<CCPACSPointAbsRel>& CPACSTransformation::GetTranslation()
         {
-            return static_cast<bool>(m_translation);
-        }
-        
-        const CCPACSPointAbsRel& CPACSTransformation::GetTranslation() const
-        {
-            return *m_translation;
-        }
-        
-        CCPACSPointAbsRel& CPACSTransformation::GetTranslation()
-        {
-            return *m_translation;
+            return m_translation;
         }
         
     }

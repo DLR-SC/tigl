@@ -64,9 +64,9 @@ namespace tigl
             TIGL_EXPORT const CCPACSStringVector& GetLowerB() const;
             TIGL_EXPORT CCPACSStringVector& GetLowerB();
             
-            TIGL_EXPORT bool HasTrailingEdgeThickness() const;
-            TIGL_EXPORT const double& GetTrailingEdgeThickness() const;
+            TIGL_EXPORT const boost::optional<double>& GetTrailingEdgeThickness() const;
             TIGL_EXPORT void SetTrailingEdgeThickness(const double& value);
+            TIGL_EXPORT void SetTrailingEdgeThickness(const boost::optional<double>& value);
             
         protected:
             CCPACSStringVector      m_psi;

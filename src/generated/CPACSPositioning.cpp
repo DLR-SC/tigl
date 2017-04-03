@@ -128,17 +128,17 @@ namespace tigl
             
         }
         
-        bool CPACSPositioning::HasUID() const
+        const boost::optional<std::string>& CPACSPositioning::GetUID() const
         {
-            return static_cast<bool>(m_uID);
-        }
-        
-        const std::string& CPACSPositioning::GetUID() const
-        {
-            return *m_uID;
+            return m_uID;
         }
         
         void CPACSPositioning::SetUID(const std::string& value)
+        {
+            m_uID = value;
+        }
+        
+        void CPACSPositioning::SetUID(const boost::optional<std::string>& value)
         {
             m_uID = value;
         }
@@ -153,17 +153,17 @@ namespace tigl
             m_name = value;
         }
         
-        bool CPACSPositioning::HasDescription() const
+        const boost::optional<std::string>& CPACSPositioning::GetDescription() const
         {
-            return static_cast<bool>(m_description);
-        }
-        
-        const std::string& CPACSPositioning::GetDescription() const
-        {
-            return *m_description;
+            return m_description;
         }
         
         void CPACSPositioning::SetDescription(const std::string& value)
+        {
+            m_description = value;
+        }
+        
+        void CPACSPositioning::SetDescription(const boost::optional<std::string>& value)
         {
             m_description = value;
         }
@@ -198,17 +198,17 @@ namespace tigl
             m_dihedralAngle = value;
         }
         
-        bool CPACSPositioning::HasFromSectionUID() const
+        const boost::optional<std::string>& CPACSPositioning::GetFromSectionUID() const
         {
-            return static_cast<bool>(m_fromSectionUID);
-        }
-        
-        const std::string& CPACSPositioning::GetFromSectionUID() const
-        {
-            return *m_fromSectionUID;
+            return m_fromSectionUID;
         }
         
         void CPACSPositioning::SetFromSectionUID(const std::string& value)
+        {
+            m_fromSectionUID = value;
+        }
+        
+        void CPACSPositioning::SetFromSectionUID(const boost::optional<std::string>& value)
         {
             m_fromSectionUID = value;
         }

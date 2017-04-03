@@ -146,17 +146,17 @@ namespace tigl
             m_name = value;
         }
         
-        bool CPACSComponentSegment::HasDescription() const
+        const boost::optional<std::string>& CPACSComponentSegment::GetDescription() const
         {
-            return static_cast<bool>(m_description);
-        }
-        
-        const std::string& CPACSComponentSegment::GetDescription() const
-        {
-            return *m_description;
+            return m_description;
         }
         
         void CPACSComponentSegment::SetDescription(const std::string& value)
+        {
+            m_description = value;
+        }
+        
+        void CPACSComponentSegment::SetDescription(const boost::optional<std::string>& value)
         {
             m_description = value;
         }
@@ -181,19 +181,14 @@ namespace tigl
             m_toElementUID = value;
         }
         
-        bool CPACSComponentSegment::HasStructure() const
+        const boost::optional<CCPACSWingCSStructure>& CPACSComponentSegment::GetStructure() const
         {
-            return static_cast<bool>(m_structure);
+            return m_structure;
         }
         
-        const CCPACSWingCSStructure& CPACSComponentSegment::GetStructure() const
+        boost::optional<CCPACSWingCSStructure>& CPACSComponentSegment::GetStructure()
         {
-            return *m_structure;
-        }
-        
-        CCPACSWingCSStructure& CPACSComponentSegment::GetStructure()
-        {
-            return *m_structure;
+            return m_structure;
         }
         
     }

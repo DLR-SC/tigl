@@ -51,13 +51,13 @@ namespace tigl
             TIGL_EXPORT const double& GetXsi() const;
             TIGL_EXPORT void SetXsi(const double& value);
             
-            TIGL_EXPORT bool HasEta_choice1() const;
-            TIGL_EXPORT const double& GetEta_choice1() const;
+            TIGL_EXPORT const boost::optional<double>& GetEta_choice1() const;
             TIGL_EXPORT void SetEta_choice1(const double& value);
+            TIGL_EXPORT void SetEta_choice1(const boost::optional<double>& value);
             
-            TIGL_EXPORT bool HasElementUID_choice2() const;
-            TIGL_EXPORT const std::string& GetElementUID_choice2() const;
+            TIGL_EXPORT const boost::optional<std::string>& GetElementUID_choice2() const;
             TIGL_EXPORT void SetElementUID_choice2(const std::string& value);
+            TIGL_EXPORT void SetElementUID_choice2(const boost::optional<std::string>& value);
             
         protected:
             CCPACSWingSparPositions* m_parent;

@@ -49,21 +49,18 @@ namespace tigl
             TIGL_EXPORT const std::string& GetName() const;
             TIGL_EXPORT void SetName(const std::string& value);
             
-            TIGL_EXPORT bool HasDescription() const;
-            TIGL_EXPORT const std::string& GetDescription() const;
+            TIGL_EXPORT const boost::optional<std::string>& GetDescription() const;
             TIGL_EXPORT void SetDescription(const std::string& value);
+            TIGL_EXPORT void SetDescription(const boost::optional<std::string>& value);
             
-            TIGL_EXPORT bool HasFuselages() const;
-            TIGL_EXPORT const CCPACSFuselages& GetFuselages() const;
-            TIGL_EXPORT CCPACSFuselages& GetFuselages();
+            TIGL_EXPORT const boost::optional<CCPACSFuselages>& GetFuselages() const;
+            TIGL_EXPORT boost::optional<CCPACSFuselages>& GetFuselages();
             
-            TIGL_EXPORT bool HasWings() const;
-            TIGL_EXPORT const CCPACSWings& GetWings() const;
-            TIGL_EXPORT CCPACSWings& GetWings();
+            TIGL_EXPORT const boost::optional<CCPACSWings>& GetWings() const;
+            TIGL_EXPORT boost::optional<CCPACSWings>& GetWings();
             
-            TIGL_EXPORT bool HasGenericGeometryComponents() const;
-            TIGL_EXPORT const CCPACSExternalObjects& GetGenericGeometryComponents() const;
-            TIGL_EXPORT CCPACSExternalObjects& GetGenericGeometryComponents();
+            TIGL_EXPORT const boost::optional<CCPACSExternalObjects>& GetGenericGeometryComponents() const;
+            TIGL_EXPORT boost::optional<CCPACSExternalObjects>& GetGenericGeometryComponents();
             
         protected:
             std::string                            m_uID;

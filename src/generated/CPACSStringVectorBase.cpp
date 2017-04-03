@@ -156,14 +156,9 @@ namespace tigl
             m_mapType = value;
         }
         
-        bool CPACSStringVectorBase::HasUncertaintyFunctionName() const
+        const boost::optional<std::string>& CPACSStringVectorBase::GetUncertaintyFunctionName() const
         {
-            return static_cast<bool>(m_uncertaintyFunctionName);
-        }
-        
-        const std::string& CPACSStringVectorBase::GetUncertaintyFunctionName() const
-        {
-            return *m_uncertaintyFunctionName;
+            return m_uncertaintyFunctionName;
         }
         
         void CPACSStringVectorBase::SetUncertaintyFunctionName(const std::string& value)
@@ -171,14 +166,14 @@ namespace tigl
             m_uncertaintyFunctionName = value;
         }
         
-        bool CPACSStringVectorBase::HasMu() const
+        void CPACSStringVectorBase::SetUncertaintyFunctionName(const boost::optional<std::string>& value)
         {
-            return static_cast<bool>(m_mu);
+            m_uncertaintyFunctionName = value;
         }
         
-        const std::string& CPACSStringVectorBase::GetMu() const
+        const boost::optional<std::string>& CPACSStringVectorBase::GetMu() const
         {
-            return *m_mu;
+            return m_mu;
         }
         
         void CPACSStringVectorBase::SetMu(const std::string& value)
@@ -186,14 +181,14 @@ namespace tigl
             m_mu = value;
         }
         
-        bool CPACSStringVectorBase::HasDelta() const
+        void CPACSStringVectorBase::SetMu(const boost::optional<std::string>& value)
         {
-            return static_cast<bool>(m_delta);
+            m_mu = value;
         }
         
-        const std::string& CPACSStringVectorBase::GetDelta() const
+        const boost::optional<std::string>& CPACSStringVectorBase::GetDelta() const
         {
-            return *m_delta;
+            return m_delta;
         }
         
         void CPACSStringVectorBase::SetDelta(const std::string& value)
@@ -201,14 +196,14 @@ namespace tigl
             m_delta = value;
         }
         
-        bool CPACSStringVectorBase::HasA() const
+        void CPACSStringVectorBase::SetDelta(const boost::optional<std::string>& value)
         {
-            return static_cast<bool>(m_a);
+            m_delta = value;
         }
         
-        const std::string& CPACSStringVectorBase::GetA() const
+        const boost::optional<std::string>& CPACSStringVectorBase::GetA() const
         {
-            return *m_a;
+            return m_a;
         }
         
         void CPACSStringVectorBase::SetA(const std::string& value)
@@ -216,14 +211,14 @@ namespace tigl
             m_a = value;
         }
         
-        bool CPACSStringVectorBase::HasB() const
+        void CPACSStringVectorBase::SetA(const boost::optional<std::string>& value)
         {
-            return static_cast<bool>(m_b);
+            m_a = value;
         }
         
-        const std::string& CPACSStringVectorBase::GetB() const
+        const boost::optional<std::string>& CPACSStringVectorBase::GetB() const
         {
-            return *m_b;
+            return m_b;
         }
         
         void CPACSStringVectorBase::SetB(const std::string& value)
@@ -231,14 +226,14 @@ namespace tigl
             m_b = value;
         }
         
-        bool CPACSStringVectorBase::HasC() const
+        void CPACSStringVectorBase::SetB(const boost::optional<std::string>& value)
         {
-            return static_cast<bool>(m_c);
+            m_b = value;
         }
         
-        const std::string& CPACSStringVectorBase::GetC() const
+        const boost::optional<std::string>& CPACSStringVectorBase::GetC() const
         {
-            return *m_c;
+            return m_c;
         }
         
         void CPACSStringVectorBase::SetC(const std::string& value)
@@ -246,14 +241,14 @@ namespace tigl
             m_c = value;
         }
         
-        bool CPACSStringVectorBase::HasV() const
+        void CPACSStringVectorBase::SetC(const boost::optional<std::string>& value)
         {
-            return static_cast<bool>(m_v);
+            m_c = value;
         }
         
-        const std::string& CPACSStringVectorBase::GetV() const
+        const boost::optional<std::string>& CPACSStringVectorBase::GetV() const
         {
-            return *m_v;
+            return m_v;
         }
         
         void CPACSStringVectorBase::SetV(const std::string& value)
@@ -261,17 +256,22 @@ namespace tigl
             m_v = value;
         }
         
-        bool CPACSStringVectorBase::HasW() const
+        void CPACSStringVectorBase::SetV(const boost::optional<std::string>& value)
         {
-            return static_cast<bool>(m_w);
+            m_v = value;
         }
         
-        const std::string& CPACSStringVectorBase::GetW() const
+        const boost::optional<std::string>& CPACSStringVectorBase::GetW() const
         {
-            return *m_w;
+            return m_w;
         }
         
         void CPACSStringVectorBase::SetW(const std::string& value)
+        {
+            m_w = value;
+        }
+        
+        void CPACSStringVectorBase::SetW(const boost::optional<std::string>& value)
         {
             m_w = value;
         }

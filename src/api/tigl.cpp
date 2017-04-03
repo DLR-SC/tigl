@@ -5457,8 +5457,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetMaterialThickness(T
                     return TIGL_ERROR;
                 }
 
-                if (material->HasThickness_choice2()) {
-                    *thickness = material->GetThickness_choice2();
+                if (material->GetThickness_choice2()) {
+                    *thickness = *material->GetThickness_choice2();
                     return TIGL_SUCCESS;
                 } else {
                     return TIGL_UNINITIALIZED;

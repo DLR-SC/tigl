@@ -65,9 +65,9 @@ bool CCPACSMaterial::IsValid() const
 const std::string& CCPACSMaterial::GetUID() const
 {
     if (isComposite())
-        return GetCompositeUID_choice1();
+        return *GetCompositeUID_choice1();
     else
-        return GetMaterialUID_choice2();
+        return *GetMaterialUID_choice2();
 }
 
 void CCPACSMaterial::SetUID(const std::string& uid)

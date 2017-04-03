@@ -199,19 +199,14 @@ namespace tigl
             return m_web1;
         }
         
-        bool CPACSSparCell::HasWeb2() const
+        const boost::optional<CPACSWeb>& CPACSSparCell::GetWeb2() const
         {
-            return static_cast<bool>(m_web2);
+            return m_web2;
         }
         
-        const CPACSWeb& CPACSSparCell::GetWeb2() const
+        boost::optional<CPACSWeb>& CPACSSparCell::GetWeb2()
         {
-            return *m_web2;
-        }
-        
-        CPACSWeb& CPACSSparCell::GetWeb2()
-        {
-            return *m_web2;
+            return m_web2;
         }
         
         const double& CPACSSparCell::GetRotation() const

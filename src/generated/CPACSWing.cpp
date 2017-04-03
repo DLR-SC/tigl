@@ -196,17 +196,17 @@ namespace tigl
             m_uID = value;
         }
         
-        bool CPACSWing::HasSymmetry() const
+        const boost::optional<TiglSymmetryAxis>& CPACSWing::GetSymmetry() const
         {
-            return static_cast<bool>(m_symmetry);
-        }
-        
-        const TiglSymmetryAxis& CPACSWing::GetSymmetry() const
-        {
-            return *m_symmetry;
+            return m_symmetry;
         }
         
         void CPACSWing::SetSymmetry(const TiglSymmetryAxis& value)
+        {
+            m_symmetry = value;
+        }
+        
+        void CPACSWing::SetSymmetry(const boost::optional<TiglSymmetryAxis>& value)
         {
             m_symmetry = value;
         }
@@ -221,14 +221,9 @@ namespace tigl
             m_name = value;
         }
         
-        bool CPACSWing::HasDescription() const
+        const boost::optional<std::string>& CPACSWing::GetDescription() const
         {
-            return static_cast<bool>(m_description);
-        }
-        
-        const std::string& CPACSWing::GetDescription() const
-        {
-            return *m_description;
+            return m_description;
         }
         
         void CPACSWing::SetDescription(const std::string& value)
@@ -236,17 +231,22 @@ namespace tigl
             m_description = value;
         }
         
-        bool CPACSWing::HasParentUID() const
+        void CPACSWing::SetDescription(const boost::optional<std::string>& value)
         {
-            return static_cast<bool>(m_parentUID);
+            m_description = value;
         }
         
-        const std::string& CPACSWing::GetParentUID() const
+        const boost::optional<std::string>& CPACSWing::GetParentUID() const
         {
-            return *m_parentUID;
+            return m_parentUID;
         }
         
         void CPACSWing::SetParentUID(const std::string& value)
+        {
+            m_parentUID = value;
+        }
+        
+        void CPACSWing::SetParentUID(const boost::optional<std::string>& value)
         {
             m_parentUID = value;
         }
@@ -271,19 +271,14 @@ namespace tigl
             return m_sections;
         }
         
-        bool CPACSWing::HasPositionings() const
+        const boost::optional<CCPACSPositionings>& CPACSWing::GetPositionings() const
         {
-            return static_cast<bool>(m_positionings);
+            return m_positionings;
         }
         
-        const CCPACSPositionings& CPACSWing::GetPositionings() const
+        boost::optional<CCPACSPositionings>& CPACSWing::GetPositionings()
         {
-            return *m_positionings;
-        }
-        
-        CCPACSPositionings& CPACSWing::GetPositionings()
-        {
-            return *m_positionings;
+            return m_positionings;
         }
         
         const CCPACSWingSegments& CPACSWing::GetSegments() const
@@ -296,19 +291,14 @@ namespace tigl
             return m_segments;
         }
         
-        bool CPACSWing::HasComponentSegments() const
+        const boost::optional<CCPACSWingComponentSegments>& CPACSWing::GetComponentSegments() const
         {
-            return static_cast<bool>(m_componentSegments);
+            return m_componentSegments;
         }
         
-        const CCPACSWingComponentSegments& CPACSWing::GetComponentSegments() const
+        boost::optional<CCPACSWingComponentSegments>& CPACSWing::GetComponentSegments()
         {
-            return *m_componentSegments;
-        }
-        
-        CCPACSWingComponentSegments& CPACSWing::GetComponentSegments()
-        {
-            return *m_componentSegments;
+            return m_componentSegments;
         }
         
     }
