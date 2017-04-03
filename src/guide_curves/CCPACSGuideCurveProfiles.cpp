@@ -33,13 +33,13 @@ namespace tigl
 // Returns the total count of guide curves in this configuration
 int CCPACSGuideCurveProfiles::GetGuideCurveProfileCount() const
 {
-    return static_cast<int>(m_guideCurveProfile.size());
+    return static_cast<int>(m_guideCurveProfiles.size());
 }
 
 // Returns the guide curve for a given uid.
 CCPACSGuideCurveProfile& CCPACSGuideCurveProfiles::GetGuideCurveProfile(const std::string& uid) const
 {
-    for (std::vector<unique_ptr<CCPACSGuideCurveProfile> >::const_iterator it = m_guideCurveProfile.begin(); it != m_guideCurveProfile.end(); ++it)
+    for (std::vector<unique_ptr<CCPACSGuideCurveProfile> >::const_iterator it = m_guideCurveProfiles.begin(); it != m_guideCurveProfiles.end(); ++it)
         if ((*it)->GetUID() == uid)
             return **it;
 

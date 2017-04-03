@@ -16,10 +16,10 @@
 // limitations under the License.
 
 #include <CCPACSFuselageSection.h>
-#include "TixiHelper.h"
-#include "CTiglLogging.h"
-#include "CTiglError.h"
 #include "CPACSFuselageSections.h"
+#include "CTiglError.h"
+#include "CTiglLogging.h"
+#include "TixiHelper.h"
 
 namespace tigl
 {
@@ -32,7 +32,7 @@ namespace tigl
         {
             // read element section
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/section")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/section", m_section);
+                tixihelper::TixiReadElements(tixiHandle, xpath + "/section", m_sections);
             }
             
         }
@@ -40,18 +40,18 @@ namespace tigl
         void CPACSFuselageSections::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element section
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/section", m_section);
+            tixihelper::TixiSaveElements(tixiHandle, xpath + "/section", m_sections);
             
         }
         
-        const std::vector<unique_ptr<CCPACSFuselageSection> >& CPACSFuselageSections::GetSection() const
+        const std::vector<unique_ptr<CCPACSFuselageSection> >& CPACSFuselageSections::GetSections() const
         {
-            return m_section;
+            return m_sections;
         }
         
-        std::vector<unique_ptr<CCPACSFuselageSection> >& CPACSFuselageSections::GetSection()
+        std::vector<unique_ptr<CCPACSFuselageSection> >& CPACSFuselageSections::GetSections()
         {
-            return m_section;
+            return m_sections;
         }
         
     }

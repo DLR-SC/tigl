@@ -15,11 +15,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "CPACSPostFailure.h"
-#include "TixiHelper.h"
-#include "CTiglLogging.h"
-#include "CTiglError.h"
 #include "CPACSMaterial.h"
+#include "CPACSPostFailure.h"
+#include "CTiglError.h"
+#include "CTiglLogging.h"
+#include "TixiHelper.h"
 
 namespace tigl
 {
@@ -84,7 +84,7 @@ namespace tigl
             
             // read element postFailure
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/postFailure")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/postFailure", m_postFailure);
+                tixihelper::TixiReadElements(tixiHandle, xpath + "/postFailure", m_postFailures);
             }
             
             // read element sig11
@@ -277,7 +277,7 @@ namespace tigl
             }
             
             // write element postFailure
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/postFailure", m_postFailure);
+            tixihelper::TixiSaveElements(tixiHandle, xpath + "/postFailure", m_postFailures);
             
             // write element sig11
             if (m_sig11_choice1) {
@@ -555,14 +555,14 @@ namespace tigl
             m_fatigueFactor = value;
         }
         
-        const std::vector<unique_ptr<CPACSPostFailure> >& CPACSMaterial::GetPostFailure() const
+        const std::vector<unique_ptr<CPACSPostFailure> >& CPACSMaterial::GetPostFailures() const
         {
-            return m_postFailure;
+            return m_postFailures;
         }
         
-        std::vector<unique_ptr<CPACSPostFailure> >& CPACSMaterial::GetPostFailure()
+        std::vector<unique_ptr<CPACSPostFailure> >& CPACSMaterial::GetPostFailures()
         {
-            return m_postFailure;
+            return m_postFailures;
         }
         
         bool CPACSMaterial::HasSig11_choice1() const

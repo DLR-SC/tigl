@@ -16,10 +16,10 @@
 // limitations under the License.
 
 #include "CPACSProfileGeometry.h"
-#include "TixiHelper.h"
-#include "CTiglLogging.h"
-#include "CTiglError.h"
 #include "CPACSWingAirfoils.h"
+#include "CTiglError.h"
+#include "CTiglLogging.h"
+#include "TixiHelper.h"
 
 namespace tigl
 {
@@ -32,7 +32,7 @@ namespace tigl
         {
             // read element wingAirfoil
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/wingAirfoil")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/wingAirfoil", m_wingAirfoil);
+                tixihelper::TixiReadElements(tixiHandle, xpath + "/wingAirfoil", m_wingAirfoils);
             }
             
         }
@@ -40,18 +40,18 @@ namespace tigl
         void CPACSWingAirfoils::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element wingAirfoil
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/wingAirfoil", m_wingAirfoil);
+            tixihelper::TixiSaveElements(tixiHandle, xpath + "/wingAirfoil", m_wingAirfoils);
             
         }
         
-        const std::vector<unique_ptr<CPACSProfileGeometry> >& CPACSWingAirfoils::GetWingAirfoil() const
+        const std::vector<unique_ptr<CPACSProfileGeometry> >& CPACSWingAirfoils::GetWingAirfoils() const
         {
-            return m_wingAirfoil;
+            return m_wingAirfoils;
         }
         
-        std::vector<unique_ptr<CPACSProfileGeometry> >& CPACSWingAirfoils::GetWingAirfoil()
+        std::vector<unique_ptr<CPACSProfileGeometry> >& CPACSWingAirfoils::GetWingAirfoils()
         {
-            return m_wingAirfoil;
+            return m_wingAirfoils;
         }
         
     }

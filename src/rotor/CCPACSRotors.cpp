@@ -49,7 +49,7 @@ void CCPACSRotors::Invalidate()
 // Returns the total count of rotors in a configuration
 int CCPACSRotors::GetRotorCount() const
 {
-    return (static_cast<int>(m_rotor.size()));
+    return (static_cast<int>(m_rotors.size()));
 }
 
 // Returns the rotor for a given index.
@@ -59,20 +59,20 @@ CCPACSRotor& CCPACSRotors::GetRotor(int index) const
     if (index < 0 || index >= GetRotorCount()) {
         throw CTiglError("Error: Invalid index in CCPACSRotors::GetRotor", TIGL_INDEX_ERROR);
     }
-    return (*m_rotor[index]);
+    return (*m_rotors[index]);
 }
 
 // Returns the rotor for a given UID.
 CCPACSRotor& CCPACSRotors::GetRotor(const std::string& UID) const
 {
-    return (*m_rotor[GetRotorIndex(UID)-1]);
+    return (*m_rotors[GetRotorIndex(UID)-1]);
 }
 
 // Returns the rotor index for a given UID.
 int CCPACSRotors::GetRotorIndex(const std::string& UID) const
 {
     for (int i=0; i < GetRotorCount(); i++) {
-        const std::string tmpUID(m_rotor[i]->GetUID());
+        const std::string tmpUID(m_rotors[i]->GetUID());
         if (tmpUID == UID) {
             return i+1;
         }

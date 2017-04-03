@@ -15,13 +15,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <CCPACSWingCell.h>
 #include <cassert>
+#include <CCPACSWingCell.h>
 #include "CCPACSWingShell.h"
-#include "TixiHelper.h"
-#include "CTiglLogging.h"
-#include "CTiglError.h"
 #include "CPACSWingCells.h"
+#include "CTiglError.h"
+#include "CTiglLogging.h"
+#include "TixiHelper.h"
 
 namespace tigl
 {
@@ -44,7 +44,7 @@ namespace tigl
         {
             // read element cell
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/cell")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/cell", m_cell, reinterpret_cast<CCPACSWingCells*>(this));
+                tixihelper::TixiReadElements(tixiHandle, xpath + "/cell", m_cells, reinterpret_cast<CCPACSWingCells*>(this));
             }
             
         }
@@ -52,18 +52,18 @@ namespace tigl
         void CPACSWingCells::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element cell
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/cell", m_cell);
+            tixihelper::TixiSaveElements(tixiHandle, xpath + "/cell", m_cells);
             
         }
         
-        const std::vector<unique_ptr<CCPACSWingCell> >& CPACSWingCells::GetCell() const
+        const std::vector<unique_ptr<CCPACSWingCell> >& CPACSWingCells::GetCells() const
         {
-            return m_cell;
+            return m_cells;
         }
         
-        std::vector<unique_ptr<CCPACSWingCell> >& CPACSWingCells::GetCell()
+        std::vector<unique_ptr<CCPACSWingCell> >& CPACSWingCells::GetCells()
         {
-            return m_cell;
+            return m_cells;
         }
         
     }

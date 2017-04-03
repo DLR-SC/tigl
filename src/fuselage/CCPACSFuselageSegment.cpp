@@ -136,7 +136,7 @@ namespace tigl
 
 CCPACSFuselageSegment::CCPACSFuselageSegment(CCPACSFuselageSegments* parent)
     : generated::CPACSFuselageSegment(parent)
-    , CTiglAbstractSegment(parent->GetSegment(), parent->GetParent()->m_symmetry)
+    , CTiglAbstractSegment(parent->GetSegments(), parent->GetParent()->m_symmetry)
     , fuselage(parent->GetParent())
 {
     Cleanup();

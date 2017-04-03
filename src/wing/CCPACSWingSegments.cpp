@@ -42,8 +42,8 @@ CCPACSWingSegments::CCPACSWingSegments(CCPACSWing* parent)
 // Invalidates internal state
 void CCPACSWingSegments::Invalidate()
 {
-    for (std::size_t i = 0; i < m_segment.size(); i++) {
-        m_segment[i]->Invalidate();
+    for (std::size_t i = 0; i < m_segments.size(); i++) {
+        m_segments[i]->Invalidate();
     }
 }
 
@@ -54,15 +54,15 @@ CCPACSWingSegment& CCPACSWingSegments::GetSegment(int index)
     if (index < 0 || index >= GetSegmentCount()) {
         throw CTiglError("Error: Invalid index value in CCPACSWingSegments::GetSegment", TIGL_INDEX_ERROR);
     }
-    return *m_segment[index];
+    return *m_segments[index];
 }
 
 // Gets a segment by uid. 
 CCPACSWingSegment& CCPACSWingSegments::GetSegment(const std::string& segmentUID)
 {
-    for (std::size_t i = 0; i < m_segment.size(); i++) {
-        if (m_segment[i]->GetUID() == segmentUID) {
-            return *m_segment[i];
+    for (std::size_t i = 0; i < m_segments.size(); i++) {
+        if (m_segments[i]->GetUID() == segmentUID) {
+            return *m_segments[i];
         }
     }
     throw CTiglError("Error: Invalid uid in CCPACSWingSegments::GetSegment", TIGL_UID_ERROR);
@@ -71,7 +71,7 @@ CCPACSWingSegment& CCPACSWingSegments::GetSegment(const std::string& segmentUID)
 // Gets total segment count
 int CCPACSWingSegments::GetSegmentCount() const
 {
-    return static_cast<int>(m_segment.size());
+    return static_cast<int>(m_segments.size());
 }
 
 } // end namespace tigl

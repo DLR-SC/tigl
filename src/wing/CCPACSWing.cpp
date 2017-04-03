@@ -251,7 +251,7 @@ CCPACSConfiguration& CCPACSWing::GetConfiguration() const
 // Get section count
 int CCPACSWing::GetSectionCount() const
 {
-    return static_cast<int>(m_sections.GetSection().size());
+    return static_cast<int>(m_sections.GetSections().size());
 }
 
 // Returns the section for a given index

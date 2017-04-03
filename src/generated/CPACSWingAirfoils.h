@@ -42,11 +42,11 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT const std::vector<unique_ptr<CPACSProfileGeometry> >& GetWingAirfoil() const;
-            TIGL_EXPORT std::vector<unique_ptr<CPACSProfileGeometry> >& GetWingAirfoil();
+            TIGL_EXPORT const std::vector<unique_ptr<CPACSProfileGeometry> >& GetWingAirfoils() const;
+            TIGL_EXPORT std::vector<unique_ptr<CPACSProfileGeometry> >& GetWingAirfoils();
             
         protected:
-            std::vector<unique_ptr<CPACSProfileGeometry> > m_wingAirfoil;
+            std::vector<unique_ptr<CPACSProfileGeometry> > m_wingAirfoils;
             
         private:
             #ifdef HAVE_CPP11
@@ -62,7 +62,11 @@ namespace tigl
         };
     }
     
-    // This type is customized, use type CCPACSWingProfiles
-    
-    using generated::CPACSProfileGeometry;
+    // Aliases in tigl namespace
+    // CPACSWingAirfoils is customized, use type CCPACSWingProfiles directly
+    #ifdef HAVE_CPP11
+    using CCPACSProfileGeometry = generated::CPACSProfileGeometry;
+    #else
+    typedef generated::CPACSProfileGeometry CCPACSProfileGeometry;
+    #endif
 }

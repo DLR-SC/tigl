@@ -15,14 +15,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <CCPACSWing.h>
 #include <cassert>
+#include <CCPACSWing.h>
 #include "CCPACSAircraftModel.h"
 #include "CCPACSRotorcraftModel.h"
-#include "TixiHelper.h"
-#include "CTiglLogging.h"
-#include "CTiglError.h"
 #include "CPACSWings.h"
+#include "CTiglError.h"
+#include "CTiglLogging.h"
+#include "TixiHelper.h"
 
 namespace tigl
 {
@@ -48,7 +48,7 @@ namespace tigl
         {
             // read element wing
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/wing")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/wing", m_wing, reinterpret_cast<CCPACSWings*>(this));
+                tixihelper::TixiReadElements(tixiHandle, xpath + "/wing", m_wings, reinterpret_cast<CCPACSWings*>(this));
             }
             
         }
@@ -56,18 +56,18 @@ namespace tigl
         void CPACSWings::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element wing
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/wing", m_wing);
+            tixihelper::TixiSaveElements(tixiHandle, xpath + "/wing", m_wings);
             
         }
         
-        const std::vector<unique_ptr<CCPACSWing> >& CPACSWings::GetWing() const
+        const std::vector<unique_ptr<CCPACSWing> >& CPACSWings::GetWings() const
         {
-            return m_wing;
+            return m_wings;
         }
         
-        std::vector<unique_ptr<CCPACSWing> >& CPACSWings::GetWing()
+        std::vector<unique_ptr<CCPACSWing> >& CPACSWings::GetWings()
         {
-            return m_wing;
+            return m_wings;
         }
         
     }

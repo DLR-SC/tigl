@@ -30,7 +30,7 @@ CCPACSWingSparPositionUIDs::CCPACSWingSparPositionUIDs()
 
 int CCPACSWingSparPositionUIDs::GetSparPositionUIDCount() const
 {
-    return static_cast<int>(m_sparPositionUID.size());
+    return static_cast<int>(m_sparPositionUIDs.size());
 }
 
 const std::string& CCPACSWingSparPositionUIDs::GetSparPositionUID(int index) const
@@ -40,7 +40,7 @@ const std::string& CCPACSWingSparPositionUIDs::GetSparPositionUID(int index) con
         LOG(ERROR) << "Invalid index value";
         throw CTiglError("Error: Invalid index value in CCPACSWingSparPositionUIDs::GetSparPositionUID", TIGL_INDEX_ERROR);
     }
-    return (m_sparPositionUID[idx]);
+    return (m_sparPositionUIDs[idx]);
 }
 
 } // end namespace tigl

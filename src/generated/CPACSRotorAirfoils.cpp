@@ -16,10 +16,10 @@
 // limitations under the License.
 
 #include "CPACSProfileGeometry.h"
-#include "TixiHelper.h"
-#include "CTiglLogging.h"
-#include "CTiglError.h"
 #include "CPACSRotorAirfoils.h"
+#include "CTiglError.h"
+#include "CTiglLogging.h"
+#include "TixiHelper.h"
 
 namespace tigl
 {
@@ -32,7 +32,7 @@ namespace tigl
         {
             // read element rotorAirfoil
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/rotorAirfoil")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/rotorAirfoil", m_rotorAirfoil);
+                tixihelper::TixiReadElements(tixiHandle, xpath + "/rotorAirfoil", m_rotorAirfoils);
             }
             
         }
@@ -40,18 +40,18 @@ namespace tigl
         void CPACSRotorAirfoils::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element rotorAirfoil
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/rotorAirfoil", m_rotorAirfoil);
+            tixihelper::TixiSaveElements(tixiHandle, xpath + "/rotorAirfoil", m_rotorAirfoils);
             
         }
         
-        const std::vector<unique_ptr<CPACSProfileGeometry> >& CPACSRotorAirfoils::GetRotorAirfoil() const
+        const std::vector<unique_ptr<CPACSProfileGeometry> >& CPACSRotorAirfoils::GetRotorAirfoils() const
         {
-            return m_rotorAirfoil;
+            return m_rotorAirfoils;
         }
         
-        std::vector<unique_ptr<CPACSProfileGeometry> >& CPACSRotorAirfoils::GetRotorAirfoil()
+        std::vector<unique_ptr<CPACSProfileGeometry> >& CPACSRotorAirfoils::GetRotorAirfoils()
         {
-            return m_rotorAirfoil;
+            return m_rotorAirfoils;
         }
         
     }

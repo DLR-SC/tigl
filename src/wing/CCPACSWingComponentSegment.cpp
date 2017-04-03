@@ -154,7 +154,7 @@ namespace
 
 CCPACSWingComponentSegment::CCPACSWingComponentSegment(CCPACSWingComponentSegments* parent)
     : generated::CPACSComponentSegment(parent)
-    , CTiglAbstractSegment(parent->GetComponentSegment(), parent->GetParent()->m_symmetry)
+    , CTiglAbstractSegment(parent->GetComponentSegments(), parent->GetParent()->m_symmetry)
     , wing(parent->GetParent())
     , surfacesAreValid(false)
 {

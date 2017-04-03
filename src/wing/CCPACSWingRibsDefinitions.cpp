@@ -31,14 +31,14 @@ CCPACSWingRibsDefinitions::CCPACSWingRibsDefinitions(CCPACSWingCSStructure* stru
 
 void CCPACSWingRibsDefinitions::Invalidate()
 {
-    for (std::vector<unique_ptr<CCPACSWingRibsDefinition> >::iterator it = m_ribsDefinition.begin(); it != m_ribsDefinition.end(); ++it) {
+    for (std::vector<unique_ptr<CCPACSWingRibsDefinition> >::iterator it = m_ribsDefinitions.begin(); it != m_ribsDefinitions.end(); ++it) {
         (*it)->Invalidate();
     }
 }
 
 int CCPACSWingRibsDefinitions::GetRibsDefinitionCount() const
 {
-    return static_cast<int>(m_ribsDefinition.size());
+    return static_cast<int>(m_ribsDefinitions.size());
 }
 
 const CCPACSWingRibsDefinition& CCPACSWingRibsDefinitions::GetRibsDefinition(const int index) const
@@ -48,7 +48,7 @@ const CCPACSWingRibsDefinition& CCPACSWingRibsDefinitions::GetRibsDefinition(con
         LOG(ERROR) << "Invalid index value";
         throw CTiglError("Error: Invalid index value in CCPACSWingRibsDefinitions::GetRibsDefinition", TIGL_INDEX_ERROR);
     }
-    return static_cast<CCPACSWingRibsDefinition&>(*(m_ribsDefinition[idx]));
+    return static_cast<CCPACSWingRibsDefinition&>(*(m_ribsDefinitions[idx]));
 }
 
 CCPACSWingRibsDefinition& CCPACSWingRibsDefinitions::GetRibsDefinition(const int index)
@@ -59,7 +59,7 @@ CCPACSWingRibsDefinition& CCPACSWingRibsDefinitions::GetRibsDefinition(const int
 
 const CCPACSWingRibsDefinition& CCPACSWingRibsDefinitions::GetRibsDefinition(const std::string& uid) const
 {
-    for (std::vector<unique_ptr<CCPACSWingRibsDefinition> >::const_iterator it = m_ribsDefinition.begin(); it != m_ribsDefinition.end(); ++it) {
+    for (std::vector<unique_ptr<CCPACSWingRibsDefinition> >::const_iterator it = m_ribsDefinitions.begin(); it != m_ribsDefinitions.end(); ++it) {
         const unique_ptr<CCPACSWingRibsDefinition>& tempRib = *it;
         if (tempRib->GetUID() == uid) {
             return *tempRib;

@@ -22,6 +22,7 @@
 #include <vector>
 #include "UniquePtr.h"
 #include <boost/optional.hpp>
+#include <boost/utility/in_place_factory.hpp>
 #include "tigl_internal.h"
 #include "CPACSComposites.h"
 
@@ -44,15 +45,15 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT const std::vector<unique_ptr<CPACSMaterial> >& GetMaterial() const;
-            TIGL_EXPORT std::vector<unique_ptr<CPACSMaterial> >& GetMaterial();
+            TIGL_EXPORT const std::vector<unique_ptr<CPACSMaterial> >& GetMaterials() const;
+            TIGL_EXPORT std::vector<unique_ptr<CPACSMaterial> >& GetMaterials();
             
             TIGL_EXPORT bool HasComposites() const;
             TIGL_EXPORT const CPACSComposites& GetComposites() const;
             TIGL_EXPORT CPACSComposites& GetComposites();
             
         protected:
-            std::vector<unique_ptr<CPACSMaterial> > m_material;
+            std::vector<unique_ptr<CPACSMaterial> > m_materials;
             boost::optional<CPACSComposites>        m_composites;
             
         private:
@@ -69,12 +70,15 @@ namespace tigl
         };
     }
     
-    // This type is not customized, create alias in tigl namespace
+    // Aliases in tigl namespace
     #ifdef HAVE_CPP11
     using CCPACSMaterials = generated::CPACSMaterials;
     #else
     typedef generated::CPACSMaterials CCPACSMaterials;
     #endif
-    
-    using generated::CPACSMaterial;
+    #ifdef HAVE_CPP11
+    using CCPACSMaterial = generated::CPACSMaterial;
+    #else
+    typedef generated::CPACSMaterial CCPACSMaterial;
+    #endif
 }

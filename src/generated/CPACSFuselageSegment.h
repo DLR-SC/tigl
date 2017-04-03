@@ -20,6 +20,7 @@
 #include <tixi.h>
 #include <string>
 #include <boost/optional.hpp>
+#include <boost/utility/in_place_factory.hpp>
 #include "tigl_internal.h"
 #include <CCPACSGuideCurves.h>
 
@@ -89,5 +90,6 @@ namespace tigl
         };
     }
     
-    // This type is customized, use type CCPACSFuselageSegment
+    // Aliases in tigl namespace
+    // CPACSFuselageSegment is customized, use type CCPACSFuselageSegment directly
 }

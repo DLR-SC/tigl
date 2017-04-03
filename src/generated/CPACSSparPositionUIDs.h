@@ -39,11 +39,11 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT const std::vector<std::string>& GetSparPositionUID() const;
-            TIGL_EXPORT void SetSparPositionUID(const std::vector<std::string>& value);
+            TIGL_EXPORT const std::vector<std::string>& GetSparPositionUIDs() const;
+            TIGL_EXPORT void SetSparPositionUIDs(const std::vector<std::string>& value);
             
         protected:
-            std::vector<std::string> m_sparPositionUID;
+            std::vector<std::string> m_sparPositionUIDs;
             
         private:
             #ifdef HAVE_CPP11
@@ -59,5 +59,6 @@ namespace tigl
         };
     }
     
-    // This type is customized, use type CCPACSWingSparPositionUIDs
+    // Aliases in tigl namespace
+    // CPACSSparPositionUIDs is customized, use type CCPACSWingSparPositionUIDs directly
 }

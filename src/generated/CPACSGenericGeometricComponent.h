@@ -20,6 +20,7 @@
 #include <tixi.h>
 #include <string>
 #include <boost/optional.hpp>
+#include <boost/utility/in_place_factory.hpp>
 #include "tigl_internal.h"
 #include <TiglSymmetryAxis.h>
 #include <CCPACSTransformation.h>
@@ -96,5 +97,6 @@ namespace tigl
         };
     }
     
-    // This type is customized, use type CCPACSExternalObject
+    // Aliases in tigl namespace
+    // CPACSGenericGeometricComponent is customized, use type CCPACSExternalObject directly
 }

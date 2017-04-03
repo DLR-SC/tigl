@@ -22,6 +22,7 @@
 #include <vector>
 #include "UniquePtr.h"
 #include <boost/optional.hpp>
+#include <boost/utility/in_place_factory.hpp>
 #include "tigl_internal.h"
 
 namespace tigl
@@ -58,15 +59,15 @@ namespace tigl
             TIGL_EXPORT const double& GetOffset() const;
             TIGL_EXPORT void SetOffset(const double& value);
             
-            TIGL_EXPORT const std::vector<unique_ptr<CPACSCompositeLayer> >& GetCompositeLayer() const;
-            TIGL_EXPORT std::vector<unique_ptr<CPACSCompositeLayer> >& GetCompositeLayer();
+            TIGL_EXPORT const std::vector<unique_ptr<CPACSCompositeLayer> >& GetCompositeLayers() const;
+            TIGL_EXPORT std::vector<unique_ptr<CPACSCompositeLayer> >& GetCompositeLayers();
             
         protected:
             boost::optional<std::string>                  m_uID;
             std::string                                   m_name;
             boost::optional<std::string>                  m_description;
             boost::optional<double>                       m_offset;
-            std::vector<unique_ptr<CPACSCompositeLayer> > m_compositeLayer;
+            std::vector<unique_ptr<CPACSCompositeLayer> > m_compositeLayers;
             
         private:
             #ifdef HAVE_CPP11
@@ -82,12 +83,15 @@ namespace tigl
         };
     }
     
-    // This type is not customized, create alias in tigl namespace
+    // Aliases in tigl namespace
     #ifdef HAVE_CPP11
     using CCPACSComposite = generated::CPACSComposite;
     #else
     typedef generated::CPACSComposite CCPACSComposite;
     #endif
-    
-    using generated::CPACSCompositeLayer;
+    #ifdef HAVE_CPP11
+    using CCPACSCompositeLayer = generated::CPACSCompositeLayer;
+    #else
+    typedef generated::CPACSCompositeLayer CCPACSCompositeLayer;
+    #endif
 }

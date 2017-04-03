@@ -75,7 +75,7 @@ namespace tigl
         };
     }
     
-    // This type is not customized, create alias in tigl namespace
+    // Aliases in tigl namespace
     #ifdef HAVE_CPP11
     using CCPACSUpdate = generated::CPACSUpdate;
     #else

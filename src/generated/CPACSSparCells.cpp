@@ -16,10 +16,10 @@
 // limitations under the License.
 
 #include "CPACSSparCell.h"
-#include "TixiHelper.h"
-#include "CTiglLogging.h"
-#include "CTiglError.h"
 #include "CPACSSparCells.h"
+#include "CTiglError.h"
+#include "CTiglLogging.h"
+#include "TixiHelper.h"
 
 namespace tigl
 {
@@ -32,7 +32,7 @@ namespace tigl
         {
             // read element sparCell
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/sparCell")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/sparCell", m_sparCell);
+                tixihelper::TixiReadElements(tixiHandle, xpath + "/sparCell", m_sparCells);
             }
             
         }
@@ -40,18 +40,18 @@ namespace tigl
         void CPACSSparCells::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element sparCell
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/sparCell", m_sparCell);
+            tixihelper::TixiSaveElements(tixiHandle, xpath + "/sparCell", m_sparCells);
             
         }
         
-        const std::vector<unique_ptr<CPACSSparCell> >& CPACSSparCells::GetSparCell() const
+        const std::vector<unique_ptr<CPACSSparCell> >& CPACSSparCells::GetSparCells() const
         {
-            return m_sparCell;
+            return m_sparCells;
         }
         
-        std::vector<unique_ptr<CPACSSparCell> >& CPACSSparCells::GetSparCell()
+        std::vector<unique_ptr<CPACSSparCell> >& CPACSSparCells::GetSparCells()
         {
-            return m_sparCell;
+            return m_sparCells;
         }
         
     }

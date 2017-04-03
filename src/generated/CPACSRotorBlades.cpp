@@ -15,13 +15,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <CCPACSWing.h>
 #include <cassert>
+#include <CCPACSWing.h>
 #include "CCPACSRotorcraftModel.h"
-#include "TixiHelper.h"
-#include "CTiglLogging.h"
-#include "CTiglError.h"
 #include "CPACSRotorBlades.h"
+#include "CTiglError.h"
+#include "CTiglLogging.h"
+#include "TixiHelper.h"
 
 namespace tigl
 {
@@ -44,7 +44,7 @@ namespace tigl
         {
             // read element rotorBlade
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/rotorBlade")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/rotorBlade", m_rotorBlade, reinterpret_cast<CCPACSRotorBlades*>(this));
+                tixihelper::TixiReadElements(tixiHandle, xpath + "/rotorBlade", m_rotorBlades, reinterpret_cast<CCPACSRotorBlades*>(this));
             }
             
         }
@@ -52,18 +52,18 @@ namespace tigl
         void CPACSRotorBlades::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element rotorBlade
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/rotorBlade", m_rotorBlade);
+            tixihelper::TixiSaveElements(tixiHandle, xpath + "/rotorBlade", m_rotorBlades);
             
         }
         
-        const std::vector<unique_ptr<CCPACSWing> >& CPACSRotorBlades::GetRotorBlade() const
+        const std::vector<unique_ptr<CCPACSWing> >& CPACSRotorBlades::GetRotorBlades() const
         {
-            return m_rotorBlade;
+            return m_rotorBlades;
         }
         
-        std::vector<unique_ptr<CCPACSWing> >& CPACSRotorBlades::GetRotorBlade()
+        std::vector<unique_ptr<CCPACSWing> >& CPACSRotorBlades::GetRotorBlades()
         {
-            return m_rotorBlade;
+            return m_rotorBlades;
         }
         
     }

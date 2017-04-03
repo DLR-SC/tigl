@@ -20,6 +20,7 @@
 #include <tixi.h>
 #include <string>
 #include <boost/optional.hpp>
+#include <boost/utility/in_place_factory.hpp>
 #include "tigl_internal.h"
 #include <CCPACSRotorHinges.h>
 #include <CCPACSStringVector.h>
@@ -98,5 +99,6 @@ namespace tigl
         };
     }
     
-    // This type is customized, use type CCPACSRotorBladeAttachment
+    // Aliases in tigl namespace
+    // CPACSRotorBladeAttachment is customized, use type CCPACSRotorBladeAttachment directly
 }

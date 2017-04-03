@@ -52,15 +52,15 @@ CCPACSFuselageSegment & CCPACSFuselageSegments::GetSegment(int index)
     if (index < 0 || index >= GetSegmentCount()) {
         throw CTiglError("Error: Invalid index value in CCPACSFuselageSegments::GetSegment", TIGL_INDEX_ERROR);
     }
-    return *m_segment[index];
+    return *m_segments[index];
 }
 
 // Gets a segment by uid. 
 CCPACSFuselageSegment & CCPACSFuselageSegments::GetSegment(const std::string& segmentUID)
 {
-    for (std::size_t i = 0; i < m_segment.size(); i++) {
-        if (m_segment[i]->GetUID() == segmentUID) {
-            return *m_segment[i];
+    for (std::size_t i = 0; i < m_segments.size(); i++) {
+        if (m_segments[i]->GetUID() == segmentUID) {
+            return *m_segments[i];
         }
     }
     throw CTiglError("Error: Invalid uid in CCPACSFuselageSegments::GetSegment", TIGL_UID_ERROR);
@@ -69,7 +69,7 @@ CCPACSFuselageSegment & CCPACSFuselageSegments::GetSegment(const std::string& se
 // Gets total segment count
 int CCPACSFuselageSegments::GetSegmentCount() const
 {
-    return static_cast<int>(m_segment.size());
+    return static_cast<int>(m_segments.size());
 }
 
 } // end namespace tigl

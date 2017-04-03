@@ -20,6 +20,7 @@
 #include <tixi.h>
 #include <string>
 #include <boost/optional.hpp>
+#include <boost/utility/in_place_factory.hpp>
 #include "tigl_internal.h"
 #include <CCPACSStringVector.h>
 #include <CCPACSStringVector.h>
@@ -91,5 +92,6 @@ namespace tigl
         };
     }
     
-    // This type is customized, use type CCPACSWingProfileCST
+    // Aliases in tigl namespace
+    // CPACSCst2D is customized, use type CCPACSWingProfileCST directly
 }

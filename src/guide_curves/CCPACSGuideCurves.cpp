@@ -45,13 +45,13 @@ void CCPACSGuideCurves::ReadCPACS(const TixiDocumentHandle& tixiHandle, const st
 
     // sort by uid as some unit tests rely on this (TODO: should we fix the tests?)
     // WARN: this destroys the order of the guide curves as stored in the CPACS file
-    std::sort(m_guideCurve.begin(), m_guideCurve.end(), UidCompare());
+    std::sort(m_guideCurves.begin(), m_guideCurves.end(), UidCompare());
 }
 
 // Returns the total count of guide curves in this configuration
 int CCPACSGuideCurves::GetGuideCurveCount() const
 {
-    return static_cast<int>(m_guideCurve.size());
+    return static_cast<int>(m_guideCurves.size());
 }
 
 // Returns the guide curve for a given index
@@ -61,15 +61,15 @@ const CCPACSGuideCurve& CCPACSGuideCurves::GetGuideCurve(int index) const
     if (index < 0 || index >= GetGuideCurveCount()) {
         throw CTiglError("Error: Invalid index in CCPACSGuideCurves::GetGuideCurve", TIGL_INDEX_ERROR);
     }
-    return *m_guideCurve[index];
+    return *m_guideCurves[index];
 }
 
 // Returns the guide curve for a given uid.
 const CCPACSGuideCurve& CCPACSGuideCurves::GetGuideCurve(std::string uid) const
 {
-    for (std::size_t i = 0; i < m_guideCurve.size(); i++) {
-        if (m_guideCurve[i]->GetUID() == uid) {
-            return *m_guideCurve[i];
+    for (std::size_t i = 0; i < m_guideCurves.size(); i++) {
+        if (m_guideCurves[i]->GetUID() == uid) {
+            return *m_guideCurves[i];
         }
     }
     throw CTiglError("CCPACSGuideCurve::GetGuideCurve: Guide curve \"" + uid + "\" not found in CPACS file!", TIGL_UID_ERROR);
@@ -78,8 +78,8 @@ const CCPACSGuideCurve& CCPACSGuideCurves::GetGuideCurve(std::string uid) const
 // Returns the guide curve for a given uid.
 bool CCPACSGuideCurves::GuideCurveExists(std::string uid) const
 {
-    for (std::size_t i = 0; i < m_guideCurve.size(); i++) {
-        if (m_guideCurve[i]->GetUID() == uid) {
+    for (std::size_t i = 0; i < m_guideCurves.size(); i++) {
+        if (m_guideCurves[i]->GetUID() == uid) {
             return true;
         }
     }

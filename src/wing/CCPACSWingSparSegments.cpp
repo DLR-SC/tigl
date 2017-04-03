@@ -32,14 +32,14 @@ CCPACSWingSparSegments::CCPACSWingSparSegments(CCPACSWingSpars* parent)
 
 void CCPACSWingSparSegments::Invalidate()
 {
-    for (std::vector<unique_ptr<CCPACSWingSparSegment> >::iterator it = m_sparSegment.begin(); it != m_sparSegment.end(); ++it) {
+    for (std::vector<unique_ptr<CCPACSWingSparSegment> >::iterator it = m_sparSegments.begin(); it != m_sparSegments.end(); ++it) {
         (*it)->Invalidate();
     }
 }
 
 int CCPACSWingSparSegments::GetSparSegmentCount() const
 {
-    return static_cast<int>(m_sparSegment.size());
+    return static_cast<int>(m_sparSegments.size());
 }
 
 CCPACSWingSparSegment& CCPACSWingSparSegments::GetSparSegment(int index) const
@@ -49,12 +49,12 @@ CCPACSWingSparSegment& CCPACSWingSparSegments::GetSparSegment(int index) const
         LOG(ERROR) << "Invalid index value";
         throw CTiglError("Error: Invalid index value in CCPACSWingSparSegments::getSparSegment", TIGL_INDEX_ERROR);
     }
-    return (*(m_sparSegment[idx]));
+    return (*(m_sparSegments[idx]));
 }
 
 CCPACSWingSparSegment& CCPACSWingSparSegments::GetSparSegment(const std::string& uid) const
 {
-    for (std::vector<unique_ptr<CCPACSWingSparSegment> >::const_iterator it = m_sparSegment.begin(); it != m_sparSegment.end(); ++it) {
+    for (std::vector<unique_ptr<CCPACSWingSparSegment> >::const_iterator it = m_sparSegments.begin(); it != m_sparSegments.end(); ++it) {
         CCPACSWingSparSegment& sparSegment = **it;
         if (sparSegment.GetUID() == uid) {
             return sparSegment;

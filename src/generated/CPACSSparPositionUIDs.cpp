@@ -15,10 +15,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "TixiHelper.h"
-#include "CTiglLogging.h"
-#include "CTiglError.h"
 #include "CPACSSparPositionUIDs.h"
+#include "CTiglError.h"
+#include "CTiglLogging.h"
+#include "TixiHelper.h"
 
 namespace tigl
 {
@@ -31,7 +31,7 @@ namespace tigl
         {
             // read element sparPositionUID
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/sparPositionUID")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/sparPositionUID", m_sparPositionUID);
+                tixihelper::TixiReadElements(tixiHandle, xpath + "/sparPositionUID", m_sparPositionUIDs);
             }
             
         }
@@ -39,18 +39,18 @@ namespace tigl
         void CPACSSparPositionUIDs::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element sparPositionUID
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/sparPositionUID", m_sparPositionUID);
+            tixihelper::TixiSaveElements(tixiHandle, xpath + "/sparPositionUID", m_sparPositionUIDs);
             
         }
         
-        const std::vector<std::string>& CPACSSparPositionUIDs::GetSparPositionUID() const
+        const std::vector<std::string>& CPACSSparPositionUIDs::GetSparPositionUIDs() const
         {
-            return m_sparPositionUID;
+            return m_sparPositionUIDs;
         }
         
-        void CPACSSparPositionUIDs::SetSparPositionUID(const std::vector<std::string>& value)
+        void CPACSSparPositionUIDs::SetSparPositionUIDs(const std::vector<std::string>& value)
         {
-            m_sparPositionUID = value;
+            m_sparPositionUIDs = value;
         }
         
     }

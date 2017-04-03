@@ -15,13 +15,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <CCPACSWingComponentSegment.h>
 #include <cassert>
+#include <CCPACSWingComponentSegment.h>
 #include "CCPACSWing.h"
-#include "TixiHelper.h"
-#include "CTiglLogging.h"
-#include "CTiglError.h"
 #include "CPACSComponentSegments.h"
+#include "CTiglError.h"
+#include "CTiglLogging.h"
+#include "TixiHelper.h"
 
 namespace tigl
 {
@@ -44,7 +44,7 @@ namespace tigl
         {
             // read element componentSegment
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/componentSegment")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/componentSegment", m_componentSegment, reinterpret_cast<CCPACSWingComponentSegments*>(this));
+                tixihelper::TixiReadElements(tixiHandle, xpath + "/componentSegment", m_componentSegments, reinterpret_cast<CCPACSWingComponentSegments*>(this));
             }
             
         }
@@ -52,18 +52,18 @@ namespace tigl
         void CPACSComponentSegments::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element componentSegment
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/componentSegment", m_componentSegment);
+            tixihelper::TixiSaveElements(tixiHandle, xpath + "/componentSegment", m_componentSegments);
             
         }
         
-        const std::vector<unique_ptr<CCPACSWingComponentSegment> >& CPACSComponentSegments::GetComponentSegment() const
+        const std::vector<unique_ptr<CCPACSWingComponentSegment> >& CPACSComponentSegments::GetComponentSegments() const
         {
-            return m_componentSegment;
+            return m_componentSegments;
         }
         
-        std::vector<unique_ptr<CCPACSWingComponentSegment> >& CPACSComponentSegments::GetComponentSegment()
+        std::vector<unique_ptr<CCPACSWingComponentSegment> >& CPACSComponentSegments::GetComponentSegments()
         {
-            return m_componentSegment;
+            return m_componentSegments;
         }
         
     }

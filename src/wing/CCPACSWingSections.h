@@ -39,8 +39,6 @@ public:
 
     // Returns the section for a given index
     TIGL_EXPORT CCPACSWingSection& GetSection(int index) const;
-
-    using generated::CPACSWingSections::GetSection;
 };
 
 } // end namespace tigl

@@ -15,13 +15,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <CCPACSRotorBladeAttachment.h>
 #include <cassert>
+#include <CCPACSRotorBladeAttachment.h>
 #include "CCPACSRotorHub.h"
-#include "TixiHelper.h"
-#include "CTiglLogging.h"
-#include "CTiglError.h"
 #include "CPACSRotorBladeAttachments.h"
+#include "CTiglError.h"
+#include "CTiglLogging.h"
+#include "TixiHelper.h"
 
 namespace tigl
 {
@@ -44,7 +44,7 @@ namespace tigl
         {
             // read element rotorBladeAttachment
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/rotorBladeAttachment")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/rotorBladeAttachment", m_rotorBladeAttachment, reinterpret_cast<CCPACSRotorBladeAttachments*>(this));
+                tixihelper::TixiReadElements(tixiHandle, xpath + "/rotorBladeAttachment", m_rotorBladeAttachments, reinterpret_cast<CCPACSRotorBladeAttachments*>(this));
             }
             
         }
@@ -52,18 +52,18 @@ namespace tigl
         void CPACSRotorBladeAttachments::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element rotorBladeAttachment
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/rotorBladeAttachment", m_rotorBladeAttachment);
+            tixihelper::TixiSaveElements(tixiHandle, xpath + "/rotorBladeAttachment", m_rotorBladeAttachments);
             
         }
         
-        const std::vector<unique_ptr<CCPACSRotorBladeAttachment> >& CPACSRotorBladeAttachments::GetRotorBladeAttachment() const
+        const std::vector<unique_ptr<CCPACSRotorBladeAttachment> >& CPACSRotorBladeAttachments::GetRotorBladeAttachments() const
         {
-            return m_rotorBladeAttachment;
+            return m_rotorBladeAttachments;
         }
         
-        std::vector<unique_ptr<CCPACSRotorBladeAttachment> >& CPACSRotorBladeAttachments::GetRotorBladeAttachment()
+        std::vector<unique_ptr<CCPACSRotorBladeAttachment> >& CPACSRotorBladeAttachments::GetRotorBladeAttachments()
         {
-            return m_rotorBladeAttachment;
+            return m_rotorBladeAttachments;
         }
         
     }

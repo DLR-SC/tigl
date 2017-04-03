@@ -15,13 +15,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <CCPACSFuselageSegment.h>
 #include <cassert>
+#include <CCPACSFuselageSegment.h>
 #include "CCPACSFuselage.h"
-#include "TixiHelper.h"
-#include "CTiglLogging.h"
-#include "CTiglError.h"
 #include "CPACSFuselageSegments.h"
+#include "CTiglError.h"
+#include "CTiglLogging.h"
+#include "TixiHelper.h"
 
 namespace tigl
 {
@@ -44,7 +44,7 @@ namespace tigl
         {
             // read element segment
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/segment")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/segment", m_segment, reinterpret_cast<CCPACSFuselageSegments*>(this));
+                tixihelper::TixiReadElements(tixiHandle, xpath + "/segment", m_segments, reinterpret_cast<CCPACSFuselageSegments*>(this));
             }
             
         }
@@ -52,18 +52,18 @@ namespace tigl
         void CPACSFuselageSegments::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element segment
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/segment", m_segment);
+            tixihelper::TixiSaveElements(tixiHandle, xpath + "/segment", m_segments);
             
         }
         
-        const std::vector<unique_ptr<CCPACSFuselageSegment> >& CPACSFuselageSegments::GetSegment() const
+        const std::vector<unique_ptr<CCPACSFuselageSegment> >& CPACSFuselageSegments::GetSegments() const
         {
-            return m_segment;
+            return m_segments;
         }
         
-        std::vector<unique_ptr<CCPACSFuselageSegment> >& CPACSFuselageSegments::GetSegment()
+        std::vector<unique_ptr<CCPACSFuselageSegment> >& CPACSFuselageSegments::GetSegments()
         {
-            return m_segment;
+            return m_segments;
         }
         
     }

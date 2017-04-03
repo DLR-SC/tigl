@@ -59,7 +59,7 @@ namespace tigl
         };
     }
     
-    // This type is not customized, create alias in tigl namespace
+    // Aliases in tigl namespace
     #ifdef HAVE_CPP11
     using CCPACSRibRotation_ribRotationReference = generated::CPACSRibRotation_ribRotationReference;
     #else

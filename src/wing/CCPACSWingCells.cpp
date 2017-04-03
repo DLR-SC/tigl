@@ -29,13 +29,13 @@ CCPACSWingCells::CCPACSWingCells(CCPACSWingShell* parent)
 
 void CCPACSWingCells::Invalidate()
 {
-    for (size_t i = 0; i < m_cell.size(); i++) {
-        m_cell[i]->Invalidate();
+    for (size_t i = 0; i < m_cells.size(); i++) {
+        m_cells[i]->Invalidate();
     }
 }
 int CCPACSWingCells::GetCellCount() const
 {
-    return static_cast<int>(m_cell.size());
+    return static_cast<int>(m_cells.size());
 }
 
 CCPACSWingCell& CCPACSWingCells::GetCell(int index) const
@@ -44,7 +44,7 @@ CCPACSWingCell& CCPACSWingCells::GetCell(int index) const
     if (index < 0 || index >= GetCellCount()) {
         throw CTiglError("Illegal index in CCPACSWingCells::GetCell", TIGL_INDEX_ERROR);
     }
-    return *m_cell[index];
+    return *m_cells[index];
 }
 
 // Get parent wing shell element
@@ -56,9 +56,9 @@ CCPACSWingShell* CCPACSWingCells::GetParentElement() const
 CCPACSWingCell &CCPACSWingCells::GetCell(const std::string &UID) const
 {
     for (int i=0; i < GetCellCount(); i++) {
-        const std::string tmpUID(m_cell[i]->GetUID());
+        const std::string tmpUID(m_cells[i]->GetUID());
         if (tmpUID == UID) {
-            return *m_cell[i];
+            return *m_cells[i];
         }
     }
 

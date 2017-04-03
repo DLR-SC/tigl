@@ -32,7 +32,7 @@ namespace tigl
 // Get profile count for this section
 int CCPACSWingSection::GetSectionElementCount() const
 {
-    return static_cast<int>(m_elements.GetElement().size());
+    return static_cast<int>(m_elements.GetElements().size());
 }
 
 // Get element for a given index

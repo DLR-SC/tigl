@@ -15,14 +15,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <CCPACSFuselage.h>
 #include <cassert>
+#include <CCPACSFuselage.h>
 #include "CCPACSAircraftModel.h"
 #include "CCPACSRotorcraftModel.h"
-#include "TixiHelper.h"
-#include "CTiglLogging.h"
-#include "CTiglError.h"
 #include "CPACSFuselages.h"
+#include "CTiglError.h"
+#include "CTiglLogging.h"
+#include "TixiHelper.h"
 
 namespace tigl
 {
@@ -48,7 +48,7 @@ namespace tigl
         {
             // read element fuselage
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/fuselage")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/fuselage", m_fuselage, reinterpret_cast<CCPACSFuselages*>(this));
+                tixihelper::TixiReadElements(tixiHandle, xpath + "/fuselage", m_fuselages, reinterpret_cast<CCPACSFuselages*>(this));
             }
             
         }
@@ -56,18 +56,18 @@ namespace tigl
         void CPACSFuselages::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element fuselage
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/fuselage", m_fuselage);
+            tixihelper::TixiSaveElements(tixiHandle, xpath + "/fuselage", m_fuselages);
             
         }
         
-        const std::vector<unique_ptr<CCPACSFuselage> >& CPACSFuselages::GetFuselage() const
+        const std::vector<unique_ptr<CCPACSFuselage> >& CPACSFuselages::GetFuselages() const
         {
-            return m_fuselage;
+            return m_fuselages;
         }
         
-        std::vector<unique_ptr<CCPACSFuselage> >& CPACSFuselages::GetFuselage()
+        std::vector<unique_ptr<CCPACSFuselage> >& CPACSFuselages::GetFuselages()
         {
-            return m_fuselage;
+            return m_fuselages;
         }
         
     }

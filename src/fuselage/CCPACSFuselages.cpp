@@ -96,7 +96,7 @@ CCPACSFuselageProfile& CCPACSFuselages::GetProfile(std::string uid) const
 // Returns the total count of fuselages in a configuration
 int CCPACSFuselages::GetFuselageCount() const
 {
-    return static_cast<int>(m_fuselage.size());
+    return static_cast<int>(m_fuselages.size());
 }
 
 // Returns the fuselage for a given index.
@@ -106,20 +106,20 @@ CCPACSFuselage& CCPACSFuselages::GetFuselage(int index) const
     if (index < 0 || index >= GetFuselageCount()) {
         throw CTiglError("Error: Invalid index in CCPACSFuselages::GetFuselage", TIGL_INDEX_ERROR);
     }
-    return *m_fuselage[index];
+    return *m_fuselages[index];
 }
 
 // Returns the fuselage for a given UID.
 CCPACSFuselage& CCPACSFuselages::GetFuselage(const std::string& UID) const
 {
-    return *m_fuselage[GetFuselageIndex(UID) - 1];
+    return *m_fuselages[GetFuselageIndex(UID) - 1];
 }
 
 // Returns the fuselage index for a given UID.
 int CCPACSFuselages::GetFuselageIndex(const std::string& UID) const
 {
     for (int i=0; i < GetFuselageCount(); i++) {
-        const std::string tmpUID(m_fuselage[i]->GetUID());
+        const std::string tmpUID(m_fuselages[i]->GetUID());
         if (tmpUID == UID) {
             return i+1;
         }
@@ -133,15 +133,15 @@ int CCPACSFuselages::GetFuselageIndex(const std::string& UID) const
 void CCPACSFuselages::AddFuselage(CCPACSFuselage* fuselage)
 {
     // Check whether the same fuselage already exists if yes remove it before adding the new one
-    for (std::vector<unique_ptr<CCPACSFuselage> >::iterator it = m_fuselage.begin(); it != m_fuselage.end(); ++it) {
+    for (std::vector<unique_ptr<CCPACSFuselage> >::iterator it = m_fuselages.begin(); it != m_fuselages.end(); ++it) {
         if ((*it)->GetUID() == fuselage->GetUID()) {
-            m_fuselage.erase(it);
+            m_fuselages.erase(it);
             break;
         }
     }
 
     // Add the new fuselage to the fuselage list
-    m_fuselage.push_back(unique_ptr<CCPACSFuselage>(fuselage));
+    m_fuselages.push_back(unique_ptr<CCPACSFuselage>(fuselage));
 }
 
 } // end namespace tigl

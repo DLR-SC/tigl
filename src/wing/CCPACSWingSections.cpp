@@ -31,7 +31,7 @@ namespace tigl
 // Get section count
 int CCPACSWingSections::GetSectionCount() const
 {
-    return static_cast<int>(m_section.size());
+    return static_cast<int>(m_sections.size());
 }
 
 // Returns the section for a given index
@@ -41,7 +41,7 @@ CCPACSWingSection& CCPACSWingSections::GetSection(int index) const
     if (index < 0 || index >= GetSectionCount()) {
         throw CTiglError("Error: Invalid index in CCPACSWingSections::GetSection", TIGL_INDEX_ERROR);
     }
-    return *m_section[index];
+    return *m_sections[index];
 }
 
 } // end namespace tigl

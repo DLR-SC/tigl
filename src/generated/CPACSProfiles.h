@@ -20,6 +20,7 @@
 #include <tixi.h>
 #include <string>
 #include <boost/optional.hpp>
+#include <boost/utility/in_place_factory.hpp>
 #include "tigl_internal.h"
 #include <CCPACSFuselageProfiles.h>
 #include <CCPACSWingProfiles.h>
@@ -79,5 +80,6 @@ namespace tigl
         };
     }
     
-    // This type is customized, use type CCPACSProfiles
+    // Aliases in tigl namespace
+    // CPACSProfiles is customized, use type CCPACSProfiles directly
 }

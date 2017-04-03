@@ -20,6 +20,7 @@
 #include <tixi.h>
 #include <string>
 #include <boost/optional.hpp>
+#include <boost/utility/in_place_factory.hpp>
 #include "CTiglError.h"
 #include <typeinfo>
 #include "tigl_internal.h"
@@ -86,5 +87,6 @@ namespace tigl
         };
     }
     
-    // This type is customized, use type CCPACSMaterial
+    // Aliases in tigl namespace
+    // CPACSMaterialDefinition is customized, use type CCPACSMaterial directly
 }

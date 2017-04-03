@@ -37,7 +37,7 @@ CCPACSRotorHinges::CCPACSRotorHinges(CCPACSRotorBladeAttachment* parent)
 // Returns the total count of rotor hinges in a rotor blade attachment
 int CCPACSRotorHinges::GetRotorHingeCount() const
 {
-    return static_cast<int>(m_hinge.size());
+    return static_cast<int>(m_hinges.size());
 }
 
 // Returns the rotor hinge for a given index.
@@ -47,7 +47,7 @@ CCPACSRotorHinge& CCPACSRotorHinges::GetRotorHinge(int index) const
     if (index < 0 || index >= GetRotorHingeCount()) {
         throw CTiglError("Error: Invalid index in CCPACSRotorHinges::GetRotorHinge", TIGL_INDEX_ERROR);
     }
-    return *m_hinge[index];
+    return *m_hinges[index];
 }
 
 // Returns the parent configuration

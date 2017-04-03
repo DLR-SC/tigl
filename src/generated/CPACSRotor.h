@@ -20,6 +20,7 @@
 #include <tixi.h>
 #include <string>
 #include <boost/optional.hpp>
+#include <boost/utility/in_place_factory.hpp>
 #include "tigl_internal.h"
 #include <TiglSymmetryAxis.h>
 #include "CPACSRotor_type.h"
@@ -107,5 +108,6 @@ namespace tigl
         };
     }
     
-    // This type is customized, use type CCPACSRotor
+    // Aliases in tigl namespace
+    // CPACSRotor is customized, use type CCPACSRotor directly
 }

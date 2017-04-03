@@ -20,6 +20,7 @@
 #include <tixi.h>
 #include <string>
 #include <boost/optional.hpp>
+#include <boost/utility/in_place_factory.hpp>
 #include "tigl_internal.h"
 #include <CCPACSTransformation.h>
 
@@ -77,5 +78,6 @@ namespace tigl
         };
     }
     
-    // This type is customized, use type CCPACSFuselageSectionElement
+    // Aliases in tigl namespace
+    // CPACSFuselageElement is customized, use type CCPACSFuselageSectionElement directly
 }

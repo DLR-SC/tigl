@@ -20,6 +20,7 @@
 #include <tixi.h>
 #include <string>
 #include <boost/optional.hpp>
+#include <boost/utility/in_place_factory.hpp>
 #include "CTiglError.h"
 #include <typeinfo>
 #include "tigl_internal.h"
@@ -108,5 +109,6 @@ namespace tigl
         };
     }
     
-    // This type is customized, use type CCPACSStringVector
+    // Aliases in tigl namespace
+    // CPACSStringVectorBase is customized, use type CCPACSStringVector directly
 }

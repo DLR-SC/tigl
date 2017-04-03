@@ -15,13 +15,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <CCPACSExternalObject.h>
 #include <cassert>
+#include <CCPACSExternalObject.h>
 #include "CCPACSAircraftModel.h"
-#include "TixiHelper.h"
-#include "CTiglLogging.h"
-#include "CTiglError.h"
 #include "CPACSGenericGeometryComponents.h"
+#include "CTiglError.h"
+#include "CTiglLogging.h"
+#include "TixiHelper.h"
 
 namespace tigl
 {
@@ -44,7 +44,7 @@ namespace tigl
         {
             // read element genericGeometryComponent
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/genericGeometryComponent")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/genericGeometryComponent", m_genericGeometryComponent, reinterpret_cast<CCPACSExternalObjects*>(this));
+                tixihelper::TixiReadElements(tixiHandle, xpath + "/genericGeometryComponent", m_genericGeometryComponents, reinterpret_cast<CCPACSExternalObjects*>(this));
             }
             
         }
@@ -52,18 +52,18 @@ namespace tigl
         void CPACSGenericGeometryComponents::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element genericGeometryComponent
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/genericGeometryComponent", m_genericGeometryComponent);
+            tixihelper::TixiSaveElements(tixiHandle, xpath + "/genericGeometryComponent", m_genericGeometryComponents);
             
         }
         
-        const std::vector<unique_ptr<CCPACSExternalObject> >& CPACSGenericGeometryComponents::GetGenericGeometryComponent() const
+        const std::vector<unique_ptr<CCPACSExternalObject> >& CPACSGenericGeometryComponents::GetGenericGeometryComponents() const
         {
-            return m_genericGeometryComponent;
+            return m_genericGeometryComponents;
         }
         
-        std::vector<unique_ptr<CCPACSExternalObject> >& CPACSGenericGeometryComponents::GetGenericGeometryComponent()
+        std::vector<unique_ptr<CCPACSExternalObject> >& CPACSGenericGeometryComponents::GetGenericGeometryComponents()
         {
-            return m_genericGeometryComponent;
+            return m_genericGeometryComponents;
         }
         
     }

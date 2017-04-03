@@ -17,10 +17,10 @@
 
 #include <cassert>
 #include "CCPACSWingRibsDefinition.h"
-#include "TixiHelper.h"
-#include "CTiglLogging.h"
-#include "CTiglError.h"
 #include "CPACSWingRibExplicitPositioning.h"
+#include "CTiglError.h"
+#include "CTiglLogging.h"
+#include "TixiHelper.h"
 
 namespace tigl
 {

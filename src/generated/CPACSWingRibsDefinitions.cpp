@@ -15,13 +15,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <CCPACSWingRibsDefinition.h>
 #include <cassert>
+#include <CCPACSWingRibsDefinition.h>
 #include "CCPACSWingCSStructure.h"
-#include "TixiHelper.h"
-#include "CTiglLogging.h"
-#include "CTiglError.h"
 #include "CPACSWingRibsDefinitions.h"
+#include "CTiglError.h"
+#include "CTiglLogging.h"
+#include "TixiHelper.h"
 
 namespace tigl
 {
@@ -44,7 +44,7 @@ namespace tigl
         {
             // read element ribsDefinition
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/ribsDefinition")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/ribsDefinition", m_ribsDefinition, reinterpret_cast<CCPACSWingRibsDefinitions*>(this));
+                tixihelper::TixiReadElements(tixiHandle, xpath + "/ribsDefinition", m_ribsDefinitions, reinterpret_cast<CCPACSWingRibsDefinitions*>(this));
             }
             
         }
@@ -52,18 +52,18 @@ namespace tigl
         void CPACSWingRibsDefinitions::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element ribsDefinition
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/ribsDefinition", m_ribsDefinition);
+            tixihelper::TixiSaveElements(tixiHandle, xpath + "/ribsDefinition", m_ribsDefinitions);
             
         }
         
-        const std::vector<unique_ptr<CCPACSWingRibsDefinition> >& CPACSWingRibsDefinitions::GetRibsDefinition() const
+        const std::vector<unique_ptr<CCPACSWingRibsDefinition> >& CPACSWingRibsDefinitions::GetRibsDefinitions() const
         {
-            return m_ribsDefinition;
+            return m_ribsDefinitions;
         }
         
-        std::vector<unique_ptr<CCPACSWingRibsDefinition> >& CPACSWingRibsDefinitions::GetRibsDefinition()
+        std::vector<unique_ptr<CCPACSWingRibsDefinition> >& CPACSWingRibsDefinitions::GetRibsDefinitions()
         {
-            return m_ribsDefinition;
+            return m_ribsDefinitions;
         }
         
     }

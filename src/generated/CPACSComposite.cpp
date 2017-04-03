@@ -15,11 +15,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "CPACSCompositeLayer.h"
-#include "TixiHelper.h"
-#include "CTiglLogging.h"
-#include "CTiglError.h"
 #include "CPACSComposite.h"
+#include "CPACSCompositeLayer.h"
+#include "CTiglError.h"
+#include "CTiglLogging.h"
+#include "TixiHelper.h"
 
 namespace tigl
 {
@@ -55,7 +55,7 @@ namespace tigl
             
             // read element compositeLayer
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/compositeLayer")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/compositeLayer", m_compositeLayer);
+                tixihelper::TixiReadElements(tixiHandle, xpath + "/compositeLayer", m_compositeLayers);
             }
             
         }
@@ -85,7 +85,7 @@ namespace tigl
             }
             
             // write element compositeLayer
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/compositeLayer", m_compositeLayer);
+            tixihelper::TixiSaveElements(tixiHandle, xpath + "/compositeLayer", m_compositeLayers);
             
         }
         
@@ -144,14 +144,14 @@ namespace tigl
             m_offset = value;
         }
         
-        const std::vector<unique_ptr<CPACSCompositeLayer> >& CPACSComposite::GetCompositeLayer() const
+        const std::vector<unique_ptr<CPACSCompositeLayer> >& CPACSComposite::GetCompositeLayers() const
         {
-            return m_compositeLayer;
+            return m_compositeLayers;
         }
         
-        std::vector<unique_ptr<CPACSCompositeLayer> >& CPACSComposite::GetCompositeLayer()
+        std::vector<unique_ptr<CPACSCompositeLayer> >& CPACSComposite::GetCompositeLayers()
         {
-            return m_compositeLayer;
+            return m_compositeLayers;
         }
         
     }

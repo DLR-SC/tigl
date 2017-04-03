@@ -45,13 +45,13 @@ void CCPACSRotorBlades::Invalidate()
 // Adds a rotor blade to the  rotor blade container
 void CCPACSRotorBlades::AddRotorBlade(CCPACSWing* rotorBlade)
 {
-    m_rotorBlade.push_back(tigl::unique_ptr<CCPACSWing>(rotorBlade));
+    m_rotorBlades.push_back(tigl::unique_ptr<CCPACSWing>(rotorBlade));
 }
 
 // Returns the total count of rotor blades of a rotor blade attachment
 int CCPACSRotorBlades::GetRotorBladeCount() const
 {
-    return (static_cast<int>(m_rotorBlade.size()));
+    return (static_cast<int>(m_rotorBlades.size()));
 }
 
 // Returns the rotor blade for a given index
@@ -61,19 +61,19 @@ CCPACSWing& CCPACSRotorBlades::GetRotorBlade(int index) const
     if (index < 0 || index >= GetRotorBladeCount()) {
         throw CTiglError("Error: Invalid index in CCPACSRotorBlades::GetRotorBlade", TIGL_INDEX_ERROR);
     }
-    return *m_rotorBlade[index];
+    return *m_rotorBlades[index];
 }
 
 CCPACSWing& CCPACSRotorBlades::GetRotorBlade(const std::string& uid) const
 {
-    return *m_rotorBlade[GetRotorBladeIndex(uid) - 1];
+    return *m_rotorBlades[GetRotorBladeIndex(uid) - 1];
 }
 
 // Returns the wing index for a given UID.
 int CCPACSRotorBlades::GetRotorBladeIndex(const std::string& UID) const
 {
     for (int i = 0; i < GetRotorBladeCount(); i++) {
-        const std::string tmpUID(m_rotorBlade[i]->GetUID());
+        const std::string tmpUID(m_rotorBlades[i]->GetUID());
         if (tmpUID == UID) {
             return i + 1;
         }

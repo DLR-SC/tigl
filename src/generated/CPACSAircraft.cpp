@@ -16,10 +16,10 @@
 // limitations under the License.
 
 #include <CCPACSAircraftModel.h>
-#include "TixiHelper.h"
-#include "CTiglLogging.h"
-#include "CTiglError.h"
 #include "CPACSAircraft.h"
+#include "CTiglError.h"
+#include "CTiglLogging.h"
+#include "TixiHelper.h"
 
 namespace tigl
 {
@@ -32,7 +32,7 @@ namespace tigl
         {
             // read element model
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/model")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/model", m_model);
+                tixihelper::TixiReadElements(tixiHandle, xpath + "/model", m_models);
             }
             
         }
@@ -40,18 +40,18 @@ namespace tigl
         void CPACSAircraft::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element model
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/model", m_model);
+            tixihelper::TixiSaveElements(tixiHandle, xpath + "/model", m_models);
             
         }
         
-        const std::vector<unique_ptr<CCPACSAircraftModel> >& CPACSAircraft::GetModel() const
+        const std::vector<unique_ptr<CCPACSAircraftModel> >& CPACSAircraft::GetModels() const
         {
-            return m_model;
+            return m_models;
         }
         
-        std::vector<unique_ptr<CCPACSAircraftModel> >& CPACSAircraft::GetModel()
+        std::vector<unique_ptr<CCPACSAircraftModel> >& CPACSAircraft::GetModels()
         {
-            return m_model;
+            return m_models;
         }
         
     }
