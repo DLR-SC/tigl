@@ -112,12 +112,9 @@ namespace tigl
     // Aliases in tigl namespace
     #ifdef HAVE_CPP11
     using CCPACSPostFailure = generated::CPACSPostFailure;
-    #else
-    typedef generated::CPACSPostFailure CCPACSPostFailure;
-    #endif
-    #ifdef HAVE_CPP11
     using CCPACSPlasticityCurvePoint = generated::CPACSPlasticityCurvePoint;
     #else
+    typedef generated::CPACSPostFailure CCPACSPostFailure;
     typedef generated::CPACSPlasticityCurvePoint CCPACSPlasticityCurvePoint;
     #endif
 }

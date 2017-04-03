@@ -92,6 +92,5 @@ namespace tigl
         };
     }
     
-    // Aliases in tigl namespace
     // CPACSCst2D is customized, use type CCPACSWingProfileCST directly
 }

@@ -89,6 +89,5 @@ namespace tigl
         };
     }
     
-    // Aliases in tigl namespace
     // CPACSRotorcraftModel is customized, use type CCPACSRotorcraftModel directly
 }

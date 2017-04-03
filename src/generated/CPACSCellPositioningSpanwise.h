@@ -83,6 +83,5 @@ namespace tigl
         };
     }
     
-    // Aliases in tigl namespace
     // CPACSCellPositioningSpanwise is customized, use type CCPACSWingCellPositionSpanwise directly
 }

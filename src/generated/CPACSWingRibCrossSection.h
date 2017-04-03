@@ -88,6 +88,5 @@ namespace tigl
         };
     }
     
-    // Aliases in tigl namespace
     // CPACSWingRibCrossSection is customized, use type CCPACSWingRibCrossSection directly
 }

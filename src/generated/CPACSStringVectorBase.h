@@ -109,6 +109,5 @@ namespace tigl
         };
     }
     
-    // Aliases in tigl namespace
     // CPACSStringVectorBase is customized, use type CCPACSStringVector directly
 }

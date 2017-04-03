@@ -75,4 +75,11 @@ namespace tigl
         }
         #endif
     }
+    
+    // Aliases in tigl namespace
+    #ifdef HAVE_CPP11
+    using ECPACSRibCrossingBehaviour = generated::CPACSRibCrossingBehaviour;
+    #else
+    typedef generated::CPACSRibCrossingBehaviour ECPACSRibCrossingBehaviour;
+    #endif
 }

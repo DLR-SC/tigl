@@ -65,12 +65,9 @@ namespace tigl
     // Aliases in tigl namespace
     #ifdef HAVE_CPP11
     using CCPACSComposites = generated::CPACSComposites;
-    #else
-    typedef generated::CPACSComposites CCPACSComposites;
-    #endif
-    #ifdef HAVE_CPP11
     using CCPACSComposite = generated::CPACSComposite;
     #else
+    typedef generated::CPACSComposites CCPACSComposites;
     typedef generated::CPACSComposite CCPACSComposite;
     #endif
 }

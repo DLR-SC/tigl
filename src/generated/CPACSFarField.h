@@ -67,6 +67,5 @@ namespace tigl
         };
     }
     
-    // Aliases in tigl namespace
     // CPACSFarField is customized, use type CCPACSFarField directly
 }

@@ -65,12 +65,9 @@ namespace tigl
     // Aliases in tigl namespace
     #ifdef HAVE_CPP11
     using CCPACSSparCells = generated::CPACSSparCells;
-    #else
-    typedef generated::CPACSSparCells CCPACSSparCells;
-    #endif
-    #ifdef HAVE_CPP11
     using CCPACSSparCell = generated::CPACSSparCell;
     #else
+    typedef generated::CPACSSparCells CCPACSSparCells;
     typedef generated::CPACSSparCell CCPACSSparCell;
     #endif
 }

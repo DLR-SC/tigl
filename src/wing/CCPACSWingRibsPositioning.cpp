@@ -255,8 +255,8 @@ void CCPACSWingRibsPositioning::SetSpacing(double value)
 CCPACSWingRibsPositioning::CrossingBehaviour CCPACSWingRibsPositioning::GetRibCrossingBehaviour() const
 {
     switch (m_ribCrossingBehaviour.GetSimpleContent()) {
-        case ENUM_VALUE_NS(generated, CPACSRibCrossingBehaviour, cross): return ENUM_VALUE(CrossingBehaviour, CROSSING_CROSS);
-        case ENUM_VALUE_NS(generated, CPACSRibCrossingBehaviour, end):   return ENUM_VALUE(CrossingBehaviour, CROSSING_END);
+        case ENUM_VALUE(ECPACSRibCrossingBehaviour, cross): return ENUM_VALUE(CrossingBehaviour, CROSSING_CROSS);
+        case ENUM_VALUE(ECPACSRibCrossingBehaviour, end):   return ENUM_VALUE(CrossingBehaviour, CROSSING_END);
         default: throw CTiglError("Unknown crossing behaviour");
     }
 }
@@ -264,8 +264,8 @@ CCPACSWingRibsPositioning::CrossingBehaviour CCPACSWingRibsPositioning::GetRibCr
 void CCPACSWingRibsPositioning::SetRibCrossingBehaviour(CCPACSWingRibsPositioning::CrossingBehaviour behaviour)
 {
     switch (behaviour) {
-        case ENUM_VALUE(CrossingBehaviour, CROSSING_CROSS): m_ribCrossingBehaviour.SetSimpleContent(ENUM_VALUE_NS(generated, CPACSRibCrossingBehaviour, cross));
-        case ENUM_VALUE(CrossingBehaviour, CROSSING_END):   m_ribCrossingBehaviour.SetSimpleContent(ENUM_VALUE_NS(generated, CPACSRibCrossingBehaviour, end));
+        case ENUM_VALUE(CrossingBehaviour, CROSSING_CROSS): m_ribCrossingBehaviour.SetSimpleContent(ENUM_VALUE(ECPACSRibCrossingBehaviour, cross));
+        case ENUM_VALUE(CrossingBehaviour, CROSSING_END):   m_ribCrossingBehaviour.SetSimpleContent(ENUM_VALUE(ECPACSRibCrossingBehaviour, end));
         default: throw CTiglError("Unknown crossing behaviour");
     }
 

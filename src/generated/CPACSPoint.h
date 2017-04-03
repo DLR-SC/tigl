@@ -76,6 +76,5 @@ namespace tigl
         };
     }
     
-    // Aliases in tigl namespace
     // CPACSPoint is customized, use type CCPACSPoint directly
 }

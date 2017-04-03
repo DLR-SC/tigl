@@ -85,4 +85,6 @@ namespace tigl
         }
         #endif
     }
+    
+    // CPACSSymmetry is customized, use type TiglSymmetryAxis directly
 }

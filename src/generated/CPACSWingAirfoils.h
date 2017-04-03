@@ -62,8 +62,9 @@ namespace tigl
         };
     }
     
-    // Aliases in tigl namespace
     // CPACSWingAirfoils is customized, use type CCPACSWingProfiles directly
+    
+    // Aliases in tigl namespace
     #ifdef HAVE_CPP11
     using CCPACSProfileGeometry = generated::CPACSProfileGeometry;
     #else

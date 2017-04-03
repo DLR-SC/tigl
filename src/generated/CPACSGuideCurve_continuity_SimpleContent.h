@@ -90,4 +90,11 @@ namespace tigl
         }
         #endif
     }
+    
+    // Aliases in tigl namespace
+    #ifdef HAVE_CPP11
+    using ECPACSGuideCurve_continuity_SimpleContent = generated::CPACSGuideCurve_continuity_SimpleContent;
+    #else
+    typedef generated::CPACSGuideCurve_continuity_SimpleContent ECPACSGuideCurve_continuity_SimpleContent;
+    #endif
 }

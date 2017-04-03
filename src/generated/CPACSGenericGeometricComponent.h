@@ -97,6 +97,5 @@ namespace tigl
         };
     }
     
-    // Aliases in tigl namespace
     // CPACSGenericGeometricComponent is customized, use type CCPACSExternalObject directly
 }

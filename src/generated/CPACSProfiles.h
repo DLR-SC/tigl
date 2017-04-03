@@ -76,6 +76,5 @@ namespace tigl
         };
     }
     
-    // Aliases in tigl namespace
     // CPACSProfiles is customized, use type CCPACSProfiles directly
 }

@@ -115,6 +115,5 @@ namespace tigl
         };
     }
     
-    // Aliases in tigl namespace
     // CPACSWingRibsPositioning is customized, use type CCPACSWingRibsPositioning directly
 }

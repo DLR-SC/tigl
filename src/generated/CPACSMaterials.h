@@ -72,12 +72,9 @@ namespace tigl
     // Aliases in tigl namespace
     #ifdef HAVE_CPP11
     using CCPACSMaterials = generated::CPACSMaterials;
-    #else
-    typedef generated::CPACSMaterials CCPACSMaterials;
-    #endif
-    #ifdef HAVE_CPP11
     using CCPACSMaterial = generated::CPACSMaterial;
     #else
+    typedef generated::CPACSMaterials CCPACSMaterials;
     typedef generated::CPACSMaterial CCPACSMaterial;
     #endif
 }
