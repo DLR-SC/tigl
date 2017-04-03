@@ -90,14 +90,9 @@ namespace tigl
             
         }
         
-        bool CPACSPointAbsRel::HasUID() const
+        const boost::optional<std::string>& CPACSPointAbsRel::GetUID() const
         {
-            return static_cast<bool>(m_uID);
-        }
-        
-        const std::string& CPACSPointAbsRel::GetUID() const
-        {
-            return *m_uID;
+            return m_uID;
         }
         
         void CPACSPointAbsRel::SetUID(const std::string& value)
@@ -105,14 +100,14 @@ namespace tigl
             m_uID = value;
         }
         
-        bool CPACSPointAbsRel::HasRefType() const
+        void CPACSPointAbsRel::SetUID(const boost::optional<std::string>& value)
         {
-            return static_cast<bool>(m_refType);
+            m_uID = value;
         }
         
-        const ECPACSTranslationType& CPACSPointAbsRel::GetRefType() const
+        const boost::optional<ECPACSTranslationType>& CPACSPointAbsRel::GetRefType() const
         {
-            return *m_refType;
+            return m_refType;
         }
         
         void CPACSPointAbsRel::SetRefType(const ECPACSTranslationType& value)
@@ -120,14 +115,14 @@ namespace tigl
             m_refType = value;
         }
         
-        bool CPACSPointAbsRel::HasX() const
+        void CPACSPointAbsRel::SetRefType(const boost::optional<ECPACSTranslationType>& value)
         {
-            return static_cast<bool>(m_x);
+            m_refType = value;
         }
         
-        const double& CPACSPointAbsRel::GetX() const
+        const boost::optional<double>& CPACSPointAbsRel::GetX() const
         {
-            return *m_x;
+            return m_x;
         }
         
         void CPACSPointAbsRel::SetX(const double& value)
@@ -135,14 +130,14 @@ namespace tigl
             m_x = value;
         }
         
-        bool CPACSPointAbsRel::HasY() const
+        void CPACSPointAbsRel::SetX(const boost::optional<double>& value)
         {
-            return static_cast<bool>(m_y);
+            m_x = value;
         }
         
-        const double& CPACSPointAbsRel::GetY() const
+        const boost::optional<double>& CPACSPointAbsRel::GetY() const
         {
-            return *m_y;
+            return m_y;
         }
         
         void CPACSPointAbsRel::SetY(const double& value)
@@ -150,17 +145,22 @@ namespace tigl
             m_y = value;
         }
         
-        bool CPACSPointAbsRel::HasZ() const
+        void CPACSPointAbsRel::SetY(const boost::optional<double>& value)
         {
-            return static_cast<bool>(m_z);
+            m_y = value;
         }
         
-        const double& CPACSPointAbsRel::GetZ() const
+        const boost::optional<double>& CPACSPointAbsRel::GetZ() const
         {
-            return *m_z;
+            return m_z;
         }
         
         void CPACSPointAbsRel::SetZ(const double& value)
+        {
+            m_z = value;
+        }
+        
+        void CPACSPointAbsRel::SetZ(const boost::optional<double>& value)
         {
             m_z = value;
         }

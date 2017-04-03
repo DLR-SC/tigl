@@ -93,14 +93,9 @@ namespace tigl
             
         }
         
-        bool CPACSCompositeLayer::HasName() const
+        const boost::optional<std::string>& CPACSCompositeLayer::GetName() const
         {
-            return static_cast<bool>(m_name);
-        }
-        
-        const std::string& CPACSCompositeLayer::GetName() const
-        {
-            return *m_name;
+            return m_name;
         }
         
         void CPACSCompositeLayer::SetName(const std::string& value)
@@ -108,17 +103,22 @@ namespace tigl
             m_name = value;
         }
         
-        bool CPACSCompositeLayer::HasDescription() const
+        void CPACSCompositeLayer::SetName(const boost::optional<std::string>& value)
         {
-            return static_cast<bool>(m_description);
+            m_name = value;
         }
         
-        const std::string& CPACSCompositeLayer::GetDescription() const
+        const boost::optional<std::string>& CPACSCompositeLayer::GetDescription() const
         {
-            return *m_description;
+            return m_description;
         }
         
         void CPACSCompositeLayer::SetDescription(const std::string& value)
+        {
+            m_description = value;
+        }
+        
+        void CPACSCompositeLayer::SetDescription(const boost::optional<std::string>& value)
         {
             m_description = value;
         }

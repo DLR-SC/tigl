@@ -211,7 +211,7 @@ double CTiglAttachedRotorBlade::GetRadius()
 double CTiglAttachedRotorBlade::GetTipSpeed()
 {
     // return GetRotor().GetNominalRotationsPerMinute()/60. * 2.*M_PI*GetRadius();
-    return GetRotor().GetNominalRotationsPerMinute()/30. * M_PI*GetRadius();
+    return *GetRotor().GetNominalRotationsPerMinute() / 30. * M_PI * GetRadius();
 }
 
 // Returns the radius of a point on the rotor blade quarter chord line for a given segment index and eta

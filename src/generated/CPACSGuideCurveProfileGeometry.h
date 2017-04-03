@@ -42,9 +42,9 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT bool HasSymmetry() const;
-            TIGL_EXPORT const TiglSymmetryAxis& GetSymmetry() const;
+            TIGL_EXPORT const boost::optional<TiglSymmetryAxis>& GetSymmetry() const;
             TIGL_EXPORT void SetSymmetry(const TiglSymmetryAxis& value);
+            TIGL_EXPORT void SetSymmetry(const boost::optional<TiglSymmetryAxis>& value);
             
             TIGL_EXPORT const std::string& GetUID() const;
             TIGL_EXPORT void SetUID(const std::string& value);
@@ -52,9 +52,9 @@ namespace tigl
             TIGL_EXPORT const std::string& GetName() const;
             TIGL_EXPORT void SetName(const std::string& value);
             
-            TIGL_EXPORT bool HasDescription() const;
-            TIGL_EXPORT const std::string& GetDescription() const;
+            TIGL_EXPORT const boost::optional<std::string>& GetDescription() const;
             TIGL_EXPORT void SetDescription(const std::string& value);
+            TIGL_EXPORT void SetDescription(const boost::optional<std::string>& value);
             
             TIGL_EXPORT const CCPACSPointListRelXYZ& GetPointList() const;
             TIGL_EXPORT CCPACSPointListRelXYZ& GetPointList();

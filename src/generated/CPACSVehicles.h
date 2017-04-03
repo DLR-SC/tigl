@@ -44,21 +44,17 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT bool HasAircraft() const;
-            TIGL_EXPORT const CPACSAircraft& GetAircraft() const;
-            TIGL_EXPORT CPACSAircraft& GetAircraft();
+            TIGL_EXPORT const boost::optional<CPACSAircraft>& GetAircraft() const;
+            TIGL_EXPORT boost::optional<CPACSAircraft>& GetAircraft();
             
-            TIGL_EXPORT bool HasRotorcraft() const;
-            TIGL_EXPORT const CPACSRotorcraft& GetRotorcraft() const;
-            TIGL_EXPORT CPACSRotorcraft& GetRotorcraft();
+            TIGL_EXPORT const boost::optional<CPACSRotorcraft>& GetRotorcraft() const;
+            TIGL_EXPORT boost::optional<CPACSRotorcraft>& GetRotorcraft();
             
-            TIGL_EXPORT bool HasProfiles() const;
-            TIGL_EXPORT const CCPACSProfiles& GetProfiles() const;
-            TIGL_EXPORT CCPACSProfiles& GetProfiles();
+            TIGL_EXPORT const boost::optional<CCPACSProfiles>& GetProfiles() const;
+            TIGL_EXPORT boost::optional<CCPACSProfiles>& GetProfiles();
             
-            TIGL_EXPORT bool HasMaterials() const;
-            TIGL_EXPORT const CPACSMaterials& GetMaterials() const;
-            TIGL_EXPORT CPACSMaterials& GetMaterials();
+            TIGL_EXPORT const boost::optional<CPACSMaterials>& GetMaterials() const;
+            TIGL_EXPORT boost::optional<CPACSMaterials>& GetMaterials();
             
         protected:
             boost::optional<CPACSAircraft>   m_aircraft;

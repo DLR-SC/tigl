@@ -52,9 +52,9 @@ namespace tigl
             TIGL_EXPORT const std::string& GetName() const;
             TIGL_EXPORT void SetName(const std::string& value);
             
-            TIGL_EXPORT bool HasDescription() const;
-            TIGL_EXPORT const std::string& GetDescription() const;
+            TIGL_EXPORT const boost::optional<std::string>& GetDescription() const;
             TIGL_EXPORT void SetDescription(const std::string& value);
+            TIGL_EXPORT void SetDescription(const boost::optional<std::string>& value);
             
             TIGL_EXPORT const std::string& GetFromElementUID() const;
             TIGL_EXPORT void SetFromElementUID(const std::string& value);
@@ -62,9 +62,8 @@ namespace tigl
             TIGL_EXPORT const std::string& GetToElementUID() const;
             TIGL_EXPORT void SetToElementUID(const std::string& value);
             
-            TIGL_EXPORT bool HasStructure() const;
-            TIGL_EXPORT const CCPACSWingCSStructure& GetStructure() const;
-            TIGL_EXPORT CCPACSWingCSStructure& GetStructure();
+            TIGL_EXPORT const boost::optional<CCPACSWingCSStructure>& GetStructure() const;
+            TIGL_EXPORT boost::optional<CCPACSWingCSStructure>& GetStructure();
             
         protected:
             CCPACSWingComponentSegments* m_parent;

@@ -136,17 +136,17 @@ namespace tigl
             m_name = value;
         }
         
-        bool CPACSHeader::HasDescription() const
+        const boost::optional<std::string>& CPACSHeader::GetDescription() const
         {
-            return static_cast<bool>(m_description);
-        }
-        
-        const std::string& CPACSHeader::GetDescription() const
-        {
-            return *m_description;
+            return m_description;
         }
         
         void CPACSHeader::SetDescription(const std::string& value)
+        {
+            m_description = value;
+        }
+        
+        void CPACSHeader::SetDescription(const boost::optional<std::string>& value)
         {
             m_description = value;
         }
@@ -191,19 +191,14 @@ namespace tigl
             m_cpacsVersion = value;
         }
         
-        bool CPACSHeader::HasUpdates() const
+        const boost::optional<CPACSUpdates>& CPACSHeader::GetUpdates() const
         {
-            return static_cast<bool>(m_updates);
+            return m_updates;
         }
         
-        const CPACSUpdates& CPACSHeader::GetUpdates() const
+        boost::optional<CPACSUpdates>& CPACSHeader::GetUpdates()
         {
-            return *m_updates;
-        }
-        
-        CPACSUpdates& CPACSHeader::GetUpdates()
-        {
-            return *m_updates;
+            return m_updates;
         }
         
     }

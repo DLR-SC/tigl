@@ -227,10 +227,10 @@ bool CCPACSWingSparSegment::HasCap(SparCapSide side) const
 {
     switch (side) {
     case UPPER:
-        return m_sparCrossSection.HasUpperCap();
+        return m_sparCrossSection.GetUpperCap();
         break;
     case LOWER:
-        return m_sparCrossSection.HasLowerCap();
+        return m_sparCrossSection.GetLowerCap();
         break;
     default:
         throw CTiglError("Unsupported SparCapSide passed to CCPACSWingSparSegment::HasCap!");
@@ -449,7 +449,7 @@ void CCPACSWingSparSegment::BuildSparCapsGeometry() const
 
     TopoDS_Shape sparCutting = GetSparCutGeometry(WING_COORDINATE_SYSTEM);
 
-    if (m_sparCrossSection.HasUpperCap()) {
+    if (m_sparCrossSection.GetUpperCap()) {
         TopoDS_Shape loft = wingStructureReference.GetUpperShape();
 
         // Get the cutting edge of the spar cutting plane and the loft
@@ -463,7 +463,7 @@ void CCPACSWingSparSegment::BuildSparCapsGeometry() const
         }
     }
 
-    if (m_sparCrossSection.HasLowerCap()) {
+    if (m_sparCrossSection.GetLowerCap()) {
         TopoDS_Shape loft = wingStructureReference.GetLowerShape();
 
         // Get the cutting edge of the spar cutting plane and the loft

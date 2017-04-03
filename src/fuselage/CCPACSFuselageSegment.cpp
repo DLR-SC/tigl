@@ -777,7 +777,7 @@ bool CCPACSFuselageSegment::GuideCurveExists(std::string UID)
 TopTools_SequenceOfShape& CCPACSFuselageSegment::BuildGuideCurves()
 {
     guideCurveWires.Clear();
-    if (HasGuideCurves()) {
+    if (m_guideCurves) {
 
         // get start and end profile
         CCPACSFuselageProfile& startProfile = startConnection.GetProfile();
@@ -816,7 +816,7 @@ TopTools_SequenceOfShape& CCPACSFuselageSegment::BuildGuideCurves()
             // otherwise get relative circumference from neighboring segment guide curve
             else {
                 // get neighboring guide curve UID
-                std::string neighborGuideCurveUID = guideCurve.GetFromGuideCurveUID_choice1();
+                std::string neighborGuideCurveUID = *guideCurve.GetFromGuideCurveUID_choice1();
                 // get neighboring guide curve
                 const CCPACSGuideCurve& neighborGuideCurve = fuselage->GetGuideCurve(neighborGuideCurveUID);
                 // get relative circumference from neighboring guide curve

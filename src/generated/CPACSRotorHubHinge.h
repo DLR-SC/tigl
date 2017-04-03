@@ -47,17 +47,17 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT bool HasUID() const;
-            TIGL_EXPORT const std::string& GetUID() const;
+            TIGL_EXPORT const boost::optional<std::string>& GetUID() const;
             TIGL_EXPORT void SetUID(const std::string& value);
+            TIGL_EXPORT void SetUID(const boost::optional<std::string>& value);
             
-            TIGL_EXPORT bool HasName() const;
-            TIGL_EXPORT const std::string& GetName() const;
+            TIGL_EXPORT const boost::optional<std::string>& GetName() const;
             TIGL_EXPORT void SetName(const std::string& value);
+            TIGL_EXPORT void SetName(const boost::optional<std::string>& value);
             
-            TIGL_EXPORT bool HasDescription() const;
-            TIGL_EXPORT const std::string& GetDescription() const;
+            TIGL_EXPORT const boost::optional<std::string>& GetDescription() const;
             TIGL_EXPORT void SetDescription(const std::string& value);
+            TIGL_EXPORT void SetDescription(const boost::optional<std::string>& value);
             
             TIGL_EXPORT const CCPACSTransformation& GetTransformation() const;
             TIGL_EXPORT CCPACSTransformation& GetTransformation();
@@ -65,21 +65,21 @@ namespace tigl
             TIGL_EXPORT const CPACSRotorHubHinge_type& GetType() const;
             TIGL_EXPORT void SetType(const CPACSRotorHubHinge_type& value);
             
-            TIGL_EXPORT bool HasNeutralPosition() const;
-            TIGL_EXPORT const double& GetNeutralPosition() const;
+            TIGL_EXPORT const boost::optional<double>& GetNeutralPosition() const;
             TIGL_EXPORT void SetNeutralPosition(const double& value);
+            TIGL_EXPORT void SetNeutralPosition(const boost::optional<double>& value);
             
-            TIGL_EXPORT bool HasStaticStiffness() const;
-            TIGL_EXPORT const double& GetStaticStiffness() const;
+            TIGL_EXPORT const boost::optional<double>& GetStaticStiffness() const;
             TIGL_EXPORT void SetStaticStiffness(const double& value);
+            TIGL_EXPORT void SetStaticStiffness(const boost::optional<double>& value);
             
-            TIGL_EXPORT bool HasDynamicStiffness() const;
-            TIGL_EXPORT const double& GetDynamicStiffness() const;
+            TIGL_EXPORT const boost::optional<double>& GetDynamicStiffness() const;
             TIGL_EXPORT void SetDynamicStiffness(const double& value);
+            TIGL_EXPORT void SetDynamicStiffness(const boost::optional<double>& value);
             
-            TIGL_EXPORT bool HasDamping() const;
-            TIGL_EXPORT const double& GetDamping() const;
+            TIGL_EXPORT const boost::optional<double>& GetDamping() const;
             TIGL_EXPORT void SetDamping(const double& value);
+            TIGL_EXPORT void SetDamping(const boost::optional<double>& value);
             
         protected:
             CCPACSRotorHinges* m_parent;

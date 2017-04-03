@@ -200,17 +200,17 @@ namespace tigl
             return m_lowerB;
         }
         
-        bool CPACSCst2D::HasTrailingEdgeThickness() const
+        const boost::optional<double>& CPACSCst2D::GetTrailingEdgeThickness() const
         {
-            return static_cast<bool>(m_trailingEdgeThickness);
-        }
-        
-        const double& CPACSCst2D::GetTrailingEdgeThickness() const
-        {
-            return *m_trailingEdgeThickness;
+            return m_trailingEdgeThickness;
         }
         
         void CPACSCst2D::SetTrailingEdgeThickness(const double& value)
+        {
+            m_trailingEdgeThickness = value;
+        }
+        
+        void CPACSCst2D::SetTrailingEdgeThickness(const boost::optional<double>& value)
         {
             m_trailingEdgeThickness = value;
         }

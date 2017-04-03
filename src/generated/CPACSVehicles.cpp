@@ -115,64 +115,44 @@ namespace tigl
             
         }
         
-        bool CPACSVehicles::HasAircraft() const
+        const boost::optional<CPACSAircraft>& CPACSVehicles::GetAircraft() const
         {
-            return static_cast<bool>(m_aircraft);
+            return m_aircraft;
         }
         
-        const CPACSAircraft& CPACSVehicles::GetAircraft() const
+        boost::optional<CPACSAircraft>& CPACSVehicles::GetAircraft()
         {
-            return *m_aircraft;
+            return m_aircraft;
         }
         
-        CPACSAircraft& CPACSVehicles::GetAircraft()
+        const boost::optional<CPACSRotorcraft>& CPACSVehicles::GetRotorcraft() const
         {
-            return *m_aircraft;
+            return m_rotorcraft;
         }
         
-        bool CPACSVehicles::HasRotorcraft() const
+        boost::optional<CPACSRotorcraft>& CPACSVehicles::GetRotorcraft()
         {
-            return static_cast<bool>(m_rotorcraft);
+            return m_rotorcraft;
         }
         
-        const CPACSRotorcraft& CPACSVehicles::GetRotorcraft() const
+        const boost::optional<CCPACSProfiles>& CPACSVehicles::GetProfiles() const
         {
-            return *m_rotorcraft;
+            return m_profiles;
         }
         
-        CPACSRotorcraft& CPACSVehicles::GetRotorcraft()
+        boost::optional<CCPACSProfiles>& CPACSVehicles::GetProfiles()
         {
-            return *m_rotorcraft;
+            return m_profiles;
         }
         
-        bool CPACSVehicles::HasProfiles() const
+        const boost::optional<CPACSMaterials>& CPACSVehicles::GetMaterials() const
         {
-            return static_cast<bool>(m_profiles);
+            return m_materials;
         }
         
-        const CCPACSProfiles& CPACSVehicles::GetProfiles() const
+        boost::optional<CPACSMaterials>& CPACSVehicles::GetMaterials()
         {
-            return *m_profiles;
-        }
-        
-        CCPACSProfiles& CPACSVehicles::GetProfiles()
-        {
-            return *m_profiles;
-        }
-        
-        bool CPACSVehicles::HasMaterials() const
-        {
-            return static_cast<bool>(m_materials);
-        }
-        
-        const CPACSMaterials& CPACSVehicles::GetMaterials() const
-        {
-            return *m_materials;
-        }
-        
-        CPACSMaterials& CPACSVehicles::GetMaterials()
-        {
-            return *m_materials;
+            return m_materials;
         }
         
     }

@@ -150,14 +150,9 @@ namespace tigl
             m_name = value;
         }
         
-        bool CPACSAircraftModel::HasDescription() const
+        const boost::optional<std::string>& CPACSAircraftModel::GetDescription() const
         {
-            return static_cast<bool>(m_description);
-        }
-        
-        const std::string& CPACSAircraftModel::GetDescription() const
-        {
-            return *m_description;
+            return m_description;
         }
         
         void CPACSAircraftModel::SetDescription(const std::string& value)
@@ -165,49 +160,39 @@ namespace tigl
             m_description = value;
         }
         
-        bool CPACSAircraftModel::HasFuselages() const
+        void CPACSAircraftModel::SetDescription(const boost::optional<std::string>& value)
         {
-            return static_cast<bool>(m_fuselages);
+            m_description = value;
         }
         
-        const CCPACSFuselages& CPACSAircraftModel::GetFuselages() const
+        const boost::optional<CCPACSFuselages>& CPACSAircraftModel::GetFuselages() const
         {
-            return *m_fuselages;
+            return m_fuselages;
         }
         
-        CCPACSFuselages& CPACSAircraftModel::GetFuselages()
+        boost::optional<CCPACSFuselages>& CPACSAircraftModel::GetFuselages()
         {
-            return *m_fuselages;
+            return m_fuselages;
         }
         
-        bool CPACSAircraftModel::HasWings() const
+        const boost::optional<CCPACSWings>& CPACSAircraftModel::GetWings() const
         {
-            return static_cast<bool>(m_wings);
+            return m_wings;
         }
         
-        const CCPACSWings& CPACSAircraftModel::GetWings() const
+        boost::optional<CCPACSWings>& CPACSAircraftModel::GetWings()
         {
-            return *m_wings;
+            return m_wings;
         }
         
-        CCPACSWings& CPACSAircraftModel::GetWings()
+        const boost::optional<CCPACSExternalObjects>& CPACSAircraftModel::GetGenericGeometryComponents() const
         {
-            return *m_wings;
+            return m_genericGeometryComponents;
         }
         
-        bool CPACSAircraftModel::HasGenericGeometryComponents() const
+        boost::optional<CCPACSExternalObjects>& CPACSAircraftModel::GetGenericGeometryComponents()
         {
-            return static_cast<bool>(m_genericGeometryComponents);
-        }
-        
-        const CCPACSExternalObjects& CPACSAircraftModel::GetGenericGeometryComponents() const
-        {
-            return *m_genericGeometryComponents;
-        }
-        
-        CCPACSExternalObjects& CPACSAircraftModel::GetGenericGeometryComponents()
-        {
-            return *m_genericGeometryComponents;
+            return m_genericGeometryComponents;
         }
         
     }

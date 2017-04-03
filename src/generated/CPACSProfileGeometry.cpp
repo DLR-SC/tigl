@@ -121,17 +121,17 @@ namespace tigl
             
         }
         
-        bool CPACSProfileGeometry::HasSymmetry() const
+        const boost::optional<TiglSymmetryAxis>& CPACSProfileGeometry::GetSymmetry() const
         {
-            return static_cast<bool>(m_symmetry);
-        }
-        
-        const TiglSymmetryAxis& CPACSProfileGeometry::GetSymmetry() const
-        {
-            return *m_symmetry;
+            return m_symmetry;
         }
         
         void CPACSProfileGeometry::SetSymmetry(const TiglSymmetryAxis& value)
+        {
+            m_symmetry = value;
+        }
+        
+        void CPACSProfileGeometry::SetSymmetry(const boost::optional<TiglSymmetryAxis>& value)
         {
             m_symmetry = value;
         }
@@ -156,14 +156,9 @@ namespace tigl
             m_name = value;
         }
         
-        bool CPACSProfileGeometry::HasDescription() const
+        const boost::optional<std::string>& CPACSProfileGeometry::GetDescription() const
         {
-            return static_cast<bool>(m_description);
-        }
-        
-        const std::string& CPACSProfileGeometry::GetDescription() const
-        {
-            return *m_description;
+            return m_description;
         }
         
         void CPACSProfileGeometry::SetDescription(const std::string& value)
@@ -171,34 +166,29 @@ namespace tigl
             m_description = value;
         }
         
-        bool CPACSProfileGeometry::HasPointList_choice1() const
+        void CPACSProfileGeometry::SetDescription(const boost::optional<std::string>& value)
         {
-            return static_cast<bool>(m_pointList_choice1);
+            m_description = value;
         }
         
-        const CCPACSPointListXYZ& CPACSProfileGeometry::GetPointList_choice1() const
+        const boost::optional<CCPACSPointListXYZ>& CPACSProfileGeometry::GetPointList_choice1() const
         {
-            return *m_pointList_choice1;
+            return m_pointList_choice1;
         }
         
-        CCPACSPointListXYZ& CPACSProfileGeometry::GetPointList_choice1()
+        boost::optional<CCPACSPointListXYZ>& CPACSProfileGeometry::GetPointList_choice1()
         {
-            return *m_pointList_choice1;
+            return m_pointList_choice1;
         }
         
-        bool CPACSProfileGeometry::HasCst2D_choice2() const
+        const boost::optional<CCPACSWingProfileCST>& CPACSProfileGeometry::GetCst2D_choice2() const
         {
-            return static_cast<bool>(m_cst2D_choice2);
+            return m_cst2D_choice2;
         }
         
-        const CCPACSWingProfileCST& CPACSProfileGeometry::GetCst2D_choice2() const
+        boost::optional<CCPACSWingProfileCST>& CPACSProfileGeometry::GetCst2D_choice2()
         {
-            return *m_cst2D_choice2;
-        }
-        
-        CCPACSWingProfileCST& CPACSProfileGeometry::GetCst2D_choice2()
-        {
-            return *m_cst2D_choice2;
+            return m_cst2D_choice2;
         }
         
     }

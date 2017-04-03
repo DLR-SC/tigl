@@ -92,8 +92,8 @@ void CCPACSPositionings::Update()
     for (std::vector<unique_ptr<CCPACSPositioning> >::iterator it = m_positionings.begin(); it != m_positionings.end(); ++it) {
         CCPACSPositioning* actPos = it->get();
         // fromSectionUID element may be present but empty
-        if (actPos->HasFromSectionUID() && !actPos->GetFromSectionUID().empty()) {
-            const std::string fromUID = actPos->GetFromSectionUID();
+        if (actPos->GetFromSectionUID() && !actPos->GetFromSectionUID()->empty()) {
+            const std::string fromUID = *actPos->GetFromSectionUID();
             bool found = false;
             for (std::vector<unique_ptr<CCPACSPositioning> >::iterator it2 = m_positionings.begin(); it2 != m_positionings.end(); ++it2) {
                 if ((*it2)->GetOuterSectionIndex() == fromUID) {

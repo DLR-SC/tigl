@@ -91,14 +91,9 @@ namespace tigl
             
         }
         
-        bool CPACSCellPositioningSpanwise::HasEta1_choice1() const
+        const boost::optional<double>& CPACSCellPositioningSpanwise::GetEta1_choice1() const
         {
-            return static_cast<bool>(m_eta1_choice1);
-        }
-        
-        const double& CPACSCellPositioningSpanwise::GetEta1_choice1() const
-        {
-            return *m_eta1_choice1;
+            return m_eta1_choice1;
         }
         
         void CPACSCellPositioningSpanwise::SetEta1_choice1(const double& value)
@@ -106,14 +101,14 @@ namespace tigl
             m_eta1_choice1 = value;
         }
         
-        bool CPACSCellPositioningSpanwise::HasEta2_choice1() const
+        void CPACSCellPositioningSpanwise::SetEta1_choice1(const boost::optional<double>& value)
         {
-            return static_cast<bool>(m_eta2_choice1);
+            m_eta1_choice1 = value;
         }
         
-        const double& CPACSCellPositioningSpanwise::GetEta2_choice1() const
+        const boost::optional<double>& CPACSCellPositioningSpanwise::GetEta2_choice1() const
         {
-            return *m_eta2_choice1;
+            return m_eta2_choice1;
         }
         
         void CPACSCellPositioningSpanwise::SetEta2_choice1(const double& value)
@@ -121,14 +116,14 @@ namespace tigl
             m_eta2_choice1 = value;
         }
         
-        bool CPACSCellPositioningSpanwise::HasRibNumber_choice2() const
+        void CPACSCellPositioningSpanwise::SetEta2_choice1(const boost::optional<double>& value)
         {
-            return static_cast<bool>(m_ribNumber_choice2);
+            m_eta2_choice1 = value;
         }
         
-        const int& CPACSCellPositioningSpanwise::GetRibNumber_choice2() const
+        const boost::optional<int>& CPACSCellPositioningSpanwise::GetRibNumber_choice2() const
         {
-            return *m_ribNumber_choice2;
+            return m_ribNumber_choice2;
         }
         
         void CPACSCellPositioningSpanwise::SetRibNumber_choice2(const int& value)
@@ -136,17 +131,22 @@ namespace tigl
             m_ribNumber_choice2 = value;
         }
         
-        bool CPACSCellPositioningSpanwise::HasRibDefinitionUID_choice2() const
+        void CPACSCellPositioningSpanwise::SetRibNumber_choice2(const boost::optional<int>& value)
         {
-            return static_cast<bool>(m_ribDefinitionUID_choice2);
+            m_ribNumber_choice2 = value;
         }
         
-        const std::string& CPACSCellPositioningSpanwise::GetRibDefinitionUID_choice2() const
+        const boost::optional<std::string>& CPACSCellPositioningSpanwise::GetRibDefinitionUID_choice2() const
         {
-            return *m_ribDefinitionUID_choice2;
+            return m_ribDefinitionUID_choice2;
         }
         
         void CPACSCellPositioningSpanwise::SetRibDefinitionUID_choice2(const std::string& value)
+        {
+            m_ribDefinitionUID_choice2 = value;
+        }
+        
+        void CPACSCellPositioningSpanwise::SetRibDefinitionUID_choice2(const boost::optional<std::string>& value)
         {
             m_ribDefinitionUID_choice2 = value;
         }

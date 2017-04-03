@@ -60,11 +60,11 @@ void CCPACSGuideCurve::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std
     Cleanup();
     generated::CPACSGuideCurve::ReadCPACS(tixiHandle, xpath);
 
-    if (HasFromRelativeCircumference_choice2() && HasFromGuideCurveUID_choice1()) {
+    if (GetFromRelativeCircumference_choice2() && GetFromGuideCurveUID_choice1()) {
         throw CTiglError("Error: It is forbidden to give fromRelativeCircumference AND fromGuideCurveUID in CCPACSGuideCurve::ReadCPACS", TIGL_XML_ERROR);
-    } else if (HasFromRelativeCircumference_choice2()) {
+    } else if (GetFromRelativeCircumference_choice2()) {
         fromRelativeCircumferenceIsSet = true;
-    } else if (HasFromGuideCurveUID_choice1()) {
+    } else if (GetFromGuideCurveUID_choice1()) {
         fromRelativeCircumferenceIsSet = false;
     } else {
         throw CTiglError("Error: Attribute fromRelativeCircumference OR fromGuideCurveUID missing in CCPACSGuideCurve::ReadCPACS", TIGL_XML_ERROR);
@@ -90,7 +90,7 @@ double CCPACSGuideCurve::GetToRelativeCircumference() const
 }
 
 const std::string& CCPACSGuideCurve::GetFromGuideCurveUID() const {
-    return GetFromGuideCurveUID_choice1();
+    return *GetFromGuideCurveUID_choice1();
 }
 
 } // end namespace tigl

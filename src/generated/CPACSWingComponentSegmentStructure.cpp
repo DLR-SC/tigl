@@ -133,34 +133,24 @@ namespace tigl
             return m_lowerShell;
         }
         
-        bool CPACSWingComponentSegmentStructure::HasRibsDefinitions() const
+        const boost::optional<CCPACSWingRibsDefinitions>& CPACSWingComponentSegmentStructure::GetRibsDefinitions() const
         {
-            return static_cast<bool>(m_ribsDefinitions);
+            return m_ribsDefinitions;
         }
         
-        const CCPACSWingRibsDefinitions& CPACSWingComponentSegmentStructure::GetRibsDefinitions() const
+        boost::optional<CCPACSWingRibsDefinitions>& CPACSWingComponentSegmentStructure::GetRibsDefinitions()
         {
-            return *m_ribsDefinitions;
+            return m_ribsDefinitions;
         }
         
-        CCPACSWingRibsDefinitions& CPACSWingComponentSegmentStructure::GetRibsDefinitions()
+        const boost::optional<CCPACSWingSpars>& CPACSWingComponentSegmentStructure::GetSpars() const
         {
-            return *m_ribsDefinitions;
+            return m_spars;
         }
         
-        bool CPACSWingComponentSegmentStructure::HasSpars() const
+        boost::optional<CCPACSWingSpars>& CPACSWingComponentSegmentStructure::GetSpars()
         {
-            return static_cast<bool>(m_spars);
-        }
-        
-        const CCPACSWingSpars& CPACSWingComponentSegmentStructure::GetSpars() const
-        {
-            return *m_spars;
-        }
-        
-        CCPACSWingSpars& CPACSWingComponentSegmentStructure::GetSpars()
-        {
-            return *m_spars;
+            return m_spars;
         }
         
     }

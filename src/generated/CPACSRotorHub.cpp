@@ -104,14 +104,9 @@ namespace tigl
             
         }
         
-        bool CPACSRotorHub::HasUID() const
+        const boost::optional<std::string>& CPACSRotorHub::GetUID() const
         {
-            return static_cast<bool>(m_uID);
-        }
-        
-        const std::string& CPACSRotorHub::GetUID() const
-        {
-            return *m_uID;
+            return m_uID;
         }
         
         void CPACSRotorHub::SetUID(const std::string& value)
@@ -119,14 +114,14 @@ namespace tigl
             m_uID = value;
         }
         
-        bool CPACSRotorHub::HasName() const
+        void CPACSRotorHub::SetUID(const boost::optional<std::string>& value)
         {
-            return static_cast<bool>(m_name);
+            m_uID = value;
         }
         
-        const std::string& CPACSRotorHub::GetName() const
+        const boost::optional<std::string>& CPACSRotorHub::GetName() const
         {
-            return *m_name;
+            return m_name;
         }
         
         void CPACSRotorHub::SetName(const std::string& value)
@@ -134,14 +129,14 @@ namespace tigl
             m_name = value;
         }
         
-        bool CPACSRotorHub::HasDescription() const
+        void CPACSRotorHub::SetName(const boost::optional<std::string>& value)
         {
-            return static_cast<bool>(m_description);
+            m_name = value;
         }
         
-        const std::string& CPACSRotorHub::GetDescription() const
+        const boost::optional<std::string>& CPACSRotorHub::GetDescription() const
         {
-            return *m_description;
+            return m_description;
         }
         
         void CPACSRotorHub::SetDescription(const std::string& value)
@@ -149,17 +144,22 @@ namespace tigl
             m_description = value;
         }
         
-        bool CPACSRotorHub::HasType() const
+        void CPACSRotorHub::SetDescription(const boost::optional<std::string>& value)
         {
-            return static_cast<bool>(m_type);
+            m_description = value;
         }
         
-        const CPACSRotorHub_type& CPACSRotorHub::GetType() const
+        const boost::optional<CPACSRotorHub_type>& CPACSRotorHub::GetType() const
         {
-            return *m_type;
+            return m_type;
         }
         
         void CPACSRotorHub::SetType(const CPACSRotorHub_type& value)
+        {
+            m_type = value;
+        }
+        
+        void CPACSRotorHub::SetType(const boost::optional<CPACSRotorHub_type>& value)
         {
             m_type = value;
         }

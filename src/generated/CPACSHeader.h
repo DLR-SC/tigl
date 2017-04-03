@@ -45,9 +45,9 @@ namespace tigl
             TIGL_EXPORT const std::string& GetName() const;
             TIGL_EXPORT void SetName(const std::string& value);
             
-            TIGL_EXPORT bool HasDescription() const;
-            TIGL_EXPORT const std::string& GetDescription() const;
+            TIGL_EXPORT const boost::optional<std::string>& GetDescription() const;
             TIGL_EXPORT void SetDescription(const std::string& value);
+            TIGL_EXPORT void SetDescription(const boost::optional<std::string>& value);
             
             TIGL_EXPORT const std::string& GetCreator() const;
             TIGL_EXPORT void SetCreator(const std::string& value);
@@ -61,9 +61,8 @@ namespace tigl
             TIGL_EXPORT const std::string& GetCpacsVersion() const;
             TIGL_EXPORT void SetCpacsVersion(const std::string& value);
             
-            TIGL_EXPORT bool HasUpdates() const;
-            TIGL_EXPORT const CPACSUpdates& GetUpdates() const;
-            TIGL_EXPORT CPACSUpdates& GetUpdates();
+            TIGL_EXPORT const boost::optional<CPACSUpdates>& GetUpdates() const;
+            TIGL_EXPORT boost::optional<CPACSUpdates>& GetUpdates();
             
         protected:
             std::string                   m_name;

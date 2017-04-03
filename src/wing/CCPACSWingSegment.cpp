@@ -1256,7 +1256,7 @@ TopTools_SequenceOfShape& CCPACSWingSegment::GetGuideCurveWires() const
 void CCPACSWingSegment::BuildGuideCurveWires() const
 {
     guideCurveWires.Clear();
-    if (HasGuideCurves()) {
+    if (m_guideCurves) {
         const tigl::CTiglTransformation& wingTransform = GetWing().GetTransformation();
 
         // get upper and lower part of inner profile in world coordinates
@@ -1298,7 +1298,7 @@ void CCPACSWingSegment::BuildGuideCurveWires() const
             // otherwise get relative circumference from neighboring segment guide curve
             else {
                 // get neighboring guide curve UID
-                std::string neighborGuideCurveUID = guideCurve.GetFromGuideCurveUID_choice1();
+                std::string neighborGuideCurveUID = *guideCurve.GetFromGuideCurveUID_choice1();
                 // get neighboring guide curve
                 const CCPACSGuideCurve& neighborGuideCurve = wing->GetGuideCurve(neighborGuideCurveUID);
                 // get relative circumference from neighboring guide curve

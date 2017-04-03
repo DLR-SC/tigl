@@ -170,14 +170,9 @@ namespace tigl
             m_name = value;
         }
         
-        bool CPACSRotorcraftModel::HasDescription() const
+        const boost::optional<std::string>& CPACSRotorcraftModel::GetDescription() const
         {
-            return static_cast<bool>(m_description);
-        }
-        
-        const std::string& CPACSRotorcraftModel::GetDescription() const
-        {
-            return *m_description;
+            return m_description;
         }
         
         void CPACSRotorcraftModel::SetDescription(const std::string& value)
@@ -185,64 +180,49 @@ namespace tigl
             m_description = value;
         }
         
-        bool CPACSRotorcraftModel::HasFuselages() const
+        void CPACSRotorcraftModel::SetDescription(const boost::optional<std::string>& value)
         {
-            return static_cast<bool>(m_fuselages);
+            m_description = value;
         }
         
-        const CCPACSFuselages& CPACSRotorcraftModel::GetFuselages() const
+        const boost::optional<CCPACSFuselages>& CPACSRotorcraftModel::GetFuselages() const
         {
-            return *m_fuselages;
+            return m_fuselages;
         }
         
-        CCPACSFuselages& CPACSRotorcraftModel::GetFuselages()
+        boost::optional<CCPACSFuselages>& CPACSRotorcraftModel::GetFuselages()
         {
-            return *m_fuselages;
+            return m_fuselages;
         }
         
-        bool CPACSRotorcraftModel::HasWings() const
+        const boost::optional<CCPACSWings>& CPACSRotorcraftModel::GetWings() const
         {
-            return static_cast<bool>(m_wings);
+            return m_wings;
         }
         
-        const CCPACSWings& CPACSRotorcraftModel::GetWings() const
+        boost::optional<CCPACSWings>& CPACSRotorcraftModel::GetWings()
         {
-            return *m_wings;
+            return m_wings;
         }
         
-        CCPACSWings& CPACSRotorcraftModel::GetWings()
+        const boost::optional<CCPACSRotors>& CPACSRotorcraftModel::GetRotors() const
         {
-            return *m_wings;
+            return m_rotors;
         }
         
-        bool CPACSRotorcraftModel::HasRotors() const
+        boost::optional<CCPACSRotors>& CPACSRotorcraftModel::GetRotors()
         {
-            return static_cast<bool>(m_rotors);
+            return m_rotors;
         }
         
-        const CCPACSRotors& CPACSRotorcraftModel::GetRotors() const
+        const boost::optional<CCPACSRotorBlades>& CPACSRotorcraftModel::GetRotorBlades() const
         {
-            return *m_rotors;
+            return m_rotorBlades;
         }
         
-        CCPACSRotors& CPACSRotorcraftModel::GetRotors()
+        boost::optional<CCPACSRotorBlades>& CPACSRotorcraftModel::GetRotorBlades()
         {
-            return *m_rotors;
-        }
-        
-        bool CPACSRotorcraftModel::HasRotorBlades() const
-        {
-            return static_cast<bool>(m_rotorBlades);
-        }
-        
-        const CCPACSRotorBlades& CPACSRotorcraftModel::GetRotorBlades() const
-        {
-            return *m_rotorBlades;
-        }
-        
-        CCPACSRotorBlades& CPACSRotorcraftModel::GetRotorBlades()
-        {
-            return *m_rotorBlades;
+            return m_rotorBlades;
         }
         
     }

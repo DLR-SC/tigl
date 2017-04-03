@@ -53,21 +53,17 @@ namespace tigl
             TIGL_EXPORT const CCPACSMaterial& GetMaterial() const;
             TIGL_EXPORT CCPACSMaterial& GetMaterial();
             
-            TIGL_EXPORT bool HasRibRotation() const;
-            TIGL_EXPORT const CPACSPointX& GetRibRotation() const;
-            TIGL_EXPORT CPACSPointX& GetRibRotation();
+            TIGL_EXPORT const boost::optional<CPACSPointX>& GetRibRotation() const;
+            TIGL_EXPORT boost::optional<CPACSPointX>& GetRibRotation();
             
-            TIGL_EXPORT bool HasRibCell() const;
-            TIGL_EXPORT const CPACSWingRibCell& GetRibCell() const;
-            TIGL_EXPORT CPACSWingRibCell& GetRibCell();
+            TIGL_EXPORT const boost::optional<CPACSWingRibCell>& GetRibCell() const;
+            TIGL_EXPORT boost::optional<CPACSWingRibCell>& GetRibCell();
             
-            TIGL_EXPORT bool HasUpperCap() const;
-            TIGL_EXPORT const CPACSCap& GetUpperCap() const;
-            TIGL_EXPORT CPACSCap& GetUpperCap();
+            TIGL_EXPORT const boost::optional<CPACSCap>& GetUpperCap() const;
+            TIGL_EXPORT boost::optional<CPACSCap>& GetUpperCap();
             
-            TIGL_EXPORT bool HasLowerCap() const;
-            TIGL_EXPORT const CPACSCap& GetLowerCap() const;
-            TIGL_EXPORT CPACSCap& GetLowerCap();
+            TIGL_EXPORT const boost::optional<CPACSCap>& GetLowerCap() const;
+            TIGL_EXPORT boost::optional<CPACSCap>& GetLowerCap();
             
         protected:
             CCPACSWingRibsDefinition* m_parent;

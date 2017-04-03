@@ -115,64 +115,44 @@ namespace tigl
             
         }
         
-        bool CPACSProfiles::HasFuselageProfiles() const
+        const boost::optional<CCPACSFuselageProfiles>& CPACSProfiles::GetFuselageProfiles() const
         {
-            return static_cast<bool>(m_fuselageProfiles);
+            return m_fuselageProfiles;
         }
         
-        const CCPACSFuselageProfiles& CPACSProfiles::GetFuselageProfiles() const
+        boost::optional<CCPACSFuselageProfiles>& CPACSProfiles::GetFuselageProfiles()
         {
-            return *m_fuselageProfiles;
+            return m_fuselageProfiles;
         }
         
-        CCPACSFuselageProfiles& CPACSProfiles::GetFuselageProfiles()
+        const boost::optional<CCPACSWingProfiles>& CPACSProfiles::GetWingAirfoils() const
         {
-            return *m_fuselageProfiles;
+            return m_wingAirfoils;
         }
         
-        bool CPACSProfiles::HasWingAirfoils() const
+        boost::optional<CCPACSWingProfiles>& CPACSProfiles::GetWingAirfoils()
         {
-            return static_cast<bool>(m_wingAirfoils);
+            return m_wingAirfoils;
         }
         
-        const CCPACSWingProfiles& CPACSProfiles::GetWingAirfoils() const
+        const boost::optional<CCPACSGuideCurveProfiles>& CPACSProfiles::GetGuideCurves() const
         {
-            return *m_wingAirfoils;
+            return m_guideCurves;
         }
         
-        CCPACSWingProfiles& CPACSProfiles::GetWingAirfoils()
+        boost::optional<CCPACSGuideCurveProfiles>& CPACSProfiles::GetGuideCurves()
         {
-            return *m_wingAirfoils;
+            return m_guideCurves;
         }
         
-        bool CPACSProfiles::HasGuideCurves() const
+        const boost::optional<CCPACSRotorProfiles>& CPACSProfiles::GetRotorAirfoils() const
         {
-            return static_cast<bool>(m_guideCurves);
+            return m_rotorAirfoils;
         }
         
-        const CCPACSGuideCurveProfiles& CPACSProfiles::GetGuideCurves() const
+        boost::optional<CCPACSRotorProfiles>& CPACSProfiles::GetRotorAirfoils()
         {
-            return *m_guideCurves;
-        }
-        
-        CCPACSGuideCurveProfiles& CPACSProfiles::GetGuideCurves()
-        {
-            return *m_guideCurves;
-        }
-        
-        bool CPACSProfiles::HasRotorAirfoils() const
-        {
-            return static_cast<bool>(m_rotorAirfoils);
-        }
-        
-        const CCPACSRotorProfiles& CPACSProfiles::GetRotorAirfoils() const
-        {
-            return *m_rotorAirfoils;
-        }
-        
-        CCPACSRotorProfiles& CPACSProfiles::GetRotorAirfoils()
-        {
-            return *m_rotorAirfoils;
+            return m_rotorAirfoils;
         }
         
     }

@@ -229,14 +229,9 @@ namespace tigl
             m_uID = value;
         }
         
-        bool CPACSFuselageCutOut::HasName() const
+        const boost::optional<std::string>& CPACSFuselageCutOut::GetName() const
         {
-            return static_cast<bool>(m_name);
-        }
-        
-        const std::string& CPACSFuselageCutOut::GetName() const
-        {
-            return *m_name;
+            return m_name;
         }
         
         void CPACSFuselageCutOut::SetName(const std::string& value)
@@ -244,17 +239,22 @@ namespace tigl
             m_name = value;
         }
         
-        bool CPACSFuselageCutOut::HasDescription() const
+        void CPACSFuselageCutOut::SetName(const boost::optional<std::string>& value)
         {
-            return static_cast<bool>(m_description);
+            m_name = value;
         }
         
-        const std::string& CPACSFuselageCutOut::GetDescription() const
+        const boost::optional<std::string>& CPACSFuselageCutOut::GetDescription() const
         {
-            return *m_description;
+            return m_description;
         }
         
         void CPACSFuselageCutOut::SetDescription(const std::string& value)
+        {
+            m_description = value;
+        }
+        
+        void CPACSFuselageCutOut::SetDescription(const boost::optional<std::string>& value)
         {
             m_description = value;
         }
@@ -309,19 +309,14 @@ namespace tigl
             return m_orientationVector;
         }
         
-        bool CPACSFuselageCutOut::HasAlignmentVector() const
+        const boost::optional<CPACSPointXYZ>& CPACSFuselageCutOut::GetAlignmentVector() const
         {
-            return static_cast<bool>(m_alignmentVector);
+            return m_alignmentVector;
         }
         
-        const CPACSPointXYZ& CPACSFuselageCutOut::GetAlignmentVector() const
+        boost::optional<CPACSPointXYZ>& CPACSFuselageCutOut::GetAlignmentVector()
         {
-            return *m_alignmentVector;
-        }
-        
-        CPACSPointXYZ& CPACSFuselageCutOut::GetAlignmentVector()
-        {
-            return *m_alignmentVector;
+            return m_alignmentVector;
         }
         
         const double& CPACSFuselageCutOut::GetDeltaY() const
@@ -344,14 +339,9 @@ namespace tigl
             m_deltaZ = value;
         }
         
-        bool CPACSFuselageCutOut::HasDeltaY1() const
+        const boost::optional<double>& CPACSFuselageCutOut::GetDeltaY1() const
         {
-            return static_cast<bool>(m_deltaY1);
-        }
-        
-        const double& CPACSFuselageCutOut::GetDeltaY1() const
-        {
-            return *m_deltaY1;
+            return m_deltaY1;
         }
         
         void CPACSFuselageCutOut::SetDeltaY1(const double& value)
@@ -359,17 +349,22 @@ namespace tigl
             m_deltaY1 = value;
         }
         
-        bool CPACSFuselageCutOut::HasDeltaZ1() const
+        void CPACSFuselageCutOut::SetDeltaY1(const boost::optional<double>& value)
         {
-            return static_cast<bool>(m_deltaZ1);
+            m_deltaY1 = value;
         }
         
-        const double& CPACSFuselageCutOut::GetDeltaZ1() const
+        const boost::optional<double>& CPACSFuselageCutOut::GetDeltaZ1() const
         {
-            return *m_deltaZ1;
+            return m_deltaZ1;
         }
         
         void CPACSFuselageCutOut::SetDeltaZ1(const double& value)
+        {
+            m_deltaZ1 = value;
+        }
+        
+        void CPACSFuselageCutOut::SetDeltaZ1(const boost::optional<double>& value)
         {
             m_deltaZ1 = value;
         }

@@ -47,9 +47,9 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT bool HasSymmetry() const;
-            TIGL_EXPORT const TiglSymmetryAxis& GetSymmetry() const;
+            TIGL_EXPORT const boost::optional<TiglSymmetryAxis>& GetSymmetry() const;
             TIGL_EXPORT void SetSymmetry(const TiglSymmetryAxis& value);
+            TIGL_EXPORT void SetSymmetry(const boost::optional<TiglSymmetryAxis>& value);
             
             TIGL_EXPORT const std::string& GetUID() const;
             TIGL_EXPORT void SetUID(const std::string& value);
@@ -57,17 +57,15 @@ namespace tigl
             TIGL_EXPORT const std::string& GetName() const;
             TIGL_EXPORT void SetName(const std::string& value);
             
-            TIGL_EXPORT bool HasDescription() const;
-            TIGL_EXPORT const std::string& GetDescription() const;
+            TIGL_EXPORT const boost::optional<std::string>& GetDescription() const;
             TIGL_EXPORT void SetDescription(const std::string& value);
+            TIGL_EXPORT void SetDescription(const boost::optional<std::string>& value);
             
-            TIGL_EXPORT bool HasPointList_choice1() const;
-            TIGL_EXPORT const CCPACSPointListXYZ& GetPointList_choice1() const;
-            TIGL_EXPORT CCPACSPointListXYZ& GetPointList_choice1();
+            TIGL_EXPORT const boost::optional<CCPACSPointListXYZ>& GetPointList_choice1() const;
+            TIGL_EXPORT boost::optional<CCPACSPointListXYZ>& GetPointList_choice1();
             
-            TIGL_EXPORT bool HasCst2D_choice2() const;
-            TIGL_EXPORT const CCPACSWingProfileCST& GetCst2D_choice2() const;
-            TIGL_EXPORT CCPACSWingProfileCST& GetCst2D_choice2();
+            TIGL_EXPORT const boost::optional<CCPACSWingProfileCST>& GetCst2D_choice2() const;
+            TIGL_EXPORT boost::optional<CCPACSWingProfileCST>& GetCst2D_choice2();
             
         protected:
             boost::optional<TiglSymmetryAxis>     m_symmetry;

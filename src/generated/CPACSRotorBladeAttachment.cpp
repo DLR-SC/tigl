@@ -143,14 +143,9 @@ namespace tigl
             
         }
         
-        bool CPACSRotorBladeAttachment::HasUID() const
+        const boost::optional<std::string>& CPACSRotorBladeAttachment::GetUID() const
         {
-            return static_cast<bool>(m_uID);
-        }
-        
-        const std::string& CPACSRotorBladeAttachment::GetUID() const
-        {
-            return *m_uID;
+            return m_uID;
         }
         
         void CPACSRotorBladeAttachment::SetUID(const std::string& value)
@@ -158,14 +153,14 @@ namespace tigl
             m_uID = value;
         }
         
-        bool CPACSRotorBladeAttachment::HasName() const
+        void CPACSRotorBladeAttachment::SetUID(const boost::optional<std::string>& value)
         {
-            return static_cast<bool>(m_name);
+            m_uID = value;
         }
         
-        const std::string& CPACSRotorBladeAttachment::GetName() const
+        const boost::optional<std::string>& CPACSRotorBladeAttachment::GetName() const
         {
-            return *m_name;
+            return m_name;
         }
         
         void CPACSRotorBladeAttachment::SetName(const std::string& value)
@@ -173,14 +168,14 @@ namespace tigl
             m_name = value;
         }
         
-        bool CPACSRotorBladeAttachment::HasDescription() const
+        void CPACSRotorBladeAttachment::SetName(const boost::optional<std::string>& value)
         {
-            return static_cast<bool>(m_description);
+            m_name = value;
         }
         
-        const std::string& CPACSRotorBladeAttachment::GetDescription() const
+        const boost::optional<std::string>& CPACSRotorBladeAttachment::GetDescription() const
         {
-            return *m_description;
+            return m_description;
         }
         
         void CPACSRotorBladeAttachment::SetDescription(const std::string& value)
@@ -188,19 +183,19 @@ namespace tigl
             m_description = value;
         }
         
-        bool CPACSRotorBladeAttachment::HasHinges() const
+        void CPACSRotorBladeAttachment::SetDescription(const boost::optional<std::string>& value)
         {
-            return static_cast<bool>(m_hinges);
+            m_description = value;
         }
         
-        const CCPACSRotorHinges& CPACSRotorBladeAttachment::GetHinges() const
+        const boost::optional<CCPACSRotorHinges>& CPACSRotorBladeAttachment::GetHinges() const
         {
-            return *m_hinges;
+            return m_hinges;
         }
         
-        CCPACSRotorHinges& CPACSRotorBladeAttachment::GetHinges()
+        boost::optional<CCPACSRotorHinges>& CPACSRotorBladeAttachment::GetHinges()
         {
-            return *m_hinges;
+            return m_hinges;
         }
         
         const std::string& CPACSRotorBladeAttachment::GetRotorBladeUID() const
@@ -213,32 +208,27 @@ namespace tigl
             m_rotorBladeUID = value;
         }
         
-        bool CPACSRotorBladeAttachment::HasAzimuthAngles_choice1() const
+        const boost::optional<CCPACSStringVector>& CPACSRotorBladeAttachment::GetAzimuthAngles_choice1() const
         {
-            return static_cast<bool>(m_azimuthAngles_choice1);
+            return m_azimuthAngles_choice1;
         }
         
-        const CCPACSStringVector& CPACSRotorBladeAttachment::GetAzimuthAngles_choice1() const
+        boost::optional<CCPACSStringVector>& CPACSRotorBladeAttachment::GetAzimuthAngles_choice1()
         {
-            return *m_azimuthAngles_choice1;
+            return m_azimuthAngles_choice1;
         }
         
-        CCPACSStringVector& CPACSRotorBladeAttachment::GetAzimuthAngles_choice1()
+        const boost::optional<int>& CPACSRotorBladeAttachment::GetNumberOfBlades_choice2() const
         {
-            return *m_azimuthAngles_choice1;
-        }
-        
-        bool CPACSRotorBladeAttachment::HasNumberOfBlades_choice2() const
-        {
-            return static_cast<bool>(m_numberOfBlades_choice2);
-        }
-        
-        const int& CPACSRotorBladeAttachment::GetNumberOfBlades_choice2() const
-        {
-            return *m_numberOfBlades_choice2;
+            return m_numberOfBlades_choice2;
         }
         
         void CPACSRotorBladeAttachment::SetNumberOfBlades_choice2(const int& value)
+        {
+            m_numberOfBlades_choice2 = value;
+        }
+        
+        void CPACSRotorBladeAttachment::SetNumberOfBlades_choice2(const boost::optional<int>& value)
         {
             m_numberOfBlades_choice2 = value;
         }

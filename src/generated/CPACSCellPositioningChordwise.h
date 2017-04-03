@@ -45,17 +45,17 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT bool HasSparUID_choice1() const;
-            TIGL_EXPORT const std::string& GetSparUID_choice1() const;
+            TIGL_EXPORT const boost::optional<std::string>& GetSparUID_choice1() const;
             TIGL_EXPORT void SetSparUID_choice1(const std::string& value);
+            TIGL_EXPORT void SetSparUID_choice1(const boost::optional<std::string>& value);
             
-            TIGL_EXPORT bool HasXsi1_choice2() const;
-            TIGL_EXPORT const double& GetXsi1_choice2() const;
+            TIGL_EXPORT const boost::optional<double>& GetXsi1_choice2() const;
             TIGL_EXPORT void SetXsi1_choice2(const double& value);
+            TIGL_EXPORT void SetXsi1_choice2(const boost::optional<double>& value);
             
-            TIGL_EXPORT bool HasXsi2_choice2() const;
-            TIGL_EXPORT const double& GetXsi2_choice2() const;
+            TIGL_EXPORT const boost::optional<double>& GetXsi2_choice2() const;
             TIGL_EXPORT void SetXsi2_choice2(const double& value);
+            TIGL_EXPORT void SetXsi2_choice2(const boost::optional<double>& value);
             
         protected:
             CCPACSWingCell* m_parent;

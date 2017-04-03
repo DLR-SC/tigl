@@ -79,19 +79,14 @@ namespace tigl
             
         }
         
-        bool CPACSRibRotation::HasRibRotationReference() const
+        const boost::optional<CPACSRibRotation_ribRotationReference>& CPACSRibRotation::GetRibRotationReference() const
         {
-            return static_cast<bool>(m_ribRotationReference);
+            return m_ribRotationReference;
         }
         
-        const CPACSRibRotation_ribRotationReference& CPACSRibRotation::GetRibRotationReference() const
+        boost::optional<CPACSRibRotation_ribRotationReference>& CPACSRibRotation::GetRibRotationReference()
         {
-            return *m_ribRotationReference;
-        }
-        
-        CPACSRibRotation_ribRotationReference& CPACSRibRotation::GetRibRotationReference()
-        {
-            return *m_ribRotationReference;
+            return m_ribRotationReference;
         }
         
         const double& CPACSRibRotation::GetZ() const

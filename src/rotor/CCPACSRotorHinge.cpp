@@ -45,19 +45,19 @@ CTiglTransformation CCPACSRotorHinge::GetTransformation() const
 // Gets the scaling vector of the rotor hinge transformation
 CTiglPoint CCPACSRotorHinge::GetScaling() const
 {
-    return m_transformation.GetScaling().AsPoint();
+    return m_transformation.getScaling();
 }
 
 // Gets the rotation vector of the rotor hinge transformation
 CTiglPoint CCPACSRotorHinge::GetRotation() const
 {
-    return m_transformation.GetRotation().AsPoint();
+    return m_transformation.getRotation();
 }
 
 // Gets the translation vector of the rotor hinge transformation
 CTiglPoint CCPACSRotorHinge::GetTranslation() const
 {
-    return m_transformation.GetTranslation().AsPoint();
+    return m_transformation.getTranslationVector();
 }
 
 // Gets the rotation angle of a hinge for a given azimuth position (thetaDeg in Degree) and given coefficients (a0, aSin[], aCos[])

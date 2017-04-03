@@ -49,35 +49,32 @@ namespace tigl
             TIGL_EXPORT const std::string& GetName() const;
             TIGL_EXPORT void SetName(const std::string& value);
             
-            TIGL_EXPORT bool HasDescription() const;
-            TIGL_EXPORT const std::string& GetDescription() const;
+            TIGL_EXPORT const boost::optional<std::string>& GetDescription() const;
             TIGL_EXPORT void SetDescription(const std::string& value);
+            TIGL_EXPORT void SetDescription(const boost::optional<std::string>& value);
             
             TIGL_EXPORT const std::string& GetGuideCurveProfileUID() const;
             TIGL_EXPORT void SetGuideCurveProfileUID(const std::string& value);
             
-            TIGL_EXPORT bool HasFromGuideCurveUID_choice1() const;
-            TIGL_EXPORT const std::string& GetFromGuideCurveUID_choice1() const;
+            TIGL_EXPORT const boost::optional<std::string>& GetFromGuideCurveUID_choice1() const;
             TIGL_EXPORT void SetFromGuideCurveUID_choice1(const std::string& value);
+            TIGL_EXPORT void SetFromGuideCurveUID_choice1(const boost::optional<std::string>& value);
             
-            TIGL_EXPORT bool HasContinuity_choice1() const;
-            TIGL_EXPORT const CPACSGuideCurve_continuity& GetContinuity_choice1() const;
-            TIGL_EXPORT CPACSGuideCurve_continuity& GetContinuity_choice1();
+            TIGL_EXPORT const boost::optional<CPACSGuideCurve_continuity>& GetContinuity_choice1() const;
+            TIGL_EXPORT boost::optional<CPACSGuideCurve_continuity>& GetContinuity_choice1();
             
-            TIGL_EXPORT bool HasFromRelativeCircumference_choice2() const;
-            TIGL_EXPORT const std::string& GetFromRelativeCircumference_choice2() const;
+            TIGL_EXPORT const boost::optional<std::string>& GetFromRelativeCircumference_choice2() const;
             TIGL_EXPORT void SetFromRelativeCircumference_choice2(const std::string& value);
+            TIGL_EXPORT void SetFromRelativeCircumference_choice2(const boost::optional<std::string>& value);
             
-            TIGL_EXPORT bool HasTangent_choice2() const;
-            TIGL_EXPORT const CPACSPointXYZ& GetTangent_choice2() const;
-            TIGL_EXPORT CPACSPointXYZ& GetTangent_choice2();
+            TIGL_EXPORT const boost::optional<CPACSPointXYZ>& GetTangent_choice2() const;
+            TIGL_EXPORT boost::optional<CPACSPointXYZ>& GetTangent_choice2();
             
             TIGL_EXPORT const std::string& GetToRelativeCircumference() const;
             TIGL_EXPORT void SetToRelativeCircumference(const std::string& value);
             
-            TIGL_EXPORT bool HasTangent() const;
-            TIGL_EXPORT const CPACSPointXYZ& GetTangent() const;
-            TIGL_EXPORT CPACSPointXYZ& GetTangent();
+            TIGL_EXPORT const boost::optional<CPACSPointXYZ>& GetTangent() const;
+            TIGL_EXPORT boost::optional<CPACSPointXYZ>& GetTangent();
             
         protected:
             std::string                                 m_uID;

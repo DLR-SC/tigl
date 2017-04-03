@@ -53,9 +53,8 @@ namespace tigl
             TIGL_EXPORT const CPACSWingSkin& GetSkin() const;
             TIGL_EXPORT CPACSWingSkin& GetSkin();
             
-            TIGL_EXPORT bool HasCells() const;
-            TIGL_EXPORT const CCPACSWingCells& GetCells() const;
-            TIGL_EXPORT CCPACSWingCells& GetCells();
+            TIGL_EXPORT const boost::optional<CCPACSWingCells>& GetCells() const;
+            TIGL_EXPORT boost::optional<CCPACSWingCells>& GetCells();
             
         protected:
             CCPACSWingCSStructure* m_parent;

@@ -161,17 +161,17 @@ namespace tigl
             m_uID = value;
         }
         
-        bool CPACSRotor::HasSymmetry() const
+        const boost::optional<TiglSymmetryAxis>& CPACSRotor::GetSymmetry() const
         {
-            return static_cast<bool>(m_symmetry);
-        }
-        
-        const TiglSymmetryAxis& CPACSRotor::GetSymmetry() const
-        {
-            return *m_symmetry;
+            return m_symmetry;
         }
         
         void CPACSRotor::SetSymmetry(const TiglSymmetryAxis& value)
+        {
+            m_symmetry = value;
+        }
+        
+        void CPACSRotor::SetSymmetry(const boost::optional<TiglSymmetryAxis>& value)
         {
             m_symmetry = value;
         }
@@ -186,14 +186,9 @@ namespace tigl
             m_name = value;
         }
         
-        bool CPACSRotor::HasDescription() const
+        const boost::optional<std::string>& CPACSRotor::GetDescription() const
         {
-            return static_cast<bool>(m_description);
-        }
-        
-        const std::string& CPACSRotor::GetDescription() const
-        {
-            return *m_description;
+            return m_description;
         }
         
         void CPACSRotor::SetDescription(const std::string& value)
@@ -201,14 +196,14 @@ namespace tigl
             m_description = value;
         }
         
-        bool CPACSRotor::HasParentUID() const
+        void CPACSRotor::SetDescription(const boost::optional<std::string>& value)
         {
-            return static_cast<bool>(m_parentUID);
+            m_description = value;
         }
         
-        const std::string& CPACSRotor::GetParentUID() const
+        const boost::optional<std::string>& CPACSRotor::GetParentUID() const
         {
-            return *m_parentUID;
+            return m_parentUID;
         }
         
         void CPACSRotor::SetParentUID(const std::string& value)
@@ -216,14 +211,14 @@ namespace tigl
             m_parentUID = value;
         }
         
-        bool CPACSRotor::HasType() const
+        void CPACSRotor::SetParentUID(const boost::optional<std::string>& value)
         {
-            return static_cast<bool>(m_type);
+            m_parentUID = value;
         }
         
-        const CPACSRotor_type& CPACSRotor::GetType() const
+        const boost::optional<CPACSRotor_type>& CPACSRotor::GetType() const
         {
-            return *m_type;
+            return m_type;
         }
         
         void CPACSRotor::SetType(const CPACSRotor_type& value)
@@ -231,17 +226,22 @@ namespace tigl
             m_type = value;
         }
         
-        bool CPACSRotor::HasNominalRotationsPerMinute() const
+        void CPACSRotor::SetType(const boost::optional<CPACSRotor_type>& value)
         {
-            return static_cast<bool>(m_nominalRotationsPerMinute);
+            m_type = value;
         }
         
-        const double& CPACSRotor::GetNominalRotationsPerMinute() const
+        const boost::optional<double>& CPACSRotor::GetNominalRotationsPerMinute() const
         {
-            return *m_nominalRotationsPerMinute;
+            return m_nominalRotationsPerMinute;
         }
         
         void CPACSRotor::SetNominalRotationsPerMinute(const double& value)
+        {
+            m_nominalRotationsPerMinute = value;
+        }
+        
+        void CPACSRotor::SetNominalRotationsPerMinute(const boost::optional<double>& value)
         {
             m_nominalRotationsPerMinute = value;
         }

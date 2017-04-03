@@ -114,17 +114,17 @@ namespace tigl
             m_name = value;
         }
         
-        bool CPACSWingSection::HasDescription() const
+        const boost::optional<std::string>& CPACSWingSection::GetDescription() const
         {
-            return static_cast<bool>(m_description);
-        }
-        
-        const std::string& CPACSWingSection::GetDescription() const
-        {
-            return *m_description;
+            return m_description;
         }
         
         void CPACSWingSection::SetDescription(const std::string& value)
+        {
+            m_description = value;
+        }
+        
+        void CPACSWingSection::SetDescription(const boost::optional<std::string>& value)
         {
             m_description = value;
         }

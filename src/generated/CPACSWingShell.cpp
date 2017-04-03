@@ -111,19 +111,14 @@ namespace tigl
             return m_skin;
         }
         
-        bool CPACSWingShell::HasCells() const
+        const boost::optional<CCPACSWingCells>& CPACSWingShell::GetCells() const
         {
-            return static_cast<bool>(m_cells);
+            return m_cells;
         }
         
-        const CCPACSWingCells& CPACSWingShell::GetCells() const
+        boost::optional<CCPACSWingCells>& CPACSWingShell::GetCells()
         {
-            return *m_cells;
-        }
-        
-        CCPACSWingCells& CPACSWingShell::GetCells()
-        {
-            return *m_cells;
+            return m_cells;
         }
         
     }

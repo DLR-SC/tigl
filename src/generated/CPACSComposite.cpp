@@ -89,17 +89,17 @@ namespace tigl
             
         }
         
-        bool CPACSComposite::HasUID() const
+        const boost::optional<std::string>& CPACSComposite::GetUID() const
         {
-            return static_cast<bool>(m_uID);
-        }
-        
-        const std::string& CPACSComposite::GetUID() const
-        {
-            return *m_uID;
+            return m_uID;
         }
         
         void CPACSComposite::SetUID(const std::string& value)
+        {
+            m_uID = value;
+        }
+        
+        void CPACSComposite::SetUID(const boost::optional<std::string>& value)
         {
             m_uID = value;
         }
@@ -114,14 +114,9 @@ namespace tigl
             m_name = value;
         }
         
-        bool CPACSComposite::HasDescription() const
+        const boost::optional<std::string>& CPACSComposite::GetDescription() const
         {
-            return static_cast<bool>(m_description);
-        }
-        
-        const std::string& CPACSComposite::GetDescription() const
-        {
-            return *m_description;
+            return m_description;
         }
         
         void CPACSComposite::SetDescription(const std::string& value)
@@ -129,17 +124,22 @@ namespace tigl
             m_description = value;
         }
         
-        bool CPACSComposite::HasOffset() const
+        void CPACSComposite::SetDescription(const boost::optional<std::string>& value)
         {
-            return static_cast<bool>(m_offset);
+            m_description = value;
         }
         
-        const double& CPACSComposite::GetOffset() const
+        const boost::optional<double>& CPACSComposite::GetOffset() const
         {
-            return *m_offset;
+            return m_offset;
         }
         
         void CPACSComposite::SetOffset(const double& value)
+        {
+            m_offset = value;
+        }
+        
+        void CPACSComposite::SetOffset(const boost::optional<double>& value)
         {
             m_offset = value;
         }

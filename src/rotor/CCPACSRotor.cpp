@@ -236,7 +236,7 @@ double CCPACSRotor::GetRadius()
 double CCPACSRotor::GetTipSpeed()
 {
     // return GetNominalRotationsPerMinute()/60. * 2.*M_PI*GetRadius();
-    return GetNominalRotationsPerMinute()/30. * M_PI*GetRadius();
+    return *GetNominalRotationsPerMinute() / 30. * M_PI * GetRadius();
 }
 
 // Returns the sum of all blade planform areas of a rotor

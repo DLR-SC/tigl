@@ -90,14 +90,9 @@ namespace tigl
             
         }
         
-        bool CPACSMaterialDefinition::HasCompositeUID_choice1() const
+        const boost::optional<std::string>& CPACSMaterialDefinition::GetCompositeUID_choice1() const
         {
-            return static_cast<bool>(m_compositeUID_choice1);
-        }
-        
-        const std::string& CPACSMaterialDefinition::GetCompositeUID_choice1() const
-        {
-            return *m_compositeUID_choice1;
+            return m_compositeUID_choice1;
         }
         
         void CPACSMaterialDefinition::SetCompositeUID_choice1(const std::string& value)
@@ -105,14 +100,14 @@ namespace tigl
             m_compositeUID_choice1 = value;
         }
         
-        bool CPACSMaterialDefinition::HasOrthotropyDirection_choice1() const
+        void CPACSMaterialDefinition::SetCompositeUID_choice1(const boost::optional<std::string>& value)
         {
-            return static_cast<bool>(m_orthotropyDirection_choice1);
+            m_compositeUID_choice1 = value;
         }
         
-        const double& CPACSMaterialDefinition::GetOrthotropyDirection_choice1() const
+        const boost::optional<double>& CPACSMaterialDefinition::GetOrthotropyDirection_choice1() const
         {
-            return *m_orthotropyDirection_choice1;
+            return m_orthotropyDirection_choice1;
         }
         
         void CPACSMaterialDefinition::SetOrthotropyDirection_choice1(const double& value)
@@ -120,14 +115,14 @@ namespace tigl
             m_orthotropyDirection_choice1 = value;
         }
         
-        bool CPACSMaterialDefinition::HasThicknessScaling_choice1() const
+        void CPACSMaterialDefinition::SetOrthotropyDirection_choice1(const boost::optional<double>& value)
         {
-            return static_cast<bool>(m_thicknessScaling_choice1);
+            m_orthotropyDirection_choice1 = value;
         }
         
-        const double& CPACSMaterialDefinition::GetThicknessScaling_choice1() const
+        const boost::optional<double>& CPACSMaterialDefinition::GetThicknessScaling_choice1() const
         {
-            return *m_thicknessScaling_choice1;
+            return m_thicknessScaling_choice1;
         }
         
         void CPACSMaterialDefinition::SetThicknessScaling_choice1(const double& value)
@@ -135,14 +130,14 @@ namespace tigl
             m_thicknessScaling_choice1 = value;
         }
         
-        bool CPACSMaterialDefinition::HasMaterialUID_choice2() const
+        void CPACSMaterialDefinition::SetThicknessScaling_choice1(const boost::optional<double>& value)
         {
-            return static_cast<bool>(m_materialUID_choice2);
+            m_thicknessScaling_choice1 = value;
         }
         
-        const std::string& CPACSMaterialDefinition::GetMaterialUID_choice2() const
+        const boost::optional<std::string>& CPACSMaterialDefinition::GetMaterialUID_choice2() const
         {
-            return *m_materialUID_choice2;
+            return m_materialUID_choice2;
         }
         
         void CPACSMaterialDefinition::SetMaterialUID_choice2(const std::string& value)
@@ -150,17 +145,22 @@ namespace tigl
             m_materialUID_choice2 = value;
         }
         
-        bool CPACSMaterialDefinition::HasThickness_choice2() const
+        void CPACSMaterialDefinition::SetMaterialUID_choice2(const boost::optional<std::string>& value)
         {
-            return static_cast<bool>(m_thickness_choice2);
+            m_materialUID_choice2 = value;
         }
         
-        const double& CPACSMaterialDefinition::GetThickness_choice2() const
+        const boost::optional<double>& CPACSMaterialDefinition::GetThickness_choice2() const
         {
-            return *m_thickness_choice2;
+            return m_thickness_choice2;
         }
         
         void CPACSMaterialDefinition::SetThickness_choice2(const double& value)
+        {
+            m_thickness_choice2 = value;
+        }
+        
+        void CPACSMaterialDefinition::SetThickness_choice2(const boost::optional<double>& value)
         {
             m_thickness_choice2 = value;
         }

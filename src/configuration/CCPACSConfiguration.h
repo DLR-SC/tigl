@@ -163,6 +163,7 @@ public:
 
     // Returns list of fuselages
     TIGL_EXPORT CCPACSFuselages& GetFuselages();
+    TIGL_EXPORT const CCPACSFuselages& GetFuselages() const;
 
     // Returns the farfield
     TIGL_EXPORT CCPACSFarField& GetFarField();

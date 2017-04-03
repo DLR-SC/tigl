@@ -74,19 +74,14 @@ namespace tigl
             return m_materials;
         }
         
-        bool CPACSMaterials::HasComposites() const
+        const boost::optional<CPACSComposites>& CPACSMaterials::GetComposites() const
         {
-            return static_cast<bool>(m_composites);
+            return m_composites;
         }
         
-        const CPACSComposites& CPACSMaterials::GetComposites() const
+        boost::optional<CPACSComposites>& CPACSMaterials::GetComposites()
         {
-            return *m_composites;
-        }
-        
-        CPACSComposites& CPACSMaterials::GetComposites()
-        {
-            return *m_composites;
+            return m_composites;
         }
         
     }

@@ -46,19 +46,15 @@ public:
     using generated::CPACSRotorBladeAttachment::ReadCPACS;
     using generated::CPACSRotorBladeAttachment::WriteCPACS;
 
-    using generated::CPACSRotorBladeAttachment::HasUID;
     using generated::CPACSRotorBladeAttachment::GetUID;
     using generated::CPACSRotorBladeAttachment::SetUID;
 
-    using generated::CPACSRotorBladeAttachment::HasName;
     using generated::CPACSRotorBladeAttachment::GetName;
     using generated::CPACSRotorBladeAttachment::SetName;
 
-    using generated::CPACSRotorBladeAttachment::HasDescription;
     using generated::CPACSRotorBladeAttachment::GetDescription;
     using generated::CPACSRotorBladeAttachment::SetDescription;
 
-    using generated::CPACSRotorBladeAttachment::HasHinges;
     using generated::CPACSRotorBladeAttachment::GetHinges;
 
     using generated::CPACSRotorBladeAttachment::GetRotorBladeUID;

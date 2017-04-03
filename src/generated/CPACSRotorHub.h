@@ -47,21 +47,21 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT bool HasUID() const;
-            TIGL_EXPORT const std::string& GetUID() const;
+            TIGL_EXPORT const boost::optional<std::string>& GetUID() const;
             TIGL_EXPORT void SetUID(const std::string& value);
+            TIGL_EXPORT void SetUID(const boost::optional<std::string>& value);
             
-            TIGL_EXPORT bool HasName() const;
-            TIGL_EXPORT const std::string& GetName() const;
+            TIGL_EXPORT const boost::optional<std::string>& GetName() const;
             TIGL_EXPORT void SetName(const std::string& value);
+            TIGL_EXPORT void SetName(const boost::optional<std::string>& value);
             
-            TIGL_EXPORT bool HasDescription() const;
-            TIGL_EXPORT const std::string& GetDescription() const;
+            TIGL_EXPORT const boost::optional<std::string>& GetDescription() const;
             TIGL_EXPORT void SetDescription(const std::string& value);
+            TIGL_EXPORT void SetDescription(const boost::optional<std::string>& value);
             
-            TIGL_EXPORT bool HasType() const;
-            TIGL_EXPORT const CPACSRotorHub_type& GetType() const;
+            TIGL_EXPORT const boost::optional<CPACSRotorHub_type>& GetType() const;
             TIGL_EXPORT void SetType(const CPACSRotorHub_type& value);
+            TIGL_EXPORT void SetType(const boost::optional<CPACSRotorHub_type>& value);
             
             TIGL_EXPORT const CCPACSRotorBladeAttachments& GetRotorBladeAttachments() const;
             TIGL_EXPORT CCPACSRotorBladeAttachments& GetRotorBladeAttachments();

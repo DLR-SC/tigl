@@ -54,20 +54,18 @@ namespace tigl
             TIGL_EXPORT const std::string& GetName() const;
             TIGL_EXPORT void SetName(const std::string& value);
             
-            TIGL_EXPORT bool HasDescription() const;
-            TIGL_EXPORT const std::string& GetDescription() const;
+            TIGL_EXPORT const boost::optional<std::string>& GetDescription() const;
             TIGL_EXPORT void SetDescription(const std::string& value);
+            TIGL_EXPORT void SetDescription(const boost::optional<std::string>& value);
             
             TIGL_EXPORT const CCPACSWingRibCrossSection& GetRibCrossSection() const;
             TIGL_EXPORT CCPACSWingRibCrossSection& GetRibCrossSection();
             
-            TIGL_EXPORT bool HasRibsPositioning_choice1() const;
-            TIGL_EXPORT const CCPACSWingRibsPositioning& GetRibsPositioning_choice1() const;
-            TIGL_EXPORT CCPACSWingRibsPositioning& GetRibsPositioning_choice1();
+            TIGL_EXPORT const boost::optional<CCPACSWingRibsPositioning>& GetRibsPositioning_choice1() const;
+            TIGL_EXPORT boost::optional<CCPACSWingRibsPositioning>& GetRibsPositioning_choice1();
             
-            TIGL_EXPORT bool HasRibExplicitPositioning_choice2() const;
-            TIGL_EXPORT const CPACSWingRibExplicitPositioning& GetRibExplicitPositioning_choice2() const;
-            TIGL_EXPORT CPACSWingRibExplicitPositioning& GetRibExplicitPositioning_choice2();
+            TIGL_EXPORT const boost::optional<CPACSWingRibExplicitPositioning>& GetRibExplicitPositioning_choice2() const;
+            TIGL_EXPORT boost::optional<CPACSWingRibExplicitPositioning>& GetRibExplicitPositioning_choice2();
             
         protected:
             CCPACSWingRibsDefinitions* m_parent;
