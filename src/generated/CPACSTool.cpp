@@ -15,10 +15,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "TixiHelper.h"
-#include "CTiglLogging.h"
-#include "CTiglError.h"
 #include "CPACSTool.h"
+#include "CTiglError.h"
+#include "CTiglLogging.h"
+#include "TixiHelper.h"
 
 namespace tigl
 {

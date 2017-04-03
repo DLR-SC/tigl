@@ -46,13 +46,13 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT const std::vector<unique_ptr<CCPACSWingSparSegment> >& GetSparSegment() const;
-            TIGL_EXPORT std::vector<unique_ptr<CCPACSWingSparSegment> >& GetSparSegment();
+            TIGL_EXPORT const std::vector<unique_ptr<CCPACSWingSparSegment> >& GetSparSegments() const;
+            TIGL_EXPORT std::vector<unique_ptr<CCPACSWingSparSegment> >& GetSparSegments();
             
         protected:
             CCPACSWingSpars* m_parent;
             
-            std::vector<unique_ptr<CCPACSWingSparSegment> > m_sparSegment;
+            std::vector<unique_ptr<CCPACSWingSparSegment> > m_sparSegments;
             
         private:
             #ifdef HAVE_CPP11
@@ -68,5 +68,6 @@ namespace tigl
         };
     }
     
-    // This type is customized, use type CCPACSWingSparSegments
+    // Aliases in tigl namespace
+    // CPACSSparSegments is customized, use type CCPACSWingSparSegments directly
 }

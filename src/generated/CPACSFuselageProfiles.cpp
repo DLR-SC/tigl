@@ -15,11 +15,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "CPACSProfileGeometry.h"
-#include "TixiHelper.h"
-#include "CTiglLogging.h"
-#include "CTiglError.h"
 #include "CPACSFuselageProfiles.h"
+#include "CPACSProfileGeometry.h"
+#include "CTiglError.h"
+#include "CTiglLogging.h"
+#include "TixiHelper.h"
 
 namespace tigl
 {
@@ -32,7 +32,7 @@ namespace tigl
         {
             // read element fuselageProfile
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/fuselageProfile")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/fuselageProfile", m_fuselageProfile);
+                tixihelper::TixiReadElements(tixiHandle, xpath + "/fuselageProfile", m_fuselageProfiles);
             }
             
         }
@@ -40,18 +40,18 @@ namespace tigl
         void CPACSFuselageProfiles::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element fuselageProfile
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/fuselageProfile", m_fuselageProfile);
+            tixihelper::TixiSaveElements(tixiHandle, xpath + "/fuselageProfile", m_fuselageProfiles);
             
         }
         
-        const std::vector<unique_ptr<CPACSProfileGeometry> >& CPACSFuselageProfiles::GetFuselageProfile() const
+        const std::vector<unique_ptr<CPACSProfileGeometry> >& CPACSFuselageProfiles::GetFuselageProfiles() const
         {
-            return m_fuselageProfile;
+            return m_fuselageProfiles;
         }
         
-        std::vector<unique_ptr<CPACSProfileGeometry> >& CPACSFuselageProfiles::GetFuselageProfile()
+        std::vector<unique_ptr<CPACSProfileGeometry> >& CPACSFuselageProfiles::GetFuselageProfiles()
         {
-            return m_fuselageProfile;
+            return m_fuselageProfiles;
         }
         
     }

@@ -122,6 +122,8 @@ namespace tigl
         std::string TixiExportDocumentAsString(const TixiDocumentHandle& tixiHandle);
 
         void TixiRegisterNamespacesFromDocument(const TixiDocumentHandle& tixiHandle);
+        void TixiRegisterNamespace(const TixiDocumentHandle& tixiHandle, const std::string& namespaceURI, const std::string& prefix);
+
 
         template<typename T, typename ReadChildFunc>
         void TixiReadElements(const TixiDocumentHandle& tixiHandle, const std::string& xpath, std::vector<T>& children, ReadChildFunc readChild, int minOccurs = -1, int maxOccurs = -1)

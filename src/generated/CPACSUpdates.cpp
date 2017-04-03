@@ -16,10 +16,10 @@
 // limitations under the License.
 
 #include "CPACSUpdate.h"
-#include "TixiHelper.h"
-#include "CTiglLogging.h"
-#include "CTiglError.h"
 #include "CPACSUpdates.h"
+#include "CTiglError.h"
+#include "CTiglLogging.h"
+#include "TixiHelper.h"
 
 namespace tigl
 {
@@ -32,7 +32,7 @@ namespace tigl
         {
             // read element update
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/update")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/update", m_update);
+                tixihelper::TixiReadElements(tixiHandle, xpath + "/update", m_updates);
             }
             
         }
@@ -40,18 +40,18 @@ namespace tigl
         void CPACSUpdates::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element update
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/update", m_update);
+            tixihelper::TixiSaveElements(tixiHandle, xpath + "/update", m_updates);
             
         }
         
-        const std::vector<unique_ptr<CPACSUpdate> >& CPACSUpdates::GetUpdate() const
+        const std::vector<unique_ptr<CPACSUpdate> >& CPACSUpdates::GetUpdates() const
         {
-            return m_update;
+            return m_updates;
         }
         
-        std::vector<unique_ptr<CPACSUpdate> >& CPACSUpdates::GetUpdate()
+        std::vector<unique_ptr<CPACSUpdate> >& CPACSUpdates::GetUpdates()
         {
-            return m_update;
+            return m_updates;
         }
         
     }

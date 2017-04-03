@@ -551,5 +551,13 @@ namespace tigl
                 throw TixiError(ret, "Failed to register all document namespaces");
             }
         }
+
+        void TixiRegisterNamespace(const TixiDocumentHandle& tixiHandle, const std::string& namespaceURI, const std::string& prefix)
+        {
+            const ReturnCode ret =  tixiRegisterNamespace(tixiHandle, namespaceURI.c_str(), prefix.c_str());
+            if (ret != SUCCESS) {
+                throw TixiError(ret, "Failed to register all document namespaces");
+            }
+        }
     }
 }

@@ -20,6 +20,7 @@
 #include <tixi.h>
 #include <string>
 #include <boost/optional.hpp>
+#include <boost/utility/in_place_factory.hpp>
 #include "tigl_internal.h"
 #include "CPACSWingRibsPositioning_ribCrossingBehaviour.h"
 #include <CCPACSWingRibRotation.h>
@@ -114,5 +115,6 @@ namespace tigl
         };
     }
     
-    // This type is customized, use type CCPACSWingRibsPositioning
+    // Aliases in tigl namespace
+    // CPACSWingRibsPositioning is customized, use type CCPACSWingRibsPositioning directly
 }

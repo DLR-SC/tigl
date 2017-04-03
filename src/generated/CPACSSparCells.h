@@ -42,11 +42,11 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT const std::vector<unique_ptr<CPACSSparCell> >& GetSparCell() const;
-            TIGL_EXPORT std::vector<unique_ptr<CPACSSparCell> >& GetSparCell();
+            TIGL_EXPORT const std::vector<unique_ptr<CPACSSparCell> >& GetSparCells() const;
+            TIGL_EXPORT std::vector<unique_ptr<CPACSSparCell> >& GetSparCells();
             
         protected:
-            std::vector<unique_ptr<CPACSSparCell> > m_sparCell;
+            std::vector<unique_ptr<CPACSSparCell> > m_sparCells;
             
         private:
             #ifdef HAVE_CPP11
@@ -62,12 +62,15 @@ namespace tigl
         };
     }
     
-    // This type is not customized, create alias in tigl namespace
+    // Aliases in tigl namespace
     #ifdef HAVE_CPP11
     using CCPACSSparCells = generated::CPACSSparCells;
     #else
     typedef generated::CPACSSparCells CCPACSSparCells;
     #endif
-    
-    using generated::CPACSSparCell;
+    #ifdef HAVE_CPP11
+    using CCPACSSparCell = generated::CPACSSparCell;
+    #else
+    typedef generated::CPACSSparCell CCPACSSparCell;
+    #endif
 }

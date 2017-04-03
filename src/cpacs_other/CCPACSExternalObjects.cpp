@@ -36,12 +36,12 @@ CCPACSExternalObject&CCPACSExternalObjects::GetObject(int index) const
     if (index < 0 || index >= GetObjectCount()) {
         throw CTiglError("Error: Invalid index in CCPACSExternalObjects::GetObject", TIGL_INDEX_ERROR);
     }
-    return *m_genericGeometryComponent[index];
+    return *m_genericGeometryComponents[index];
 }
 
 int CCPACSExternalObjects::GetObjectCount() const
 {
-    return static_cast<int>(m_genericGeometryComponent.size());
+    return static_cast<int>(m_genericGeometryComponents.size());
 }
 
 }

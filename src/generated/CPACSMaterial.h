@@ -22,6 +22,7 @@
 #include <vector>
 #include "UniquePtr.h"
 #include <boost/optional.hpp>
+#include <boost/utility/in_place_factory.hpp>
 #include "tigl_internal.h"
 
 namespace tigl
@@ -71,8 +72,8 @@ namespace tigl
             TIGL_EXPORT const double& GetFatigueFactor() const;
             TIGL_EXPORT void SetFatigueFactor(const double& value);
             
-            TIGL_EXPORT const std::vector<unique_ptr<CPACSPostFailure> >& GetPostFailure() const;
-            TIGL_EXPORT std::vector<unique_ptr<CPACSPostFailure> >& GetPostFailure();
+            TIGL_EXPORT const std::vector<unique_ptr<CPACSPostFailure> >& GetPostFailures() const;
+            TIGL_EXPORT std::vector<unique_ptr<CPACSPostFailure> >& GetPostFailures();
             
             TIGL_EXPORT bool HasSig11_choice1() const;
             TIGL_EXPORT const double& GetSig11_choice1() const;
@@ -199,7 +200,7 @@ namespace tigl
             double                                     m_k12;
             boost::optional<double>                    m_maxStrain;
             boost::optional<double>                    m_fatigueFactor;
-            std::vector<unique_ptr<CPACSPostFailure> > m_postFailure;
+            std::vector<unique_ptr<CPACSPostFailure> > m_postFailures;
             boost::optional<double>                    m_sig11_choice1;
             boost::optional<double>                    m_tau12_choice1;
             boost::optional<double>                    m_sig11yieldT_choice1;
@@ -244,12 +245,15 @@ namespace tigl
         };
     }
     
-    // This type is not customized, create alias in tigl namespace
+    // Aliases in tigl namespace
     #ifdef HAVE_CPP11
     using CCPACSMaterial = generated::CPACSMaterial;
     #else
     typedef generated::CPACSMaterial CCPACSMaterial;
     #endif
-    
-    using generated::CPACSPostFailure;
+    #ifdef HAVE_CPP11
+    using CCPACSPostFailure = generated::CPACSPostFailure;
+    #else
+    typedef generated::CPACSPostFailure CCPACSPostFailure;
+    #endif
 }

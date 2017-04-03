@@ -20,6 +20,7 @@
 #include <tixi.h>
 #include <string>
 #include <boost/optional.hpp>
+#include <boost/utility/in_place_factory.hpp>
 #include "tigl_internal.h"
 #include <TiglSymmetryAxis.h>
 #include <CCPACSPointListRelXYZ.h>
@@ -79,5 +80,6 @@ namespace tigl
         };
     }
     
-    // This type is customized, use type CCPACSGuideCurveProfile
+    // Aliases in tigl namespace
+    // CPACSGuideCurveProfileGeometry is customized, use type CCPACSGuideCurveProfile directly
 }

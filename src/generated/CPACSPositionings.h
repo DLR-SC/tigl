@@ -45,11 +45,11 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT const std::vector<unique_ptr<CCPACSPositioning> >& GetPositioning() const;
-            TIGL_EXPORT std::vector<unique_ptr<CCPACSPositioning> >& GetPositioning();
+            TIGL_EXPORT const std::vector<unique_ptr<CCPACSPositioning> >& GetPositionings() const;
+            TIGL_EXPORT std::vector<unique_ptr<CCPACSPositioning> >& GetPositionings();
             
         protected:
-            std::vector<unique_ptr<CCPACSPositioning> > m_positioning;
+            std::vector<unique_ptr<CCPACSPositioning> > m_positionings;
             
         private:
             #ifdef HAVE_CPP11
@@ -65,5 +65,6 @@ namespace tigl
         };
     }
     
-    // This type is customized, use type CCPACSPositionings
+    // Aliases in tigl namespace
+    // CPACSPositionings is customized, use type CCPACSPositionings directly
 }

@@ -16,10 +16,10 @@
 // limitations under the License.
 
 #include <CCPACSPositioning.h>
-#include "TixiHelper.h"
-#include "CTiglLogging.h"
-#include "CTiglError.h"
 #include "CPACSPositionings.h"
+#include "CTiglError.h"
+#include "CTiglLogging.h"
+#include "TixiHelper.h"
 
 namespace tigl
 {
@@ -32,7 +32,7 @@ namespace tigl
         {
             // read element positioning
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/positioning")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/positioning", m_positioning);
+                tixihelper::TixiReadElements(tixiHandle, xpath + "/positioning", m_positionings);
             }
             
         }
@@ -40,18 +40,18 @@ namespace tigl
         void CPACSPositionings::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element positioning
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/positioning", m_positioning);
+            tixihelper::TixiSaveElements(tixiHandle, xpath + "/positioning", m_positionings);
             
         }
         
-        const std::vector<unique_ptr<CCPACSPositioning> >& CPACSPositionings::GetPositioning() const
+        const std::vector<unique_ptr<CCPACSPositioning> >& CPACSPositionings::GetPositionings() const
         {
-            return m_positioning;
+            return m_positionings;
         }
         
-        std::vector<unique_ptr<CCPACSPositioning> >& CPACSPositionings::GetPositioning()
+        std::vector<unique_ptr<CCPACSPositioning> >& CPACSPositionings::GetPositionings()
         {
-            return m_positioning;
+            return m_positionings;
         }
         
     }

@@ -15,13 +15,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <CCPACSWingSparPosition.h>
 #include <cassert>
+#include <CCPACSWingSparPosition.h>
 #include "CCPACSWingSpars.h"
-#include "TixiHelper.h"
-#include "CTiglLogging.h"
-#include "CTiglError.h"
 #include "CPACSSparPositions.h"
+#include "CTiglError.h"
+#include "CTiglLogging.h"
+#include "TixiHelper.h"
 
 namespace tigl
 {
@@ -44,7 +44,7 @@ namespace tigl
         {
             // read element sparPosition
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/sparPosition")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/sparPosition", m_sparPosition, reinterpret_cast<CCPACSWingSparPositions*>(this));
+                tixihelper::TixiReadElements(tixiHandle, xpath + "/sparPosition", m_sparPositions, reinterpret_cast<CCPACSWingSparPositions*>(this));
             }
             
         }
@@ -52,18 +52,18 @@ namespace tigl
         void CPACSSparPositions::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element sparPosition
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/sparPosition", m_sparPosition);
+            tixihelper::TixiSaveElements(tixiHandle, xpath + "/sparPosition", m_sparPositions);
             
         }
         
-        const std::vector<unique_ptr<CCPACSWingSparPosition> >& CPACSSparPositions::GetSparPosition() const
+        const std::vector<unique_ptr<CCPACSWingSparPosition> >& CPACSSparPositions::GetSparPositions() const
         {
-            return m_sparPosition;
+            return m_sparPositions;
         }
         
-        std::vector<unique_ptr<CCPACSWingSparPosition> >& CPACSSparPositions::GetSparPosition()
+        std::vector<unique_ptr<CCPACSWingSparPosition> >& CPACSSparPositions::GetSparPositions()
         {
-            return m_sparPosition;
+            return m_sparPositions;
         }
         
     }

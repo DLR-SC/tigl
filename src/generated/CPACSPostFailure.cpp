@@ -16,10 +16,10 @@
 // limitations under the License.
 
 #include "CPACSPlasticityCurvePoint.h"
-#include "TixiHelper.h"
-#include "CTiglLogging.h"
-#include "CTiglError.h"
 #include "CPACSPostFailure.h"
+#include "CTiglError.h"
+#include "CTiglLogging.h"
+#include "TixiHelper.h"
 
 namespace tigl
 {
@@ -52,7 +52,7 @@ namespace tigl
             
             // read element plasticityCurvePoint
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/plasticityCurvePoint")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/plasticityCurvePoint", m_plasticityCurvePoint_choice1);
+                tixihelper::TixiReadElements(tixiHandle, xpath + "/plasticityCurvePoint", m_plasticityCurvePoint_choice1s);
             }
             
             // read element initialEquivalentShearStrain
@@ -109,7 +109,7 @@ namespace tigl
             }
             
             // write element plasticityCurvePoint
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/plasticityCurvePoint", m_plasticityCurvePoint_choice1);
+            tixihelper::TixiSaveElements(tixiHandle, xpath + "/plasticityCurvePoint", m_plasticityCurvePoint_choice1s);
             
             // write element initialEquivalentShearStrain
             if (m_initialEquivalentShearStrain_choice2) {
@@ -203,14 +203,14 @@ namespace tigl
             m_plasticEliminationStrain_choice1 = value;
         }
         
-        const std::vector<unique_ptr<CPACSPlasticityCurvePoint> >& CPACSPostFailure::GetPlasticityCurvePoint_choice1() const
+        const std::vector<unique_ptr<CPACSPlasticityCurvePoint> >& CPACSPostFailure::GetPlasticityCurvePoint_choice1s() const
         {
-            return m_plasticityCurvePoint_choice1;
+            return m_plasticityCurvePoint_choice1s;
         }
         
-        std::vector<unique_ptr<CPACSPlasticityCurvePoint> >& CPACSPostFailure::GetPlasticityCurvePoint_choice1()
+        std::vector<unique_ptr<CPACSPlasticityCurvePoint> >& CPACSPostFailure::GetPlasticityCurvePoint_choice1s()
         {
-            return m_plasticityCurvePoint_choice1;
+            return m_plasticityCurvePoint_choice1s;
         }
         
         bool CPACSPostFailure::HasInitialEquivalentShearStrain_choice2() const

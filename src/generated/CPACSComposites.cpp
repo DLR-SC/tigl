@@ -16,10 +16,10 @@
 // limitations under the License.
 
 #include "CPACSComposite.h"
-#include "TixiHelper.h"
-#include "CTiglLogging.h"
-#include "CTiglError.h"
 #include "CPACSComposites.h"
+#include "CTiglError.h"
+#include "CTiglLogging.h"
+#include "TixiHelper.h"
 
 namespace tigl
 {
@@ -32,7 +32,7 @@ namespace tigl
         {
             // read element composite
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/composite")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/composite", m_composite);
+                tixihelper::TixiReadElements(tixiHandle, xpath + "/composite", m_composites);
             }
             
         }
@@ -40,18 +40,18 @@ namespace tigl
         void CPACSComposites::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element composite
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/composite", m_composite);
+            tixihelper::TixiSaveElements(tixiHandle, xpath + "/composite", m_composites);
             
         }
         
-        const std::vector<unique_ptr<CPACSComposite> >& CPACSComposites::GetComposite() const
+        const std::vector<unique_ptr<CPACSComposite> >& CPACSComposites::GetComposites() const
         {
-            return m_composite;
+            return m_composites;
         }
         
-        std::vector<unique_ptr<CPACSComposite> >& CPACSComposites::GetComposite()
+        std::vector<unique_ptr<CPACSComposite> >& CPACSComposites::GetComposites()
         {
-            return m_composite;
+            return m_composites;
         }
         
     }

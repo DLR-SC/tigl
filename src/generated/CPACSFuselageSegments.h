@@ -46,13 +46,13 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT const std::vector<unique_ptr<CCPACSFuselageSegment> >& GetSegment() const;
-            TIGL_EXPORT std::vector<unique_ptr<CCPACSFuselageSegment> >& GetSegment();
+            TIGL_EXPORT const std::vector<unique_ptr<CCPACSFuselageSegment> >& GetSegments() const;
+            TIGL_EXPORT std::vector<unique_ptr<CCPACSFuselageSegment> >& GetSegments();
             
         protected:
             CCPACSFuselage* m_parent;
             
-            std::vector<unique_ptr<CCPACSFuselageSegment> > m_segment;
+            std::vector<unique_ptr<CCPACSFuselageSegment> > m_segments;
             
         private:
             #ifdef HAVE_CPP11
@@ -68,5 +68,6 @@ namespace tigl
         };
     }
     
-    // This type is customized, use type CCPACSFuselageSegments
+    // Aliases in tigl namespace
+    // CPACSFuselageSegments is customized, use type CCPACSFuselageSegments directly
 }

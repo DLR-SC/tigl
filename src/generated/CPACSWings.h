@@ -67,14 +67,14 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT const std::vector<unique_ptr<CCPACSWing> >& GetWing() const;
-            TIGL_EXPORT std::vector<unique_ptr<CCPACSWing> >& GetWing();
+            TIGL_EXPORT const std::vector<unique_ptr<CCPACSWing> >& GetWings() const;
+            TIGL_EXPORT std::vector<unique_ptr<CCPACSWing> >& GetWings();
             
         protected:
             void* m_parent;
             const std::type_info* m_parentType;
             
-            std::vector<unique_ptr<CCPACSWing> > m_wing;
+            std::vector<unique_ptr<CCPACSWing> > m_wings;
             
         private:
             #ifdef HAVE_CPP11
@@ -90,5 +90,6 @@ namespace tigl
         };
     }
     
-    // This type is customized, use type CCPACSWings
+    // Aliases in tigl namespace
+    // CPACSWings is customized, use type CCPACSWings directly
 }

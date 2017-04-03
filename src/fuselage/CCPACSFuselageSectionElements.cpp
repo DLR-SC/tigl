@@ -31,7 +31,7 @@ namespace tigl
 // Get element count for this section
 int CCPACSFuselageSectionElements::GetSectionElementCount() const
 {
-    return static_cast<int>(m_element.size());
+    return static_cast<int>(m_elements.size());
 }
 
 // Get element for a given index
@@ -41,7 +41,7 @@ CCPACSFuselageSectionElement& CCPACSFuselageSectionElements::GetSectionElement(i
     if (index < 0 || index >= GetSectionElementCount()) {
         throw CTiglError("Error: Invalid index in CCPACSFuselageSectionElements::GetSectionElement", TIGL_INDEX_ERROR);
     }
-    return *m_element[index];
+    return *m_elements[index];
 }
 
 

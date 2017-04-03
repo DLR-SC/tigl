@@ -16,10 +16,10 @@
 // limitations under the License.
 
 #include <CCPACSWingSectionElement.h>
-#include "TixiHelper.h"
-#include "CTiglLogging.h"
-#include "CTiglError.h"
 #include "CPACSWingElements.h"
+#include "CTiglError.h"
+#include "CTiglLogging.h"
+#include "TixiHelper.h"
 
 namespace tigl
 {
@@ -32,7 +32,7 @@ namespace tigl
         {
             // read element element
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/element")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/element", m_element);
+                tixihelper::TixiReadElements(tixiHandle, xpath + "/element", m_elements);
             }
             
         }
@@ -40,18 +40,18 @@ namespace tigl
         void CPACSWingElements::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element element
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/element", m_element);
+            tixihelper::TixiSaveElements(tixiHandle, xpath + "/element", m_elements);
             
         }
         
-        const std::vector<unique_ptr<CCPACSWingSectionElement> >& CPACSWingElements::GetElement() const
+        const std::vector<unique_ptr<CCPACSWingSectionElement> >& CPACSWingElements::GetElements() const
         {
-            return m_element;
+            return m_elements;
         }
         
-        std::vector<unique_ptr<CCPACSWingSectionElement> >& CPACSWingElements::GetElement()
+        std::vector<unique_ptr<CCPACSWingSectionElement> >& CPACSWingElements::GetElements()
         {
-            return m_element;
+            return m_elements;
         }
         
     }

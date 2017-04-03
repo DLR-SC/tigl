@@ -16,10 +16,10 @@
 // limitations under the License.
 
 #include <CCPACSGuideCurve.h>
-#include "TixiHelper.h"
-#include "CTiglLogging.h"
-#include "CTiglError.h"
 #include "CPACSGuideCurves.h"
+#include "CTiglError.h"
+#include "CTiglLogging.h"
+#include "TixiHelper.h"
 
 namespace tigl
 {
@@ -32,7 +32,7 @@ namespace tigl
         {
             // read element guideCurve
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/guideCurve")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/guideCurve", m_guideCurve);
+                tixihelper::TixiReadElements(tixiHandle, xpath + "/guideCurve", m_guideCurves);
             }
             
         }
@@ -40,18 +40,18 @@ namespace tigl
         void CPACSGuideCurves::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element guideCurve
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/guideCurve", m_guideCurve);
+            tixihelper::TixiSaveElements(tixiHandle, xpath + "/guideCurve", m_guideCurves);
             
         }
         
-        const std::vector<unique_ptr<CCPACSGuideCurve> >& CPACSGuideCurves::GetGuideCurve() const
+        const std::vector<unique_ptr<CCPACSGuideCurve> >& CPACSGuideCurves::GetGuideCurves() const
         {
-            return m_guideCurve;
+            return m_guideCurves;
         }
         
-        std::vector<unique_ptr<CCPACSGuideCurve> >& CPACSGuideCurves::GetGuideCurve()
+        std::vector<unique_ptr<CCPACSGuideCurve> >& CPACSGuideCurves::GetGuideCurves()
         {
-            return m_guideCurve;
+            return m_guideCurves;
         }
         
     }

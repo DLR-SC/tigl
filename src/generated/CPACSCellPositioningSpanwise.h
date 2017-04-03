@@ -20,6 +20,7 @@
 #include <tixi.h>
 #include <string>
 #include <boost/optional.hpp>
+#include <boost/utility/in_place_factory.hpp>
 #include "tigl_internal.h"
 
 namespace tigl
@@ -82,5 +83,6 @@ namespace tigl
         };
     }
     
-    // This type is customized, use type CCPACSWingCellPositionSpanwise
+    // Aliases in tigl namespace
+    // CPACSCellPositioningSpanwise is customized, use type CCPACSWingCellPositionSpanwise directly
 }

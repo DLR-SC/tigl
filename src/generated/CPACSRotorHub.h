@@ -20,6 +20,7 @@
 #include <tixi.h>
 #include <string>
 #include <boost/optional.hpp>
+#include <boost/utility/in_place_factory.hpp>
 #include "tigl_internal.h"
 #include "CPACSRotorHub_type.h"
 #include <CCPACSRotorBladeAttachments.h>
@@ -88,5 +89,6 @@ namespace tigl
         };
     }
     
-    // This type is customized, use type CCPACSRotorHub
+    // Aliases in tigl namespace
+    // CPACSRotorHub is customized, use type CCPACSRotorHub directly
 }

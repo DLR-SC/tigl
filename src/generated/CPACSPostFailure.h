@@ -22,6 +22,7 @@
 #include <vector>
 #include "UniquePtr.h"
 #include <boost/optional.hpp>
+#include <boost/utility/in_place_factory.hpp>
 #include "tigl_internal.h"
 
 namespace tigl
@@ -59,8 +60,8 @@ namespace tigl
             TIGL_EXPORT const double& GetPlasticEliminationStrain_choice1() const;
             TIGL_EXPORT void SetPlasticEliminationStrain_choice1(const double& value);
             
-            TIGL_EXPORT const std::vector<unique_ptr<CPACSPlasticityCurvePoint> >& GetPlasticityCurvePoint_choice1() const;
-            TIGL_EXPORT std::vector<unique_ptr<CPACSPlasticityCurvePoint> >& GetPlasticityCurvePoint_choice1();
+            TIGL_EXPORT const std::vector<unique_ptr<CPACSPlasticityCurvePoint> >& GetPlasticityCurvePoint_choice1s() const;
+            TIGL_EXPORT std::vector<unique_ptr<CPACSPlasticityCurvePoint> >& GetPlasticityCurvePoint_choice1s();
             
             TIGL_EXPORT bool HasInitialEquivalentShearStrain_choice2() const;
             TIGL_EXPORT const double& GetInitialEquivalentShearStrain_choice2() const;
@@ -87,7 +88,7 @@ namespace tigl
             boost::optional<std::string>                        m_description;
             boost::optional<std::string>                        m_materialLaw;
             boost::optional<double>                             m_plasticEliminationStrain_choice1;
-            std::vector<unique_ptr<CPACSPlasticityCurvePoint> > m_plasticityCurvePoint_choice1;
+            std::vector<unique_ptr<CPACSPlasticityCurvePoint> > m_plasticityCurvePoint_choice1s;
             boost::optional<double>                             m_initialEquivalentShearStrain_choice2;
             boost::optional<double>                             m_intermediateEquivalentShearStrain_choice2;
             boost::optional<double>                             m_ultimateEquivalentShearStrain_choice2;
@@ -108,12 +109,15 @@ namespace tigl
         };
     }
     
-    // This type is not customized, create alias in tigl namespace
+    // Aliases in tigl namespace
     #ifdef HAVE_CPP11
     using CCPACSPostFailure = generated::CPACSPostFailure;
     #else
     typedef generated::CPACSPostFailure CCPACSPostFailure;
     #endif
-    
-    using generated::CPACSPlasticityCurvePoint;
+    #ifdef HAVE_CPP11
+    using CCPACSPlasticityCurvePoint = generated::CPACSPlasticityCurvePoint;
+    #else
+    typedef generated::CPACSPlasticityCurvePoint CCPACSPlasticityCurvePoint;
+    #endif
 }

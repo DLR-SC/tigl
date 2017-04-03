@@ -20,6 +20,7 @@
 #include <tixi.h>
 #include <string>
 #include <boost/optional.hpp>
+#include <boost/utility/in_place_factory.hpp>
 #include "CTiglError.h"
 #include <typeinfo>
 #include "tigl_internal.h"
@@ -75,7 +76,7 @@ namespace tigl
         };
     }
     
-    // This type is not customized, create alias in tigl namespace
+    // Aliases in tigl namespace
     #ifdef HAVE_CPP11
     using CCPACSPointXYZ = generated::CPACSPointXYZ;
     #else

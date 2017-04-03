@@ -40,8 +40,6 @@ public:
     // Invalidates internal state
     TIGL_EXPORT void Invalidate();
 
-    using generated::CPACSFuselageSegments::GetSegment;
-
     // Gets a segment by index.
     TIGL_EXPORT CCPACSFuselageSegment& GetSegment(int index);
 

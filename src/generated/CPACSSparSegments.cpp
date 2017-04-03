@@ -15,13 +15,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <CCPACSWingSparSegment.h>
 #include <cassert>
+#include <CCPACSWingSparSegment.h>
 #include "CCPACSWingSpars.h"
-#include "TixiHelper.h"
-#include "CTiglLogging.h"
-#include "CTiglError.h"
 #include "CPACSSparSegments.h"
+#include "CTiglError.h"
+#include "CTiglLogging.h"
+#include "TixiHelper.h"
 
 namespace tigl
 {
@@ -44,7 +44,7 @@ namespace tigl
         {
             // read element sparSegment
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/sparSegment")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/sparSegment", m_sparSegment, reinterpret_cast<CCPACSWingSparSegments*>(this));
+                tixihelper::TixiReadElements(tixiHandle, xpath + "/sparSegment", m_sparSegments, reinterpret_cast<CCPACSWingSparSegments*>(this));
             }
             
         }
@@ -52,18 +52,18 @@ namespace tigl
         void CPACSSparSegments::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element sparSegment
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/sparSegment", m_sparSegment);
+            tixihelper::TixiSaveElements(tixiHandle, xpath + "/sparSegment", m_sparSegments);
             
         }
         
-        const std::vector<unique_ptr<CCPACSWingSparSegment> >& CPACSSparSegments::GetSparSegment() const
+        const std::vector<unique_ptr<CCPACSWingSparSegment> >& CPACSSparSegments::GetSparSegments() const
         {
-            return m_sparSegment;
+            return m_sparSegments;
         }
         
-        std::vector<unique_ptr<CCPACSWingSparSegment> >& CPACSSparSegments::GetSparSegment()
+        std::vector<unique_ptr<CCPACSWingSparSegment> >& CPACSSparSegments::GetSparSegments()
         {
-            return m_sparSegment;
+            return m_sparSegments;
         }
         
     }

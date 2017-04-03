@@ -71,5 +71,6 @@ namespace tigl
         };
     }
     
-    // This type is customized, use type CCPACSWingSpars
+    // Aliases in tigl namespace
+    // CPACSWingSpar is customized, use type CCPACSWingSpars directly
 }

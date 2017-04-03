@@ -46,7 +46,7 @@ void CCPACSRotorBladeAttachments::Invalidate()
 // Returns the total count of rotor blade attachments in a rotor hub
 int CCPACSRotorBladeAttachments::GetRotorBladeAttachmentCount() const
 {
-    return static_cast<int>(m_rotorBladeAttachment.size());
+    return static_cast<int>(m_rotorBladeAttachments.size());
 }
 
 // Returns the rotor blade attachment for a given index.
@@ -56,7 +56,7 @@ CCPACSRotorBladeAttachment& CCPACSRotorBladeAttachments::GetRotorBladeAttachment
     if (index < 0 || index >= GetRotorBladeAttachmentCount()) {
         throw CTiglError("Error: Invalid index in CCPACSRotorBladeAttachments::GetRotorBladeAttachment", TIGL_INDEX_ERROR);
     }
-    return *m_rotorBladeAttachment[index];
+    return *m_rotorBladeAttachments[index];
 }
 
 // Returns the parent rotor

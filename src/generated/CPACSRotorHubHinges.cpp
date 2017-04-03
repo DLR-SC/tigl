@@ -15,13 +15,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <CCPACSRotorHinge.h>
 #include <cassert>
+#include <CCPACSRotorHinge.h>
 #include "CCPACSRotorBladeAttachment.h"
-#include "TixiHelper.h"
-#include "CTiglLogging.h"
-#include "CTiglError.h"
 #include "CPACSRotorHubHinges.h"
+#include "CTiglError.h"
+#include "CTiglLogging.h"
+#include "TixiHelper.h"
 
 namespace tigl
 {
@@ -44,7 +44,7 @@ namespace tigl
         {
             // read element hinge
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/hinge")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/hinge", m_hinge, reinterpret_cast<CCPACSRotorHinges*>(this));
+                tixihelper::TixiReadElements(tixiHandle, xpath + "/hinge", m_hinges, reinterpret_cast<CCPACSRotorHinges*>(this));
             }
             
         }
@@ -52,18 +52,18 @@ namespace tigl
         void CPACSRotorHubHinges::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element hinge
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/hinge", m_hinge);
+            tixihelper::TixiSaveElements(tixiHandle, xpath + "/hinge", m_hinges);
             
         }
         
-        const std::vector<unique_ptr<CCPACSRotorHinge> >& CPACSRotorHubHinges::GetHinge() const
+        const std::vector<unique_ptr<CCPACSRotorHinge> >& CPACSRotorHubHinges::GetHinges() const
         {
-            return m_hinge;
+            return m_hinges;
         }
         
-        std::vector<unique_ptr<CCPACSRotorHinge> >& CPACSRotorHubHinges::GetHinge()
+        std::vector<unique_ptr<CCPACSRotorHinge> >& CPACSRotorHubHinges::GetHinges()
         {
-            return m_hinge;
+            return m_hinges;
         }
         
     }

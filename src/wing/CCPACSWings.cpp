@@ -84,7 +84,7 @@ CCPACSWingProfile& CCPACSWings::GetProfile(int index) const
 // Returns the total count of wings in a configuration
 int CCPACSWings::GetWingCount() const
 {
-    return static_cast<int>(m_wing.size());
+    return static_cast<int>(m_wings.size());
 }
 
 // Returns the count of wings in a configuration with the property isRotorBlade set to true
@@ -106,20 +106,20 @@ CCPACSWing& CCPACSWings::GetWing(int index) const
     if (index < 0 || index >= GetWingCount()) {
         throw CTiglError("Error: Invalid index in CCPACSWings::GetWing", TIGL_INDEX_ERROR);
     }
-    return *m_wing[index];
+    return *m_wings[index];
 }
 
 // Returns the wing for a given UID.
 CCPACSWing& CCPACSWings::GetWing(const std::string& UID) const
 {
-    return *m_wing[GetWingIndex(UID)-1];
+    return *m_wings[GetWingIndex(UID)-1];
 }
 
 // Returns the wing index for a given UID.
 int CCPACSWings::GetWingIndex(const std::string& UID) const
 {
     for (int i=0; i < GetWingCount(); i++) {
-        const std::string tmpUID(m_wing[i]->GetUID());
+        const std::string tmpUID(m_wings[i]->GetUID());
         if (tmpUID == UID) {
             return i+1;
         }
@@ -131,8 +131,8 @@ int CCPACSWings::GetWingIndex(const std::string& UID) const
 
 bool CCPACSWings::HasWing(const std::string & uid) const
 {
-    for (std::size_t i = 0; i < m_wing.size(); i++)
-        if (m_wing[i]->GetUID() == uid)
+    for (std::size_t i = 0; i < m_wings.size(); i++)
+        if (m_wings[i]->GetUID() == uid)
             return true;
     return false;
 }
@@ -140,15 +140,15 @@ bool CCPACSWings::HasWing(const std::string & uid) const
 void CCPACSWings::AddWing(CCPACSWing* wing)
 {
     // Check whether the same wing already exists if yes remove it before adding the new one
-    for (std::vector<unique_ptr<CCPACSWing> >::iterator it = m_wing.begin(); it != m_wing.end(); ++it) {
+    for (std::vector<unique_ptr<CCPACSWing> >::iterator it = m_wings.begin(); it != m_wings.end(); ++it) {
         if ((*it)->GetUID() == wing->GetUID()) {
-            m_wing.erase(it);
+            m_wings.erase(it);
             break;
         }
     }
 
     // Add the new wing to the wing list
-    m_wing.push_back(unique_ptr<CCPACSWing>(wing));
+    m_wings.push_back(unique_ptr<CCPACSWing>(wing));
 }
 
 } // end namespace tigl

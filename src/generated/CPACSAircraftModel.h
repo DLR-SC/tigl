@@ -20,6 +20,7 @@
 #include <tixi.h>
 #include <string>
 #include <boost/optional.hpp>
+#include <boost/utility/in_place_factory.hpp>
 #include "tigl_internal.h"
 #include <CCPACSFuselages.h>
 #include <CCPACSWings.h>
@@ -86,5 +87,6 @@ namespace tigl
         };
     }
     
-    // This type is customized, use type CCPACSAircraftModel
+    // Aliases in tigl namespace
+    // CPACSAircraftModel is customized, use type CCPACSAircraftModel directly
 }

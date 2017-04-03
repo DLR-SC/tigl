@@ -32,7 +32,7 @@ namespace tigl
 
 int CCPACSFuselageSections::GetSectionCount() const
 {
-    return static_cast<int>(m_section.size());
+    return static_cast<int>(m_sections.size());
 }
 
 CCPACSFuselageSection& CCPACSFuselageSections::GetSection(int index) const
@@ -41,7 +41,7 @@ CCPACSFuselageSection& CCPACSFuselageSections::GetSection(int index) const
     if (index < 0 || index >= GetSectionCount()) {
         throw CTiglError("Error: Invalid index in CCPACSFuselageSections::GetSection", TIGL_INDEX_ERROR);
     }
-    return *m_section[index];
+    return *m_sections[index];
 }
 
 } // end namespace tigl

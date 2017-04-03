@@ -20,6 +20,7 @@
 #include <tixi.h>
 #include <string>
 #include <boost/optional.hpp>
+#include <boost/utility/in_place_factory.hpp>
 #include "tigl_internal.h"
 #include <ECPACSTranslationType.h>
 
@@ -81,5 +82,6 @@ namespace tigl
         };
     }
     
-    // This type is customized, use type CCPACSPointAbsRel
+    // Aliases in tigl namespace
+    // CPACSPointAbsRel is customized, use type CCPACSPointAbsRel directly
 }

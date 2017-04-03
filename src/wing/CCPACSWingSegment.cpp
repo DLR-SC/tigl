@@ -206,7 +206,7 @@ namespace
 
 CCPACSWingSegment::CCPACSWingSegment(CCPACSWingSegments* parent)
     : generated::CPACSWingSegment(parent)
-    , CTiglAbstractSegment(parent->GetSegment(), parent->GetParent()->m_symmetry)
+    , CTiglAbstractSegment(parent->GetSegments(), parent->GetParent()->m_symmetry)
     , wing(parent->GetParent()) {
     Cleanup();
 }

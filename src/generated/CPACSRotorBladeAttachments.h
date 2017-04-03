@@ -46,13 +46,13 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT const std::vector<unique_ptr<CCPACSRotorBladeAttachment> >& GetRotorBladeAttachment() const;
-            TIGL_EXPORT std::vector<unique_ptr<CCPACSRotorBladeAttachment> >& GetRotorBladeAttachment();
+            TIGL_EXPORT const std::vector<unique_ptr<CCPACSRotorBladeAttachment> >& GetRotorBladeAttachments() const;
+            TIGL_EXPORT std::vector<unique_ptr<CCPACSRotorBladeAttachment> >& GetRotorBladeAttachments();
             
         protected:
             CCPACSRotorHub* m_parent;
             
-            std::vector<unique_ptr<CCPACSRotorBladeAttachment> > m_rotorBladeAttachment;
+            std::vector<unique_ptr<CCPACSRotorBladeAttachment> > m_rotorBladeAttachments;
             
         private:
             #ifdef HAVE_CPP11
@@ -68,5 +68,6 @@ namespace tigl
         };
     }
     
-    // This type is customized, use type CCPACSRotorBladeAttachments
+    // Aliases in tigl namespace
+    // CPACSRotorBladeAttachments is customized, use type CCPACSRotorBladeAttachments directly
 }

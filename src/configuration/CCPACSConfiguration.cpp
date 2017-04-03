@@ -220,7 +220,7 @@ int CCPACSConfiguration::GetWingProfileCount() const
         if (profiles->HasWingAirfoils())
             count += profiles->GetWingAirfoils().GetProfileCount();
         if (profiles->HasRotorAirfoils())
-            count += static_cast<int>(profiles->GetRotorAirfoils().GetRotorAirfoil().size());
+            count += static_cast<int>(profiles->GetRotorAirfoils().GetRotorAirfoils().size());
     }
     return count;
 }

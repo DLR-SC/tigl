@@ -69,5 +69,6 @@ namespace tigl
         };
     }
     
-    // This type is customized, use type CCPACSPointListRelXYZ
+    // Aliases in tigl namespace
+    // CPACSPointListRelXYZVector is customized, use type CCPACSPointListRelXYZ directly
 }

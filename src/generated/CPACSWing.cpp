@@ -18,10 +18,10 @@
 #include <cassert>
 #include "CCPACSRotorBlades.h"
 #include "CCPACSWings.h"
-#include "TixiHelper.h"
-#include "CTiglLogging.h"
-#include "CTiglError.h"
 #include "CPACSWing.h"
+#include "CTiglError.h"
+#include "CTiglLogging.h"
+#include "TixiHelper.h"
 
 namespace tigl
 {

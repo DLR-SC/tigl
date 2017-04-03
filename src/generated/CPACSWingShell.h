@@ -20,6 +20,7 @@
 #include <tixi.h>
 #include <string>
 #include <boost/optional.hpp>
+#include <boost/utility/in_place_factory.hpp>
 #include "tigl_internal.h"
 #include "CPACSWingSkin.h"
 #include <CCPACSWingCells.h>
@@ -77,5 +78,6 @@ namespace tigl
         };
     }
     
-    // This type is customized, use type CCPACSWingShell
+    // Aliases in tigl namespace
+    // CPACSWingShell is customized, use type CCPACSWingShell directly
 }

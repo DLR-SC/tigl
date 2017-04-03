@@ -16,10 +16,10 @@
 // limitations under the License.
 
 #include "CPACSMaterial.h"
-#include "TixiHelper.h"
-#include "CTiglLogging.h"
-#include "CTiglError.h"
 #include "CPACSMaterials.h"
+#include "CTiglError.h"
+#include "CTiglLogging.h"
+#include "TixiHelper.h"
 
 namespace tigl
 {
@@ -32,7 +32,7 @@ namespace tigl
         {
             // read element material
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/material")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/material", m_material);
+                tixihelper::TixiReadElements(tixiHandle, xpath + "/material", m_materials);
             }
             
             // read element composites
@@ -54,7 +54,7 @@ namespace tigl
         void CPACSMaterials::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element material
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/material", m_material);
+            tixihelper::TixiSaveElements(tixiHandle, xpath + "/material", m_materials);
             
             // write element composites
             if (m_composites) {
@@ -64,14 +64,14 @@ namespace tigl
             
         }
         
-        const std::vector<unique_ptr<CPACSMaterial> >& CPACSMaterials::GetMaterial() const
+        const std::vector<unique_ptr<CPACSMaterial> >& CPACSMaterials::GetMaterials() const
         {
-            return m_material;
+            return m_materials;
         }
         
-        std::vector<unique_ptr<CPACSMaterial> >& CPACSMaterials::GetMaterial()
+        std::vector<unique_ptr<CPACSMaterial> >& CPACSMaterials::GetMaterials()
         {
-            return m_material;
+            return m_materials;
         }
         
         bool CPACSMaterials::HasComposites() const

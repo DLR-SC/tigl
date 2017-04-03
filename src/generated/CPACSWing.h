@@ -20,6 +20,7 @@
 #include <tixi.h>
 #include <string>
 #include <boost/optional.hpp>
+#include <boost/utility/in_place_factory.hpp>
 #include "CTiglError.h"
 #include <typeinfo>
 #include "tigl_internal.h"
@@ -135,5 +136,6 @@ namespace tigl
         };
     }
     
-    // This type is customized, use type CCPACSWing
+    // Aliases in tigl namespace
+    // CPACSWing is customized, use type CCPACSWing directly
 }

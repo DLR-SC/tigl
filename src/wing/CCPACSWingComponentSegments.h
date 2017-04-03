@@ -47,8 +47,6 @@ public:
     // Invalidates internal state
     TIGL_EXPORT void Invalidate();
 
-    using generated::CPACSComponentSegments::GetComponentSegment;
-
     // Gets a segment by index
     TIGL_EXPORT CCPACSWingComponentSegment & GetComponentSegment(int index);
     TIGL_EXPORT CCPACSWingComponentSegment & GetComponentSegment(const std::string& componentSegmentUID);
