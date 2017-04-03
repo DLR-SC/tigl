@@ -59,6 +59,5 @@ namespace tigl
         };
     }
     
-    // Aliases in tigl namespace
     // CPACSSparPositionUIDs is customized, use type CCPACSWingSparPositionUIDs directly
 }

@@ -95,4 +95,11 @@ namespace tigl
         }
         #endif
     }
+    
+    // Aliases in tigl namespace
+    #ifdef HAVE_CPP11
+    using ECPACSFuselageCutOut_cutoutType_SimpleContent = generated::CPACSFuselageCutOut_cutoutType_SimpleContent;
+    #else
+    typedef generated::CPACSFuselageCutOut_cutoutType_SimpleContent ECPACSFuselageCutOut_cutoutType_SimpleContent;
+    #endif
 }

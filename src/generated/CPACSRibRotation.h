@@ -72,6 +72,5 @@ namespace tigl
         };
     }
     
-    // Aliases in tigl namespace
     // CPACSRibRotation is customized, use type CCPACSWingRibRotation directly
 }

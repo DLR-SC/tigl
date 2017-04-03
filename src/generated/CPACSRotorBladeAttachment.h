@@ -97,6 +97,5 @@ namespace tigl
         };
     }
     
-    // Aliases in tigl namespace
     // CPACSRotorBladeAttachment is customized, use type CCPACSRotorBladeAttachment directly
 }

@@ -65,12 +65,9 @@ namespace tigl
     // Aliases in tigl namespace
     #ifdef HAVE_CPP11
     using CCPACSUpdates = generated::CPACSUpdates;
-    #else
-    typedef generated::CPACSUpdates CCPACSUpdates;
-    #endif
-    #ifdef HAVE_CPP11
     using CCPACSUpdate = generated::CPACSUpdate;
     #else
+    typedef generated::CPACSUpdates CCPACSUpdates;
     typedef generated::CPACSUpdate CCPACSUpdate;
     #endif
 }

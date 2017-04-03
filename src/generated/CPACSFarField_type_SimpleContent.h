@@ -85,4 +85,6 @@ namespace tigl
         }
         #endif
     }
+    
+    // CPACSFarField_type_SimpleContent is customized, use type TiglFarFieldType directly
 }

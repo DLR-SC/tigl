@@ -83,6 +83,5 @@ namespace tigl
         };
     }
     
-    // Aliases in tigl namespace
     // CPACSWingComponentSegmentStructure is customized, use type CCPACSWingCSStructure directly
 }

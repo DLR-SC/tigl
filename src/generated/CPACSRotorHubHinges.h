@@ -68,6 +68,5 @@ namespace tigl
         };
     }
     
-    // Aliases in tigl namespace
     // CPACSRotorHubHinges is customized, use type CCPACSRotorHinges directly
 }

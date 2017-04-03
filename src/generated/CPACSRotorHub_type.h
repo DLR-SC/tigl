@@ -85,4 +85,11 @@ namespace tigl
         }
         #endif
     }
+    
+    // Aliases in tigl namespace
+    #ifdef HAVE_CPP11
+    using ECPACSRotorHub_type = generated::CPACSRotorHub_type;
+    #else
+    typedef generated::CPACSRotorHub_type ECPACSRotorHub_type;
+    #endif
 }

@@ -65,6 +65,5 @@ namespace tigl
         };
     }
     
-    // Aliases in tigl namespace
     // CPACSGuideCurves is customized, use type CCPACSGuideCurves directly
 }

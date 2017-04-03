@@ -113,10 +113,10 @@ TiglRotorType CCPACSRotor::GetType() const
         return ENUM_VALUE(TiglRotorType, TIGLROTOR_UNDEFINED);
 
     switch (*m_type) {
-        case ENUM_VALUE_NS(generated, CPACSRotor_type, fenestron): return ENUM_VALUE(TiglRotorType, TIGLROTOR_FENESTRON);
-        case ENUM_VALUE_NS(generated, CPACSRotor_type, mainRotor): return ENUM_VALUE(TiglRotorType, TIGLROTOR_MAIN_ROTOR);
-        case ENUM_VALUE_NS(generated, CPACSRotor_type, propeller): return ENUM_VALUE(TiglRotorType, TIGLROTOR_PROPELLER);
-        case ENUM_VALUE_NS(generated, CPACSRotor_type, tailRotor): return ENUM_VALUE(TiglRotorType, TIGLROTOR_TAIL_ROTOR);
+        case ENUM_VALUE(ECPACSRotor_type, fenestron): return ENUM_VALUE(TiglRotorType, TIGLROTOR_FENESTRON);
+        case ENUM_VALUE(ECPACSRotor_type, mainRotor): return ENUM_VALUE(TiglRotorType, TIGLROTOR_MAIN_ROTOR);
+        case ENUM_VALUE(ECPACSRotor_type, propeller): return ENUM_VALUE(TiglRotorType, TIGLROTOR_PROPELLER);
+        case ENUM_VALUE(ECPACSRotor_type, tailRotor): return ENUM_VALUE(TiglRotorType, TIGLROTOR_TAIL_ROTOR);
         default: throw CTiglError("unknown rotor type");
     }
 }

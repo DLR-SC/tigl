@@ -81,6 +81,5 @@ namespace tigl
         };
     }
     
-    // Aliases in tigl namespace
     // CPACSSparPosition is customized, use type CCPACSWingSparPosition directly
 }

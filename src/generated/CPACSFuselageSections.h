@@ -62,6 +62,5 @@ namespace tigl
         };
     }
     
-    // Aliases in tigl namespace
     // CPACSFuselageSections is customized, use type CCPACSFuselageSections directly
 }

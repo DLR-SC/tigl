@@ -65,6 +65,5 @@ namespace tigl
         };
     }
     
-    // Aliases in tigl namespace
     // CPACSPositionings is customized, use type CCPACSPositionings directly
 }

@@ -82,6 +82,5 @@ namespace tigl
         };
     }
     
-    // Aliases in tigl namespace
     // CPACSPointAbsRel is customized, use type CCPACSPointAbsRel directly
 }

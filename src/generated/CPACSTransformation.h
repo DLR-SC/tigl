@@ -86,6 +86,5 @@ namespace tigl
         };
     }
     
-    // Aliases in tigl namespace
     // CPACSTransformation is customized, use type CCPACSTransformation directly
 }

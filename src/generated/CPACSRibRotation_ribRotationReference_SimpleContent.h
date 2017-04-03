@@ -100,4 +100,11 @@ namespace tigl
         }
         #endif
     }
+    
+    // Aliases in tigl namespace
+    #ifdef HAVE_CPP11
+    using ECPACSRibRotation_ribRotationReference_SimpleContent = generated::CPACSRibRotation_ribRotationReference_SimpleContent;
+    #else
+    typedef generated::CPACSRibRotation_ribRotationReference_SimpleContent ECPACSRibRotation_ribRotationReference_SimpleContent;
+    #endif
 }

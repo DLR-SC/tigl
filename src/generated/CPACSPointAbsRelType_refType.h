@@ -75,4 +75,6 @@ namespace tigl
         }
         #endif
     }
+    
+    // CPACSPointAbsRelType_refType is customized, use type ECPACSTranslationType directly
 }

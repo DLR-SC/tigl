@@ -68,6 +68,5 @@ namespace tigl
         };
     }
     
-    // Aliases in tigl namespace
     // CPACSWingCells is customized, use type CCPACSWingCells directly
 }

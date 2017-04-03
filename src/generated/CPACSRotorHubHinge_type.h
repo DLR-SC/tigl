@@ -80,4 +80,11 @@ namespace tigl
         }
         #endif
     }
+    
+    // Aliases in tigl namespace
+    #ifdef HAVE_CPP11
+    using ECPACSRotorHubHinge_type = generated::CPACSRotorHubHinge_type;
+    #else
+    typedef generated::CPACSRotorHubHinge_type ECPACSRotorHubHinge_type;
+    #endif
 }

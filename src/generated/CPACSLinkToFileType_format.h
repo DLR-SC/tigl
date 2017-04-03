@@ -80,4 +80,11 @@ namespace tigl
         }
         #endif
     }
+    
+    // Aliases in tigl namespace
+    #ifdef HAVE_CPP11
+    using ECPACSLinkToFileType_format = generated::CPACSLinkToFileType_format;
+    #else
+    typedef generated::CPACSLinkToFileType_format ECPACSLinkToFileType_format;
+    #endif
 }

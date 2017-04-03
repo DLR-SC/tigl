@@ -41,10 +41,10 @@ TiglRotorHubType CCPACSRotorHub::GetType() const
     if (!m_type)
         return ENUM_VALUE(TiglRotorHubType, TIGLROTORHUB_UNDEFINED);
     switch (*m_type) {
-        case ENUM_VALUE_NS(generated, CPACSRotorHub_type, articulated): return ENUM_VALUE(TiglRotorHubType, TIGLROTORHUB_ARTICULATED);
-        case ENUM_VALUE_NS(generated, CPACSRotorHub_type, hingeless):   return ENUM_VALUE(TiglRotorHubType, TIGLROTORHUB_HINGELESS);
-        case ENUM_VALUE_NS(generated, CPACSRotorHub_type, rigid):       return ENUM_VALUE(TiglRotorHubType, TIGLROTORHUB_RIGID);
-        case ENUM_VALUE_NS(generated, CPACSRotorHub_type, semiRigid):   return ENUM_VALUE(TiglRotorHubType, TIGLROTORHUB_SEMI_RIGID);
+        case ENUM_VALUE(ECPACSRotorHub_type, articulated): return ENUM_VALUE(TiglRotorHubType, TIGLROTORHUB_ARTICULATED);
+        case ENUM_VALUE(ECPACSRotorHub_type, hingeless):   return ENUM_VALUE(TiglRotorHubType, TIGLROTORHUB_HINGELESS);
+        case ENUM_VALUE(ECPACSRotorHub_type, rigid):       return ENUM_VALUE(TiglRotorHubType, TIGLROTORHUB_RIGID);
+        case ENUM_VALUE(ECPACSRotorHub_type, semiRigid):   return ENUM_VALUE(TiglRotorHubType, TIGLROTORHUB_SEMI_RIGID);
         default: throw CTiglError("unrecognized enum");
     }
 }

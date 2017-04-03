@@ -89,6 +89,5 @@ namespace tigl
         };
     }
     
-    // Aliases in tigl namespace
     // CPACSRotorHub is customized, use type CCPACSRotorHub directly
 }

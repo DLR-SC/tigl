@@ -62,8 +62,9 @@ namespace tigl
         };
     }
     
-    // Aliases in tigl namespace
     // CPACSFuselageProfiles is customized, use type CCPACSFuselageProfiles directly
+    
+    // Aliases in tigl namespace
     #ifdef HAVE_CPP11
     using CCPACSProfileGeometry = generated::CPACSProfileGeometry;
     #else

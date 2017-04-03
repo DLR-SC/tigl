@@ -134,6 +134,5 @@ namespace tigl
         };
     }
     
-    // Aliases in tigl namespace
     // CPACSWing is customized, use type CCPACSWing directly
 }

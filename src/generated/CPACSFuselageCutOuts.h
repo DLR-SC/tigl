@@ -65,12 +65,9 @@ namespace tigl
     // Aliases in tigl namespace
     #ifdef HAVE_CPP11
     using CCPACSFuselageCutOuts = generated::CPACSFuselageCutOuts;
-    #else
-    typedef generated::CPACSFuselageCutOuts CCPACSFuselageCutOuts;
-    #endif
-    #ifdef HAVE_CPP11
     using CCPACSFuselageCutOut = generated::CPACSFuselageCutOut;
     #else
+    typedef generated::CPACSFuselageCutOuts CCPACSFuselageCutOuts;
     typedef generated::CPACSFuselageCutOut CCPACSFuselageCutOut;
     #endif
 }
