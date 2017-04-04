@@ -48,23 +48,23 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT const std::string& GetUID() const;
-            TIGL_EXPORT void SetUID(const std::string& value);
+            TIGL_EXPORT virtual const std::string& GetUID() const;
+            TIGL_EXPORT virtual void SetUID(const std::string& value);
             
-            TIGL_EXPORT const CPACSWingSkin& GetSkin() const;
-            TIGL_EXPORT CPACSWingSkin& GetSkin();
+            TIGL_EXPORT virtual const CPACSWingSkin& GetSkin() const;
+            TIGL_EXPORT virtual CPACSWingSkin& GetSkin();
             
-            TIGL_EXPORT const CCPACSWingCellPositionChordwise& GetPositioningLeadingEdge() const;
-            TIGL_EXPORT CCPACSWingCellPositionChordwise& GetPositioningLeadingEdge();
+            TIGL_EXPORT virtual const CCPACSWingCellPositionChordwise& GetPositioningLeadingEdge() const;
+            TIGL_EXPORT virtual CCPACSWingCellPositionChordwise& GetPositioningLeadingEdge();
             
-            TIGL_EXPORT const CCPACSWingCellPositionChordwise& GetPositioningTrailingEdge() const;
-            TIGL_EXPORT CCPACSWingCellPositionChordwise& GetPositioningTrailingEdge();
+            TIGL_EXPORT virtual const CCPACSWingCellPositionChordwise& GetPositioningTrailingEdge() const;
+            TIGL_EXPORT virtual CCPACSWingCellPositionChordwise& GetPositioningTrailingEdge();
             
-            TIGL_EXPORT const CCPACSWingCellPositionSpanwise& GetPositioningInnerBorder() const;
-            TIGL_EXPORT CCPACSWingCellPositionSpanwise& GetPositioningInnerBorder();
+            TIGL_EXPORT virtual const CCPACSWingCellPositionSpanwise& GetPositioningInnerBorder() const;
+            TIGL_EXPORT virtual CCPACSWingCellPositionSpanwise& GetPositioningInnerBorder();
             
-            TIGL_EXPORT const CCPACSWingCellPositionSpanwise& GetPositioningOuterBorder() const;
-            TIGL_EXPORT CCPACSWingCellPositionSpanwise& GetPositioningOuterBorder();
+            TIGL_EXPORT virtual const CCPACSWingCellPositionSpanwise& GetPositioningOuterBorder() const;
+            TIGL_EXPORT virtual CCPACSWingCellPositionSpanwise& GetPositioningOuterBorder();
             
         protected:
             CCPACSWingCells* m_parent;

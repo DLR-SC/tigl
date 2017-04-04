@@ -63,7 +63,7 @@ public:
 
     TIGL_EXPORT virtual const std::string& GetUID() const OVERRIDE;
 
-    TIGL_EXPORT virtual CTiglTransformation GetTransformation() const OVERRIDE;
+    TIGL_EXPORT virtual CTiglTransformation GetTransformationMatrix() const OVERRIDE;
 
     // Read CPACS rotor elements
     TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& rotorXPath) OVERRIDE;
@@ -75,7 +75,7 @@ public:
     TIGL_EXPORT CTiglPoint GetTranslation();
 
     // Returns the type of the rotor
-    TIGL_EXPORT TiglRotorType GetType() const;
+    TIGL_EXPORT TiglRotorType GetDefaultedType() const;
 
     // Returns the rotor blade attachment count
     TIGL_EXPORT int GetRotorBladeAttachmentCount() const;

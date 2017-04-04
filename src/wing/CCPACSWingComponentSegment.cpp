@@ -218,19 +218,6 @@ void CCPACSWingComponentSegment::SetUID(const std::string& uid) {
     generated::CPACSComponentSegment::SetUID(uid);
 }
 
-// Returns whether a structure is defined or not
-bool CCPACSWingComponentSegment::HasStructure() const {
-    return static_cast<bool>(m_structure);
-}
-
-const CCPACSWingCSStructure& CCPACSWingComponentSegment::GetStructure() const {
-    return *m_structure;
-}
-
-CCPACSWingCSStructure& CCPACSWingComponentSegment::GetStructure() {
-    return *m_structure;
-}
-
 // Returns the wing this segment belongs to
 CCPACSWing& CCPACSWingComponentSegment::GetWing() const {
     return *wing;
@@ -1050,7 +1037,7 @@ void CCPACSWingComponentSegment::UpdateProjectedLeadingEdge() const
     }
 
     // create projection plane
-    gp_GTrsf wingTrafo = wing->GetTransformation().Get_gp_GTrsf();
+    gp_GTrsf wingTrafo = wing->GetTransformationMatrix().Get_gp_GTrsf();
     gp_XYZ pCenter(0,0,0);
     gp_XYZ pDirX(1,0,0);
     wingTrafo.Transforms(pCenter);
@@ -1248,7 +1235,7 @@ gp_Pnt CCPACSWingComponentSegment::GetPoint(double eta, double xsi) const
         // first, we have to project the point on the plane, to ignore any depth distance
 
         // compute the projection plane as done in CCPACSWingComponentSegment::UpdateProjectedLeadingEdge()
-        gp_GTrsf wingTrafo = wing->GetTransformation().Get_gp_GTrsf();
+        gp_GTrsf wingTrafo = wing->GetTransformationMatrix().Get_gp_GTrsf();
         gp_XYZ pCenter(0,0,0);
         gp_XYZ pDirX(1,0,0);
         wingTrafo.Transforms(pCenter);

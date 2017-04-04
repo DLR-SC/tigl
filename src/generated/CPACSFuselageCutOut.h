@@ -43,54 +43,54 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT const std::string& GetUID() const;
-            TIGL_EXPORT void SetUID(const std::string& value);
+            TIGL_EXPORT virtual const std::string& GetUID() const;
+            TIGL_EXPORT virtual void SetUID(const std::string& value);
             
-            TIGL_EXPORT const boost::optional<std::string>& GetName() const;
-            TIGL_EXPORT void SetName(const std::string& value);
-            TIGL_EXPORT void SetName(const boost::optional<std::string>& value);
+            TIGL_EXPORT virtual const boost::optional<std::string>& GetName() const;
+            TIGL_EXPORT virtual void SetName(const std::string& value);
+            TIGL_EXPORT virtual void SetName(const boost::optional<std::string>& value);
             
-            TIGL_EXPORT const boost::optional<std::string>& GetDescription() const;
-            TIGL_EXPORT void SetDescription(const std::string& value);
-            TIGL_EXPORT void SetDescription(const boost::optional<std::string>& value);
+            TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
+            TIGL_EXPORT virtual void SetDescription(const std::string& value);
+            TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
             
-            TIGL_EXPORT const double& GetPositionX() const;
-            TIGL_EXPORT void SetPositionX(const double& value);
+            TIGL_EXPORT virtual const double& GetPositionX() const;
+            TIGL_EXPORT virtual void SetPositionX(const double& value);
             
-            TIGL_EXPORT const double& GetReferenceY() const;
-            TIGL_EXPORT void SetReferenceY(const double& value);
+            TIGL_EXPORT virtual const double& GetReferenceY() const;
+            TIGL_EXPORT virtual void SetReferenceY(const double& value);
             
-            TIGL_EXPORT const double& GetReferenceZ() const;
-            TIGL_EXPORT void SetReferenceZ(const double& value);
+            TIGL_EXPORT virtual const double& GetReferenceZ() const;
+            TIGL_EXPORT virtual void SetReferenceZ(const double& value);
             
-            TIGL_EXPORT const double& GetReferenceAngle() const;
-            TIGL_EXPORT void SetReferenceAngle(const double& value);
+            TIGL_EXPORT virtual const double& GetReferenceAngle() const;
+            TIGL_EXPORT virtual void SetReferenceAngle(const double& value);
             
-            TIGL_EXPORT const CPACSPointXYZ& GetOrientationVector() const;
-            TIGL_EXPORT CPACSPointXYZ& GetOrientationVector();
+            TIGL_EXPORT virtual const CPACSPointXYZ& GetOrientationVector() const;
+            TIGL_EXPORT virtual CPACSPointXYZ& GetOrientationVector();
             
-            TIGL_EXPORT const boost::optional<CPACSPointXYZ>& GetAlignmentVector() const;
-            TIGL_EXPORT boost::optional<CPACSPointXYZ>& GetAlignmentVector();
+            TIGL_EXPORT virtual const boost::optional<CPACSPointXYZ>& GetAlignmentVector() const;
+            TIGL_EXPORT virtual boost::optional<CPACSPointXYZ>& GetAlignmentVector();
             
-            TIGL_EXPORT const double& GetDeltaY() const;
-            TIGL_EXPORT void SetDeltaY(const double& value);
+            TIGL_EXPORT virtual const double& GetDeltaY() const;
+            TIGL_EXPORT virtual void SetDeltaY(const double& value);
             
-            TIGL_EXPORT const double& GetDeltaZ() const;
-            TIGL_EXPORT void SetDeltaZ(const double& value);
+            TIGL_EXPORT virtual const double& GetDeltaZ() const;
+            TIGL_EXPORT virtual void SetDeltaZ(const double& value);
             
-            TIGL_EXPORT const boost::optional<double>& GetDeltaY1() const;
-            TIGL_EXPORT void SetDeltaY1(const double& value);
-            TIGL_EXPORT void SetDeltaY1(const boost::optional<double>& value);
+            TIGL_EXPORT virtual const boost::optional<double>& GetDeltaY1() const;
+            TIGL_EXPORT virtual void SetDeltaY1(const double& value);
+            TIGL_EXPORT virtual void SetDeltaY1(const boost::optional<double>& value);
             
-            TIGL_EXPORT const boost::optional<double>& GetDeltaZ1() const;
-            TIGL_EXPORT void SetDeltaZ1(const double& value);
-            TIGL_EXPORT void SetDeltaZ1(const boost::optional<double>& value);
+            TIGL_EXPORT virtual const boost::optional<double>& GetDeltaZ1() const;
+            TIGL_EXPORT virtual void SetDeltaZ1(const double& value);
+            TIGL_EXPORT virtual void SetDeltaZ1(const boost::optional<double>& value);
             
-            TIGL_EXPORT const double& GetFilletRadius() const;
-            TIGL_EXPORT void SetFilletRadius(const double& value);
+            TIGL_EXPORT virtual const double& GetFilletRadius() const;
+            TIGL_EXPORT virtual void SetFilletRadius(const double& value);
             
-            TIGL_EXPORT const CPACSFuselageCutOut_cutoutType& GetCutoutType() const;
-            TIGL_EXPORT CPACSFuselageCutOut_cutoutType& GetCutoutType();
+            TIGL_EXPORT virtual const CPACSFuselageCutOut_cutoutType& GetCutoutType() const;
+            TIGL_EXPORT virtual CPACSFuselageCutOut_cutoutType& GetCutoutType();
             
         protected:
             std::string                    m_uID;

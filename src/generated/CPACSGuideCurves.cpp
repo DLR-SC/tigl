@@ -15,7 +15,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <CCPACSGuideCurve.h>
+#include "CPACSGuideCurve.h"
 #include "CPACSGuideCurves.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -44,12 +44,12 @@ namespace tigl
             
         }
         
-        const std::vector<unique_ptr<CCPACSGuideCurve> >& CPACSGuideCurves::GetGuideCurves() const
+        const std::vector<unique_ptr<CPACSGuideCurve> >& CPACSGuideCurves::GetGuideCurves() const
         {
             return m_guideCurves;
         }
         
-        std::vector<unique_ptr<CCPACSGuideCurve> >& CPACSGuideCurves::GetGuideCurves()
+        std::vector<unique_ptr<CPACSGuideCurve> >& CPACSGuideCurves::GetGuideCurves()
         {
             return m_guideCurves;
         }

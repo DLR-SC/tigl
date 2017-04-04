@@ -28,15 +28,6 @@ class CCPACSWingRibsDefinition;
 class CCPACSWingRibsPositioning : public generated::CPACSWingRibsPositioning
 {
 public:
-#ifdef HAVE_CPP11
-    enum class CrossingBehaviour
-#else
-    enum CrossingBehaviour
-#endif
-    { 
-        CROSSING_CROSS,
-        CROSSING_END
-    };
     // NOTE: definition of start/end of rib via spar position not conform with CPACS format (v2.3)
 #ifdef HAVE_CPP11
     enum class StartDefinitionType
@@ -105,9 +96,6 @@ public:
 
     TIGL_EXPORT double GetSpacing() const;
     TIGL_EXPORT void SetSpacing(double);
-
-    TIGL_EXPORT CrossingBehaviour GetRibCrossingBehaviour() const;
-    TIGL_EXPORT void SetRibCrossingBehaviour(CrossingBehaviour);
 
 private:
     boost::optional<std::string> m_sparPositionStartUID_choice3;

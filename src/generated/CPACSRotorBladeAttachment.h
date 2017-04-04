@@ -47,30 +47,30 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT const boost::optional<std::string>& GetUID() const;
-            TIGL_EXPORT void SetUID(const std::string& value);
-            TIGL_EXPORT void SetUID(const boost::optional<std::string>& value);
+            TIGL_EXPORT virtual const boost::optional<std::string>& GetUID() const;
+            TIGL_EXPORT virtual void SetUID(const std::string& value);
+            TIGL_EXPORT virtual void SetUID(const boost::optional<std::string>& value);
             
-            TIGL_EXPORT const boost::optional<std::string>& GetName() const;
-            TIGL_EXPORT void SetName(const std::string& value);
-            TIGL_EXPORT void SetName(const boost::optional<std::string>& value);
+            TIGL_EXPORT virtual const boost::optional<std::string>& GetName() const;
+            TIGL_EXPORT virtual void SetName(const std::string& value);
+            TIGL_EXPORT virtual void SetName(const boost::optional<std::string>& value);
             
-            TIGL_EXPORT const boost::optional<std::string>& GetDescription() const;
-            TIGL_EXPORT void SetDescription(const std::string& value);
-            TIGL_EXPORT void SetDescription(const boost::optional<std::string>& value);
+            TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
+            TIGL_EXPORT virtual void SetDescription(const std::string& value);
+            TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
             
-            TIGL_EXPORT const boost::optional<CCPACSRotorHinges>& GetHinges() const;
-            TIGL_EXPORT boost::optional<CCPACSRotorHinges>& GetHinges();
+            TIGL_EXPORT virtual const boost::optional<CCPACSRotorHinges>& GetHinges() const;
+            TIGL_EXPORT virtual boost::optional<CCPACSRotorHinges>& GetHinges();
             
-            TIGL_EXPORT const std::string& GetRotorBladeUID() const;
-            TIGL_EXPORT void SetRotorBladeUID(const std::string& value);
+            TIGL_EXPORT virtual const std::string& GetRotorBladeUID() const;
+            TIGL_EXPORT virtual void SetRotorBladeUID(const std::string& value);
             
-            TIGL_EXPORT const boost::optional<CCPACSStringVector>& GetAzimuthAngles_choice1() const;
-            TIGL_EXPORT boost::optional<CCPACSStringVector>& GetAzimuthAngles_choice1();
+            TIGL_EXPORT virtual const boost::optional<CCPACSStringVector>& GetAzimuthAngles_choice1() const;
+            TIGL_EXPORT virtual boost::optional<CCPACSStringVector>& GetAzimuthAngles_choice1();
             
-            TIGL_EXPORT const boost::optional<int>& GetNumberOfBlades_choice2() const;
-            TIGL_EXPORT void SetNumberOfBlades_choice2(const int& value);
-            TIGL_EXPORT void SetNumberOfBlades_choice2(const boost::optional<int>& value);
+            TIGL_EXPORT virtual const boost::optional<int>& GetNumberOfBlades_choice2() const;
+            TIGL_EXPORT virtual void SetNumberOfBlades_choice2(const int& value);
+            TIGL_EXPORT virtual void SetNumberOfBlades_choice2(const boost::optional<int>& value);
             
         protected:
             CCPACSRotorBladeAttachments* m_parent;

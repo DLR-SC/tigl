@@ -44,44 +44,44 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT const boost::optional<std::string>& GetName() const;
-            TIGL_EXPORT void SetName(const std::string& value);
-            TIGL_EXPORT void SetName(const boost::optional<std::string>& value);
+            TIGL_EXPORT virtual const boost::optional<std::string>& GetName() const;
+            TIGL_EXPORT virtual void SetName(const std::string& value);
+            TIGL_EXPORT virtual void SetName(const boost::optional<std::string>& value);
             
-            TIGL_EXPORT const boost::optional<std::string>& GetDescription() const;
-            TIGL_EXPORT void SetDescription(const std::string& value);
-            TIGL_EXPORT void SetDescription(const boost::optional<std::string>& value);
+            TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
+            TIGL_EXPORT virtual void SetDescription(const std::string& value);
+            TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
             
-            TIGL_EXPORT const boost::optional<std::string>& GetMaterialLaw() const;
-            TIGL_EXPORT void SetMaterialLaw(const std::string& value);
-            TIGL_EXPORT void SetMaterialLaw(const boost::optional<std::string>& value);
+            TIGL_EXPORT virtual const boost::optional<std::string>& GetMaterialLaw() const;
+            TIGL_EXPORT virtual void SetMaterialLaw(const std::string& value);
+            TIGL_EXPORT virtual void SetMaterialLaw(const boost::optional<std::string>& value);
             
-            TIGL_EXPORT const boost::optional<double>& GetPlasticEliminationStrain_choice1() const;
-            TIGL_EXPORT void SetPlasticEliminationStrain_choice1(const double& value);
-            TIGL_EXPORT void SetPlasticEliminationStrain_choice1(const boost::optional<double>& value);
+            TIGL_EXPORT virtual const boost::optional<double>& GetPlasticEliminationStrain_choice1() const;
+            TIGL_EXPORT virtual void SetPlasticEliminationStrain_choice1(const double& value);
+            TIGL_EXPORT virtual void SetPlasticEliminationStrain_choice1(const boost::optional<double>& value);
             
-            TIGL_EXPORT const std::vector<unique_ptr<CPACSPlasticityCurvePoint> >& GetPlasticityCurvePoint_choice1s() const;
-            TIGL_EXPORT std::vector<unique_ptr<CPACSPlasticityCurvePoint> >& GetPlasticityCurvePoint_choice1s();
+            TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSPlasticityCurvePoint> >& GetPlasticityCurvePoint_choice1s() const;
+            TIGL_EXPORT virtual std::vector<unique_ptr<CPACSPlasticityCurvePoint> >& GetPlasticityCurvePoint_choice1s();
             
-            TIGL_EXPORT const boost::optional<double>& GetInitialEquivalentShearStrain_choice2() const;
-            TIGL_EXPORT void SetInitialEquivalentShearStrain_choice2(const double& value);
-            TIGL_EXPORT void SetInitialEquivalentShearStrain_choice2(const boost::optional<double>& value);
+            TIGL_EXPORT virtual const boost::optional<double>& GetInitialEquivalentShearStrain_choice2() const;
+            TIGL_EXPORT virtual void SetInitialEquivalentShearStrain_choice2(const double& value);
+            TIGL_EXPORT virtual void SetInitialEquivalentShearStrain_choice2(const boost::optional<double>& value);
             
-            TIGL_EXPORT const boost::optional<double>& GetIntermediateEquivalentShearStrain_choice2() const;
-            TIGL_EXPORT void SetIntermediateEquivalentShearStrain_choice2(const double& value);
-            TIGL_EXPORT void SetIntermediateEquivalentShearStrain_choice2(const boost::optional<double>& value);
+            TIGL_EXPORT virtual const boost::optional<double>& GetIntermediateEquivalentShearStrain_choice2() const;
+            TIGL_EXPORT virtual void SetIntermediateEquivalentShearStrain_choice2(const double& value);
+            TIGL_EXPORT virtual void SetIntermediateEquivalentShearStrain_choice2(const boost::optional<double>& value);
             
-            TIGL_EXPORT const boost::optional<double>& GetUltimateEquivalentShearStrain_choice2() const;
-            TIGL_EXPORT void SetUltimateEquivalentShearStrain_choice2(const double& value);
-            TIGL_EXPORT void SetUltimateEquivalentShearStrain_choice2(const boost::optional<double>& value);
+            TIGL_EXPORT virtual const boost::optional<double>& GetUltimateEquivalentShearStrain_choice2() const;
+            TIGL_EXPORT virtual void SetUltimateEquivalentShearStrain_choice2(const double& value);
+            TIGL_EXPORT virtual void SetUltimateEquivalentShearStrain_choice2(const boost::optional<double>& value);
             
-            TIGL_EXPORT const boost::optional<double>& GetIntermediateDamage_choice2() const;
-            TIGL_EXPORT void SetIntermediateDamage_choice2(const double& value);
-            TIGL_EXPORT void SetIntermediateDamage_choice2(const boost::optional<double>& value);
+            TIGL_EXPORT virtual const boost::optional<double>& GetIntermediateDamage_choice2() const;
+            TIGL_EXPORT virtual void SetIntermediateDamage_choice2(const double& value);
+            TIGL_EXPORT virtual void SetIntermediateDamage_choice2(const boost::optional<double>& value);
             
-            TIGL_EXPORT const boost::optional<double>& GetUltimateDamage_choice2() const;
-            TIGL_EXPORT void SetUltimateDamage_choice2(const double& value);
-            TIGL_EXPORT void SetUltimateDamage_choice2(const boost::optional<double>& value);
+            TIGL_EXPORT virtual const boost::optional<double>& GetUltimateDamage_choice2() const;
+            TIGL_EXPORT virtual void SetUltimateDamage_choice2(const double& value);
+            TIGL_EXPORT virtual void SetUltimateDamage_choice2(const boost::optional<double>& value);
             
         protected:
             boost::optional<std::string>                        m_name;

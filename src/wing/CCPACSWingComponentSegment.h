@@ -75,12 +75,6 @@ public:
     TIGL_EXPORT virtual const std::string& GetUID() const;
     TIGL_EXPORT virtual void SetUID(const std::string& uid);
 
-    // Returns whether a structure is defined or not
-    TIGL_EXPORT bool HasStructure() const;
-
-    TIGL_EXPORT const CCPACSWingCSStructure& GetStructure() const;
-    TIGL_EXPORT CCPACSWingCSStructure& GetStructure();
-
     TIGL_EXPORT CCPACSWing& GetWing() const;
 
     // Getter for upper Shape

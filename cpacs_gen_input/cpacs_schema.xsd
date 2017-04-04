@@ -18404,7 +18404,7 @@ jonas.jepsen@dlr.de
 							</xsd:element>
 						</xsd:sequence>
 						<xsd:sequence>
-							<xsd:element name="fromRelativeCircumference" type="stringUIDBaseType">
+							<xsd:element name="fromRelativeCircumference" type="doubleBaseType">
 								<xsd:annotation>
 									<xsd:documentation>Reference to the relative circumference
 										position from which the guide curve shall start.
@@ -18419,7 +18419,7 @@ jonas.jepsen@dlr.de
 						</xsd:sequence>
 					</xsd:choice>
 					<xsd:sequence>
-						<xsd:element name="toRelativeCircumference" type="stringUIDBaseType">
+						<xsd:element name="toRelativeCircumference" type="doubleBaseType">
 							<xsd:annotation>
 								<xsd:documentation>Reference to the relative circumference
 									position at which the guide curve shall end.

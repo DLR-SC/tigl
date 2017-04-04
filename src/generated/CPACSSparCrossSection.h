@@ -50,23 +50,23 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT const boost::optional<CPACSCap>& GetUpperCap() const;
-            TIGL_EXPORT boost::optional<CPACSCap>& GetUpperCap();
+            TIGL_EXPORT virtual const boost::optional<CPACSCap>& GetUpperCap() const;
+            TIGL_EXPORT virtual boost::optional<CPACSCap>& GetUpperCap();
             
-            TIGL_EXPORT const boost::optional<CPACSCap>& GetLowerCap() const;
-            TIGL_EXPORT boost::optional<CPACSCap>& GetLowerCap();
+            TIGL_EXPORT virtual const boost::optional<CPACSCap>& GetLowerCap() const;
+            TIGL_EXPORT virtual boost::optional<CPACSCap>& GetLowerCap();
             
-            TIGL_EXPORT const CPACSWeb& GetWeb1() const;
-            TIGL_EXPORT CPACSWeb& GetWeb1();
+            TIGL_EXPORT virtual const CPACSWeb& GetWeb1() const;
+            TIGL_EXPORT virtual CPACSWeb& GetWeb1();
             
-            TIGL_EXPORT const boost::optional<CPACSWeb>& GetWeb2() const;
-            TIGL_EXPORT boost::optional<CPACSWeb>& GetWeb2();
+            TIGL_EXPORT virtual const boost::optional<CPACSWeb>& GetWeb2() const;
+            TIGL_EXPORT virtual boost::optional<CPACSWeb>& GetWeb2();
             
-            TIGL_EXPORT const boost::optional<CPACSSparCells>& GetSparCells() const;
-            TIGL_EXPORT boost::optional<CPACSSparCells>& GetSparCells();
+            TIGL_EXPORT virtual const boost::optional<CPACSSparCells>& GetSparCells() const;
+            TIGL_EXPORT virtual boost::optional<CPACSSparCells>& GetSparCells();
             
-            TIGL_EXPORT const double& GetRotation() const;
-            TIGL_EXPORT void SetRotation(const double& value);
+            TIGL_EXPORT virtual const double& GetRotation() const;
+            TIGL_EXPORT virtual void SetRotation(const double& value);
             
         protected:
             CCPACSWingSparSegment* m_parent;

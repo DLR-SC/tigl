@@ -42,8 +42,8 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT const std::vector<unique_ptr<CPACSProfileGeometry> >& GetFuselageProfiles() const;
-            TIGL_EXPORT std::vector<unique_ptr<CPACSProfileGeometry> >& GetFuselageProfiles();
+            TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSProfileGeometry> >& GetFuselageProfiles() const;
+            TIGL_EXPORT virtual std::vector<unique_ptr<CPACSProfileGeometry> >& GetFuselageProfiles();
             
         protected:
             std::vector<unique_ptr<CPACSProfileGeometry> > m_fuselageProfiles;

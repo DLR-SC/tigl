@@ -36,7 +36,7 @@
 #include "CCPACSFuselageSegments.h"
 #include "CCPACSPositionings.h"
 #include "CTiglRelativelyPositionedComponent.h"
-#include "CCPACSGuideCurve.h"
+#include "generated/CPACSGuideCurve.h"
 
 #include "TopoDS_Shape.hxx"
 #include "TopoDS_Compound.hxx"
@@ -67,8 +67,6 @@ public:
 
     TIGL_EXPORT virtual const std::string& GetUID() const OVERRIDE;
 
-    using CTiglRelativelyPositionedComponent::GetTransformation;
-
     // Get section count
     TIGL_EXPORT int GetSectionCount() const;
 
@@ -84,9 +82,6 @@ public:
     // Returns the segment for a given UID
     TIGL_EXPORT CCPACSFuselageSegment& GetSegment(std::string uid);
 
-    // Gets the fuselage transformation
-    TIGL_EXPORT CTiglTransformation GetFuselageTransformation();
-
     // Get the positioning transformation for a given section index
     TIGL_EXPORT CTiglTransformation GetPositioningTransformation(const std::string& sectionUID);
 
@@ -98,9 +93,6 @@ public:
 
     // Gets the volume of this fuselage
     TIGL_EXPORT double GetVolume();
-
-    // get the Transformation object
-    TIGL_EXPORT CTiglTransformation GetTransformation();
 
     // Gets the surfade area of this wing
     TIGL_EXPORT double GetSurfaceArea();

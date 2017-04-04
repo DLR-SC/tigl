@@ -37,7 +37,7 @@ CCPACSRotorHinge::CCPACSRotorHinge(CCPACSRotorHinges* parent)
     : generated::CPACSRotorHubHinge(parent) {}
 
 // Gets the rotor hinge transformation
-CTiglTransformation CCPACSRotorHinge::GetTransformation() const
+CTiglTransformation CCPACSRotorHinge::GetTransformationMatrix() const
 {
     return m_transformation.getTransformationMatrix();
 }

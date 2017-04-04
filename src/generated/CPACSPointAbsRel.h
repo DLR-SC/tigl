@@ -41,25 +41,25 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT const boost::optional<std::string>& GetUID() const;
-            TIGL_EXPORT void SetUID(const std::string& value);
-            TIGL_EXPORT void SetUID(const boost::optional<std::string>& value);
+            TIGL_EXPORT virtual const boost::optional<std::string>& GetUID() const;
+            TIGL_EXPORT virtual void SetUID(const std::string& value);
+            TIGL_EXPORT virtual void SetUID(const boost::optional<std::string>& value);
             
-            TIGL_EXPORT const boost::optional<ECPACSTranslationType>& GetRefType() const;
-            TIGL_EXPORT void SetRefType(const ECPACSTranslationType& value);
-            TIGL_EXPORT void SetRefType(const boost::optional<ECPACSTranslationType>& value);
+            TIGL_EXPORT virtual const boost::optional<ECPACSTranslationType>& GetRefType() const;
+            TIGL_EXPORT virtual void SetRefType(const ECPACSTranslationType& value);
+            TIGL_EXPORT virtual void SetRefType(const boost::optional<ECPACSTranslationType>& value);
             
-            TIGL_EXPORT const boost::optional<double>& GetX() const;
-            TIGL_EXPORT void SetX(const double& value);
-            TIGL_EXPORT void SetX(const boost::optional<double>& value);
+            TIGL_EXPORT virtual const boost::optional<double>& GetX() const;
+            TIGL_EXPORT virtual void SetX(const double& value);
+            TIGL_EXPORT virtual void SetX(const boost::optional<double>& value);
             
-            TIGL_EXPORT const boost::optional<double>& GetY() const;
-            TIGL_EXPORT void SetY(const double& value);
-            TIGL_EXPORT void SetY(const boost::optional<double>& value);
+            TIGL_EXPORT virtual const boost::optional<double>& GetY() const;
+            TIGL_EXPORT virtual void SetY(const double& value);
+            TIGL_EXPORT virtual void SetY(const boost::optional<double>& value);
             
-            TIGL_EXPORT const boost::optional<double>& GetZ() const;
-            TIGL_EXPORT void SetZ(const double& value);
-            TIGL_EXPORT void SetZ(const boost::optional<double>& value);
+            TIGL_EXPORT virtual const boost::optional<double>& GetZ() const;
+            TIGL_EXPORT virtual void SetZ(const double& value);
+            TIGL_EXPORT virtual void SetZ(const boost::optional<double>& value);
             
         protected:
             boost::optional<std::string>           m_uID;

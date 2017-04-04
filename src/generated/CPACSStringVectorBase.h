@@ -45,43 +45,43 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT const std::string& GetMapType() const;
-            TIGL_EXPORT void SetMapType(const std::string& value);
+            TIGL_EXPORT virtual const std::string& GetMapType() const;
+            TIGL_EXPORT virtual void SetMapType(const std::string& value);
             
-            TIGL_EXPORT const boost::optional<std::string>& GetUncertaintyFunctionName() const;
-            TIGL_EXPORT void SetUncertaintyFunctionName(const std::string& value);
-            TIGL_EXPORT void SetUncertaintyFunctionName(const boost::optional<std::string>& value);
+            TIGL_EXPORT virtual const boost::optional<std::string>& GetUncertaintyFunctionName() const;
+            TIGL_EXPORT virtual void SetUncertaintyFunctionName(const std::string& value);
+            TIGL_EXPORT virtual void SetUncertaintyFunctionName(const boost::optional<std::string>& value);
             
-            TIGL_EXPORT const boost::optional<std::string>& GetMu() const;
-            TIGL_EXPORT void SetMu(const std::string& value);
-            TIGL_EXPORT void SetMu(const boost::optional<std::string>& value);
+            TIGL_EXPORT virtual const boost::optional<std::string>& GetMu() const;
+            TIGL_EXPORT virtual void SetMu(const std::string& value);
+            TIGL_EXPORT virtual void SetMu(const boost::optional<std::string>& value);
             
-            TIGL_EXPORT const boost::optional<std::string>& GetDelta() const;
-            TIGL_EXPORT void SetDelta(const std::string& value);
-            TIGL_EXPORT void SetDelta(const boost::optional<std::string>& value);
+            TIGL_EXPORT virtual const boost::optional<std::string>& GetDelta() const;
+            TIGL_EXPORT virtual void SetDelta(const std::string& value);
+            TIGL_EXPORT virtual void SetDelta(const boost::optional<std::string>& value);
             
-            TIGL_EXPORT const boost::optional<std::string>& GetA() const;
-            TIGL_EXPORT void SetA(const std::string& value);
-            TIGL_EXPORT void SetA(const boost::optional<std::string>& value);
+            TIGL_EXPORT virtual const boost::optional<std::string>& GetA() const;
+            TIGL_EXPORT virtual void SetA(const std::string& value);
+            TIGL_EXPORT virtual void SetA(const boost::optional<std::string>& value);
             
-            TIGL_EXPORT const boost::optional<std::string>& GetB() const;
-            TIGL_EXPORT void SetB(const std::string& value);
-            TIGL_EXPORT void SetB(const boost::optional<std::string>& value);
+            TIGL_EXPORT virtual const boost::optional<std::string>& GetB() const;
+            TIGL_EXPORT virtual void SetB(const std::string& value);
+            TIGL_EXPORT virtual void SetB(const boost::optional<std::string>& value);
             
-            TIGL_EXPORT const boost::optional<std::string>& GetC() const;
-            TIGL_EXPORT void SetC(const std::string& value);
-            TIGL_EXPORT void SetC(const boost::optional<std::string>& value);
+            TIGL_EXPORT virtual const boost::optional<std::string>& GetC() const;
+            TIGL_EXPORT virtual void SetC(const std::string& value);
+            TIGL_EXPORT virtual void SetC(const boost::optional<std::string>& value);
             
-            TIGL_EXPORT const boost::optional<std::string>& GetV() const;
-            TIGL_EXPORT void SetV(const std::string& value);
-            TIGL_EXPORT void SetV(const boost::optional<std::string>& value);
+            TIGL_EXPORT virtual const boost::optional<std::string>& GetV() const;
+            TIGL_EXPORT virtual void SetV(const std::string& value);
+            TIGL_EXPORT virtual void SetV(const boost::optional<std::string>& value);
             
-            TIGL_EXPORT const boost::optional<std::string>& GetW() const;
-            TIGL_EXPORT void SetW(const std::string& value);
-            TIGL_EXPORT void SetW(const boost::optional<std::string>& value);
+            TIGL_EXPORT virtual const boost::optional<std::string>& GetW() const;
+            TIGL_EXPORT virtual void SetW(const std::string& value);
+            TIGL_EXPORT virtual void SetW(const boost::optional<std::string>& value);
             
-            TIGL_EXPORT const std::string& GetSimpleContent() const;
-            TIGL_EXPORT void SetSimpleContent(const std::string& value);
+            TIGL_EXPORT virtual const std::string& GetSimpleContent() const;
+            TIGL_EXPORT virtual void SetSimpleContent(const std::string& value);
             
         protected:
             std::string                  m_mapType;

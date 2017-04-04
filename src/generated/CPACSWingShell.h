@@ -47,14 +47,14 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT const std::string& GetUID() const;
-            TIGL_EXPORT void SetUID(const std::string& value);
+            TIGL_EXPORT virtual const std::string& GetUID() const;
+            TIGL_EXPORT virtual void SetUID(const std::string& value);
             
-            TIGL_EXPORT const CPACSWingSkin& GetSkin() const;
-            TIGL_EXPORT CPACSWingSkin& GetSkin();
+            TIGL_EXPORT virtual const CPACSWingSkin& GetSkin() const;
+            TIGL_EXPORT virtual CPACSWingSkin& GetSkin();
             
-            TIGL_EXPORT const boost::optional<CCPACSWingCells>& GetCells() const;
-            TIGL_EXPORT boost::optional<CCPACSWingCells>& GetCells();
+            TIGL_EXPORT virtual const boost::optional<CCPACSWingCells>& GetCells() const;
+            TIGL_EXPORT virtual boost::optional<CCPACSWingCells>& GetCells();
             
         protected:
             CCPACSWingCSStructure* m_parent;

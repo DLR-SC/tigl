@@ -41,14 +41,14 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT const CCPACSStringVector& GetX() const;
-            TIGL_EXPORT CCPACSStringVector& GetX();
+            TIGL_EXPORT virtual const CCPACSStringVector& GetX() const;
+            TIGL_EXPORT virtual CCPACSStringVector& GetX();
             
-            TIGL_EXPORT const CCPACSStringVector& GetY() const;
-            TIGL_EXPORT CCPACSStringVector& GetY();
+            TIGL_EXPORT virtual const CCPACSStringVector& GetY() const;
+            TIGL_EXPORT virtual CCPACSStringVector& GetY();
             
-            TIGL_EXPORT const CCPACSStringVector& GetZ() const;
-            TIGL_EXPORT CCPACSStringVector& GetZ();
+            TIGL_EXPORT virtual const CCPACSStringVector& GetZ() const;
+            TIGL_EXPORT virtual CCPACSStringVector& GetZ();
             
         protected:
             CCPACSStringVector m_x;

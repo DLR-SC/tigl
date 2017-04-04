@@ -44,17 +44,17 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT const boost::optional<CCPACSFuselageProfiles>& GetFuselageProfiles() const;
-            TIGL_EXPORT boost::optional<CCPACSFuselageProfiles>& GetFuselageProfiles();
+            TIGL_EXPORT virtual const boost::optional<CCPACSFuselageProfiles>& GetFuselageProfiles() const;
+            TIGL_EXPORT virtual boost::optional<CCPACSFuselageProfiles>& GetFuselageProfiles();
             
-            TIGL_EXPORT const boost::optional<CCPACSWingProfiles>& GetWingAirfoils() const;
-            TIGL_EXPORT boost::optional<CCPACSWingProfiles>& GetWingAirfoils();
+            TIGL_EXPORT virtual const boost::optional<CCPACSWingProfiles>& GetWingAirfoils() const;
+            TIGL_EXPORT virtual boost::optional<CCPACSWingProfiles>& GetWingAirfoils();
             
-            TIGL_EXPORT const boost::optional<CCPACSGuideCurveProfiles>& GetGuideCurves() const;
-            TIGL_EXPORT boost::optional<CCPACSGuideCurveProfiles>& GetGuideCurves();
+            TIGL_EXPORT virtual const boost::optional<CCPACSGuideCurveProfiles>& GetGuideCurves() const;
+            TIGL_EXPORT virtual boost::optional<CCPACSGuideCurveProfiles>& GetGuideCurves();
             
-            TIGL_EXPORT const boost::optional<CCPACSRotorProfiles>& GetRotorAirfoils() const;
-            TIGL_EXPORT boost::optional<CCPACSRotorProfiles>& GetRotorAirfoils();
+            TIGL_EXPORT virtual const boost::optional<CCPACSRotorProfiles>& GetRotorAirfoils() const;
+            TIGL_EXPORT virtual boost::optional<CCPACSRotorProfiles>& GetRotorAirfoils();
             
         protected:
             boost::optional<CCPACSFuselageProfiles>   m_fuselageProfiles;

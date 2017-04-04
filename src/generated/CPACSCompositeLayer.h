@@ -40,22 +40,22 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT const boost::optional<std::string>& GetName() const;
-            TIGL_EXPORT void SetName(const std::string& value);
-            TIGL_EXPORT void SetName(const boost::optional<std::string>& value);
+            TIGL_EXPORT virtual const boost::optional<std::string>& GetName() const;
+            TIGL_EXPORT virtual void SetName(const std::string& value);
+            TIGL_EXPORT virtual void SetName(const boost::optional<std::string>& value);
             
-            TIGL_EXPORT const boost::optional<std::string>& GetDescription() const;
-            TIGL_EXPORT void SetDescription(const std::string& value);
-            TIGL_EXPORT void SetDescription(const boost::optional<std::string>& value);
+            TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
+            TIGL_EXPORT virtual void SetDescription(const std::string& value);
+            TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
             
-            TIGL_EXPORT const double& GetThickness() const;
-            TIGL_EXPORT void SetThickness(const double& value);
+            TIGL_EXPORT virtual const double& GetThickness() const;
+            TIGL_EXPORT virtual void SetThickness(const double& value);
             
-            TIGL_EXPORT const double& GetPhi() const;
-            TIGL_EXPORT void SetPhi(const double& value);
+            TIGL_EXPORT virtual const double& GetPhi() const;
+            TIGL_EXPORT virtual void SetPhi(const double& value);
             
-            TIGL_EXPORT const std::string& GetMaterialUID() const;
-            TIGL_EXPORT void SetMaterialUID(const std::string& value);
+            TIGL_EXPORT virtual const std::string& GetMaterialUID() const;
+            TIGL_EXPORT virtual void SetMaterialUID(const std::string& value);
             
         protected:
             boost::optional<std::string> m_name;

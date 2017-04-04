@@ -189,13 +189,6 @@ PNamedShape CCPACSFuselage::BuildLoft()
     return loft;
 }
 
-
-// Gets the fuselage transformation
-CTiglTransformation CCPACSFuselage::GetFuselageTransformation()
-{
-    return m_transformation.getTransformationMatrix();
-}
-
 // Get the positioning transformation for a given section index
 CTiglTransformation CCPACSFuselage::GetPositioningTransformation(const std::string &sectionUID)
 {
@@ -222,12 +215,6 @@ double CCPACSFuselage::GetVolume()
     BRepGProp::VolumeProperties(fusedSegments, System);
     double myVolume = System.Mass();
     return myVolume;
-}
-
-// Get the Transformation object
-CTiglTransformation CCPACSFuselage::GetTransformation()
-{
-    return GetFuselageTransformation();
 }
 
 // Returns the circumference of the segment "segmentIndex" at a given eta

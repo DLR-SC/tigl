@@ -47,44 +47,44 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT const std::string& GetRibReference() const;
-            TIGL_EXPORT void SetRibReference(const std::string& value);
+            TIGL_EXPORT virtual const std::string& GetRibReference() const;
+            TIGL_EXPORT virtual void SetRibReference(const std::string& value);
             
-            TIGL_EXPORT const std::string& GetRibStart() const;
-            TIGL_EXPORT void SetRibStart(const std::string& value);
+            TIGL_EXPORT virtual const std::string& GetRibStart() const;
+            TIGL_EXPORT virtual void SetRibStart(const std::string& value);
             
-            TIGL_EXPORT const std::string& GetRibEnd() const;
-            TIGL_EXPORT void SetRibEnd(const std::string& value);
+            TIGL_EXPORT virtual const std::string& GetRibEnd() const;
+            TIGL_EXPORT virtual void SetRibEnd(const std::string& value);
             
-            TIGL_EXPORT const CPACSWingRibsPositioning_ribCrossingBehaviour& GetRibCrossingBehaviour() const;
-            TIGL_EXPORT CPACSWingRibsPositioning_ribCrossingBehaviour& GetRibCrossingBehaviour();
+            TIGL_EXPORT virtual const CPACSWingRibsPositioning_ribCrossingBehaviour& GetRibCrossingBehaviour() const;
+            TIGL_EXPORT virtual CPACSWingRibsPositioning_ribCrossingBehaviour& GetRibCrossingBehaviour();
             
-            TIGL_EXPORT const CCPACSWingRibRotation& GetRibRotation() const;
-            TIGL_EXPORT CCPACSWingRibRotation& GetRibRotation();
+            TIGL_EXPORT virtual const CCPACSWingRibRotation& GetRibRotation() const;
+            TIGL_EXPORT virtual CCPACSWingRibRotation& GetRibRotation();
             
-            TIGL_EXPORT const boost::optional<double>& GetEtaStart_choice1() const;
-            TIGL_EXPORT void SetEtaStart_choice1(const double& value);
-            TIGL_EXPORT void SetEtaStart_choice1(const boost::optional<double>& value);
+            TIGL_EXPORT virtual const boost::optional<double>& GetEtaStart_choice1() const;
+            TIGL_EXPORT virtual void SetEtaStart_choice1(const double& value);
+            TIGL_EXPORT virtual void SetEtaStart_choice1(const boost::optional<double>& value);
             
-            TIGL_EXPORT const boost::optional<std::string>& GetElementStartUID_choice2() const;
-            TIGL_EXPORT void SetElementStartUID_choice2(const std::string& value);
-            TIGL_EXPORT void SetElementStartUID_choice2(const boost::optional<std::string>& value);
+            TIGL_EXPORT virtual const boost::optional<std::string>& GetElementStartUID_choice2() const;
+            TIGL_EXPORT virtual void SetElementStartUID_choice2(const std::string& value);
+            TIGL_EXPORT virtual void SetElementStartUID_choice2(const boost::optional<std::string>& value);
             
-            TIGL_EXPORT const boost::optional<double>& GetEtaEnd_choice1() const;
-            TIGL_EXPORT void SetEtaEnd_choice1(const double& value);
-            TIGL_EXPORT void SetEtaEnd_choice1(const boost::optional<double>& value);
+            TIGL_EXPORT virtual const boost::optional<double>& GetEtaEnd_choice1() const;
+            TIGL_EXPORT virtual void SetEtaEnd_choice1(const double& value);
+            TIGL_EXPORT virtual void SetEtaEnd_choice1(const boost::optional<double>& value);
             
-            TIGL_EXPORT const boost::optional<std::string>& GetElementEndUID_choice2() const;
-            TIGL_EXPORT void SetElementEndUID_choice2(const std::string& value);
-            TIGL_EXPORT void SetElementEndUID_choice2(const boost::optional<std::string>& value);
+            TIGL_EXPORT virtual const boost::optional<std::string>& GetElementEndUID_choice2() const;
+            TIGL_EXPORT virtual void SetElementEndUID_choice2(const std::string& value);
+            TIGL_EXPORT virtual void SetElementEndUID_choice2(const boost::optional<std::string>& value);
             
-            TIGL_EXPORT const boost::optional<double>& GetSpacing_choice1() const;
-            TIGL_EXPORT void SetSpacing_choice1(const double& value);
-            TIGL_EXPORT void SetSpacing_choice1(const boost::optional<double>& value);
+            TIGL_EXPORT virtual const boost::optional<double>& GetSpacing_choice1() const;
+            TIGL_EXPORT virtual void SetSpacing_choice1(const double& value);
+            TIGL_EXPORT virtual void SetSpacing_choice1(const boost::optional<double>& value);
             
-            TIGL_EXPORT const boost::optional<int>& GetNumberOfRibs_choice2() const;
-            TIGL_EXPORT void SetNumberOfRibs_choice2(const int& value);
-            TIGL_EXPORT void SetNumberOfRibs_choice2(const boost::optional<int>& value);
+            TIGL_EXPORT virtual const boost::optional<int>& GetNumberOfRibs_choice2() const;
+            TIGL_EXPORT virtual void SetNumberOfRibs_choice2(const int& value);
+            TIGL_EXPORT virtual void SetNumberOfRibs_choice2(const boost::optional<int>& value);
             
         protected:
             CCPACSWingRibsDefinition* m_parent;

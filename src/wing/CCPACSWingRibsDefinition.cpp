@@ -747,7 +747,7 @@ double CCPACSWingRibsDefinition::ComputeSparPositionEta(const std::string& sparP
     CheckSparPositionOnReference(sparPositionUID, m_ribsPositioning_choice1->GetRibReference(), structure);
 
     // get componentSegment required for getting section element face
-    CCPACSWingSpars& spars = structure.GetSpars();
+    CCPACSWingSpars& spars = *structure.GetSpars();
 
     // obtain the spar position instance for the referenced UID
     CCPACSWingSparPosition& sparPos = spars.GetSparPositions().GetSparPosition(sparPositionUID);

@@ -49,17 +49,17 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT const CCPACSWingShell& GetUpperShell() const;
-            TIGL_EXPORT CCPACSWingShell& GetUpperShell();
+            TIGL_EXPORT virtual const CCPACSWingShell& GetUpperShell() const;
+            TIGL_EXPORT virtual CCPACSWingShell& GetUpperShell();
             
-            TIGL_EXPORT const CCPACSWingShell& GetLowerShell() const;
-            TIGL_EXPORT CCPACSWingShell& GetLowerShell();
+            TIGL_EXPORT virtual const CCPACSWingShell& GetLowerShell() const;
+            TIGL_EXPORT virtual CCPACSWingShell& GetLowerShell();
             
-            TIGL_EXPORT const boost::optional<CCPACSWingRibsDefinitions>& GetRibsDefinitions() const;
-            TIGL_EXPORT boost::optional<CCPACSWingRibsDefinitions>& GetRibsDefinitions();
+            TIGL_EXPORT virtual const boost::optional<CCPACSWingRibsDefinitions>& GetRibsDefinitions() const;
+            TIGL_EXPORT virtual boost::optional<CCPACSWingRibsDefinitions>& GetRibsDefinitions();
             
-            TIGL_EXPORT const boost::optional<CCPACSWingSpars>& GetSpars() const;
-            TIGL_EXPORT boost::optional<CCPACSWingSpars>& GetSpars();
+            TIGL_EXPORT virtual const boost::optional<CCPACSWingSpars>& GetSpars() const;
+            TIGL_EXPORT virtual boost::optional<CCPACSWingSpars>& GetSpars();
             
         protected:
             CCPACSWingComponentSegment* m_parent;

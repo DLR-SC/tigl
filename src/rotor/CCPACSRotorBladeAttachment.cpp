@@ -104,7 +104,7 @@ CTiglTransformation CCPACSRotorBladeAttachment::GetRotorBladeTransformationMatri
 
     // 4. Add rotor transformation if desired
     if (doRotorTransformation) {
-        rotorBladeTransformation.PreMultiply(GetRotor().GetTransformation());
+        rotorBladeTransformation.PreMultiply(GetRotor().GetTransformationMatrix());
     }
 
     return rotorBladeTransformation;

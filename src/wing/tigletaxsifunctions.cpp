@@ -42,7 +42,7 @@ gp_Pnt getSectionElementChordlinePoint(const CCPACSWingComponentSegment& cs, con
     const CCPACSWingSegment& segment = static_cast<const CCPACSWingSegment&>(wing.GetSegment(1));
     if (sectionElementUID == segment.GetInnerSectionElementUID()) {
         // convert into wing coordinate system
-        CTiglTransformation wingTrans = wing.GetTransformation();
+        CTiglTransformation wingTrans = wing.GetTransformationMatrix();
         chordlinePoint = wingTrans.Inverted().Transform(segment.GetChordPoint(0, xsi));
     }
     else {
@@ -51,7 +51,7 @@ gp_Pnt getSectionElementChordlinePoint(const CCPACSWingComponentSegment& cs, con
             const CCPACSWingSegment& segment = static_cast<const CCPACSWingSegment&>(wing.GetSegment(i));
             if (sectionElementUID == segment.GetOuterSectionElementUID()) {
                 // convert into wing coordinate system
-                CTiglTransformation wingTrans = wing.GetTransformation();
+                CTiglTransformation wingTrans = wing.GetTransformationMatrix();
                 chordlinePoint = wingTrans.Inverted().Transform(segment.GetChordPoint(1, xsi));
                 break;
             }

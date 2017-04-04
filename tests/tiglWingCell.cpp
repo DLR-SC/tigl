@@ -256,7 +256,7 @@ TEST_F(WingCellRibSpar, etaXsi) {
     tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
     tigl::CCPACSWing& wing = config.GetWing(1);
     tigl::CCPACSWingComponentSegment& componentSegment = static_cast<tigl::CCPACSWingComponentSegment&>(wing.GetComponentSegment(1));
-    tigl::CCPACSWingCSStructure& structure = componentSegment.GetStructure();
+    tigl::CCPACSWingCSStructure& structure = *componentSegment.GetStructure();
 
     tigl::CCPACSWingCell& cell = componentSegment.GetUpperShell().GetCell(1);
     checkCellEtaXsis(cell, expectedEtaXsi);

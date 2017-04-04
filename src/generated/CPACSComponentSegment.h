@@ -46,24 +46,24 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT const std::string& GetUID() const;
-            TIGL_EXPORT void SetUID(const std::string& value);
+            TIGL_EXPORT virtual const std::string& GetUID() const;
+            TIGL_EXPORT virtual void SetUID(const std::string& value);
             
-            TIGL_EXPORT const std::string& GetName() const;
-            TIGL_EXPORT void SetName(const std::string& value);
+            TIGL_EXPORT virtual const std::string& GetName() const;
+            TIGL_EXPORT virtual void SetName(const std::string& value);
             
-            TIGL_EXPORT const boost::optional<std::string>& GetDescription() const;
-            TIGL_EXPORT void SetDescription(const std::string& value);
-            TIGL_EXPORT void SetDescription(const boost::optional<std::string>& value);
+            TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
+            TIGL_EXPORT virtual void SetDescription(const std::string& value);
+            TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
             
-            TIGL_EXPORT const std::string& GetFromElementUID() const;
-            TIGL_EXPORT void SetFromElementUID(const std::string& value);
+            TIGL_EXPORT virtual const std::string& GetFromElementUID() const;
+            TIGL_EXPORT virtual void SetFromElementUID(const std::string& value);
             
-            TIGL_EXPORT const std::string& GetToElementUID() const;
-            TIGL_EXPORT void SetToElementUID(const std::string& value);
+            TIGL_EXPORT virtual const std::string& GetToElementUID() const;
+            TIGL_EXPORT virtual void SetToElementUID(const std::string& value);
             
-            TIGL_EXPORT const boost::optional<CCPACSWingCSStructure>& GetStructure() const;
-            TIGL_EXPORT boost::optional<CCPACSWingCSStructure>& GetStructure();
+            TIGL_EXPORT virtual const boost::optional<CCPACSWingCSStructure>& GetStructure() const;
+            TIGL_EXPORT virtual boost::optional<CCPACSWingCSStructure>& GetStructure();
             
         protected:
             CCPACSWingComponentSegments* m_parent;

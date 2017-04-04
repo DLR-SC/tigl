@@ -48,29 +48,29 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT const std::string& GetUID() const;
-            TIGL_EXPORT void SetUID(const std::string& value);
+            TIGL_EXPORT virtual const std::string& GetUID() const;
+            TIGL_EXPORT virtual void SetUID(const std::string& value);
             
-            TIGL_EXPORT const boost::optional<TiglSymmetryAxis>& GetSymmetry() const;
-            TIGL_EXPORT void SetSymmetry(const TiglSymmetryAxis& value);
-            TIGL_EXPORT void SetSymmetry(const boost::optional<TiglSymmetryAxis>& value);
+            TIGL_EXPORT virtual const boost::optional<TiglSymmetryAxis>& GetSymmetry() const;
+            TIGL_EXPORT virtual void SetSymmetry(const TiglSymmetryAxis& value);
+            TIGL_EXPORT virtual void SetSymmetry(const boost::optional<TiglSymmetryAxis>& value);
             
-            TIGL_EXPORT const std::string& GetName() const;
-            TIGL_EXPORT void SetName(const std::string& value);
+            TIGL_EXPORT virtual const std::string& GetName() const;
+            TIGL_EXPORT virtual void SetName(const std::string& value);
             
-            TIGL_EXPORT const boost::optional<std::string>& GetDescription() const;
-            TIGL_EXPORT void SetDescription(const std::string& value);
-            TIGL_EXPORT void SetDescription(const boost::optional<std::string>& value);
+            TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
+            TIGL_EXPORT virtual void SetDescription(const std::string& value);
+            TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
             
-            TIGL_EXPORT const boost::optional<std::string>& GetParentUID() const;
-            TIGL_EXPORT void SetParentUID(const std::string& value);
-            TIGL_EXPORT void SetParentUID(const boost::optional<std::string>& value);
+            TIGL_EXPORT virtual const boost::optional<std::string>& GetParentUID() const;
+            TIGL_EXPORT virtual void SetParentUID(const std::string& value);
+            TIGL_EXPORT virtual void SetParentUID(const boost::optional<std::string>& value);
             
-            TIGL_EXPORT const CCPACSTransformation& GetTransformation() const;
-            TIGL_EXPORT CCPACSTransformation& GetTransformation();
+            TIGL_EXPORT virtual const CCPACSTransformation& GetTransformation() const;
+            TIGL_EXPORT virtual CCPACSTransformation& GetTransformation();
             
-            TIGL_EXPORT const CPACSLinkToFile& GetLinkToFile() const;
-            TIGL_EXPORT CPACSLinkToFile& GetLinkToFile();
+            TIGL_EXPORT virtual const CPACSLinkToFile& GetLinkToFile() const;
+            TIGL_EXPORT virtual CPACSLinkToFile& GetLinkToFile();
             
         protected:
             CCPACSExternalObjects* m_parent;

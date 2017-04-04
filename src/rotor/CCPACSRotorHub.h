@@ -59,7 +59,7 @@ public:
     TIGL_EXPORT CCPACSRotorHub(CCPACSRotor* parent);
 
     // Returns the type of the rotor hub
-    TIGL_EXPORT TiglRotorHubType GetType() const;
+    TIGL_EXPORT TiglRotorHubType GetDefaultedType() const;
 
     // Returns the rotor blade attachment count
     TIGL_EXPORT int GetRotorBladeAttachmentCount() const;

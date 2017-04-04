@@ -34,8 +34,6 @@ public:
     
     TIGL_EXPORT virtual const std::string& GetUID() const OVERRIDE;
 
-    using CTiglRelativelyPositionedComponent::GetTransformation;
-
     TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& objectXPath) OVERRIDE;
     
     TIGL_EXPORT const std::string& GetFilePath() const;

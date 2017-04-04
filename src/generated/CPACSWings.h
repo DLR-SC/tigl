@@ -67,8 +67,8 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT const std::vector<unique_ptr<CCPACSWing> >& GetWings() const;
-            TIGL_EXPORT std::vector<unique_ptr<CCPACSWing> >& GetWings();
+            TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSWing> >& GetWings() const;
+            TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSWing> >& GetWings();
             
         protected:
             void* m_parent;

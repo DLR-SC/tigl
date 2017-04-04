@@ -44,27 +44,27 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT const std::string& GetUID() const;
-            TIGL_EXPORT void SetUID(const std::string& value);
+            TIGL_EXPORT virtual const std::string& GetUID() const;
+            TIGL_EXPORT virtual void SetUID(const std::string& value);
             
-            TIGL_EXPORT const std::string& GetName() const;
-            TIGL_EXPORT void SetName(const std::string& value);
+            TIGL_EXPORT virtual const std::string& GetName() const;
+            TIGL_EXPORT virtual void SetName(const std::string& value);
             
-            TIGL_EXPORT const boost::optional<std::string>& GetDescription() const;
-            TIGL_EXPORT void SetDescription(const std::string& value);
-            TIGL_EXPORT void SetDescription(const boost::optional<std::string>& value);
+            TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
+            TIGL_EXPORT virtual void SetDescription(const std::string& value);
+            TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
             
-            TIGL_EXPORT const boost::optional<CCPACSFuselages>& GetFuselages() const;
-            TIGL_EXPORT boost::optional<CCPACSFuselages>& GetFuselages();
+            TIGL_EXPORT virtual const boost::optional<CCPACSFuselages>& GetFuselages() const;
+            TIGL_EXPORT virtual boost::optional<CCPACSFuselages>& GetFuselages();
             
-            TIGL_EXPORT const boost::optional<CCPACSWings>& GetWings() const;
-            TIGL_EXPORT boost::optional<CCPACSWings>& GetWings();
+            TIGL_EXPORT virtual const boost::optional<CCPACSWings>& GetWings() const;
+            TIGL_EXPORT virtual boost::optional<CCPACSWings>& GetWings();
             
-            TIGL_EXPORT const boost::optional<CCPACSRotors>& GetRotors() const;
-            TIGL_EXPORT boost::optional<CCPACSRotors>& GetRotors();
+            TIGL_EXPORT virtual const boost::optional<CCPACSRotors>& GetRotors() const;
+            TIGL_EXPORT virtual boost::optional<CCPACSRotors>& GetRotors();
             
-            TIGL_EXPORT const boost::optional<CCPACSRotorBlades>& GetRotorBlades() const;
-            TIGL_EXPORT boost::optional<CCPACSRotorBlades>& GetRotorBlades();
+            TIGL_EXPORT virtual const boost::optional<CCPACSRotorBlades>& GetRotorBlades() const;
+            TIGL_EXPORT virtual boost::optional<CCPACSRotorBlades>& GetRotorBlades();
             
         protected:
             std::string                        m_uID;

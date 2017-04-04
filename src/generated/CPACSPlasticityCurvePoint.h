@@ -38,11 +38,11 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT const double& GetTangentModulus() const;
-            TIGL_EXPORT void SetTangentModulus(const double& value);
+            TIGL_EXPORT virtual const double& GetTangentModulus() const;
+            TIGL_EXPORT virtual void SetTangentModulus(const double& value);
             
-            TIGL_EXPORT const double& GetTrueStress() const;
-            TIGL_EXPORT void SetTrueStress(const double& value);
+            TIGL_EXPORT virtual const double& GetTrueStress() const;
+            TIGL_EXPORT virtual void SetTrueStress(const double& value);
             
         protected:
             double m_tangentModulus;

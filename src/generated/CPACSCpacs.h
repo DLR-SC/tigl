@@ -41,14 +41,14 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT const CPACSHeader& GetHeader() const;
-            TIGL_EXPORT CPACSHeader& GetHeader();
+            TIGL_EXPORT virtual const CPACSHeader& GetHeader() const;
+            TIGL_EXPORT virtual CPACSHeader& GetHeader();
             
-            TIGL_EXPORT const boost::optional<CPACSVehicles>& GetVehicles() const;
-            TIGL_EXPORT boost::optional<CPACSVehicles>& GetVehicles();
+            TIGL_EXPORT virtual const boost::optional<CPACSVehicles>& GetVehicles() const;
+            TIGL_EXPORT virtual boost::optional<CPACSVehicles>& GetVehicles();
             
-            TIGL_EXPORT const boost::optional<CPACSToolspecific>& GetToolspecific() const;
-            TIGL_EXPORT boost::optional<CPACSToolspecific>& GetToolspecific();
+            TIGL_EXPORT virtual const boost::optional<CPACSToolspecific>& GetToolspecific() const;
+            TIGL_EXPORT virtual boost::optional<CPACSToolspecific>& GetToolspecific();
             
         protected:
             CPACSHeader                        m_header;

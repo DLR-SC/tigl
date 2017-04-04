@@ -108,7 +108,7 @@ CTiglPoint CCPACSTransformation::getScaling() const
 
 ECPACSTranslationType CCPACSTransformation::getTranslationType() const
 {
-    return m_translation->GetRefType();
+    return m_translation->GetRefDefaultedType();
 }
 
 CTiglTransformation CCPACSTransformation::getTransformationMatrix() const

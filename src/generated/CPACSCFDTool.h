@@ -40,14 +40,14 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT const CPACSTool& GetTool() const;
-            TIGL_EXPORT CPACSTool& GetTool();
+            TIGL_EXPORT virtual const CPACSTool& GetTool() const;
+            TIGL_EXPORT virtual CPACSTool& GetTool();
             
-            TIGL_EXPORT const std::string& GetAircraftModelUID() const;
-            TIGL_EXPORT void SetAircraftModelUID(const std::string& value);
+            TIGL_EXPORT virtual const std::string& GetAircraftModelUID() const;
+            TIGL_EXPORT virtual void SetAircraftModelUID(const std::string& value);
             
-            TIGL_EXPORT const CCPACSFarField& GetFarField() const;
-            TIGL_EXPORT CCPACSFarField& GetFarField();
+            TIGL_EXPORT virtual const CCPACSFarField& GetFarField() const;
+            TIGL_EXPORT virtual CCPACSFarField& GetFarField();
             
         protected:
             CPACSTool      m_tool;
