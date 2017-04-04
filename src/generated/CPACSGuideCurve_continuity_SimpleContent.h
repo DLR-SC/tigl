@@ -96,5 +96,10 @@ namespace tigl
     using ECPACSGuideCurve_continuity_SimpleContent = generated::CPACSGuideCurve_continuity_SimpleContent;
     #else
     typedef generated::CPACSGuideCurve_continuity_SimpleContent ECPACSGuideCurve_continuity_SimpleContent;
+    using generated::C0;
+    using generated::C1_from_previous;
+    using generated::C2_from_previous;
+    using generated::C1_to_previous;
+    using generated::C2_to_previous;
     #endif
 }

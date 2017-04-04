@@ -86,5 +86,8 @@ namespace tigl
     using ECPACSRotorHubHinge_type = generated::CPACSRotorHubHinge_type;
     #else
     typedef generated::CPACSRotorHubHinge_type ECPACSRotorHubHinge_type;
+    using generated::flap;
+    using generated::pitch;
+    using generated::leadLag;
     #endif
 }

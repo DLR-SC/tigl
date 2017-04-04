@@ -91,5 +91,9 @@ namespace tigl
     using ECPACSRotor_type = generated::CPACSRotor_type;
     #else
     typedef generated::CPACSRotor_type ECPACSRotor_type;
+    using generated::mainRotor;
+    using generated::tailRotor;
+    using generated::fenestron;
+    using generated::propeller;
     #endif
 }
