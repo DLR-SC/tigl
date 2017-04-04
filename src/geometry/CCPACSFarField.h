@@ -41,9 +41,6 @@ public:
     // Returns the Geometric type of this component, e.g. Wing or Fuselage
     TIGL_EXPORT virtual TiglGeometricComponentType GetComponentType() const;
 
-    TIGL_EXPORT TiglFarFieldType GetFieldType();
-    TIGL_EXPORT void SetFieldType(const TiglFarFieldType& value);
-
 protected:
     virtual PNamedShape BuildLoft();
 

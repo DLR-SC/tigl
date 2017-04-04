@@ -17,52 +17,101 @@
 
 #pragma once
 
-#include <tixi.h>
 #include <string>
-#include "tigl_internal.h"
-#include "CPACSRibRotation_ribRotationReference_SimpleContent.h"
+#include <cctype>
+
+#include "CTiglError.h"
+#include "to_string.h"
 
 namespace tigl
 {
     namespace generated
     {
-        // This class is used in:
+        // This enum is used in:
         // CPACSRibRotation
         
-        // generated from /xsd:schema/xsd:complexType[730]/xsd:complexContent/xsd:extension/xsd:sequence/xsd:element[1]/xsd:complexType
-        class CPACSRibRotation_ribRotationReference
+        // generated from /xsd:schema/xsd:complexType[730]/xsd:complexContent/xsd:extension/xsd:sequence/xsd:element[1]/xsd:complexType/xsd:simpleContent
+        #ifdef HAVE_CPP11
+        enum class CPACSRibRotation_ribRotationReference
+        #else
+        enum CPACSRibRotation_ribRotationReference
+        #endif
         {
-        public:
-            TIGL_EXPORT CPACSRibRotation_ribRotationReference();
-            TIGL_EXPORT virtual ~CPACSRibRotation_ribRotationReference();
-            
-            TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
-            TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
-            
-            TIGL_EXPORT virtual const CPACSRibRotation_ribRotationReference_SimpleContent& GetSimpleContent() const;
-            TIGL_EXPORT virtual void SetSimpleContent(const CPACSRibRotation_ribRotationReference_SimpleContent& value);
-            
-        protected:
-            CPACSRibRotation_ribRotationReference_SimpleContent m_simpleContent;
-            
-        private:
-            #ifdef HAVE_CPP11
-            CPACSRibRotation_ribRotationReference(const CPACSRibRotation_ribRotationReference&) = delete;
-            CPACSRibRotation_ribRotationReference& operator=(const CPACSRibRotation_ribRotationReference&) = delete;
-            
-            CPACSRibRotation_ribRotationReference(CPACSRibRotation_ribRotationReference&&) = delete;
-            CPACSRibRotation_ribRotationReference& operator=(CPACSRibRotation_ribRotationReference&&) = delete;
-            #else
-            CPACSRibRotation_ribRotationReference(const CPACSRibRotation_ribRotationReference&);
-            CPACSRibRotation_ribRotationReference& operator=(const CPACSRibRotation_ribRotationReference&);
-            #endif
+            LeadingEdge,
+            TrailingEdge,
+            FrontSpar,
+            RearSpar,
+            globalX,
+            globalY,
+            globalZ
         };
+        
+        #ifdef HAVE_CPP11
+        inline std::string CPACSRibRotation_ribRotationReferenceToString(const CPACSRibRotation_ribRotationReference& value)
+        {
+            switch(value) {
+            case CPACSRibRotation_ribRotationReference::LeadingEdge: return "LeadingEdge";
+            case CPACSRibRotation_ribRotationReference::TrailingEdge: return "TrailingEdge";
+            case CPACSRibRotation_ribRotationReference::FrontSpar: return "FrontSpar";
+            case CPACSRibRotation_ribRotationReference::RearSpar: return "RearSpar";
+            case CPACSRibRotation_ribRotationReference::globalX: return "globalX";
+            case CPACSRibRotation_ribRotationReference::globalY: return "globalY";
+            case CPACSRibRotation_ribRotationReference::globalZ: return "globalZ";
+            default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSRibRotation_ribRotationReference");
+            }
+        }
+        inline CPACSRibRotation_ribRotationReference stringToCPACSRibRotation_ribRotationReference(const std::string& value)
+        {
+            auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
+            if (toLower(value) == "leadingedge") { return CPACSRibRotation_ribRotationReference::LeadingEdge; }
+            if (toLower(value) == "trailingedge") { return CPACSRibRotation_ribRotationReference::TrailingEdge; }
+            if (toLower(value) == "frontspar") { return CPACSRibRotation_ribRotationReference::FrontSpar; }
+            if (toLower(value) == "rearspar") { return CPACSRibRotation_ribRotationReference::RearSpar; }
+            if (toLower(value) == "globalx") { return CPACSRibRotation_ribRotationReference::globalX; }
+            if (toLower(value) == "globaly") { return CPACSRibRotation_ribRotationReference::globalY; }
+            if (toLower(value) == "globalz") { return CPACSRibRotation_ribRotationReference::globalZ; }
+            throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSRibRotation_ribRotationReference");
+        }
+        #else
+        inline std::string CPACSRibRotation_ribRotationReferenceToString(const CPACSRibRotation_ribRotationReference& value)
+        {
+            switch(value) {
+            case LeadingEdge: return "LeadingEdge";
+            case TrailingEdge: return "TrailingEdge";
+            case FrontSpar: return "FrontSpar";
+            case RearSpar: return "RearSpar";
+            case globalX: return "globalX";
+            case globalY: return "globalY";
+            case globalZ: return "globalZ";
+            default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSRibRotation_ribRotationReference");
+            }
+        }
+        inline CPACSRibRotation_ribRotationReference stringToCPACSRibRotation_ribRotationReference(const std::string& value)
+        {
+            struct ToLower { std::string operator()(std::string str) { for (std::size_t i = 0; i < str.length(); i++) { str[i] = std::tolower(str[i]); } return str; } } toLower;
+            if (toLower(value) == "leadingedge") { return LeadingEdge; }
+            if (toLower(value) == "trailingedge") { return TrailingEdge; }
+            if (toLower(value) == "frontspar") { return FrontSpar; }
+            if (toLower(value) == "rearspar") { return RearSpar; }
+            if (toLower(value) == "globalx") { return globalX; }
+            if (toLower(value) == "globaly") { return globalY; }
+            if (toLower(value) == "globalz") { return globalZ; }
+            throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSRibRotation_ribRotationReference");
+        }
+        #endif
     }
     
     // Aliases in tigl namespace
     #ifdef HAVE_CPP11
-    using CCPACSRibRotation_ribRotationReference = generated::CPACSRibRotation_ribRotationReference;
+    using ECPACSRibRotation_ribRotationReference = generated::CPACSRibRotation_ribRotationReference;
     #else
-    typedef generated::CPACSRibRotation_ribRotationReference CCPACSRibRotation_ribRotationReference;
+    typedef generated::CPACSRibRotation_ribRotationReference ECPACSRibRotation_ribRotationReference;
+    using generated::LeadingEdge;
+    using generated::TrailingEdge;
+    using generated::FrontSpar;
+    using generated::RearSpar;
+    using generated::globalX;
+    using generated::globalY;
+    using generated::globalZ;
     #endif
 }

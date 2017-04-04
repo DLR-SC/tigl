@@ -28,9 +28,9 @@ namespace tigl
     namespace generated
     {
         // This enum is used in:
-        // CPACSWingRibsPositioning_ribCrossingBehaviour
+        // CPACSWingRibsPositioning
         
-        // generated from /xsd:schema/xsd:complexType[916]/xsd:complexContent/xsd:extension/xsd:sequence/xsd:element[4]/xsd:complexType/xsd:simpleContent
+        // generated from /xsd:schema/xsd:complexType[716]/xsd:complexContent/xsd:extension/xsd:sequence/xsd:element[4]/xsd:complexType/xsd:simpleContent
         #ifdef HAVE_CPP11
         enum class CPACSRibCrossingBehaviour
         #else

@@ -43,16 +43,7 @@ namespace tigl
         {
             // read element ribRotationReference
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/ribRotationReference")) {
-                m_ribRotationReference = boost::in_place();
-                try {
-                    m_ribRotationReference->ReadCPACS(tixiHandle, xpath + "/ribRotationReference");
-                } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read ribRotationReference at xpath << " << xpath << ": " << e.what();
-                    m_ribRotationReference = boost::none;
-                } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read ribRotationReference at xpath << " << xpath << ": " << e.getError();
-                    m_ribRotationReference = boost::none;
-                }
+                m_ribRotationReference = stringToCPACSRibRotation_ribRotationReference(tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/ribRotationReference"));
             }
             
             // read element z
@@ -70,7 +61,7 @@ namespace tigl
             // write element ribRotationReference
             if (m_ribRotationReference) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ribRotationReference");
-                m_ribRotationReference->WriteCPACS(tixiHandle, xpath + "/ribRotationReference");
+                tixihelper::TixiSaveElement(tixiHandle, xpath + "/ribRotationReference", CPACSRibRotation_ribRotationReferenceToString(*m_ribRotationReference));
             }
             
             // write element z
@@ -84,9 +75,14 @@ namespace tigl
             return m_ribRotationReference;
         }
         
-        boost::optional<CPACSRibRotation_ribRotationReference>& CPACSRibRotation::GetRibRotationReference()
+        void CPACSRibRotation::SetRibRotationReference(const CPACSRibRotation_ribRotationReference& value)
         {
-            return m_ribRotationReference;
+            m_ribRotationReference = value;
+        }
+        
+        void CPACSRibRotation::SetRibRotationReference(const boost::optional<CPACSRibRotation_ribRotationReference>& value)
+        {
+            m_ribRotationReference = value;
         }
         
         const double& CPACSRibRotation::GetZ() const

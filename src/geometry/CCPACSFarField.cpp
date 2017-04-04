@@ -42,7 +42,7 @@ CCPACSFarField::CCPACSFarField() {
 
 void CCPACSFarField::init()
 {
-    SetFieldType(ENUM_VALUE(TiglFarFieldType, NONE));
+    SetType(ENUM_VALUE(TiglFarFieldType, NONE));
     loft.reset();
 }
 
@@ -65,7 +65,7 @@ PNamedShape CCPACSFarField::BuildLoft()
     shape.Nullify();
     gp_Pnt center(0,0,0);
 
-    switch (GetFieldType()) {
+    switch (GetType()) {
     case ENUM_VALUE(TiglFarFieldType, FULL_SPHERE):
         shape = BRepPrimAPI_MakeSphere(center, fieldSize).Shape();
         break;
@@ -108,15 +108,6 @@ PNamedShape CCPACSFarField::BuildLoft()
 TiglGeometricComponentType CCPACSFarField::GetComponentType() const
 {
     return TIGL_COMPONENT_LOGICAL;
-}
-
-
-TiglFarFieldType CCPACSFarField::GetFieldType() {
-    return m_type.GetSimpleContent();
-}
-
-void CCPACSFarField::SetFieldType(const TiglFarFieldType& value) {
-    m_type.SetSimpleContent(value);
 }
 
 } // namespace tigl

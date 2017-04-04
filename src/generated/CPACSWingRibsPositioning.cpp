@@ -68,7 +68,7 @@ namespace tigl
             
             // read element ribCrossingBehaviour
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/ribCrossingBehaviour")) {
-                m_ribCrossingBehaviour.ReadCPACS(tixiHandle, xpath + "/ribCrossingBehaviour");
+                m_ribCrossingBehaviour = stringToCPACSRibCrossingBehaviour(tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/ribCrossingBehaviour"));
             }
             else {
                 LOG(ERROR) << "Required element ribCrossingBehaviour is missing at xpath " << xpath;
@@ -130,7 +130,7 @@ namespace tigl
             
             // write element ribCrossingBehaviour
             tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ribCrossingBehaviour");
-            m_ribCrossingBehaviour.WriteCPACS(tixiHandle, xpath + "/ribCrossingBehaviour");
+            tixihelper::TixiSaveElement(tixiHandle, xpath + "/ribCrossingBehaviour", CPACSRibCrossingBehaviourToString(m_ribCrossingBehaviour));
             
             // write element ribRotation
             tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ribRotation");
@@ -204,14 +204,14 @@ namespace tigl
             m_ribEnd = value;
         }
         
-        const CPACSWingRibsPositioning_ribCrossingBehaviour& CPACSWingRibsPositioning::GetRibCrossingBehaviour() const
+        const CPACSRibCrossingBehaviour& CPACSWingRibsPositioning::GetRibCrossingBehaviour() const
         {
             return m_ribCrossingBehaviour;
         }
         
-        CPACSWingRibsPositioning_ribCrossingBehaviour& CPACSWingRibsPositioning::GetRibCrossingBehaviour()
+        void CPACSWingRibsPositioning::SetRibCrossingBehaviour(const CPACSRibCrossingBehaviour& value)
         {
-            return m_ribCrossingBehaviour;
+            m_ribCrossingBehaviour = value;
         }
         
         const CCPACSWingRibRotation& CPACSWingRibsPositioning::GetRibRotation() const

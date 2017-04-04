@@ -156,7 +156,7 @@ void CTiglFusePlane::Perform()
     _result = FuseWithChilds(NULL, rootComponentPtrs);
 
     CCPACSFarField& farfield = _myconfig.GetFarField();
-    if (farfield.GetFieldType() != ENUM_VALUE(TiglFarFieldType, NONE) && (_mymode == FULL_PLANE_TRIMMED_FF || _mymode == HALF_PLANE_TRIMMED_FF)) {
+    if (farfield.GetType() != ENUM_VALUE(TiglFarFieldType, NONE) && (_mymode == FULL_PLANE_TRIMMED_FF || _mymode == HALF_PLANE_TRIMMED_FF)) {
         PNamedShape ff = farfield.GetLoft();
         assert(_result);
 

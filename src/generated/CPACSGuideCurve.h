@@ -61,7 +61,8 @@ namespace tigl
             TIGL_EXPORT virtual void SetFromGuideCurveUID_choice1(const boost::optional<std::string>& value);
             
             TIGL_EXPORT virtual const boost::optional<CPACSGuideCurve_continuity>& GetContinuity_choice1() const;
-            TIGL_EXPORT virtual boost::optional<CPACSGuideCurve_continuity>& GetContinuity_choice1();
+            TIGL_EXPORT virtual void SetContinuity_choice1(const CPACSGuideCurve_continuity& value);
+            TIGL_EXPORT virtual void SetContinuity_choice1(const boost::optional<CPACSGuideCurve_continuity>& value);
             
             TIGL_EXPORT virtual const boost::optional<double>& GetFromRelativeCircumference_choice2() const;
             TIGL_EXPORT virtual void SetFromRelativeCircumference_choice2(const double& value);
