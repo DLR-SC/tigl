@@ -101,5 +101,11 @@ namespace tigl
     using ECPACSFuselageCutOut_cutoutType_SimpleContent = generated::CPACSFuselageCutOut_cutoutType_SimpleContent;
     #else
     typedef generated::CPACSFuselageCutOut_cutoutType_SimpleContent ECPACSFuselageCutOut_cutoutType_SimpleContent;
+    using generated::window;
+    using generated::door;
+    using generated::paxDoor;
+    using generated::emergencyDoor;
+    using generated::cargoDoor;
+    using generated::ramp;
     #endif
 }

@@ -106,5 +106,12 @@ namespace tigl
     using ECPACSRibRotation_ribRotationReference_SimpleContent = generated::CPACSRibRotation_ribRotationReference_SimpleContent;
     #else
     typedef generated::CPACSRibRotation_ribRotationReference_SimpleContent ECPACSRibRotation_ribRotationReference_SimpleContent;
+    using generated::LeadingEdge;
+    using generated::TrailingEdge;
+    using generated::FrontSpar;
+    using generated::RearSpar;
+    using generated::globalX;
+    using generated::globalY;
+    using generated::globalZ;
     #endif
 }

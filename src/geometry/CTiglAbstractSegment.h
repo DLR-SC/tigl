@@ -52,7 +52,7 @@ class CTiglAbstractSegment : public CTiglAbstractGeometricComponent
 {
 public:
     TIGL_EXPORT CTiglAbstractSegment(const std::vector<unique_ptr<SegmentType>>& segments, const boost::optional<TiglSymmetryAxis>& parentSymmetry)
-        : _segments(segments), _parentSymmetry(parentSymmetry), _continuity(C0) {}
+        : _segments(segments), _parentSymmetry(parentSymmetry), _continuity(ENUM_VALUE_NS(, TiglContinuity, C0)) {}
 
     // Returns the segment index of this segment
     TIGL_EXPORT int GetSegmentIndex() const

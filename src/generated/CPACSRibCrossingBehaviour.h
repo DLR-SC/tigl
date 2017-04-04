@@ -81,5 +81,7 @@ namespace tigl
     using ECPACSRibCrossingBehaviour = generated::CPACSRibCrossingBehaviour;
     #else
     typedef generated::CPACSRibCrossingBehaviour ECPACSRibCrossingBehaviour;
+    using generated::cross;
+    using generated::end;
     #endif
 }

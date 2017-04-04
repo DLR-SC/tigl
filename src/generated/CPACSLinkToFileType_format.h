@@ -86,5 +86,8 @@ namespace tigl
     using ECPACSLinkToFileType_format = generated::CPACSLinkToFileType_format;
     #else
     typedef generated::CPACSLinkToFileType_format ECPACSLinkToFileType_format;
+    using generated::Step;
+    using generated::Iges;
+    using generated::Stl;
     #endif
 }

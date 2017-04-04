@@ -91,5 +91,9 @@ namespace tigl
     using ECPACSRotorHub_type = generated::CPACSRotorHub_type;
     #else
     typedef generated::CPACSRotorHub_type ECPACSRotorHub_type;
+    using generated::semiRigid;
+    using generated::rigid;
+    using generated::articulated;
+    using generated::hingeless;
     #endif
 }
