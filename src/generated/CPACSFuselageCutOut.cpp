@@ -137,7 +137,7 @@ namespace tigl
             
             // read element cutoutType
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/cutoutType")) {
-                m_cutoutType.ReadCPACS(tixiHandle, xpath + "/cutoutType");
+                m_cutoutType = stringToCPACSFuselageCutOut_cutout(tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/cutoutType"));
             }
             else {
                 LOG(ERROR) << "Required element cutoutType is missing at xpath " << xpath;
@@ -215,7 +215,7 @@ namespace tigl
             
             // write element cutoutType
             tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/cutoutType");
-            m_cutoutType.WriteCPACS(tixiHandle, xpath + "/cutoutType");
+            tixihelper::TixiSaveElement(tixiHandle, xpath + "/cutoutType", CPACSFuselageCutOut_cutoutToString(m_cutoutType));
             
         }
         
@@ -379,14 +379,14 @@ namespace tigl
             m_filletRadius = value;
         }
         
-        const CPACSFuselageCutOut_cutoutType& CPACSFuselageCutOut::GetCutoutType() const
+        const CPACSFuselageCutOut_cutout& CPACSFuselageCutOut::GetCutoutType() const
         {
             return m_cutoutType;
         }
         
-        CPACSFuselageCutOut_cutoutType& CPACSFuselageCutOut::GetCutoutType()
+        void CPACSFuselageCutOut::SetCutoutType(const CPACSFuselageCutOut_cutout& value)
         {
-            return m_cutoutType;
+            m_cutoutType = value;
         }
         
     }

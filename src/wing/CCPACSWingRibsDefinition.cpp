@@ -883,21 +883,21 @@ gp_Vec CCPACSWingRibsDefinition::GetRibDirection(double currentEta, const gp_Pnt
     std::string ribReference = m_ribsPositioning_choice1->GetRibReference();
     double zRotation = m_ribsPositioning_choice1->GetRibRotation().GetZ() * M_PI / 180.0;
 
-    boost::optional<ECPACSRibRotation_ribRotationReference_SimpleContent> ribRotationReference;
-    if(m_ribsPositioning_choice1->GetRibRotation().GetRibRotationReference())
-        ribRotationReference = m_ribsPositioning_choice1->GetRibRotation().GetRibRotationReference()->GetSimpleContent();
+    boost::optional<ECPACSRibRotation_ribRotationReference> ribRotationReference;
+    if (m_ribsPositioning_choice1->GetRibRotation().GetRibRotationReference())
+        ribRotationReference = m_ribsPositioning_choice1->GetRibRotation().GetRibRotationReference();
 
     if (!ribRotationReference) {
         double midplaneEta, dummy;
         wingStructureReference.GetMidplaneEtaXsi(startPnt, midplaneEta, dummy);
         ribDir = wingStructureReference.GetMidplaneEtaDir(midplaneEta);
-    } else if (ribRotationReference == ENUM_VALUE(ECPACSRibRotation_ribRotationReference_SimpleContent, LeadingEdge)) {
+    } else if (ribRotationReference == ENUM_VALUE(ECPACSRibRotation_ribRotationReference, LeadingEdge)) {
         ribDir = wingStructureReference.GetLeadingEdgeDirection(startPnt);
     }
-    else if (ribRotationReference == ENUM_VALUE(ECPACSRibRotation_ribRotationReference_SimpleContent, TrailingEdge)) {
+    else if (ribRotationReference == ENUM_VALUE(ECPACSRibRotation_ribRotationReference, TrailingEdge)) {
         ribDir = wingStructureReference.GetTrailingEdgeDirection(startPnt);
     }
-    else if (ribRotationReference == ENUM_VALUE(ECPACSRibRotation_ribRotationReference_SimpleContent, globalY)) {
+    else if (ribRotationReference == ENUM_VALUE(ECPACSRibRotation_ribRotationReference, globalY)) {
         // rotate y-axis around z-axis by zRotation in order to get rib direction
         ribDir = gp_Vec(0, 1, 0);
     }
@@ -905,7 +905,7 @@ gp_Vec CCPACSWingRibsDefinition::GetRibDirection(double currentEta, const gp_Pnt
         // rotation computation only implemented for ribs which have the
         // reference point in the same spar, otherwise computation could
         // be difficult
-        const std::string ribRotationReferenceStr = generated::CPACSRibRotation_ribRotationReference_SimpleContentToString(*ribRotationReference);
+        const std::string ribRotationReferenceStr = generated::CPACSRibRotation_ribRotationReferenceToString(*ribRotationReference);
         if (ribReference != ribRotationReferenceStr) {
             LOG(ERROR) << "using spar as rib rotation reference but not as rib reference is not supported!";
             throw CTiglError("ERROR: using spar as rib rotation reference but not as rib reference is not supported!");
@@ -916,7 +916,7 @@ gp_Vec CCPACSWingRibsDefinition::GetRibDirection(double currentEta, const gp_Pnt
 
     // rotate rib direction by z rotation around up vector
     // special handling for globalY, by default the zRotation defines the rotation around the up-vector
-    if (ribRotationReference == ENUM_VALUE(ECPACSRibRotation_ribRotationReference_SimpleContent, globalY)) {
+    if (ribRotationReference == ENUM_VALUE(ECPACSRibRotation_ribRotationReference, globalY)) {
         ribDir.Rotate(gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), zRotation);
     }
     else {

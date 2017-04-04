@@ -17,52 +17,89 @@
 
 #pragma once
 
-#include <tixi.h>
 #include <string>
-#include "tigl_internal.h"
-#include "CPACSGuideCurve_continuity_SimpleContent.h"
+#include <cctype>
+
+#include "CTiglError.h"
+#include "to_string.h"
 
 namespace tigl
 {
     namespace generated
     {
-        // This class is used in:
+        // This enum is used in:
         // CPACSGuideCurve
         
-        // generated from /xsd:schema/xsd:complexType[421]/xsd:complexContent/xsd:extension/xsd:sequence/xsd:choice[1]/xsd:sequence[1]/xsd:element[2]/xsd:complexType
-        class CPACSGuideCurve_continuity
+        // generated from /xsd:schema/xsd:complexType[421]/xsd:complexContent/xsd:extension/xsd:sequence/xsd:choice[1]/xsd:sequence[1]/xsd:element[2]/xsd:complexType/xsd:simpleContent
+        #ifdef HAVE_CPP11
+        enum class CPACSGuideCurve_continuity
+        #else
+        enum CPACSGuideCurve_continuity
+        #endif
         {
-        public:
-            TIGL_EXPORT CPACSGuideCurve_continuity();
-            TIGL_EXPORT virtual ~CPACSGuideCurve_continuity();
-            
-            TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
-            TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
-            
-            TIGL_EXPORT virtual const CPACSGuideCurve_continuity_SimpleContent& GetSimpleContent() const;
-            TIGL_EXPORT virtual void SetSimpleContent(const CPACSGuideCurve_continuity_SimpleContent& value);
-            
-        protected:
-            CPACSGuideCurve_continuity_SimpleContent m_simpleContent;
-            
-        private:
-            #ifdef HAVE_CPP11
-            CPACSGuideCurve_continuity(const CPACSGuideCurve_continuity&) = delete;
-            CPACSGuideCurve_continuity& operator=(const CPACSGuideCurve_continuity&) = delete;
-            
-            CPACSGuideCurve_continuity(CPACSGuideCurve_continuity&&) = delete;
-            CPACSGuideCurve_continuity& operator=(CPACSGuideCurve_continuity&&) = delete;
-            #else
-            CPACSGuideCurve_continuity(const CPACSGuideCurve_continuity&);
-            CPACSGuideCurve_continuity& operator=(const CPACSGuideCurve_continuity&);
-            #endif
+            C0,
+            C1_from_previous,
+            C2_from_previous,
+            C1_to_previous,
+            C2_to_previous
         };
+        
+        #ifdef HAVE_CPP11
+        inline std::string CPACSGuideCurve_continuityToString(const CPACSGuideCurve_continuity& value)
+        {
+            switch(value) {
+            case CPACSGuideCurve_continuity::C0: return "C0";
+            case CPACSGuideCurve_continuity::C1_from_previous: return "C1 from previous";
+            case CPACSGuideCurve_continuity::C2_from_previous: return "C2 from previous";
+            case CPACSGuideCurve_continuity::C1_to_previous: return "C1 to previous";
+            case CPACSGuideCurve_continuity::C2_to_previous: return "C2 to previous";
+            default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSGuideCurve_continuity");
+            }
+        }
+        inline CPACSGuideCurve_continuity stringToCPACSGuideCurve_continuity(const std::string& value)
+        {
+            auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
+            if (toLower(value) == "c0") { return CPACSGuideCurve_continuity::C0; }
+            if (toLower(value) == "c1 from previous") { return CPACSGuideCurve_continuity::C1_from_previous; }
+            if (toLower(value) == "c2 from previous") { return CPACSGuideCurve_continuity::C2_from_previous; }
+            if (toLower(value) == "c1 to previous") { return CPACSGuideCurve_continuity::C1_to_previous; }
+            if (toLower(value) == "c2 to previous") { return CPACSGuideCurve_continuity::C2_to_previous; }
+            throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSGuideCurve_continuity");
+        }
+        #else
+        inline std::string CPACSGuideCurve_continuityToString(const CPACSGuideCurve_continuity& value)
+        {
+            switch(value) {
+            case C0: return "C0";
+            case C1_from_previous: return "C1 from previous";
+            case C2_from_previous: return "C2 from previous";
+            case C1_to_previous: return "C1 to previous";
+            case C2_to_previous: return "C2 to previous";
+            default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSGuideCurve_continuity");
+            }
+        }
+        inline CPACSGuideCurve_continuity stringToCPACSGuideCurve_continuity(const std::string& value)
+        {
+            struct ToLower { std::string operator()(std::string str) { for (std::size_t i = 0; i < str.length(); i++) { str[i] = std::tolower(str[i]); } return str; } } toLower;
+            if (toLower(value) == "c0") { return C0; }
+            if (toLower(value) == "c1 from previous") { return C1_from_previous; }
+            if (toLower(value) == "c2 from previous") { return C2_from_previous; }
+            if (toLower(value) == "c1 to previous") { return C1_to_previous; }
+            if (toLower(value) == "c2 to previous") { return C2_to_previous; }
+            throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSGuideCurve_continuity");
+        }
+        #endif
     }
     
     // Aliases in tigl namespace
     #ifdef HAVE_CPP11
-    using CCPACSGuideCurve_continuity = generated::CPACSGuideCurve_continuity;
+    using ECPACSGuideCurve_continuity = generated::CPACSGuideCurve_continuity;
     #else
-    typedef generated::CPACSGuideCurve_continuity CCPACSGuideCurve_continuity;
+    typedef generated::CPACSGuideCurve_continuity ECPACSGuideCurve_continuity;
+    using generated::C0;
+    using generated::C1_from_previous;
+    using generated::C2_from_previous;
+    using generated::C1_to_previous;
+    using generated::C2_to_previous;
     #endif
 }

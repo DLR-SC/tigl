@@ -35,7 +35,7 @@ namespace tigl
         // CPACSRotor
         // CPACSWing
         
-        // generated from /xsd:schema/xsd:complexType[412]/xsd:complexContent/xsd:extension/xsd:all/xsd:element[3]/xsd:complexType/xsd:simpleContent
+        // generated from /xsd:schema/xsd:complexType[387]/xsd:complexContent/xsd:extension/xsd:attribute[2]/xsd:simpleType
         #ifdef HAVE_CPP11
         enum class CPACSSymmetry
         #else

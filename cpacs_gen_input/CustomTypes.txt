@@ -4,7 +4,7 @@
 // enums
 CPACSSymmetry                      TiglSymmetryAxis
 CPACSPointAbsRelType_refType       ECPACSTranslationType
-CPACSFarField_type_SimpleContent   TiglFarFieldType
+CPACSFarField_type                 TiglFarFieldType
 
 // classes
 CPACSAircraftModel                 CCPACSAircraftModel

@@ -24,7 +24,7 @@
 #include "tigl_internal.h"
 #include "CPACSPointXYZ.h"
 #include "CPACSPointXYZ.h"
-#include "CPACSFuselageCutOut_cutoutType.h"
+#include "CPACSFuselageCutOut_cutout.h"
 
 namespace tigl
 {
@@ -89,8 +89,8 @@ namespace tigl
             TIGL_EXPORT virtual const double& GetFilletRadius() const;
             TIGL_EXPORT virtual void SetFilletRadius(const double& value);
             
-            TIGL_EXPORT virtual const CPACSFuselageCutOut_cutoutType& GetCutoutType() const;
-            TIGL_EXPORT virtual CPACSFuselageCutOut_cutoutType& GetCutoutType();
+            TIGL_EXPORT virtual const CPACSFuselageCutOut_cutout& GetCutoutType() const;
+            TIGL_EXPORT virtual void SetCutoutType(const CPACSFuselageCutOut_cutout& value);
             
         protected:
             std::string                    m_uID;
@@ -107,7 +107,7 @@ namespace tigl
             boost::optional<double>        m_deltaY1;
             boost::optional<double>        m_deltaZ1;
             double                         m_filletRadius;
-            CPACSFuselageCutOut_cutoutType m_cutoutType;
+            CPACSFuselageCutOut_cutout     m_cutoutType;
             
         private:
             #ifdef HAVE_CPP11

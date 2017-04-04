@@ -65,16 +65,7 @@ namespace tigl
             
             // read element continuity
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/continuity")) {
-                m_continuity_choice1 = boost::in_place();
-                try {
-                    m_continuity_choice1->ReadCPACS(tixiHandle, xpath + "/continuity");
-                } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read continuity at xpath << " << xpath << ": " << e.what();
-                    m_continuity_choice1 = boost::none;
-                } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read continuity at xpath << " << xpath << ": " << e.getError();
-                    m_continuity_choice1 = boost::none;
-                }
+                m_continuity_choice1 = stringToCPACSGuideCurve_continuity(tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/continuity"));
             }
             
             // read element fromRelativeCircumference
@@ -149,7 +140,7 @@ namespace tigl
             // write element continuity
             if (m_continuity_choice1) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/continuity");
-                m_continuity_choice1->WriteCPACS(tixiHandle, xpath + "/continuity");
+                tixihelper::TixiSaveElement(tixiHandle, xpath + "/continuity", CPACSGuideCurve_continuityToString(*m_continuity_choice1));
             }
             
             // write element fromRelativeCircumference
@@ -241,9 +232,14 @@ namespace tigl
             return m_continuity_choice1;
         }
         
-        boost::optional<CPACSGuideCurve_continuity>& CPACSGuideCurve::GetContinuity_choice1()
+        void CPACSGuideCurve::SetContinuity_choice1(const CPACSGuideCurve_continuity& value)
         {
-            return m_continuity_choice1;
+            m_continuity_choice1 = value;
+        }
+        
+        void CPACSGuideCurve::SetContinuity_choice1(const boost::optional<CPACSGuideCurve_continuity>& value)
+        {
+            m_continuity_choice1 = value;
         }
         
         const boost::optional<double>& CPACSGuideCurve::GetFromRelativeCircumference_choice2() const

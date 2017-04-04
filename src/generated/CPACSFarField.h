@@ -20,7 +20,7 @@
 #include <tixi.h>
 #include <string>
 #include "tigl_internal.h"
-#include "CPACSFarField_type.h"
+#include <TiglFarFieldType.h>
 
 namespace tigl
 {
@@ -39,8 +39,8 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT virtual const CPACSFarField_type& GetType() const;
-            TIGL_EXPORT virtual CPACSFarField_type& GetType();
+            TIGL_EXPORT virtual const TiglFarFieldType& GetType() const;
+            TIGL_EXPORT virtual void SetType(const TiglFarFieldType& value);
             
             TIGL_EXPORT virtual const double& GetReferenceLength() const;
             TIGL_EXPORT virtual void SetReferenceLength(const double& value);
@@ -49,9 +49,9 @@ namespace tigl
             TIGL_EXPORT virtual void SetMultiplier(const double& value);
             
         protected:
-            CPACSFarField_type m_type;
-            double             m_referenceLength;
-            double             m_multiplier;
+            TiglFarFieldType m_type;
+            double           m_referenceLength;
+            double           m_multiplier;
             
         private:
             #ifdef HAVE_CPP11

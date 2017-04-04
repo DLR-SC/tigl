@@ -31,7 +31,7 @@ namespace tigl
         {
             // read element type
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/type")) {
-                m_type.ReadCPACS(tixiHandle, xpath + "/type");
+                m_type = stringToTiglFarFieldType(tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/type"));
             }
             else {
                 LOG(ERROR) << "Required element type is missing at xpath " << xpath;
@@ -59,7 +59,7 @@ namespace tigl
         {
             // write element type
             tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/type");
-            m_type.WriteCPACS(tixiHandle, xpath + "/type");
+            tixihelper::TixiSaveElement(tixiHandle, xpath + "/type", TiglFarFieldTypeToString(m_type));
             
             // write element referenceLength
             tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/referenceLength");
@@ -71,14 +71,14 @@ namespace tigl
             
         }
         
-        const CPACSFarField_type& CPACSFarField::GetType() const
+        const TiglFarFieldType& CPACSFarField::GetType() const
         {
             return m_type;
         }
         
-        CPACSFarField_type& CPACSFarField::GetType()
+        void CPACSFarField::SetType(const TiglFarFieldType& value)
         {
-            return m_type;
+            m_type = value;
         }
         
         const double& CPACSFarField::GetReferenceLength() const
