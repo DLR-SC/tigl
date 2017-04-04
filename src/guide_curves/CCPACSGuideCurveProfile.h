@@ -24,8 +24,6 @@
 #define CCPACSGUIDECURVEPROFILE_H
 
 #include "generated/CPACSGuideCurveProfileGeometry.h"
-#include "tigl_internal.h"
-#include "tixi.h"
 #include "CTiglPoint.h"
 
 namespace tigl

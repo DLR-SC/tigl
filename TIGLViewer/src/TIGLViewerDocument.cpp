@@ -1936,7 +1936,7 @@ void TIGLViewerDocument::drawWingStructure()
         }
     }
 
-    if (!cs || !cs->HasStructure()) {
+    if (!cs || !cs->GetStructure()) {
         displayError("This wing has no structure defined.", "Information");
         return;
     }
@@ -1946,11 +1946,11 @@ void TIGLViewerDocument::drawWingStructure()
     app->getScene()->deleteAllObjects();
 
     // display component segment shape with transparency
-    const tigl::CTiglTransformation trafo = cs->GetWing().GetTransformation();
+    const tigl::CTiglTransformation trafo = cs->GetWing().GetTransformationMatrix();
     TopoDS_Shape loft = trafo.Transform(cs->GetLoft()->Shape());
     app->getScene()->displayShape(loft, Quantity_NOC_ShapeCol, 0.5);
 
-    const tigl::CCPACSWingCSStructure& structure = cs->GetStructure();
+    const tigl::CCPACSWingCSStructure& structure = *cs->GetStructure();
 
     // draw spars
     for (int ispar = 1; ispar <= structure.GetSparSegmentCount(); ++ispar) {
@@ -2194,7 +2194,7 @@ void TIGLViewerDocument::showRotorProperties()
         propertiesText += QString("<b>%1:</b> %2<br/>").arg(propertyName).arg(valueText);
 
         ADD_PROPERTY_TEXT("UID", QString::fromStdString(rotor.GetUID()));
-        ADD_PROPERTY_TEXT("Type", QString::number(rotor.GetType()));
+        ADD_PROPERTY_TEXT("Type", QString::number(rotor.GetDefaultedType()));
         ADD_PROPERTY_TEXT("Name", QString::fromStdString(rotor.GetName()));
         ADD_PROPERTY_TEXT("Description", QString::fromStdString(rotor.GetDescription().get_value_or("")));
 
@@ -2484,7 +2484,7 @@ void TIGLViewerDocument::drawWingComponentSegment(tigl::CCPACSWingComponentSegme
 
     // the component segment shape is given in local wing coordinates.
     // Move to global coordinates
-    const tigl::CTiglTransformation trafo = segment.GetWing().GetTransformation();
+    const tigl::CTiglTransformation trafo = segment.GetWing().GetTransformationMatrix();
     TopoDS_Shape loft = trafo.Transform(segment.GetLoft()->Shape());
 
     app->getScene()->displayShape(loft);

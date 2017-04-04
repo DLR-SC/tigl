@@ -20,11 +20,8 @@
 * @brief  Implementation of a CPACS guide curve profile
 */
 
-#include "tigl.h"
 #include "CCPACSGuideCurveProfile.h"
-#include "CTiglError.h"
 #include "CTiglPoint.h"
-#include "CTiglLogging.h"
 
 namespace tigl
 {

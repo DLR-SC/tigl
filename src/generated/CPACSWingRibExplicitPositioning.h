@@ -43,17 +43,17 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT const std::string& GetStartReference() const;
-            TIGL_EXPORT void SetStartReference(const std::string& value);
+            TIGL_EXPORT virtual const std::string& GetStartReference() const;
+            TIGL_EXPORT virtual void SetStartReference(const std::string& value);
             
-            TIGL_EXPORT const double& GetEtaStart() const;
-            TIGL_EXPORT void SetEtaStart(const double& value);
+            TIGL_EXPORT virtual const double& GetEtaStart() const;
+            TIGL_EXPORT virtual void SetEtaStart(const double& value);
             
-            TIGL_EXPORT const std::string& GetEndReference() const;
-            TIGL_EXPORT void SetEndReference(const std::string& value);
+            TIGL_EXPORT virtual const std::string& GetEndReference() const;
+            TIGL_EXPORT virtual void SetEndReference(const std::string& value);
             
-            TIGL_EXPORT const double& GetEtaEnd() const;
-            TIGL_EXPORT void SetEtaEnd(const double& value);
+            TIGL_EXPORT virtual const double& GetEtaEnd() const;
+            TIGL_EXPORT virtual void SetEtaEnd(const double& value);
             
         protected:
             CCPACSWingRibsDefinition* m_parent;

@@ -46,11 +46,11 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT const boost::optional<CPACSRibRotation_ribRotationReference>& GetRibRotationReference() const;
-            TIGL_EXPORT boost::optional<CPACSRibRotation_ribRotationReference>& GetRibRotationReference();
+            TIGL_EXPORT virtual const boost::optional<CPACSRibRotation_ribRotationReference>& GetRibRotationReference() const;
+            TIGL_EXPORT virtual boost::optional<CPACSRibRotation_ribRotationReference>& GetRibRotationReference();
             
-            TIGL_EXPORT const double& GetZ() const;
-            TIGL_EXPORT void SetZ(const double& value);
+            TIGL_EXPORT virtual const double& GetZ() const;
+            TIGL_EXPORT virtual void SetZ(const double& value);
             
         protected:
             CCPACSWingRibsPositioning* m_parent;

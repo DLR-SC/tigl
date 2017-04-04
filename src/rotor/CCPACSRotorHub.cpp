@@ -36,7 +36,7 @@ CCPACSRotorHub::CCPACSRotorHub(CCPACSRotor* parent)
     : generated::CPACSRotorHub(parent) {}
 
 // Returns the type of the rotor hub
-TiglRotorHubType CCPACSRotorHub::GetType() const
+TiglRotorHubType CCPACSRotorHub::GetDefaultedType() const
 {
     if (!m_type)
         return ENUM_VALUE(TiglRotorHubType, TIGLROTORHUB_UNDEFINED);

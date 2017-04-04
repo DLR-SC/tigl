@@ -46,32 +46,11 @@ const CTiglWingStructureReference CCPACSWingCSStructure::GetWingStructureReferen
     return const_cast<CCPACSWingCSStructure&>(*this).GetWingStructureReference();
 }
 
-bool CCPACSWingCSStructure::HasSpars() const {
-    return static_cast<bool>(m_spars);
-}
-
-CCPACSWingSpars& CCPACSWingCSStructure::GetSpars() {
-    if (!m_spars) {
-        throw CTiglError("Error: spars not available but requested in CCPACSWingCSStructure::GetSpars!");
-    }
-    return *m_spars;
-}
-
-const CCPACSWingSpars& CCPACSWingCSStructure::GetSpars() const {
-    if (!m_spars) {
-        throw CTiglError("Error: spars not available but requested in CCPACSWingCSStructure::GetSpars!");
-    }
-    return *m_spars;
-}
-
 int CCPACSWingCSStructure::GetSparSegmentCount() const {
-    int sparSegmentCount = 0;
-
     if (m_spars) {
-        sparSegmentCount = m_spars->GetSparSegments().GetSparSegmentCount();
+        return m_spars->GetSparSegments().GetSparSegmentCount();
     }
-
-    return sparSegmentCount;
+    return 0;
 }
 
 CCPACSWingSparSegment& CCPACSWingCSStructure::GetSparSegment(int index) {
@@ -102,18 +81,11 @@ const CCPACSWingSparSegment& CCPACSWingCSStructure::GetSparSegment(const std::st
     return m_spars->GetSparSegments().GetSparSegment(uid);
 }
 
-bool CCPACSWingCSStructure::HasRibsDefinitions() const {
-    return static_cast<bool>(m_ribsDefinitions);
-}
-
 int CCPACSWingCSStructure::GetRibsDefinitionCount() const {
-    int ribsDefinitionCount = 0;
-
     if (m_ribsDefinitions) {
-        ribsDefinitionCount = m_ribsDefinitions->GetRibsDefinitionCount();
+        return m_ribsDefinitions->GetRibsDefinitionCount();
     }
-
-    return ribsDefinitionCount;
+    return 0;
 }
 
 CCPACSWingRibsDefinition& CCPACSWingCSStructure::GetRibsDefinition(int index) {

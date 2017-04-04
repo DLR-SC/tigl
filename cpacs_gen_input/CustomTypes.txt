@@ -12,7 +12,6 @@ CPACSRotorcraftModel               CCPACSRotorcraftModel
 CPACSProfiles                      CCPACSProfiles
 CPACSMaterialDefinition            CCPACSMaterial
 CPACSFarField                      CCPACSFarField
-CPACSGuideCurve                    CCPACSGuideCurve
 CPACSGuideCurves                   CCPACSGuideCurves
 CPACSGuideCurveProfileGeometry     CCPACSGuideCurveProfile
 CPACSGuideCurveProfiles            CCPACSGuideCurveProfiles

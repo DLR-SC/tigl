@@ -45,19 +45,19 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT const std::string& GetUID() const;
-            TIGL_EXPORT void SetUID(const std::string& value);
+            TIGL_EXPORT virtual const std::string& GetUID() const;
+            TIGL_EXPORT virtual void SetUID(const std::string& value);
             
-            TIGL_EXPORT const double& GetXsi() const;
-            TIGL_EXPORT void SetXsi(const double& value);
+            TIGL_EXPORT virtual const double& GetXsi() const;
+            TIGL_EXPORT virtual void SetXsi(const double& value);
             
-            TIGL_EXPORT const boost::optional<double>& GetEta_choice1() const;
-            TIGL_EXPORT void SetEta_choice1(const double& value);
-            TIGL_EXPORT void SetEta_choice1(const boost::optional<double>& value);
+            TIGL_EXPORT virtual const boost::optional<double>& GetEta_choice1() const;
+            TIGL_EXPORT virtual void SetEta_choice1(const double& value);
+            TIGL_EXPORT virtual void SetEta_choice1(const boost::optional<double>& value);
             
-            TIGL_EXPORT const boost::optional<std::string>& GetElementUID_choice2() const;
-            TIGL_EXPORT void SetElementUID_choice2(const std::string& value);
-            TIGL_EXPORT void SetElementUID_choice2(const boost::optional<std::string>& value);
+            TIGL_EXPORT virtual const boost::optional<std::string>& GetElementUID_choice2() const;
+            TIGL_EXPORT virtual void SetElementUID_choice2(const std::string& value);
+            TIGL_EXPORT virtual void SetElementUID_choice2(const boost::optional<std::string>& value);
             
         protected:
             CCPACSWingSparPositions* m_parent;

@@ -79,7 +79,7 @@ namespace tigl
             
             // read element fromRelativeCircumference
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/fromRelativeCircumference")) {
-                m_fromRelativeCircumference_choice2 = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/fromRelativeCircumference");
+                m_fromRelativeCircumference_choice2 = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/fromRelativeCircumference");
             }
             
             // read element tangent
@@ -98,7 +98,7 @@ namespace tigl
             
             // read element toRelativeCircumference
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/toRelativeCircumference")) {
-                m_toRelativeCircumference = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/toRelativeCircumference");
+                m_toRelativeCircumference = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/toRelativeCircumference");
             }
             else {
                 LOG(ERROR) << "Required element toRelativeCircumference is missing at xpath " << xpath;
@@ -246,17 +246,17 @@ namespace tigl
             return m_continuity_choice1;
         }
         
-        const boost::optional<std::string>& CPACSGuideCurve::GetFromRelativeCircumference_choice2() const
+        const boost::optional<double>& CPACSGuideCurve::GetFromRelativeCircumference_choice2() const
         {
             return m_fromRelativeCircumference_choice2;
         }
         
-        void CPACSGuideCurve::SetFromRelativeCircumference_choice2(const std::string& value)
+        void CPACSGuideCurve::SetFromRelativeCircumference_choice2(const double& value)
         {
             m_fromRelativeCircumference_choice2 = value;
         }
         
-        void CPACSGuideCurve::SetFromRelativeCircumference_choice2(const boost::optional<std::string>& value)
+        void CPACSGuideCurve::SetFromRelativeCircumference_choice2(const boost::optional<double>& value)
         {
             m_fromRelativeCircumference_choice2 = value;
         }
@@ -271,12 +271,12 @@ namespace tigl
             return m_tangent_choice2;
         }
         
-        const std::string& CPACSGuideCurve::GetToRelativeCircumference() const
+        const double& CPACSGuideCurve::GetToRelativeCircumference() const
         {
             return m_toRelativeCircumference;
         }
         
-        void CPACSGuideCurve::SetToRelativeCircumference(const std::string& value)
+        void CPACSGuideCurve::SetToRelativeCircumference(const double& value)
         {
             m_toRelativeCircumference = value;
         }

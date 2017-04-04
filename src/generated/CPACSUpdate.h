@@ -39,20 +39,20 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT const std::string& GetModification() const;
-            TIGL_EXPORT void SetModification(const std::string& value);
+            TIGL_EXPORT virtual const std::string& GetModification() const;
+            TIGL_EXPORT virtual void SetModification(const std::string& value);
             
-            TIGL_EXPORT const std::string& GetCreator() const;
-            TIGL_EXPORT void SetCreator(const std::string& value);
+            TIGL_EXPORT virtual const std::string& GetCreator() const;
+            TIGL_EXPORT virtual void SetCreator(const std::string& value);
             
-            TIGL_EXPORT const std::time_t& GetTimestamp() const;
-            TIGL_EXPORT void SetTimestamp(const std::time_t& value);
+            TIGL_EXPORT virtual const std::time_t& GetTimestamp() const;
+            TIGL_EXPORT virtual void SetTimestamp(const std::time_t& value);
             
-            TIGL_EXPORT const std::string& GetVersion() const;
-            TIGL_EXPORT void SetVersion(const std::string& value);
+            TIGL_EXPORT virtual const std::string& GetVersion() const;
+            TIGL_EXPORT virtual void SetVersion(const std::string& value);
             
-            TIGL_EXPORT const std::string& GetCpacsVersion() const;
-            TIGL_EXPORT void SetCpacsVersion(const std::string& value);
+            TIGL_EXPORT virtual const std::string& GetCpacsVersion() const;
+            TIGL_EXPORT virtual void SetCpacsVersion(const std::string& value);
             
         protected:
             std::string m_modification;

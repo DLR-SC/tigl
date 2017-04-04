@@ -39,14 +39,14 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT const CPACSFarField_type& GetType() const;
-            TIGL_EXPORT CPACSFarField_type& GetType();
+            TIGL_EXPORT virtual const CPACSFarField_type& GetType() const;
+            TIGL_EXPORT virtual CPACSFarField_type& GetType();
             
-            TIGL_EXPORT const double& GetReferenceLength() const;
-            TIGL_EXPORT void SetReferenceLength(const double& value);
+            TIGL_EXPORT virtual const double& GetReferenceLength() const;
+            TIGL_EXPORT virtual void SetReferenceLength(const double& value);
             
-            TIGL_EXPORT const double& GetMultiplier() const;
-            TIGL_EXPORT void SetMultiplier(const double& value);
+            TIGL_EXPORT virtual const double& GetMultiplier() const;
+            TIGL_EXPORT virtual void SetMultiplier(const double& value);
             
         protected:
             CPACSFarField_type m_type;

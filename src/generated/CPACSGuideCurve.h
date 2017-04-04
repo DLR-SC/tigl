@@ -43,38 +43,38 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT const std::string& GetUID() const;
-            TIGL_EXPORT void SetUID(const std::string& value);
+            TIGL_EXPORT virtual const std::string& GetUID() const;
+            TIGL_EXPORT virtual void SetUID(const std::string& value);
             
-            TIGL_EXPORT const std::string& GetName() const;
-            TIGL_EXPORT void SetName(const std::string& value);
+            TIGL_EXPORT virtual const std::string& GetName() const;
+            TIGL_EXPORT virtual void SetName(const std::string& value);
             
-            TIGL_EXPORT const boost::optional<std::string>& GetDescription() const;
-            TIGL_EXPORT void SetDescription(const std::string& value);
-            TIGL_EXPORT void SetDescription(const boost::optional<std::string>& value);
+            TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
+            TIGL_EXPORT virtual void SetDescription(const std::string& value);
+            TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
             
-            TIGL_EXPORT const std::string& GetGuideCurveProfileUID() const;
-            TIGL_EXPORT void SetGuideCurveProfileUID(const std::string& value);
+            TIGL_EXPORT virtual const std::string& GetGuideCurveProfileUID() const;
+            TIGL_EXPORT virtual void SetGuideCurveProfileUID(const std::string& value);
             
-            TIGL_EXPORT const boost::optional<std::string>& GetFromGuideCurveUID_choice1() const;
-            TIGL_EXPORT void SetFromGuideCurveUID_choice1(const std::string& value);
-            TIGL_EXPORT void SetFromGuideCurveUID_choice1(const boost::optional<std::string>& value);
+            TIGL_EXPORT virtual const boost::optional<std::string>& GetFromGuideCurveUID_choice1() const;
+            TIGL_EXPORT virtual void SetFromGuideCurveUID_choice1(const std::string& value);
+            TIGL_EXPORT virtual void SetFromGuideCurveUID_choice1(const boost::optional<std::string>& value);
             
-            TIGL_EXPORT const boost::optional<CPACSGuideCurve_continuity>& GetContinuity_choice1() const;
-            TIGL_EXPORT boost::optional<CPACSGuideCurve_continuity>& GetContinuity_choice1();
+            TIGL_EXPORT virtual const boost::optional<CPACSGuideCurve_continuity>& GetContinuity_choice1() const;
+            TIGL_EXPORT virtual boost::optional<CPACSGuideCurve_continuity>& GetContinuity_choice1();
             
-            TIGL_EXPORT const boost::optional<std::string>& GetFromRelativeCircumference_choice2() const;
-            TIGL_EXPORT void SetFromRelativeCircumference_choice2(const std::string& value);
-            TIGL_EXPORT void SetFromRelativeCircumference_choice2(const boost::optional<std::string>& value);
+            TIGL_EXPORT virtual const boost::optional<double>& GetFromRelativeCircumference_choice2() const;
+            TIGL_EXPORT virtual void SetFromRelativeCircumference_choice2(const double& value);
+            TIGL_EXPORT virtual void SetFromRelativeCircumference_choice2(const boost::optional<double>& value);
             
-            TIGL_EXPORT const boost::optional<CPACSPointXYZ>& GetTangent_choice2() const;
-            TIGL_EXPORT boost::optional<CPACSPointXYZ>& GetTangent_choice2();
+            TIGL_EXPORT virtual const boost::optional<CPACSPointXYZ>& GetTangent_choice2() const;
+            TIGL_EXPORT virtual boost::optional<CPACSPointXYZ>& GetTangent_choice2();
             
-            TIGL_EXPORT const std::string& GetToRelativeCircumference() const;
-            TIGL_EXPORT void SetToRelativeCircumference(const std::string& value);
+            TIGL_EXPORT virtual const double& GetToRelativeCircumference() const;
+            TIGL_EXPORT virtual void SetToRelativeCircumference(const double& value);
             
-            TIGL_EXPORT const boost::optional<CPACSPointXYZ>& GetTangent() const;
-            TIGL_EXPORT boost::optional<CPACSPointXYZ>& GetTangent();
+            TIGL_EXPORT virtual const boost::optional<CPACSPointXYZ>& GetTangent() const;
+            TIGL_EXPORT virtual boost::optional<CPACSPointXYZ>& GetTangent();
             
         protected:
             std::string                                 m_uID;
@@ -83,9 +83,9 @@ namespace tigl
             std::string                                 m_guideCurveProfileUID;
             boost::optional<std::string>                m_fromGuideCurveUID_choice1;
             boost::optional<CPACSGuideCurve_continuity> m_continuity_choice1;
-            boost::optional<std::string>                m_fromRelativeCircumference_choice2;
+            boost::optional<double>                     m_fromRelativeCircumference_choice2;
             boost::optional<CPACSPointXYZ>              m_tangent_choice2;
-            std::string                                 m_toRelativeCircumference;
+            double                                      m_toRelativeCircumference;
             boost::optional<CPACSPointXYZ>              m_tangent;
             
         private:
@@ -102,5 +102,10 @@ namespace tigl
         };
     }
     
-    // CPACSGuideCurve is customized, use type CCPACSGuideCurve directly
+    // Aliases in tigl namespace
+    #ifdef HAVE_CPP11
+    using CCPACSGuideCurve = generated::CPACSGuideCurve;
+    #else
+    typedef generated::CPACSGuideCurve CCPACSGuideCurve;
+    #endif
 }

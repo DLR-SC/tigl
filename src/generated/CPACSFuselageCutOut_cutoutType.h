@@ -39,8 +39,8 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT const CPACSFuselageCutOut_cutoutType_SimpleContent& GetSimpleContent() const;
-            TIGL_EXPORT void SetSimpleContent(const CPACSFuselageCutOut_cutoutType_SimpleContent& value);
+            TIGL_EXPORT virtual const CPACSFuselageCutOut_cutoutType_SimpleContent& GetSimpleContent() const;
+            TIGL_EXPORT virtual void SetSimpleContent(const CPACSFuselageCutOut_cutoutType_SimpleContent& value);
             
         protected:
             CPACSFuselageCutOut_cutoutType_SimpleContent m_simpleContent;

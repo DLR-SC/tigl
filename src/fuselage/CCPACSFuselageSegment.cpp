@@ -31,6 +31,7 @@
 #include "CCPACSFuselageProfile.h"
 #include "CCPACSConfiguration.h"
 #include "CTiglUIDManager.h"
+#include "generated/CPACSGuideCurve.h"
 #include "CCPACSGuideCurveProfiles.h"
 #include "CCPACSGuideCurveAlgo.h"
 #include "CCPACSFuselageProfileGetPointAlgo.h"
@@ -212,14 +213,14 @@ CCPACSFuselage& CCPACSFuselageSegment::GetFuselage() const
 TopoDS_Wire CCPACSFuselageSegment::GetStartWire()
 {
     CCPACSFuselageProfile& startProfile = startConnection.GetProfile();
-    return transformProfileWire(GetFuselage().GetTransformation(), startConnection, startProfile.GetWire(true));
+    return transformProfileWire(GetFuselage().GetTransformationMatrix(), startConnection, startProfile.GetWire(true));
 }
 
 // helper function to get the wire of the end section
 TopoDS_Wire CCPACSFuselageSegment::GetEndWire()
 {
     CCPACSFuselageProfile& endProfile = endConnection.GetProfile();
-    return transformProfileWire(GetFuselage().GetTransformation(), endConnection, endProfile.GetWire(true));
+    return transformProfileWire(GetFuselage().GetTransformationMatrix(), endConnection, endProfile.GetWire(true));
 }
 
 // get short name for loft
@@ -449,8 +450,8 @@ gp_Pnt CCPACSFuselageSegment::GetPoint(double eta, double zeta)
     gp_Pnt startProfilePoint = startProfile.GetPoint(zeta);
     gp_Pnt endProfilePoint   = endProfile.GetPoint(zeta);
     
-    startProfilePoint = transformProfilePoint(GetFuselage().GetTransformation(), startConnection, startProfilePoint);
-    endProfilePoint   = transformProfilePoint(GetFuselage().GetTransformation(), endConnection,   endProfilePoint);
+    startProfilePoint = transformProfilePoint(GetFuselage().GetTransformationMatrix(), startConnection, startProfilePoint);
+    endProfilePoint   = transformProfilePoint(GetFuselage().GetTransformationMatrix(), endConnection,   endProfilePoint);
 
     // Get point on fuselage segment in dependence of eta by linear interpolation
     Handle(Geom_TrimmedCurve) profileLine = GC_MakeSegment(startProfilePoint, endProfilePoint);
@@ -474,7 +475,7 @@ std::vector<CTiglPoint*> CCPACSFuselageSegment::GetRawStartProfilePoints()
     for (std::vector<tigl::CTiglPoint*>::size_type i = 0; i < points.size(); i++) {
         gp_Pnt pnt = points[i]->Get_gp_Pnt();
 
-        pnt = transformProfilePoint(fuselage->GetTransformation(), startConnection, pnt);
+        pnt = transformProfilePoint(fuselage->GetTransformationMatrix(), startConnection, pnt);
 
         CTiglPoint *tiglPoint = new CTiglPoint(pnt.X(), pnt.Y(), pnt.Z());
         pointsTransformed.push_back(tiglPoint);
@@ -492,7 +493,7 @@ std::vector<CTiglPoint*> CCPACSFuselageSegment::GetRawEndProfilePoints()
     for (std::vector<tigl::CTiglPoint*>::size_type i = 0; i < points.size(); i++) {
         gp_Pnt pnt = points[i]->Get_gp_Pnt();
 
-        pnt = transformProfilePoint(fuselage->GetTransformation(), endConnection, pnt);
+        pnt = transformProfilePoint(fuselage->GetTransformationMatrix(), endConnection, pnt);
 
         CTiglPoint *tiglPoint = new CTiglPoint(pnt.X(), pnt.Y(), pnt.Z());
         pointsTransformed.push_back(tiglPoint);
@@ -788,8 +789,8 @@ TopTools_SequenceOfShape& CCPACSFuselageSegment::BuildGuideCurves()
         TopoDS_Wire endWire   = endProfile.GetWire(!endProfile.GetMirrorSymmetry());
 
         // get profile wires in world coordinates
-        startWire = transformProfileWire(GetFuselage().GetTransformation(), startConnection, startWire);
-        endWire = transformProfileWire(GetFuselage().GetTransformation(), endConnection, endWire);
+        startWire = transformProfileWire(GetFuselage().GetTransformationMatrix(), startConnection, startWire);
+        endWire = transformProfileWire(GetFuselage().GetTransformationMatrix(), endConnection, endWire);
 
         // put wires into container for guide curve algo
         TopTools_SequenceOfShape startWireContainer;
@@ -798,8 +799,8 @@ TopTools_SequenceOfShape& CCPACSFuselageSegment::BuildGuideCurves()
         endWireContainer.Append(endWire);
 
         // get chord lengths for inner profile in word coordinates
-        TopoDS_Wire innerChordLineWire = transformProfileWire(GetFuselage().GetTransformation(), startConnection, startProfile.GetDiameterWire());
-        TopoDS_Wire outerChordLineWire = transformProfileWire(GetFuselage().GetTransformation(), endConnection, endProfile.GetDiameterWire());
+        TopoDS_Wire innerChordLineWire = transformProfileWire(GetFuselage().GetTransformationMatrix(), startConnection, startProfile.GetDiameterWire());
+        TopoDS_Wire outerChordLineWire = transformProfileWire(GetFuselage().GetTransformationMatrix(), endConnection, endProfile.GetDiameterWire());
         double innerScale = GetWireLength(innerChordLineWire);
         double outerScale = GetWireLength(outerChordLineWire);
 
@@ -810,8 +811,8 @@ TopTools_SequenceOfShape& CCPACSFuselageSegment::BuildGuideCurves()
             const CCPACSGuideCurve& guideCurve = m_guideCurves->GetGuideCurve(i+1);
             double fromRelativeCircumference;
             // check if fromRelativeCircumference is given in the current guide curve
-            if (guideCurve.GetFromRelativeCircumferenceIsSet()) {
-                fromRelativeCircumference = guideCurve.GetFromRelativeCircumference();
+            if (guideCurve.GetFromRelativeCircumference_choice2()) {
+                fromRelativeCircumference = *guideCurve.GetFromRelativeCircumference_choice2();
             }
             // otherwise get relative circumference from neighboring segment guide curve
             else {

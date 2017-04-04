@@ -43,30 +43,30 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT const CCPACSStringVector& GetPsi() const;
-            TIGL_EXPORT CCPACSStringVector& GetPsi();
+            TIGL_EXPORT virtual const CCPACSStringVector& GetPsi() const;
+            TIGL_EXPORT virtual CCPACSStringVector& GetPsi();
             
-            TIGL_EXPORT const double& GetUpperN1() const;
-            TIGL_EXPORT void SetUpperN1(const double& value);
+            TIGL_EXPORT virtual const double& GetUpperN1() const;
+            TIGL_EXPORT virtual void SetUpperN1(const double& value);
             
-            TIGL_EXPORT const double& GetUpperN2() const;
-            TIGL_EXPORT void SetUpperN2(const double& value);
+            TIGL_EXPORT virtual const double& GetUpperN2() const;
+            TIGL_EXPORT virtual void SetUpperN2(const double& value);
             
-            TIGL_EXPORT const CCPACSStringVector& GetUpperB() const;
-            TIGL_EXPORT CCPACSStringVector& GetUpperB();
+            TIGL_EXPORT virtual const CCPACSStringVector& GetUpperB() const;
+            TIGL_EXPORT virtual CCPACSStringVector& GetUpperB();
             
-            TIGL_EXPORT const double& GetLowerN1() const;
-            TIGL_EXPORT void SetLowerN1(const double& value);
+            TIGL_EXPORT virtual const double& GetLowerN1() const;
+            TIGL_EXPORT virtual void SetLowerN1(const double& value);
             
-            TIGL_EXPORT const double& GetLowerN2() const;
-            TIGL_EXPORT void SetLowerN2(const double& value);
+            TIGL_EXPORT virtual const double& GetLowerN2() const;
+            TIGL_EXPORT virtual void SetLowerN2(const double& value);
             
-            TIGL_EXPORT const CCPACSStringVector& GetLowerB() const;
-            TIGL_EXPORT CCPACSStringVector& GetLowerB();
+            TIGL_EXPORT virtual const CCPACSStringVector& GetLowerB() const;
+            TIGL_EXPORT virtual CCPACSStringVector& GetLowerB();
             
-            TIGL_EXPORT const boost::optional<double>& GetTrailingEdgeThickness() const;
-            TIGL_EXPORT void SetTrailingEdgeThickness(const double& value);
-            TIGL_EXPORT void SetTrailingEdgeThickness(const boost::optional<double>& value);
+            TIGL_EXPORT virtual const boost::optional<double>& GetTrailingEdgeThickness() const;
+            TIGL_EXPORT virtual void SetTrailingEdgeThickness(const double& value);
+            TIGL_EXPORT virtual void SetTrailingEdgeThickness(const boost::optional<double>& value);
             
         protected:
             CCPACSStringVector      m_psi;

@@ -39,8 +39,8 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT const std::vector<std::string>& GetSparPositionUIDs() const;
-            TIGL_EXPORT void SetSparPositionUIDs(const std::vector<std::string>& value);
+            TIGL_EXPORT virtual const std::vector<std::string>& GetSparPositionUIDs() const;
+            TIGL_EXPORT virtual void SetSparPositionUIDs(const std::vector<std::string>& value);
             
         protected:
             std::vector<std::string> m_sparPositionUIDs;

@@ -45,7 +45,7 @@
 #include "CTiglTransformation.h"
 #include "CCPACSGuideCurveProfile.h"
 #include "CCPACSGuideCurveProfiles.h"
-#include "CCPACSGuideCurve.h"
+#include "generated/CPACSGuideCurve.h"
 #include "CCPACSGuideCurves.h"
 #include "CCPACSWingProfileGetPointAlgo.h"
 #include "CCPACSGuideCurveAlgo.h"
@@ -135,8 +135,8 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSGuideCurve)
     ASSERT_EQ(guideCurve.GetUID(), "GuideCurveModel_Wing_Seg_1_2_GuideCurve_TrailingEdgeLower");
     ASSERT_EQ(guideCurve.GetName(), "Lower Trailing Edge GuideCurve from GuideCurveModel - Wing Section 1 Main Element to GuideCurveModel - Wing Section 2 Main Element ");
     ASSERT_EQ(guideCurve.GetGuideCurveProfileUID(), "GuideCurveModel_Wing_GuideCurveProfile_TrailingEdgeLower_NonLinear");
-    ASSERT_TRUE(guideCurve.GetFromRelativeCircumferenceIsSet());
-    ASSERT_EQ(guideCurve.GetFromRelativeCircumference(), -1.0);
+    ASSERT_TRUE(guideCurve.GetFromRelativeCircumference_choice2());
+    ASSERT_EQ(*guideCurve.GetFromRelativeCircumference_choice2(), -1.0);
     ASSERT_EQ(guideCurve.GetToRelativeCircumference(), -1.0);
 }
 
@@ -152,8 +152,8 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSGuideCurves)
     ASSERT_EQ(guideCurve.GetUID(), "GuideCurveModel_Wing_Seg_2_3_GuideCurve_LeadingEdge");
     ASSERT_EQ(guideCurve.GetName(), "Leading Edge GuideCurve from GuideCurveModel - Wing Section 2 Main Element to GuideCurveModel - Wing Section 3 Main Element ");
     ASSERT_EQ(guideCurve.GetGuideCurveProfileUID(), "GuideCurveModel_Wing_GuideCurveProfile_LeadingEdge_NonLinear");
-    ASSERT_TRUE(!guideCurve.GetFromRelativeCircumferenceIsSet());
-    ASSERT_EQ(guideCurve.GetFromGuideCurveUID(), "GuideCurveModel_Wing_Seg_1_2_GuideCurve_LeadingEdge_NonLinear" );
+    ASSERT_TRUE(!guideCurve.GetFromRelativeCircumference_choice2());
+    ASSERT_EQ(*guideCurve.GetFromGuideCurveUID_choice1(), "GuideCurveModel_Wing_Seg_1_2_GuideCurve_LeadingEdge_NonLinear" );
     ASSERT_EQ(guideCurve.GetToRelativeCircumference(), 0.0);
 }
 

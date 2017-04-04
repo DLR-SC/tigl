@@ -166,7 +166,7 @@ double CTiglAttachedRotorBlade::GetPlanformArea()
         P4.SetZ(0.);
 
         // Apply rotor transformation, calculate and add segment planform area
-        const CTiglTransformation& rotorTrafo = parent->GetRotor().GetTransformation();
+        const CTiglTransformation& rotorTrafo = parent->GetRotor().GetTransformationMatrix();
         planformArea += quadrilateral_area(rotorTrafo.Transform(P1).XYZ(),
                                            rotorTrafo.Transform(P2).XYZ(),
                                            rotorTrafo.Transform(P3).XYZ(),
@@ -185,8 +185,8 @@ double CTiglAttachedRotorBlade::GetRadius()
         return rotorRadius;
     }
 
-    CTiglPoint rotorAxisOrigin(    parent->GetRotor().GetTransformation().Transform(gp_Pnt(0., 0., 0.)).XYZ() );
-    CTiglPoint rotorAxisDirection( parent->GetRotor().GetTransformation().Transform(gp_Pnt(0., 0., 1.)).XYZ() );
+    CTiglPoint rotorAxisOrigin(    parent->GetRotor().GetTransformationMatrix().Transform(gp_Pnt(0., 0., 0.)).XYZ() );
+    CTiglPoint rotorAxisDirection( parent->GetRotor().GetTransformationMatrix().Transform(gp_Pnt(0., 0., 1.)).XYZ() );
     rotorAxisDirection -= rotorAxisOrigin;
 
     gp_Pnt maxDistPoint;
@@ -223,8 +223,8 @@ double CTiglAttachedRotorBlade::GetLocalRadius(const int& segmentIndex, const do
         return radius;
     }
 
-    CTiglPoint rotorAxisOrigin(    parent->GetRotor().GetTransformation().Transform(gp_Pnt(0., 0., 0.)).XYZ() );
-    CTiglPoint rotorAxisDirection( parent->GetRotor().GetTransformation().Transform(gp_Pnt(0., 0., 1.)).XYZ() );
+    CTiglPoint rotorAxisOrigin(    parent->GetRotor().GetTransformationMatrix().Transform(gp_Pnt(0., 0., 0.)).XYZ() );
+    CTiglPoint rotorAxisDirection( parent->GetRotor().GetTransformationMatrix().Transform(gp_Pnt(0., 0., 1.)).XYZ() );
     rotorAxisDirection -= rotorAxisOrigin;
 
     CTiglTransformation bladeTransformation = parent->GetRotorBladeTransformationMatrix(0., 0., false, false, true);
@@ -260,8 +260,8 @@ double CTiglAttachedRotorBlade::GetLocalTwistAngle(const int& segmentIndex, cons
         return twistAngle;
     }
 
-    CTiglPoint rotorAxisOrigin(    parent->GetRotor().GetTransformation().Transform(gp_Pnt(0., 0., 0.)).XYZ() );
-    CTiglPoint rotorAxisDirection( parent->GetRotor().GetTransformation().Transform(gp_Pnt(0., 0., 1.)).XYZ() );
+    CTiglPoint rotorAxisOrigin(    parent->GetRotor().GetTransformationMatrix().Transform(gp_Pnt(0., 0., 0.)).XYZ() );
+    CTiglPoint rotorAxisDirection( parent->GetRotor().GetTransformationMatrix().Transform(gp_Pnt(0., 0., 1.)).XYZ() );
     rotorAxisDirection -= rotorAxisOrigin;
 
     CTiglTransformation bladeTransformation = parent->GetRotorBladeTransformationMatrix(0., 0., false, false, true);
@@ -296,10 +296,9 @@ TopoDS_Shape CTiglAttachedRotorBlade::GetRotorDisk()
     return rotorDisk;
 }
 
-CTiglTransformation CTiglAttachedRotorBlade::GetTransformation() const
+CTiglTransformation CTiglAttachedRotorBlade::GetTransformationMatrix() const
 {
     const_cast<CTiglAttachedRotorBlade*>(this)->Update(); // TODO: hack
-    
     return transformation.getTransformationMatrix();
 }
 
@@ -330,7 +329,7 @@ TopoDS_Shape CTiglAttachedRotorBlade::BuildRotorDisk()
     rotorDisk = BRepPrimAPI_MakeRevol(quarterChordLine, axis);
 
     // Apply rotor transformation
-    rotorDisk = parent->GetRotor().GetTransformation().Transform(rotorDisk);
+    rotorDisk = parent->GetRotor().GetTransformationMatrix().Transform(rotorDisk);
 
     // Return the generated geometry
     return rotorDisk;

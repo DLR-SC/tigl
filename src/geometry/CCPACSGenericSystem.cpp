@@ -189,7 +189,7 @@ PNamedShape CCPACSGenericSystem::BuildLoft()
         sysShape = cube.Shape();
     }
 
-    sysShape = GetTransformation().Transform(sysShape);
+    sysShape = GetTransformationMatrix().Transform(sysShape);
     std::string loftName = GetUID();
     std::string loftShortName = GetShortShapeName();
     PNamedShape loft(new CNamedShape(sysShape, loftName.c_str(), loftShortName.c_str()));

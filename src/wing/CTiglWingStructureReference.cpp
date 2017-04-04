@@ -41,21 +41,15 @@ CCPACSWing& CTiglWingStructureReference::GetWing() const
     DISPATCH(GetWing())
 }
 
-bool CTiglWingStructureReference::HasStructure() const
-{
-    DISPATCH(HasStructure())
-}
-
-CCPACSWingCSStructure& CTiglWingStructureReference::GetStructure()
+boost::optional<CCPACSWingCSStructure>& CTiglWingStructureReference::GetStructure()
 {
     DISPATCH(GetStructure())
 }
 
-const CCPACSWingCSStructure& CTiglWingStructureReference::GetStructure() const
+const boost::optional<CCPACSWingCSStructure>& CTiglWingStructureReference::GetStructure() const
 {
     DISPATCH(GetStructure())
 }
-
 
 PNamedShape CTiglWingStructureReference::GetLoft() const
 {

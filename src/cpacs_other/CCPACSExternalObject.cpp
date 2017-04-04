@@ -110,7 +110,7 @@ PNamedShape CCPACSExternalObject::BuildLoft()
             shapeGroup->SetShortName(GetUID().c_str());
 
             // Apply transformation
-            TopoDS_Shape sh = GetTransformation().Transform(shapeGroup->Shape());
+            TopoDS_Shape sh = GetTransformationMatrix().Transform(shapeGroup->Shape());
             shapeGroup->SetShape(sh);
         }
 

@@ -56,7 +56,7 @@ public:
     TIGL_EXPORT CCPACSRotorHinge(CCPACSRotorHinges* parent);
 
     // Returns the rotor hinge transformation
-    TIGL_EXPORT CTiglTransformation GetTransformation() const;
+    TIGL_EXPORT CTiglTransformation GetTransformationMatrix() const;
 
     // Returns the scaling vector of the rotor hinge transformation
     TIGL_EXPORT CTiglPoint GetScaling() const;

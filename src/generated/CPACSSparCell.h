@@ -44,29 +44,29 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT const std::string& GetUID() const;
-            TIGL_EXPORT void SetUID(const std::string& value);
+            TIGL_EXPORT virtual const std::string& GetUID() const;
+            TIGL_EXPORT virtual void SetUID(const std::string& value);
             
-            TIGL_EXPORT const double& GetFromEta() const;
-            TIGL_EXPORT void SetFromEta(const double& value);
+            TIGL_EXPORT virtual const double& GetFromEta() const;
+            TIGL_EXPORT virtual void SetFromEta(const double& value);
             
-            TIGL_EXPORT const double& GetToEta() const;
-            TIGL_EXPORT void SetToEta(const double& value);
+            TIGL_EXPORT virtual const double& GetToEta() const;
+            TIGL_EXPORT virtual void SetToEta(const double& value);
             
-            TIGL_EXPORT const CPACSCap& GetUpperCap() const;
-            TIGL_EXPORT CPACSCap& GetUpperCap();
+            TIGL_EXPORT virtual const CPACSCap& GetUpperCap() const;
+            TIGL_EXPORT virtual CPACSCap& GetUpperCap();
             
-            TIGL_EXPORT const CPACSCap& GetLowerCap() const;
-            TIGL_EXPORT CPACSCap& GetLowerCap();
+            TIGL_EXPORT virtual const CPACSCap& GetLowerCap() const;
+            TIGL_EXPORT virtual CPACSCap& GetLowerCap();
             
-            TIGL_EXPORT const CPACSWeb& GetWeb1() const;
-            TIGL_EXPORT CPACSWeb& GetWeb1();
+            TIGL_EXPORT virtual const CPACSWeb& GetWeb1() const;
+            TIGL_EXPORT virtual CPACSWeb& GetWeb1();
             
-            TIGL_EXPORT const boost::optional<CPACSWeb>& GetWeb2() const;
-            TIGL_EXPORT boost::optional<CPACSWeb>& GetWeb2();
+            TIGL_EXPORT virtual const boost::optional<CPACSWeb>& GetWeb2() const;
+            TIGL_EXPORT virtual boost::optional<CPACSWeb>& GetWeb2();
             
-            TIGL_EXPORT const double& GetRotation() const;
-            TIGL_EXPORT void SetRotation(const double& value);
+            TIGL_EXPORT virtual const double& GetRotation() const;
+            TIGL_EXPORT virtual void SetRotation(const double& value);
             
         protected:
             std::string               m_uID;

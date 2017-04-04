@@ -308,7 +308,7 @@ TopoDS_Wire CCPACSWingSegment::GetInnerWire(TiglCoordinateSystem referenceCS) co
         return TopoDS::Wire(transformProfileWire(identity, innerConnection, w));
         break;
     case GLOBAL_COORDINATE_SYSTEM:
-        return TopoDS::Wire(transformProfileWire(GetWing().GetTransformation(), innerConnection, w));
+        return TopoDS::Wire(transformProfileWire(GetWing().GetTransformationMatrix(), innerConnection, w));
         break;
     default:
         throw CTiglError("Invalid coordinate system passed to CCPACSWingSegment::GetInnerWire");
@@ -345,7 +345,7 @@ TopoDS_Wire CCPACSWingSegment::GetOuterWire(TiglCoordinateSystem referenceCS) co
         return TopoDS::Wire(transformProfileWire(identity, outerConnection, w));
         break;
     case GLOBAL_COORDINATE_SYSTEM:
-        return TopoDS::Wire(transformProfileWire(GetWing().GetTransformation(), outerConnection, w));
+        return TopoDS::Wire(transformProfileWire(GetWing().GetTransformationMatrix(), outerConnection, w));
         break;
     default:
         throw CTiglError("Invalid coordinate system passed to CCPACSWingSegment::GetOuterWire");
@@ -364,7 +364,7 @@ TopoDS_Wire CCPACSWingSegment::GetInnerWireOpened(TiglCoordinateSystem reference
         return TopoDS::Wire(transformProfileWire(identity, innerConnection, innerProfile.GetWireOpened()));
         break;
     case GLOBAL_COORDINATE_SYSTEM:
-        return TopoDS::Wire(transformProfileWire(GetWing().GetTransformation(), innerConnection, innerProfile.GetWireOpened()));
+        return TopoDS::Wire(transformProfileWire(GetWing().GetTransformationMatrix(), innerConnection, innerProfile.GetWireOpened()));
         break;
     default:
         throw CTiglError("Invalid coordinate system passed to CCPACSWingSegment::GetInnerWireOpened");
@@ -383,7 +383,7 @@ TopoDS_Wire CCPACSWingSegment::GetOuterWireOpened(TiglCoordinateSystem reference
         return TopoDS::Wire(transformProfileWire(identity, outerConnection, outerProfile.GetWireOpened()));
         break;
     case GLOBAL_COORDINATE_SYSTEM:
-        return TopoDS::Wire(transformProfileWire(GetWing().GetTransformation(), outerConnection, outerProfile.GetWireOpened()));
+        return TopoDS::Wire(transformProfileWire(GetWing().GetTransformationMatrix(), outerConnection, outerProfile.GetWireOpened()));
         break;
     default:
         throw CTiglError("Invalid coordinate system passed to CCPACSWingSegment::GetInnerWireOpened");
@@ -943,10 +943,10 @@ void CCPACSWingSegment::MakeChordSurface() const
     gp_Pnt outer_tep = outerProfile.GetChordPoint(1.);
 
     // Do section element transformation on points
-    inner_lep = transformProfilePoint(wing->GetTransformation(), innerConnection, inner_lep);
-    inner_tep = transformProfilePoint(wing->GetTransformation(), innerConnection, inner_tep);
-    outer_lep = transformProfilePoint(wing->GetTransformation(), outerConnection, outer_lep);
-    outer_tep = transformProfilePoint(wing->GetTransformation(), outerConnection, outer_tep);
+    inner_lep = transformProfilePoint(wing->GetTransformationMatrix(), innerConnection, inner_lep);
+    inner_tep = transformProfilePoint(wing->GetTransformationMatrix(), innerConnection, inner_tep);
+    outer_lep = transformProfilePoint(wing->GetTransformationMatrix(), outerConnection, outer_lep);
+    outer_tep = transformProfilePoint(wing->GetTransformationMatrix(), outerConnection, outer_tep);
 
     surfaceCache.cordSurface.setQuadriangle(inner_lep.XYZ(), outer_lep.XYZ(), inner_tep.XYZ(), outer_tep.XYZ());
 
@@ -985,10 +985,10 @@ void CCPACSWingSegment::MakeSurfaces() const
     TopoDS_Edge ou_wire_local = TopoDS::Edge(transformProfileWire(identity, outerConnection, ou_wire));
     TopoDS_Edge il_wire_local = TopoDS::Edge(transformProfileWire(identity, innerConnection, il_wire));
     TopoDS_Edge ol_wire_local = TopoDS::Edge(transformProfileWire(identity, outerConnection, ol_wire));
-    iu_wire = TopoDS::Edge(transformProfileWire(wing->GetTransformation(), innerConnection, iu_wire));
-    ou_wire = TopoDS::Edge(transformProfileWire(wing->GetTransformation(), outerConnection, ou_wire));
-    il_wire = TopoDS::Edge(transformProfileWire(wing->GetTransformation(), innerConnection, il_wire));
-    ol_wire = TopoDS::Edge(transformProfileWire(wing->GetTransformation(), outerConnection, ol_wire));
+    iu_wire = TopoDS::Edge(transformProfileWire(wing->GetTransformationMatrix(), innerConnection, iu_wire));
+    ou_wire = TopoDS::Edge(transformProfileWire(wing->GetTransformationMatrix(), outerConnection, ou_wire));
+    il_wire = TopoDS::Edge(transformProfileWire(wing->GetTransformationMatrix(), innerConnection, il_wire));
+    ol_wire = TopoDS::Edge(transformProfileWire(wing->GetTransformationMatrix(), outerConnection, ol_wire));
 
     BRepOffsetAPI_ThruSections upperSections(Standard_False,Standard_True);
     upperSections.AddWire(BRepBuilderAPI_MakeWire(iu_wire));
@@ -1257,7 +1257,7 @@ void CCPACSWingSegment::BuildGuideCurveWires() const
 {
     guideCurveWires.Clear();
     if (m_guideCurves) {
-        const tigl::CTiglTransformation& wingTransform = GetWing().GetTransformation();
+        const tigl::CTiglTransformation& wingTransform = GetWing().GetTransformationMatrix();
 
         // get upper and lower part of inner profile in world coordinates
         CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
@@ -1292,8 +1292,8 @@ void CCPACSWingSegment::BuildGuideCurveWires() const
             const CCPACSGuideCurve& guideCurve = m_guideCurves->GetGuideCurve(i+1);
             double fromRelativeCircumference;
             // check if fromRelativeCircumference is given in the current guide curve
-            if (guideCurve.GetFromRelativeCircumferenceIsSet()) {
-                fromRelativeCircumference = guideCurve.GetFromRelativeCircumference();
+            if (guideCurve.GetFromRelativeCircumference_choice2()) {
+                fromRelativeCircumference = *guideCurve.GetFromRelativeCircumference_choice2();
             }
             // otherwise get relative circumference from neighboring segment guide curve
             else {

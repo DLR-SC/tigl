@@ -42,26 +42,26 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT const std::string& GetUID() const;
-            TIGL_EXPORT void SetUID(const std::string& value);
+            TIGL_EXPORT virtual const std::string& GetUID() const;
+            TIGL_EXPORT virtual void SetUID(const std::string& value);
             
-            TIGL_EXPORT const std::string& GetFromRib() const;
-            TIGL_EXPORT void SetFromRib(const std::string& value);
+            TIGL_EXPORT virtual const std::string& GetFromRib() const;
+            TIGL_EXPORT virtual void SetFromRib(const std::string& value);
             
-            TIGL_EXPORT const std::string& GetToRib() const;
-            TIGL_EXPORT void SetToRib(const std::string& value);
+            TIGL_EXPORT virtual const std::string& GetToRib() const;
+            TIGL_EXPORT virtual void SetToRib(const std::string& value);
             
-            TIGL_EXPORT const CPACSPointX& GetRibRotation() const;
-            TIGL_EXPORT CPACSPointX& GetRibRotation();
+            TIGL_EXPORT virtual const CPACSPointX& GetRibRotation() const;
+            TIGL_EXPORT virtual CPACSPointX& GetRibRotation();
             
-            TIGL_EXPORT const CCPACSMaterial& GetMaterial() const;
-            TIGL_EXPORT CCPACSMaterial& GetMaterial();
+            TIGL_EXPORT virtual const CCPACSMaterial& GetMaterial() const;
+            TIGL_EXPORT virtual CCPACSMaterial& GetMaterial();
             
-            TIGL_EXPORT const CPACSCap& GetUpperCap() const;
-            TIGL_EXPORT CPACSCap& GetUpperCap();
+            TIGL_EXPORT virtual const CPACSCap& GetUpperCap() const;
+            TIGL_EXPORT virtual CPACSCap& GetUpperCap();
             
-            TIGL_EXPORT const CPACSCap& GetLowerCap() const;
-            TIGL_EXPORT CPACSCap& GetLowerCap();
+            TIGL_EXPORT virtual const CPACSCap& GetLowerCap() const;
+            TIGL_EXPORT virtual CPACSCap& GetLowerCap();
             
         protected:
             std::string    m_uID;

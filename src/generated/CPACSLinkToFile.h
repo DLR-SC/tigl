@@ -39,11 +39,11 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT const std::string& GetBase() const;
-            TIGL_EXPORT void SetBase(const std::string& value);
+            TIGL_EXPORT virtual const std::string& GetBase() const;
+            TIGL_EXPORT virtual void SetBase(const std::string& value);
             
-            TIGL_EXPORT const CPACSLinkToFileType_format& GetFormat() const;
-            TIGL_EXPORT void SetFormat(const CPACSLinkToFileType_format& value);
+            TIGL_EXPORT virtual const CPACSLinkToFileType_format& GetFormat() const;
+            TIGL_EXPORT virtual void SetFormat(const CPACSLinkToFileType_format& value);
             
         protected:
             std::string                m_base;

@@ -771,10 +771,4 @@ const CCPACSGuideCurve& CCPACSWing::GetGuideCurve(std::string uid)
     throw tigl::CTiglError("Error: Guide Curve with UID " + uid + " does not exists", TIGL_ERROR);
 }
 
-// Getter for positionings
-const CCPACSPositionings& CCPACSWing::GetPositionings()
-{
-    return *m_positionings;
-}
-
 } // end namespace tigl

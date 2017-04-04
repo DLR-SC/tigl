@@ -22,6 +22,8 @@
 #ifndef CTIGLWINGSTRUCTUREREFERENCE_H
 #define CTIGLWINGSTRUCTUREREFERENCE_H
 
+#include <boost/optional.hpp>
+
 #include "tigl_internal.h"
 
 #include "PNamedShape.h"
@@ -49,9 +51,8 @@ public:
     TIGL_EXPORT CTiglWingStructureReference(CCPACSWingComponentSegment& parent);
 
     TIGL_EXPORT CCPACSWing& GetWing() const;
-    TIGL_EXPORT bool HasStructure() const;
-    TIGL_EXPORT CCPACSWingCSStructure& GetStructure();
-    TIGL_EXPORT const CCPACSWingCSStructure& GetStructure() const;
+    TIGL_EXPORT boost::optional<CCPACSWingCSStructure>& GetStructure();
+    TIGL_EXPORT const boost::optional<CCPACSWingCSStructure>& GetStructure() const;
     TIGL_EXPORT PNamedShape GetLoft() const;
     TIGL_EXPORT gp_Pnt GetPoint(double eta, double xsi) const;
     TIGL_EXPORT double GetLeadingEdgeLength() const;

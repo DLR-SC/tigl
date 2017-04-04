@@ -19,7 +19,7 @@ namespace tigl
         m_z = point.z;
     }
 
-    ECPACSTranslationType CCPACSPointAbsRel::GetRefType() const
+    ECPACSTranslationType CCPACSPointAbsRel::GetRefDefaultedType() const
     {
         // TODO: CPACSGen does not yet support optional attributes with default values, remove this code and return m_ref when defaults become available
         if (m_refType) {

@@ -37,7 +37,7 @@
 #include "CCPACSWingComponentSegments.h"
 #include "CCPACSPositionings.h"
 #include "CTiglAbstractSegment.h"
-#include "CCPACSGuideCurve.h"
+#include "generated/CPACSGuideCurve.h"
 
 #include "TopoDS_Shape.hxx"
 
@@ -62,8 +62,6 @@ public:
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & wingXPath);
 
     TIGL_EXPORT virtual const std::string& GetUID() const OVERRIDE;
-
-    using CTiglRelativelyPositionedComponent::GetTransformation;
 
     // Returns whether this wing is a rotor blade
     TIGL_EXPORT bool IsRotorBlade() const;
@@ -153,9 +151,6 @@ public:
 
     // Get the guide curve with a given UID
     TIGL_EXPORT const CCPACSGuideCurve& GetGuideCurve(std::string uid);
-
-    // Getter for positionings
-    TIGL_EXPORT const CCPACSPositionings& GetPositionings();
 
 protected:
     // Cleanup routine

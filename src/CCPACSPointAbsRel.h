@@ -10,6 +10,6 @@ namespace tigl
     public:
         TIGL_EXPORT CTiglPoint AsPoint() const;
         TIGL_EXPORT void SetAsPoint(const CTiglPoint& point);
-        TIGL_EXPORT ECPACSTranslationType GetRefType() const;
+        TIGL_EXPORT ECPACSTranslationType GetRefDefaultedType() const;
     };
 }

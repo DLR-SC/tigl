@@ -46,7 +46,7 @@ public:
 
     TIGL_EXPORT virtual const std::string& GetUID() const OVERRIDE;
 
-    TIGL_EXPORT virtual CTiglTransformation GetTransformation() const OVERRIDE;
+    TIGL_EXPORT virtual CTiglTransformation GetTransformationMatrix() const OVERRIDE;
 
     // Invalidates internal state
     TIGL_EXPORT void Invalidate();

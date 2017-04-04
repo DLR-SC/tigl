@@ -49,37 +49,37 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT const std::string& GetUID() const;
-            TIGL_EXPORT void SetUID(const std::string& value);
+            TIGL_EXPORT virtual const std::string& GetUID() const;
+            TIGL_EXPORT virtual void SetUID(const std::string& value);
             
-            TIGL_EXPORT const boost::optional<TiglSymmetryAxis>& GetSymmetry() const;
-            TIGL_EXPORT void SetSymmetry(const TiglSymmetryAxis& value);
-            TIGL_EXPORT void SetSymmetry(const boost::optional<TiglSymmetryAxis>& value);
+            TIGL_EXPORT virtual const boost::optional<TiglSymmetryAxis>& GetSymmetry() const;
+            TIGL_EXPORT virtual void SetSymmetry(const TiglSymmetryAxis& value);
+            TIGL_EXPORT virtual void SetSymmetry(const boost::optional<TiglSymmetryAxis>& value);
             
-            TIGL_EXPORT const std::string& GetName() const;
-            TIGL_EXPORT void SetName(const std::string& value);
+            TIGL_EXPORT virtual const std::string& GetName() const;
+            TIGL_EXPORT virtual void SetName(const std::string& value);
             
-            TIGL_EXPORT const boost::optional<std::string>& GetDescription() const;
-            TIGL_EXPORT void SetDescription(const std::string& value);
-            TIGL_EXPORT void SetDescription(const boost::optional<std::string>& value);
+            TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
+            TIGL_EXPORT virtual void SetDescription(const std::string& value);
+            TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
             
-            TIGL_EXPORT const boost::optional<std::string>& GetParentUID() const;
-            TIGL_EXPORT void SetParentUID(const std::string& value);
-            TIGL_EXPORT void SetParentUID(const boost::optional<std::string>& value);
+            TIGL_EXPORT virtual const boost::optional<std::string>& GetParentUID() const;
+            TIGL_EXPORT virtual void SetParentUID(const std::string& value);
+            TIGL_EXPORT virtual void SetParentUID(const boost::optional<std::string>& value);
             
-            TIGL_EXPORT const boost::optional<CPACSRotor_type>& GetType() const;
-            TIGL_EXPORT void SetType(const CPACSRotor_type& value);
-            TIGL_EXPORT void SetType(const boost::optional<CPACSRotor_type>& value);
+            TIGL_EXPORT virtual const boost::optional<CPACSRotor_type>& GetType() const;
+            TIGL_EXPORT virtual void SetType(const CPACSRotor_type& value);
+            TIGL_EXPORT virtual void SetType(const boost::optional<CPACSRotor_type>& value);
             
-            TIGL_EXPORT const boost::optional<double>& GetNominalRotationsPerMinute() const;
-            TIGL_EXPORT void SetNominalRotationsPerMinute(const double& value);
-            TIGL_EXPORT void SetNominalRotationsPerMinute(const boost::optional<double>& value);
+            TIGL_EXPORT virtual const boost::optional<double>& GetNominalRotationsPerMinute() const;
+            TIGL_EXPORT virtual void SetNominalRotationsPerMinute(const double& value);
+            TIGL_EXPORT virtual void SetNominalRotationsPerMinute(const boost::optional<double>& value);
             
-            TIGL_EXPORT const CCPACSTransformation& GetTransformation() const;
-            TIGL_EXPORT CCPACSTransformation& GetTransformation();
+            TIGL_EXPORT virtual const CCPACSTransformation& GetTransformation() const;
+            TIGL_EXPORT virtual CCPACSTransformation& GetTransformation();
             
-            TIGL_EXPORT const CCPACSRotorHub& GetRotorHub() const;
-            TIGL_EXPORT CCPACSRotorHub& GetRotorHub();
+            TIGL_EXPORT virtual const CCPACSRotorHub& GetRotorHub() const;
+            TIGL_EXPORT virtual CCPACSRotorHub& GetRotorHub();
             
         protected:
             CCPACSRotors* m_parent;

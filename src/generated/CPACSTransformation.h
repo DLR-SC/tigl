@@ -53,18 +53,18 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT const boost::optional<std::string>& GetUID() const;
-            TIGL_EXPORT void SetUID(const std::string& value);
-            TIGL_EXPORT void SetUID(const boost::optional<std::string>& value);
+            TIGL_EXPORT virtual const boost::optional<std::string>& GetUID() const;
+            TIGL_EXPORT virtual void SetUID(const std::string& value);
+            TIGL_EXPORT virtual void SetUID(const boost::optional<std::string>& value);
             
-            TIGL_EXPORT const boost::optional<CCPACSPoint>& GetScaling() const;
-            TIGL_EXPORT boost::optional<CCPACSPoint>& GetScaling();
+            TIGL_EXPORT virtual const boost::optional<CCPACSPoint>& GetScaling() const;
+            TIGL_EXPORT virtual boost::optional<CCPACSPoint>& GetScaling();
             
-            TIGL_EXPORT const boost::optional<CCPACSPoint>& GetRotation() const;
-            TIGL_EXPORT boost::optional<CCPACSPoint>& GetRotation();
+            TIGL_EXPORT virtual const boost::optional<CCPACSPoint>& GetRotation() const;
+            TIGL_EXPORT virtual boost::optional<CCPACSPoint>& GetRotation();
             
-            TIGL_EXPORT const boost::optional<CCPACSPointAbsRel>& GetTranslation() const;
-            TIGL_EXPORT boost::optional<CCPACSPointAbsRel>& GetTranslation();
+            TIGL_EXPORT virtual const boost::optional<CCPACSPointAbsRel>& GetTranslation() const;
+            TIGL_EXPORT virtual boost::optional<CCPACSPointAbsRel>& GetTranslation();
             
         protected:
             boost::optional<std::string>       m_uID;

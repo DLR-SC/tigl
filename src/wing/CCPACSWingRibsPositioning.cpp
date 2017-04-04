@@ -252,24 +252,4 @@ void CCPACSWingRibsPositioning::SetSpacing(double value)
     GetParent()->GetStructure().Invalidate();
 }
 
-CCPACSWingRibsPositioning::CrossingBehaviour CCPACSWingRibsPositioning::GetRibCrossingBehaviour() const
-{
-    switch (m_ribCrossingBehaviour.GetSimpleContent()) {
-        case ENUM_VALUE(ECPACSRibCrossingBehaviour, cross): return ENUM_VALUE(CrossingBehaviour, CROSSING_CROSS);
-        case ENUM_VALUE(ECPACSRibCrossingBehaviour, end):   return ENUM_VALUE(CrossingBehaviour, CROSSING_END);
-        default: throw CTiglError("Unknown crossing behaviour");
-    }
-}
-
-void CCPACSWingRibsPositioning::SetRibCrossingBehaviour(CCPACSWingRibsPositioning::CrossingBehaviour behaviour)
-{
-    switch (behaviour) {
-        case ENUM_VALUE(CrossingBehaviour, CROSSING_CROSS): m_ribCrossingBehaviour.SetSimpleContent(ENUM_VALUE(ECPACSRibCrossingBehaviour, cross));
-        case ENUM_VALUE(CrossingBehaviour, CROSSING_END):   m_ribCrossingBehaviour.SetSimpleContent(ENUM_VALUE(ECPACSRibCrossingBehaviour, end));
-        default: throw CTiglError("Unknown crossing behaviour");
-    }
-
-    GetParent()->GetStructure().Invalidate();
-}
-
 } // end namespace tigl

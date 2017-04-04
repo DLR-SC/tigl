@@ -40,32 +40,32 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT const boost::optional<std::string>& GetUID() const;
-            TIGL_EXPORT void SetUID(const std::string& value);
-            TIGL_EXPORT void SetUID(const boost::optional<std::string>& value);
+            TIGL_EXPORT virtual const boost::optional<std::string>& GetUID() const;
+            TIGL_EXPORT virtual void SetUID(const std::string& value);
+            TIGL_EXPORT virtual void SetUID(const boost::optional<std::string>& value);
             
-            TIGL_EXPORT const std::string& GetName() const;
-            TIGL_EXPORT void SetName(const std::string& value);
+            TIGL_EXPORT virtual const std::string& GetName() const;
+            TIGL_EXPORT virtual void SetName(const std::string& value);
             
-            TIGL_EXPORT const boost::optional<std::string>& GetDescription() const;
-            TIGL_EXPORT void SetDescription(const std::string& value);
-            TIGL_EXPORT void SetDescription(const boost::optional<std::string>& value);
+            TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
+            TIGL_EXPORT virtual void SetDescription(const std::string& value);
+            TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
             
-            TIGL_EXPORT const double& GetLength() const;
-            TIGL_EXPORT void SetLength(const double& value);
+            TIGL_EXPORT virtual const double& GetLength() const;
+            TIGL_EXPORT virtual void SetLength(const double& value);
             
-            TIGL_EXPORT const double& GetSweepAngle() const;
-            TIGL_EXPORT void SetSweepAngle(const double& value);
+            TIGL_EXPORT virtual const double& GetSweepAngle() const;
+            TIGL_EXPORT virtual void SetSweepAngle(const double& value);
             
-            TIGL_EXPORT const double& GetDihedralAngle() const;
-            TIGL_EXPORT void SetDihedralAngle(const double& value);
+            TIGL_EXPORT virtual const double& GetDihedralAngle() const;
+            TIGL_EXPORT virtual void SetDihedralAngle(const double& value);
             
-            TIGL_EXPORT const boost::optional<std::string>& GetFromSectionUID() const;
-            TIGL_EXPORT void SetFromSectionUID(const std::string& value);
-            TIGL_EXPORT void SetFromSectionUID(const boost::optional<std::string>& value);
+            TIGL_EXPORT virtual const boost::optional<std::string>& GetFromSectionUID() const;
+            TIGL_EXPORT virtual void SetFromSectionUID(const std::string& value);
+            TIGL_EXPORT virtual void SetFromSectionUID(const boost::optional<std::string>& value);
             
-            TIGL_EXPORT const std::string& GetToSectionUID() const;
-            TIGL_EXPORT void SetToSectionUID(const std::string& value);
+            TIGL_EXPORT virtual const std::string& GetToSectionUID() const;
+            TIGL_EXPORT virtual void SetToSectionUID(const std::string& value);
             
         protected:
             boost::optional<std::string> m_uID;

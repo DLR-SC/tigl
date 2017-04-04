@@ -42,11 +42,11 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT const CCPACSMaterial& GetMaterial() const;
-            TIGL_EXPORT CCPACSMaterial& GetMaterial();
+            TIGL_EXPORT virtual const CCPACSMaterial& GetMaterial() const;
+            TIGL_EXPORT virtual CCPACSMaterial& GetMaterial();
             
-            TIGL_EXPORT const double& GetRelPos() const;
-            TIGL_EXPORT void SetRelPos(const double& value);
+            TIGL_EXPORT virtual const double& GetRelPos() const;
+            TIGL_EXPORT virtual void SetRelPos(const double& value);
             
         protected:
             CCPACSMaterial m_material;

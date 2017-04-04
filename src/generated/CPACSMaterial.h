@@ -44,152 +44,152 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT const boost::optional<std::string>& GetUID() const;
-            TIGL_EXPORT void SetUID(const std::string& value);
-            TIGL_EXPORT void SetUID(const boost::optional<std::string>& value);
+            TIGL_EXPORT virtual const boost::optional<std::string>& GetUID() const;
+            TIGL_EXPORT virtual void SetUID(const std::string& value);
+            TIGL_EXPORT virtual void SetUID(const boost::optional<std::string>& value);
             
-            TIGL_EXPORT const std::string& GetName() const;
-            TIGL_EXPORT void SetName(const std::string& value);
+            TIGL_EXPORT virtual const std::string& GetName() const;
+            TIGL_EXPORT virtual void SetName(const std::string& value);
             
-            TIGL_EXPORT const boost::optional<std::string>& GetDescription() const;
-            TIGL_EXPORT void SetDescription(const std::string& value);
-            TIGL_EXPORT void SetDescription(const boost::optional<std::string>& value);
+            TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
+            TIGL_EXPORT virtual void SetDescription(const std::string& value);
+            TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
             
-            TIGL_EXPORT const double& GetRho() const;
-            TIGL_EXPORT void SetRho(const double& value);
+            TIGL_EXPORT virtual const double& GetRho() const;
+            TIGL_EXPORT virtual void SetRho(const double& value);
             
-            TIGL_EXPORT const double& GetK11() const;
-            TIGL_EXPORT void SetK11(const double& value);
+            TIGL_EXPORT virtual const double& GetK11() const;
+            TIGL_EXPORT virtual void SetK11(const double& value);
             
-            TIGL_EXPORT const double& GetK12() const;
-            TIGL_EXPORT void SetK12(const double& value);
+            TIGL_EXPORT virtual const double& GetK12() const;
+            TIGL_EXPORT virtual void SetK12(const double& value);
             
-            TIGL_EXPORT const boost::optional<double>& GetMaxStrain() const;
-            TIGL_EXPORT void SetMaxStrain(const double& value);
-            TIGL_EXPORT void SetMaxStrain(const boost::optional<double>& value);
+            TIGL_EXPORT virtual const boost::optional<double>& GetMaxStrain() const;
+            TIGL_EXPORT virtual void SetMaxStrain(const double& value);
+            TIGL_EXPORT virtual void SetMaxStrain(const boost::optional<double>& value);
             
-            TIGL_EXPORT const boost::optional<double>& GetFatigueFactor() const;
-            TIGL_EXPORT void SetFatigueFactor(const double& value);
-            TIGL_EXPORT void SetFatigueFactor(const boost::optional<double>& value);
+            TIGL_EXPORT virtual const boost::optional<double>& GetFatigueFactor() const;
+            TIGL_EXPORT virtual void SetFatigueFactor(const double& value);
+            TIGL_EXPORT virtual void SetFatigueFactor(const boost::optional<double>& value);
             
-            TIGL_EXPORT const std::vector<unique_ptr<CPACSPostFailure> >& GetPostFailures() const;
-            TIGL_EXPORT std::vector<unique_ptr<CPACSPostFailure> >& GetPostFailures();
+            TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSPostFailure> >& GetPostFailures() const;
+            TIGL_EXPORT virtual std::vector<unique_ptr<CPACSPostFailure> >& GetPostFailures();
             
-            TIGL_EXPORT const boost::optional<double>& GetSig11_choice1() const;
-            TIGL_EXPORT void SetSig11_choice1(const double& value);
-            TIGL_EXPORT void SetSig11_choice1(const boost::optional<double>& value);
+            TIGL_EXPORT virtual const boost::optional<double>& GetSig11_choice1() const;
+            TIGL_EXPORT virtual void SetSig11_choice1(const double& value);
+            TIGL_EXPORT virtual void SetSig11_choice1(const boost::optional<double>& value);
             
-            TIGL_EXPORT const boost::optional<double>& GetTau12_choice1() const;
-            TIGL_EXPORT void SetTau12_choice1(const double& value);
-            TIGL_EXPORT void SetTau12_choice1(const boost::optional<double>& value);
+            TIGL_EXPORT virtual const boost::optional<double>& GetTau12_choice1() const;
+            TIGL_EXPORT virtual void SetTau12_choice1(const double& value);
+            TIGL_EXPORT virtual void SetTau12_choice1(const boost::optional<double>& value);
             
-            TIGL_EXPORT const boost::optional<double>& GetSig11yieldT_choice1() const;
-            TIGL_EXPORT void SetSig11yieldT_choice1(const double& value);
-            TIGL_EXPORT void SetSig11yieldT_choice1(const boost::optional<double>& value);
+            TIGL_EXPORT virtual const boost::optional<double>& GetSig11yieldT_choice1() const;
+            TIGL_EXPORT virtual void SetSig11yieldT_choice1(const double& value);
+            TIGL_EXPORT virtual void SetSig11yieldT_choice1(const boost::optional<double>& value);
             
-            TIGL_EXPORT const boost::optional<double>& GetSig11yieldC_choice1() const;
-            TIGL_EXPORT void SetSig11yieldC_choice1(const double& value);
-            TIGL_EXPORT void SetSig11yieldC_choice1(const boost::optional<double>& value);
+            TIGL_EXPORT virtual const boost::optional<double>& GetSig11yieldC_choice1() const;
+            TIGL_EXPORT virtual void SetSig11yieldC_choice1(const double& value);
+            TIGL_EXPORT virtual void SetSig11yieldC_choice1(const boost::optional<double>& value);
             
-            TIGL_EXPORT const boost::optional<double>& GetK22_choice2() const;
-            TIGL_EXPORT void SetK22_choice2(const double& value);
-            TIGL_EXPORT void SetK22_choice2(const boost::optional<double>& value);
+            TIGL_EXPORT virtual const boost::optional<double>& GetK22_choice2() const;
+            TIGL_EXPORT virtual void SetK22_choice2(const double& value);
+            TIGL_EXPORT virtual void SetK22_choice2(const boost::optional<double>& value);
             
-            TIGL_EXPORT const boost::optional<double>& GetK23_choice2() const;
-            TIGL_EXPORT void SetK23_choice2(const double& value);
-            TIGL_EXPORT void SetK23_choice2(const boost::optional<double>& value);
+            TIGL_EXPORT virtual const boost::optional<double>& GetK23_choice2() const;
+            TIGL_EXPORT virtual void SetK23_choice2(const double& value);
+            TIGL_EXPORT virtual void SetK23_choice2(const boost::optional<double>& value);
             
-            TIGL_EXPORT const boost::optional<double>& GetK66_choice2() const;
-            TIGL_EXPORT void SetK66_choice2(const double& value);
-            TIGL_EXPORT void SetK66_choice2(const boost::optional<double>& value);
+            TIGL_EXPORT virtual const boost::optional<double>& GetK66_choice2() const;
+            TIGL_EXPORT virtual void SetK66_choice2(const double& value);
+            TIGL_EXPORT virtual void SetK66_choice2(const boost::optional<double>& value);
             
-            TIGL_EXPORT const boost::optional<double>& GetSig11t_choice2() const;
-            TIGL_EXPORT void SetSig11t_choice2(const double& value);
-            TIGL_EXPORT void SetSig11t_choice2(const boost::optional<double>& value);
+            TIGL_EXPORT virtual const boost::optional<double>& GetSig11t_choice2() const;
+            TIGL_EXPORT virtual void SetSig11t_choice2(const double& value);
+            TIGL_EXPORT virtual void SetSig11t_choice2(const boost::optional<double>& value);
             
-            TIGL_EXPORT const boost::optional<double>& GetSig11c_choice2() const;
-            TIGL_EXPORT void SetSig11c_choice2(const double& value);
-            TIGL_EXPORT void SetSig11c_choice2(const boost::optional<double>& value);
+            TIGL_EXPORT virtual const boost::optional<double>& GetSig11c_choice2() const;
+            TIGL_EXPORT virtual void SetSig11c_choice2(const double& value);
+            TIGL_EXPORT virtual void SetSig11c_choice2(const boost::optional<double>& value);
             
-            TIGL_EXPORT const boost::optional<double>& GetSig22t_choice2() const;
-            TIGL_EXPORT void SetSig22t_choice2(const double& value);
-            TIGL_EXPORT void SetSig22t_choice2(const boost::optional<double>& value);
+            TIGL_EXPORT virtual const boost::optional<double>& GetSig22t_choice2() const;
+            TIGL_EXPORT virtual void SetSig22t_choice2(const double& value);
+            TIGL_EXPORT virtual void SetSig22t_choice2(const boost::optional<double>& value);
             
-            TIGL_EXPORT const boost::optional<double>& GetSig22c_choice2() const;
-            TIGL_EXPORT void SetSig22c_choice2(const double& value);
-            TIGL_EXPORT void SetSig22c_choice2(const boost::optional<double>& value);
+            TIGL_EXPORT virtual const boost::optional<double>& GetSig22c_choice2() const;
+            TIGL_EXPORT virtual void SetSig22c_choice2(const double& value);
+            TIGL_EXPORT virtual void SetSig22c_choice2(const boost::optional<double>& value);
             
-            TIGL_EXPORT const boost::optional<double>& GetTau12_choice2() const;
-            TIGL_EXPORT void SetTau12_choice2(const double& value);
-            TIGL_EXPORT void SetTau12_choice2(const boost::optional<double>& value);
+            TIGL_EXPORT virtual const boost::optional<double>& GetTau12_choice2() const;
+            TIGL_EXPORT virtual void SetTau12_choice2(const double& value);
+            TIGL_EXPORT virtual void SetTau12_choice2(const boost::optional<double>& value);
             
-            TIGL_EXPORT const boost::optional<double>& GetTau23_choice2() const;
-            TIGL_EXPORT void SetTau23_choice2(const double& value);
-            TIGL_EXPORT void SetTau23_choice2(const boost::optional<double>& value);
+            TIGL_EXPORT virtual const boost::optional<double>& GetTau23_choice2() const;
+            TIGL_EXPORT virtual void SetTau23_choice2(const double& value);
+            TIGL_EXPORT virtual void SetTau23_choice2(const boost::optional<double>& value);
             
-            TIGL_EXPORT const boost::optional<double>& GetK13_choice3() const;
-            TIGL_EXPORT void SetK13_choice3(const double& value);
-            TIGL_EXPORT void SetK13_choice3(const boost::optional<double>& value);
+            TIGL_EXPORT virtual const boost::optional<double>& GetK13_choice3() const;
+            TIGL_EXPORT virtual void SetK13_choice3(const double& value);
+            TIGL_EXPORT virtual void SetK13_choice3(const boost::optional<double>& value);
             
-            TIGL_EXPORT const boost::optional<double>& GetK22_choice3() const;
-            TIGL_EXPORT void SetK22_choice3(const double& value);
-            TIGL_EXPORT void SetK22_choice3(const boost::optional<double>& value);
+            TIGL_EXPORT virtual const boost::optional<double>& GetK22_choice3() const;
+            TIGL_EXPORT virtual void SetK22_choice3(const double& value);
+            TIGL_EXPORT virtual void SetK22_choice3(const boost::optional<double>& value);
             
-            TIGL_EXPORT const boost::optional<double>& GetK23_choice3() const;
-            TIGL_EXPORT void SetK23_choice3(const double& value);
-            TIGL_EXPORT void SetK23_choice3(const boost::optional<double>& value);
+            TIGL_EXPORT virtual const boost::optional<double>& GetK23_choice3() const;
+            TIGL_EXPORT virtual void SetK23_choice3(const double& value);
+            TIGL_EXPORT virtual void SetK23_choice3(const boost::optional<double>& value);
             
-            TIGL_EXPORT const boost::optional<double>& GetK33_choice3() const;
-            TIGL_EXPORT void SetK33_choice3(const double& value);
-            TIGL_EXPORT void SetK33_choice3(const boost::optional<double>& value);
+            TIGL_EXPORT virtual const boost::optional<double>& GetK33_choice3() const;
+            TIGL_EXPORT virtual void SetK33_choice3(const double& value);
+            TIGL_EXPORT virtual void SetK33_choice3(const boost::optional<double>& value);
             
-            TIGL_EXPORT const boost::optional<double>& GetK44_choice3() const;
-            TIGL_EXPORT void SetK44_choice3(const double& value);
-            TIGL_EXPORT void SetK44_choice3(const boost::optional<double>& value);
+            TIGL_EXPORT virtual const boost::optional<double>& GetK44_choice3() const;
+            TIGL_EXPORT virtual void SetK44_choice3(const double& value);
+            TIGL_EXPORT virtual void SetK44_choice3(const boost::optional<double>& value);
             
-            TIGL_EXPORT const boost::optional<double>& GetK55_choice3() const;
-            TIGL_EXPORT void SetK55_choice3(const double& value);
-            TIGL_EXPORT void SetK55_choice3(const boost::optional<double>& value);
+            TIGL_EXPORT virtual const boost::optional<double>& GetK55_choice3() const;
+            TIGL_EXPORT virtual void SetK55_choice3(const double& value);
+            TIGL_EXPORT virtual void SetK55_choice3(const boost::optional<double>& value);
             
-            TIGL_EXPORT const boost::optional<double>& GetK66_choice3() const;
-            TIGL_EXPORT void SetK66_choice3(const double& value);
-            TIGL_EXPORT void SetK66_choice3(const boost::optional<double>& value);
+            TIGL_EXPORT virtual const boost::optional<double>& GetK66_choice3() const;
+            TIGL_EXPORT virtual void SetK66_choice3(const double& value);
+            TIGL_EXPORT virtual void SetK66_choice3(const boost::optional<double>& value);
             
-            TIGL_EXPORT const boost::optional<double>& GetSig11t_choice3() const;
-            TIGL_EXPORT void SetSig11t_choice3(const double& value);
-            TIGL_EXPORT void SetSig11t_choice3(const boost::optional<double>& value);
+            TIGL_EXPORT virtual const boost::optional<double>& GetSig11t_choice3() const;
+            TIGL_EXPORT virtual void SetSig11t_choice3(const double& value);
+            TIGL_EXPORT virtual void SetSig11t_choice3(const boost::optional<double>& value);
             
-            TIGL_EXPORT const boost::optional<double>& GetSig11c_choice3() const;
-            TIGL_EXPORT void SetSig11c_choice3(const double& value);
-            TIGL_EXPORT void SetSig11c_choice3(const boost::optional<double>& value);
+            TIGL_EXPORT virtual const boost::optional<double>& GetSig11c_choice3() const;
+            TIGL_EXPORT virtual void SetSig11c_choice3(const double& value);
+            TIGL_EXPORT virtual void SetSig11c_choice3(const boost::optional<double>& value);
             
-            TIGL_EXPORT const boost::optional<double>& GetSig22t_choice3() const;
-            TIGL_EXPORT void SetSig22t_choice3(const double& value);
-            TIGL_EXPORT void SetSig22t_choice3(const boost::optional<double>& value);
+            TIGL_EXPORT virtual const boost::optional<double>& GetSig22t_choice3() const;
+            TIGL_EXPORT virtual void SetSig22t_choice3(const double& value);
+            TIGL_EXPORT virtual void SetSig22t_choice3(const boost::optional<double>& value);
             
-            TIGL_EXPORT const boost::optional<double>& GetSig22c_choice3() const;
-            TIGL_EXPORT void SetSig22c_choice3(const double& value);
-            TIGL_EXPORT void SetSig22c_choice3(const boost::optional<double>& value);
+            TIGL_EXPORT virtual const boost::optional<double>& GetSig22c_choice3() const;
+            TIGL_EXPORT virtual void SetSig22c_choice3(const double& value);
+            TIGL_EXPORT virtual void SetSig22c_choice3(const boost::optional<double>& value);
             
-            TIGL_EXPORT const boost::optional<double>& GetSig33t_choice3() const;
-            TIGL_EXPORT void SetSig33t_choice3(const double& value);
-            TIGL_EXPORT void SetSig33t_choice3(const boost::optional<double>& value);
+            TIGL_EXPORT virtual const boost::optional<double>& GetSig33t_choice3() const;
+            TIGL_EXPORT virtual void SetSig33t_choice3(const double& value);
+            TIGL_EXPORT virtual void SetSig33t_choice3(const boost::optional<double>& value);
             
-            TIGL_EXPORT const boost::optional<double>& GetSig33c_choice3() const;
-            TIGL_EXPORT void SetSig33c_choice3(const double& value);
-            TIGL_EXPORT void SetSig33c_choice3(const boost::optional<double>& value);
+            TIGL_EXPORT virtual const boost::optional<double>& GetSig33c_choice3() const;
+            TIGL_EXPORT virtual void SetSig33c_choice3(const double& value);
+            TIGL_EXPORT virtual void SetSig33c_choice3(const boost::optional<double>& value);
             
-            TIGL_EXPORT const boost::optional<double>& GetTau12_choice3() const;
-            TIGL_EXPORT void SetTau12_choice3(const double& value);
-            TIGL_EXPORT void SetTau12_choice3(const boost::optional<double>& value);
+            TIGL_EXPORT virtual const boost::optional<double>& GetTau12_choice3() const;
+            TIGL_EXPORT virtual void SetTau12_choice3(const double& value);
+            TIGL_EXPORT virtual void SetTau12_choice3(const boost::optional<double>& value);
             
-            TIGL_EXPORT const boost::optional<double>& GetTau13_choice3() const;
-            TIGL_EXPORT void SetTau13_choice3(const double& value);
-            TIGL_EXPORT void SetTau13_choice3(const boost::optional<double>& value);
+            TIGL_EXPORT virtual const boost::optional<double>& GetTau13_choice3() const;
+            TIGL_EXPORT virtual void SetTau13_choice3(const double& value);
+            TIGL_EXPORT virtual void SetTau13_choice3(const boost::optional<double>& value);
             
-            TIGL_EXPORT const boost::optional<double>& GetTau23_choice3() const;
-            TIGL_EXPORT void SetTau23_choice3(const double& value);
-            TIGL_EXPORT void SetTau23_choice3(const boost::optional<double>& value);
+            TIGL_EXPORT virtual const boost::optional<double>& GetTau23_choice3() const;
+            TIGL_EXPORT virtual void SetTau23_choice3(const double& value);
+            TIGL_EXPORT virtual void SetTau23_choice3(const boost::optional<double>& value);
             
         protected:
             boost::optional<std::string>               m_uID;

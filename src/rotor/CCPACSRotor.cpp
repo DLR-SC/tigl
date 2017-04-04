@@ -85,7 +85,7 @@ void CCPACSRotor::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::str
 }
 
 // Get the Transformation object
-CTiglTransformation CCPACSRotor::GetTransformation() const
+CTiglTransformation CCPACSRotor::GetTransformationMatrix() const
 {
     const_cast<CCPACSRotor*>(this)->Update();   // create new transformation matrix if scaling, rotation or translation was changed, TODO: hack
     return m_transformation.getTransformationMatrix();
@@ -107,7 +107,7 @@ CTiglPoint CCPACSRotor::GetTranslation()
 }
 
 // Returns the type of the rotor
-TiglRotorType CCPACSRotor::GetType() const
+TiglRotorType CCPACSRotor::GetDefaultedType() const
 {
     if (!m_type)
         return ENUM_VALUE(TiglRotorType, TIGLROTOR_UNDEFINED);

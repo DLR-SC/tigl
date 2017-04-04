@@ -112,7 +112,7 @@ TEST_F(WingCellRibSpar2, computeSparXsi) {
     tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
     tigl::CCPACSWing& wing = config.GetWing(1);
     tigl::CCPACSWingComponentSegment& componentSegment = static_cast<tigl::CCPACSWingComponentSegment&>(wing.GetComponentSegment(1));
-    const tigl::CCPACSWingSparSegment& spar = componentSegment.GetStructure().GetSparSegment(1);
+    const tigl::CCPACSWingSparSegment& spar = componentSegment.GetStructure()->GetSparSegment(1);
 
     const double arr[] = { 0.2, 0.225, 0.25, 0.275, 0.3, 0.325, 0.35, 0.375, 0.4, 0.41, 0.42, 0.43, 0.44, 0.45, 0.46, 0.47, 0.48, 0.49, 0.5, 0.4, 0.3 };
     std::vector<double> expectedXsis (arr, arr + sizeof(arr) / sizeof(arr[0]));
@@ -131,7 +131,7 @@ TEST_F(DistortedWing, computeSparXsi) {
     tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
     tigl::CCPACSWing& wing = config.GetWing(1);
     tigl::CCPACSWingComponentSegment& componentSegment = static_cast<tigl::CCPACSWingComponentSegment&>(wing.GetComponentSegment(1));
-    const tigl::CCPACSWingSparSegment& spar = componentSegment.GetStructure().GetSparSegment(1);
+    const tigl::CCPACSWingSparSegment& spar = componentSegment.GetStructure()->GetSparSegment(1);
 
     const std::pair<double, double> arr[] = { DP(0, 0.2), DP(0.33, 0.29), DP(0.5, 0.2), DP(0.9, 0.33) };
     std::vector< std::pair<double, double> > expectedEtaXsis (arr, arr + sizeof(arr) / sizeof(arr[0])); 
@@ -152,7 +152,7 @@ TEST_F(WingCellRibSpar2, computeRibEta) {
     tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
     tigl::CCPACSWing& wing = config.GetWing(1);
     tigl::CCPACSWingComponentSegment& componentSegment = static_cast<tigl::CCPACSWingComponentSegment&>(wing.GetComponentSegment(1));
-    tigl::CCPACSWingCSStructure& structure = componentSegment.GetStructure();
+    tigl::CCPACSWingCSStructure& structure = *componentSegment.GetStructure();
     tigl::CCPACSWingRibsDefinition& ribsDefinition = structure.GetRibsDefinition(1);
     // now we change the rib definition for testing
     // TODO: create a cpacs file which already contains this modified rib definition
@@ -178,7 +178,7 @@ TEST_F(WingCellRibSpar2, computeSparIntersectionEtaXsi) {
     tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
     tigl::CCPACSWing& wing = config.GetWing(1);
     tigl::CCPACSWingComponentSegment& componentSegment = static_cast<tigl::CCPACSWingComponentSegment&>(wing.GetComponentSegment(1));
-    tigl::CCPACSWingCSStructure& structure = componentSegment.GetStructure();
+    tigl::CCPACSWingCSStructure& structure = *componentSegment.GetStructure();
     tigl::CCPACSWingRibsDefinition& ribsDefinition = structure.GetRibsDefinition(1);
     const tigl::CCPACSWingSparSegment& spar = structure.GetSparSegment(1);
     // now we change the rib definition for testing

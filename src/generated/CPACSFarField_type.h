@@ -39,8 +39,8 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT const TiglFarFieldType& GetSimpleContent() const;
-            TIGL_EXPORT void SetSimpleContent(const TiglFarFieldType& value);
+            TIGL_EXPORT virtual const TiglFarFieldType& GetSimpleContent() const;
+            TIGL_EXPORT virtual void SetSimpleContent(const TiglFarFieldType& value);
             
         protected:
             TiglFarFieldType m_simpleContent;

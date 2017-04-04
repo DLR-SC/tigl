@@ -50,20 +50,20 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT const CCPACSMaterial& GetMaterial() const;
-            TIGL_EXPORT CCPACSMaterial& GetMaterial();
+            TIGL_EXPORT virtual const CCPACSMaterial& GetMaterial() const;
+            TIGL_EXPORT virtual CCPACSMaterial& GetMaterial();
             
-            TIGL_EXPORT const boost::optional<CPACSPointX>& GetRibRotation() const;
-            TIGL_EXPORT boost::optional<CPACSPointX>& GetRibRotation();
+            TIGL_EXPORT virtual const boost::optional<CPACSPointX>& GetRibRotation() const;
+            TIGL_EXPORT virtual boost::optional<CPACSPointX>& GetRibRotation();
             
-            TIGL_EXPORT const boost::optional<CPACSWingRibCell>& GetRibCell() const;
-            TIGL_EXPORT boost::optional<CPACSWingRibCell>& GetRibCell();
+            TIGL_EXPORT virtual const boost::optional<CPACSWingRibCell>& GetRibCell() const;
+            TIGL_EXPORT virtual boost::optional<CPACSWingRibCell>& GetRibCell();
             
-            TIGL_EXPORT const boost::optional<CPACSCap>& GetUpperCap() const;
-            TIGL_EXPORT boost::optional<CPACSCap>& GetUpperCap();
+            TIGL_EXPORT virtual const boost::optional<CPACSCap>& GetUpperCap() const;
+            TIGL_EXPORT virtual boost::optional<CPACSCap>& GetUpperCap();
             
-            TIGL_EXPORT const boost::optional<CPACSCap>& GetLowerCap() const;
-            TIGL_EXPORT boost::optional<CPACSCap>& GetLowerCap();
+            TIGL_EXPORT virtual const boost::optional<CPACSCap>& GetLowerCap() const;
+            TIGL_EXPORT virtual boost::optional<CPACSCap>& GetLowerCap();
             
         protected:
             CCPACSWingRibsDefinition* m_parent;
