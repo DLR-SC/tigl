@@ -1093,55 +1093,6 @@ void tiglComponentGetHashCode(TiglCPACSConfigurationHandle* cpacsHandle,
 }
 
 
-
-void tiglComponentIntersectionPoint_f(TiglCPACSConfigurationHandle* cpacsHandle,
-                                     char*  componentUidOne,
-                                     char*  componentUidTwo,
-                                     int* lineID,
-                                     double* eta,
-                                     double* pointXPtr,
-                                     double* pointYPtr,
-                                     double* pointZPtr,
-                                     TiglReturnCode* returnCode,
-                                     int lengthString1,
-                                     int lengthString2)
-{
-    char *cStringOne = NULL;
-    char *cStringTwo = NULL;
-    cStringOne = makeCString(componentUidOne, lengthString1);
-    cStringTwo = makeCString(componentUidTwo, lengthString2);
-    *returnCode = tiglComponentIntersectionPoint(    *cpacsHandle,
-                                                    cStringOne,
-                                                    cStringTwo,
-                                                    *lineID,
-                                                    *eta,
-                                                    pointXPtr,
-                                                    pointYPtr,
-                                                    pointZPtr);
-
-}
-
-
-void tiglComponentIntersectionLineCount_f(TiglCPACSConfigurationHandle* cpacsHandle,
-                                        char*  componentUidOne,
-                                        char*  componentUidTwo,
-                                        int*   numWires,
-                                        TiglReturnCode* returnCode,
-                                        int lengthString1,
-                                        int lengthString2)
-{
-    char *cStringOne = NULL;
-    char *cStringTwo = NULL;
-    cStringOne = makeCString(componentUidOne, lengthString1);
-    cStringTwo = makeCString(componentUidTwo, lengthString2);
-    *returnCode = tiglComponentIntersectionLineCount(*cpacsHandle,
-                                                    cStringOne,
-                                                    cStringTwo,
-                                                    numWires);
-
-}
-
-
 void tiglFuselageGetMinumumDistanceToGround_f(TiglCPACSConfigurationHandle* cpacsHandle,
                                              char *fuselageUID,
                                              double* axisPntX,

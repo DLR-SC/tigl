@@ -92,7 +92,7 @@ void TIGLViewerWindow::contextMenuEvent(QContextMenuEvent *event)
         eraseAct = new QAction(tr("&Erase"), this);
         eraseAct->setStatusTip(tr("Erase selected components"));
         menu.addAction(eraseAct);
-        connect(eraseAct, SIGNAL(triggered()), myOCC, SLOT(eraseSelected()));
+        connect(eraseAct, SIGNAL(triggered()), myScene, SLOT(eraseSelected()));
 
         QAction *transparencyAct;
         transparencyAct = new QAction(tr("&Transparency"), this);
@@ -104,13 +104,13 @@ void TIGLViewerWindow::contextMenuEvent(QContextMenuEvent *event)
         wireframeAct = new QAction(tr("&Wireframe"), this);
         wireframeAct->setStatusTip(tr("Component Wireframe"));
         menu.addAction(wireframeAct);
-        connect(wireframeAct, SIGNAL(triggered()), myOCC, SLOT(setObjectsWireframe()));
+        connect(wireframeAct, SIGNAL(triggered()), myScene, SLOT(setObjectsWireframe()));
 
         QAction *shadingAct;
         shadingAct = new QAction(tr("&Shading"), this);
         shadingAct->setStatusTip(tr("Component Shading"));
         menu.addAction(shadingAct);
-        connect(shadingAct, SIGNAL(triggered()), myOCC, SLOT(setObjectsShading()));
+        connect(shadingAct, SIGNAL(triggered()), myScene, SLOT(setObjectsShading()));
 
         QAction *colorAct;
         colorAct = new QAction(tr("&Color"), this);
@@ -140,7 +140,7 @@ TIGLViewerWindow::TIGLViewerWindow()
     settingsDialog = new TIGLViewerSettingsDialog(*tiglViewerSettings, this);
 
     myScene  = new TIGLViewerContext();
-    myOCC->setContext(myScene->getContext());
+    myOCC->setContext(myScene);
 
     // we create a timer to workaround QFileSystemWatcher bug,
     // which emits multiple signals in a few milliseconds. This caused
@@ -756,6 +756,13 @@ void TIGLViewerWindow::connectSignals()
     connect(showConsoleAction, SIGNAL(toggled(bool)), consoleDockWidget, SLOT(setVisible(bool)));
     connect(consoleDockWidget, SIGNAL(visibilityChanged(bool)), showConsoleAction, SLOT(setChecked(bool)));
     connect(showWireframeAction, SIGNAL(toggled(bool)), myScene, SLOT(wireFrame(bool)));
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(6,7,0)
+    connect(showReflectionLinesAction, SIGNAL(toggled(bool)), myScene, SLOT(setReflectionlinesEnabled(bool)));
+#else
+    showReflectionLinesAction->setVisible(false);
+    showReflectionLinesAction->setEnabled(false);
+#endif
+
 
     connect(openTimer, SIGNAL(timeout()), this, SLOT(reopenFile()));
 

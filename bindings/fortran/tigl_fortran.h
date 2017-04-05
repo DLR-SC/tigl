@@ -128,8 +128,6 @@ extern "C" {
 #define tiglExportMeshedGeometryVTKSimpleByUID_f TIGL_EXPORT_MESHED_GEOMETRY_VTK_SIMPLE_BY_UID
 #define tiglWingComponentSegmentGetMaterialUIDs_f TIGL_WING_COMPONENT_SEGMENT_GET_MATERIAL_UIDS
 #define tiglComponentGetHashCode_f TIGL_COMPONENT_GET_HASH_CODE
-#define tiglComponentIntersectionPoint_f TIGL_COMPONENT_INTERSECTION_POINT
-#define tiglComponentIntersectionLineCount_f TIGL_COMPONENT_INTERSECTION_LINE_COUNT
 #define tiglFuselageGetMinumumDistanceToGround_f TIGL_FUSELAGE_GET_MINIMUM_DISTANCE_TO_GROUND
 #define tiglWingGetWettedArea_f TIGL_WING_GET_WETTED_AREA
 #define tiglGetErrorString_f TIGL_GET_ERROR_STRING
@@ -204,8 +202,6 @@ extern "C" {
 #define tiglExportMeshedGeometryVTKSimpleByUID_f FORTRAN_NAME(tigl_export_meshed_geometry_vtk_simple_by_uid)
 #define tiglWingComponentSegmentGetMaterialUIDs_f FORTRAN_NAME(tigl_wing_component_segment_get_material_uids)
 #define tiglComponentGetHashCode_f FORTRAN_NAME(tigl_component_get_hash_code)
-#define tiglComponentIntersectionPoint_f FORTRAN_NAME(tigl_component_intersection_point)
-#define tiglComponentIntersectionLineCount_f FORTRAN_NAME(tigl_component_intersection_line_count)
 #define tiglFuselageGetMinumumDistanceToGround_f FORTRAN_NAME(tigl_fuselage_get_minumum_distance_to_ground)
 #define tiglWingGetWettedArea_f FORTRAN_NAME(tigl_wing_get_wetted_area)
 #define tiglGetErrorString_f FORTRAN_NAME(tigl_get_error_string)
@@ -659,29 +655,6 @@ void tiglComponentGetHashCode_f(TiglCPACSConfigurationHandle* cpacsHandle,
                                int* hashCode,
                                TiglReturnCode* returnCode,
                                int lengthString1);
-
-
-
-void tiglComponentIntersectionPoint_f(TiglCPACSConfigurationHandle* cpacsHandle,
-                                     char*  componentUidOne,
-                                     char*  componentUidTwo,
-                                     int* lineID,
-                                     double* eta,
-                                     double* pointXPtr,
-                                     double* pointYPtr,
-                                     double* pointZPtr,
-                                     TiglReturnCode* returnCode,
-                                     int lengthString1,
-                                     int lengthString2);
-
-
-void tiglComponentIntersectionLineCount_f(TiglCPACSConfigurationHandle* cpacsHandle,
-                                        char*  componentUidOne,
-                                        char*  componentUidTwo,
-                                        int*   numWires,
-                                        TiglReturnCode* returnCode,
-                                        int lengthString1,
-                                        int lengthString2);
 
 
 void tiglFuselageGetMinumumDistanceToGround_f(TiglCPACSConfigurationHandle* cpacsHandle,

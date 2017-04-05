@@ -17,7 +17,7 @@
 */
 
 /* 
-* This file is automatically created from tigl.h on 2016-01-06.
+* This file is automatically created from tigl.h on 2017-03-09.
 * If you experience any bugs please contact the authors
 */
 
@@ -34,6 +34,7 @@ public class TiglNativeInterface {
     }
 
     public static native int tiglOpenCPACSConfiguration(int tixiHandle, String configurationUID, IntByReference cpacsHandlePtr);
+    public static native int tiglSaveCPACSConfiguration(String configurationUID, int cpacsHandle);
     public static native int tiglCloseCPACSConfiguration(int cpacsHandle);
     public static native int tiglGetCPACSTixiHandle(int cpacsHandle, IntByReference tixiHandlePtr);
     public static native int tiglIsCPACSConfigurationHandleValid(int cpacsHandle, IntByReference isValidPtr);
@@ -101,9 +102,28 @@ public class TiglNativeInterface {
     public static native int tiglFuselageGetSectionUID(int cpacsHandle, int fuselageIndex, int sectionIndex, PointerByReference uidNamePtr);
     public static native int tiglFuselageGetSymmetry(int cpacsHandle, int fuselageIndex, IntByReference symmetryAxisPtr);
     public static native int tiglFuselageGetMinumumDistanceToGround(int cpacsHandle, String fuselageUID, double axisPntX, double axisPntY, double axisPntZ, double axisDirX, double axisDirY, double axisDirZ, double angle, DoubleByReference pointXPtr, DoubleByReference pointYPtr, DoubleByReference pointZPtr);
-    public static native int tiglComponentIntersectionPoint(int cpacsHandle, String componentUidOne, String componentUidTwo, int lineID, double eta, DoubleByReference pointXPtr, DoubleByReference pointYPtr, DoubleByReference pointZPtr);
-    public static native int tiglComponentIntersectionPoints(int cpacsHandle, String componentUidOne, String componentUidTwo, int lineID, Pointer etaArray, int numberOfPoints, Pointer pointXArray, Pointer pointYArray, Pointer pointZArray);
-    public static native int tiglComponentIntersectionLineCount(int cpacsHandle, String componentUidOne, String componentUidTwo, IntByReference numWires);
+    public static native int tiglGetRotorCount(int cpacsHandle, IntByReference rotorCountPtr);
+    public static native int tiglRotorGetUID(int cpacsHandle, int rotorIndex, PointerByReference uidNamePtr);
+    public static native int tiglRotorGetIndex(int cpacsHandle, String rotorUID, IntByReference rotorIndexPtr);
+    public static native int tiglRotorGetRadius(int cpacsHandle, int rotorIndex, DoubleByReference radiusPtr);
+    public static native int tiglRotorGetReferenceArea(int cpacsHandle, int rotorIndex, DoubleByReference referenceAreaPtr);
+    public static native int tiglRotorGetTotalBladePlanformArea(int cpacsHandle, int rotorIndex, DoubleByReference totalBladePlanformAreaPtr);
+    public static native int tiglRotorGetSolidity(int cpacsHandle, int rotorIndex, DoubleByReference solidityPtr);
+    public static native int tiglRotorGetSurfaceArea(int cpacsHandle, int rotorIndex, DoubleByReference surfaceAreaPtr);
+    public static native int tiglRotorGetVolume(int cpacsHandle, int rotorIndex, DoubleByReference volumePtr);
+    public static native int tiglRotorGetTipSpeed(int cpacsHandle, int rotorIndex, DoubleByReference tipSpeedPtr);
+    public static native int tiglRotorGetRotorBladeCount(int cpacsHandle, int rotorIndex, IntByReference rotorBladeCountPtr);
+    public static native int tiglRotorBladeGetWingIndex(int cpacsHandle, int rotorIndex, int rotorBladeIndex, IntByReference wingIndexPtr);
+    public static native int tiglRotorBladeGetWingUID(int cpacsHandle, int rotorIndex, int rotorBladeIndex, PointerByReference wingUIDPtr);
+    public static native int tiglRotorBladeGetAzimuthAngle(int cpacsHandle, int rotorIndex, int rotorBladeIndex, DoubleByReference azimuthAnglePtr);
+    public static native int tiglRotorBladeGetRadius(int cpacsHandle, int rotorIndex, int rotorBladeIndex, DoubleByReference radiusPtr);
+    public static native int tiglRotorBladeGetPlanformArea(int cpacsHandle, int rotorIndex, int rotorBladeIndex, DoubleByReference planformAreaPtr);
+    public static native int tiglRotorBladeGetSurfaceArea(int cpacsHandle, int rotorIndex, int rotorBladeIndex, DoubleByReference surfaceAreaPtr);
+    public static native int tiglRotorBladeGetVolume(int cpacsHandle, int rotorIndex, int rotorBladeIndex, DoubleByReference volumePtr);
+    public static native int tiglRotorBladeGetTipSpeed(int cpacsHandle, int rotorIndex, int rotorBladeIndex, DoubleByReference tipSpeedPtr);
+    public static native int tiglRotorBladeGetLocalRadius(int cpacsHandle, int rotorIndex, int rotorBladeIndex, int segmentIndex, double eta, DoubleByReference radiusPtr);
+    public static native int tiglRotorBladeGetLocalChord(int cpacsHandle, int rotorIndex, int rotorBladeIndex, int segmentIndex, double eta, DoubleByReference chordPtr);
+    public static native int tiglRotorBladeGetLocalTwistAngle(int cpacsHandle, int rotorIndex, int rotorBladeIndex, int segmentIndex, double eta, DoubleByReference twistAnglePtr);
     public static native int tiglIntersectComponents(int cpacsHandle, String componentUidOne, String componentUidTwo, PointerByReference intersectionID);
     public static native int tiglIntersectWithPlane(int cpacsHandle, String componentUid, double px, double py, double pz, double nx, double ny, double nz, PointerByReference intersectionID);
     public static native int tiglIntersectGetLineCount(int cpacsHandle, String intersectionID, IntByReference lineCount);

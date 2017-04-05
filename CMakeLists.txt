@@ -78,6 +78,17 @@ find_package(OCE 0.15 COMPONENTS ${OCC_LIBS} QUIET)
 if(OCE_FOUND)
   set(OpenCASCADE_LIBRARIES ${OCC_LIBS})
   set(OpenCASCADE_INCLUDE_DIR ${OCE_INCLUDE_DIRS})
+
+  # set shaders directory
+  if (NOT ${OCE_VERSION} VERSION_LESS "0.17")
+      FIND_PATH(OpenCASCADE_SHADER_DIRECTORY
+                NAMES PhongShading.fs
+                PATH_SUFFIXES share/oce/src/Shaders share/oce-${OCE_VERSION}/src/Shaders
+                HINTS ${CASROOT} ${OCE_INCLUDE_DIRS}/../../
+      )
+  endif()
+
+
   # get opencascade version
   IF(EXISTS "${OpenCASCADE_INCLUDE_DIR}/Standard_Version.hxx")
     FILE(STRINGS "${OpenCASCADE_INCLUDE_DIR}/Standard_Version.hxx" occ_version_str REGEX "^#define[\t ]+OCC_VERSION_COMPLETE[\t ]+\".*\"")
