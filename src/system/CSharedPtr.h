@@ -25,7 +25,7 @@
     #include <memory>
     #define CSharedPtr std::shared_ptr
 #else
-    #include <boost/smart_ptr/shared_ptr.hpp>
+    #include <boost/shared_ptr.hpp>
     #define CSharedPtr boost::shared_ptr
 #endif
 

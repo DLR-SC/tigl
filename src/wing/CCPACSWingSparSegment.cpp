@@ -227,10 +227,10 @@ bool CCPACSWingSparSegment::HasCap(SparCapSide side) const
 {
     switch (side) {
     case UPPER:
-        return m_sparCrossSection.GetUpperCap();
+        return !!m_sparCrossSection.GetUpperCap();
         break;
     case LOWER:
-        return m_sparCrossSection.GetLowerCap();
+        return !!m_sparCrossSection.GetLowerCap();
         break;
     default:
         throw CTiglError("Unsupported SparCapSide passed to CCPACSWingSparSegment::HasCap!");

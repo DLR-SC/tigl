@@ -26,7 +26,7 @@
 #ifndef CTIGLABTRACTSEGMENT_H
 #define CTIGLABTRACTSEGMENT_H
 
-#include <boost/optional/optional.hpp>
+#include <boost/optional.hpp>
 #include <cassert>
 #include <vector>
 #include <algorithm>

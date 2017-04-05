@@ -57,7 +57,7 @@ if (TIGL_BINDINGS_PYTHON_INTERNAL)
 
     include_directories(${OpenCASCADE_INCLUDE_DIR} ${PythonOCC_INCLUDE_DIRS})
 
-    include_directories(${PROJECT_SOURCE_DIR}/thirdparty/boost_1_55_0)
+    include_directories(${PROJECT_SOURCE_DIR}/thirdparty/boost_1_63_0)
 
     set (MODULES "geometry;occtaddons;tmath;configuration;core;boolean_ops;exports;imports")
 

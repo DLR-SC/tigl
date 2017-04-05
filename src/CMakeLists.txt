@@ -31,8 +31,8 @@ include_directories(${OpenCASCADE_INCLUDE_DIR}
 )
 
 # boost
-include_directories(${PROJECT_SOURCE_DIR}/thirdparty/boost_1_55_0)
-file(GLOB_RECURSE BOOST_SRC ${PROJECT_SOURCE_DIR}/thirdparty/boost_1_55_0/libs/*)
+include_directories(${PROJECT_SOURCE_DIR}/thirdparty/boost_1_63_0)
+file(GLOB_RECURSE BOOST_SRC ${PROJECT_SOURCE_DIR}/thirdparty/boost_1_63_0/libs/*)
 
 file(GLOB_RECURSE TIGL_SRC
     "*.h"
