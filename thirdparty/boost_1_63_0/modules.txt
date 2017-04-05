@@ -1,0 +1,8 @@
+List of included boost files (with dependencies), collected using boost bcp:
+
+date_time/posix_time/posix_time.hpp
+functional/hash.hpp
+optional.hpp
+shared_ptr.hpp
+utility/in_place_factory.hpp
+variant.hpp

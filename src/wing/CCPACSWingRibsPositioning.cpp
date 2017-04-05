@@ -72,10 +72,16 @@ void CCPACSWingRibsPositioning::WriteCPACS(const TixiDocumentHandle& tixiHandle,
     generated::CPACSWingRibsPositioning::WriteCPACS(tixiHandle, xpath);
 
     // write element sparPositionStartUID
-    tixihelper::TixiSaveElement(tixiHandle, xpath + "/sparPositionStartUID", m_sparPositionStartUID_choice3);
+    if (m_sparPositionStartUID_choice3) {
+        tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/sparPositionStartUID");
+        tixihelper::TixiSaveElement(tixiHandle, xpath + "/sparPositionStartUID", *m_sparPositionStartUID_choice3);
+    }
 
     // write element sparPositionEndUID
-    tixihelper::TixiSaveElement(tixiHandle, xpath + "/sparPositionEndUID", m_sparPositionEndUID_choice3);
+    if (m_sparPositionEndUID_choice3) {
+        tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/sparPositionEndUID");
+        tixihelper::TixiSaveElement(tixiHandle, xpath + "/sparPositionEndUID", *m_sparPositionEndUID_choice3);
+    }
 }
 
 CCPACSWingRibsPositioning::StartDefinitionType CCPACSWingRibsPositioning::GetStartDefinitionType() const

@@ -135,7 +135,7 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSGuideCurve)
     ASSERT_EQ(guideCurve.GetUID(), "GuideCurveModel_Wing_Seg_1_2_GuideCurve_TrailingEdgeLower");
     ASSERT_EQ(guideCurve.GetName(), "Lower Trailing Edge GuideCurve from GuideCurveModel - Wing Section 1 Main Element to GuideCurveModel - Wing Section 2 Main Element ");
     ASSERT_EQ(guideCurve.GetGuideCurveProfileUID(), "GuideCurveModel_Wing_GuideCurveProfile_TrailingEdgeLower_NonLinear");
-    ASSERT_TRUE(guideCurve.GetFromRelativeCircumference_choice2());
+    ASSERT_TRUE(!!guideCurve.GetFromRelativeCircumference_choice2());
     ASSERT_EQ(*guideCurve.GetFromRelativeCircumference_choice2(), -1.0);
     ASSERT_EQ(guideCurve.GetToRelativeCircumference(), -1.0);
 }
