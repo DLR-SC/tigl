@@ -31,11 +31,7 @@ namespace tigl
         // CPACSFarField
         
         // generated from /xsd:schema/xsd:complexType[317]/xsd:complexContent/xsd:extension/xsd:sequence/xsd:element[1]/xsd:complexType/xsd:simpleContent
-        #ifdef HAVE_CPP11
-        enum class CPACSFarField_type
-        #else
         enum CPACSFarField_type
-        #endif
         {
             halfSphere,
             fullSphere,
@@ -43,27 +39,6 @@ namespace tigl
             fullCube
         };
         
-        #ifdef HAVE_CPP11
-        inline std::string TiglFarFieldTypeToString(const CPACSFarField_type& value)
-        {
-            switch(value) {
-            case CPACSFarField_type::halfSphere: return "halfSphere";
-            case CPACSFarField_type::fullSphere: return "fullSphere";
-            case CPACSFarField_type::halfCube: return "halfCube";
-            case CPACSFarField_type::fullCube: return "fullCube";
-            default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSFarField_type");
-            }
-        }
-        inline CPACSFarField_type stringToTiglFarFieldType(const std::string& value)
-        {
-            auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
-            if (toLower(value) == "halfsphere") { return CPACSFarField_type::halfSphere; }
-            if (toLower(value) == "fullsphere") { return CPACSFarField_type::fullSphere; }
-            if (toLower(value) == "halfcube") { return CPACSFarField_type::halfCube; }
-            if (toLower(value) == "fullcube") { return CPACSFarField_type::fullCube; }
-            throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSFarField_type");
-        }
-        #else
         inline std::string TiglFarFieldTypeToString(const CPACSFarField_type& value)
         {
             switch(value) {
@@ -83,7 +58,6 @@ namespace tigl
             if (toLower(value) == "fullcube") { return fullCube; }
             throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSFarField_type");
         }
-        #endif
     }
     
     // CPACSFarField_type is customized, use type TiglFarFieldType directly

@@ -28,11 +28,7 @@ class CCPACSWingSpars;
 class CCPACSWingSparPosition : public generated::CPACSSparPosition
 {
 public:
-#ifdef HAVE_CPP11
-    enum class InputType
-#else
     enum InputType
-#endif
     {
         ElementUID,
         Eta,

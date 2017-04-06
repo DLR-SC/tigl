@@ -22,7 +22,7 @@
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
 #include "tigl_internal.h"
-#include "CPACSRotorHub_type.h"
+#include <TiglRotorHubType.h>
 #include <CCPACSRotorBladeAttachments.h>
 
 namespace tigl
@@ -59,9 +59,9 @@ namespace tigl
             TIGL_EXPORT virtual void SetDescription(const std::string& value);
             TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
             
-            TIGL_EXPORT virtual const boost::optional<CPACSRotorHub_type>& GetType() const;
-            TIGL_EXPORT virtual void SetType(const CPACSRotorHub_type& value);
-            TIGL_EXPORT virtual void SetType(const boost::optional<CPACSRotorHub_type>& value);
+            TIGL_EXPORT virtual const boost::optional<TiglRotorHubType>& GetType() const;
+            TIGL_EXPORT virtual void SetType(const TiglRotorHubType& value);
+            TIGL_EXPORT virtual void SetType(const boost::optional<TiglRotorHubType>& value);
             
             TIGL_EXPORT virtual const CCPACSRotorBladeAttachments& GetRotorBladeAttachments() const;
             TIGL_EXPORT virtual CCPACSRotorBladeAttachments& GetRotorBladeAttachments();
@@ -69,11 +69,11 @@ namespace tigl
         protected:
             CCPACSRotor* m_parent;
             
-            boost::optional<std::string>        m_uID;
-            boost::optional<std::string>        m_name;
-            boost::optional<std::string>        m_description;
-            boost::optional<CPACSRotorHub_type> m_type;
-            CCPACSRotorBladeAttachments         m_rotorBladeAttachments;
+            boost::optional<std::string>      m_uID;
+            boost::optional<std::string>      m_name;
+            boost::optional<std::string>      m_description;
+            boost::optional<TiglRotorHubType> m_type;
+            CCPACSRotorBladeAttachments       m_rotorBladeAttachments;
             
         private:
             #ifdef HAVE_CPP11

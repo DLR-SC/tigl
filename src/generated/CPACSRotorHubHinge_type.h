@@ -31,36 +31,13 @@ namespace tigl
         // CPACSRotorHubHinge
         
         // generated from /xsd:schema/xsd:complexType[740]/xsd:complexContent/xsd:extension/xsd:all/xsd:element[4]/xsd:simpleType
-        #ifdef HAVE_CPP11
-        enum class CPACSRotorHubHinge_type
-        #else
         enum CPACSRotorHubHinge_type
-        #endif
         {
             flap,
             pitch,
             leadLag
         };
         
-        #ifdef HAVE_CPP11
-        inline std::string CPACSRotorHubHinge_typeToString(const CPACSRotorHubHinge_type& value)
-        {
-            switch(value) {
-            case CPACSRotorHubHinge_type::flap: return "flap";
-            case CPACSRotorHubHinge_type::pitch: return "pitch";
-            case CPACSRotorHubHinge_type::leadLag: return "leadLag";
-            default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSRotorHubHinge_type");
-            }
-        }
-        inline CPACSRotorHubHinge_type stringToCPACSRotorHubHinge_type(const std::string& value)
-        {
-            auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
-            if (toLower(value) == "flap") { return CPACSRotorHubHinge_type::flap; }
-            if (toLower(value) == "pitch") { return CPACSRotorHubHinge_type::pitch; }
-            if (toLower(value) == "leadlag") { return CPACSRotorHubHinge_type::leadLag; }
-            throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSRotorHubHinge_type");
-        }
-        #else
         inline std::string CPACSRotorHubHinge_typeToString(const CPACSRotorHubHinge_type& value)
         {
             switch(value) {
@@ -78,7 +55,6 @@ namespace tigl
             if (toLower(value) == "leadlag") { return leadLag; }
             throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSRotorHubHinge_type");
         }
-        #endif
     }
     
     // Aliases in tigl namespace
@@ -86,8 +62,8 @@ namespace tigl
     using ECPACSRotorHubHinge_type = generated::CPACSRotorHubHinge_type;
     #else
     typedef generated::CPACSRotorHubHinge_type ECPACSRotorHubHinge_type;
+    #endif
     using generated::flap;
     using generated::pitch;
     using generated::leadLag;
-    #endif
 }

@@ -31,11 +31,7 @@ namespace tigl
         // CPACSGuideCurve
         
         // generated from /xsd:schema/xsd:complexType[421]/xsd:complexContent/xsd:extension/xsd:sequence/xsd:choice[1]/xsd:sequence[1]/xsd:element[2]/xsd:complexType/xsd:simpleContent
-        #ifdef HAVE_CPP11
-        enum class CPACSGuideCurve_continuity
-        #else
         enum CPACSGuideCurve_continuity
-        #endif
         {
             C0,
             C1_from_previous,
@@ -44,29 +40,6 @@ namespace tigl
             C2_to_previous
         };
         
-        #ifdef HAVE_CPP11
-        inline std::string CPACSGuideCurve_continuityToString(const CPACSGuideCurve_continuity& value)
-        {
-            switch(value) {
-            case CPACSGuideCurve_continuity::C0: return "C0";
-            case CPACSGuideCurve_continuity::C1_from_previous: return "C1 from previous";
-            case CPACSGuideCurve_continuity::C2_from_previous: return "C2 from previous";
-            case CPACSGuideCurve_continuity::C1_to_previous: return "C1 to previous";
-            case CPACSGuideCurve_continuity::C2_to_previous: return "C2 to previous";
-            default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSGuideCurve_continuity");
-            }
-        }
-        inline CPACSGuideCurve_continuity stringToCPACSGuideCurve_continuity(const std::string& value)
-        {
-            auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
-            if (toLower(value) == "c0") { return CPACSGuideCurve_continuity::C0; }
-            if (toLower(value) == "c1 from previous") { return CPACSGuideCurve_continuity::C1_from_previous; }
-            if (toLower(value) == "c2 from previous") { return CPACSGuideCurve_continuity::C2_from_previous; }
-            if (toLower(value) == "c1 to previous") { return CPACSGuideCurve_continuity::C1_to_previous; }
-            if (toLower(value) == "c2 to previous") { return CPACSGuideCurve_continuity::C2_to_previous; }
-            throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSGuideCurve_continuity");
-        }
-        #else
         inline std::string CPACSGuideCurve_continuityToString(const CPACSGuideCurve_continuity& value)
         {
             switch(value) {
@@ -88,7 +61,6 @@ namespace tigl
             if (toLower(value) == "c2 to previous") { return C2_to_previous; }
             throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSGuideCurve_continuity");
         }
-        #endif
     }
     
     // Aliases in tigl namespace
@@ -96,10 +68,10 @@ namespace tigl
     using ECPACSGuideCurve_continuity = generated::CPACSGuideCurve_continuity;
     #else
     typedef generated::CPACSGuideCurve_continuity ECPACSGuideCurve_continuity;
+    #endif
     using generated::C0;
     using generated::C1_from_previous;
     using generated::C2_from_previous;
     using generated::C1_to_previous;
     using generated::C2_to_previous;
-    #endif
 }

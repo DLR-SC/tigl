@@ -25,7 +25,7 @@ namespace tigl
         if (m_refType) {
             return *m_refType;
         } else {
-            return ENUM_VALUE(ECPACSTranslationType, ABS_LOCAL);
+            return ABS_LOCAL;
         }
     }
 }

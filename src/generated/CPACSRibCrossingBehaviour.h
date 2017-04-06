@@ -31,33 +31,12 @@ namespace tigl
         // CPACSWingRibsPositioning
         
         // generated from /xsd:schema/xsd:complexType[716]/xsd:complexContent/xsd:extension/xsd:sequence/xsd:element[4]/xsd:complexType/xsd:simpleContent
-        #ifdef HAVE_CPP11
-        enum class CPACSRibCrossingBehaviour
-        #else
         enum CPACSRibCrossingBehaviour
-        #endif
         {
             cross,
             end
         };
         
-        #ifdef HAVE_CPP11
-        inline std::string CPACSRibCrossingBehaviourToString(const CPACSRibCrossingBehaviour& value)
-        {
-            switch(value) {
-            case CPACSRibCrossingBehaviour::cross: return "cross";
-            case CPACSRibCrossingBehaviour::end: return "end";
-            default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSRibCrossingBehaviour");
-            }
-        }
-        inline CPACSRibCrossingBehaviour stringToCPACSRibCrossingBehaviour(const std::string& value)
-        {
-            auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
-            if (toLower(value) == "cross") { return CPACSRibCrossingBehaviour::cross; }
-            if (toLower(value) == "end") { return CPACSRibCrossingBehaviour::end; }
-            throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSRibCrossingBehaviour");
-        }
-        #else
         inline std::string CPACSRibCrossingBehaviourToString(const CPACSRibCrossingBehaviour& value)
         {
             switch(value) {
@@ -73,7 +52,6 @@ namespace tigl
             if (toLower(value) == "end") { return end; }
             throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSRibCrossingBehaviour");
         }
-        #endif
     }
     
     // Aliases in tigl namespace
@@ -81,7 +59,7 @@ namespace tigl
     using ECPACSRibCrossingBehaviour = generated::CPACSRibCrossingBehaviour;
     #else
     typedef generated::CPACSRibCrossingBehaviour ECPACSRibCrossingBehaviour;
+    #endif
     using generated::cross;
     using generated::end;
-    #endif
 }

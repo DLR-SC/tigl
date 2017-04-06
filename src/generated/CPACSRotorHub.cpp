@@ -59,7 +59,7 @@ namespace tigl
             
             // read element type
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/type")) {
-                m_type = stringToCPACSRotorHub_type(tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/type"));
+                m_type = stringToTiglRotorHubType(tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/type"));
             }
             
             // read element rotorBladeAttachments
@@ -95,7 +95,7 @@ namespace tigl
             // write element type
             if (m_type) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/type");
-                tixihelper::TixiSaveElement(tixiHandle, xpath + "/type", CPACSRotorHub_typeToString(*m_type));
+                tixihelper::TixiSaveElement(tixiHandle, xpath + "/type", TiglRotorHubTypeToString(*m_type));
             }
             
             // write element rotorBladeAttachments
@@ -149,17 +149,17 @@ namespace tigl
             m_description = value;
         }
         
-        const boost::optional<CPACSRotorHub_type>& CPACSRotorHub::GetType() const
+        const boost::optional<TiglRotorHubType>& CPACSRotorHub::GetType() const
         {
             return m_type;
         }
         
-        void CPACSRotorHub::SetType(const CPACSRotorHub_type& value)
+        void CPACSRotorHub::SetType(const TiglRotorHubType& value)
         {
             m_type = value;
         }
         
-        void CPACSRotorHub::SetType(const boost::optional<CPACSRotorHub_type>& value)
+        void CPACSRotorHub::SetType(const boost::optional<TiglRotorHubType>& value)
         {
             m_type = value;
         }

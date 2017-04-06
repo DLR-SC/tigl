@@ -861,7 +861,7 @@ void TIGLViewerWindow::updateMenus()
     try {
         if (hand > 0) {
             tigl::CCPACSConfiguration& config = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(hand);
-            hasFarField = config.GetFarField().GetType() != ENUM_VALUE_NS(tigl, TiglFarFieldType, NONE);
+            hasFarField = config.GetFarField().GetType() != tigl::NONE;
             hasACSystems = config.GetGenericSystemCount() > 0;
             nRotorBlades = config.GetRotorBladeCount();
             nRotors = config.GetRotorCount();

@@ -37,11 +37,7 @@ class CCPACSWingCell;
 class CCPACSWingCellPositionChordwise : private generated::CPACSCellPositioningChordwise
 {
 public:
-#ifdef HAVE_CPP11
-    enum class InputType
-#else
     enum InputType
-#endif
     {
         Xsi,
         Spar,

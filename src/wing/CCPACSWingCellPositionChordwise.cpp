@@ -29,10 +29,10 @@ CCPACSWingCellPositionChordwise::CCPACSWingCellPositionChordwise(CCPACSWingCell*
 CCPACSWingCellPositionChordwise::InputType CCPACSWingCellPositionChordwise::GetInputType() const
 {
     if (m_xsi1_choice2 && m_xsi2_choice2)
-        return ENUM_VALUE(InputType, Xsi);
+        return Xsi;
     if (m_sparUID_choice1)
-        return ENUM_VALUE(InputType, Spar);
-    return ENUM_VALUE(InputType, None);
+        return Spar;
+    return None;
 }
 
 void CCPACSWingCellPositionChordwise::SetXsi(double xsi1, double xsi2)
@@ -56,7 +56,7 @@ void CCPACSWingCellPositionChordwise::GetXsi(double& xsi1, double& xsi2) const
 
 std::pair<double, double> CCPACSWingCellPositionChordwise::GetXsi() const
 {
-    if (GetInputType() != ENUM_VALUE(InputType, Xsi)) {
+    if (GetInputType() != Xsi) {
         throw CTiglError("CCPACSWingCellPositionChordwise::GetXsi method called, but position is defined via sparUID!");
     }
     return std::make_pair(*m_xsi1_choice2, *m_xsi2_choice2);
@@ -75,7 +75,7 @@ void CCPACSWingCellPositionChordwise::SetSparUId(std::string sparUId)
 
 const std::string& CCPACSWingCellPositionChordwise::GetSparUId() const
 {
-    if (GetInputType() != ENUM_VALUE(InputType, Spar)) {
+    if (GetInputType() != Spar) {
         throw CTiglError("CCPACSWingCellPositionChordwise::GetSparUId method called, but position is defined via xsi1/xsi2!");
     }
     return *m_sparUID_choice1;
