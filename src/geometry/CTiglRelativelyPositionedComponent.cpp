@@ -63,7 +63,7 @@ namespace {
             else if (_parent)
                 return _parent->GetSymmetryAxis();
             else
-                return ENUM_VALUE(TiglSymmetryAxis, TIGL_NO_SYMMETRY);
+                return TIGL_NO_SYMMETRY;
         }
         TiglSymmetryAxis operator()(const boost::optional<TiglSymmetryAxis>* s) {
             if (s && *s)
@@ -71,7 +71,7 @@ namespace {
             else if (_parent)
                 return _parent->GetSymmetryAxis();
             else
-                return ENUM_VALUE(TiglSymmetryAxis, TIGL_NO_SYMMETRY);
+                return TIGL_NO_SYMMETRY;
         }
 
     private:
@@ -147,7 +147,7 @@ ECPACSTranslationType CTiglRelativelyPositionedComponent::GetTranslationType() c
     if (_transformation)
         return _transformation->getTranslationType();
     else
-        return ENUM_VALUE(ECPACSTranslationType, ABS_GLOBAL); // TODO(bgruber): is this a valid default?
+        return ABS_GLOBAL; // TODO(bgruber): is this a valid default?
 }
 
 void CTiglRelativelyPositionedComponent::Translate(CTiglPoint trans)

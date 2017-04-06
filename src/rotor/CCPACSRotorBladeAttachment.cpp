@@ -78,13 +78,13 @@ CTiglTransformation CCPACSRotorBladeAttachment::GetRotorBladeTransformationMatri
             // a. move to origin
             rotorBladeTransformation.AddTranslation(-curHingePosition.x, -curHingePosition.y, -curHingePosition.z);
             // b. rotate around hinge axis
-            if (curHingeType == ENUM_VALUE(ECPACSRotorHubHinge_type, pitch)) {
+            if (curHingeType == pitch) {
                 rotorBladeTransformation.AddRotationX( (GetHinge(k+1).GetHingeAngle(bladeThetaDeg)));
             }
-            else if (curHingeType == ENUM_VALUE(ECPACSRotorHubHinge_type, flap)) {
+            else if (curHingeType == flap) {
                 rotorBladeTransformation.AddRotationY(-(GetHinge(k+1).GetHingeAngle(bladeThetaDeg)));
             }
-            else if (curHingeType == ENUM_VALUE(ECPACSRotorHubHinge_type, leadLag)) {
+            else if (curHingeType == leadLag) {
                 rotorBladeTransformation.AddRotationZ( (GetHinge(k+1).GetHingeAngle(bladeThetaDeg)));
             }
             // c. move back to origin

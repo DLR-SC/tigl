@@ -87,11 +87,11 @@ void CCPACSWingRibsPositioning::WriteCPACS(const TixiDocumentHandle& tixiHandle,
 CCPACSWingRibsPositioning::StartDefinitionType CCPACSWingRibsPositioning::GetStartDefinitionType() const
 {
     if (m_etaStart_choice1)
-        return ENUM_VALUE(StartDefinitionType, ETA_START);
+        return ETA_START;
     if (m_elementStartUID_choice2)
-        return ENUM_VALUE(StartDefinitionType, ELEMENT_START);
+        return ELEMENT_START;
     if (m_sparPositionStartUID_choice3)
-        return ENUM_VALUE(StartDefinitionType, SPARPOSITION_START);
+        return SPARPOSITION_START;
     throw CTiglError("Invalid start definition");
 }
 
@@ -153,11 +153,11 @@ void CCPACSWingRibsPositioning::SetSparPositionStartUID(const std::string& uid)
 CCPACSWingRibsPositioning::EndDefinitionType CCPACSWingRibsPositioning::GetEndDefinitionType() const
 {
     if (m_etaEnd_choice1)
-        return ENUM_VALUE(EndDefinitionType, ETA_END);
+        return ETA_END;
     if (m_elementEndUID_choice2)
-        return ENUM_VALUE(EndDefinitionType, ELEMENT_END);
+        return ELEMENT_END;
     if (m_sparPositionEndUID_choice3)
-        return ENUM_VALUE(EndDefinitionType, SPARPOSITION_END);
+        return SPARPOSITION_END;
     throw CTiglError("Invalid end definition");
 }
 
@@ -218,9 +218,9 @@ void CCPACSWingRibsPositioning::SetSparPositionEndUID(const std::string& uid)
 CCPACSWingRibsPositioning::RibCountDefinitionType CCPACSWingRibsPositioning::GetRibCountDefinitionType() const
 {
     if (m_spacing_choice1)
-        return ENUM_VALUE(RibCountDefinitionType, SPACING);
+        return SPACING;
     if (m_numberOfRibs_choice2)
-        return ENUM_VALUE(RibCountDefinitionType, NUMBER_OF_RIBS);
+        return NUMBER_OF_RIBS;
     throw CTiglError("Invalid rib count definition");
 }
 

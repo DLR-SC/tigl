@@ -68,7 +68,7 @@ CTiglPoint CCPACSWingSection::GetScaling() const
 // Setter for translation
 void CCPACSWingSection::SetTranslation(const CTiglPoint& trans)
 {
-    m_transformation.setTranslation(trans, ENUM_VALUE(ECPACSTranslationType, ABS_LOCAL));
+    m_transformation.setTranslation(trans, ABS_LOCAL);
     m_transformation.updateMatrix();
 
 }

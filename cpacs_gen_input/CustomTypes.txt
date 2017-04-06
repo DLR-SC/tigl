@@ -5,6 +5,7 @@
 CPACSSymmetry                      TiglSymmetryAxis
 CPACSPointAbsRelType_refType       ECPACSTranslationType
 CPACSFarField_type                 TiglFarFieldType
+CPACSRotorHub_type                 TiglRotorHubType
 
 // classes
 CPACSAircraftModel                 CCPACSAircraftModel

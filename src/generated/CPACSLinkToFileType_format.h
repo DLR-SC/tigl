@@ -31,36 +31,13 @@ namespace tigl
         // CPACSLinkToFile
         
         // generated from /xsd:schema/xsd:complexType[486]/xsd:complexContent/xsd:extension/xsd:attribute[1]/xsd:simpleType
-        #ifdef HAVE_CPP11
-        enum class CPACSLinkToFileType_format
-        #else
         enum CPACSLinkToFileType_format
-        #endif
         {
             Step,
             Iges,
             Stl
         };
         
-        #ifdef HAVE_CPP11
-        inline std::string CPACSLinkToFileType_formatToString(const CPACSLinkToFileType_format& value)
-        {
-            switch(value) {
-            case CPACSLinkToFileType_format::Step: return "Step";
-            case CPACSLinkToFileType_format::Iges: return "Iges";
-            case CPACSLinkToFileType_format::Stl: return "Stl";
-            default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSLinkToFileType_format");
-            }
-        }
-        inline CPACSLinkToFileType_format stringToCPACSLinkToFileType_format(const std::string& value)
-        {
-            auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
-            if (toLower(value) == "step") { return CPACSLinkToFileType_format::Step; }
-            if (toLower(value) == "iges") { return CPACSLinkToFileType_format::Iges; }
-            if (toLower(value) == "stl") { return CPACSLinkToFileType_format::Stl; }
-            throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSLinkToFileType_format");
-        }
-        #else
         inline std::string CPACSLinkToFileType_formatToString(const CPACSLinkToFileType_format& value)
         {
             switch(value) {
@@ -78,7 +55,6 @@ namespace tigl
             if (toLower(value) == "stl") { return Stl; }
             throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSLinkToFileType_format");
         }
-        #endif
     }
     
     // Aliases in tigl namespace
@@ -86,8 +62,8 @@ namespace tigl
     using ECPACSLinkToFileType_format = generated::CPACSLinkToFileType_format;
     #else
     typedef generated::CPACSLinkToFileType_format ECPACSLinkToFileType_format;
+    #endif
     using generated::Step;
     using generated::Iges;
     using generated::Stl;
-    #endif
 }

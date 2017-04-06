@@ -304,8 +304,8 @@ std::pair<double, double> CCPACSWingCell::computePositioningEtaXsi(const CCPACSW
 {
     double eta, xsi;
 
-    if (spanwisePos.GetInputType() == ENUM_VALUE_NS(CCPACSWingCellPositionSpanwise, InputType, Eta) &&
-        chordwisePos.GetInputType() == ENUM_VALUE_NS(CCPACSWingCellPositionChordwise, InputType, Xsi)) {
+    if (spanwisePos.GetInputType() == CCPACSWingCellPositionSpanwise::Eta &&
+        chordwisePos.GetInputType() == CCPACSWingCellPositionChordwise::Xsi) {
         if (front) {
             eta = spanwisePos.GetEta().first;
         }
@@ -319,8 +319,8 @@ std::pair<double, double> CCPACSWingCell::computePositioningEtaXsi(const CCPACSW
             xsi = chordwisePos.GetXsi().second;
         }
     }
-    else if (spanwisePos.GetInputType() == ENUM_VALUE_NS(CCPACSWingCellPositionSpanwise, InputType, Eta) &&
-             chordwisePos.GetInputType() == ENUM_VALUE_NS(CCPACSWingCellPositionChordwise, InputType, Spar)) {
+    else if (spanwisePos.GetInputType() == CCPACSWingCellPositionSpanwise::Eta &&
+             chordwisePos.GetInputType() == CCPACSWingCellPositionChordwise::Spar) {
         if (front) {
             eta = spanwisePos.GetEta().first;
         }
@@ -332,8 +332,8 @@ std::pair<double, double> CCPACSWingCell::computePositioningEtaXsi(const CCPACSW
         const CCPACSWingSparSegment& spar = structure.GetSparSegment(chordwisePos.GetSparUId());
         xsi = computeSparXsiValue(structure.GetWingStructureReference(), spar, eta);
     }
-    else if (spanwisePos.GetInputType() == ENUM_VALUE_NS(CCPACSWingCellPositionSpanwise, InputType, Rib) &&
-             chordwisePos.GetInputType() == ENUM_VALUE_NS(CCPACSWingCellPositionChordwise, InputType, Xsi)) {
+    else if (spanwisePos.GetInputType() == CCPACSWingCellPositionSpanwise::Rib &&
+             chordwisePos.GetInputType() == CCPACSWingCellPositionChordwise::Xsi) {
         std::string ribUid;
         int ribIndex;
         // get the ribs definition from the wing structure reference
@@ -348,8 +348,8 @@ std::pair<double, double> CCPACSWingCell::computePositioningEtaXsi(const CCPACSW
         }
         eta = computeRibEtaValue(structure.GetWingStructureReference(), ribsDefinition, ribIndex, xsi);
     }
-    else if (spanwisePos.GetInputType() == ENUM_VALUE_NS(CCPACSWingCellPositionSpanwise, InputType, Rib) &&
-             chordwisePos.GetInputType() == ENUM_VALUE_NS(CCPACSWingCellPositionChordwise, InputType, Spar)) {
+    else if (spanwisePos.GetInputType() == CCPACSWingCellPositionSpanwise::Rib &&
+             chordwisePos.GetInputType() == CCPACSWingCellPositionChordwise::Spar) {
         // get the spar from the wing structure reference
         const CCPACSWingCSStructure& structure = m_parent->GetParentElement()->GetStructure();
         CTiglWingStructureReference wsr = structure.GetWingStructureReference();

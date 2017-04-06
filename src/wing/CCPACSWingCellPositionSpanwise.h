@@ -32,11 +32,8 @@ class CCPACSWingCell;
 class CCPACSWingCellPositionSpanwise : public generated::CPACSCellPositioningSpanwise
 {
 public:
-#ifdef HAVE_CPP11
-    enum class InputType {
-#else
-    enum InputType {
-#endif
+    enum InputType
+    {
         Eta,
         Rib,
         None

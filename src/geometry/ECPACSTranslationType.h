@@ -24,11 +24,7 @@
 
 namespace tigl
 {
-#ifdef HAVE_CPP11
-enum class ECPACSTranslationType
-#else
 enum ECPACSTranslationType
-#endif
 {
     ABS_LOCAL,
     ABS_GLOBAL
@@ -36,15 +32,15 @@ enum ECPACSTranslationType
 
 inline std::string ECPACSTranslationTypeToString(const ECPACSTranslationType& value) {
     switch (value) {
-        case ENUM_VALUE(ECPACSTranslationType, ABS_LOCAL):  return "absLocal";
-        case ENUM_VALUE(ECPACSTranslationType, ABS_GLOBAL): return "absGlobal";
+        case ABS_LOCAL:  return "absLocal";
+        case ABS_GLOBAL: return "absGlobal";
         default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type ECPACSTranslationType");
     }
 }
 
 inline ECPACSTranslationType stringToECPACSTranslationType(const std::string& value) {
-    if (value == "absLocal")  { return ENUM_VALUE(ECPACSTranslationType, ABS_LOCAL);  }
-    if (value == "absGlobal") { return ENUM_VALUE(ECPACSTranslationType, ABS_GLOBAL); }
+    if (value == "absLocal")  { return ABS_LOCAL;  }
+    if (value == "absGlobal") { return ABS_GLOBAL; }
     throw CTiglError("Invalid string value \"" + value + "\" for enum type ECPACSTranslationType");
 }
 

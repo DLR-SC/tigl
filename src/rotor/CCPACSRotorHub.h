@@ -30,30 +30,16 @@
 
 #include "generated/CPACSRotorHub.h"
 #include "CCPACSRotorBladeAttachments.h"
-
+#include "TiglRotorHubType.h"
 
 namespace tigl
 {
-#ifdef HAVE_CPP11
-enum class TiglRotorHubType
-#else
-enum TiglRotorHubType
-#endif
-{
-    TIGLROTORHUB_UNDEFINED,
-    TIGLROTORHUB_SEMI_RIGID,
-    TIGLROTORHUB_RIGID,
-    TIGLROTORHUB_ARTICULATED,
-    TIGLROTORHUB_HINGELESS
-};
-
 class CCPACSConfiguration;
 class CCPACSRotor;
 class CTiglAttachedRotorBlade;
 
 class CCPACSRotorHub : public generated::CPACSRotorHub
 {
-
 public:
     // Constructor
     TIGL_EXPORT CCPACSRotorHub(CCPACSRotor* parent);

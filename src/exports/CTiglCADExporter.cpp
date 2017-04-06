@@ -89,7 +89,7 @@ void CTiglCADExporter::AddConfiguration(CCPACSConfiguration& config, ExportOptio
 
     if (options.includeFarField) {
         CCPACSFarField& farfield = config.GetFarField();
-        if (farfield.GetType() != ENUM_VALUE(TiglFarFieldType, NONE)) {
+        if (farfield.GetType() != NONE) {
             AddShape(farfield.GetLoft(),options);
         }
     }

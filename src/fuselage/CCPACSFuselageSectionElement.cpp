@@ -70,7 +70,7 @@ CTiglPoint CCPACSFuselageSectionElement::GetScaling() const
 
 void CCPACSFuselageSectionElement::SetTranslation(const CTiglPoint &translation)
 {
-    m_transformation.setTranslation(translation, ENUM_VALUE(ECPACSTranslationType, ABS_LOCAL));
+    m_transformation.setTranslation(translation, ABS_LOCAL);
     m_transformation.updateMatrix();
 }
 

@@ -32,9 +32,9 @@ CCPACSWingSparPosition::CCPACSWingSparPosition(CCPACSWingSparPositions* sparPosi
 CCPACSWingSparPosition::InputType CCPACSWingSparPosition::GetInputType() const
 {
     if (m_eta_choice1)
-        return ENUM_VALUE(InputType, Eta);
+        return Eta;
     if (m_elementUID_choice2)
-        return ENUM_VALUE(InputType, ElementUID);
+        return ElementUID;
     throw CTiglError("Invalid input type");
 }
 

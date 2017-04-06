@@ -165,7 +165,7 @@ void CCPACSConfiguration::transformAllComponents(CTiglRelativelyPositionedCompon
     CTiglPoint parentTranslation = parent->GetTranslation();
     for (pIter = children.begin(); pIter != children.end(); ++pIter) {
         CTiglRelativelyPositionedComponent* child = *pIter;
-        if (child->GetTranslationType() == ENUM_VALUE(ECPACSTranslationType, ABS_LOCAL)) {
+        if (child->GetTranslationType() == ABS_LOCAL) {
             child->Translate(parentTranslation);
         }
         transformAllComponents(child);
