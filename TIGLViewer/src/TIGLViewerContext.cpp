@@ -103,14 +103,14 @@ void TIGLViewerContext::initShaders()
     myShader->AttachShader (
         Graphic3d_ShaderObject::CreateFromSource(
             Graphic3d_TOS_VERTEX,
-            getShaderFile("PhongShading.vs").toStdString().c_str()
+            getShaderFile("PhongShading-" + shaderVersion + ".vs").toStdString().c_str()
     ));
 
     // Attach fragment shader
     myShader->AttachShader (
         Graphic3d_ShaderObject::CreateFromSource(
             Graphic3d_TOS_FRAGMENT,
-            getShaderFile("PhongShading.fs").toStdString().c_str()
+            getShaderFile("PhongShading-" + shaderVersion + ".fs").toStdString().c_str()
     ));
 
     myShader->PushVariable ("enableZebra", 0);

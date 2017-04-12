@@ -20,7 +20,9 @@
     <file>../gfx/edit-select-all.png</file>
     <file>../gfx/screenshot.png</file>
     <file>../scripts/globaldefs.js</file>
-    <file>../shaders/PhongShading.fs</file>
-    <file>../shaders/PhongShading.vs</file>
+    <file>../shaders/PhongShading-v6.fs</file>
+    <file>../shaders/PhongShading-v6.vs</file>
+    <file>../shaders/PhongShading-v7.fs</file>
+    <file>../shaders/PhongShading-v7.vs</file>
 </qresource>
 </RCC>
