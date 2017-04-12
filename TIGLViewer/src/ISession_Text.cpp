@@ -87,7 +87,14 @@ void ISession_Text::Compute(const Handle(PrsMgr_PresentationManager3d)& mgr,
                             const Handle(Prs3d_Presentation)& aPresentation,
                             const Standard_Integer /*aMode*/)
 {
+
+#if OCC_VERSION_HEX >= 0x070100
+    Handle(Graphic3d_HighlightStyle) greenStyle = new Graphic3d_HighlightStyle();
+    greenStyle->SetColor(Quantity_NOC_GREEN);
+    mgr->Color(this, greenStyle);
+#else
     mgr->Color(this, Quantity_NOC_GREEN);
+#endif
     Prs3d_Text::Draw(aPresentation,myDrawer,MyText,gp_Pnt(  MyX ,MyY,MyZ ));
 }
 

@@ -70,7 +70,13 @@ TIGLViewerContext::TIGLViewerContext()
     myGridColor      = Quantity_NOC_RED4;
     myGridTenthColor = Quantity_NOC_GRAY90;
 
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,1,0)
+    Handle(Graphic3d_HighlightStyle) whiteStyle = new Graphic3d_HighlightStyle;
+    whiteStyle->SetColor(Quantity_NOC_WHITE);
+    myContext->SetHighlightStyle(whiteStyle);
+#else
     myContext->SetHilightColor(Quantity_NOC_WHITE);
+#endif
     myContext->SetIsoNumber(0);
 
 
@@ -84,6 +90,12 @@ TIGLViewerContext::TIGLViewerContext()
 
 void TIGLViewerContext::initShaders()
 {
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,0,0)
+    QString shaderVersion = "v7";
+#elif OCC_VERSION_HEX >= VERSION_HEX_CODE(6,7,0)
+    QString shaderVersion = "v6";
+#endif
+
 #if OCC_VERSION_HEX >= VERSION_HEX_CODE(6,7,0)
     myShader = new Graphic3d_ShaderProgram();
 

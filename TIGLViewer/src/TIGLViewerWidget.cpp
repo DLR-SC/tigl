@@ -1074,7 +1074,8 @@ void TIGLViewerWidget::drawRubberBand( const QPoint origin, const QPoint positio
         myLayer->End();
     }
 #else
-    if (!myContext.IsNull()) {
+    if (viewerContext) {
+        Handle(AIS_InteractiveContext) myContext = viewerContext->getContext();
         // Draw black-white dotted, imitate a shadowy look
         // This makes it possible to draw even on white or
         // black backgrounds
@@ -1103,7 +1104,8 @@ void TIGLViewerWidget::hideRubberBand( void )
         myLayer->Clear();
     }
 #else
-    if (!myContext.IsNull()) {
+    if (viewerContext) {
+        Handle(AIS_InteractiveContext) myContext = viewerContext->getContext();
         myContext->Remove (whiteRect, Standard_False);
         myContext->Remove (blackRect, Standard_False);
         myContext->CurrentViewer()->RedrawImmediate();
