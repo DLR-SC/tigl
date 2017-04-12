@@ -41,9 +41,7 @@ void CCPACSWings::Invalidate()
 }
 
 CCPACSWings::CCPACSWings(CCPACSRotorcraftModel* parent)
-    : generated::CPACSWings(parent) {
-    throw CTiglError("Instantiating CCPACSWings with CPACSRotorcraftModel as parent is not implemented");
-}
+    : generated::CPACSWings(parent) {}
 
 CCPACSWings::CCPACSWings(CCPACSAircraftModel* parent)
     : generated::CPACSWings(parent) {}
@@ -61,11 +59,17 @@ int CCPACSWings::GetProfileCount() const
 
 CCPACSWingProfiles& CCPACSWings::GetProfiles()
 {
-    return static_cast<CCPACSAircraftModel*>(m_parent)->GetConfiguration().GetWingProfiles();
+    if (IsParent<CCPACSAircraftModel>())
+        return static_cast<CCPACSAircraftModel*>(m_parent)->GetConfiguration().GetWingProfiles();
+    else
+        return static_cast<CCPACSRotorcraftModel*>(m_parent)->GetConfiguration().GetWingProfiles();
 }
 
 const CCPACSWingProfiles& CCPACSWings::GetProfiles() const {
-    return static_cast<CCPACSAircraftModel*>(m_parent)->GetConfiguration().GetWingProfiles();
+    if (IsParent<CCPACSAircraftModel>())
+        return static_cast<CCPACSAircraftModel*>(m_parent)->GetConfiguration().GetWingProfiles();
+    else
+        return static_cast<CCPACSRotorcraftModel*>(m_parent)->GetConfiguration().GetWingProfiles();
 }
 
 
