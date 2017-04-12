@@ -36,7 +36,7 @@ class CCPACSWingSparPosition;
 // Applies the wing transformation to the passed Shape and returns the
 // the transformed shape
 // TODO: const correctness of CCPACSWingCSStructure
-TopoDS_Shape ApplyWingTransformation(CCPACSWingCSStructure& structure, const TopoDS_Shape& shape);
+TopoDS_Shape ApplyWingTransformation(const CCPACSWingCSStructure& structure, const TopoDS_Shape& shape);
 
 // Cuts the passed shape with all spars found in the passed structure and
 // returns the splitted shape
