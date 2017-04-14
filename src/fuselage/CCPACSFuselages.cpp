@@ -36,9 +36,7 @@ CCPACSFuselages::CCPACSFuselages(CCPACSAircraftModel* parent)
     : generated::CPACSFuselages(parent) {}
 
 CCPACSFuselages::CCPACSFuselages(CCPACSRotorcraftModel* parent)
-    : generated::CPACSFuselages(parent) {
-    throw CTiglError("Instantiating CCPACSFuselages with CPACSRotorcraftModel as parent is not implemented");
-}
+    : generated::CPACSFuselages(parent) {}
 
 // Invalidates internal state
 void CCPACSFuselages::Invalidate()
@@ -74,11 +72,17 @@ int CCPACSFuselages::GetProfileCount() const
 
 CCPACSFuselageProfiles& CCPACSFuselages::GetProfiles() 
 {
-    return static_cast<CCPACSAircraftModel*>(m_parent)->GetConfiguration().GetFuselageProfiles();
+    if (IsParent<CCPACSAircraftModel>())
+        return static_cast<CCPACSAircraftModel*>(m_parent)->GetConfiguration().GetFuselageProfiles();
+    else
+        return static_cast<CCPACSRotorcraftModel*>(m_parent)->GetConfiguration().GetFuselageProfiles();
 }
 
 const CCPACSFuselageProfiles& CCPACSFuselages::GetProfiles() const {
-    return static_cast<const CCPACSAircraftModel*>(m_parent)->GetConfiguration().GetFuselageProfiles();
+    if (IsParent<CCPACSAircraftModel>())
+        return static_cast<CCPACSAircraftModel*>(m_parent)->GetConfiguration().GetFuselageProfiles();
+    else
+        return static_cast<CCPACSRotorcraftModel*>(m_parent)->GetConfiguration().GetFuselageProfiles();
 }
 
 // Returns the fuselage profile for a given index.

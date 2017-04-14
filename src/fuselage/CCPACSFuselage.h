@@ -50,7 +50,6 @@ class CCPACSFuselage : public generated::CPACSFuselage, public CTiglRelativelyPo
 {
 public:
     // Constructor
-    TIGL_EXPORT CCPACSFuselage(CCPACSConfiguration* config);
     TIGL_EXPORT CCPACSFuselage(CCPACSFuselages* parent);
 
     // Virtual Destructor
