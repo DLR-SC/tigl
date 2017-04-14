@@ -44,18 +44,6 @@ void CCPACSRotorBladeAttachment::Invalidate()
     }
 }
 
-// Read CPACS rotor blade attachment elements
-void CCPACSRotorBladeAttachment::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& rotorBladeAttachmentXPath)
-{
-    generated::CPACSRotorBladeAttachment::ReadCPACS(tixiHandle, rotorBladeAttachmentXPath);
-
-    if (m_numberOfBlades_choice2) {
-        for (int i = 0; i < *m_numberOfBlades_choice2; i++) {
-            cachedAzimuthAngles.push_back(i * 360.0 / static_cast<double>(*m_numberOfBlades_choice2));
-        }
-    }
-}
-
 // Builds and returns the transformation matrix for an attached rotor blade
 //     rotorThetaDeg:         current azimuthal position of the rotor in degrees
 //     bladeDeltaThetaDeg:    azimuth angle offset of the attached blade
@@ -120,7 +108,7 @@ int CCPACSRotorBladeAttachment::GetNumberOfBlades() const
 }
 
 // Returns the azimuth angle of the attached rotor blade with the given index
-const double& CCPACSRotorBladeAttachment::GetAzimuthAngle(int index) const
+double CCPACSRotorBladeAttachment::GetAzimuthAngle(int index) const
 {
     index --;
     if (index < 0 || index >= GetNumberOfBlades()) {
@@ -129,7 +117,7 @@ const double& CCPACSRotorBladeAttachment::GetAzimuthAngle(int index) const
     if (m_azimuthAngles_choice1)
         return m_azimuthAngles_choice1->AsVector()[index];
     else
-        return cachedAzimuthAngles[index];
+        return index * 360.0 / static_cast<double>(*m_numberOfBlades_choice2);
 }
 
 // Returns the index of the referenced wing definition
@@ -187,15 +175,17 @@ void CCPACSRotorBladeAttachment::lazyCreateAttachedRotorBlades()
     // We have to do these lazily, as we do not have control of the order in which CPACS elements are read
     // (wings may not be loaded yet, when ReadCPACS of this class is called)
     CCPACSRotorcraftModel& rotorcraft = *m_parent->GetParent()->GetParent()->GetParent()->GetParent();
-    const int count = GetNumberOfBlades();
-    if (attachedRotorBlades.size() == 0 && attachedRotorBlades.size() < count) {
+    const int bladeCount = GetNumberOfBlades();
+    if (attachedRotorBlades.size() != bladeCount) {
+        attachedRotorBlades.clear();
         if (rotorcraft.GetRotorBlades()) {
             CCPACSWing& blade = rotorcraft.GetRotorBlades()->GetRotorBlade(m_rotorBladeUID);
-            for (int i = 1; i <= count; i++) {
-                attachedRotorBlades.push_back(make_unique<CTiglAttachedRotorBlade>(this, blade, i));
+            for (int i = 0; i < bladeCount; i++) {
+                attachedRotorBlades.push_back(make_unique<CTiglAttachedRotorBlade>(this, blade, i + 1));
             }
         }
     }
+    assert(attachedRotorBlades.size() == bladeCount);
 }
 
 } // end namespace tigl
