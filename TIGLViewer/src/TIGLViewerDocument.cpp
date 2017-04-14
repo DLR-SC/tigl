@@ -2161,10 +2161,10 @@ void TIGLViewerDocument::drawRotorDisk()
     START_COMMAND();
 
     //clear screen
-    //app->getScene()->deleteAllObjects();
+    app->getScene()->deleteAllObjects();
 
     // Draw rotor disk
-    const TopoDS_Shape& rotorDisk = rotor.GetRotorDisk()->Shape();
+    TopoDS_Shape rotorDisk = rotor.GetRotorDisk()->Shape();
     app->getScene()->displayShape(rotorDisk, Quantity_NOC_RotorCol, 0.9);
 }
 
