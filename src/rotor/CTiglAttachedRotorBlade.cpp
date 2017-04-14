@@ -293,6 +293,7 @@ TopoDS_Shape CTiglAttachedRotorBlade::GetRotorDisk()
 {
     if (rebuildRotorDisk) {
         rotorDisk = BuildRotorDisk();
+        rebuildRotorDisk = false;
     }
     return rotorDisk;
 }
