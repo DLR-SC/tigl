@@ -47,6 +47,7 @@ CTiglAttachedRotorBlade::CTiglAttachedRotorBlade(CCPACSRotorBladeAttachment* par
     , rotorBlade(&rotorBlade)
     , rotorBladeIndex(index)
     , rebuildRotorDisk(true)
+    , invalidated(true)
 {
     Update();
 }
@@ -71,9 +72,9 @@ void CTiglAttachedRotorBlade::Cleanup()
 // Builds transformation matrix for the rotor blade including rotor transformation
 void CTiglAttachedRotorBlade::BuildMatrix()
 {
-    double thetaDeg = 0.; // current azimuthal position of the rotor in degrees
-
-    transformation.setTransformationMatrix(parent->GetRotorBladeTransformationMatrix(thetaDeg, GetAzimuthAngle(), true, true, true));
+    const double thetaDeg = 0.; // current azimuthal position of the rotor in degrees
+    const double azimuth = GetAzimuthAngle();
+    transformation.setTransformationMatrix(parent->GetRotorBladeTransformationMatrix(thetaDeg, azimuth, true, true, true));
 }
 
 // Update internal rotor blade data
