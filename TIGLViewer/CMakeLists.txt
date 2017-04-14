@@ -282,7 +282,7 @@ if (WIN32 OR APPLE)
 endif()
 
 # install shader files from opencascade
-if (NOT OCC_VERSION_STRING VERSION_LESS "6.7.0")
+if (OpenCASCADE_SHADER_DIRECTORY)
    file(GLOB SHADER_FILES PATH "${OpenCASCADE_SHADER_DIRECTORY}/*")
    if (APPLE)
      install(FILES ${SHADER_FILES} DESTINATION ${PROGNAME}.app/Contents/Resources/ COMPONENT viewer)
