@@ -52,20 +52,14 @@
 namespace tigl
 {
 
-// Constructor
-CCPACSFuselage::CCPACSFuselage(CCPACSConfiguration* config)
-    : generated::CPACSFuselage(&config->GetFuselages())
-    , CTiglRelativelyPositionedComponent(&m_parentUID, &m_transformation, &m_symmetry)
-    , configuration(config)
-{
-    Cleanup();
-}
-
 CCPACSFuselage::CCPACSFuselage(CCPACSFuselages* parent)
     : generated::CPACSFuselage(parent)
-    , CTiglRelativelyPositionedComponent(&m_parentUID, &m_transformation, &m_symmetry)
-    , configuration(&parent->GetParent<CCPACSAircraftModel>()->GetConfiguration()) {
+    , CTiglRelativelyPositionedComponent(&m_parentUID, &m_transformation, &m_symmetry) {
     Cleanup();
+    if (parent->IsParent<CCPACSAircraftModel>())
+        configuration = &parent->GetParent<CCPACSAircraftModel>()->GetConfiguration();
+    else
+        configuration = &parent->GetParent<CCPACSRotorcraftModel>()->GetConfiguration();
 }
 
 // Destructor
