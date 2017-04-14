@@ -290,16 +290,15 @@ void TIGLViewerContext::displayShape(const TopoDS_Shape& loft, Quantity_Color co
 {
     TIGLViewerSettings& settings = TIGLViewerSettings::Instance();
     Handle(AIS_Shape) shape = new AIS_Shape(loft);
-    myContext->SetMaterial(shape, Graphic3d_NOM_METALIZED, Standard_False);
-    myContext->SetColor(shape, color, Standard_False);
-    myContext->SetTransparency(shape, transparency, Standard_False);
-    shape->SetOwnDeviationCoefficient(settings.tesselationAccuracy());
-
 #if OCC_VERSION_HEX >= VERSION_HEX_CODE(6,7,0)
     if (!myShader.IsNull()) {
         shape->Attributes()->ShadingAspect()->Aspect()->SetShaderProgram (myShader);
     }
 #endif
+    myContext->SetMaterial(shape, Graphic3d_NOM_METALIZED, Standard_False);
+    myContext->SetColor(shape, color, Standard_False);
+    myContext->SetTransparency(shape, transparency, Standard_False);
+    shape->SetOwnDeviationCoefficient(settings.tesselationAccuracy());
 
     myContext->Display(shape, Standard_True);
     
