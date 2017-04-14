@@ -118,7 +118,7 @@ public:
     // since memberwise copy is enough for this class.
 
     // for debug purposes
-    TIGL_EXPORT void printTransformMatrix();
+    TIGL_EXPORT friend std::ostream& operator<<(std::ostream& os, const CTiglTransformation& t);
 
     // Getter for matrix values
     TIGL_EXPORT double GetValue(int row, int col) const;

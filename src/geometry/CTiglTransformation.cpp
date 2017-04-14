@@ -427,16 +427,6 @@ gp_Pnt CTiglTransformation::Transform(const gp_Pnt& point) const
     return gp_Pnt(transformed.X(), transformed.Y(), transformed.Z());
 }
 
-void CTiglTransformation::printTransformMatrix()
-{
-    for (int i = 0; i < 4; ++i) {
-        for (int j = 0; j < 4; ++j) {
-            cout << m_matrix[i][j] << "\t";
-        }
-        cout << endl;
-    }
-}
-
 bool CTiglTransformation::IsUniform() const
 {
     // The following code is copied from gp_Trsf
@@ -534,6 +524,17 @@ double CTiglTransformation::GetValue(int row, int col) const
     }
 
     return m_matrix[row][col];
+}
+
+std::ostream& operator<<(std::ostream& os, const CTiglTransformation& t)
+{
+    for (int i = 0; i < 4; ++i) {
+        for (int j = 0; j < 4; ++j) {
+            os << t.m_matrix[i][j] << "\t";
+        }
+        os << endl;
+    }
+    return os;
 }
 
 } // end namespace tigl
