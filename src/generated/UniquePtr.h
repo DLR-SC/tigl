@@ -65,28 +65,23 @@ namespace tigl
         }
     };
 
-    template <typename T>
-    unique_ptr<T> make_unique()
-    {
-        return unique_ptr<T>(new T());
-    }
+    template <typename T> unique_ptr<T> make_unique() { return unique_ptr<T>(new T()); }
 
-    template <typename T, typename Arg1>
-    unique_ptr<T> make_unique(Arg1& arg1)
-    {
-        return unique_ptr<T>(new T(arg1));
-    }
+    template <typename T, typename Arg1> unique_ptr<T> make_unique(      Arg1& arg1) { return unique_ptr<T>(new T(arg1)); }
+    template <typename T, typename Arg1> unique_ptr<T> make_unique(const Arg1& arg1) { return unique_ptr<T>(new T(arg1)); }
 
-    template <typename T, typename Arg1, typename Arg2>
-    unique_ptr<T> make_unique(Arg1& arg1, Arg2& arg2)
-    {
-        return unique_ptr<T>(new T(arg1, arg2));
-    }
+    template <typename T, typename Arg1, typename Arg2> unique_ptr<T> make_unique(      Arg1& arg1,       Arg2& arg2) { return unique_ptr<T>(new T(arg1, arg2)); }
+    template <typename T, typename Arg1, typename Arg2> unique_ptr<T> make_unique(      Arg1& arg1, const Arg2& arg2) { return unique_ptr<T>(new T(arg1, arg2)); }
+    template <typename T, typename Arg1, typename Arg2> unique_ptr<T> make_unique(const Arg1& arg1,       Arg2& arg2) { return unique_ptr<T>(new T(arg1, arg2)); }
+    template <typename T, typename Arg1, typename Arg2> unique_ptr<T> make_unique(const Arg1& arg1, const Arg2& arg2) { return unique_ptr<T>(new T(arg1, arg2)); }
 
-    template <typename T, typename Arg1, typename Arg2, typename Arg3>
-    unique_ptr<T> make_unique(Arg1& arg1, Arg2& arg2, Arg3& arg3)
-    {
-        return unique_ptr<T>(new T(arg1, arg2, arg3));
-    }
+    template <typename T, typename Arg1, typename Arg2, typename Arg3> unique_ptr<T> make_unique(      Arg1& arg1,       Arg2& arg2, const Arg3& arg3) { return unique_ptr<T>(new T(arg1, arg2, arg3)); }
+    template <typename T, typename Arg1, typename Arg2, typename Arg3> unique_ptr<T> make_unique(      Arg1& arg1,       Arg2& arg2,       Arg3& arg3) { return unique_ptr<T>(new T(arg1, arg2, arg3)); }
+    template <typename T, typename Arg1, typename Arg2, typename Arg3> unique_ptr<T> make_unique(      Arg1& arg1, const Arg2& arg2, const Arg3& arg3) { return unique_ptr<T>(new T(arg1, arg2, arg3)); }
+    template <typename T, typename Arg1, typename Arg2, typename Arg3> unique_ptr<T> make_unique(      Arg1& arg1, const Arg2& arg2,       Arg3& arg3) { return unique_ptr<T>(new T(arg1, arg2, arg3)); }
+    template <typename T, typename Arg1, typename Arg2, typename Arg3> unique_ptr<T> make_unique(const Arg1& arg1,       Arg2& arg2, const Arg3& arg3) { return unique_ptr<T>(new T(arg1, arg2, arg3)); }
+    template <typename T, typename Arg1, typename Arg2, typename Arg3> unique_ptr<T> make_unique(const Arg1& arg1,       Arg2& arg2,       Arg3& arg3) { return unique_ptr<T>(new T(arg1, arg2, arg3)); }
+    template <typename T, typename Arg1, typename Arg2, typename Arg3> unique_ptr<T> make_unique(const Arg1& arg1, const Arg2& arg2, const Arg3& arg3) { return unique_ptr<T>(new T(arg1, arg2, arg3)); }
+    template <typename T, typename Arg1, typename Arg2, typename Arg3> unique_ptr<T> make_unique(const Arg1& arg1, const Arg2& arg2,       Arg3& arg3) { return unique_ptr<T>(new T(arg1, arg2, arg3)); }
 #endif
 }
