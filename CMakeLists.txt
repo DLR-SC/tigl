@@ -138,6 +138,15 @@ set(src_shared_ptr "#include <memory>\nint main(){\n std::shared_ptr<int> a(new 
 CHECK_CXX_SOURCE_COMPILES("${src_cpp11_features}" HAVE_CPP11)
 CHECK_CXX_SOURCE_COMPILES(${src_shared_ptr} HAVE_STDSHARED_PTR)
 
+set(src_unique_ptr "#include <memory>\nint main(){\n std::unique_ptr<int> a(new int)\;\n return 0\;\n}\n")
+CHECK_CXX_SOURCE_COMPILES(${src_unique_ptr} HAVE_STDUNIQUE_PTR)
+
+set(src_make_unqiue "#include <memory>\nint main(){\n std::make_unique<int>(5)\;\n return 0\;\n}\n")
+CHECK_CXX_SOURCE_COMPILES(${src_make_unqiue} HAVE_STDMAKE_UNIQUE)
+
+set(src_is_same "#include <typeinfo>\n#include <type_traits>\nint main(){\n bool issame = std::is_same<int, int>::value\;\n return 0\;\n}\n")
+CHECK_CXX_SOURCE_COMPILES(${src_is_same} HAVE_STDIS_SAME)
+
 # enable parallel builds in Visual Studio
 if (MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")

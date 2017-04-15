@@ -22,6 +22,9 @@
 // include files and other standard functionality
 #cmakedefine HAVE_CPP11
 #cmakedefine HAVE_STDSHARED_PTR
+#cmakedefine HAVE_STDUNIQUE_PTR
+#cmakedefine HAVE_STDMAKE_UNIQUE
+#cmakedefine HAVE_STDIS_SAME
 
 // optional libraries
 #cmakedefine GLOG_FOUND

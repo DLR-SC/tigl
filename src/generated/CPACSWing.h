@@ -60,7 +60,7 @@ namespace tigl
             template<typename P>
             TIGL_EXPORT P* GetParent() const
             {
-                #ifdef HAVE_CPP11
+                #ifdef HAVE_STDIS_SAME
                 static_assert(std::is_same<P, CCPACSRotorBlades>::value || std::is_same<P, CCPACSWings>::value, "template argument for P is not a parent class of CPACSWing");
                 #endif
                 if (!IsParent<P>()) {

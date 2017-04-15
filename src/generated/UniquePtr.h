@@ -26,7 +26,7 @@
 
 namespace tigl
 {
-#ifdef HAVE_CPP11
+#if defined (HAVE_STDUNIQUE_PTR) && defined (HAVE_CPP11)
     template <typename T>
     using unique_ptr = std::unique_ptr<T>;
 
