@@ -168,6 +168,7 @@ vec4 computeLighting (in vec3 theNormal,
   vec4 aMaterialDiffuse  = gl_FrontFacing ? occFrontMaterial_Diffuse()  : occBackMaterial_Diffuse();
   vec4 aMaterialSpecular = gl_FrontFacing ? occFrontMaterial_Specular() : occBackMaterial_Specular();
   vec4 aMaterialEmission = gl_FrontFacing ? occFrontMaterial_Emission() : occBackMaterial_Emission();
+  float mMaterialTransparency = gl_FrontFacing ? occFrontMaterial_Transparency() : occBackMaterial_Transparency();
 
   float attenuation = 1.0;
   if (enableZebra)
@@ -194,7 +195,7 @@ vec4 computeLighting (in vec3 theNormal,
              + vec4 (Specular, 1.0) * aMaterialSpecular
                                   + aMaterialEmission;
   
-  return color * vec4(attenuation, attenuation, attenuation, 1.0);
+  return vec4(color.xyz, mMaterialTransparency) * vec4(attenuation, attenuation, attenuation, 1.0);
 }
 
 //! Entry point to the Fragment Shader
