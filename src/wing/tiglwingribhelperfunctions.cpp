@@ -40,7 +40,7 @@
 namespace tigl
 {
 
-TopoDS_Shape ApplyWingTransformation(CCPACSWingCSStructure& structure, const TopoDS_Shape& shape)
+TopoDS_Shape ApplyWingTransformation(const CCPACSWingCSStructure& structure, const TopoDS_Shape& shape)
 {
     return structure.GetWingStructureReference().GetWing().GetWingTransformation().Transform(shape);
 }

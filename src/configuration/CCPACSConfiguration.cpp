@@ -138,7 +138,7 @@ void CCPACSConfiguration::ReadCPACS(const std::string& configurationUID)
 // Write CPACS structure to tixiHandle
 void CCPACSConfiguration::WriteCPACS(const std::string& configurationUID)
 {
-    header.WriteCPACS(tixiDocumentHandle, "/cpacs/header");
+    header.WriteCPACS(tixiDocumentHandle, headerXPath);
     if (aircraftModel) {
         tixihelper::TixiSaveAttribute(tixiDocumentHandle, "/cpacs/vehicles/aircraft/model", "uID", configurationUID); // patch uid in tixi, so xpath below is valid
         aircraftModel->SetUID(configurationUID);
@@ -218,7 +218,7 @@ int CCPACSConfiguration::GetWingProfileCount() const
     int count = 0;
     if (profiles) {
         if (profiles->GetWingAirfoils())
-            count += profiles->GetWingAirfoils()->GetProfileCount();
+            count += profiles->GetWingAirfoils()->GetWingAirfoils().size();
         if (profiles->GetRotorAirfoils())
             count += static_cast<int>(profiles->GetRotorAirfoils()->GetRotorAirfoils().size());
     }

@@ -139,7 +139,7 @@ int CCPACSWingRibsDefinition::GetNumberOfRibs() const
         numberOfRibs = ribSetDataCache.numberOfRibs;
         break;
     default:
-        throw CTiglError("Unknown GetRibPositioningType() found in CCPACSWingRibsDefinition::GetNumberOfRibs()!");
+        throw CTiglError("Unknown ribPositioningType found in CCPACSWingRibsDefinition::GetNumberOfRibs()!");
     }
     return numberOfRibs;
 }
@@ -313,8 +313,8 @@ void CCPACSWingRibsDefinition::BuildAuxiliaryGeometry() const
         BuildAuxGeomExplicitRibPositioning();
         break;
     default:
-        LOG(ERROR) << "Invalid GetRibPositioningType() found in CCPACSWingRibsDefinition::BuildAuxiliaryGeometry!";
-        throw CTiglError("Invalid GetRibPositioningType() found in CCPACSWingRibsDefinition::BuildAuxiliaryGeometry!");
+        LOG(ERROR) << "Invalid ribPositioningType found in CCPACSWingRibsDefinition::BuildAuxiliaryGeometry!";
+        throw CTiglError("Invalid ribPositioningType found in CCPACSWingRibsDefinition::BuildAuxiliaryGeometry!");
     }
 
     auxGeomCache.valid = true;
@@ -452,7 +452,7 @@ void CCPACSWingRibsDefinition::BuildAuxGeomExplicitRibPositioning() const
     else {
         // check whether the startReference is a spar
         if (startReference != "leadingEdge" && startReference != "trailingEdge") {
-            CCPACSWingSparSegment& spar = structure.GetSparSegment(startReference);
+            const CCPACSWingSparSegment& spar = structure.GetSparSegment(startReference);
             TopoDS_Shape sparShape = spar.GetSparGeometry(WING_COORDINATE_SYSTEM);
             double midplaneEta, dummy;
             wingStructureReference.GetMidplaneEtaXsi(startPnt, midplaneEta, dummy);
