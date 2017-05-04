@@ -76,10 +76,7 @@ CCPACSFuselageProfile::CCPACSFuselageProfile(CTiglUIDManager* uidMgr)
 }
 
 // Destructor
-CCPACSFuselageProfile::~CCPACSFuselageProfile()
-{
-    Cleanup();
-}
+CCPACSFuselageProfile::~CCPACSFuselageProfile() {}
 
 // Cleanup routine
 void CCPACSFuselageProfile::Cleanup()

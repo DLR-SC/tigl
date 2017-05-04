@@ -79,17 +79,17 @@
                         <name>name</name>
                         <description>description</description>
                         <transformation>
-                            <scaling uID = "">
+                            <scaling>
                                 <x>1.0</x>
                                 <y>1.0</y>
                                 <z>1.0</z>
                             </scaling>
-                            <rotation uID = "">
+                            <rotation>
                                 <x>0.0</x>
                                 <y>0.0</y>
                                 <z>0.0</z>
                             </rotation>
-                            <translation refType = "absLocal" uID = "">
+                            <translation refType = "absLocal">
                                 <x>0.0</x>
                                 <y>0.0</y>
                                 <z>0.0</z>
@@ -14927,7 +14927,7 @@
                 <lengthCMX>3.685</lengthCMX>
                 <lengthCMY>0.0</lengthCMY>
                 <lengthCMZ>3.685</lengthCMZ>
-                <momentReferencePoint uID = "">
+                <momentReferencePoint>
                     <x>21.6</x>
                     <y>0.0</y>
                     <z>0.0</z>
@@ -15463,12 +15463,12 @@
                 </mLM>
             </rangesCoG>
             <geometryPoints>
-                <tailTip uID = "">
+                <tailTip>
                     <x>33.8977</x>
                     <y>0.0</y>
                     <z>0.0</z>
                 </tailTip>
-                <lowestPoint uID = "">
+                <lowestPoint>
                     <x>16.7066</x>
                     <y>5.755</y>
                     <z>-3.35</z>

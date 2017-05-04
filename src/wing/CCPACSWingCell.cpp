@@ -100,10 +100,7 @@ CCPACSWingCell::CCPACSWingCell(CCPACSWingCells* parentCells, CTiglUIDManager* ui
     Reset();
 }
 
-CCPACSWingCell::~CCPACSWingCell()
-{
-    Reset();
-}
+CCPACSWingCell::~CCPACSWingCell() {}
 
 void CCPACSWingCell::Invalidate()
 {

@@ -218,6 +218,7 @@ private:
     void operator=(const CCPACSConfiguration&);
 
 private:
+    CTiglUIDManager                        uidManager;           /**< Stores the unique ids of the components. */ // list as first member, has to be created first and destroyed last
     boost::optional<CCPACSAircraftModel>   aircraftModel;        /**< Root component for the CTiglUIDManager */
     boost::optional<CCPACSRotorcraftModel> rotorcraftModel;      /**< Root component for the CTiglUIDManager */
     boost::optional<CCPACSProfiles>        profiles;             /**< Wing airfoils, fuselage profiles, rotor airfoils, guide curve profiles */
@@ -225,7 +226,6 @@ private:
     CCPACSHeader                           header;               /**< Configuration header element */
     CCPACSACSystems                        acSystems;            /**< Configuration aircraft systems element */
     CCPACSFarField                         farField;             /**< Far field configuration for CFD tools */
-    CTiglUIDManager                        uidManager;           /**< Stores the unique ids of the components */
     PTiglFusePlane                         aircraftFuser;        /**< The aircraft fusing algo */
     CTiglShapeCache                        shapeCache;
     CTiglMemoryPool                        memoryPool;
