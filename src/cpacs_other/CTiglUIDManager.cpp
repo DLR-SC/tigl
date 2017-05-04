@@ -57,7 +57,8 @@ namespace {
         std::string indentation;
         for (int i = 0; i < level; i++)
             indentation += '\t';
-        LOG(INFO) << indentation << c->GetUID() << std::endl;
+        const auto uid = c->GetDefaultedUID();
+        LOG(INFO) << indentation << (uid.empty() ? "<no uid>" : uid) << std::endl;
         const CTiglRelativelyPositionedComponent::ChildContainerType& children = c->GetChildren(false);
         for (CTiglRelativelyPositionedComponent::ChildContainerType::const_iterator it = children.begin(); it != children.end(); ++it)
             writeComponent(*it, level + 1);
