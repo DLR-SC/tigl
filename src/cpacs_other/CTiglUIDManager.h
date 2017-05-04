@@ -53,13 +53,13 @@ public:
     template<typename T>
     TIGL_EXPORT void RegisterObject(const std::string& uid, T& object) {
         if (uid.empty()) {
-            throw CTiglError("Tried to register an empty uid");
+            throw CTiglError("Tried to register an empty uid for type " + std::string(typeid(T).name()));
         }
 
         // check existence
         const CPACSObjectMap::iterator it = cpacsObjects.find(uid);
         if (it != std::end(cpacsObjects)) {
-            throw CTiglError("Tried to register uid " + uid + " which is already registered");
+            throw CTiglError("Tried to register uid " + uid + " for type " + std::string(typeid(T).name()) + " which is already registered to an instance of " + std::string(it->second.type->name()));
         }
 
         // insert
@@ -76,9 +76,8 @@ public:
         const TypedPtr object = ResolveObject(uid);
 
         // check type
-        const std::type_info* ti = &typeid(T);
-        if (ti != object.type) {
-            throw CTiglError("Object with uid \"" + uid + "\" is not a " + std::string(ti->name()) + " but a " + std::string(object.type->name()));
+        if (&typeid(T) != object.type) {
+            throw CTiglError("Object with uid \"" + uid + "\" is not a " + std::string(typeid(T).name()) + " but a " + std::string(object.type->name()));
         }
 
         // cast and return
