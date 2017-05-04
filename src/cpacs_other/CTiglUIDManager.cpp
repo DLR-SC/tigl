@@ -35,6 +35,23 @@ namespace tigl
 CTiglUIDManager::CTiglUIDManager()
     : invalidated(true), rootComponent(NULL) {}
 
+CTiglUIDManager::TypedPtr CTiglUIDManager::ResolveObject(const std::string& uid) const {
+    // check existence
+    const CPACSObjectMap::const_iterator it = cpacsObjects.find(uid);
+    if (it == std::end(cpacsObjects)) {
+        throw CTiglError("No object is registered for uid \"" + uid + "\"");
+    }
+    return it->second;
+}
+
+void CTiglUIDManager::UnregisterObject(const std::string& uid) {
+    const CPACSObjectMap::const_iterator it = cpacsObjects.find(uid);
+    if (it == std::end(cpacsObjects)) {
+        throw CTiglError("No object is registered for uid \"" + uid + "\"");
+    }
+    cpacsObjects.erase(it);
+}
+
 namespace {
     void writeComponent(CTiglRelativelyPositionedComponent* c, int level = 0) {
         std::string indentation;
@@ -131,6 +148,7 @@ void CTiglUIDManager::Clear()
     relativeComponents.clear();
     allShapes.clear();
     rootComponents.clear();
+    cpacsObjects.clear();
     invalidated = true;
 }
 

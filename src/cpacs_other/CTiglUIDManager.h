@@ -26,22 +26,76 @@
 #ifndef CTIGLUIDMANAGER_H
 #define CTIGLUIDMANAGER_H
 
-#include "tigl_internal.h"
-#include "CTiglRelativelyPositionedComponent.h"
+#include <typeinfo>
 #include <map>
 #include <string>
+#include "tigl_internal.h"
+#include "CTiglError.h"
+#include "CTiglRelativelyPositionedComponent.h"
 
-namespace tigl 
+namespace tigl
 {
-
 typedef std::map<const std::string, ITiglGeometricComponent*> ShapeContainerType;
 typedef std::map<const std::string, CTiglRelativelyPositionedComponent*> RelativeComponentContainerType;
 
 class CTiglUIDManager
 {
 public:
+    struct TypedPtr {
+        void* ptr;
+        const std::type_info* type;
+    };
+
+public:
     // Constructor
     TIGL_EXPORT CTiglUIDManager();
+
+    template<typename T>
+    TIGL_EXPORT void RegisterObject(const std::string& uid, T& object) {
+        if (uid.empty()) {
+            throw CTiglError("Tried to register an empty uid");
+        }
+
+        // check existence
+        const CPACSObjectMap::iterator it = cpacsObjects.find(uid);
+        if (it != std::end(cpacsObjects)) {
+            throw CTiglError("Tried to register uid " + uid + " which is already registered");
+        }
+
+        // insert
+        cpacsObjects.insert(it, std::make_pair(uid, TypedPtr{
+            &object,
+            &typeid(T)
+        }));
+    }
+
+    TIGL_EXPORT TypedPtr ResolveObject(const std::string& uid) const;
+
+    template<typename T>
+    TIGL_EXPORT T& ResolveObject(const std::string& uid) const {
+        const TypedPtr object = ResolveObject(uid);
+
+        // check type
+        const std::type_info* ti = &typeid(T);
+        if (ti != object.type) {
+            throw CTiglError("Object with uid \"" + uid + "\" is not a " + std::string(ti->name()) + " but a " + std::string(object.type->name()));
+        }
+
+        // cast and return
+        return *static_cast<T* const>(object.ptr);
+    }
+
+    template<typename T>
+    TIGL_EXPORT std::vector<T*> ResolveObjects() const {
+        const std::type_info* ti = &typeid(T);
+        std::vector<T*> objects;
+        for (const auto& c : cpacsObjects)
+            if (c.second.type == ti)
+                objects.push_back(static_cast<T* const>(c.second.ptr));
+        return objects;
+    }
+
+    TIGL_EXPORT void UnregisterObject(const std::string& uid);
 
     // Function to add a UID and a geometric component to the uid store.
     TIGL_EXPORT void AddGeometricComponent(const std::string& uid, ITiglGeometricComponent* componentPtr);
@@ -75,18 +129,21 @@ protected:
     CTiglRelativelyPositionedComponent& GetRelativeComponent(const std::string& uid) const;
 
 private:
+    typedef std::map<std::string, TypedPtr> CPACSObjectMap;
 
+private:
     // Copy constructor
     CTiglUIDManager(const CTiglUIDManager& );
 
     // Assignment operator
     void operator=(const CTiglUIDManager& );
 
-    RelativeComponentContainerType      relativeComponents;             /**< All relative components of the configuration */
-    ShapeContainerType                  allShapes;                      /**< All components of the configuration */
-    CTiglRelativelyPositionedComponent* rootComponent;                  /**< Root component injected by configuration */
-    RelativeComponentContainerType      rootComponents;                 /**< All root components that have children */
-    bool                                invalidated;                    /**< Internal state flag */
+    RelativeComponentContainerType      relativeComponents;             ///< All relative components of the configuration
+    ShapeContainerType                  allShapes;                      ///< All components of the configuration
+    CTiglRelativelyPositionedComponent* rootComponent;                  ///< Root component injected by configuration
+    RelativeComponentContainerType      rootComponents;                 ///< All root components that have children
+    CPACSObjectMap                      cpacsObjects;                   ///< All objects in CPACS which have a UID
+    bool                                invalidated;                    ///< Internal state flag
 };
 
 } // end namespace tigl
