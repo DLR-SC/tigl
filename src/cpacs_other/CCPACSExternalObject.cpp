@@ -84,7 +84,7 @@ void CCPACSExternalObject::ReadCPACS(const TixiDocumentHandle& tixiHandle, const
     // Register ourself at the unique id manager
     if (m_parent) {
         CCPACSConfiguration& config = m_parent->GetParent()->GetConfiguration();
-        config.GetUIDManager().AddUID(m_uID, this);
+        config.GetUIDManager().AddGeometricComponent(m_uID, this);
     }
 }
 

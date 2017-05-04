@@ -80,7 +80,7 @@ void CCPACSRotor::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::str
 {
     Cleanup();
     generated::CPACSRotor::ReadCPACS(tixiHandle, rotorXPath);
-    m_parent->GetConfiguration().GetUIDManager().AddUID(m_uID, this);
+    m_parent->GetConfiguration().GetUIDManager().AddGeometricComponent(m_uID, this);
     Update();
 }
 

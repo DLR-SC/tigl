@@ -63,18 +63,18 @@ void CTiglUIDManager::Update()
 }
 
 // Function to add a UID and a geometric component to the uid store.
-void CTiglUIDManager::AddUID(const std::string& uid, ITiglGeometricComponent* componentPtr)
+void CTiglUIDManager::AddGeometricComponent(const std::string& uid, ITiglGeometricComponent* componentPtr)
 {
     if (uid.empty()) {
-        throw CTiglError("Empty UID in CTiglUIDManager::AddUID", TIGL_XML_ERROR);
+        throw CTiglError("Empty UID in CTiglUIDManager::AddGeometricComponent", TIGL_XML_ERROR);
     }
 
-    if (HasUID(uid)) {
-        throw CTiglError("Duplicate UID " + uid + " in CPACS file (CTiglUIDManager::AddUID)", TIGL_XML_ERROR);
+    if (HasGeometricComponent(uid)) {
+        throw CTiglError("Duplicate UID " + uid + " in CPACS file (CTiglUIDManager::AddGeometricComponent)", TIGL_XML_ERROR);
     }
 
     if (componentPtr == NULL) {
-        throw CTiglError("Null pointer for component in CTiglUIDManager::AddUID", TIGL_NULL_POINTER);
+        throw CTiglError("Null pointer for component in CTiglUIDManager::AddGeometricComponent", TIGL_NULL_POINTER);
     }
 
     CTiglRelativelyPositionedComponent* tmp = dynamic_cast<CTiglRelativelyPositionedComponent*>(componentPtr);
@@ -86,24 +86,24 @@ void CTiglUIDManager::AddUID(const std::string& uid, ITiglGeometricComponent* co
 }
 
 // Checks if a UID already exists.
-bool CTiglUIDManager::HasUID(const std::string& uid) const
+bool CTiglUIDManager::HasGeometricComponent(const std::string& uid) const
 {
     if (uid.empty()) {
-        throw CTiglError("Empty UID in CTiglUIDManager::HasUID", TIGL_XML_ERROR);
+        throw CTiglError("Empty UID in CTiglUIDManager::HasGeometricComponent", TIGL_XML_ERROR);
     }
 
     return (allShapes.find(uid) != allShapes.end());
 }
 
 // Returns a pointer to the geometric component for the given unique id.
-ITiglGeometricComponent& CTiglUIDManager::GetComponent(const std::string& uid) const
+ITiglGeometricComponent& CTiglUIDManager::GetGeometricComponent(const std::string& uid) const
 {
     if (uid.empty()) {
-        throw CTiglError("Empty UID in CTiglUIDManager::GetComponent", TIGL_UID_ERROR);
+        throw CTiglError("Empty UID in CTiglUIDManager::GetGeometricComponent", TIGL_UID_ERROR);
     }
 
-    if (!HasUID(uid)) {
-        throw CTiglError("UID " + std_to_string(uid) + " not found in CTiglUIDManager::GetComponent", TIGL_UID_ERROR);
+    if (!HasGeometricComponent(uid)) {
+        throw CTiglError("UID " + std_to_string(uid) + " not found in CTiglUIDManager::GetGeometricComponent", TIGL_UID_ERROR);
     }
 
     return *allShapes.find(uid)->second;
@@ -113,12 +113,12 @@ ITiglGeometricComponent& CTiglUIDManager::GetComponent(const std::string& uid) c
 CTiglRelativelyPositionedComponent& CTiglUIDManager::GetRelativeComponent(const std::string& uid) const
 {
     if (uid.empty()) {
-        throw CTiglError("Empty UID in CTiglUIDManager::GetComponent", TIGL_XML_ERROR);
+        throw CTiglError("Empty UID in CTiglUIDManager::GetGeometricComponent", TIGL_XML_ERROR);
     }
 
     const RelativeComponentContainerType::const_iterator it = relativeComponents.find(uid);
     if (it == relativeComponents.end()) {
-        throw CTiglError("UID '"+uid+"' not found in CTiglUIDManager::GetComponent", TIGL_XML_ERROR);
+        throw CTiglError("UID '"+uid+"' not found in CTiglUIDManager::GetGeometricComponent", TIGL_XML_ERROR);
     }
 
     return *it->second;
@@ -136,7 +136,7 @@ void CTiglUIDManager::Clear()
 
 // Returns the parent component for a component or a null pointer
 // if there is no parent.
-CTiglRelativelyPositionedComponent* CTiglUIDManager::GetParentComponent(const std::string& uid) const
+CTiglRelativelyPositionedComponent* CTiglUIDManager::GetParentGeometricComponent(const std::string& uid) const
 {
     CTiglRelativelyPositionedComponent& component = GetRelativeComponent(uid);
     const boost::optional<const std::string&> parentUID = component.GetParentUID();
@@ -144,7 +144,7 @@ CTiglRelativelyPositionedComponent* CTiglUIDManager::GetParentComponent(const st
 }
 
 // Returns the container with all root components of the geometric topology that have children.
-const RelativeComponentContainerType& CTiglUIDManager::GetAllRootComponents() const
+const RelativeComponentContainerType& CTiglUIDManager::GetRootGeometricComponents() const
 {
     const_cast<CTiglUIDManager&>(*this).Update(); // TODO(bgruber): hack to keep up logical constness, think about mutable members
     return rootComponents;

@@ -249,7 +249,7 @@ void CCPACSWingSegment::ReadCPACS(TixiDocumentHandle tixiHandle, const std::stri
     Cleanup();
     generated::CPACSWingSegment::ReadCPACS(tixiHandle, segmentXPath);
 
-    GetWing().GetConfiguration().GetUIDManager().AddUID(m_uID, this);
+    GetWing().GetConfiguration().GetUIDManager().AddGeometricComponent(m_uID, this);
 
     innerConnection = CCPACSWingConnection(m_fromElementUID, this);
     outerConnection = CCPACSWingConnection(m_toElementUID, this);

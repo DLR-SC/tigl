@@ -35,7 +35,7 @@ CCPACSAircraftModel::CCPACSAircraftModel(CCPACSConfiguration* config)
 void CCPACSAircraftModel::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) {
     generated::CPACSAircraftModel::ReadCPACS(tixiHandle, xpath);
     if (config) {
-        config->GetUIDManager().AddUID(m_uID, this);
+        config->GetUIDManager().AddGeometricComponent(m_uID, this);
     }
 }
 

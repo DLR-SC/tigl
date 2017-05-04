@@ -28,7 +28,7 @@ CCPACSRotorcraftModel::CCPACSRotorcraftModel(CCPACSConfiguration* config)
 void CCPACSRotorcraftModel::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) {
     generated::CPACSRotorcraftModel::ReadCPACS(tixiHandle, xpath);
     if (config) {
-        config->GetUIDManager().AddUID(m_uID, this);
+        config->GetUIDManager().AddGeometricComponent(m_uID, this);
     }
 }
 

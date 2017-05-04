@@ -93,7 +93,7 @@ void CCPACSFuselage::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string&
     Cleanup();
     generated::CPACSFuselage::ReadCPACS(tixiHandle, fuselageXPath);
     // Register ourself at the unique id manager
-    configuration->GetUIDManager().AddUID(m_uID, this);
+    configuration->GetUIDManager().AddGeometricComponent(m_uID, this);
 }
 
 // Returns the parent configuration

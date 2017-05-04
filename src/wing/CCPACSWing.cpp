@@ -227,7 +227,7 @@ void CCPACSWing::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& win
         isRotorBlade = true;
     }
     // Register ourself at the unique id manager
-    configuration->GetUIDManager().AddUID(m_uID, this);
+    configuration->GetUIDManager().AddGeometricComponent(m_uID, this);
 
     Update();
 }

@@ -403,8 +403,8 @@ QScriptValue TIGLScriptProxy::getShape(QString uid)
     try {
         tigl::CCPACSConfiguration& config = _app->getDocument()->GetConfiguration();
         tigl::CTiglUIDManager& manager = config.GetUIDManager();
-        if (manager.HasUID(uid.toStdString()) ) {
-            TopoDS_Shape shape = manager.GetComponent(uid.toStdString()).GetLoft()->Shape();
+        if (manager.HasGeometricComponent(uid.toStdString()) ) {
+            TopoDS_Shape shape = manager.GetGeometricComponent(uid.toStdString()).GetLoft()->Shape();
             return engine()->newVariant(QVariant::fromValue(shape));
         }
         else {

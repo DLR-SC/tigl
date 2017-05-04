@@ -123,7 +123,7 @@ CTiglTriangularizer::CTiglTriangularizer(CCPACSConfiguration& config, bool fuseS
 
         useMultipleObjects(false);
         std::vector<CTiglRelativelyPositionedComponent*> rootComponentPtrs;
-        const RelativeComponentContainerType& rootComponents = config.GetUIDManager().GetAllRootComponents();
+        const RelativeComponentContainerType& rootComponents = config.GetUIDManager().GetRootGeometricComponents();
         for (RelativeComponentContainerType::const_iterator it = rootComponents.begin(); it != rootComponents.end(); ++it)
             rootComponentPtrs.push_back(it->second);
         triangularizeComponent(rootComponentPtrs, true, planeShape, deflection, mode);

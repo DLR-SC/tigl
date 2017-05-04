@@ -44,21 +44,21 @@ public:
     TIGL_EXPORT CTiglUIDManager();
 
     // Function to add a UID and a geometric component to the uid store.
-    TIGL_EXPORT void AddUID(const std::string& uid, ITiglGeometricComponent* componentPtr);
+    TIGL_EXPORT void AddGeometricComponent(const std::string& uid, ITiglGeometricComponent* componentPtr);
 
-    // Checks if a UID already exists. 
-    TIGL_EXPORT bool HasUID(const std::string& uid) const;
+    // Checks if a UID already exists.
+    TIGL_EXPORT bool HasGeometricComponent(const std::string& uid) const;
 
     // Returns a pointer to the geometric component for the given unique id.
-    TIGL_EXPORT ITiglGeometricComponent& GetComponent(const std::string& uid) const;
+    TIGL_EXPORT ITiglGeometricComponent& GetGeometricComponent(const std::string& uid) const;
 
     // Returns the parent component for a component or a null pointer if there is no parent.
-    TIGL_EXPORT CTiglRelativelyPositionedComponent* GetParentComponent(const std::string& uid) const;
+    TIGL_EXPORT CTiglRelativelyPositionedComponent* GetParentGeometricComponent(const std::string& uid) const;
 
     // Returns the container with all root components of the geometric topology that have children.
-    TIGL_EXPORT const RelativeComponentContainerType& GetAllRootComponents() const;
+    TIGL_EXPORT const RelativeComponentContainerType& GetRootGeometricComponents() const;
 
-    // Returns the contianer with all registered shapes
+    // Returns the container with all registered shapes
     TIGL_EXPORT const ShapeContainerType& GetShapeContainer() const;
 
     // Clears the uid store
@@ -84,7 +84,7 @@ private:
 
     RelativeComponentContainerType      relativeComponents;             /**< All relative components of the configuration */
     ShapeContainerType                  allShapes;                      /**< All components of the configuration */
-    CTiglRelativelyPositionedComponent*             rootComponent;                  /**< Root component injected by configuration */
+    CTiglRelativelyPositionedComponent* rootComponent;                  /**< Root component injected by configuration */
     RelativeComponentContainerType      rootComponents;                 /**< All root components that have children */
     bool                                invalidated;                    /**< Internal state flag */
 };

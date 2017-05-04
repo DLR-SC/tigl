@@ -131,7 +131,7 @@ void CCPACSGenericSystem::ReadCPACS(TixiDocumentHandle tixiHandle, const std::st
 
     // Register ourself at the unique id manager
     if (configuration) {
-        configuration->GetUIDManager().AddUID(ptrUID, this);
+        configuration->GetUIDManager().AddGeometricComponent(ptrUID, this);
     }
 
     // Get symmetry axis attribute
