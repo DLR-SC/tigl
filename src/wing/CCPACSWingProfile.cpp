@@ -64,8 +64,8 @@ namespace tigl
 {
 
 // Constructor
-CCPACSWingProfile::CCPACSWingProfile()
-    : invalidated(true), profileAlgo(NULL)
+CCPACSWingProfile::CCPACSWingProfile(CTiglUIDManager* uidMgr)
+    : generated::CPACSProfileGeometry(uidMgr), invalidated(true), profileAlgo(NULL)
 {
     Cleanup();
 }

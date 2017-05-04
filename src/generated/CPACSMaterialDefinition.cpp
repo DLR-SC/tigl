@@ -24,7 +24,8 @@ namespace tigl
 {
     namespace generated
     {
-        CPACSMaterialDefinition::CPACSMaterialDefinition(){}
+        CPACSMaterialDefinition::CPACSMaterialDefinition() {}
+        
         CPACSMaterialDefinition::~CPACSMaterialDefinition() {}
         
         void CPACSMaterialDefinition::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)

@@ -18,14 +18,20 @@
 #include "CPACSProfileGeometry.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "TixiHelper.h"
 
 namespace tigl
 {
     namespace generated
     {
-        CPACSProfileGeometry::CPACSProfileGeometry(){}
-        CPACSProfileGeometry::~CPACSProfileGeometry() {}
+        CPACSProfileGeometry::CPACSProfileGeometry(CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr) {}
+        
+        CPACSProfileGeometry::~CPACSProfileGeometry()
+        {
+            if (m_uidMgr) m_uidMgr->UnregisterObject(m_uID);
+        }
         
         void CPACSProfileGeometry::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
@@ -83,6 +89,7 @@ namespace tigl
                 }
             }
             
+            if (m_uidMgr) m_uidMgr->RegisterObject(m_uID, *this);
         }
         
         void CPACSProfileGeometry::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const

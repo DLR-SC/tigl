@@ -20,13 +20,15 @@
 #include "CPACSWingRibCrossSection.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "TixiHelper.h"
 
 namespace tigl
 {
     namespace generated
     {
-        CPACSWingRibCrossSection::CPACSWingRibCrossSection(CCPACSWingRibsDefinition* parent)
+        CPACSWingRibCrossSection::CPACSWingRibCrossSection(CCPACSWingRibsDefinition* parent, CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr)
         {
             //assert(parent != NULL);
             m_parent = parent;
@@ -51,7 +53,7 @@ namespace tigl
             
             // read element ribRotation
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/ribRotation")) {
-                m_ribRotation = boost::in_place();
+                m_ribRotation = boost::in_place(m_uidMgr);
                 try {
                     m_ribRotation->ReadCPACS(tixiHandle, xpath + "/ribRotation");
                 } catch(const std::exception& e) {
@@ -65,7 +67,7 @@ namespace tigl
             
             // read element ribCell
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/ribCell")) {
-                m_ribCell = boost::in_place();
+                m_ribCell = boost::in_place(m_uidMgr);
                 try {
                     m_ribCell->ReadCPACS(tixiHandle, xpath + "/ribCell");
                 } catch(const std::exception& e) {

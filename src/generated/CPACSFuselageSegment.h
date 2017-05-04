@@ -26,6 +26,7 @@
 
 namespace tigl
 {
+    class CTiglUIDManager;
     class CCPACSFuselageSegments;
     
     namespace generated
@@ -37,7 +38,7 @@ namespace tigl
         class CPACSFuselageSegment
         {
         public:
-            TIGL_EXPORT CPACSFuselageSegment(CCPACSFuselageSegments* parent);
+            TIGL_EXPORT CPACSFuselageSegment(CCPACSFuselageSegments* parent, CTiglUIDManager* uidMgr);
             
             TIGL_EXPORT virtual ~CPACSFuselageSegment();
             
@@ -67,6 +68,8 @@ namespace tigl
             
         protected:
             CCPACSFuselageSegments* m_parent;
+            
+            CTiglUIDManager* m_uidMgr;
             
             std::string                        m_uID;
             std::string                        m_name;

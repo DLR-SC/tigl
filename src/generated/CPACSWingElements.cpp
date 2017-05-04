@@ -19,20 +19,23 @@
 #include "CPACSWingElements.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "TixiHelper.h"
 
 namespace tigl
 {
     namespace generated
     {
-        CPACSWingElements::CPACSWingElements(){}
+        CPACSWingElements::CPACSWingElements(CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr) {}
+        
         CPACSWingElements::~CPACSWingElements() {}
         
         void CPACSWingElements::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element element
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/element")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/element", m_elements);
+                tixihelper::TixiReadElements(tixiHandle, xpath + "/element", m_elements, m_uidMgr);
             }
             
         }

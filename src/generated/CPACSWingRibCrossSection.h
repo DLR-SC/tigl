@@ -29,6 +29,7 @@
 
 namespace tigl
 {
+    class CTiglUIDManager;
     class CCPACSWingRibsDefinition;
     
     namespace generated
@@ -40,7 +41,7 @@ namespace tigl
         class CPACSWingRibCrossSection
         {
         public:
-            TIGL_EXPORT CPACSWingRibCrossSection(CCPACSWingRibsDefinition* parent);
+            TIGL_EXPORT CPACSWingRibCrossSection(CCPACSWingRibsDefinition* parent, CTiglUIDManager* uidMgr);
             
             TIGL_EXPORT virtual ~CPACSWingRibCrossSection();
             
@@ -66,6 +67,8 @@ namespace tigl
             
         protected:
             CCPACSWingRibsDefinition* m_parent;
+            
+            CTiglUIDManager* m_uidMgr;
             
             CCPACSMaterial                    m_material;
             boost::optional<CPACSPointX>      m_ribRotation;

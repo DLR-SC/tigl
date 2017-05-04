@@ -19,20 +19,23 @@
 #include "CPACSRotorAirfoils.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "TixiHelper.h"
 
 namespace tigl
 {
     namespace generated
     {
-        CPACSRotorAirfoils::CPACSRotorAirfoils(){}
+        CPACSRotorAirfoils::CPACSRotorAirfoils(CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr) {}
+        
         CPACSRotorAirfoils::~CPACSRotorAirfoils() {}
         
         void CPACSRotorAirfoils::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element rotorAirfoil
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/rotorAirfoil")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/rotorAirfoil", m_rotorAirfoils);
+                tixihelper::TixiReadElements(tixiHandle, xpath + "/rotorAirfoil", m_rotorAirfoils, m_uidMgr);
             }
             
         }

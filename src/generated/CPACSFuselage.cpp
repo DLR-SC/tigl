@@ -20,20 +20,28 @@
 #include "CPACSFuselage.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "TixiHelper.h"
 
 namespace tigl
 {
     namespace generated
     {
-        CPACSFuselage::CPACSFuselage(CCPACSFuselages* parent) :
-            m_segments(reinterpret_cast<CCPACSFuselage*>(this))
+        CPACSFuselage::CPACSFuselage(CCPACSFuselages* parent, CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr), 
+            m_transformation(m_uidMgr), 
+            m_sections(m_uidMgr), 
+            m_positionings(m_uidMgr), 
+            m_segments(reinterpret_cast<CCPACSFuselage*>(this), m_uidMgr)
         {
             //assert(parent != NULL);
             m_parent = parent;
         }
         
-        CPACSFuselage::~CPACSFuselage() {}
+        CPACSFuselage::~CPACSFuselage()
+        {
+            if (m_uidMgr) m_uidMgr->UnregisterObject(m_uID);
+        }
         
         CCPACSFuselages* CPACSFuselage::GetParent() const
         {
@@ -107,7 +115,7 @@ namespace tigl
             
             // read element cutOuts
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/cutOuts")) {
-                m_cutOuts = boost::in_place();
+                m_cutOuts = boost::in_place(m_uidMgr);
                 try {
                     m_cutOuts->ReadCPACS(tixiHandle, xpath + "/cutOuts");
                 } catch(const std::exception& e) {
@@ -119,6 +127,7 @@ namespace tigl
                 }
             }
             
+            if (m_uidMgr) m_uidMgr->RegisterObject(m_uID, *this);
         }
         
         void CPACSFuselage::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const

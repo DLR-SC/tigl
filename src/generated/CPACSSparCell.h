@@ -27,6 +27,8 @@
 
 namespace tigl
 {
+    class CTiglUIDManager;
+    
     namespace generated
     {
         // This class is used in:
@@ -36,14 +38,15 @@ namespace tigl
         class CPACSSparCell
         {
         public:
-            TIGL_EXPORT CPACSSparCell();
+            TIGL_EXPORT CPACSSparCell(CTiglUIDManager* uidMgr);
             TIGL_EXPORT virtual ~CPACSSparCell();
             
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT virtual const std::string& GetUID() const;
+            TIGL_EXPORT virtual const boost::optional<std::string>& GetUID() const;
             TIGL_EXPORT virtual void SetUID(const std::string& value);
+            TIGL_EXPORT virtual void SetUID(const boost::optional<std::string>& value);
             
             TIGL_EXPORT virtual const double& GetFromEta() const;
             TIGL_EXPORT virtual void SetFromEta(const double& value);
@@ -67,14 +70,16 @@ namespace tigl
             TIGL_EXPORT virtual void SetRotation(const double& value);
             
         protected:
-            std::string               m_uID;
-            double                    m_fromEta;
-            double                    m_toEta;
-            CPACSCap                  m_upperCap;
-            CPACSCap                  m_lowerCap;
-            CPACSWeb                  m_web1;
-            boost::optional<CPACSWeb> m_web2;
-            double                    m_rotation;
+            CTiglUIDManager* m_uidMgr;
+            
+            boost::optional<std::string> m_uID;
+            double                       m_fromEta;
+            double                       m_toEta;
+            CPACSCap                     m_upperCap;
+            CPACSCap                     m_lowerCap;
+            CPACSWeb                     m_web1;
+            boost::optional<CPACSWeb>    m_web2;
+            double                       m_rotation;
             
         private:
             #ifdef HAVE_CPP11

@@ -46,10 +46,8 @@ class CCPACSWingCells;
 class CCPACSWingCell : public generated::CPACSWingCell
 {
 public:
-    TIGL_EXPORT CCPACSWingCell(CCPACSWingCells* parentCells);
+    TIGL_EXPORT CCPACSWingCell(CCPACSWingCells* parentCells, CTiglUIDManager* uidMgr);
     TIGL_EXPORT virtual ~CCPACSWingCell();
-
-    TIGL_EXPORT const std::string& GetUID() const;
 
     TIGL_EXPORT void Invalidate();
 

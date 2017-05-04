@@ -27,8 +27,8 @@
 namespace tigl
 {
 
-CCPACSExternalObjects::CCPACSExternalObjects(CCPACSAircraftModel* parent)
-    : generated::CPACSGenericGeometryComponents(parent) {}
+CCPACSExternalObjects::CCPACSExternalObjects(CCPACSAircraftModel* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSGenericGeometryComponents(parent, uidMgr) {}
 
 CCPACSExternalObject&CCPACSExternalObjects::GetObject(int index) const
 {

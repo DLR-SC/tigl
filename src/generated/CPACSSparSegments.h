@@ -25,6 +25,7 @@
 
 namespace tigl
 {
+    class CTiglUIDManager;
     class CCPACSWingSparSegment;
     class CCPACSWingSpars;
     
@@ -37,7 +38,7 @@ namespace tigl
         class CPACSSparSegments
         {
         public:
-            TIGL_EXPORT CPACSSparSegments(CCPACSWingSpars* parent);
+            TIGL_EXPORT CPACSSparSegments(CCPACSWingSpars* parent, CTiglUIDManager* uidMgr);
             
             TIGL_EXPORT virtual ~CPACSSparSegments();
             
@@ -51,6 +52,8 @@ namespace tigl
             
         protected:
             CCPACSWingSpars* m_parent;
+            
+            CTiglUIDManager* m_uidMgr;
             
             std::vector<unique_ptr<CCPACSWingSparSegment> > m_sparSegments;
             

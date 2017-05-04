@@ -47,7 +47,7 @@ class CCPACSFuselageProfile : public generated::CPACSProfileGeometry
 {
 public:
     // Constructor
-    TIGL_EXPORT CCPACSFuselageProfile();
+    TIGL_EXPORT CCPACSFuselageProfile(CTiglUIDManager* uidMgr);
 
     // Virtual Destructor
     TIGL_EXPORT virtual ~CCPACSFuselageProfile();

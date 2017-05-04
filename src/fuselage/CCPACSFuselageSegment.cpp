@@ -135,8 +135,8 @@ namespace
 namespace tigl
 {
 
-CCPACSFuselageSegment::CCPACSFuselageSegment(CCPACSFuselageSegments* parent)
-    : generated::CPACSFuselageSegment(parent)
+CCPACSFuselageSegment::CCPACSFuselageSegment(CCPACSFuselageSegments* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSFuselageSegment(parent, uidMgr)
     , CTiglAbstractSegment(parent->GetSegments(), parent->GetParent()->m_symmetry)
     , fuselage(parent->GetParent())
 {
@@ -199,7 +199,7 @@ void CCPACSFuselageSegment::ReadCPACS(TixiDocumentHandle tixiHandle, const std::
     Invalidate();
 }
 
-const std::string& CCPACSFuselageSegment::GetUID() const {
+std::string CCPACSFuselageSegment::GetDefaultedUID() const {
     return generated::CPACSFuselageSegment::GetUID();
 }
 

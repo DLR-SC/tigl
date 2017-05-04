@@ -20,13 +20,15 @@
 #include "CPACSWingCell.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "TixiHelper.h"
 
 namespace tigl
 {
     namespace generated
     {
-        CPACSWingCell::CPACSWingCell(CCPACSWingCells* parent) :
+        CPACSWingCell::CPACSWingCell(CCPACSWingCells* parent, CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr), 
             m_positioningLeadingEdge(reinterpret_cast<CCPACSWingCell*>(this)), 
             m_positioningTrailingEdge(reinterpret_cast<CCPACSWingCell*>(this)), 
             m_positioningInnerBorder(reinterpret_cast<CCPACSWingCell*>(this)), 
@@ -36,7 +38,10 @@ namespace tigl
             m_parent = parent;
         }
         
-        CPACSWingCell::~CPACSWingCell() {}
+        CPACSWingCell::~CPACSWingCell()
+        {
+            if (m_uidMgr) m_uidMgr->UnregisterObject(m_uID);
+        }
         
         CCPACSWingCells* CPACSWingCell::GetParent() const
         {
@@ -93,6 +98,7 @@ namespace tigl
                 LOG(ERROR) << "Required element positioningOuterBorder is missing at xpath " << xpath;
             }
             
+            if (m_uidMgr) m_uidMgr->RegisterObject(m_uID, *this);
         }
         
         void CPACSWingCell::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const

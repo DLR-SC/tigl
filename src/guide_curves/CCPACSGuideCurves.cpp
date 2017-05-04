@@ -33,6 +33,8 @@
 
 namespace tigl
 {
+CCPACSGuideCurves::CCPACSGuideCurves(CTiglUIDManager* uidMgr)
+    : generated::CPACSGuideCurves(uidMgr) {}
 
 namespace {
     struct UidCompare {

@@ -50,7 +50,7 @@ class CCPACSFuselage : public generated::CPACSFuselage, public CTiglRelativelyPo
 {
 public:
     // Constructor
-    TIGL_EXPORT CCPACSFuselage(CCPACSFuselages* parent);
+    TIGL_EXPORT CCPACSFuselage(CCPACSFuselages* parent, CTiglUIDManager* uidMgr);
 
     // Virtual Destructor
     TIGL_EXPORT virtual ~CCPACSFuselage();
@@ -64,7 +64,7 @@ public:
     // Returns the parent configuration
     TIGL_EXPORT CCPACSConfiguration & GetConfiguration() const;
 
-    TIGL_EXPORT virtual const std::string& GetUID() const OVERRIDE;
+    TIGL_EXPORT virtual std::string GetDefaultedUID() const OVERRIDE;
 
     // Get section count
     TIGL_EXPORT int GetSectionCount() const;

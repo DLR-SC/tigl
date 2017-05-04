@@ -27,7 +27,10 @@
 
 namespace tigl
 {
-// Returns the UID of the referenced wing profile
+CCPACSWingSectionElement::CCPACSWingSectionElement(CTiglUIDManager* uidMgr)
+    : generated::CPACSWingElement(uidMgr) {}
+
+    // Returns the UID of the referenced wing profile
 std::string CCPACSWingSectionElement::GetProfileIndex() const
 {
     return m_airfoilUID;

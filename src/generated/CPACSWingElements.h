@@ -25,6 +25,7 @@
 
 namespace tigl
 {
+    class CTiglUIDManager;
     class CCPACSWingSectionElement;
     
     namespace generated
@@ -36,7 +37,7 @@ namespace tigl
         class CPACSWingElements
         {
         public:
-            TIGL_EXPORT CPACSWingElements();
+            TIGL_EXPORT CPACSWingElements(CTiglUIDManager* uidMgr);
             TIGL_EXPORT virtual ~CPACSWingElements();
             
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
@@ -46,6 +47,8 @@ namespace tigl
             TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSWingSectionElement> >& GetElements();
             
         protected:
+            CTiglUIDManager* m_uidMgr;
+            
             std::vector<unique_ptr<CCPACSWingSectionElement> > m_elements;
             
         private:

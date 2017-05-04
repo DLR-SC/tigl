@@ -24,7 +24,8 @@ namespace tigl
 {
     namespace generated
     {
-        CPACSWeb::CPACSWeb(){}
+        CPACSWeb::CPACSWeb() {}
+        
         CPACSWeb::~CPACSWeb() {}
         
         void CPACSWeb::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)

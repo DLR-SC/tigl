@@ -25,6 +25,7 @@
 
 namespace tigl
 {
+    class CTiglUIDManager;
     class CCPACSWingSparPosition;
     class CCPACSWingSpars;
     
@@ -37,7 +38,7 @@ namespace tigl
         class CPACSSparPositions
         {
         public:
-            TIGL_EXPORT CPACSSparPositions(CCPACSWingSpars* parent);
+            TIGL_EXPORT CPACSSparPositions(CCPACSWingSpars* parent, CTiglUIDManager* uidMgr);
             
             TIGL_EXPORT virtual ~CPACSSparPositions();
             
@@ -51,6 +52,8 @@ namespace tigl
             
         protected:
             CCPACSWingSpars* m_parent;
+            
+            CTiglUIDManager* m_uidMgr;
             
             std::vector<unique_ptr<CCPACSWingSparPosition> > m_sparPositions;
             

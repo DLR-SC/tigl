@@ -31,6 +31,7 @@
 
 namespace tigl
 {
+    class CTiglUIDManager;
     class CCPACSFuselages;
     
     namespace generated
@@ -42,7 +43,7 @@ namespace tigl
         class CPACSFuselage
         {
         public:
-            TIGL_EXPORT CPACSFuselage(CCPACSFuselages* parent);
+            TIGL_EXPORT CPACSFuselage(CCPACSFuselages* parent, CTiglUIDManager* uidMgr);
             
             TIGL_EXPORT virtual ~CPACSFuselage();
             
@@ -86,6 +87,8 @@ namespace tigl
             
         protected:
             CCPACSFuselages* m_parent;
+            
+            CTiglUIDManager* m_uidMgr;
             
             std::string                           m_uID;
             boost::optional<TiglSymmetryAxis>     m_symmetry;

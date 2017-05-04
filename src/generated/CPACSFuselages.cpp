@@ -22,20 +22,23 @@
 #include "CPACSFuselages.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "TixiHelper.h"
 
 namespace tigl
 {
     namespace generated
     {
-        CPACSFuselages::CPACSFuselages(CCPACSAircraftModel* parent)
+        CPACSFuselages::CPACSFuselages(CCPACSAircraftModel* parent, CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr)
         {
             //assert(parent != NULL);
             m_parent = parent;
             m_parentType = &typeid(CCPACSAircraftModel);
         }
         
-        CPACSFuselages::CPACSFuselages(CCPACSRotorcraftModel* parent)
+        CPACSFuselages::CPACSFuselages(CCPACSRotorcraftModel* parent, CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr)
         {
             //assert(parent != NULL);
             m_parent = parent;
@@ -48,7 +51,7 @@ namespace tigl
         {
             // read element fuselage
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/fuselage")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/fuselage", m_fuselages, reinterpret_cast<CCPACSFuselages*>(this));
+                tixihelper::TixiReadElements(tixiHandle, xpath + "/fuselage", m_fuselages, reinterpret_cast<CCPACSFuselages*>(this), m_uidMgr);
             }
             
         }

@@ -25,6 +25,7 @@
 
 namespace tigl
 {
+    class CTiglUIDManager;
     class CCPACSRotorHinge;
     class CCPACSRotorBladeAttachment;
     
@@ -37,7 +38,7 @@ namespace tigl
         class CPACSRotorHubHinges
         {
         public:
-            TIGL_EXPORT CPACSRotorHubHinges(CCPACSRotorBladeAttachment* parent);
+            TIGL_EXPORT CPACSRotorHubHinges(CCPACSRotorBladeAttachment* parent, CTiglUIDManager* uidMgr);
             
             TIGL_EXPORT virtual ~CPACSRotorHubHinges();
             
@@ -51,6 +52,8 @@ namespace tigl
             
         protected:
             CCPACSRotorBladeAttachment* m_parent;
+            
+            CTiglUIDManager* m_uidMgr;
             
             std::vector<unique_ptr<CCPACSRotorHinge> > m_hinges;
             

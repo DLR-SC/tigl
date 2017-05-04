@@ -25,6 +25,7 @@
 
 namespace tigl
 {
+    class CTiglUIDManager;
     class CCPACSFuselageSection;
     
     namespace generated
@@ -36,7 +37,7 @@ namespace tigl
         class CPACSFuselageSections
         {
         public:
-            TIGL_EXPORT CPACSFuselageSections();
+            TIGL_EXPORT CPACSFuselageSections(CTiglUIDManager* uidMgr);
             TIGL_EXPORT virtual ~CPACSFuselageSections();
             
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
@@ -46,6 +47,8 @@ namespace tigl
             TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSFuselageSection> >& GetSections();
             
         protected:
+            CTiglUIDManager* m_uidMgr;
+            
             std::vector<unique_ptr<CCPACSFuselageSection> > m_sections;
             
         private:

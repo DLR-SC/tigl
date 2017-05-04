@@ -29,6 +29,8 @@
 
 namespace tigl
 {
+    class CTiglUIDManager;
+    
     namespace generated
     {
         // This class is used in:
@@ -38,7 +40,7 @@ namespace tigl
         class CPACSVehicles
         {
         public:
-            TIGL_EXPORT CPACSVehicles();
+            TIGL_EXPORT CPACSVehicles(CTiglUIDManager* uidMgr);
             TIGL_EXPORT virtual ~CPACSVehicles();
             
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
@@ -57,6 +59,8 @@ namespace tigl
             TIGL_EXPORT virtual boost::optional<CPACSMaterials>& GetMaterials();
             
         protected:
+            CTiglUIDManager* m_uidMgr;
+            
             boost::optional<CPACSAircraft>   m_aircraft;
             boost::optional<CPACSRotorcraft> m_rotorcraft;
             boost::optional<CCPACSProfiles>  m_profiles;

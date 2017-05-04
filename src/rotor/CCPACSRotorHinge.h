@@ -50,10 +50,9 @@ class CCPACSRotorBladeAttachment;
 
 class CCPACSRotorHinge : public generated::CPACSRotorHubHinge
 {
-
 public:
     // Constructor
-    TIGL_EXPORT CCPACSRotorHinge(CCPACSRotorHinges* parent);
+    TIGL_EXPORT CCPACSRotorHinge(CCPACSRotorHinges* parent, CTiglUIDManager* uidMgr);
 
     // Returns the rotor hinge transformation
     TIGL_EXPORT CTiglTransformation GetTransformationMatrix() const;

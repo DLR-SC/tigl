@@ -25,6 +25,7 @@
 
 namespace tigl
 {
+    class CTiglUIDManager;
     class CCPACSWingCell;
     class CCPACSWingShell;
     
@@ -37,7 +38,7 @@ namespace tigl
         class CPACSWingCells
         {
         public:
-            TIGL_EXPORT CPACSWingCells(CCPACSWingShell* parent);
+            TIGL_EXPORT CPACSWingCells(CCPACSWingShell* parent, CTiglUIDManager* uidMgr);
             
             TIGL_EXPORT virtual ~CPACSWingCells();
             
@@ -51,6 +52,8 @@ namespace tigl
             
         protected:
             CCPACSWingShell* m_parent;
+            
+            CTiglUIDManager* m_uidMgr;
             
             std::vector<unique_ptr<CCPACSWingCell> > m_cells;
             

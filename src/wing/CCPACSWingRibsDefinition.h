@@ -71,8 +71,8 @@ public:
     };
 
 public:
-    //TIGL_EXPORT CCPACSWingRibsDefinition(CCPACSWingCSStructure* structure);
-    TIGL_EXPORT CCPACSWingRibsDefinition(CCPACSWingRibsDefinitions* parent);
+    //TIGL_EXPORT CCPACSWingRibsDefinition(CCPACSWingCSStructure* structure, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSWingRibsDefinition(CCPACSWingRibsDefinitions* parent, CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT void Invalidate();
 

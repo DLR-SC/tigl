@@ -21,13 +21,15 @@
 #include "CPACSWingRibsDefinitions.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "TixiHelper.h"
 
 namespace tigl
 {
     namespace generated
     {
-        CPACSWingRibsDefinitions::CPACSWingRibsDefinitions(CCPACSWingCSStructure* parent)
+        CPACSWingRibsDefinitions::CPACSWingRibsDefinitions(CCPACSWingCSStructure* parent, CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr)
         {
             //assert(parent != NULL);
             m_parent = parent;
@@ -44,7 +46,7 @@ namespace tigl
         {
             // read element ribsDefinition
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/ribsDefinition")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/ribsDefinition", m_ribsDefinitions, reinterpret_cast<CCPACSWingRibsDefinitions*>(this));
+                tixihelper::TixiReadElements(tixiHandle, xpath + "/ribsDefinition", m_ribsDefinitions, reinterpret_cast<CCPACSWingRibsDefinitions*>(this), m_uidMgr);
             }
             
         }

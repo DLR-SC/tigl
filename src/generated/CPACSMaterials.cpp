@@ -19,25 +19,28 @@
 #include "CPACSMaterials.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "TixiHelper.h"
 
 namespace tigl
 {
     namespace generated
     {
-        CPACSMaterials::CPACSMaterials(){}
+        CPACSMaterials::CPACSMaterials(CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr) {}
+        
         CPACSMaterials::~CPACSMaterials() {}
         
         void CPACSMaterials::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element material
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/material")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/material", m_materials);
+                tixihelper::TixiReadElements(tixiHandle, xpath + "/material", m_materials, m_uidMgr);
             }
             
             // read element composites
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/composites")) {
-                m_composites = boost::in_place();
+                m_composites = boost::in_place(m_uidMgr);
                 try {
                     m_composites->ReadCPACS(tixiHandle, xpath + "/composites");
                 } catch(const std::exception& e) {

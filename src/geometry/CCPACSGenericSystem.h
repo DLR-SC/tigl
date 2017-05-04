@@ -45,8 +45,10 @@ public:
     // Virtual destructor
     TIGL_EXPORT virtual ~CCPACSGenericSystem();
 
-    TIGL_EXPORT virtual const std::string& GetUID() const OVERRIDE;
+    TIGL_EXPORT const std::string& GetUID() const;
     TIGL_EXPORT void SetUID(const std::string& uid);
+
+    TIGL_EXPORT virtual std::string GetDefaultedUID() const OVERRIDE;
 
     // Invalidates internal state
     TIGL_EXPORT void Invalidate();

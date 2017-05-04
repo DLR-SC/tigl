@@ -52,9 +52,8 @@ void CCPACSFarField::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::
     generated::CPACSFarField::ReadCPACS(tixiHandle, xpath);
 }
 
-const std::string& CCPACSFarField::GetUID() const {
-    static const std::string s_uid = "FarField";
-    return s_uid;
+std::string CCPACSFarField::GetDefaultedUID() const {
+    return "FarField";
 }
 
 PNamedShape CCPACSFarField::BuildLoft()
@@ -85,7 +84,7 @@ PNamedShape CCPACSFarField::BuildLoft()
     }
 
     // set names
-    std::string loftName = GetUID();
+    std::string loftName = GetDefaultedUID();
     std::string loftShortName = "FF";
 
     PNamedShape loft(new CNamedShape(shape, loftName.c_str(), loftShortName.c_str()));

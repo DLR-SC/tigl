@@ -191,26 +191,49 @@ namespace tigl
             TixiReadElements(tixiHandle, xpath, children, ChildReader<T>(), minOccurs, maxOccurs);
         }
 
-        template<typename T, typename Parent>
-        struct ChildWithParentReader
+        template<typename T, typename Arg1>
+        struct ChildWithArgsReader1
         {
-            ChildWithParentReader(Parent* p) : m_p(p) {}
+            ChildWithArgsReader1(Arg1* arg1) : m_arg1(arg1) {}
 
             unique_ptr<T> operator()(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
             {
-                unique_ptr<T> child = make_unique<T>(m_p);
+                unique_ptr<T> child = make_unique<T>(m_arg1);
                 child->ReadCPACS(tixiHandle, xpath);
                 return child;
             }
 
         private:
-            Parent* m_p;
+            Arg1* m_arg1;
         };
 
-        template<typename T, typename Parent>
-        void TixiReadElements(const TixiDocumentHandle& tixiHandle, const std::string& xpath, std::vector<unique_ptr<T> >& children, Parent* parent, int minOccurs = -1, int maxOccurs = -1)
+        template<typename T, typename Arg1>
+        void TixiReadElements(const TixiDocumentHandle& tixiHandle, const std::string& xpath, std::vector<unique_ptr<T> >& children, Arg1* arg1, int minOccurs = -1, int maxOccurs = -1)
         {
-            TixiReadElements(tixiHandle, xpath, children, ChildWithParentReader<T, Parent>(parent), minOccurs, maxOccurs);
+            TixiReadElements(tixiHandle, xpath, children, ChildWithArgsReader1<T, Arg1>(arg1), minOccurs, maxOccurs);
+        }
+
+        template<typename T, typename Arg1, typename Arg2>
+        struct ChildWithArgsReader2
+        {
+            ChildWithArgsReader2(Arg1* arg1, Arg2* arg2) : m_arg1(arg1), m_arg2(arg2) {}
+
+            unique_ptr<T> operator()(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
+            {
+                unique_ptr<T> child = make_unique<T>(m_arg1, m_arg2);
+                child->ReadCPACS(tixiHandle, xpath);
+                return child;
+            }
+
+        private:
+            Arg1* m_arg1;
+            Arg2* m_arg2;
+        };
+
+        template<typename T, typename Arg1, typename Arg2>
+        void TixiReadElements(const TixiDocumentHandle& tixiHandle, const std::string& xpath, std::vector<unique_ptr<T> >& children, Arg1* arg1, Arg2* arg2, int minOccurs = -1, int maxOccurs = -1)
+        {
+            TixiReadElements(tixiHandle, xpath, children, ChildWithArgsReader2<T, Arg1, Arg2>(arg1, arg2), minOccurs, maxOccurs);
         }
 
         template<typename T, typename WriteChildFunc>

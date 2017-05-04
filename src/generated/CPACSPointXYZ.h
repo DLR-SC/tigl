@@ -27,6 +27,8 @@
 
 namespace tigl
 {
+    class CTiglUIDManager;
+    
     namespace generated
     {
         // This class is used in:
@@ -37,7 +39,7 @@ namespace tigl
         class CPACSPointXYZ
         {
         public:
-            TIGL_EXPORT CPACSPointXYZ();
+            TIGL_EXPORT CPACSPointXYZ(CTiglUIDManager* uidMgr);
             TIGL_EXPORT virtual ~CPACSPointXYZ();
             
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
@@ -57,6 +59,8 @@ namespace tigl
             TIGL_EXPORT virtual void SetZ(const double& value);
             
         protected:
+            CTiglUIDManager* m_uidMgr;
+            
             boost::optional<std::string> m_uID;
             double                       m_x;
             double                       m_y;

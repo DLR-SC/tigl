@@ -33,6 +33,7 @@
 
 namespace tigl
 {
+    class CTiglUIDManager;
     class CCPACSRotorBlades;
     class CCPACSWings;
     
@@ -46,8 +47,8 @@ namespace tigl
         class CPACSWing
         {
         public:
-            TIGL_EXPORT CPACSWing(CCPACSRotorBlades* parent);
-            TIGL_EXPORT CPACSWing(CCPACSWings* parent);
+            TIGL_EXPORT CPACSWing(CCPACSRotorBlades* parent, CTiglUIDManager* uidMgr);
+            TIGL_EXPORT CPACSWing(CCPACSWings* parent, CTiglUIDManager* uidMgr);
             
             TIGL_EXPORT virtual ~CPACSWing();
             
@@ -108,6 +109,8 @@ namespace tigl
         protected:
             void* m_parent;
             const std::type_info* m_parentType;
+            
+            CTiglUIDManager* m_uidMgr;
             
             std::string                                  m_uID;
             boost::optional<TiglSymmetryAxis>            m_symmetry;

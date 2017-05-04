@@ -18,14 +18,20 @@
 #include "CPACSPositioning.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "TixiHelper.h"
 
 namespace tigl
 {
     namespace generated
     {
-        CPACSPositioning::CPACSPositioning(){}
-        CPACSPositioning::~CPACSPositioning() {}
+        CPACSPositioning::CPACSPositioning(CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr) {}
+        
+        CPACSPositioning::~CPACSPositioning()
+        {
+            if (m_uidMgr && m_uID) m_uidMgr->UnregisterObject(*m_uID);
+        }
         
         void CPACSPositioning::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
@@ -84,6 +90,7 @@ namespace tigl
                 LOG(ERROR) << "Required element toSectionUID is missing at xpath " << xpath;
             }
             
+            if (m_uidMgr && m_uID) m_uidMgr->RegisterObject(*m_uID, *this);
         }
         
         void CPACSPositioning::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const

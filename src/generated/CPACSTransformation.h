@@ -29,6 +29,8 @@
 
 namespace tigl
 {
+    class CTiglUIDManager;
+    
     namespace generated
     {
         // This class is used in:
@@ -46,7 +48,7 @@ namespace tigl
         class CPACSTransformation
         {
         public:
-            TIGL_EXPORT CPACSTransformation();
+            TIGL_EXPORT CPACSTransformation(CTiglUIDManager* uidMgr);
             TIGL_EXPORT virtual ~CPACSTransformation();
             
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
@@ -66,6 +68,8 @@ namespace tigl
             TIGL_EXPORT virtual boost::optional<CCPACSPointAbsRel>& GetTranslation();
             
         protected:
+            CTiglUIDManager* m_uidMgr;
+            
             boost::optional<std::string>       m_uID;
             boost::optional<CCPACSPoint>       m_scaling;
             boost::optional<CCPACSPoint>       m_rotation;

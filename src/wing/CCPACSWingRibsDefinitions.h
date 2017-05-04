@@ -27,7 +27,7 @@ class CCPACSWingCSStructure;
 class CCPACSWingRibsDefinitions : public generated::CPACSWingRibsDefinitions
 {
 public:
-    TIGL_EXPORT CCPACSWingRibsDefinitions(CCPACSWingCSStructure* structure);
+    TIGL_EXPORT CCPACSWingRibsDefinitions(CCPACSWingCSStructure* structure, CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT void Invalidate();
 

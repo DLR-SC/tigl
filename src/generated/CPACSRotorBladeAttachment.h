@@ -27,6 +27,7 @@
 
 namespace tigl
 {
+    class CTiglUIDManager;
     class CCPACSRotorBladeAttachments;
     
     namespace generated
@@ -38,7 +39,7 @@ namespace tigl
         class CPACSRotorBladeAttachment
         {
         public:
-            TIGL_EXPORT CPACSRotorBladeAttachment(CCPACSRotorBladeAttachments* parent);
+            TIGL_EXPORT CPACSRotorBladeAttachment(CCPACSRotorBladeAttachments* parent, CTiglUIDManager* uidMgr);
             
             TIGL_EXPORT virtual ~CPACSRotorBladeAttachment();
             
@@ -74,6 +75,8 @@ namespace tigl
             
         protected:
             CCPACSRotorBladeAttachments* m_parent;
+            
+            CTiglUIDManager* m_uidMgr;
             
             boost::optional<std::string>        m_uID;
             boost::optional<std::string>        m_name;

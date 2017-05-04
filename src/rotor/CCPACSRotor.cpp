@@ -40,8 +40,8 @@ namespace tigl
 {
 
 // Constructor
-CCPACSRotor::CCPACSRotor(CCPACSRotors* parent)
-    : generated::CPACSRotor(parent)
+CCPACSRotor::CCPACSRotor(CCPACSRotors* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSRotor(parent, uidMgr)
     , CTiglRelativelyPositionedComponent(&m_parentUID, &m_transformation, &m_symmetry)
     , rebuildGeometry(true) {}
 
@@ -71,7 +71,7 @@ void CCPACSRotor::Update()
     rebuildGeometry = true;
 }
 
-const std::string& CCPACSRotor::GetUID() const {
+std::string CCPACSRotor::GetDefaultedUID() const {
     return generated::CPACSRotor::GetUID();
 }
 

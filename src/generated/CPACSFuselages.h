@@ -27,6 +27,7 @@
 
 namespace tigl
 {
+    class CTiglUIDManager;
     class CCPACSFuselage;
     class CCPACSAircraftModel;
     class CCPACSRotorcraftModel;
@@ -41,8 +42,8 @@ namespace tigl
         class CPACSFuselages
         {
         public:
-            TIGL_EXPORT CPACSFuselages(CCPACSAircraftModel* parent);
-            TIGL_EXPORT CPACSFuselages(CCPACSRotorcraftModel* parent);
+            TIGL_EXPORT CPACSFuselages(CCPACSAircraftModel* parent, CTiglUIDManager* uidMgr);
+            TIGL_EXPORT CPACSFuselages(CCPACSRotorcraftModel* parent, CTiglUIDManager* uidMgr);
             
             TIGL_EXPORT virtual ~CPACSFuselages();
             
@@ -73,6 +74,8 @@ namespace tigl
         protected:
             void* m_parent;
             const std::type_info* m_parentType;
+            
+            CTiglUIDManager* m_uidMgr;
             
             std::vector<unique_ptr<CCPACSFuselage> > m_fuselages;
             

@@ -20,20 +20,26 @@
 #include "CPACSRotor.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "TixiHelper.h"
 
 namespace tigl
 {
     namespace generated
     {
-        CPACSRotor::CPACSRotor(CCPACSRotors* parent) :
-            m_rotorHub(reinterpret_cast<CCPACSRotor*>(this))
+        CPACSRotor::CPACSRotor(CCPACSRotors* parent, CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr), 
+            m_transformation(m_uidMgr), 
+            m_rotorHub(reinterpret_cast<CCPACSRotor*>(this), m_uidMgr)
         {
             //assert(parent != NULL);
             m_parent = parent;
         }
         
-        CPACSRotor::~CPACSRotor() {}
+        CPACSRotor::~CPACSRotor()
+        {
+            if (m_uidMgr) m_uidMgr->UnregisterObject(m_uID);
+        }
         
         CCPACSRotors* CPACSRotor::GetParent() const
         {
@@ -99,6 +105,7 @@ namespace tigl
                 LOG(ERROR) << "Required element rotorHub is missing at xpath " << xpath;
             }
             
+            if (m_uidMgr) m_uidMgr->RegisterObject(m_uID, *this);
         }
         
         void CPACSRotor::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const

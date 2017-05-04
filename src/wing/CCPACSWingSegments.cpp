@@ -36,8 +36,8 @@ namespace tigl
 {
 
 // Constructor
-CCPACSWingSegments::CCPACSWingSegments(CCPACSWing* parent)
-    : generated::CPACSWingSegments(parent) {}
+CCPACSWingSegments::CCPACSWingSegments(CCPACSWing* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSWingSegments(parent, uidMgr) {}
 
 // Invalidates internal state
 void CCPACSWingSegments::Invalidate()

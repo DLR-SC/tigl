@@ -28,6 +28,7 @@
 
 namespace tigl
 {
+    class CTiglUIDManager;
     class CCPACSWingComponentSegment;
     
     namespace generated
@@ -39,7 +40,7 @@ namespace tigl
         class CPACSWingComponentSegmentStructure
         {
         public:
-            TIGL_EXPORT CPACSWingComponentSegmentStructure(CCPACSWingComponentSegment* parent);
+            TIGL_EXPORT CPACSWingComponentSegmentStructure(CCPACSWingComponentSegment* parent, CTiglUIDManager* uidMgr);
             
             TIGL_EXPORT virtual ~CPACSWingComponentSegmentStructure();
             
@@ -62,6 +63,8 @@ namespace tigl
             
         protected:
             CCPACSWingComponentSegment* m_parent;
+            
+            CTiglUIDManager* m_uidMgr;
             
             CCPACSWingShell                            m_upperShell;
             CCPACSWingShell                            m_lowerShell;

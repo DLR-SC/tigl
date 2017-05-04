@@ -30,7 +30,7 @@ class CCPACSWingCSStructure;
 class CCPACSWingSpars : public generated::CPACSWingSpar
 {
 public:
-    TIGL_EXPORT CCPACSWingSpars(CCPACSWingCSStructure* structure);
+    TIGL_EXPORT CCPACSWingSpars(CCPACSWingCSStructure* structure, CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT void Invalidate();
 

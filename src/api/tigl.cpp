@@ -1068,7 +1068,10 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetComponentSegmentUID(TiglCPACSConfig
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
         tigl::CCPACSWingComponentSegment& segment = (tigl::CCPACSWingComponentSegment &) wing.GetComponentSegment(compSegmentIndex);
-        *uidNamePtr = const_cast<char*>(segment.GetUID().c_str());
+        if (segment.GetUID())
+            *uidNamePtr = const_cast<char*>(segment.GetUID()->c_str());
+        else
+            *uidNamePtr = "";
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
@@ -1794,7 +1797,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentFindSegment(TiglCPACSC
 
             for (int componentSegment = 1; componentSegment <= wing.GetComponentSegmentCount(); componentSegment++) {
                 tigl::CCPACSWingComponentSegment& cs = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(componentSegment);
-                if ( cs.GetUID() == componentSegmentUID) {
+                if (cs.GetUID() == std::string(componentSegmentUID)) {
                     gp_Pnt nearestPointOnSegment;
                     double distance = 0;
                     const tigl::CCPACSWingSegment* segment =  cs.findSegment(x, y, z, nearestPointOnSegment, distance);

@@ -19,14 +19,20 @@
 #include "CPACSPostFailure.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "TixiHelper.h"
 
 namespace tigl
 {
     namespace generated
     {
-        CPACSMaterial::CPACSMaterial(){}
-        CPACSMaterial::~CPACSMaterial() {}
+        CPACSMaterial::CPACSMaterial(CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr) {}
+        
+        CPACSMaterial::~CPACSMaterial()
+        {
+            if (m_uidMgr && m_uID) m_uidMgr->UnregisterObject(*m_uID);
+        }
         
         void CPACSMaterial::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
@@ -232,6 +238,7 @@ namespace tigl
                 m_tau23_choice3 = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/tau23");
             }
             
+            if (m_uidMgr && m_uID) m_uidMgr->RegisterObject(*m_uID, *this);
         }
         
         void CPACSMaterial::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const

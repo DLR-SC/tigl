@@ -31,7 +31,7 @@ namespace tigl
 class CCPACSTransformation : public generated::CPACSTransformation
 {
 public:
-    TIGL_EXPORT CCPACSTransformation();
+    TIGL_EXPORT CCPACSTransformation(CTiglUIDManager* uidMgr);
     
     TIGL_EXPORT void reset();
     

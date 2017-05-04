@@ -21,13 +21,15 @@
 #include "CPACSSparPositions.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "TixiHelper.h"
 
 namespace tigl
 {
     namespace generated
     {
-        CPACSSparPositions::CPACSSparPositions(CCPACSWingSpars* parent)
+        CPACSSparPositions::CPACSSparPositions(CCPACSWingSpars* parent, CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr)
         {
             //assert(parent != NULL);
             m_parent = parent;
@@ -44,7 +46,7 @@ namespace tigl
         {
             // read element sparPosition
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/sparPosition")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/sparPosition", m_sparPositions, reinterpret_cast<CCPACSWingSparPositions*>(this));
+                tixihelper::TixiReadElements(tixiHandle, xpath + "/sparPosition", m_sparPositions, reinterpret_cast<CCPACSWingSparPositions*>(this), m_uidMgr);
             }
             
         }

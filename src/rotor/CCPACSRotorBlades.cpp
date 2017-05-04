@@ -31,8 +31,8 @@
 namespace tigl
 {
 // Constructor
-CCPACSRotorBlades::CCPACSRotorBlades(CCPACSRotorcraftModel* parent)
-    : generated::CPACSRotorBlades(parent) {}
+CCPACSRotorBlades::CCPACSRotorBlades(CCPACSRotorcraftModel* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSRotorBlades(parent, uidMgr) {}
 
 // Invalidates internal state
 void CCPACSRotorBlades::Invalidate()

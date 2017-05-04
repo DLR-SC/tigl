@@ -28,6 +28,7 @@
 
 namespace tigl
 {
+    class CTiglUIDManager;
     class CCPACSExternalObjects;
     
     namespace generated
@@ -39,7 +40,7 @@ namespace tigl
         class CPACSGenericGeometricComponent
         {
         public:
-            TIGL_EXPORT CPACSGenericGeometricComponent(CCPACSExternalObjects* parent);
+            TIGL_EXPORT CPACSGenericGeometricComponent(CCPACSExternalObjects* parent, CTiglUIDManager* uidMgr);
             
             TIGL_EXPORT virtual ~CPACSGenericGeometricComponent();
             
@@ -74,6 +75,8 @@ namespace tigl
             
         protected:
             CCPACSExternalObjects* m_parent;
+            
+            CTiglUIDManager* m_uidMgr;
             
             std::string                       m_uID;
             boost::optional<TiglSymmetryAxis> m_symmetry;

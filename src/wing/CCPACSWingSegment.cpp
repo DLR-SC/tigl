@@ -204,8 +204,8 @@ namespace
     }
 }
 
-CCPACSWingSegment::CCPACSWingSegment(CCPACSWingSegments* parent)
-    : generated::CPACSWingSegment(parent)
+CCPACSWingSegment::CCPACSWingSegment(CCPACSWingSegments* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSWingSegment(parent, uidMgr)
     , CTiglAbstractSegment(parent->GetSegments(), parent->GetParent()->m_symmetry)
     , wing(parent->GetParent()) {
     Cleanup();
@@ -268,7 +268,7 @@ void CCPACSWingSegment::ReadCPACS(TixiDocumentHandle tixiHandle, const std::stri
     Update();
 }
 
-const std::string& CCPACSWingSegment::GetUID() const {
+std::string CCPACSWingSegment::GetDefaultedUID() const {
     return generated::CPACSWingSegment::GetUID();
 }
 

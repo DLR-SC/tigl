@@ -24,7 +24,8 @@ namespace tigl
 {
     namespace generated
     {
-        CPACSPlasticityCurvePoint::CPACSPlasticityCurvePoint(){}
+        CPACSPlasticityCurvePoint::CPACSPlasticityCurvePoint() {}
+        
         CPACSPlasticityCurvePoint::~CPACSPlasticityCurvePoint() {}
         
         void CPACSPlasticityCurvePoint::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)

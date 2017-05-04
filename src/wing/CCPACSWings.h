@@ -38,8 +38,8 @@ namespace tigl
 class CCPACSWings : public generated::CPACSWings
 {
 public:
-    TIGL_EXPORT CCPACSWings(CCPACSRotorcraftModel* parent);
-    TIGL_EXPORT CCPACSWings(CCPACSAircraftModel* parent);
+    TIGL_EXPORT CCPACSWings(CCPACSRotorcraftModel* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSWings(CCPACSAircraftModel* parent, CTiglUIDManager* uidMgr);
 
     // Invalidates internal state
     TIGL_EXPORT void Invalidate();

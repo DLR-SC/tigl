@@ -24,7 +24,8 @@ namespace tigl
 {
     namespace generated
     {
-        CPACSHeader::CPACSHeader(){}
+        CPACSHeader::CPACSHeader() {}
+        
         CPACSHeader::~CPACSHeader() {}
         
         void CPACSHeader::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)

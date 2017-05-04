@@ -25,6 +25,8 @@
 
 namespace tigl
 {
+    class CTiglUIDManager;
+    
     namespace generated
     {
         // This class is used in:
@@ -34,7 +36,7 @@ namespace tigl
         class CPACSPositioning
         {
         public:
-            TIGL_EXPORT CPACSPositioning();
+            TIGL_EXPORT CPACSPositioning(CTiglUIDManager* uidMgr);
             TIGL_EXPORT virtual ~CPACSPositioning();
             
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
@@ -68,6 +70,8 @@ namespace tigl
             TIGL_EXPORT virtual void SetToSectionUID(const std::string& value);
             
         protected:
+            CTiglUIDManager* m_uidMgr;
+            
             boost::optional<std::string> m_uID;
             std::string                  m_name;
             boost::optional<std::string> m_description;

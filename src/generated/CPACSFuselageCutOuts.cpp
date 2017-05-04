@@ -19,20 +19,23 @@
 #include "CPACSFuselageCutOuts.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "TixiHelper.h"
 
 namespace tigl
 {
     namespace generated
     {
-        CPACSFuselageCutOuts::CPACSFuselageCutOuts(){}
+        CPACSFuselageCutOuts::CPACSFuselageCutOuts(CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr) {}
+        
         CPACSFuselageCutOuts::~CPACSFuselageCutOuts() {}
         
         void CPACSFuselageCutOuts::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element element
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/element")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/element", m_elements);
+                tixihelper::TixiReadElements(tixiHandle, xpath + "/element", m_elements, m_uidMgr);
             }
             
         }

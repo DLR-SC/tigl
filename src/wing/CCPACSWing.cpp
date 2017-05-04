@@ -147,8 +147,8 @@ namespace
     }
 }
 
-CCPACSWing::CCPACSWing(CCPACSWings* parent)
-    : generated::CPACSWing(parent)
+CCPACSWing::CCPACSWing(CCPACSWings* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSWing(parent, uidMgr)
     , CTiglRelativelyPositionedComponent(&m_parentUID, &m_transformation, &m_symmetry)
     , rebuildFusedSegments(true)
     , rebuildFusedSegWEdge(true)
@@ -163,8 +163,8 @@ CCPACSWing::CCPACSWing(CCPACSWings* parent)
 
     Cleanup();
 }
-CCPACSWing::CCPACSWing(CCPACSRotorBlades* parent)
-    : generated::CPACSWing(parent)
+CCPACSWing::CCPACSWing(CCPACSRotorBlades* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSWing(parent, uidMgr)
     , CTiglRelativelyPositionedComponent(&m_parentUID, &m_transformation, &m_symmetry)
     , configuration(&parent->GetConfiguration())
     , rebuildFusedSegments(true)
@@ -232,7 +232,7 @@ void CCPACSWing::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& win
     Update();
 }
 
-const std::string& CCPACSWing::GetUID() const {
+std::string CCPACSWing::GetDefaultedUID() const {
     return generated::CPACSWing::GetUID();
 }
 

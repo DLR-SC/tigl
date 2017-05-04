@@ -29,8 +29,8 @@ namespace tigl
 {
 
 // Constructor
-CCPACSPositionings::CCPACSPositionings()
-    : invalidated(true)
+CCPACSPositionings::CCPACSPositionings(CTiglUIDManager* uidMgr)
+    : generated::CPACSPositionings(uidMgr), invalidated(true)
 {
 }
 

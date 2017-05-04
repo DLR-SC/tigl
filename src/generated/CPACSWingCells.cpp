@@ -21,13 +21,15 @@
 #include "CPACSWingCells.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "TixiHelper.h"
 
 namespace tigl
 {
     namespace generated
     {
-        CPACSWingCells::CPACSWingCells(CCPACSWingShell* parent)
+        CPACSWingCells::CPACSWingCells(CCPACSWingShell* parent, CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr)
         {
             //assert(parent != NULL);
             m_parent = parent;
@@ -44,7 +46,7 @@ namespace tigl
         {
             // read element cell
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/cell")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/cell", m_cells, reinterpret_cast<CCPACSWingCells*>(this));
+                tixihelper::TixiReadElements(tixiHandle, xpath + "/cell", m_cells, reinterpret_cast<CCPACSWingCells*>(this), m_uidMgr);
             }
             
         }

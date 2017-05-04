@@ -36,6 +36,8 @@ class CCPACSWingProfile;
 class CCPACSRotorProfiles : public generated::CPACSRotorAirfoils
 {
 public:
+    TIGL_EXPORT CCPACSRotorProfiles(CTiglUIDManager* uidMgr);
+
     // Read CPACS wing profiles
     TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
 

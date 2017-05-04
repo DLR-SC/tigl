@@ -22,20 +22,23 @@
 #include "CPACSWings.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "TixiHelper.h"
 
 namespace tigl
 {
     namespace generated
     {
-        CPACSWings::CPACSWings(CCPACSAircraftModel* parent)
+        CPACSWings::CPACSWings(CCPACSAircraftModel* parent, CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr)
         {
             //assert(parent != NULL);
             m_parent = parent;
             m_parentType = &typeid(CCPACSAircraftModel);
         }
         
-        CPACSWings::CPACSWings(CCPACSRotorcraftModel* parent)
+        CPACSWings::CPACSWings(CCPACSRotorcraftModel* parent, CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr)
         {
             //assert(parent != NULL);
             m_parent = parent;
@@ -48,7 +51,7 @@ namespace tigl
         {
             // read element wing
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/wing")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/wing", m_wings, reinterpret_cast<CCPACSWings*>(this));
+                tixihelper::TixiReadElements(tixiHandle, xpath + "/wing", m_wings, reinterpret_cast<CCPACSWings*>(this), m_uidMgr);
             }
             
         }

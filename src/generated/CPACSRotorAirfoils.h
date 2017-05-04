@@ -25,6 +25,8 @@
 
 namespace tigl
 {
+    class CTiglUIDManager;
+    
     namespace generated
     {
         class CPACSProfileGeometry;
@@ -36,7 +38,7 @@ namespace tigl
         class CPACSRotorAirfoils
         {
         public:
-            TIGL_EXPORT CPACSRotorAirfoils();
+            TIGL_EXPORT CPACSRotorAirfoils(CTiglUIDManager* uidMgr);
             TIGL_EXPORT virtual ~CPACSRotorAirfoils();
             
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
@@ -46,6 +48,8 @@ namespace tigl
             TIGL_EXPORT virtual std::vector<unique_ptr<CPACSProfileGeometry> >& GetRotorAirfoils();
             
         protected:
+            CTiglUIDManager* m_uidMgr;
+            
             std::vector<unique_ptr<CPACSProfileGeometry> > m_rotorAirfoils;
             
         private:

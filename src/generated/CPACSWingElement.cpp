@@ -18,14 +18,21 @@
 #include "CPACSWingElement.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "TixiHelper.h"
 
 namespace tigl
 {
     namespace generated
     {
-        CPACSWingElement::CPACSWingElement(){}
-        CPACSWingElement::~CPACSWingElement() {}
+        CPACSWingElement::CPACSWingElement(CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr), 
+            m_transformation(m_uidMgr) {}
+        
+        CPACSWingElement::~CPACSWingElement()
+        {
+            if (m_uidMgr) m_uidMgr->UnregisterObject(m_uID);
+        }
         
         void CPACSWingElement::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
@@ -66,6 +73,7 @@ namespace tigl
                 LOG(ERROR) << "Required element transformation is missing at xpath " << xpath;
             }
             
+            if (m_uidMgr) m_uidMgr->RegisterObject(m_uID, *this);
         }
         
         void CPACSWingElement::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const

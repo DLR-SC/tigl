@@ -24,7 +24,8 @@ namespace tigl
 {
     namespace generated
     {
-        CPACSFarField::CPACSFarField(){}
+        CPACSFarField::CPACSFarField() {}
+        
         CPACSFarField::~CPACSFarField() {}
         
         void CPACSFarField::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)

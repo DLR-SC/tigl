@@ -27,6 +27,8 @@
 
 namespace tigl
 {
+    class CTiglUIDManager;
+    
     namespace generated
     {
         class CPACSCompositeLayer;
@@ -38,7 +40,7 @@ namespace tigl
         class CPACSComposite
         {
         public:
-            TIGL_EXPORT CPACSComposite();
+            TIGL_EXPORT CPACSComposite(CTiglUIDManager* uidMgr);
             TIGL_EXPORT virtual ~CPACSComposite();
             
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
@@ -63,6 +65,8 @@ namespace tigl
             TIGL_EXPORT virtual std::vector<unique_ptr<CPACSCompositeLayer> >& GetCompositeLayers();
             
         protected:
+            CTiglUIDManager* m_uidMgr;
+            
             boost::optional<std::string>                  m_uID;
             std::string                                   m_name;
             boost::optional<std::string>                  m_description;

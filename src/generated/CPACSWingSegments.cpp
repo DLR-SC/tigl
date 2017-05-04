@@ -21,13 +21,15 @@
 #include "CPACSWingSegments.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "TixiHelper.h"
 
 namespace tigl
 {
     namespace generated
     {
-        CPACSWingSegments::CPACSWingSegments(CCPACSWing* parent)
+        CPACSWingSegments::CPACSWingSegments(CCPACSWing* parent, CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr)
         {
             //assert(parent != NULL);
             m_parent = parent;
@@ -44,7 +46,7 @@ namespace tigl
         {
             // read element segment
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/segment")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/segment", m_segments, reinterpret_cast<CCPACSWingSegments*>(this));
+                tixihelper::TixiReadElements(tixiHandle, xpath + "/segment", m_segments, reinterpret_cast<CCPACSWingSegments*>(this), m_uidMgr);
             }
             
         }

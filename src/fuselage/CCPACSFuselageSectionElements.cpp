@@ -28,7 +28,10 @@
 
 namespace tigl
 {
-// Get element count for this section
+CCPACSFuselageSectionElements::CCPACSFuselageSectionElements(CTiglUIDManager* uidMgr)
+    : generated::CPACSFuselageElements(uidMgr) {}
+
+    // Get element count for this section
 int CCPACSFuselageSectionElements::GetSectionElementCount() const
 {
     return static_cast<int>(m_elements.size());

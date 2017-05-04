@@ -25,6 +25,7 @@
 
 namespace tigl
 {
+    class CTiglUIDManager;
     class CCPACSRotorcraftModel;
     
     namespace generated
@@ -36,7 +37,7 @@ namespace tigl
         class CPACSRotorcraft
         {
         public:
-            TIGL_EXPORT CPACSRotorcraft();
+            TIGL_EXPORT CPACSRotorcraft(CTiglUIDManager* uidMgr);
             TIGL_EXPORT virtual ~CPACSRotorcraft();
             
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
@@ -46,6 +47,8 @@ namespace tigl
             TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSRotorcraftModel> >& GetModels();
             
         protected:
+            CTiglUIDManager* m_uidMgr;
+            
             std::vector<unique_ptr<CCPACSRotorcraftModel> > m_models;
             
         private:

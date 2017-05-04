@@ -54,7 +54,7 @@ class CCPACSWingSegment : public generated::CPACSWingSegment, public CTiglAbstra
 {
 public:
     // Constructor
-    TIGL_EXPORT CCPACSWingSegment(CCPACSWingSegments* parent);
+    TIGL_EXPORT CCPACSWingSegment(CCPACSWingSegments* parent, CTiglUIDManager* uidMgr);
 
     // Virtual Destructor
     TIGL_EXPORT virtual ~CCPACSWingSegment();
@@ -65,7 +65,7 @@ public:
     // Read CPACS segment elements
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& segmentXPath);
 
-    TIGL_EXPORT virtual const std::string& GetUID() const OVERRIDE;
+    TIGL_EXPORT virtual std::string GetDefaultedUID() const OVERRIDE;
 
     // Returns the wing this segment belongs to
     TIGL_EXPORT CCPACSWing& GetWing() const;

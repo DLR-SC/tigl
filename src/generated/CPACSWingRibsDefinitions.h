@@ -25,6 +25,7 @@
 
 namespace tigl
 {
+    class CTiglUIDManager;
     class CCPACSWingRibsDefinition;
     class CCPACSWingCSStructure;
     
@@ -37,7 +38,7 @@ namespace tigl
         class CPACSWingRibsDefinitions
         {
         public:
-            TIGL_EXPORT CPACSWingRibsDefinitions(CCPACSWingCSStructure* parent);
+            TIGL_EXPORT CPACSWingRibsDefinitions(CCPACSWingCSStructure* parent, CTiglUIDManager* uidMgr);
             
             TIGL_EXPORT virtual ~CPACSWingRibsDefinitions();
             
@@ -51,6 +52,8 @@ namespace tigl
             
         protected:
             CCPACSWingCSStructure* m_parent;
+            
+            CTiglUIDManager* m_uidMgr;
             
             std::vector<unique_ptr<CCPACSWingRibsDefinition> > m_ribsDefinitions;
             

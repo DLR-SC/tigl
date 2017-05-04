@@ -27,6 +27,8 @@
 
 namespace tigl
 {
+    class CTiglUIDManager;
+    
     namespace generated
     {
         class CPACSGuideCurve;
@@ -39,7 +41,7 @@ namespace tigl
         class CPACSGuideCurves
         {
         public:
-            TIGL_EXPORT CPACSGuideCurves();
+            TIGL_EXPORT CPACSGuideCurves(CTiglUIDManager* uidMgr);
             TIGL_EXPORT virtual ~CPACSGuideCurves();
             
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
@@ -49,6 +51,8 @@ namespace tigl
             TIGL_EXPORT virtual std::vector<unique_ptr<CPACSGuideCurve> >& GetGuideCurves();
             
         protected:
+            CTiglUIDManager* m_uidMgr;
+            
             std::vector<unique_ptr<CPACSGuideCurve> > m_guideCurves;
             
         private:

@@ -95,19 +95,14 @@ namespace WingCellInternal
 
 using namespace WingCellInternal;
 
-CCPACSWingCell::CCPACSWingCell(CCPACSWingCells* parentCells)
-    : generated::CPACSWingCell(parentCells) {
+CCPACSWingCell::CCPACSWingCell(CCPACSWingCells* parentCells, CTiglUIDManager* uidMgr)
+    : generated::CPACSWingCell(parentCells, uidMgr) {
     Reset();
 }
 
 CCPACSWingCell::~CCPACSWingCell()
 {
     Reset();
-}
-
-const std::string& CCPACSWingCell::GetUID() const
-{
-    return m_uID;
 }
 
 void CCPACSWingCell::Invalidate()

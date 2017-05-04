@@ -38,6 +38,8 @@ namespace tigl
 class CCPACSWingProfiles : public generated::CPACSWingAirfoils
 {
 public:
+    TIGL_EXPORT CCPACSWingProfiles(CTiglUIDManager* uidMgr);
+
     // Read CPACS wing profiles
     TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
 

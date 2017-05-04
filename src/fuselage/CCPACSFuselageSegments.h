@@ -35,7 +35,7 @@ class CCPACSFuselageSegment;
 class CCPACSFuselageSegments : public generated::CPACSFuselageSegments
 {
 public:
-    TIGL_EXPORT CCPACSFuselageSegments(CCPACSFuselage* parent);
+    TIGL_EXPORT CCPACSFuselageSegments(CCPACSFuselage* parent, CTiglUIDManager* uidMgr);
 
     // Invalidates internal state
     TIGL_EXPORT void Invalidate();

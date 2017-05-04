@@ -24,7 +24,8 @@ namespace tigl
 {
     namespace generated
     {
-        CPACSStringVectorBase::CPACSStringVectorBase(){}
+        CPACSStringVectorBase::CPACSStringVectorBase() {}
+        
         CPACSStringVectorBase::~CPACSStringVectorBase() {}
         
         void CPACSStringVectorBase::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)

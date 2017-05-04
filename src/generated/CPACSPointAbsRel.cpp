@@ -18,14 +18,20 @@
 #include "CPACSPointAbsRel.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "TixiHelper.h"
 
 namespace tigl
 {
     namespace generated
     {
-        CPACSPointAbsRel::CPACSPointAbsRel(){}
-        CPACSPointAbsRel::~CPACSPointAbsRel() {}
+        CPACSPointAbsRel::CPACSPointAbsRel(CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr) {}
+        
+        CPACSPointAbsRel::~CPACSPointAbsRel()
+        {
+            if (m_uidMgr && m_uID) m_uidMgr->UnregisterObject(*m_uID);
+        }
         
         void CPACSPointAbsRel::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
@@ -54,6 +60,7 @@ namespace tigl
                 m_z = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/z");
             }
             
+            if (m_uidMgr && m_uID) m_uidMgr->RegisterObject(*m_uID, *this);
         }
         
         void CPACSPointAbsRel::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const

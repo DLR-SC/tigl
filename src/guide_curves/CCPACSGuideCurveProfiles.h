@@ -36,6 +36,8 @@ namespace tigl
 class CCPACSGuideCurveProfiles : public generated::CPACSGuideCurveProfiles
 {
 public:
+    TIGL_EXPORT CCPACSGuideCurveProfiles(CTiglUIDManager* uidMgr);
+
     // Returns the total count of guide curves in this configuration
     TIGL_EXPORT int GetGuideCurveProfileCount() const;
 

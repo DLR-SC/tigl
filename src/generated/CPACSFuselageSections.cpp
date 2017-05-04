@@ -19,20 +19,23 @@
 #include "CPACSFuselageSections.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "TixiHelper.h"
 
 namespace tigl
 {
     namespace generated
     {
-        CPACSFuselageSections::CPACSFuselageSections(){}
+        CPACSFuselageSections::CPACSFuselageSections(CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr) {}
+        
         CPACSFuselageSections::~CPACSFuselageSections() {}
         
         void CPACSFuselageSections::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element section
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/section")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/section", m_sections);
+                tixihelper::TixiReadElements(tixiHandle, xpath + "/section", m_sections, m_uidMgr);
             }
             
         }

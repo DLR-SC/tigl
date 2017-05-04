@@ -27,6 +27,7 @@
 
 namespace tigl
 {
+    class CTiglUIDManager;
     class CCPACSWing;
     class CCPACSAircraftModel;
     class CCPACSRotorcraftModel;
@@ -41,8 +42,8 @@ namespace tigl
         class CPACSWings
         {
         public:
-            TIGL_EXPORT CPACSWings(CCPACSAircraftModel* parent);
-            TIGL_EXPORT CPACSWings(CCPACSRotorcraftModel* parent);
+            TIGL_EXPORT CPACSWings(CCPACSAircraftModel* parent, CTiglUIDManager* uidMgr);
+            TIGL_EXPORT CPACSWings(CCPACSRotorcraftModel* parent, CTiglUIDManager* uidMgr);
             
             TIGL_EXPORT virtual ~CPACSWings();
             
@@ -73,6 +74,8 @@ namespace tigl
         protected:
             void* m_parent;
             const std::type_info* m_parentType;
+            
+            CTiglUIDManager* m_uidMgr;
             
             std::vector<unique_ptr<CCPACSWing> > m_wings;
             

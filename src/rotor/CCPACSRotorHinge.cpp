@@ -33,8 +33,8 @@ namespace tigl
 {
 
 // Constructor
-CCPACSRotorHinge::CCPACSRotorHinge(CCPACSRotorHinges* parent)
-    : generated::CPACSRotorHubHinge(parent) {}
+CCPACSRotorHinge::CCPACSRotorHinge(CCPACSRotorHinges* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSRotorHubHinge(parent, uidMgr) {}
 
 // Gets the rotor hinge transformation
 CTiglTransformation CCPACSRotorHinge::GetTransformationMatrix() const

@@ -18,13 +18,16 @@
 #include "CPACSCpacs.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "TixiHelper.h"
 
 namespace tigl
 {
     namespace generated
     {
-        CPACSCpacs::CPACSCpacs(){}
+        CPACSCpacs::CPACSCpacs(CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr) {}
+        
         CPACSCpacs::~CPACSCpacs() {}
         
         void CPACSCpacs::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
@@ -39,7 +42,7 @@ namespace tigl
             
             // read element vehicles
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/vehicles")) {
-                m_vehicles = boost::in_place();
+                m_vehicles = boost::in_place(m_uidMgr);
                 try {
                     m_vehicles->ReadCPACS(tixiHandle, xpath + "/vehicles");
                 } catch(const std::exception& e) {

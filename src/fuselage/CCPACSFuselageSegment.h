@@ -48,7 +48,7 @@ class CCPACSFuselageSegment : public generated::CPACSFuselageSegment, public CTi
 
 public:
     // Constructor
-    TIGL_EXPORT CCPACSFuselageSegment(CCPACSFuselageSegments* parent);
+    TIGL_EXPORT CCPACSFuselageSegment(CCPACSFuselageSegments* parent, CTiglUIDManager* uidMgr);
 
     // Virtual Destructor
     TIGL_EXPORT virtual ~CCPACSFuselageSegment();
@@ -59,7 +59,7 @@ public:
     // Read CPACS segment elements
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& segmentXPath);
 
-    TIGL_EXPORT virtual const std::string& GetUID() const OVERRIDE;
+    TIGL_EXPORT virtual std::string GetDefaultedUID() const OVERRIDE;
 
     // Returns the fuselage this segment belongs to
     TIGL_EXPORT CCPACSFuselage& GetFuselage() const;

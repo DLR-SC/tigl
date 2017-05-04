@@ -31,9 +31,8 @@ namespace tigl
 {
 
 // Constructor
-CCPACSFuselageSectionElement::CCPACSFuselageSectionElement()
-{
-}
+CCPACSFuselageSectionElement::CCPACSFuselageSectionElement(CTiglUIDManager* uidMgr)
+    : generated::CPACSFuselageElement(uidMgr) {}
 
 // Read CPACS section elements
 void CCPACSFuselageSectionElement::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& elementXPath)

@@ -2,6 +2,9 @@
 
 namespace tigl
 {
+    CCPACSPoint::CCPACSPoint(CTiglUIDManager* uidMgr)
+        : generated::CPACSPoint(uidMgr) {}
+
     CTiglPoint CCPACSPoint::AsPoint() const
     {
         CTiglPoint point;

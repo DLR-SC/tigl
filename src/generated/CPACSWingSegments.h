@@ -25,6 +25,7 @@
 
 namespace tigl
 {
+    class CTiglUIDManager;
     class CCPACSWingSegment;
     class CCPACSWing;
     
@@ -37,7 +38,7 @@ namespace tigl
         class CPACSWingSegments
         {
         public:
-            TIGL_EXPORT CPACSWingSegments(CCPACSWing* parent);
+            TIGL_EXPORT CPACSWingSegments(CCPACSWing* parent, CTiglUIDManager* uidMgr);
             
             TIGL_EXPORT virtual ~CPACSWingSegments();
             
@@ -51,6 +52,8 @@ namespace tigl
             
         protected:
             CCPACSWing* m_parent;
+            
+            CTiglUIDManager* m_uidMgr;
             
             std::vector<unique_ptr<CCPACSWingSegment> > m_segments;
             

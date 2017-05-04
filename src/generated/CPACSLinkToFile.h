@@ -17,6 +17,8 @@
 
 #pragma once
 
+#include <boost/optional.hpp>
+#include <boost/utility/in_place_factory.hpp>
 #include <string>
 #include <tixi.h>
 #include "CPACSLinkToFileType_format.h"
@@ -42,12 +44,13 @@ namespace tigl
             TIGL_EXPORT virtual const std::string& GetBase() const;
             TIGL_EXPORT virtual void SetBase(const std::string& value);
             
-            TIGL_EXPORT virtual const CPACSLinkToFileType_format& GetFormat() const;
+            TIGL_EXPORT virtual const boost::optional<CPACSLinkToFileType_format>& GetFormat() const;
             TIGL_EXPORT virtual void SetFormat(const CPACSLinkToFileType_format& value);
+            TIGL_EXPORT virtual void SetFormat(const boost::optional<CPACSLinkToFileType_format>& value);
             
         protected:
-            std::string                m_base;
-            CPACSLinkToFileType_format m_format;
+            std::string                                 m_base;
+            boost::optional<CPACSLinkToFileType_format> m_format;
             
         private:
             #ifdef HAVE_CPP11

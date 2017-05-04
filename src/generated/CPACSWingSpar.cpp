@@ -20,15 +20,17 @@
 #include "CPACSWingSpar.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "TixiHelper.h"
 
 namespace tigl
 {
     namespace generated
     {
-        CPACSWingSpar::CPACSWingSpar(CCPACSWingCSStructure* parent) :
-            m_sparPositions(reinterpret_cast<CCPACSWingSpars*>(this)), 
-            m_sparSegments(reinterpret_cast<CCPACSWingSpars*>(this))
+        CPACSWingSpar::CPACSWingSpar(CCPACSWingCSStructure* parent, CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr), 
+            m_sparPositions(reinterpret_cast<CCPACSWingSpars*>(this), m_uidMgr), 
+            m_sparSegments(reinterpret_cast<CCPACSWingSpars*>(this), m_uidMgr)
         {
             //assert(parent != NULL);
             m_parent = parent;

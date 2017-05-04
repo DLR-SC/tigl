@@ -18,14 +18,20 @@
 #include "CPACSTransformation.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "TixiHelper.h"
 
 namespace tigl
 {
     namespace generated
     {
-        CPACSTransformation::CPACSTransformation(){}
-        CPACSTransformation::~CPACSTransformation() {}
+        CPACSTransformation::CPACSTransformation(CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr) {}
+        
+        CPACSTransformation::~CPACSTransformation()
+        {
+            if (m_uidMgr && m_uID) m_uidMgr->UnregisterObject(*m_uID);
+        }
         
         void CPACSTransformation::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
@@ -36,7 +42,7 @@ namespace tigl
             
             // read element scaling
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/scaling")) {
-                m_scaling = boost::in_place();
+                m_scaling = boost::in_place(m_uidMgr);
                 try {
                     m_scaling->ReadCPACS(tixiHandle, xpath + "/scaling");
                 } catch(const std::exception& e) {
@@ -50,7 +56,7 @@ namespace tigl
             
             // read element rotation
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/rotation")) {
-                m_rotation = boost::in_place();
+                m_rotation = boost::in_place(m_uidMgr);
                 try {
                     m_rotation->ReadCPACS(tixiHandle, xpath + "/rotation");
                 } catch(const std::exception& e) {
@@ -64,7 +70,7 @@ namespace tigl
             
             // read element translation
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/translation")) {
-                m_translation = boost::in_place();
+                m_translation = boost::in_place(m_uidMgr);
                 try {
                     m_translation->ReadCPACS(tixiHandle, xpath + "/translation");
                 } catch(const std::exception& e) {
@@ -76,6 +82,7 @@ namespace tigl
                 }
             }
             
+            if (m_uidMgr && m_uID) m_uidMgr->RegisterObject(*m_uID, *this);
         }
         
         void CPACSTransformation::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const

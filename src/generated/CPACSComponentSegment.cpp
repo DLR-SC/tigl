@@ -20,19 +20,24 @@
 #include "CPACSComponentSegment.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "TixiHelper.h"
 
 namespace tigl
 {
     namespace generated
     {
-        CPACSComponentSegment::CPACSComponentSegment(CCPACSWingComponentSegments* parent)
+        CPACSComponentSegment::CPACSComponentSegment(CCPACSWingComponentSegments* parent, CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr)
         {
             //assert(parent != NULL);
             m_parent = parent;
         }
         
-        CPACSComponentSegment::~CPACSComponentSegment() {}
+        CPACSComponentSegment::~CPACSComponentSegment()
+        {
+            if (m_uidMgr && m_uID) m_uidMgr->UnregisterObject(*m_uID);
+        }
         
         CCPACSWingComponentSegments* CPACSComponentSegment::GetParent() const
         {
@@ -44,9 +49,6 @@ namespace tigl
             // read attribute uID
             if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
                 m_uID = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
-            }
-            else {
-                LOG(ERROR) << "Required attribute uID is missing at xpath " << xpath;
             }
             
             // read element name
@@ -80,7 +82,7 @@ namespace tigl
             
             // read element structure
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/structure")) {
-                m_structure = boost::in_place(reinterpret_cast<CCPACSWingComponentSegment*>(this));
+                m_structure = boost::in_place(reinterpret_cast<CCPACSWingComponentSegment*>(this), m_uidMgr);
                 try {
                     m_structure->ReadCPACS(tixiHandle, xpath + "/structure");
                 } catch(const std::exception& e) {
@@ -92,13 +94,16 @@ namespace tigl
                 }
             }
             
+            if (m_uidMgr && m_uID) m_uidMgr->RegisterObject(*m_uID, *this);
         }
         
         void CPACSComponentSegment::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write attribute uID
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/uID");
-            tixihelper::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
+            if (m_uID) {
+                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/uID");
+                tixihelper::TixiSaveAttribute(tixiHandle, xpath, "uID", *m_uID);
+            }
             
             // write element name
             tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
@@ -126,12 +131,17 @@ namespace tigl
             
         }
         
-        const std::string& CPACSComponentSegment::GetUID() const
+        const boost::optional<std::string>& CPACSComponentSegment::GetUID() const
         {
             return m_uID;
         }
         
         void CPACSComponentSegment::SetUID(const std::string& value)
+        {
+            m_uID = value;
+        }
+        
+        void CPACSComponentSegment::SetUID(const boost::optional<std::string>& value)
         {
             m_uID = value;
         }

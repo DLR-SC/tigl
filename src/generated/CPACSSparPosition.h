@@ -25,6 +25,7 @@
 
 namespace tigl
 {
+    class CTiglUIDManager;
     class CCPACSWingSparPositions;
     
     namespace generated
@@ -36,7 +37,7 @@ namespace tigl
         class CPACSSparPosition
         {
         public:
-            TIGL_EXPORT CPACSSparPosition(CCPACSWingSparPositions* parent);
+            TIGL_EXPORT CPACSSparPosition(CCPACSWingSparPositions* parent, CTiglUIDManager* uidMgr);
             
             TIGL_EXPORT virtual ~CPACSSparPosition();
             
@@ -45,8 +46,9 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT virtual const std::string& GetUID() const;
+            TIGL_EXPORT virtual const boost::optional<std::string>& GetUID() const;
             TIGL_EXPORT virtual void SetUID(const std::string& value);
+            TIGL_EXPORT virtual void SetUID(const boost::optional<std::string>& value);
             
             TIGL_EXPORT virtual const double& GetXsi() const;
             TIGL_EXPORT virtual void SetXsi(const double& value);
@@ -62,7 +64,9 @@ namespace tigl
         protected:
             CCPACSWingSparPositions* m_parent;
             
-            std::string                  m_uID;
+            CTiglUIDManager* m_uidMgr;
+            
+            boost::optional<std::string> m_uID;
             double                       m_xsi;
             boost::optional<double>      m_eta_choice1;
             boost::optional<std::string> m_elementUID_choice2;

@@ -18,14 +18,20 @@
 #include "CPACSAircraftModel.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "TixiHelper.h"
 
 namespace tigl
 {
     namespace generated
     {
-        CPACSAircraftModel::CPACSAircraftModel(){}
-        CPACSAircraftModel::~CPACSAircraftModel() {}
+        CPACSAircraftModel::CPACSAircraftModel(CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr) {}
+        
+        CPACSAircraftModel::~CPACSAircraftModel()
+        {
+            if (m_uidMgr) m_uidMgr->UnregisterObject(m_uID);
+        }
         
         void CPACSAircraftModel::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
@@ -52,7 +58,7 @@ namespace tigl
             
             // read element fuselages
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/fuselages")) {
-                m_fuselages = boost::in_place(reinterpret_cast<CCPACSAircraftModel*>(this));
+                m_fuselages = boost::in_place(reinterpret_cast<CCPACSAircraftModel*>(this), m_uidMgr);
                 try {
                     m_fuselages->ReadCPACS(tixiHandle, xpath + "/fuselages");
                 } catch(const std::exception& e) {
@@ -66,7 +72,7 @@ namespace tigl
             
             // read element wings
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/wings")) {
-                m_wings = boost::in_place(reinterpret_cast<CCPACSAircraftModel*>(this));
+                m_wings = boost::in_place(reinterpret_cast<CCPACSAircraftModel*>(this), m_uidMgr);
                 try {
                     m_wings->ReadCPACS(tixiHandle, xpath + "/wings");
                 } catch(const std::exception& e) {
@@ -80,7 +86,7 @@ namespace tigl
             
             // read element genericGeometryComponents
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/genericGeometryComponents")) {
-                m_genericGeometryComponents = boost::in_place(reinterpret_cast<CCPACSAircraftModel*>(this));
+                m_genericGeometryComponents = boost::in_place(reinterpret_cast<CCPACSAircraftModel*>(this), m_uidMgr);
                 try {
                     m_genericGeometryComponents->ReadCPACS(tixiHandle, xpath + "/genericGeometryComponents");
                 } catch(const std::exception& e) {
@@ -92,6 +98,7 @@ namespace tigl
                 }
             }
             
+            if (m_uidMgr) m_uidMgr->RegisterObject(m_uID, *this);
         }
         
         void CPACSAircraftModel::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const

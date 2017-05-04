@@ -18,14 +18,20 @@
 #include "CPACSRotorcraftModel.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "TixiHelper.h"
 
 namespace tigl
 {
     namespace generated
     {
-        CPACSRotorcraftModel::CPACSRotorcraftModel(){}
-        CPACSRotorcraftModel::~CPACSRotorcraftModel() {}
+        CPACSRotorcraftModel::CPACSRotorcraftModel(CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr) {}
+        
+        CPACSRotorcraftModel::~CPACSRotorcraftModel()
+        {
+            if (m_uidMgr) m_uidMgr->UnregisterObject(m_uID);
+        }
         
         void CPACSRotorcraftModel::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
@@ -52,7 +58,7 @@ namespace tigl
             
             // read element fuselages
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/fuselages")) {
-                m_fuselages = boost::in_place(reinterpret_cast<CCPACSRotorcraftModel*>(this));
+                m_fuselages = boost::in_place(reinterpret_cast<CCPACSRotorcraftModel*>(this), m_uidMgr);
                 try {
                     m_fuselages->ReadCPACS(tixiHandle, xpath + "/fuselages");
                 } catch(const std::exception& e) {
@@ -66,7 +72,7 @@ namespace tigl
             
             // read element wings
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/wings")) {
-                m_wings = boost::in_place(reinterpret_cast<CCPACSRotorcraftModel*>(this));
+                m_wings = boost::in_place(reinterpret_cast<CCPACSRotorcraftModel*>(this), m_uidMgr);
                 try {
                     m_wings->ReadCPACS(tixiHandle, xpath + "/wings");
                 } catch(const std::exception& e) {
@@ -80,7 +86,7 @@ namespace tigl
             
             // read element rotors
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/rotors")) {
-                m_rotors = boost::in_place(reinterpret_cast<CCPACSRotorcraftModel*>(this));
+                m_rotors = boost::in_place(reinterpret_cast<CCPACSRotorcraftModel*>(this), m_uidMgr);
                 try {
                     m_rotors->ReadCPACS(tixiHandle, xpath + "/rotors");
                 } catch(const std::exception& e) {
@@ -94,7 +100,7 @@ namespace tigl
             
             // read element rotorBlades
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/rotorBlades")) {
-                m_rotorBlades = boost::in_place(reinterpret_cast<CCPACSRotorcraftModel*>(this));
+                m_rotorBlades = boost::in_place(reinterpret_cast<CCPACSRotorcraftModel*>(this), m_uidMgr);
                 try {
                     m_rotorBlades->ReadCPACS(tixiHandle, xpath + "/rotorBlades");
                 } catch(const std::exception& e) {
@@ -106,6 +112,7 @@ namespace tigl
                 }
             }
             
+            if (m_uidMgr) m_uidMgr->RegisterObject(m_uID, *this);
         }
         
         void CPACSRotorcraftModel::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const

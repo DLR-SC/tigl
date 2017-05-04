@@ -18,14 +18,21 @@
 #include "CPACSFuselageCutOut.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "TixiHelper.h"
 
 namespace tigl
 {
     namespace generated
     {
-        CPACSFuselageCutOut::CPACSFuselageCutOut(){}
-        CPACSFuselageCutOut::~CPACSFuselageCutOut() {}
+        CPACSFuselageCutOut::CPACSFuselageCutOut(CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr), 
+            m_orientationVector(m_uidMgr) {}
+        
+        CPACSFuselageCutOut::~CPACSFuselageCutOut()
+        {
+            if (m_uidMgr) m_uidMgr->UnregisterObject(m_uID);
+        }
         
         void CPACSFuselageCutOut::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
@@ -89,7 +96,7 @@ namespace tigl
             
             // read element alignmentVector
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/alignmentVector")) {
-                m_alignmentVector = boost::in_place();
+                m_alignmentVector = boost::in_place(m_uidMgr);
                 try {
                     m_alignmentVector->ReadCPACS(tixiHandle, xpath + "/alignmentVector");
                 } catch(const std::exception& e) {
@@ -143,6 +150,7 @@ namespace tigl
                 LOG(ERROR) << "Required element cutoutType is missing at xpath " << xpath;
             }
             
+            if (m_uidMgr) m_uidMgr->RegisterObject(m_uID, *this);
         }
         
         void CPACSFuselageCutOut::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const

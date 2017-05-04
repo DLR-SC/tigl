@@ -16,6 +16,9 @@
 
 namespace tigl
 {
+CCPACSProfiles::CCPACSProfiles(CTiglUIDManager* uidMgr)
+    : generated::CPACSProfiles(uidMgr) {}
+
 void CCPACSProfiles::Invalidate() {
     if (m_fuselageProfiles  ) m_fuselageProfiles->Invalidate();
     if (m_wingAirfoils      ) m_wingAirfoils->Invalidate();

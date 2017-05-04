@@ -18,14 +18,20 @@
 #include "CPACSGuideCurveProfileGeometry.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "TixiHelper.h"
 
 namespace tigl
 {
     namespace generated
     {
-        CPACSGuideCurveProfileGeometry::CPACSGuideCurveProfileGeometry(){}
-        CPACSGuideCurveProfileGeometry::~CPACSGuideCurveProfileGeometry() {}
+        CPACSGuideCurveProfileGeometry::CPACSGuideCurveProfileGeometry(CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr) {}
+        
+        CPACSGuideCurveProfileGeometry::~CPACSGuideCurveProfileGeometry()
+        {
+            if (m_uidMgr) m_uidMgr->UnregisterObject(m_uID);
+        }
         
         void CPACSGuideCurveProfileGeometry::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
@@ -63,6 +69,7 @@ namespace tigl
                 LOG(ERROR) << "Required element pointList is missing at xpath " << xpath;
             }
             
+            if (m_uidMgr) m_uidMgr->RegisterObject(m_uID, *this);
         }
         
         void CPACSGuideCurveProfileGeometry::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const

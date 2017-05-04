@@ -19,20 +19,23 @@
 #include "CPACSGuideCurves.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "TixiHelper.h"
 
 namespace tigl
 {
     namespace generated
     {
-        CPACSGuideCurves::CPACSGuideCurves(){}
+        CPACSGuideCurves::CPACSGuideCurves(CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr) {}
+        
         CPACSGuideCurves::~CPACSGuideCurves() {}
         
         void CPACSGuideCurves::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element guideCurve
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/guideCurve")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/guideCurve", m_guideCurves);
+                tixihelper::TixiReadElements(tixiHandle, xpath + "/guideCurve", m_guideCurves, m_uidMgr);
             }
             
         }

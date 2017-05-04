@@ -25,6 +25,7 @@
 
 namespace tigl
 {
+    class CTiglUIDManager;
     class CCPACSWingCSStructure;
     
     namespace generated
@@ -36,7 +37,7 @@ namespace tigl
         class CPACSWingSpar
         {
         public:
-            TIGL_EXPORT CPACSWingSpar(CCPACSWingCSStructure* parent);
+            TIGL_EXPORT CPACSWingSpar(CCPACSWingCSStructure* parent, CTiglUIDManager* uidMgr);
             
             TIGL_EXPORT virtual ~CPACSWingSpar();
             
@@ -53,6 +54,8 @@ namespace tigl
             
         protected:
             CCPACSWingCSStructure* m_parent;
+            
+            CTiglUIDManager* m_uidMgr;
             
             CCPACSWingSparPositions m_sparPositions;
             CCPACSWingSparSegments  m_sparSegments;

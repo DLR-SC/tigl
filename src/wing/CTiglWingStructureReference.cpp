@@ -151,7 +151,7 @@ TopoDS_Wire CTiglWingStructureReference::GetMidplaneLine(const gp_Pnt& startPoin
     DISPATCH(GetMidplaneLine(startPoint, endPoint))
 }
 
-const std::string& CTiglWingStructureReference::GetUID() const
+const boost::optional<std::string>& CTiglWingStructureReference::GetUID() const
 {
     DISPATCH(GetUID())
 }

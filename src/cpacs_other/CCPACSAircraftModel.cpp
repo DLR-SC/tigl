@@ -30,7 +30,10 @@
 namespace tigl
 {
 CCPACSAircraftModel::CCPACSAircraftModel(CCPACSConfiguration* config)
-    : CTiglRelativelyPositionedComponent(NULL, NULL), config(config) {}
+    : generated::CPACSAircraftModel(config ? &config->GetUIDManager() : NULL), CTiglRelativelyPositionedComponent(NULL, NULL), config(config) {}
+
+CCPACSAircraftModel::CCPACSAircraftModel(CTiglUIDManager* uidMgr)
+    : generated::CPACSAircraftModel(uidMgr), CTiglRelativelyPositionedComponent(NULL, NULL), config(NULL) {}
 
 void CCPACSAircraftModel::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) {
     generated::CPACSAircraftModel::ReadCPACS(tixiHandle, xpath);
@@ -39,7 +42,7 @@ void CCPACSAircraftModel::ReadCPACS(const TixiDocumentHandle& tixiHandle, const 
     }
 }
 
-const std::string& CCPACSAircraftModel::GetUID() const {
+std::string CCPACSAircraftModel::GetDefaultedUID() const {
     return generated::CPACSAircraftModel::GetUID();
 }
 

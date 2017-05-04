@@ -29,7 +29,7 @@ class CCPACSWingCells : public generated::CPACSWingCells
 {
 public:
     // Constructor
-    TIGL_EXPORT CCPACSWingCells(CCPACSWingShell* parent);
+    TIGL_EXPORT CCPACSWingCells(CCPACSWingShell* parent, CTiglUIDManager* uidMgr);
     
     TIGL_EXPORT void Invalidate();
 

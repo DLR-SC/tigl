@@ -25,6 +25,9 @@
 
 namespace tigl
 {
+CCPACSGuideCurveProfile::CCPACSGuideCurveProfile(CTiglUIDManager* uidMgr)
+    : generated::CPACSGuideCurveProfileGeometry(uidMgr) {}
+
 const std::vector<CTiglPoint>& CCPACSGuideCurveProfile::GetGuideCurveProfilePoints() {
     return m_pointList.AsVector();
 }

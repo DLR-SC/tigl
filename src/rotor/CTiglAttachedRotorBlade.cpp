@@ -48,11 +48,12 @@ CTiglAttachedRotorBlade::CTiglAttachedRotorBlade(CCPACSRotorBladeAttachment* par
     , rotorBladeIndex(index)
     , rebuildRotorDisk(true)
     , invalidated(true)
+    , transformation(NULL)
 {
     Update();
 }
 
-const std::string& CTiglAttachedRotorBlade::GetUID() const {
+std::string CTiglAttachedRotorBlade::GetDefaultedUID() const {
     return rotorBlade->GetUID();
 }
 

@@ -37,7 +37,7 @@ class CCPACSFuselageSectionElement : public generated::CPACSFuselageElement
 {
 public:
     // Constructor
-    TIGL_EXPORT CCPACSFuselageSectionElement();
+    TIGL_EXPORT CCPACSFuselageSectionElement(CTiglUIDManager* uidMgr);
 
     // Read CPACS section element
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& elementXPath);

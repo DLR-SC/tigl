@@ -41,7 +41,7 @@ namespace tigl
 
 // Constructor
 CCPACSGenericSystem::CCPACSGenericSystem(CCPACSConfiguration* config)
-    : CTiglRelativelyPositionedComponent(NULL, &transformation, &symmetryAxis), configuration(config)
+    : CTiglRelativelyPositionedComponent(NULL, &transformation, &symmetryAxis), transformation(config ? &config->GetUIDManager() : NULL), configuration(config)
 {
     Cleanup();
 }
@@ -58,6 +58,10 @@ const std::string& CCPACSGenericSystem::GetUID() const {
 
 void CCPACSGenericSystem::SetUID(const std::string& uid) {
     this->uid = uid;
+}
+
+std::string CCPACSGenericSystem::GetDefaultedUID() const {
+    return uid;
 }
 
 // Invalidates internal state

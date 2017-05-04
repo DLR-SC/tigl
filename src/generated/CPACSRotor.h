@@ -29,6 +29,7 @@
 
 namespace tigl
 {
+    class CTiglUIDManager;
     class CCPACSRotors;
     
     namespace generated
@@ -40,7 +41,7 @@ namespace tigl
         class CPACSRotor
         {
         public:
-            TIGL_EXPORT CPACSRotor(CCPACSRotors* parent);
+            TIGL_EXPORT CPACSRotor(CCPACSRotors* parent, CTiglUIDManager* uidMgr);
             
             TIGL_EXPORT virtual ~CPACSRotor();
             
@@ -83,6 +84,8 @@ namespace tigl
             
         protected:
             CCPACSRotors* m_parent;
+            
+            CTiglUIDManager* m_uidMgr;
             
             std::string                       m_uID;
             boost::optional<TiglSymmetryAxis> m_symmetry;

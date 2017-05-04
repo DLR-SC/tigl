@@ -42,7 +42,7 @@ class CCPACSPositionings : public generated::CPACSPositionings
 
 public:
     // Constructor
-    TIGL_EXPORT CCPACSPositionings();
+    TIGL_EXPORT CCPACSPositionings(CTiglUIDManager* uidMgr);
 
     // Virtual Destructor
     TIGL_EXPORT virtual ~CCPACSPositionings();

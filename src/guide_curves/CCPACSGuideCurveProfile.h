@@ -31,6 +31,8 @@ namespace tigl
 class CCPACSGuideCurveProfile : public generated::CPACSGuideCurveProfileGeometry
 {
 public:
+    TIGL_EXPORT CCPACSGuideCurveProfile(CTiglUIDManager* uidMgr);
+
     // Returns the guide curve points as read from TIXI.
     TIGL_EXPORT const std::vector<CTiglPoint>& GetGuideCurveProfilePoints();
 };

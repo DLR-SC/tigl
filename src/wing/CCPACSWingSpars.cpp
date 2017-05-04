@@ -19,10 +19,8 @@
 namespace tigl
 {
 
-CCPACSWingSpars::CCPACSWingSpars(CCPACSWingCSStructure* structure)
-: generated::CPACSWingSpar(structure)
-{
-}
+CCPACSWingSpars::CCPACSWingSpars(CCPACSWingCSStructure* structure, CTiglUIDManager* uidMgr)
+    : generated::CPACSWingSpar(structure, uidMgr) {}
 
 void CCPACSWingSpars::Invalidate()
 {

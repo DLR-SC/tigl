@@ -21,13 +21,15 @@
 #include "CPACSRotorHubHinges.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "TixiHelper.h"
 
 namespace tigl
 {
     namespace generated
     {
-        CPACSRotorHubHinges::CPACSRotorHubHinges(CCPACSRotorBladeAttachment* parent)
+        CPACSRotorHubHinges::CPACSRotorHubHinges(CCPACSRotorBladeAttachment* parent, CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr)
         {
             //assert(parent != NULL);
             m_parent = parent;
@@ -44,7 +46,7 @@ namespace tigl
         {
             // read element hinge
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/hinge")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/hinge", m_hinges, reinterpret_cast<CCPACSRotorHinges*>(this));
+                tixihelper::TixiReadElements(tixiHandle, xpath + "/hinge", m_hinges, reinterpret_cast<CCPACSRotorHinges*>(this), m_uidMgr);
             }
             
         }

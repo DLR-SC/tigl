@@ -26,6 +26,8 @@
 
 namespace tigl
 {
+    class CTiglUIDManager;
+    
     namespace generated
     {
         // This class is used in:
@@ -35,7 +37,7 @@ namespace tigl
         class CPACSFuselageElement
         {
         public:
-            TIGL_EXPORT CPACSFuselageElement();
+            TIGL_EXPORT CPACSFuselageElement(CTiglUIDManager* uidMgr);
             TIGL_EXPORT virtual ~CPACSFuselageElement();
             
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
@@ -58,6 +60,8 @@ namespace tigl
             TIGL_EXPORT virtual CCPACSTransformation& GetTransformation();
             
         protected:
+            CTiglUIDManager* m_uidMgr;
+            
             std::string                  m_uID;
             std::string                  m_name;
             boost::optional<std::string> m_description;

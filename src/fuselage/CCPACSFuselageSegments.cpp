@@ -34,8 +34,8 @@
 
 namespace tigl
 {
-CCPACSFuselageSegments::CCPACSFuselageSegments(CCPACSFuselage* parent)
-    : generated::CPACSFuselageSegments(parent) {}
+CCPACSFuselageSegments::CCPACSFuselageSegments(CCPACSFuselage* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSFuselageSegments(parent, uidMgr) {}
 
 // Invalidates internal state
 void CCPACSFuselageSegments::Invalidate()

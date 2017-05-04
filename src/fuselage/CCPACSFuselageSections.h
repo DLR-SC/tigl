@@ -39,6 +39,8 @@ class CCPACSFuselageSection;
 class CCPACSFuselageSections : public generated::CPACSFuselageSections
 {
 public:
+    TIGL_EXPORT CCPACSFuselageSections(CTiglUIDManager* uidMgr);
+
     // Get section count
     TIGL_EXPORT int GetSectionCount() const;
 

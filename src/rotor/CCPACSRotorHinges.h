@@ -39,7 +39,7 @@ class CCPACSRotorBladeAttachment;
 class CCPACSRotorHinges : public generated::CPACSRotorHubHinges
 {
 public:
-    TIGL_EXPORT CCPACSRotorHinges(CCPACSRotorBladeAttachment* parent);
+    TIGL_EXPORT CCPACSRotorHinges(CCPACSRotorBladeAttachment* parent, CTiglUIDManager* uidMgr);
 
     // Returns the total count of rotor hinges in a rotor blade attachment
     TIGL_EXPORT int GetRotorHingeCount() const;

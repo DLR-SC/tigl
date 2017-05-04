@@ -42,7 +42,7 @@ class CCPACSWingComponentSegments : public generated::CPACSComponentSegments
 {
 public:
     // Constructor
-    TIGL_EXPORT CCPACSWingComponentSegments(CCPACSWing* parent);
+    TIGL_EXPORT CCPACSWingComponentSegments(CCPACSWing* parent, CTiglUIDManager* uidMgr);
 
     // Invalidates internal state
     TIGL_EXPORT void Invalidate();
