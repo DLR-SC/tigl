@@ -84,10 +84,10 @@ namespace tigl
                 try {
                     m_guideCurves->ReadCPACS(tixiHandle, xpath + "/guideCurves");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read guideCurves at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read guideCurves at xpath " << xpath << ": " << e.what();
                     m_guideCurves = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read guideCurves at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read guideCurves at xpath " << xpath << ": " << e.getError();
                     m_guideCurves = boost::none;
                 }
             }

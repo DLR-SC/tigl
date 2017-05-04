@@ -100,10 +100,10 @@ namespace tigl
                 try {
                     m_positionings->ReadCPACS(tixiHandle, xpath + "/positionings");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read positionings at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read positionings at xpath " << xpath << ": " << e.what();
                     m_positionings = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read positionings at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read positionings at xpath " << xpath << ": " << e.getError();
                     m_positionings = boost::none;
                 }
             }
@@ -122,10 +122,10 @@ namespace tigl
                 try {
                     m_componentSegments->ReadCPACS(tixiHandle, xpath + "/componentSegments");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read componentSegments at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read componentSegments at xpath " << xpath << ": " << e.what();
                     m_componentSegments = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read componentSegments at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read componentSegments at xpath " << xpath << ": " << e.getError();
                     m_componentSegments = boost::none;
                 }
             }

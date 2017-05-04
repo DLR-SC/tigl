@@ -17,11 +17,11 @@
 
 #pragma once
 
-#include <tixi.h>
 #include <string>
+#include <tixi.h>
 #include <vector>
-#include "UniquePtr.h"
 #include "tigl_internal.h"
+#include "UniquePtr.h"
 
 namespace tigl
 {

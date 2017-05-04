@@ -77,10 +77,10 @@ namespace tigl
                 try {
                     m_ribsPositioning_choice1->ReadCPACS(tixiHandle, xpath + "/ribsPositioning");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read ribsPositioning at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read ribsPositioning at xpath " << xpath << ": " << e.what();
                     m_ribsPositioning_choice1 = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read ribsPositioning at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read ribsPositioning at xpath " << xpath << ": " << e.getError();
                     m_ribsPositioning_choice1 = boost::none;
                 }
             }
@@ -91,10 +91,10 @@ namespace tigl
                 try {
                     m_ribExplicitPositioning_choice2->ReadCPACS(tixiHandle, xpath + "/ribExplicitPositioning");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read ribExplicitPositioning at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read ribExplicitPositioning at xpath " << xpath << ": " << e.what();
                     m_ribExplicitPositioning_choice2 = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read ribExplicitPositioning at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read ribExplicitPositioning at xpath " << xpath << ": " << e.getError();
                     m_ribExplicitPositioning_choice2 = boost::none;
                 }
             }

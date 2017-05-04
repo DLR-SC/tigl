@@ -17,19 +17,19 @@
 
 #pragma once
 
-#include <tixi.h>
-#include <string>
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
-#include "CTiglError.h"
-#include <typeinfo>
-#include "tigl_internal.h"
-#include <TiglSymmetryAxis.h>
-#include <CCPACSTransformation.h>
-#include <CCPACSWingSections.h>
 #include <CCPACSPositionings.h>
-#include <CCPACSWingSegments.h>
+#include <CCPACSTransformation.h>
 #include <CCPACSWingComponentSegments.h>
+#include <CCPACSWingSections.h>
+#include <CCPACSWingSegments.h>
+#include <string>
+#include <TiglSymmetryAxis.h>
+#include <tixi.h>
+#include <typeinfo>
+#include "CTiglError.h"
+#include "tigl_internal.h"
 
 namespace tigl
 {

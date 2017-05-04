@@ -79,10 +79,10 @@ namespace tigl
                 try {
                     m_tangent_choice2->ReadCPACS(tixiHandle, xpath + "/tangent");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read tangent at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read tangent at xpath " << xpath << ": " << e.what();
                     m_tangent_choice2 = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read tangent at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read tangent at xpath " << xpath << ": " << e.getError();
                     m_tangent_choice2 = boost::none;
                 }
             }
@@ -101,10 +101,10 @@ namespace tigl
                 try {
                     m_tangent->ReadCPACS(tixiHandle, xpath + "/tangent");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read tangent at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read tangent at xpath " << xpath << ": " << e.what();
                     m_tangent = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read tangent at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read tangent at xpath " << xpath << ": " << e.getError();
                     m_tangent = boost::none;
                 }
             }

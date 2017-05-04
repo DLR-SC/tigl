@@ -35,10 +35,10 @@ namespace tigl
                 try {
                     m_fuselageProfiles->ReadCPACS(tixiHandle, xpath + "/fuselageProfiles");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read fuselageProfiles at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read fuselageProfiles at xpath " << xpath << ": " << e.what();
                     m_fuselageProfiles = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read fuselageProfiles at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read fuselageProfiles at xpath " << xpath << ": " << e.getError();
                     m_fuselageProfiles = boost::none;
                 }
             }
@@ -49,10 +49,10 @@ namespace tigl
                 try {
                     m_wingAirfoils->ReadCPACS(tixiHandle, xpath + "/wingAirfoils");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read wingAirfoils at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read wingAirfoils at xpath " << xpath << ": " << e.what();
                     m_wingAirfoils = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read wingAirfoils at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read wingAirfoils at xpath " << xpath << ": " << e.getError();
                     m_wingAirfoils = boost::none;
                 }
             }
@@ -63,10 +63,10 @@ namespace tigl
                 try {
                     m_guideCurves->ReadCPACS(tixiHandle, xpath + "/guideCurves");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read guideCurves at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read guideCurves at xpath " << xpath << ": " << e.what();
                     m_guideCurves = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read guideCurves at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read guideCurves at xpath " << xpath << ": " << e.getError();
                     m_guideCurves = boost::none;
                 }
             }
@@ -77,10 +77,10 @@ namespace tigl
                 try {
                     m_rotorAirfoils->ReadCPACS(tixiHandle, xpath + "/rotorAirfoils");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read rotorAirfoils at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read rotorAirfoils at xpath " << xpath << ": " << e.what();
                     m_rotorAirfoils = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read rotorAirfoils at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read rotorAirfoils at xpath " << xpath << ": " << e.getError();
                     m_rotorAirfoils = boost::none;
                 }
             }

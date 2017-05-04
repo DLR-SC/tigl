@@ -93,10 +93,10 @@ namespace tigl
                 try {
                     m_alignmentVector->ReadCPACS(tixiHandle, xpath + "/alignmentVector");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read alignmentVector at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read alignmentVector at xpath " << xpath << ": " << e.what();
                     m_alignmentVector = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read alignmentVector at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read alignmentVector at xpath " << xpath << ": " << e.getError();
                     m_alignmentVector = boost::none;
                 }
             }

@@ -17,10 +17,10 @@
 
 #pragma once
 
-#include <tixi.h>
 #include <string>
-#include "tigl_internal.h"
+#include <tixi.h>
 #include "CPACSLinkToFileType_format.h"
+#include "tigl_internal.h"
 
 namespace tigl
 {

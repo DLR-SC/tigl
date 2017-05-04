@@ -35,10 +35,10 @@ namespace tigl
                 try {
                     m_cFD->ReadCPACS(tixiHandle, xpath + "/cFD");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read cFD at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read cFD at xpath " << xpath << ": " << e.what();
                     m_cFD = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read cFD at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read cFD at xpath " << xpath << ": " << e.getError();
                     m_cFD = boost::none;
                 }
             }

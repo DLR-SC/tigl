@@ -40,10 +40,10 @@ namespace tigl
                 try {
                     m_scaling->ReadCPACS(tixiHandle, xpath + "/scaling");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read scaling at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read scaling at xpath " << xpath << ": " << e.what();
                     m_scaling = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read scaling at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read scaling at xpath " << xpath << ": " << e.getError();
                     m_scaling = boost::none;
                 }
             }
@@ -54,10 +54,10 @@ namespace tigl
                 try {
                     m_rotation->ReadCPACS(tixiHandle, xpath + "/rotation");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read rotation at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read rotation at xpath " << xpath << ": " << e.what();
                     m_rotation = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read rotation at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read rotation at xpath " << xpath << ": " << e.getError();
                     m_rotation = boost::none;
                 }
             }
@@ -68,10 +68,10 @@ namespace tigl
                 try {
                     m_translation->ReadCPACS(tixiHandle, xpath + "/translation");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read translation at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read translation at xpath " << xpath << ": " << e.what();
                     m_translation = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read translation at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read translation at xpath " << xpath << ": " << e.getError();
                     m_translation = boost::none;
                 }
             }

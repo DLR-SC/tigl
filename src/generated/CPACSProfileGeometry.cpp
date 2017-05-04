@@ -61,10 +61,10 @@ namespace tigl
                 try {
                     m_pointList_choice1->ReadCPACS(tixiHandle, xpath + "/pointList");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read pointList at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read pointList at xpath " << xpath << ": " << e.what();
                     m_pointList_choice1 = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read pointList at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read pointList at xpath " << xpath << ": " << e.getError();
                     m_pointList_choice1 = boost::none;
                 }
             }
@@ -75,10 +75,10 @@ namespace tigl
                 try {
                     m_cst2D_choice2->ReadCPACS(tixiHandle, xpath + "/cst2D");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read cst2D at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read cst2D at xpath " << xpath << ": " << e.what();
                     m_cst2D_choice2 = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read cst2D at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read cst2D at xpath " << xpath << ": " << e.getError();
                     m_cst2D_choice2 = boost::none;
                 }
             }

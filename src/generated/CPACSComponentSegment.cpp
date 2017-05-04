@@ -84,10 +84,10 @@ namespace tigl
                 try {
                     m_structure->ReadCPACS(tixiHandle, xpath + "/structure");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read structure at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read structure at xpath " << xpath << ": " << e.what();
                     m_structure = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read structure at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read structure at xpath " << xpath << ": " << e.getError();
                     m_structure = boost::none;
                 }
             }

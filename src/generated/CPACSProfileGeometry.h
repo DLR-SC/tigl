@@ -17,16 +17,16 @@
 
 #pragma once
 
-#include <tixi.h>
-#include <string>
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
-#include "CTiglError.h"
-#include <typeinfo>
-#include "tigl_internal.h"
-#include <TiglSymmetryAxis.h>
 #include <CCPACSPointListXYZ.h>
 #include <CCPACSWingProfileCST.h>
+#include <string>
+#include <TiglSymmetryAxis.h>
+#include <tixi.h>
+#include <typeinfo>
+#include "CTiglError.h"
+#include "tigl_internal.h"
 
 namespace tigl
 {

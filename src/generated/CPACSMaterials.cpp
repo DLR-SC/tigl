@@ -41,10 +41,10 @@ namespace tigl
                 try {
                     m_composites->ReadCPACS(tixiHandle, xpath + "/composites");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read composites at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read composites at xpath " << xpath << ": " << e.what();
                     m_composites = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read composites at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read composites at xpath " << xpath << ": " << e.getError();
                     m_composites = boost::none;
                 }
             }

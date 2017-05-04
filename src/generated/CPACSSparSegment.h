@@ -17,11 +17,11 @@
 
 #pragma once
 
-#include <tixi.h>
-#include <string>
-#include "tigl_internal.h"
 #include <CCPACSWingSparPositionUIDs.h>
+#include <string>
+#include <tixi.h>
 #include "CPACSSparCrossSection.h"
+#include "tigl_internal.h"
 
 namespace tigl
 {

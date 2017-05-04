@@ -65,10 +65,10 @@ namespace tigl
                 try {
                     m_ribsDefinitions->ReadCPACS(tixiHandle, xpath + "/ribsDefinitions");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read ribsDefinitions at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read ribsDefinitions at xpath " << xpath << ": " << e.what();
                     m_ribsDefinitions = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read ribsDefinitions at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read ribsDefinitions at xpath " << xpath << ": " << e.getError();
                     m_ribsDefinitions = boost::none;
                 }
             }
@@ -79,10 +79,10 @@ namespace tigl
                 try {
                     m_spars->ReadCPACS(tixiHandle, xpath + "/spars");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read spars at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read spars at xpath " << xpath << ": " << e.what();
                     m_spars = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read spars at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read spars at xpath " << xpath << ": " << e.getError();
                     m_spars = boost::none;
                 }
             }

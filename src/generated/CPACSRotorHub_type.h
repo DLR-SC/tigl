@@ -43,7 +43,7 @@ namespace tigl
         {
             switch(value) {
             case semiRigid: return "semiRigid";
-            case CPACSRotorHub_type_rigid: return "CPACSRotorHub_type_rigid";
+            case CPACSRotorHub_type_rigid: return "rigid";
             case articulated: return "articulated";
             case hingeless: return "hingeless";
             default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSRotorHub_type");
@@ -53,7 +53,7 @@ namespace tigl
         {
             struct ToLower { std::string operator()(std::string str) { for (std::size_t i = 0; i < str.length(); i++) { str[i] = std::tolower(str[i]); } return str; } } toLower;
             if (toLower(value) == "semirigid") { return semiRigid; }
-            if (toLower(value) == "cpacsrotorhub_type_rigid") { return CPACSRotorHub_type_rigid; }
+            if (toLower(value) == "rigid") { return CPACSRotorHub_type_rigid; }
             if (toLower(value) == "articulated") { return articulated; }
             if (toLower(value) == "hingeless") { return hingeless; }
             throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSRotorHub_type");

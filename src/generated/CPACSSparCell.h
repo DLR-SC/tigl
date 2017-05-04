@@ -17,15 +17,13 @@
 
 #pragma once
 
-#include <tixi.h>
-#include <string>
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
+#include <string>
+#include <tixi.h>
+#include "CPACSCap.h"
+#include "CPACSWeb.h"
 #include "tigl_internal.h"
-#include "CPACSCap.h"
-#include "CPACSCap.h"
-#include "CPACSWeb.h"
-#include "CPACSWeb.h"
 
 namespace tigl
 {

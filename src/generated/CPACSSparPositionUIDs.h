@@ -17,8 +17,8 @@
 
 #pragma once
 
-#include <tixi.h>
 #include <string>
+#include <tixi.h>
 #include <vector>
 #include "tigl_internal.h"
 
@@ -40,7 +40,7 @@ namespace tigl
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
             TIGL_EXPORT virtual const std::vector<std::string>& GetSparPositionUIDs() const;
-            TIGL_EXPORT virtual void SetSparPositionUIDs(const std::vector<std::string>& value);
+            TIGL_EXPORT virtual std::vector<std::string>& GetSparPositionUIDs();
             
         protected:
             std::vector<std::string> m_sparPositionUIDs;

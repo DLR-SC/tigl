@@ -48,9 +48,9 @@ namespace tigl
             return m_sparPositionUIDs;
         }
         
-        void CPACSSparPositionUIDs::SetSparPositionUIDs(const std::vector<std::string>& value)
+        std::vector<std::string>& CPACSSparPositionUIDs::GetSparPositionUIDs()
         {
-            m_sparPositionUIDs = value;
+            return m_sparPositionUIDs;
         }
         
     }

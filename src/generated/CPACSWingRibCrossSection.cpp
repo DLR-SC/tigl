@@ -55,10 +55,10 @@ namespace tigl
                 try {
                     m_ribRotation->ReadCPACS(tixiHandle, xpath + "/ribRotation");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read ribRotation at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read ribRotation at xpath " << xpath << ": " << e.what();
                     m_ribRotation = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read ribRotation at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read ribRotation at xpath " << xpath << ": " << e.getError();
                     m_ribRotation = boost::none;
                 }
             }
@@ -69,10 +69,10 @@ namespace tigl
                 try {
                     m_ribCell->ReadCPACS(tixiHandle, xpath + "/ribCell");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read ribCell at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read ribCell at xpath " << xpath << ": " << e.what();
                     m_ribCell = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read ribCell at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read ribCell at xpath " << xpath << ": " << e.getError();
                     m_ribCell = boost::none;
                 }
             }
@@ -83,10 +83,10 @@ namespace tigl
                 try {
                     m_upperCap->ReadCPACS(tixiHandle, xpath + "/upperCap");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read upperCap at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read upperCap at xpath " << xpath << ": " << e.what();
                     m_upperCap = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read upperCap at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read upperCap at xpath " << xpath << ": " << e.getError();
                     m_upperCap = boost::none;
                 }
             }
@@ -97,10 +97,10 @@ namespace tigl
                 try {
                     m_lowerCap->ReadCPACS(tixiHandle, xpath + "/lowerCap");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read lowerCap at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read lowerCap at xpath " << xpath << ": " << e.what();
                     m_lowerCap = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read lowerCap at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read lowerCap at xpath " << xpath << ": " << e.getError();
                     m_lowerCap = boost::none;
                 }
             }

@@ -17,15 +17,15 @@
 
 #pragma once
 
-#include <tixi.h>
-#include <string>
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
-#include "tigl_internal.h"
-#include <TiglSymmetryAxis.h>
-#include "CPACSRotor_type.h"
-#include <CCPACSTransformation.h>
 #include <CCPACSRotorHub.h>
+#include <CCPACSTransformation.h>
+#include <string>
+#include <TiglSymmetryAxis.h>
+#include <tixi.h>
+#include "CPACSRotor_type.h"
+#include "tigl_internal.h"
 
 namespace tigl
 {
