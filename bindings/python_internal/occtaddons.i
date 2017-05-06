@@ -34,17 +34,6 @@
 %import math.i
 
 
-// Add missing Math_math classes
-class math_Vector  {
-public:
-    math_Vector(const int Lower,const int Upper);
-};
-
-class math_Matrix  {
-public:
-    math_Matrix(const int Lower,const int Upper, const int Lower2,const int Upper2 );
-};
-
 // enable printing matrix (python)
 %extend math_Matrix {
     std::string __str__() {

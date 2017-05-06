@@ -35,6 +35,8 @@ public:
     *
     * @param f (in) Objective function 
     * @param x (in/out) The function is initialized with the initial guess x and returns the solution x.
+    * @param gradTol Norm of the gradient df/dx, when to stop optimizing.
+    * @param ofTol Relative change of the objective function, when to stop optimizing.
     */
     TIGL_EXPORT static TiglReturnCode optNewton2d(const class ITiglObjectiveFunction& f, double * x, double gradTol = 1e-5, double ofTol = 1e-5);
 

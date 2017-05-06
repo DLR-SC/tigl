@@ -28,6 +28,8 @@
   %include boost_shared_ptr.i
 #endif
 
+%include unique_pointer.i
+
 
 #define Handle(ClassName)  Handle_##ClassName
 #define TixiDocumentHandle int

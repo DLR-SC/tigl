@@ -25,6 +25,9 @@
 %{
 #include "CTiglMemoryPool.h"
 #include "CTiglError.h"
+#include "CCPACSStringVector.h"
+#include "generated/CPACSUpdates.h"
+#include "generated/CPACSHeader.h"
 %}
 
 %feature("autodoc", "3");
@@ -34,6 +37,10 @@
 
 %include "CTiglMemoryPool.h"
 %include "CTiglError.h"
+%include "generated/CPACSStringVectorBase.h"
+%include "CCPACSStringVector.h"
+%include "generated/CPACSUpdates.h"
+%include "generated/CPACSHeader.h"
 
 %template(DoubleVector) std::vector<double>;
 

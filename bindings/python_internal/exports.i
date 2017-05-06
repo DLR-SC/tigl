@@ -44,6 +44,7 @@
 
 
 %include "CCPACSImportExport.h"
+%include "CTiglCADExporter.h"
 %include "CTiglExportBrep.h"
 %include "CTiglExportStep.h"
 %include "CTiglExportIges.h"

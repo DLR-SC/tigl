@@ -54,7 +54,7 @@ public:
      * \param alpha2 Parameter which defines the starting point of the guide curve on the 2nd profile
      * \param scale1 Scaling factor from 1st profile (inner profile chord line in the case of wing profiles)
      * \param scale2 Scaling factor from 2nd profile (outer profile chord line in the case of wing profiles)
-     * \param guideCurveProfile Guide curve profile coordinates
+     * \param gcp Guide curve profile coordinates
      *
      * @return Guide curve wire in world coordinates
      */
