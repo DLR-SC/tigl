@@ -66,7 +66,7 @@ namespace tigl
 
         operator bool() const
         {
-            return get() != NULL;
+            return std::auto_ptr<T>::get() != NULL;
         }
     };
 
