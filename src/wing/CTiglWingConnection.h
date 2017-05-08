@@ -2,9 +2,9 @@
 * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
-* Changed: $Id$ 
+* Changed: $Id: CCPACSWingConnection.h 2641 2017-03-30 21:08:46Z bgruber $ 
 *
-* Version: $Revision$
+* Version: $Revision: 2641 $
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -20,36 +20,35 @@
 */
 /**
 * @file
-* @brief  Implementation of CPACS fuselage connection handling routines.
+* @brief  Implementation of CPACS wing connection handling routines.
 */
 
-#ifndef CCPACSFUSELAGECONNECTION_H
-#define CCPACSFUSELAGECONNECTION_H
+#ifndef CCPACSWINGCONNECTION_H
+#define CCPACSWINGCONNECTION_H
+
+#include <string>
 
 #include "tixi.h"
 #include "tigl_internal.h"
+#include "CCPACSWingProfile.h"
 #include "CTiglTransformation.h"
-#include <string>
 
 namespace tigl
 {
+class CCPACSWingSegment;
 
-class CCPACSFuselageSegment;
-class CCPACSFuselageProfile;
-
-// TODO(bgruber): rename file
-// TODO: this class is very similar to CCPACSWingConnection, merge into one class
-class CTiglFuselageConnection
+// TODO(bgruber): this class is very similar to CCPACSFuselageConnection, merge into one class
+class CTiglWingConnection
 {
 public:
     // Constructor
-    TIGL_EXPORT CTiglFuselageConnection();
-    TIGL_EXPORT CTiglFuselageConnection(const std::string& elementUID, CCPACSFuselageSegment* aSegment);
+    TIGL_EXPORT CTiglWingConnection();
+    TIGL_EXPORT CTiglWingConnection(const std::string& elementUID, CCPACSWingSegment* aSegment);
 
-    // Returns the section UID of this connection
+    // Returns the section uid of this connection
     TIGL_EXPORT const std::string& GetSectionUID() const;
 
-    // Returns the section element UID of this connection
+    // Returns the section element uid of this connection
     TIGL_EXPORT const std::string& GetSectionElementUID() const;
 
     // Returns the section index of this connection
@@ -58,8 +57,8 @@ public:
     // Returns the section element index of this connection
     TIGL_EXPORT int GetSectionElementIndex() const;
 
-    // Returns the fuselage profile referenced by this connection
-    TIGL_EXPORT CCPACSFuselageProfile& GetProfile() const;
+    // Returns the wing profile referenced by this connection
+    TIGL_EXPORT CCPACSWingProfile& GetProfile() const;
 
     // Returns the positioning transformation (segment transformation) for the referenced section
     TIGL_EXPORT CTiglTransformation GetPositioningTransformation() const;
@@ -71,15 +70,22 @@ public:
     TIGL_EXPORT CTiglTransformation GetSectionElementTransformation() const;
 
 private:
-    const std::string*             elementUID;   /**< UID in section/elements */
+    struct ResolvedIndices {
+        int sectionIndex;
+        int elementIndex;
+        const std::string* sectionUidPtr;
+        const std::string* profileUIDPtr;
+    };
 
-    int                            sectionIndex; /**< Index in sections */
-    int                            elementIndex; /**< Index in section/elements */
-    std::string                    sectionUID;   /**< UID in sections */
-    CCPACSFuselageSegment*         segment;      /**< Parent segment */
+    void resolve() const;
+
+private:
+    mutable ResolvedIndices m_resolved;
+    std::string           elementUID;    /**< UID of the connection-section/-elements */
+    CCPACSWingSegment*    segment;       /**< Parent segment */
 
 };
 
 } // end namespace tigl
 
-#endif // CCPACSFUSELAGECONNECTION_H
+#endif // CCPACSWINGCONNECTION_H

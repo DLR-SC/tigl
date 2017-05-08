@@ -39,7 +39,7 @@
 
 #include "generated/UniquePtr.h"
 #include "CCPACSMaterial.h"
-#include "CCPACSWingConnection.h"
+#include "CTiglWingConnection.h"
 #include "CCPACSWingCSStructure.h"
 #include "CCPACSWingShell.h"
 #include "CTiglAbstractSegment.h"

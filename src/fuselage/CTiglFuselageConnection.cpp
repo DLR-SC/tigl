@@ -23,7 +23,7 @@
 * @brief  Implementation of CPACS fuselage connection handling routines.
 */
 
-#include "CCPACSFuselageConnection.h"
+#include "CTiglFuselageConnection.h"
 #include "CTiglError.h"
 #include "CCPACSFuselage.h"
 #include "CCPACSFuselageSection.h"

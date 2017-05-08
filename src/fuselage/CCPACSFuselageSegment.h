@@ -31,7 +31,7 @@
 #include "tigl_internal.h"
 #include "tigl_config.h"
 #include "tixi.h"
-#include "CCPACSFuselageConnection.h"
+#include "CTiglFuselageConnection.h"
 #include "CTiglAbstractSegment.h"
 #include "CCPACSGuideCurves.h"
 #include "CCPACSTransformation.h"

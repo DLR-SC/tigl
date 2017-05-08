@@ -29,7 +29,7 @@
 
 #include "CTiglError.h"
 #include "CTiglLogging.h"
-#include "CCPACSWingProfilePointList.h"
+#include "CTiglWingProfilePointList.h"
 #include "math.h"
 
 #include "gp_Pnt2d.hxx"

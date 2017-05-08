@@ -31,7 +31,7 @@
 #include "CTiglInterpolateBsplineWire.h"
 #include "CTiglInterpolateLinearWire.h"
 #include "ITiglWingProfileAlgo.h"
-#include "CCPACSWingProfilePointList.h"
+#include "CTiglWingProfilePointList.h"
 #include "CTiglTransformation.h"
 #include "math.h"
 #include "CCPACSWingProfile.h"

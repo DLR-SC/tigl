@@ -24,7 +24,7 @@
 #include "CTiglLogging.h"
 #include "CCPACSWingProfile.h"
 #include "CCPACSWingProfileFactory.h"
-#include "CCPACSWingProfilePointList.h"
+#include "CTiglWingProfilePointList.h"
 #include "CCPACSWingProfileCST.h"
 
 

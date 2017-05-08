@@ -69,7 +69,7 @@
 #include "CTiglExportVtk.h"
 #include "tiglcommonfunctions.h"
 #include "CTiglFusePlane.h"
-#include "CCPACSWingProfilePointList.h"
+#include "CTiglWingProfilePointList.h"
 #include "CCPACSWingSegment.h"
 #include "CCPACSFuselageSegment.h"
 #include "CCPACSGenericSystem.h"

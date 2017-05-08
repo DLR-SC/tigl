@@ -32,7 +32,7 @@
 #include "tigl_config.h"
 #include "tigl_internal.h"
 #include "tixi.h"
-#include "CCPACSWingConnection.h"
+#include "CTiglWingConnection.h"
 #include "CCPACSGuideCurves.h"
 #include "CTiglPoint.h"
 #include "CTiglAbstractSegment.h"

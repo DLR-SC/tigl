@@ -25,7 +25,7 @@
 
 #include <iostream>
 
-#include "CCPACSWingConnection.h"
+#include "CTiglWingConnection.h"
 #include "CTiglError.h"
 #include "CCPACSWing.h"
 #include "CCPACSWingSection.h"
