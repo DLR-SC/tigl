@@ -22,13 +22,6 @@
 
 #include "CCPACSGuideCurves.h"
 
-#include <sstream>
-#include <iostream>
-#include <fstream>
-#include <algorithm>
-
-#include "CTiglError.h"
-#include "CTiglPoint.h"
 #include "generated/CPACSGuideCurve.h"
 
 namespace tigl

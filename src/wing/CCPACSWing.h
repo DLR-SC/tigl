@@ -73,20 +73,24 @@ public:
     TIGL_EXPORT int GetSectionCount() const;
 
     // Returns the section for a given index
-    TIGL_EXPORT const CCPACSWingSection & GetSection(int index) const;
+    TIGL_EXPORT CCPACSWingSection& GetSection(int index);
+    TIGL_EXPORT const CCPACSWingSection& GetSection(int index) const;
 
     // Getter of the number of segments of the wing
     TIGL_EXPORT int GetSegmentCount() const;
 
     // Returns the segment for a given index or uid
     TIGL_EXPORT CCPACSWingSegment& GetSegment(const int index);
+    TIGL_EXPORT const CCPACSWingSegment& GetSegment(const int index) const;
     TIGL_EXPORT CCPACSWingSegment& GetSegment(std::string uid);
+    TIGL_EXPORT const CCPACSWingSegment& GetSegment(std::string uid) const;
 
     // Getter of the number of component segments of the wing
-    TIGL_EXPORT int GetComponentSegmentCount();
+    TIGL_EXPORT int GetComponentSegmentCount() const;
 
     // Returns the segment for a given index or uid
     TIGL_EXPORT CCPACSWingComponentSegment& GetComponentSegment(const int index);
+	TIGL_EXPORT const CCPACSWingComponentSegment& GetComponentSegment(const int index) const;
     TIGL_EXPORT CCPACSWingComponentSegment& GetComponentSegment(std::string uid);
 
     // Gets the wing transformation

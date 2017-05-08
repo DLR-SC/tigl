@@ -45,8 +45,7 @@ void CCPACSPositionings::Invalidate()
 {
     invalidated = true;
     for (std::vector<unique_ptr<CCPACSPositioning> >::iterator it = m_positionings.begin(); it != m_positionings.end(); ++it) {
-        CCPACSPositioning* actPos = it->get();
-        actPos->Invalidate();
+        it->get()->Invalidate();
     }
 }
 
@@ -62,11 +61,34 @@ CTiglTransformation CCPACSPositionings::GetPositioningTransformation(std::string
     Update();
     for (std::vector<unique_ptr<CCPACSPositioning> >::const_iterator it = m_positionings.begin(); it != m_positionings.end(); ++it) {
         CCPACSPositioning* p = it->get();
-        if (p->GetOuterSectionIndex() == sectionIndex) {
-            return p->GetOuterTransformation();
+        if (p->GetToSectionUID() == sectionIndex) {
+            return p->GetToTransformation();
         }
     }
     return CTiglTransformation();
+}
+
+namespace {
+    void UpdateNextPositioning(CCPACSPositioning* currPos, int depth)
+    {
+        // check for recursive definition
+        if (depth > 1000) {
+            throw CTiglError("Recursive definition of positioning is not allowed");
+        }
+
+        if (currPos->GetToSectionUID() == ""){
+            throw CTiglError("illegal definition of positionings");
+        }
+
+        // Find all positionings which have the end section of the current positioning
+        // defined as their start section.
+        const std::vector<CCPACSPositioning*>& children = currPos->GetDependentPositionings();
+        for (std::vector<CCPACSPositioning*>::const_iterator it = children.begin(); it != children.end(); ++it) {
+            CCPACSPositioning* childPos = *it;
+            childPos->SetFromPoint(currPos->GetToPoint());
+            UpdateNextPositioning(childPos, depth + 1);
+        }
+    }
 }
 
 // Update internal positionings structure
@@ -83,8 +105,8 @@ void CCPACSPositionings::Update()
     // diconnect and reset
     for (std::vector<unique_ptr<CCPACSPositioning> >::iterator it = m_positionings.begin(); it != m_positionings.end(); ++it) {
         CCPACSPositioning* actPos = it->get();
-        actPos->DisconnectChilds();
-        actPos->SetInnerPoint(CTiglPoint(0,0,0));
+        actPos->DisconnectDependentPositionings();
+        actPos->SetFromPoint(CTiglPoint(0,0,0));
     }
     
     // connect positionings, find roots
@@ -96,8 +118,8 @@ void CCPACSPositionings::Update()
             const std::string fromUID = *actPos->GetFromSectionUID();
             bool found = false;
             for (std::vector<unique_ptr<CCPACSPositioning> >::iterator it2 = m_positionings.begin(); it2 != m_positionings.end(); ++it2) {
-                if ((*it2)->GetOuterSectionIndex() == fromUID) {
-                    (*it2)->ConnectChildPositioning(actPos);
+                if ((*it2)->GetToSectionUID() == fromUID) {
+                    (*it2)->AddDependentPositioning(actPos);
                     found = true;
                     break;
                 }
@@ -114,28 +136,6 @@ void CCPACSPositionings::Update()
 
     for (std::vector<CCPACSPositioning*>::iterator it = rootNodes.begin(); it != rootNodes.end(); it++) {
         UpdateNextPositioning(*it, 0);
-    }
-}
-
-void CCPACSPositionings::UpdateNextPositioning(CCPACSPositioning* currPos, int depth)
-{
-    // check for recursive definition
-    if (depth > 1000) {
-        throw CTiglError("Recursive definition of wing positioning is not allowed");
-    }
-
-    if (currPos->GetOuterSectionIndex() == ""){
-        throw CTiglError("illegal definition of wing positionings");
-    }
-        
-    // Find all positionings which have the end section of the current positioning
-    // defined as their start section.
-    std::vector<CCPACSPositioning*>::const_iterator it;
-    const std::vector<CCPACSPositioning*>& childs = currPos->GetChilds();
-    for (it = childs.begin(); it != childs.end(); ++it) {
-        CCPACSPositioning* childPos = *it;
-        childPos->SetInnerPoint(currPos->GetOuterPoint());
-        UpdateNextPositioning(childPos, depth+1);
     }
 }
 

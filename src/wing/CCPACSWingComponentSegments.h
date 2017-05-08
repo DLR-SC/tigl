@@ -49,10 +49,12 @@ public:
 
     // Gets a segment by index
     TIGL_EXPORT CCPACSWingComponentSegment & GetComponentSegment(int index);
+    TIGL_EXPORT const CCPACSWingComponentSegment & GetComponentSegment(int index) const;
     TIGL_EXPORT CCPACSWingComponentSegment & GetComponentSegment(const std::string& componentSegmentUID);
+    TIGL_EXPORT const CCPACSWingComponentSegment & GetComponentSegment(const std::string& componentSegmentUID) const;
 
     // Gets total segment count
-    TIGL_EXPORT int GetComponentSegmentCount();
+    TIGL_EXPORT int GetComponentSegmentCount() const;
 };
 
 } // end namespace tigl

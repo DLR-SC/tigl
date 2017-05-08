@@ -31,7 +31,7 @@ namespace tigl
 CCPACSWingSections::CCPACSWingSections(CTiglUIDManager* uidMgr)
     : generated::CPACSWingSections(uidMgr) {}
 
-    // Get section count
+// Get section count
 int CCPACSWingSections::GetSectionCount() const
 {
     return static_cast<int>(m_sections.size());

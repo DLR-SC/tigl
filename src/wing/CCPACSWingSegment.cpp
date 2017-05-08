@@ -114,7 +114,7 @@ namespace tigl
 
 namespace
 {
-    gp_Pnt transformProfilePoint(const tigl::CTiglTransformation& wingTransform, const tigl::CCPACSWingConnection& connection, const gp_Pnt& pointOnProfile)
+    gp_Pnt transformProfilePoint(const tigl::CTiglTransformation& wingTransform, const tigl::CTiglWingConnection& connection, const gp_Pnt& pointOnProfile)
     {
         gp_Pnt transformedPoint(pointOnProfile);
 
@@ -134,7 +134,7 @@ namespace
         return transformedPoint;
     }
 
-    TopoDS_Shape transformProfileWire(const tigl::CTiglTransformation& wingTransform, const tigl::CCPACSWingConnection& connection, const TopoDS_Shape& wire)
+    TopoDS_Shape transformProfileWire(const tigl::CTiglTransformation& wingTransform, const tigl::CTiglWingConnection& connection, const TopoDS_Shape& wire)
     {
         TopoDS_Shape transformedWire(wire);
 
@@ -251,8 +251,8 @@ void CCPACSWingSegment::ReadCPACS(TixiDocumentHandle tixiHandle, const std::stri
 
     GetWing().GetConfiguration().GetUIDManager().AddGeometricComponent(m_uID, this);
 
-    innerConnection = CCPACSWingConnection(m_fromElementUID, this);
-    outerConnection = CCPACSWingConnection(m_toElementUID, this);
+    innerConnection = CTiglWingConnection(m_fromElementUID, this);
+    outerConnection = CTiglWingConnection(m_toElementUID, this);
 
     // check that the profiles are consistent
     if (innerConnection.GetProfile().HasBluntTE() !=
@@ -524,13 +524,13 @@ int CCPACSWingSegment::GetOuterSectionElementIndex() const
 }
 
 // Returns the start section element index of this segment
-CCPACSWingConnection& CCPACSWingSegment::GetInnerConnection()
+CTiglWingConnection& CCPACSWingSegment::GetInnerConnection()
 {
     return( innerConnection );
 }
 
 // Returns the end section element index of this segment
-CCPACSWingConnection& CCPACSWingSegment::GetOuterConnection()
+CTiglWingConnection& CCPACSWingSegment::GetOuterConnection()
 {
     return( outerConnection );
 }
@@ -732,7 +732,7 @@ gp_Pnt CCPACSWingSegment::GetPoint(double eta, double xsi, bool fromUpper, TiglC
         outerProfilePoint = outerProfile.GetLowerPoint(xsi);
     }
 
-        CTiglTransformation identity;
+    CTiglTransformation identity;
     switch (referenceCS) {
     case WING_COORDINATE_SYSTEM:
         innerProfilePoint = transformProfilePoint(identity, innerConnection, innerProfilePoint);

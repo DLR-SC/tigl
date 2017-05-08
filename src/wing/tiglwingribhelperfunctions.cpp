@@ -40,7 +40,7 @@
 namespace tigl
 {
 
-TopoDS_Shape ApplyWingTransformation(CCPACSWingCSStructure& structure, const TopoDS_Shape& shape)
+TopoDS_Shape ApplyWingTransformation(const CCPACSWingCSStructure& structure, const TopoDS_Shape& shape)
 {
     return structure.GetWingStructureReference().GetWing().GetWingTransformation().Transform(shape);
 }
@@ -122,12 +122,12 @@ bool IsOuterSparPointInSection(const std::string& sparUid, double eta, const CCP
         sparPositionIndex = 1;
     }
     else if (eta > 1 - Precision::Confusion()) {
-        sparPositionIndex = sparSegment.GetSparPositionUIDCount();
+        sparPositionIndex = sparSegment.GetSparPositionUIDs().GetSparPositionUIDCount();
     }
     else {
         return false;
     }
-    CCPACSWingSparPosition& pos = sparSegment.GetSparPosition(sparSegment.GetSparPositionUID(sparPositionIndex));
+    const CCPACSWingSparPosition& pos = sparSegment.GetSparPosition(sparSegment.GetSparPositionUIDs().GetSparPositionUID(sparPositionIndex));
     if (pos.GetInputType() == CCPACSWingSparPosition::ElementUID) {
         return true;
     }
@@ -312,10 +312,10 @@ void CheckSparPositionOnReference(const std::string& sparPositionUID, const std:
 
     // next ensure that the spar position is part of the spar segment
     const CCPACSWingSparSegment& sparSegment = structure.GetSparSegment(sparSegmentIndex);
-    int numSparPositions = sparSegment.GetSparPositionUIDCount();
+    int numSparPositions = sparSegment.GetSparPositionUIDs().GetSparPositionUIDCount();
     int sparPositionIndex = 1;
     for (; sparPositionIndex <= numSparPositions; ++sparPositionIndex) {
-        if (sparSegment.GetSparPositionUID(sparPositionIndex) == sparPositionUID) {
+        if (sparSegment.GetSparPositionUIDs().GetSparPositionUID(sparPositionIndex) == sparPositionUID) {
             break;
         }
     }

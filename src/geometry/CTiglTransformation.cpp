@@ -537,4 +537,10 @@ std::ostream& operator<<(std::ostream& os, const CTiglTransformation& t)
     return os;
 }
 
+CTiglTransformation operator*(const CTiglTransformation & a, const CTiglTransformation & b) {
+    CTiglTransformation result = a;
+    result.PreMultiply(b);
+    return result;
+}
+
 } // end namespace tigl

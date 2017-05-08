@@ -63,9 +63,6 @@ protected:
     // Update internal positioning structure
     void Update();
 
-    // Update connected positionings recursive
-    void UpdateNextPositioning(CCPACSPositioning*, int depth);
-
 private:
     bool                           invalidated;       /**< Internal state flag  */
 

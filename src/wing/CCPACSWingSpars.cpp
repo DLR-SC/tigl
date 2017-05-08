@@ -27,14 +27,4 @@ void CCPACSWingSpars::Invalidate()
     m_sparSegments.Invalidate();
 }
 
-const CCPACSWingCSStructure& CCPACSWingSpars::GetStructure() const
-{
-    return *GetParent();
-}
-
-CCPACSWingCSStructure& CCPACSWingSpars::GetStructure()
-{
-    return *GetParent();
-}
-
 } // end namespace tigl

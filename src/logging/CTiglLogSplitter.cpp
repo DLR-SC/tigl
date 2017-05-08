@@ -37,7 +37,7 @@ void CTiglLogSplitter::AddLogger(PTiglLogger logger)
     }
 }
 
-// OVERRIDE from ITIglLogger
+// override from ITIglLogger
 void CTiglLogSplitter::LogMessage(TiglLogLevel level, const char * message) 
 {
     if (level<=verbosity) {

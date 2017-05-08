@@ -77,10 +77,10 @@ public:
     TIGL_EXPORT int GetEndSectionIndex();
 
     // Returns the starting Segement Connection
-    TIGL_EXPORT CCPACSFuselageConnection& GetStartConnection();
+    TIGL_EXPORT CTiglFuselageConnection& GetStartConnection();
 
     // Return the end Segment Connection
-    TIGL_EXPORT CCPACSFuselageConnection& GetEndConnection();
+    TIGL_EXPORT CTiglFuselageConnection& GetEndConnection();
 
     // Returns the start section element UID of this segment
     TIGL_EXPORT const std::string& GetStartSectionElementUID();
@@ -171,8 +171,8 @@ private:
     // get short name for loft
     std::string GetShortShapeName();
 
-    CCPACSFuselageConnection startConnection;      /**< Start segment connection                */
-    CCPACSFuselageConnection endConnection;        /**< End segment connection                  */
+    CTiglFuselageConnection startConnection;       /**< Start segment connection                */
+    CTiglFuselageConnection endConnection;         /**< End segment connection                  */
     CCPACSFuselage*          fuselage;             /**< Parent fuselage                         */
     TopTools_SequenceOfShape guideCurveWires;      /**< container for the guide curve wires     */
     double                   myVolume;             /**< Volume of this segment                  */

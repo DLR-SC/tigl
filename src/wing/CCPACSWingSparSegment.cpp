@@ -49,7 +49,7 @@
 // TODO: const sparsNode
 TopoDS_Shape ApplyWingTransformation(tigl::CCPACSWingSpars& sparsNode, const TopoDS_Shape& shape)
 {
-    return sparsNode.GetStructure().GetWingStructureReference().GetWing().GetWingTransformation().Transform(shape);
+    return sparsNode.GetParent()->GetWingStructureReference().GetWing().GetWingTransformation().Transform(shape);
 }
 
 namespace tigl
@@ -69,19 +69,13 @@ void CCPACSWingSparSegment::Invalidate()
     sparCapsCache.valid = false;
 }
 
-int CCPACSWingSparSegment::GetSparPositionUIDCount() const
+CCPACSWingSparPosition& CCPACSWingSparSegment::GetSparPosition(std::string uID)
 {
-    return m_sparPositionUIDs.GetSparPositionUIDCount();
+    return sparsNode.GetSparPositions().GetSparPosition(uID);
 }
 
-const std::string& CCPACSWingSparSegment::GetSparPositionUID(int index) const
-{
-    return m_sparPositionUIDs.GetSparPositionUID(index);
-}
-
-CCPACSWingSparPosition& CCPACSWingSparSegment::GetSparPosition(std::string m_uID) const
-{
-    return sparsNode.GetSparPositions().GetSparPosition(m_uID);
+const CCPACSWingSparPosition& CCPACSWingSparSegment::GetSparPosition(std::string uid) const {
+    return sparsNode.GetSparPositions().GetSparPosition(uid);
 }
 
 // Returns the eta point on the midplane line of the spar segment
@@ -144,8 +138,8 @@ void CCPACSWingSparSegment::GetEtaXsi(int positionIndex, double& eta, double& xs
     else if (sparPosition.GetInputType() == CCPACSWingSparPosition::ElementUID) {
         gp_Pnt sparPositionPoint = GetMidplanePoint(sparPositionUID);
         double dummy;
-        sparsNode.GetStructure().GetWingStructureReference().GetMidplaneEtaXsi(sparPositionPoint, eta, dummy);
-        assert(fabs(dummy - xsi) < 1.E-6);
+        sparsNode.GetParent()->GetWingStructureReference().GetMidplaneEtaXsi(sparPositionPoint, eta, dummy);
+        assert(std::abs(dummy - xsi) < 1.E-6);
     }
     else {
         throw CTiglError("Unknown SparPosition-InputType found in CCPACSWingSparSegment::GetEtaXsi");
@@ -268,7 +262,7 @@ TopoDS_Shape CCPACSWingSparSegment::GetSparCapsGeometry(SparCapSide side, TiglCo
 void CCPACSWingSparSegment::BuildAuxiliaryGeometry() const
 {
     // get assigned componentsegment
-    const CTiglWingStructureReference& wingStructureReference = sparsNode.GetStructure().GetWingStructureReference();
+    CTiglWingStructureReference wingStructureReference = sparsNode.GetParent()->GetWingStructureReference();
 
     // build compound for cut geometry
     BRepBuilderAPI_Sewing cutGeomSewer;
@@ -359,7 +353,7 @@ void CCPACSWingSparSegment::BuildAuxiliaryGeometry() const
 
 void CCPACSWingSparSegment::BuildGeometry() const
 {
-    const CTiglWingStructureReference& wingStructureReference = sparsNode.GetStructure().GetWingStructureReference();
+    CTiglWingStructureReference wingStructureReference = sparsNode.GetParent()->GetWingStructureReference();
 
     // build compound for spar geometry
     BRepBuilderAPI_Sewing sewing;
@@ -417,7 +411,7 @@ void CCPACSWingSparSegment::BuildSplittedSparGeometry() const
     TopoDS_Shape splittedSparGeometry = geometryCache.shape;
 
     // next iterate over all ribs from the component segment
-    const CCPACSWingCSStructure& structure = sparsNode.GetStructure();
+    const CCPACSWingCSStructure& structure = *sparsNode.GetParent();
     int numRibs = structure.GetRibsDefinitionCount();
     BRep_Builder builder;
     TopoDS_Compound compound;
@@ -440,7 +434,7 @@ void CCPACSWingSparSegment::BuildSplittedSparGeometry() const
 
 void CCPACSWingSparSegment::BuildSparCapsGeometry() const
 {
-    const CTiglWingStructureReference& wingStructureReference = sparsNode.GetStructure().GetWingStructureReference();
+    CTiglWingStructureReference wingStructureReference = sparsNode.GetParent()->GetWingStructureReference();
     TopoDS_Compound upperCompound;
     TopoDS_Compound lowerCompound;
     BRep_Builder builder;
@@ -487,7 +481,7 @@ gp_Pnt CCPACSWingSparSegment::GetMidplanePoint(const std::string& positionUID) c
 {
     gp_Pnt midplanePoint;
     CCPACSWingSparPosition& position = sparsNode.GetSparPositions().GetSparPosition(positionUID);
-    const CTiglWingStructureReference& wingStructureReference = sparsNode.GetStructure().GetWingStructureReference();
+    CTiglWingStructureReference wingStructureReference = sparsNode.GetParent()->GetWingStructureReference();
 
     if (position.GetInputType() == CCPACSWingSparPosition::ElementUID) {
         CCPACSWingComponentSegment& componentSegment = wingStructureReference.GetWingComponentSegment();
@@ -506,7 +500,7 @@ gp_Vec CCPACSWingSparSegment::GetUpVector(const std::string& positionUID, gp_Pnt
 {
     gp_Vec upVec;
     CCPACSWingSparPosition& position = sparsNode.GetSparPositions().GetSparPosition(positionUID);
-    const CTiglWingStructureReference& wingStructureReference = sparsNode.GetStructure().GetWingStructureReference();
+    CTiglWingStructureReference wingStructureReference = sparsNode.GetParent()->GetWingStructureReference();
 
     if (position.GetInputType() == CCPACSWingSparPosition::ElementUID) {
         // get componentSegment required for getting chordline points of sections

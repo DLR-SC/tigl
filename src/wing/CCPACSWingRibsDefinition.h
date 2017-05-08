@@ -16,32 +16,19 @@
 #ifndef CCPACSWINGRIBSDEFINITION_H
 #define CCPACSWINGRIBSDEFINITION_H
 
-#include <string>
-#include <vector>
-
 #include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Wire.hxx>
-#include <tixi.h>
 
-#include "CCPACSWingRibCrossSection.h"
-#include "CTiglWingStructureReference.h"
-#include "tigl_internal.h"
-#include "tigl.h"
+#include <vector>
 
 #include "generated/CPACSWingRibsDefinition.h"
 
-// forward declarations
-class gp_Vec;
-
 namespace tigl
 {
-
-// forward declaration
-class CCPACSWingRibsPositioning;
-class CCPACSWingRibCrossSection;
-class CCPACSWingSparPosition;
+class CCPACSWingCSStructure;
 
 class CCPACSWingRibsDefinition : public generated::CPACSWingRibsDefinition
 {
@@ -71,21 +58,11 @@ public:
     };
 
 public:
-    //TIGL_EXPORT CCPACSWingRibsDefinition(CCPACSWingCSStructure* structure, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSWingRibsDefinition(CCPACSWingRibsDefinitions* parent, CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT void Invalidate();
 
     TIGL_EXPORT RibPositioningType GetRibPositioningType() const;
-
-    TIGL_EXPORT const CCPACSWingRibsPositioning& GetRibsPositioning() const;
-    TIGL_EXPORT CCPACSWingRibsPositioning& GetRibsPositioning();
-
-    TIGL_EXPORT const CCPACSWingRibExplicitPositioning& GetRibExplicitPositioning() const;
-    TIGL_EXPORT CCPACSWingRibExplicitPositioning& GetRibExplicitPositioning();
-
-    TIGL_EXPORT const CCPACSWingCSStructure& GetStructure() const;
-    TIGL_EXPORT CCPACSWingCSStructure& GetStructure();
 
     // Returns the number of ribs for this rib definition, either this is
     // defined directly in the ribsPositioning or otherwise it is computed based
@@ -190,6 +167,9 @@ private:
     RibMidplanePoints ComputeRibDefinitionPoints(const std::string& ribStart, const std::string& ribEnd, 
                                                  const TopoDS_Face& ribCutFace) const;
 
+    CCPACSWingCSStructure& getStructure();
+    const CCPACSWingCSStructure& getStructure() const;
+
 private:
     CCPACSWingRibsDefinition(const CCPACSWingRibsDefinition&); // = delete;
     void operator=(const CCPACSWingRibsDefinition& ); // = delete;
@@ -239,8 +219,6 @@ private:
     };
 
 private:
-    CCPACSWingCSStructure& structure;
-
     mutable RibSetDataCache ribSetDataCache;
 
     mutable AuxiliaryGeomCache auxGeomCache;

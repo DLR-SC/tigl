@@ -24,8 +24,9 @@
 */
 
 #include "CCPACSWings.h"
-#include "CCPACSConfiguration.h"
+
 #include "CTiglError.h"
+#include "CCPACSConfiguration.h"
 #include "CCPACSAircraftModel.h"
 
 namespace tigl
@@ -34,7 +35,6 @@ namespace tigl
 // Invalidates internal state
 void CCPACSWings::Invalidate()
 {
-    GetProfiles().Invalidate();
     for (int i = 1; i <= GetWingCount(); i++) {
         GetWing(i).Invalidate();
     }
@@ -45,45 +45,6 @@ CCPACSWings::CCPACSWings(CCPACSRotorcraftModel* parent, CTiglUIDManager* uidMgr)
 
 CCPACSWings::CCPACSWings(CCPACSAircraftModel* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSWings(parent, uidMgr) {}
-
-bool CCPACSWings::HasProfile(std::string uid) const
-{
-    return GetProfiles().HasProfile(uid);
-}
-
-// Returns the total count of wing profiles in this configuration
-int CCPACSWings::GetProfileCount() const
-{
-    return GetProfiles().GetProfileCount();
-}
-
-CCPACSWingProfiles& CCPACSWings::GetProfiles()
-{
-    if (IsParent<CCPACSAircraftModel>())
-        return static_cast<CCPACSAircraftModel*>(m_parent)->GetConfiguration().GetWingProfiles();
-    else
-        return static_cast<CCPACSRotorcraftModel*>(m_parent)->GetConfiguration().GetWingProfiles();
-}
-
-const CCPACSWingProfiles& CCPACSWings::GetProfiles() const {
-    if (IsParent<CCPACSAircraftModel>())
-        return static_cast<CCPACSAircraftModel*>(m_parent)->GetConfiguration().GetWingProfiles();
-    else
-        return static_cast<CCPACSRotorcraftModel*>(m_parent)->GetConfiguration().GetWingProfiles();
-}
-
-
-// Returns the wing profile for a given uid.
-CCPACSWingProfile& CCPACSWings::GetProfile(std::string uid) const
-{
-    return GetProfiles().GetProfile(uid);
-}
-
-// Returns the wing profile for a given index.
-CCPACSWingProfile& CCPACSWings::GetProfile(int index) const
-{
-    return GetProfiles().GetProfile(index);
-}
 
 // Returns the total count of wings in a configuration
 int CCPACSWings::GetWingCount() const
@@ -141,18 +102,18 @@ bool CCPACSWings::HasWing(const std::string & uid) const
     return false;
 }
 
-void CCPACSWings::AddWing(CCPACSWing* wing)
+void CCPACSWings::Add(CCPACSWing* wing)
 {
-    // Check whether the same wing already exists if yes remove it before adding the new one
-    for (std::vector<unique_ptr<CCPACSWing> >::iterator it = m_wings.begin(); it != m_wings.end(); ++it) {
-        if ((*it)->GetUID() == wing->GetUID()) {
-            m_wings.erase(it);
-            break;
-        }
-    }
-
-    // Add the new wing to the wing list
     m_wings.push_back(unique_ptr<CCPACSWing>(wing));
 }
 
+void CCPACSWings::Remove(CCPACSWing* wing) {
+    for (std::vector<unique_ptr<CCPACSWing> >::iterator it = m_wings.begin(); it != m_wings.end(); ++it) {
+        if ((*it).get() == wing) {
+            m_wings.erase(it);
+            return;
+        }
+    }
+    throw std::runtime_error("Wing not found");
+}
 } // end namespace tigl

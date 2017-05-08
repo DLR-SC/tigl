@@ -46,14 +46,6 @@ public:
     // Destructor
     TIGL_EXPORT ~CCPACSWingProfileCST();
 
-    DEPRECATED TIGL_EXPORT static std::string CPACSID();
-
-    // Read CPACS wing profile file
-    TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& profileXPath) OVERRIDE;
-
-    // Write CPACS wing profile
-    TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& profileXPath) const OVERRIDE;
-
     // Cleanup routine
     TIGL_EXPORT void Cleanup();
 

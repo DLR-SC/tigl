@@ -92,6 +92,11 @@ namespace tigl
                 m_elementStartUID_choice2 = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/elementStartUID");
             }
             
+            // read element sparPositionStartUID
+            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/sparPositionStartUID")) {
+                m_sparPositionStartUID_choice3 = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/sparPositionStartUID");
+            }
+            
             // read element etaEnd
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/etaEnd")) {
                 m_etaEnd_choice1 = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/etaEnd");
@@ -100,6 +105,11 @@ namespace tigl
             // read element elementEndUID
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/elementEndUID")) {
                 m_elementEndUID_choice2 = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/elementEndUID");
+            }
+            
+            // read element sparPositionEndUID
+            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/sparPositionEndUID")) {
+                m_sparPositionEndUID_choice3 = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/sparPositionEndUID");
             }
             
             // read element spacing
@@ -148,6 +158,12 @@ namespace tigl
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/elementStartUID", *m_elementStartUID_choice2);
             }
             
+            // write element sparPositionStartUID
+            if (m_sparPositionStartUID_choice3) {
+                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/sparPositionStartUID");
+                tixihelper::TixiSaveElement(tixiHandle, xpath + "/sparPositionStartUID", *m_sparPositionStartUID_choice3);
+            }
+            
             // write element etaEnd
             if (m_etaEnd_choice1) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/etaEnd");
@@ -158,6 +174,12 @@ namespace tigl
             if (m_elementEndUID_choice2) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/elementEndUID");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/elementEndUID", *m_elementEndUID_choice2);
+            }
+            
+            // write element sparPositionEndUID
+            if (m_sparPositionEndUID_choice3) {
+                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/sparPositionEndUID");
+                tixihelper::TixiSaveElement(tixiHandle, xpath + "/sparPositionEndUID", *m_sparPositionEndUID_choice3);
             }
             
             // write element spacing
@@ -254,6 +276,21 @@ namespace tigl
             m_elementStartUID_choice2 = value;
         }
         
+        const boost::optional<std::string>& CPACSWingRibsPositioning::GetSparPositionStartUID_choice3() const
+        {
+            return m_sparPositionStartUID_choice3;
+        }
+        
+        void CPACSWingRibsPositioning::SetSparPositionStartUID_choice3(const std::string& value)
+        {
+            m_sparPositionStartUID_choice3 = value;
+        }
+        
+        void CPACSWingRibsPositioning::SetSparPositionStartUID_choice3(const boost::optional<std::string>& value)
+        {
+            m_sparPositionStartUID_choice3 = value;
+        }
+        
         const boost::optional<double>& CPACSWingRibsPositioning::GetEtaEnd_choice1() const
         {
             return m_etaEnd_choice1;
@@ -282,6 +319,21 @@ namespace tigl
         void CPACSWingRibsPositioning::SetElementEndUID_choice2(const boost::optional<std::string>& value)
         {
             m_elementEndUID_choice2 = value;
+        }
+        
+        const boost::optional<std::string>& CPACSWingRibsPositioning::GetSparPositionEndUID_choice3() const
+        {
+            return m_sparPositionEndUID_choice3;
+        }
+        
+        void CPACSWingRibsPositioning::SetSparPositionEndUID_choice3(const std::string& value)
+        {
+            m_sparPositionEndUID_choice3 = value;
+        }
+        
+        void CPACSWingRibsPositioning::SetSparPositionEndUID_choice3(const boost::optional<std::string>& value)
+        {
+            m_sparPositionEndUID_choice3 = value;
         }
         
         const boost::optional<double>& CPACSWingRibsPositioning::GetSpacing_choice1() const

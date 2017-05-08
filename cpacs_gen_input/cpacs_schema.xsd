@@ -39979,6 +39979,13 @@ jonas.jepsen@dlr.de
 								</xsd:documentation>
 							</xsd:annotation>
 						</xsd:element>
+						<xsd:element name="sparPositionStartUID" type="stringUIDBaseType">
+							<xsd:annotation>
+								<xsd:documentation>
+									TIGL extension
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
 					</xsd:choice>
 					<xsd:choice>
 						<xsd:element name="etaEnd" type="doubleBaseType">
@@ -39997,6 +40004,13 @@ jonas.jepsen@dlr.de
 									set on the
 									ribReference line. It is relative to a section element and hence linked to
 									the outer shape.
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="sparPositionEndUID" type="stringUIDBaseType">
+							<xsd:annotation>
+								<xsd:documentation>
+									TIGL extension
 								</xsd:documentation>
 							</xsd:annotation>
 						</xsd:element>

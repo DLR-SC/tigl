@@ -50,9 +50,6 @@ public:
 public:
     TIGL_EXPORT CCPACSWingRibsPositioning(CCPACSWingRibsDefinition* parent);
 
-    TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string & xpath) OVERRIDE;
-    TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string & xpath) const OVERRIDE;
-
     TIGL_EXPORT StartDefinitionType GetStartDefinitionType() const;
     
     TIGL_EXPORT double GetEtaStart() const;
@@ -84,10 +81,6 @@ public:
 
     TIGL_EXPORT double GetSpacing() const;
     TIGL_EXPORT void SetSpacing(double);
-
-private:
-    boost::optional<std::string> m_sparPositionStartUID_choice3;
-    boost::optional<std::string> m_sparPositionEndUID_choice3;
 };
 
 } // end namespace tigl

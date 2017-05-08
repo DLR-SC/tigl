@@ -22,67 +22,12 @@
 
 #include "generated/TixiHelper.h"
 
-//std::string toString(tigl::CCPACSWingRibsPositioning::CrossingBehaviour crossingBehaviour)
-//{
-//    switch (crossingBehaviour) {
-//    case ENUM_VALUE_NS(CCPACSWingRibsPositioning::CrossingBehaviour, CROSSING_CROSS): return "cross";
-//    case ENUM_VALUE_NS(CCPACSWingRibsPositioning::CrossingBehaviour, CROSSING_END): return "end";
-//    default:
-//        throw tigl::CTiglError("Unknown CrossingBehaviour can not be converted to string!");
-//    }
-//}
-//
-//tigl::CCPACSWingRibsPositioning::CrossingBehaviour ribCrossingFromString(const std::string& crossingBehaviour)
-//{
-//    if (crossingBehaviour == "cross") {
-//        return tigl::CCPACSWingRibsPositioning::CROSSING_CROSS;
-//    }
-//    else if (crossingBehaviour == "end") {
-//        return tigl::CCPACSWingRibsPositioning::CROSSING_END;
-//    }
-//    throw tigl::CTiglError("Unknown CrossingBehaviour " + crossingBehaviour + " found in CCPACSWingRibsPositioning!");
-//}
-
 
 namespace tigl
 {
 
 CCPACSWingRibsPositioning::CCPACSWingRibsPositioning(CCPACSWingRibsDefinition* parent)
-: generated::CPACSWingRibsPositioning(parent)
-{
-}
-
-void CCPACSWingRibsPositioning::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
-{
-    generated::CPACSWingRibsPositioning::ReadCPACS(tixiHandle, xpath);
-
-    // read element sparPositionStartUID
-    if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/sparPositionStartUID")) {
-        m_sparPositionStartUID_choice3 = tixihelper::TixiGetTextElement(tixiHandle, xpath + "/sparPositionStartUID");
-    }
-
-    // read element sparPositionEndUID
-    if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/sparPositionEndUID")) {
-        m_sparPositionEndUID_choice3 = tixihelper::TixiGetTextElement(tixiHandle, xpath + "/sparPositionEndUID");
-    }
-}
-
-void CCPACSWingRibsPositioning::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
-{
-    generated::CPACSWingRibsPositioning::WriteCPACS(tixiHandle, xpath);
-
-    // write element sparPositionStartUID
-    if (m_sparPositionStartUID_choice3) {
-        tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/sparPositionStartUID");
-        tixihelper::TixiSaveElement(tixiHandle, xpath + "/sparPositionStartUID", *m_sparPositionStartUID_choice3);
-    }
-
-    // write element sparPositionEndUID
-    if (m_sparPositionEndUID_choice3) {
-        tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/sparPositionEndUID");
-        tixihelper::TixiSaveElement(tixiHandle, xpath + "/sparPositionEndUID", *m_sparPositionEndUID_choice3);
-    }
-}
+    : generated::CPACSWingRibsPositioning(parent) {}
 
 CCPACSWingRibsPositioning::StartDefinitionType CCPACSWingRibsPositioning::GetStartDefinitionType() const
 {
@@ -105,13 +50,13 @@ double CCPACSWingRibsPositioning::GetEtaStart() const
 
 void CCPACSWingRibsPositioning::SetEtaStart(double value)
 {
-    m_etaStart_choice1 = value;
+    generated::CPACSWingRibsPositioning::SetEtaStart_choice1(value);
 
     m_elementStartUID_choice2 = boost::none;
     m_sparPositionStartUID_choice3 = boost::none;
 
     // invalidate whole component segment structure, since cells could reference the ribs
-    GetParent()->GetStructure().Invalidate();
+    GetParent()->GetParent()->Invalidate();
 }
 
 const std::string& CCPACSWingRibsPositioning::GetElementStartUID() const
@@ -124,12 +69,12 @@ const std::string& CCPACSWingRibsPositioning::GetElementStartUID() const
 
 void CCPACSWingRibsPositioning::SetElementStartUID(const std::string& uid)
 {
-    m_elementStartUID_choice2 = uid;
+    generated::CPACSWingRibsPositioning::SetElementStartUID_choice2(uid);
 
     m_etaStart_choice1 = boost::none;
     m_sparPositionStartUID_choice3 = boost::none;
 
-    GetParent()->GetStructure().Invalidate();
+    GetParent()->GetParent()->Invalidate();
 }
 
 const std::string& CCPACSWingRibsPositioning::GetSparPositionStartUID() const
@@ -142,12 +87,12 @@ const std::string& CCPACSWingRibsPositioning::GetSparPositionStartUID() const
 
 void CCPACSWingRibsPositioning::SetSparPositionStartUID(const std::string& uid)
 {
-    m_sparPositionStartUID_choice3 = uid;
+    generated::CPACSWingRibsPositioning::SetSparPositionStartUID_choice3(uid);
 
     m_etaStart_choice1 = boost::none;
     m_elementStartUID_choice2 = boost::none;
 
-    GetParent()->GetStructure().Invalidate();
+    GetParent()->GetParent()->Invalidate();
 }
 
 CCPACSWingRibsPositioning::EndDefinitionType CCPACSWingRibsPositioning::GetEndDefinitionType() const
@@ -171,12 +116,12 @@ double CCPACSWingRibsPositioning::GetEtaEnd() const
 
 void CCPACSWingRibsPositioning::SetEtaEnd(double value)
 {
-    m_etaEnd_choice1 = value;
+    generated::CPACSWingRibsPositioning::SetEtaEnd_choice1(value);
 
     m_elementEndUID_choice2 = boost::none;
     m_sparPositionEndUID_choice3 = boost::none;
 
-    GetParent()->GetStructure().Invalidate();
+    GetParent()->GetParent()->Invalidate();
 }
 
 const std::string& CCPACSWingRibsPositioning::GetElementEndUID() const
@@ -189,12 +134,12 @@ const std::string& CCPACSWingRibsPositioning::GetElementEndUID() const
 
 void CCPACSWingRibsPositioning::SetElementEndUID(const std::string& uid)
 {
-    m_elementEndUID_choice2 = uid;
+    generated::CPACSWingRibsPositioning::SetElementEndUID_choice2(uid);
 
     m_etaEnd_choice1 = boost::none;
     m_sparPositionEndUID_choice3 = boost::none;
 
-    GetParent()->GetStructure().Invalidate();
+    GetParent()->GetParent()->Invalidate();
 }
 
 const std::string& CCPACSWingRibsPositioning::GetSparPositionEndUID() const
@@ -207,12 +152,12 @@ const std::string& CCPACSWingRibsPositioning::GetSparPositionEndUID() const
 
 void CCPACSWingRibsPositioning::SetSparPositionEndUID(const std::string& uid)
 {
-    m_sparPositionEndUID_choice3 = uid;
+    generated::CPACSWingRibsPositioning::SetSparPositionEndUID_choice3(uid);
 
     m_etaEnd_choice1 = boost::none;
     m_elementEndUID_choice2 = boost::none;
 
-    GetParent()->GetStructure().Invalidate();
+    GetParent()->GetParent()->Invalidate();
 }
 
 CCPACSWingRibsPositioning::RibCountDefinitionType CCPACSWingRibsPositioning::GetRibCountDefinitionType() const
@@ -238,7 +183,7 @@ void CCPACSWingRibsPositioning::SetNumberOfRibs(int numRibs)
 
     m_spacing_choice1 = boost::none;
 
-    GetParent()->GetStructure().Invalidate();
+    GetParent()->GetParent()->Invalidate();
 }
 
 double CCPACSWingRibsPositioning::GetSpacing() const
@@ -255,7 +200,7 @@ void CCPACSWingRibsPositioning::SetSpacing(double value)
 
     m_numberOfRibs_choice2 = boost::none;
 
-    GetParent()->GetStructure().Invalidate();
+    GetParent()->GetParent()->Invalidate();
 }
 
 } // end namespace tigl

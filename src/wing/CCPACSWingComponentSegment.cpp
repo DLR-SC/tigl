@@ -504,35 +504,35 @@ TopoDS_Wire CCPACSWingComponentSegment::GetMidplaneLine(const gp_Pnt& startPoint
     // next iterate until endSegmentUID
     for (; it != segments.end(); ++it) {
         const CCPACSWingSegment& segment = *(*it);
-            // add intersection with end section only in case end point is skipped
-            if (segment.GetUID() != endSegmentUID) {
-                // compute outer chord line
+        // add intersection with end section only in case end point is skipped
+        if (segment.GetUID() != endSegmentUID) {
+            // compute outer chord line
             gp_Pnt pl = segment.GetPoint(1, 0, true, WING_COORDINATE_SYSTEM);
             gp_Pnt pt = segment.GetPoint(1, 1, true, WING_COORDINATE_SYSTEM);
 
-                TopoDS_Edge outerChordLine = BRepBuilderAPI_MakeEdge(pl, pt);
-                // cut outer chord line with reference face
-                gp_Pnt nextPnt;
-                if (GetIntersectionPoint(cutFace, outerChordLine, nextPnt)) {
-                    // only build new edge if start and end point are not equal (can occur
-                    // when the startPoint lies within a section, because then findSegment
-                    // returns the inner segment first
-                    if (!prevPnt.IsEqual(nextPnt, Precision::Confusion())) {
-                        TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(prevPnt, nextPnt);
-                        wireBuilder.Add(edge);
-                        prevPnt = nextPnt;
-                    }
-                }
-                else {
-                    throw CTiglError("Unable to build midline for component segment: intersection with section chord line failed!");
+            TopoDS_Edge outerChordLine = BRepBuilderAPI_MakeEdge(pl, pt);
+            // cut outer chord line with reference face
+            gp_Pnt nextPnt;
+            if (GetIntersectionPoint(cutFace, outerChordLine, nextPnt)) {
+                // only build new edge if start and end point are not equal (can occur
+                // when the startPoint lies within a section, because then findSegment
+                // returns the inner segment first
+                if (!prevPnt.IsEqual(nextPnt, Precision::Confusion())) {
+                    TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(prevPnt, nextPnt);
+                    wireBuilder.Add(edge);
+                    prevPnt = nextPnt;
                 }
             }
             else {
-                TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(prevPnt, endPnt);
-                wireBuilder.Add(edge);
-                break;
+                throw CTiglError("Unable to build midline for component segment: intersection with section chord line failed!");
             }
         }
+        else {
+            TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(prevPnt, endPnt);
+            wireBuilder.Add(edge);
+            break;
+        }
+    }
     return wireBuilder.Wire();
 }
 
@@ -754,17 +754,17 @@ void CCPACSWingComponentSegment::InterpolateOnLine(double csEta1, double csXsi1,
                 extendedInnerChord.translate(curEta, curXsi, &nearestPointTmp);
                 nearestPoint = nearestPointTmp.Get_gp_Pnt();
                 xsi = curXsi;
-    }
+            }
             else {
                 throw CTiglError("The requested point lies outside the wing chord surface.", TIGL_MATH_ERROR);
+            }
         }
-        }
-        }
+    }
     else {
         double etaRes, xsiRes;
         segment->GetEtaXsi(nearestPoint, etaRes, xsiRes);
         xsi = xsiRes;
-        }
+    }
 
     // compute the error distance
     // This is the distance from the line to the nearest point on the chord face
@@ -1511,17 +1511,13 @@ MaterialList CCPACSWingComponentSegment::GetMaterials(double eta, double xsi, Ti
         int ncells = shell->GetCellCount();
         for (int i = 1; i <= ncells; ++i){
             CCPACSWingCell& cell = shell->GetCell(i);
-            if (!cell.GetMaterial().IsValid()) {
-                continue;
-            }
-                
             if (cell.IsInside(eta,xsi)) {
                 list.push_back(&(cell.GetMaterial()));
             }
         }
             
         // add complete skin, only if no cells are defined
-        if (list.empty() && shell->GetMaterial().IsValid()){
+        if (list.empty()){
             list.push_back(&(shell->GetMaterial()));
         }
         

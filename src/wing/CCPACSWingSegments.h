@@ -43,8 +43,10 @@ public:
     TIGL_EXPORT void Invalidate();
 
     // Gets a segment by index or UID.
-    TIGL_EXPORT CCPACSWingSegment & GetSegment(int index);
-    TIGL_EXPORT CCPACSWingSegment & GetSegment(const std::string& segmentUID);
+    TIGL_EXPORT CCPACSWingSegment& GetSegment(const int index);
+    TIGL_EXPORT const CCPACSWingSegment& GetSegment(const int index) const;
+    TIGL_EXPORT CCPACSWingSegment& GetSegment(const std::string& segmentUID);
+    TIGL_EXPORT const CCPACSWingSegment& GetSegment(const std::string& segmentUID) const;
 
     // Gets total segment count
     TIGL_EXPORT int GetSegmentCount() const;

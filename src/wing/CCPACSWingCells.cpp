@@ -40,7 +40,7 @@ int CCPACSWingCells::GetCellCount() const
 
 CCPACSWingCell& CCPACSWingCells::GetCell(int index) const
 {
-    index--;;
+    index--;
     if (index < 0 || index >= GetCellCount()) {
         throw CTiglError("Illegal index in CCPACSWingCells::GetCell", TIGL_INDEX_ERROR);
     }
@@ -65,6 +65,4 @@ CCPACSWingCell &CCPACSWingCells::GetCell(const std::string &UID) const
     // UID not there
     throw CTiglError("Error: Invalid UID in CCPACSWingCells::GetCell", TIGL_UID_ERROR);
 }
-
-
 } // namespace tigl

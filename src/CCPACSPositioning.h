@@ -1,8 +1,8 @@
-/* 
+/*
 * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
-* Changed: $Id$ 
+* Changed: $Id$
 *
 * Version: $Revision$
 *
@@ -18,94 +18,53 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-/**
-* @file
-* @brief  Implementation of CPACS wing positioning handling routines.
-*/
 
-#ifndef CCPACSPositioning_H
-#define CCPACSPositioning_H
+#pragma once
 
 #include <vector>
 #include "generated/CPACSPositioning.h"
 #include "CTiglTransformation.h"
 #include "CTiglPoint.h"
 
-namespace tigl
-{
+namespace tigl {
+    class CCPACSPositioning : public generated::CPACSPositioning {
+    public:
+        // Constructor
+        TIGL_EXPORT CCPACSPositioning(CTiglUIDManager* uidMgr);
 
-class CCPACSPositioning : public generated::CPACSPositioning
-{
+        // Invalidates internal state
+        TIGL_EXPORT void Invalidate();
 
-public:
-    // Constructor
-    TIGL_EXPORT CCPACSPositioning(CTiglUIDManager* uidMgr);
+        // Read CPACS segment elements
+        TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& positioningXPath);
 
-    // Virtual Destructor
-    TIGL_EXPORT virtual ~CCPACSPositioning();
+        TIGL_EXPORT void SetFromPoint(const CTiglPoint& aPoint);
+        TIGL_EXPORT const CTiglPoint& GetFromPoint();
 
-    // Invalidates internal state
-    TIGL_EXPORT void Invalidate();
+        TIGL_EXPORT void SetToPoint(const CTiglPoint& aPoint);
+        TIGL_EXPORT const CTiglPoint& GetToPoint();
 
-    // Read CPACS segment elements
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& positioningXPath);
+        TIGL_EXPORT CTiglTransformation GetToTransformation();
 
-    // Sets the positioning of the inner point
-    TIGL_EXPORT void SetInnerPoint(const CTiglPoint& aPoint);
+        // Adds child to childs. To be successful the following condition must be met:
+        // child.startSectionIndex == this.endSectionIndex
+        // no ownership is taken of child
+        TIGL_EXPORT void AddDependentPositioning(CCPACSPositioning* child);
+        TIGL_EXPORT void DisconnectDependentPositionings();
+        TIGL_EXPORT const std::vector<CCPACSPositioning*> GetDependentPositionings() const;
 
-    // Gets the positioning of the outer point
-    TIGL_EXPORT CTiglPoint GetOuterPoint();
+    protected:
+        // Build transformation matrix for the positioning
+        void BuildMatrix();
 
-    // Gets the outer transformation of this positioning
-    TIGL_EXPORT CTiglTransformation GetOuterTransformation();
+        // Update internal positioning data
+        void Update();
 
-    // Gets the section-uid of the outer section of this positioning
-    DEPRECATED TIGL_EXPORT std::string GetOuterSectionIndex();
-
-    // Gets the section-uid of the inner section of this positioning
-    DEPRECATED TIGL_EXPORT std::string GetInnerSectionIndex();
-
-    // Sets the positioning of the start point
-    TIGL_EXPORT void SetStartPoint(const CTiglPoint& aPoint);
-
-    // Gets the positioning of the end point
-    TIGL_EXPORT CTiglPoint GetEndPoint();
-
-    // Gets the end transformation of this positioning
-    TIGL_EXPORT CTiglTransformation GetEndTransformation();
-
-    // Gets the section index of the end section of this positioning
-    DEPRECATED TIGL_EXPORT std::string GetEndSectionIndex();
-
-    // Gets the section index of the start section of this positioning
-    DEPRECATED TIGL_EXPORT std::string GetStartSectionIndex();
-
-    // Adds child to childs. To be successful the following condition must be met:
-    // child.startSectionIndex == this.endSectionIndex
-    TIGL_EXPORT void ConnectChildPositioning(CCPACSPositioning* child);
-    TIGL_EXPORT void DisconnectChilds();
-
-    TIGL_EXPORT const std::vector<CCPACSPositioning*> GetChilds() const;
-
-    // Cleanup routine
-    TIGL_EXPORT void Cleanup();
-
-protected:
-    // Build transformation matrix for the positioning
-    void BuildMatrix();
-
-    // Update internal positioning data
-    void Update();
-
-private:
-    CTiglPoint           innerPoint;           /**< Positioning inner point                 */
-    CTiglPoint           outerPoint;           /**< Positioning outer point                 */
-    CTiglTransformation  outerTransformation;  /**< Transformation for the outer section    */
-    bool                 invalidated;          /**< Internal state flag                     */
-
-    std::vector<CCPACSPositioning*> childPositionings;
-};
-
-} // end namespace tigl
-
-#endif // CCPACSPositioning_H
+    private:
+        CTiglPoint           _fromPoint;        //< Positioning inner/start point
+        CTiglPoint           _toPoint;          //< Positioning outer/end point
+        CTiglTransformation  _toTransformation; //< Transformation for the outer/end section
+        bool                 invalidated;       //< Internal state flag
+        std::vector<CCPACSPositioning*> _dependentPositionings;
+    };
+}

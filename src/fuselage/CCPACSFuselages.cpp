@@ -41,7 +41,6 @@ CCPACSFuselages::CCPACSFuselages(CCPACSRotorcraftModel* parent, CTiglUIDManager*
 // Invalidates internal state
 void CCPACSFuselages::Invalidate()
 {
-    GetProfiles().Invalidate();
     for (int i = 1; i <= GetFuselageCount(); i++) {
         GetFuselage(i).Invalidate();
     }
@@ -57,44 +56,6 @@ void CCPACSFuselages::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string
 void CCPACSFuselages::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& xpath) const
 {
     generated::CPACSFuselages::WriteCPACS(tixiHandle, xpath);
-}
-
-bool CCPACSFuselages::HasProfile(std::string uid) const
-{
-    return GetProfiles().HasProfile(uid);
-}
-
-// Returns the total count of fuselage profiles in this configuration
-int CCPACSFuselages::GetProfileCount() const
-{
-    return GetProfiles().GetProfileCount();
-}
-
-CCPACSFuselageProfiles& CCPACSFuselages::GetProfiles() 
-{
-    if (IsParent<CCPACSAircraftModel>())
-        return static_cast<CCPACSAircraftModel*>(m_parent)->GetConfiguration().GetFuselageProfiles();
-    else
-        return static_cast<CCPACSRotorcraftModel*>(m_parent)->GetConfiguration().GetFuselageProfiles();
-}
-
-const CCPACSFuselageProfiles& CCPACSFuselages::GetProfiles() const {
-    if (IsParent<CCPACSAircraftModel>())
-        return static_cast<CCPACSAircraftModel*>(m_parent)->GetConfiguration().GetFuselageProfiles();
-    else
-        return static_cast<CCPACSRotorcraftModel*>(m_parent)->GetConfiguration().GetFuselageProfiles();
-}
-
-// Returns the fuselage profile for a given index.
-CCPACSFuselageProfile& CCPACSFuselages::GetProfile(int index) const
-{
-    return GetProfiles().GetProfile(index);
-}
-
-// Returns the fuselage profile for a given uid.
-CCPACSFuselageProfile& CCPACSFuselages::GetProfile(std::string uid) const
-{
-    return GetProfiles().GetProfile(uid);
 }
 
 // Returns the total count of fuselages in a configuration
@@ -133,19 +94,17 @@ int CCPACSFuselages::GetFuselageIndex(const std::string& UID) const
     throw CTiglError("Error: Invalid UID in CCPACSFuselages::GetFuselageIndex", TIGL_UID_ERROR);
 }
 
-
-void CCPACSFuselages::AddFuselage(CCPACSFuselage* fuselage)
-{
-    // Check whether the same fuselage already exists if yes remove it before adding the new one
-    for (std::vector<unique_ptr<CCPACSFuselage> >::iterator it = m_fuselages.begin(); it != m_fuselages.end(); ++it) {
-        if ((*it)->GetUID() == fuselage->GetUID()) {
-            m_fuselages.erase(it);
-            break;
-        }
-    }
-
-    // Add the new fuselage to the fuselage list
+void CCPACSFuselages::Add(CCPACSFuselage* fuselage) {
     m_fuselages.push_back(unique_ptr<CCPACSFuselage>(fuselage));
+}
+
+void CCPACSFuselages::Remove(CCPACSFuselage* fuselage) {
+    for(std::size_t i = 0; i < m_fuselages.size(); i++)
+        if (m_fuselages[i].get() == fuselage) {
+            m_fuselages.erase(m_fuselages.begin() + i);
+            return;
+        }
+    throw std::runtime_error("Fuselage not found");
 }
 
 } // end namespace tigl

@@ -110,10 +110,10 @@ public:
     TIGL_EXPORT int GetOuterSectionElementIndex() const;
 
     // Returns the starting(inner) Segment Connection
-    TIGL_EXPORT CCPACSWingConnection& GetInnerConnection();
+    TIGL_EXPORT CTiglWingConnection& GetInnerConnection();
 
     // Return the end(outer) Segment Connection
-    TIGL_EXPORT CCPACSWingConnection& GetOuterConnection();
+    TIGL_EXPORT CTiglWingConnection& GetOuterConnection();
 
     // Gets the count of segments connected to the inner section of this segment
     TIGL_EXPORT int GetInnerConnectedSegmentCount() const;
@@ -252,8 +252,8 @@ private:
     // converts segment eta xsi coordinates to face uv koordinates
     void etaXsiToUV(bool isFromUpper, double eta, double xsi, double& u, double& v) const;
 
-    CCPACSWingConnection innerConnection;      /**< Inner segment connection (root)         */
-    CCPACSWingConnection outerConnection;      /**< Outer segment connection (tip)          */
+    CTiglWingConnection innerConnection;      /**< Inner segment connection (root)         */
+    CTiglWingConnection outerConnection;      /**< Outer segment connection (tip)          */
     mutable TopTools_SequenceOfShape guideCurveWires;  /**< container for the guide curve wires     */
     CCPACSWing*          wing;                 /**< Parent wing                             */
     double               myVolume;             /**< Volume of this segment                  */

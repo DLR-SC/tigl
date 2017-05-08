@@ -79,12 +79,12 @@ inline gp_Pnt operator/(const gp_Pnt& a, double b)
 namespace tigl
 {
 
-const double CCPACSWingProfilePointList::c_trailingEdgeRelGap = 1E-2;
-const double CCPACSWingProfilePointList::c_blendingDistance = 0.1;
+const double CTiglWingProfilePointList::c_trailingEdgeRelGap = 1E-2;
+const double CTiglWingProfilePointList::c_blendingDistance = 0.1;
 
 // Constructor
-CCPACSWingProfilePointList::CCPACSWingProfilePointList(const CCPACSWingProfile& profile, const CCPACSPointListXYZ& cpacsPointList, const std::string& xpath)
-    : profileRef(profile), profileWireAlgo(new CTiglInterpolateBsplineWire), ProfileDataXPath(xpath) {
+CTiglWingProfilePointList::CTiglWingProfilePointList(const CCPACSWingProfile& profile, const CCPACSPointListXYZ& cpacsPointList)
+    : profileRef(profile), profileWireAlgo(new CTiglInterpolateBsplineWire) {
 
     // points with maximal/minimal y-component
     coordinates = cpacsPointList.AsVector();
@@ -102,7 +102,7 @@ CCPACSWingProfilePointList::CCPACSWingProfilePointList(const CCPACSWingProfile& 
 
     // check if points with maximal/minimal z-component were calculated correctly
     if (maxZIndex == minZIndex) {
-        throw CTiglError("Error: CCPACSWingProfilePointList::ReadCPACS: Unable to separate upper and lower wing profile from point list", TIGL_XML_ERROR);
+        throw CTiglError("Error: CTiglWingProfilePointList::ReadCPACS: Unable to separate upper and lower wing profile from point list", TIGL_XML_ERROR);
     }
     // force order of points to run through the lower profile first and then through the upper profile
     if (minZIndex > maxZIndex) {
@@ -111,25 +111,25 @@ CCPACSWingProfilePointList::CCPACSWingProfilePointList(const CCPACSWingProfile& 
     }
 }
 
-std::string CCPACSWingProfilePointList::CPACSID()
+std::string CTiglWingProfilePointList::CPACSID()
 {
     return "pointList";
 }
 
 // Cleanup routine
-void CCPACSWingProfilePointList::Cleanup()
+void CTiglWingProfilePointList::Cleanup()
 {
     coordinates.clear();
 }
 
-void CCPACSWingProfilePointList::Update()
+void CTiglWingProfilePointList::Update()
 {
     BuildWires();
 }
 
 // Builds the wing profile wire. The returned wire is already transformed by the
 // wing profile element transformation.
-void CCPACSWingProfilePointList::BuildWires()
+void CTiglWingProfilePointList::BuildWires()
 {
     ITiglWireAlgorithm::CPointContainer points;
     ITiglWireAlgorithm::CPointContainer openPoints, closedPoints;
@@ -173,7 +173,7 @@ void CCPACSWingProfilePointList::BuildWires()
     TopoDS_Wire tempWireOpened = wireBuilder.BuildWire(openPoints, false);
     TopoDS_Wire tempWireClosed = wireBuilder.BuildWire(closedPoints, true);
     if (tempWireOpened.IsNull() || tempWireClosed.IsNull()) {
-        throw CTiglError("Error: TopoDS_Wire is null in CCPACSWingProfilePointList::BuildWire", TIGL_ERROR);
+        throw CTiglError("Error: TopoDS_Wire is null in CTiglWingProfilePointList::BuildWire", TIGL_ERROR);
     }
 
     //@todo: do we really want to remove all y information? this has to be a bug
@@ -248,7 +248,7 @@ void CCPACSWingProfilePointList::BuildWires()
 // which is located farmost from the trailing edge point.
 // Finally, we correct the trailing edge to make sure, that the GetPoint
 // functions work correctly.
-void CCPACSWingProfilePointList::BuildLETEPoints()
+void CTiglWingProfilePointList::BuildLETEPoints()
 {
     // compute TE point
     gp_Pnt firstPnt = coordinates[0].Get_gp_Pnt();
@@ -281,18 +281,12 @@ void CCPACSWingProfilePointList::BuildLETEPoints()
     tePoint = lePoint.XYZ() + alphamin*(vchord.XYZ());
 }
 
-const std::vector<CTiglPoint>& CCPACSWingProfilePointList::GetSamplePoints() const {
+const std::vector<CTiglPoint>& CTiglWingProfilePointList::GetSamplePoints() const {
     return coordinates;
 }
 
-// get profiles CPACS XML path
-const std::string& CCPACSWingProfilePointList::GetProfileDataXPath() const
-{
-    return ProfileDataXPath;
-}
-
 // get upper wing profile wire
-const TopoDS_Edge& CCPACSWingProfilePointList::GetUpperWire() const
+const TopoDS_Edge& CTiglWingProfilePointList::GetUpperWire() const
 {
     if (profileIsClosed) {
         return upperWireClosed;
@@ -303,7 +297,7 @@ const TopoDS_Edge& CCPACSWingProfilePointList::GetUpperWire() const
 }
 
 // get lower wing profile wire
-const TopoDS_Edge& CCPACSWingProfilePointList::GetLowerWire() const
+const TopoDS_Edge& CTiglWingProfilePointList::GetLowerWire() const
 {
     if (profileIsClosed) {
         return lowerWireClosed;
@@ -314,7 +308,7 @@ const TopoDS_Edge& CCPACSWingProfilePointList::GetLowerWire() const
 }
 
 // get the upper and lower wing profile combined into one edge
-const TopoDS_Edge & CCPACSWingProfilePointList::GetUpperLowerWire() const 
+const TopoDS_Edge & CTiglWingProfilePointList::GetUpperLowerWire() const 
 {
     if (profileIsClosed) {
         return upperLowerEdgeClosed;
@@ -325,7 +319,7 @@ const TopoDS_Edge & CCPACSWingProfilePointList::GetUpperLowerWire() const
 }
 
 // get trailing edge
-const TopoDS_Edge& CCPACSWingProfilePointList::GetTrailingEdge() const
+const TopoDS_Edge& CTiglWingProfilePointList::GetTrailingEdge() const
 {
     if (profileIsClosed) {
         return trailingEdgeClosed;
@@ -336,49 +330,49 @@ const TopoDS_Edge& CCPACSWingProfilePointList::GetTrailingEdge() const
 }
 
 // get trailing edge
-const TopoDS_Edge& CCPACSWingProfilePointList::GetTrailingEdgeOpened() const
+const TopoDS_Edge& CTiglWingProfilePointList::GetTrailingEdgeOpened() const
 {
     return trailingEdgeOpened;
 }
 
 // Getter for upper wire of closed profile
-const TopoDS_Edge& CCPACSWingProfilePointList::GetUpperWireClosed() const
+const TopoDS_Edge& CTiglWingProfilePointList::GetUpperWireClosed() const
 {
     return upperWireClosed;
 }
 
 // Getter for lower wire of closed profile
-const TopoDS_Edge& CCPACSWingProfilePointList::GetLowerWireClosed() const
+const TopoDS_Edge& CTiglWingProfilePointList::GetLowerWireClosed() const
 {
     return lowerWireClosed;
 }
 
 // Getter for upper wire of closed profile
-const TopoDS_Edge& CCPACSWingProfilePointList::GetUpperWireOpened() const
+const TopoDS_Edge& CTiglWingProfilePointList::GetUpperWireOpened() const
 {
     return upperWireOpened;
 }
 
 // Getter for lower wire of closed profile
-const TopoDS_Edge& CCPACSWingProfilePointList::GetLowerWireOpened() const
+const TopoDS_Edge& CTiglWingProfilePointList::GetLowerWireOpened() const
 {
     return lowerWireOpened;
 }
 
 // get leading edge point();
-const gp_Pnt& CCPACSWingProfilePointList::GetLEPoint() const
+const gp_Pnt& CTiglWingProfilePointList::GetLEPoint() const
 {
     return lePoint;
 }
 
 // get trailing edge point();
-const gp_Pnt& CCPACSWingProfilePointList::GetTEPoint() const
+const gp_Pnt& CTiglWingProfilePointList::GetTEPoint() const
 {
     return tePoint;
 }
 
 // Helper method for closing profile points at trailing edge
-void CCPACSWingProfilePointList::closeProfilePoints(ITiglWireAlgorithm::CPointContainer& points)
+void CTiglWingProfilePointList::closeProfilePoints(ITiglWireAlgorithm::CPointContainer& points)
 {
     gp_Pnt startPnt = points.front();
     gp_Pnt endPnt = points.back();
@@ -412,7 +406,7 @@ void CCPACSWingProfilePointList::closeProfilePoints(ITiglWireAlgorithm::CPointCo
 }
 
 // Helper method for opening profile points at trailing edge
-void CCPACSWingProfilePointList::openProfilePoints(ITiglWireAlgorithm::CPointContainer& points)
+void CTiglWingProfilePointList::openProfilePoints(ITiglWireAlgorithm::CPointContainer& points)
 {
     // Pass 1: determine deltay
     double minZ = 0;
@@ -448,7 +442,7 @@ void CCPACSWingProfilePointList::openProfilePoints(ITiglWireAlgorithm::CPointCon
     }
 }
 
-void CCPACSWingProfilePointList::trimUpperLowerCurve(Handle(Geom_TrimmedCurve) lowerCurve, Handle(Geom_TrimmedCurve) upperCurve, Handle_Geom_Curve curve)
+void CTiglWingProfilePointList::trimUpperLowerCurve(Handle(Geom_TrimmedCurve) lowerCurve, Handle(Geom_TrimmedCurve) upperCurve, Handle_Geom_Curve curve)
 {
     gp_Pnt firstPnt = lowerCurve->StartPoint();
     gp_Pnt lastPnt = upperCurve->EndPoint();
@@ -491,7 +485,7 @@ void CCPACSWingProfilePointList::trimUpperLowerCurve(Handle(Geom_TrimmedCurve) l
     }
 }
 
-bool CCPACSWingProfilePointList::HasBluntTE() const
+bool CTiglWingProfilePointList::HasBluntTE() const
 {
     gp_Pnt firstPnt = coordinates[0].Get_gp_Pnt();
     gp_Pnt lastPnt  = coordinates[coordinates.size() - 1].Get_gp_Pnt();

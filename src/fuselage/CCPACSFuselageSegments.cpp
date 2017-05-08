@@ -25,12 +25,13 @@
 
 #include "CCPACSFuselageSegments.h"
 
-#include "CCPACSFuselageSegment.h"
-#include "CTiglError.h"
-
 #include <iostream>
 #include <sstream>
+#include <algorithm>
 
+#include "CCPACSFuselageSegment.h"
+#include "CCPACSFuselage.h"
+#include "CTiglError.h"
 
 namespace tigl
 {

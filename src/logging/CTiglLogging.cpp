@@ -63,6 +63,7 @@ CTiglLogging::CTiglLogging()
 CTiglLogging::~CTiglLogging()
 {
 #ifdef GLOG_FOUND
+    // TODO (bgruber): this is problematic, as the application linking to TIGL may also use glog after TIGL has been shutdown
     google::ShutdownGoogleLogging();
 #endif
 }

@@ -54,19 +54,6 @@ CCPACSWingProfileCST::~CCPACSWingProfileCST()
 {
 }
 
-std::string CCPACSWingProfileCST::CPACSID()
-{
-    return "cst2D";
-}
-
-void CCPACSWingProfileCST::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& profileXPath) {
-    generated::CPACSCst2D::ReadCPACS(tixiHandle, profileXPath);
-}
-
-void CCPACSWingProfileCST::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& profileXPath) const {
-    generated::CPACSCst2D::WriteCPACS(tixiHandle, profileXPath);
-}
-
 // Cleanup routine
 void CCPACSWingProfileCST::Cleanup()
 {

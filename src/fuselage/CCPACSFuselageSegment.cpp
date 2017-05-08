@@ -90,7 +90,7 @@
 
 namespace
 {
-    gp_Pnt transformProfilePoint(const tigl::CTiglTransformation& fuselTransform, const tigl::CCPACSFuselageConnection& connection, const gp_Pnt& pointOnProfile)
+    gp_Pnt transformProfilePoint(const tigl::CTiglTransformation& fuselTransform, const tigl::CTiglFuselageConnection& connection, const gp_Pnt& pointOnProfile)
     {
         // Do section element transformation on points
         tigl::CTiglTransformation trafo = connection.GetSectionElementTransformation();
@@ -108,7 +108,7 @@ namespace
         return transformedPoint;
     }
 
-    TopoDS_Wire transformProfileWire(const tigl::CTiglTransformation& fuselTransform, const tigl::CCPACSFuselageConnection& connection, const TopoDS_Wire& wire)
+    TopoDS_Wire transformProfileWire(const tigl::CTiglTransformation& fuselTransform, const tigl::CTiglFuselageConnection& connection, const TopoDS_Wire& wire)
     {
         // Do section element transformation on points
         tigl::CTiglTransformation trafo = connection.GetSectionElementTransformation();
@@ -171,8 +171,8 @@ void CCPACSFuselageSegment::ReadCPACS(TixiDocumentHandle tixiHandle, const std::
     Cleanup();
     generated::CPACSFuselageSegment::ReadCPACS(tixiHandle, segmentXPath);
 
-    startConnection = CCPACSFuselageConnection(m_fromElementUID, this);
-    endConnection = CCPACSFuselageConnection(m_toElementUID, this);
+    startConnection = CTiglFuselageConnection(m_fromElementUID, this);
+    endConnection = CTiglFuselageConnection(m_toElementUID, this);
 
     // TODO: continuity does not exist in CPACS spec
 
@@ -324,13 +324,13 @@ int CCPACSFuselageSegment::GetEndSectionElementIndex()
 }
 
 // Returns the start section element index of this segment
-CCPACSFuselageConnection& CCPACSFuselageSegment::GetStartConnection()
+CTiglFuselageConnection& CCPACSFuselageSegment::GetStartConnection()
 {
     return( startConnection );
 }
 
 // Returns the end section element index of this segment
-CCPACSFuselageConnection& CCPACSFuselageSegment::GetEndConnection()
+CTiglFuselageConnection& CCPACSFuselageSegment::GetEndConnection()
 {
     return( endConnection );
 }

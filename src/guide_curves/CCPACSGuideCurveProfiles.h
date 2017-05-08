@@ -24,12 +24,6 @@
 #define CCPACSGUIDECURVEPROFILES_H
 
 #include "generated/CPACSGuideCurveProfiles.h"
-#include "tigl_internal.h"
-#include "tixi.h"
-#include "CSharedPtr.h"
-#include "CCPACSGuideCurveProfile.h"
-#include <string>
-#include <map>
 
 namespace tigl
 {

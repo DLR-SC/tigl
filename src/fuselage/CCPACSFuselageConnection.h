@@ -37,14 +37,14 @@ namespace tigl
 class CCPACSFuselageSegment;
 class CCPACSFuselageProfile;
 
-// TODO: this class does not represent any class in CPACS, rename to e.g. CTiglFuselageConnection
+// TODO(bgruber): rename file
 // TODO: this class is very similar to CCPACSWingConnection, merge into one class
-class CCPACSFuselageConnection
+class CTiglFuselageConnection
 {
 public:
     // Constructor
-    TIGL_EXPORT CCPACSFuselageConnection();
-    TIGL_EXPORT CCPACSFuselageConnection(const std::string& elementUID, CCPACSFuselageSegment* aSegment);
+    TIGL_EXPORT CTiglFuselageConnection();
+    TIGL_EXPORT CTiglFuselageConnection(const std::string& elementUID, CCPACSFuselageSegment* aSegment);
 
     // Returns the section UID of this connection
     TIGL_EXPORT const std::string& GetSectionUID() const;

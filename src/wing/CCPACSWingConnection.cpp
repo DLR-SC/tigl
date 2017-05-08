@@ -2,9 +2,9 @@
 * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
-* Changed: $Id$ 
+* Changed: $Id: CCPACSWingConnection.cpp 2698 2017-04-26 14:40:01Z bgruber $ 
 *
-* Version: $Revision$
+* Version: $Revision: 2698 $
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -34,88 +34,65 @@
 
 namespace tigl
 {
+CTiglWingConnection::CTiglWingConnection() {}
 
-TIGL_EXPORT CCPACSWingConnection::CCPACSWingConnection() : elementUID(NULL), segment(NULL) {}
-
-// Constructor
-CCPACSWingConnection::CCPACSWingConnection(const std::string& euid, CCPACSWingSegment* aSegment)
-    : elementUID(&euid), segment(aSegment)
+    // Constructor
+CTiglWingConnection::CTiglWingConnection(const std::string& elementUID, CCPACSWingSegment* aSegment)
+    : elementUID(elementUID), segment(aSegment)
 {
-    // find the corresponding section to this segment
-    CCPACSWing& wing = segment->GetWing();
-    for (int i = 1; i <= wing.GetSectionCount(); i++) {
-        const CCPACSWingSection& section = wing.GetSection(i);
-        for (int j = 1; j <= section.GetSectionElementCount(); j++) {
-            if (section.GetSectionElement(j).GetUID() == *elementUID) {
-                sectionUID = section.GetUID();
-                sectionIndex = i;
-                elementIndex = j;
-            }
-        }
-    }
 }
 
-
 // Returns the section UID of this connection
-const std::string& CCPACSWingConnection::GetSectionUID() const
+const std::string& CTiglWingConnection::GetSectionUID() const
 {
-    return sectionUID;
+    resolve();
+    return *m_resolved.sectionUidPtr;
 }
 
 // Returns the section element UID of this connection
-const std::string& CCPACSWingConnection::GetSectionElementUID() const
+const std::string& CTiglWingConnection::GetSectionElementUID() const
 {
-    return *elementUID;
+    return elementUID;
 }
 
 // Returns the section index of this connection
-int CCPACSWingConnection::GetSectionIndex() const
+int CTiglWingConnection::GetSectionIndex() const
 {
-    return sectionIndex;
+    resolve();
+    return m_resolved.sectionIndex;
 }
 
+
 // Returns the section element index of this connection
-int CCPACSWingConnection::GetSectionElementIndex() const
+int CTiglWingConnection::GetSectionElementIndex() const
 {
-    return elementIndex;
+    resolve();
+    return m_resolved.elementIndex;
 }
 
 // Returns the wing profile referenced by this connection
-CCPACSWingProfile& CCPACSWingConnection::GetProfile() const
+CCPACSWingProfile& CTiglWingConnection::GetProfile() const
 {
-    CCPACSWing& wing = segment->GetWing();
-    std::string profileUID;
-
-    for (int i=1; i <= wing.GetSectionCount(); i++) {
-        const CCPACSWingSection& section = wing.GetSection(i);
-        for (int j=1; j <= section.GetSectionElementCount(); j++) {
-            if (section.GetSectionElement(j).GetUID() == *elementUID ) {
-                const CCPACSWingSectionElement& element = section.GetSectionElement(j);
-                profileUID = element.GetProfileIndex();
-            }
-        }
-    }
-    CCPACSConfiguration& config = wing.GetConfiguration();
-
-    return config.GetWingProfile(profileUID);
+    resolve();
+    return segment->GetWing().GetConfiguration().GetWingProfile(*m_resolved.profileUIDPtr);
 }
 
 // Returns the positioning transformation (segment transformation) for the referenced section
-CTiglTransformation CCPACSWingConnection::GetPositioningTransformation() const
+CTiglTransformation CTiglWingConnection::GetPositioningTransformation() const
 {
-    return (segment->GetWing().GetPositioningTransformation(sectionUID));
+    return segment->GetWing().GetPositioningTransformation(GetSectionUID());
 }
 
 // Returns the section matrix referenced by this connection
-CTiglTransformation CCPACSWingConnection::GetSectionTransformation() const
+CTiglTransformation CTiglWingConnection::GetSectionTransformation() const
 {
-    CCPACSWing& wing           = segment->GetWing();
-    CTiglTransformation    transformation;
+    CCPACSWing& wing = segment->GetWing();
+    CTiglTransformation transformation;
 
     for (int i = 1; i <= wing.GetSectionCount(); i++) {
         const CCPACSWingSection& section = wing.GetSection(i);
         for (int j = 1; j <= section.GetSectionElementCount(); j++) {
-            if (section.GetSectionElement(j).GetUID() == *elementUID) {
+            if (section.GetSectionElement(j).GetUID() == elementUID) {
                 transformation = section.GetSectionTransformation();
             }
         }
@@ -124,7 +101,7 @@ CTiglTransformation CCPACSWingConnection::GetSectionTransformation() const
 }
 
 // Returns the section element matrix referenced by this connection
-CTiglTransformation CCPACSWingConnection::GetSectionElementTransformation() const
+CTiglTransformation CTiglWingConnection::GetSectionElementTransformation() const
 {
     CCPACSWing& wing = segment->GetWing();
     CTiglTransformation transformation;
@@ -132,7 +109,7 @@ CTiglTransformation CCPACSWingConnection::GetSectionElementTransformation() cons
     for (int i = 1; i <= wing.GetSectionCount(); i++) {
         const CCPACSWingSection& section = wing.GetSection(i);
         for (int j = 1; j <= section.GetSectionElementCount(); j++) {
-            if (section.GetSectionElement(j).GetUID() == *elementUID) {
+            if (section.GetSectionElement(j).GetUID() == elementUID) {
                 const CCPACSWingSectionElement& element = section.GetSectionElement(j);
                 transformation = element.GetSectionElementTransformation();
             }
@@ -141,4 +118,22 @@ CTiglTransformation CCPACSWingConnection::GetSectionElementTransformation() cons
     return transformation;
 }
 
+
+void CTiglWingConnection::resolve() const {
+    CCPACSWing& wing = segment->GetWing();
+    for (int i = 1; i <= wing.GetSectionCount(); i++) {
+        const CCPACSWingSection& section = wing.GetSection(i);
+        for (int j = 1; j <= section.GetSectionElementCount(); j++) {
+            const CCPACSWingSectionElement& element = section.GetSectionElement(j);
+            if (element.GetUID() == elementUID) {
+                m_resolved.sectionUidPtr = &section.GetUID();
+                m_resolved.sectionIndex = i;
+                m_resolved.elementIndex = j;
+                m_resolved.profileUIDPtr = &element.GetProfileUID();
+                return;
+            }
+        }
+    }
+    throw CTiglError("Could not resolve element UID");
+}
 } // end namespace tigl

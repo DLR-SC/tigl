@@ -26,6 +26,7 @@
 #include "CCPACSWingSparSegment.h"
 #include "CCPACSWingSparSegments.h"
 #include "CCPACSWingRibsDefinitions.h"
+#include "CCPACSWingComponentSegment.h"
 //#include "CCPACSTrailingEdgeDevice.h"
 
 namespace tigl
