@@ -50,38 +50,19 @@ public:
     // Constructor
     TIGL_EXPORT CTiglUIDManager();
 
+    TIGL_EXPORT void RegisterObject(const std::string& uid, void* object, const std::type_info& typeInfo);
+
     template<typename T>
     TIGL_EXPORT void RegisterObject(const std::string& uid, T& object) {
-        if (uid.empty()) {
-            throw CTiglError("Tried to register an empty uid for type " + std::string(typeid(T).name()));
-        }
-
-        // check existence
-        const CPACSObjectMap::iterator it = cpacsObjects.find(uid);
-        if (it != std::end(cpacsObjects)) {
-            throw CTiglError("Tried to register uid " + uid + " for type " + std::string(typeid(T).name()) + " which is already registered to an instance of " + std::string(it->second.type->name()));
-        }
-
-        // insert
-        cpacsObjects.insert(it, std::make_pair(uid, TypedPtr{
-            &object,
-            &typeid(T)
-        }));
+        RegisterObject(uid, &object, typeid(object));
     }
 
     TIGL_EXPORT TypedPtr ResolveObject(const std::string& uid) const;
+    TIGL_EXPORT TypedPtr ResolveObject(const std::string& uid, const std::type_info& typeInfo) const;
 
     template<typename T>
     TIGL_EXPORT T& ResolveObject(const std::string& uid) const {
-        const TypedPtr object = ResolveObject(uid);
-
-        // check type
-        if (&typeid(T) != object.type) {
-            throw CTiglError("Object with uid \"" + uid + "\" is not a " + std::string(typeid(T).name()) + " but a " + std::string(object.type->name()));
-        }
-
-        // cast and return
-        return *static_cast<T* const>(object.ptr);
+        return *static_cast<T* const>(ResolveObject(uid, typeid(T)).ptr);
     }
 
     template<typename T>

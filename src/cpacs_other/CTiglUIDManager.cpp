@@ -35,6 +35,35 @@ namespace tigl
 CTiglUIDManager::CTiglUIDManager()
     : invalidated(true), rootComponent(NULL) {}
 
+void CTiglUIDManager::RegisterObject(const std::string& uid, void* object, const std::type_info& typeInfo) {
+    if (uid.empty()) {
+        throw CTiglError("Tried to register an empty uid for type " + std::string(typeInfo.name()));
+    }
+
+    // check existence
+    const CPACSObjectMap::iterator it = cpacsObjects.find(uid);
+    if (it != std::end(cpacsObjects)) {
+        throw CTiglError("Tried to register uid " + uid + " for type " + std::string(typeInfo.name()) + " which is already registered to an instance of " + std::string(it->second.type->name()));
+    }
+
+    // insert
+    cpacsObjects.insert(it, std::make_pair(uid, TypedPtr{
+        object,
+        &typeInfo
+    }));
+}
+
+CTiglUIDManager::TypedPtr CTiglUIDManager::ResolveObject(const std::string& uid, const std::type_info& typeInfo) const {
+    const TypedPtr object = ResolveObject(uid);
+
+    // check type
+    if (&typeInfo != object.type) {
+        throw CTiglError("Object with uid \"" + uid + "\" is not a " + std::string(typeInfo.name()) + " but a " + std::string(object.type->name()));
+    }
+
+    return object;
+}
+
 CTiglUIDManager::TypedPtr CTiglUIDManager::ResolveObject(const std::string& uid) const {
     // check existence
     const CPACSObjectMap::const_iterator it = cpacsObjects.find(uid);
