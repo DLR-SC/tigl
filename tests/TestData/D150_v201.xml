@@ -3998,23 +3998,23 @@
                                     </ribsDefinitions>
                                     <spars>
                                         <sparPositions>
-                                            <sparPosition uID = "FS_P1">
+                                            <sparPosition uID = "FS_P1_1">
                                                 <eta>0.0</eta>
                                                 <xsi>0.10142</xsi>
                                             </sparPosition>
-                                            <sparPosition uID = "FS_P2">
+                                            <sparPosition uID = "FS_P2_1">
                                                 <eta>0.11015</eta>
                                                 <xsi>0.10142</xsi>
                                             </sparPosition>
-                                            <sparPosition uID = "FS_P3">
+                                            <sparPosition uID = "FS_P3_1">
                                                 <eta>1.0</eta>
                                                 <xsi>0.33692</xsi>
                                             </sparPosition>
-                                            <sparPosition uID = "RS_P1">
+                                            <sparPosition uID = "RS_P1_1">
                                                 <eta>0.0</eta>
                                                 <xsi>0.56059</xsi>
                                             </sparPosition>
-                                            <sparPosition uID = "RS_P2">
+                                            <sparPosition uID = "RS_P2_1">
                                                 <eta>0.11015</eta>
                                                 <xsi>0.56059</xsi>
                                             </sparPosition>
@@ -4036,9 +4036,9 @@
                                                 <name>Front Spar</name>
                                                 <description>Front Spar</description>
                                                 <sparPositionUIDs>
-                                                    <sparPositionUID>FS_P1</sparPositionUID>
-                                                    <sparPositionUID>FS_P2</sparPositionUID>
-                                                    <sparPositionUID>FS_P3</sparPositionUID>
+                                                    <sparPositionUID>FS_P1_1</sparPositionUID>
+                                                    <sparPositionUID>FS_P2_1</sparPositionUID>
+                                                    <sparPositionUID>FS_P3_1</sparPositionUID>
                                                 </sparPositionUIDs>
                                                 <sparCrossSection>
                                                     <upperCap>
@@ -4069,8 +4069,8 @@
                                                 <name>Rear Spar</name>
                                                 <description>Rear Spar</description>
                                                 <sparPositionUIDs>
-                                                    <sparPositionUID>RS_P1</sparPositionUID>
-                                                    <sparPositionUID>RS_P2</sparPositionUID>
+                                                    <sparPositionUID>RS_P1_1</sparPositionUID>
+                                                    <sparPositionUID>RS_P2_1</sparPositionUID>
                                                     <sparPositionUID>RS_P3</sparPositionUID>
                                                     <sparPositionUID>RS_P4</sparPositionUID>
                                                     <sparPositionUID>RS_P5</sparPositionUID>
@@ -6800,19 +6800,19 @@
                                     </ribsDefinitions>
                                     <spars>
                                         <sparPositions>
-                                            <sparPosition uID = "FS_P1">
+                                            <sparPosition uID = "FS_P1_2">
                                                 <eta>0.0</eta>
                                                 <xsi>0.21</xsi>
                                             </sparPosition>
-                                            <sparPosition uID = "FS_P2">
+                                            <sparPosition uID = "FS_P2_2">
                                                 <eta>1</eta>
                                                 <xsi>0.23</xsi>
                                             </sparPosition>
-                                            <sparPosition uID = "RS_P1">
+                                            <sparPosition uID = "RS_P1_2">
                                                 <eta>0.0</eta>
                                                 <xsi>0.55</xsi>
                                             </sparPosition>
-                                            <sparPosition uID = "RS_P2">
+                                            <sparPosition uID = "RS_P2_2">
                                                 <eta>1</eta>
                                                 <xsi>0.52</xsi>
                                             </sparPosition>
@@ -6822,8 +6822,8 @@
                                                 <name>name</name>
                                                 <description>description</description>
                                                 <sparPositionUIDs>
-                                                    <sparPositionUID>FS_P1</sparPositionUID>
-                                                    <sparPositionUID>FS_P2</sparPositionUID>
+                                                    <sparPositionUID>FS_P1_2</sparPositionUID>
+                                                    <sparPositionUID>FS_P2_2</sparPositionUID>
                                                 </sparPositionUIDs>
                                                 <sparCrossSection>
                                                     <upperCap>
@@ -6854,8 +6854,8 @@
                                                 <name>name</name>
                                                 <description>description</description>
                                                 <sparPositionUIDs>
-                                                    <sparPositionUID>RS_P1</sparPositionUID>
-                                                    <sparPositionUID>RS_P2</sparPositionUID>
+                                                    <sparPositionUID>RS_P1_2</sparPositionUID>
+                                                    <sparPositionUID>RS_P2_2</sparPositionUID>
                                                 </sparPositionUIDs>
                                                 <sparCrossSection>
                                                     <upperCap>
@@ -7423,19 +7423,19 @@
                                     </ribsDefinitions>
                                     <spars>
                                         <sparPositions>
-                                            <sparPosition uID = "FS_P1">
+                                            <sparPosition uID = "FS_P1_3">
                                                 <eta>0.0</eta>
                                                 <xsi>0.21</xsi>
                                             </sparPosition>
-                                            <sparPosition uID = "FS_P2">
+                                            <sparPosition uID = "FS_P2_3">
                                                 <eta>1</eta>
                                                 <xsi>0.23</xsi>
                                             </sparPosition>
-                                            <sparPosition uID = "RS_P1">
+                                            <sparPosition uID = "RS_P1_3">
                                                 <eta>0.0</eta>
                                                 <xsi>0.55</xsi>
                                             </sparPosition>
-                                            <sparPosition uID = "RS_P2">
+                                            <sparPosition uID = "RS_P2_3">
                                                 <eta>1</eta>
                                                 <xsi>0.52</xsi>
                                             </sparPosition>
@@ -7445,8 +7445,8 @@
                                                 <name>name</name>
                                                 <description>description</description>
                                                 <sparPositionUIDs>
-                                                    <sparPositionUID>FS_P1</sparPositionUID>
-                                                    <sparPositionUID>FS_P2</sparPositionUID>
+                                                    <sparPositionUID>FS_P1_3</sparPositionUID>
+                                                    <sparPositionUID>FS_P2_3</sparPositionUID>
                                                 </sparPositionUIDs>
                                                 <sparCrossSection>
                                                     <upperCap>
@@ -7477,8 +7477,8 @@
                                                 <name>name</name>
                                                 <description>description</description>
                                                 <sparPositionUIDs>
-                                                    <sparPositionUID>RS_P1</sparPositionUID>
-                                                    <sparPositionUID>RS_P2</sparPositionUID>
+                                                    <sparPositionUID>RS_P1_3</sparPositionUID>
+                                                    <sparPositionUID>RS_P2_3</sparPositionUID>
                                                 </sparPositionUIDs>
                                                 <sparCrossSection>
                                                     <upperCap>
