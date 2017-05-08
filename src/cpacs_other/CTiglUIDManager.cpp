@@ -47,10 +47,10 @@ void CTiglUIDManager::RegisterObject(const std::string& uid, void* object, const
     }
 
     // insert
-    cpacsObjects.insert(it, std::make_pair(uid, TypedPtr{
+    cpacsObjects.insert(it, std::make_pair(uid, TypedPtr(
         object,
         &typeInfo
-    }));
+    )));
 }
 
 CTiglUIDManager::TypedPtr CTiglUIDManager::ResolveObject(const std::string& uid, const std::type_info& typeInfo) const {

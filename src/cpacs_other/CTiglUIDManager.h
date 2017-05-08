@@ -42,6 +42,9 @@ class CTiglUIDManager
 {
 public:
     struct TypedPtr {
+        TypedPtr(void* ptr, const std::type_info* type)
+            : ptr(ptr), type(type) {}
+
         void* ptr;
         const std::type_info* type;
     };
