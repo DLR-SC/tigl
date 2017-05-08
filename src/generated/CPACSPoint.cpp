@@ -93,11 +93,19 @@ namespace tigl
         
         void CPACSPoint::SetUID(const std::string& value)
         {
+            if (m_uidMgr) {
+                if (m_uID) m_uidMgr->UnregisterObject(*m_uID);
+                m_uidMgr->RegisterObject(value, *this);
+            }
             m_uID = value;
         }
         
         void CPACSPoint::SetUID(const boost::optional<std::string>& value)
         {
+            if (m_uidMgr) {
+                if (m_uID) m_uidMgr->UnregisterObject(*m_uID);
+                if (value) m_uidMgr->RegisterObject(*value, *this);
+            }
             m_uID = value;
         }
         

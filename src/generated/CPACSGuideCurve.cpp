@@ -181,6 +181,10 @@ namespace tigl
         
         void CPACSGuideCurve::SetUID(const std::string& value)
         {
+            if (m_uidMgr) {
+                m_uidMgr->UnregisterObject(m_uID);
+                m_uidMgr->RegisterObject(value, *this);
+            }
             m_uID = value;
         }
         
