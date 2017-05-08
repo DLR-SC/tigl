@@ -72,9 +72,9 @@ public:
     TIGL_EXPORT std::vector<T*> ResolveObjects() const {
         const std::type_info* ti = &typeid(T);
         std::vector<T*> objects;
-        for (const auto& c : cpacsObjects)
-            if (c.second.type == ti)
-                objects.push_back(static_cast<T* const>(c.second.ptr));
+        for (CPACSObjectMap::const_iterator it = cpacsObjects.begin(); it != cpacsObjects.end(); ++it)
+            if (it->second.type == ti)
+                objects.push_back(static_cast<T* const>(it->second.ptr));
         return objects;
     }
 
