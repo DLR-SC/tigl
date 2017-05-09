@@ -35,6 +35,8 @@ namespace tigl
 class CCPACSFuselageProfiles : public generated::CPACSFuselageProfiles
 {
 public:
+    TIGL_EXPORT CCPACSFuselageProfiles(CTiglUIDManager* uidMgr);
+
     // Read CPACS fuselage profiles
     TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
 

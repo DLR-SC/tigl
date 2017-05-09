@@ -21,13 +21,15 @@
 #include "CPACSGenericGeometryComponents.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "TixiHelper.h"
 
 namespace tigl
 {
     namespace generated
     {
-        CPACSGenericGeometryComponents::CPACSGenericGeometryComponents(CCPACSAircraftModel* parent)
+        CPACSGenericGeometryComponents::CPACSGenericGeometryComponents(CCPACSAircraftModel* parent, CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr)
         {
             //assert(parent != NULL);
             m_parent = parent;
@@ -44,7 +46,7 @@ namespace tigl
         {
             // read element genericGeometryComponent
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/genericGeometryComponent")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/genericGeometryComponent", m_genericGeometryComponents, reinterpret_cast<CCPACSExternalObjects*>(this));
+                tixihelper::TixiReadElements(tixiHandle, xpath + "/genericGeometryComponent", m_genericGeometryComponents, reinterpret_cast<CCPACSExternalObjects*>(this), m_uidMgr);
             }
             
         }

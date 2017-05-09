@@ -17,14 +17,15 @@
 
 #pragma once
 
-#include <tixi.h>
 #include <string>
+#include <tixi.h>
 #include <vector>
-#include "UniquePtr.h"
 #include "tigl_internal.h"
+#include "UniquePtr.h"
 
 namespace tigl
 {
+    class CTiglUIDManager;
     class CCPACSWingCell;
     class CCPACSWingShell;
     
@@ -37,7 +38,7 @@ namespace tigl
         class CPACSWingCells
         {
         public:
-            TIGL_EXPORT CPACSWingCells(CCPACSWingShell* parent);
+            TIGL_EXPORT CPACSWingCells(CCPACSWingShell* parent, CTiglUIDManager* uidMgr);
             
             TIGL_EXPORT virtual ~CPACSWingCells();
             
@@ -51,6 +52,8 @@ namespace tigl
             
         protected:
             CCPACSWingShell* m_parent;
+            
+            CTiglUIDManager* m_uidMgr;
             
             std::vector<unique_ptr<CCPACSWingCell> > m_cells;
             

@@ -20,19 +20,25 @@
 #include "CPACSGenericGeometricComponent.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "TixiHelper.h"
 
 namespace tigl
 {
     namespace generated
     {
-        CPACSGenericGeometricComponent::CPACSGenericGeometricComponent(CCPACSExternalObjects* parent)
+        CPACSGenericGeometricComponent::CPACSGenericGeometricComponent(CCPACSExternalObjects* parent, CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr), 
+            m_transformation(m_uidMgr)
         {
             //assert(parent != NULL);
             m_parent = parent;
         }
         
-        CPACSGenericGeometricComponent::~CPACSGenericGeometricComponent() {}
+        CPACSGenericGeometricComponent::~CPACSGenericGeometricComponent()
+        {
+            if (m_uidMgr) m_uidMgr->UnregisterObject(m_uID);
+        }
         
         CCPACSExternalObjects* CPACSGenericGeometricComponent::GetParent() const
         {
@@ -88,6 +94,7 @@ namespace tigl
                 LOG(ERROR) << "Required element linkToFile is missing at xpath " << xpath;
             }
             
+            if (m_uidMgr) m_uidMgr->RegisterObject(m_uID, *this);
         }
         
         void CPACSGenericGeometricComponent::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
@@ -135,6 +142,10 @@ namespace tigl
         
         void CPACSGenericGeometricComponent::SetUID(const std::string& value)
         {
+            if (m_uidMgr) {
+                m_uidMgr->UnregisterObject(m_uID);
+                m_uidMgr->RegisterObject(value, *this);
+            }
             m_uID = value;
         }
         

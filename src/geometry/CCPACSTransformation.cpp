@@ -22,7 +22,8 @@
 namespace tigl
 {
 
-CCPACSTransformation::CCPACSTransformation() {
+CCPACSTransformation::CCPACSTransformation(CTiglUIDManager* uidMgr)
+    : generated::CPACSTransformation(uidMgr) {
     _transformationMatrix.SetIdentity();
 }
 
@@ -44,7 +45,7 @@ void CCPACSTransformation::reset()
 void CCPACSTransformation::setTranslation(const CTiglPoint& translation, ECPACSTranslationType type)
 {
     if (!m_translation) {
-        m_translation = boost::in_place();
+        m_translation = boost::in_place(m_uidMgr);
     }
     m_translation->SetAsPoint(translation);
     m_translation->SetRefType(type);
@@ -53,7 +54,7 @@ void CCPACSTransformation::setTranslation(const CTiglPoint& translation, ECPACST
 void CCPACSTransformation::setRotation(const CTiglPoint& rotation)
 {
     if (!m_rotation) {
-        m_rotation = boost::in_place();
+        m_rotation = boost::in_place(m_uidMgr);
     }
     m_rotation->SetAsPoint(rotation);
 }
@@ -61,7 +62,7 @@ void CCPACSTransformation::setRotation(const CTiglPoint& rotation)
 void CCPACSTransformation::setScaling(const CTiglPoint& scale)
 {
     if (!m_scaling) {
-        m_scaling = boost::in_place();
+        m_scaling = boost::in_place(m_uidMgr);
     }
     m_scaling->SetAsPoint(scale);
 }

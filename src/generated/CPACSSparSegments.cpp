@@ -21,13 +21,15 @@
 #include "CPACSSparSegments.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "TixiHelper.h"
 
 namespace tigl
 {
     namespace generated
     {
-        CPACSSparSegments::CPACSSparSegments(CCPACSWingSpars* parent)
+        CPACSSparSegments::CPACSSparSegments(CCPACSWingSpars* parent, CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr)
         {
             //assert(parent != NULL);
             m_parent = parent;
@@ -44,7 +46,7 @@ namespace tigl
         {
             // read element sparSegment
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/sparSegment")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/sparSegment", m_sparSegments, reinterpret_cast<CCPACSWingSparSegments*>(this));
+                tixihelper::TixiReadElements(tixiHandle, xpath + "/sparSegment", m_sparSegments, reinterpret_cast<CCPACSWingSparSegments*>(this), m_uidMgr);
             }
             
         }

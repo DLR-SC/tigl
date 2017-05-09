@@ -18,69 +18,72 @@
 #include "CPACSVehicles.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "TixiHelper.h"
 
 namespace tigl
 {
     namespace generated
     {
-        CPACSVehicles::CPACSVehicles(){}
+        CPACSVehicles::CPACSVehicles(CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr) {}
+        
         CPACSVehicles::~CPACSVehicles() {}
         
         void CPACSVehicles::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element aircraft
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/aircraft")) {
-                m_aircraft = boost::in_place();
+                m_aircraft = boost::in_place(m_uidMgr);
                 try {
                     m_aircraft->ReadCPACS(tixiHandle, xpath + "/aircraft");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read aircraft at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read aircraft at xpath " << xpath << ": " << e.what();
                     m_aircraft = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read aircraft at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read aircraft at xpath " << xpath << ": " << e.getError();
                     m_aircraft = boost::none;
                 }
             }
             
             // read element rotorcraft
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/rotorcraft")) {
-                m_rotorcraft = boost::in_place();
+                m_rotorcraft = boost::in_place(m_uidMgr);
                 try {
                     m_rotorcraft->ReadCPACS(tixiHandle, xpath + "/rotorcraft");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read rotorcraft at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read rotorcraft at xpath " << xpath << ": " << e.what();
                     m_rotorcraft = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read rotorcraft at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read rotorcraft at xpath " << xpath << ": " << e.getError();
                     m_rotorcraft = boost::none;
                 }
             }
             
             // read element profiles
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/profiles")) {
-                m_profiles = boost::in_place();
+                m_profiles = boost::in_place(m_uidMgr);
                 try {
                     m_profiles->ReadCPACS(tixiHandle, xpath + "/profiles");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read profiles at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read profiles at xpath " << xpath << ": " << e.what();
                     m_profiles = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read profiles at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read profiles at xpath " << xpath << ": " << e.getError();
                     m_profiles = boost::none;
                 }
             }
             
             // read element materials
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/materials")) {
-                m_materials = boost::in_place();
+                m_materials = boost::in_place(m_uidMgr);
                 try {
                     m_materials->ReadCPACS(tixiHandle, xpath + "/materials");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read materials at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read materials at xpath " << xpath << ": " << e.what();
                     m_materials = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read materials at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read materials at xpath " << xpath << ": " << e.getError();
                     m_materials = boost::none;
                 }
             }

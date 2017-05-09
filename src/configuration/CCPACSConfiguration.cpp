@@ -98,7 +98,7 @@ void CCPACSConfiguration::ReadCPACS(const std::string& configurationUID)
         header.ReadCPACS(tixiDocumentHandle, headerXPath);
     }
     if (tixihelper::TixiCheckElement(tixiDocumentHandle, profilesXPath)) {
-        profiles = boost::in_place();
+        profiles = boost::in_place(&uidManager);
         // read wing airfoils, fuselage profiles, rotor airfoils and guide curve profiles
         profiles->ReadCPACS(tixiDocumentHandle, profilesXPath);
     }
@@ -125,7 +125,7 @@ void CCPACSConfiguration::ReadCPACS(const std::string& configurationUID)
     // Now do parent <-> child transformations. Child should use the
     // parent coordinate system as root.
     try {
-        const RelativeComponentContainerType& allRootComponentsWithChildren = uidManager.GetAllRootComponents();
+        const RelativeComponentContainerType& allRootComponentsWithChildren = uidManager.GetRootGeometricComponents();
         for (RelativeComponentContainerType::const_iterator it = allRootComponentsWithChildren.begin(); it != allRootComponentsWithChildren.end(); ++it) {
             transformAllComponents(it->second);
         }
@@ -390,7 +390,7 @@ int CCPACSConfiguration::GetRotorIndex(const std::string& UID) const
 
 TopoDS_Shape CCPACSConfiguration::GetParentLoft(const std::string& UID)
 {
-    return uidManager.GetParentComponent(UID)->GetLoft()->Shape();
+    return uidManager.GetParentGeometricComponent(UID)->GetLoft()->Shape();
 }
 
 bool CCPACSConfiguration::HasFuselageProfile(std::string uid) const

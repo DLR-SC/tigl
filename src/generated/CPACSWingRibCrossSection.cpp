@@ -20,13 +20,15 @@
 #include "CPACSWingRibCrossSection.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "TixiHelper.h"
 
 namespace tigl
 {
     namespace generated
     {
-        CPACSWingRibCrossSection::CPACSWingRibCrossSection(CCPACSWingRibsDefinition* parent)
+        CPACSWingRibCrossSection::CPACSWingRibCrossSection(CCPACSWingRibsDefinition* parent, CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr)
         {
             //assert(parent != NULL);
             m_parent = parent;
@@ -51,28 +53,28 @@ namespace tigl
             
             // read element ribRotation
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/ribRotation")) {
-                m_ribRotation = boost::in_place();
+                m_ribRotation = boost::in_place(m_uidMgr);
                 try {
                     m_ribRotation->ReadCPACS(tixiHandle, xpath + "/ribRotation");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read ribRotation at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read ribRotation at xpath " << xpath << ": " << e.what();
                     m_ribRotation = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read ribRotation at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read ribRotation at xpath " << xpath << ": " << e.getError();
                     m_ribRotation = boost::none;
                 }
             }
             
             // read element ribCell
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/ribCell")) {
-                m_ribCell = boost::in_place();
+                m_ribCell = boost::in_place(m_uidMgr);
                 try {
                     m_ribCell->ReadCPACS(tixiHandle, xpath + "/ribCell");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read ribCell at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read ribCell at xpath " << xpath << ": " << e.what();
                     m_ribCell = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read ribCell at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read ribCell at xpath " << xpath << ": " << e.getError();
                     m_ribCell = boost::none;
                 }
             }
@@ -83,10 +85,10 @@ namespace tigl
                 try {
                     m_upperCap->ReadCPACS(tixiHandle, xpath + "/upperCap");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read upperCap at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read upperCap at xpath " << xpath << ": " << e.what();
                     m_upperCap = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read upperCap at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read upperCap at xpath " << xpath << ": " << e.getError();
                     m_upperCap = boost::none;
                 }
             }
@@ -97,10 +99,10 @@ namespace tigl
                 try {
                     m_lowerCap->ReadCPACS(tixiHandle, xpath + "/lowerCap");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read lowerCap at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read lowerCap at xpath " << xpath << ": " << e.what();
                     m_lowerCap = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read lowerCap at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read lowerCap at xpath " << xpath << ": " << e.getError();
                     m_lowerCap = boost::none;
                 }
             }

@@ -30,7 +30,10 @@
 
 namespace tigl
 {
-// Returns the total count of guide curves in this configuration
+CCPACSGuideCurveProfiles::CCPACSGuideCurveProfiles(CTiglUIDManager* uidMgr)
+    : generated::CPACSGuideCurveProfiles(uidMgr) {}
+
+    // Returns the total count of guide curves in this configuration
 int CCPACSGuideCurveProfiles::GetGuideCurveProfileCount() const
 {
     return static_cast<int>(m_guideCurveProfiles.size());

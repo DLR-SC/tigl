@@ -26,7 +26,7 @@ namespace tigl
 class CCPACSExternalObjects : public generated::CPACSGenericGeometryComponents
 {
 public:
-    TIGL_EXPORT CCPACSExternalObjects(CCPACSAircraftModel* parent);
+    TIGL_EXPORT CCPACSExternalObjects(CCPACSAircraftModel* parent, CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT CCPACSExternalObject& GetObject(int index) const;
     TIGL_EXPORT int GetObjectCount() const;

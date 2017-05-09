@@ -17,14 +17,15 @@
 
 #pragma once
 
-#include <tixi.h>
 #include <string>
+#include <tixi.h>
 #include <vector>
-#include "UniquePtr.h"
 #include "tigl_internal.h"
+#include "UniquePtr.h"
 
 namespace tigl
 {
+    class CTiglUIDManager;
     class CCPACSFuselageSegment;
     class CCPACSFuselage;
     
@@ -37,7 +38,7 @@ namespace tigl
         class CPACSFuselageSegments
         {
         public:
-            TIGL_EXPORT CPACSFuselageSegments(CCPACSFuselage* parent);
+            TIGL_EXPORT CPACSFuselageSegments(CCPACSFuselage* parent, CTiglUIDManager* uidMgr);
             
             TIGL_EXPORT virtual ~CPACSFuselageSegments();
             
@@ -51,6 +52,8 @@ namespace tigl
             
         protected:
             CCPACSFuselage* m_parent;
+            
+            CTiglUIDManager* m_uidMgr;
             
             std::vector<unique_ptr<CCPACSFuselageSegment> > m_segments;
             

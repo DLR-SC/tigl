@@ -31,6 +31,8 @@
 
 namespace tigl
 {
+CCPACSFuselageProfiles::CCPACSFuselageProfiles(CTiglUIDManager* uidMgr)
+    : generated::CPACSFuselageProfiles(uidMgr) {}
 
 // Invalidates internal state
 void CCPACSFuselageProfiles::Invalidate()
@@ -47,7 +49,7 @@ void CCPACSFuselageProfiles::ReadCPACS(const TixiDocumentHandle& tixiHandle, con
 
     // read element fuselageProfile
     if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/fuselageProfile")) {
-        tixihelper::TixiReadElements(tixiHandle, xpath + "/fuselageProfile", m_fuselageProfiles, tixihelper::ChildReader<CCPACSFuselageProfile>());
+        tixihelper::TixiReadElements(tixiHandle, xpath + "/fuselageProfile", m_fuselageProfiles, tixihelper::ChildWithArgsReader1<CCPACSFuselageProfile, CTiglUIDManager>(m_uidMgr));
     }
 }
 

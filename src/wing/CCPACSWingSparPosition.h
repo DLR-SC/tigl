@@ -35,7 +35,7 @@ public:
         None
     };
 
-    TIGL_EXPORT CCPACSWingSparPosition(CCPACSWingSparPositions* sparPositions);
+    TIGL_EXPORT CCPACSWingSparPosition(CCPACSWingSparPositions* sparPositions, CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT InputType GetInputType() const;
 

@@ -20,20 +20,25 @@
 #include "CPACSWingRibsDefinition.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "TixiHelper.h"
 
 namespace tigl
 {
     namespace generated
     {
-        CPACSWingRibsDefinition::CPACSWingRibsDefinition(CCPACSWingRibsDefinitions* parent) :
-            m_ribCrossSection(reinterpret_cast<CCPACSWingRibsDefinition*>(this))
+        CPACSWingRibsDefinition::CPACSWingRibsDefinition(CCPACSWingRibsDefinitions* parent, CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr), 
+            m_ribCrossSection(reinterpret_cast<CCPACSWingRibsDefinition*>(this), m_uidMgr)
         {
             //assert(parent != NULL);
             m_parent = parent;
         }
         
-        CPACSWingRibsDefinition::~CPACSWingRibsDefinition() {}
+        CPACSWingRibsDefinition::~CPACSWingRibsDefinition()
+        {
+            if (m_uidMgr && m_uID) m_uidMgr->UnregisterObject(*m_uID);
+        }
         
         CCPACSWingRibsDefinitions* CPACSWingRibsDefinition::GetParent() const
         {
@@ -45,9 +50,6 @@ namespace tigl
             // read attribute uID
             if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
                 m_uID = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
-            }
-            else {
-                LOG(ERROR) << "Required attribute uID is missing at xpath " << xpath;
             }
             
             // read element name
@@ -77,10 +79,10 @@ namespace tigl
                 try {
                     m_ribsPositioning_choice1->ReadCPACS(tixiHandle, xpath + "/ribsPositioning");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read ribsPositioning at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read ribsPositioning at xpath " << xpath << ": " << e.what();
                     m_ribsPositioning_choice1 = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read ribsPositioning at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read ribsPositioning at xpath " << xpath << ": " << e.getError();
                     m_ribsPositioning_choice1 = boost::none;
                 }
             }
@@ -91,21 +93,24 @@ namespace tigl
                 try {
                     m_ribExplicitPositioning_choice2->ReadCPACS(tixiHandle, xpath + "/ribExplicitPositioning");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read ribExplicitPositioning at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read ribExplicitPositioning at xpath " << xpath << ": " << e.what();
                     m_ribExplicitPositioning_choice2 = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read ribExplicitPositioning at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read ribExplicitPositioning at xpath " << xpath << ": " << e.getError();
                     m_ribExplicitPositioning_choice2 = boost::none;
                 }
             }
             
+            if (m_uidMgr && m_uID) m_uidMgr->RegisterObject(*m_uID, *this);
         }
         
         void CPACSWingRibsDefinition::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write attribute uID
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/uID");
-            tixihelper::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
+            if (m_uID) {
+                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/uID");
+                tixihelper::TixiSaveAttribute(tixiHandle, xpath, "uID", *m_uID);
+            }
             
             // write element name
             tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
@@ -135,13 +140,26 @@ namespace tigl
             
         }
         
-        const std::string& CPACSWingRibsDefinition::GetUID() const
+        const boost::optional<std::string>& CPACSWingRibsDefinition::GetUID() const
         {
             return m_uID;
         }
         
         void CPACSWingRibsDefinition::SetUID(const std::string& value)
         {
+            if (m_uidMgr) {
+                if (m_uID) m_uidMgr->UnregisterObject(*m_uID);
+                m_uidMgr->RegisterObject(value, *this);
+            }
+            m_uID = value;
+        }
+        
+        void CPACSWingRibsDefinition::SetUID(const boost::optional<std::string>& value)
+        {
+            if (m_uidMgr) {
+                if (m_uID) m_uidMgr->UnregisterObject(*m_uID);
+                if (value) m_uidMgr->RegisterObject(*value, *this);
+            }
             m_uID = value;
         }
         

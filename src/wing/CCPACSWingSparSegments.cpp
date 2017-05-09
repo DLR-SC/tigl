@@ -25,10 +25,8 @@
 namespace tigl
 {
 
-CCPACSWingSparSegments::CCPACSWingSparSegments(CCPACSWingSpars* parent)
-: generated::CPACSSparSegments(parent)
-{
-}
+CCPACSWingSparSegments::CCPACSWingSparSegments(CCPACSWingSpars* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSSparSegments(parent, uidMgr) {}
 
 void CCPACSWingSparSegments::Invalidate()
 {
@@ -60,7 +58,7 @@ CCPACSWingSparSegment& CCPACSWingSparSegments::GetSparSegment(const std::string&
             return sparSegment;
         }
     }
-    std::string referenceUID = GetParent()->GetStructure().GetWingStructureReference().GetUID();
+    std::string referenceUID = GetParent()->GetStructure().GetWingStructureReference().GetUID().value_or("");
     LOG(ERROR) << "Spar Segment \"" << uid << "\" not found in component segment or trailing edge device with UID \"" << referenceUID << "\"";
     throw CTiglError("Error: Spar Segment \"" + uid + "\" not found in component segment or trailing edge device with UID \"" + referenceUID + "\". Please check the CPACS document!", TIGL_ERROR);
 }

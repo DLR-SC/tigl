@@ -73,7 +73,7 @@ public:
     TIGL_EXPORT TopoDS_Face GetInnerFace() const;
     TIGL_EXPORT TopoDS_Face GetOuterFace() const;
     TIGL_EXPORT TopoDS_Wire GetMidplaneLine(const gp_Pnt& startPoint, const gp_Pnt& endPoint) const;
-    TIGL_EXPORT const std::string& GetUID() const;
+    TIGL_EXPORT const boost::optional<std::string>& GetUID() const;
 
     TIGL_EXPORT CCPACSWingComponentSegment& GetWingComponentSegment() const;
 //    TIGL_EXPORT CCPACSTrailingEdgeDevice& GetTrailingEdgeDevice() const;

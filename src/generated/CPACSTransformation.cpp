@@ -18,14 +18,20 @@
 #include "CPACSTransformation.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "TixiHelper.h"
 
 namespace tigl
 {
     namespace generated
     {
-        CPACSTransformation::CPACSTransformation(){}
-        CPACSTransformation::~CPACSTransformation() {}
+        CPACSTransformation::CPACSTransformation(CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr) {}
+        
+        CPACSTransformation::~CPACSTransformation()
+        {
+            if (m_uidMgr && m_uID) m_uidMgr->UnregisterObject(*m_uID);
+        }
         
         void CPACSTransformation::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
@@ -36,46 +42,47 @@ namespace tigl
             
             // read element scaling
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/scaling")) {
-                m_scaling = boost::in_place();
+                m_scaling = boost::in_place(m_uidMgr);
                 try {
                     m_scaling->ReadCPACS(tixiHandle, xpath + "/scaling");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read scaling at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read scaling at xpath " << xpath << ": " << e.what();
                     m_scaling = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read scaling at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read scaling at xpath " << xpath << ": " << e.getError();
                     m_scaling = boost::none;
                 }
             }
             
             // read element rotation
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/rotation")) {
-                m_rotation = boost::in_place();
+                m_rotation = boost::in_place(m_uidMgr);
                 try {
                     m_rotation->ReadCPACS(tixiHandle, xpath + "/rotation");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read rotation at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read rotation at xpath " << xpath << ": " << e.what();
                     m_rotation = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read rotation at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read rotation at xpath " << xpath << ": " << e.getError();
                     m_rotation = boost::none;
                 }
             }
             
             // read element translation
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/translation")) {
-                m_translation = boost::in_place();
+                m_translation = boost::in_place(m_uidMgr);
                 try {
                     m_translation->ReadCPACS(tixiHandle, xpath + "/translation");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read translation at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read translation at xpath " << xpath << ": " << e.what();
                     m_translation = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read translation at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read translation at xpath " << xpath << ": " << e.getError();
                     m_translation = boost::none;
                 }
             }
             
+            if (m_uidMgr && m_uID) m_uidMgr->RegisterObject(*m_uID, *this);
         }
         
         void CPACSTransformation::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
@@ -113,11 +120,19 @@ namespace tigl
         
         void CPACSTransformation::SetUID(const std::string& value)
         {
+            if (m_uidMgr) {
+                if (m_uID) m_uidMgr->UnregisterObject(*m_uID);
+                m_uidMgr->RegisterObject(value, *this);
+            }
             m_uID = value;
         }
         
         void CPACSTransformation::SetUID(const boost::optional<std::string>& value)
         {
+            if (m_uidMgr) {
+                if (m_uID) m_uidMgr->UnregisterObject(*m_uID);
+                if (value) m_uidMgr->RegisterObject(*value, *this);
+            }
             m_uID = value;
         }
         

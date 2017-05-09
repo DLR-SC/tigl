@@ -24,7 +24,8 @@ namespace tigl
 {
     namespace generated
     {
-        CPACSPointListXYZVector::CPACSPointListXYZVector(){}
+        CPACSPointListXYZVector::CPACSPointListXYZVector() {}
+        
         CPACSPointListXYZVector::~CPACSPointListXYZVector() {}
         
         void CPACSPointListXYZVector::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)

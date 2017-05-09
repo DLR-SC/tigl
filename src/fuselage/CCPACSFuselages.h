@@ -40,8 +40,8 @@ class CCPACSFuselages : public generated::CPACSFuselages
 {
 public:
     //TIGL_EXPORT CCPACSFuselages();
-    TIGL_EXPORT CCPACSFuselages(CCPACSAircraftModel* parent);
-    TIGL_EXPORT CCPACSFuselages(CCPACSRotorcraftModel* parent);
+    TIGL_EXPORT CCPACSFuselages(CCPACSAircraftModel* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSFuselages(CCPACSRotorcraftModel* parent, CTiglUIDManager* uidMgr);
 
     // Invalidates internal state
     TIGL_EXPORT void Invalidate();

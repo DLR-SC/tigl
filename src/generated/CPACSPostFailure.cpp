@@ -25,7 +25,8 @@ namespace tigl
 {
     namespace generated
     {
-        CPACSPostFailure::CPACSPostFailure(){}
+        CPACSPostFailure::CPACSPostFailure() {}
+        
         CPACSPostFailure::~CPACSPostFailure() {}
         
         void CPACSPostFailure::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)

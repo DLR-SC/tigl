@@ -49,8 +49,8 @@ class CCPACSWing : public generated::CPACSWing, public CTiglRelativelyPositioned
 {
 public:
     // Constructor
-    TIGL_EXPORT CCPACSWing(CCPACSWings* parent);
-    TIGL_EXPORT CCPACSWing(CCPACSRotorBlades* parent);
+    TIGL_EXPORT CCPACSWing(CCPACSWings* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSWing(CCPACSRotorBlades* parent, CTiglUIDManager* uidMgr);
 
     // Virtual destructor
     TIGL_EXPORT virtual ~CCPACSWing();
@@ -61,7 +61,7 @@ public:
     // Read CPACS wing elements
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & wingXPath);
 
-    TIGL_EXPORT virtual const std::string& GetUID() const OVERRIDE;
+    TIGL_EXPORT virtual std::string GetDefaultedUID() const OVERRIDE;
 
     // Returns whether this wing is a rotor blade
     TIGL_EXPORT bool IsRotorBlade() const;

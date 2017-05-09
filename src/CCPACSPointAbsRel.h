@@ -8,6 +8,8 @@ namespace tigl
     class CCPACSPointAbsRel : public generated::CPACSPointAbsRel
     {
     public:
+        TIGL_EXPORT CCPACSPointAbsRel(CTiglUIDManager* uidMgr);
+
         TIGL_EXPORT CTiglPoint AsPoint() const;
         TIGL_EXPORT void SetAsPoint(const CTiglPoint& point);
         TIGL_EXPORT ECPACSTranslationType GetRefDefaultedType() const;

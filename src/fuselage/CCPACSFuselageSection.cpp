@@ -29,6 +29,8 @@
 
 namespace tigl
 {
+CCPACSFuselageSection::CCPACSFuselageSection(CTiglUIDManager* uidMgr)
+    : generated::CPACSFuselageSection(uidMgr) {}
 
 // Cleanup routine
 void CCPACSFuselageSection::Cleanup()
@@ -37,7 +39,6 @@ void CCPACSFuselageSection::Cleanup()
     m_uID = "";
     m_transformation.reset();
 }
-
 
 // Read CPACS section elements
 void CCPACSFuselageSection::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& sectionXPath)

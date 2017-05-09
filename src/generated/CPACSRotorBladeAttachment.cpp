@@ -20,19 +20,24 @@
 #include "CPACSRotorBladeAttachment.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "TixiHelper.h"
 
 namespace tigl
 {
     namespace generated
     {
-        CPACSRotorBladeAttachment::CPACSRotorBladeAttachment(CCPACSRotorBladeAttachments* parent)
+        CPACSRotorBladeAttachment::CPACSRotorBladeAttachment(CCPACSRotorBladeAttachments* parent, CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr)
         {
             //assert(parent != NULL);
             m_parent = parent;
         }
         
-        CPACSRotorBladeAttachment::~CPACSRotorBladeAttachment() {}
+        CPACSRotorBladeAttachment::~CPACSRotorBladeAttachment()
+        {
+            if (m_uidMgr && m_uID) m_uidMgr->UnregisterObject(*m_uID);
+        }
         
         CCPACSRotorBladeAttachments* CPACSRotorBladeAttachment::GetParent() const
         {
@@ -58,14 +63,14 @@ namespace tigl
             
             // read element hinges
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/hinges")) {
-                m_hinges = boost::in_place(reinterpret_cast<CCPACSRotorBladeAttachment*>(this));
+                m_hinges = boost::in_place(reinterpret_cast<CCPACSRotorBladeAttachment*>(this), m_uidMgr);
                 try {
                     m_hinges->ReadCPACS(tixiHandle, xpath + "/hinges");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read hinges at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read hinges at xpath " << xpath << ": " << e.what();
                     m_hinges = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read hinges at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read hinges at xpath " << xpath << ": " << e.getError();
                     m_hinges = boost::none;
                 }
             }
@@ -84,10 +89,10 @@ namespace tigl
                 try {
                     m_azimuthAngles_choice1->ReadCPACS(tixiHandle, xpath + "/azimuthAngles");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read azimuthAngles at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read azimuthAngles at xpath " << xpath << ": " << e.what();
                     m_azimuthAngles_choice1 = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read azimuthAngles at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read azimuthAngles at xpath " << xpath << ": " << e.getError();
                     m_azimuthAngles_choice1 = boost::none;
                 }
             }
@@ -97,6 +102,7 @@ namespace tigl
                 m_numberOfBlades_choice2 = tixihelper::TixiGetElement<int>(tixiHandle, xpath + "/numberOfBlades");
             }
             
+            if (m_uidMgr && m_uID) m_uidMgr->RegisterObject(*m_uID, *this);
         }
         
         void CPACSRotorBladeAttachment::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
@@ -150,11 +156,19 @@ namespace tigl
         
         void CPACSRotorBladeAttachment::SetUID(const std::string& value)
         {
+            if (m_uidMgr) {
+                if (m_uID) m_uidMgr->UnregisterObject(*m_uID);
+                m_uidMgr->RegisterObject(value, *this);
+            }
             m_uID = value;
         }
         
         void CPACSRotorBladeAttachment::SetUID(const boost::optional<std::string>& value)
         {
+            if (m_uidMgr) {
+                if (m_uID) m_uidMgr->UnregisterObject(*m_uID);
+                if (value) m_uidMgr->RegisterObject(*value, *this);
+            }
             m_uID = value;
         }
         

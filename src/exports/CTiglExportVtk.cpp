@@ -80,7 +80,7 @@ void CTiglExportVtk::ExportMeshedWingVTKByUID(const std::string& wingUID, const 
 void CTiglExportVtk::ExportMeshedFuselageVTKByIndex(const int fuselageIndex, const std::string& filename, const double deflection)
 {
     CTiglRelativelyPositionedComponent & component = myConfig.GetFuselage(fuselageIndex);
-    ExportMeshedFuselageVTKByUID(component.GetUID(), filename, deflection);
+    ExportMeshedFuselageVTKByUID(component.GetDefaultedUID(), filename, deflection);
 }
 
 // Exports a by UID selected fuselage, boolean fused and meshed, as VTK file

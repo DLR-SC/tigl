@@ -18,14 +18,20 @@
 #include "CPACSAircraftModel.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "TixiHelper.h"
 
 namespace tigl
 {
     namespace generated
     {
-        CPACSAircraftModel::CPACSAircraftModel(){}
-        CPACSAircraftModel::~CPACSAircraftModel() {}
+        CPACSAircraftModel::CPACSAircraftModel(CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr) {}
+        
+        CPACSAircraftModel::~CPACSAircraftModel()
+        {
+            if (m_uidMgr) m_uidMgr->UnregisterObject(m_uID);
+        }
         
         void CPACSAircraftModel::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
@@ -52,46 +58,47 @@ namespace tigl
             
             // read element fuselages
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/fuselages")) {
-                m_fuselages = boost::in_place(reinterpret_cast<CCPACSAircraftModel*>(this));
+                m_fuselages = boost::in_place(reinterpret_cast<CCPACSAircraftModel*>(this), m_uidMgr);
                 try {
                     m_fuselages->ReadCPACS(tixiHandle, xpath + "/fuselages");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read fuselages at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read fuselages at xpath " << xpath << ": " << e.what();
                     m_fuselages = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read fuselages at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read fuselages at xpath " << xpath << ": " << e.getError();
                     m_fuselages = boost::none;
                 }
             }
             
             // read element wings
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/wings")) {
-                m_wings = boost::in_place(reinterpret_cast<CCPACSAircraftModel*>(this));
+                m_wings = boost::in_place(reinterpret_cast<CCPACSAircraftModel*>(this), m_uidMgr);
                 try {
                     m_wings->ReadCPACS(tixiHandle, xpath + "/wings");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read wings at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read wings at xpath " << xpath << ": " << e.what();
                     m_wings = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read wings at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read wings at xpath " << xpath << ": " << e.getError();
                     m_wings = boost::none;
                 }
             }
             
             // read element genericGeometryComponents
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/genericGeometryComponents")) {
-                m_genericGeometryComponents = boost::in_place(reinterpret_cast<CCPACSAircraftModel*>(this));
+                m_genericGeometryComponents = boost::in_place(reinterpret_cast<CCPACSAircraftModel*>(this), m_uidMgr);
                 try {
                     m_genericGeometryComponents->ReadCPACS(tixiHandle, xpath + "/genericGeometryComponents");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read genericGeometryComponents at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read genericGeometryComponents at xpath " << xpath << ": " << e.what();
                     m_genericGeometryComponents = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read genericGeometryComponents at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read genericGeometryComponents at xpath " << xpath << ": " << e.getError();
                     m_genericGeometryComponents = boost::none;
                 }
             }
             
+            if (m_uidMgr) m_uidMgr->RegisterObject(m_uID, *this);
         }
         
         void CPACSAircraftModel::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
@@ -137,6 +144,10 @@ namespace tigl
         
         void CPACSAircraftModel::SetUID(const std::string& value)
         {
+            if (m_uidMgr) {
+                m_uidMgr->UnregisterObject(m_uID);
+                m_uidMgr->RegisterObject(value, *this);
+            }
             m_uID = value;
         }
         

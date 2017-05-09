@@ -20,19 +20,25 @@
 #include "CPACSRotorHubHinge.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "TixiHelper.h"
 
 namespace tigl
 {
     namespace generated
     {
-        CPACSRotorHubHinge::CPACSRotorHubHinge(CCPACSRotorHinges* parent)
+        CPACSRotorHubHinge::CPACSRotorHubHinge(CCPACSRotorHinges* parent, CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr), 
+            m_transformation(m_uidMgr)
         {
             //assert(parent != NULL);
             m_parent = parent;
         }
         
-        CPACSRotorHubHinge::~CPACSRotorHubHinge() {}
+        CPACSRotorHubHinge::~CPACSRotorHubHinge()
+        {
+            if (m_uidMgr && m_uID) m_uidMgr->UnregisterObject(*m_uID);
+        }
         
         CCPACSRotorHinges* CPACSRotorHubHinge::GetParent() const
         {
@@ -92,6 +98,7 @@ namespace tigl
                 m_damping = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/damping");
             }
             
+            if (m_uidMgr && m_uID) m_uidMgr->RegisterObject(*m_uID, *this);
         }
         
         void CPACSRotorHubHinge::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
@@ -155,11 +162,19 @@ namespace tigl
         
         void CPACSRotorHubHinge::SetUID(const std::string& value)
         {
+            if (m_uidMgr) {
+                if (m_uID) m_uidMgr->UnregisterObject(*m_uID);
+                m_uidMgr->RegisterObject(value, *this);
+            }
             m_uID = value;
         }
         
         void CPACSRotorHubHinge::SetUID(const boost::optional<std::string>& value)
         {
+            if (m_uidMgr) {
+                if (m_uID) m_uidMgr->UnregisterObject(*m_uID);
+                if (value) m_uidMgr->RegisterObject(*value, *this);
+            }
             m_uID = value;
         }
         

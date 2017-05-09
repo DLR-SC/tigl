@@ -26,10 +26,8 @@
 namespace tigl 
 {
 
-CCPACSWingShell::CCPACSWingShell(CCPACSWingCSStructure* parent)
-    : generated::CPACSWingShell(parent)
-{
-}
+CCPACSWingShell::CCPACSWingShell(CCPACSWingCSStructure* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSWingShell(parent, uidMgr) {}
 
 int CCPACSWingShell::GetCellCount() const
 {

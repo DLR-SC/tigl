@@ -17,14 +17,16 @@
 
 #pragma once
 
-#include <tixi.h>
 #include <string>
+#include <tixi.h>
 #include <vector>
-#include "UniquePtr.h"
 #include "tigl_internal.h"
+#include "UniquePtr.h"
 
 namespace tigl
 {
+    class CTiglUIDManager;
+    
     namespace generated
     {
         class CPACSProfileGeometry;
@@ -36,7 +38,7 @@ namespace tigl
         class CPACSWingAirfoils
         {
         public:
-            TIGL_EXPORT CPACSWingAirfoils();
+            TIGL_EXPORT CPACSWingAirfoils(CTiglUIDManager* uidMgr);
             TIGL_EXPORT virtual ~CPACSWingAirfoils();
             
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
@@ -46,6 +48,8 @@ namespace tigl
             TIGL_EXPORT virtual std::vector<unique_ptr<CPACSProfileGeometry> >& GetWingAirfoils();
             
         protected:
+            CTiglUIDManager* m_uidMgr;
+            
             std::vector<unique_ptr<CPACSProfileGeometry> > m_wingAirfoils;
             
         private:

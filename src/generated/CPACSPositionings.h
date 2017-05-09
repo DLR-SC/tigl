@@ -17,16 +17,17 @@
 
 #pragma once
 
-#include <tixi.h>
 #include <string>
-#include <vector>
-#include "UniquePtr.h"
-#include "CTiglError.h"
+#include <tixi.h>
 #include <typeinfo>
+#include <vector>
+#include "CTiglError.h"
 #include "tigl_internal.h"
+#include "UniquePtr.h"
 
 namespace tigl
 {
+    class CTiglUIDManager;
     class CCPACSPositioning;
     
     namespace generated
@@ -39,7 +40,7 @@ namespace tigl
         class CPACSPositionings
         {
         public:
-            TIGL_EXPORT CPACSPositionings();
+            TIGL_EXPORT CPACSPositionings(CTiglUIDManager* uidMgr);
             TIGL_EXPORT virtual ~CPACSPositionings();
             
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
@@ -49,6 +50,8 @@ namespace tigl
             TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSPositioning> >& GetPositionings();
             
         protected:
+            CTiglUIDManager* m_uidMgr;
+            
             std::vector<unique_ptr<CCPACSPositioning> > m_positionings;
             
         private:

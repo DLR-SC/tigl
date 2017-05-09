@@ -17,16 +17,19 @@
 
 #pragma once
 
-#include <tixi.h>
-#include <string>
-#include "tigl_internal.h"
-#include "CPACSPointX.h"
+#include <boost/optional.hpp>
+#include <boost/utility/in_place_factory.hpp>
 #include <CCPACSMaterial.h>
+#include <string>
+#include <tixi.h>
 #include "CPACSCap.h"
-#include "CPACSCap.h"
+#include "CPACSPointX.h"
+#include "tigl_internal.h"
 
 namespace tigl
 {
+    class CTiglUIDManager;
+    
     namespace generated
     {
         // This class is used in:
@@ -36,14 +39,15 @@ namespace tigl
         class CPACSWingRibCell
         {
         public:
-            TIGL_EXPORT CPACSWingRibCell();
+            TIGL_EXPORT CPACSWingRibCell(CTiglUIDManager* uidMgr);
             TIGL_EXPORT virtual ~CPACSWingRibCell();
             
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT virtual const std::string& GetUID() const;
+            TIGL_EXPORT virtual const boost::optional<std::string>& GetUID() const;
             TIGL_EXPORT virtual void SetUID(const std::string& value);
+            TIGL_EXPORT virtual void SetUID(const boost::optional<std::string>& value);
             
             TIGL_EXPORT virtual const std::string& GetFromRib() const;
             TIGL_EXPORT virtual void SetFromRib(const std::string& value);
@@ -64,13 +68,15 @@ namespace tigl
             TIGL_EXPORT virtual CPACSCap& GetLowerCap();
             
         protected:
-            std::string    m_uID;
-            std::string    m_fromRib;
-            std::string    m_toRib;
-            CPACSPointX    m_ribRotation;
-            CCPACSMaterial m_material;
-            CPACSCap       m_upperCap;
-            CPACSCap       m_lowerCap;
+            CTiglUIDManager* m_uidMgr;
+            
+            boost::optional<std::string> m_uID;
+            std::string                  m_fromRib;
+            std::string                  m_toRib;
+            CPACSPointX                  m_ribRotation;
+            CCPACSMaterial               m_material;
+            CPACSCap                     m_upperCap;
+            CPACSCap                     m_lowerCap;
             
         private:
             #ifdef HAVE_CPP11

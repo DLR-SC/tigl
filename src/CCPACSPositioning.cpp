@@ -31,7 +31,8 @@ namespace tigl
 {
 
 // Constructor
-CCPACSPositioning::CCPACSPositioning()
+CCPACSPositioning::CCPACSPositioning(CTiglUIDManager* uidMgr)
+    : generated::CPACSPositioning(uidMgr)
 {
     Cleanup();
 }

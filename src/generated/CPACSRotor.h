@@ -17,18 +17,19 @@
 
 #pragma once
 
-#include <tixi.h>
-#include <string>
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
-#include "tigl_internal.h"
-#include <TiglSymmetryAxis.h>
-#include "CPACSRotor_type.h"
-#include <CCPACSTransformation.h>
 #include <CCPACSRotorHub.h>
+#include <CCPACSTransformation.h>
+#include <string>
+#include <TiglSymmetryAxis.h>
+#include <tixi.h>
+#include "CPACSRotor_type.h"
+#include "tigl_internal.h"
 
 namespace tigl
 {
+    class CTiglUIDManager;
     class CCPACSRotors;
     
     namespace generated
@@ -40,7 +41,7 @@ namespace tigl
         class CPACSRotor
         {
         public:
-            TIGL_EXPORT CPACSRotor(CCPACSRotors* parent);
+            TIGL_EXPORT CPACSRotor(CCPACSRotors* parent, CTiglUIDManager* uidMgr);
             
             TIGL_EXPORT virtual ~CPACSRotor();
             
@@ -83,6 +84,8 @@ namespace tigl
             
         protected:
             CCPACSRotors* m_parent;
+            
+            CTiglUIDManager* m_uidMgr;
             
             std::string                       m_uID;
             boost::optional<TiglSymmetryAxis> m_symmetry;

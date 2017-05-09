@@ -30,11 +30,11 @@
 
 namespace tigl
 {
-CCPACSWingCSStructure::CCPACSWingCSStructure(CCPACSWingComponentSegment* parent)
-    : generated::CPACSWingComponentSegmentStructure(parent) {}
+CCPACSWingCSStructure::CCPACSWingCSStructure(CCPACSWingComponentSegment* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSWingComponentSegmentStructure(parent, uidMgr) {}
 
-//CCPACSWingCSStructure::CCPACSWingCSStructure(CPACSTrailingEdgeDevice* parent)
-//    : generated::CPACSWingComponentSegmentStructure(parent) {}
+//CCPACSWingCSStructure::CCPACSWingCSStructure(CPACSTrailingEdgeDevice* parent, CTiglUIDManager* uidMgr)
+//    : generated::CPACSWingComponentSegmentStructure(parent, uidMgr) {}
 
 CTiglWingStructureReference CCPACSWingCSStructure::GetWingStructureReference() {
     //if (IsParent<CCPACSWingComponentSegment>()) return CTiglWingStructureReference(*GetParent<CCPACSWingComponentSegment>());

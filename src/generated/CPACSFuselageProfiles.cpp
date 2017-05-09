@@ -19,20 +19,23 @@
 #include "CPACSProfileGeometry.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "TixiHelper.h"
 
 namespace tigl
 {
     namespace generated
     {
-        CPACSFuselageProfiles::CPACSFuselageProfiles(){}
+        CPACSFuselageProfiles::CPACSFuselageProfiles(CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr) {}
+        
         CPACSFuselageProfiles::~CPACSFuselageProfiles() {}
         
         void CPACSFuselageProfiles::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element fuselageProfile
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/fuselageProfile")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/fuselageProfile", m_fuselageProfiles);
+                tixihelper::TixiReadElements(tixiHandle, xpath + "/fuselageProfile", m_fuselageProfiles, m_uidMgr);
             }
             
         }

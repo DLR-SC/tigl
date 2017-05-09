@@ -31,8 +31,8 @@
 
 namespace tigl
 {
-CCPACSRotorHinges::CCPACSRotorHinges(CCPACSRotorBladeAttachment* parent)
-    : generated::CPACSRotorHubHinges(parent) {}
+CCPACSRotorHinges::CCPACSRotorHinges(CCPACSRotorBladeAttachment* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSRotorHubHinges(parent, uidMgr) {}
 
 // Returns the total count of rotor hinges in a rotor blade attachment
 int CCPACSRotorHinges::GetRotorHingeCount() const

@@ -24,7 +24,8 @@ namespace tigl
 {
     namespace generated
     {
-        CPACSLinkToFile::CPACSLinkToFile(){}
+        CPACSLinkToFile::CPACSLinkToFile() {}
+        
         CPACSLinkToFile::~CPACSLinkToFile() {}
         
         void CPACSLinkToFile::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
@@ -41,9 +42,6 @@ namespace tigl
             if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "format")) {
                 m_format = stringToCPACSLinkToFileType_format(tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "format"));
             }
-            else {
-                LOG(ERROR) << "Required attribute format is missing at xpath " << xpath;
-            }
             
         }
         
@@ -53,8 +51,10 @@ namespace tigl
             tixihelper::TixiSaveElement(tixiHandle, xpath, m_base);
             
             // write attribute format
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/format");
-            tixihelper::TixiSaveAttribute(tixiHandle, xpath, "format", CPACSLinkToFileType_formatToString(m_format));
+            if (m_format) {
+                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/format");
+                tixihelper::TixiSaveAttribute(tixiHandle, xpath, "format", CPACSLinkToFileType_formatToString(*m_format));
+            }
             
         }
         
@@ -68,12 +68,17 @@ namespace tigl
             m_base = value;
         }
         
-        const CPACSLinkToFileType_format& CPACSLinkToFile::GetFormat() const
+        const boost::optional<CPACSLinkToFileType_format>& CPACSLinkToFile::GetFormat() const
         {
             return m_format;
         }
         
         void CPACSLinkToFile::SetFormat(const CPACSLinkToFileType_format& value)
+        {
+            m_format = value;
+        }
+        
+        void CPACSLinkToFile::SetFormat(const boost::optional<CPACSLinkToFileType_format>& value)
         {
             m_format = value;
         }

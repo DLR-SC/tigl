@@ -21,13 +21,15 @@
 #include "CPACSRotorBlades.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "TixiHelper.h"
 
 namespace tigl
 {
     namespace generated
     {
-        CPACSRotorBlades::CPACSRotorBlades(CCPACSRotorcraftModel* parent)
+        CPACSRotorBlades::CPACSRotorBlades(CCPACSRotorcraftModel* parent, CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr)
         {
             //assert(parent != NULL);
             m_parent = parent;
@@ -44,7 +46,7 @@ namespace tigl
         {
             // read element rotorBlade
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/rotorBlade")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/rotorBlade", m_rotorBlades, reinterpret_cast<CCPACSRotorBlades*>(this));
+                tixihelper::TixiReadElements(tixiHandle, xpath + "/rotorBlade", m_rotorBlades, reinterpret_cast<CCPACSRotorBlades*>(this), m_uidMgr);
             }
             
         }

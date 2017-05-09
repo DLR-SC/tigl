@@ -150,7 +150,7 @@ void CTiglFusePlane::Perform()
 
     CTiglUIDManager& uidManager = _myconfig.GetUIDManager();
     std::vector<CTiglRelativelyPositionedComponent*> rootComponentPtrs;
-    const RelativeComponentContainerType& rootComponents = uidManager.GetAllRootComponents();
+    const RelativeComponentContainerType& rootComponents = uidManager.GetRootGeometricComponents();
     for (RelativeComponentContainerType::const_iterator it = rootComponents.begin(); it != rootComponents.end(); ++it)
         rootComponentPtrs.push_back(it->second);
     _result = FuseWithChilds(NULL, rootComponentPtrs);

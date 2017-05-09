@@ -40,7 +40,7 @@ class CCPACSWingCSStructure;
 class CCPACSWingShell : public generated::CPACSWingShell
 {
 public:
-    TIGL_EXPORT CCPACSWingShell(CCPACSWingCSStructure* parent);
+    TIGL_EXPORT CCPACSWingShell(CCPACSWingCSStructure* parent, CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT int GetCellCount() const;
 

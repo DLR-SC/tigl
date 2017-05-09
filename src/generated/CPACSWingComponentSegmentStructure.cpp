@@ -20,15 +20,17 @@
 #include "CPACSWingComponentSegmentStructure.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "TixiHelper.h"
 
 namespace tigl
 {
     namespace generated
     {
-        CPACSWingComponentSegmentStructure::CPACSWingComponentSegmentStructure(CCPACSWingComponentSegment* parent) :
-            m_upperShell(reinterpret_cast<CCPACSWingCSStructure*>(this)), 
-            m_lowerShell(reinterpret_cast<CCPACSWingCSStructure*>(this))
+        CPACSWingComponentSegmentStructure::CPACSWingComponentSegmentStructure(CCPACSWingComponentSegment* parent, CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr), 
+            m_upperShell(reinterpret_cast<CCPACSWingCSStructure*>(this), m_uidMgr), 
+            m_lowerShell(reinterpret_cast<CCPACSWingCSStructure*>(this), m_uidMgr)
         {
             //assert(parent != NULL);
             m_parent = parent;
@@ -61,28 +63,28 @@ namespace tigl
             
             // read element ribsDefinitions
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/ribsDefinitions")) {
-                m_ribsDefinitions = boost::in_place(reinterpret_cast<CCPACSWingCSStructure*>(this));
+                m_ribsDefinitions = boost::in_place(reinterpret_cast<CCPACSWingCSStructure*>(this), m_uidMgr);
                 try {
                     m_ribsDefinitions->ReadCPACS(tixiHandle, xpath + "/ribsDefinitions");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read ribsDefinitions at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read ribsDefinitions at xpath " << xpath << ": " << e.what();
                     m_ribsDefinitions = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read ribsDefinitions at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read ribsDefinitions at xpath " << xpath << ": " << e.getError();
                     m_ribsDefinitions = boost::none;
                 }
             }
             
             // read element spars
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/spars")) {
-                m_spars = boost::in_place(reinterpret_cast<CCPACSWingCSStructure*>(this));
+                m_spars = boost::in_place(reinterpret_cast<CCPACSWingCSStructure*>(this), m_uidMgr);
                 try {
                     m_spars->ReadCPACS(tixiHandle, xpath + "/spars");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read spars at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read spars at xpath " << xpath << ": " << e.what();
                     m_spars = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read spars at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read spars at xpath " << xpath << ": " << e.getError();
                     m_spars = boost::none;
                 }
             }

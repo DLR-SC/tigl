@@ -17,12 +17,10 @@
 
 #pragma once
 
-#include <tixi.h>
+#include <CCPACSStringVector.h>
 #include <string>
+#include <tixi.h>
 #include "tigl_internal.h"
-#include <CCPACSStringVector.h>
-#include <CCPACSStringVector.h>
-#include <CCPACSStringVector.h>
 
 namespace tigl
 {

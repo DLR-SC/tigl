@@ -8,6 +8,8 @@ namespace tigl
     class CCPACSPoint : public generated::CPACSPoint
     {
     public:
+        TIGL_EXPORT CCPACSPoint(CTiglUIDManager* uidMgr);
+
         TIGL_EXPORT CTiglPoint AsPoint() const;
         TIGL_EXPORT void SetAsPoint(const CTiglPoint& point);
     };

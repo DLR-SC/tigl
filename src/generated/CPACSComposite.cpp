@@ -19,14 +19,20 @@
 #include "CPACSCompositeLayer.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "TixiHelper.h"
 
 namespace tigl
 {
     namespace generated
     {
-        CPACSComposite::CPACSComposite(){}
-        CPACSComposite::~CPACSComposite() {}
+        CPACSComposite::CPACSComposite(CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr) {}
+        
+        CPACSComposite::~CPACSComposite()
+        {
+            if (m_uidMgr && m_uID) m_uidMgr->UnregisterObject(*m_uID);
+        }
         
         void CPACSComposite::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
@@ -58,6 +64,7 @@ namespace tigl
                 tixihelper::TixiReadElements(tixiHandle, xpath + "/compositeLayer", m_compositeLayers);
             }
             
+            if (m_uidMgr && m_uID) m_uidMgr->RegisterObject(*m_uID, *this);
         }
         
         void CPACSComposite::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
@@ -96,11 +103,19 @@ namespace tigl
         
         void CPACSComposite::SetUID(const std::string& value)
         {
+            if (m_uidMgr) {
+                if (m_uID) m_uidMgr->UnregisterObject(*m_uID);
+                m_uidMgr->RegisterObject(value, *this);
+            }
             m_uID = value;
         }
         
         void CPACSComposite::SetUID(const boost::optional<std::string>& value)
         {
+            if (m_uidMgr) {
+                if (m_uID) m_uidMgr->UnregisterObject(*m_uID);
+                if (value) m_uidMgr->RegisterObject(*value, *this);
+            }
             m_uID = value;
         }
         

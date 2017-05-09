@@ -44,7 +44,7 @@ public:
     // Constructor
     TIGL_EXPORT CTiglAttachedRotorBlade(CCPACSRotorBladeAttachment* parent, CCPACSWing& rotorBlade, int index);
 
-    TIGL_EXPORT virtual const std::string& GetUID() const OVERRIDE;
+    TIGL_EXPORT virtual std::string GetDefaultedUID() const OVERRIDE;
 
     TIGL_EXPORT virtual CTiglTransformation GetTransformationMatrix() const OVERRIDE;
 

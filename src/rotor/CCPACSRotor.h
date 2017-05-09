@@ -56,12 +56,12 @@ class CCPACSRotor : public generated::CPACSRotor, public CTiglRelativelyPosition
 
 public:
     // Constructor
-    TIGL_EXPORT CCPACSRotor(CCPACSRotors* parent);
+    TIGL_EXPORT CCPACSRotor(CCPACSRotors* parent, CTiglUIDManager* uidMgr);
 
     // Invalidates internal state
     TIGL_EXPORT void Invalidate();
 
-    TIGL_EXPORT virtual const std::string& GetUID() const OVERRIDE;
+    TIGL_EXPORT virtual std::string GetDefaultedUID() const OVERRIDE;
 
     TIGL_EXPORT virtual CTiglTransformation GetTransformationMatrix() const OVERRIDE;
 

@@ -24,8 +24,8 @@
 namespace tigl
 {
 
-CCPACSWingCells::CCPACSWingCells(CCPACSWingShell* parent)
-    : generated::CPACSWingCells(parent) {}
+CCPACSWingCells::CCPACSWingCells(CCPACSWingShell* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSWingCells(parent, uidMgr) {}
 
 void CCPACSWingCells::Invalidate()
 {

@@ -18,14 +18,20 @@
 #include "CPACSGuideCurve.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "TixiHelper.h"
 
 namespace tigl
 {
     namespace generated
     {
-        CPACSGuideCurve::CPACSGuideCurve(){}
-        CPACSGuideCurve::~CPACSGuideCurve() {}
+        CPACSGuideCurve::CPACSGuideCurve(CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr) {}
+        
+        CPACSGuideCurve::~CPACSGuideCurve()
+        {
+            if (m_uidMgr) m_uidMgr->UnregisterObject(m_uID);
+        }
         
         void CPACSGuideCurve::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
@@ -75,14 +81,14 @@ namespace tigl
             
             // read element tangent
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/tangent")) {
-                m_tangent_choice2 = boost::in_place();
+                m_tangent_choice2 = boost::in_place(m_uidMgr);
                 try {
                     m_tangent_choice2->ReadCPACS(tixiHandle, xpath + "/tangent");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read tangent at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read tangent at xpath " << xpath << ": " << e.what();
                     m_tangent_choice2 = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read tangent at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read tangent at xpath " << xpath << ": " << e.getError();
                     m_tangent_choice2 = boost::none;
                 }
             }
@@ -97,18 +103,19 @@ namespace tigl
             
             // read element tangent
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/tangent")) {
-                m_tangent = boost::in_place();
+                m_tangent = boost::in_place(m_uidMgr);
                 try {
                     m_tangent->ReadCPACS(tixiHandle, xpath + "/tangent");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read tangent at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read tangent at xpath " << xpath << ": " << e.what();
                     m_tangent = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read tangent at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read tangent at xpath " << xpath << ": " << e.getError();
                     m_tangent = boost::none;
                 }
             }
             
+            if (m_uidMgr) m_uidMgr->RegisterObject(m_uID, *this);
         }
         
         void CPACSGuideCurve::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
@@ -174,6 +181,10 @@ namespace tigl
         
         void CPACSGuideCurve::SetUID(const std::string& value)
         {
+            if (m_uidMgr) {
+                m_uidMgr->UnregisterObject(m_uID);
+                m_uidMgr->RegisterObject(value, *this);
+            }
             m_uID = value;
         }
         

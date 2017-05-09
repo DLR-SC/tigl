@@ -18,14 +18,20 @@
 #include "CPACSRotorcraftModel.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "TixiHelper.h"
 
 namespace tigl
 {
     namespace generated
     {
-        CPACSRotorcraftModel::CPACSRotorcraftModel(){}
-        CPACSRotorcraftModel::~CPACSRotorcraftModel() {}
+        CPACSRotorcraftModel::CPACSRotorcraftModel(CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr) {}
+        
+        CPACSRotorcraftModel::~CPACSRotorcraftModel()
+        {
+            if (m_uidMgr) m_uidMgr->UnregisterObject(m_uID);
+        }
         
         void CPACSRotorcraftModel::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
@@ -52,60 +58,61 @@ namespace tigl
             
             // read element fuselages
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/fuselages")) {
-                m_fuselages = boost::in_place(reinterpret_cast<CCPACSRotorcraftModel*>(this));
+                m_fuselages = boost::in_place(reinterpret_cast<CCPACSRotorcraftModel*>(this), m_uidMgr);
                 try {
                     m_fuselages->ReadCPACS(tixiHandle, xpath + "/fuselages");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read fuselages at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read fuselages at xpath " << xpath << ": " << e.what();
                     m_fuselages = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read fuselages at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read fuselages at xpath " << xpath << ": " << e.getError();
                     m_fuselages = boost::none;
                 }
             }
             
             // read element wings
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/wings")) {
-                m_wings = boost::in_place(reinterpret_cast<CCPACSRotorcraftModel*>(this));
+                m_wings = boost::in_place(reinterpret_cast<CCPACSRotorcraftModel*>(this), m_uidMgr);
                 try {
                     m_wings->ReadCPACS(tixiHandle, xpath + "/wings");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read wings at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read wings at xpath " << xpath << ": " << e.what();
                     m_wings = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read wings at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read wings at xpath " << xpath << ": " << e.getError();
                     m_wings = boost::none;
                 }
             }
             
             // read element rotors
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/rotors")) {
-                m_rotors = boost::in_place(reinterpret_cast<CCPACSRotorcraftModel*>(this));
+                m_rotors = boost::in_place(reinterpret_cast<CCPACSRotorcraftModel*>(this), m_uidMgr);
                 try {
                     m_rotors->ReadCPACS(tixiHandle, xpath + "/rotors");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read rotors at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read rotors at xpath " << xpath << ": " << e.what();
                     m_rotors = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read rotors at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read rotors at xpath " << xpath << ": " << e.getError();
                     m_rotors = boost::none;
                 }
             }
             
             // read element rotorBlades
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/rotorBlades")) {
-                m_rotorBlades = boost::in_place(reinterpret_cast<CCPACSRotorcraftModel*>(this));
+                m_rotorBlades = boost::in_place(reinterpret_cast<CCPACSRotorcraftModel*>(this), m_uidMgr);
                 try {
                     m_rotorBlades->ReadCPACS(tixiHandle, xpath + "/rotorBlades");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read rotorBlades at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read rotorBlades at xpath " << xpath << ": " << e.what();
                     m_rotorBlades = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read rotorBlades at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read rotorBlades at xpath " << xpath << ": " << e.getError();
                     m_rotorBlades = boost::none;
                 }
             }
             
+            if (m_uidMgr) m_uidMgr->RegisterObject(m_uID, *this);
         }
         
         void CPACSRotorcraftModel::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
@@ -157,6 +164,10 @@ namespace tigl
         
         void CPACSRotorcraftModel::SetUID(const std::string& value)
         {
+            if (m_uidMgr) {
+                m_uidMgr->UnregisterObject(m_uID);
+                m_uidMgr->RegisterObject(value, *this);
+            }
             m_uID = value;
         }
         

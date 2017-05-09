@@ -30,8 +30,8 @@
 
 namespace tigl
 {
-CCPACSRotorBladeAttachment::CCPACSRotorBladeAttachment(CCPACSRotorBladeAttachments * parent)
-    : generated::CPACSRotorBladeAttachment(parent) {}
+CCPACSRotorBladeAttachment::CCPACSRotorBladeAttachment(CCPACSRotorBladeAttachments* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSRotorBladeAttachment(parent, uidMgr) {}
 
 
 // Invalidates internal state

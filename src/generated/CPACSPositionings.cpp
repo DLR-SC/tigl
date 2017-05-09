@@ -19,20 +19,23 @@
 #include "CPACSPositionings.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "TixiHelper.h"
 
 namespace tigl
 {
     namespace generated
     {
-        CPACSPositionings::CPACSPositionings(){}
+        CPACSPositionings::CPACSPositionings(CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr) {}
+        
         CPACSPositionings::~CPACSPositionings() {}
         
         void CPACSPositionings::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element positioning
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/positioning")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/positioning", m_positionings);
+                tixihelper::TixiReadElements(tixiHandle, xpath + "/positioning", m_positionings, m_uidMgr);
             }
             
         }

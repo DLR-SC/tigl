@@ -17,16 +17,17 @@
 
 #pragma once
 
-#include <tixi.h>
-#include <string>
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
-#include "tigl_internal.h"
-#include "CPACSWingSkin.h"
 #include <CCPACSWingCells.h>
+#include <string>
+#include <tixi.h>
+#include "CPACSWingSkin.h"
+#include "tigl_internal.h"
 
 namespace tigl
 {
+    class CTiglUIDManager;
     class CCPACSWingCSStructure;
     
     namespace generated
@@ -38,7 +39,7 @@ namespace tigl
         class CPACSWingShell
         {
         public:
-            TIGL_EXPORT CPACSWingShell(CCPACSWingCSStructure* parent);
+            TIGL_EXPORT CPACSWingShell(CCPACSWingCSStructure* parent, CTiglUIDManager* uidMgr);
             
             TIGL_EXPORT virtual ~CPACSWingShell();
             
@@ -47,8 +48,9 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT virtual const std::string& GetUID() const;
+            TIGL_EXPORT virtual const boost::optional<std::string>& GetUID() const;
             TIGL_EXPORT virtual void SetUID(const std::string& value);
+            TIGL_EXPORT virtual void SetUID(const boost::optional<std::string>& value);
             
             TIGL_EXPORT virtual const CPACSWingSkin& GetSkin() const;
             TIGL_EXPORT virtual CPACSWingSkin& GetSkin();
@@ -59,7 +61,9 @@ namespace tigl
         protected:
             CCPACSWingCSStructure* m_parent;
             
-            std::string                      m_uID;
+            CTiglUIDManager* m_uidMgr;
+            
+            boost::optional<std::string>     m_uID;
             CPACSWingSkin                    m_skin;
             boost::optional<CCPACSWingCells> m_cells;
             

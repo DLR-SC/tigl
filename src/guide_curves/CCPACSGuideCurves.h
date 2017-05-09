@@ -30,6 +30,8 @@ namespace tigl
 class CCPACSGuideCurves : public generated::CPACSGuideCurves
 {
 public:
+    TIGL_EXPORT CCPACSGuideCurves(CTiglUIDManager* uidMgr);
+
     TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) OVERRIDE;
 
     // Returns the total count of guide curves in this configuration

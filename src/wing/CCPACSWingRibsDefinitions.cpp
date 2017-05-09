@@ -24,10 +24,8 @@
 namespace tigl 
 {
 
-CCPACSWingRibsDefinitions::CCPACSWingRibsDefinitions(CCPACSWingCSStructure* structure)
-: generated::CPACSWingRibsDefinitions(structure)
-{
-}
+CCPACSWingRibsDefinitions::CCPACSWingRibsDefinitions(CCPACSWingCSStructure* structure, CTiglUIDManager* uidMgr)
+    : generated::CPACSWingRibsDefinitions(structure, uidMgr) {}
 
 void CCPACSWingRibsDefinitions::Invalidate()
 {
@@ -66,7 +64,7 @@ const CCPACSWingRibsDefinition& CCPACSWingRibsDefinitions::GetRibsDefinition(con
         }
     }
 
-    const std::string referenceUID = GetParent()->GetWingStructureReference().GetUID();
+    const std::string referenceUID = GetParent()->GetWingStructureReference().GetUID().value_or("");
     LOG(ERROR) << "Ribs Definition \"" << uid << "\" not found in component segment or trailing edge device with UID \"" << referenceUID << "\"";
     throw CTiglError("Error: Ribs Definition \"" + uid + "\" not found in component segment or trailing edge device with UID \"" + referenceUID + "\". Please check the CPACS document!", TIGL_ERROR);
 }

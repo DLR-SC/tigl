@@ -17,16 +17,17 @@
 
 #pragma once
 
-#include <tixi.h>
-#include <string>
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
-#include "tigl_internal.h"
-#include <TiglRotorHubType.h>
 #include <CCPACSRotorBladeAttachments.h>
+#include <string>
+#include <TiglRotorHubType.h>
+#include <tixi.h>
+#include "tigl_internal.h"
 
 namespace tigl
 {
+    class CTiglUIDManager;
     class CCPACSRotor;
     
     namespace generated
@@ -38,7 +39,7 @@ namespace tigl
         class CPACSRotorHub
         {
         public:
-            TIGL_EXPORT CPACSRotorHub(CCPACSRotor* parent);
+            TIGL_EXPORT CPACSRotorHub(CCPACSRotor* parent, CTiglUIDManager* uidMgr);
             
             TIGL_EXPORT virtual ~CPACSRotorHub();
             
@@ -68,6 +69,8 @@ namespace tigl
             
         protected:
             CCPACSRotor* m_parent;
+            
+            CTiglUIDManager* m_uidMgr;
             
             boost::optional<std::string>      m_uID;
             boost::optional<std::string>      m_name;

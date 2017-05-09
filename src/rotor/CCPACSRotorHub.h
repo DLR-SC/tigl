@@ -42,7 +42,7 @@ class CCPACSRotorHub : public generated::CPACSRotorHub
 {
 public:
     // Constructor
-    TIGL_EXPORT CCPACSRotorHub(CCPACSRotor* parent);
+    TIGL_EXPORT CCPACSRotorHub(CCPACSRotor* parent, CTiglUIDManager* uidMgr);
 
     // Returns the type of the rotor hub
     TIGL_EXPORT TiglRotorHubType GetDefaultedType() const;

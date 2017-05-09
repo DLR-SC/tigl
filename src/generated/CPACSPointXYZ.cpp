@@ -18,14 +18,20 @@
 #include "CPACSPointXYZ.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "TixiHelper.h"
 
 namespace tigl
 {
     namespace generated
     {
-        CPACSPointXYZ::CPACSPointXYZ(){}
-        CPACSPointXYZ::~CPACSPointXYZ() {}
+        CPACSPointXYZ::CPACSPointXYZ(CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr) {}
+        
+        CPACSPointXYZ::~CPACSPointXYZ()
+        {
+            if (m_uidMgr && m_uID) m_uidMgr->UnregisterObject(*m_uID);
+        }
         
         void CPACSPointXYZ::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
@@ -58,6 +64,7 @@ namespace tigl
                 LOG(ERROR) << "Required element z is missing at xpath " << xpath;
             }
             
+            if (m_uidMgr && m_uID) m_uidMgr->RegisterObject(*m_uID, *this);
         }
         
         void CPACSPointXYZ::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
@@ -89,11 +96,19 @@ namespace tigl
         
         void CPACSPointXYZ::SetUID(const std::string& value)
         {
+            if (m_uidMgr) {
+                if (m_uID) m_uidMgr->UnregisterObject(*m_uID);
+                m_uidMgr->RegisterObject(value, *this);
+            }
             m_uID = value;
         }
         
         void CPACSPointXYZ::SetUID(const boost::optional<std::string>& value)
         {
+            if (m_uidMgr) {
+                if (m_uID) m_uidMgr->UnregisterObject(*m_uID);
+                if (value) m_uidMgr->RegisterObject(*value, *this);
+            }
             m_uID = value;
         }
         

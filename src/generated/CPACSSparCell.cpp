@@ -18,23 +18,26 @@
 #include "CPACSSparCell.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "TixiHelper.h"
 
 namespace tigl
 {
     namespace generated
     {
-        CPACSSparCell::CPACSSparCell(){}
-        CPACSSparCell::~CPACSSparCell() {}
+        CPACSSparCell::CPACSSparCell(CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr) {}
+        
+        CPACSSparCell::~CPACSSparCell()
+        {
+            if (m_uidMgr && m_uID) m_uidMgr->UnregisterObject(*m_uID);
+        }
         
         void CPACSSparCell::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read attribute uID
             if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
                 m_uID = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
-            }
-            else {
-                LOG(ERROR) << "Required attribute uID is missing at xpath " << xpath;
             }
             
             // read element fromEta
@@ -83,10 +86,10 @@ namespace tigl
                 try {
                     m_web2->ReadCPACS(tixiHandle, xpath + "/web2");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read web2 at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read web2 at xpath " << xpath << ": " << e.what();
                     m_web2 = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read web2 at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read web2 at xpath " << xpath << ": " << e.getError();
                     m_web2 = boost::none;
                 }
             }
@@ -99,13 +102,16 @@ namespace tigl
                 LOG(ERROR) << "Required element rotation is missing at xpath " << xpath;
             }
             
+            if (m_uidMgr && m_uID) m_uidMgr->RegisterObject(*m_uID, *this);
         }
         
         void CPACSSparCell::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write attribute uID
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/uID");
-            tixihelper::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
+            if (m_uID) {
+                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/uID");
+                tixihelper::TixiSaveAttribute(tixiHandle, xpath, "uID", *m_uID);
+            }
             
             // write element fromEta
             tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/fromEta");
@@ -139,13 +145,26 @@ namespace tigl
             
         }
         
-        const std::string& CPACSSparCell::GetUID() const
+        const boost::optional<std::string>& CPACSSparCell::GetUID() const
         {
             return m_uID;
         }
         
         void CPACSSparCell::SetUID(const std::string& value)
         {
+            if (m_uidMgr) {
+                if (m_uID) m_uidMgr->UnregisterObject(*m_uID);
+                m_uidMgr->RegisterObject(value, *this);
+            }
+            m_uID = value;
+        }
+        
+        void CPACSSparCell::SetUID(const boost::optional<std::string>& value)
+        {
+            if (m_uidMgr) {
+                if (m_uID) m_uidMgr->UnregisterObject(*m_uID);
+                if (value) m_uidMgr->RegisterObject(*value, *this);
+            }
             m_uID = value;
         }
         

@@ -24,10 +24,8 @@
 namespace tigl
 {
 
-CCPACSWingSparPosition::CCPACSWingSparPosition(CCPACSWingSparPositions* sparPositions)
-: generated::CPACSSparPosition(sparPositions)
-{
-}
+CCPACSWingSparPosition::CCPACSWingSparPosition(CCPACSWingSparPositions* sparPositions, CTiglUIDManager* uidMgr)
+: generated::CPACSSparPosition(sparPositions, uidMgr) {}
 
 CCPACSWingSparPosition::InputType CCPACSWingSparPosition::GetInputType() const
 {

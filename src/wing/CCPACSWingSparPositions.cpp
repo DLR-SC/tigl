@@ -24,10 +24,8 @@
 namespace tigl
 {
 
-CCPACSWingSparPositions::CCPACSWingSparPositions(CCPACSWingSpars* parent)
-: generated::CPACSSparPositions(parent)
-{
-}
+CCPACSWingSparPositions::CCPACSWingSparPositions(CCPACSWingSpars* parent, CTiglUIDManager* uidMgr)
+: generated::CPACSSparPositions(parent, uidMgr) {}
 
 const CCPACSWingSparPosition& CCPACSWingSparPositions::GetSparPosition(const std::string uid) const
 {

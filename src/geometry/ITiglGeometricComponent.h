@@ -37,8 +37,8 @@ namespace tigl
 class ITiglGeometricComponent
 {
 public:
-    // Returns the unique id of this component
-    TIGL_EXPORT virtual const std::string& GetUID() const = 0;
+    // Returns the unique id of this component or an empty string if the component does not have a uid
+    TIGL_EXPORT virtual std::string GetDefaultedUID() const = 0;
 
     // Gets the loft of a geometric component
     TIGL_EXPORT virtual PNamedShape GetLoft() = 0;

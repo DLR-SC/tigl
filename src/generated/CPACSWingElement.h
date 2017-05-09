@@ -17,15 +17,17 @@
 
 #pragma once
 
-#include <tixi.h>
-#include <string>
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
-#include "tigl_internal.h"
 #include <CCPACSTransformation.h>
+#include <string>
+#include <tixi.h>
+#include "tigl_internal.h"
 
 namespace tigl
 {
+    class CTiglUIDManager;
+    
     namespace generated
     {
         // This class is used in:
@@ -35,7 +37,7 @@ namespace tigl
         class CPACSWingElement
         {
         public:
-            TIGL_EXPORT CPACSWingElement();
+            TIGL_EXPORT CPACSWingElement(CTiglUIDManager* uidMgr);
             TIGL_EXPORT virtual ~CPACSWingElement();
             
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
@@ -58,6 +60,8 @@ namespace tigl
             TIGL_EXPORT virtual CCPACSTransformation& GetTransformation();
             
         protected:
+            CTiglUIDManager* m_uidMgr;
+            
             std::string                  m_uID;
             std::string                  m_name;
             boost::optional<std::string> m_description;

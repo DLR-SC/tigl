@@ -17,14 +17,15 @@
 
 #pragma once
 
-#include <tixi.h>
 #include <string>
+#include <tixi.h>
 #include <vector>
-#include "UniquePtr.h"
 #include "tigl_internal.h"
+#include "UniquePtr.h"
 
 namespace tigl
 {
+    class CTiglUIDManager;
     class CCPACSGuideCurveProfile;
     
     namespace generated
@@ -36,7 +37,7 @@ namespace tigl
         class CPACSGuideCurveProfiles
         {
         public:
-            TIGL_EXPORT CPACSGuideCurveProfiles();
+            TIGL_EXPORT CPACSGuideCurveProfiles(CTiglUIDManager* uidMgr);
             TIGL_EXPORT virtual ~CPACSGuideCurveProfiles();
             
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
@@ -46,6 +47,8 @@ namespace tigl
             TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSGuideCurveProfile> >& GetGuideCurveProfiles();
             
         protected:
+            CTiglUIDManager* m_uidMgr;
+            
             std::vector<unique_ptr<CCPACSGuideCurveProfile> > m_guideCurveProfiles;
             
         private:

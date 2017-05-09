@@ -69,17 +69,14 @@ namespace tigl
 {
 
 // Constructor
-CCPACSFuselageProfile::CCPACSFuselageProfile()
-    : invalidated(true), profileWireAlgo(new CTiglInterpolateBsplineWire)
+CCPACSFuselageProfile::CCPACSFuselageProfile(CTiglUIDManager* uidMgr)
+    : generated::CPACSProfileGeometry(uidMgr), invalidated(true), profileWireAlgo(new CTiglInterpolateBsplineWire)
 {
     Cleanup();
 }
 
 // Destructor
-CCPACSFuselageProfile::~CCPACSFuselageProfile()
-{
-    Cleanup();
-}
+CCPACSFuselageProfile::~CCPACSFuselageProfile() {}
 
 // Cleanup routine
 void CCPACSFuselageProfile::Cleanup()

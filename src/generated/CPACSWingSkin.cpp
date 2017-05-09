@@ -24,7 +24,8 @@ namespace tigl
 {
     namespace generated
     {
-        CPACSWingSkin::CPACSWingSkin(){}
+        CPACSWingSkin::CPACSWingSkin() {}
+        
         CPACSWingSkin::~CPACSWingSkin() {}
         
         void CPACSWingSkin::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)

@@ -17,13 +17,13 @@
 
 #pragma once
 
-#include <tixi.h>
-#include <string>
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
-#include "tigl_internal.h"
-#include "CPACSRibCrossingBehaviour.h"
 #include <CCPACSWingRibRotation.h>
+#include <string>
+#include <tixi.h>
+#include "CPACSRibCrossingBehaviour.h"
+#include "tigl_internal.h"
 
 namespace tigl
 {

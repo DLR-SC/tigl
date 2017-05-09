@@ -47,7 +47,7 @@ public:
     };
 
 public:
-    TIGL_EXPORT CCPACSWingSparSegment(CCPACSWingSparSegments* sparSegments);
+    TIGL_EXPORT CCPACSWingSparSegment(CCPACSWingSparSegments* sparSegments, CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT void Invalidate();
 

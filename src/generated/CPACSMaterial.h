@@ -17,16 +17,18 @@
 
 #pragma once
 
-#include <tixi.h>
-#include <string>
-#include <vector>
-#include "UniquePtr.h"
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
+#include <string>
+#include <tixi.h>
+#include <vector>
 #include "tigl_internal.h"
+#include "UniquePtr.h"
 
 namespace tigl
 {
+    class CTiglUIDManager;
+    
     namespace generated
     {
         class CPACSPostFailure;
@@ -38,7 +40,7 @@ namespace tigl
         class CPACSMaterial
         {
         public:
-            TIGL_EXPORT CPACSMaterial();
+            TIGL_EXPORT CPACSMaterial(CTiglUIDManager* uidMgr);
             TIGL_EXPORT virtual ~CPACSMaterial();
             
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
@@ -192,6 +194,8 @@ namespace tigl
             TIGL_EXPORT virtual void SetTau23_choice3(const boost::optional<double>& value);
             
         protected:
+            CTiglUIDManager* m_uidMgr;
+            
             boost::optional<std::string>               m_uID;
             std::string                                m_name;
             boost::optional<std::string>               m_description;

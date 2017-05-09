@@ -40,11 +40,11 @@ void CCPACSWings::Invalidate()
     }
 }
 
-CCPACSWings::CCPACSWings(CCPACSRotorcraftModel* parent)
-    : generated::CPACSWings(parent) {}
+CCPACSWings::CCPACSWings(CCPACSRotorcraftModel* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSWings(parent, uidMgr) {}
 
-CCPACSWings::CCPACSWings(CCPACSAircraftModel* parent)
-    : generated::CPACSWings(parent) {}
+CCPACSWings::CCPACSWings(CCPACSAircraftModel* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSWings(parent, uidMgr) {}
 
 bool CCPACSWings::HasProfile(std::string uid) const
 {

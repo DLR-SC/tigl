@@ -30,7 +30,7 @@ class CCPACSWingSpars;
 class CCPACSWingSparSegments : public generated::CPACSSparSegments
 {
 public:
-    TIGL_EXPORT CCPACSWingSparSegments(CCPACSWingSpars* parent);
+    TIGL_EXPORT CCPACSWingSparSegments(CCPACSWingSpars* parent, CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT void Invalidate();
 

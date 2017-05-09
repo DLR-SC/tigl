@@ -18,14 +18,20 @@
 #include "CPACSProfileGeometry.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "TixiHelper.h"
 
 namespace tigl
 {
     namespace generated
     {
-        CPACSProfileGeometry::CPACSProfileGeometry(){}
-        CPACSProfileGeometry::~CPACSProfileGeometry() {}
+        CPACSProfileGeometry::CPACSProfileGeometry(CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr) {}
+        
+        CPACSProfileGeometry::~CPACSProfileGeometry()
+        {
+            if (m_uidMgr) m_uidMgr->UnregisterObject(m_uID);
+        }
         
         void CPACSProfileGeometry::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
@@ -61,10 +67,10 @@ namespace tigl
                 try {
                     m_pointList_choice1->ReadCPACS(tixiHandle, xpath + "/pointList");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read pointList at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read pointList at xpath " << xpath << ": " << e.what();
                     m_pointList_choice1 = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read pointList at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read pointList at xpath " << xpath << ": " << e.getError();
                     m_pointList_choice1 = boost::none;
                 }
             }
@@ -75,14 +81,15 @@ namespace tigl
                 try {
                     m_cst2D_choice2->ReadCPACS(tixiHandle, xpath + "/cst2D");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read cst2D at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read cst2D at xpath " << xpath << ": " << e.what();
                     m_cst2D_choice2 = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read cst2D at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read cst2D at xpath " << xpath << ": " << e.getError();
                     m_cst2D_choice2 = boost::none;
                 }
             }
             
+            if (m_uidMgr) m_uidMgr->RegisterObject(m_uID, *this);
         }
         
         void CPACSProfileGeometry::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
@@ -143,6 +150,10 @@ namespace tigl
         
         void CPACSProfileGeometry::SetUID(const std::string& value)
         {
+            if (m_uidMgr) {
+                m_uidMgr->UnregisterObject(m_uID);
+                m_uidMgr->RegisterObject(value, *this);
+            }
             m_uID = value;
         }
         

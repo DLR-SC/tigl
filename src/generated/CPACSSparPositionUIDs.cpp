@@ -24,7 +24,8 @@ namespace tigl
 {
     namespace generated
     {
-        CPACSSparPositionUIDs::CPACSSparPositionUIDs(){}
+        CPACSSparPositionUIDs::CPACSSparPositionUIDs() {}
+        
         CPACSSparPositionUIDs::~CPACSSparPositionUIDs() {}
         
         void CPACSSparPositionUIDs::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
@@ -48,9 +49,9 @@ namespace tigl
             return m_sparPositionUIDs;
         }
         
-        void CPACSSparPositionUIDs::SetSparPositionUIDs(const std::vector<std::string>& value)
+        std::vector<std::string>& CPACSSparPositionUIDs::GetSparPositionUIDs()
         {
-            m_sparPositionUIDs = value;
+            return m_sparPositionUIDs;
         }
         
     }

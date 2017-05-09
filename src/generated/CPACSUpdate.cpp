@@ -24,7 +24,8 @@ namespace tigl
 {
     namespace generated
     {
-        CPACSUpdate::CPACSUpdate(){}
+        CPACSUpdate::CPACSUpdate() {}
+        
         CPACSUpdate::~CPACSUpdate() {}
         
         void CPACSUpdate::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)

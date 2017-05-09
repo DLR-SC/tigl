@@ -20,20 +20,25 @@
 #include "CPACSRotorHub.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "TixiHelper.h"
 
 namespace tigl
 {
     namespace generated
     {
-        CPACSRotorHub::CPACSRotorHub(CCPACSRotor* parent) :
-            m_rotorBladeAttachments(reinterpret_cast<CCPACSRotorHub*>(this))
+        CPACSRotorHub::CPACSRotorHub(CCPACSRotor* parent, CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr), 
+            m_rotorBladeAttachments(reinterpret_cast<CCPACSRotorHub*>(this), m_uidMgr)
         {
             //assert(parent != NULL);
             m_parent = parent;
         }
         
-        CPACSRotorHub::~CPACSRotorHub() {}
+        CPACSRotorHub::~CPACSRotorHub()
+        {
+            if (m_uidMgr && m_uID) m_uidMgr->UnregisterObject(*m_uID);
+        }
         
         CCPACSRotor* CPACSRotorHub::GetParent() const
         {
@@ -70,6 +75,7 @@ namespace tigl
                 LOG(ERROR) << "Required element rotorBladeAttachments is missing at xpath " << xpath;
             }
             
+            if (m_uidMgr && m_uID) m_uidMgr->RegisterObject(*m_uID, *this);
         }
         
         void CPACSRotorHub::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
@@ -111,11 +117,19 @@ namespace tigl
         
         void CPACSRotorHub::SetUID(const std::string& value)
         {
+            if (m_uidMgr) {
+                if (m_uID) m_uidMgr->UnregisterObject(*m_uID);
+                m_uidMgr->RegisterObject(value, *this);
+            }
             m_uID = value;
         }
         
         void CPACSRotorHub::SetUID(const boost::optional<std::string>& value)
         {
+            if (m_uidMgr) {
+                if (m_uID) m_uidMgr->UnregisterObject(*m_uID);
+                if (value) m_uidMgr->RegisterObject(*value, *this);
+            }
             m_uID = value;
         }
         

@@ -20,13 +20,15 @@
 #include "CPACSSparCrossSection.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "TixiHelper.h"
 
 namespace tigl
 {
     namespace generated
     {
-        CPACSSparCrossSection::CPACSSparCrossSection(CCPACSWingSparSegment* parent)
+        CPACSSparCrossSection::CPACSSparCrossSection(CCPACSWingSparSegment* parent, CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr)
         {
             //assert(parent != NULL);
             m_parent = parent;
@@ -47,10 +49,10 @@ namespace tigl
                 try {
                     m_upperCap->ReadCPACS(tixiHandle, xpath + "/upperCap");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read upperCap at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read upperCap at xpath " << xpath << ": " << e.what();
                     m_upperCap = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read upperCap at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read upperCap at xpath " << xpath << ": " << e.getError();
                     m_upperCap = boost::none;
                 }
             }
@@ -61,10 +63,10 @@ namespace tigl
                 try {
                     m_lowerCap->ReadCPACS(tixiHandle, xpath + "/lowerCap");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read lowerCap at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read lowerCap at xpath " << xpath << ": " << e.what();
                     m_lowerCap = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read lowerCap at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read lowerCap at xpath " << xpath << ": " << e.getError();
                     m_lowerCap = boost::none;
                 }
             }
@@ -83,24 +85,24 @@ namespace tigl
                 try {
                     m_web2->ReadCPACS(tixiHandle, xpath + "/web2");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read web2 at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read web2 at xpath " << xpath << ": " << e.what();
                     m_web2 = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read web2 at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read web2 at xpath " << xpath << ": " << e.getError();
                     m_web2 = boost::none;
                 }
             }
             
             // read element sparCells
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/sparCells")) {
-                m_sparCells = boost::in_place();
+                m_sparCells = boost::in_place(m_uidMgr);
                 try {
                     m_sparCells->ReadCPACS(tixiHandle, xpath + "/sparCells");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read sparCells at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read sparCells at xpath " << xpath << ": " << e.what();
                     m_sparCells = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read sparCells at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read sparCells at xpath " << xpath << ": " << e.getError();
                     m_sparCells = boost::none;
                 }
             }

@@ -17,19 +17,18 @@
 
 #pragma once
 
-#include <tixi.h>
-#include <string>
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
-#include "tigl_internal.h"
+#include <string>
+#include <tixi.h>
 #include "CPACSCap.h"
-#include "CPACSCap.h"
-#include "CPACSWeb.h"
-#include "CPACSWeb.h"
 #include "CPACSSparCells.h"
+#include "CPACSWeb.h"
+#include "tigl_internal.h"
 
 namespace tigl
 {
+    class CTiglUIDManager;
     class CCPACSWingSparSegment;
     
     namespace generated
@@ -41,7 +40,7 @@ namespace tigl
         class CPACSSparCrossSection
         {
         public:
-            TIGL_EXPORT CPACSSparCrossSection(CCPACSWingSparSegment* parent);
+            TIGL_EXPORT CPACSSparCrossSection(CCPACSWingSparSegment* parent, CTiglUIDManager* uidMgr);
             
             TIGL_EXPORT virtual ~CPACSSparCrossSection();
             
@@ -70,6 +69,8 @@ namespace tigl
             
         protected:
             CCPACSWingSparSegment* m_parent;
+            
+            CTiglUIDManager* m_uidMgr;
             
             boost::optional<CPACSCap>       m_upperCap;
             boost::optional<CPACSCap>       m_lowerCap;

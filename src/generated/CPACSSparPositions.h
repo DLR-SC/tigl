@@ -17,14 +17,15 @@
 
 #pragma once
 
-#include <tixi.h>
 #include <string>
+#include <tixi.h>
 #include <vector>
-#include "UniquePtr.h"
 #include "tigl_internal.h"
+#include "UniquePtr.h"
 
 namespace tigl
 {
+    class CTiglUIDManager;
     class CCPACSWingSparPosition;
     class CCPACSWingSpars;
     
@@ -37,7 +38,7 @@ namespace tigl
         class CPACSSparPositions
         {
         public:
-            TIGL_EXPORT CPACSSparPositions(CCPACSWingSpars* parent);
+            TIGL_EXPORT CPACSSparPositions(CCPACSWingSpars* parent, CTiglUIDManager* uidMgr);
             
             TIGL_EXPORT virtual ~CPACSSparPositions();
             
@@ -51,6 +52,8 @@ namespace tigl
             
         protected:
             CCPACSWingSpars* m_parent;
+            
+            CTiglUIDManager* m_uidMgr;
             
             std::vector<unique_ptr<CCPACSWingSparPosition> > m_sparPositions;
             

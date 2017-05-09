@@ -17,14 +17,16 @@
 
 #pragma once
 
-#include <tixi.h>
-#include <string>
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
+#include <string>
+#include <tixi.h>
 #include "tigl_internal.h"
 
 namespace tigl
 {
+    class CTiglUIDManager;
+    
     namespace generated
     {
         // This class is used in:
@@ -34,7 +36,7 @@ namespace tigl
         class CPACSPoint
         {
         public:
-            TIGL_EXPORT CPACSPoint();
+            TIGL_EXPORT CPACSPoint(CTiglUIDManager* uidMgr);
             TIGL_EXPORT virtual ~CPACSPoint();
             
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
@@ -57,6 +59,8 @@ namespace tigl
             TIGL_EXPORT virtual void SetZ(const boost::optional<double>& value);
             
         protected:
+            CTiglUIDManager* m_uidMgr;
+            
             boost::optional<std::string> m_uID;
             boost::optional<double>      m_x;
             boost::optional<double>      m_y;

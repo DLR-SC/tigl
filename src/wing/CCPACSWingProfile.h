@@ -51,7 +51,7 @@ class CCPACSWingProfile : public generated::CPACSProfileGeometry
 
 public:
     // Algo
-    TIGL_EXPORT CCPACSWingProfile();
+    TIGL_EXPORT CCPACSWingProfile(CTiglUIDManager* uidMgr);
 
     // Virtual Destructor
     TIGL_EXPORT virtual ~CCPACSWingProfile();

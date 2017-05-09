@@ -31,7 +31,7 @@ private:
     typedef std::vector<CCPACSWingSparPosition*> CCPACSWingSparPositionContainer;
 
 public:
-    TIGL_EXPORT CCPACSWingSparPositions(CCPACSWingSpars* parent);
+    TIGL_EXPORT CCPACSWingSparPositions(CCPACSWingSpars* parent, CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT const CCPACSWingSparPosition& GetSparPosition(const std::string uid) const;
     TIGL_EXPORT CCPACSWingSparPosition& GetSparPosition(const std::string uid);

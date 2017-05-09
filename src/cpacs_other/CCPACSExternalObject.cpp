@@ -59,10 +59,10 @@ namespace external_object_private
 }
 using namespace external_object_private;
 
-CCPACSExternalObject::CCPACSExternalObject(CCPACSExternalObjects* parent)
-    : generated::CPACSGenericGeometricComponent(parent), CTiglRelativelyPositionedComponent(&m_parentUID, &m_transformation) {}
+CCPACSExternalObject::CCPACSExternalObject(CCPACSExternalObjects* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSGenericGeometricComponent(parent, uidMgr), CTiglRelativelyPositionedComponent(&m_parentUID, &m_transformation) {}
 
-const std::string& CCPACSExternalObject::GetUID() const {
+std::string CCPACSExternalObject::GetDefaultedUID() const {
     return generated::CPACSGenericGeometricComponent::GetUID();
 }
 
@@ -84,7 +84,7 @@ void CCPACSExternalObject::ReadCPACS(const TixiDocumentHandle& tixiHandle, const
     // Register ourself at the unique id manager
     if (m_parent) {
         CCPACSConfiguration& config = m_parent->GetParent()->GetConfiguration();
-        config.GetUIDManager().AddUID(m_uID, this);
+        config.GetUIDManager().AddGeometricComponent(m_uID, this);
     }
 }
 
@@ -100,24 +100,29 @@ TiglGeometricComponentType CCPACSExternalObject::GetComponentType() const
 
 PNamedShape CCPACSExternalObject::BuildLoft()
 {
-    const std::string& fileType = CPACSLinkToFileType_formatToString(m_linkToFile.GetFormat());
-    PTiglCADImporter importer = CTiglImporterFactory::Instance().Create(fileType);
-    if (importer) {
-        ListPNamedShape shapes = importer->Read(_filePath);
-        PNamedShape shapeGroup = CGroupShapes(shapes);
-        if (shapeGroup) {
-            shapeGroup->SetName(GetUID().c_str());
-            shapeGroup->SetShortName(GetUID().c_str());
+    if (m_linkToFile.GetFormat()) {
+        const std::string& fileType = CPACSLinkToFileType_formatToString(*m_linkToFile.GetFormat());
+        PTiglCADImporter importer = CTiglImporterFactory::Instance().Create(fileType);
+        if (importer) {
+            ListPNamedShape shapes = importer->Read(_filePath);
+            PNamedShape shapeGroup = CGroupShapes(shapes);
+            if (shapeGroup) {
+                shapeGroup->SetName(GetUID().c_str());
+                shapeGroup->SetShortName(GetUID().c_str());
 
-            // Apply transformation
-            TopoDS_Shape sh = GetTransformationMatrix().Transform(shapeGroup->Shape());
-            shapeGroup->SetShape(sh);
+                // Apply transformation
+                TopoDS_Shape sh = GetTransformationMatrix().Transform(shapeGroup->Shape());
+                shapeGroup->SetShape(sh);
+            }
+
+            return shapeGroup;
         }
-
-        return shapeGroup;
+        else {
+            throw CTiglError("Cannot open externalComponent. Unknown file format " + fileType);
+        }
     }
     else {
-        throw CTiglError("Cannot open externalComponent. Unknown file format " + fileType);
+        throw CTiglError("Cannot open externalComponent. No file format given");
     }
 }
 

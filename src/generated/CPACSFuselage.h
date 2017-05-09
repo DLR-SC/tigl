@@ -17,20 +17,21 @@
 
 #pragma once
 
-#include <tixi.h>
-#include <string>
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
-#include "tigl_internal.h"
-#include <TiglSymmetryAxis.h>
-#include <CCPACSTransformation.h>
 #include <CCPACSFuselageSections.h>
-#include <CCPACSPositionings.h>
 #include <CCPACSFuselageSegments.h>
+#include <CCPACSPositionings.h>
+#include <CCPACSTransformation.h>
+#include <string>
+#include <TiglSymmetryAxis.h>
+#include <tixi.h>
 #include "CPACSFuselageCutOuts.h"
+#include "tigl_internal.h"
 
 namespace tigl
 {
+    class CTiglUIDManager;
     class CCPACSFuselages;
     
     namespace generated
@@ -42,7 +43,7 @@ namespace tigl
         class CPACSFuselage
         {
         public:
-            TIGL_EXPORT CPACSFuselage(CCPACSFuselages* parent);
+            TIGL_EXPORT CPACSFuselage(CCPACSFuselages* parent, CTiglUIDManager* uidMgr);
             
             TIGL_EXPORT virtual ~CPACSFuselage();
             
@@ -86,6 +87,8 @@ namespace tigl
             
         protected:
             CCPACSFuselages* m_parent;
+            
+            CTiglUIDManager* m_uidMgr;
             
             std::string                           m_uID;
             boost::optional<TiglSymmetryAxis>     m_symmetry;

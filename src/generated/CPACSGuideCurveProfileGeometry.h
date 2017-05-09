@@ -17,16 +17,18 @@
 
 #pragma once
 
-#include <tixi.h>
-#include <string>
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
-#include "tigl_internal.h"
-#include <TiglSymmetryAxis.h>
 #include <CCPACSPointListRelXYZ.h>
+#include <string>
+#include <TiglSymmetryAxis.h>
+#include <tixi.h>
+#include "tigl_internal.h"
 
 namespace tigl
 {
+    class CTiglUIDManager;
+    
     namespace generated
     {
         // This class is used in:
@@ -36,7 +38,7 @@ namespace tigl
         class CPACSGuideCurveProfileGeometry
         {
         public:
-            TIGL_EXPORT CPACSGuideCurveProfileGeometry();
+            TIGL_EXPORT CPACSGuideCurveProfileGeometry(CTiglUIDManager* uidMgr);
             TIGL_EXPORT virtual ~CPACSGuideCurveProfileGeometry();
             
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
@@ -60,6 +62,8 @@ namespace tigl
             TIGL_EXPORT virtual CCPACSPointListRelXYZ& GetPointList();
             
         protected:
+            CTiglUIDManager* m_uidMgr;
+            
             boost::optional<TiglSymmetryAxis> m_symmetry;
             std::string                       m_uID;
             std::string                       m_name;

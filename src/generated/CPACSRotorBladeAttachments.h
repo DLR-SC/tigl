@@ -17,14 +17,15 @@
 
 #pragma once
 
-#include <tixi.h>
 #include <string>
+#include <tixi.h>
 #include <vector>
-#include "UniquePtr.h"
 #include "tigl_internal.h"
+#include "UniquePtr.h"
 
 namespace tigl
 {
+    class CTiglUIDManager;
     class CCPACSRotorBladeAttachment;
     class CCPACSRotorHub;
     
@@ -37,7 +38,7 @@ namespace tigl
         class CPACSRotorBladeAttachments
         {
         public:
-            TIGL_EXPORT CPACSRotorBladeAttachments(CCPACSRotorHub* parent);
+            TIGL_EXPORT CPACSRotorBladeAttachments(CCPACSRotorHub* parent, CTiglUIDManager* uidMgr);
             
             TIGL_EXPORT virtual ~CPACSRotorBladeAttachments();
             
@@ -51,6 +52,8 @@ namespace tigl
             
         protected:
             CCPACSRotorHub* m_parent;
+            
+            CTiglUIDManager* m_uidMgr;
             
             std::vector<unique_ptr<CCPACSRotorBladeAttachment> > m_rotorBladeAttachments;
             

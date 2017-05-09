@@ -63,6 +63,11 @@ namespace tigl
             std::auto_ptr<T>::operator=(const_cast<unique_ptr<U>&>(other));
             return *this;
         }
+
+        operator bool() const
+        {
+            return std::auto_ptr<T>::get() != NULL;
+        }
     };
 
     template <typename T> unique_ptr<T> make_unique() { return unique_ptr<T>(new T()); }

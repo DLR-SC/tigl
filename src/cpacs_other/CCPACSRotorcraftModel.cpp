@@ -23,16 +23,19 @@
 namespace tigl
 {
 CCPACSRotorcraftModel::CCPACSRotorcraftModel(CCPACSConfiguration* config)
-    : CTiglRelativelyPositionedComponent(NULL, NULL), config(config) {}
+    : generated::CPACSRotorcraftModel(config ? &config->GetUIDManager() : NULL), CTiglRelativelyPositionedComponent(NULL, NULL), config(config) {}
+
+CCPACSRotorcraftModel::CCPACSRotorcraftModel(CTiglUIDManager* uidMgr)
+    : generated::CPACSRotorcraftModel(uidMgr), CTiglRelativelyPositionedComponent(NULL, NULL), config(NULL) {}
 
 void CCPACSRotorcraftModel::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) {
     generated::CPACSRotorcraftModel::ReadCPACS(tixiHandle, xpath);
     if (config) {
-        config->GetUIDManager().AddUID(m_uID, this);
+        config->GetUIDManager().AddGeometricComponent(m_uID, this);
     }
 }
 
-const std::string& CCPACSRotorcraftModel::GetUID() const {
+std::string CCPACSRotorcraftModel::GetDefaultedUID() const {
     return generated::CPACSRotorcraftModel::GetUID();
 }
 

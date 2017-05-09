@@ -32,11 +32,11 @@
 
 namespace tigl
 {
-CCPACSFuselages::CCPACSFuselages(CCPACSAircraftModel* parent)
-    : generated::CPACSFuselages(parent) {}
+CCPACSFuselages::CCPACSFuselages(CCPACSAircraftModel* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSFuselages(parent, uidMgr) {}
 
-CCPACSFuselages::CCPACSFuselages(CCPACSRotorcraftModel* parent)
-    : generated::CPACSFuselages(parent) {}
+CCPACSFuselages::CCPACSFuselages(CCPACSRotorcraftModel* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSFuselages(parent, uidMgr) {}
 
 // Invalidates internal state
 void CCPACSFuselages::Invalidate()

@@ -17,15 +17,16 @@
 
 #pragma once
 
-#include <tixi.h>
-#include <string>
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
-#include "tigl_internal.h"
 #include <CCPACSWingCSStructure.h>
+#include <string>
+#include <tixi.h>
+#include "tigl_internal.h"
 
 namespace tigl
 {
+    class CTiglUIDManager;
     class CCPACSWingComponentSegments;
     
     namespace generated
@@ -37,7 +38,7 @@ namespace tigl
         class CPACSComponentSegment
         {
         public:
-            TIGL_EXPORT CPACSComponentSegment(CCPACSWingComponentSegments* parent);
+            TIGL_EXPORT CPACSComponentSegment(CCPACSWingComponentSegments* parent, CTiglUIDManager* uidMgr);
             
             TIGL_EXPORT virtual ~CPACSComponentSegment();
             
@@ -46,8 +47,9 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT virtual const std::string& GetUID() const;
+            TIGL_EXPORT virtual const boost::optional<std::string>& GetUID() const;
             TIGL_EXPORT virtual void SetUID(const std::string& value);
+            TIGL_EXPORT virtual void SetUID(const boost::optional<std::string>& value);
             
             TIGL_EXPORT virtual const std::string& GetName() const;
             TIGL_EXPORT virtual void SetName(const std::string& value);
@@ -68,7 +70,9 @@ namespace tigl
         protected:
             CCPACSWingComponentSegments* m_parent;
             
-            std::string                            m_uID;
+            CTiglUIDManager* m_uidMgr;
+            
+            boost::optional<std::string>           m_uID;
             std::string                            m_name;
             boost::optional<std::string>           m_description;
             std::string                            m_fromElementUID;

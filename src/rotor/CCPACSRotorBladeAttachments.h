@@ -38,7 +38,7 @@ class CCPACSRotorBladeAttachments : public generated::CPACSRotorBladeAttachments
 {
 public:
     // Constructor
-    TIGL_EXPORT CCPACSRotorBladeAttachments(CCPACSRotorHub* parent);
+    TIGL_EXPORT CCPACSRotorBladeAttachments(CCPACSRotorHub* parent, CTiglUIDManager* uidMgr);
 
     // Invalidates internal state
     TIGL_EXPORT void Invalidate();

@@ -32,8 +32,8 @@ namespace tigl
 {
 
 // Constructor
-CCPACSRotorHub::CCPACSRotorHub(CCPACSRotor* parent)
-    : generated::CPACSRotorHub(parent) {}
+CCPACSRotorHub::CCPACSRotorHub(CCPACSRotor* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSRotorHub(parent, uidMgr) {}
 
 // Returns the type of the rotor hub
 TiglRotorHubType CCPACSRotorHub::GetDefaultedType() const

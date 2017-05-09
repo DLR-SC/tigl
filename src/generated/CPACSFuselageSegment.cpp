@@ -20,19 +20,24 @@
 #include "CPACSFuselageSegment.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "TixiHelper.h"
 
 namespace tigl
 {
     namespace generated
     {
-        CPACSFuselageSegment::CPACSFuselageSegment(CCPACSFuselageSegments* parent)
+        CPACSFuselageSegment::CPACSFuselageSegment(CCPACSFuselageSegments* parent, CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr)
         {
             //assert(parent != NULL);
             m_parent = parent;
         }
         
-        CPACSFuselageSegment::~CPACSFuselageSegment() {}
+        CPACSFuselageSegment::~CPACSFuselageSegment()
+        {
+            if (m_uidMgr) m_uidMgr->UnregisterObject(m_uID);
+        }
         
         CCPACSFuselageSegments* CPACSFuselageSegment::GetParent() const
         {
@@ -80,18 +85,19 @@ namespace tigl
             
             // read element guideCurves
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/guideCurves")) {
-                m_guideCurves = boost::in_place();
+                m_guideCurves = boost::in_place(m_uidMgr);
                 try {
                     m_guideCurves->ReadCPACS(tixiHandle, xpath + "/guideCurves");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read guideCurves at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read guideCurves at xpath " << xpath << ": " << e.what();
                     m_guideCurves = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read guideCurves at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read guideCurves at xpath " << xpath << ": " << e.getError();
                     m_guideCurves = boost::none;
                 }
             }
             
+            if (m_uidMgr) m_uidMgr->RegisterObject(m_uID, *this);
         }
         
         void CPACSFuselageSegment::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
@@ -133,6 +139,10 @@ namespace tigl
         
         void CPACSFuselageSegment::SetUID(const std::string& value)
         {
+            if (m_uidMgr) {
+                m_uidMgr->UnregisterObject(m_uID);
+                m_uidMgr->RegisterObject(value, *this);
+            }
             m_uID = value;
         }
         

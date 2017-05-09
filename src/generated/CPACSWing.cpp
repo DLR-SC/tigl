@@ -21,29 +21,39 @@
 #include "CPACSWing.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "TixiHelper.h"
 
 namespace tigl
 {
     namespace generated
     {
-        CPACSWing::CPACSWing(CCPACSRotorBlades* parent) :
-            m_segments(reinterpret_cast<CCPACSWing*>(this))
+        CPACSWing::CPACSWing(CCPACSRotorBlades* parent, CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr), 
+            m_transformation(m_uidMgr), 
+            m_sections(m_uidMgr), 
+            m_segments(reinterpret_cast<CCPACSWing*>(this), m_uidMgr)
         {
             //assert(parent != NULL);
             m_parent = parent;
             m_parentType = &typeid(CCPACSRotorBlades);
         }
         
-        CPACSWing::CPACSWing(CCPACSWings* parent) :
-            m_segments(reinterpret_cast<CCPACSWing*>(this))
+        CPACSWing::CPACSWing(CCPACSWings* parent, CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr), 
+            m_transformation(m_uidMgr), 
+            m_sections(m_uidMgr), 
+            m_segments(reinterpret_cast<CCPACSWing*>(this), m_uidMgr)
         {
             //assert(parent != NULL);
             m_parent = parent;
             m_parentType = &typeid(CCPACSWings);
         }
         
-        CPACSWing::~CPACSWing() {}
+        CPACSWing::~CPACSWing()
+        {
+            if (m_uidMgr) m_uidMgr->UnregisterObject(m_uID);
+        }
         
         void CPACSWing::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
@@ -96,14 +106,14 @@ namespace tigl
             
             // read element positionings
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/positionings")) {
-                m_positionings = boost::in_place();
+                m_positionings = boost::in_place(m_uidMgr);
                 try {
                     m_positionings->ReadCPACS(tixiHandle, xpath + "/positionings");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read positionings at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read positionings at xpath " << xpath << ": " << e.what();
                     m_positionings = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read positionings at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read positionings at xpath " << xpath << ": " << e.getError();
                     m_positionings = boost::none;
                 }
             }
@@ -118,18 +128,19 @@ namespace tigl
             
             // read element componentSegments
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/componentSegments")) {
-                m_componentSegments = boost::in_place(reinterpret_cast<CCPACSWing*>(this));
+                m_componentSegments = boost::in_place(reinterpret_cast<CCPACSWing*>(this), m_uidMgr);
                 try {
                     m_componentSegments->ReadCPACS(tixiHandle, xpath + "/componentSegments");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read componentSegments at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read componentSegments at xpath " << xpath << ": " << e.what();
                     m_componentSegments = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read componentSegments at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read componentSegments at xpath " << xpath << ": " << e.getError();
                     m_componentSegments = boost::none;
                 }
             }
             
+            if (m_uidMgr) m_uidMgr->RegisterObject(m_uID, *this);
         }
         
         void CPACSWing::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
@@ -193,6 +204,10 @@ namespace tigl
         
         void CPACSWing::SetUID(const std::string& value)
         {
+            if (m_uidMgr) {
+                m_uidMgr->UnregisterObject(m_uID);
+                m_uidMgr->RegisterObject(value, *this);
+            }
             m_uID = value;
         }
         

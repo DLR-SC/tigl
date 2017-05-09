@@ -19,20 +19,23 @@
 #include "CPACSSparCells.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "TixiHelper.h"
 
 namespace tigl
 {
     namespace generated
     {
-        CPACSSparCells::CPACSSparCells(){}
+        CPACSSparCells::CPACSSparCells(CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr) {}
+        
         CPACSSparCells::~CPACSSparCells() {}
         
         void CPACSSparCells::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element sparCell
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/sparCell")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/sparCell", m_sparCells);
+                tixihelper::TixiReadElements(tixiHandle, xpath + "/sparCell", m_sparCells, m_uidMgr);
             }
             
         }

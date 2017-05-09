@@ -26,39 +26,76 @@
 #ifndef CTIGLUIDMANAGER_H
 #define CTIGLUIDMANAGER_H
 
-#include "tigl_internal.h"
-#include "CTiglRelativelyPositionedComponent.h"
+#include <typeinfo>
 #include <map>
 #include <string>
+#include "tigl_internal.h"
+#include "CTiglError.h"
+#include "CTiglRelativelyPositionedComponent.h"
 
-namespace tigl 
+namespace tigl
 {
-
 typedef std::map<const std::string, ITiglGeometricComponent*> ShapeContainerType;
 typedef std::map<const std::string, CTiglRelativelyPositionedComponent*> RelativeComponentContainerType;
 
 class CTiglUIDManager
 {
 public:
+    struct TypedPtr {
+        TypedPtr(void* ptr, const std::type_info* type)
+            : ptr(ptr), type(type) {}
+
+        void* ptr;
+        const std::type_info* type;
+    };
+
+public:
     // Constructor
     TIGL_EXPORT CTiglUIDManager();
 
-    // Function to add a UID and a geometric component to the uid store.
-    TIGL_EXPORT void AddUID(const std::string& uid, ITiglGeometricComponent* componentPtr);
+    TIGL_EXPORT void RegisterObject(const std::string& uid, void* object, const std::type_info& typeInfo);
 
-    // Checks if a UID already exists. 
-    TIGL_EXPORT bool HasUID(const std::string& uid) const;
+    template<typename T>
+    TIGL_EXPORT void RegisterObject(const std::string& uid, T& object) {
+        RegisterObject(uid, &object, typeid(object));
+    }
+
+    TIGL_EXPORT TypedPtr ResolveObject(const std::string& uid) const;
+    TIGL_EXPORT TypedPtr ResolveObject(const std::string& uid, const std::type_info& typeInfo) const;
+
+    template<typename T>
+    TIGL_EXPORT T& ResolveObject(const std::string& uid) const {
+        return *static_cast<T* const>(ResolveObject(uid, typeid(T)).ptr);
+    }
+
+    template<typename T>
+    TIGL_EXPORT std::vector<T*> ResolveObjects() const {
+        const std::type_info* ti = &typeid(T);
+        std::vector<T*> objects;
+        for (CPACSObjectMap::const_iterator it = cpacsObjects.begin(); it != cpacsObjects.end(); ++it)
+            if (it->second.type == ti)
+                objects.push_back(static_cast<T* const>(it->second.ptr));
+        return objects;
+    }
+
+    TIGL_EXPORT void UnregisterObject(const std::string& uid);
+
+    // Function to add a UID and a geometric component to the uid store.
+    TIGL_EXPORT void AddGeometricComponent(const std::string& uid, ITiglGeometricComponent* componentPtr);
+
+    // Checks if a UID already exists.
+    TIGL_EXPORT bool HasGeometricComponent(const std::string& uid) const;
 
     // Returns a pointer to the geometric component for the given unique id.
-    TIGL_EXPORT ITiglGeometricComponent& GetComponent(const std::string& uid) const;
+    TIGL_EXPORT ITiglGeometricComponent& GetGeometricComponent(const std::string& uid) const;
 
     // Returns the parent component for a component or a null pointer if there is no parent.
-    TIGL_EXPORT CTiglRelativelyPositionedComponent* GetParentComponent(const std::string& uid) const;
+    TIGL_EXPORT CTiglRelativelyPositionedComponent* GetParentGeometricComponent(const std::string& uid) const;
 
     // Returns the container with all root components of the geometric topology that have children.
-    TIGL_EXPORT const RelativeComponentContainerType& GetAllRootComponents() const;
+    TIGL_EXPORT const RelativeComponentContainerType& GetRootGeometricComponents() const;
 
-    // Returns the contianer with all registered shapes
+    // Returns the container with all registered shapes
     TIGL_EXPORT const ShapeContainerType& GetShapeContainer() const;
 
     // Clears the uid store
@@ -75,18 +112,21 @@ protected:
     CTiglRelativelyPositionedComponent& GetRelativeComponent(const std::string& uid) const;
 
 private:
+    typedef std::map<std::string, TypedPtr> CPACSObjectMap;
 
+private:
     // Copy constructor
     CTiglUIDManager(const CTiglUIDManager& );
 
     // Assignment operator
     void operator=(const CTiglUIDManager& );
 
-    RelativeComponentContainerType      relativeComponents;             /**< All relative components of the configuration */
-    ShapeContainerType                  allShapes;                      /**< All components of the configuration */
-    CTiglRelativelyPositionedComponent*             rootComponent;                  /**< Root component injected by configuration */
-    RelativeComponentContainerType      rootComponents;                 /**< All root components that have children */
-    bool                                invalidated;                    /**< Internal state flag */
+    RelativeComponentContainerType      relativeComponents;             ///< All relative components of the configuration
+    ShapeContainerType                  allShapes;                      ///< All components of the configuration
+    CTiglRelativelyPositionedComponent* rootComponent;                  ///< Root component injected by configuration
+    RelativeComponentContainerType      rootComponents;                 ///< All root components that have children
+    CPACSObjectMap                      cpacsObjects;                   ///< All objects in CPACS which have a UID
+    bool                                invalidated;                    ///< Internal state flag
 };
 
 } // end namespace tigl

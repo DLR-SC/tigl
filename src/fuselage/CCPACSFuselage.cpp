@@ -52,8 +52,8 @@
 namespace tigl
 {
 
-CCPACSFuselage::CCPACSFuselage(CCPACSFuselages* parent)
-    : generated::CPACSFuselage(parent)
+CCPACSFuselage::CCPACSFuselage(CCPACSFuselages* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSFuselage(parent, uidMgr)
     , CTiglRelativelyPositionedComponent(&m_parentUID, &m_transformation, &m_symmetry) {
     Cleanup();
     if (parent->IsParent<CCPACSAircraftModel>())
@@ -93,7 +93,7 @@ void CCPACSFuselage::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string&
     Cleanup();
     generated::CPACSFuselage::ReadCPACS(tixiHandle, fuselageXPath);
     // Register ourself at the unique id manager
-    configuration->GetUIDManager().AddUID(m_uID, this);
+    configuration->GetUIDManager().AddGeometricComponent(m_uID, this);
 }
 
 // Returns the parent configuration
@@ -102,7 +102,7 @@ CCPACSConfiguration& CCPACSFuselage::GetConfiguration() const
     return *configuration;
 }
 
-const std::string& CCPACSFuselage::GetUID() const {
+std::string CCPACSFuselage::GetDefaultedUID() const {
     return generated::CPACSFuselage::GetUID();
 }
 

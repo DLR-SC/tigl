@@ -20,19 +20,24 @@
 #include "CPACSWingShell.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "TixiHelper.h"
 
 namespace tigl
 {
     namespace generated
     {
-        CPACSWingShell::CPACSWingShell(CCPACSWingCSStructure* parent)
+        CPACSWingShell::CPACSWingShell(CCPACSWingCSStructure* parent, CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr)
         {
             //assert(parent != NULL);
             m_parent = parent;
         }
         
-        CPACSWingShell::~CPACSWingShell() {}
+        CPACSWingShell::~CPACSWingShell()
+        {
+            if (m_uidMgr && m_uID) m_uidMgr->UnregisterObject(*m_uID);
+        }
         
         CCPACSWingCSStructure* CPACSWingShell::GetParent() const
         {
@@ -45,9 +50,6 @@ namespace tigl
             if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
                 m_uID = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
             }
-            else {
-                LOG(ERROR) << "Required attribute uID is missing at xpath " << xpath;
-            }
             
             // read element skin
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/skin")) {
@@ -59,25 +61,28 @@ namespace tigl
             
             // read element cells
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/cells")) {
-                m_cells = boost::in_place(reinterpret_cast<CCPACSWingShell*>(this));
+                m_cells = boost::in_place(reinterpret_cast<CCPACSWingShell*>(this), m_uidMgr);
                 try {
                     m_cells->ReadCPACS(tixiHandle, xpath + "/cells");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read cells at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read cells at xpath " << xpath << ": " << e.what();
                     m_cells = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read cells at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read cells at xpath " << xpath << ": " << e.getError();
                     m_cells = boost::none;
                 }
             }
             
+            if (m_uidMgr && m_uID) m_uidMgr->RegisterObject(*m_uID, *this);
         }
         
         void CPACSWingShell::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write attribute uID
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/uID");
-            tixihelper::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
+            if (m_uID) {
+                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/uID");
+                tixihelper::TixiSaveAttribute(tixiHandle, xpath, "uID", *m_uID);
+            }
             
             // write element skin
             tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/skin");
@@ -91,13 +96,26 @@ namespace tigl
             
         }
         
-        const std::string& CPACSWingShell::GetUID() const
+        const boost::optional<std::string>& CPACSWingShell::GetUID() const
         {
             return m_uID;
         }
         
         void CPACSWingShell::SetUID(const std::string& value)
         {
+            if (m_uidMgr) {
+                if (m_uID) m_uidMgr->UnregisterObject(*m_uID);
+                m_uidMgr->RegisterObject(value, *this);
+            }
+            m_uID = value;
+        }
+        
+        void CPACSWingShell::SetUID(const boost::optional<std::string>& value)
+        {
+            if (m_uidMgr) {
+                if (m_uID) m_uidMgr->UnregisterObject(*m_uID);
+                if (value) m_uidMgr->RegisterObject(*value, *this);
+            }
             m_uID = value;
         }
         

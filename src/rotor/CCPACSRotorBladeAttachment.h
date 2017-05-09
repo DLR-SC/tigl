@@ -39,7 +39,7 @@ class CCPACSRotorBladeAttachment : private generated::CPACSRotorBladeAttachment
 {
 
 public:
-    TIGL_EXPORT CCPACSRotorBladeAttachment(CCPACSRotorBladeAttachments* parent);
+    TIGL_EXPORT CCPACSRotorBladeAttachment(CCPACSRotorBladeAttachments* parent, CTiglUIDManager* uidMgr);
 
     using generated::CPACSRotorBladeAttachment::GetParent;
 

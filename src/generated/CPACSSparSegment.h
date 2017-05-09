@@ -17,14 +17,17 @@
 
 #pragma once
 
-#include <tixi.h>
-#include <string>
-#include "tigl_internal.h"
+#include <boost/optional.hpp>
+#include <boost/utility/in_place_factory.hpp>
 #include <CCPACSWingSparPositionUIDs.h>
+#include <string>
+#include <tixi.h>
 #include "CPACSSparCrossSection.h"
+#include "tigl_internal.h"
 
 namespace tigl
 {
+    class CTiglUIDManager;
     class CCPACSWingSparSegments;
     
     namespace generated
@@ -36,7 +39,7 @@ namespace tigl
         class CPACSSparSegment
         {
         public:
-            TIGL_EXPORT CPACSSparSegment(CCPACSWingSparSegments* parent);
+            TIGL_EXPORT CPACSSparSegment(CCPACSWingSparSegments* parent, CTiglUIDManager* uidMgr);
             
             TIGL_EXPORT virtual ~CPACSSparSegment();
             
@@ -45,8 +48,9 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT virtual const std::string& GetUID() const;
+            TIGL_EXPORT virtual const boost::optional<std::string>& GetUID() const;
             TIGL_EXPORT virtual void SetUID(const std::string& value);
+            TIGL_EXPORT virtual void SetUID(const boost::optional<std::string>& value);
             
             TIGL_EXPORT virtual const std::string& GetName() const;
             TIGL_EXPORT virtual void SetName(const std::string& value);
@@ -63,11 +67,13 @@ namespace tigl
         protected:
             CCPACSWingSparSegments* m_parent;
             
-            std::string                m_uID;
-            std::string                m_name;
-            std::string                m_description;
-            CCPACSWingSparPositionUIDs m_sparPositionUIDs;
-            CPACSSparCrossSection      m_sparCrossSection;
+            CTiglUIDManager* m_uidMgr;
+            
+            boost::optional<std::string> m_uID;
+            std::string                  m_name;
+            std::string                  m_description;
+            CCPACSWingSparPositionUIDs   m_sparPositionUIDs;
+            CPACSSparCrossSection        m_sparCrossSection;
             
         private:
             #ifdef HAVE_CPP11

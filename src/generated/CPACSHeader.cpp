@@ -24,7 +24,8 @@ namespace tigl
 {
     namespace generated
     {
-        CPACSHeader::CPACSHeader(){}
+        CPACSHeader::CPACSHeader() {}
+        
         CPACSHeader::~CPACSHeader() {}
         
         void CPACSHeader::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
@@ -80,10 +81,10 @@ namespace tigl
                 try {
                     m_updates->ReadCPACS(tixiHandle, xpath + "/updates");
                 } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read updates at xpath << " << xpath << ": " << e.what();
+                    LOG(ERROR) << "Failed to read updates at xpath " << xpath << ": " << e.what();
                     m_updates = boost::none;
                 } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read updates at xpath << " << xpath << ": " << e.getError();
+                    LOG(ERROR) << "Failed to read updates at xpath " << xpath << ": " << e.getError();
                     m_updates = boost::none;
                 }
             }

@@ -39,6 +39,8 @@ namespace tigl
 class CCPACSFuselageSectionElements : public generated::CPACSFuselageElements
 {
 public:
+    TIGL_EXPORT CCPACSFuselageSectionElements(CTiglUIDManager* uidMgr);
+
     // Get element count for this section
     TIGL_EXPORT int GetSectionElementCount() const;
 

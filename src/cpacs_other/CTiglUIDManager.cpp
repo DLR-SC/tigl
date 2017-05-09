@@ -35,12 +35,59 @@ namespace tigl
 CTiglUIDManager::CTiglUIDManager()
     : invalidated(true), rootComponent(NULL) {}
 
+void CTiglUIDManager::RegisterObject(const std::string& uid, void* object, const std::type_info& typeInfo) {
+    if (uid.empty()) {
+        throw CTiglError("Tried to register an empty uid for type " + std::string(typeInfo.name()));
+    }
+
+    // check existence
+    const CPACSObjectMap::iterator it = cpacsObjects.find(uid);
+    if (it != std::end(cpacsObjects)) {
+        throw CTiglError("Tried to register uid " + uid + " for type " + std::string(typeInfo.name()) + " which is already registered to an instance of " + std::string(it->second.type->name()));
+    }
+
+    // insert
+    cpacsObjects.insert(it, std::make_pair(uid, TypedPtr(
+        object,
+        &typeInfo
+    )));
+}
+
+CTiglUIDManager::TypedPtr CTiglUIDManager::ResolveObject(const std::string& uid, const std::type_info& typeInfo) const {
+    const TypedPtr object = ResolveObject(uid);
+
+    // check type
+    if (&typeInfo != object.type) {
+        throw CTiglError("Object with uid \"" + uid + "\" is not a " + std::string(typeInfo.name()) + " but a " + std::string(object.type->name()));
+    }
+
+    return object;
+}
+
+CTiglUIDManager::TypedPtr CTiglUIDManager::ResolveObject(const std::string& uid) const {
+    // check existence
+    const CPACSObjectMap::const_iterator it = cpacsObjects.find(uid);
+    if (it == std::end(cpacsObjects)) {
+        throw CTiglError("No object is registered for uid \"" + uid + "\"");
+    }
+    return it->second;
+}
+
+void CTiglUIDManager::UnregisterObject(const std::string& uid) {
+    const CPACSObjectMap::const_iterator it = cpacsObjects.find(uid);
+    if (it == std::end(cpacsObjects)) {
+        throw CTiglError("No object is registered for uid \"" + uid + "\"");
+    }
+    cpacsObjects.erase(it);
+}
+
 namespace {
     void writeComponent(CTiglRelativelyPositionedComponent* c, int level = 0) {
         std::string indentation;
         for (int i = 0; i < level; i++)
             indentation += '\t';
-        LOG(INFO) << indentation << c->GetUID() << std::endl;
+        const auto uid = c->GetDefaultedUID();
+        LOG(INFO) << indentation << (uid.empty() ? "<no uid>" : uid) << std::endl;
         const CTiglRelativelyPositionedComponent::ChildContainerType& children = c->GetChildren(false);
         for (CTiglRelativelyPositionedComponent::ChildContainerType::const_iterator it = children.begin(); it != children.end(); ++it)
             writeComponent(*it, level + 1);
@@ -63,18 +110,18 @@ void CTiglUIDManager::Update()
 }
 
 // Function to add a UID and a geometric component to the uid store.
-void CTiglUIDManager::AddUID(const std::string& uid, ITiglGeometricComponent* componentPtr)
+void CTiglUIDManager::AddGeometricComponent(const std::string& uid, ITiglGeometricComponent* componentPtr)
 {
     if (uid.empty()) {
-        throw CTiglError("Empty UID in CTiglUIDManager::AddUID", TIGL_XML_ERROR);
+        throw CTiglError("Empty UID in CTiglUIDManager::AddGeometricComponent", TIGL_XML_ERROR);
     }
 
-    if (HasUID(uid)) {
-        throw CTiglError("Duplicate UID " + uid + " in CPACS file (CTiglUIDManager::AddUID)", TIGL_XML_ERROR);
+    if (HasGeometricComponent(uid)) {
+        throw CTiglError("Duplicate UID " + uid + " in CPACS file (CTiglUIDManager::AddGeometricComponent)", TIGL_XML_ERROR);
     }
 
     if (componentPtr == NULL) {
-        throw CTiglError("Null pointer for component in CTiglUIDManager::AddUID", TIGL_NULL_POINTER);
+        throw CTiglError("Null pointer for component in CTiglUIDManager::AddGeometricComponent", TIGL_NULL_POINTER);
     }
 
     CTiglRelativelyPositionedComponent* tmp = dynamic_cast<CTiglRelativelyPositionedComponent*>(componentPtr);
@@ -86,24 +133,24 @@ void CTiglUIDManager::AddUID(const std::string& uid, ITiglGeometricComponent* co
 }
 
 // Checks if a UID already exists.
-bool CTiglUIDManager::HasUID(const std::string& uid) const
+bool CTiglUIDManager::HasGeometricComponent(const std::string& uid) const
 {
     if (uid.empty()) {
-        throw CTiglError("Empty UID in CTiglUIDManager::HasUID", TIGL_XML_ERROR);
+        throw CTiglError("Empty UID in CTiglUIDManager::HasGeometricComponent", TIGL_XML_ERROR);
     }
 
     return (allShapes.find(uid) != allShapes.end());
 }
 
 // Returns a pointer to the geometric component for the given unique id.
-ITiglGeometricComponent& CTiglUIDManager::GetComponent(const std::string& uid) const
+ITiglGeometricComponent& CTiglUIDManager::GetGeometricComponent(const std::string& uid) const
 {
     if (uid.empty()) {
-        throw CTiglError("Empty UID in CTiglUIDManager::GetComponent", TIGL_UID_ERROR);
+        throw CTiglError("Empty UID in CTiglUIDManager::GetGeometricComponent", TIGL_UID_ERROR);
     }
 
-    if (!HasUID(uid)) {
-        throw CTiglError("UID " + std_to_string(uid) + " not found in CTiglUIDManager::GetComponent", TIGL_UID_ERROR);
+    if (!HasGeometricComponent(uid)) {
+        throw CTiglError("UID " + std_to_string(uid) + " not found in CTiglUIDManager::GetGeometricComponent", TIGL_UID_ERROR);
     }
 
     return *allShapes.find(uid)->second;
@@ -113,12 +160,12 @@ ITiglGeometricComponent& CTiglUIDManager::GetComponent(const std::string& uid) c
 CTiglRelativelyPositionedComponent& CTiglUIDManager::GetRelativeComponent(const std::string& uid) const
 {
     if (uid.empty()) {
-        throw CTiglError("Empty UID in CTiglUIDManager::GetComponent", TIGL_XML_ERROR);
+        throw CTiglError("Empty UID in CTiglUIDManager::GetGeometricComponent", TIGL_XML_ERROR);
     }
 
     const RelativeComponentContainerType::const_iterator it = relativeComponents.find(uid);
     if (it == relativeComponents.end()) {
-        throw CTiglError("UID '"+uid+"' not found in CTiglUIDManager::GetComponent", TIGL_XML_ERROR);
+        throw CTiglError("UID '"+uid+"' not found in CTiglUIDManager::GetGeometricComponent", TIGL_XML_ERROR);
     }
 
     return *it->second;
@@ -131,12 +178,13 @@ void CTiglUIDManager::Clear()
     relativeComponents.clear();
     allShapes.clear();
     rootComponents.clear();
+    cpacsObjects.clear();
     invalidated = true;
 }
 
 // Returns the parent component for a component or a null pointer
 // if there is no parent.
-CTiglRelativelyPositionedComponent* CTiglUIDManager::GetParentComponent(const std::string& uid) const
+CTiglRelativelyPositionedComponent* CTiglUIDManager::GetParentGeometricComponent(const std::string& uid) const
 {
     CTiglRelativelyPositionedComponent& component = GetRelativeComponent(uid);
     const boost::optional<const std::string&> parentUID = component.GetParentUID();
@@ -144,7 +192,7 @@ CTiglRelativelyPositionedComponent* CTiglUIDManager::GetParentComponent(const st
 }
 
 // Returns the container with all root components of the geometric topology that have children.
-const RelativeComponentContainerType& CTiglUIDManager::GetAllRootComponents() const
+const RelativeComponentContainerType& CTiglUIDManager::GetRootGeometricComponents() const
 {
     const_cast<CTiglUIDManager&>(*this).Update(); // TODO(bgruber): hack to keep up logical constness, think about mutable members
     return rootComponents;

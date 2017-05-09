@@ -19,20 +19,23 @@
 #include "CPACSWingAirfoils.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "TixiHelper.h"
 
 namespace tigl
 {
     namespace generated
     {
-        CPACSWingAirfoils::CPACSWingAirfoils(){}
+        CPACSWingAirfoils::CPACSWingAirfoils(CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr) {}
+        
         CPACSWingAirfoils::~CPACSWingAirfoils() {}
         
         void CPACSWingAirfoils::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element wingAirfoil
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/wingAirfoil")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/wingAirfoil", m_wingAirfoils);
+                tixihelper::TixiReadElements(tixiHandle, xpath + "/wingAirfoil", m_wingAirfoils, m_uidMgr);
             }
             
         }

@@ -17,18 +17,20 @@
 
 #pragma once
 
-#include <tixi.h>
-#include <string>
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
-#include "tigl_internal.h"
 #include <CCPACSFuselages.h>
-#include <CCPACSWings.h>
-#include <CCPACSRotors.h>
 #include <CCPACSRotorBlades.h>
+#include <CCPACSRotors.h>
+#include <CCPACSWings.h>
+#include <string>
+#include <tixi.h>
+#include "tigl_internal.h"
 
 namespace tigl
 {
+    class CTiglUIDManager;
+    
     namespace generated
     {
         // This class is used in:
@@ -38,7 +40,7 @@ namespace tigl
         class CPACSRotorcraftModel
         {
         public:
-            TIGL_EXPORT CPACSRotorcraftModel();
+            TIGL_EXPORT CPACSRotorcraftModel(CTiglUIDManager* uidMgr);
             TIGL_EXPORT virtual ~CPACSRotorcraftModel();
             
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
@@ -67,6 +69,8 @@ namespace tigl
             TIGL_EXPORT virtual boost::optional<CCPACSRotorBlades>& GetRotorBlades();
             
         protected:
+            CTiglUIDManager* m_uidMgr;
+            
             std::string                        m_uID;
             std::string                        m_name;
             boost::optional<std::string>       m_description;

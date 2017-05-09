@@ -24,7 +24,8 @@ namespace tigl
 {
     namespace generated
     {
-        CPACSCompositeLayer::CPACSCompositeLayer(){}
+        CPACSCompositeLayer::CPACSCompositeLayer() {}
+        
         CPACSCompositeLayer::~CPACSCompositeLayer() {}
         
         void CPACSCompositeLayer::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)

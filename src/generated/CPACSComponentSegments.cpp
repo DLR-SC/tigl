@@ -21,13 +21,15 @@
 #include "CPACSComponentSegments.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "TixiHelper.h"
 
 namespace tigl
 {
     namespace generated
     {
-        CPACSComponentSegments::CPACSComponentSegments(CCPACSWing* parent)
+        CPACSComponentSegments::CPACSComponentSegments(CCPACSWing* parent, CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr)
         {
             //assert(parent != NULL);
             m_parent = parent;
@@ -44,7 +46,7 @@ namespace tigl
         {
             // read element componentSegment
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/componentSegment")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/componentSegment", m_componentSegments, reinterpret_cast<CCPACSWingComponentSegments*>(this));
+                tixihelper::TixiReadElements(tixiHandle, xpath + "/componentSegment", m_componentSegments, reinterpret_cast<CCPACSWingComponentSegments*>(this), m_uidMgr);
             }
             
         }

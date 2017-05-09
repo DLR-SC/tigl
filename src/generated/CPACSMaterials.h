@@ -17,17 +17,19 @@
 
 #pragma once
 
-#include <tixi.h>
-#include <string>
-#include <vector>
-#include "UniquePtr.h"
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
-#include "tigl_internal.h"
+#include <string>
+#include <tixi.h>
+#include <vector>
 #include "CPACSComposites.h"
+#include "tigl_internal.h"
+#include "UniquePtr.h"
 
 namespace tigl
 {
+    class CTiglUIDManager;
+    
     namespace generated
     {
         class CPACSMaterial;
@@ -39,7 +41,7 @@ namespace tigl
         class CPACSMaterials
         {
         public:
-            TIGL_EXPORT CPACSMaterials();
+            TIGL_EXPORT CPACSMaterials(CTiglUIDManager* uidMgr);
             TIGL_EXPORT virtual ~CPACSMaterials();
             
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
@@ -52,6 +54,8 @@ namespace tigl
             TIGL_EXPORT virtual boost::optional<CPACSComposites>& GetComposites();
             
         protected:
+            CTiglUIDManager* m_uidMgr;
+            
             std::vector<unique_ptr<CPACSMaterial> > m_materials;
             boost::optional<CPACSComposites>        m_composites;
             

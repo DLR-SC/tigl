@@ -24,8 +24,8 @@
 
 namespace tigl
 {
-CCPACSWingRibCrossSection::CCPACSWingRibCrossSection(CCPACSWingRibsDefinition* parent)
-    : generated::CPACSWingRibCrossSection(parent) {}
+CCPACSWingRibCrossSection::CCPACSWingRibCrossSection(CCPACSWingRibsDefinition* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSWingRibCrossSection(parent, uidMgr) {}
 
 double CCPACSWingRibCrossSection::GetXRotation() const
 {
@@ -38,7 +38,7 @@ double CCPACSWingRibCrossSection::GetXRotation() const
 void CCPACSWingRibCrossSection::SetXRotation(double rotation)
 {
     if (!m_ribRotation)
-        m_ribRotation = boost::in_place();
+        m_ribRotation = boost::in_place(m_uidMgr);
     m_ribRotation->SetX(rotation);
 
     // invalidate whole component segment structure, since rib could be referenced anywher

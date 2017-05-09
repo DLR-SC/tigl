@@ -17,14 +17,15 @@
 
 #pragma once
 
-#include <tixi.h>
 #include <string>
+#include <tixi.h>
 #include <vector>
-#include "UniquePtr.h"
 #include "tigl_internal.h"
+#include "UniquePtr.h"
 
 namespace tigl
 {
+    class CTiglUIDManager;
     class CCPACSFuselageSectionElement;
     
     namespace generated
@@ -36,7 +37,7 @@ namespace tigl
         class CPACSFuselageElements
         {
         public:
-            TIGL_EXPORT CPACSFuselageElements();
+            TIGL_EXPORT CPACSFuselageElements(CTiglUIDManager* uidMgr);
             TIGL_EXPORT virtual ~CPACSFuselageElements();
             
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
@@ -46,6 +47,8 @@ namespace tigl
             TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSFuselageSectionElement> >& GetElements();
             
         protected:
+            CTiglUIDManager* m_uidMgr;
+            
             std::vector<unique_ptr<CCPACSFuselageSectionElement> > m_elements;
             
         private:

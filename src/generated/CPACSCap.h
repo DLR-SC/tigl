@@ -17,12 +17,12 @@
 
 #pragma once
 
-#include <tixi.h>
-#include <string>
-#include "CTiglError.h"
-#include <typeinfo>
-#include "tigl_internal.h"
 #include <CCPACSMaterial.h>
+#include <string>
+#include <tixi.h>
+#include <typeinfo>
+#include "CTiglError.h"
+#include "tigl_internal.h"
 
 namespace tigl
 {

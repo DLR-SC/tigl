@@ -17,17 +17,18 @@
 
 #pragma once
 
-#include <tixi.h>
-#include <string>
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
-#include "tigl_internal.h"
-#include <TiglSymmetryAxis.h>
 #include <CCPACSTransformation.h>
+#include <string>
+#include <TiglSymmetryAxis.h>
+#include <tixi.h>
 #include "CPACSLinkToFile.h"
+#include "tigl_internal.h"
 
 namespace tigl
 {
+    class CTiglUIDManager;
     class CCPACSExternalObjects;
     
     namespace generated
@@ -39,7 +40,7 @@ namespace tigl
         class CPACSGenericGeometricComponent
         {
         public:
-            TIGL_EXPORT CPACSGenericGeometricComponent(CCPACSExternalObjects* parent);
+            TIGL_EXPORT CPACSGenericGeometricComponent(CCPACSExternalObjects* parent, CTiglUIDManager* uidMgr);
             
             TIGL_EXPORT virtual ~CPACSGenericGeometricComponent();
             
@@ -74,6 +75,8 @@ namespace tigl
             
         protected:
             CCPACSExternalObjects* m_parent;
+            
+            CTiglUIDManager* m_uidMgr;
             
             std::string                       m_uID;
             boost::optional<TiglSymmetryAxis> m_symmetry;

@@ -30,9 +30,9 @@ class CCPACSConfiguration;
 class CCPACSExternalObject : public generated::CPACSGenericGeometricComponent, public CTiglRelativelyPositionedComponent
 {
 public:
-    TIGL_EXPORT CCPACSExternalObject(CCPACSExternalObjects* parent);
+    TIGL_EXPORT CCPACSExternalObject(CCPACSExternalObjects* parent, CTiglUIDManager* uidMgr);
     
-    TIGL_EXPORT virtual const std::string& GetUID() const OVERRIDE;
+    TIGL_EXPORT virtual std::string GetDefaultedUID() const OVERRIDE;
 
     TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& objectXPath) OVERRIDE;
     

@@ -17,15 +17,16 @@
 
 #pragma once
 
-#include <tixi.h>
-#include <string>
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
-#include "tigl_internal.h"
 #include <CCPACSGuideCurves.h>
+#include <string>
+#include <tixi.h>
+#include "tigl_internal.h"
 
 namespace tigl
 {
+    class CTiglUIDManager;
     class CCPACSWingSegments;
     
     namespace generated
@@ -37,7 +38,7 @@ namespace tigl
         class CPACSWingSegment
         {
         public:
-            TIGL_EXPORT CPACSWingSegment(CCPACSWingSegments* parent);
+            TIGL_EXPORT CPACSWingSegment(CCPACSWingSegments* parent, CTiglUIDManager* uidMgr);
             
             TIGL_EXPORT virtual ~CPACSWingSegment();
             
@@ -67,6 +68,8 @@ namespace tigl
             
         protected:
             CCPACSWingSegments* m_parent;
+            
+            CTiglUIDManager* m_uidMgr;
             
             std::string                        m_uID;
             std::string                        m_name;

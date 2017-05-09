@@ -18,14 +18,22 @@
 #include "CPACSFuselageSection.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "TixiHelper.h"
 
 namespace tigl
 {
     namespace generated
     {
-        CPACSFuselageSection::CPACSFuselageSection(){}
-        CPACSFuselageSection::~CPACSFuselageSection() {}
+        CPACSFuselageSection::CPACSFuselageSection(CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr), 
+            m_transformation(m_uidMgr), 
+            m_elements(m_uidMgr) {}
+        
+        CPACSFuselageSection::~CPACSFuselageSection()
+        {
+            if (m_uidMgr) m_uidMgr->UnregisterObject(m_uID);
+        }
         
         void CPACSFuselageSection::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
@@ -66,6 +74,7 @@ namespace tigl
                 LOG(ERROR) << "Required element elements is missing at xpath " << xpath;
             }
             
+            if (m_uidMgr) m_uidMgr->RegisterObject(m_uID, *this);
         }
         
         void CPACSFuselageSection::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
@@ -101,6 +110,10 @@ namespace tigl
         
         void CPACSFuselageSection::SetUID(const std::string& value)
         {
+            if (m_uidMgr) {
+                m_uidMgr->UnregisterObject(m_uID);
+                m_uidMgr->RegisterObject(value, *this);
+            }
             m_uID = value;
         }
         
