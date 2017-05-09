@@ -17,7 +17,6 @@
           <wing uID="Wing">
             <name>Wing</name>
             <description/>
-            <parentUID/>
             <transformation>
               <scaling>
                 <x>1</x>

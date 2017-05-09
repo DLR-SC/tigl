@@ -81,6 +81,9 @@ public:
 
     TIGL_EXPORT double GetSpacing() const;
     TIGL_EXPORT void SetSpacing(double);
+
+private:
+    void invalidateStructure();
 };
 
 } // end namespace tigl

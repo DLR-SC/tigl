@@ -1511,13 +1511,17 @@ MaterialList CCPACSWingComponentSegment::GetMaterials(double eta, double xsi, Ti
         int ncells = shell->GetCellCount();
         for (int i = 1; i <= ncells; ++i){
             CCPACSWingCell& cell = shell->GetCell(i);
+            if (!cell.GetMaterial().IsValid()) {
+                continue;
+            }
+
             if (cell.IsInside(eta,xsi)) {
                 list.push_back(&(cell.GetMaterial()));
             }
         }
-            
+
         // add complete skin, only if no cells are defined
-        if (list.empty()){
+        if (list.empty() && shell->GetMaterial().IsValid()){
             list.push_back(&(shell->GetMaterial()));
         }
         

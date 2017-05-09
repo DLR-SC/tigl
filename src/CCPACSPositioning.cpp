@@ -90,6 +90,7 @@ namespace tigl {
     }
 
     const CTiglPoint& CCPACSPositioning::GetFromPoint() {
+        Update();
         return _fromPoint;
     }
 
@@ -99,6 +100,7 @@ namespace tigl {
     }
 
     const CTiglPoint& CCPACSPositioning::GetToPoint() {
+        Update();
         return _toPoint;
     }
 

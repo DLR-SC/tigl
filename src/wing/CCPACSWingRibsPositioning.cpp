@@ -56,7 +56,7 @@ void CCPACSWingRibsPositioning::SetEtaStart(double value)
     m_sparPositionStartUID_choice3 = boost::none;
 
     // invalidate whole component segment structure, since cells could reference the ribs
-    GetParent()->GetParent()->Invalidate();
+    invalidateStructure();
 }
 
 const std::string& CCPACSWingRibsPositioning::GetElementStartUID() const
@@ -74,7 +74,7 @@ void CCPACSWingRibsPositioning::SetElementStartUID(const std::string& uid)
     m_etaStart_choice1 = boost::none;
     m_sparPositionStartUID_choice3 = boost::none;
 
-    GetParent()->GetParent()->Invalidate();
+    invalidateStructure();
 }
 
 const std::string& CCPACSWingRibsPositioning::GetSparPositionStartUID() const
@@ -92,7 +92,7 @@ void CCPACSWingRibsPositioning::SetSparPositionStartUID(const std::string& uid)
     m_etaStart_choice1 = boost::none;
     m_elementStartUID_choice2 = boost::none;
 
-    GetParent()->GetParent()->Invalidate();
+    invalidateStructure();
 }
 
 CCPACSWingRibsPositioning::EndDefinitionType CCPACSWingRibsPositioning::GetEndDefinitionType() const
@@ -121,7 +121,7 @@ void CCPACSWingRibsPositioning::SetEtaEnd(double value)
     m_elementEndUID_choice2 = boost::none;
     m_sparPositionEndUID_choice3 = boost::none;
 
-    GetParent()->GetParent()->Invalidate();
+    invalidateStructure();
 }
 
 const std::string& CCPACSWingRibsPositioning::GetElementEndUID() const
@@ -139,7 +139,7 @@ void CCPACSWingRibsPositioning::SetElementEndUID(const std::string& uid)
     m_etaEnd_choice1 = boost::none;
     m_sparPositionEndUID_choice3 = boost::none;
 
-    GetParent()->GetParent()->Invalidate();
+    invalidateStructure();
 }
 
 const std::string& CCPACSWingRibsPositioning::GetSparPositionEndUID() const
@@ -157,7 +157,7 @@ void CCPACSWingRibsPositioning::SetSparPositionEndUID(const std::string& uid)
     m_etaEnd_choice1 = boost::none;
     m_elementEndUID_choice2 = boost::none;
 
-    GetParent()->GetParent()->Invalidate();
+    invalidateStructure();
 }
 
 CCPACSWingRibsPositioning::RibCountDefinitionType CCPACSWingRibsPositioning::GetRibCountDefinitionType() const
@@ -183,7 +183,7 @@ void CCPACSWingRibsPositioning::SetNumberOfRibs(int numRibs)
 
     m_spacing_choice1 = boost::none;
 
-    GetParent()->GetParent()->Invalidate();
+    invalidateStructure();
 }
 
 double CCPACSWingRibsPositioning::GetSpacing() const
@@ -200,7 +200,11 @@ void CCPACSWingRibsPositioning::SetSpacing(double value)
 
     m_numberOfRibs_choice2 = boost::none;
 
-    GetParent()->GetParent()->Invalidate();
+    invalidateStructure();
+}
+
+void CCPACSWingRibsPositioning::invalidateStructure() {
+    GetParent()->GetParent()->GetParent()->Invalidate();
 }
 
 } // end namespace tigl
