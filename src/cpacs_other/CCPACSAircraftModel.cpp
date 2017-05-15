@@ -37,9 +37,6 @@ CCPACSAircraftModel::CCPACSAircraftModel(CTiglUIDManager* uidMgr)
 
 void CCPACSAircraftModel::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) {
     generated::CPACSAircraftModel::ReadCPACS(tixiHandle, xpath);
-    if (config) {
-        config->GetUIDManager().AddGeometricComponent(m_uID, this);
-    }
 }
 
 std::string CCPACSAircraftModel::GetDefaultedUID() const {

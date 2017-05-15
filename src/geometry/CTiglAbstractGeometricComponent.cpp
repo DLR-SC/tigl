@@ -53,9 +53,6 @@ TiglSymmetryAxis CTiglAbstractGeometricComponent::GetSymmetryAxis() const
 PNamedShape CTiglAbstractGeometricComponent::GetLoft()
 {
     if (!loft) {
-#ifdef DEBUG
-        LOG(INFO) << "Building loft " << GetUID();
-#endif
         loft = BuildLoft();
     }
     return loft;
