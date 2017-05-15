@@ -610,6 +610,31 @@ TEST_F(WingComponentSegmentSimple, IntersectEta_cinterface)
     ASSERT_EQ(TIGL_MATH_ERROR, tiglWingComponentSegmentComputeEtaIntersection(tiglHandle, "WING_CS1", 0.0, 0.0, 1.0, 1.0, 2.0, &xsi, &hasWarning));
 }
 
+/// Tests the math of the new component segment definition
+TEST_F(WingComponentSegmentSimple, wingChordFace)
+{
+    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
+    tigl::CCPACSWing& wing = config.GetWing(1);
+    tigl::CCPACSWingComponentSegment& compSegment = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(1);
+
+    tigl::CTiglWingChordface& chordFace = compSegment.GetChordface();
+
+    std::vector<double> etas = chordFace.GetElementEtas();
+
+    ASSERT_EQ(3, etas.size());
+    EXPECT_NEAR(0., etas[0], 1e-10);
+    EXPECT_NEAR(1./ (1. + sqrt(17./16.)), etas[1], 1e-10);
+    EXPECT_NEAR(1., etas[2], 1e-10);
+
+    EXPECT_NEAR(0., chordFace.GetPoint(0., 0.).Distance(gp_Pnt(0., 0., 0.)), 1e-10);
+    EXPECT_NEAR(0., chordFace.GetPoint(0., 1.).Distance(gp_Pnt(1., 0., 0.)), 1e-10);
+    EXPECT_NEAR(0., chordFace.GetPoint(etas[1], 0.).Distance(gp_Pnt(0., 1., 0.)), 1e-10);
+    EXPECT_NEAR(0., chordFace.GetPoint(etas[1], 1.).Distance(gp_Pnt(1., 1., 0.)), 1e-10);
+    EXPECT_NEAR(0., chordFace.GetPoint(etas[2], 0.).Distance(gp_Pnt(0.5, 2., 0.)), 1e-10);
+    EXPECT_NEAR(0., chordFace.GetPoint(etas[2], 1.).Distance(gp_Pnt(1., 2., 0.)), 1e-10);
+}
+
 TEST_F(WingComponentSegment3, tiglWingComponentSegmentPointGetSegmentEtaXsi_BUG1)
 {
     // now the tests

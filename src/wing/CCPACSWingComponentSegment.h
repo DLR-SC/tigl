@@ -37,6 +37,7 @@
 #include "tigl_config.h"
 #include "tigl_internal.h"
 
+#include "generated/UniquePtr.h"
 #include "CCPACSMaterial.h"
 #include "CCPACSWingConnection.h"
 #include "CCPACSWingCSStructure.h"
@@ -45,6 +46,7 @@
 #include "CTiglPoint.h"
 #include "CTiglPointTranslator.h"
 #include "CCPACSTransformation.h"
+#include "CTiglWingChordface.h"
 
 
 namespace tigl
@@ -184,6 +186,8 @@ public:
 
     // computes the xsi coordinate on a straight line in global space, given an eta coordinate
     TIGL_EXPORT void InterpolateOnLine(double csEta1, double csXsi1, double csEta2, double csXsi2, double eta, double &xsi, double &errorDistance);
+
+    TIGL_EXPORT CTiglWingChordface& GetChordface() const;
 protected:
     // Cleanup routine
     void Cleanup();
@@ -219,9 +223,12 @@ private:
 
     void UpdateProjectedLeadingEdge() const;
     void UpdateExtendedChordFaces();
+    void UpdateChordFace() const;
 
 
 private:
+    CTiglUIDManager* _uidMgr;
+
     std::string          toElementUID;         /**< Outer segment uid (tip)                 */
     CCPACSWing*          wing;                 /**< Parent wing                             */
     double               myVolume;             /**< Volume of this segment                  */
@@ -234,6 +241,7 @@ private:
     TopoDS_Face          outerFace;            /**< [[CAS_AES]] added outer segment face    */
     CTiglPointTranslator extendedOuterChord;   /**< Extended outer segment chord face */
     CTiglPointTranslator extendedInnerChord;   /**< Extended inner segment chord face */
+    mutable CTiglWingChordface chordFace;
     Handle(Geom_Surface) upperSurface;
     Handle(Geom_Surface) lowerSurface;
     bool                 surfacesAreValid;

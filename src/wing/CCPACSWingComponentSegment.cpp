@@ -154,8 +154,10 @@ namespace
 
 CCPACSWingComponentSegment::CCPACSWingComponentSegment(CCPACSWingComponentSegments* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSComponentSegment(parent, uidMgr)
+    , _uidMgr(uidMgr)
     , CTiglAbstractSegment(parent->GetComponentSegments(), parent->GetParent()->m_symmetry)
     , wing(parent->GetParent())
+    , chordFace(wingSegments, uidMgr)
     , surfacesAreValid(false)
 {
     assert(wing != NULL);
@@ -176,9 +178,11 @@ void CCPACSWingComponentSegment::Invalidate()
     surfacesAreValid = false;
     projLeadingEdge.Nullify();
     wingSegments.clear();
-    if (m_structure)
+    if (m_structure) {
         m_structure->Invalidate();
+    }
     linesAreValid = false;
+    chordFace.Reset();
 }
 
 // Cleanup routine
@@ -200,6 +204,11 @@ void CCPACSWingComponentSegment::Cleanup()
 void CCPACSWingComponentSegment::Update()
 {
     Invalidate();
+
+    chordFace.SetUID(GetDefaultedUID() + "_chordface");
+
+    // Update List of segments
+    GetSegmentList();
 }
 
 // Read CPACS segment elements
@@ -766,6 +775,13 @@ void CCPACSWingComponentSegment::InterpolateOnLine(double csEta1, double csXsi1,
     errorDistance = line.Distance(nearestPoint);
 }
 
+CTiglWingChordface &CCPACSWingComponentSegment::GetChordface() const
+{
+    UpdateChordFace();
+
+    return chordFace;
+}
+
 // get short name for loft
 std::string CCPACSWingComponentSegment::GetShortShapeName() 
 {
@@ -1158,6 +1174,13 @@ void CCPACSWingComponentSegment::UpdateExtendedChordFaces()
 
 
     surfacesAreValid = true;
+}
+
+void CCPACSWingComponentSegment::UpdateChordFace() const
+{
+    // update creation of segment list
+    GetSegmentList();
+    chordFace.BuildChordSurface();
 }
 
 
