@@ -22,9 +22,8 @@
 #include "tigl_internal.h"
 
 #include "CTiglAbstractGeometricComponent.h"
-#include "CTiglUIDManager.h"
 #include "PNamedShape.h"
-#include "CCPACSWingSegment.h"
+#include "CTiglWingSegmentList.h"
 
 #include <Geom_BSplineSurface.hxx>
 
@@ -33,10 +32,12 @@
 namespace tigl
 {
 
+class CTiglUIDManager;
+
 class CTiglWingChordface : public CTiglAbstractGeometricComponent
 {
 public:
-    TIGL_EXPORT CTiglWingChordface(const std::vector<CCPACSWingSegment*>& segments, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CTiglWingChordface(const CTiglWingSegmentList& segments, CTiglUIDManager* uidMgr);
     TIGL_EXPORT virtual ~CTiglWingChordface();
 
     TIGL_EXPORT gp_Pnt GetPoint(double eta, double xsi) const;
@@ -63,9 +64,12 @@ protected:
     virtual PNamedShape BuildLoft() OVERRIDE;
 
 private:
+    CTiglWingChordface(const CTiglWingChordface&); // disabled copy constructor
+
+    void unregisterShape();
+
+    CTiglWingSegmentList _segments;
     std::string _uid;
-    typedef std::vector<CCPACSWingSegment*> SegmentList;
-    const SegmentList& _segments;
 
     CTiglUIDManager* _uidManager;
 

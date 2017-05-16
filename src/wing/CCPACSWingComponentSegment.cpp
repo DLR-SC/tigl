@@ -157,7 +157,7 @@ CCPACSWingComponentSegment::CCPACSWingComponentSegment(CCPACSWingComponentSegmen
     , _uidMgr(uidMgr)
     , CTiglAbstractSegment(parent->GetComponentSegments(), parent->GetParent()->m_symmetry)
     , wing(parent->GetParent())
-    , chordFace(wingSegments, uidMgr)
+    , chordFace(*this, uidMgr)
     , surfacesAreValid(false)
 {
     assert(wing != NULL);
@@ -206,9 +206,6 @@ void CCPACSWingComponentSegment::Update()
     Invalidate();
 
     chordFace.SetUID(GetDefaultedUID() + "_chordface");
-
-    // Update List of segments
-    GetSegmentList();
 }
 
 // Read CPACS segment elements

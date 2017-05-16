@@ -19,6 +19,8 @@
 #include "CTiglWingChordface.h"
 
 #include "CNamedShape.h"
+#include "CTiglUIDManager.h"
+#include "CCPACSWingSegment.h"
 
 #include <TColgp_Array2OfPnt.hxx>
 #include <TColStd_Array1OfReal.hxx>
@@ -33,22 +35,17 @@ namespace tigl
 {
 
 
-CTiglWingChordface::CTiglWingChordface(const std::vector<CCPACSWingSegment*> &segments,
+CTiglWingChordface::CTiglWingChordface(const CTiglWingSegmentList& segments,
                                        CTiglUIDManager *uidMgr)
-    : _uid("chordface")
-    , _segments(segments)
+    : _segments(segments)
+    , _uid("chordface")
     , _uidManager(uidMgr)
 {
 }
 
 CTiglWingChordface::~CTiglWingChordface()
 {
-    try {
-        if (_uidManager && _uidManager->HasGeometricComponent(_uid)) {
-            _uidManager->UnregisterObject(GetDefaultedUID());
-        }
-    }
-    catch(...){}
+    unregisterShape();
 }
 
 gp_Pnt CTiglWingChordface::GetPoint(double eta, double xsi) const
@@ -60,12 +57,7 @@ gp_Pnt CTiglWingChordface::GetPoint(double eta, double xsi) const
 
 void CTiglWingChordface::SetUID(const std::string &uid)
 {
-    try {
-        if (_uidManager && _uidManager->HasGeometricComponent(GetDefaultedUID())) {
-            _uidManager->UnregisterObject(GetDefaultedUID());
-        }
-    }
-    catch(...){}
+    unregisterShape();
 
     _uid = uid;
 
@@ -99,14 +91,26 @@ PNamedShape CTiglWingChordface::BuildLoft()
     return chordFace;
 }
 
+void CTiglWingChordface::unregisterShape()
+{
+    try {
+        if (_uidManager && _uidManager->HasGeometricComponent(GetDefaultedUID())) {
+            _uidManager->UnregisterObject(GetDefaultedUID());
+        }
+    }
+    catch(...){}
+}
+
 void CTiglWingChordface::BuildChordSurface() const
 {
     if (_chordSurface.IsNull()) {
 
-        TColgp_Array2OfPnt poles(1, 2, 1, _segments.size() + 1);
+        std::vector<CCPACSWingSegment*> segmentsList = getSortedSegments(_segments);
+
+        TColgp_Array2OfPnt poles(1, 2, 1, static_cast<int>(segmentsList.size() + 1));
 
         int vPole = 1;
-        for (SegmentList::const_iterator it = _segments.begin(); it != _segments.end(); ++it) {
+        for (std::vector<CCPACSWingSegment*>::const_iterator it = segmentsList.begin(); it != segmentsList.end(); ++it) {
             CCPACSWingSegment* segment =*it;
 
             gp_Pnt frontInner = segment->GetChordPoint(0., 0.);
@@ -118,7 +122,7 @@ void CTiglWingChordface::BuildChordSurface() const
             vPole++;
         }
 
-        CCPACSWingSegment* outerSegment = _segments.back();
+        CCPACSWingSegment* outerSegment = segmentsList.back();
         poles.SetValue(1, vPole, outerSegment->GetChordPoint(1., 0.));
         poles.SetValue(2, vPole, outerSegment->GetChordPoint(1., 1.));
 

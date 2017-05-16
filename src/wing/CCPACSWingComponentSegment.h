@@ -255,6 +255,11 @@ private:
     mutable bool         linesAreValid;
 };
 
+inline std::vector<tigl::CCPACSWingSegment*> getSortedSegments(const CCPACSWingComponentSegment& cs)
+{
+    return cs.GetSegmentList();
+}
+
 } // end namespace tigl
 
 #endif // CCPACSWINGCOMPONENTSEGMENT_H
