@@ -25,6 +25,10 @@ namespace tigl
 
 class CCPACSWingSegment;
 
+// @TODO: Forward declaring this is an ugly hack to make gcc happy! Try to remove this!
+class CCPACSWingComponentSegment;
+std::vector<CCPACSWingSegment*> getSortedSegments(CCPACSWingComponentSegment const& list);
+
 class CTiglWingSegmentList
 {
 public:
