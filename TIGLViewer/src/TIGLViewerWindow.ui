@@ -168,6 +168,7 @@
      <addaction name="drawIntersectionAction"/>
      <addaction name="drawFarFieldAction"/>
      <addaction name="drawSystemsAction"/>
+     <addaction name="drawComponentAction"/>
     </widget>
     <widget class="QMenu" name="menuWings">
      <property name="title">
@@ -1397,6 +1398,11 @@
    </property>
    <property name="shortcut">
     <string>Alt+R</string>
+   </property>
+  </action>
+  <action name="drawComponentAction">
+   <property name="text">
+    <string>Draw any Component</string>
    </property>
   </action>
  </widget>

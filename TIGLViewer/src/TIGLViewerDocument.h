@@ -63,6 +63,7 @@ public slots:
     void drawIntersectionLine();
     void drawFarField();
     void drawSystems();
+    void drawComponent();
 
     // Wing slots
     void drawWingProfiles();
@@ -153,6 +154,8 @@ private slots:
     QString dlgGetFuselageSegmentSelection();
     QString dlgGetFuselageProfileSelection();
 
+    // Other selection dialogs
+    QString dlgGetComponentSelection();
 
 private: 
     TiglCPACSConfigurationHandle            m_cpacsHandle;

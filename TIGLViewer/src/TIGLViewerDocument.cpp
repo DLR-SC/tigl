@@ -668,6 +668,30 @@ QString TIGLViewerDocument::dlgGetFuselageProfileSelection()
     }
 }
 
+QString TIGLViewerDocument::dlgGetComponentSelection()
+{
+    QStringList componentUIDs;
+
+    // fill combo boxes
+    const tigl::ShapeContainerType& uids = GetConfiguration().GetUIDManager().GetShapeContainer();
+
+    for (tigl::ShapeContainerType::const_iterator it = uids.begin(); it != uids.end(); ++it) {
+        componentUIDs.append(it->first.c_str());
+    }
+
+    // sort uids
+    componentUIDs.sort();
+
+    bool ok;
+    QString choice = QInputDialog::getItem(app, tr("Select Component"), tr("Available Components:"), componentUIDs, 0, false, &ok);
+    if (ok) {
+        return choice;
+    }
+    else {
+        return "";
+    }
+}
+
 void TIGLViewerDocument::drawAllFuselagesAndWings( )
 {
     try {
@@ -1994,6 +2018,30 @@ void TIGLViewerDocument::drawSystems()
         }
 
         app->getScene()->displayShape(genericSystem.GetMirroredLoft()->Shape(), Quantity_NOC_MirrShapeCol);
+    }
+}
+
+void TIGLViewerDocument::drawComponent()
+{
+    tigl::CCPACSConfiguration& config = GetConfiguration();
+    tigl::CTiglUIDManager& uidManager = config.GetUIDManager();
+
+    QString componentUID = dlgGetComponentSelection();
+
+    if (!componentUID.isEmpty()) {
+        START_COMMAND();
+
+        try {
+            tigl::ITiglGeometricComponent& component = uidManager.GetGeometricComponent(componentUID.toStdString());
+            TopoDS_Shape shape = component.GetLoft()->Shape();
+            app->getScene()->displayShape(shape);
+        }
+        catch(tigl::CTiglError& err) {
+            displayError(err.getError());
+        }
+        catch(...) {
+            displayError("An unknown error occured. Sorry!");
+        }
     }
 }
 
