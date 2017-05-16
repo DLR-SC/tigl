@@ -446,6 +446,13 @@
             					</cell>
             				</cells>
             			</upperShell>
+            			<lowerShell>
+            				<skin>
+            					<material>
+            						<materialUID>MySkinMat</materialUID>
+            					</material>
+            				</skin>
+            			</lowerShell>
             		</structure>
             	</componentSegment>
             </componentSegments>
