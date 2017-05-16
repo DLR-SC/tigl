@@ -616,13 +616,19 @@ void TIGLViewerWidget::setBGImage(const QString& filename)
 
 void TIGLViewerWidget::setTransparency()
 {
-    bool ok;
-    int transparency;
-
     QInputDialog *dialog = new QInputDialog(this);
     dialog->setInputMode(QInputDialog::IntInput);
+    dialog->setOption(QInputDialog::NoButtons);
+    dialog->setLabelText("Set Transparency [0...100]:");
+    dialog->setIntValue(30);
+    dialog->setIntRange(0, 100);
+    dialog->setIntStep(10);
     connect(dialog, SIGNAL(intValueChanged(int)), this, SLOT(setTransparency(int)));
-    transparency = dialog->getInt(this, tr("Select transparency level"), tr("Transparency:"), 25, 0, 100, 1, &ok);
+    dialog->exec();
+}
+
+void TIGLViewerWidget::setTransparency(int transparency)
+{
     viewerContext->setTransparency(transparency);
 }
 

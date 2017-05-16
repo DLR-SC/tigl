@@ -145,6 +145,7 @@ public slots:
     void viewReset();
     void setReset();
     void setTransparency();
+    void setTransparency(int);
     void setObjectsColor();
     void setObjectsMaterial();
     bool makeScreenshot(const QString& filename, bool whiteBGEnabled = true, int width=0, int height=0, int quality=90);
