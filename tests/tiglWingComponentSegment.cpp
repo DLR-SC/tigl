@@ -387,9 +387,9 @@ TEST_F(WingComponentSegmentSimple, GetMaterials)
     ASSERT_EQ(1, list.size());
     ASSERT_STREQ("MySkinMat", list[0]->GetUID().c_str());
     
-    // no materials defined for lower shell
+    // one material defined for lower shell
     list = segment.GetMaterials(0.6, 0.9, LOWER_SHELL);
-    ASSERT_EQ(0, list.size());
+    ASSERT_EQ(1, list.size());
 }
 
 TEST_F(WingComponentSegmentSimple, GetMaterials_cinterface)
