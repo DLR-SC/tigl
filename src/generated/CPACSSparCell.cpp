@@ -33,6 +33,16 @@ namespace tigl
             if (m_uidMgr && m_uID) m_uidMgr->UnregisterObject(*m_uID);
         }
         
+        CTiglUIDManager& CPACSSparCell::GetUIDManager()
+        {
+            return *m_uidMgr;
+        }
+        
+        const CTiglUIDManager& CPACSSparCell::GetUIDManager() const
+        {
+            return *m_uidMgr;
+        }
+        
         void CPACSSparCell::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read attribute uID
@@ -109,8 +119,11 @@ namespace tigl
         {
             // write attribute uID
             if (m_uID) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/uID");
                 tixihelper::TixiSaveAttribute(tixiHandle, xpath, "uID", *m_uID);
+            } else {
+                if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+                    tixihelper::TixiRemoveAttribute(tixiHandle, xpath, "uID");
+                }
             }
             
             // write element fromEta
@@ -137,6 +150,10 @@ namespace tigl
             if (m_web2) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/web2");
                 m_web2->WriteCPACS(tixiHandle, xpath + "/web2");
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/web2")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/web2");
+                }
             }
             
             // write element rotation

@@ -52,8 +52,11 @@ namespace tigl
             
             // write attribute format
             if (m_format) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/format");
                 tixihelper::TixiSaveAttribute(tixiHandle, xpath, "format", CPACSLinkToFileType_formatToString(*m_format));
+            } else {
+                if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "format")) {
+                    tixihelper::TixiRemoveAttribute(tixiHandle, xpath, "format");
+                }
             }
             
         }

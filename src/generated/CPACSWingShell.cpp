@@ -44,6 +44,16 @@ namespace tigl
             return m_parent;
         }
         
+        CTiglUIDManager& CPACSWingShell::GetUIDManager()
+        {
+            return *m_uidMgr;
+        }
+        
+        const CTiglUIDManager& CPACSWingShell::GetUIDManager() const
+        {
+            return *m_uidMgr;
+        }
+        
         void CPACSWingShell::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read attribute uID
@@ -80,8 +90,11 @@ namespace tigl
         {
             // write attribute uID
             if (m_uID) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/uID");
                 tixihelper::TixiSaveAttribute(tixiHandle, xpath, "uID", *m_uID);
+            } else {
+                if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+                    tixihelper::TixiRemoveAttribute(tixiHandle, xpath, "uID");
+                }
             }
             
             // write element skin
@@ -92,6 +105,10 @@ namespace tigl
             if (m_cells) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/cells");
                 m_cells->WriteCPACS(tixiHandle, xpath + "/cells");
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/cells")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/cells");
+                }
             }
             
         }

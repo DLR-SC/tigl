@@ -34,6 +34,16 @@ namespace tigl
             if (m_uidMgr) m_uidMgr->UnregisterObject(m_uID);
         }
         
+        CTiglUIDManager& CPACSFuselageCutOut::GetUIDManager()
+        {
+            return *m_uidMgr;
+        }
+        
+        const CTiglUIDManager& CPACSFuselageCutOut::GetUIDManager() const
+        {
+            return *m_uidMgr;
+        }
+        
         void CPACSFuselageCutOut::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read attribute uID
@@ -156,19 +166,26 @@ namespace tigl
         void CPACSFuselageCutOut::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write attribute uID
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/uID");
             tixihelper::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
             
             // write element name
             if (m_name) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/name", *m_name);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/name")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/name");
+                }
             }
             
             // write element description
             if (m_description) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/description")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/description");
+                }
             }
             
             // write element positionX
@@ -195,6 +212,10 @@ namespace tigl
             if (m_alignmentVector) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/alignmentVector");
                 m_alignmentVector->WriteCPACS(tixiHandle, xpath + "/alignmentVector");
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/alignmentVector")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/alignmentVector");
+                }
             }
             
             // write element deltaY
@@ -209,12 +230,20 @@ namespace tigl
             if (m_deltaY1) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/deltaY1");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/deltaY1", *m_deltaY1);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/deltaY1")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/deltaY1");
+                }
             }
             
             // write element deltaZ1
             if (m_deltaZ1) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/deltaZ1");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/deltaZ1", *m_deltaZ1);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/deltaZ1")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/deltaZ1");
+                }
             }
             
             // write element filletRadius

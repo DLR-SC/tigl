@@ -31,6 +31,16 @@ namespace tigl
         
         CPACSFuselageSections::~CPACSFuselageSections() {}
         
+        CTiglUIDManager& CPACSFuselageSections::GetUIDManager()
+        {
+            return *m_uidMgr;
+        }
+        
+        const CTiglUIDManager& CPACSFuselageSections::GetUIDManager() const
+        {
+            return *m_uidMgr;
+        }
+        
         void CPACSFuselageSections::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element section

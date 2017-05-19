@@ -45,6 +45,16 @@ namespace tigl
             return m_parent;
         }
         
+        CTiglUIDManager& CPACSRotorHubHinge::GetUIDManager()
+        {
+            return *m_uidMgr;
+        }
+        
+        const CTiglUIDManager& CPACSRotorHubHinge::GetUIDManager() const
+        {
+            return *m_uidMgr;
+        }
+        
         void CPACSRotorHubHinge::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read attribute uID
@@ -105,20 +115,31 @@ namespace tigl
         {
             // write attribute uID
             if (m_uID) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/uID");
                 tixihelper::TixiSaveAttribute(tixiHandle, xpath, "uID", *m_uID);
+            } else {
+                if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+                    tixihelper::TixiRemoveAttribute(tixiHandle, xpath, "uID");
+                }
             }
             
             // write element name
             if (m_name) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/name", *m_name);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/name")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/name");
+                }
             }
             
             // write element description
             if (m_description) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/description")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/description");
+                }
             }
             
             // write element transformation
@@ -133,24 +154,40 @@ namespace tigl
             if (m_neutralPosition) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/neutralPosition");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/neutralPosition", *m_neutralPosition);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/neutralPosition")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/neutralPosition");
+                }
             }
             
             // write element staticStiffness
             if (m_staticStiffness) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/staticStiffness");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/staticStiffness", *m_staticStiffness);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/staticStiffness")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/staticStiffness");
+                }
             }
             
             // write element dynamicStiffness
             if (m_dynamicStiffness) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/dynamicStiffness");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/dynamicStiffness", *m_dynamicStiffness);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/dynamicStiffness")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/dynamicStiffness");
+                }
             }
             
             // write element damping
             if (m_damping) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/damping");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/damping", *m_damping);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/damping")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/damping");
+                }
             }
             
         }

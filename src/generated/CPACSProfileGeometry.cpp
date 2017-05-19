@@ -25,12 +25,33 @@ namespace tigl
 {
     namespace generated
     {
+        namespace {
+            const std::vector<std::vector<std::string>> choices = {
+                { "name", "description", "pointList" },
+                { "name", "description", "cst2D" },
+            };
+            unsigned int identifyChoice() {
+                const bool isChoice0 = false;
+                const bool isChoice1 = false;
+            }
+        }
+        
         CPACSProfileGeometry::CPACSProfileGeometry(CTiglUIDManager* uidMgr) :
             m_uidMgr(uidMgr) {}
         
         CPACSProfileGeometry::~CPACSProfileGeometry()
         {
             if (m_uidMgr) m_uidMgr->UnregisterObject(m_uID);
+        }
+        
+        CTiglUIDManager& CPACSProfileGeometry::GetUIDManager()
+        {
+            return *m_uidMgr;
+        }
+        
+        const CTiglUIDManager& CPACSProfileGeometry::GetUIDManager() const
+        {
+            return *m_uidMgr;
         }
         
         void CPACSProfileGeometry::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
@@ -96,12 +117,14 @@ namespace tigl
         {
             // write attribute symmetry
             if (m_symmetry) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/symmetry");
                 tixihelper::TixiSaveAttribute(tixiHandle, xpath, "symmetry", TiglSymmetryAxisToString(*m_symmetry));
+            } else {
+                if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "symmetry")) {
+                    tixihelper::TixiRemoveAttribute(tixiHandle, xpath, "symmetry");
+                }
             }
             
             // write attribute uID
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/uID");
             tixihelper::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
             
             // write element name
@@ -112,18 +135,30 @@ namespace tigl
             if (m_description) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/description")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/description");
+                }
             }
             
             // write element pointList
             if (m_pointList_choice1) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/pointList");
                 m_pointList_choice1->WriteCPACS(tixiHandle, xpath + "/pointList");
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/pointList")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/pointList");
+                }
             }
             
             // write element cst2D
             if (m_cst2D_choice2) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/cst2D");
                 m_cst2D_choice2->WriteCPACS(tixiHandle, xpath + "/cst2D");
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/cst2D")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/cst2D");
+                }
             }
             
         }

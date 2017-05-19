@@ -26,6 +26,17 @@ namespace tigl
 {
     namespace generated
     {
+        namespace {
+            const std::vector<std::vector<std::string>> choices = {
+                { "eta1", "eta2" },
+                { "ribNumber", "ribDefinitionUID" },
+            };
+            unsigned int identifyChoice() {
+                const bool isChoice0 = false;
+                const bool isChoice1 = false;
+            }
+        }
+        
         CPACSCellPositioningSpanwise::CPACSCellPositioningSpanwise(CCPACSWingCell* parent)
         {
             //assert(parent != NULL);
@@ -69,24 +80,40 @@ namespace tigl
             if (m_eta1_choice1) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/eta1");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/eta1", *m_eta1_choice1);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/eta1")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/eta1");
+                }
             }
             
             // write element eta2
             if (m_eta2_choice1) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/eta2");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/eta2", *m_eta2_choice1);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/eta2")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/eta2");
+                }
             }
             
             // write element ribNumber
             if (m_ribNumber_choice2) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ribNumber");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/ribNumber", *m_ribNumber_choice2);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/ribNumber")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/ribNumber");
+                }
             }
             
             // write element ribDefinitionUID
             if (m_ribDefinitionUID_choice2) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ribDefinitionUID");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/ribDefinitionUID", *m_ribDefinitionUID_choice2);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/ribDefinitionUID")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/ribDefinitionUID");
+                }
             }
             
         }

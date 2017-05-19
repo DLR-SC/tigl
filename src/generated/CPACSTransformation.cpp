@@ -33,6 +33,16 @@ namespace tigl
             if (m_uidMgr && m_uID) m_uidMgr->UnregisterObject(*m_uID);
         }
         
+        CTiglUIDManager& CPACSTransformation::GetUIDManager()
+        {
+            return *m_uidMgr;
+        }
+        
+        const CTiglUIDManager& CPACSTransformation::GetUIDManager() const
+        {
+            return *m_uidMgr;
+        }
+        
         void CPACSTransformation::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read attribute uID
@@ -89,26 +99,41 @@ namespace tigl
         {
             // write attribute uID
             if (m_uID) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/uID");
                 tixihelper::TixiSaveAttribute(tixiHandle, xpath, "uID", *m_uID);
+            } else {
+                if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+                    tixihelper::TixiRemoveAttribute(tixiHandle, xpath, "uID");
+                }
             }
             
             // write element scaling
             if (m_scaling) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/scaling");
                 m_scaling->WriteCPACS(tixiHandle, xpath + "/scaling");
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/scaling")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/scaling");
+                }
             }
             
             // write element rotation
             if (m_rotation) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/rotation");
                 m_rotation->WriteCPACS(tixiHandle, xpath + "/rotation");
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/rotation")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/rotation");
+                }
             }
             
             // write element translation
             if (m_translation) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/translation");
                 m_translation->WriteCPACS(tixiHandle, xpath + "/translation");
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/translation")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/translation");
+                }
             }
             
         }

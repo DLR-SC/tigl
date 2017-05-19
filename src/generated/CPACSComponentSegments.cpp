@@ -42,6 +42,16 @@ namespace tigl
             return m_parent;
         }
         
+        CTiglUIDManager& CPACSComponentSegments::GetUIDManager()
+        {
+            return *m_uidMgr;
+        }
+        
+        const CTiglUIDManager& CPACSComponentSegments::GetUIDManager() const
+        {
+            return *m_uidMgr;
+        }
+        
         void CPACSComponentSegments::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element componentSegment

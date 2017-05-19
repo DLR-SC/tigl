@@ -41,6 +41,16 @@ namespace tigl
             return m_parent;
         }
         
+        CTiglUIDManager& CPACSSparCrossSection::GetUIDManager()
+        {
+            return *m_uidMgr;
+        }
+        
+        const CTiglUIDManager& CPACSSparCrossSection::GetUIDManager() const
+        {
+            return *m_uidMgr;
+        }
+        
         void CPACSSparCrossSection::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element upperCap
@@ -123,12 +133,20 @@ namespace tigl
             if (m_upperCap) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/upperCap");
                 m_upperCap->WriteCPACS(tixiHandle, xpath + "/upperCap");
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/upperCap")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/upperCap");
+                }
             }
             
             // write element lowerCap
             if (m_lowerCap) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/lowerCap");
                 m_lowerCap->WriteCPACS(tixiHandle, xpath + "/lowerCap");
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/lowerCap")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/lowerCap");
+                }
             }
             
             // write element web1
@@ -139,12 +157,20 @@ namespace tigl
             if (m_web2) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/web2");
                 m_web2->WriteCPACS(tixiHandle, xpath + "/web2");
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/web2")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/web2");
+                }
             }
             
             // write element sparCells
             if (m_sparCells) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/sparCells");
                 m_sparCells->WriteCPACS(tixiHandle, xpath + "/sparCells");
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/sparCells")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/sparCells");
+                }
             }
             
             // write element rotation

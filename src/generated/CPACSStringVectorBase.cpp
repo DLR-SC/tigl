@@ -91,55 +91,78 @@ namespace tigl
         void CPACSStringVectorBase::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write attribute mapType
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/mapType");
             tixihelper::TixiSaveAttribute(tixiHandle, xpath, "mapType", m_mapType);
             
             // write attribute uncertaintyFunctionName
             if (m_uncertaintyFunctionName) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/uncertaintyFunctionName");
                 tixihelper::TixiSaveAttribute(tixiHandle, xpath, "uncertaintyFunctionName", *m_uncertaintyFunctionName);
+            } else {
+                if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uncertaintyFunctionName")) {
+                    tixihelper::TixiRemoveAttribute(tixiHandle, xpath, "uncertaintyFunctionName");
+                }
             }
             
             // write attribute mu
             if (m_mu) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/mu");
                 tixihelper::TixiSaveAttribute(tixiHandle, xpath, "mu", *m_mu);
+            } else {
+                if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "mu")) {
+                    tixihelper::TixiRemoveAttribute(tixiHandle, xpath, "mu");
+                }
             }
             
             // write attribute delta
             if (m_delta) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/delta");
                 tixihelper::TixiSaveAttribute(tixiHandle, xpath, "delta", *m_delta);
+            } else {
+                if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "delta")) {
+                    tixihelper::TixiRemoveAttribute(tixiHandle, xpath, "delta");
+                }
             }
             
             // write attribute a
             if (m_a) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/a");
                 tixihelper::TixiSaveAttribute(tixiHandle, xpath, "a", *m_a);
+            } else {
+                if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "a")) {
+                    tixihelper::TixiRemoveAttribute(tixiHandle, xpath, "a");
+                }
             }
             
             // write attribute b
             if (m_b) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/b");
                 tixihelper::TixiSaveAttribute(tixiHandle, xpath, "b", *m_b);
+            } else {
+                if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "b")) {
+                    tixihelper::TixiRemoveAttribute(tixiHandle, xpath, "b");
+                }
             }
             
             // write attribute c
             if (m_c) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/c");
                 tixihelper::TixiSaveAttribute(tixiHandle, xpath, "c", *m_c);
+            } else {
+                if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "c")) {
+                    tixihelper::TixiRemoveAttribute(tixiHandle, xpath, "c");
+                }
             }
             
             // write attribute v
             if (m_v) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/v");
                 tixihelper::TixiSaveAttribute(tixiHandle, xpath, "v", *m_v);
+            } else {
+                if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "v")) {
+                    tixihelper::TixiRemoveAttribute(tixiHandle, xpath, "v");
+                }
             }
             
             // write attribute w
             if (m_w) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/w");
                 tixihelper::TixiSaveAttribute(tixiHandle, xpath, "w", *m_w);
+            } else {
+                if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "w")) {
+                    tixihelper::TixiRemoveAttribute(tixiHandle, xpath, "w");
+                }
             }
             
             // write simpleContent 

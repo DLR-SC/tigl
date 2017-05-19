@@ -41,6 +41,16 @@ namespace tigl
             return m_parent;
         }
         
+        CTiglUIDManager& CPACSWingRibCrossSection::GetUIDManager()
+        {
+            return *m_uidMgr;
+        }
+        
+        const CTiglUIDManager& CPACSWingRibCrossSection::GetUIDManager() const
+        {
+            return *m_uidMgr;
+        }
+        
         void CPACSWingRibCrossSection::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element material
@@ -119,24 +129,40 @@ namespace tigl
             if (m_ribRotation) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ribRotation");
                 m_ribRotation->WriteCPACS(tixiHandle, xpath + "/ribRotation");
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/ribRotation")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/ribRotation");
+                }
             }
             
             // write element ribCell
             if (m_ribCell) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ribCell");
                 m_ribCell->WriteCPACS(tixiHandle, xpath + "/ribCell");
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/ribCell")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/ribCell");
+                }
             }
             
             // write element upperCap
             if (m_upperCap) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/upperCap");
                 m_upperCap->WriteCPACS(tixiHandle, xpath + "/upperCap");
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/upperCap")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/upperCap");
+                }
             }
             
             // write element lowerCap
             if (m_lowerCap) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/lowerCap");
                 m_lowerCap->WriteCPACS(tixiHandle, xpath + "/lowerCap");
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/lowerCap")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/lowerCap");
+                }
             }
             
         }

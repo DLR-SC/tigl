@@ -33,6 +33,16 @@ namespace tigl
             if (m_uidMgr && m_uID) m_uidMgr->UnregisterObject(*m_uID);
         }
         
+        CTiglUIDManager& CPACSPositioning::GetUIDManager()
+        {
+            return *m_uidMgr;
+        }
+        
+        const CTiglUIDManager& CPACSPositioning::GetUIDManager() const
+        {
+            return *m_uidMgr;
+        }
+        
         void CPACSPositioning::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read attribute uID
@@ -97,8 +107,11 @@ namespace tigl
         {
             // write attribute uID
             if (m_uID) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/uID");
                 tixihelper::TixiSaveAttribute(tixiHandle, xpath, "uID", *m_uID);
+            } else {
+                if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+                    tixihelper::TixiRemoveAttribute(tixiHandle, xpath, "uID");
+                }
             }
             
             // write element name
@@ -109,6 +122,10 @@ namespace tigl
             if (m_description) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/description")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/description");
+                }
             }
             
             // write element length
@@ -127,6 +144,10 @@ namespace tigl
             if (m_fromSectionUID) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/fromSectionUID");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/fromSectionUID", *m_fromSectionUID);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/fromSectionUID")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/fromSectionUID");
+                }
             }
             
             // write element toSectionUID

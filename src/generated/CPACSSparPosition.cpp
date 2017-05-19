@@ -27,6 +27,17 @@ namespace tigl
 {
     namespace generated
     {
+        namespace {
+            const std::vector<std::vector<std::string>> choices = {
+                { "xsi", "eta" },
+                { "xsi", "elementUID" },
+            };
+            unsigned int identifyChoice() {
+                const bool isChoice0 = false;
+                const bool isChoice1 = false;
+            }
+        }
+        
         CPACSSparPosition::CPACSSparPosition(CCPACSWingSparPositions* parent, CTiglUIDManager* uidMgr) :
             m_uidMgr(uidMgr)
         {
@@ -42,6 +53,16 @@ namespace tigl
         CCPACSWingSparPositions* CPACSSparPosition::GetParent() const
         {
             return m_parent;
+        }
+        
+        CTiglUIDManager& CPACSSparPosition::GetUIDManager()
+        {
+            return *m_uidMgr;
+        }
+        
+        const CTiglUIDManager& CPACSSparPosition::GetUIDManager() const
+        {
+            return *m_uidMgr;
         }
         
         void CPACSSparPosition::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
@@ -76,8 +97,11 @@ namespace tigl
         {
             // write attribute uID
             if (m_uID) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/uID");
                 tixihelper::TixiSaveAttribute(tixiHandle, xpath, "uID", *m_uID);
+            } else {
+                if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+                    tixihelper::TixiRemoveAttribute(tixiHandle, xpath, "uID");
+                }
             }
             
             // write element xsi
@@ -88,12 +112,20 @@ namespace tigl
             if (m_eta_choice1) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/eta");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/eta", *m_eta_choice1);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/eta")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/eta");
+                }
             }
             
             // write element elementUID
             if (m_elementUID_choice2) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/elementUID");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/elementUID", *m_elementUID_choice2);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/elementUID")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/elementUID");
+                }
             }
             
         }

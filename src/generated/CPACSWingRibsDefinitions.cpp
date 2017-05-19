@@ -42,6 +42,16 @@ namespace tigl
             return m_parent;
         }
         
+        CTiglUIDManager& CPACSWingRibsDefinitions::GetUIDManager()
+        {
+            return *m_uidMgr;
+        }
+        
+        const CTiglUIDManager& CPACSWingRibsDefinitions::GetUIDManager() const
+        {
+            return *m_uidMgr;
+        }
+        
         void CPACSWingRibsDefinitions::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element ribsDefinition

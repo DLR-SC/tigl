@@ -33,6 +33,16 @@ namespace tigl
             if (m_uidMgr && m_uID) m_uidMgr->UnregisterObject(*m_uID);
         }
         
+        CTiglUIDManager& CPACSPoint::GetUIDManager()
+        {
+            return *m_uidMgr;
+        }
+        
+        const CTiglUIDManager& CPACSPoint::GetUIDManager() const
+        {
+            return *m_uidMgr;
+        }
+        
         void CPACSPoint::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read attribute uID
@@ -62,26 +72,41 @@ namespace tigl
         {
             // write attribute uID
             if (m_uID) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/uID");
                 tixihelper::TixiSaveAttribute(tixiHandle, xpath, "uID", *m_uID);
+            } else {
+                if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+                    tixihelper::TixiRemoveAttribute(tixiHandle, xpath, "uID");
+                }
             }
             
             // write element x
             if (m_x) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/x");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/x", *m_x);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/x")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/x");
+                }
             }
             
             // write element y
             if (m_y) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/y");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/y", *m_y);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/y")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/y");
+                }
             }
             
             // write element z
             if (m_z) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/z");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/z", *m_z);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/z")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/z");
+                }
             }
             
         }

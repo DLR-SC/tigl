@@ -26,12 +26,35 @@ namespace tigl
 {
     namespace generated
     {
+        namespace {
+            const std::vector<std::vector<std::string>> choices = {
+                { "name", "description", "rho", "k11", "k12", "maxStrain", "fatigueFactor", "postFailure", "sig11", "tau12", "sig11yieldT", "sig11yieldC" },
+                { "name", "description", "rho", "k11", "k12", "maxStrain", "fatigueFactor", "postFailure", "k22", "k23", "k66", "sig11t", "sig11c", "sig22t", "sig22c", "tau12", "tau23" },
+                { "name", "description", "rho", "k11", "k12", "maxStrain", "fatigueFactor", "postFailure", "k13", "k22", "k23", "k33", "k44", "k55", "k66", "sig11t", "sig11c", "sig22t", "sig22c", "sig33t", "sig33c", "tau12", "tau13", "tau23" },
+            };
+            unsigned int identifyChoice() {
+                const bool isChoice0 = false;
+                const bool isChoice1 = false;
+                const bool isChoice2 = false;
+            }
+        }
+        
         CPACSMaterial::CPACSMaterial(CTiglUIDManager* uidMgr) :
             m_uidMgr(uidMgr) {}
         
         CPACSMaterial::~CPACSMaterial()
         {
             if (m_uidMgr && m_uID) m_uidMgr->UnregisterObject(*m_uID);
+        }
+        
+        CTiglUIDManager& CPACSMaterial::GetUIDManager()
+        {
+            return *m_uidMgr;
+        }
+        
+        const CTiglUIDManager& CPACSMaterial::GetUIDManager() const
+        {
+            return *m_uidMgr;
         }
         
         void CPACSMaterial::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
@@ -245,8 +268,11 @@ namespace tigl
         {
             // write attribute uID
             if (m_uID) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/uID");
                 tixihelper::TixiSaveAttribute(tixiHandle, xpath, "uID", *m_uID);
+            } else {
+                if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+                    tixihelper::TixiRemoveAttribute(tixiHandle, xpath, "uID");
+                }
             }
             
             // write element name
@@ -257,6 +283,10 @@ namespace tigl
             if (m_description) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/description")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/description");
+                }
             }
             
             // write element rho
@@ -275,12 +305,20 @@ namespace tigl
             if (m_maxStrain) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/maxStrain");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/maxStrain", *m_maxStrain);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/maxStrain")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/maxStrain");
+                }
             }
             
             // write element fatigueFactor
             if (m_fatigueFactor) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/fatigueFactor");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/fatigueFactor", *m_fatigueFactor);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/fatigueFactor")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/fatigueFactor");
+                }
             }
             
             // write element postFailure
@@ -290,174 +328,290 @@ namespace tigl
             if (m_sig11_choice1) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/sig11");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/sig11", *m_sig11_choice1);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/sig11")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/sig11");
+                }
             }
             
             // write element tau12
             if (m_tau12_choice1) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/tau12");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/tau12", *m_tau12_choice1);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/tau12")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/tau12");
+                }
             }
             
             // write element sig11yieldT
             if (m_sig11yieldT_choice1) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/sig11yieldT");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/sig11yieldT", *m_sig11yieldT_choice1);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/sig11yieldT")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/sig11yieldT");
+                }
             }
             
             // write element sig11yieldC
             if (m_sig11yieldC_choice1) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/sig11yieldC");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/sig11yieldC", *m_sig11yieldC_choice1);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/sig11yieldC")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/sig11yieldC");
+                }
             }
             
             // write element k22
             if (m_k22_choice2) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/k22");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/k22", *m_k22_choice2);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/k22")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/k22");
+                }
             }
             
             // write element k23
             if (m_k23_choice2) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/k23");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/k23", *m_k23_choice2);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/k23")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/k23");
+                }
             }
             
             // write element k66
             if (m_k66_choice2) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/k66");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/k66", *m_k66_choice2);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/k66")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/k66");
+                }
             }
             
             // write element sig11t
             if (m_sig11t_choice2) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/sig11t");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/sig11t", *m_sig11t_choice2);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/sig11t")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/sig11t");
+                }
             }
             
             // write element sig11c
             if (m_sig11c_choice2) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/sig11c");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/sig11c", *m_sig11c_choice2);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/sig11c")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/sig11c");
+                }
             }
             
             // write element sig22t
             if (m_sig22t_choice2) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/sig22t");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/sig22t", *m_sig22t_choice2);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/sig22t")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/sig22t");
+                }
             }
             
             // write element sig22c
             if (m_sig22c_choice2) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/sig22c");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/sig22c", *m_sig22c_choice2);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/sig22c")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/sig22c");
+                }
             }
             
             // write element tau12
             if (m_tau12_choice2) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/tau12");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/tau12", *m_tau12_choice2);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/tau12")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/tau12");
+                }
             }
             
             // write element tau23
             if (m_tau23_choice2) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/tau23");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/tau23", *m_tau23_choice2);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/tau23")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/tau23");
+                }
             }
             
             // write element k13
             if (m_k13_choice3) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/k13");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/k13", *m_k13_choice3);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/k13")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/k13");
+                }
             }
             
             // write element k22
             if (m_k22_choice3) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/k22");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/k22", *m_k22_choice3);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/k22")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/k22");
+                }
             }
             
             // write element k23
             if (m_k23_choice3) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/k23");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/k23", *m_k23_choice3);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/k23")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/k23");
+                }
             }
             
             // write element k33
             if (m_k33_choice3) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/k33");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/k33", *m_k33_choice3);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/k33")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/k33");
+                }
             }
             
             // write element k44
             if (m_k44_choice3) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/k44");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/k44", *m_k44_choice3);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/k44")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/k44");
+                }
             }
             
             // write element k55
             if (m_k55_choice3) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/k55");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/k55", *m_k55_choice3);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/k55")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/k55");
+                }
             }
             
             // write element k66
             if (m_k66_choice3) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/k66");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/k66", *m_k66_choice3);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/k66")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/k66");
+                }
             }
             
             // write element sig11t
             if (m_sig11t_choice3) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/sig11t");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/sig11t", *m_sig11t_choice3);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/sig11t")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/sig11t");
+                }
             }
             
             // write element sig11c
             if (m_sig11c_choice3) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/sig11c");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/sig11c", *m_sig11c_choice3);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/sig11c")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/sig11c");
+                }
             }
             
             // write element sig22t
             if (m_sig22t_choice3) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/sig22t");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/sig22t", *m_sig22t_choice3);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/sig22t")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/sig22t");
+                }
             }
             
             // write element sig22c
             if (m_sig22c_choice3) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/sig22c");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/sig22c", *m_sig22c_choice3);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/sig22c")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/sig22c");
+                }
             }
             
             // write element sig33t
             if (m_sig33t_choice3) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/sig33t");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/sig33t", *m_sig33t_choice3);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/sig33t")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/sig33t");
+                }
             }
             
             // write element sig33c
             if (m_sig33c_choice3) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/sig33c");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/sig33c", *m_sig33c_choice3);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/sig33c")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/sig33c");
+                }
             }
             
             // write element tau12
             if (m_tau12_choice3) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/tau12");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/tau12", *m_tau12_choice3);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/tau12")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/tau12");
+                }
             }
             
             // write element tau13
             if (m_tau13_choice3) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/tau13");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/tau13", *m_tau13_choice3);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/tau13")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/tau13");
+                }
             }
             
             // write element tau23
             if (m_tau23_choice3) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/tau23");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/tau23", *m_tau23_choice3);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/tau23")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/tau23");
+                }
             }
             
         }

@@ -33,6 +33,16 @@ namespace tigl
             if (m_uidMgr && m_uID) m_uidMgr->UnregisterObject(*m_uID);
         }
         
+        CTiglUIDManager& CPACSPointXYZ::GetUIDManager()
+        {
+            return *m_uidMgr;
+        }
+        
+        const CTiglUIDManager& CPACSPointXYZ::GetUIDManager() const
+        {
+            return *m_uidMgr;
+        }
+        
         void CPACSPointXYZ::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read attribute uID
@@ -71,8 +81,11 @@ namespace tigl
         {
             // write attribute uID
             if (m_uID) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/uID");
                 tixihelper::TixiSaveAttribute(tixiHandle, xpath, "uID", *m_uID);
+            } else {
+                if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+                    tixihelper::TixiRemoveAttribute(tixiHandle, xpath, "uID");
+                }
             }
             
             // write element x

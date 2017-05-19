@@ -31,6 +31,16 @@ namespace tigl
         
         CPACSComposites::~CPACSComposites() {}
         
+        CTiglUIDManager& CPACSComposites::GetUIDManager()
+        {
+            return *m_uidMgr;
+        }
+        
+        const CTiglUIDManager& CPACSComposites::GetUIDManager() const
+        {
+            return *m_uidMgr;
+        }
+        
         void CPACSComposites::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element composite

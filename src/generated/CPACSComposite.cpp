@@ -34,6 +34,16 @@ namespace tigl
             if (m_uidMgr && m_uID) m_uidMgr->UnregisterObject(*m_uID);
         }
         
+        CTiglUIDManager& CPACSComposite::GetUIDManager()
+        {
+            return *m_uidMgr;
+        }
+        
+        const CTiglUIDManager& CPACSComposite::GetUIDManager() const
+        {
+            return *m_uidMgr;
+        }
+        
         void CPACSComposite::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read attribute uID
@@ -71,8 +81,11 @@ namespace tigl
         {
             // write attribute uID
             if (m_uID) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/uID");
                 tixihelper::TixiSaveAttribute(tixiHandle, xpath, "uID", *m_uID);
+            } else {
+                if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+                    tixihelper::TixiRemoveAttribute(tixiHandle, xpath, "uID");
+                }
             }
             
             // write element name
@@ -83,12 +96,20 @@ namespace tigl
             if (m_description) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/description")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/description");
+                }
             }
             
             // write element offset
             if (m_offset) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/offset");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/offset", *m_offset);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/offset")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/offset");
+                }
             }
             
             // write element compositeLayer

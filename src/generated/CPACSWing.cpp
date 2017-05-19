@@ -55,6 +55,16 @@ namespace tigl
             if (m_uidMgr) m_uidMgr->UnregisterObject(m_uID);
         }
         
+        CTiglUIDManager& CPACSWing::GetUIDManager()
+        {
+            return *m_uidMgr;
+        }
+        
+        const CTiglUIDManager& CPACSWing::GetUIDManager() const
+        {
+            return *m_uidMgr;
+        }
+        
         void CPACSWing::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read attribute uID
@@ -146,13 +156,15 @@ namespace tigl
         void CPACSWing::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write attribute uID
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/uID");
             tixihelper::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
             
             // write attribute symmetry
             if (m_symmetry) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/symmetry");
                 tixihelper::TixiSaveAttribute(tixiHandle, xpath, "symmetry", TiglSymmetryAxisToString(*m_symmetry));
+            } else {
+                if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "symmetry")) {
+                    tixihelper::TixiRemoveAttribute(tixiHandle, xpath, "symmetry");
+                }
             }
             
             // write element name
@@ -163,12 +175,20 @@ namespace tigl
             if (m_description) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/description")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/description");
+                }
             }
             
             // write element parentUID
             if (m_parentUID) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/parentUID");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/parentUID", *m_parentUID);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/parentUID")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/parentUID");
+                }
             }
             
             // write element transformation
@@ -183,6 +203,10 @@ namespace tigl
             if (m_positionings) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/positionings");
                 m_positionings->WriteCPACS(tixiHandle, xpath + "/positionings");
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/positionings")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/positionings");
+                }
             }
             
             // write element segments
@@ -193,6 +217,10 @@ namespace tigl
             if (m_componentSegments) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/componentSegments");
                 m_componentSegments->WriteCPACS(tixiHandle, xpath + "/componentSegments");
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/componentSegments")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/componentSegments");
+                }
             }
             
         }

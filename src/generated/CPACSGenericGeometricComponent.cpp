@@ -45,6 +45,16 @@ namespace tigl
             return m_parent;
         }
         
+        CTiglUIDManager& CPACSGenericGeometricComponent::GetUIDManager()
+        {
+            return *m_uidMgr;
+        }
+        
+        const CTiglUIDManager& CPACSGenericGeometricComponent::GetUIDManager() const
+        {
+            return *m_uidMgr;
+        }
+        
         void CPACSGenericGeometricComponent::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read attribute uID
@@ -100,13 +110,15 @@ namespace tigl
         void CPACSGenericGeometricComponent::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write attribute uID
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/uID");
             tixihelper::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
             
             // write attribute symmetry
             if (m_symmetry) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/symmetry");
                 tixihelper::TixiSaveAttribute(tixiHandle, xpath, "symmetry", TiglSymmetryAxisToString(*m_symmetry));
+            } else {
+                if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "symmetry")) {
+                    tixihelper::TixiRemoveAttribute(tixiHandle, xpath, "symmetry");
+                }
             }
             
             // write element name
@@ -117,12 +129,20 @@ namespace tigl
             if (m_description) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/description")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/description");
+                }
             }
             
             // write element parentUID
             if (m_parentUID) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/parentUID");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/parentUID", *m_parentUID);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/parentUID")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/parentUID");
+                }
             }
             
             // write element transformation

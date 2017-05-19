@@ -43,6 +43,16 @@ namespace tigl
             return m_parent;
         }
         
+        CTiglUIDManager& CPACSWingComponentSegmentStructure::GetUIDManager()
+        {
+            return *m_uidMgr;
+        }
+        
+        const CTiglUIDManager& CPACSWingComponentSegmentStructure::GetUIDManager() const
+        {
+            return *m_uidMgr;
+        }
+        
         void CPACSWingComponentSegmentStructure::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element upperShell
@@ -105,12 +115,20 @@ namespace tigl
             if (m_ribsDefinitions) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ribsDefinitions");
                 m_ribsDefinitions->WriteCPACS(tixiHandle, xpath + "/ribsDefinitions");
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/ribsDefinitions")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/ribsDefinitions");
+                }
             }
             
             // write element spars
             if (m_spars) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/spars");
                 m_spars->WriteCPACS(tixiHandle, xpath + "/spars");
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/spars")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/spars");
+                }
             }
             
         }

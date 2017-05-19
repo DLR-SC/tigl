@@ -46,6 +46,16 @@ namespace tigl
             return m_parent;
         }
         
+        CTiglUIDManager& CPACSRotor::GetUIDManager()
+        {
+            return *m_uidMgr;
+        }
+        
+        const CTiglUIDManager& CPACSRotor::GetUIDManager() const
+        {
+            return *m_uidMgr;
+        }
+        
         void CPACSRotor::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read attribute uID
@@ -111,13 +121,15 @@ namespace tigl
         void CPACSRotor::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write attribute uID
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/uID");
             tixihelper::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
             
             // write attribute symmetry
             if (m_symmetry) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/symmetry");
                 tixihelper::TixiSaveAttribute(tixiHandle, xpath, "symmetry", TiglSymmetryAxisToString(*m_symmetry));
+            } else {
+                if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "symmetry")) {
+                    tixihelper::TixiRemoveAttribute(tixiHandle, xpath, "symmetry");
+                }
             }
             
             // write element name
@@ -128,24 +140,40 @@ namespace tigl
             if (m_description) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/description")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/description");
+                }
             }
             
             // write element parentUID
             if (m_parentUID) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/parentUID");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/parentUID", *m_parentUID);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/parentUID")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/parentUID");
+                }
             }
             
             // write element type
             if (m_type) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/type");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/type", CPACSRotor_typeToString(*m_type));
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/type")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/type");
+                }
             }
             
             // write element nominalRotationsPerMinute
             if (m_nominalRotationsPerMinute) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/nominalRotationsPerMinute");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/nominalRotationsPerMinute", *m_nominalRotationsPerMinute);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/nominalRotationsPerMinute")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/nominalRotationsPerMinute");
+                }
             }
             
             // write element transformation

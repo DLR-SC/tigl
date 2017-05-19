@@ -26,6 +26,49 @@ namespace tigl
 {
     namespace generated
     {
+        namespace {
+            const std::vector<std::vector<std::string>> choices = {
+                { "ribReference", "ribStart", "ribEnd", "ribCrossingBehaviour", "ribRotation", "etaStart", "etaEnd", "spacing" },
+                { "ribReference", "ribStart", "ribEnd", "ribCrossingBehaviour", "ribRotation", "elementStartUID", "etaEnd", "spacing" },
+                { "ribReference", "ribStart", "ribEnd", "ribCrossingBehaviour", "ribRotation", "sparPositionStartUID", "etaEnd", "spacing" },
+                { "ribReference", "ribStart", "ribEnd", "ribCrossingBehaviour", "ribRotation", "etaStart", "elementEndUID", "spacing" },
+                { "ribReference", "ribStart", "ribEnd", "ribCrossingBehaviour", "ribRotation", "elementStartUID", "elementEndUID", "spacing" },
+                { "ribReference", "ribStart", "ribEnd", "ribCrossingBehaviour", "ribRotation", "sparPositionStartUID", "elementEndUID", "spacing" },
+                { "ribReference", "ribStart", "ribEnd", "ribCrossingBehaviour", "ribRotation", "etaStart", "sparPositionEndUID", "spacing" },
+                { "ribReference", "ribStart", "ribEnd", "ribCrossingBehaviour", "ribRotation", "elementStartUID", "sparPositionEndUID", "spacing" },
+                { "ribReference", "ribStart", "ribEnd", "ribCrossingBehaviour", "ribRotation", "sparPositionStartUID", "sparPositionEndUID", "spacing" },
+                { "ribReference", "ribStart", "ribEnd", "ribCrossingBehaviour", "ribRotation", "etaStart", "etaEnd", "numberOfRibs" },
+                { "ribReference", "ribStart", "ribEnd", "ribCrossingBehaviour", "ribRotation", "elementStartUID", "etaEnd", "numberOfRibs" },
+                { "ribReference", "ribStart", "ribEnd", "ribCrossingBehaviour", "ribRotation", "sparPositionStartUID", "etaEnd", "numberOfRibs" },
+                { "ribReference", "ribStart", "ribEnd", "ribCrossingBehaviour", "ribRotation", "etaStart", "elementEndUID", "numberOfRibs" },
+                { "ribReference", "ribStart", "ribEnd", "ribCrossingBehaviour", "ribRotation", "elementStartUID", "elementEndUID", "numberOfRibs" },
+                { "ribReference", "ribStart", "ribEnd", "ribCrossingBehaviour", "ribRotation", "sparPositionStartUID", "elementEndUID", "numberOfRibs" },
+                { "ribReference", "ribStart", "ribEnd", "ribCrossingBehaviour", "ribRotation", "etaStart", "sparPositionEndUID", "numberOfRibs" },
+                { "ribReference", "ribStart", "ribEnd", "ribCrossingBehaviour", "ribRotation", "elementStartUID", "sparPositionEndUID", "numberOfRibs" },
+                { "ribReference", "ribStart", "ribEnd", "ribCrossingBehaviour", "ribRotation", "sparPositionStartUID", "sparPositionEndUID", "numberOfRibs" },
+            };
+            unsigned int identifyChoice() {
+                const bool isChoice0 = false;
+                const bool isChoice1 = false;
+                const bool isChoice2 = false;
+                const bool isChoice3 = false;
+                const bool isChoice4 = false;
+                const bool isChoice5 = false;
+                const bool isChoice6 = false;
+                const bool isChoice7 = false;
+                const bool isChoice8 = false;
+                const bool isChoice9 = false;
+                const bool isChoice10 = false;
+                const bool isChoice11 = false;
+                const bool isChoice12 = false;
+                const bool isChoice13 = false;
+                const bool isChoice14 = false;
+                const bool isChoice15 = false;
+                const bool isChoice16 = false;
+                const bool isChoice17 = false;
+            }
+        }
+        
         CPACSWingRibsPositioning::CPACSWingRibsPositioning(CCPACSWingRibsDefinition* parent) :
             m_ribRotation(reinterpret_cast<CCPACSWingRibsPositioning*>(this))
         {
@@ -150,48 +193,80 @@ namespace tigl
             if (m_etaStart_choice1) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/etaStart");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/etaStart", *m_etaStart_choice1);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/etaStart")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/etaStart");
+                }
             }
             
             // write element elementStartUID
             if (m_elementStartUID_choice2) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/elementStartUID");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/elementStartUID", *m_elementStartUID_choice2);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/elementStartUID")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/elementStartUID");
+                }
             }
             
             // write element sparPositionStartUID
             if (m_sparPositionStartUID_choice3) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/sparPositionStartUID");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/sparPositionStartUID", *m_sparPositionStartUID_choice3);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/sparPositionStartUID")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/sparPositionStartUID");
+                }
             }
             
             // write element etaEnd
             if (m_etaEnd_choice1) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/etaEnd");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/etaEnd", *m_etaEnd_choice1);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/etaEnd")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/etaEnd");
+                }
             }
             
             // write element elementEndUID
             if (m_elementEndUID_choice2) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/elementEndUID");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/elementEndUID", *m_elementEndUID_choice2);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/elementEndUID")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/elementEndUID");
+                }
             }
             
             // write element sparPositionEndUID
             if (m_sparPositionEndUID_choice3) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/sparPositionEndUID");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/sparPositionEndUID", *m_sparPositionEndUID_choice3);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/sparPositionEndUID")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/sparPositionEndUID");
+                }
             }
             
             // write element spacing
             if (m_spacing_choice1) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/spacing");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/spacing", *m_spacing_choice1);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/spacing")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/spacing");
+                }
             }
             
             // write element numberOfRibs
             if (m_numberOfRibs_choice2) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/numberOfRibs");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/numberOfRibs", *m_numberOfRibs_choice2);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/numberOfRibs")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/numberOfRibs");
+                }
             }
             
         }
