@@ -26,17 +26,6 @@ namespace tigl
 {
     namespace generated
     {
-        namespace {
-            const std::vector<std::vector<std::string>> choices = {
-                { "sparUID" },
-                { "xsi1", "xsi2" },
-            };
-            unsigned int identifyChoice() {
-                const bool isChoice0 = false;
-                const bool isChoice1 = false;
-            }
-        }
-        
         CPACSCellPositioningChordwise::CPACSCellPositioningChordwise(CCPACSWingCell* parent)
         {
             //assert(parent != NULL);

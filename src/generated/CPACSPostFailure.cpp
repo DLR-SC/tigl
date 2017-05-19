@@ -25,17 +25,6 @@ namespace tigl
 {
     namespace generated
     {
-        namespace {
-            const std::vector<std::vector<std::string>> choices = {
-                { "name", "description", "materialLaw", "plasticEliminationStrain", "plasticityCurvePoint" },
-                { "name", "description", "materialLaw", "initialEquivalentShearStrain", "intermediateEquivalentShearStrain", "ultimateEquivalentShearStrain", "intermediateDamage", "ultimateDamage" },
-            };
-            unsigned int identifyChoice() {
-                const bool isChoice0 = false;
-                const bool isChoice1 = false;
-            }
-        }
-        
         CPACSPostFailure::CPACSPostFailure() {}
         
         CPACSPostFailure::~CPACSPostFailure() {}

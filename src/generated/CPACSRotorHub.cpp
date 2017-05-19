@@ -37,7 +37,7 @@ namespace tigl
         
         CPACSRotorHub::~CPACSRotorHub()
         {
-            if (m_uidMgr && m_uID) m_uidMgr->UnregisterObject(*m_uID);
+            if (m_uidMgr && m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
         }
         
         CCPACSRotor* CPACSRotorHub::GetParent() const
@@ -143,7 +143,7 @@ namespace tigl
         void CPACSRotorHub::SetUID(const std::string& value)
         {
             if (m_uidMgr) {
-                if (m_uID) m_uidMgr->UnregisterObject(*m_uID);
+                if (m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
                 m_uidMgr->RegisterObject(value, *this);
             }
             m_uID = value;
@@ -152,7 +152,7 @@ namespace tigl
         void CPACSRotorHub::SetUID(const boost::optional<std::string>& value)
         {
             if (m_uidMgr) {
-                if (m_uID) m_uidMgr->UnregisterObject(*m_uID);
+                if (m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
                 if (value) m_uidMgr->RegisterObject(*value, *this);
             }
             m_uID = value;

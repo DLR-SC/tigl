@@ -24,17 +24,6 @@ namespace tigl
 {
     namespace generated
     {
-        namespace {
-            const std::vector<std::vector<std::string>> choices = {
-                { "compositeUID", "orthotropyDirection", "thicknessScaling" },
-                { "materialUID", "thickness" },
-            };
-            unsigned int identifyChoice() {
-                const bool isChoice0 = false;
-                const bool isChoice1 = false;
-            }
-        }
-        
         CPACSMaterialDefinition::CPACSMaterialDefinition() {}
         
         CPACSMaterialDefinition::~CPACSMaterialDefinition() {}

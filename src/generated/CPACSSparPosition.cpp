@@ -27,17 +27,6 @@ namespace tigl
 {
     namespace generated
     {
-        namespace {
-            const std::vector<std::vector<std::string>> choices = {
-                { "xsi", "eta" },
-                { "xsi", "elementUID" },
-            };
-            unsigned int identifyChoice() {
-                const bool isChoice0 = false;
-                const bool isChoice1 = false;
-            }
-        }
-        
         CPACSSparPosition::CPACSSparPosition(CCPACSWingSparPositions* parent, CTiglUIDManager* uidMgr) :
             m_uidMgr(uidMgr)
         {
@@ -47,7 +36,7 @@ namespace tigl
         
         CPACSSparPosition::~CPACSSparPosition()
         {
-            if (m_uidMgr && m_uID) m_uidMgr->UnregisterObject(*m_uID);
+            if (m_uidMgr && m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
         }
         
         CCPACSWingSparPositions* CPACSSparPosition::GetParent() const
@@ -138,7 +127,7 @@ namespace tigl
         void CPACSSparPosition::SetUID(const std::string& value)
         {
             if (m_uidMgr) {
-                if (m_uID) m_uidMgr->UnregisterObject(*m_uID);
+                if (m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
                 m_uidMgr->RegisterObject(value, *this);
             }
             m_uID = value;
@@ -147,7 +136,7 @@ namespace tigl
         void CPACSSparPosition::SetUID(const boost::optional<std::string>& value)
         {
             if (m_uidMgr) {
-                if (m_uID) m_uidMgr->UnregisterObject(*m_uID);
+                if (m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
                 if (value) m_uidMgr->RegisterObject(*value, *this);
             }
             m_uID = value;

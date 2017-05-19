@@ -40,7 +40,7 @@ namespace tigl
         
         CPACSFuselage::~CPACSFuselage()
         {
-            if (m_uidMgr) m_uidMgr->UnregisterObject(m_uID);
+            if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
         }
         
         CCPACSFuselages* CPACSFuselage::GetParent() const
@@ -214,7 +214,7 @@ namespace tigl
         void CPACSFuselage::SetUID(const std::string& value)
         {
             if (m_uidMgr) {
-                m_uidMgr->UnregisterObject(m_uID);
+                m_uidMgr->TryUnregisterObject(m_uID);
                 m_uidMgr->RegisterObject(value, *this);
             }
             m_uID = value;

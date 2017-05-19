@@ -30,7 +30,7 @@ namespace tigl
         
         CPACSRotorcraftModel::~CPACSRotorcraftModel()
         {
-            if (m_uidMgr) m_uidMgr->UnregisterObject(m_uID);
+            if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
         }
         
         CTiglUIDManager& CPACSRotorcraftModel::GetUIDManager()
@@ -194,7 +194,7 @@ namespace tigl
         void CPACSRotorcraftModel::SetUID(const std::string& value)
         {
             if (m_uidMgr) {
-                m_uidMgr->UnregisterObject(m_uID);
+                m_uidMgr->TryUnregisterObject(m_uID);
                 m_uidMgr->RegisterObject(value, *this);
             }
             m_uID = value;

@@ -27,17 +27,6 @@ namespace tigl
 {
     namespace generated
     {
-        namespace {
-            const std::vector<std::vector<std::string>> choices = {
-                { "name", "description", "ribCrossSection", "ribsPositioning" },
-                { "name", "description", "ribCrossSection", "ribExplicitPositioning" },
-            };
-            unsigned int identifyChoice() {
-                const bool isChoice0 = false;
-                const bool isChoice1 = false;
-            }
-        }
-        
         CPACSWingRibsDefinition::CPACSWingRibsDefinition(CCPACSWingRibsDefinitions* parent, CTiglUIDManager* uidMgr) :
             m_uidMgr(uidMgr), 
             m_ribCrossSection(reinterpret_cast<CCPACSWingRibsDefinition*>(this), m_uidMgr)
@@ -48,7 +37,7 @@ namespace tigl
         
         CPACSWingRibsDefinition::~CPACSWingRibsDefinition()
         {
-            if (m_uidMgr && m_uID) m_uidMgr->UnregisterObject(*m_uID);
+            if (m_uidMgr && m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
         }
         
         CCPACSWingRibsDefinitions* CPACSWingRibsDefinition::GetParent() const
@@ -184,7 +173,7 @@ namespace tigl
         void CPACSWingRibsDefinition::SetUID(const std::string& value)
         {
             if (m_uidMgr) {
-                if (m_uID) m_uidMgr->UnregisterObject(*m_uID);
+                if (m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
                 m_uidMgr->RegisterObject(value, *this);
             }
             m_uID = value;
@@ -193,7 +182,7 @@ namespace tigl
         void CPACSWingRibsDefinition::SetUID(const boost::optional<std::string>& value)
         {
             if (m_uidMgr) {
-                if (m_uID) m_uidMgr->UnregisterObject(*m_uID);
+                if (m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
                 if (value) m_uidMgr->RegisterObject(*value, *this);
             }
             m_uID = value;

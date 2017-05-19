@@ -25,23 +25,12 @@ namespace tigl
 {
     namespace generated
     {
-        namespace {
-            const std::vector<std::vector<std::string>> choices = {
-                { "name", "description", "guideCurveProfileUID", "fromGuideCurveUID", "continuity", "toRelativeCircumference", "tangent" },
-                { "name", "description", "guideCurveProfileUID", "fromRelativeCircumference", "tangent", "toRelativeCircumference", "tangent" },
-            };
-            unsigned int identifyChoice() {
-                const bool isChoice0 = false;
-                const bool isChoice1 = false;
-            }
-        }
-        
         CPACSGuideCurve::CPACSGuideCurve(CTiglUIDManager* uidMgr) :
             m_uidMgr(uidMgr) {}
         
         CPACSGuideCurve::~CPACSGuideCurve()
         {
-            if (m_uidMgr) m_uidMgr->UnregisterObject(m_uID);
+            if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
         }
         
         CTiglUIDManager& CPACSGuideCurve::GetUIDManager()
@@ -226,7 +215,7 @@ namespace tigl
         void CPACSGuideCurve::SetUID(const std::string& value)
         {
             if (m_uidMgr) {
-                m_uidMgr->UnregisterObject(m_uID);
+                m_uidMgr->TryUnregisterObject(m_uID);
                 m_uidMgr->RegisterObject(value, *this);
             }
             m_uID = value;

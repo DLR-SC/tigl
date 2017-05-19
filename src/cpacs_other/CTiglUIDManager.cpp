@@ -73,12 +73,18 @@ CTiglUIDManager::TypedPtr CTiglUIDManager::ResolveObject(const std::string& uid)
     return it->second;
 }
 
-void CTiglUIDManager::UnregisterObject(const std::string& uid) {
+bool CTiglUIDManager::TryUnregisterObject(const std::string& uid) {
     const CPACSObjectMap::const_iterator it = cpacsObjects.find(uid);
     if (it == std::end(cpacsObjects)) {
-        throw CTiglError("No object is registered for uid \"" + uid + "\"");
+        return false;
     }
     cpacsObjects.erase(it);
+    return true;
+}
+
+void CTiglUIDManager::UnregisterObject(const std::string& uid) {
+    if (!TryUnregisterObject(uid))
+        throw CTiglError("No object is registered for uid \"" + uid + "\"");
 }
 
 namespace {
@@ -211,6 +217,10 @@ void CTiglUIDManager::BuildTree()
         CTiglRelativelyPositionedComponent& c = *it->second;
         const boost::optional<const std::string&> parentUid = c.GetParentUID();
         if (parentUid) {
+            if (parentUid->empty()) {
+                throw CTiglError("geometric component with uid " + c.GetDefaultedUID() + " has empty parentUid");
+            }
+
             CTiglRelativelyPositionedComponent& p = GetRelativeComponent(*parentUid);
             p.AddChild(c);
             c.SetParent(p);

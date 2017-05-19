@@ -52,7 +52,7 @@ namespace tigl
         
         CPACSWing::~CPACSWing()
         {
-            if (m_uidMgr) m_uidMgr->UnregisterObject(m_uID);
+            if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
         }
         
         CTiglUIDManager& CPACSWing::GetUIDManager()
@@ -233,7 +233,7 @@ namespace tigl
         void CPACSWing::SetUID(const std::string& value)
         {
             if (m_uidMgr) {
-                m_uidMgr->UnregisterObject(m_uID);
+                m_uidMgr->TryUnregisterObject(m_uID);
                 m_uidMgr->RegisterObject(value, *this);
             }
             m_uID = value;

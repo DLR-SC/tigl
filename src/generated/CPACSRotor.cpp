@@ -38,7 +38,7 @@ namespace tigl
         
         CPACSRotor::~CPACSRotor()
         {
-            if (m_uidMgr) m_uidMgr->UnregisterObject(m_uID);
+            if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
         }
         
         CCPACSRotors* CPACSRotor::GetParent() const
@@ -194,7 +194,7 @@ namespace tigl
         void CPACSRotor::SetUID(const std::string& value)
         {
             if (m_uidMgr) {
-                m_uidMgr->UnregisterObject(m_uID);
+                m_uidMgr->TryUnregisterObject(m_uID);
                 m_uidMgr->RegisterObject(value, *this);
             }
             m_uID = value;

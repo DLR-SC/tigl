@@ -26,49 +26,6 @@ namespace tigl
 {
     namespace generated
     {
-        namespace {
-            const std::vector<std::vector<std::string>> choices = {
-                { "ribReference", "ribStart", "ribEnd", "ribCrossingBehaviour", "ribRotation", "etaStart", "etaEnd", "spacing" },
-                { "ribReference", "ribStart", "ribEnd", "ribCrossingBehaviour", "ribRotation", "elementStartUID", "etaEnd", "spacing" },
-                { "ribReference", "ribStart", "ribEnd", "ribCrossingBehaviour", "ribRotation", "sparPositionStartUID", "etaEnd", "spacing" },
-                { "ribReference", "ribStart", "ribEnd", "ribCrossingBehaviour", "ribRotation", "etaStart", "elementEndUID", "spacing" },
-                { "ribReference", "ribStart", "ribEnd", "ribCrossingBehaviour", "ribRotation", "elementStartUID", "elementEndUID", "spacing" },
-                { "ribReference", "ribStart", "ribEnd", "ribCrossingBehaviour", "ribRotation", "sparPositionStartUID", "elementEndUID", "spacing" },
-                { "ribReference", "ribStart", "ribEnd", "ribCrossingBehaviour", "ribRotation", "etaStart", "sparPositionEndUID", "spacing" },
-                { "ribReference", "ribStart", "ribEnd", "ribCrossingBehaviour", "ribRotation", "elementStartUID", "sparPositionEndUID", "spacing" },
-                { "ribReference", "ribStart", "ribEnd", "ribCrossingBehaviour", "ribRotation", "sparPositionStartUID", "sparPositionEndUID", "spacing" },
-                { "ribReference", "ribStart", "ribEnd", "ribCrossingBehaviour", "ribRotation", "etaStart", "etaEnd", "numberOfRibs" },
-                { "ribReference", "ribStart", "ribEnd", "ribCrossingBehaviour", "ribRotation", "elementStartUID", "etaEnd", "numberOfRibs" },
-                { "ribReference", "ribStart", "ribEnd", "ribCrossingBehaviour", "ribRotation", "sparPositionStartUID", "etaEnd", "numberOfRibs" },
-                { "ribReference", "ribStart", "ribEnd", "ribCrossingBehaviour", "ribRotation", "etaStart", "elementEndUID", "numberOfRibs" },
-                { "ribReference", "ribStart", "ribEnd", "ribCrossingBehaviour", "ribRotation", "elementStartUID", "elementEndUID", "numberOfRibs" },
-                { "ribReference", "ribStart", "ribEnd", "ribCrossingBehaviour", "ribRotation", "sparPositionStartUID", "elementEndUID", "numberOfRibs" },
-                { "ribReference", "ribStart", "ribEnd", "ribCrossingBehaviour", "ribRotation", "etaStart", "sparPositionEndUID", "numberOfRibs" },
-                { "ribReference", "ribStart", "ribEnd", "ribCrossingBehaviour", "ribRotation", "elementStartUID", "sparPositionEndUID", "numberOfRibs" },
-                { "ribReference", "ribStart", "ribEnd", "ribCrossingBehaviour", "ribRotation", "sparPositionStartUID", "sparPositionEndUID", "numberOfRibs" },
-            };
-            unsigned int identifyChoice() {
-                const bool isChoice0 = false;
-                const bool isChoice1 = false;
-                const bool isChoice2 = false;
-                const bool isChoice3 = false;
-                const bool isChoice4 = false;
-                const bool isChoice5 = false;
-                const bool isChoice6 = false;
-                const bool isChoice7 = false;
-                const bool isChoice8 = false;
-                const bool isChoice9 = false;
-                const bool isChoice10 = false;
-                const bool isChoice11 = false;
-                const bool isChoice12 = false;
-                const bool isChoice13 = false;
-                const bool isChoice14 = false;
-                const bool isChoice15 = false;
-                const bool isChoice16 = false;
-                const bool isChoice17 = false;
-            }
-        }
-        
         CPACSWingRibsPositioning::CPACSWingRibsPositioning(CCPACSWingRibsDefinition* parent) :
             m_ribRotation(reinterpret_cast<CCPACSWingRibsPositioning*>(this))
         {

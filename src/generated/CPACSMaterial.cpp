@@ -26,25 +26,12 @@ namespace tigl
 {
     namespace generated
     {
-        namespace {
-            const std::vector<std::vector<std::string>> choices = {
-                { "name", "description", "rho", "k11", "k12", "maxStrain", "fatigueFactor", "postFailure", "sig11", "tau12", "sig11yieldT", "sig11yieldC" },
-                { "name", "description", "rho", "k11", "k12", "maxStrain", "fatigueFactor", "postFailure", "k22", "k23", "k66", "sig11t", "sig11c", "sig22t", "sig22c", "tau12", "tau23" },
-                { "name", "description", "rho", "k11", "k12", "maxStrain", "fatigueFactor", "postFailure", "k13", "k22", "k23", "k33", "k44", "k55", "k66", "sig11t", "sig11c", "sig22t", "sig22c", "sig33t", "sig33c", "tau12", "tau13", "tau23" },
-            };
-            unsigned int identifyChoice() {
-                const bool isChoice0 = false;
-                const bool isChoice1 = false;
-                const bool isChoice2 = false;
-            }
-        }
-        
         CPACSMaterial::CPACSMaterial(CTiglUIDManager* uidMgr) :
             m_uidMgr(uidMgr) {}
         
         CPACSMaterial::~CPACSMaterial()
         {
-            if (m_uidMgr && m_uID) m_uidMgr->UnregisterObject(*m_uID);
+            if (m_uidMgr && m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
         }
         
         CTiglUIDManager& CPACSMaterial::GetUIDManager()
@@ -624,7 +611,7 @@ namespace tigl
         void CPACSMaterial::SetUID(const std::string& value)
         {
             if (m_uidMgr) {
-                if (m_uID) m_uidMgr->UnregisterObject(*m_uID);
+                if (m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
                 m_uidMgr->RegisterObject(value, *this);
             }
             m_uID = value;
@@ -633,7 +620,7 @@ namespace tigl
         void CPACSMaterial::SetUID(const boost::optional<std::string>& value)
         {
             if (m_uidMgr) {
-                if (m_uID) m_uidMgr->UnregisterObject(*m_uID);
+                if (m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
                 if (value) m_uidMgr->RegisterObject(*value, *this);
             }
             m_uID = value;

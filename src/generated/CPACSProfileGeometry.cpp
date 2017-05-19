@@ -25,23 +25,12 @@ namespace tigl
 {
     namespace generated
     {
-        namespace {
-            const std::vector<std::vector<std::string>> choices = {
-                { "name", "description", "pointList" },
-                { "name", "description", "cst2D" },
-            };
-            unsigned int identifyChoice() {
-                const bool isChoice0 = false;
-                const bool isChoice1 = false;
-            }
-        }
-        
         CPACSProfileGeometry::CPACSProfileGeometry(CTiglUIDManager* uidMgr) :
             m_uidMgr(uidMgr) {}
         
         CPACSProfileGeometry::~CPACSProfileGeometry()
         {
-            if (m_uidMgr) m_uidMgr->UnregisterObject(m_uID);
+            if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
         }
         
         CTiglUIDManager& CPACSProfileGeometry::GetUIDManager()
@@ -186,7 +175,7 @@ namespace tigl
         void CPACSProfileGeometry::SetUID(const std::string& value)
         {
             if (m_uidMgr) {
-                m_uidMgr->UnregisterObject(m_uID);
+                m_uidMgr->TryUnregisterObject(m_uID);
                 m_uidMgr->RegisterObject(value, *this);
             }
             m_uID = value;

@@ -78,7 +78,8 @@ public:
         return objects;
     }
 
-    TIGL_EXPORT void UnregisterObject(const std::string& uid);
+    TIGL_EXPORT bool TryUnregisterObject(const std::string& uid); // returns false on failure
+    TIGL_EXPORT void UnregisterObject(const std::string& uid); // throws on failure
 
     // Function to add a UID and a geometric component to the uid store.
     TIGL_EXPORT void AddGeometricComponent(const std::string& uid, ITiglGeometricComponent* componentPtr);

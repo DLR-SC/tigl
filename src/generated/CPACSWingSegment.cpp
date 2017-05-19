@@ -36,7 +36,7 @@ namespace tigl
         
         CPACSWingSegment::~CPACSWingSegment()
         {
-            if (m_uidMgr) m_uidMgr->UnregisterObject(m_uID);
+            if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
         }
         
         CCPACSWingSegments* CPACSWingSegment::GetParent() const
@@ -157,7 +157,7 @@ namespace tigl
         void CPACSWingSegment::SetUID(const std::string& value)
         {
             if (m_uidMgr) {
-                m_uidMgr->UnregisterObject(m_uID);
+                m_uidMgr->TryUnregisterObject(m_uID);
                 m_uidMgr->RegisterObject(value, *this);
             }
             m_uID = value;

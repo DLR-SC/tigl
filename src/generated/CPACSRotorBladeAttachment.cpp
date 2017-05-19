@@ -27,17 +27,6 @@ namespace tigl
 {
     namespace generated
     {
-        namespace {
-            const std::vector<std::vector<std::string>> choices = {
-                { "name", "description", "hinges", "rotorBladeUID", "azimuthAngles" },
-                { "name", "description", "hinges", "rotorBladeUID", "numberOfBlades" },
-            };
-            unsigned int identifyChoice() {
-                const bool isChoice0 = false;
-                const bool isChoice1 = false;
-            }
-        }
-        
         CPACSRotorBladeAttachment::CPACSRotorBladeAttachment(CCPACSRotorBladeAttachments* parent, CTiglUIDManager* uidMgr) :
             m_uidMgr(uidMgr)
         {
@@ -47,7 +36,7 @@ namespace tigl
         
         CPACSRotorBladeAttachment::~CPACSRotorBladeAttachment()
         {
-            if (m_uidMgr && m_uID) m_uidMgr->UnregisterObject(*m_uID);
+            if (m_uidMgr && m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
         }
         
         CCPACSRotorBladeAttachments* CPACSRotorBladeAttachment::GetParent() const
@@ -201,7 +190,7 @@ namespace tigl
         void CPACSRotorBladeAttachment::SetUID(const std::string& value)
         {
             if (m_uidMgr) {
-                if (m_uID) m_uidMgr->UnregisterObject(*m_uID);
+                if (m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
                 m_uidMgr->RegisterObject(value, *this);
             }
             m_uID = value;
@@ -210,7 +199,7 @@ namespace tigl
         void CPACSRotorBladeAttachment::SetUID(const boost::optional<std::string>& value)
         {
             if (m_uidMgr) {
-                if (m_uID) m_uidMgr->UnregisterObject(*m_uID);
+                if (m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
                 if (value) m_uidMgr->RegisterObject(*value, *this);
             }
             m_uID = value;

@@ -37,7 +37,7 @@ namespace tigl
         
         CPACSGenericGeometricComponent::~CPACSGenericGeometricComponent()
         {
-            if (m_uidMgr) m_uidMgr->UnregisterObject(m_uID);
+            if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
         }
         
         CCPACSExternalObjects* CPACSGenericGeometricComponent::GetParent() const
@@ -163,7 +163,7 @@ namespace tigl
         void CPACSGenericGeometricComponent::SetUID(const std::string& value)
         {
             if (m_uidMgr) {
-                m_uidMgr->UnregisterObject(m_uID);
+                m_uidMgr->TryUnregisterObject(m_uID);
                 m_uidMgr->RegisterObject(value, *this);
             }
             m_uID = value;
