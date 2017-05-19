@@ -102,7 +102,8 @@ CCPACSConfiguration& CCPACSFuselage::GetConfiguration() const
     return *configuration;
 }
 
-std::string CCPACSFuselage::GetDefaultedUID() const {
+std::string CCPACSFuselage::GetDefaultedUID() const
+{
     return generated::CPACSFuselage::GetUID();
 }
 

@@ -74,7 +74,8 @@ CCPACSWingComponentSegment & CCPACSWingComponentSegments::GetComponentSegment(co
     throw CTiglError("Error: Invalid uid in CCPACSWingComponentSegments::GetComponentSegment", TIGL_UID_ERROR);
 }
 
-const CCPACSWingComponentSegment & CCPACSWingComponentSegments::GetComponentSegment(const std::string& componentSegmentUID) const {
+const CCPACSWingComponentSegment & CCPACSWingComponentSegments::GetComponentSegment(const std::string& componentSegmentUID) const
+{
     for (std::size_t i = 0; i < m_componentSegments.size(); i++) {
         if (m_componentSegments[i]->GetUID() == componentSegmentUID) {
             return *m_componentSegments[i];

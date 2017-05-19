@@ -1,8 +1,8 @@
-/* 
+/*
 * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
-* Changed: $Id$ 
+* Changed: $Id$
 *
 * Version: $Revision$
 *
@@ -68,27 +68,28 @@ CTiglTransformation CCPACSPositionings::GetPositioningTransformation(std::string
     return CTiglTransformation();
 }
 
-namespace {
-    void UpdateNextPositioning(CCPACSPositioning* currPos, int depth)
-    {
-        // check for recursive definition
-        if (depth > 1000) {
-            throw CTiglError("Recursive definition of positioning is not allowed");
-        }
-
-        if (currPos->GetToSectionUID() == ""){
-            throw CTiglError("illegal definition of positionings");
-        }
-
-        // Find all positionings which have the end section of the current positioning
-        // defined as their start section.
-        const std::vector<CCPACSPositioning*>& children = currPos->GetDependentPositionings();
-        for (std::vector<CCPACSPositioning*>::const_iterator it = children.begin(); it != children.end(); ++it) {
-            CCPACSPositioning* childPos = *it;
-            childPos->SetFromPoint(currPos->GetToPoint());
-            UpdateNextPositioning(childPos, depth + 1);
-        }
+namespace
+{
+void UpdateNextPositioning(CCPACSPositioning* currPos, int depth)
+{
+    // check for recursive definition
+    if (depth > 1000) {
+        throw CTiglError("Recursive definition of positioning is not allowed");
     }
+
+    if (currPos->GetToSectionUID() == "") {
+        throw CTiglError("illegal definition of positionings");
+    }
+
+    // Find all positionings which have the end section of the current positioning
+    // defined as their start section.
+    const std::vector<CCPACSPositioning*>& children = currPos->GetDependentPositionings();
+    for (std::vector<CCPACSPositioning*>::const_iterator it = children.begin(); it != children.end(); ++it) {
+        CCPACSPositioning* childPos = *it;
+        childPos->SetFromPoint(currPos->GetToPoint());
+        UpdateNextPositioning(childPos, depth + 1);
+    }
+}
 }
 
 // Update internal positionings structure
@@ -108,7 +109,7 @@ void CCPACSPositionings::Update()
         actPos->DisconnectDependentPositionings();
         actPos->SetFromPoint(CTiglPoint(0,0,0));
     }
-    
+
     // connect positionings, find roots
     std::vector<CCPACSPositioning*> rootNodes;
     for (std::vector<unique_ptr<CCPACSPositioning> >::iterator it = m_positionings.begin(); it != m_positionings.end(); ++it) {

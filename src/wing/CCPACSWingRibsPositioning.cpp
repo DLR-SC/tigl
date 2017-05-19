@@ -203,7 +203,8 @@ void CCPACSWingRibsPositioning::SetSpacing(double value)
     invalidateStructure();
 }
 
-void CCPACSWingRibsPositioning::invalidateStructure() {
+void CCPACSWingRibsPositioning::invalidateStructure()
+{
     GetParent()->GetParent()->GetParent()->Invalidate();
 }
 

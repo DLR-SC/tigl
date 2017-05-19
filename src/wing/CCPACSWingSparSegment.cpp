@@ -74,7 +74,8 @@ CCPACSWingSparPosition& CCPACSWingSparSegment::GetSparPosition(std::string uID)
     return sparsNode.GetSparPositions().GetSparPosition(uID);
 }
 
-const CCPACSWingSparPosition& CCPACSWingSparSegment::GetSparPosition(std::string uid) const {
+const CCPACSWingSparPosition& CCPACSWingSparSegment::GetSparPosition(std::string uid) const
+{
     return sparsNode.GetSparPositions().GetSparPosition(uid);
 }
 

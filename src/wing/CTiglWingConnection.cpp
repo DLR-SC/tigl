@@ -36,11 +36,9 @@ namespace tigl
 {
 CTiglWingConnection::CTiglWingConnection() {}
 
-    // Constructor
+// Constructor
 CTiglWingConnection::CTiglWingConnection(const std::string& elementUID, CCPACSWingSegment* aSegment)
-    : elementUID(elementUID), segment(aSegment)
-{
-}
+    : elementUID(elementUID), segment(aSegment) {}
 
 // Returns the section UID of this connection
 const std::string& CTiglWingConnection::GetSectionUID() const
@@ -119,7 +117,8 @@ CTiglTransformation CTiglWingConnection::GetSectionElementTransformation() const
 }
 
 
-void CTiglWingConnection::resolve() const {
+void CTiglWingConnection::resolve() const
+{
     CCPACSWing& wing = segment->GetWing();
     for (int i = 1; i <= wing.GetSectionCount(); i++) {
         const CCPACSWingSection& section = wing.GetSection(i);

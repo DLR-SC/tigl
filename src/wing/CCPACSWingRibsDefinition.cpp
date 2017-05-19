@@ -958,10 +958,13 @@ CCPACSWingRibsDefinition::RibMidplanePoints CCPACSWingRibsDefinition::ComputeRib
     return RibMidplanePoints(ribStartPnt, ribEndPnt);
 }
 
-CCPACSWingCSStructure & CCPACSWingRibsDefinition::getStructure() {
+CCPACSWingCSStructure & CCPACSWingRibsDefinition::getStructure()
+{
     return *m_parent->GetParent();
 }
-const CCPACSWingCSStructure & CCPACSWingRibsDefinition::getStructure() const {
+
+const CCPACSWingCSStructure & CCPACSWingRibsDefinition::getStructure() const
+{
     return *m_parent->GetParent();
 }
 
