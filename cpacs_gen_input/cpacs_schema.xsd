@@ -8361,32 +8361,36 @@ jonas.jepsen@dlr.de
 			<xsd:extension base="complexBaseType">
 				<xsd:choice>
 					<xsd:sequence>
-						<xsd:element name="ribDefinitionUID" type="stringUIDBaseType">
-							<xsd:annotation>
-								<xsd:documentation>Link to a rib definition
-								</xsd:documentation>
-							</xsd:annotation>
-						</xsd:element>
-						<xsd:element name="ribNumber" type="integerBaseType">
-							<xsd:annotation>
-								<xsd:documentation>Rib number in the corresponding
-									ribDefinitionUID</xsd:documentation>
-							</xsd:annotation>
-						</xsd:element>
-					</xsd:sequence>
-					<xsd:sequence>
-						<xsd:element name="etaLE" type="doubleBaseType">
-							<xsd:annotation>
-								<xsd:documentation>Spanwise location of the border at the
-									leading edge of the cut out</xsd:documentation>
-							</xsd:annotation>
-						</xsd:element>
-						<xsd:element name="etaTE" type="doubleBaseType">
-							<xsd:annotation>
-								<xsd:documentation>Spanwise location of the border at the
-									trailing edge of the cut out</xsd:documentation>
-							</xsd:annotation>
-						</xsd:element>
+						<xsd:choice>
+							<xsd:sequence>
+								<xsd:element name="ribDefinitionUID" type="stringUIDBaseType">
+									<xsd:annotation>
+										<xsd:documentation>Link to a rib definition
+										</xsd:documentation>
+									</xsd:annotation>
+								</xsd:element>
+								<xsd:element name="ribNumber" type="integerBaseType">
+									<xsd:annotation>
+										<xsd:documentation>Rib number in the corresponding
+											ribDefinitionUID</xsd:documentation>
+									</xsd:annotation>
+								</xsd:element>
+							</xsd:sequence>
+							<xsd:sequence>
+								<xsd:element name="etaLE" type="doubleBaseType">
+									<xsd:annotation>
+										<xsd:documentation>Spanwise location of the border at the
+											leading edge of the cut out</xsd:documentation>
+									</xsd:annotation>
+								</xsd:element>
+								<xsd:element name="etaTE" type="doubleBaseType">
+									<xsd:annotation>
+										<xsd:documentation>Spanwise location of the border at the
+											trailing edge of the cut out</xsd:documentation>
+									</xsd:annotation>
+								</xsd:element>
+							</xsd:sequence>
+						</xsd:choice>
 					</xsd:sequence>
 				</xsd:choice>
 			</xsd:extension>
