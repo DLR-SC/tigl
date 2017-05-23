@@ -47,18 +47,18 @@ void CCPACSWingComponentSegments::Invalidate()
 // Gets a componentSegment by index.
 CCPACSWingComponentSegment& CCPACSWingComponentSegments::GetComponentSegment(int index)
 {
-	index--;
+    index--;
     if (index < 0 || index >= GetComponentSegmentCount()) {
-        throw CTiglError("Error: Invalid index value in CCPACSWingComponentSegments::GetComponentSegment", TIGL_INDEX_ERROR);
+        throw CTiglError("Invalid index value in CCPACSWingComponentSegments::GetComponentSegment", TIGL_INDEX_ERROR);
     }
     return *m_componentSegments[index];
 }
 
 const CCPACSWingComponentSegment& CCPACSWingComponentSegments::GetComponentSegment(int index) const
 {
-	index--;
+    index--;
     if (index < 0 || index >= GetComponentSegmentCount()) {
-        throw CTiglError("Error: Invalid index value in CCPACSWingComponentSegments::GetComponentSegment", TIGL_INDEX_ERROR);
+        throw CTiglError("Invalid index value in CCPACSWingComponentSegments::GetComponentSegment", TIGL_INDEX_ERROR);
     }
     return *m_componentSegments[index];
 }
@@ -71,7 +71,7 @@ CCPACSWingComponentSegment & CCPACSWingComponentSegments::GetComponentSegment(co
             return *m_componentSegments[i];
         }
     }
-    throw CTiglError("Error: Invalid uid in CCPACSWingComponentSegments::GetComponentSegment", TIGL_UID_ERROR);
+    throw CTiglError("Invalid uid in CCPACSWingComponentSegments::GetComponentSegment", TIGL_UID_ERROR);
 }
 
 const CCPACSWingComponentSegment & CCPACSWingComponentSegments::GetComponentSegment(const std::string& componentSegmentUID) const
@@ -81,7 +81,7 @@ const CCPACSWingComponentSegment & CCPACSWingComponentSegments::GetComponentSegm
             return *m_componentSegments[i];
         }
     }
-    throw CTiglError("Error: Invalid uid in CCPACSWingComponentSegments::GetComponentSegment", TIGL_UID_ERROR);
+    throw CTiglError("Invalid uid in CCPACSWingComponentSegments::GetComponentSegment", TIGL_UID_ERROR);
 }
 
 // Gets total componentSegment count

@@ -387,7 +387,7 @@ void CCPACSWingSparSegment::BuildGeometry() const
             sparFaces = BuildFace(TopoDS::Wire(wireList.First()), TopoDS::Wire(wireList.Last()));
         } else {
             LOG(ERROR) << "no geometry for spar definition found!";
-            throw CTiglError("Error: no geometry for spar definition found!");
+            throw CTiglError("no geometry for spar definition found!");
         }
 
         // add spar face to compound

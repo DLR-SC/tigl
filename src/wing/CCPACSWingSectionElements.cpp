@@ -42,7 +42,7 @@ CCPACSWingSectionElement& CCPACSWingSectionElements::GetSectionElement(int index
 {
 	index--;
     if (index < 0 || index >= GetSectionElementCount()) {
-        throw CTiglError("Error: Invalid index in CCPACSWingSectionElements::GetSectionElement", TIGL_INDEX_ERROR);
+        throw CTiglError("Invalid index in CCPACSWingSectionElements::GetSectionElement", TIGL_INDEX_ERROR);
     }
     return *m_elements[index];
 }

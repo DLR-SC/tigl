@@ -263,7 +263,7 @@ gp_Pnt CCPACSWingProfile::GetTEPoint()
 gp_Pnt CCPACSWingProfile::GetChordPoint(double xsi)
 {
     if (xsi < 0.0 || xsi > 1.0) {
-        throw CTiglError("Error: Parameter xsi not in the range 0.0 <= xsi <= 1.0 in CCPACSWingProfile::GetChordPoint", TIGL_ERROR);
+        throw CTiglError("Parameter xsi not in the range 0.0 <= xsi <= 1.0 in CCPACSWingProfile::GetChordPoint", TIGL_ERROR);
     }
 
     Handle(Geom2d_TrimmedCurve) chordLine = GetChordLine();
@@ -318,7 +318,7 @@ gp_Pnt CCPACSWingProfile::GetPoint(double xsi, bool fromUpper)
     Update();
 
     if (xsi < 0.0 || xsi > 1.0) {
-        throw CTiglError("Error: Parameter xsi not in the range 0.0 <= xsi <= 1.0 in CCPACSWingProfile::GetPoint", TIGL_ERROR);
+        throw CTiglError("Parameter xsi not in the range 0.0 <= xsi <= 1.0 in CCPACSWingProfile::GetPoint", TIGL_ERROR);
     }
 
     if (xsi < Precision::Confusion()) {
@@ -396,7 +396,7 @@ gp_Pnt CCPACSWingProfile::GetPoint(double xsi, bool fromUpper)
         }
         return minYPnt3d;
     }
-    throw CTiglError("Error: No intersection point found in CCPACSWingProfile::GetPoint", TIGL_NOT_FOUND);
+    throw CTiglError("No intersection point found in CCPACSWingProfile::GetPoint", TIGL_NOT_FOUND);
 }
 
 // Helper function to determine the chord line between leading and trailing edge in the profile plane

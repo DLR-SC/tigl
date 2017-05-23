@@ -45,7 +45,7 @@ CCPACSRotorHinge& CCPACSRotorHinges::GetRotorHinge(int index) const
 {
     index--;
     if (index < 0 || index >= GetRotorHingeCount()) {
-        throw CTiglError("Error: Invalid index in CCPACSRotorHinges::GetRotorHinge", TIGL_INDEX_ERROR);
+        throw CTiglError("Invalid index in CCPACSRotorHinges::GetRotorHinge", TIGL_INDEX_ERROR);
     }
     return *m_hinges[index];
 }

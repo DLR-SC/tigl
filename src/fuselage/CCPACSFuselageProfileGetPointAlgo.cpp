@@ -43,12 +43,12 @@ CCPACSFuselageProfileGetPointAlgo::CCPACSFuselageProfileGetPointAlgo (const TopT
 {
     try {
         if (wireContainer.Length()!=1) {
-            throw CTiglError("Error: CCPACSWingProfileGetPointAlgo: Number of wires is not equal 1", TIGL_ERROR);
+            throw CTiglError("CCPACSWingProfileGetPointAlgo: Number of wires is not equal 1", TIGL_ERROR);
         }
         wire = TopoDS::Wire(wireContainer(1));
     }
     catch(...) {
-        throw CTiglError("Error: CCPACSFuselageProfileGetPointAlgo: Conversion of shape to wire failed", TIGL_ERROR);
+        throw CTiglError("CCPACSFuselageProfileGetPointAlgo: Conversion of shape to wire failed", TIGL_ERROR);
     }
     wireLength = GetWireLength(wire);
 }

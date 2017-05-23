@@ -41,7 +41,7 @@ CCPACSFuselageSection& CCPACSFuselageSections::GetSection(int index) const
 {
     index--;
     if (index < 0 || index >= GetSectionCount()) {
-        throw CTiglError("Error: Invalid index in CCPACSFuselageSections::GetSection", TIGL_INDEX_ERROR);
+        throw CTiglError("Invalid index in CCPACSFuselageSections::GetSection", TIGL_INDEX_ERROR);
     }
     return *m_sections[index];
 }

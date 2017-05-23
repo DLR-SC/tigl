@@ -44,7 +44,7 @@ const CCPACSWingRibsDefinition& CCPACSWingRibsDefinitions::GetRibsDefinition(con
     const int idx = index - 1;
     if (idx < 0 || idx >= GetRibsDefinitionCount()) {
         LOG(ERROR) << "Invalid index value";
-        throw CTiglError("Error: Invalid index value in CCPACSWingRibsDefinitions::GetRibsDefinition", TIGL_INDEX_ERROR);
+        throw CTiglError("Invalid index value in CCPACSWingRibsDefinitions::GetRibsDefinition", TIGL_INDEX_ERROR);
     }
     return static_cast<CCPACSWingRibsDefinition&>(*(m_ribsDefinitions[idx]));
 }
@@ -66,7 +66,7 @@ const CCPACSWingRibsDefinition& CCPACSWingRibsDefinitions::GetRibsDefinition(con
 
     const std::string referenceUID = GetParent()->GetWingStructureReference().GetUID().value_or("");
     LOG(ERROR) << "Ribs Definition \"" << uid << "\" not found in component segment or trailing edge device with UID \"" << referenceUID << "\"";
-    throw CTiglError("Error: Ribs Definition \"" + uid + "\" not found in component segment or trailing edge device with UID \"" + referenceUID + "\". Please check the CPACS document!", TIGL_ERROR);
+    throw CTiglError("Ribs Definition \"" + uid + "\" not found in component segment or trailing edge device with UID \"" + referenceUID + "\". Please check the CPACS document!", TIGL_ERROR);
 }
 
 CCPACSWingRibsDefinition& CCPACSWingRibsDefinitions::GetRibsDefinition(const std::string& uid)

@@ -59,7 +59,7 @@ CCPACSWing& CCPACSRotorBlades::GetRotorBlade(int index) const
 {
     index --;
     if (index < 0 || index >= GetRotorBladeCount()) {
-        throw CTiglError("Error: Invalid index in CCPACSRotorBlades::GetRotorBlade", TIGL_INDEX_ERROR);
+        throw CTiglError("Invalid index in CCPACSRotorBlades::GetRotorBlade", TIGL_INDEX_ERROR);
     }
     return *m_rotorBlades[index];
 }
@@ -80,7 +80,7 @@ int CCPACSRotorBlades::GetRotorBladeIndex(const std::string& UID) const
     }
 
     // UID not there
-    throw CTiglError("Error: Invalid UID in CCPACSRotorBlades::GetRotorBladeIndex", TIGL_UID_ERROR);
+    throw CTiglError("Invalid UID in CCPACSRotorBlades::GetRotorBladeIndex", TIGL_UID_ERROR);
 }
 
 // Returns the parent configuration

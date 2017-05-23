@@ -91,7 +91,7 @@ void CCPACSConfiguration::ReadCPACS(const std::string& configurationUID)
 {
     char* path;
     if (tixiUIDGetXPath(tixiDocumentHandle, configurationUID.c_str(), &path) != SUCCESS) {
-        throw CTiglError("Error: XML error while reading in CCPACSConfiguration::ReadCPACS", TIGL_XML_ERROR);
+        throw CTiglError("XML error while reading in CCPACSConfiguration::ReadCPACS", TIGL_XML_ERROR);
     }
 
     if (tixihelper::TixiCheckElement(tixiDocumentHandle, headerXPath)) {

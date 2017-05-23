@@ -335,7 +335,7 @@ void CTiglExportIges::AddToIges(PNamedShape shape, IGESControl_Writer& writer, i
     if (faceMap.Extent() > 0) {
         int ret = writer.AddShape(shape->Shape());
         if (ret > IFSelect_RetDone) {
-            throw CTiglError("Error: Export to IGES file failed in CTiglExportStep. Could not translate shape " 
+            throw CTiglError("Export to IGES file failed in CTiglExportStep. Could not translate shape " 
                              + shapeName + " to iges entity,", TIGL_ERROR);
         }
         WriteIgesNames(writer, shape, level);
@@ -352,7 +352,7 @@ void CTiglExportIges::AddToIges(PNamedShape shape, IGESControl_Writer& writer, i
         for (int iwire = 1; iwire <= Edges->Length(); ++iwire) {
             int ret = writer.AddShape(Edges->Value(iwire));
             if (ret > IFSelect_RetDone) {
-                throw CTiglError("Error: Export to IGES file failed in CTiglExportIges. Could not translate shape " 
+                throw CTiglError("Export to IGES file failed in CTiglExportIges. Could not translate shape " 
                                  + shapeName + " to iges entity,", TIGL_ERROR);
             }
             PNamedShape theWire(new CNamedShape(Edges->Value(iwire),shapeName.c_str()));

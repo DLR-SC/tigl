@@ -268,10 +268,10 @@ TopoDS_Face CCPACSWingComponentSegment::GetOuterFace()
 gp_Pnt CCPACSWingComponentSegment::GetMidplaneOrChordlinePoint(double eta, double xsi) const
 {
     if (eta < 0.0 || eta > 1.0) {
-        throw CTiglError("Error: Parameter eta not in the range 0.0 <= eta <= 1.0 in CCPACSWingComponentSegment::GetMidplaneOrChordlinePoint", TIGL_ERROR);
+        throw CTiglError("Parameter eta not in the range 0.0 <= eta <= 1.0 in CCPACSWingComponentSegment::GetMidplaneOrChordlinePoint", TIGL_ERROR);
     }
     if (xsi < 0.0 || xsi > 1.0) {
-        throw CTiglError("Error: Parameter xsi not in the range 0.0 <= xsi <= 1.0 in CCPACSWingComponentSegment::GetMidplaneOrChordlinePoint", TIGL_ERROR);
+        throw CTiglError("Parameter xsi not in the range 0.0 <= xsi <= 1.0 in CCPACSWingComponentSegment::GetMidplaneOrChordlinePoint", TIGL_ERROR);
     }
 
     gp_Pnt p;
@@ -814,7 +814,7 @@ PNamedShape CCPACSWingComponentSegment::BuildLoft()
 
     const SegmentList& segments = GetSegmentList();
     if (segments.size() == 0) {
-        throw CTiglError("Error: Could not find segments in CCPACSWingComponentSegment::BuildLoft", TIGL_ERROR);
+        throw CTiglError("Could not find segments in CCPACSWingComponentSegment::BuildLoft", TIGL_ERROR);
     }
 
     TopoDS_Shape innerShape = segments.front()->GetInnerClosure(WING_COORDINATE_SYSTEM);
@@ -1186,10 +1186,10 @@ gp_Pnt CCPACSWingComponentSegment::GetPoint(double eta, double xsi) const
 {
     // search for ETA coordinate
     if (eta < 0.0 || eta > 1.0) {
-        throw CTiglError("Error: Parameter eta not in the range 0.0 <= eta <= 1.0 in CCPACSWingComponentSegment::GetPoint", TIGL_ERROR);
+        throw CTiglError("Parameter eta not in the range 0.0 <= eta <= 1.0 in CCPACSWingComponentSegment::GetPoint", TIGL_ERROR);
     }
     if (xsi < 0.0 || xsi > 1.0) {
-        throw CTiglError("Error: Parameter xsi not in the range 0.0 <= xsi <= 1.0 in CCPACSWingComponentSegment::GetPoint", TIGL_ERROR);
+        throw CTiglError("Parameter xsi not in the range 0.0 <= xsi <= 1.0 in CCPACSWingComponentSegment::GetPoint", TIGL_ERROR);
     }
 
     UpdateProjectedLeadingEdge();
@@ -1336,7 +1336,7 @@ gp_Vec CCPACSWingComponentSegment::GetMidplaneEtaDir(double eta) const
 gp_Vec CCPACSWingComponentSegment::GetMidplaneNormal(double eta) const
 {
     if (eta < 0.0 || eta > 1.0) {
-        throw CTiglError("Error: Parameter eta not in the range 0.0 <= eta <= 1.0 in CCPACSWingComponentSegment::GetMidplaneOrChordlinePoint", TIGL_ERROR);
+        throw CTiglError("Parameter eta not in the range 0.0 <= eta <= 1.0 in CCPACSWingComponentSegment::GetMidplaneOrChordlinePoint", TIGL_ERROR);
     }
 
     gp_Pnt lePnt = GetMidplaneOrChordlinePoint(eta, 0);
@@ -1352,10 +1352,10 @@ void CCPACSWingComponentSegment::GetEtaXsiFromSegmentEtaXsi(const std::string& s
     // search for ETA coordinate
         
     if (seta < 0.0 || seta > 1.0) {
-        throw CTiglError("Error: Parameter seta not in the range 0.0 <= seta <= 1.0 in CCPACSWingComponentSegment::GetPoint", TIGL_ERROR);
+        throw CTiglError("Parameter seta not in the range 0.0 <= seta <= 1.0 in CCPACSWingComponentSegment::GetPoint", TIGL_ERROR);
     }
     if (sxsi < 0.0 || sxsi > 1.0) {
-        throw CTiglError("Error: Parameter sxsi not in the range 0.0 <= sxsi <= 1.0 in CCPACSWingComponentSegment::GetPoint", TIGL_ERROR);
+        throw CTiglError("Parameter sxsi not in the range 0.0 <= sxsi <= 1.0 in CCPACSWingComponentSegment::GetPoint", TIGL_ERROR);
     }
 
     const SegmentList& segments = GetSegmentList();
@@ -1368,7 +1368,7 @@ void CCPACSWingComponentSegment::GetEtaXsiFromSegmentEtaXsi(const std::string& s
         }
     }
     if (!segment) {
-        throw CTiglError("Error: segment does not belong to component segment in CCPACSWingComponentSegment::GetEtaXsiFromSegmentEtaXsi", TIGL_ERROR);
+        throw CTiglError("segment does not belong to component segment in CCPACSWingComponentSegment::GetEtaXsiFromSegmentEtaXsi", TIGL_ERROR);
     }
 
     gp_Pnt point3d = segment->GetChordPoint(seta, sxsi);
@@ -1409,7 +1409,7 @@ double CCPACSWingComponentSegment::GetSurfaceArea()
 //    {
 //        if (eta < 0.0 || eta > 1.0)
 //        {
-//            throw CTiglError("Error: Parameter eta not in the range 0.0 <= eta <= 1.0 in CCPACSWingSegment::GetPoint", TIGL_ERROR);
+//            throw CTiglError("Parameter eta not in the range 0.0 <= eta <= 1.0 in CCPACSWingSegment::GetPoint", TIGL_ERROR);
 //        }
 //
 //        CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
@@ -1560,7 +1560,7 @@ bool CCPACSWingComponentSegment::IsSegmentContained(const CCPACSWingSegment& seg
 const CCPACSWingShell& CCPACSWingComponentSegment::GetUpperShell() const
 {
     if (!m_structure) {
-        throw CTiglError("Error: no structure existing in CCPACSWingComponentSegment::GetUpperShell!");
+        throw CTiglError("no structure existing in CCPACSWingComponentSegment::GetUpperShell!");
     }
     return m_structure->GetUpperShell();
 }
@@ -1574,7 +1574,7 @@ CCPACSWingShell& CCPACSWingComponentSegment::GetUpperShell()
 const CCPACSWingShell& CCPACSWingComponentSegment::GetLowerShell() const
 {
     if (!m_structure) {
-        throw CTiglError("Error: no structure existing in CCPACSWingComponentSegment::GetLowerShell!");
+        throw CTiglError("no structure existing in CCPACSWingComponentSegment::GetLowerShell!");
     }
     return m_structure->GetLowerShell();
 }

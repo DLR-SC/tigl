@@ -56,28 +56,28 @@ int CCPACSWingCSStructure::GetSparSegmentCount() const {
 
 CCPACSWingSparSegment& CCPACSWingCSStructure::GetSparSegment(int index) {
     if (!m_spars) {
-        throw CTiglError("Error: no spars existing in CCPACSWingCSStructure::GetSparSegment!");
+        throw CTiglError("no spars existing in CCPACSWingCSStructure::GetSparSegment!");
     }
     return m_spars->GetSparSegments().GetSparSegment(index);
 }
 
 CCPACSWingSparSegment& CCPACSWingCSStructure::GetSparSegment(const std::string& uid) {
     if (!m_spars) {
-        throw CTiglError("Error: no spars existing in CCPACSWingCSStructure::GetSparSegment!");
+        throw CTiglError("no spars existing in CCPACSWingCSStructure::GetSparSegment!");
     }
     return m_spars->GetSparSegments().GetSparSegment(uid);
 }
 
 const CCPACSWingSparSegment& CCPACSWingCSStructure::GetSparSegment(int index) const {
     if (!m_spars) {
-        throw CTiglError("Error: no spars existing in CCPACSWingCSStructure::GetSparSegment!");
+        throw CTiglError("no spars existing in CCPACSWingCSStructure::GetSparSegment!");
     }
     return m_spars->GetSparSegments().GetSparSegment(index);
 }
 
 const CCPACSWingSparSegment& CCPACSWingCSStructure::GetSparSegment(const std::string& uid) const {
     if (!m_spars) {
-        throw CTiglError("Error: no spars existing in CCPACSWingCSStructure::GetSparSegment!");
+        throw CTiglError("no spars existing in CCPACSWingCSStructure::GetSparSegment!");
     }
     return m_spars->GetSparSegments().GetSparSegment(uid);
 }
@@ -91,28 +91,28 @@ int CCPACSWingCSStructure::GetRibsDefinitionCount() const {
 
 CCPACSWingRibsDefinition& CCPACSWingCSStructure::GetRibsDefinition(int index) {
     if (!m_ribsDefinitions) {
-        throw CTiglError("Error: no ribsDefinitions existing in CCPACSWingCSStructure::GetRibsDefinition!");
+        throw CTiglError("no ribsDefinitions existing in CCPACSWingCSStructure::GetRibsDefinition!");
     }
     return m_ribsDefinitions->GetRibsDefinition(index);
 }
 
 CCPACSWingRibsDefinition& CCPACSWingCSStructure::GetRibsDefinition(const std::string& uid) {
     if (!m_ribsDefinitions) {
-        throw CTiglError("Error: no ribsDefinitions existing in CCPACSWingCSStructure::GetRibsDefinition!");
+        throw CTiglError("no ribsDefinitions existing in CCPACSWingCSStructure::GetRibsDefinition!");
     }
     return m_ribsDefinitions->GetRibsDefinition(uid);
 }
 
 const CCPACSWingRibsDefinition& CCPACSWingCSStructure::GetRibsDefinition(int index) const {
     if (!m_ribsDefinitions) {
-        throw CTiglError("Error: no ribsDefinitions existing in CCPACSWingCSStructure::GetRibsDefinition!");
+        throw CTiglError("no ribsDefinitions existing in CCPACSWingCSStructure::GetRibsDefinition!");
     }
     return m_ribsDefinitions->GetRibsDefinition(index);
 }
 
 const CCPACSWingRibsDefinition& CCPACSWingCSStructure::GetRibsDefinition(const std::string& uid) const {
     if (!m_ribsDefinitions) {
-        throw CTiglError("Error: no ribsDefinitions existing in CCPACSWingCSStructure::GetRibsDefinition!");
+        throw CTiglError("no ribsDefinitions existing in CCPACSWingCSStructure::GetRibsDefinition!");
     }
     return m_ribsDefinitions->GetRibsDefinition(uid);
 }

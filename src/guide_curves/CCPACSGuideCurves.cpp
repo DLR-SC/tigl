@@ -56,7 +56,7 @@ const CCPACSGuideCurve& CCPACSGuideCurves::GetGuideCurve(int index) const
 {
     index--;
     if (index < 0 || index >= GetGuideCurveCount()) {
-        throw CTiglError("Error: Invalid index in CCPACSGuideCurves::GetGuideCurve", TIGL_INDEX_ERROR);
+        throw CTiglError("Invalid index in CCPACSGuideCurves::GetGuideCurve", TIGL_INDEX_ERROR);
     }
     return *m_guideCurves[index];
 }

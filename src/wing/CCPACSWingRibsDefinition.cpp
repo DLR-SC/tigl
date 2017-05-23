@@ -148,7 +148,7 @@ const CCPACSWingRibsDefinition::CutGeometry& CCPACSWingRibsDefinition::GetRibCut
     int index = ribNumber - 1;
     if (index < 0 || index >= GetNumberOfRibs()) {
         LOG(ERROR) << "invalid rib number passed to CCPACSWingRibsDefinition::GetRibCutGeometry!";
-        throw CTiglError("ERROR: invalid rib number passed to CCPACSWingRibsDefinition::GetRibCutGeometry!");
+        throw CTiglError("invalid rib number passed to CCPACSWingRibsDefinition::GetRibCutGeometry!");
     }
     return auxGeomCache.cutGeometries[index];
 }
@@ -528,7 +528,7 @@ void CCPACSWingRibsDefinition::BuildGeometry() const
                 }
                 catch (const CTiglError&) {
                     LOG(ERROR) << "unable to generate rib face for rib definition: " << m_uID.value_or("");
-                    throw CTiglError("Error: unable to generate rib face for rib definition \"" + m_uID.value_or("") + "\"! Please check for a correct rib definition!");
+                    throw CTiglError("unable to generate rib face for rib definition \"" + m_uID.value_or("") + "\"! Please check for a correct rib definition!");
                 }
             }
             else if (wireList.Extent() == 2) {
@@ -536,7 +536,7 @@ void CCPACSWingRibsDefinition::BuildGeometry() const
             }
             else {
                 LOG(ERROR) << "no geometry for ribs definition found!";
-                throw CTiglError("Error: no geometry for ribs definition found!");
+                throw CTiglError("no geometry for ribs definition found!");
             }
 
             if (ribFace.IsNull()) {
@@ -751,7 +751,7 @@ int CCPACSWingRibsDefinition::ComputeNumberOfRibs(double etaStart, double etaEnd
     }
     else {
         LOG(ERROR) << "Unknown ribsCountDefinitionType found in CCPACSWingRibsDefinition::ComputeNumberOfRibs!";
-        throw CTiglError("Error: Unknown ribsCountDefinitionType found in CCPACSWingRibsDefinition::ComputeNumberOfRibs!");
+        throw CTiglError("Unknown ribsCountDefinitionType found in CCPACSWingRibsDefinition::ComputeNumberOfRibs!");
     }
 
     return numberOfRibs;
@@ -782,7 +782,7 @@ double CCPACSWingRibsDefinition::ComputeEtaOffset(double etaStart, double etaEnd
     }
     else {
         LOG(ERROR) << "Unknown ribsCountDefinitionType found in CCPACSWingRibsDefinition::ComputeEtaOffset!";
-        throw CTiglError("Error: Unknown ribsCountDefinitionType found in CCPACSWingRibsDefinition::ComputeEtaOffset!");
+        throw CTiglError("Unknown ribsCountDefinitionType found in CCPACSWingRibsDefinition::ComputeEtaOffset!");
     }
 
     return etaOffset;
@@ -867,7 +867,7 @@ gp_Vec CCPACSWingRibsDefinition::GetRibDirection(double currentEta, const gp_Pnt
         const std::string ribRotationReferenceStr = generated::CPACSRibRotation_ribRotationReferenceToString(*ribRotationReference);
         if (ribReference != ribRotationReferenceStr) {
             LOG(ERROR) << "using spar as rib rotation reference but not as rib reference is not supported!";
-            throw CTiglError("ERROR: using spar as rib rotation reference but not as rib reference is not supported!");
+            throw CTiglError("using spar as rib rotation reference but not as rib reference is not supported!");
         }
         const CCPACSWingSparSegment& sparSegment = getStructure().GetSparSegment(ribRotationReferenceStr);
         ribDir = sparSegment.GetDirection(currentEta);

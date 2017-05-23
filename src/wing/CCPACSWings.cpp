@@ -69,7 +69,7 @@ CCPACSWing& CCPACSWings::GetWing(int index) const
 {
     index --;
     if (index < 0 || index >= GetWingCount()) {
-        throw CTiglError("Error: Invalid index in CCPACSWings::GetWing", TIGL_INDEX_ERROR);
+        throw CTiglError("Invalid index in CCPACSWings::GetWing", TIGL_INDEX_ERROR);
     }
     return *m_wings[index];
 }
@@ -91,7 +91,7 @@ int CCPACSWings::GetWingIndex(const std::string& UID) const
     }
 
     // UID not there
-    throw CTiglError("Error: Invalid UID in CCPACSWings::GetWingIndex", TIGL_UID_ERROR);
+    throw CTiglError("Invalid UID in CCPACSWings::GetWingIndex", TIGL_UID_ERROR);
 }
 
 bool CCPACSWings::HasWing(const std::string & uid) const
@@ -114,6 +114,6 @@ void CCPACSWings::Remove(CCPACSWing* wing) {
             return;
         }
     }
-    throw std::runtime_error("Wing not found");
+    throw CTiglError("Wing not found");
 }
 } // end namespace tigl

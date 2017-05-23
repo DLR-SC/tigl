@@ -99,7 +99,7 @@ namespace
 
         // Cast shapes to wires, see OpenCascade documentation
         if (resultWire.ShapeType() != TopAbs_WIRE) {
-            throw tigl::CTiglError("Error: Wrong shape type in CCPACSWing::transformToAbsCoords", TIGL_ERROR);
+            throw tigl::CTiglError("Wrong shape type in CCPACSWing::transformToAbsCoords", TIGL_ERROR);
         }
         
         return TopoDS::Wire(resultWire);
@@ -786,7 +786,7 @@ const CCPACSGuideCurve& CCPACSWing::GetGuideCurve(std::string uid)
             return segment.GetGuideCurve(uid);
         }
     }
-    throw tigl::CTiglError("Error: Guide Curve with UID " + uid + " does not exists", TIGL_ERROR);
+    throw tigl::CTiglError("Guide Curve with UID " + uid + " does not exists", TIGL_ERROR);
 }
 
 } // end namespace tigl

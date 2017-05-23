@@ -49,7 +49,7 @@ CCPACSWingSegment& CCPACSWingSegments::GetSegment(int index)
 {
     index--;
     if (index < 0 || index >= GetSegmentCount()) {
-        throw CTiglError("Error: Invalid index value in CCPACSWingSegments::GetSegment", TIGL_INDEX_ERROR);
+        throw CTiglError("Invalid index value in CCPACSWingSegments::GetSegment", TIGL_INDEX_ERROR);
     }
     return *m_segments[index];
 }
@@ -58,7 +58,7 @@ const CCPACSWingSegment& CCPACSWingSegments::GetSegment(int index) const
 {
     index--;
     if (index < 0 || index >= GetSegmentCount()) {
-        throw CTiglError("Error: Invalid index value in CCPACSWingSegments::GetSegment", TIGL_INDEX_ERROR);
+        throw CTiglError("Invalid index value in CCPACSWingSegments::GetSegment", TIGL_INDEX_ERROR);
     }
     return *m_segments[index];
 }
@@ -71,7 +71,7 @@ CCPACSWingSegment& CCPACSWingSegments::GetSegment(const std::string& segmentUID)
             return *m_segments[i];
         }
     }
-    throw CTiglError("Error: Invalid uid in CCPACSWingSegments::GetSegment", TIGL_UID_ERROR);
+    throw CTiglError("Invalid uid in CCPACSWingSegments::GetSegment", TIGL_UID_ERROR);
 }
 
 const CCPACSWingSegment& CCPACSWingSegments::GetSegment(const std::string& segmentUID) const
@@ -81,7 +81,7 @@ const CCPACSWingSegment& CCPACSWingSegments::GetSegment(const std::string& segme
             return *m_segments[i];
         }
     }
-    throw CTiglError("Error: Invalid uid in CCPACSWingSegments::GetSegment", TIGL_UID_ERROR);
+    throw CTiglError("Invalid uid in CCPACSWingSegments::GetSegment", TIGL_UID_ERROR);
 }
 
 // Gets total segment count

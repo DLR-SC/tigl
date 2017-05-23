@@ -103,7 +103,7 @@ void CTiglTransformation::SetIdentity()
 void CTiglTransformation::SetValue(int row, int col, double value)
 {
     if (row < 0 || row > 3 || col < 0 || col > 3) {
-        throw CTiglError("Error: Invalid row or column index in CTiglTransformation::SetValue", TIGL_INDEX_ERROR);
+        throw CTiglError("Invalid row or column index in CTiglTransformation::SetValue", TIGL_INDEX_ERROR);
     }
 
     m_matrix[row][col] = value;
@@ -520,7 +520,7 @@ CTiglTransformation CTiglTransformation::Inverted() const
 double CTiglTransformation::GetValue(int row, int col) const
 {
     if (row < 0 || row > 3 || col < 0 || col > 3) {
-        throw CTiglError("Error: Invalid row or column index in CTiglTransformation::GetValue", TIGL_INDEX_ERROR);
+        throw CTiglError("Invalid row or column index in CTiglTransformation::GetValue", TIGL_INDEX_ERROR);
     }
 
     return m_matrix[row][col];

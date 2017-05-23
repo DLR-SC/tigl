@@ -112,7 +112,7 @@ double CCPACSRotorBladeAttachment::GetAzimuthAngle(int index) const
 {
     index --;
     if (index < 0 || index >= GetNumberOfBlades()) {
-        throw CTiglError("Error: Invalid index in CCPACSRotorBladeAttachment::GetAzimuthAngle", TIGL_INDEX_ERROR);
+        throw CTiglError("Invalid index in CCPACSRotorBladeAttachment::GetAzimuthAngle", TIGL_INDEX_ERROR);
     }
     if (m_azimuthAngles_choice1)
         return m_azimuthAngles_choice1->AsVector()[index];
@@ -147,7 +147,7 @@ CTiglAttachedRotorBlade& CCPACSRotorBladeAttachment::GetAttachedRotorBlade(int i
     lazyCreateAttachedRotorBlades();
     index--;
     if (index < 0 || index >= GetNumberOfBlades()) {
-        throw CTiglError("Error: Invalid index in CCPACSRotorBladeAttachment::GetAttachedRotorBlade", TIGL_INDEX_ERROR);
+        throw CTiglError("Invalid index in CCPACSRotorBladeAttachment::GetAttachedRotorBlade", TIGL_INDEX_ERROR);
     }
     return *attachedRotorBlades[index];
 }

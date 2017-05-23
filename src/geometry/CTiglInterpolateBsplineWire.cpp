@@ -56,7 +56,7 @@ TopoDS_Wire CTiglInterpolateBsplineWire::BuildWire(const CPointContainer& points
     bool endTangency = (continuity == _C1);
 
     if (points.size() < 2) {
-        throw CTiglError("Error: To less points to build a curve in CTiglInterpolateBsplineWire::BuildCurve", TIGL_ERROR);
+        throw CTiglError("To less points to build a curve in CTiglInterpolateBsplineWire::BuildCurve", TIGL_ERROR);
     }
 
     // If first and last point are identical always force wire closure independently of given forceClosed flag.
@@ -90,7 +90,7 @@ TopoDS_Wire CTiglInterpolateBsplineWire::BuildWire(const CPointContainer& points
     }
 
     if (pointCount < 2) {
-        throw CTiglError("Error: To less points to build a curve in CTiglInterpolateBsplineWire::BuildCurve", TIGL_ERROR);
+        throw CTiglError("To less points to build a curve in CTiglInterpolateBsplineWire::BuildCurve", TIGL_ERROR);
     }
 
     Handle(TColgp_HArray1OfPnt) hpoints = new TColgp_HArray1OfPnt(1, pointCount);
@@ -119,7 +119,7 @@ TopoDS_Wire CTiglInterpolateBsplineWire::BuildWire(const CPointContainer& points
     TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(hcurve);
     BRepBuilderAPI_MakeWire wireBuilder(edge);
     if (!wireBuilder.IsDone()) {
-        throw CTiglError("Error: Wire construction failed in CTiglInterpolateBsplineWire::BuildWire", TIGL_ERROR);
+        throw CTiglError("Wire construction failed in CTiglInterpolateBsplineWire::BuildWire", TIGL_ERROR);
     }
 
     TopoDS_Wire wire = wireBuilder.Wire();
@@ -128,7 +128,7 @@ TopoDS_Wire CTiglInterpolateBsplineWire::BuildWire(const CPointContainer& points
         edge = BRepBuilderAPI_MakeEdge(endPnt, startPnt);
         wire = BRepBuilderAPI_MakeWire(wire, edge).Wire();
         if (!wire.Closed()) {
-            throw CTiglError("Error: Wire closing failed in CTiglInterpolateBsplineWire::BuildWire", TIGL_ERROR);
+            throw CTiglError("Wire closing failed in CTiglInterpolateBsplineWire::BuildWire", TIGL_ERROR);
         }
     }
 
@@ -145,7 +145,7 @@ TiglAlgorithmCode CTiglInterpolateBsplineWire::GetAlgorithmCode() const
 gp_Pnt CTiglInterpolateBsplineWire::GetPointWithMinX(const CPointContainer& points) const
 {        
     if (points.size() == 0) {
-        throw CTiglError("Error: To less points in CTiglInterpolateBsplineWire::GetPointWithMinX", TIGL_ERROR);
+        throw CTiglError("To less points in CTiglInterpolateBsplineWire::GetPointWithMinX", TIGL_ERROR);
     }
 
     gp_Pnt minXPnt = points[0];
@@ -161,7 +161,7 @@ gp_Pnt CTiglInterpolateBsplineWire::GetPointWithMinX(const CPointContainer& poin
 gp_Pnt CTiglInterpolateBsplineWire::GetPointWithMaxX(const CPointContainer& points) const
 {
     if (points.size() == 0) {
-        throw CTiglError("Error: To less points in CTiglInterpolateBsplineWire::GetPointWithMaxX", TIGL_ERROR);
+        throw CTiglError("To less points in CTiglInterpolateBsplineWire::GetPointWithMaxX", TIGL_ERROR);
     }
 
     gp_Pnt maxXPnt = points[0];
@@ -177,7 +177,7 @@ gp_Pnt CTiglInterpolateBsplineWire::GetPointWithMaxX(const CPointContainer& poin
 gp_Pnt CTiglInterpolateBsplineWire::GetPointWithMinY(const CPointContainer& points) const
 {
     if (points.size() == 0) {
-        throw CTiglError("Error: To less points in CTiglInterpolateBsplineWire::GetPointWithMinY", TIGL_ERROR);
+        throw CTiglError("To less points in CTiglInterpolateBsplineWire::GetPointWithMinY", TIGL_ERROR);
     }
 
     gp_Pnt minYPnt = points[0];
@@ -193,7 +193,7 @@ gp_Pnt CTiglInterpolateBsplineWire::GetPointWithMinY(const CPointContainer& poin
 gp_Pnt CTiglInterpolateBsplineWire::GetPointWithMaxY(const CPointContainer& points) const
 {
     if (points.size() == 0) {
-        throw CTiglError("Error: To less points in CTiglInterpolateBsplineWire::GetPointWithMaxY", TIGL_ERROR);
+        throw CTiglError("To less points in CTiglInterpolateBsplineWire::GetPointWithMaxY", TIGL_ERROR);
     }
 
     gp_Pnt maxYPnt = points[0];

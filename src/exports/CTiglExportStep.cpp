@@ -261,7 +261,7 @@ void CTiglExportStep::AddToStep(PNamedShape shape, STEPControl_Writer& writer) c
     if (faceMap.Extent() > 0) {
         int ret = writer.Transfer(shape->Shape(), STEP_WRITEMODE);
         if (ret > IFSelect_RetDone) {
-            throw CTiglError("Error: Export to STEP file failed in CTiglExportStep. Could not translate shape " 
+            throw CTiglError("Export to STEP file failed in CTiglExportStep. Could not translate shape " 
                              + shapeName + " to step entity,", TIGL_ERROR);
         }
         WriteStepNames(FP, shape);
@@ -278,7 +278,7 @@ void CTiglExportStep::AddToStep(PNamedShape shape, STEPControl_Writer& writer) c
         for (int iwire = 1; iwire <= Edges->Length(); ++iwire) {
             int ret = writer.Transfer(Edges->Value(iwire), STEP_WRITEMODE);
             if (ret > IFSelect_RetDone) {
-                throw CTiglError("Error: Export to STEP file failed in CTiglExportStep. Could not translate shape " 
+                throw CTiglError("Export to STEP file failed in CTiglExportStep. Could not translate shape " 
                                  + shapeName + " to step entity,", TIGL_ERROR);
             }
             PNamedShape theWire(new CNamedShape(Edges->Value(iwire),shapeName.c_str()));

@@ -278,7 +278,7 @@ const CCPACSGuideCurve& CCPACSFuselage::GetGuideCurve(std::string uid)
             return segment.GetGuideCurve(uid);
         }
     }
-    throw tigl::CTiglError("Error: Guide Curve with UID " + uid + " does not exists", TIGL_ERROR);
+    throw tigl::CTiglError("Guide Curve with UID " + uid + " does not exists", TIGL_ERROR);
 }
 
 } // end namespace tigl

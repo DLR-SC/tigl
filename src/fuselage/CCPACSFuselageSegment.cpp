@@ -125,7 +125,7 @@ namespace
 
         // Cast shapes to wires, see OpenCascade documentation
         if (transformedWire.ShapeType() != TopAbs_WIRE) {
-            throw tigl::CTiglError("Error: Wrong shape type in CCPACSFuselageSegment::transformProfileWire", TIGL_ERROR);
+            throw tigl::CTiglError("Wrong shape type in CCPACSFuselageSegment::transformProfileWire", TIGL_ERROR);
         }
 
         return TopoDS::Wire(transformedWire);
@@ -389,7 +389,7 @@ int CCPACSFuselageSegment::GetEndConnectedSegmentCount()
 int CCPACSFuselageSegment::GetStartConnectedSegmentIndex(int n)
 {
     if (n < 1 || n > GetStartConnectedSegmentCount()) {
-        throw CTiglError("Error: Invalid value for parameter n in CCPACSFuselageSegment::GetStartConnectedSegmentIndex", TIGL_INDEX_ERROR);
+        throw CTiglError("Invalid value for parameter n in CCPACSFuselageSegment::GetStartConnectedSegmentIndex", TIGL_INDEX_ERROR);
     }
 
     for (int i = 1, count = 0; i <= GetFuselage().GetSegmentCount(); i++) {
@@ -406,7 +406,7 @@ int CCPACSFuselageSegment::GetStartConnectedSegmentIndex(int n)
         }
     }
 
-    throw CTiglError("Error: No connected segment found in CCPACSFuselageSegment::GetStartConnectedSegmentIndex", TIGL_NOT_FOUND);
+    throw CTiglError("No connected segment found in CCPACSFuselageSegment::GetStartConnectedSegmentIndex", TIGL_NOT_FOUND);
 }
 
 // Gets the index (number) of the n-th segment connected to the end section
@@ -414,7 +414,7 @@ int CCPACSFuselageSegment::GetStartConnectedSegmentIndex(int n)
 int CCPACSFuselageSegment::GetEndConnectedSegmentIndex(int n)
 {
     if (n < 1 || n > GetEndConnectedSegmentCount()) {
-        throw CTiglError("Error: Invalid value for parameter n in CCPACSFuselageSegment::GetEndConnectedSegmentIndex", TIGL_INDEX_ERROR);
+        throw CTiglError("Invalid value for parameter n in CCPACSFuselageSegment::GetEndConnectedSegmentIndex", TIGL_INDEX_ERROR);
     }
 
     for (int i = 1, count = 0; i <= GetFuselage().GetSegmentCount(); i++) {
@@ -431,7 +431,7 @@ int CCPACSFuselageSegment::GetEndConnectedSegmentIndex(int n)
         }
     }
 
-    throw CTiglError("Error: No connected segment found in CCPACSFuselageSegment::GetEndConnectedSegmentIndex", TIGL_NOT_FOUND);
+    throw CTiglError("No connected segment found in CCPACSFuselageSegment::GetEndConnectedSegmentIndex", TIGL_NOT_FOUND);
 }
 
 // Gets a point on the fuselage segment in dependence of parameters eta and zeta with
@@ -441,7 +441,7 @@ int CCPACSFuselageSegment::GetEndConnectedSegmentIndex(int n)
 gp_Pnt CCPACSFuselageSegment::GetPoint(double eta, double zeta)
 {
     if (eta < 0.0 || eta > 1.0) {
-        throw CTiglError("Error: Parameter eta not in the range 0.0 <= eta <= 1.0 in CCPACSFuselageSegment::GetPoint", TIGL_ERROR);
+        throw CTiglError("Parameter eta not in the range 0.0 <= eta <= 1.0 in CCPACSFuselageSegment::GetPoint", TIGL_ERROR);
     }
 
     CCPACSFuselageProfile& startProfile = startConnection.GetProfile();
@@ -619,7 +619,7 @@ TopoDS_Shape CCPACSFuselageSegment::getWireOnLoft(double eta)
     // connect edges to wires and save them to Wire-sequence
     ShapeAnalysis_FreeBounds::ConnectEdgesToWires(Edges, tolerance, false, Wires);
     if (numWires < 1){
-        throw CTiglError("Error: No intersection found in CCPACSFuselageSegment::getWireOnLoft", TIGL_NOT_FOUND);
+        throw CTiglError("No intersection found in CCPACSFuselageSegment::getWireOnLoft", TIGL_NOT_FOUND);
     }
     return TopoDS::Wire(Wires->Value(1));
 }

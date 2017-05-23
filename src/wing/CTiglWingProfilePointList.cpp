@@ -102,7 +102,7 @@ CTiglWingProfilePointList::CTiglWingProfilePointList(const CCPACSWingProfile& pr
 
     // check if points with maximal/minimal z-component were calculated correctly
     if (maxZIndex == minZIndex) {
-        throw CTiglError("Error: CTiglWingProfilePointList::ReadCPACS: Unable to separate upper and lower wing profile from point list", TIGL_XML_ERROR);
+        throw CTiglError("CTiglWingProfilePointList::ReadCPACS: Unable to separate upper and lower wing profile from point list", TIGL_XML_ERROR);
     }
     // force order of points to run through the lower profile first and then through the upper profile
     if (minZIndex > maxZIndex) {
@@ -173,7 +173,7 @@ void CTiglWingProfilePointList::BuildWires()
     TopoDS_Wire tempWireOpened = wireBuilder.BuildWire(openPoints, false);
     TopoDS_Wire tempWireClosed = wireBuilder.BuildWire(closedPoints, true);
     if (tempWireOpened.IsNull() || tempWireClosed.IsNull()) {
-        throw CTiglError("Error: TopoDS_Wire is null in CTiglWingProfilePointList::BuildWire", TIGL_ERROR);
+        throw CTiglError("TopoDS_Wire is null in CTiglWingProfilePointList::BuildWire", TIGL_ERROR);
     }
 
     //@todo: do we really want to remove all y information? this has to be a bug

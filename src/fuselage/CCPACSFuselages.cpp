@@ -69,7 +69,7 @@ CCPACSFuselage& CCPACSFuselages::GetFuselage(int index) const
 {
     index--;
     if (index < 0 || index >= GetFuselageCount()) {
-        throw CTiglError("Error: Invalid index in CCPACSFuselages::GetFuselage", TIGL_INDEX_ERROR);
+        throw CTiglError("Invalid index in CCPACSFuselages::GetFuselage", TIGL_INDEX_ERROR);
     }
     return *m_fuselages[index];
 }
@@ -91,7 +91,7 @@ int CCPACSFuselages::GetFuselageIndex(const std::string& UID) const
     }
 
     // UID not there
-    throw CTiglError("Error: Invalid UID in CCPACSFuselages::GetFuselageIndex", TIGL_UID_ERROR);
+    throw CTiglError("Invalid UID in CCPACSFuselages::GetFuselageIndex", TIGL_UID_ERROR);
 }
 
 void CCPACSFuselages::Add(CCPACSFuselage* fuselage)
