@@ -108,7 +108,7 @@ CCPACSGenericSystem& CCPACSGenericSystems::GetGenericSystem(int index) const
 {
     index --;
     if (index < 0 || index >= GetGenericSystemCount()) {
-        throw CTiglError("Error: Invalid index in CCPACSGenericSystems::GetGenericSystem", TIGL_INDEX_ERROR);
+        throw CTiglError("Invalid index in CCPACSGenericSystems::GetGenericSystem", TIGL_INDEX_ERROR);
     }
     return (*systems[index]);
 }
@@ -124,7 +124,7 @@ CCPACSGenericSystem& CCPACSGenericSystems::GetGenericSystem(const std::string& U
     }
 
     // UID not there
-    throw CTiglError("Error: Invalid UID in CCPACSGenericSystems::GetGenericSystem", TIGL_INDEX_ERROR);
+    throw CTiglError("Invalid UID in CCPACSGenericSystems::GetGenericSystem", TIGL_INDEX_ERROR);
 }
 
 } // end namespace tigl

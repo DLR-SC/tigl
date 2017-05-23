@@ -33,9 +33,6 @@ public:
     
     TIGL_EXPORT void Invalidate();
 
-    // Virtual Destructor
-    TIGL_EXPORT virtual ~CCPACSWingCells() {}
-
     // Returns the total count of wing cells for that wing component segment
     TIGL_EXPORT int GetCellCount() const;
     

@@ -1,8 +1,8 @@
-/* 
+/*
 * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
-* Changed: $Id$ 
+* Changed: $Id$
 *
 * Version: $Revision$
 *
@@ -19,7 +19,7 @@
 * limitations under the License.
 */
 /**
-* @file 
+* @file
 * @brief  Implementation of the TIGL UID manager.
 */
 
@@ -56,7 +56,8 @@ public:
     TIGL_EXPORT void RegisterObject(const std::string& uid, void* object, const std::type_info& typeInfo);
 
     template<typename T>
-    TIGL_EXPORT void RegisterObject(const std::string& uid, T& object) {
+    TIGL_EXPORT void RegisterObject(const std::string& uid, T& object)
+    {
         RegisterObject(uid, &object, typeid(object));
     }
 
@@ -64,21 +65,25 @@ public:
     TIGL_EXPORT TypedPtr ResolveObject(const std::string& uid, const std::type_info& typeInfo) const;
 
     template<typename T>
-    TIGL_EXPORT T& ResolveObject(const std::string& uid) const {
+    TIGL_EXPORT T& ResolveObject(const std::string& uid) const
+    {
         return *static_cast<T* const>(ResolveObject(uid, typeid(T)).ptr);
     }
 
     template<typename T>
-    TIGL_EXPORT std::vector<T*> ResolveObjects() const {
+    TIGL_EXPORT std::vector<T*> ResolveObjects() const
+    {
         const std::type_info* ti = &typeid(T);
         std::vector<T*> objects;
         for (CPACSObjectMap::const_iterator it = cpacsObjects.begin(); it != cpacsObjects.end(); ++it)
-            if (it->second.type == ti)
+            if (it->second.type == ti) {
                 objects.push_back(static_cast<T* const>(it->second.ptr));
+            }
         return objects;
     }
 
-    TIGL_EXPORT void UnregisterObject(const std::string& uid);
+    TIGL_EXPORT bool TryUnregisterObject(const std::string& uid); // returns false on failure
+    TIGL_EXPORT void UnregisterObject(const std::string& uid); // throws on failure
 
     // Function to add a UID and a geometric component to the uid store.
     TIGL_EXPORT void AddGeometricComponent(const std::string& uid, ITiglGeometricComponent* componentPtr);

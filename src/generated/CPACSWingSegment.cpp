@@ -36,12 +36,22 @@ namespace tigl
         
         CPACSWingSegment::~CPACSWingSegment()
         {
-            if (m_uidMgr) m_uidMgr->UnregisterObject(m_uID);
+            if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
         }
         
         CCPACSWingSegments* CPACSWingSegment::GetParent() const
         {
             return m_parent;
+        }
+        
+        CTiglUIDManager& CPACSWingSegment::GetUIDManager()
+        {
+            return *m_uidMgr;
+        }
+        
+        const CTiglUIDManager& CPACSWingSegment::GetUIDManager() const
+        {
+            return *m_uidMgr;
         }
         
         void CPACSWingSegment::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
@@ -103,7 +113,6 @@ namespace tigl
         void CPACSWingSegment::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write attribute uID
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/uID");
             tixihelper::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
             
             // write element name
@@ -114,6 +123,10 @@ namespace tigl
             if (m_description) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/description")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/description");
+                }
             }
             
             // write element fromElementUID
@@ -128,6 +141,10 @@ namespace tigl
             if (m_guideCurves) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/guideCurves");
                 m_guideCurves->WriteCPACS(tixiHandle, xpath + "/guideCurves");
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/guideCurves")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/guideCurves");
+                }
             }
             
         }
@@ -140,7 +157,7 @@ namespace tigl
         void CPACSWingSegment::SetUID(const std::string& value)
         {
             if (m_uidMgr) {
-                m_uidMgr->UnregisterObject(m_uID);
+                m_uidMgr->TryUnregisterObject(m_uID);
                 m_uidMgr->RegisterObject(value, *this);
             }
             m_uID = value;

@@ -18,8 +18,6 @@
 
 #include "CCPACSWingCSStructure.h"
 #include "CCPACSWingRibsDefinition.h"
-#include "CTiglError.h"
-#include "CTiglLogging.h"
 
 
 namespace tigl
@@ -42,6 +40,6 @@ void CCPACSWingRibCrossSection::SetXRotation(double rotation)
     m_ribRotation->SetX(rotation);
 
     // invalidate whole component segment structure, since rib could be referenced anywher
-    GetParent()->GetStructure().Invalidate();
+    GetParent()->GetParent()->Invalidate();
 }
 } // end namespace tigl

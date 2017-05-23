@@ -52,19 +52,6 @@ public:
     // Write CPACS fuselage elements
     TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& xpath) const;
 
-    DEPRECATED TIGL_EXPORT bool HasProfile(std::string uid) const;
-
-    // Returns the total count of fuselage profiles in this configuration
-    DEPRECATED TIGL_EXPORT int GetProfileCount() const;
-        
-    // Returns the wing profiles in this configuration
-    DEPRECATED TIGL_EXPORT CCPACSFuselageProfiles& GetProfiles();
-    DEPRECATED TIGL_EXPORT const CCPACSFuselageProfiles& GetProfiles() const;
-
-    // Returns the fuselage profile for a given index.
-    DEPRECATED TIGL_EXPORT CCPACSFuselageProfile& GetProfile(int index) const;
-    DEPRECATED TIGL_EXPORT CCPACSFuselageProfile& GetProfile(std::string uid) const;
-
     // Returns the total count of fuselages in a configuration
     TIGL_EXPORT int GetFuselageCount() const;
 
@@ -74,12 +61,11 @@ public:
     // Returns the fuselage for a given UID.
     TIGL_EXPORT CCPACSFuselage& GetFuselage(const std::string& UID) const;
 
-    // Adds a new fuselage to the list of fuselages
-    TIGL_EXPORT void AddFuselage(CCPACSFuselage* fuselage);
-
     // Returns the fuselage index for a given UID.
     TIGL_EXPORT int GetFuselageIndex(const std::string& UID) const;
 
+    TIGL_EXPORT void Add(CCPACSFuselage* fuselage);
+    TIGL_EXPORT void Remove(CCPACSFuselage* fuselage);
 };
 
 } // end namespace tigl

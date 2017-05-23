@@ -72,12 +72,20 @@ namespace tigl
             if (m_name) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/name", *m_name);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/name")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/name");
+                }
             }
             
             // write element description
             if (m_description) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/description")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/description");
+                }
             }
             
             // write element thickness

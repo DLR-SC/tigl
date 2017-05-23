@@ -91,7 +91,7 @@ void CCPACSConfiguration::ReadCPACS(const std::string& configurationUID)
 {
     char* path;
     if (tixiUIDGetXPath(tixiDocumentHandle, configurationUID.c_str(), &path) != SUCCESS) {
-        throw CTiglError("Error: XML error while reading in CCPACSConfiguration::ReadCPACS", TIGL_XML_ERROR);
+        throw CTiglError("XML error while reading in CCPACSConfiguration::ReadCPACS", TIGL_XML_ERROR);
     }
 
     if (tixihelper::TixiCheckElement(tixiDocumentHandle, headerXPath)) {
@@ -138,7 +138,7 @@ void CCPACSConfiguration::ReadCPACS(const std::string& configurationUID)
 // Write CPACS structure to tixiHandle
 void CCPACSConfiguration::WriteCPACS(const std::string& configurationUID)
 {
-    header.WriteCPACS(tixiDocumentHandle, "/cpacs/header");
+    header.WriteCPACS(tixiDocumentHandle, headerXPath);
     if (aircraftModel) {
         tixihelper::TixiSaveAttribute(tixiDocumentHandle, "/cpacs/vehicles/aircraft/model", "uID", configurationUID); // patch uid in tixi, so xpath below is valid
         aircraftModel->SetUID(configurationUID);
@@ -218,7 +218,7 @@ int CCPACSConfiguration::GetWingProfileCount() const
     int count = 0;
     if (profiles) {
         if (profiles->GetWingAirfoils())
-            count += profiles->GetWingAirfoils()->GetProfileCount();
+            count += profiles->GetWingAirfoils()->GetWingAirfoils().size();
         if (profiles->GetRotorAirfoils())
             count += static_cast<int>(profiles->GetRotorAirfoils()->GetRotorAirfoils().size());
     }
@@ -507,7 +507,12 @@ CCPACSFuselage& CCPACSConfiguration::GetFuselage(const std::string& UID) const
 }
 
 // Returns the guide curve profile for a given UID.
-CCPACSGuideCurveProfile& CCPACSConfiguration::GetGuideCurveProfile(std::string UID) const
+CCPACSGuideCurveProfile& CCPACSConfiguration::GetGuideCurveProfile(std::string UID)
+{
+    return profiles->GetGuideCurves()->GetGuideCurveProfile(UID);
+}
+
+const CCPACSGuideCurveProfile& CCPACSConfiguration::GetGuideCurveProfile(std::string UID) const
 {
     return profiles->GetGuideCurves()->GetGuideCurveProfile(UID);
 }
@@ -602,15 +607,24 @@ CCPACSHeader* CCPACSConfiguration::GetHeader()
     return &header;
 }
 
-CCPACSWings* CCPACSConfiguration::GetWings()
+CCPACSWings& CCPACSConfiguration::GetWings()
 {
     if (aircraftModel)
-        return &*aircraftModel->GetWings();
+        return *aircraftModel->GetWings();
     else if (rotorcraftModel)
-        return &*rotorcraftModel->GetWings();
+        return *rotorcraftModel->GetWings();
     else
         throw CTiglError("No configuration loaded");
 }
 
+const CCPACSWings& CCPACSConfiguration::GetWings() const
+{
+    if (aircraftModel)
+        return *aircraftModel->GetWings();
+    else if (rotorcraftModel)
+        return *rotorcraftModel->GetWings();
+    else
+        throw CTiglError("No configuration loaded");
+}
 } // end namespace tigl
 

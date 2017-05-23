@@ -37,12 +37,22 @@ namespace tigl
         
         CPACSRotorHub::~CPACSRotorHub()
         {
-            if (m_uidMgr && m_uID) m_uidMgr->UnregisterObject(*m_uID);
+            if (m_uidMgr && m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
         }
         
         CCPACSRotor* CPACSRotorHub::GetParent() const
         {
             return m_parent;
+        }
+        
+        CTiglUIDManager& CPACSRotorHub::GetUIDManager()
+        {
+            return *m_uidMgr;
+        }
+        
+        const CTiglUIDManager& CPACSRotorHub::GetUIDManager() const
+        {
+            return *m_uidMgr;
         }
         
         void CPACSRotorHub::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
@@ -82,26 +92,41 @@ namespace tigl
         {
             // write attribute uID
             if (m_uID) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/uID");
                 tixihelper::TixiSaveAttribute(tixiHandle, xpath, "uID", *m_uID);
+            } else {
+                if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+                    tixihelper::TixiRemoveAttribute(tixiHandle, xpath, "uID");
+                }
             }
             
             // write element name
             if (m_name) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/name", *m_name);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/name")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/name");
+                }
             }
             
             // write element description
             if (m_description) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/description")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/description");
+                }
             }
             
             // write element type
             if (m_type) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/type");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/type", TiglRotorHubTypeToString(*m_type));
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/type")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/type");
+                }
             }
             
             // write element rotorBladeAttachments
@@ -118,7 +143,7 @@ namespace tigl
         void CPACSRotorHub::SetUID(const std::string& value)
         {
             if (m_uidMgr) {
-                if (m_uID) m_uidMgr->UnregisterObject(*m_uID);
+                if (m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
                 m_uidMgr->RegisterObject(value, *this);
             }
             m_uID = value;
@@ -127,7 +152,7 @@ namespace tigl
         void CPACSRotorHub::SetUID(const boost::optional<std::string>& value)
         {
             if (m_uidMgr) {
-                if (m_uID) m_uidMgr->UnregisterObject(*m_uID);
+                if (m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
                 if (value) m_uidMgr->RegisterObject(*value, *this);
             }
             m_uID = value;

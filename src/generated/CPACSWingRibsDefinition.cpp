@@ -37,12 +37,22 @@ namespace tigl
         
         CPACSWingRibsDefinition::~CPACSWingRibsDefinition()
         {
-            if (m_uidMgr && m_uID) m_uidMgr->UnregisterObject(*m_uID);
+            if (m_uidMgr && m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
         }
         
         CCPACSWingRibsDefinitions* CPACSWingRibsDefinition::GetParent() const
         {
             return m_parent;
+        }
+        
+        CTiglUIDManager& CPACSWingRibsDefinition::GetUIDManager()
+        {
+            return *m_uidMgr;
+        }
+        
+        const CTiglUIDManager& CPACSWingRibsDefinition::GetUIDManager() const
+        {
+            return *m_uidMgr;
         }
         
         void CPACSWingRibsDefinition::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
@@ -108,8 +118,11 @@ namespace tigl
         {
             // write attribute uID
             if (m_uID) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/uID");
                 tixihelper::TixiSaveAttribute(tixiHandle, xpath, "uID", *m_uID);
+            } else {
+                if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+                    tixihelper::TixiRemoveAttribute(tixiHandle, xpath, "uID");
+                }
             }
             
             // write element name
@@ -120,6 +133,10 @@ namespace tigl
             if (m_description) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/description")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/description");
+                }
             }
             
             // write element ribCrossSection
@@ -130,12 +147,20 @@ namespace tigl
             if (m_ribsPositioning_choice1) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ribsPositioning");
                 m_ribsPositioning_choice1->WriteCPACS(tixiHandle, xpath + "/ribsPositioning");
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/ribsPositioning")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/ribsPositioning");
+                }
             }
             
             // write element ribExplicitPositioning
             if (m_ribExplicitPositioning_choice2) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ribExplicitPositioning");
                 m_ribExplicitPositioning_choice2->WriteCPACS(tixiHandle, xpath + "/ribExplicitPositioning");
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/ribExplicitPositioning")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/ribExplicitPositioning");
+                }
             }
             
         }
@@ -148,7 +173,7 @@ namespace tigl
         void CPACSWingRibsDefinition::SetUID(const std::string& value)
         {
             if (m_uidMgr) {
-                if (m_uID) m_uidMgr->UnregisterObject(*m_uID);
+                if (m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
                 m_uidMgr->RegisterObject(value, *this);
             }
             m_uID = value;
@@ -157,7 +182,7 @@ namespace tigl
         void CPACSWingRibsDefinition::SetUID(const boost::optional<std::string>& value)
         {
             if (m_uidMgr) {
-                if (m_uID) m_uidMgr->UnregisterObject(*m_uID);
+                if (m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
                 if (value) m_uidMgr->RegisterObject(*value, *this);
             }
             m_uID = value;

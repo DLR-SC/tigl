@@ -45,7 +45,7 @@ CCPACSWingSparSegment& CCPACSWingSparSegments::GetSparSegment(int index) const
     const int idx = index - 1;
     if (idx < 0 || idx >= GetSparSegmentCount()) {
         LOG(ERROR) << "Invalid index value";
-        throw CTiglError("Error: Invalid index value in CCPACSWingSparSegments::getSparSegment", TIGL_INDEX_ERROR);
+        throw CTiglError("Invalid index value in CCPACSWingSparSegments::getSparSegment", TIGL_INDEX_ERROR);
     }
     return (*(m_sparSegments[idx]));
 }
@@ -58,9 +58,8 @@ CCPACSWingSparSegment& CCPACSWingSparSegments::GetSparSegment(const std::string&
             return sparSegment;
         }
     }
-    std::string referenceUID = GetParent()->GetStructure().GetWingStructureReference().GetUID().value_or("");
+    std::string referenceUID = GetParent()->GetParent()->GetWingStructureReference().GetUID().value_or("");
     LOG(ERROR) << "Spar Segment \"" << uid << "\" not found in component segment or trailing edge device with UID \"" << referenceUID << "\"";
-    throw CTiglError("Error: Spar Segment \"" + uid + "\" not found in component segment or trailing edge device with UID \"" + referenceUID + "\". Please check the CPACS document!", TIGL_ERROR);
+    throw CTiglError("Spar Segment \"" + uid + "\" not found in component segment or trailing edge device with UID \"" + referenceUID + "\". Please check the CPACS document!", TIGL_ERROR);
 }
-
 } // end namespace tigl

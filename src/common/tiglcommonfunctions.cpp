@@ -173,7 +173,7 @@ gp_Pnt WireGetPoint(const TopoDS_Wire& wire, double alpha)
 void WireGetPointTangent(const TopoDS_Wire& wire, double alpha, gp_Pnt& point, gp_Vec& tangent)
 {
     if (alpha < 0.0 || alpha > 1.0) {
-        throw tigl::CTiglError("Error: Parameter alpha not in the range 0.0 <= alpha <= 1.0 in WireGetPointTangent", TIGL_ERROR);
+        throw tigl::CTiglError("Parameter alpha not in the range 0.0 <= alpha <= 1.0 in WireGetPointTangent", TIGL_ERROR);
     }
     // ETA 3D point
     BRepAdaptor_CompCurve aCompoundCurve(wire, Standard_True);
@@ -202,7 +202,7 @@ gp_Pnt EdgeGetPoint(const TopoDS_Edge& edge, double alpha)
 void EdgeGetPointTangent(const TopoDS_Edge& edge, double alpha, gp_Pnt& point, gp_Vec& tangent)
 {
     if (alpha < 0.0 || alpha > 1.0) {
-        throw tigl::CTiglError("Error: Parameter alpha not in the range 0.0 <= alpha <= 1.0 in EdgeGetPointTangent", TIGL_ERROR);
+        throw tigl::CTiglError("Parameter alpha not in the range 0.0 <= alpha <= 1.0 in EdgeGetPointTangent", TIGL_ERROR);
     }
     // ETA 3D point
     Standard_Real umin, umax;
@@ -551,11 +551,11 @@ TopoDS_Face GetSingleFace(const TopoDS_Shape& shape)
     unsigned numFaces = GetNumberOfFaces(shape);
     if (numFaces < 1) {
         LOG(ERROR) << "unable to get single face from shape: shape contains no faces";
-        throw tigl::CTiglError("ERROR: unable to get single face from shape: shape contains no faces!");
+        throw tigl::CTiglError("unable to get single face from shape: shape contains no faces!");
     }
     else if (numFaces > 1) {
         LOG(ERROR) << "unable to get single face from shape: shape contains more than one face";
-        throw tigl::CTiglError("ERROR: unable to get single face from shape: shape contains more than one face!");
+        throw tigl::CTiglError("unable to get single face from shape: shape contains more than one face!");
     }
     return GetFace(shape, 0);
 }
@@ -660,14 +660,14 @@ TopoDS_Face BuildRuledFace(const TopoDS_Wire& wire1, const TopoDS_Wire& wire2)
     orderWires.Perform();
     if (!orderWires.IsDone()) {
         LOG(ERROR) << "unable to determine common wire order!";
-        throw tigl::CTiglError("Error: unable to determine common wire order!");
+        throw tigl::CTiglError("unable to determine common wire order!");
     }
     TopTools_SequenceOfShape orderedWireSequence;
 
     orderedWireSequence = orderWires.Shape();
     if (orderedWireSequence.Length() != 2) {
         LOG(ERROR) << "number of wires in sequence does not match. Expected: 2, Got: " << orderedWireSequence.Length();
-        throw tigl::CTiglError("Error: number of wires in sequence does not match. Expected: 2");
+        throw tigl::CTiglError("number of wires in sequence does not match. Expected: 2");
     }
     TopoDS_Wire sortedWire1 = TopoDS::Wire(orderedWireSequence.First());
     TopoDS_Wire sortedWire2 = TopoDS::Wire(orderedWireSequence.Last());
@@ -693,7 +693,7 @@ TopoDS_Face BuildRuledFace(const TopoDS_Wire& wire1, const TopoDS_Wire& wire2)
         !approx2.IsDone() || !approx2.HasResult()) {
 
         LOG(ERROR) << "unable to approximate wires by curves for building face";
-        throw tigl::CTiglError("Error: unable to approximate wires by curves for building face!");
+        throw tigl::CTiglError("unable to approximate wires by curves for building face!");
     }
     Handle(Geom_Curve) approxCurve1 = approx1.Curve();
     Handle(Geom_Curve) approxCurve2 = approx2.Curve();
@@ -772,7 +772,7 @@ TopoDS_Wire CloseWire(const TopoDS_Wire& wire)
     // check if we have exatcly two end vertices
     if (numEndVertices != 2) {
         LOG(ERROR) << "invalid number of end vertices found!";
-        throw tigl::CTiglError("Error: invalid number of end vertices found in CloseWire!");
+        throw tigl::CTiglError("invalid number of end vertices found in CloseWire!");
     }
 
     // next generate an edge between the end vertices
@@ -784,7 +784,7 @@ TopoDS_Wire CloseWire(const TopoDS_Wire& wire)
     makeWire.Add(edge);
     if (!makeWire.IsDone()) {
         LOG(ERROR) << "unable to build closed wire!";
-        throw tigl::CTiglError("Error: unable to build closed wire in CloseWire!");
+        throw tigl::CTiglError("unable to build closed wire in CloseWire!");
     }
     TopoDS_Wire result = SortWireEdges(makeWire.Wire());
     return result;
@@ -809,7 +809,7 @@ TopoDS_Wire CloseWires(const TopoDS_Wire& wire1, const TopoDS_Wire& wire2)
     // check for correct number of end vertices
     if (endVertices1.Extent() != 2) {
         LOG(ERROR) << "Unable to close wires because invalid number of end-vertices found!";
-        throw tigl::CTiglError("Error: Unable to close wires because invalid number of end-vertices found!");
+        throw tigl::CTiglError("Unable to close wires because invalid number of end-vertices found!");
     }
 
     TopoDS_Vertex& v1 = TopoDS::Vertex(endVertices1.First());
@@ -850,7 +850,7 @@ TopoDS_Wire CloseWires(const TopoDS_Wire& wire1, const TopoDS_Wire& wire2, const
     int numEndVertices2 = endVertices2.Extent();
     if (numEndVertices1 != 2 || numEndVertices2 != 2) {
         LOG(ERROR) << "Unable to close wires because invalid number of end-vertices found!";
-        throw tigl::CTiglError("Error: Unable to close wires because invalid number of end-vertices found!");
+        throw tigl::CTiglError("Unable to close wires because invalid number of end-vertices found!");
     }
 
     // sort end vertices according to direction vector
@@ -893,7 +893,7 @@ TopoDS_Wire CloseWires(const TopoDS_Wire& wire1, const TopoDS_Wire& wire2, const
     makeWire.Add(edgeList);
     if (!makeWire.IsDone()) {
         LOG(ERROR) << "error during creation of closed wire!";
-        throw tigl::CTiglError("Error: error during creation of closed wire in CloseWires!");
+        throw tigl::CTiglError("error during creation of closed wire in CloseWires!");
     }
 
     TopoDS_Wire result = SortWireEdges(makeWire.Wire());
@@ -980,7 +980,7 @@ TopoDS_Shape SplitShape(const TopoDS_Shape& src, const TopoDS_Shape& tool)
     }
     if (splitter.ErrorStatus() != 0) {
         LOG(ERROR) << "unable to split passed shapes!";
-        throw tigl::CTiglError("ERROR: unable to split passed shapes!");
+        throw tigl::CTiglError("unable to split passed shapes!");
     }
     return splitter.Shape();
 }
@@ -1064,7 +1064,7 @@ TopoDS_Face GetNearestFace(const TopoDS_Shape& shape, const gp_Pnt& pnt)
         BRepExtrema_DistShapeShape extrema(checkFace, v);
         if (!extrema.IsDone() || extrema.NbSolution() < 1) {
             LOG(ERROR) << "unable to determine nearest point between face and vertex!";
-            throw tigl::CTiglError("ERROR: unable to determine nearest point between face and vertex!");
+            throw tigl::CTiglError("unable to determine nearest point between face and vertex!");
         }
         if (extrema.Value() < resultDistance) {
             resultFace = checkFace;

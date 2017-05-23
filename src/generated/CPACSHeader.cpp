@@ -101,6 +101,10 @@ namespace tigl
             if (m_description) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/description")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/description");
+                }
             }
             
             // write element creator
@@ -123,6 +127,10 @@ namespace tigl
             if (m_updates) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/updates");
                 m_updates->WriteCPACS(tixiHandle, xpath + "/updates");
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/updates")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/updates");
+                }
             }
             
         }

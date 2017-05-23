@@ -33,6 +33,7 @@
 #include "generated/UniquePtr.h"
 #include "tigl.h"
 #include "tigl_internal.h"
+#include "CTiglError.h"
 #include "CTiglAbstractGeometricComponent.h"
 
 namespace tigl

@@ -31,6 +31,16 @@ namespace tigl
         
         CPACSMaterials::~CPACSMaterials() {}
         
+        CTiglUIDManager& CPACSMaterials::GetUIDManager()
+        {
+            return *m_uidMgr;
+        }
+        
+        const CTiglUIDManager& CPACSMaterials::GetUIDManager() const
+        {
+            return *m_uidMgr;
+        }
+        
         void CPACSMaterials::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element material
@@ -63,6 +73,10 @@ namespace tigl
             if (m_composites) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/composites");
                 m_composites->WriteCPACS(tixiHandle, xpath + "/composites");
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/composites")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/composites");
+                }
             }
             
         }

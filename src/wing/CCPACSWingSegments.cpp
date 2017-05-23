@@ -23,14 +23,11 @@
 * @brief  Implementation of CPACS wing segments handling routines.
 */
 
-#include <iostream>
-#include <sstream>
-#include <exception>
-
 #include "CCPACSWingSegments.h"
 
-#include "CCPACSWingSegment.h"
 #include "CTiglError.h"
+#include "CCPACSWing.h"
+#include "CCPACSWingSegment.h"
 
 namespace tigl
 {
@@ -52,7 +49,16 @@ CCPACSWingSegment& CCPACSWingSegments::GetSegment(int index)
 {
     index--;
     if (index < 0 || index >= GetSegmentCount()) {
-        throw CTiglError("Error: Invalid index value in CCPACSWingSegments::GetSegment", TIGL_INDEX_ERROR);
+        throw CTiglError("Invalid index value in CCPACSWingSegments::GetSegment", TIGL_INDEX_ERROR);
+    }
+    return *m_segments[index];
+}
+
+const CCPACSWingSegment& CCPACSWingSegments::GetSegment(int index) const
+{
+    index--;
+    if (index < 0 || index >= GetSegmentCount()) {
+        throw CTiglError("Invalid index value in CCPACSWingSegments::GetSegment", TIGL_INDEX_ERROR);
     }
     return *m_segments[index];
 }
@@ -65,7 +71,17 @@ CCPACSWingSegment& CCPACSWingSegments::GetSegment(const std::string& segmentUID)
             return *m_segments[i];
         }
     }
-    throw CTiglError("Error: Invalid uid in CCPACSWingSegments::GetSegment", TIGL_UID_ERROR);
+    throw CTiglError("Invalid uid in CCPACSWingSegments::GetSegment", TIGL_UID_ERROR);
+}
+
+const CCPACSWingSegment& CCPACSWingSegments::GetSegment(const std::string& segmentUID) const
+{
+    for (std::size_t i = 0; i < m_segments.size(); i++) {
+        if (m_segments[i]->GetUID() == segmentUID) {
+            return *m_segments[i];
+        }
+    }
+    throw CTiglError("Invalid uid in CCPACSWingSegments::GetSegment", TIGL_UID_ERROR);
 }
 
 // Gets total segment count

@@ -65,6 +65,9 @@ namespace tigl
                 return static_cast<P*>(m_parent);
             }
             
+            TIGL_EXPORT CTiglUIDManager& GetUIDManager();
+            TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
+            
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             

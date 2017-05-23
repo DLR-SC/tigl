@@ -16,21 +16,10 @@
 #ifndef CCPACSWINGRIBCROSSSECTION_H
 #define CCPACSWINGRIBCROSSSECTION_H
 
-#include <string>
-
-#include <tixi.h>
-
 #include "generated/CPACSWingRibCrossSection.h"
-#include "CCPACSMaterial.h"
-#include "tigl_internal.h"
-
 
 namespace tigl
 {
-
-// forward declarations
-class CCPACSWingRibsDefinition;
-
 class CCPACSWingRibCrossSection : public generated::CPACSWingRibCrossSection
 {
 public:

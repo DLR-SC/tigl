@@ -45,6 +45,7 @@ public:
     TIGL_EXPORT int GetSectionElementCount() const;
 
     // Get element for a given index
+    TIGL_EXPORT CCPACSWingSectionElement& GetSectionElement(int index);
     TIGL_EXPORT const CCPACSWingSectionElement& GetSectionElement(int index) const;
 
     // Gets the section transformation

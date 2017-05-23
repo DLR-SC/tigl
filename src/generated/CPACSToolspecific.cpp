@@ -52,6 +52,10 @@ namespace tigl
             if (m_cFD) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/cFD");
                 m_cFD->WriteCPACS(tixiHandle, xpath + "/cFD");
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/cFD")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/cFD");
+                }
             }
             
         }

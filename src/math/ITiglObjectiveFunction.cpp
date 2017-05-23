@@ -39,7 +39,7 @@ ITiglObjectiveFunction::~ITiglObjectiveFunction()
 void ITiglObjectiveFunction::setNumericalStepSize(double h) 
 {
     if ( h <= 0) {
-        throw CTiglError("Error: Step size for finite differences must be larger than zero!");
+        throw CTiglError("Step size for finite differences must be larger than zero!");
     }
 
     this->h = h;
@@ -54,7 +54,7 @@ void ITiglObjectiveFunction::getGradient(const double * x, double * dx) const
 void ITiglObjectiveFunction::getNumericalGradient(const double * x, double * dx) const 
 {
     if (!dx) {
-        throw CTiglError("Error: gradient argument must not be a zero pointer in  ITiglObjectiveFunction::getNumericalGradient!");
+        throw CTiglError("gradient argument must not be a zero pointer in  ITiglObjectiveFunction::getNumericalGradient!");
     }
 
     const double curOf = getFunctionValue(x);
@@ -85,7 +85,7 @@ void ITiglObjectiveFunction::getHessian(const double * x, double * H) const
 void ITiglObjectiveFunction::getNumericalHessian(const double * x, double * H) const 
 {
     if (!H) {
-        throw CTiglError("Error: hessian argument must not be a zero pointer in  ITiglObjectiveFunction::getNumericalHessian!");
+        throw CTiglError("hessian argument must not be a zero pointer in  ITiglObjectiveFunction::getNumericalHessian!");
     }
 
     int n = getParameterCount();

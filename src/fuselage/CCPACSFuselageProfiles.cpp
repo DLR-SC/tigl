@@ -98,8 +98,8 @@ CCPACSFuselageProfile& CCPACSFuselageProfiles::GetProfile(std::string uid) const
 CCPACSFuselageProfile& CCPACSFuselageProfiles::GetProfile(int index) const
 {
     index--;
-    if (index < 0 || index >= GetProfileCount()) {
-        throw CTiglError("Error: Invalid index in CCPACSFuselageProfiles::GetProfile", TIGL_INDEX_ERROR);
+    if (index < 0 || index >= m_fuselageProfiles.size()) {
+        throw CTiglError("Invalid index in CCPACSFuselageProfiles::GetProfile", TIGL_INDEX_ERROR);
     }
     return static_cast<CCPACSFuselageProfile&>(*m_fuselageProfiles[index]);
 }

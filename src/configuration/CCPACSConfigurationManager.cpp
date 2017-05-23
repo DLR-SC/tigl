@@ -58,20 +58,20 @@ CCPACSConfigurationManager& CCPACSConfigurationManager::GetInstance()
 TiglCPACSConfigurationHandle CCPACSConfigurationManager::AddConfiguration(CCPACSConfiguration* config)
 {
     if (config == 0) {
-        throw CTiglError("Error: Null pointer argument for CCPACSConfiguration in CCPACSConfigurationManager::AddConfiguration", TIGL_NULL_POINTER);
+        throw CTiglError("Null pointer argument for CCPACSConfiguration in CCPACSConfigurationManager::AddConfiguration", TIGL_NULL_POINTER);
     }
 
     handleCounter++;
 
     if (handleCounter < 1) {
         // handleCounter could be less than 1 because of a range overflow. Very unlikely, but who knows ;-)
-        throw CTiglError("Error: Can't generate a valid handle in CPACSConfigurationManager::AddConfiguration", TIGL_ERROR);
+        throw CTiglError("Can't generate a valid handle in CPACSConfigurationManager::AddConfiguration", TIGL_ERROR);
     }
  
     CCPACSConfigConstIterator iter = configurations.find(handleCounter);
     if (iter != configurations.end()) {
         // handle could already exist because of a range overflow for handleCounter. Very unlikely too ;-)
-        throw CTiglError("Error: Generated handle already exists in CPACSConfigurationManager::AddConfiguration", TIGL_ERROR);
+        throw CTiglError("Generated handle already exists in CPACSConfigurationManager::AddConfiguration", TIGL_ERROR);
     }
 
     configurations[handleCounter] = config;
@@ -83,7 +83,7 @@ void CCPACSConfigurationManager::DeleteConfiguration(TiglCPACSConfigurationHandl
 {
     CCPACSConfigIterator iter = configurations.find(handle);
     if (iter == configurations.end()) {
-        throw CTiglError("Error: Invalid CPACS configuration handle in CCPACSConfigurationManager::DeleteConfiguration", TIGL_NOT_FOUND);
+        throw CTiglError("Invalid CPACS configuration handle in CCPACSConfigurationManager::DeleteConfiguration", TIGL_NOT_FOUND);
     }
 
     CCPACSConfiguration* config = iter->second;
@@ -96,7 +96,7 @@ CCPACSConfiguration& CCPACSConfigurationManager::GetConfiguration(TiglCPACSConfi
 {
     CCPACSConfigConstIterator iter = configurations.find(handle);
     if (iter == configurations.end()) {
-        throw CTiglError("Error: Invalid CPACS configuration handle in CCPACSConfigurationManager::GetConfiguration", TIGL_NOT_FOUND);
+        throw CTiglError("Invalid CPACS configuration handle in CCPACSConfigurationManager::GetConfiguration", TIGL_NOT_FOUND);
     }
 
     CCPACSConfiguration* config = iter->second;

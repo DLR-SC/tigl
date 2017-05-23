@@ -54,7 +54,7 @@ CCPACSRotorBladeAttachment& CCPACSRotorBladeAttachments::GetRotorBladeAttachment
 {
     index--;
     if (index < 0 || index >= GetRotorBladeAttachmentCount()) {
-        throw CTiglError("Error: Invalid index in CCPACSRotorBladeAttachments::GetRotorBladeAttachment", TIGL_INDEX_ERROR);
+        throw CTiglError("Invalid index in CCPACSRotorBladeAttachments::GetRotorBladeAttachment", TIGL_INDEX_ERROR);
     }
     return *m_rotorBladeAttachments[index];
 }

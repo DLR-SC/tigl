@@ -38,7 +38,7 @@ const std::string& CCPACSWingSparPositionUIDs::GetSparPositionUID(int index) con
     const int idx = index - 1;
     if (idx < 0 || idx >= GetSparPositionUIDCount()) {
         LOG(ERROR) << "Invalid index value";
-        throw CTiglError("Error: Invalid index value in CCPACSWingSparPositionUIDs::GetSparPositionUID", TIGL_INDEX_ERROR);
+        throw CTiglError("Invalid index value in CCPACSWingSparPositionUIDs::GetSparPositionUID", TIGL_INDEX_ERROR);
     }
     return (m_sparPositionUIDs[idx]);
 }

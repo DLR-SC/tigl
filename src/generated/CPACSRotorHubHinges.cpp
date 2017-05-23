@@ -42,6 +42,16 @@ namespace tigl
             return m_parent;
         }
         
+        CTiglUIDManager& CPACSRotorHubHinges::GetUIDManager()
+        {
+            return *m_uidMgr;
+        }
+        
+        const CTiglUIDManager& CPACSRotorHubHinges::GetUIDManager() const
+        {
+            return *m_uidMgr;
+        }
+        
         void CPACSRotorHubHinges::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element hinge

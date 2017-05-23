@@ -19,29 +19,25 @@
 #ifndef CCPACSWINGCELL_H
 #define CCPACSWINGCELL_H
 
-#include <iostream>
-#include <vector>
-
 #include <gp_Pln.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Edge.hxx>
 
-#include "generated/CPACSWingCell.h"
-#include "CCPACSMaterial.h"
-#include "CCPACSWingCellPositionChordwise.h"
-#include "CCPACSWingCellPositionSpanwise.h"
-#include "tigl_internal.h"
-#include "tigletaxsifunctions.h"
-#include "tixi.h"
+#include <vector>
 
+#include "generated/CPACSWingCell.h"
+#include "generated/UniquePtr.h"
+#include "tigletaxsifunctions.h"
 
 namespace tigl
 {
 
 // forward declarations
 class CCPACSWingCells;
-
+class CCPACSMaterial;
+class CCPACSWingCellPositionChordwise;
+class CCPACSWingCellPositionSpanwise;
 
 class CCPACSWingCell : public generated::CPACSWingCell
 {
@@ -59,7 +55,7 @@ public:
     // TODO: missing support for spar cell borders
     TIGL_EXPORT bool IsConvex() const;
     
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& cellXPath);
+    TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& cellXPath) OVERRIDE;
 
     // get corner coordinates of cell
     TIGL_EXPORT void GetLeadingEdgeInnerPoint (double* eta, double* xsi) const;

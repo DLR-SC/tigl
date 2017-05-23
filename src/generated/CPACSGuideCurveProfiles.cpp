@@ -31,6 +31,16 @@ namespace tigl
         
         CPACSGuideCurveProfiles::~CPACSGuideCurveProfiles() {}
         
+        CTiglUIDManager& CPACSGuideCurveProfiles::GetUIDManager()
+        {
+            return *m_uidMgr;
+        }
+        
+        const CTiglUIDManager& CPACSGuideCurveProfiles::GetUIDManager() const
+        {
+            return *m_uidMgr;
+        }
+        
         void CPACSGuideCurveProfiles::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element guideCurveProfile

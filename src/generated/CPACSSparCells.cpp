@@ -31,6 +31,16 @@ namespace tigl
         
         CPACSSparCells::~CPACSSparCells() {}
         
+        CTiglUIDManager& CPACSSparCells::GetUIDManager()
+        {
+            return *m_uidMgr;
+        }
+        
+        const CTiglUIDManager& CPACSSparCells::GetUIDManager() const
+        {
+            return *m_uidMgr;
+        }
+        
         void CPACSSparCells::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element sparCell

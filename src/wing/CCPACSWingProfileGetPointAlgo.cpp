@@ -44,13 +44,13 @@ CCPACSWingProfileGetPointAlgo::CCPACSWingProfileGetPointAlgo (const TopTools_Seq
 {
     try {
         if (wireContainer.Length()!=2) {
-            throw CTiglError("Error: CCPACSWingProfileGetPointAlgo: Number of wires is not equal 2", TIGL_ERROR);
+            throw CTiglError("CCPACSWingProfileGetPointAlgo: Number of wires is not equal 2", TIGL_ERROR);
         }
         lowerWire = TopoDS::Edge(wireContainer(1));
         upperWire = TopoDS::Edge(wireContainer(2));
     }
     catch(...) {
-        throw CTiglError("Error: CCPACSWingProfileGetPointAlgo: Separation of upper and lower profiles failed", TIGL_ERROR);
+        throw CTiglError("CCPACSWingProfileGetPointAlgo: Separation of upper and lower profiles failed", TIGL_ERROR);
     }
 
     lowerWireLength = GetEdgeLength(lowerWire);

@@ -40,8 +40,7 @@
 #include <TopoDS.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
 
-#include <tixi.h>
-
+#include "generated/TixiHelper.h"
 #include "CCPACSWing.h"
 #include "CCPACSWingCells.h"
 #include "CCPACSWingComponentSegment.h"
@@ -189,7 +188,7 @@ bool CCPACSWingCell::IsInside(double eta, double xsi) const
     }
 }
 
-void CCPACSWingCell::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string &cellXPath)
+void CCPACSWingCell::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string &cellXPath)
 {
     Reset();
     generated::CPACSWingCell::ReadCPACS(tixiHandle, cellXPath);

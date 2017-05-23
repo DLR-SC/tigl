@@ -30,6 +30,16 @@ namespace tigl
         
         CPACSCpacs::~CPACSCpacs() {}
         
+        CTiglUIDManager& CPACSCpacs::GetUIDManager()
+        {
+            return *m_uidMgr;
+        }
+        
+        const CTiglUIDManager& CPACSCpacs::GetUIDManager() const
+        {
+            return *m_uidMgr;
+        }
+        
         void CPACSCpacs::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element header
@@ -80,12 +90,20 @@ namespace tigl
             if (m_vehicles) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/vehicles");
                 m_vehicles->WriteCPACS(tixiHandle, xpath + "/vehicles");
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/vehicles")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/vehicles");
+                }
             }
             
             // write element toolspecific
             if (m_toolspecific) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/toolspecific");
                 m_toolspecific->WriteCPACS(tixiHandle, xpath + "/toolspecific");
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/toolspecific")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/toolspecific");
+                }
             }
             
         }

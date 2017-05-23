@@ -31,6 +31,16 @@ namespace tigl
         
         CPACSPositionings::~CPACSPositionings() {}
         
+        CTiglUIDManager& CPACSPositionings::GetUIDManager()
+        {
+            return *m_uidMgr;
+        }
+        
+        const CTiglUIDManager& CPACSPositionings::GetUIDManager() const
+        {
+            return *m_uidMgr;
+        }
+        
         void CPACSPositionings::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element positioning

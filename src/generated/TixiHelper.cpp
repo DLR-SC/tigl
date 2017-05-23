@@ -359,12 +359,12 @@ namespace tigl
 
         void TixiSaveAttribute(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& attribute, bool value)
         {
-            TixiSaveAttributeInternal(tixiHandle, xpath, attribute, tixiAddIntegerAttribute, value ? 1 : 0, (const char*)0); // TODO: no tixiAddBooleanAttribute in Tixi
+            TixiSaveAttributeInternal(tixiHandle, xpath, attribute, tixiAddIntegerAttribute, value ? 1 : 0, "%d"); // TODO: no tixiAddBooleanAttribute in Tixi
         }
 
         void TixiSaveAttribute(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& attribute, int value)
         {
-            TixiSaveAttributeInternal(tixiHandle, xpath, attribute, tixiAddIntegerAttribute, value, (const char*)0);
+            TixiSaveAttributeInternal(tixiHandle, xpath, attribute, tixiAddIntegerAttribute, value, "%d");
         }
 
         namespace
@@ -477,7 +477,7 @@ namespace tigl
 
         void TixiSaveElement(const TixiDocumentHandle& tixiHandle, const std::string& xpath, int value)
         {
-            TixiSaveElementInternal(tixiHandle, xpath, tixiUpdateIntegerElement, tixiAddIntegerElement, value, (const char*)NULL);
+            TixiSaveElementInternal(tixiHandle, xpath, tixiUpdateIntegerElement, tixiAddIntegerElement, value, "%d");
         }
 
         void TixiSaveElement(const TixiDocumentHandle& tixiHandle, const std::string& xpath, std::time_t value)

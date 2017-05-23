@@ -1,8 +1,8 @@
-/* 
+/*
 * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
-* Changed: $Id$ 
+* Changed: $Id$
 *
 * Version: $Revision$
 *
@@ -29,99 +29,8 @@
 
 namespace tigl
 {
-
-// Constructor
 CCPACSPositioning::CCPACSPositioning(CTiglUIDManager* uidMgr)
-    : generated::CPACSPositioning(uidMgr)
-{
-    Cleanup();
-}
-
-// Destructor
-CCPACSPositioning::~CCPACSPositioning()
-{
-    Cleanup();
-}
-
-// Invalidates internal state
-void CCPACSPositioning::Invalidate()
-{
-    invalidated = true;
-}
-
-// Cleanup routine
-void CCPACSPositioning::Cleanup()
-{
-    m_length        = 1.0;
-    m_sweepAngle    = 0.0;
-    m_dihedralAngle = 0.0;
-    innerPoint    = CTiglPoint(0.0, 0.0, 0.0);
-    outerPoint    = CTiglPoint(0.0, 0.0, 0.0);
-    outerTransformation.SetIdentity();
-    childPositionings.clear();
-    Invalidate();
-}
-
-// Sets the positioning inner point
-void CCPACSPositioning::SetInnerPoint(const CTiglPoint& aPoint)
-{
-    innerPoint = aPoint;
-    Invalidate();
-}
-
-// Sets the positioning start point
-void CCPACSPositioning::SetStartPoint(const CTiglPoint& aPoint) {
-    SetInnerPoint(aPoint);
-}
-
-// Gets the positioning outer point
-CTiglPoint CCPACSPositioning::GetOuterPoint()
-{
-    Update();
-    return outerPoint;
-}
-
-// Gets the positioning end point
-CTiglPoint CCPACSPositioning::GetEndPoint() {
-    return GetOuterPoint();
-}
-
-// Gets the outer transformation of this segment
-CTiglTransformation CCPACSPositioning::GetOuterTransformation()
-{
-    Update();
-    return outerTransformation;
-}
-
-CTiglTransformation CCPACSPositioning::GetEndTransformation() {
-    Update();
-    return outerTransformation;
-}
-
-// Gets the section-uid of the outer section of this positioning
-std::string CCPACSPositioning::GetOuterSectionIndex()
-{
-    Update();
-    return m_toSectionUID;
-}
-
-std::string CCPACSPositioning::GetEndSectionIndex() {
-    return GetOuterSectionIndex();
-}
-
-// Gets the section-uid of the inner section of this positioning
-std::string CCPACSPositioning::GetInnerSectionIndex()
-{
-    Update();
-    if (m_fromSectionUID)
-        return *m_fromSectionUID;
-    else
-        return std::string();
-}
-
-std::string CCPACSPositioning::GetStartSectionIndex() {
-    return GetInnerSectionIndex();
-}
+    : generated::CPACSPositioning(uidMgr) {}
 
 // Build outer transformation matrix for the positioning
 void CCPACSPositioning::BuildMatrix()
@@ -141,16 +50,18 @@ void CCPACSPositioning::BuildMatrix()
     gp_Pnt tempPnt = tempTransformation.Transform(gp_Pnt(0.0, m_length, 0.0));
 
     // Setup transformation combining both steps
-    outerTransformation.SetIdentity();
-    outerTransformation.AddTranslation( innerPoint.x + tempPnt.X() , 
-                                        innerPoint.y + tempPnt.Y() , 
-                                        innerPoint.z + tempPnt.Z() );
+    _toTransformation.SetIdentity();
+    _toTransformation.AddTranslation(
+        _fromPoint.x + tempPnt.X(),
+        _fromPoint.y + tempPnt.Y(),
+        _fromPoint.z + tempPnt.Z()
+    );
 
     // calculate outer section point by transforming orign
-    tempPnt = outerTransformation.Transform(gp_Pnt(0.0, 0.0, 0.0));
-    outerPoint.x = tempPnt.X();
-    outerPoint.y = tempPnt.Y();
-    outerPoint.z = tempPnt.Z();
+    tempPnt = _toTransformation.Transform(gp_Pnt(0.0, 0.0, 0.0));
+    _toPoint.x = tempPnt.X();
+    _toPoint.y = tempPnt.Y();
+    _toPoint.z = tempPnt.Z();
 }
 
 // Update internal segment data
@@ -164,35 +75,69 @@ void CCPACSPositioning::Update()
     invalidated = false;
 }
 
+// Invalidates internal state
+void CCPACSPositioning::Invalidate()
+{
+    invalidated = true;
+}
+
 // Read CPACS segment elements
 void CCPACSPositioning::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& positioningXPath)
 {
-    Cleanup();
     generated::CPACSPositioning::ReadCPACS(tixiHandle, positioningXPath);
     Update();
 }
 
-void CCPACSPositioning::ConnectChildPositioning(CCPACSPositioning* child)
+void CCPACSPositioning::SetFromPoint(const CTiglPoint& aPoint)
+{
+    _fromPoint = aPoint;
+    Invalidate();
+}
+
+const CTiglPoint& CCPACSPositioning::GetFromPoint()
+{
+    Update();
+    return _fromPoint;
+}
+
+void CCPACSPositioning::SetToPoint(const CTiglPoint& aPoint)
+{
+    _toPoint = aPoint;
+    Invalidate();
+}
+
+const CTiglPoint& CCPACSPositioning::GetToPoint()
+{
+    Update();
+    return _toPoint;
+}
+
+CTiglTransformation CCPACSPositioning::GetToTransformation()
+{
+    Update();
+    return _toTransformation;
+}
+
+void CCPACSPositioning::AddDependentPositioning(CCPACSPositioning* child)
 {
     if (!child) {
-        return;
+        throw CTiglError("Dependent positioning is nullptr");
     }
-    
+
     if (*child->m_fromSectionUID != m_toSectionUID) {
         throw CTiglError("Incompatible positioning connection in CCPACSPositioning::ConnectChildPositioning");
     }
-    
-    childPositionings.push_back(child);
+
+    _dependentPositionings.push_back(child);
 }
 
-const std::vector<CCPACSPositioning*> CCPACSPositioning::GetChilds() const
+void CCPACSPositioning::DisconnectDependentPositionings()
 {
-    return childPositionings;
+    _dependentPositionings.clear();
 }
 
-void CCPACSPositioning::DisconnectChilds()
+const std::vector<CCPACSPositioning*> CCPACSPositioning::GetDependentPositionings() const
 {
-    childPositionings.clear();
+    return _dependentPositionings;
 }
-
-} // end namespace tigl
+}

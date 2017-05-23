@@ -49,6 +49,9 @@ namespace tigl
             
             TIGL_EXPORT CCPACSFuselages* GetParent() const;
             
+            TIGL_EXPORT CTiglUIDManager& GetUIDManager();
+            TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
+            
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             

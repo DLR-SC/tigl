@@ -29,7 +29,7 @@
 
 #include "CTiglError.h"
 #include "CTiglLogging.h"
-#include "CCPACSWingProfilePointList.h"
+#include "CTiglWingProfilePointList.h"
 #include "math.h"
 
 #include "gp_Pnt2d.hxx"
@@ -99,7 +99,7 @@ void CCPACSWingProfile::ReadCPACS(const TixiDocumentHandle& tixiHandle, const st
     generated::CPACSProfileGeometry::ReadCPACS(tixiHandle, xpath);
     if (m_pointList_choice1) {
         // in case the wing profile algorithm is a point list, create the additional algorithm instance
-        pointListAlgo.reset(new CCPACSWingProfilePointList(*this, *m_pointList_choice1, xpath + "/pointList"));
+        pointListAlgo.reset(new CTiglWingProfilePointList(*this, *m_pointList_choice1));
         profileAlgo = &*pointListAlgo;
     } else if (m_cst2D_choice2) {
         profileAlgo = &*m_cst2D_choice2;
@@ -263,7 +263,7 @@ gp_Pnt CCPACSWingProfile::GetTEPoint()
 gp_Pnt CCPACSWingProfile::GetChordPoint(double xsi)
 {
     if (xsi < 0.0 || xsi > 1.0) {
-        throw CTiglError("Error: Parameter xsi not in the range 0.0 <= xsi <= 1.0 in CCPACSWingProfile::GetChordPoint", TIGL_ERROR);
+        throw CTiglError("Parameter xsi not in the range 0.0 <= xsi <= 1.0 in CCPACSWingProfile::GetChordPoint", TIGL_ERROR);
     }
 
     Handle(Geom2d_TrimmedCurve) chordLine = GetChordLine();
@@ -318,7 +318,7 @@ gp_Pnt CCPACSWingProfile::GetPoint(double xsi, bool fromUpper)
     Update();
 
     if (xsi < 0.0 || xsi > 1.0) {
-        throw CTiglError("Error: Parameter xsi not in the range 0.0 <= xsi <= 1.0 in CCPACSWingProfile::GetPoint", TIGL_ERROR);
+        throw CTiglError("Parameter xsi not in the range 0.0 <= xsi <= 1.0 in CCPACSWingProfile::GetPoint", TIGL_ERROR);
     }
 
     if (xsi < Precision::Confusion()) {
@@ -396,7 +396,7 @@ gp_Pnt CCPACSWingProfile::GetPoint(double xsi, bool fromUpper)
         }
         return minYPnt3d;
     }
-    throw CTiglError("Error: No intersection point found in CCPACSWingProfile::GetPoint", TIGL_NOT_FOUND);
+    throw CTiglError("No intersection point found in CCPACSWingProfile::GetPoint", TIGL_NOT_FOUND);
 }
 
 // Helper function to determine the chord line between leading and trailing edge in the profile plane

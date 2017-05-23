@@ -120,7 +120,7 @@ void CCPACSFuselageProfile::ReadCPACS(const TixiDocumentHandle& tixiHandle, cons
 
         // check if points with maximal/minimal y-component were calculated correctly
         if (maxYIndex == minYIndex) {
-            throw CTiglError("Error: CCPACSFuselageProfile::ReadCPACS: Unable to separate upper and lower wing profile from point list", TIGL_XML_ERROR);
+            throw CTiglError("CCPACSFuselageProfile::ReadCPACS: Unable to separate upper and lower wing profile from point list", TIGL_XML_ERROR);
         }
 
         if (!mirrorSymmetry) {
@@ -215,7 +215,7 @@ void CCPACSFuselageProfile::BuildWires()
     ITiglWireAlgorithm::CPointContainer points;
 
     if (coordinates.size() < 2) {
-        throw CTiglError("Error: Number of points is less than 2 in CCPACSFuselageProfile::BuildWire", TIGL_ERROR);
+        throw CTiglError("Number of points is less than 2 in CCPACSFuselageProfile::BuildWire", TIGL_ERROR);
     }
 
     points.push_back(coordinates[0].Get_gp_Pnt());
@@ -283,7 +283,7 @@ void CCPACSFuselageProfile::BuildWires()
         }
 
         if (tempWireClosed.IsNull() == Standard_True || tempWireOriginal.IsNull() == Standard_True) {
-            throw CTiglError("Error: TopoDS_Wire is null in CCPACSFuselageProfile::BuildWire", TIGL_ERROR);
+            throw CTiglError("TopoDS_Wire is null in CCPACSFuselageProfile::BuildWire", TIGL_ERROR);
         }
     }
 
@@ -308,13 +308,13 @@ gp_Pnt CCPACSFuselageProfile::GetPoint(double zeta)
     Update();
 
     if (zeta < 0.0 || zeta > 1.0) {
-        throw CTiglError("Error: Parameter zeta not in the range 0.0 <= zeta <= 1.0 in CCPACSFuselageProfile::GetPoint", TIGL_ERROR);
+        throw CTiglError("Parameter zeta not in the range 0.0 <= zeta <= 1.0 in CCPACSFuselageProfile::GetPoint", TIGL_ERROR);
     }
 
     // Get the first edge of the wire
     BRepTools_WireExplorer wireExplorer(wireOriginal);
     if (!wireExplorer.More()) {
-        throw CTiglError("Error: Not enough edges found in CCPACSFuselageProfile::GetPoint", TIGL_ERROR);
+        throw CTiglError("Not enough edges found in CCPACSFuselageProfile::GetPoint", TIGL_ERROR);
     }
     Standard_Real firstParam;
     Standard_Real lastParam;

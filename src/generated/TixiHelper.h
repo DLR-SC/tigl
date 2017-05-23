@@ -261,12 +261,7 @@ namespace tigl
             
             // delete old children which where not overwritten
             for (std::size_t i = children.size() + 1; i <= static_cast<std::size_t>(childCount); i++) {
-                TixiRemoveElement(tixiHandle, xpath + "[" + to_string(i) + "]");
-            }
-            
-            // remove parent node if there are no child nodes
-            if(children.size() == 0) {
-                TixiRemoveElement(tixiHandle, sp.parentXPath);
+                TixiRemoveElement(tixiHandle, xpath + "[" + to_string(children.size() + 1) + "]");
             }
         }
 

@@ -45,7 +45,6 @@ public:
 
     virtual void Update()   = 0;
 
-
     // Returns points on profile.
 
     virtual const std::vector<CTiglPoint>& GetSamplePoints() const = 0;

@@ -30,7 +30,17 @@ namespace tigl
         
         CPACSRotorcraftModel::~CPACSRotorcraftModel()
         {
-            if (m_uidMgr) m_uidMgr->UnregisterObject(m_uID);
+            if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
+        }
+        
+        CTiglUIDManager& CPACSRotorcraftModel::GetUIDManager()
+        {
+            return *m_uidMgr;
+        }
+        
+        const CTiglUIDManager& CPACSRotorcraftModel::GetUIDManager() const
+        {
+            return *m_uidMgr;
         }
         
         void CPACSRotorcraftModel::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
@@ -118,7 +128,6 @@ namespace tigl
         void CPACSRotorcraftModel::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write attribute uID
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/uID");
             tixihelper::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
             
             // write element name
@@ -129,30 +138,50 @@ namespace tigl
             if (m_description) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/description")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/description");
+                }
             }
             
             // write element fuselages
             if (m_fuselages) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/fuselages");
                 m_fuselages->WriteCPACS(tixiHandle, xpath + "/fuselages");
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/fuselages")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/fuselages");
+                }
             }
             
             // write element wings
             if (m_wings) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/wings");
                 m_wings->WriteCPACS(tixiHandle, xpath + "/wings");
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/wings")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/wings");
+                }
             }
             
             // write element rotors
             if (m_rotors) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/rotors");
                 m_rotors->WriteCPACS(tixiHandle, xpath + "/rotors");
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/rotors")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/rotors");
+                }
             }
             
             // write element rotorBlades
             if (m_rotorBlades) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/rotorBlades");
                 m_rotorBlades->WriteCPACS(tixiHandle, xpath + "/rotorBlades");
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/rotorBlades")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/rotorBlades");
+                }
             }
             
         }
@@ -165,7 +194,7 @@ namespace tigl
         void CPACSRotorcraftModel::SetUID(const std::string& value)
         {
             if (m_uidMgr) {
-                m_uidMgr->UnregisterObject(m_uID);
+                m_uidMgr->TryUnregisterObject(m_uID);
                 m_uidMgr->RegisterObject(value, *this);
             }
             m_uID = value;

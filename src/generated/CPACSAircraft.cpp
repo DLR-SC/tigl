@@ -31,6 +31,16 @@ namespace tigl
         
         CPACSAircraft::~CPACSAircraft() {}
         
+        CTiglUIDManager& CPACSAircraft::GetUIDManager()
+        {
+            return *m_uidMgr;
+        }
+        
+        const CTiglUIDManager& CPACSAircraft::GetUIDManager() const
+        {
+            return *m_uidMgr;
+        }
+        
         void CPACSAircraft::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element model

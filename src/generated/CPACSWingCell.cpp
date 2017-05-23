@@ -40,12 +40,22 @@ namespace tigl
         
         CPACSWingCell::~CPACSWingCell()
         {
-            if (m_uidMgr) m_uidMgr->UnregisterObject(m_uID);
+            if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
         }
         
         CCPACSWingCells* CPACSWingCell::GetParent() const
         {
             return m_parent;
+        }
+        
+        CTiglUIDManager& CPACSWingCell::GetUIDManager()
+        {
+            return *m_uidMgr;
+        }
+        
+        const CTiglUIDManager& CPACSWingCell::GetUIDManager() const
+        {
+            return *m_uidMgr;
         }
         
         void CPACSWingCell::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
@@ -104,7 +114,6 @@ namespace tigl
         void CPACSWingCell::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write attribute uID
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/uID");
             tixihelper::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
             
             // write element skin
@@ -137,7 +146,7 @@ namespace tigl
         void CPACSWingCell::SetUID(const std::string& value)
         {
             if (m_uidMgr) {
-                m_uidMgr->UnregisterObject(m_uID);
+                m_uidMgr->TryUnregisterObject(m_uID);
                 m_uidMgr->RegisterObject(value, *this);
             }
             m_uID = value;

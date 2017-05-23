@@ -127,6 +127,10 @@ namespace tigl
             if (m_trailingEdgeThickness) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/trailingEdgeThickness");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/trailingEdgeThickness", *m_trailingEdgeThickness);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/trailingEdgeThickness")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/trailingEdgeThickness");
+                }
             }
             
         }

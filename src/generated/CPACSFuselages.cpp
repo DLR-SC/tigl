@@ -47,6 +47,16 @@ namespace tigl
         
         CPACSFuselages::~CPACSFuselages() {}
         
+        CTiglUIDManager& CPACSFuselages::GetUIDManager()
+        {
+            return *m_uidMgr;
+        }
+        
+        const CTiglUIDManager& CPACSFuselages::GetUIDManager() const
+        {
+            return *m_uidMgr;
+        }
+        
         void CPACSFuselages::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element fuselage

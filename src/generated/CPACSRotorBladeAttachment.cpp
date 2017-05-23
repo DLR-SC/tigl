@@ -36,12 +36,22 @@ namespace tigl
         
         CPACSRotorBladeAttachment::~CPACSRotorBladeAttachment()
         {
-            if (m_uidMgr && m_uID) m_uidMgr->UnregisterObject(*m_uID);
+            if (m_uidMgr && m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
         }
         
         CCPACSRotorBladeAttachments* CPACSRotorBladeAttachment::GetParent() const
         {
             return m_parent;
+        }
+        
+        CTiglUIDManager& CPACSRotorBladeAttachment::GetUIDManager()
+        {
+            return *m_uidMgr;
+        }
+        
+        const CTiglUIDManager& CPACSRotorBladeAttachment::GetUIDManager() const
+        {
+            return *m_uidMgr;
         }
         
         void CPACSRotorBladeAttachment::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
@@ -109,26 +119,41 @@ namespace tigl
         {
             // write attribute uID
             if (m_uID) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/uID");
                 tixihelper::TixiSaveAttribute(tixiHandle, xpath, "uID", *m_uID);
+            } else {
+                if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+                    tixihelper::TixiRemoveAttribute(tixiHandle, xpath, "uID");
+                }
             }
             
             // write element name
             if (m_name) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/name", *m_name);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/name")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/name");
+                }
             }
             
             // write element description
             if (m_description) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/description")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/description");
+                }
             }
             
             // write element hinges
             if (m_hinges) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/hinges");
                 m_hinges->WriteCPACS(tixiHandle, xpath + "/hinges");
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/hinges")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/hinges");
+                }
             }
             
             // write element rotorBladeUID
@@ -139,12 +164,20 @@ namespace tigl
             if (m_azimuthAngles_choice1) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/azimuthAngles");
                 m_azimuthAngles_choice1->WriteCPACS(tixiHandle, xpath + "/azimuthAngles");
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/azimuthAngles")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/azimuthAngles");
+                }
             }
             
             // write element numberOfBlades
             if (m_numberOfBlades_choice2) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/numberOfBlades");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/numberOfBlades", *m_numberOfBlades_choice2);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/numberOfBlades")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/numberOfBlades");
+                }
             }
             
         }
@@ -157,7 +190,7 @@ namespace tigl
         void CPACSRotorBladeAttachment::SetUID(const std::string& value)
         {
             if (m_uidMgr) {
-                if (m_uID) m_uidMgr->UnregisterObject(*m_uID);
+                if (m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
                 m_uidMgr->RegisterObject(value, *this);
             }
             m_uID = value;
@@ -166,7 +199,7 @@ namespace tigl
         void CPACSRotorBladeAttachment::SetUID(const boost::optional<std::string>& value)
         {
             if (m_uidMgr) {
-                if (m_uID) m_uidMgr->UnregisterObject(*m_uID);
+                if (m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
                 if (value) m_uidMgr->RegisterObject(*value, *this);
             }
             m_uID = value;

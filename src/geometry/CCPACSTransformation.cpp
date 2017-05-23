@@ -23,7 +23,8 @@ namespace tigl
 {
 
 CCPACSTransformation::CCPACSTransformation(CTiglUIDManager* uidMgr)
-    : generated::CPACSTransformation(uidMgr) {
+    : generated::CPACSTransformation(uidMgr)
+{
     _transformationMatrix.SetIdentity();
 }
 
@@ -40,6 +41,11 @@ void CCPACSTransformation::reset()
         m_translation->SetRefType(boost::optional<ECPACSTranslationType>());
     }
     _transformationMatrix.SetIdentity();
+}
+
+void CCPACSTransformation::setTranslation(const CTiglPoint & translation)
+{
+    setTranslation(translation, m_translation && m_translation->GetRefType() ? *m_translation->GetRefType() : ABS_LOCAL);
 }
 
 void CCPACSTransformation::setTranslation(const CTiglPoint& translation, ECPACSTranslationType type)

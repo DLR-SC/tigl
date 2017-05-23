@@ -39,6 +39,9 @@ namespace tigl
             TIGL_EXPORT CPACSPositioning(CTiglUIDManager* uidMgr);
             TIGL_EXPORT virtual ~CPACSPositioning();
             
+            TIGL_EXPORT CTiglUIDManager& GetUIDManager();
+            TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
+            
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             

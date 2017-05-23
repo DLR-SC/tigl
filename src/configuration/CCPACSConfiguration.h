@@ -174,7 +174,8 @@ public:
     TIGL_EXPORT CCPACSExternalObject& GetExternalObject(int index) const;
 
     // Returns the guide curve profile for a given UID.
-    TIGL_EXPORT CCPACSGuideCurveProfile& GetGuideCurveProfile(std::string UID) const;
+    TIGL_EXPORT CCPACSGuideCurveProfile& GetGuideCurveProfile(std::string UID);
+    TIGL_EXPORT const CCPACSGuideCurveProfile& GetGuideCurveProfile(std::string UID) const;
 
     // Returns the uid manager
     TIGL_EXPORT CTiglUIDManager& GetUIDManager();
@@ -202,7 +203,8 @@ public:
     TIGL_EXPORT CCPACSHeader* GetHeader();
 
     /** Getter for member wings */
-    TIGL_EXPORT CCPACSWings* GetWings();
+    TIGL_EXPORT CCPACSWings& GetWings();
+    TIGL_EXPORT const CCPACSWings& GetWings() const;
 
     TIGL_EXPORT CCPACSACSystems& GetACSystems();
 

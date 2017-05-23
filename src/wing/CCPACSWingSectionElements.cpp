@@ -31,7 +31,7 @@ namespace tigl
 CCPACSWingSectionElements::CCPACSWingSectionElements(CTiglUIDManager* uidMgr)
     : generated::CPACSWingElements(uidMgr) {}
 
-    // Get element count for this section
+// Get element count for this section
 int CCPACSWingSectionElements::GetSectionElementCount() const
 {
     return static_cast<int>(m_elements.size());
@@ -42,7 +42,7 @@ CCPACSWingSectionElement& CCPACSWingSectionElements::GetSectionElement(int index
 {
 	index--;
     if (index < 0 || index >= GetSectionElementCount()) {
-        throw CTiglError("Error: Invalid index in CCPACSWingSectionElements::GetSectionElement", TIGL_INDEX_ERROR);
+        throw CTiglError("Invalid index in CCPACSWingSectionElements::GetSectionElement", TIGL_INDEX_ERROR);
     }
     return *m_elements[index];
 }
