@@ -1288,10 +1288,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetPoint(TiglCPACSConf
 *                                     In contrast to old releases, the returned string <b>must not be freed </b>by the user!
 * @param[out] segmentEta              Eta of the point on the corresponding segment.
 * @param[out] segmentXsi              Xsi of the point on the corresponding segment.
-* @param[out] errorDistance           If the point given in component segment lies outside the wing chord surface
-*                                     this paramter returns the distance of the point to the nearest point on the
-*                                     wing. Normally, this should be zero! In older releases, an error was generated
-*                                     if this distance was larger than 1 cm. Now, it is up to the user to handle this case.
 *
 * @return
 *   - TIGL_SUCCESS if no error occurred
@@ -1306,8 +1302,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentPointGetSegmentEtaXsi(
                                                                                 double eta, double xsi,
                                                                                 char** wingUID, 
                                                                                 char** segmentUID,
-                                                                                double *segmentEta, double *segmentXsi,
-                                                                                double *errorDistance);
+                                                                                double *segmentEta, double *segmentXsi);
 
 
 

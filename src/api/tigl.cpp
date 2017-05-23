@@ -1895,23 +1895,28 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetPoint(TiglCPACSConf
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentPointGetSegmentEtaXsi(TiglCPACSConfigurationHandle cpacsHandle,
                                                                                 const char *componentSegmentUID, double eta, double xsi,
                                                                                 char** wingUID, char** segmentUID,
-                                                                                double *segmentEta, double *segmentXsi,
-                                                                                double *errorDistance)
+                                                                                double *segmentEta, double *segmentXsi)
 {
-    if (segmentUID == 0) {
+    if (!segmentUID) {
         LOG(ERROR) << "Error: Null pointer argument for segmentUID "
                    << "in function call to tiglWingComponentSegmentPointGetSegmentEtaXsi.";
         return TIGL_NULL_POINTER;
     }
 
-    if (wingUID == 0) {
+    if (!wingUID) {
         LOG(ERROR) << "Error: Null pointer argument for wingUID "
                    << "in function call to tiglWingComponentSegmentPointGetSegmentEtaXsi.";
         return TIGL_NULL_POINTER;
     }
-    
-    if (errorDistance == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for errorDistance "
+
+    if (!segmentEta) {
+        LOG(ERROR) << "Error: Null pointer argument for segmentEta "
+                   << "in function call to tiglWingComponentSegmentPointGetSegmentEtaXsi.";
+        return TIGL_NULL_POINTER;
+    }
+
+    if (!segmentXsi) {
+        LOG(ERROR) << "Error: Null pointer argument for segmentXsi "
                    << "in function call to tiglWingComponentSegmentPointGetSegmentEtaXsi.";
         return TIGL_NULL_POINTER;
     }
@@ -1920,49 +1925,23 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentPointGetSegmentEtaXsi(
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
 
-        // search for component segment
-        int nwings = config.GetWingCount();
-        for (int iwing = 1; iwing <= nwings; ++iwing) {
-            tigl::CCPACSWing& wing = config.GetWing(iwing);
-            int ncompSegs = wing.GetComponentSegmentCount();
-            for (int jcompSeg = 1; jcompSeg <= ncompSegs; ++jcompSeg) {
-                tigl::CCPACSWingComponentSegment & compSeg = (tigl::CCPACSWingComponentSegment &) wing.GetComponentSegment(jcompSeg);
-                if ( compSeg.GetUID() == std::string(componentSegmentUID) ) {
-                    //now do the calculations
-                    gp_Pnt pnt = compSeg.GetPoint(eta, xsi);
-                    *segmentXsi = xsi;
+        tigl::CCPACSWingComponentSegment& cs = config.GetUIDManager()
+                .ResolveObject<tigl::CCPACSWingComponentSegment>(componentSegmentUID);
 
 
-                    gp_Pnt nearestPoint;
-                    double tmp = 0;
-                    tigl::CCPACSWingSegment* segment = (tigl::CCPACSWingSegment*) compSeg.findSegment(pnt.X(), pnt.Y(), pnt.Z(), nearestPoint, tmp);
-                    if (!segment) {
-                        LOG(ERROR) << "Can not find any segment that does belong to the provided point.";
-                        return TIGL_MATH_ERROR;
-                    }
-                    *errorDistance = nearestPoint.Distance(pnt);
-                    // warn if cs point is more than 1mm outside from segment
-                    if ( *errorDistance > 1e-3) {
-                        LOG(WARNING) << "Given point is located more than 1mm from the wing component segment body."
-                                     << " The actual diviation is " << *errorDistance*1000.  << " mm."
-                                     << " The point will be projected onto the wing segment.";
-                        segment->GetEtaXsi(nearestPoint, *segmentEta, *segmentXsi);
-                    }
-                    else {
-                        *segmentEta = segment->GetEta(pnt, *segmentXsi);
-                    }
+        std::string segmentUIDTmp;
+        cs.GetSegmentEtaXsi(eta, xsi, segmentUIDTmp, *segmentEta, *segmentXsi);
 
-                    *segmentUID = (char*) segment->GetUID().c_str();
-                    *wingUID    = (char*) wing.GetUID().c_str();
+        tigl::CCPACSWing* wing = cs.GetParent()->GetParent();
+        *wingUID = const_cast<char*>(wing->GetUID().c_str());
 
-                    return TIGL_SUCCESS;
-                }
-            }
-        }
+        // Get the segment
+        tigl::CCPACSWingSegment& segment = config.GetUIDManager()
+                .ResolveObject<tigl::CCPACSWingSegment>(segmentUIDTmp);
 
-        // the component segment was not found
-        LOG(ERROR) << "Error: Invalid uid in tiglWingComponentSegmentPointGetSegmentEtaXsi" << std::endl;
-        return TIGL_UID_ERROR;
+        *segmentUID = const_cast<char*>(segment.GetUID().c_str());
+
+        return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what() << std::endl;

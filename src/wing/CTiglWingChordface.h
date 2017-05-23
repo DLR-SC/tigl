@@ -58,7 +58,7 @@ public:
     /**
      * @brief Returns the Eta coordinate of each element
      */
-    TIGL_EXPORT std::vector<double> GetElementEtas() const;
+    TIGL_EXPORT const std::vector<double>& GetElementEtas() const;
 
 protected:
     virtual PNamedShape BuildLoft() OVERRIDE;
@@ -74,6 +74,7 @@ private:
     CTiglUIDManager* _uidManager;
 
     mutable Handle(Geom_BSplineSurface) _chordSurface;
+    mutable std::vector<double> _elementEtas;
 };
 
 }

@@ -21,6 +21,7 @@
 #include "CNamedShape.h"
 #include "CTiglUIDManager.h"
 #include "CCPACSWingSegment.h"
+#include "CTiglError.h"
 
 #include <TColgp_Array2OfPnt.hxx>
 #include <TColStd_Array1OfReal.hxx>
@@ -107,6 +108,10 @@ void CTiglWingChordface::BuildChordSurface() const
 
         std::vector<CCPACSWingSegment*> segmentsList = getSortedSegments(_segments);
 
+        if (segmentsList.size() < 1) {
+            throw CTiglError("Wing chord face " + _uid + " does not contain any segments (CTiglWingChordface::BuildChordSurface)!", TIGL_ERROR);
+        }
+
         TColgp_Array2OfPnt poles(1, 2, 1, static_cast<int>(segmentsList.size() + 1));
 
         int vPole = 1;
@@ -162,21 +167,20 @@ void CTiglWingChordface::BuildChordSurface() const
         uMults.SetValue(2, 2);
 
         _chordSurface = new Geom_BSplineSurface(poles, uKnots, vKnots, uMults, vMults, 1, 1);
+
+        // set the break points
+        _elementEtas.clear();
+        for (int iElement = 1; iElement <= _chordSurface->NbVKnots(); ++iElement) {
+            _elementEtas.push_back(_chordSurface->VKnot(iElement));
+        }
     }
 }
 
-std::vector<double> CTiglWingChordface::GetElementEtas() const
+const std::vector<double>& CTiglWingChordface::GetElementEtas() const
 {
     BuildChordSurface();
 
-    std::vector<double> etas;
-
-    // return the vknots
-    for (int iElement = 1; iElement <= _chordSurface->NbVKnots(); ++iElement) {
-        etas.push_back(_chordSurface->VKnot(iElement));
-    }
-
-    return etas;
+    return _elementEtas;
 }
 
 

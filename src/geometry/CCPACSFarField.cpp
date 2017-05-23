@@ -16,6 +16,8 @@
 * limitations under the License.
 */
 
+#define _USE_MATH_DEFINES
+
 #include "CCPACSFarField.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"

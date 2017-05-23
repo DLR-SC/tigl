@@ -120,6 +120,9 @@ public:
     // Get the eta xsi coordinate from a segment point (given by seta, sxsi)
     TIGL_EXPORT void GetEtaXsiFromSegmentEtaXsi(const std::string &segmentUID, double seta, double sxsi, double &eta, double &xsi) const;
 
+    // Returns segment coordinates given component segment coordinates
+    TIGL_EXPORT void GetSegmentEtaXsi(double csEta, double xsXsi, std::string& segmentUID, double& seta, double& sxsi) const;
+
     // Gets the volume of this segment
     TIGL_EXPORT double GetVolume();
 
@@ -229,7 +232,6 @@ private:
 private:
     CTiglUIDManager* _uidMgr;
 
-    std::string          toElementUID;         /**< Outer segment uid (tip)                 */
     CCPACSWing*          wing;                 /**< Parent wing                             */
     double               myVolume;             /**< Volume of this segment                  */
     double               mySurfaceArea;        /**< Surface area of this segment            */
