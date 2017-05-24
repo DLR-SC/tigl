@@ -26,41 +26,25 @@ public:
      * @param points:
      *          Given points where new parameters are computed at
      * @param alpha:
-     *          parameters for the computation of the parameters; alpha=0.5 means, that this method uses the centripetal method
+     *          Exponent for the computation of the parameters; alpha=0.5 means, that this method uses the centripetal method
      * @param parameters
      *          reference of the TColStd_Array1OfReal parameters, that is created beforehand
      */
-    TIGL_EXPORT static Handle(TColStd_HArray1OfReal) computeParamsBSplineCurve(const TColgp_Array1OfPnt& points, double alpha);
+    TIGL_EXPORT static Handle(TColStd_HArray1OfReal) computeParamsBSplineCurve(const TColgp_Array1OfPnt& points, double alpha=0.5);
 
-    /**
-     * @brief computeParamsBSplineCurveCentripetal:
-     *          Computes the parameters of a Geom_BSplineCurve at the given points by the centripetal method
-     * @param points:
-     *          Given points where new parameters are computed at
-     * @param parameters:
-     *          reference of the TColStd_Array1OfReal parameters, that is created beforehand
-     */
-    TIGL_EXPORT static Handle(TColStd_HArray1OfReal) computeParamsBSplineCurveCentripetal(const TColgp_Array1OfPnt& points);
 
     /**
      * @brief computeParamsBSplineSurf:
      *          Computes the parameters of a Geom_BSplineSurface at the given points
      * @param points:
      *          Given points where new parameters are computed at
+     * @param alpha:
+     *          Exponent for the computation of the parameters; alpha=0.5 means, that this method uses the centripetal method
      * @return  a std::pair of Handle(TColStd_HArray1OfReal) of the parameters in u- and in v-direction
      */
     TIGL_EXPORT static std::pair<Handle(TColStd_HArray1OfReal), Handle(TColStd_HArray1OfReal) >
-    computeParamsBSplineSurf(const TColgp_Array2OfPnt& points, double alpha);
+    computeParamsBSplineSurf(const TColgp_Array2OfPnt& points, double alpha=0.5);
 
-    /**
-     * @brief computeParamsBSplineSurfCentripetal:
-     *          Computes the parameters of a Geom_BSplineSurface at the given points by the centripetal method
-     * @param points:
-     *          Given points where new parameters are computed at
-     * @return  a std::pair of Handle(TColStd_HArray1OfReal) of the parameters in u- and in v-direction
-     */
-    TIGL_EXPORT static std::pair<Handle(TColStd_HArray1OfReal), Handle(TColStd_HArray1OfReal) >
-    computeParamsBSplineSurfCentripetal(const TColgp_Array2OfPnt& points);
 
     /**
      * @brief createCommonKnotsVectorCurve:
