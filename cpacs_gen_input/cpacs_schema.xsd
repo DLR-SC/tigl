@@ -6706,7 +6706,7 @@ jonas.jepsen@dlr.de
 					<xsd:element minOccurs="0" name="wingFuelTanks" type="wingFuelTanksType"/>
 					<xsd:element minOccurs="0" name="wingStructuralMounts" type="wingStructuralMountsType"/>
 				</xsd:sequence>
-				<xsd:attribute name="uID" type="xsd:string"/>
+				<xsd:attribute name="uID" type="xsd:string" use="required"/>
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>

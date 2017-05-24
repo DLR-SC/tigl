@@ -361,10 +361,7 @@ QString TIGLViewerDocument::dlgGetWingComponentSegmentSelection()
 
         for (int j = 1; j <= wing.GetComponentSegmentCount(); ++j) {
             tigl::CCPACSWingComponentSegment& segment = wing.GetComponentSegment(j);
-            if (segment.GetUID())
-                compSegs << segment.GetUID()->c_str();
-            else
-                compSegs << "Unknown component segment";
+            compSegs << segment.GetUID().c_str();
         }
     }
 
@@ -510,10 +507,7 @@ QString TIGLViewerDocument::dlgGetRotorBladeComponentSegmentSelection()
         if (wing.IsRotorBlade()) {
             for (int j = 1; j <= wing.GetComponentSegmentCount(); ++j) {
                 tigl::CCPACSWingComponentSegment& segment = wing.GetComponentSegment(j);
-                if (segment.GetUID())
-                    compSegs << segment.GetUID()->c_str();
-                else
-                    compSegs << "Unknown component segment";
+                compSegs << segment.GetUID().c_str();
             }
         }
     }

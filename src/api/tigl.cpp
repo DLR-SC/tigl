@@ -1070,12 +1070,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetComponentSegmentUID(TiglCPACSConfig
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
         tigl::CCPACSWingComponentSegment& segment = (tigl::CCPACSWingComponentSegment &) wing.GetComponentSegment(compSegmentIndex);
-        if (segment.GetUID()) {
-            *uidNamePtr = const_cast<char*>(segment.GetUID()->c_str());
-        }
-        else {
-            *uidNamePtr = const_cast<char*>(emptyString.c_str());
-        }
+        *uidNamePtr = const_cast<char*>(segment.GetUID().c_str());
 
         return TIGL_SUCCESS;
     }

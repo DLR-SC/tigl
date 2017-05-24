@@ -217,7 +217,7 @@ void CCPACSWingComponentSegment::ReadCPACS(TixiDocumentHandle tixiHandle, const 
 }
 
 std::string CCPACSWingComponentSegment::GetDefaultedUID() const {
-    return m_uID.value_or("");
+    return m_uID;
 }
 
 // Returns the wing this segment belongs to
@@ -328,7 +328,7 @@ TopoDS_Face CCPACSWingComponentSegment::GetSectionElementFace(const std::string&
             return GetSingleFace((*it)->GetOuterClosure(WING_COORDINATE_SYSTEM));
         }
     }
-    throw CTiglError("Unable to find section element with UID \"" + sectionElementUID + "\" in component segment \"" + m_uID.value_or("") + "\"!");
+    throw CTiglError("Unable to find section element with UID \"" + sectionElementUID + "\" in component segment \"" + m_uID + "\"!");
 }
 
 
@@ -872,7 +872,7 @@ PNamedShape CCPACSWingComponentSegment::BuildLoft()
     mySurfaceArea = AreaSystem.Mass();
         
     // Set Names
-    std::string loftName = m_uID.value_or("");
+    std::string loftName = m_uID;
     std::string loftShortName = GetShortShapeName();
     PNamedShape loft (new CNamedShape(loftShape, loftName.c_str(), loftShortName.c_str()));
     SetFaceTraits(loft, static_cast<unsigned int>(segments.size()));
@@ -1041,7 +1041,7 @@ void CCPACSWingComponentSegment::UpdateProjectedLeadingEdge() const
 
     if (segments.size() < 1) {
         std::stringstream str;
-        str << "Wing component " << m_uID.value_or("") << " does not contain any segments (CCPACSWingComponentSegment::updateProjectedLeadingEdge)!";
+        str << "Wing component " << m_uID << " does not contain any segments (CCPACSWingComponentSegment::updateProjectedLeadingEdge)!";
         throw CTiglError(str.str(), TIGL_ERROR);
     }
 
@@ -1196,7 +1196,7 @@ gp_Pnt CCPACSWingComponentSegment::GetPoint(double eta, double xsi) const
 
     const SegmentList& segments = GetSegmentList();
     if (segments.size() < 1) {
-        throw CTiglError("Wing component " + m_uID.value_or("") + " does not contain any segments (CCPACSWingComponentSegment::GetPoint)!", TIGL_ERROR);
+        throw CTiglError("Wing component " + m_uID + " does not contain any segments (CCPACSWingComponentSegment::GetPoint)!", TIGL_ERROR);
     }
 
     // build up iso xsi line control points
