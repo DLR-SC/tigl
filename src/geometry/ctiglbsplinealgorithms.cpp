@@ -114,12 +114,6 @@ Handle(TColStd_HArray1OfReal) CTiglBSplineAlgorithms::computeParamsBSplineCurve(
 }
 
 
-Handle(TColStd_HArray1OfReal) CTiglBSplineAlgorithms::computeParamsBSplineCurveCentripetal(const TColgp_Array1OfPnt& points)
-{
-    return computeParamsBSplineCurve(points, 0.5);
-}
-
-
 std::pair<Handle(TColStd_HArray1OfReal), Handle(TColStd_HArray1OfReal) >
 CTiglBSplineAlgorithms::computeParamsBSplineSurf(const TColgp_Array2OfPnt& points, double alpha)
 {
@@ -181,12 +175,6 @@ CTiglBSplineAlgorithms::computeParamsBSplineSurf(const TColgp_Array2OfPnt& point
     // put computed parameters for both u- and v-direction in output tuple
     return std::make_pair(parameters_u_average, parameters_v_average);
 
-}
-
-
-std::pair<Handle(TColStd_HArray1OfReal), Handle(TColStd_HArray1OfReal) > CTiglBSplineAlgorithms::computeParamsBSplineSurfCentripetal(const TColgp_Array2OfPnt& points)
-{
-    return computeParamsBSplineSurf(points, 0.5);
 }
 
 
@@ -369,50 +357,15 @@ std::vector<Handle(Geom_BSplineSurface) > CTiglBSplineAlgorithms::createCommonKn
     // create a copy of the old B-spline surfaces in order to get no shadow effects
     std::vector<Handle(Geom_BSplineSurface)> surfaces_vector;
     for (unsigned int surface_idx = 0; surface_idx < old_surfaces_vector.size(); ++surface_idx) {
-        Handle(Geom_BSplineSurface) old_surface = old_surfaces_vector[surface_idx];
-        Handle(Geom_BSplineSurface) new_surface = Handle(Geom_BSplineSurface)::DownCast(old_surface->Copy());
+        Handle(Geom_BSplineSurface) new_surface = Handle(Geom_BSplineSurface)::DownCast(old_surfaces_vector[surface_idx]->Copy());
         surfaces_vector.push_back(new_surface);
     }
 
     // first create a common knot vector in u-direction
-
-//    // create a vector of all knots in u-direction of all surfaces
-//    std::vector<double> all_knots_u;
-//    for (unsigned int surface_idx = 0; surface_idx < surfaces_vector.size(); ++surface_idx) {
-//        for (int knot_idx = 1; knot_idx <= surfaces_vector[surface_idx]->NbUKnots(); ++knot_idx) {
-//            double u_knot = surfaces_vector[surface_idx]->UKnot(knot_idx);
-//            all_knots_u.push_back(u_knot);
-//        }
-//    }
-
-//    // sort vector of all knots in u-direction of all surfaces
-//    std::sort(all_knots_u.begin(), all_knots_u.end());
-
-//    // delete duplicate knots, so that in all_knots are all unique knots
-//    all_knots_u.erase(std::unique(all_knots_u.begin(), all_knots_u.end(), helper_function_unique), all_knots_u.end());
-
-//    // create matrix of multiplicities of all knots in u-direction for all surfaces and initialize it with zeros
-//    std::vector<std::vector<int> > mult_vector_u(surfaces_vector.size(), std::vector<int> (all_knots_u.size(), 0));
-//    for (unsigned int surface_idx = 0; surface_idx < surfaces_vector.size(); ++surface_idx) {
-//        bool is_there = false;
-//        for (unsigned int all_knot_u_idx = 0; all_knot_u_idx < all_knots_u.size(); ++all_knot_u_idx) {
-//            int mult = 0;
-//            for (int surface_knot_u_idx = 1; surface_knot_u_idx <= surfaces_vector[surface_idx]->NbUKnots(); ++surface_knot_u_idx) {
-//                if (std::abs(surfaces_vector[surface_idx]->UKnot(surface_knot_u_idx) - all_knots_u[all_knot_u_idx]) < 1e-15) {
-//                    is_there = true;
-//                    mult = surfaces_vector[surface_idx]->UMultiplicity(surface_knot_u_idx);
-//                }
-//            }
-//            if (is_there) {  // otherwise multiplicity remains zero
-//                    mult_vector_u[surface_idx][all_knot_u_idx] = mult;
-//            }
-//        }
-//    }
-
-    surfaces_vector = CTiglBSplineAlgorithms::createCommonKnotsVectorSurfaceOneDir(surfaces_vector, (knotInsertionCall)knot_insertion_u, (getIntCall)get_NbKnots_u, (getKnotCall)get_knot_u, (getMultCall)get_knot_u_mult, (getIntCall)get_degree_u);
+    surfaces_vector = createCommonKnotsVectorSurfaceOneDir(surfaces_vector, (knotInsertionCall)knot_insertion_u, (getIntCall)get_NbKnots_u, (getKnotCall)get_knot_u, (getMultCall)get_knot_u_mult, (getIntCall)get_degree_u);
 
     // now create a common knot vector in v-direction
-    surfaces_vector = CTiglBSplineAlgorithms::createCommonKnotsVectorSurfaceOneDir(surfaces_vector, (knotInsertionCall)knot_insertion_v, (getIntCall)get_NbKnots_v, (getKnotCall)get_knot_v, (getMultCall)get_knot_v_mult, (getIntCall)get_degree_v);
+    surfaces_vector = createCommonKnotsVectorSurfaceOneDir(surfaces_vector, (knotInsertionCall)knot_insertion_v, (getIntCall)get_NbKnots_v, (getKnotCall)get_knot_v, (getMultCall)get_knot_v_mult, (getIntCall)get_degree_v);
 
     return surfaces_vector;
 }
@@ -455,7 +408,8 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::skinnedBSplineSurfaceParams(
         controlPoints_spline_v->SetValue(point_v_idx, controlPoints(1, point_v_idx));
     }
 
-    // create first spline that interoplates first column of control points in v-direction separately in order to get knots_v and mults_v for creating the Geom_BSplineSurface:
+    // create first spline that interoplates first column of control points in v-direction
+    // separately in order to get knots_v and mults_v for creating the Geom_BSplineSurface:
     GeomAPI_Interpolate interpolationObject_v(controlPoints_spline_v, v_parameters, false, 1e-15);
     interpolationObject_v.Perform();
 
@@ -509,8 +463,6 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::skinnedBSplineSurfaceParams(
 
 Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::skinnedBSplineSurface(const std::vector<Handle(Geom_BSplineCurve) >& splines_vector)
 {
-    // TODO: check that all splines live in a space with the same dimension
-
     // // // // // // // // // // for computing control points ---beginning
 
     // match degree of given B-splines
@@ -538,7 +490,7 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::skinnedBSplineSurface(const 
         }
     }
 
-    std::pair<Handle(TColStd_HArray1OfReal), Handle(TColStd_HArray1OfReal) > parameters = CTiglBSplineAlgorithms::computeParamsBSplineSurfCentripetal(controlPoints);
+    std::pair<Handle(TColStd_HArray1OfReal), Handle(TColStd_HArray1OfReal) > parameters = CTiglBSplineAlgorithms::computeParamsBSplineSurf(controlPoints);
     Handle(TColStd_HArray1OfReal) v_parameters = new TColStd_HArray1OfReal(1, parameters.second->Length());
     for (int param_idx = 1; param_idx <= parameters.second->Length(); ++param_idx) {
         v_parameters->SetValue(param_idx, parameters.second->Value(param_idx));
