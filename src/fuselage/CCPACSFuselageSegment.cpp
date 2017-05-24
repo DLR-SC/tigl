@@ -388,12 +388,18 @@ CCPACSFuselageConnection& CCPACSFuselageSegment::GetEndConnection(void)
 // Returns the volume of this segment
 double CCPACSFuselageSegment::GetVolume(void)
 {
+    // we have to trigger the build of the shape
+    GetLoft();
+
     return( myVolume );
 }
 
 // Returns the surface area of this segment
 double CCPACSFuselageSegment::GetSurfaceArea(void)
 {
+    // we have to trigger the build of the shape
+    GetLoft();
+
     return( mySurfaceArea );
 }
 

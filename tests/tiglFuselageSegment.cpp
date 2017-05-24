@@ -587,5 +587,12 @@ TEST_F( TiglFuselageSegment, FuselageGetEndSectionAndElementUID_success)
     ASSERT_STREQ("D150_VAMP_FL1_Sec4_Elem1", elementUID);
 }
 
+TEST_F(TiglFuselageSegment, GetSegmentVolume)
+{
+    double volume = 0.;
+    ASSERT_EQ(TIGL_SUCCESS, tiglFuselageGetSegmentVolume(tiglHandle, 1, 10, &volume));
+    ASSERT_GT(volume, 0.);
+}
+
 
 

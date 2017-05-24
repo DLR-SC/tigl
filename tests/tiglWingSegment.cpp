@@ -1115,3 +1115,10 @@ TEST_F(WingSegmentSimple, saveCPACS)
         tiglCloseCPACSConfiguration(tmpHandle);
     }
 }
+
+TEST_F(WingSegmentSimple, getSegmentVolume)
+{
+    double volume = 0.;
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetSegmentVolume(tiglSimpleHandle, 1, 2, &volume));
+    ASSERT_GT(volume, 0.);
+}
