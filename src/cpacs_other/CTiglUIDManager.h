@@ -88,6 +88,9 @@ public:
     // Function to add a UID and a geometric component to the uid store.
     TIGL_EXPORT void AddGeometricComponent(const std::string& uid, ITiglGeometricComponent* componentPtr);
 
+    // Removes a component from the UID Manager
+    TIGL_EXPORT void RemoveGeometricComponent(const std::string& uid);
+
     // Checks if a UID already exists.
     TIGL_EXPORT bool HasGeometricComponent(const std::string& uid) const;
 

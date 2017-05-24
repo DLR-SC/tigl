@@ -1278,6 +1278,7 @@ gp_Pnt CCPACSWingComponentSegment::GetPoint(double eta, double xsi) const
 
 void CCPACSWingComponentSegment::GetMidplaneEtaXsi(const gp_Pnt& p, double& eta, double& xsi) const
 {
+    // @TODO: replace by using the chordface
     gp_Pnt globalPoint = wing->GetWingTransformation().Transform(p);
     gp_Pnt dummy;
     double deviation = 0.;

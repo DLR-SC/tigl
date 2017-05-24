@@ -72,6 +72,8 @@ namespace
     static std::string version = std::string(TIGL_REVISION).size() > 0 ?
         TIGL_VERSION_STRING " rev" TIGL_REVISION :
         TIGL_VERSION_STRING;
+
+    static std::string const emptyString = "";
 }
 
 TixiPrintMsgFnc oldTixiMessageHandler = NULL;
@@ -1068,10 +1070,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetComponentSegmentUID(TiglCPACSConfig
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
         tigl::CCPACSWingComponentSegment& segment = (tigl::CCPACSWingComponentSegment &) wing.GetComponentSegment(compSegmentIndex);
-        if (segment.GetUID())
+        if (segment.GetUID()) {
             *uidNamePtr = const_cast<char*>(segment.GetUID()->c_str());
-        else
-            *uidNamePtr = "";
+        }
+        else {
+            *uidNamePtr = const_cast<char*>(emptyString.c_str());
+        }
+
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {

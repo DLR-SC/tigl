@@ -149,6 +149,15 @@ void CTiglUIDManager::AddGeometricComponent(const std::string& uid, ITiglGeometr
     invalidated = true;
 }
 
+void CTiglUIDManager::RemoveGeometricComponent(const std::string &uid)
+{
+    const ShapeContainerType::const_iterator it = allShapes.find(uid);
+    if (it == std::end(allShapes)) {
+        throw CTiglError("No shape is registered for uid \"" + uid + "\"");
+    }
+    allShapes.erase(it);
+}
+
 // Checks if a UID already exists.
 bool CTiglUIDManager::HasGeometricComponent(const std::string& uid) const
 {
