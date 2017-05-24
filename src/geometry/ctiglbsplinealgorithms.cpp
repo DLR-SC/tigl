@@ -580,4 +580,40 @@ Handle(Geom_BSplineCurve) CTiglBSplineAlgorithms::reparametrizeBSpline(const Han
     return copied_spline;
 }
 
+Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::flipSurface(const Handle(Geom_BSplineSurface) surface)
+{
+    TColgp_Array2OfPnt swapped_control_points(1, surface->NbVPoles(), 1, surface->NbUPoles());
+    TColgp_Array2OfPnt controlPoints(1, surface->NbUPoles(), 1, surface->NbVPoles());
+    surface->Poles(controlPoints);
+
+    for (int cp_u_idx = 1; cp_u_idx <= surface->NbUPoles(); ++cp_u_idx) {
+        for (int cp_v_idx = 1; cp_v_idx <= surface->NbVPoles(); ++cp_v_idx) {
+            swapped_control_points(cp_v_idx, cp_u_idx) = controlPoints(cp_u_idx, cp_v_idx);
+        }
+    }
+
+    // also swap axes of the weights for NURBS
+    TColStd_Array2OfReal swapped_weights(1, surface->NbVPoles(), 1, surface->NbUPoles());
+    TColStd_Array2OfReal weights(1, surface->NbUPoles(), 1, surface->NbVPoles());
+    for (int weight_u_idx = 1; weight_u_idx <= surface->NbUPoles(); ++weight_u_idx) {
+        for (int weight_v_idx = 1; weight_v_idx <= surface->NbVPoles(); ++weight_v_idx) {
+            swapped_weights(weight_v_idx, weight_u_idx) = weights(weight_u_idx, weight_v_idx);
+        }
+    }
+
+    TColStd_Array1OfReal knots_u(1, surface->NbUKnots());
+    surface->UKnots(knots_u);
+    TColStd_Array1OfReal knots_v(1, surface->NbVKnots());
+    surface->VKnots(knots_v);
+
+    TColStd_Array1OfInteger mults_u(1, surface->NbUKnots());
+    surface->UMultiplicities(mults_u);
+    TColStd_Array1OfInteger mults_v(1, surface->NbVKnots());
+    surface->VMultiplicities(mults_v);
+
+    Handle(Geom_BSplineSurface) flippedSurface = new Geom_BSplineSurface(swapped_control_points, knots_v, knots_u, mults_v, mults_u, surface->VDegree(), surface->UDegree());
+
+    return flippedSurface;
+}
+
 } // namespace tigl
