@@ -210,7 +210,7 @@ void CTiglUIDManager::BuildTree()
     for (RelativeComponentContainerType::iterator it = relativeComponents.begin(); it != relativeComponents.end(); ++it) {
         CTiglRelativelyPositionedComponent& c = *it->second;
         const boost::optional<const std::string&> parentUid = c.GetParentUID();
-        if (parentUid) {
+        if (parentUid && !parentUid->empty()) {
             CTiglRelativelyPositionedComponent& p = GetRelativeComponent(*parentUid);
             p.AddChild(c);
             c.SetParent(p);
