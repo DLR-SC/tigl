@@ -538,7 +538,9 @@ CTiglWingConnection& CCPACSWingSegment::GetOuterConnection()
 // Returns the volume of this segment
 double CCPACSWingSegment::GetVolume()
 {
-    Update();
+    // Trigger shape building
+    GetLoft();
+
     return( myVolume );
 }
 
