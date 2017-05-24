@@ -1,3 +1,21 @@
+/*
+* Copyright (C) 2017 German Aerospace Center (DLR/SC)
+*
+* Created: 2017-05-24 Merlin Pelz <Merlin.Pelz@dlr.de>
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+
 #include <CTiglBSplineAlgorithms.h>
 #include <CTiglError.h>
 #include <CSharedPtr.h>
@@ -16,81 +34,217 @@
 #include <algorithm>
 #include <cassert>
 
-
-// helper function for std::unique
-bool helper_function_unique(double a, double b)
+namespace
 {
-    return (std::abs(a - b) < 1e-15);
-}
 
-// helper functions for method createCommonKnotsVectorSurfaceOneDir
+    // helper function for std::unique
+    bool helper_function_unique(double a, double b)
+    {
+        return (std::abs(a - b) < 1e-15);
+    }
 
-// typedef knotInsertionCall
-void knot_insertion_u(const Handle(Geom_BSplineSurface) surface, double knot_u, int mult)
-{
-    double tolerance = 1e-15;
-    surface->InsertUKnot(knot_u, mult, tolerance);
-}
+    // helper functions for method createCommonKnotsVectorSurfaceOneDir
 
-void knot_insertion_v(const Handle(Geom_BSplineSurface) surface, double knot_v, int mult)
-{
-    double tolerance = 1e-15;
-    surface->InsertVKnot(knot_v, mult, tolerance);
-}
+    // typedef KnotInsertionCall
+    void knot_insertion_u(const Handle(Geom_BSplineSurface) surface, double knot_u, int mult)
+    {
+        double tolerance = 1e-15;
+        surface->InsertUKnot(knot_u, mult, tolerance, false);
+    }
 
-// typedef getKnotCall
-double get_knot_u(const Handle(Geom_BSplineSurface) surface, int index)
-{
-    return surface->UKnot(index);
-}
+    void knot_insertion_v(const Handle(Geom_BSplineSurface) surface, double knot_v, int mult)
+    {
+        double tolerance = 1e-15;
+        surface->InsertVKnot(knot_v, mult, tolerance, false);
+    }
 
-double get_knot_v(const Handle(Geom_BSplineSurface) surface, int index)
-{
-    return surface->VKnot(index);
-}
+    // typedef GetKnotCall
+    double get_knot_u(const Handle(Geom_BSplineSurface) surface, int index)
+    {
+        return surface->UKnot(index);
+    }
 
-// typedef getMultCall
-int get_knot_u_mult(const Handle(Geom_BSplineSurface) surface, int index)
-{
-    return surface->UMultiplicity(index);
-}
+    double get_knot_v(const Handle(Geom_BSplineSurface) surface, int index)
+    {
+        return surface->VKnot(index);
+    }
 
-int get_knot_v_mult(const Handle(Geom_BSplineSurface) surface, int index)
-{
-    return surface->VMultiplicity(index);
-}
+    // typedef GetMultCall
+    int get_knot_u_mult(const Handle(Geom_BSplineSurface) surface, int index)
+    {
+        return surface->UMultiplicity(index);
+    }
+
+    int get_knot_v_mult(const Handle(Geom_BSplineSurface) surface, int index)
+    {
+        return surface->VMultiplicity(index);
+    }
 
 
-// typedef getIntCall
-int get_NbKnots_u(const Handle(Geom_BSplineSurface) surface)
-{
-    return surface->NbUKnots();
-}
+    // typedef GetIntCall
+    int get_NbKnots_u(const Handle(Geom_BSplineSurface) surface)
+    {
+        return surface->NbUKnots();
+    }
 
-int get_NbKnots_v(const Handle(Geom_BSplineSurface) surface)
-{
-    return surface->NbVKnots();
-}
+    int get_NbKnots_v(const Handle(Geom_BSplineSurface) surface)
+    {
+        return surface->NbVKnots();
+    }
 
-int get_degree_u(const Handle(Geom_BSplineSurface) surface)
-{
-    return surface->UDegree();
-}
+    int get_degree_u(const Handle(Geom_BSplineSurface) surface)
+    {
+        return surface->UDegree();
+    }
 
-int get_degree_v(const Handle(Geom_BSplineSurface) surface)
-{
-    return surface->VDegree();
+    int get_degree_v(const Handle(Geom_BSplineSurface) surface)
+    {
+        return surface->VDegree();
+    }
+
+    void insert_knot_curve(const Handle(Geom_BSplineCurve) curve, double knot, int mult)
+    {
+        curve->InsertKnot(knot, mult, 1e-15, false);
+    }
+
+    double get_knot_curve(const Handle(Geom_BSplineCurve) curve, int index)
+    {
+        return curve->Knot(index);
+    }
+
+    int get_mult_curve(const Handle(Geom_BSplineCurve) curve, int index)
+    {
+        return curve->Multiplicity(index);
+    }
+
+    int get_degree_curve(const Handle(Geom_BSplineCurve) curve)
+    {
+        return curve->Degree();
+    }
+
+    int get_nbknots_curve(const Handle(Geom_BSplineCurve) curve)
+    {
+        return curve->NbKnots();
+    }
+
+    // typedefs for createCommonKnotsVectorSurfaceOneDir
+    typedef void (* KnotInsertionCall)(const Handle(Geom_Geometry) surface, double knot, int mult);
+    typedef double (* GetKnotCall)(const Handle(Geom_Geometry) surface, int index);
+    typedef int (* GetMultCall)(const Handle(Geom_Geometry) surface, int index);
+    typedef int (* GetIntCall)(const Handle(Geom_Geometry) surface);
+
+    /**
+     * @brief createCommonKnotsVectorImpl:
+     *          Creates a common knot vector in u- or v-direction of the given vector of B-splines
+     *          The common knot vector contains all knots in u- or v-direction of all splines with the highest multiplicity of all splines.
+     * @param old_splines_vector:
+     *          the given vector of B-spline splines that could have a different knot vector in u- or v-direction
+     * @param insert_knot
+     *          calls the appropriate function for knot insertion depending on creating a common knot vector in u- (Geom_BSplineSurface::InsertUKnot) or in v-direction (Geom_BSplineSurface::InsertVKnot)
+     * @param get_knot_number
+     *          calls the appropriate function for the number of knots depending on creating a common knot vector in u- (Geom_BSplineSurface::NbUKnots) or in v-direction (Geom_BSplineSurface::NbVKnots)
+     * @param get_knot
+     *          calls the appropriate function that returns a knot at an index in the knot vector depending on creating a common knot vector in u- (Geom_BSplineSurface::UKnot) or in v-direction (Geom_BSplineSurface::VKnot)
+     * @param get_mult
+     *          calls the appropriate function which returns the multiplicity of a certain knot depending on creating a common knot vector in u- (Geom_BSplineSurface::UMultiplicity) or in v-direction (Geom_BSplineSurface::VMultiplicity)
+     * @param get_degree
+     *          calls the appropriate function which returns the degree of the surface depending on creating a common knot vector in u- (Geom_BSplineSurface::UDegree) or in v-direction (Geom_BSplineSurface::VDegree)
+     * @return
+     *          the given vector of B-spline splines, now with a common knot vector in u- or in v-direction
+     *          The B-spline surface geometry remains the same.
+     */
+    template <class TGeometry>
+    std::vector<TGeometry >
+    createCommonKnotsVectorImpl(const std::vector<TGeometry > old_splines,
+                                KnotInsertionCall insert_knot,
+                                GetIntCall get_knot_number,
+                                GetKnotCall get_knot,
+                                GetMultCall get_mult,
+                                GetIntCall get_degree)
+    {
+        // all B-spline splines must have the same parameter range in the chosen direction
+        double begin_param_dir = get_knot(old_splines[0], 1);
+        double end_param_dir = get_knot(old_splines[0], get_knot_number(old_splines[0]));
+        for (unsigned int surface_idx = 0; surface_idx < old_splines.size(); ++surface_idx) {
+            double begin_param_dir_surface = get_knot(old_splines[surface_idx], 1);
+            double end_param_dir_surface = get_knot(old_splines[surface_idx], get_knot_number(old_splines[surface_idx]));
+            if (std::abs(begin_param_dir_surface - begin_param_dir) > 1e-15 || std::abs(end_param_dir_surface - end_param_dir) > 1e-15) {
+                throw tigl::CTiglError("B-splines don't have the same parameter range at least in one direction (u / v) in method createCommonKnotsVectorImpl!", TIGL_MATH_ERROR);
+            }
+        }
+
+        // all B-spline splines must have the same degree in the chosen direction
+        int degree = get_degree(old_splines[0]);
+        for (unsigned int surface_idx = 0; surface_idx < old_splines.size(); ++surface_idx) {
+            if (get_degree(old_splines[surface_idx]) != degree) {
+                throw tigl::CTiglError("B-splines don't have the same degree at least in one direction (u / v) in method createCommonKnotsVectorImpl!", TIGL_MATH_ERROR);
+            }
+        }
+
+
+        // create a copy of the old B-splines in order to get no side effects
+        std::vector<TGeometry> splines_vector;
+        for (std::vector<TGeometry>::const_iterator splineIt = old_splines.begin(); splineIt != old_splines.end(); ++splineIt) {
+            TGeometry new_surface = TGeometry::DownCast((*splineIt)->Copy());
+            splines_vector.push_back(new_surface);
+        }
+
+        // create a vector of all knots in chosen direction (u or v) of all splines
+        std::vector<double> all_knots_dir;
+        for (std::vector<TGeometry>::const_iterator splineIt = splines_vector.begin(); splineIt != splines_vector.end(); ++splineIt) {
+            TGeometry spline = *splineIt;
+            for (int knot_idx = 1; knot_idx <= get_knot_number(spline); ++knot_idx) {
+                double dir_knot = get_knot(spline, knot_idx);
+                all_knots_dir.push_back(dir_knot);
+            }
+        }
+
+        // sort vector of all knots in given direction of all splines
+        std::sort(all_knots_dir.begin(), all_knots_dir.end());
+
+        // delete duplicate knots, so that in all_knots are all unique knots
+        all_knots_dir.erase(std::unique(all_knots_dir.begin(), all_knots_dir.end(), helper_function_unique), all_knots_dir.end());
+
+
+        // find highest multiplicities
+        std::vector<int> end_mult_vector_dir(all_knots_dir.size(), 0);
+        for (std::vector<TGeometry>::const_iterator splineIt = splines_vector.begin(); splineIt != splines_vector.end(); ++splineIt) {
+            TGeometry spline = *splineIt;
+
+            for (unsigned int all_knot_dir_idx = 0; all_knot_dir_idx < all_knots_dir.size(); ++all_knot_dir_idx) {
+
+                // get multiplicity of current knot in surface
+                int mult = 0;
+                for (int spline_knot_dir_idx = 1; spline_knot_dir_idx <= get_knot_number(spline); ++spline_knot_dir_idx) {
+                    if (std::abs(get_knot(spline, spline_knot_dir_idx) - all_knots_dir[all_knot_dir_idx]) < 1e-15) {
+                        mult = get_mult(spline, spline_knot_dir_idx);
+                    }
+                }
+
+                if (mult > end_mult_vector_dir[all_knot_dir_idx]) {
+                    end_mult_vector_dir[all_knot_dir_idx] = mult;
+                }
+            }
+        }
+
+        // now insert missing knots in all splines
+        for (std::vector<TGeometry>::iterator splineIt = splines_vector.begin(); splineIt != splines_vector.end(); ++splineIt) {
+            TGeometry spline = *splineIt;
+            for (unsigned int all_knot_dir_idx = 0; all_knot_dir_idx < all_knots_dir.size(); ++all_knot_dir_idx) {
+                int mult = end_mult_vector_dir[all_knot_dir_idx]; // always >= 0
+                double knot = all_knots_dir[all_knot_dir_idx];
+                insert_knot(spline, knot, mult);
+            }
+        }
+
+        return splines_vector;
+    }
+
 }
 
 
 namespace tigl
 {
-
-
-CTiglBSplineAlgorithms::CTiglBSplineAlgorithms()
-{
-
-}
 
 
 Handle(TColStd_HArray1OfReal) CTiglBSplineAlgorithms::computeParamsBSplineCurve(const TColgp_Array1OfPnt& points, const double alpha)
@@ -178,176 +332,14 @@ CTiglBSplineAlgorithms::computeParamsBSplineSurf(const TColgp_Array2OfPnt& point
 }
 
 
-std::vector<Handle(Geom_BSplineCurve)> CTiglBSplineAlgorithms::createCommonKnotsVectorCurve(const std::vector<Handle(Geom_BSplineCurve)>& old_splines_vector)
+std::vector<Handle(Geom_BSplineCurve)> CTiglBSplineAlgorithms::createCommonKnotsVectorCurve(const std::vector<Handle(Geom_BSplineCurve)>& splines_vector)
 {
-    // all splines must have the same parameter range
-    double begin_param = old_splines_vector[0]->Knot(1);
-    double end_param = old_splines_vector[0]->Knot(old_splines_vector[0]->NbKnots());
-    for (unsigned int spline_idx = 0; spline_idx < old_splines_vector.size(); ++spline_idx) {
-        double begin_param_spline = old_splines_vector[spline_idx]->Knot(1);
-        double end_param_spline = old_splines_vector[spline_idx]->Knot(old_splines_vector[spline_idx]->NbKnots());
-        if (std::abs(begin_param_spline - begin_param) > 1e-15 || std::abs(end_param_spline - end_param) > 1e-15) {
-            throw CTiglError("ERROR: B-splines don't have the same parameter range in method createCommonKnotsVectorCurve!");
-        }
-    }
-
-    // all B-splines must have the same degree
-    int degree = old_splines_vector[0]->Degree();
-    for (unsigned int spline_idx = 0; spline_idx < old_splines_vector.size(); ++spline_idx) {
-        if (old_splines_vector[spline_idx]->Degree() != degree) {
-            throw CTiglError("ERROR: B-splines don't have the same degree in method createCommonKnotsVectorCurve!");
-        }
-    }
-
-    // create a copy of the old B-splines in order to get no shadow effects
-    std::vector<Handle(Geom_BSplineCurve)> splines_vector;
-    for (unsigned int spline_idx = 0; spline_idx < old_splines_vector.size(); ++spline_idx) {
-        Handle(Geom_BSplineCurve) old_curve = old_splines_vector[spline_idx];
-        Handle(Geom_BSplineCurve) new_curve = Handle(Geom_BSplineCurve)::DownCast(old_curve->Copy());
-        splines_vector.push_back(new_curve);
-    }
-
-    // create a vector of all knots of all B-splines
-    std::vector<double> all_knots;
-    for (unsigned int spline_idx = 0; spline_idx < splines_vector.size(); ++spline_idx) {
-        for (int knot_idx = 1; knot_idx <= splines_vector[spline_idx]->NbKnots(); ++knot_idx) {
-            double knot = splines_vector[spline_idx]->Knot(knot_idx);
-            all_knots.push_back(knot);
-        }
-    }
-
-    // sort vector of all knots of all B-splines
-    std::sort(all_knots.begin(), all_knots.end());
-
-    // delete duplicate knots, so that in all_knots are all unique knots
-    all_knots.erase(std::unique(all_knots.begin(), all_knots.end(), helper_function_unique), all_knots.end());
-
-    // create matrix of multiplicities of all knots for all B-splines and initialize it with zeros
-    std::vector<std::vector<int> > mult_vector(splines_vector.size(), std::vector<int> (all_knots.size(), 0));
-    for (unsigned int spline_idx = 0; spline_idx < splines_vector.size(); ++spline_idx) {
-        bool is_there = false;
-        for (unsigned int all_knot_idx = 0; all_knot_idx < all_knots.size(); ++all_knot_idx) {
-            int mult = 0;
-            for (int spline_knot_idx = 1; spline_knot_idx <= splines_vector[spline_idx]->NbKnots(); ++spline_knot_idx) {
-                if (std::abs(splines_vector[spline_idx]->Knot(spline_knot_idx) - all_knots[all_knot_idx]) < 1e-15) {
-                    is_there = true;
-                    mult = splines_vector[spline_idx]->Multiplicity(spline_knot_idx);
-                }
-            }
-            if (is_there) {  // otherwise multiplicity remains zero
-                    mult_vector[spline_idx][all_knot_idx] = mult;
-            }
-        }
-    }
-
-    // find highest multiplicities of all knots of all splines
-    std::vector<int> end_mult_vector(all_knots.size(), 0);
-    for (unsigned int spline_idx = 0; spline_idx < splines_vector.size(); ++spline_idx) {
-        for (unsigned int all_knot_idx = 0; all_knot_idx < all_knots.size(); ++all_knot_idx) {
-            if (end_mult_vector[all_knot_idx] < mult_vector[spline_idx][all_knot_idx]) {
-                // if this is false for all splines multiplicity is zero
-                end_mult_vector[all_knot_idx] = mult_vector[spline_idx][all_knot_idx];
-            }
-        }
-    }
-
-    // now insert missing knots in all splines
-    for (unsigned int spline_idx = 0; spline_idx < splines_vector.size(); ++spline_idx) {
-        for (unsigned int all_knot_idx = 0; all_knot_idx < all_knots.size(); ++all_knot_idx) {
-            int diff = end_mult_vector[all_knot_idx] - mult_vector[spline_idx][all_knot_idx];  // always >= 0
-            double knot = all_knots[all_knot_idx];
-            splines_vector[spline_idx]->InsertKnot(knot, diff);
-        }
-    }
-
-    return splines_vector;
-}
-
-
-std::vector<Handle(Geom_BSplineSurface) > CTiglBSplineAlgorithms::createCommonKnotsVectorSurfaceOneDir(const std::vector<Handle(Geom_BSplineSurface) > old_surfaces_vector, knotInsertionCall insert_knot, getIntCall get_knot_number, getKnotCall get_knot, getMultCall get_mult, getIntCall get_degree)
-{
-    // all B-spline surfaces must have the same parameter range in the chosen direction
-    double begin_param_dir = get_knot(old_surfaces_vector[0], 1);
-    double end_param_dir = get_knot(old_surfaces_vector[0], get_knot_number(old_surfaces_vector[0]));
-    for (unsigned int surface_idx = 0; surface_idx < old_surfaces_vector.size(); ++surface_idx) {
-        double begin_param_dir_surface = get_knot(old_surfaces_vector[surface_idx], 1);
-        double end_param_dir_surface = get_knot(old_surfaces_vector[surface_idx], get_knot_number(old_surfaces_vector[surface_idx]));
-        if (std::abs(begin_param_dir_surface - begin_param_dir) > 1e-15 || std::abs(end_param_dir_surface - end_param_dir) > 1e-15) {
-            throw CTiglError("ERROR: B-spline surfaces don't have the same parameter range at least in one direction (u / v) in method createCommonKnotsVectorSurfaceOneDir!");
-        }
-    }
-
-    // all B-spline surfaces must have the same degree in the chosen direction
-    int degree = get_degree(old_surfaces_vector[0]);
-    for (unsigned int surface_idx = 0; surface_idx < old_surfaces_vector.size(); ++surface_idx) {
-        if (get_degree(old_surfaces_vector[surface_idx]) != degree) {
-            throw CTiglError("ERROR: B-spline surfaces don't have the same degree at least in one direction (u / v) in method createCommonKnotsVectorSurfaceOneDir!");
-        }
-    }
-
-
-    // create a copy of the old B-spline surfaces in order to get no shadow effects
-    std::vector<Handle(Geom_BSplineSurface)> surfaces_vector;
-    for (unsigned int surface_idx = 0; surface_idx < old_surfaces_vector.size(); ++surface_idx) {
-        Handle(Geom_BSplineSurface) old_surface = old_surfaces_vector[surface_idx];
-        Handle(Geom_BSplineSurface) new_surface = Handle(Geom_BSplineSurface)::DownCast(old_surface->Copy());
-        surfaces_vector.push_back(new_surface);
-    }
-
-    // create a vector of all knots in chosen direction (u or v) of all surfaces
-    std::vector<double> all_knots_dir;
-    for (unsigned int surface_idx = 0; surface_idx < surfaces_vector.size(); ++surface_idx) {
-        for (int knot_idx = 1; knot_idx <= get_knot_number(surfaces_vector[surface_idx]); ++knot_idx) {
-            double dir_knot = get_knot(surfaces_vector[surface_idx], knot_idx);
-            all_knots_dir.push_back(dir_knot);
-        }
-    }
-
-    // sort vector of all knots in given direction of all surfaces
-    std::sort(all_knots_dir.begin(), all_knots_dir.end());
-
-    // delete duplicate knots, so that in all_knots are all unique knots
-    all_knots_dir.erase(std::unique(all_knots_dir.begin(), all_knots_dir.end(), helper_function_unique), all_knots_dir.end());
-
-    // create matrix of multiplicities of all knots in given direction for all surfaces and initialize it with zeros
-    std::vector<std::vector<int> > mult_vector_dir(surfaces_vector.size(), std::vector<int> (all_knots_dir.size(), 0));
-    for (unsigned int surface_idx = 0; surface_idx < surfaces_vector.size(); ++surface_idx) {
-        bool is_there = false;
-        for (unsigned int all_knot_dir_idx = 0; all_knot_dir_idx < all_knots_dir.size(); ++all_knot_dir_idx) {
-            int mult = 0;
-            for (int surface_knot_dir_idx = 1; surface_knot_dir_idx <= get_knot_number(surfaces_vector[surface_idx]); ++surface_knot_dir_idx) {
-                if (std::abs(get_knot(surfaces_vector[surface_idx], surface_knot_dir_idx) - all_knots_dir[all_knot_dir_idx]) < 1e-15) {
-                    is_there = true;
-                    mult = get_mult(surfaces_vector[surface_idx], surface_knot_dir_idx);
-                }
-            }
-            if (is_there) {  // otherwise multiplicity remains zero
-                    mult_vector_dir[surface_idx][all_knot_dir_idx] = mult;
-            }
-        }
-    }
-
-    // find highest multiplicities
-    std::vector<int> end_mult_vector_dir(all_knots_dir.size(), 0);
-    for (unsigned int surface_idx = 0; surface_idx < surfaces_vector.size(); ++surface_idx) {
-        for (unsigned int all_knot_dir_idx = 0; all_knot_dir_idx < all_knots_dir.size(); ++all_knot_dir_idx) {
-            if (end_mult_vector_dir[all_knot_dir_idx] < mult_vector_dir[surface_idx][all_knot_dir_idx]) {
-                // if this is false for all splines multiplicity is zero
-                end_mult_vector_dir[all_knot_dir_idx] = mult_vector_dir[surface_idx][all_knot_dir_idx];
-            }
-        }
-    }
-
-    // now insert missing knots in all surfaces
-    for (unsigned int surface_idx = 0; surface_idx < surfaces_vector.size(); ++surface_idx) {
-        for (unsigned int all_knot_dir_idx = 0; all_knot_dir_idx < all_knots_dir.size(); ++all_knot_dir_idx) {
-            int diff = end_mult_vector_dir[all_knot_dir_idx] - mult_vector_dir[surface_idx][all_knot_dir_idx];  // always >= 0
-            double knot = all_knots_dir[all_knot_dir_idx];
-            insert_knot(surfaces_vector[surface_idx], knot, diff);
-        }
-    }
-
-    return surfaces_vector;
+    return createCommonKnotsVectorImpl<Handle(Geom_BSplineCurve)>(splines_vector,
+                                                                           (KnotInsertionCall) insert_knot_curve,
+                                                                           (GetIntCall) get_nbknots_curve,
+                                                                           (GetKnotCall) get_knot_curve,
+                                                                           (GetMultCall) get_mult_curve,
+                                                                           (GetIntCall) get_degree_curve);
 }
 
 std::vector<Handle(Geom_BSplineSurface) > CTiglBSplineAlgorithms::createCommonKnotsVectorSurface(const std::vector<Handle(Geom_BSplineSurface) >& old_surfaces_vector)
@@ -356,16 +348,12 @@ std::vector<Handle(Geom_BSplineSurface) > CTiglBSplineAlgorithms::createCommonKn
 
     // create a copy of the old B-spline surfaces in order to get no shadow effects
     std::vector<Handle(Geom_BSplineSurface)> surfaces_vector;
-    for (unsigned int surface_idx = 0; surface_idx < old_surfaces_vector.size(); ++surface_idx) {
-        Handle(Geom_BSplineSurface) new_surface = Handle(Geom_BSplineSurface)::DownCast(old_surfaces_vector[surface_idx]->Copy());
-        surfaces_vector.push_back(new_surface);
-    }
 
     // first create a common knot vector in u-direction
-    surfaces_vector = createCommonKnotsVectorSurfaceOneDir(surfaces_vector, (knotInsertionCall)knot_insertion_u, (getIntCall)get_NbKnots_u, (getKnotCall)get_knot_u, (getMultCall)get_knot_u_mult, (getIntCall)get_degree_u);
+    surfaces_vector = createCommonKnotsVectorImpl<Handle(Geom_BSplineSurface)>(old_surfaces_vector, (KnotInsertionCall)knot_insertion_u, (GetIntCall)get_NbKnots_u, (GetKnotCall)get_knot_u, (GetMultCall)get_knot_u_mult, (GetIntCall)get_degree_u);
 
     // now create a common knot vector in v-direction
-    surfaces_vector = createCommonKnotsVectorSurfaceOneDir(surfaces_vector, (knotInsertionCall)knot_insertion_v, (getIntCall)get_NbKnots_v, (getKnotCall)get_knot_v, (getMultCall)get_knot_v_mult, (getIntCall)get_degree_v);
+    surfaces_vector = createCommonKnotsVectorImpl<Handle(Geom_BSplineSurface)>(surfaces_vector, (KnotInsertionCall)knot_insertion_v, (GetIntCall)get_NbKnots_v, (GetKnotCall)get_knot_v, (GetMultCall)get_knot_v_mult, (GetIntCall)get_degree_v);
 
     return surfaces_vector;
 }
@@ -374,10 +362,8 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::skinnedBSplineSurfaceParams(
 {
     // check amount of given parameters
     if (v_parameters->Length() != splines_vector.size()) {
-        throw CTiglError("ERROR: The amount of given parameters has to be equal to the amount of given B-splines!");
+        throw CTiglError("The amount of given parameters has to be equal to the amount of given B-splines!", TIGL_MATH_ERROR);
     }
-
-    // TODO: check that all splines live in a space with the same dimension
 
     // match degree of given B-splines
     int new_degree = 0;
