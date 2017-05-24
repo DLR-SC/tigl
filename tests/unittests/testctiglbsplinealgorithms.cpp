@@ -564,4 +564,65 @@ TEST(TiglBSplineAlgorithms, testReparametrizeBSpline)
     ASSERT_EQ(reparam_spline->Multiplicity(9), 4);
 }
 
+
+TEST(TiglBSplineAlgorithms, testFlipSurface)
+{
+    /*
+     * Test the method flipSurface(surface)
+     */
+
+    // create B-spline surface
+    TColgp_Array2OfPnt controlPoints(1, 4, 1, 3);
+    controlPoints(1, 1) = gp_Pnt(0., 0., 0.);
+    controlPoints(2, 1) = gp_Pnt(1., 1., 0.);
+    controlPoints(3, 1) = gp_Pnt(3., -1., 0.);
+    controlPoints(4, 1) = gp_Pnt(4., 0., 0.);
+    controlPoints(1, 2) = gp_Pnt(0., 1., 0.);
+    controlPoints(2, 2) = gp_Pnt(1., 0., 0.);
+    controlPoints(3, 2) = gp_Pnt(4., -1., 0.);
+    controlPoints(4, 2) = gp_Pnt(5., 0., 0.);
+    controlPoints(1, 3) = gp_Pnt(0., 0., -1.);
+    controlPoints(2, 3) = gp_Pnt(2., 1., 0.);
+    controlPoints(3, 3) = gp_Pnt(3., -2., 0.);
+    controlPoints(4, 3) = gp_Pnt(8., 0., 0.);
+
+    TColStd_Array1OfReal knots_u(1, 2);
+    knots_u(1) = 0.;
+    knots_u(2) = 1.;
+
+    TColStd_Array1OfInteger mults_u(1, 2);
+    mults_u(1) = 4;
+    mults_u(2) = 4;
+
+    TColStd_Array1OfReal knots_v(1, 2);
+    knots_v(1) = 0.;
+    knots_v(2) = 1.;
+
+    TColStd_Array1OfInteger mults_v(1, 2);
+    mults_v(1) = 3;
+    mults_v(2) = 3;
+
+    unsigned int degree_u = 3;
+    unsigned int degree_v = 2;
+
+    Handle(Geom_BSplineSurface) surface = new Geom_BSplineSurface(controlPoints, knots_u, knots_v, mults_u, mults_v, degree_u, degree_v);
+
+    // flip this surface
+    Handle(Geom_BSplineSurface) flippedSurface = CTiglBSplineAlgorithms::flipSurface(surface);
+
+    //now test it
+    for (int u_idx = 0; u_idx < 101; ++u_idx) {
+        for (int v_idx = 0; v_idx < 101; ++v_idx) {
+            double u_value = u_idx / 100.;
+            double v_value = v_idx / 100.;
+
+            gp_Pnt point = surface->Value(u_idx, v_idx);
+            gp_Pnt same_point = flippedSurface->Value(v_idx, u_idx);
+
+            ASSERT_NEAR(point.X(), same_point.X(), 1e-15);
+            ASSERT_NEAR(point.Y(), same_point.Y(), 1e-15);
+            ASSERT_NEAR(point.Z(), same_point.Z(), 1e-15);
+        }
+    }
+}
 } // namespace tigl
