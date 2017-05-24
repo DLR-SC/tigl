@@ -1,3 +1,21 @@
+/*
+* Copyright (C) 2017 German Aerospace Center (DLR/SC)
+*
+* Created: 2017-05-24 Merlin Pelz <Merlin.Pelz@dlr.de>
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+
 #ifndef CTIGLBSPLINEALGORITHMS_H
 #define CTIGLBSPLINEALGORITHMS_H
 
@@ -18,7 +36,6 @@ namespace tigl
 class CTiglBSplineAlgorithms
 {
 public:
-    TIGL_EXPORT CTiglBSplineAlgorithms();
 
     /**
      * @brief computeParamsBSplineCurve:
@@ -109,33 +126,8 @@ public:
     TIGL_EXPORT static Handle(Geom_BSplineCurve) reparametrizeBSpline(const Handle(Geom_BSplineCurve) spline, const TColStd_Array1OfReal& old_parameters, const TColStd_Array1OfReal& new_parameters);
     TIGL_EXPORT static Handle(Geom_BSplineSurface) flipSurface(const Handle(Geom_BSplineSurface) surface);
 
-private:
-    // typedefs for createCommonKnotsVectorSurfaceOneDir
-    typedef void (* knotInsertionCall)(const Handle(Geom_BSplineSurface) surface, double knot, int mult);
-    typedef double (* getKnotCall)(const Handle(Geom_BSplineSurface) surface, int index);
-    typedef int (* getMultCall)(const Handle(Geom_BSplineSurface) surface, int index);
-    typedef int (* getIntCall)(const Handle(Geom_BSplineSurface) surface);
-    /**
-     * @brief createCommonKnotsVectorSurfaceOneDir:
-     *          Creates a common knot vector in u- or v-direction of the given vector of B-spline surfaces
-     *          The common knot vector contains all knots in u- or v-direction of all surfaces with the highest multiplicity of all surfaces.
-     * @param old_surfaces_vector:
-     *          the given vector of B-spline surfaces that could have a different knot vector in u- or v-direction
-     * @param insert_knot
-     *          calls the appropriate function for knot insertion depending on creating a common knot vector in u- (Geom_BSplineSurface::InsertUKnot) or in v-direction (Geom_BSplineSurface::InsertVKnot)
-     * @param get_knot_number
-     *          calls the appropriate function for the number of knots depending on creating a common knot vector in u- (Geom_BSplineSurface::NbUKnots) or in v-direction (Geom_BSplineSurface::NbVKnots)
-     * @param get_knot
-     *          calls the appropriate function that returns a knot at an index in the knot vector depending on creating a common knot vector in u- (Geom_BSplineSurface::UKnot) or in v-direction (Geom_BSplineSurface::VKnot)
-     * @param get_mult
-     *          calls the appropriate function which returns the multiplicity of a certain knot depending on creating a common knot vector in u- (Geom_BSplineSurface::UMultiplicity) or in v-direction (Geom_BSplineSurface::VMultiplicity)
-     * @param get_degree
-     *          calls the appropriate function which returns the degree of the surface depending on creating a common knot vector in u- (Geom_BSplineSurface::UDegree) or in v-direction (Geom_BSplineSurface::VDegree)
-     * @return
-     *          the given vector of B-spline surfaces, now with a common knot vector in u- or in v-direction
-     *          The B-spline surface geometry remains the same.
-     */
-    static std::vector<Handle(Geom_BSplineSurface) > createCommonKnotsVectorSurfaceOneDir(const std::vector<Handle(Geom_BSplineSurface) > old_surfaces_vector, knotInsertionCall insert_knot, getIntCall get_knot_number, getKnotCall get_knot, getMultCall get_mult, getIntCall get_degree);
+
+
 
 };
 
