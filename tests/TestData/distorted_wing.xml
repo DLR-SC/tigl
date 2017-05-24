@@ -270,7 +270,7 @@
                         <ribCrossingBehaviour>cross</ribCrossingBehaviour>
                         <ribRotation>
                           <z>85</z>
-                          <ribRotationReference/>
+                          <ribRotationReference>leadingEdge</ribRotationReference>
                         </ribRotation>
                       </ribsPositioning>
                       <ribCrossSection>
