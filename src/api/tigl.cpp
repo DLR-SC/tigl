@@ -65,7 +65,7 @@
 namespace
 {
     static std::string version = std::string(TIGL_REVISION).size() > 0 ?
-        TIGL_VERSION_STRING " rev" TIGL_REVISION :
+        TIGL_VERSION_STRING + std::string("-r") + std::string(TIGL_REVISION).substr(0,8) :
         TIGL_VERSION_STRING;
 }
 

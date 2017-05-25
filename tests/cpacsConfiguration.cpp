@@ -26,7 +26,7 @@
 
 #include "test.h" // Brings in the GTest framework
 #include "tigl.h"
-
+#include "tigl_version.h"
 
 /******************************************************************************/
 
@@ -208,6 +208,6 @@ TEST_F(tiglCPACSConfigurationHandleValid,validHandle)
 */
 TEST_F(tiglCPACSConfigurationHandleValid, version_valid)
 {
-    ASSERT_STREQ(tiglGetVersion(), TIGL_VERSION);
+    ASSERT_EQ(0, std::string(tiglGetVersion()).find(TIGL_VERSION_STRING));
 }
 
