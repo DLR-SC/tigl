@@ -7,5 +7,5 @@ TIXI_HOME=<tixi install folder>
 
 c_demo: c_demo.c
 	@echo "Building c_demo"
-	@gcc -o c_demo c_demo.c -I$(TIGL_HOME)/include -I$(TIXI_HOME)/include \
-	-L$(TIGL_HOME)/lib -L$(TIXI_HOME)/lib -L$(TIGL_HOME)/lib64 -L$(TIXI_HOME)/lib64 -lTIGL -lTIXI
+	@gcc -o c_demo c_demo.c -I$(TIGL_HOME)/include/tigl3 -I$(TIXI_HOME)/include \
+	-L$(TIGL_HOME)/lib -L$(TIXI_HOME)/lib -L$(TIGL_HOME)/lib64 -L$(TIXI_HOME)/lib64 -ltigl3 -lTIXI

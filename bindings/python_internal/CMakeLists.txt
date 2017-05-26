@@ -74,15 +74,15 @@ if (TIGL_BINDINGS_PYTHON_INTERNAL)
         set(SWIG_MODULE_${MODULE}_EXTRA_DEPS common.i doc.i)
 
         swig_add_module(${MODULE} python ${MODULE}.i )
-        swig_link_libraries(${MODULE} ${PYTHON_LIBRARIES} TIGL)
+        swig_link_libraries(${MODULE} ${PYTHON_LIBRARIES} tigl3)
 
         install(TARGETS _${MODULE}
-                DESTINATION share/tigl/python/internal
+                DESTINATION share/tigl3/python/internal
                 COMPONENT interfaces
         )
 
         install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${MODULE}.py
-                DESTINATION share/tigl/python/internal
+                DESTINATION share/tigl3/python/internal
                 COMPONENT interfaces
         )
 

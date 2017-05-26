@@ -16,17 +16,37 @@
 * limitations under the License.
 */
 
-package de.dlr.sc.tigl;
+/* 
+* This file is automatically created from tigl.h on 2017-05-26.
+* If you experience any bugs please contact the authors
+*/
 
-import com.sun.jna.Native;
-import com.sun.jna.ptr.*;
+package de.dlr.sc.tigl3;
 
-public class TixiNativeInterface {
+import java.util.ArrayList;
+
+public enum TiglLoftSide {
+    UPPER_SIDE(0),
+    LOWER_SIDE(1);
+
+    private static ArrayList<TiglLoftSide> codes = new ArrayList<>();
+
     static {
-        Native.register("TIXI");
+        codes.add(UPPER_SIDE);
+        codes.add(LOWER_SIDE);
     }
-    
-    static native int tixiOpenDocument (String xmlFilename, IntByReference handle);
-    static native int tixiImportFromString(String xmlImportString, IntByReference handle);
-    static native int tixiCloseDocument (int handle);
-}
+
+    private final int code;
+
+    private TiglLoftSide(final int value) {
+         code = value;
+    }
+
+    public static TiglLoftSide getEnum(final int value) {
+        return codes.get(Integer.valueOf(value));
+    }
+
+    public int getValue() {
+        return code;
+    }
+};

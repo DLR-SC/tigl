@@ -17,34 +17,36 @@
 */
 
 /* 
-* This file is automatically created from tigl.h on 2014-10-21.
+* This file is automatically created from tigl.h on 2017-05-26.
 * If you experience any bugs please contact the authors
 */
 
-package de.dlr.sc.tigl;
+package de.dlr.sc.tigl3;
 
 import java.util.ArrayList;
 
-public enum TiglAlgorithmCode {
-    TIGL_INTERPOLATE_LINEAR_WIRE(0),
-    TIGL_INTERPOLATE_BSPLINE_WIRE(1),
-    TIGL_APPROXIMATE_BSPLINE_WIRE(2);
+public enum TiglImportExportFormat {
+    TIGL_IMPORTEXPORT_IGES(0),
+    TIGL_IMPORTEXPORT_STEP(1),
+    TIGL_IMPORTEXPORT_STL(2),
+    TIGL_IMPORTEXPORT_VTK(3);
 
-    private static ArrayList<TiglAlgorithmCode> codes = new ArrayList<>();
+    private static ArrayList<TiglImportExportFormat> codes = new ArrayList<>();
 
     static {
-        codes.add(TIGL_INTERPOLATE_LINEAR_WIRE);
-        codes.add(TIGL_INTERPOLATE_BSPLINE_WIRE);
-        codes.add(TIGL_APPROXIMATE_BSPLINE_WIRE);
+        codes.add(TIGL_IMPORTEXPORT_IGES);
+        codes.add(TIGL_IMPORTEXPORT_STEP);
+        codes.add(TIGL_IMPORTEXPORT_STL);
+        codes.add(TIGL_IMPORTEXPORT_VTK);
     }
 
     private final int code;
 
-    private TiglAlgorithmCode(final int value) {
+    private TiglImportExportFormat(final int value) {
          code = value;
     }
 
-    public static TiglAlgorithmCode getEnum(final int value) {
+    public static TiglImportExportFormat getEnum(final int value) {
         return codes.get(Integer.valueOf(value));
     }
 

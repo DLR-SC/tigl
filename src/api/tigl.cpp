@@ -154,7 +154,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
     }
 
     /* check TIXI Version */
-    if ( atof(tixiGetVersion()) < atof(tiglGetVersion()) ) {
+    if ( atof(tixiGetVersion()) < 2.2 ) {
         LOG(ERROR) << "Incompatible TIXI Version in use with this TIGL" << std::endl;
         return TIGL_WRONG_TIXI_VERSION;
     }

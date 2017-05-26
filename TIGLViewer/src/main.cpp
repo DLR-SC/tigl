@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
 #ifdef __APPLE__
     shaderDir += "/../Resources";
 #else
-    shaderDir += "/../share/tigl/shaders";
+    shaderDir += "/../share/tigl3/shaders";
 #endif
     
     QByteArray envVar = qgetenv("CSF_ShadersDirectory");

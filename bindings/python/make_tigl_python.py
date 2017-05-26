@@ -75,7 +75,7 @@ if __name__ == '__main__':
     parser.parse_header_file(tiglpath + '/src/api/tigl.h')
     
     # create the wrapper
-    pg = PG.PythonGenerator(name_prefix = 'tigl', libname = 'TIGL')
+    pg = PG.PythonGenerator(name_prefix = 'tigl', libname = 'tigl3')
     pg.license = apache
     pg.userfunctions = userfunctions
     pg.blacklist = blacklist
@@ -88,7 +88,7 @@ if __name__ == '__main__':
     print('done')
     
     # write file
-    filename = 'tiglwrapper.py'
+    filename = 'tigl3wrapper.py'
     print('Write tigl python interface to file "%s" ... ' % filename, end=' ') 
     fop = open(filename, 'w')
     fop.write(wrapper)

@@ -5,7 +5,7 @@
 
 OPTION(TIGL_VIEWER "Builds the TiGL Viewer program (requires OpenGL and Qt4)" ON)
 
-set(PROGNAME "TIGLViewer")
+set(PROGNAME "TIGLViewer3")
 
 
 if(TIGL_VIEWER)
@@ -214,7 +214,7 @@ add_executable(${PROGNAME} ${TYPE}
 )
 
 target_link_libraries(${PROGNAME} 
-	TIGL_static
+	tigl3_static
 	${TIXI_LIBRARIES} 
 	${CMake_QT_LIBRARIES} 
 	${OPENGL_LIBRARIES} 
@@ -287,7 +287,7 @@ if (OpenCASCADE_SHADER_DIRECTORY)
    if (APPLE)
      install(FILES ${SHADER_FILES} DESTINATION ${PROGNAME}.app/Contents/Resources/ COMPONENT viewer)
    else()
-     install(FILES ${SHADER_FILES} DESTINATION share/tigl/shaders COMPONENT viewer)
+     install(FILES ${SHADER_FILES} DESTINATION share/tigl3/shaders COMPONENT viewer)
    endif(APPLE)
 endif()
 

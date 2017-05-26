@@ -52,7 +52,7 @@ if(CMAKE_COMPILER_IS_GNUCC)
 endif(CMAKE_COMPILER_IS_GNUCC)
 
 # tigl dll/so library
-add_library(TIGL SHARED ${TIGL_SRC})
+add_library(tigl3 SHARED ${TIGL_SRC})
 
 if(GLOG_FOUND)
   include_directories(${GLOG_INCLUDE_DIR})
@@ -71,26 +71,26 @@ if (WIN32)
   set(TIGL_LIBRARIES  ${TIGL_LIBRARIES} Shlwapi)
 endif(WIN32)
 
-target_link_libraries (TIGL ${TIGL_LIBRARIES})
-set_target_properties( TIGL PROPERTIES VERSION ${TIGL_VERSION})
-set_target_properties( TIGL PROPERTIES SOVERSION "${TIGL_VERSION_MAJOR}")
+target_link_libraries (tigl3 ${TIGL_LIBRARIES})
+set_target_properties( tigl3 PROPERTIES VERSION ${TIGL_VERSION})
+set_target_properties( tigl3 PROPERTIES SOVERSION "${TIGL_VERSION_MAJOR}")
 
-install (TARGETS TIGL 
+install (TARGETS tigl3
 		 EXPORT tigl-targets
 		 RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 		 LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
 		 ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
 		 )
 		 
-install (EXPORT tigl-targets DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/tigl)
+install (EXPORT tigl-targets DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/tigl3)
 		 
 install (FILES api/tigl.h ${CMAKE_CURRENT_BINARY_DIR}/api/tigl_version.h
-		 DESTINATION include
+		 DESTINATION include/tigl3
 		 COMPONENT headers)
 
 # static lib for tiglviewer 
-add_library(TIGL_static ${TIGL_SRC})
+add_library(tigl3_static ${TIGL_SRC})
 # this does no actual linking but keeps track of the dependencies
-target_link_libraries (TIGL_static ${TIGL_LIBRARIES})
+target_link_libraries (tigl3_static ${TIGL_LIBRARIES})
 
 AddToCheckstyle()

@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package de.dlr.sc.tigl;
+package de.dlr.sc.tigl3;
 
 public class TiglException extends Exception{
 
