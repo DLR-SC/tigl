@@ -44,7 +44,7 @@ class WingCSTProfile : public ::testing::Test
 protected:
     virtual void SetUp() 
     {
-        const char* filename = "TestData/CPACS_21_CST_simple.xml";
+        const char* filename = "TestData/CPACS_30_CST_simple.xml";
         ReturnCode tixiRet;
         TiglReturnCode tiglRet;
 
@@ -148,7 +148,7 @@ TEST_F(WingCSTProfile, tiglWingCSTProfile_approximation)
 */
 TEST_F(WingCSTProfile, tiglWingCSTProfile_VTK_export)
 {
-    const char* vtkWingFilename = "TestData/export/CPACS_21_CST_simple_wing1.vtp";
+    const char* vtkWingFilename = "TestData/export/CPACS_30_CST_simple_wing1.vtp";
     ASSERT_TRUE(tiglExportMeshedWingVTKSimpleByUID(tiglHandle, "CSTExample_W1", vtkWingFilename, 0.01) == TIGL_SUCCESS);
 }
 

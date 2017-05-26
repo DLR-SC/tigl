@@ -35,7 +35,7 @@ class TiglWing : public ::testing::Test
 protected:
     static void SetUpTestCase() 
     {
-        const char* filename = "TestData/CPACS_21_D150.xml";
+        const char* filename = "TestData/CPACS_30_D150.xml";
         ReturnCode tixiRet;
         TiglReturnCode tiglRet;
 

@@ -39,7 +39,7 @@ class WingComponentSegment : public ::testing::Test
 protected:
     static void SetUpTestCase()
     {
-        const char* filename = "TestData/CPACS_21_D150.xml";
+        const char* filename = "TestData/CPACS_30_D150.xml";
         ReturnCode tixiRet;
         TiglReturnCode tiglRet;
 
@@ -73,7 +73,7 @@ class WingComponentSegment2 : public ::testing::Test
 protected:
     virtual void SetUp()
     {
-        const char* filename = "TestData/CPACS_20_D250_10.xml";
+        const char* filename = "TestData/CPACS_30_D250_10.xml";
         ReturnCode tixiRet;
         TiglReturnCode tiglRet;
 
@@ -104,7 +104,7 @@ class WingComponentSegment3 : public ::testing::Test
 protected:
     virtual void SetUp()
     {
-        const char* filename = "TestData/D150_v201.xml";
+        const char* filename = "TestData/D150_v30.xml";
         ReturnCode tixiRet;
         TiglReturnCode tiglRet;
 

@@ -35,7 +35,7 @@ class tiglOpenCpacsConfiguration : public ::testing::Test
 protected:
     virtual void SetUp()
     {
-        const char* filename = "TestData/CPACS_21_D150.xml";
+        const char* filename = "TestData/CPACS_30_D150.xml";
         ReturnCode tixiRet;
 
         tiglHandle = -1;
@@ -101,7 +101,7 @@ class TiglGetCPACSTixiHandle : public ::testing::Test
 protected:
     virtual void SetUp()
     {
-        const char* filename = "TestData/CPACS_21_D150.xml";
+        const char* filename = "TestData/CPACS_30_D150.xml";
         TiglReturnCode tiglRet;
 
         tiglHandle = -1;
@@ -158,7 +158,7 @@ class tiglCPACSConfigurationHandleValid : public ::testing::Test
 protected:
     virtual void SetUp()
     {
-        const char* filename = "TestData/CPACS_21_D150.xml";
+        const char* filename = "TestData/CPACS_30_D150.xml";
         TiglReturnCode tiglRet;
 
         tiglHandle = -1;
