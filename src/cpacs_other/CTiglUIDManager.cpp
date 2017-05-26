@@ -43,7 +43,7 @@ void CTiglUIDManager::RegisterObject(const std::string& uid, void* object, const
 
     // check existence
     const CPACSObjectMap::iterator it = cpacsObjects.find(uid);
-    if (it != std::end(cpacsObjects)) {
+    if (it != cpacsObjects.end()) {
         throw CTiglError("Tried to register uid " + uid + " for type " + std::string(typeInfo.name()) + " which is already registered to an instance of " + std::string(it->second.type->name()));
     }
 
@@ -70,7 +70,7 @@ CTiglUIDManager::TypedPtr CTiglUIDManager::ResolveObject(const std::string& uid)
 {
     // check existence
     const CPACSObjectMap::const_iterator it = cpacsObjects.find(uid);
-    if (it == std::end(cpacsObjects)) {
+    if (it == cpacsObjects.end()) {
         throw CTiglError("No object is registered for uid \"" + uid + "\"");
     }
     return it->second;
@@ -78,8 +78,8 @@ CTiglUIDManager::TypedPtr CTiglUIDManager::ResolveObject(const std::string& uid)
 
 bool CTiglUIDManager::TryUnregisterObject(const std::string& uid)
 {
-    const CPACSObjectMap::const_iterator it = cpacsObjects.find(uid);
-    if (it == std::end(cpacsObjects)) {
+    const CPACSObjectMap::iterator it = cpacsObjects.find(uid);
+    if (it == cpacsObjects.end()) {
         return false;
     }
     cpacsObjects.erase(it);
@@ -151,8 +151,8 @@ void CTiglUIDManager::AddGeometricComponent(const std::string& uid, ITiglGeometr
 
 void CTiglUIDManager::RemoveGeometricComponent(const std::string &uid)
 {
-    const ShapeContainerType::const_iterator it = allShapes.find(uid);
-    if (it == std::end(allShapes)) {
+    const ShapeContainerType::iterator it = allShapes.find(uid);
+    if (it == allShapes.end()) {
         throw CTiglError("No shape is registered for uid \"" + uid + "\"");
     }
     allShapes.erase(it);
