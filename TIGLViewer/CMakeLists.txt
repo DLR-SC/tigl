@@ -267,7 +267,7 @@ set(DIRS ${TIXI_LIB_PATH} ${OpenCASCADE_DLL_DIRECTORY} ${OpenCASCADE_LINK_DIRECT
 if (WIN32 OR APPLE)
   if(Qt5Widgets_FOUND)
     if(APPLE)
-      set(QT_PLUGINS  "qcocoa;qtaccessiblewidgets")
+      set(QT_PLUGINS  "qcocoa")
     endif()
     if(WIN32)
       set(QT_PLUGINS  "qwindows")
