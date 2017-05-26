@@ -4,8 +4,8 @@
     <name>Export from</name>
     <creator>VAMPzero</creator>
     <timestamp>2010-12-31T12:00:00</timestamp>
-    <cpacsVersion>2.0</cpacsVersion>
-    <version>0.9</version>
+    <cpacsVersion>3.0</cpacsVersion>
+    <version>1.0</version>
   </header>
   <vehicles>
     <aircraft>

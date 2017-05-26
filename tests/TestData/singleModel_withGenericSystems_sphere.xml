@@ -5,8 +5,8 @@
         <description>This file contains sample data for the visualization of generic system components.</description>
         <creator>Jonas Jepsen (DLR-LY)</creator>
         <timestamp>2015-11-16T08:55:23</timestamp>
-        <version>0.1</version>
-        <cpacsVersion>2.2</cpacsVersion>
+        <version>0.2</version>
+        <cpacsVersion>3.0</cpacsVersion>
     </header>
     <vehicles>
         <aircraft>

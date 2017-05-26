@@ -6,8 +6,8 @@
         <description>copied some stuff from other versions. Mission is just an example as the D150 might not make it to Newark with Mach 0.84</description>
         <creator>Daniel Boehnke, DLR-LK</creator>
         <timestamp>2010-07-07T12:00:00</timestamp>
-        <version>1.0</version>
-        <cpacsVersion>2.0</cpacsVersion>
+        <version>1.1</version>
+        <cpacsVersion>3.0</cpacsVersion>
 	</header>
     <vehicles>
         <aircraft>

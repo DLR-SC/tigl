@@ -5,8 +5,8 @@
     <description>Simple Wing for unit testing</description>
     <creator>Martin Siggel</creator>
     <timestamp>2015-05-19T11:06:22</timestamp>
-    <version>0.0</version>
-    <cpacsVersion>2.0</cpacsVersion>
+    <version>0.1</version>
+    <cpacsVersion>3.0</cpacsVersion>
   </header>
   <vehicles>
     <aircraft>

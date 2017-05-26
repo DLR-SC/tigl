@@ -5,8 +5,8 @@
 		<description>D150_reference_VAMP, outer geometry reshapedP2C'ed from PrADO A320-200, CPACS 2.0</description>
 		<creator>Thomas Zill, DLR, LY-ILE</creator>
 		<timestamp>2012-04-23T12:00:00</timestamp>
-		<version>0.9</version>
-		<cpacsVersion>2.0</cpacsVersion>
+		<version>1.0</version>
+		<cpacsVersion>3.0</cpacsVersion>
 	</header>
 	<vehicles>
 		<aircraft>
