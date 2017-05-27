@@ -31,7 +31,7 @@ endif(PYTHON_EXECUTABLE)
 if(PYTHONINTERP_FOUND AND NOT PYTHON_VERSION_STRING VERSION_LESS "2.5" )
 	#run python to create the wrapper
 		add_custom_command(
-                        OUTPUT ${LIBRARY_OUTPUT_PATH}/tigl3wrapper.py
+			OUTPUT ${LIBRARY_OUTPUT_PATH}/tigl3wrapper.py
 			DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/make_tigl_python.py ${PROJECT_SOURCE_DIR}/src/api/tigl.h
 			WORKING_DIRECTORY ${LIBRARY_OUTPUT_PATH}
 			COMMAND ${PYTHON_EXECUTABLE}
