@@ -29,13 +29,13 @@ else()
 		add_definitions(-DIFORT_WIN32)
 	endif()
 
-	add_library(TIGLf STATIC ${TIGL_F_SRC} ${TIGL_F_HDR})
-	set_target_properties(TIGLf PROPERTIES VERSION ${TIGL_VERSION})
-	install (TARGETS TIGLf 
+	add_library(tigl3-f90 STATIC ${TIGL_F_SRC} ${TIGL_F_HDR})
+	set_target_properties(tigl3-f90 PROPERTIES VERSION ${TIGL_VERSION})
+	install (TARGETS tigl3-f90 
 			DESTINATION ${CMAKE_INSTALL_LIBDIR}
 			COMPONENT interfaces)
 	install (FILES tigl_fortran.h 
-			DESTINATION include
+			DESTINATION include/tigl3
 			COMPONENT interfaces)
 	
 endif()

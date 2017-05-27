@@ -5,8 +5,8 @@
     <description>BWB geometry described by CST, Copyright DLR</description>
     <creator>Pier Davide Ciampa, Thomas Zill</creator>
     <timestamp>2014-11-03T12:00:00</timestamp>
-    <version>0.1</version>
-    <cpacsVersion>2.1</cpacsVersion>
+    <version>0.2</version>
+    <cpacsVersion>3.0</cpacsVersion>
   </header>
   <vehicles>
     <aircraft>

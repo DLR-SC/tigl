@@ -17,32 +17,46 @@
 */
 
 /* 
-* This file is automatically created from tigl.h on 2017-03-09.
+* This file is automatically created from tigl.h on 2017-05-26.
 * If you experience any bugs please contact the authors
 */
 
-package de.dlr.sc.tigl;
+package de.dlr.sc.tigl3;
 
 import java.util.ArrayList;
 
-public enum TiglLoftSide {
-    UPPER_SIDE(0),
-    LOWER_SIDE(1);
+public enum TiglLogLevel {
+    TILOG_SILENT(0),
+    TILOG_ERROR(1),
+    TILOG_WARNING(2),
+    TILOG_INFO(3),
+    TILOG_DEBUG(4),
+    TILOG_DEBUG1(5),
+    TILOG_DEBUG2(6),
+    TILOG_DEBUG3(7),
+    TILOG_DEBUG4(8);
 
-    private static ArrayList<TiglLoftSide> codes = new ArrayList<>();
+    private static ArrayList<TiglLogLevel> codes = new ArrayList<>();
 
     static {
-        codes.add(UPPER_SIDE);
-        codes.add(LOWER_SIDE);
+        codes.add(TILOG_SILENT);
+        codes.add(TILOG_ERROR);
+        codes.add(TILOG_WARNING);
+        codes.add(TILOG_INFO);
+        codes.add(TILOG_DEBUG);
+        codes.add(TILOG_DEBUG1);
+        codes.add(TILOG_DEBUG2);
+        codes.add(TILOG_DEBUG3);
+        codes.add(TILOG_DEBUG4);
     }
 
     private final int code;
 
-    private TiglLoftSide(final int value) {
+    private TiglLogLevel(final int value) {
          code = value;
     }
 
-    public static TiglLoftSide getEnum(final int value) {
+    public static TiglLogLevel getEnum(final int value) {
         return codes.get(Integer.valueOf(value));
     }
 

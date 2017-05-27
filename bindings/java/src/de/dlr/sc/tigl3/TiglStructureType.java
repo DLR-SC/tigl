@@ -17,46 +17,34 @@
 */
 
 /* 
-* This file is automatically created from tigl.h on 2014-10-21.
+* This file is automatically created from tigl.h on 2017-05-26.
 * If you experience any bugs please contact the authors
 */
 
-package de.dlr.sc.tigl;
+package de.dlr.sc.tigl3;
 
 import java.util.ArrayList;
 
-public enum TiglLogLevel {
-    TILOG_SILENT(0),
-    TILOG_ERROR(1),
-    TILOG_WARNING(2),
-    TILOG_INFO(3),
-    TILOG_DEBUG(4),
-    TILOG_DEBUG1(5),
-    TILOG_DEBUG2(6),
-    TILOG_DEBUG3(7),
-    TILOG_DEBUG4(8);
+public enum TiglStructureType {
+    UPPER_SHELL(0),
+    LOWER_SHELL(1),
+    INNER_STRUCTURE(2);
 
-    private static ArrayList<TiglLogLevel> codes = new ArrayList<>();
+    private static ArrayList<TiglStructureType> codes = new ArrayList<>();
 
     static {
-        codes.add(TILOG_SILENT);
-        codes.add(TILOG_ERROR);
-        codes.add(TILOG_WARNING);
-        codes.add(TILOG_INFO);
-        codes.add(TILOG_DEBUG);
-        codes.add(TILOG_DEBUG1);
-        codes.add(TILOG_DEBUG2);
-        codes.add(TILOG_DEBUG3);
-        codes.add(TILOG_DEBUG4);
+        codes.add(UPPER_SHELL);
+        codes.add(LOWER_SHELL);
+        codes.add(INNER_STRUCTURE);
     }
 
     private final int code;
 
-    private TiglLogLevel(final int value) {
+    private TiglStructureType(final int value) {
          code = value;
     }
 
-    public static TiglLogLevel getEnum(final int value) {
+    public static TiglStructureType getEnum(final int value) {
         return codes.get(Integer.valueOf(value));
     }
 

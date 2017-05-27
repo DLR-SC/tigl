@@ -3,7 +3,7 @@
 include(tiglmacros)
 
 FILE (GLOB_RECURSE test_SRCS *.cpp *.cxx *.cc *.C *.c *.h *.hpp)
-SET (test_LIBS gtest TIGL_static)
+SET (test_LIBS gtest tigl3_static)
 SET (test_BIN ${PROJECT_NAME}-unittests)
 
 # add all tigl directories to include path

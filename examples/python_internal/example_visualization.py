@@ -1,8 +1,8 @@
 from __future__ import print_function
 
 from tixi import tixiwrapper
-from tigl import tiglwrapper
-import tigl.configuration, tigl.geometry, tigl.boolean_ops, tigl.exports
+from tigl3 import tigl3wrapper
+import tigl3.configuration, tigl3.geometry, tigl3.boolean_ops, tigl3.exports
 import os
 
 def display_configuration(tigl_handle):
@@ -63,7 +63,7 @@ def display_configuration(tigl_handle):
 
 if __name__ == '__main__':
     tixi_h = tixiwrapper.Tixi()
-    tigl_h = tiglwrapper.Tigl()
+    tigl_h = tigl3wrapper.Tigl3()
 
     dir_path = os.path.dirname(os.path.realpath(__file__))
     tixi_h.open(dir_path + "/../../tests/TestData/D150_v201.xml")

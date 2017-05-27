@@ -16,37 +16,13 @@
 * limitations under the License.
 */
 
-/* 
-* This file is automatically created from tigl.h on 2014-10-21.
-* If you experience any bugs please contact the authors
-*/
-
-package de.dlr.sc.tigl;
+package de.dlr.sc.tigl3;
 
 import java.util.ArrayList;
 
-public enum TiglBoolean {
-    TIGL_FALSE(0),
-    TIGL_TRUE(1);
-
-    private static ArrayList<TiglBoolean> codes = new ArrayList<>();
-
-    static {
-        codes.add(TIGL_FALSE);
-        codes.add(TIGL_TRUE);
-    }
-
-    private final int code;
-
-    private TiglBoolean(final int value) {
-         code = value;
-    }
-
-    public static TiglBoolean getEnum(final int value) {
-        return codes.get(Integer.valueOf(value));
-    }
-
-    public int getValue() {
-        return code;
-    }
-};
+public class TiglBSpline {
+    public ArrayList<Double> knots = new ArrayList<>();
+    public ArrayList<TiglPoint> controlPoints = new ArrayList<>();
+    public int degree = 0;
+    
+}

@@ -16,39 +16,17 @@
 * limitations under the License.
 */
 
-/* 
-* This file is automatically created from tigl.h on 2014-10-21.
-* If you experience any bugs please contact the authors
-*/
+package de.dlr.sc.tigl3;
 
-package de.dlr.sc.tigl;
+import com.sun.jna.Native;
+import com.sun.jna.ptr.*;
 
-import java.util.ArrayList;
-
-public enum TiglContinuity {
-    C0(0),
-    C1(1),
-    C2(2);
-
-    private static ArrayList<TiglContinuity> codes = new ArrayList<>();
-
+public class TixiNativeInterface {
     static {
-        codes.add(C0);
-        codes.add(C1);
-        codes.add(C2);
+        Native.register("TIXI");
     }
-
-    private final int code;
-
-    private TiglContinuity(final int value) {
-         code = value;
-    }
-
-    public static TiglContinuity getEnum(final int value) {
-        return codes.get(Integer.valueOf(value));
-    }
-
-    public int getValue() {
-        return code;
-    }
-};
+    
+    static native int tixiOpenDocument (String xmlFilename, IntByReference handle);
+    static native int tixiImportFromString(String xmlImportString, IntByReference handle);
+    static native int tixiCloseDocument (int handle);
+}

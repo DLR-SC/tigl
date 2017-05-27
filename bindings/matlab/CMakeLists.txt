@@ -29,7 +29,7 @@ configure_file(Makefile.in ${CMAKE_CURRENT_BINARY_DIR}/Makefile-matlab @ONLY)
 
 install(
     CODE "file( GLOB MFILES ${CMAKE_CURRENT_BINARY_DIR}/*.m )"
-    CODE "file( INSTALL \${MFILES} DESTINATION \${CMAKE_INSTALL_PREFIX}/share/tigl/matlab )"
+    CODE "file( INSTALL \${MFILES} DESTINATION \${CMAKE_INSTALL_PREFIX}/share/tigl3/matlab )"
     COMPONENT interfaces
 )
 
@@ -38,7 +38,7 @@ install(FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/common.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Readme.md
     ${TIXI_INCLUDE_DIRS}/tixi.h
-    DESTINATION share/tigl/matlab
+    DESTINATION share/tigl3/matlab
     COMPONENT interfaces
 )
 
@@ -47,7 +47,7 @@ install(FILES
 install(FILES
     ${CMAKE_CURRENT_BINARY_DIR}/Makefile-matlab
     RENAME Makefile
-    DESTINATION share/tigl/matlab
+    DESTINATION share/tigl3/matlab
     COMPONENT interfaces
 )
 
@@ -70,10 +70,10 @@ if(MATLAB_FOUND)
     include_directories(${PROJECT_SOURCE_DIR}/src/api ${MATLAB_INCLUDE_DIR} ${TIXI_INCLUDE_DIRS} ${CMAKE_CURRENT_SOURCE_DIR})
 
     add_library(tigl_matlab SHARED ${TMAT_SRC})
-    target_link_libraries(tigl_matlab ${MATLAB_mat_LIBRARY} ${MATLAB_mx_LIBRARY} ${MATLAB_mex_LIBRARY} TIGL)
+    target_link_libraries(tigl_matlab ${MATLAB_mat_LIBRARY} ${MATLAB_mx_LIBRARY} ${MATLAB_mex_LIBRARY} tigl3)
     set_target_properties(tigl_matlab PROPERTIES SUFFIX ${MATLAB_MEX_SUFFIX} PREFIX "")
 
-    install(TARGETS tigl_matlab DESTINATION share/tigl/matlab
+    install(TARGETS tigl_matlab DESTINATION share/tigl3/matlab
             COMPONENT interfaces)
 
 else(MATLAB_FOUND)

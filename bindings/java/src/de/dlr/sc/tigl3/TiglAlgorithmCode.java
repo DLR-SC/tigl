@@ -17,34 +17,34 @@
 */
 
 /* 
-* This file is automatically created from tigl.h on 2017-03-09.
+* This file is automatically created from tigl.h on 2017-05-26.
 * If you experience any bugs please contact the authors
 */
 
-package de.dlr.sc.tigl;
+package de.dlr.sc.tigl3;
 
 import java.util.ArrayList;
 
-public enum TiglCoordinateSystem {
-    GLOBAL_COORDINATE_SYSTEM(0),
-    WING_COORDINATE_SYSTEM(1),
-    FUSELAGE_COORDINATE_SYSTEM(2);
+public enum TiglAlgorithmCode {
+    TIGL_INTERPOLATE_LINEAR_WIRE(0),
+    TIGL_INTERPOLATE_BSPLINE_WIRE(1),
+    TIGL_APPROXIMATE_BSPLINE_WIRE(2);
 
-    private static ArrayList<TiglCoordinateSystem> codes = new ArrayList<>();
+    private static ArrayList<TiglAlgorithmCode> codes = new ArrayList<>();
 
     static {
-        codes.add(GLOBAL_COORDINATE_SYSTEM);
-        codes.add(WING_COORDINATE_SYSTEM);
-        codes.add(FUSELAGE_COORDINATE_SYSTEM);
+        codes.add(TIGL_INTERPOLATE_LINEAR_WIRE);
+        codes.add(TIGL_INTERPOLATE_BSPLINE_WIRE);
+        codes.add(TIGL_APPROXIMATE_BSPLINE_WIRE);
     }
 
     private final int code;
 
-    private TiglCoordinateSystem(final int value) {
+    private TiglAlgorithmCode(final int value) {
          code = value;
     }
 
-    public static TiglCoordinateSystem getEnum(final int value) {
+    public static TiglAlgorithmCode getEnum(final int value) {
         return codes.get(Integer.valueOf(value));
     }
 

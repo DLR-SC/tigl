@@ -1,4 +1,4 @@
-package de.dlr.sc.tigl;
+package de.dlr.sc.tigl3;
 /* 
 * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *

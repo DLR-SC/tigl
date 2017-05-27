@@ -17,36 +17,32 @@
 */
 
 /* 
-* This file is automatically created from tigl.h on 2014-10-21.
+* This file is automatically created from tigl.h on 2017-05-26.
 * If you experience any bugs please contact the authors
 */
 
-package de.dlr.sc.tigl;
+package de.dlr.sc.tigl3;
 
 import java.util.ArrayList;
 
-public enum TiglSymmetryAxis {
-    TIGL_NO_SYMMETRY(0),
-    TIGL_X_Y_PLANE(1),
-    TIGL_X_Z_PLANE(2),
-    TIGL_Y_Z_PLANE(3);
+public enum TiglBoolean {
+    TIGL_FALSE(0),
+    TIGL_TRUE(1);
 
-    private static ArrayList<TiglSymmetryAxis> codes = new ArrayList<>();
+    private static ArrayList<TiglBoolean> codes = new ArrayList<>();
 
     static {
-        codes.add(TIGL_NO_SYMMETRY);
-        codes.add(TIGL_X_Y_PLANE);
-        codes.add(TIGL_X_Z_PLANE);
-        codes.add(TIGL_Y_Z_PLANE);
+        codes.add(TIGL_FALSE);
+        codes.add(TIGL_TRUE);
     }
 
     private final int code;
 
-    private TiglSymmetryAxis(final int value) {
+    private TiglBoolean(final int value) {
          code = value;
     }
 
-    public static TiglSymmetryAxis getEnum(final int value) {
+    public static TiglBoolean getEnum(final int value) {
         return codes.get(Integer.valueOf(value));
     }
 

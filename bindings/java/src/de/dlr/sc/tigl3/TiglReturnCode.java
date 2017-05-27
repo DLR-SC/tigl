@@ -17,11 +17,11 @@
 */
 
 /* 
-* This file is automatically created from tigl.h on 2015-06-01.
+* This file is automatically created from tigl.h on 2017-05-26.
 * If you experience any bugs please contact the authors
 */
 
-package de.dlr.sc.tigl;
+package de.dlr.sc.tigl3;
 
 import java.util.ArrayList;
 

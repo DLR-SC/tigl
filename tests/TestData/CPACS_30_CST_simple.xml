@@ -5,8 +5,8 @@
 		<description>Wing Segment with CST Airfoils</description>
 		<creator>Tobias Stollenwerk, DLR, SC-VSS</creator>
 		<timestamp>2013-12-19T12:51:00</timestamp>
-		<version>0.1</version>
-		<cpacsVersion>2.1</cpacsVersion>
+		<version>0.2</version>
+		<cpacsVersion>3.0</cpacsVersion>
 	</header>
 	<vehicles>
 		<aircraft>

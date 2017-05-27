@@ -3,14 +3,14 @@ import java.util.List;
 import com.sun.jna.ptr.DoubleByReference;
 import com.sun.jna.ptr.IntByReference;
 
-import de.dlr.sc.tigl.CpacsConfiguration;
-import de.dlr.sc.tigl.Tigl.WSProjectionResult;
-import de.dlr.sc.tigl.TiglBSpline;
-import de.dlr.sc.tigl.Tigl;
-import de.dlr.sc.tigl.TiglNativeInterface;
-import de.dlr.sc.tigl.TiglPoint;
-import de.dlr.sc.tigl.TiglSymmetryAxis;
-import de.dlr.sc.tigl.TiglException;
+import de.dlr.sc.tigl3.CpacsConfiguration;
+import de.dlr.sc.tigl3.Tigl.WSProjectionResult;
+import de.dlr.sc.tigl3.TiglBSpline;
+import de.dlr.sc.tigl3.Tigl;
+import de.dlr.sc.tigl3.TiglNativeInterface;
+import de.dlr.sc.tigl3.TiglPoint;
+import de.dlr.sc.tigl3.TiglSymmetryAxis;
+import de.dlr.sc.tigl3.TiglException;
 
 
 public class JavaDemo {

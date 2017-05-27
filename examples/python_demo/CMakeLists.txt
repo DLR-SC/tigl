@@ -3,7 +3,7 @@
 
 install(FILES 
     python_demo.py
-    DESTINATION share/doc/tigl/examples
+    DESTINATION share/doc/tigl3/examples
     COMPONENT docu
 )
 

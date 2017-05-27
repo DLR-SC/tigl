@@ -29,7 +29,7 @@ if(DOXYGEN_FOUND AND PYTHONINTERP_FOUND)
     )
     
     install(DIRECTORY ${PROJECT_BINARY_DIR}/doc/html
-            DESTINATION    share/doc/tigl
+            DESTINATION    share/doc/tigl3
             COMPONENT docu
             OPTIONAL)
 
@@ -97,7 +97,7 @@ if(DOXYGEN_FOUND AND PYTHONINTERP_FOUND)
         )
         
         install(FILES ${PROJECT_BINARY_DIR}/doc/tiglRef.pdf 
-                DESTINATION    share/doc/tigl
+                DESTINATION    share/doc/tigl3
                 COMPONENT docu
                 OPTIONAL)
                 
