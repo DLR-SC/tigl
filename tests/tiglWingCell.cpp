@@ -262,14 +262,14 @@ TEST_F(WingCellRibSpar, etaXsi) {
     checkCellEtaXsis(cell, expectedEtaXsi);
 
     // now we change the rib definition and watch whether the cell is correctly updated
-    structure.GetRibsDefinition(1).GetRibsPositioning().SetEtaEnd(0.8);
+    structure.GetRibsDefinition(1).GetRibsPositioning_choice1()->SetEtaEnd(0.8);
     const std::pair<double, double> arr2[] = { DP(0.2, 0.3), DP(0.8, 0.48), DP(0.2, 0.8), DP(0.8, 1.0) };
     expectedEtaXsi = std::vector< std::pair<double, double> > (arr2, arr2 + sizeof(arr2) / sizeof(arr2[0]));
     checkCellEtaXsis(cell, expectedEtaXsi);
 
     // next we change the z-rotation of the rib
     // See: cell_rib_spar_test_2.png for placement of cells
-    structure.GetRibsDefinition(1).GetRibsPositioning().GetRibRotation().SetZ(75);
+    structure.GetRibsDefinition(1).GetRibsPositioning_choice1()->GetRibRotation().SetZ(75);
     const std::pair<double, double> arr3[] = { DP(0.16, 0.28), DP(0.74, 0.47), DP(0.09, 0.8), DP(0.67, 1.0) };
     expectedEtaXsi = std::vector< std::pair<double, double> > (arr3, arr3 + sizeof(arr3) / sizeof(arr3[0]));
     // precision at 1E-2 since expected values are estimated based on geometric inspection

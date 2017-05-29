@@ -24,7 +24,7 @@ if (TIGL_BINDINGS_JAVA)
 		DEPENDS ${TIGL_JAR}
 	)
 	
-	install(FILES ${TIGL_JAR} DESTINATION share/tigl/java)
+	install(FILES ${TIGL_JAR} DESTINATION share/tigl3/java)
 
 endif()
 

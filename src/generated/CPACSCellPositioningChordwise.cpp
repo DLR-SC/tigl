@@ -64,18 +64,30 @@ namespace tigl
             if (m_sparUID_choice1) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/sparUID");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/sparUID", *m_sparUID_choice1);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/sparUID")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/sparUID");
+                }
             }
             
             // write element xsi1
             if (m_xsi1_choice2) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/xsi1");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/xsi1", *m_xsi1_choice2);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/xsi1")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/xsi1");
+                }
             }
             
             // write element xsi2
             if (m_xsi2_choice2) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/xsi2");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/xsi2", *m_xsi2_choice2);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/xsi2")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/xsi2");
+                }
             }
             
         }

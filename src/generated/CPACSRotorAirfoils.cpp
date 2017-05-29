@@ -31,6 +31,16 @@ namespace tigl
         
         CPACSRotorAirfoils::~CPACSRotorAirfoils() {}
         
+        CTiglUIDManager& CPACSRotorAirfoils::GetUIDManager()
+        {
+            return *m_uidMgr;
+        }
+        
+        const CTiglUIDManager& CPACSRotorAirfoils::GetUIDManager() const
+        {
+            return *m_uidMgr;
+        }
+        
         void CPACSRotorAirfoils::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element rotorAirfoil

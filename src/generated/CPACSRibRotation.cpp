@@ -62,6 +62,10 @@ namespace tigl
             if (m_ribRotationReference) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ribRotationReference");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/ribRotationReference", CPACSRibRotation_ribRotationReferenceToString(*m_ribRotationReference));
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/ribRotationReference")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/ribRotationReference");
+                }
             }
             
             // write element z

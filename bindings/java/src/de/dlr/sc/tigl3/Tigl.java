@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package de.dlr.sc.tigl;
+package de.dlr.sc.tigl3;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

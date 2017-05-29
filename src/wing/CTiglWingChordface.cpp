@@ -109,7 +109,7 @@ void CTiglWingChordface::unregisterShape()
 {
     try {
         if (_uidManager && _uidManager->HasGeometricComponent(GetDefaultedUID())) {
-            _uidManager->UnregisterObject(GetDefaultedUID());
+            _uidManager->RemoveGeometricComponent(GetDefaultedUID());
         }
     }
     catch(...){}

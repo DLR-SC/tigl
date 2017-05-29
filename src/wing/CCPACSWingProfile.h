@@ -44,7 +44,7 @@
 
 namespace tigl 
 {
-class CCPACSWingProfilePointList;
+class CTiglWingProfilePointList;
 
 class CCPACSWingProfile : public generated::CPACSProfileGeometry
 {
@@ -160,7 +160,7 @@ private:
     bool                      isRotorProfile; /**< Indicates if this profile is a rotor profile */
     bool                                        invalidated;    /**< Flag if element is invalid */
     ITiglWingProfileAlgo*                       profileAlgo; // points to the current profile algo (non-owning)
-    unique_ptr<CCPACSWingProfilePointList> pointListAlgo; // is created in case the wing profile alg is a point list, otherwise cst2d constructed in the base class is used
+    unique_ptr<CTiglWingProfilePointList> pointListAlgo; // is created in case the wing profile alg is a point list, otherwise cst2d constructed in the base class is used
 
 }; // class CCPACSWingProfile
 

@@ -42,6 +42,16 @@ namespace tigl
             return m_parent;
         }
         
+        CTiglUIDManager& CPACSGenericGeometryComponents::GetUIDManager()
+        {
+            return *m_uidMgr;
+        }
+        
+        const CTiglUIDManager& CPACSGenericGeometryComponents::GetUIDManager() const
+        {
+            return *m_uidMgr;
+        }
+        
         void CPACSGenericGeometryComponents::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element genericGeometryComponent

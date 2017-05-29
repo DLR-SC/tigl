@@ -8,10 +8,10 @@ namespace tigl
     CTiglPoint CCPACSPointAbsRel::AsPoint() const
     {
         CTiglPoint point;
-        // TODO: in case m_x, m_y ot m_z is not valid, we can set the corresponding coord to zero, thus AsPoint() never throws
-        point.x = *m_x;
-        point.y = *m_y;
-        point.z = *m_z;
+        point.x = m_x ? *m_x : 0;
+        point.y = m_y ? *m_y : 0;
+        point.z = m_z ? *m_z : 0;
+
         return point;
     }
 

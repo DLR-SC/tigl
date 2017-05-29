@@ -2,9 +2,9 @@
 * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
-* Changed: $Id$ 
+* Changed: $Id: CCPACSFuselageConnection.cpp 2641 2017-03-30 21:08:46Z bgruber $ 
 *
-* Version: $Revision$
+* Version: $Revision: 2641 $
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@
 * @brief  Implementation of CPACS fuselage connection handling routines.
 */
 
-#include "CCPACSFuselageConnection.h"
+#include "CTiglFuselageConnection.h"
 #include "CTiglError.h"
 #include "CCPACSFuselage.h"
 #include "CCPACSFuselageSection.h"
@@ -34,10 +34,10 @@
 namespace tigl
 {
 
-CCPACSFuselageConnection::CCPACSFuselageConnection() : elementUID(NULL), segment(NULL) {}
+CTiglFuselageConnection::CTiglFuselageConnection() : elementUID(NULL), segment(NULL) {}
 
 // Constructor
-CCPACSFuselageConnection::CCPACSFuselageConnection(const std::string& elementUID, CCPACSFuselageSegment* aSegment)
+CTiglFuselageConnection::CTiglFuselageConnection(const std::string& elementUID, CCPACSFuselageSegment* aSegment)
     : elementUID(&elementUID), segment(aSegment)
 {
     // find the corresponding section to this segment
@@ -55,33 +55,33 @@ CCPACSFuselageConnection::CCPACSFuselageConnection(const std::string& elementUID
 }
 
 // Returns the section index of this connection
-const std::string& CCPACSFuselageConnection::GetSectionUID() const
+const std::string& CTiglFuselageConnection::GetSectionUID() const
 {
     return sectionUID;
 }
 
 // Returns the section element index of this connection
-const std::string& CCPACSFuselageConnection::GetSectionElementUID() const
+const std::string& CTiglFuselageConnection::GetSectionElementUID() const
 {
     return *elementUID;
 }
 
 
 // Returns the section index of this connection
-int CCPACSFuselageConnection::GetSectionIndex() const
+int CTiglFuselageConnection::GetSectionIndex() const
 {
     return sectionIndex;
 }
 
 // Returns the section element index of this connection
-int CCPACSFuselageConnection::GetSectionElementIndex() const
+int CTiglFuselageConnection::GetSectionElementIndex() const
 {
     return elementIndex;
 }
 
 
 // Returns the fuselage profile referenced by this connection
-CCPACSFuselageProfile& CCPACSFuselageConnection::GetProfile() const
+CCPACSFuselageProfile& CTiglFuselageConnection::GetProfile() const
 {
     CCPACSFuselage& fuselage = segment->GetFuselage();
     std::string profileUID;
@@ -107,13 +107,13 @@ CCPACSFuselageProfile& CCPACSFuselageConnection::GetProfile() const
 }
 
 // Returns the positioning transformation for the referenced section
-CTiglTransformation CCPACSFuselageConnection::GetPositioningTransformation() const
+CTiglTransformation CTiglFuselageConnection::GetPositioningTransformation() const
 {
     return (segment->GetFuselage().GetPositioningTransformation(sectionUID));
 }
 
 // Returns the section matrix referenced by this connection
-CTiglTransformation CCPACSFuselageConnection::GetSectionTransformation() const
+CTiglTransformation CTiglFuselageConnection::GetSectionTransformation() const
 {
     CCPACSFuselage& fuselage = segment->GetFuselage();
     CTiglTransformation transformation;
@@ -130,7 +130,7 @@ CTiglTransformation CCPACSFuselageConnection::GetSectionTransformation() const
 }
 
 // Returns the section element matrix referenced by this connection
-CTiglTransformation CCPACSFuselageConnection::GetSectionElementTransformation() const
+CTiglTransformation CTiglFuselageConnection::GetSectionElementTransformation() const
 {
     CCPACSFuselage& fuselage = segment->GetFuselage();
     CTiglTransformation transformation;

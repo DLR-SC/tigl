@@ -114,7 +114,7 @@ namespace tigl
 
 namespace
 {
-    gp_Pnt transformProfilePoint(const tigl::CTiglTransformation& wingTransform, const tigl::CCPACSWingConnection& connection, const gp_Pnt& pointOnProfile)
+    gp_Pnt transformProfilePoint(const tigl::CTiglTransformation& wingTransform, const tigl::CTiglWingConnection& connection, const gp_Pnt& pointOnProfile)
     {
         gp_Pnt transformedPoint(pointOnProfile);
 
@@ -134,7 +134,7 @@ namespace
         return transformedPoint;
     }
 
-    TopoDS_Shape transformProfileWire(const tigl::CTiglTransformation& wingTransform, const tigl::CCPACSWingConnection& connection, const TopoDS_Shape& wire)
+    TopoDS_Shape transformProfileWire(const tigl::CTiglTransformation& wingTransform, const tigl::CTiglWingConnection& connection, const TopoDS_Shape& wire)
     {
         TopoDS_Shape transformedWire(wire);
 
@@ -251,8 +251,8 @@ void CCPACSWingSegment::ReadCPACS(TixiDocumentHandle tixiHandle, const std::stri
 
     GetWing().GetConfiguration().GetUIDManager().AddGeometricComponent(m_uID, this);
 
-    innerConnection = CCPACSWingConnection(m_fromElementUID, this);
-    outerConnection = CCPACSWingConnection(m_toElementUID, this);
+    innerConnection = CTiglWingConnection(m_fromElementUID, this);
+    outerConnection = CTiglWingConnection(m_toElementUID, this);
 
     // check that the profiles are consistent
     if (innerConnection.GetProfile().HasBluntTE() !=
@@ -524,13 +524,13 @@ int CCPACSWingSegment::GetOuterSectionElementIndex() const
 }
 
 // Returns the start section element index of this segment
-CCPACSWingConnection& CCPACSWingSegment::GetInnerConnection()
+CTiglWingConnection& CCPACSWingSegment::GetInnerConnection()
 {
     return( innerConnection );
 }
 
 // Returns the end section element index of this segment
-CCPACSWingConnection& CCPACSWingSegment::GetOuterConnection()
+CTiglWingConnection& CCPACSWingSegment::GetOuterConnection()
 {
     return( outerConnection );
 }
@@ -538,7 +538,9 @@ CCPACSWingConnection& CCPACSWingSegment::GetOuterConnection()
 // Returns the volume of this segment
 double CCPACSWingSegment::GetVolume()
 {
-    Update();
+    // Trigger shape building
+    GetLoft();
+
     return( myVolume );
 }
 
@@ -660,7 +662,7 @@ int CCPACSWingSegment::GetOuterConnectedSegmentCount() const
 int CCPACSWingSegment::GetInnerConnectedSegmentIndex(int n) const
 {
     if (n < 1 || n > GetInnerConnectedSegmentCount()) {
-        throw CTiglError("Error: Invalid value for parameter n in CCPACSWingSegment::GetInnerConnectedSegmentIndex", TIGL_INDEX_ERROR);
+        throw CTiglError("Invalid value for parameter n in CCPACSWingSegment::GetInnerConnectedSegmentIndex", TIGL_INDEX_ERROR);
     }
 
     for (int i = 1, count = 0; i <= GetWing().GetSegmentCount(); i++) {
@@ -677,7 +679,7 @@ int CCPACSWingSegment::GetInnerConnectedSegmentIndex(int n) const
         }
     }
 
-    throw CTiglError("Error: No connected segment found in CCPACSWingSegment::GetInnerConnectedSegmentIndex", TIGL_NOT_FOUND);
+    throw CTiglError("No connected segment found in CCPACSWingSegment::GetInnerConnectedSegmentIndex", TIGL_NOT_FOUND);
 }
 
 // Gets the index (number) of the n-th segment connected to the outer section
@@ -685,7 +687,7 @@ int CCPACSWingSegment::GetInnerConnectedSegmentIndex(int n) const
 int CCPACSWingSegment::GetOuterConnectedSegmentIndex(int n) const
 {
     if (n < 1 || n > GetOuterConnectedSegmentCount()) {
-        throw CTiglError("Error: Invalid value for parameter n in CCPACSWingSegment::GetOuterConnectedSegmentIndex", TIGL_INDEX_ERROR);
+        throw CTiglError("Invalid value for parameter n in CCPACSWingSegment::GetOuterConnectedSegmentIndex", TIGL_INDEX_ERROR);
     }
 
     for (int i = 1, count = 0; i <= GetWing().GetSegmentCount(); i++) {
@@ -702,7 +704,7 @@ int CCPACSWingSegment::GetOuterConnectedSegmentIndex(int n) const
         }
     }
 
-    throw CTiglError("Error: No connected segment found in CCPACSWingSegment::GetOuterConnectedSegmentIndex", TIGL_NOT_FOUND);
+    throw CTiglError("No connected segment found in CCPACSWingSegment::GetOuterConnectedSegmentIndex", TIGL_NOT_FOUND);
 }
 
 // Returns an upper or lower point on the segment surface in
@@ -714,7 +716,7 @@ int CCPACSWingSegment::GetOuterConnectedSegmentIndex(int n) const
 gp_Pnt CCPACSWingSegment::GetPoint(double eta, double xsi, bool fromUpper, TiglCoordinateSystem referenceCS) const
 {
     if (eta < 0.0 || eta > 1.0) {
-        throw CTiglError("Error: Parameter eta not in the range 0.0 <= eta <= 1.0 in CCPACSWingSegment::GetPoint", TIGL_ERROR);
+        throw CTiglError("Parameter eta not in the range 0.0 <= eta <= 1.0 in CCPACSWingSegment::GetPoint", TIGL_ERROR);
     }
 
     CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
@@ -732,7 +734,7 @@ gp_Pnt CCPACSWingSegment::GetPoint(double eta, double xsi, bool fromUpper, TiglC
         outerProfilePoint = outerProfile.GetLowerPoint(xsi);
     }
 
-        CTiglTransformation identity;
+    CTiglTransformation identity;
     switch (referenceCS) {
     case WING_COORDINATE_SYSTEM:
         innerProfilePoint = transformProfilePoint(identity, innerConnection, innerProfilePoint);
@@ -760,7 +762,7 @@ gp_Pnt CCPACSWingSegment::GetPoint(double eta, double xsi, bool fromUpper, TiglC
 gp_Pnt CCPACSWingSegment::GetPointDirection(double eta, double xsi, double dirx, double diry, double dirz, bool fromUpper, double& deviation) const
 {
     if (eta < 0.0 || eta > 1.0) {
-        throw CTiglError("Error: Parameter eta not in the range 0.0 <= eta <= 1.0 in CCPACSWingSegment::GetPoint", TIGL_ERROR);
+        throw CTiglError("Parameter eta not in the range 0.0 <= eta <= 1.0 in CCPACSWingSegment::GetPoint", TIGL_ERROR);
     }
 
     if (dirx*dirx + diry*diry + dirz*dirz < 1e-10) {
@@ -1047,7 +1049,7 @@ void CCPACSWingSegment::MakeSurfaces() const
     TopoDS_Edge innerTEWire = innerProfile.GetTrailingEdgeOpened();
     TopoDS_Edge outerTEWire = outerProfile.GetTrailingEdgeOpened();
     if (innerTEWire.IsNull() || outerTEWire.IsNull()) {
-        throw CTiglError("ERROR: trailing edge geometry of Wing Section Profile not found!");
+        throw CTiglError("trailing edge geometry of Wing Section Profile not found!");
     }
     // transform wires
     innerTEWire = TopoDS::Edge(transformProfileWire(identity, innerConnection, innerTEWire));

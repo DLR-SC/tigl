@@ -29,19 +29,12 @@ namespace tigl
 {
 CCPACSWingSectionElement::CCPACSWingSectionElement(CTiglUIDManager* uidMgr)
     : generated::CPACSWingElement(uidMgr) {}
-
-    // Returns the UID of the referenced wing profile
-std::string CCPACSWingSectionElement::GetProfileIndex() const
-{
-    return m_airfoilUID;
-}
-
+	
 // Returns the uid of the profile of this element
-std::string CCPACSWingSectionElement::GetProfileUID() const
+const std::string& CCPACSWingSectionElement::GetProfileUID() const
 {
     return m_airfoilUID;
 }
-
 
 // Gets the section element transformation
 CTiglTransformation CCPACSWingSectionElement::GetSectionElementTransformation() const

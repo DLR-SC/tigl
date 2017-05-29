@@ -42,6 +42,16 @@ namespace tigl
             return m_parent;
         }
         
+        CTiglUIDManager& CPACSSparSegments::GetUIDManager()
+        {
+            return *m_uidMgr;
+        }
+        
+        const CTiglUIDManager& CPACSSparSegments::GetUIDManager() const
+        {
+            return *m_uidMgr;
+        }
+        
         void CPACSSparSegments::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element sparSegment

@@ -22,18 +22,15 @@
 
 #include "CCPACSGuideCurveProfiles.h"
 #include "CTiglError.h"
-#include "CTiglPoint.h"
 #include "CTiglLogging.h"
-#include <sstream>
-#include <iostream>
-#include <fstream>
+#include "CCPACSGuideCurveProfile.h"
 
 namespace tigl
 {
 CCPACSGuideCurveProfiles::CCPACSGuideCurveProfiles(CTiglUIDManager* uidMgr)
     : generated::CPACSGuideCurveProfiles(uidMgr) {}
 
-    // Returns the total count of guide curves in this configuration
+// Returns the total count of guide curves in this configuration
 int CCPACSGuideCurveProfiles::GetGuideCurveProfileCount() const
 {
     return static_cast<int>(m_guideCurveProfiles.size());
@@ -46,7 +43,7 @@ CCPACSGuideCurveProfile& CCPACSGuideCurveProfiles::GetGuideCurveProfile(const st
         if ((*it)->GetUID() == uid)
             return **it;
 
-    LOG(ERROR) << "Guide curve \"" + uid + "\" not found in CPACS file!" << endl;
+    LOG(ERROR) << "Guide curve \"" + uid + "\" not found in CPACS file!" << std::endl;
     throw CTiglError("Guide curve \"" + uid + "\" not found in CPACS file!", TIGL_UID_ERROR);
 }
 

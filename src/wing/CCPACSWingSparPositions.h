@@ -27,9 +27,6 @@ class CCPACSWingSpars;
 
 class CCPACSWingSparPositions : public generated::CPACSSparPositions
 {
-private:
-    typedef std::vector<CCPACSWingSparPosition*> CCPACSWingSparPositionContainer;
-
 public:
     TIGL_EXPORT CCPACSWingSparPositions(CCPACSWingSpars* parent, CTiglUIDManager* uidMgr);
 

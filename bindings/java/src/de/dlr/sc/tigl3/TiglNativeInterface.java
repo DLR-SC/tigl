@@ -21,7 +21,7 @@
 * If you experience any bugs please contact the authors
 */
 
-package de.dlr.sc.tigl;
+package de.dlr.sc.tigl3;
 
 import com.sun.jna.*;
 import com.sun.jna.ptr.*;
@@ -30,7 +30,7 @@ import com.sun.jna.ptr.*;
 public class TiglNativeInterface {
 
     static {
-        Native.register("TIGL");
+        Native.register("tigl3");
     }
 
     public static native int tiglOpenCPACSConfiguration(int tixiHandle, String configurationUID, IntByReference cpacsHandlePtr);

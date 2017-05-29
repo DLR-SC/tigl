@@ -31,7 +31,7 @@ endif(PYTHON_EXECUTABLE)
 if(PYTHONINTERP_FOUND AND NOT PYTHON_VERSION_STRING VERSION_LESS "2.5" )
 	#run python to create the wrapper
 		add_custom_command(
-			OUTPUT ${LIBRARY_OUTPUT_PATH}/tiglwrapper.py
+			OUTPUT ${LIBRARY_OUTPUT_PATH}/tigl3wrapper.py
 			DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/make_tigl_python.py ${PROJECT_SOURCE_DIR}/src/api/tigl.h
 			WORKING_DIRECTORY ${LIBRARY_OUTPUT_PATH}
 			COMMAND ${PYTHON_EXECUTABLE}
@@ -40,11 +40,11 @@ if(PYTHONINTERP_FOUND AND NOT PYTHON_VERSION_STRING VERSION_LESS "2.5" )
 
 		add_custom_target(tiglPython ALL
 			COMMENT "Create python interface for tigl" VERBATIM 
-			DEPENDS ${LIBRARY_OUTPUT_PATH}/tiglwrapper.py
+			DEPENDS ${LIBRARY_OUTPUT_PATH}/tigl3wrapper.py
 		)
 		
-		install(FILES ${LIBRARY_OUTPUT_PATH}/tiglwrapper.py 
-				DESTINATION share/tigl/python
+		install(FILES ${LIBRARY_OUTPUT_PATH}/tigl3wrapper.py
+				DESTINATION share/tigl3/python
 				COMPONENT interfaces)
 else()
     message(ERROR "Python could not be found or the python installation is too old ( < 2.5). Python bindings can not be build!")

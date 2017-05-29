@@ -89,24 +89,40 @@ namespace tigl
             if (m_name) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/name", *m_name);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/name")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/name");
+                }
             }
             
             // write element description
             if (m_description) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/description")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/description");
+                }
             }
             
             // write element materialLaw
             if (m_materialLaw) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/materialLaw");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/materialLaw", *m_materialLaw);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/materialLaw")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/materialLaw");
+                }
             }
             
             // write element plasticEliminationStrain
             if (m_plasticEliminationStrain_choice1) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/plasticEliminationStrain");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/plasticEliminationStrain", *m_plasticEliminationStrain_choice1);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/plasticEliminationStrain")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/plasticEliminationStrain");
+                }
             }
             
             // write element plasticityCurvePoint
@@ -116,30 +132,50 @@ namespace tigl
             if (m_initialEquivalentShearStrain_choice2) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/initialEquivalentShearStrain");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/initialEquivalentShearStrain", *m_initialEquivalentShearStrain_choice2);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/initialEquivalentShearStrain")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/initialEquivalentShearStrain");
+                }
             }
             
             // write element intermediateEquivalentShearStrain
             if (m_intermediateEquivalentShearStrain_choice2) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/intermediateEquivalentShearStrain");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/intermediateEquivalentShearStrain", *m_intermediateEquivalentShearStrain_choice2);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/intermediateEquivalentShearStrain")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/intermediateEquivalentShearStrain");
+                }
             }
             
             // write element ultimateEquivalentShearStrain
             if (m_ultimateEquivalentShearStrain_choice2) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ultimateEquivalentShearStrain");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/ultimateEquivalentShearStrain", *m_ultimateEquivalentShearStrain_choice2);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/ultimateEquivalentShearStrain")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/ultimateEquivalentShearStrain");
+                }
             }
             
             // write element intermediateDamage
             if (m_intermediateDamage_choice2) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/intermediateDamage");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/intermediateDamage", *m_intermediateDamage_choice2);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/intermediateDamage")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/intermediateDamage");
+                }
             }
             
             // write element ultimateDamage
             if (m_ultimateDamage_choice2) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ultimateDamage");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/ultimateDamage", *m_ultimateDamage_choice2);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/ultimateDamage")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/ultimateDamage");
+                }
             }
             
         }

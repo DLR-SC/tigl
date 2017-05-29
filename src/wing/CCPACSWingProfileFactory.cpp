@@ -24,7 +24,7 @@
 #include "CTiglLogging.h"
 #include "CCPACSWingProfile.h"
 #include "CCPACSWingProfileFactory.h"
-#include "CCPACSWingProfilePointList.h"
+#include "CTiglWingProfilePointList.h"
 #include "CCPACSWingProfileCST.h"
 
 
@@ -60,7 +60,7 @@ PTiglWingProfileAlgo CCPACSWingProfileFactory::CreateProfileAlgo(TixiDocumentHan
     }
 
     // no profile created
-    throw CTiglError("Error: CCPACSWingProfileFactory::CreateProfileAlgo: Unable to find valid profile data", TIGL_XML_ERROR);
+    throw CTiglError("CCPACSWingProfileFactory::CreateProfileAlgo: Unable to find valid profile data", TIGL_XML_ERROR);
 }
 
 } // namespace tigl

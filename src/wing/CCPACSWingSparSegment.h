@@ -51,9 +51,8 @@ public:
 
     TIGL_EXPORT void Invalidate();
 
-    TIGL_EXPORT int GetSparPositionUIDCount() const;
-    TIGL_EXPORT const std::string& GetSparPositionUID(int) const;
-    TIGL_EXPORT CCPACSWingSparPosition& GetSparPosition(std::string) const;
+    TIGL_EXPORT CCPACSWingSparPosition& GetSparPosition(std::string);
+    TIGL_EXPORT const CCPACSWingSparPosition& GetSparPosition(std::string) const;
 
     TIGL_EXPORT gp_Pnt GetPoint(double sparEta) const;
 

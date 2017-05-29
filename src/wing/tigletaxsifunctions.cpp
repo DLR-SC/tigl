@@ -127,7 +127,7 @@ EtaXsi computeRibSparIntersectionEtaXsi(const CTiglWingStructureReference& wsr, 
     wsr.GetMidplaneEtaXsi(ribEndPoint, ribEnd.eta, ribEnd.xsi);
 
     // determine number of spar positions
-    int numSparPositions = spar.GetSparPositionUIDCount();
+    int numSparPositions = spar.GetSparPositionUIDs().GetSparPositionUIDCount();
 
     const double precision = 1E-8;
     const double zeroMin = 0 - precision;

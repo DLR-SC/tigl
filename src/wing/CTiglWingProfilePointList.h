@@ -50,63 +50,61 @@ namespace tigl
 
 class CCPACSWingProfile;
 
-class CCPACSWingProfilePointList : public ITiglWingProfileAlgo // TODO: this is NOT a CPACS class, rename to e.g. WingProfilePointListAlgo
+// TODO(bgruber): rename file
+class CTiglWingProfilePointList : public ITiglWingProfileAlgo
 {
 
 public:
     // Constructor
-    TIGL_EXPORT CCPACSWingProfilePointList(const CCPACSWingProfile& profile, const CCPACSPointListXYZ& cpacsPointlist, const std::string& xpath);
+    TIGL_EXPORT CTiglWingProfilePointList(const CCPACSWingProfile& profile, const CCPACSPointListXYZ& cpacsPointlist);
 
     DEPRECATED TIGL_EXPORT static std::string CPACSID();
 
     // Cleanup routine
-    TIGL_EXPORT void Cleanup();
+    TIGL_EXPORT virtual void Cleanup() OVERRIDE;
 
     // Update interna
-    TIGL_EXPORT void Update();
+    TIGL_EXPORT virtual void Update() OVERRIDE;
 
     // Returns the profile points as read from TIXI.
     TIGL_EXPORT virtual const std::vector<CTiglPoint>& GetSamplePoints() const OVERRIDE;
 
-    // get profiles CPACS XML path
-    DEPRECATED TIGL_EXPORT const std::string& GetProfileDataXPath() const;
-
     // get upper wing profile wire
-    TIGL_EXPORT const TopoDS_Edge& GetUpperWire() const;
+    TIGL_EXPORT virtual const TopoDS_Edge& GetUpperWire() const OVERRIDE;
 
     // get lower wing profile wire
-    TIGL_EXPORT const TopoDS_Edge& GetLowerWire() const;
+    TIGL_EXPORT virtual const TopoDS_Edge& GetLowerWire() const OVERRIDE;
 
     // get the upper and lower wing profile combined into one edge
-    TIGL_EXPORT const TopoDS_Edge & GetUpperLowerWire() const;
+    TIGL_EXPORT virtual const TopoDS_Edge & GetUpperLowerWire() const OVERRIDE;
 
     // get trailing edge if existing in definition
-    TIGL_EXPORT const TopoDS_Edge& GetTrailingEdge() const;
+    TIGL_EXPORT virtual const TopoDS_Edge& GetTrailingEdge() const OVERRIDE;
 
     // returns the trailing edge for the opened wing profile
-    TIGL_EXPORT const TopoDS_Edge& GetTrailingEdgeOpened() const;
+    TIGL_EXPORT virtual const TopoDS_Edge& GetTrailingEdgeOpened() const OVERRIDE;
 
     // getter for upper wire of closed profile
-    TIGL_EXPORT const TopoDS_Edge& GetUpperWireClosed() const;
+    TIGL_EXPORT virtual const TopoDS_Edge& GetUpperWireClosed() const OVERRIDE;
 
     // getter for lower wire of closed profile
-    TIGL_EXPORT const TopoDS_Edge& GetLowerWireClosed() const;
+    TIGL_EXPORT virtual const TopoDS_Edge& GetLowerWireClosed() const OVERRIDE;
 
     // getter for upper wire of opened profile
-    TIGL_EXPORT const TopoDS_Edge& GetUpperWireOpened() const;
+    TIGL_EXPORT virtual const TopoDS_Edge& GetUpperWireOpened() const OVERRIDE;
 
     // getter for lower wire of opened profile
-    TIGL_EXPORT const TopoDS_Edge& GetLowerWireOpened() const;
+    TIGL_EXPORT virtual const TopoDS_Edge& GetLowerWireOpened() const OVERRIDE;
 
     // get leading edge point();
-    TIGL_EXPORT const gp_Pnt& GetLEPoint() const;
+    TIGL_EXPORT virtual const gp_Pnt& GetLEPoint() const OVERRIDE;
 
     // get trailing edge point();
-    TIGL_EXPORT const gp_Pnt& GetTEPoint() const;
+    TIGL_EXPORT virtual const gp_Pnt& GetTEPoint() const OVERRIDE;
 
     // Checks, whether the trailing edge is blunt or
     // not by comparing first and last point.
-    TIGL_EXPORT bool HasBluntTE() const;
+    TIGL_EXPORT virtual bool HasBluntTE() const OVERRIDE;
 
 protected:
     // Builds the wing profile wires.
@@ -123,10 +121,10 @@ protected:
 
 private:
     // Copy constructor
-    CCPACSWingProfilePointList(const CCPACSWingProfilePointList&);
+    CTiglWingProfilePointList(const CTiglWingProfilePointList&);
 
     // Assignment operator
-    void operator=(const CCPACSWingProfilePointList&);
+    void operator=(const CTiglWingProfilePointList&);
 
     // Helper method for trimming upper an lower curve
     void trimUpperLowerCurve(Handle(Geom_TrimmedCurve) lowerCurve, Handle(Geom_TrimmedCurve) upperCurve, Handle_Geom_Curve curve);

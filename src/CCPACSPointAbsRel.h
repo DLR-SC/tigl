@@ -10,7 +10,7 @@ namespace tigl
     public:
         TIGL_EXPORT CCPACSPointAbsRel(CTiglUIDManager* uidMgr);
 
-        TIGL_EXPORT CTiglPoint AsPoint() const;
+        TIGL_EXPORT CTiglPoint AsPoint() const; // missing coordinates default to zero
         TIGL_EXPORT void SetAsPoint(const CTiglPoint& point);
         TIGL_EXPORT ECPACSTranslationType GetRefDefaultedType() const;
     };

@@ -82,7 +82,7 @@ namespace
         }
     }
 
-    TopoDS_Wire transformToWingCoords(const tigl::CTiglTransformation& wingTransform, const tigl::CCPACSWingConnection& wingConnection, const TopoDS_Wire& origWire)
+    TopoDS_Wire transformToWingCoords(const tigl::CTiglTransformation& wingTransform, const tigl::CTiglWingConnection& wingConnection, const TopoDS_Wire& origWire)
     {
         // Do section element transformations
         tigl::CTiglTransformation trafo = wingConnection.GetSectionElementTransformation();
@@ -99,7 +99,7 @@ namespace
 
         // Cast shapes to wires, see OpenCascade documentation
         if (resultWire.ShapeType() != TopAbs_WIRE) {
-            throw tigl::CTiglError("Error: Wrong shape type in CCPACSWing::transformToAbsCoords", TIGL_ERROR);
+            throw tigl::CTiglError("Wrong shape type in CCPACSWing::transformToAbsCoords", TIGL_ERROR);
         }
         
         return TopoDS::Wire(resultWire);
@@ -255,6 +255,10 @@ int CCPACSWing::GetSectionCount() const
 }
 
 // Returns the section for a given index
+CCPACSWingSection& CCPACSWing::GetSection(int index)
+{
+    return m_sections.GetSection(index);
+}
 const CCPACSWingSection& CCPACSWing::GetSection(int index) const
 {
     return m_sections.GetSection(index);
@@ -272,14 +276,24 @@ CCPACSWingSegment& CCPACSWing::GetSegment(const int index)
     return m_segments.GetSegment(index);
 }
 
+const CCPACSWingSegment& CCPACSWing::GetSegment(const int index) const
+{
+    return m_segments.GetSegment(index);
+}
+
 // Returns the segment for a given uid
 CCPACSWingSegment& CCPACSWing::GetSegment(std::string uid)
 {
     return m_segments.GetSegment(uid);
 }
 
+const CCPACSWingSegment& CCPACSWing::GetSegment(std::string uid) const
+{
+    return m_segments.GetSegment(uid);
+}
+
 // Get componentSegment count
-int CCPACSWing::GetComponentSegmentCount()
+int CCPACSWing::GetComponentSegmentCount() const
 {
     if (m_componentSegments)
         return m_componentSegments->GetComponentSegmentCount();
@@ -290,6 +304,10 @@ int CCPACSWing::GetComponentSegmentCount()
 // Returns the segment for a given index
 CCPACSWingComponentSegment& CCPACSWing::GetComponentSegment(const int index)
 {
+    return m_componentSegments->GetComponentSegment(index);
+}
+
+const CCPACSWingComponentSegment& CCPACSWing::GetComponentSegment(const int index) const {
     return m_componentSegments->GetComponentSegment(index);
 }
 
@@ -385,7 +403,7 @@ void CCPACSWing::BuildUpperLowerShells()
     BRepOffsetAPI_ThruSections generatorLow(Standard_False, Standard_True, Precision::Confusion() );
 
     for (int i=1; i <= m_segments.GetSegmentCount(); i++) {
-        CCPACSWingConnection& startConnection = m_segments.GetSegment(i).GetInnerConnection();
+        CTiglWingConnection& startConnection = m_segments.GetSegment(i).GetInnerConnection();
         CCPACSWingProfile& startProfile = startConnection.GetProfile();
         TopoDS_Wire upperWire, lowerWire;
         upperWire = TopoDS::Wire(transformToWingCoords(GetWingTransformation(), startConnection, BRepBuilderAPI_MakeWire(startProfile.GetUpperWire())));
@@ -394,7 +412,7 @@ void CCPACSWing::BuildUpperLowerShells()
         generatorLow.AddWire(lowerWire);
     }
 
-    CCPACSWingConnection& endConnection = m_segments.GetSegment(m_segments.GetSegmentCount()).GetOuterConnection();
+    CTiglWingConnection& endConnection = m_segments.GetSegment(m_segments.GetSegmentCount()).GetOuterConnection();
     CCPACSWingProfile& endProfile = endConnection.GetProfile();
     TopoDS_Wire endUpWire, endLowWire;
 
@@ -571,7 +589,7 @@ double CCPACSWing::GetWingspan()
             return cumulatedSpanDirection.X() >= cumulatedSpanDirection.Z() ? xw : zw;
         case 2:
             return cumulatedSpanDirection.X() >= cumulatedSpanDirection.Y() ? xw : yw;
-    }
+        }
     }
     else {
         for (int i = 1; i <= GetSegmentCount(); ++i) {
@@ -749,13 +767,13 @@ int CCPACSWing::GetSegmentEtaXsi(const gp_Pnt& point, double& eta, double& xsi, 
     }
     else {
 
-    CCPACSWingSegment& segment = (CCPACSWingSegment&) GetSegment(segmentFound);
-    segment.GetEtaXsi(point, eta, xsi);
+        CCPACSWingSegment& segment = (CCPACSWingSegment&) GetSegment(segmentFound);
+        segment.GetEtaXsi(point, eta, xsi);
 
-    // TODO: do we need that here?
-    onTop = segment.GetIsOnTop(point);
+        // TODO: do we need that here?
+        onTop = segment.GetIsOnTop(point);
 
-    return segmentFound;
+        return segmentFound;
     }
 }
 
@@ -768,7 +786,7 @@ const CCPACSGuideCurve& CCPACSWing::GetGuideCurve(std::string uid)
             return segment.GetGuideCurve(uid);
         }
     }
-    throw tigl::CTiglError("Error: Guide Curve with UID " + uid + " does not exists", TIGL_ERROR);
+    throw tigl::CTiglError("Guide Curve with UID " + uid + " does not exists", TIGL_ERROR);
 }
 
 } // end namespace tigl

@@ -57,7 +57,7 @@ CCPACSRotor& CCPACSRotors::GetRotor(int index) const
 {
     index --;
     if (index < 0 || index >= GetRotorCount()) {
-        throw CTiglError("Error: Invalid index in CCPACSRotors::GetRotor", TIGL_INDEX_ERROR);
+        throw CTiglError("Invalid index in CCPACSRotors::GetRotor", TIGL_INDEX_ERROR);
     }
     return (*m_rotors[index]);
 }
@@ -79,7 +79,7 @@ int CCPACSRotors::GetRotorIndex(const std::string& UID) const
     }
 
     // UID not there
-    throw CTiglError("Error: Invalid UID in CCPACSRotors::GetRotorIndex", TIGL_UID_ERROR);
+    throw CTiglError("Invalid UID in CCPACSRotors::GetRotorIndex", TIGL_UID_ERROR);
     return -1;
 }
 

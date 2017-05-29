@@ -32,7 +32,17 @@ namespace tigl
         
         CPACSWingSection::~CPACSWingSection()
         {
-            if (m_uidMgr) m_uidMgr->UnregisterObject(m_uID);
+            if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
+        }
+        
+        CTiglUIDManager& CPACSWingSection::GetUIDManager()
+        {
+            return *m_uidMgr;
+        }
+        
+        const CTiglUIDManager& CPACSWingSection::GetUIDManager() const
+        {
+            return *m_uidMgr;
         }
         
         void CPACSWingSection::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
@@ -80,7 +90,6 @@ namespace tigl
         void CPACSWingSection::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write attribute uID
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/uID");
             tixihelper::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
             
             // write element name
@@ -91,6 +100,10 @@ namespace tigl
             if (m_description) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/description")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/description");
+                }
             }
             
             // write element transformation
@@ -111,7 +124,7 @@ namespace tigl
         void CPACSWingSection::SetUID(const std::string& value)
         {
             if (m_uidMgr) {
-                m_uidMgr->UnregisterObject(m_uID);
+                m_uidMgr->TryUnregisterObject(m_uID);
                 m_uidMgr->RegisterObject(value, *this);
             }
             m_uID = value;

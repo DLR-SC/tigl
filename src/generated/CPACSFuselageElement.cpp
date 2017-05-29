@@ -31,7 +31,17 @@ namespace tigl
         
         CPACSFuselageElement::~CPACSFuselageElement()
         {
-            if (m_uidMgr) m_uidMgr->UnregisterObject(m_uID);
+            if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
+        }
+        
+        CTiglUIDManager& CPACSFuselageElement::GetUIDManager()
+        {
+            return *m_uidMgr;
+        }
+        
+        const CTiglUIDManager& CPACSFuselageElement::GetUIDManager() const
+        {
+            return *m_uidMgr;
         }
         
         void CPACSFuselageElement::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
@@ -79,7 +89,6 @@ namespace tigl
         void CPACSFuselageElement::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write attribute uID
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/uID");
             tixihelper::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
             
             // write element name
@@ -90,6 +99,10 @@ namespace tigl
             if (m_description) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/description")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/description");
+                }
             }
             
             // write element profileUID
@@ -110,7 +123,7 @@ namespace tigl
         void CPACSFuselageElement::SetUID(const std::string& value)
         {
             if (m_uidMgr) {
-                m_uidMgr->UnregisterObject(m_uID);
+                m_uidMgr->TryUnregisterObject(m_uID);
                 m_uidMgr->RegisterObject(value, *this);
             }
             m_uID = value;

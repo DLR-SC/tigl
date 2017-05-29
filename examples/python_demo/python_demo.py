@@ -14,13 +14,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from tiglwrapper import Tigl, TiglBoolean
+from tigl3wrapper import Tigl3, TiglBoolean
 from tixiwrapper import Tixi
 import sys
 
 def python_demo(filename):
     tixi = Tixi()
-    tigl = Tigl()
+    tigl = Tigl3()
     
     # open cpacs xml with tixi
     try:

@@ -69,7 +69,7 @@
 #include "CTiglExportVtk.h"
 #include "tiglcommonfunctions.h"
 #include "CTiglFusePlane.h"
-#include "CCPACSWingProfilePointList.h"
+#include "CTiglWingProfilePointList.h"
 #include "CCPACSWingSegment.h"
 #include "CCPACSFuselageSegment.h"
 #include "CCPACSGenericSystem.h"
@@ -361,10 +361,7 @@ QString TIGLViewerDocument::dlgGetWingComponentSegmentSelection()
 
         for (int j = 1; j <= wing.GetComponentSegmentCount(); ++j) {
             tigl::CCPACSWingComponentSegment& segment = wing.GetComponentSegment(j);
-            if (segment.GetUID())
-                compSegs << segment.GetUID()->c_str();
-            else
-                compSegs << "Unknown component segment";
+            compSegs << segment.GetUID().c_str();
         }
     }
 
@@ -510,10 +507,7 @@ QString TIGLViewerDocument::dlgGetRotorBladeComponentSegmentSelection()
         if (wing.IsRotorBlade()) {
             for (int j = 1; j <= wing.GetComponentSegmentCount(); ++j) {
                 tigl::CCPACSWingComponentSegment& segment = wing.GetComponentSegment(j);
-                if (segment.GetUID())
-                    compSegs << segment.GetUID()->c_str();
-                else
-                    compSegs << "Unknown component segment";
+                compSegs << segment.GetUID().c_str();
             }
         }
     }
@@ -2378,7 +2372,7 @@ void TIGLViewerDocument::drawWingOverlayProfilePoints(tigl::CCPACSWing& wing)
         // Get segment
         tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
         // Get inner profile point list
-        tigl::CCPACSWingConnection& innerConnection = segment.GetInnerConnection();
+        tigl::CTiglWingConnection& innerConnection = segment.GetInnerConnection();
         tigl::CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
         const std::vector<tigl::CTiglPoint>& innerProfilePointList = innerProfile.GetProfileAlgo()->GetSamplePoints();
         // get points and transform them
@@ -2395,7 +2389,7 @@ void TIGLViewerDocument::drawWingOverlayProfilePoints(tigl::CCPACSWing& wing)
         }
 
         // Get outer profile point list
-        tigl::CCPACSWingConnection& outerConnection = segment.GetOuterConnection();
+        tigl::CTiglWingConnection& outerConnection = segment.GetOuterConnection();
         tigl::CCPACSWingProfile& outerProfile = outerConnection.GetProfile();
         const std::vector<tigl::CTiglPoint>& outerProfilePointList = outerProfile.GetProfileAlgo()->GetSamplePoints();
 

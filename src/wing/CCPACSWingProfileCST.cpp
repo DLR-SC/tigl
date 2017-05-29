@@ -54,19 +54,6 @@ CCPACSWingProfileCST::~CCPACSWingProfileCST()
 {
 }
 
-std::string CCPACSWingProfileCST::CPACSID()
-{
-    return "cst2D";
-}
-
-void CCPACSWingProfileCST::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& profileXPath) {
-    generated::CPACSCst2D::ReadCPACS(tixiHandle, profileXPath);
-}
-
-void CCPACSWingProfileCST::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& profileXPath) const {
-    generated::CPACSCst2D::WriteCPACS(tixiHandle, profileXPath);
-}
-
 // Cleanup routine
 void CCPACSWingProfileCST::Cleanup()
 {
@@ -135,13 +122,13 @@ const TopoDS_Edge& CCPACSWingProfileCST::GetLowerWireClosed() const
 // Getter for upper wire of opened profile
 const TopoDS_Edge& CCPACSWingProfileCST::GetUpperWireOpened() const
 {
-    throw CTiglError("ERROR: GetUpperWireOpened not implemented yet for CCPACSWingProfileCST!");
+    throw CTiglError("GetUpperWireOpened not implemented yet for CCPACSWingProfileCST!");
 }
 
 // Getter for lower wire of opened profile
 const TopoDS_Edge& CCPACSWingProfileCST::GetLowerWireOpened() const
 {
-    throw CTiglError("ERROR: GetLowerWireOpened not implemented yet for CCPACSWingProfileCST!");
+    throw CTiglError("GetLowerWireOpened not implemented yet for CCPACSWingProfileCST!");
 }
 
 // get upper wing profile wire
@@ -171,7 +158,7 @@ const TopoDS_Edge & CCPACSWingProfileCST::GetTrailingEdge() const
 // get trailing edge
 const TopoDS_Edge & CCPACSWingProfileCST::GetTrailingEdgeOpened() const
 {
-    throw CTiglError("ERROR: GetTrailingEdgeOpened not implemented yet for CCPACSWingProfileCST!");
+    throw CTiglError("GetTrailingEdgeOpened not implemented yet for CCPACSWingProfileCST!");
 }
 
 // get leading edge point();

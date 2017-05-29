@@ -42,6 +42,16 @@ namespace tigl
             return m_parent;
         }
         
+        CTiglUIDManager& CPACSRotorBladeAttachments::GetUIDManager()
+        {
+            return *m_uidMgr;
+        }
+        
+        const CTiglUIDManager& CPACSRotorBladeAttachments::GetUIDManager() const
+        {
+            return *m_uidMgr;
+        }
+        
         void CPACSRotorBladeAttachments::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element rotorBladeAttachment

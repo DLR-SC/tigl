@@ -44,12 +44,14 @@ namespace tigl
             
             TIGL_EXPORT CCPACSWingComponentSegments* GetParent() const;
             
+            TIGL_EXPORT CTiglUIDManager& GetUIDManager();
+            TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
+            
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT virtual const boost::optional<std::string>& GetUID() const;
+            TIGL_EXPORT virtual const std::string& GetUID() const;
             TIGL_EXPORT virtual void SetUID(const std::string& value);
-            TIGL_EXPORT virtual void SetUID(const boost::optional<std::string>& value);
             
             TIGL_EXPORT virtual const std::string& GetName() const;
             TIGL_EXPORT virtual void SetName(const std::string& value);
@@ -72,7 +74,7 @@ namespace tigl
             
             CTiglUIDManager* m_uidMgr;
             
-            boost::optional<std::string>           m_uID;
+            std::string                            m_uID;
             std::string                            m_name;
             boost::optional<std::string>           m_description;
             std::string                            m_fromElementUID;

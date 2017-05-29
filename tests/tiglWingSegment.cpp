@@ -37,7 +37,7 @@ class WingSegment : public ::testing::Test
 protected:
     static void SetUpTestCase() 
     {
-        const char* filename = "TestData/CPACS_21_D150.xml";
+        const char* filename = "TestData/CPACS_30_D150.xml";
         ReturnCode tixiRet;
         TiglReturnCode tiglRet;
 
@@ -1114,4 +1114,11 @@ TEST_F(WingSegmentSimple, saveCPACS)
     if (tmpHandle > 0) {
         tiglCloseCPACSConfiguration(tmpHandle);
     }
+}
+
+TEST_F(WingSegmentSimple, getSegmentVolume)
+{
+    double volume = 0.;
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetSegmentVolume(tiglSimpleHandle, 1, 2, &volume));
+    ASSERT_GT(volume, 0.);
 }

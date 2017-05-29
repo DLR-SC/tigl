@@ -30,6 +30,16 @@ namespace tigl
         
         CPACSVehicles::~CPACSVehicles() {}
         
+        CTiglUIDManager& CPACSVehicles::GetUIDManager()
+        {
+            return *m_uidMgr;
+        }
+        
+        const CTiglUIDManager& CPACSVehicles::GetUIDManager() const
+        {
+            return *m_uidMgr;
+        }
+        
         void CPACSVehicles::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element aircraft
@@ -96,24 +106,40 @@ namespace tigl
             if (m_aircraft) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/aircraft");
                 m_aircraft->WriteCPACS(tixiHandle, xpath + "/aircraft");
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/aircraft")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/aircraft");
+                }
             }
             
             // write element rotorcraft
             if (m_rotorcraft) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/rotorcraft");
                 m_rotorcraft->WriteCPACS(tixiHandle, xpath + "/rotorcraft");
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/rotorcraft")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/rotorcraft");
+                }
             }
             
             // write element profiles
             if (m_profiles) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/profiles");
                 m_profiles->WriteCPACS(tixiHandle, xpath + "/profiles");
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/profiles")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/profiles");
+                }
             }
             
             // write element materials
             if (m_materials) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/materials");
                 m_materials->WriteCPACS(tixiHandle, xpath + "/materials");
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/materials")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/materials");
+                }
             }
             
         }

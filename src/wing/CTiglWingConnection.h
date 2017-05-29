@@ -2,9 +2,9 @@
 * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
-* Changed: $Id$ 
+* Changed: $Id: CCPACSWingConnection.h 2641 2017-03-30 21:08:46Z bgruber $ 
 *
-* Version: $Revision$
+* Version: $Revision: 2641 $
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -37,14 +37,13 @@ namespace tigl
 {
 class CCPACSWingSegment;
 
-// TODO: this class does not represent any class in CPACS, rename to e.g. CTiglWingConnection
-// TODO: this class is very similar to CCPACSFuselageConnection, merge into one class
-class CCPACSWingConnection
+// TODO(bgruber): this class is very similar to CCPACSFuselageConnection, merge into one class
+class CTiglWingConnection
 {
 public:
     // Constructor
-    TIGL_EXPORT CCPACSWingConnection();
-    TIGL_EXPORT CCPACSWingConnection(const std::string& elementUID, CCPACSWingSegment* aSegment);
+    TIGL_EXPORT CTiglWingConnection();
+    TIGL_EXPORT CTiglWingConnection(const std::string& elementUID, CCPACSWingSegment* aSegment);
 
     // Returns the section uid of this connection
     TIGL_EXPORT const std::string& GetSectionUID() const;
@@ -71,11 +70,18 @@ public:
     TIGL_EXPORT CTiglTransformation GetSectionElementTransformation() const;
 
 private:
-    const std::string* elementUID;    /**< UID of the connection-section/-elements */ //
+    struct ResolvedIndices {
+        int sectionIndex;
+        int elementIndex;
+        const std::string* sectionUidPtr;
+        const std::string* profileUIDPtr;
+    };
 
-    int                   sectionIndex;  /**< Index of the connection-sections */
-    int                   elementIndex;  /**< Index of the connection-section/-elements */
-    std::string           sectionUID;    /**< UID of the connection-sections */
+    void resolve() const;
+
+private:
+    mutable ResolvedIndices m_resolved;
+    std::string           elementUID;    /**< UID of the connection-section/-elements */
     CCPACSWingSegment*    segment;       /**< Parent segment */
 
 };

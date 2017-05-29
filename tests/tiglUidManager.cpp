@@ -35,10 +35,10 @@ namespace {
     protected:
         virtual void SetUp() {
             tixiHandle = -1;
-            ASSERT_TRUE(tixiOpenDocument("TestData/CPACS_21_D150.xml", &tixiHandle) == SUCCESS);
+            ASSERT_TRUE(tixiOpenDocument("TestData/CPACS_30_D150.xml", &tixiHandle) == SUCCESS);
 
             tiglHandle = -1;
-            ASSERT_TRUE(tiglOpenCPACSConfiguration(tixiHandle, "D150_VAMP", &tiglHandle) == SUCCESS);
+            ASSERT_TRUE(tiglOpenCPACSConfiguration(tixiHandle, "D150_VAMP", &tiglHandle) == TIGL_SUCCESS);
 
             uidMgr = &tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(tiglHandle).GetUIDManager();
         }

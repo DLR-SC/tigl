@@ -5,8 +5,8 @@
 		<description>D250 - aircraft geometrical model interpreted from internal data</description>
 		<creator>Erwin Moerland</creator>
 		<timestamp>2011-07-01T12:00:00</timestamp>
-		<version>0.9</version>
-		<cpacsVersion>2.0</cpacsVersion>
+		<version>1.0</version>
+		<cpacsVersion>3.0</cpacsVersion>
 		<updates>
 			<update>
 				<modification>Extended with nongeometrical settings for all VAMP tools</modification>

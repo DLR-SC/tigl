@@ -17,36 +17,34 @@
 */
 
 /* 
-* This file is automatically created from tigl.h on 2014-10-21.
+* This file is automatically created from tigl.h on 2017-05-26.
 * If you experience any bugs please contact the authors
 */
 
-package de.dlr.sc.tigl;
+package de.dlr.sc.tigl3;
 
 import java.util.ArrayList;
 
-public enum TiglImportExportFormat {
-    TIGL_IMPORTEXPORT_IGES(0),
-    TIGL_IMPORTEXPORT_STEP(1),
-    TIGL_IMPORTEXPORT_STL(2),
-    TIGL_IMPORTEXPORT_VTK(3);
+public enum TiglContinuity {
+    C0(0),
+    C1(1),
+    C2(2);
 
-    private static ArrayList<TiglImportExportFormat> codes = new ArrayList<>();
+    private static ArrayList<TiglContinuity> codes = new ArrayList<>();
 
     static {
-        codes.add(TIGL_IMPORTEXPORT_IGES);
-        codes.add(TIGL_IMPORTEXPORT_STEP);
-        codes.add(TIGL_IMPORTEXPORT_STL);
-        codes.add(TIGL_IMPORTEXPORT_VTK);
+        codes.add(C0);
+        codes.add(C1);
+        codes.add(C2);
     }
 
     private final int code;
 
-    private TiglImportExportFormat(final int value) {
+    private TiglContinuity(final int value) {
          code = value;
     }
 
-    public static TiglImportExportFormat getEnum(final int value) {
+    public static TiglContinuity getEnum(final int value) {
         return codes.get(Integer.valueOf(value));
     }
 

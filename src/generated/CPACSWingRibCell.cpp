@@ -31,7 +31,17 @@ namespace tigl
         
         CPACSWingRibCell::~CPACSWingRibCell()
         {
-            if (m_uidMgr && m_uID) m_uidMgr->UnregisterObject(*m_uID);
+            if (m_uidMgr && m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
+        }
+        
+        CTiglUIDManager& CPACSWingRibCell::GetUIDManager()
+        {
+            return *m_uidMgr;
+        }
+        
+        const CTiglUIDManager& CPACSWingRibCell::GetUIDManager() const
+        {
+            return *m_uidMgr;
         }
         
         void CPACSWingRibCell::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
@@ -96,8 +106,11 @@ namespace tigl
         {
             // write attribute uID
             if (m_uID) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/uID");
                 tixihelper::TixiSaveAttribute(tixiHandle, xpath, "uID", *m_uID);
+            } else {
+                if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+                    tixihelper::TixiRemoveAttribute(tixiHandle, xpath, "uID");
+                }
             }
             
             // write element fromRib
@@ -134,7 +147,7 @@ namespace tigl
         void CPACSWingRibCell::SetUID(const std::string& value)
         {
             if (m_uidMgr) {
-                if (m_uID) m_uidMgr->UnregisterObject(*m_uID);
+                if (m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
                 m_uidMgr->RegisterObject(value, *this);
             }
             m_uID = value;
@@ -143,7 +156,7 @@ namespace tigl
         void CPACSWingRibCell::SetUID(const boost::optional<std::string>& value)
         {
             if (m_uidMgr) {
-                if (m_uID) m_uidMgr->UnregisterObject(*m_uID);
+                if (m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
                 if (value) m_uidMgr->RegisterObject(*value, *this);
             }
             m_uID = value;

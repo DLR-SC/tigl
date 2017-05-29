@@ -72,6 +72,8 @@ namespace
     static std::string version = std::string(TIGL_REVISION).size() > 0 ?
         TIGL_VERSION_STRING " rev" TIGL_REVISION :
         TIGL_VERSION_STRING;
+
+    static std::string const emptyString = "";
 }
 
 TixiPrintMsgFnc oldTixiMessageHandler = NULL;
@@ -147,12 +149,12 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
     }
     
     if (cpacsHandlePtr == 0) {
-        LOG(ERROR) << "Null pointer argument for cpacsHandlePtr in function call to tiglOpenCPACSConfiguration." << std::endl;
+        LOG(ERROR) << "Null pointer argument for cpacsHandlePtr in function call to tiglOpenCPACSConfiguration.";
         return TIGL_NULL_POINTER;
     }
 
     /* check TIXI Version */
-    if ( atof(tixiGetVersion()) < atof(tiglGetVersion()) ) {
+    if ( atof(tixiGetVersion()) < 2.2 ) {
         LOG(ERROR) << "Incompatible TIXI Version in use with this TIGL" << std::endl;
         return TIGL_WRONG_TIXI_VERSION;
     }
@@ -164,19 +166,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
         if (tixiRet != SUCCESS) {
             // NO CPACS Version Information in Header
             if (tixiRet == ELEMENT_PATH_NOT_UNIQUE) {
-                LOG(ERROR) << "Multiple CPACS version entries found. Please verify CPACS file." << std::endl;
+                LOG(ERROR) << "Multiple CPACS version entries found. Please verify CPACS file.";
             }
             else if (tixiRet == ELEMENT_NOT_FOUND) {
-                LOG(ERROR) << "No CPACS version information in file header. CPACS file seems to be too old." << std::endl;
+                LOG(ERROR) << "No CPACS version information in file header. CPACS file seems to be too old.";
             }
             else {
-                LOG(ERROR) << "Cannot read CPACS version," << std::endl;
+                LOG(ERROR) << "Cannot read CPACS version,";
             }
             return TIGL_WRONG_CPACS_VERSION;
         }
         else {
             if (dcpacsVersion < (double) TIGL_MAJOR_VERSION) {
-                LOG(ERROR) << "Too old CPACS dataset. CPACS version has to be at least " << (double) TIGL_MAJOR_VERSION << "!" << std::endl;
+                LOG(ERROR) << "Too old CPACS dataset. CPACS version has to be at least " << (double) TIGL_MAJOR_VERSION << "!";
                 return TIGL_WRONG_CPACS_VERSION;
             }
             else if (dcpacsVersion > atof(tiglGetVersion())) {
@@ -193,7 +195,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
 
         tixiRet = tixiGetNamedChildrenCount(tixiHandle, "/cpacs/vehicles/aircraft|/cpacs/vehicles/rotorcraft", "model", &modelCount);
         if (tixiRet != SUCCESS) {
-            LOG(ERROR) << "No configuration specified!" << std::endl;
+            LOG(ERROR) << "No configuration specified!";
             return TIGL_ERROR;
         }
         char * tmpConfUID = NULL;
@@ -201,7 +203,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
         if (tixiRet != SUCCESS) {
             tixiRet = tixiGetTextAttribute(tixiHandle, "/cpacs/vehicles/rotorcraft/model[1]", "uID", &tmpConfUID);
             if (tixiRet != SUCCESS) {
-                LOG(ERROR) << "Problems reading configuration-uid!" << std::endl;
+                LOG(ERROR) << "Problems reading configuration-uid!";
                 return TIGL_ERROR;
             }
         }
@@ -219,7 +221,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
         ConfigurationXPath += "\"]";
         int tixiReturn = tixiGetTextElement( tixiHandle, ConfigurationXPath.c_str(), &tmpString);
         if (tixiReturn != 0) {
-            LOG(ERROR) << "Configuration '" << configurationUID << "' not found!" << std::endl;
+            LOG(ERROR) << "Configuration '" << configurationUID << "' not found!";
             return TIGL_ERROR;
         }
     }
@@ -234,15 +236,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_OPEN_FAILED;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return TIGL_OPEN_FAILED;
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglOpenCPACSConfiguration!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglOpenCPACSConfiguration!";
         return TIGL_OPEN_FAILED;
     }
 }
@@ -252,7 +254,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglSaveCPACSConfiguration(const char* configu
     tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
 
     if (!manager.IsValid(cpacsHandle)) {
-        LOG(ERROR) << "Invalid cpacsHandle passed to tiglSaveCPACSConfiguration!" << std::endl;
+        LOG(ERROR) << "Invalid cpacsHandle passed to tiglSaveCPACSConfiguration!";
         return TIGL_UNINITIALIZED;
     }
 
@@ -263,15 +265,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglSaveCPACSConfiguration(const char* configu
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return TIGL_ERROR;
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglSaveCPACSConfiguration!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglSaveCPACSConfiguration!";
         return TIGL_ERROR;
     }
 }
@@ -285,15 +287,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglCloseCPACSConfiguration(TiglCPACSConfigura
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_CLOSE_FAILED;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return TIGL_CLOSE_FAILED;
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglCloseCPACSConfiguration!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglCloseCPACSConfiguration!";
         return TIGL_CLOSE_FAILED;
     }
 }
@@ -302,7 +304,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglCloseCPACSConfiguration(TiglCPACSConfigura
 TIGL_COMMON_EXPORT TiglReturnCode tiglGetCPACSTixiHandle(TiglCPACSConfigurationHandle cpacsHandle, TixiDocumentHandle* tixiHandlePtr)
 {
     if (tixiHandlePtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for tixiHandlePtr in function call to tiglGetCPACSTixiHandle." << std::endl;
+        LOG(ERROR) << "Null pointer argument for tixiHandlePtr in function call to tiglGetCPACSTixiHandle.";
         return TIGL_NULL_POINTER;
     }
 
@@ -313,15 +315,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetCPACSTixiHandle(TiglCPACSConfigurationH
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_NOT_FOUND;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return TIGL_NOT_FOUND;
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglGetCPACSTixiHandle!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglGetCPACSTixiHandle!";
         return TIGL_NOT_FOUND;
     }
 }
@@ -335,15 +337,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIsCPACSConfigurationHandleValid(TiglCPACSC
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_NOT_FOUND;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return TIGL_NOT_FOUND;
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglIsCPACSConfigurationHandleValid!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglIsCPACSConfigurationHandleValid!";
         return TIGL_NOT_FOUND;
     }
 }
@@ -641,8 +643,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetUpperPoint(TiglCPACSConfigurationHa
                                                         double* pointZPtr)
 {
     if (pointXPtr == NULL || pointYPtr == NULL || pointZPtr == NULL) {
-        LOG(ERROR) << "Error: Null pointer argument for pointXPtr, pointYPtr or pointZPtr ";
-        LOG(ERROR) << "in function call to tiglWingGetUpperPoint." << std::endl;
+        LOG(ERROR) << "Null pointer argument for pointXPtr, pointYPtr or pointZPtr\n"
+                   << "in function call to tiglWingGetUpperPoint.";
         return TIGL_NULL_POINTER;
     }
 
@@ -657,15 +659,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetUpperPoint(TiglCPACSConfigurationHa
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an unknown exception in tiglWingGetUpperPoint" << std::endl;
+        LOG(ERROR) << "Caught an unknown exception in tiglWingGetUpperPoint";
         return TIGL_ERROR;
     }
 }
@@ -681,8 +683,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetLowerPoint(TiglCPACSConfigurationHa
                                                         double* pointZPtr)
 {
     if (pointXPtr == 0 || pointYPtr == 0 || pointZPtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for pointXPtr, pointYPtr or pointZPtr ";
-        LOG(ERROR) << "in function call to tiglWingGetLowerPoint." << std::endl;
+        LOG(ERROR) << "Null pointer argument for pointXPtr, pointYPtr or pointZPtr\n"
+                   << "in function call to tiglWingGetLowerPoint.";
         return TIGL_NULL_POINTER;
     }
 
@@ -697,15 +699,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetLowerPoint(TiglCPACSConfigurationHa
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglWingGetLowerPoint!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglWingGetLowerPoint!";
         return TIGL_ERROR;
     }
 }
@@ -720,8 +722,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetChordPoint(TiglCPACSConfigurationHa
                                                         double* pointZPtr)
 {
     if (pointXPtr == 0 || pointYPtr == 0 || pointZPtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for pointXPtr, pointYPtr or pointZPtr ";
-        LOG(ERROR) << "in function call to tiglWingGetChordPoint." << std::endl;
+        LOG(ERROR) << "Null pointer argument for pointXPtr, pointYPtr or pointZPtr\n"
+                   << "in function call to tiglWingGetChordPoint.";
         return TIGL_NULL_POINTER;
     }
 
@@ -738,15 +740,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetChordPoint(TiglCPACSConfigurationHa
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglWingGetChordPoint!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglWingGetChordPoint!";
         return TIGL_ERROR;
     }
 }
@@ -761,8 +763,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetChordNormal(TiglCPACSConfigurationH
                                                          double* normalZPtr)
 {
     if (normalXPtr == 0 || normalYPtr == 0 || normalZPtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for normalXPtr, normalYPtr or normalZPtr ";
-        LOG(ERROR) << "in function call to tiglWingGetChordNormal." << std::endl;
+        LOG(ERROR) << "Null pointer argument for normalXPtr, normalYPtr or normalZPtr\n"
+                   << "in function call to tiglWingGetChordNormal.";
         return TIGL_NULL_POINTER;
     }
 
@@ -787,15 +789,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetChordNormal(TiglCPACSConfigurationH
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglWingGetChordNormal!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglWingGetChordNormal!";
         return TIGL_ERROR;
     }
 }
@@ -814,7 +816,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetUpperPointAtDirection(TiglCPACSConf
                                                                    double* errorDistance)
 {
     if (pointXPtr == NULL || pointYPtr == NULL || pointZPtr == NULL) {
-        LOG(ERROR) << "Null pointer argument for pointXPtr, pointYPtr or pointZPtr "
+        LOG(ERROR) << "Null pointer argument for pointXPtr, pointYPtr or pointZPtr\n"
                    << "in function call to tiglWingGetUpperPointAtDirection.";
         return TIGL_NULL_POINTER;
     }
@@ -843,15 +845,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetUpperPointAtDirection(TiglCPACSConf
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an unknown exception in tiglWingGetUpperPointAtDirection" << std::endl;
+        LOG(ERROR) << "Caught an unknown exception in tiglWingGetUpperPointAtDirection";
         return TIGL_ERROR;
     }
 }
@@ -870,7 +872,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetLowerPointAtDirection(TiglCPACSConf
                                                                    double* errorDistance)
 {
     if (pointXPtr == NULL || pointYPtr == NULL || pointZPtr == NULL) {
-        LOG(ERROR) << "Error: Null pointer argument for pointXPtr, pointYPtr or pointZPtr "
+        LOG(ERROR) << "Null pointer argument for pointXPtr, pointYPtr or pointZPtr\n"
                    << "in function call to tiglWingGetLowerPointAtDirection.";
         return TIGL_NULL_POINTER;
     }
@@ -898,15 +900,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetLowerPointAtDirection(TiglCPACSConf
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an unknown exception in tiglWingGetLowerPointAtDirection" << std::endl;
+        LOG(ERROR) << "Caught an unknown exception in tiglWingGetLowerPointAtDirection";
         return TIGL_ERROR;
     }
 }
@@ -922,8 +924,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentEtaXsi(TiglCPACSConfiguratio
                                                            int* isOnTop)
 {
     if (eta == NULL || xsi == NULL || isOnTop == NULL) {
-        LOG(ERROR) << "Error: Null pointer argument for eta, xsi or isOnTop ";
-        LOG(ERROR) << "in function call to tiglWingGetSegmentEtaXsi." << std::endl;
+        LOG(ERROR) << "Null pointer argument for eta, xsi or isOnTop\n"
+                   << "in function call to tiglWingGetSegmentEtaXsi.";
         return TIGL_NULL_POINTER;
     }
 
@@ -941,15 +943,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentEtaXsi(TiglCPACSConfiguratio
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an unknown exception in tiglWingGetSegmentEtaXsi" << std::endl;
+        LOG(ERROR) << "Caught an unknown exception in tiglWingGetSegmentEtaXsi";
         return TIGL_ERROR;
     }
 }
@@ -958,8 +960,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentEtaXsi(TiglCPACSConfiguratio
 TIGL_COMMON_EXPORT TiglReturnCode tiglGetWingCount(TiglCPACSConfigurationHandle cpacsHandle, int* wingCountPtr)
 {
     if (wingCountPtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for wingCountPtr ";
-        LOG(ERROR) << "in function call to tiglGetWingCount." << std::endl;
+        LOG(ERROR) << "Null pointer argument for wingCountPtr\n"
+                   << "in function call to tiglGetWingCount.";
         return TIGL_NULL_POINTER;
     }
 
@@ -970,15 +972,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetWingCount(TiglCPACSConfigurationHandle 
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglGetWingCount!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglGetWingCount!";
         return TIGL_ERROR;
     }
 }
@@ -989,8 +991,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentCount(TiglCPACSConfiguration
                                                           int* segmentCountPtr)
 {
     if (segmentCountPtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for segmentCountPtr ";
-        LOG(ERROR) << "in function call to tiglWingGetSegmentCount." << std::endl;
+        LOG(ERROR) << "Null pointer argument for segmentCountPtr\n"
+                   << "in function call to tiglWingGetSegmentCount.";
         return TIGL_NULL_POINTER;
     }
 
@@ -1002,15 +1004,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentCount(TiglCPACSConfiguration
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglWingGetSegmentCount!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglWingGetSegmentCount!";
         return TIGL_ERROR;
     }
 }
@@ -1020,8 +1022,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetComponentSegmentCount(TiglCPACSConf
                                                                    int* compSegmentCountPtr)
 {
     if (compSegmentCountPtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for compSegmentCountPtr ";
-        LOG(ERROR) << "in function call to tiglWingGetSegmentCount." << std::endl;
+        LOG(ERROR) << "Null pointer argument for compSegmentCountPtr\n"
+                   << "in function call to tiglWingGetSegmentCount.";
         return TIGL_NULL_POINTER;
     }
 
@@ -1033,15 +1035,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetComponentSegmentCount(TiglCPACSConf
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglWingGetComponentSegmentCount!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglWingGetComponentSegmentCount!";
         return TIGL_ERROR;
     }
 }
@@ -1052,14 +1054,14 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetComponentSegmentUID(TiglCPACSConfig
                                                                  char** uidNamePtr)
 {
     if (uidNamePtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for uidNamePtr ";
-        LOG(ERROR) << "in function call to tiglWingGetComponentSegmentUID." << std::endl;
+        LOG(ERROR) << "Null pointer argument for uidNamePtr\n"
+                   << "in function call to tiglWingGetComponentSegmentUID.";
         return TIGL_NULL_POINTER;
     }
 
     if (wingIndex < 1 || compSegmentIndex < 1) {
-        LOG(ERROR) << "Error: Wing or segment index index in less than zero ";
-        LOG(ERROR) << "in function call to tiglWingGetComponentSegmentUID." << std::endl;
+        LOG(ERROR) << "Wing or segment index index in less than zero\n"
+                   << "in function call to tiglWingGetComponentSegmentUID.";
         return TIGL_INDEX_ERROR;
     }
 
@@ -1068,22 +1070,20 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetComponentSegmentUID(TiglCPACSConfig
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
         tigl::CCPACSWingComponentSegment& segment = (tigl::CCPACSWingComponentSegment &) wing.GetComponentSegment(compSegmentIndex);
-        if (segment.GetUID())
-            *uidNamePtr = const_cast<char*>(segment.GetUID()->c_str());
-        else
-            *uidNamePtr = "";
+        *uidNamePtr = const_cast<char*>(segment.GetUID().c_str());
+
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglWingGetComponentSegmentUID!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglWingGetComponentSegmentUID!";
         return TIGL_ERROR;
     }
 }
@@ -1094,13 +1094,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetComponentSegmentIndex(TiglCPACSConf
                                                                    int * segmentIndex) 
 {
     if (compSegmentUID == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for segmentUID ";
-        LOG(ERROR) << "in function call to tiglWingGetComponentSegmentIndex." << std::endl;
+        LOG(ERROR) << "Null pointer argument for segmentUID\n"
+                   << "in function call to tiglWingGetComponentSegmentIndex.";
         return TIGL_NULL_POINTER;
     }
     if (segmentIndex == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for segmentIndex ";
-        LOG(ERROR) << "in function call to tiglWingGetComponentSegmentIndex." << std::endl;
+        LOG(ERROR) << "Null pointer argument for segmentIndex\n"
+                   << "in function call to tiglWingGetComponentSegmentIndex.";
         return TIGL_NULL_POINTER;
     }
 
@@ -1119,20 +1119,20 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetComponentSegmentIndex(TiglCPACSConf
         }
 
         LOG(ERROR) << "Error in tiglWingGetComponentSegmentIndex: the wing with index=" << wingIndex << " has no segment with an UID="
-                   << compSegmentUID << "!" << std::endl;
+                   << compSegmentUID << "!";
         *segmentIndex = -1;
         return TIGL_UID_ERROR;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglWingComponentGetSegmentIndex!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglWingComponentGetSegmentIndex!";
         return TIGL_ERROR;
     }
 }
@@ -1143,8 +1143,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetInnerConnectedSegmentCount(TiglCPAC
                                                                         int* segmentCountPtr)
 {
     if (segmentCountPtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for segmentCountPtr ";
-        LOG(ERROR) << "in function call to tiglWingGetInnerConnectedSegmentCount." << std::endl;
+        LOG(ERROR) << "Null pointer argument for segmentCountPtr\n"
+                   << "in function call to tiglWingGetInnerConnectedSegmentCount.";
         return TIGL_NULL_POINTER;
     }
 
@@ -1157,15 +1157,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetInnerConnectedSegmentCount(TiglCPAC
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglWingGetInnerConnectedSegmentCount!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglWingGetInnerConnectedSegmentCount!";
         return TIGL_ERROR;
     }
 }
@@ -1177,8 +1177,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetOuterConnectedSegmentCount(TiglCPAC
                                                                         int* segmentCountPtr)
 {
     if (segmentCountPtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for segmentCountPtr ";
-        LOG(ERROR) << "in function call to tiglWingGetOuterConnectedSegmentCount." << std::endl;
+        LOG(ERROR) << "Null pointer argument for segmentCountPtr\n"
+                   << "in function call to tiglWingGetOuterConnectedSegmentCount.";
         return TIGL_NULL_POINTER;
     }
 
@@ -1191,15 +1191,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetOuterConnectedSegmentCount(TiglCPAC
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglWingGetOuterConnectedSegmentCount!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglWingGetOuterConnectedSegmentCount!";
         return TIGL_ERROR;
     }
 }
@@ -1212,8 +1212,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetInnerConnectedSegmentIndex(TiglCPAC
                                                                         int* connectedIndexPtr)
 {
     if (connectedIndexPtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for connectedIndexPtr ";
-        LOG(ERROR) << "in function call to tiglWingGetInnerConnectedSegmentIndex." << std::endl;
+        LOG(ERROR) << "Null pointer argument for connectedIndexPtr\n"
+                   << "in function call to tiglWingGetInnerConnectedSegmentIndex.";
         return TIGL_NULL_POINTER;
     }
 
@@ -1226,15 +1226,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetInnerConnectedSegmentIndex(TiglCPAC
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglWingGetInnerConnectedSegmentIndex!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglWingGetInnerConnectedSegmentIndex!";
         return TIGL_ERROR;
     }
 }
@@ -1247,8 +1247,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetOuterConnectedSegmentIndex(TiglCPAC
                                                                         int* connectedIndexPtr)
 {
     if (connectedIndexPtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for connectedIndexPtr ";
-        LOG(ERROR) << "in function call to tiglWingGetOuterConnectedSegmentIndex." << std::endl;
+        LOG(ERROR) << "Null pointer argument for connectedIndexPtr\n"
+                   << "in function call to tiglWingGetOuterConnectedSegmentIndex.";
         return TIGL_NULL_POINTER;
     }
 
@@ -1261,15 +1261,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetOuterConnectedSegmentIndex(TiglCPAC
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglWingGetOuterConnectedSegmentIndex!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglWingGetOuterConnectedSegmentIndex!";
         return TIGL_ERROR;
     }
 }
@@ -1282,14 +1282,14 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetInnerSectionAndElementIndex(TiglCPA
                                                                          int* elementIndexPtr)
 {
     if (wingIndex < 1 || segmentIndex < 1) {
-        LOG(ERROR) << "Error: Wing or segment index index in less than zero ";
-        LOG(ERROR) << "in function call to tiglWingGetInnerSectionAndElementIndex." << std::endl;
+        LOG(ERROR) << "Wing or segment index index in less than zero\n"
+                   << "in function call to tiglWingGetInnerSectionAndElementIndex.";
         return TIGL_INDEX_ERROR;
     }
 
     if (elementIndexPtr == 0 || sectionIndexPtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for sectionIndexPtr or elementIndexPtr ";
-        LOG(ERROR) << "in function call to tiglWingGetInnerSectionAndElementIndex." << std::endl;
+        LOG(ERROR) << "Null pointer argument for sectionIndexPtr or elementIndexPtr\n"
+                   << "in function call to tiglWingGetInnerSectionAndElementIndex.";
         return TIGL_NULL_POINTER;
     }
 
@@ -1304,15 +1304,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetInnerSectionAndElementIndex(TiglCPA
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglWingGetInnerSectionAndElementIndex!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglWingGetInnerSectionAndElementIndex!";
         return TIGL_ERROR;
     }
 }
@@ -1325,14 +1325,14 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetOuterSectionAndElementIndex(TiglCPA
                                                                          int* elementIndexPtr)
 {
     if (wingIndex < 1 || segmentIndex < 1) {
-        LOG(ERROR) << "Error: Wing or segment index index in less than zero ";
-        LOG(ERROR) << "in function call to tiglWingGetOuterSectionAndElementIndex." << std::endl;
+        LOG(ERROR) << "Wing or segment index index in less than zero\n"
+                   << "in function call to tiglWingGetOuterSectionAndElementIndex.";
         return TIGL_INDEX_ERROR;
     }
 
     if (elementIndexPtr == 0 || sectionIndexPtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for sectionIndexPtr or elementIndexPtr ";
-        LOG(ERROR) << "in function call to tiglWingGetOuterSectionAndElementIndex." << std::endl;
+        LOG(ERROR) << "Null pointer argument for sectionIndexPtr or elementIndexPtr\n"
+                   << "in function call to tiglWingGetOuterSectionAndElementIndex.";
         return TIGL_NULL_POINTER;
     }
 
@@ -1347,15 +1347,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetOuterSectionAndElementIndex(TiglCPA
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglWingGetOuterSectionAndElementIndex!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglWingGetOuterSectionAndElementIndex!";
         return TIGL_ERROR;
     }
 }
@@ -1370,8 +1370,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetInnerSectionAndElementUID(TiglCPACS
 {
 
     if (wingIndex < 1 || segmentIndex < 1) {
-        LOG(ERROR) << "Error: Wing or segment index index in less than zero ";
-        LOG(ERROR) << "in function call to tiglWingGetInnerSectionAndElementUID." << std::endl;
+        LOG(ERROR) << "Wing or segment index index in less than zero\n"
+                   << "in function call to tiglWingGetInnerSectionAndElementUID.";
         return TIGL_INDEX_ERROR;
     }
 
@@ -1388,15 +1388,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetInnerSectionAndElementUID(TiglCPACS
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglWingGetInnerSectionAndElementIndex!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglWingGetInnerSectionAndElementIndex!";
         return TIGL_ERROR;
     }
 }
@@ -1410,8 +1410,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetOuterSectionAndElementUID(TiglCPACS
 {
 
     if (wingIndex < 1 || segmentIndex < 1) {
-        LOG(ERROR) << "Error: Wing or segment index index in less than zero ";
-        LOG(ERROR) << "in function call to tiglWingGetOuterSectionAndElementUID." << std::endl;
+        LOG(ERROR) << "Wing or segment index index in less than zero\n"
+                   << "in function call to tiglWingGetOuterSectionAndElementUID.";
         return TIGL_INDEX_ERROR;
     }
 
@@ -1427,15 +1427,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetOuterSectionAndElementUID(TiglCPACS
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglWingGetOuterSectionAndElementIndex!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglWingGetOuterSectionAndElementIndex!";
         return TIGL_ERROR;
     }
 }
@@ -1448,14 +1448,14 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetProfileName(TiglCPACSConfigurationH
                                                          char** profileNamePtr)
 {
     if (profileNamePtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for profileNamePtr ";
-        LOG(ERROR) << "in function call to tiglWingGetProfileName." << std::endl;
+        LOG(ERROR) << "Null pointer argument for profileNamePtr\n"
+                   << "in function call to tiglWingGetProfileName.";
         return TIGL_NULL_POINTER;
     }
 
     if (wingIndex < 1 || sectionIndex < 1 || elementIndex < 1) {
-        LOG(ERROR) << "Error: Wing, section or element index index in less than zero ";
-        LOG(ERROR) << "in function call to tiglWingGetProfileName." << std::endl;
+        LOG(ERROR) << "Wing, section or element index index in less than zero\n"
+                   << "in function call to tiglWingGetProfileName.";
         return TIGL_INDEX_ERROR;
     }
 
@@ -1465,7 +1465,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetProfileName(TiglCPACSConfigurationH
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
         const tigl::CCPACSWingSection& section = wing.GetSection(sectionIndex);
         const tigl::CCPACSWingSectionElement& element = section.GetSectionElement(elementIndex);
-        std::string profileUID = element.GetProfileIndex();
+        std::string profileUID = element.GetProfileUID();
         tigl::CCPACSWingProfile& profile = config.GetWingProfile(profileUID);
 
         *profileNamePtr = const_cast<char*>(profile.GetName().c_str());
@@ -1473,15 +1473,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetProfileName(TiglCPACSConfigurationH
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglWingGetProfileName!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglWingGetProfileName!";
         return TIGL_ERROR;
     }
 }
@@ -1493,14 +1493,14 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetUID(TiglCPACSConfigurationHandle cp
                                                  char** uidNamePtr)
 {
     if (uidNamePtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for uidNamePtr ";
-        LOG(ERROR) << "in function call to tiglWingGetUID." << std::endl;
+        LOG(ERROR) << "Null pointer argument for uidNamePtr\n"
+                   << "in function call to tiglWingGetUID.";
         return TIGL_NULL_POINTER;
     }
 
     if (wingIndex < 1) {
-        LOG(ERROR) << "Error: Wing or segment index index in less than zero ";
-        LOG(ERROR) << "in function call to tiglWingGetUID." << std::endl;
+        LOG(ERROR) << "Wing or segment index index in less than zero\n"
+                   << "in function call to tiglWingGetUID.";
         return TIGL_INDEX_ERROR;
     }
 
@@ -1512,15 +1512,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetUID(TiglCPACSConfigurationHandle cp
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglWingGetUID!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglWingGetUID!";
         return TIGL_ERROR;
     }
 }
@@ -1530,13 +1530,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetIndex(TiglCPACSConfigurationHandle 
                                                    int* wingIndexPtr)
 {
     if (wingUID == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for wingUID ";
-        LOG(ERROR) << "in function call to tiglWingGetIndex." << std::endl;
+        LOG(ERROR) << "Null pointer argument for wingUID\n"
+                   << "in function call to tiglWingGetIndex.";
         return TIGL_NULL_POINTER;
     }
     if (wingIndexPtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for wingIndexPtr ";
-        LOG(ERROR) << "in function call to tiglWingGetIndex." << std::endl;
+        LOG(ERROR) << "Null pointer argument for wingIndexPtr\n"
+                   << "in function call to tiglWingGetIndex.";
         return TIGL_NULL_POINTER;
     }
 
@@ -1548,16 +1548,16 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetIndex(TiglCPACSConfigurationHandle 
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
         *wingIndexPtr = -1;
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglWingGetIndex!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglWingGetIndex!";
         return TIGL_ERROR;
     }
 }
@@ -1568,14 +1568,14 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentUID(TiglCPACSConfigurationHa
                                                         char** uidNamePtr)
 {
     if (uidNamePtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for uidNamePtr ";
-        LOG(ERROR) << "in function call to tiglWingGetSegmentUID." << std::endl;
+        LOG(ERROR) << "Null pointer argument for uidNamePtr\n"
+                   << "in function call to tiglWingGetSegmentUID.";
         return TIGL_NULL_POINTER;
     }
 
     if (wingIndex < 1 || segmentIndex < 1) {
-        LOG(ERROR) << "Error: Wing or segment index index in less than zero ";
-        LOG(ERROR) << "in function call to tiglWingGetSegmentUID." << std::endl;
+        LOG(ERROR) << "Wing or segment index index in less than zero\n"
+                   << "in function call to tiglWingGetSegmentUID.";
         return TIGL_INDEX_ERROR;
     }
 
@@ -1588,15 +1588,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentUID(TiglCPACSConfigurationHa
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglWingGetSegmentUID!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglWingGetSegmentUID!";
         return TIGL_ERROR;
     }
 }
@@ -1607,18 +1607,18 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentIndex(TiglCPACSConfiguration
                                                           int * wingIndex) 
 {
     if (segmentUID == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for segmentUID ";
-        LOG(ERROR) << "in function call to tiglWingGetSegmentIndex." << std::endl;
+        LOG(ERROR) << "Null pointer argument for segmentUID\n"
+                   << "in function call to tiglWingGetSegmentIndex.";
         return TIGL_NULL_POINTER;
     }
     if (segmentIndex == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for segmentIndex ";
-        LOG(ERROR) << "in function call to tiglWingGetSegmentIndex." << std::endl;
+        LOG(ERROR) << "Null pointer argument for segmentIndex\n"
+                   << "in function call to tiglWingGetSegmentIndex.";
         return TIGL_NULL_POINTER;
     }
     if (wingIndex == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for wingIndex ";
-        LOG(ERROR) << "in function call to tiglWingGetSegmentIndex." << std::endl;
+        LOG(ERROR) << "Null pointer argument for wingIndex\n"
+                   << "in function call to tiglWingGetSegmentIndex.";
         return TIGL_NULL_POINTER;
     }
 
@@ -1645,15 +1645,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentIndex(TiglCPACSConfiguration
         return TIGL_UID_ERROR;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglWingGetSegmentIndex!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglWingGetSegmentIndex!";
         return TIGL_ERROR;
     }
 }
@@ -1664,13 +1664,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSectionCount(TiglCPACSConfiguration
                                                           int* sectionCount)
 {
     if (sectionCount == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for sectionCount "
+        LOG(ERROR) << "Null pointer argument for sectionCount\n"
                    << "in function call to tiglWingGetSectionCount.";
         return TIGL_NULL_POINTER;
     }
 
     if (wingIndex < 1) {
-        LOG(ERROR) << "Error: Wing index is less than zero "
+        LOG(ERROR) << "Wing index is less than zero\n"
                    << "in function call to tiglWingGetSectionCount.";
         return TIGL_INDEX_ERROR;
     }
@@ -1683,15 +1683,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSectionCount(TiglCPACSConfiguration
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglWingGetSectionCount!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglWingGetSectionCount!";
         return TIGL_ERROR;
     }
 }
@@ -1703,13 +1703,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSectionUID(TiglCPACSConfigurationHa
                                                         char** uidNamePtr)
 {
     if (uidNamePtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for uidNamePtr "
+        LOG(ERROR) << "Null pointer argument for uidNamePtr\n"
                    << "in function call to tiglWingGetSectionUID.";
         return TIGL_NULL_POINTER;
     }
 
     if (wingIndex < 1 || sectionIndex < 1) {
-        LOG(ERROR) << "Error: Wing or segment index is less than zero "
+        LOG(ERROR) << "Wing or segment index is less than zero\n"
                    << "in function call to tiglWingGetSectionUID.";
         return TIGL_INDEX_ERROR;
     }
@@ -1723,15 +1723,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSectionUID(TiglCPACSConfigurationHa
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglWingGetSectionUID!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglWingGetSectionUID!";
         return TIGL_ERROR;
     }
 }
@@ -1743,8 +1743,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSymmetry(TiglCPACSConfigurationHand
 {
 
     if (wingIndex < 1) {
-        LOG(ERROR) << "Error: Wing or segment index index in less than zero ";
-        LOG(ERROR) << "in function call to tiglGetWingSymmetry." << std::endl;
+        LOG(ERROR) << "Wing or segment index index in less than zero\n"
+                   << "in function call to tiglGetWingSymmetry.";
         return TIGL_INDEX_ERROR;
     }
 
@@ -1756,15 +1756,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSymmetry(TiglCPACSConfigurationHand
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglGetWingSymmetry!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglGetWingSymmetry!";
         return TIGL_ERROR;
     }
 }
@@ -1775,14 +1775,14 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentFindSegment(TiglCPACSC
                                                                       double z, char** segmentUID, char** wingUID)
 {
     if (segmentUID == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for segmentUID ";
-        LOG(ERROR) << "in function call to tiglWingComponentSegmentFindSegment." << std::endl;
+        LOG(ERROR) << "Null pointer argument for segmentUID\n"
+                   << "in function call to tiglWingComponentSegmentFindSegment.";
         return TIGL_NULL_POINTER;
     }
 
     if (wingUID == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for wingUID ";
-        LOG(ERROR) << "in function call to tiglWingComponentSegmentFindSegment." << std::endl;
+        LOG(ERROR) << "Null pointer argument for wingUID\n"
+                   << "in function call to tiglWingComponentSegmentFindSegment.";
         return TIGL_NULL_POINTER;
     }
 
@@ -1808,7 +1808,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentFindSegment(TiglCPACSC
                     if (distance > 1e-2) {
                         // point does not lie on component segment
                         LOG(ERROR) << "Given point does not lie on component segment within 1cm tolerance."
-                                   << " Diviation is " << distance*1000. << " mm.";
+                                   << " Deviation is " << distance*1000. << " mm.";
                         return TIGL_NOT_FOUND;
                     }
 
@@ -1822,15 +1822,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentFindSegment(TiglCPACSC
         return TIGL_ERROR;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglWingComponentSegmentFindSegment!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglWingComponentSegmentFindSegment!";
         return TIGL_ERROR;
     }
 }
@@ -1840,14 +1840,14 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetPoint(TiglCPACSConf
                                                                    double * x, double * y, double * z)
 {
     if (!componentSegmentUID) {
-        LOG(ERROR) << "Error: Null pointer argument for componentSegmentUID ";
-        LOG(ERROR) << "in function call to tiglWingComponentSegmentPointGetPoint." << std::endl;
+        LOG(ERROR) << "Null pointer argument for componentSegmentUID \n"
+                   << "in function call to tiglWingComponentSegmentPointGetPoint.";
         return TIGL_NULL_POINTER;
     }
     
     if (!x || !y || !z){
-        LOG(ERROR) << "Error: Null pointer argument for x, y, or z ";
-        LOG(ERROR) << "in function call to tiglWingComponentSegmentPointGetPoint." << std::endl;
+        LOG(ERROR) << "Null pointer argument for x, y, or z\n"
+                   << "in function call to tiglWingComponentSegmentPointGetPoint.";
         return TIGL_NULL_POINTER;
     }
     
@@ -1875,19 +1875,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetPoint(TiglCPACSConf
         }
 
         // the component segment was not found
-        LOG(ERROR) << "Error: Invalid uid in tiglWingComponentSegmentPointGetPoint" << std::endl;
+        LOG(ERROR) << "Invalid uid in tiglWingComponentSegmentPointGetPoint!";
         return TIGL_UID_ERROR;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglWingComponentSegmentPointGetPoint!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglWingComponentSegmentPointGetPoint!";
         return TIGL_ERROR;
     }
 }
@@ -1957,25 +1957,25 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentPointGetSegmentEtaXsi(
                                                                                 double *segmentEta, double *segmentXsi)
 {
     if (!segmentUID) {
-        LOG(ERROR) << "Error: Null pointer argument for segmentUID "
+        LOG(ERROR) << "Null pointer argument for segmentUID\n"
                    << "in function call to tiglWingComponentSegmentPointGetSegmentEtaXsi.";
         return TIGL_NULL_POINTER;
     }
 
     if (!wingUID) {
-        LOG(ERROR) << "Error: Null pointer argument for wingUID "
+        LOG(ERROR) << "Null pointer argument for wingUID\n"
                    << "in function call to tiglWingComponentSegmentPointGetSegmentEtaXsi.";
         return TIGL_NULL_POINTER;
     }
 
     if (!segmentEta) {
-        LOG(ERROR) << "Error: Null pointer argument for segmentEta "
+        LOG(ERROR) << "Null pointer argument for segmentEta\n"
                    << "in function call to tiglWingComponentSegmentPointGetSegmentEtaXsi.";
         return TIGL_NULL_POINTER;
     }
 
     if (!segmentXsi) {
-        LOG(ERROR) << "Error: Null pointer argument for segmentXsi "
+        LOG(ERROR) << "Null pointer argument for segmentXsi\n"
                    << "in function call to tiglWingComponentSegmentPointGetSegmentEtaXsi.";
         return TIGL_NULL_POINTER;
     }
@@ -2003,15 +2003,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentPointGetSegmentEtaXsi(
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglWingComponentSegmentPointGetSegmentEtaXsi!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglWingComponentSegmentPointGetSegmentEtaXsi!";
         return TIGL_ERROR;
     }
 }
@@ -2023,26 +2023,26 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingSegmentPointGetComponentSegmentEtaXsi(
 {
                                     
     if (segmentUID == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for segmentUID ";
-        LOG(ERROR) << "in function call to tiglWingSegmentPointGetComponentSegmentEtaXsi." << std::endl;
+        LOG(ERROR) << "Null pointer argument for segmentUID\n"
+                   << "in function call to tiglWingSegmentPointGetComponentSegmentEtaXsi.";
         return TIGL_NULL_POINTER;
     }
 
     if (componentSegmentUID == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for componentSegmentUID ";
-        LOG(ERROR) << "in function call to tiglWingSegmentPointGetComponentSegmentEtaXsi." << std::endl;
+        LOG(ERROR) << "Null pointer argument for componentSegmentUID\n"
+                   << "in function call to tiglWingSegmentPointGetComponentSegmentEtaXsi.";
         return TIGL_NULL_POINTER;
     }
     
     if (eta == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for eta ";
-        LOG(ERROR) << "in function call to tiglWingSegmentPointGetComponentSegmentEtaXsi." << std::endl;
+        LOG(ERROR) << "Null pointer argument for eta\n"
+                   << "in function call to tiglWingSegmentPointGetComponentSegmentEtaXsi.";
         return TIGL_NULL_POINTER;
     }
     
     if (xsi == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for xsi ";
-        LOG(ERROR) << "in function call to tiglWingSegmentPointGetComponentSegmentEtaXsi." << std::endl;
+        LOG(ERROR) << "Null pointer argument for xsi\n"
+                   << "in function call to tiglWingSegmentPointGetComponentSegmentEtaXsi.";
         return TIGL_NULL_POINTER;
     }
     
@@ -2071,19 +2071,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingSegmentPointGetComponentSegmentEtaXsi(
         }
         
         // the component segment was not found
-        LOG(ERROR) << "Error: Invalid component segment uid in tiglWingSegmentPointGetComponentSegmentEtaXsi" << std::endl;
+        LOG(ERROR) << "Invalid component segment uid in tiglWingSegmentPointGetComponentSegmentEtaXsi";
         return TIGL_UID_ERROR;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglWingSegmentPointGetComponentSegmentEtaXsi!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglWingSegmentPointGetComponentSegmentEtaXsi!";
         return TIGL_ERROR;
     }
 }
@@ -2098,20 +2098,20 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetSegmentIntersection
                                                                                  TiglBoolean* hasWarning)
 {
     if (segmentUID == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for segmentUID ";
-        LOG(ERROR) << "in function call to tiglWingComponentSegmentGetSegmentIntersection." << std::endl;
+        LOG(ERROR) << "Null pointer argument for segmentUID\n"
+                   << "in function call to tiglWingComponentSegmentGetSegmentIntersection.";
         return TIGL_NULL_POINTER;
     }
 
     if (componentSegmentUID == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for componentSegmentUID ";
-        LOG(ERROR) << "in function call to tiglWingComponentSegmentGetSegmentIntersection." << std::endl;
+        LOG(ERROR) << "Null pointer argument for componentSegmentUID\n"
+                   << "in function call to tiglWingComponentSegmentGetSegmentIntersection.";
         return TIGL_NULL_POINTER;
     }
     
     if (segmentXsi == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for segmentXsi ";
-        LOG(ERROR) << "in function call to tiglWingComponentSegmentGetSegmentIntersection." << std::endl;
+        LOG(ERROR) << "Null pointer argument for segmentXsi\n"
+                   << "in function call to tiglWingComponentSegmentGetSegmentIntersection.";
         return TIGL_NULL_POINTER;
     }
     
@@ -2150,19 +2150,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetSegmentIntersection
         }
         
         // the component segment was not found
-        LOG(ERROR) << "Error: Invalid component segment uid in tiglWingComponentSegmentGetSegmentIntersection" << std::endl;
+        LOG(ERROR) << "Invalid component segment uid in tiglWingComponentSegmentGetSegmentIntersection";
         return TIGL_UID_ERROR;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an unknown exception in tiglWingComponentSegmentGetSegmentIntersection!" << std::endl;
+        LOG(ERROR) << "Caught an unknown exception in tiglWingComponentSegmentGetSegmentIntersection!";
         return TIGL_ERROR;
     }
 }
@@ -2176,14 +2176,14 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentComputeEtaIntersection
                                                                                  TiglBoolean* hasWarning)
 {
     if (componentSegmentUID == 0) {
-        LOG(ERROR) << "Error: Null pointer for argument componentSegmentUID ";
-        LOG(ERROR) << "in function call to tiglWingComponentSegmentComputeEtaIntersection." << std::endl;
+        LOG(ERROR) << "Null pointer for argument componentSegmentUID\n"
+                   << "in function call to tiglWingComponentSegmentComputeEtaIntersection.";
         return TIGL_NULL_POINTER;
     }
 
     if (xsi == 0) {
-        LOG(ERROR) << "Error: Null pointer for argument xsi ";
-        LOG(ERROR) << "in function call to tiglWingComponentSegmentComputeEtaIntersection." << std::endl;
+        LOG(ERROR) << "Null pointer for argument xsi\n"
+                   << "in function call to tiglWingComponentSegmentComputeEtaIntersection.";
         return TIGL_NULL_POINTER;
     }
 
@@ -2225,19 +2225,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentComputeEtaIntersection
         }
 
         // the component segment was not found
-        LOG(ERROR) << "Error: Invalid component segment uid in tiglWingComponentSegmentComputeEtaIntersection" << std::endl;
+        LOG(ERROR) << "Invalid component segment uid in tiglWingComponentSegmentComputeEtaIntersection";
         return TIGL_UID_ERROR;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an unknown exception in tiglWingComponentSegmentComputeEtaIntersection!" << std::endl;
+        LOG(ERROR) << "Caught an unknown exception in tiglWingComponentSegmentComputeEtaIntersection!";
         return TIGL_ERROR;
     }
 }
@@ -2248,14 +2248,14 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetNumberOfSegments(Ti
 {
 
     if (componentSegmentUID == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for componentSegmentUID ";
-        LOG(ERROR) << "in function call to tiglWingComponentSegmentGetNumberOfSegments." << std::endl;
+        LOG(ERROR) << "Null pointer argument for componentSegmentUID\n"
+                   << "in function call to tiglWingComponentSegmentGetNumberOfSegments.";
         return TIGL_NULL_POINTER;
     }
     
     if (nsegments == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for nsegments ";
-        LOG(ERROR) << "in function call to tiglWingComponentSegmentGetNumberOfSegments." << std::endl;
+        LOG(ERROR) << "Null pointer argument for nsegments\n"
+                   << "in function call to tiglWingComponentSegmentGetNumberOfSegments.";
         return TIGL_NULL_POINTER;
     }
     
@@ -2283,19 +2283,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetNumberOfSegments(Ti
             }
         }
         // the component segment was not found
-        LOG(ERROR) << "Error: Invalid component segment uid in tiglWingComponentSegmentGetNumberOfSegments" << std::endl;
+        LOG(ERROR) << "Invalid component segment uid in tiglWingComponentSegmentGetNumberOfSegments";
         return TIGL_UID_ERROR;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglWingComponentSegmentGetNumberOfSegments!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglWingComponentSegmentGetNumberOfSegments!";
         return TIGL_ERROR;
     }
 }
@@ -2308,14 +2308,14 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetSegmentUID(TiglCPAC
 {
     
     if (componentSegmentUID == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for componentSegmentUID ";
-        LOG(ERROR) << "in function call to tiglWingComponentSegmentGetSegmentUID." << std::endl;
+        LOG(ERROR) << "Null pointer argument for componentSegmentUID\n"
+                   << "in function call to tiglWingComponentSegmentGetSegmentUID.";
         return TIGL_NULL_POINTER;
     }
     
     if (segmentUID == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for nsegments ";
-        LOG(ERROR) << "in function call to tiglWingComponentSegmentGetSegmentUID." << std::endl;
+        LOG(ERROR) << "Null pointer argument for nsegments\n"
+                   << "in function call to tiglWingComponentSegmentGetSegmentUID.";
         return TIGL_NULL_POINTER;
     }
     
@@ -2331,7 +2331,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetSegmentUID(TiglCPAC
                 tigl::CCPACSWingComponentSegment & compSeg = (tigl::CCPACSWingComponentSegment &) wing.GetComponentSegment(componentSegmentUID);
                 const tigl::SegmentList& segments = compSeg.GetSegmentList();
                 if (segmentIndex < 1 || segmentIndex > (int) segments.size()) {
-                    LOG(ERROR) << "Error: Invalid segment index in tiglWingComponentSegmentGetSegmentUID" << std::endl;
+                    LOG(ERROR) << "Invalid segment index in tiglWingComponentSegmentGetSegmentUID";
                     return TIGL_INDEX_ERROR;
                 }
                 *segmentUID = const_cast<char*>(segments[segmentIndex-1]->GetUID().c_str());
@@ -2348,19 +2348,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetSegmentUID(TiglCPAC
             }
         }
         // the component segment was not found
-        LOG(ERROR) << "Error: Invalid component segment uid in tiglWingComponentSegmentGetSegmentUID" << std::endl;
+        LOG(ERROR) << "Invalid component segment uid in tiglWingComponentSegmentGetSegmentUID";
         return TIGL_UID_ERROR;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglWingComponentSegmentGetSegmentUID!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglWingComponentSegmentGetSegmentUID!";
         return TIGL_ERROR;
     }
 }
@@ -2373,8 +2373,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetSegmentUID(TiglCPAC
 TIGL_COMMON_EXPORT TiglReturnCode tiglGetFuselageCount(TiglCPACSConfigurationHandle cpacsHandle, int* fuselageCountPtr)
 {
     if (fuselageCountPtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for fuselageCountPtr ";
-        LOG(ERROR) << "in function call to tiglGetFuselageCount." << std::endl;
+        LOG(ERROR) << "Null pointer argument for fuselageCountPtr\n"
+                   << "in function call to tiglGetFuselageCount.";
         return TIGL_NULL_POINTER;
     }
 
@@ -2385,15 +2385,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetFuselageCount(TiglCPACSConfigurationHan
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglGetFuselageCount!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglGetFuselageCount!";
         return TIGL_ERROR;
     }
 }
@@ -2404,8 +2404,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentCount(TiglCPACSConfigura
                                                               int* segmentCountPtr)
 {
     if (segmentCountPtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for segmentCountPtr ";
-        LOG(ERROR) << "in function call to tiglFuselageGetSegmentCount." << std::endl;
+        LOG(ERROR) << "Null pointer argument for segmentCountPtr\n"
+                   << "in function call to tiglFuselageGetSegmentCount.";
         return TIGL_NULL_POINTER;
     }
 
@@ -2417,15 +2417,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentCount(TiglCPACSConfigura
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglFuselageGetSegmentCount!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetSegmentCount!";
         return TIGL_ERROR;
     }
 }
@@ -2441,8 +2441,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetPoint(TiglCPACSConfigurationHan
                                                        double* pointZPtr)
 {
     if (pointXPtr == 0 || pointYPtr == 0 || pointZPtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for pointXPtr, pointYPtr or pointZPtr ";
-        LOG(ERROR) << "in function call to tiglFuselageGetPoint." << std::endl;
+        LOG(ERROR) << "Null pointer argument for pointXPtr, pointYPtr or pointZPtr\n"
+                   << "in function call to tiglFuselageGetPoint.";
         return TIGL_NULL_POINTER;
     }
 
@@ -2457,15 +2457,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetPoint(TiglCPACSConfigurationHan
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglFuselageGetPoint!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetPoint!";
         return TIGL_ERROR;
     }
 }
@@ -2482,8 +2482,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetPointAngle(TiglCPACSConfigurati
                                                             double* pointZPtr)
 {
     if (pointXPtr == 0 || pointYPtr == 0 || pointZPtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for pointXPtr, pointYPtr or pointZPtr ";
-        LOG(ERROR) << "in function call to tiglFuselageGetPointAngle." << std::endl;
+        LOG(ERROR) << "Null pointer argument for pointXPtr, pointYPtr or pointZPtr\n"
+                   << "in function call to tiglFuselageGetPointAngle.";
         return TIGL_NULL_POINTER;
     }
 
@@ -2502,15 +2502,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetPointAngle(TiglCPACSConfigurati
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglFuselageGetPointAngle!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetPointAngle!";
         return TIGL_ERROR;
     }
 }
@@ -2528,8 +2528,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetPointAngleTranslated(TiglCPACSC
                                                                       double* pointZPtr)
 {
     if (pointXPtr == 0 || pointYPtr == 0 || pointZPtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for pointXPtr, pointYPtr or pointZPtr ";
-        LOG(ERROR) << "in function call to tiglFuselageGetPointAngleTranslated." << std::endl;
+        LOG(ERROR) << "Null pointer argument for pointXPtr, pointYPtr or pointZPtr\n"
+                   << "in function call to tiglFuselageGetPointAngleTranslated.";
         return TIGL_NULL_POINTER;
     }
 
@@ -2548,15 +2548,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetPointAngleTranslated(TiglCPACSC
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglFuselageGetPointAngleTranslated!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetPointAngleTranslated!";
         return TIGL_ERROR;
     }
 }
@@ -2573,8 +2573,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetPointOnXPlane(TiglCPACSConfigur
                                                                double* pointZPtr)
 {
     if (pointXPtr == 0 || pointYPtr == 0 || pointZPtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for pointXPtr, pointYPtr or pointZPtr ";
-        LOG(ERROR) << "in function call to tiglFuselageGetPointOnXPlane." << std::endl;
+        LOG(ERROR) << "Null pointer argument for pointXPtr, pointYPtr or pointZPtr\n"
+                   << "in function call to tiglFuselageGetPointOnXPlane.";
         return TIGL_NULL_POINTER;
     }
 
@@ -2590,15 +2590,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetPointOnXPlane(TiglCPACSConfigur
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglFuselageGetPointOnXPlane!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetPointOnXPlane!";
         return TIGL_ERROR;
     }
 }
@@ -2616,8 +2616,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetPointOnYPlane(TiglCPACSConfigur
                                                                double* pointZPtr)
 {
     if (pointXPtr == 0 || pointYPtr == 0 || pointZPtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for pointXPtr, pointYPtr or pointZPtr ";
-        LOG(ERROR) << "in function call to tiglFuselageGetPointOnYPlane." << std::endl;
+        LOG(ERROR) << "Null pointer argument for pointXPtr, pointYPtr or pointZPtr\n"
+                   << "in function call to tiglFuselageGetPointOnYPlane.";
         return TIGL_NULL_POINTER;
     }
 
@@ -2633,15 +2633,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetPointOnYPlane(TiglCPACSConfigur
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglFuselageGetPointOnYPlane!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetPointOnYPlane!";
         return TIGL_ERROR;
     }
 }
@@ -2655,8 +2655,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetNumPointsOnXPlane(TiglCPACSConf
                                                                    int* numPointsPtr)
 {
     if (numPointsPtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for numPointsPtr ";
-        LOG(ERROR) << "in function call to tiglFuselageGetNumPointsOnXPlane." << std::endl;
+        LOG(ERROR) << "Null pointer argument for numPointsPtr\n"
+                   << "in function call to tiglFuselageGetNumPointsOnXPlane.";
         return TIGL_NULL_POINTER;
     }
 
@@ -2669,15 +2669,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetNumPointsOnXPlane(TiglCPACSConf
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglFuselageGetNumPointsOnXPlane!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetNumPointsOnXPlane!";
         return TIGL_ERROR;
     }
 }
@@ -2691,8 +2691,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetNumPointsOnYPlane(TiglCPACSConf
                                                                    int* numPointsPtr)
 {
     if (numPointsPtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for numPointsPtr ";
-        LOG(ERROR) << "in function call to tiglFuselageGetNumPointsOnYPlane." << std::endl;
+        LOG(ERROR) << "Null pointer argument for numPointsPtr\n"
+                   << "in function call to tiglFuselageGetNumPointsOnYPlane.";
         return TIGL_NULL_POINTER;
     }
 
@@ -2705,15 +2705,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetNumPointsOnYPlane(TiglCPACSConf
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglFuselageGetNumPointsOnYPlane!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetNumPointsOnYPlane!";
         return TIGL_ERROR;
     }
 }
@@ -2726,8 +2726,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetCircumference(TiglCPACSConfigur
                                                                double* circumferencePtr)
 {
     if (circumferencePtr == 0) {
-         LOG(ERROR) << "Error: Null pointer argument for circumferencePtr ";
-         LOG(ERROR) << "in function call to tiglFuselageGetCircumference." << std::endl;
+         LOG(ERROR) << "Null pointer argument for circumferencePtr\n"
+                    << "in function call to tiglFuselageGetCircumference.";
          return TIGL_NULL_POINTER;
      }
 
@@ -2739,15 +2739,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetCircumference(TiglCPACSConfigur
          return TIGL_SUCCESS;
      }
      catch (std::exception& ex) {
-         LOG(ERROR) << ex.what() << std::endl;
+         LOG(ERROR) << ex.what();
          return TIGL_ERROR;
      }
      catch (tigl::CTiglError& ex) {
-         LOG(ERROR) << ex.getError() << std::endl;
+         LOG(ERROR) << ex.getError();
          return ex.getCode();
      }
      catch (...) {
-         LOG(ERROR) << "Caught an exception in tiglFuselageGetCircumference!" << std::endl;
+         LOG(ERROR) << "Caught an exception in tiglFuselageGetCircumference!";
          return TIGL_ERROR;
      }
 }
@@ -2761,8 +2761,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetStartConnectedSegmentCount(Tigl
                                                                             int* segmentCountPtr)
 {
     if (segmentCountPtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for segmentCountPtr ";
-        LOG(ERROR) << "in function call to tiglFuselageGetStartConnectedSegmentCount." << std::endl;
+        LOG(ERROR) << "Null pointer argument for segmentCountPtr\n"
+                   << "in function call to tiglFuselageGetStartConnectedSegmentCount.";
         return TIGL_NULL_POINTER;
     }
 
@@ -2775,15 +2775,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetStartConnectedSegmentCount(Tigl
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglFuselageGetStartConnectedSegmentCount!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetStartConnectedSegmentCount!";
         return TIGL_ERROR;
     }
 }
@@ -2795,8 +2795,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetEndConnectedSegmentCount(TiglCP
                                                                           int* segmentCountPtr)
 {
     if (segmentCountPtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for segmentCountPtr ";
-        LOG(ERROR) << "in function call to tiglFuselageGetEndConnectedSegmentCount." << std::endl;
+        LOG(ERROR) << "Null pointer argument for segmentCountPtr\n"
+                   << "in function call to tiglFuselageGetEndConnectedSegmentCount.";
         return TIGL_NULL_POINTER;
     }
 
@@ -2809,15 +2809,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetEndConnectedSegmentCount(TiglCP
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglFuselageGetEndConnectedSegmentCount!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetEndConnectedSegmentCount!";
         return TIGL_ERROR;
     }
 }
@@ -2830,8 +2830,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetStartConnectedSegmentIndex(Tigl
                                                                             int* connectedIndexPtr)
 {
     if (connectedIndexPtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for connectedIndexPtr ";
-        LOG(ERROR) << "in function call to tiglFuselageGetStartConnectedSegmentIndex." << std::endl;
+        LOG(ERROR) << "Null pointer argument for connectedIndexPtr\n"
+                   << "in function call to tiglFuselageGetStartConnectedSegmentIndex.";
         return TIGL_NULL_POINTER;
     }
 
@@ -2844,15 +2844,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetStartConnectedSegmentIndex(Tigl
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglFuselageGetStartConnectedSegmentIndex!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetStartConnectedSegmentIndex!";
         return TIGL_ERROR;
     }
 }
@@ -2865,8 +2865,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetEndConnectedSegmentIndex(TiglCP
                                                                           int* connectedIndexPtr)
 {
     if (connectedIndexPtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for connectedIndexPtr ";
-        LOG(ERROR) << "in function call to tiglFuselageGetEndConnectedSegmentIndex." << std::endl;
+        LOG(ERROR) << "Null pointer argument for connectedIndexPtr\n"
+                   << "in function call to tiglFuselageGetEndConnectedSegmentIndex.";
         return TIGL_NULL_POINTER;
     }
 
@@ -2879,15 +2879,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetEndConnectedSegmentIndex(TiglCP
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglFuselageGetEndConnectedSegmentIndex!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetEndConnectedSegmentIndex!";
         return TIGL_ERROR;
     }
 }
@@ -2900,8 +2900,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetStartSectionAndElementUID(TiglC
 {
 
     if (fuselageIndex < 1 || segmentIndex < 1) {
-        LOG(ERROR) << "Error: fuselageIndex or segmentIndex argument is less than one ";
-        LOG(ERROR) << "in function call to tiglFuselageGetStartSectionAndElementUID." << std::endl;
+        LOG(ERROR) << "fuselageIndex or segmentIndex argument is less than one\n"
+                   << "in function call to tiglFuselageGetStartSectionAndElementUID.";
         return TIGL_INDEX_ERROR;
     }
 
@@ -2918,15 +2918,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetStartSectionAndElementUID(TiglC
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglFuselageGetStartSectionAndElementIndex!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetStartSectionAndElementIndex!";
         return TIGL_ERROR;
     }
 }
@@ -2941,8 +2941,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetEndSectionAndElementUID(TiglCPA
 {
 
     if (fuselageIndex < 1 || segmentIndex < 1) {
-        LOG(ERROR) << "Error: fuselageIndex or segmentIndex argument less than one ";
-        LOG(ERROR) << "in function call to tiglFuselageGetEndSectionAndElementUID." << std::endl;
+        LOG(ERROR) << "FuselageIndex or segmentIndex argument less than one\n"
+                   << "in function call to tiglFuselageGetEndSectionAndElementUID.";
         return TIGL_INDEX_ERROR;
     }
 
@@ -2958,15 +2958,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetEndSectionAndElementUID(TiglCPA
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglFuselageGetEndSectionAndElementIndex!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetEndSectionAndElementIndex!";
         return TIGL_ERROR;
     }
 }
@@ -2980,13 +2980,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetStartSectionAndElementIndex (Ti
                                                                               int* elementIndexPtr)
 {
     if (sectionIndexPtr == 0 || elementIndexPtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for sectionIndexPtr or elementIndexPtr ";
-        LOG(ERROR) << "in function call to tiglFuselageGetStartSectionAndElementIndex." << std::endl;
+        LOG(ERROR) << "Null pointer argument for sectionIndexPtr or elementIndexPtr\n"
+                   << "in function call to tiglFuselageGetStartSectionAndElementIndex.";
         return TIGL_NULL_POINTER;
     }
     if (elementIndexPtr == 0 || sectionIndexPtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for sectionIndexPtr or elementIndexPtr ";
-        LOG(ERROR) << "in function call to tiglFuselageGetStartSectionAndElementIndex." << std::endl;
+        LOG(ERROR) << "Null pointer argument for sectionIndexPtr or elementIndexPtr\n"
+                   << "in function call to tiglFuselageGetStartSectionAndElementIndex.";
         return TIGL_NULL_POINTER;
     }
 
@@ -3001,15 +3001,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetStartSectionAndElementIndex (Ti
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglFuselageGetStartSectionAndElementIndex!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetStartSectionAndElementIndex!";
         return TIGL_ERROR;
     }
 }
@@ -3022,13 +3022,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetEndSectionAndElementIndex(TiglC
                                                                            int* elementIndexPtr)
 {
     if (sectionIndexPtr == 0 || elementIndexPtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for sectionIndexPtr or elementIndexPtr ";
-        LOG(ERROR) << "in function call to tiglFuselageGetEndSectionAndElementIndex." << std::endl;
+        LOG(ERROR) << "Null pointer argument for sectionIndexPtr or elementIndexPtr\n"
+                   << "in function call to tiglFuselageGetEndSectionAndElementIndex.";
         return TIGL_NULL_POINTER;
     }
     if (elementIndexPtr == 0 || sectionIndexPtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for sectionIndexPtr or elementIndexPtr ";
-        LOG(ERROR) << "in function call to tiglFuselageGetEndSectionAndElementIndex." << std::endl;
+        LOG(ERROR) << "Null pointer argument for sectionIndexPtr or elementIndexPtr\n"
+                   << "in function call to tiglFuselageGetEndSectionAndElementIndex.";
         return TIGL_NULL_POINTER;
     }
 
@@ -3043,15 +3043,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetEndSectionAndElementIndex(TiglC
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglFuselageGetEndSectionAndElementIndex!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetEndSectionAndElementIndex!";
         return TIGL_ERROR;
     }
 }
@@ -3064,14 +3064,14 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetProfileName(TiglCPACSConfigurat
                                                              char** profileNamePtr)
 {
     if (profileNamePtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for profileNamePtr ";
-        LOG(ERROR) << "in function call to tiglFuselageGetProfileName." << std::endl;
+        LOG(ERROR) << "Null pointer argument for profileNamePtr\n"
+                   << "in function call to tiglFuselageGetProfileName.";
         return TIGL_NULL_POINTER;
     }
 
     if (fuselageIndex < 1 || sectionIndex < 1 || elementIndex < 1) {
-        LOG(ERROR) << "Error: Fuselage, section or element index index in less than zero ";
-        LOG(ERROR) << "in function call to tiglFuselageGetProfileName." << std::endl;
+        LOG(ERROR) << "Fuselage, section or element index index in less than zero\n"
+                   << "in function call to tiglFuselageGetProfileName.";
         return TIGL_INDEX_ERROR;
     }
 
@@ -3089,15 +3089,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetProfileName(TiglCPACSConfigurat
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglFuselageGetProfileName!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetProfileName!";
         return TIGL_ERROR;
     }
 }
@@ -3108,14 +3108,14 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetUID(TiglCPACSConfigurationHandl
                                                      char** uidNamePtr)
 {
     if (uidNamePtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for uidNamePtr ";
-        LOG(ERROR) << "in function call to tiglFuselageGetUID." << std::endl;
+        LOG(ERROR) << "Null pointer argument for uidNamePtr\n"
+                   << "in function call to tiglFuselageGetUID.";
         return TIGL_NULL_POINTER;
     }
 
     if (fuselageIndex < 1) {
-        LOG(ERROR) << "Error: Fuselage or segment index index in less than zero ";
-        LOG(ERROR) << "in function call to tiglFuselageGetUID." << std::endl;
+        LOG(ERROR) << "Fuselage or segment index index in less than zero\n"
+                   << "in function call to tiglFuselageGetUID.";
         return TIGL_INDEX_ERROR;
     }
 
@@ -3127,15 +3127,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetUID(TiglCPACSConfigurationHandl
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglFuselageGetUID!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetUID!";
         return TIGL_ERROR;
     }
 }
@@ -3145,13 +3145,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetIndex(TiglCPACSConfigurationHan
                                                        int* fuselageIndexPtr)
 {
     if (fuselageUID == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for fuselageUID ";
-        LOG(ERROR) << "in function call to tiglFuselageGetIndex." << std::endl;
+        LOG(ERROR) << "Null pointer argument for fuselageUID\n"
+                   << "in function call to tiglFuselageGetIndex.";
         return TIGL_NULL_POINTER;
     }
     if (fuselageIndexPtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for fuselageIndexPtr ";
-        LOG(ERROR) << "in function call to tiglFuselageGetIndex." << std::endl;
+        LOG(ERROR) << "Null pointer argument for fuselageIndexPtr\n"
+                   << "in function call to tiglFuselageGetIndex.";
         return TIGL_NULL_POINTER;
     }
 
@@ -3163,16 +3163,16 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetIndex(TiglCPACSConfigurationHan
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
         *fuselageIndexPtr = -1;
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglFuselageGetIndex!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetIndex!";
         return TIGL_ERROR;
     }
 }
@@ -3184,14 +3184,14 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentUID(TiglCPACSConfigurati
                                                             char** uidNamePtr)
 {
     if (uidNamePtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for uidNamePtr ";
-        LOG(ERROR) << "in function call to tiglFuselageGetSegmentUID." << std::endl;
+        LOG(ERROR) << "Null pointer argument for uidNamePtr\n"
+                   << "in function call to tiglFuselageGetSegmentUID.";
         return TIGL_NULL_POINTER;
     }
 
     if (fuselageIndex < 1 || segmentIndex < 1) {
-        LOG(ERROR) << "Error: Fuselage or segment index index in less than zero ";
-        LOG(ERROR) << "in function call to tiglFuselageGetSegmentUID." << std::endl;
+        LOG(ERROR) << "Fuselage or segment index index in less than zero\n"
+                   << "in function call to tiglFuselageGetSegmentUID.";
         return TIGL_INDEX_ERROR;
     }
 
@@ -3204,15 +3204,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentUID(TiglCPACSConfigurati
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglFuselageGetSegmentUID!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetSegmentUID!";
         return TIGL_ERROR;
     }
 }
@@ -3224,18 +3224,18 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentIndex(TiglCPACSConfigura
                                                               int * fuselageIndex)
 {
     if (segmentUID == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for segmentUID ";
-        LOG(ERROR) << "in function call to tiglFuselageGetSegmentIndex." << std::endl;
+        LOG(ERROR) << "Null pointer argument for segmentUID\n"
+                   << "in function call to tiglFuselageGetSegmentIndex.";
         return TIGL_NULL_POINTER;
     }
     if (segmentIndex == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for segmentIndex ";
-        LOG(ERROR) << "in function call to tiglFuselageGetSegmentIndex." << std::endl;
+        LOG(ERROR) << "Null pointer argument for segmentIndex\n"
+                   << "in function call to tiglFuselageGetSegmentIndex.";
         return TIGL_NULL_POINTER;
     }
     if (fuselageIndex == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for fuselageIndex ";
-        LOG(ERROR) << "in function call to tiglFuselageGetSegmentIndex." << std::endl;
+        LOG(ERROR) << "Null pointer argument for fuselageIndex\n"
+                   << "in function call to tiglFuselageGetSegmentIndex.";
         return TIGL_NULL_POINTER;
     }
 
@@ -3262,15 +3262,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentIndex(TiglCPACSConfigura
         return TIGL_UID_ERROR;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglFuselageGetSegmentIndex!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetSegmentIndex!";
         return TIGL_ERROR;
     }
 }
@@ -3281,13 +3281,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSectionCount(TiglCPACSConfigura
                                                               int* sectionCount)
 {
     if (sectionCount == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for sectionCount "
+        LOG(ERROR) << "Null pointer argument for sectionCount "
                    << "in function call to tiglFuselageGetSectionCount.";
         return TIGL_NULL_POINTER;
     }
 
     if (fuselageIndex < 1) {
-        LOG(ERROR) << "Error: Fuselage index is less than zero "
+        LOG(ERROR) << "Fuselage index is less than zero "
                    << "in function call to tiglFuselageGetSectionCount.";
         return TIGL_INDEX_ERROR;
     }
@@ -3300,15 +3300,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSectionCount(TiglCPACSConfigura
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglFuselageGetSectionCount!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetSectionCount!";
         return TIGL_ERROR;
     }
 }
@@ -3320,14 +3320,14 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSectionUID(TiglCPACSConfigurati
                                                             char** uidNamePtr)
 {
     if (uidNamePtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for uidNamePtr ";
-        LOG(ERROR) << "in function call to tiglFuselageGetSectionUID." << std::endl;
+        LOG(ERROR) << "Null pointer argument for uidNamePtr\n"
+                   << "in function call to tiglFuselageGetSectionUID.";
         return TIGL_NULL_POINTER;
     }
 
     if (fuselageIndex < 1 || sectionIndex < 1) {
-        LOG(ERROR) << "Error: Fuselage or segment index index in less than zero ";
-        LOG(ERROR) << "in function call to tiglFuselageGetSectionUID." << std::endl;
+        LOG(ERROR) << "Fuselage or segment index index in less than zero\n"
+                   << "in function call to tiglFuselageGetSectionUID.";
         return TIGL_INDEX_ERROR;
     }
 
@@ -3340,15 +3340,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSectionUID(TiglCPACSConfigurati
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglFuselageGetSectionUID!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetSectionUID!";
         return TIGL_ERROR;
     }
 }
@@ -3364,8 +3364,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSymmetry(TiglCPACSConfiguration
                                                           TiglSymmetryAxis* symmetryAxisPtr)
 {
     if (fuselageIndex < 1) {
-        LOG(ERROR) << "Error: Fuselage or segment index index is less than zero ";
-        LOG(ERROR) << "in function call to tiglGetFuselageSymmetry." << std::endl;
+        LOG(ERROR) << "Fuselage or segment index index is less than zero\n"
+                   << "in function call to tiglGetFuselageSymmetry.";
         return TIGL_INDEX_ERROR;
     }
 
@@ -3377,15 +3377,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSymmetry(TiglCPACSConfiguration
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglGetFuselageSymmetry!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglGetFuselageSymmetry!";
         return TIGL_ERROR;
     }
 }
@@ -3407,8 +3407,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetMinumumDistanceToGround(TiglCPA
                                                                          double* pointZPtr)
 {
     if (pointXPtr == 0 || pointYPtr == 0 || pointZPtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for pointXPtr, pointYPtr or pointZPtr ";
-        LOG(ERROR) << "in function call to tiglFuselageGetMinumumDistanceToGround." << std::endl;
+        LOG(ERROR) << "Null pointer argument for pointXPtr, pointYPtr or pointZPtr\n"
+                   << "in function call to tiglFuselageGetMinumumDistanceToGround.";
         return TIGL_NULL_POINTER;
     }
 
@@ -3426,15 +3426,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetMinumumDistanceToGround(TiglCPA
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglFuselageGetPointOnYPlane!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetPointOnYPlane!";
         return TIGL_ERROR;
     }
 }
@@ -3448,8 +3448,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetRotorCount(TiglCPACSConfigurationHandle
                                                     int* rotorCountPtr)
 {
     if (rotorCountPtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for rotorCountPtr ";
-        LOG(ERROR) << "in function call to tiglGetRotorCount." << std::endl;
+        LOG(ERROR) << "Null pointer argument for rotorCountPtr\n"
+                   << "in function call to tiglGetRotorCount.";
         return TIGL_NULL_POINTER;
     }
 
@@ -3460,15 +3460,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetRotorCount(TiglCPACSConfigurationHandle
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglGetRotorCount!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglGetRotorCount!";
         return TIGL_ERROR;
     }
 }
@@ -3478,14 +3478,14 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetUID(TiglCPACSConfigurationHandle c
                                                   char** uidNamePtr)
 {
     if (uidNamePtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for uidNamePtr ";
-        LOG(ERROR) << "in function call to tiglRotorGetUID." << std::endl;
+        LOG(ERROR) << "Null pointer argument for uidNamePtr\n"
+                   << "in function call to tiglRotorGetUID.";
         return TIGL_NULL_POINTER;
     }
 
     if (rotorIndex < 1) {
-        LOG(ERROR) << "Error: Rotor index is less than one ";
-        LOG(ERROR) << "in function call to tiglRotorGetUID." << std::endl;
+        LOG(ERROR) << "Rotor index is less than one\n"
+                   << "in function call to tiglRotorGetUID.";
         return TIGL_INDEX_ERROR;
     }
 
@@ -3497,15 +3497,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetUID(TiglCPACSConfigurationHandle c
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglRotorGetUID!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglRotorGetUID!";
         return TIGL_ERROR;
     }
 }
@@ -3515,13 +3515,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetIndex(TiglCPACSConfigurationHandle
                                                     int* rotorIndexPtr)
 {
     if (rotorUID == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for rotorUID ";
-        LOG(ERROR) << "in function call to tiglRotorGetIndex." << std::endl;
+        LOG(ERROR) << "Null pointer argument for rotorUID\n"
+                   << "in function call to tiglRotorGetIndex.";
         return TIGL_NULL_POINTER;
     }
     if (rotorIndexPtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for rotorIndexPtr ";
-        LOG(ERROR) << "in function call to tiglRotorGetIndex." << std::endl;
+        LOG(ERROR) << "Null pointer argument for rotorIndexPtr\n"
+                   << "in function call to tiglRotorGetIndex.";
         return TIGL_NULL_POINTER;
     }
 
@@ -3532,17 +3532,17 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetIndex(TiglCPACSConfigurationHandle
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         *rotorIndexPtr = -1;
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         *rotorIndexPtr = -1;
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglRotorGetIndex!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglRotorGetIndex!";
         *rotorIndexPtr = -1;
         return TIGL_ERROR;
     }
@@ -3553,12 +3553,12 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetRadius(TiglCPACSConfigurationHandl
                                                      double *radiusPtr)
 {
     if (radiusPtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for radiusPtr ";
-        LOG(ERROR) << "in function call to tiglRotorGetRadius." << std::endl;
+        LOG(ERROR) << "Null pointer argument for radiusPtr\n"
+                   << "in function call to tiglRotorGetRadius.";
         return TIGL_NULL_POINTER;
     }
     if (rotorIndex < 1) {
-        LOG(ERROR) << "Error: rotor index is less than one "
+        LOG(ERROR) << "Rotor index is less than one\n"
                    << "in function call to tiglRotorGetRadius.";
         return TIGL_INDEX_ERROR;
     }
@@ -3571,15 +3571,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetRadius(TiglCPACSConfigurationHandl
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglRotorGetRadius!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglRotorGetRadius!";
         return TIGL_ERROR;
     }
 }
@@ -3589,12 +3589,12 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetReferenceArea(TiglCPACSConfigurati
                                                             double *referenceAreaPtr)
 {
     if (referenceAreaPtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for referenceAreaPtr ";
-        LOG(ERROR) << "in function call to tiglRotorGetReferenceArea." << std::endl;
+        LOG(ERROR) << "Null pointer argument for referenceAreaPtr\n"
+                   << "in function call to tiglRotorGetReferenceArea.";
         return TIGL_NULL_POINTER;
     }
     if (rotorIndex < 1) {
-        LOG(ERROR) << "Error: rotor index is less than one "
+        LOG(ERROR) << "Rotor index is less than one\n"
                    << "in function call to tiglrotorGetReferenceArea.";
         return TIGL_INDEX_ERROR;
     }
@@ -3607,15 +3607,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetReferenceArea(TiglCPACSConfigurati
         return TIGL_SUCCESS;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglRotorGetReferenceArea!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglRotorGetReferenceArea!";
         return TIGL_ERROR;
     }
 }
@@ -3625,12 +3625,12 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetTotalBladePlanformArea(TiglCPACSCo
                                                                      double *totalBladePlanformAreaPtr)
 {
     if (totalBladePlanformAreaPtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for totalBladePlanformAreaPtr ";
-        LOG(ERROR) << "in function call to tiglRotorGetTotalBladePlanformArea." << std::endl;
+        LOG(ERROR) << "Null pointer argument for totalBladePlanformAreaPtr\n"
+                   << "in function call to tiglRotorGetTotalBladePlanformArea.";
         return TIGL_NULL_POINTER;
     }
     if (rotorIndex < 1) {
-        LOG(ERROR) << "Error: rotor index is less than one "
+        LOG(ERROR) << "Rotor index is less than one\n"
                    << "in function call to tiglRotorGetTotalBladePlanformArea.";
         return TIGL_INDEX_ERROR;
     }
@@ -3643,15 +3643,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetTotalBladePlanformArea(TiglCPACSCo
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglRotorGetTotalBladePlanformArea!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglRotorGetTotalBladePlanformArea!";
         return TIGL_ERROR;
     }
 }
@@ -3661,12 +3661,12 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetSolidity(TiglCPACSConfigurationHan
                                                        double *solidityPtr)
 {
     if (solidityPtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for solidityPtr ";
-        LOG(ERROR) << "in function call to tiglRotorGetSolidity." << std::endl;
+        LOG(ERROR) << "Null pointer argument for solidityPtr\n"
+                   << "in function call to tiglRotorGetSolidity.";
         return TIGL_NULL_POINTER;
     }
     if (rotorIndex < 1) {
-        LOG(ERROR) << "Error: rotor index is less than one "
+        LOG(ERROR) << "Rotor index is less than one\n"
                    << "in function call to tiglRotorGetSolidity.";
         return TIGL_INDEX_ERROR;
     }
@@ -3679,15 +3679,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetSolidity(TiglCPACSConfigurationHan
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglRotorGetSolidity!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglRotorGetSolidity!";
         return TIGL_ERROR;
     }
 }
@@ -3697,13 +3697,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetSurfaceArea(TiglCPACSConfiguration
                                                           double *surfaceAreaPtr)
 {
     if (surfaceAreaPtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for surfaceAreaPtr ";
-        LOG(ERROR) << "in function call to tiglRotorGetSurfaceArea." << std::endl;
+        LOG(ERROR) << "Null pointer argument for surfaceAreaPtr\n"
+                   << "in function call to tiglRotorGetSurfaceArea.";
         return TIGL_NULL_POINTER;
     }
     if (rotorIndex < 1) {
-        LOG(ERROR) << "Error: Rotor index is less than one ";
-        LOG(ERROR) << "in function call to tiglRotorGetSurfaceArea." << std::endl;
+        LOG(ERROR) << "Rotor index is less than one\n"
+                   << "in function call to tiglRotorGetSurfaceArea.";
         return TIGL_INDEX_ERROR;
     }
 
@@ -3715,15 +3715,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetSurfaceArea(TiglCPACSConfiguration
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglRotorGetSurfaceArea!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglRotorGetSurfaceArea!";
         return TIGL_ERROR;
     }
 }
@@ -3733,13 +3733,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetVolume(TiglCPACSConfigurationHandl
                                                      double *volumePtr)
 {
     if (volumePtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for volumePtr ";
-        LOG(ERROR) << "in function call to tiglRotorGetVolume." << std::endl;
+        LOG(ERROR) << "Null pointer argument for volumePtr\n"
+                   << "in function call to tiglRotorGetVolume.";
         return TIGL_NULL_POINTER;
     }
     if (rotorIndex < 1) {
-        LOG(ERROR) << "Error: rotor index is less than one ";
-        LOG(ERROR) << "in function call to tiglrotorGetVolume." << std::endl;
+        LOG(ERROR) << "Rotor index is less than one\n"
+                   << "in function call to tiglrotorGetVolume.";
         return TIGL_INDEX_ERROR;
     }
 
@@ -3751,15 +3751,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetVolume(TiglCPACSConfigurationHandl
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglrotorGetVolume!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglrotorGetVolume!";
         return TIGL_ERROR;
     }
 }
@@ -3769,12 +3769,12 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetTipSpeed(TiglCPACSConfigurationHan
                                                        double *tipSpeedPtr)
 {
     if (tipSpeedPtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for tipSpeedPtr ";
-        LOG(ERROR) << "in function call to tiglRotorGetTipSpeed." << std::endl;
+        LOG(ERROR) << "Null pointer argument for tipSpeedPtr\n"
+                   << "in function call to tiglRotorGetTipSpeed.";
         return TIGL_NULL_POINTER;
     }
     if (rotorIndex < 1) {
-        LOG(ERROR) << "Error: rotor index is less than one "
+        LOG(ERROR) << "Rotor index is less than one\n"
                    << "in function call to tiglRotorGetTipSpeed.";
         return TIGL_INDEX_ERROR;
     }
@@ -3787,15 +3787,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetTipSpeed(TiglCPACSConfigurationHan
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglRotorGetTipSpeed!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglRotorGetTipSpeed!";
         return TIGL_ERROR;
     }
 }
@@ -3810,12 +3810,12 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetRotorBladeCount(TiglCPACSConfigura
                                                               int* rotorBladeCountPtr)
 {
     if (rotorBladeCountPtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for rotorBladeCountPtr ";
-        LOG(ERROR) << "in function call to tiglRotorGetRotorBladeCount." << std::endl;
+        LOG(ERROR) << "Null pointer argument for rotorBladeCountPtr\n"
+                   << "in function call to tiglRotorGetRotorBladeCount.";
         return TIGL_NULL_POINTER;
     }
     if (rotorIndex < 1) {
-        LOG(ERROR) << "Error: rotor index is less than one "
+        LOG(ERROR) << "Rotor index is less than one\n"
                    << "in function call to tiglRotorGetRotorBladeCount.";
         return TIGL_INDEX_ERROR;
     }
@@ -3828,15 +3828,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetRotorBladeCount(TiglCPACSConfigura
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglRotorGetRotorBladeCount!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglRotorGetRotorBladeCount!";
         return TIGL_ERROR;
     }
 }
@@ -3847,17 +3847,17 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetWingIndex(TiglCPACSConfigurat
                                                              int* wingIndexPtr)
 {
     if (wingIndexPtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for wingIndexPtr ";
-        LOG(ERROR) << "in function call to tiglRotorBladeGetWingIndex." << std::endl;
+        LOG(ERROR) << "Null pointer argument for wingIndexPtr\n"
+                   << "in function call to tiglRotorBladeGetWingIndex.";
         return TIGL_NULL_POINTER;
     }
     if (rotorIndex < 1) {
-        LOG(ERROR) << "Error: rotor index is less than one "
+        LOG(ERROR) << "Rotor index is less than one\n"
                    << "in function call to tiglRotorBladeGetWingIndex.";
         return TIGL_INDEX_ERROR;
     }
     if (rotorBladeIndex < 1) {
-        LOG(ERROR) << "Error: rotor blade index is less than one "
+        LOG(ERROR) << "Rotor blade index is less than one\n"
                    << "in function call to tiglRotorBladeGetWingIndex.";
         return TIGL_INDEX_ERROR;
     }
@@ -3872,15 +3872,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetWingIndex(TiglCPACSConfigurat
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglRotorBladeGetWingIndex!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglRotorBladeGetWingIndex!";
         return TIGL_ERROR;
     }
 }
@@ -3891,17 +3891,17 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetWingUID(TiglCPACSConfiguratio
                                                            char** wingUIDPtr)
 {
     if (wingUIDPtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for wingUIDPtr ";
-        LOG(ERROR) << "in function call to tiglRotorBladeGetWingUID." << std::endl;
+        LOG(ERROR) << "Null pointer argument for wingUIDPtr\n"
+                   << "in function call to tiglRotorBladeGetWingUID.";
         return TIGL_NULL_POINTER;
     }
     if (rotorIndex < 1) {
-        LOG(ERROR) << "Error: rotor index is less than one "
+        LOG(ERROR) << "Rotor index is less than one\n"
                    << "in function call to tiglRotorBladeGetWingUID.";
         return TIGL_INDEX_ERROR;
     }
     if (rotorBladeIndex < 1) {
-        LOG(ERROR) << "Error: rotor blade index is less than one "
+        LOG(ERROR) << "Rotor blade index is less than one\n"
                    << "in function call to tiglRotorBladeGetWingUID.";
         return TIGL_INDEX_ERROR;
     }
@@ -3916,15 +3916,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetWingUID(TiglCPACSConfiguratio
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglRotorBladeGetWingUID!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglRotorBladeGetWingUID!";
         return TIGL_ERROR;
     }
 }
@@ -3935,17 +3935,17 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetAzimuthAngle(TiglCPACSConfigu
                                                                 double* azimuthAnglePtr)
 {
     if (azimuthAnglePtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for azimuthAnglePtr ";
-        LOG(ERROR) << "in function call to tiglRotorBladeGetAzimuthAngle." << std::endl;
+        LOG(ERROR) << "Null pointer argument for azimuthAnglePtr\n"
+                   << "in function call to tiglRotorBladeGetAzimuthAngle.";
         return TIGL_NULL_POINTER;
     }
     if (rotorIndex < 1) {
-        LOG(ERROR) << "Error: rotor index is less than one "
+        LOG(ERROR) << "Rotor index is less than one\n"
                    << "in function call to tiglRotorBladeGetAzimuthAngle.";
         return TIGL_INDEX_ERROR;
     }
     if (rotorBladeIndex < 1) {
-        LOG(ERROR) << "Error: rotor blade index is less than one "
+        LOG(ERROR) << "Rotor blade index is less than one\n"
                    << "in function call to tiglRotorBladeGetAzimuthAngle.";
         return TIGL_INDEX_ERROR;
     }
@@ -3959,15 +3959,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetAzimuthAngle(TiglCPACSConfigu
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglRotorBladeGetAzimuthAngle!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglRotorBladeGetAzimuthAngle!";
         return TIGL_ERROR;
     }
 }
@@ -3978,17 +3978,17 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetRadius(TiglCPACSConfiguration
                                                           double* radiusPtr)
 {
     if (radiusPtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for radiusPtr ";
-        LOG(ERROR) << "in function call to tiglRotorBladeGetRadius." << std::endl;
+        LOG(ERROR) << "Null pointer argument for radiusPtr\n"
+                   << "in function call to tiglRotorBladeGetRadius.";
         return TIGL_NULL_POINTER;
     }
     if (rotorIndex < 1) {
-        LOG(ERROR) << "Error: rotor index is less than one "
+        LOG(ERROR) << "Rotor index is less than one\n"
                    << "in function call to tiglRotorBladeGetRadius.";
         return TIGL_INDEX_ERROR;
     }
     if (rotorBladeIndex < 1) {
-        LOG(ERROR) << "Error: rotor blade index is less than one "
+        LOG(ERROR) << "Rotor blade index is less than one\n"
                    << "in function call to tiglRotorBladeGetRadius.";
         return TIGL_INDEX_ERROR;
     }
@@ -4002,15 +4002,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetRadius(TiglCPACSConfiguration
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglRotorBladeGetRadius!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglRotorBladeGetRadius!";
         return TIGL_ERROR;
     }
 }
@@ -4021,17 +4021,17 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetPlanformArea(TiglCPACSConfigu
                                                                 double *planformAreaPtr)
 {
     if (planformAreaPtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for planformAreaPtr ";
-        LOG(ERROR) << "in function call to tiglRotorBladeGetPlanformArea." << std::endl;
+        LOG(ERROR) << "Null pointer argument for planformAreaPtr\n"
+                   << "in function call to tiglRotorBladeGetPlanformArea.";
         return TIGL_NULL_POINTER;
     }
     if (rotorIndex < 1) {
-        LOG(ERROR) << "Error: rotor index is less than one "
+        LOG(ERROR) << "Rotor index is less than one\n"
                    << "in function call to tiglRotorBladeGetPlanformArea.";
         return TIGL_INDEX_ERROR;
     }
     if (rotorBladeIndex < 1) {
-        LOG(ERROR) << "Error: rotor blade index is less than one "
+        LOG(ERROR) << "Rotor blade index is less than one\n"
                    << "in function call to tiglRotorBladeGetPlanformArea.";
         return TIGL_INDEX_ERROR;
     }
@@ -4045,15 +4045,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetPlanformArea(TiglCPACSConfigu
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglRotorBladeGetPlanformArea!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglRotorBladeGetPlanformArea!";
         return TIGL_ERROR;
     }
 }
@@ -4064,17 +4064,17 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetSurfaceArea(TiglCPACSConfigur
                                                                double *surfaceAreaPtr)
 {
     if (surfaceAreaPtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for surfaceAreaPtr ";
-        LOG(ERROR) << "in function call to tiglRotorBladeGetSurfaceArea." << std::endl;
+        LOG(ERROR) << "Null pointer argument for surfaceAreaPtr\n"
+                   << "in function call to tiglRotorBladeGetSurfaceArea.";
         return TIGL_NULL_POINTER;
     }
     if (rotorIndex < 1) {
-        LOG(ERROR) << "Error: rotor index is less than one "
+        LOG(ERROR) << "Rotor index is less than one\n"
                    << "in function call to tiglRotorBladeGetSurfaceArea.";
         return TIGL_INDEX_ERROR;
     }
     if (rotorBladeIndex < 1) {
-        LOG(ERROR) << "Error: rotor blade index is less than one "
+        LOG(ERROR) << "Rotor blade index is less than one\n"
                    << "in function call to tiglRotorBladeGetSurfaceArea.";
         return TIGL_INDEX_ERROR;
     }
@@ -4088,15 +4088,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetSurfaceArea(TiglCPACSConfigur
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglRotorBladeGetSurfaceArea!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglRotorBladeGetSurfaceArea!";
         return TIGL_ERROR;
     }
 }
@@ -4107,17 +4107,17 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetVolume(TiglCPACSConfiguration
                                                           double *volumePtr)
 {
     if (volumePtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for volumePtr ";
-        LOG(ERROR) << "in function call to tiglRotorBladeGetVolume." << std::endl;
+        LOG(ERROR) << "Null pointer argument for volumePtr\n"
+                   << "in function call to tiglRotorBladeGetVolume.";
         return TIGL_NULL_POINTER;
     }
     if (rotorIndex < 1) {
-        LOG(ERROR) << "Error: rotor index is less than one "
+        LOG(ERROR) << "Rotor index is less than one\n"
                    << "in function call to tiglRotorBladeGetVolume.";
         return TIGL_INDEX_ERROR;
     }
     if (rotorBladeIndex < 1) {
-        LOG(ERROR) << "Error: rotor blade index is less than one "
+        LOG(ERROR) << "Rotor blade index is less than one\n"
                    << "in function call to tiglRotorBladeGetVolume.";
         return TIGL_INDEX_ERROR;
     }
@@ -4131,15 +4131,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetVolume(TiglCPACSConfiguration
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglRotorBladeGetVolume!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglRotorBladeGetVolume!";
         return TIGL_ERROR;
     }
 }
@@ -4150,17 +4150,17 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetTipSpeed(TiglCPACSConfigurati
                                                             double* tipSpeedPtr)
 {
     if (tipSpeedPtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for tipSpeedPtr ";
-        LOG(ERROR) << "in function call to tiglRotorBladeGetTipSpeed." << std::endl;
+        LOG(ERROR) << "Null pointer argument for tipSpeedPtr\n"
+                   << "in function call to tiglRotorBladeGetTipSpeed.";
         return TIGL_NULL_POINTER;
     }
     if (rotorIndex < 1) {
-        LOG(ERROR) << "Error: rotor index is less than one "
+        LOG(ERROR) << "Rotor index is less than one\n"
                    << "in function call to tiglRotorBladeGetTipSpeed.";
         return TIGL_INDEX_ERROR;
     }
     if (rotorBladeIndex < 1) {
-        LOG(ERROR) << "Error: rotor blade index is less than one "
+        LOG(ERROR) << "Rotor blade index is less than one\n"
                    << "in function call to tiglRotorBladeGetTipSpeed.";
         return TIGL_INDEX_ERROR;
     }
@@ -4174,15 +4174,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetTipSpeed(TiglCPACSConfigurati
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglRotorBladeGetTipSpeed!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglRotorBladeGetTipSpeed!";
         return TIGL_ERROR;
     }
 }
@@ -4195,27 +4195,27 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetLocalRadius(TiglCPACSConfigur
                                                                double* radiusPtr)
 {
     if (radiusPtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for radiusPtr ";
-        LOG(ERROR) << "in function call to tiglRotorBladeGetLocalRadius." << std::endl;
+        LOG(ERROR) << "Null pointer argument for radiusPtr\n"
+                   << "in function call to tiglRotorBladeGetLocalRadius.";
         return TIGL_NULL_POINTER;
     }
     if (rotorIndex < 1) {
-        LOG(ERROR) << "Error: rotor index is less than one "
+        LOG(ERROR) << "Rotor index is less than one\n"
                    << "in function call to tiglRotorBladeGetLocalRadius.";
         return TIGL_INDEX_ERROR;
     }
     if (rotorBladeIndex < 1) {
-        LOG(ERROR) << "Error: rotor blade index is less than one "
+        LOG(ERROR) << "Rotor blade index is less than one\n"
                    << "in function call to tiglRotorBladeGetLocalRadius.";
         return TIGL_INDEX_ERROR;
     }
     if (segmentIndex < 1) {
-        LOG(ERROR) << "Error: segment index is less than one "
+        LOG(ERROR) << "Segment index is less than one\n"
                    << "in function call to tiglRotorBladeGetLocalRadius.";
         return TIGL_INDEX_ERROR;
     }
     if ((eta < 0.) || (eta > 1.)) {
-        LOG(ERROR) << "Error: eta not in range [0,1] "
+        LOG(ERROR) << "Eta not in range [0,1]\n"
                    << "in function call to tiglRotorBladeGetLocalRadius.";
         return TIGL_ERROR;
     }
@@ -4229,15 +4229,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetLocalRadius(TiglCPACSConfigur
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglRotorBladeGetLocalRadius!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglRotorBladeGetLocalRadius!";
         return TIGL_ERROR;
     }
 }
@@ -4250,27 +4250,27 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetLocalChord(TiglCPACSConfigura
                                                               double* chordPtr)
 {
     if (chordPtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for chordPtr ";
-        LOG(ERROR) << "in function call to tiglRotorBladeGetLocalChord." << std::endl;
+        LOG(ERROR) << "Null pointer argument for chordPtr\n"
+                   << "in function call to tiglRotorBladeGetLocalChord.";
         return TIGL_NULL_POINTER;
     }
     if (rotorIndex < 1) {
-        LOG(ERROR) << "Error: rotor index is less than one "
+        LOG(ERROR) << "Rotor index is less than one\n"
                    << "in function call to tiglRotorBladeGetLocalChord.";
         return TIGL_INDEX_ERROR;
     }
     if (rotorBladeIndex < 1) {
-        LOG(ERROR) << "Error: rotor blade index is less than one "
+        LOG(ERROR) << "Rotor blade index is less than one\n"
                    << "in function call to tiglRotorBladeGetLocalChord.";
         return TIGL_INDEX_ERROR;
     }
     if (segmentIndex < 1) {
-        LOG(ERROR) << "Error: segment index is less than one "
+        LOG(ERROR) << "Segment index is less than one\n"
                    << "in function call to tiglRotorBladeGetLocalChord.";
         return TIGL_INDEX_ERROR;
     }
     if ((eta < 0.) || (eta > 1.)) {
-        LOG(ERROR) << "Error: eta not in range [0,1] "
+        LOG(ERROR) << "Eta not in range [0,1]\n"
                    << "in function call to tiglRotorBladeGetLocalChord.";
         return TIGL_ERROR;
     }
@@ -4284,15 +4284,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetLocalChord(TiglCPACSConfigura
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglRotorBladeGetLocalChord!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglRotorBladeGetLocalChord!";
         return TIGL_ERROR;
     }
 }
@@ -4305,27 +4305,27 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetLocalTwistAngle(TiglCPACSConf
                                                                    double* twistAnglePtr)
 {
     if (twistAnglePtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for twistAnglePtr ";
-        LOG(ERROR) << "in function call to tiglRotorBladeGetLocalTwistAngle." << std::endl;
+        LOG(ERROR) << "Null pointer argument for twistAnglePtr\n"
+                   << "in function call to tiglRotorBladeGetLocalTwistAngle.";
         return TIGL_NULL_POINTER;
     }
     if (rotorIndex < 1) {
-        LOG(ERROR) << "Error: rotor index is less than one "
+        LOG(ERROR) << "Rotor index is less than one\n"
                    << "in function call to tiglRotorBladeGetLocalTwistAngle.";
         return TIGL_INDEX_ERROR;
     }
     if (rotorBladeIndex < 1) {
-        LOG(ERROR) << "Error: rotor blade index is less than one "
+        LOG(ERROR) << "Rotor blade index is less than one\n"
                    << "in function call to tiglRotorBladeGetLocalTwistAngle.";
         return TIGL_INDEX_ERROR;
     }
     if (segmentIndex < 1) {
-        LOG(ERROR) << "Error: segment index is less than one "
+        LOG(ERROR) << "segment index is less than one\n"
                    << "in function call to tiglRotorBladeGetLocalTwistAngle.";
         return TIGL_INDEX_ERROR;
     }
     if ((eta < 0.) || (eta > 1.)) {
-        LOG(ERROR) << "Error: eta not in range [0,1] "
+        LOG(ERROR) << "eta not in range [0,1]\n"
                    << "in function call to tiglRotorBladeGetLocalTwistAngle.";
         return TIGL_ERROR;
     }
@@ -4339,15 +4339,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetLocalTwistAngle(TiglCPACSConf
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglRotorBladeGetLocalTwistAngle!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglRotorBladeGetLocalTwistAngle!";
         return TIGL_ERROR;
     }
 }
@@ -4558,8 +4558,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectGetPoint(TiglCPACSConfigurationHa
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportIGES(TiglCPACSConfigurationHandle cpacsHandle, const char *filenamePtr)
 {
     if (filenamePtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for filenamePtr";
-        LOG(ERROR) << "in function call to tiglExportIGES." << std::endl;
+        LOG(ERROR) << "Null pointer argument for filenamePtr"
+                   << "in function call to tiglExportIGES.";
         return TIGL_NULL_POINTER;
     }
 
@@ -4572,15 +4572,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportIGES(TiglCPACSConfigurationHandle cp
         return ret ? TIGL_SUCCESS : TIGL_WRITE_FAILED;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglExportIGES!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglExportIGES!";
         return TIGL_ERROR;
     }
 }
@@ -4590,8 +4590,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportFusedWingFuselageIGES(TiglCPACSConfi
                                                                   const char *filenamePtr)
 {
     if (filenamePtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for filenamePtr";
-        LOG(ERROR) << "in function call to tiglExportFusedWingFuselageIGES." << std::endl;
+        LOG(ERROR) << "Null pointer argument for filenamePtr\n"
+                   << "in function call to tiglExportFusedWingFuselageIGES.";
         return TIGL_NULL_POINTER;
     }
 
@@ -4604,15 +4604,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportFusedWingFuselageIGES(TiglCPACSConfi
         return ret ? TIGL_SUCCESS : TIGL_WRITE_FAILED;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglExportFusedWingFuselageIGES!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglExportFusedWingFuselageIGES!";
         return TIGL_ERROR;
     }
 }
@@ -4621,8 +4621,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportFusedWingFuselageIGES(TiglCPACSConfi
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportSTEP(TiglCPACSConfigurationHandle cpacsHandle, const char* filenamePtr)
 {
     if (filenamePtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for filenamePtr";
-        LOG(ERROR) << "in function call to tiglExportSTEP." << std::endl;
+        LOG(ERROR) << "Null pointer argument for filenamePtr\n"
+                   << "in function call to tiglExportSTEP.";
         return TIGL_NULL_POINTER;
     }
 
@@ -4635,15 +4635,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportSTEP(TiglCPACSConfigurationHandle cp
         return ret ? TIGL_SUCCESS : TIGL_WRITE_FAILED;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglExportSTEP!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglExportSTEP!";
         return TIGL_ERROR;
     }
 }
@@ -4651,8 +4651,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportSTEP(TiglCPACSConfigurationHandle cp
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportFusedSTEP(TiglCPACSConfigurationHandle cpacsHandle, const char* filenamePtr)
 {
     if (filenamePtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for filenamePtr";
-        LOG(ERROR) << "in function call to tiglExportFusedSTEP." << std::endl;
+        LOG(ERROR) << "Null pointer argument for filenamePtr\n"
+                   << "in function call to tiglExportFusedSTEP.";
         return TIGL_NULL_POINTER;
     }
 
@@ -4665,15 +4665,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportFusedSTEP(TiglCPACSConfigurationHand
         return ret ? TIGL_SUCCESS : TIGL_WRITE_FAILED;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglExportFusedSTEP!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglExportFusedSTEP!";
         return TIGL_ERROR;
     }
 }
@@ -4683,13 +4683,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingSTL(TiglCPACSConfiguration
                                                           const char *filenamePtr, double deflection)
 {
     if (filenamePtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for filenamePtr";
-        LOG(ERROR) << "in function call to tiglExportMeshedWingSTL." << std::endl;
+        LOG(ERROR) << "Null pointer argument for filenamePtr\n"
+                   << "in function call to tiglExportMeshedWingSTL.";
         return TIGL_NULL_POINTER;
     }
     if (wingIndex < 1) {
-        LOG(ERROR) << "Error: wingIndex in less or equal zero";
-        LOG(ERROR) << "in function call to tiglExportMeshedWingSTL." << std::endl;
+        LOG(ERROR) << "wingIndex in less or equal zero\n"
+                   << "in function call to tiglExportMeshedWingSTL.";
         return TIGL_INDEX_ERROR;
     }
 
@@ -4705,15 +4705,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingSTL(TiglCPACSConfiguration
         return ret ? TIGL_SUCCESS : TIGL_WRITE_FAILED;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglExportMeshedWingSTL!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglExportMeshedWingSTL!";
         return TIGL_ERROR;
     }
 }
@@ -4724,13 +4724,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingSTLByUID(TiglCPACSConfigur
                                                                double deflection)
 {
     if (filenamePtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for filenamePtr"
-                   << "in function call to tiglExportMeshedWingSTLByUID." << std::endl;
+        LOG(ERROR) << "Null pointer argument for filenamePtr"
+                   << "in function call to tiglExportMeshedWingSTLByUID.";
         return TIGL_NULL_POINTER;
     }
     if (wingUID == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for wingUID"
-                   << "in function call to tiglExportMeshedWingSTLByUID." << std::endl;
+        LOG(ERROR) << "Null pointer argument for wingUID"
+                   << "in function call to tiglExportMeshedWingSTLByUID.";
         return TIGL_NULL_POINTER;
     }
 
@@ -4750,19 +4750,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingSTLByUID(TiglCPACSConfigur
         }
         
         LOG(ERROR) << "Wing with UID " << wingUID << " not found"
-                   << "in function call to tiglExportMeshedWingSTLByUID." << std::endl;
+                   << "in function call to tiglExportMeshedWingSTLByUID.";
         return TIGL_UID_ERROR;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglExportMeshedWingSTLByUID!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglExportMeshedWingSTLByUID!";
         return TIGL_ERROR;
     }
 }
@@ -4772,13 +4772,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageSTL(TiglCPACSConfigura
                                                               const char* filenamePtr, double deflection)
 {
     if (filenamePtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for filenamePtr";
-        LOG(ERROR) << "in function call to tiglExportMeshedFuselageSTL." << std::endl;
+        LOG(ERROR) << "Null pointer argument for filenamePtr\n"
+                   << "in function call to tiglExportMeshedFuselageSTL.";
         return TIGL_NULL_POINTER;
     }
     if (fuselageIndex < 1) {
-        LOG(ERROR) << "Error: fuselageIndex in less or equal zero";
-        LOG(ERROR) << "in function call to tiglExportMeshedFuselageSTL." << std::endl;
+        LOG(ERROR) << "fuselageIndex in less or equal zero\n"
+                   << "in function call to tiglExportMeshedFuselageSTL.";
         return TIGL_INDEX_ERROR;
     }
 
@@ -4794,15 +4794,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageSTL(TiglCPACSConfigura
         return ret ? TIGL_SUCCESS : TIGL_WRITE_FAILED;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglExportMeshedFuselageSTL!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglExportMeshedFuselageSTL!";
         return TIGL_ERROR;
     }
 }
@@ -4815,12 +4815,12 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageSTLByUID(TiglCPACSConf
 {
     if (filenamePtr == 0) {
         LOG(ERROR) << "Null pointer argument for filenamePtr"
-                   << "in function call to tiglExportMeshedFuselageSTLByUID." << std::endl;
+                   << "in function call to tiglExportMeshedFuselageSTLByUID.";
         return TIGL_NULL_POINTER;
     }
     if (fuselageUID == 0) {
         LOG(ERROR) << "Null pointer argument for fuselageUID"
-                   << "in function call to tiglExportMeshedFuselageSTLByUID." << std::endl;
+                   << "in function call to tiglExportMeshedFuselageSTLByUID.";
         return TIGL_NULL_POINTER;
     }
 
@@ -4841,19 +4841,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageSTLByUID(TiglCPACSConf
         }
         
         LOG(ERROR) << "Fuselage with UID " << fuselageUID << " not found"
-                   << "in function call to tiglExportMeshedFuselageSTLByUID." << std::endl;
+                   << "in function call to tiglExportMeshedFuselageSTLByUID.";
         return TIGL_UID_ERROR;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglExportMeshedFuselageSTLByUID!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglExportMeshedFuselageSTLByUID!";
         return TIGL_ERROR;
     }
 }
@@ -4862,8 +4862,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageSTLByUID(TiglCPACSConf
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedGeometrySTL(TiglCPACSConfigurationHandle cpacsHandle, const char *filenamePtr, double deflection)
 {
     if (filenamePtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for filenamePtr";
-        LOG(ERROR) << "in function call to tiglExportMeshedGeometrySTL." << std::endl;
+        LOG(ERROR) << "Null pointer argument for filenamePtr\n"
+                   << "in function call to tiglExportMeshedGeometrySTL.";
         return TIGL_NULL_POINTER;
     }
 
@@ -4881,15 +4881,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedGeometrySTL(TiglCPACSConfigura
         return ret ? TIGL_SUCCESS : TIGL_WRITE_FAILED;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglExportMeshedGeometrySTL!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglExportMeshedGeometrySTL!";
         return TIGL_ERROR;
     }
 }
@@ -4899,13 +4899,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingVTKByIndex(const TiglCPACS
                                                                  const char* filenamePtr, const double deflection)
 {
     if (filenamePtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for filenamePtr";
-        LOG(ERROR) << "in function call to tiglExportMeshedWingVTKByIndex." << std::endl;
+        LOG(ERROR) << "Null pointer argument for filenamePtr\n"
+                   << "in function call to tiglExportMeshedWingVTKByIndex.";
         return TIGL_NULL_POINTER;
     }
     if (wingIndex < 1) {
-        LOG(ERROR) << "Error: wingIndex in less or equal zero";
-        LOG(ERROR) << "in function call to tiglExportMeshedWingVTKByIndex." << std::endl;
+        LOG(ERROR) << "wingIndex in less or equal zero\n"
+                   << "in function call to tiglExportMeshedWingVTKByIndex.";
         return TIGL_INDEX_ERROR;
     }
 
@@ -4919,23 +4919,23 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingVTKByIndex(const TiglCPACS
     }
     // all exceptions from the standard library 
     catch (std::exception & ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError & ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch(char *str) {
-        LOG(ERROR) << str << std::endl;
+        LOG(ERROR) << str;
         return TIGL_ERROR;
     }
     catch(std::string& str) {
-        LOG(ERROR) << str << std::endl;
+        LOG(ERROR) << str;
         return TIGL_ERROR;
     }
     catch (...) {
-        LOG(ERROR) << "Caught an unknown exception in tiglExportMeshedWingVTKByIndex" << std::endl;
+        LOG(ERROR) << "Caught an unknown exception in tiglExportMeshedWingVTKByIndex";
         return TIGL_ERROR;
     }
 }
@@ -4945,13 +4945,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingVTKByUID(const TiglCPACSCo
                                                                const char* filenamePtr, double deflection)
 {
     if (filenamePtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for filenamePtr";
-        LOG(ERROR) << "in function call to tiglExportMeshedWingVTKByUID." << std::endl;
+        LOG(ERROR) << "Null pointer argument for filenamePtr\n"
+                   << "in function call to tiglExportMeshedWingVTKByUID.";
         return TIGL_NULL_POINTER;
     }
     if (wingUID == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for wingUID";
-        LOG(ERROR) << "in function call to tiglExportMeshedWingVTKByUID." << std::endl;
+        LOG(ERROR) << "Null pointer argument for wingUID\n"
+                   << "in function call to tiglExportMeshedWingVTKByUID.";
         return TIGL_NULL_POINTER;
     }
 
@@ -4965,23 +4965,23 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingVTKByUID(const TiglCPACSCo
     }
     // all exceptions from the standard library
     catch (std::exception & ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError & ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch(char *str) {
-        LOG(ERROR) << str << std::endl;
+        LOG(ERROR) << str;
         return TIGL_ERROR;
     }
     catch(std::string& str) {
-        LOG(ERROR) << str << std::endl;
+        LOG(ERROR) << str;
         return TIGL_ERROR;
     }
     catch (...) {
-        LOG(ERROR) << "Caught an unknown exception in tiglExportMeshedWingVTKByUID" << std::endl;
+        LOG(ERROR) << "Caught an unknown exception in tiglExportMeshedWingVTKByUID";
         return TIGL_ERROR;
     }
 }
@@ -4991,13 +4991,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageVTKByIndex(const TiglC
                                                                      const char* filenamePtr, double deflection)
 {
     if (filenamePtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for filenamePtr";
-        LOG(ERROR) << "in function call to tiglExportMeshedFuselageVTKByIndex." << std::endl;
+        LOG(ERROR) << "Null pointer argument for filenamePtr\n"
+                   << "in function call to tiglExportMeshedFuselageVTKByIndex.";
         return TIGL_NULL_POINTER;
     }
     if (fuselageIndex < 1) {
-        LOG(ERROR) << "Error: fuselageIndex in less or equal zero";
-        LOG(ERROR) << "in function call to tiglExportMeshedFuselageVTKByIndex." << std::endl;
+        LOG(ERROR) << "fuselageIndex in less or equal zero\n"
+                   << "in function call to tiglExportMeshedFuselageVTKByIndex.";
         return TIGL_INDEX_ERROR;
     }
 
@@ -5010,15 +5010,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageVTKByIndex(const TiglC
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglExportMeshedFuselageVTKByIndex!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglExportMeshedFuselageVTKByIndex!";
         return TIGL_ERROR;
     }
 }
@@ -5028,13 +5028,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageVTKByUID(const TiglCPA
                                                                    const char* filenamePtr, double deflection)
 {
     if (filenamePtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for filenamePtr";
-        LOG(ERROR) << "in function call to tiglExportMeshedFuselageVTKByUID." << std::endl;
+        LOG(ERROR) << "Null pointer argument for filenamePtr\n"
+                   << "in function call to tiglExportMeshedFuselageVTKByUID.";
         return TIGL_NULL_POINTER;
     }
     if (fuselageUID == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for fuselageIndex";
-        LOG(ERROR) << "in function call to tiglExportMeshedFuselageVTKByUID." << std::endl;
+        LOG(ERROR) << "Null pointer argument for fuselageIndex\n"
+                   << "in function call to tiglExportMeshedFuselageVTKByUID.";
         return TIGL_INDEX_ERROR;
     }
 
@@ -5047,15 +5047,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageVTKByUID(const TiglCPA
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglExportMeshedFuselageVTKByUID!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglExportMeshedFuselageVTKByUID!";
         return TIGL_ERROR;
     }
 }
@@ -5065,8 +5065,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageVTKByUID(const TiglCPA
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedGeometryVTK(const TiglCPACSConfigurationHandle cpacsHandle, const char* filenamePtr, double deflection)
 {
     if (filenamePtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for filenamePtr";
-        LOG(ERROR) << "in function call to tiglExportMeshedGeometryVTK." << std::endl;
+        LOG(ERROR) << "Null pointer argument for filenamePtr\n"
+                   << "in function call to tiglExportMeshedGeometryVTK.";
         return TIGL_NULL_POINTER;
     }
 
@@ -5079,15 +5079,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedGeometryVTK(const TiglCPACSCon
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglExportMeshedGeometryVTK!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglExportMeshedGeometryVTK!";
         return TIGL_ERROR;
     }
 }
@@ -5099,13 +5099,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingVTKSimpleByUID(const TiglC
                                                                      const char* filenamePtr, double deflection)
 {
     if (filenamePtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for filenamePtr";
-        LOG(ERROR) << "in function call to tiglExportMeshedWingVTKSimpleByUID." << std::endl;
+        LOG(ERROR) << "Null pointer argument for filenamePtr\n"
+                   << "in function call to tiglExportMeshedWingVTKSimpleByUID.";
         return TIGL_NULL_POINTER;
     }
     if (wingUID == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for wingUID";
-        LOG(ERROR) << "in function call to tiglExportMeshedWingVTKSimpleByUID." << std::endl;
+        LOG(ERROR) << "Null pointer argument for wingUID\n"
+                   << "in function call to tiglExportMeshedWingVTKSimpleByUID.";
         return TIGL_NULL_POINTER;
     }
 
@@ -5119,23 +5119,23 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingVTKSimpleByUID(const TiglC
     }
     // all exceptions from the standard library
     catch (std::exception & ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError & ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch(char *str) {
-        LOG(ERROR) << str << std::endl;
+        LOG(ERROR) << str;
         return TIGL_ERROR;
     }
     catch(std::string& str) {
-        LOG(ERROR) << str << std::endl;
+        LOG(ERROR) << str;
         return TIGL_ERROR;
     }
     catch (...) {
-        LOG(ERROR) << "Caught an unknown exception in tiglExportMeshedWingVTKSimpleByUID" << std::endl;
+        LOG(ERROR) << "Caught an unknown exception in tiglExportMeshedWingVTKSimpleByUID";
         return TIGL_ERROR;
     }
 }
@@ -5146,13 +5146,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageVTKSimpleByUID(const T
                                                                          const char* filenamePtr, double deflection)
 {
     if (filenamePtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for filenamePtr";
-        LOG(ERROR) << "in function call to tiglExportMeshedFuselageVTKSimpleByUID." << std::endl;
+        LOG(ERROR) << "Null pointer argument for filenamePtr\n"
+                   << "in function call to tiglExportMeshedFuselageVTKSimpleByUID.";
         return TIGL_NULL_POINTER;
     }
     if (fuselageUID == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for fuselageIndex";
-        LOG(ERROR) << "in function call to tiglExportMeshedFuselageVTKSimpleByUID." << std::endl;
+        LOG(ERROR) << "Null pointer argument for fuselageIndex\n"
+                   << "in function call to tiglExportMeshedFuselageVTKSimpleByUID.";
         return TIGL_INDEX_ERROR;
     }
 
@@ -5165,15 +5165,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageVTKSimpleByUID(const T
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglExportMeshedFuselageVTKSimpleByUID!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglExportMeshedFuselageVTKSimpleByUID!";
         return TIGL_ERROR;
     }
 }
@@ -5181,13 +5181,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageVTKSimpleByUID(const T
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportFuselageColladaByUID(const TiglCPACSConfigurationHandle cpacsHandle, const char* fuselageUID, const char* filenamePtr, double deflection) 
 {
     if (filenamePtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for filenamePtr";
-        LOG(ERROR) << "in function call to tiglExportFuselageColladaByUID." << std::endl;
+        LOG(ERROR) << "Null pointer argument for filenamePtr\n"
+                   << "in function call to tiglExportFuselageColladaByUID.";
         return TIGL_NULL_POINTER;
     }
     if (fuselageUID == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for fuselageUID";
-        LOG(ERROR) << "in function call to tiglExportFuselageColladaByUID." << std::endl;
+        LOG(ERROR) << "Null pointer argument for fuselageUID\n"
+                   << "in function call to tiglExportFuselageColladaByUID.";
         return TIGL_INDEX_ERROR;
     }
 
@@ -5201,15 +5201,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportFuselageColladaByUID(const TiglCPACS
         return ret ? TIGL_SUCCESS : TIGL_WRITE_FAILED;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglExportFuselageColladaByUID!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglExportFuselageColladaByUID!";
         return TIGL_ERROR;
     }
 }
@@ -5217,13 +5217,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportFuselageColladaByUID(const TiglCPACS
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportWingColladaByUID(const TiglCPACSConfigurationHandle cpacsHandle, const char* wingUID, const char* filenamePtr, double deflection) 
 {
     if (filenamePtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for filenamePtr";
-        LOG(ERROR) << "in function call to tiglExportWingColladaByUID." << std::endl;
+        LOG(ERROR) << "Null pointer argument for filenamePtr\n"
+                   << "in function call to tiglExportWingColladaByUID.";
         return TIGL_NULL_POINTER;
     }
     if (wingUID == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for wingUID";
-        LOG(ERROR) << "in function call to tiglExportWingColladaByUID." << std::endl;
+        LOG(ERROR) << "Null pointer argument for wingUID\n"
+                   << "in function call to tiglExportWingColladaByUID.";
         return TIGL_INDEX_ERROR;
     }
 
@@ -5237,15 +5237,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportWingColladaByUID(const TiglCPACSConf
         return ret ? TIGL_SUCCESS : TIGL_WRITE_FAILED;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglExportWingColladaByUID!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglExportWingColladaByUID!";
         return TIGL_ERROR;
     }
 }
@@ -5255,8 +5255,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportWingColladaByUID(const TiglCPACSConf
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedGeometryVTKSimple(const TiglCPACSConfigurationHandle cpacsHandle, const char* filenamePtr, double deflection)
 {
     if (filenamePtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for filenamePtr";
-        LOG(ERROR) << "in function call to tiglExportMeshedGeometryVTKSimple." << std::endl;
+        LOG(ERROR) << "Null pointer argument for filenamePtr\n"
+                   << "in function call to tiglExportMeshedGeometryVTKSimple.";
         return TIGL_NULL_POINTER;
     }
 
@@ -5269,15 +5269,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedGeometryVTKSimple(const TiglCP
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglExportMeshedGeometryVTKSimple!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglExportMeshedGeometryVTKSimple!";
         return TIGL_ERROR;
     }
 }
@@ -5285,8 +5285,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedGeometryVTKSimple(const TiglCP
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportFusedBREP(TiglCPACSConfigurationHandle cpacsHandle, const char* filename)
 {
     if (filename == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for filename";
-        LOG(ERROR) << "in function call to tiglExportFusedBREP." << std::endl;
+        LOG(ERROR) << "Null pointer argument for filename\n"
+                   << "in function call to tiglExportFusedBREP.";
         return TIGL_NULL_POINTER;
     }
 
@@ -5299,15 +5299,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportFusedBREP(TiglCPACSConfigurationHand
         return ret == true? TIGL_SUCCESS : TIGL_WRITE_FAILED;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglExportFusedBREP!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglExportFusedBREP!";
         return TIGL_ERROR;
     }
 }
@@ -5323,14 +5323,14 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetMaterialCount(TiglC
                                                                            int * materialCount) 
 {
     if (!componentSegmentUID) {
-        LOG(ERROR) << "Error: Null pointer argument for componentSegmentUID ";
-        LOG(ERROR) << "in function call to tiglWingComponentSegmentGetMaterialCount." << std::endl;
+        LOG(ERROR) << "Null pointer argument for componentSegmentUID\n"
+                   << "in function call to tiglWingComponentSegmentGetMaterialCount.";
         return TIGL_NULL_POINTER;
     }
 
     if (!materialCount) {
-        LOG(ERROR) << "Error: Null pointer argument for materialCount ";
-        LOG(ERROR) << "in function call to tiglWingComponentSegmentGetMaterialCount." << std::endl;
+        LOG(ERROR) << "Null pointer argument for materialCount\n"
+                   << "in function call to tiglWingComponentSegmentGetMaterialCount.";
         return TIGL_NULL_POINTER;
     }
 
@@ -5361,19 +5361,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetMaterialCount(TiglC
             }
         }
         // the component segment was not found
-        LOG(ERROR) << "Error: Invalid uid in tiglWingComponentSegmentGetMaterialCount" << std::endl;
+        LOG(ERROR) << "Invalid uid in tiglWingComponentSegmentGetMaterialCount";
         return TIGL_UID_ERROR;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglWingComponentSegmentGetMaterialCount!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglWingComponentSegmentGetMaterialCount!";
         return TIGL_ERROR;
     }
 }
@@ -5386,13 +5386,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetMaterialUID(TiglCPA
                                                                          char ** uid) 
 {
     if (!componentSegmentUID) {
-        LOG(ERROR) << "Error: Null pointer argument for componentSegmentUID "
+        LOG(ERROR) << "Null pointer argument for componentSegmentUID\n"
                    << "in function call to tiglWingComponentSegmentGetMaterialUID.";
         return TIGL_NULL_POINTER;
     }
 
     if (!uid) {
-        LOG(ERROR) << "Error: Null pointer argument for uid "
+        LOG(ERROR) << "Null pointer argument for uid\n"
                    << "in function call to tiglWingComponentSegmentGetMaterialUID.";
         return TIGL_NULL_POINTER;
     }
@@ -5436,19 +5436,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetMaterialUID(TiglCPA
             }
         }
         // the component segment was not found
-        LOG(ERROR) << "Error: Invalid uid in tiglWingComponentSegmentGetMaterialUID" << std::endl;
+        LOG(ERROR) << "Invalid uid in tiglWingComponentSegmentGetMaterialUID";
         return TIGL_UID_ERROR;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglWingComponentSegmentGetMaterialUID!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglWingComponentSegmentGetMaterialUID!";
         return TIGL_ERROR;
     }
 }
@@ -5461,13 +5461,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetMaterialThickness(T
                                                                                double * thickness)
 {
     if (!componentSegmentUID){
-        LOG(ERROR) << "Error: Null pointer argument for componentSegmentUID "
+        LOG(ERROR) << "Null pointer argument for componentSegmentUID\n"
                    << "in function call to tiglWingComponentSegmentGetMaterialThickness.";
         return TIGL_NULL_POINTER;
     }
 
     if (!thickness){
-        LOG(ERROR) << "Error: Null pointer argument for thickness "
+        LOG(ERROR) << "Null pointer argument for thickness\n"
                    << "in function call to tiglWingComponentSegmentGetMaterialThickness.";
         return TIGL_NULL_POINTER;
     }
@@ -5515,19 +5515,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetMaterialThickness(T
             }
         }
         // the component segment was not found
-        LOG(ERROR) << "Error: Invalid uid in tiglWingComponentSegmentGetMaterialThickness" << std::endl;
+        LOG(ERROR) << "invalid uid in tiglWingComponentSegmentGetMaterialThickness";
         return TIGL_UID_ERROR;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglWingComponentSegmentGetMaterialThickness!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglWingComponentSegmentGetMaterialThickness!";
         return TIGL_ERROR;
     }
 }
@@ -5540,8 +5540,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetVolume(TiglCPACSConfigurationHa
                                                         double *volumePtr)
 {
     if (fuselageIndex < 1) {
-        LOG(ERROR) << "Error: Fuselage index index is less than zero ";
-        LOG(ERROR) << "in function call to tiglFuselageGetVolume." << std::endl;
+        LOG(ERROR) << "Fuselage index index is less than zero\n"
+                   << "in function call to tiglFuselageGetVolume.";
         return TIGL_INDEX_ERROR;
     }
 
@@ -5553,15 +5553,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetVolume(TiglCPACSConfigurationHa
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglFuselageGetVolume!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetVolume!";
         return TIGL_ERROR;
     }
 }
@@ -5571,8 +5571,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetVolume(TiglCPACSConfigurationHandle
                                                     double *volumePtr)
 {
     if (wingIndex < 1) {
-        LOG(ERROR) << "Error: Wing index index is less than zero ";
-        LOG(ERROR) << "in function call to tiglWingGetVolume." << std::endl;
+        LOG(ERROR) << "Wing index index is less than zero\n"
+                   << "in function call to tiglWingGetVolume.";
         return TIGL_INDEX_ERROR;
     }
 
@@ -5584,15 +5584,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetVolume(TiglCPACSConfigurationHandle
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglWingGetVolume!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglWingGetVolume!";
         return TIGL_ERROR;
     }
 }
@@ -5604,14 +5604,14 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentVolume(TiglCPACSConfiguratio
                                                            double* volumePtr)
 {
     if (volumePtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for volumePtr ";
-        LOG(ERROR) << "in function call to tiglWingGetSegmentVolume." << std::endl;
+        LOG(ERROR) << "Null pointer argument for volumePtr\n"
+                   << "in function call to tiglWingGetSegmentVolume.";
         return TIGL_NULL_POINTER;
     }
 
     if (wingIndex < 1 || segmentIndex < 1) {
-        LOG(ERROR) << "Error: Wing or segment index index in less than zero ";
-        LOG(ERROR) << "in function call to tiglWingGetSegmentVolume." << std::endl;
+        LOG(ERROR) << "Wing or segment index index in less than zero\n"
+                   << "in function call to tiglWingGetSegmentVolume.";
         return TIGL_INDEX_ERROR;
     }
 
@@ -5624,15 +5624,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentVolume(TiglCPACSConfiguratio
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglWingGetSegmentVolume!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglWingGetSegmentVolume!";
         return TIGL_ERROR;
     }
 }
@@ -5643,14 +5643,14 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentVolume(TiglCPACSConfigur
                                                                double* volumePtr)
 {
     if (volumePtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for volumePtr ";
-        LOG(ERROR) << "in function call to tiglFuselageGetSegmentVolume." << std::endl;
+        LOG(ERROR) << "Null pointer argument for volumePtr\n"
+                   << "in function call to tiglFuselageGetSegmentVolume.";
         return TIGL_NULL_POINTER;
     }
 
     if (fuselageIndex < 1 || segmentIndex < 1) {
-        LOG(ERROR) << "Error: Fuselage or segment index index in less than zero ";
-        LOG(ERROR) << "in function call to tiglFuselageGetSegmentVolume." << std::endl;
+        LOG(ERROR) << "Fuselage or segment index index in less than zero\n"
+                   << "in function call to tiglFuselageGetSegmentVolume.";
         return TIGL_INDEX_ERROR;
     }
 
@@ -5663,15 +5663,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentVolume(TiglCPACSConfigur
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglFuselageGetSegmentVolume!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetSegmentVolume!";
         return TIGL_ERROR;
     }
 }
@@ -5684,8 +5684,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSurfaceArea(TiglCPACSConfigurationH
                                                          double *surfaceAreaPtr)
 {
     if (wingIndex < 1) {
-        LOG(ERROR) << "Error: Wing index index is less than zero ";
-        LOG(ERROR) << "in function call to tiglWingGetSurfaceArea." << std::endl;
+        LOG(ERROR) << "Wing index index is less than zero\n"
+                   << "in function call to tiglWingGetSurfaceArea.";
         return TIGL_INDEX_ERROR;
     }
 
@@ -5697,15 +5697,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSurfaceArea(TiglCPACSConfigurationH
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglWingGetSurfaceArea!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglWingGetSurfaceArea!";
         return TIGL_ERROR;
     }
 }
@@ -5715,8 +5715,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSurfaceArea(TiglCPACSConfigurat
                                                              double *surfaceAreaPtr)
 {
     if (fuselageIndex < 1) {
-        LOG(ERROR) << "Error: Fuselage index index is less than zero ";
-        LOG(ERROR) << "in function call to tiglFuselageGetSurfaceArea." << std::endl;
+        LOG(ERROR) << "Fuselage index index is less than zero\n"
+                   << "in function call to tiglFuselageGetSurfaceArea.";
         return TIGL_INDEX_ERROR;
     }
 
@@ -5728,15 +5728,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSurfaceArea(TiglCPACSConfigurat
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglFuselageGetSurfaceArea!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetSurfaceArea!";
         return TIGL_ERROR;
     }
 }
@@ -5748,14 +5748,14 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentSurfaceArea(TiglCPACSConfigu
                                                                 double* surfaceAreaPtr)
 {
     if (surfaceAreaPtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for surfaceAreaPtr ";
-        LOG(ERROR) << "in function call to tiglWingGetSegmentSurfaceArea." << std::endl;
+        LOG(ERROR) << "Null pointer argument for surfaceAreaPtr\n"
+                   << "in function call to tiglWingGetSegmentSurfaceArea.";
         return TIGL_NULL_POINTER;
     }
 
     if (wingIndex < 1 || segmentIndex < 1) {
-        LOG(ERROR) << "Error: Wing or segment index index in less than zero ";
-        LOG(ERROR) << "in function call to tiglWingGetSegmentSurfaceArea." << std::endl;
+        LOG(ERROR) << "Wing or segment index index in less than zero\n"
+                   << "in function call to tiglWingGetSegmentSurfaceArea.";
         return TIGL_INDEX_ERROR;
     }
 
@@ -5768,15 +5768,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentSurfaceArea(TiglCPACSConfigu
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglWingGetSegmentSurfaceArea!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglWingGetSegmentSurfaceArea!";
         return TIGL_ERROR;
     }
 }
@@ -5788,14 +5788,14 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentSurfaceArea(TiglCPACSCon
                                                                     double* surfaceAreaPtr)
 {
     if (surfaceAreaPtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for surfaceAreaPtr ";
-        LOG(ERROR) << "in function call to tiglFuselageGetSegmentSurfaceArea." << std::endl;
+        LOG(ERROR) << "Null pointer argument for surfaceAreaPtr\n"
+                   << "in function call to tiglFuselageGetSegmentSurfaceArea.";
         return TIGL_NULL_POINTER;
     }
 
     if (fuselageIndex < 1 || segmentIndex < 1) {
-        LOG(ERROR) << "Error: Fuselage or segment index index in less than zero ";
-        LOG(ERROR) << "in function call to tiglFuselageGetSegmentSurfaceArea." << std::endl;
+        LOG(ERROR) << "Fuselage or segment index index in less than zero\n"
+                   << "in function call to tiglFuselageGetSegmentSurfaceArea.";
         return TIGL_INDEX_ERROR;
     }
 
@@ -5808,15 +5808,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentSurfaceArea(TiglCPACSCon
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglFuselageGetSegmentSurfaceArea!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetSegmentSurfaceArea!";
         return TIGL_ERROR;
     }
 }
@@ -5831,13 +5831,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentUpperSurfaceAreaTrimmed(Tigl
                                                                             double* surfaceArea)
 {
     if (surfaceArea == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for surfaceArea "
+        LOG(ERROR) << "Null pointer argument for surfaceArea "
                    << "in function call to tiglWingGetSegmentUpperSurfaceAreaTrimmed.";
         return TIGL_NULL_POINTER;
     }
 
     if (wingIndex < 1 || segmentIndex < 1) {
-        LOG(ERROR) << "Error: Wing or segment index index in less than one "
+        LOG(ERROR) << "Wing or segment index index in less than one\n"
                    << "in function call to tiglWingGetSegmentUpperSurfaceAreaTrimmed.";
         return TIGL_INDEX_ERROR;
     }
@@ -5855,15 +5855,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentUpperSurfaceAreaTrimmed(Tigl
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglWingGetSegmentUpperSurfaceAreaTrimmed!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglWingGetSegmentUpperSurfaceAreaTrimmed!";
         return TIGL_ERROR;
     }
 }
@@ -5878,13 +5878,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentLowerSurfaceAreaTrimmed(Tigl
                                                                             double* surfaceArea)
 {
     if (surfaceArea == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for surfaceArea "
+        LOG(ERROR) << "Null pointer argument for surfaceArea\n"
                    << "in function call to tiglWingGetSegmentLowerSurfaceAreaTrimmed.";
         return TIGL_NULL_POINTER;
     }
 
     if (wingIndex < 1 || segmentIndex < 1) {
-        LOG(ERROR) << "Error: Wing or segment index index in less than one "
+        LOG(ERROR) << "Wing or segment index index in less than one\n"
                    << "in function call to tiglWingGetSegmentLowerSurfaceAreaTrimmed.";
         return TIGL_INDEX_ERROR;
     }
@@ -5902,15 +5902,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentLowerSurfaceAreaTrimmed(Tigl
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglWingGetSegmentLowerSurfaceAreaTrimmed!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglWingGetSegmentLowerSurfaceAreaTrimmed!";
         return TIGL_ERROR;
     }
 }
@@ -5921,13 +5921,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetReferenceArea(TiglCPACSConfiguratio
                                                            double *referenceAreaPtr)
 {
     if (wingIndex < 1) {
-        LOG(ERROR) << "Error: Wing index index is less than zero "
+        LOG(ERROR) << "Wing index index is less than zero\n"
                    << "in function call to tiglWingGetReferenceArea.";
         return TIGL_INDEX_ERROR;
     }
 
     if (symPlane < TIGL_NO_SYMMETRY || symPlane > TIGL_Y_Z_PLANE) {
-        LOG(ERROR) << "Error: invalid symmetry "
+        LOG(ERROR) << "Invalid symmetry\n"
                    << "in function call to tiglWingGetReferenceArea.";
         return TIGL_ERROR;
     }
@@ -5940,15 +5940,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetReferenceArea(TiglCPACSConfiguratio
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglWingGetReferenceArea!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglWingGetReferenceArea!";
         return TIGL_ERROR;
     }
 }
@@ -5991,15 +5991,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetMAC(TiglCPACSConfigurationHandle cp
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglConfigurationGetLength!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglConfigurationGetLength!";
         return TIGL_ERROR;
     }
 }
@@ -6009,8 +6009,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetWettedArea(TiglCPACSConfigurationHa
                                                         double *wettedAreaPtr)
 {
     if (wingUID == NULL) {
-        LOG(ERROR) << "Error: WingUID is empty ";
-        LOG(ERROR) << "in function call to tiglWingGetWettedArea." << std::endl;
+        LOG(ERROR) << "WingUID is empty\n"
+                   << "in function call to tiglWingGetWettedArea.";
         return TIGL_NULL_POINTER;
     }
 
@@ -6023,15 +6023,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetWettedArea(TiglCPACSConfigurationHa
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglWingGetWettedArea!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglWingGetWettedArea!";
         return TIGL_ERROR;
     }
 }
@@ -6049,14 +6049,14 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglComponentGetHashCode(TiglCPACSConfiguratio
                                                            int* hashCodePtr)
 {
     if (componentUID == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for componentUID ";
-        LOG(ERROR) << "in function call to tiglComponentGetHashCode." << std::endl;
+        LOG(ERROR) << "Null pointer argument for componentUID\n"
+                   << "in function call to tiglComponentGetHashCode.";
         return TIGL_NULL_POINTER;
     }
 
     if (hashCodePtr == NULL) {
-        LOG(ERROR) << "Error: Null pointer argument for hashCodePtr ";
-        LOG(ERROR) << "in function call to tiglComponentGetHashCode." << std::endl;
+        LOG(ERROR) << "Null pointer argument for hashCodePtr\n"
+                   << "in function call to tiglComponentGetHashCode.";
         return TIGL_NULL_POINTER;
     }
 
@@ -6077,15 +6077,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglComponentGetHashCode(TiglCPACSConfiguratio
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglComponentGetHashCode!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglComponentGetHashCode!";
         return TIGL_ERROR;
     }
 }
@@ -6093,7 +6093,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglComponentGetHashCode(TiglCPACSConfiguratio
 TIGL_COMMON_EXPORT const char * tiglGetErrorString(TiglReturnCode code)
 {
     if (code > TIGL_MATH_ERROR || code < 0) {
-        LOG(ERROR) << "TIGL error code " << code << " is unknown!" << std::endl;
+        LOG(ERROR) << "TIGL error code " << code << " is unknown!";
         return "TIGL_UNKNOWN_ERROR";
     }
     return TiglErrorStrings[code];
@@ -6102,7 +6102,7 @@ TIGL_COMMON_EXPORT const char * tiglGetErrorString(TiglReturnCode code)
 TIGL_COMMON_EXPORT TiglReturnCode tiglConfigurationGetLength(TiglCPACSConfigurationHandle cpacsHandle, double * pLength)
 {
     if (pLength == NULL) {
-        LOG(ERROR) << "Error: argument pLength is NULL in tiglConfigurationGetLength!";
+        LOG(ERROR) << "argument pLength is NULL in tiglConfigurationGetLength!";
         return TIGL_NULL_POINTER;
     }
 
@@ -6113,15 +6113,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglConfigurationGetLength(TiglCPACSConfigurat
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglConfigurationGetLength!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglConfigurationGetLength!";
         return TIGL_ERROR;
     }
 }
@@ -6129,12 +6129,12 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglConfigurationGetLength(TiglCPACSConfigurat
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSpan(TiglCPACSConfigurationHandle cpacsHandle, const char* wingUID, double * pSpan)
 {
     if (pSpan == NULL) {
-        LOG(ERROR) << "Error: argument pSpan is NULL in tiglConfigurationGetLength!";
+        LOG(ERROR) << "argument pSpan is NULL in tiglConfigurationGetLength!";
         return TIGL_NULL_POINTER;
     }
 
     if (wingUID == NULL) {
-        LOG(ERROR) << "Error: argument wingUID is NULL in tiglConfigurationGetLength!";
+        LOG(ERROR) << "argument wingUID is NULL in tiglConfigurationGetLength!";
         return TIGL_NULL_POINTER;
     }
 
@@ -6146,15 +6146,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSpan(TiglCPACSConfigurationHandle c
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
+        LOG(ERROR) << ex.what();
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError();
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglConfigurationGetLength!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglConfigurationGetLength!";
         return TIGL_ERROR;
     }
 }
@@ -6166,7 +6166,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglLogToFileEnabled(const char *filePrefix)
 {
     tigl::CTiglLogging& logger = tigl::CTiglLogging::Instance();
     if (filePrefix == NULL) {
-        LOG(ERROR) << "Error: argument filePrefix is NULL in tiglLogToFileEnabled!";
+        LOG(ERROR) << "argument filePrefix is NULL in tiglLogToFileEnabled!";
         return TIGL_NULL_POINTER;
     }
 
@@ -6184,7 +6184,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglLogToFileStreamEnabled(FILE * fp)
 {
     tigl::CTiglLogging& logger = tigl::CTiglLogging::Instance();
     if (fp == NULL) {
-        LOG(ERROR) << "Error: argument fp is NULL in tiglLogToFileStreamEnabled!";
+        LOG(ERROR) << "argument fp is NULL in tiglLogToFileStreamEnabled!";
         return TIGL_NULL_POINTER;
     }
 
@@ -6203,7 +6203,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglLogSetFileEnding(const char *ending)
 {
     tigl::CTiglLogging& logger = tigl::CTiglLogging::Instance();
     if (ending == NULL) {
-        LOG(ERROR) << "Error: argument ending is NULL in tiglLogSetFileEnding!";
+        LOG(ERROR) << "argument ending is NULL in tiglLogSetFileEnding!";
         return TIGL_NULL_POINTER;
     }
 

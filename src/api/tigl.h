@@ -35,7 +35,7 @@ extern "C" {
 #include <stdio.h>
 
 #if defined(WIN32)
-  #if defined (TIGL_EXPORTS)
+  #if defined (tigl3_EXPORTS)
     #define TIGL_COMMON_EXPORT __declspec (dllexport)
   #else
     #define TIGL_COMMON_EXPORT

@@ -42,7 +42,7 @@ CCPACSFuselageSectionElement& CCPACSFuselageSectionElements::GetSectionElement(i
 {
     index--;
     if (index < 0 || index >= GetSectionElementCount()) {
-        throw CTiglError("Error: Invalid index in CCPACSFuselageSectionElements::GetSectionElement", TIGL_INDEX_ERROR);
+        throw CTiglError("Invalid index in CCPACSFuselageSectionElements::GetSectionElement", TIGL_INDEX_ERROR);
     }
     return *m_elements[index];
 }

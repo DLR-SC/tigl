@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package de.dlr.sc.tigl;
+package de.dlr.sc.tigl3;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,17 +31,17 @@ import com.sun.jna.ptr.DoubleByReference;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.PointerByReference;
 
-import de.dlr.sc.tigl.Tigl.SectionAndElementIndex;
-import de.dlr.sc.tigl.Tigl.SectionAndElementUID;
-import de.dlr.sc.tigl.Tigl.SegmentXsiAndWarning;
-import de.dlr.sc.tigl.Tigl.SurfaceMaterial;
-import de.dlr.sc.tigl.Tigl.WCSFindSegmentResult;
-import de.dlr.sc.tigl.Tigl.WCSGetSegmentEtaXsiResult;
-import de.dlr.sc.tigl.Tigl.WGetPointDirectionResult;
-import de.dlr.sc.tigl.Tigl.WSProjectionResult;
-import de.dlr.sc.tigl.Tigl.WingCoordinates;
-import de.dlr.sc.tigl.Tigl.GetSegmentIndexResult;
-import de.dlr.sc.tigl.Tigl.WingMAC;
+import de.dlr.sc.tigl3.Tigl.SectionAndElementIndex;
+import de.dlr.sc.tigl3.Tigl.SectionAndElementUID;
+import de.dlr.sc.tigl3.Tigl.SegmentXsiAndWarning;
+import de.dlr.sc.tigl3.Tigl.SurfaceMaterial;
+import de.dlr.sc.tigl3.Tigl.WCSFindSegmentResult;
+import de.dlr.sc.tigl3.Tigl.WCSGetSegmentEtaXsiResult;
+import de.dlr.sc.tigl3.Tigl.WGetPointDirectionResult;
+import de.dlr.sc.tigl3.Tigl.WSProjectionResult;
+import de.dlr.sc.tigl3.Tigl.WingCoordinates;
+import de.dlr.sc.tigl3.Tigl.GetSegmentIndexResult;
+import de.dlr.sc.tigl3.Tigl.WingMAC;
 
 public class CpacsConfiguration implements AutoCloseable {
     

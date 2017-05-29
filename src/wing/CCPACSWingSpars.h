@@ -17,27 +17,16 @@
 #define CCPACSWINGSPARS_H
 
 #include "generated/CPACSWingSpar.h"
-#include "CCPACSWingSparPositions.h"
-#include "CCPACSWingSparSegments.h"
 
 namespace tigl
 {
-
-// forward declarations
-class CCPACSWingCSStructure;
-
-
 class CCPACSWingSpars : public generated::CPACSWingSpar
 {
 public:
-    TIGL_EXPORT CCPACSWingSpars(CCPACSWingCSStructure* structure, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSWingSpars(CCPACSWingCSStructure* parent, CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT void Invalidate();
-
-    TIGL_EXPORT const CCPACSWingCSStructure& GetStructure() const;
-    TIGL_EXPORT CCPACSWingCSStructure& GetStructure();
 };
-
 } // end namespace tigl
 
 #endif // CCPACSWINGSPARS_H

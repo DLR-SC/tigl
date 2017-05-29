@@ -25,12 +25,13 @@
 
 #include "CCPACSFuselageSegments.h"
 
-#include "CCPACSFuselageSegment.h"
-#include "CTiglError.h"
-
 #include <iostream>
 #include <sstream>
+#include <algorithm>
 
+#include "CCPACSFuselageSegment.h"
+#include "CCPACSFuselage.h"
+#include "CTiglError.h"
 
 namespace tigl
 {
@@ -50,7 +51,7 @@ CCPACSFuselageSegment & CCPACSFuselageSegments::GetSegment(int index)
 {
     index--;
     if (index < 0 || index >= GetSegmentCount()) {
-        throw CTiglError("Error: Invalid index value in CCPACSFuselageSegments::GetSegment", TIGL_INDEX_ERROR);
+        throw CTiglError("Invalid index value in CCPACSFuselageSegments::GetSegment", TIGL_INDEX_ERROR);
     }
     return *m_segments[index];
 }
@@ -63,7 +64,7 @@ CCPACSFuselageSegment & CCPACSFuselageSegments::GetSegment(const std::string& se
             return *m_segments[i];
         }
     }
-    throw CTiglError("Error: Invalid uid in CCPACSFuselageSegments::GetSegment", TIGL_UID_ERROR);
+    throw CTiglError("Invalid uid in CCPACSFuselageSegments::GetSegment", TIGL_UID_ERROR);
 }
 
 // Gets total segment count

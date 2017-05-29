@@ -40,7 +40,7 @@
 namespace tigl
 {
 
-TopoDS_Shape ApplyWingTransformation(CCPACSWingCSStructure& structure, const TopoDS_Shape& shape)
+TopoDS_Shape ApplyWingTransformation(const CCPACSWingCSStructure& structure, const TopoDS_Shape& shape)
 {
     return structure.GetWingStructureReference().GetWing().GetWingTransformation().Transform(shape);
 }
@@ -122,12 +122,12 @@ bool IsOuterSparPointInSection(const std::string& sparUid, double eta, const CCP
         sparPositionIndex = 1;
     }
     else if (eta > 1 - Precision::Confusion()) {
-        sparPositionIndex = sparSegment.GetSparPositionUIDCount();
+        sparPositionIndex = sparSegment.GetSparPositionUIDs().GetSparPositionUIDCount();
     }
     else {
         return false;
     }
-    CCPACSWingSparPosition& pos = sparSegment.GetSparPosition(sparSegment.GetSparPositionUID(sparPositionIndex));
+    const CCPACSWingSparPosition& pos = sparSegment.GetSparPosition(sparSegment.GetSparPositionUIDs().GetSparPositionUID(sparPositionIndex));
     if (pos.GetInputType() == CCPACSWingSparPosition::ElementUID) {
         return true;
     }
@@ -190,7 +190,7 @@ TopoDS_Wire CutFaceWithSpar(TopoDS_Shape& ribCutFace, const TopoDS_Shape& sparGe
     // check if number of end vertices is valid
     if (endVertices.Extent() > 2) {
         LOG(ERROR) << "invalid number of end vertices found!";
-        throw CTiglError("Error: invalid number of end vertices found in CCPACSWingRibsDefinition::CutFaceWithSpar!");
+        throw CTiglError("invalid number of end vertices found in CCPACSWingRibsDefinition::CutFaceWithSpar!");
     }
 
     // extend the edges of the end vertices
@@ -254,14 +254,14 @@ gp_Pnt GetRibDefinitionPoint(const std::string& definition, const TopoDS_Face& r
         TopoDS_Wire leadingEdgeLine = wingStructureReference.GetLeadingEdgeLine();
         if (!GetIntersectionPoint(ribCutFace, leadingEdgeLine, definitionPoint)) {
             LOG(ERROR) << "Unable to determine rib definition point!";
-            throw CTiglError("ERROR: Unable to determine rib definition point in CCPACSWingRibsDefinition::GetRibDefinitionPoint!");
+            throw CTiglError("Unable to determine rib definition point in CCPACSWingRibsDefinition::GetRibDefinitionPoint!");
         }
     }
     else if (definition == "trailingEdge") {
         TopoDS_Wire trailingEdgeLine = wingStructureReference.GetTrailingEdgeLine();
         if (!GetIntersectionPoint(ribCutFace, trailingEdgeLine, definitionPoint)) {
             LOG(ERROR) << "Unable to determine rib definition point!";
-            throw CTiglError("ERROR: Unable to determine rib definition point in CCPACSWingRibsDefinition::GetRibDefinitionPoint!");
+            throw CTiglError("Unable to determine rib definition point in CCPACSWingRibsDefinition::GetRibDefinitionPoint!");
         }
     }
     else {
@@ -271,7 +271,7 @@ gp_Pnt GetRibDefinitionPoint(const std::string& definition, const TopoDS_Face& r
         TopoDS_Wire sparMidplaneLine = sparSegment.GetSparMidplaneLine();
         if (!GetIntersectionPoint(ribCutFace, sparMidplaneLine, definitionPoint)) {
             LOG(ERROR) << "Unable to determine rib definition point!";
-            throw CTiglError("ERROR: Unable to determine rib definition point in CCPACSWingRibsDefinition::GetRibDefinitionPoint!");
+            throw CTiglError("Unable to determine rib definition point in CCPACSWingRibsDefinition::GetRibDefinitionPoint!");
         }
     }
     return definitionPoint;
@@ -307,21 +307,21 @@ void CheckSparPositionOnReference(const std::string& sparPositionUID, const std:
     }
     if (sparSegmentIndex > numSparSegments) {
         LOG(ERROR) << "Invalid ribs definition: use of spar position for rib positioning only valid when spar is used as rib reference line!";
-        throw CTiglError("Error: Invalid ribs definition: use of spar position for rib positioning only valid when spar is used as rib reference line!");
+        throw CTiglError("Invalid ribs definition: use of spar position for rib positioning only valid when spar is used as rib reference line!");
     }
 
     // next ensure that the spar position is part of the spar segment
     const CCPACSWingSparSegment& sparSegment = structure.GetSparSegment(sparSegmentIndex);
-    int numSparPositions = sparSegment.GetSparPositionUIDCount();
+    int numSparPositions = sparSegment.GetSparPositionUIDs().GetSparPositionUIDCount();
     int sparPositionIndex = 1;
     for (; sparPositionIndex <= numSparPositions; ++sparPositionIndex) {
-        if (sparSegment.GetSparPositionUID(sparPositionIndex) == sparPositionUID) {
+        if (sparSegment.GetSparPositionUIDs().GetSparPositionUID(sparPositionIndex) == sparPositionUID) {
             break;
         }
     }
     if (sparPositionIndex > numSparPositions) {
         LOG(ERROR) << "Invalid ribs definition: used spar position \"" + sparPositionUID + "\" must be part of reference spar \"" + ribReference + "\"!";
-        throw CTiglError("Error: Invalid ribs definition: used spar position \"" + sparPositionUID + "\" must be part of reference spar \"" + ribReference + "\"!");
+        throw CTiglError("Invalid ribs definition: used spar position \"" + sparPositionUID + "\" must be part of reference spar \"" + ribReference + "\"!");
     }
 }
 

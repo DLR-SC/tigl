@@ -92,6 +92,11 @@ namespace tigl
                 m_elementStartUID_choice2 = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/elementStartUID");
             }
             
+            // read element sparPositionStartUID
+            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/sparPositionStartUID")) {
+                m_sparPositionStartUID_choice3 = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/sparPositionStartUID");
+            }
+            
             // read element etaEnd
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/etaEnd")) {
                 m_etaEnd_choice1 = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/etaEnd");
@@ -100,6 +105,11 @@ namespace tigl
             // read element elementEndUID
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/elementEndUID")) {
                 m_elementEndUID_choice2 = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/elementEndUID");
+            }
+            
+            // read element sparPositionEndUID
+            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/sparPositionEndUID")) {
+                m_sparPositionEndUID_choice3 = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/sparPositionEndUID");
             }
             
             // read element spacing
@@ -140,36 +150,80 @@ namespace tigl
             if (m_etaStart_choice1) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/etaStart");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/etaStart", *m_etaStart_choice1);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/etaStart")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/etaStart");
+                }
             }
             
             // write element elementStartUID
             if (m_elementStartUID_choice2) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/elementStartUID");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/elementStartUID", *m_elementStartUID_choice2);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/elementStartUID")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/elementStartUID");
+                }
+            }
+            
+            // write element sparPositionStartUID
+            if (m_sparPositionStartUID_choice3) {
+                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/sparPositionStartUID");
+                tixihelper::TixiSaveElement(tixiHandle, xpath + "/sparPositionStartUID", *m_sparPositionStartUID_choice3);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/sparPositionStartUID")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/sparPositionStartUID");
+                }
             }
             
             // write element etaEnd
             if (m_etaEnd_choice1) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/etaEnd");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/etaEnd", *m_etaEnd_choice1);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/etaEnd")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/etaEnd");
+                }
             }
             
             // write element elementEndUID
             if (m_elementEndUID_choice2) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/elementEndUID");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/elementEndUID", *m_elementEndUID_choice2);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/elementEndUID")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/elementEndUID");
+                }
+            }
+            
+            // write element sparPositionEndUID
+            if (m_sparPositionEndUID_choice3) {
+                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/sparPositionEndUID");
+                tixihelper::TixiSaveElement(tixiHandle, xpath + "/sparPositionEndUID", *m_sparPositionEndUID_choice3);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/sparPositionEndUID")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/sparPositionEndUID");
+                }
             }
             
             // write element spacing
             if (m_spacing_choice1) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/spacing");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/spacing", *m_spacing_choice1);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/spacing")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/spacing");
+                }
             }
             
             // write element numberOfRibs
             if (m_numberOfRibs_choice2) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/numberOfRibs");
                 tixihelper::TixiSaveElement(tixiHandle, xpath + "/numberOfRibs", *m_numberOfRibs_choice2);
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/numberOfRibs")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/numberOfRibs");
+                }
             }
             
         }
@@ -254,6 +308,21 @@ namespace tigl
             m_elementStartUID_choice2 = value;
         }
         
+        const boost::optional<std::string>& CPACSWingRibsPositioning::GetSparPositionStartUID_choice3() const
+        {
+            return m_sparPositionStartUID_choice3;
+        }
+        
+        void CPACSWingRibsPositioning::SetSparPositionStartUID_choice3(const std::string& value)
+        {
+            m_sparPositionStartUID_choice3 = value;
+        }
+        
+        void CPACSWingRibsPositioning::SetSparPositionStartUID_choice3(const boost::optional<std::string>& value)
+        {
+            m_sparPositionStartUID_choice3 = value;
+        }
+        
         const boost::optional<double>& CPACSWingRibsPositioning::GetEtaEnd_choice1() const
         {
             return m_etaEnd_choice1;
@@ -282,6 +351,21 @@ namespace tigl
         void CPACSWingRibsPositioning::SetElementEndUID_choice2(const boost::optional<std::string>& value)
         {
             m_elementEndUID_choice2 = value;
+        }
+        
+        const boost::optional<std::string>& CPACSWingRibsPositioning::GetSparPositionEndUID_choice3() const
+        {
+            return m_sparPositionEndUID_choice3;
+        }
+        
+        void CPACSWingRibsPositioning::SetSparPositionEndUID_choice3(const std::string& value)
+        {
+            m_sparPositionEndUID_choice3 = value;
+        }
+        
+        void CPACSWingRibsPositioning::SetSparPositionEndUID_choice3(const boost::optional<std::string>& value)
+        {
+            m_sparPositionEndUID_choice3 = value;
         }
         
         const boost::optional<double>& CPACSWingRibsPositioning::GetSpacing_choice1() const

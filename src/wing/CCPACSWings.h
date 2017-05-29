@@ -44,21 +44,6 @@ public:
     // Invalidates internal state
     TIGL_EXPORT void Invalidate();
 
-    DEPRECATED TIGL_EXPORT bool HasProfile(std::string uid) const;
-
-    // Returns the wing profiles in this configuration
-    DEPRECATED TIGL_EXPORT CCPACSWingProfiles& GetProfiles();
-    DEPRECATED TIGL_EXPORT const CCPACSWingProfiles& GetProfiles() const;
-
-    // Returns the total count of wing profiles in this configuration
-    DEPRECATED TIGL_EXPORT int GetProfileCount() const;
-
-    // Returns the wing profile for a given uid.
-    DEPRECATED TIGL_EXPORT CCPACSWingProfile& GetProfile(std::string uid) const;
-
-    // Returns the wing profile for a given index - TODO: depricated function!
-    DEPRECATED TIGL_EXPORT CCPACSWingProfile& GetProfile(int index) const;
-
     // Returns the total count of wings in a configuration
     TIGL_EXPORT int GetWingCount() const;
 
@@ -71,9 +56,9 @@ public:
     // Returns the wing for a given UID.
     TIGL_EXPORT CCPACSWing& GetWing(const std::string& UID) const;
     
-    // Adds a wing to the wing list
-    TIGL_EXPORT void AddWing(CCPACSWing* wing);
-
+    TIGL_EXPORT void Add(CCPACSWing* wing);
+    TIGL_EXPORT void Remove(CCPACSWing* wing);
+    
     // Returns the wing index for a given UID.
     TIGL_EXPORT int GetWingIndex(const std::string& UID) const;
 

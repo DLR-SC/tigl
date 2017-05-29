@@ -21,7 +21,7 @@
 namespace tigl
 {
 
-// TODO: replace by std_to_string() when C++11 is available
+// TODO: replace by std::to_string() when C++11 is available
 template<typename T>
 std::string std_to_string(T value)
 {

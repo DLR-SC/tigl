@@ -31,7 +31,7 @@ CCPACSWingRibRotation::CCPACSWingRibRotation(CCPACSWingRibsPositioning* parent)
 void CCPACSWingRibRotation::SetZ(const double & value) {
     generated::CPACSRibRotation::SetZ(value);
     // invalidate whole component segment structure since rib may be referenced anywhere
-    m_parent->GetParent()->GetStructure().Invalidate();
+    m_parent->GetParent()->GetParent()->GetParent()->Invalidate();
 }
 
 } // end namespace tigl

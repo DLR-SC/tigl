@@ -62,7 +62,7 @@ if __name__ == '__main__':
     parser.parse_header_file(tiglpath + '/src/api/tigl.h')
     
     # create the wrapper
-    pg = PG.JavaGenerator(name_prefix = 'tigl', libname = 'TIGL', package = "de.dlr.sc.tigl")
+    pg = PG.JavaGenerator(name_prefix = 'tigl', libname = 'tigl3', package = "de.dlr.sc.tigl3")
     pg.license = apache
     pg.blacklist = blacklist
     pg.postconstr = postconstr
@@ -73,7 +73,7 @@ if __name__ == '__main__':
     print('done')
     
     # write file
-    directory = 'src/de/dlr/sc/tigl'
+    directory = 'src/de/dlr/sc/tigl3'
     filename = directory + '/TiglNativeInterface.java'
     print('Write tigl java interface to file "%s" ... ' % filename, end=' ') 
     fop = open(filename, 'w')

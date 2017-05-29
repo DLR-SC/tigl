@@ -6,7 +6,7 @@
     <creator>Martin Siggel</creator>
     <timestamp>2012-10-09T15:12:47</timestamp>
     <version>0.0</version>
-    <cpacsVersion>2.0</cpacsVersion>
+    <cpacsVersion>3.0</cpacsVersion>
   </header>
   <vehicles>
     <aircraft>

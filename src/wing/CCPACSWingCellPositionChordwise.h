@@ -31,7 +31,7 @@
 
 namespace tigl
 {
-// forware declarations
+// forward declarations
 class CCPACSWingCell;
 
 class CCPACSWingCellPositionChordwise : private generated::CPACSCellPositioningChordwise

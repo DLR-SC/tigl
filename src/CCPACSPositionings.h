@@ -1,8 +1,8 @@
-/* 
+/*
 * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
-* Changed: $Id$ 
+* Changed: $Id$
 *
 * Version: $Revision$
 *
@@ -62,9 +62,6 @@ public:
 protected:
     // Update internal positioning structure
     void Update();
-
-    // Update connected positionings recursive
-    void UpdateNextPositioning(CCPACSPositioning*, int depth);
 
 private:
     bool                           invalidated;       /**< Internal state flag  */

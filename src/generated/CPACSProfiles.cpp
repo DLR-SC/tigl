@@ -30,6 +30,16 @@ namespace tigl
         
         CPACSProfiles::~CPACSProfiles() {}
         
+        CTiglUIDManager& CPACSProfiles::GetUIDManager()
+        {
+            return *m_uidMgr;
+        }
+        
+        const CTiglUIDManager& CPACSProfiles::GetUIDManager() const
+        {
+            return *m_uidMgr;
+        }
+        
         void CPACSProfiles::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element fuselageProfiles
@@ -96,24 +106,40 @@ namespace tigl
             if (m_fuselageProfiles) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/fuselageProfiles");
                 m_fuselageProfiles->WriteCPACS(tixiHandle, xpath + "/fuselageProfiles");
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/fuselageProfiles")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/fuselageProfiles");
+                }
             }
             
             // write element wingAirfoils
             if (m_wingAirfoils) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/wingAirfoils");
                 m_wingAirfoils->WriteCPACS(tixiHandle, xpath + "/wingAirfoils");
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/wingAirfoils")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/wingAirfoils");
+                }
             }
             
             // write element guideCurves
             if (m_guideCurves) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/guideCurves");
                 m_guideCurves->WriteCPACS(tixiHandle, xpath + "/guideCurves");
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/guideCurves")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/guideCurves");
+                }
             }
             
             // write element rotorAirfoils
             if (m_rotorAirfoils) {
                 tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/rotorAirfoils");
                 m_rotorAirfoils->WriteCPACS(tixiHandle, xpath + "/rotorAirfoils");
+            } else {
+                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/rotorAirfoils")) {
+                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/rotorAirfoils");
+                }
             }
             
         }

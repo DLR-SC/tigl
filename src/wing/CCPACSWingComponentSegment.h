@@ -39,7 +39,7 @@
 
 #include "generated/UniquePtr.h"
 #include "CCPACSMaterial.h"
-#include "CCPACSWingConnection.h"
+#include "CTiglWingConnection.h"
 #include "CCPACSWingCSStructure.h"
 #include "CCPACSWingShell.h"
 #include "CTiglAbstractSegment.h"
@@ -188,10 +188,11 @@ public:
     TIGL_EXPORT bool IsSegmentContained(const CCPACSWingSegment& segment) const;
 
     // Getter for upper and lower shell
-    TIGL_EXPORT const CCPACSWingShell& GetUpperShell() const;
-    TIGL_EXPORT CCPACSWingShell& GetUpperShell();
-    TIGL_EXPORT const CCPACSWingShell& GetLowerShell() const;
-    TIGL_EXPORT CCPACSWingShell& GetLowerShell();
+    // DEPRECATED: use GetStructure().Get*()
+    DEPRECATED TIGL_EXPORT const CCPACSWingShell& GetUpperShell() const;
+    DEPRECATED TIGL_EXPORT CCPACSWingShell& GetUpperShell();
+    DEPRECATED TIGL_EXPORT const CCPACSWingShell& GetLowerShell() const;
+    DEPRECATED TIGL_EXPORT CCPACSWingShell& GetLowerShell();
 
     // computes the xsi coordinate on a straight line in global space, given an eta coordinate
     TIGL_EXPORT void InterpolateOnLine(double csEta1, double csXsi1, double csEta2, double csXsi2, double eta, double &xsi, double &errorDistance);

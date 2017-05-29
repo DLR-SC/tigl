@@ -34,7 +34,7 @@ class  TiglFuselageSegment : public ::testing::Test
 protected:
     static void SetUpTestCase()
     {
-        const char* filename = "TestData/CPACS_21_D150.xml";
+        const char* filename = "TestData/CPACS_30_D150.xml";
         ReturnCode tixiRet;
         TiglReturnCode tiglRet;
 
@@ -585,6 +585,13 @@ TEST_F( TiglFuselageSegment, FuselageGetEndSectionAndElementUID_success)
     ASSERT_TRUE(tiglFuselageGetEndSectionAndElementUID(tiglHandle, 1, 3, &sectionUID, &elementUID) == TIGL_SUCCESS);
     ASSERT_STREQ("D150_VAMP_FL1_Sec4", sectionUID);
     ASSERT_STREQ("D150_VAMP_FL1_Sec4_Elem1", elementUID);
+}
+
+TEST_F(TiglFuselageSegment, GetSegmentVolume)
+{
+    double volume = 0.;
+    ASSERT_EQ(TIGL_SUCCESS, tiglFuselageGetSegmentVolume(tiglHandle, 1, 10, &volume));
+    ASSERT_GT(volume, 0.);
 }
 
 

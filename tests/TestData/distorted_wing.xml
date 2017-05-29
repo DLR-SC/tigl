@@ -2,8 +2,8 @@
 <cpacs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.airbusds.com/cpacs/2.3">
   <header>
     <name>Descartes Model</name>
-    <version>1.0</version>
-    <cpacsVersion>2.1.2</cpacsVersion>
+    <version>1.1</version>
+    <cpacsVersion>3.0</cpacsVersion>
     <creator>Descartes</creator>
     <description>CPACS aircraft model designed using Descartes</description>
     <timestamp>2016-08-08T18:03:00</timestamp>
@@ -17,7 +17,6 @@
           <wing uID="Wing">
             <name>Wing</name>
             <description/>
-            <parentUID/>
             <transformation>
               <scaling>
                 <x>1</x>

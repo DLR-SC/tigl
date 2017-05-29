@@ -217,7 +217,7 @@ void CCPACSWingComponentSegment::ReadCPACS(TixiDocumentHandle tixiHandle, const 
 }
 
 std::string CCPACSWingComponentSegment::GetDefaultedUID() const {
-    return m_uID.value_or("");
+    return m_uID;
 }
 
 // Returns the wing this segment belongs to
@@ -315,7 +315,7 @@ TopoDS_Face CCPACSWingComponentSegment::GetSectionElementFace(const std::string&
             return GetSingleFace((*it)->GetOuterClosure(WING_COORDINATE_SYSTEM));
         }
     }
-    throw CTiglError("Unable to find section element with UID \"" + sectionElementUID + "\" in component segment \"" + m_uID.value_or("") + "\"!");
+    throw CTiglError("Unable to find section element with UID \"" + sectionElementUID + "\" in component segment \"" + m_uID + "\"!");
 }
 
 
@@ -491,35 +491,35 @@ TopoDS_Wire CCPACSWingComponentSegment::GetMidplaneLine(const gp_Pnt& startPoint
     // next iterate until endSegmentUID
     for (; it != segments.end(); ++it) {
         const CCPACSWingSegment& segment = *(*it);
-            // add intersection with end section only in case end point is skipped
-            if (segment.GetUID() != endSegmentUID) {
-                // compute outer chord line
+        // add intersection with end section only in case end point is skipped
+        if (segment.GetUID() != endSegmentUID) {
+            // compute outer chord line
             gp_Pnt pl = segment.GetPoint(1, 0, true, WING_COORDINATE_SYSTEM);
             gp_Pnt pt = segment.GetPoint(1, 1, true, WING_COORDINATE_SYSTEM);
 
-                TopoDS_Edge outerChordLine = BRepBuilderAPI_MakeEdge(pl, pt);
-                // cut outer chord line with reference face
-                gp_Pnt nextPnt;
-                if (GetIntersectionPoint(cutFace, outerChordLine, nextPnt)) {
-                    // only build new edge if start and end point are not equal (can occur
-                    // when the startPoint lies within a section, because then findSegment
-                    // returns the inner segment first
-                    if (!prevPnt.IsEqual(nextPnt, Precision::Confusion())) {
-                        TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(prevPnt, nextPnt);
-                        wireBuilder.Add(edge);
-                        prevPnt = nextPnt;
-                    }
-                }
-                else {
-                    throw CTiglError("Unable to build midline for component segment: intersection with section chord line failed!");
+            TopoDS_Edge outerChordLine = BRepBuilderAPI_MakeEdge(pl, pt);
+            // cut outer chord line with reference face
+            gp_Pnt nextPnt;
+            if (GetIntersectionPoint(cutFace, outerChordLine, nextPnt)) {
+                // only build new edge if start and end point are not equal (can occur
+                // when the startPoint lies within a section, because then findSegment
+                // returns the inner segment first
+                if (!prevPnt.IsEqual(nextPnt, Precision::Confusion())) {
+                    TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(prevPnt, nextPnt);
+                    wireBuilder.Add(edge);
+                    prevPnt = nextPnt;
                 }
             }
             else {
-                TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(prevPnt, endPnt);
-                wireBuilder.Add(edge);
-                break;
+                throw CTiglError("Unable to build midline for component segment: intersection with section chord line failed!");
             }
         }
+        else {
+            TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(prevPnt, endPnt);
+            wireBuilder.Add(edge);
+            break;
+        }
+    }
     return wireBuilder.Wire();
 }
 
@@ -741,17 +741,17 @@ void CCPACSWingComponentSegment::InterpolateOnLine(double csEta1, double csXsi1,
                 extendedInnerChord.translate(curEta, curXsi, &nearestPointTmp);
                 nearestPoint = nearestPointTmp.Get_gp_Pnt();
                 xsi = curXsi;
-    }
+            }
             else {
                 throw CTiglError("The requested point lies outside the wing chord surface.", TIGL_MATH_ERROR);
+            }
         }
-        }
-        }
+    }
     else {
         double etaRes, xsiRes;
         segment->GetEtaXsi(nearestPoint, etaRes, xsiRes);
         xsi = xsiRes;
-        }
+    }
 
     // compute the error distance
     // This is the distance from the line to the nearest point on the chord face
@@ -801,7 +801,7 @@ PNamedShape CCPACSWingComponentSegment::BuildLoft()
 
     const SegmentList& segments = GetSegmentList();
     if (segments.size() == 0) {
-        throw CTiglError("Error: Could not find segments in CCPACSWingComponentSegment::BuildLoft", TIGL_ERROR);
+        throw CTiglError("Could not find segments in CCPACSWingComponentSegment::BuildLoft", TIGL_ERROR);
     }
 
     TopoDS_Shape innerShape = segments.front()->GetInnerClosure(WING_COORDINATE_SYSTEM);
@@ -859,7 +859,7 @@ PNamedShape CCPACSWingComponentSegment::BuildLoft()
     mySurfaceArea = AreaSystem.Mass();
         
     // Set Names
-    std::string loftName = m_uID.value_or("");
+    std::string loftName = m_uID;
     std::string loftShortName = GetShortShapeName();
     PNamedShape loft (new CNamedShape(loftShape, loftName.c_str(), loftShortName.c_str()));
     SetFaceTraits(loft, static_cast<unsigned int>(segments.size()));
@@ -1028,7 +1028,7 @@ void CCPACSWingComponentSegment::UpdateProjectedLeadingEdge() const
 
     if (segments.size() < 1) {
         std::stringstream str;
-        str << "Wing component " << m_uID.value_or("") << " does not contain any segments (CCPACSWingComponentSegment::updateProjectedLeadingEdge)!";
+        str << "Wing component " << m_uID << " does not contain any segments (CCPACSWingComponentSegment::updateProjectedLeadingEdge)!";
         throw CTiglError(str.str(), TIGL_ERROR);
     }
 
@@ -1173,10 +1173,10 @@ gp_Pnt CCPACSWingComponentSegment::GetPoint(double eta, double xsi) const
 {
     // search for ETA coordinate
     if (eta < 0.0 || eta > 1.0) {
-        throw CTiglError("Error: Parameter eta not in the range 0.0 <= eta <= 1.0 in CCPACSWingComponentSegment::GetPoint", TIGL_ERROR);
+        throw CTiglError("Parameter eta not in the range 0.0 <= eta <= 1.0 in CCPACSWingComponentSegment::GetPoint", TIGL_ERROR);
     }
     if (xsi < 0.0 || xsi > 1.0) {
-        throw CTiglError("Error: Parameter xsi not in the range 0.0 <= xsi <= 1.0 in CCPACSWingComponentSegment::GetPoint", TIGL_ERROR);
+        throw CTiglError("Parameter xsi not in the range 0.0 <= xsi <= 1.0 in CCPACSWingComponentSegment::GetPoint", TIGL_ERROR);
     }
 
     if (eta < Precision::Confusion()) {
@@ -1200,6 +1200,7 @@ void CCPACSWingComponentSegment::GetEtaXsi(const gp_Pnt& p, double& eta, double&
 // TODO (siggel): remove this function as it duplicates GetEtaXsi
 void CCPACSWingComponentSegment::GetMidplaneEtaXsi(const gp_Pnt& p, double& eta, double& xsi) const
 {
+    // @TODO: replace by using the chordface
     gp_Pnt globalPoint = wing->GetWingTransformation().Transform(p);
     gp_Pnt dummy;
     double deviation = 0.;
@@ -1258,7 +1259,7 @@ gp_Vec CCPACSWingComponentSegment::GetMidplaneEtaDir(double eta) const
 gp_Vec CCPACSWingComponentSegment::GetMidplaneNormal(double eta) const
 {
     if (eta < 0.0 || eta > 1.0) {
-        throw CTiglError("Error: Parameter eta not in the range 0.0 <= eta <= 1.0 in CCPACSWingComponentSegment::GetMidplaneOrChordlinePoint", TIGL_ERROR);
+        throw CTiglError("Parameter eta not in the range 0.0 <= eta <= 1.0 in CCPACSWingComponentSegment::GetMidplaneOrChordlinePoint", TIGL_ERROR);
     }
 
     gp_Pnt lePnt = GetMidplaneOrChordlinePoint(eta, 0);
@@ -1274,10 +1275,10 @@ void CCPACSWingComponentSegment::GetEtaXsiFromSegmentEtaXsi(const std::string& s
     // search for ETA coordinate
         
     if (seta < 0.0 || seta > 1.0) {
-        throw CTiglError("Error: Parameter seta not in the range 0.0 <= seta <= 1.0 in CCPACSWingComponentSegment::GetPoint", TIGL_ERROR);
+        throw CTiglError("Parameter seta not in the range 0.0 <= seta <= 1.0 in CCPACSWingComponentSegment::GetPoint", TIGL_ERROR);
     }
     if (sxsi < 0.0 || sxsi > 1.0) {
-        throw CTiglError("Error: Parameter sxsi not in the range 0.0 <= sxsi <= 1.0 in CCPACSWingComponentSegment::GetPoint", TIGL_ERROR);
+        throw CTiglError("Parameter sxsi not in the range 0.0 <= sxsi <= 1.0 in CCPACSWingComponentSegment::GetPoint", TIGL_ERROR);
     }
 
     const SegmentList& segments = GetSegmentList();
@@ -1290,7 +1291,7 @@ void CCPACSWingComponentSegment::GetEtaXsiFromSegmentEtaXsi(const std::string& s
         segmentIndex++;
     }
     if (segmentIndex == segments.size()) {
-        throw CTiglError("Error: segment does not belong to component segment in CCPACSWingComponentSegment::GetEtaXsiFromSegmentEtaXsi", TIGL_ERROR);
+        throw CTiglError("Segment does not belong to component segment in CCPACSWingComponentSegment::GetEtaXsiFromSegmentEtaXsi", TIGL_ERROR);
     }
 
     const std::vector<double>& etas = chordFace.GetElementEtas();
@@ -1348,7 +1349,7 @@ double CCPACSWingComponentSegment::GetSurfaceArea()
 //    {
 //        if (eta < 0.0 || eta > 1.0)
 //        {
-//            throw CTiglError("Error: Parameter eta not in the range 0.0 <= eta <= 1.0 in CCPACSWingSegment::GetPoint", TIGL_ERROR);
+//            throw CTiglError("Parameter eta not in the range 0.0 <= eta <= 1.0 in CCPACSWingSegment::GetPoint", TIGL_ERROR);
 //        }
 //
 //        CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
@@ -1453,12 +1454,12 @@ MaterialList CCPACSWingComponentSegment::GetMaterials(double eta, double xsi, Ti
             if (!cell.GetMaterial().IsValid()) {
                 continue;
             }
-                
+
             if (cell.IsInside(eta,xsi)) {
                 list.push_back(&(cell.GetMaterial()));
             }
         }
-            
+
         // add complete skin, only if no cells are defined
         if (list.empty() && shell->GetMaterial().IsValid()){
             list.push_back(&(shell->GetMaterial()));
@@ -1499,7 +1500,7 @@ bool CCPACSWingComponentSegment::IsSegmentContained(const CCPACSWingSegment& seg
 const CCPACSWingShell& CCPACSWingComponentSegment::GetUpperShell() const
 {
     if (!m_structure) {
-        throw CTiglError("Error: no structure existing in CCPACSWingComponentSegment::GetUpperShell!");
+        throw CTiglError("no structure existing in CCPACSWingComponentSegment::GetUpperShell!");
     }
     return m_structure->GetUpperShell();
 }
@@ -1513,7 +1514,7 @@ CCPACSWingShell& CCPACSWingComponentSegment::GetUpperShell()
 const CCPACSWingShell& CCPACSWingComponentSegment::GetLowerShell() const
 {
     if (!m_structure) {
-        throw CTiglError("Error: no structure existing in CCPACSWingComponentSegment::GetLowerShell!");
+        throw CTiglError("no structure existing in CCPACSWingComponentSegment::GetLowerShell!");
     }
     return m_structure->GetLowerShell();
 }

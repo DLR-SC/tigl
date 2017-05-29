@@ -1,8 +1,8 @@
-/* 
+/*
 * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
-* Changed: $Id$ 
+* Changed: $Id$
 *
 * Version: $Revision$
 *
@@ -19,7 +19,7 @@
 * limitations under the License.
 */
 /**
-* @file 
+* @file
 * @brief  Implementation of the TIGL UID manager.
 */
 
@@ -28,32 +28,34 @@
 #include "CTiglLogging.h"
 #include "to_string.h"
 
-namespace tigl 
+namespace tigl
 {
 
 // Constructor
 CTiglUIDManager::CTiglUIDManager()
     : invalidated(true), rootComponent(NULL) {}
 
-void CTiglUIDManager::RegisterObject(const std::string& uid, void* object, const std::type_info& typeInfo) {
+void CTiglUIDManager::RegisterObject(const std::string& uid, void* object, const std::type_info& typeInfo)
+{
     if (uid.empty()) {
         throw CTiglError("Tried to register an empty uid for type " + std::string(typeInfo.name()));
     }
 
     // check existence
     const CPACSObjectMap::iterator it = cpacsObjects.find(uid);
-    if (it != std::end(cpacsObjects)) {
+    if (it != cpacsObjects.end()) {
         throw CTiglError("Tried to register uid " + uid + " for type " + std::string(typeInfo.name()) + " which is already registered to an instance of " + std::string(it->second.type->name()));
     }
 
     // insert
     cpacsObjects.insert(it, std::make_pair(uid, TypedPtr(
-        object,
-        &typeInfo
-    )));
+                                               object,
+                                               &typeInfo
+                                           )));
 }
 
-CTiglUIDManager::TypedPtr CTiglUIDManager::ResolveObject(const std::string& uid, const std::type_info& typeInfo) const {
+CTiglUIDManager::TypedPtr CTiglUIDManager::ResolveObject(const std::string& uid, const std::type_info& typeInfo) const
+{
     const TypedPtr object = ResolveObject(uid);
 
     // check type
@@ -64,34 +66,48 @@ CTiglUIDManager::TypedPtr CTiglUIDManager::ResolveObject(const std::string& uid,
     return object;
 }
 
-CTiglUIDManager::TypedPtr CTiglUIDManager::ResolveObject(const std::string& uid) const {
+CTiglUIDManager::TypedPtr CTiglUIDManager::ResolveObject(const std::string& uid) const
+{
     // check existence
     const CPACSObjectMap::const_iterator it = cpacsObjects.find(uid);
-    if (it == std::end(cpacsObjects)) {
+    if (it == cpacsObjects.end()) {
         throw CTiglError("No object is registered for uid \"" + uid + "\"", TIGL_UID_ERROR);
     }
     return it->second;
 }
 
-void CTiglUIDManager::UnregisterObject(const std::string& uid) {
-    const CPACSObjectMap::const_iterator it = cpacsObjects.find(uid);
-    if (it == std::end(cpacsObjects)) {
-        throw CTiglError("No object is registered for uid \"" + uid + "\"", TIGL_UID_ERROR);
+bool CTiglUIDManager::TryUnregisterObject(const std::string& uid)
+{
+    const CPACSObjectMap::iterator it = cpacsObjects.find(uid);
+    if (it == cpacsObjects.end()) {
+        return false;
     }
     cpacsObjects.erase(it);
+    return true;
 }
 
-namespace {
-    void writeComponent(CTiglRelativelyPositionedComponent* c, int level = 0) {
-        std::string indentation;
-        for (int i = 0; i < level; i++)
-            indentation += '\t';
-        const auto uid = c->GetDefaultedUID();
-        LOG(INFO) << indentation << (uid.empty() ? "<no uid>" : uid) << std::endl;
-        const CTiglRelativelyPositionedComponent::ChildContainerType& children = c->GetChildren(false);
-        for (CTiglRelativelyPositionedComponent::ChildContainerType::const_iterator it = children.begin(); it != children.end(); ++it)
-            writeComponent(*it, level + 1);
+void CTiglUIDManager::UnregisterObject(const std::string& uid)
+{
+    if (!TryUnregisterObject(uid)) {
+        throw CTiglError("No object is registered for uid \"" + uid + "\"", TIGL_UID_ERROR);
     }
+}
+
+namespace
+{
+void writeComponent(CTiglRelativelyPositionedComponent* c, int level = 0)
+{
+    std::string indentation;
+    for (int i = 0; i < level; i++) {
+        indentation += '\t';
+    }
+    const auto uid = c->GetDefaultedUID();
+    LOG(INFO) << indentation << (uid.empty() ? "<no uid>" : uid) << std::endl;
+    const CTiglRelativelyPositionedComponent::ChildContainerType& children = c->GetChildren(false);
+    for (CTiglRelativelyPositionedComponent::ChildContainerType::const_iterator it = children.begin(); it != children.end(); ++it) {
+        writeComponent(*it, level + 1);
+    }
+}
 }
 
 // Update internal UID manager data.
@@ -100,13 +116,14 @@ void CTiglUIDManager::Update()
     if (!invalidated) {
         return;
     }
-    
+
     BuildTree();
     invalidated = false;
 
     LOG(INFO) << "Relative component trees:" << std::endl;
-    for (RelativeComponentContainerType::const_iterator it = rootComponents.begin(); it != rootComponents.end(); ++it)
+    for (RelativeComponentContainerType::const_iterator it = rootComponents.begin(); it != rootComponents.end(); ++it) {
         writeComponent(it->second);
+    }
 }
 
 // Function to add a UID and a geometric component to the uid store.
@@ -130,6 +147,15 @@ void CTiglUIDManager::AddGeometricComponent(const std::string& uid, ITiglGeometr
     }
     allShapes[uid] = componentPtr;
     invalidated = true;
+}
+
+void CTiglUIDManager::RemoveGeometricComponent(const std::string &uid)
+{
+    const ShapeContainerType::iterator it = allShapes.find(uid);
+    if (it == allShapes.end()) {
+        throw CTiglError("No shape is registered for uid \"" + uid + "\"");
+    }
+    allShapes.erase(it);
 }
 
 // Checks if a UID already exists.
@@ -210,7 +236,11 @@ void CTiglUIDManager::BuildTree()
     for (RelativeComponentContainerType::iterator it = relativeComponents.begin(); it != relativeComponents.end(); ++it) {
         CTiglRelativelyPositionedComponent& c = *it->second;
         const boost::optional<const std::string&> parentUid = c.GetParentUID();
-        if (parentUid && !parentUid->empty()) {
+        if (parentUid) {
+            if (parentUid->empty()) {
+                throw CTiglError("geometric component with uid " + c.GetDefaultedUID() + " has empty parentUid");
+            }
+
             CTiglRelativelyPositionedComponent& p = GetRelativeComponent(*parentUid);
             p.AddChild(c);
             c.SetParent(p);

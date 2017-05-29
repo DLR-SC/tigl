@@ -31,6 +31,16 @@ namespace tigl
         
         CPACSWingElements::~CPACSWingElements() {}
         
+        CTiglUIDManager& CPACSWingElements::GetUIDManager()
+        {
+            return *m_uidMgr;
+        }
+        
+        const CTiglUIDManager& CPACSWingElements::GetUIDManager() const
+        {
+            return *m_uidMgr;
+        }
+        
         void CPACSWingElements::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element element

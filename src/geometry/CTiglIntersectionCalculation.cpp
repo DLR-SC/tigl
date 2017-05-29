@@ -256,7 +256,7 @@ int CTiglIntersectionCalculation::GetCountIntersectionLines()
 gp_Pnt CTiglIntersectionCalculation::GetPoint(double zeta, int wireID = 1)
 {
     if (zeta < 0.0 || zeta > 1.0) {
-        throw CTiglError("Error: Parameter zeta not in the range 0.0 <= zeta <= 1.0 in CTiglIntersectionCalculation::GetPoint", TIGL_ERROR);
+        throw CTiglError("Parameter zeta not in the range 0.0 <= zeta <= 1.0 in CTiglIntersectionCalculation::GetPoint", TIGL_ERROR);
     }
 
     TopoDS_Wire wire = GetWire(wireID);
@@ -266,7 +266,7 @@ gp_Pnt CTiglIntersectionCalculation::GetPoint(double zeta, int wireID = 1)
 TopoDS_Wire CTiglIntersectionCalculation::GetWire(int wireID)
 {
     if (wireID > GetCountIntersectionLines() || wireID < 1){
-        throw CTiglError("Error: Invalid wireID in CTiglIntersectionCalculation::GetWire", TIGL_INDEX_ERROR);
+        throw CTiglError("Invalid wireID in CTiglIntersectionCalculation::GetWire", TIGL_INDEX_ERROR);
     }
 
     TopExp_Explorer wireExplorer(intersectionResult, TopAbs_WIRE);
