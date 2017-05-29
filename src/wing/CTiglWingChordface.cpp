@@ -28,6 +28,8 @@
 #include <TColStd_Array1OfInteger.hxx>
 #include <TopoDS_Face.hxx>
 
+#include <GeomAPI_ProjectPointOnSurf.hxx>
+
 #include <BRepBuilderAPI_MakeFace.hxx>
 
 #include <cassert>
@@ -55,6 +57,17 @@ gp_Pnt CTiglWingChordface::GetPoint(double eta, double xsi) const
 
     return _chordSurface->Value(xsi, eta);
 }
+
+void CTiglWingChordface::GetEtaXsi(gp_Pnt point, double &eta, double &xsi) const
+{
+    BuildChordSurface();
+
+    GeomAPI_ProjectPointOnSurf projector(point, _chordSurface, 0., 1., 0., 1.);
+    projector.Perform(point);
+
+    projector.LowerDistanceParameters(xsi, eta);
+}
+
 
 void CTiglWingChordface::SetUID(const std::string &uid)
 {

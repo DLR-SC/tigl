@@ -42,6 +42,8 @@ public:
 
     TIGL_EXPORT gp_Pnt GetPoint(double eta, double xsi) const;
 
+    TIGL_EXPORT void GetEtaXsi(gp_Pnt point, double& eta, double& xsi) const;
+
     TIGL_EXPORT void SetUID(const std::string& uid);
 
     TIGL_EXPORT virtual void Reset();

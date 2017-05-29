@@ -324,6 +324,39 @@ TEST_F(WingComponentSegmentSimple, getPointInternal_accuracy)
     ASSERT_NEAR(point.Y(), 1.5, 1e-7);
 }
 
+
+TEST_F(WingComponentSegmentSimple, getEtaXsi)
+{
+    int compseg = 1;
+    // now we have do use the internal interface as we currently have no public api for this
+    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
+    tigl::CCPACSWing& wing = config.GetWing(1);
+    tigl::CCPACSWingComponentSegment& segment = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(compseg);
+
+    double eta, xsi;
+    gp_Pnt point = gp_Pnt(0.5, 0.5, 0.);
+    segment.GetEtaXsi(point, eta, xsi);
+    EXPECT_NEAR(0.5/(1 + sqrt(17./16.)), eta, 1e-6);
+    EXPECT_NEAR(0.5, xsi, 1e-6);
+
+    eta *= 2.;
+    point = gp_Pnt(0.5, 1.0, 0.);
+    segment.GetEtaXsi(point, eta, xsi);
+    EXPECT_NEAR(1.0/(1 + sqrt(17./16.)), eta, 1e-6);
+    EXPECT_NEAR(0.5, xsi, 1e-6);
+
+    point = gp_Pnt(0.75, 2.0, 0.);
+    segment.GetEtaXsi(point, eta, xsi);
+    EXPECT_NEAR(1.0, eta, 1e-6);
+    EXPECT_NEAR(0.5, xsi, 1e-6);
+
+    point = gp_Pnt(0.625, 1.5, 0.);
+    segment.GetEtaXsi(point, eta, xsi);
+    EXPECT_NEAR((1. + 0.5*sqrt(17./16.))/(1. + sqrt(17./16.)), eta, 1e-6);
+    EXPECT_NEAR(0.5, xsi, 1e-6);
+}
+
 TEST_F(WingComponentSegmentSimple, tiglWingComponentSegmentPointGetSegmentEtaXsi)
 {
     // now the tests

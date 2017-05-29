@@ -265,25 +265,12 @@ TopoDS_Face CCPACSWingComponentSegment::GetOuterFace()
 // Returns the inner or outer chordline points, in case eta==0 or eta==1
 // Otherwise returns the point at the defined eta/xsi coordinate
 // Points are returned relative to the wing coordinate system
+// TODO (siggel): This function is duplicate to GetPoint and simply removes the global transform.
+//                Should we just add the coordinate system as a third parameter?
 gp_Pnt CCPACSWingComponentSegment::GetMidplaneOrChordlinePoint(double eta, double xsi) const
 {
-    if (eta < 0.0 || eta > 1.0) {
-        throw CTiglError("Error: Parameter eta not in the range 0.0 <= eta <= 1.0 in CCPACSWingComponentSegment::GetMidplaneOrChordlinePoint", TIGL_ERROR);
-    }
-    if (xsi < 0.0 || xsi > 1.0) {
-        throw CTiglError("Error: Parameter xsi not in the range 0.0 <= xsi <= 1.0 in CCPACSWingComponentSegment::GetMidplaneOrChordlinePoint", TIGL_ERROR);
-    }
+    gp_Pnt p = GetPoint(eta, xsi);
 
-    gp_Pnt p;
-    if (eta <= Precision::Confusion()) {
-        p = GetSegmentList().front()->GetChordPoint(0, xsi);
-    }
-    else if (eta >= (1-Precision::Confusion())) {
-        p = GetSegmentList().back()->GetChordPoint(1, xsi);
-    }
-    else {
-        p = GetPoint(eta, xsi);
-    }
     return wing->GetWingTransformation().Inverted().Transform(p);
 }
 
@@ -1192,10 +1179,25 @@ gp_Pnt CCPACSWingComponentSegment::GetPoint(double eta, double xsi) const
         throw CTiglError("Error: Parameter xsi not in the range 0.0 <= xsi <= 1.0 in CCPACSWingComponentSegment::GetPoint", TIGL_ERROR);
     }
 
-    return chordFace.GetPoint(eta, xsi);
-
+    if (eta < Precision::Confusion()) {
+        return chordFace.GetPoint(0., xsi);
+    }
+    else if (1. - eta < Precision::Confusion()) {
+        return chordFace.GetPoint(1., xsi);
+    }
+    else {
+        return chordFace.GetPoint(eta, xsi);
+    }
 }
 
+void CCPACSWingComponentSegment::GetEtaXsi(const gp_Pnt& p, double& eta, double& xsi) const
+{
+    UpdateChordFace();
+
+    chordFace.GetEtaXsi(p, eta, xsi);
+}
+
+// TODO (siggel): remove this function as it duplicates GetEtaXsi
 void CCPACSWingComponentSegment::GetMidplaneEtaXsi(const gp_Pnt& p, double& eta, double& xsi) const
 {
     gp_Pnt globalPoint = wing->GetWingTransformation().Transform(p);

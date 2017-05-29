@@ -94,7 +94,12 @@ public:
 
     // For eta==0 or eta==1 returns the chordlinePoints, otherwise returns the
     // eta/xsi point in the wing coordinate system (calls GetPoint)
+    // TODO (siggel): This function is duplicate to GetPoint and simply removes the global transform.
+    //                Should we just add the coordinate system as a third parameter?
     TIGL_EXPORT gp_Pnt GetMidplaneOrChordlinePoint(double eta, double xsi) const;
+
+    // Returns the eta xsi coordinates of a points projected onto the midplane / chordface
+    TIGL_EXPORT void GetEtaXsi(const gp_Pnt& p, double& eta, double& xsi) const;
 
     // Getter for leading edge point at the relative position, which must be
     // defined between 0 (inner point on leadinge edge) and 1 (outer point)
@@ -109,6 +114,7 @@ public:
 
     // Getter for eta and xsi for passed point
     // Passed point must be in wing coordinate system
+    // TODO (siggel): remove this function as it duplicates GetEtaXsi
     TIGL_EXPORT void GetMidplaneEtaXsi(const gp_Pnt& p, double& eta, double& xsi) const;
 
     // Getter for eta direction of midplane (no X-component)
