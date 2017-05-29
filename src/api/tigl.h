@@ -1270,6 +1270,33 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetPoint(TiglCPACSConf
                                                                    double * z);
 
 /**
+ * @brief Projects a points onto the chord face of the wing component segment
+ *        and returns the eta/xsi coordinates of the point of projection.
+ *
+ * @param[in] cpacsHandle           Handle for the CPACS configuration
+ * @param[in] componentSegmentUID   UID of the componentSegment to search for
+ * @param[in] pX                    X coordinate of the point to project
+ * @param[in] pY                    Y coordinate of the point to project
+ * @param[in] pZ                    Z coordinate of the point to project
+ * @param[out] eta                  Eta coordinate of the projected point
+ * @param[out] xsi                  Xsi coordinate of the projected point
+ * @param[out] errorDistance        Distance between the point and the projected point
+ *                                  on the component segment. If the point already lies
+ *                                  on the component segment's chord face, the errorDistance
+ *                                  should be zero!
+ * @return
+ *   - TIGL_SUCCESS if no error occurred
+ *   - TIGL_NOT_FOUND if no configuration was found for the given handle
+ *   - TIGL_UID_ERROR if the componentSegment does not exist
+ *   - TIGL_ERROR if some other error occurred
+ */
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentPointGetEtaXsi(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                         const char* componentSegmentUID,
+                                                                         double pX, double pY, double pZ,
+                                                                         double* eta, double* xsi,
+                                                                         double* errorDistance);
+
+/**
 * @brief Returns eta, xsi, segmentUID and wingUID for a given eta and xsi on a componentSegment.
 *
 * If the given component segment point lies outside the wing chord surface, the function returns
