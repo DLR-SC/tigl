@@ -101,7 +101,7 @@ void writeComponent(CTiglRelativelyPositionedComponent* c, int level = 0)
     for (int i = 0; i < level; i++) {
         indentation += '\t';
     }
-    const auto uid = c->GetDefaultedUID();
+    const std::string uid = c->GetDefaultedUID();
     LOG(INFO) << indentation << (uid.empty() ? "<no uid>" : uid) << std::endl;
     const CTiglRelativelyPositionedComponent::ChildContainerType& children = c->GetChildren(false);
     for (CTiglRelativelyPositionedComponent::ChildContainerType::const_iterator it = children.begin(); it != children.end(); ++it) {
