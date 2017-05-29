@@ -16,7 +16,7 @@
 * limitations under the License.
 */
 
-%module (package="tigl", directors="1") tmath
+%module (package="tigl3", directors="1") tmath
 
 %include common.i
 

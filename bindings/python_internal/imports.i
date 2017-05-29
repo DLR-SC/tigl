@@ -16,7 +16,7 @@
 * limitations under the License.
 */
 
-%module (package="tigl") imports
+%module (package="tigl3") imports
 
 %include common.i
 

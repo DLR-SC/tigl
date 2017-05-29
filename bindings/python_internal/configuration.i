@@ -16,7 +16,7 @@
 * limitations under the License.
 */
 
-%module (package="tigl") configuration
+%module (package="tigl3") configuration
 
 %include common.i
 
@@ -40,8 +40,8 @@
 #include "CTiglError.h"
 #include "CCPACSWingSegment.h"
 #include "CCPACSFuselageSegment.h"
-#include "CCPACSWingConnection.h"
-#include "CCPACSFuselageConnection.h"
+#include "CTiglWingConnection.h"
+#include "CTiglFuselageConnection.h"
 #include "CCPACSWingCell.h"
 #include "CCPACSMaterial.h"
 #include "CCPACSGenericSystem.h"
@@ -49,6 +49,8 @@
 #include "generated/CPACSWingElement.h"
 #include "CCPACSWingSectionElement.h"
 #include "CCPACSWingSection.h"
+#include "generated/CPACSGuideCurveProfileGeometry.h"
+#include "CCPACSGuideCurveProfile.h"
 %}
 
 %feature("autodoc", "3");
@@ -82,8 +84,8 @@
 %include "generated/CPACSProfileGeometry.h"
 %include "CCPACSWingProfile.h"
 %include "CCPACSFuselageProfile.h"
-%include "CCPACSWingConnection.h"
-%include "CCPACSFuselageConnection.h"
+%include "CTiglWingConnection.h"
+%include "CTiglFuselageConnection.h"
 %include "generated/CPACSWingElements.h"
 %include "CCPACSWingSectionElements.h"
 %include "generated/CPACSWingElement.h"
@@ -150,7 +152,22 @@
 %include "generated/CPACSLinkToFile.h"
 %include "generated/CPACSGenericGeometricComponent.h"
 %include "CCPACSExternalObject.h"
-%include "CTiglUIDManager.h"
+
+namespace tigl
+{
+class CTiglUIDManager
+{
+public:
+    CTiglUIDManager();
+    void AddGeometricComponent(const std::string& uid, ITiglGeometricComponent* componentPtr);
+    void RemoveGeometricComponent(const std::string& uid);
+    bool HasGeometricComponent(const std::string& uid) const;
+    ITiglGeometricComponent& GetGeometricComponent(const std::string& uid) const;
+    CTiglRelativelyPositionedComponent* GetParentGeometricComponent(const std::string& uid) const;
+    void Clear();
+};
+} // namespace tigl
+
 %include "CTiglShapeCache.h"
 %include "CCPACSGenericSystem.h"
 %include "CCPACSGenericSystems.h"
