@@ -60,7 +60,7 @@ CTiglUIDManager::TypedPtr CTiglUIDManager::ResolveObject(const std::string& uid,
 
     // check type
     if (&typeInfo != object.type) {
-        throw CTiglError("Object with uid \"" + uid + "\" is not a " + std::string(typeInfo.name()) + " but a " + std::string(object.type->name()));
+        throw CTiglError("Object with uid \"" + uid + "\" is not a " + std::string(typeInfo.name()) + " but a " + std::string(object.type->name()), TIGL_UID_ERROR);
     }
 
     return object;
@@ -71,7 +71,7 @@ CTiglUIDManager::TypedPtr CTiglUIDManager::ResolveObject(const std::string& uid)
     // check existence
     const CPACSObjectMap::const_iterator it = cpacsObjects.find(uid);
     if (it == cpacsObjects.end()) {
-        throw CTiglError("No object is registered for uid \"" + uid + "\"");
+        throw CTiglError("No object is registered for uid \"" + uid + "\"", TIGL_UID_ERROR);
     }
     return it->second;
 }
@@ -89,7 +89,7 @@ bool CTiglUIDManager::TryUnregisterObject(const std::string& uid)
 void CTiglUIDManager::UnregisterObject(const std::string& uid)
 {
     if (!TryUnregisterObject(uid)) {
-        throw CTiglError("No object is registered for uid \"" + uid + "\"");
+        throw CTiglError("No object is registered for uid \"" + uid + "\"", TIGL_UID_ERROR);
     }
 }
 

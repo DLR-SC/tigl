@@ -153,17 +153,6 @@ public:
     // Getter for outer wire of opened profile (containing trailing edge)
     TIGL_EXPORT TopoDS_Wire GetOuterWireOpened(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
 
-    // Returns eta as parametric distance from a given point on the surface
-    // Get information about a point beeing on upper/lower side with "GetIsOnTop"
-    TIGL_EXPORT double GetEta(gp_Pnt pnt, bool isUpper) const;
-
-    // calculates eta from a given XSI and
-    TIGL_EXPORT double GetEta(gp_Pnt pnt, double xsi) const;
-
-    // Returns zeta as parametric distance from a given point on the surface
-    // Get information about a point beeing on upper/lower side with "GetIsOnTop"
-    TIGL_EXPORT double GetXsi(gp_Pnt pnt, bool isUpper) const;
-
     // projects a point unto the wing and returns its coordinates
     TIGL_EXPORT void GetEtaXsi(gp_Pnt pnt, double& eta, double& xsi) const;
 

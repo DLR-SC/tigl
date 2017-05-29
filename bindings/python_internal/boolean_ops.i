@@ -16,7 +16,7 @@
 * limitations under the License.
 */
 
-%module (package="tigl") boolean_ops
+%module (package="tigl3") boolean_ops
 
 %include common.i
 

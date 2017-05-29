@@ -42,6 +42,8 @@ public:
 
     TIGL_EXPORT gp_Pnt GetPoint(double eta, double xsi) const;
 
+    TIGL_EXPORT void GetEtaXsi(gp_Pnt point, double& eta, double& xsi) const;
+
     TIGL_EXPORT void SetUID(const std::string& uid);
 
     TIGL_EXPORT virtual void Reset();
@@ -58,7 +60,7 @@ public:
     /**
      * @brief Returns the Eta coordinate of each element
      */
-    TIGL_EXPORT std::vector<double> GetElementEtas() const;
+    TIGL_EXPORT const std::vector<double>& GetElementEtas() const;
 
 protected:
     virtual PNamedShape BuildLoft() OVERRIDE;
@@ -74,6 +76,7 @@ private:
     CTiglUIDManager* _uidManager;
 
     mutable Handle(Geom_BSplineSurface) _chordSurface;
+    mutable std::vector<double> _elementEtas;
 };
 
 }

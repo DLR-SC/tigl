@@ -21,11 +21,14 @@
 #include "CNamedShape.h"
 #include "CTiglUIDManager.h"
 #include "CCPACSWingSegment.h"
+#include "CTiglError.h"
 
 #include <TColgp_Array2OfPnt.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TopoDS_Face.hxx>
+
+#include <GeomAPI_ProjectPointOnSurf.hxx>
 
 #include <BRepBuilderAPI_MakeFace.hxx>
 
@@ -54,6 +57,17 @@ gp_Pnt CTiglWingChordface::GetPoint(double eta, double xsi) const
 
     return _chordSurface->Value(xsi, eta);
 }
+
+void CTiglWingChordface::GetEtaXsi(gp_Pnt point, double &eta, double &xsi) const
+{
+    BuildChordSurface();
+
+    GeomAPI_ProjectPointOnSurf projector(point, _chordSurface, 0., 1., 0., 1.);
+    projector.Perform(point);
+
+    projector.LowerDistanceParameters(xsi, eta);
+}
+
 
 void CTiglWingChordface::SetUID(const std::string &uid)
 {
@@ -106,6 +120,10 @@ void CTiglWingChordface::BuildChordSurface() const
     if (_chordSurface.IsNull()) {
 
         std::vector<CCPACSWingSegment*> segmentsList = getSortedSegments(_segments);
+
+        if (segmentsList.size() < 1) {
+            throw CTiglError("Wing chord face " + _uid + " does not contain any segments (CTiglWingChordface::BuildChordSurface)!", TIGL_ERROR);
+        }
 
         TColgp_Array2OfPnt poles(1, 2, 1, static_cast<int>(segmentsList.size() + 1));
 
@@ -162,21 +180,20 @@ void CTiglWingChordface::BuildChordSurface() const
         uMults.SetValue(2, 2);
 
         _chordSurface = new Geom_BSplineSurface(poles, uKnots, vKnots, uMults, vMults, 1, 1);
+
+        // set the break points
+        _elementEtas.clear();
+        for (int iElement = 1; iElement <= _chordSurface->NbVKnots(); ++iElement) {
+            _elementEtas.push_back(_chordSurface->VKnot(iElement));
+        }
     }
 }
 
-std::vector<double> CTiglWingChordface::GetElementEtas() const
+const std::vector<double>& CTiglWingChordface::GetElementEtas() const
 {
     BuildChordSurface();
 
-    std::vector<double> etas;
-
-    // return the vknots
-    for (int iElement = 1; iElement <= _chordSurface->NbVKnots(); ++iElement) {
-        etas.push_back(_chordSurface->VKnot(iElement));
-    }
-
-    return etas;
+    return _elementEtas;
 }
 
 

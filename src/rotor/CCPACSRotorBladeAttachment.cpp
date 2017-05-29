@@ -39,7 +39,7 @@ void CCPACSRotorBladeAttachment::Invalidate()
 {
     invalidated = true;
     lazyCreateAttachedRotorBlades();
-    for (int i = 0; i < attachedRotorBlades.size(); i++) {
+    for (unsigned int i = 0; i < attachedRotorBlades.size(); i++) {
         attachedRotorBlades[i]->Invalidate();
     }
 }

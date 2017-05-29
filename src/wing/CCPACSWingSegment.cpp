@@ -831,59 +831,6 @@ gp_Pnt CCPACSWingSegment::GetChordNormal(double eta, double xsi) const
     return normal.Get_gp_Pnt();
 }
 
-// TODO: remove this function if favour of Standard GetEta
-double CCPACSWingSegment::GetEta(gp_Pnt pnt, double xsi) const
-{
-    // Build virtual eta line.
-    // eta is in x = 0
-    gp_Pnt pnt0 = GetChordPoint(0, xsi);
-    pnt0 = gp_Pnt(0, pnt0.Y(), pnt0.Z());
-
-    gp_Pnt pnt1 = GetChordPoint(1, xsi);
-    pnt1 = gp_Pnt(0, pnt1.Y(), pnt1.Z());
-
-    BRepBuilderAPI_MakeWire etaWireBuilder;
-    TopoDS_Edge etaEdge = BRepBuilderAPI_MakeEdge(pnt0, pnt1);
-    etaWireBuilder.Add(etaEdge);
-    TopoDS_Wire etaLine = etaWireBuilder.Wire();
-
-    // intersection line
-    Handle(Geom_TrimmedCurve) profileLine = GC_MakeSegment(pnt, gp_Pnt(-1e9, 0, 0));
-    BRepBuilderAPI_MakeEdge ME(profileLine);
-    TopoDS_Shape aCrv(ME.Edge());
-
-    // now find intersection point
-    BRepExtrema_DistShapeShape extrema(etaLine, aCrv);
-    extrema.Perform();
-    gp_Pnt intersectionPoint = extrema.PointOnShape1(1);
-
-    //length of the eta line
-    Standard_Real len1 = pnt0.Distance(pnt1);
-    // now the small line, a fraction of the original eta line
-    Standard_Real len2 = pnt0.Distance(intersectionPoint);
-
-    assert(len1 != 0.);
-
-    return len2/len1;
-}
-
-
-// Returns eta as parametric distance from a given point on the surface
-double CCPACSWingSegment::GetEta(gp_Pnt pnt, bool isUpper) const
-{
-    double eta = 0., xsi = 0.;
-    GetEtaXsi(pnt, eta, xsi);
-    return eta;
-}
-
-// Returns xsi as parametric distance from a given point on the surface
-double CCPACSWingSegment::GetXsi(gp_Pnt pnt, bool isUpper) const
-{
-    double eta = 0., xsi = 0.;
-    GetEtaXsi(pnt, eta, xsi);
-    return xsi;
-}
-
 // Returns xsi as parametric distance from a given point on the surface
 void CCPACSWingSegment::GetEtaXsi(gp_Pnt pnt, double& eta, double& xsi) const
 {

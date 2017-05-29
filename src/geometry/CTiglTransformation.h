@@ -129,7 +129,7 @@ private:
     double m_matrix[4][4];
 };
 
-CTiglTransformation operator*(const CTiglTransformation& a, const CTiglTransformation& b);
+TIGL_EXPORT CTiglTransformation operator*(const CTiglTransformation& a, const CTiglTransformation& b);
 
 } // end namespace tigl
 

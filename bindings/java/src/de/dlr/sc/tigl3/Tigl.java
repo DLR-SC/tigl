@@ -255,16 +255,15 @@ public class Tigl {
     }
     
     public static class WCSGetSegmentEtaXsiResult {
-        public WCSGetSegmentEtaXsiResult(String wingUID, String segmentUID, double eta, double xsi, double errorDistance) {
+        public WCSGetSegmentEtaXsiResult(String wingUID, String segmentUID, double eta, double xsi) {
             this.wingUID = wingUID;
             this.segmentUID = segmentUID;
             this.eta = eta;
             this.xsi = xsi;
-            this.errorDistance = errorDistance;
         }
         
         public String wingUID, segmentUID;
-        public double  eta, xsi, errorDistance;
+        public double  eta, xsi;
     }
     
     public static class SurfaceMaterial {
