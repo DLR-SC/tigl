@@ -340,7 +340,6 @@ TEST_F(WingComponentSegmentSimple, getEtaXsi)
     EXPECT_NEAR(0.5/(1 + sqrt(17./16.)), eta, 1e-6);
     EXPECT_NEAR(0.5, xsi, 1e-6);
 
-    eta *= 2.;
     point = gp_Pnt(0.5, 1.0, 0.);
     segment.GetEtaXsi(point, eta, xsi);
     EXPECT_NEAR(1.0/(1 + sqrt(17./16.)), eta, 1e-6);
@@ -355,6 +354,40 @@ TEST_F(WingComponentSegmentSimple, getEtaXsi)
     segment.GetEtaXsi(point, eta, xsi);
     EXPECT_NEAR((1. + 0.5*sqrt(17./16.))/(1. + sqrt(17./16.)), eta, 1e-6);
     EXPECT_NEAR(0.5, xsi, 1e-6);
+}
+
+TEST_F(WingComponentSegmentSimple, tiglWingComponentSegmentPointGetEtaXsi)
+{
+    double eta = 0., xsi = 0., errorDistance = 0.;
+
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingComponentSegmentPointGetEtaXsi(tiglHandle, "WING_CS1", 0.5, 0.5, 0., &eta, &xsi, &errorDistance));
+
+    EXPECT_NEAR(0.5/(1 + sqrt(17./16.)), eta, 1e-6);
+    EXPECT_NEAR(0.5, xsi, 1e-6);
+    EXPECT_NEAR(0.0, errorDistance, 1e-6);
+
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingComponentSegmentPointGetEtaXsi(tiglHandle, "WING_CS1", 0.5, 1.0, 0., &eta, &xsi, &errorDistance));
+    EXPECT_NEAR(1.0/(1 + sqrt(17./16.)), eta, 1e-6);
+    EXPECT_NEAR(0.5, xsi, 1e-6);
+    EXPECT_NEAR(0.0, errorDistance, 1e-6);
+
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingComponentSegmentPointGetEtaXsi(tiglHandle, "WING_CS1", 0.75, 2.0, 0., &eta, &xsi, &errorDistance));
+    EXPECT_NEAR(1.0, eta, 1e-6);
+    EXPECT_NEAR(0.5, xsi, 1e-6);
+    EXPECT_NEAR(0.0, errorDistance, 1e-6);
+
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingComponentSegmentPointGetEtaXsi(tiglHandle, "WING_CS1", 0.625, 1.5, 0.2, &eta, &xsi, &errorDistance));
+    EXPECT_NEAR((1. + 0.5*sqrt(17./16.))/(1. + sqrt(17./16.)), eta, 1e-6);
+    EXPECT_NEAR(0.5, xsi, 1e-6);
+    EXPECT_NEAR(0.2, errorDistance, 1e-6);
+
+    // test api errors
+    ASSERT_EQ(TIGL_UID_ERROR, tiglWingComponentSegmentPointGetEtaXsi(tiglHandle, "WING_CS1_INVALID", 0.5, 0.5, 0., &eta, &xsi, &errorDistance));
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglWingComponentSegmentPointGetEtaXsi(tiglHandle, NULL, 0.5, 0.5, 0., &eta, &xsi, &errorDistance));
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglWingComponentSegmentPointGetEtaXsi(tiglHandle, "WING_CS1", 0.5, 0.5, 0., NULL, &xsi, &errorDistance));
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglWingComponentSegmentPointGetEtaXsi(tiglHandle, "WING_CS1", 0.5, 0.5, 0., &eta, NULL, &errorDistance));
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglWingComponentSegmentPointGetEtaXsi(tiglHandle, "WING_CS1", 0.5, 0.5, 0., &eta, &xsi, NULL));
+    ASSERT_EQ(TIGL_NOT_FOUND, tiglWingComponentSegmentPointGetEtaXsi(-1, "WING_CS1", 0.5, 0.5, 0., &eta, &xsi, &errorDistance));
 }
 
 TEST_F(WingComponentSegmentSimple, tiglWingComponentSegmentPointGetSegmentEtaXsi)
