@@ -1,5 +1,6 @@
 <root>
   <genericGeometryComponent uID = "nacelle">
+    <name>nacelle</name>
     <transformation>
     <scaling>
       <x>1.0</x>
@@ -19,7 +20,9 @@
     </transformation>
     <linkToFile format = "Step">nacelle.stp</linkToFile>
   </genericGeometryComponent>
-    <genericGeometryComponent uID = "nacelle2">
+  <genericGeometryComponent uID = "nacelle2">
+    <name>nacelle2</name>
+	<transformation/>
     <linkToFile format = "unknownformat">nacelle.x3x</linkToFile>
   </genericGeometryComponent>
 </root>
