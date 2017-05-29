@@ -79,9 +79,6 @@ namespace tigl
                 } catch(const std::exception& e) {
                     LOG(ERROR) << "Failed to read hinges at xpath " << xpath << ": " << e.what();
                     m_hinges = boost::none;
-                } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read hinges at xpath " << xpath << ": " << e.getError();
-                    m_hinges = boost::none;
                 }
             }
             
@@ -100,9 +97,6 @@ namespace tigl
                     m_azimuthAngles_choice1->ReadCPACS(tixiHandle, xpath + "/azimuthAngles");
                 } catch(const std::exception& e) {
                     LOG(ERROR) << "Failed to read azimuthAngles at xpath " << xpath << ": " << e.what();
-                    m_azimuthAngles_choice1 = boost::none;
-                } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read azimuthAngles at xpath " << xpath << ": " << e.getError();
                     m_azimuthAngles_choice1 = boost::none;
                 }
             }

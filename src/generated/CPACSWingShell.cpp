@@ -77,9 +77,6 @@ namespace tigl
                 } catch(const std::exception& e) {
                     LOG(ERROR) << "Failed to read cells at xpath " << xpath << ": " << e.what();
                     m_cells = boost::none;
-                } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read cells at xpath " << xpath << ": " << e.getError();
-                    m_cells = boost::none;
                 }
             }
             

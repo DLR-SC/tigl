@@ -131,7 +131,7 @@ void CCPACSConfiguration::ReadCPACS(const std::string& configurationUID)
         }
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.what() << std::endl;
     }
 }
 

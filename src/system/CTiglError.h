@@ -29,11 +29,12 @@
 #include "tigl_internal.h"
 #include "tigl.h"
 #include <string>
+#include <exception>
 
 namespace tigl 
 {
 
-class CTiglError // TODO(bgruber): inherit from std::exception
+class CTiglError : public std::exception
 {
 
 public:
@@ -47,9 +48,9 @@ public:
     // memberwise copy is enough for this class.
 
     // Returns the error string as C string (char*)
-    TIGL_EXPORT virtual const char* getError() const throw();
+    DEPRECATED TIGL_EXPORT virtual const char* getError() const throw();
 
-    //TIGL_EXPORT virtual const char* what() const throw() OVERRIDE;
+    TIGL_EXPORT virtual const char* what() const throw() OVERRIDE;
 
     // Returns the error code
     TIGL_EXPORT virtual TiglReturnCode getCode() const throw();

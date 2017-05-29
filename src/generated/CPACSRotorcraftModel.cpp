@@ -74,9 +74,6 @@ namespace tigl
                 } catch(const std::exception& e) {
                     LOG(ERROR) << "Failed to read fuselages at xpath " << xpath << ": " << e.what();
                     m_fuselages = boost::none;
-                } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read fuselages at xpath " << xpath << ": " << e.getError();
-                    m_fuselages = boost::none;
                 }
             }
             
@@ -87,9 +84,6 @@ namespace tigl
                     m_wings->ReadCPACS(tixiHandle, xpath + "/wings");
                 } catch(const std::exception& e) {
                     LOG(ERROR) << "Failed to read wings at xpath " << xpath << ": " << e.what();
-                    m_wings = boost::none;
-                } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read wings at xpath " << xpath << ": " << e.getError();
                     m_wings = boost::none;
                 }
             }
@@ -102,9 +96,6 @@ namespace tigl
                 } catch(const std::exception& e) {
                     LOG(ERROR) << "Failed to read rotors at xpath " << xpath << ": " << e.what();
                     m_rotors = boost::none;
-                } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read rotors at xpath " << xpath << ": " << e.getError();
-                    m_rotors = boost::none;
                 }
             }
             
@@ -115,9 +106,6 @@ namespace tigl
                     m_rotorBlades->ReadCPACS(tixiHandle, xpath + "/rotorBlades");
                 } catch(const std::exception& e) {
                     LOG(ERROR) << "Failed to read rotorBlades at xpath " << xpath << ": " << e.what();
-                    m_rotorBlades = boost::none;
-                } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read rotorBlades at xpath " << xpath << ": " << e.getError();
                     m_rotorBlades = boost::none;
                 }
             }

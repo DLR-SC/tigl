@@ -38,9 +38,6 @@ namespace tigl
                 } catch(const std::exception& e) {
                     LOG(ERROR) << "Failed to read cFD at xpath " << xpath << ": " << e.what();
                     m_cFD = boost::none;
-                } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read cFD at xpath " << xpath << ": " << e.getError();
-                    m_cFD = boost::none;
                 }
             }
             
