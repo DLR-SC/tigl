@@ -1078,12 +1078,11 @@ public class CpacsConfiguration implements AutoCloseable {
         PointerByReference c_suid = new PointerByReference();
         DoubleByReference  c_eta = new DoubleByReference();
         DoubleByReference  c_xsi = new DoubleByReference();
-        DoubleByReference  c_error = new DoubleByReference();
         
         errorCode = TiglNativeInterface.tiglWingComponentSegmentPointGetSegmentEtaXsi(
                 cpacsHandle, 
                 componentSegmentUID, csEta, csXsi, 
-                c_wuid, c_suid, c_eta, c_xsi, c_error);
+                c_wuid, c_suid, c_eta, c_xsi);
         
         throwIfError("tiglWingComponentSegmentPointGetSegmentEtaXsi", errorCode);
         
@@ -1091,8 +1090,7 @@ public class CpacsConfiguration implements AutoCloseable {
                 c_wuid.getValue().getString(0),
                 c_suid.getValue().getString(0),
                 c_eta.getValue(),
-                c_xsi.getValue(),
-                c_error.getValue());
+                c_xsi.getValue());
     }
     
     /**
