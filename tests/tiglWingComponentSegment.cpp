@@ -31,6 +31,7 @@
 #include "CCPACSWingComponentSegment.h"
 #include "CCPACSWingSegment.h"
 #include "CCPACSMaterial.h"
+#include "CTiglWingChordface.h"
 
 /******************************************************************************/
 

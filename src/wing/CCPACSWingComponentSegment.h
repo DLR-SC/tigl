@@ -46,14 +46,13 @@
 #include "CTiglPoint.h"
 #include "CTiglPointTranslator.h"
 #include "CCPACSTransformation.h"
-#include "CTiglWingChordface.h"
-
 
 namespace tigl
 {
 
 class CCPACSWing;
 class CCPACSWingSegment;
+class CTiglWingChordface;
 
 typedef std::vector<const CCPACSMaterial*>    MaterialList;
 typedef std::vector<CCPACSWingSegment*>       SegmentList;
@@ -250,7 +249,7 @@ private:
     TopoDS_Face          outerFace;            /**< [[CAS_AES]] added outer segment face    */
     CTiglPointTranslator extendedOuterChord;   /**< Extended outer segment chord face */
     CTiglPointTranslator extendedInnerChord;   /**< Extended inner segment chord face */
-    mutable CTiglWingChordface chordFace;
+    mutable unique_ptr<CTiglWingChordface> chordFace;
     Handle(Geom_Surface) upperSurface;
     Handle(Geom_Surface) lowerSurface;
     bool                 surfacesAreValid;

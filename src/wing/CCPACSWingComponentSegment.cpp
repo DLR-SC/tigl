@@ -43,6 +43,7 @@
 #include "tiglcommonfunctions.h"
 #include "CCPACSWingCSStructure.h"
 #include "CNamedShape.h"
+#include "CTiglWingChordface.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "TopoDS_Edge.hxx"
@@ -157,7 +158,7 @@ CCPACSWingComponentSegment::CCPACSWingComponentSegment(CCPACSWingComponentSegmen
     , _uidMgr(uidMgr)
     , CTiglAbstractSegment(parent->GetComponentSegments(), parent->GetParent()->m_symmetry)
     , wing(parent->GetParent())
-    , chordFace(*this, uidMgr)
+    , chordFace(make_unique<CTiglWingChordface>(*this, uidMgr))
     , surfacesAreValid(false)
 {
     assert(wing != NULL);
@@ -182,7 +183,7 @@ void CCPACSWingComponentSegment::Invalidate()
         m_structure->Invalidate();
     }
     linesAreValid = false;
-    chordFace.Reset();
+    chordFace->Reset();
 }
 
 // Cleanup routine
@@ -205,7 +206,7 @@ void CCPACSWingComponentSegment::Update()
 {
     Invalidate();
 
-    chordFace.SetUID(GetDefaultedUID() + "_chordface");
+    chordFace->SetUID(GetDefaultedUID() + "_chordface");
 }
 
 // Read CPACS segment elements
@@ -763,7 +764,7 @@ CTiglWingChordface &CCPACSWingComponentSegment::GetChordface() const
 {
     UpdateChordFace();
 
-    return chordFace;
+    return *chordFace;
 }
 
 // get short name for loft
@@ -1164,7 +1165,7 @@ void CCPACSWingComponentSegment::UpdateChordFace() const
 {
     // update creation of segment list
     GetSegmentList();
-    chordFace.BuildChordSurface();
+    chordFace->BuildChordSurface();
 }
 
 
@@ -1180,13 +1181,13 @@ gp_Pnt CCPACSWingComponentSegment::GetPoint(double eta, double xsi) const
     }
 
     if (eta < Precision::Confusion()) {
-        return chordFace.GetPoint(0., xsi);
+        return chordFace->GetPoint(0., xsi);
     }
     else if (1. - eta < Precision::Confusion()) {
-        return chordFace.GetPoint(1., xsi);
+        return chordFace->GetPoint(1., xsi);
     }
     else {
-        return chordFace.GetPoint(eta, xsi);
+        return chordFace->GetPoint(eta, xsi);
     }
 }
 
@@ -1194,7 +1195,7 @@ void CCPACSWingComponentSegment::GetEtaXsi(const gp_Pnt& p, double& eta, double&
 {
     UpdateChordFace();
 
-    chordFace.GetEtaXsi(p, eta, xsi);
+    chordFace->GetEtaXsi(p, eta, xsi);
 }
 
 // TODO (siggel): remove this function as it duplicates GetEtaXsi
@@ -1294,7 +1295,7 @@ void CCPACSWingComponentSegment::GetEtaXsiFromSegmentEtaXsi(const std::string& s
         throw CTiglError("Segment does not belong to component segment in CCPACSWingComponentSegment::GetEtaXsiFromSegmentEtaXsi", TIGL_ERROR);
     }
 
-    const std::vector<double>& etas = chordFace.GetElementEtas();
+    const std::vector<double>& etas = chordFace->GetElementEtas();
     eta = (1. - seta) * etas[segmentIndex] + seta * etas[segmentIndex + 1];
     xsi = sxsi;
 }
@@ -1309,7 +1310,7 @@ void CCPACSWingComponentSegment::GetSegmentEtaXsi(double csEta, double csXsi, st
     }
 
     const SegmentList& segments = GetSegmentList();
-    const std::vector<double>& etas = chordFace.GetElementEtas();
+    const std::vector<double>& etas = chordFace->GetElementEtas();
 
     // find index such that etas[index] <= csEta < etas[index+1]
     unsigned int index = 0;
