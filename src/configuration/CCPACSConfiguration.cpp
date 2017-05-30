@@ -130,7 +130,7 @@ void CCPACSConfiguration::ReadCPACS(const std::string& configurationUID)
             transformAllComponents(it->second);
         }
     }
-    catch (tigl::CTiglError& ex) {
+    catch (const CTiglError& ex) {
         LOG(ERROR) << ex.what() << std::endl;
     }
 }
