@@ -286,7 +286,7 @@ gp_Pnt GetSparMidplanePoint(const CCPACSWingSparPosition& sparPos, const CCPACSW
         midplanePoint = getSectionElementChordlinePoint(componentSegment, sparPos.GetElementUID(), sparPos.GetXsi());
     }
     else if (sparPos.GetInputType() == CCPACSWingSparPosition::Eta) {
-        midplanePoint = wingStructureReference.GetMidplaneOrChordlinePoint(sparPos.GetEta(), sparPos.GetXsi());
+        midplanePoint = wingStructureReference.GetPoint(sparPos.GetEta(), sparPos.GetXsi(), WING_COORDINATE_SYSTEM);
     }
     else {
         throw CTiglError("Unknown SparPosition InputType found in CCPACSWingRibsDefinition::GetSparMidplanePoint");

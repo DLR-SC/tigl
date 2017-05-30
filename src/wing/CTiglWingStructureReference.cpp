@@ -56,9 +56,9 @@ PNamedShape CTiglWingStructureReference::GetLoft() const
     DISPATCH(GetLoft())
 }
 
-gp_Pnt CTiglWingStructureReference::GetPoint(double eta, double xsi) const
+gp_Pnt CTiglWingStructureReference::GetPoint(double eta, double xsi, TiglCoordinateSystem reference) const
 {
-    DISPATCH(GetPoint(eta, xsi))
+    DISPATCH(GetPoint(eta, xsi, reference))
 }
 
 double CTiglWingStructureReference::GetLeadingEdgeLength() const
@@ -114,11 +114,6 @@ gp_Vec CTiglWingStructureReference::GetMidplaneEtaDir(double eta) const
 gp_Vec CTiglWingStructureReference::GetMidplaneNormal(double eta) const
 {
     DISPATCH(GetMidplaneNormal(eta))
-}
-
-gp_Pnt CTiglWingStructureReference::GetMidplaneOrChordlinePoint(double eta, double xsi) const
-{
-    DISPATCH(GetMidplaneOrChordlinePoint(eta, xsi))
 }
 
 TopoDS_Shape CTiglWingStructureReference::GetMidplaneShape() const

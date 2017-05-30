@@ -66,10 +66,10 @@ gp_Pnt getSectionElementChordlinePoint(const CCPACSWingComponentSegment& cs, con
 TopoDS_Face buildEtaCutFace(const CTiglWingStructureReference& wsr, double eta)
 {
     // NOTE: we have to determine the cut plane by using the 
-    // GetMidplaneOrChordlinePoint methods for handling the case when the eta line
+    // GetPoint methods for handling the case when the eta line
     // is extended because of an z-rotation of the outer or inner sections
-    gp_Pnt startPnt = wsr.GetMidplaneOrChordlinePoint(eta, 0);
-    gp_Pnt endPnt = wsr.GetMidplaneOrChordlinePoint(eta, 1);
+    gp_Pnt startPnt = wsr.GetPoint(eta, 0., WING_COORDINATE_SYSTEM);
+    gp_Pnt endPnt = wsr.GetPoint(eta, 1., WING_COORDINATE_SYSTEM);
     gp_Vec midplaneNormal = wsr.GetMidplaneNormal(eta);
     gp_Dir cutPlaneNormal = midplaneNormal.Crossed(gp_Vec(startPnt, endPnt));
     gp_Pln etaCutPlane = gp_Pln(startPnt, cutPlaneNormal);

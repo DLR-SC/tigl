@@ -25,6 +25,7 @@
 #include <boost/optional.hpp>
 
 #include "tigl_internal.h"
+#include "tigl.h"
 
 #include "PNamedShape.h"
 #include "TopoDS_Shape.hxx"
@@ -54,7 +55,7 @@ public:
     TIGL_EXPORT boost::optional<CCPACSWingCSStructure>& GetStructure();
     TIGL_EXPORT const boost::optional<CCPACSWingCSStructure>& GetStructure() const;
     TIGL_EXPORT PNamedShape GetLoft() const;
-    TIGL_EXPORT gp_Pnt GetPoint(double eta, double xsi) const;
+    TIGL_EXPORT gp_Pnt GetPoint(double eta, double xsi, TiglCoordinateSystem reference) const;
     TIGL_EXPORT double GetLeadingEdgeLength() const;
     TIGL_EXPORT double GetTrailingEdgeLength() const;
     TIGL_EXPORT gp_Pnt GetLeadingEdgePoint(double relativePos) const;
@@ -66,7 +67,6 @@ public:
     TIGL_EXPORT void GetMidplaneEtaXsi(const gp_Pnt& p, double& eta, double& xsi) const;
     TIGL_EXPORT gp_Vec GetMidplaneEtaDir(double eta) const;
     TIGL_EXPORT gp_Vec GetMidplaneNormal(double eta) const;
-    TIGL_EXPORT gp_Pnt GetMidplaneOrChordlinePoint(double eta, double xsi) const;
     TIGL_EXPORT TopoDS_Shape GetMidplaneShape() const;
     TIGL_EXPORT TopoDS_Shape GetUpperShape() const;
     TIGL_EXPORT TopoDS_Shape GetLowerShape() const;
