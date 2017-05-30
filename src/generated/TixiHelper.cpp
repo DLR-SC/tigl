@@ -459,7 +459,6 @@ namespace tigl
             TixiSaveElementInternal(tixiHandle, xpath, tixiUpdateTextElement, tixiAddTextElement, value);
         }
 
-        // TODO: updating an empty text doesn't work : no error, but the text is not updated
         void TixiSaveElement(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& value)
         {
             TixiSaveElementInternal(tixiHandle, xpath, tixiUpdateTextElement, tixiAddTextElement, value.c_str());

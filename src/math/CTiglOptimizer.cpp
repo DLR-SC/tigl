@@ -17,7 +17,6 @@
 */
 /**
 * @file
-* @brief  TODO: Describe!.
 */
 #include "CTiglOptimizer.h"
 
