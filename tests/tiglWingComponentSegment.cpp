@@ -691,28 +691,28 @@ TEST_F(WingComponentSegmentSimple, InterpolateOnLine)
     ASSERT_NEAR(0.0, error, 1e-6);
 
     // check cases in first segment
-    compSegment.InterpolateOnLine(0.0, 0.0, 1.0, 1.0, 0.25, xsi, error);
+    compSegment.InterpolateOnLine(0.0, 0.0, 1.0, 1.0, 0.5 / (1. + sqrt(17./16.)), xsi, error);
     ASSERT_NEAR(0.25, xsi, 1e-6);
     ASSERT_NEAR(0.0, error, 1e-6);
 
-    compSegment.InterpolateOnLine(0.0, 0.0, 1.0, 1.0, 0.4, xsi, error);
+    compSegment.InterpolateOnLine(0.0, 0.0, 1.0, 1.0, 0.8 / (1. + sqrt(17./16.)), xsi, error);
     ASSERT_NEAR(0.4, xsi, 1e-6);
     ASSERT_NEAR(0.0, error, 1e-6);
 
     // now check the not so trivial cases in second segment
-    compSegment.InterpolateOnLine(0.0, 0.0, 1.0, 1.0, 0.5, xsi, error);
+    compSegment.InterpolateOnLine(0.0, 0.0, 1.0, 1.0, 1.0 / (1. + sqrt(17./16.)), xsi, error);
     ASSERT_NEAR(0.5, xsi, 1e-6);
     ASSERT_NEAR(0.0, error, 1e-6);
 
-    compSegment.InterpolateOnLine(0.0, 0.0, 1.0, 1.0, 0.75, xsi, error);
+    compSegment.InterpolateOnLine(0.0, 0.0, 1.0, 1.0, (1 + 0.5*sqrt(17./16.)) / (1. + sqrt(17./16.)), xsi, error);
     ASSERT_NEAR(0.5/0.75, xsi, 1e-6);
     ASSERT_NEAR(0.0, error, 1e-6);
 
-    compSegment.InterpolateOnLine(0.0, 0.0, 1.0, 1.0, 0.6, xsi, error);
+    compSegment.InterpolateOnLine(0.0, 0.0, 1.0, 1.0, (1 + 0.2*sqrt(17./16.)) / (1. + sqrt(17./16.)), xsi, error);
     ASSERT_NEAR(0.5/0.9, xsi, 1e-6);
     ASSERT_NEAR(0.0, error, 1e-6);
 
-    compSegment.InterpolateOnLine(0.0, 0.0, 1.0, 1.0, 0.9, xsi, error);
+    compSegment.InterpolateOnLine(0.0, 0.0, 1.0, 1.0, (1 + 0.8*sqrt(17./16.)) / (1. + sqrt(17./16.)), xsi, error);
     ASSERT_NEAR(0.5/0.6, xsi, 1e-6);
     ASSERT_NEAR(0.0, error, 1e-6);
 }
@@ -721,7 +721,7 @@ TEST_F(WingComponentSegmentSimple, IntersectEta_cinterface)
 {
     double xsi;
     TiglBoolean hasWarning;
-    ASSERT_EQ(TIGL_SUCCESS, tiglWingComponentSegmentComputeEtaIntersection(tiglHandle, "WING_CS1", 0.0, 0.0, 1.0, 1.0, 0.9, &xsi, &hasWarning));
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingComponentSegmentComputeEtaIntersection(tiglHandle, "WING_CS1", 0.0, 0.0, 1.0, 1.0, (1 + 0.8*sqrt(17./16.)) / (1. + sqrt(17./16.)), &xsi, &hasWarning));
     ASSERT_NEAR(0.5/0.6, xsi, 1e-6);
     ASSERT_EQ(TIGL_FALSE, hasWarning);
     ASSERT_EQ(TIGL_SUCCESS, tiglWingComponentSegmentComputeEtaIntersection(tiglHandle, "WING_CS1", 0.0, 0.0, 1.0, 1.0, 0.9, &xsi, NULL));

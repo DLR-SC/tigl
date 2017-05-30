@@ -196,6 +196,13 @@ const std::vector<double>& CTiglWingChordface::GetElementEtas() const
     return _elementEtas;
 }
 
+const Handle(Geom_BSplineSurface) CTiglWingChordface::GetSurface() const
+{
+    BuildChordSurface();
+
+    return _chordSurface;
+}
+
 
 
 } // namespace tigl

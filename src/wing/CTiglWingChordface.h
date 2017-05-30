@@ -62,6 +62,8 @@ public:
      */
     TIGL_EXPORT const std::vector<double>& GetElementEtas() const;
 
+    TIGL_EXPORT const Handle(Geom_BSplineSurface) GetSurface() const;
+
 protected:
     virtual PNamedShape BuildLoft() OVERRIDE;
 

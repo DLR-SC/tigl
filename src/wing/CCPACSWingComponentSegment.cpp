@@ -51,6 +51,7 @@
 #include "TopoDS_Wire.hxx"
 #include "GeomAPI_ProjectPointOnSurf.hxx"
 #include "GeomAPI_ProjectPointOnCurve.hxx"
+#include "GeomAPI_ExtremaCurveCurve.hxx"
 #include "GeomAdaptor_Curve.hxx"
 #include "Extrema_ExtCC.hxx"
 #include "Geom_Plane.hxx"
@@ -688,76 +689,33 @@ void CCPACSWingComponentSegment::GetSegmentIntersection(const std::string& segme
 
 void CCPACSWingComponentSegment::InterpolateOnLine(double csEta1, double csXsi1, double csEta2, double csXsi2, double eta, double &xsi, double& errorDistance)
 {
+    if (eta > 1 + Precision::Confusion() || eta < - Precision::Confusion()) {
+        throw CTiglError("Eta not in range [0,1] in CCPACSWingComponentSegment::InterpolateOnLine.", TIGL_MATH_ERROR);
+    }
+
     // compute component segment line
     gp_Pnt p1 = GetPoint(csEta1, csXsi1);
     gp_Pnt p2 = GetPoint(csEta2, csXsi2);
 
-    UpdateProjectedLeadingEdge();
-    UpdateExtendedChordFaces();
+    UpdateChordFace();
 
-    // get eta plane and compute intersection with line
-    // compute eta point and normal on the projected LE
-    gp_Pnt etaPnt, intersectionPoint;
-    gp_Vec etaNormal;
-    projLeadingEdge->D1(eta, etaPnt, etaNormal);
+    const Handle(Geom_Curve) etaCurve = chordFace->GetSurface()->VIso(eta);
+    const Handle(Geom_Curve) line = new Geom_Line(p1, p2.XYZ() - p1.XYZ());
 
-    if (IntersectLinePlane(p1, p2, gp_Pln(etaPnt, etaNormal.XYZ()), intersectionPoint) == NoIntersection) {
-        throw CTiglError("Cannot interpolate for the given eta coordinate", TIGL_MATH_ERROR);
-        }
-
-    // get xsi coordinate
-    gp_Pnt nearestPoint;
-    double deviation = 0;
-    tigl::CCPACSWingSegment* segment = (tigl::CCPACSWingSegment*) findSegment(intersectionPoint.X(), intersectionPoint.Y(), intersectionPoint.Z(),
-                nearestPoint, deviation);
-
-    if (!segment) {
-        throw CTiglError("Cannot interpolate for the given eta coordinate", TIGL_MATH_ERROR);
-            }
-
-    if (deviation > 1e-3) {
-        // There are two options:
-        // Either, the point is completely outside the component segment or on the extended
-        // surfaces
-
-        double tol = 1e-4;
-        double curEta = 0.;
-        double curXsi = 0.;
-        CTiglPoint nearestPointTmp;
-
-        // Test outer surface
-        TiglReturnCode retValProj = extendedOuterChord.translate(intersectionPoint.XYZ(), &curEta, &curXsi);
-        if (retValProj == TIGL_SUCCESS && curEta > -tol && curEta < 1. + tol && curXsi > -tol && curXsi < 1. + tol) {
-            // we are on the extended surface
-            segment = GetSegmentList().front();
-            extendedOuterChord.translate(curEta, curXsi, &nearestPointTmp);
-            nearestPoint = nearestPointTmp.Get_gp_Pnt();
-            xsi = curXsi;
-        }
-        else {
-            retValProj = extendedInnerChord.translate(intersectionPoint.XYZ(), &curEta, &curXsi);
-            if (retValProj == TIGL_SUCCESS && curEta > -tol && curEta < 1. + tol && curXsi > -tol && curXsi < 1. + tol) {
-                // we are on the extended surface
-                segment = GetSegmentList().back();
-                extendedInnerChord.translate(curEta, curXsi, &nearestPointTmp);
-                nearestPoint = nearestPointTmp.Get_gp_Pnt();
-                xsi = curXsi;
-            }
-            else {
-                throw CTiglError("The requested point lies outside the wing chord surface.", TIGL_MATH_ERROR);
-            }
-        }
+    GeomAPI_ExtremaCurveCurve algo(etaCurve, line, 0., 1., 0., p1.Distance(p2));
+    if (algo.NbExtrema() < 1) {
+        throw CTiglError("Cannot compute xsi coordinate in CCPACSWingComponentSegment::InterpolateOnLine", TIGL_MATH_ERROR);
     }
-    else {
-        double etaRes, xsiRes;
-        segment->GetEtaXsi(nearestPoint, etaRes, xsiRes);
-        xsi = xsiRes;
-    }
+
+    // xsi coordinate
+    double u;
+    algo.LowerDistanceParameters(xsi, u);
+
+    // TODO (siggel): check if point on line is outside the wing
 
     // compute the error distance
     // This is the distance from the line to the nearest point on the chord face
-    gp_Lin line(p1, p2.XYZ() - p1.XYZ());
-    errorDistance = line.Distance(nearestPoint);
+    errorDistance = algo.LowerDistance();
 }
 
 CTiglWingChordface &CCPACSWingComponentSegment::GetChordface() const
