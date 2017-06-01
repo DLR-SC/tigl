@@ -45,6 +45,9 @@ namespace tigl
             // read element ribReference
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/ribReference")) {
                 m_ribReference = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/ribReference");
+                if (m_ribReference.empty()) {
+                    LOG(ERROR) << "Required element ribReference is empty at xpath " << xpath;
+                }
             }
             else {
                 LOG(ERROR) << "Required element ribReference is missing at xpath " << xpath;
@@ -53,6 +56,9 @@ namespace tigl
             // read element ribStart
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/ribStart")) {
                 m_ribStart = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/ribStart");
+                if (m_ribStart.empty()) {
+                    LOG(ERROR) << "Required element ribStart is empty at xpath " << xpath;
+                }
             }
             else {
                 LOG(ERROR) << "Required element ribStart is missing at xpath " << xpath;
@@ -61,6 +67,9 @@ namespace tigl
             // read element ribEnd
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/ribEnd")) {
                 m_ribEnd = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/ribEnd");
+                if (m_ribEnd.empty()) {
+                    LOG(ERROR) << "Required element ribEnd is empty at xpath " << xpath;
+                }
             }
             else {
                 LOG(ERROR) << "Required element ribEnd is missing at xpath " << xpath;
@@ -90,11 +99,17 @@ namespace tigl
             // read element elementStartUID
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/elementStartUID")) {
                 m_elementStartUID_choice2 = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/elementStartUID");
+                if (m_elementStartUID_choice2->empty()) {
+                    LOG(ERROR) << "Optional element elementStartUID is present but empty at xpath " << xpath;
+                }
             }
             
             // read element sparPositionStartUID
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/sparPositionStartUID")) {
                 m_sparPositionStartUID_choice3 = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/sparPositionStartUID");
+                if (m_sparPositionStartUID_choice3->empty()) {
+                    LOG(ERROR) << "Optional element sparPositionStartUID is present but empty at xpath " << xpath;
+                }
             }
             
             // read element etaEnd
@@ -105,11 +120,17 @@ namespace tigl
             // read element elementEndUID
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/elementEndUID")) {
                 m_elementEndUID_choice2 = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/elementEndUID");
+                if (m_elementEndUID_choice2->empty()) {
+                    LOG(ERROR) << "Optional element elementEndUID is present but empty at xpath " << xpath;
+                }
             }
             
             // read element sparPositionEndUID
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/sparPositionEndUID")) {
                 m_sparPositionEndUID_choice3 = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/sparPositionEndUID");
+                if (m_sparPositionEndUID_choice3->empty()) {
+                    LOG(ERROR) << "Optional element sparPositionEndUID is present but empty at xpath " << xpath;
+                }
             }
             
             // read element spacing

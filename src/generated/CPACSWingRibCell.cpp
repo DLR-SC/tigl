@@ -49,11 +49,17 @@ namespace tigl
             // read attribute uID
             if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
                 m_uID = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
+                if (m_uID->empty()) {
+                    LOG(ERROR) << "Optional attribute uID is present but empty at xpath " << xpath;
+                }
             }
             
             // read element fromRib
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/fromRib")) {
                 m_fromRib = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/fromRib");
+                if (m_fromRib.empty()) {
+                    LOG(ERROR) << "Required element fromRib is empty at xpath " << xpath;
+                }
             }
             else {
                 LOG(ERROR) << "Required element fromRib is missing at xpath " << xpath;
@@ -62,6 +68,9 @@ namespace tigl
             // read element toRib
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/toRib")) {
                 m_toRib = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/toRib");
+                if (m_toRib.empty()) {
+                    LOG(ERROR) << "Required element toRib is empty at xpath " << xpath;
+                }
             }
             else {
                 LOG(ERROR) << "Required element toRib is missing at xpath " << xpath;

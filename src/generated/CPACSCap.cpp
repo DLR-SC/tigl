@@ -24,7 +24,8 @@ namespace tigl
 {
     namespace generated
     {
-        CPACSCap::CPACSCap() {}
+        CPACSCap::CPACSCap() :
+            m_area(0) {}
         
         CPACSCap::~CPACSCap() {}
         

@@ -48,6 +48,9 @@ namespace tigl
             // read attribute uID
             if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
                 m_uID = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
+                if (m_uID->empty()) {
+                    LOG(ERROR) << "Optional attribute uID is present but empty at xpath " << xpath;
+                }
             }
             
             // read element scaling

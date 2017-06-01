@@ -24,7 +24,11 @@ namespace tigl
 {
     namespace generated
     {
-        CPACSCst2D::CPACSCst2D() {}
+        CPACSCst2D::CPACSCst2D() :
+            m_upperN1(0), 
+            m_upperN2(0), 
+            m_lowerN1(0), 
+            m_lowerN2(0) {}
         
         CPACSCst2D::~CPACSCst2D() {}
         

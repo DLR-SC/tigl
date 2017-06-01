@@ -26,7 +26,9 @@ namespace tigl
 {
     namespace generated
     {
-        CPACSWingRibExplicitPositioning::CPACSWingRibExplicitPositioning(CCPACSWingRibsDefinition* parent)
+        CPACSWingRibExplicitPositioning::CPACSWingRibExplicitPositioning(CCPACSWingRibsDefinition* parent) :
+            m_etaStart(0), 
+            m_etaEnd(0)
         {
             //assert(parent != NULL);
             m_parent = parent;
@@ -44,6 +46,9 @@ namespace tigl
             // read element startReference
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/startReference")) {
                 m_startReference = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/startReference");
+                if (m_startReference.empty()) {
+                    LOG(ERROR) << "Required element startReference is empty at xpath " << xpath;
+                }
             }
             else {
                 LOG(ERROR) << "Required element startReference is missing at xpath " << xpath;
@@ -60,6 +65,9 @@ namespace tigl
             // read element endReference
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/endReference")) {
                 m_endReference = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/endReference");
+                if (m_endReference.empty()) {
+                    LOG(ERROR) << "Required element endReference is empty at xpath " << xpath;
+                }
             }
             else {
                 LOG(ERROR) << "Required element endReference is missing at xpath " << xpath;

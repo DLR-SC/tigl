@@ -33,6 +33,9 @@ namespace tigl
             // read attribute mapType
             if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "mapType")) {
                 m_mapType = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "mapType");
+                if (m_mapType.empty()) {
+                    LOG(ERROR) << "Required attribute mapType is empty at xpath " << xpath;
+                }
             }
             else {
                 LOG(ERROR) << "Required attribute mapType is missing at xpath " << xpath;
@@ -41,46 +44,73 @@ namespace tigl
             // read attribute uncertaintyFunctionName
             if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uncertaintyFunctionName")) {
                 m_uncertaintyFunctionName = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "uncertaintyFunctionName");
+                if (m_uncertaintyFunctionName->empty()) {
+                    LOG(ERROR) << "Optional attribute uncertaintyFunctionName is present but empty at xpath " << xpath;
+                }
             }
             
             // read attribute mu
             if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "mu")) {
                 m_mu = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "mu");
+                if (m_mu->empty()) {
+                    LOG(ERROR) << "Optional attribute mu is present but empty at xpath " << xpath;
+                }
             }
             
             // read attribute delta
             if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "delta")) {
                 m_delta = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "delta");
+                if (m_delta->empty()) {
+                    LOG(ERROR) << "Optional attribute delta is present but empty at xpath " << xpath;
+                }
             }
             
             // read attribute a
             if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "a")) {
                 m_a = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "a");
+                if (m_a->empty()) {
+                    LOG(ERROR) << "Optional attribute a is present but empty at xpath " << xpath;
+                }
             }
             
             // read attribute b
             if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "b")) {
                 m_b = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "b");
+                if (m_b->empty()) {
+                    LOG(ERROR) << "Optional attribute b is present but empty at xpath " << xpath;
+                }
             }
             
             // read attribute c
             if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "c")) {
                 m_c = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "c");
+                if (m_c->empty()) {
+                    LOG(ERROR) << "Optional attribute c is present but empty at xpath " << xpath;
+                }
             }
             
             // read attribute v
             if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "v")) {
                 m_v = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "v");
+                if (m_v->empty()) {
+                    LOG(ERROR) << "Optional attribute v is present but empty at xpath " << xpath;
+                }
             }
             
             // read attribute w
             if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "w")) {
                 m_w = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "w");
+                if (m_w->empty()) {
+                    LOG(ERROR) << "Optional attribute w is present but empty at xpath " << xpath;
+                }
             }
             
             // read simpleContent 
             if (tixihelper::TixiCheckElement(tixiHandle, xpath)) {
                 m_simpleContent = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath);
+                if (m_simpleContent.empty()) {
+                    LOG(ERROR) << "Required element  is empty at xpath " << xpath;
+                }
             }
             else {
                 LOG(ERROR) << "Required simpleContent  is missing at xpath " << xpath;

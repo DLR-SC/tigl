@@ -34,16 +34,25 @@ namespace tigl
             // read element name
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/name")) {
                 m_name = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
+                if (m_name->empty()) {
+                    LOG(ERROR) << "Optional element name is present but empty at xpath " << xpath;
+                }
             }
             
             // read element description
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/description")) {
                 m_description = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
+                if (m_description->empty()) {
+                    LOG(ERROR) << "Optional element description is present but empty at xpath " << xpath;
+                }
             }
             
             // read element materialLaw
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/materialLaw")) {
                 m_materialLaw = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/materialLaw");
+                if (m_materialLaw->empty()) {
+                    LOG(ERROR) << "Optional element materialLaw is present but empty at xpath " << xpath;
+                }
             }
             
             // read element plasticEliminationStrain

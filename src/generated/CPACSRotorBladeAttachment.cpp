@@ -59,16 +59,25 @@ namespace tigl
             // read attribute uID
             if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
                 m_uID = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
+                if (m_uID->empty()) {
+                    LOG(ERROR) << "Optional attribute uID is present but empty at xpath " << xpath;
+                }
             }
             
             // read element name
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/name")) {
                 m_name = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
+                if (m_name->empty()) {
+                    LOG(ERROR) << "Optional element name is present but empty at xpath " << xpath;
+                }
             }
             
             // read element description
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/description")) {
                 m_description = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
+                if (m_description->empty()) {
+                    LOG(ERROR) << "Optional element description is present but empty at xpath " << xpath;
+                }
             }
             
             // read element hinges
@@ -85,6 +94,9 @@ namespace tigl
             // read element rotorBladeUID
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/rotorBladeUID")) {
                 m_rotorBladeUID = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/rotorBladeUID");
+                if (m_rotorBladeUID.empty()) {
+                    LOG(ERROR) << "Required element rotorBladeUID is empty at xpath " << xpath;
+                }
             }
             else {
                 LOG(ERROR) << "Required element rotorBladeUID is missing at xpath " << xpath;
