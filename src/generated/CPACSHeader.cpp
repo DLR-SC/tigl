@@ -83,9 +83,6 @@ namespace tigl
                 } catch(const std::exception& e) {
                     LOG(ERROR) << "Failed to read updates at xpath " << xpath << ": " << e.what();
                     m_updates = boost::none;
-                } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read updates at xpath " << xpath << ": " << e.getError();
-                    m_updates = boost::none;
                 }
             }
             

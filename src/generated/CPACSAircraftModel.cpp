@@ -74,9 +74,6 @@ namespace tigl
                 } catch(const std::exception& e) {
                     LOG(ERROR) << "Failed to read fuselages at xpath " << xpath << ": " << e.what();
                     m_fuselages = boost::none;
-                } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read fuselages at xpath " << xpath << ": " << e.getError();
-                    m_fuselages = boost::none;
                 }
             }
             
@@ -88,9 +85,6 @@ namespace tigl
                 } catch(const std::exception& e) {
                     LOG(ERROR) << "Failed to read wings at xpath " << xpath << ": " << e.what();
                     m_wings = boost::none;
-                } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read wings at xpath " << xpath << ": " << e.getError();
-                    m_wings = boost::none;
                 }
             }
             
@@ -101,9 +95,6 @@ namespace tigl
                     m_genericGeometryComponents->ReadCPACS(tixiHandle, xpath + "/genericGeometryComponents");
                 } catch(const std::exception& e) {
                     LOG(ERROR) << "Failed to read genericGeometryComponents at xpath " << xpath << ": " << e.what();
-                    m_genericGeometryComponents = boost::none;
-                } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read genericGeometryComponents at xpath " << xpath << ": " << e.getError();
                     m_genericGeometryComponents = boost::none;
                 }
             }

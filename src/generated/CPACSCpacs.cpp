@@ -58,9 +58,6 @@ namespace tigl
                 } catch(const std::exception& e) {
                     LOG(ERROR) << "Failed to read vehicles at xpath " << xpath << ": " << e.what();
                     m_vehicles = boost::none;
-                } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read vehicles at xpath " << xpath << ": " << e.getError();
-                    m_vehicles = boost::none;
                 }
             }
             
@@ -71,9 +68,6 @@ namespace tigl
                     m_toolspecific->ReadCPACS(tixiHandle, xpath + "/toolspecific");
                 } catch(const std::exception& e) {
                     LOG(ERROR) << "Failed to read toolspecific at xpath " << xpath << ": " << e.what();
-                    m_toolspecific = boost::none;
-                } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read toolspecific at xpath " << xpath << ": " << e.getError();
                     m_toolspecific = boost::none;
                 }
             }

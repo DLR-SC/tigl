@@ -98,9 +98,6 @@ namespace tigl
                 } catch(const std::exception& e) {
                     LOG(ERROR) << "Failed to read web2 at xpath " << xpath << ": " << e.what();
                     m_web2 = boost::none;
-                } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read web2 at xpath " << xpath << ": " << e.getError();
-                    m_web2 = boost::none;
                 }
             }
             

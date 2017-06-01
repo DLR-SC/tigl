@@ -58,9 +58,6 @@ namespace tigl
                 } catch(const std::exception& e) {
                     LOG(ERROR) << "Failed to read scaling at xpath " << xpath << ": " << e.what();
                     m_scaling = boost::none;
-                } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read scaling at xpath " << xpath << ": " << e.getError();
-                    m_scaling = boost::none;
                 }
             }
             
@@ -72,9 +69,6 @@ namespace tigl
                 } catch(const std::exception& e) {
                     LOG(ERROR) << "Failed to read rotation at xpath " << xpath << ": " << e.what();
                     m_rotation = boost::none;
-                } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read rotation at xpath " << xpath << ": " << e.getError();
-                    m_rotation = boost::none;
                 }
             }
             
@@ -85,9 +79,6 @@ namespace tigl
                     m_translation->ReadCPACS(tixiHandle, xpath + "/translation");
                 } catch(const std::exception& e) {
                     LOG(ERROR) << "Failed to read translation at xpath " << xpath << ": " << e.what();
-                    m_translation = boost::none;
-                } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read translation at xpath " << xpath << ": " << e.getError();
                     m_translation = boost::none;
                 }
             }

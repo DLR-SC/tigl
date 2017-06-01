@@ -50,9 +50,6 @@ namespace tigl
                 } catch(const std::exception& e) {
                     LOG(ERROR) << "Failed to read aircraft at xpath " << xpath << ": " << e.what();
                     m_aircraft = boost::none;
-                } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read aircraft at xpath " << xpath << ": " << e.getError();
-                    m_aircraft = boost::none;
                 }
             }
             
@@ -63,9 +60,6 @@ namespace tigl
                     m_rotorcraft->ReadCPACS(tixiHandle, xpath + "/rotorcraft");
                 } catch(const std::exception& e) {
                     LOG(ERROR) << "Failed to read rotorcraft at xpath " << xpath << ": " << e.what();
-                    m_rotorcraft = boost::none;
-                } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read rotorcraft at xpath " << xpath << ": " << e.getError();
                     m_rotorcraft = boost::none;
                 }
             }
@@ -78,9 +72,6 @@ namespace tigl
                 } catch(const std::exception& e) {
                     LOG(ERROR) << "Failed to read profiles at xpath " << xpath << ": " << e.what();
                     m_profiles = boost::none;
-                } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read profiles at xpath " << xpath << ": " << e.getError();
-                    m_profiles = boost::none;
                 }
             }
             
@@ -91,9 +82,6 @@ namespace tigl
                     m_materials->ReadCPACS(tixiHandle, xpath + "/materials");
                 } catch(const std::exception& e) {
                     LOG(ERROR) << "Failed to read materials at xpath " << xpath << ": " << e.what();
-                    m_materials = boost::none;
-                } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read materials at xpath " << xpath << ": " << e.getError();
                     m_materials = boost::none;
                 }
             }

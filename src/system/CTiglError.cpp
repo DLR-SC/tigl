@@ -48,9 +48,10 @@ const char* CTiglError::getError() const throw()
     return err.c_str(); 
 }
 
-//const char* CTiglError::what() const throw() {
-//   return err.c_str();
-//}
+const char* CTiglError::what() const throw()
+{
+   return err.c_str();
+}
 
 // Returns the error code
 TiglReturnCode CTiglError::getCode() const throw() 
