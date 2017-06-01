@@ -24,7 +24,9 @@ namespace tigl
 {
     namespace generated
     {
-        CPACSFarField::CPACSFarField() {}
+        CPACSFarField::CPACSFarField() :
+            m_referenceLength(0), 
+            m_multiplier(0) {}
         
         CPACSFarField::~CPACSFarField() {}
         

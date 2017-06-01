@@ -26,7 +26,10 @@ namespace tigl
     namespace generated
     {
         CPACSSparCell::CPACSSparCell(CTiglUIDManager* uidMgr) :
-            m_uidMgr(uidMgr) {}
+            m_uidMgr(uidMgr), 
+            m_fromEta(0), 
+            m_toEta(0), 
+            m_rotation(0) {}
         
         CPACSSparCell::~CPACSSparCell()
         {
@@ -48,6 +51,9 @@ namespace tigl
             // read attribute uID
             if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
                 m_uID = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
+                if (m_uID->empty()) {
+                    LOG(ERROR) << "Optional attribute uID is present but empty at xpath " << xpath;
+                }
             }
             
             // read element fromEta

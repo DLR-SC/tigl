@@ -24,7 +24,8 @@ namespace tigl
 {
     namespace generated
     {
-        CPACSWeb::CPACSWeb() {}
+        CPACSWeb::CPACSWeb() :
+            m_relPos(0) {}
         
         CPACSWeb::~CPACSWeb() {}
         

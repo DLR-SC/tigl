@@ -28,7 +28,8 @@ namespace tigl
     namespace generated
     {
         CPACSSparPosition::CPACSSparPosition(CCPACSWingSparPositions* parent, CTiglUIDManager* uidMgr) :
-            m_uidMgr(uidMgr)
+            m_uidMgr(uidMgr), 
+            m_xsi(0)
         {
             //assert(parent != NULL);
             m_parent = parent;
@@ -59,6 +60,9 @@ namespace tigl
             // read attribute uID
             if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
                 m_uID = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
+                if (m_uID->empty()) {
+                    LOG(ERROR) << "Optional attribute uID is present but empty at xpath " << xpath;
+                }
             }
             
             // read element xsi
@@ -77,6 +81,9 @@ namespace tigl
             // read element elementUID
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/elementUID")) {
                 m_elementUID_choice2 = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/elementUID");
+                if (m_elementUID_choice2->empty()) {
+                    LOG(ERROR) << "Optional element elementUID is present but empty at xpath " << xpath;
+                }
             }
             
             if (m_uidMgr && m_uID) m_uidMgr->RegisterObject(*m_uID, *this);

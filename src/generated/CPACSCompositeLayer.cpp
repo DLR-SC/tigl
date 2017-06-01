@@ -24,7 +24,9 @@ namespace tigl
 {
     namespace generated
     {
-        CPACSCompositeLayer::CPACSCompositeLayer() {}
+        CPACSCompositeLayer::CPACSCompositeLayer() :
+            m_thickness(0), 
+            m_phi(0) {}
         
         CPACSCompositeLayer::~CPACSCompositeLayer() {}
         
@@ -33,11 +35,17 @@ namespace tigl
             // read element name
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/name")) {
                 m_name = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
+                if (m_name->empty()) {
+                    LOG(ERROR) << "Optional element name is present but empty at xpath " << xpath;
+                }
             }
             
             // read element description
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/description")) {
                 m_description = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
+                if (m_description->empty()) {
+                    LOG(ERROR) << "Optional element description is present but empty at xpath " << xpath;
+                }
             }
             
             // read element thickness
@@ -59,6 +67,9 @@ namespace tigl
             // read element materialUID
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/materialUID")) {
                 m_materialUID = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/materialUID");
+                if (m_materialUID.empty()) {
+                    LOG(ERROR) << "Required element materialUID is empty at xpath " << xpath;
+                }
             }
             else {
                 LOG(ERROR) << "Required element materialUID is missing at xpath " << xpath;

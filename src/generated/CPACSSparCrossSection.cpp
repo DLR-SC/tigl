@@ -28,7 +28,8 @@ namespace tigl
     namespace generated
     {
         CPACSSparCrossSection::CPACSSparCrossSection(CCPACSWingSparSegment* parent, CTiglUIDManager* uidMgr) :
-            m_uidMgr(uidMgr)
+            m_uidMgr(uidMgr), 
+            m_rotation(0)
         {
             //assert(parent != NULL);
             m_parent = parent;

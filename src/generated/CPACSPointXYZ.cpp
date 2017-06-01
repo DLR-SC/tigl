@@ -26,7 +26,10 @@ namespace tigl
     namespace generated
     {
         CPACSPointXYZ::CPACSPointXYZ(CTiglUIDManager* uidMgr) :
-            m_uidMgr(uidMgr) {}
+            m_uidMgr(uidMgr), 
+            m_x(0), 
+            m_y(0), 
+            m_z(0) {}
         
         CPACSPointXYZ::~CPACSPointXYZ()
         {
@@ -48,6 +51,9 @@ namespace tigl
             // read attribute uID
             if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
                 m_uID = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
+                if (m_uID->empty()) {
+                    LOG(ERROR) << "Optional attribute uID is present but empty at xpath " << xpath;
+                }
             }
             
             // read element x

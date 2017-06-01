@@ -359,7 +359,7 @@ namespace tigl
 
         void TixiSaveAttribute(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& attribute, bool value)
         {
-            TixiSaveAttributeInternal(tixiHandle, xpath, attribute, tixiAddIntegerAttribute, value ? 1 : 0, "%d"); // TODO: no tixiAddBooleanAttribute in Tixi
+            TixiSaveAttributeInternal(tixiHandle, xpath, attribute, tixiAddTextAttribute, value ? "true" : "false"); // TODO: no tixiAddBooleanAttribute in Tixi
         }
 
         void TixiSaveAttribute(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& attribute, int value)
