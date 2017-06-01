@@ -1,0 +1,3 @@
+[submodule "cpacs_gen"]
+	path = cpacs_gen
+	url = https://github.com/RlanderRISCSW/cpacs_tigl_gen
