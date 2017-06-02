@@ -289,7 +289,7 @@ TEST(TiglBSplineAlgorithms, testCreateCommonKnotsVectorSurface)
     // u knot vector is now: [0, 0, 0, 0, 1./3, 3./5, 1, 1, 1, 1]
 
     surface2->InsertVKnot(0.6, 2, 1e-15, Standard_True);
-    // v knot vector is now: [0, 0, 0, 0.6, 0.6, 0.6, 0.6, 1, 1, 1]
+    // v knot vector is now: [0, 0, 0, 0.6, 0.6, 1, 1, 1]
 
 
     // create the third B-spline surface
