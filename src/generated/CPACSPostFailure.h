@@ -44,6 +44,8 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
+            TIGL_EXPORT bool ValidateChoices() const;
+            
             TIGL_EXPORT virtual const boost::optional<std::string>& GetName() const;
             TIGL_EXPORT virtual void SetName(const std::string& value);
             TIGL_EXPORT virtual void SetName(const boost::optional<std::string>& value);
@@ -60,8 +62,8 @@ namespace tigl
             TIGL_EXPORT virtual void SetPlasticEliminationStrain_choice1(const double& value);
             TIGL_EXPORT virtual void SetPlasticEliminationStrain_choice1(const boost::optional<double>& value);
             
-            TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSPlasticityCurvePoint> >& GetPlasticityCurvePoint_choice1s() const;
-            TIGL_EXPORT virtual std::vector<unique_ptr<CPACSPlasticityCurvePoint> >& GetPlasticityCurvePoint_choice1s();
+            TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSPlasticityCurvePoint> >& GetPlasticityCurvePoints_choice1() const;
+            TIGL_EXPORT virtual std::vector<unique_ptr<CPACSPlasticityCurvePoint> >& GetPlasticityCurvePoints_choice1();
             
             TIGL_EXPORT virtual const boost::optional<double>& GetInitialEquivalentShearStrain_choice2() const;
             TIGL_EXPORT virtual void SetInitialEquivalentShearStrain_choice2(const double& value);
@@ -88,7 +90,7 @@ namespace tigl
             boost::optional<std::string>                        m_description;
             boost::optional<std::string>                        m_materialLaw;
             boost::optional<double>                             m_plasticEliminationStrain_choice1;
-            std::vector<unique_ptr<CPACSPlasticityCurvePoint> > m_plasticityCurvePoint_choice1s;
+            std::vector<unique_ptr<CPACSPlasticityCurvePoint> > m_plasticityCurvePoints_choice1;
             boost::optional<double>                             m_initialEquivalentShearStrain_choice2;
             boost::optional<double>                             m_intermediateEquivalentShearStrain_choice2;
             boost::optional<double>                             m_ultimateEquivalentShearStrain_choice2;
