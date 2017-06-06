@@ -217,7 +217,6 @@ private:
     // Returns the trailing edge direction of the segment with the passed UID
     gp_Vec GetTrailingEdgeDirection(const std::string& segmentUID) const;
 
-    void UpdateProjectedLeadingEdge() const;
     void UpdateChordFace() const;
 
 
@@ -229,7 +228,6 @@ private:
     double               mySurfaceArea;        /**< Surface area of this segment            */
     unique_ptr<CTiglShapeGeomComponentAdaptor> upperShape; /**< Upper shape of this componentSegment */
     unique_ptr<CTiglShapeGeomComponentAdaptor> lowerShape; /**< Lower shape of this componentSegment */
-    mutable Handle(Geom_Curve) projLeadingEdge;/**< (Extended) Leading edge projected into y-z plane */
     mutable SegmentList  wingSegments;         /**< List of segments belonging to the component segment */
     TopoDS_Face          innerFace;            /**< [[CAS_AES]] added inner segment face    */
     TopoDS_Face          outerFace;            /**< [[CAS_AES]] added outer segment face    */

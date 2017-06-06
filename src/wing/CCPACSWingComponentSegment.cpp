@@ -180,7 +180,6 @@ void CCPACSWingComponentSegment::Invalidate()
 {
     // call parent class instead of directly setting invalidated flag
     CTiglAbstractSegment::Reset();
-    projLeadingEdge.Nullify();
     wingSegments.clear();
     if (m_structure) {
         m_structure->Invalidate();
@@ -201,7 +200,6 @@ void CCPACSWingComponentSegment::Cleanup()
     mySurfaceArea  = 0.;
     linesAreValid = false;
     CTiglAbstractSegment::Reset();
-    projLeadingEdge.Nullify();
     wingSegments.clear();
 }
 
@@ -885,87 +883,6 @@ void CCPACSWingComponentSegment::BuildLines() const
     trailingEdgeLine = wbTe.Wire();
 
     linesAreValid = true;
-}
-
-void CCPACSWingComponentSegment::UpdateProjectedLeadingEdge() const
-{
-    if ( !projLeadingEdge.IsNull() ) {
-        return;
-    }
-
-    // add inner sections of each segment
-    const SegmentList& segments = GetSegmentList();
-
-    if (segments.size() < 1) {
-        std::stringstream str;
-        str << "Wing component " << m_uID << " does not contain any segments (CCPACSWingComponentSegment::updateProjectedLeadingEdge)!";
-        throw CTiglError(str.str(), TIGL_ERROR);
-    }
-
-    // create projection plane
-    gp_GTrsf wingTrafo = wing->GetTransformationMatrix().Get_gp_GTrsf();
-    gp_XYZ pCenter(0,0,0);
-    gp_XYZ pDirX(1,0,0);
-    wingTrafo.Transforms(pCenter);
-    wingTrafo.Transforms(pDirX);
-    Handle(Geom_Plane) projPlane = new Geom_Plane(pCenter, pDirX-pCenter);
-    
-    std::vector<gp_Pnt> LEPointsProjected;
-    SegmentList::const_iterator segmentIt = segments.begin();
-    int pointIndex = 1;
-    for (; segmentIt != segments.end(); ++segmentIt) {
-        tigl::CCPACSWingSegment& segment = **segmentIt;
-
-        // build iso xsi line
-        gp_Pnt lep = segment.GetChordPoint(0.,0.);
-
-        // build leading edge projected to the plane
-        gp_Pnt lep_proj = GeomAPI_ProjectPointOnSurf(lep, projPlane).NearestPoint();
-        LEPointsProjected.push_back(lep_proj);
-
-        if (segmentIt == segments.end()-1) {
-            // add outer section of last segment
-            gp_Pnt lep = segment.GetChordPoint(1., 0.);
-            gp_Pnt lep_proj = GeomAPI_ProjectPointOnSurf(lep, projPlane).NearestPoint();
-            LEPointsProjected.push_back(lep_proj);
-            // the break should not be necessary here, since the loop is
-            break;
-        }
-        pointIndex++;
-    }
-
-    // check if we have to extend the leading edge at wing tip
-    std::size_t nPoints = LEPointsProjected.size();
-    tigl::CCPACSWingSegment& outerSegment = *segments[segments.size()-1];
-    tigl::CCPACSWingSegment& innerSegment = *segments[0];
-
-    // project outer point of trailing edge on leading edge
-    gp_Pnt pOuterTrailingEdge = outerSegment.GetChordPoint(1.0, 1.0);
-    Standard_Real uout = ProjectPointOnLine(pOuterTrailingEdge, LEPointsProjected[nPoints-2], LEPointsProjected[nPoints-1]);
-
-
-    // project outer point of trailing edge on leading edge
-    gp_Pnt pInnerTrailingEdge = innerSegment.GetChordPoint(0.0, 1.0);
-    Standard_Real uin = ProjectPointOnLine(pInnerTrailingEdge, LEPointsProjected[0], LEPointsProjected[1]);
-
-    gp_Pnt outnew =  LEPointsProjected[nPoints-1];
-    if (uout > 1.0) {
-        // extend outer leading edge
-        outnew = LEPointsProjected[nPoints-2].XYZ()*(1. - uout) + LEPointsProjected[nPoints-1].XYZ()*uout;
-    }
-
-    gp_Pnt innew  = LEPointsProjected[0];
-    if (uin < 0.0) {
-        // extend inner leading edge
-        innew  = LEPointsProjected[0].XYZ()*(1. - uin) + LEPointsProjected[1].XYZ()*uin;
-    }
-
-    // set new leading edge points
-    LEPointsProjected[nPoints-1] = outnew;
-    LEPointsProjected[0]         = innew;
-
-    // build projected leading edge curve
-    projLeadingEdge = CPointsToLinearBSpline(LEPointsProjected).Curve();
 }
 
 void CCPACSWingComponentSegment::UpdateChordFace() const
