@@ -222,7 +222,7 @@ namespace tigl
         
         bool CPACSGuideCurve::ValidateChoices() const
         {
-            return ((m_fromGuideCurveUID_choice1.is_initialized() && m_continuity_choice1.is_initialized()) || (m_fromRelativeCircumference_choice2.is_initialized() && m_tangent_choice2.is_initialized()));
+            return ((m_fromGuideCurveUID_choice1.is_initialized()) || (m_fromRelativeCircumference_choice2.is_initialized()));
         }
         
         const std::string& CPACSGuideCurve::GetUID() const

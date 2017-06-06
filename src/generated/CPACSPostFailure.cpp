@@ -194,7 +194,7 @@ namespace tigl
         
         bool CPACSPostFailure::ValidateChoices() const
         {
-            return ((m_plasticEliminationStrain_choice1.is_initialized() && !m_plasticityCurvePoints_choice1.empty()) || (m_initialEquivalentShearStrain_choice2.is_initialized() && m_intermediateEquivalentShearStrain_choice2.is_initialized() && m_ultimateEquivalentShearStrain_choice2.is_initialized() && m_intermediateDamage_choice2.is_initialized() && m_ultimateDamage_choice2.is_initialized()));
+            return ((m_initialEquivalentShearStrain_choice2.is_initialized() && m_intermediateEquivalentShearStrain_choice2.is_initialized() && m_ultimateEquivalentShearStrain_choice2.is_initialized() && m_intermediateDamage_choice2.is_initialized() && m_ultimateDamage_choice2.is_initialized()));
         }
         
         const boost::optional<std::string>& CPACSPostFailure::GetName() const

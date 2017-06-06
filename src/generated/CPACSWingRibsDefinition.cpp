@@ -173,7 +173,7 @@ namespace tigl
         
         bool CPACSWingRibsDefinition::ValidateChoices() const
         {
-            return (m_ribsPositioning_choice1.is_initialized() || m_ribExplicitPositioning_choice2.is_initialized());
+            return ((m_ribsPositioning_choice1.is_initialized()) || (m_ribExplicitPositioning_choice2.is_initialized()));
         }
         
         const boost::optional<std::string>& CPACSWingRibsDefinition::GetUID() const

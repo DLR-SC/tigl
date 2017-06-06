@@ -131,7 +131,7 @@ namespace tigl
         
         bool CPACSSparPosition::ValidateChoices() const
         {
-            return (m_eta_choice1.is_initialized() || m_elementUID_choice2.is_initialized());
+            return ((m_eta_choice1.is_initialized()) || (m_elementUID_choice2.is_initialized()));
         }
         
         const boost::optional<std::string>& CPACSSparPosition::GetUID() const
