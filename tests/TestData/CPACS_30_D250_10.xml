@@ -1616,7 +1616,6 @@
 				<wings>
 					<wing symmetry="x-z-plane" uID="D250_wing">
 						<name>D250_wing</name>
-						<description/>
 						<parentUID>D250_fuselage</parentUID>
 						<transformation xsi:type="transformationType">
 							<scaling xsi:type="pointType">
@@ -2289,7 +2288,7 @@
 											</ribCrossSection>
 										</ribsDefinition>
 										<ribsDefinition uID="ribs_11">
-											<name/>
+											<name>Ribs11</name>
 											<description>rib 11</description>
 											<ribsPositioning>
 												<ribReference>midSpar</ribReference>
@@ -6094,7 +6093,7 @@
 									</lowerShell>
 									<ribsDefinitions>
 										<ribsDefinition uID="rib_winglet_1">
-											<name/>
+											<name>Rib Winglet 1</name>
 											<ribsPositioning>
 												<ribReference>leadingEdge</ribReference>
 												<etaStart>0</etaStart>
@@ -6119,7 +6118,7 @@
 											</ribCrossSection>
 										</ribsDefinition>
 										<ribsDefinition uID="rib_winglet_2_6">
-											<name/>
+											<name>Rib Winglet 2</name>
 											<ribsPositioning>
 												<ribReference>leadingEdge</ribReference>
 												<etaStart>0.2</etaStart>
