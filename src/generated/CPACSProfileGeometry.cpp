@@ -103,6 +103,9 @@ namespace tigl
             }
             
             if (m_uidMgr) m_uidMgr->RegisterObject(m_uID, *this);
+            if (!ValidateChoices()) {
+                LOG(ERROR) << "Invalid choice configuration at xpath " << xpath;
+            }
         }
         
         void CPACSProfileGeometry::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
@@ -153,6 +156,11 @@ namespace tigl
                 }
             }
             
+        }
+        
+        bool CPACSProfileGeometry::ValidateChoices() const
+        {
+            return ((m_pointList_choice1.is_initialized()) || (m_cst2D_choice2.is_initialized()));
         }
         
         const boost::optional<TiglSymmetryAxis>& CPACSProfileGeometry::GetSymmetry() const

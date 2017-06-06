@@ -143,6 +143,9 @@ namespace tigl
                 m_numberOfRibs_choice2 = tixihelper::TixiGetElement<int>(tixiHandle, xpath + "/numberOfRibs");
             }
             
+            if (!ValidateChoices()) {
+                LOG(ERROR) << "Invalid choice configuration at xpath " << xpath;
+            }
         }
         
         void CPACSWingRibsPositioning::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
@@ -247,6 +250,11 @@ namespace tigl
                 }
             }
             
+        }
+        
+        bool CPACSWingRibsPositioning::ValidateChoices() const
+        {
+            return ((m_etaStart_choice1.is_initialized()) || (m_elementStartUID_choice2.is_initialized()) || (m_sparPositionStartUID_choice3.is_initialized())) && ((m_etaEnd_choice1.is_initialized()) || (m_elementEndUID_choice2.is_initialized()) || (m_sparPositionEndUID_choice3.is_initialized())) && ((m_spacing_choice1.is_initialized()) || (m_numberOfRibs_choice2.is_initialized()));
         }
         
         const std::string& CPACSWingRibsPositioning::GetRibReference() const

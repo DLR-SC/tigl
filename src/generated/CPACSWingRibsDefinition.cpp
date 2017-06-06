@@ -115,6 +115,9 @@ namespace tigl
             }
             
             if (m_uidMgr && m_uID) m_uidMgr->RegisterObject(*m_uID, *this);
+            if (!ValidateChoices()) {
+                LOG(ERROR) << "Invalid choice configuration at xpath " << xpath;
+            }
         }
         
         void CPACSWingRibsDefinition::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
@@ -166,6 +169,11 @@ namespace tigl
                 }
             }
             
+        }
+        
+        bool CPACSWingRibsDefinition::ValidateChoices() const
+        {
+            return ((m_ribsPositioning_choice1.is_initialized()) || (m_ribExplicitPositioning_choice2.is_initialized()));
         }
         
         const boost::optional<std::string>& CPACSWingRibsDefinition::GetUID() const

@@ -59,6 +59,9 @@ namespace tigl
                 m_xsi2_choice2 = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/xsi2");
             }
             
+            if (!ValidateChoices()) {
+                LOG(ERROR) << "Invalid choice configuration at xpath " << xpath;
+            }
         }
         
         void CPACSCellPositioningChordwise::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
@@ -93,6 +96,11 @@ namespace tigl
                 }
             }
             
+        }
+        
+        bool CPACSCellPositioningChordwise::ValidateChoices() const
+        {
+            return ((m_sparUID_choice1.is_initialized()) || (m_xsi1_choice2.is_initialized() && m_xsi2_choice2.is_initialized()));
         }
         
         const boost::optional<std::string>& CPACSCellPositioningChordwise::GetSparUID_choice1() const

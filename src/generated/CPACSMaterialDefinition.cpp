@@ -61,6 +61,9 @@ namespace tigl
                 m_thickness_choice2 = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/thickness");
             }
             
+            if (!ValidateChoices()) {
+                LOG(ERROR) << "Invalid choice configuration at xpath " << xpath;
+            }
         }
         
         void CPACSMaterialDefinition::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
@@ -115,6 +118,11 @@ namespace tigl
                 }
             }
             
+        }
+        
+        bool CPACSMaterialDefinition::ValidateChoices() const
+        {
+            return ((m_compositeUID_choice1.is_initialized()) || (m_materialUID_choice2.is_initialized()));
         }
         
         const boost::optional<std::string>& CPACSMaterialDefinition::GetCompositeUID_choice1() const

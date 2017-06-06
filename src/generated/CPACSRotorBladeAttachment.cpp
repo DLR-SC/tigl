@@ -119,6 +119,9 @@ namespace tigl
             }
             
             if (m_uidMgr && m_uID) m_uidMgr->RegisterObject(*m_uID, *this);
+            if (!ValidateChoices()) {
+                LOG(ERROR) << "Invalid choice configuration at xpath " << xpath;
+            }
         }
         
         void CPACSRotorBladeAttachment::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
@@ -186,6 +189,11 @@ namespace tigl
                 }
             }
             
+        }
+        
+        bool CPACSRotorBladeAttachment::ValidateChoices() const
+        {
+            return ((m_azimuthAngles_choice1.is_initialized()) || (m_numberOfBlades_choice2.is_initialized()));
         }
         
         const boost::optional<std::string>& CPACSRotorBladeAttachment::GetUID() const

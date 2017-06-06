@@ -45,6 +45,8 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
+            TIGL_EXPORT bool ValidateChoices() const;
+            
             TIGL_EXPORT virtual const boost::optional<double>& GetEta1_choice1() const;
             TIGL_EXPORT virtual void SetEta1_choice1(const double& value);
             TIGL_EXPORT virtual void SetEta1_choice1(const boost::optional<double>& value);
