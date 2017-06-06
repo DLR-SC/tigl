@@ -53,6 +53,7 @@ namespace tigl
 class CCPACSWing;
 class CCPACSWingSegment;
 class CTiglWingChordface;
+class CTiglShapeGeomComponentAdaptor;
 
 typedef std::vector<const CCPACSMaterial*>    MaterialList;
 typedef std::vector<CCPACSWingSegment*>       SegmentList;
@@ -89,13 +90,7 @@ public:
     TIGL_EXPORT TopoDS_Face GetOuterFace();
 
     // Gets a point in relative wing coordinates for a given eta and xsi
-    TIGL_EXPORT gp_Pnt GetPoint(double eta, double xsi) const;
-
-    // For eta==0 or eta==1 returns the chordlinePoints, otherwise returns the
-    // eta/xsi point in the wing coordinate system (calls GetPoint)
-    // TODO (siggel): This function is duplicate to GetPoint and simply removes the global transform.
-    //                Should we just add the coordinate system as a third parameter?
-    TIGL_EXPORT gp_Pnt GetMidplaneOrChordlinePoint(double eta, double xsi) const;
+    TIGL_EXPORT gp_Pnt GetPoint(double eta, double xsi, TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
 
     // Returns the eta xsi coordinates of a points projected onto the midplane / chordface
     TIGL_EXPORT void GetEtaXsi(const gp_Pnt& p, double& eta, double& xsi) const;
@@ -210,14 +205,6 @@ protected:
     // Method for building wires for eta-, leading edge-, trailing edge-lines
     void BuildLines() const;
 
-    // Returns an upper or lower point on the segment surface in
-    // dependence of parameters eta and xsi, which range from 0.0 to 1.0.
-    // For eta = 0.0, xsi = 0.0 point is equal to leading edge on the
-    // inner wing profile. For eta = 1.0, xsi = 1.0 point is equal to the trailing
-    // edge on the outer wing profile. If fromUpper is true, a point
-    // on the upper surface is returned, otherwise from the lower.
-//  gp_Pnt GetPoint(double eta, double xsi, bool fromUpper);
-
 private:
     // get short name for loft
     std::string GetShortShapeName();
@@ -230,8 +217,6 @@ private:
     // Returns the trailing edge direction of the segment with the passed UID
     gp_Vec GetTrailingEdgeDirection(const std::string& segmentUID) const;
 
-    void UpdateProjectedLeadingEdge() const;
-    void UpdateExtendedChordFaces();
     void UpdateChordFace() const;
 
 
@@ -241,25 +226,16 @@ private:
     CCPACSWing*          wing;                 /**< Parent wing                             */
     double               myVolume;             /**< Volume of this segment                  */
     double               mySurfaceArea;        /**< Surface area of this segment            */
-    TopoDS_Shape         upperShape;           /**< Upper shape of this componentSegment    */
-    TopoDS_Shape         lowerShape;           /**< Lower shape of this componentSegment    */
-    mutable Handle(Geom_Curve) projLeadingEdge;/**< (Extended) Leading edge projected into y-z plane */
+    unique_ptr<CTiglShapeGeomComponentAdaptor> upperShape; /**< Upper shape of this componentSegment */
+    unique_ptr<CTiglShapeGeomComponentAdaptor> lowerShape; /**< Lower shape of this componentSegment */
     mutable SegmentList  wingSegments;         /**< List of segments belonging to the component segment */
     TopoDS_Face          innerFace;            /**< [[CAS_AES]] added inner segment face    */
     TopoDS_Face          outerFace;            /**< [[CAS_AES]] added outer segment face    */
-    CTiglPointTranslator extendedOuterChord;   /**< Extended outer segment chord face */
-    CTiglPointTranslator extendedInnerChord;   /**< Extended inner segment chord face */
     mutable unique_ptr<CTiglWingChordface> chordFace;
-    Handle(Geom_Surface) upperSurface;
-    Handle(Geom_Surface) lowerSurface;
-    bool                 surfacesAreValid;
 
     mutable TopoDS_Wire  etaLine;                  // 2d version (in YZ plane) of leadingEdgeLine
-    mutable TopoDS_Wire  extendedEtaLine;          // 2d version (in YZ plane) of extendedLeadingEdgeLine
     mutable TopoDS_Wire  leadingEdgeLine;          // leading edge as wire
-    mutable TopoDS_Wire  extendedLeadingEdgeLine;  // leading edge extended along y-axis, see CPACS spar geometry definition
     mutable TopoDS_Wire  trailingEdgeLine;         // trailing edge as wire
-    mutable TopoDS_Wire  extendedTrailingEdgeLine; // trailing edge extended along y-axis, see CPACS spar geometry definition
     mutable bool         linesAreValid;
 };
 

@@ -17,7 +17,6 @@
 */
 /**
 * @file
-* @brief  TODO: Describe!.
 */
 #include <vector>
 #include "ITiglObjectiveFunction.h"

@@ -17,7 +17,6 @@
 */
 /**
 * @file
-* @brief  TODO: Describe!.
 */
 #ifndef ITIGL_OBJECTIVE_FUNCTION
 #define ITIGL_OBJECTIVE_FUNCTION

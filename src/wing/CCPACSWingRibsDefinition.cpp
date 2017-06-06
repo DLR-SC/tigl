@@ -817,7 +817,7 @@ TopoDS_Face CCPACSWingRibsDefinition::GetSectionRibGeometry(const std::string& e
         TopoDS_Shape cutShape = sparSegment.GetSparCutGeometry(WING_COORDINATE_SYSTEM);
         TopoDS_Shape cutResult = SplitShape(ribFace, cutShape);
         // get face from split result which is nearest to trailing edge
-        ribFace = GetNearestFace(cutResult, wingStructureReference.GetMidplaneOrChordlinePoint(eta, 1));
+        ribFace = GetNearestFace(cutResult, wingStructureReference.GetPoint(eta, 1, WING_COORDINATE_SYSTEM));
     }
     
     // cut rib face in case it ends at spar
@@ -828,7 +828,7 @@ TopoDS_Face CCPACSWingRibsDefinition::GetSectionRibGeometry(const std::string& e
         TopoDS_Shape cutShape = sparSegment.GetSparCutGeometry(WING_COORDINATE_SYSTEM);
         TopoDS_Shape cutResult = SplitShape(ribFace, cutShape);
         // get face from split result which is nearest to leading edge
-        ribFace = GetNearestFace(cutResult, wingStructureReference.GetMidplaneOrChordlinePoint(eta, 0));
+        ribFace = GetNearestFace(cutResult, wingStructureReference.GetPoint(eta, 0, WING_COORDINATE_SYSTEM));
     }
 
     return ribFace;
