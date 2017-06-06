@@ -50,6 +50,8 @@
 #include <BRepBndLib.hxx>
 
 // TIGLViewer includes
+#include "UniquePtr.h"
+#include "CPACSProfileGeometry.h"
 #include "TIGLViewerInternal.h"
 #include "CCPACSConfigurationManager.h"
 #include "CCPACSFarField.h"
@@ -416,14 +418,11 @@ QString TIGLViewerDocument::dlgGetWingProfileSelection()
 
     // Initialize wing list
     tigl::CCPACSConfiguration& config = GetConfiguration();
-    int profileCount = config.GetWingProfileCount();
-    for (int i = 1; i <= profileCount; i++) {
-        tigl::CCPACSWingProfile& profile = config.GetWingProfile(i);
-        if (profile.IsRotorProfile()) {
-            continue;
-        }
-        std::string profileUID = profile.GetUID();
-        std::string name     = profile.GetName();
+    std::vector<tigl::unique_ptr<tigl::generated::CPACSProfileGeometry> >& airfoils = config.GetWingProfiles().GetWingAirfoils();
+    for (int i = 0; i < airfoils.size(); i++) {
+        tigl::generated::CPACSProfileGeometry* profile = airfoils.at(i).get();
+
+        std::string profileUID = profile->GetUID();
         wingProfiles << profileUID.c_str();
     }
 
@@ -561,14 +560,10 @@ QString TIGLViewerDocument::dlgGetRotorProfileSelection()
 
     // Initialize wing list
     tigl::CCPACSConfiguration& config = GetConfiguration();
-    int profileCount = config.GetWingProfileCount();
-    for (int i = 1; i <= profileCount; i++) {
-        tigl::CCPACSWingProfile& profile = config.GetWingProfile(i);
-        if (profile.IsRotorProfile()) {
-            std::string profileUID = profile.GetUID();
-            std::string name     = profile.GetName();
-            wingProfiles << profileUID.c_str();
-        }
+    std::vector<tigl::unique_ptr<tigl::generated::CPACSProfileGeometry> >& airfoils = config.GetRotorProfiles().GetRotorAirfoils();
+    for (int i = 0; i < airfoils.size(); i++) {
+        tigl::generated::CPACSProfileGeometry* profile = airfoils.at(i).get();
+        wingProfiles << profile->GetUID().c_str();
     }
 
     QString choice = QInputDialog::getItem(app, tr("Select Rotor Profile"), tr("Available Rotor Profiles:"), wingProfiles, 0, false, &ok);
@@ -779,7 +774,7 @@ void TIGLViewerDocument::drawAllFuselagesAndWings( )
         }
     }
     catch(tigl::CTiglError& err) {
-        displayError(err.getError());
+        displayError(err.what());
     }
 }
 
@@ -793,7 +788,7 @@ void TIGLViewerDocument::drawWingProfiles()
         drawAirfoil(profile);
     }
     catch (tigl::CTiglError& ex) {
-        std::cerr << ex.getError() << std::endl;
+        displayError(ex.what());
     }
 }
 
@@ -806,7 +801,7 @@ void TIGLViewerDocument::drawWingOverlayProfilePoints()
         drawWingOverlayProfilePoints(wing);
     }
     catch (tigl::CTiglError& ex) {
-        std::cerr << ex.getError() << std::endl;
+        displayError(ex.what());
     }
 }
 
@@ -881,7 +876,7 @@ void TIGLViewerDocument::drawFuselageProfiles()
               text.str("");
             }
             catch (tigl::CTiglError& ex) {
-              std::cerr << ex.getError() << std::endl;
+              displayError(ex.what());
             }
         }
     }
@@ -919,7 +914,7 @@ void TIGLViewerDocument::drawWing()
         drawWing(wing);
     }
     catch (tigl::CTiglError& ex) {
-        std::cerr << ex.getError() << std::endl;
+        displayError(ex.what());
     }
 }
 
@@ -953,7 +948,7 @@ void TIGLViewerDocument::drawWingTriangulation()
         drawWingTriangulation(wing);
     }
     catch (tigl::CTiglError& ex) {
-        std::cerr << ex.getError() << std::endl;
+        displayError(ex.what());
     }
 }
 
@@ -987,7 +982,7 @@ void TIGLViewerDocument::drawWingSamplePoints()
         drawWingSamplePoints(wing);
         }
     catch (tigl::CTiglError& ex) {
-        std::cerr << ex.getError() << std::endl;
+        displayError(ex.what());
     }
 }
 
@@ -1574,7 +1569,7 @@ void TIGLViewerDocument::exportFusedConfigBRep()
         BRepTools::Write(shape, fileName.toStdString().c_str());
     }
     catch(tigl::CTiglError & error){
-        displayError(error.getError(), "Error in BRep export");
+        displayError(error.what(), "Error in BRep export");
     }
     catch(...){
         displayError("Unknown Exception during computation of fused aircraft.", "Error in BRep export");
@@ -1721,7 +1716,7 @@ void TIGLViewerDocument::drawFusedWing()
         drawFusedWing(wing);
     }
     catch (tigl::CTiglError& ex) {
-        std::cerr << ex.getError() << std::endl;
+        displayError(ex.what());
     }
 }
 
@@ -1799,10 +1794,10 @@ void TIGLViewerDocument::drawFusedAircraft()
         }
     }
     catch(tigl::CTiglError & error){
-        std::cerr << error.getError() << std::endl;
+        displayError(error.what());
     }
     catch(...){
-        std::cerr << "Unknown Exception" << std::endl;
+        displayError("Unknown Exception");
     }
 }
 
@@ -1928,7 +1923,7 @@ void TIGLViewerDocument::drawWingShells()
         drawWingShells(wing);
     }
     catch (tigl::CTiglError& ex) {
-        std::cerr << ex.getError() << std::endl;
+        displayError(ex.what());
     }
 }
 
@@ -2049,7 +2044,7 @@ void TIGLViewerDocument::drawComponent()
             app->getScene()->displayShape(shape);
         }
         catch(tigl::CTiglError& err) {
-            displayError(err.getError());
+            displayError(err.what());
         }
         catch(...) {
             displayError("An unknown error occured. Sorry!");
@@ -2065,7 +2060,7 @@ void TIGLViewerDocument::drawRotorProfiles()
         drawAirfoil(profile);
     }
     catch (tigl::CTiglError& ex) {
-        std::cerr << ex.getError() << std::endl;
+        displayError(ex.what());
     }
 }
 
@@ -2077,7 +2072,7 @@ void TIGLViewerDocument::drawRotorBladeOverlayProfilePoints()
         drawWingOverlayProfilePoints(wing);
     }
     catch (tigl::CTiglError& ex) {
-        std::cerr << ex.getError() << std::endl;
+        displayError(ex.what());
     }
 }
 
@@ -2102,7 +2097,7 @@ void TIGLViewerDocument::drawRotorBlade()
         drawWing(wing);
     }
     catch (tigl::CTiglError& ex) {
-        std::cerr << ex.getError() << std::endl;
+        displayError(ex.what());
     }
 }
 
@@ -2114,7 +2109,7 @@ void TIGLViewerDocument::drawRotorBladeTriangulation()
         drawWingTriangulation(wing);
     }
     catch (tigl::CTiglError& ex) {
-        std::cerr << ex.getError() << std::endl;
+        displayError(ex.what());
     }
 }
 
@@ -2126,7 +2121,7 @@ void TIGLViewerDocument::drawRotorBladeSamplePoints()
         drawWingSamplePoints(wing);
     }
     catch (tigl::CTiglError& ex) {
-        std::cerr << ex.getError() << std::endl;
+        displayError(ex.what());
     }
 }
 
@@ -2138,7 +2133,7 @@ void TIGLViewerDocument::drawFusedRotorBlade()
         drawFusedWing(wing);
     }
     catch (tigl::CTiglError& ex) {
-        std::cerr << ex.getError() << std::endl;
+        displayError(ex.what());
     }
 }
 
@@ -2183,7 +2178,7 @@ void TIGLViewerDocument::drawRotorBladeShells()
         drawWingShells(wing);
     }
     catch (tigl::CTiglError& ex) {
-        std::cerr << ex.getError() << std::endl;
+        displayError(ex.what());
     }
 }
 
@@ -2348,7 +2343,7 @@ void TIGLViewerDocument::drawAirfoil(tigl::CCPACSWingProfile& profile)
                 text.str("");
             }
             catch (tigl::CTiglError& ex) {
-                std::cerr << ex.getError() << std::endl;
+                displayError(ex.what());
             }
 
             try {
@@ -2359,7 +2354,7 @@ void TIGLViewerDocument::drawAirfoil(tigl::CCPACSWingProfile& profile)
                 text.str("");
             }
             catch (tigl::CTiglError& ex) {
-                std::cerr << ex.getError() << std::endl;
+                displayError(ex.what());
             }
 
             try {
@@ -2370,7 +2365,7 @@ void TIGLViewerDocument::drawAirfoil(tigl::CCPACSWingProfile& profile)
                 text.str("");
             }
             catch (tigl::CTiglError& ex) {
-                std::cerr << ex.getError() << std::endl;
+                displayError(ex.what());
             }
         }
     }

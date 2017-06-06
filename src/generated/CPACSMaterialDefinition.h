@@ -46,6 +46,8 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
+            TIGL_EXPORT bool ValidateChoices() const;
+            
             TIGL_EXPORT virtual const boost::optional<std::string>& GetCompositeUID_choice1() const;
             TIGL_EXPORT virtual void SetCompositeUID_choice1(const std::string& value);
             TIGL_EXPORT virtual void SetCompositeUID_choice1(const boost::optional<std::string>& value);

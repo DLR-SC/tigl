@@ -33,6 +33,9 @@ namespace tigl
             // read element compositeUID
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/compositeUID")) {
                 m_compositeUID_choice1 = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/compositeUID");
+                if (m_compositeUID_choice1->empty()) {
+                    LOG(ERROR) << "Optional element compositeUID is present but empty at xpath " << xpath;
+                }
             }
             
             // read element orthotropyDirection
@@ -48,6 +51,9 @@ namespace tigl
             // read element materialUID
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/materialUID")) {
                 m_materialUID_choice2 = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/materialUID");
+                if (m_materialUID_choice2->empty()) {
+                    LOG(ERROR) << "Optional element materialUID is present but empty at xpath " << xpath;
+                }
             }
             
             // read element thickness
@@ -55,6 +61,9 @@ namespace tigl
                 m_thickness_choice2 = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/thickness");
             }
             
+            if (!ValidateChoices()) {
+                LOG(ERROR) << "Invalid choice configuration at xpath " << xpath;
+            }
         }
         
         void CPACSMaterialDefinition::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
@@ -109,6 +118,11 @@ namespace tigl
                 }
             }
             
+        }
+        
+        bool CPACSMaterialDefinition::ValidateChoices() const
+        {
+            return ((m_compositeUID_choice1.is_initialized()) || (m_materialUID_choice2.is_initialized()));
         }
         
         const boost::optional<std::string>& CPACSMaterialDefinition::GetCompositeUID_choice1() const

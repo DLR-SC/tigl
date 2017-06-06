@@ -27,7 +27,10 @@ namespace tigl
     namespace generated
     {
         CPACSMaterial::CPACSMaterial(CTiglUIDManager* uidMgr) :
-            m_uidMgr(uidMgr) {}
+            m_uidMgr(uidMgr), 
+            m_rho(0), 
+            m_k11(0), 
+            m_k12(0) {}
         
         CPACSMaterial::~CPACSMaterial()
         {
@@ -49,11 +52,17 @@ namespace tigl
             // read attribute uID
             if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
                 m_uID = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
+                if (m_uID->empty()) {
+                    LOG(ERROR) << "Optional attribute uID is present but empty at xpath " << xpath;
+                }
             }
             
             // read element name
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/name")) {
                 m_name = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
+                if (m_name.empty()) {
+                    LOG(ERROR) << "Required element name is empty at xpath " << xpath;
+                }
             }
             else {
                 LOG(ERROR) << "Required element name is missing at xpath " << xpath;
@@ -62,6 +71,9 @@ namespace tigl
             // read element description
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/description")) {
                 m_description = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
+                if (m_description->empty()) {
+                    LOG(ERROR) << "Optional element description is present but empty at xpath " << xpath;
+                }
             }
             
             // read element rho
@@ -249,6 +261,9 @@ namespace tigl
             }
             
             if (m_uidMgr && m_uID) m_uidMgr->RegisterObject(*m_uID, *this);
+            if (!ValidateChoices()) {
+                LOG(ERROR) << "Invalid choice configuration at xpath " << xpath;
+            }
         }
         
         void CPACSMaterial::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
@@ -601,6 +616,11 @@ namespace tigl
                 }
             }
             
+        }
+        
+        bool CPACSMaterial::ValidateChoices() const
+        {
+            return ((m_sig11_choice1.is_initialized() && m_tau12_choice1.is_initialized()) || (m_k22_choice2.is_initialized() && m_k23_choice2.is_initialized() && m_k66_choice2.is_initialized() && m_sig11t_choice2.is_initialized() && m_sig11c_choice2.is_initialized() && m_sig22t_choice2.is_initialized() && m_sig22c_choice2.is_initialized() && m_tau12_choice2.is_initialized() && m_tau23_choice2.is_initialized()) || (m_k13_choice3.is_initialized() && m_k22_choice3.is_initialized() && m_k23_choice3.is_initialized() && m_k33_choice3.is_initialized() && m_k44_choice3.is_initialized() && m_k55_choice3.is_initialized() && m_k66_choice3.is_initialized() && m_sig11t_choice3.is_initialized() && m_sig11c_choice3.is_initialized() && m_sig22t_choice3.is_initialized() && m_sig22c_choice3.is_initialized() && m_sig33t_choice3.is_initialized() && m_sig33c_choice3.is_initialized() && m_tau12_choice3.is_initialized() && m_tau13_choice3.is_initialized() && m_tau23_choice3.is_initialized()));
         }
         
         const boost::optional<std::string>& CPACSMaterial::GetUID() const

@@ -34,16 +34,25 @@ namespace tigl
             // read element name
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/name")) {
                 m_name = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
+                if (m_name->empty()) {
+                    LOG(ERROR) << "Optional element name is present but empty at xpath " << xpath;
+                }
             }
             
             // read element description
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/description")) {
                 m_description = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
+                if (m_description->empty()) {
+                    LOG(ERROR) << "Optional element description is present but empty at xpath " << xpath;
+                }
             }
             
             // read element materialLaw
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/materialLaw")) {
                 m_materialLaw = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/materialLaw");
+                if (m_materialLaw->empty()) {
+                    LOG(ERROR) << "Optional element materialLaw is present but empty at xpath " << xpath;
+                }
             }
             
             // read element plasticEliminationStrain
@@ -53,7 +62,7 @@ namespace tigl
             
             // read element plasticityCurvePoint
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/plasticityCurvePoint")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/plasticityCurvePoint", m_plasticityCurvePoint_choice1s);
+                tixihelper::TixiReadElements(tixiHandle, xpath + "/plasticityCurvePoint", m_plasticityCurvePoints_choice1);
             }
             
             // read element initialEquivalentShearStrain
@@ -81,6 +90,9 @@ namespace tigl
                 m_ultimateDamage_choice2 = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/ultimateDamage");
             }
             
+            if (!ValidateChoices()) {
+                LOG(ERROR) << "Invalid choice configuration at xpath " << xpath;
+            }
         }
         
         void CPACSPostFailure::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
@@ -126,7 +138,7 @@ namespace tigl
             }
             
             // write element plasticityCurvePoint
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/plasticityCurvePoint", m_plasticityCurvePoint_choice1s);
+            tixihelper::TixiSaveElements(tixiHandle, xpath + "/plasticityCurvePoint", m_plasticityCurvePoints_choice1);
             
             // write element initialEquivalentShearStrain
             if (m_initialEquivalentShearStrain_choice2) {
@@ -178,6 +190,11 @@ namespace tigl
                 }
             }
             
+        }
+        
+        bool CPACSPostFailure::ValidateChoices() const
+        {
+            return ((m_initialEquivalentShearStrain_choice2.is_initialized() && m_intermediateEquivalentShearStrain_choice2.is_initialized() && m_ultimateEquivalentShearStrain_choice2.is_initialized() && m_intermediateDamage_choice2.is_initialized() && m_ultimateDamage_choice2.is_initialized()));
         }
         
         const boost::optional<std::string>& CPACSPostFailure::GetName() const
@@ -240,14 +257,14 @@ namespace tigl
             m_plasticEliminationStrain_choice1 = value;
         }
         
-        const std::vector<unique_ptr<CPACSPlasticityCurvePoint> >& CPACSPostFailure::GetPlasticityCurvePoint_choice1s() const
+        const std::vector<unique_ptr<CPACSPlasticityCurvePoint> >& CPACSPostFailure::GetPlasticityCurvePoints_choice1() const
         {
-            return m_plasticityCurvePoint_choice1s;
+            return m_plasticityCurvePoints_choice1;
         }
         
-        std::vector<unique_ptr<CPACSPlasticityCurvePoint> >& CPACSPostFailure::GetPlasticityCurvePoint_choice1s()
+        std::vector<unique_ptr<CPACSPlasticityCurvePoint> >& CPACSPostFailure::GetPlasticityCurvePoints_choice1()
         {
-            return m_plasticityCurvePoint_choice1s;
+            return m_plasticityCurvePoints_choice1;
         }
         
         const boost::optional<double>& CPACSPostFailure::GetInitialEquivalentShearStrain_choice2() const

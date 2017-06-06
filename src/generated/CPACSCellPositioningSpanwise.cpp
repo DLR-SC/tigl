@@ -59,8 +59,14 @@ namespace tigl
             // read element ribDefinitionUID
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/ribDefinitionUID")) {
                 m_ribDefinitionUID_choice2 = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/ribDefinitionUID");
+                if (m_ribDefinitionUID_choice2->empty()) {
+                    LOG(ERROR) << "Optional element ribDefinitionUID is present but empty at xpath " << xpath;
+                }
             }
             
+            if (!ValidateChoices()) {
+                LOG(ERROR) << "Invalid choice configuration at xpath " << xpath;
+            }
         }
         
         void CPACSCellPositioningSpanwise::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
@@ -105,6 +111,11 @@ namespace tigl
                 }
             }
             
+        }
+        
+        bool CPACSCellPositioningSpanwise::ValidateChoices() const
+        {
+            return ((m_eta1_choice1.is_initialized() && m_eta2_choice1.is_initialized()) || (m_ribNumber_choice2.is_initialized() && m_ribDefinitionUID_choice2.is_initialized()));
         }
         
         const boost::optional<double>& CPACSCellPositioningSpanwise::GetEta1_choice1() const

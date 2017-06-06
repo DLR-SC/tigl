@@ -41,6 +41,9 @@ namespace tigl
             // read element aircraftModelUID
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/aircraftModelUID")) {
                 m_aircraftModelUID = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/aircraftModelUID");
+                if (m_aircraftModelUID.empty()) {
+                    LOG(ERROR) << "Required element aircraftModelUID is empty at xpath " << xpath;
+                }
             }
             else {
                 LOG(ERROR) << "Required element aircraftModelUID is missing at xpath " << xpath;

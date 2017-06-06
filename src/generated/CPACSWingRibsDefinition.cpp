@@ -60,11 +60,17 @@ namespace tigl
             // read attribute uID
             if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
                 m_uID = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
+                if (m_uID->empty()) {
+                    LOG(ERROR) << "Optional attribute uID is present but empty at xpath " << xpath;
+                }
             }
             
             // read element name
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/name")) {
                 m_name = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
+                if (m_name.empty()) {
+                    LOG(ERROR) << "Required element name is empty at xpath " << xpath;
+                }
             }
             else {
                 LOG(ERROR) << "Required element name is missing at xpath " << xpath;
@@ -73,6 +79,9 @@ namespace tigl
             // read element description
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/description")) {
                 m_description = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
+                if (m_description->empty()) {
+                    LOG(ERROR) << "Optional element description is present but empty at xpath " << xpath;
+                }
             }
             
             // read element ribCrossSection
@@ -91,9 +100,6 @@ namespace tigl
                 } catch(const std::exception& e) {
                     LOG(ERROR) << "Failed to read ribsPositioning at xpath " << xpath << ": " << e.what();
                     m_ribsPositioning_choice1 = boost::none;
-                } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read ribsPositioning at xpath " << xpath << ": " << e.getError();
-                    m_ribsPositioning_choice1 = boost::none;
                 }
             }
             
@@ -105,13 +111,13 @@ namespace tigl
                 } catch(const std::exception& e) {
                     LOG(ERROR) << "Failed to read ribExplicitPositioning at xpath " << xpath << ": " << e.what();
                     m_ribExplicitPositioning_choice2 = boost::none;
-                } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read ribExplicitPositioning at xpath " << xpath << ": " << e.getError();
-                    m_ribExplicitPositioning_choice2 = boost::none;
                 }
             }
             
             if (m_uidMgr && m_uID) m_uidMgr->RegisterObject(*m_uID, *this);
+            if (!ValidateChoices()) {
+                LOG(ERROR) << "Invalid choice configuration at xpath " << xpath;
+            }
         }
         
         void CPACSWingRibsDefinition::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
@@ -163,6 +169,11 @@ namespace tigl
                 }
             }
             
+        }
+        
+        bool CPACSWingRibsDefinition::ValidateChoices() const
+        {
+            return ((m_ribsPositioning_choice1.is_initialized()) || (m_ribExplicitPositioning_choice2.is_initialized()));
         }
         
         const boost::optional<std::string>& CPACSWingRibsDefinition::GetUID() const

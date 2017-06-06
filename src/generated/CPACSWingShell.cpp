@@ -59,6 +59,9 @@ namespace tigl
             // read attribute uID
             if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
                 m_uID = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
+                if (m_uID->empty()) {
+                    LOG(ERROR) << "Optional attribute uID is present but empty at xpath " << xpath;
+                }
             }
             
             // read element skin
@@ -76,9 +79,6 @@ namespace tigl
                     m_cells->ReadCPACS(tixiHandle, xpath + "/cells");
                 } catch(const std::exception& e) {
                     LOG(ERROR) << "Failed to read cells at xpath " << xpath << ": " << e.what();
-                    m_cells = boost::none;
-                } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read cells at xpath " << xpath << ": " << e.getError();
                     m_cells = boost::none;
                 }
             }

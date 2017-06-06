@@ -59,16 +59,25 @@ namespace tigl
             // read attribute uID
             if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
                 m_uID = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
+                if (m_uID->empty()) {
+                    LOG(ERROR) << "Optional attribute uID is present but empty at xpath " << xpath;
+                }
             }
             
             // read element name
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/name")) {
                 m_name = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
+                if (m_name->empty()) {
+                    LOG(ERROR) << "Optional element name is present but empty at xpath " << xpath;
+                }
             }
             
             // read element description
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/description")) {
                 m_description = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
+                if (m_description->empty()) {
+                    LOG(ERROR) << "Optional element description is present but empty at xpath " << xpath;
+                }
             }
             
             // read element hinges
@@ -79,15 +88,15 @@ namespace tigl
                 } catch(const std::exception& e) {
                     LOG(ERROR) << "Failed to read hinges at xpath " << xpath << ": " << e.what();
                     m_hinges = boost::none;
-                } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read hinges at xpath " << xpath << ": " << e.getError();
-                    m_hinges = boost::none;
                 }
             }
             
             // read element rotorBladeUID
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/rotorBladeUID")) {
                 m_rotorBladeUID = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/rotorBladeUID");
+                if (m_rotorBladeUID.empty()) {
+                    LOG(ERROR) << "Required element rotorBladeUID is empty at xpath " << xpath;
+                }
             }
             else {
                 LOG(ERROR) << "Required element rotorBladeUID is missing at xpath " << xpath;
@@ -101,9 +110,6 @@ namespace tigl
                 } catch(const std::exception& e) {
                     LOG(ERROR) << "Failed to read azimuthAngles at xpath " << xpath << ": " << e.what();
                     m_azimuthAngles_choice1 = boost::none;
-                } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read azimuthAngles at xpath " << xpath << ": " << e.getError();
-                    m_azimuthAngles_choice1 = boost::none;
                 }
             }
             
@@ -113,6 +119,9 @@ namespace tigl
             }
             
             if (m_uidMgr && m_uID) m_uidMgr->RegisterObject(*m_uID, *this);
+            if (!ValidateChoices()) {
+                LOG(ERROR) << "Invalid choice configuration at xpath " << xpath;
+            }
         }
         
         void CPACSRotorBladeAttachment::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
@@ -180,6 +189,11 @@ namespace tigl
                 }
             }
             
+        }
+        
+        bool CPACSRotorBladeAttachment::ValidateChoices() const
+        {
+            return ((m_azimuthAngles_choice1.is_initialized()) || (m_numberOfBlades_choice2.is_initialized()));
         }
         
         const boost::optional<std::string>& CPACSRotorBladeAttachment::GetUID() const

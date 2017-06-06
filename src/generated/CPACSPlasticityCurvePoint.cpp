@@ -24,7 +24,9 @@ namespace tigl
 {
     namespace generated
     {
-        CPACSPlasticityCurvePoint::CPACSPlasticityCurvePoint() {}
+        CPACSPlasticityCurvePoint::CPACSPlasticityCurvePoint() :
+            m_tangentModulus(0), 
+            m_trueStress(0) {}
         
         CPACSPlasticityCurvePoint::~CPACSPlasticityCurvePoint() {}
         

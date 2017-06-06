@@ -48,6 +48,9 @@ namespace tigl
             // read attribute uID
             if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
                 m_uID = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
+                if (m_uID.empty()) {
+                    LOG(ERROR) << "Required attribute uID is empty at xpath " << xpath;
+                }
             }
             else {
                 LOG(ERROR) << "Required attribute uID is missing at xpath " << xpath;
@@ -56,6 +59,9 @@ namespace tigl
             // read element name
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/name")) {
                 m_name = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
+                if (m_name.empty()) {
+                    LOG(ERROR) << "Required element name is empty at xpath " << xpath;
+                }
             }
             else {
                 LOG(ERROR) << "Required element name is missing at xpath " << xpath;
@@ -64,6 +70,9 @@ namespace tigl
             // read element description
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/description")) {
                 m_description = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
+                if (m_description->empty()) {
+                    LOG(ERROR) << "Optional element description is present but empty at xpath " << xpath;
+                }
             }
             
             // read element fuselages
@@ -73,9 +82,6 @@ namespace tigl
                     m_fuselages->ReadCPACS(tixiHandle, xpath + "/fuselages");
                 } catch(const std::exception& e) {
                     LOG(ERROR) << "Failed to read fuselages at xpath " << xpath << ": " << e.what();
-                    m_fuselages = boost::none;
-                } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read fuselages at xpath " << xpath << ": " << e.getError();
                     m_fuselages = boost::none;
                 }
             }
@@ -88,9 +94,6 @@ namespace tigl
                 } catch(const std::exception& e) {
                     LOG(ERROR) << "Failed to read wings at xpath " << xpath << ": " << e.what();
                     m_wings = boost::none;
-                } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read wings at xpath " << xpath << ": " << e.getError();
-                    m_wings = boost::none;
                 }
             }
             
@@ -102,9 +105,6 @@ namespace tigl
                 } catch(const std::exception& e) {
                     LOG(ERROR) << "Failed to read rotors at xpath " << xpath << ": " << e.what();
                     m_rotors = boost::none;
-                } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read rotors at xpath " << xpath << ": " << e.getError();
-                    m_rotors = boost::none;
                 }
             }
             
@@ -115,9 +115,6 @@ namespace tigl
                     m_rotorBlades->ReadCPACS(tixiHandle, xpath + "/rotorBlades");
                 } catch(const std::exception& e) {
                     LOG(ERROR) << "Failed to read rotorBlades at xpath " << xpath << ": " << e.what();
-                    m_rotorBlades = boost::none;
-                } catch(const CTiglError& e) {
-                    LOG(ERROR) << "Failed to read rotorBlades at xpath " << xpath << ": " << e.getError();
                     m_rotorBlades = boost::none;
                 }
             }

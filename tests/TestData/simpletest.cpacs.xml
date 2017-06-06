@@ -12,7 +12,6 @@
     <aircraft>
       <model uID="Cpacs2Test">
         <name>Cpacs2Test</name>
-        <description></description>
         <reference>
           <area>1</area>
           <length>1</length>

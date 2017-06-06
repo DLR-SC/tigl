@@ -44,6 +44,9 @@ namespace tigl
             // read element sparUID
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/sparUID")) {
                 m_sparUID_choice1 = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/sparUID");
+                if (m_sparUID_choice1->empty()) {
+                    LOG(ERROR) << "Optional element sparUID is present but empty at xpath " << xpath;
+                }
             }
             
             // read element xsi1
@@ -56,6 +59,9 @@ namespace tigl
                 m_xsi2_choice2 = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/xsi2");
             }
             
+            if (!ValidateChoices()) {
+                LOG(ERROR) << "Invalid choice configuration at xpath " << xpath;
+            }
         }
         
         void CPACSCellPositioningChordwise::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
@@ -90,6 +96,11 @@ namespace tigl
                 }
             }
             
+        }
+        
+        bool CPACSCellPositioningChordwise::ValidateChoices() const
+        {
+            return ((m_sparUID_choice1.is_initialized()) || (m_xsi1_choice2.is_initialized() && m_xsi2_choice2.is_initialized()));
         }
         
         const boost::optional<std::string>& CPACSCellPositioningChordwise::GetSparUID_choice1() const

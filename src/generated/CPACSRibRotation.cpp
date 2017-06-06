@@ -26,7 +26,8 @@ namespace tigl
 {
     namespace generated
     {
-        CPACSRibRotation::CPACSRibRotation(CCPACSWingRibsPositioning* parent)
+        CPACSRibRotation::CPACSRibRotation(CCPACSWingRibsPositioning* parent) :
+            m_z(0)
         {
             //assert(parent != NULL);
             m_parent = parent;

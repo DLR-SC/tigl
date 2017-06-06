@@ -1,7 +1,6 @@
 <cpacs>
     <header>
         <name>Test File for Wing Segment Get Point from Wing Component Segment Eta-Xsi-Coordinates</name>
-        <description></description>
         <creator>Tobias Stollenwerk</creator>
         <timestamp>2014-06-10T00:00:00</timestamp>
         <version>0.2</version>
@@ -10,13 +9,10 @@
     <vehicles>
         <aircraft>
             <model uID="Aircraft1">
-                <name></name>
-                <description></description>
+                <name>Aircraft</name>
                 <wings>
                     <wing uID="Aircraft1_Wing1" symmetry="x-z-plane">
-                        <name></name>
-                        <description></description>
-                        <parentUID isLink="True">Aircraft1_Fuselage1</parentUID>
+                        <name>Wing 1</name>
                         <transformation uID="Aircraft1_Wing1_Transf">
                             <scaling uID="Aircraft1_Wing1_Transf_Sca">
                                 <x>1.0</x>
@@ -37,7 +33,6 @@
                         <sections>
                             <section uID="Aircraft1_Wing1_Sec1">
                                 <name>Aircraft1_Wing1_Sec1</name>
-                                <description></description>
                                 <transformation uID="Aircraft1_Wing1_Sec1_Transf">
                                     <scaling uID="Aircraft1_Wing1_Sec1_Transf_Sca">
                                         <x>6.0</x>
@@ -82,7 +77,6 @@
                             </section>
                             <section uID="Aircraft1_Wing1_Sec2">
                                 <name>Aircraft1_Wing1_Sec2</name>
-                                <description></description>
                                 <transformation uID="Aircraft1_Wing1_Sec2_Transf">
                                     <scaling uID="Aircraft1_Wing1_Sec2_Transf_Sca">
                                         <x>1.0</x>
@@ -127,7 +121,6 @@
                             </section>
                             <section uID="Aircraft1_Wing1_Sec3">
                                 <name>Aircraft1_Wing1_Sec3</name>
-                                <description/>
                                 <transformation uID="Aircraft1_Wing1_Sec3_Transf">
                                     <scaling uID="Aircraft1_Wing1_Sec3_Transf_Sca">
                                         <x>1.0</x>
@@ -172,7 +165,6 @@
                             </section>
                             <section uID="Aircraft1_Wing1_Sec4">
                                 <name>Aircraft1_Wing1_Sec4</name>
-                                <description/>
                                 <transformation uID="Aircraft1_Wing1_Sec4_Transf">
                                     <scaling uID="Aircraft1_Wing1_Sec4_Transf_Sca">
                                         <x>1.0</x>

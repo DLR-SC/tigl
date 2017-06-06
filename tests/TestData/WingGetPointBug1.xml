@@ -12,8 +12,7 @@
     <vehicles>
         <aircraft>
             <model uID = "WingmodelUID">
-                <name>wing for CPACS 2.0</name>
-                <description></description>
+                <name>wing for CPACS 3.0</name>
                 <reference>
                     <area></area>
                     <length></length>

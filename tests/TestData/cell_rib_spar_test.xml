@@ -11,12 +11,10 @@
   <vehicles>
     <aircraft>
       <model uID="model">
-        <name/>
-        <description/>
+        <name>Name</name>
         <wings>
           <wing uID="Wing">
             <name>Wing</name>
-            <description/>
             <transformation>
               <scaling>
                 <x>1</x>
@@ -37,7 +35,6 @@
             <sections>
               <section uID="Wing_section1">
                 <name>Wing_section1</name>
-                <description/>
                 <transformation>
                   <scaling>
                     <x>1</x>
@@ -58,7 +55,6 @@
                 <elements>
                   <element uID="Wing_section1_element1">
                     <name>Wing_section1_element1</name>
-                    <description/>
                     <airfoilUID>NACA0012</airfoilUID>
                     <transformation>
                       <scaling>
@@ -82,7 +78,6 @@
               </section>
               <section uID="Wing_section2">
                 <name>Wing_section2</name>
-                <description/>
                 <transformation>
                   <scaling>
                     <x>1</x>
@@ -103,7 +98,6 @@
                 <elements>
                   <element uID="Wing_section2_element1">
                     <name>Wing_section2_element1</name>
-                    <description/>
                     <airfoilUID>NACA0012</airfoilUID>
                     <transformation>
                       <scaling>
@@ -129,7 +123,6 @@
             <segments>
               <segment uID="Wing_segment1">
                 <name>Wing_segment1</name>
-                <description/>
                 <fromElementUID>Wing_section1_element1</fromElementUID>
                 <toElementUID>Wing_section2_element1</toElementUID>
               </segment>
@@ -258,7 +251,6 @@
       <wingAirfoils>
         <wingAirfoil uID="NACA0012">
           <name>NACA0012</name>
-          <description/>
           <pointList>
             <x mapType="vector">1;0.955135;0.910361;0.865767;0.821443;0.777479;0.733963;0.690983;0.648625;0.606975;0.566116;0.526131;0.487101;0.449103;0.412215;0.37651;0.342061;0.308937;0.277205;0.246929;0.218169;0.190983;0.165427;0.141551;0.119404;0.0990311;0.0804722;0.0637651;0.0489435;0.0360371;0.0250721;0.0160704;0.00905024;0.00402571;0.00100693;0;0.00100693;0.00402571;0.00905024;0.0160704;0.0250721;0.0360371;0.0489435;0.0637651;0.0804722;0.0990311;0.119404;0.141551;0.165427;0.190983;0.218169;0.246929;0.277205;0.308937;0.342061;0.37651;0.412215;0.449103;0.487101;0.526131;0.566116;0.606975;0.648625;0.690983;0.733963;0.777479;0.821443;0.865767;0.910361;0.955135;1</x>
             <y mapType="vector">0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0</y>
