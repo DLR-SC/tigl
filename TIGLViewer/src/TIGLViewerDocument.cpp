@@ -50,6 +50,8 @@
 #include <BRepBndLib.hxx>
 
 // TIGLViewer includes
+#include "UniquePtr.h"
+#include "CPACSProfileGeometry.h"
 #include "TIGLViewerInternal.h"
 #include "CCPACSConfigurationManager.h"
 #include "CCPACSFarField.h"
@@ -416,14 +418,11 @@ QString TIGLViewerDocument::dlgGetWingProfileSelection()
 
     // Initialize wing list
     tigl::CCPACSConfiguration& config = GetConfiguration();
-    int profileCount = config.GetWingProfileCount();
-    for (int i = 1; i <= profileCount; i++) {
-        tigl::CCPACSWingProfile& profile = config.GetWingProfile(i);
-        if (profile.IsRotorProfile()) {
-            continue;
-        }
-        std::string profileUID = profile.GetUID();
-        std::string name     = profile.GetName();
+    std::vector<tigl::unique_ptr<tigl::generated::CPACSProfileGeometry> >& airfoils = config.GetWingProfiles().GetWingAirfoils();
+    for (int i = 0; i < airfoils.size(); i++) {
+        tigl::generated::CPACSProfileGeometry* profile = airfoils.at(i).get();
+
+        std::string profileUID = profile->GetUID();
         wingProfiles << profileUID.c_str();
     }
 
@@ -561,14 +560,10 @@ QString TIGLViewerDocument::dlgGetRotorProfileSelection()
 
     // Initialize wing list
     tigl::CCPACSConfiguration& config = GetConfiguration();
-    int profileCount = config.GetWingProfileCount();
-    for (int i = 1; i <= profileCount; i++) {
-        tigl::CCPACSWingProfile& profile = config.GetWingProfile(i);
-        if (profile.IsRotorProfile()) {
-            std::string profileUID = profile.GetUID();
-            std::string name     = profile.GetName();
-            wingProfiles << profileUID.c_str();
-        }
+    std::vector<tigl::unique_ptr<tigl::generated::CPACSProfileGeometry> >& airfoils = config.GetRotorProfiles().GetRotorAirfoils();
+    for (int i = 0; i < airfoils.size(); i++) {
+        tigl::generated::CPACSProfileGeometry* profile = airfoils.at(i).get();
+        wingProfiles << profile->GetUID().c_str();
     }
 
     QString choice = QInputDialog::getItem(app, tr("Select Rotor Profile"), tr("Available Rotor Profiles:"), wingProfiles, 0, false, &ok);
