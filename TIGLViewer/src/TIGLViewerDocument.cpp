@@ -1957,31 +1957,49 @@ void TIGLViewerDocument::drawWingStructure()
         return;
     }
 
-    START_COMMAND();
+    try {
 
-    app->getScene()->deleteAllObjects();
+        START_COMMAND();
 
-    // display component segment shape with transparency
-    const tigl::CTiglTransformation trafo = cs->GetWing().GetTransformationMatrix();
-    TopoDS_Shape loft = trafo.Transform(cs->GetLoft()->Shape());
-    app->getScene()->displayShape(loft, Quantity_NOC_ShapeCol, 0.5);
+        tigl::CCPACSWingComponentSegment& cs = GetConfiguration().GetUIDManager()
+                .ResolveObject<tigl::CCPACSWingComponentSegment>(csUid.toStdString());
 
-    const tigl::CCPACSWingCSStructure& structure = *cs->GetStructure();
+        if (!cs.GetStructure()) {
+            displayError("This wing has no structure defined.", "Information");
+            return;
+        }
 
-    // draw spars
-    for (int ispar = 1; ispar <= structure.GetSparSegmentCount(); ++ispar) {
-        const tigl::CCPACSWingSparSegment& spar = structure.GetSparSegment(ispar);
-        TopoDS_Shape sparGeom = spar.GetSparGeometry();
-        app->getScene()->displayShape(sparGeom, Quantity_NOC_RED);
+        app->getScene()->deleteAllObjects();
+
+        // display component segment shape with transparency
+        app->getScene()->displayShape(cs.GetLoft()->Shape(), Quantity_NOC_ShapeCol, 0.5);
+
+        const tigl::CCPACSWingCSStructure& structure = *cs.GetStructure();
+
+        // draw spars
+        for (int ispar = 1; ispar <= structure.GetSparSegmentCount(); ++ispar) {
+            const tigl::CCPACSWingSparSegment& spar = structure.GetSparSegment(ispar);
+            TopoDS_Shape sparGeom = spar.GetSparGeometry();
+            app->getScene()->displayShape(sparGeom, Quantity_NOC_RED);
+        }
+
+        // draw ribs
+        for (int irib = 1; irib <=structure.GetRibsDefinitionCount(); ++irib) {
+            const tigl::CCPACSWingRibsDefinition& rib = structure.GetRibsDefinition(irib);
+            TopoDS_Shape ribGeom = rib.GetRibsGeometry();
+            app->getScene()->displayShape(ribGeom, Quantity_NOC_RED);
+        }
+
     }
-
-    // draw ribs
-    for (int irib = 1; irib <=structure.GetRibsDefinitionCount(); ++irib) {
-        const tigl::CCPACSWingRibsDefinition& rib = structure.GetRibsDefinition(irib);
-        TopoDS_Shape ribGeom = rib.GetRibsGeometry();
-        app->getScene()->displayShape(ribGeom, Quantity_NOC_RED);
+    catch(tigl::CTiglError& err) {
+        displayError(QString("Error while computing the wing structure: \"%1\"").arg(err.getError()));
     }
-
+    catch(Standard_ConstructionError& err) {
+        displayError(QString("Error while computing the wing structure: \"%1\"").arg(err.GetMessageString()));
+    }
+    catch(...) {
+        displayError("Error while computing the wing structure.");
+    }
 
 }
 
@@ -2522,12 +2540,7 @@ void TIGLViewerDocument::drawWingComponentSegment(tigl::CCPACSWingComponentSegme
     START_COMMAND();
     app->getScene()->deleteAllObjects();
 
-    // the component segment shape is given in local wing coordinates.
-    // Move to global coordinates
-    const tigl::CTiglTransformation trafo = segment.GetWing().GetTransformationMatrix();
-    TopoDS_Shape loft = trafo.Transform(segment.GetLoft()->Shape());
-
-    app->getScene()->displayShape(loft);
+    app->getScene()->displayShape(segment.GetLoft()->Shape());
 }
 
 /*

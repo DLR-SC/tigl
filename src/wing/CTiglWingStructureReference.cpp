@@ -19,6 +19,8 @@
 //#include "CCPACSTrailingEdgeDevice.h"
 #include "CCPACSWingComponentSegment.h"
 #include "CCPACSWing.h"
+#include "CNamedShape.h"
+#include <BRepTools.hxx>
 
 
 namespace tigl
@@ -51,9 +53,35 @@ const boost::optional<CCPACSWingCSStructure>& CTiglWingStructureReference::GetSt
     DISPATCH(GetStructure())
 }
 
-PNamedShape CTiglWingStructureReference::GetLoft() const
+PNamedShape CTiglWingStructureReference::GetLoft(TiglCoordinateSystem reference) const
 {
-    DISPATCH(GetLoft())
+    PNamedShape loft;
+    switch (type) {
+        case ComponentSegmentType:
+            loft = componentSegment->GetLoft()->DeepCopy();
+            break;
+/*        case TrailingEdgeDeviceType:
+            loft = trailingEdgeDevice->GetLoft()->DeepCopy();
+            break;*/
+        default: throw CTiglError("Internal Error in CTiglWingStructureReference: unknown type passed to GetLoft method!");
+    }
+
+    // apply inverse wing transform to go to local coordinates
+    CTiglTransformation transform;
+
+    switch(reference) {
+    case WING_COORDINATE_SYSTEM:
+        // apply inverse wing transform to go to local coordinates
+        transform = GetWing().GetTransformation().getTransformationMatrix().Inverted();
+        loft->SetShape(transform.Transform(loft->Shape()));
+        break;
+    case GLOBAL_COORDINATE_SYSTEM:
+        break;
+    default:
+        throw CTiglError("Wrong coordinate system given in CTiglWingStructureReference::GetLoft");
+    }
+
+    return loft;
 }
 
 gp_Pnt CTiglWingStructureReference::GetPoint(double eta, double xsi, TiglCoordinateSystem reference) const
@@ -121,14 +149,64 @@ TopoDS_Shape CTiglWingStructureReference::GetMidplaneShape() const
     DISPATCH(GetMidplaneShape())
 }
 
-TopoDS_Shape CTiglWingStructureReference::GetUpperShape() const
+TopoDS_Shape CTiglWingStructureReference::GetUpperShape(TiglCoordinateSystem reference) const
 {
-    DISPATCH(GetUpperShape())
+    TopoDS_Shape loft;
+    switch (type) {
+        case ComponentSegmentType:
+            loft = componentSegment->GetUpperShape();
+            break;
+/*        case TrailingEdgeDeviceType:
+            loft = trailingEdgeDevice->GetUpperShape();
+            break;*/
+        default: throw CTiglError("Internal Error in CTiglWingStructureReference: unknown type passed to GetUpperShape method!");
+    }
+
+    CTiglTransformation transform;
+
+    switch(reference) {
+    case WING_COORDINATE_SYSTEM:
+        // apply inverse wing transform to go to local coordinates
+        transform = GetWing().GetTransformation().getTransformationMatrix().Inverted();
+        loft = transform.Transform(loft);
+        break;
+    case GLOBAL_COORDINATE_SYSTEM:
+        break;
+    default:
+        throw CTiglError("Wrong coordinate system given in CTiglWingStructureReference::GetUpperShape");
+    }
+
+    return loft;
 }
 
-TopoDS_Shape CTiglWingStructureReference::GetLowerShape() const
+TopoDS_Shape CTiglWingStructureReference::GetLowerShape(TiglCoordinateSystem reference) const
 {
-    DISPATCH(GetLowerShape())
+    TopoDS_Shape loft;
+    switch (type) {
+        case ComponentSegmentType:
+            loft = componentSegment->GetLowerShape();
+            break;
+/*        case TrailingEdgeDeviceType:
+            loft = trailingEdgeDevice->GetLowerShape();
+            break;*/
+        default: throw CTiglError("Internal Error in CTiglWingStructureReference: unknown type passed to GetLowerShape method!");
+    }
+
+    CTiglTransformation transform;
+
+    switch(reference) {
+    case WING_COORDINATE_SYSTEM:
+        // apply inverse wing transform to go to local coordinates
+        transform = GetWing().GetTransformation().getTransformationMatrix().Inverted();
+        loft = transform.Transform(loft);
+        break;
+    case GLOBAL_COORDINATE_SYSTEM:
+        break;
+    default:
+        throw CTiglError("Wrong coordinate system given in CTiglWingStructureReference::GetLowerShape");
+    }
+
+    return loft;
 }
 
 TopoDS_Face CTiglWingStructureReference::GetInnerFace() const

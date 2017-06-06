@@ -54,7 +54,7 @@ public:
     TIGL_EXPORT CCPACSWing& GetWing() const;
     TIGL_EXPORT boost::optional<CCPACSWingCSStructure>& GetStructure();
     TIGL_EXPORT const boost::optional<CCPACSWingCSStructure>& GetStructure() const;
-    TIGL_EXPORT PNamedShape GetLoft() const;
+    TIGL_EXPORT PNamedShape GetLoft(TiglCoordinateSystem reference = WING_COORDINATE_SYSTEM) const;
     TIGL_EXPORT gp_Pnt GetPoint(double eta, double xsi, TiglCoordinateSystem reference) const;
     TIGL_EXPORT double GetLeadingEdgeLength() const;
     TIGL_EXPORT double GetTrailingEdgeLength() const;
@@ -68,8 +68,8 @@ public:
     TIGL_EXPORT gp_Vec GetMidplaneEtaDir(double eta) const;
     TIGL_EXPORT gp_Vec GetMidplaneNormal(double eta) const;
     TIGL_EXPORT TopoDS_Shape GetMidplaneShape() const;
-    TIGL_EXPORT TopoDS_Shape GetUpperShape() const;
-    TIGL_EXPORT TopoDS_Shape GetLowerShape() const;
+    TIGL_EXPORT TopoDS_Shape GetUpperShape(TiglCoordinateSystem reference = WING_COORDINATE_SYSTEM) const;
+    TIGL_EXPORT TopoDS_Shape GetLowerShape(TiglCoordinateSystem reference = WING_COORDINATE_SYSTEM) const;
     TIGL_EXPORT TopoDS_Face GetInnerFace() const;
     TIGL_EXPORT TopoDS_Face GetOuterFace() const;
     TIGL_EXPORT TopoDS_Wire GetMidplaneLine(const gp_Pnt& startPoint, const gp_Pnt& endPoint) const;

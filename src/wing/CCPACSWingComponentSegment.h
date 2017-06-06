@@ -53,6 +53,7 @@ namespace tigl
 class CCPACSWing;
 class CCPACSWingSegment;
 class CTiglWingChordface;
+class CTiglShapeGeomComponentAdaptor;
 
 typedef std::vector<const CCPACSMaterial*>    MaterialList;
 typedef std::vector<CCPACSWingSegment*>       SegmentList;
@@ -226,15 +227,13 @@ private:
     CCPACSWing*          wing;                 /**< Parent wing                             */
     double               myVolume;             /**< Volume of this segment                  */
     double               mySurfaceArea;        /**< Surface area of this segment            */
-    TopoDS_Shape         upperShape;           /**< Upper shape of this componentSegment    */
-    TopoDS_Shape         lowerShape;           /**< Lower shape of this componentSegment    */
+    unique_ptr<CTiglShapeGeomComponentAdaptor> upperShape; /**< Upper shape of this componentSegment */
+    unique_ptr<CTiglShapeGeomComponentAdaptor> lowerShape; /**< Lower shape of this componentSegment */
     mutable Handle(Geom_Curve) projLeadingEdge;/**< (Extended) Leading edge projected into y-z plane */
     mutable SegmentList  wingSegments;         /**< List of segments belonging to the component segment */
     TopoDS_Face          innerFace;            /**< [[CAS_AES]] added inner segment face    */
     TopoDS_Face          outerFace;            /**< [[CAS_AES]] added outer segment face    */
     mutable unique_ptr<CTiglWingChordface> chordFace;
-    Handle(Geom_Surface) upperSurface;
-    Handle(Geom_Surface) lowerSurface;
 
     mutable TopoDS_Wire  etaLine;                  // 2d version (in YZ plane) of leadingEdgeLine
     mutable TopoDS_Wire  leadingEdgeLine;          // leading edge as wire

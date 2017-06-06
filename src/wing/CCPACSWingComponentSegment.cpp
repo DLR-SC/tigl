@@ -44,6 +44,8 @@
 #include "CCPACSWingCSStructure.h"
 #include "CNamedShape.h"
 #include "CTiglWingChordface.h"
+#include "CTiglShapeGeomComponentAdaptor.h"
+#include "CNamedShape.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "TopoDS_Edge.hxx"
@@ -159,6 +161,8 @@ CCPACSWingComponentSegment::CCPACSWingComponentSegment(CCPACSWingComponentSegmen
     , _uidMgr(uidMgr)
     , CTiglAbstractSegment(parent->GetComponentSegments(), parent->GetParent()->m_symmetry)
     , wing(parent->GetParent())
+    , upperShape(make_unique<CTiglShapeGeomComponentAdaptor>(this, m_uidMgr))
+    , lowerShape(make_unique<CTiglShapeGeomComponentAdaptor>(this, m_uidMgr))
     , chordFace(make_unique<CTiglWingChordface>(*this, uidMgr))
 {
     assert(wing != NULL);
@@ -183,6 +187,8 @@ void CCPACSWingComponentSegment::Invalidate()
     }
     linesAreValid = false;
     chordFace->Reset();
+    upperShape->Reset();
+    lowerShape->Reset();
 }
 
 // Cleanup routine
@@ -205,6 +211,12 @@ void CCPACSWingComponentSegment::Update()
     Invalidate();
 
     chordFace->SetUID(GetDefaultedUID() + "_chordface");
+    lowerShape->SetUID(GetDefaultedUID() + "_lower");
+    upperShape->SetUID(GetDefaultedUID() + "_upper");
+
+    if (!GetDefaultedUID().empty() && m_uidMgr) {
+        m_uidMgr->AddGeometricComponent(GetDefaultedUID(), this);
+    }
 }
 
 // Read CPACS segment elements
@@ -230,7 +242,7 @@ TopoDS_Shape CCPACSWingComponentSegment::GetUpperShape()
     // NOTE: Because it is not clear whether loft.IsNull or invalidated defines
     //       a valid state i call GetLoft here to ensure the geometry was built
     GetLoft();
-    return upperShape;
+    return upperShape->GetLoft()->Shape();
 }
 
 // Getter for lower Shape
@@ -239,7 +251,7 @@ TopoDS_Shape CCPACSWingComponentSegment::GetLowerShape()
     // NOTE: Because it is not clear whether loft.IsNull or invalidated defines
     //       a valid state i call GetLoft here to ensure the geometry was built
     GetLoft();
-    return lowerShape;
+    return lowerShape->GetLoft()->Shape();
 }
 
 // Getter for inner segment face
@@ -424,9 +436,11 @@ TopoDS_Wire CCPACSWingComponentSegment::GetMidplaneLine(const gp_Pnt& startPoint
 
     BRepBuilderAPI_MakeWire wireBuilder;
 
+    TopoDS_Shape localLoft = GetWing().GetTransformationMatrix().Inverted().Transform(loft->Shape());
+
     // get minimum and maximum z-value of bounding box
     Bnd_Box bbox;
-    BRepBndLib::Add(loft->Shape(), bbox);
+    BRepBndLib::Add(localLoft, bbox);
     double zmin, zmax, temp;
     bbox.Get(temp, temp, zmin, temp, temp, zmax);
 
@@ -781,8 +795,17 @@ PNamedShape CCPACSWingComponentSegment::BuildLoft()
     }
     upperShellSewing.Perform();
     lowerShellSewing.Perform();
-    upperShape = upperShellSewing.SewedShape();
-    lowerShape = lowerShellSewing.SewedShape();
+
+    // transform all shapes
+    CTiglTransformation trafo = wing->GetTransformation().getTransformationMatrix();
+
+    PNamedShape upperShell(new CNamedShape(trafo.Transform(upperShellSewing.SewedShape()), upperShape->GetDefaultedUID().c_str()));
+    PNamedShape lowerShell(new CNamedShape(trafo.Transform(lowerShellSewing.SewedShape()), lowerShape->GetDefaultedUID().c_str()));
+
+    loftShape = trafo.Transform(loftShape);
+
+    upperShape->SetShape(upperShell);
+    lowerShape->SetShape(lowerShell);
 
     BRepTools::Clean(loftShape);
 
