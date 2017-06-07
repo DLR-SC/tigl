@@ -162,7 +162,7 @@ endforeach()
 QTX_WRAP_CPP(tv_hdr_MOC ${tv_hdr_qobj_comp})
 QTX_WRAP_UI(tv_ui_HEADERS ${tv_ui_comp})
 # compile icons
-QTX_ADD_RESOURCES( tv_rcrs src/TIGLViewer.qrc )
+QTX_ADD_RESOURCES( tv_rcrs src/TIGLViewer.qrc styles/qdarkstyle/style.qrc)
 
 add_definitions(-DCSFDB -DQOCC_STATIC)
 

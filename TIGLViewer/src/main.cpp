@@ -30,19 +30,24 @@
 #include "CommandLineParameters.h"
 
 #include <Standard_Version.hxx>
+#include <QApplication>
 
 using namespace std;
 
 int parseArguments(QStringList);
 void showHelp(QString);
 
+void loadStyle();
+
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
-    
+
 #ifdef __APPLE__
     app.setAttribute(Qt::AA_DontCreateNativeWidgetSiblings, true);
 #endif
+
+    loadStyle();
 
 #if defined __linux__
     // we need to set us locale as we use "." for decimal point
@@ -192,5 +197,15 @@ int parseArguments(QStringList argList)
     }
 
     return 0;
+}
+
+void loadStyle()
+{
+    QFile styleFile(":/qdarkstyle/style.qss");
+    styleFile.open(QFile::ReadOnly);
+    if (styleFile.isOpen()) {
+        QString StyleSheet = QLatin1String(styleFile.readAll());
+        qApp->setStyleSheet(StyleSheet);
+    }
 }
 

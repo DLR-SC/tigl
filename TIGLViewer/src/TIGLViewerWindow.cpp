@@ -570,9 +570,9 @@ void TIGLViewerWindow::about()
     text += "TiGL: v" + tiglVersion + "<br/>";
     text += "OpenCASCADE: v" + occtVersion + "<br/><br/>";
 
-    text += "Visit the TiGL project page at <a href=\"http://software.dlr.de/p/tigl/\">http://software.dlr.de/p/tigl/</a><br/><br/>";
+    text += "Visit the TiGL project page at <a style=\"color: #8eceff;\" href=\"http://software.dlr.de/p/tigl/\">http://software.dlr.de/p/tigl/</a><br/><br/>";
 
-    text += "&copy; 2015 German Aerospace Center (DLR) ";
+    text += "&copy; 2017 German Aerospace Center (DLR) ";
 
     QMessageBox::about(this, tr("About TiGL Viewer"), text);
 }
