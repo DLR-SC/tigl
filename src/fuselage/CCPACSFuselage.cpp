@@ -159,7 +159,7 @@ PNamedShape CCPACSFuselage::BuildLoft()
     // Get Continuity of first segment
     // TODO: adapt lofting to have multiple different continuities
     TiglContinuity cont = m_segments.GetSegment(1).GetContinuity();
-    Standard_Boolean ruled = (cont == C0? true : false);
+    Standard_Boolean ruled = (cont == ::C0? true : false);
 
 
     // Ne need a smooth fuselage by default

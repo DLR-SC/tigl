@@ -213,7 +213,7 @@ TEST_F(WingCellSpar, sparCellXsi) {
         double xsi1Exp = it->first;
         double xsi2Exp = it->second;
 
-        tigl::CCPACSWingCell& cell = componentSegment.GetUpperShell().GetCell(cellIndex++);
+        tigl::CCPACSWingCell& cell = componentSegment.GetStructure()->GetUpperShell().GetCell(cellIndex++);
         double xsi1, xsi2, dummy;
         cell.GetLeadingEdgeInnerPoint(&dummy, &xsi1);
         cell.GetLeadingEdgeOuterPoint(&dummy, &xsi2);
@@ -258,7 +258,7 @@ TEST_F(WingCellRibSpar, etaXsi) {
     tigl::CCPACSWingComponentSegment& componentSegment = static_cast<tigl::CCPACSWingComponentSegment&>(wing.GetComponentSegment(1));
     tigl::CCPACSWingCSStructure& structure = *componentSegment.GetStructure();
 
-    tigl::CCPACSWingCell& cell = componentSegment.GetUpperShell().GetCell(1);
+    tigl::CCPACSWingCell& cell = componentSegment.GetStructure()->GetUpperShell().GetCell(1);
     checkCellEtaXsis(cell, expectedEtaXsi);
 
     // now we change the rib definition and watch whether the cell is correctly updated

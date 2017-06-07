@@ -277,7 +277,7 @@ void TIGLScriptEngine::eval(QString commandLine)
         val = engine.evaluate(commandLine);
     }
     catch (tigl::CTiglError& err) {
-        emit scriptError(err.getError());
+        emit scriptError(err.what());
         emit evalDone();
         return;
     }

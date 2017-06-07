@@ -1987,7 +1987,7 @@ void TIGLViewerDocument::drawWingStructure()
 
     }
     catch(tigl::CTiglError& err) {
-        displayError(QString("Error while computing the wing structure: \"%1\"").arg(err.getError()));
+        displayError(QString("Error while computing the wing structure: \"%1\"").arg(err.what()));
     }
     catch(Standard_ConstructionError& err) {
         displayError(QString("Error while computing the wing structure: \"%1\"").arg(err.GetMessageString()));

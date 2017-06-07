@@ -36,7 +36,6 @@
 %rename("%(undercase)s", %$isfunction) "";
 
 %include "CTiglMemoryPool.h"
-%include "CTiglError.h"
 %include "generated/CPACSStringVectorBase.h"
 %include "CCPACSStringVector.h"
 %include "generated/CPACSUpdates.h"
@@ -151,7 +150,19 @@ enum TiglImportExportFormat
             exc_class = PyExc_RuntimeError;
         }
 
-        PyErr_SetString(exc_class, const_cast<char*>(err.getError()));
+        PyErr_SetString(exc_class, const_cast<char*>(err.what()));
+        SWIG_fail;
+    }
+    catch(Standard_Failure & err) {
+        PyErr_SetString(PyExc_RuntimeError, const_cast<char*>((std::string("OpenCASCADE Error: ") + err.GetMessageString()).c_str()));
+        SWIG_fail;
+    }
+    catch(std::exception & err) {
+        PyErr_SetString(PyExc_RuntimeError, const_cast<char*>(err.what()));
+        SWIG_fail;
+    }
+    catch(...) {
+        PyErr_SetString(PyExc_RuntimeError, const_cast<char*>("An unkown error occured!"));
         SWIG_fail;
     }
 }
