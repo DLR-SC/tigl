@@ -31,7 +31,7 @@
 #define WORST_TRIANGULATION 0.01
 #define BEST_TRIANGULATION 0.00005
 
-#define BTN_STYLE "#buttonColorChoser {background-color: %1; border: 1px solid black; border-radius: 5px;} #buttonColorChoser:hover {border: 1px solid white;}"
+#define BTN_STYLE "#buttonColorChoser {background-color: %1; color: black; border: 1px solid black; border-radius: 5px;} #buttonColorChoser:hover {border: 1px solid white;}"
 
 TIGLViewerSettingsDialog::TIGLViewerSettingsDialog(TIGLViewerSettings& settings, QWidget *parent)
     : QDialog(parent), _settings(settings)
@@ -47,6 +47,7 @@ TIGLViewerSettingsDialog::TIGLViewerSettingsDialog(TIGLViewerSettings& settings,
     connect(sliderTriangulationAccuracy, SIGNAL(valueChanged(int)), this, SLOT(onSliderTriangulationChanged(int)));
     connect(buttonColorChoser, SIGNAL(clicked()), this, SLOT(onColorChoserPushed()));
     connect(settingsList, SIGNAL(currentRowChanged(int)), this, SLOT(onSettingsListChanged(int)));
+    connect(btnRestoreDefaults, SIGNAL(clicked(bool)), this, SLOT(restoreDefaults()));
 }
 
 double TIGLViewerSettingsDialog::calcTesselationAccu(int value)
@@ -145,6 +146,12 @@ void TIGLViewerSettingsDialog::updateBGColorButton()
 void TIGLViewerSettingsDialog::onSettingsListChanged(int index)
 {
     stackedWidget->setCurrentIndex(index);
+}
+
+void TIGLViewerSettingsDialog::restoreDefaults()
+{
+    _settings.restoreDefaults();
+    updateEntries();
 }
 
 TIGLViewerSettingsDialog::~TIGLViewerSettingsDialog() {}

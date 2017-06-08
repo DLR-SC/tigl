@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>407</width>
-    <height>286</height>
+    <width>465</width>
+    <height>310</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -185,7 +185,7 @@
            </property>
            <property name="maximumSize">
             <size>
-             <width>20</width>
+             <width>28</width>
              <height>16777215</height>
             </size>
            </property>
@@ -284,6 +284,12 @@
          </item>
          <item>
           <widget class="QLineEdit" name="trianAccuEdit">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="minimumSize">
             <size>
              <width>20</width>
@@ -292,7 +298,7 @@
            </property>
            <property name="maximumSize">
             <size>
-             <width>20</width>
+             <width>28</width>
              <height>16777215</height>
             </size>
            </property>
@@ -611,6 +617,13 @@
      </property>
      <property name="standardButtons">
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QPushButton" name="btnRestoreDefaults">
+     <property name="text">
+      <string>Restore Defaults</string>
      </property>
     </widget>
    </item>

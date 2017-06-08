@@ -48,8 +48,9 @@ public:
     bool enumerateFaces() const;
     int  numFaceIsosForDisplay() const;
 
-    virtual ~TIGLViewerSettings();
+    void restoreDefaults();
 
+    virtual ~TIGLViewerSettings();
 private:
     TIGLViewerSettings();
     
