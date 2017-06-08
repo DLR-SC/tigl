@@ -26,6 +26,7 @@
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_Array2OfPnt.hxx>
 #include <TColStd_Array1OfReal.hxx>
+#include <TColStd_HArray1OfReal.hxx>
 
 #include <utility>
 #include <vector>
@@ -111,7 +112,8 @@ public:
     TIGL_EXPORT static Handle(Geom_BSplineSurface) skinnedBSplineSurface(const std::vector<Handle(Geom_BSplineCurve) >& splines_vector);
 
     /**
-     * @brief Reparametrizes a given B-spline by giving an array of its old parameters that should have the values of the given array of new parameters after this function call.
+     * @brief reparametrizeBSpline:
+     *        Reparametrizes a given B-spline by giving an array of its old parameters that should have the values of the given array of new parameters after this function call.
      *        The B-spline geometry remains the same, but:
      *        In general after this reparametrization the spline isn't continuously differentiable considering its parametrization anymore
      * @param spline:
@@ -124,11 +126,70 @@ public:
      *          the reparametrized given B-spline
      */
     TIGL_EXPORT static Handle(Geom_BSplineCurve) reparametrizeBSpline(const Handle(Geom_BSplineCurve) spline, const TColStd_Array1OfReal& old_parameters, const TColStd_Array1OfReal& new_parameters);
+
+    /**
+     * @brief flipSurface:
+     *          swaps axes of the given surface, i.e., surface(u-coord, v-coord) becomes surface(v-coord, u-coord)
+     * @param surface:
+     *          B-spline surface that shall be flipped
+     * @return
+     *          the given surface, but flipped
+     */
     TIGL_EXPORT static Handle(Geom_BSplineSurface) flipSurface(const Handle(Geom_BSplineSurface) surface);
 
+    /**
+     * @brief interpolatingSurface:
+     *          interpolates a matrix of points by a B-spline surface with parameters in u- and in v-direction where the points shall be at
+     *          ! Uses a skinned surface !
+     * @param points:
+     *          matrix of points that shall be interpolated
+     * @param parameters_u:
+     *          parameters in u-direction where the points shall be at on the interpolating surface
+     * @param parameters_v:
+     *          parameters in v-direction where the points shall be at on the interpolating surface
+     * @return
+     *          B-spline surface which interpolates the given points with the given parameters
+     */
+    TIGL_EXPORT static Handle(Geom_BSplineSurface) interpolatingSurface(const TColgp_Array2OfPnt& points, const Handle(TColStd_HArray1OfReal) parameters_u, const Handle(TColStd_HArray1OfReal) parameters_v);
 
+    /**
+     * @brief createGordonSurface:
+     *          Returns a Gordon Surface with a given compatible network of B-splines
+     *          All parameters must be in the right order and the B-spline network must be 'closed', i.e., B-splines mustn't stick out!
+     * @param compatible_splines_u_vector:
+     *          vector of B-splines in u-direction
+     *          compatible means: intersection parameters with v-directional B-splines are equal
+     *                            (if not: reparametrize -> change B-spline knots)
+     *                            DON'T need to have common knot vector because skinning method is creating it when
+     *                            needed (for surface_u)
+     * @param compatible_splines_v_vector:
+     *          vector of B-splines in v-direction, orthogonal to u-direction
+     *          compatible means: intersection parameters with u-directional B-splines are equal
+     *                            (if not: reparametrize -> change B-spline knots)
+     *                            DON'T need to have common knot vector because skinning method is creating it when
+     *                            needed (for surface_v)
+     * @param intersection_params_spline_u:
+     *          array of intersection parameters of the u-directional B-splines with all the v-directional B-splines
+     *          These intersection parameters must be the same for all u-directional B-splines (because compatible).
+     * @param intersection_params_spline_v:
+     *          array of intersection parameters of the v-directional B-splines with all the u-directional B-splines
+     *          These intersection parameters are the same for all v-directional B-splines (because compatible).
+     * @return
+     *          the Gordon Surface as a B-spline surface
+     */
+    TIGL_EXPORT static Handle(Geom_BSplineSurface) createGordonSurface(const std::vector<Handle(Geom_BSplineCurve) >& compatible_splines_u_vector, const std::vector<Handle(Geom_BSplineCurve) >& compatible_splines_v_vector, const Handle(TColStd_HArray1OfReal) intersection_params_spline_u, const Handle(TColStd_HArray1OfReal) intersection_params_spline_v);
 
-
+    /**
+     * @brief intersectionFinder:
+     *          Returns all intersections of two B-splines
+     * @param spline1:
+     *          first B-spline
+     * @param spline2:
+     *          second B-spline
+     * @return:
+     *          intersections of spline1 with spline2 as a vector of (parameter of spline1, parameter of spline2)-pairs
+     */
+    TIGL_EXPORT static std::vector<std::pair<double, double>> intersectionFinder(const Handle(Geom_BSplineCurve) spline1, const Handle(Geom_BSplineCurve) spline2);
 };
 
 } // namespace tigl
