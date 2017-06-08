@@ -1,7 +1,7 @@
 /* 
 * Copyright (C) RISC Software GmbH
 *
-* Created: 2017-05-08 Bernhard Manfred Gruber
+* Created: 2017-06-08 Bernhard Manfred Gruber
 * Changed: $Id$ 
 *
 * Version: $Revision$
