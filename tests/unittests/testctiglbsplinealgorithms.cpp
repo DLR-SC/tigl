@@ -15,6 +15,10 @@
 
 #include <CTiglBSplineAlgorithms.h>
 
+#include <BRepTools.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
+#include <Precision.hxx>
+
 
 namespace tigl
 {
@@ -439,6 +443,7 @@ TEST(TiglBSplineAlgorithms, testSkinnedBSplineSurface)
 
     Handle(Geom_BSplineSurface) skinnedSurface = CTiglBSplineAlgorithms::skinnedBSplineSurface(splines_vector);
 
+
     // now test the skinned surface
     for (int u_idx = 0; u_idx < 100; ++u_idx) {
         for (int v_idx = 0; v_idx < 100; ++v_idx) {
@@ -624,5 +629,250 @@ TEST(TiglBSplineAlgorithms, testFlipSurface)
             ASSERT_NEAR(point.Z(), same_point.Z(), 1e-15);
         }
     }
+}
+
+TEST(TiglBSplineAlgorithms, testInterpolatingSurface)
+{
+    // create exact surface
+    // create B-spline surface
+    TColgp_Array2OfPnt controlPoints(1, 4, 1, 3);
+    controlPoints(1, 1) = gp_Pnt(0., 0., 0.);
+    controlPoints(2, 1) = gp_Pnt(1., 1., 0.);
+    controlPoints(3, 1) = gp_Pnt(3., -1., 0.);
+    controlPoints(4, 1) = gp_Pnt(4., 0., 0.);
+    controlPoints(1, 2) = gp_Pnt(0., 1., 0.);
+    controlPoints(2, 2) = gp_Pnt(1., 0., 0.);
+    controlPoints(3, 2) = gp_Pnt(4., -1., 0.);
+    controlPoints(4, 2) = gp_Pnt(5., 0., 0.);
+    controlPoints(1, 3) = gp_Pnt(0., 0., -1.);
+    controlPoints(2, 3) = gp_Pnt(2., 1., 0.);
+    controlPoints(3, 3) = gp_Pnt(3., -2., 0.);
+    controlPoints(4, 3) = gp_Pnt(8., 0., 0.);
+
+    TColStd_Array1OfReal knots_u(1, 2);
+    knots_u(1) = 0.;
+    knots_u(2) = 1.;
+
+    TColStd_Array1OfInteger mults_u(1, 2);
+    mults_u(1) = 4;
+    mults_u(2) = 4;
+
+    TColStd_Array1OfReal knots_v(1, 2);
+    knots_v(1) = 0.;
+    knots_v(2) = 1.;
+
+    TColStd_Array1OfInteger mults_v(1, 2);
+    mults_v(1) = 3;
+    mults_v(2) = 3;
+
+    unsigned int degree_u = 3;
+    unsigned int degree_v = 2;
+
+    Handle(Geom_BSplineSurface) surface = new Geom_BSplineSurface(controlPoints, knots_u, knots_v, mults_u, mults_v, degree_u, degree_v);
+
+    TColgp_Array2OfPnt points(1, 100, 1, 100);
+    for (unsigned int u_idx = 1; u_idx <= 100; ++u_idx) {
+        for (unsigned int v_idx = 1; v_idx <= 100; ++v_idx) {
+            points(u_idx, v_idx) = surface->Value(u_idx / 100., v_idx / 100.);
+        }
+    }
+
+    std::pair<Handle(TColStd_HArray1OfReal), Handle(TColStd_HArray1OfReal)> parameters = CTiglBSplineAlgorithms::computeParamsBSplineSurf(points);
+
+    Handle(Geom_BSplineSurface) interpolatingSurf = CTiglBSplineAlgorithms::interpolatingSurface(points, parameters.first, parameters.second);
+
+    for (unsigned int u_idx = 1; u_idx <= 100; ++u_idx) {
+        for (unsigned int v_idx = 1; v_idx <= 100; ++v_idx) {
+            gp_Pnt surf_pnt = surface->Value(u_idx / 100., v_idx / 100.);
+            gp_Pnt interp_pnt = interpolatingSurf->Value(parameters.first->Value(u_idx), parameters.second->Value(v_idx));
+            ASSERT_NEAR(interp_pnt.X(), surf_pnt.X(), 4e-15);
+            ASSERT_NEAR(interp_pnt.Y(), surf_pnt.Y(), 4e-15);
+            ASSERT_NEAR(interp_pnt.Z(), surf_pnt.Z(), 4e-15);
+        }
+    }
+}
+
+TEST(TiglBSplineAlgorithms, testCreateGordonSurface)
+{
+    // Tests the method createGordonSurface
+
+    // creating first u-directional B-spline which represents y(z) = (z - 0.5)^2 with offset -1 in x-direction
+    unsigned int degree = 3;  // degree of the four u-directional B-splines and the five v-directional B-splines
+
+    TColgp_Array1OfPnt controlPoints_u1(1, 4);
+    controlPoints_u1(1) = gp_Pnt(-1., 0.25, 0.);
+    controlPoints_u1(2) = gp_Pnt(-1., -1. / 12, 1. / 3);
+    controlPoints_u1(3) = gp_Pnt(-1., -1. / 12, 2. / 3);
+    controlPoints_u1(4) = gp_Pnt(-1., 0.25, 1.);
+
+    TColStd_Array1OfReal knots(1, 2);
+    knots(1) = 0.;
+    knots(2) = 1.;
+
+    TColStd_Array1OfInteger mults(1, 2);
+    mults(1) = 4;
+    mults(2) = 4;
+
+    Handle(Geom_BSplineCurve) spline_u1 = new Geom_BSplineCurve(controlPoints_u1, knots, mults, degree);
+
+    // creating second u-directional B-spline which represents y(z) = (z - 0.5)^2 with offset 2 in x-direction
+    TColgp_Array1OfPnt controlPoints_u2(1, 4);
+    controlPoints_u2(1) = gp_Pnt(2., 0.25, 0.);
+    controlPoints_u2(2) = gp_Pnt(2., -1. / 12, 1. / 3);
+    controlPoints_u2(3) = gp_Pnt(2., -1. / 12, 2. / 3);
+    controlPoints_u2(4) = gp_Pnt(2., 0.25, 1.);
+
+    Handle(Geom_BSplineCurve) spline_u2 = new Geom_BSplineCurve(controlPoints_u2, knots, mults, degree);
+
+    // creating third u-directional B-spline which represents y(z) = (z - 0.5)^2 with offset 3 in x-direction
+    TColgp_Array1OfPnt controlPoints_u3(1, 4);
+    controlPoints_u3(1) = gp_Pnt(3., 0.25, 0.);
+    controlPoints_u3(2) = gp_Pnt(3., -1. / 12, 1. / 3);
+    controlPoints_u3(3) = gp_Pnt(3., -1. / 12, 2. / 3);
+    controlPoints_u3(4) = gp_Pnt(3., 0.25, 1.);
+
+    Handle(Geom_BSplineCurve) spline_u3 = new Geom_BSplineCurve(controlPoints_u3, knots, mults, degree);
+
+    // creating fourth u-directional B-spline which represents y(z) = (z - 0.5)^2 with offset 4 in x-direction
+    TColgp_Array1OfPnt controlPoints_u4(1, 4);
+    controlPoints_u4(1) = gp_Pnt(4., 0.25, 0.);
+    controlPoints_u4(2) = gp_Pnt(4., -1. / 12, 1. / 3);
+    controlPoints_u4(3) = gp_Pnt(4., -1. / 12, 2. / 3);
+    controlPoints_u4(4) = gp_Pnt(4., 0.25, 1.);
+
+    Handle(Geom_BSplineCurve) spline_u4 = new Geom_BSplineCurve(controlPoints_u4, knots, mults, degree);
+
+
+    // creating first v-directional B-spline which represents z(x) = 0 at y = 0.25
+    TColgp_Array1OfPnt controlPoints_v1(1, 4);
+    controlPoints_v1(1) = gp_Pnt(-1., 0.25, 0.);
+    controlPoints_v1(2) = gp_Pnt(2. / 3, 0.25, 0.);
+    controlPoints_v1(3) = gp_Pnt(7. / 3, 0.25, 0.);
+    controlPoints_v1(4) = gp_Pnt(4., 0.25, 0.);
+
+    Handle(Geom_BSplineCurve) spline_v1 = new Geom_BSplineCurve(controlPoints_v1, knots, mults, degree);
+
+    // creating second v-directional B-spline which represents z(x) = 0.5 - sqrt(0.1) at y = 0.1
+    TColgp_Array1OfPnt controlPoints_v2(1, 4);
+    controlPoints_v2(1) = gp_Pnt(-1., 0.1, 0.5 - std::sqrt(0.1));
+    controlPoints_v2(2) = gp_Pnt(2. / 3, 0.1, 0.5 - sqrt(0.1));
+    controlPoints_v2(3) = gp_Pnt(7. / 3, 0.1, 0.5 - sqrt(0.1));
+    controlPoints_v2(4) = gp_Pnt(4., 0.1, 0.5 - sqrt(0.1));
+
+    Handle(Geom_BSplineCurve) spline_v2 = new Geom_BSplineCurve(controlPoints_v2, knots, mults, degree);
+
+    // creating third v-directional B-spline which represents z(x) = 0.5 - sqrt(0.05) at y = 0.05
+    TColgp_Array1OfPnt controlPoints_v3(1, 4);
+    controlPoints_v3(1) = gp_Pnt(-1., 0.05, 0.5 - std::sqrt(0.05));
+    controlPoints_v3(2) = gp_Pnt(2. / 3, 0.05, 0.5 - sqrt(0.05));
+    controlPoints_v3(3) = gp_Pnt(7. / 3, 0.05, 0.5 - sqrt(0.05));
+    controlPoints_v3(4) = gp_Pnt(4., 0.05, 0.5 - sqrt(0.05));
+
+    Handle(Geom_BSplineCurve) spline_v3 = new Geom_BSplineCurve(controlPoints_v3, knots, mults, degree);
+
+    // creating fourth v-directional B-spline which represents z(x) = 0.5 + sqrt(0.1) at y = 0.1
+    TColgp_Array1OfPnt controlPoints_v4(1, 4);
+    controlPoints_v4(1) = gp_Pnt(-1., 0.1, 0.5 + std::sqrt(0.1));
+    controlPoints_v4(2) = gp_Pnt(2. / 3, 0.1, 0.5 + sqrt(0.1));
+    controlPoints_v4(3) = gp_Pnt(7. / 3, 0.1, 0.5 + sqrt(0.1));
+    controlPoints_v4(4) = gp_Pnt(4., 0.1, 0.5 + sqrt(0.1));
+
+    Handle(Geom_BSplineCurve) spline_v4 = new Geom_BSplineCurve(controlPoints_v4, knots, mults, degree);
+
+    // creating fifth v-directional B-spline which represents z(x) = 1 at y = 0.25
+    TColgp_Array1OfPnt controlPoints_v5(1, 4);
+    controlPoints_v5(1) = gp_Pnt(-1., 0.25, 1.);
+    controlPoints_v5(2) = gp_Pnt(2. / 3, 0.25, 1.);
+    controlPoints_v5(3) = gp_Pnt(7. / 3, 0.25, 1.);
+    controlPoints_v5(4) = gp_Pnt(4., 0.25, 1.);
+
+    Handle(Geom_BSplineCurve) spline_v5 = new Geom_BSplineCurve(controlPoints_v5, knots, mults, degree);
+
+    // u- and v-directional B-splines are already compatible in B-spline sense (common knot vector, same parametrization)
+    std::vector<Handle(Geom_BSplineCurve)> compatible_splines_u_vector;
+    compatible_splines_u_vector.push_back(spline_u1);
+    compatible_splines_u_vector.push_back(spline_u2);
+    compatible_splines_u_vector.push_back(spline_u3);
+    compatible_splines_u_vector.push_back(spline_u4);
+
+    std::vector<Handle(Geom_BSplineCurve)> compatible_splines_v_vector;
+    compatible_splines_v_vector.push_back(spline_v1);
+    compatible_splines_v_vector.push_back(spline_v2);
+    compatible_splines_v_vector.push_back(spline_v3);
+    compatible_splines_v_vector.push_back(spline_v4);
+    compatible_splines_v_vector.push_back(spline_v5);
+
+    // intersection point parameters of v-directional curve with u-directional curves:
+    Handle(TColStd_HArray1OfReal) intersection_params_v = new TColStd_HArray1OfReal(1, 4);
+    intersection_params_v->SetValue(1, 0.);
+    intersection_params_v->SetValue(2, 3. / 5);
+    intersection_params_v->SetValue(3, 4. / 5);
+    intersection_params_v->SetValue(4, 1.);
+
+    // intersection point parameters of u-directional curve with v-directional curves:
+    Handle(TColStd_HArray1OfReal) intersection_params_u = new TColStd_HArray1OfReal(1, 5);
+    intersection_params_u->SetValue(1, 0.);
+    intersection_params_u->SetValue(2, 0.5 - std::sqrt(0.1));
+    intersection_params_u->SetValue(3, 0.5 - std::sqrt(0.05));
+    intersection_params_u->SetValue(4, 0.5 + std::sqrt(0.1));
+    intersection_params_u->SetValue(5, 1.);
+
+    Handle(Geom_BSplineSurface) gordonSurface = CTiglBSplineAlgorithms::createGordonSurface(compatible_splines_u_vector, compatible_splines_v_vector, intersection_params_u, intersection_params_v);
+
+    Handle(Geom_BSplineSurface) skinnedSurf = CTiglBSplineAlgorithms::skinnedBSplineSurface(compatible_splines_u_vector);
+
+    // after creating the test surface above, now test it:
+    for (int u_idx = 0; u_idx <= 100; ++u_idx) {
+        for (int v_idx = 0; v_idx <= 100; ++v_idx) {
+            double u_value = u_idx / 100.;
+            double v_value = v_idx / 100.;
+
+            gp_Pnt surface_point = gordonSurface->Value(v_value, u_value);
+            gp_Pnt point_curve1 = spline_u1->Value(u_value);  // represents y(z) = (z - 0.5)^2 with offset -1 in x-direction
+            gp_Pnt point_curve2 = spline_u4->Value(u_value);  // represents y(z) = (z - 0.5)^2 with offset 2 in x-direction
+            gp_Pnt right_point(point_curve1.X() * (1. - v_value) + point_curve2.X() * v_value, point_curve1.Y() * (1. - v_value) + point_curve2.Y() * v_value, point_curve1.Z() * (1. - v_value) + point_curve2.Z() * v_value);
+
+            ASSERT_NEAR(surface_point.X(), right_point.X(), 2e-15);
+            ASSERT_NEAR(surface_point.Y(), right_point.Y(), 2e-15);
+            ASSERT_NEAR(surface_point.Z(), right_point.Z(), 2e-15);
+        }
+    }
+}
+
+TEST(TiglBSplineAlgorithms, testIntersectionFinder)
+{
+    // creating u-directional B-spline which represents y(z) = (z - 0.5)^2 with offset 3 in x-direction
+    TColgp_Array1OfPnt controlPoints_u(1, 4);
+    controlPoints_u(1) = gp_Pnt(3., 0.25, 0.);
+    controlPoints_u(2) = gp_Pnt(3., -1. / 12, 1. / 3);
+    controlPoints_u(3) = gp_Pnt(3., -1. / 12, 2. / 3);
+    controlPoints_u(4) = gp_Pnt(3., 0.25, 1.);
+
+    TColStd_Array1OfReal knots(1, 2);
+    knots(1) = 0.;
+    knots(2) = 1.;
+
+    TColStd_Array1OfInteger mults(1, 2);
+    mults(1) = 4;
+    mults(2) = 4;
+
+    unsigned int degree = 3;
+
+    Handle(Geom_BSplineCurve) spline_u = new Geom_BSplineCurve(controlPoints_u, knots, mults, degree);
+
+    // creating v-directional B-spline which represents z(x) = 0.5 + sqrt(0.1) at y = 0.1
+    TColgp_Array1OfPnt controlPoints_v(1, 4);
+    controlPoints_v(1) = gp_Pnt(-1., 0.1, 0.5 + std::sqrt(0.1));
+    controlPoints_v(2) = gp_Pnt(2. / 3, 0.1, 0.5 + sqrt(0.1));
+    controlPoints_v(3) = gp_Pnt(7. / 3, 0.1, 0.5 + sqrt(0.1));
+    controlPoints_v(4) = gp_Pnt(4., 0.1, 0.5 + sqrt(0.1));
+
+    Handle(Geom_BSplineCurve) spline_v = new Geom_BSplineCurve(controlPoints_v, knots, mults, degree);
+
+    std::vector<std::pair<double, double>> intersection_vector = CTiglBSplineAlgorithms::intersectionFinder(spline_u, spline_v);
+
+    // splines should intersect at u = 0.5 + std::sqrt(0.1) and v = 4. / 5
+    ASSERT_NEAR(intersection_vector[0].first, 0.5 + std::sqrt(0.1), 1e-15);
+    ASSERT_NEAR(intersection_vector[0].second, 4. / 5, 1e-15);
 }
 } // namespace tigl
