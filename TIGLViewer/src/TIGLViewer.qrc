@@ -1,28 +1,29 @@
 <RCC>
-<qresource prefix="/">
-    <file>../TIGLViewer.ico</file>
-    <file>../gfx/document-open.png</file>
-    <file>../gfx/document-save.png</file>
-    <file>../gfx/document-close.png</file>
-    <file>../gfx/view-top.png</file>
-    <file>../gfx/view-front.png</file>
-    <file>../gfx/view-left.png</file>
-    <file>../gfx/view-axo.png</file>
-    <file>../gfx/translate.png</file>
-    <file>../gfx/rotate.png</file>
-    <file>../gfx/zoom.png</file>
-    <file>../gfx/select.png</file>
-    <file>../gfx/settings-display.png</file>
-    <file>../gfx/settings.png</file>
-    <file>../gfx/edit-cut.png</file>
-    <file>../gfx/edit-paste.png</file>
-    <file>../gfx/edit-copy.png</file>
-    <file>../gfx/edit-select-all.png</file>
-    <file>../gfx/screenshot.png</file>
-    <file>../scripts/globaldefs.js</file>
-    <file>../shaders/PhongShading-v6.fs</file>
-    <file>../shaders/PhongShading-v6.vs</file>
-    <file>../shaders/PhongShading-v7.fs</file>
-    <file>../shaders/PhongShading-v7.vs</file>
-</qresource>
+    <qresource prefix="/">
+        <file>../TIGLViewer.ico</file>
+        <file>../gfx/document-open.png</file>
+        <file>../gfx/document-save.png</file>
+        <file>../gfx/document-close.png</file>
+        <file>../gfx/view-top.png</file>
+        <file>../gfx/view-front.png</file>
+        <file>../gfx/view-left.png</file>
+        <file>../gfx/view-axo.png</file>
+        <file>../gfx/translate.png</file>
+        <file>../gfx/rotate.png</file>
+        <file>../gfx/zoom.png</file>
+        <file>../gfx/select.png</file>
+        <file>../gfx/settings-display.png</file>
+        <file>../gfx/settings.png</file>
+        <file>../gfx/edit-cut.png</file>
+        <file>../gfx/edit-paste.png</file>
+        <file>../gfx/edit-copy.png</file>
+        <file>../gfx/edit-select-all.png</file>
+        <file>../gfx/screenshot.png</file>
+        <file>../scripts/globaldefs.js</file>
+        <file>../shaders/PhongShading-v6.fs</file>
+        <file>../shaders/PhongShading-v6.vs</file>
+        <file>../shaders/PhongShading-v7.fs</file>
+        <file>../shaders/PhongShading-v7.vs</file>
+        <file>../gfx/error.png</file>
+    </qresource>
 </RCC>

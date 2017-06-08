@@ -26,11 +26,6 @@ TIGLViewerErrorDialog::TIGLViewerErrorDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    // set platform dependent error icon
-    int iconSize    = QApplication::style()->pixelMetric (QStyle::PM_MessageBoxIconSize, 0, this);
-    QIcon errorIcon = QApplication::style()->standardIcon(QStyle::SP_MessageBoxCritical, 0, this);
-    ui->iconLabel->setPixmap(errorIcon.pixmap(iconSize, iconSize));
-
     detailsButton = new QPushButton("Show details", this);
     ui->buttonBox->addButton(detailsButton, QDialogButtonBox::ActionRole);
 

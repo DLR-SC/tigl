@@ -19,6 +19,14 @@
 #include <TIGLViewerSettings.h>
 #include <QSettings>
 
+const double DEFAULT_TESSELATION_ACCURACY = 0.000316;
+const double DEFAULT_TRIANGULATION_ACCURACY = 0.00070;
+const QColor DEFAULT_BGCOLOR(255,235,163);
+const bool DEFAULT_DEBUG_BOPS = false;
+const bool DEFAULT_ENUM_FACES = false;
+const int DEFAULT_NISO_FACES = 0;
+
+
 TIGLViewerSettings& TIGLViewerSettings::Instance()
 {
     static TIGLViewerSettings settings;
@@ -27,12 +35,7 @@ TIGLViewerSettings& TIGLViewerSettings::Instance()
 
 TIGLViewerSettings::TIGLViewerSettings()
 {
-    _tesselationAccuracy = 0.000316;
-    _triangulationAccuracy = 0.00070;
-    _bgcolor = QColor(255,235,163);
-    _debugBOPs = false;
-    _enumFaces = false;
-    _nIsosPerFace = 0;
+    restoreDefaults();
 }
 
 void TIGLViewerSettings::setTesselationAccuracy(double accu)
@@ -119,6 +122,16 @@ void TIGLViewerSettings::storeSettings()
     settings.setValue("debug_bops", _debugBOPs);
     settings.setValue("enumerate_faces", _enumFaces);
     settings.setValue("number_isolines_per_face", _nIsosPerFace);
+}
+
+void TIGLViewerSettings::restoreDefaults()
+{
+    _tesselationAccuracy = DEFAULT_TESSELATION_ACCURACY;
+    _triangulationAccuracy = DEFAULT_TRIANGULATION_ACCURACY;
+    _bgcolor = DEFAULT_BGCOLOR;
+    _debugBOPs = DEFAULT_DEBUG_BOPS;
+    _enumFaces = DEFAULT_ENUM_FACES;
+    _nIsosPerFace = DEFAULT_NISO_FACES;
 }
 
 TIGLViewerSettings::~TIGLViewerSettings() {}

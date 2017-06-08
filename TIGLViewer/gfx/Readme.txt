@@ -1,1 +1,1 @@
-Images taken from http://openiconlibrary.sourceforge.net
+Images taken android material design icon library: https://material.io/icons/
