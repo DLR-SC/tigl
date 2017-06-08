@@ -45,7 +45,10 @@
           </sizepolicy>
          </property>
          <property name="text">
-          <string>ICON</string>
+          <string/>
+         </property>
+         <property name="pixmap">
+          <pixmap resource="TIGLViewer.qrc">:/gfx/error.png</pixmap>
          </property>
          <property name="scaledContents">
           <bool>false</bool>
@@ -147,7 +150,16 @@
       <string>Error log</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
-      <property name="margin">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
        <number>0</number>
       </property>
       <item>
