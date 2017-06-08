@@ -122,7 +122,7 @@ namespace tigl
         
         bool CPACSMaterialDefinition::ValidateChoices() const
         {
-            return ((m_compositeUID_choice1.is_initialized()) || (m_materialUID_choice2.is_initialized()));
+            return ((m_compositeUID_choice1.is_initialized()) + (m_materialUID_choice2.is_initialized()) == 1);
         }
         
         const boost::optional<std::string>& CPACSMaterialDefinition::GetCompositeUID_choice1() const

@@ -115,7 +115,7 @@ namespace tigl
         
         bool CPACSCellPositioningSpanwise::ValidateChoices() const
         {
-            return ((m_eta1_choice1.is_initialized() && m_eta2_choice1.is_initialized()) || (m_ribNumber_choice2.is_initialized() && m_ribDefinitionUID_choice2.is_initialized()));
+            return ((m_eta1_choice1.is_initialized() && m_eta2_choice1.is_initialized()) + (m_ribNumber_choice2.is_initialized() && m_ribDefinitionUID_choice2.is_initialized()) == 1);
         }
         
         const boost::optional<double>& CPACSCellPositioningSpanwise::GetEta1_choice1() const
