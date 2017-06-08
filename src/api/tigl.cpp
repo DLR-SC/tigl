@@ -1405,6 +1405,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetInnerSectionAndElementUID(TiglCPACS
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglWingGetInnerSectionAndElementIndex!";
@@ -1443,6 +1444,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetOuterSectionAndElementUID(TiglCPACS
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglWingGetOuterSectionAndElementIndex!";
@@ -1488,6 +1490,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetProfileName(TiglCPACSConfigurationH
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglWingGetProfileName!";
@@ -1526,6 +1529,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetUID(TiglCPACSConfigurationHandle cp
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglWingGetUID!";
@@ -1601,6 +1605,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentUID(TiglCPACSConfigurationHa
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglWingGetSegmentUID!";
@@ -1657,6 +1662,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentIndex(TiglCPACSConfiguration
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglWingGetSegmentIndex!";
@@ -1694,6 +1700,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSectionCount(TiglCPACSConfiguration
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglWingGetSectionCount!";
@@ -1733,6 +1740,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSectionUID(TiglCPACSConfigurationHa
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglWingGetSectionUID!";
@@ -1765,6 +1773,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSymmetry(TiglCPACSConfigurationHand
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglGetWingSymmetry!";
@@ -1830,6 +1839,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentFindSegment(TiglCPACSC
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglWingComponentSegmentFindSegment!";
@@ -1886,6 +1896,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetPoint(TiglCPACSConf
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglWingComponentSegmentPointGetPoint!";
@@ -2008,6 +2019,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentPointGetSegmentEtaXsi(
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglWingComponentSegmentPointGetSegmentEtaXsi!";
@@ -2079,6 +2091,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingSegmentPointGetComponentSegmentEtaXsi(
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglWingSegmentPointGetComponentSegmentEtaXsi!";
@@ -2157,6 +2170,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetSegmentIntersection
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an unknown exception in tiglWingComponentSegmentGetSegmentIntersection!";
@@ -2231,6 +2245,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentComputeEtaIntersection
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an unknown exception in tiglWingComponentSegmentComputeEtaIntersection!";
@@ -2288,6 +2303,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetNumberOfSegments(Ti
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglWingComponentSegmentGetNumberOfSegments!";
@@ -2352,6 +2368,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetSegmentUID(TiglCPAC
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglWingComponentSegmentGetSegmentUID!";
@@ -2384,6 +2401,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetFuselageCount(TiglCPACSConfigurationHan
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglGetFuselageCount!";
@@ -2415,6 +2433,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentCount(TiglCPACSConfigura
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglFuselageGetSegmentCount!";
@@ -2454,6 +2473,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetPoint(TiglCPACSConfigurationHan
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglFuselageGetPoint!";
@@ -2498,6 +2518,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetPointAngle(TiglCPACSConfigurati
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglFuselageGetPointAngle!";
@@ -2543,6 +2564,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetPointAngleTranslated(TiglCPACSC
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglFuselageGetPointAngleTranslated!";
@@ -2584,6 +2606,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetPointOnXPlane(TiglCPACSConfigur
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglFuselageGetPointOnXPlane!";
@@ -2626,6 +2649,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetPointOnYPlane(TiglCPACSConfigur
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglFuselageGetPointOnYPlane!";
@@ -2661,6 +2685,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetNumPointsOnXPlane(TiglCPACSConf
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglFuselageGetNumPointsOnXPlane!";
@@ -2696,6 +2721,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetNumPointsOnYPlane(TiglCPACSConf
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglFuselageGetNumPointsOnYPlane!";
@@ -2765,6 +2791,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetStartConnectedSegmentCount(Tigl
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglFuselageGetStartConnectedSegmentCount!";
@@ -2798,6 +2825,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetEndConnectedSegmentCount(TiglCP
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglFuselageGetEndConnectedSegmentCount!";
@@ -2832,6 +2860,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetStartConnectedSegmentIndex(Tigl
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglFuselageGetStartConnectedSegmentIndex!";
@@ -2866,6 +2895,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetEndConnectedSegmentIndex(TiglCP
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglFuselageGetEndConnectedSegmentIndex!";
@@ -2904,6 +2934,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetStartSectionAndElementUID(TiglC
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglFuselageGetStartSectionAndElementIndex!";
@@ -2943,6 +2974,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetEndSectionAndElementUID(TiglCPA
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglFuselageGetEndSectionAndElementIndex!";
@@ -2985,6 +3017,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetStartSectionAndElementIndex (Ti
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglFuselageGetStartSectionAndElementIndex!";
@@ -3026,6 +3059,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetEndSectionAndElementIndex(TiglC
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglFuselageGetEndSectionAndElementIndex!";
@@ -3071,6 +3105,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetProfileName(TiglCPACSConfigurat
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglFuselageGetProfileName!";
@@ -3108,6 +3143,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetUID(TiglCPACSConfigurationHandl
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglFuselageGetUID!";
@@ -3184,6 +3220,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentUID(TiglCPACSConfigurati
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglFuselageGetSegmentUID!";
@@ -3241,6 +3278,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentIndex(TiglCPACSConfigura
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglFuselageGetSegmentIndex!";
@@ -3278,6 +3316,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSectionCount(TiglCPACSConfigura
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglFuselageGetSectionCount!";
@@ -3317,6 +3356,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSectionUID(TiglCPACSConfigurati
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglFuselageGetSectionUID!";
@@ -3353,6 +3393,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSymmetry(TiglCPACSConfiguration
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglGetFuselageSymmetry!";
@@ -3401,6 +3442,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetMinumumDistanceToGround(TiglCPA
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglFuselageGetPointOnYPlane!";
@@ -3434,6 +3476,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetRotorCount(TiglCPACSConfigurationHandle
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglGetRotorCount!";
@@ -3470,6 +3513,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetUID(TiglCPACSConfigurationHandle c
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglRotorGetUID!";
@@ -3543,6 +3587,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetRadius(TiglCPACSConfigurationHandl
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglRotorGetRadius!";
@@ -3614,6 +3659,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetTotalBladePlanformArea(TiglCPACSCo
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglRotorGetTotalBladePlanformArea!";
@@ -3649,6 +3695,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetSolidity(TiglCPACSConfigurationHan
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglRotorGetSolidity!";
@@ -3684,6 +3731,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetSurfaceArea(TiglCPACSConfiguration
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglRotorGetSurfaceArea!";
@@ -3719,6 +3767,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetVolume(TiglCPACSConfigurationHandl
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglrotorGetVolume!";
@@ -3754,6 +3803,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetTipSpeed(TiglCPACSConfigurationHan
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglRotorGetTipSpeed!";
@@ -3794,6 +3844,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetRotorBladeCount(TiglCPACSConfigura
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglRotorGetRotorBladeCount!";
@@ -3837,6 +3888,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetWingIndex(TiglCPACSConfigurat
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglRotorBladeGetWingIndex!";
@@ -3880,6 +3932,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetWingUID(TiglCPACSConfiguratio
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglRotorBladeGetWingUID!";
@@ -3922,6 +3975,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetAzimuthAngle(TiglCPACSConfigu
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglRotorBladeGetAzimuthAngle!";
@@ -3964,6 +4018,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetRadius(TiglCPACSConfiguration
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglRotorBladeGetRadius!";
@@ -4006,6 +4061,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetPlanformArea(TiglCPACSConfigu
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglRotorBladeGetPlanformArea!";
@@ -4048,6 +4104,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetSurfaceArea(TiglCPACSConfigur
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglRotorBladeGetSurfaceArea!";
@@ -4090,6 +4147,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetVolume(TiglCPACSConfiguration
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglRotorBladeGetVolume!";
@@ -4132,6 +4190,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetTipSpeed(TiglCPACSConfigurati
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglRotorBladeGetTipSpeed!";
@@ -4186,6 +4245,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetLocalRadius(TiglCPACSConfigur
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglRotorBladeGetLocalRadius!";
@@ -4240,6 +4300,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetLocalChord(TiglCPACSConfigura
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglRotorBladeGetLocalChord!";
@@ -4294,6 +4355,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetLocalTwistAngle(TiglCPACSConf
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglRotorBladeGetLocalTwistAngle!";
@@ -4526,6 +4588,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportIGES(TiglCPACSConfigurationHandle cp
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglExportIGES!";
@@ -4557,6 +4620,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportFusedWingFuselageIGES(TiglCPACSConfi
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglExportFusedWingFuselageIGES!";
@@ -4587,6 +4651,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportSTEP(TiglCPACSConfigurationHandle cp
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglExportSTEP!";
@@ -4616,6 +4681,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportFusedSTEP(TiglCPACSConfigurationHand
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglExportFusedSTEP!";
@@ -4655,6 +4721,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingSTL(TiglCPACSConfiguration
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglExportMeshedWingSTL!";
@@ -4703,6 +4770,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingSTLByUID(TiglCPACSConfigur
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglExportMeshedWingSTLByUID!";
@@ -4742,6 +4810,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageSTL(TiglCPACSConfigura
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglExportMeshedFuselageSTL!";
@@ -4792,6 +4861,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageSTLByUID(TiglCPACSConf
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglExportMeshedFuselageSTLByUID!";
@@ -4827,6 +4897,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedGeometrySTL(TiglCPACSConfigura
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglExportMeshedGeometrySTL!";
@@ -4955,6 +5026,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageVTKByIndex(const TiglC
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglExportMeshedFuselageVTKByIndex!";
@@ -4991,6 +5063,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageVTKByUID(const TiglCPA
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglExportMeshedFuselageVTKByUID!";
@@ -5022,6 +5095,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedGeometryVTK(const TiglCPACSCon
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglExportMeshedGeometryVTK!";
@@ -5107,6 +5181,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageVTKSimpleByUID(const T
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglExportMeshedFuselageVTKSimpleByUID!";
@@ -5142,6 +5217,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportFuselageColladaByUID(const TiglCPACS
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglExportFuselageColladaByUID!";
@@ -5177,6 +5253,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportWingColladaByUID(const TiglCPACSConf
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglExportWingColladaByUID!";
@@ -5208,6 +5285,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedGeometryVTKSimple(const TiglCP
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglExportMeshedGeometryVTKSimple!";
@@ -5237,6 +5315,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportFusedBREP(TiglCPACSConfigurationHand
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglExportFusedBREP!";
@@ -5302,6 +5381,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetMaterialCount(TiglC
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglWingComponentSegmentGetMaterialCount!";
@@ -5376,6 +5456,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetMaterialUID(TiglCPA
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglWingComponentSegmentGetMaterialUID!";
@@ -5454,6 +5535,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetMaterialThickness(T
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglWingComponentSegmentGetMaterialThickness!";
@@ -5487,6 +5569,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetVolume(TiglCPACSConfigurationHa
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglFuselageGetVolume!";
@@ -5517,6 +5600,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetVolume(TiglCPACSConfigurationHandle
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglWingGetVolume!";
@@ -5556,6 +5640,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentVolume(TiglCPACSConfiguratio
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglWingGetSegmentVolume!";
@@ -5594,6 +5679,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentVolume(TiglCPACSConfigur
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglFuselageGetSegmentVolume!";
@@ -5627,6 +5713,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSurfaceArea(TiglCPACSConfigurationH
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglWingGetSurfaceArea!";
@@ -5657,6 +5744,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSurfaceArea(TiglCPACSConfigurat
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglFuselageGetSurfaceArea!";
@@ -5696,6 +5784,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentSurfaceArea(TiglCPACSConfigu
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglWingGetSegmentSurfaceArea!";
@@ -5735,6 +5824,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentSurfaceArea(TiglCPACSCon
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglFuselageGetSegmentSurfaceArea!";
@@ -5781,6 +5871,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentUpperSurfaceAreaTrimmed(Tigl
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglWingGetSegmentUpperSurfaceAreaTrimmed!";
@@ -5827,6 +5918,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentLowerSurfaceAreaTrimmed(Tigl
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglWingGetSegmentLowerSurfaceAreaTrimmed!";
@@ -5864,6 +5956,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetReferenceArea(TiglCPACSConfiguratio
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglWingGetReferenceArea!";
@@ -5914,6 +6007,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetMAC(TiglCPACSConfigurationHandle cp
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglConfigurationGetLength!";
@@ -5945,6 +6039,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetWettedArea(TiglCPACSConfigurationHa
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglWingGetWettedArea!";
@@ -5998,6 +6093,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglComponentGetHashCode(TiglCPACSConfiguratio
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglComponentGetHashCode!";
@@ -6033,6 +6129,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglConfigurationGetLength(TiglCPACSConfigurat
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglConfigurationGetLength!";
@@ -6065,6 +6162,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSpan(TiglCPACSConfigurationHandle c
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglConfigurationGetLength!";
