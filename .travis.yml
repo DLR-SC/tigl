@@ -5,6 +5,7 @@ os:
 language: cpp
 
 before_install:
+  # Linux steps
   - '[ "$TRAVIS_OS_NAME" != linux ] || curl http://download.opensuse.org/repositories/science:/dlr/xUbuntu_12.04/Release.key | sudo apt-key add - '
   - '[ "$TRAVIS_OS_NAME" != linux ] || echo "deb http://download.opensuse.org/repositories/science:/dlr/xUbuntu_12.04/ /" | sudo tee -a /etc/apt/sources.list '
   - '[ "$TRAVIS_OS_NAME" != linux ] || sudo add-apt-repository ppa:george-edison55/precise-backports -y'
@@ -12,12 +13,21 @@ before_install:
   - '[ "$TRAVIS_OS_NAME" != linux ] || sudo apt-get install -y --force-yes libtixi-dev liboce-dev cmake cmake-data'
 # oce ships a faulty config file, we have to remove it and use standard opencascade detection
   - '[ "$TRAVIS_OS_NAME" != linux ] || sudo rm /usr/lib/oce-*/OCEConfig.cmake '
+  # macOS steps
+  - '[ "$TRAVIS_OS_NAME" != osx ] || brew update'
+  - '[ "$TRAVIS_OS_NAME" != osx ] || brew install qt55'
+  - '[ "$TRAVIS_OS_NAME" != osx ] || export MACOSX_DEPLOYMENT_TARGET=10.8'
+  - '[ "$TRAVIS_OS_NAME" != osx ] || /usr/bin/curl -O -L https://netix.dl.sourceforge.net/project/tigl/Thirdparty/oce.0.17.2.macos_static.tar.gz '
+  - '[ "$TRAVIS_OS_NAME" != osx ] || /usr/bin/curl -O -L https://github.com/DLR-SC/tixi/releases/download/v2.2.4/TIXI-2.2.4-macOS.tar.gz '
+  - '[ "$TRAVIS_OS_NAME" != osx ] || tar xf oce.0.17.2.macos_static.tar.gz'
+  - '[ "$TRAVIS_OS_NAME" != osx ] || tar xf TIXI-2.2.4-macOS.tar.gz '
   
 before_script:
   - mkdir build
   - cd build
 
 script: 
+  - '[ "$TRAVIS_OS_NAME" != osx ] || export CMAKE_PREFIX_PATH=$PWD/TIXI-2.2.4-macOS:$PWD/oce.0.17.2.macos_static '
   - cmake -DTIGL_BUILD_TESTS=ON -DTIGL_BINDINGS_MATLAB=ON ..
   - make
   - make check
