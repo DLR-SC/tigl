@@ -30,6 +30,7 @@ script:
   - cmake -DTIGL_BUILD_TESTS=ON -DTIGL_BINDINGS_MATLAB=ON ..
   - make
   - '[ "$TRAVIS_OS_NAME" != osx ] || export DYLD_LIBRARY_PATH=`pwd`/../TIXI-2.2.4-macOS/lib '
-  - make check
+  - cd tests
+  - ./TIGL-unittests --gtest_output=xml
 
 
