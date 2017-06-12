@@ -498,7 +498,7 @@ Handle(Geom_BSplineCurve) CTiglBSplineAlgorithms::reparametrizeBSpline(const Han
     Handle(Geom_BSplineCurve) copied_spline = Handle(Geom_BSplineCurve)::DownCast(spline->Copy());
 
     // insert knots at intersections, so that one can reparametrize intervals between these intersections afterwards
-    for (int i = old_parameters.Lower(); i < old_parameters.Upper(); ++i) {
+    for (int i = old_parameters.Lower(); i <= old_parameters.Upper(); ++i) {
         // if between parameter range of B-spline
         if ((old_parameters(i) - copied_spline->Knot(1) > 1e-15) && (copied_spline->Knot(copied_spline->NbKnots())) - old_parameters(i)) {
             // insert knot degree-times
@@ -507,6 +507,8 @@ Handle(Geom_BSplineCurve) CTiglBSplineAlgorithms::reparametrizeBSpline(const Han
     }
 
     // move knots to reparametrize
+    TColStd_Array1OfReal knots(1, copied_spline->NbKnots());
+    copied_spline->Knots(knots);
     for (int interval_idx = old_parameters.Lower(); interval_idx <= old_parameters.Upper() - 1; ++interval_idx) {
         double interval_beginning_old = old_parameters(interval_idx);
         double interval_end_old = old_parameters(interval_idx + 1);
@@ -514,13 +516,22 @@ Handle(Geom_BSplineCurve) CTiglBSplineAlgorithms::reparametrizeBSpline(const Han
         double interval_beginning_new = new_parameters(interval_idx);
         double interval_end_new = new_parameters(interval_idx + 1);
 
+
         for (int knot_idx = 1; knot_idx <= copied_spline->NbKnots(); ++knot_idx) {
-            double knot = copied_spline->Knot(knot_idx);
+            double knot = knots(knot_idx);
             if (interval_beginning_old <= knot && knot < interval_end_old) {
-                copied_spline->SetKnot(knot_idx, (knot - interval_beginning_old) / (interval_end_old - interval_beginning_old) * (interval_end_new - interval_beginning_new) + interval_beginning_new, copied_spline->Multiplicity(knot_idx));
+                knots(knot_idx) = (knot - interval_beginning_old) / (interval_end_old - interval_beginning_old) * (interval_end_new - interval_beginning_new) + interval_beginning_new;
+            }
+
+            // case: knot = upper bound of parameter range
+            else if (knot == old_parameters(old_parameters.Upper()) && interval_idx == old_parameters.Upper() - 1) {
+                knots(knot_idx) = new_parameters(new_parameters.Upper());
             }
         }
     }
+
+    // the multiplicity of the knots is not modified:
+    copied_spline->SetKnots(knots);
 
     return copied_spline;
 }
@@ -637,7 +648,7 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::createGordonSurface(const st
         throw tigl::CTiglError("There have to be at least three B-splines for creating a skinned surface! Thrown in CTiglBSplineAlgorithms.cpp in line " + __LINE__);
     }
     unsigned int degree_v_dir = compatible_splines_u_vector.size() - 1;
-    Handle(Geom_BSplineSurface) surface_v_unmod_unflipped = skinnedBSplineSurfaceParams(compatible_splines_u_vector, intersection_params_spline_v);
+    Handle(Geom_BSplineSurface) surface_v_unmod = skinnedBSplineSurfaceParams(compatible_splines_u_vector, intersection_params_spline_v);
     // therefore reparametrization before this method
 
     // Skinning in u-direction with v directional B-Splines
@@ -648,8 +659,8 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::createGordonSurface(const st
     unsigned int degree_u_dir = compatible_splines_v_vector.size() - 1;
     Handle(Geom_BSplineSurface) surface_u_unmod = skinnedBSplineSurfaceParams(compatible_splines_v_vector, intersection_params_spline_u);
 
-    // flipping of the surface in v-direction
-    Handle(Geom_BSplineSurface) surface_v_unmod = flipSurface(surface_v_unmod_unflipped);
+    // flipping of the surface in v-direction; flipping is redundant here, therefore the next line is a comment!
+    //Handle(Geom_BSplineSurface) surface_v_unmod = flipSurface(surface_v_unmod_unflipped);
 
     // setting everything up for creating Tensor Product Surface by interpolating intersection points of profiles and guides with B-Spline surface
     // find the intersection points:
@@ -706,7 +717,7 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::createGordonSurface(const st
     for (int cp_u_idx = 1; cp_u_idx <= surface_u->NbUPoles(); ++cp_u_idx) {
         for (int cp_v_idx = 1; cp_v_idx <= surface_u->NbVPoles(); ++cp_v_idx) {
             gp_Pnt cp_surf_u = surface_u->Pole(cp_u_idx, cp_v_idx);
-            gp_Pnt cp_surf_v = surface_v->Pole(cp_v_idx, cp_u_idx);
+            gp_Pnt cp_surf_v = surface_v->Pole(cp_u_idx, cp_v_idx);
             gp_Pnt cp_tensor = tensorProdSurf->Pole(cp_u_idx, cp_v_idx);
 
             gp_Pnt gordon_cp(cp_surf_u.X() + cp_surf_v.X() - cp_tensor.X(), cp_surf_u.Y() + cp_surf_v.Y() - cp_tensor.Y(), cp_surf_u.Z() + cp_surf_v.Z() - cp_tensor.Z());
@@ -736,35 +747,46 @@ std::vector<std::pair<double, double>> CTiglBSplineAlgorithms::intersectionFinde
     // check parametrization of B-splines:
     TColStd_Array1OfReal knots1(1, spline1->NbKnots());
     spline1->Knots(knots1);
-    if (std::abs(spline1->Knot(1)) > 1e-15) {  // parameter range doesn't start with 0
+    if (std::abs(spline1->Knot(1)) > 1e-15 || std::abs(spline1->Knot(spline1->NbKnots()) - 1) > 1e-15) {
+        if (std::abs(spline1->Knot(1)) > 1e-15) {  // parameter range doesn't start with 0
 
-        for (int knot_idx = 1; knot_idx <= spline1->NbKnots(); ++knot_idx) {
-            knots1(knot_idx) -= spline1->Knot(1);
+            for (int knot_idx = 1; knot_idx <= spline1->NbKnots(); ++knot_idx) {
+                knots1(knot_idx) -= spline1->Knot(1);
+            }
         }
-    }
 
-    if (std::abs(spline1->Knot(spline1->NbKnots()) - 1) > 1e-15) {  // parameter range doesn't end with 1
+        if (std::abs(spline1->Knot(spline1->NbKnots()) - 1) > 1e-15) {  // parameter range doesn't end with 1
 
-        for (int knot_idx = 1; knot_idx <= spline1->NbKnots(); ++knot_idx) {
-            knots1(knot_idx) /= spline1->Knot(spline1->NbKnots());
+            for (int knot_idx = 1; knot_idx <= spline1->NbKnots(); ++knot_idx) {
+                knots1(knot_idx) /= spline1->Knot(spline1->NbKnots());
+            }
         }
+
+        // edit spline
+        spline1->SetKnots(knots1);
     }
 
     TColStd_Array1OfReal knots2(1, spline2->NbKnots());
     spline2->Knots(knots2);
-    if (std::abs(spline2->Knot(1)) > 1e-15) {  // parameter range doesn't start with 0
+    if (std::abs(spline2->Knot(1)) > 1e-15 || std::abs(spline1->Knot(spline2->NbKnots()) - 1) > 1e-15) {
+        if (std::abs(spline2->Knot(1)) > 1e-15) {  // parameter range doesn't start with 0
 
-        for (int knot_idx = 1; knot_idx <= spline2->NbKnots(); ++knot_idx) {
-            knots2(knot_idx) -= spline2->Knot(1);
+            for (int knot_idx = 1; knot_idx <= spline2->NbKnots(); ++knot_idx) {
+                knots2(knot_idx) -= spline2->Knot(1);
+            }
         }
+
+        if (std::abs(spline2->Knot(spline2->NbKnots()) - 1) > 1e-15) {  // parameter range doesn't end with 1
+
+            for (int knot_idx = 1; knot_idx <= spline2->NbKnots(); ++knot_idx) {
+                knots2(knot_idx) /= spline2->Knot(spline2->NbKnots());
+            }
+        }
+
+        // edit spline
+        spline2->SetKnots(knots2);
     }
 
-    if (std::abs(spline2->Knot(spline2->NbKnots()) - 1) > 1e-15) {  // parameter range doesn't end with 1
-
-        for (int knot_idx = 1; knot_idx <= spline2->NbKnots(); ++knot_idx) {
-            knots2(knot_idx) /= spline2->Knot(spline2->NbKnots());
-        }
-    }
     // now the parameter range of both spline1 and spline2 is [0,1]
 
     std::vector<std::pair<double, double>> intersection_params_vector;
@@ -785,4 +807,143 @@ std::vector<std::pair<double, double>> CTiglBSplineAlgorithms::intersectionFinde
     return intersection_params_vector;
 }
 
+Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::createGordonSurfaceGeneral(const std::vector<Handle(Geom_BSplineCurve) >& splines_u_vector,
+                                                       const std::vector<Handle(Geom_BSplineCurve) >& splines_v_vector) {
+    // check parametrization of u-directional B-splines:
+    for (unsigned int spline_u_idx = 0; spline_u_idx < splines_u_vector.size(); ++spline_u_idx) {
+        // check parametrization of B-splines:
+        TColStd_Array1OfReal knots(1, splines_u_vector[spline_u_idx]->NbKnots());
+        splines_u_vector[spline_u_idx]->Knots(knots);
+
+        if (std::abs(splines_u_vector[spline_u_idx]->Knot(1)) > 1e-15 || std::abs(splines_u_vector[spline_u_idx]->Knot(splines_u_vector[spline_u_idx]->NbKnots()) - 1) > 1e-15) {
+            if (std::abs(splines_u_vector[spline_u_idx]->Knot(1)) > 1e-15) {  // parameter range doesn't start with 0
+
+                for (int knot_idx = 1; knot_idx <= splines_u_vector[spline_u_idx]->NbKnots(); ++knot_idx) {
+                    knots(knot_idx) -= splines_u_vector[spline_u_idx]->Knot(1);
+                }
+            }
+
+            if (std::abs(splines_u_vector[spline_u_idx]->Knot(splines_u_vector[spline_u_idx]->NbKnots()) - 1) > 1e-15) {  // parameter range doesn't end with 1
+
+                for (int knot_idx = 1; knot_idx <= splines_u_vector[spline_u_idx]->NbKnots(); ++knot_idx) {
+                    knots(knot_idx) /= splines_u_vector[spline_u_idx]->Knot(splines_u_vector[spline_u_idx]->NbKnots());
+                }
+            }
+
+            // edit spline
+            splines_u_vector[spline_u_idx]->SetKnots(knots);
+        }
+    }
+    // now the parameter range of all u-directional B-splines should be [0, 1]
+
+    // check parametrization of v-directional B-splines:
+    for (unsigned int spline_v_idx = 0; spline_v_idx < splines_v_vector.size(); ++spline_v_idx) {
+        // check parametrization of B-splines:
+        TColStd_Array1OfReal knots(1, splines_v_vector[spline_v_idx]->NbKnots());
+        splines_v_vector[spline_v_idx]->Knots(knots);
+
+        if (std::abs(splines_v_vector[spline_v_idx]->Knot(1)) > 1e-15 || std::abs(splines_v_vector[spline_v_idx]->Knot(splines_v_vector[spline_v_idx]->NbKnots()) - 1) > 1e-15) {
+            if (std::abs(splines_v_vector[spline_v_idx]->Knot(1)) > 1e-15) {  // parameter range doesn't start with 0
+
+                for (int knot_idx = 1; knot_idx <= splines_v_vector[spline_v_idx]->NbKnots(); ++knot_idx) {
+                    knots(knot_idx) -= splines_v_vector[spline_v_idx]->Knot(1);
+                }
+            }
+
+            if (std::abs(splines_v_vector[spline_v_idx]->Knot(splines_v_vector[spline_v_idx]->NbKnots()) - 1) > 1e-15) {  // parameter range doesn't end with 1
+
+                for (int knot_idx = 1; knot_idx <= splines_v_vector[spline_v_idx]->NbKnots(); ++knot_idx) {
+                    knots(knot_idx) /= splines_v_vector[spline_v_idx]->Knot(splines_v_vector[spline_v_idx]->NbKnots());
+                }
+            }
+
+            // edit spline
+            splines_v_vector[spline_v_idx]->SetKnots(knots);
+        }
+    }
+    // now the parameter range of all v-directional B-splines should be [0, 1]
+
+
+    // now find all intersections of all B-splines with each other
+    std::vector<std::vector<double>> intersection_params_u(splines_u_vector.size(), std::vector<double> (splines_v_vector.size()));
+    std::vector<std::vector<double>> intersection_params_v(splines_v_vector.size(), std::vector<double> (splines_u_vector.size()));
+
+    for (unsigned int spline_u_idx = 0; spline_u_idx < splines_u_vector.size(); ++spline_u_idx) {
+        for (unsigned int spline_v_idx = 0; spline_v_idx < splines_v_vector.size(); ++spline_v_idx) {
+            std::vector<std::pair<double, double>> intersection_params_vector = CTiglBSplineAlgorithms::intersectionFinder(splines_u_vector[spline_u_idx], splines_v_vector[spline_v_idx]);
+
+            if (intersection_params_vector.size() < 1) {
+                throw CTiglError("U-directional B-spline and v-directional B-spline don't intersect each other!");
+            }
+
+            if (intersection_params_vector.size() > 1) {
+                throw CTiglError("U-directional B-spline and v-directional B-spline have more than one intersection with each other!");
+            }
+
+            intersection_params_u[spline_u_idx][spline_v_idx] = intersection_params_vector[0].first;
+            intersection_params_v[spline_v_idx][spline_u_idx] = intersection_params_vector[0].second;
+        }
+    }
+
+    TColStd_Array1OfReal average_intersection_params_u(1, splines_v_vector.size());
+    for (unsigned int spline_v_idx = 1; spline_v_idx <= splines_v_vector.size(); ++spline_v_idx) {
+        double sum = 0;
+        for (unsigned int spline_u_idx = 1; spline_u_idx <= splines_u_vector.size(); ++spline_u_idx) {
+            sum += intersection_params_u[spline_u_idx - 1][spline_v_idx - 1];
+        }
+        average_intersection_params_u(spline_v_idx) = sum / splines_u_vector.size();
+    }
+
+    TColStd_Array1OfReal average_intersection_params_v(1, splines_u_vector.size());
+    for (unsigned int spline_u_idx = 1; spline_u_idx <= splines_u_vector.size(); ++spline_u_idx) {
+        double sum = 0;
+        for (unsigned int spline_v_idx = 1; spline_v_idx <= splines_v_vector.size(); ++spline_v_idx) {
+            sum += intersection_params_v[spline_v_idx - 1][spline_u_idx - 1];
+        }
+        average_intersection_params_v(spline_u_idx) = sum / splines_v_vector.size();
+    }
+
+    // reparametrize u-directional B-splines
+    std::vector<Handle(Geom_BSplineCurve)> reparam_splines_u;
+    for (unsigned int spline_u_idx = 0; spline_u_idx < splines_u_vector.size(); ++spline_u_idx) {
+
+        TColStd_Array1OfReal old_parameters(1, splines_v_vector.size());
+        for (unsigned int spline_v_idx = 1; spline_v_idx <= splines_v_vector.size(); ++spline_v_idx) {
+            old_parameters(spline_v_idx) = intersection_params_u[spline_u_idx][spline_v_idx - 1];
+        }
+
+        Handle(Geom_BSplineCurve) reparam_spline_u = CTiglBSplineAlgorithms::reparametrizeBSpline(splines_u_vector[spline_u_idx], old_parameters, average_intersection_params_u);
+        reparam_splines_u.push_back(reparam_spline_u);
+    }
+
+    // reparametrize v-directional B-splines
+    std::vector<Handle(Geom_BSplineCurve)> reparam_splines_v;
+    for (unsigned int spline_v_idx = 0; spline_v_idx < splines_v_vector.size(); ++spline_v_idx) {
+
+        TColStd_Array1OfReal old_parameters(1, splines_u_vector.size());
+        for (unsigned int spline_u_idx = 1; spline_u_idx <= splines_u_vector.size(); ++spline_u_idx) {
+            old_parameters(spline_u_idx) = intersection_params_v[spline_v_idx][spline_u_idx - 1];
+        }
+
+        Handle(Geom_BSplineCurve) reparam_spline_v = CTiglBSplineAlgorithms::reparametrizeBSpline(splines_v_vector[spline_v_idx], old_parameters, average_intersection_params_v);
+        reparam_splines_v.push_back(reparam_spline_v);
+    }
+
+    // splines are reparametrized, but don't have common knot vector yet, in this sense not compatible
+
+    // convert types of average_intersection_params
+    Handle(TColStd_HArray1OfReal) av_intersection_params_u = new TColStd_HArray1OfReal(1, average_intersection_params_u.Length());
+    for (int i = 1; i <= average_intersection_params_u.Length(); ++i) {
+        av_intersection_params_u->SetValue(i, average_intersection_params_u(i));
+    }
+
+    Handle(TColStd_HArray1OfReal) av_intersection_params_v = new TColStd_HArray1OfReal(1, average_intersection_params_v.Length());
+    for (int i = 1; i <= average_intersection_params_v.Length(); ++i) {
+        av_intersection_params_v->SetValue(i, average_intersection_params_v(i));
+    }
+
+    Handle(Geom_BSplineSurface) gordonSurface = CTiglBSplineAlgorithms::createGordonSurface(splines_u_vector, splines_v_vector, av_intersection_params_u, av_intersection_params_v);
+
+    return gordonSurface;
+}
 } // namespace tigl
