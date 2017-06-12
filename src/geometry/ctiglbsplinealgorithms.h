@@ -154,7 +154,7 @@ public:
 
     /**
      * @brief createGordonSurface:
-     *          Returns a Gordon Surface with a given compatible network of B-splines
+     *          Returns a Gordon Surface of a given compatible network of B-splines
      *          All parameters must be in the right order and the B-spline network must be 'closed', i.e., B-splines mustn't stick out!
      * @param compatible_splines_u_vector:
      *          vector of B-splines in u-direction
@@ -174,7 +174,7 @@ public:
      * @param intersection_params_spline_v:
      *          array of intersection parameters of the v-directional B-splines with all the u-directional B-splines
      *          These intersection parameters are the same for all v-directional B-splines (because compatible).
-     * @return
+     * @return:
      *          the Gordon Surface as a B-spline surface
      */
     TIGL_EXPORT static Handle(Geom_BSplineSurface) createGordonSurface(const std::vector<Handle(Geom_BSplineCurve) >& compatible_splines_u_vector, const std::vector<Handle(Geom_BSplineCurve) >& compatible_splines_v_vector, const Handle(TColStd_HArray1OfReal) intersection_params_spline_u, const Handle(TColStd_HArray1OfReal) intersection_params_spline_v);
@@ -190,8 +190,21 @@ public:
      *          intersections of spline1 with spline2 as a vector of (parameter of spline1, parameter of spline2)-pairs
      */
     TIGL_EXPORT static std::vector<std::pair<double, double>> intersectionFinder(const Handle(Geom_BSplineCurve) spline1, const Handle(Geom_BSplineCurve) spline2);
-};
 
+    /**
+     * @brief createGordonSurfaceGeneral:
+     *          Returns a Gordon Surface of a given compatible network of B-splines
+     * @param splines_u_vector:
+     *          vector of B-splines parametrized in u-direction which don't need to be compatible yet
+     *          ! Have to be in the right order (from small v to bigger v) !
+     * @param splines_v_vector:
+     *          vector of B-splines parametrized in v-direction which don't need to be compatible yet
+     *          ! Have to be in the right order (from small u to bigger u) !
+     * @return:
+     *          the Gordon Surface as a B-spline surface
+     */
+    TIGL_EXPORT static Handle(Geom_BSplineSurface) createGordonSurfaceGeneral(const std::vector<Handle(Geom_BSplineCurve) >& splines_u_vector, const std::vector<Handle(Geom_BSplineCurve) >& splines_v_vector);
+};
 } // namespace tigl
 
 #endif // CTIGLBSPLINEALGORITHMS_H
