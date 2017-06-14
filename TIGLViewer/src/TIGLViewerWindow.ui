@@ -64,7 +64,7 @@
      <x>0</x>
      <y>0</y>
      <width>783</width>
-     <height>21</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="fileMenu">
@@ -287,9 +287,7 @@
      <addaction name="gridCircAction"/>
     </widget>
     <addaction name="viewDisplayMenu"/>
-    <addaction name="separator"/>
     <addaction name="viewActionsMenu"/>
-    <addaction name="separator"/>
     <addaction name="gridMenu"/>
    </widget>
    <widget class="QMenu" name="helpMenu">
@@ -309,6 +307,9 @@
    <property name="windowTitle">
     <string>File</string>
    </property>
+   <property name="movable">
+    <bool>false</bool>
+   </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
    </attribute>
@@ -325,8 +326,11 @@
    <property name="windowTitle">
     <string>Views</string>
    </property>
+   <property name="orientation">
+    <enum>Qt::Vertical</enum>
+   </property>
    <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
+    <enum>LeftToolBarArea</enum>
    </attribute>
    <attribute name="toolBarBreak">
     <bool>false</bool>
@@ -335,6 +339,7 @@
    <addaction name="panAction"/>
    <addaction name="rotAction"/>
    <addaction name="zoomAction"/>
+   <addaction name="fitAllAction"/>
    <addaction name="separator"/>
    <addaction name="viewTopAction"/>
    <addaction name="viewLeftAction"/>
@@ -1021,6 +1026,10 @@
    </property>
   </action>
   <action name="fitAllAction">
+   <property name="icon">
+    <iconset resource="TIGLViewer.qrc">
+     <normaloff>:/gfx/view-fit.png</normaloff>:/gfx/view-fit.png</iconset>
+   </property>
    <property name="text">
     <string>Fit &amp;All</string>
    </property>
