@@ -65,14 +65,15 @@ namespace
 namespace tigl
 {
 
+bool CTiglTriangularizer::_useMultipleObjects = false;
+bool CTiglTriangularizer::_normalsEnabled = true;
+
 CTiglTriangularizer::CTiglTriangularizer()
 {
-    useMultipleObjects(false);
 }
 
-CTiglTriangularizer::CTiglTriangularizer(const TopoDS_Shape& shape, double deflection, bool multipleObj) 
+CTiglTriangularizer::CTiglTriangularizer(const TopoDS_Shape& shape, double deflection)
 {
-    useMultipleObjects(multipleObj);
     
     // check if we have already a mesh with given deflection
     if (!BRepTools::Triangulation (shape, deflection)) {
@@ -90,6 +91,8 @@ int CTiglTriangularizer::triangularizeShape(const TopoDS_Shape& shape)
     for (shellExplorer.Init(shape, TopAbs_SHELL); shellExplorer.More(); shellExplorer.Next()) {
         const TopoDS_Shell shell = TopoDS::Shell(shellExplorer.Current());
         
+        currentObject().enableNormals(_normalsEnabled);
+
         for (faceExplorer.Init(shell, TopAbs_FACE); faceExplorer.More(); faceExplorer.Next()) {
             TopoDS_Face face = TopoDS::Face(faceExplorer.Current());
             unsigned long nVertices, iPolyLower, iPolyUpper;
@@ -182,6 +185,8 @@ int CTiglTriangularizer::triangularizeComponent(CTiglAbstractPhysicalComponent &
     BRepTools::Clean (shape);
     BRepMesh_IncrementalMesh(shape, deflection);
     LOG(INFO) << "Done meshing";
+
+    currentObject().enableNormals(_normalsEnabled);
     
     TopExp_Explorer faceExplorer;
     for (faceExplorer.Init(shape, TopAbs_FACE); faceExplorer.More(); faceExplorer.Next()) {
@@ -313,11 +318,10 @@ int CTiglTriangularizer::triangularizeFace(const TopoDS_Face & face, unsigned lo
     unsigned long ilower = 0;
     unsigned long iBufferSize = 0;
     
-    if (triangulation->HasUVNodes()) {
+    if (triangulation->HasUVNodes() && _normalsEnabled) {
         // we use the uv nodes to compute normal vectors for each point
         
         BRepGProp_Face prop(face);
-        currentObject().enableNormals(true);
         
         const TColgp_Array1OfPnt2d& uvnodes = triangulation->UVNodes(); // get (face-local) list of nodes
         ilower = uvnodes.Lower();
@@ -333,7 +337,7 @@ int CTiglTriangularizer::triangularizeFace(const TopoDS_Face & face, unsigned lo
             }
             if (face.Orientation() == TopAbs_INTERNAL) {
                 n.Reverse();
-            } 
+            }
             indexBuffer.push_back(currentObject().addPointNormal(p.XYZ(), n.XYZ()));
         }
     } 
@@ -394,6 +398,11 @@ int CTiglTriangularizer::triangularizeFace(const TopoDS_Face & face, unsigned lo
 void CTiglTriangularizer::useMultipleObjects(bool use)
 {
     _useMultipleObjects = use;
+}
+
+void CTiglTriangularizer::setNormalsEnabled(bool enabled)
+{
+    _normalsEnabled = enabled;
 }
 
 } // namespace tigl

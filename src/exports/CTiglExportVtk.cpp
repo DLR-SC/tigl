@@ -88,7 +88,7 @@ void CTiglExportVtk::ExportMeshedFuselageVTKByUID(const std::string& fuselageUID
 {
     CTiglAbstractPhysicalComponent & component = myConfig.GetFuselage(fuselageUID);
     const TopoDS_Shape& shape = component.GetLoft()->Shape();
-    CTiglTriangularizer trian(shape, deflection, false);
+    CTiglTriangularizer trian(shape, deflection);
     trian.writeVTK(filename.c_str());
 }
 
