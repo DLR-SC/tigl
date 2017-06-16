@@ -11,11 +11,12 @@ source:
     - fix_tkopengl_dll_path.patch     # [win]
     - dlr-feature-coons_c2.patch
     - fix-tiglviewer-selection.patch
+    - oceonly-freeimage_staticlib_support.patch
     - glibc.patch                     # [linux]
 
 build:
   detect_binary_files_with_prefix: True
-  number: 0
+  number: 1
   features:
     - vc9              # [win and py27]
     - vc10             # [win and py34]
@@ -26,6 +27,7 @@ requirements:
     - patch            # [win]
     - python
     - freetype-static ==2.6
+    - freeimageplus-static ==3.17.0
     - ninja ==1.7.1
     - cmake
     - gcc              # [linux]

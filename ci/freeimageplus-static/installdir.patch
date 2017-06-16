@@ -1,0 +1,13 @@
+diff --git CMakeLists.txt CMakeLists.txt
+index 8f8a648..c374ae6 100644
+--- CMakeLists.txt
++++ CMakeLists.txt
+@@ -72,7 +72,7 @@ IF(MINGW)
+ ENDIF()
+ 
+ 
+-SET( OCE_WIN_BUNDLE_INSTALL_DIR_BITS ${OCE_WIN_BUNDLE_INSTALL_DIR}/Win${BIT}/)
++SET( OCE_WIN_BUNDLE_INSTALL_DIR_BITS ${OCE_WIN_BUNDLE_INSTALL_DIR}/)
+ SET( OCE_BUNDLE_ROOT_PATH ${CMAKE_CURRENT_SOURCE_DIR} )
+ 
+ # Adds freetype and related variables
