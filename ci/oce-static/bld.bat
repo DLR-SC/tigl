@@ -25,3 +25,7 @@ REM Install step
 ninja install
 if errorlevel 1 exit 1
 
+
+REM Fix hardcoded absolute freetype and freeimage paths
+python %RECIPE_DIR%\fixpaths.py "%LIBRARY_PREFIX%\cmake\OCE-libraries-release.cmake" "%LIBRARY_PREFIX%"\lib\
+if errorlevel 1 exit 1
