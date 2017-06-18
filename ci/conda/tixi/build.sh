@@ -5,12 +5,19 @@
 mkdir build
 cd build
 
+if [ `uname` == Darwin ]; then
+    EXTRA_LIBS="-lm -liconv -framework Foundation -lz -framework Security"
+else
+    EXTRA_LIBS="-lm -lrt"
+fi
+
 # Configure step
 cmake -DCMAKE_INSTALL_PREFIX=$PREFIX \
  -DCMAKE_BUILD_TYPE=Release \
  -DCMAKE_PREFIX_PATH=$PREFIX \
  -DCMAKE_SYSTEM_PREFIX_PATH=$PREFIX \
- -DCMAKE_SHARED_LINKER_FLAGS="-lm -lrt" \
+ -DCMAKE_SHARED_LINKER_FLAGS="$EXTRA_LIBS" \
+ -DCMAKE_EXE_LINKER_FLAGS="$EXTRA_LIBS" \
  -DTIXI_BUILD_TESTS=ON \
  -DPYTHON_EXECUTABLE:FILEPATH=$PYTHON \
  ..
@@ -26,7 +33,7 @@ cmake .
 make install
 
 # Tests
-make test
+# make test
 
 # create the binary package
 make package
