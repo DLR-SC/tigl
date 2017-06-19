@@ -437,7 +437,7 @@ void CTiglPolyData::writeVTKPiece(TixiDocumentHandle& handle, unsigned int iObje
         for (unsigned int i = 0; i < nPoints; ++i) {
             const CTiglPoint& p = co.getVertexPoint(i);
             setMinMax(p, &min_coord, &max_coord);
-            stream1 << "    " <<  p.x << " " << p.y << " " << p.z << std::endl;
+            stream1 << "    " << std::setprecision(10) << p.x << " " << p.y << " " << p.z << std::endl;
             stream1 << "         ";
         }
         std::string tmpPath = piecepath + "/Points";
