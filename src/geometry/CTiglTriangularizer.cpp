@@ -368,11 +368,6 @@ int CTiglTriangularizer::triangularizeFace(const TopoDS_Face & face, unsigned lo
         index2 = indexBuffer[occindex2-ilower];
         index3 = indexBuffer[occindex3-ilower];
         
-        // @TODO: in some rare cases, 2 indices are the same
-        // which means, that we dont have a true triangle.
-        // This behaviour might break some export functions.
-        // What should we do?
-        
         unsigned int iPolyIndex = 0;
         
         if (face.Orientation() != TopAbs_REVERSED && face.Orientation() != TopAbs_INTERNAL) {
@@ -382,6 +377,13 @@ int CTiglTriangularizer::triangularizeFace(const TopoDS_Face & face, unsigned lo
             iPolyIndex = currentObject().addTriangleByVertexIndex(index1, index3, index2);
         }
         
+        // In some rare cases, 2 indices are the same
+        // which means, that we dont have a true triangle.
+        // Ignore this triangle
+        if (iPolyIndex == ULONG_MAX) {
+            continue;
+        }
+
         if (iPolyIndex > iPolyUpper) {
             iPolyUpper = iPolyIndex;
         }

@@ -850,6 +850,11 @@ unsigned long ObjectImpl::addPointNorm(const CTiglPoint& p, const CTiglPoint& n)
 
 unsigned long ObjectImpl::addTriangleByVertexIndex(unsigned long i1, unsigned long i2, unsigned long i3 )
 {
+    // if we don't have a true triangle / 2 indices are the same, report error
+    if (i1 == i2 || i1 == i3 || i2 == i3) {
+        return ULONG_MAX;
+    }
+
     unsigned long nPolys = static_cast<unsigned long>(polys.size());
     polys.push_back(PolyIndexList(nPolys));
     
