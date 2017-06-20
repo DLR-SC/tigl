@@ -98,7 +98,8 @@ public:
      * @return
      *          the created skinned surface
      */
-    TIGL_EXPORT static Handle(Geom_BSplineSurface) skinnedBSplineSurfaceParams(const std::vector<Handle(Geom_BSplineCurve) >& splines_vector, const Handle(TColStd_HArray1OfReal) v_params);
+    TIGL_EXPORT static Handle(Geom_BSplineSurface) skinnedBSplineSurfaceParams(const std::vector<Handle(Geom_BSplineCurve) >& splines_vector,
+                                                                               const Handle(TColStd_HArray1OfReal) v_params);
 
     /**
      * @brief skinnedBSplineSurfaceParams:
@@ -125,7 +126,8 @@ public:
      * @return
      *          the reparametrized given B-spline
      */
-    TIGL_EXPORT static Handle(Geom_BSplineCurve) reparametrizeBSpline(const Handle(Geom_BSplineCurve) spline, const TColStd_Array1OfReal& old_parameters, const TColStd_Array1OfReal& new_parameters);
+    TIGL_EXPORT static Handle(Geom_BSplineCurve) reparametrizeBSpline(const Handle(Geom_BSplineCurve) spline, const TColStd_Array1OfReal& old_parameters,
+                                                                      const TColStd_Array1OfReal& new_parameters);
 
     /**
      * @brief flipSurface:
@@ -150,7 +152,8 @@ public:
      * @return
      *          B-spline surface which interpolates the given points with the given parameters
      */
-    TIGL_EXPORT static Handle(Geom_BSplineSurface) interpolatingSurface(const TColgp_Array2OfPnt& points, const Handle(TColStd_HArray1OfReal) parameters_u, const Handle(TColStd_HArray1OfReal) parameters_v);
+    TIGL_EXPORT static Handle(Geom_BSplineSurface) interpolatingSurface(const TColgp_Array2OfPnt& points, const Handle(TColStd_HArray1OfReal) parameters_u,
+                                                                        const Handle(TColStd_HArray1OfReal) parameters_v);
 
     /**
      * @brief createGordonSurface:
@@ -177,7 +180,10 @@ public:
      * @return:
      *          the Gordon Surface as a B-spline surface
      */
-    TIGL_EXPORT static Handle(Geom_BSplineSurface) createGordonSurface(const std::vector<Handle(Geom_BSplineCurve) >& compatible_splines_u_vector, const std::vector<Handle(Geom_BSplineCurve) >& compatible_splines_v_vector, const Handle(TColStd_HArray1OfReal) intersection_params_spline_u, const Handle(TColStd_HArray1OfReal) intersection_params_spline_v);
+    TIGL_EXPORT static Handle(Geom_BSplineSurface) createGordonSurface(const std::vector<Handle(Geom_BSplineCurve) >& compatible_splines_u_vector,
+                                                                       const std::vector<Handle(Geom_BSplineCurve) >& compatible_splines_v_vector,
+                                                                       const Handle(TColStd_HArray1OfReal) intersection_params_spline_u,
+                                                                       const Handle(TColStd_HArray1OfReal) intersection_params_spline_v);
 
     /**
      * @brief intersectionFinder:
@@ -189,7 +195,31 @@ public:
      * @return:
      *          intersections of spline1 with spline2 as a vector of (parameter of spline1, parameter of spline2)-pairs
      */
-    TIGL_EXPORT static std::vector<std::pair<double, double>> intersectionFinder(const Handle(Geom_BSplineCurve) spline1, const Handle(Geom_BSplineCurve) spline2);
+    TIGL_EXPORT static std::vector<std::pair<double, double> > intersectionFinder(const Handle(Geom_BSplineCurve) spline1, const Handle(Geom_BSplineCurve) spline2);
+
+    /**
+     * @brief sortBSplines:
+     *          Returns a pair of parameters and its correlating vector of B-splines in such a sorted way so that the parameters are in an ascending order
+     * @param parameters:
+     *          array of parameters that correlate to the given vector of B-splines
+     *          Each B-spline has its own parameter
+     * @param splines_vector:
+     *          vector of B-splines
+     *          There must be as many B-splines as parameters.
+     * @return:
+     *          a pair of the sorted parameters and their sorted vector of B-spline curves
+     */
+    TIGL_EXPORT static std::pair<Handle(TColStd_HArray1OfReal), std::vector<Handle(Geom_BSplineCurve)> > sortBSplines(const Handle(TColStd_HArray1OfReal) parameters, const std::vector<Handle(Geom_BSplineCurve)>& splines_vector);
+
+    /**
+     * @brief scaleOfBSplines:
+     *          Returns the approximate scale of the biggest given B-spline curve
+     * @param splines_vector:
+     *          vector of B-spline curves
+     * @return:
+     *          the scale
+     */
+    TIGL_EXPORT static double scaleOfBSplines(const std::vector<Handle(Geom_BSplineCurve)>& splines_vector);
 
     /**
      * @brief createGordonSurfaceGeneral:
@@ -203,7 +233,8 @@ public:
      * @return:
      *          the Gordon Surface as a B-spline surface
      */
-    TIGL_EXPORT static Handle(Geom_BSplineSurface) createGordonSurfaceGeneral(const std::vector<Handle(Geom_BSplineCurve) >& splines_u_vector, const std::vector<Handle(Geom_BSplineCurve) >& splines_v_vector);
+    TIGL_EXPORT static Handle(Geom_BSplineSurface) createGordonSurfaceGeneral(const std::vector<Handle(Geom_BSplineCurve) >& splines_u_vector,
+                                                                              const std::vector<Handle(Geom_BSplineCurve) >& splines_v_vector);
 };
 } // namespace tigl
 
