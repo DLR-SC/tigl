@@ -17,7 +17,16 @@
 
 #include <BRepTools.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
+#include <BRepBuilderAPI_MakeEdge.hxx>
 #include <Precision.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <BRep_Builder.hxx>
+#include <TopTools_ListOfShape.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopExp.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
+#include <GeomConvert.hxx>
 
 
 namespace tigl
@@ -867,7 +876,7 @@ TEST(TiglBSplineAlgorithms, testIntersectionFinder)
 
     Handle(Geom_BSplineCurve) spline_v = new Geom_BSplineCurve(controlPoints_v, knots, mults, degree);
 
-    std::vector<std::pair<double, double>> intersection_vector = CTiglBSplineAlgorithms::intersectionFinder(spline_u, spline_v);
+    std::vector<std::pair<double, double> > intersection_vector = CTiglBSplineAlgorithms::intersectionFinder(spline_u, spline_v);
 
     // splines should intersect at u = 0.5 + std::sqrt(0.1) and v = 4. / 5
     ASSERT_NEAR(intersection_vector[0].first, 0.5 + std::sqrt(0.1), 1e-15);
@@ -973,17 +982,17 @@ TEST(TiglBSplineAlgorithms, testCreateGordonSurfaceGeneral)
 
     // u- and v-directional B-splines are already compatible in B-spline sense (common knot vector, same parametrization)
     std::vector<Handle(Geom_BSplineCurve)> splines_u_vector;
+    splines_u_vector.push_back(spline_u3);
     splines_u_vector.push_back(spline_u1);
     splines_u_vector.push_back(spline_u2);
-    splines_u_vector.push_back(spline_u3);
     splines_u_vector.push_back(spline_u4);
 
     std::vector<Handle(Geom_BSplineCurve)> splines_v_vector;
-    splines_v_vector.push_back(spline_v1);
+    splines_v_vector.push_back(spline_v5);
+    splines_v_vector.push_back(spline_v4);
     splines_v_vector.push_back(spline_v2);
     splines_v_vector.push_back(spline_v3);
-    splines_v_vector.push_back(spline_v4);
-    splines_v_vector.push_back(spline_v5);
+    splines_v_vector.push_back(spline_v1);
 
     Handle(Geom_BSplineSurface) gordonSurface = CTiglBSplineAlgorithms::createGordonSurfaceGeneral(splines_u_vector, splines_v_vector);
 
@@ -1004,5 +1013,56 @@ TEST(TiglBSplineAlgorithms, testCreateGordonSurfaceGeneral)
         }
     }
 }
+
+TEST(TiglBSplineAlgorithms, testCreateGordonSurfaceGeneralBRep)
+{
+    // u-directional B-spline curves
+    // first read the brep-input file
+    TopoDS_Shape shape_u;
+    Standard_CString file_u = "wing2/profiles.brep";
+    BRep_Builder builder_u;
+
+    BRepTools::Read(shape_u, file_u, builder_u);
+
+     TopExp_Explorer Explorer;
+     // get the splines in u-direction from the Edges
+     std::vector<Handle(Geom_BSplineCurve)> splines_u_vector;
+     for (Explorer.Init(shape_u, TopAbs_EDGE); Explorer.More(); Explorer.Next()) {
+         TopoDS_Edge curve_edge = TopoDS::Edge(Explorer.Current());
+         double beginning = 0;
+         double end = 1;
+         Handle(Geom_Curve) curve = BRep_Tool::Curve(curve_edge, beginning, end);
+         Handle(Geom_BSplineCurve) spline = GeomConvert::CurveToBSplineCurve(curve);
+         splines_u_vector.push_back(spline);
+     }
+
+    // v-directional B-spline curves
+    // first read the BRep-input file
+    TopoDS_Shape shape_v;
+    Standard_CString file_v = "wing2/guides.brep";
+    BRep_Builder builder_v;
+
+    BRepTools::Read(shape_v, file_v, builder_v);
+
+    // now filter out the Edges
+    TopTools_IndexedMapOfShape mapEdges_v;
+    TopExp::MapShapes(shape_v, TopAbs_EDGE, mapEdges_v);
+
+    // get the splines in v-direction from the Edges
+    std::vector<Handle(Geom_BSplineCurve)> splines_v_vector;
+    for (Explorer.Init(shape_v, TopAbs_EDGE); Explorer.More(); Explorer.Next()) {
+        TopoDS_Edge curve_edge = TopoDS::Edge(Explorer.Current());
+        double beginning = 0;
+        double end = 1;
+        Handle(Geom_Curve) curve = BRep_Tool::Curve(curve_edge, beginning, end);
+        Handle(Geom_BSplineCurve) spline = GeomConvert::CurveToBSplineCurve(curve);
+        splines_v_vector.push_back(spline);
+    }
+
+
+    Handle(Geom_BSplineSurface) gordonSurface = CTiglBSplineAlgorithms::createGordonSurfaceGeneral(splines_u_vector, splines_v_vector);
+    //BRepTools::Write(BRepBuilderAPI_MakeFace(gordonSurface, Precision::Confusion()), "GordonSurfaceFromBRep.brep");
+}
+
 
 } // namespace tigl
