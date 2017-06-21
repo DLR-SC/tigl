@@ -254,7 +254,50 @@ namespace tigl
         
         bool CPACSWingRibsPositioning::ValidateChoices() const
         {
-            return ((m_etaStart_choice1.is_initialized()) + (m_elementStartUID_choice2.is_initialized()) + (m_sparPositionStartUID_choice3.is_initialized()) == 1) && ((m_etaEnd_choice1.is_initialized()) + (m_elementEndUID_choice2.is_initialized()) + (m_sparPositionEndUID_choice3.is_initialized()) == 1) && ((m_spacing_choice1.is_initialized()) + (m_numberOfRibs_choice2.is_initialized()) == 1);
+            return
+            (
+                (
+                    (
+                        m_etaStart_choice1.is_initialized()
+                    )
+                    +
+                    (
+                        m_elementStartUID_choice2.is_initialized()
+                    )
+                    +
+                    (
+                        m_sparPositionStartUID_choice3.is_initialized()
+                    )
+                    == 1
+                )
+                &&
+                (
+                    (
+                        m_etaEnd_choice1.is_initialized()
+                    )
+                    +
+                    (
+                        m_elementEndUID_choice2.is_initialized()
+                    )
+                    +
+                    (
+                        m_sparPositionEndUID_choice3.is_initialized()
+                    )
+                    == 1
+                )
+                &&
+                (
+                    (
+                        m_spacing_choice1.is_initialized()
+                    )
+                    +
+                    (
+                        m_numberOfRibs_choice2.is_initialized()
+                    )
+                    == 1
+                )
+            )
+            ;
         }
         
         const std::string& CPACSWingRibsPositioning::GetRibReference() const

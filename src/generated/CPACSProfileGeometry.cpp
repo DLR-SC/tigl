@@ -160,7 +160,20 @@ namespace tigl
         
         bool CPACSProfileGeometry::ValidateChoices() const
         {
-            return ((m_pointList_choice1.is_initialized()) + (m_cst2D_choice2.is_initialized()) == 1);
+            return
+            (
+                (
+                    (
+                        m_pointList_choice1.is_initialized()
+                    )
+                    +
+                    (
+                        m_cst2D_choice2.is_initialized()
+                    )
+                    == 1
+                )
+            )
+            ;
         }
         
         const boost::optional<TiglSymmetryAxis>& CPACSProfileGeometry::GetSymmetry() const
