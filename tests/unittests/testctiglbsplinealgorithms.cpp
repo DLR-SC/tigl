@@ -1014,12 +1014,12 @@ TEST(TiglBSplineAlgorithms, testCreateGordonSurfaceGeneral)
     }
 }
 
-TEST(TiglBSplineAlgorithms, testCreateGordonSurfaceGeneralBRep)
+TEST(TiglBSplineAlgorithms, gordonSurfaceWing2)
 {
     // u-directional B-spline curves
     // first read the brep-input file
     TopoDS_Shape shape_u;
-    Standard_CString file_u = "wing2/profiles.brep";
+    Standard_CString file_u = "TestData/wing2/profiles.brep";
     BRep_Builder builder_u;
 
     BRepTools::Read(shape_u, file_u, builder_u);
@@ -1039,7 +1039,7 @@ TEST(TiglBSplineAlgorithms, testCreateGordonSurfaceGeneralBRep)
     // v-directional B-spline curves
     // first read the BRep-input file
     TopoDS_Shape shape_v;
-    Standard_CString file_v = "wing2/guides.brep";
+    Standard_CString file_v = "TestData/wing2/guides.brep";
     BRep_Builder builder_v;
 
     BRepTools::Read(shape_v, file_v, builder_v);
@@ -1061,7 +1061,7 @@ TEST(TiglBSplineAlgorithms, testCreateGordonSurfaceGeneralBRep)
 
 
     Handle(Geom_BSplineSurface) gordonSurface = CTiglBSplineAlgorithms::createGordonSurfaceGeneral(splines_u_vector, splines_v_vector);
-    //BRepTools::Write(BRepBuilderAPI_MakeFace(gordonSurface, Precision::Confusion()), "GordonSurfaceFromBRep.brep");
+    BRepTools::Write(BRepBuilderAPI_MakeFace(gordonSurface, Precision::Confusion()), "TestData/Wing2_result.brep");
 }
 
 
