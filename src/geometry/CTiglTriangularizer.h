@@ -38,17 +38,52 @@ enum ComponentTraingMode
     SEGMENT_INFO
 };
 
+class CTiglTriangularizerOptions {
+public:
+    CTiglTriangularizerOptions()
+        : m_useMultipleObjects(false),
+          m_normalsEnabled(true)
+    {
+    }
+
+    bool useMultipleObjects() const
+    {
+        return m_useMultipleObjects;
+    }
+
+    bool normalsEnabled() const
+    {
+        return m_normalsEnabled;
+    }
+
+    void setNormalsEnabled(bool enabled)
+    {
+        m_normalsEnabled = enabled;
+    }
+
+    void setMutipleObjectsEnabled(bool enabled)
+    {
+        m_useMultipleObjects = enabled;
+    }
+
+private:
+    bool m_useMultipleObjects;
+    bool m_normalsEnabled;
+};
+
 class CTiglTriangularizer : public CTiglPolyData
 {
 public:
-    TIGL_EXPORT CTiglTriangularizer();
-    TIGL_EXPORT CTiglTriangularizer(const TopoDS_Shape&, double deflection);
-    TIGL_EXPORT CTiglTriangularizer(class CTiglAbstractPhysicalComponent &comp, double deflection, ComponentTraingMode mode);
-    TIGL_EXPORT CTiglTriangularizer(class CCPACSConfiguration& config, bool fuseShapes, double deflection, ComponentTraingMode mode);
-    
-    TIGL_EXPORT static void useMultipleObjects(bool);
-    TIGL_EXPORT static void setNormalsEnabled(bool);
-    
+    TIGL_EXPORT CTiglTriangularizer(const CTiglTriangularizerOptions& options = CTiglTriangularizerOptions());
+
+    TIGL_EXPORT CTiglTriangularizer(const TopoDS_Shape&, double deflection, const CTiglTriangularizerOptions& options = CTiglTriangularizerOptions());
+
+    TIGL_EXPORT CTiglTriangularizer(class CTiglAbstractPhysicalComponent &comp, double deflection,
+                                    ComponentTraingMode mode, const CTiglTriangularizerOptions& options = CTiglTriangularizerOptions());
+
+    TIGL_EXPORT CTiglTriangularizer(class CCPACSConfiguration& config, bool fuseShapes, double deflection, ComponentTraingMode mode,
+                                    const CTiglTriangularizerOptions& options = CTiglTriangularizerOptions());
+
 private:
     int triangularizeComponent(class CTiglAbstractPhysicalComponent &, bool includeChilds, const TopoDS_Shape& shape, double deflection, ComponentTraingMode = NO_INFO);
     int triangularizeShape(const TopoDS_Shape &);
@@ -57,8 +92,7 @@ private:
     int computeVTKMetaData(class CCPACSWing&);
 
     // some options
-    static bool _useMultipleObjects;
-    static bool _normalsEnabled;
+    CTiglTriangularizerOptions m_options;
 };
 
 }

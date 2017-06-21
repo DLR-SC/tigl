@@ -5015,6 +5015,37 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedGeometrySTL(TiglCPACSConfigura
     }
 }
 
+TIGL_COMMON_EXPORT TiglReturnCode tiglExportVTKSetOptions(const char *key, const char *value)
+{
+    if (!key) {
+        LOG(ERROR) << "Error: Null pointer argument for key ";
+        LOG(ERROR) << "in function call to tiglExportVTKSetOptions." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+
+    if (!value) {
+        LOG(ERROR) << "Error: Null pointer argument for value ";
+        LOG(ERROR) << "in function call to tiglExportVTKSetOptions." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        tigl::CTiglExportVtk::SetOptions(key, value);
+        return TIGL_SUCCESS;
+    }
+    catch (std::exception & ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError & ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an unknown exception in tiglExportVTKSetOptions" << std::endl;
+        return TIGL_ERROR;
+    }
+}
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingVTKByIndex(const TiglCPACSConfigurationHandle cpacsHandle, const int wingIndex,
                                                                  const char* filenamePtr, const double deflection)
@@ -6381,3 +6412,4 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglLogSetVerbosity(TiglLogLevel consoleVerbos
 
     return TIGL_SUCCESS;
 }
+

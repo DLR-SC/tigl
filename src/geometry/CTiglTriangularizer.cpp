@@ -65,14 +65,13 @@ namespace
 namespace tigl
 {
 
-bool CTiglTriangularizer::_useMultipleObjects = false;
-bool CTiglTriangularizer::_normalsEnabled = true;
-
-CTiglTriangularizer::CTiglTriangularizer()
+CTiglTriangularizer::CTiglTriangularizer(const CTiglTriangularizerOptions& options)
+    : m_options(options)
 {
 }
 
-CTiglTriangularizer::CTiglTriangularizer(const TopoDS_Shape& shape, double deflection)
+CTiglTriangularizer::CTiglTriangularizer(const TopoDS_Shape& shape, double deflection, const CTiglTriangularizerOptions& options)
+    : m_options(options)
 {
     
     // check if we have already a mesh with given deflection
@@ -91,14 +90,14 @@ int CTiglTriangularizer::triangularizeShape(const TopoDS_Shape& shape)
     for (shellExplorer.Init(shape, TopAbs_SHELL); shellExplorer.More(); shellExplorer.Next()) {
         const TopoDS_Shell shell = TopoDS::Shell(shellExplorer.Current());
         
-        currentObject().enableNormals(_normalsEnabled);
+        currentObject().enableNormals(m_options.normalsEnabled());
 
         for (faceExplorer.Init(shell, TopAbs_FACE); faceExplorer.More(); faceExplorer.Next()) {
             TopoDS_Face face = TopoDS::Face(faceExplorer.Current());
             unsigned long nVertices, iPolyLower, iPolyUpper;
             triangularizeFace(face, nVertices, iPolyLower, iPolyUpper);
         } // for faces
-        if (_useMultipleObjects) {
+        if (m_options.useMultipleObjects()) {
             createNewObject();
         }
     } // for shells
@@ -106,14 +105,15 @@ int CTiglTriangularizer::triangularizeShape(const TopoDS_Shape& shape)
     return 0;
 }
 
-CTiglTriangularizer::CTiglTriangularizer(CTiglAbstractPhysicalComponent& comp, double deflection, ComponentTraingMode mode) 
+CTiglTriangularizer::CTiglTriangularizer(CTiglAbstractPhysicalComponent& comp, double deflection, ComponentTraingMode mode, const CTiglTriangularizerOptions& options)
+    : m_options(options)
 {
-    useMultipleObjects(false);
     LOG(INFO) << "Calculating fused plane";
     triangularizeComponent(comp, false, comp.GetLoft()->Shape(), deflection, mode);
 }
 
-CTiglTriangularizer::CTiglTriangularizer(CCPACSConfiguration &config, bool fuseShapes, double deflection, ComponentTraingMode mode) 
+CTiglTriangularizer::CTiglTriangularizer(CCPACSConfiguration &config, bool fuseShapes, double deflection, ComponentTraingMode mode ,const CTiglTriangularizerOptions& options)
+    : m_options(options)
 {
     if (fuseShapes){
         CTiglAbstractPhysicalComponent* pRoot =  config.GetUIDManager().GetRootComponent();
@@ -126,11 +126,11 @@ CTiglTriangularizer::CTiglTriangularizer(CCPACSConfiguration &config, bool fuseS
 
         TopoDS_Shape planeShape = fuser->FusedPlane()->Shape();
 
-        useMultipleObjects(false);
+        m_options.setMutipleObjectsEnabled(false);
         triangularizeComponent(*pRoot, true, planeShape, deflection, mode);
     }
     else {
-        useMultipleObjects(false);
+        m_options.setMutipleObjectsEnabled(false);
         for (int iWing = 1; iWing <= config.GetWingCount(); ++iWing) {
             CCPACSWing& wing = config.GetWing(iWing);
 
@@ -186,7 +186,7 @@ int CTiglTriangularizer::triangularizeComponent(CTiglAbstractPhysicalComponent &
     BRepMesh_IncrementalMesh(shape, deflection);
     LOG(INFO) << "Done meshing";
 
-    currentObject().enableNormals(_normalsEnabled);
+    currentObject().enableNormals(m_options.normalsEnabled());
     
     TopExp_Explorer faceExplorer;
     for (faceExplorer.Init(shape, TopAbs_FACE); faceExplorer.More(); faceExplorer.Next()) {
@@ -245,7 +245,7 @@ int CTiglTriangularizer::triangularizeComponent(CTiglAbstractPhysicalComponent &
             } // ! found
         }
     }
-    if (_useMultipleObjects) {
+    if (m_options.useMultipleObjects()) {
         createNewObject();
     }
 
@@ -318,7 +318,7 @@ int CTiglTriangularizer::triangularizeFace(const TopoDS_Face & face, unsigned lo
     unsigned long ilower = 0;
     unsigned long iBufferSize = 0;
     
-    if (triangulation->HasUVNodes() && _normalsEnabled) {
+    if (triangulation->HasUVNodes() && m_options.normalsEnabled()) {
         // we use the uv nodes to compute normal vectors for each point
         
         BRepGProp_Face prop(face);
@@ -395,16 +395,6 @@ int CTiglTriangularizer::triangularizeFace(const TopoDS_Face & face, unsigned lo
 
     nVertices = iBufferSize;
     return 0;
-}
-
-void CTiglTriangularizer::useMultipleObjects(bool use)
-{
-    _useMultipleObjects = use;
-}
-
-void CTiglTriangularizer::setNormalsEnabled(bool enabled)
-{
-    _normalsEnabled = enabled;
 }
 
 } // namespace tigl
