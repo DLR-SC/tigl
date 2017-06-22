@@ -193,7 +193,20 @@ namespace tigl
         
         bool CPACSRotorBladeAttachment::ValidateChoices() const
         {
-            return ((m_azimuthAngles_choice1.is_initialized()) + (m_numberOfBlades_choice2.is_initialized()) == 1);
+            return
+            (
+                (
+                    (
+                        m_azimuthAngles_choice1.is_initialized()
+                    )
+                    +
+                    (
+                        m_numberOfBlades_choice2.is_initialized()
+                    )
+                    == 1
+                )
+            )
+            ;
         }
         
         const boost::optional<std::string>& CPACSRotorBladeAttachment::GetUID() const

@@ -122,7 +122,26 @@ namespace tigl
         
         bool CPACSMaterialDefinition::ValidateChoices() const
         {
-            return ((m_compositeUID_choice1.is_initialized()) + (m_materialUID_choice2.is_initialized()) == 1);
+            return
+            (
+                (
+                    (
+                        m_compositeUID_choice1.is_initialized()
+                        &&
+                        true // m_orthotropyDirection_choice1 is optional in choice
+                        &&
+                        true // m_thicknessScaling_choice1 is optional in choice
+                    )
+                    +
+                    (
+                        m_materialUID_choice2.is_initialized()
+                        &&
+                        true // m_thickness_choice2 is optional in choice
+                    )
+                    == 1
+                )
+            )
+            ;
         }
         
         const boost::optional<std::string>& CPACSMaterialDefinition::GetCompositeUID_choice1() const

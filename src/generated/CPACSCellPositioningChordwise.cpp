@@ -100,7 +100,22 @@ namespace tigl
         
         bool CPACSCellPositioningChordwise::ValidateChoices() const
         {
-            return ((m_sparUID_choice1.is_initialized()) + (m_xsi1_choice2.is_initialized() && m_xsi2_choice2.is_initialized()) == 1);
+            return
+            (
+                (
+                    (
+                        m_sparUID_choice1.is_initialized()
+                    )
+                    +
+                    (
+                        m_xsi1_choice2.is_initialized()
+                        &&
+                        m_xsi2_choice2.is_initialized()
+                    )
+                    == 1
+                )
+            )
+            ;
         }
         
         const boost::optional<std::string>& CPACSCellPositioningChordwise::GetSparUID_choice1() const
