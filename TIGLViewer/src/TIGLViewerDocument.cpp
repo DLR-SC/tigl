@@ -51,6 +51,7 @@
 
 // TIGLViewer includes
 #include "TIGLViewerInternal.h"
+#include "TIGLViewerVTKExportDialog.h"
 #include "CCPACSConfigurationManager.h"
 #include "CCPACSFarField.h"
 #include "CCPACSExternalObject.h"
@@ -1293,12 +1294,24 @@ void TIGLViewerDocument::exportMeshedWingVTK()
 
     fileName = QFileDialog::getSaveFileName(app, tr("Save as..."), myLastFolder, tr("Export VTK(*.vtp)"));
 
-    if (!fileName.isEmpty()) {
+    if (fileName.isEmpty()) {
+        return;
+    }
+
+    double deflection = 1.0;
+    if (1) {
         START_COMMAND();
         tigl::CCPACSWing& wing = GetConfiguration().GetWing(qstringToCstring(wingUid));
-        double deflection = wing.GetWingspan()/2. * TIGLViewerSettings::Instance().triangulationAccuracy();
+        deflection = wing.GetWingspan()/2. * TIGLViewerSettings::Instance().triangulationAccuracy();
+    }
 
-        TiglReturnCode err = tiglExportMeshedWingVTKByUID(m_cpacsHandle, wingUid.toStdString().c_str(), qstringToCstring(fileName), deflection);
+    TIGLViewerVTKExportDialog settings(app);
+    settings.setDeflection(deflection);
+    settings.exec();
+
+    if (1) {
+        START_COMMAND();
+        TiglReturnCode err = tiglExportMeshedWingVTKByUID(m_cpacsHandle, wingUid.toStdString().c_str(), qstringToCstring(fileName), settings.getDeflection());
         if (err != TIGL_SUCCESS) {
             displayError(QString("Error in function <u>tiglExportMeshedWingVTKByIndex</u>. Error code: %1").arg(err), "TIGL Error");
         }
@@ -1322,11 +1335,23 @@ void TIGLViewerDocument::exportMeshedWingVTKsimple()
 
     fileName = QFileDialog::getSaveFileName(app, tr("Save as..."), myLastFolder, tr("Export VTK(*.vtp)"));
 
-    if (!fileName.isEmpty()) {
+    if (fileName.isEmpty()) {
+        return;
+    }
+
+    double deflection = 1.0;
+    if (1) {
         START_COMMAND();
         tigl::CCPACSWing& wing = GetConfiguration().GetWing(qstringToCstring(wingUid));
-        double deflection = wing.GetWingspan()/2. * TIGLViewerSettings::Instance().triangulationAccuracy();
+        deflection = wing.GetWingspan()/2. * TIGLViewerSettings::Instance().triangulationAccuracy();
+    }
 
+    TIGLViewerVTKExportDialog settings(app);
+    settings.setDeflection(deflection);
+    settings.exec();
+
+    if (1) {
+        START_COMMAND();
         TiglReturnCode err = tiglExportMeshedWingVTKSimpleByUID(m_cpacsHandle, qstringToCstring(wingUid), qstringToCstring(fileName), deflection);
         if (err != TIGL_SUCCESS) {
             displayError(QString("Error in function <u>tiglExportMeshedWingVTKSimpleByUID</u>. Error code: %1").arg(err), "TIGL Error");
@@ -1409,22 +1434,32 @@ void TIGLViewerDocument::exportConfigCollada()
 void TIGLViewerDocument::exportMeshedFuselageVTK()
 {
     QString     fileName;
-    QString        fileType;
-    QFileInfo    fileInfo;
-    TIGLViewerInputOutput writer;
 
     QString wingUid = dlgGetFuselageSelection();
     if (wingUid == "") {
         return;
     }
 
-    writeToStatusBar(tr("Saving meshed Fuselage as VTK file with TIGL..."));
-
     fileName = QFileDialog::getSaveFileName(app, tr("Save as..."), myLastFolder, tr("Export VTK(*.vtp)"));
 
-    if (!fileName.isEmpty()) {
+    if (fileName.isEmpty()) {
+        return;
+    }
+
+    double deflection = 1.0;
+    if (1) {
         START_COMMAND();
-        TiglReturnCode err = tiglExportMeshedFuselageVTKByUID(m_cpacsHandle, wingUid.toStdString().c_str(), qstringToCstring(fileName), 0.1);
+        deflection = GetConfiguration().GetAirplaneLenth()
+                * TIGLViewerSettings::Instance().triangulationAccuracy();
+    }
+
+    TIGLViewerVTKExportDialog settings(app);
+    settings.setDeflection(deflection);
+
+    if (settings.exec()) {
+        writeToStatusBar(tr("Saving meshed Fuselage as VTK file with TIGL..."));
+        START_COMMAND();
+        TiglReturnCode err = tiglExportMeshedFuselageVTKByUID(m_cpacsHandle, wingUid.toStdString().c_str(), qstringToCstring(fileName), settings.getDeflection());
         if (err != TIGL_SUCCESS) {
             displayError(QString("Error in function <u>tiglExportMeshedFuselageVTKByIndex</u>. Error code: %1").arg(err), "TIGL Error");
         }
@@ -1437,13 +1472,26 @@ void TIGLViewerDocument::exportMeshedFuselageVTKsimple()
     QString fileName;
     QString fuselageUid = dlgGetFuselageSelection();
 
-    writeToStatusBar(tr("Saving meshed Fuselage as simple VTK file with TIGL..."));
-
     fileName = QFileDialog::getSaveFileName(app, tr("Save as..."), myLastFolder, tr("Export VTK(*.vtp)"));
 
-    if (!fileName.isEmpty()) {
+    if (fileName.isEmpty()) {
+        return;
+    }
+
+    double deflection = 1.0;
+    if (1) {
         START_COMMAND();
-        TiglReturnCode err = tiglExportMeshedFuselageVTKSimpleByUID(m_cpacsHandle, qstringToCstring(fuselageUid), qstringToCstring(fileName), 0.1);
+        deflection = GetConfiguration().GetAirplaneLenth()
+                * TIGLViewerSettings::Instance().triangulationAccuracy();
+    }
+
+    TIGLViewerVTKExportDialog settings(app);
+    settings.setDeflection(deflection);
+
+    if (settings.exec()) {
+        writeToStatusBar(tr("Saving meshed Fuselage as simple VTK file with TIGL..."));
+        START_COMMAND();
+        TiglReturnCode err = tiglExportMeshedFuselageVTKSimpleByUID(m_cpacsHandle, qstringToCstring(fuselageUid), qstringToCstring(fileName), settings.getDeflection());
         if (err != TIGL_SUCCESS) {
             displayError(QString("Error in function <u>tiglExportMeshedFuselageVTKSimpleByUID</u>. Error code: %1").arg(err), "TIGL Error");
         }
@@ -1455,7 +1503,21 @@ void TIGLViewerDocument::exportMeshedConfigVTK()
     QString     fileName;
     fileName = QFileDialog::getSaveFileName(app, tr("Save as..."), myLastFolder, tr("Export VTK(*.vtp)"));
 
-    if (!fileName.isEmpty()) {
+    if (fileName.isEmpty()) {
+        return;
+    }
+
+    double deflection = 1.0;
+    if (1) {
+        START_COMMAND();
+        deflection = GetConfiguration().GetAirplaneLenth()
+                        * TIGLViewerSettings::Instance().triangulationAccuracy();
+    }
+
+    TIGLViewerVTKExportDialog settings(app);
+    settings.setDeflection(deflection);
+
+    if (settings.exec()) {
         START_COMMAND();
         writeToStatusBar("Calculating fused airplane, this can take a while");
         // calculating loft, is cached afterwards
@@ -1467,11 +1529,9 @@ void TIGLViewerDocument::exportMeshedConfigVTK()
         }
         writeToStatusBar("Writing meshed vtk file");
         tigl::CTiglExportVtk exporter(GetConfiguration());
-        
-        double deflection = GetConfiguration().GetAirplaneLenth() 
-                * TIGLViewerSettings::Instance().triangulationAccuracy();
-        exporter.ExportMeshedGeometryVTK(fileName.toStdString(), deflection);
-        
+
+        exporter.ExportMeshedGeometryVTK(fileName.toStdString(), settings.getDeflection());
+
         writeToStatusBar("");
     }
 }
@@ -1481,14 +1541,26 @@ void TIGLViewerDocument::exportMeshedConfigVTKNoFuse()
     QString     fileName;
     fileName = QFileDialog::getSaveFileName(app, tr("Save as..."), myLastFolder, tr("Export VTK(*.vtp)"));
 
-    if (!fileName.isEmpty()) {
+    if (fileName.isEmpty()) {
+        return;
+    }
+
+    double deflection = 1.0;
+    if (1) {
+        START_COMMAND();
+        deflection = GetConfiguration().GetAirplaneLenth()
+                        * TIGLViewerSettings::Instance().triangulationAccuracy();
+    }
+
+    TIGLViewerVTKExportDialog settings(app);
+    settings.setDeflection(deflection);
+
+    if (settings.exec()) {
         QApplication::setOverrideCursor( Qt::WaitCursor );
         writeToStatusBar("Writing meshed vtk file");
         tigl::CTiglExportVtk exporter(GetConfiguration());
 
-        double deflection = GetConfiguration().GetAirplaneLenth() 
-                * TIGLViewerSettings::Instance().triangulationAccuracy();
-        exporter.ExportMeshedGeometryVTKNoFuse(fileName.toStdString(), deflection);
+        exporter.ExportMeshedGeometryVTKNoFuse(fileName.toStdString(), settings.getDeflection());
 
         writeToStatusBar("");
         QApplication::restoreOverrideCursor();
