@@ -3314,6 +3314,26 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedGeometrySTL(TiglCPACSConfigura
 
 
 /**
+ * @brief Sets options for the VTK Export
+ *
+ * **Available Settings**:
+ *
+ *   - *key*: "normals_enabled" *valid values*: "0 or 1" *default*: "1".
+ *
+ *       Enables or disables the output of normal vectors.
+ *       A Normal vector and a vertex belong to the same logical structure. If there
+ *       are two identical vertices but with different normal vectors, the VTK export stores
+ *       them as two entries. Thus, a VTK file may have "duplicate" vertices. To disable this
+ *       behavior, set "normal_enabled" to "0".
+ *
+ * @return
+ *   - TIGL_SUCCESS if no error occurred
+ *   - TIGL_NULL_POINTER if key or value are a null pointer
+ *   - TIGL_ERROR if the specified key/value pair is invalid
+ */
+TIGL_COMMON_EXPORT TiglReturnCode tiglExportVTKSetOptions(const char* key, const char* value);
+
+/**
 * @brief Exports the boolean fused geometry of a wing (selected by id) meshed to VTK format.
 *
 *

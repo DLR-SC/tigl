@@ -158,6 +158,18 @@ TiglCPACSConfigurationHandle tiglExportRectangularWing::tiglRectangularWingHandl
 //    writer.ExportMeshedWingVTK
 //}
 
+TEST_F(tiglExport, vtkOptions)
+{
+    ASSERT_EQ(TIGL_SUCCESS, tiglExportVTKSetOptions("normals_enabled", "0"));
+    ASSERT_EQ(TIGL_SUCCESS, tiglExportVTKSetOptions("normals_enabled", "1"));
+
+    ASSERT_EQ(TIGL_ERROR, tiglExportVTKSetOptions("normals_enabled", "no"));
+    ASSERT_EQ(TIGL_ERROR, tiglExportVTKSetOptions("invalid options", "0"));
+
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglExportVTKSetOptions(NULL, "0"));
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglExportVTKSetOptions("normals_enabled", NULL));
+}
+
 /**
 * Tests tiglWingGetProfileName with invalid CPACS handle.
 */

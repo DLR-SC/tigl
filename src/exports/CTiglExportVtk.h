@@ -83,6 +83,11 @@ public:
 
     TIGL_EXPORT void ExportMeshedGeometryVTKNoFuse(const std::string& filename, const double deflection = 0.1);
 
+    TIGL_EXPORT static void SetOptions(const std::string& key, const std::string& value);
+
+
+    // Options
+    static bool normalsEnabled;
 
 private:
     class CCPACSConfiguration & myConfig;       /**< TIGL configuration object */
