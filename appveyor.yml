@@ -23,13 +23,13 @@ install:
       Write-Output "Configuration: $env:CONFIGURATION"
       Write-Output "Platform: $env:PLATFORM"
       $generator = "Visual Studio 14 2015"
-      $ocedist = "oce.017.2.win32_msvc2015_static"
+      $ocedist = "oce.0.17.2.win32_msvc2015_static"
       $tixidist = "TIXI-2.2.4-vc2015-win32"
       $qtdist = "5.7/msvc2015"
       if ($env:PLATFORM -eq "x64")
       {
           $generator = "$generator Win64"
-          $ocedist = "oce.017.2.win64_msvc2015_static"
+          $ocedist = "oce.0.17.2.win64_msvc2015_static"
           $tixidist = "TIXI-2.2.4-vc2015-win64"
           $qtdist = "$qtdist_64"
       }
