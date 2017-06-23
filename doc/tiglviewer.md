@@ -4,8 +4,8 @@ The TiGL Viewer {#tiglviewer}
 The TiGL Viewer is a 3D viewer for CPACS geometries. In addition, it also allows opening standard CAD file formats like IGES, STEP and BREP.
 Historically, TiGL Viewer was created as a TiGL debugging tool to visualize the modeled geometries.
 
-@image html images/tiglviewer-web.jpg "The TiGL Viewer showing a CPACS model of the Enterprise NCC 1701"
-@image latex images/tiglviewer.png  "The TiGL Viewer showing a CPACS model of the Enterprise NCC 1701" width=8cm
+@image html images/tiglviewer-web.jpg "The TiGL Viewer showing a CPACS model of the D 150 aircraft"
+@image latex images/tiglviewer.png  "The TiGL Viewer showing a CPACS model of the D 150 aircraft" width=8cm
 
 __Features of TiGL Viewer__
 
