@@ -8,7 +8,6 @@ platform:
 
 configuration:
   - Release
-#  - Debug
 
 build:
   verbosity: minimal
@@ -22,24 +21,19 @@ install:
   - ps: |
       Write-Output "Configuration: $env:CONFIGURATION"
       Write-Output "Platform: $env:PLATFORM"
-      $generator = "Visual Studio 10 2010"
-      $ocedist = "oce.017.win32_msvc2010_static"
-      $ocebindir = "Win32"
-      $tixidist = "TIXI-2.2.4-win32"
-      $qtdist = "msvc2010_opengl_32"
-      $redist = "msvc10-redist"
+      $generator = "Visual Studio 14 2015"
+      $ocedist = "oce.0.17.2.win32_msvc2015_static"
+      $tixidist = "TIXI-2.2.4-vc2015-win32"
+      $qtdist = "5.7/msvc2015"
       if ($env:PLATFORM -eq "x64")
       {
           $generator = "$generator Win64"
-          $ocedist = "oce.017.win64_msvc2010_static"
-          $ocebindir = "Win64"
-          $tixidist = "TIXI-2.2.4-win64"
-          $qtdist = "msvc2010_opengl_64"
+          $ocedist = "oce.0.17.2.win64_msvc2015_static"
+          $tixidist = "TIXI-2.2.4-vc2015-win64"
+          $qtdist = "$qtdist_64"
       }
       md c:\oce -Force | Out-Null
       md c:\tixi -Force | Out-Null
-      md c:\Qt\5.4.1 -Force | Out-Null
-      md c:\redist -Force | Out-Null
       If (!(Test-Path -Path "c:\oce\$ocedist")) {
         Write-Output "Downloading OCE"
         (new-object System.Net.WebClient).Downloadfile("https://sourceforge.net/projects/tigl/files/Thirdparty/$ocedist.7z", "c:\$ocedist.7z")
@@ -52,25 +46,13 @@ install:
         Write-Output "Extract TiXI"
         & 7z x -y "c:\$tixidist.zip" -oC:\tixi\ > null
       }
-      If (!(Test-Path -Path "c:\Qt\5.4.1\$qtdist")) {
-        Write-Output "Downloading Qt 5.4.1"
-        (new-object System.Net.WebClient).Downloadfile("https://sourceforge.net/projects/tigl/files/Thirdparty/qt5.4_$qtdist.7z", "c:\qt5.4_$qtdist.7z")
-        Write-Output "Extract Qt 5.4.1"
-        & 7z x -y "c:\qt5.4_$qtdist.7z" -oC:\Qt\5.4.1\ > null
-      }
-      If (!(Test-Path -Path "c:\redist\$redist")) {
-        Write-Output "Downloading VC 2010 Redistributable"
-        (new-object System.Net.WebClient).Downloadfile("https://sourceforge.net/projects/tigl/files/Thirdparty/$redist.7z", "c:\$redist.7z")
-        Write-Output "Extract VC 2010 Redistributable"
-        & 7z x -y "c:\$redist.7z" -oC:\redist\ > null
-      }
 
 
 build_script:
 - ps: |
     md _build -Force | Out-Null
     cd _build
-    & cmake -G "$generator" -DCASROOT=c:\oce\$ocedist -DTIXI_PATH=c:\tixi\$tixidist -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BUILD_TESTS=ON -DQT_PATH=c:\Qt\5.4.1\$qtdist -DMSVC10_REDIST_DIR=c:/redist/$redist ..
+    & cmake -G "$generator" -DCASROOT=c:\oce\$ocedist -DTIXI_PATH=c:\tixi\$tixidist -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BUILD_TESTS=ON -DQT_PATH=c:\Qt\$qtdist ..
     if ($LastExitCode -ne 0) {
         throw "Exec: $ErrorMessage"
     }
@@ -83,7 +65,7 @@ build_script:
 test_script:
 - ps: |
     cd tests
-    $env:PATH = "c:\oce\$ocedist\$ocebindir\bin;c:\tixi\$tixidist\bin;$env:PATH"
+    $env:PATH = "c:\tixi\$tixidist\bin;$env:PATH"
     & $env:CONFIGURATION\TIGL-unittests.exe --gtest_output=xml:test_results.xml
     if ($LastExitCode -ne 0) {
         throw "Exec: $ErrorMessage"
@@ -97,7 +79,6 @@ after_test:
     & cpack -G ZIP
 
 cache:
- - c:\oce
- - c:\Qt\5.4.1
+ - c:\oce -> appveyor.yml
  - c:\tixi -> appveyor.yml
- - c:\redist
+
