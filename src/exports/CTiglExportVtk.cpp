@@ -25,6 +25,7 @@
 
 // standard libraries
 #include <iostream>
+#include <algorithm>
 
 #include "CTiglLogging.h"
 #include "CTiglExportVtk.h"
@@ -44,8 +45,29 @@
 #include "CTiglPolyData.h"
 #include "CTiglTriangularizer.h"
 
+namespace
+{
+    tigl::CTiglTriangularizerOptions getOptions(const tigl::CTiglExportVtk& /* exporter */)
+    {
+        tigl::CTiglTriangularizerOptions options;
+        options.setNormalsEnabled(tigl::CTiglExportVtk::normalsEnabled);
+
+        return options ;
+    }
+
+    std::string to_lower(const std::string& str)
+    {
+        std::string result = str;
+        std::transform(result.begin(), result.end(), result.begin(), ::tolower);
+
+        return result;
+    }
+}
+
 namespace tigl 
 {
+
+bool CTiglExportVtk::normalsEnabled = true;
 
 // Constructor
 CTiglExportVtk::CTiglExportVtk(CCPACSConfiguration& config)
@@ -70,7 +92,7 @@ void CTiglExportVtk::ExportMeshedWingVTKByIndex(const int wingIndex, const std::
 void CTiglExportVtk::ExportMeshedWingVTKByUID(const std::string& wingUID, const std::string& filename, const double deflection)
 {
     tigl::CCPACSWing& wing = myConfig.GetWing(wingUID);
-    CTiglTriangularizer wingTrian(wing, deflection, SEGMENT_INFO);
+    CTiglTriangularizer wingTrian(wing, deflection, SEGMENT_INFO, getOptions(*this));
     wingTrian.writeVTK(filename.c_str());
 }
 
@@ -88,7 +110,7 @@ void CTiglExportVtk::ExportMeshedFuselageVTKByUID(const std::string& fuselageUID
 {
     CTiglAbstractPhysicalComponent & component = myConfig.GetFuselage(fuselageUID);
     const TopoDS_Shape& shape = component.GetLoft()->Shape();
-    CTiglTriangularizer trian(shape, deflection, false);
+    CTiglTriangularizer trian(shape, deflection, getOptions(*this));
     trian.writeVTK(filename.c_str());
 }
 
@@ -96,7 +118,7 @@ void CTiglExportVtk::ExportMeshedFuselageVTKByUID(const std::string& fuselageUID
 // Exports a whole geometry, boolean fused and meshed, as VTK file
 void CTiglExportVtk::ExportMeshedGeometryVTK(const std::string& filename, const double deflection)
 {
-    tigl::CTiglTriangularizer trian(myConfig, true, deflection, SEGMENT_INFO);
+    tigl::CTiglTriangularizer trian(myConfig, true, deflection, SEGMENT_INFO, getOptions(*this));
     trian.writeVTK(filename.c_str());
 }
 
@@ -106,7 +128,7 @@ void CTiglExportVtk::ExportMeshedWingVTKSimpleByUID(const std::string& wingUID, 
 {
     CCPACSWing & component = dynamic_cast<CCPACSWing&>(myConfig.GetWing(wingUID));
     TopoDS_Shape& loft = component.GetLoftWithLeadingEdge();
-    CTiglTriangularizer loftTrian(loft, deflection);
+    CTiglTriangularizer loftTrian(loft, deflection, getOptions(*this));
     loftTrian.writeVTK(filename.c_str());
 }
 
@@ -123,7 +145,7 @@ void CTiglExportVtk::ExportMeshedFuselageVTKSimpleByUID(const std::string& fusel
 {
     CTiglAbstractPhysicalComponent & component = myConfig.GetFuselage(fuselageUID);
     const TopoDS_Shape& shape = component.GetLoft()->Shape();
-    CTiglTriangularizer loftTrian(shape, deflection);
+    CTiglTriangularizer loftTrian(shape, deflection, getOptions(*this));
     loftTrian.writeVTK(filename.c_str());
 }
 
@@ -138,15 +160,34 @@ void CTiglExportVtk::ExportMeshedFuselageVTKSimpleByIndex(const int fuselageInde
 // Exports a whole geometry, boolean fused and meshed, as VTK file
 void CTiglExportVtk::ExportMeshedGeometryVTKSimple(const std::string& filename, const double deflection)
 {
-    tigl::CTiglTriangularizer trian(myConfig, true, deflection, NO_INFO);
+    tigl::CTiglTriangularizer trian(myConfig, true, deflection, NO_INFO, getOptions(*this));
     trian.writeVTK(filename.c_str());
 }
 
 // Exports a whole geometry, not fused and meshed, as VTK file
 void CTiglExportVtk::ExportMeshedGeometryVTKNoFuse(const std::string& filename, const double deflection)
 {
-    tigl::CTiglTriangularizer trian(myConfig, false, deflection, NO_INFO);
+    tigl::CTiglTriangularizer trian(myConfig, false, deflection, NO_INFO, getOptions(*this));
     trian.writeVTK(filename.c_str());
+}
+
+void CTiglExportVtk::SetOptions(const std::string &key, const std::string &value)
+{
+    if (key == "normals_enabled") {
+        if (value == "1" || to_lower(value) == "true") {
+            CTiglExportVtk::normalsEnabled = true;
+        }
+        else if (value == "0" || to_lower(value) == "false") {
+            CTiglExportVtk::normalsEnabled = false;
+        }
+        else {
+            throw CTiglError("Wrong value for 'normals_enabled' in vtk export: " + value);
+        }
+    }
+
+    else {
+        throw CTiglError("Invalid key in vtk export: " + key);
+    }
 }
 
 } // end namespace tigl
