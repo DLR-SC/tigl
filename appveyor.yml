@@ -30,7 +30,7 @@ install:
           $generator = "$generator Win64"
           $ocedist = "oce.0.17.2.win64_msvc2015_static"
           $tixidist = "TIXI-2.2.4-vc2015-win64"
-          $qtdist = "$qtdist_64"
+          $qtdist = "5.7/msvc2015_64"
       }
       md c:\oce -Force | Out-Null
       md c:\tixi -Force | Out-Null
@@ -52,6 +52,7 @@ build_script:
 - ps: |
     md _build -Force | Out-Null
     cd _build
+    Write-Output "Running cmake: -DCASROOT=c:\oce\$ocedist -DTIXI_PATH=c:\tixi\$tixidist -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BUILD_TESTS=ON -DTIGL_NIGHTLY=ON -DQT_PATH=c:\Qt\$qtdist .."
     & cmake -G "$generator" -DCASROOT=c:\oce\$ocedist -DTIXI_PATH=c:\tixi\$tixidist -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BUILD_TESTS=ON -DTIGL_NIGHTLY=ON -DQT_PATH=c:\Qt\$qtdist ..
     if ($LastExitCode -ne 0) {
         throw "Exec: $ErrorMessage"
