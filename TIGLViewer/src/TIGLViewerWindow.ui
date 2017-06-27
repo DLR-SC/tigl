@@ -64,7 +64,7 @@
      <x>0</x>
      <y>0</y>
      <width>783</width>
-     <height>20</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="fileMenu">
@@ -345,6 +345,8 @@
    <addaction name="viewLeftAction"/>
    <addaction name="viewFrontAction"/>
    <addaction name="viewAxoAction"/>
+   <addaction name="separator"/>
+   <addaction name="showReflectionLinesAction"/>
   </widget>
   <widget class="QDockWidget" name="consoleDockWidget">
    <property name="windowTitle">
@@ -1402,11 +1404,21 @@
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="icon">
+    <iconset resource="TIGLViewer.qrc">
+     <normaloff>:/gfx/reflections.png</normaloff>:/gfx/reflections.png</iconset>
+   </property>
    <property name="text">
     <string>Reflection lines</string>
    </property>
+   <property name="toolTip">
+    <string>Show reflection lines (zebra plot)</string>
+   </property>
    <property name="shortcut">
     <string>Alt+R</string>
+   </property>
+   <property name="iconVisibleInMenu">
+    <bool>false</bool>
    </property>
   </action>
   <action name="drawComponentAction">
