@@ -193,7 +193,7 @@ vec4 computeLighting (in vec3 theNormal,
 
   if (occTextureEnable > 0)
   {
-    aMaterialDiffuse = aMaterialDiffuse * texture(occActiveSampler, uv.xy);
+    aMaterialDiffuse = aMaterialDiffuse * texture2D(occActiveSampler, uv.xy);
   }
 
   vec4 color = vec4 (Ambient,  1.0) * aMaterialAmbient
