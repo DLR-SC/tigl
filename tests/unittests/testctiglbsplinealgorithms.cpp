@@ -449,7 +449,7 @@ TEST(TiglBSplineAlgorithms, testSkinnedBSplineSurface)
     splines_vector.push_back(curve1);
     splines_vector.push_back(curve2);
 
-    Handle(Geom_BSplineSurface) skinnedSurface = CTiglBSplineAlgorithms::skinnedBSplineSurface(splines_vector);
+    Handle(Geom_BSplineSurface) skinnedSurface = CTiglBSplineAlgorithms::skinnedBSplineSurface(splines_vector, false);
 
 
     // now test the skinned surface
@@ -687,7 +687,7 @@ TEST(TiglBSplineAlgorithms, testInterpolatingSurface)
 
     std::pair<Handle(TColStd_HArray1OfReal), Handle(TColStd_HArray1OfReal)> parameters = CTiglBSplineAlgorithms::computeParamsBSplineSurf(points);
 
-    Handle(Geom_BSplineSurface) interpolatingSurf = CTiglBSplineAlgorithms::interpolatingSurface(points, parameters.first, parameters.second);
+    Handle(Geom_BSplineSurface) interpolatingSurf = CTiglBSplineAlgorithms::interpolatingSurface(points, parameters.first, parameters.second, false, false);
 
     for (unsigned int u_idx = 1; u_idx <= 100; ++u_idx) {
         for (unsigned int v_idx = 1; v_idx <= 100; ++v_idx) {
@@ -834,7 +834,7 @@ TEST(TiglBSplineAlgorithms, testCreateGordonSurface)
             double u_value = u_idx / 100.;
             double v_value = v_idx / 100.;
 
-            gp_Pnt surface_point = gordonSurface->Value(v_value, u_value);
+            gp_Pnt surface_point = gordonSurface->Value(u_value, v_value);
             gp_Pnt point_curve1 = spline_u1->Value(u_value);  // represents y(z) = (z - 0.5)^2 with offset -1 in x-direction
             gp_Pnt point_curve2 = spline_u4->Value(u_value);  // represents y(z) = (z - 0.5)^2 with offset 2 in x-direction
             gp_Pnt right_point(point_curve1.X() * (1. - v_value) + point_curve2.X() * v_value, point_curve1.Y() * (1. - v_value) + point_curve2.Y() * v_value, point_curve1.Z() * (1. - v_value) + point_curve2.Z() * v_value);
@@ -844,6 +844,18 @@ TEST(TiglBSplineAlgorithms, testCreateGordonSurface)
             ASSERT_NEAR(surface_point.Z(), right_point.Z(), 2e-15);
         }
     }
+
+//    // location of the intersection points
+//    for (int spline_u_idx = 1; spline_u_idx <= intersection_params_v->Length(); ++spline_u_idx) {
+//        for (int spline_v_idx = 1; spline_v_idx <= intersection_params_u->Length(); ++spline_v_idx) {
+//            gp_Pnt surface_point = gordonSurface->Value(intersection_params_u->Value(spline_v_idx), intersection_params_v->Value(spline_u_idx));
+//            gp_Pnt real_intersection = compatible_splines_u_vector[spline_u_idx]->Value(intersection_params_u->Value(spline_v_idx));
+
+//            ASSERT_NEAR(surface_point.X(), real_intersection.X(), 1e-5);
+//            ASSERT_NEAR(surface_point.Y(), real_intersection.Y(), 1e-5);
+//            ASSERT_NEAR(surface_point.Z(), real_intersection.Z(), 1e-5);
+//        }
+//    }
 }
 
 TEST(TiglBSplineAlgorithms, testIntersectionFinder)
@@ -881,6 +893,97 @@ TEST(TiglBSplineAlgorithms, testIntersectionFinder)
     // splines should intersect at u = 0.5 + std::sqrt(0.1) and v = 4. / 5
     ASSERT_NEAR(intersection_vector[0].first, 0.5 + std::sqrt(0.1), 1e-15);
     ASSERT_NEAR(intersection_vector[0].second, 4. / 5, 1e-15);
+}
+
+TEST(TiglBSplineAlgorithms, testSortBSpline)
+{
+    unsigned int degree = 3;  // degree of the five v-directional B-splines
+
+    TColStd_Array1OfReal knots(1, 2);
+    knots(1) = 0.;
+    knots(2) = 1.;
+
+    TColStd_Array1OfInteger mults(1, 2);
+    mults(1) = 4;
+    mults(2) = 4;
+
+    // creating first v-directional B-spline which represents z(x) = 0 at y = 0.25
+    TColgp_Array1OfPnt controlPoints_v1(1, 4);
+    controlPoints_v1(1) = gp_Pnt(-1., 0.25, 0.);
+    controlPoints_v1(2) = gp_Pnt(2. / 3, 0.25, 0.);
+    controlPoints_v1(3) = gp_Pnt(7. / 3, 0.25, 0.);
+    controlPoints_v1(4) = gp_Pnt(4., 0.25, 0.);
+
+    Handle(Geom_BSplineCurve) spline_v1 = new Geom_BSplineCurve(controlPoints_v1, knots, mults, degree);
+
+    // creating second v-directional B-spline which represents z(x) = 0.5 - sqrt(0.1) at y = 0.1
+    TColgp_Array1OfPnt controlPoints_v2(1, 4);
+    controlPoints_v2(1) = gp_Pnt(-1., 0.1, 0.5 - std::sqrt(0.1));
+    controlPoints_v2(2) = gp_Pnt(2. / 3, 0.1, 0.5 - sqrt(0.1));
+    controlPoints_v2(3) = gp_Pnt(7. / 3, 0.1, 0.5 - sqrt(0.1));
+    controlPoints_v2(4) = gp_Pnt(4., 0.1, 0.5 - sqrt(0.1));
+
+    Handle(Geom_BSplineCurve) spline_v2 = new Geom_BSplineCurve(controlPoints_v2, knots, mults, degree);
+
+    // creating third v-directional B-spline which represents z(x) = 0.5 - sqrt(0.05) at y = 0.05
+    TColgp_Array1OfPnt controlPoints_v3(1, 4);
+    controlPoints_v3(1) = gp_Pnt(-1., 0.05, 0.5 - std::sqrt(0.05));
+    controlPoints_v3(2) = gp_Pnt(2. / 3, 0.05, 0.5 - sqrt(0.05));
+    controlPoints_v3(3) = gp_Pnt(7. / 3, 0.05, 0.5 - sqrt(0.05));
+    controlPoints_v3(4) = gp_Pnt(4., 0.05, 0.5 - sqrt(0.05));
+
+    Handle(Geom_BSplineCurve) spline_v3 = new Geom_BSplineCurve(controlPoints_v3, knots, mults, degree);
+
+    // creating fourth v-directional B-spline which represents z(x) = 0.5 + sqrt(0.1) at y = 0.1
+    TColgp_Array1OfPnt controlPoints_v4(1, 4);
+    controlPoints_v4(1) = gp_Pnt(-1., 0.1, 0.5 + std::sqrt(0.1));
+    controlPoints_v4(2) = gp_Pnt(2. / 3, 0.1, 0.5 + sqrt(0.1));
+    controlPoints_v4(3) = gp_Pnt(7. / 3, 0.1, 0.5 + sqrt(0.1));
+    controlPoints_v4(4) = gp_Pnt(4., 0.1, 0.5 + sqrt(0.1));
+
+    Handle(Geom_BSplineCurve) spline_v4 = new Geom_BSplineCurve(controlPoints_v4, knots, mults, degree);
+
+    // creating fifth v-directional B-spline which represents z(x) = 1 at y = 0.25
+    TColgp_Array1OfPnt controlPoints_v5(1, 4);
+    controlPoints_v5(1) = gp_Pnt(-1., 0.25, 1.);
+    controlPoints_v5(2) = gp_Pnt(2. / 3, 0.25, 1.);
+    controlPoints_v5(3) = gp_Pnt(7. / 3, 0.25, 1.);
+    controlPoints_v5(4) = gp_Pnt(4., 0.25, 1.);
+
+    Handle(Geom_BSplineCurve) spline_v5 = new Geom_BSplineCurve(controlPoints_v5, knots, mults, degree);
+
+    // u- and v-directional B-splines are already compatible in B-spline sense (common knot vector, same parametrization)
+
+    std::vector<Handle(Geom_BSplineCurve)> splines_vector;
+    splines_vector.push_back(spline_v5);
+    splines_vector.push_back(spline_v2);
+    splines_vector.push_back(spline_v4);
+    splines_vector.push_back(spline_v3);
+    splines_vector.push_back(spline_v1);
+
+    Handle(TColStd_HArray1OfReal) params_u = new TColStd_HArray1OfReal(1, 5);
+    params_u->SetValue(1, 1.);
+    params_u->SetValue(2, 0.5 - std::sqrt(0.1));
+    params_u->SetValue(3, 0.5 + std::sqrt(0.1));
+    params_u->SetValue(4, 0.5 - std::sqrt(0.05));
+    params_u->SetValue(5, 0.);
+
+    std::pair<Handle(TColStd_HArray1OfReal), std::vector<Handle(Geom_BSplineCurve)> > params_spline_v_pair = CTiglBSplineAlgorithms::sortBSplines(params_u, splines_vector);
+    Handle(TColStd_HArray1OfReal) sorted_params_u = params_spline_v_pair.first;
+    std::vector<Handle(Geom_BSplineCurve)> sorted_splines_vector = params_spline_v_pair.second;
+
+    gp_Pnt spline1_pnt = sorted_splines_vector[0]->Value(sorted_splines_vector[0]->Knot(1));
+    gp_Pnt spline2_pnt = sorted_splines_vector[1]->Value(sorted_splines_vector[1]->Knot(1));
+    gp_Pnt spline3_pnt = sorted_splines_vector[2]->Value(sorted_splines_vector[2]->Knot(1));
+    gp_Pnt spline4_pnt = sorted_splines_vector[3]->Value(sorted_splines_vector[3]->Knot(1));
+    gp_Pnt spline5_pnt = sorted_splines_vector[4]->Value(sorted_splines_vector[4]->Knot(1));
+
+    ASSERT_NEAR(spline1_pnt.Z(), 0., 1e-15);
+    ASSERT_NEAR(spline2_pnt.Z(), 0.5 - std::sqrt(0.1), 1e-15);
+    ASSERT_NEAR(spline3_pnt.Z(), 0.5 - std::sqrt(0.05), 1e-15);
+    ASSERT_NEAR(spline4_pnt.Z(), 0.5 + std::sqrt(0.1), 1e-15);
+    ASSERT_NEAR(spline5_pnt.Z(), 1., 1e-15);
+
 }
 
 TEST(TiglBSplineAlgorithms, testCreateGordonSurfaceGeneral)
@@ -995,14 +1098,14 @@ TEST(TiglBSplineAlgorithms, testCreateGordonSurfaceGeneral)
     splines_v_vector.push_back(spline_v1);
 
     Handle(Geom_BSplineSurface) gordonSurface = CTiglBSplineAlgorithms::createGordonSurfaceGeneral(splines_u_vector, splines_v_vector);
-
+    BRepTools::Write(BRepBuilderAPI_MakeFace(gordonSurface, Precision::Confusion()), "TestData/GordonNew.brep");
     // after creating the test surface above, now test it:
     for (int u_idx = 0; u_idx <= 100; ++u_idx) {
         for (int v_idx = 0; v_idx <= 100; ++v_idx) {
             double u_value = u_idx / 100.;
             double v_value = v_idx / 100.;
 
-            gp_Pnt surface_point = gordonSurface->Value(v_value, u_value);
+            gp_Pnt surface_point = gordonSurface->Value(u_value, v_value);
             gp_Pnt point_curve1 = spline_u1->Value(u_value);  // represents y(z) = (z - 0.5)^2 with offset -1 in x-direction
             gp_Pnt point_curve2 = spline_u4->Value(u_value);  // represents y(z) = (z - 0.5)^2 with offset 2 in x-direction
             gp_Pnt right_point(point_curve1.X() * (1. - v_value) + point_curve2.X() * v_value, point_curve1.Y() * (1. - v_value) + point_curve2.Y() * v_value, point_curve1.Z() * (1. - v_value) + point_curve2.Z() * v_value);
@@ -1014,35 +1117,57 @@ TEST(TiglBSplineAlgorithms, testCreateGordonSurfaceGeneral)
     }
 }
 
-TEST(TiglBSplineAlgorithms, gordonSurfaceWing2)
+
+class GordonSurface: public ::testing::TestWithParam<std::string>
+{
+protected:
+    virtual void SetUp()
+    {
+        // get the name of the folder with the B-spline network data
+        path_profiles = "TestData/" + GetParam() + "/profiles.brep";
+        path_guides = "TestData/" + GetParam() + "/guides.brep";
+        path_output = "TestData/" + GetParam() + "/result_gordon.brep";
+    }
+
+    void TearDown()
+    {
+    }
+
+    // name of the folder with the B-spline network data
+    std::string path_profiles;
+    std::string path_guides;
+    std::string path_output;
+};
+
+TEST_P(GordonSurface, testFromBRep)
 {
     // u-directional B-spline curves
     // first read the brep-input file
     TopoDS_Shape shape_u;
-    Standard_CString file_u = "TestData/wing2/profiles.brep";
+
     BRep_Builder builder_u;
 
-    BRepTools::Read(shape_u, file_u, builder_u);
+    BRepTools::Read(shape_u, path_profiles.c_str(), builder_u);
 
-     TopExp_Explorer Explorer;
-     // get the splines in u-direction from the Edges
-     std::vector<Handle(Geom_BSplineCurve)> splines_u_vector;
-     for (Explorer.Init(shape_u, TopAbs_EDGE); Explorer.More(); Explorer.Next()) {
-         TopoDS_Edge curve_edge = TopoDS::Edge(Explorer.Current());
-         double beginning = 0;
-         double end = 1;
-         Handle(Geom_Curve) curve = BRep_Tool::Curve(curve_edge, beginning, end);
-         Handle(Geom_BSplineCurve) spline = GeomConvert::CurveToBSplineCurve(curve);
-         splines_u_vector.push_back(spline);
-     }
+    TopExp_Explorer Explorer;
+    // get the splines in u-direction from the Edges
+    std::vector<Handle(Geom_BSplineCurve)> splines_u_vector;
+    for (Explorer.Init(shape_u, TopAbs_EDGE); Explorer.More(); Explorer.Next()) {
+        TopoDS_Edge curve_edge = TopoDS::Edge(Explorer.Current());
+        double beginning = 0;
+        double end = 1;
+        Handle(Geom_Curve) curve = BRep_Tool::Curve(curve_edge, beginning, end);
+        Handle(Geom_BSplineCurve) spline = GeomConvert::CurveToBSplineCurve(curve);
+        splines_u_vector.push_back(spline);
+    }
 
     // v-directional B-spline curves
     // first read the BRep-input file
     TopoDS_Shape shape_v;
-    Standard_CString file_v = "TestData/wing2/guides.brep";
+
     BRep_Builder builder_v;
 
-    BRepTools::Read(shape_v, file_v, builder_v);
+    BRepTools::Read(shape_v, path_guides.c_str(), builder_v);
 
     // now filter out the Edges
     TopTools_IndexedMapOfShape mapEdges_v;
@@ -1059,10 +1184,13 @@ TEST(TiglBSplineAlgorithms, gordonSurfaceWing2)
         splines_v_vector.push_back(spline);
     }
 
-
     Handle(Geom_BSplineSurface) gordonSurface = CTiglBSplineAlgorithms::createGordonSurfaceGeneral(splines_u_vector, splines_v_vector);
-    BRepTools::Write(BRepBuilderAPI_MakeFace(gordonSurface, Precision::Confusion()), "TestData/Wing2_result.brep");
+    BRepTools::Write(BRepBuilderAPI_MakeFace(gordonSurface, Precision::Confusion()), path_output.c_str());
 }
 
+INSTANTIATE_TEST_CASE_P(TiglBSplineAlgorithms, GordonSurface, ::testing::Values(
+                            "nacelle",
+                            "wing2"
+                            ));
 
 } // namespace tigl
