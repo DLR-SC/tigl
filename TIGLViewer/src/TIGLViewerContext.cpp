@@ -31,6 +31,7 @@
 #include "ISession_Point.h"
 #include "ISession_Text.h"
 #include "ISession_Direction.h"
+#include "AIS_TexturedShape.hxx"
 
 #include <OpenGl_GraphicDriver.hxx>
 // Shader related stuff
@@ -289,7 +290,7 @@ void TIGLViewerContext::setGridOffset (Quantity_Length offset)
 void TIGLViewerContext::displayShape(const TopoDS_Shape& loft, Quantity_Color color, double transparency)
 {
     TIGLViewerSettings& settings = TIGLViewerSettings::Instance();
-    Handle(AIS_Shape) shape = new AIS_Shape(loft);
+    Handle(AIS_TexturedShape) shape = new AIS_TexturedShape(loft);
 
     myContext->SetMaterial(shape, Graphic3d_NOM_METALIZED, Standard_False);
     myContext->SetColor(shape, color, Standard_False);
@@ -417,6 +418,25 @@ void TIGLViewerContext::setObjectsMaterial(Graphic3d_NameOfMaterial material)
     }
 }
 
+void TIGLViewerContext::setObjectsTexture(const QString &filename)
+{
+    if (!myContext.IsNull()) {
+        for (myContext->InitCurrent(); myContext->MoreCurrent(); myContext->NextCurrent()) {
+             Handle(AIS_TexturedShape) shape = Handle(AIS_TexturedShape)::DownCast(myContext->Current());
+             if (!shape.IsNull()) {
+                 shape->SetTextureFileName(filename.toStdString().c_str());
+                 shape->SetTextureMapOn();
+                 if (shape->DisplayMode() == 3) {
+                     myContext->RecomputePrsOnly (shape);
+                 }
+                 else {
+                     myContext->SetDisplayMode (shape, 3, Standard_False);
+                     myContext->Display        (shape, Standard_True);
+                 }
+             }
+        }
+    }
+}
 
 void TIGLViewerContext::setReflectionlinesEnabled(bool enable)
 {

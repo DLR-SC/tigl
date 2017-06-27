@@ -17,6 +17,7 @@ varying vec3 View;          //!< Direction to the viewer
 varying vec3 Normal;        //!< Vertex normal in view space
 varying vec4 Position;      //!< Vertex position in view space.
 varying vec4 PositionWorld; //!< Vertex position in world space
+varying vec4 uv;            //!< Vertex uv coordinate
 
 uniform bool enableZebra; //!< Whether the zebra stripe mode is enabled
 
@@ -174,27 +175,32 @@ vec4 computeLighting (in vec3 theNormal,
   if (enableZebra)
   {
     vec3 v = vec3(0., 0., -1.);
-    
+
     // Direction of the view reflected on the surface
     vec3 vReflect = 2. * (dot(Normal, v)*Normal - v);
-    
+
     // normal vector of the light stripe plane
     vec3 lightDir = normalize(vec3(0., 1., 0.));
-    
+
     // View projected into light plane
-    vec3 vProj = normalize(v - dot(v, lightDir)*lightDir); 
-    
+    vec3 vProj = normalize(v - dot(v, lightDir)*lightDir);
+
     // x-position of the reflected view on the light plane
     float posLightPlane = dot(vReflect, vProj);
-    
+
     attenuation = max(min(2.0, sin(posLightPlane*30.0)*3. + 2.0), -1.0);
+  }
+
+  if (occTextureEnable > 0)
+  {
+    aMaterialDiffuse = aMaterialDiffuse * texture(occActiveSampler, uv.xy);
   }
 
   vec4 color = vec4 (Ambient,  1.0) * aMaterialAmbient
              + vec4 (Diffuse,  1.0) * aMaterialDiffuse
              + vec4 (Specular, 1.0) * aMaterialSpecular
                                   + aMaterialEmission;
-  
+
   return vec4(color.xyz, mMaterialTransparency) * vec4(attenuation, attenuation, attenuation, 1.0);
 }
 

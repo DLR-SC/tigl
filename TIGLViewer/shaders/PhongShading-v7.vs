@@ -17,6 +17,7 @@ varying vec3 View;          //!< Direction to the viewer
 varying vec3 Normal;        //!< Vertex normal in view space
 varying vec4 Position;      //!< Vertex position in view space
 varying vec4 PositionWorld; //!< Vertex position in world space
+varying vec4 uv;            //!< Vertex uv coordinates
 
 //! Computes the normal in view space
 vec3 TransformNormal (in vec3 theNormal)
@@ -40,4 +41,5 @@ void main()
 
   // Do fixed functionality vertex transform
   gl_Position = occProjectionMatrix * occWorldViewMatrix * occModelWorldMatrix * occVertex;
+  uv = occTexCoord;
 }

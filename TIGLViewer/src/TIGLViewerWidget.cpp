@@ -33,6 +33,7 @@
 #include <QColorDialog>
 #include <QMessageBox>
 #include <QInputDialog>
+#include <QFileDialog>
 
 #include "TIGLViewerInternal.h"
 #include "TIGLQAspectWindow.h"
@@ -196,6 +197,9 @@ void TIGLViewerWidget::initializeOCC(const Handle(AIS_InteractiveContext)& aCont
         //myView->SetAntialiasingOn();
 
         //myView->ColorScaleDisplay();
+
+        // enable textures
+        myView->SetSurfaceDetail(V3d_TEX_ALL);
 
         // Map the window
         if (!myWindow->IsMapped()) {
@@ -678,6 +682,18 @@ void TIGLViewerWidget::setObjectsMaterial()
     }
 }
 
+void TIGLViewerWidget::setObjectsTexture()
+{
+    // open file dialog
+    QString fileName = QFileDialog::getOpenFileName (this,
+                                                     tr("Choose image file"),
+                                                     QString(),
+                                                     tr("Images (*.png *.jpeg *.jpg *.bmp);") );
+
+    if (!fileName.isEmpty()) {
+        viewerContext->setObjectsTexture(fileName);
+    }
+}
 
 void TIGLViewerWidget::onLeftButtonDown(  Qt::KeyboardModifiers nFlags, const QPoint point )
 {

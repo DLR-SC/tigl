@@ -123,6 +123,12 @@ void TIGLViewerWindow::contextMenuEvent(QContextMenuEvent *event)
         materialAct->setStatusTip(tr("Component Material"));
         menu.addAction(materialAct);
         connect(materialAct, SIGNAL(triggered()), myOCC, SLOT(setObjectsMaterial()));
+
+        QAction *textureAct;
+        textureAct = new QAction(tr("Apply Te&xture"), this);
+        textureAct->setStatusTip(tr("Apply a texture image to the shape"));
+        menu.addAction(textureAct);
+        connect(textureAct, SIGNAL(triggered()), myOCC, SLOT(setObjectsTexture()));
      }
 
      TIGLViewerScopedCommand command(getConsole(), false);

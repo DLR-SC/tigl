@@ -17,6 +17,7 @@ varying vec3 View;          //!< Direction to the viewer
 varying vec3 Normal;        //!< Vertex normal in view space
 varying vec4 Position;      //!< Vertex position in view space.
 varying vec4 PositionWorld; //!< Vertex position in world space
+varying vec4 uv;            //!< Vertex uv coordinate
 
 uniform bool enableZebra; //!< Whether the zebra stripe mode is enabled
 
@@ -188,6 +189,11 @@ vec4 computeLighting (in vec3 theNormal,
     float posLightPlane = dot(vReflect, vProj);
 
     attenuation = max(min(2.0, sin(posLightPlane*30.0)*3. + 2.0), -1.0);
+  }
+
+  if (occTextureEnable > 0)
+  {
+    aMaterialDiffuse = aMaterialDiffuse * texture(occActiveSampler, uv.xy);
   }
 
   vec4 color = vec4 (Ambient,  1.0) * aMaterialAmbient

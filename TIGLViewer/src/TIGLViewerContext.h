@@ -94,6 +94,7 @@ public slots:
     void setObjectsWireframe();
     void setObjectsShading();
     void setObjectsMaterial(Graphic3d_NameOfMaterial material);
+    void setObjectsTexture(const QString& filename);
     void setReflectionlinesEnabled(bool);
     void setObjectsColor(const QColor &color);
 
