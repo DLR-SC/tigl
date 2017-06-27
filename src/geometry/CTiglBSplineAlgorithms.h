@@ -99,7 +99,7 @@ public:
      *          the created skinned surface
      */
     TIGL_EXPORT static Handle(Geom_BSplineSurface) skinnedBSplineSurfaceParams(const std::vector<Handle(Geom_BSplineCurve) >& splines_vector,
-                                                                               const Handle(TColStd_HArray1OfReal) v_params);
+                                                                               const Handle(TColStd_HArray1OfReal) v_params, bool is_closed_v);
 
     /**
      * @brief skinnedBSplineSurfaceParams:
@@ -110,7 +110,7 @@ public:
      * @return
      *          the created skinned surface
      */
-    TIGL_EXPORT static Handle(Geom_BSplineSurface) skinnedBSplineSurface(const std::vector<Handle(Geom_BSplineCurve) >& splines_vector);
+    TIGL_EXPORT static Handle(Geom_BSplineSurface) skinnedBSplineSurface(const std::vector<Handle(Geom_BSplineCurve) >& splines_vector, bool is_closed_v);
 
     /**
      * @brief reparametrizeBSpline:
@@ -153,7 +153,7 @@ public:
      *          B-spline surface which interpolates the given points with the given parameters
      */
     TIGL_EXPORT static Handle(Geom_BSplineSurface) interpolatingSurface(const TColgp_Array2OfPnt& points, const Handle(TColStd_HArray1OfReal) parameters_u,
-                                                                        const Handle(TColStd_HArray1OfReal) parameters_v);
+                                                                        const Handle(TColStd_HArray1OfReal) parameters_v, bool is_closed_u, bool is_closed_v);
 
     /**
      * @brief createGordonSurface:
