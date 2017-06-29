@@ -78,9 +78,14 @@ void TIGLViewerSettings::setEnumerateFacesEnabled(bool enabled)
     _enumFaces = enabled;
 }
 
-void TIGLViewerSettings::setNumberOfIsolinesPerFace(int nlines)
+void TIGLViewerSettings::setNumberOfUIsolinesPerFace(int nlines)
 {
-    _nIsosPerFace = nlines;
+    _nUIsosPerFace = nlines;
+}
+
+void TIGLViewerSettings::setNumberOfVIsolinesPerFace(int nlines)
+{
+    _nVIsosPerFace = nlines;
 }
 
 bool TIGLViewerSettings::debugBooleanOperations() const
@@ -93,14 +98,19 @@ bool TIGLViewerSettings::enumerateFaces() const
     return _enumFaces;
 }
 
-int  TIGLViewerSettings::numFaceIsosForDisplay() const
+int  TIGLViewerSettings::numFaceUIsosForDisplay() const
 {
-    return _nIsosPerFace;
+    return _nUIsosPerFace;
+}
+
+int TIGLViewerSettings::numFaceVIsosForDisplay() const
+{
+    return _nVIsosPerFace;
 }
 
 void TIGLViewerSettings::loadSettings()
 {
-    QSettings settings("DLR SC-VK","TIGLViewer");
+    QSettings settings("DLR SC-HPC", "TiGLViewer3");
 
     _tesselationAccuracy   = settings.value("tesselation_accuracy"  , tesselationAccuracy()).toDouble();
     _triangulationAccuracy = settings.value("triangulation_accuracy", triangulationAccuracy()).toDouble();
@@ -108,12 +118,13 @@ void TIGLViewerSettings::loadSettings()
     
     _debugBOPs = settings.value("debug_bops", false).toBool();
     _enumFaces = settings.value("enumerate_faces", false).toBool();
-    _nIsosPerFace = settings.value("number_isolines_per_face", 0).toInt();
+    _nUIsosPerFace = settings.value("number_uisolines_per_face", 0).toInt();
+    _nVIsosPerFace = settings.value("number_visolines_per_face", 0).toInt();
 }
 
 void TIGLViewerSettings::storeSettings()
 {
-    QSettings settings("DLR SC-VK","TIGLViewer");
+    QSettings settings("DLR SC-HPC", "TiGLViewer3");
 
     settings.setValue("tesselation_accuracy"  , tesselationAccuracy());
     settings.setValue("triangulation_accuracy", triangulationAccuracy());
@@ -121,7 +132,8 @@ void TIGLViewerSettings::storeSettings()
     
     settings.setValue("debug_bops", _debugBOPs);
     settings.setValue("enumerate_faces", _enumFaces);
-    settings.setValue("number_isolines_per_face", _nIsosPerFace);
+    settings.setValue("number_uisolines_per_face", _nUIsosPerFace);
+    settings.setValue("number_visolines_per_face", _nVIsosPerFace);
 }
 
 void TIGLViewerSettings::restoreDefaults()
@@ -131,7 +143,8 @@ void TIGLViewerSettings::restoreDefaults()
     _bgcolor = DEFAULT_BGCOLOR;
     _debugBOPs = DEFAULT_DEBUG_BOPS;
     _enumFaces = DEFAULT_ENUM_FACES;
-    _nIsosPerFace = DEFAULT_NISO_FACES;
+    _nUIsosPerFace = DEFAULT_NISO_FACES;
+    _nVIsosPerFace = DEFAULT_NISO_FACES;
 }
 
 TIGLViewerSettings::~TIGLViewerSettings() {}

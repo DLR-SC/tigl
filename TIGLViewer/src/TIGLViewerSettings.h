@@ -42,11 +42,13 @@ public:
     // Debugging Tab
     void setDebugBooleanOperationsEnabled(bool);
     void setEnumerateFacesEnabled(bool);
-    void setNumberOfIsolinesPerFace(int);
+    void setNumberOfUIsolinesPerFace(int);
+    void setNumberOfVIsolinesPerFace(int);
     
     bool debugBooleanOperations() const;
     bool enumerateFaces() const;
-    int  numFaceIsosForDisplay() const;
+    int  numFaceUIsosForDisplay() const;
+    int  numFaceVIsosForDisplay() const;
 
     void restoreDefaults();
 
@@ -60,7 +62,8 @@ private:
     
     bool _debugBOPs;
     bool _enumFaces;
-    int  _nIsosPerFace;
+    int  _nUIsosPerFace;
+    int  _nVIsosPerFace;
 };
 
 #endif /* TIGLVIEWERSETTINGS_H_ */

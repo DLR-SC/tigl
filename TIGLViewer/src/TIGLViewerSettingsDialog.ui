@@ -27,36 +27,20 @@
    <property name="sizeConstraint">
     <enum>QLayout::SetFixedSize</enum>
    </property>
-   <item row="0" column="0">
-    <widget class="QListWidget" name="settingsList">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
+   <item row="1" column="1" colspan="3">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
      </property>
-     <property name="maximumSize">
-      <size>
-       <width>150</width>
-       <height>16777215</height>
-      </size>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
-     <item>
-      <property name="text">
-       <string>Display Settings</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Debugging</string>
-      </property>
-     </item>
     </widget>
    </item>
    <item row="0" column="2">
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="pageDisplaySettings">
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -549,12 +533,19 @@
          <item>
           <widget class="QLabel" name="label_21">
            <property name="text">
-            <string>Number of iso-parameter lines per face</string>
+            <string>Number of iso lines per face  </string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QSpinBox" name="numIsoLinesSB">
+          <widget class="QLabel" name="label_12">
+           <property name="text">
+            <string>U</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSpinBox" name="numUIsoLinesSB">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -574,7 +565,21 @@
             </size>
            </property>
            <property name="maximum">
-            <number>10</number>
+            <number>50</number>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_13">
+           <property name="text">
+            <string>V</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSpinBox" name="numVIsoLinesSB">
+           <property name="maximum">
+            <number>50</number>
            </property>
           </widget>
          </item>
@@ -610,21 +615,37 @@
      </widget>
     </widget>
    </item>
-   <item row="1" column="1" colspan="3">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
-   </item>
    <item row="1" column="0">
     <widget class="QPushButton" name="btnRestoreDefaults">
      <property name="text">
       <string>Restore Defaults</string>
      </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QListWidget" name="settingsList">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>150</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <item>
+      <property name="text">
+       <string>Display Settings</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Debugging</string>
+      </property>
+     </item>
     </widget>
    </item>
   </layout>

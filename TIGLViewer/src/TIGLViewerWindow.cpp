@@ -333,7 +333,7 @@ void TIGLViewerWindow::setCurrentFile(const QString &fileName)
     setWindowFilePath(fileName);
     currentFile = fileName;
 
-    QSettings settings("DLR SC-VK","TIGLViewer");
+    QSettings settings("DLR SC-HPC", "TiGLViewer3");
     QStringList files = settings.value("recentFileList").toStringList();
     files.removeAll(fileName);
     files.prepend(fileName);
@@ -349,7 +349,7 @@ void TIGLViewerWindow::setCurrentFile(const QString &fileName)
 
 void TIGLViewerWindow::loadSettings()
 {
-    QSettings settings("DLR SC-VK","TIGLViewer");
+    QSettings settings("DLR SC-HPC", "TiGLViewer3");
 
     bool showConsole = settings.value("show_console",QVariant(true)).toBool();
 
@@ -365,7 +365,7 @@ void TIGLViewerWindow::loadSettings()
 
 void TIGLViewerWindow::saveSettings()
 {
-    QSettings settings("DLR SC-VK","TIGLViewer");
+    QSettings settings("DLR SC-HPC", "TiGLViewer3");
 
     bool showConsole = consoleDockWidget->isVisible();
     settings.setValue("show_console", showConsole);
@@ -380,7 +380,8 @@ void TIGLViewerWindow::applySettings()
 {
     QColor col = tiglViewerSettings->BGColor();
     myOCC->setBackgroundGradient(col.red(), col.green(), col.blue());
-    getScene()->getContext()->SetIsoNumber(tiglViewerSettings->numFaceIsosForDisplay());
+    getScene()->getContext()->SetIsoNumber(tiglViewerSettings->numFaceUIsosForDisplay(), AIS_TOI_IsoU);
+    getScene()->getContext()->SetIsoNumber(tiglViewerSettings->numFaceVIsosForDisplay(), AIS_TOI_IsoV);
     getScene()->getContext()->UpdateCurrentViewer();
     if (tiglViewerSettings->debugBooleanOperations()) {
         qputenv("TIGL_DEBUG_BOP", "1");
