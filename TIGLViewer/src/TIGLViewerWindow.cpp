@@ -491,6 +491,14 @@ void TIGLViewerWindow::about()
     text =  "The <b>TiGL Viewer</b> is based on the TiGL library and allows you to view CPACS geometries. ";
     text += "TiGL Viewer uses the following Open Source libraries:<br/><br/>";
     
+    if (tiglVersion.contains("-r")) {
+        QStringList list = tiglVersion.split("-r");
+        QString ver = list[0];
+        QString rev = list[1];
+
+        tiglVersion = QString("%1-r<a style=\"color: #8eceff;\" href=\"https://github.com/DLR-SC/tigl/commit/%2\">%2</a>").arg(ver).arg(rev);
+    }
+
     text += "TiXI: v" + tixiVersion + "<br/>";
     text += "TiGL: v" + tiglVersion + "<br/>";
     text += "OpenCASCADE: v" + occtVersion + "<br/><br/>";
