@@ -96,6 +96,7 @@ set(tv_src
     TIGLViewerScopedCommand.cpp
     TIGLQAspectWindow.cpp
     TIGLViewerVTKExportDialog.cpp
+    TIGLSliderDialog.cpp
 )
 	
 # normal header files
@@ -137,6 +138,7 @@ set(tv_hdr_qobj
 	TIGLViewerShapeIntersectionDialog.h
 	TIGLViewerScreenshotDialog.h
 	TIGLViewerVTKExportDialog.h
+	TIGLSliderDialog.h
 )
 
 set(tv_ui_comp
@@ -149,6 +151,7 @@ set(tv_ui_comp
 	src/TIGLViewerScreenshotDialog.ui
 	src/TIGLViewerDrawVectorDialog.ui
 	src/TIGLViewerVTKExportDialog.ui
+	src/TIGLSliderDialog.ui
 )
 	
 foreach ( _fname ${tv_src})

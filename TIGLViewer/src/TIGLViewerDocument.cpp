@@ -1568,14 +1568,13 @@ void TIGLViewerDocument::exportMeshedConfigVTKNoFuse()
     settings.setDeflection(deflection);
 
     if (settings.exec()) {
-        QApplication::setOverrideCursor( Qt::WaitCursor );
+        START_COMMAND();
         writeToStatusBar("Writing meshed vtk file");
         tigl::CTiglExportVtk exporter(GetConfiguration());
 
         exporter.ExportMeshedGeometryVTKNoFuse(fileName.toStdString(), settings.getDeflection());
 
         writeToStatusBar("");
-        QApplication::restoreOverrideCursor();
     }
 }
 

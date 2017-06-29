@@ -30,12 +30,6 @@
 #include <QProcessEnvironment>
 #include <QMessageBox>
 
-#include <BRepBuilderAPI_MakeVertex.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <AIS_Shape.hxx>
-#include <AIS_InteractiveContext.hxx>
-#include <Aspect_RectangularGrid.hxx>
-#include <Standard_Version.hxx>
 
 #include "TIGLViewerWindow.h"
 #include "TIGLViewerSettingsDialog.h"
@@ -59,82 +53,6 @@
 #include "CCPACSConfigurationManager.h"
 
 #include <cstdlib>
-
-void ShowOrigin ( Handle(AIS_InteractiveContext) theContext );
-void AddVertex  ( double x, double y, double z, Handle(AIS_InteractiveContext) theContext );
-
-void AddVertex (double x, double y, double z, Handle(AIS_InteractiveContext) theContext)
-{
-    TopoDS_Vertex aVertex=BRepBuilderAPI_MakeVertex( gp_Pnt(x,y,z) );
-    Handle(AIS_Shape) AISVertex = new AIS_Shape(aVertex);
-    // context is the handle to an AIS_InteractiveContext object.
-    theContext->Display(AISVertex);
-}
-
-void ShowOrigin ( Handle(AIS_InteractiveContext) theContext )
-{
-    AddVertex ( 0.0, 0.0, 0.0, theContext);
-}
-
-void TIGLViewerWindow::contextMenuEvent(QContextMenuEvent *event)
- {
-     QMenu menu(this);
-
-     bool OneOrMoreIsSelected = false;
-     for (myScene->getContext()->InitCurrent(); myScene->getContext()->MoreCurrent (); myScene->getContext()->NextCurrent ()) {
-         if (myScene->getContext()->IsDisplayed(myScene->getContext()->Current())) {
-             OneOrMoreIsSelected=true;
-         }
-     }
-
-     if (OneOrMoreIsSelected) {
-        QAction *eraseAct;
-        eraseAct = new QAction(tr("&Erase"), this);
-        eraseAct->setStatusTip(tr("Erase selected components"));
-        menu.addAction(eraseAct);
-        connect(eraseAct, SIGNAL(triggered()), myScene, SLOT(eraseSelected()));
-
-        QAction *transparencyAct;
-        transparencyAct = new QAction(tr("&Transparency"), this);
-        transparencyAct->setStatusTip(tr("Component Transparency"));
-        menu.addAction(transparencyAct);
-        connect(transparencyAct, SIGNAL(triggered()), myOCC, SLOT(setTransparency()));
-
-        QAction *wireframeAct;
-        wireframeAct = new QAction(tr("&Wireframe"), this);
-        wireframeAct->setStatusTip(tr("Component Wireframe"));
-        menu.addAction(wireframeAct);
-        connect(wireframeAct, SIGNAL(triggered()), myScene, SLOT(setObjectsWireframe()));
-
-        QAction *shadingAct;
-        shadingAct = new QAction(tr("&Shading"), this);
-        shadingAct->setStatusTip(tr("Component Shading"));
-        menu.addAction(shadingAct);
-        connect(shadingAct, SIGNAL(triggered()), myScene, SLOT(setObjectsShading()));
-
-        QAction *colorAct;
-        colorAct = new QAction(tr("&Color"), this);
-        colorAct->setStatusTip(tr("Component Color"));
-        menu.addAction(colorAct);
-        connect(colorAct, SIGNAL(triggered()), myOCC, SLOT(setObjectsColor()));
-
-        QAction *materialAct;
-        materialAct = new QAction(tr("&Material"), this);
-        materialAct->setStatusTip(tr("Component Material"));
-        menu.addAction(materialAct);
-        connect(materialAct, SIGNAL(triggered()), myOCC, SLOT(setObjectsMaterial()));
-
-        QAction *textureAct;
-        textureAct = new QAction(tr("Apply Te&xture"), this);
-        textureAct->setStatusTip(tr("Apply a texture image to the shape"));
-        menu.addAction(textureAct);
-        connect(textureAct, SIGNAL(triggered()), myOCC, SLOT(setObjectsTexture()));
-     }
-
-     TIGLViewerScopedCommand command(getConsole(), false);
-     Q_UNUSED(command);
-     menu.exec(event->globalPos());
- }
 
 TIGLViewerWindow::TIGLViewerWindow()
     : myLastFolder(tr(""))
@@ -599,13 +517,6 @@ void TIGLViewerWindow::xyzPosition (V3d_Coordinate X,
     //statusBar()->showMessage(aString); // do not bother user with x,y,z crap
 }
 
-void TIGLViewerWindow::addPoint (V3d_Coordinate X,
-                                 V3d_Coordinate Y,
-                                 V3d_Coordinate Z)
-{
-    AddVertex ( X, Y, Z, myScene->getContext() );
-}
-
 void TIGLViewerWindow::statusMessage (const QString aMessage)
 {
     statusBar()->showMessage(aMessage);
@@ -777,9 +688,6 @@ void TIGLViewerWindow::connectSignals()
     connect( myOCC, SIGNAL(mouseMoved(V3d_Coordinate,V3d_Coordinate,V3d_Coordinate)),
              this,   SLOT(xyzPosition(V3d_Coordinate,V3d_Coordinate,V3d_Coordinate)) );
 
-    // Add a point from the view
-    connect( myOCC, SIGNAL(pointClicked(V3d_Coordinate,V3d_Coordinate,V3d_Coordinate)),
-             this,   SLOT (addPoint    (V3d_Coordinate,V3d_Coordinate,V3d_Coordinate)) );
 
     connect( myOCC, SIGNAL(sendStatus(const QString)), this,  SLOT  (statusMessage(const QString)) );
 

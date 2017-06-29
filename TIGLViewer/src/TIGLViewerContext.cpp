@@ -32,6 +32,7 @@
 #include "ISession_Text.h"
 #include "ISession_Direction.h"
 #include "AIS_TexturedShape.hxx"
+#include "AIS_InteractiveContext.hxx"
 
 #include <OpenGl_GraphicDriver.hxx>
 // Shader related stuff
@@ -40,6 +41,8 @@
   #include <Graphic3d_AspectFillArea3d.hxx>
   #include <Graphic3d_ShaderObject.hxx>
 #endif
+
+#include <QApplication>
 
 /// Loads a shader file from the resource system
 QString getShaderFile(const QString& filename)
@@ -360,6 +363,22 @@ void TIGLViewerContext::displayVector(const gp_Pnt& aPoint,
     myContext->Display(aGraphicText,UpdateViewer);
 }
 
+bool TIGLViewerContext::hasSelectedShapes() const
+{
+    if (myContext.IsNull()) {
+        return false;
+    }
+
+    bool hasSelectedShapes = false;
+    for (myContext->InitCurrent(); myContext->MoreCurrent (); myContext->NextCurrent ()) {
+        if (myContext->IsDisplayed(myContext->Current())) {
+            hasSelectedShapes = true;
+        }
+    }
+
+    return hasSelectedShapes;
+}
+
 // convenience wrapper
 void TIGLViewerContext::drawVector(double x, double y, double z, double dirx, double diry, double dirz)
 {
@@ -421,6 +440,8 @@ void TIGLViewerContext::setObjectsMaterial(Graphic3d_NameOfMaterial material)
 void TIGLViewerContext::setObjectsTexture(const QString &filename)
 {
     if (!myContext.IsNull()) {
+        QApplication::setOverrideCursor( Qt::WaitCursor );
+        QApplication::processEvents();
         for (myContext->InitCurrent(); myContext->MoreCurrent(); myContext->NextCurrent()) {
              Handle(AIS_TexturedShape) shape = Handle(AIS_TexturedShape)::DownCast(myContext->Current());
              if (!shape.IsNull()) {
@@ -435,6 +456,7 @@ void TIGLViewerContext::setObjectsTexture(const QString &filename)
                  }
              }
         }
+        QApplication::restoreOverrideCursor();
     }
 }
 

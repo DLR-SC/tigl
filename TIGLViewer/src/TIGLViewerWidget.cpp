@@ -34,10 +34,11 @@
 #include <QMessageBox>
 #include <QInputDialog>
 #include <QFileDialog>
+#include <QAction>
+#include <QMenu>
 
 #include "TIGLViewerInternal.h"
 #include "TIGLQAspectWindow.h"
-//#include "TIGLViewerDocument.h"
 #include "TIGLViewerContext.h"
 #include "TIGLViewerSettings.h"
 #include "ISession_Point.h"
@@ -45,6 +46,7 @@
 #include "ISession_Text.h"
 #include "CTiglLogging.h"
 #include "tiglcommonfunctions.h"
+#include "TIGLSliderDialog.h"
 
 #include <OpenGl_GraphicDriver.hxx>
 
@@ -620,15 +622,18 @@ void TIGLViewerWidget::setBGImage(const QString& filename)
 
 void TIGLViewerWidget::setTransparency()
 {
-    QInputDialog *dialog = new QInputDialog(this);
-    dialog->setInputMode(QInputDialog::IntInput);
-    dialog->setOption(QInputDialog::NoButtons);
-    dialog->setLabelText("Set Transparency [0...100]:");
+    TIGLSliderDialog* dialog = new TIGLSliderDialog(this);
+
+    // Move the slider to the mouse position
+    QPoint mPos = QCursor::pos();
+    dialog->move(mPos.x() - dialog->size().width()/2, mPos.y() - dialog->size().height());
+
+    connect(dialog, SIGNAL(intValueChanged(int)), this, SLOT(setTransparency(int)));
     dialog->setIntValue(30);
     dialog->setIntRange(0, 100);
-    dialog->setIntStep(10);
-    connect(dialog, SIGNAL(intValueChanged(int)), this, SLOT(setTransparency(int)));
-    dialog->exec();
+
+    dialog->show();
+    dialog->activateWindow();
 }
 
 void TIGLViewerWidget::setTransparency(int transparency)
@@ -1216,3 +1221,62 @@ bool TIGLViewerWidget::makeScreenshot(const QString& filename, bool whiteBGEnabl
     }
 
 }
+
+void TIGLViewerWidget::contextMenuEvent(QContextMenuEvent *event)
+ {
+
+     if (viewerContext->hasSelectedShapes()) {
+        QMenu menu(this);
+
+        QAction *transparencyAct;
+        transparencyAct = new QAction(tr("&Transparency"), this);
+        transparencyAct->setStatusTip(tr("Component Transparency"));
+        menu.addAction(transparencyAct);
+        connect(transparencyAct, SIGNAL(triggered()), this, SLOT(setTransparency()));
+
+        QMenu* renderingModeMenu = new QMenu("Rendering mode", this);
+        menu.addMenu(renderingModeMenu);
+
+        QAction *wireframeAct;
+        wireframeAct = new QAction(tr("&Wireframe"), this);
+        wireframeAct->setStatusTip(tr("Component Wireframe"));
+        renderingModeMenu->addAction(wireframeAct);
+        connect(wireframeAct, SIGNAL(triggered()), viewerContext, SLOT(setObjectsWireframe()));
+
+        QAction *shadingAct;
+        shadingAct = new QAction(tr("&Shading"), this);
+        shadingAct->setStatusTip(tr("Component Shading"));
+        renderingModeMenu->addAction(shadingAct);
+        connect(shadingAct, SIGNAL(triggered()), viewerContext, SLOT(setObjectsShading()));
+
+        QAction *colorAct;
+        colorAct = new QAction(tr("&Color"), this);
+        colorAct->setStatusTip(tr("Component Color"));
+        menu.addAction(colorAct);
+        connect(colorAct, SIGNAL(triggered()), this, SLOT(setObjectsColor()));
+
+        QAction *materialAct;
+        materialAct = new QAction(tr("&Material"), this);
+        materialAct->setStatusTip(tr("Component Material"));
+        menu.addAction(materialAct);
+        connect(materialAct, SIGNAL(triggered()), this, SLOT(setObjectsMaterial()));
+
+        QAction *textureAct;
+        textureAct = new QAction(tr("Apply Te&xture"), this);
+        textureAct->setStatusTip(tr("Apply a texture image to the shape"));
+        menu.addAction(textureAct);
+        connect(textureAct, SIGNAL(triggered()), this, SLOT(setObjectsTexture()));
+
+        menu.addSeparator();
+
+        QAction *eraseAct;
+        eraseAct = new QAction(tr("&Erase"), this);
+        eraseAct->setStatusTip(tr("Erase selected components"));
+        eraseAct->setIcon(QIcon(":/gfx/document-close.png"));
+        menu.addAction(eraseAct);
+        connect(eraseAct, SIGNAL(triggered()), viewerContext, SLOT(eraseSelected()));
+
+        menu.exec(event->globalPos());
+     }
+
+ }

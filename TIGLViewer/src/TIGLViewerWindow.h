@@ -62,7 +62,6 @@ public:
     void displayErrorMessage (const QString aMessage, QString aHeader);
 
 protected:
-     void contextMenuEvent(QContextMenuEvent *event);
      void dropEvent(QDropEvent *ev);
      void dragEnterEvent(QDragEnterEvent *ev);
 
@@ -90,9 +89,6 @@ private slots:
     void xyzPosition (V3d_Coordinate X,
                       V3d_Coordinate Y,
                       V3d_Coordinate Z);
-    void addPoint (V3d_Coordinate X,
-                   V3d_Coordinate Y,
-                   V3d_Coordinate Z);
     void statusMessage (const QString aMessage);
     void loadSettings();
     void saveSettings();

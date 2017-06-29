@@ -162,6 +162,7 @@ protected: // methods
     virtual void keyPressEvent     ( QKeyEvent* e );
 
     virtual void leaveEvent           ( QEvent * );
+    virtual void contextMenuEvent  (QContextMenuEvent *event);
 
 private: // members
     void initializeOCC(const Handle_AIS_InteractiveContext& aContext = NULL);

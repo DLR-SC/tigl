@@ -49,12 +49,12 @@ public:
     TIGLViewerContext();
     ~TIGLViewerContext();
 
-    Handle_V3d_Viewer&              getViewer();
-    Handle_AIS_InteractiveContext&  getContext();
+    Handle(V3d_Viewer)&              getViewer();
+    Handle(AIS_InteractiveContext)&  getContext();
 
-    Handle_V3d_Viewer createViewer( const Standard_ExtString aName,
-                                    const Standard_CString aDomain,
-                                    const Standard_Real ViewSize );
+    Handle(V3d_Viewer) createViewer( const Standard_ExtString aName,
+                                     const Standard_CString aDomain,
+                                     const Standard_Real ViewSize );
 
     void setGridOffset (Quantity_Length offset);
     
@@ -74,6 +74,8 @@ public:
                        Standard_Real anYoffset,
                        Standard_Real aZoffset,
                        Standard_Real TextScale);
+
+    bool hasSelectedShapes() const;
 
 public slots:
     void displayShape(const TopoDS_Shape& loft, Quantity_Color color = Quantity_NOC_ShapeCol, double transparency=0.);
