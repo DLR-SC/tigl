@@ -20,6 +20,8 @@
 */
 #include "tigl_config.h"
 
+
+#include <QApplication>
 #include <QTextStream>
 #include <QFile>
 #include <qnamespace.h>
@@ -41,8 +43,6 @@
   #include <Graphic3d_AspectFillArea3d.hxx>
   #include <Graphic3d_ShaderObject.hxx>
 #endif
-
-#include <QApplication>
 
 /// Loads a shader file from the resource system
 QString getShaderFile(const QString& filename)
