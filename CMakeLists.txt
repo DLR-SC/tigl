@@ -9,7 +9,7 @@ if(NOT DEFINED CMAKE_BUILD_TYPE)
     "MinSizeRel" "RelWithDebInfo")
 endif()
 
-project (TIGL)
+project (TiGL)
 set(TIGL_VERSION_MAJOR 3)
 set(TIGL_VERSION_MINOR 0)
 set(TIGL_VERSION_PATCH 0dev)
@@ -225,7 +225,7 @@ set(CPACK_NSIS_MUI_UNIICON ${PROJECT_SOURCE_DIR}/TIGLViewer/TIGLViewer.ico)
 if(WIN32)
     set(CPACK_PACKAGE_ICON  ${PROJECT_SOURCE_DIR}/TIGLViewer/gfx\\\\TIGLViewerNSIS.bmp)
 elseif(APPLE)
-    set(CPACK_PACKAGE_ICON  ${PROJECT_SOURCE_DIR}/TIGLViewer/gfx/TIGLViewer3.icns)
+    set(CPACK_PACKAGE_ICON  ${PROJECT_SOURCE_DIR}/TIGLViewer/gfx/TiGL-Viewer3.icns)
 endif()
 
 # set generators
@@ -248,12 +248,18 @@ else()
   set(CPACK_NSIS_INSTALL_ROOT "$PROGRAMFILES")
 endif()
 
-set(CPACK_PACKAGE_EXECUTABLES 
-    "TIGLViewer" "TIGL Viewer"
-)
+if (APPLE)
+  set(CPACK_PACKAGE_EXECUTABLES
+    "TiGL-Viewer3" "TiGL Viewer 3"
+  )
+else(APPLE)
+  set(CPACK_PACKAGE_EXECUTABLES
+    "tiglviewer-3" "TiGL Viewer 3"
+  )
+endif(APPLE)
 
 include(CPack)
-cpack_add_component(viewer DISPLAY_NAME "TIGL Viewer + 3rd Party DLLs")
+cpack_add_component(viewer DISPLAY_NAME "TiGL Viewer + 3rd Party DLLs")
 cpack_add_component(headers DISPLAY_NAME "Headers")
 cpack_add_component(interfaces DISPLAY_NAME "Interfaces/Bindings")
 cpack_add_component(docu DISPLAY_NAME "Documentation")
