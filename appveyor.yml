@@ -67,7 +67,7 @@ test_script:
 - ps: |
     cd tests
     $env:PATH = "c:\tixi\$tixidist\bin;$env:PATH"
-    & $env:CONFIGURATION\TIGL-unittests.exe --gtest_output=xml:test_results.xml
+    & $env:CONFIGURATION\TiGL-unittests.exe --gtest_output=xml:test_results.xml
     if ($LastExitCode -ne 0) {
         throw "Exec: $ErrorMessage"
     }
