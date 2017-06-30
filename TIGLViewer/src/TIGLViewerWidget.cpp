@@ -691,7 +691,7 @@ void TIGLViewerWidget::setObjectsTexture()
 {
     // open file dialog
     QString fileName = QFileDialog::getOpenFileName (this,
-                                                     tr("Choose image file"),
+                                                     tr("Choose texture image"),
                                                      QString(),
                                                      tr("Images (*.png *.jpeg *.jpg *.bmp);") );
 
@@ -1234,7 +1234,7 @@ void TIGLViewerWidget::contextMenuEvent(QContextMenuEvent *event)
         menu.addAction(transparencyAct);
         connect(transparencyAct, SIGNAL(triggered()), this, SLOT(setTransparency()));
 
-        QMenu* renderingModeMenu = new QMenu("Rendering mode", this);
+        QMenu* renderingModeMenu = new QMenu("&Rendering mode", this);
         menu.addMenu(renderingModeMenu);
 
         QAction *wireframeAct;
@@ -1244,10 +1244,16 @@ void TIGLViewerWidget::contextMenuEvent(QContextMenuEvent *event)
         connect(wireframeAct, SIGNAL(triggered()), viewerContext, SLOT(setObjectsWireframe()));
 
         QAction *shadingAct;
-        shadingAct = new QAction(tr("&Shading"), this);
+        shadingAct = new QAction(tr("&Shaded"), this);
         shadingAct->setStatusTip(tr("Component Shading"));
         renderingModeMenu->addAction(shadingAct);
         connect(shadingAct, SIGNAL(triggered()), viewerContext, SLOT(setObjectsShading()));
+
+        QAction *textureAct;
+        textureAct = new QAction(tr("&Textured"), this);
+        textureAct->setStatusTip(tr("Apply a texture image to the shape"));
+        renderingModeMenu->addAction(textureAct);
+        connect(textureAct, SIGNAL(triggered()), this, SLOT(setObjectsTexture()));
 
         QAction *colorAct;
         colorAct = new QAction(tr("&Color"), this);
@@ -1260,12 +1266,6 @@ void TIGLViewerWidget::contextMenuEvent(QContextMenuEvent *event)
         materialAct->setStatusTip(tr("Component Material"));
         menu.addAction(materialAct);
         connect(materialAct, SIGNAL(triggered()), this, SLOT(setObjectsMaterial()));
-
-        QAction *textureAct;
-        textureAct = new QAction(tr("Apply Te&xture"), this);
-        textureAct->setStatusTip(tr("Apply a texture image to the shape"));
-        menu.addAction(textureAct);
-        connect(textureAct, SIGNAL(triggered()), this, SLOT(setObjectsTexture()));
 
         menu.addSeparator();
 
