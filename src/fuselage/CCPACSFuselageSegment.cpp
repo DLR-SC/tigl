@@ -171,6 +171,8 @@ void CCPACSFuselageSegment::ReadCPACS(TixiDocumentHandle tixiHandle, const std::
     Cleanup();
     generated::CPACSFuselageSegment::ReadCPACS(tixiHandle, segmentXPath);
 
+    GetFuselage().GetConfiguration().GetUIDManager().AddGeometricComponent(m_uID, this);
+
     startConnection = CTiglFuselageConnection(m_fromElementUID, this);
     endConnection = CTiglFuselageConnection(m_toElementUID, this);
 
