@@ -4217,6 +4217,29 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglLogSetVerbosity(TiglLogLevel level);
  */
 /*@{*/
 
+/**
+ * @brief Checks whether a point lies inside the given geometric object.
+ *
+ * This function works only for solid objects!
+ *
+ * @param[in]  cpacsHandle   Handle for the CPACS configuration
+ * @param[in]  px            X coordinate of point
+ * @param[in]  py            Y coordinate of point
+ * @param[in]  pz            Z coordinate of point
+ * @param[in]  componentUID  UID of the component (e.g. a fuselage UID, wing UID, wing segment UID ...)
+ * @param[out] isInside      Returns, whether the point lies inside the object or not.
+ *
+ * @return
+ *   - TIGL_SUCCESS if no error occurred.
+ *   - TIGL_NOT_FOUND if no configuration was found for the given handle.
+ *   - TIGL_UID_ERROR if the component does not exist or is not a geometric object.
+ *   - TIGL_NULL_POINTER if componentUID or isInside are null.
+ *   - TIGL_ERROR if some error occurred, e.g. the component is not a solid object.
+ */
+TIGL_COMMON_EXPORT TiglReturnCode tiglCheckPointInside(TiglCPACSConfigurationHandle cpacsHandle,
+                                                       double px, double py, double pz,
+                                                       const char* componentUID,
+                                                       TiglBoolean* isInside);
 
 /**
 * @brief Returns a unique HashCode for a geometric component. 

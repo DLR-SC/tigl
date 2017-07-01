@@ -85,3 +85,31 @@ TEST(TiglCommonFunctions, IsPointInsideShape)
     TopoDS_Vertex v = BRepBuilderAPI_MakeVertex(gp_Pnt(10., 10., 10.));
     EXPECT_THROW(IsPointInsideShape(v, gp_Pnt(0., 0., 0.)), tigl::CTiglError);
 }
+
+TEST(TiglCommonFunctions, tiglCheckPointInside_api)
+{
+    TixiDocumentHandle tixiSimpleWingHandle = -1;
+    TiglCPACSConfigurationHandle tiglSimpleWingHandle = -1;
+
+    ReturnCode tixiRet = tixiOpenDocument("TestData/simpletest.cpacs.xml", &tixiSimpleWingHandle);
+    ASSERT_EQ (SUCCESS, tixiRet);
+
+    TiglReturnCode tiglRet = tiglOpenCPACSConfiguration(tixiSimpleWingHandle, "Cpacs2Test", &tiglSimpleWingHandle);
+    ASSERT_EQ(TIGL_SUCCESS, tiglRet);
+
+    TiglBoolean isInside = TIGL_FALSE;
+
+    ASSERT_EQ(TIGL_SUCCESS, tiglCheckPointInside(tiglSimpleWingHandle, 0., 0., 0., "segmentD150_Fuselage_1Segment2ID", &isInside));
+    EXPECT_EQ(TIGL_TRUE, isInside);
+
+    ASSERT_EQ(TIGL_SUCCESS, tiglCheckPointInside(tiglSimpleWingHandle, 0., 0., 2., "segmentD150_Fuselage_1Segment2ID", &isInside));
+    EXPECT_EQ(TIGL_FALSE, isInside);
+
+    // test errors
+    EXPECT_EQ(TIGL_UID_ERROR, tiglCheckPointInside(tiglSimpleWingHandle, 0., 0., 0., "wrongUID", &isInside));
+    EXPECT_EQ(TIGL_NOT_FOUND, tiglCheckPointInside(-1, 0., 0., 0., "wrongUID", &isInside));
+    EXPECT_EQ(TIGL_NULL_POINTER, tiglCheckPointInside(tiglSimpleWingHandle, 0., 0., 0., NULL, &isInside));
+    EXPECT_EQ(TIGL_NULL_POINTER, tiglCheckPointInside(tiglSimpleWingHandle, 0., 0., 0., "wrongUID", NULL));
+
+
+}
