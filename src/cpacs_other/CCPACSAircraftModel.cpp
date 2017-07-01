@@ -59,7 +59,7 @@ void CCPACSAircraftModel::Invalidate() {
     if (m_wings)
         m_wings->Invalidate();
     if (m_fuselages)
-        m_fuselages;
+        m_fuselages->Invalidate();
 }
 
 CCPACSConfiguration& CCPACSAircraftModel::GetConfiguration() const {

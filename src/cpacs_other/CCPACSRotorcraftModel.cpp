@@ -55,7 +55,7 @@ void CCPACSRotorcraftModel::Invalidate() {
     if (m_wings)
         m_wings->Invalidate();
     if (m_fuselages)
-        m_fuselages;
+        m_fuselages->Invalidate();
     if (m_rotors)
         m_rotors->Invalidate();
 }
