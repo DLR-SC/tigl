@@ -35,6 +35,7 @@
 #include "ISession_Direction.h"
 #include "AIS_TexturedShape.hxx"
 #include "AIS_InteractiveContext.hxx"
+#include "BRepBuilderAPI_MakeVertex.hxx"
 
 #include <OpenGl_GraphicDriver.hxx>
 // Shader related stuff
@@ -290,7 +291,7 @@ void TIGLViewerContext::setGridOffset (Quantity_Length offset)
 }
 
 // a small helper when we just want to display a shape
-void TIGLViewerContext::displayShape(const TopoDS_Shape& loft, Quantity_Color color, double transparency)
+void TIGLViewerContext::displayShape(const TopoDS_Shape& loft, Standard_Boolean updateViewer, Quantity_Color color, double transparency)
 {
     TIGLViewerSettings& settings = TIGLViewerSettings::Instance();
     Handle(AIS_TexturedShape) shape = new AIS_TexturedShape(loft);
@@ -306,7 +307,7 @@ void TIGLViewerContext::displayShape(const TopoDS_Shape& loft, Quantity_Color co
     }
 #endif
 
-    myContext->Display(shape, Standard_True);
+    myContext->Display(shape, updateViewer);
     
     if (settings.enumerateFaces()) {
         TopTools_IndexedMapOfShape shapeMap;
@@ -329,13 +330,19 @@ void TIGLViewerContext::displayPoint(const gp_Pnt& aPoint,
                                      Standard_Real aZoffset,
                                      Standard_Real TextScale)
 {
-    Handle(ISession_Point) aGraphicPoint = new ISession_Point(aPoint.X(), aPoint.Y(), aPoint.Z());
-    myContext->Display(aGraphicPoint,UpdateViewer);
-    Handle(ISession_Text) aGraphicText = new ISession_Text(aText, aPoint.X() + anXoffset,
-                                                 aPoint.Y() + anYoffset,
-                                                 aPoint.Z() + aZoffset);
-    aGraphicText->SetScale(TextScale);
-    myContext->Display(aGraphicText,UpdateViewer);
+    if (std::string(aText) == "") {
+        displayShape(BRepBuilderAPI_MakeVertex(gp_Pnt(aPoint.X() + anXoffset, aPoint.Y() + anYoffset, aPoint.Z() + aZoffset)), UpdateViewer, Quantity_NOC_YELLOW);
+    }
+    else {
+        Handle(ISession_Point) aGraphicPoint = new ISession_Point(aPoint.X(), aPoint.Y(), aPoint.Z());
+        myContext->Display(aGraphicPoint,UpdateViewer);
+        Handle(ISession_Text) aGraphicText = new ISession_Text(aText, aPoint.X() + anXoffset,
+                                                     aPoint.Y() + anYoffset,
+                                                     aPoint.Z() + aZoffset);
+        aGraphicText->SetScale(TextScale);
+        myContext->Display(aGraphicText,UpdateViewer);
+    }
+
 }
 
 // convenience wrapper
@@ -377,6 +384,13 @@ bool TIGLViewerContext::hasSelectedShapes() const
     }
 
     return hasSelectedShapes;
+}
+
+void TIGLViewerContext::updateViewer()
+{
+    if (!myContext.IsNull()) {
+        myContext->UpdateCurrentViewer();
+    }
 }
 
 // convenience wrapper

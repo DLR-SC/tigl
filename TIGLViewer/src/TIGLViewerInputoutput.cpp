@@ -59,7 +59,7 @@ bool TIGLViewerInputOutput::importModel( const QString fileName,
     }
 
     for ( int i = 1; i <= shapes->Length(); i++ ) {
-        scene.displayShape(shapes->Value(i));
+        scene.displayShape(shapes->Value(i), true);
     }
     return true;
 }
