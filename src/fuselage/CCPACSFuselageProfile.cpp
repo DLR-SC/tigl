@@ -316,19 +316,12 @@ gp_Pnt CCPACSFuselageProfile::GetPoint(double zeta)
     if (!wireExplorer.More()) {
         throw CTiglError("Not enough edges found in CCPACSFuselageProfile::GetPoint", TIGL_ERROR);
     }
-    Standard_Real firstParam;
-    Standard_Real lastParam;
-    TopoDS_Edge edge = wireExplorer.Current();
-    wireExplorer.Next();
-    Handle(Geom_Curve) curve = BRep_Tool::Curve(edge, firstParam, lastParam);
 
-    if (!reparOriginal.isInitialized()) {
-        // load the curve
-        reparOriginal.init(GeomConvert::CurveToBSplineCurve(curve), 1e-4);
-        }
+    Standard_Real firstParam = 0.;
+    Standard_Real lastParam = 1.;
+    Handle(Geom_Curve) curve = BRep_Tool::Curve(wireExplorer.Current(), firstParam, lastParam);
 
-    double parameter = reparOriginal.parameter(zeta*reparOriginal.totalLength());
-    gp_Pnt point = curve->Value(parameter);
+    gp_Pnt point = curve->Value(firstParam*(1-zeta) + lastParam*zeta);
 
     return point;
 }
