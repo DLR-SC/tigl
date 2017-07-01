@@ -576,58 +576,28 @@ gp_Pnt CCPACSFuselageSegment::GetPointOnXPlane(double eta, double xpos, int poin
 // Gets the wire on the loft at a given eta
 TopoDS_Shape CCPACSFuselageSegment::getWireOnLoft(double eta)
 {
-    // get eta-x-coordinate
-    gp_Pnt tmpPoint = GetPoint(eta, 0.1);
+    const TopoDS_Shape& loft = GetLoft()->Shape();
 
-    // Build cutting plane
-    gp_Pnt p1(tmpPoint.X(), -1.0e7, -1.0e7);
-    gp_Pnt p2(tmpPoint.X(),  1.0e7, -1.0e7);
-    gp_Pnt p3(tmpPoint.X(),  1.0e7, 1.0e7);
-    gp_Pnt p4(tmpPoint.X(), -1.0e7, 1.0e7);
+    TopExp_Explorer faceExplorer(loft, TopAbs_FACE);
 
-    Handle(Geom_TrimmedCurve) shaft_line1 = GC_MakeSegment(p1,p2);
-    Handle(Geom_TrimmedCurve) shaft_line2 = GC_MakeSegment(p2,p3);
-    Handle(Geom_TrimmedCurve) shaft_line3 = GC_MakeSegment(p3,p4);
-    Handle(Geom_TrimmedCurve) shaft_line4 = GC_MakeSegment(p4,p1);
-
-    TopoDS_Edge shaft_edge1 = BRepBuilderAPI_MakeEdge(shaft_line1);
-    TopoDS_Edge shaft_edge2 = BRepBuilderAPI_MakeEdge(shaft_line2);
-    TopoDS_Edge shaft_edge3 = BRepBuilderAPI_MakeEdge(shaft_line3);
-    TopoDS_Edge shaft_edge4 = BRepBuilderAPI_MakeEdge(shaft_line4);
-
-    TopoDS_Wire shaft_wire = BRepBuilderAPI_MakeWire(shaft_edge1, shaft_edge2, shaft_edge3, shaft_edge4);
-    TopoDS_Face shaft_face = BRepBuilderAPI_MakeFace(shaft_wire);
-
-    // calculate intersection between loft and cutting plane
-    Standard_Real tolerance = 1.0e-7;
-    int numWires = 0;                           /* The number of intersection lines */
-    TopoDS_Shape intersectionResult;            /* The full Intersection result */
-    Handle(TopTools_HSequenceOfShape) Wires;    /* All intersection wires */
-    Handle(TopTools_HSequenceOfShape) Edges;    /* All intersection edges */
-    Standard_Boolean PerformNow = Standard_False;
-    BRepAlgoAPI_Section section(GetLoft()->Shape(), shaft_face, PerformNow);
-    section.ComputePCurveOn1(Standard_True);
-    section.Approximation(Standard_True);
-    section.Build();
-    intersectionResult = section.Shape();
-
-    TopExp_Explorer myEdgeExplorer(intersectionResult, TopAbs_EDGE);
-
-    Edges = new TopTools_HSequenceOfShape();
-    Wires = new TopTools_HSequenceOfShape();
-
-    while (myEdgeExplorer.More()) {
-        Edges->Append(TopoDS::Edge(myEdgeExplorer.Current()));
-        myEdgeExplorer.Next();
-        numWires++;
+    if (!faceExplorer.More()) {
+        throw CTiglError("Internal error: invalid topology of fuselage segment shape.", TIGL_ERROR);
     }
 
-    // connect edges to wires and save them to Wire-sequence
-    ShapeAnalysis_FreeBounds::ConnectEdgesToWires(Edges, tolerance, false, Wires);
-    if (numWires < 1){
-        throw CTiglError("No intersection found in CCPACSFuselageSegment::getWireOnLoft", TIGL_NOT_FOUND);
+    const TopoDS_Face& face = TopoDS::Face(faceExplorer.Current());
+    Handle(Geom_Surface) surf = BRep_Tool::Surface(face);
+
+    // we need to extract a iso-v curve
+    Standard_Real umin = 0, vmin = 0, umax = 1., vmax = 1.;
+    surf->Bounds(umin, umax, vmin, vmax);
+    Handle(Geom_Curve) curve = surf->VIso(vmin * (1. - eta) + vmax * eta);
+
+    BRepBuilderAPI_MakeWire wireMaker(BRepBuilderAPI_MakeEdge(curve).Edge());
+    if (!curve->IsClosed()) {
+        wireMaker.Add(BRepBuilderAPI_MakeEdge(curve->Value(curve->LastParameter()), curve->Value(curve->FirstParameter())));
     }
-    return TopoDS::Wire(Wires->Value(1));
+
+    return wireMaker.Wire();
 }
 
 
