@@ -17,7 +17,7 @@
 */
 
 /* 
-* This file is automatically created from tigl.h on 2017-06-21.
+* This file is automatically created from tigl.h on 2017-07-02.
 * If you experience any bugs please contact the authors
 */
 
@@ -173,6 +173,7 @@ public class TiglNativeInterface {
     public static native int tiglLogSetFileEnding(String ending);
     public static native int tiglLogSetTimeInFilenameEnabled(int enabled);
     public static native int tiglLogSetVerbosity(int level);
+    public static native int tiglCheckPointInside(int cpacsHandle, double px, double py, double pz, String componentUID, IntByReference isInside);
     public static native int tiglComponentGetHashCode(int cpacsHandle, String componentUID, IntByReference hashCodePtr);
     public static native String tiglGetErrorString(int errorCode);
     public static native int tiglConfigurationGetLength(int cpacsHandle, DoubleByReference pLength);
