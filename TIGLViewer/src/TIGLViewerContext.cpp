@@ -267,13 +267,29 @@ void TIGLViewerContext::gridCirc ( void )
  */
 void TIGLViewerContext::wireFrame(bool wireframe) 
 {
-    if (!myContext.IsNull()){
+    if (!myContext.IsNull()) {
         if (wireframe) {
             myContext->SetDisplayMode(AIS_WireFrame);
         }
         else {
             myContext->SetDisplayMode(AIS_Shaded);
         }
+    }
+}
+
+void TIGLViewerContext::selectAll()
+{
+    if (!myContext.IsNull()) {
+        AIS_ListOfInteractive aList;
+        // deselect all
+        myContext->ClearCurrents(Standard_False);
+        myContext->DisplayedObjects( aList );
+        AIS_ListIteratorOfListOfInteractive aListIterator;
+        for ( aListIterator.Initialize( aList ); aListIterator.More(); aListIterator.Next() ) {
+            // add to selection
+            myContext->AddOrRemoveCurrentObject(aListIterator.Value(), Standard_False);
+        }
+        myContext->UpdateCurrentViewer();
     }
 }
 

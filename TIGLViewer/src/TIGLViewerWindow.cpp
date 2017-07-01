@@ -55,6 +55,13 @@
 
 #include <cstdlib>
 
+namespace
+{
+    QString makeLink(const QString& linkText, const QString& address) {
+        return QString("<a style='color: #8eceff;' href='%1'>%2</a>").arg(address).arg(linkText);
+    }
+}
+
 TIGLViewerWindow::TIGLViewerWindow()
     : myLastFolder(tr(""))
     , cpacsConfiguration(NULL)
@@ -502,14 +509,14 @@ void TIGLViewerWindow::about()
         QString ver = list[0];
         QString rev = list[1];
 
-        tiglVersion = QString("%1-r<a style=\"color: #8eceff;\" href=\"https://github.com/DLR-SC/tigl/commit/%2\">%2</a>").arg(ver).arg(rev);
+        tiglVersion = QString("%1-r%2").arg(ver).arg(makeLink(rev, QString("https://github.com/DLR-SC/tigl/commit/%1").arg(rev)));
     }
 
-    text += "TiXI: v" + tixiVersion + "<br/>";
-    text += "TiGL: v" + tiglVersion + "<br/>";
-    text += "OpenCASCADE: v" + occtVersion + "<br/><br/>";
+    text += makeLink("TiXI", "https://github.com/dlr-sc/tixi") + ": v" + tixiVersion + "<br/>";
+    text += makeLink("TiGL", "https://github.com/dlr-sc/tigl") + ": v" + tiglVersion + "<br/>";
+    text += makeLink("OpenCASCADE", "https://www.opencascade.com/") + ": v" + occtVersion + "<br/><br/>";
 
-    text += "Visit the TiGL project page at <a style=\"color: #8eceff;\" href=\"http://software.dlr.de/p/tigl/\">http://software.dlr.de/p/tigl/</a><br/><br/>";
+    text += "Visit the TiGL project page at " + makeLink("http://software.dlr.de/p/tigl/", "http://software.dlr.de/p/tigl/")+ "<br/><br/>";
 
     text += "&copy; 2017 German Aerospace Center (DLR) ";
 
@@ -519,6 +526,7 @@ void TIGLViewerWindow::about()
 void TIGLViewerWindow::aboutQt()
 {
     statusBar()->showMessage(tr("Invoked Help|About Qt"));
+    qApp->aboutQt();
 }
 
 
@@ -649,7 +657,6 @@ void TIGLViewerWindow::connectSignals()
     connect(setBackgroundAction, SIGNAL(triggered()), this, SLOT(setBackgroundImage()));
     connect(exitAction, SIGNAL(triggered()), this, SLOT(close()));
     connect(aboutAction, SIGNAL(triggered()), this, SLOT(about()));
-    connect(aboutQtAction, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
     connect(aboutQtAction, SIGNAL(triggered()), this, SLOT(aboutQt()));
 
     // Misc drawing actions
@@ -665,6 +672,10 @@ void TIGLViewerWindow::connectSignals()
     connect(panAction, SIGNAL(triggered()), myOCC, SLOT(pan()));
     connect(rotAction, SIGNAL(triggered()), myOCC, SLOT(rotation()));
     connect(selectAction, SIGNAL(triggered()), myOCC, SLOT(selecting()));
+
+    // select all is not present in any menu or bar
+    addAction(selectAllAction);
+    connect(selectAllAction, SIGNAL(triggered(bool)), myScene, SLOT(selectAll()));
 
     // view->grid menu
     connect(gridOnAction, SIGNAL(toggled(bool)), myScene, SLOT(toggleGrid(bool)));

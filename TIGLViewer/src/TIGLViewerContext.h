@@ -93,6 +93,7 @@ public slots:
     void gridRect   ( void );
     void gridCirc   ( void );
     void wireFrame  ( bool );
+    void selectAll();
     void eraseSelected();
     void setTransparency(int tr);
     void setObjectsWireframe();
