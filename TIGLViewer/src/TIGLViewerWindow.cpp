@@ -50,6 +50,7 @@
 #include "TIGLViewerScreenshotDialog.h"
 #include "TIGLViewerScopedCommand.h"
 #include "tigl_config.h"
+#include "api/tigl_version.h"
 #include "CCPACSConfigurationManager.h"
 
 #include <cstdlib>
@@ -59,6 +60,8 @@ TIGLViewerWindow::TIGLViewerWindow()
     , cpacsConfiguration(NULL)
 {
     setupUi(this);
+
+    setWindowTitle(QString("TiGL Viewer %1").arg(TIGL_MAJOR_VERSION));
 
     tiglViewerSettings = &TIGLViewerSettings::Instance();
     settingsDialog = new TIGLViewerSettingsDialog(*tiglViewerSettings, this);
@@ -113,7 +116,6 @@ TIGLViewerWindow::TIGLViewerWindow()
 
     statusBar()->showMessage(tr("A context menu is available by right-clicking"));
 
-    setWindowTitle(tr(PARAMS.windowTitle.toLatin1().data()));
     setMinimumSize(160, 160);
 }
 
@@ -229,6 +231,7 @@ void TIGLViewerWindow::closeConfiguration()
         delete cpacsConfiguration;
         cpacsConfiguration = NULL;
     }
+    setWindowTitle(QString("TiGL Viewer %1").arg(TIGL_MAJOR_VERSION));
 }
 
 void TIGLViewerWindow::openRecentFile()
@@ -241,7 +244,7 @@ void TIGLViewerWindow::openRecentFile()
 
 void TIGLViewerWindow::openFile(const QString& fileName)
 {
-    QString        fileType;
+    QString      fileType;
     QFileInfo    fileInfo;
 
     TIGLViewerInputOutput::FileFormat format;
@@ -330,7 +333,10 @@ void TIGLViewerWindow::reopenFile()
 
 void TIGLViewerWindow::setCurrentFile(const QString &fileName)
 {
-    setWindowFilePath(fileName);
+    setWindowTitle(QString("%2 - TiGL Viewer %1")
+                   .arg(TIGL_MAJOR_VERSION)
+                   .arg(QDir::toNativeSeparators(QFileInfo(fileName).absoluteFilePath())));
+
     currentFile = fileName;
 
     QSettings settings("DLR SC-HPC", "TiGLViewer3");
@@ -724,7 +730,7 @@ void TIGLViewerWindow::createMenus()
 
 void TIGLViewerWindow::updateRecentFileActions()
 {
-    QSettings settings("DLR SC-VK","TIGLViewer");
+    QSettings settings("DLR SC-HPC", "TiGLViewer3");
     QStringList files = settings.value("recentFileList").toStringList();
 
     int numRecentFiles = qMin(files.size(), (int)MaxRecentFiles);

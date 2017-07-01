@@ -5,7 +5,12 @@
 
 OPTION(TIGL_VIEWER "Builds the TiGL Viewer program (requires OpenGL and Qt4)" ON)
 
-set(PROGNAME "TIGLViewer3")
+
+if (APPLE)
+   set(PROGNAME "TiGL-Viewer3")
+else(APPLE)
+   set(PROGNAME "tiglviewer-3")
+endif(APPLE)
 
 
 if(TIGL_VIEWER)
@@ -153,7 +158,7 @@ set(tv_ui_comp
 	src/TIGLViewerVTKExportDialog.ui
 	src/TIGLSliderDialog.ui
 )
-	
+
 foreach ( _fname ${tv_src})
    set(tv_src_comp ${tv_src_comp} src/${_fname})
 endforeach()
@@ -266,7 +271,7 @@ ENDIF(WIN32)
 SET(CMAKE_INSTALL_OPENMP_LIBRARIES "ON")
 INCLUDE(InstallRequiredSystemLibraries)
 
-	
+
 # set directories to look for dependencies
 set(DIRS ${TIXI_LIB_PATH} ${OpenCASCADE_DLL_DIRECTORY} ${OpenCASCADE_LINK_DIRECTORY} ${TIGL_ADD_LIB_PATH})
 
@@ -298,7 +303,7 @@ if (OpenCASCADE_SHADER_DIRECTORY)
 endif()
 
 else (QT4_FOUND OR Qt5Widgets_FOUND)
-message(STATUS "No qt was found. TIGLViewer will not be build!")
+message(STATUS "No qt was found. TiGL Viewer will not be build!")
 endif(QT4_FOUND OR Qt5Widgets_FOUND)
 
 endif(TIGL_VIEWER)

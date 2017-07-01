@@ -15,8 +15,8 @@ before_install:
   - '[ "$TRAVIS_OS_NAME" != linux ] || sudo rm /usr/lib/oce-*/OCEConfig.cmake '
   # macOS steps
   - '[ "$TRAVIS_OS_NAME" != osx ] || export MACOSX_DEPLOYMENT_TARGET=10.8'
-  - '[ "$TRAVIS_OS_NAME" != osx ] || /usr/bin/curl -o Qt5.4_clang64_macOS.tar.gz -L https://sourceforge.net/projects/tigl/files/Thirdparty/Qt5.4_clang64_macOS.tar.gz/download?use_mirror=10gbps-io'
-  - '[ "$TRAVIS_OS_NAME" != osx ] || /usr/bin/curl -o oce.0.17.2.macos_static.tar.gz -L https://sourceforge.net/projects/tigl/files/Thirdparty/oce.0.17.2.macos_static.tar.gz/download?use_mirror=10gbps-io'
+  - '[ "$TRAVIS_OS_NAME" != osx ] || /usr/bin/curl -o Qt5.4_clang64_macOS.tar.gz -L https://sourceforge.net/projects/tigl/files/Thirdparty/Qt5.4_clang64_macOS.tar.gz'
+  - '[ "$TRAVIS_OS_NAME" != osx ] || /usr/bin/curl -o oce.0.17.2.macos_static.tar.gz -L https://sourceforge.net/projects/tigl/files/Thirdparty/oce.0.17.2.macos_static.tar.gz'
   - '[ "$TRAVIS_OS_NAME" != osx ] || /usr/bin/curl -O -L https://github.com/DLR-SC/tixi/releases/download/v2.2.4/TIXI-2.2.4-macOS.tar.gz '
   - '[ "$TRAVIS_OS_NAME" != osx ] || tar xf Qt5.4_clang64_macOS.tar.gz'
   - '[ "$TRAVIS_OS_NAME" != osx ] || tar xf oce.0.17.2.macos_static.tar.gz'
@@ -30,9 +30,9 @@ script:
   - '[ "$TRAVIS_OS_NAME" != osx ] || export CMAKE_PREFIX_PATH=`pwd`/../TIXI-2.2.4-macOS:`pwd`/../oce.0.17.2.macos_static:`pwd`/../Qt5.4_clang64_macOS'
   - '[ "$TRAVIS_OS_NAME" != osx ] || export CXXFLAGS=-Wno-inconsistent-missing-override '
   - cmake -DTIGL_BUILD_TESTS=ON -DTIGL_BINDINGS_MATLAB=ON ..
-  - make
+  - make -j 4
   - '[ "$TRAVIS_OS_NAME" != osx ] || export DYLD_LIBRARY_PATH=`pwd`/../TIXI-2.2.4-macOS/lib '
   - cd tests
-  - ./TIGL-unittests --gtest_output=xml
+  - ./TiGL-unittests --gtest_output=xml
 
 
