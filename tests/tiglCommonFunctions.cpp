@@ -19,6 +19,8 @@
 #include "test.h"
 
 #include <gp_Pln.hxx>
+#include <BRepPrimAPI_MakeBox.hxx>
+#include <BRepBuilderAPI_MakeVertex.hxx>
 
 TEST(TiglCommonFunctions, isPathRelative)
 {
@@ -57,4 +59,29 @@ TEST(TiglCommonFunctions, IntersectLinePlane)
     ASSERT_NEAR(0., result.Distance(gp_Pnt(1., 2., 0)), 1e-10);
 
     ASSERT_EQ(NoIntersection, IntersectLinePlane(gp_Pnt(1., 3., 0.), gp_Pnt(10., 3., 0.), plane, result));
+}
+
+TEST(TiglCommonFunctions, IsPointInsideShape)
+{
+    TopoDS_Shape box = BRepPrimAPI_MakeBox(1., 1., 1).Solid();
+
+    EXPECT_TRUE(IsPointInsideShape(box, gp_Pnt(0.5, 0.5, 0.5)));
+    EXPECT_TRUE(IsPointInsideShape(box, gp_Pnt(1.0, 0.5, 0.5)));
+
+    EXPECT_FALSE(IsPointInsideShape(box, gp_Pnt(1.5, 0.5, 0.5)));
+
+    TopoDS_Shape boxrev = box.Reversed();
+
+    EXPECT_TRUE(IsPointInsideShape(boxrev, gp_Pnt(0.5, 0.5, 0.5)));
+    EXPECT_TRUE(IsPointInsideShape(boxrev, gp_Pnt(1.0, 0.5, 0.5)));
+
+    EXPECT_FALSE(IsPointInsideShape(boxrev, gp_Pnt(1.5, 0.5, 0.5)));
+
+    // check tolerance of 1e-3
+    EXPECT_TRUE(IsPointInsideShape(boxrev, gp_Pnt(1.0009, 0.5, 0.5)));
+    EXPECT_FALSE(IsPointInsideShape(boxrev, gp_Pnt(1.0011, 0.5, 0.5)));
+
+    // The function requires a solid, else it will throw
+    TopoDS_Vertex v = BRepBuilderAPI_MakeVertex(gp_Pnt(10., 10., 10.));
+    EXPECT_THROW(IsPointInsideShape(v, gp_Pnt(0., 0., 0.)), tigl::CTiglError);
 }
