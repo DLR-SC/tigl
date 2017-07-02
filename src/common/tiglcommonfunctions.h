@@ -104,6 +104,9 @@ TIGL_EXPORT bool GetIntersectionPoint(const TopoDS_Face& face, const TopoDS_Edge
 // Computes the intersection point of a face and a wire
 TIGL_EXPORT bool GetIntersectionPoint(const TopoDS_Face& face, const TopoDS_Wire& wire, gp_Pnt& dst);
 
+// Checks, whether a points lies inside a given shape, which must be a solid
+TIGL_EXPORT bool IsPointInsideShape(const TopoDS_Shape& solid, gp_Pnt point);
+
 // Returns the single face contained in the passed shape
 // Throws an exception when number of faces != 1
 TIGL_EXPORT TopoDS_Face GetSingleFace(const TopoDS_Shape& shape);
