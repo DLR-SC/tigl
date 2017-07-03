@@ -167,6 +167,7 @@ protected:
     // Builds the loft between the two segment sections
     PNamedShape BuildLoft();
 
+    void SetFaceTraits(PNamedShape loft, bool hasSymmetryPlane);
 private:
     // get short name for loft
     std::string GetShortShapeName();

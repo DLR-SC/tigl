@@ -248,6 +248,37 @@ std::string CCPACSFuselageSegment::GetShortShapeName()
     return "UNKNOWN";
 }
 
+void CCPACSFuselageSegment::SetFaceTraits (PNamedShape loft, bool hasSymmetryPlane)
+{
+    // this is currently only valid without guides
+
+    int nFaces = GetNumberOfFaces(loft->Shape());
+
+    std::vector<std::string> names;
+    names.push_back(loft->Name());
+    names.push_back("symmetry");
+    names.push_back("Front");
+    names.push_back("Rear");
+
+
+    int facesPerSegment = hasSymmetryPlane ? 2 : 1;
+    int remainingFaces = nFaces - facesPerSegment;
+    if (remainingFaces < 0 || remainingFaces > 2) {
+        throw CTiglError("Fuselage shape seems to be invalid");
+    }
+
+    int iFaceTotal = 0;
+    for (int iFace = 0; iFace < facesPerSegment; ++iFace) {
+        loft->FaceTraits(iFaceTotal++).SetName(names[iFace].c_str());
+    }
+
+    // set the caps
+    int iFace = 2;
+    for (;iFaceTotal < nFaces; ++iFaceTotal) {
+        loft->FaceTraits(iFaceTotal).SetName(names[iFace++].c_str());
+    }
+}
+
 // Builds the loft between the two segment sections
 PNamedShape CCPACSFuselageSegment::BuildLoft()
 {
@@ -266,13 +297,25 @@ PNamedShape CCPACSFuselageSegment::BuildLoft()
     myVolume = System.Mass();
 
     // Calculate surface area
+    TopExp_Explorer faceExplorer(loftShape, TopAbs_FACE);
+
+    if (!faceExplorer.More()) {
+        throw CTiglError("Invalid fuselage segment shape generated");
+    }
+
     GProp_GProps AreaSystem;
-    BRepGProp::SurfaceProperties(loftShape, AreaSystem);
+
+    // The first face is the outer hull. We ignore symmetry planes and the front / back caps
+    BRepGProp::SurfaceProperties(faceExplorer.Current(), AreaSystem);
     mySurfaceArea = AreaSystem.Mass();
         
     std::string loftName = GetUID();
     std::string loftShortName = GetShortShapeName();
     PNamedShape loft(new CNamedShape(loftShape, loftName.c_str(), loftShortName.c_str()));
+
+    bool hasSymmetryPlane = GetNumberOfEdges(GetEndWire()) > 1;
+    SetFaceTraits(loft, hasSymmetryPlane);
+
     return loft;
 }
 

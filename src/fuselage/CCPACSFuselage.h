@@ -116,6 +116,8 @@ protected:
     // Adds all segments of this fuselage to one shape
     PNamedShape BuildLoft();
     
+    void SetFaceTraits(PNamedShape loft, bool hasSymmetryPlane, bool smoothSurface);
+
 private:
     // get short name for loft
     std::string GetShortShapeName();
