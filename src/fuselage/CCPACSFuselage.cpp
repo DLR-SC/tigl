@@ -47,6 +47,8 @@
 #include "BRepBuilderAPI_MakeWire.hxx"
 #include "GC_MakeSegment.hxx"
 #include "BRepExtrema_DistShapeShape.hxx"
+#include "TopExp.hxx"
+#include "TopTools_IndexedMapOfShape.hxx"
 
 
 namespace tigl
@@ -239,6 +241,41 @@ std::string CCPACSFuselage::GetShortShapeName ()
     return "UNKNOWN";
 }
 
+void CCPACSFuselage::SetFaceTraits (PNamedShape loft, bool hasSymmetryPlane, bool smoothSurface)
+{
+    // this is currently only valid without guides
+
+    int nFaces = GetNumberOfFaces(loft->Shape());
+
+    std::vector<std::string> names;
+    names.push_back(loft->Name());
+    names.push_back("symmetry");
+    names.push_back("Front");
+    names.push_back("Rear");
+
+    // if we have a smooth surface, the whole fuslage is treatet as one segment
+    int nSegments = smoothSurface ? 1 : this->GetSegmentCount();
+
+    int facesPerSegment = hasSymmetryPlane ? 2 : 1;
+    int remainingFaces = nFaces - facesPerSegment * nSegments;
+    if (remainingFaces < 0 || remainingFaces > 2) {
+        throw CTiglError("Fuselage shape seems to be invalid");
+    }
+
+    int iFaceTotal = 0;
+    for (int iSegment = 0; iSegment < nSegments; ++iSegment) {
+        for (int iFace = 0; iFace < facesPerSegment; ++iFace) {
+            loft->FaceTraits(iFaceTotal++).SetName(names[iFace].c_str());
+        }
+    }
+
+    // set the caps
+    int iFace = 2;
+    for (;iFaceTotal < nFaces; ++iFaceTotal) {
+        loft->FaceTraits(iFaceTotal).SetName(names[iFace++].c_str());
+    }
+}
+
 // Builds a fused shape of all fuselage segments
 PNamedShape CCPACSFuselage::BuildLoft(void)
 {
@@ -267,6 +304,11 @@ PNamedShape CCPACSFuselage::BuildLoft(void)
     std::string loftName = GetUID();
     std::string loftShortName = GetShortShapeName();
     PNamedShape loft(new CNamedShape(loftShape, loftName.c_str(), loftShortName.c_str()));
+
+    bool hasSymmetryPlane = GetNumberOfEdges(segments.GetSegment(1).GetEndWire()) > 1;
+
+    SetFaceTraits(loft, hasSymmetryPlane, !ruled);
+
     return loft;
 }
 
@@ -320,11 +362,23 @@ double CCPACSFuselage::GetCircumference(const int segmentIndex, const double eta
 // Returns the surface area of this fuselage
 double CCPACSFuselage::GetSurfaceArea(void)
 {
-    const TopoDS_Shape& fusedSegments = GetLoft()->Shape();
+    const PNamedShape& fusedSegments = GetLoft();
+
+    // loop over all faces that are not symmetry, front or rear
+    double myArea = 0.;
+
+    TopTools_IndexedMapOfShape shapeMap;
+    TopExp::MapShapes(fusedSegments->Shape(), TopAbs_FACE, shapeMap);
+    for (int i = 1; i <= shapeMap.Extent(); ++i) {
+        if (GetUID() == fusedSegments->GetFaceTraits(i-1).Name()) {
+            const TopoDS_Face& f = TopoDS::Face(shapeMap(i));
+            GProp_GProps System;
+            BRepGProp::SurfaceProperties(f, System);
+            myArea += System.Mass();
+        }
+    }
+
     // Calculate surface area
-    GProp_GProps System;
-    BRepGProp::SurfaceProperties(fusedSegments, System);
-    double myArea = System.Mass();
     return myArea;
 }
 
