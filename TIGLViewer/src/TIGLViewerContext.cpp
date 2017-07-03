@@ -29,6 +29,8 @@
 #include "TIGLViewerInternal.h"
 #include "TIGLViewerSettings.h"
 #include "tiglcommonfunctions.h"
+#include "CNamedShape.h"
+#include "PNamedShape.h"
 
 #include "ISession_Point.h"
 #include "ISession_Text.h"
@@ -332,6 +334,45 @@ void TIGLViewerContext::displayShape(const TopoDS_Shape& loft, Standard_Boolean 
             const TopoDS_Face& face = TopoDS::Face(shapeMap(i));
             gp_Pnt p = GetCentralFacePoint(face);
             QString s = QString("%1").arg(i);
+            displayPoint(p, s.toStdString().c_str(), false, 0., 0., 0., 10.);
+        }
+    }
+}
+
+// a small helper when we just want to display a shape
+void TIGLViewerContext::displayShape(const PNamedShape& pshape, Standard_Boolean updateViewer, Quantity_Color color, double transparency)
+{
+    if (!pshape) {
+        return;
+    }
+
+    TIGLViewerSettings& settings = TIGLViewerSettings::Instance();
+    Handle(AIS_TexturedShape) shape = new AIS_TexturedShape(pshape->Shape());
+
+    myContext->SetMaterial(shape, Graphic3d_NOM_METALIZED, Standard_False);
+    myContext->SetColor(shape, color, Standard_False);
+    myContext->SetTransparency(shape, transparency, Standard_False);
+    shape->SetOwnDeviationCoefficient(settings.tesselationAccuracy());
+
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(6,7,0)
+    if (!myShader.IsNull()) {
+        shape->Attributes()->ShadingAspect()->Aspect()->SetShaderProgram (myShader);
+    }
+#endif
+
+    myContext->Display(shape, updateViewer);
+
+    if (settings.enumerateFaces()) {
+        TopTools_IndexedMapOfShape shapeMap;
+        TopExp::MapShapes(pshape->Shape(), TopAbs_FACE, shapeMap);
+        for (int i = 1; i <= shapeMap.Extent(); ++i) {
+            const TopoDS_Face& face = TopoDS::Face(shapeMap(i));
+            std::string faceName = pshape->GetFaceTraits(i - 1).Name();
+            if (faceName != std::string(pshape->Name())) {
+                faceName = faceName + " (" + std::string(pshape->Name()) + ")";
+            }
+            gp_Pnt p = GetCentralFacePoint(face);
+            QString s = QString("%1 - %2").arg(i).arg(faceName.c_str());
             displayPoint(p, s.toStdString().c_str(), false, 0., 0., 0., 10.);
         }
     }
