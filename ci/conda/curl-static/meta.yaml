@@ -1,0 +1,34 @@
+{% set version = "7.50.3" %}
+
+package:
+  name: curl-static
+  version: {{ version }}
+
+source:
+  fn: curl-{{ version }}.tar.gz
+  url: http://curl.haxx.se/download/curl-{{ version }}.tar.gz
+
+build:
+  number: 0
+  features:
+    - vc9              # [win and py27]
+    - vc10             # [win and py34]
+    - vc14             # [win and py35]
+
+requirements:
+  build:
+    - python
+    - gcc              # [linux]
+
+test:
+  requires:
+    - python 2.7.*     # [win and py27]
+    - python 3.4.*     # [win and py34]
+    - python 3.5.*     # [win and py35]
+
+  commands:
+    - curl --version
+
+about:
+  home: http://curl.haxx.se
+  summary: Curl is an open source command line tool and library for transferring data with URL syntax.

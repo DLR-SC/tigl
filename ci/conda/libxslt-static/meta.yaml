@@ -1,0 +1,30 @@
+{% set version = "1.1.29" %}
+
+package:
+  name: libxslt-static
+  version: {{ version }}
+
+source:
+  fn: libxslt-{{ version }}.tar.gz
+  url: ftp://xmlsoft.org/libxslt/libxslt-{{ version }}.tar.gz
+
+
+build:
+  number: 1
+  features:
+    - vc9              # [win and py27]
+    - vc10             # [win and py34]
+    - vc14             # [win and py35]
+
+requirements:
+  build:
+    - python
+    - libxml2-static ==2.9.3
+    - gcc               [linux]
+
+  run:
+    - libxml2-static ==2.9.3
+
+about:
+  home: http://xmlsoft.org/XSLT/
+  summary: The XSLT C library for GNOME

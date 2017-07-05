@@ -1,0 +1,20 @@
+#
+# Author: Martin Siggel
+# 
+# This patch makes sure, to use clock_gettime from librt instead of glibc
+# to provide better portability for older systems
+#
+
+diff --git adm/cmake/TKernel/CMakeLists.txt adm/cmake/TKernel/CMakeLists.txt
+index 54e241e..6db857a 100644
+--- adm/cmake/TKernel/CMakeLists.txt
++++ adm/cmake/TKernel/CMakeLists.txt
+@@ -31,7 +31,7 @@ else(WIN32)
+ 	#  An implementation for Mac OS X has been added in src/OSD/gettime_osx.h
+ 	if(NOT APPLE)
+ 		include( CheckFunctionExists )
+-		check_function_exists( clock_gettime CLOCK_GETTIME_IN_LIBC )
++		# check_function_exists( clock_gettime CLOCK_GETTIME_IN_LIBC )
+ 		if(NOT CLOCK_GETTIME_IN_LIBC)
+ 			include( CheckLibraryExists )
+ 			check_library_exists(rt clock_gettime "" CLOCK_GETTIME_IN_LIBRT)

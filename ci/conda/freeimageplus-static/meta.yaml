@@ -1,0 +1,32 @@
+package:
+  name: freeimageplus-static
+  version: 3.17.0
+
+source:
+  fn: new-bundle.zip [win]
+  url: https://github.com/QbProg/oce-win-bundle/archive/qb/new-bundle.zip [win]
+  fn: FreeImage3170.zip [unix]
+  url: http://downloads.sourceforge.net/freeimage/FreeImage3170.zip [unix]
+  patches:
+    - installdir.patch   [win]
+    - installlinux.patch [linux]
+
+build:
+  number: 0
+  features:
+    - vc9               [win and py27]
+    - vc10              [win and py34]
+    - vc14              [win and py35]
+
+requirements:
+  build:
+    - patch             [win]
+    - cmake             [win]
+    - gcc               [linux]
+    - ninja ==1.7.1
+
+
+about:
+  home: http://freeimage.sourceforge.net/
+  license: GNU LPGL Version 2 and FreeImage Public License
+  summary: FreeImage, The productivity booster

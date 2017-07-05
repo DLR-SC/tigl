@@ -1,0 +1,49 @@
+{% set version = "2.2.0" %}
+
+package:
+  name: tigl
+  version: {{ version }}
+
+source:
+  fn: tigl-{{ version }}.tar.gz
+  url: https://github.com/DLR-SC/tigl/archive/v{{ version }}.tar.gz
+  #path: ../../
+  patches:
+    - force_qt4.patch     # [linux]
+    - fixup_linux.patch   # [linux]
+
+build:
+  number: 0
+  detect_binary_files_with_prefix: True
+  features:
+    - vc9               # [win and py27]
+    - vc10              # [win and py34]
+    - vc14              # [win and py35]
+
+requirements:
+  build:
+    - ninja
+    - python
+    - cmake
+    - doxygen ==1.8.10
+    - nsis ==3.0        # [win]
+    - tixi ==2.2.4
+    - oce-static ==0.17.2
+    - qt ==5.6.0        # [win or osx]
+    - qt ==4.8.7        # [linux]
+    # OCE deps
+    - freetype-static ==2.6
+    - freeimageplus-static ==3.17.0
+
+
+  run:
+    - tixi ==2.2.4
+    - python
+    - qt ==5.6.0        # [win or osx]
+    - qt ==4.8.7        # [linux]
+
+
+about:
+  home: https://github.com/DLR-SC/tigl
+  license: Apache 2.0
+  summary: The TiGL Geometry Library to process aircraft geometries in pre-design

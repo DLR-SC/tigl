@@ -1,0 +1,20 @@
+# The TKOpenGl.dll path is generated differently, if the build tool is nmake
+# Ninja should behave identical to nmake. This fix checks, if the build tool
+# is ninja, and sets the nmake variable.
+
+diff --git CMakeLists.txt CMakeLists.txt
+index 33c8421..658a77e 100644
+--- CMakeLists.txt
++++ CMakeLists.txt
+@@ -73,9 +73,9 @@ if(NOT CMAKE_CONFIGURATION_TYPES)
+ 	endif(CMAKE_BUILD_TYPE STREQUAL "")
+ endif(NOT CMAKE_CONFIGURATION_TYPES)
+ 
+-if(CMAKE_BUILD_TOOL STREQUAL "nmake")
++if(CMAKE_BUILD_TOOL STREQUAL "nmake" OR CMAKE_GENERATOR STREQUAL "Ninja")
+ 	set(NMAKE TRUE)
+-endif(CMAKE_BUILD_TOOL STREQUAL "nmake")
++endif(CMAKE_BUILD_TOOL STREQUAL "nmake" OR CMAKE_GENERATOR STREQUAL "Ninja")
+ 
+ if(MSVC)
+ 	option_with_default( OCE_INSTALL_PDB_FILES "Install PDB files (debug informations)" ON )

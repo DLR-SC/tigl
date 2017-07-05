@@ -1,0 +1,30 @@
+# This patch also removes explicit linking by cmake with all static dependencies
+# of tixi.
+
+diff --git contrib/PostInstall.cmake.in contrib/PostInstall.cmake.in
+index bfc252f..b020235 100644
+--- contrib/PostInstall.cmake.in
++++ contrib/PostInstall.cmake.in
+@@ -3,18 +3,18 @@ message(STATUS "Performing post install steps")
+ set (PYTHON_EXECUTABLE @PYTHON_EXECUTABLE@)
+ 
+ # cleanup hard-coded links to libraries
+-if (WIN32)
++if (1)
+ 
+     execute_process(
+-      COMMAND ${PYTHON_EXECUTABLE} @CMAKE_SOURCE_DIR@/contrib/remove-library.py  ${CMAKE_INSTALL_PREFIX}/@CMAKE_INSTALL_LIBDIR@/tixi/tixi-targets-release.cmake "@CURL_LIBRARIES@;"
++      COMMAND ${PYTHON_EXECUTABLE} @CMAKE_SOURCE_DIR@/contrib/remove-library.py  ${CMAKE_INSTALL_PREFIX}/@CMAKE_INSTALL_LIBDIR@/tixi/tixi-targets-release.cmake "@CURL_LIBRARIES@"
+     )
+ 
+     execute_process(
+-      COMMAND ${PYTHON_EXECUTABLE} @CMAKE_SOURCE_DIR@/contrib/remove-library.py  ${CMAKE_INSTALL_PREFIX}/@CMAKE_INSTALL_LIBDIR@/tixi/tixi-targets-release.cmake "@XSLT_LIBRARIES@;"
++      COMMAND ${PYTHON_EXECUTABLE} @CMAKE_SOURCE_DIR@/contrib/remove-library.py  ${CMAKE_INSTALL_PREFIX}/@CMAKE_INSTALL_LIBDIR@/tixi/tixi-targets-release.cmake "@XSLT_LIBRARIES@"
+     )
+ 
+     execute_process(
+-      COMMAND ${PYTHON_EXECUTABLE} @CMAKE_SOURCE_DIR@/contrib/remove-library.py  ${CMAKE_INSTALL_PREFIX}/@CMAKE_INSTALL_LIBDIR@/tixi/tixi-targets-release.cmake "@XML_LIBRARIES@;"
++      COMMAND ${PYTHON_EXECUTABLE} @CMAKE_SOURCE_DIR@/contrib/remove-library.py  ${CMAKE_INSTALL_PREFIX}/@CMAKE_INSTALL_LIBDIR@/tixi/tixi-targets-release.cmake "@XML_LIBRARIES@"
+     )
+ 
+ endif()
