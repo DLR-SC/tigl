@@ -62,8 +62,6 @@
 #include "gp_Pnt.hxx"
 #include "TopoDS_Shape.hxx"
 #include "TopoDS_Edge.hxx"
-#include "GProp_GProps.hxx"
-#include "BRepGProp.hxx"
 
 /*****************************************************************************/
 /* Private functions.                                                 */
@@ -2467,12 +2465,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSectionCenter(TiglCPACSConfigur
         // get ISO curve
         TopoDS_Shape curve = segment.getWireOnLoft(eta);
 
-        // get linear properties of the ISO curve
-         GProp_GProps LProps;
-         BRepGProp::LinearProperties(curve, LProps);
-
          // compute center of the ISO curve
-         gp_Pnt centerPoint = LProps.CentreOfMass();
+         gp_Pnt centerPoint = GetCenterOfMass(curve);
 
          // assigne solution to return point
          *pointX = centerPoint.X();

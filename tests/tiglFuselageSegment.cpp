@@ -667,7 +667,15 @@ TEST_F(TiglFuselageSegmentSimple, getSectionCenter)
     EXPECT_NEAR(pointY, 0, 1e-2);
     EXPECT_NEAR(pointZ, 0, 1e-2);
 
-    ASSERT_EQ(TIGL_UID_ERROR, tiglFuselageGetSectionCenter(tiglHandle, "segmentD150_Fuselaggg_1Segment2ID", eta, &pointX, &pointY, &pointZ));
+    ASSERT_EQ(TIGL_UID_ERROR, tiglFuselageGetSectionCenter(tiglHandle, "invalidUID", eta, &pointX, &pointY, &pointZ));
+
     ASSERT_EQ(TIGL_NULL_POINTER, tiglFuselageGetSectionCenter(tiglHandle, "segmentD150_Fuselage_1Segment2ID", eta, NULL, &pointY, &pointZ));
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglFuselageGetSectionCenter(tiglHandle, "segmentD150_Fuselage_1Segment2ID", eta, &pointX, NULL, &pointZ));
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglFuselageGetSectionCenter(tiglHandle, "segmentD150_Fuselage_1Segment2ID", eta, &pointX, &pointY, NULL));
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglFuselageGetSectionCenter(tiglHandle, "segmentD150_Fuselage_1Segment2ID", eta, NULL, NULL, &pointZ));
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglFuselageGetSectionCenter(tiglHandle, "segmentD150_Fuselage_1Segment2ID", eta, &pointX, NULL, NULL));
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglFuselageGetSectionCenter(tiglHandle, "segmentD150_Fuselage_1Segment2ID", eta, NULL, NULL, NULL));
+
+    ASSERT_EQ(TIGL_NOT_FOUND, tiglFuselageGetSectionCenter(-1, "segmentD150_Fuselage_1Segment2ID", eta, &pointX, &pointY, &pointZ));
 }
 
