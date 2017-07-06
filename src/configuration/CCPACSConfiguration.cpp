@@ -116,7 +116,7 @@ void CCPACSConfiguration::ReadCPACS(const char* configurationUID)
         name = ptrName;
     }
 
-    char* ptrDescription = "";
+    char* ptrDescription = NULL;
     tempString    = xpath + "/description";
     if (tixiGetTextElement(tixiDocumentHandle, tempString.c_str(), &ptrDescription) == SUCCESS) {
         description = ptrDescription;

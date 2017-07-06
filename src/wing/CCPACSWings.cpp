@@ -100,7 +100,7 @@ void CCPACSWings::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& c
     if (tixiUIDGetXPath(tixiHandle, configurationUID.c_str(), &tmpString) != SUCCESS) {
         throw CTiglError("XML error: tixiUIDGetXPath failed in CCPACSWings::WriteCPACS", TIGL_XML_ERROR);
     }
-    if (tmpString == "") {
+    if (!tmpString || std::string(tmpString).empty()) {
         throw CTiglError("XML error in CCPACSWings::WriteCPACS : Path not found", TIGL_XML_ERROR);
     }
 

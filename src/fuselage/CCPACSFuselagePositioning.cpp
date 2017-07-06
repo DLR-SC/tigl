@@ -153,14 +153,14 @@ void CCPACSFuselagePositioning::ReadCPACS(TixiDocumentHandle tixiHandle, const s
     std::string tempString;
 
     // Get subelement "name"
-    char* ptrName = "";
+    char* ptrName = NULL;
     tempString  = positioningXPath + "/name";
     if (tixiGetTextElement(tixiHandle, tempString.c_str(), &ptrName) == SUCCESS) {
         name = ptrName;
     }
 
     // Get subelement "description"
-    char * ptrDescription = ""; 
+    char * ptrDescription = NULL;
     tempString  = positioningXPath + "/description";
     if (tixiGetTextElement(tixiHandle, tempString.c_str(), &ptrDescription) == SUCCESS) {
         description = ptrDescription;
