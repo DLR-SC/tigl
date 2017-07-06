@@ -25,14 +25,27 @@
 #include <Geom_BSplineSurface.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_Array2OfPnt.hxx>
+#include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 
 #include <utility>
 #include <vector>
+#include <tuple>
+
+#include <BSplCLib_EvaluatorFunction.hxx>
 
 namespace tigl
 {
+
+class ParametrizingFunction : public BSplCLib_EvaluatorFunction {
+public:
+    std::vector<gp_Pnt2d> parameter_coordinates;
+
+    ParametrizingFunction(const TColStd_Array1OfReal& old_params, const TColStd_Array1OfReal& new_params);
+    virtual void Evaluate(const Standard_Integer theDerivativeRequest, const Standard_Real * theStartEnd, const Standard_Real theParameter,
+                          Standard_Real & theResult, Standard_Integer & theErrorCode) const;
+};
 
 class CTiglBSplineAlgorithms
 {
@@ -129,6 +142,11 @@ public:
     TIGL_EXPORT static Handle(Geom_BSplineCurve) reparametrizeBSpline(const Handle(Geom_BSplineCurve) spline, const TColStd_Array1OfReal& old_parameters,
                                                                       const TColStd_Array1OfReal& new_parameters);
 
+    TIGL_EXPORT static Handle(Geom_BSplineCurve) reparametrizeBSplineContinuously(const Handle(Geom_BSplineCurve) spline, const TColStd_Array1OfReal& old_parameters,
+                                                                                  const TColStd_Array1OfReal& new_parameters);
+    TIGL_EXPORT static Handle(Geom_BSplineCurve) CTiglBSplineAlgorithms::reparametrizeBSplineContinuouslyApprox(const Handle(Geom_BSplineCurve) spline, const TColStd_Array1OfReal& old_parameters,
+                                                                                                                const TColStd_Array1OfReal& new_parameters);
+
     /**
      * @brief flipSurface:
      *          swaps axes of the given surface, i.e., surface(u-coord, v-coord) becomes surface(v-coord, u-coord)
@@ -209,7 +227,28 @@ public:
      * @return:
      *          a pair of the sorted parameters and their sorted vector of B-spline curves
      */
-    TIGL_EXPORT static std::pair<Handle(TColStd_HArray1OfReal), std::vector<Handle(Geom_BSplineCurve)> > sortBSplines(const Handle(TColStd_HArray1OfReal) parameters, const std::vector<Handle(Geom_BSplineCurve)>& splines_vector);
+    TIGL_EXPORT static std::tuple<std::vector<int>, Handle(TColStd_HArray1OfReal), std::vector<Handle(Geom_BSplineCurve)> > sortBSplines(const Handle(TColStd_HArray1OfReal) parameters, const std::vector<Handle(Geom_BSplineCurve)>& splines_vector);
+
+    /**
+     * @brief sortIntersectionParams:
+     *          Sorts the two-dimensional arrays of intersection parameters of every u-directional B-spline with every v-directional B-spline and vice versa
+     *          in the way that their values are increasing by increasing row and increasing column indices
+     *          The corresponding vectors of B-splines are sorted as well.
+     * @param intersection_params_u:
+     *          the two-dimensional array of intersection parameters of every u-directional B-spline with every v-directional B-spline
+     * @param intersection_params_v:
+     *          the two-dimensional array of intersection parameters of every v-directional B-spline with every u-directional B-spline
+     * @param splines_u_vector:
+     *          vector of u-directional B-splines
+     * @param splines_v_vector:
+     *          vector of v-directional B-splines
+     * @return:
+     *          a tuple of the sorted intersection parameter arrays and the sorted vector of B-splines
+     */
+    TIGL_EXPORT static std::tuple<std::vector<std::vector<double> >, std::vector<std::vector<double> >, std::vector<Handle(Geom_BSplineCurve)>, std::vector<Handle(Geom_BSplineCurve)> > sortIntersectionParams(const std::vector<std::vector<double> > intersection_params_u,
+                                                                                                                                                                                                                                        const std::vector<std::vector<double> >& intersection_params_v,
+                                                                                                                                                                                                                                        const std::vector<Handle(Geom_BSplineCurve)>& splines_u_vector,
+                                                                                                                                                                                                                                        const std::vector<Handle(Geom_BSplineCurve)>& splines_v_vector);
 
     /**
      * @brief scaleOfBSplines:

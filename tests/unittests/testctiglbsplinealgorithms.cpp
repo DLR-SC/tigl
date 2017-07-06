@@ -11,6 +11,7 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <vector>
+#include <tuple>
 #include <cmath>
 
 #include <CTiglBSplineAlgorithms.h>
@@ -968,9 +969,9 @@ TEST(TiglBSplineAlgorithms, testSortBSpline)
     params_u->SetValue(4, 0.5 - std::sqrt(0.05));
     params_u->SetValue(5, 0.);
 
-    std::pair<Handle(TColStd_HArray1OfReal), std::vector<Handle(Geom_BSplineCurve)> > params_spline_v_pair = CTiglBSplineAlgorithms::sortBSplines(params_u, splines_vector);
-    Handle(TColStd_HArray1OfReal) sorted_params_u = params_spline_v_pair.first;
-    std::vector<Handle(Geom_BSplineCurve)> sorted_splines_vector = params_spline_v_pair.second;
+    std::tuple<std::vector<int>, Handle(TColStd_HArray1OfReal), std::vector<Handle(Geom_BSplineCurve)> > params_spline_v_tuple = CTiglBSplineAlgorithms::sortBSplines(params_u, splines_vector);
+    Handle(TColStd_HArray1OfReal) sorted_params_u = std::get<1>(params_spline_v_tuple);
+    std::vector<Handle(Geom_BSplineCurve)> sorted_splines_vector = std::get<2>(params_spline_v_tuple);
 
     gp_Pnt spline1_pnt = sorted_splines_vector[0]->Value(sorted_splines_vector[0]->Knot(1));
     gp_Pnt spline2_pnt = sorted_splines_vector[1]->Value(sorted_splines_vector[1]->Knot(1));
@@ -1117,6 +1118,360 @@ TEST(TiglBSplineAlgorithms, testCreateGordonSurfaceGeneral)
     }
 }
 
+TEST(TiglBSplineAlgorithms, testIntersectionFinderClosed)
+{
+    // u-directional B-spline curves
+    // first read the brep-input file
+    TopoDS_Shape shape_u;
+
+    BRep_Builder builder_u;
+
+    BRepTools::Read(shape_u, "TestData/spiralwing/profiles.brep", builder_u);
+
+    TopExp_Explorer Explorer;
+    // get the splines in u-direction from the Edges
+    std::vector<Handle(Geom_BSplineCurve)> splines_u_vector;
+    for (Explorer.Init(shape_u, TopAbs_EDGE); Explorer.More(); Explorer.Next()) {
+        TopoDS_Edge curve_edge = TopoDS::Edge(Explorer.Current());
+        double beginning = 0;
+        double end = 1;
+        Handle(Geom_Curve) curve = BRep_Tool::Curve(curve_edge, beginning, end);
+        Handle(Geom_BSplineCurve) spline = GeomConvert::CurveToBSplineCurve(curve);
+        splines_u_vector.push_back(spline);
+    }
+
+    // v-directional B-spline curves
+    // first read the BRep-input file
+    TopoDS_Shape shape_v;
+
+    BRep_Builder builder_v;
+
+    BRepTools::Read(shape_v, "TestData/spiralwing/guides.brep", builder_v);
+
+    // now filter out the Edges
+    TopTools_IndexedMapOfShape mapEdges_v;
+    TopExp::MapShapes(shape_v, TopAbs_EDGE, mapEdges_v);
+
+    // get the splines in v-direction from the Edges
+    std::vector<Handle(Geom_BSplineCurve)> splines_v_vector;
+    for (Explorer.Init(shape_v, TopAbs_EDGE); Explorer.More(); Explorer.Next()) {
+        TopoDS_Edge curve_edge = TopoDS::Edge(Explorer.Current());
+        double beginning = 0;
+        double end = 1;
+        Handle(Geom_Curve) curve = BRep_Tool::Curve(curve_edge, beginning, end);
+        Handle(Geom_BSplineCurve) spline = GeomConvert::CurveToBSplineCurve(curve);
+        splines_v_vector.push_back(spline);
+    }
+
+    std::vector<std::pair<double, double> > intersection_params_vector = CTiglBSplineAlgorithms::intersectionFinder(splines_u_vector[5], splines_v_vector[2]);
+    //std::cout << std::endl << "intersection_params_vector.size(): " << intersection_params_vector.size();
+
+}
+
+TEST(TiglBSplineAlgorithms, testSortIntersectionParams)
+{
+    // Tests the method sortIntersectionParams()
+
+    // creating first u-directional B-spline which represents y(z) = (z - 0.5)^2 with offset -1 in x-direction
+    unsigned int degree = 3;  // degree of the four u-directional B-splines and the five v-directional B-splines
+
+    TColgp_Array1OfPnt controlPoints_u1(1, 4);
+    controlPoints_u1(1) = gp_Pnt(-1., 0.25, 0.);
+    controlPoints_u1(2) = gp_Pnt(-1., -1. / 12, 1. / 3);
+    controlPoints_u1(3) = gp_Pnt(-1., -1. / 12, 2. / 3);
+    controlPoints_u1(4) = gp_Pnt(-1., 0.25, 1.);
+
+    TColStd_Array1OfReal knots(1, 2);
+    knots(1) = 0.;
+    knots(2) = 1.;
+
+    TColStd_Array1OfInteger mults(1, 2);
+    mults(1) = 4;
+    mults(2) = 4;
+
+    Handle(Geom_BSplineCurve) spline_u1 = new Geom_BSplineCurve(controlPoints_u1, knots, mults, degree);
+    spline_u1->InsertKnot(0.5);
+
+    // creating second u-directional B-spline which represents y(z) = (z - 0.5)^2 with offset 2 in x-direction
+    TColgp_Array1OfPnt controlPoints_u2(1, 4);
+    controlPoints_u2(1) = gp_Pnt(2., 0.25, 0.);
+    controlPoints_u2(2) = gp_Pnt(2., -1. / 12, 1. / 3);
+    controlPoints_u2(3) = gp_Pnt(2., -1. / 12, 2. / 3);
+    controlPoints_u2(4) = gp_Pnt(2., 0.25, 1.);
+
+    Handle(Geom_BSplineCurve) spline_u2 = new Geom_BSplineCurve(controlPoints_u2, knots, mults, degree);
+    spline_u2->InsertKnot(0.6);
+    // creating third u-directional B-spline which represents y(z) = (z - 0.5)^2 with offset 3 in x-direction
+    TColgp_Array1OfPnt controlPoints_u3(1, 4);
+    controlPoints_u3(1) = gp_Pnt(3., 0.25, 0.);
+    controlPoints_u3(2) = gp_Pnt(3., -1. / 12, 1. / 3);
+    controlPoints_u3(3) = gp_Pnt(3., -1. / 12, 2. / 3);
+    controlPoints_u3(4) = gp_Pnt(3., 0.25, 1.);
+
+    Handle(Geom_BSplineCurve) spline_u3 = new Geom_BSplineCurve(controlPoints_u3, knots, mults, degree);
+    spline_u3->InsertKnot(0.6);
+    // creating fourth u-directional B-spline which represents y(z) = (z - 0.5)^2 with offset 4 in x-direction
+    TColgp_Array1OfPnt controlPoints_u4(1, 4);
+    controlPoints_u4(1) = gp_Pnt(4., 0.25, 0.);
+    controlPoints_u4(2) = gp_Pnt(4., -1. / 12, 1. / 3);
+    controlPoints_u4(3) = gp_Pnt(4., -1. / 12, 2. / 3);
+    controlPoints_u4(4) = gp_Pnt(4., 0.25, 1.);
+
+    Handle(Geom_BSplineCurve) spline_u4 = new Geom_BSplineCurve(controlPoints_u4, knots, mults, degree);
+    spline_u4->InsertKnot(0.6);
+
+    // creating first v-directional B-spline which represents z(x) = 0 at y = 0.25
+    TColgp_Array1OfPnt controlPoints_v1(1, 4);
+    controlPoints_v1(1) = gp_Pnt(-1., 0.25, 0.);
+    controlPoints_v1(2) = gp_Pnt(2. / 3, 0.25, 0.);
+    controlPoints_v1(3) = gp_Pnt(7. / 3, 0.25, 0.);
+    controlPoints_v1(4) = gp_Pnt(4., 0.25, 0.);
+
+    Handle(Geom_BSplineCurve) spline_v1 = new Geom_BSplineCurve(controlPoints_v1, knots, mults, degree);
+
+    // creating second v-directional B-spline which represents z(x) = 0.5 - sqrt(0.1) at y = 0.1
+    TColgp_Array1OfPnt controlPoints_v2(1, 4);
+    controlPoints_v2(1) = gp_Pnt(-1., 0.1, 0.5 - std::sqrt(0.1));
+    controlPoints_v2(2) = gp_Pnt(2. / 3, 0.1, 0.5 - sqrt(0.1));
+    controlPoints_v2(3) = gp_Pnt(7. / 3, 0.1, 0.5 - sqrt(0.1));
+    controlPoints_v2(4) = gp_Pnt(4., 0.1, 0.5 - sqrt(0.1));
+
+    Handle(Geom_BSplineCurve) spline_v2 = new Geom_BSplineCurve(controlPoints_v2, knots, mults, degree);
+
+    // creating third v-directional B-spline which represents z(x) = 0.5 - sqrt(0.05) at y = 0.05
+    TColgp_Array1OfPnt controlPoints_v3(1, 4);
+    controlPoints_v3(1) = gp_Pnt(-1., 0.05, 0.5 - std::sqrt(0.05));
+    controlPoints_v3(2) = gp_Pnt(2. / 3, 0.05, 0.5 - sqrt(0.05));
+    controlPoints_v3(3) = gp_Pnt(7. / 3, 0.05, 0.5 - sqrt(0.05));
+    controlPoints_v3(4) = gp_Pnt(4., 0.05, 0.5 - sqrt(0.05));
+
+    Handle(Geom_BSplineCurve) spline_v3 = new Geom_BSplineCurve(controlPoints_v3, knots, mults, degree);
+
+    // creating fourth v-directional B-spline which represents z(x) = 0.5 + sqrt(0.1) at y = 0.1
+    TColgp_Array1OfPnt controlPoints_v4(1, 4);
+    controlPoints_v4(1) = gp_Pnt(-1., 0.1, 0.5 + std::sqrt(0.1));
+    controlPoints_v4(2) = gp_Pnt(2. / 3, 0.1, 0.5 + sqrt(0.1));
+    controlPoints_v4(3) = gp_Pnt(7. / 3, 0.1, 0.5 + sqrt(0.1));
+    controlPoints_v4(4) = gp_Pnt(4., 0.1, 0.5 + sqrt(0.1));
+
+    Handle(Geom_BSplineCurve) spline_v4 = new Geom_BSplineCurve(controlPoints_v4, knots, mults, degree);
+
+    // creating fifth v-directional B-spline which represents z(x) = 1 at y = 0.25
+    TColgp_Array1OfPnt controlPoints_v5(1, 4);
+    controlPoints_v5(1) = gp_Pnt(-1., 0.25, 1.);
+    controlPoints_v5(2) = gp_Pnt(2. / 3, 0.25, 1.);
+    controlPoints_v5(3) = gp_Pnt(7. / 3, 0.25, 1.);
+    controlPoints_v5(4) = gp_Pnt(4., 0.25, 1.);
+
+    Handle(Geom_BSplineCurve) spline_v5 = new Geom_BSplineCurve(controlPoints_v5, knots, mults, degree);
+
+    // u- and v-directional B-splines are already compatible in B-spline sense (common knot vector, same parametrization)
+    std::vector<Handle(Geom_BSplineCurve)> splines_u_vector;
+    splines_u_vector.push_back(spline_u3);
+    splines_u_vector.push_back(spline_u1);
+    splines_u_vector.push_back(spline_u2);
+    splines_u_vector.push_back(spline_u4);
+
+    std::vector<Handle(Geom_BSplineCurve)> splines_v_vector;
+    splines_v_vector.push_back(spline_v5);
+    splines_v_vector.push_back(spline_v4);
+    splines_v_vector.push_back(spline_v2);
+    splines_v_vector.push_back(spline_v3);
+    splines_v_vector.push_back(spline_v1);
+
+
+    // find intersections between u-directional with v-directional B-splines
+    std::vector<std::vector<double> > intersection_params_u(splines_u_vector.size(), std::vector<double> (splines_v_vector.size()));
+    std::vector<std::vector<double> > intersection_params_v(splines_v_vector.size(), std::vector<double> (splines_u_vector.size()));
+    for (unsigned int spline_u_idx = 0; spline_u_idx < splines_u_vector.size(); ++spline_u_idx) {
+        for (unsigned int spline_v_idx = 0; spline_v_idx < splines_v_vector.size(); ++spline_v_idx) {
+            std::vector<std::pair<double, double> > intersection_vector = CTiglBSplineAlgorithms::intersectionFinder(splines_u_vector[spline_u_idx], splines_v_vector[spline_v_idx]);
+            intersection_params_u[spline_u_idx][spline_v_idx] = intersection_vector[0].first;
+            intersection_params_v[spline_v_idx][spline_u_idx] = intersection_vector[0].second;
+        }
+    }
+
+    std::tuple<std::vector<std::vector<double> >, std::vector<std::vector<double> >, std::vector<Handle(Geom_BSplineCurve)>, std::vector<Handle(Geom_BSplineCurve)> > sorted_tuple = CTiglBSplineAlgorithms::sortIntersectionParams(intersection_params_u,
+                                                                                                                                                                                                          intersection_params_v,
+                                                                                                                                                                                                          splines_u_vector,
+                                                                                                                                                                                                          splines_v_vector);
+    std::vector<std::vector<double> > sorted_intersection_params_u = std::get<0>(sorted_tuple);
+    std::vector<std::vector<double> > sorted_intersection_params_v = std::get<1>(sorted_tuple);
+    std::vector<Handle(Geom_BSplineCurve)> sorted_splines_u = std::get<2>(sorted_tuple);
+    std::vector<Handle(Geom_BSplineCurve)> sorted_splines_v = std::get<3>(sorted_tuple);
+
+    ASSERT_EQ(sorted_splines_u[0], spline_u1);
+    ASSERT_EQ(sorted_splines_u[1], spline_u2);
+    ASSERT_EQ(sorted_splines_u[2], spline_u3);
+    ASSERT_EQ(sorted_splines_u[3], spline_u4);
+
+    ASSERT_EQ(sorted_splines_v[0], spline_v1);
+    ASSERT_EQ(sorted_splines_v[1], spline_v2);
+    ASSERT_EQ(sorted_splines_v[2], spline_v3);
+    ASSERT_EQ(sorted_splines_v[3], spline_v4);
+    ASSERT_EQ(sorted_splines_v[4], spline_v5);
+
+    ASSERT_NEAR(sorted_intersection_params_u[0][0], 0., 1e-15);
+    ASSERT_NEAR(sorted_intersection_params_u[0][1], 0.5 - std::sqrt(0.1), 1e-15);
+    ASSERT_NEAR(sorted_intersection_params_u[0][2], 0.5 - std::sqrt(0.05), 1e-15);
+    ASSERT_NEAR(sorted_intersection_params_u[0][3], 0.5 + std::sqrt(0.1), 1e-15);
+    ASSERT_NEAR(sorted_intersection_params_u[0][4], 1., 1e-15);
+
+    ASSERT_NEAR(sorted_intersection_params_u[1][0], 0., 1e-15);
+    ASSERT_NEAR(sorted_intersection_params_u[1][1], 0.5 - std::sqrt(0.1), 1e-15);
+    ASSERT_NEAR(sorted_intersection_params_u[1][2], 0.5 - std::sqrt(0.05), 1e-15);
+    ASSERT_NEAR(sorted_intersection_params_u[1][3], 0.5 + std::sqrt(0.1), 1e-15);
+    ASSERT_NEAR(sorted_intersection_params_u[1][4], 1., 1e-15);
+
+    ASSERT_NEAR(sorted_intersection_params_u[2][0], 0., 1e-10);
+    ASSERT_NEAR(sorted_intersection_params_u[2][1], 0.5 - std::sqrt(0.1), 1e-15);
+    ASSERT_NEAR(sorted_intersection_params_u[2][2], 0.5 - std::sqrt(0.05), 1e-15);
+    ASSERT_NEAR(sorted_intersection_params_u[2][3], 0.5 + std::sqrt(0.1), 1e-15);
+    ASSERT_NEAR(sorted_intersection_params_u[2][4], 1., 1e-15);
+
+    ASSERT_NEAR(sorted_intersection_params_u[3][0], 0., 1e-15);
+    ASSERT_NEAR(sorted_intersection_params_u[3][1], 0.5 - std::sqrt(0.1), 1e-15);
+    ASSERT_NEAR(sorted_intersection_params_u[3][2], 0.5 - std::sqrt(0.05), 1e-15);
+    ASSERT_NEAR(sorted_intersection_params_u[3][3], 0.5 + std::sqrt(0.1), 1e-15);
+    ASSERT_NEAR(sorted_intersection_params_u[3][4], 1., 1e-15);
+}
+
+TEST(TiglBSplineAlgorithms, testSortIntersectionParamsFromBRep)
+{
+    // u-directional B-spline curves
+    // first read the brep-input file
+    TopoDS_Shape shape_u;
+
+    BRep_Builder builder_u;
+
+    BRepTools::Read(shape_u, "TestData/test_surface4/profiles.brep", builder_u);
+
+    TopExp_Explorer Explorer;
+    // get the splines in u-direction from the Edges
+    std::vector<Handle(Geom_BSplineCurve)> splines_u_vector;
+    for (Explorer.Init(shape_u, TopAbs_EDGE); Explorer.More(); Explorer.Next()) {
+        TopoDS_Edge curve_edge = TopoDS::Edge(Explorer.Current());
+        double beginning = 0;
+        double end = 1;
+        Handle(Geom_Curve) curve = BRep_Tool::Curve(curve_edge, beginning, end);
+        Handle(Geom_BSplineCurve) spline = GeomConvert::CurveToBSplineCurve(curve);
+        splines_u_vector.push_back(spline);
+    }
+
+    // v-directional B-spline curves
+    // first read the BRep-input file
+    TopoDS_Shape shape_v;
+
+    BRep_Builder builder_v;
+
+    BRepTools::Read(shape_v, "TestData/test_surface4/guides.brep", builder_v);
+
+    // now filter out the Edges
+    TopTools_IndexedMapOfShape mapEdges_v;
+    TopExp::MapShapes(shape_v, TopAbs_EDGE, mapEdges_v);
+
+    // get the splines in v-direction from the Edges
+    std::vector<Handle(Geom_BSplineCurve)> splines_v_vector;
+    for (Explorer.Init(shape_v, TopAbs_EDGE); Explorer.More(); Explorer.Next()) {
+        TopoDS_Edge curve_edge = TopoDS::Edge(Explorer.Current());
+        double beginning = 0;
+        double end = 1;
+        Handle(Geom_Curve) curve = BRep_Tool::Curve(curve_edge, beginning, end);
+        Handle(Geom_BSplineCurve) spline = GeomConvert::CurveToBSplineCurve(curve);
+        splines_v_vector.push_back(spline);
+    }
+
+    // check parametrization of u-directional B-splines and change it in order to support vectors of B-splines with different parametrizations:
+    for (unsigned int spline_u_idx = 0; spline_u_idx < splines_u_vector.size(); ++spline_u_idx) {
+        // check parametrization of B-splines:
+        TColStd_Array1OfReal knots(1, splines_u_vector[spline_u_idx]->NbKnots());
+        splines_u_vector[spline_u_idx]->Knots(knots);
+
+        if (std::abs(splines_u_vector[spline_u_idx]->Knot(1)) > 1e-15 || std::abs(splines_u_vector[spline_u_idx]->Knot(splines_u_vector[spline_u_idx]->NbKnots()) - 1) > 1e-15) {
+            if (std::abs(splines_u_vector[spline_u_idx]->Knot(1)) > 1e-15) {  // parameter range doesn't start with 0
+
+                for (int knot_idx = 1; knot_idx <= splines_u_vector[spline_u_idx]->NbKnots(); ++knot_idx) {
+                    knots(knot_idx) -= splines_u_vector[spline_u_idx]->Knot(1);
+                }
+            }
+
+            if (std::abs(splines_u_vector[spline_u_idx]->Knot(splines_u_vector[spline_u_idx]->NbKnots()) - 1) > 1e-15) {  // parameter range doesn't end with 1
+
+                for (int knot_idx = 1; knot_idx <= splines_u_vector[spline_u_idx]->NbKnots(); ++knot_idx) {
+                    knots(knot_idx) /= splines_u_vector[spline_u_idx]->Knot(splines_u_vector[spline_u_idx]->NbKnots());
+                }
+            }
+
+            // edit spline
+            splines_u_vector[spline_u_idx]->SetKnots(knots);
+        }
+    }
+    // now the parameter range of all u-directional B-splines should be [0, 1]
+
+    // check parametrization of v-directional B-splines:
+    for (unsigned int spline_v_idx = 0; spline_v_idx < splines_v_vector.size(); ++spline_v_idx) {
+        // check parametrization of B-splines:
+        TColStd_Array1OfReal knots(1, splines_v_vector[spline_v_idx]->NbKnots());
+        splines_v_vector[spline_v_idx]->Knots(knots);
+
+        if (std::abs(splines_v_vector[spline_v_idx]->Knot(1)) > 1e-15 || std::abs(splines_v_vector[spline_v_idx]->Knot(splines_v_vector[spline_v_idx]->NbKnots()) - 1) > 1e-15) {
+            if (std::abs(splines_v_vector[spline_v_idx]->Knot(1)) > 1e-15) {  // parameter range doesn't start with 0
+
+                for (int knot_idx = 1; knot_idx <= splines_v_vector[spline_v_idx]->NbKnots(); ++knot_idx) {
+                    knots(knot_idx) -= splines_v_vector[spline_v_idx]->Knot(1);
+                }
+            }
+
+            if (std::abs(splines_v_vector[spline_v_idx]->Knot(splines_v_vector[spline_v_idx]->NbKnots()) - 1) > 1e-15) {  // parameter range doesn't end with 1
+
+                for (int knot_idx = 1; knot_idx <= splines_v_vector[spline_v_idx]->NbKnots(); ++knot_idx) {
+                    knots(knot_idx) /= splines_v_vector[spline_v_idx]->Knot(splines_v_vector[spline_v_idx]->NbKnots());
+                }
+            }
+
+            // edit spline
+            splines_v_vector[spline_v_idx]->SetKnots(knots);
+        }
+    }
+    // now the parameter range of all v-directional B-splines should be [0, 1]
+
+    // find intersections between u-directional with v-directional B-splines
+    std::vector<std::vector<double> > intersection_params_u(splines_u_vector.size(), std::vector<double> (splines_v_vector.size()));
+    std::vector<std::vector<double> > intersection_params_v(splines_v_vector.size(), std::vector<double> (splines_u_vector.size()));
+    for (unsigned int spline_u_idx = 0; spline_u_idx < splines_u_vector.size(); ++spline_u_idx) {
+        for (unsigned int spline_v_idx = 0; spline_v_idx < splines_v_vector.size(); ++spline_v_idx) {
+            std::vector<std::pair<double, double> > intersection_vector = CTiglBSplineAlgorithms::intersectionFinder(splines_u_vector[spline_u_idx], splines_v_vector[spline_v_idx]);
+            intersection_params_u[spline_u_idx][spline_v_idx] = intersection_vector[0].first;
+            intersection_params_v[spline_v_idx][spline_u_idx] = intersection_vector[0].second;
+        }
+    }
+
+    std::tuple<std::vector<std::vector<double> >, std::vector<std::vector<double> >, std::vector<Handle(Geom_BSplineCurve)>, std::vector<Handle(Geom_BSplineCurve)> > sorted_tuple = CTiglBSplineAlgorithms::sortIntersectionParams(intersection_params_u,
+                                                                                                                                                                                                          intersection_params_v,
+                                                                                                                                                                                                          splines_u_vector,
+                                                                                                                                                                                                          splines_v_vector);
+    std::vector<std::vector<double> > sorted_intersection_params_u = std::get<0>(sorted_tuple);
+    std::vector<std::vector<double> > sorted_intersection_params_v = std::get<1>(sorted_tuple);
+    std::vector<Handle(Geom_BSplineCurve)> sorted_splines_u = std::get<2>(sorted_tuple);
+    std::vector<Handle(Geom_BSplineCurve)> sorted_splines_v = std::get<3>(sorted_tuple);
+
+    std::cout << std::endl << "sorted_intersection_params_u: " << std::endl;
+    for (int i = 0; i < sorted_splines_u.size(); ++i) {
+        for (int j = 0; j < sorted_splines_v.size(); ++j) {
+            std::cout << sorted_intersection_params_u[i][j] << "  ";
+        }
+        std::cout << std::endl;
+    }
+
+    std::cout << std::endl << "sorted_intersection_params_v: " << std::endl;
+    for (int i = 0; i < sorted_splines_v.size(); ++i) {
+        for (int j = 0; j < sorted_splines_u.size(); ++j) {
+            std::cout << sorted_intersection_params_v[i][j] << "  ";
+        }
+        std::cout << std::endl;
+    }
+}
+
 
 class GordonSurface: public ::testing::TestWithParam<std::string>
 {
@@ -1190,7 +1545,10 @@ TEST_P(GordonSurface, testFromBRep)
 
 INSTANTIATE_TEST_CASE_P(TiglBSplineAlgorithms, GordonSurface, ::testing::Values(
                             "nacelle",
-                            "wing2"
+                            "wing2",
+                            "spiralwing",
+                            "test_surface4_sorted",
+                            "test_surface4"
                             ));
 
 } // namespace tigl
