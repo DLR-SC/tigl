@@ -19,11 +19,10 @@
 #ifndef WIRETOCURVE_H
 #define WIRETOCURVE_H
 
-#include <TopoDS_Wire.hxx>
-
 #include "tigl_internal.h"
 
-class Handle(Geom_BSplineCurve);
+#include <TopoDS_Wire.hxx>
+#include <Geom_BSplineCurve.hxx>
 
 namespace tigl
 {
