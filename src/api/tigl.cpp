@@ -62,6 +62,8 @@
 #include "gp_Pnt.hxx"
 #include "TopoDS_Shape.hxx"
 #include "TopoDS_Edge.hxx"
+#include "GProp_GProps.hxx"
+#include "BRepGProp.hxx"
 
 /*****************************************************************************/
 /* Private functions.                                                 */
@@ -2439,6 +2441,58 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentCount(TiglCPACSConfigura
         LOG(ERROR) << "Caught an exception in tiglFuselageGetSegmentCount!";
         return TIGL_ERROR;
     }
+}
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSectionCenter(TiglCPACSConfigurationHandle cpacsHandle,
+                                                               const char *fuselageSegmentUID,
+                                                               double eta,
+                                                               double * pointX,
+                                                               double * pointY,
+                                                               double * pointZ)
+{
+    if (pointX == 0 || pointY == 0 || pointZ == 0) {
+        LOG(ERROR) << "Null pointer argument for pointX, pointY or pointZ\n"
+                   << "in function call to tiglFuselageGetSectionCenter.";
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+
+        // get component segment
+        tigl::CCPACSFuselageSegment& segment = config.GetUIDManager()
+                .ResolveObject<tigl::CCPACSFuselageSegment>(fuselageSegmentUID);
+
+        // get ISO curve
+        TopoDS_Shape curve = segment.getWireOnLoft(eta);
+
+        // get linear properties of the ISO curve
+         GProp_GProps LProps;
+         BRepGProp::LinearProperties(curve, LProps);
+
+         // compute center of the ISO curve
+         gp_Pnt centerPoint = LProps.CentreOfMass();
+
+         // assigne solution to return point
+         *pointX = centerPoint.X();
+         *pointY = centerPoint.Y();
+         *pointZ = centerPoint.Z();
+
+    }
+    catch (const tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.what();
+        return ex.getCode();
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetSectionCenter!";
+        return TIGL_ERROR;
+    }
+
+    return TIGL_SUCCESS;
 }
 
 
