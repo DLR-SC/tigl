@@ -1,0 +1,338 @@
+From 9959c79c65055685a6b88fa62711d4e5dc659446 Mon Sep 17 00:00:00 2001
+From: Martin Siggel <martin.siggel@dlr.de>
+Date: Thu, 6 Jul 2017 22:14:22 +0200
+Subject: [PATCH] Fixed corrupted fonts and font loading on macOS
+
+This fix includes a patch for freetype > 2.5.3 and font loading
+on macOS.
+
+This is a back ported patch of the following three commits:
+ - http://git.dev.opencascade.org/gitweb/?p=occt.git;a=commit;h=49297cb6bdb70a6d5b50755a07afdf1dc3f841e6
+ - http://git.dev.opencascade.org/gitweb/?p=occt.git;a=commit;h=65360da3dbd9e952fb897c4eed11be26bba64ff3
+ - http://git.dev.opencascade.org/gitweb/?p=occt.git;a=commit;h=264abd72f2508894ff6d514f2d9ff5c2443656f8
+---
+ src/Font/Font_FTFont.cxx             |  2 +-
+ src/Font/Font_FTFont.hxx             |  6 +--
+ src/Font/Font_FontMgr.cxx            | 41 ++++++++++++---
+ src/OpenGl/OpenGl_PrimitiveArray.cxx |  7 ++-
+ src/OpenGl/OpenGl_Text.cxx           | 98 ++++++++++++++++++++++++------------
+ 5 files changed, 109 insertions(+), 45 deletions(-)
+
+diff --git a/src/Font/Font_FTFont.cxx b/src/Font/Font_FTFont.cxx
+index 213f6b6..2f2908d 100644
+--- a/src/Font/Font_FTFont.cxx
++++ b/src/Font/Font_FTFont.cxx
+@@ -160,7 +160,7 @@ bool Font_FTFont::RenderGlyph (const Standard_Utf32Char theUChar)
+ 
+   FT_Bitmap aBitmap = myFTFace->glyph->bitmap;
+   if (aBitmap.pixel_mode != FT_PIXEL_MODE_GRAY
+-   || aBitmap.buffer == NULL || aBitmap.width <= 0 || aBitmap.rows <= 0)
++   || aBitmap.buffer == NULL || aBitmap.width == 0 || aBitmap.rows == 0)
+   {
+     return false;
+   }
+diff --git a/src/Font/Font_FTFont.hxx b/src/Font/Font_FTFont.hxx
+index 510d36b..f4ba85c 100644
+--- a/src/Font/Font_FTFont.hxx
++++ b/src/Font/Font_FTFont.hxx
+@@ -171,11 +171,11 @@ public:
+   //! Retrieve glyph bitmap rectangle
+   inline void GlyphRect (Font_FTFont::Rect& theRect) const
+   {
+-    FT_Bitmap aBitmap = myFTFace->glyph->bitmap;
++    const FT_Bitmap& aBitmap = myFTFace->glyph->bitmap;
+     theRect.Left   = float(myFTFace->glyph->bitmap_left);
+     theRect.Top    = float(myFTFace->glyph->bitmap_top);
+-    theRect.Right  = float(myFTFace->glyph->bitmap_left + aBitmap.width);
+-    theRect.Bottom = float(myFTFace->glyph->bitmap_top  - aBitmap.rows);
++    theRect.Right  = float(myFTFace->glyph->bitmap_left + (int )aBitmap.width);
++    theRect.Bottom = float(myFTFace->glyph->bitmap_top  - (int )aBitmap.rows);
+   }
+ 
+ protected:
+diff --git a/src/Font/Font_FontMgr.cxx b/src/Font/Font_FontMgr.cxx
+index f9bfb45..91d81d9 100644
+--- a/src/Font/Font_FontMgr.cxx
++++ b/src/Font/Font_FontMgr.cxx
+@@ -35,7 +35,7 @@ struct Font_FontMgr_FontAliasMapNode
+ static const Font_FontMgr_FontAliasMapNode Font_FontMgr_MapOfFontsAliases[] =
+ {
+ 
+-#ifdef WNT
++#ifdef _WIN32
+ 
+   { "Courier"                  , "Courier New"    , Font_FA_Regular },
+   { "Times-Roman"              , "Times New Roman", Font_FA_Regular  },
+@@ -48,6 +48,15 @@ static const Font_FontMgr_FontAliasMapNode Font_FontMgr_MapOfFontsAliases[] =
+   { "Rock"                     , "Arial"          , Font_FA_Regular  },
+   { "Iris"                     , "Lucida Console" , Font_FA_Regular  }
+ 
++#elif defined(__ANDROID__)
++
++  { "Courier"                  , "Droid Sans Mono", Font_FA_Regular },
++  { "Times-Roman"              , "Droid Serif"    , Font_FA_Regular  },
++  { "Times-Bold"               , "Droid Serif"    , Font_FA_Bold },
++  { "Times-Italic"             , "Droid Serif"    , Font_FA_Italic  },
++  { "Times-BoldItalic"         , "Droid Serif"    , Font_FA_BoldItalic  },
++  { "Arial"                    , "Roboto"         , Font_FA_Regular  },
++
+ #else   //X11
+ 
+   { "Courier"                  , "Courier"      , Font_FA_Regular },
+@@ -55,7 +64,7 @@ static const Font_FontMgr_FontAliasMapNode Font_FontMgr_MapOfFontsAliases[] =
+   { "Times-Bold"               , "Times"        , Font_FA_Bold },
+   { "Times-Italic"             , "Times"        , Font_FA_Italic  },
+   { "Times-BoldItalic"         , "Times"        , Font_FA_BoldItalic  },
+-  { "Arial"                    , "Helvetica"    , Font_FA_Regular  }, 
++  { "Arial"                    , "Helvetica"    , Font_FA_Regular  },
+   { "ZapfChancery-MediumItalic", "-adobe-itc zapf chancery-medium-i-normal--*-*-*-*-*-*-iso8859-1"              , Font_FA_Regular  },
+   { "Symbol"                   , "-adobe-symbol-medium-r-normal--*-*-*-*-*-*-adobe-fontspecific"                , Font_FA_Regular  },
+   { "ZapfDingbats"             , "-adobe-itc zapf dingbats-medium-r-normal--*-*-*-*-*-*-adobe-fontspecific"     , Font_FA_Regular  },
+@@ -67,7 +76,7 @@ static const Font_FontMgr_FontAliasMapNode Font_FontMgr_MapOfFontsAliases[] =
+ 
+ #define NUM_FONT_ENTRIES (int)(sizeof(Font_FontMgr_MapOfFontsAliases)/sizeof(Font_FontMgr_FontAliasMapNode))
+ 
+-#if (defined(_WIN32) || defined(__WIN32__))
++#if defined(_WIN32)
+ 
+   #include <windows.h>
+   #include <stdlib.h>
+@@ -89,6 +98,7 @@ static const Font_FontMgr_FontAliasMapNode Font_FontMgr_MapOfFontsAliases[] =
+ #else
+ 
+   #include <OSD_DirectoryIterator.hxx>
++  #include <OSD_FileIterator.hxx>
+   #include <OSD_Path.hxx>
+   #include <OSD_File.hxx>
+   #include <OSD_OpenMode.hxx>
+@@ -123,7 +133,8 @@ static const Font_FontMgr_FontAliasMapNode Font_FontMgr_MapOfFontsAliases[] =
+                                                    };
+   #else
+     // default fonts paths in most Unix systems (Linux and others)
+-    static Standard_CString myDefaultFontsDirs[] = {"/usr/share/fonts",
++    static Standard_CString myDefaultFontsDirs[] = {"/system/fonts",         // Android
++                                                    "/usr/share/fonts",
+                                                     "/usr/local/share/fonts",
+                                                     NULL
+                                                    };
+@@ -438,6 +449,24 @@ void Font_FontMgr::InitFontDataBase()
+   for (NCollection_Map<TCollection_AsciiString>::Iterator anIter (aMapOfFontsDirs);
+        anIter.More(); anIter.Next())
+   {
++  #ifdef __ANDROID__
++    OSD_Path aFolderPath (anIter.Value());
++    for (OSD_FileIterator aFileIter (aFolderPath, "*"); aFileIter.More(); aFileIter.Next())
++    {
++      OSD_Path aFontFilePath;
++      aFileIter.Values().Path (aFontFilePath);
++
++      TCollection_AsciiString aFontFileName;
++      aFontFilePath.SystemName (aFontFileName);
++      aFontFileName = anIter.Value() + "/" + aFontFileName;
++
++      Handle(Font_SystemFont) aNewFont = checkFont (aFtLibrary, aFontFileName.ToCString());
++      if (!aNewFont.IsNull())
++      {
++        myListOfFonts.Append (aNewFont);
++      }
++    }
++  #else
+     OSD_File aReadFile (anIter.Value() + "/fonts.dir");
+     if (!aReadFile.Exists())
+     {
+@@ -513,10 +542,10 @@ void Font_FontMgr::InitFontDataBase()
+         {
+           myListOfFonts.Append (aNewFontFromXLFD);
+         }
+-
+       }
+     }
+     aReadFile.Close();
++  #endif
+   }
+ #endif
+ }
+@@ -553,7 +582,7 @@ Handle(Font_SystemFont) Font_FontMgr::GetFont (const Handle(TCollection_HAsciiSt
+ {
+   if ( (theFontSize < 2 && theFontSize != -1) || theFontName.IsNull())
+   {
+-    return NULL; 
++    return NULL;
+   }
+ 
+   for (Font_NListOfSystemFont::Iterator aFontsIterator (myListOfFonts);
+diff --git a/src/OpenGl/OpenGl_PrimitiveArray.cxx b/src/OpenGl/OpenGl_PrimitiveArray.cxx
+index 6a47923..7d81ca8 100644
+--- a/src/OpenGl/OpenGl_PrimitiveArray.cxx
++++ b/src/OpenGl/OpenGl_PrimitiveArray.cxx
+@@ -448,16 +448,19 @@ void OpenGl_PrimitiveArray::drawArray (const Handle(OpenGl_Workspace)& theWorksp
+ void OpenGl_PrimitiveArray::drawEdges (const TEL_COLOUR*               theEdgeColour,
+                                        const Handle(OpenGl_Workspace)& theWorkspace) const
+ {
++  const Handle(OpenGl_Context)& aGlContext = theWorkspace->GetGlContext();
+   if (myVboAttribs.IsNull())
+   {
+     return;
+   }
+ 
+ #if !defined(GL_ES_VERSION_2_0)
+-  glDisable (GL_LIGHTING);
++  if (aGlContext->core11 != NULL)
++  {
++    glDisable (GL_LIGHTING);
++  }
+ #endif
+ 
+-  const Handle(OpenGl_Context)& aGlContext = theWorkspace->GetGlContext();
+   const OpenGl_AspectLine* anAspectLineOld = NULL;
+ 
+   anAspectLineOld = theWorkspace->SetAspectLine (theWorkspace->AspectFace (Standard_True)->AspectEdge());
+diff --git a/src/OpenGl/OpenGl_Text.cxx b/src/OpenGl/OpenGl_Text.cxx
+index 509a604..e97b581 100644
+--- a/src/OpenGl/OpenGl_Text.cxx
++++ b/src/OpenGl/OpenGl_Text.cxx
+@@ -588,32 +588,49 @@ Handle(OpenGl_Font) OpenGl_Text::FindFont (const Handle(OpenGl_Context)& theCtx,
+     const Handle(TCollection_HAsciiString) aFontName = new TCollection_HAsciiString (theAspect.FontName());
+     const Font_FontAspect anAspect = (theAspect.FontAspect() != Font_FA_Undefined) ? theAspect.FontAspect() : Font_FA_Regular;
+     Handle(Font_SystemFont) aRequestedFont = aFontMgr->FindFont (aFontName, anAspect, theHeight);
+-    if (aRequestedFont.IsNull())
++    Handle(Font_FTFont) aFontFt;
++    if (!aRequestedFont.IsNull())
+     {
+-      return aFont;
+-    }
++      aFontFt = new Font_FTFont (NULL);
+ 
+-    Handle(Font_FTFont) aFontFt = new Font_FTFont (NULL);
+-    if (!aFontFt->Init (aRequestedFont->FontPath()->ToCString(), theHeight))
+-    {
+-      return aFont;
++      if (aFontFt->Init (aRequestedFont->FontPath()->ToCString(), theHeight))
++      {
++        aFont = new OpenGl_Font (aFontFt, theKey);
++        if (!aFont->Init (theCtx))
++        {
++          TCollection_ExtendedString aMsg;
++          aMsg += "Font '";
++          aMsg += theAspect.FontName();
++          aMsg += "' - initialization of GL resources has failed!";
++          theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH, aMsg);
++          aFontFt.Nullify();
++          aFont->Release (theCtx.operator->());
++          aFont = new OpenGl_Font (aFontFt, theKey);
++        }
++      }
++      else
++      {
++        TCollection_ExtendedString aMsg;
++        aMsg += "Font '";
++        aMsg += theAspect.FontName();
++        aMsg += "' is broken or has incompatible format! File path: ";
++        aMsg += aRequestedFont->FontPath()->ToCString();
++        theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH, aMsg);
++        aFontFt.Nullify();
++        aFont = new OpenGl_Font (aFontFt, theKey);
++      }
+     }
+-
+-    Handle(OpenGl_Context) aCtx = theCtx;
+-  #if !defined(GL_ES_VERSION_2_0)
+-    glPushAttrib (GL_TEXTURE_BIT);
+-  #endif
+-    aFont = new OpenGl_Font (aFontFt, theKey);
+-    if (!aFont->Init (aCtx))
++    else
+     {
+-      //glPopAttrib();
+-      //return aFont; // out of resources?
++      TCollection_ExtendedString aMsg;
++      aMsg += "Font '";
++      aMsg += theAspect.FontName();
++      aMsg += "' is not found in the system!";
++      theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH, aMsg);
++      aFont = new OpenGl_Font (aFontFt, theKey);
+     }
+-  #if !defined(GL_ES_VERSION_2_0)
+-    glPopAttrib(); // texture bit
+-  #endif
+ 
+-    aCtx->ShareResource (theKey, aFont);
++    theCtx->ShareResource (theKey, aFont);
+   }
+   return aFont;
+ }
+@@ -644,10 +661,10 @@ void OpenGl_Text::render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
+   if (myFont.IsNull())
+   {
+     myFont = FindFont (theCtx, theTextAspect, myParams.Height, aFontKey);
+-    if (myFont.IsNull())
+-    {
+-      return;
+-    }
++  }
++  if (!myFont->WasInitialized())
++  {
++    return;
+   }
+ 
+   if (myTextures.IsEmpty())
+@@ -814,19 +831,29 @@ void OpenGl_Text::render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
+   setupMatrix (thePrintCtx, theCtx, theTextAspect, OpenGl_Vec3 (0.0f, 0.0f, 0.0f));
+   drawText    (thePrintCtx, theCtx, theTextAspect);
+ 
+-  glTexEnvi (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, aTexEnvParam);
++#if !defined(GL_ES_VERSION_2_0)
++  if (theCtx->core11 != NULL)
++  {
++    glTexEnvi (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, aTexEnvParam);
++  }
++#endif
+ 
+   if (theTextAspect.DisplayType() == Aspect_TODT_DIMENSION)
+   {
+     setupMatrix (thePrintCtx, theCtx, theTextAspect, OpenGl_Vec3 (0.0f, 0.0f, 0.00001f));
+ 
+     glDisable (GL_BLEND);
+-    glDisable (GL_TEXTURE_2D);
+-    glDisable (GL_ALPHA_TEST);
+     if (!myIs2d)
+     {
+       glDisable (GL_DEPTH_TEST);
+     }
++  #if !defined(GL_ES_VERSION_2_0)
++    if (theCtx->core11 != NULL)
++    {
++      glDisable (GL_TEXTURE_2D);
++      glDisable (GL_ALPHA_TEST);
++    }
++  #endif
+     glColorMask (GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+ 
+     glClear (GL_STENCIL_BUFFER_BIT);
+@@ -834,12 +861,17 @@ void OpenGl_Text::render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
+     glStencilFunc (GL_ALWAYS, 1, 0xFF);
+     glStencilOp (GL_KEEP, GL_KEEP, GL_REPLACE);
+ 
+-    glBegin (GL_QUADS);
+-    glVertex2f (myBndBox.Left,  myBndBox.Top);
+-    glVertex2f (myBndBox.Right, myBndBox.Top);
+-    glVertex2f (myBndBox.Right, myBndBox.Bottom);
+-    glVertex2f (myBndBox.Left,  myBndBox.Bottom);
+-    glEnd();
++  #if !defined(GL_ES_VERSION_2_0)
++    if (theCtx->core11 != NULL)
++    {
++      glBegin (GL_QUADS);
++      glVertex2f (myBndBox.Left,  myBndBox.Top);
++      glVertex2f (myBndBox.Right, myBndBox.Top);
++      glVertex2f (myBndBox.Right, myBndBox.Bottom);
++      glVertex2f (myBndBox.Left,  myBndBox.Bottom);
++      glEnd();
++    }
++  #endif
+ 
+     glStencilFunc (GL_ALWAYS, 0, 0xFF);
+     // glPopAttrib() will reset state for us
+-- 
+2.7.4 (Apple Git-66)
+

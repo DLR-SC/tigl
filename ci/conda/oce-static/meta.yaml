@@ -12,12 +12,12 @@ source:
     - dlr-feature-coons_c2.patch
     - fix-tiglviewer-selection.patch
     - oceonly-freeimage_staticlib_support.patch
-    - fix-freetype26-fonts.patch
+    - fix-fonts.patch
     - glibc.patch                     # [linux]
 
 build:
   detect_binary_files_with_prefix: True
-  number: 4
+  number: 5
   features:
     - vc9              # [win and py27]
     - vc10             # [win and py34]
