@@ -194,6 +194,9 @@ TIGL_EXPORT void GetEndVertices(const TopoDS_Shape& shape, TopTools_ListOfShape&
 // Method for finding the face which has the lowest distance to the passed point
 TIGL_EXPORT TopoDS_Face GetNearestFace(const TopoDS_Shape& src, const gp_Pnt& pnt);
 
+// Method for finding the center of mass of a shape
+TIGL_EXPORT gp_Pnt GetCenterOfMass(const TopoDS_Shape& shape);
+
 // Method for checking for duplicate edges in the passed shape.
 // The method returns a shape with only unique edges
 // NOTE: THIS METHOD ONLY CHECKS THE VERTEX POSITIONS, AND THE MIDDLE POINT 
