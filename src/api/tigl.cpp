@@ -2455,10 +2455,14 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSectionCenter(TiglCPACSConfigur
     }
 
     if (fuselageSegmentUID == NULL) {
+        LOG(ERROR) << "Null pointer argument for fuselageSegmentUID\n"
+                   << "in function call to tiglFuselageGetSectionCenter.";
         return TIGL_NULL_POINTER;
     }
 
     if (eta < 0 || eta > 1) {
+        LOG(ERROR) << "Argument eta is not in obligatory range [0, 1]\n"
+                   << "in function call to tiglFuselageGetSectionCenter.";
         return TIGL_MATH_ERROR;
     }
 
@@ -2496,7 +2500,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSectionCenter(TiglCPACSConfigur
 
     return TIGL_SUCCESS;
 }
-
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetPoint(TiglCPACSConfigurationHandle cpacsHandle,
                                                        int fuselageIndex,
