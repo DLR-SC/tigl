@@ -70,6 +70,47 @@ TiglCPACSConfigurationHandle  TiglFuselageSegment::tiglHandle = 0;
 
 /***************************************************************************************************/
 
+class  TiglFuselageSegmentSimple : public ::testing::Test
+{
+protected:
+    static void SetUpTestCase()
+    {
+        const char* filename = "TestData/simpletest.cpacs.xml";
+        ReturnCode tixiRet;
+        TiglReturnCode tiglRet;
+
+        tiglHandle = -1;
+        tixiHandle = -1;
+
+        tixiRet = tixiOpenDocument(filename, &tixiHandle);
+        ASSERT_TRUE (tixiRet == SUCCESS);
+        tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "", &tiglHandle);
+        ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
+    }
+
+    static void TearDownTestCase()
+    {
+        ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == TIGL_SUCCESS);
+        ASSERT_TRUE(tixiCloseDocument(tixiHandle) == SUCCESS);
+        tiglHandle = -1;
+        tixiHandle = -1;
+    }
+
+    virtual void SetUp() {}
+    virtual void TearDown() {}
+
+
+    static TixiDocumentHandle           tixiHandle;
+    static TiglCPACSConfigurationHandle tiglHandle;
+};
+
+
+TixiDocumentHandle  TiglFuselageSegmentSimple::tixiHandle = 0;
+TiglCPACSConfigurationHandle  TiglFuselageSegmentSimple::tiglHandle = 0;
+
+
+/***************************************************************************************************/
+
 /**
 * Tests tiglGetFuselageCount with invalid CPACS handle.
 */
@@ -594,5 +635,80 @@ TEST_F(TiglFuselageSegment, GetSegmentVolume)
     ASSERT_GT(volume, 0.);
 }
 
+/***************************************************************************************************/
 
+TEST_F(TiglFuselageSegmentSimple, getSectionCenter)
+{
+    // test first fuselage segment
+    double eta = 0.;
+
+    double pointX = 0;
+    double pointY = 0;
+    double pointZ = 0;
+
+    ASSERT_NE(TIGL_NULL_POINTER, tiglFuselageGetSectionCenter(tiglHandle, "segmentD150_Fuselage_1Segment2ID", eta, &pointX, &pointY, &pointZ));
+    ASSERT_EQ(TIGL_SUCCESS, tiglFuselageGetSectionCenter(tiglHandle, "segmentD150_Fuselage_1Segment2ID", eta, &pointX, &pointY, &pointZ));
+    EXPECT_NEAR(pointX, -0.5, 1e-15);
+    EXPECT_NEAR(pointY, 0, 1e-2);
+    EXPECT_NEAR(pointZ, 0, 1e-2);
+
+    eta = 0.5;
+
+    ASSERT_NE(TIGL_NULL_POINTER, tiglFuselageGetSectionCenter(tiglHandle, "segmentD150_Fuselage_1Segment2ID", eta, &pointX, &pointY, &pointZ));
+    ASSERT_EQ(TIGL_SUCCESS, tiglFuselageGetSectionCenter(tiglHandle, "segmentD150_Fuselage_1Segment2ID", eta, &pointX, &pointY, &pointZ));
+    EXPECT_NEAR(pointX, 0, 1e-15);
+    EXPECT_NEAR(pointY, 0, 1e-2);
+    EXPECT_NEAR(pointZ, 0, 1e-2);
+
+    eta = 1;
+
+    ASSERT_NE(TIGL_NULL_POINTER, tiglFuselageGetSectionCenter(tiglHandle, "segmentD150_Fuselage_1Segment2ID", eta, &pointX, &pointY, &pointZ));
+    ASSERT_EQ(TIGL_SUCCESS, tiglFuselageGetSectionCenter(tiglHandle, "segmentD150_Fuselage_1Segment2ID", eta, &pointX, &pointY, &pointZ));
+    EXPECT_NEAR(pointX, 0.5, 1e-15);
+    EXPECT_NEAR(pointY, 0, 1e-2);
+    EXPECT_NEAR(pointZ, 0, 1e-2);
+
+    // test second fuselage segment
+    eta = 0.;
+
+    ASSERT_NE(TIGL_NULL_POINTER, tiglFuselageGetSectionCenter(tiglHandle, "segmentD150_Fuselage_1Segment3ID", eta, &pointX, &pointY, &pointZ));
+    ASSERT_EQ(TIGL_SUCCESS, tiglFuselageGetSectionCenter(tiglHandle, "segmentD150_Fuselage_1Segment3ID", eta, &pointX, &pointY, &pointZ));
+    EXPECT_NEAR(pointX, 0.5, 1e-15);
+    EXPECT_NEAR(pointY, 0, 1e-2);
+    EXPECT_NEAR(pointZ, 0, 1e-2);
+
+    eta = 0.5;
+
+    ASSERT_NE(TIGL_NULL_POINTER, tiglFuselageGetSectionCenter(tiglHandle, "segmentD150_Fuselage_1Segment3ID", eta, &pointX, &pointY, &pointZ));
+    ASSERT_EQ(TIGL_SUCCESS, tiglFuselageGetSectionCenter(tiglHandle, "segmentD150_Fuselage_1Segment3ID", eta, &pointX, &pointY, &pointZ));
+    EXPECT_NEAR(pointX, 1, 1e-15);
+    EXPECT_NEAR(pointY, 0, 1e-2);
+    EXPECT_NEAR(pointZ, 0, 1e-2);
+
+    eta = 1;
+
+    ASSERT_NE(TIGL_NULL_POINTER, tiglFuselageGetSectionCenter(tiglHandle, "segmentD150_Fuselage_1Segment3ID", eta, &pointX, &pointY, &pointZ));
+    ASSERT_EQ(TIGL_SUCCESS, tiglFuselageGetSectionCenter(tiglHandle, "segmentD150_Fuselage_1Segment3ID", eta, &pointX, &pointY, &pointZ));
+    EXPECT_NEAR(pointX, 1.5, 1e-15);
+    EXPECT_NEAR(pointY, 0, 1e-2);
+    EXPECT_NEAR(pointZ, 0, 1e-2);
+
+    // some other tests: make sure that right error codes are returned in case of the corresponding errors
+    ASSERT_EQ(TIGL_UID_ERROR, tiglFuselageGetSectionCenter(tiglHandle, "invalidUID", eta, &pointX, &pointY, &pointZ));
+
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglFuselageGetSectionCenter(tiglHandle, "segmentD150_Fuselage_1Segment2ID", eta, NULL, &pointY, &pointZ));
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglFuselageGetSectionCenter(tiglHandle, "segmentD150_Fuselage_1Segment2ID", eta, &pointX, NULL, &pointZ));
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglFuselageGetSectionCenter(tiglHandle, "segmentD150_Fuselage_1Segment2ID", eta, &pointX, &pointY, NULL));
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglFuselageGetSectionCenter(tiglHandle, "segmentD150_Fuselage_1Segment2ID", eta, NULL, NULL, &pointZ));
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglFuselageGetSectionCenter(tiglHandle, "segmentD150_Fuselage_1Segment2ID", eta, &pointX, NULL, NULL));
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglFuselageGetSectionCenter(tiglHandle, "segmentD150_Fuselage_1Segment2ID", eta, NULL, NULL, NULL));
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglFuselageGetSectionCenter(tiglHandle, NULL, eta, &pointX, &pointY, &pointZ));
+
+    ASSERT_EQ(TIGL_NOT_FOUND, tiglFuselageGetSectionCenter(-1, "segmentD150_Fuselage_1Segment2ID", eta, &pointX, &pointY, &pointZ));
+
+    double eta_out_of_range = -0.5;
+    ASSERT_EQ(TIGL_MATH_ERROR, tiglFuselageGetSectionCenter(tiglHandle, "segmentD150_Fuselage_1Segment2ID", eta_out_of_range, &pointX, &pointY, &pointZ));
+    eta_out_of_range = 2;
+    ASSERT_EQ(TIGL_MATH_ERROR, tiglFuselageGetSectionCenter(tiglHandle, "segmentD150_Fuselage_1Segment2ID", eta_out_of_range, &pointX, &pointY, &pointZ));
+}
 

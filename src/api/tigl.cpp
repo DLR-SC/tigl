@@ -2441,6 +2441,65 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentCount(TiglCPACSConfigura
     }
 }
 
+TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSectionCenter(TiglCPACSConfigurationHandle cpacsHandle,
+                                                               const char *fuselageSegmentUID,
+                                                               double eta,
+                                                               double * pointX,
+                                                               double * pointY,
+                                                               double * pointZ)
+{
+    if (pointX == 0 || pointY == 0 || pointZ == 0) {
+        LOG(ERROR) << "Null pointer argument for pointX, pointY or pointZ\n"
+                   << "in function call to tiglFuselageGetSectionCenter.";
+        return TIGL_NULL_POINTER;
+    }
+
+    if (fuselageSegmentUID == NULL) {
+        LOG(ERROR) << "Null pointer argument for fuselageSegmentUID\n"
+                   << "in function call to tiglFuselageGetSectionCenter.";
+        return TIGL_NULL_POINTER;
+    }
+
+    if (eta < 0 || eta > 1) {
+        LOG(ERROR) << "Argument eta is not in obligatory range [0, 1]\n"
+                   << "in function call to tiglFuselageGetSectionCenter.";
+        return TIGL_MATH_ERROR;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+
+        // get component segment
+        tigl::CCPACSFuselageSegment& segment = config.GetUIDManager()
+                .ResolveObject<tigl::CCPACSFuselageSegment>(fuselageSegmentUID);
+
+        // get ISO curve
+        TopoDS_Shape curve = segment.getWireOnLoft(eta);
+
+         // compute center of the ISO curve
+         gp_Pnt centerPoint = GetCenterOfMass(curve);
+
+         // assigne solution to return point
+         *pointX = centerPoint.X();
+         *pointY = centerPoint.Y();
+         *pointZ = centerPoint.Z();
+
+    }
+    catch (const tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.what();
+        return ex.getCode();
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetSectionCenter!";
+        return TIGL_ERROR;
+    }
+
+    return TIGL_SUCCESS;
+}
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetPoint(TiglCPACSConfigurationHandle cpacsHandle,
                                                        int fuselageIndex,

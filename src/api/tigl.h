@@ -1525,6 +1525,29 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentCount(TiglCPACSConfigura
                                                               int* segmentCountPtr);
 
 /**
+* @brief Returns the section center of a fuselage
+* @param[in] cpacsHandle        Handle for the CPACS configuration
+* @param[in] fuselageSegmentUID UID of the segment
+* @param[in] eta                Parameter value from where on the given object the section is cut out, eta in the range 0.0 <= eta <= 1.0
+* @param[out] pointX            Pointer to the x-coordinate of the section center point
+* @param[out] pointY            Pointer to the y-coordinate of the section center point
+* @param[out] pointZ            Pointer to the z-coordinate of the section center point
+* @return
+*   - TIGL_SUCCESS if a point was found
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_UID_ERROR if UID is invalid or not a fuselage segment
+*   - TIGL_NULL_POINTER if pointX, pointY or pointZ are null pointers
+*   - TIGL_MATH_ERROR if eta is out of range, i.e., not in [0, 1]
+*   - TIGL_ERROR if some other error occurred
+ */
+TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSectionCenter(TiglCPACSConfigurationHandle cpacsHandle,
+                                                               const char *fuselageSegmentUID,
+                                                               double eta,
+                                                               double *pointX,
+                                                               double *pointY,
+                                                               double *pointZ);
+
+/**
 * @brief Returns a point on a fuselage surface for a given fuselage and segment index.
 *
 * Returns a point on a fuselage segment of a given fuselage in dependence of parameters eta and zeta with
