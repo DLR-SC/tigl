@@ -54,6 +54,11 @@ public:
     tigl::CTiglPoint GetPoint();
     tigl::CTiglPoint GetNormal();
 
+    QString GetShapeSUID();
+    tigl::CTiglPoint GetPoint1();
+    tigl::CTiglPoint GetPoint2();
+    tigl::CTiglPoint GetW();
+
 private slots:
     void OnItemChanged();
 
@@ -63,9 +68,13 @@ private:
 
     static tigl::CTiglPoint p;
     static tigl::CTiglPoint n;
+    static tigl::CTiglPoint p1;
+    static tigl::CTiglPoint p2;
+    static tigl::CTiglPoint w;
     static int shape1Selected;
     static int shape2Selected;
     static int shapeSelected;
+    static int shapeSSelected;
     static int lastMode;
 };
 

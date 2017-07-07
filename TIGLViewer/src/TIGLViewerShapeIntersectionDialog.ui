@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>303</width>
-    <height>275</height>
+    <width>356</width>
+    <height>346</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,8 +16,14 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QTabWidget" name="TabView">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="tabSS">
       <attribute name="title">
@@ -180,6 +186,195 @@
        </item>
       </layout>
      </widget>
+     <widget class="QWidget" name="tabSPS">
+      <attribute name="title">
+       <string>Shape/Plane segment</string>
+      </attribute>
+      <widget class="QGroupBox" name="groupBox_5">
+       <property name="geometry">
+        <rect>
+         <x>9</x>
+         <y>9</y>
+         <width>311</width>
+         <height>71</height>
+        </rect>
+       </property>
+       <property name="title">
+        <string>Shape</string>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QComboBox" name="shapeComboS"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QGroupBox" name="groupBox_6">
+       <property name="geometry">
+        <rect>
+         <x>9</x>
+         <y>89</y>
+         <width>311</width>
+         <height>161</height>
+        </rect>
+       </property>
+       <property name="title">
+        <string>Two Points and Direction</string>
+       </property>
+       <widget class="QWidget" name="">
+        <property name="geometry">
+         <rect>
+          <x>11</x>
+          <y>30</y>
+          <width>291</width>
+          <height>121</height>
+         </rect>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_4">
+         <item row="0" column="1">
+          <widget class="QLabel" name="label_23">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Point 1</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="2">
+          <widget class="QLabel" name="label_24">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Point 2</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="3">
+          <widget class="QLabel" name="label_26">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Direction</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_9">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>X=</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QDoubleSpinBox" name="p1xSB">
+           <property name="minimum">
+            <double>-99.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="2">
+          <widget class="QDoubleSpinBox" name="p2xSB">
+           <property name="minimum">
+            <double>-99.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="3">
+          <widget class="QDoubleSpinBox" name="wxSB">
+           <property name="minimum">
+            <double>-99.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="label_22">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Y=</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QDoubleSpinBox" name="p1ySB">
+           <property name="minimum">
+            <double>-99.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="2">
+          <widget class="QDoubleSpinBox" name="p2ySB">
+           <property name="minimum">
+            <double>-99.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="3">
+          <widget class="QDoubleSpinBox" name="wySB">
+           <property name="minimum">
+            <double>-99.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="label_25">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Z=</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <widget class="QDoubleSpinBox" name="p1zSB">
+           <property name="minimum">
+            <double>-99.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="2">
+          <widget class="QDoubleSpinBox" name="p2zSB">
+           <property name="minimum">
+            <double>-99.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="3">
+          <widget class="QDoubleSpinBox" name="wzSB">
+           <property name="minimum">
+            <double>-99.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+     </widget>
     </widget>
    </item>
    <item>
@@ -196,16 +391,54 @@
  </widget>
  <tabstops>
   <tabstop>TabView</tabstop>
-  <tabstop>shape1Combo</tabstop>
-  <tabstop>shape2Combo</tabstop>
+  <tabstop>shapeComboS</tabstop>
+  <tabstop>p1xSB</tabstop>
+  <tabstop>p1ySB</tabstop>
+  <tabstop>p1zSB</tabstop>
+  <tabstop>p2xSB</tabstop>
+  <tabstop>p2ySB</tabstop>
+  <tabstop>p2zSB</tabstop>
+  <tabstop>wxSB</tabstop>
+  <tabstop>wySB</tabstop>
+  <tabstop>wzSB</tabstop>
+  <tabstop>shape2Combo_2</tabstop>
   <tabstop>shapeCombo</tabstop>
-  <tabstop>pxSB</tabstop>
-  <tabstop>pySB</tabstop>
+  <tabstop>shapeCombo_2</tabstop>
+  <tabstop>pxSB_2</tabstop>
+  <tabstop>nxSB_2</tabstop>
+  <tabstop>pySB_2</tabstop>
+  <tabstop>nySB_2</tabstop>
+  <tabstop>pzSB_2</tabstop>
+  <tabstop>nzSB_2</tabstop>
+  <tabstop>comboBox_2</tabstop>
+  <tabstop>shape1Combo_3</tabstop>
+  <tabstop>shape2Combo_3</tabstop>
+  <tabstop>shapeCombo_3</tabstop>
+  <tabstop>pxSB_3</tabstop>
+  <tabstop>nxSB_3</tabstop>
+  <tabstop>pySB_3</tabstop>
+  <tabstop>nySB_3</tabstop>
+  <tabstop>pzSB_3</tabstop>
+  <tabstop>nzSB_3</tabstop>
+  <tabstop>comboBox_3</tabstop>
+  <tabstop>shape1Combo</tabstop>
   <tabstop>pzSB</tabstop>
-  <tabstop>nxSB</tabstop>
-  <tabstop>nySB</tabstop>
   <tabstop>nzSB</tabstop>
-  <tabstop>buttonBox</tabstop>
+  <tabstop>pxSB</tabstop>
+  <tabstop>nxSB</tabstop>
+  <tabstop>shape2Combo</tabstop>
+  <tabstop>pySB</tabstop>
+  <tabstop>nySB</tabstop>
+  <tabstop>shape1Combo_2</tabstop>
+  <tabstop>p1xSB_2</tabstop>
+  <tabstop>p2xSB_2</tabstop>
+  <tabstop>wxSB_2</tabstop>
+  <tabstop>p1ySB_2</tabstop>
+  <tabstop>p2ySB_2</tabstop>
+  <tabstop>wySB_2</tabstop>
+  <tabstop>p1zSB_2</tabstop>
+  <tabstop>p2zSB_2</tabstop>
+  <tabstop>wzSB_2</tabstop>
  </tabstops>
  <resources/>
  <connections>
@@ -232,8 +465,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>316</x>
-     <y>260</y>
+     <x>293</x>
+     <y>265</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>

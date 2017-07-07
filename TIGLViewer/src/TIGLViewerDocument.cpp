@@ -1924,6 +1924,23 @@ void TIGLViewerDocument::drawIntersectionLine()
         writeToStatusBar(tr("Calculating intersection... This may take a while!"));
         Intersector = new tigl::CTiglIntersectionCalculation(&config.GetShapeCache(), uid, compoundOne, p, n);
     }
+    else if (mode == 2) {
+        // shape - plane segment
+        std::string uid = dialog.GetShapeSUID().toStdString();
+        writeToStatusBar(QString(tr("Calculating %1 ...")).arg(uid.c_str()));
+        const TopoDS_Shape& compound = uidManager.GetGeometricComponent(uid).GetLoft()->Shape();
+
+        gp_Pnt p1 = dialog.GetPoint1().Get_gp_Pnt();
+        gp_Pnt p2 = dialog.GetPoint2().Get_gp_Pnt();
+        tigl::CTiglPoint normal = dialog.GetW();
+        if (normal.norm2() < 1e-7) {
+            displayError("The directional vector must not be zero.");
+            return;
+        }
+        gp_Dir n = normal.Get_gp_Pnt().XYZ();
+        writeToStatusBar(tr("Calculating intersection... This may take a while!"));
+        Intersector = new tigl::CTiglIntersectionCalculation(&config.GetShapeCache(), uid, compound, p1, p2, n);
+    }
     else {
         return;
     }

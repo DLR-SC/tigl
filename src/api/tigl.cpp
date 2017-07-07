@@ -4475,6 +4475,75 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectWithPlane(TiglCPACSConfigurationH
     }
 }
 
+TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectWithPlaneSegment(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                const char*  componentUid,
+                                                                double p1x, double p1y, double p1z,
+                                                                double p2x, double p2y, double p2z,
+                                                                double wx, double wy, double wz,
+                                                                char** intersectionID)
+{
+    if (!componentUid) {
+        LOG(ERROR) << "Null pointer for argument componentUid in tiglIntersectWithPlaneSegment.";
+        return TIGL_NULL_POINTER;
+    }
+    if (!intersectionID) {
+        LOG(ERROR) << "Null pointer for argument intersectionID in tiglIntersectWithPlaneSegment.";
+        return TIGL_NULL_POINTER;
+    }
+    if (wx*wx + wy*wy + wz*wz < 1e-10) {
+        LOG(ERROR) << "Normal vector must not be zero in tiglIntersectWithPlaneSegment.";
+        return TIGL_MATH_ERROR;
+    }
+
+    // check if p1 and p2 are distinct points
+    if ( (p1x-p2x)*(p1x-p2x) + (p1y-p2y)*(p1y-p2y) + (p1z-p2z)*(p1z-p2z) < 1e-10 ) {
+        LOG(ERROR) << "Point 1 and Point 2 must be unequal.";
+        return TIGL_MATH_ERROR;
+    }
+
+    // check if (p2 - p1) and w are linearly dependent
+    if ( abs( 1. - (p2x-p1x)*wx + (p2y-p1y)*wy + (p2z-p1z)*wz ) < 1e-10 ) {
+        LOG(ERROR) << "( Point 2 - Point 1 ) and w must be linearly independent";
+        return TIGL_MATH_ERROR;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::CTiglUIDManager& uidManager = config.GetUIDManager();
+
+        tigl::ITiglGeometricComponent* component = &uidManager.GetGeometricComponent(componentUid);
+        if (component) {
+            TopoDS_Shape shape = component->GetLoft()->Shape();
+            gp_Pnt p1(p1x, p1y, p1z);
+            gp_Pnt p2(p2x, p2y, p2z);
+            gp_Dir w(wx, wy, wz);
+
+            tigl::CTiglIntersectionCalculation Intersector(&config.GetShapeCache(),
+                                                           componentUid,
+                                                           shape,
+                                                           p1,p2,w);
+
+            std::string id = Intersector.GetID();
+            *intersectionID = (char*) config.GetMemoryPool().MakeNontempString(id.c_str());
+
+            return TIGL_SUCCESS;
+        }
+        else {
+            LOG(ERROR) << "UID can not be found in tiglIntersectWithPlaneSegment.";
+            return TIGL_UID_ERROR;
+        }
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.what();
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglIntersectWithPlaneSegment!";
+        return TIGL_ERROR;
+    }
+}
+
 TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectGetLineCount(TiglCPACSConfigurationHandle cpacsHandle,
                                                             const char* intersectionID,
                                                             int* lineCount)

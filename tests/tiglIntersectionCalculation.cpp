@@ -125,6 +125,26 @@ TEST_F(TiglIntersectionCalculation, tiglIntersectWithPlane)
     ASSERT_EQ(TIGL_MATH_ERROR,   tiglIntersectWithPlane(tiglHandle, "SimpleFuselage", 0., 0., 0., 0., 0., 0., &id));
 }
 
+TEST_F(TiglIntersectionCalculation, tiglIntersectWithPlaneSegment)
+{
+    char* id = NULL;
+    int count = 0;
+    ASSERT_EQ(TIGL_SUCCESS, tiglIntersectWithPlaneSegment(tiglHandle, "SimpleFuselage", 0.5, -5., 0.,0.5,5.,0., 0., 0., 1., &id));
+    ASSERT_EQ(TIGL_SUCCESS, tiglIntersectGetLineCount(tiglHandle, id, &count));
+    ASSERT_EQ(1, count);
+
+    ASSERT_EQ(TIGL_SUCCESS, tiglIntersectWithPlaneSegment(tiglHandle, "SimpleFuselage", -1., -5., 0.,-1.,5.,0., 0., 0., 1., &id));
+    ASSERT_EQ(TIGL_SUCCESS, tiglIntersectGetLineCount(tiglHandle, id, &count));
+    ASSERT_EQ(0, count);
+
+    ASSERT_EQ(TIGL_NOT_FOUND,    tiglIntersectWithPlaneSegment(-1, "SimpleFuselage", 0.5, -5., 0.,0.5,5.,0., 0., 0., 1., &id));
+    ASSERT_EQ(TIGL_UID_ERROR,    tiglIntersectWithPlaneSegment(tiglHandle, "UNKNOWN_UID", 0.5, -5., 0.,0.5,5.,0., 0., 0., 1., &id));
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglIntersectWithPlaneSegment(tiglHandle, NULL,  0.5, -5., 0.,0.5,5.,0., 0., 0., 1., &id));
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglIntersectWithPlaneSegment(tiglHandle, "SimpleFuselage",  0.5, -5., 0.,0.5,5.,0., 0., 0., 1., NULL));
+    ASSERT_EQ(TIGL_MATH_ERROR,   tiglIntersectWithPlaneSegment(tiglHandle, "SimpleFuselage",  0.5, -5., 0.,0.5,5.,0., 0., 0., 0., &id));
+    ASSERT_EQ(TIGL_MATH_ERROR,   tiglIntersectWithPlaneSegment(tiglHandle, "SimpleFuselage",  0.5,  5., 0.,0.5,5.,0., 0., 0., 1., &id));
+}
+
 TEST_F(TiglIntersectionCalculation, tiglIntersectComponents_Errors)
 {
     char* id = NULL;

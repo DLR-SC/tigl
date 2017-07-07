@@ -60,6 +60,9 @@
 #include "TopTools_HSequenceOfShape.hxx"
 #include "ShapeAnalysis_FreeBounds.hxx"
 #include "BRepBuilderAPI_MakeWire.hxx"
+#include "BRepPrimAPI_MakeHalfSpace.hxx"
+#include "BRepAlgoAPI_Cut.hxx"
+#include "BRepProj_Projection.hxx"
 
 #include <sstream>
 #include <boost/functional/hash.hpp>
@@ -101,6 +104,29 @@ namespace
     private:
         size_t hash;
     };
+
+    class HashableProjection
+    {
+    public:
+        HashableProjection(const gp_Pnt& x, const gp_Dir& d)
+        {
+            gp_Vec xvec = gp_Vec(x.XYZ());
+            gp_Vec dvec = gp_Vec(d);
+            double coeff  = -dvec.Dot(xvec)/dvec.Dot(dvec);
+            gp_Vec result = xvec - coeff*dvec;
+            hash = 0;
+            boost::hash_combine(hash,result.X());
+            boost::hash_combine(hash,result.Y());
+            boost::hash_combine(hash,result.Z());
+        }
+
+        size_t HashValue()
+        {
+            return hash;
+        }
+    private:
+        size_t hash;
+    };
 }
 
 namespace tigl 
@@ -134,6 +160,62 @@ CTiglIntersectionCalculation::CTiglIntersectionCalculation(CTiglShapeCache* cach
     // create plane
     TopoDS_Shape plane = BRepBuilderAPI_MakeFace(gp_Pln(point, normal));
     computeIntersection(cache, hash1, hash2, shape, plane);
+}
+
+// Computes the intersection of a shape with a plane segment,
+// that is defined by two points p1 and p2 and a vector w in
+// the following way: p(u,v) = p1 (1-u) + p2u + wv, with
+// u in [0,1]. Ideally w should be perpendicular to (p1 - p2)
+// cache variable can be NULL
+CTiglIntersectionCalculation::CTiglIntersectionCalculation(CTiglShapeCache* cache,
+                                                           const std::string& shapeID,
+                                                           TopoDS_Shape shape,
+                                                           gp_Pnt point1,
+                                                           gp_Pnt point2,
+                                                           gp_Dir normal)
+    : tolerance(1.0e-7)
+{
+
+    // create hash
+    size_t hash = boost::hash<std::string>()(shapeID);
+    size_t hashP1P2 = HashableProjection(point1,normal).HashValue() ^ HashableProjection(point2,normal).HashValue();
+    boost::hash_combine(hash, hashP1P2);
+    //TODO make hash independent of sign of normal
+    boost::hash_combine(hash,normal.X());
+    boost::hash_combine(hash,normal.Y());
+    boost::hash_combine(hash,normal.Z());
+
+    std::stringstream s;
+    s << "int" << hash;
+    id = s.str();
+
+    bool inCache = false;
+    if (cache) {
+        // check, if result is already in cache
+        if (cache->HasShape(id)) {
+            intersectionResult = TopoDS::Compound(cache->GetShape(id));
+            inCache = true;
+        }
+    }
+
+    if (!inCache) {
+
+        TopoDS_Wire p2p1 = BRepBuilderAPI_MakeWire( BRepBuilderAPI_MakeEdge(point1,point2) );
+
+        // use direction d =  ( (P2 - P1) x w ) x (P2 - P1)
+        //gp_Dir n = gp_Dir( gp_Vec(point1,point2).Crossed( gp_Vec(normal) ) );
+        //gp_Dir d = gp_Dir( gp_Vec(n).Crossed( gp_Vec(point1,point2) ) );
+        //BRepProj_Projection projector = BRepProj_Projection(p2p1,shape,d);
+
+        // use direction normal
+        BRepProj_Projection projector = BRepProj_Projection(p2p1,shape,normal);
+        intersectionResult = projector.Shape();
+    }
+
+    //add to cache
+    if (cache) {
+        cache->Insert(intersectionResult, id);
+    }
 }
 
 CTiglIntersectionCalculation::CTiglIntersectionCalculation(CTiglShapeCache& cache,
@@ -185,11 +267,11 @@ void CTiglIntersectionCalculation::computeIntersection(CTiglShapeCache * cache,
     }
 
     if (!inCache) {
-        Standard_Boolean PerformNow=Standard_False; 
-        BRepAlgoAPI_Section section(compoundOne, compoundTwo, PerformNow); 
-        section.ComputePCurveOn1(Standard_True); 
-        section.Approximation(Standard_True); 
-        section.Build(); 
+        Standard_Boolean PerformNow=Standard_False;
+        BRepAlgoAPI_Section section(compoundOne, compoundTwo, PerformNow);
+        section.ComputePCurveOn1(Standard_True);
+        section.Approximation(Standard_True);
+        section.Build();
         TopoDS_Shape result = section.Shape();
         TopExp_Explorer myEdgeExplorer (result, TopAbs_EDGE);
 

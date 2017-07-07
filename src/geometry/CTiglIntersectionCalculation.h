@@ -64,6 +64,18 @@ public:
                                              gp_Pnt point,
                                              gp_Dir normal );
 
+    // Computes the intersection of a shape with a plane segment,
+    // that is defined by two points p1 and p2 and a vector w in
+    // the following way: p(u,v) = p1 (1-u) + p2u + wv, with
+    // u in [0,1]. Ideally w should be perpendicular to (p1 - p2)
+    // cache variable can be NULL
+    CTiglIntersectionCalculation(CTiglShapeCache* cache,
+                                 const std::string& shapeID,
+                                 TopoDS_Shape shape,
+                                 gp_Pnt point1,
+                                 gp_Pnt point2,
+                                 gp_Dir normal);
+
     // Constructor, load intersection result from cache
     // cache is mandatory, hence the reference
     TIGL_EXPORT CTiglIntersectionCalculation(CTiglShapeCache& cache,
