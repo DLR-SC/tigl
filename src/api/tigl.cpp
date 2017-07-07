@@ -2501,6 +2501,65 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSectionCenter(TiglCPACSConfigur
     return TIGL_SUCCESS;
 }
 
+TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetCrossSectionArea(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                  const char *fuselageSegmentUID,
+                                                                  double eta,
+                                                                  double *area)
+{
+    if (area == NULL) {
+        LOG(ERROR) << "Null pointer argument for area\n"
+                   << "in function call to tiglFuselageGetCrossSectionArea.";
+        return TIGL_NULL_POINTER;
+    }
+
+    if (fuselageSegmentUID == NULL) {
+        LOG(ERROR) << "Null pointer argument for fuselageSegmentUID\n"
+                   << "in function call to tiglFuselageGetCrossSectionArea.";
+        return TIGL_NULL_POINTER;
+    }
+
+    if (eta < 0 || eta > 1) {
+        LOG(ERROR) << "Argument eta is not in obligatory range [0, 1]\n"
+                   << "in function call to tiglFuselageGetCrossSectionArea.";
+        return TIGL_MATH_ERROR;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+
+        // get component segment
+        tigl::CCPACSFuselageSegment& segment = config.GetUIDManager()
+                .ResolveObject<tigl::CCPACSFuselageSegment>(fuselageSegmentUID);
+
+        // get ISO curve as a wire
+        TopoDS_Wire curve = TopoDS::Wire(segment.getWireOnLoft(eta));
+
+        // get surface which is framed by the ISO curve
+        TopoDS_Face surface = BuildFace(curve);
+
+        // compute area
+        double framedArea = GetArea(surface);
+
+        // assigne solution to return value
+        *area = framedArea;
+
+    }
+    catch (const tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.what();
+        return ex.getCode();
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetCrossSectionArea!";
+        return TIGL_ERROR;
+    }
+
+    return TIGL_SUCCESS;
+}
+
 TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetPoint(TiglCPACSConfigurationHandle cpacsHandle,
                                                        int fuselageIndex,
                                                        int segmentIndex,
@@ -2539,8 +2598,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetPoint(TiglCPACSConfigurationHan
         return TIGL_ERROR;
     }
 }
-
-
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetPointAngle(TiglCPACSConfigurationHandle cpacsHandle,
                                                             int fuselageIndex,

@@ -1548,6 +1548,25 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSectionCenter(TiglCPACSConfigur
                                                                double *pointZ);
 
 /**
+* @brief Returns the value of the area of a cross section of a fuselage
+* @param[in] cpacsHandle        Handle for the CPACS configuration
+* @param[in] fuselageSegmentUID UID of the segment
+* @param[in] eta                Parameter value from where on the given object the section is cut out, eta in the range 0.0 <= eta <= 1.0
+* @param[out] area              the area of the given cross section of a given fuselage
+* @return
+*   - TIGL_SUCCESS if the area was found
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_UID_ERROR if UID is invalid or not a fuselage segment
+*   - TIGL_NULL_POINTER if area is a null pointer
+*   - TIGL_MATH_ERROR if eta is out of range, i.e., not in [0, 1]
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetCrossSectionArea(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                  const char *fuselageSegmentUID,
+                                                                  double eta,
+                                                                  double *area);
+
+/**
 * @brief Returns a point on a fuselage surface for a given fuselage and segment index.
 *
 * Returns a point on a fuselage segment of a given fuselage in dependence of parameters eta and zeta with

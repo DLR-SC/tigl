@@ -1089,6 +1089,18 @@ gp_Pnt GetCenterOfMass(const TopoDS_Shape &shape)
      return centerPoint;
 }
 
+double GetArea(const TopoDS_Shape &shape)
+{
+    // get surface properties of the shape
+     GProp_GProps SProps;
+     BRepGProp::SurfaceProperties(shape, SProps);
+
+     // compute the area of the shape or the area that is framed by the shape
+     double area = SProps.Mass();
+
+     return area;
+}
+
 TopoDS_Shape RemoveDuplicateEdges(const TopoDS_Shape& shape)
 {
     TopTools_ListOfShape initialEdgeList, newEdgeList;
