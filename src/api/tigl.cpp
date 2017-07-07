@@ -1,8 +1,8 @@
-/* 
+/*
 * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
-* Changed: $Id$ 
+* Changed: $Id$
 *
 * Version: $Revision$
 *
@@ -89,7 +89,7 @@ namespace
     bool tiglInit()
     {
         atexit(tiglCleanup);
-    
+
         // Initialize logger
         tigl::CTiglLogging::Instance();
         // Register dynamic tigl types
@@ -100,11 +100,11 @@ namespace
         tixiSetPrintMsgFunc(TixiMessageHandler);
         return true;
     }
-    
+
     void tiglCleanup()
     {
     }
-    
+
     // This function pulls all tixi messages, puts them into the tigl
     // log and pushes them back to tixi
     void TixiMessageHandler(MessageType type, const char *message)
@@ -147,7 +147,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
     if (configurationUID_cstr) {
         configurationUID = configurationUID_cstr;
     }
-    
+
     if (cpacsHandlePtr == 0) {
         LOG(ERROR) << "Null pointer argument for cpacsHandlePtr in function call to tiglOpenCPACSConfiguration.";
         return TIGL_NULL_POINTER;
@@ -375,24 +375,24 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglProfileGetBSplineCount(TiglCPACSConfigurat
         LOG(ERROR) << "Null pointer for argument curveCount in tiglProfileGetBSplineCount";
         return TIGL_NULL_POINTER;
     }
-    
+
     try {
         tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration & config = manager.GetConfiguration(cpacsHandle);
-        
+
         if (config.HasWingProfile(profileUID)) {
             tigl::CCPACSWingProfile& profile = config.GetWingProfile(profileUID);
-            int edgeCount = GetNumberOfEdges(profile.GetUpperWire()) 
+            int edgeCount = GetNumberOfEdges(profile.GetUpperWire())
                           + GetNumberOfEdges(profile.GetLowerWire());
             *curveCount = edgeCount;
-            
+
             return TIGL_SUCCESS;
         }
         else if (config.HasFuselageProfile(profileUID)) {
             tigl::CCPACSFuselageProfile& profile = config.GetFuselageProfile(profileUID);
             int edgeCount = GetNumberOfEdges(profile.GetWire(false));
             *curveCount = edgeCount;
-    
+
             return TIGL_SUCCESS;
         }
         else {
@@ -443,19 +443,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglProfileGetBSplineDataSizes(TiglCPACSConfig
         LOG(ERROR) << "Negative index of argument curveid in tiglProfileGetBSplineDataSizes";
         return TIGL_INDEX_ERROR;
     }
-    
+
     try {
         tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration & config = manager.GetConfiguration(cpacsHandle);
-        
+
         TopoDS_Edge e;
-        
+
         // query wings
         if (config.HasWingProfile(profileUID)) {
             tigl::CCPACSWingProfile& profile = config.GetWingProfile(profileUID);
             int nel = GetNumberOfEdges(profile.GetLowerWire());
             int neu = GetNumberOfEdges(profile.GetUpperWire());
-            
+
             if (curveid <= nel) {
                 e = GetEdge(profile.GetLowerWire(), curveid - 1);
             }
@@ -471,7 +471,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglProfileGetBSplineDataSizes(TiglCPACSConfig
             tigl::CCPACSFuselageProfile& profile = config.GetFuselageProfile(profileUID);
             TopoDS_Wire wire = profile.GetWire(false);
             int ne = GetNumberOfEdges(wire);
-            
+
             if (curveid <= ne) {
                 e = GetEdge(wire, curveid - 1);
             }
@@ -484,14 +484,14 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglProfileGetBSplineDataSizes(TiglCPACSConfig
             LOG(ERROR) << "Profile " << profileUID << " not found in cpacs file.";
             return TIGL_UID_ERROR;
         }
-        
+
         // profile found, lets get bspline data
-        
+
         if (!e.IsNull()) {
              Handle(Geom_BSplineCurve) bspl = GetBSplineCurve(e);
              *degree = bspl->Degree();
              *ncontrolPoints = bspl->NbPoles();
-             
+
              *nKnots = 0;
              for (int i = 1; i <= bspl->NbKnots(); ++i) {
                  *nKnots += bspl->Multiplicity(i);
@@ -541,19 +541,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglProfileGetBSplineData(TiglCPACSConfigurati
         LOG(ERROR) << "Negative index of argument curveid in tiglProfileGetBSplineData";
         return TIGL_INDEX_ERROR;
     }
-    
+
     try {
         tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration & config = manager.GetConfiguration(cpacsHandle);
-        
+
         TopoDS_Edge e;
-        
+
         // query wings
         if (config.HasWingProfile(profileUID)) {
             tigl::CCPACSWingProfile& profile = config.GetWingProfile(profileUID);
             int nel = GetNumberOfEdges(profile.GetLowerWire());
             int neu = GetNumberOfEdges(profile.GetUpperWire());
-            
+
             if (curveid <= nel) {
                 e = GetEdge(profile.GetLowerWire(), curveid - 1);
             }
@@ -569,7 +569,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglProfileGetBSplineData(TiglCPACSConfigurati
             tigl::CCPACSFuselageProfile& profile = config.GetFuselageProfile(profileUID);
             TopoDS_Wire wire = profile.GetWire(false);
             int ne = GetNumberOfEdges(wire);
-            
+
             if (curveid <= ne) {
                 e = GetEdge(wire, curveid - 1);
             }
@@ -582,21 +582,21 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglProfileGetBSplineData(TiglCPACSConfigurati
             LOG(ERROR) << "Profile " << profileUID << " not found in cpacs file.";
             return TIGL_UID_ERROR;
         }
-        
+
         // profile found, lets get bspline data
-        
+
         if (!e.IsNull()) {
             Handle(Geom_BSplineCurve) bspl = GetBSplineCurve(e);
             // check correct sizes
             if (ncp != bspl->NbPoles()) {
                 return TIGL_ERROR;
             }
-            
+
             int nKnots = 0;
             for (int i = 1; i <= bspl->NbKnots(); ++i) {
                 nKnots += bspl->Multiplicity(i);
             }
-            
+
             if (nk != nKnots) {
                 return TIGL_ERROR;
             }
@@ -608,7 +608,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglProfileGetBSplineData(TiglCPACSConfigurati
                 cpy[icp] = p.Y();
                 cpz[icp] = p.Z();
             }
-            
+
             // copy knots
             int ipos = 0;
             for (int iknot = 1; iknot <= bspl->NbKnots(); ++iknot) {
@@ -618,7 +618,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglProfileGetBSplineData(TiglCPACSConfigurati
                     ipos++;
                 }
             }
-            
+
             return TIGL_SUCCESS;
         }
         else {
@@ -744,7 +744,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetChordPoint(TiglCPACSConfigurationHa
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
         tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment&) wing.GetSegment(segmentIndex);
-        
+
         gp_Pnt point = segment.GetChordPoint(eta, xsi);
         *pointXPtr = point.X();
         *pointYPtr = point.Y();
@@ -785,7 +785,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetChordNormal(TiglCPACSConfigurationH
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
         tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment&) wing.GetSegment(segmentIndex);
-        
+
         gp_Pnt normal = segment.GetChordNormal(eta, xsi);
         // normalize normal
         double len = normal.X()*normal.X() + normal.Y()*normal.Y() + normal.Z()*normal.Z();
@@ -794,7 +794,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetChordNormal(TiglCPACSConfigurationH
             LOG(ERROR) << "Computed normal vector on wing chord face is zero";
             return TIGL_ERROR;
         }
-        
+
         *normalXPtr = normal.X()/len;
         *normalYPtr = normal.Y()/len;
         *normalZPtr = normal.Z()/len;
@@ -832,7 +832,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetUpperPointAtDirection(TiglCPACSConf
                    << "in function call to tiglWingGetUpperPointAtDirection.";
         return TIGL_NULL_POINTER;
     }
-    
+
     if (errorDistance == NULL) {
         LOG(ERROR) << "Null pointer in errorDistance argument in tiglWingGetUpperPointAtDirection.";
         return TIGL_NULL_POINTER;
@@ -843,17 +843,17 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetUpperPointAtDirection(TiglCPACSConf
         tigl::CCPACSConfiguration & config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
         tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment&) wing.GetSegment(segmentIndex);
-   
+
         gp_Pnt point = segment.GetPointDirection(eta, xsi, dirx, diry, dirz, true, *errorDistance);
-        
+
         if (*errorDistance > 1e-3) {
             LOG(WARNING) << "The wing's upper skin is missed by more than 1cm  in tiglWingGetUpperPointAtDirection.";
         }
-        
+
         *pointXPtr = point.X();
         *pointYPtr = point.Y();
         *pointZPtr = point.Z();
-        
+
         return TIGL_SUCCESS;
     }
     catch (const tigl::CTiglError& ex) {
@@ -888,7 +888,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetLowerPointAtDirection(TiglCPACSConf
                    << "in function call to tiglWingGetLowerPointAtDirection.";
         return TIGL_NULL_POINTER;
     }
-    
+
     if (errorDistance == NULL) {
         LOG(ERROR) << "Null pointer in errorDistance argument in tiglWingGetLowerPointAtDirection.";
         return TIGL_NULL_POINTER;
@@ -904,7 +904,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetLowerPointAtDirection(TiglCPACSConf
         *pointXPtr = point.X();
         *pointYPtr = point.Y();
         *pointZPtr = point.Z();
-        
+
         if (*errorDistance > 1e-3) {
             LOG(WARNING) << "The wing's lower skin is missed by more than 1cm  in tiglWingGetLowerPointAtDirection.";
         }
@@ -1103,7 +1103,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetComponentSegmentUID(TiglCPACSConfig
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetComponentSegmentIndex(TiglCPACSConfigurationHandle cpacsHandle,
                                                                    int wingIndex,
                                                                    const char * compSegmentUID,
-                                                                   int * segmentIndex) 
+                                                                   int * segmentIndex)
 {
     if (compSegmentUID == 0) {
         LOG(ERROR) << "Null pointer argument for segmentUID\n"
@@ -1615,8 +1615,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentUID(TiglCPACSConfigurationHa
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentIndex(TiglCPACSConfigurationHandle cpacsHandle,
                                                           const char * segmentUID,
-                                                          int * segmentIndex, 
-                                                          int * wingIndex) 
+                                                          int * segmentIndex,
+                                                          int * wingIndex)
 {
     if (segmentUID == 0) {
         LOG(ERROR) << "Null pointer argument for segmentUID\n"
@@ -1637,7 +1637,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentIndex(TiglCPACSConfiguration
     try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
-        
+
         for (int iWing = 1; iWing <= config.GetWingCount(); ++iWing) {
             tigl::CCPACSWing& wing = config.GetWing(iWing);
             try {
@@ -1749,7 +1749,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSectionUID(TiglCPACSConfigurationHa
 }
 
 
-TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSymmetry(TiglCPACSConfigurationHandle cpacsHandle, 
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSymmetry(TiglCPACSConfigurationHandle cpacsHandle,
                                                       int wingIndex,
                                                       TiglSymmetryAxis* symmetryAxisPtr)
 {
@@ -1856,13 +1856,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetPoint(TiglCPACSConf
                    << "in function call to tiglWingComponentSegmentPointGetPoint.";
         return TIGL_NULL_POINTER;
     }
-    
+
     if (!x || !y || !z){
         LOG(ERROR) << "Null pointer argument for x, y, or z\n"
                    << "in function call to tiglWingComponentSegmentPointGetPoint.";
         return TIGL_NULL_POINTER;
     }
-    
+
     try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
@@ -2028,11 +2028,11 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentPointGetSegmentEtaXsi(
 }
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingSegmentPointGetComponentSegmentEtaXsi(TiglCPACSConfigurationHandle cpacsHandle,
-                                                                                const char *segmentUID, const char * componentSegmentUID, 
+                                                                                const char *segmentUID, const char * componentSegmentUID,
                                                                                 double segmentEta, double segmentXsi,
                                                                                 double *eta, double *xsi)
 {
-                                    
+
     if (segmentUID == 0) {
         LOG(ERROR) << "Null pointer argument for segmentUID\n"
                    << "in function call to tiglWingSegmentPointGetComponentSegmentEtaXsi.";
@@ -2044,19 +2044,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingSegmentPointGetComponentSegmentEtaXsi(
                    << "in function call to tiglWingSegmentPointGetComponentSegmentEtaXsi.";
         return TIGL_NULL_POINTER;
     }
-    
+
     if (eta == 0) {
         LOG(ERROR) << "Null pointer argument for eta\n"
                    << "in function call to tiglWingSegmentPointGetComponentSegmentEtaXsi.";
         return TIGL_NULL_POINTER;
     }
-    
+
     if (xsi == 0) {
         LOG(ERROR) << "Null pointer argument for xsi\n"
                    << "in function call to tiglWingSegmentPointGetComponentSegmentEtaXsi.";
         return TIGL_NULL_POINTER;
     }
-    
+
     try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
@@ -2078,9 +2078,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingSegmentPointGetComponentSegmentEtaXsi(
                     throw;
                 }
             }
-            
+
         }
-        
+
         // the component segment was not found
         LOG(ERROR) << "Invalid component segment uid in tiglWingSegmentPointGetComponentSegmentEtaXsi";
         return TIGL_UID_ERROR;
@@ -2119,17 +2119,17 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetSegmentIntersection
                    << "in function call to tiglWingComponentSegmentGetSegmentIntersection.";
         return TIGL_NULL_POINTER;
     }
-    
+
     if (segmentXsi == 0) {
         LOG(ERROR) << "Null pointer argument for segmentXsi\n"
                    << "in function call to tiglWingComponentSegmentGetSegmentIntersection.";
         return TIGL_NULL_POINTER;
     }
-    
+
     try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
-        
+
         // search for component segment
         int nwings = config.GetWingCount();
         for (int iwing = 1; iwing <= nwings; ++iwing) {
@@ -2159,7 +2159,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetSegmentIntersection
                 }
             }
         }
-        
+
         // the component segment was not found
         LOG(ERROR) << "Invalid component segment uid in tiglWingComponentSegmentGetSegmentIntersection";
         return TIGL_UID_ERROR;
@@ -2263,13 +2263,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetNumberOfSegments(Ti
                    << "in function call to tiglWingComponentSegmentGetNumberOfSegments.";
         return TIGL_NULL_POINTER;
     }
-    
+
     if (nsegments == 0) {
         LOG(ERROR) << "Null pointer argument for nsegments\n"
                    << "in function call to tiglWingComponentSegmentGetNumberOfSegments.";
         return TIGL_NULL_POINTER;
     }
-    
+
     try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
@@ -2315,21 +2315,21 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetNumberOfSegments(Ti
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetSegmentUID(TiglCPACSConfigurationHandle cpacsHandle,
                                                                         const char * componentSegmentUID,
                                                                         int  segmentIndex,
-                                                                        char ** segmentUID) 
+                                                                        char ** segmentUID)
 {
-    
+
     if (componentSegmentUID == 0) {
         LOG(ERROR) << "Null pointer argument for componentSegmentUID\n"
                    << "in function call to tiglWingComponentSegmentGetSegmentUID.";
         return TIGL_NULL_POINTER;
     }
-    
+
     if (segmentUID == 0) {
         LOG(ERROR) << "Null pointer argument for nsegments\n"
                    << "in function call to tiglWingComponentSegmentGetSegmentUID.";
         return TIGL_NULL_POINTER;
     }
-    
+
     try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
@@ -2346,7 +2346,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetSegmentUID(TiglCPAC
                     return TIGL_INDEX_ERROR;
                 }
                 *segmentUID = const_cast<char*>(segments[segmentIndex-1]->GetUID().c_str());
-                
+
                 return TIGL_SUCCESS;
             }
             catch (const tigl::CTiglError& err){
@@ -2501,6 +2501,123 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSectionCenter(TiglCPACSConfigur
     return TIGL_SUCCESS;
 }
 
+TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetCrossSectionArea(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                  const char *fuselageSegmentUID,
+                                                                  double eta,
+                                                                  double *area)
+{
+    if (area == NULL) {
+        LOG(ERROR) << "Null pointer argument for area\n"
+                   << "in function call to tiglFuselageGetCrossSectionArea.";
+        return TIGL_NULL_POINTER;
+    }
+
+    if (fuselageSegmentUID == NULL) {
+        LOG(ERROR) << "Null pointer argument for fuselageSegmentUID\n"
+                   << "in function call to tiglFuselageGetCrossSectionArea.";
+        return TIGL_NULL_POINTER;
+    }
+
+    if (eta < 0 || eta > 1) {
+        LOG(ERROR) << "Argument eta is not in obligatory range [0, 1]\n"
+                   << "in function call to tiglFuselageGetCrossSectionArea.";
+        return TIGL_MATH_ERROR;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+
+        // get component segment
+        tigl::CCPACSFuselageSegment& segment = config.GetUIDManager()
+                .ResolveObject<tigl::CCPACSFuselageSegment>(fuselageSegmentUID);
+
+        // get ISO curve as a wire
+        TopoDS_Wire curve = TopoDS::Wire(segment.getWireOnLoft(eta));
+
+        // get surface which is framed by the ISO curve
+        TopoDS_Face surface = BuildFace(curve);
+
+        // compute area
+        double framedArea = GetArea(surface);
+
+        // assigne solution to return value
+        *area = framedArea;
+
+    }
+    catch (const tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.what();
+        return ex.getCode();
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetCrossSectionArea!";
+        return TIGL_ERROR;
+    }
+
+    return TIGL_SUCCESS;
+}
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetCenterLineLength(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                  const char *fuselageUID,
+                                                                  double *length)
+{
+    if (length == NULL) {
+        LOG(ERROR) << "Null pointer argument for length\n"
+                   << "in function call to tiglFuselageGetCenterLineLength.";
+        return TIGL_NULL_POINTER;
+    }
+
+    if (fuselageUID == NULL) {
+        LOG(ERROR) << "Null pointer argument for fuselageUID\n"
+                   << "in function call to tiglFuselageGetCenterLineLength.";
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::CCPACSFuselage& fuselage = config.GetFuselage(fuselageUID);
+
+        double centerLineLength = 0;
+        for (int segment_idx = 1; segment_idx <= fuselage.GetSegmentCount(); ++segment_idx) {
+            tigl::CCPACSFuselageSegment& segment = fuselage.GetSegment(segment_idx);
+
+            double pointX = 0.;
+            double pointY = 0.;
+            double pointZ = 0.;
+            tiglFuselageGetSectionCenter(cpacsHandle, segment.GetUID().c_str(), 0., &pointX, &pointY, &pointZ);
+            gp_Pnt centerPointBeginning(pointX, pointY, pointZ);
+
+            tiglFuselageGetSectionCenter(cpacsHandle, segment.GetUID().c_str(), 1., &pointX, &pointY, &pointZ);
+            gp_Pnt centerPointEnd(pointX, pointY, pointZ);
+
+            // compute distance of center points at the beginning and end of the current fuselage segment by the l2-norm
+            centerLineLength += std::sqrt(std::pow(centerPointBeginning.X() - centerPointEnd.X(), 2)
+                                          + std::pow(centerPointBeginning.Y() - centerPointEnd.Y(), 2)
+                                          + std::pow(centerPointBeginning.Z() - centerPointEnd.Z(), 2));
+        }
+
+        // assigne solution to return value
+        *length = centerLineLength;
+    }
+    catch (const tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.what();
+        return ex.getCode();
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetCrossSectionArea!";
+        return TIGL_ERROR;
+    }
+
+    return TIGL_SUCCESS;
+}
+
 TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetPoint(TiglCPACSConfigurationHandle cpacsHandle,
                                                        int fuselageIndex,
                                                        int segmentIndex,
@@ -2540,8 +2657,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetPoint(TiglCPACSConfigurationHan
     }
 }
 
-
-
 TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetPointAngle(TiglCPACSConfigurationHandle cpacsHandle,
                                                             int fuselageIndex,
                                                             int segmentIndex,
@@ -2562,7 +2677,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetPointAngle(TiglCPACSConfigurati
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSFuselage& fuselage = config.GetFuselage(fuselageIndex);
         tigl::CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(segmentIndex);
-        gp_Pnt point = segment.GetPointAngle(eta, alpha, 0.0, 0.0);        
+        gp_Pnt point = segment.GetPointAngle(eta, alpha, 0.0, 0.0);
         if ((point.X() == 0.0) && (point.Y() == 0.0) && (point.Z() == 0.0)) {
             return TIGL_ERROR;
         }
@@ -3155,7 +3270,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetProfileName(TiglCPACSConfigurat
         tigl::CCPACSFuselageProfile& profile = config.GetFuselageProfile(profileUID);
 
         *profileNamePtr = const_cast<char*>(profile.GetName().c_str());
-        
+
         return TIGL_SUCCESS;
     }
     catch (const tigl::CTiglError& ex) {
@@ -3762,7 +3877,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetSolidity(TiglCPACSConfigurationHan
     }
 }
 
-TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetSurfaceArea(TiglCPACSConfigurationHandle cpacsHandle, 
+TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetSurfaceArea(TiglCPACSConfigurationHandle cpacsHandle,
                                                           int rotorIndex,
                                                           double *surfaceAreaPtr)
 {
@@ -3798,7 +3913,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetSurfaceArea(TiglCPACSConfiguration
     }
 }
 
-TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetVolume(TiglCPACSConfigurationHandle cpacsHandle, 
+TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetVolume(TiglCPACSConfigurationHandle cpacsHandle,
                                                      int rotorIndex,
                                                      double *volumePtr)
 {
@@ -4085,7 +4200,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetRadius(TiglCPACSConfiguration
     }
 }
 
-TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetPlanformArea(TiglCPACSConfigurationHandle cpacsHandle, 
+TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetPlanformArea(TiglCPACSConfigurationHandle cpacsHandle,
                                                                 int rotorIndex,
                                                                 int rotorBladeIndex,
                                                                 double *planformAreaPtr)
@@ -4171,7 +4286,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetSurfaceArea(TiglCPACSConfigur
     }
 }
 
-TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetVolume(TiglCPACSConfigurationHandle cpacsHandle, 
+TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetVolume(TiglCPACSConfigurationHandle cpacsHandle,
                                                           int rotorIndex,
                                                           int rotorBladeIndex,
                                                           double *volumePtr)
@@ -4444,7 +4559,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectComponents(TiglCPACSConfiguration
         LOG(ERROR) << "Null pointer for argument intersectionID in tiglIntersectComponents.";
         return TIGL_NULL_POINTER;
     }
-    
+
     try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
@@ -4453,11 +4568,11 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectComponents(TiglCPACSConfiguration
         if (uidManager.HasGeometricComponent(componentUidOne) && uidManager.HasGeometricComponent(componentUidTwo)) {
             TopoDS_Shape compoundOne = uidManager.GetGeometricComponent(componentUidOne).GetLoft()->Shape();
             TopoDS_Shape compoundTwo = uidManager.GetGeometricComponent(componentUidTwo).GetLoft()->Shape();
-            
+
             tigl::CTiglIntersectionCalculation Intersector(&config.GetShapeCache(),
-                                                           componentUidOne, 
-                                                           componentUidTwo, 
-                                                           compoundOne, 
+                                                           componentUidOne,
+                                                           componentUidTwo,
+                                                           compoundOne,
                                                            compoundTwo);
 
             std::string id = Intersector.GetID();
@@ -4498,7 +4613,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectWithPlane(TiglCPACSConfigurationH
         LOG(ERROR) << "Normal vector must not be zero in tiglIntersectWithPlane.";
         return TIGL_MATH_ERROR;
     }
-    
+
     try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
@@ -4508,7 +4623,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectWithPlane(TiglCPACSConfigurationH
             TopoDS_Shape shape = uidManager.GetGeometricComponent(componentUid).GetLoft()->Shape();
             gp_Pnt p(px, py, pz);
             gp_Dir n(nx, ny, nz);
-            
+
             tigl::CTiglIntersectionCalculation Intersector(&config.GetShapeCache(),
                                                            componentUid,
                                                            shape,
@@ -4546,7 +4661,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectGetLineCount(TiglCPACSConfigurati
         LOG(ERROR) << "Null pointer for argument intersectionID in tiglIntersectGetLineCount.";
         return TIGL_NULL_POINTER;
     }
-    
+
     try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
@@ -4554,7 +4669,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectGetLineCount(TiglCPACSConfigurati
 
         tigl::CTiglIntersectionCalculation Intersector(cache, intersectionID);
         *lineCount = Intersector.GetCountIntersectionLines();
-        
+
         return TIGL_SUCCESS;
     }
     catch (const tigl::CTiglError& ex) {
@@ -4595,7 +4710,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectGetPoint(TiglCPACSConfigurationHa
         LOG(ERROR) << "Parameter eta not in valid the range 0.0 <= eta <= 1.0 in tiglIntersectGetPoint";
         return TIGL_MATH_ERROR;
     }
-    
+
     try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
@@ -4603,11 +4718,11 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectGetPoint(TiglCPACSConfigurationHa
 
         tigl::CTiglIntersectionCalculation Intersector(cache, intersectionID);
         gp_Pnt p = Intersector.GetPoint(eta, lineIdx);
-        
+
         *pointX = p.X();
         *pointY = p.Y();
         *pointZ = p.Z();
-        
+
         return TIGL_SUCCESS;
     }
     catch (const tigl::CTiglError& ex) {
@@ -4768,7 +4883,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingSTL(TiglCPACSConfiguration
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
         PNamedShape loft = wing.GetLoft();
-        
+
         tigl::CTiglExportStl exporter;
         exporter.AddShape(loft, deflection);
         bool ret = exporter.Write(filenamePtr);
@@ -4788,9 +4903,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingSTL(TiglCPACSConfiguration
     }
 }
 
-TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingSTLByUID(TiglCPACSConfigurationHandle cpacsHandle, 
+TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingSTLByUID(TiglCPACSConfigurationHandle cpacsHandle,
                                                                const char* wingUID,
-                                                               const char *filenamePtr, 
+                                                               const char *filenamePtr,
                                                                double deflection)
 {
     if (filenamePtr == 0) {
@@ -4811,14 +4926,14 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingSTLByUID(TiglCPACSConfigur
             tigl::CCPACSWing& wing = config.GetWing(iWing);
             if (wing.GetUID() == wingUID) {
                 PNamedShape loft = wing.GetLoft();
-                
+
                 tigl::CTiglExportStl exporter;
                 exporter.AddShape(loft, deflection);
                 bool ret = exporter.Write(filenamePtr);
                 return ret ? TIGL_SUCCESS : TIGL_WRITE_FAILED;
             }
         }
-        
+
         LOG(ERROR) << "Wing with UID " << wingUID << " not found"
                    << "in function call to tiglExportMeshedWingSTLByUID.";
         return TIGL_UID_ERROR;
@@ -4857,7 +4972,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageSTL(TiglCPACSConfigura
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSFuselage& fuselage = config.GetFuselage(fuselageIndex);
         PNamedShape loft = fuselage.GetLoft();
-        
+
         tigl::CTiglExportStl exporter;
         exporter.AddShape(loft, deflection);
         bool ret = exporter.Write(filenamePtr);
@@ -4878,9 +4993,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageSTL(TiglCPACSConfigura
 }
 
 
-TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageSTLByUID(TiglCPACSConfigurationHandle cpacsHandle, 
+TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageSTLByUID(TiglCPACSConfigurationHandle cpacsHandle,
                                                                    const char* fuselageUID,
-                                                                   const char* filenamePtr, 
+                                                                   const char* filenamePtr,
                                                                    double deflection)
 {
     if (filenamePtr == 0) {
@@ -4897,19 +5012,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageSTLByUID(TiglCPACSConf
     try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
-        
+
         for (int ifusel = 1; ifusel <= config.GetFuselageCount(); ++ifusel) {
             tigl::CCPACSFuselage& fuselage = config.GetFuselage(ifusel);
             if (fuselage.GetUID() == fuselageUID) {
                 PNamedShape loft = fuselage.GetLoft();
-                
+
                 tigl::CTiglExportStl exporter;
                 exporter.AddShape(loft, deflection);
                 bool ret = exporter.Write(filenamePtr);
                 return ret ? TIGL_SUCCESS : TIGL_WRITE_FAILED;
             }
         }
-        
+
         LOG(ERROR) << "Fuselage with UID " << fuselageUID << " not found"
                    << "in function call to tiglExportMeshedFuselageSTLByUID.";
         return TIGL_UID_ERROR;
@@ -5018,7 +5133,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingVTKByIndex(const TiglCPACS
         exporter.ExportMeshedWingVTKByIndex(wingIndex, filename, deflection);
         return TIGL_SUCCESS;
     }
-    // all exceptions from the standard library 
+    // all exceptions from the standard library
     catch (tigl::CTiglError & ex) {
         LOG(ERROR) << ex.what();
         return ex.getCode();
@@ -5279,7 +5394,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageVTKSimpleByUID(const T
     }
 }
 
-TIGL_COMMON_EXPORT TiglReturnCode tiglExportFuselageColladaByUID(const TiglCPACSConfigurationHandle cpacsHandle, const char* fuselageUID, const char* filenamePtr, double deflection) 
+TIGL_COMMON_EXPORT TiglReturnCode tiglExportFuselageColladaByUID(const TiglCPACSConfigurationHandle cpacsHandle, const char* fuselageUID, const char* filenamePtr, double deflection)
 {
     if (filenamePtr == 0) {
         LOG(ERROR) << "Null pointer argument for filenamePtr\n"
@@ -5315,7 +5430,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportFuselageColladaByUID(const TiglCPACS
     }
 }
 
-TIGL_COMMON_EXPORT TiglReturnCode tiglExportWingColladaByUID(const TiglCPACSConfigurationHandle cpacsHandle, const char* wingUID, const char* filenamePtr, double deflection) 
+TIGL_COMMON_EXPORT TiglReturnCode tiglExportWingColladaByUID(const TiglCPACSConfigurationHandle cpacsHandle, const char* wingUID, const char* filenamePtr, double deflection)
 {
     if (filenamePtr == 0) {
         LOG(ERROR) << "Null pointer argument for filenamePtr\n"
@@ -5421,7 +5536,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetMaterialCount(TiglC
                                                                            const char *componentSegmentUID,
                                                                            TiglStructureType structureType,
                                                                            double eta, double xsi,
-                                                                           int * materialCount) 
+                                                                           int * materialCount)
 {
     if (!componentSegmentUID) {
         LOG(ERROR) << "Null pointer argument for componentSegmentUID\n"
@@ -5484,7 +5599,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetMaterialUID(TiglCPA
                                                                          TiglStructureType structureType,
                                                                          double eta, double xsi,
                                                                          int materialIndex,
-                                                                         char ** uid) 
+                                                                         char ** uid)
 {
     if (!componentSegmentUID) {
         LOG(ERROR) << "Null pointer argument for componentSegmentUID\n"
@@ -5942,13 +6057,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentUpperSurfaceAreaTrimmed(Tigl
                    << "in function call to tiglWingGetSegmentUpperSurfaceAreaTrimmed.";
         return TIGL_INDEX_ERROR;
     }
-    
+
     try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
         tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment&) wing.GetSegment(segmentIndex);
-        *surfaceArea = segment.GetSurfaceArea(true, 
+        *surfaceArea = segment.GetSurfaceArea(true,
                                               eta1, xsi1,
                                               eta2, xsi2,
                                               eta3, xsi3,
@@ -5989,13 +6104,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentLowerSurfaceAreaTrimmed(Tigl
                    << "in function call to tiglWingGetSegmentLowerSurfaceAreaTrimmed.";
         return TIGL_INDEX_ERROR;
     }
-    
+
     try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
         tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment&) wing.GetSegment(segmentIndex);
-        *surfaceArea = segment.GetSurfaceArea(false, 
+        *surfaceArea = segment.GetSurfaceArea(false,
                                               eta1, xsi1,
                                               eta2, xsi2,
                                               eta3, xsi3,
@@ -6263,7 +6378,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSpan(TiglCPACSConfigurationHandle c
 /*****************************************************************************/
 /* Logging functions.                                                        */
 /*****************************************************************************/
-TIGL_COMMON_EXPORT TiglReturnCode tiglLogToFileEnabled(const char *filePrefix) 
+TIGL_COMMON_EXPORT TiglReturnCode tiglLogToFileEnabled(const char *filePrefix)
 {
     tigl::CTiglLogging& logger = tigl::CTiglLogging::Instance();
     if (filePrefix == NULL) {
@@ -6281,7 +6396,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglLogToFileEnabled(const char *filePrefix)
     return TIGL_SUCCESS;
 }
 
-TIGL_COMMON_EXPORT TiglReturnCode tiglLogToFileStreamEnabled(FILE * fp) 
+TIGL_COMMON_EXPORT TiglReturnCode tiglLogToFileStreamEnabled(FILE * fp)
 {
     tigl::CTiglLogging& logger = tigl::CTiglLogging::Instance();
     if (fp == NULL) {
@@ -6300,7 +6415,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglLogToFileStreamEnabled(FILE * fp)
 }
 
 
-TIGL_COMMON_EXPORT TiglReturnCode tiglLogSetFileEnding(const char *ending) 
+TIGL_COMMON_EXPORT TiglReturnCode tiglLogSetFileEnding(const char *ending)
 {
     tigl::CTiglLogging& logger = tigl::CTiglLogging::Instance();
     if (ending == NULL) {
@@ -6318,7 +6433,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglLogSetFileEnding(const char *ending)
     return TIGL_SUCCESS;
 }
 
-TIGL_COMMON_EXPORT TiglReturnCode tiglLogSetTimeInFilenameEnabled(TiglBoolean enabled) 
+TIGL_COMMON_EXPORT TiglReturnCode tiglLogSetTimeInFilenameEnabled(TiglBoolean enabled)
 {
     tigl::CTiglLogging& logger = tigl::CTiglLogging::Instance();
 
@@ -6332,7 +6447,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglLogSetTimeInFilenameEnabled(TiglBoolean en
     return TIGL_SUCCESS;
 }
 
-TIGL_COMMON_EXPORT TiglReturnCode tiglLogToFileDisabled() 
+TIGL_COMMON_EXPORT TiglReturnCode tiglLogToFileDisabled()
 {
     tigl::CTiglLogging& logger = tigl::CTiglLogging::Instance();
 
@@ -6346,7 +6461,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglLogToFileDisabled()
     return TIGL_SUCCESS;
 }
 
-TIGL_COMMON_EXPORT TiglReturnCode tiglLogSetVerbosity(TiglLogLevel consoleVerbosity) 
+TIGL_COMMON_EXPORT TiglReturnCode tiglLogSetVerbosity(TiglLogLevel consoleVerbosity)
 {
     tigl::CTiglLogging& logger = tigl::CTiglLogging::Instance();
 
