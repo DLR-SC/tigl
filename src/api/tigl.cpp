@@ -2454,6 +2454,14 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSectionCenter(TiglCPACSConfigur
         return TIGL_NULL_POINTER;
     }
 
+    if (fuselageSegmentUID == NULL) {
+        return TIGL_NULL_POINTER;
+    }
+
+    if (eta < 0 || eta > 1) {
+        return TIGL_MATH_ERROR;
+    }
+
     try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);

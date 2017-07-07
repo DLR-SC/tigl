@@ -1523,6 +1523,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetFuselageCount(TiglCPACSConfigurationHan
 TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentCount(TiglCPACSConfigurationHandle cpacsHandle,
                                                               int fuselageIndex,
                                                               int* segmentCountPtr);
+
 /**
 * @brief Returns the section center of a fuselage
 * @param[in] cpacsHandle        Handle for the CPACS configuration
@@ -1536,6 +1537,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentCount(TiglCPACSConfigura
 *   - TIGL_NOT_FOUND if no configuration was found for the given handle
 *   - TIGL_UID_ERROR if UID is invalid or not a fuselage segment
 *   - TIGL_NULL_POINTER if pointX, pointY or pointZ are null pointers
+*   - TIGL_MATH_ERROR if eta is out of range, i.e., not in [0, 1]
 *   - TIGL_ERROR if some other error occurred
  */
 TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSectionCenter(TiglCPACSConfigurationHandle cpacsHandle,
