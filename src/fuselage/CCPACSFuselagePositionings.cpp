@@ -192,14 +192,14 @@ void CCPACSFuselagePositionings::WriteCPACS(TixiDocumentHandle tixiHandle, const
     std::string elementPath;
     std::string xpath;
     ReturnCode    tixiRet;
-    int           positioningCount, test;
+    int test = 0;
 
     elementPath = fuselageXPath + "/positionings";
     
     TixiSaveExt::TixiSaveElement(tixiHandle, fuselageXPath.c_str(), "positionings");
     
     tixiRet = tixiGetNamedChildrenCount(tixiHandle, elementPath.c_str(), "positioning", &test);
-    positioningCount = positionings.size();
+    size_t positioningCount = positionings.size();
 
     CCPACSFuselagePositioningIterator it;
     int i = 0;
@@ -216,7 +216,7 @@ void CCPACSFuselagePositionings::WriteCPACS(TixiDocumentHandle tixiHandle, const
         }
         positioning->WriteCPACS(tixiHandle, xpath);
     }
-    for (int i = positioningCount + 1; i <= test; i++) {
+    for (size_t i = positioningCount + 1; i <= test; i++) {
         std::stringstream ss;
         ss << elementPath << "/positioning[" << positioningCount + 1 << "]";
         xpath = ss.str();

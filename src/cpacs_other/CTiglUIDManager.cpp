@@ -180,7 +180,7 @@ void CTiglUIDManager::FindRootComponents(void)
         CTiglAbstractPhysicalComponent* component = pIter->second;
         if (component->GetParentUID().empty()) {
             // Select the component with the maximum number of children as root component if there are multiple components without parentUID in the dataset
-            childCnt = component->GetChildren(true).size();
+            childCnt = static_cast<int>(component->GetChildren(true).size());
             if (childCnt > maxChildCnt) {
                 maxChildCnt = childCnt;
                 rootComponent = component;

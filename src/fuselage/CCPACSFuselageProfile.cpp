@@ -289,7 +289,7 @@ const std::string& CCPACSFuselageProfile::GetDescription(void) const
 
 const int CCPACSFuselageProfile::GetNumPoints(void) const 
 {
-    return coordinates.size();
+    return static_cast<int>(coordinates.size());
 }
 
 // Returns the flag for the mirror symmetry with respect to the x-z-plane in the fuselage profile
