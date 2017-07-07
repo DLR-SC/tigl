@@ -20,6 +20,9 @@
 * @brief Tests for testing non classified fuselage functions.
 */
 
+#define _USE_MATH_DEFINES
+#include <cmath>
+
 #include "test.h" // Brings in the GTest framework
 #include "tigl.h"
 #include <string.h>
@@ -147,4 +150,42 @@ TEST_F(TiglFuselage, tiglFuselageGetSegmentIndex_wrongHandle)
     int segmentIndex = 0;
     int fuselageIndex = 0;
     ASSERT_TRUE(tiglFuselageGetSegmentIndex(myWrongHandle, "D150_VAMP_FL1_Seg1", &segmentIndex, &fuselageIndex) == TIGL_NOT_FOUND);
+}
+
+TEST(TiglSimpleFuselage, getSurfaceArea_FullModel)
+{
+    const char* filename = "TestData/simpletest.cpacs.xml";
+
+    TiglCPACSConfigurationHandle tiglHandle = -1;
+    TixiDocumentHandle tixiHandle = -1;
+
+    ASSERT_EQ(SUCCESS, tixiOpenDocument(filename, &tixiHandle));
+    ASSERT_EQ(TIGL_SUCCESS, tiglOpenCPACSConfiguration(tixiHandle, "", &tiglHandle));
+
+    double area = 0.;
+    tiglFuselageGetSurfaceArea(tiglHandle, 1, &area);
+
+    ASSERT_NEAR(2.*M_PI, area, 2.*M_PI * 0.1);
+
+    tiglCloseCPACSConfiguration(tiglHandle);
+    tixiCloseDocument(tixiHandle);
+}
+
+TEST(TiglSimpleFuselage, getSurfaceArea_HalfModel)
+{
+    const char* filename = "TestData/simpletest-halfmodel.cpacs.xml";
+
+    TiglCPACSConfigurationHandle tiglHandle = -1;
+    TixiDocumentHandle tixiHandle = -1;
+
+    ASSERT_EQ(SUCCESS, tixiOpenDocument(filename, &tixiHandle));
+    ASSERT_EQ(TIGL_SUCCESS, tiglOpenCPACSConfiguration(tixiHandle, "", &tiglHandle));
+
+    double area = 0.;
+    tiglFuselageGetSurfaceArea(tiglHandle, 1, &area);
+
+    ASSERT_NEAR(M_PI, area, M_PI * 0.1);
+
+    tiglCloseCPACSConfiguration(tiglHandle);
+    tixiCloseDocument(tixiHandle);
 }

@@ -6359,3 +6359,45 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglLogSetVerbosity(TiglLogLevel consoleVerbos
 
     return TIGL_SUCCESS;
 }
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglCheckPointInside(TiglCPACSConfigurationHandle cpacsHandle,
+                                                       double px, double py, double pz,
+                                                       const char *componentUID, TiglBoolean *isInside)
+{
+    if (!componentUID) {
+        LOG(ERROR) << "Argument componentUID is NULL in tiglCheckPointInside!";
+        return TIGL_NULL_POINTER;
+    }
+
+    if (!isInside) {
+        LOG(ERROR) << "Argument isInside is NULL in tiglCheckPointInside!";
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        const tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+
+        // get component
+        tigl::ITiglGeometricComponent& component = config.GetUIDManager().GetGeometricComponent(componentUID);
+
+        const TopoDS_Shape& shape = component.GetLoft()->Shape();
+        *isInside = IsPointInsideShape(shape, gp_Pnt(px, py, pz)) ? TIGL_TRUE : TIGL_FALSE;
+
+        return TIGL_SUCCESS;
+    }
+    catch (const tigl::CTiglError& ex) {
+        LOG(ERROR) << "In tiglCheckPointInside: " << ex.what();
+        return ex.getCode();
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << "In tiglCheckPointInside: " << ex.what();
+    }
+    catch (Standard_Failure& err) {
+        LOG(ERROR) << "Cannot compute shape `" << componentUID << "`: " << err.GetMessageString();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglCheckPointInside!";
+    }
+    return TIGL_ERROR;
+}

@@ -34,6 +34,7 @@
 #if OCC_VERSION_HEX >= VERSION_HEX_CODE(6,7,0)
   #include <Graphic3d_ShaderProgram.hxx>
 #endif
+#include "PNamedShape.h"
 
 class TopoDS_Shape;
 class gp_Pnt;
@@ -81,6 +82,8 @@ public:
 
 public slots:
     void displayShape(const TopoDS_Shape& loft, Standard_Boolean updateViewer, Quantity_Color color = Quantity_NOC_ShapeCol, double transparency=0.);
+    void displayShape(const PNamedShape& pshape, Standard_Boolean updateViewer, Quantity_Color color= Quantity_NOC_ShapeCol, double transparency=0.);
+
     void drawPoint(double x, double y, double z);
     void drawVector(double x, double y, double z, double dirx, double diry, double dirz);
     void deleteAllObjects();

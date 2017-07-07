@@ -67,6 +67,7 @@
 #include "BRepFill.hxx"
 #include "GProp_GProps.hxx"
 #include "BRepGProp.hxx"
+#include "BRepClass3d_SolidClassifier.hxx"
 
 #include <Approx_Curve3d.hxx>
 #include <BRepAdaptor_HCompCurve.hxx>
@@ -1153,3 +1154,26 @@ TopoDS_Shape RemoveDuplicateEdges(const TopoDS_Shape& shape)
     return result;
 }
 
+
+bool IsPointInsideShape(const TopoDS_Shape &solid, gp_Pnt point)
+{
+    // check if solid
+    TopoDS_Solid s;
+    try {
+        s = TopoDS::Solid(solid);
+    }
+    catch (Standard_Failure) {
+        throw tigl::CTiglError("The shape is not a solid");
+    }
+
+    BRepClass3d_SolidClassifier algo(s);
+
+    // test whether a point at infinity lies inside. If yes, then the shape is reversed
+    algo.PerformInfinitePoint(1e-3);
+
+    bool shapeIsReversed = (algo.State() == TopAbs_IN);
+
+    algo.Perform(point, 1e-3);
+
+    return ((algo.State() == TopAbs_IN) != shapeIsReversed ) || (algo.State() == TopAbs_ON);
+}
