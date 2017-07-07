@@ -2562,6 +2562,64 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetCrossSectionArea(TiglCPACSConfi
     return TIGL_SUCCESS;
 }
 
+TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetCenterLineLength(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                  const char *fuselageUID,
+                                                                  double *length)
+{
+    if (length == NULL) {
+        LOG(ERROR) << "Null pointer argument for length\n"
+                   << "in function call to tiglFuselageGetCenterLineLength.";
+        return TIGL_NULL_POINTER;
+    }
+
+    if (fuselageUID == NULL) {
+        LOG(ERROR) << "Null pointer argument for fuselageUID\n"
+                   << "in function call to tiglFuselageGetCenterLineLength.";
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::CCPACSFuselage& fuselage = config.GetFuselage(fuselageUID);
+
+        double centerLineLength = 0;
+        for (int segment_idx = 1; segment_idx <= fuselage.GetSegmentCount(); ++segment_idx) {
+            tigl::CCPACSFuselageSegment& segment = fuselage.GetSegment(segment_idx);
+
+            double pointX = 0.;
+            double pointY = 0.;
+            double pointZ = 0.;
+            tiglFuselageGetSectionCenter(cpacsHandle, segment.GetUID().c_str(), 0., &pointX, &pointY, &pointZ);
+            gp_Pnt centerPointBeginning(pointX, pointY, pointZ);
+
+            tiglFuselageGetSectionCenter(cpacsHandle, segment.GetUID().c_str(), 1., &pointX, &pointY, &pointZ);
+            gp_Pnt centerPointEnd(pointX, pointY, pointZ);
+
+            // compute distance of center points at the beginning and end of the current fuselage segment by the l2-norm
+            centerLineLength += std::sqrt(std::pow(centerPointBeginning.X() - centerPointEnd.X(), 2)
+                                          + std::pow(centerPointBeginning.Y() - centerPointEnd.Y(), 2)
+                                          + std::pow(centerPointBeginning.Z() - centerPointEnd.Z(), 2));
+        }
+
+        // assigne solution to return value
+        *length = centerLineLength;
+    }
+    catch (const tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.what();
+        return ex.getCode();
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetCenterLineLength!";
+        return TIGL_ERROR;
+    }
+
+    return TIGL_SUCCESS;
+}
+
 TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetPoint(TiglCPACSConfigurationHandle cpacsHandle,
                                                        int fuselageIndex,
                                                        int segmentIndex,

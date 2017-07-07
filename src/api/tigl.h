@@ -1567,6 +1567,22 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetCrossSectionArea(TiglCPACSConfi
                                                                   double *area);
 
 /**
+* @brief Returns the length of center line of the given fuselage with all its segments which connects all the center points of the cross sections of the fuselage
+* @param[in] cpacsHandle Handle for the CPACS configuration
+* @param[in] fuselageUID UID of the fuselage
+* @param[out] length     the sum of the lengths of all the fuselage segments
+* @return
+*   - TIGL_SUCCESS if the length was found
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_UID_ERROR if UID is invalid or not a fuselage
+*   - TIGL_NULL_POINTER if length is a null pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetCenterLineLength(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                  const char *fuselageUID,
+                                                                  double *length);
+
+/**
 * @brief Returns a point on a fuselage surface for a given fuselage and segment index.
 *
 * Returns a point on a fuselage segment of a given fuselage in dependence of parameters eta and zeta with
