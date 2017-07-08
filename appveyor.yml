@@ -62,7 +62,8 @@ install:
         (new-object System.Net.WebClient).Downloadfile("https://sourceforge.net/projects/tigl/files/Thirdparty/$redist.7z", "c:\$redist.7z")
         Write-Output "Extract VC 2010 Redistributable"
         & 7z x -y "c:\$redist.7z" -oC:\redist\ > null
-      if (!(Test-Path -Path "c:\doxygen-win")) {
+      }
+      If (!(Test-Path -Path "c:\doxygen-win")) {
         Write-Output "Downloading Doxygen"
         (new-object System.Net.WebClient).Downloadfile("https://sourceforge.net/projects/tigl/files/Thirdparty/doxygen-win.zip", "c:\doxygen-win.zip")
         Write-Output "Extract Doxygen"
