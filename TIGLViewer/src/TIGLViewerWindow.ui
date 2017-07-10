@@ -15,7 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="TIGLViewer.qrc">
-    <normaloff>:/TIGLViewer.ico</normaloff>:/TIGLViewer.ico</iconset>
+    <normaloff>:/gfx/Icon_TIGL_128.png</normaloff>:/gfx/Icon_TIGL_128.png</iconset>
   </property>
   <property name="unifiedTitleAndToolBarOnMac">
    <bool>true</bool>

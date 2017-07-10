@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/">
         <file>../TIGLViewer.ico</file>
+        <file>../gfx/Icon_TIGL_128.png</file>
         <file>../gfx/document-open.png</file>
         <file>../gfx/document-save.png</file>
         <file>../gfx/document-close.png</file>
