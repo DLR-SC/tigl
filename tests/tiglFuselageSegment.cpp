@@ -26,6 +26,9 @@
 #include "test.h" // Brings in the GTest framework
 #include "tigl.h"
 
+#define _USE_MATH_DEFINES
+#include "math.h"
+
 
 /***************************************************************************************************/
 
@@ -648,50 +651,50 @@ TEST_F(TiglFuselageSegmentSimple, getSectionCenter)
 
     ASSERT_NE(TIGL_NULL_POINTER, tiglFuselageGetSectionCenter(tiglHandle, "segmentD150_Fuselage_1Segment2ID", eta, &pointX, &pointY, &pointZ));
     ASSERT_EQ(TIGL_SUCCESS, tiglFuselageGetSectionCenter(tiglHandle, "segmentD150_Fuselage_1Segment2ID", eta, &pointX, &pointY, &pointZ));
-    EXPECT_NEAR(pointX, -0.5, 1e-15);
-    EXPECT_NEAR(pointY, 0, 1e-2);
-    EXPECT_NEAR(pointZ, 0, 1e-2);
+    EXPECT_NEAR(-0.5, pointX, 1e-15);
+    EXPECT_NEAR(0, pointY, 1e-2);
+    EXPECT_NEAR(0, pointZ, 1e-2);
 
     eta = 0.5;
 
     ASSERT_NE(TIGL_NULL_POINTER, tiglFuselageGetSectionCenter(tiglHandle, "segmentD150_Fuselage_1Segment2ID", eta, &pointX, &pointY, &pointZ));
     ASSERT_EQ(TIGL_SUCCESS, tiglFuselageGetSectionCenter(tiglHandle, "segmentD150_Fuselage_1Segment2ID", eta, &pointX, &pointY, &pointZ));
-    EXPECT_NEAR(pointX, 0, 1e-15);
-    EXPECT_NEAR(pointY, 0, 1e-2);
-    EXPECT_NEAR(pointZ, 0, 1e-2);
+    EXPECT_NEAR(0, pointX, 1e-15);
+    EXPECT_NEAR(0, pointY, 1e-2);
+    EXPECT_NEAR(0, pointZ, 1e-2);
 
     eta = 1;
 
     ASSERT_NE(TIGL_NULL_POINTER, tiglFuselageGetSectionCenter(tiglHandle, "segmentD150_Fuselage_1Segment2ID", eta, &pointX, &pointY, &pointZ));
     ASSERT_EQ(TIGL_SUCCESS, tiglFuselageGetSectionCenter(tiglHandle, "segmentD150_Fuselage_1Segment2ID", eta, &pointX, &pointY, &pointZ));
-    EXPECT_NEAR(pointX, 0.5, 1e-15);
-    EXPECT_NEAR(pointY, 0, 1e-2);
-    EXPECT_NEAR(pointZ, 0, 1e-2);
+    EXPECT_NEAR(0.5, pointX, 1e-15);
+    EXPECT_NEAR(0, pointY, 1e-2);
+    EXPECT_NEAR(0, pointZ, 1e-2);
 
     // test second fuselage segment
     eta = 0.;
 
     ASSERT_NE(TIGL_NULL_POINTER, tiglFuselageGetSectionCenter(tiglHandle, "segmentD150_Fuselage_1Segment3ID", eta, &pointX, &pointY, &pointZ));
     ASSERT_EQ(TIGL_SUCCESS, tiglFuselageGetSectionCenter(tiglHandle, "segmentD150_Fuselage_1Segment3ID", eta, &pointX, &pointY, &pointZ));
-    EXPECT_NEAR(pointX, 0.5, 1e-15);
-    EXPECT_NEAR(pointY, 0, 1e-2);
-    EXPECT_NEAR(pointZ, 0, 1e-2);
+    EXPECT_NEAR(0.5, pointX, 1e-15);
+    EXPECT_NEAR(0, pointY, 1e-2);
+    EXPECT_NEAR(0, pointZ, 1e-2);
 
     eta = 0.5;
 
     ASSERT_NE(TIGL_NULL_POINTER, tiglFuselageGetSectionCenter(tiglHandle, "segmentD150_Fuselage_1Segment3ID", eta, &pointX, &pointY, &pointZ));
     ASSERT_EQ(TIGL_SUCCESS, tiglFuselageGetSectionCenter(tiglHandle, "segmentD150_Fuselage_1Segment3ID", eta, &pointX, &pointY, &pointZ));
-    EXPECT_NEAR(pointX, 1, 1e-15);
-    EXPECT_NEAR(pointY, 0, 1e-2);
-    EXPECT_NEAR(pointZ, 0, 1e-2);
+    EXPECT_NEAR(1, pointX, 1e-15);
+    EXPECT_NEAR(0, pointY, 1e-2);
+    EXPECT_NEAR(0, pointZ, 1e-2);
 
     eta = 1;
 
     ASSERT_NE(TIGL_NULL_POINTER, tiglFuselageGetSectionCenter(tiglHandle, "segmentD150_Fuselage_1Segment3ID", eta, &pointX, &pointY, &pointZ));
     ASSERT_EQ(TIGL_SUCCESS, tiglFuselageGetSectionCenter(tiglHandle, "segmentD150_Fuselage_1Segment3ID", eta, &pointX, &pointY, &pointZ));
-    EXPECT_NEAR(pointX, 1.5, 1e-15);
-    EXPECT_NEAR(pointY, 0, 1e-2);
-    EXPECT_NEAR(pointZ, 0, 1e-2);
+    EXPECT_NEAR(1.5, pointX, 1e-15);
+    EXPECT_NEAR(0, pointY, 1e-2);
+    EXPECT_NEAR(0, pointZ, 1e-2);
 
     // some other tests: make sure that right error codes are returned in case of the corresponding errors
     ASSERT_EQ(TIGL_UID_ERROR, tiglFuselageGetSectionCenter(tiglHandle, "invalidUID", eta, &pointX, &pointY, &pointZ));
@@ -710,5 +713,56 @@ TEST_F(TiglFuselageSegmentSimple, getSectionCenter)
     ASSERT_EQ(TIGL_MATH_ERROR, tiglFuselageGetSectionCenter(tiglHandle, "segmentD150_Fuselage_1Segment2ID", eta_out_of_range, &pointX, &pointY, &pointZ));
     eta_out_of_range = 2;
     ASSERT_EQ(TIGL_MATH_ERROR, tiglFuselageGetSectionCenter(tiglHandle, "segmentD150_Fuselage_1Segment2ID", eta_out_of_range, &pointX, &pointY, &pointZ));
+}
+
+TEST_F(TiglFuselageSegmentSimple, getSectionArea)
+{
+    // test first fuselage segment
+    double eta = 0.;
+
+    double area = 0.;
+
+    ASSERT_NE(TIGL_NULL_POINTER, tiglFuselageGetCrossSectionArea(tiglHandle, "segmentD150_Fuselage_1Segment2ID", eta, &area));
+    ASSERT_EQ(TIGL_SUCCESS, tiglFuselageGetCrossSectionArea(tiglHandle, "segmentD150_Fuselage_1Segment2ID", eta, &area));
+    EXPECT_NEAR(M_PI * 0.5 * 0.5, area, 3e-2);
+
+    eta = 0.5;
+    ASSERT_NE(TIGL_NULL_POINTER, tiglFuselageGetCrossSectionArea(tiglHandle, "segmentD150_Fuselage_1Segment2ID", eta, &area));
+    ASSERT_EQ(TIGL_SUCCESS, tiglFuselageGetCrossSectionArea(tiglHandle, "segmentD150_Fuselage_1Segment2ID", eta, &area));
+    EXPECT_NEAR(M_PI * 0.5 * 0.5, area, 3e-2);
+
+    eta = 1.;
+    ASSERT_NE(TIGL_NULL_POINTER, tiglFuselageGetCrossSectionArea(tiglHandle, "segmentD150_Fuselage_1Segment2ID", eta, &area));
+    ASSERT_EQ(TIGL_SUCCESS, tiglFuselageGetCrossSectionArea(tiglHandle, "segmentD150_Fuselage_1Segment2ID", eta, &area));
+    EXPECT_NEAR(M_PI * 0.5 * 0.5, area, 3e-2);
+
+    // test second fuselage segment
+    eta = 0.;
+    ASSERT_NE(TIGL_NULL_POINTER, tiglFuselageGetCrossSectionArea(tiglHandle, "segmentD150_Fuselage_1Segment3ID", eta, &area));
+    ASSERT_EQ(TIGL_SUCCESS, tiglFuselageGetCrossSectionArea(tiglHandle, "segmentD150_Fuselage_1Segment3ID", eta, &area));
+    EXPECT_NEAR(M_PI * 0.5 * 0.5, area, 3e-2);
+
+    eta = 0.5;
+    ASSERT_NE(TIGL_NULL_POINTER, tiglFuselageGetCrossSectionArea(tiglHandle, "segmentD150_Fuselage_1Segment3ID", eta, &area));
+    ASSERT_EQ(TIGL_SUCCESS, tiglFuselageGetCrossSectionArea(tiglHandle, "segmentD150_Fuselage_1Segment3ID", eta, &area));
+    EXPECT_NEAR(M_PI * 0.5 * 0.5, area, 3e-2);
+
+    eta = 1.;
+    ASSERT_NE(TIGL_NULL_POINTER, tiglFuselageGetCrossSectionArea(tiglHandle, "segmentD150_Fuselage_1Segment3ID", eta, &area));
+    ASSERT_EQ(TIGL_SUCCESS, tiglFuselageGetCrossSectionArea(tiglHandle, "segmentD150_Fuselage_1Segment3ID", eta, &area));
+    EXPECT_NEAR(M_PI * 0.5 * 0.5, area, 3e-2);
+
+    // some other tests: make sure that right error codes are returned in case of the corresponding errors
+    ASSERT_EQ(TIGL_UID_ERROR, tiglFuselageGetCrossSectionArea(tiglHandle, "invalidUID", eta, &area));
+
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglFuselageGetCrossSectionArea(tiglHandle, "segmentD150_Fuselage_1Segment2ID", eta, NULL));
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglFuselageGetCrossSectionArea(tiglHandle, NULL, eta, &area));
+
+    ASSERT_EQ(TIGL_NOT_FOUND, tiglFuselageGetCrossSectionArea(-1, "segmentD150_Fuselage_1Segment2ID", eta, &area));
+
+    double eta_out_of_range = -0.5;
+    ASSERT_EQ(TIGL_MATH_ERROR, tiglFuselageGetCrossSectionArea(tiglHandle, "segmentD150_Fuselage_1Segment2ID", eta_out_of_range, &area));
+    eta_out_of_range = 2;
+    ASSERT_EQ(TIGL_MATH_ERROR, tiglFuselageGetCrossSectionArea(tiglHandle, "segmentD150_Fuselage_1Segment2ID", eta_out_of_range, &area));
 }
 
