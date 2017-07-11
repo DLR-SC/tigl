@@ -109,12 +109,12 @@ namespace
     {
     public:
         HashableProjection(const gp_Pnt& x, const gp_Dir& d)
+            : hash(0)
         {
             gp_Vec xvec = gp_Vec(x.XYZ());
             gp_Vec dvec = gp_Vec(d);
             double coeff  = -dvec.Dot(xvec)/dvec.Dot(dvec);
-            gp_Vec result = xvec - coeff*dvec;
-            hash = 0;
+            gp_Vec result = xvec + coeff*dvec;
             boost::hash_combine(hash,result.X());
             boost::hash_combine(hash,result.Y());
             boost::hash_combine(hash,result.Z());
@@ -172,7 +172,8 @@ CTiglIntersectionCalculation::CTiglIntersectionCalculation(CTiglShapeCache* cach
                                                            TopoDS_Shape shape,
                                                            gp_Pnt point1,
                                                            gp_Pnt point2,
-                                                           gp_Dir normal)
+                                                           gp_Dir normal,
+                                                           bool forceOrthogonal)
     : tolerance(1.0e-7)
 {
 
@@ -202,19 +203,23 @@ CTiglIntersectionCalculation::CTiglIntersectionCalculation(CTiglShapeCache* cach
 
         TopoDS_Wire p2p1 = BRepBuilderAPI_MakeWire( BRepBuilderAPI_MakeEdge(point1,point2) );
 
-        // use direction d =  ( (P2 - P1) x w ) x (P2 - P1)
-        //gp_Dir n = gp_Dir( gp_Vec(point1,point2).Crossed( gp_Vec(normal) ) );
-        //gp_Dir d = gp_Dir( gp_Vec(n).Crossed( gp_Vec(point1,point2) ) );
-        //BRepProj_Projection projector = BRepProj_Projection(p2p1,shape,d);
+        if(forceOrthogonal) {
+            // force direction orthogonal to P2-P1, i.e. use direction
+            //       d =  ( (P2 - P1) x w ) x (P2 - P1)
+            gp_Dir n = gp_Dir( gp_Vec(point1,point2).Crossed( gp_Vec(normal) ) );
+            gp_Dir d = gp_Dir( gp_Vec(n).Crossed( gp_Vec(point1,point2) ) );
+            BRepProj_Projection projector = BRepProj_Projection(p2p1,shape,d);
+            intersectionResult = projector.Shape();
+        }else {
+            // use direction normal
+            BRepProj_Projection projector = BRepProj_Projection(p2p1,shape,normal);
+            intersectionResult = projector.Shape();
+        }
 
-        // use direction normal
-        BRepProj_Projection projector = BRepProj_Projection(p2p1,shape,normal);
-        intersectionResult = projector.Shape();
-    }
-
-    //add to cache
-    if (cache) {
-        cache->Insert(intersectionResult, id);
+        //add to cache
+        if (cache) {
+            cache->Insert(intersectionResult, id);
+        }
     }
 }
 

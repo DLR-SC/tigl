@@ -1939,7 +1939,7 @@ void TIGLViewerDocument::drawIntersectionLine()
         }
         gp_Dir n = normal.Get_gp_Pnt().XYZ();
         writeToStatusBar(tr("Calculating intersection... This may take a while!"));
-        Intersector = new tigl::CTiglIntersectionCalculation(&config.GetShapeCache(), uid, compound, p1, p2, n);
+        Intersector = new tigl::CTiglIntersectionCalculation(&config.GetShapeCache(), uid, compound, p1, p2, n,false);
     }
     else {
         return;

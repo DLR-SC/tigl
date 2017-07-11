@@ -4502,7 +4502,10 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectWithPlaneSegment(TiglCPACSConfigu
     }
 
     // check if (p2 - p1) and w are linearly dependent
-    if ( abs( 1. - (p2x-p1x)*wx + (p2y-p1y)*wy + (p2z-p1z)*wz ) < 1e-10 ) {
+    double uw = (p2x-p1x)*wx + (p2y-p1y)*wy + (p2z-p1z)*wz;
+    double uu = (p2x-p1x)*(p2x-p1x) + (p2y-p1y)*(p2y-p1y) + (p2z-p1z)*(p2z-p1z);
+    double ww = wx*wx + wy*wy + wz*wz;
+    if ( uu*ww - uw*uw < 1e-10 ) {
         LOG(ERROR) << "( Point 2 - Point 1 ) and w must be linearly independent";
         return TIGL_MATH_ERROR;
     }
@@ -4522,7 +4525,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectWithPlaneSegment(TiglCPACSConfigu
             tigl::CTiglIntersectionCalculation Intersector(&config.GetShapeCache(),
                                                            componentUid,
                                                            shape,
-                                                           p1,p2,w);
+                                                           p1,p2,w,false);
 
             std::string id = Intersector.GetID();
             *intersectionID = (char*) config.GetMemoryPool().MakeNontempString(id.c_str());

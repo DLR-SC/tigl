@@ -220,7 +220,7 @@
        <property name="title">
         <string>Two Points and Direction</string>
        </property>
-       <widget class="QWidget" name="">
+       <widget class="QWidget" name="layoutWidget">
         <property name="geometry">
          <rect>
           <x>11</x>
@@ -401,26 +401,7 @@
   <tabstop>wxSB</tabstop>
   <tabstop>wySB</tabstop>
   <tabstop>wzSB</tabstop>
-  <tabstop>shape2Combo_2</tabstop>
   <tabstop>shapeCombo</tabstop>
-  <tabstop>shapeCombo_2</tabstop>
-  <tabstop>pxSB_2</tabstop>
-  <tabstop>nxSB_2</tabstop>
-  <tabstop>pySB_2</tabstop>
-  <tabstop>nySB_2</tabstop>
-  <tabstop>pzSB_2</tabstop>
-  <tabstop>nzSB_2</tabstop>
-  <tabstop>comboBox_2</tabstop>
-  <tabstop>shape1Combo_3</tabstop>
-  <tabstop>shape2Combo_3</tabstop>
-  <tabstop>shapeCombo_3</tabstop>
-  <tabstop>pxSB_3</tabstop>
-  <tabstop>nxSB_3</tabstop>
-  <tabstop>pySB_3</tabstop>
-  <tabstop>nySB_3</tabstop>
-  <tabstop>pzSB_3</tabstop>
-  <tabstop>nzSB_3</tabstop>
-  <tabstop>comboBox_3</tabstop>
   <tabstop>shape1Combo</tabstop>
   <tabstop>pzSB</tabstop>
   <tabstop>nzSB</tabstop>
@@ -429,16 +410,6 @@
   <tabstop>shape2Combo</tabstop>
   <tabstop>pySB</tabstop>
   <tabstop>nySB</tabstop>
-  <tabstop>shape1Combo_2</tabstop>
-  <tabstop>p1xSB_2</tabstop>
-  <tabstop>p2xSB_2</tabstop>
-  <tabstop>wxSB_2</tabstop>
-  <tabstop>p1ySB_2</tabstop>
-  <tabstop>p2ySB_2</tabstop>
-  <tabstop>wySB_2</tabstop>
-  <tabstop>p1zSB_2</tabstop>
-  <tabstop>p2zSB_2</tabstop>
-  <tabstop>wzSB_2</tabstop>
  </tabstops>
  <resources/>
  <connections>
