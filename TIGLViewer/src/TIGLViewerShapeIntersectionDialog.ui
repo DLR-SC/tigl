@@ -6,15 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>356</width>
+    <width>380</width>
     <height>346</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Define intersection</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
-   <item>
+  <layout class="QGridLayout" name="gridLayout_2">
+   <item row="0" column="0">
     <widget class="QTabWidget" name="TabView">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -190,194 +190,120 @@
       <attribute name="title">
        <string>Shape/Plane segment</string>
       </attribute>
-      <widget class="QGroupBox" name="groupBox_5">
-       <property name="geometry">
-        <rect>
-         <x>9</x>
-         <y>9</y>
-         <width>311</width>
-         <height>71</height>
-        </rect>
-       </property>
-       <property name="title">
-        <string>Shape</string>
-       </property>
-       <layout class="QHBoxLayout" name="horizontalLayout">
-        <item>
-         <widget class="QComboBox" name="shapeComboS"/>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QGroupBox" name="groupBox_6">
-       <property name="geometry">
-        <rect>
-         <x>9</x>
-         <y>89</y>
-         <width>311</width>
-         <height>161</height>
-        </rect>
-       </property>
-       <property name="title">
-        <string>Two Points and Direction</string>
-       </property>
-       <widget class="QWidget" name="layoutWidget">
-        <property name="geometry">
-         <rect>
-          <x>11</x>
-          <y>30</y>
-          <width>291</width>
-          <height>121</height>
-         </rect>
-        </property>
-        <layout class="QGridLayout" name="gridLayout_4">
-         <item row="0" column="1">
-          <widget class="QLabel" name="label_23">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>Point 1</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="2">
-          <widget class="QLabel" name="label_24">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>Point 2</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="3">
-          <widget class="QLabel" name="label_26">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>Direction</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="label_9">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>X=</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QDoubleSpinBox" name="p1xSB">
-           <property name="minimum">
-            <double>-99.000000000000000</double>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="2">
-          <widget class="QDoubleSpinBox" name="p2xSB">
-           <property name="minimum">
-            <double>-99.000000000000000</double>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="3">
-          <widget class="QDoubleSpinBox" name="wxSB">
-           <property name="minimum">
-            <double>-99.000000000000000</double>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="label_22">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>Y=</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <widget class="QDoubleSpinBox" name="p1ySB">
-           <property name="minimum">
-            <double>-99.000000000000000</double>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="2">
-          <widget class="QDoubleSpinBox" name="p2ySB">
-           <property name="minimum">
-            <double>-99.000000000000000</double>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="3">
-          <widget class="QDoubleSpinBox" name="wySB">
-           <property name="minimum">
-            <double>-99.000000000000000</double>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="0">
-          <widget class="QLabel" name="label_25">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>Z=</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="1">
-          <widget class="QDoubleSpinBox" name="p1zSB">
-           <property name="minimum">
-            <double>-99.000000000000000</double>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="2">
-          <widget class="QDoubleSpinBox" name="p2zSB">
-           <property name="minimum">
-            <double>-99.000000000000000</double>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="3">
-          <widget class="QDoubleSpinBox" name="wzSB">
-           <property name="minimum">
-            <double>-99.000000000000000</double>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </widget>
+      <layout class="QVBoxLayout" name="verticalLayout_7">
+       <item>
+        <widget class="QGroupBox" name="groupBox_5">
+         <property name="title">
+          <string>Shape</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_8">
+          <item>
+           <widget class="QComboBox" name="shapeComboS"/>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox_6">
+         <property name="title">
+          <string>Two Points and Direction</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_3">
+          <item row="0" column="4">
+           <widget class="QLabel" name="label_3">
+            <property name="text">
+             <string>Direction</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="3">
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>Point 2</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLabel" name="label_2">
+            <property name="text">
+             <string>Point 1</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="3">
+           <widget class="QDoubleSpinBox" name="p2xSB"/>
+          </item>
+          <item row="1" column="1">
+           <widget class="QDoubleSpinBox" name="p1xSB"/>
+          </item>
+          <item row="1" column="4">
+           <widget class="QDoubleSpinBox" name="wxSB"/>
+          </item>
+          <item row="2" column="1">
+           <widget class="QDoubleSpinBox" name="p1ySB"/>
+          </item>
+          <item row="2" column="3">
+           <widget class="QDoubleSpinBox" name="p2ySB"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_10">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Y =</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="4">
+           <widget class="QDoubleSpinBox" name="wySB"/>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_9">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>X =</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QDoubleSpinBox" name="p1zSB"/>
+          </item>
+          <item row="3" column="3">
+           <widget class="QDoubleSpinBox" name="p2zSB"/>
+          </item>
+          <item row="3" column="4">
+           <widget class="QDoubleSpinBox" name="wzSB"/>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_11">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Z = </string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
      </widget>
     </widget>
    </item>
-   <item>
+   <item row="1" column="0">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -401,14 +327,14 @@
   <tabstop>wxSB</tabstop>
   <tabstop>wySB</tabstop>
   <tabstop>wzSB</tabstop>
-  <tabstop>shapeCombo</tabstop>
-  <tabstop>shape1Combo</tabstop>
-  <tabstop>pzSB</tabstop>
   <tabstop>nzSB</tabstop>
-  <tabstop>pxSB</tabstop>
-  <tabstop>nxSB</tabstop>
+  <tabstop>shapeCombo</tabstop>
   <tabstop>shape2Combo</tabstop>
+  <tabstop>shape1Combo</tabstop>
+  <tabstop>pxSB</tabstop>
   <tabstop>pySB</tabstop>
+  <tabstop>pzSB</tabstop>
+  <tabstop>nxSB</tabstop>
   <tabstop>nySB</tabstop>
  </tabstops>
  <resources/>

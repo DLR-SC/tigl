@@ -59,6 +59,8 @@
 #include "CCPACSRotorBladeAttachment.h"
 #include "CTiglAttachedRotorBlade.h"
 
+#include "CTiglPoint.h"
+
 #include "gp_Pnt.hxx"
 #include "TopoDS_Shape.hxx"
 #include "TopoDS_Edge.hxx"
@@ -4490,21 +4492,26 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectWithPlaneSegment(TiglCPACSConfigu
         LOG(ERROR) << "Null pointer for argument intersectionID in tiglIntersectWithPlaneSegment.";
         return TIGL_NULL_POINTER;
     }
-    if (wx*wx + wy*wy + wz*wz < 1e-10) {
+
+    tigl::CTiglPoint P1(p1x, p1y, p1z);
+    tigl::CTiglPoint P2(p2x, p2y, p2z);
+    tigl::CTiglPoint W (wx,  wy,  wz );
+
+    if ( W.norm2Sqr() < 1e-10) {
         LOG(ERROR) << "Normal vector must not be zero in tiglIntersectWithPlaneSegment.";
         return TIGL_MATH_ERROR;
     }
 
     // check if p1 and p2 are distinct points
-    if ( (p1x-p2x)*(p1x-p2x) + (p1y-p2y)*(p1y-p2y) + (p1z-p2z)*(p1z-p2z) < 1e-10 ) {
+    if ( P1.distance2(P2) < 1e-10 ) {
         LOG(ERROR) << "Point 1 and Point 2 must be unequal.";
         return TIGL_MATH_ERROR;
     }
 
-    // check if (p2 - p1) and w are linearly dependent
-    double uw = (p2x-p1x)*wx + (p2y-p1y)*wy + (p2z-p1z)*wz;
-    double uu = (p2x-p1x)*(p2x-p1x) + (p2y-p1y)*(p2y-p1y) + (p2z-p1z)*(p2z-p1z);
-    double ww = wx*wx + wy*wy + wz*wz;
+    // check if u = (p2 - p1) and w are linearly dependent
+    double uw = tigl::CTiglPoint::inner_prod(W, P2-P1);
+    double uu = (P2-P1).norm2Sqr();
+    double ww = W.norm2Sqr();
     if ( uu*ww - uw*uw < 1e-10 ) {
         LOG(ERROR) << "( Point 2 - Point 1 ) and w must be linearly independent";
         return TIGL_MATH_ERROR;
@@ -4525,7 +4532,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectWithPlaneSegment(TiglCPACSConfigu
             tigl::CTiglIntersectionCalculation Intersector(&config.GetShapeCache(),
                                                            componentUid,
                                                            shape,
-                                                           p1,p2,w,false);
+                                                           p1, p2, w,
+                                                           false);
 
             std::string id = Intersector.GetID();
             *intersectionID = (char*) config.GetMemoryPool().MakeNontempString(id.c_str());

@@ -89,8 +89,7 @@ namespace
                 nlocal.Reverse();
             }
 
-            hash = 0;
-            boost::hash_combine(hash, d);
+            hash = boost::hash<double>()(d);
             boost::hash_combine(hash, nlocal.X());
             boost::hash_combine(hash, nlocal.Y());
             boost::hash_combine(hash, nlocal.Z());
@@ -109,15 +108,14 @@ namespace
     {
     public:
         HashableProjection(const gp_Pnt& x, const gp_Dir& d)
-            : hash(0)
         {
             gp_Vec xvec = gp_Vec(x.XYZ());
             gp_Vec dvec = gp_Vec(d);
             double coeff  = -dvec.Dot(xvec)/dvec.Dot(dvec);
             gp_Vec result = xvec + coeff*dvec;
-            boost::hash_combine(hash,result.X());
-            boost::hash_combine(hash,result.Y());
-            boost::hash_combine(hash,result.Z());
+            hash = boost::hash<double>()(result.X());
+            boost::hash_combine(hash, result.Y());
+            boost::hash_combine(hash, result.Z());
         }
 
         size_t HashValue()
@@ -127,6 +125,14 @@ namespace
     private:
         size_t hash;
     };
+
+    template <typename L, typename R>
+    size_t hash_combine_symmetric( L const& LHS, R const& RHS)
+    {
+        size_t lhs = boost::hash_value(LHS);
+        size_t rhs = boost::hash_value(RHS);
+        return (lhs ^ rhs) + lhs + rhs;
+    }
 }
 
 namespace tigl 
@@ -179,12 +185,12 @@ CTiglIntersectionCalculation::CTiglIntersectionCalculation(CTiglShapeCache* cach
 
     // create hash
     size_t hash = boost::hash<std::string>()(shapeID);
-    size_t hashP1P2 = HashableProjection(point1,normal).HashValue() ^ HashableProjection(point2,normal).HashValue();
+    size_t hashP1P2 = hash_combine_symmetric( HashableProjection(point1, normal).HashValue(), HashableProjection(point2, normal).HashValue() );
     boost::hash_combine(hash, hashP1P2);
     //TODO make hash independent of sign of normal
-    boost::hash_combine(hash,normal.X());
-    boost::hash_combine(hash,normal.Y());
-    boost::hash_combine(hash,normal.Z());
+    boost::hash_combine(hash, normal.X());
+    boost::hash_combine(hash, normal.Y());
+    boost::hash_combine(hash, normal.Z());
 
     std::stringstream s;
     s << "int" << hash;
@@ -201,18 +207,19 @@ CTiglIntersectionCalculation::CTiglIntersectionCalculation(CTiglShapeCache* cach
 
     if (!inCache) {
 
-        TopoDS_Wire p2p1 = BRepBuilderAPI_MakeWire( BRepBuilderAPI_MakeEdge(point1,point2) );
+        TopoDS_Wire p2p1 = BRepBuilderAPI_MakeWire( BRepBuilderAPI_MakeEdge(point1, point2) );
 
-        if(forceOrthogonal) {
+        if (forceOrthogonal) {
             // force direction orthogonal to P2-P1, i.e. use direction
             //       d =  ( (P2 - P1) x w ) x (P2 - P1)
-            gp_Dir n = gp_Dir( gp_Vec(point1,point2).Crossed( gp_Vec(normal) ) );
-            gp_Dir d = gp_Dir( gp_Vec(n).Crossed( gp_Vec(point1,point2) ) );
-            BRepProj_Projection projector = BRepProj_Projection(p2p1,shape,d);
+            gp_Dir n = gp_Dir( gp_Vec(point1, point2).Crossed( gp_Vec(normal) ) );
+            gp_Dir d = gp_Dir( gp_Vec(n).Crossed( gp_Vec(point1, point2) ) );
+            BRepProj_Projection projector = BRepProj_Projection(p2p1, shape, d);
             intersectionResult = projector.Shape();
-        }else {
+        }
+        else {
             // use direction normal
-            BRepProj_Projection projector = BRepProj_Projection(p2p1,shape,normal);
+            BRepProj_Projection projector = BRepProj_Projection(p2p1, shape, normal);
             intersectionResult = projector.Shape();
         }
 
@@ -253,9 +260,10 @@ void CTiglIntersectionCalculation::computeIntersection(CTiglShapeCache * cache,
     // the xor commutes, so this should work
     size_t tmpid;
     if (hashOne != hashTwo) {
-        tmpid = hashOne ^ hashTwo;
+        tmpid = hash_combine_symmetric(hashOne, hashTwo);
     }
-    else {
+    else
+    {
         tmpid = hashOne;
     }
     std::stringstream s;

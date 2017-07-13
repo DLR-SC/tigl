@@ -3023,8 +3023,11 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectWithPlane(TiglCPACSConfigurationH
 
 /**
 * @brief tiglIntersectWithPlaneSegment computes the intersection line(s) between a shape
-* and a plane segment. The plane segment is defined by p(u,v) = p1 (1-u) + p2u + wv, with
-* u in [0,1]. Ideally w should be perpendicular to (p1 - p2)
+* and a plane segment. The plane segment is defined by p(u,v) = P1*(1-u) + P2*u + w*v, with
+* u in [0,1] (see image).
+*
+* @image html intersectPlaneSegment.png "The dashed line connecting the points P1 and P2 is projected along w onto the shape (blue dashed line)."
+* @image latex intersectPlaneSegment.pdf "The dashed line connecting the points P1 and P2 is projected along w onto the shape (blue dashed line)." width=10cm
 *
 * It returns an intersection ID for further computations on the result.
 * To query points on the intersection line, ::tiglIntersectGetPoint has
@@ -3036,15 +3039,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectWithPlane(TiglCPACSConfigurationH
 *
 * @param[in]  cpacsHandle     Handle for the CPACS configuration
 * @param[in]  componentUid    The UID of the CPACS shape
-* @param[in]  p1x             X Coordinate of the first point
-* @param[in]  p1y             Y Coordinate of the first point
-* @param[in]  p1z             Z Coordinate of the first point
-* @param[in]  p2x             X Coordinate of the second point
-* @param[in]  p2y             Y Coordinate of the second point
-* @param[in]  p2z             Z Coordinate of the second point
-* @param[in]  wx              X value of the normal vector
-* @param[in]  wy              Y value of the normal vector
-* @param[in]  wz              Z value of the normal vector
+* @param[in]  p1x             X Coordinate of the first point P1
+* @param[in]  p1y             Y Coordinate of the first point P1
+* @param[in]  p1z             Z Coordinate of the first point P1
+* @param[in]  p2x             X Coordinate of the second point P2
+* @param[in]  p2y             Y Coordinate of the second point P2
+* @param[in]  p2z             Z Coordinate of the second point P2
+* @param[in]  wx              X value of the normal vector w
+* @param[in]  wy              Y value of the normal vector w
+* @param[in]  wz              Z value of the normal vector w
 * @param[out] intersectionID  A unique identifier that is associated with the computed intersection.
 *
 *
@@ -3061,7 +3064,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectWithPlaneSegment(TiglCPACSConfigu
                                                                 const char*  componentUid,
                                                                 double p1x, double p1y, double p1z,
                                                                 double p2x, double p2y, double p2z,
-                                                                double nx, double ny, double nz,
+                                                                double wx, double wy, double wz,
                                                                 char** intersectionID);
 
 /**
