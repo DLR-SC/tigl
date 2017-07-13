@@ -131,7 +131,7 @@ namespace
     {
         size_t lhs = boost::hash_value(LHS);
         size_t rhs = boost::hash_value(RHS);
-        return (lhs ^ rhs) + lhs + rhs;
+        return (lhs ^ rhs) ^ (lhs + rhs);
     }
 }
 
