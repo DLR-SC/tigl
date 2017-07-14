@@ -6,18 +6,24 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>303</width>
-    <height>275</height>
+    <width>380</width>
+    <height>346</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Define intersection</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
-   <item>
+  <layout class="QGridLayout" name="gridLayout_2">
+   <item row="0" column="0">
     <widget class="QTabWidget" name="TabView">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="tabSS">
       <attribute name="title">
@@ -180,9 +186,124 @@
        </item>
       </layout>
      </widget>
+     <widget class="QWidget" name="tabSPS">
+      <attribute name="title">
+       <string>Shape/Plane segment</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_7">
+       <item>
+        <widget class="QGroupBox" name="groupBox_5">
+         <property name="title">
+          <string>Shape</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_8">
+          <item>
+           <widget class="QComboBox" name="shapeComboS"/>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox_6">
+         <property name="title">
+          <string>Two Points and Direction</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_3">
+          <item row="0" column="4">
+           <widget class="QLabel" name="label_3">
+            <property name="text">
+             <string>Direction</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="3">
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>Point 2</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLabel" name="label_2">
+            <property name="text">
+             <string>Point 1</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="3">
+           <widget class="QDoubleSpinBox" name="p2xSB"/>
+          </item>
+          <item row="1" column="1">
+           <widget class="QDoubleSpinBox" name="p1xSB"/>
+          </item>
+          <item row="1" column="4">
+           <widget class="QDoubleSpinBox" name="wxSB"/>
+          </item>
+          <item row="2" column="1">
+           <widget class="QDoubleSpinBox" name="p1ySB"/>
+          </item>
+          <item row="2" column="3">
+           <widget class="QDoubleSpinBox" name="p2ySB"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_10">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Y =</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="4">
+           <widget class="QDoubleSpinBox" name="wySB"/>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_9">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>X =</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QDoubleSpinBox" name="p1zSB"/>
+          </item>
+          <item row="3" column="3">
+           <widget class="QDoubleSpinBox" name="p2zSB"/>
+          </item>
+          <item row="3" column="4">
+           <widget class="QDoubleSpinBox" name="wzSB"/>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_11">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Z = </string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
-   <item>
+   <item row="1" column="0">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -196,16 +317,25 @@
  </widget>
  <tabstops>
   <tabstop>TabView</tabstop>
-  <tabstop>shape1Combo</tabstop>
-  <tabstop>shape2Combo</tabstop>
+  <tabstop>shapeComboS</tabstop>
+  <tabstop>p1xSB</tabstop>
+  <tabstop>p1ySB</tabstop>
+  <tabstop>p1zSB</tabstop>
+  <tabstop>p2xSB</tabstop>
+  <tabstop>p2ySB</tabstop>
+  <tabstop>p2zSB</tabstop>
+  <tabstop>wxSB</tabstop>
+  <tabstop>wySB</tabstop>
+  <tabstop>wzSB</tabstop>
+  <tabstop>nzSB</tabstop>
   <tabstop>shapeCombo</tabstop>
+  <tabstop>shape2Combo</tabstop>
+  <tabstop>shape1Combo</tabstop>
   <tabstop>pxSB</tabstop>
   <tabstop>pySB</tabstop>
   <tabstop>pzSB</tabstop>
   <tabstop>nxSB</tabstop>
   <tabstop>nySB</tabstop>
-  <tabstop>nzSB</tabstop>
-  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
  <connections>
@@ -232,8 +362,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>316</x>
-     <y>260</y>
+     <x>293</x>
+     <y>265</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>

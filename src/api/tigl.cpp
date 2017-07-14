@@ -59,6 +59,8 @@
 #include "CCPACSRotorBladeAttachment.h"
 #include "CTiglAttachedRotorBlade.h"
 
+#include "CTiglPoint.h"
+
 #include "gp_Pnt.hxx"
 #include "TopoDS_Shape.hxx"
 #include "TopoDS_Edge.hxx"
@@ -4587,6 +4589,84 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectWithPlane(TiglCPACSConfigurationH
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglIntersectWithPlane!";
+        return TIGL_ERROR;
+    }
+}
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectWithPlaneSegment(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                const char*  componentUid,
+                                                                double p1x, double p1y, double p1z,
+                                                                double p2x, double p2y, double p2z,
+                                                                double wx, double wy, double wz,
+                                                                char** intersectionID)
+{
+    if (!componentUid) {
+        LOG(ERROR) << "Null pointer for argument componentUid in tiglIntersectWithPlaneSegment.";
+        return TIGL_NULL_POINTER;
+    }
+    if (!intersectionID) {
+        LOG(ERROR) << "Null pointer for argument intersectionID in tiglIntersectWithPlaneSegment.";
+        return TIGL_NULL_POINTER;
+    }
+
+    tigl::CTiglPoint P1(p1x, p1y, p1z);
+    tigl::CTiglPoint P2(p2x, p2y, p2z);
+    tigl::CTiglPoint W (wx,  wy,  wz );
+
+    if ( W.norm2Sqr() < 1e-10) {
+        LOG(ERROR) << "Normal vector must not be zero in tiglIntersectWithPlaneSegment.";
+        return TIGL_MATH_ERROR;
+    }
+
+    // check if p1 and p2 are distinct points
+    if ( P1.distance2(P2) < 1e-10 ) {
+        LOG(ERROR) << "Point 1 and Point 2 must be unequal.";
+        return TIGL_MATH_ERROR;
+    }
+
+    // check if u = (p2 - p1) and w are linearly dependent
+    double uw = tigl::CTiglPoint::inner_prod(W, P2-P1);
+    double uu = (P2-P1).norm2Sqr();
+    double ww = W.norm2Sqr();
+    if ( uu*ww - uw*uw < 1e-10 ) {
+        LOG(ERROR) << "( Point 2 - Point 1 ) and w must be linearly independent";
+        return TIGL_MATH_ERROR;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::CTiglUIDManager& uidManager = config.GetUIDManager();
+
+        tigl::ITiglGeometricComponent* component = &uidManager.GetGeometricComponent(componentUid);
+        if (component) {
+            TopoDS_Shape shape = component->GetLoft()->Shape();
+            gp_Pnt p1(p1x, p1y, p1z);
+            gp_Pnt p2(p2x, p2y, p2z);
+            gp_Dir w(wx, wy, wz);
+
+            tigl::CTiglIntersectionCalculation Intersector(&config.GetShapeCache(),
+                                                           componentUid,
+                                                           shape,
+                                                           p1, p2, w,
+                                                           false);
+
+            std::string id = Intersector.GetID();
+            *intersectionID = (char*) config.GetMemoryPool().MakeNontempString(id.c_str());
+
+            return TIGL_SUCCESS;
+        }
+        else {
+            LOG(ERROR) << "UID can not be found in tiglIntersectWithPlaneSegment.";
+            return TIGL_UID_ERROR;
+        }
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.what();
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglIntersectWithPlaneSegment!";
         return TIGL_ERROR;
     }
 }

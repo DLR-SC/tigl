@@ -125,6 +125,31 @@ TEST_F(TiglIntersectionCalculation, tiglIntersectWithPlane)
     ASSERT_EQ(TIGL_MATH_ERROR,   tiglIntersectWithPlane(tiglHandle, "SimpleFuselage", 0., 0., 0., 0., 0., 0., &id));
 }
 
+TEST_F(TiglIntersectionCalculation, tiglIntersectWithPlaneSegment)
+{
+    char* id1 = NULL;
+    int count1 = -1;
+    ASSERT_EQ(TIGL_SUCCESS, tiglIntersectWithPlaneSegment(tiglHandle, "SimpleFuselage", 0.5, -.25, 0.,0.5,.25,0., 0., 0., 1., &id1));
+    ASSERT_EQ(TIGL_SUCCESS, tiglIntersectGetLineCount(tiglHandle, id1, &count1));
+    ASSERT_EQ(2, count1);
+
+    char* id2 = NULL;
+    int count2 = -1;
+    ASSERT_EQ(TIGL_SUCCESS, tiglIntersectWithPlaneSegment(tiglHandle, "SimpleFuselage", -1., -.2, 0.,-1.,.33,0., 0., 0., 1., &id2));
+    //CHECK using P1=(-1,-.25,0.), P2=(-1,.25,0.) instead causes a hash collision on Travis CI's Mac build
+    //(after XORing the two HashableProjections in CTiglIntersectionCalculation)
+    ASSERT_EQ(TIGL_SUCCESS, tiglIntersectGetLineCount(tiglHandle, id2, &count2));
+    ASSERT_EQ(0, count2);
+
+    char* id = NULL;
+    ASSERT_EQ(TIGL_NOT_FOUND,    tiglIntersectWithPlaneSegment(-1, "SimpleFuselage", 0.5, -5., 0.,0.5,5.,0., 0., 0., 1., &id));
+    ASSERT_EQ(TIGL_UID_ERROR,    tiglIntersectWithPlaneSegment(tiglHandle, "UNKNOWN_UID", 0.5, -5., 0.,0.5,5.,0., 0., 0., 1., &id));
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglIntersectWithPlaneSegment(tiglHandle, NULL,  0.5, -5., 0.,0.5,5.,0., 0., 0., 1., &id));
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglIntersectWithPlaneSegment(tiglHandle, "SimpleFuselage",  0.5, -5., 0.,0.5,5.,0., 0., 0., 1., NULL));
+    ASSERT_EQ(TIGL_MATH_ERROR,   tiglIntersectWithPlaneSegment(tiglHandle, "SimpleFuselage",  0.5, -5., 0.,0.5,5.,0., 0., 0., 0., &id));
+    ASSERT_EQ(TIGL_MATH_ERROR,   tiglIntersectWithPlaneSegment(tiglHandle, "SimpleFuselage",  0.5,  5., 0.,0.5,5.,0., 0., 0., 1., &id));
+}
+
 TEST_F(TiglIntersectionCalculation, tiglIntersectComponents_Errors)
 {
     char* id = NULL;
