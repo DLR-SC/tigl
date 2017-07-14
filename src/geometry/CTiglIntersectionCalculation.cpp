@@ -71,6 +71,10 @@
 #define max(a, b) (((a) > (b)) ? (a) : (b))
 #endif
 
+#ifndef min
+#define min(a, b) (((a) > (b)) ? (b) : (a))
+#endif
+
 // WARNING: boost::hash gets incorrectly compiled with gcc 4.3.4 - the optimization will produce indeterministic hash values
 // To workaround the problem, we have to avoid optimization of this file
 
@@ -131,9 +135,18 @@ namespace
     {
         size_t lhs = boost::hash_value(LHS);
         size_t rhs = boost::hash_value(RHS);
-        return (lhs ^ rhs) ^ (lhs + rhs);
+
+        if ( lhs != rhs ) {
+            size_t result = max(lhs, rhs);
+            boost::hash_combine(result, min(lhs, rhs));
+            return result;
+        }
+        else {
+            return lhs;
+        }
     }
 }
+
 
 namespace tigl 
 {
