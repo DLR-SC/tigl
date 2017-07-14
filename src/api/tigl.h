@@ -3064,6 +3064,43 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectWithPlane(TiglCPACSConfigurationH
                                                          char** intersectionID);
 
 /**
+* @brief tiglIntersectCurves computes intersection point of two (intersection) curves.
+* Both curves are the result of a previous intersection (e.g. Fuselage-Wing Intersection).
+*
+* It returns an intersection ID for further computations on the result.
+* To query points on the intersection line, ::tiglIntersectGetPoint has
+* to be called.
+*
+* The curves must be specified by their intersectionIDs and an index of the wire in the
+* intersection. The intersection is calculated to a specified tolerance. The computed
+* intersection point is specified by the parameter eta1 along the first curve and the
+* parameters eta2 along the second curve.
+*
+* @param cpacsHandle     Handle for the CPACS configuration
+* @param curvesID1       ID of the first intersection
+* @param curve1Idx       Index of the curve in the first intersection
+* @param curvesID2       ID of the second curve
+* @param curve2Idx       Index of the curve in the second intersection
+* @param tolerance       tolerance to specify the required accuracy of the intersection point
+* @param eta1            parameter of the intersection point along the first curve
+* @param eta2            parameter of the intersection point along the second curve
+*
+*
+* @return
+*   - TIGL_SUCCESS if an intersection could be computed
+*   - TIGL_NOT_FOUND if the cpacs handle is not valid
+*   - TIGL_NULL_POINTER if either curveID is a NULL pointer
+*   - TIGL_INDEX_ERROR if either curve index is invalid
+*   - TIGL_MATH_ERROR if the tolerance is not positive
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectCurves(TiglCPACSConfigurationHandle cpacsHandle,
+                                   const char* curvesID1, int curve1Idx,
+                                   const char* curvesID2, int curve2Idx,
+                                   double tolerance,
+                                   double* eta1, double* eta2);
+
+/**
 * @brief tiglIntersectGetLineCount return the number of intersection lines computed by 
 * ::tiglIntersectComponents or ::tiglIntersectWithPlane for the given intersectionID.
 *

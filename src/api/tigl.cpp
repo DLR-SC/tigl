@@ -62,6 +62,8 @@
 #include "gp_Pnt.hxx"
 #include "TopoDS_Shape.hxx"
 #include "TopoDS_Edge.hxx"
+#include "BRepExtrema_ExtCC.hxx"
+#include "TopExp_Explorer.hxx"
 
 /*****************************************************************************/
 /* Private functions.                                                 */
@@ -4587,6 +4589,122 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectWithPlane(TiglCPACSConfigurationH
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglIntersectWithPlane!";
+        return TIGL_ERROR;
+    }
+}
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectCurves(TiglCPACSConfigurationHandle cpacsHandle,
+                                   const char* curvesID1, int curve1Idx,
+                                   const char* curvesID2, int curve2Idx,
+                                   double tolerance,
+                                   double* eta1, double* eta2)
+{
+
+    if (!curvesID1) {
+        LOG(ERROR) << "Null pointer for argument curvesID1 in tiglIntersectCurves.";
+        return TIGL_NULL_POINTER;
+    }
+
+    int linecount1;
+    tiglIntersectGetLineCount(cpacsHandle, curvesID1, &linecount1);
+    if ( (curve1Idx > linecount1-1) || (curve1Idx<0) ) {
+        LOG(ERROR) << "argument curve1Idx = "<<curvesID1<<" is invalid in tiglIntersectCurves (lineCount of curve "<<curvesID1<<": "<<linecount1<<").";
+        return TIGL_INDEX_ERROR;
+    }
+
+    int linecount2;
+    tiglIntersectGetLineCount(cpacsHandle, curvesID2, &linecount2);
+    if ( (curve2Idx > linecount2-1) || (curve2Idx<0) ) {
+        LOG(ERROR) << "argument curve2Idx = "<<curvesID2<<" is invalid in tiglIntersectCurves (lineCount of curve "<<curvesID2<<": "<<linecount2<<").";
+        return TIGL_INDEX_ERROR;
+    }
+
+    if (!curvesID2) {
+        LOG(ERROR) << "Null pointer for argument curvesID2 in tiglIntersectCurves.";
+        return TIGL_NULL_POINTER;
+    }
+
+    if ( tolerance < 0 ) {
+        LOG(ERROR) << "tolerance musst be non negative in tiglIntersectCurves (tolerance = "<<tolerance<<").";
+        return TIGL_MATH_ERROR;
+    }
+
+    if (!eta1) {
+        LOG(ERROR) << "Null pointer for argument eta1 in tiglIntersectCurves.";
+        return TIGL_NULL_POINTER;
+    }
+
+    if (!eta2) {
+        LOG(ERROR) << "Null pointer for argument eta2 in tiglIntersectCurves.";
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::CTiglUIDManager& uidManager = config.GetUIDManager();
+
+        if (uidManager.HasGeometricComponent(curvesID1) && uidManager.HasGeometricComponent(curvesID2)) {
+
+            // get first wire
+            tigl::CTiglIntersectionCalculation Intersector1(config.GetShapeCache(), curvesID1);
+            TopoDS_Wire wire1 = Intersector1.GetWire(curve1Idx);
+
+            // get second wire
+            tigl::CTiglIntersectionCalculation Intersector2(config.GetShapeCache(), curvesID1);
+            TopoDS_Wire wire2 = Intersector2.GetWire(curve2Idx);
+
+            // explore the edges of both wires and see if any pair intersects
+            TopExp_Explorer EdgeExplorer1(wire1, TopAbs_EDGE);
+            TopExp_Explorer EdgeExplorer2(wire2, TopAbs_EDGE);
+            BRepExtrema_ExtCC Intersector;
+            std::vector<double> etas1;
+            std::vector<double> etas2;
+            while ( EdgeExplorer1.More() ) {
+                while ( EdgeExplorer2.More() ) {
+                    TopoDS_Edge egde1 = TopoDS::Edge(EdgeExplorer1.Current());
+                    TopoDS_Edge egde2 = TopoDS::Edge(EdgeExplorer2.Current());
+                    Intersector = BRepExtrema_ExtCC(egde1,egde2);
+                    // now go through all extremal distances of the current edge pair
+                    for( int i=0; i<Intersector.NbExt(); i++ ) {
+                        if( Intersector.SquareDistance(i) < tolerance ) {
+                            etas1.push_back( Intersector.ParameterOnE1(i) );
+                            etas2.push_back( Intersector.ParameterOnE1(i) );
+                        }
+                    }
+                }
+                EdgeExplorer2.ReInit();
+                EdgeExplorer1.Next();
+            }
+
+            if ( etas1.size() > 1 ) {
+                LOG(WARNING) << "More than one intersection found!";
+            }
+            //TODO how to handle several intersections?
+
+            if ( etas1.size() == 0 ) {
+                LOG(INFO) << "The curves do not intersect to the specified tolerance";
+            }
+            else {
+                *eta1 = etas1.at(0);
+                *eta2 = etas2.at(0);
+            }
+
+            return TIGL_SUCCESS;
+        }
+        else {
+            LOG(ERROR) << "UID can not be found in tiglIntersectCurves.";
+            return TIGL_UID_ERROR;
+        }
+
+        return TIGL_SUCCESS;
+    }
+    catch (const tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.what();
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglIntersectComponents!";
         return TIGL_ERROR;
     }
 }
