@@ -766,3 +766,19 @@ TEST_F(TiglFuselageSegmentSimple, getSectionArea)
     ASSERT_EQ(TIGL_MATH_ERROR, tiglFuselageGetCrossSectionArea(tiglHandle, "segmentD150_Fuselage_1Segment2ID", eta_out_of_range, &area));
 }
 
+TEST_F(TiglFuselageSegmentSimple, getCenterLineLength)
+{
+    double centerLineLength = 0.;
+
+    // test value of the result
+    ASSERT_NE(TIGL_NULL_POINTER, tiglFuselageGetCenterLineLength(tiglHandle, "SimpleFuselage", &centerLineLength));
+    ASSERT_EQ(TIGL_SUCCESS, tiglFuselageGetCenterLineLength(tiglHandle, "SimpleFuselage", &centerLineLength));
+    EXPECT_NEAR(centerLineLength, 2., 1e-15);
+
+    // some other tests: make sure that right error codes are returned in case of the corresponding errors
+    ASSERT_EQ(TIGL_UID_ERROR, tiglFuselageGetCenterLineLength(tiglHandle, "invalidUID", &centerLineLength));
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglFuselageGetCenterLineLength(tiglHandle, "SimpleFuselage", NULL));
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglFuselageGetCenterLineLength(tiglHandle, NULL, &centerLineLength));
+    ASSERT_EQ(TIGL_NOT_FOUND, tiglFuselageGetCenterLineLength(-1, "SimpleFuselage", &centerLineLength));
+}
+
