@@ -59,6 +59,8 @@
 #include "CCPACSRotorBladeAttachment.h"
 #include "CTiglAttachedRotorBlade.h"
 
+#include "CTiglPoint.h"
+
 #include "gp_Pnt.hxx"
 #include "TopoDS_Shape.hxx"
 #include "TopoDS_Edge.hxx"
@@ -2562,6 +2564,62 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetCrossSectionArea(TiglCPACSConfi
     return TIGL_SUCCESS;
 }
 
+TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetCenterLineLength(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                  const char *fuselageUID,
+                                                                  double *length)
+{
+    if (length == NULL) {
+        LOG(ERROR) << "Null pointer argument for length\n"
+                   << "in function call to tiglFuselageGetCenterLineLength.";
+        return TIGL_NULL_POINTER;
+    }
+
+    if (fuselageUID == NULL) {
+        LOG(ERROR) << "Null pointer argument for fuselageUID\n"
+                   << "in function call to tiglFuselageGetCenterLineLength.";
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::CCPACSFuselage& fuselage = config.GetFuselage(fuselageUID);
+
+        double centerLineLength = 0;
+        for (int segment_idx = 1; segment_idx <= fuselage.GetSegmentCount(); ++segment_idx) {
+            tigl::CCPACSFuselageSegment& segment = fuselage.GetSegment(segment_idx);
+
+            double pointX = 0.;
+            double pointY = 0.;
+            double pointZ = 0.;
+            tiglFuselageGetSectionCenter(cpacsHandle, segment.GetUID().c_str(), 0., &pointX, &pointY, &pointZ);
+            tigl::CTiglPoint centerPointBeginning(pointX, pointY, pointZ);
+
+            tiglFuselageGetSectionCenter(cpacsHandle, segment.GetUID().c_str(), 1., &pointX, &pointY, &pointZ);
+            tigl::CTiglPoint centerPointEnd(pointX, pointY, pointZ);
+
+            // add distance of current segment to total distance
+            centerLineLength += sqrt(centerPointBeginning.distance2(centerPointEnd));
+        }
+
+        // assigne solution to return value
+        *length = centerLineLength;
+    }
+    catch (const tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.what();
+        return ex.getCode();
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetCenterLineLength!";
+        return TIGL_ERROR;
+    }
+
+    return TIGL_SUCCESS;
+}
+
 TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetPoint(TiglCPACSConfigurationHandle cpacsHandle,
                                                        int fuselageIndex,
                                                        int segmentIndex,
@@ -4593,6 +4651,85 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectWithPlane(TiglCPACSConfigurationH
     }
 }
 
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectWithPlaneSegment(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                const char*  componentUid,
+                                                                double p1x, double p1y, double p1z,
+                                                                double p2x, double p2y, double p2z,
+                                                                double wx, double wy, double wz,
+                                                                char** intersectionID)
+{
+    if (!componentUid) {
+        LOG(ERROR) << "Null pointer for argument componentUid in tiglIntersectWithPlaneSegment.";
+        return TIGL_NULL_POINTER;
+    }
+    if (!intersectionID) {
+        LOG(ERROR) << "Null pointer for argument intersectionID in tiglIntersectWithPlaneSegment.";
+        return TIGL_NULL_POINTER;
+    }
+
+    tigl::CTiglPoint P1(p1x, p1y, p1z);
+    tigl::CTiglPoint P2(p2x, p2y, p2z);
+    tigl::CTiglPoint W (wx,  wy,  wz );
+
+    if ( W.norm2Sqr() < 1e-10) {
+        LOG(ERROR) << "Normal vector must not be zero in tiglIntersectWithPlaneSegment.";
+        return TIGL_MATH_ERROR;
+    }
+
+    // check if p1 and p2 are distinct points
+    if ( P1.distance2(P2) < 1e-10 ) {
+        LOG(ERROR) << "Point 1 and Point 2 must be unequal.";
+        return TIGL_MATH_ERROR;
+    }
+
+    // check if u = (p2 - p1) and w are linearly dependent
+    double uw = tigl::CTiglPoint::inner_prod(W, P2-P1);
+    double uu = (P2-P1).norm2Sqr();
+    double ww = W.norm2Sqr();
+    if ( uu*ww - uw*uw < 1e-10 ) {
+        LOG(ERROR) << "( Point 2 - Point 1 ) and w must be linearly independent";
+        return TIGL_MATH_ERROR;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::CTiglUIDManager& uidManager = config.GetUIDManager();
+
+        tigl::ITiglGeometricComponent* component = &uidManager.GetGeometricComponent(componentUid);
+        if (component) {
+            TopoDS_Shape shape = component->GetLoft()->Shape();
+            gp_Pnt p1(p1x, p1y, p1z);
+            gp_Pnt p2(p2x, p2y, p2z);
+            gp_Dir w(wx, wy, wz);
+
+            tigl::CTiglIntersectionCalculation Intersector(&config.GetShapeCache(),
+                                                           componentUid,
+                                                           shape,
+                                                           p1, p2, w,
+                                                           false);
+
+            std::string id = Intersector.GetID();
+            *intersectionID = (char*) config.GetMemoryPool().MakeNontempString(id.c_str());
+
+            return TIGL_SUCCESS;
+        }
+        else {
+            LOG(ERROR) << "UID can not be found in tiglIntersectWithPlaneSegment.";
+            return TIGL_UID_ERROR;
+        }
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.what();
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglIntersectWithPlaneSegment!";
+        return TIGL_ERROR;
+    }
+}
+
 TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectCurves(TiglCPACSConfigurationHandle cpacsHandle,
                                    const char* curvesID1, int curve1Idx,
                                    const char* curvesID2, int curve2Idx,
@@ -4612,16 +4749,16 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectCurves(TiglCPACSConfigurationHand
         return TIGL_INDEX_ERROR;
     }
 
+    if (!curvesID2) {
+        LOG(ERROR) << "Null pointer for argument curvesID2 in tiglIntersectCurves.";
+        return TIGL_NULL_POINTER;
+    }
+
     int linecount2;
     tiglIntersectGetLineCount(cpacsHandle, curvesID2, &linecount2);
     if ( (curve2Idx > linecount2-1) || (curve2Idx<0) ) {
         LOG(ERROR) << "argument curve2Idx = "<<curvesID2<<" is invalid in tiglIntersectCurves (lineCount of curve "<<curvesID2<<": "<<linecount2<<").";
         return TIGL_INDEX_ERROR;
-    }
-
-    if (!curvesID2) {
-        LOG(ERROR) << "Null pointer for argument curvesID2 in tiglIntersectCurves.";
-        return TIGL_NULL_POINTER;
     }
 
     if ( tolerance < 0 ) {
@@ -4693,18 +4830,17 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectCurves(TiglCPACSConfigurationHand
             return TIGL_SUCCESS;
         }
         else {
+
             LOG(ERROR) << "UID can not be found in tiglIntersectCurves.";
             return TIGL_UID_ERROR;
         }
-
-        return TIGL_SUCCESS;
     }
     catch (const tigl::CTiglError& ex) {
         LOG(ERROR) << ex.what();
         return ex.getCode();
     }
-    catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglIntersectComponents!";
+    catch(...) {
+        LOG(ERROR) << "Caught an exception in tiglIntersectCurves";
         return TIGL_ERROR;
     }
 }

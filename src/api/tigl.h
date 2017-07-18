@@ -1567,6 +1567,22 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetCrossSectionArea(TiglCPACSConfi
                                                                   double *area);
 
 /**
+* @brief Returns the length of center line of the given fuselage with all its segments which connects all the center points of the cross sections of the fuselage
+* @param[in] cpacsHandle Handle for the CPACS configuration
+* @param[in] fuselageUID UID of the fuselage
+* @param[out] length     the sum of the lengths of all the fuselage segments
+* @return
+*   - TIGL_SUCCESS if the length was found
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_UID_ERROR if UID is invalid or not a fuselage
+*   - TIGL_NULL_POINTER if length is a null pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetCenterLineLength(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                  const char *fuselageUID,
+                                                                  double *length);
+
+/**
 * @brief Returns a point on a fuselage surface for a given fuselage and segment index.
 *
 * Returns a point on a fuselage segment of a given fuselage in dependence of parameters eta and zeta with
@@ -3064,12 +3080,53 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectWithPlane(TiglCPACSConfigurationH
                                                          char** intersectionID);
 
 /**
-* @brief tiglIntersectCurves computes intersection point of two (intersection) curves.
-* Both curves are the result of a previous intersection (e.g. Fuselage-Wing Intersection).
+* @brief tiglIntersectWithPlaneSegment computes the intersection line(s) between a shape
+* and a plane segment. The plane segment is defined by p(u,v) = P1*(1-u) + P2*u + w*v, with
+* u in [0,1] (see image).
+*
+* @image html intersectPlaneSegment.png "The dashed line connecting the points P1 and P2 is projected along w onto the shape (blue dashed line)."
+* @image latex intersectPlaneSegment.pdf "The dashed line connecting the points P1 and P2 is projected along w onto the shape (blue dashed line)." width=10cm
 *
 * It returns an intersection ID for further computations on the result.
 * To query points on the intersection line, ::tiglIntersectGetPoint has
 * to be called.
+*
+* The shape has to be specified by its CPACS UID.
+* The plane segment is specified by two points p1 and p2  and a normal vector w, which
+* (ideally) is perpendicular to (p2 - p1). The normal vector w must not be zero!
+*
+* @param[in]  cpacsHandle     Handle for the CPACS configuration
+* @param[in]  componentUid    The UID of the CPACS shape
+* @param[in]  p1x             X Coordinate of the first point P1
+* @param[in]  p1y             Y Coordinate of the first point P1
+* @param[in]  p1z             Z Coordinate of the first point P1
+* @param[in]  p2x             X Coordinate of the second point P2
+* @param[in]  p2y             Y Coordinate of the second point P2
+* @param[in]  p2z             Z Coordinate of the second point P2
+* @param[in]  wx              X value of the normal vector w
+* @param[in]  wy              Y value of the normal vector w
+* @param[in]  wz              Z value of the normal vector w
+* @param[out] intersectionID  A unique identifier that is associated with the computed intersection.
+*
+*
+* @return
+*   - TIGL_SUCCESS if an intersection could be computed
+*   - TIGL_NOT_FOUND if the cpacs handle is not valid
+*   - TIGL_NULL_POINTER if either componentUid or intersectionID are NULL pointers
+*   - TIGL_UID_ERROR if componentUid can not be found in the CPACS file
+*   - TIGL_MATH_ERROR if the normal vector is zero, p1 and p2 are equal or if w and (p2-p1) are linearly dependent.
+*
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectWithPlaneSegment(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                const char*  componentUid,
+                                                                double p1x, double p1y, double p1z,
+                                                                double p2x, double p2y, double p2z,
+                                                                double wx, double wy, double wz,
+                                                                char** intersectionID);
+
+/**
+* @brief tiglIntersectCurves computes intersection point of two (intersection) curves.
+* Both curves are the result of a previous intersection (e.g. Fuselage-Wing Intersection).
 *
 * The curves must be specified by their intersectionIDs and an index of the wire in the
 * intersection. The intersection is calculated to a specified tolerance. The computed
