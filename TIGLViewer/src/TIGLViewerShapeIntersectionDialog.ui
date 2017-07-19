@@ -231,19 +231,39 @@
            </widget>
           </item>
           <item row="1" column="3">
-           <widget class="QDoubleSpinBox" name="p2xSB"/>
+           <widget class="QDoubleSpinBox" name="p2xSB">
+            <property name="minimum">
+             <double>-99.989999999999995</double>
+            </property>
+           </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QDoubleSpinBox" name="p1xSB"/>
+           <widget class="QDoubleSpinBox" name="p1xSB">
+            <property name="minimum">
+             <double>-99.989999999999995</double>
+            </property>
+           </widget>
           </item>
           <item row="1" column="4">
-           <widget class="QDoubleSpinBox" name="wxSB"/>
+           <widget class="QDoubleSpinBox" name="wxSB">
+            <property name="minimum">
+             <double>-99.989999999999995</double>
+            </property>
+           </widget>
           </item>
           <item row="2" column="1">
-           <widget class="QDoubleSpinBox" name="p1ySB"/>
+           <widget class="QDoubleSpinBox" name="p1ySB">
+            <property name="minimum">
+             <double>-99.989999999999995</double>
+            </property>
+           </widget>
           </item>
           <item row="2" column="3">
-           <widget class="QDoubleSpinBox" name="p2ySB"/>
+           <widget class="QDoubleSpinBox" name="p2ySB">
+            <property name="minimum">
+             <double>-99.989999999999995</double>
+            </property>
+           </widget>
           </item>
           <item row="2" column="0">
            <widget class="QLabel" name="label_10">
@@ -259,7 +279,11 @@
            </widget>
           </item>
           <item row="2" column="4">
-           <widget class="QDoubleSpinBox" name="wySB"/>
+           <widget class="QDoubleSpinBox" name="wySB">
+            <property name="minimum">
+             <double>-99.989999999999995</double>
+            </property>
+           </widget>
           </item>
           <item row="1" column="0">
            <widget class="QLabel" name="label_9">
@@ -275,13 +299,25 @@
            </widget>
           </item>
           <item row="3" column="1">
-           <widget class="QDoubleSpinBox" name="p1zSB"/>
+           <widget class="QDoubleSpinBox" name="p1zSB">
+            <property name="minimum">
+             <double>-99.989999999999995</double>
+            </property>
+           </widget>
           </item>
           <item row="3" column="3">
-           <widget class="QDoubleSpinBox" name="p2zSB"/>
+           <widget class="QDoubleSpinBox" name="p2zSB">
+            <property name="minimum">
+             <double>-99.989999999999995</double>
+            </property>
+           </widget>
           </item>
           <item row="3" column="4">
-           <widget class="QDoubleSpinBox" name="wzSB"/>
+           <widget class="QDoubleSpinBox" name="wzSB">
+            <property name="minimum">
+             <double>-99.989999999999995</double>
+            </property>
+           </widget>
           </item>
           <item row="3" column="0">
            <widget class="QLabel" name="label_11">
