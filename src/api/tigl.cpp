@@ -64,9 +64,9 @@
 #include "gp_Pnt.hxx"
 #include "TopoDS_Shape.hxx"
 #include "TopoDS_Edge.hxx"
+
 #include "BRepExtrema_ExtCC.hxx"
 #include "TopExp_Explorer.hxx"
-
 #include "BRepTools.hxx"
 
 /*****************************************************************************/
@@ -4796,8 +4796,12 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectCurves(TiglCPACSConfigurationHand
         TopExp_Explorer EdgeExplorer2(wire2, TopAbs_EDGE);
 
         BRepExtrema_ExtCC Intersector;
-        std::vector<double> etas1;
-        std::vector<double> etas2;
+
+        struct IntersectionPoint {
+            double ParameterOnE1, ParameterOnE2, SquareDistance;
+            gp_Pnt Center;
+        };
+        std::vector<IntersectionPoint> intersectionPoints;
 
         while ( EdgeExplorer1.More() ) {
 
@@ -4813,17 +4817,26 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectCurves(TiglCPACSConfigurationHand
                 for( int i=1; i<=Intersector.NbExt(); i++ ) {
                     if( Intersector.SquareDistance(i) < tolerance ) {
 
-                        gp_Pnt p1 = Intersector.PointOnE1(i);
-                        gp_Pnt p2 = Intersector.PointOnE2(i);
-                        std::cout<<"-> "<<": Found an extremum satisfying tolerance requirement"<<std::endl;
-                        std::cout<<"      SquareDistance: "<<Intersector.SquareDistance(i)<<std::endl;
-                        std::cout<<"      ParameterOnE1 : "<<Intersector.ParameterOnE1(i)<<std::endl;
-                        std::cout<<"      ParameterOnE2 : "<<Intersector.ParameterOnE2(i)<<std::endl;
-                        std::cout<<"      PointOnE1     : "<<"("<<p1.X()<<", "<<p1.Y()<<", "<<p1.Z()<<")"<<std::endl;
-                        std::cout<<"      PointOnE2     : "<<"("<<p2.X()<<", "<<p2.Y()<<", "<<p2.Z()<<")"<<std::endl;
+                        IntersectionPoint intersectionPoint;
+                        intersectionPoint.ParameterOnE1=Intersector.ParameterOnE1(i);
+                        intersectionPoint.ParameterOnE2=Intersector.ParameterOnE2(i);
+                        intersectionPoint.SquareDistance=Intersector.SquareDistance(i);
+                        intersectionPoint.Center = Intersector.PointOnE1(i);
+                        intersectionPoint.Center.BaryCenter(0.5,Intersector.PointOnE2(i),0.5);
 
-                        etas1.push_back( Intersector.ParameterOnE1(i) );
-                        etas2.push_back( Intersector.ParameterOnE1(i) );
+                        //make sure the intersectionPoints are unique
+                        bool foundIntersectionPoint = false;
+                        for (unsigned int i=0;i<intersectionPoints.size(); i++ ) {
+                            if ( intersectionPoint.Center.Distance( intersectionPoints[i].Center ) < tolerance ) {
+                                foundIntersectionPoint = true;
+                                if ( intersectionPoint.SquareDistance< intersectionPoints[i].SquareDistance ) {
+                                    intersectionPoints[i]=intersectionPoint;
+                                }
+                            }
+                        }
+                        if ( !foundIntersectionPoint ) {
+                            intersectionPoints.push_back(intersectionPoint);
+                        }
                     }
                 }
                 EdgeExplorer2.Next();
@@ -4832,17 +4845,36 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectCurves(TiglCPACSConfigurationHand
             EdgeExplorer1.Next();
         }
 
-        if ( etas1.size() > 1 ) {
-            LOG(WARNING) << "More than one intersection found!";
+        std::cout<<std::endl;
+        for( unsigned int i=0; i<intersectionPoints.size(); i++ ) {
+            std::cout<<"==== Intersection Point "<<i<<" ===="<<std::endl;
+            std::cout<<"    Distance      : " <<intersectionPoints[i].SquareDistance<<std::endl;
+            std::cout<<"    Eta1          : " <<intersectionPoints[i].ParameterOnE1<<std::endl;
+            std::cout<<"    Eta2          : " <<intersectionPoints[i].ParameterOnE2<<std::endl;
+            std::cout<<"    Center        : ("<<intersectionPoints[i].Center.X()<<", "
+                                              <<intersectionPoints[i].Center.Y()<<", "
+                                              <<intersectionPoints[i].Center.Z()<<")"
+                                              <<std::endl;
+            double p1x, p1y, p1z;
+            tiglIntersectGetPoint( cpacsHandle, curvesID1, curve1Idx, intersectionPoints[i].ParameterOnE1, &p1x, &p1y, &p1z);
+            std::cout<<"    PointOnE1     : ("<<p1x<<", "<<p1y<<", "<<p1z<<")"<<std::endl;
+
+            double p2x, p2y, p2z;
+            tiglIntersectGetPoint( cpacsHandle, curvesID2, curve2Idx, intersectionPoints[i].ParameterOnE2, &p2x, &p2y, &p2z);
+            std::cout<<"    PointOnE2     : ("<<p2x<<", "<<p2y<<", "<<p2z<<")"<<std::endl;
+        }
+
+        if ( intersectionPoints.size() > 1 ) {
+            LOG(WARNING) << "tiglIntersectCurves: More than one intersection found!";
         }
         //TODO how to handle several intersections?
 
-        if ( etas1.size() == 0 ) {
-            LOG(INFO) << "The curves do not intersect to the specified tolerance";
+        if ( intersectionPoints.size() == 0 ) {
+            LOG(INFO) << "tiglIntersectCurves: The curves do not intersect to the specified tolerance";
         }
         else {
-            *eta1 = etas1.at(0);
-            *eta2 = etas2.at(0);
+            *eta1 = intersectionPoints[0].ParameterOnE1;
+            *eta2 = intersectionPoints[0].ParameterOnE2;
         }
 
         return TIGL_SUCCESS;

@@ -151,13 +151,38 @@ TEST_F(TiglIntersectionCalculation, tiglIntersectWithPlaneSegment)
 TEST_F(TiglIntersectionCalculation, tiglIntersectCurves)
 {
     char* id1 = NULL;
-    ASSERT_EQ(TIGL_SUCCESS, tiglIntersectWithPlaneSegment(tiglHandle, "SimpleFuselage", 0.5, -1.25, 0., 0.5, 1.25,0., 0., 0., 1., &id1));
+    ASSERT_EQ(TIGL_SUCCESS, tiglIntersectWithPlaneSegment(tiglHandle, "SimpleFuselage", 0.5, -.25, 0., 0.5, .25,0., 0., 0., 1., &id1));
 
     char* id2 = NULL;
-    ASSERT_EQ(TIGL_SUCCESS, tiglIntersectWithPlaneSegment(tiglHandle, "SimpleFuselage", 0., 0., -1., 0., 0., 1., 1., 0., 0., &id2));
+    ASSERT_EQ(TIGL_SUCCESS, tiglIntersectWithPlane(tiglHandle, "SimpleFuselage", 0., 0., 0., 0., 1., 0., &id2));
 
+    double tol = 1e-8;
     double eta1, eta2;
-    ASSERT_EQ(TIGL_SUCCESS, tiglIntersectCurves(tiglHandle, id1, 1, id2, 1, 1e-5, &eta1, &eta2) );
+    double p1x, p1y, p1z;
+    double p2x, p2y, p2z;
+
+    ASSERT_EQ(TIGL_SUCCESS, tiglIntersectCurves(  tiglHandle, id1, 1, id2, 1, tol, &eta1, &eta2) );
+    ASSERT_EQ(TIGL_SUCCESS, tiglIntersectGetPoint(tiglHandle, id1, 1, eta1, &p1x, &p1y, &p1z) );
+    ASSERT_EQ(TIGL_SUCCESS, tiglIntersectGetPoint(tiglHandle, id2, 1, eta2, &p2x, &p2y, &p2z) );
+//    ASSERT_NEAR( 0.5, p1x, tol);
+//    ASSERT_NEAR( 0.0, p1y, tol);
+//    ASSERT_NEAR( 0.5, p1z, tol);
+//    ASSERT_NEAR( 0.5, p2x, tol);
+//    ASSERT_NEAR( 0.0, p2y, tol);
+//    ASSERT_NEAR( 0.5, p2z, tol);
+
+
+    ASSERT_EQ(TIGL_SUCCESS, tiglIntersectCurves(  tiglHandle, id1, 2, id2, 1, 1e-5, &eta1, &eta2) );
+    ASSERT_EQ(TIGL_SUCCESS, tiglIntersectGetPoint(tiglHandle, id1, 2, eta1, &p1x, &p1y, &p1z) );
+    ASSERT_EQ(TIGL_SUCCESS, tiglIntersectGetPoint(tiglHandle, id2, 1, eta2, &p2x, &p2y, &p2z) );
+//    ASSERT_NEAR( 0.5, p1x, tol);
+//    ASSERT_NEAR( 0.0, p1y, tol);
+//    ASSERT_NEAR(-0.5, p1z, tol);
+//    ASSERT_NEAR( 0.5, p2x, tol);
+//    ASSERT_NEAR( 0.0, p2y, tol);
+//    ASSERT_NEAR(-0.5, p2z, tol);
+
+//    check errorcodes
 
 }
 
