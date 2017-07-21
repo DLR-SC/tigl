@@ -109,6 +109,22 @@ public:
         return m_parmsIntersGuides;
     }
 
+    /**
+     * @brief Returns the sorted profile curves
+     */
+    std::vector<Handle (Geom_Curve)> const & Profiles() const
+    {
+        return m_profiles;
+    }
+
+    /**
+     * @brief Returns the sorted guide curves
+     */
+    std::vector<Handle (Geom_Curve)> const & Guides() const
+    {
+        return m_guides;
+    }
+
     // The next functions are just for testing the algorithm and
     // are not required elsewhere.
     std::vector<std::string> const & ProfileIndices() const;

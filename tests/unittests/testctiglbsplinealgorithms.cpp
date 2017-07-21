@@ -578,6 +578,103 @@ TEST(TiglBSplineAlgorithms, testReparametrizeBSpline)
     ASSERT_EQ(reparam_spline->Multiplicity(9), 4);
 }
 
+TEST(TiglBSplineAlgorithms, testReparametrizeBSplineContinuouslyApprox)
+{
+    /*
+     * Tests the method reparametrizeBSplineContinuouslyApprox(spline, old_parameters, new_parameters, n_control_pnts=30)
+     */
+
+    // create B-spline
+    unsigned int degree = 3;
+
+    TColgp_Array1OfPnt controlPoints(1, 8);
+    controlPoints(1) = gp_Pnt(0., -1., 0.);
+    controlPoints(2) = gp_Pnt(2., 3., 1.);
+    controlPoints(3) = gp_Pnt(1., 5., -2.);
+    controlPoints(4) = gp_Pnt(2., 8., -1.);
+    controlPoints(5) = gp_Pnt(0., 10., 2.);
+    controlPoints(6) = gp_Pnt(-1., 12., 4.);
+    controlPoints(7) = gp_Pnt(-2., 16., 5.);
+    controlPoints(8) = gp_Pnt(0., 17., 0.);
+
+    TColStd_Array1OfReal knots(1, 5);
+    knots(1) = 0.;
+    knots(2) = 0.1;
+    knots(3) = 0.3;
+    knots(4) = 0.8;
+    knots(5) = 1.;
+
+    TColStd_Array1OfInteger mults(1, 5);
+    mults(1) = 4;
+    mults(2) = 1;
+    mults(3) = 2;
+    mults(4) = 1;
+    mults(5) = 4;
+
+    Handle(Geom_BSplineCurve) spline = new Geom_BSplineCurve(controlPoints, knots, mults, degree);
+
+    TColStd_Array1OfReal old_parameters(1, 7);
+    old_parameters(1) = 0.;
+    old_parameters(2) = 0.2;
+    old_parameters(3) = 0.4;
+    old_parameters(4) = 0.5;
+    old_parameters(5) = 0.6;
+    old_parameters(6) = 0.8;
+    old_parameters(7) = 1.;
+
+    TColStd_Array1OfReal new_parameters(1, 7);
+    new_parameters(1) = 0.;
+    new_parameters(2) = 0.1;
+    new_parameters(3) = 0.2;
+    new_parameters(4) = 0.3;
+    new_parameters(5) = 0.7;
+    new_parameters(6) = 0.95;
+    new_parameters(7) = 1.;
+
+    Handle(Geom_BSplineCurve) reparam_spline = CTiglBSplineAlgorithms::reparametrizeBSplineContinuouslyApprox(spline, old_parameters, new_parameters, 100);
+
+    TColStd_Array1OfReal test_point_params(1, 101);
+    for (int i = 0; i < 101; ++i) {
+        test_point_params(i + 1) = i / 100.;
+    }
+
+    TColStd_Array1OfReal test_point_new_params(1, 101);
+
+    for (int i = test_point_params.Lower(); i <= test_point_params.Upper(); ++i) {
+        for (int j = old_parameters.Lower(); j <= old_parameters.Upper() - 1; ++j) {
+            if (std::abs(test_point_params(i) - old_parameters(j + 1)) < 1e-15) {
+                test_point_new_params(i) = new_parameters(j + 1);
+            }
+            else if (std::abs(test_point_params(i) - old_parameters(1)) < 1e-15) {
+                test_point_new_params(i) = new_parameters(1);
+            }
+            else if (old_parameters(j + 1) > test_point_params(i) && test_point_params(i) > old_parameters(j)) {
+                test_point_new_params(i) = test_point_params(i) * (new_parameters(j + 1) - new_parameters(j)) / (old_parameters(j + 1) - old_parameters(j));
+            }
+        }
+    }
+
+    // check that B-spline geometry remains approximately the same
+    for (int param_idx = old_parameters.Lower(); param_idx <= old_parameters.Upper(); ++param_idx) {
+        gp_Pnt old_point = spline->Value(old_parameters(param_idx));
+        gp_Pnt new_point = reparam_spline->Value(new_parameters(param_idx));
+        ASSERT_NEAR(old_point.X(), new_point.X(), 1e-10);
+        ASSERT_NEAR(old_point.Y(), new_point.Y(), 1e-10);
+        ASSERT_NEAR(old_point.Z(), new_point.Z(), 1e-10);
+    }
+
+    // check that knots -> TODO: find the right knots
+    ASSERT_NEAR(reparam_spline->Knot(1), 0., 1e-15);
+    ASSERT_NEAR(reparam_spline->Knot(2), 0.05, 1e-15);
+    ASSERT_NEAR(reparam_spline->Knot(3), 0.1, 1e-15);
+    ASSERT_NEAR(reparam_spline->Knot(4), 0.15, 1e-15);
+    ASSERT_NEAR(reparam_spline->Knot(5), 0.2, 1e-15);
+    ASSERT_NEAR(reparam_spline->Knot(6), 0.3, 1e-15);
+    ASSERT_NEAR(reparam_spline->Knot(7), 0.7, 1e-15);
+    ASSERT_NEAR(reparam_spline->Knot(8), 0.95, 1e-15);
+    ASSERT_NEAR(reparam_spline->Knot(9), 1., 1e-15);
+}
+
 
 TEST(TiglBSplineAlgorithms, testFlipSurface)
 {
@@ -1111,9 +1208,9 @@ TEST(TiglBSplineAlgorithms, testCreateGordonSurfaceGeneral)
             gp_Pnt point_curve2 = spline_u4->Value(u_value);  // represents y(z) = (z - 0.5)^2 with offset 2 in x-direction
             gp_Pnt right_point(point_curve1.X() * (1. - v_value) + point_curve2.X() * v_value, point_curve1.Y() * (1. - v_value) + point_curve2.Y() * v_value, point_curve1.Z() * (1. - v_value) + point_curve2.Z() * v_value);
 
-            ASSERT_NEAR(surface_point.X(), right_point.X(), 1e-14);
-            ASSERT_NEAR(surface_point.Y(), right_point.Y(), 1e-14);
-            ASSERT_NEAR(surface_point.Z(), right_point.Z(), 1e-14);
+            ASSERT_NEAR(surface_point.X(), right_point.X(), 1e-13);
+            ASSERT_NEAR(surface_point.Y(), right_point.Y(), 1e-13);
+            ASSERT_NEAR(surface_point.Z(), right_point.Z(), 1e-13);
         }
     }
 }
@@ -1164,8 +1261,6 @@ TEST(TiglBSplineAlgorithms, testIntersectionFinderClosed)
     }
 
     std::vector<std::pair<double, double> > intersection_params_vector = CTiglBSplineAlgorithms::intersectionFinder(splines_u_vector[5], splines_v_vector[2]);
-    //std::cout << std::endl << "intersection_params_vector.size(): " << intersection_params_vector.size();
-
 }
 
 TEST(TiglBSplineAlgorithms, testSortIntersectionParams)
@@ -1454,22 +1549,6 @@ TEST(TiglBSplineAlgorithms, testSortIntersectionParamsFromBRep)
     std::vector<std::vector<double> > sorted_intersection_params_v = std::get<1>(sorted_tuple);
     std::vector<Handle(Geom_BSplineCurve)> sorted_splines_u = std::get<2>(sorted_tuple);
     std::vector<Handle(Geom_BSplineCurve)> sorted_splines_v = std::get<3>(sorted_tuple);
-
-    std::cout << std::endl << "sorted_intersection_params_u: " << std::endl;
-    for (int i = 0; i < sorted_splines_u.size(); ++i) {
-        for (int j = 0; j < sorted_splines_v.size(); ++j) {
-            std::cout << sorted_intersection_params_u[i][j] << "  ";
-        }
-        std::cout << std::endl;
-    }
-
-    std::cout << std::endl << "sorted_intersection_params_v: " << std::endl;
-    for (int i = 0; i < sorted_splines_v.size(); ++i) {
-        for (int j = 0; j < sorted_splines_u.size(); ++j) {
-            std::cout << sorted_intersection_params_v[i][j] << "  ";
-        }
-        std::cout << std::endl;
-    }
 }
 
 
