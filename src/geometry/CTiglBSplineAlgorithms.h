@@ -32,6 +32,7 @@
 #include <utility>
 #include <vector>
 #include <tuple>
+#include <math_Matrix.hxx>
 
 #include <BSplCLib_EvaluatorFunction.hxx>
 
@@ -40,7 +41,8 @@ namespace tigl
 
 class ParametrizingFunction : public BSplCLib_EvaluatorFunction {
 public:
-    std::vector<gp_Pnt2d> parameter_coordinates;
+    Handle(TColStd_HArray1OfReal) old_parameters;
+    Handle(TColStd_HArray1OfReal) new_parameters;
 
     ParametrizingFunction(const TColStd_Array1OfReal& old_params, const TColStd_Array1OfReal& new_params);
     virtual void Evaluate(const Standard_Integer theDerivativeRequest, const Standard_Real * theStartEnd, const Standard_Real theParameter,
@@ -144,8 +146,8 @@ public:
 
     TIGL_EXPORT static Handle(Geom_BSplineCurve) reparametrizeBSplineContinuously(const Handle(Geom_BSplineCurve) spline, const TColStd_Array1OfReal& old_parameters,
                                                                                   const TColStd_Array1OfReal& new_parameters);
-    TIGL_EXPORT static Handle(Geom_BSplineCurve) CTiglBSplineAlgorithms::reparametrizeBSplineContinuouslyApprox(const Handle(Geom_BSplineCurve) spline, const TColStd_Array1OfReal& old_parameters,
-                                                                                                                const TColStd_Array1OfReal& new_parameters);
+    TIGL_EXPORT static Handle(Geom_BSplineCurve) reparametrizeBSplineContinuouslyApprox(const Handle(Geom_BSplineCurve) spline, const TColStd_Array1OfReal& old_parameters,
+                                                                                        const TColStd_Array1OfReal& new_parameters, unsigned int n_control_pnts=30);
 
     /**
      * @brief flipSurface:
@@ -259,6 +261,20 @@ public:
      *          the scale
      */
     TIGL_EXPORT static double scaleOfBSplines(const std::vector<Handle(Geom_BSplineCurve)>& splines_vector);
+
+    /**
+     * @brief eliminateInaccuraciesNetworkIntersections:
+     *          Eliminates small inaccuracies of the intersection parameter values at the beginning and end of each B-spline curve of a B-spline curve network
+     * @param sorted_splines_u:
+     *          u-directional B-spline curves in an order
+     * @param sorted_splines_v:
+     *          v-directional B-spline curves in an order
+     * @param intersection_params_u:
+     *          the two-dimensional array of intersection parameters of every u-directional B-spline with every v-directional B-spline
+     * @param intersection_params_v:
+     *          the two-dimensional array of intersection parameters of every v-directional B-spline with every u-directional B-spline
+     */
+    TIGL_EXPORT static void eliminateInaccuraciesNetworkIntersections(const std::vector<Handle(Geom_BSplineCurve)> & sorted_splines_u, const std::vector<Handle(Geom_BSplineCurve)> & sorted_splines_v, math_Matrix & intersection_params_u, math_Matrix & intersection_params_v);
 
     /**
      * @brief createGordonSurfaceGeneral:
