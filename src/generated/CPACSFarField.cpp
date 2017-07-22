@@ -33,24 +33,24 @@ namespace tigl
         void CPACSFarField::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element type
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/type")) {
-                m_type = stringToTiglFarFieldType(tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/type"));
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/type")) {
+                m_type = stringToTiglFarFieldType(tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/type"));
             }
             else {
                 LOG(ERROR) << "Required element type is missing at xpath " << xpath;
             }
             
             // read element referenceLength
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/referenceLength")) {
-                m_referenceLength = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/referenceLength");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/referenceLength")) {
+                m_referenceLength = tixi::TixiGetElement<double>(tixiHandle, xpath + "/referenceLength");
             }
             else {
                 LOG(ERROR) << "Required element referenceLength is missing at xpath " << xpath;
             }
             
             // read element multiplier
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/multiplier")) {
-                m_multiplier = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/multiplier");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/multiplier")) {
+                m_multiplier = tixi::TixiGetElement<double>(tixiHandle, xpath + "/multiplier");
             }
             else {
                 LOG(ERROR) << "Required element multiplier is missing at xpath " << xpath;
@@ -61,16 +61,16 @@ namespace tigl
         void CPACSFarField::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element type
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/type");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/type", TiglFarFieldTypeToString(m_type));
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/type");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/type", TiglFarFieldTypeToString(m_type));
             
             // write element referenceLength
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/referenceLength");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/referenceLength", m_referenceLength);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/referenceLength");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/referenceLength", m_referenceLength);
             
             // write element multiplier
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/multiplier");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/multiplier", m_multiplier);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/multiplier");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/multiplier", m_multiplier);
             
         }
         

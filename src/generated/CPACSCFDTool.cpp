@@ -31,7 +31,7 @@ namespace tigl
         void CPACSCFDTool::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element tool
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/tool")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/tool")) {
                 m_tool.ReadCPACS(tixiHandle, xpath + "/tool");
             }
             else {
@@ -39,8 +39,8 @@ namespace tigl
             }
             
             // read element aircraftModelUID
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/aircraftModelUID")) {
-                m_aircraftModelUID = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/aircraftModelUID");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/aircraftModelUID")) {
+                m_aircraftModelUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/aircraftModelUID");
                 if (m_aircraftModelUID.empty()) {
                     LOG(WARNING) << "Required element aircraftModelUID is empty at xpath " << xpath;
                 }
@@ -50,7 +50,7 @@ namespace tigl
             }
             
             // read element farField
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/farField")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/farField")) {
                 m_farField.ReadCPACS(tixiHandle, xpath + "/farField");
             }
             else {
@@ -62,15 +62,15 @@ namespace tigl
         void CPACSCFDTool::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element tool
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/tool");
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/tool");
             m_tool.WriteCPACS(tixiHandle, xpath + "/tool");
             
             // write element aircraftModelUID
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/aircraftModelUID");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/aircraftModelUID", m_aircraftModelUID);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/aircraftModelUID");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/aircraftModelUID", m_aircraftModelUID);
             
             // write element farField
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/farField");
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/farField");
             m_farField.WriteCPACS(tixiHandle, xpath + "/farField");
             
         }

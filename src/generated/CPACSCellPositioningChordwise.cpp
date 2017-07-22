@@ -42,21 +42,21 @@ namespace tigl
         void CPACSCellPositioningChordwise::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element sparUID
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/sparUID")) {
-                m_sparUID_choice1 = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/sparUID");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/sparUID")) {
+                m_sparUID_choice1 = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/sparUID");
                 if (m_sparUID_choice1->empty()) {
                     LOG(WARNING) << "Optional element sparUID is present but empty at xpath " << xpath;
                 }
             }
             
             // read element xsi1
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/xsi1")) {
-                m_xsi1_choice2 = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/xsi1");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/xsi1")) {
+                m_xsi1_choice2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/xsi1");
             }
             
             // read element xsi2
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/xsi2")) {
-                m_xsi2_choice2 = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/xsi2");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/xsi2")) {
+                m_xsi2_choice2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/xsi2");
             }
             
             if (!ValidateChoices()) {
@@ -68,31 +68,31 @@ namespace tigl
         {
             // write element sparUID
             if (m_sparUID_choice1) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/sparUID");
-                tixihelper::TixiSaveElement(tixiHandle, xpath + "/sparUID", *m_sparUID_choice1);
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/sparUID");
+                tixi::TixiSaveElement(tixiHandle, xpath + "/sparUID", *m_sparUID_choice1);
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/sparUID")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/sparUID");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/sparUID")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/sparUID");
                 }
             }
             
             // write element xsi1
             if (m_xsi1_choice2) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/xsi1");
-                tixihelper::TixiSaveElement(tixiHandle, xpath + "/xsi1", *m_xsi1_choice2);
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/xsi1");
+                tixi::TixiSaveElement(tixiHandle, xpath + "/xsi1", *m_xsi1_choice2);
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/xsi1")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/xsi1");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/xsi1")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/xsi1");
                 }
             }
             
             // write element xsi2
             if (m_xsi2_choice2) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/xsi2");
-                tixihelper::TixiSaveElement(tixiHandle, xpath + "/xsi2", *m_xsi2_choice2);
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/xsi2");
+                tixi::TixiSaveElement(tixiHandle, xpath + "/xsi2", *m_xsi2_choice2);
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/xsi2")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/xsi2");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/xsi2")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/xsi2");
                 }
             }
             

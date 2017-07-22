@@ -35,7 +35,7 @@ namespace tigl
         void CPACSCst2D::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element psi
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/psi")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/psi")) {
                 m_psi.ReadCPACS(tixiHandle, xpath + "/psi");
             }
             else {
@@ -43,23 +43,23 @@ namespace tigl
             }
             
             // read element upperN1
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/upperN1")) {
-                m_upperN1 = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/upperN1");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/upperN1")) {
+                m_upperN1 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/upperN1");
             }
             else {
                 LOG(ERROR) << "Required element upperN1 is missing at xpath " << xpath;
             }
             
             // read element upperN2
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/upperN2")) {
-                m_upperN2 = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/upperN2");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/upperN2")) {
+                m_upperN2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/upperN2");
             }
             else {
                 LOG(ERROR) << "Required element upperN2 is missing at xpath " << xpath;
             }
             
             // read element upperB
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/upperB")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/upperB")) {
                 m_upperB.ReadCPACS(tixiHandle, xpath + "/upperB");
             }
             else {
@@ -67,23 +67,23 @@ namespace tigl
             }
             
             // read element lowerN1
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/lowerN1")) {
-                m_lowerN1 = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/lowerN1");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/lowerN1")) {
+                m_lowerN1 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/lowerN1");
             }
             else {
                 LOG(ERROR) << "Required element lowerN1 is missing at xpath " << xpath;
             }
             
             // read element lowerN2
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/lowerN2")) {
-                m_lowerN2 = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/lowerN2");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/lowerN2")) {
+                m_lowerN2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/lowerN2");
             }
             else {
                 LOG(ERROR) << "Required element lowerN2 is missing at xpath " << xpath;
             }
             
             // read element lowerB
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/lowerB")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/lowerB")) {
                 m_lowerB.ReadCPACS(tixiHandle, xpath + "/lowerB");
             }
             else {
@@ -91,8 +91,8 @@ namespace tigl
             }
             
             // read element trailingEdgeThickness
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/trailingEdgeThickness")) {
-                m_trailingEdgeThickness = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/trailingEdgeThickness");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/trailingEdgeThickness")) {
+                m_trailingEdgeThickness = tixi::TixiGetElement<double>(tixiHandle, xpath + "/trailingEdgeThickness");
             }
             
         }
@@ -100,40 +100,40 @@ namespace tigl
         void CPACSCst2D::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element psi
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/psi");
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/psi");
             m_psi.WriteCPACS(tixiHandle, xpath + "/psi");
             
             // write element upperN1
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/upperN1");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/upperN1", m_upperN1);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/upperN1");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/upperN1", m_upperN1);
             
             // write element upperN2
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/upperN2");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/upperN2", m_upperN2);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/upperN2");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/upperN2", m_upperN2);
             
             // write element upperB
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/upperB");
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/upperB");
             m_upperB.WriteCPACS(tixiHandle, xpath + "/upperB");
             
             // write element lowerN1
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/lowerN1");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/lowerN1", m_lowerN1);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/lowerN1");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/lowerN1", m_lowerN1);
             
             // write element lowerN2
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/lowerN2");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/lowerN2", m_lowerN2);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/lowerN2");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/lowerN2", m_lowerN2);
             
             // write element lowerB
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/lowerB");
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/lowerB");
             m_lowerB.WriteCPACS(tixiHandle, xpath + "/lowerB");
             
             // write element trailingEdgeThickness
             if (m_trailingEdgeThickness) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/trailingEdgeThickness");
-                tixihelper::TixiSaveElement(tixiHandle, xpath + "/trailingEdgeThickness", *m_trailingEdgeThickness);
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/trailingEdgeThickness");
+                tixi::TixiSaveElement(tixiHandle, xpath + "/trailingEdgeThickness", *m_trailingEdgeThickness);
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/trailingEdgeThickness")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/trailingEdgeThickness");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/trailingEdgeThickness")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/trailingEdgeThickness");
                 }
             }
             

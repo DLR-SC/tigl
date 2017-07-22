@@ -48,8 +48,8 @@ void CCPACSFuselageProfiles::ReadCPACS(const TixiDocumentHandle& tixiHandle, con
     // we replace generated::CPACSFuselageProfiles::ReadCPACS and not call it to allow instantiation of CCPACSFuselageProfile instead of generated::CPACSProfileGeometry
 
     // read element fuselageProfile
-    if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/fuselageProfile")) {
-        tixihelper::TixiReadElements(tixiHandle, xpath + "/fuselageProfile", m_fuselageProfiles, tixihelper::ChildWithArgsReader1<CCPACSFuselageProfile, CTiglUIDManager>(m_uidMgr));
+    if (tixi::TixiCheckElement(tixiHandle, xpath + "/fuselageProfile")) {
+        tixi::TixiReadElements(tixiHandle, xpath + "/fuselageProfile", m_fuselageProfiles, tixi::ChildWithArgsReader1<CCPACSFuselageProfile, CTiglUIDManager>(m_uidMgr));
     }
 }
 

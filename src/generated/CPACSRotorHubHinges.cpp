@@ -55,8 +55,8 @@ namespace tigl
         void CPACSRotorHubHinges::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element hinge
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/hinge")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/hinge", m_hinges, reinterpret_cast<CCPACSRotorHinges*>(this), m_uidMgr);
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/hinge")) {
+                tixi::TixiReadElements(tixiHandle, xpath + "/hinge", m_hinges, reinterpret_cast<CCPACSRotorHinges*>(this), m_uidMgr);
             }
             
         }
@@ -64,7 +64,7 @@ namespace tigl
         void CPACSRotorHubHinges::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element hinge
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/hinge", m_hinges);
+            tixi::TixiSaveElements(tixiHandle, xpath + "/hinge", m_hinges);
             
         }
         

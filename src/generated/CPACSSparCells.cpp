@@ -44,8 +44,8 @@ namespace tigl
         void CPACSSparCells::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element sparCell
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/sparCell")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/sparCell", m_sparCells, m_uidMgr);
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/sparCell")) {
+                tixi::TixiReadElements(tixiHandle, xpath + "/sparCell", m_sparCells, m_uidMgr);
             }
             
         }
@@ -53,7 +53,7 @@ namespace tigl
         void CPACSSparCells::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element sparCell
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/sparCell", m_sparCells);
+            tixi::TixiSaveElements(tixiHandle, xpath + "/sparCell", m_sparCells);
             
         }
         

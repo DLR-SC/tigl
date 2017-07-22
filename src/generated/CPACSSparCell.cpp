@@ -49,31 +49,31 @@ namespace tigl
         void CPACSSparCell::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read attribute uID
-            if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
-                m_uID = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
+            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+                m_uID = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
                 if (m_uID->empty()) {
                     LOG(WARNING) << "Optional attribute uID is present but empty at xpath " << xpath;
                 }
             }
             
             // read element fromEta
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/fromEta")) {
-                m_fromEta = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/fromEta");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/fromEta")) {
+                m_fromEta = tixi::TixiGetElement<double>(tixiHandle, xpath + "/fromEta");
             }
             else {
                 LOG(ERROR) << "Required element fromEta is missing at xpath " << xpath;
             }
             
             // read element toEta
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/toEta")) {
-                m_toEta = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/toEta");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/toEta")) {
+                m_toEta = tixi::TixiGetElement<double>(tixiHandle, xpath + "/toEta");
             }
             else {
                 LOG(ERROR) << "Required element toEta is missing at xpath " << xpath;
             }
             
             // read element upperCap
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/upperCap")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/upperCap")) {
                 m_upperCap.ReadCPACS(tixiHandle, xpath + "/upperCap");
             }
             else {
@@ -81,7 +81,7 @@ namespace tigl
             }
             
             // read element lowerCap
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/lowerCap")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/lowerCap")) {
                 m_lowerCap.ReadCPACS(tixiHandle, xpath + "/lowerCap");
             }
             else {
@@ -89,7 +89,7 @@ namespace tigl
             }
             
             // read element web1
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/web1")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/web1")) {
                 m_web1.ReadCPACS(tixiHandle, xpath + "/web1");
             }
             else {
@@ -97,7 +97,7 @@ namespace tigl
             }
             
             // read element web2
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/web2")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/web2")) {
                 m_web2 = boost::in_place();
                 try {
                     m_web2->ReadCPACS(tixiHandle, xpath + "/web2");
@@ -108,8 +108,8 @@ namespace tigl
             }
             
             // read element rotation
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/rotation")) {
-                m_rotation = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/rotation");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/rotation")) {
+                m_rotation = tixi::TixiGetElement<double>(tixiHandle, xpath + "/rotation");
             }
             else {
                 LOG(ERROR) << "Required element rotation is missing at xpath " << xpath;
@@ -122,46 +122,46 @@ namespace tigl
         {
             // write attribute uID
             if (m_uID) {
-                tixihelper::TixiSaveAttribute(tixiHandle, xpath, "uID", *m_uID);
+                tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", *m_uID);
             } else {
-                if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
-                    tixihelper::TixiRemoveAttribute(tixiHandle, xpath, "uID");
+                if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+                    tixi::TixiRemoveAttribute(tixiHandle, xpath, "uID");
                 }
             }
             
             // write element fromEta
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/fromEta");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/fromEta", m_fromEta);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/fromEta");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/fromEta", m_fromEta);
             
             // write element toEta
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/toEta");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/toEta", m_toEta);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/toEta");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/toEta", m_toEta);
             
             // write element upperCap
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/upperCap");
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/upperCap");
             m_upperCap.WriteCPACS(tixiHandle, xpath + "/upperCap");
             
             // write element lowerCap
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/lowerCap");
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/lowerCap");
             m_lowerCap.WriteCPACS(tixiHandle, xpath + "/lowerCap");
             
             // write element web1
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/web1");
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/web1");
             m_web1.WriteCPACS(tixiHandle, xpath + "/web1");
             
             // write element web2
             if (m_web2) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/web2");
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/web2");
                 m_web2->WriteCPACS(tixiHandle, xpath + "/web2");
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/web2")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/web2");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/web2")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/web2");
                 }
             }
             
             // write element rotation
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/rotation");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/rotation", m_rotation);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/rotation");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/rotation", m_rotation);
             
         }
         

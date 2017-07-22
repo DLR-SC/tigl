@@ -55,7 +55,7 @@ namespace tigl
         void CPACSSparCrossSection::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element upperCap
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/upperCap")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/upperCap")) {
                 m_upperCap = boost::in_place();
                 try {
                     m_upperCap->ReadCPACS(tixiHandle, xpath + "/upperCap");
@@ -66,7 +66,7 @@ namespace tigl
             }
             
             // read element lowerCap
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/lowerCap")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/lowerCap")) {
                 m_lowerCap = boost::in_place();
                 try {
                     m_lowerCap->ReadCPACS(tixiHandle, xpath + "/lowerCap");
@@ -77,7 +77,7 @@ namespace tigl
             }
             
             // read element web1
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/web1")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/web1")) {
                 m_web1.ReadCPACS(tixiHandle, xpath + "/web1");
             }
             else {
@@ -85,7 +85,7 @@ namespace tigl
             }
             
             // read element web2
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/web2")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/web2")) {
                 m_web2 = boost::in_place();
                 try {
                     m_web2->ReadCPACS(tixiHandle, xpath + "/web2");
@@ -96,7 +96,7 @@ namespace tigl
             }
             
             // read element sparCells
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/sparCells")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/sparCells")) {
                 m_sparCells = boost::in_place(m_uidMgr);
                 try {
                     m_sparCells->ReadCPACS(tixiHandle, xpath + "/sparCells");
@@ -107,8 +107,8 @@ namespace tigl
             }
             
             // read element rotation
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/rotation")) {
-                m_rotation = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/rotation");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/rotation")) {
+                m_rotation = tixi::TixiGetElement<double>(tixiHandle, xpath + "/rotation");
             }
             else {
                 LOG(ERROR) << "Required element rotation is missing at xpath " << xpath;
@@ -120,51 +120,51 @@ namespace tigl
         {
             // write element upperCap
             if (m_upperCap) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/upperCap");
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/upperCap");
                 m_upperCap->WriteCPACS(tixiHandle, xpath + "/upperCap");
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/upperCap")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/upperCap");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/upperCap")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/upperCap");
                 }
             }
             
             // write element lowerCap
             if (m_lowerCap) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/lowerCap");
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/lowerCap");
                 m_lowerCap->WriteCPACS(tixiHandle, xpath + "/lowerCap");
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/lowerCap")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/lowerCap");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/lowerCap")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/lowerCap");
                 }
             }
             
             // write element web1
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/web1");
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/web1");
             m_web1.WriteCPACS(tixiHandle, xpath + "/web1");
             
             // write element web2
             if (m_web2) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/web2");
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/web2");
                 m_web2->WriteCPACS(tixiHandle, xpath + "/web2");
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/web2")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/web2");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/web2")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/web2");
                 }
             }
             
             // write element sparCells
             if (m_sparCells) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/sparCells");
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/sparCells");
                 m_sparCells->WriteCPACS(tixiHandle, xpath + "/sparCells");
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/sparCells")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/sparCells");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/sparCells")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/sparCells");
                 }
             }
             
             // write element rotation
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/rotation");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/rotation", m_rotation);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/rotation");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/rotation", m_rotation);
             
         }
         

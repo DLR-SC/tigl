@@ -32,8 +32,8 @@ namespace tigl
         void CPACSUpdate::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element modification
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/modification")) {
-                m_modification = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/modification");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/modification")) {
+                m_modification = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/modification");
                 if (m_modification.empty()) {
                     LOG(WARNING) << "Required element modification is empty at xpath " << xpath;
                 }
@@ -43,8 +43,8 @@ namespace tigl
             }
             
             // read element creator
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/creator")) {
-                m_creator = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/creator");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/creator")) {
+                m_creator = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/creator");
                 if (m_creator.empty()) {
                     LOG(WARNING) << "Required element creator is empty at xpath " << xpath;
                 }
@@ -54,16 +54,16 @@ namespace tigl
             }
             
             // read element timestamp
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/timestamp")) {
-                m_timestamp = tixihelper::TixiGetElement<std::time_t>(tixiHandle, xpath + "/timestamp");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/timestamp")) {
+                m_timestamp = tixi::TixiGetElement<std::time_t>(tixiHandle, xpath + "/timestamp");
             }
             else {
                 LOG(ERROR) << "Required element timestamp is missing at xpath " << xpath;
             }
             
             // read element version
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/version")) {
-                m_version = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/version");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/version")) {
+                m_version = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/version");
                 if (m_version.empty()) {
                     LOG(WARNING) << "Required element version is empty at xpath " << xpath;
                 }
@@ -73,8 +73,8 @@ namespace tigl
             }
             
             // read element cpacsVersion
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/cpacsVersion")) {
-                m_cpacsVersion = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/cpacsVersion");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/cpacsVersion")) {
+                m_cpacsVersion = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/cpacsVersion");
                 if (m_cpacsVersion.empty()) {
                     LOG(WARNING) << "Required element cpacsVersion is empty at xpath " << xpath;
                 }
@@ -88,24 +88,24 @@ namespace tigl
         void CPACSUpdate::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element modification
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/modification");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/modification", m_modification);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/modification");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/modification", m_modification);
             
             // write element creator
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/creator");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/creator", m_creator);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/creator");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/creator", m_creator);
             
             // write element timestamp
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/timestamp");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/timestamp", m_timestamp);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/timestamp");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/timestamp", m_timestamp);
             
             // write element version
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/version");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/version", m_version);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/version");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/version", m_version);
             
             // write element cpacsVersion
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/cpacsVersion");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/cpacsVersion", m_cpacsVersion);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/cpacsVersion");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/cpacsVersion", m_cpacsVersion);
             
         }
         

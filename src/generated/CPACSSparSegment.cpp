@@ -58,16 +58,16 @@ namespace tigl
         void CPACSSparSegment::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read attribute uID
-            if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
-                m_uID = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
+            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+                m_uID = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
                 if (m_uID->empty()) {
                     LOG(WARNING) << "Optional attribute uID is present but empty at xpath " << xpath;
                 }
             }
             
             // read element name
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/name")) {
-                m_name = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
+                m_name = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
                 if (m_name.empty()) {
                     LOG(WARNING) << "Required element name is empty at xpath " << xpath;
                 }
@@ -77,8 +77,8 @@ namespace tigl
             }
             
             // read element description
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/description")) {
-                m_description = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
+                m_description = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
                 if (m_description.empty()) {
                     LOG(WARNING) << "Required element description is empty at xpath " << xpath;
                 }
@@ -88,7 +88,7 @@ namespace tigl
             }
             
             // read element sparPositionUIDs
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/sparPositionUIDs")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/sparPositionUIDs")) {
                 m_sparPositionUIDs.ReadCPACS(tixiHandle, xpath + "/sparPositionUIDs");
             }
             else {
@@ -96,7 +96,7 @@ namespace tigl
             }
             
             // read element sparCrossSection
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/sparCrossSection")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/sparCrossSection")) {
                 m_sparCrossSection.ReadCPACS(tixiHandle, xpath + "/sparCrossSection");
             }
             else {
@@ -110,27 +110,27 @@ namespace tigl
         {
             // write attribute uID
             if (m_uID) {
-                tixihelper::TixiSaveAttribute(tixiHandle, xpath, "uID", *m_uID);
+                tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", *m_uID);
             } else {
-                if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
-                    tixihelper::TixiRemoveAttribute(tixiHandle, xpath, "uID");
+                if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+                    tixi::TixiRemoveAttribute(tixiHandle, xpath, "uID");
                 }
             }
             
             // write element name
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/name", m_name);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/name", m_name);
             
             // write element description
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/description", m_description);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/description", m_description);
             
             // write element sparPositionUIDs
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/sparPositionUIDs");
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/sparPositionUIDs");
             m_sparPositionUIDs.WriteCPACS(tixiHandle, xpath + "/sparPositionUIDs");
             
             // write element sparCrossSection
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/sparCrossSection");
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/sparCrossSection");
             m_sparCrossSection.WriteCPACS(tixiHandle, xpath + "/sparCrossSection");
             
         }

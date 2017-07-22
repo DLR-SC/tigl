@@ -33,40 +33,40 @@ namespace tigl
         void CPACSCompositeLayer::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element name
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/name")) {
-                m_name = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
+                m_name = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
                 if (m_name->empty()) {
                     LOG(WARNING) << "Optional element name is present but empty at xpath " << xpath;
                 }
             }
             
             // read element description
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/description")) {
-                m_description = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
+                m_description = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
                 if (m_description->empty()) {
                     LOG(WARNING) << "Optional element description is present but empty at xpath " << xpath;
                 }
             }
             
             // read element thickness
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/thickness")) {
-                m_thickness = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/thickness");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/thickness")) {
+                m_thickness = tixi::TixiGetElement<double>(tixiHandle, xpath + "/thickness");
             }
             else {
                 LOG(ERROR) << "Required element thickness is missing at xpath " << xpath;
             }
             
             // read element phi
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/phi")) {
-                m_phi = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/phi");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/phi")) {
+                m_phi = tixi::TixiGetElement<double>(tixiHandle, xpath + "/phi");
             }
             else {
                 LOG(ERROR) << "Required element phi is missing at xpath " << xpath;
             }
             
             // read element materialUID
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/materialUID")) {
-                m_materialUID = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/materialUID");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/materialUID")) {
+                m_materialUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/materialUID");
                 if (m_materialUID.empty()) {
                     LOG(WARNING) << "Required element materialUID is empty at xpath " << xpath;
                 }
@@ -81,35 +81,35 @@ namespace tigl
         {
             // write element name
             if (m_name) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
-                tixihelper::TixiSaveElement(tixiHandle, xpath + "/name", *m_name);
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
+                tixi::TixiSaveElement(tixiHandle, xpath + "/name", *m_name);
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/name")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/name");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/name");
                 }
             }
             
             // write element description
             if (m_description) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
-                tixihelper::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
+                tixi::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/description")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/description");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/description");
                 }
             }
             
             // write element thickness
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/thickness");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/thickness", m_thickness);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/thickness");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/thickness", m_thickness);
             
             // write element phi
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/phi");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/phi", m_phi);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/phi");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/phi", m_phi);
             
             // write element materialUID
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/materialUID");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/materialUID", m_materialUID);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/materialUID");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/materialUID", m_materialUID);
             
         }
         

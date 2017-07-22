@@ -44,8 +44,8 @@ namespace tigl
         void CPACSWingRibExplicitPositioning::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element startReference
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/startReference")) {
-                m_startReference = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/startReference");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/startReference")) {
+                m_startReference = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/startReference");
                 if (m_startReference.empty()) {
                     LOG(WARNING) << "Required element startReference is empty at xpath " << xpath;
                 }
@@ -55,16 +55,16 @@ namespace tigl
             }
             
             // read element etaStart
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/etaStart")) {
-                m_etaStart = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/etaStart");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/etaStart")) {
+                m_etaStart = tixi::TixiGetElement<double>(tixiHandle, xpath + "/etaStart");
             }
             else {
                 LOG(ERROR) << "Required element etaStart is missing at xpath " << xpath;
             }
             
             // read element endReference
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/endReference")) {
-                m_endReference = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/endReference");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/endReference")) {
+                m_endReference = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/endReference");
                 if (m_endReference.empty()) {
                     LOG(WARNING) << "Required element endReference is empty at xpath " << xpath;
                 }
@@ -74,8 +74,8 @@ namespace tigl
             }
             
             // read element etaEnd
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/etaEnd")) {
-                m_etaEnd = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/etaEnd");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/etaEnd")) {
+                m_etaEnd = tixi::TixiGetElement<double>(tixiHandle, xpath + "/etaEnd");
             }
             else {
                 LOG(ERROR) << "Required element etaEnd is missing at xpath " << xpath;
@@ -86,20 +86,20 @@ namespace tigl
         void CPACSWingRibExplicitPositioning::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element startReference
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/startReference");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/startReference", m_startReference);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/startReference");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/startReference", m_startReference);
             
             // write element etaStart
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/etaStart");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/etaStart", m_etaStart);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/etaStart");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/etaStart", m_etaStart);
             
             // write element endReference
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/endReference");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/endReference", m_endReference);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/endReference");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/endReference", m_endReference);
             
             // write element etaEnd
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/etaEnd");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/etaEnd", m_etaEnd);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/etaEnd");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/etaEnd", m_etaEnd);
             
         }
         

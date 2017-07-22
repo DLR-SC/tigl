@@ -31,8 +31,8 @@ namespace tigl
         void CPACSSparPositionUIDs::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element sparPositionUID
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/sparPositionUID")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/sparPositionUID", m_sparPositionUIDs);
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/sparPositionUID")) {
+                tixi::TixiReadElements(tixiHandle, xpath + "/sparPositionUID", m_sparPositionUIDs);
             }
             
         }
@@ -40,7 +40,7 @@ namespace tigl
         void CPACSSparPositionUIDs::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element sparPositionUID
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/sparPositionUID", m_sparPositionUIDs);
+            tixi::TixiSaveElements(tixiHandle, xpath + "/sparPositionUID", m_sparPositionUIDs);
             
         }
         

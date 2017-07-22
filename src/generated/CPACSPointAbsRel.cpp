@@ -46,31 +46,31 @@ namespace tigl
         void CPACSPointAbsRel::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read attribute uID
-            if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
-                m_uID = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
+            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+                m_uID = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
                 if (m_uID->empty()) {
                     LOG(WARNING) << "Optional attribute uID is present but empty at xpath " << xpath;
                 }
             }
             
             // read attribute refType
-            if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "refType")) {
-                m_refType = stringToECPACSTranslationType(tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "refType"));
+            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "refType")) {
+                m_refType = stringToECPACSTranslationType(tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "refType"));
             }
             
             // read element x
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/x")) {
-                m_x = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/x");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/x")) {
+                m_x = tixi::TixiGetElement<double>(tixiHandle, xpath + "/x");
             }
             
             // read element y
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/y")) {
-                m_y = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/y");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/y")) {
+                m_y = tixi::TixiGetElement<double>(tixiHandle, xpath + "/y");
             }
             
             // read element z
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/z")) {
-                m_z = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/z");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/z")) {
+                m_z = tixi::TixiGetElement<double>(tixiHandle, xpath + "/z");
             }
             
             if (m_uidMgr && m_uID) m_uidMgr->RegisterObject(*m_uID, *this);
@@ -80,49 +80,49 @@ namespace tigl
         {
             // write attribute uID
             if (m_uID) {
-                tixihelper::TixiSaveAttribute(tixiHandle, xpath, "uID", *m_uID);
+                tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", *m_uID);
             } else {
-                if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
-                    tixihelper::TixiRemoveAttribute(tixiHandle, xpath, "uID");
+                if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+                    tixi::TixiRemoveAttribute(tixiHandle, xpath, "uID");
                 }
             }
             
             // write attribute refType
             if (m_refType) {
-                tixihelper::TixiSaveAttribute(tixiHandle, xpath, "refType", ECPACSTranslationTypeToString(*m_refType));
+                tixi::TixiSaveAttribute(tixiHandle, xpath, "refType", ECPACSTranslationTypeToString(*m_refType));
             } else {
-                if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "refType")) {
-                    tixihelper::TixiRemoveAttribute(tixiHandle, xpath, "refType");
+                if (tixi::TixiCheckAttribute(tixiHandle, xpath, "refType")) {
+                    tixi::TixiRemoveAttribute(tixiHandle, xpath, "refType");
                 }
             }
             
             // write element x
             if (m_x) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/x");
-                tixihelper::TixiSaveElement(tixiHandle, xpath + "/x", *m_x);
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/x");
+                tixi::TixiSaveElement(tixiHandle, xpath + "/x", *m_x);
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/x")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/x");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/x")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/x");
                 }
             }
             
             // write element y
             if (m_y) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/y");
-                tixihelper::TixiSaveElement(tixiHandle, xpath + "/y", *m_y);
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/y");
+                tixi::TixiSaveElement(tixiHandle, xpath + "/y", *m_y);
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/y")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/y");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/y")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/y");
                 }
             }
             
             // write element z
             if (m_z) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/z");
-                tixihelper::TixiSaveElement(tixiHandle, xpath + "/z", *m_z);
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/z");
+                tixi::TixiSaveElement(tixiHandle, xpath + "/z", *m_z);
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/z")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/z");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/z")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/z");
                 }
             }
             

@@ -56,7 +56,7 @@ namespace tigl
         void CPACSWingSpar::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element sparPositions
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/sparPositions")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/sparPositions")) {
                 m_sparPositions.ReadCPACS(tixiHandle, xpath + "/sparPositions");
             }
             else {
@@ -64,7 +64,7 @@ namespace tigl
             }
             
             // read element sparSegments
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/sparSegments")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/sparSegments")) {
                 m_sparSegments.ReadCPACS(tixiHandle, xpath + "/sparSegments");
             }
             else {
@@ -76,11 +76,11 @@ namespace tigl
         void CPACSWingSpar::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element sparPositions
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/sparPositions");
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/sparPositions");
             m_sparPositions.WriteCPACS(tixiHandle, xpath + "/sparPositions");
             
             // write element sparSegments
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/sparSegments");
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/sparSegments");
             m_sparSegments.WriteCPACS(tixiHandle, xpath + "/sparSegments");
             
         }

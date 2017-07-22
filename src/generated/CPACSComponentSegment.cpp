@@ -57,8 +57,8 @@ namespace tigl
         void CPACSComponentSegment::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read attribute uID
-            if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
-                m_uID = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
+            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+                m_uID = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
                 if (m_uID.empty()) {
                     LOG(WARNING) << "Required attribute uID is empty at xpath " << xpath;
                 }
@@ -68,8 +68,8 @@ namespace tigl
             }
             
             // read element name
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/name")) {
-                m_name = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
+                m_name = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
                 if (m_name.empty()) {
                     LOG(WARNING) << "Required element name is empty at xpath " << xpath;
                 }
@@ -79,16 +79,16 @@ namespace tigl
             }
             
             // read element description
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/description")) {
-                m_description = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
+                m_description = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
                 if (m_description->empty()) {
                     LOG(WARNING) << "Optional element description is present but empty at xpath " << xpath;
                 }
             }
             
             // read element fromElementUID
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/fromElementUID")) {
-                m_fromElementUID = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/fromElementUID");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/fromElementUID")) {
+                m_fromElementUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/fromElementUID");
                 if (m_fromElementUID.empty()) {
                     LOG(WARNING) << "Required element fromElementUID is empty at xpath " << xpath;
                 }
@@ -98,8 +98,8 @@ namespace tigl
             }
             
             // read element toElementUID
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/toElementUID")) {
-                m_toElementUID = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/toElementUID");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/toElementUID")) {
+                m_toElementUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/toElementUID");
                 if (m_toElementUID.empty()) {
                     LOG(WARNING) << "Required element toElementUID is empty at xpath " << xpath;
                 }
@@ -109,7 +109,7 @@ namespace tigl
             }
             
             // read element structure
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/structure")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/structure")) {
                 m_structure = boost::in_place(reinterpret_cast<CCPACSWingComponentSegment*>(this), m_uidMgr);
                 try {
                     m_structure->ReadCPACS(tixiHandle, xpath + "/structure");
@@ -125,37 +125,37 @@ namespace tigl
         void CPACSComponentSegment::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write attribute uID
-            tixihelper::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
+            tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
             
             // write element name
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/name", m_name);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/name", m_name);
             
             // write element description
             if (m_description) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
-                tixihelper::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
+                tixi::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/description")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/description");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/description");
                 }
             }
             
             // write element fromElementUID
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/fromElementUID");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/fromElementUID", m_fromElementUID);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/fromElementUID");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/fromElementUID", m_fromElementUID);
             
             // write element toElementUID
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/toElementUID");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/toElementUID", m_toElementUID);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/toElementUID");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/toElementUID", m_toElementUID);
             
             // write element structure
             if (m_structure) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/structure");
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/structure");
                 m_structure->WriteCPACS(tixiHandle, xpath + "/structure");
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/structure")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/structure");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/structure")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/structure");
                 }
             }
             
