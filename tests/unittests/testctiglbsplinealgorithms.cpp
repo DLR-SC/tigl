@@ -11,7 +11,6 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <vector>
-#include <tuple>
 #include <cmath>
 
 #include <CTiglBSplineAlgorithms.h>
@@ -992,7 +991,7 @@ TEST(TiglBSplineAlgorithms, testIntersectionFinder)
     ASSERT_NEAR(intersection_vector[0].first, 0.5 + std::sqrt(0.1), 1e-15);
     ASSERT_NEAR(intersection_vector[0].second, 4. / 5, 1e-15);
 }
-
+/*
 TEST(TiglBSplineAlgorithms, testSortBSpline)
 {
     unsigned int degree = 3;  // degree of the five v-directional B-splines
@@ -1082,7 +1081,7 @@ TEST(TiglBSplineAlgorithms, testSortBSpline)
     ASSERT_NEAR(spline4_pnt.Z(), 0.5 + std::sqrt(0.1), 1e-15);
     ASSERT_NEAR(spline5_pnt.Z(), 1., 1e-15);
 
-}
+}*/
 
 TEST(TiglBSplineAlgorithms, testCreateGordonSurfaceGeneral)
 {
@@ -1263,6 +1262,7 @@ TEST(TiglBSplineAlgorithms, testIntersectionFinderClosed)
     std::vector<std::pair<double, double> > intersection_params_vector = CTiglBSplineAlgorithms::intersectionFinder(splines_u_vector[5], splines_v_vector[2]);
 }
 
+/*
 TEST(TiglBSplineAlgorithms, testSortIntersectionParams)
 {
     // Tests the method sortIntersectionParams()
@@ -1549,7 +1549,7 @@ TEST(TiglBSplineAlgorithms, testSortIntersectionParamsFromBRep)
     std::vector<std::vector<double> > sorted_intersection_params_v = std::get<1>(sorted_tuple);
     std::vector<Handle(Geom_BSplineCurve)> sorted_splines_u = std::get<2>(sorted_tuple);
     std::vector<Handle(Geom_BSplineCurve)> sorted_splines_v = std::get<3>(sorted_tuple);
-}
+}*/
 
 
 class GordonSurface: public ::testing::TestWithParam<std::string>

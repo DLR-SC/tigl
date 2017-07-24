@@ -31,7 +31,6 @@
 
 #include <utility>
 #include <vector>
-#include <tuple>
 #include <math_Matrix.hxx>
 
 #include <BSplCLib_EvaluatorFunction.hxx>
@@ -216,41 +215,6 @@ public:
      *          intersections of spline1 with spline2 as a vector of (parameter of spline1, parameter of spline2)-pairs
      */
     TIGL_EXPORT static std::vector<std::pair<double, double> > intersectionFinder(const Handle(Geom_BSplineCurve) spline1, const Handle(Geom_BSplineCurve) spline2);
-
-    /**
-     * @brief sortBSplines:
-     *          Returns a pair of parameters and its correlating vector of B-splines in such a sorted way so that the parameters are in an ascending order
-     * @param parameters:
-     *          array of parameters that correlate to the given vector of B-splines
-     *          Each B-spline has its own parameter
-     * @param splines_vector:
-     *          vector of B-splines
-     *          There must be as many B-splines as parameters.
-     * @return:
-     *          a pair of the sorted parameters and their sorted vector of B-spline curves
-     */
-    TIGL_EXPORT static std::tuple<std::vector<int>, Handle(TColStd_HArray1OfReal), std::vector<Handle(Geom_BSplineCurve)> > sortBSplines(const Handle(TColStd_HArray1OfReal) parameters, const std::vector<Handle(Geom_BSplineCurve)>& splines_vector);
-
-    /**
-     * @brief sortIntersectionParams:
-     *          Sorts the two-dimensional arrays of intersection parameters of every u-directional B-spline with every v-directional B-spline and vice versa
-     *          in the way that their values are increasing by increasing row and increasing column indices
-     *          The corresponding vectors of B-splines are sorted as well.
-     * @param intersection_params_u:
-     *          the two-dimensional array of intersection parameters of every u-directional B-spline with every v-directional B-spline
-     * @param intersection_params_v:
-     *          the two-dimensional array of intersection parameters of every v-directional B-spline with every u-directional B-spline
-     * @param splines_u_vector:
-     *          vector of u-directional B-splines
-     * @param splines_v_vector:
-     *          vector of v-directional B-splines
-     * @return:
-     *          a tuple of the sorted intersection parameter arrays and the sorted vector of B-splines
-     */
-    TIGL_EXPORT static std::tuple<std::vector<std::vector<double> >, std::vector<std::vector<double> >, std::vector<Handle(Geom_BSplineCurve)>, std::vector<Handle(Geom_BSplineCurve)> > sortIntersectionParams(const std::vector<std::vector<double> > intersection_params_u,
-                                                                                                                                                                                                                                        const std::vector<std::vector<double> >& intersection_params_v,
-                                                                                                                                                                                                                                        const std::vector<Handle(Geom_BSplineCurve)>& splines_u_vector,
-                                                                                                                                                                                                                                        const std::vector<Handle(Geom_BSplineCurve)>& splines_v_vector);
 
     /**
      * @brief scaleOfBSplines:
