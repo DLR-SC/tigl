@@ -379,7 +379,7 @@ int CTiglTriangularizer::triangularizeFace(const TopoDS_Face & face, unsigned lo
         index2 = indexBuffer[occindex2-ilower];
         index3 = indexBuffer[occindex3-ilower];
         
-        unsigned int iPolyIndex = 0;
+        unsigned long iPolyIndex = 0;
         
         if (face.Orientation() != TopAbs_REVERSED && face.Orientation() != TopAbs_INTERNAL) {
             iPolyIndex = currentObject().addTriangleByVertexIndex(index1, index2, index3);
