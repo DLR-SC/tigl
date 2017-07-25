@@ -263,7 +263,7 @@ Handle(TColStd_HArray1OfReal) CTiglBSplineAlgorithms::computeParamsBSplineCurve(
 {
     Handle(TColStd_HArray1OfReal) parameters(new TColStd_HArray1OfReal(points.Lower(), points.Upper()));
 
-    parameters->SetValue(1, 0.);
+    parameters->SetValue(points.Lower(), 0.);
 
     for (int i = points.Lower() + 1; i <= points.Upper(); ++i) {
         double length = pow(points(i).SquareDistance(points(i - 1)), alpha / 2.);
@@ -286,7 +286,7 @@ CTiglBSplineAlgorithms::computeParamsBSplineSurf(const TColgp_Array2OfPnt& point
     // B-splines must have  the same amount of control points
 
     // first for parameters in u-direction:
-    TColStd_Array2OfReal parameters_u(points.LowerCol(), points.UpperCol(), points.LowerRow(), points.UpperRow());
+    TColStd_Array2OfReal parameters_u(points.LowerRow(), points.UpperRow(), points.LowerCol(), points.UpperCol());
     for (int v_idx = points.LowerCol(); v_idx <= points.UpperCol(); ++v_idx) {
         TColgp_Array1OfPnt points_u_line(points.LowerRow(), points.UpperRow());
 
@@ -298,18 +298,18 @@ CTiglBSplineAlgorithms::computeParamsBSplineSurf(const TColgp_Array2OfPnt& point
 
         // save these parameters_spline in parameters_u
         for (int param_idx = parameters_u_line->Lower(); param_idx <= parameters_u_line->Upper(); ++param_idx) {
-            parameters_u(v_idx, param_idx) = parameters_u_line->Value(param_idx);
+            parameters_u(param_idx, v_idx) = parameters_u_line->Value(param_idx);
         }
     }
 
     // averaging along v-direction
     Handle(TColStd_HArray1OfReal) parameters_u_average(new TColStd_HArray1OfReal(points.LowerRow(), points.UpperRow()));
-    for (int param_idx = parameters_u.LowerCol(); param_idx <= parameters_u.UpperCol(); ++param_idx) {
+    for (int param_idx = parameters_u.LowerRow(); param_idx <= parameters_u.UpperRow(); ++param_idx) {
         double sum = 0;
-        for (int spline_idx = parameters_u.LowerRow(); spline_idx <= parameters_u.UpperRow(); ++spline_idx) {
-            sum += parameters_u(spline_idx, param_idx);
+        for (int spline_idx = parameters_u.LowerCol(); spline_idx <= parameters_u.UpperCol(); ++spline_idx) {
+            sum += parameters_u(param_idx, spline_idx);
         }
-        parameters_u_average->SetValue(param_idx, sum / (parameters_u.UpperRow() - parameters_u.LowerRow() + 1.));
+        parameters_u_average->SetValue(param_idx, sum / points.RowLength());
     }
 
     // now for parameters in v-direction:
@@ -335,7 +335,7 @@ CTiglBSplineAlgorithms::computeParamsBSplineSurf(const TColgp_Array2OfPnt& point
         for (int param_idx = points.LowerRow(); param_idx <= points.UpperRow(); ++param_idx) {
             sum += parameters_v(param_idx, spline_idx);
         }
-        parameters_v_average->SetValue(spline_idx, sum / (points.UpperRow() - points.LowerRow() + 1.));
+        parameters_v_average->SetValue(spline_idx, sum / points.ColLength());
     }
 
     // put computed parameters for both u- and v-direction in output tuple
