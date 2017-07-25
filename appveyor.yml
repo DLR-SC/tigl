@@ -45,7 +45,7 @@ install:
         Write-Output "Extract TiXI"
         & 7z x -y "c:\$tixidist.zip" -oC:\tixi\ > null
       }
-      if (!(Test-Path -Path "c:\doxygen-win")) {
+      If (!(Test-Path -Path "c:\doxygen-win")) {
         Write-Output "Downloading Doxygen"
         (new-object System.Net.WebClient).Downloadfile("https://sourceforge.net/projects/tigl/files/Thirdparty/doxygen-win.zip", "c:\doxygen-win.zip")
         Write-Output "Extract Doxygen"
@@ -57,8 +57,8 @@ build_script:
 - ps: |
     md _build -Force | Out-Null
     cd _build
-    Write-Output "Running cmake: -DCASROOT=c:\oce\$ocedist -DTIXI_PATH=c:\tixi\$tixidist -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BUILD_TESTS=ON -DTIGL_NIGHTLY=ON -DQT_PATH=c:\Qt\$qtdist -DDOXYGEN_EXECUTABLE=c:/doxygen-win/bin/doxygen.exe .."
-    & cmake -G "$generator" -DCASROOT=c:\oce\$ocedist -DTIXI_PATH=c:\tixi\$tixidist -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BUILD_TESTS=ON -DTIGL_NIGHTLY=ON -DQT_PATH=c:\Qt\$qtdist -DDOXYGEN_EXECUTABLE=c:/doxygen-win/bin/doxygen.exe ..
+    Write-Output "Running cmake: -DCASROOT=c:\oce\$ocedist -DTIXI_PATH=c:\tixi\$tixidist -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BUILD_TESTS=ON -DTIGL_NIGHTLY=ON -DQT_PATH=c:\Qt\5.4.1\$qtdist -DDOXYGEN_EXECUTABLE=c:/doxygen-win/bin/doxygen.exe -DMSVC10_REDIST_DIR=c:/redist/$redist .."
+    & cmake -G "$generator" -DCASROOT=c:\oce\$ocedist -DTIXI_PATH=c:\tixi\$tixidist -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BUILD_TESTS=ON -DTIGL_NIGHTLY=ON -DQT_PATH=c:\Qt\5.4.1\$qtdist -DDOXYGEN_EXECUTABLE=c:/doxygen-win/bin/doxygen.exe -DMSVC10_REDIST_DIR=c:/redist/$redist ..
     if ($LastExitCode -ne 0) {
         throw "Exec: $ErrorMessage"
     }
@@ -87,5 +87,5 @@ after_test:
 cache:
  - c:\oce -> appveyor.yml
  - c:\tixi -> appveyor.yml
+ - c:\redist
  - c:\doxygen-win
-

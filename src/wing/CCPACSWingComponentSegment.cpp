@@ -759,10 +759,6 @@ PNamedShape CCPACSWingComponentSegment::BuildLoft()
         throw CTiglError("Could not find segments in CCPACSWingComponentSegment::BuildLoft", TIGL_ERROR);
     }
 
-    TopoDS_Shape innerShape = segments.front()->GetInnerClosure(WING_COORDINATE_SYSTEM);
-    innerFace = GetSingleFace(innerShape);
-    sewing.Add(innerFace);
-
     for (SegmentList::const_iterator it = segments.begin(); it != segments.end(); ++it) {
         CCPACSWingSegment& segment = **it;
         TopoDS_Face lowerSegmentFace = GetSingleFace(segment.GetLowerShape(WING_COORDINATE_SYSTEM));
@@ -773,8 +769,13 @@ PNamedShape CCPACSWingComponentSegment::BuildLoft()
         sewing.Add(upperSegmentFace);
     }
 
+
+    TopoDS_Shape innerShape = segments.front()->GetInnerClosure(WING_COORDINATE_SYSTEM);
+    innerFace = GetSingleFace(innerShape);
     TopoDS_Shape outerShape = segments.back()->GetOuterClosure(WING_COORDINATE_SYSTEM);
     outerFace = GetSingleFace(outerShape);
+
+    sewing.Add(innerFace);
     sewing.Add(outerFace);
 
     sewing.Perform();

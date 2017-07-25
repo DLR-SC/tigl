@@ -107,7 +107,7 @@ Handle(Geom_BSplineCurve) CTiglSymetricSplineBuilder::GetBSplineInternal(const C
 
     // mirror each point at x-z plane i.e. mirror y coordinate to close the profile
     // and skip first point
-    for (int i = static_cast<int>(inputPoints.size()) - 1; i > 0; i--) {
+    for (size_t i = inputPoints.size() - 1; i > 0; i--) {
         gp_Pnt curP = inputPoints[i];
         if (i == inputPoints.size() - 1 && std::abs(curP.Y()) < 1e-6) {
             // do not add the same points twice

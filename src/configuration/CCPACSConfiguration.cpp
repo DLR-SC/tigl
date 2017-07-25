@@ -97,6 +97,7 @@ void CCPACSConfiguration::ReadCPACS(const std::string& configurationUID)
     if (tixihelper::TixiCheckElement(tixiDocumentHandle, headerXPath)) {
         header.ReadCPACS(tixiDocumentHandle, headerXPath);
     }
+
     if (tixihelper::TixiCheckElement(tixiDocumentHandle, profilesXPath)) {
         profiles = boost::in_place(&uidManager);
         // read wing airfoils, fuselage profiles, rotor airfoils and guide curve profiles

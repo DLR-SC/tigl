@@ -946,7 +946,7 @@ TEST_F(WingSegmentSimple, getSurfaceAreaTrimmed)
     ASSERT_EQ(TIGL_SUCCESS, ret);
     
     
-    ret = tiglWingGetSegmentUpperSurfaceAreaTrimmed(tiglSimpleHandle, 1, 1,
+    ret = tiglWingGetSegmentLowerSurfaceAreaTrimmed(tiglSimpleHandle, 1, 1,
                                                     0.2, 0.8, 
                                                     0.2, 1.0,
                                                     0.8, 1.0,
