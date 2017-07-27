@@ -92,7 +92,7 @@ int main(int argc, char* argv[])
             double zeta = 0.;
             printf("\nIntersection points of a plane with first wing:\n");
             while ( zeta < 1) {
-                tiglIntersectGetPoint(tiglHandle, int_id, 1, zeta, &x, &y, &z);
+                tiglIntersectSamplePoint(tiglHandle, int_id, 1, zeta, &x, &y, &z);
                 printf("zeta = %g\tp=(%g, %g, %g)\n", zeta, x, y, z);
                 zeta += 0.1;
             }

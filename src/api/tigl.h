@@ -3025,7 +3025,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetLocalTwistAngle(TiglCPACSConf
 /**
 * @brief tiglIntersectComponents computes the intersection line(s) between two shapes
 * specified by their CPACS uid. It returns an intersection ID for further computations
-* on the result. To query points on the intersection line, ::tiglIntersectGetPoint has
+* on the result. To query points on the intersection line, ::tiglIntersectSamplePoint has
 * to be called.
 *
 * @param[in]  cpacsHandle     Handle for the CPACS configuration
@@ -3048,7 +3048,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectComponents(TiglCPACSConfiguration
 /**
 * @brief tiglIntersectWithPlane computes the intersection line(s) between a shape and a plane. 
 * It returns an intersection ID for further computations on the result. 
-* To query points on the intersection line, ::tiglIntersectGetPoint has
+* To query points on the intersection line, ::tiglIntersectSamplePoint has
 * to be called.
 *
 * The shape has to be specified by its CPACS UID.
@@ -3088,7 +3088,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectWithPlane(TiglCPACSConfigurationH
 * @image latex intersectPlaneSegment.pdf "The dashed line connecting the points P1 and P2 is projected along w onto the shape (blue dashed line)." width=10cm
 *
 * It returns an intersection ID for further computations on the result.
-* To query points on the intersection line, ::tiglIntersectGetPoint has
+* To query points on the intersection line, ::tiglIntersectSamplePoint has
 * to be called.
 *
 * The shape has to be specified by its CPACS UID.
@@ -3133,14 +3133,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectWithPlaneSegment(TiglCPACSConfigu
 * intersection point is specified by the parameter eta1 along the first curve and the
 * parameters eta2 along the second curve.
 *
-* @param cpacsHandle     Handle for the CPACS configuration
-* @param curvesID1       ID of the first intersection
-* @param curve1Idx       Index of the curve in the first intersection
-* @param curvesID2       ID of the second curve
-* @param curve2Idx       Index of the curve in the second intersection
-* @param tolerance       tolerance to specify the required accuracy of the intersection point
-* @param eta1            parameter of the intersection point along the first curve
-* @param eta2            parameter of the intersection point along the second curve
+* @param[in]  cpacsHandle     Handle for the CPACS configuration
+* @param[in]  curvesID1       ID of the first intersection
+* @param[in]  curve1Idx       Index of the curve in the first intersection
+* @param[in]  curvesID2       ID of the second curve
+* @param[in]  curve2Idx       Index of the curve in the second intersection
+* @param[in]  tolerance       tolerance to specify the required accuracy of the intersection point
+* @param[out] intersectionID  A unique identifier that is associated with the computed intersection.
 *
 *
 * @return
@@ -3152,13 +3151,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectWithPlaneSegment(TiglCPACSConfigu
 *   - TIGL_ERROR if some other error occurred
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectCurves(TiglCPACSConfigurationHandle cpacsHandle,
-                                   const char* curvesID1, int curve1Idx,
-                                   const char* curvesID2, int curve2Idx,
-                                   double tolerance,
-                                   double* eta1, double* eta2);
+                                                      const char* curvesID1, int curve1Idx,
+                                                      const char* curvesID2, int curve2Idx,
+                                                      double tolerance,
+                                                      char** intersectionID);
 
 /**
-* @brief tiglIntersectGetLineCount return the number of intersection lines computed by 
+* @brief tiglIntersectGetLineCount returns the number of intersection lines computed by
 * ::tiglIntersectComponents or ::tiglIntersectWithPlane for the given intersectionID.
 *
 * @param[in]  cpacsHandle     Handle for the CPACS configuration
@@ -3176,8 +3175,26 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectGetLineCount(TiglCPACSConfigurati
                                                             int* lineCount);
 
 /**
-* @brief tiglIntersectGetPoint samples a point on an intersection line calculated by
-* ::tiglIntersectComponents or ::tiglIntersectWithPlane.
+* @brief tiglIntersectGetPointCount returns the number of intersection points computed by
+* ::tiglIntersectCurves for the given intersectionID.
+*
+* @param[in]  cpacsHandle     Handle for the CPACS configuration
+* @param[in]  intersectionID  The intersection identifier returned by ::tiglIntersectCurves
+* @param[out] pointCount      Number of intersection points computed by ::tiglIntersectCurves
+*                             If no intersection could be computed, pointCount is 0.
+*
+* @return
+*   - TIGL_SUCCESS if no error occured
+*   - TIGL_NOT_FOUND if the cpacs handle  or the intersectionID is not valid
+*   - TIGL_NULL_POINTER if pointCount is a NULL pointer
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectGetPointCount(TiglCPACSConfigurationHandle cpacsHandle,
+                                                            const char* intersectionID,
+                                                            int* pointCount);
+
+/**
+* @brief tiglIntersectSamplePoint samples a point on an intersection line calculated by
+* ::tiglIntersectComponents, ::tiglIntersectWithPlane or ::tiglIntersectWithPlaneSegment.
 *
 * @param[in]  cpacsHandle     Handle for the CPACS configuration
 * @param[in]  intersectionID  The intersection identifier returned by ::tiglIntersectComponents or ::tiglIntersectWithPlane
@@ -3195,13 +3212,61 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectGetLineCount(TiglCPACSConfigurati
 *   - TIGL_INDEX_ERROR if lineIdx is not in valid range
 *   - TIGL_MATH_ERROR if eta is not in range 0 <= eta <= 1
 */
+TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectSamplePoint(TiglCPACSConfigurationHandle cpacsHandle,
+                                                           const char* intersectionID,
+                                                           int lineIdx,
+                                                           double eta,
+                                                           double* pointX,
+                                                           double* pointY,
+                                                           double* pointZ);
+
+/**
+* @brief tiglIntersectGetPoint returns an intersection point calculated by ::tiglIntersectCurves
+*
+* @param[in]  cpacsHandle     Handle for the CPACS configuration
+* @param[in]  intersectionID  The intersection identifier returned by ::tiglIntersectCurves
+* @param[in]  pointIdx        Point index to sample from. To get the number of intersection points, call ::tiglIntersectGetPointCount.
+*                             1 <= pointIdx <= pointCount.
+* @param[out] pointX          X coordinate of the resulting point.
+* @param[out] pointY          Y coordinate of the resulting point.
+* @param[out] pointZ          Z coordinate of the resulting point.
+*
+* @return
+*   - TIGL_SUCCESS if no error occured
+*   - TIGL_NOT_FOUND if the cpacs handle  or the intersectionID is not valid
+*   - TIGL_NULL_POINTER if pointX, pointY, or pointZ are NULL pointers
+*   - TIGL_INDEX_ERROR if lineIdx is not in valid range
+*/
 TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectGetPoint(TiglCPACSConfigurationHandle cpacsHandle,
                                                         const char* intersectionID,
-                                                        int lineIdx,
-                                                        double eta,
+                                                        int pointIdx,
                                                         double* pointX,
                                                         double* pointY,
                                                         double* pointZ);
+
+/**
+@brief tiglIntersectGetParameter returns the parameter of an intersection point calculated by ::tiglIntersectCurves
+*
+* @param[in]  cpacsHandle     Handle for the CPACS configuration
+* @param[in]  intersectionID  The intersection identifier returned by ::tiglIntersectCurves
+* @param[in]  pointIdx        Point index to sample from. To get the number of intersection points, call ::tiglIntersectGetPointCount.
+*                             1 <= pointIdx <= pointCount.
+* @param[out] eta1            The parameter along the first curve.
+* @param[out] eta2            The parameter along the second curve.
+*
+* @return
+*   - TIGL_SUCCESS if no error occured
+*   - TIGL_NOT_FOUND if the cpacs handle  or the intersectionID is not valid
+*   - TIGL_NULL_POINTER if pointX, pointY, or pointZ are NULL pointers
+*   - TIGL_INDEX_ERROR if lineIdx is not in valid range
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectGetParameter(TiglCPACSConfigurationHandle cpacsHandle,
+                                                            const char* intersectionID,
+                                                            int pointIdx,
+                                                            const char* curveID,
+                                                            int curveIdx,
+                                                            double* eta);
+
 
 
 /*@}*/

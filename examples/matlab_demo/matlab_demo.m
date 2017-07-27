@@ -68,7 +68,7 @@ function matlab_demo(file)
             zeta = 0.;
             fprintf(1, '\nIntersection points of a plane with first wing:\n');
             while zeta < 1 
-                [x,y,z] = tiglIntersectGetPoint(tiglHandle, int_id, 1, zeta);
+                [x,y,z] = tiglIntersectSamplePoint(tiglHandle, int_id, 1, zeta);
                 fprintf(1, 'zeta = %g\tp=(%g, %g, %g)\n', zeta, x, y, z);
                 zeta = zeta + 0.1;
             end

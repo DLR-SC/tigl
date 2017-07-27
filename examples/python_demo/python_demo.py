@@ -75,7 +75,7 @@ def python_demo(filename):
             zeta = 0.
             print '\nIntersection points of a plane with first wing:'
             while zeta < 1: 
-                (x,y,z) = tigl.intersectGetPoint(int_id, 1, zeta)
+                (x,y,z) = tigl.intersectSamplePoint(int_id, 1, zeta)
                 print 'zeta = %g\tp=(%g, %g, %g)' % (zeta, x, y, z)
                 zeta = zeta + 0.1      
             print
