@@ -34,7 +34,7 @@ namespace tigl
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/compositeUID")) {
                 m_compositeUID_choice1 = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/compositeUID");
                 if (m_compositeUID_choice1->empty()) {
-                    LOG(ERROR) << "Optional element compositeUID is present but empty at xpath " << xpath;
+                    LOG(WARNING) << "Optional element compositeUID is present but empty at xpath " << xpath;
                 }
             }
             
@@ -52,7 +52,7 @@ namespace tigl
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/materialUID")) {
                 m_materialUID_choice2 = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/materialUID");
                 if (m_materialUID_choice2->empty()) {
-                    LOG(ERROR) << "Optional element materialUID is present but empty at xpath " << xpath;
+                    LOG(WARNING) << "Optional element materialUID is present but empty at xpath " << xpath;
                 }
             }
             

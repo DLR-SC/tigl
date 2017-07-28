@@ -64,7 +64,7 @@ namespace tigl
             if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
                 m_uID = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
                 if (m_uID.empty()) {
-                    LOG(ERROR) << "Required attribute uID is empty at xpath " << xpath;
+                    LOG(WARNING) << "Required attribute uID is empty at xpath " << xpath;
                 }
             }
             else {

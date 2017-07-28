@@ -35,7 +35,7 @@ namespace tigl
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/name")) {
                 m_name = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
                 if (m_name.empty()) {
-                    LOG(ERROR) << "Required element name is empty at xpath " << xpath;
+                    LOG(WARNING) << "Required element name is empty at xpath " << xpath;
                 }
             }
             else {
@@ -46,7 +46,7 @@ namespace tigl
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/description")) {
                 m_description = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
                 if (m_description->empty()) {
-                    LOG(ERROR) << "Optional element description is present but empty at xpath " << xpath;
+                    LOG(WARNING) << "Optional element description is present but empty at xpath " << xpath;
                 }
             }
             
@@ -54,7 +54,7 @@ namespace tigl
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/creator")) {
                 m_creator = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/creator");
                 if (m_creator.empty()) {
-                    LOG(ERROR) << "Required element creator is empty at xpath " << xpath;
+                    LOG(WARNING) << "Required element creator is empty at xpath " << xpath;
                 }
             }
             else {
@@ -73,7 +73,7 @@ namespace tigl
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/version")) {
                 m_version = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/version");
                 if (m_version.empty()) {
-                    LOG(ERROR) << "Required element version is empty at xpath " << xpath;
+                    LOG(WARNING) << "Required element version is empty at xpath " << xpath;
                 }
             }
             else {
@@ -84,7 +84,7 @@ namespace tigl
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/cpacsVersion")) {
                 m_cpacsVersion = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/cpacsVersion");
                 if (m_cpacsVersion.empty()) {
-                    LOG(ERROR) << "Required element cpacsVersion is empty at xpath " << xpath;
+                    LOG(WARNING) << "Required element cpacsVersion is empty at xpath " << xpath;
                 }
             }
             else {

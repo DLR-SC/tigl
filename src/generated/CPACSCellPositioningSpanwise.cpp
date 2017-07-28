@@ -60,7 +60,7 @@ namespace tigl
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/ribDefinitionUID")) {
                 m_ribDefinitionUID_choice2 = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/ribDefinitionUID");
                 if (m_ribDefinitionUID_choice2->empty()) {
-                    LOG(ERROR) << "Optional element ribDefinitionUID is present but empty at xpath " << xpath;
+                    LOG(WARNING) << "Optional element ribDefinitionUID is present but empty at xpath " << xpath;
                 }
             }
             

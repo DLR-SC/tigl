@@ -47,7 +47,7 @@ namespace tigl
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/startReference")) {
                 m_startReference = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/startReference");
                 if (m_startReference.empty()) {
-                    LOG(ERROR) << "Required element startReference is empty at xpath " << xpath;
+                    LOG(WARNING) << "Required element startReference is empty at xpath " << xpath;
                 }
             }
             else {
@@ -66,7 +66,7 @@ namespace tigl
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/endReference")) {
                 m_endReference = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/endReference");
                 if (m_endReference.empty()) {
-                    LOG(ERROR) << "Required element endReference is empty at xpath " << xpath;
+                    LOG(WARNING) << "Required element endReference is empty at xpath " << xpath;
                 }
             }
             else {

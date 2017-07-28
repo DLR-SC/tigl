@@ -50,7 +50,7 @@ namespace tigl
             if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
                 m_uID = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
                 if (m_uID.empty()) {
-                    LOG(ERROR) << "Required attribute uID is empty at xpath " << xpath;
+                    LOG(WARNING) << "Required attribute uID is empty at xpath " << xpath;
                 }
             }
             else {
@@ -61,7 +61,7 @@ namespace tigl
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/name")) {
                 m_name = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
                 if (m_name.empty()) {
-                    LOG(ERROR) << "Required element name is empty at xpath " << xpath;
+                    LOG(WARNING) << "Required element name is empty at xpath " << xpath;
                 }
             }
             else {
@@ -72,7 +72,7 @@ namespace tigl
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/description")) {
                 m_description = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
                 if (m_description->empty()) {
-                    LOG(ERROR) << "Optional element description is present but empty at xpath " << xpath;
+                    LOG(WARNING) << "Optional element description is present but empty at xpath " << xpath;
                 }
             }
             
@@ -80,7 +80,7 @@ namespace tigl
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/guideCurveProfileUID")) {
                 m_guideCurveProfileUID = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/guideCurveProfileUID");
                 if (m_guideCurveProfileUID.empty()) {
-                    LOG(ERROR) << "Required element guideCurveProfileUID is empty at xpath " << xpath;
+                    LOG(WARNING) << "Required element guideCurveProfileUID is empty at xpath " << xpath;
                 }
             }
             else {
@@ -91,7 +91,7 @@ namespace tigl
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/fromGuideCurveUID")) {
                 m_fromGuideCurveUID_choice1 = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/fromGuideCurveUID");
                 if (m_fromGuideCurveUID_choice1->empty()) {
-                    LOG(ERROR) << "Optional element fromGuideCurveUID is present but empty at xpath " << xpath;
+                    LOG(WARNING) << "Optional element fromGuideCurveUID is present but empty at xpath " << xpath;
                 }
             }
             
