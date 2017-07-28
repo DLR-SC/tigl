@@ -248,8 +248,9 @@ CTiglIntersectionCalculation::CTiglIntersectionCalculation(CTiglShapeCache* cach
                                                            const std::string& wireID1,
                                                            int wireIdx1,
                                                            const std::string& wireID2,
-                                                           int wireIdx2)
-    : tolerance(1.0e-7)
+                                                           int wireIdx2,
+                                                           double tol)
+    : tolerance(tol)
 {
     size_t hash = hash_combine_symmetric( boost::hash<std::string>()(wireID1),
                                           boost::hash<std::string>()(wireID2) );
@@ -477,11 +478,6 @@ TopoDS_Vertex CTiglIntersectionCalculation::GetVertex(int vertexID)
 const std::string& CTiglIntersectionCalculation::GetID()
 {
     return id;
-}
-
-void CTiglIntersectionCalculation::SetTolerance(const double& tol)
-{
-    tolerance = tol;
 }
 
 } // end namespace tigl

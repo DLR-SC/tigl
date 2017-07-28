@@ -4742,23 +4742,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectCurves(TiglCPACSConfigurationHand
         return TIGL_NULL_POINTER;
     }
 
-    int linecount1;
-    tiglIntersectGetLineCount(cpacsHandle, curvesID1, &linecount1);
-    if ( (curve1Idx > linecount1) || (curve1Idx<1) ) {
-        LOG(ERROR) << "argument curve1Idx = "<<curvesID1<<" is invalid in tiglIntersectCurves (lineCount of curve "<<curvesID1<<": "<<linecount1<<").";
-        return TIGL_INDEX_ERROR;
-    }
-
     if (!curvesID2) {
         LOG(ERROR) << "Null pointer for argument curvesID2 in tiglIntersectCurves.";
         return TIGL_NULL_POINTER;
-    }
-
-    int linecount2;
-    tiglIntersectGetLineCount(cpacsHandle, curvesID2, &linecount2);
-    if ( (curve2Idx > linecount2) || (curve2Idx<1) ) {
-        LOG(ERROR) << "argument curve2Idx = "<<curvesID2<<" is invalid in tiglIntersectCurves (lineCount of curve "<<curvesID2<<": "<<linecount2<<").";
-        return TIGL_INDEX_ERROR;
     }
 
     if (!intersectionID) {
@@ -4775,10 +4761,26 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectCurves(TiglCPACSConfigurationHand
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
 
+        // check if the cuve indices are valid
+        int linecount1;
+        tiglIntersectGetLineCount(cpacsHandle, curvesID1, &linecount1);
+        if ( (curve1Idx > linecount1) || (curve1Idx<1) ) {
+            LOG(ERROR) << "argument curve1Idx = "<<curvesID1<<" is invalid in tiglIntersectCurves (lineCount of curve "<<curvesID1<<": "<<linecount1<<").";
+            return TIGL_INDEX_ERROR;
+        }
+
+        int linecount2;
+        tiglIntersectGetLineCount(cpacsHandle, curvesID2, &linecount2);
+        if ( (curve2Idx > linecount2) || (curve2Idx<1) ) {
+            LOG(ERROR) << "argument curve2Idx = "<<curvesID2<<" is invalid in tiglIntersectCurves (lineCount of curve "<<curvesID2<<": "<<linecount2<<").";
+            return TIGL_INDEX_ERROR;
+        }
+
+        // now calculate the intersection
         tigl::CTiglIntersectionCalculation Intersector(&config.GetShapeCache(),
                                                        curvesID1, curve1Idx,
-                                                       curvesID2, curve2Idx);
-        Intersector.SetTolerance(tolerance);
+                                                       curvesID2, curve2Idx,
+                                                       tolerance);
 
         std::string id = Intersector.GetID();
         *intersectionID = (char*) config.GetMemoryPool().MakeNontempString(id.c_str());

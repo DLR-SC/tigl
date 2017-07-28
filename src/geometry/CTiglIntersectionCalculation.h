@@ -86,7 +86,8 @@ public:
                                             const std::string& wireID1,
                                             int wireIdx1,
                                             const std::string& wireID2,
-                                            int wireIdx2);
+                                            int wireIdx2,
+                                            double tol = 1e-7);
 
     // Constructor, load intersection result from cache
     // cache is mandatory, hence the reference
@@ -116,9 +117,6 @@ public:
 
     // returnes the unique ID for the current intersection
     TIGL_EXPORT const std::string& GetID();
-
-    // set the tolerance for the intersection calculation
-    TIGL_EXPORT void SetTolerance(const double& tol);
 
 protected:
     void computeIntersection(CTiglShapeCache* cache,
