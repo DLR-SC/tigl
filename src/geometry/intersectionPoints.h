@@ -21,16 +21,12 @@
 
 #include <vector>
 
+//This struct is used by GetIntersectionPoint(const TopoDS_Wire& wire1, const TopoDS_Wire& wire2,[...]) in tiglcommonfunctions.h
 struct IntersectionPoint {
-    //TODO the consistency of the starting point for the parameters must be taken care of
-    //
-    // Specifically in tiglcommonfunctions.h:
-    // WireGetPoint(wire,parameter) interprets the parameter from a different starting point
-    // as the results calculated by  GetIntersetionPoint(wire1,wire2,intersectionPoints)
-    //
-    double ParameterOnWire1, ParameterOnWire2, SquareDistance;
+    double SquareDistance;
     gp_Pnt Center;
 };
+
 typedef std::vector<IntersectionPoint> intersectionPointList;
 
 #endif // PNAMEDSHAPE_H

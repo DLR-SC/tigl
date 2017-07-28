@@ -4761,6 +4761,11 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectCurves(TiglCPACSConfigurationHand
         return TIGL_INDEX_ERROR;
     }
 
+    if (!intersectionID) {
+        LOG(ERROR) << "Null pointer for argument intersectionID in tiglIntersectCurves.";
+        return TIGL_NULL_POINTER;
+    }
+
     if ( tolerance < 0 ) {
         LOG(ERROR) << "tolerance musst be non negative in tiglIntersectCurves (tolerance = "<<tolerance<<").";
         return TIGL_MATH_ERROR;
@@ -4939,6 +4944,12 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectGetPoint(TiglCPACSConfigurationHa
         tigl::CTiglShapeCache& cache = config.GetShapeCache();
 
         tigl::CTiglIntersectionCalculation Intersector(cache, intersectionID);
+
+        int npoints = Intersector.GetCountIntersectionPoints();
+        if ( pointIdx < 1 || pointIdx > npoints ) {
+            return TIGL_INDEX_ERROR;
+        }
+
         gp_Pnt p = BRep_Tool::Pnt( Intersector.GetVertex(pointIdx) );
 
         *pointX = p.X();
@@ -4969,11 +4980,11 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectGetParameter(TiglCPACSConfigurati
         return TIGL_NULL_POINTER;
     }
     if (!intersectionID) {
-        LOG(ERROR) << "Null pointer for argument intersectionID in tiglIntersectGetPoint.";
+        LOG(ERROR) << "Null pointer for argument intersectionID in tiglIntersectGetParameter.";
         return TIGL_NULL_POINTER;
     }
     if (!curveID) {
-        LOG(ERROR) << "Null pointer for argument curveID in tiglIntersectGetPoint.";
+        LOG(ERROR) << "Null pointer for argument curveID in tiglIntersectGetParameter.";
         return TIGL_NULL_POINTER;
     }
 
