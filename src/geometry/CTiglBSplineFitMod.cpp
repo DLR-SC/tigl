@@ -30,12 +30,9 @@
 
 using namespace std;
 
-BSplineFit::BSplineFit( int deg, int ncp, std::vector<double> parameters, double eps, int maxIter )
+BSplineFit::BSplineFit( int deg, int ncp)
     : _degree(deg)
     , _ncp(ncp)
-    , t(parameters)
-    , _tolerance(eps)
-    , _maxIterations(maxIter)
     , _knots(1, ncp + deg + 1)
 {
     computeKnots();
@@ -164,94 +161,101 @@ void BSplineFit::computeKnots()
 
 
 
-// /**
- // * @brief Calculates curve parameter t_k [0, 1], which
- // * corresponds to the arc lengths
- // */
-// void BSplineFit::computeParameters()
-// {
-    // double sum = 0.0;
-    // t[0]=0.0;
+ /**
+  * @brief Calculates curve parameter t_k [0, 1], which
+  * corresponds to the arc lengths
+  */
+ void BSplineFit::computeParameters(double alpha)
+ {
+     double sum = 0.0;
+     t[0]=0.0;
 
-    // unsigned int nPoints = _px.size();
+     unsigned int nPoints = _px.size();
 
-    // // calc total arc length: dt^2 = dx^2 + dy^2
-    // for (unsigned int i=0; i<nPoints-1; i++) {
-        // sum += sqrt( (_px[i]-_px[i+1])*(_px[i]-_px[i+1]) + (_py[i]-_py[i+1])*(_py[i]-_py[i+1]) );
-        // t[i+1] = sum;
-    // }
+     // calc total arc length: dt^2 = dx^2 + dy^2
+     for (unsigned int i=0; i<nPoints-1; i++) {
+         double len2 = (_px[i]-_px[i+1])*(_px[i]-_px[i+1])
+                 + (_py[i]-_py[i+1])*(_py[i]-_py[i+1])
+                 + (_pz[i]-_pz[i+1])*(_pz[i]-_pz[i+1]);
+         sum += pow(len2, alpha/2.);
+         t[i+1] = sum;
+     }
 
-    // // normalize parameter with maximum
-    // double tmax = t[nPoints-1];
-    // for (unsigned int i=0; i<nPoints; i++) {
-        // t[i] /= tmax;
-    // }
+     // normalize parameter with maximum
+     double tmax = t[nPoints-1];
+     for (unsigned int i=0; i<nPoints; i++) {
+         t[i] /= tmax;
+     }
 
-    // // reset start and end value to achieve a better accuracy
-    // t[0] = 0.0;
-    // t[nPoints-1] = 1.0;
-// }
+     // reset start and end value to achieve a better accuracy
+     t[0] = 0.0;
+     t[nPoints-1] = 1.0;
+ }
 
-// /**
- // * @brief Recalculates the curve parameters t_k after the
- // * control points are fitted to achieve an even better fit.
- // */
-// void BSplineFit::optimizeParameters()
-// {
-    // const int maxIter = 500;  // maximum No of iterations
-    // const double eps = 1.0E-6;  // accuracy of arc length parameter
+ /**
+  * @brief Recalculates the curve parameters t_k after the
+  * control points are fitted to achieve an even better fit.
+  */
+ void BSplineFit::optimizeParameters()
+ {
+     const int maxIter = 500;  // maximum No of iterations
+     const double eps = 1.0E-6;  // accuracy of arc length parameter
 
-    // double max_error = 0.;
+     double max_error = 0.;
 
-    // unsigned int nPoints = _px.size();
+     unsigned int nPoints = _px.size();
 
-    // // optimize each inner parameter t_k
-    // for (unsigned int k=1; k<nPoints-2;  k++) {
-        // double f = 0;
+     // optimize each inner parameter t_k
+     for (unsigned int k=1; k<nPoints-2;  k++) {
+         double f = 0;
 
-        // // get old curve parameter value
-        // double tk = t[k];
+         // get old curve parameter value
+         double tk = t[k];
 
-        // // newton step
-        // double dt = 0;
+         // newton step
+         double dt = 0;
 
-        // int iter = 0; // iteration counter
-        // do {  // Newton iteration to get a better t parameter
+         int iter = 0; // iteration counter
+         do {  // Newton iteration to get a better t parameter
 
-            // // Get the derivatives of the spline wrt parameter t
-            // gp_Vec2d p   = _curve->DN(tk, 0);
-            // gp_Vec2d dp  = _curve->DN(tk, 1);
-            // gp_Vec2d d2p = _curve->DN(tk, 2);
+             // Get the derivatives of the spline wrt parameter t
+             gp_Vec p   = _curve->DN(tk, 0);
+             gp_Vec dp  = _curve->DN(tk, 1);
+             gp_Vec d2p = _curve->DN(tk, 2);
 
-            // // compute objective function and their derivative
-            // f = sqrt((p.X()-_px[k])*(p.X()-_px[k]) + (p.Y()-_py[k])*(p.Y()-_py[k]));
+             // compute objective function and their derivative
+             f = sqrt((p.X()-_px[k])*(p.X()-_px[k])
+                    + (p.Y()-_py[k])*(p.Y()-_py[k])
+                    + (p.Z()-_pz[k])*(p.Z()-_pz[k]));
 
-            // double df  = (p.X()-_px[k])*dp.X()  + (p.Y()-_py[k])*dp.Y();
+             double df  = (p.X()-_px[k])*dp.X()
+                        + (p.Y()-_py[k])*dp.Y()
+                        + (p.Z()-_pz[k])*dp.Z();
 
-            // double d2f = (p.X()-_px[k])*d2p.X() + (p.Y()-_py[k])*d2p.Y()
-                    // + dp.X()*dp.X() + dp.Y()*dp.Y();
+             double d2f = (p.X()-_px[k])*d2p.X() + (p.Y()-_py[k])*d2p.Y() + (p.Z()-_pz[k])*d2p.Z()
+                        + dp.X()*dp.X() + dp.Y()*dp.Y() + dp.Z()*dp.Z();
 
-            // // newton iterate
-            // dt = df/d2f;
-            // tk -= dt;
+             // newton iterate
+             dt = df/d2f;
+             tk -= dt;
 
-            // // if parameter out of range reset it to the start value
-            // if ( tk<t[0] || tk>t[nPoints-1]) {
-                // tk = t[k];
-            // }
+             // if parameter out of range reset it to the start value
+             if ( tk<t[0] || tk>t[nPoints-1]) {
+                 tk = t[k];
+             }
 
-            // iter++;
-        // }
-        // while (fabs(dt)>eps && iter<maxIter);
+             iter++;
+         }
+         while (fabs(dt)>eps && iter<maxIter);
 
-        // if (f > max_error) {
-            // max_error = f;
-        // }
+         if (f > max_error) {
+             max_error = f;
+         }
 
-        // // store optimised parameter
-        // t[k] = tk;
-    // }
-// }
+         // store optimised parameter
+         t[k] = tk;
+     }
+ }
 
 
 /** computes maximum error of the fit */
@@ -291,6 +295,50 @@ BSplineFit::error BSplineFit::Fit( const TColgp_Array1OfPnt& points, const std::
 
 }
 
+BSplineFit::error BSplineFit::Fit(const TColgp_Array1OfPnt &points, double alpha)
+{
+    copyPoints(points);
+    computeParameters(alpha);
+
+    return fitCurve();
+}
+
+BSplineFit::error BSplineFit::FitOptimal(const TColgp_Array1OfPnt &points, double alpha, double tolerance, int maxIter)
+{
+    int iter = 0;
+    double residuum = 0.;
+    double cumSum = 0., cumSumOld = 0.;
+
+    copyPoints(points);
+    computeParameters(alpha);
+
+    do { // outer iteration for curve parameter t
+        BSplineFit::error err = fitCurve();
+
+        if (err != NoError) {
+            return err;
+        }
+
+        // compute residuum
+        cumSum = 0.0;
+        for (int i=2; i < _curve->NbPoles(); ++i ) {
+            gp_Pnt p = _curve->Pole(i);
+            cumSum += fabs(p.X() + p.Y() +p.Z());
+        }
+
+        residuum = fabs(cumSumOld - cumSum);
+        cumSumOld = cumSum;
+
+        optimizeParameters();
+
+        iter++;
+
+    }
+    while (residuum > tolerance && iter < maxIter );
+
+    return NoError;
+}
+
 
 Handle_Geom_BSplineCurve BSplineFit::Curve() const
 {
@@ -311,11 +359,6 @@ BSplineFit::error BSplineFit::fitCurve()
     if (_ncp >= static_cast<int>(_px.size())) {
         return InvalidInput;
     }
-
-    int iter = 0; // iteration counter
-
-    double residuum = 0.0;
-    double cumSum = 0.0, cumSumOld = 0.0;
 
     // copy knots from flat knot vector
     int nknots = _ncp - _degree + 1;
@@ -352,49 +395,33 @@ BSplineFit::error BSplineFit::fitCurve()
 
     math_Matrix A(1, n_vars, 1, n_vars);
 
-    do { // outer iteration for curve parameter t
-        initSystem(A, cx, cy, cz);
+    initSystem(A, cx, cy, cz);
 
-        math_Gauss solver(A);
+    math_Gauss solver(A);
 
-        solver.Solve(cx, X);
-        if (!solver.IsDone()) {
-            return MatrixSingular;
-        }
-
-        solver.Solve(cy, Y);
-        if (!solver.IsDone()) {
-            return MatrixSingular;
-        }
-
-        solver.Solve(cz, Z);
-        if (!solver.IsDone()) {
-            return MatrixSingular;
-        }
-
-        // copy solution to control point vector
-        for (int i=1; i<_ncp-1; ++i ) {
-            gp_Pnt p(X(i), Y(i), Z(i));
-            poles.SetValue(i+1, p);
-        }
-
-        _curve = new Geom_BSplineCurve(poles, knots_compact, mults, _degree);
-
-        // compute residuum
-        cumSum = 0.0;
-        for (int i=1; i<=n_vars; ++i ) {
-            cumSum += fabs(X(i) + Y(i) + Z(i));
-        }
-
-        residuum = fabs(cumSumOld - cumSum);
-        cumSumOld = cumSum;
-
-        //optimizeParameters();
-
-        iter++;
-
+    solver.Solve(cx, X);
+    if (!solver.IsDone()) {
+        return MatrixSingular;
     }
-    while(residuum > _tolerance && iter <_maxIterations );
+
+    solver.Solve(cy, Y);
+    if (!solver.IsDone()) {
+        return MatrixSingular;
+    }
+
+    solver.Solve(cz, Z);
+    if (!solver.IsDone()) {
+        return MatrixSingular;
+    }
+
+    // copy solution to control point vector
+    for (int i=1; i<_ncp-1; ++i ) {
+        gp_Pnt p(X(i), Y(i), Z(i));
+        poles.SetValue(i+1, p);
+    }
+
+    _curve = new Geom_BSplineCurve(poles, knots_compact, mults, _degree);
+
 
     return NoError;
 }

@@ -34,7 +34,7 @@ public:
      * @param eps Tolerance of the iterative method
      * @param maxIter Maximum number of iterations
      */
-    BSplineFit(  int deg, int ncp, std::vector<double> parameters, double eps=1.0E-3, int maxIter=100 );
+    BSplineFit(int deg, int ncp);
 
     enum error
     {
@@ -46,6 +46,13 @@ public:
 
     /// Fits the given points by a B-spline
     error Fit(const TColgp_Array1OfPnt& points, const std::vector<double>& parameters);
+
+    /// Fits the given points by a B-spline using the centripetal paramterization scheme (alpha=0.5)
+    error Fit(const TColgp_Array1OfPnt& points, double alpha=1.0);
+
+    /// Fits, by optimizing the fit parameters
+    /// This is an iterative algorithm and requires more time than the other fit algorithms
+    error FitOptimal(const TColgp_Array1OfPnt& points, double alpha=1.0, double eps=1.0E-3, int maxIter=100);
 
     /// Returns the resulting curve. Returns
     /// Null in case of an error
@@ -67,11 +74,11 @@ private:
     void computeKnots();
 
     /// Calculates curve parameter t_k [0, 1], which corresponds to the arc lengths
-    //void computeParameters();
+    void computeParameters(double alpha);
 
     /// Recalculates the curve parameters t_k after the
     /// control points are fitted to achieve an even better fit.
-    //void optimizeParameters();
+    void optimizeParameters();
 
     /// Fits the given points by a Bezier spline
     error fitCurve();
