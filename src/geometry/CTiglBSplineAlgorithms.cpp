@@ -782,7 +782,7 @@ Handle(Geom_BSplineCurve) CTiglBSplineAlgorithms::reparametrizeBSplineContinuous
         t_vector.push_back(t(parameter_idx));
     }
 
-    BSplineFit approximationObj(3, n_control_pnts, t_vector);
+    BSplineFit approximationObj(3, n_control_pnts);
     approximationObj.Fit(points, t_vector);
 
     Handle(Geom_BSplineCurve) reparametrized_spline = approximationObj.Curve();
