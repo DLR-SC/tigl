@@ -14,7 +14,7 @@
  *    becomes smaller. Go back to (1)
  */
 
-#include "CTiglBSplineFitMod.h"
+#include "CTiglBSplineFit.h"
 
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_Array1OfInteger.hxx>

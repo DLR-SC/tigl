@@ -20,7 +20,7 @@
 #include "CTiglCurveNetworkSorter.h"
 #include "CTiglError.h"
 #include "CSharedPtr.h"
-#include <CTiglBSplineFitMod.h>
+#include "CTiglBSplineFit.h"
 
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
