@@ -92,12 +92,6 @@ private:
     /// Number of control points of the B-spline
     int _ncp;
 
-    /// fit accuracy
-    double _tolerance;
-
-    /// max number of iterations
-    int _maxIterations;
-
     /// uniform knot vector of the B-spline
     TColStd_Array1OfReal _knots;
 
