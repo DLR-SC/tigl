@@ -16,8 +16,11 @@ before_script:
   - cd build
 
 script: 
-  - cmake -DTIGL_BUILD_TESTS=ON -DTIGL_BINDINGS_MATLAB=ON ..
+  - jdk_switcher use oraclejdk8
+  - cmake -DTIGL_BUILD_TESTS=ON -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON -DCMAKE_INSTALL_PREFIX=`pwd`/install ..
   - make
+  - make install
   - make check
+  - TERM=dumb make tigl-java-demo
 
 
