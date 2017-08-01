@@ -10,6 +10,7 @@ sourceSets {
 }
 
 mainClassName = 'JavaDemo'
+applicationDefaultJvmArgs = ["-Djna.nosys=true"]
 
 
 repositories {
