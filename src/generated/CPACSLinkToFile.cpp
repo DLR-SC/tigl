@@ -34,7 +34,7 @@ namespace tigl
             if (tixihelper::TixiCheckElement(tixiHandle, xpath)) {
                 m_base = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath);
                 if (m_base.empty()) {
-                    LOG(ERROR) << "Required element  is empty at xpath " << xpath;
+                    LOG(WARNING) << "Required element  is empty at xpath " << xpath;
                 }
             }
             else {

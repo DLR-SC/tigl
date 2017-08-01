@@ -36,7 +36,7 @@ namespace tigl
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/name")) {
                 m_name = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
                 if (m_name->empty()) {
-                    LOG(ERROR) << "Optional element name is present but empty at xpath " << xpath;
+                    LOG(WARNING) << "Optional element name is present but empty at xpath " << xpath;
                 }
             }
             
@@ -44,7 +44,7 @@ namespace tigl
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/description")) {
                 m_description = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
                 if (m_description->empty()) {
-                    LOG(ERROR) << "Optional element description is present but empty at xpath " << xpath;
+                    LOG(WARNING) << "Optional element description is present but empty at xpath " << xpath;
                 }
             }
             
@@ -68,7 +68,7 @@ namespace tigl
             if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/materialUID")) {
                 m_materialUID = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/materialUID");
                 if (m_materialUID.empty()) {
-                    LOG(ERROR) << "Required element materialUID is empty at xpath " << xpath;
+                    LOG(WARNING) << "Required element materialUID is empty at xpath " << xpath;
                 }
             }
             else {
