@@ -29,10 +29,12 @@ before_script:
 script: 
   - '[ "$TRAVIS_OS_NAME" != osx ] || export CMAKE_PREFIX_PATH=`pwd`/../TIXI-2.2.4-macOS:`pwd`/../oce.0.17.2.macos_static:`pwd`/../Qt5.4_clang64_macOS'
   - '[ "$TRAVIS_OS_NAME" != osx ] || export CXXFLAGS=-Wno-inconsistent-missing-override '
-  - cmake -DTIGL_BUILD_TESTS=ON -DTIGL_BINDINGS_MATLAB=ON ..
-  - make -j 4
+  - '[ "$TRAVIS_OS_NAME" != linux ] || jdk_switcher use oraclejdk8'
+  - cmake -DTIGL_BUILD_TESTS=ON -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON -DCMAKE_INSTALL_PREFIX=`pwd`/install ..
+  - make -j 4 install
   - '[ "$TRAVIS_OS_NAME" != osx ] || export DYLD_LIBRARY_PATH=`pwd`/../TIXI-2.2.4-macOS/lib '
   - cd tests
   - ./TiGL-unittests --gtest_output=xml
-
+  - cd ..
+  - TERM=dumb make tigl-java-demo
 
