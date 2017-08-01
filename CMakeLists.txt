@@ -148,6 +148,12 @@ if(WIN32)
     add_definitions(-DStandard_EXPORT=)
 endif(WIN32)
 
+option(TIGL_BINDINGS_JAVA "Build the java bindings of tigl (requires java)" OFF)
+
+if (TIGL_BINDINGS_JAVA)
+    find_package(Java 1.7.0 COMPONENTS Development REQUIRED)
+endif(TIGL_BINDINGS_JAVA)
+
 # style checks
 add_custom_target(checkstyle)
 add_custom_target(checkstylexml)
