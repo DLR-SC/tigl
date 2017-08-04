@@ -10,6 +10,7 @@ install(FILES
 if (TIGL_BINDINGS_JAVA)
 	SET(TIGL_JAR "${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}/tigl-${TIGL_VERSION}.jar")
 
+	set(TIGL_LIB_PATH ${PROJECT_BINARY_DIR}/lib)
 	
 	configure_file(${CMAKE_CURRENT_SOURCE_DIR}/build.gradle.in ${CMAKE_CURRENT_BINARY_DIR}/build.gradle)
 	
