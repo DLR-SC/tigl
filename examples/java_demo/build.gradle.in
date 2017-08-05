@@ -20,12 +20,14 @@ dependencies {
     compile group: 'commons-logging', name: 'commons-logging', version: '1.2'
     compile group: 'net.java.dev.jna', name: 'jna', version: '4.1.0'
 
-    compile fileTree(dir: '@PROJECT_BINARY_DIR@/@CMAKE_INSTALL_LIBDIR@', include: ['tigl-@TIGL_VERSION@.jar'])
+    compile fileTree(dir: '@TIGL_LIB_PATH@', include: ['tigl-@TIGL_VERSION@.jar'])
 }
 
 run {
     args += '@PROJECT_SOURCE_DIR@/tests/TestData/simpletest.cpacs.xml'
-    classpath  'java.library.path','@LIBRARY_INSTALL_PATH@'
-    environment 'DYLD_LIBRARY_PATH', '@TIXI_LIB_PATH@'
+    classpath  'java.library.path','@TIGL_LIB_PATH@','@TIGL_LIB_PATH@/Release','@TIGL_LIB_PATH@/Debug'
+    environment 'DYLD_LIBRARY_PATH', '@OpenCASCADE_DLL_DIRECTORY@:@TIXI_LIB_PATH@'
+    environment 'LD_LIBRARY_PATH', '@OpenCASCADE_DLL_DIRECTORY@:@TIXI_LIB_PATH@'
+    environment 'PATH', '@OpenCASCADE_DLL_DIRECTORY@;@TIXI_LIB_PATH@'
 }
 

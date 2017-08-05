@@ -57,8 +57,8 @@ build_script:
 - ps: |
     md _build -Force | Out-Null
     cd _build
-    Write-Output "Running cmake: -DCMAKE_INSTALL_PREFIX=$PWD\install -DCASROOT=c:\oce\$ocedist -DTIXI_PATH=c:\tixi\$tixidist -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON -DTIGL_BUILD_TESTS=ON -DTIGL_NIGHTLY=ON -DQT_PATH=c:\Qt\5.4.1\$qtdist -DDOXYGEN_EXECUTABLE=c:/doxygen-win/bin/doxygen.exe -DMSVC10_REDIST_DIR=c:/redist/$redist .."
-    & cmake -G "$generator" -DCMAKE_INSTALL_PREFIX="$PWD"\install -DCASROOT=c:\oce\$ocedist -DTIXI_PATH=c:\tixi\$tixidist -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON -DTIGL_BUILD_TESTS=ON -DTIGL_NIGHTLY=ON -DQT_PATH=c:\Qt\5.4.1\$qtdist -DDOXYGEN_EXECUTABLE=c:/doxygen-win/bin/doxygen.exe -DMSVC10_REDIST_DIR=c:/redist/$redist ..
+    Write-Output "Running cmake: -DCMAKE_INSTALL_PREFIX=install -DCASROOT=c:\oce\$ocedist -DTIXI_PATH=c:\tixi\$tixidist -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON -DTIGL_BUILD_TESTS=ON -DTIGL_NIGHTLY=ON -DQT_PATH=c:\Qt\5.4.1\$qtdist -DDOXYGEN_EXECUTABLE=c:/doxygen-win/bin/doxygen.exe .."
+    & cmake -G "$generator" -DCMAKE_INSTALL_PREFIX=install -DCASROOT=c:\oce\$ocedist -DTIXI_PATH=c:\tixi\$tixidist -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON -DTIGL_BUILD_TESTS=ON -DTIGL_NIGHTLY=ON -DQT_PATH=c:\Qt\5.4.1\$qtdist -DDOXYGEN_EXECUTABLE=c:/doxygen-win/bin/doxygen.exe ..
     if ($LastExitCode -ne 0) {
         throw "Exec: $ErrorMessage"
     }
