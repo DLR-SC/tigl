@@ -1,7 +1,0 @@
-// fundamental types which have special Tixi IO functions
-
-std::string 
-double
-bool
-int
-std::time_t
