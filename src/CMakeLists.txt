@@ -72,8 +72,8 @@ if (WIN32)
 endif(WIN32)
 
 target_link_libraries (tigl3 ${TIGL_LIBRARIES})
-set_target_properties( tigl3 PROPERTIES VERSION ${TIGL_VERSION})
-set_target_properties( tigl3 PROPERTIES SOVERSION "${TIGL_VERSION_MAJOR}")
+set_target_properties( tigl3 PROPERTIES VERSION ${TIGL_VERSION_MINOR}.${TIGL_VERSION_PATCH})
+set_target_properties( tigl3 PROPERTIES SOVERSION "${TIGL_VERSION_MINOR}")
 
 install (TARGETS tigl3
 		 EXPORT tigl-targets
