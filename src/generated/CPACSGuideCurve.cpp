@@ -226,15 +226,31 @@ namespace tigl
             (
                 (
                     (
+                        // mandatory elements of this choice must be there
                         m_fromGuideCurveUID_choice1.is_initialized()
                         &&
                         true // m_continuity_choice1 is optional in choice
+                        &&
+                        // elements of other choices must not be there
+                        !(
+                            m_fromRelativeCircumference_choice2.is_initialized()
+                            ||
+                            m_tangent_choice2.is_initialized()
+                        )
                     )
                     +
                     (
+                        // mandatory elements of this choice must be there
                         m_fromRelativeCircumference_choice2.is_initialized()
                         &&
                         true // m_tangent_choice2 is optional in choice
+                        &&
+                        // elements of other choices must not be there
+                        !(
+                            m_fromGuideCurveUID_choice1.is_initialized()
+                            ||
+                            m_continuity_choice1.is_initialized()
+                        )
                     )
                     == 1
                 )

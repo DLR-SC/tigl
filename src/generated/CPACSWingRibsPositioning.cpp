@@ -258,41 +258,101 @@ namespace tigl
             (
                 (
                     (
+                        // mandatory elements of this choice must be there
                         m_etaStart_choice1.is_initialized()
+                        &&
+                        // elements of other choices must not be there
+                        !(
+                            m_elementStartUID_choice2.is_initialized()
+                            ||
+                            m_sparPositionStartUID_choice3.is_initialized()
+                        )
                     )
                     +
                     (
+                        // mandatory elements of this choice must be there
                         m_elementStartUID_choice2.is_initialized()
+                        &&
+                        // elements of other choices must not be there
+                        !(
+                            m_etaStart_choice1.is_initialized()
+                            ||
+                            m_sparPositionStartUID_choice3.is_initialized()
+                        )
                     )
                     +
                     (
+                        // mandatory elements of this choice must be there
                         m_sparPositionStartUID_choice3.is_initialized()
+                        &&
+                        // elements of other choices must not be there
+                        !(
+                            m_etaStart_choice1.is_initialized()
+                            ||
+                            m_elementStartUID_choice2.is_initialized()
+                        )
                     )
                     == 1
                 )
                 &&
                 (
                     (
+                        // mandatory elements of this choice must be there
                         m_etaEnd_choice1.is_initialized()
+                        &&
+                        // elements of other choices must not be there
+                        !(
+                            m_elementEndUID_choice2.is_initialized()
+                            ||
+                            m_sparPositionEndUID_choice3.is_initialized()
+                        )
                     )
                     +
                     (
+                        // mandatory elements of this choice must be there
                         m_elementEndUID_choice2.is_initialized()
+                        &&
+                        // elements of other choices must not be there
+                        !(
+                            m_etaEnd_choice1.is_initialized()
+                            ||
+                            m_sparPositionEndUID_choice3.is_initialized()
+                        )
                     )
                     +
                     (
+                        // mandatory elements of this choice must be there
                         m_sparPositionEndUID_choice3.is_initialized()
+                        &&
+                        // elements of other choices must not be there
+                        !(
+                            m_etaEnd_choice1.is_initialized()
+                            ||
+                            m_elementEndUID_choice2.is_initialized()
+                        )
                     )
                     == 1
                 )
                 &&
                 (
                     (
+                        // mandatory elements of this choice must be there
                         m_spacing_choice1.is_initialized()
+                        &&
+                        // elements of other choices must not be there
+                        !(
+                            m_numberOfRibs_choice2.is_initialized()
+                        )
                     )
                     +
                     (
+                        // mandatory elements of this choice must be there
                         m_numberOfRibs_choice2.is_initialized()
+                        &&
+                        // elements of other choices must not be there
+                        !(
+                            m_spacing_choice1.is_initialized()
+                        )
                     )
                     == 1
                 )

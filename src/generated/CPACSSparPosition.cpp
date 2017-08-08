@@ -135,11 +135,23 @@ namespace tigl
             (
                 (
                     (
+                        // mandatory elements of this choice must be there
                         m_eta_choice1.is_initialized()
+                        &&
+                        // elements of other choices must not be there
+                        !(
+                            m_elementUID_choice2.is_initialized()
+                        )
                     )
                     +
                     (
+                        // mandatory elements of this choice must be there
                         m_elementUID_choice2.is_initialized()
+                        &&
+                        // elements of other choices must not be there
+                        !(
+                            m_eta_choice1.is_initialized()
+                        )
                     )
                     == 1
                 )
