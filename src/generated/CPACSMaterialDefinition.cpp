@@ -126,17 +126,35 @@ namespace tigl
             (
                 (
                     (
+                        // mandatory elements of this choice must be there
                         m_compositeUID_choice1.is_initialized()
                         &&
                         true // m_orthotropyDirection_choice1 is optional in choice
                         &&
                         true // m_thicknessScaling_choice1 is optional in choice
+                        &&
+                        // elements of other choices must not be there
+                        !(
+                            m_materialUID_choice2.is_initialized()
+                            ||
+                            m_thickness_choice2.is_initialized()
+                        )
                     )
                     +
                     (
+                        // mandatory elements of this choice must be there
                         m_materialUID_choice2.is_initialized()
                         &&
                         true // m_thickness_choice2 is optional in choice
+                        &&
+                        // elements of other choices must not be there
+                        !(
+                            m_compositeUID_choice1.is_initialized()
+                            ||
+                            m_orthotropyDirection_choice1.is_initialized()
+                            ||
+                            m_thicknessScaling_choice1.is_initialized()
+                        )
                     )
                     == 1
                 )

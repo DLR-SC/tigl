@@ -198,12 +198,27 @@ namespace tigl
             (
                 (
                     (
+                        // mandatory elements of this choice must be there
                         true // m_plasticEliminationStrain_choice1 is optional in choice
                         &&
                         true // m_plasticityCurvePoints_choice1 is optional in choice
+                        &&
+                        // elements of other choices must not be there
+                        !(
+                            m_initialEquivalentShearStrain_choice2.is_initialized()
+                            ||
+                            m_intermediateEquivalentShearStrain_choice2.is_initialized()
+                            ||
+                            m_ultimateEquivalentShearStrain_choice2.is_initialized()
+                            ||
+                            m_intermediateDamage_choice2.is_initialized()
+                            ||
+                            m_ultimateDamage_choice2.is_initialized()
+                        )
                     )
                     +
                     (
+                        // mandatory elements of this choice must be there
                         m_initialEquivalentShearStrain_choice2.is_initialized()
                         &&
                         m_intermediateEquivalentShearStrain_choice2.is_initialized()
@@ -213,6 +228,13 @@ namespace tigl
                         m_intermediateDamage_choice2.is_initialized()
                         &&
                         m_ultimateDamage_choice2.is_initialized()
+                        &&
+                        // elements of other choices must not be there
+                        !(
+                            m_plasticEliminationStrain_choice1.is_initialized()
+                            ||
+                            !m_plasticityCurvePoints_choice1.empty()
+                        )
                     )
                     == 1
                 )

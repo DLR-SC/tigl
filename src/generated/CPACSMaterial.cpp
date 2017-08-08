@@ -624,6 +624,7 @@ namespace tigl
             (
                 (
                     (
+                        // mandatory elements of this choice must be there
                         m_sig11_choice1.is_initialized()
                         &&
                         m_tau12_choice1.is_initialized()
@@ -631,9 +632,59 @@ namespace tigl
                         true // m_sig11yieldT_choice1 is optional in choice
                         &&
                         true // m_sig11yieldC_choice1 is optional in choice
+                        &&
+                        // elements of other choices must not be there
+                        !(
+                            m_k22_choice2.is_initialized()
+                            ||
+                            m_k23_choice2.is_initialized()
+                            ||
+                            m_k66_choice2.is_initialized()
+                            ||
+                            m_sig11t_choice2.is_initialized()
+                            ||
+                            m_sig11c_choice2.is_initialized()
+                            ||
+                            m_sig22t_choice2.is_initialized()
+                            ||
+                            m_sig22c_choice2.is_initialized()
+                            ||
+                            m_tau23_choice2.is_initialized()
+                            ||
+                            m_k13_choice3.is_initialized()
+                            ||
+                            m_k22_choice3.is_initialized()
+                            ||
+                            m_k23_choice3.is_initialized()
+                            ||
+                            m_k33_choice3.is_initialized()
+                            ||
+                            m_k44_choice3.is_initialized()
+                            ||
+                            m_k55_choice3.is_initialized()
+                            ||
+                            m_k66_choice3.is_initialized()
+                            ||
+                            m_sig11t_choice3.is_initialized()
+                            ||
+                            m_sig11c_choice3.is_initialized()
+                            ||
+                            m_sig22t_choice3.is_initialized()
+                            ||
+                            m_sig22c_choice3.is_initialized()
+                            ||
+                            m_sig33t_choice3.is_initialized()
+                            ||
+                            m_sig33c_choice3.is_initialized()
+                            ||
+                            m_tau13_choice3.is_initialized()
+                            ||
+                            m_tau23_choice3.is_initialized()
+                        )
                     )
                     +
                     (
+                        // mandatory elements of this choice must be there
                         m_k22_choice2.is_initialized()
                         &&
                         m_k23_choice2.is_initialized()
@@ -651,9 +702,33 @@ namespace tigl
                         m_tau12_choice2.is_initialized()
                         &&
                         m_tau23_choice2.is_initialized()
+                        &&
+                        // elements of other choices must not be there
+                        !(
+                            m_sig11_choice1.is_initialized()
+                            ||
+                            m_sig11yieldT_choice1.is_initialized()
+                            ||
+                            m_sig11yieldC_choice1.is_initialized()
+                            ||
+                            m_k13_choice3.is_initialized()
+                            ||
+                            m_k33_choice3.is_initialized()
+                            ||
+                            m_k44_choice3.is_initialized()
+                            ||
+                            m_k55_choice3.is_initialized()
+                            ||
+                            m_sig33t_choice3.is_initialized()
+                            ||
+                            m_sig33c_choice3.is_initialized()
+                            ||
+                            m_tau13_choice3.is_initialized()
+                        )
                     )
                     +
                     (
+                        // mandatory elements of this choice must be there
                         m_k13_choice3.is_initialized()
                         &&
                         m_k22_choice3.is_initialized()
@@ -685,6 +760,15 @@ namespace tigl
                         m_tau13_choice3.is_initialized()
                         &&
                         m_tau23_choice3.is_initialized()
+                        &&
+                        // elements of other choices must not be there
+                        !(
+                            m_sig11_choice1.is_initialized()
+                            ||
+                            m_sig11yieldT_choice1.is_initialized()
+                            ||
+                            m_sig11yieldC_choice1.is_initialized()
+                        )
                     )
                     == 1
                 )
