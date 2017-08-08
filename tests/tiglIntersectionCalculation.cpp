@@ -91,19 +91,19 @@ TEST_F(TiglIntersectionCalculation, tiglIntersectComponents)
     ASSERT_EQ(TIGL_SUCCESS, tiglIntersectComponents(tiglHandle, "Wing", "SimpleFuselage", &id));
     ASSERT_EQ(TIGL_SUCCESS, tiglIntersectGetLineCount(tiglHandle, id, &count));
     ASSERT_EQ(1, count);
-    ASSERT_EQ(TIGL_SUCCESS, tiglIntersectSamplePoint(tiglHandle, id, 1, 0., &px, &py, &pz));
+    ASSERT_EQ(TIGL_SUCCESS, tiglIntersectGetPoint(tiglHandle, id, 1, 0., &px, &py, &pz));
     
-    // tests errors of tiglIntersectSamplePoint since we already have a result
-    ASSERT_EQ(TIGL_NOT_FOUND,    tiglIntersectSamplePoint(-1, id, 1, 0., &px, &py, &pz));
-    ASSERT_EQ(TIGL_NOT_FOUND,    tiglIntersectSamplePoint(tiglHandle, "1234567890", 1, 0., &px, &py, &pz));
-    ASSERT_EQ(TIGL_INDEX_ERROR,  tiglIntersectSamplePoint(tiglHandle, id, 0, 0., &px, &py, &pz));
-    ASSERT_EQ(TIGL_INDEX_ERROR,  tiglIntersectSamplePoint(tiglHandle, id, 2, 0., &px, &py, &pz));
-    ASSERT_EQ(TIGL_MATH_ERROR,   tiglIntersectSamplePoint(tiglHandle, id, 1, -0.5, &px, &py, &pz));
-    ASSERT_EQ(TIGL_MATH_ERROR,   tiglIntersectSamplePoint(tiglHandle, id, 1,  1.5, &px, &py, &pz));
-    ASSERT_EQ(TIGL_NULL_POINTER, tiglIntersectSamplePoint(tiglHandle, id, 1, 0.5, NULL, &py, &pz));
-    ASSERT_EQ(TIGL_NULL_POINTER, tiglIntersectSamplePoint(tiglHandle, id, 1, 0.5, &px, NULL, &pz));
-    ASSERT_EQ(TIGL_NULL_POINTER, tiglIntersectSamplePoint(tiglHandle, id, 1, 0.5, &px, &py, NULL));
-    ASSERT_EQ(TIGL_NULL_POINTER, tiglIntersectSamplePoint(tiglHandle, NULL, 1, 0.5, &px, &py, &pz));
+    // tests errors of tiglIntersectGetPoint since we already have a result
+    ASSERT_EQ(TIGL_NOT_FOUND,    tiglIntersectGetPoint(-1, id, 1, 0., &px, &py, &pz));
+    ASSERT_EQ(TIGL_NOT_FOUND,    tiglIntersectGetPoint(tiglHandle, "1234567890", 1, 0., &px, &py, &pz));
+    ASSERT_EQ(TIGL_INDEX_ERROR,  tiglIntersectGetPoint(tiglHandle, id, 0, 0., &px, &py, &pz));
+    ASSERT_EQ(TIGL_INDEX_ERROR,  tiglIntersectGetPoint(tiglHandle, id, 2, 0., &px, &py, &pz));
+    ASSERT_EQ(TIGL_MATH_ERROR,   tiglIntersectGetPoint(tiglHandle, id, 1, -0.5, &px, &py, &pz));
+    ASSERT_EQ(TIGL_MATH_ERROR,   tiglIntersectGetPoint(tiglHandle, id, 1,  1.5, &px, &py, &pz));
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglIntersectGetPoint(tiglHandle, id, 1, 0.5, NULL, &py, &pz));
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglIntersectGetPoint(tiglHandle, id, 1, 0.5, &px, NULL, &pz));
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglIntersectGetPoint(tiglHandle, id, 1, 0.5, &px, &py, NULL));
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglIntersectGetPoint(tiglHandle, NULL, 1, 0.5, &px, &py, &pz));
 }
 
 TEST_F(TiglIntersectionCalculation, tiglIntersectWithPlane)
@@ -148,7 +148,7 @@ TEST_F(TiglIntersectionCalculation, tiglIntersectWithPlaneSegment)
     ASSERT_EQ(TIGL_MATH_ERROR,   tiglIntersectWithPlaneSegment(tiglHandle, "SimpleFuselage",  0.5,  5., 0., 0.5, 5.,0., 0., 0., 1., &id));
 }
 
-TEST_F(TiglIntersectionCalculation, tiglIntersectCurves)
+TEST_F(TiglIntersectionCalculation, tiglGetCurveIntersection)
 {
     // first, calculate two intersections
 
@@ -162,62 +162,62 @@ TEST_F(TiglIntersectionCalculation, tiglIntersectCurves)
 
     double tol = 1e-4;
     char* id_result = NULL;
-    ASSERT_EQ(TIGL_SUCCESS, tiglIntersectCurves(tiglHandle, id1, 1, id2, 1, tol, &id_result) );
+    ASSERT_EQ(TIGL_SUCCESS, tiglGetCurveIntersection(tiglHandle, id1, 1, id2, 1, tol, &id_result) );
 
     // query the number of points
     int numPoints;
-    ASSERT_EQ(TIGL_SUCCESS, tiglIntersectGetPointCount(tiglHandle, id_result, &numPoints) );
+    ASSERT_EQ(TIGL_SUCCESS, tiglGetCurveIntersectionCount(tiglHandle, id_result, &numPoints) );
     EXPECT_EQ( 2, numPoints );
 
     // query a point by its index
     double p1x, p1y, p1z;
-    ASSERT_EQ(TIGL_SUCCESS, tiglIntersectGetPoint(tiglHandle, id_result, 1,  &p1x, &p1y, &p1z) );
+    ASSERT_EQ(TIGL_SUCCESS, tiglGetCurveIntersectionPoint(tiglHandle, id_result, 1,  &p1x, &p1y, &p1z) );
     ASSERT_NEAR(  0.5, p1x, tol);
     ASSERT_NEAR(  0.0, p1y, tol);
     ASSERT_NEAR( -0.5, p1z, tol);
 
     double p2x, p2y, p2z;
-    ASSERT_EQ(TIGL_SUCCESS, tiglIntersectGetPoint(tiglHandle, id_result, 2,  &p2x, &p2y, &p2z) );
+    ASSERT_EQ(TIGL_SUCCESS, tiglGetCurveIntersectionPoint(tiglHandle, id_result, 2,  &p2x, &p2y, &p2z) );
     ASSERT_NEAR(  0.5, p2x, tol);
     ASSERT_NEAR(  0.0, p2y, tol);
     ASSERT_NEAR(  0.5, p2z, tol);
 
     // get the parameter of an intersection point
     double eta1;
-    ASSERT_EQ(TIGL_SUCCESS, tiglIntersectGetParameter(tiglHandle, id_result, 1, id1, 1, &eta1) );
+    ASSERT_EQ(TIGL_SUCCESS, tiglGetCurveIntersectionParameter (tiglHandle, id_result, 1, id1, 1, &eta1) );
 
     double eta2;
-    ASSERT_EQ(TIGL_SUCCESS, tiglIntersectGetParameter(tiglHandle, id_result, 1, id2, 1, &eta2) );
+    ASSERT_EQ(TIGL_SUCCESS, tiglGetCurveIntersectionParameter (tiglHandle, id_result, 1, id2, 1, &eta2) );
 
 
-    // check errorcodes of tiglIntersectCurves
-    ASSERT_EQ(TIGL_NOT_FOUND,    tiglIntersectCurves(-1, id1, 1, id2, 1, tol, &id_result) );
-    ASSERT_EQ(TIGL_NULL_POINTER, tiglIntersectCurves(tiglHandle, NULL, 1, id2, 1, tol, &id_result) );
-    ASSERT_EQ(TIGL_NULL_POINTER, tiglIntersectCurves(tiglHandle, id1, 1, NULL, 1, tol, &id_result) );
-    ASSERT_EQ(TIGL_NULL_POINTER, tiglIntersectCurves(tiglHandle, id1, 1, id2, 1, tol, NULL) );
-    ASSERT_EQ(TIGL_INDEX_ERROR,  tiglIntersectCurves(tiglHandle, id1, 2, id2, 1, tol, &id_result) );
-    ASSERT_EQ(TIGL_INDEX_ERROR,  tiglIntersectCurves(tiglHandle, id1, 1, id2, 2, tol, &id_result) );
-    ASSERT_EQ(TIGL_MATH_ERROR,   tiglIntersectCurves(tiglHandle, id1, 1, id2, 1, -1, &id_result) );
+    // check errorcodes of tiglGetCurveIntersection
+    ASSERT_EQ(TIGL_NOT_FOUND,    tiglGetCurveIntersection(-1, id1, 1, id2, 1, tol, &id_result) );
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglGetCurveIntersection(tiglHandle, NULL, 1, id2, 1, tol, &id_result) );
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglGetCurveIntersection(tiglHandle, id1, 1, NULL, 1, tol, &id_result) );
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglGetCurveIntersection(tiglHandle, id1, 1, id2, 1, tol, NULL) );
+    ASSERT_EQ(TIGL_INDEX_ERROR,  tiglGetCurveIntersection(tiglHandle, id1, 2, id2, 1, tol, &id_result) );
+    ASSERT_EQ(TIGL_INDEX_ERROR,  tiglGetCurveIntersection(tiglHandle, id1, 1, id2, 2, tol, &id_result) );
+    ASSERT_EQ(TIGL_MATH_ERROR,   tiglGetCurveIntersection(tiglHandle, id1, 1, id2, 1, -1, &id_result) );
 
-    // check errorcodes of tiglIntersectGetPointCount
-    ASSERT_EQ(TIGL_NOT_FOUND,    tiglIntersectGetPointCount(-1, id_result, &numPoints) );
-    ASSERT_EQ(TIGL_NULL_POINTER, tiglIntersectGetPointCount(tiglHandle, NULL, &numPoints) );
-    ASSERT_EQ(TIGL_NULL_POINTER, tiglIntersectGetPointCount(tiglHandle, id_result, NULL) );
+    // check errorcodes of tiglGetCurveIntersectionCount
+    ASSERT_EQ(TIGL_NOT_FOUND,    tiglGetCurveIntersectionCount(-1, id_result, &numPoints) );
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglGetCurveIntersectionCount(tiglHandle, NULL, &numPoints) );
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglGetCurveIntersectionCount(tiglHandle, id_result, NULL) );
 
-    // check errorcodes of tiglIntersectGetPoint
-    ASSERT_EQ(TIGL_NOT_FOUND,    tiglIntersectGetPoint(-1, id_result, 2,  &p2x, &p2y, &p2z) );
-    ASSERT_EQ(TIGL_NULL_POINTER, tiglIntersectGetPoint(tiglHandle, NULL, 2,  &p2x, &p2y, &p2z) );
-    ASSERT_EQ(TIGL_NULL_POINTER, tiglIntersectGetPoint(tiglHandle, id_result, 2,  NULL, &p2y, &p2z) );
-    ASSERT_EQ(TIGL_NULL_POINTER, tiglIntersectGetPoint(tiglHandle, id_result, 2,  &p2x, NULL, &p2z) );
-    ASSERT_EQ(TIGL_NULL_POINTER, tiglIntersectGetPoint(tiglHandle, id_result, 2,  &p2x, &p2y, NULL) );
-    ASSERT_EQ(TIGL_INDEX_ERROR,  tiglIntersectGetPoint(tiglHandle, id_result, 3,  &p2x, &p2y, &p2z) );
+    // check errorcodes of tiglGetCurveIntersectionPoint
+    ASSERT_EQ(TIGL_NOT_FOUND,    tiglGetCurveIntersectionPoint(-1, id_result, 2,  &p2x, &p2y, &p2z) );
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglGetCurveIntersectionPoint(tiglHandle, NULL, 2,  &p2x, &p2y, &p2z) );
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglGetCurveIntersectionPoint(tiglHandle, id_result, 2,  NULL, &p2y, &p2z) );
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglGetCurveIntersectionPoint(tiglHandle, id_result, 2,  &p2x, NULL, &p2z) );
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglGetCurveIntersectionPoint(tiglHandle, id_result, 2,  &p2x, &p2y, NULL) );
+    ASSERT_EQ(TIGL_INDEX_ERROR,  tiglGetCurveIntersectionPoint(tiglHandle, id_result, 3,  &p2x, &p2y, &p2z) );
 
-    // check errorcodes of tiglIntersectGetParameter
-    ASSERT_EQ(TIGL_NOT_FOUND,    tiglIntersectGetParameter(-1, id_result, 1, id1, 1, &eta1) );
-    ASSERT_EQ(TIGL_NULL_POINTER, tiglIntersectGetParameter(tiglHandle, NULL, 1, id1, 1, &eta1) );
-    ASSERT_EQ(TIGL_NULL_POINTER, tiglIntersectGetParameter(tiglHandle, id_result, 1, NULL, 1, &eta1) );
-    ASSERT_EQ(TIGL_NULL_POINTER, tiglIntersectGetParameter(tiglHandle, id_result, 1, id1, 1, NULL) );
-    ASSERT_EQ(TIGL_INDEX_ERROR,  tiglIntersectGetParameter(tiglHandle, id_result, 1, id1, 2, &eta1) );
+    // check errorcodes of tiglGetCurveIntersectionParameter
+    ASSERT_EQ(TIGL_NOT_FOUND,    tiglGetCurveIntersectionParameter (-1, id_result, 1, id1, 1, &eta1) );
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglGetCurveIntersectionParameter (tiglHandle, NULL, 1, id1, 1, &eta1) );
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglGetCurveIntersectionParameter (tiglHandle, id_result, 1, NULL, 1, &eta1) );
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglGetCurveIntersectionParameter (tiglHandle, id_result, 1, id1, 1, NULL) );
+    ASSERT_EQ(TIGL_INDEX_ERROR,  tiglGetCurveIntersectionParameter (tiglHandle, id_result, 1, id1, 2, &eta1) );
 
 }
 
