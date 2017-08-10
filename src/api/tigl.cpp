@@ -4864,12 +4864,12 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetCurveIntersectionCount(TiglCPACSConfigu
 }
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectGetPoint(TiglCPACSConfigurationHandle cpacsHandle,
-                                                           const char* intersectionID,
-                                                           int lineIdx,
-                                                           double eta,
-                                                           double* pointX,
-                                                           double* pointY,
-                                                           double* pointZ)
+                                                        const char* intersectionID,
+                                                        int lineIdx,
+                                                        double eta,
+                                                        double* pointX,
+                                                        double* pointY,
+                                                        double* pointZ)
 {
     if (!pointX) {
         LOG(ERROR) << "Null pointer for argument pointX in tiglIntersectGetPoint.";
@@ -4970,23 +4970,32 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetCurveIntersectionPoint(TiglCPACSConfigu
     }
 }
 
-TIGL_COMMON_EXPORT TiglReturnCode tiglGetCurveIntersectionParameter (TiglCPACSConfigurationHandle cpacsHandle,
-                                                                     const char* intersectionID,
-                                                                     int pointIdx,
-                                                                     const char* curveID,
-                                                                     int curveIdx,
-                                                                     double* eta)
+TIGL_COMMON_EXPORT TiglReturnCode tiglGetCurveParameter (TiglCPACSConfigurationHandle cpacsHandle,
+                                                         const char* curveID,
+                                                         int curveIdx,
+                                                         double pointX,
+                                                         double pointY,
+                                                         double pointZ,
+                                                         double* eta)
 {
     if (!eta) {
-        LOG(ERROR) << "Null pointer for argument eta in tiglGetCurveIntersectionParameter .";
+        LOG(ERROR) << "Null pointer for argument eta in tiglGetCurveParameter .";
         return TIGL_NULL_POINTER;
     }
-    if (!intersectionID) {
-        LOG(ERROR) << "Null pointer for argument intersectionID in tiglGetCurveIntersectionParameter .";
+    if (!pointX) {
+        LOG(ERROR) << "Null pointer for argument pointX in tiglGetCurveParameter .";
+        return TIGL_NULL_POINTER;
+    }
+    if (!pointY) {
+        LOG(ERROR) << "Null pointer for argument pointY in tiglGetCurveParameter .";
+        return TIGL_NULL_POINTER;
+    }
+    if (!pointZ) {
+        LOG(ERROR) << "Null pointer for argument pointZ in tiglGetCurveParameter .";
         return TIGL_NULL_POINTER;
     }
     if (!curveID) {
-        LOG(ERROR) << "Null pointer for argument curveID in tiglGetCurveIntersectionParameter .";
+        LOG(ERROR) << "Null pointer for argument curveID in tiglGetCurveParameter .";
         return TIGL_NULL_POINTER;
     }
 
@@ -4995,8 +5004,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetCurveIntersectionParameter (TiglCPACSCo
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CTiglShapeCache& cache = config.GetShapeCache();
 
-        tigl::CTiglIntersectionCalculation IntersectorPoint(cache, intersectionID);
-        gp_Pnt p = BRep_Tool::Pnt( IntersectorPoint.GetVertex(pointIdx) );
+        gp_Pnt p(pointX, pointY, pointZ);
 
         tigl::CTiglIntersectionCalculation IntersectorLine(cache, curveID);
         TopoDS_Wire wire = IntersectorLine.GetWire(curveIdx);
@@ -5010,7 +5018,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetCurveIntersectionParameter (TiglCPACSCo
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglGetCurveIntersectionParameter !";
+        LOG(ERROR) << "Caught an exception in tiglGetCurveParameter !";
         return TIGL_ERROR;
     }
 }

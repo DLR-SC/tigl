@@ -27,7 +27,7 @@
 #include "TopoDS_Shape.hxx"
 #include "PNamedShape.h"
 #include "ListPNamedShape.h"
-#include "intersectionPoints.h"
+#include "CTiglIntersectionPoint.h"
 #include "CCPACSConfiguration.h"
 #include "CTiglRelativelyPositionedComponent.h"
 #include <TopoDS_Edge.hxx>

@@ -3129,11 +3129,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectWithPlaneSegment(TiglCPACSConfigu
 * Both curves are the result of a previous intersection (e.g. Fuselage-Wing Intersection).
 *
 * The curves must be specified by their intersectionIDs and an index of the wire in the
-* intersection. The intersection is calculated to a specified tolerance.
+* intersection. For each calculated intersection, the distance between the point on the first curve
+* to the point on the second curve is smaller than the tolerance specified by the user.
+*
 *
 * It returns an intersection ID for further computations on the result.
 * To query the number of intersection points, call ::tiglGetCurveIntersectionCount.
-* To query intersection points, ::tiglGetCurveIntersectionPoint or ::tiglGetCurveIntersectionParameter
+* To query intersection points, ::tiglGetCurveIntersectionPoint or ::tiglGetCurveParameter
 * has to be called.
 *
 * @param[in]  cpacsHandle     Handle for the CPACS configuration
@@ -3249,18 +3251,18 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetCurveIntersectionPoint(TiglCPACSConfigu
                                                                 double* pointZ);
 
 /**
-@brief tiglGetCurveIntersectionParameter  returns the parameter of an intersection point calculated by ::tiglGetCurveIntersection
-along one of the intersection lines. The intersection line is specified by an intersection ID calculated by
-* ::tiglIntersectComponents, ::tiglIntersectWithPlane or ::tiglIntersectWithPlaneSegment. It must be one of the
-* intersection lines used as an input in the call to ::tiglGetCurveIntersection.
+@brief tiglGetCurveParameter  projects a point onto a curve of an intersection line.
+The intersection line is specified by a curveID. The curveID can be calculated using
+* ::tiglIntersectComponents, ::tiglIntersectWithPlane or ::tiglIntersectWithPlaneSegment.
+* The function returns the parameter eta of the projected point on the curve.
 
 *
 * @param[in]  cpacsHandle     Handle for the CPACS configuration
-* @param[in]  intersectionID  The intersection identifier returned by ::tiglGetCurveIntersection
-* @param[in]  pointIdx        Index of the intersection point. To get the number of intersection points,
-*                             call ::tiglGetCurveIntersectionCount with 1 <= pointIdx <= pointCount.
-* @param[in]  curveID         The id of the intersection.
+* @param[in]  curveID         The id of the intersection line.
 * @param[in]  curveIdx        The index of curve in the intersection.
+* @param[in]  pointX          X coordinate of the point to be projected.
+* @param[in]  pointY          Y coordinate of the point to be projected.
+* @param[in]  pointZ          Z coordinate of the point to be projected.
 * @param[out] eta             The parameter along the first curve.
 *
 * @return
@@ -3269,12 +3271,13 @@ along one of the intersection lines. The intersection line is specified by an in
 *   - TIGL_NULL_POINTER if intersectionID, curveID or eta are NULL pointers
 *   - TIGL_INDEX_ERROR if curveIdx is not in valid range
 */
-TIGL_COMMON_EXPORT TiglReturnCode tiglGetCurveIntersectionParameter (TiglCPACSConfigurationHandle cpacsHandle,
-                                                                     const char* intersectionID,
-                                                                     int pointIdx,
-                                                                     const char* curveID,
-                                                                     int curveIdx,
-                                                                     double* eta);
+TIGL_COMMON_EXPORT TiglReturnCode tiglGetCurveParameter (TiglCPACSConfigurationHandle cpacsHandle,
+                                                         const char* curveID,
+                                                         int curveIdx,
+                                                         double pointX,
+                                                         double pointY,
+                                                         double pointZ,
+                                                         double* eta);
 
 
 

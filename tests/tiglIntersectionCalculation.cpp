@@ -184,10 +184,10 @@ TEST_F(TiglIntersectionCalculation, tiglGetCurveIntersection)
 
     // get the parameter of an intersection point
     double eta1;
-    ASSERT_EQ(TIGL_SUCCESS, tiglGetCurveIntersectionParameter (tiglHandle, id_result, 1, id1, 1, &eta1) );
+    ASSERT_EQ(TIGL_SUCCESS, tiglGetCurveParameter (tiglHandle, id1, 1, p1x, p1y, p1z, &eta1) );
 
     double eta2;
-    ASSERT_EQ(TIGL_SUCCESS, tiglGetCurveIntersectionParameter (tiglHandle, id_result, 1, id2, 1, &eta2) );
+    ASSERT_EQ(TIGL_SUCCESS, tiglGetCurveParameter (tiglHandle, id2, 1, p1x, p1y, p1z,  &eta2) );
 
 
     // check errorcodes of tiglGetCurveIntersection
@@ -212,12 +212,14 @@ TEST_F(TiglIntersectionCalculation, tiglGetCurveIntersection)
     ASSERT_EQ(TIGL_NULL_POINTER, tiglGetCurveIntersectionPoint(tiglHandle, id_result, 2,  &p2x, &p2y, NULL) );
     ASSERT_EQ(TIGL_INDEX_ERROR,  tiglGetCurveIntersectionPoint(tiglHandle, id_result, 3,  &p2x, &p2y, &p2z) );
 
-    // check errorcodes of tiglGetCurveIntersectionParameter
-    ASSERT_EQ(TIGL_NOT_FOUND,    tiglGetCurveIntersectionParameter (-1, id_result, 1, id1, 1, &eta1) );
-    ASSERT_EQ(TIGL_NULL_POINTER, tiglGetCurveIntersectionParameter (tiglHandle, NULL, 1, id1, 1, &eta1) );
-    ASSERT_EQ(TIGL_NULL_POINTER, tiglGetCurveIntersectionParameter (tiglHandle, id_result, 1, NULL, 1, &eta1) );
-    ASSERT_EQ(TIGL_NULL_POINTER, tiglGetCurveIntersectionParameter (tiglHandle, id_result, 1, id1, 1, NULL) );
-    ASSERT_EQ(TIGL_INDEX_ERROR,  tiglGetCurveIntersectionParameter (tiglHandle, id_result, 1, id1, 2, &eta1) );
+    // check errorcodes of tiglGetCurveParameter
+    ASSERT_EQ(TIGL_NOT_FOUND,    tiglGetCurveParameter (-1, id1, 1, p1x, p1y, p1z, &eta1) );
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglGetCurveParameter (tiglHandle, NULL, 1, p1x, p1y, p1z, &eta1) );
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglGetCurveParameter (tiglHandle, id1, 1, NULL, p1y, p1z, &eta1) );
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglGetCurveParameter (tiglHandle, id1, 1, p1x, NULL, p1z, &eta1) );
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglGetCurveParameter (tiglHandle, id1, 1, p1x, p1y, NULL, &eta1) );
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglGetCurveParameter (tiglHandle, id1, 1, p1x, p1y, p1z, NULL) );
+    ASSERT_EQ(TIGL_INDEX_ERROR,  tiglGetCurveParameter (tiglHandle, id1, 2, p1x, p1y, p1z, &eta1) );
 
 }
 
