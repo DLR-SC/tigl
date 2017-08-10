@@ -2449,7 +2449,12 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetPointAngle(TiglCPACSConfigurati
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSFuselage& fuselage = config.GetFuselage(fuselageIndex);
         tigl::CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(segmentIndex);
-        gp_Pnt point = segment.GetPointAngle(eta, alpha, 0.0, 0.0);        
+
+        // get cross section center
+        TopoDS_Shape crossSection = segment.getWireOnLoft(eta);
+        gp_Pnt csc = GetCenterOfMass(crossSection);
+
+        gp_Pnt point = segment.GetPointAngle(eta, alpha, csc.Y(), csc.Z());
         if ((point.X() == 0.0) && (point.Y() == 0.0) && (point.Z() == 0.0)) {
             return TIGL_ERROR;
         }

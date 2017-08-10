@@ -791,7 +791,7 @@ int CCPACSFuselageSegment::GetNumPointsOnXPlane(double eta, double xpos)
 
 
 // Gets a point on the fuselage segment in dependence of an angle alpha (degree).
-// The origin of the angle could be set via the parameters x_cs and z_cs,
+// The origin of the angle could be set via the parameters y_cs and z_cs,
 // but in most cases x_cs and z_cs will be zero get the get center line of the profile.
 gp_Pnt CCPACSFuselageSegment::GetPointAngle(double eta, double alpha, double y_cs, double z_cs)
 {

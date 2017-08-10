@@ -65,6 +65,8 @@
 #include "BRepBndLib.hxx"
 #include "BRepExtrema_ExtCF.hxx"
 #include "BRepFill.hxx"
+#include "GProp_GProps.hxx"
+#include "BRepGProp.hxx"
 
 #include <Approx_Curve3d.hxx>
 #include <BRepAdaptor_HCompCurve.hxx>
@@ -1072,6 +1074,18 @@ TopoDS_Face GetNearestFace(const TopoDS_Shape& shape, const gp_Pnt& pnt)
         }
     }
     return resultFace;
+}
+
+gp_Pnt GetCenterOfMass(const TopoDS_Shape &shape)
+{
+    // get linear properties of the shape
+     GProp_GProps LProps;
+     BRepGProp::LinearProperties(shape, LProps);
+
+     // compute center of the shape
+     gp_Pnt centerPoint = LProps.CentreOfMass();
+
+     return centerPoint;
 }
 
 TopoDS_Shape RemoveDuplicateEdges(const TopoDS_Shape& shape)

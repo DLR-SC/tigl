@@ -1587,7 +1587,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetPointAngle(TiglCPACSConfigurati
 * segment, for eta = 1.0 it lies on the end profile of the segment.
 * The angle alpha is calculated in degrees. It's orientation is the mathematical negative rotation direction around the X-axis, i.e. looking
 * in flight direction, an angle of 45 degrees resembles a point on the top-left fuselage.
-* The parameters x_cs and z_cs must be in absolute world coordinates.
+* The parameters y_cs and z_cs must be in absolute world coordinates.
 * The point is returned in absolute world coordinates.
 *
 *
