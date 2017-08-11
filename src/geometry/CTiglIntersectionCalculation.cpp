@@ -55,6 +55,7 @@
 #include "BRepBuilderAPI_MakeWire.hxx"
 #include "BRepBuilderAPI_MakeEdge.hxx"
 #include "BRepBuilderAPI_MakeFace.hxx"
+#include "BRepBuilderAPI_MakeVertex.hxx"
 #include "BRepAlgoAPI_Section.hxx"
 #include "ShapeAnalysis_Wire.hxx"
 #include "TopTools_HSequenceOfShape.hxx"
@@ -243,6 +244,62 @@ CTiglIntersectionCalculation::CTiglIntersectionCalculation(CTiglShapeCache* cach
     }
 }
 
+CTiglIntersectionCalculation::CTiglIntersectionCalculation(CTiglShapeCache* cache,
+                                                           const std::string& wireID1,
+                                                           int wireIdx1,
+                                                           const std::string& wireID2,
+                                                           int wireIdx2,
+                                                           double tol)
+    : tolerance(tol)
+{
+    size_t hash = hash_combine_symmetric( boost::hash<std::string>()(wireID1),
+                                          boost::hash<std::string>()(wireID2) );
+
+    std::stringstream s;
+    s << "int" << hash;
+    id = s.str();
+
+    bool inCache = false;
+    if (cache) {
+        // check, if result is already in cache
+        if (cache->HasShape(id)) {
+            intersectionResult = TopoDS::Compound(cache->GetShape(id));
+            inCache = true;
+        }
+    }
+
+    if (!inCache) {
+
+        // get first wire
+        CTiglIntersectionCalculation Intersector1(*cache, wireID1);
+        TopoDS_Wire wire1 = Intersector1.GetWire(wireIdx1);
+
+        // get second wire
+        CTiglIntersectionCalculation Intersector2(*cache, wireID2);
+        TopoDS_Wire wire2 = Intersector2.GetWire(wireIdx2);
+
+        // calculate the intersections
+        intersectionPointList intersectionPoints;
+        GetIntersectionPoint(wire1, wire2, intersectionPoints, tolerance);
+
+        // save each intersection point as a vertex in intersectionResult
+        intersectionResult.Nullify();
+        BRep_Builder builder;
+        builder.MakeCompound(intersectionResult);
+        for( unsigned int i = 0; i< intersectionPoints.size(); i++ ) {
+            builder.Add(intersectionResult,
+                        BRepBuilderAPI_MakeVertex (intersectionPoints[i].Center) );
+        }
+
+
+        //add to cache
+        if (cache) {
+            cache->Insert(intersectionResult, id);
+        }
+    }
+
+}
+
 CTiglIntersectionCalculation::CTiglIntersectionCalculation(CTiglShapeCache& cache,
                                                            const std::string& intersectionID)
     : tolerance(1.0e-7)
@@ -357,6 +414,17 @@ int CTiglIntersectionCalculation::GetCountIntersectionLines()
     return nwires;
 }
 
+// returns total number of intersection points
+int CTiglIntersectionCalculation::GetCountIntersectionPoints()
+{
+    TopExp_Explorer vertexExplorer(intersectionResult, TopAbs_VERTEX);
+    int npoints = 0;
+    for (; vertexExplorer.More(); vertexExplorer.Next()) {
+        npoints++;
+    }
+    return npoints;
+}
+
 // Gets a point on the intersection line in dependence of a parameter zeta with
 // 0.0 <= zeta <= 1.0. For zeta = 0.0 this is the line starting point,
 // for zeta = 1.0 the last point on the intersection line.
@@ -386,7 +454,25 @@ TopoDS_Wire CTiglIntersectionCalculation::GetWire(int wireID)
         currentWireID++;
     }
 
-    throw CTiglError("Cannot retrieve intersection wire in CTiglIntersectionCalculation::GetPoint", TIGL_ERROR);
+    throw CTiglError("Cannot retrieve intersection wire in CTiglIntersectionCalculation::GetWire", TIGL_ERROR);
+}
+
+TopoDS_Vertex CTiglIntersectionCalculation::GetVertex(int vertexID)
+{
+    if (vertexID > GetCountIntersectionPoints() || vertexID < 1){
+        throw CTiglError("Invalid vertexID in CTiglIntersectionCalculation::GetVertex", TIGL_INDEX_ERROR);
+    }
+
+    TopExp_Explorer vertexExplorer(intersectionResult, TopAbs_VERTEX);
+    int currentVertexID = 1;
+    for (; vertexExplorer.More(); vertexExplorer.Next()) {
+        if (vertexID == currentVertexID) {
+            return TopoDS::Vertex(vertexExplorer.Current());
+        }
+        currentVertexID++;
+    }
+
+    throw CTiglError("Cannot retrieve intersection vertex in CTiglIntersectionCalculation::GetVertex", TIGL_ERROR);
 }
 
 const std::string& CTiglIntersectionCalculation::GetID()

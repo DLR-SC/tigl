@@ -74,6 +74,7 @@
 #include <BRepAlgoAPI_Section.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
+#include "BRepExtrema_ExtCC.hxx"
 #include <BRepExtrema_DistShapeShape.hxx>
 #include <BRepFill_CompatibleWires.hxx>
 #include <BRepFill_Filling.hxx>
@@ -547,6 +548,70 @@ bool GetIntersectionPoint(const TopoDS_Face& face, const TopoDS_Wire& wire, gp_P
         }
     }
     return false;
+}
+
+TIGL_EXPORT bool GetIntersectionPoint(const TopoDS_Wire& wire1, const TopoDS_Wire& wire2, intersectionPointList& intersectionPoints, const double tolerance)
+{
+    BRepExtrema_ExtCC Intersector;
+
+    // explore the edges of both wires
+    TopExp_Explorer EdgeExplorer1(wire1, TopAbs_EDGE);
+    TopExp_Explorer EdgeExplorer2(wire2, TopAbs_EDGE);
+
+    while ( EdgeExplorer2.More() ) {
+
+        TopoDS_Edge edge2 = TopoDS::Edge(EdgeExplorer2.Current());
+        Intersector.Initialize(edge2);
+
+        while ( EdgeExplorer1.More() ) {
+
+            TopoDS_Edge edge1 = TopoDS::Edge(EdgeExplorer1.Current());
+
+            //calculate intersection point
+            Intersector.Perform(edge1);
+
+            if (!Intersector.IsDone()) {
+                LOG(ERROR) << "Error intersecting two wires in GetIntersectionPoint!";
+                throw tigl::CTiglError("Error intersecting two wires in GetIntersectionPoint!");
+            }
+
+            // now go through all extremal distances of the current edge pair
+            for( int i=1; i<=Intersector.NbExt(); i++ ) {
+                if( Intersector.SquareDistance(i) < tolerance ) {
+
+                    IntersectionPoint intersectionPoint;
+
+                    intersectionPoint.SquareDistance=Intersector.SquareDistance(i);
+                    intersectionPoint.Center = Intersector.PointOnE1(i);
+                    intersectionPoint.Center.BaryCenter(0.5,Intersector.PointOnE2(i),0.5);
+
+                    //make sure the intersectionPoints are unique
+                    bool foundIntersectionPoint = false;
+                    for (unsigned int i=0;i<intersectionPoints.size(); i++ ) {
+                        if ( intersectionPoint.Center.Distance( intersectionPoints[i].Center ) < tolerance ) {
+                            foundIntersectionPoint = true;
+                            if ( intersectionPoint.SquareDistance< intersectionPoints[i].SquareDistance ) {
+                                intersectionPoints[i]=intersectionPoint;
+                            }
+                        }
+                    }
+                    if ( !foundIntersectionPoint ) {
+                        intersectionPoints.push_back(intersectionPoint);
+                    }
+                }
+            }
+            EdgeExplorer1.Next();
+        }
+        EdgeExplorer1.ReInit();
+        EdgeExplorer2.Next();
+    }
+
+    if ( intersectionPoints.size() == 0 ) {
+        LOG(INFO) << "tiglIntersectCurves: The curves do not intersect to the specified tolerance";
+        return false;
+    }
+
+    return true;
 }
 
 TopoDS_Face GetSingleFace(const TopoDS_Shape& shape)

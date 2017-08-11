@@ -27,6 +27,7 @@
 #include "TopoDS_Shape.hxx"
 #include "PNamedShape.h"
 #include "ListPNamedShape.h"
+#include "CTiglIntersectionPoint.h"
 #include "CCPACSConfiguration.h"
 #include "CTiglRelativelyPositionedComponent.h"
 #include <TopoDS_Edge.hxx>
@@ -103,6 +104,9 @@ TIGL_EXPORT bool GetIntersectionPoint(const TopoDS_Face& face, const TopoDS_Edge
 
 // Computes the intersection point of a face and a wire
 TIGL_EXPORT bool GetIntersectionPoint(const TopoDS_Face& face, const TopoDS_Wire& wire, gp_Pnt& dst);
+
+// Comuptes the intersection points of two wires
+TIGL_EXPORT bool GetIntersectionPoint(const TopoDS_Wire& wire1, const TopoDS_Wire& wire2, intersectionPointList& intersectionPoints, const double tolerance=Precision::SquareConfusion());
 
 // Checks, whether a points lies inside a given shape, which must be a solid
 TIGL_EXPORT bool IsPointInsideShape(const TopoDS_Shape& solid, gp_Pnt point);

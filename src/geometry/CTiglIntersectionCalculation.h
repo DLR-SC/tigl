@@ -71,13 +71,23 @@ public:
     // This last bit is optional, and enforced if
     // forceOrthogonal == true.
     // cache variable can be NULL
-    CTiglIntersectionCalculation(CTiglShapeCache* cache,
-                                 const std::string& shapeID,
-                                 TopoDS_Shape shape,
-                                 gp_Pnt point1,
-                                 gp_Pnt point2,
-                                 gp_Dir normal,
-                                 bool forceOrthogonal);
+    TIGL_EXPORT CTiglIntersectionCalculation(CTiglShapeCache* cache,
+                                             const std::string& shapeID,
+                                             TopoDS_Shape shape,
+                                             gp_Pnt point1,
+                                             gp_Pnt point2,
+                                             gp_Dir normal,
+                                             bool forceOrthogonal);
+
+    // Computes the intersection points of two intersection wires,
+    // specified by their intersection ids and respective wire indices.
+    // cache variable can be NULL
+    TIGL_EXPORT CTiglIntersectionCalculation(CTiglShapeCache* cache,
+                                            const std::string& wireID1,
+                                            int wireIdx1,
+                                            const std::string& wireID2,
+                                            int wireIdx2,
+                                            double tol = 1e-7);
 
     // Constructor, load intersection result from cache
     // cache is mandatory, hence the reference
@@ -90,6 +100,9 @@ public:
     // returns total number of intersection lines
     TIGL_EXPORT int GetCountIntersectionLines();
 
+    // returns total number of intersection points
+    TIGL_EXPORT int GetCountIntersectionPoints();
+
     // Gets a point on the intersection line in dependence of a parameter zeta with
     // 0.0 <= zeta <= 1.0. For zeta = 0.0 this is the line starting point,
     // for zeta = 1.0 the last point on the intersection line.
@@ -98,6 +111,9 @@ public:
 
     // gives a reference to the computed wire
     TIGL_EXPORT TopoDS_Wire GetWire(int wireID);
+
+    // gives a reference to the computed vertex
+    TIGL_EXPORT TopoDS_Vertex GetVertex(int vertexID);
 
     // returnes the unique ID for the current intersection
     TIGL_EXPORT const std::string& GetID();
