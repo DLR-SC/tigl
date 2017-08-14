@@ -128,9 +128,9 @@ public:
 
     /**
      * @brief reparametrizeBSpline:
-     *        Reparametrizes a given B-spline by giving an array of its old parameters that should have the values of the given array of new parameters after this function call.
-     *        The B-spline geometry remains the same, but:
-     *        In general after this reparametrization the spline isn't continuously differentiable considering its parametrization anymore
+     *          Reparametrizes a given B-spline by giving an array of its old parameters that should have the values of the given array of new parameters after this function call.
+     *          The B-spline geometry remains the same, but:
+     *          In general after this reparametrization the spline isn't continuously differentiable considering its parametrization anymore
      * @param spline:
      *          B-spline which shall be reparametrized
      * @param old_parameters:
@@ -145,6 +145,18 @@ public:
 
     TIGL_EXPORT static Handle(Geom_BSplineCurve) reparametrizeBSplineContinuously(const Handle(Geom_BSplineCurve) spline, const TColStd_Array1OfReal& old_parameters,
                                                                                   const TColStd_Array1OfReal& new_parameters);
+    /**
+     * @brief reparametrizeBSplineContinuouslyApprox:
+     *          Reparametrizes a given B-spline by giving an array of its old parameters that should have the values of the given array of new parameters after this function call.
+     *          The B-spline geometry remains approximately the same, and:
+     *          After this reparametrization the spline is continuously differentiable considering its parametrization
+     * @param old_parameters:
+     *          array of the old parameters that shall have the values of the new parameters
+     * @param new_parameters:
+     *          array of the new parameters the old parameters should become
+     * @return
+     *          the continuously reparametrized given B-spline
+     */
     TIGL_EXPORT static Handle(Geom_BSplineCurve) reparametrizeBSplineContinuouslyApprox(const Handle(Geom_BSplineCurve) spline, const TColStd_Array1OfReal& old_parameters,
                                                                                         const TColStd_Array1OfReal& new_parameters, unsigned int n_control_pnts=30);
 
