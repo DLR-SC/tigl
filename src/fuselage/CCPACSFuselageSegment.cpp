@@ -791,15 +791,24 @@ int CCPACSFuselageSegment::GetNumPointsOnXPlane(double eta, double xpos)
 
 
 // Gets a point on the fuselage segment in dependence of an angle alpha (degree).
-// The origin of the angle could be set via the parameters y_cs and z_cs,
-// but in most cases x_cs and z_cs will be zero get the get center line of the profile.
-gp_Pnt CCPACSFuselageSegment::GetPointAngle(double eta, double alpha, double y_cs, double z_cs)
+// The origin of the angle could be set via the parameters y_cs and z_cs.
+// y_cs and z_cs are assumed to be offsets from the cross section center. Set absolute = true
+// if the values should be interpreted as absolute coordinates
+gp_Pnt CCPACSFuselageSegment::GetPointAngle(double eta, double alpha, double y_cs, double z_cs, bool absolute )
 {
     // get eta-y-coordinate
     gp_Pnt tmpPoint = GetPoint(eta, 0.0);
 
     // get outer wire
     TopoDS_Shape intersectionWire = getWireOnLoft(eta);
+
+    if ( !absolute ) {
+        // get cross section center
+        gp_Pnt csc = GetCenterOfMass(intersectionWire);
+        y_cs += csc.Y();
+        z_cs += csc.Z();
+    }
+
 
     // compute approximate cross section of fuselage wire
     Bnd_Box boundingBox;
@@ -816,36 +825,24 @@ gp_Pnt CCPACSFuselageSegment::GetPointAngle(double eta, double alpha, double y_c
     double length = cross_section * 2.;
     double angle = alpha/180. * M_PI;
     // build a line
-    gp_Pnt initPoint(tmpPoint.X(), y_cs, z_cs);
+    gp_Pnt initPoint(tmpPoint.X(),  y_cs, z_cs);
     gp_Pnt endPoint (tmpPoint.X(), y_cs - length*sin(angle),  z_cs + length*cos(angle));
 
-    BRepBuilderAPI_MakeEdge edge1(initPoint, endPoint);
-    TopoDS_Shape lineShape = edge1.Shape();
+    // get the intersection of the intersectionWire with the line between initPoint and endPoint
+    TopoDS_Wire line = BuildWire(initPoint, endPoint);
+    intersectionPointList intersectionPoints;
+    GetIntersectionPoint( TopoDS::Wire(intersectionWire), line, intersectionPoints, 1e-7);
 
-    // calculate intersection point
-    BRepExtrema_DistShapeShape distSS;
-    distSS.LoadS1(intersectionWire);
-    distSS.LoadS2(lineShape);
-    distSS.Perform();
-
-    int numberOfIntersections = distSS.NbSolution();
-    if (numberOfIntersections > 1) {
-        gp_Pnt p1 = distSS.PointOnShape1(1);
-        for (int iSol = 1; iSol <= distSS.NbSolution(); ++iSol){
-            if (p1.Distance(distSS.PointOnShape1(1)) > 1e-7){
-                LOG(WARNING) << "Multiple intersection points found in CCPACSFuselageSegment::GetPointAngle. Only the first is returned." << std::endl;
-                break;
-            }
-        }
-        return p1;
-    }
-    else if (numberOfIntersections <= 0) {
+    if (intersectionPoints.size()==0) {
         LOG(ERROR) << "No solution found in CCPACSFuselageSegment::GetPointAngle. Return (0,0,0) instead." << std::endl;
         return gp_Pnt(0., 0., 0.);
     }
-    else {
-        return distSS.PointOnShape1(1);
+
+    if (intersectionPoints.size()>1) {
+        LOG(WARNING) << "Multiple intersection points found in CCPACSFuselageSegment::GetPointAngle. Only the first is returned." << std::endl;
     }
+
+    return intersectionPoints[0].Center;
 }
 
 

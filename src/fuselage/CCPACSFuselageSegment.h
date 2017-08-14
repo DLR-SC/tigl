@@ -130,9 +130,10 @@ public:
     TIGL_EXPORT gp_Pnt GetPointOnXPlane(double eta, double xpos, int pointIndex);
 
     // Gets a point on the fuselage segment in dependence of an angle alpha (degree).
-    // The origin of the angle could be set via the parameters y_cs and z_cs,
-    // but in most cases y_cs and z_cs will be zero get the get center line of the profile.
-    TIGL_EXPORT gp_Pnt GetPointAngle(double eta, double alpha, double y_cs, double z_cs);
+    // The origin of the angle could be set via the parameters y_cs and z_cs.
+    // y_cs and z_cs are assumed to be offsets from the cross section center. Set absolute = true
+    // if the values should be interpreted as absolute coordinates
+    TIGL_EXPORT gp_Pnt GetPointAngle(double eta, double alpha, double y_cs = 0.0, double z_cs=0.0, bool absolute = false);
 
     // Gets the volume of this segment
     TIGL_EXPORT double GetVolume();
