@@ -18,9 +18,13 @@
 
 /* Visual Studio C macros */
 #ifdef _MSC_VER
-  #define _CRT_SECURE_NO_WARNINGS
+  #ifndef _CRT_SECURE_NO_WARNINGS
+    #define _CRT_SECURE_NO_WARNINGS
+  #endif
   #pragma warning(disable: 4090)
-  #define snprintf _snprintf
+  #if _MSC_VER < 1900
+    #define snprintf _snprintf
+  #endif
 #endif
 
 #include <math.h>

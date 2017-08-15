@@ -50,16 +50,19 @@ private:
 
 public:
     // Constructor
-    TIGL_EXPORT CCPACSGuideCurve(const std::string& path);
+    TIGL_EXPORT CCPACSGuideCurve();
 
     // Virtual Destructor
     TIGL_EXPORT virtual ~CCPACSGuideCurve(void);
 
     // Read CPACS guide curve file
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, bool isInsideFirstSegment);
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& xpath);
 
     // Returns the name of the guide curve
     TIGL_EXPORT const std::string& GetName(void) const;
+
+    // Returns the description of the guide curve
+    TIGL_EXPORT const std::string& GetDescription(void) const;
 
     // Returns the UID of the guide curve
     TIGL_EXPORT const std::string& GetUID(void) const;

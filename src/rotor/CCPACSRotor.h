@@ -48,7 +48,6 @@ enum TiglRotorType
     TIGLROTOR_FENESTRON,
     TIGLROTOR_PROPELLER
 };
-typedef enum TiglRotorType TiglRotorType;
 
 class CCPACSConfiguration;
 

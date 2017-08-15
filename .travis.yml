@@ -6,10 +6,11 @@ git:
   submodules: false
 
 before_install:
-  - curl http://download.opensuse.org/repositories/home:/martinsiggel/xUbuntu_12.04/Release.key | sudo apt-key add -
-  - echo "deb http://download.opensuse.org/repositories/home:/martinsiggel/xUbuntu_12.04/ /" | sudo tee -a /etc/apt/sources.list
+  - curl http://download.opensuse.org/repositories/science:/dlr/xUbuntu_12.04/Release.key | sudo apt-key add -
+  - echo "deb http://download.opensuse.org/repositories/science:/dlr/xUbuntu_12.04/ /" | sudo tee -a /etc/apt/sources.list
+  - sudo add-apt-repository ppa:george-edison55/precise-backports -y
   - sudo apt-get update -qq
-  - sudo apt-get install -y libtixi-dev liboce-dev
+  - sudo apt-get install -y --force-yes libtixi-dev liboce-dev cmake cmake-data
 # oce ships a faulty config file, we have to remove it and use standard opencascade detection
   - sudo rm /usr/lib/oce-*/OCEConfig.cmake  
   
@@ -18,8 +19,11 @@ before_script:
   - cd build
 
 script: 
-  - cmake -DTIGL_BUILD_TESTS=ON -DTIGL_OCE_COONS_PATCHED=ON ..
+  - jdk_switcher use oraclejdk8
+  - cmake -DTIGL_BUILD_TESTS=ON -DTIGL_OCE_COONS_PATCHED=ON -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON -DCMAKE_INSTALL_PREFIX=`pwd`/install ..
   - make
-  - make test
+  - make install
+  - make check
+  - TERM=dumb make tigl-java-demo
 
 

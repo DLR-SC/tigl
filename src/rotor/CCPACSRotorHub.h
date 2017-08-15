@@ -43,7 +43,6 @@ enum TiglRotorHubType
     TIGLROTORHUB_ARTICULATED,
     TIGLROTORHUB_HINGELESS
 };
-typedef enum TiglRotorHubType TiglRotorHubType;
 
 class CCPACSConfiguration;
 class CCPACSRotor;

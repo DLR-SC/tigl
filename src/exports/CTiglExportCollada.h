@@ -23,6 +23,7 @@
 #include "tigl_internal.h"
 #include "PNamedShape.h"
 #include "ListPNamedShape.h"
+#include "CTiglCADExporter.h"
 
 #include <string>
 
@@ -30,21 +31,16 @@
 namespace tigl 
 {
 
-class CTiglExportCollada
+class CTiglExportCollada : public CTiglCADExporter
 {
 public:
     TIGL_EXPORT CTiglExportCollada();
-    
-    // adds a shape to export
-    TIGL_EXPORT void AddShape(PNamedShape shape, double deflection = 0.1);
-    TIGL_EXPORT TiglReturnCode Write(const std::string& filename);
 
 private:
+    bool WriteImpl(const std::string& filename) const;
+
     /// Exports a polygon object to a collada file, the true export code
     TiglReturnCode writeToDisc(class CTiglPolyData &polyData, const char * id, const char * filename);
-    
-    ListPNamedShape _shapes;
-    std::vector<double> _deflects;
 };
 
 

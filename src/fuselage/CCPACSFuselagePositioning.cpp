@@ -30,6 +30,8 @@
 #include <iostream>
 #include <sstream>
 
+#include "TixiSaveExt.h"
+
 namespace tigl
 {
 
@@ -150,6 +152,20 @@ void CCPACSFuselagePositioning::ReadCPACS(TixiDocumentHandle tixiHandle, const s
     char*       elementPath;
     std::string tempString;
 
+    // Get subelement "name"
+    char* ptrName = NULL;
+    tempString  = positioningXPath + "/name";
+    if (tixiGetTextElement(tixiHandle, tempString.c_str(), &ptrName) == SUCCESS) {
+        name = ptrName;
+    }
+
+    // Get subelement "description"
+    char * ptrDescription = NULL;
+    tempString  = positioningXPath + "/description";
+    if (tixiGetTextElement(tixiHandle, tempString.c_str(), &ptrDescription) == SUCCESS) {
+        description = ptrDescription;
+    }
+
     // Get subelement "length"
     tempString  = positioningXPath + "/length";
     elementPath = const_cast<char*>(tempString.c_str());
@@ -190,6 +206,20 @@ void CCPACSFuselagePositioning::ReadCPACS(TixiDocumentHandle tixiHandle, const s
     }
 
     Update();
+}
+
+// Write CPACS segment elements
+void CCPACSFuselagePositioning::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& positioningXPath)
+{
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, positioningXPath.c_str(), "name", name.c_str());
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, positioningXPath.c_str(), "description", description.c_str());
+
+    TixiSaveExt::TixiSaveDoubleElement(tixiHandle, positioningXPath.c_str(), "length", length, NULL);
+    TixiSaveExt::TixiSaveDoubleElement(tixiHandle, positioningXPath.c_str(), "sweepAngle", sweepangle, NULL);
+    TixiSaveExt::TixiSaveDoubleElement(tixiHandle, positioningXPath.c_str(), "dihedralAngle", dihedralangle, NULL);
+
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, positioningXPath.c_str(), "fromSectionUID", startSection.c_str());
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, positioningXPath.c_str(), "toSectionUID", endSection.c_str());
 }
 
 void CCPACSFuselagePositioning::ConnectChildPositioning(CCPACSFuselagePositioning* child)

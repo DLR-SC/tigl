@@ -39,8 +39,8 @@ CGlogLoggerAdaptor::~CGlogLoggerAdaptor()
 
 void CGlogLoggerAdaptor::Write(bool force_flush,
                                time_t /* timestamp */,
-                               tconst char* message,
-                               tint message_len) 
+                               const char* message,
+                               int message_len) 
 {
 #ifdef LOGGER_DEBUG
     printf("CGlogLoggerAdaptor::Write called. force_flush=%d\n", force_flush);
@@ -50,9 +50,7 @@ void CGlogLoggerAdaptor::Write(bool force_flush,
         if (_mutex) {
             _mutex->lock();
         }
-        char * msg = new char[sizeof(char)*(message_len+3)];
-        strncpy(msg, message, message_len);
-        msg[message_len-1] = '\0';
+        std::string msg(message, message_len);
 
         //TODO: determine log level
         TiglLogLevel level = TILOG_INFO;
@@ -66,8 +64,7 @@ void CGlogLoggerAdaptor::Write(bool force_flush,
             level = TILOG_WARNING;
         }
 
-        _mylogger->LogMessage(level, msg);
-        delete[] msg;
+        _mylogger->LogMessage(level, msg.c_str());
         if (_mutex) {
             _mutex->unlock();
         }

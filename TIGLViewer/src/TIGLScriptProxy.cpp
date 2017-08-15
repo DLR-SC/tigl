@@ -405,6 +405,18 @@ QScriptValue TIGLScriptProxy::wingGetSpan(QString wingUID)
     }
 }
 
+QScriptValue TIGLScriptProxy::wingGetSegmentVolume(int wingIndex, int segmentIndex)
+{
+    double volume;
+    TiglReturnCode ret = ::tiglWingGetSegmentVolume(getTiglHandle(), wingIndex, segmentIndex, &volume);
+    if (ret != TIGL_SUCCESS) {
+        return context()->throwError(tiglGetErrorString(ret));
+    }
+    else {
+        return volume;
+    }
+}
+
 QScriptValue TIGLScriptProxy::getShape(QString uid)
 {
     if (!_app->getDocument()) {

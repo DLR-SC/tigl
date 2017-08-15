@@ -37,6 +37,7 @@
 #include "CTiglLogging.h"
 #include "CCPACSConfiguration.h"
 #include "tiglcommonfunctions.h"
+#include "TixiSaveExt.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "TopExp_Explorer.hxx"
@@ -239,6 +240,17 @@ void CCPACSFuselageSegment::ReadCPACS(TixiDocumentHandle tixiHandle, const std::
     Update();
 }
 
+// Write CPACS segment elements
+void CCPACSFuselageSegment::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& segmentXPath)
+{
+    TixiSaveExt::TixiSaveTextAttribute(tixiHandle, segmentXPath.c_str(), "uID", GetUID().c_str());
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, segmentXPath.c_str(), "name", name.c_str());
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, segmentXPath.c_str(), "description", name.c_str());
+    
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, segmentXPath.c_str(), "fromElementUID", startConnection.GetSectionElementUID().c_str());
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, segmentXPath.c_str(), "toElementUID", endConnection.GetSectionElementUID().c_str());
+}
+
 // Returns the fuselage this segment belongs to
 CCPACSFuselage& CCPACSFuselageSegment::GetFuselage(void) const
 {
@@ -288,6 +300,39 @@ std::string CCPACSFuselageSegment::GetShortShapeName()
     return "UNKNOWN";
 }
 
+void CCPACSFuselageSegment::SetFaceTraits (PNamedShape loft, bool hasSymmetryPlane)
+{
+    // TODO: Face traits with guides must be made
+    // this is currently only valid without guides
+
+    int nFaces = GetNumberOfFaces(loft->Shape());
+
+    std::vector<std::string> names;
+    names.push_back(loft->Name());
+    names.push_back("symmetry");
+    names.push_back("Front");
+    names.push_back("Rear");
+
+
+    int facesPerSegment = hasSymmetryPlane ? 2 : 1;
+    int remainingFaces = nFaces - facesPerSegment;
+    if (remainingFaces < 0 || remainingFaces > 2) {
+        LOG(WARNING) << "Fuselage segment faces cannot be names properly (maybe due to Guide Curves?)";
+        return;
+    }
+
+    int iFaceTotal = 0;
+    for (int iFace = 0; iFace < facesPerSegment; ++iFace) {
+        loft->FaceTraits(iFaceTotal++).SetName(names[iFace].c_str());
+    }
+
+    // set the caps
+    int iFace = 2;
+    for (;iFaceTotal < nFaces; ++iFaceTotal) {
+        loft->FaceTraits(iFaceTotal).SetName(names[iFace++].c_str());
+    }
+}
+
 // Builds the loft between the two segment sections
 PNamedShape CCPACSFuselageSegment::BuildLoft(void)
 {
@@ -306,13 +351,25 @@ PNamedShape CCPACSFuselageSegment::BuildLoft(void)
     myVolume = System.Mass();
 
     // Calculate surface area
+    TopExp_Explorer faceExplorer(loftShape, TopAbs_FACE);
+
+    if (!faceExplorer.More()) {
+        throw CTiglError("Invalid fuselage segment shape generated");
+    }
+
     GProp_GProps AreaSystem;
-    BRepGProp::SurfaceProperties(loftShape, AreaSystem);
+
+    // The first face is the outer hull. We ignore symmetry planes and the front / back caps
+    BRepGProp::SurfaceProperties(faceExplorer.Current(), AreaSystem);
     mySurfaceArea = AreaSystem.Mass();
         
     std::string loftName = GetUID();
     std::string loftShortName = GetShortShapeName();
     PNamedShape loft(new CNamedShape(loftShape, loftName.c_str(), loftShortName.c_str()));
+
+    bool hasSymmetryPlane = GetNumberOfEdges(GetEndWire()) > 1;
+    SetFaceTraits(loft, hasSymmetryPlane);
+
     return loft;
 }
 
@@ -380,12 +437,18 @@ CCPACSFuselageConnection& CCPACSFuselageSegment::GetEndConnection(void)
 // Returns the volume of this segment
 double CCPACSFuselageSegment::GetVolume(void)
 {
+    // we have to trigger the build of the shape
+    GetLoft();
+
     return( myVolume );
 }
 
 // Returns the surface area of this segment
 double CCPACSFuselageSegment::GetSurfaceArea(void)
 {
+    // we have to trigger the build of the shape
+    GetLoft();
+
     return( mySurfaceArea );
 }
 
@@ -875,6 +938,5 @@ CCPACSGuideCurves& CCPACSFuselageSegment::GetGuideCurveSegments()
 {
     return guideCurves;
 }
-
 
 } // end namespace tigl

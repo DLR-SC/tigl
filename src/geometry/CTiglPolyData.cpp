@@ -25,6 +25,7 @@
 #include "CTiglLogging.h"
 #include "tigl.h"
 #include "tixi.h"
+#include "to_string.h"
 
 #include <iostream>
 #include <cassert>
@@ -188,8 +189,15 @@ struct PolyIndexList
         }
     }
     
-    int getNVert() const { return pindex.size();}
-    int getPointIndex(int i) const { return pindex.at(i); }
+    int getNVert() const
+    {
+        return static_cast<int>(pindex.size());
+    }
+
+    int getPointIndex(int i) const
+    {
+        return pindex.at(i);
+    }
     
 private:
     std::vector<int> pindex;
@@ -297,7 +305,7 @@ CTiglPolyObject& CTiglPolyData::switchObject(unsigned int iObject)
 
 unsigned int CTiglPolyData::getNObjects()
 {
-    return _objects.size();
+    return static_cast<unsigned int>(_objects.size());
 }
 
 unsigned long CTiglPolyData::getTotalPolygonCount()
@@ -391,7 +399,6 @@ void setMinMax(const CTiglPoint& p, double* oldmin, double* oldmax)
 // writes the polygon data of a surface (in vtk they call it piece)
 void CTiglPolyData::writeVTKPiece(TixiDocumentHandle& handle, unsigned int iObject)
 {
-
     CTiglPolyObject& co = switchObject(iObject);
 
     if (co.getNPolygons() == 0) {
@@ -411,16 +418,15 @@ void CTiglPolyData::writeVTKPiece(TixiDocumentHandle& handle, unsigned int iObje
     // surface specific stuff
     tixiCreateElement(handle, "/VTKFile/PolyData","Piece");
 
-    char piecepath[512];
-    snprintf(piecepath, 512, "/VTKFile/PolyData/Piece[%d]", iObject);
+    const std::string piecepath = "/VTKFile/PolyData/Piece[" + std_to_string(iObject) + "]";
 
-    tixiAddIntegerAttribute(handle, piecepath, "NumberOfPoints", co.getNVertices(), "%d");
-    tixiAddIntegerAttribute(handle, piecepath, "NumberOfVerts",  0, "%d");
-    tixiAddIntegerAttribute(handle, piecepath, "NumberOfLines",  0, "%d");
-    tixiAddIntegerAttribute(handle, piecepath, "NumberOfStrips", 0, "%d");
-    tixiAddIntegerAttribute(handle, piecepath, "NumberOfPolys",  co.getNPolygons(), "%d");
+    tixiAddIntegerAttribute(handle, piecepath.c_str(), "NumberOfPoints", co.getNVertices(), "%d");
+    tixiAddIntegerAttribute(handle, piecepath.c_str(), "NumberOfVerts",  0, "%d");
+    tixiAddIntegerAttribute(handle, piecepath.c_str(), "NumberOfLines",  0, "%d");
+    tixiAddIntegerAttribute(handle, piecepath.c_str(), "NumberOfStrips", 0, "%d");
+    tixiAddIntegerAttribute(handle, piecepath.c_str(), "NumberOfPolys",  co.getNPolygons(), "%d");
 
-    tixiCreateElement(handle, piecepath, "Points");
+    tixiCreateElement(handle, piecepath.c_str(), "Points");
 
     //points
     {
@@ -431,28 +437,25 @@ void CTiglPolyData::writeVTKPiece(TixiDocumentHandle& handle, unsigned int iObje
         for (unsigned int i = 0; i < nPoints; ++i) {
             const CTiglPoint& p = co.getVertexPoint(i);
             setMinMax(p, &min_coord, &max_coord);
-            stream1 << "    " <<  p.x << " " << p.y << " " << p.z << std::endl;
+            stream1 << "    " << std::setprecision(10) << p.x << " " << p.y << " " << p.z << std::endl;
             stream1 << "         ";
         }
-        char tmpPath[512];
-        snprintf(tmpPath, 512, "%s/Points", piecepath);
-        tixiAddTextElement(handle, tmpPath, "DataArray", stream1.str().c_str());
-        snprintf(tmpPath, 512,  "%s/Points/DataArray", piecepath);
-        tixiAddTextAttribute(handle, tmpPath, "type", "Float64");
-        tixiAddTextAttribute(handle, tmpPath, "Name", "Points");
-        tixiAddTextAttribute(handle, tmpPath, "NumberOfComponents", "3");
-        tixiAddTextAttribute(handle, tmpPath, "format", "ascii");
-        tixiAddDoubleAttribute(handle, tmpPath, "RangeMin", min_coord ,"%f");
-        tixiAddDoubleAttribute(handle, tmpPath, "RangeMax", max_coord ,"%f");
+        std::string tmpPath = piecepath + "/Points";
+        tixiAddTextElement(handle, tmpPath.c_str(), "DataArray", stream1.str().c_str());
+        tmpPath += "/DataArray";
+        tixiAddTextAttribute(handle, tmpPath.c_str(), "type", "Float64");
+        tixiAddTextAttribute(handle, tmpPath.c_str(), "Name", "Points");
+        tixiAddTextAttribute(handle, tmpPath.c_str(), "NumberOfComponents", "3");
+        tixiAddTextAttribute(handle, tmpPath.c_str(), "format", "ascii");
+        tixiAddDoubleAttribute(handle, tmpPath.c_str(), "RangeMin", min_coord ,"%f");
+        tixiAddDoubleAttribute(handle, tmpPath.c_str(), "RangeMax", max_coord ,"%f");
     }
 
     //normals
     if (co.hasNormals()) {
-        tixiCreateElement(handle, piecepath, "PointData");
-        char tmpPath[512];
-        snprintf(tmpPath, 512, "%s/PointData", piecepath);
-
-        tixiAddTextAttribute(handle, tmpPath, "Normals", "surf_normals");
+        tixiCreateElement(handle, piecepath.c_str(), "PointData");
+        std::string tmpPath = piecepath + "/PointData";
+        tixiAddTextAttribute(handle, tmpPath.c_str(), "Normals", "surf_normals");
 
         std::stringstream stream;
         double min_coord = DBL_MAX, max_coord = DBL_MIN;
@@ -464,19 +467,19 @@ void CTiglPolyData::writeVTKPiece(TixiDocumentHandle& handle, unsigned int iObje
              stream <<  "        ";
         }
 
-        tixiAddTextElement(handle, tmpPath, "DataArray", stream.str().c_str());
-        snprintf(tmpPath, 512, "%s/PointData/DataArray", piecepath);
-        tixiAddTextAttribute(handle, tmpPath, "type", "Float64");
-        tixiAddTextAttribute(handle, tmpPath, "Name", "surf_normals");
-        tixiAddTextAttribute(handle, tmpPath, "NumberOfComponents", "3");
-        tixiAddTextAttribute(handle, tmpPath, "format", "ascii");
-        tixiAddDoubleAttribute(handle, tmpPath, "RangeMin", min_coord ,"%f");
-        tixiAddDoubleAttribute(handle, tmpPath, "RangeMax", max_coord ,"%f");
+        tixiAddTextElement(handle, tmpPath.c_str(), "DataArray", stream.str().c_str());
+        tmpPath += "/DataArray";
+        tixiAddTextAttribute(handle, tmpPath.c_str(), "type", "Float64");
+        tixiAddTextAttribute(handle, tmpPath.c_str(), "Name", "surf_normals");
+        tixiAddTextAttribute(handle, tmpPath.c_str(), "NumberOfComponents", "3");
+        tixiAddTextAttribute(handle, tmpPath.c_str(), "format", "ascii");
+        tixiAddDoubleAttribute(handle, tmpPath.c_str(), "RangeMin", min_coord ,"%f");
+        tixiAddDoubleAttribute(handle, tmpPath.c_str(), "RangeMax", max_coord ,"%f");
     }
 
     //polygons
     {
-        tixiCreateElement(handle, piecepath, "Polys");
+        tixiCreateElement(handle, piecepath.c_str(), "Polys");
         std::stringstream stream2;
         stream2 << std::endl <<   "        ";
         for (unsigned int iPoly = 0; iPoly < co.getNPolygons(); ++iPoly) {
@@ -487,15 +490,14 @@ void CTiglPolyData::writeVTKPiece(TixiDocumentHandle& handle, unsigned int iObje
             stream2  << std::endl <<  "        ";;
         }
 
-        char tmpPath[512];
-        snprintf(tmpPath, 512, "%s/Polys", piecepath);
-        tixiAddTextElement(handle, tmpPath, "DataArray", stream2.str().c_str());
-        snprintf(tmpPath, 512, "%s/Polys/DataArray", piecepath);
-        tixiAddTextAttribute(handle,tmpPath, "type", "Int32");
-        tixiAddTextAttribute(handle, tmpPath, "Name", "connectivity");
-        tixiAddTextAttribute(handle, tmpPath, "format", "ascii");
-        tixiAddIntegerAttribute(handle, tmpPath, "RangeMin", 0 ,"%d");
-        tixiAddIntegerAttribute(handle, tmpPath, "RangeMax", co.getNVertices()-1,"%d");
+        std::string tmpPath = piecepath + "/Polys";
+        tixiAddTextElement(handle, tmpPath.c_str(), "DataArray", stream2.str().c_str());
+        tmpPath += "/DataArray";
+        tixiAddTextAttribute(handle,tmpPath.c_str(), "type", "Int32");
+        tixiAddTextAttribute(handle, tmpPath.c_str(), "Name", "connectivity");
+        tixiAddTextAttribute(handle, tmpPath.c_str(), "format", "ascii");
+        tixiAddIntegerAttribute(handle, tmpPath.c_str(), "RangeMin", 0 ,"%d");
+        tixiAddIntegerAttribute(handle, tmpPath.c_str(), "RangeMax", co.getNVertices()-1,"%d");
     }
 
     //offset
@@ -508,23 +510,21 @@ void CTiglPolyData::writeVTKPiece(TixiDocumentHandle& handle, unsigned int iObje
             }
             next += co.getNPointsOfPolygon(i);
             stream3 << " " << next;
-    }
-    stream3 << endl << "        ";
-    char tmpPath[512];
-    snprintf(tmpPath, 512, "%s/Polys", piecepath);
-    tixiAddTextElement(handle, tmpPath, "DataArray", stream3.str().c_str());
-    snprintf(tmpPath, 512, "%s/Polys/DataArray[2]", piecepath);
-    tixiAddTextAttribute(handle, tmpPath, "type", "Int32");
-    tixiAddTextAttribute(handle, tmpPath, "Name", "offsets");
-    tixiAddIntegerAttribute(handle, tmpPath, "RangeMin", co.getNPointsOfPolygon(0) ,"%d");
-    tixiAddIntegerAttribute(handle, tmpPath, "RangeMax", nvert,"%d");
+        }
+        stream3 << endl << "        ";
+        std::string tmpPath = piecepath + "/Polys";
+        tixiAddTextElement(handle, tmpPath.c_str(), "DataArray", stream3.str().c_str());
+        tmpPath += "/DataArray[2]";
+        tixiAddTextAttribute(handle, tmpPath.c_str(), "type", "Int32");
+        tixiAddTextAttribute(handle, tmpPath.c_str(), "Name", "offsets");
+        tixiAddIntegerAttribute(handle, tmpPath.c_str(), "RangeMin", co.getNPointsOfPolygon(0) ,"%d");
+        tixiAddIntegerAttribute(handle, tmpPath.c_str(), "RangeMax", nvert,"%d");
     }
     
     // write cell data
     if (currentObject().getNumberOfPolyRealData() > 0) {
-        tixiCreateElement(handle, piecepath, "CellData");
-        char tmpPath[512];
-        snprintf(tmpPath, 512, "%s/CellData", piecepath);
+        tixiCreateElement(handle, piecepath.c_str(), "CellData");
+        const std::string tmpPath = piecepath + "/CellData";
         
         for (unsigned int iData = 0; iData < currentObject().getNumberOfPolyRealData(); ++iData) {
             const char * dataField = currentObject().getPolyDataFieldName(iData);
@@ -532,18 +532,15 @@ void CTiglPolyData::writeVTKPiece(TixiDocumentHandle& handle, unsigned int iObje
             for (unsigned long jPoly = 0; jPoly < currentObject().getNPolygons(); ++jPoly) {
                 stream << currentObject().getPolyDataReal(jPoly, dataField) << " ";
             }
-            tixiAddTextElement(handle, tmpPath, "DataArray", stream.str().c_str());
-            char path[512];
-            snprintf(path, 512, "%s/DataArray[%d]", tmpPath, iData+1);
-            tixiAddTextAttribute(handle, path, "type", "Float64");
-            tixiAddTextAttribute(handle, path, "Name", dataField);
-            tixiAddTextAttribute(handle, path, "NumberOfComponents", "1");
-            tixiAddTextAttribute(handle, path, "format", "ascii");
-            tixiAddDoubleAttribute(handle, path, "RangeMin", 0. ,"%f");
-            tixiAddDoubleAttribute(handle, path, "RangeMax", 1. ,"%f");
-            
+            tixiAddTextElement(handle, tmpPath.c_str(), "DataArray", stream.str().c_str());
+            const std::string path = tmpPath + "/DataArray[" + std_to_string(iData + 1) + "]";
+            tixiAddTextAttribute(handle, path.c_str(), "type", "Float64");
+            tixiAddTextAttribute(handle, path.c_str(), "Name", dataField);
+            tixiAddTextAttribute(handle, path.c_str(), "NumberOfComponents", "1");
+            tixiAddTextAttribute(handle, path.c_str(), "format", "ascii");
+            tixiAddDoubleAttribute(handle, path.c_str(), "RangeMin", 0. ,"%f");
+            tixiAddDoubleAttribute(handle, path.c_str(), "RangeMax", 1. ,"%f");
         }
-        
     }
 
     // write metadata
@@ -554,13 +551,11 @@ void CTiglPolyData::writeVTKPiece(TixiDocumentHandle& handle, unsigned int iObje
             stream4 << "    " << co.getPolyMetadata(i) << endl;
             stream4 << "        ";
         }
-        char tmpPath[512];
-        snprintf(tmpPath, 512, "%s/Polys", piecepath);
-        tixiAddTextElement(handle, tmpPath, "MetaData", stream4.str().c_str());
-        snprintf(tmpPath, 512, "%s/Polys/MetaData", piecepath);
-        tixiAddTextAttribute(handle,  tmpPath, "elements", currentObject().getMetadataElements() );
+        std::string tmpPath = piecepath + "/Polys";
+        tixiAddTextElement(handle, tmpPath.c_str(), "MetaData", stream4.str().c_str());
+        tmpPath += "/MetaData";
+        tixiAddTextAttribute(handle, tmpPath.c_str(), "elements", currentObject().getMetadataElements() );
     }
-
 }
 
 // --------------------------------------------------------------------------//
@@ -613,7 +608,7 @@ unsigned long CTiglPolyObject::getNPolygons() const
 
 unsigned long CTiglPolyObject::getNVertices() const
 {
-    return impl->pPoints.size();
+    return static_cast<unsigned long>(impl->pPoints.size());
 }
 
 void CTiglPolyObject::enableNormals(bool normals_enabled)
@@ -746,7 +741,7 @@ double CTiglPolyObject::getPolyDataReal(unsigned long iPolyIndex, const char *da
 // returns the number if different polygon data entries 
 unsigned int CTiglPolyObject::getNumberOfPolyRealData() const 
 {
-    return impl->polyDataElems.size();
+    return static_cast<unsigned int>(impl->polyDataElems.size());
 }
 
 // retuns the  name of the ith data field (i = 0 .. getNumberPolyReadlData - 1)
@@ -776,7 +771,7 @@ CTiglPolygon::CTiglPolygon()
 
 unsigned int CTiglPolygon::getNPoints() const
 {
-    return _points.size();
+    return static_cast<unsigned int>(_points.size());
 }
 
 void CTiglPolygon::addPoint(const CTiglPoint & p)
@@ -833,7 +828,7 @@ unsigned long ObjectImpl::addPointNorm(const CTiglPoint& p, const CTiglPoint& n)
     using namespace std;
 
     //check if point is already in pointlist
-    unsigned int index = pointlist.size();
+    unsigned int index = static_cast<unsigned int>(pointlist.size());
     std::pair<PointMap::iterator,bool> ret;
 
     ret = pointlist.insert(std::pair<PointImpl, int>(PointImpl(p,n),index));
@@ -855,7 +850,12 @@ unsigned long ObjectImpl::addPointNorm(const CTiglPoint& p, const CTiglPoint& n)
 
 unsigned long ObjectImpl::addTriangleByVertexIndex(unsigned long i1, unsigned long i2, unsigned long i3 )
 {
-    unsigned long nPolys = polys.size();
+    // if we don't have a true triangle / 2 indices are the same, report error
+    if (i1 == i2 || i1 == i3 || i2 == i3) {
+        return ULONG_MAX;
+    }
+
+    unsigned long nPolys = static_cast<unsigned long>(polys.size());
     polys.push_back(PolyIndexList(nPolys));
     
     std::vector<PolyIndexList>::iterator itLastPoly = polys.end()-1;
@@ -869,7 +869,7 @@ unsigned long ObjectImpl::addTriangleByVertexIndex(unsigned long i1, unsigned lo
 
 void ObjectImpl::addPolygon(const CTiglPolygon & poly)
 {
-    long polynum = polys.size() + 1;
+    long polynum = static_cast<long>(polys.size()) + 1;
     if (!has_normals) {
         for (unsigned long i = 0 ; i < poly.getNPoints(); ++i) {
             CTiglPoint n(1,0,0);
@@ -888,7 +888,7 @@ void ObjectImpl::addPolygon(const CTiglPolygon & poly)
 
 unsigned long ObjectImpl::getNPolygons() const 
 {
-    return polys.size();
+    return static_cast<unsigned long>(polys.size());
 }
 
 unsigned long ObjectImpl::getNPointsOfPolygon(unsigned long ipoly) const 

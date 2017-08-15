@@ -236,7 +236,7 @@ TEST_P(tiglFuseAircraftCPACS, fusedAircraftMirror)
     tigl::PTiglFusePlane fuser = config.AircraftFusingAlgo();
     fuser->SetResultMode(tigl::FULL_PLANE);
     PNamedShape airplane = fuser->FusedPlane();
-    ASSERT_TRUE(airplane);
+    //ASSERT_TRUE(airplane);
     ASSERT_TRUE(BRepTools::Write(airplane->Shape(), ("TestData/export/" + name + "_fusedAircraftMirrored.brep").c_str()));
 }
 

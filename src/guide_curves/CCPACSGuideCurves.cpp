@@ -24,6 +24,7 @@
 #include "CTiglError.h"
 #include "CTiglPoint.h"
 #include "CTiglLogging.h"
+#include "IOHelper.h"
 #include <sstream>
 #include <iostream>
 #include <fstream>
@@ -54,23 +55,10 @@ void CCPACSGuideCurves::ReadCPACS(TixiDocumentHandle tixiHandle, const std::stri
 {
     Cleanup();
 
-    std::string guideCurvesXPath = segmentXPath + "/guideCurves";
-    if (tixiCheckElement(tixiHandle, guideCurvesXPath.c_str()) == SUCCESS) {
-        // Get element count
-        int elementCount;
-        if (tixiGetNamedChildrenCount(tixiHandle, guideCurvesXPath.c_str(), "guideCurve", &elementCount) != SUCCESS) {
-            throw CTiglError("tixiGetNamedChildrenCount failed in CCPACSGuideCurves::ReadCPACS", TIGL_XML_ERROR);
-        }
-
-        // Loop over all <guideCurve> elements
-        for (int i = 1; i <= elementCount; i++) {
-            std::ostringstream xpath;
-            xpath << guideCurvesXPath << "/guideCurve[" << i << "]";
-
-            PCCPACSGuideCurve guideCurve(new CCPACSGuideCurve(xpath.str()));
-            guideCurve->ReadCPACS(tixiHandle, isInsideFirstSegment);
-            guideCurves[guideCurve->GetUID()] = guideCurve;
-        }
+    std::vector<CCPACSGuideCurve*> curves;
+    ReadContainerElement(tixiHandle, segmentXPath + "/guideCurves", "guideCurve", 1, curves);
+    for (size_t i = 0; i < curves.size(); i++) {
+        guideCurves[curves[i]->GetUID()] = PCCPACSGuideCurve(curves[i]);
     }
 }
 

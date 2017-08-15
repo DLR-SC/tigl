@@ -38,6 +38,7 @@
 #include "CCPACSWingProfile.h"
 #include "CCPACSWingProfileFactory.h"
 #include "tiglcommonfunctions.h"
+#include "TixiSaveExt.h"
 
 #include "gp_Pnt2d.hxx"
 #include "gp_Vec2d.hxx"
@@ -68,8 +69,21 @@
 #include "BRepBndLib.hxx"
 #include "ShapeFix_Wire.hxx"
 
+
+inline gp_Pnt operator+(const gp_Pnt& a, const gp_Pnt& b)
+{
+    return gp_Pnt(a.X()+b.X(), a.Y()+b.Y(), a.Z()+b.Z());
+}
+inline gp_Pnt operator/(const gp_Pnt& a, double b)
+{
+    return gp_Pnt(a.X() / b, a.Y() / b, a.Z() / b);
+}
+
 namespace tigl
 {
+
+const double CCPACSWingProfilePointList::c_trailingEdgeRelGap = 1E-2;
+const double CCPACSWingProfilePointList::c_blendingDistance = 0.1;
 
 // type creation function used by factory
 PTiglWingProfileAlgo CreateProfilePointList(const CCPACSWingProfile& profile, const std::string& cpacsPath)
@@ -119,81 +133,95 @@ void CCPACSWingProfilePointList::Update(void)
 // Read wing profile file
 void CCPACSWingProfilePointList::ReadCPACS(TixiDocumentHandle tixiHandle)
 {
-    try {
+    // check if deprecated CPACS point definition is included in the CPACS file and give warning
+    if (tixiCheckElement(tixiHandle, (ProfileDataXPath + "/point[1]").c_str()) == SUCCESS) {
+        LOG(WARNING) << "Deprecated point definition in wing profile " << profileRef.GetUID() <<  " will be ignored" << endl;
+    }
 
-        // check if deprecated CPACS point definition is included in the CPACS file and give warning
-        if (tixiCheckElement(tixiHandle, (ProfileDataXPath + "/point[1]").c_str()) == SUCCESS) {
-            LOG(WARNING) << "Deprecated point definition in wing profile " << profileRef.GetUID() <<  " will be ignored" << endl;
-        }
+    const std::string xXpath = ProfileDataXPath +"/x";
+    const std::string yXpath = ProfileDataXPath +"/y";
+    const std::string zXpath = ProfileDataXPath +"/z";
 
-        std::string xXpath = ProfileDataXPath +"/x";
-        std::string yXpath = ProfileDataXPath +"/y";
-        std::string zXpath = ProfileDataXPath +"/z";
+    // check the number of elements in all three vectors. It has to be the same, otherwise cancel
+    int countX;
+    if (tixiGetVectorSize(tixiHandle, xXpath.c_str(), &countX) != SUCCESS) {
+        throw CTiglError("Error: XML error while reading point vector <x> in CCPACSWingProfilePointList::ReadCPACS", TIGL_XML_ERROR);
+    }
+    int countY;
+    if (tixiGetVectorSize(tixiHandle, yXpath.c_str(), &countY) != SUCCESS) {
+        throw CTiglError("Error: XML error while reading point vector <y> in CCPACSWingProfilePointList::ReadCPACS", TIGL_XML_ERROR);
+    }
+    int countZ;
+    if (tixiGetVectorSize(tixiHandle, zXpath.c_str(), &countZ) != SUCCESS) {
+        throw CTiglError("Error: XML error while reading point vector <z> in CCPACSWingProfilePointList::ReadCPACS", TIGL_XML_ERROR);
+    }
 
-        // check the number of elements in all three vectors. It has to be the same, otherwise cancel
-        int countX;
-        int countY;
-        int countZ;
-        if (tixiGetVectorSize(tixiHandle, xXpath.c_str(), &countX) != SUCCESS) {
-            throw CTiglError("Error: XML error while reading point vector <x> in CCPACSWingProfilePointList::ReadCPACS", TIGL_XML_ERROR);
-        }
-        if (tixiGetVectorSize(tixiHandle, yXpath.c_str(), &countY) != SUCCESS) {
-            throw CTiglError("Error: XML error while reading point vector <y> in CCPACSWingProfilePointList::ReadCPACS", TIGL_XML_ERROR);
-        }
-        if (tixiGetVectorSize(tixiHandle, zXpath.c_str(), &countZ) != SUCCESS) {
-            throw CTiglError("Error: XML error while reading point vector <z> in CCPACSWingProfilePointList::ReadCPACS", TIGL_XML_ERROR);
-        }
+    if (countX != countY || countX != countZ || countY != countZ) {
+        throw CTiglError("Error: Vector size for profile points are not eqal in CCPACSWingProfilePointList::ReadCPACS", TIGL_XML_ERROR);
+    }
 
-        if (countX != countY || countX != countZ || countY != countZ) {
-            throw CTiglError("Error: Vector size for profile points are not eqal in CCPACSWingProfilePointList::ReadCPACS", TIGL_XML_ERROR);
-        }
+    // read in vectors, vectors are allocated and freed by tixi
+    double* xCoordinates = NULL;
+    if (tixiGetFloatVector(tixiHandle, xXpath.c_str(), &xCoordinates, countX) != SUCCESS) {
+        throw CTiglError("Error: XML error while reading point vector <x> in CCPACSWingProfilePointList::ReadCPACS", TIGL_XML_ERROR);
+    }
+    double* yCoordinates = NULL;
+    if (tixiGetFloatVector(tixiHandle, yXpath.c_str(), &yCoordinates, countY) != SUCCESS) {
+        throw CTiglError("Error: XML error while reading point vector <y> in CCPACSWingProfilePointList::ReadCPACS", TIGL_XML_ERROR);
+    }
+    double* zCoordinates = NULL;
+    if (tixiGetFloatVector(tixiHandle, zXpath.c_str(), &zCoordinates, countZ) != SUCCESS) {
+        throw CTiglError("Error: XML error while reading point vector <z> in CCPACSWingProfilePointList::ReadCPACS", TIGL_XML_ERROR);
+    }
 
-        // read in vectors, vectors are allocated and freed by tixi
-        double* xCoordinates = NULL;
-        double* yCoordinates = NULL;
-        double* zCoordinates = NULL;
-
-        if (tixiGetFloatVector(tixiHandle, xXpath.c_str(), &xCoordinates, countX) != SUCCESS) {
-            throw CTiglError("Error: XML error while reading point vector <x> in CCPACSWingProfilePointList::ReadCPACS", TIGL_XML_ERROR);
+    // points with maximal/minimal z-component
+    double maxZ = -std::numeric_limits<double>::max();
+    double minZ = std::numeric_limits<double>::max();
+    int maxZIndex=-1;
+    int minZIndex=-1;
+    // Loop over all points in the vector
+    for (int i = 0; i < countX; i++) {
+        CTiglPoint* point = new CTiglPoint(xCoordinates[i], yCoordinates[i], zCoordinates[i]);
+        coordinates.push_back(point);
+        if (zCoordinates[i]>maxZ) {
+            maxZ = zCoordinates[i];
+            maxZIndex = i;
         }
-        if (tixiGetFloatVector(tixiHandle, yXpath.c_str(), &yCoordinates, countY) != SUCCESS) {
-            throw CTiglError("Error: XML error while reading point vector <y> in CCPACSWingProfilePointList::ReadCPACS", TIGL_XML_ERROR);
-        }
-        if (tixiGetFloatVector(tixiHandle, zXpath.c_str(), &zCoordinates, countZ) != SUCCESS) {
-            throw CTiglError("Error: XML error while reading point vector <z> in CCPACSWingProfilePointList::ReadCPACS", TIGL_XML_ERROR);
-        }
-
-        // points with maximal/minimal z-component
-        double maxZ=-std::numeric_limits<double>::max();
-        double minZ=std::numeric_limits<double>::max();
-        int maxZIndex=-1;
-        int minZIndex=-1;
-        // Loop over all points in the vector
-        for (int i = 0; i < countX; i++) {
-            CTiglPoint* point = new CTiglPoint(xCoordinates[i], yCoordinates[i], zCoordinates[i]);
-            coordinates.push_back(point);
-            if (zCoordinates[i]>maxZ) {
-                maxZ = zCoordinates[i];
-                maxZIndex = i;
-            }
-            if (zCoordinates[i]<minZ) {
-                minZ = zCoordinates[i];
-                minZIndex = i;
-            }
-        }
-        // check if points with maximal/minimal z-component were calculated correctly
-        if (maxZIndex==-1 || minZIndex==-1 || maxZIndex==minZIndex) {
-            throw CTiglError("Error: CCPACSWingProfilePointList::ReadCPACS: Unable to separate upper and lower wing profile from point list", TIGL_XML_ERROR);
-        }
-        // force order of points to run through the lower profile first and then through the upper profile
-        if (minZIndex>maxZIndex) {
-            LOG(WARNING) << "The points in profile " << profileRef.GetUID() <<  " don't seem to be ordered in a mathematical positive sense.";
-            std::reverse(coordinates.begin(), coordinates.end());
+        if (zCoordinates[i]<minZ) {
+            minZ = zCoordinates[i];
+            minZIndex = i;
         }
     }
-    catch (...) {
-        throw;
+    // check if points with maximal/minimal z-component were calculated correctly
+    if (maxZIndex==-1 || minZIndex==-1 || maxZIndex==minZIndex) {
+        throw CTiglError("Error: CCPACSWingProfilePointList::ReadCPACS: Unable to separate upper and lower wing profile from point list", TIGL_XML_ERROR);
     }
+    // force order of points to run through the lower profile first and then through the upper profile
+    if (minZIndex>maxZIndex) {
+        LOG(WARNING) << "The points in profile " << profileRef.GetUID() <<  " don't seem to be ordered in a mathematical positive sense.";
+        std::reverse(coordinates.begin(), coordinates.end());
+    }
+}
+
+void CCPACSWingProfilePointList::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& profileXPath)
+{
+    TixiSaveExt::TixiSaveElement(tixiHandle, profileXPath.c_str(), "pointList");
+
+    // store points as vectors
+    std::vector<double> point_X(coordinates.size());
+    std::vector<double> point_Y(coordinates.size());
+    std::vector<double> point_Z(coordinates.size());
+
+    for (unsigned int j = 0; j < coordinates.size(); j++) {
+        point_X[j] = coordinates[j]->x;
+        point_Y[j] = coordinates[j]->y;
+        point_Z[j] = coordinates[j]->z;
+    }
+
+    const std::string path = profileXPath + "/pointList";
+    TixiSaveExt::TixiSaveVector(tixiHandle, path, "x", point_X);
+    TixiSaveExt::TixiSaveVector(tixiHandle, path, "y", point_Y);
+    TixiSaveExt::TixiSaveVector(tixiHandle, path, "z", point_Z);
 }
 
 // Builds the wing profile wire. The returned wire is already transformed by the
@@ -201,8 +229,31 @@ void CCPACSWingProfilePointList::ReadCPACS(TixiDocumentHandle tixiHandle)
 void CCPACSWingProfilePointList::BuildWires()
 {
     ITiglWireAlgorithm::CPointContainer points;
+    ITiglWireAlgorithm::CPointContainer openPoints, closedPoints;
+
     for (CCPACSCoordinateContainer::size_type i = 0; i < coordinates.size(); i++) {
         points.push_back(coordinates[i]->Get_gp_Pnt());
+    }
+    // special handling for supporting opened and closed profiles
+    if (points.size() < 2) {
+        LOG(ERROR) << "Not enough points defined for Wing Profile" << endl;
+        throw CTiglError("Not enough points defined for Wing Profile");
+    }
+    // close profile if not already closed
+    gp_Pnt startPnt = points[0];
+    gp_Pnt endPnt = points[points.size()-1];
+    // compute list of open and closed profile points
+    openPoints = points;
+    closedPoints = points;
+    if (startPnt.Distance(endPnt) >= Precision::Confusion()) {
+        closeProfilePoints(closedPoints);
+        // save information that profile is opened by default
+        profileIsClosed = false;
+    }
+    else {
+        openProfilePoints(openPoints);
+        // save information that profile is closed by default
+        profileIsClosed = true;
     }
 
     // Build wires from wing profile points.
@@ -216,8 +267,9 @@ void CCPACSWingProfilePointList::BuildWires()
         throw CTiglError("Linear Wing Profiles are currently not supported",TIGL_ERROR);
     }
 
-    TopoDS_Wire tempWireOpened   = wireBuilder.BuildWire(points, false);
-    if (tempWireOpened.IsNull()) {
+    TopoDS_Wire tempWireOpened = wireBuilder.BuildWire(openPoints, false);
+    TopoDS_Wire tempWireClosed = wireBuilder.BuildWire(closedPoints, true);
+    if (tempWireOpened.IsNull() || tempWireClosed.IsNull()) {
         throw CTiglError("Error: TopoDS_Wire is null in CCPACSWingProfilePointList::BuildWire", TIGL_ERROR);
     }
 
@@ -226,85 +278,65 @@ void CCPACSWingProfilePointList::BuildWires()
     CTiglTransformation transformation;
     transformation.AddProjectionOnXZPlane();
 
-    TopoDS_Wire tempShapeOpened   = TopoDS::Wire(transformation.Transform(tempWireOpened));
+    TopoDS_Wire tempShapeOpened = TopoDS::Wire(transformation.Transform(tempWireOpened));
+    TopoDS_Wire tempShapeClosed = TopoDS::Wire(transformation.Transform(tempWireClosed));
     // the open wire should consist of only 1 edge - lets check
-    if (GetNumberOfEdges(tempShapeOpened) != 1) {
+    if (GetNumberOfEdges(tempShapeOpened) != 1 || GetNumberOfEdges(tempShapeClosed) != 1) {
         throw CTiglError("Number of Wing Profile Edges is not 1. Please contact the developers");
     }
-    TopExp_Explorer wireEx(tempShapeOpened, TopAbs_EDGE);
-    TopoDS_Edge profileEdgeTmp = TopoDS::Edge(wireEx.Current());
+    TopExp_Explorer wireExOpened(tempShapeOpened, TopAbs_EDGE);
+    TopoDS_Edge profileEdgeTmpOpened = TopoDS::Edge(wireExOpened.Current());
+    TopExp_Explorer wireExClosed(tempShapeClosed, TopAbs_EDGE);
+    TopoDS_Edge profileEdgeTmpClosed = TopoDS::Edge(wireExClosed.Current());
 
     BuildLETEPoints();
 
     // Get the curve of the wire
     Standard_Real u1,u2;
-    Handle(Geom_Curve) curve = BRep_Tool::Curve(profileEdgeTmp, u1, u2);
-    curve = new Geom_TrimmedCurve(curve, u1, u2);
-    
+    Handle_Geom_Curve curveOpened = BRep_Tool::Curve(profileEdgeTmpOpened, u1, u2);
+    curveOpened = new Geom_TrimmedCurve(curveOpened, u1, u2);
+    Handle_Geom_Curve curveClosed = BRep_Tool::Curve(profileEdgeTmpClosed, u1, u2);
+    curveClosed = new Geom_TrimmedCurve(curveClosed, u1, u2);
+
     // Get Leading edge parameter on curve
-    double lep_par = GeomAPI_ProjectPointOnCurve(lePoint, curve).LowerDistanceParameter();
+    double lep_par_opened = GeomAPI_ProjectPointOnCurve(lePoint, curveOpened).LowerDistanceParameter();
+    double lep_par_closed = GeomAPI_ProjectPointOnCurve(lePoint, curveClosed).LowerDistanceParameter();
 
     // upper and lower curve
-    Handle(Geom_TrimmedCurve) lowerCurve = new Geom_TrimmedCurve(curve, curve->FirstParameter(), lep_par);
-    Handle(Geom_TrimmedCurve) upperCurve = new Geom_TrimmedCurve(curve, lep_par, curve->LastParameter());
+    Handle(Geom_TrimmedCurve) lowerCurveOpened = new Geom_TrimmedCurve(curveOpened, curveOpened->FirstParameter(), lep_par_opened);
+    Handle(Geom_TrimmedCurve) upperCurveOpened = new Geom_TrimmedCurve(curveOpened, lep_par_opened, curveOpened->LastParameter());
+    Handle(Geom_TrimmedCurve) lowerCurveClosed = new Geom_TrimmedCurve(curveClosed, curveClosed->FirstParameter(), lep_par_closed);
+    Handle(Geom_TrimmedCurve) upperCurveClosed = new Geom_TrimmedCurve(curveClosed, lep_par_closed, curveClosed->LastParameter());
 
-    gp_Pnt firstPnt = lowerCurve->StartPoint();
-    gp_Pnt lastPnt  = upperCurve->EndPoint();
-
-    // Trim upper and lower curve to make sure, that the trailing edge
-    // is perpendicular to the chord line
-    double tolerance = 1e-4;
-    gp_Pln plane(tePoint,gp_Vec(lePoint, tePoint));
-    GeomAPI_IntCS int1(lowerCurve, new Geom_Plane(plane));
-    if (int1.IsDone() && int1.NbPoints() > 0) {
-        Standard_Real u,v,w;
-        int1.Parameters(1, u, v, w);
-        if ( w > lowerCurve->FirstParameter() + Precision::Confusion() && w < lowerCurve->LastParameter() ) {
-            double relDist = lowerCurve->Value(w).Distance(firstPnt) / tePoint.Distance(lePoint);
-            if (relDist > tolerance) {
-                LOG(WARNING) << "The wing profile " << profileRef.GetUID() << " will be trimmed"
-                             << " to avoid a skewed trailing edge."
-                             << " The lower part is trimmed about " << relDist*100. << " % w.r.t. the chord length."
-                             << " Please correct the wing profile!";
-            }
-            lowerCurve = new Geom_TrimmedCurve(lowerCurve, w, lowerCurve->LastParameter());
-            curve = new Geom_TrimmedCurve(curve, w, curve->LastParameter());
-        }
-    }
-    GeomAPI_IntCS int2(upperCurve, new Geom_Plane(plane));
-    if (int2.IsDone() && int2.NbPoints() > 0) {
-        Standard_Real u,v,w;
-        int2.Parameters(1, u, v, w);
-        if ( w < upperCurve->LastParameter() - Precision::Confusion() && w > upperCurve->FirstParameter() ) {
-            double relDist = upperCurve->Value(w).Distance(lastPnt) / tePoint.Distance(lePoint);
-            if (relDist > tolerance) {
-                LOG(WARNING) << "The wing profile " << profileRef.GetUID() << " will be trimmed"
-                             << " to avoid a skewed trailing edge."
-                             << " The upper part is trimmed about " << relDist*100. << " % w.r.t. the chord length."
-                             << " Please correct the wing profile!";
-            }
-            upperCurve = new Geom_TrimmedCurve(upperCurve, upperCurve->FirstParameter(), w);
-            curve = new Geom_TrimmedCurve(curve, curve->FirstParameter(), w);
-        }
-    }
+    trimUpperLowerCurve(lowerCurveOpened, upperCurveOpened, curveOpened);
+    trimUpperLowerCurve(lowerCurveClosed, upperCurveClosed, curveClosed);
 
     // upper and lower edges
-    lowerEdge = BRepBuilderAPI_MakeEdge(lowerCurve);
-    upperEdge = BRepBuilderAPI_MakeEdge(upperCurve);
-    upperLowerEdge = BRepBuilderAPI_MakeEdge(curve);
+    lowerWireOpened = BRepBuilderAPI_MakeEdge(lowerCurveOpened);
+    upperWireOpened = BRepBuilderAPI_MakeEdge(upperCurveOpened);
+    upperLowerEdgeOpened = BRepBuilderAPI_MakeEdge(curveOpened);
+    lowerWireClosed = BRepBuilderAPI_MakeEdge(lowerCurveClosed);
+    upperWireClosed = BRepBuilderAPI_MakeEdge(upperCurveClosed);
+    upperLowerEdgeClosed = BRepBuilderAPI_MakeEdge(curveClosed);
 
     // Trailing edge points
     gp_Pnt te_up, te_down;
-    te_up = upperCurve->EndPoint();
-    te_down = lowerCurve->StartPoint();
+    te_up = upperCurveOpened->EndPoint();
+    te_down = lowerCurveOpened->StartPoint();
 
     //check if we have to close upper and lower wing shells
+    // TODO: maybe change the implementation to ensure that this is true, since the 
+    //       open profile should always have a trailing edge
     if (te_up.Distance(te_down) > Precision::Confusion()) {
-        trailingEdge =  BRepBuilderAPI_MakeEdge(te_up,te_down);
+        trailingEdgeOpened = BRepBuilderAPI_MakeEdge(te_up,te_down);
     }
     else {
-        trailingEdge.Nullify();
+        trailingEdgeOpened.Nullify();
     }
+
+    // closed profile nevere has a trailing edge
+    trailingEdgeClosed.Nullify();
+
 }
 
 // Builds leading and trailing edge points of the wing profile wire.
@@ -317,8 +349,8 @@ void CCPACSWingProfilePointList::BuildLETEPoints(void)
 {
     // compute TE point
     gp_Pnt firstPnt = coordinates[0]->Get_gp_Pnt();
-    gp_Pnt lastPnt  = coordinates[coordinates.size() - 1]->Get_gp_Pnt();
-    double x = (firstPnt.X() + lastPnt.X())/2.;
+    gp_Pnt lastPnt = coordinates[coordinates.size() - 1]->Get_gp_Pnt();
+    double x = (firstPnt.X() + lastPnt.X()) / 2.;
     double y = (firstPnt.Y() + lastPnt.Y())/2.;
     double z = (firstPnt.Z() + lastPnt.Z())/2.;
     tePoint = gp_Pnt(x,y,z);
@@ -362,25 +394,75 @@ const std::string& CCPACSWingProfilePointList::GetProfileDataXPath() const
 // get upper wing profile wire
 const TopoDS_Edge& CCPACSWingProfilePointList::GetUpperEdge() const
 {
-    return upperEdge;
+    if (profileIsClosed) {
+        return upperWireClosed;
+    }
+    else {
+        return upperWireOpened;
+    }
 }
 
 // get lower wing profile wire
 const TopoDS_Edge& CCPACSWingProfilePointList::GetLowerEdge() const
 {
-    return lowerEdge;
+    if (profileIsClosed) {
+        return lowerWireClosed;
+    }
+    else {
+        return lowerWireOpened;
+    }
 }
 
 // get the upper and lower wing profile combined into one edge
 const TopoDS_Edge & CCPACSWingProfilePointList::GetUpperLowerEdge() const 
 {
-    return upperLowerEdge;
+    if (profileIsClosed) {
+        return upperLowerEdgeClosed;
+    }
+    else {
+        return upperLowerEdgeOpened;
+    }
 }
 
 // get trailing edge
 const TopoDS_Edge& CCPACSWingProfilePointList::GetTrailingEdge() const
 {
-    return trailingEdge;
+    if (profileIsClosed) {
+        return trailingEdgeClosed;
+    }
+    else {
+        return trailingEdgeOpened;
+    }
+}
+
+// get trailing edge
+const TopoDS_Edge& CCPACSWingProfilePointList::GetTrailingEdgeOpened() const
+{
+    return trailingEdgeOpened;
+}
+
+// Getter for upper wire of closed profile
+const TopoDS_Edge& CCPACSWingProfilePointList::GetUpperWireClosed() const
+{
+    return upperWireClosed;
+}
+
+// Getter for lower wire of closed profile
+const TopoDS_Edge& CCPACSWingProfilePointList::GetLowerWireClosed() const
+{
+    return lowerWireClosed;
+}
+
+// Getter for upper wire of closed profile
+const TopoDS_Edge& CCPACSWingProfilePointList::GetUpperWireOpened() const
+{
+    return upperWireOpened;
+}
+
+// Getter for lower wire of closed profile
+const TopoDS_Edge& CCPACSWingProfilePointList::GetLowerWireOpened() const
+{
+    return lowerWireOpened;
 }
 
 // get leading edge point();
@@ -395,6 +477,119 @@ const gp_Pnt& CCPACSWingProfilePointList::GetTEPoint() const
     return tePoint;
 }
 
+// Helper method for closing profile points at trailing edge
+void CCPACSWingProfilePointList::closeProfilePoints(ITiglWireAlgorithm::CPointContainer& points)
+{
+    gp_Pnt startPnt = points.front();
+    gp_Pnt endPnt = points.back();
+    // points are always sorted beginning at trailing edge point in
+    // direction of lower side
+    gp_Vec gap(startPnt, endPnt);
+
+    // always keep last x position for determination of upper or lower side
+    double lastX = startPnt.X();
+    ITiglWireAlgorithm::CPointContainer::iterator it;
+    for (it = points.begin(); it != points.end(); ++it) {
+        gp_Pnt& pnt = (*it);
+        if (pnt.X() >= 1.0 - c_blendingDistance) { // inside the blending range:
+            // points are always sorted beginning at trailing edge point in
+            // direction of lower side
+            bool upperSide = lastX < pnt.X();
+            double factor = (pnt.X() - (1.0 - c_blendingDistance)) / c_blendingDistance;
+            if (upperSide) { // upper side
+                pnt.Translate(-1 * factor * 0.5 * gap);
+            }
+            else {//lower side
+                pnt.Translate(factor * 0.5 * gap);
+            }
+        }
+        lastX = pnt.X();
+    }
+
+    // finally set start point identical to the end point, as reference use the one with
+    // the x coordinate nearest to 1
+    points.back() = points.front();
+}
+
+// Helper method for opening profile points at trailing edge
+void CCPACSWingProfilePointList::openProfilePoints(ITiglWireAlgorithm::CPointContainer& points)
+{
+    // Pass 1: determine deltay
+    double minZ = 0;
+    double maxZ = 0;
+
+    ITiglWireAlgorithm::CPointContainer::iterator it;
+    for (it = points.begin(); it != points.end(); ++it) {
+        gp_Pnt& pnt = (*it);
+        if (pnt.Z() < minZ) {
+            minZ = pnt.Z();
+        }
+        if (pnt.Z() > maxZ) {
+            maxZ = pnt.Z();
+        }
+    }
+    double deltay = (maxZ - minZ) * c_trailingEdgeRelGap * 0.5; // applied to upper and lower side
+    double lastX = points.begin()->X();
+    // Pass 2: apply deltay
+    for (it = points.begin(); it != points.end(); ++it) {
+        gp_Pnt& pnt = (*it);
+        if (pnt.X() >= 1.0 - c_blendingDistance) { // inside the blending range:
+            // points are always sorted beginning at trailing edge point in
+            // direction of lower side
+            bool lowerSide = lastX >= pnt.X();
+            if (lowerSide) {
+                pnt.SetZ(pnt.Z() - ((pnt.X() - (1.0 - c_blendingDistance)) / c_blendingDistance * deltay));
+            }
+            else {
+                pnt.SetZ(pnt.Z() + ((pnt.X() - (1.0 - c_blendingDistance)) / c_blendingDistance * deltay));
+            }
+        }
+        lastX = pnt.X();
+    }
+}
+
+void CCPACSWingProfilePointList::trimUpperLowerCurve(Handle(Geom_TrimmedCurve) lowerCurve, Handle(Geom_TrimmedCurve) upperCurve, Handle_Geom_Curve curve)
+{
+    gp_Pnt firstPnt = lowerCurve->StartPoint();
+    gp_Pnt lastPnt = upperCurve->EndPoint();
+
+    // Trim upper and lower curve to make sure, that the trailing edge
+    // is perpendicular to the chord line
+    double tolerance = 1e-4;
+    gp_Pln plane(tePoint, gp_Vec(lePoint, tePoint));
+    GeomAPI_IntCS int1(lowerCurve, new Geom_Plane(plane));
+    if (int1.IsDone() && int1.NbPoints() > 0) {
+        Standard_Real u, v, w;
+        int1.Parameters(1, u, v, w);
+        if (w > lowerCurve->FirstParameter() + Precision::Confusion() && w < lowerCurve->LastParameter()) {
+            double relDist = lowerCurve->Value(w).Distance(firstPnt) / tePoint.Distance(lePoint);
+            if (relDist > tolerance) {
+                LOG(WARNING) << "The wing profile " << profileRef.GetUID() << " will be trimmed"
+                    << " to avoid a skewed trailing edge."
+                    << " The lower part is trimmed about " << relDist*100. << " % w.r.t. the chord length."
+                    << " Please correct the wing profile!";
+            }
+            lowerCurve = new Geom_TrimmedCurve(lowerCurve, w, lowerCurve->LastParameter());
+            curve = new Geom_TrimmedCurve(curve, w, curve->LastParameter());
+        }
+    }
+    GeomAPI_IntCS int2(upperCurve, new Geom_Plane(plane));
+    if (int2.IsDone() && int2.NbPoints() > 0) {
+        Standard_Real u, v, w;
+        int2.Parameters(1, u, v, w);
+        if (w < upperCurve->LastParameter() - Precision::Confusion() && w > upperCurve->FirstParameter()) {
+            double relDist = upperCurve->Value(w).Distance(lastPnt) / tePoint.Distance(lePoint);
+            if (relDist > tolerance) {
+                LOG(WARNING) << "The wing profile " << profileRef.GetUID() << " will be trimmed"
+                    << " to avoid a skewed trailing edge."
+                    << " The upper part is trimmed about " << relDist*100. << " % w.r.t. the chord length."
+                    << " Please correct the wing profile!";
+            }
+            upperCurve = new Geom_TrimmedCurve(upperCurve, upperCurve->FirstParameter(), w);
+            curve = new Geom_TrimmedCurve(curve, curve->FirstParameter(), w);
+        }
+    }
+}
 
 bool CCPACSWingProfilePointList::HasBluntTE() const
 {

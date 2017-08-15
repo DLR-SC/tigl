@@ -123,4 +123,44 @@ void CCPACSFuselageSegments::ReadCPACS(TixiDocumentHandle tixiHandle, const std:
 
 }
 
+// Write CPACS segments element
+void CCPACSFuselageSegments::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& fuselageXPath)
+{
+    std::string elementPath;
+    std::string xpath;
+    ReturnCode    tixiRet;
+    int           segmentCount, test;
+
+    elementPath = fuselageXPath + "/segments";
+    if ((tixiRet = tixiCheckElement(tixiHandle, elementPath.c_str())) == ELEMENT_NOT_FOUND) {
+        if ((tixiRet = tixiCreateElement(tixiHandle, fuselageXPath.c_str(), "segments")) != SUCCESS) {
+            throw CTiglError("XML error: tixiCreateElement failed in CCPACSWings::WriteCPACS", TIGL_XML_ERROR);
+        }
+    }
+    else if (tixiRet != SUCCESS) {
+        return;
+    }
+    tixiRet = tixiGetNamedChildrenCount(tixiHandle, elementPath.c_str(), "segment", &test);
+    segmentCount = GetSegmentCount();
+
+    for (int i = 1; i <= segmentCount; i++) {
+        CCPACSFuselageSegment& segment = GetSegment(i);
+        std::stringstream ss;
+        ss << elementPath << "/segment[" << i << "]";
+        xpath = ss.str();
+        if ((tixiRet = tixiCheckElement(tixiHandle, xpath.c_str())) == ELEMENT_NOT_FOUND) {
+            if ((tixiRet = tixiCreateElement(tixiHandle, elementPath.c_str(), "segment")) != SUCCESS) {
+                throw CTiglError("XML error: tixiCreateElement failed in CCPACSWingsPositionnings::WriteCPACS", TIGL_XML_ERROR);
+            }
+        }
+        segment.WriteCPACS(tixiHandle, xpath);
+    }
+    for (int i = segmentCount + 1; i <= test; i++) {
+        std::stringstream ss;
+        ss << elementPath << "/segment[" << segmentCount + 1 << "]";
+        xpath = ss.str();
+        tixiRemoveElement(tixiHandle, xpath.c_str());
+    }
+}
+
 } // end namespace tigl

@@ -48,17 +48,44 @@ public:
     // Read CPACS wing section element
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& elementXPath);
 
+    // Write CPACS wing section element
+    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& elementXPath);
+
     // Returns the UID of the referenced wing profile
     TIGL_EXPORT std::string GetProfileIndex(void) const;
 
     // Returns the UID of the WingSectionElement
     TIGL_EXPORT std::string GetUID(void) const;
 
+    // Getter for the member name
+    TIGL_EXPORT std::string GetName(void) const;
+
+    // Getter for the member description
+    TIGL_EXPORT std::string GetDescription(void) const;
+
     // Returns the UID of the profile of this element
     TIGL_EXPORT std::string GetProfileUID(void) const;
 
     // Gets the section element transformation
     TIGL_EXPORT CTiglTransformation GetSectionElementTransformation(void) const;
+
+    // Getter for translation
+    TIGL_EXPORT const CTiglPoint& GetTranslation() const;
+
+    // Getter for rotation
+    TIGL_EXPORT const CTiglPoint& GetRotation() const;
+
+    // Getter for scaling
+    TIGL_EXPORT const CTiglPoint& GetScaling() const;
+
+    // Setter for translation
+    TIGL_EXPORT void SetTranslation(const CTiglPoint& trans);
+
+    // Setter for rotation
+    TIGL_EXPORT void SetRotation(const CTiglPoint& rot);
+
+    // Setter for scaling
+    TIGL_EXPORT void SetScaling(const CTiglPoint& scaling);
 
 protected:
     // Cleanup routine
@@ -73,6 +100,7 @@ private:
 
 private:
     std::string           name;           /**< Section name                          */
+    std::string           description;    /**< Section name                          */
     std::string           profileUID;     /**< Profile index in wing profile library */
     std::string           uID;            /**< UID of the WingSectionElement         */
     CCPACSTransformation  transformation; /**< Section element transformation        */

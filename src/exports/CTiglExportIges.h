@@ -28,9 +28,9 @@
 
 #include "tigl_config.h"
 #include "tigl_internal.h"
-#include "PNamedShape.h"
-#include "ListPNamedShape.h"
 #include "CCPACSImportExport.h"
+#include "CTiglCADExporter.h"
+
 
 class IGESControl_Writer;
 
@@ -39,40 +39,26 @@ namespace tigl
 
 class CCPACSConfiguration;
 
-class CTiglExportIges
+class CTiglExportIges : public CTiglCADExporter
 {
 
 public:
     // Constructor
     TIGL_EXPORT CTiglExportIges();
 
-    // Virtual Destructor
-    TIGL_EXPORT virtual ~CTiglExportIges(void);
-
-    //  Adds the whole configuration fused, to the step file
-    TIGL_EXPORT void AddConfiguration(CCPACSConfiguration& config);
-
-    //  Adds the configuration, boolean fused, to the step file
-    TIGL_EXPORT void AddFusedConfiguration(CCPACSConfiguration& config);
-
-    // Adds a shape to the step file
-    TIGL_EXPORT void AddShape(PNamedShape shape);
-
     // Sets the type of storing shapes to iges
     TIGL_EXPORT void SetGroupMode(ShapeGroupMode mode);
 
-    // Writes the IGES file
-    TIGL_EXPORT bool Write(const std::string& filename) const;
-
-protected:
 
 private:
+    // Actual implementation of the IGES file writing
+    TIGL_EXPORT bool WriteImpl(const std::string& filename) const;
+
     // Assignment operator
-    void operator=(const CTiglExportIges& ) { /* Do nothing */ }
+    void operator=(const CTiglExportIges& );
     void AddToIges(PNamedShape shape, IGESControl_Writer& writer, int level = 0) const;
 
     ShapeGroupMode  _groupMode;    /**< Type specifying how to group faces in the iges file */
-    ListPNamedShape _shapes;
     void SetTranslationParameters() const;
 };
 

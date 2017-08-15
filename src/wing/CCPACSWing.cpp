@@ -32,6 +32,7 @@
 #include "CCPACSWingSegment.h"
 #include "CTiglError.h"
 #include "tiglcommonfunctions.h"
+#include "TixiSaveExt.h"
 #include "tiglmathfunctions.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
@@ -48,6 +49,7 @@
 #include "CTiglMakeLoft.h"
 #include <TopExp.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
+
 
 namespace tigl
 {
@@ -127,12 +129,14 @@ void CCPACSWing::Invalidate(void)
     invalidated = true;
     segments.Invalidate();
     positionings.Invalidate();
+    componentSegments.Invalidate();
 }
 
 // Cleanup routine
 void CCPACSWing::Cleanup(void)
 {
     name = "";
+    description = "";
     isRotorBlade = false;
     transformation.reset();
 
@@ -180,34 +184,32 @@ void CCPACSWing::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& win
         isRotorBlade = true;
     }
 
-    char*       elementPath;
-    std::string tempString;
-
     // Get subelement "name"
     char* ptrName = NULL;
-    tempString    = wingXPath + "/name";
-    elementPath   = const_cast<char*>(tempString.c_str());
-    if (tixiGetTextElement(tixiHandle, elementPath, &ptrName) == SUCCESS) {
+    if (tixiGetTextElement(tixiHandle, (wingXPath + "/name").c_str(), &ptrName) == SUCCESS) {
         name          = ptrName;
+    }
+
+    // Get subelement "description"
+    char* ptrDescription = NULL;
+    if (tixiGetTextElement(tixiHandle, (wingXPath + "/description").c_str(), &ptrDescription) == SUCCESS) {
+        description   = ptrDescription;
     }
 
     // Get attribute "uid"
     char* ptrUID = NULL;
-    tempString   = "uID";
-    elementPath  = const_cast<char*>(tempString.c_str());
-    if (tixiGetTextAttribute(tixiHandle, const_cast<char*>(wingXPath.c_str()), const_cast<char*>(tempString.c_str()), &ptrUID) == SUCCESS) {
+    if (tixiGetTextAttribute(tixiHandle, wingXPath.c_str(), "uID", &ptrUID) == SUCCESS) {
         SetUID(ptrUID);
     }
 
     // Get subelement "parent_uid"
     char* ptrParentUID = NULL;
-    tempString         = wingXPath + "/parentUID";
-    elementPath        = const_cast<char*>(tempString.c_str());
-    if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS &&
-        tixiGetTextElement(tixiHandle, elementPath, &ptrParentUID) == SUCCESS) {
-
+    std::string elementPath = wingXPath + "/parentUID";
+    if (tixiCheckElement(tixiHandle, elementPath.c_str()) == SUCCESS &&
+        tixiGetTextElement(tixiHandle, elementPath.c_str(), &ptrParentUID) == SUCCESS) {
         SetParentUID(ptrParentUID);
     }
+
 
     // Get Transformation
     transformation.ReadCPACS(tixiHandle, wingXPath);
@@ -226,16 +228,36 @@ void CCPACSWing::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& win
     componentSegments.ReadCPACS(tixiHandle, wingXPath);
 
     // Register ourself at the unique id manager
-    configuration->GetUIDManager().AddUID(ptrUID, this);
+    if (configuration) {
+        configuration->GetUIDManager().AddUID(ptrUID, this);
+    }
 
     // Get symmetry axis attribute, has to be done, when segments are build
     char* ptrSym = NULL;
-    tempString   = "symmetry";
-    if (tixiGetTextAttribute(tixiHandle, const_cast<char*>(wingXPath.c_str()), const_cast<char*>(tempString.c_str()), &ptrSym) == SUCCESS) {
+    if (tixiGetTextAttribute(tixiHandle, wingXPath.c_str(), "symmetry", &ptrSym) == SUCCESS) {
         SetSymmetryAxis(ptrSym);
     }
 
     Update();
+}
+
+// Write CPACS wing element
+void CCPACSWing::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& wingXPath)
+{
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, wingXPath.c_str(), "name", GetName().c_str());
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, wingXPath.c_str(), "description", description.c_str());
+    TixiSaveExt::TixiSaveTextAttribute(tixiHandle, wingXPath.c_str(), "uID", GetUID().c_str());
+    if (GetSymmetryAxis() != TIGL_NO_SYMMETRY) {
+        TixiSaveExt::TixiSaveTextAttribute(tixiHandle, wingXPath.c_str(), "symmetry", GetSymmetryAxisString());
+    }
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, wingXPath.c_str(), "parentUID", GetParentUID().c_str());
+
+    transformation.WriteCPACS(tixiHandle, wingXPath);
+
+    sections.WriteCPACS(tixiHandle, wingXPath);
+    positionings.WriteCPACS(tixiHandle, wingXPath);
+    segments.WriteCPACS(tixiHandle, wingXPath);
+    componentSegments.WriteCPACS(tixiHandle, wingXPath);
 }
 
 // Returns the Component Type TIGL_COMPONENT_WING.
@@ -253,6 +275,12 @@ TiglGeometricComponentType CCPACSWing::GetComponentType(void)
 const std::string& CCPACSWing::GetName(void) const
 {
     return name;
+}
+
+// Returns the description of the wing
+const std::string& CCPACSWing::GetDescription(void) const
+{
+    return description;
 }
 
 // Returns whether this wing is a rotor blade
@@ -297,7 +325,7 @@ CTiglAbstractSegment & CCPACSWing::GetSegment(std::string uid)
     return (CTiglAbstractSegment &) segments.GetSegment(uid);
 }
 
-    // Get componentSegment count
+// Get componentSegment count
 int CCPACSWing::GetComponentSegmentCount(void)
 {
     return componentSegments.GetComponentSegmentCount();
@@ -314,7 +342,6 @@ CTiglAbstractSegment & CCPACSWing::GetComponentSegment(std::string uid)
 {
     return (CTiglAbstractSegment &) componentSegments.GetComponentSegment(uid);
 }
-
 
 // Gets the loft of the whole wing with modeled leading edge.
 TopoDS_Shape & CCPACSWing::GetLoftWithLeadingEdge(void)
@@ -466,6 +493,7 @@ void CCPACSWing::Translate(CTiglPoint trans)
     componentSegments.Invalidate();
     Update();
 }
+
 
 // Returns the surface area of this wing
 double CCPACSWing::GetSurfaceArea(void)
@@ -857,6 +885,12 @@ void CCPACSWing::BuildGuideCurveWires()
         result = wireFixer.Wire();
         b.Add(guideCurves, result);
     }
+}
+
+// Getter for positionings
+CCPACSWingPositionings& CCPACSWing::GetPositionings()
+{
+    return positionings;
 }
 
 } // end namespace tigl

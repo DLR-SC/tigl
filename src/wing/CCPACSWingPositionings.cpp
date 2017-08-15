@@ -24,6 +24,8 @@
 */
 
 #include "CCPACSWingPositionings.h"
+#include "TixiSaveExt.h"
+#include "IOHelper.h"
 #include <iostream>
 #include <sstream>
 
@@ -64,6 +66,11 @@ void CCPACSWingPositionings::Cleanup(void)
     }
     positionings.clear();
     invalidated = true;
+}
+
+CCPACSWingPositionings::CCPACSWingPositioningContainer& CCPACSWingPositionings::GetPositionings()
+{
+    return positionings;
 }
 
 // Returns the positioning matrix for a given section index
@@ -151,36 +158,21 @@ void CCPACSWingPositionings::UpdateNextPositioning(CCPACSWingPositioning* currPo
 }
 
 // Read CPACS positionings element
-void CCPACSWingPositionings::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& wingXPath)
+void CCPACSWingPositionings::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& xpath)
 {
     Cleanup();
-
-    ReturnCode    tixiRet;
-    int           positioningCount;
-    std::string   tempString;
-    char*         elementPath;
-
-    /* Get positioning element count */
-    tempString  = wingXPath + "/positionings";
-    elementPath = const_cast<char*>(tempString.c_str());
-    tixiRet = tixiGetNamedChildrenCount(tixiHandle, elementPath, "positioning", &positioningCount);
-    if (tixiRet != SUCCESS) {
-        throw CTiglError("XML error: tixiGetNamedChildrenCount failed in CCPACSWingPositionings::ReadCPACS", TIGL_XML_ERROR);
+    std::vector<CCPACSWingPositioning*> children;
+    ReadContainerElement(tixiHandle, xpath, "positioning", 1, children);
+    for (std::size_t i = 0; i < children.size(); i++) {
+        positionings[children[i]->GetOuterSectionIndex()] = children[i];
     }
-
-    // Loop over all positionings
-    for (int i = 1; i <= positioningCount; i++) {
-        CCPACSWingPositioning* positioning = new CCPACSWingPositioning();
-
-        tempString = wingXPath + "/positionings/positioning[";
-        std::ostringstream xpath;
-        xpath << tempString << i << "]";
-        positioning->ReadCPACS(tixiHandle, xpath.str());
-        
-        positionings[positioning->GetOuterSectionIndex()] = positioning;
-    }
-
     Update();
+}
+
+// Write CPACS positionings element
+void CCPACSWingPositionings::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& xpath) const
+{
+    WriteContainerElement(tixiHandle, xpath, "positioning", positionings);
 }
 
 } // end namespace tigl

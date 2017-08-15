@@ -57,6 +57,18 @@ CTiglTransformation::CTiglTransformation(const gp_GTrsf& ocMatrix)
     m_matrix[2][3] = ocMatrix.Value(3,4);
 }
 
+// Constructor for transformation based on gp_Trsf
+CTiglTransformation::CTiglTransformation(const gp_Trsf& trans)
+{
+    SetIdentity();
+
+    for (int row = 0; row < 3; row++) {
+        for (int col = 0; col < 4; col++) {
+            m_matrix[row][col] = trans.Value(row+1, col+1);
+        }
+    }
+}
+
 // Destructor
 CTiglTransformation::~CTiglTransformation(void)
 {
@@ -428,27 +440,27 @@ void CTiglTransformation::printTransformMatrix()
 bool CTiglTransformation::IsUniform() const
 {
     // The following code is copied from gp_Trsf
-    
-    gp_XYZ col1(m_matrix[0][0],m_matrix[1][0],m_matrix[2][0]);
-    gp_XYZ col2(m_matrix[0][1],m_matrix[1][1],m_matrix[2][1]);
-    gp_XYZ col3(m_matrix[0][2],m_matrix[1][2],m_matrix[2][2]);
+
+    gp_XYZ col1(m_matrix[0][0], m_matrix[1][0], m_matrix[2][0]);
+    gp_XYZ col2(m_matrix[0][1], m_matrix[1][1], m_matrix[2][1]);
+    gp_XYZ col3(m_matrix[0][2], m_matrix[1][2], m_matrix[2][2]);
 
     // compute the determinant
-    gp_Mat M(col1,col2,col3);
+    gp_Mat M(col1, col2, col3);
     Standard_Real s = M.Determinant();
-    
+
     if (fabs(s) < Precision::Confusion()) {
         return false;
     }
-    
+
     if (s > 0) {
-      s = Pow(s,1./3.);
+        s = Pow(s, 1. / 3.);
     }
     else {
-      s = -Pow(-s,1./3.);
+        s = -Pow(-s, 1. / 3.);
     }
     M.Divide(s);
-    
+
     // check if the matrix is a rotation matrix
     // i.e. check if M^T * M = I
     gp_Mat TM(M);
@@ -456,62 +468,72 @@ bool CTiglTransformation::IsUniform() const
     TM.Multiply(M);
 
     // don t trust the initial values !
-    gp_Mat anIdentity ;
-    anIdentity.SetIdentity() ;
+    gp_Mat anIdentity;
+    anIdentity.SetIdentity();
     TM.Subtract(anIdentity);
-    
+
     double v = 0;
-    v = TM.Value(1,1);
+    v = TM.Value(1, 1);
     if (fabs(v) > Precision::Confusion()) {
         return false;
     }
-    
-    v = TM.Value(1,2);
+
+    v = TM.Value(1, 2);
     if (fabs(v) > Precision::Confusion()) {
         return false;
     }
-    
-    v = TM.Value(1,3);
+
+    v = TM.Value(1, 3);
     if (fabs(v) > Precision::Confusion()) {
         return false;
     }
-    
-    v = TM.Value(2,1);
+
+    v = TM.Value(2, 1);
     if (fabs(v) > Precision::Confusion()) {
         return false;
     }
-    
-    v = TM.Value(2,2);
+
+    v = TM.Value(2, 2);
     if (fabs(v) > Precision::Confusion()) {
         return false;
     }
-    
-    v = TM.Value(2,3);
+
+    v = TM.Value(2, 3);
     if (fabs(v) > Precision::Confusion()) {
         return false;
     }
-    
-    v = TM.Value(3,1);
+
+    v = TM.Value(3, 1);
     if (fabs(v) > Precision::Confusion()) {
         return false;
     }
-    
-    v = TM.Value(3,2);
+
+    v = TM.Value(3, 2);
     if (fabs(v) > Precision::Confusion()) {
         return false;
     }
-    
-    v = TM.Value(3,3);
+
+    v = TM.Value(3, 3);
     if (fabs(v) > Precision::Confusion()) {
         return false;
     }
-    
+
     return true;
 }
 
-CTiglTransformation CTiglTransformation::Inverted() const 
+CTiglTransformation CTiglTransformation::Inverted() const
 {
     return Get_gp_GTrsf().Inverted();
+}
+
+// Getter for matrix values
+double CTiglTransformation::GetValue(int row, int col) const
+{
+    if (row < 0 || row > 3 || col < 0 || col > 3) {
+        throw CTiglError("Error: Invalid row or column index in CTiglTransformation::GetValue", TIGL_INDEX_ERROR);
+    }
+
+    return m_matrix[row][col];
 }
 
 } // end namespace tigl

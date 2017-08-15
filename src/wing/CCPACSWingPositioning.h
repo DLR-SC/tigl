@@ -52,6 +52,9 @@ public:
     // Read CPACS segment elements
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& positioningXPath);
 
+    // Write CPACS segment elements
+    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& positioningXPath);
+
     // Sets the positioning of the inner point
     TIGL_EXPORT void SetInnerPoint(const CTiglPoint& aPoint);
 
@@ -74,10 +77,10 @@ public:
 
     TIGL_EXPORT const std::vector<CCPACSWingPositioning*> GetChilds() const;
 
-protected:
     // Cleanup routine
-    void Cleanup(void);
+    TIGL_EXPORT void Cleanup(void);
 
+protected:
     // Build transformation matrix for the positioning
     void BuildMatrix(void);
 

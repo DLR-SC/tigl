@@ -64,6 +64,9 @@ public:
     // Gets symmetry axis
     TIGL_EXPORT virtual TiglSymmetryAxis GetSymmetryAxis(void);
 
+    // Gets symmetry axis as string
+    TIGL_EXPORT virtual const char* GetSymmetryAxisString(void) const;
+
     // Sets symmetry axis
     TIGL_EXPORT virtual void SetSymmetryAxis(const std::string& axis);
 
@@ -75,6 +78,12 @@ public:
     
     // Get type of translation (global or local)
     TIGL_EXPORT virtual ECPACSTranslationType GetTranslationType(void) const;
+
+    // Get component rotation
+    TIGL_EXPORT virtual CTiglPoint GetRotation() const;
+
+    // Get component scaling
+    TIGL_EXPORT virtual CTiglPoint GetScaling() const;
 
     // Set transformation object
     TIGL_EXPORT virtual void Translate(CTiglPoint trans);

@@ -32,7 +32,7 @@ namespace tigl
 {
 
 // Constructor
-CCPACSGuideCurve::CCPACSGuideCurve(const std::string& path) : GuideCurveXPath(path)
+CCPACSGuideCurve::CCPACSGuideCurve()
 {
     Cleanup();
 }
@@ -58,64 +58,67 @@ void CCPACSGuideCurve::Cleanup(void)
 }
 
 // Read guide curve file
-void CCPACSGuideCurve::ReadCPACS(TixiDocumentHandle tixiHandle, bool isInsideFirstSegment)
+void CCPACSGuideCurve::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& xpath)
 {
     Cleanup();
-    std::string namePath                  = GuideCurveXPath + "/name";
-    std::string describtionPath           = GuideCurveXPath + "/description";
-    std::string fromGuideCurveUIDPath     = GuideCurveXPath + "/fromGuideCurveUID";
-    std::string guideCurveProfileUIDPath  = GuideCurveXPath + "/guideCurveProfileUID";
+
+    std::string namePath                  = xpath + "/name";
+    std::string describtionPath           = xpath + "/description";
+    std::string fromGuideCurveUIDPath     = xpath + "/fromGuideCurveUID";
+    std::string guideCurveProfileUIDPath  = xpath + "/guideCurveProfileUID";
+
+    bool isInsideFirstSegment = false;
 
     // Get subelement "name"
     char* ptrName = NULL;
-    if (tixiGetTextElement(tixiHandle, const_cast<char*>(namePath.c_str()), &ptrName) == SUCCESS) {
+    if (tixiGetTextElement(tixiHandle, namePath.c_str(), &ptrName) == SUCCESS) {
         name = ptrName;
     }
 
     // Get guide curve "uid"
     char* ptrUID = NULL;
-    if (tixiGetTextAttribute(tixiHandle, const_cast<char*>(GuideCurveXPath.c_str()), "uID", &ptrUID) == SUCCESS) {
+    if (tixiGetTextAttribute(tixiHandle, xpath.c_str(), "uID", &ptrUID) == SUCCESS) {
         uid = ptrUID;
     }
 
     // Get subelement "description"
     char* ptrDescription = NULL;
-    if (tixiGetTextElement(tixiHandle, const_cast<char*>(describtionPath.c_str()), &ptrDescription) == SUCCESS) {
+    if (tixiGetTextElement(tixiHandle, describtionPath.c_str(), &ptrDescription) == SUCCESS) {
         description = ptrDescription;
     }
 
     // Get guide curve profile UID
     char* ptrGuideCurveProfileUID = NULL;
-    if (tixiGetTextElement(tixiHandle, (GuideCurveXPath+"/guideCurveProfileUID").c_str(), &ptrGuideCurveProfileUID) != SUCCESS) {
+    if (tixiGetTextElement(tixiHandle, (xpath+"/guideCurveProfileUID").c_str(), &ptrGuideCurveProfileUID) != SUCCESS) {
         throw CTiglError("Error: XML error while reading guideCurveProfileUID in CCPACSGuideCurve::ReadCPACS", TIGL_XML_ERROR);
     }
     profileUID = ptrGuideCurveProfileUID;
 
     // check if fromRelativeCircumference or fromGuideCurveUID is set
-    bool foundFromRelativeCircumference = (tixiCheckElement(tixiHandle, (GuideCurveXPath + "/fromRelativeCircumference").c_str()) == SUCCESS);
-    bool foundFromGuideCurveUID = (tixiCheckElement(tixiHandle, (GuideCurveXPath + "/fromGuideCurveUID").c_str()) == SUCCESS);
+    bool foundFromRelativeCircumference = (tixiCheckElement(tixiHandle, (xpath + "/fromRelativeCircumference").c_str()) == SUCCESS);
+    bool foundFromGuideCurveUID = (tixiCheckElement(tixiHandle, (xpath + "/fromGuideCurveUID").c_str()) == SUCCESS);
     if (foundFromRelativeCircumference && foundFromGuideCurveUID) {
         throw CTiglError("Error: It is forbidden to give fromRelativeCircumference AND fromGuideCurveUID in CCPACSGuideCurve::ReadCPACS", TIGL_XML_ERROR);
     }
 
-    if (isInsideFirstSegment && foundFromGuideCurveUID) {
+    /*if (isInsideFirstSegment && foundFromGuideCurveUID) {
         throw CTiglError("Error: fromRelativeCircumference must be set in the first segment for the guide curve (CCPACSGuideCurve::ReadCPACS)", TIGL_XML_ERROR);
     }
 
     if (!isInsideFirstSegment && foundFromRelativeCircumference) {
         throw CTiglError("Error: Invalid use of fromRelativeCircumference in subsequent guide curve segment. Use fromGuideCurveUID instead! (CCPACSGuideCurve::ReadCPACS)", TIGL_XML_ERROR);
-    }
+    }*/
 
     else if (foundFromRelativeCircumference) {
         fromRelativeCircumferenceIsSet = true;
-        if (tixiGetDoubleElement(tixiHandle, (GuideCurveXPath + "/fromRelativeCircumference").c_str(), &fromRelativeCircumference) != SUCCESS) {
+        if (tixiGetDoubleElement(tixiHandle, (xpath + "/fromRelativeCircumference").c_str(), &fromRelativeCircumference) != SUCCESS) {
             throw CTiglError("Error: XML error while reading fromRelativeCircumference in CCPACSGuideCurve::ReadCPACS", TIGL_XML_ERROR);
         }
     }
     else if (foundFromGuideCurveUID) {
         fromRelativeCircumferenceIsSet = false;
         char* ptrFromGuideCurveUID = NULL;
-        if (tixiGetTextElement(tixiHandle, (GuideCurveXPath+"/fromGuideCurveUID").c_str(), &ptrFromGuideCurveUID) != SUCCESS) {
+        if (tixiGetTextElement(tixiHandle, (xpath+"/fromGuideCurveUID").c_str(), &ptrFromGuideCurveUID) != SUCCESS) {
             throw CTiglError("Error: XML error while reading fromGuideCurveUID in CCPACSGuideCurve::ReadCPACS", TIGL_XML_ERROR);
         }
         fromGuideCurveUID = ptrFromGuideCurveUID;
@@ -124,7 +127,7 @@ void CCPACSGuideCurve::ReadCPACS(TixiDocumentHandle tixiHandle, bool isInsideFir
         throw CTiglError("Error: Attribute fromRelativeCircumference OR fromGuideCurveUID missing in CCPACSGuideCurve::ReadCPACS", TIGL_XML_ERROR);
     }
     // read in toRelativeCircumference
-    if (tixiGetDoubleElement(tixiHandle, (GuideCurveXPath + "/toRelativeCircumference").c_str(), &toRelativeCircumference) != SUCCESS) {
+    if (tixiGetDoubleElement(tixiHandle, (xpath + "/toRelativeCircumference").c_str(), &toRelativeCircumference) != SUCCESS) {
         throw CTiglError("Error: XML error while reading toRelativeCircumference in CCPACSGuideCurve::ReadCPACS", TIGL_XML_ERROR);
     }
 }
@@ -135,13 +138,18 @@ const std::string& CCPACSGuideCurve::GetName(void) const
     return name;
 }
 
+const std::string& CCPACSGuideCurve::GetDescription(void) const
+{
+    return description;
+}
+
 // Returns the UID of the guide curve
 const std::string& CCPACSGuideCurve::GetUID(void) const
 {
     return uid;
 }
 
-// Returns the UID of the guide curve
+// Returns the profile UID of the guide curve
 const std::string& CCPACSGuideCurve::GetGuideCurveProfileUID(void) const
 {
     return profileUID;

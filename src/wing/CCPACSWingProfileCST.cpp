@@ -33,6 +33,7 @@
 #include "CTiglTransformation.h"
 #include "CWireToCurve.h"
 #include "CCPACSWingProfileFactory.h"
+#include "TixiSaveExt.h"
 #include "math.h"
 
 #include <TopoDS.hxx>
@@ -40,8 +41,7 @@
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <Geom_BSplineCurve.hxx>
-
-
+#include <Standard_Version.hxx>
 
 
 namespace tigl
@@ -89,7 +89,7 @@ AUTORUN(CCPACSWingProfileCST)
 }
 
 // Constructor
-CCPACSWingProfileCST::CCPACSWingProfileCST(const CCPACSWingProfile&, const std::string& path)
+CCPACSWingProfileCST::CCPACSWingProfileCST(const CCPACSWingProfile& profile, const std::string& path)
 {
     ProfileDataXPath=path + "/" + CPACSID();
     trailingEdge.Nullify();
@@ -121,12 +121,25 @@ void CCPACSWingProfileCST::Update(void)
 // Read wing profile file
 void CCPACSWingProfileCST::ReadCPACS(TixiDocumentHandle tixiHandle)
 {
-    upperB=readTixiVector(tixiHandle, ProfileDataXPath, "/upperB", "CCPACSWingProfileCST::ReadCPACS"); 
-    lowerB=readTixiVector(tixiHandle, ProfileDataXPath, "/lowerB", "CCPACSWingProfileCST::ReadCPACS"); 
-    upperN1=readTixiDouble(tixiHandle, ProfileDataXPath, "/upperN1", "CCPACSWingProfileCST::ReadCPACS"); 
-    upperN2=readTixiDouble(tixiHandle, ProfileDataXPath, "/upperN2", "CCPACSWingProfileCST::ReadCPACS"); 
-    lowerN1=readTixiDouble(tixiHandle, ProfileDataXPath, "/lowerN1", "CCPACSWingProfileCST::ReadCPACS"); 
-    lowerN2=readTixiDouble(tixiHandle, ProfileDataXPath, "/lowerN2", "CCPACSWingProfileCST::ReadCPACS"); 
+    upperB = readTixiVector(tixiHandle, ProfileDataXPath, "/upperB", "CCPACSWingProfileCST::ReadCPACS");
+    lowerB = readTixiVector(tixiHandle, ProfileDataXPath, "/lowerB", "CCPACSWingProfileCST::ReadCPACS");
+    upperN1 = readTixiDouble(tixiHandle, ProfileDataXPath, "/upperN1", "CCPACSWingProfileCST::ReadCPACS");
+    upperN2 = readTixiDouble(tixiHandle, ProfileDataXPath, "/upperN2", "CCPACSWingProfileCST::ReadCPACS");
+    lowerN1 = readTixiDouble(tixiHandle, ProfileDataXPath, "/lowerN1", "CCPACSWingProfileCST::ReadCPACS");
+    lowerN2 = readTixiDouble(tixiHandle, ProfileDataXPath, "/lowerN2", "CCPACSWingProfileCST::ReadCPACS");
+}
+
+// Write CPACS wing profile
+void CCPACSWingProfileCST::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& ProfileXPath)
+{
+    TixiSaveExt::TixiSaveElement(tixiHandle, ProfileXPath.c_str(), CPACSID().c_str() );
+    const std::string elementPath = ProfileXPath + "/" + CPACSID();
+    TixiSaveExt::TixiSaveVector(tixiHandle, elementPath, "upperB", upperB);
+    TixiSaveExt::TixiSaveVector(tixiHandle, elementPath, "lowerB", lowerB);
+    TixiSaveExt::TixiSaveDoubleElement(tixiHandle, elementPath.c_str(), "upperN1", upperN1);
+    TixiSaveExt::TixiSaveDoubleElement(tixiHandle, elementPath.c_str(), "upperN2", upperN2);
+    TixiSaveExt::TixiSaveDoubleElement(tixiHandle, elementPath.c_str(), "lowerN1", lowerN1);
+    TixiSaveExt::TixiSaveDoubleElement(tixiHandle, elementPath.c_str(), "lowerN2", lowerN2);
 }
 
 // Builds the wing profile wire. The returned wire is already transformed by the
@@ -177,7 +190,31 @@ const std::string & CCPACSWingProfileCST::GetProfileDataXPath() const
 {
     return ProfileDataXPath;
 }
-        
+
+// Getter for upper wire of closed profile
+const TopoDS_Edge& CCPACSWingProfileCST::GetUpperWireClosed() const
+{
+    return upperEdge;
+}
+
+// Getter for lower wire of closed profile
+const TopoDS_Edge& CCPACSWingProfileCST::GetLowerWireClosed() const
+{
+    return lowerEdge;
+}
+
+// Getter for upper wire of opened profile
+const TopoDS_Edge& CCPACSWingProfileCST::GetUpperWireOpened() const
+{
+    throw CTiglError("ERROR: GetUpperWireOpened not implemented yet for CCPACSWingProfileCST!");
+}
+
+// Getter for lower wire of opened profile
+const TopoDS_Edge& CCPACSWingProfileCST::GetLowerWireOpened() const
+{
+    throw CTiglError("ERROR: GetLowerWireOpened not implemented yet for CCPACSWingProfileCST!");
+}
+
 // get upper wing profile wire
 const TopoDS_Edge & CCPACSWingProfileCST::GetUpperEdge() const
 {
@@ -197,9 +234,15 @@ const TopoDS_Edge & CCPACSWingProfileCST::GetUpperLowerEdge() const
 }
 
 // get trailing edge
-const TopoDS_Edge & CCPACSWingProfileCST::GetTrailingEdge() const 
+const TopoDS_Edge & CCPACSWingProfileCST::GetTrailingEdge() const
 {
     return trailingEdge;
+}
+
+// get trailing edge
+const TopoDS_Edge & CCPACSWingProfileCST::GetTrailingEdgeOpened() const
+{
+    throw CTiglError("ERROR: GetTrailingEdgeOpened not implemented yet for CCPACSWingProfileCST!");
 }
 
 // get leading edge point();

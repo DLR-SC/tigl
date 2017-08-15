@@ -26,6 +26,8 @@
 #include "CCPACSWings.h"
 #include "CCPACSConfiguration.h"
 #include "CTiglError.h"
+#include "TixiSaveExt.h"
+#include "IOHelper.h"
 #include <iostream>
 #include <sstream>
 
@@ -66,52 +68,62 @@ void CCPACSWings::Cleanup(void)
 void CCPACSWings::ReadCPACS(TixiDocumentHandle tixiHandle, const char* configurationUID)
 {
     Cleanup();
-
     profiles.ReadCPACS(tixiHandle);
 
-    // read normal wings
-    ReadCPACSWing(tixiHandle, configurationUID, "wings", "wing");
-
-    if (configuration->IsRotorcraft()) {
-         // read rotor blades
-         ReadCPACSWing(tixiHandle, configurationUID, "rotorBlades", "rotorBlade");
-    }
-}
-
-// Read CPACS wings element
-void CCPACSWings::ReadCPACSWing(TixiDocumentHandle tixiHandle, const char* configurationUID, const char* wingsLibraryName, const char* wingElementName)
-{
-    char *tmpString = NULL;
-
+    char* tmpString = NULL;
     if (tixiUIDGetXPath(tixiHandle, configurationUID, &tmpString) != SUCCESS) {
         throw CTiglError("XML error: tixiUIDGetXPath failed in CCPACSWings::ReadCPACS", TIGL_XML_ERROR);
     }
-
-    std::string wingXPath = tmpString;
-    wingXPath += "[@uID=\"";
-    wingXPath += configurationUID;
-    wingXPath += "\"]/";
-    wingXPath += wingsLibraryName;
-
-    if (tixiCheckElement(tixiHandle, wingXPath.c_str()) != SUCCESS) {
-        return;
+    const std::string wingXPath = std::string(tmpString) + "[@uID=\"" + configurationUID + "\"]/wings";
+    if (tixiCheckElement(tixiHandle, wingXPath.c_str()) == SUCCESS) {
+        ReadContainerElement(tixiHandle, wingXPath, "wing", 1, wings, configuration);
     }
 
-    /* Get wing element count */
-    int wingCount;
-    if (tixiGetNamedChildrenCount(tixiHandle, wingXPath.c_str(), wingElementName, &wingCount) != SUCCESS) {
-        throw CTiglError("XML error: tixiGetNamedChildrenCount failed in CCPACSWings::ReadCPACS", TIGL_XML_ERROR);
+    if (configuration->IsRotorcraft()) {
+         // read rotor blades
+         const std::string rotorbladeXPath = std::string(tmpString) + "[@uID=\"" + configurationUID + "\"]/rotorBlades";
+         if (tixiCheckElement(tixiHandle, rotorbladeXPath.c_str()) == SUCCESS) {
+            ReadContainerElement(tixiHandle, rotorbladeXPath, "rotorBlade", 1, wings, configuration);
+         }
+    }
+}
+
+
+// Write CPACS wings elements
+void CCPACSWings::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& configurationUID)
+{
+    // save the wing profiles
+    profiles.WriteCPACS(tixiHandle);
+
+    // tixi frees tmpString internally when finished
+    char *tmpString = NULL;
+    if (tixiUIDGetXPath(tixiHandle, configurationUID.c_str(), &tmpString) != SUCCESS) {
+        throw CTiglError("XML error: tixiUIDGetXPath failed in CCPACSWings::WriteCPACS", TIGL_XML_ERROR);
+    }
+    if (!tmpString || std::string(tmpString).empty()) {
+        throw CTiglError("XML error in CCPACSWings::WriteCPACS : Path not found", TIGL_XML_ERROR);
     }
 
-    // Loop over all wings
-    for (int i = 1; i <= wingCount; i++) {
-        CCPACSWing* wing = new CCPACSWing(configuration);
-        wings.push_back(wing);
+    // determine, which are wings and which are rotorbaldes
+    CCPACSWingContainer theWings, theRotorblades;
 
-        std::ostringstream xpath;
-        xpath << wingXPath << "/" << wingElementName << "[" << i << "]";
-        wing->ReadCPACS(tixiHandle, xpath.str());
+    for (CCPACSWingContainer::iterator iter = wings.begin(); iter != wings.end(); ++iter) {
+        CCPACSWing* wing = *iter;
+        if (wing->IsRotorBlade()) {
+            theRotorblades.push_back(wing);
+        }
+        else {
+            theWings.push_back(wing);
+        }
     }
+    // write wings
+    std::string xpath = std::string(tmpString) + "[@uID=\"" + configurationUID + "\"]/wings";
+    WriteContainerElement(tixiHandle, xpath, "wing", theWings);
+
+    // write rotorblades
+    xpath = std::string(tmpString) + "[@uID=\"" + configurationUID + "\"]/rotorBlades";
+    WriteContainerElement(tixiHandle, xpath, "rotorBlade", theRotorblades);
+
 }
 
 bool CCPACSWings::HasProfile(std::string uid) const
@@ -123,6 +135,11 @@ bool CCPACSWings::HasProfile(std::string uid) const
 int CCPACSWings::GetProfileCount(void) const
 {
     return profiles.GetProfileCount();
+}
+
+CCPACSWingProfiles& CCPACSWings::GetProfiles(void)
+{
+    return profiles;
 }
 
 // Returns the wing profile for a given uid.
@@ -183,6 +200,22 @@ int CCPACSWings::GetWingIndex(const std::string& UID) const
 
     // UID not there
     throw CTiglError("Error: Invalid UID in CCPACSWings::GetWingIndex", TIGL_UID_ERROR);
+}
+
+void CCPACSWings::AddWing(CCPACSWing* wing)
+{
+    // Check whether the same wing already exists if yes remove it before adding the new one
+    CCPACSWingContainer::iterator it;
+    for (it = wings.begin(); it != wings.end(); ++it) {
+        if ((*it)->GetUID() == wing->GetUID()) {
+            delete (*it);
+            wings.erase(it);
+            break;
+        }
+    }
+
+    // Add the new wing to the wing list
+    wings.push_back(wing);
 }
 
 } // end namespace tigl

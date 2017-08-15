@@ -18,7 +18,7 @@
 
 #include "CTiglMemoryPool.h"
 
-#include <vector>
+#include <list>
 #include <string>
 
 namespace tigl
@@ -27,7 +27,7 @@ namespace tigl
 class CTiglMemoryPoolImpl
 {
 public:
-    std::vector<std::string> strings;
+    std::list<std::string> strings;
 };
 
 CTiglMemoryPool::CTiglMemoryPool()

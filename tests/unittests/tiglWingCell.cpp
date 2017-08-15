@@ -17,14 +17,100 @@
 */
 
 #include "test.h"
+#include "tigl.h"
 
+#include "CCPACSConfigurationManager.h"
+#include "CCPACSWing.h"
 #include "CCPACSWingCell.h"
+#include "CCPACSWingComponentSegment.h"
+#include "CCPACSWingRibsDefinition.h"
+#include "CCPACSWingRibsPositioning.h"
+#include "CCPACSWingSegment.h"
 
 using namespace tigl;
 
+typedef std::pair<double, double> DP;
+
+/******************************************************************************/
+
+class WingCellSpar : public ::testing::Test
+{
+protected:
+    static void SetUpTestCase()
+    {
+        const char* filename = "TestData/cell_test_spars.xml";
+        ReturnCode tixiRet;
+        TiglReturnCode tiglRet;
+
+        tiglHandle = -1;
+        tixiHandle = -1;
+
+        tixiRet = tixiOpenDocument(filename, &tixiHandle);
+        ASSERT_EQ(SUCCESS, tixiRet);
+        tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "model", &tiglHandle);
+        ASSERT_EQ(TIGL_SUCCESS, tiglRet);
+    }
+
+    static void TearDownTestCase()
+    {
+        ASSERT_EQ(TIGL_SUCCESS, tiglCloseCPACSConfiguration(tiglHandle));
+        ASSERT_EQ(SUCCESS, tixiCloseDocument(tixiHandle));
+        tiglHandle = -1;
+        tixiHandle = -1;
+    }
+
+    virtual void SetUp() {}
+    virtual void TearDown() {}
+
+    static TixiDocumentHandle           tixiHandle;
+    static TiglCPACSConfigurationHandle tiglHandle;
+};
+
+TixiDocumentHandle WingCellSpar::tixiHandle = 0;
+TiglCPACSConfigurationHandle WingCellSpar::tiglHandle = 0;
+
+
+class WingCellRibSpar : public ::testing::Test
+{
+protected:
+    static void SetUpTestCase()
+    {
+        const char* filename = "TestData/cell_rib_spar_test.xml";
+        ReturnCode tixiRet;
+        TiglReturnCode tiglRet;
+
+        tiglHandle = -1;
+        tixiHandle = -1;
+
+        tixiRet = tixiOpenDocument(filename, &tixiHandle);
+        ASSERT_EQ(SUCCESS, tixiRet);
+        tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "model", &tiglHandle);
+        ASSERT_EQ(TIGL_SUCCESS, tiglRet);
+    }
+
+    static void TearDownTestCase()
+    {
+        ASSERT_EQ(TIGL_SUCCESS, tiglCloseCPACSConfiguration(tiglHandle));
+        ASSERT_EQ(SUCCESS, tixiCloseDocument(tixiHandle));
+        tiglHandle = -1;
+        tixiHandle = -1;
+    }
+
+    virtual void SetUp() {}
+    virtual void TearDown() {}
+
+    static TixiDocumentHandle           tixiHandle;
+    static TiglCPACSConfigurationHandle tiglHandle;
+};
+
+TixiDocumentHandle WingCellRibSpar::tixiHandle = 0;
+TiglCPACSConfigurationHandle WingCellRibSpar::tiglHandle = 0;
+
+/******************************************************************************/
+
 TEST(WingCell, IsInner)
 {
-    tigl::CCPACSWingCell cell;
+    tigl::CCPACSWingCell cell(NULL);
     cell.SetLeadingEdgeInnerPoint (0,0);
     cell.SetLeadingEdgeOuterPoint (1,0);
     cell.SetTrailingEdgeInnerPoint(0,1);
@@ -59,7 +145,7 @@ TEST(WingCell, IsInner)
 
 TEST(WingCell, IsInner_NonConvex)
 {
-    tigl::CCPACSWingCell cell;
+    tigl::CCPACSWingCell cell(NULL);
     cell.SetLeadingEdgeInnerPoint (0,0);
     cell.SetLeadingEdgeOuterPoint (1,0);
     cell.SetTrailingEdgeInnerPoint(0,1);
@@ -76,7 +162,7 @@ TEST(WingCell, IsInner_NonConvex)
 
 TEST(WingCell, IsConvex)
 {
-    tigl::CCPACSWingCell cell;
+    tigl::CCPACSWingCell cell(NULL);
     cell.SetLeadingEdgeInnerPoint (0,0);
     cell.SetLeadingEdgeOuterPoint (1,0);
     cell.SetTrailingEdgeInnerPoint(0,1);
@@ -107,4 +193,85 @@ TEST(WingCell, area)
     ASSERT_NEAR(0.5, WingCellInternal::area(p1,p2,p3), 1e-7);
     ASSERT_NEAR(0.5, WingCellInternal::area(p2,p3,p1), 1e-7);
     ASSERT_NEAR(0.5, WingCellInternal::area(p3,p1,p2), 1e-7);
+}
+
+TEST_F(WingCellSpar, sparCellXsi) {
+    // See: cell_test_spars.png for placement of cells
+
+    const std::pair<double, double> arr[] = { DP(0.2, 0.25), DP(0.35, 0.4), DP(0.3, 0.43), DP(0.275, 0.4), DP(0.47, 0.4), DP(0.5, 0.3) };
+    std::vector< std::pair<double, double> > expectedXsis(arr, arr + sizeof(arr) / sizeof(arr[0]));
+
+    // get Component Segment
+    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
+    tigl::CCPACSWing& wing = config.GetWing(1);
+    tigl::CCPACSWingComponentSegment& componentSegment = static_cast<tigl::CCPACSWingComponentSegment&>(wing.GetComponentSegment(1));
+
+    int cellIndex = 1;
+    std::vector< std::pair<double, double> >::const_iterator it;
+    for (it = expectedXsis.begin(); it != expectedXsis.end(); ++it) {
+        double xsi1Exp = it->first;
+        double xsi2Exp = it->second;
+
+        tigl::CCPACSWingCell& cell = componentSegment.GetUpperShell().GetCell(cellIndex++);
+        double xsi1, xsi2, dummy;
+        cell.GetLeadingEdgeInnerPoint(&dummy, &xsi1);
+        cell.GetLeadingEdgeOuterPoint(&dummy, &xsi2);
+        ASSERT_NEAR(xsi1, xsi1Exp, 1e-7);
+        ASSERT_NEAR(xsi2, xsi2Exp, 1e-7);
+    }
+}
+
+namespace {
+    void checkCellEtaXsis(const tigl::CCPACSWingCell& cell, const std::vector< std::pair<double, double> >& expectedEtaXsi, double precision = 1e-7) {
+        double eta, xsi;
+        int etaXsiIndex = 0;
+        cell.GetLeadingEdgeInnerPoint(&eta, &xsi);
+        ASSERT_NEAR(eta, expectedEtaXsi[etaXsiIndex].first, precision);
+        ASSERT_NEAR(xsi, expectedEtaXsi[etaXsiIndex].second, precision);
+        ++etaXsiIndex;
+        cell.GetLeadingEdgeOuterPoint(&eta, &xsi);
+        ASSERT_NEAR(eta, expectedEtaXsi[etaXsiIndex].first, precision);
+        ASSERT_NEAR(xsi, expectedEtaXsi[etaXsiIndex].second, precision);
+        ++etaXsiIndex;
+        cell.GetTrailingEdgeInnerPoint(&eta, &xsi);
+        ASSERT_NEAR(eta, expectedEtaXsi[etaXsiIndex].first, precision);
+        ASSERT_NEAR(xsi, expectedEtaXsi[etaXsiIndex].second, precision);
+        ++etaXsiIndex;
+        cell.GetTrailingEdgeOuterPoint(&eta, &xsi);
+        ASSERT_NEAR(eta, expectedEtaXsi[etaXsiIndex].first, precision);
+        ASSERT_NEAR(xsi, expectedEtaXsi[etaXsiIndex].second, precision);
+    }
+}
+
+TEST_F(WingCellRibSpar, etaXsi) {
+    // See: cell_rib_spar_test.png for placement of cells
+
+    // next compute the expected XSI values on the spar
+    const std::pair<double, double> arr[] = { DP(0.2, 0.3), DP(0.95, 0.4), DP(0.2, 0.8), DP(0.95, 1.0) };
+    std::vector< std::pair<double, double> > expectedEtaXsi (arr, arr + sizeof(arr) / sizeof(arr[0]));
+
+    // get Component Segment
+    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
+    tigl::CCPACSWing& wing = config.GetWing(1);
+    tigl::CCPACSWingComponentSegment& componentSegment = static_cast<tigl::CCPACSWingComponentSegment&>(wing.GetComponentSegment(1));
+    const tigl::CCPACSWingCSStructure& structure = componentSegment.GetStructure();
+
+    tigl::CCPACSWingCell& cell = componentSegment.GetUpperShell().GetCell(1);
+    checkCellEtaXsis(cell, expectedEtaXsi);
+
+    // now we change the rib definition and watch whether the cell is correctly updated
+    structure.GetRibsDefinition(1).GetRibsPositioning().SetEtaEnd(0.8);
+    const std::pair<double, double> arr2[] = { DP(0.2, 0.3), DP(0.8, 0.48), DP(0.2, 0.8), DP(0.8, 1.0) };
+    expectedEtaXsi = std::vector< std::pair<double, double> > (arr2, arr2 + sizeof(arr2) / sizeof(arr2[0]));
+    checkCellEtaXsis(cell, expectedEtaXsi);
+
+    // next we change the z-rotation of the rib
+    // See: cell_rib_spar_test_2.png for placement of cells
+    structure.GetRibsDefinition(1).GetRibsPositioning().GetRibRotation().SetZRotation(75);
+    const std::pair<double, double> arr3[] = { DP(0.16, 0.28), DP(0.74, 0.47), DP(0.09, 0.8), DP(0.67, 1.0) };
+    expectedEtaXsi = std::vector< std::pair<double, double> > (arr3, arr3 + sizeof(arr3) / sizeof(arr3[0]));
+    // precision at 1E-2 since expected values are estimated based on geometric inspection
+    checkCellEtaXsis(cell, expectedEtaXsi, 1.E-2);
 }

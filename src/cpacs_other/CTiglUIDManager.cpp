@@ -120,7 +120,7 @@ CTiglAbstractPhysicalComponent* CTiglUIDManager::GetPhysicalComponent(const std:
     }
 
     if (physicalShapes.find(uid) == physicalShapes.end()) {
-        throw CTiglError("UID not found in CTiglUIDManager::GetComponent", TIGL_XML_ERROR);
+        throw CTiglError("UID '"+uid+"' not found in CTiglUIDManager::GetComponent", TIGL_XML_ERROR);
     }
 
     return physicalShapes[uid];
@@ -135,6 +135,13 @@ void CTiglUIDManager::Clear(void)
     allRootComponentsWithChildren.clear();
     rootComponent = 0;
     rootComponentCnt = 0;
+    invalidated = true;
+}
+
+// Sets the root component
+void CTiglUIDManager::SetRootComponent(CTiglAbstractPhysicalComponent* rootComponent)
+{
+    this->rootComponent = rootComponent;
     invalidated = true;
 }
 
@@ -173,7 +180,7 @@ void CTiglUIDManager::FindRootComponents(void)
         CTiglAbstractPhysicalComponent* component = pIter->second;
         if (component->GetParentUID().empty()) {
             // Select the component with the maximum number of children as root component if there are multiple components without parentUID in the dataset
-            childCnt = component->GetChildren(true).size();
+            childCnt = static_cast<int>(component->GetChildren(true).size());
             if (childCnt > maxChildCnt) {
                 maxChildCnt = childCnt;
                 rootComponent = component;
@@ -189,13 +196,24 @@ void CTiglUIDManager::FindRootComponents(void)
 // Builds the parent child relationships.
 void CTiglUIDManager::BuildParentChildTree(void)
 {
+    // root component must be set manually, error if not
+    if (!rootComponent) {
+        throw CTiglError("CTiglUIDManager::BuildParentChildTree(); no root component set!");
+    }
+
     UIDStoreContainerType::iterator pIter;
 
     for (pIter = physicalShapes.begin(); pIter != physicalShapes.end(); ++pIter) {
         CTiglAbstractPhysicalComponent* component = pIter->second;
-        if (!component->GetParentUID().empty()) {
+
+        // TODO: when this method is called more than once the components will be added 
+        //       multiple times as childs
+        if (!component->GetParentUID().empty() && component->GetParentUID() != rootComponent->GetUID()) {
             CTiglAbstractPhysicalComponent* parent = GetPhysicalComponent(component->GetParentUID());
             parent->AddChild(component);
+        }
+        else {
+            rootComponent->AddChild(component);
         }
     }
 }

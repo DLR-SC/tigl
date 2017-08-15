@@ -48,7 +48,7 @@ protected:
 TEST_F(TestLinearProjection, OnFirstSegment)
 {
     tigl::CTiglProjectOnLinearSpline proj(curve, gp_Pnt(1, 0, 0));
-    ASSERT_EQ(true, proj.IsDone());
+    ASSERT_TRUE(proj.IsDone());
     ASSERT_NEAR(0.25, proj.Parameter(), 1e-10);
     ASSERT_NEAR(0.0, gp_Pnt(1,0,0).Distance(proj.Point()), 1e-10);
 }
@@ -56,7 +56,7 @@ TEST_F(TestLinearProjection, OnFirstSegment)
 TEST_F(TestLinearProjection, OnSecondSegment)
 {
     tigl::CTiglProjectOnLinearSpline proj(curve, gp_Pnt(2, 0.5, 0));
-    ASSERT_EQ(true, proj.IsDone());
+    ASSERT_TRUE(proj.IsDone());
     ASSERT_NEAR(0.625, proj.Parameter(), 1e-10);
     ASSERT_NEAR(0.0, gp_Pnt(2,0.5,0).Distance(proj.Point()), 1e-10);
 }
@@ -64,7 +64,7 @@ TEST_F(TestLinearProjection, OnSecondSegment)
 TEST_F(TestLinearProjection, OnLastPoint)
 {
     tigl::CTiglProjectOnLinearSpline proj(curve, gp_Pnt(1, 1, 0));
-    ASSERT_EQ(true, proj.IsDone());
+    ASSERT_TRUE(proj.IsDone());
     ASSERT_NEAR(1.0, proj.Parameter(), 1e-10);
     ASSERT_NEAR(0.0, gp_Pnt(1,1,0).Distance(proj.Point()), 1e-10);
 }
@@ -72,7 +72,7 @@ TEST_F(TestLinearProjection, OnLastPoint)
 TEST_F(TestLinearProjection, InBetween)
 {
     tigl::CTiglProjectOnLinearSpline proj(curve, gp_Pnt(1, 0.5, 0));
-    ASSERT_EQ(true, proj.IsDone());
+    ASSERT_TRUE(proj.IsDone());
     ASSERT_NEAR(0.25, proj.Parameter(), 1e-10);
     ASSERT_NEAR(0.0, gp_Pnt(1,0,0).Distance(proj.Point()), 1e-10);
 }
@@ -80,7 +80,7 @@ TEST_F(TestLinearProjection, InBetween)
 TEST_F(TestLinearProjection, InBetween2)
 {
     tigl::CTiglProjectOnLinearSpline proj(curve, gp_Pnt(1, 0.6, 0));
-    ASSERT_EQ(true, proj.IsDone());
+    ASSERT_TRUE(proj.IsDone());
     ASSERT_NEAR(1.0, proj.Parameter(), 1e-10);
     ASSERT_NEAR(0.0, gp_Pnt(1,1,0).Distance(proj.Point()), 1e-10);
 }
@@ -88,7 +88,7 @@ TEST_F(TestLinearProjection, InBetween2)
 TEST_F(TestLinearProjection, OutSide)
 {
     tigl::CTiglProjectOnLinearSpline proj(curve, gp_Pnt(-0.01, -0.01, 0));
-    ASSERT_EQ(false, proj.IsDone());
+    ASSERT_FALSE(proj.IsDone());
 
     ASSERT_THROW(proj.Point(), tigl::CTiglError);
 }

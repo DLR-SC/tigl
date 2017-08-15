@@ -53,6 +53,9 @@ public:
     // Read CPACS fuselage sections element
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& fuselageXPath);
 
+    // Write CPACS fuselage sections element
+    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& fuselageXPath);
+
     // Get section count
     TIGL_EXPORT int GetSectionCount(void) const;
 

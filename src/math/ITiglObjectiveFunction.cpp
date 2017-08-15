@@ -19,6 +19,7 @@
 * @file
 * @brief  TODO: Describe!.
 */
+#include <vector>
 #include "ITiglObjectiveFunction.h"
 #include "CTiglError.h"
 
@@ -56,8 +57,8 @@ void ITiglObjectiveFunction::getNumericalGradient(const double * x, double * dx)
         throw CTiglError("Error: gradient argument must not be a zero pointer in  ITiglObjectiveFunction::getNumericalGradient!");
     }
 
-    double curOf = getFunctionValue(x);
-    double * xnew = new double[getParameterCount()];
+    const double curOf = getFunctionValue(x);
+    std::vector<double> xnew(getParameterCount());
 
     for (int i = 0; i < getParameterCount(); ++i) {
         xnew[i] = x[i];
@@ -66,13 +67,11 @@ void ITiglObjectiveFunction::getNumericalGradient(const double * x, double * dx)
     for (int i = 0; i < getParameterCount(); ++i) {
         xnew[i] = x[i] + h;
 
-        double ofi = getFunctionValue(xnew);
+        double ofi = getFunctionValue(&xnew.front());
         dx[i] = (ofi - curOf)/h;
 
         xnew[i] = x[i];
     }
-
-    delete[] xnew;
 }
 
 // by default, we calculate the hessian matrix with finite differences if no gradient is given

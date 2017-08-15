@@ -27,37 +27,24 @@
 
 #include "tigl_internal.h"
 #include "ListPNamedShape.h"
+#include "CTiglCADExporter.h"
 
 namespace tigl 
 {
 
 class CCPACSConfiguration;
 
-class CTiglExportBrep
+class CTiglExportBrep : public CTiglCADExporter
 {
 
 public:
     // Constructor
-    TIGL_EXPORT CTiglExportBrep();
-
-    // Virtual Destructor
-    TIGL_EXPORT virtual ~CTiglExportBrep(void);
-
-    // Adds the whole configuration
-    TIGL_EXPORT void AddConfiguration(CCPACSConfiguration& config);
-
-    // Adds the whole configuration, boolean fused
-    TIGL_EXPORT void AddFusedConfiguration(CCPACSConfiguration& config);
-
-    // Adds a shape
-    TIGL_EXPORT void AddShape(PNamedShape shape);
-    
-    // Writes the shapes to BREP. In multiple shapes were added
-    // a compound is created.
-    TIGL_EXPORT bool Write(const std::string& filename) const;
+    TIGL_EXPORT CTiglExportBrep(){}
 
 private:
-    ListPNamedShape _shapes;
+    // Writes the shapes to BREP. In multiple shapes were added
+    // a compound is created.
+    TIGL_EXPORT bool WriteImpl(const std::string& filename) const;
 };
 
 } // namespace tigl

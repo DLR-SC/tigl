@@ -58,6 +58,9 @@ public:
     // Read CPACS segment elements
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& segmentXPath);
 
+    // Write CPACS segment elements
+    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& segmentXPath);
+
     // Returns the fuselage this segment belongs to
     TIGL_EXPORT CCPACSFuselage& GetFuselage(void) const;
 
@@ -166,6 +169,7 @@ protected:
     // Builds the loft between the two segment sections
     PNamedShape BuildLoft(void);
 
+    void SetFaceTraits(PNamedShape loft, bool hasSymmetryPlane);
 private:
     // get short name for loft
     std::string GetShortShapeName(void);

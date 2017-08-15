@@ -31,6 +31,7 @@
 #include "CCPACSWingSection.h"
 #include "CCPACSWingSegment.h"
 #include "CCPACSConfiguration.h"
+#include "TixiSaveExt.h"
 
 namespace tigl
 {
@@ -147,14 +148,9 @@ void CCPACSWingConnection::ReadCPACS(TixiDocumentHandle tixiHandle, const std::s
 {
     Cleanup();
 
-    char*       elementPath;
-    std::string tempString;
-
     // Get subelement "element"
     char*            ptrElementUID = NULL;
-    tempString    = connectionXPath;
-    elementPath   = const_cast<char*>(tempString.c_str());
-    if (tixiGetTextElement(tixiHandle, elementPath, &ptrElementUID) != SUCCESS) {
+    if (tixiGetTextElement(tixiHandle, connectionXPath.c_str(), &ptrElementUID) != SUCCESS) {
         throw CTiglError("Error: Can't read element <elementUID/> in CCPACSWingConnection::ReadCPACS", TIGL_XML_ERROR);
     }
     elementUID = ptrElementUID;
@@ -162,7 +158,7 @@ void CCPACSWingConnection::ReadCPACS(TixiDocumentHandle tixiHandle, const std::s
     // find the corresponding section to this segment
     CCPACSWing& wing = segment->GetWing();
     for (int i=1; i <= wing.GetSectionCount(); i++) {
-        CCPACSWingSection& section        = wing.GetSection(i);
+        CCPACSWingSection& section = wing.GetSection(i);
         for (int j=1; j <= section.GetSectionElementCount(); j++) {
             if (section.GetSectionElement(j).GetUID() == elementUID ) {
                 sectionUID = section.GetUID();
@@ -171,6 +167,12 @@ void CCPACSWingConnection::ReadCPACS(TixiDocumentHandle tixiHandle, const std::s
             }
         }
     }
+}
+
+// Write CPACS connection element
+void CCPACSWingConnection::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& connectionXPath, const std::string& direction) const
+{
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, connectionXPath.c_str(), direction.c_str(), elementUID.c_str());
 }
 
 } // end namespace tigl

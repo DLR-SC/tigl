@@ -26,6 +26,12 @@
 #include "CCPACSFuselageProfile.h"
 #include "CTiglError.h"
 #include "CTiglTransformation.h"
+#include "CTiglInterpolateBsplineWire.h"
+#include "CTiglSymetricSplineBuilder.h"
+#include "tiglcommonfunctions.h"
+#include "CTiglLogging.h"
+#include "TixiSaveExt.h"
+
 #include "TopoDS.hxx"
 #include "TopoDS_Wire.hxx"
 #include "gp_Pnt2d.hxx"
@@ -35,6 +41,7 @@
 #include "BRepBuilderAPI_MakeEdge.hxx"
 #include "BRepBuilderAPI_MakeWire.hxx"
 #include "Geom_TrimmedCurve.hxx"
+#include "GeomConvert.hxx"
 #include "Geom_Plane.hxx"
 #include "GCE2d_MakeSegment.hxx"
 #include "Geom2d_Line.hxx"
@@ -50,10 +57,6 @@
 #include "BRepTools_WireExplorer.hxx"
 #include "GeomAdaptor_Curve.hxx"
 #include "GCPnts_AbscissaPoint.hxx"
-#include "CTiglInterpolateBsplineWire.h"
-#include "CTiglSymetricSplineBuilder.h"
-#include "tiglcommonfunctions.h"
-#include "CTiglLogging.h"
 #include "GeomAPI_IntCS.hxx"
 
 #include "math.h"
@@ -220,6 +223,46 @@ void CCPACSFuselageProfile::ReadCPACS(TixiDocumentHandle tixiHandle)
     }
 }
 
+// Write fuselage profile file
+void CCPACSFuselageProfile::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& profileXPath)
+{
+    // Set attribute "uID"
+    TixiSaveExt::TixiSaveTextAttribute(tixiHandle, profileXPath.c_str(), "uID", uid.c_str());
+    
+    // Set element "name"
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, profileXPath.c_str(), "name", name.c_str());
+    
+    // Set element "name"
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, profileXPath.c_str(), "description", description.c_str());
+    
+    // Set the element "point"
+    TixiSaveExt::TixiSaveElement(tixiHandle, profileXPath.c_str(), "pointList");
+
+    // TODO: symmetry!!!
+
+    std::string path = profileXPath + "/pointList";
+
+    // store points as vectors
+    std::vector<double> point_X(coordinates.size());
+    std::vector<double> point_Y(coordinates.size());
+    std::vector<double> point_Z(coordinates.size());
+
+    for (unsigned int j = 0; j < coordinates.size(); j++) {
+        point_X[j] = coordinates[j]->x;
+        point_Y[j] = coordinates[j]->y;
+        point_Z[j] = coordinates[j]->z;
+    }
+
+    // Set the x coordinates
+    TixiSaveExt::TixiSaveVector(tixiHandle, path, "x", point_X);
+
+    // Set the y coordinates
+    TixiSaveExt::TixiSaveVector(tixiHandle, path, "y", point_Y);
+
+    // Set the z coordinates
+    TixiSaveExt::TixiSaveVector(tixiHandle, path, "z", point_Z);
+}
+
 // Returns the filename of the fuselage profile file
 const std::string& CCPACSFuselageProfile::GetFileName(void) const
 {
@@ -238,8 +281,19 @@ const std::string& CCPACSFuselageProfile::GetUID(void) const
     return uid;
 }
 
+// Returns the UID of the fuselage profile
+const std::string& CCPACSFuselageProfile::GetDescription(void) const
+{
+    return description;
+}
+
+const int CCPACSFuselageProfile::GetNumPoints(void) const 
+{
+    return static_cast<int>(coordinates.size());
+}
+
 // Returns the flag for the mirror symmetry with respect to the x-z-plane in the fuselage profile
-const bool CCPACSFuselageProfile::GetMirrorSymmetry(void) const
+bool CCPACSFuselageProfile::GetMirrorSymmetry(void) const
 {
     return mirrorSymmetry;
 }
@@ -386,8 +440,6 @@ gp_Pnt CCPACSFuselageProfile::GetPoint(double zeta)
         throw CTiglError("Error: Parameter zeta not in the range 0.0 <= zeta <= 1.0 in CCPACSFuselageProfile::GetPoint", TIGL_ERROR);
     }
 
-    double length = wireLength * zeta;
-
     // Get the first edge of the wire
     BRepTools_WireExplorer wireExplorer(wireOriginal);
     if (!wireExplorer.More()) {
@@ -399,39 +451,13 @@ gp_Pnt CCPACSFuselageProfile::GetPoint(double zeta)
     wireExplorer.Next();
     Handle(Geom_Curve) curve = BRep_Tool::Curve(edge, firstParam, lastParam);
 
-    // Length of current edge
-    GeomAdaptor_Curve adaptorCurve;
-    adaptorCurve.Load(curve);
-    double currLength = GCPnts_AbscissaPoint::Length(adaptorCurve);
-
-    // Length of complete wire up to now
-    double sumLength = currLength;
-
-    while (length > sumLength) {
-        if (!wireExplorer.More()) {
-            break;
-        }
-        edge = wireExplorer.Current();
-        wireExplorer.Next();
-
-        curve = BRep_Tool::Curve(edge, firstParam, lastParam);
-        adaptorCurve.Load(curve);
-
-        // Length of current edge
-        currLength = GCPnts_AbscissaPoint::Length(adaptorCurve);
-
-        // Length of complete wire up to now
-        sumLength += currLength;
+    if (!reparOriginal.isInitialized()) {
+        // load the curve
+        reparOriginal.init(GeomConvert::CurveToBSplineCurve(curve), 1e-4);
     }
 
-    // Distance of searched point from end point of current edge
-    double currEndDelta = std::max((sumLength - length), 0.0);
-
-    // Distance of searched point from start point of current edge
-    double currDist = std::max((currLength - currEndDelta), 0.0);
-
-    GCPnts_AbscissaPoint abscissaPoint(adaptorCurve, currDist, adaptorCurve.FirstParameter());
-    gp_Pnt point = adaptorCurve.Value(abscissaPoint.Parameter());
+    double parameter = reparOriginal.parameter(zeta*reparOriginal.totalLength());
+    gp_Pnt point = curve->Value(parameter);
 
     return point;
 }

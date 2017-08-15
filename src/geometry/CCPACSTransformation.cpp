@@ -18,6 +18,7 @@
 
 #include "CCPACSTransformation.h"
 #include "CTiglError.h"
+#include "TixiSaveExt.h"
 
 namespace tigl
 {
@@ -75,17 +76,17 @@ void CCPACSTransformation::updateMatrix()
     _transformationMatrix.AddTranslation(_translation.x, _translation.y, _translation.z);
 }
 
-CTiglPoint CCPACSTransformation::getTranslationVector() const
+const CTiglPoint& CCPACSTransformation::getTranslationVector() const
 {
     return _translation;
 }
 
-CTiglPoint CCPACSTransformation::getRotation() const
+const CTiglPoint& CCPACSTransformation::getRotation() const
 {
     return _rotation;
 }
 
-CTiglPoint CCPACSTransformation::getScaling() const
+const CTiglPoint& CCPACSTransformation::getScaling() const
 {
     return _scaling;
 }
@@ -146,9 +147,37 @@ void CCPACSTransformation::ReadCPACS(TixiDocumentHandle tixiHandle, const std::s
     updateMatrix();
 }
 
+void CCPACSTransformation::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string &transformationXPath)
+{
+    std::string elementPath, subelementPath;
+
+    TixiSaveExt::TixiSaveElement(tixiHandle, transformationXPath.c_str(), "transformation");
+    elementPath = transformationXPath + "/transformation";
+
+    TixiSaveExt::TixiSaveElement(tixiHandle, elementPath.c_str(), "scaling");
+    subelementPath = elementPath + "/scaling";
+    TixiSaveExt::TixiSavePoint(tixiHandle, subelementPath.c_str(), _scaling.x, _scaling.y, _scaling.z, "%f");
+
+    TixiSaveExt::TixiSaveElement(tixiHandle, elementPath.c_str(), "rotation");
+    subelementPath = elementPath + "/rotation";
+    TixiSaveExt::TixiSavePoint(tixiHandle, subelementPath.c_str(), _rotation.x, _rotation.y, _rotation.z, "%f");
+
+    TixiSaveExt::TixiSaveElement(tixiHandle, elementPath.c_str(), "translation");
+    subelementPath = elementPath + "/translation";
+
+    if (_translationType == ABS_LOCAL) {
+        TixiSaveExt::TixiSaveTextAttribute(tixiHandle, subelementPath.c_str(), "refType", "absLocal");
+    }
+    else {
+        TixiSaveExt::TixiSaveTextAttribute(tixiHandle, subelementPath.c_str(), "refType", "absGlobal");
+    }
+
+    TixiSaveExt::TixiSavePoint(tixiHandle, subelementPath.c_str(), _translation.x, _translation.y, _translation.z, "%f");
+}
+
+
 CCPACSTransformation::~CCPACSTransformation()
 {
 }
-
 
 } // namespace tigl

@@ -24,6 +24,7 @@
 #include "CTiglError.h"
 #include "CTiglPoint.h"
 #include "CTiglLogging.h"
+#include "IOHelper.h"
 #include <sstream>
 #include <iostream>
 #include <fstream>
@@ -53,22 +54,12 @@ void CCPACSGuideCurveProfiles::Cleanup(void)
 void CCPACSGuideCurveProfiles::ReadCPACS(TixiDocumentHandle tixiHandle)
 {
     Cleanup();
-
-    if (tixiCheckElement(tixiHandle, "/cpacs/vehicles/profiles/guideCurveProfiles") == SUCCESS) {
-        // Get element count
-        int elementCount;
-        if (tixiGetNamedChildrenCount(tixiHandle, "/cpacs/vehicles/profiles/guideCurveProfiles", "guideCurveProfile", &elementCount) != SUCCESS) {
-            throw CTiglError("Error: tixiGetNamedChildrenCount failed in CCPACSGuideCurveProfiles::ReadCPACS", TIGL_XML_ERROR);
-        }
-
-        // Loop over all <guideCurve> elements
-        for (int i = 1; i <= elementCount; i++) {
-            std::ostringstream xpath;
-            xpath << "/cpacs/vehicles/profiles/guideCurveProfiles/guideCurveProfile[" << i << "]";
-
-            PCCPACSGuideCurveProfile guideCurve(new CCPACSGuideCurveProfile(xpath.str()));
-            guideCurve->ReadCPACS(tixiHandle);
-            guideCurves[guideCurve->GetUID()] = guideCurve;
+    const std::string xpath = "/cpacs/vehicles/profiles/guideCurveProfiles";
+    std::vector<CCPACSGuideCurveProfile*> children;
+    if (tixiCheckElement(tixiHandle, xpath.c_str()) == SUCCESS) {
+        ReadContainerElement(tixiHandle, xpath, "guideCurveProfile", 1, children);
+        for (std::size_t i = 0; i < children.size(); i++) {
+            guideCurves[children[i]->GetUID()].reset(children[i]);
         }
     }
 }

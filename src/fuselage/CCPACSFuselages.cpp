@@ -26,6 +26,7 @@
 #include "CCPACSFuselages.h"
 #include "CCPACSFuselage.h"
 #include "CTiglError.h"
+#include "TixiSaveExt.h"
 #include <iostream>
 #include <sstream>
 
@@ -101,6 +102,55 @@ void CCPACSFuselages::ReadCPACS(TixiDocumentHandle tixiHandle, const char* confi
     }
 }
 
+// Write CPACS fuselage elements
+void CCPACSFuselages::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& configurationUID)
+{
+    std::string fuselageXPathPrt;
+    char *tmpString = NULL;
+    std::string xpath;
+    int test, fuselageCount;
+    ReturnCode tixiRet;
+
+    // when the model doesn't exist, an error is thrown
+    if (tixiUIDGetXPath(tixiHandle, configurationUID.c_str(), &tmpString) != SUCCESS) {
+        throw CTiglError("XML error: tixiUIDGetXPath failed in CCPACSFuselages::WriteCPACS", TIGL_XML_ERROR);
+    }
+    if (strcmp(tmpString, "") == 0) {
+        throw CTiglError("XML error in CCPACSFuselages::WriteCPACS : Path not found", TIGL_XML_ERROR);
+    }
+
+    std::stringstream ss;
+    ss << tmpString << "[@uID=\"" << configurationUID << "\"]";
+    xpath = ss.str();
+    fuselageXPathPrt = xpath + "/fuselages";
+
+    profiles.WriteCPACS(tixiHandle);
+    TixiSaveExt::TixiSaveElement(tixiHandle, xpath.c_str(), "fuselages");
+
+    tixiRet = tixiGetNamedChildrenCount(tixiHandle, fuselageXPathPrt.c_str(), "fuselage", &test);
+    fuselageCount = this->GetFuselageCount();
+
+    for (int i = 1; i <= fuselageCount; i++) {
+        std::stringstream ss;
+        ss << fuselageXPathPrt << "/fuselage[" << i << "]";
+        xpath = ss.str();
+        CCPACSFuselage& fuselage = GetFuselage(i);
+        if ((tixiRet = tixiCheckElement(tixiHandle, xpath.c_str())) == ELEMENT_NOT_FOUND) {
+            if ((tixiRet = tixiCreateElement(tixiHandle, fuselageXPathPrt.c_str(), "fuselage")) != SUCCESS) {
+                throw CTiglError("XML error: tixiCreateElement failed in CCPACSFuselages::WriteCPACS", TIGL_XML_ERROR);
+            }
+        }
+        fuselage.WriteCPACS(tixiHandle, xpath);
+    }
+
+    for (int i = fuselageCount + 1; i <= test; i++) {
+        std::stringstream ss;
+        ss << fuselageXPathPrt << "/fuselage[" << fuselageCount + 1 << "]";
+        xpath = ss.str();
+        tixiRet = tixiRemoveElement(tixiHandle, xpath.c_str());
+    }
+}
+
 bool CCPACSFuselages::HasProfile(std::string uid) const
 {
     return profiles.HasProfile(uid);
@@ -110,6 +160,11 @@ bool CCPACSFuselages::HasProfile(std::string uid) const
 int CCPACSFuselages::GetProfileCount(void) const
 {
     return profiles.GetProfileCount();
+}
+
+CCPACSFuselageProfiles& CCPACSFuselages::GetProfiles(void) 
+{
+    return profiles;
 }
 
 // Returns the fuselage profile for a given index.
@@ -159,6 +214,24 @@ int CCPACSFuselages::GetFuselageIndex(const std::string& UID) const
     // UID not there
     throw CTiglError("Error: Invalid UID in CCPACSFuselages::GetFuselageIndex", TIGL_UID_ERROR);
 }
+
+
+void CCPACSFuselages::AddFuselage(CCPACSFuselage* fuselage)
+{
+    // Check whether the same fuselage already exists if yes remove it before adding the new one
+    CCPACSFuselageContainer::iterator it;
+    for (it = fuselages.begin(); it != fuselages.end(); ++it) {
+        if ((*it)->GetUID() == fuselage->GetUID()) {
+            delete (*it);
+            fuselages.erase(it);
+            break;
+        }
+    }
+
+    // Add the new fuselage to the fuselage list
+    fuselages.push_back(fuselage);
+}
+
 
 
 } // end namespace tigl

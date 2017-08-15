@@ -946,7 +946,7 @@ TEST_F(WingSegmentSimple, getSurfaceAreaTrimmed)
     ASSERT_EQ(TIGL_SUCCESS, ret);
     
     
-    ret = tiglWingGetSegmentUpperSurfaceAreaTrimmed(tiglSimpleHandle, 1, 1,
+    ret = tiglWingGetSegmentLowerSurfaceAreaTrimmed(tiglSimpleHandle, 1, 1,
                                                     0.2, 0.8, 
                                                     0.2, 1.0,
                                                     0.8, 1.0,
@@ -1099,4 +1099,26 @@ TEST_F(WingSegmentSimple, wingGetEtaXsiBug1)
     ASSERT_EQ(TIGL_SUCCESS, tiglWingGetSegmentEtaXsi(tiglSimpleHandle, 1, 0.5, 1.0005, 0.0, &idx, &eta, &xsi, &onTop));
     ASSERT_EQ(2, idx);
     ASSERT_NEAR(0.0005, eta, 1e-8);
+}
+
+TEST_F(WingSegmentSimple, saveCPACS)
+{
+
+    ASSERT_EQ(TIGL_SUCCESS, tiglSaveCPACSConfiguration("simpletest-saved", tiglSimpleHandle));
+    ASSERT_EQ(SUCCESS, tixiSaveDocument(tixiSimpleHandle, "TestData/simpltest-saved.cpacs.xml"));
+
+    // try to reopen document
+    TiglCPACSConfigurationHandle tmpHandle = 0;
+    EXPECT_EQ(TIGL_SUCCESS, tiglOpenCPACSConfiguration(tixiSimpleHandle, "", &tmpHandle));
+
+    if (tmpHandle > 0) {
+        tiglCloseCPACSConfiguration(tmpHandle);
+    }
+}
+
+TEST_F(WingSegmentSimple, getSegmentVolume)
+{
+    double volume = 0.;
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetSegmentVolume(tiglSimpleHandle, 1, 2, &volume));
+    ASSERT_GT(volume, 0.);
 }

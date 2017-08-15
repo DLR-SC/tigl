@@ -60,10 +60,16 @@ public:
     // Read CPACS fuselage elements
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const char* configurationUID);
 
+    // Write CPACS fuselage elements
+    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& configurationUID);
+
     TIGL_EXPORT bool HasProfile(std::string uid) const;
 
     // Returns the total count of fuselage profiles in this configuration
     TIGL_EXPORT int GetProfileCount(void) const;
+        
+    // Returns the wing profiles in this configuration
+    TIGL_EXPORT CCPACSFuselageProfiles& GetProfiles(void);
 
     // Returns the fuselage profile for a given index.
     TIGL_EXPORT CCPACSFuselageProfile& GetProfile(int index) const;
@@ -77,6 +83,9 @@ public:
 
     // Returns the fuselage for a given UID.
     TIGL_EXPORT CCPACSFuselage& GetFuselage(const std::string& UID) const;
+
+    // Adds a new fuselage to the list of fuselages
+    TIGL_EXPORT void AddFuselage(CCPACSFuselage* fuselage);
 
     // Returns the fuselage index for a given UID.
     TIGL_EXPORT int GetFuselageIndex(const std::string& UID) const;

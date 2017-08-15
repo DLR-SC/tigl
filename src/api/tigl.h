@@ -219,6 +219,24 @@ enum TiglStructureType
 typedef enum TiglStructureType TiglStructureType;
 
 
+enum TiglLoftSide
+{
+    UPPER_SIDE = 0,
+    LOWER_SIDE = 1
+};
+
+typedef enum TiglLoftSide TiglLoftSide;
+
+
+enum TiglCoordinateSystem
+{
+    GLOBAL_COORDINATE_SYSTEM   = 0,
+    WING_COORDINATE_SYSTEM     = 1,
+    FUSELAGE_COORDINATE_SYSTEM = 2
+};
+
+typedef enum TiglCoordinateSystem TiglCoordinateSystem;
+
 enum TiglContinuity
 {
     C0 = 0,
@@ -301,6 +319,21 @@ typedef enum TiglImportExportFormat TiglImportExportFormat;
 TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle tixiHandle, const char* configurationUID, TiglCPACSConfigurationHandle* cpacsHandlePtr);
 
 /**
+* @brief Writes a CPACS configuration based on the data and geometry structure in memory.
+*
+*
+* @param[in] configurationUID The UID of the configuration that should be written.
+* @param[in] cpacsHandle Handle to the CPACS configuration. This handle is used in calls to other TIGL functions.
+*
+* @return
+*   - TIGL_SUCCESS if the CPACS configuration was successfully written
+*   - TIGL_NULL_POINTER if cpacsHandle is an invalid null pointer
+*   - TIGL_UNINITIALIZED if cpacsHandle is not managed by the CCPACSConfigurationManager
+*   - TIGL_ERROR if some other kind of error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglSaveCPACSConfiguration(const char* configurationUID, TiglCPACSConfigurationHandle cpacsHandle);
+
+/**
 * @brief Closes a CPACS configuration and cleans up all memory used by the configuration.
 *        After closing a configuration the associated configuration handle is no longer valid.
 *        When the CPACS configuration has been closed, the companion tixi document can also be closed.
@@ -350,7 +383,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIsCPACSConfigurationHandleValid(TiglCPACSC
     @return
         - char* A string with the version number.
 */
-TIGL_COMMON_EXPORT char* tiglGetVersion();
+TIGL_COMMON_EXPORT const char* tiglGetVersion();
 
 
 /*@}*/
@@ -2379,8 +2412,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetRadius(TiglCPACSConfigurationHandl
 /**
 * @brief Returns the reference area of the rotor.
 *
-* The area of the rotor disk is taken as reference area of the rotor. It is calculated using the formula \f$\pi R^2\f$,
-* where \f$R\f$ denotes the radius of the largest attached blade.
+* The area of the rotor disk is taken as reference area of the rotor. It is calculated using the formula pi*r^2,
+* where r denotes the radius of the largest attached blade.
 *
 * <b>Fortran syntax:</b>
 *
@@ -2518,7 +2551,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetVolume(TiglCPACSConfigurationHandl
 * @param[in]  cpacsHandle       Handle for the CPACS configuration
 * @param[in]  rotorIndex        Index of the rotor to calculate the area, starting at 1
 *
-* @param[out] solidityPtr       The tip speed of the rotor
+* @param[out] tipSpeedPtr       The tip speed of the rotor
 *
 * @return
 *   - TIGL_SUCCESS if no error occurred
@@ -2625,19 +2658,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetWingUID(TiglCPACSConfiguratio
 *
 * <b>Fortran syntax:</b>
 *
-* tigl_get_rotor_blade_azimuth(integer cpacsHandle, integer rotorIndex, integer rotorBladeIndex, real azimuthPtr, integer returnCode)
+* tigl_get_rotor_blade_azimuth(integer cpacsHandle, integer rotorIndex, integer rotorBladeIndex, real azimuthAngle, integer returnCode)
 *
 *
 * @param[in]  cpacsHandle       Handle for the CPACS configuration
 * @param[in]  rotorIndex        Index of the rotor
 * @param[in]  rotorBladeIndex   Index of the rotor blade
-* @param[out] azimuthPtr        Pointer to the azimuth angle
+* @param[out] azimuthAnglePtr   Pointer to the azimuth angle
 *
 * @return
 *   - TIGL_SUCCESS if no error occurred
 *   - TIGL_NOT_FOUND if no configuration was found for the given handle
 *   - TIGL_INDEX_ERROR if rotorIndex or rotorBladeIndex are invalid
-*   - TIGL_NULL_POINTER if azimuthPtr is a null pointer
+*   - TIGL_NULL_POINTER if azimuthAnglePtr is a null pointer
 *   - TIGL_ERROR if some other error occurred
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetAzimuthAngle(TiglCPACSConfigurationHandle cpacsHandle,
@@ -3356,6 +3389,26 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedGeometrySTL(TiglCPACSConfigura
                                                               const char* filenamePtr,
                                                               double deflection);
 
+
+/**
+ * @brief Sets options for the VTK Export
+ *
+ * **Available Settings**:
+ *
+ *   - *key*: "normals_enabled" *valid values*: "0 or 1" *default*: "1".
+ *
+ *       Enables or disables the output of normal vectors.
+ *       A Normal vector and a vertex belong to the same logical structure. If there
+ *       are two identical vertices but with different normal vectors, the VTK export stores
+ *       them as two entries. Thus, a VTK file may have "duplicate" vertices. To disable this
+ *       behavior, set "normal_enabled" to "0".
+ *
+ * @return
+ *   - TIGL_SUCCESS if no error occurred
+ *   - TIGL_NULL_POINTER if key or value are a null pointer
+ *   - TIGL_ERROR if the specified key/value pair is invalid
+ */
+TIGL_COMMON_EXPORT TiglReturnCode tiglExportVTKSetOptions(const char* key, const char* value);
 
 /**
 * @brief Exports the boolean fused geometry of a wing (selected by id) meshed to VTK format.

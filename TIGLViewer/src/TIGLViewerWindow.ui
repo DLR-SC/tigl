@@ -64,7 +64,7 @@
      <x>0</x>
      <y>0</y>
      <width>783</width>
-     <height>20</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="fileMenu">
@@ -111,6 +111,7 @@
       </property>
       <addaction name="tiglExportMeshedWingSTL"/>
       <addaction name="tiglExportMeshedFuselageSTL"/>
+      <addaction name="tiglExportMeshedConfigSTL"/>
      </widget>
      <widget class="QMenu" name="menuExport_to_Collada">
       <property name="title">
@@ -176,6 +177,7 @@
      <addaction name="drawFusedWingAction"/>
      <addaction name="drawWingShellAction"/>
      <addaction name="drawWingComponentSegmentAction"/>
+     <addaction name="drawWingStructureAction"/>
      <addaction name="drawWingTriangulationAction"/>
      <addaction name="drawWingProfilesAction"/>
      <addaction name="drawWingGuideCurvesAction"/>
@@ -782,7 +784,7 @@
   </action>
   <action name="tiglExportIgesAction">
    <property name="text">
-    <string>Export Model as IGES</string>
+    <string>Export Configuration</string>
    </property>
    <property name="statusTip">
     <string>Export Model as IGES.</string>
@@ -790,7 +792,7 @@
   </action>
   <action name="tiglExportFusedIgesAction">
    <property name="text">
-    <string>Export Fused Model as IGES</string>
+    <string>Export Fused Configuration</string>
    </property>
    <property name="statusTip">
     <string>Export Fused Model as IGES.</string>
@@ -798,7 +800,7 @@
   </action>
   <action name="tiglExportStepAction">
    <property name="text">
-    <string>Export Model as STEP</string>
+    <string>Export Configuration</string>
    </property>
    <property name="statusTip">
     <string>Export Model as STEP.</string>
@@ -814,7 +816,7 @@
   </action>
   <action name="tiglExportMeshedWingSTL">
    <property name="text">
-    <string>Export meshed Wing as STL</string>
+    <string>Export Wing</string>
    </property>
    <property name="statusTip">
     <string>Export meshed Wing as STL.</string>
@@ -822,7 +824,7 @@
   </action>
   <action name="tiglExportMeshedWingVTK">
    <property name="text">
-    <string>Export meshed Wing as VTK</string>
+    <string>Export Wing</string>
    </property>
    <property name="statusTip">
     <string>Export meshed Wing as VTK.</string>
@@ -830,7 +832,7 @@
   </action>
   <action name="tiglExportMeshedWingVTKsimple">
    <property name="text">
-    <string>Export meshed Wing as simple VTK</string>
+    <string>Export Wing (simple)</string>
    </property>
    <property name="toolTip">
     <string>Export meshed Wing as simple VTK - no cpacs related export</string>
@@ -841,7 +843,7 @@
   </action>
   <action name="tiglExportMeshedFuselageVTK">
    <property name="text">
-    <string>Export meshed Fuselage as VTK</string>
+    <string>Export Fuselage</string>
    </property>
    <property name="statusTip">
     <string>Export meshed Fuselage as VTK.</string>
@@ -849,7 +851,7 @@
   </action>
   <action name="tiglExportMeshedFuselageVTKsimple">
    <property name="text">
-    <string>Export meshed Fuselage as simple VTK</string>
+    <string>Export Fuselage (simple)</string>
    </property>
    <property name="toolTip">
     <string>Export meshed Fuselage as simple VTK - no cpacs realted export</string>
@@ -860,7 +862,7 @@
   </action>
   <action name="tiglExportMeshedFuselageSTL">
    <property name="text">
-    <string>Export meshed Fuselage as STL</string>
+    <string>Export Fuselage</string>
    </property>
    <property name="statusTip">
     <string>Export meshed Fuselage as STL.</string>
@@ -1280,12 +1282,12 @@
   </action>
   <action name="tiglExportMeshedConfigVTK">
    <property name="text">
-    <string>Export fused Configuration VTK (slow)</string>
+    <string>Export fused Configuration (slow)</string>
    </property>
   </action>
   <action name="tiglExportMeshedConfigVTKNoFuse">
    <property name="text">
-    <string>Export Configuration VTK (not fused)</string>
+    <string>Export Configuration (not fused)</string>
    </property>
   </action>
   <action name="drawFarFieldAction">
@@ -1298,7 +1300,7 @@
   </action>
   <action name="tiglExportFusedStepAction">
    <property name="text">
-    <string>Export fused/trimmed Model as STEP</string>
+    <string>Export fused/trimmed Configuration</string>
    </property>
   </action>
   <action name="tiglExportWingBRepAction">
@@ -1373,6 +1375,16 @@
   <action name="drawSystemsAction">
    <property name="text">
     <string>Draw Systems</string>
+   </property>
+  </action>
+  <action name="drawWingStructureAction">
+   <property name="text">
+    <string>Show Wing Structure</string>
+   </property>
+  </action>
+  <action name="tiglExportMeshedConfigSTL">
+   <property name="text">
+    <string>Export Configuration</string>
    </property>
   </action>
  </widget>

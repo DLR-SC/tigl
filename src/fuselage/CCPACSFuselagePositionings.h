@@ -55,6 +55,9 @@ public:
     // Read CPACS positionings element
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& fuselageXPath);
 
+    // Write CPACS positionings element
+    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& fuselageXPath);
+
     // Invalidates internal state
     TIGL_EXPORT void Invalidate(void);
 

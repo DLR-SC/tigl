@@ -62,7 +62,13 @@
 /* Private functions.                                                 */
 /*****************************************************************************/
 
-static char * version = NULL;
+namespace
+{
+    static std::string version = std::string(TIGL_REVISION).size() > 0 ?
+        TIGL_VERSION_STRING + std::string("-r") + std::string(TIGL_REVISION).substr(0,8) :
+        TIGL_VERSION_STRING;
+}
+
 TixiPrintMsgFnc oldTixiMessageHandler = NULL;
 
 namespace
@@ -90,10 +96,6 @@ namespace
     
     void tiglCleanup(void)
     {
-        if (version) {
-            delete[] version;
-        }
-        version = NULL;
     }
     
     // This function pulls all tixi messages, puts them into the tigl
@@ -244,6 +246,35 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
     }
 }
 
+TIGL_COMMON_EXPORT TiglReturnCode tiglSaveCPACSConfiguration(const char* configurationUID, TiglCPACSConfigurationHandle cpacsHandle)
+{
+    tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+
+    if (!manager.IsValid(cpacsHandle)) {
+        LOG(ERROR) << "Invalid cpacsHandle passed to tiglSaveCPACSConfiguration!" << std::endl;
+        return TIGL_UNINITIALIZED;
+    }
+
+    tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+
+    try {
+        config.WriteCPACS(configurationUID);
+        return TIGL_SUCCESS;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglSaveCPACSConfiguration!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglCloseCPACSConfiguration(TiglCPACSConfigurationHandle cpacsHandle)
 {
@@ -320,18 +351,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIsCPACSConfigurationHandleValid(TiglCPACSC
 /**
 * gives the tigl version number
 */
-TIGL_COMMON_EXPORT char* tiglGetVersion()
+TIGL_COMMON_EXPORT const char* tiglGetVersion()
 {
-    if (!version) {
-        version = new char[512];
-        if (std::string(TIGL_REVISION).size() > 0) {
-            sprintf(version, "%s rev%s", TIGL_VERSION_STRING, TIGL_REVISION);
-        }
-        else {
-            sprintf(version, "%s", TIGL_VERSION_STRING);
-        }
-    }
-    return version;
+    return version.c_str();
 }
 
 /*** General geometry function ***/
@@ -2204,7 +2226,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetNumberOfSegments(Ti
             tigl::CCPACSWing& wing = config.GetWing(iwing);
             try {
                 tigl::CCPACSWingComponentSegment & compSeg = (tigl::CCPACSWingComponentSegment &) wing.GetComponentSegment(componentSegmentUID);
-                tigl::SegmentList& segments = compSeg.GetSegmentList();
+                const tigl::SegmentList& segments = compSeg.GetSegmentList();
                 *nsegments = (int) segments.size();
                 return TIGL_SUCCESS;
             }
@@ -2264,7 +2286,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetSegmentUID(TiglCPAC
             tigl::CCPACSWing& wing = config.GetWing(iwing);
             try {
                 tigl::CCPACSWingComponentSegment & compSeg = (tigl::CCPACSWingComponentSegment &) wing.GetComponentSegment(componentSegmentUID);
-                tigl::SegmentList& segments = compSeg.GetSegmentList();
+                const tigl::SegmentList& segments = compSeg.GetSegmentList();
                 if (segmentIndex < 1 || segmentIndex > (int) segments.size()) {
                     LOG(ERROR) << "Error: Invalid segment index in tiglWingComponentSegmentGetSegmentUID" << std::endl;
                     return TIGL_INDEX_ERROR;
@@ -4800,7 +4822,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingSTL(TiglCPACSConfiguration
         
         tigl::CTiglExportStl exporter;
         exporter.AddShape(loft, deflection);
-        return exporter.Write(filenamePtr);
+        bool ret = exporter.Write(filenamePtr);
+        return ret ? TIGL_SUCCESS : TIGL_WRITE_FAILED;
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what() << std::endl;
@@ -4842,7 +4865,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingSTLByUID(TiglCPACSConfigur
                 
                 tigl::CTiglExportStl exporter;
                 exporter.AddShape(loft, deflection);
-                return exporter.Write(filenamePtr);
+                bool ret = exporter.Write(filenamePtr);
+                return ret ? TIGL_SUCCESS : TIGL_WRITE_FAILED;
             }
         }
         
@@ -4887,7 +4911,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageSTL(TiglCPACSConfigura
         
         tigl::CTiglExportStl exporter;
         exporter.AddShape(loft, deflection);
-        return exporter.Write(filenamePtr);
+        bool ret = exporter.Write(filenamePtr);
+        return ret ? TIGL_SUCCESS : TIGL_WRITE_FAILED;
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what() << std::endl;
@@ -4931,7 +4956,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageSTLByUID(TiglCPACSConf
                 
                 tigl::CTiglExportStl exporter;
                 exporter.AddShape(loft, deflection);
-                return exporter.Write(filenamePtr);
+                bool ret = exporter.Write(filenamePtr);
+                return ret ? TIGL_SUCCESS : TIGL_WRITE_FAILED;
             }
         }
         
@@ -4966,8 +4992,14 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedGeometrySTL(TiglCPACSConfigura
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CTiglExportStl exporter;
-        exporter.AddConfiguration(config, deflection);
-        return exporter.Write(filenamePtr);
+        tigl::ExportOptions options;
+        options.deflection = deflection;
+        options.applySymmetries = true;
+        options.includeFarField = false;
+
+        exporter.AddConfiguration(config, options);
+        bool ret = exporter.Write(filenamePtr);
+        return ret ? TIGL_SUCCESS : TIGL_WRITE_FAILED;
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what() << std::endl;
@@ -4983,6 +5015,37 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedGeometrySTL(TiglCPACSConfigura
     }
 }
 
+TIGL_COMMON_EXPORT TiglReturnCode tiglExportVTKSetOptions(const char *key, const char *value)
+{
+    if (!key) {
+        LOG(ERROR) << "Error: Null pointer argument for key ";
+        LOG(ERROR) << "in function call to tiglExportVTKSetOptions." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+
+    if (!value) {
+        LOG(ERROR) << "Error: Null pointer argument for value ";
+        LOG(ERROR) << "in function call to tiglExportVTKSetOptions." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        tigl::CTiglExportVtk::SetOptions(key, value);
+        return TIGL_SUCCESS;
+    }
+    catch (std::exception & ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError & ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an unknown exception in tiglExportVTKSetOptions" << std::endl;
+        return TIGL_ERROR;
+    }
+}
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingVTKByIndex(const TiglCPACSConfigurationHandle cpacsHandle, const int wingIndex,
                                                                  const char* filenamePtr, const double deflection)
@@ -5286,7 +5349,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportFuselageColladaByUID(const TiglCPACS
         tigl::CCPACSFuselage& fuselage = config.GetFuselage(fuselageUID);
         tigl::CTiglExportCollada colladaWriter;
         colladaWriter.AddShape(fuselage.GetLoft(), deflection);
-        return colladaWriter.Write(filenamePtr);
+        bool ret = colladaWriter.Write(filenamePtr);
+        return ret ? TIGL_SUCCESS : TIGL_WRITE_FAILED;
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what() << std::endl;
@@ -5321,7 +5385,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportWingColladaByUID(const TiglCPACSConf
         tigl::CCPACSWing& wing = config.GetWing(wingUID);
         tigl::CTiglExportCollada colladaWriter;
         colladaWriter.AddShape(wing.GetLoft(), deflection);
-        return colladaWriter.Write(filenamePtr);
+        bool ret = colladaWriter.Write(filenamePtr);
+        return ret ? TIGL_SUCCESS : TIGL_WRITE_FAILED;
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what() << std::endl;
@@ -6347,3 +6412,4 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglLogSetVerbosity(TiglLogLevel consoleVerbos
 
     return TIGL_SUCCESS;
 }
+

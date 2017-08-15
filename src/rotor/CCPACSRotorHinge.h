@@ -44,7 +44,6 @@ enum TiglRotorHingeType
     TIGLROTORHINGE_PITCH,
     TIGLROTORHINGE_LEAD_LAG
 };
-typedef enum TiglRotorHingeType TiglRotorHingeType;
 
 class CCPACSConfiguration;
 class CCPACSRotor;

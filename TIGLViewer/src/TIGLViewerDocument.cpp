@@ -51,6 +51,7 @@
 
 // TIGLViewer includes
 #include "TIGLViewerInternal.h"
+#include "TIGLViewerVTKExportDialog.h"
 #include "CCPACSConfigurationManager.h"
 #include "CCPACSFarField.h"
 #include "CCPACSExternalObject.h"
@@ -76,6 +77,9 @@
 #include "tiglcommonfunctions.h"
 #include "CTiglPoint.h"
 #include "CTiglExportCollada.h"
+#include "CCPACSWingCSStructure.h"
+#include "CCPACSWingSparSegment.h"
+#include "CCPACSWingRibsDefinition.h"
 
 #define max(a,b) ((a) > (b) ? (a) : (b))
 
@@ -1260,9 +1264,27 @@ void TIGLViewerDocument::exportMeshedFuselageSTL()
 
     if (!fileName.isEmpty()) {
         START_COMMAND();
-        TiglReturnCode err = tiglExportMeshedFuselageSTLByUID(m_cpacsHandle, qstringToCstring(fuselageUid), qstringToCstring(fileName), 0.01);
+        TiglReturnCode err = tiglExportMeshedFuselageSTLByUID(m_cpacsHandle, qstringToCstring(fuselageUid), qstringToCstring(fileName), TIGLViewerSettings::Instance().triangulationAccuracy());
         if (err != TIGL_SUCCESS) {
             displayError(QString("Error in function <u>tiglExportMeshedFuselageSTLByUID</u>. Error code: %1").arg(err), "TIGL Error");
+        }
+    }
+}
+
+void TIGLViewerDocument::exportMeshedConfigSTL()
+{
+    QString     fileName;
+
+
+    writeToStatusBar(tr("Saving meshed Configuration as STL file with TIGL..."));
+
+    fileName = QFileDialog::getSaveFileName(app, tr("Save as..."), myLastFolder, tr("Export STL(*.stl)"));
+
+    if (!fileName.isEmpty()) {
+        START_COMMAND();
+        TiglReturnCode err = tiglExportMeshedGeometrySTL(m_cpacsHandle, qstringToCstring(fileName), TIGLViewerSettings::Instance().triangulationAccuracy());
+        if (err != TIGL_SUCCESS) {
+            displayError(QString("Error in function <u>tiglExportMeshedGeometrySTL</u>. Error code: %1").arg(err), "TIGL Error");
         }
     }
 }
@@ -1281,12 +1303,24 @@ void TIGLViewerDocument::exportMeshedWingVTK()
 
     fileName = QFileDialog::getSaveFileName(app, tr("Save as..."), myLastFolder, tr("Export VTK(*.vtp)"));
 
-    if (!fileName.isEmpty()) {
+    if (fileName.isEmpty()) {
+        return;
+    }
+
+    double deflection = 1.0;
+    if (1) {
         START_COMMAND();
         tigl::CCPACSWing& wing = GetConfiguration().GetWing(qstringToCstring(wingUid));
-        double deflection = wing.GetWingspan()/2. * TIGLViewerSettings::Instance().triangulationAccuracy();
+        deflection = wing.GetWingspan()/2. * TIGLViewerSettings::Instance().triangulationAccuracy();
+    }
 
-        TiglReturnCode err = tiglExportMeshedWingVTKByUID(m_cpacsHandle, wingUid.toStdString().c_str(), qstringToCstring(fileName), deflection);
+    TIGLViewerVTKExportDialog settings(app);
+    settings.setDeflection(deflection);
+    settings.exec();
+
+    if (1) {
+        START_COMMAND();
+        TiglReturnCode err = tiglExportMeshedWingVTKByUID(m_cpacsHandle, wingUid.toStdString().c_str(), qstringToCstring(fileName), settings.getDeflection());
         if (err != TIGL_SUCCESS) {
             displayError(QString("Error in function <u>tiglExportMeshedWingVTKByIndex</u>. Error code: %1").arg(err), "TIGL Error");
         }
@@ -1310,11 +1344,23 @@ void TIGLViewerDocument::exportMeshedWingVTKsimple()
 
     fileName = QFileDialog::getSaveFileName(app, tr("Save as..."), myLastFolder, tr("Export VTK(*.vtp)"));
 
-    if (!fileName.isEmpty()) {
+    if (fileName.isEmpty()) {
+        return;
+    }
+
+    double deflection = 1.0;
+    if (1) {
         START_COMMAND();
         tigl::CCPACSWing& wing = GetConfiguration().GetWing(qstringToCstring(wingUid));
-        double deflection = wing.GetWingspan()/2. * TIGLViewerSettings::Instance().triangulationAccuracy();
+        deflection = wing.GetWingspan()/2. * TIGLViewerSettings::Instance().triangulationAccuracy();
+    }
 
+    TIGLViewerVTKExportDialog settings(app);
+    settings.setDeflection(deflection);
+    settings.exec();
+
+    if (1) {
+        START_COMMAND();
         TiglReturnCode err = tiglExportMeshedWingVTKSimpleByUID(m_cpacsHandle, qstringToCstring(wingUid), qstringToCstring(fileName), deflection);
         if (err != TIGL_SUCCESS) {
             displayError(QString("Error in function <u>tiglExportMeshedWingVTKSimpleByUID</u>. Error code: %1").arg(err), "TIGL Error");
@@ -1376,28 +1422,19 @@ void TIGLViewerDocument::exportConfigCollada()
         START_COMMAND();
         TIGLViewerSettings& settings = TIGLViewerSettings::Instance();
         double relDeflect = settings.triangulationAccuracy();
-        
+        tigl::ExportOptions options;
+        options.deflection = relDeflect;
+        options.includeFarField = false;
+
         tigl::CTiglExportCollada exporter;
         tigl::CCPACSConfiguration& config = GetConfiguration();
-        for (int ifusel = 1; ifusel <= config.GetFuselageCount(); ++ifusel) {
-            tigl::CCPACSFuselage& fusel = config.GetFuselage(ifusel);
-            writeToStatusBar(tr("Computing ") + fusel.GetUID().c_str() + ".");
-            PNamedShape fshape = fusel.GetLoft();
-            exporter.AddShape(fshape, getAbsDeflection(fshape->Shape(), relDeflect));
-        }
-        
-        for (int iwing = 1; iwing <= config.GetWingCount(); ++iwing) {
-            tigl::CCPACSWing& wing = config.GetWing(iwing);
-            writeToStatusBar(tr("Computing ") + wing.GetUID().c_str() + ".");
-            PNamedShape wshape = wing.GetLoft();
-            exporter.AddShape(wshape, getAbsDeflection(wshape->Shape(), relDeflect));
-        }
-        
+        exporter.AddConfiguration(config, options);
+
         writeToStatusBar(tr("Meshing and writing COLLADA file ") + fileName + ".");
-        TiglReturnCode err = exporter.Write(fileName.toStdString());
+        bool okay = exporter.Write(fileName.toStdString());
         writeToStatusBar("");
-        if (err != TIGL_SUCCESS) {
-            displayError(QString("Error while exporting to COLLADA. Error code: %1").arg(err), "TIGL Error");
+        if (!okay) {
+            displayError(QString("Error while exporting to COLLADA."), "TIGL Error");
         }
     }
 }
@@ -1406,22 +1443,32 @@ void TIGLViewerDocument::exportConfigCollada()
 void TIGLViewerDocument::exportMeshedFuselageVTK()
 {
     QString     fileName;
-    QString        fileType;
-    QFileInfo    fileInfo;
-    TIGLViewerInputOutput writer;
 
     QString wingUid = dlgGetFuselageSelection();
     if (wingUid == "") {
         return;
     }
 
-    writeToStatusBar(tr("Saving meshed Fuselage as VTK file with TIGL..."));
-
     fileName = QFileDialog::getSaveFileName(app, tr("Save as..."), myLastFolder, tr("Export VTK(*.vtp)"));
 
-    if (!fileName.isEmpty()) {
+    if (fileName.isEmpty()) {
+        return;
+    }
+
+    double deflection = 1.0;
+    if (1) {
         START_COMMAND();
-        TiglReturnCode err = tiglExportMeshedFuselageVTKByUID(m_cpacsHandle, wingUid.toStdString().c_str(), qstringToCstring(fileName), 0.1);
+        deflection = GetConfiguration().GetAirplaneLenth()
+                * TIGLViewerSettings::Instance().triangulationAccuracy();
+    }
+
+    TIGLViewerVTKExportDialog settings(app);
+    settings.setDeflection(deflection);
+
+    if (settings.exec()) {
+        writeToStatusBar(tr("Saving meshed Fuselage as VTK file with TIGL..."));
+        START_COMMAND();
+        TiglReturnCode err = tiglExportMeshedFuselageVTKByUID(m_cpacsHandle, wingUid.toStdString().c_str(), qstringToCstring(fileName), settings.getDeflection());
         if (err != TIGL_SUCCESS) {
             displayError(QString("Error in function <u>tiglExportMeshedFuselageVTKByIndex</u>. Error code: %1").arg(err), "TIGL Error");
         }
@@ -1434,13 +1481,26 @@ void TIGLViewerDocument::exportMeshedFuselageVTKsimple()
     QString fileName;
     QString fuselageUid = dlgGetFuselageSelection();
 
-    writeToStatusBar(tr("Saving meshed Fuselage as simple VTK file with TIGL..."));
-
     fileName = QFileDialog::getSaveFileName(app, tr("Save as..."), myLastFolder, tr("Export VTK(*.vtp)"));
 
-    if (!fileName.isEmpty()) {
+    if (fileName.isEmpty()) {
+        return;
+    }
+
+    double deflection = 1.0;
+    if (1) {
         START_COMMAND();
-        TiglReturnCode err = tiglExportMeshedFuselageVTKSimpleByUID(m_cpacsHandle, qstringToCstring(fuselageUid), qstringToCstring(fileName), 0.1);
+        deflection = GetConfiguration().GetAirplaneLenth()
+                * TIGLViewerSettings::Instance().triangulationAccuracy();
+    }
+
+    TIGLViewerVTKExportDialog settings(app);
+    settings.setDeflection(deflection);
+
+    if (settings.exec()) {
+        writeToStatusBar(tr("Saving meshed Fuselage as simple VTK file with TIGL..."));
+        START_COMMAND();
+        TiglReturnCode err = tiglExportMeshedFuselageVTKSimpleByUID(m_cpacsHandle, qstringToCstring(fuselageUid), qstringToCstring(fileName), settings.getDeflection());
         if (err != TIGL_SUCCESS) {
             displayError(QString("Error in function <u>tiglExportMeshedFuselageVTKSimpleByUID</u>. Error code: %1").arg(err), "TIGL Error");
         }
@@ -1452,7 +1512,21 @@ void TIGLViewerDocument::exportMeshedConfigVTK()
     QString     fileName;
     fileName = QFileDialog::getSaveFileName(app, tr("Save as..."), myLastFolder, tr("Export VTK(*.vtp)"));
 
-    if (!fileName.isEmpty()) {
+    if (fileName.isEmpty()) {
+        return;
+    }
+
+    double deflection = 1.0;
+    if (1) {
+        START_COMMAND();
+        deflection = GetConfiguration().GetAirplaneLenth()
+                        * TIGLViewerSettings::Instance().triangulationAccuracy();
+    }
+
+    TIGLViewerVTKExportDialog settings(app);
+    settings.setDeflection(deflection);
+
+    if (settings.exec()) {
         START_COMMAND();
         writeToStatusBar("Calculating fused airplane, this can take a while");
         // calculating loft, is cached afterwards
@@ -1464,11 +1538,9 @@ void TIGLViewerDocument::exportMeshedConfigVTK()
         }
         writeToStatusBar("Writing meshed vtk file");
         tigl::CTiglExportVtk exporter(GetConfiguration());
-        
-        double deflection = GetConfiguration().GetAirplaneLenth() 
-                * TIGLViewerSettings::Instance().triangulationAccuracy();
-        exporter.ExportMeshedGeometryVTK(fileName.toStdString(), deflection);
-        
+
+        exporter.ExportMeshedGeometryVTK(fileName.toStdString(), settings.getDeflection());
+
         writeToStatusBar("");
     }
 }
@@ -1478,14 +1550,26 @@ void TIGLViewerDocument::exportMeshedConfigVTKNoFuse()
     QString     fileName;
     fileName = QFileDialog::getSaveFileName(app, tr("Save as..."), myLastFolder, tr("Export VTK(*.vtp)"));
 
-    if (!fileName.isEmpty()) {
+    if (fileName.isEmpty()) {
+        return;
+    }
+
+    double deflection = 1.0;
+    if (1) {
+        START_COMMAND();
+        deflection = GetConfiguration().GetAirplaneLenth()
+                        * TIGLViewerSettings::Instance().triangulationAccuracy();
+    }
+
+    TIGLViewerVTKExportDialog settings(app);
+    settings.setDeflection(deflection);
+
+    if (settings.exec()) {
         QApplication::setOverrideCursor( Qt::WaitCursor );
         writeToStatusBar("Writing meshed vtk file");
         tigl::CTiglExportVtk exporter(GetConfiguration());
 
-        double deflection = GetConfiguration().GetAirplaneLenth() 
-                * TIGLViewerSettings::Instance().triangulationAccuracy();
-        exporter.ExportMeshedGeometryVTKNoFuse(fileName.toStdString(), deflection);
+        exporter.ExportMeshedGeometryVTKNoFuse(fileName.toStdString(), settings.getDeflection());
 
         writeToStatusBar("");
         QApplication::restoreOverrideCursor();
@@ -1853,7 +1937,7 @@ void TIGLViewerDocument::drawWingComponentSegment()
     for (int i = 1; i <= GetConfiguration().GetWingCount();++i) {
         tigl::CCPACSWing& wing = GetConfiguration().GetWing(i);
         for (int j = 1; j <= wing.GetComponentSegmentCount();++j) {
-            tigl::CTiglAbstractSegment& segment = wing.GetComponentSegment(j);
+            tigl::CCPACSWingComponentSegment& segment = static_cast<tigl::CCPACSWingComponentSegment&>(wing.GetComponentSegment(j));
             if (segment.GetUID() == csUid.toStdString()) {
                 drawWingComponentSegment(segment);
                 break;
@@ -1887,6 +1971,59 @@ void TIGLViewerDocument::drawWingShells()
     catch (tigl::CTiglError& ex) {
         std::cerr << ex.getError() << std::endl;
     }
+}
+
+void TIGLViewerDocument::drawWingStructure()
+{
+    QString csUid = dlgGetWingComponentSegmentSelection();
+    if (csUid == "") {
+        return;
+    }
+
+    // find component segment first
+    tigl::CCPACSWingComponentSegment* cs = NULL;
+    for (int i = 1; i <= GetConfiguration().GetWingCount();++i) {
+        tigl::CCPACSWing& wing = GetConfiguration().GetWing(i);
+        for (int j = 1; j <= wing.GetComponentSegmentCount();++j) {
+            tigl::CTiglAbstractSegment& segment = wing.GetComponentSegment(j);
+            if (segment.GetUID() == csUid.toStdString()) {
+                cs = static_cast<tigl::CCPACSWingComponentSegment*>(&segment);
+                break;
+            }
+        }
+    }
+
+    if (!cs || !cs->HasStructure()) {
+        displayError("This wing has no structure defined.", "Information");
+        return;
+    }
+
+    START_COMMAND();
+
+    app->getScene()->deleteAllObjects();
+
+    // display component segment shape with transparency
+    const tigl::CTiglTransformation trafo = cs->GetWing().GetTransformation();
+    TopoDS_Shape loft = trafo.Transform(cs->GetLoft()->Shape());
+    app->getScene()->displayShape(loft, Quantity_NOC_ShapeCol, 0.5);
+
+    const tigl::CCPACSWingCSStructure& structure = cs->GetStructure();
+
+    // draw spars
+    for (int ispar = 1; ispar <= structure.GetSparSegmentCount(); ++ispar) {
+        const tigl::CCPACSWingSparSegment& spar = structure.GetSparSegment(ispar);
+        TopoDS_Shape sparGeom = spar.GetSparGeometry();
+        app->getScene()->displayShape(sparGeom, Quantity_NOC_RED);
+    }
+
+    // draw ribs
+    for (int irib = 1; irib <=structure.GetRibsDefinitionCount(); ++irib) {
+        const tigl::CCPACSWingRibsDefinition& rib = structure.GetRibsDefinition(irib);
+        TopoDS_Shape ribGeom = rib.GetRibsGeometry();
+        app->getScene()->displayShape(ribGeom, Quantity_NOC_RED);
+    }
+
+
 }
 
 void TIGLViewerDocument::drawFarField()
@@ -2014,7 +2151,7 @@ void TIGLViewerDocument::drawRotorBladeComponentSegment()
     for (int i = 1; i <= GetConfiguration().GetWingCount();++i) {
         tigl::CCPACSWing& wing = GetConfiguration().GetWing(i);
         for (int j = 1; j <= wing.GetComponentSegmentCount();++j) {
-            tigl::CTiglAbstractSegment& segment = wing.GetComponentSegment(j);
+            tigl::CCPACSWingComponentSegment& segment = static_cast<tigl::CCPACSWingComponentSegment&>(wing.GetComponentSegment(j));
             if (segment.GetUID() == csUid.toStdString()) {
                 drawWingComponentSegment(segment);
                 break;
@@ -2397,11 +2534,17 @@ void TIGLViewerDocument::drawFusedWing(tigl::CCPACSWing& wing)
 /*
  * Draw the input wing component segment
  */
-void TIGLViewerDocument::drawWingComponentSegment(tigl::CTiglAbstractSegment& segment)
+void TIGLViewerDocument::drawWingComponentSegment(tigl::CCPACSWingComponentSegment& segment)
 {
     START_COMMAND();
     app->getScene()->deleteAllObjects();
-    app->getScene()->displayShape(segment.GetLoft()->Shape());
+
+    // the component segment shape is given in local wing coordinates.
+    // Move to global coordinates
+    const tigl::CTiglTransformation trafo = segment.GetWing().GetTransformation();
+    TopoDS_Shape loft = trafo.Transform(segment.GetLoft()->Shape());
+
+    app->getScene()->displayShape(loft);
 }
 
 /*

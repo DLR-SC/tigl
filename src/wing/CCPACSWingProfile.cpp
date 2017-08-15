@@ -59,14 +59,14 @@
 #include "ITiglWingProfileAlgo.h"
 #include "CCPACSWingProfile.h"
 #include "CCPACSWingProfileFactory.h"
+#include "TixiSaveExt.h"
 
 namespace tigl 
 {
 
 // Constructor
-CCPACSWingProfile::CCPACSWingProfile(const std::string& path)
-    : ProfileXPath(path),
-    invalidated(true)
+CCPACSWingProfile::CCPACSWingProfile()
+    : invalidated(true)
 {
     Cleanup();
 }
@@ -93,44 +93,46 @@ void CCPACSWingProfile::Cleanup(void)
 }
 
 // Read wing profile file
-void CCPACSWingProfile::ReadCPACS(TixiDocumentHandle tixiHandle)
+void CCPACSWingProfile::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& xpath)
 {
     Cleanup();
-    
-    if (ProfileXPath.find("rotorAirfoil") != std::string::npos) {
+
+    if (xpath.find("rotorAirfoil") != std::string::npos) {
         isRotorProfile = true;
     }
-    
-    std::string namePath = ProfileXPath + "/name";
-    std::string describtionPath = ProfileXPath + "/description";
 
-    try {
-        // Get profiles "uid"
-        char* ptrUID = NULL;
-        if (tixiGetTextAttribute(tixiHandle, ProfileXPath.c_str(), "uID", &ptrUID) == SUCCESS) {
-            uid = ptrUID;
-        }
-
-        // Get subelement "name"
-        char* ptrName = NULL;
-        if (tixiGetTextElement(tixiHandle, namePath.c_str(), &ptrName) == SUCCESS) {
-            name = ptrName;
-        }
-
-        // Get subelement "description"
-        char* ptrDescription = NULL;
-        if (tixiGetTextElement(tixiHandle, describtionPath.c_str(), &ptrDescription) == SUCCESS) {
-            description = ptrDescription;
-        }
-
-        // create wing profile algorithm via factory
-        profileAlgo=CCPACSWingProfileFactory::Instance().CreateProfileAlgo(tixiHandle, *this, ProfileXPath);
-        // read in wing profile data
-        profileAlgo->ReadCPACS(tixiHandle);
+    // Get profiles "uid"
+    char* ptrUID = NULL;
+    if (tixiGetTextAttribute(tixiHandle, xpath.c_str(), "uID", &ptrUID) == SUCCESS) {
+        uid = ptrUID;
     }
-    catch (...) {
-        throw;
+
+    // Get subelement "name"
+    char* ptrName = NULL;
+    if (tixiGetTextElement(tixiHandle, (xpath + "/name").c_str(), &ptrName) == SUCCESS) {
+        name = ptrName;
     }
+
+    // Get subelement "description"
+    char* ptrDescription = NULL;
+    if (tixiGetTextElement(tixiHandle, (xpath + "/description").c_str(), &ptrDescription) == SUCCESS) {
+        description = ptrDescription;
+    }
+
+    // create wing profile algorithm via factory
+    profileAlgo = CCPACSWingProfileFactory::Instance().CreateProfileAlgo(tixiHandle, *this, xpath);
+
+    // read in wing profile data
+    profileAlgo->ReadCPACS(tixiHandle);
+}
+
+// Write CPACS wing profile file
+void CCPACSWingProfile::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& ProfileXPath) const
+{
+    TixiSaveExt::TixiSaveTextAttribute(tixiHandle, ProfileXPath.c_str(), "uID", uid.c_str());
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, ProfileXPath.c_str(), "name", name.c_str());
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, ProfileXPath.c_str(), "description", description.c_str());
+    profileAlgo->WriteCPACS(tixiHandle, ProfileXPath);
 }
 
 // Returns the name of the wing profile
@@ -181,19 +183,53 @@ TopoDS_Edge CCPACSWingProfile::GetUpperWire()
     Update();
     return profileAlgo->GetUpperEdge();
 }
-    
+
+// Returns the wing upper profile wire for opened profile
+TopoDS_Edge CCPACSWingProfile::GetUpperWireOpened()
+{
+    Update();
+    return profileAlgo->GetUpperWireOpened();
+}
+
+// Returns the wing upper profile wire for closed profile
+TopoDS_Edge CCPACSWingProfile::GetUpperWireClosed()
+{
+    Update();
+    return profileAlgo->GetUpperWireClosed();
+}
+
 // Returns the wing profile lower wire
 TopoDS_Edge CCPACSWingProfile::GetLowerWire()
 {
     Update();
     return profileAlgo->GetLowerEdge();
 }
-    
+
+// Returns the wing lower profile wire for opened profile
+TopoDS_Edge CCPACSWingProfile::GetLowerWireOpened()
+{
+    Update();
+    return profileAlgo->GetLowerWireOpened();
+}
+
+// Returns the wing lower profile wire for closed profile
+TopoDS_Edge CCPACSWingProfile::GetLowerWireClosed()
+{
+    Update();
+    return profileAlgo->GetLowerWireClosed();
+}
+
 // Returns the wing profile trailing edge
 TopoDS_Edge CCPACSWingProfile::GetTrailingEdge()
 {
     Update();
     return profileAlgo->GetTrailingEdge();
+}
+
+TopoDS_Edge CCPACSWingProfile::GetTrailingEdgeOpened()
+{
+    Update();
+    return profileAlgo->GetTrailingEdgeOpened();
 }
 
 // Returns the wing profile lower and upper wire fused
@@ -212,7 +248,7 @@ TopoDS_Wire CCPACSWingProfile::GetSplitWire()
     if (!closedWireBuilder.IsDone()) {
         throw CTiglError("Error creating closed wing profile");
     }
-        
+    
     return closedWireBuilder.Wire();
 }
 
@@ -232,6 +268,26 @@ TopoDS_Wire CCPACSWingProfile::GetWire()
     }
         
     return closedWireBuilder.Wire();
+}
+
+TopoDS_Wire CCPACSWingProfile::GetWireOpened()
+{
+    Update();
+    BRepBuilderAPI_MakeWire wireBuilder;
+    wireBuilder.Add(profileAlgo->GetUpperWireOpened());
+    wireBuilder.Add(profileAlgo->GetLowerWireOpened());
+    wireBuilder.Add(profileAlgo->GetTrailingEdgeOpened());
+    return wireBuilder.Wire();
+}
+
+// Getter for closed wire
+TopoDS_Wire CCPACSWingProfile::GetWireClosed()
+{
+    Update();
+    BRepBuilderAPI_MakeWire wireBuilder;
+    wireBuilder.Add(profileAlgo->GetUpperWireClosed());
+    wireBuilder.Add(profileAlgo->GetLowerWireClosed());
+    return wireBuilder.Wire();
 }
 
 // Returns the leading edge point of the wing profile wire. The leading edge point

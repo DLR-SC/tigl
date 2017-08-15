@@ -68,6 +68,9 @@ public:
     // Clears the uid store
     TIGL_EXPORT void Clear(void);
 
+    // Sets the root component
+    TIGL_EXPORT void SetRootComponent(CTiglAbstractPhysicalComponent* rootComponent);
+
     // Virtual Destructor
     TIGL_EXPORT virtual ~CTiglUIDManager(void);
 

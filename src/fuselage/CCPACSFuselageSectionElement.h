@@ -48,6 +48,9 @@ public:
     // Read CPACS section element
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& elementXPath);
 
+    // Write CPACS section element
+    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& elementXPath);
+
     // Returns the UID of the referenced wing profile
     TIGL_EXPORT std::string GetProfileIndex(void) const;
 
@@ -59,6 +62,18 @@ public:
 
     // Gets the section element transformation
     TIGL_EXPORT CTiglTransformation GetSectionElementTransformation(void) const;
+
+    TIGL_EXPORT CTiglPoint GetTranslation(void) const;
+
+    TIGL_EXPORT CTiglPoint GetRotation(void) const;
+
+    TIGL_EXPORT CTiglPoint GetScaling(void) const;
+
+    TIGL_EXPORT void SetTranslation(const CTiglPoint& translation);
+
+    TIGL_EXPORT void SetRotation(const CTiglPoint& rotation);
+
+    TIGL_EXPORT void SetScaling(const CTiglPoint& scaling);
 
 protected:
     // Cleanup routine
@@ -76,6 +91,7 @@ private:
 
 private:
     std::string           name;           /**< Section name                              */
+    std::string           description;    /**< Section description                       */
     std::string           profileUID;     /**< Profile index in fuselage profile library */
     std::string           uid;            /**< UID of the FuselageSectionElement         */
     int                   profileIndex;   /**< Profile index in fuselage profile library */

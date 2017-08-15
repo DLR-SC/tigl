@@ -66,8 +66,14 @@ public:
     // Read CPACS wing elements
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & wingXPath);
 
+    // Write CPACS wing elements
+    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string & wingXPath);
+
     // Returns the name of the wing
     TIGL_EXPORT const std::string & GetName(void) const;
+
+    // Returns the member description
+    TIGL_EXPORT const std::string & GetDescription(void) const;
 
     // Returns whether this wing is a rotor blade
     TIGL_EXPORT bool IsRotorBlade(void) const;
@@ -81,14 +87,14 @@ public:
     // Returns the section for a given index
     TIGL_EXPORT CCPACSWingSection & GetSection(int index) const;
 
-    // Get segment count
+    // Getter of the number of segments of the wing
     TIGL_EXPORT int GetSegmentCount(void) const;
 
     // Returns the segment for a given index or uid
     TIGL_EXPORT CTiglAbstractSegment & GetSegment(const int index);
     TIGL_EXPORT CTiglAbstractSegment & GetSegment(std::string uid);
 
-    // Get segment count
+    // Getter of the number of component segments of the wing
     TIGL_EXPORT int GetComponentSegmentCount(void);
 
     // Returns the segment for a given index or uid
@@ -166,6 +172,9 @@ public:
     // Returns all guide curve wires as a compound
     TIGL_EXPORT TopoDS_Compound& GetGuideCurveWires();
 
+    // Getter for positionings
+    TIGL_EXPORT CCPACSWingPositionings& GetPositionings();
+
 protected:
     void BuildGuideCurveWires();
 
@@ -197,6 +206,7 @@ private:
 
 private:
     std::string                    name;                     /**< Wing name           */
+    std::string                    description;              /**< Wing description    */
     bool                           isRotorBlade;             /**< Indicates if this wing is a rotor blade */
     CCPACSWingSections             sections;                 /**< Wing sections       */
     CCPACSWingSegments             segments;                 /**< Wing segments       */

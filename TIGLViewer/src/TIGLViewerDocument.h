@@ -75,6 +75,7 @@ public slots:
     void drawWingComponentSegment();
     void drawWingComponentSegmentPoints();
     void drawWingShells();
+    void drawWingStructure();
 
     // Fuselage slots
     void drawFuselageProfiles();
@@ -109,6 +110,7 @@ public slots:
     void exportAsStepFused();
     void exportMeshedWingSTL();
     void exportMeshedFuselageSTL();
+    void exportMeshedConfigSTL();
     void exportMeshedWingVTK();
     void exportMeshedWingVTKsimple();
     void exportMeshedFuselageVTK();
@@ -169,7 +171,7 @@ private:
     void drawWingTriangulation(tigl::CCPACSWing& wing);
     void drawWingSamplePoints(tigl::CCPACSWing& wing);
     void drawFusedWing(tigl::CCPACSWing& wing);
-    void drawWingComponentSegment(tigl::CTiglAbstractSegment& segment);
+    void drawWingComponentSegment(tigl::CCPACSWingComponentSegment& segment);
     void drawWingComponentSegmentPoint(const std::string& csUID, const double& eta, const double& xsi);
     void drawWingShells(tigl::CCPACSWing& wing);
 

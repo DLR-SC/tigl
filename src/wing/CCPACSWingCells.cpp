@@ -23,11 +23,14 @@
 #include "CCPACSWingCell.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "TixiSaveExt.h"
+#include "IOHelper.h"
 
 namespace tigl
 {
 
-CCPACSWingCells::CCPACSWingCells()
+CCPACSWingCells::CCPACSWingCells(CCPACSWingShell* parent)
+: parentShell(parent)
 {
     Reset();
 }
@@ -52,38 +55,27 @@ void CCPACSWingCells::Cleanup()
     cells.clear();
 }
 
-void CCPACSWingCells::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string &cellsXPath)
+void CCPACSWingCells::Invalidate()
+{
+    for (size_t i = 0; i < cells.size(); i++) {
+        cells[i]->Invalidate();
+    }
+}
+
+void CCPACSWingCells::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string &xpath)
 {
     Cleanup();
-    
-    // check path
-    if (tixiCheckElement(tixiHandle, cellsXPath.c_str()) != SUCCESS) {
-        LOG(ERROR) << "Wing Cells definition" << cellsXPath << " not found in CPACS file!" << std::endl;
-        return;
-    }
-    
-    int ncells = 0;
-    if (tixiGetNamedChildrenCount(tixiHandle, cellsXPath.c_str(), "cell", &ncells) != SUCCESS) {
-        // no cells found
-        return;
-    }
-    
-    for (int icell = 1; icell <= ncells; ++icell) {
-        std::stringstream stream;
-        stream << cellsXPath << "/" << "cell[" << icell << "]";
-        
-        // check path
-        if ( tixiCheckElement(tixiHandle, stream.str().c_str()) == SUCCESS) {
-            CCPACSWingCell * cell = new CCPACSWingCell();
-            cell->ReadCPACS(tixiHandle, stream.str().c_str());
-            cells.push_back(cell);
-        }
-    }
+    ReadContainerElement(tixiHandle, xpath, "cell", 1, cells, this);
+}
+
+void CCPACSWingCells::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& xpath) const
+{
+    WriteContainerElement(tixiHandle, xpath, "cell", cells);
 }
 
 int CCPACSWingCells::GetCellCount() const
 {
-    return cells.size();
+    return static_cast<int>(cells.size());
 }
 
 CCPACSWingCell& CCPACSWingCells::GetCell(int index) const
@@ -93,6 +85,12 @@ CCPACSWingCell& CCPACSWingCells::GetCell(int index) const
     }
     
     return *cells.at(index-1);
+}
+
+// Get parent wing shell element
+CCPACSWingShell* CCPACSWingCells::GetParentElement() const
+{
+    return parentShell;
 }
 
 CCPACSWingCell &CCPACSWingCells::GetCell(const std::string &UID) const
@@ -107,7 +105,6 @@ CCPACSWingCell &CCPACSWingCells::GetCell(const std::string &UID) const
     // UID not there
     throw CTiglError("Error: Invalid UID in CCPACSWingCells::GetCell", TIGL_UID_ERROR);
 }
-
 
 
 } // namespace tigl
