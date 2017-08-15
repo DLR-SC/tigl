@@ -24,7 +24,7 @@ dependencies {
 }
 
 run {
-    args += '@PROJECT_SOURCE_DIR@/tests/TestData/simpletest.cpacs.xml'
+    args += '@PROJECT_SOURCE_DIR@/tests/unittests/TestData/simpletest.cpacs.xml'
     classpath  'java.library.path','@LIBRARY_INSTALL_PATH@'
 }
 
