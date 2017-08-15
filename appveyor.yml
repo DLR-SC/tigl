@@ -88,7 +88,7 @@ build_script:
 
 test_script:
 - ps: |
-    cd tests
+    cd tests/unittests
     $env:PATH = "c:\oce\$ocedist\$ocebindir\bin;c:\tixi\$tixidist\bin;$env:PATH"
     & $env:CONFIGURATION\TIGL-unittests.exe --gtest_output=xml:test_results.xml
     if ($LastExitCode -ne 0) {
