@@ -49,6 +49,7 @@
 #include "BRep_Tool.hxx"
 #include "Geom_TrimmedCurve.hxx"
 #include "GC_MakeSegment.hxx"
+#include "gp_Pln.hxx"
 #include "gp_Lin.hxx"
 #include "GeomAPI_IntCS.hxx"
 #include "Geom_Surface.hxx"
@@ -766,8 +767,9 @@ int CCPACSFuselageSegment::GetNumPointsOnXPlane(double eta, double xpos)
 // if the values should be interpreted as absolute coordinates
 gp_Pnt CCPACSFuselageSegment::GetPointAngle(double eta, double alpha, double y_cs, double z_cs, bool absolute )
 {
-    // get eta-y-coordinate
-    gp_Pnt tmpPoint = GetPoint(eta, 0.0);
+
+    //CAUTION: This functions assumes the fuselage to be aligned along the x-axis
+    // and xsi=0 to be at the top of the fuselage (in z-direction)
 
     // get outer wire
     TopoDS_Shape intersectionWire = getWireOnLoft(eta);
@@ -779,40 +781,32 @@ gp_Pnt CCPACSFuselageSegment::GetPointAngle(double eta, double alpha, double y_c
         z_cs += csc.Z();
     }
 
-
     // compute approximate cross section of fuselage wire
     Bnd_Box boundingBox;
     BRepBndLib::Add(intersectionWire, boundingBox);
     Standard_Real xmin, xmax, ymin, ymax, zmin, zmax;
     boundingBox.Get(xmin, ymin, zmin, xmax, ymax, zmax);
-    double xw = xmax - xmin;
     double yw = ymax - ymin;
     double zw = zmax - zmin;
+    double length = 2*max(yw, zw);
 
-    double cross_section = max(xw, max(yw, zw));
-
-    // This defines a length of a line intersecting with the fuselage
-    double length = cross_section * 2.;
+    //create a rectangular face
     double angle = alpha/180. * M_PI;
-    // build a line
-    gp_Pnt initPoint(tmpPoint.X(),  y_cs, z_cs);
-    gp_Pnt endPoint (tmpPoint.X(), y_cs - length*sin(angle),  z_cs + length*cos(angle));
+    gp_Pnt p1(xmin, y_cs, z_cs);
+    gp_Pnt p2(xmax, y_cs, z_cs);
+    gp_Pnt p3(xmax, y_cs - length*sin(angle), z_cs + length*cos(angle) );
+    gp_Pnt p4(xmin, y_cs - length*sin(angle), z_cs + length*cos(angle) );
+    TopoDS_Edge edge1 = BRepBuilderAPI_MakeEdge(p1, p2);
+    TopoDS_Edge edge2 = BRepBuilderAPI_MakeEdge(p2, p3);
+    TopoDS_Edge edge3 = BRepBuilderAPI_MakeEdge(p3, p4);
+    TopoDS_Edge edge4 = BRepBuilderAPI_MakeEdge(p4, p1);
+    TopoDS_Wire rectangleWire = BRepBuilderAPI_MakeWire(edge1, edge2, edge3, edge4);
 
-    // get the intersection of the intersectionWire with the line between initPoint and endPoint
-    TopoDS_Wire line = BuildWire(initPoint, endPoint);
-    intersectionPointList intersectionPoints;
-    GetIntersectionPoint( TopoDS::Wire(intersectionWire), line, intersectionPoints, 1e-7);
+    BRepBuilderAPI_MakeFace FaceMaker(rectangleWire);
 
-    if (intersectionPoints.size()==0) {
-        LOG(ERROR) << "No solution found in CCPACSFuselageSegment::GetPointAngle. Return (0,0,0) instead." << std::endl;
-        return gp_Pnt(0., 0., 0.);
-    }
-
-    if (intersectionPoints.size()>1) {
-        LOG(WARNING) << "Multiple intersection points found in CCPACSFuselageSegment::GetPointAngle. Only the first is returned." << std::endl;
-    }
-
-    return intersectionPoints[0].Center;
+    gp_Pnt result;
+    GetIntersectionPoint( FaceMaker.Face(), TopoDS::Wire(intersectionWire), result);
+    return result;
 }
 
 
