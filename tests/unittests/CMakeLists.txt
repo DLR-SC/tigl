@@ -51,5 +51,3 @@ configure_file (
 )
 
 AddToCheckstyle()
-
-add_custom_target(test DEPENDS ${TEST_TARGETS})
