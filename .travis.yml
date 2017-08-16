@@ -49,4 +49,5 @@ script:
   - TERM=dumb make tigl-java-demo
 
 after_success:
-    - '[ "$TRAVIS_OS_NAME" != osx ] || sshpass -p $FTP_PASSWORD scp build/*.dmg $FTP_USER@frs.sourceforge.net:/home/frs/project/tigl/Misc'
+    - echo `pwd`
+    - '[ "$TRAVIS_OS_NAME" != osx ] || sshpass -p $FTP_PASSWORD scp -o StrictHostKeyChecking=no build/*.dmg $FTP_USER@frs.sourceforge.net:/home/frs/project/tigl/Misc'
