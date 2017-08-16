@@ -95,7 +95,7 @@ test_script:
         throw "Exec: $ErrorMessage"
     }
     (new-object net.webclient).UploadFile("https://ci.appveyor.com/api/testresults/junit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\test_results.xml))
-    cd ..
+    cd ..\..
     cmake --build . --target tigl-java-demo
     if ($LastExitCode -ne 0) {
         throw "Exec: $ErrorMessage"
