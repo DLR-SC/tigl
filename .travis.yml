@@ -39,15 +39,14 @@ script:
   - cmake -DTIGL_BUILD_TESTS=ON -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON -DCMAKE_INSTALL_PREFIX=`pwd`/install ..
   # Build the java bindings first to workaround the travis terminal curruption
   - TERM=dumb make tigl-java
-  - make -j 4
+  - TERM=xterm-256color make -j 4
   - make install
   - '[ "$TRAVIS_OS_NAME" != osx ] || make package'
   - '[ "$TRAVIS_OS_NAME" != osx ] || export DYLD_LIBRARY_PATH=`pwd`/../TIXI-2.2.4-macOS/lib '
   - cd tests
-  - ./TiGL-unittests --gtest_output=xml
+  - TERM=xterm-256color ./TiGL-unittests --gtest_output=xml
   - cd ..
   - TERM=dumb make tigl-java-demo
 
 after_success:
-    - echo `pwd`
-    - '[ "$TRAVIS_OS_NAME" != osx ] || sshpass -p $FTP_PASSWORD scp -o StrictHostKeyChecking=no build/*.dmg $FTP_USER@frs.sourceforge.net:/home/frs/project/tigl/Misc'
+    - '[ "$TRAVIS_OS_NAME" != osx ] || sshpass -p $FTP_PASSWORD scp -o StrictHostKeyChecking=no *.dmg $FTP_USER@frs.sourceforge.net:/home/frs/project/tigl/Misc'
