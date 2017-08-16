@@ -49,7 +49,6 @@
 #include "BRep_Tool.hxx"
 #include "Geom_TrimmedCurve.hxx"
 #include "GC_MakeSegment.hxx"
-#include "gp_Pln.hxx"
 #include "gp_Lin.hxx"
 #include "GeomAPI_IntCS.hxx"
 #include "Geom_Surface.hxx"
@@ -767,7 +766,6 @@ int CCPACSFuselageSegment::GetNumPointsOnXPlane(double eta, double xpos)
 // if the values should be interpreted as absolute coordinates
 gp_Pnt CCPACSFuselageSegment::GetPointAngle(double eta, double alpha, double y_cs, double z_cs, bool absolute )
 {
-
     //CAUTION: This functions assumes the fuselage to be aligned along the x-axis
     // and xsi=0 to be at the top of the fuselage (in z-direction)
 
@@ -801,7 +799,6 @@ gp_Pnt CCPACSFuselageSegment::GetPointAngle(double eta, double alpha, double y_c
     TopoDS_Edge edge3 = BRepBuilderAPI_MakeEdge(p3, p4);
     TopoDS_Edge edge4 = BRepBuilderAPI_MakeEdge(p4, p1);
     TopoDS_Wire rectangleWire = BRepBuilderAPI_MakeWire(edge1, edge2, edge3, edge4);
-
     BRepBuilderAPI_MakeFace FaceMaker(rectangleWire);
 
     gp_Pnt result;
