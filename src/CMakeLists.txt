@@ -34,6 +34,7 @@ include_directories(${OpenCASCADE_INCLUDE_DIR}
 include_directories(${PROJECT_SOURCE_DIR}/thirdparty/boost_1_63_0)
 file(GLOB_RECURSE BOOST_SRC ${PROJECT_SOURCE_DIR}/thirdparty/boost_1_63_0/libs/*)
 
+
 file(GLOB_RECURSE TIGL_SRC
     "*.h"
     "*.hxx"
@@ -61,6 +62,9 @@ endif(GLOG_FOUND)
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
   add_definitions(-DDEBUG)
+  if(DEBUG_EXTENSIVE)
+      add_definitions(-DDEBUG_GUIDED_SURFACE_CREATION)
+  endif()
 endif()
 
 set(TIGL_LIBRARIES ${OpenCASCADE_LIBRARIES} ${TIXI_LIBRARIES} ${VLD_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
@@ -92,5 +96,25 @@ install (FILES api/tigl.h ${CMAKE_CURRENT_BINARY_DIR}/api/tigl_version.h
 add_library(tigl3_static ${TIGL_SRC})
 # this does no actual linking but keeps track of the dependencies
 target_link_libraries (tigl3_static ${TIGL_LIBRARIES})
+
+# cmake configuration export
+set(CMAKE_INSTALL_INCLUDE_DIR "include")
+set(CONFIG_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/cmake/tigl")
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+  "${CMAKE_CURRENT_BINARY_DIR}/tigl-config-version.cmake"
+  VERSION ${TIGL_VERSION}
+  COMPATIBILITY AnyNewerVersion
+)
+
+configure_package_config_file (${PROJECT_SOURCE_DIR}/cmake/tigl-config.cmake.in 
+    "${CMAKE_CURRENT_BINARY_DIR}/tigl-config.cmake"
+	INSTALL_DESTINATION ${CONFIG_INSTALL_DIR}
+	PATH_VARS CMAKE_INSTALL_INCLUDE_DIR CONFIG_INSTALL_DIR
+)
+install (FILES
+  "${CMAKE_CURRENT_BINARY_DIR}/tigl-config.cmake"
+  "${CMAKE_CURRENT_BINARY_DIR}/tigl-config-version.cmake"
+  DESTINATION ${CONFIG_INSTALL_DIR})
 
 AddToCheckstyle()

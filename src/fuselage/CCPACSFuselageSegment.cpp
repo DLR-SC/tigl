@@ -155,9 +155,10 @@ void CCPACSFuselageSegment::Cleanup()
     m_name = "";
     myVolume      = 0.;
     mySurfaceArea = 0.;
-    myWireLength  = 0.;
     _continuity    = C2;
     CTiglAbstractGeometricComponent::Reset();
+
+    guideCurvesBuilt = false;
 }
 
 void CCPACSFuselageSegment::Invalidate()
@@ -178,25 +179,12 @@ void CCPACSFuselageSegment::ReadCPACS(TixiDocumentHandle tixiHandle, const std::
 
     // TODO: continuity does not exist in CPACS spec
 
-    //// Continuity
-    //char* ptrCont = NULL;
-    //if (tixiGetTextElement(tixiHandle, (segmentXPath + "/continuity").c_str(); , &ptrCont) == SUCCESS) {
-    //    if (strcmp(ptrCont, "C0") == 0) {
-    //        continuity = TiglContinuity(C0);
-    //    }
-    //    else if (strcmp(ptrCont, "C1") == 0) {
-    //        continuity = TiglContinuity(C1);
-    //    }
-    //    else if (strcmp(ptrCont, "C2") == 0) {
-    //        continuity = TiglContinuity(C2);
-    //    }
-    //    else {
-    //        LOG(ERROR) << "Invalid continuity specifier " << ptrCont << " for UID " << GetUID();
-    //        continuity = C2;
-    //    }
-    //} else {
-    //    continuity = C2;
-    //}
+    if (m_guideCurves) {
+        for (int iguide = 1; iguide <= m_guideCurves->GetGuideCurveCount(); ++iguide) {
+            CCPACSGuideCurve& curve = m_guideCurves->GetGuideCurve(iguide);
+            curve.SetGuideCurveBuilder(this);
+        }
+    }
 
     Invalidate();
 }
@@ -250,6 +238,7 @@ std::string CCPACSFuselageSegment::GetShortShapeName()
 
 void CCPACSFuselageSegment::SetFaceTraits (PNamedShape loft, bool hasSymmetryPlane)
 {
+    // TODO: Face traits with guides must be made
     // this is currently only valid without guides
 
     int nFaces = GetNumberOfFaces(loft->Shape());
@@ -264,7 +253,8 @@ void CCPACSFuselageSegment::SetFaceTraits (PNamedShape loft, bool hasSymmetryPla
     int facesPerSegment = hasSymmetryPlane ? 2 : 1;
     int remainingFaces = nFaces - facesPerSegment;
     if (remainingFaces < 0 || remainingFaces > 2) {
-        throw CTiglError("Fuselage shape seems to be invalid");
+        LOG(WARNING) << "Fuselage segment faces cannot be names properly (maybe due to Guide Curves?)";
+        return;
     }
 
     int iFaceTotal = 0;
@@ -779,27 +769,19 @@ double CCPACSFuselageSegment::GetCircumference(const double eta)
 
     GProp_GProps System;
     BRepGProp::LinearProperties(intersectionWire,System);
-    myWireLength = System.Mass();
-    return myWireLength;
-}
-
-// get guide curve for given UID
-const CCPACSGuideCurve& CCPACSFuselageSegment::GetGuideCurve(std::string UID)
-{
-    return m_guideCurves->GetGuideCurve(UID);
-}
-
-// check if guide curve with a given UID exists
-bool CCPACSFuselageSegment::GuideCurveExists(std::string UID)
-{
-    return m_guideCurves->GuideCurveExists(UID);
+    return System.Mass();
 }
 
 // Creates all guide curves
-TopTools_SequenceOfShape& CCPACSFuselageSegment::BuildGuideCurves()
+void CCPACSFuselageSegment::BuildGuideCurve(CCPACSGuideCurve*)
 {
-    guideCurveWires.Clear();
-    if (m_guideCurves) {
+    // build all guides at once, this is more efficient
+    
+    if (!GetGuideCurves() || guideCurvesBuilt) {
+        return;
+    }
+
+    if (GetGuideCurves()) {
 
         // get start and end profile
         CCPACSFuselageProfile& startProfile = startConnection.GetProfile();
@@ -829,7 +811,7 @@ TopTools_SequenceOfShape& CCPACSFuselageSegment::BuildGuideCurves()
         int nGuideCurves = m_guideCurves ? m_guideCurves->GetGuideCurveCount() : 0;
         for (int i=0; i!=nGuideCurves; i++) {
             // get guide curve
-            const CCPACSGuideCurve& guideCurve = m_guideCurves->GetGuideCurve(i+1);
+            CCPACSGuideCurve& guideCurve = m_guideCurves->GetGuideCurve(i+1);
             double fromRelativeCircumference;
             // check if fromRelativeCircumference is given in the current guide curve
             if (guideCurve.GetFromRelativeCircumference_choice2()) {
@@ -840,31 +822,32 @@ TopTools_SequenceOfShape& CCPACSFuselageSegment::BuildGuideCurves()
                 // get neighboring guide curve UID
                 std::string neighborGuideCurveUID = *guideCurve.GetFromGuideCurveUID_choice1();
                 // get neighboring guide curve
-                const CCPACSGuideCurve& neighborGuideCurve = fuselage->GetGuideCurve(neighborGuideCurveUID);
+                const CCPACSGuideCurve& neighborGuideCurve = fuselage->GetGuideCurveSegment(neighborGuideCurveUID);
                 // get relative circumference from neighboring guide curve
                 fromRelativeCircumference = neighborGuideCurve.GetToRelativeCircumference();
             }
+
             // get relative circumference of outer profile
             double toRelativeCircumference = guideCurve.GetToRelativeCircumference();
             // get guide curve profile UID
             std::string guideCurveProfileUID = guideCurve.GetGuideCurveProfileUID();
-            // get relative circumference of inner profile
 
             // get guide curve profile
             CCPACSConfiguration& config = fuselage->GetConfiguration();
             CCPACSGuideCurveProfile& guideCurveProfile = config.GetGuideCurveProfile(guideCurveProfileUID);
 
             // construct guide curve algorithm
-            TopoDS_Wire guideCurveWire = CCPACSGuideCurveAlgo<CCPACSFuselageProfileGetPointAlgo> (startWireContainer, endWireContainer, fromRelativeCircumference, toRelativeCircumference, innerScale, outerScale, guideCurveProfile);
-            guideCurveWires.Append(guideCurveWire);
+            TopoDS_Edge guideCurveEdge = CCPACSGuideCurveAlgo<CCPACSFuselageProfileGetPointAlgo> (startWireContainer, 
+                                                                                                  endWireContainer, 
+                                                                                                  fromRelativeCircumference, 
+                                                                                                  toRelativeCircumference, 
+                                                                                                  innerScale, 
+                                                                                                  outerScale, 
+                                                                                                  guideCurveProfile);
+            guideCurve.SetCurve(guideCurveEdge);
         }
-
-        // return container for guide curve wires
-        return guideCurveWires;
     }
-    else {
-        return guideCurveWires;
-    }
+    guideCurvesBuilt = true;
 }
 
 } // end namespace tigl

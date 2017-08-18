@@ -37,9 +37,10 @@
 #include "CCPACSWingComponentSegments.h"
 #include "CCPACSPositionings.h"
 #include "CTiglAbstractSegment.h"
-#include "generated/CPACSGuideCurve.h"
+#include "CCPACSGuideCurve.h"
 
 #include "TopoDS_Shape.hxx"
+#include "TopoDS_Compound.hxx"
 
 namespace tigl
 {
@@ -47,6 +48,8 @@ class CCPACSConfiguration;
 
 class CCPACSWing : public generated::CPACSWing, public CTiglRelativelyPositionedComponent
 {
+friend class CTiglWingBuilder;
+
 public:
     // Constructor
     TIGL_EXPORT CCPACSWing(CCPACSWings* parent, CTiglUIDManager* uidMgr);
@@ -153,12 +156,19 @@ public:
     // Returns the upper Surface of a Segment
     TIGL_EXPORT Handle(Geom_Surface) GetUpperSegmentSurface(int index);
 
-    // Get the guide curve with a given UID
-    TIGL_EXPORT const CCPACSGuideCurve& GetGuideCurve(std::string uid);
+    // Get the guide curve segment (partial guide curve) with a given UID
+    TIGL_EXPORT CCPACSGuideCurve& GetGuideCurveSegment(std::string uid);
+
+    // Returns all guide curve wires as a compound
+    TIGL_EXPORT TopoDS_Compound& GetGuideCurveWires();
 
 protected:
+    void BuildGuideCurveWires();
+
     // Cleanup routine
     void Cleanup();
+
+    void ConnectGuideCurveSegments(void);
 
     // Update internal wing data
     void Update();
@@ -180,6 +190,7 @@ private:
     TopoDS_Shape                   fusedSegmentWithEdge;     /**< All Segments in one shape plus modelled leading edge */ 
     TopoDS_Shape                   upperShape;
     TopoDS_Shape                   lowerShape;
+    TopoDS_Compound                guideCurves;
     bool                           invalidated;              /**< Internal state flag */
     bool                           rebuildFusedSegments;     /**< Indicates if segmentation fusing need rebuild */
     bool                           rebuildFusedSegWEdge;     /**< Indicates if segmentation fusing need rebuild */

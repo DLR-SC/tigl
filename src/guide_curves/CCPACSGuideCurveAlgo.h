@@ -28,7 +28,7 @@
 
 #include "tigl_internal.h"
 #include "CCPACSGuideCurveProfile.h"
-#include "CTiglInterpolateBsplineWire.h"
+#include "tiglcommonfunctions.h"
 #include "CTiglLogging.h"
 
 namespace tigl
@@ -75,7 +75,7 @@ public:
     {
     }
 
-    TIGL_EXPORT operator TopoDS_Wire()
+    TIGL_EXPORT operator TopoDS_Edge()
     {
         // get guide Curve points in local coordinates
         std::vector<CTiglPoint> guideCurveProfilePoints = _guideCurveProfile.GetGuideCurveProfilePoints();
@@ -134,14 +134,13 @@ public:
             // magnitude: gamma times linear interpolated scaling factor
             guideCurvePoint += gamma * scale * normalGamma;
             // save to container
-            guideCurvePoints[i+1]=gp_Pnt(guideCurvePoint.X(), guideCurvePoint.Y(), guideCurvePoint.Z()) ;
+            guideCurvePoints[i+1]=gp_Pnt(guideCurvePoint.XYZ()) ;
         }
 
         // interpolate B-Spline curve through guide curve points
-        CTiglInterpolateBsplineWire wireBuilder;
-        TopoDS_Wire guideCurveWire = wireBuilder.BuildWire(guideCurvePoints, false);
+        TopoDS_Edge guideCurveEdge = EdgeSplineFromPoints(guideCurvePoints);
 
-        return guideCurveWire;
+        return guideCurveEdge;
     }
 
 private:

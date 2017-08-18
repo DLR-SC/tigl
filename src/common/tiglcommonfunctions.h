@@ -25,6 +25,7 @@
 #include "gp_Pnt.hxx"
 #include "gp_Vec.hxx"
 #include "TopoDS_Shape.hxx"
+#include <TopoDS_Edge.hxx>
 #include "PNamedShape.h"
 #include "ListPNamedShape.h"
 #include "CTiglIntersectionPoint.h"
@@ -47,6 +48,12 @@ TIGL_EXPORT Standard_Real GetEdgeLength(const class TopoDS_Edge& edge);
 // returns a point on the wire (0 <= alpha <= 1)
 TIGL_EXPORT gp_Pnt WireGetPoint(const TopoDS_Wire& wire, double alpha);
 TIGL_EXPORT void WireGetPointTangent(const TopoDS_Wire& wire, double alpha, gp_Pnt& point, gp_Vec& normal);
+
+// returns the starting point of the wire
+TIGL_EXPORT gp_Pnt WireGetFirstPoint(const TopoDS_Wire& w);
+
+// returns the end point of the wire
+TIGL_EXPORT gp_Pnt WireGetLastPoint(const TopoDS_Wire& w);
 
 TIGL_EXPORT gp_Pnt EdgeGetPoint(const TopoDS_Edge& edge, double alpha);
 TIGL_EXPORT void EdgeGetPointTangent(const TopoDS_Edge& edge, double alpha, gp_Pnt& point, gp_Vec& normal);
@@ -99,6 +106,9 @@ TIGL_EXPORT void GetShapeExtension(const TopoDS_Shape& shape,
 // Returns a unique Hashcode for a specific geometric component based on its loft
 TIGL_EXPORT int GetComponentHashCode(tigl::ITiglGeometricComponent&);
 
+// Creates an Edge from the given Points by B-Spline interpolation
+TIGL_EXPORT TopoDS_Edge EdgeSplineFromPoints(const std::vector<gp_Pnt>& points);
+
 // Computes the intersection point of a face and an edge
 TIGL_EXPORT bool GetIntersectionPoint(const TopoDS_Face& face, const TopoDS_Edge& edge, gp_Pnt& dst);
 
@@ -123,6 +133,11 @@ TIGL_EXPORT bool IsPathRelative(const std::string&);
 
 // Returns true, if a file is readable
 TIGL_EXPORT bool IsFileReadable(const std::string& filename);
+
+// get the continuity of two edges which share a common vertex
+TIGL_EXPORT TiglContinuity getEdgeContinuity(const TopoDS_Edge& edge1, const TopoDS_Edge& edge2);
+
+TIGL_EXPORT Standard_Boolean IsEqual(const TopoDS_Shape& s1, const TopoDS_Shape& s2);
 
 // Method for building a face out of two wires
 TIGL_EXPORT TopoDS_Face BuildFace(const TopoDS_Wire& wire1, const TopoDS_Wire& wire2);

@@ -24,7 +24,7 @@ dependencies {
 }
 
 run {
-    args += '@PROJECT_SOURCE_DIR@/tests/TestData/simpletest.cpacs.xml'
+    args += '@PROJECT_SOURCE_DIR@/tests/unittests/TestData/simpletest.cpacs.xml'
     classpath  'java.library.path','@TIGL_LIB_PATH@','@TIGL_LIB_PATH@/Release','@TIGL_LIB_PATH@/Debug'
     environment 'DYLD_LIBRARY_PATH', '@OpenCASCADE_DLL_DIRECTORY@:@TIXI_LIB_PATH@'
     environment 'LD_LIBRARY_PATH', '@OpenCASCADE_DLL_DIRECTORY@:@TIXI_LIB_PATH@'

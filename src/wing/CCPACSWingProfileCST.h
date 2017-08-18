@@ -56,10 +56,10 @@ public:
     TIGL_EXPORT virtual const std::vector<CTiglPoint>& GetSamplePoints() const OVERRIDE; // TODO: why do we need those anyway, they just return an empty vector?
 
     // get upper wing profile wire
-    TIGL_EXPORT const TopoDS_Edge & GetUpperWire() const;
+    TIGL_EXPORT const TopoDS_Edge & GetUpperEdge() const;
 
     // get lower wing profile wire
-    TIGL_EXPORT const TopoDS_Edge & GetLowerWire() const;
+    TIGL_EXPORT const TopoDS_Edge & GetLowerEdge() const;
 
     // get trailing edge
     TIGL_EXPORT const TopoDS_Edge & GetTrailingEdge() const;
@@ -68,7 +68,7 @@ public:
     TIGL_EXPORT const TopoDS_Edge & GetTrailingEdgeOpened() const;
 
     // gets the upper and lower wing profile into on edge
-    TIGL_EXPORT const TopoDS_Edge & GetUpperLowerWire() const;
+    TIGL_EXPORT const TopoDS_Edge & GetUpperLowerEdge() const;
 
     // Getter for upper wire of closed profile
     TIGL_EXPORT const TopoDS_Edge & GetUpperWireClosed() const;
@@ -96,10 +96,10 @@ protected:
     void BuildWires();
 
 private:
-    TopoDS_Edge               upperWire;          /**< wire of the upper wing profile */
-    TopoDS_Edge               lowerWire;          /**< wire of the lower wing profile */
+    TopoDS_Edge               upperEdge;          /**< wire of the upper wing profile */
+    TopoDS_Edge               lowerEdge;          /**< wire of the lower wing profile */
     TopoDS_Edge               upperLowerEdge;     /**< edge consisting of upper and lower wing profile */
-    TopoDS_Edge               trailingEdge;       /**< wire of the trailing edge */
+    TopoDS_Edge               trailingEdge;       /**< edge of the trailing edge */
     gp_Pnt                    lePoint;            /**< Leading edge point */
     gp_Pnt                    tePoint;            /**< Trailing edge point */
 };

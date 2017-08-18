@@ -33,6 +33,7 @@
 #include "tixi.h"
 #include "CTiglFuselageConnection.h"
 #include "CTiglAbstractSegment.h"
+#include "CCPACSGuideCurve.h"
 #include "CCPACSGuideCurves.h"
 #include "CCPACSTransformation.h"
 
@@ -43,7 +44,7 @@ namespace tigl
 {
 class CCPACSFuselage;
 
-class CCPACSFuselageSegment : public generated::CPACSFuselageSegment, public CTiglAbstractSegment<CCPACSFuselageSegment>
+class CCPACSFuselageSegment : public generated::CPACSFuselageSegment, public CTiglAbstractSegment<CCPACSFuselageSegment>, public IGuideCurveBuilder
 {
 
 public:
@@ -151,14 +152,8 @@ public:
 
     TIGL_EXPORT TiglGeometricComponentType GetComponentType() const { return TIGL_COMPONENT_FUSELSEGMENT | TIGL_COMPONENT_SEGMENT | TIGL_COMPONENT_LOGICAL; }
 
-    // builds all guide curve wires
-    TIGL_EXPORT TopTools_SequenceOfShape& BuildGuideCurves();
-
-    // get guide curve for given UID
-    TIGL_EXPORT const CCPACSGuideCurve& GetGuideCurve(std::string UID);
-
-    // check if guide curve with a given UID exists
-    TIGL_EXPORT bool GuideCurveExists(std::string UID);
+    // builds all guide curve segments
+    TIGL_EXPORT void BuildGuideCurve(CCPACSGuideCurve*);
 
 protected:
     // Cleanup routine
@@ -174,11 +169,10 @@ private:
 
     CTiglFuselageConnection startConnection;       /**< Start segment connection                */
     CTiglFuselageConnection endConnection;         /**< End segment connection                  */
-    CCPACSFuselage*          fuselage;             /**< Parent fuselage                         */
-    TopTools_SequenceOfShape guideCurveWires;      /**< container for the guide curve wires     */
-    double                   myVolume;             /**< Volume of this segment                  */
-    double                   mySurfaceArea;        /**< Surface Area of this segment            */
-    double                   myWireLength;         /**< Wire length of this segment for a given zeta */
+    CCPACSFuselage*         fuselage;             /**< Parent fuselage                         */
+    double                  myVolume;             /**< Volume of this segment                  */
+    double                  mySurfaceArea;        /**< Surface Area of this segment            */
+    bool                    guideCurvesBuilt;     /**< True, if guide curves are already built                     */
 };
 
 } // end namespace tigl

@@ -322,15 +322,14 @@ TEST_F(FuselageGuideCurve, tiglFuselageGuideCurve_CCPACSGuideCurveAlgo)
     tigl::CCPACSGuideCurveProfile guideCurveProfile(NULL);
     guideCurveProfile.ReadCPACS(tixiHandle, "/cpacs/vehicles/profiles/guideCurves/guideCurveProfile[2]");
 
-    TopoDS_Wire guideCurveWire;
+    TopoDS_Edge guideCurveEdge;
     // instantiate guideCurveAlgo
-    guideCurveWire = tigl::CCPACSGuideCurveAlgo<tigl::CCPACSFuselageProfileGetPointAlgo> (wireContainer1, wireContainer2, 0.5, 0.5, 2*radius1, 2*radius2, guideCurveProfile);
+    guideCurveEdge = tigl::CCPACSGuideCurveAlgo<tigl::CCPACSFuselageProfileGetPointAlgo> (wireContainer1, wireContainer2, 0.5, 0.5, 2*radius1, 2*radius2, guideCurveProfile);
 
     // check if guide curve runs through sample points
     // get curve
     Standard_Real u1, u2;
-    BRepTools_WireExplorer guideCurveExplorer(guideCurveWire);
-    Handle(Geom_Curve) curve =  BRep_Tool::Curve(guideCurveExplorer.Current(), u1, u2);
+    Handle(Geom_Curve) curve =  BRep_Tool::Curve(guideCurveEdge, u1, u2);
     // set predicted sample points from cpacs file
     const double temp[] = {0.0, 0.0, 0.01, 0.03, 0.09, 0.08, 0.07, 0.06, 0.02, 0.0, 0.0};
     std::vector<double> predictedSamplePointsY (temp, temp + sizeof(temp) / sizeof(temp[0]) );
@@ -364,19 +363,18 @@ TEST_F(FuselageGuideCurve, tiglFuselageGuideCurve_CCPACSFuselageSegment)
     ASSERT_EQ(fuselage.GetSegmentCount(),2);
     tigl::CCPACSFuselageSegment& segment1 = (tigl::CCPACSFuselageSegment&) fuselage.GetSegment(1);
     tigl::CCPACSFuselageSegment& segment2 = (tigl::CCPACSFuselageSegment&) fuselage.GetSegment(2);
-    TopTools_SequenceOfShape& guideCurveContainer1 = segment1.BuildGuideCurves();
-    TopTools_SequenceOfShape& guideCurveContainer2 = segment2.BuildGuideCurves();
 
-    ASSERT_EQ(guideCurveContainer1.Length(), 3);
+    ASSERT_TRUE(segment1.GetGuideCurves().get_ptr() != NULL);
+    tigl::CCPACSGuideCurves& guides = *segment1.GetGuideCurves();
+    ASSERT_EQ(guides.GetGuideCurveCount(), 3);
 
     // obtain leading edge guide curve 
-    TopoDS_Wire guideCurveWire = TopoDS::Wire(guideCurveContainer1(2));
+    TopoDS_Edge guideCurveWire = guides.GetGuideCurve(2).GetCurve();
 
     // check if guide curve runs through sample points
     // get curve
     Standard_Real u1, u2;
-    BRepTools_WireExplorer guideCurveExplorer(guideCurveWire);
-    Handle(Geom_Curve) curve =  BRep_Tool::Curve(guideCurveExplorer.Current(), u1, u2);
+    Handle(Geom_Curve) curve =  BRep_Tool::Curve(guideCurveWire, u1, u2);
     // gamma values of cpacs data points
     const double temp[] = {0.0, 0.0, 0.01, 0.03, 0.09, 0.08, 0.07, 0.06, 0.02, 0.0, 0.0};
     std::vector<double> gammaDeviation (temp, temp + sizeof(temp) / sizeof(temp[0]) );

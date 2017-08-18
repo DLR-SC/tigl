@@ -70,13 +70,13 @@ public:
     TIGL_EXPORT virtual const std::vector<CTiglPoint>& GetSamplePoints() const OVERRIDE;
 
     // get upper wing profile wire
-    TIGL_EXPORT virtual const TopoDS_Edge& GetUpperWire() const OVERRIDE;
+    TIGL_EXPORT virtual const TopoDS_Edge& GetUpperEdge() const OVERRIDE;
 
     // get lower wing profile wire
-    TIGL_EXPORT virtual const TopoDS_Edge& GetLowerWire() const OVERRIDE;
+    TIGL_EXPORT virtual const TopoDS_Edge& GetLowerEdge() const OVERRIDE;
 
     // get the upper and lower wing profile combined into one edge
-    TIGL_EXPORT virtual const TopoDS_Edge & GetUpperLowerWire() const OVERRIDE;
+    TIGL_EXPORT virtual const TopoDS_Edge & GetUpperLowerEdge() const OVERRIDE;
 
     // get trailing edge if existing in definition
     TIGL_EXPORT virtual const TopoDS_Edge& GetTrailingEdge() const OVERRIDE;

@@ -136,7 +136,7 @@ void CCPACSWingProfile::Update()
 TopoDS_Edge CCPACSWingProfile::GetUpperWire()
 {
     Update();
-    return profileAlgo->GetUpperWire();
+    return profileAlgo->GetUpperEdge();
 }
 
 // Returns the wing upper profile wire for opened profile
@@ -157,7 +157,7 @@ TopoDS_Edge CCPACSWingProfile::GetUpperWireClosed()
 TopoDS_Edge CCPACSWingProfile::GetLowerWire()
 {
     Update();
-    return profileAlgo->GetLowerWire();
+    return profileAlgo->GetLowerEdge();
 }
 
 // Returns the wing lower profile wire for opened profile
@@ -193,8 +193,8 @@ TopoDS_Wire CCPACSWingProfile::GetSplitWire()
     Update();
     // rebuild closed wire
     BRepBuilderAPI_MakeWire closedWireBuilder;
-    closedWireBuilder.Add(profileAlgo->GetLowerWire());
-    closedWireBuilder.Add(profileAlgo->GetUpperWire());
+    closedWireBuilder.Add(profileAlgo->GetLowerEdge());
+    closedWireBuilder.Add(profileAlgo->GetUpperEdge());
     if (!profileAlgo->GetTrailingEdge().IsNull()) {
         closedWireBuilder.Add(profileAlgo->GetTrailingEdge());
     }
@@ -212,11 +212,16 @@ TopoDS_Wire CCPACSWingProfile::GetWire()
     Update();
     // rebuild closed wire
     BRepBuilderAPI_MakeWire closedWireBuilder;
-    closedWireBuilder.Add(profileAlgo->GetUpperLowerWire());
+    closedWireBuilder.Add(profileAlgo->GetUpperLowerEdge());
     if (!profileAlgo->GetTrailingEdge().IsNull()) {
         closedWireBuilder.Add(profileAlgo->GetTrailingEdge());
     }
-
+    closedWireBuilder.Build();
+    
+    if (!closedWireBuilder.IsDone()) {
+        throw CTiglError("Error creating closed wing profile");
+    }
+        
     return closedWireBuilder.Wire();
 }
 

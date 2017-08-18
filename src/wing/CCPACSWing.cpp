@@ -29,6 +29,7 @@
 #include "generated/CPACSRotorBlades.h"
 #include "CCPACSWing.h"
 #include "CCPACSWingSection.h"
+#include "CTiglWingBuilder.h"
 #include "CCPACSConfiguration.h"
 #include "CTiglAbstractSegment.h"
 #include "CCPACSWingSegment.h"
@@ -48,7 +49,10 @@
 #include "BRepAlgoAPI_Cut.hxx"
 #include "Bnd_Box.hxx"
 #include "BRepBndLib.hxx"
-#include <BRepBuilderAPI_MakeWire.hxx>
+#include "BRepBuilderAPI_MakeWire.hxx"
+#include "BRepTools.hxx"
+#include "ShapeFix_Wire.hxx"
+#include "CTiglMakeLoft.h"
 #include <TopExp.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
 
@@ -103,47 +107,6 @@ namespace
         }
         
         return TopoDS::Wire(resultWire);
-    }
-
-    // Set the face traits
-    void SetFaceTraits (PNamedShape loft, unsigned int nSegments) 
-    { 
-        // designated names of the faces
-        std::vector<std::string> names(3);
-        names[0]="Bottom";
-        names[1]="Top";
-        names[2]="TrailingEdge";
-        std::vector<std::string> endnames(2);
-        endnames[0]="Inside";
-        endnames[1]="Outside";
-
-        // map of faces
-        TopTools_IndexedMapOfShape map;
-        TopExp::MapShapes(loft->Shape(),   TopAbs_FACE, map);
-
-        unsigned int nFaces = map.Extent();
-        // check if number of faces without inside and outside surface (nFaces-2) 
-        // is a multiple of 2 (without Trailing Edges) or 3 (with Trailing Edges)
-        if (!((nFaces-2)/nSegments == 2 || (nFaces-2)/nSegments == 3) || nFaces < 4) {
-            LOG(ERROR) << "CCPACSWing: Unable to determine wing face names from wing loft.";
-            return;
-        }
-        // remove trailing edge name if there is no trailing edge
-        if ((nFaces-2)/nSegments == 2) {
-            names.erase(names.begin()+2);
-        }
-        // assign "Top" and "Bottom" to face traits
-        for (unsigned int i = 0; i < nFaces-2; i++) {
-            CFaceTraits traits = loft->GetFaceTraits(i);
-            traits.SetName(names[i%names.size()].c_str());
-            loft->SetFaceTraits(i, traits);
-        }
-        // assign "Inside" and "Outside" to face traits
-        for (unsigned int i = nFaces-2; i < nFaces; i++) {
-            CFaceTraits traits = loft->GetFaceTraits(i);
-            traits.SetName(endnames[i-nFaces+2].c_str());
-            loft->SetFaceTraits(i, traits);
-        }
     }
 }
 
@@ -204,6 +167,29 @@ void CCPACSWing::Cleanup()
     Invalidate();
 }
 
+void CCPACSWing::ConnectGuideCurveSegments(void)
+{
+    for (int isegment = 1; isegment <= GetSegmentCount(); ++isegment) {
+        CCPACSWingSegment& segment = GetSegment(isegment);
+
+        if (!segment.GetGuideCurves()) {
+            continue;
+        }
+
+        CCPACSGuideCurves& curves = *segment.GetGuideCurves();
+        for (int icurve = 1; icurve <= curves.GetGuideCurveCount(); ++icurve) {
+            CCPACSGuideCurve& curve = curves.GetGuideCurve(icurve);
+
+            if (!curve.GetFromRelativeCircumference_choice2()) {
+                std::string fromUID = *curve.GetFromGuideCurveUID_choice1();
+                CCPACSGuideCurve& fromCurve = GetGuideCurveSegment(fromUID);
+                curve.SetFromRelativeCircumference_choice2(fromCurve.GetToRelativeCircumference());
+                //TODO: also call curve->connect already
+            }
+        }
+    }
+}
+
 // Update internal wing data
 void CCPACSWing::Update()
 {
@@ -226,6 +212,9 @@ void CCPACSWing::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& win
     if (wingXPath.find("rotorBlade") != std::string::npos) {
         isRotorBlade = true;
     }
+
+    ConnectGuideCurveSegments();
+
     // Register ourself at the unique id manager
     configuration->GetUIDManager().AddGeometricComponent(m_uID, this);
 
@@ -373,25 +362,7 @@ PNamedShape CCPACSWing::BuildLoft()
 // Builds a fused shape of all wing segments
 PNamedShape CCPACSWing::BuildFusedSegments(bool splitWingInUpperAndLower)
 {
-    //@todo: this probably works only if the wings does not split somewere
-    BRepOffsetAPI_ThruSections generator(Standard_True, Standard_True, Precision::Confusion() );
-
-    for (int i=1; i <= m_segments.GetSegmentCount(); i++) {
-        TopoDS_Wire startWire = m_segments.GetSegment(i).GetInnerWire();
-        generator.AddWire(startWire);
-    }
-
-    TopoDS_Wire endWire = m_segments.GetSegment(m_segments.GetSegmentCount()).GetOuterWire();
-    generator.AddWire(endWire);
-
-    generator.CheckCompatibility(Standard_False);
-    generator.Build();
-        
-    TopoDS_Shape loftShape = generator.Shape();
-    std::string loftName = GetUID();
-    std::string loftShortName = GetShortShapeName();
-    PNamedShape loft(new CNamedShape(loftShape, loftName.c_str(), loftShortName.c_str()));
-    SetFaceTraits(loft, m_segments.GetSegmentCount());
+    PNamedShape loft = CTiglWingBuilder(*this);
     return loft;
 }
     
@@ -778,15 +749,95 @@ int CCPACSWing::GetSegmentEtaXsi(const gp_Pnt& point, double& eta, double& xsi, 
 }
 
 // Get the guide curve with a given UID
-const CCPACSGuideCurve& CCPACSWing::GetGuideCurve(std::string uid)
+CCPACSGuideCurve& CCPACSWing::GetGuideCurveSegment(std::string uid)
 {
     for (int i=1; i <= m_segments.GetSegmentCount(); i++) {
         CCPACSWingSegment& segment = m_segments.GetSegment(i);
-        if (segment.GuideCurveExists(uid)) {
-            return segment.GetGuideCurve(uid);
+
+        if (!segment.GetGuideCurves()) {
+            continue;
+        }
+
+        if (segment.GetGuideCurves()->GuideCurveExists(uid)) {
+            return segment.GetGuideCurves()->GetGuideCurve(uid);
         }
     }
     throw tigl::CTiglError("Guide Curve with UID " + uid + " does not exists", TIGL_ERROR);
+}
+
+TopoDS_Compound& CCPACSWing::GetGuideCurveWires()
+{
+    BuildGuideCurveWires();
+    return guideCurves;
+}
+
+
+void CCPACSWing::BuildGuideCurveWires()
+{
+    if (!guideCurves.IsNull()) {
+        return;
+    }
+    
+    guideCurves.Nullify();
+    BRep_Builder b;
+    b.MakeCompound(guideCurves);
+    
+    // check, if the wing has a blunt trailing edge
+    bool hasBluntTE = true;
+    if (GetSectionCount() > 0) {
+        CCPACSWingSegment& segment = m_segments.GetSegment(1);
+        hasBluntTE = !segment.GetInnerConnection().GetProfile().GetTrailingEdge().IsNull();
+    }
+    
+    // the guide curves will be sorted according to the inner
+    // from relativeCircumference
+    std::multimap<double, CCPACSGuideCurve*> roots;
+    
+    // connect the belonging guide curve segments
+    for (int isegment = 1; isegment <= GetSegmentCount(); ++isegment) {
+        CCPACSWingSegment& segment = m_segments.GetSegment(isegment);
+
+        if (!segment.GetGuideCurves()) {
+            continue;
+        }
+
+        CCPACSGuideCurves& segmentCurves = *segment.GetGuideCurves();
+        for (int iguide = 1; iguide <=  segmentCurves.GetGuideCurveCount(); ++iguide) {
+            CCPACSGuideCurve& curve = segmentCurves.GetGuideCurve(iguide);
+            if (!curve.GetFromGuideCurveUID_choice1()) {
+                // this is a root curve
+                double fromRef = *curve.GetFromRelativeCircumference_choice2();
+                if (fromRef >= 1. && !hasBluntTE) {
+                    fromRef = -1.;
+                }
+                roots.insert(std::make_pair(fromRef, &curve));
+            }
+            else {
+                CCPACSGuideCurve& fromCurve = GetGuideCurveSegment(*curve.GetFromGuideCurveUID_choice1());
+                fromCurve.ConnectToCurve(&curve);
+            }
+        }
+    }
+    
+    // connect belonging guide curves to wires
+    std::multimap<double, CCPACSGuideCurve*>::iterator it;
+    for (it = roots.begin(); it != roots.end(); ++it) {
+        CCPACSGuideCurve* curCurve = it->second;
+        BRepBuilderAPI_MakeWire wireMaker;
+        while (curCurve) {
+            const TopoDS_Edge& edge = curCurve->GetCurve();
+            wireMaker.Add(edge);
+            curCurve = curCurve->GetConnectedCurve();
+        }
+        TopoDS_Wire result = wireMaker.Wire();
+        // Fix Shape, might be necessary since the order of edges could be wrong
+        ShapeFix_Wire wireFixer;
+        wireFixer.Load(result);
+        wireFixer.FixReorder();
+        wireFixer.Perform();
+        result = wireFixer.Wire();
+        b.Add(guideCurves, result);
+    }
 }
 
 } // end namespace tigl

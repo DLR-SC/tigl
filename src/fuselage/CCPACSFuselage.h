@@ -36,7 +36,7 @@
 #include "CCPACSFuselageSegments.h"
 #include "CCPACSPositionings.h"
 #include "CTiglRelativelyPositionedComponent.h"
-#include "generated/CPACSGuideCurve.h"
+#include "CCPACSGuideCurve.h"
 
 #include "TopoDS_Shape.hxx"
 #include "TopoDS_Compound.hxx"
@@ -106,10 +106,19 @@ public:
     // The Fuselage could be turned with a given angle at at given axis, specified by a point and a direction.
     TIGL_EXPORT gp_Pnt GetMinumumDistanceToGround(gp_Ax1 RAxis, double angle);
 
-    // Get the guide curve with a given UID
-    TIGL_EXPORT const CCPACSGuideCurve& GetGuideCurve(std::string uid);
-    
+    TIGL_EXPORT void SetSymmetryAxis(const std::string& axis);
+
+    // Get the guide curve segment(partial guide curve) with a given UID
+    TIGL_EXPORT CCPACSGuideCurve& GetGuideCurveSegment(std::string uid);
+
+    // Returns all guide curve wires as a compound
+    TIGL_EXPORT TopoDS_Compound& GetGuideCurveWires();
+
 protected:
+    void BuildGuideCurves();
+
+    void ConnectGuideCurveSegments();
+
     // Cleanup routine
     void Cleanup();
 
@@ -127,6 +136,7 @@ private:
     FusedElementsContainerType fusedElements;        /**< Stores already fused segments */
 
     TopoDS_Compound            aCompound;
+    TopoDS_Compound            guideCurves;
     BRep_Builder               aBuilder;
     double                     myVolume;             /**< Volume of this fuselage              */
 

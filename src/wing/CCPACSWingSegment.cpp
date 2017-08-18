@@ -28,6 +28,7 @@
 #include <string>
 #include <cassert>
 #include <cfloat>
+#include <map>
 
 #include "CCPACSWingSegment.h"
 #include "CCPACSWing.h"
@@ -38,6 +39,7 @@
 #include "CCPACSWingProfileGetPointAlgo.h"
 #include "CCPACSConfiguration.h"
 #include "CTiglError.h"
+#include "CTiglMakeLoft.h"
 #include "tiglcommonfunctions.h"
 #include "tigl_config.h"
 #include "math/tiglmathfunctions.h"
@@ -223,7 +225,7 @@ void CCPACSWingSegment::Invalidate()
     CTiglAbstractSegment::Reset();
     surfaceCache.valid = false;
     surfaceCache.chordsurfaceValid = false;
-    guideCurveWires.Clear();
+    guideCurvesBuilt = false;
 }
 
 // Cleanup routine
@@ -235,6 +237,7 @@ void CCPACSWingSegment::Cleanup()
     surfaceCache.valid = false;
     surfaceCache.chordsurfaceValid = false;
     CTiglAbstractSegment::Reset();
+    guideCurvesBuilt = false;
 }
 
 // Update internal segment data
@@ -251,8 +254,20 @@ void CCPACSWingSegment::ReadCPACS(TixiDocumentHandle tixiHandle, const std::stri
 
     GetWing().GetConfiguration().GetUIDManager().AddGeometricComponent(m_uID, this);
 
+
     innerConnection = CTiglWingConnection(m_fromElementUID, this);
     outerConnection = CTiglWingConnection(m_toElementUID, this);
+
+    if (m_guideCurves) {
+        for (int iguide = 1; iguide <= m_guideCurves->GetGuideCurveCount(); ++iguide) {
+            CCPACSGuideCurve& curve = m_guideCurves->GetGuideCurve(iguide);
+            curve.SetGuideCurveBuilder(this);
+        }
+    }
+
+    // TODO: check in case of guide curves, that the curves of the first
+    // segment have a relativeFromCircumference set, the others not
+
 
     // check that the profiles are consistent
     if (innerConnection.GetProfile().HasBluntTE() !=
@@ -290,16 +305,12 @@ TopoDS_Wire CCPACSWingSegment::GetInnerWire(TiglCoordinateSystem referenceCS) co
     * In all other cases, we need the splitted wire to distiguish
     * upper und lower wing surface
     */
-#ifdef LOFTALGO_FOUND
-    if (guideCurves.GetGuideCurveCount() > 0) {
+    if (m_guideCurves && m_guideCurves->GetGuideCurveCount() > 0) {
         w = innerProfile.GetWire();
     }
     else {
         w = innerProfile.GetSplitWire();
     }
-#else
-    w = innerProfile.GetSplitWire();
-#endif
 
         CTiglTransformation identity;
     
@@ -327,16 +338,12 @@ TopoDS_Wire CCPACSWingSegment::GetOuterWire(TiglCoordinateSystem referenceCS) co
     * In all other cases, we need the splitted wire to distiguish
     * upper und lower wing surface
     */
-#ifdef LOFTALGO_FOUND
-    if (guideCurves.GetGuideCurveCount() > 0) {
+    if (m_guideCurves && m_guideCurves->GetGuideCurveCount() > 0) {
         w = outerProfile.GetWire();
     }
     else {
         w = outerProfile.GetSplitWire();
     }
-#else
-    w = outerProfile.GetSplitWire();
-#endif
 
         CTiglTransformation identity;
 
@@ -437,14 +444,41 @@ PNamedShape CCPACSWingSegment::BuildLoft()
     TopoDS_Wire outerWire = GetOuterWire();
 
     // Build loft
-    //BRepOffsetAPI_ThruSections generator(Standard_False, Standard_False, Precision::Confusion());
-    BRepOffsetAPI_ThruSections generator(/* is solid (else shell) */ Standard_True, /* ruled (else smoothed out) */ Standard_False, Precision::Confusion());
-    generator.AddWire(innerWire);
-    generator.AddWire(outerWire);
-    generator.CheckCompatibility(/* check (defaults to true) */ Standard_False);
-    generator.Build();
-    TopoDS_Shape loftShape = generator.Shape();
+    CTiglMakeLoft lofter;
+    lofter.addProfiles(innerWire);
+    lofter.addProfiles(outerWire);
+    
 
+    if (m_guideCurves) {
+        CCPACSGuideCurves& curves = *m_guideCurves;
+        bool hasTrailingEdge = !innerConnection.GetProfile().GetTrailingEdge().IsNull();
+        
+        // order guide curves according to fromRelativeCircumeference
+        std::multimap<double, CCPACSGuideCurve*> guideMap;
+        for (int iguide = 1; iguide <= curves.GetGuideCurveCount(); ++iguide) {
+            CCPACSGuideCurve* curve = &curves.GetGuideCurve(iguide);
+            double value = *(curve->GetFromRelativeCircumference_choice2());
+            if (value >= 1. && !hasTrailingEdge) {
+                // this is a trailing edge profile, we should add it first
+                value = -1.;
+            }
+            guideMap.insert(std::make_pair(value, curve));
+        }
+        
+        std::multimap<double, CCPACSGuideCurve*>::iterator it;
+        for (it = guideMap.begin(); it != guideMap.end(); ++it) {
+            CCPACSGuideCurve* curve = it->second;
+            BRepBuilderAPI_MakeWire wireMaker(curve->GetCurve());
+            lofter.addGuides(wireMaker.Wire());
+        }
+    }
+    
+    TopoDS_Shape loftShape = lofter.Shape();
+    if (loftShape.IsNull()) {
+        LOG(ERROR) << "Cannot compute wing segment loft " << GetUID();
+        return PNamedShape();
+    }
+    
     Handle(ShapeFix_Shape) sfs = new ShapeFix_Shape;
     sfs->Init ( loftShape );
     sfs->Perform();
@@ -1181,32 +1215,17 @@ TopoDS_Shape& CCPACSWingSegment::GetLowerShape(TiglCoordinateSystem referenceCS)
     }
 }
 
-// get guide curve for given UID
-const CCPACSGuideCurve& CCPACSWingSegment::GetGuideCurve(std::string UID) const
-{
-    return m_guideCurves->GetGuideCurve(UID);
-}
-
-// check if guide curve with a given UID exists
-bool CCPACSWingSegment::GuideCurveExists(std::string UID) const
-{
-    return m_guideCurves->GuideCurveExists(UID);
-}
-
-TopTools_SequenceOfShape& CCPACSWingSegment::GetGuideCurveWires() const
-{
-    if (guideCurveWires.IsEmpty()) {
-        BuildGuideCurveWires();
-    }
-    return guideCurveWires;
-}
-
 // Creates all guide curves
-void CCPACSWingSegment::BuildGuideCurveWires() const
+void CCPACSWingSegment::BuildGuideCurve(CCPACSGuideCurve*)
 {
-    guideCurveWires.Clear();
+    // we build all curves at once, not just the one asked for
+    
+    if (!m_guideCurves || guideCurvesBuilt) {
+        return;
+    }
+    
     if (m_guideCurves) {
-        const tigl::CTiglTransformation& wingTransform = GetWing().GetTransformationMatrix();
+         const tigl::CTiglTransformation& wingTransform = GetWing().GetTransformationMatrix();
 
         // get upper and lower part of inner profile in world coordinates
         CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
@@ -1238,7 +1257,7 @@ void CCPACSWingSegment::BuildGuideCurveWires() const
         int nGuideCurves = m_guideCurves->GetGuideCurveCount();
         for (int i=0; i!=nGuideCurves; i++) {
             // get guide curve
-            const CCPACSGuideCurve& guideCurve = m_guideCurves->GetGuideCurve(i+1);
+            CCPACSGuideCurve& guideCurve = m_guideCurves->GetGuideCurve(i+1);
             double fromRelativeCircumference;
             // check if fromRelativeCircumference is given in the current guide curve
             if (guideCurve.GetFromRelativeCircumference_choice2()) {
@@ -1249,10 +1268,11 @@ void CCPACSWingSegment::BuildGuideCurveWires() const
                 // get neighboring guide curve UID
                 std::string neighborGuideCurveUID = *guideCurve.GetFromGuideCurveUID_choice1();
                 // get neighboring guide curve
-                const CCPACSGuideCurve& neighborGuideCurve = wing->GetGuideCurve(neighborGuideCurveUID);
+                const CCPACSGuideCurve& neighborGuideCurve = wing->GetGuideCurveSegment(neighborGuideCurveUID);
                 // get relative circumference from neighboring guide curve
                 fromRelativeCircumference = neighborGuideCurve.GetToRelativeCircumference();
             }
+
             // get relative circumference of outer profile
             double toRelativeCircumference = guideCurve.GetToRelativeCircumference();
             // get guide curve profile UID
@@ -1264,10 +1284,17 @@ void CCPACSWingSegment::BuildGuideCurveWires() const
             CCPACSGuideCurveProfile& guideCurveProfile = config.GetGuideCurveProfile(guideCurveProfileUID);
 
             // construct guide curve algorithm
-            TopoDS_Wire guideCurveWire = CCPACSGuideCurveAlgo<CCPACSWingProfileGetPointAlgo>(concatenatedInnerWires, concatenatedOuterWires, fromRelativeCircumference, toRelativeCircumference, innerScale, outerScale, guideCurveProfile);
-            guideCurveWires.Append(guideCurveWire);
+            TopoDS_Edge guideCurveEdge = CCPACSGuideCurveAlgo<CCPACSWingProfileGetPointAlgo> (concatenatedInnerWires,
+                                                                                              concatenatedOuterWires,
+                                                                                              fromRelativeCircumference,
+                                                                                              toRelativeCircumference,
+                                                                                              innerScale,
+                                                                                              outerScale,
+                                                                                              guideCurveProfile);
+            guideCurve.SetCurve(guideCurveEdge);
         }
     }
+    guideCurvesBuilt = true;
 }
 
 int CCPACSWingSegment::GetGuideCurveCount() const

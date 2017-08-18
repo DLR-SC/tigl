@@ -57,8 +57,8 @@ build_script:
 - ps: |
     md _build -Force | Out-Null
     cd _build
-    Write-Output "Running cmake: -DCMAKE_INSTALL_PREFIX=install -DCASROOT=c:\oce\$ocedist -DTIXI_PATH=c:\tixi\$tixidist -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON -DTIGL_BUILD_TESTS=ON -DTIGL_NIGHTLY=ON -DQT_PATH=c:\Qt\5.4.1\$qtdist -DDOXYGEN_EXECUTABLE=c:/doxygen-win/bin/doxygen.exe .."
-    & cmake -G "$generator" -DCMAKE_INSTALL_PREFIX=install -DCASROOT=c:\oce\$ocedist -DTIXI_PATH=c:\tixi\$tixidist -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON -DTIGL_BUILD_TESTS=ON -DTIGL_NIGHTLY=ON -DQT_PATH=c:\Qt\5.4.1\$qtdist -DDOXYGEN_EXECUTABLE=c:/doxygen-win/bin/doxygen.exe ..
+    Write-Output "Running cmake: -DCMAKE_INSTALL_PREFIX=install -DCASROOT=c:\oce\$ocedist -DTIXI_PATH=c:\tixi\$tixidist -DTIGL_OCE_COONS_PATCHED=ON -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON -DTIGL_BUILD_TESTS=ON -DTIGL_NIGHTLY=ON -DQT_PATH=c:\Qt\5.4.1\$qtdist -DDOXYGEN_EXECUTABLE=c:/doxygen-win/bin/doxygen.exe .."
+    & cmake -G "$generator" -DCMAKE_INSTALL_PREFIX=install -DCASROOT=c:\oce\$ocedist -DTIXI_PATH=c:\tixi\$tixidist -DTIGL_OCE_COONS_PATCHED=ON -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON -DTIGL_BUILD_TESTS=ON -DTIGL_NIGHTLY=ON -DQT_PATH=c:\Qt\5.4.1\$qtdist -DDOXYGEN_EXECUTABLE=c:/doxygen-win/bin/doxygen.exe ..
     if ($LastExitCode -ne 0) {
         throw "Exec: $ErrorMessage"
     }
@@ -70,14 +70,14 @@ build_script:
 
 test_script:
 - ps: |
-    cd tests
+    cd tests/unittests
     $env:PATH = "c:\tixi\$tixidist\bin;$env:PATH"
     & $env:CONFIGURATION\TiGL-unittests.exe --gtest_output=xml:test_results.xml
     if ($LastExitCode -ne 0) {
         throw "Exec: $ErrorMessage"
     }
     (new-object net.webclient).UploadFile("https://ci.appveyor.com/api/testresults/junit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\test_results.xml))
-    cd ..
+    cd ..\..
     cmake --build . --target tigl-java-demo
     if ($LastExitCode -ne 0) {
         throw "Exec: $ErrorMessage"

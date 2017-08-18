@@ -134,7 +134,7 @@ void CTiglWingProfilePointList::BuildWires()
     ITiglWireAlgorithm::CPointContainer points;
     ITiglWireAlgorithm::CPointContainer openPoints, closedPoints;
 
-	for (std::vector<CTiglPoint>::const_iterator it = coordinates.begin(); it != coordinates.end(); ++it) {
+    for (std::vector<CTiglPoint>::const_iterator it = coordinates.begin(); it != coordinates.end(); ++it) {
         points.push_back(it->Get_gp_Pnt());
     }
     // special handling for supporting opened and closed profiles
@@ -260,7 +260,7 @@ void CTiglWingProfilePointList::BuildLETEPoints()
 
     // find the point with the max dist to TE point
     lePoint = tePoint;
-	for (std::vector<CTiglPoint>::const_iterator it = coordinates.begin(); it != coordinates.end(); ++it) {
+    for (std::vector<CTiglPoint>::const_iterator it = coordinates.begin(); it != coordinates.end(); ++it) {
         gp_Pnt point = it->Get_gp_Pnt();
         if (tePoint.Distance(point) > tePoint.Distance(lePoint)) {
             lePoint = point;
@@ -286,7 +286,7 @@ const std::vector<CTiglPoint>& CTiglWingProfilePointList::GetSamplePoints() cons
 }
 
 // get upper wing profile wire
-const TopoDS_Edge& CTiglWingProfilePointList::GetUpperWire() const
+const TopoDS_Edge& CTiglWingProfilePointList::GetUpperEdge() const
 {
     if (profileIsClosed) {
         return upperWireClosed;
@@ -297,7 +297,7 @@ const TopoDS_Edge& CTiglWingProfilePointList::GetUpperWire() const
 }
 
 // get lower wing profile wire
-const TopoDS_Edge& CTiglWingProfilePointList::GetLowerWire() const
+const TopoDS_Edge& CTiglWingProfilePointList::GetLowerEdge() const
 {
     if (profileIsClosed) {
         return lowerWireClosed;
@@ -308,7 +308,7 @@ const TopoDS_Edge& CTiglWingProfilePointList::GetLowerWire() const
 }
 
 // get the upper and lower wing profile combined into one edge
-const TopoDS_Edge & CTiglWingProfilePointList::GetUpperLowerWire() const 
+const TopoDS_Edge & CTiglWingProfilePointList::GetUpperLowerEdge() const
 {
     if (profileIsClosed) {
         return upperLowerEdgeClosed;

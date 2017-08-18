@@ -40,6 +40,11 @@ set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
 set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
+# convert path to absolute (required for some scripts)
+if (NOT IS_ABSOLUTE ${CMAKE_INSTALL_PREFIX})
+   set (CMAKE_INSTALL_PREFIX ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_PREFIX})
+endif()
+
 OPTION(TIGL_NIGHTLY "Creates a nightly build of tigl (includes git sha into tigl version)" OFF)
 mark_as_advanced(TIGL_NIGHTLY)
 if(TIGL_NIGHTLY)
@@ -74,7 +79,11 @@ set (OCC_VISU_LIBS
 
 # search OCE. If OCE is not found, search for standard OpenCASCADE
 set(CMAKE_PREFIX_PATH "$ENV{CASROOT};${CASROOT};${CMAKE_PREFIX_PATH}")
-find_package(OCE 0.15 COMPONENTS ${OCC_LIBS} QUIET)
+OPTION(OpenCASCADE_DONT_SEARCH_OCE "Disabled searching for OCE" OFF)
+if(NOT OpenCASCADE_DONT_SEARCH_OCE)
+  find_package(OCE 0.15 COMPONENTS ${OCC_LIBS} QUIET)
+endif()
+
 if(OCE_FOUND)
   set(OpenCASCADE_LIBRARIES ${OCC_LIBS})
   set(OpenCASCADE_INCLUDE_DIR ${OCE_INCLUDE_DIRS})
@@ -121,6 +130,8 @@ if(TIGL_USE_GLOG)
     endif()
 endif(TIGL_USE_GLOG)
 
+OPTION(TIGL_OCE_COONS_PATCHED "Check, if you have the OCCT source patched with the C2 coons algorithm" OFF)
+
 # enable C++11 support if available
 include(CheckCXXCompilerFlag)
 include(CheckCXXSourceCompiles)
@@ -154,8 +165,13 @@ endif()
 
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/src/tigl_config.h.in ${CMAKE_CURRENT_BINARY_DIR}/src/tigl_config.h)
 
+# add confidential tests
+OPTION(BUILD_TIGL_CONFIDENTIAL_TESTS "Build tests on confidential data" OFF)
+
 # code coverage analysis
 IF (CMAKE_BUILD_TYPE STREQUAL "Debug")
+        # enable extensive debug output
+        OPTION(DEBUG_EXTENSIVE "Switch on extensive debug output" OFF)
         OPTION(TIGL_ENABLE_COVERAGE "Enable GCov coverage analysis (defines a 'coverage' target and enforces static build of tigl)" OFF)
         IF(TIGL_ENABLE_COVERAGE)
                 MESSAGE(STATUS "Coverage enabled")

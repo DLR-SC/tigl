@@ -39,6 +39,7 @@
 #include "ShapeFix_Shape.hxx"
 #include "GProp_GProps.hxx"
 #include "BRep_Tool.hxx"
+#include "BRepTools.hxx"
 #include "BRepGProp.hxx"
 #include "BRepBuilderAPI_Transform.hxx"
 #include "Geom_TrimmedCurve.hxx"
@@ -48,6 +49,8 @@
 #include "BRepBuilderAPI_MakeWire.hxx"
 #include "GC_MakeSegment.hxx"
 #include "BRepExtrema_DistShapeShape.hxx"
+#include "ShapeFix_Wire.hxx"
+#include "CTiglMakeLoft.h"
 #include "TopExp.hxx"
 #include "TopTools_IndexedMapOfShape.hxx"
 
@@ -93,7 +96,11 @@ void CCPACSFuselage::Cleanup()
 void CCPACSFuselage::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& fuselageXPath)
 {
     Cleanup();
+
     generated::CPACSFuselage::ReadCPACS(tixiHandle, fuselageXPath);
+
+    ConnectGuideCurveSegments();
+
     // Register ourself at the unique id manager
     configuration->GetUIDManager().AddGeometricComponent(m_uID, this);
 }
@@ -157,6 +164,7 @@ std::string CCPACSFuselage::GetShortShapeName ()
 
 void CCPACSFuselage::SetFaceTraits (PNamedShape loft, bool hasSymmetryPlane, bool smoothSurface)
 {
+    // TODO: Face traits with guides must be made
     // this is currently only valid without guides
 
     int nFaces = GetNumberOfFaces(loft->Shape());
@@ -173,7 +181,8 @@ void CCPACSFuselage::SetFaceTraits (PNamedShape loft, bool hasSymmetryPlane, boo
     int facesPerSegment = hasSymmetryPlane ? 2 : 1;
     int remainingFaces = nFaces - facesPerSegment * nSegments;
     if (remainingFaces < 0 || remainingFaces > 2) {
-        throw CTiglError("Fuselage shape seems to be invalid");
+        LOG(WARNING) << "Fuselage faces cannot be names properly (maybe due to Guide Curves?)";
+        return;
     }
 
     int iFaceTotal = 0;
@@ -195,33 +204,32 @@ PNamedShape CCPACSFuselage::BuildLoft()
 {
     // Get Continuity of first segment
     // TODO: adapt lofting to have multiple different continuities
+
     TiglContinuity cont = m_segments.GetSegment(1).GetContinuity();
-    Standard_Boolean ruled = (cont == ::C0? true : false);
+    Standard_Boolean smooth = (cont == ::C0? false : true);
 
-
-    // Ne need a smooth fuselage by default
-    // @TODO: OpenCascade::ThruSections is currently buggy and crashes, if smooth lofting
-    // is performed. Therefore we swicth the 2. parameter to Standard_True (non smooth lofting).
-    // This has to be reverted, as soon as the bug is fixed!!!
-    BRepOffsetAPI_ThruSections generator(Standard_True, ruled, Precision::Confusion() );
-
+    CTiglMakeLoft lofter;
+    // add profiles
     for (int i=1; i <= m_segments.GetSegmentCount(); i++) {
-        generator.AddWire(m_segments.GetSegment(i).GetStartWire());
+        lofter.addProfiles(m_segments.GetSegment(i).GetStartWire());
     }
-    generator.AddWire(m_segments.GetSegment(m_segments.GetSegmentCount()).GetEndWire());
-        
-    generator.SetMaxDegree(2); //surfaces will be C1-continuous
-    generator.SetParType(Approx_Centripetal);
-    generator.CheckCompatibility(Standard_False);
-    generator.Build();
-    TopoDS_Shape loftShape =  generator.Shape();
+    lofter.addProfiles(m_segments.GetSegment(m_segments.GetSegmentCount()).GetEndWire());
+
+    // add guides
+    lofter.addGuides(GetGuideCurveWires());
+
+    lofter.setMakeSmooth(smooth);
+    lofter.setMakeSolid(true);
+
+    TopoDS_Shape loftShape =  lofter.Shape();
+
     std::string loftName = GetUID();
     std::string loftShortName = GetShortShapeName();
     PNamedShape loft(new CNamedShape(loftShape, loftName.c_str(), loftShortName.c_str()));
 
     bool hasSymmetryPlane = GetNumberOfEdges(m_segments.GetSegment(1).GetEndWire()) > 1;
 
-    SetFaceTraits(loft, hasSymmetryPlane, !ruled);
+    SetFaceTraits(loft, hasSymmetryPlane, smooth);
 
     return loft;
 }
@@ -324,15 +332,104 @@ gp_Pnt CCPACSFuselage::GetMinumumDistanceToGround(gp_Ax1 RAxis, double angle)
 }
 
 // Get the guide curve with a given UID
-const CCPACSGuideCurve& CCPACSFuselage::GetGuideCurve(std::string uid)
+CCPACSGuideCurve& CCPACSFuselage::GetGuideCurveSegment(std::string uid)
 {
     for (int i=1; i <= m_segments.GetSegmentCount(); i++) {
         CCPACSFuselageSegment& segment = m_segments.GetSegment(i);
-        if (segment.GuideCurveExists(uid)) {
-            return segment.GetGuideCurve(uid);
+
+        if (!segment.GetGuideCurves()) {
+            continue;
+        }
+
+        if (segment.GetGuideCurves()->GuideCurveExists(uid)) {
+            return segment.GetGuideCurves()->GetGuideCurve(uid);
         }
     }
     throw tigl::CTiglError("Guide Curve with UID " + uid + " does not exists", TIGL_ERROR);
+}
+
+TopoDS_Compound &CCPACSFuselage::GetGuideCurveWires()
+{
+    BuildGuideCurves();
+    return guideCurves;
+}
+
+void CCPACSFuselage::BuildGuideCurves()
+{
+    if (!guideCurves.IsNull()) {
+        return;
+    }
+    
+    guideCurves.Nullify();
+    BRep_Builder b;
+    b.MakeCompound(guideCurves);
+    std::multimap<double, CCPACSGuideCurve*> roots;
+    
+    // find roots and connect the belonging guide curve segments
+    for (int isegment = 1; isegment <= GetSegmentCount(); ++isegment) {
+        CCPACSFuselageSegment& segment = m_segments.GetSegment(isegment);
+
+        if (!segment.GetGuideCurves()) {
+            continue;
+        }
+
+        CCPACSGuideCurves& segmentCurves = *segment.GetGuideCurves();
+        for (int iguide = 1; iguide <=  segmentCurves.GetGuideCurveCount(); ++iguide) {
+            CCPACSGuideCurve& curve = segmentCurves.GetGuideCurve(iguide);
+            if (!curve.GetFromGuideCurveUID_choice1()) {
+                // this is a root curve
+                double relCirc= *curve.GetFromRelativeCircumference_choice2();
+                //TODO: determine if half fuselage or not. If not
+                //the guide curve at relCirc=1 should be inserted at relCirc=0
+                roots.insert(std::make_pair(relCirc, &curve));
+            }
+            else {
+                CCPACSGuideCurve& fromCurve = GetGuideCurveSegment(*curve.GetFromGuideCurveUID_choice1());
+                fromCurve.ConnectToCurve(&curve);
+            }
+        }
+    }
+    
+    // connect belonging guide curves to wires
+    std::multimap<double, CCPACSGuideCurve*>::iterator it;
+    for (it = roots.begin(); it != roots.end(); ++it) {
+        CCPACSGuideCurve* curCurve = it->second;
+        BRepBuilderAPI_MakeWire wireMaker;
+        while (curCurve) {
+            const TopoDS_Edge& edge = curCurve->GetCurve();
+            wireMaker.Add(edge);
+            curCurve = curCurve->GetConnectedCurve();
+        }
+        TopoDS_Wire result = wireMaker.Wire();
+        // Fix Shape, might be necessary since the order of edges could be wrong
+        ShapeFix_Wire wireFixer;
+        wireFixer.Load(result);
+        wireFixer.FixReorder();
+        wireFixer.Perform();
+        result = wireFixer.Wire();
+        b.Add(guideCurves, result);
+    }
+}
+
+void CCPACSFuselage::ConnectGuideCurveSegments(void)
+{
+    for (int isegment = 1; isegment <= GetSegmentCount(); ++isegment) {
+        CCPACSFuselageSegment& segment = GetSegment(isegment);
+
+        if (!segment.GetGuideCurves()) {
+            continue;
+        }
+
+        CCPACSGuideCurves& curves = *segment.GetGuideCurves();
+        for (int icurve = 1; icurve <= curves.GetGuideCurveCount(); ++icurve) {
+            CCPACSGuideCurve& curve = curves.GetGuideCurve(icurve);
+            if (!curve.GetFromRelativeCircumference_choice2()) {
+                std::string fromUID = *curve.GetFromGuideCurveUID_choice1();
+                CCPACSGuideCurve& fromCurve = GetGuideCurveSegment(fromUID);
+                curve.SetFromRelativeCircumference_choice2(fromCurve.GetToRelativeCircumference());
+            }
+        }
+    }
 }
 
 } // end namespace tigl

@@ -111,10 +111,5 @@ namespace tigl
         };
     }
     
-    // Aliases in tigl namespace
-    #ifdef HAVE_CPP11
-    using CCPACSGuideCurve = generated::CPACSGuideCurve;
-    #else
-    typedef generated::CPACSGuideCurve CCPACSGuideCurve;
-    #endif
+    // CPACSGuideCurve is customized, use type CCPACSGuideCurve directly
 }

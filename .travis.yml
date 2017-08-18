@@ -4,6 +4,9 @@ os:
 
 language: cpp
 
+git:
+  submodules: false
+
 before_install:
   # Linux steps
   - '[ "$TRAVIS_OS_NAME" != linux ] || curl http://download.opensuse.org/repositories/science:/dlr/xUbuntu_12.04/Release.key | sudo apt-key add - '
@@ -30,12 +33,12 @@ script:
   - '[ "$TRAVIS_OS_NAME" != osx ] || export CMAKE_PREFIX_PATH=`pwd`/../TIXI-2.2.4-macOS:`pwd`/../oce.0.17.2.macos_static:`pwd`/../Qt5.4_clang64_macOS'
   - '[ "$TRAVIS_OS_NAME" != osx ] || export CXXFLAGS=-Wno-inconsistent-missing-override '
   - '[ "$TRAVIS_OS_NAME" != linux ] || jdk_switcher use oraclejdk8'
-  - cmake -DTIGL_BUILD_TESTS=ON -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON -DCMAKE_INSTALL_PREFIX=`pwd`/install ..
+  - cmake -DTIGL_BUILD_TESTS=ON -DTIGL_OCE_COONS_PATCHED=ON -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON -DCMAKE_INSTALL_PREFIX=`pwd`/install ..
   - make -j 4
   - '[ "$TRAVIS_OS_NAME" != linux ] || make install'
   - '[ "$TRAVIS_OS_NAME" != osx ] || export DYLD_LIBRARY_PATH=`pwd`/../TIXI-2.2.4-macOS/lib '
-  - cd tests
+  - cd tests/unittests
   - ./TiGL-unittests --gtest_output=xml
-  - cd ..
+  - cd ../..
   - TERM=dumb make tigl-java-demo
 

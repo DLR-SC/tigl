@@ -59,7 +59,10 @@ FUNCTION(SETUP_TARGET_FOR_COVERAGE _targetname _testrunner _outputname)
         ENDIF() # NOT GENHTML_PATH
         
         # copy testdata
-        file(COPY ${PROJECT_SOURCE_DIR}/tests/TestData DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+        file(COPY ${PROJECT_SOURCE_DIR}/tests/unittests/TestData DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+        if (BUILD_TIGL_CONFIDENTIAL_TESTS)
+            file(COPY ${PROJECT_SOURCE_DIR}/tests/conftests/TestData DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+        endif()
 
         # Setup target
         ADD_CUSTOM_TARGET(${_targetname}

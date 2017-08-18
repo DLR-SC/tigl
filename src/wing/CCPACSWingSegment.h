@@ -34,6 +34,7 @@
 #include "tixi.h"
 #include "CTiglWingConnection.h"
 #include "CCPACSGuideCurves.h"
+#include "CCPACSGuideCurve.h"
 #include "CTiglPoint.h"
 #include "CTiglAbstractSegment.h"
 #include "CCPACSTransformation.h"
@@ -50,7 +51,7 @@ namespace tigl
 
 class CCPACSWing;
 
-class CCPACSWingSegment : public generated::CPACSWingSegment, public CTiglAbstractSegment<CCPACSWingSegment>
+class CCPACSWingSegment : public generated::CPACSWingSegment, public CTiglAbstractSegment<CCPACSWingSegment>,  public IGuideCurveBuilder
 {
 public:
     // Constructor
@@ -176,15 +177,6 @@ public:
     TIGL_EXPORT TopoDS_Shape& GetUpperShape(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
     TIGL_EXPORT TopoDS_Shape& GetLowerShape(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
 
-    // Returns the guide curves of the segment as wires
-    TIGL_EXPORT TopTools_SequenceOfShape& GetGuideCurveWires() const;
-
-    // get guide curve for given UID
-    TIGL_EXPORT const CCPACSGuideCurve& GetGuideCurve(std::string UID) const;
-
-    // check if guide curve with a given UID exists
-    TIGL_EXPORT bool GuideCurveExists(std::string UID) const;
-
     // Returns an upper or lower point on the segment surface in
     // dependence of parameters eta and xsi, which range from 0.0 to 1.0.
     // For eta = 0.0, xsi = 0.0 point is equal to leading edge on the
@@ -207,9 +199,13 @@ public:
     {
         return TIGL_COMPONENT_WINGSEGMENT | TIGL_COMPONENT_SEGMENT | TIGL_COMPONENT_LOGICAL;
     }
+    
+    // builds all guide curve segments wires
+    TIGL_EXPORT void BuildGuideCurve(CCPACSGuideCurve*);
 
     // Getter for the number of guide curves
-    TIGL_EXPORT int GetGuideCurveCount() const;
+    // TODO: This can be replace by GetGuideCurveSegments->GetGuideCurveCount()
+    DEPRECATED TIGL_EXPORT int GetGuideCurveCount() const;
 
 protected:
     // Cleanup routine
@@ -217,9 +213,6 @@ protected:
 
     // Update internal segment data
     void Update();
-
-    // builds all guide curve wires
-    void BuildGuideCurveWires() const;
 
     // Builds the loft between the two segment sections
     PNamedShape BuildLoft();
@@ -243,7 +236,6 @@ private:
 
     CTiglWingConnection innerConnection;      /**< Inner segment connection (root)         */
     CTiglWingConnection outerConnection;      /**< Outer segment connection (tip)          */
-    mutable TopTools_SequenceOfShape guideCurveWires;  /**< container for the guide curve wires     */
     CCPACSWing*          wing;                 /**< Parent wing                             */
     double               myVolume;             /**< Volume of this segment                  */
     
@@ -267,6 +259,8 @@ private:
         Handle(Geom_Surface) cordFace;
     };
     mutable SurfaceCache surfaceCache;
+
+    bool                 guideCurvesBuilt;     /**< True, if guide curves are already built                     */
 };
 
 } // end namespace tigl

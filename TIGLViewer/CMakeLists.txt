@@ -29,7 +29,10 @@ set (TV_OCC_LIBS
     ${OCC_VISU_LIBS} ${OCC_LIBS}
 )
 
-find_package(OCE 0.15 COMPONENTS ${TV_OCC_LIBS} QUIET)
+if(NOT OpenCASCADE_DONT_SEARCH_OCE)
+  find_package(OCE 0.15 COMPONENTS ${TV_OCC_LIBS} QUIET)
+endif()
+
 if(OCE_FOUND)
   set(OpenCASCADE_LIBRARIES ${TV_OCC_LIBS})
   set(OpenCASCADE_INCLUDE_DIR ${OCE_INCLUDE_DIRS})
@@ -197,7 +200,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
 
 if(WIN32)
   # comment this line if you want to see an additional console window
-  set(TYPE WIN32)
+  # set(TYPE WIN32)
 
   # add program icon
   set(tv_icon_rc src/TIGLViewer.rc)
