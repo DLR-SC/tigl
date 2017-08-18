@@ -5,13 +5,18 @@ Version 2.2.1
     - General changes:
         - Improved calculation time of ``::tiglFuselageGetPoint`` and ``::tiglFuselageGetPointAngle``
 
+    - New API functions:
+        - New API function ``::tiglExportVTKSetOptions``. This function can be used e.g to disable
+          normal vector writing in the VTK export.
+
     - Changed API:
-        - Ignore Symmetry face in ``::tiglFuselageGetSurfaceArea``
+        - Ignore Symmetry face in ``::tiglFuselageGetSurfaceArea`` for half fuselages
         - In ``::tiglFuselageGetPointAngle`` the cross section center is used as starting point of the angle rather than the origin of the yz-plane
 
     - Fixes:
-        - Fixed broken VTK export
-        - Improved accuracy of the VTK export
+        - Fixed bug, where the VTK export showed no geometry in ParaView
+        - Improved accuracy of the VTK export. The digits of points are not truncated anymore to avoid duplicate points
+        - Triangles with zero surface are excluded from the VTK export
         - Fixed incorrect face name ordering in WingComponentSegment
 
 Version 2.2.0
