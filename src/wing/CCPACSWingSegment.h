@@ -203,10 +203,6 @@ public:
     // builds all guide curve segments wires
     TIGL_EXPORT void BuildGuideCurve(CCPACSGuideCurve*);
 
-    // Getter for the number of guide curves
-    // TODO: This can be replace by GetGuideCurveSegments->GetGuideCurveCount()
-    DEPRECATED TIGL_EXPORT int GetGuideCurveCount() const;
-
 protected:
     // Cleanup routine
     void Cleanup();

@@ -1297,14 +1297,6 @@ void CCPACSWingSegment::BuildGuideCurve(CCPACSGuideCurve*)
     guideCurvesBuilt = true;
 }
 
-int CCPACSWingSegment::GetGuideCurveCount() const
-{
-    if (m_guideCurves)
-        return m_guideCurves->GetGuideCurveCount();
-    else
-        return 0;
-}
-
 } // end namespace tigl
 
 

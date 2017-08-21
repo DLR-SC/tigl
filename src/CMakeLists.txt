@@ -99,7 +99,7 @@ target_link_libraries (tigl3_static ${TIGL_LIBRARIES})
 
 # cmake configuration export
 set(CMAKE_INSTALL_INCLUDE_DIR "include")
-set(CONFIG_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/cmake/tigl")
+set(CONFIG_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/cmake/tigl3")
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(
   "${CMAKE_CURRENT_BINARY_DIR}/tigl-config-version.cmake"
