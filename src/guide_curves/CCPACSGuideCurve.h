@@ -35,6 +35,8 @@
 #include <vector>
 #include <string>
 
+#include "generated/UniquePtr.h"
+
 namespace tigl
 {
 
@@ -57,8 +59,6 @@ public:
     // Virtual Destructor
     TIGL_EXPORT virtual ~CCPACSGuideCurve(void);
 
-    TIGL_EXPORT void SetCurve(const TopoDS_Edge&);
-
     TIGL_EXPORT const TopoDS_Edge& GetCurve();
 
     // Connects the current guide curve segment with another segment guide
@@ -67,8 +67,7 @@ public:
 
     TIGL_EXPORT CCPACSGuideCurve* GetConnectedCurve() const;
 
-    TIGL_EXPORT void SetGuideCurveBuilder(IGuideCurveBuilder*);
-
+    TIGL_EXPORT void SetGuideCurveBuilder(IGuideCurveBuilder& b);
 protected:
     // Cleanup routine
     void Cleanup(void);
@@ -83,7 +82,7 @@ private:
     TopoDS_Edge guideCurveTopo;           /**< Actual topological entity of the curve */
     CCPACSGuideCurve* nextGuideSegment;   /**< Pointer to a guide curve segment that is connected to this segment */
 
-    IGuideCurveBuilder* builder;
+    IGuideCurveBuilder* m_builder;
     bool isBuild;                         /**< Checks whether the guide curve is already built */
 
 };
@@ -91,7 +90,7 @@ private:
 class IGuideCurveBuilder
 {
 public:
-    virtual void BuildGuideCurve(CCPACSGuideCurve*) = 0;
+    virtual TopoDS_Edge BuildGuideCurve(CCPACSGuideCurve*) = 0;
 };
 
 } // end namespace tigl

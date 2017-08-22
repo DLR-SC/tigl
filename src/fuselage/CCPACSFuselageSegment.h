@@ -44,7 +44,7 @@ namespace tigl
 {
 class CCPACSFuselage;
 
-class CCPACSFuselageSegment : public generated::CPACSFuselageSegment, public CTiglAbstractSegment<CCPACSFuselageSegment>, public IGuideCurveBuilder
+class CCPACSFuselageSegment : public generated::CPACSFuselageSegment, public CTiglAbstractSegment<CCPACSFuselageSegment>
 {
 
 public:
@@ -152,9 +152,6 @@ public:
 
     TIGL_EXPORT TiglGeometricComponentType GetComponentType() const { return TIGL_COMPONENT_FUSELSEGMENT | TIGL_COMPONENT_SEGMENT | TIGL_COMPONENT_LOGICAL; }
 
-    // builds all guide curve segments
-    TIGL_EXPORT void BuildGuideCurve(CCPACSGuideCurve*);
-
 protected:
     // Cleanup routine
     void Cleanup();
@@ -172,7 +169,8 @@ private:
     CCPACSFuselage*         fuselage;             /**< Parent fuselage                         */
     double                  myVolume;             /**< Volume of this segment                  */
     double                  mySurfaceArea;        /**< Surface Area of this segment            */
-    bool                    guideCurvesBuilt;     /**< True, if guide curves are already built                     */
+
+    unique_ptr<IGuideCurveBuilder> m_guideCurveBuilder;
 };
 
 } // end namespace tigl

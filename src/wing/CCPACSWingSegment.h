@@ -51,7 +51,7 @@ namespace tigl
 
 class CCPACSWing;
 
-class CCPACSWingSegment : public generated::CPACSWingSegment, public CTiglAbstractSegment<CCPACSWingSegment>,  public IGuideCurveBuilder
+class CCPACSWingSegment : public generated::CPACSWingSegment, public CTiglAbstractSegment<CCPACSWingSegment>
 {
 public:
     // Constructor
@@ -199,9 +199,6 @@ public:
     {
         return TIGL_COMPONENT_WINGSEGMENT | TIGL_COMPONENT_SEGMENT | TIGL_COMPONENT_LOGICAL;
     }
-    
-    // builds all guide curve segments wires
-    TIGL_EXPORT void BuildGuideCurve(CCPACSGuideCurve*);
 
 protected:
     // Cleanup routine
@@ -256,7 +253,7 @@ private:
     };
     mutable SurfaceCache surfaceCache;
 
-    bool                 guideCurvesBuilt;     /**< True, if guide curves are already built                     */
+    unique_ptr<IGuideCurveBuilder> m_guideCurveBuilder;
 };
 
 } // end namespace tigl

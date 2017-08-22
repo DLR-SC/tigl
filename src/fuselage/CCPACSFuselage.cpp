@@ -432,4 +432,21 @@ void CCPACSFuselage::ConnectGuideCurveSegments(void)
     }
 }
 
+TopoDS_Shape transformFuselageProfileGeometry(const CTiglTransformation& fuselTransform, const CTiglFuselageConnection& connection, const TopoDS_Shape& shape)
+{
+    // Do section element transformation on points
+    tigl::CTiglTransformation trafo = connection.GetSectionElementTransformation();
+
+    // Do section transformations
+    trafo.PreMultiply(connection.GetSectionTransformation());
+
+    // Do positioning transformations
+    trafo.PreMultiply(connection.GetPositioningTransformation());
+
+    trafo.PreMultiply(fuselTransform);
+
+    return trafo.Transform(shape);
+
+}
+
 } // end namespace tigl

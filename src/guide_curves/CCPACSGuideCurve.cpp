@@ -49,21 +49,15 @@ void CCPACSGuideCurve::Cleanup(void)
 {
     nextGuideSegment = NULL;
     guideCurveTopo.Nullify();
-    builder = NULL;
+    m_builder = NULL;
     isBuild = false;
-}
-
-// This will be called be the guide curve builder
-void CCPACSGuideCurve::SetCurve(const TopoDS_Edge& edge)
-{
-    isBuild = true;
-    guideCurveTopo = edge;
 }
 
 const TopoDS_Edge& CCPACSGuideCurve::GetCurve()
 {
-    if (builder && !isBuild) {
-        builder->BuildGuideCurve(this);
+    if (m_builder && !isBuild) {
+        guideCurveTopo = m_builder->BuildGuideCurve(this);
+        isBuild = true;
     }
     return guideCurveTopo;
 }
@@ -86,9 +80,9 @@ CCPACSGuideCurve* CCPACSGuideCurve::GetConnectedCurve() const
     return nextGuideSegment;
 }
 
-void CCPACSGuideCurve::SetGuideCurveBuilder(IGuideCurveBuilder* b)
+void CCPACSGuideCurve::SetGuideCurveBuilder(IGuideCurveBuilder& b)
 {
-    builder = b;
+    m_builder = &b;
 }
 
 } // end namespace tigl

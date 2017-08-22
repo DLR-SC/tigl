@@ -86,28 +86,6 @@ namespace
         }
     }
 
-    TopoDS_Wire transformToWingCoords(const tigl::CTiglTransformation& wingTransform, const tigl::CTiglWingConnection& wingConnection, const TopoDS_Wire& origWire)
-    {
-        // Do section element transformations
-        tigl::CTiglTransformation trafo = wingConnection.GetSectionElementTransformation();
-
-        // Do section transformations
-        trafo.PreMultiply(wingConnection.GetSectionTransformation());
-
-        // Do positioning transformations (positioning of sections)
-        trafo.PreMultiply(wingConnection.GetPositioningTransformation());
-
-        trafo.PreMultiply(wingTransform);
-
-        TopoDS_Shape resultWire = trafo.Transform(origWire);
-
-        // Cast shapes to wires, see OpenCascade documentation
-        if (resultWire.ShapeType() != TopAbs_WIRE) {
-            throw tigl::CTiglError("Wrong shape type in CCPACSWing::transformToAbsCoords", TIGL_ERROR);
-        }
-        
-        return TopoDS::Wire(resultWire);
-    }
 }
 
 CCPACSWing::CCPACSWing(CCPACSWings* parent, CTiglUIDManager* uidMgr)
@@ -377,8 +355,8 @@ void CCPACSWing::BuildUpperLowerShells()
         CTiglWingConnection& startConnection = m_segments.GetSegment(i).GetInnerConnection();
         CCPACSWingProfile& startProfile = startConnection.GetProfile();
         TopoDS_Wire upperWire, lowerWire;
-        upperWire = TopoDS::Wire(transformToWingCoords(GetWingTransformation(), startConnection, BRepBuilderAPI_MakeWire(startProfile.GetUpperWire())));
-        lowerWire = TopoDS::Wire(transformToWingCoords(GetWingTransformation(), startConnection, BRepBuilderAPI_MakeWire(startProfile.GetLowerWire())));
+        upperWire = TopoDS::Wire(transformWingProfileGeometry(GetWingTransformation(), startConnection, BRepBuilderAPI_MakeWire(startProfile.GetUpperWire())));
+        lowerWire = TopoDS::Wire(transformWingProfileGeometry(GetWingTransformation(), startConnection, BRepBuilderAPI_MakeWire(startProfile.GetLowerWire())));
         generatorUp.AddWire(upperWire);
         generatorLow.AddWire(lowerWire);
     }
@@ -387,8 +365,8 @@ void CCPACSWing::BuildUpperLowerShells()
     CCPACSWingProfile& endProfile = endConnection.GetProfile();
     TopoDS_Wire endUpWire, endLowWire;
 
-    endUpWire  = TopoDS::Wire(transformToWingCoords(GetWingTransformation(), endConnection, BRepBuilderAPI_MakeWire(endProfile.GetUpperWire())));
-    endLowWire = TopoDS::Wire(transformToWingCoords(GetWingTransformation(), endConnection, BRepBuilderAPI_MakeWire(endProfile.GetLowerWire())));
+    endUpWire  = TopoDS::Wire(transformWingProfileGeometry(GetWingTransformation(), endConnection, BRepBuilderAPI_MakeWire(endProfile.GetUpperWire())));
+    endLowWire = TopoDS::Wire(transformWingProfileGeometry(GetWingTransformation(), endConnection, BRepBuilderAPI_MakeWire(endProfile.GetLowerWire())));
 
     generatorUp.AddWire(endUpWire);
     generatorLow.AddWire(endLowWire);
@@ -838,6 +816,26 @@ void CCPACSWing::BuildGuideCurveWires()
         result = wireFixer.Wire();
         b.Add(guideCurves, result);
     }
+}
+
+TopoDS_Shape transformWingProfileGeometry(const CTiglTransformation& wingTransform, const CTiglWingConnection& connection, const TopoDS_Shape& wire)
+{
+    TopoDS_Shape transformedWire(wire);
+
+    // Do section element transformation on points
+    CTiglTransformation trafo = connection.GetSectionElementTransformation();
+
+    // Do section transformations
+    trafo.PreMultiply(connection.GetSectionTransformation());
+
+    // Do positioning transformations
+    trafo.PreMultiply(connection.GetPositioningTransformation());
+
+    trafo.PreMultiply(wingTransform);
+
+    transformedWire = trafo.Transform(transformedWire);
+
+    return transformedWire;
 }
 
 } // end namespace tigl

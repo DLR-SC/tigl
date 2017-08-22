@@ -37,6 +37,7 @@
 #include "CCPACSPositionings.h"
 #include "CTiglRelativelyPositionedComponent.h"
 #include "CCPACSGuideCurve.h"
+#include "CTiglFuselageConnection.h"
 
 #include "TopoDS_Shape.hxx"
 #include "TopoDS_Compound.hxx"
@@ -142,6 +143,8 @@ private:
 
     friend class CCPACSFuselageSegment;
 };
+
+TopoDS_Shape transformFuselageProfileGeometry(const CTiglTransformation& fuselTransform, const CTiglFuselageConnection& connection, const TopoDS_Shape& shape);
 
 } // end namespace tigl
 

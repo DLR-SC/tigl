@@ -26,6 +26,7 @@
 #include <cmath>
 
 #include "CCPACSFuselageSegment.h"
+#include "CTiglFuselageSegmentGuidecurveBuilder.h"
 #include "CCPACSFuselage.h"
 
 #include "CCPACSFuselageProfile.h"
@@ -107,29 +108,6 @@ namespace
 
         return transformedPoint;
     }
-
-    TopoDS_Wire transformProfileWire(const tigl::CTiglTransformation& fuselTransform, const tigl::CTiglFuselageConnection& connection, const TopoDS_Wire& wire)
-    {
-        // Do section element transformation on points
-        tigl::CTiglTransformation trafo = connection.GetSectionElementTransformation();
-
-        // Do section transformations
-        trafo.PreMultiply(connection.GetSectionTransformation());
-
-        // Do positioning transformations
-        trafo.PreMultiply(connection.GetPositioningTransformation());
-
-        trafo.PreMultiply(fuselTransform);
-
-        TopoDS_Shape transformedWire = trafo.Transform(wire);
-
-        // Cast shapes to wires, see OpenCascade documentation
-        if (transformedWire.ShapeType() != TopAbs_WIRE) {
-            throw tigl::CTiglError("Wrong shape type in CCPACSFuselageSegment::transformProfileWire", TIGL_ERROR);
-        }
-
-        return TopoDS::Wire(transformedWire);
-    }
 }
 
 namespace tigl
@@ -139,6 +117,7 @@ CCPACSFuselageSegment::CCPACSFuselageSegment(CCPACSFuselageSegments* parent, CTi
     : generated::CPACSFuselageSegment(parent, uidMgr)
     , CTiglAbstractSegment(parent->GetSegments(), parent->GetParent()->m_symmetry)
     , fuselage(parent->GetParent())
+    , m_guideCurveBuilder(make_unique<CTiglFuselageSegmentGuidecurveBuilder>(*this))
 {
     Cleanup();
 }
@@ -157,8 +136,6 @@ void CCPACSFuselageSegment::Cleanup()
     mySurfaceArea = 0.;
     _continuity    = C2;
     CTiglAbstractGeometricComponent::Reset();
-
-    guideCurvesBuilt = false;
 }
 
 void CCPACSFuselageSegment::Invalidate()
@@ -181,8 +158,7 @@ void CCPACSFuselageSegment::ReadCPACS(TixiDocumentHandle tixiHandle, const std::
 
     if (m_guideCurves) {
         for (int iguide = 1; iguide <= m_guideCurves->GetGuideCurveCount(); ++iguide) {
-            CCPACSGuideCurve& curve = m_guideCurves->GetGuideCurve(iguide);
-            curve.SetGuideCurveBuilder(this);
+            m_guideCurves->GetGuideCurve(iguide).SetGuideCurveBuilder(*m_guideCurveBuilder);
         }
     }
 
@@ -203,14 +179,14 @@ CCPACSFuselage& CCPACSFuselageSegment::GetFuselage() const
 TopoDS_Wire CCPACSFuselageSegment::GetStartWire()
 {
     CCPACSFuselageProfile& startProfile = startConnection.GetProfile();
-    return transformProfileWire(GetFuselage().GetTransformationMatrix(), startConnection, startProfile.GetWire(true));
+    return TopoDS::Wire(transformFuselageProfileGeometry(GetFuselage().GetTransformationMatrix(), startConnection, startProfile.GetWire(true)));
 }
 
 // helper function to get the wire of the end section
 TopoDS_Wire CCPACSFuselageSegment::GetEndWire()
 {
     CCPACSFuselageProfile& endProfile = endConnection.GetProfile();
-    return transformProfileWire(GetFuselage().GetTransformationMatrix(), endConnection, endProfile.GetWire(true));
+    return TopoDS::Wire(transformFuselageProfileGeometry(GetFuselage().GetTransformationMatrix(), endConnection, endProfile.GetWire(true)));
 }
 
 // get short name for loft
@@ -770,84 +746,6 @@ double CCPACSFuselageSegment::GetCircumference(const double eta)
     GProp_GProps System;
     BRepGProp::LinearProperties(intersectionWire,System);
     return System.Mass();
-}
-
-// Creates all guide curves
-void CCPACSFuselageSegment::BuildGuideCurve(CCPACSGuideCurve*)
-{
-    // build all guides at once, this is more efficient
-    
-    if (!GetGuideCurves() || guideCurvesBuilt) {
-        return;
-    }
-
-    if (GetGuideCurves()) {
-
-        // get start and end profile
-        CCPACSFuselageProfile& startProfile = startConnection.GetProfile();
-        CCPACSFuselageProfile& endProfile   = endConnection.GetProfile();
-
-        // get wire and close it if the profile is not mirror symmetric
-        TopoDS_Wire startWire = startProfile.GetWire(!startProfile.GetMirrorSymmetry());
-        TopoDS_Wire endWire   = endProfile.GetWire(!endProfile.GetMirrorSymmetry());
-
-        // get profile wires in world coordinates
-        startWire = transformProfileWire(GetFuselage().GetTransformationMatrix(), startConnection, startWire);
-        endWire = transformProfileWire(GetFuselage().GetTransformationMatrix(), endConnection, endWire);
-
-        // put wires into container for guide curve algo
-        TopTools_SequenceOfShape startWireContainer;
-        startWireContainer.Append(startWire);
-        TopTools_SequenceOfShape endWireContainer;
-        endWireContainer.Append(endWire);
-
-        // get chord lengths for inner profile in word coordinates
-        TopoDS_Wire innerChordLineWire = transformProfileWire(GetFuselage().GetTransformationMatrix(), startConnection, startProfile.GetDiameterWire());
-        TopoDS_Wire outerChordLineWire = transformProfileWire(GetFuselage().GetTransformationMatrix(), endConnection, endProfile.GetDiameterWire());
-        double innerScale = GetWireLength(innerChordLineWire);
-        double outerScale = GetWireLength(outerChordLineWire);
-
-        // loop through all guide curves and construct the corresponding wires
-        int nGuideCurves = m_guideCurves ? m_guideCurves->GetGuideCurveCount() : 0;
-        for (int i=0; i!=nGuideCurves; i++) {
-            // get guide curve
-            CCPACSGuideCurve& guideCurve = m_guideCurves->GetGuideCurve(i+1);
-            double fromRelativeCircumference;
-            // check if fromRelativeCircumference is given in the current guide curve
-            if (guideCurve.GetFromRelativeCircumference_choice2()) {
-                fromRelativeCircumference = *guideCurve.GetFromRelativeCircumference_choice2();
-            }
-            // otherwise get relative circumference from neighboring segment guide curve
-            else {
-                // get neighboring guide curve UID
-                std::string neighborGuideCurveUID = *guideCurve.GetFromGuideCurveUID_choice1();
-                // get neighboring guide curve
-                const CCPACSGuideCurve& neighborGuideCurve = fuselage->GetGuideCurveSegment(neighborGuideCurveUID);
-                // get relative circumference from neighboring guide curve
-                fromRelativeCircumference = neighborGuideCurve.GetToRelativeCircumference();
-            }
-
-            // get relative circumference of outer profile
-            double toRelativeCircumference = guideCurve.GetToRelativeCircumference();
-            // get guide curve profile UID
-            std::string guideCurveProfileUID = guideCurve.GetGuideCurveProfileUID();
-
-            // get guide curve profile
-            CCPACSConfiguration& config = fuselage->GetConfiguration();
-            CCPACSGuideCurveProfile& guideCurveProfile = config.GetGuideCurveProfile(guideCurveProfileUID);
-
-            // construct guide curve algorithm
-            TopoDS_Edge guideCurveEdge = CCPACSGuideCurveAlgo<CCPACSFuselageProfileGetPointAlgo> (startWireContainer, 
-                                                                                                  endWireContainer, 
-                                                                                                  fromRelativeCircumference, 
-                                                                                                  toRelativeCircumference, 
-                                                                                                  innerScale, 
-                                                                                                  outerScale, 
-                                                                                                  guideCurveProfile);
-            guideCurve.SetCurve(guideCurveEdge);
-        }
-    }
-    guideCurvesBuilt = true;
 }
 
 } // end namespace tigl

@@ -202,6 +202,9 @@ private:
     friend class CCPACSWingComponentSegment;
 };
 
+/// Transforms a shape in profile coordinates to world coordinates
+TopoDS_Shape transformWingProfileGeometry(const CTiglTransformation& wingTransform, const CTiglWingConnection& connection, const TopoDS_Shape& wire);
+
 } // end namespace tigl
 
 #endif // CCPACSWING_H
