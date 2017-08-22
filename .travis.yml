@@ -49,4 +49,4 @@ script:
   - TERM=dumb make tigl-java-demo
 
 after_success:
-    - '[ "$TRAVIS_OS_NAME" != osx ] || sshpass -p $FTP_PASSWORD scp -o StrictHostKeyChecking=no *.dmg $FTP_USER@frs.sourceforge.net:/home/frs/project/tigl/Nightlies-macOS'
+    - ../ci/travis/deploy.sh
