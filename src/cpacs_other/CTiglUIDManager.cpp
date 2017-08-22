@@ -27,6 +27,7 @@
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "to_string.h"
+#include "typename.h"
 
 namespace tigl
 {
@@ -38,13 +39,13 @@ CTiglUIDManager::CTiglUIDManager()
 void CTiglUIDManager::RegisterObject(const std::string& uid, void* object, const std::type_info& typeInfo)
 {
     if (uid.empty()) {
-        throw CTiglError("Tried to register an empty uid for type " + std::string(typeInfo.name()));
+        throw CTiglError("Tried to register an empty uid for type " + typeName(typeInfo));
     }
 
     // check existence
     const CPACSObjectMap::iterator it = cpacsObjects.find(uid);
     if (it != cpacsObjects.end()) {
-        throw CTiglError("Tried to register uid " + uid + " for type " + std::string(typeInfo.name()) + " which is already registered to an instance of " + std::string(it->second.type->name()));
+        throw CTiglError("Tried to register uid " + uid + " for type " + typeName(typeInfo) + " which is already registered to an instance of " + std::string(it->second.type->name()));
     }
 
     // insert
@@ -60,7 +61,7 @@ CTiglUIDManager::TypedPtr CTiglUIDManager::ResolveObject(const std::string& uid,
 
     // check type
     if (&typeInfo != object.type) {
-        throw CTiglError("Object with uid \"" + uid + "\" is not a " + std::string(typeInfo.name()) + " but a " + std::string(object.type->name()), TIGL_UID_ERROR);
+        throw CTiglError("Object with uid \"" + uid + "\" is not a " + typeName(typeInfo) + " but a " + typeName(*object.type), TIGL_UID_ERROR);
     }
 
     return object;
