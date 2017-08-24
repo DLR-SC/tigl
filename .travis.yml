@@ -28,7 +28,7 @@ before_install:
   - '[ "$TRAVIS_OS_NAME" != osx ] || tar xf oce.0.17.2.macos_static.tar.gz'
   - '[ "$TRAVIS_OS_NAME" != osx ] || tar xf TIXI-2.2.4-macOS.tar.gz '
   # If a tag/release is build, disable the nighty build flag
-  - export TIGL_NIGHTLY=$([ -z "$TRAVIS_TAG" ] && echo "ON" || echo "OFF")
+  - export TIGL_NIGHTLY=$([ "$TRAVIS_EVENT_TYPE" == "cron" ] && echo "ON" || echo "OFF")
 
 before_script:
   - mkdir build
