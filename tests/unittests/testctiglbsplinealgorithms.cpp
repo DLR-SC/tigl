@@ -661,17 +661,6 @@ TEST(TiglBSplineAlgorithms, testReparametrizeBSplineContinuouslyApprox)
         ASSERT_NEAR(old_point.Y(), new_point.Y(), 1e-10);
         ASSERT_NEAR(old_point.Z(), new_point.Z(), 1e-10);
     }
-
-    // check that knots -> TODO: find the right knots
-    ASSERT_NEAR(reparam_spline->Knot(1), 0., 1e-15);
-    ASSERT_NEAR(reparam_spline->Knot(2), 0.05, 1e-15);
-    ASSERT_NEAR(reparam_spline->Knot(3), 0.1, 1e-15);
-    ASSERT_NEAR(reparam_spline->Knot(4), 0.15, 1e-15);
-    ASSERT_NEAR(reparam_spline->Knot(5), 0.2, 1e-15);
-    ASSERT_NEAR(reparam_spline->Knot(6), 0.3, 1e-15);
-    ASSERT_NEAR(reparam_spline->Knot(7), 0.7, 1e-15);
-    ASSERT_NEAR(reparam_spline->Knot(8), 0.95, 1e-15);
-    ASSERT_NEAR(reparam_spline->Knot(9), 1., 1e-15);
 }
 
 
@@ -1624,6 +1613,7 @@ TEST_P(GordonSurface, testFromBRep)
 
 INSTANTIATE_TEST_CASE_P(TiglBSplineAlgorithms, GordonSurface, ::testing::Values(
                             "nacelle",
+                            "full_nacelle",
                             "wing2",
                             "spiralwing",
                             "test_surface4_sorted",
