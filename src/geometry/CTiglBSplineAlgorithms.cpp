@@ -1029,7 +1029,7 @@ std::vector<std::pair<double, double> > CTiglBSplineAlgorithms::intersectionFind
 
     // check parametrization of B-splines beforehand
 
-    // find out the average scale of the two B-splines in order to being able to handle a more approximate dataset and find its intersections
+    // find out the average scale of the two B-splines in order to being able to handle a more approximate curves and find its intersections
     std::vector<Handle(Geom_BSplineCurve)> spline1_vector;
     spline1_vector.push_back(spline1);
     double splines_scale = CTiglBSplineAlgorithms::scaleOfBSplines(spline1_vector);
@@ -1152,7 +1152,7 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::createGordonSurfaceGeneral(c
         throw tigl::CTiglError("There are no v-directional B-splines!");
     }
 
-    // check parametrization of u-directional B-splines and change it in order to support vectors of B-splines with different parametrizations:
+    // check parameter ranges of u-directional B-splines and change it in order to support vectors of B-splines with different parameter ranges:
     for (unsigned int spline_u_idx = 0; spline_u_idx < splines_u_vector.size(); ++spline_u_idx) {
         // check parametrization of B-splines:
         TColStd_Array1OfReal knots(1, splines_u_vector[spline_u_idx]->NbKnots());
@@ -1179,7 +1179,7 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::createGordonSurfaceGeneral(c
     }
     // now the parameter range of all u-directional B-splines is [0, 1]
 
-    // check parametrization of v-directional B-splines:
+    // check parameter ranges of v-directional B-splines:
     for (unsigned int spline_v_idx = 0; spline_v_idx < splines_v_vector.size(); ++spline_v_idx) {
         // check parametrization of B-splines:
         TColStd_Array1OfReal knots(1, splines_v_vector[spline_v_idx]->NbKnots());
