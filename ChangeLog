@@ -2,8 +2,9 @@ Version 2.2.1
 --------------
 18/08/2017
 
-    - General changes:
-        - Improved calculation time of ``::tiglFuselageGetPoint`` and ``::tiglFuselageGetPointAngle``
+   - General changes:
+        - Improved calculation time of ``::tiglFuselageGetPointAngle`` by roughly a factor of 30. The results might be a different than in previous versions, but the function should be more robust now.
+        - Improved calculation time of ``::tiglFuselageGetPoint`` by applying caching. This leads only to a benefit in case of a large number of GetPoint calls (~30) per fuselage segment. This will be even improved in TiGL 3.
 
     - New API functions:
         - New API function ``::tiglExportVTKSetOptions``. This function can be used e.g to disable
