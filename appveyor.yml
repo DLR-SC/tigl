@@ -13,8 +13,21 @@ build:
   verbosity: minimal
 
 artifacts:
-  - path: '_build/*.zip'
+  - path: '*.zip'
     name: binaries
+
+deploy:
+  - provider: FTP
+    protocol: sftp
+    host: frs.sourceforge.net
+    username:
+      secure: HZlK5sZGRgSoPQQI6EgdtsFtTj/ZAfdSPdLLxt8FeuE=
+    password:
+      secure: z0kfNd+oRq/PHvJumrSOpA==
+    folder: files/Nightlies-Windows
+#   on:
+#     appveyor_scheduled_build: true
+
 
 install:
   - ps: |
@@ -87,6 +100,7 @@ after_test:
 - ps: |
     & cmake --build . --config $env:CONFIGURATION --target doc
     & cpack -G ZIP
+    & mv *.zip ..
 
 cache:
  - c:\oce -> appveyor.yml
