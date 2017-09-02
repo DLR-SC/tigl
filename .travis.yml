@@ -9,11 +9,24 @@ env:
     - secure: "x+x2IMHk0IJKuvDAWcNMi5ifR0dNwpvAkM2axK67YqN2zb0CJzpj87daiEGvf+4268gHk5nBtHQtVxTIjk6B6LmUnya6OwOcs55ZBMrkgc6NiWVxB9+i6n2phdVNbXogWknOBDZhQqTtqqdvbQBJAO3UppdFrDZQF3eb9j+YWMs="
     - secure: "lijVVp4jRIfDkV67yPFdANoAv9oONJSISM/QO7uScMyNUkyDKwCgZbuFsOziJsqZUyGbM3GFCdSK7ufpzM3mlEFQyPckaPCnHyifgzixLlWTn7Krijgt5jMFGqwbSONqLENBhUJi5eAmj2m2lP3Pdmg4U4PPAOTwd5EQvY8uwRU="
 
+deploy:
+  provider: releases
+  api_key:
+    secure: sUJ1hPLgEJosx0JGo9A5bGbAfoigXCK4+Bo5OGUkjiHtx4UmQ72fy9EPAFQpGp2b9MGP1fSkGJGWVR7hRvCE682cu3kICncXLIs4/jsrC4CKjNmZ9W9Ua/dgZ1tG6I4/l/Aecf4OgXZTOn6RqqXtQdpiyHz5neDh+Rf4ZxcY+hw=
+  file_glob: true
+  file: build/*.dmg
+  skip_cleanup: true
+  tag_name: "$TRAVIS_TAG"
+  condition: $TRAVIS_OS_NAME == osx
+  draft: true
+  on:
+    repo: DLR-SC/tigl
+    tags: true
+
 before_install:
   # Linux steps
   - '[ "$TRAVIS_OS_NAME" != linux ] || curl http://download.opensuse.org/repositories/science:/dlr/xUbuntu_12.04/Release.key | sudo apt-key add - '
   - '[ "$TRAVIS_OS_NAME" != linux ] || echo "deb http://download.opensuse.org/repositories/science:/dlr/xUbuntu_12.04/ /" | sudo tee -a /etc/apt/sources.list '
-  - '[ "$TRAVIS_OS_NAME" != linux ] || sudo add-apt-repository ppa:george-edison55/precise-backports -y'
   - '[ "$TRAVIS_OS_NAME" != linux ] || sudo apt-get update -qq '
   - '[ "$TRAVIS_OS_NAME" != linux ] || sudo apt-get install -y --force-yes libtixi-dev liboce-dev cmake cmake-data sshpass'
 # oce ships a faulty config file, we have to remove it and use standard opencascade detection
@@ -50,3 +63,5 @@ script:
 
 after_success:
     - ../ci/travis/deploy.sh
+    - cd ..
+
