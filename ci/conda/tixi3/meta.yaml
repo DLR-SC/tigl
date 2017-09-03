@@ -1,14 +1,13 @@
-{% set version = "2.2.4" %}
+{% set version = "3.0.0" %}
 
 package:
-  name: tixi
+  name: tixi3
   version: {{ version }}
 
 source:
   fn: tixi-{{ version }}.tar.gz
   url: https://github.com/DLR-SC/tixi/archive/v{{ version }}.tar.gz
   patches:
-    - install.patch
     - remove_hard_links.patch
 
 build:

@@ -21,6 +21,6 @@ nmake install
 if errorlevel 1 exit 1
 
 REM install python packages
-mkdir %SP_DIR%\tixi
-echo. 2> %SP_DIR%\tixi\__init__.py
-copy lib\tixiwrapper.py %SP_DIR%\tixi\
+mkdir %SP_DIR%\tixi3
+echo. 2> %SP_DIR%\tixi3\__init__.py
+copy lib\tixi3wrapper.py %SP_DIR%\tixi3\
