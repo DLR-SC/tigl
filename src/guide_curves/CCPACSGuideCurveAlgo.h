@@ -85,6 +85,17 @@ public:
         gp_Vec tangent;
         _getPointAlgo1.GetPointTangent(_alpha1, guideCurvePoints[0], tangent);
         _getPointAlgo2.GetPointTangent(_alpha2, guideCurvePoints[guideCurvePoints.size()-1], tangent);
+
+        gp_Vec vec_start(guideCurvePoints[0].X(), guideCurvePoints[0].Y(), guideCurvePoints[0].Z());
+        gp_Vec vec_end( guideCurvePoints[guideCurvePoints.size()-1].X(),
+                        guideCurvePoints[guideCurvePoints.size()-1].Y(),
+                        guideCurvePoints[guideCurvePoints.size()-1].Z() );
+
+        // Y = vec_end - vec_ start, and Z = (1, 0, 0) x Y, i.e.
+        //          Z = (0, -Y.z, Y.y)
+        gp_Vec z_vec(0., vec_start.Z() - vec_end.Z(), vec_end.Y() - vec_start.Y());
+        z_vec.Normalize();
+
         // loop over guide Curve profile points
         for (int i=0; i!=guideCurveProfilePoints.size(); i++) {
 
@@ -92,49 +103,18 @@ public:
             Standard_Real beta  = guideCurveProfilePoints[i].y;
             Standard_Real gamma = guideCurveProfilePoints[i].z;
 
-            // ******************************************************************
-            // construct line between anchor points at the start and end profile
-            // ******************************************************************
-            // get starting point
-            gp_Pnt startPoint;
-            gp_Vec startTangent;
-            _getPointAlgo1.GetPointTangent(alpha, startPoint, startTangent);
+            // origin of xz-plane is linear interpolation of start and end point
+            gp_Vec vec_global = (1-beta)*vec_start + beta*vec_end;
 
-            // get end point
-            gp_Pnt endPoint;
-            gp_Vec endTangent;
-            _getPointAlgo2.GetPointTangent(alpha, endPoint, endTangent);
+            // interpolate scale factor to beta
+            Standard_Real scale = (1-beta)*_scale1 + beta*_scale2;
 
-            // construct vector in beta direction
-            gp_Vec vectorBeta(startPoint, endPoint);
+            // add alpha component along global x and gamma component along z_vec
+            vec_global.SetX( vec_global.X() + scale*alpha );
+            vec_global += scale*gamma*z_vec;
 
-            // ******************************************************************
-            // construct start and end normal vectors in gamma direction
-            // ******************************************************************
-            // interpolate tangent vectors at start and end profile
-            gp_Vec tangentInterpolated = startTangent + (endTangent - startTangent) * beta;
-
-            gp_Vec vectorGamma = tangentInterpolated.Crossed(vectorBeta);
-            gp_Dir normalGamma(vectorGamma);
-
-            // ******************************************************************
-            // calculate linear interpolated scaling factor in gamma direction
-            // ******************************************************************
-            Standard_Real scale = _scale1 + (_scale2-_scale1) * beta;
-
-            // ******************************************************************
-            // construct world coordinates for guide curve point
-            // ******************************************************************
-            // start with the anchor point at the 1st profile
-            gp_Vec guideCurvePoint (gp_Pnt(), startPoint);
-            // add contribution from beta along the connection between the two anchor points
-            guideCurvePoint += beta * vectorBeta;
-            // add contribution from gamma
-            // direction: linear interpolation of normal vectors in gamma direction
-            // magnitude: gamma times linear interpolated scaling factor
-            guideCurvePoint += gamma * scale * normalGamma;
             // save to container
-            guideCurvePoints[i+1]=gp_Pnt(guideCurvePoint.XYZ()) ;
+            guideCurvePoints[i+1]=gp_Pnt(vec_global.XYZ()) ;
         }
 
         // interpolate B-Spline curve through guide curve points
