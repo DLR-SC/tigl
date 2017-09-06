@@ -95,6 +95,7 @@ TopoDS_Edge CTiglWingSegmentGuidecurveBuilder::BuildGuideCurve(CCPACSGuideCurve 
                                                                                       toRelativeCircumference,
                                                                                       innerScale,
                                                                                       outerScale,
+                                                                                      gp_Dir(1.0, 0.0, 0.0),
                                                                                       guideCurveProfile);
     return guideCurveEdge;
 }

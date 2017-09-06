@@ -90,6 +90,7 @@ TopoDS_Edge CTiglFuselageSegmentGuidecurveBuilder::BuildGuideCurve(CCPACSGuideCu
                                                                                           toRelativeCircumference,
                                                                                           innerScale,
                                                                                           outerScale,
+                                                                                          gp_Dir(0.0, 0.0, 1.0),
                                                                                           guideCurveProfile);
     return guideCurveEdge;
 }

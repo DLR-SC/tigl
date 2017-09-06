@@ -364,7 +364,7 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSGuideCurveAlgo)
 
     TopoDS_Edge guideCurveEdge;
     // instantiate guideCurveAlgo
-    guideCurveEdge = tigl::CCPACSGuideCurveAlgo<tigl::CCPACSWingProfileGetPointAlgo> (innerWireContainer, outerWireContainer, 0.0, 0.0, 2*radius1, 2*radius2, guideCurveProfile);
+    guideCurveEdge = tigl::CCPACSGuideCurveAlgo<tigl::CCPACSWingProfileGetPointAlgo> (innerWireContainer, outerWireContainer, 0.0, 0.0, 2*radius1, 2*radius2, gp_Dir(1.0, 0.0, 0.0), guideCurveProfile);
 
     // check if guide curve runs through sample points
     // get curve
@@ -384,8 +384,6 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSGuideCurveAlgo)
 
         // scale sample points since 2nd profile is scaled by a factor 2
         predictedSamplePointsX[i]*=(2*radius1+(2*radius2-2*radius1)*b);
-        // minus sign since gamma direction is negative x-direction for alpha=0
-        predictedSamplePointsX[i]*=-1.0;
         // check is guide curve runs through the predicted sample points
         ASSERT_NEAR(predictedSamplePointsX[i], point.X(), 1E-14);
         ASSERT_NEAR(b*distance, point.Y(), 1E-14);
@@ -437,7 +435,7 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSWingSegment)
         // n is the y direction rotated pi/6 (30 degrees) inside the x-y plane
         double b = width*i/double(N);
         gp_Pnt planeLocation = gp_Pnt(b*sin(angle), b*cos(angle)+position, 0.0);
-        Handle(Geom_Plane) plane = new Geom_Plane(planeLocation, gp_Dir(sin(angle), cos(angle), 0.0));
+        Handle(Geom_Plane) plane = new Geom_Plane(planeLocation, gp_Dir(0.0, 1.0, 0.0));
         GeomAPI_IntCS intersection (curve, plane);
         ASSERT_EQ(intersection.NbPoints(), 1);
         gp_Pnt point = intersection.Point(1);
@@ -449,7 +447,7 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSWingSegment)
         // scale sample points since outer profile's chordline smaller by a factor of 0.5
         double s=(innerScale+(outerScale-innerScale)*i/double(N));
         // go along direction perpendicular to the leading edge in the x-y plane
-        predictedPoint += gp_Vec(-cos(angle)*gammaDeviation[i]*s, sin(angle)*gammaDeviation[i]*s, 0.0);
+        predictedPoint += gp_Vec(gammaDeviation[i]*s, 0.0, 0.0);
 
         // check is guide curve runs through the predicted sample points
         ASSERT_NEAR(predictedPoint.X(), point.X(), 1E-5);

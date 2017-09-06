@@ -324,7 +324,7 @@ TEST_F(FuselageGuideCurve, tiglFuselageGuideCurve_CCPACSGuideCurveAlgo)
 
     TopoDS_Edge guideCurveEdge;
     // instantiate guideCurveAlgo
-    guideCurveEdge = tigl::CCPACSGuideCurveAlgo<tigl::CCPACSFuselageProfileGetPointAlgo> (wireContainer1, wireContainer2, 0.5, 0.5, 2*radius1, 2*radius2, guideCurveProfile);
+    guideCurveEdge = tigl::CCPACSGuideCurveAlgo<tigl::CCPACSFuselageProfileGetPointAlgo> (wireContainer1, wireContainer2, 0.5, 0.5, 2*radius1, 2*radius2, gp_Dir(0.0, 0.0, 1.0), guideCurveProfile);
 
     // check if guide curve runs through sample points
     // get curve
@@ -362,7 +362,6 @@ TEST_F(FuselageGuideCurve, tiglFuselageGuideCurve_CCPACSFuselageSegment)
 
     ASSERT_EQ(fuselage.GetSegmentCount(),2);
     tigl::CCPACSFuselageSegment& segment1 = (tigl::CCPACSFuselageSegment&) fuselage.GetSegment(1);
-    tigl::CCPACSFuselageSegment& segment2 = (tigl::CCPACSFuselageSegment&) fuselage.GetSegment(2);
 
     ASSERT_TRUE(segment1.GetGuideCurves().get_ptr() != NULL);
     tigl::CCPACSGuideCurves& guides = *segment1.GetGuideCurves();

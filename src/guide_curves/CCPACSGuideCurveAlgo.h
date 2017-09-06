@@ -54,6 +54,7 @@ public:
      * \param alpha2 Parameter which defines the starting point of the guide curve on the 2nd profile
      * \param scale1 Scaling factor from 1st profile (inner profile chord line in the case of wing profiles)
      * \param scale2 Scaling factor from 2nd profile (outer profile chord line in the case of wing profiles)
+     * \param x_direction is the vector, along which the first components of the guide curve points are defined
      * \param gcp Guide curve profile coordinates
      *
      * @return Guide curve wire in world coordinates
@@ -64,6 +65,7 @@ public:
                                      const Standard_Real& alpha2,
                                      const Standard_Real& scale1,
                                      const Standard_Real& scale2,
+                                     const gp_Dir& x_direction,
                                      CCPACSGuideCurveProfile& gcp) :
         _getPointAlgo1(profileContainer1),
         _getPointAlgo2(profileContainer2),
@@ -71,6 +73,7 @@ public:
         _alpha2(alpha2),
         _scale1(scale1),
         _scale2(scale2),
+        _x_direction(x_direction),
         _guideCurveProfile(gcp)
     {
     }
@@ -86,14 +89,11 @@ public:
         _getPointAlgo1.GetPointTangent(_alpha1, guideCurvePoints[0], tangent);
         _getPointAlgo2.GetPointTangent(_alpha2, guideCurvePoints[guideCurvePoints.size()-1], tangent);
 
-        gp_Vec vec_start(guideCurvePoints[0].X(), guideCurvePoints[0].Y(), guideCurvePoints[0].Z());
-        gp_Vec vec_end( guideCurvePoints[guideCurvePoints.size()-1].X(),
-                        guideCurvePoints[guideCurvePoints.size()-1].Y(),
-                        guideCurvePoints[guideCurvePoints.size()-1].Z() );
+        gp_Vec vec_start(gp_Pnt(),guideCurvePoints[0]);
+        gp_Vec vec_end(gp_Pnt(),guideCurvePoints[guideCurvePoints.size()-1]);
 
-        // Y = vec_end - vec_ start, and Z = (1, 0, 0) x Y, i.e.
-        //          Z = (0, -Y.z, Y.y)
-        gp_Vec z_vec(0., vec_start.Z() - vec_end.Z(), vec_end.Y() - vec_start.Y());
+        // Z = X x Y, where Y = vec_end - vec_start.
+        gp_Vec z_vec = gp_Vec(_x_direction).Crossed(vec_end-vec_start);
         z_vec.Normalize();
 
         // loop over guide Curve profile points
@@ -104,10 +104,10 @@ public:
             Standard_Real gamma = guideCurveProfilePoints[i].z;
 
             // origin of xz-plane is linear interpolation of start and end point
-            gp_Vec vec_global = (1-beta)*vec_start + beta*vec_end;
+            gp_Vec vec_global = (1.0-beta)*vec_start + beta*vec_end;
 
             // interpolate scale factor to beta
-            Standard_Real scale = (1-beta)*_scale1 + beta*_scale2;
+            Standard_Real scale = (1.0-beta)*_scale1 + beta*_scale2;
 
             // add alpha component along global x and gamma component along z_vec
             vec_global.SetX( vec_global.X() + scale*alpha );
@@ -130,6 +130,7 @@ private:
     Standard_Real           _alpha2;               /**< End point parameter */
     Standard_Real           _scale1;               /**< 1st scale factor */
     Standard_Real           _scale2;               /**< 2nd scale factor */
+    gp_Dir                  _x_direction;          /**< x-direction of the guide curve points */
     CCPACSGuideCurveProfile& _guideCurveProfile;   /**< Guide curve profile */
 };
 
