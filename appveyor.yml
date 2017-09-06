@@ -13,8 +13,28 @@ build:
   verbosity: minimal
 
 artifacts:
-  - path: '_build/*.zip'
+  - path: '*.zip'
     name: binaries
+  - path: '*.exe'
+    name: installer
+
+deploy:
+  - provider: FTP
+    protocol: sftp
+    host: frs.sourceforge.net
+    username:
+      secure: HZlK5sZGRgSoPQQI6EgdtsFtTj/ZAfdSPdLLxt8FeuE=
+    password:
+      secure: z0kfNd+oRq/PHvJumrSOpA==
+    folder: files/Nightlies-Windows
+    on:
+      appveyor_scheduled_build: true
+
+  - provider: Environment
+    name: GitHub
+    on:
+      appveyor_repo_tag: true
+
 
 install:
   - ps: |
@@ -51,14 +71,21 @@ install:
         Write-Output "Extract Doxygen"
         & 7z x -y "c:\doxygen-win.zip" -oC:\ > null
       }
-
+  # check if release build, if yes we need nsis
+  - ps: |
+      $BUILD_RELEASE = $($env:appveyor_repo_tag -eq "true")
+      $BUILD_NIGHTLY = "ON"
+      if ($BUILD_RELEASE) {
+        $BUILD_NIGHTLY = "OFF"
+        Write-Output "Release builds enabled."
+      }
 
 build_script:
 - ps: |
     md _build -Force | Out-Null
     cd _build
-    Write-Output "Running cmake: -DCMAKE_INSTALL_PREFIX=install -DCASROOT=c:\oce\$ocedist -DTIXI_PATH=c:\tixi\$tixidist -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON -DTIGL_BUILD_TESTS=ON -DTIGL_NIGHTLY=ON -DQT_PATH=c:\Qt\5.4.1\$qtdist -DDOXYGEN_EXECUTABLE=c:/doxygen-win/bin/doxygen.exe .."
-    & cmake -G "$generator" -DCMAKE_INSTALL_PREFIX=install -DCASROOT=c:\oce\$ocedist -DTIXI_PATH=c:\tixi\$tixidist -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON -DTIGL_BUILD_TESTS=ON -DTIGL_NIGHTLY=ON -DQT_PATH=c:\Qt\5.4.1\$qtdist -DDOXYGEN_EXECUTABLE=c:/doxygen-win/bin/doxygen.exe ..
+    Write-Output "Running cmake: -DCMAKE_INSTALL_PREFIX=install -DCASROOT=c:\oce\$ocedist -DTIXI_PATH=c:\tixi\$tixidist -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON -DTIGL_BUILD_TESTS=ON -DTIGL_NIGHTLY=$BUILD_NIGHTLY -DQT_PATH=c:\Qt\$qtdist -DDOXYGEN_EXECUTABLE=c:/doxygen-win/bin/doxygen.exe .."
+    & cmake -G "$generator" -DCMAKE_INSTALL_PREFIX=install -DCASROOT=c:\oce\$ocedist -DTIXI_PATH=c:\tixi\$tixidist -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON -DTIGL_BUILD_TESTS=ON -DTIGL_NIGHTLY="$BUILD_NIGHTLY" -DQT_PATH=c:\Qt\$qtdist -DDOXYGEN_EXECUTABLE=c:/doxygen-win/bin/doxygen.exe ..
     if ($LastExitCode -ne 0) {
         throw "Exec: $ErrorMessage"
     }
@@ -87,6 +114,13 @@ after_test:
 - ps: |
     & cmake --build . --config $env:CONFIGURATION --target doc
     & cpack -G ZIP
+    & mv *.zip ..
+- ps : |
+    if ($BUILD_RELEASE)
+    {
+        cpack -G NSIS
+        mv *.exe ..
+    }
 
 cache:
  - c:\oce -> appveyor.yml
