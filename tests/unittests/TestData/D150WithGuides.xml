@@ -10943,7 +10943,7 @@
         <guideCurveProfile uID="guideCurveProfileFuselageright">
           <name>NameGuideCurveProfileFuselageright</name>
           <pointList>
-            <rX mapType="vector">0.250000</rX>
+            <rX mapType="vector">0.000000</rX>
             <rY mapType="vector">0.500000</rY>
             <rZ mapType="vector">0.000000</rZ>
           </pointList>
@@ -10951,7 +10951,7 @@
         <guideCurveProfile uID="guideCurveProfileFuselageupper">
           <name>NameGuideCurveProfileFuselageupper</name>
           <pointList>
-            <rX mapType="vector">0.500000</rX>
+            <rX mapType="vector">0.000000</rX>
             <rY mapType="vector">0.500000</rY>
             <rZ mapType="vector">0.000000</rZ>
           </pointList>
@@ -10959,7 +10959,7 @@
         <guideCurveProfile uID="guideCurveProfileFuselageleft">
           <name>NameGuideCurveProfileFuselageleft</name>
           <pointList>
-            <rX mapType="vector">0.750000</rX>
+            <rX mapType="vector">0.000000</rX>
             <rY mapType="vector">0.500000</rY>
             <rZ mapType="vector">0.000000</rZ>
           </pointList>
@@ -10967,7 +10967,7 @@
         <guideCurveProfile uID="guideCurveProfileWingTE">
           <name>NameGuideCurveProfileWingTE</name>
           <pointList>
-            <rX mapType="vector">-1.000000</rX>
+            <rX mapType="vector">0.000000</rX>
             <rY mapType="vector">0.500000</rY>
             <rZ mapType="vector">0.000000</rZ>
           </pointList>
