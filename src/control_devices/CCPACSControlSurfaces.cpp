@@ -25,10 +25,10 @@
 namespace tigl
 {
 
-CCPACSControlSurfaces::CCPACSControlSurfaces(CCPACSWingComponentSegment* cs)
-    : _componentSegment(cs)
+CCPACSControlSurfaces::CCPACSControlSurfaces(CCPACSConfiguration* cfg, CCPACSWingComponentSegment* cs)
+    : _componentSegment(cs), _config(cfg)
 {
-    controlSurfaceDevices = CSharedPtr<CCPACSControlSurfaceDevices>(new CCPACSControlSurfaceDevices(cs));
+    controlSurfaceDevices = CCPACSControlSurfaceDevicesPtr(new CCPACSControlSurfaceDevices(cfg, cs));
 }
 
 // Read CPACS segment elements

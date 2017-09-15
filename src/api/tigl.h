@@ -206,10 +206,9 @@ typedef unsigned int TiglGeometricComponentType;
 #define  TIGL_COMPONENT_WINGCOMPSEGMENT 256      /**< The Component is a wing component segment */
 #define  TIGL_COMPONENT_WINGSHELL       512      /**< The Component is a face of the wing (e.g. upper wing surface) */
 #define  TIGL_COMPONENT_GENERICSYSTEM   1024     /**< The Component is a generic system */
-#define  TIGL_COMPONENT_CONTROLSURF     2048     /**< The Component is a control surface */
 #define  TIGL_COMPONENT_ROTOR           2048     /**< The Component is a rotor */
 #define  TIGL_COMPONENT_ROTORBLADE      4096     /**< The Component is a rotor blade */
-
+#define  TIGL_COMPONENT_CONTROLSURF     8192     /**< The Component is a control surface */
 
 enum TiglStructureType
 {

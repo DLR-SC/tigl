@@ -25,14 +25,21 @@
 #include "CTiglError.h"
 #include "tigl_internal.h"
 #include "CCPACSControlSurfaceDeviceBorderLeadingEdgeShape.h"
+#include "CTiglControlSurfaceBorderCoordinateSystem.h"
+#include "CCPACSControlSurfaceDeviceAirfoil.h"
+#include "PNamedShape.h"
+
+#include <TopoDS_Wire.hxx>
 
 namespace tigl
 {
 
+class CCPACSWingComponentSegment;
+
 class CCPACSControlSurfaceDeviceOuterShapeBorder
 {
 public:
-    TIGL_EXPORT CCPACSControlSurfaceDeviceOuterShapeBorder();
+    TIGL_EXPORT CCPACSControlSurfaceDeviceOuterShapeBorder(CCPACSWingComponentSegment*);
 
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle,
                                const std::string & BorderXPath,
@@ -43,11 +50,29 @@ public:
     TIGL_EXPORT double getXsiLE() const;
     TIGL_EXPORT double getXsiTE() const;
 
-    TIGL_EXPORT CCPACSControlSurfaceDeviceBorderLeadingEdgeShape getLeadingEdgeShape() const;
-    TIGL_EXPORT bool isLeadingEdgeShapeAvailible() const;
+    // computes the wire of the outershape
+    TIGL_EXPORT TopoDS_Wire getWire(PNamedShape wingShape, gp_Vec upDir) const;
+
+    TIGL_EXPORT CTiglControlSurfaceBorderCoordinateSystem getCoordinateSystem(gp_Vec upDir) const;
+
+    TIGL_EXPORT CCPACSControlSurfaceDeviceBorderLeadingEdgeShapePtr getLeadingEdgeShape() const;
+
+    TIGL_EXPORT CCPACSControlSurfaceDeviceAirfoilPtr getAirfoil() const;
+
+    TIGL_EXPORT void setUID(const std::string& uid);
+
+    enum ShapeType
+    {
+        SIMPLE   = 0,
+        LE_SHAPE = 1,
+        AIRFOIL  = 2
+    };
+
+    TIGL_EXPORT ShapeType getShapeType() const;
 
 private:
-    std::string xsiType;
+    std::string _uid;
+    ShapeType _shapeType;
 
     /* Simple Border */
     double etaLE;
@@ -55,8 +80,11 @@ private:
     double xsiLE;
     double xsiTE;
 
-    CCPACSControlSurfaceDeviceBorderLeadingEdgeShape leadingEdgeShape;
-    bool leadingEdgeShapeAvailible;
+    CCPACSControlSurfaceDeviceBorderLeadingEdgeShapePtr leadingEdgeShape;
+    CCPACSControlSurfaceDeviceAirfoilPtr airfoil;
+
+    // helpers
+    CCPACSWingComponentSegment* _segment;
 };
 
 } // end namespace tigl

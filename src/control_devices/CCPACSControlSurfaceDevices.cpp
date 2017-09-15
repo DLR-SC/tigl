@@ -28,8 +28,8 @@
 namespace tigl
 {
 
-CCPACSControlSurfaceDevices::CCPACSControlSurfaceDevices(CCPACSWingComponentSegment* cs)
-    : _componentSegment(cs)
+CCPACSControlSurfaceDevices::CCPACSControlSurfaceDevices(CCPACSConfiguration* cfg, CCPACSWingComponentSegment* cs)
+    : _componentSegment(cs), _config(cfg)
 {
 }
 
@@ -81,7 +81,7 @@ void CCPACSControlSurfaceDevices::ReadCPACS(
     // Loop over all controlSurfaces
     for (int i = 1; i <= controlSurfaceDeviceCount; i++) {
         CCPACSControlSurfaceDevice* controlSurfaceDevice =
-                new CCPACSControlSurfaceDevice(_componentSegment);
+                new CCPACSControlSurfaceDevice(_config, _componentSegment);
         controlSurfaceDevices.push_back(controlSurfaceDevice);
 
 

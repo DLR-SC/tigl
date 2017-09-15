@@ -24,6 +24,7 @@
 #include "tixi.h"
 #include "CTiglError.h"
 #include "tigl_internal.h"
+#include "CSharedPtr.h"
 
 namespace tigl
 {
@@ -47,6 +48,8 @@ private:
     double xsiUpperSkin;
     double xsiLowerSkin;
 };
+
+typedef CSharedPtr<CCPACSControlSurfaceDeviceBorderLeadingEdgeShape> CCPACSControlSurfaceDeviceBorderLeadingEdgeShapePtr;
 
 } // end namespace tigl
 

@@ -174,9 +174,12 @@ CCPACSWingComponentSegment::CCPACSWingComponentSegment(CCPACSWing* aWing, int aS
     : CTiglAbstractSegment(aSegmentIndex)
     , wing(aWing)
     , surfacesAreValid(false)
-    , controlSurfaces(new CCPACSControlSurfaces(this))
     , structure(NULL)
 {
+    assert(aWing);
+
+    controlSurfaces = CCPACSControlSurfacesPtr(new CCPACSControlSurfaces(&aWing->GetConfiguration(), this));
+
     Cleanup();
 }
 

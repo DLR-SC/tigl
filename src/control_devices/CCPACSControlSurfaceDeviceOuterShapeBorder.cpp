@@ -17,18 +17,27 @@
  */
 
 #include "CCPACSControlSurfaceDeviceOuterShapeBorder.h"
+#include "CControlSurfaceBoarderBuilder.h"
+#include "CNamedShape.h"
+#include "CCPACSWingComponentSegment.h"
+#include "CCPACSWing.h"
+
+#include <BRepTools.hxx>
+
+#include <cassert>
 
 namespace tigl
 {
 
-CCPACSControlSurfaceDeviceOuterShapeBorder::CCPACSControlSurfaceDeviceOuterShapeBorder()
+CCPACSControlSurfaceDeviceOuterShapeBorder::CCPACSControlSurfaceDeviceOuterShapeBorder(CCPACSWingComponentSegment* segment)
+    : _segment(segment)
 {
-    xsiType = "";
+    setUID("ControlSurfaceDevice_OuterShapeBorder");
     xsiLE = -1;
     xsiTE = -1;
     etaLE = -1;
     etaTE = -1;
-    leadingEdgeShapeAvailible = false;
+    _shapeType = SIMPLE;
 }
 
 // Read CPACS Border element
@@ -71,8 +80,8 @@ void CCPACSControlSurfaceDeviceOuterShapeBorder::ReadCPACS(
         tempString = BorderXPath + "/leadingEdgeShape";
         elementPath = const_cast<char*>(tempString.c_str());
         if (tixiCheckElement(tixiHandle,elementPath) == SUCCESS) {
-            leadingEdgeShape.ReadCPACS(tixiHandle,elementPath,TRAILING_EDGE_DEVICE);
-            leadingEdgeShapeAvailible = true;
+            leadingEdgeShape = CCPACSControlSurfaceDeviceBorderLeadingEdgeShapePtr(new CCPACSControlSurfaceDeviceBorderLeadingEdgeShape);
+            leadingEdgeShape->ReadCPACS(tixiHandle,elementPath,TRAILING_EDGE_DEVICE);
         }
     }
     else if (type == LEADING_EDGE_DEVICE) {
@@ -99,6 +108,32 @@ void CCPACSControlSurfaceDeviceOuterShapeBorder::ReadCPACS(
             // couldnt read xsiTE
         }
     }
+
+    if (tixiCheckElement(tixiHandle, (BorderXPath + "/airfoil").c_str()) == SUCCESS) {
+        // TODO: avoid chaining, instead provide configuration to constructor
+        airfoil = CCPACSControlSurfaceDeviceAirfoilPtr(
+                    new CCPACSControlSurfaceDeviceAirfoil(&_segment->GetWing().GetConfiguration())); 
+        airfoil->ReadCPACS(tixiHandle, BorderXPath + "/airfoil");
+    }
+
+    // check validity of the cpacs file
+    if (type == TRAILING_EDGE_DEVICE) {
+        if (airfoil && leadingEdgeShape) {
+            throw CTiglError("Error in path: " + BorderXPath + 
+                             ". The border must not contain both elements \"airfoil\" and \"leadingEdgeShape\"!");
+        }
+    }
+
+    // determine shape type
+    if (airfoil) {
+        _shapeType = AIRFOIL;
+    }
+    else if(leadingEdgeShape) {
+        _shapeType = LE_SHAPE;
+    }
+    else {
+        _shapeType = SIMPLE;
+    }
 }
 
 double CCPACSControlSurfaceDeviceOuterShapeBorder::getEtaLE() const
@@ -118,14 +153,63 @@ double CCPACSControlSurfaceDeviceOuterShapeBorder::getXsiTE() const
     return xsiTE;
 }
 
-CCPACSControlSurfaceDeviceBorderLeadingEdgeShape CCPACSControlSurfaceDeviceOuterShapeBorder::getLeadingEdgeShape() const
+TopoDS_Wire CCPACSControlSurfaceDeviceOuterShapeBorder::getWire(PNamedShape wingShape, gp_Vec upDir) const
+{
+    assert(wingShape);
+
+    // Compute cutout plane
+    CTiglControlSurfaceBorderCoordinateSystem coords = getCoordinateSystem(upDir);
+    CControlSurfaceBoarderBuilder builder(coords, wingShape->Shape());
+
+    TopoDS_Wire wire;
+    if (leadingEdgeShape) {
+        wire = builder.boarderWithLEShape(leadingEdgeShape->getRelHeightLE(), 1.0,
+                                          leadingEdgeShape->getXsiUpperSkin(),
+                                          leadingEdgeShape->getXsiLowerSkin());
+    }
+    else if (airfoil) {
+        wire = airfoil->GetWire(coords);
+    }
+    else {
+        wire = builder.boarderSimple(1.0, 1.0);
+    }
+
+#ifdef DEBUG
+    std::stringstream filenamestr;
+    filenamestr << _uid << "_wire.brep";
+    BRepTools::Write(wire, filenamestr.str().c_str());
+#endif
+
+    return wire;
+}
+
+CTiglControlSurfaceBorderCoordinateSystem CCPACSControlSurfaceDeviceOuterShapeBorder::getCoordinateSystem(gp_Vec upDir) const
+{
+    gp_Pnt pLE = _segment->GetPoint(getEtaLE(), getXsiLE());
+    gp_Pnt pTE = _segment->GetPoint(getEtaLE(), getXsiTE());
+
+    CTiglControlSurfaceBorderCoordinateSystem coords(pLE, pTE, upDir);
+    return coords;
+}
+
+CCPACSControlSurfaceDeviceBorderLeadingEdgeShapePtr CCPACSControlSurfaceDeviceOuterShapeBorder::getLeadingEdgeShape() const
 {
     return leadingEdgeShape;
 }
 
-bool CCPACSControlSurfaceDeviceOuterShapeBorder::isLeadingEdgeShapeAvailible() const
+CCPACSControlSurfaceDeviceAirfoilPtr CCPACSControlSurfaceDeviceOuterShapeBorder::getAirfoil() const
 {
-    return leadingEdgeShapeAvailible;
+    return airfoil;
+}
+
+void CCPACSControlSurfaceDeviceOuterShapeBorder::setUID(const std::string& uid)
+{
+    _uid = uid;
+}
+
+CCPACSControlSurfaceDeviceOuterShapeBorder::ShapeType CCPACSControlSurfaceDeviceOuterShapeBorder::getShapeType() const
+{
+    return _shapeType;
 }
 
 } // end namespace tigl

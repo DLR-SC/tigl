@@ -36,11 +36,12 @@ namespace tigl
 {
 
 class CCPACSWingComponentSegment;
+class CCPACSConfiguration;
 
 class CCPACSControlSurfaceDevice : public CTiglAbstractPhysicalComponent
 {
 public:
-    TIGL_EXPORT CCPACSControlSurfaceDevice(CCPACSWingComponentSegment* segment);
+    TIGL_EXPORT CCPACSControlSurfaceDevice(CCPACSConfiguration* config, CCPACSWingComponentSegment* segment);
 
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & controlSurfaceDeviceXPath, TiglControlSurfaceType type = TRAILING_EDGE_DEVICE);
 
@@ -49,10 +50,7 @@ public:
     TIGL_EXPORT const CCPACSControlSurfaceDevicePath& getMovementPath() const;
     TIGL_EXPORT TiglGeometricComponentType GetComponentType(void) {return TIGL_COMPONENT_CONTROLSURF | TIGL_COMPONENT_PHYSICAL;}
     TIGL_EXPORT PNamedShape getCutOutShape(void);
-    
-    // @TODO: the loft buildup should be done inside this class. Currently it
-    // is done inside the wing class.
-    TIGL_EXPORT void setLoft(PNamedShape loft);
+    TIGL_EXPORT PNamedShape getFlapShape(void);
 
     // Returns the flap transformation based on the deflection
     TIGL_EXPORT gp_Trsf GetFlapTransform(double deflection) const;
@@ -63,45 +61,30 @@ public:
     // Returns the minimal deflaction value (defined in CPACS file)
     TIGL_EXPORT double GetMaxDeflection() const;
 
-    // TODO: missing description. Seems to be internal only, but used in tests
-    TIGL_EXPORT void getProjectedPoints(gp_Pnt point1, gp_Pnt point2, gp_Pnt point3,
-                                        gp_Pnt point4, gp_Vec& projectedPoint1,
-                                        gp_Vec& projectedPoint2, gp_Vec& projectedPoint3,
-                                        gp_Vec& projectedPoint4 );
-
 
     TIGL_EXPORT gp_Vec getNormalOfControlSurfaceDevice();
     TIGL_EXPORT CCPACSWingComponentSegment* getSegment();
     TIGL_EXPORT TiglControlSurfaceType getType();
 
-    // Actually a private class, only public for testing
-    // @TODO: should we make it private. Only used for simplistic cutout
-    TIGL_EXPORT TopoDS_Face GetBasePlane();
+    TIGL_EXPORT void SetUID(const std::string& uid);
+    TIGL_EXPORT std::string GetShortShapeName();
 
 protected:
     PNamedShape BuildLoft();
 
 private:
     CCPACSControlSurfaceDevice(const CCPACSControlSurfaceDevice& segment); /* disable copy constructor */
-    double determineCutOutPrismThickness();
-    std::string GetShortShapeName();
-    double determineSpoilerThickness();
 
-    gp_Pnt getLeadingEdgeShapeLeadingEdgePoint(bool isInnerBorder);
-    gp_Pln getBorderPlane(bool isInnerBorder);
-    void getLeadingEdgeTangent(gp_Pln plane, bool isInnerBorder, bool isUpper, gp_Pnt& point, gp_Vec& vec);
-    TopoDS_Wire getCutoutWire(bool isInnerBorder);
-
+    // CPACS elements of control surface
     CCPACSControlSurfaceDevicePath path;
     CCPACSControlSurfaceDeviceOuterShape outerShape;
-    CCPACSControlSurfaceDeviceWingCutOut wingCutOut;
-
-    CCPACSWingComponentSegment* _segment;
+    CSharedPtr<CCPACSControlSurfaceDeviceWingCutOut> wingCutOut;
     CSharedPtr<CTiglControlSurfaceHingeLine> _hingeLine;
 
+    // Helper members
+    CCPACSWingComponentSegment* _segment;
+    CCPACSConfiguration* _config;
     TiglControlSurfaceType _type;
-
-
 
 };
 

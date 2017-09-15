@@ -100,15 +100,15 @@ public:
     TIGL_EXPORT CTiglAbstractSegment & GetComponentSegment(std::string uid);
 
     // Extends given flap of this wing
-    TIGL_EXPORT TopoDS_Shape ExtendFlap(std::string flapUID, double flapDeflectionPercentage );
+    TIGL_EXPORT void ExtendFlap(std::string flapUID, double flapDeflectionPercentage);
 
     // Adds all Segments of this wing and flaps to one shape
     // @TODO: this should not be called explicitly. Instead, it should be called by get loft, in case
     // The control surface deflections are not zero
-    TIGL_EXPORT TopoDS_Shape BuildFusedSegmentsWithFlaps(bool splitWingInUpperAndLower, std::map<std::string,double> flapStatus);
+    TIGL_EXPORT PNamedShape GroupedFlapsAndWingShapes(std::map<std::string,double> flapStatus);
 
     // builds Wing Without Flaps.
-    TIGL_EXPORT void BuildFlapsAndWingWithoutFlaps();
+    TIGL_EXPORT void BuildWingWithCutouts();
 
     // Gets the wing transformation
     TIGL_EXPORT CTiglTransformation GetWingTransformation(void);
@@ -123,13 +123,14 @@ public:
     TIGL_EXPORT gp_Pnt GetLowerPoint(int segmentIndex, double eta, double xsi);
 
     TIGL_EXPORT TopoDS_Shape GetWingWithoutFlaps();
+    TIGL_EXPORT TopoDS_Shape GetLoftWithCutouts();
 
     // Gets a point on the chord surface in absolute (world) coordinates for a given segment, eta, xsi
     TIGL_EXPORT gp_Pnt GetChordPoint(int segmentIndex, double eta, double xsi);
 
     // Gets the loft of the whole wing
     TIGL_EXPORT TopoDS_Shape & GetLoftWithLeadingEdge(void);
-        
+
     TIGL_EXPORT TopoDS_Shape & GetUpperShape();
     TIGL_EXPORT TopoDS_Shape & GetLowerShape();
 
@@ -186,6 +187,10 @@ public:
     // Getter for positionings
     TIGL_EXPORT CCPACSWingPositionings& GetPositionings();
 
+    // Returns the wing shape without any extended flaps
+    TIGL_EXPORT PNamedShape GetWingCleanShape();
+
+
 protected:
     // Cleanup routine
     void Cleanup(void);
@@ -225,7 +230,7 @@ private:
     TopoDS_Shape                   fusedSegmentWithEdge;     /**< All Segments in one shape plus modelled leading edge */
     TopoDS_Shape                   upperShape;
     TopoDS_Shape                   lowerShape;
-    PNamedShape                    wingCutOutShape;          /**< Wing without flaps / flaps removed */
+    PNamedShape                    wingShapeWithCutouts;          /**< Wing without flaps / flaps removed */
     PNamedShape                    wingCleanShape;           /**< Clean wing surface without flaps cutout*/
     bool                           invalidated;              /**< Internal state flag */
     bool                           rebuildFusedSegments;     /**< Indicates if segmentation fusing need rebuild */

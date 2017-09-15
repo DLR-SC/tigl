@@ -379,31 +379,30 @@ CTiglAbstractSegment & CCPACSWing::GetComponentSegment(std::string uid)
 }
 
 
-
-TopoDS_Shape CCPACSWing::ExtendFlap(std::string flapUID, double flapDeflectionPercentage )
+void CCPACSWing::ExtendFlap(std::string flapUID, double flapDeflectionPercentage )
 {
     std::map<std::string,double> flapMap;
     flapMap[flapUID] = flapDeflectionPercentage;
-    return BuildFusedSegmentsWithFlaps(false, flapMap);
+    GroupedFlapsAndWingShapes(flapMap);
 }
 
-void CCPACSWing::BuildFlapsAndWingWithoutFlaps()
+void CCPACSWing::BuildWingWithCutouts()
 {
 
-    if ( !wingCleanShape ) {
-        // remeber old wing loft
-        wingCleanShape = GetLoft();
-    }
-    else {
+    if (wingShapeWithCutouts) {
         // nothing to do, because everything is built already.
         return;
+    }
+
+    if ( !wingCleanShape ) {
+        // remember old wing loft
+        wingCleanShape = GetLoft();
     }
 
     TopoDS_Compound allFlapPrisms;
     BRep_Builder compoundBuilderFlaps;
     compoundBuilderFlaps.MakeCompound (allFlapPrisms);
 
-    //TopoDS_Shape allCutOutBoxes;
     PNamedShape fusedBoxes;
     bool first = true;
     for ( int i = 1; i <= GetComponentSegmentCount(); i++ ) {
@@ -427,35 +426,26 @@ void CCPACSWing::BuildFlapsAndWingWithoutFlaps()
                 }
             }
 
-            PNamedShape deviceShape = CBopCommon(wingCleanShape, controlSurfacePrism);
-            deviceShape->SetName(controlSurfaceDevice.GetUID().c_str());
-            for (unsigned int iFace = 0; iFace < deviceShape->GetFaceCount(); ++iFace) {
-                CFaceTraits ft = deviceShape->GetFaceTraits(iFace);
-                ft.SetOrigin(controlSurfacePrism);
-                deviceShape->SetFaceTraits(iFace, ft);
-            }
-            
-            controlSurfaceDevice.setLoft(deviceShape);
+            // trigger build of the flap
+            controlSurfaceDevice.GetLoft();
         }
     }
 
-    
+
     CCutShape cutter(wingCleanShape, fusedBoxes);
     cutter.Perform();
-    wingCutOutShape = cutter.NamedShape();
-    for (unsigned int iFace = 0; iFace < wingCutOutShape->GetFaceCount(); ++iFace) {
-        CFaceTraits ft = wingCutOutShape->GetFaceTraits(iFace);
+    wingShapeWithCutouts = cutter.NamedShape();
+    for (unsigned int iFace = 0; iFace < wingShapeWithCutouts->GetFaceCount(); ++iFace) {
+        CFaceTraits ft = wingShapeWithCutouts->GetFaceTraits(iFace);
         ft.SetOrigin(wingCleanShape);
-        wingCutOutShape->SetFaceTraits(iFace, ft);
+        wingShapeWithCutouts->SetFaceTraits(iFace, ft);
     }
 }
 
 // Builds a fuse shape of all wing segments with flaps
-TopoDS_Shape CCPACSWing::BuildFusedSegmentsWithFlaps(bool splitWingInUpperAndLower, std::map<std::string,double> flapStatus )
+PNamedShape CCPACSWing::GroupedFlapsAndWingShapes(std::map<std::string,double> flapStatus )
 {
-    if ( !wingCleanShape ) {
-        BuildFlapsAndWingWithoutFlaps();
-    }
+    BuildWingWithCutouts();
 
     ListPNamedShape flapsAndWingShapes;
     for ( int i = 1; i <= GetComponentSegmentCount(); i++ ) {
@@ -472,7 +462,7 @@ TopoDS_Shape CCPACSWing::BuildFusedSegmentsWithFlaps(bool splitWingInUpperAndLow
             BRepBuilderAPI_Transform form(deviceShape->Shape(), T);
             deviceShape->SetShape(form.Shape());
 
-            // store the transformation
+            // store the transformation property. Required e.g. for VTK metadata
             gp_GTrsf gT(T);
             CTiglTransformation tiglTrafo(gT);
             unsigned int nFaces = deviceShape->GetFaceCount();
@@ -486,10 +476,10 @@ TopoDS_Shape CCPACSWing::BuildFusedSegmentsWithFlaps(bool splitWingInUpperAndLow
        }
     }
 
-    flapsAndWingShapes.push_back(wingCutOutShape);
+    flapsAndWingShapes.push_back(wingShapeWithCutouts);
     loft = CGroupShapes(flapsAndWingShapes);
 
-    return loft->Shape();
+    return loft;
 }
 
 // Gets the loft of the whole wing.
@@ -534,16 +524,17 @@ std::string CCPACSWing::GetShortShapeName()
 // build loft
 PNamedShape CCPACSWing::BuildLoft()
 {
-    return BuildFusedSegments(true);
+    wingCleanShape = BuildFusedSegments(true);
+    return wingCleanShape;
 }
 
-TopoDS_Shape CCPACSWing::GetWingWithoutFlaps()
+TopoDS_Shape CCPACSWing::GetLoftWithCutouts()
 {
-    if (!wingCutOutShape) {
+    if (!wingShapeWithCutouts) {
         std::map<std::string,double> flapStatus;
-        BuildFusedSegmentsWithFlaps(false, flapStatus);
+        GroupedFlapsAndWingShapes(flapStatus);
     }
-    return wingCutOutShape->Shape();
+    return wingShapeWithCutouts->Shape();
 }
 
 // Builds a fused shape of all wing segments
@@ -998,6 +989,15 @@ void CCPACSWing::ResetWingShape()
 CCPACSWingPositionings& CCPACSWing::GetPositionings()
 {
     return positionings;
+}
+
+PNamedShape CCPACSWing::GetWingCleanShape()
+{
+    if (!wingCleanShape) {
+        BuildLoft();
+    }
+    
+    return wingCleanShape;
 }
 
 } // end namespace tigl

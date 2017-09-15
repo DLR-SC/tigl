@@ -43,6 +43,72 @@ TEST(TiglCommonFunctions, isFileReadable)
     ASSERT_FALSE(IsFileReadable("invalidfile.txt"));
 }
 
+TEST(TiglCommonFunctions, projectPointOnPlane)
+{
+    gp_Pnt p(0,0,1);
+    gp_Pln pln(gp_Pnt(0,0,0), gp_Dir(0,0,1));
+
+    gp_Pnt2d res;
+    res = ProjectPointOnPlane(pln, p);
+    ASSERT_NEAR(0, res.X(), 1e-10);
+    ASSERT_NEAR(0, res.Y(), 1e-10);
+
+    p = gp_Pnt(2,0,3);
+    res = ProjectPointOnPlane(pln, p);
+    ASSERT_NEAR(2, res.X(), 1e-10);
+    ASSERT_NEAR(0, res.Y(), 1e-10);
+
+    pln = gp_Pln(gp_Pnt(0,0,0), gp_Dir(0,1,0));
+    res = ProjectPointOnPlane(pln, p);
+    ASSERT_NEAR(3, res.X(), 1e-10);
+    ASSERT_NEAR(2, res.Y(), 1e-10);
+
+    pln = gp_Pln(gp_Pnt(0,0,0), gp_Dir(-1,1,0));
+    p = gp_Pnt(1,0,0);
+    res = ProjectPointOnPlane(pln, p);
+    ASSERT_NEAR(sqrt(0.5), res.X(), 1e-10);
+    ASSERT_NEAR(0, res.Y(), 1e-10);
+
+    pln = gp_Pln(gp_Pnt(1,0,0), gp_Dir(-1,1,0));
+    p = gp_Pnt(1,0,0);
+    res = ProjectPointOnPlane(pln, p);
+    ASSERT_NEAR(0, res.X(), 1e-10);
+    ASSERT_NEAR(0, res.Y(), 1e-10);
+}
+
+TEST(TiglCommonFunctions, projectVecOnPlane)
+{
+    gp_Vec v(0,0,1);
+    gp_Pln pln(gp_Pnt(0,0,0), gp_Dir(0,0,1));
+
+    gp_Vec2d res;
+    res = ProjectVecOnPlane(pln, v);
+    ASSERT_NEAR(0, res.X(), 1e-10);
+    ASSERT_NEAR(0, res.Y(), 1e-10);
+
+    v = gp_Vec(2,0,3);
+    res = ProjectVecOnPlane(pln, v);
+    ASSERT_NEAR(2, res.X(), 1e-10);
+    ASSERT_NEAR(0, res.Y(), 1e-10);
+
+    pln = gp_Pln(gp_Pnt(0,0,0), gp_Dir(0,1,0));
+    res = ProjectVecOnPlane(pln, v);
+    ASSERT_NEAR(3, res.X(), 1e-10);
+    ASSERT_NEAR(2, res.Y(), 1e-10);
+
+    pln = gp_Pln(gp_Pnt(0,0,0), gp_Dir(-1,1,0));
+    v = gp_Vec(1,0,0);
+    res = ProjectVecOnPlane(pln, v);
+    ASSERT_NEAR(sqrt(0.5), res.X(), 1e-10);
+    ASSERT_NEAR(0, res.Y(), 1e-10);
+
+    pln = gp_Pln(gp_Pnt(1,0,0), gp_Dir(-1,1,0));
+    v = gp_Vec(1,0,0);
+    res = ProjectVecOnPlane(pln, v);
+    ASSERT_NEAR(sqrt(0.5), res.X(), 1e-10);
+    ASSERT_NEAR(0, res.Y(), 1e-10);
+}
+
 TEST(TiglCommonFunctions, IntersectLinePlane)
 {
     gp_Pln plane(gp_Pnt(10., 2., 0.), gp_Dir(0., 1., 0));

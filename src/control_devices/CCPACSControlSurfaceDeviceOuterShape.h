@@ -25,6 +25,7 @@
 #include "tixi.h"
 #include "CTiglError.h"
 #include "CCPACSControlSurfaceDeviceOuterShapeBorder.h"
+#include "PNamedShape.h"
 #include "tigl_internal.h"
 
 
@@ -33,10 +34,13 @@
 namespace tigl
 {
 
+class CCPACSControlSurfaceDevice;
+class CCPACSWingComponentSegment;
+
 class CCPACSControlSurfaceDeviceOuterShape
 {
 public:
-    TIGL_EXPORT CCPACSControlSurfaceDeviceOuterShape();
+    TIGL_EXPORT CCPACSControlSurfaceDeviceOuterShape(CCPACSControlSurfaceDevice*, CCPACSWingComponentSegment*);
 
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle,
                                const std::string & outerShapeXPath,
@@ -45,11 +49,37 @@ public:
     TIGL_EXPORT const CCPACSControlSurfaceDeviceOuterShapeBorder& getInnerBorder() const;
     TIGL_EXPORT const CCPACSControlSurfaceDeviceOuterShapeBorder& getOuterBorder() const;
 
+    /**
+     * Builds and returns the outer flap shape.
+     * 
+     * @param wingCleanShape Shape of the wing without the flaps, required for modeling
+     * @param upDir Up direction of the component segment
+     */
+    TIGL_EXPORT PNamedShape GetLoft(PNamedShape wingCleanShape, gp_Vec upDir);
+
+    /** 
+     * Returns the cutout shape, which can be used when no wing cutout is defined in the 
+     * control surface device
+     * 
+     * The return value can be zero, in case the flap shape is build up from flap profiles
+     */
+    TIGL_EXPORT PNamedShape cutoutShape(PNamedShape wingCleanShape, gp_Vec upDir);
+    
+    TIGL_EXPORT void setUID(const std::string& uid);
+
 private:
-    // intermediateAirfoils
+    bool needsWingIntersection() const;
+    
+    // CPACS Entities, currently missing intermediate airfoils
     CCPACSControlSurfaceDeviceOuterShapeBorder outerBorder;
     CCPACSControlSurfaceDeviceOuterShapeBorder innerBorder;
 
+    // helper objects
+    PNamedShape _outerShape;
+    PNamedShape _cutterShape;
+    std::string _uid;
+    CCPACSWingComponentSegment* _segment;
+    CCPACSControlSurfaceDevice* _csDevice;
 };
 
 } // end namespace tigl

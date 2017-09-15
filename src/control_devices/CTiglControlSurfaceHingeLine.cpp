@@ -67,21 +67,20 @@ void CTiglControlSurfaceHingeLine::buildHingeLine() const
     }
     
     // Calculate inner and outer HingePoint
-    tigl::CCPACSControlSurfaceDeviceOuterShapeBorder borders[2];
-    borders[0] = _outerShape->getOuterBorder();
-    borders[1] = _outerShape->getInnerBorder();
-
     for ( int borderCounter = 0; borderCounter < 2; borderCounter++ ) {
+        const CCPACSControlSurfaceDeviceOuterShapeBorder* border = NULL;
         double hingeXsi;
         if (borderCounter == 0) {
+            border = &_outerShape->getOuterBorder();
             hingeXsi = _path->getOuterHingePoint().getXsi();
         }
         else {
+            border = &_outerShape->getInnerBorder();
             hingeXsi = _path->getInnerHingePoint().getXsi();
         }
 
-        double borderEtaLE = borders[borderCounter].getEtaLE();
-        double borderEtaTE = borders[borderCounter].getEtaTE();
+        double borderEtaLE = border->getEtaLE();
+        double borderEtaTE = border->getEtaTE();
         double hingeEta = -1;
 
         // only calculate etaCoordinate if it´s not the same as the other one.
@@ -89,8 +88,8 @@ void CTiglControlSurfaceHingeLine::buildHingeLine() const
             hingeEta = (borderEtaTE + borderEtaLE)/2;
         }
         else {
-            double m = ( borderEtaLE - borderEtaTE )/(borders[borderCounter].getXsiLE() - borders[borderCounter].getXsiTE());
-            hingeEta = m * (hingeXsi - borders[borderCounter].getXsiLE()) + borderEtaLE;
+            double m = ( borderEtaLE - borderEtaTE )/(border->getXsiLE() - border->getXsiTE());
+            hingeEta = m * (hingeXsi - border->getXsiLE()) + borderEtaLE;
         }
 
         double eta = 0.,xsi = 0.;

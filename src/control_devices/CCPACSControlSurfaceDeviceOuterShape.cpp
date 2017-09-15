@@ -21,20 +21,35 @@
 #include <exception>
 
 #include "CCPACSControlSurfaceDeviceOuterShape.h"
+#include "CCPACSControlSurfaceDevice.h"
+#include "CBopCommon.h"
+#include "CNamedShape.h"
+#include "CTiglLogging.h"
 
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <Poly_Triangulation.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <GC_MakeSegment.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
+#include <BRepTools.hxx>
+#include <BRepOffsetAPI_ThruSections.hxx>
+
+#include <cassert>
 
 
 namespace tigl
 {
 
-CCPACSControlSurfaceDeviceOuterShape::CCPACSControlSurfaceDeviceOuterShape()
-{
+CCPACSControlSurfaceDeviceOuterShape::CCPACSControlSurfaceDeviceOuterShape(
+        CCPACSControlSurfaceDevice* device,
+        CCPACSWingComponentSegment* segment)
 
+    : innerBorder(segment),
+      outerBorder(segment),
+      _segment(segment),
+      _csDevice(device)
+{
+    setUID("ControlSurfaceDevice_OuterShape");
 }
 
 // Read CPACS outerShape element
@@ -53,12 +68,23 @@ void CCPACSControlSurfaceDeviceOuterShape::ReadCPACS(TixiDocumentHandle tixiHand
     if (tixiGetTextElement(tixiHandle, elementPath, &ptrName) == SUCCESS) {
         outerBorder.ReadCPACS(tixiHandle, elementPath, type);
     }
+    else {
+        throw CTiglError("Missing outerBorder element in path: " + outerShapeXPath + "!");
+    }
 
     // Get innerBorder
     tempString = outerShapeXPath + "/innerBorder";
     elementPath = const_cast<char*>(tempString.c_str());
     if (tixiGetTextElement(tixiHandle, elementPath, &ptrName) == SUCCESS) {
         innerBorder.ReadCPACS(tixiHandle, elementPath, type);
+    }
+    else {
+        throw CTiglError("Missing innerBorder element in path: " + outerShapeXPath + "!");
+    }
+
+    // validate compatibility of borders 
+    if (innerBorder.getShapeType() != outerBorder.getShapeType()) {
+        throw CTiglError("Inner and outerborder not compatible in path: " + outerShapeXPath + "!");
     }
 }
 
@@ -70,6 +96,91 @@ const CCPACSControlSurfaceDeviceOuterShapeBorder& CCPACSControlSurfaceDeviceOute
 {
     return outerBorder;
 }
+
+PNamedShape CCPACSControlSurfaceDeviceOuterShape::GetLoft(PNamedShape wingCleanShape, gp_Vec upDir)
+{
+    if (_outerShape) {
+        return _outerShape;
+    }
+
+    DLOG(INFO) << "Building " << _uid << " loft";
+    PNamedShape shapeBox = cutoutShape(wingCleanShape, upDir);
+    assert(shapeBox);
+    if (needsWingIntersection()) {
+
+        // perform the boolean intersection of the flap box with the wing 
+        _outerShape = CBopCommon(wingCleanShape, shapeBox);
+
+        for (unsigned int iFace = 0; iFace < _outerShape->GetFaceCount(); ++iFace) {
+            CFaceTraits ft = _outerShape->GetFaceTraits(iFace);
+            ft.SetOrigin(shapeBox);
+            _outerShape->SetFaceTraits(iFace, ft);
+        }
+
+#ifdef DEBUG
+        std::stringstream filenamestr2;
+        filenamestr2 << _uid << ".brep";
+        BRepTools::Write(_outerShape->Shape(), filenamestr2.str().c_str());
+#endif
+        
+        return _outerShape;
+    }
+    else {
+        _outerShape = shapeBox;
+        return _outerShape;
+    }
+    
+}
+
+PNamedShape CCPACSControlSurfaceDeviceOuterShape::cutoutShape(PNamedShape wingShape, gp_Vec upDir)
+{
+    if (_cutterShape) {
+        return _cutterShape;
+    }
+
+    DLOG(INFO) << "Building " << _uid << " cutter shape";
+
+    // Get Wires definng the Shape of the more complex CutOutShape.
+    TopoDS_Wire innerWire = innerBorder.getWire(wingShape, upDir);
+    TopoDS_Wire outerWire = outerBorder.getWire(wingShape, upDir);
+
+    // make one shape out of the 2 wires and build connections inbetween.
+    BRepOffsetAPI_ThruSections thrusections(true,true);
+    thrusections.AddWire(outerWire);
+    thrusections.AddWire(innerWire);
+    thrusections.Build();
+
+    _cutterShape = PNamedShape(new CNamedShape(thrusections.Shape(), _csDevice->GetUID().c_str()));
+    _cutterShape->SetShortName(_csDevice->GetShortShapeName().c_str());
+
+    assert(_cutterShape);
+
+#ifdef DEBUG
+    std::stringstream filenamestr;
+    filenamestr << _uid << "_cutter.brep";
+    BRepTools::Write(_cutterShape->Shape(), filenamestr.str().c_str());
+#endif
+
+    return _cutterShape;
+}
+
+void CCPACSControlSurfaceDeviceOuterShape::setUID(const std::string& uid)
+{
+    _uid = uid;
+    outerBorder.setUID(uid + "_OuterBorder");
+    innerBorder.setUID(uid + "_InnerBorder");
+}
+
+bool CCPACSControlSurfaceDeviceOuterShape::needsWingIntersection() const
+{
+    if (innerBorder.getShapeType() == CCPACSControlSurfaceDeviceOuterShapeBorder::AIRFOIL) {
+        return false;
+    }
+    else {
+        return true;
+    }
+}
+
 }
 
 // end namespace tigl
