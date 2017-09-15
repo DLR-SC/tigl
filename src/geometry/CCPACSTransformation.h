@@ -44,9 +44,9 @@ public:
     /// this function must be called explitly after the previous setters
     TIGL_EXPORT void updateMatrix();
     
-    TIGL_EXPORT CTiglPoint getTranslationVector() const;
-    TIGL_EXPORT CTiglPoint getRotation() const;
-    TIGL_EXPORT CTiglPoint getScaling() const;
+    TIGL_EXPORT const CTiglPoint& getTranslationVector() const;
+    TIGL_EXPORT const CTiglPoint& getRotation() const;
+    TIGL_EXPORT const CTiglPoint& getScaling() const;
     TIGL_EXPORT ECPACSTranslationType getTranslationType() const;
     TIGL_EXPORT CTiglTransformation getTransformationMatrix() const;
     
@@ -56,6 +56,8 @@ public:
     * @param transformationXPath XPath to the parent object
     */
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& transformationXPath);
+
+    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& transformationXPath);
     
     TIGL_EXPORT ~CCPACSTransformation();
 

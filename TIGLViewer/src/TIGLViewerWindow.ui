@@ -64,7 +64,7 @@
      <x>0</x>
      <y>0</y>
      <width>783</width>
-     <height>20</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="fileMenu">
@@ -111,6 +111,7 @@
       </property>
       <addaction name="tiglExportMeshedWingSTL"/>
       <addaction name="tiglExportMeshedFuselageSTL"/>
+      <addaction name="tiglExportMeshedConfigSTL"/>
      </widget>
      <widget class="QMenu" name="menuExport_to_Collada">
       <property name="title">
@@ -176,6 +177,7 @@
      <addaction name="drawFusedWingAction"/>
      <addaction name="drawWingShellAction"/>
      <addaction name="drawWingComponentSegmentAction"/>
+     <addaction name="drawWingStructureAction"/>
      <addaction name="drawWingTriangulationAction"/>
      <addaction name="drawWingProfilesAction"/>
      <addaction name="drawWingGuideCurvesAction"/>
@@ -197,6 +199,30 @@
      <addaction name="drawFuselageSamplePointsAngleAction"/>
      <addaction name="drawFusedFuselageAction"/>
     </widget>
+    <widget class="QMenu" name="menuRotorcraft">
+     <property name="title">
+      <string>Rotorcraft</string>
+     </property>
+     <addaction name="drawRotorsAction"/>
+     <addaction name="drawRotorDisksAction"/>
+     <addaction name="showRotorPropertiesAction"/>
+    </widget>
+    <widget class="QMenu" name="menuRotorBlades">
+     <property name="title">
+      <string>Rotor blades</string>
+     </property>
+     <addaction name="drawRotorBladesAction"/>
+     <addaction name="drawFusedRotorBladeAction"/>
+     <addaction name="drawRotorBladeShellAction"/>
+     <addaction name="drawRotorBladeComponentSegmentAction"/>
+     <addaction name="drawRotorBladeTriangulationAction"/>
+     <addaction name="drawRotorProfilesAction"/>
+     <addaction name="drawRotorBladeGuideCurvesAction"/>
+     <addaction name="separator"/>
+     <addaction name="drawRotorBladeSamplePointsAction"/>
+     <addaction name="drawRotorBladeOverlayCPACSProfilePointsAction"/>
+     <addaction name="drawRotorBladeCSPointAction"/>
+    </widget>
     <widget class="QMenu" name="menuMisc_Geometry">
      <property name="title">
       <string>Misc Geometry</string>
@@ -205,7 +231,9 @@
      <addaction name="drawVectorAction"/>
     </widget>
     <addaction name="menuAircraft"/>
+    <addaction name="menuRotorcraft"/>
     <addaction name="menuWings"/>
+    <addaction name="menuRotorBlades"/>
     <addaction name="menuFuselages"/>
     <addaction name="menuMisc_Geometry"/>
    </widget>
@@ -579,6 +607,116 @@
     <string>Shows a wing component segment</string>
    </property>
   </action>
+  <action name="drawRotorBladesAction">
+   <property name="text">
+    <string>Show Rotor Blade</string>
+   </property>
+   <property name="toolTip">
+    <string>Show a rotor blade only</string>
+   </property>
+  </action>
+  <action name="drawRotorProfilesAction">
+   <property name="text">
+    <string>Show Rotor Profiles</string>
+   </property>
+   <property name="toolTip">
+    <string>Show the profiles of a rotor</string>
+   </property>
+   <property name="statusTip">
+    <string>Show the profiles of a rotor</string>
+   </property>
+  </action>
+  <action name="drawRotorBladeOverlayCPACSProfilePointsAction">
+   <property name="text">
+    <string>Show Rotor Blade overlay profile points</string>
+   </property>
+   <property name="toolTip">
+    <string>Show the points of a rotor blade profile</string>
+   </property>
+  </action>
+  <action name="drawRotorBladeTriangulationAction">
+   <property name="text">
+    <string>Show Rotor Blade triangulation</string>
+   </property>
+   <property name="toolTip">
+    <string>Shows the triangulation of a rotor blade</string>
+   </property>
+  </action>
+  <action name="drawRotorBladeSamplePointsAction">
+   <property name="text">
+    <string>Show Sample Rotor Blade points</string>
+   </property>
+   <property name="toolTip">
+    <string>Show sample points on a rotor blade</string>
+   </property>
+   <property name="statusTip">
+    <string/>
+   </property>
+  </action>
+  <action name="drawFusedRotorBladeAction">
+   <property name="text">
+    <string>Show Fused Rotor Blade</string>
+   </property>
+   <property name="toolTip">
+    <string>Shows a fused rotor blade</string>
+   </property>
+   <property name="statusTip">
+    <string>Shows a fused rotor blade</string>
+   </property>
+  </action>
+  <action name="drawRotorBladeComponentSegmentAction">
+   <property name="text">
+    <string>Show Rotor Blade Component Segment</string>
+   </property>
+   <property name="statusTip">
+    <string>Shows a rotor blade component segment</string>
+   </property>
+   <property name="whatsThis">
+    <string>Shows a rotor blade component segment</string>
+   </property>
+  </action>
+  <action name="drawRotorBladeCSPointAction">
+   <property name="text">
+    <string>Show Rotor Blade Component Segment Point</string>
+   </property>
+  </action>
+  <action name="drawRotorBladeShellAction">
+   <property name="text">
+    <string>Show Rotor Blade Shells</string>
+   </property>
+  </action>
+  <action name="drawAllRotorsWingsAndFuselagesAction">
+   <property name="text">
+    <string>Show all Rotors, Wings and Fuselages</string>
+   </property>
+   <property name="toolTip">
+    <string>Show all Rotors, Wings and Fuselages</string>
+   </property>
+  </action>
+  <action name="drawRotorsAction">
+   <property name="text">
+    <string>Show a Rotor</string>
+   </property>
+   <property name="toolTip">
+    <string>Show only one rotor</string>
+   </property>
+  </action>
+  <action name="drawRotorDisksAction">
+   <property name="text">
+    <string>Show a Rotor Disk</string>
+   </property>
+   <property name="toolTip">
+    <string>Show only one rotor disk</string>
+   </property>
+  </action>
+  <action name="showRotorPropertiesAction">
+   <property name="text">
+    <string>Show Rotor Properties...</string>
+   </property>
+   <property name="toolTip">
+    <string>Show properties of a rotor</string>
+   </property>
+  </action>
   <action name="drawFuselageAction">
    <property name="text">
     <string>Show Fuselage</string>
@@ -647,7 +785,7 @@
   </action>
   <action name="tiglExportIgesAction">
    <property name="text">
-    <string>Export Model as IGES</string>
+    <string>Export Configuration</string>
    </property>
    <property name="statusTip">
     <string>Export Model as IGES.</string>
@@ -655,7 +793,7 @@
   </action>
   <action name="tiglExportFusedIgesAction">
    <property name="text">
-    <string>Export Fused Model as IGES</string>
+    <string>Export Fused Configuration</string>
    </property>
    <property name="statusTip">
     <string>Export Fused Model as IGES.</string>
@@ -663,7 +801,7 @@
   </action>
   <action name="tiglExportStepAction">
    <property name="text">
-    <string>Export Model as STEP</string>
+    <string>Export Configuration</string>
    </property>
    <property name="statusTip">
     <string>Export Model as STEP.</string>
@@ -679,7 +817,7 @@
   </action>
   <action name="tiglExportMeshedWingSTL">
    <property name="text">
-    <string>Export meshed Wing as STL</string>
+    <string>Export Wing</string>
    </property>
    <property name="statusTip">
     <string>Export meshed Wing as STL.</string>
@@ -687,7 +825,7 @@
   </action>
   <action name="tiglExportMeshedWingVTK">
    <property name="text">
-    <string>Export meshed Wing as VTK</string>
+    <string>Export Wing</string>
    </property>
    <property name="statusTip">
     <string>Export meshed Wing as VTK.</string>
@@ -695,7 +833,7 @@
   </action>
   <action name="tiglExportMeshedWingVTKsimple">
    <property name="text">
-    <string>Export meshed Wing as simple VTK</string>
+    <string>Export Wing (simple)</string>
    </property>
    <property name="toolTip">
     <string>Export meshed Wing as simple VTK - no cpacs related export</string>
@@ -706,7 +844,7 @@
   </action>
   <action name="tiglExportMeshedFuselageVTK">
    <property name="text">
-    <string>Export meshed Fuselage as VTK</string>
+    <string>Export Fuselage</string>
    </property>
    <property name="statusTip">
     <string>Export meshed Fuselage as VTK.</string>
@@ -714,7 +852,7 @@
   </action>
   <action name="tiglExportMeshedFuselageVTKsimple">
    <property name="text">
-    <string>Export meshed Fuselage as simple VTK</string>
+    <string>Export Fuselage (simple)</string>
    </property>
    <property name="toolTip">
     <string>Export meshed Fuselage as simple VTK - no cpacs realted export</string>
@@ -725,7 +863,7 @@
   </action>
   <action name="tiglExportMeshedFuselageSTL">
    <property name="text">
-    <string>Export meshed Fuselage as STL</string>
+    <string>Export Fuselage</string>
    </property>
    <property name="statusTip">
     <string>Export meshed Fuselage as STL.</string>
@@ -1145,12 +1283,12 @@
   </action>
   <action name="tiglExportMeshedConfigVTK">
    <property name="text">
-    <string>Export fused Configuration VTK (slow)</string>
+    <string>Export fused Configuration (slow)</string>
    </property>
   </action>
   <action name="tiglExportMeshedConfigVTKNoFuse">
    <property name="text">
-    <string>Export Configuration VTK (not fused)</string>
+    <string>Export Configuration (not fused)</string>
    </property>
   </action>
   <action name="drawFarFieldAction">
@@ -1163,7 +1301,7 @@
   </action>
   <action name="tiglExportFusedStepAction">
    <property name="text">
-    <string>Export fused/trimmed Model as STEP</string>
+    <string>Export fused/trimmed Configuration</string>
    </property>
   </action>
   <action name="tiglExportWingBRepAction">
@@ -1189,6 +1327,11 @@
   <action name="drawWingGuideCurvesAction">
    <property name="text">
     <string>Show Wing Guide Curves</string>
+   </property>
+  </action>
+  <action name="drawRotorBladeGuideCurvesAction">
+   <property name="text">
+    <string>Show Rotor Blade Guide Curves</string>
    </property>
   </action>
   <action name="drawFuselageGuideCurvesAction">
@@ -1238,6 +1381,16 @@
   <action name="drawSystemsAction">
    <property name="text">
     <string>Draw Systems</string>
+   </property>
+  </action>
+  <action name="drawWingStructureAction">
+   <property name="text">
+    <string>Show Wing Structure</string>
+   </property>
+  </action>
+  <action name="tiglExportMeshedConfigSTL">
+   <property name="text">
+    <string>Export Configuration</string>
    </property>
   </action>
  </widget>

@@ -64,8 +64,17 @@ public:
     // Read CPACS wing elements
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & wingXPath);
 
+    // Write CPACS wing elements
+    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string & wingXPath);
+
     // Returns the name of the wing
     TIGL_EXPORT const std::string & GetName(void) const;
+
+    // Returns the member description
+    TIGL_EXPORT const std::string & GetDescription(void) const;
+
+    // Returns whether this wing is a rotor blade
+    TIGL_EXPORT bool IsRotorBlade(void) const;
 
     // Returns the parent configuration
     TIGL_EXPORT CCPACSConfiguration & GetConfiguration(void) const;
@@ -76,14 +85,14 @@ public:
     // Returns the section for a given index
     TIGL_EXPORT CCPACSWingSection & GetSection(int index) const;
 
-    // Get segment count
+    // Getter of the number of segments of the wing
     TIGL_EXPORT int GetSegmentCount(void) const;
 
     // Returns the segment for a given index or uid
     TIGL_EXPORT CTiglAbstractSegment & GetSegment(const int index);
     TIGL_EXPORT CTiglAbstractSegment & GetSegment(std::string uid);
 
-    // Get segment count
+    // Getter of the number of component segments of the wing
     TIGL_EXPORT int GetComponentSegmentCount(void);
 
     // Returns the segment for a given index or uid
@@ -115,6 +124,12 @@ public:
 
     TIGL_EXPORT TopoDS_Shape GetWingWithoutFlaps();
 
+    // Gets a point on the chord surface in absolute (world) coordinates for a given segment, eta, xsi
+    TIGL_EXPORT gp_Pnt GetChordPoint(int segmentIndex, double eta, double xsi);
+
+    // Gets the loft of the whole wing
+    TIGL_EXPORT TopoDS_Shape & GetLoftWithLeadingEdge(void);
+        
     TIGL_EXPORT TopoDS_Shape & GetUpperShape();
     TIGL_EXPORT TopoDS_Shape & GetLowerShape();
 
@@ -140,6 +155,9 @@ public:
     // Returns the wingspan of the wing
     TIGL_EXPORT double GetWingspan(void);
 
+    // Returns the aspect ratio of the wing
+    TIGL_EXPORT double GetAspectRatio(void);
+
     // Returns the mean aerodynamic chord of the wing
     TIGL_EXPORT void  GetWingMAC(double& mac_chord, double& mac_x, double& mac_y, double& mac_z);
 
@@ -149,7 +167,7 @@ public:
     TIGL_EXPORT int GetSegmentEtaXsi(const gp_Pnt& xyz, double& eta, double& xsi, bool &onTop);
 
     // Returns the Component Type TIGL_COMPONENT_WING.
-    TIGL_EXPORT TiglGeometricComponentType GetComponentType(void) {return TIGL_COMPONENT_WING | TIGL_COMPONENT_PHYSICAL;}
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType(void);
 
     // Returns the lower Surface of a Segment
     TIGL_EXPORT Handle(Geom_Surface) GetLowerSegmentSurface(int index);
@@ -164,6 +182,9 @@ public:
 
     // resets wing Shape to cleanShape
     TIGL_EXPORT void ResetWingShape();
+
+    // Getter for positionings
+    TIGL_EXPORT CCPACSWingPositionings& GetPositionings();
 
 protected:
     // Cleanup routine
@@ -194,6 +215,8 @@ private:
 
 private:
     std::string                    name;                     /**< Wing name           */
+    std::string                    description;              /**< Wing description    */
+    bool                           isRotorBlade;             /**< Indicates if this wing is a rotor blade */
     CCPACSWingSections             sections;                 /**< Wing sections       */
     CCPACSWingSegments             segments;                 /**< Wing segments       */
     CCPACSWingComponentSegments    componentSegments;        /**< Wing ComponentSegments */

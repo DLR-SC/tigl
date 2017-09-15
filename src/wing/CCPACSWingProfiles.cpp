@@ -25,6 +25,10 @@
 
 #include "CCPACSWingProfiles.h"
 #include "CTiglError.h"
+#include "TixiSaveExt.h"
+#include "IOHelper.h"
+#include "CTiglLogging.h"
+
 #include <sstream>
 #include <iostream>
 
@@ -46,8 +50,6 @@ CCPACSWingProfiles::~CCPACSWingProfiles(void)
 // Cleanup routine
 void CCPACSWingProfiles::Cleanup(void)
 {
-    librarypath = "";
-
     CCPACSWingProfileContainer::iterator p;
     for (p = profiles.begin(); p!=profiles.end(); ++p) {
         CCPACSWingProfile *pro = p->second;
@@ -70,29 +72,58 @@ void CCPACSWingProfiles::Invalidate(void)
 void CCPACSWingProfiles::ReadCPACS(TixiDocumentHandle tixiHandle)
 {
     Cleanup();
+    // call separate import method for reading (allows for importing
+    // additional profiles from other files)
+    ImportCPACS(tixiHandle);
+}
 
-    ReturnCode    tixiRet;
-    int           elementCount;
-    std::string   elementString;
-    char*         elementPath;
+void CCPACSWingProfiles::ImportCPACS(TixiDocumentHandle tixiHandle)
+{
+    const std::string xpath = "/cpacs/vehicles/profiles";
+    std::vector<CCPACSWingProfile*> children;
+    if (tixiCheckElement(tixiHandle, (xpath + "/wingAirfoils").c_str()) == SUCCESS) {
+        ReadContainerElement(tixiHandle, xpath, "wingAirfoil", 0, children);
+    }
+    if (tixiCheckElement(tixiHandle, (xpath + "/rotorAirfoils").c_str()) == SUCCESS) {
+        ReadContainerElement(tixiHandle, xpath, "rotorAirfoil", 0, children);
+    }
+    for (std::size_t i = 0; i < children.size(); i++) {
+        CCPACSWingProfile* child = children[i];
+        if (profiles.find(child->GetUID()) != profiles.end()) {
+            delete profiles[child->GetUID()];
+        }
+        profiles[child->GetUID()] = child;
+    }
+}
 
-    /* Get wing element count */
-    elementString  = "/cpacs/vehicles/profiles/wingAirfoils";
-    elementPath = const_cast<char*>(elementString.c_str());
-    tixiRet = tixiGetNamedChildrenCount(tixiHandle, elementPath, "wingAirfoil", &elementCount);
-    if (tixiRet != SUCCESS) {
-        cerr << "Warning: no wing profiles are defined!" << endl;
-        return;
+// Write CPACS wing profiles
+void CCPACSWingProfiles::WriteCPACS(TixiDocumentHandle tixiHandle)
+{
+    if (profiles.size() > 0) {
+        TixiSaveExt::TixiSaveElement(tixiHandle, "/cpacs/vehicles", "profiles");
     }
 
-    // Loop over all section elements
-    for (int i = 1; i <= elementCount; i++) {
-        /* Get the appropriate airfoil */
-        std::ostringstream airfoilTmpStream;
-        airfoilTmpStream << "/cpacs/vehicles/profiles/wingAirfoils/wingAirfoil[" << i << "]";
-        CCPACSWingProfile* profile = new CCPACSWingProfile(airfoilTmpStream.str());
-        profile->ReadCPACS(tixiHandle);
-        profiles[profile->GetUID()] = profile;
+    const std::string xpath = "/cpacs/vehicles/profiles";
+    WriteContainerElement(tixiHandle, xpath, "wingAirfoil", profiles);
+}
+
+void CCPACSWingProfiles::AddProfile(CCPACSWingProfile* profile)
+{
+    // free memory for existing profiles
+    if (profiles.find(profile->GetUID()) != profiles.end()) {
+        delete profiles[profile->GetUID()];
+    }
+    profiles[profile->GetUID()] = profile;
+}
+
+
+void CCPACSWingProfiles::DeleteProfile( std::string uid )
+{
+    // free memory for existing profiles
+    if (profiles.find( uid ) != profiles.end()) {
+        profiles[ uid ]->Invalidate();
+        delete profiles[ uid ];
+        profiles.erase( uid );
     }
 }
 

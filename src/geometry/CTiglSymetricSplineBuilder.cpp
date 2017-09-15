@@ -34,7 +34,8 @@
 namespace
 {
     // Symmetrizes two control points along the x-z plane
-    void symPole(Handle(Geom_BSplineCurve) c, int i1, int i2) {
+    void symPole(Handle(Geom_BSplineCurve) c, int i1, int i2)
+    {
         gp_Pnt p1 = c->Pole(i1);
         gp_Pnt p2 = c->Pole(i2);
 
@@ -105,7 +106,7 @@ Handle(Geom_BSplineCurve) CTiglSymetricSplineBuilder::GetBSplineInternal(const C
 
     // mirror each point at x-z plane i.e. mirror y coordinate to close the profile
     // and skip first point
-    for (int i = inputPoints.size() - 1; i > 0; i--) {
+    for (size_t i = inputPoints.size() - 1; i > 0; i--) {
         gp_Pnt curP = inputPoints[i];
         if (i == inputPoints.size()-1 && fabs(curP.Y()) < 1e-6) {
             // do not add the same points twice
@@ -116,7 +117,7 @@ Handle(Geom_BSplineCurve) CTiglSymetricSplineBuilder::GetBSplineInternal(const C
     }
 
     // build interpolation curve
-    Handle(TColgp_HArray1OfPnt) pnts = new TColgp_HArray1OfPnt(1,points.size());
+    Handle(TColgp_HArray1OfPnt) pnts = new TColgp_HArray1OfPnt(1, static_cast<Standard_Integer>(points.size()));
     for (unsigned int i = 0; i < points.size(); ++i) {
         pnts->SetValue(i+1, points[i]);
     }

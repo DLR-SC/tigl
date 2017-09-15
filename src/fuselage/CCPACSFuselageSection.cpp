@@ -25,6 +25,7 @@
 
 #include "CCPACSFuselageSection.h"
 #include "CTiglError.h"
+#include "TixiSaveExt.h"
 #include <iostream>
 
 namespace tigl
@@ -66,6 +67,13 @@ void CCPACSFuselageSection::ReadCPACS(TixiDocumentHandle tixiHandle, const std::
         name = ptrName;
     }
 
+    // Get subelement "description"
+    char* ptrDescription = NULL;
+    tempString    = sectionXPath + "/description";
+    if (tixiGetTextElement(tixiHandle, tempString.c_str(), &ptrDescription) == SUCCESS) {
+        description = ptrDescription;
+    }
+
     // Get attribute "uID"
     char* ptrUID  = NULL;
     tempString    = sectionXPath;
@@ -79,6 +87,19 @@ void CCPACSFuselageSection::ReadCPACS(TixiDocumentHandle tixiHandle, const std::
 
     // Get subelement "elements", which means the section elements
     elements.ReadCPACS(tixiHandle, sectionXPath);
+}
+
+// Write CPACS section elements
+void CCPACSFuselageSection::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& sectionXPath)
+{
+
+    TixiSaveExt::TixiSaveTextAttribute(tixiHandle, sectionXPath.c_str(), "uID", uid.c_str());
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, sectionXPath.c_str(), "name", name.c_str());
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, sectionXPath.c_str(), "description", description.c_str());
+
+    transformation.WriteCPACS(tixiHandle, sectionXPath);
+
+    elements.WriteCPACS(tixiHandle, sectionXPath);
 }
 
 // Get profile count for this section

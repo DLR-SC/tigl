@@ -48,6 +48,9 @@ public:
     // Read CPACS section elements
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& sectionXPath);
 
+    // Write CPACS section elements
+    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& sectionXPath);
+
     // Get element count for this section
     TIGL_EXPORT int GetSectionElementCount(void) const;
 
@@ -76,6 +79,7 @@ private:
 
 private:
     std::string                   name;           /**< Section name             */
+    std::string                   description;    /**< Section description      */
     std::string                   uid;            /**< Section uid              */
     CCPACSTransformation          transformation; /**< Section transfromation   */
     CCPACSFuselageSectionElements elements;       /**< Section elements         */

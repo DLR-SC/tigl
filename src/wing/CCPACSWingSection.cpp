@@ -25,6 +25,7 @@
 
 #include "CCPACSWingSection.h"
 #include "CTiglError.h"
+#include "TixiSaveExt.h"
 #include <iostream>
 
 namespace tigl
@@ -47,6 +48,7 @@ void CCPACSWingSection::Cleanup(void)
 {
     name = "";
     uID  = "";
+    description = "";
     transformation.reset();
 }
 
@@ -55,22 +57,21 @@ void CCPACSWingSection::ReadCPACS(TixiDocumentHandle tixiHandle, const std::stri
 {
     Cleanup();
 
-    char*       elementPath;
-    std::string tempString;
-
     // Get subelement "name"
     char* ptrName = NULL;
-    tempString    = sectionXPath + "/name";
-    elementPath   = const_cast<char*>(tempString.c_str());
-    if (tixiGetTextElement(tixiHandle, elementPath, &ptrName) == SUCCESS) {
+    if (tixiGetTextElement(tixiHandle, (sectionXPath + "/name").c_str(), &ptrName) == SUCCESS) {
         name = ptrName;
+    }
+
+    // Get subelement "description"
+    char* ptrDescription = NULL;
+    if (tixiGetTextElement(tixiHandle, (sectionXPath + "/description").c_str(), &ptrDescription) == SUCCESS) {
+        description = ptrDescription;
     }
 
     // Get attribute "uID"
     char* ptrUID = NULL;
-    tempString    = sectionXPath;
-    elementPath   = const_cast<char*>(tempString.c_str());
-    if (tixiGetTextAttribute(tixiHandle, elementPath, "uID", &ptrUID) == SUCCESS) {
+    if (tixiGetTextAttribute(tixiHandle, sectionXPath.c_str(), "uID", &ptrUID) == SUCCESS) {
         uID = ptrUID;
     }
 
@@ -79,6 +80,18 @@ void CCPACSWingSection::ReadCPACS(TixiDocumentHandle tixiHandle, const std::stri
 
     // Get subelement "elements", which means the section elements
     elements.ReadCPACS(tixiHandle, sectionXPath);
+}
+
+// Write CPACS section elements
+void CCPACSWingSection::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& sectionXPath)
+{
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, sectionXPath.c_str(), "name", GetName().c_str());
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, sectionXPath.c_str(), "description", description.c_str());
+    TixiSaveExt::TixiSaveTextAttribute(tixiHandle, sectionXPath.c_str(), "uID", GetUID().c_str());
+
+    transformation.WriteCPACS(tixiHandle, sectionXPath);
+
+    elements.WriteCPACS(tixiHandle, sectionXPath);
 }
 
 // Get profile count for this section
@@ -93,6 +106,18 @@ const std::string& CCPACSWingSection::GetUID(void) const
     return uID;
 }
 
+// Get the name of this WingSection
+const std::string& CCPACSWingSection::GetName() const
+{
+    return name;
+}
+
+// Getter for the member description
+const std::string& CCPACSWingSection::GetDescription(void) const
+{
+    return description;
+}
+
 // Get element for a given index
 CCPACSWingSectionElement& CCPACSWingSection::GetSectionElement(int index) const
 {
@@ -103,6 +128,46 @@ CCPACSWingSectionElement& CCPACSWingSection::GetSectionElement(int index) const
 CTiglTransformation CCPACSWingSection::GetSectionTransformation(void) const
 {
     return transformation.getTransformationMatrix();
+}
+
+// Gets the section translation
+const CTiglPoint& CCPACSWingSection::GetTranslation() const
+{
+    return transformation.getTranslationVector();
+}
+
+// Gets the section rotation
+const CTiglPoint& CCPACSWingSection::GetRotation() const
+{
+    return transformation.getRotation();
+}
+
+// Gets the section scaling
+const CTiglPoint& CCPACSWingSection::GetScaling() const
+{
+    return transformation.getScaling();
+}
+
+// Setter for translation
+void CCPACSWingSection::SetTranslation(const CTiglPoint& trans)
+{
+    transformation.setTranslation(trans, ABS_LOCAL);
+    transformation.updateMatrix();
+
+}
+
+// Setter for rotation
+void CCPACSWingSection::SetRotation(const CTiglPoint& rot)
+{
+    transformation.setRotation(rot);
+    transformation.updateMatrix();
+}
+
+// Setter for scaling
+void CCPACSWingSection::SetScaling(const CTiglPoint& scale)
+{
+    transformation.setScaling(scale);
+    transformation.updateMatrix();
 }
 
 } // end namespace tigl

@@ -84,7 +84,7 @@ CCPACSExternalObject&CCPACSExternalObjects::GetObject(int index) const
 
 int CCPACSExternalObjects::GetObjectCount() const
 {
-    return _objects.size();
+    return static_cast<int>(_objects.size());
 }
 
     // Cleanup routine

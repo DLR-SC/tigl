@@ -25,6 +25,7 @@
 
 #include "CCPACSWingSectionElement.h"
 #include "CTiglError.h"
+#include "TixiSaveExt.h"
 #include <iostream>
 
 namespace tigl
@@ -46,7 +47,8 @@ CCPACSWingSectionElement::~CCPACSWingSectionElement(void)
 void CCPACSWingSectionElement::Cleanup(void)
 {
     name         = "";
-    profileUID     = "";
+    description  = "";
+    profileUID   = "";
     uID          = "";
     transformation.reset();
 }
@@ -56,35 +58,39 @@ void CCPACSWingSectionElement::ReadCPACS(TixiDocumentHandle tixiHandle, const st
 {
     Cleanup();
 
-    char*       elementPath;
-    std::string tempString;
-
-    // Get subelement "name"
     char* ptrName = NULL;
-    tempString    = elementXPath + "/name";
-    elementPath   = const_cast<char*>(tempString.c_str());
-    if (tixiGetTextElement(tixiHandle, elementPath, &ptrName) == SUCCESS) {
-        name          = ptrName;
+    if (tixiGetTextElement(tixiHandle, (elementXPath + "/name").c_str(), &ptrName) == SUCCESS) {
+        name = ptrName;
     }
 
-    // Get subelement "profileUID"
+    char* ptrdescription = NULL;
+    if (tixiGetTextElement(tixiHandle, (elementXPath + "/description").c_str(), &ptrdescription) == SUCCESS) {
+        description = ptrdescription;
+    }
+
     char* ptrUID  = NULL;
-    tempString    = elementXPath + "/airfoilUID";
-    elementPath   = const_cast<char*>(tempString.c_str());
-    if (tixiGetTextElement(tixiHandle, elementPath, &ptrUID) == SUCCESS) {
-        profileUID      = ptrUID;
+    if (tixiGetTextElement(tixiHandle, (elementXPath + "/airfoilUID").c_str(), &ptrUID) == SUCCESS) {
+        profileUID = ptrUID;
     }
 
-    // Get attribute "uID"
     char* ptrMyUID  = NULL;
-    tempString    = elementXPath;
-    elementPath   = const_cast<char*>(tempString.c_str());
-    if (tixiGetTextAttribute(tixiHandle, elementPath, "uID", &ptrMyUID) == SUCCESS) {
-        uID      = ptrMyUID;
+    if (tixiGetTextAttribute(tixiHandle, elementXPath.c_str(), "uID", &ptrMyUID) == SUCCESS) {
+        uID = ptrMyUID;
     }
 
     // Get Transformation
     transformation.ReadCPACS(tixiHandle, elementXPath);
+}
+
+// Write CPACS wing section elements
+void CCPACSWingSectionElement::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& elementXPath)
+{
+    TixiSaveExt::TixiSaveTextAttribute(tixiHandle, elementXPath.c_str(), "uID", uID.c_str());
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, elementXPath.c_str(), "name", name.c_str());
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, elementXPath.c_str(), "description", description.c_str());
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, elementXPath.c_str(), "airfoilUID", profileUID.c_str());
+
+    transformation.WriteCPACS(tixiHandle, elementXPath);
 }
 
 // Returns the UID of the referenced wing profile
@@ -105,10 +111,55 @@ std::string CCPACSWingSectionElement::GetProfileUID(void) const
     return profileUID;
 }
 
+// Getter for the member name
+std::string CCPACSWingSectionElement::GetName(void) const
+{
+    return name;
+}
+
+// Getter for the member description
+std::string CCPACSWingSectionElement::GetDescription(void) const
+{
+    return description;
+}
+
 // Gets the section element transformation
 CTiglTransformation CCPACSWingSectionElement::GetSectionElementTransformation(void) const
 {
     return transformation.getTransformationMatrix();
+}
+
+const CTiglPoint &CCPACSWingSectionElement::GetTranslation() const
+{
+    return transformation.getTranslationVector();
+}
+
+const CTiglPoint &CCPACSWingSectionElement::GetRotation() const
+{
+    return transformation.getRotation();
+}
+
+const CTiglPoint &CCPACSWingSectionElement::GetScaling() const
+{
+    return transformation.getScaling();
+}
+
+void CCPACSWingSectionElement::SetTranslation(const CTiglPoint &trans)
+{
+    transformation.setTranslation(trans, ABS_LOCAL);
+    transformation.updateMatrix();
+}
+
+void CCPACSWingSectionElement::SetRotation(const CTiglPoint &rot)
+{
+    transformation.setRotation(rot);
+    transformation.updateMatrix();
+}
+
+void CCPACSWingSectionElement::SetScaling(const CTiglPoint &scaling)
+{
+    transformation.setScaling(scaling);
+    transformation.updateMatrix();
 }
 
 } // end namespace tigl

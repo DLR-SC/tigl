@@ -27,6 +27,7 @@
 
 #include "CCPACSFuselageSection.h"
 #include "CTiglError.h"
+#include "TixiSaveExt.h"
 
 #include <iostream>
 #include <sstream>
@@ -82,6 +83,39 @@ void CCPACSFuselageSections::ReadCPACS(TixiDocumentHandle tixiHandle, const std:
         std::ostringstream xpath;
         xpath << tempString << i << "]";
         section->ReadCPACS(tixiHandle, xpath.str());
+    }
+}
+
+// Write CPACS fuselage sections element
+void CCPACSFuselageSections::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& fuselageXPath)
+{
+    std::string elementPath;
+    std::string xpath;
+    ReturnCode    tixiRet;
+    int           sectionCount, test;
+
+    TixiSaveExt::TixiSaveElement(tixiHandle, fuselageXPath.c_str(), "sections");
+    elementPath = fuselageXPath + "/sections";
+    tixiRet = tixiGetNamedChildrenCount(tixiHandle, elementPath.c_str(), "section", &test);
+    sectionCount = GetSectionCount();
+
+    for (int i = 1; i <= sectionCount; i++) {
+        CCPACSFuselageSection& section = GetSection(i);
+        std::stringstream ss;
+        ss << elementPath << "/section[" << i << "]";
+        xpath = ss.str();
+        if ((tixiRet = tixiCheckElement(tixiHandle, xpath.c_str())) == ELEMENT_NOT_FOUND) {
+            if ((tixiRet = tixiCreateElement(tixiHandle, elementPath.c_str(), "section")) != SUCCESS) {
+                throw CTiglError("XML error: tixiCreateElement failed in CCPACSFuselageSections::WriteCPACS", TIGL_XML_ERROR);
+            }
+        }
+        section.WriteCPACS(tixiHandle, xpath);
+    }
+    for (int i = sectionCount + 1; i <= test; i++) {
+        std::stringstream ss;
+        ss << elementPath << "/section[" << sectionCount + 1 << "]";
+        xpath = ss.str();
+        tixiRemoveElement(tixiHandle, xpath.c_str());
     }
 }
 

@@ -11,10 +11,6 @@ set(PROGNAME "TIGLViewer")
 if(TIGL_VIEWER)
 
 include(SearchQt)
-# disable automatic linking of qtmain
-if (POLICY CMP0020)
-  cmake_policy(SET CMP0020 OLD)
-endif (POLICY CMP0020)
 
 #build only tiglviewer if qt was found
 if(QT4_FOUND OR Qt5Widgets_FOUND)
@@ -100,6 +96,7 @@ set(tv_src
     TIGLViewerDrawVectorDialog.cpp
     TIGLViewerScopedCommand.cpp
     TIGLQAspectWindow.cpp
+    TIGLViewerVTKExportDialog.cpp
 )
 
 # normal header files
@@ -141,6 +138,7 @@ set(tv_hdr_qobj
 	TIGLViewerFuseDialog.h
 	TIGLViewerShapeIntersectionDialog.h
 	TIGLViewerScreenshotDialog.h
+	TIGLViewerVTKExportDialog.h
 )
 
 set(tv_ui_comp
@@ -153,6 +151,7 @@ set(tv_ui_comp
 	src/TIGLViewerShapeIntersectionDialog.ui
 	src/TIGLViewerScreenshotDialog.ui
 	src/TIGLViewerDrawVectorDialog.ui
+	src/TIGLViewerVTKExportDialog.ui
 )
 
 foreach ( _fname ${tv_src})
@@ -166,10 +165,10 @@ foreach ( _fname ${tv_hdr})
 endforeach()
 
 # moc header files
-QT4_WRAP_CPP(tv_hdr_MOC ${tv_hdr_qobj_comp})
-QT4_WRAP_UI(tv_ui_HEADERS ${tv_ui_comp})
+QTX_WRAP_CPP(tv_hdr_MOC ${tv_hdr_qobj_comp})
+QTX_WRAP_UI(tv_ui_HEADERS ${tv_ui_comp})
 # compile icons
-QT4_ADD_RESOURCES( tv_rcrs src/TIGLViewer.qrc )
+QTX_ADD_RESOURCES( tv_rcrs src/TIGLViewer.qrc )
 
 add_definitions(-DCSFDB -DQOCC_STATIC)
 
@@ -228,7 +227,6 @@ target_link_libraries(${PROGNAME}
 	TIGL_static
 	${TIXI_LIBRARIES} 
 	${CMake_QT_LIBRARIES} 
-	${QT_QTMAIN_LIBRARY} 
 	${OPENGL_LIBRARIES} 
 	${OpenCASCADE_LIBRARIES} 
 	${EXTRA_LIBRARIES} 
@@ -274,7 +272,7 @@ INCLUDE(InstallRequiredSystemLibraries)
 
 
 # set directories to look for dependencies
-set(DIRS ${TIXI_LIB_PATH} ${OpenCASCADE_DLL_DIRECTORY}  ${OpenCASCADE_LINK_DIRECTORY} ${QT_BINARY_DIR} ${TIGL_ADD_LIB_PATH})
+set(DIRS ${TIXI_LIB_PATH} ${OpenCASCADE_DLL_DIRECTORY} ${OpenCASCADE_LINK_DIRECTORY} ${TIGL_ADD_LIB_PATH})
 
 if (WIN32 OR APPLE)
   if(Qt5Widgets_FOUND)

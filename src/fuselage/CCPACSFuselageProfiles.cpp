@@ -25,6 +25,7 @@
 
 #include "CCPACSFuselageProfiles.h"
 #include "CTiglError.h"
+#include "TixiSaveExt.h"
 #include <sstream>
 #include <iostream>
 
@@ -90,6 +91,44 @@ void CCPACSFuselageProfiles::ReadCPACS(TixiDocumentHandle tixiHandle)
     }
 }
 
+// Write CPACS fuselage profiles
+void CCPACSFuselageProfiles::WriteCPACS(TixiDocumentHandle tixiHandle)
+{
+    const char* elementPath = "/cpacs/vehicles/profiles/fuselageProfiles";
+    std::string path;
+    ReturnCode tixiRet;
+    int fuselageProfileCount, test;
+    
+    TixiSaveExt::TixiSaveElement(tixiHandle, "/cpacs/vehicles", "profiles");
+    TixiSaveExt::TixiSaveElement(tixiHandle, "/cpacs/vehicles/profiles", "fuselageProfiles");
+    
+    if (tixiGetNamedChildrenCount(tixiHandle, elementPath, "fuselageProfile", &test) != SUCCESS) {
+        throw CTiglError("XML error: tixiGetNamedChildrenCount failed in CCPACSFuselageProfiles::WriteCPACS", TIGL_XML_ERROR);
+    }
+
+    fuselageProfileCount = GetProfileCount();
+
+    for (int i = 1; i <= fuselageProfileCount; i++) {
+        std::stringstream ss;
+        ss << elementPath << "/fuselageProfile[" << i << "]";
+        path = ss.str();
+        CCPACSFuselageProfile& fuselageProfile = GetProfile(i);
+        if ((tixiRet = tixiCheckElement(tixiHandle, path.c_str())) == ELEMENT_NOT_FOUND) {
+            if ((tixiRet = tixiCreateElement(tixiHandle, elementPath, "fuselageProfile")) != SUCCESS) {
+                throw CTiglError("XML error: tixiCreateElement failed in CCPACSFuselageProfiles::WriteCPACS", TIGL_XML_ERROR);
+            }
+        }
+        fuselageProfile.WriteCPACS(tixiHandle, path);
+    }
+
+    for (int i = fuselageProfileCount + 1; i <= test; i++) {
+        std::stringstream ss;
+        ss << elementPath << "/fuselageProfile[" << fuselageProfileCount + 1 << "]";
+        path = ss.str();
+        tixiRet = tixiRemoveElement(tixiHandle, path.c_str());
+    }
+}
+
 bool CCPACSFuselageProfiles::HasProfile(std::string uid) const
 {
     CCPACSFuselageProfileContainer::const_iterator it = profiles.find(uid);
@@ -98,6 +137,25 @@ bool CCPACSFuselageProfiles::HasProfile(std::string uid) const
     }
     else {
         return false;
+    }
+}
+
+void CCPACSFuselageProfiles::AddProfile(CCPACSFuselageProfile* profile)
+{
+    // free memory for existing profiles
+    if (profiles.find(profile->GetUID()) != profiles.end()) {
+        delete profiles[profile->GetUID()];
+    }
+    profiles[profile->GetUID()] = profile;
+}
+
+void CCPACSFuselageProfiles::DeleteProfile( std::string uid )
+{
+    // free memory for existing profiles
+    if (profiles.find( uid ) != profiles.end()) {
+        profiles[ uid ]->Invalidate();
+        delete profiles[ uid ];
+        profiles.erase( uid );
     }
 }
 

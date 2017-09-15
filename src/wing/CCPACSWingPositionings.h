@@ -40,7 +40,7 @@ namespace tigl
 class CCPACSWingPositionings
 {
 
-private:
+public:
     // Typedef for a CCPACSWingPositioning container to store the positionings.
     typedef std::map<std::string, CCPACSWingPositioning*> CCPACSWingPositioningContainer;
     typedef CCPACSWingPositioningContainer::iterator CCPACSWingPositioningIterator;
@@ -55,16 +55,21 @@ public:
     // Read CPACS positionings element
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& wingXPath);
 
+    // Write CPACS positionings element
+    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& wingXPath) const;
+
     // Invalidates internal state
     TIGL_EXPORT void Invalidate(void);
 
     // Returns the positioning matrix for a given section-uid
     TIGL_EXPORT CTiglTransformation GetPositioningTransformation(std::string sectionIndex);
 
-protected:
     // Cleanup routine
-    void Cleanup(void);
+    TIGL_EXPORT void Cleanup(void);
 
+    TIGL_EXPORT CCPACSWingPositioningContainer& GetPositionings();
+
+protected:
     // Update internal positioning structure
     void Update(void);
 

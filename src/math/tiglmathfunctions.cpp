@@ -136,6 +136,17 @@ double quadrilateral_area(const CTiglPoint& A, const CTiglPoint& B, const CTiglP
     return 0.5 * AC.CrossMagnitude(BD);
 }
 
+/**
+ * @brief Calculates the distance of a point P from the line defined by a point X0 and direction DX
+ */
+double distance_point_from_line(const CTiglPoint& P, const CTiglPoint& X0, const CTiglPoint& DX)
+{
+    double lenDX = DX.norm2();
+    assert(lenDX > 0.);
+
+    return CTiglPoint::cross_prod(DX, X0-P).norm2()/lenDX;
+}
+
 /** 
  * @brief Computes the nth derivative of x^k
  */
@@ -192,7 +203,7 @@ double class_function_deriv(const double& N1, const double& N2, const int& n, co
 double shape_function(const std::vector<double>& B, const double& x)
 {
     double ret = 0.;
-    int order = B.size()-1;
+    int order = static_cast<int>(B.size()) - 1;
     int i = 0;
     for (std::vector<double>::const_iterator bIT = B.begin(); bIT != B.end(); ++bIT, ++i) {
         ret += *bIT * bernstein_poly(i, order, x);
@@ -206,7 +217,7 @@ double shape_function(const std::vector<double>& B, const double& x)
 double shape_function_deriv(const std::vector<double>& B, const int& n, const double& x)
 {
     double ret = 0.;
-    int order = B.size()-1;
+    int order = static_cast<int>(B.size()) - 1;
     int i = 0;
     for (std::vector<double>::const_iterator bIT = B.begin(); bIT != B.end(); ++bIT, ++i) {
         ret += *bIT * tigl::bernstein_poly_deriv(n, i, order, x);

@@ -104,10 +104,6 @@ void CFuseShapes::Clear()
 /// This is the actual fusing
 void CFuseShapes::DoFuse()
 {
-    if (!_parent) {
-        throw tigl::CTiglError("Null pointer for parent shape in CFuseShapes", TIGL_NULL_POINTER);
-    }
-
     BRepBuilderAPI_Sewing shellMaker;
 
     _trimmedChilds.clear();
@@ -116,59 +112,72 @@ void CFuseShapes::DoFuse()
     TrimOperation childTrim  = EXCLUDE;
     TrimOperation parentTrim = EXCLUDE;
 
-    // trim the childs with the parent and vice versa
-    _trimmedParent = _parent->DeepCopy();
-    for (childIter = _childs.begin(); childIter != _childs.end(); ++childIter) {
-        const PNamedShape child = *childIter;
-        if (!child) {
-            continue;
+    // handle case when parent has no shape
+    if (!_parent) {
+        _trimmedParent.reset();
+        for (childIter = _childs.begin(); childIter != _childs.end(); ++childIter) {
+            const PNamedShape child = *childIter;
+            if (!child) {
+                continue;
+            }
+            _trimmedChilds.push_back(child);
         }
+    }
+    else {
+        // trim the childs with the parent and vice versa
+        _trimmedParent = _parent->DeepCopy();
+        for (childIter = _childs.begin(); childIter != _childs.end(); ++childIter) {
+            const PNamedShape child = *childIter;
+            if (!child) {
+                continue;
+            }
 
 #ifdef DEBUG_BOP
-        clock_t start, stop;
-        start = clock();
+            clock_t start, stop;
+            start = clock();
 #endif
-        BOPCol_ListOfShape aLS;
-        aLS.Append(_trimmedParent->Shape());
-        aLS.Append(child->Shape());
-        BOPAlgo_PaveFiller DSFill;
-        DSFill.SetArguments(aLS);
-        DSFill.Perform();
+            BOPCol_ListOfShape aLS;
+            aLS.Append(_trimmedParent->Shape());
+            aLS.Append(child->Shape());
+            BOPAlgo_PaveFiller DSFill;
+            DSFill.SetArguments(aLS);
+            DSFill.Perform();
 #ifdef DEBUG_BOP
-        stop = clock();
-        printf("dsfiller [ms]: %f\n", (stop-start)/(double)CLOCKS_PER_SEC * 1000.);
+            stop = clock();
+            printf("dsfiller [ms]: %f\n", (stop-start)/(double)CLOCKS_PER_SEC * 1000.);
 
-        start = clock();
+            start = clock();
 #endif
-        // calculate intersection
-        // Todo: make a new BOP out of this
-        TopoDS_Shape intersection = BRepAlgoAPI_Section(_trimmedParent->Shape(), child->Shape(), DSFill);
-        PNamedShape intersectionShape(new CNamedShape(intersection, std::string("INT" + std::string(_parent->Name()) + child->Name()).c_str()));
-        intersectionShape->SetShortName(std::string("INT" + std::string(_parent->ShortName()) + child->ShortName()).c_str());
-        _intersections.push_back(intersectionShape);
-
-#ifdef DEBUG_BOP
-        stop = clock();
-        printf("intersection [ms]: %f\n", (stop-start)/(double)CLOCKS_PER_SEC * 1000.);
-
-        start = clock();
-#endif
-        _trimmedParent = CTrimShape(_trimmedParent, child, DSFill, parentTrim);
+            // calculate intersection
+            // Todo: make a new BOP out of this
+            TopoDS_Shape intersection = BRepAlgoAPI_Section(_trimmedParent->Shape(), child->Shape(), DSFill);
+            PNamedShape intersectionShape(new CNamedShape(intersection, std::string("INT" + std::string(_parent->Name()) + child->Name()).c_str()));
+            intersectionShape->SetShortName(std::string("INT" + std::string(_parent->ShortName()) + child->ShortName()).c_str());
+            _intersections.push_back(intersectionShape);
 
 #ifdef DEBUG_BOP
-        stop = clock();
-        printf("parent split [ms]: %f\n", (stop-start)/(double)CLOCKS_PER_SEC * 1000.);
+            stop = clock();
+            printf("intersection [ms]: %f\n", (stop-start)/(double)CLOCKS_PER_SEC * 1000.);
 
-        start = clock();
+            start = clock();
 #endif
-        PNamedShape trimmedChild = CTrimShape(child, _parent, DSFill, childTrim);
-        _trimmedChilds.push_back(trimmedChild);
+            _trimmedParent = CTrimShape(_trimmedParent, child, DSFill, parentTrim);
 
 #ifdef DEBUG_BOP
-        stop = clock();
-        printf("child split [ms]: %f\n", (stop-start)/(double)CLOCKS_PER_SEC * 1000.);
+            stop = clock();
+            printf("parent split [ms]: %f\n", (stop-start)/(double)CLOCKS_PER_SEC * 1000.);
+
+            start = clock();
 #endif
-    } // trimming
+            PNamedShape trimmedChild = CTrimShape(child, _parent, DSFill, childTrim);
+            _trimmedChilds.push_back(trimmedChild);
+
+#ifdef DEBUG_BOP
+            stop = clock();
+            printf("child split [ms]: %f\n", (stop-start)/(double)CLOCKS_PER_SEC * 1000.);
+#endif
+        } // trimming
+    }
 
     // add trimmed child faces to result
     for (childIter = _trimmedChilds.begin(); childIter != _trimmedChilds.end(); ++childIter) {
@@ -176,7 +185,9 @@ void CFuseShapes::DoFuse()
     }
 
     // add trimmed parent faces to result
-    shellMaker.Add(_trimmedParent->Shape());
+    if (_trimmedParent) {
+        shellMaker.Add(_trimmedParent->Shape());
+    }
     shellMaker.Perform();
 
     // make a solid out of the face collection
@@ -193,9 +204,12 @@ void CFuseShapes::DoFuse()
         tmpshape->SetShape(shellMaker.ModifiedSubShape(child->Shape()));
         CBooleanOperTools::MapFaceNamesAfterBOP(sewerAdapter, tmpshape, resultShell);
     }
-    PNamedShape tmpshape(new CNamedShape(*_trimmedParent));
-    tmpshape->SetShape(shellMaker.ModifiedSubShape(_trimmedParent->Shape()));
-    CBooleanOperTools::MapFaceNamesAfterBOP(sewerAdapter, tmpshape, resultShell);
+
+    if (_trimmedParent) {
+        PNamedShape tmpshape(new CNamedShape(*_trimmedParent));
+        tmpshape->SetShape(shellMaker.ModifiedSubShape(_trimmedParent->Shape()));
+        CBooleanOperTools::MapFaceNamesAfterBOP(sewerAdapter, tmpshape, resultShell);
+    }
 
     // map names to solid
     BRepBuilderAPI_MakeSolid solidmaker;

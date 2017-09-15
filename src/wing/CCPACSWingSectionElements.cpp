@@ -25,6 +25,8 @@
 
 #include "CCPACSWingSectionElements.h"
 #include "CTiglError.h"
+#include "TixiSaveExt.h"
+#include "IOHelper.h"
 #include <iostream>
 #include <sstream>
 
@@ -53,33 +55,16 @@ void CCPACSWingSectionElements::Cleanup(void)
 }
 
 // Read CPACS wing section elements
-void CCPACSWingSectionElements::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& sectionXPath)
+void CCPACSWingSectionElements::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& xpath)
 {
     Cleanup();
+    ReadContainerElement(tixiHandle, xpath, "element", 1, elements);
+}
 
-    ReturnCode    tixiRet;
-    int           elementCount;
-    std::string   tempString;
-    char*         elementPath;
-
-    /* Get section element count */
-    tempString  = sectionXPath + "/elements";
-    elementPath = const_cast<char*>(tempString.c_str());
-    tixiRet = tixiGetNamedChildrenCount(tixiHandle, elementPath, "element", &elementCount);
-    if (tixiRet != SUCCESS) {
-        throw CTiglError("XML error: tixiGetNamedChildrenCount failed in CCPACSWingSectionElements::ReadCPACS", TIGL_XML_ERROR);
-    }
-
-    // Loop over all section elements
-    for (int i = 1; i <= elementCount; i++) {
-        CCPACSWingSectionElement* element = new CCPACSWingSectionElement();
-        elements.push_back(element);
-
-        tempString = sectionXPath + "/elements/element[";
-        std::ostringstream xpath;
-        xpath << tempString << i << "]";
-        element->ReadCPACS(tixiHandle, xpath.str());
-    }
+// Write CPACS wing section elements
+void CCPACSWingSectionElements::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& xpath) const
+{
+    WriteContainerElement(tixiHandle, xpath, "element", elements);
 }
 
 // Get element count for this section

@@ -27,6 +27,7 @@
 
 #include "tigl_internal.h"
 #include "tixi.h"
+#include "CTiglArcLengthReparameterization.h"
 #include "TopoDS_Wire.hxx"
 
 #include <gp_Pnt.hxx>
@@ -59,6 +60,9 @@ public:
     // Read CPACS fuselage profile file
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle);
 
+    // Write CPACS fuselage profile file
+    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& profileXPath);
+
     // Returns the filename of the fuselage profile file
     TIGL_EXPORT const std::string& GetFileName(void) const;
 
@@ -67,9 +71,15 @@ public:
 
     // Returns the UID of the fuselage profile
     TIGL_EXPORT const std::string& GetUID(void) const;
+    
+    // Returns the name of the fuselage profile
+    TIGL_EXPORT const std::string& GetDescription(void) const;
+    
+    // Returns the name of the fuselage profile
+    TIGL_EXPORT const int GetNumPoints(void) const;
 
     // Returns the flag for the mirror symmetry with respect to the x-z-plane in the fuselage profile
-    TIGL_EXPORT const bool GetMirrorSymmetry(void) const;
+    TIGL_EXPORT bool GetMirrorSymmetry(void) const;
 
     // Invalidates internal fuselage profile state
     TIGL_EXPORT void Invalidate(void);
@@ -139,6 +149,7 @@ private:
     WireAlgoPointer           profileWireAlgo;
     gp_Pnt                    startDiameterPoint; 
     gp_Pnt                    endDiameterPoint;  
+    CTiglArcLengthReparameterization reparOriginal;
 
 };
 

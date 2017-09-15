@@ -207,6 +207,8 @@ typedef unsigned int TiglGeometricComponentType;
 #define  TIGL_COMPONENT_WINGSHELL       512      /**< The Component is a face of the wing (e.g. upper wing surface) */
 #define  TIGL_COMPONENT_GENERICSYSTEM   1024     /**< The Component is a generic system */
 #define  TIGL_COMPONENT_CONTROLSURF     2048     /**< The Component is a control surface */
+#define  TIGL_COMPONENT_ROTOR           2048     /**< The Component is a rotor */
+#define  TIGL_COMPONENT_ROTORBLADE      4096     /**< The Component is a rotor blade */
 
 
 enum TiglStructureType
@@ -226,6 +228,24 @@ enum TiglControlSurfaceType
 };
 
 typedef enum TiglControlSurfaceType TiglControlSurfaceType;
+enum TiglLoftSide
+{
+    UPPER_SIDE = 0,
+    LOWER_SIDE = 1
+};
+
+typedef enum TiglLoftSide TiglLoftSide;
+
+
+enum TiglCoordinateSystem
+{
+    GLOBAL_COORDINATE_SYSTEM   = 0,
+    WING_COORDINATE_SYSTEM     = 1,
+    FUSELAGE_COORDINATE_SYSTEM = 2
+};
+
+typedef enum TiglCoordinateSystem TiglCoordinateSystem;
+
 
 enum TiglContinuity
 {
@@ -309,6 +329,21 @@ typedef enum TiglImportExportFormat TiglImportExportFormat;
 TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle tixiHandle, const char* configurationUID, TiglCPACSConfigurationHandle* cpacsHandlePtr);
 
 /**
+* @brief Writes a CPACS configuration based on the data and geometry structure in memory.
+*
+*
+* @param[in] configurationUID The UID of the configuration that should be written.
+* @param[in] cpacsHandle Handle to the CPACS configuration. This handle is used in calls to other TIGL functions.
+*
+* @return
+*   - TIGL_SUCCESS if the CPACS configuration was successfully written
+*   - TIGL_NULL_POINTER if cpacsHandle is an invalid null pointer
+*   - TIGL_UNINITIALIZED if cpacsHandle is not managed by the CCPACSConfigurationManager
+*   - TIGL_ERROR if some other kind of error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglSaveCPACSConfiguration(const char* configurationUID, TiglCPACSConfigurationHandle cpacsHandle);
+
+/**
 * @brief Closes a CPACS configuration and cleans up all memory used by the configuration.
 *        After closing a configuration the associated configuration handle is no longer valid.
 *        When the CPACS configuration has been closed, the companion tixi document can also be closed.
@@ -358,7 +393,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIsCPACSConfigurationHandleValid(TiglCPACSC
     @return
         - char* A string with the version number.
 */
-TIGL_COMMON_EXPORT char* tiglGetVersion();
+TIGL_COMMON_EXPORT const char* tiglGetVersion();
 
 
 /*@}*/
@@ -1562,7 +1597,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetPointAngle(TiglCPACSConfigurati
 * segment, for eta = 1.0 it lies on the end profile of the segment.
 * The angle alpha is calculated in degrees. It's orientation is the mathematical negative rotation direction around the X-axis, i.e. looking
 * in flight direction, an angle of 45 degrees resembles a point on the top-left fuselage.
-* The parameters x_cs and z_cs must be in absolute world coordinates.
+* The parameters y_cs and z_cs must be in absolute world coordinates.
 * The point is returned in absolute world coordinates.
 *
 *
@@ -2027,7 +2062,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetUID(TiglCPACSConfigurationHandl
 
 
 /**
-* @brief Returns the Index of a fuselage.
+* @brief Returns the index of a fuselage.
 *
 *
 * @param[in]  cpacsHandle     Handle for the CPACS configuration
@@ -2251,6 +2286,659 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetMinumumDistanceToGround(TiglCPA
 /*****************************************************************************************************/
 
 /*@}*/
+
+
+/**
+  \defgroup RotorFunctions Functions for rotor calculations
+    Functions to handle rotor geometries with TIGL.
+ */
+/*@{*/
+
+/**
+* @brief Returns the number of rotors in a CPACS configuration.
+*
+*
+* <b>Fortran syntax:</b>
+*
+* tigl_get_rotor_count(integer cpacsHandle,
+*                      integer rotorCountPtr,
+*                      integer returnCode)
+*
+*
+* @param[in]  cpacsHandle  Handle for the CPACS configuration
+* @param[out] rotorCountPtr Pointer to the number of rotors
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_NULL_POINTER if rotorCountPtr is a null pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglGetRotorCount(TiglCPACSConfigurationHandle cpacsHandle,
+                                                    int* rotorCountPtr);
+
+/**
+* @brief Returns the UID of a rotor. The string returned must not be
+* deleted by the caller via free(). It will be deleted when the CPACS configuration
+* is closed.
+*
+*
+* <b>Fortran syntax:</b>
+*
+* tigl_rotor_get_uid(integer cpacsHandle,
+*                    integer rotorIndex,
+*                    character*n uIDNamePtr,
+*                    integer returnCode)
+*
+*
+* @param[in]  cpacsHandle     Handle for the CPACS configuration
+* @param[in]  rotorIndex      The index of a rotor, starting at 1
+* @param[out] uidNamePtr      The uid of the rotor
+*
+* Usage example:
+*
+@verbatim
+   TiglReturnCode returnCode;
+   char* uidPtr = 0;
+   returnCode = tiglRotorGetUID(cpacsHandle, rotor, &uidPtr);
+   printf("The UID of the rotor is %s\n", uidPtr);
+@endverbatim
+*
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_INDEX_ERROR if rotorIndex is not valid
+*   - TIGL_NULL_POINTER if profileNamePtr is a null pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetUID(TiglCPACSConfigurationHandle cpacsHandle,
+                                                  int rotorIndex,
+                                                  char** uidNamePtr);
+
+/**
+* @brief Returns the Index of a rotor.
+*
+*
+* <b>Fortran syntax:</b>
+*
+* tigl_rotor_get_index(integer cpacsHandle,
+*                      character*n uIDNamePtr,
+*                      integer rotorIndex,
+*                      integer returnCode)
+*
+*
+* @param[in]  cpacsHandle      Handle for the CPACS configuration
+* @param[in]  rotorUID         The uid of the rotor
+* @param[out] rotorIndexPtr    The index of a rotor, starting at 1
+*
+* Usage example:
+*
+@verbatim
+   TiglReturnCode returnCode;
+   int rotorIndex;
+   returnCode = tiglRotorGetUID(cpacsHandle, rotorUID, &rotorIndex);
+   printf("The Index of the rotor is %d\n", rotorIndex);
+@endverbatim
+*
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_UID_ERROR if rotorUID does not exist
+*   - TIGL_NULL_POINTER if rotorUID is a null pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetIndex(TiglCPACSConfigurationHandle cpacsHandle,
+                                                    const char* rotorUID,
+                                                    int* rotorIndexPtr);
+
+/**
+* @brief Returns the radius of the rotor.
+*
+* This function returns the radius of the largest blade attached to the rotor hub.
+*
+* <b>Fortran syntax:</b>
+*
+* tigl_rotor_get_radius(integer cpacsHandle, int rotorIndex, real radiusPtr, integer returnCode)
+*
+*
+* @param[in]  cpacsHandle       Handle for the CPACS configuration
+* @param[in]  rotorIndex        Index of the rotor to calculate the radius, starting at 1
+*
+* @param[out] radiusPtr         The radius of the rotor
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_INDEX_ERROR if rotorIndex is less or equal zero or greater than the rotor count
+*   - TIGL_NULL_POINTER if radiusPtr is a null pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetRadius(TiglCPACSConfigurationHandle cpacsHandle,
+                                                     int rotorIndex,
+                                                     double *radiusPtr);
+
+/**
+* @brief Returns the reference area of the rotor.
+*
+* The area of the rotor disk is taken as reference area of the rotor. It is calculated using the formula pi*r^2,
+* where r denotes the radius of the largest attached blade.
+*
+* <b>Fortran syntax:</b>
+*
+* tigl_rotor_get_reference_area(integer cpacsHandle, int rotorIndex, real referenceAreaPtr, integer returnCode)
+*
+*
+* @param[in]  cpacsHandle       Handle for the CPACS configuration
+* @param[in]  rotorIndex        Index of the rotor to calculate the area, starting at 1
+*
+* @param[out] referenceAreaPtr  The reference area of the rotor
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_INDEX_ERROR if rotorIndex is less or equal zero or greater than the rotor count
+*   - TIGL_NULL_POINTER if referenceAreaPtr is a null pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetReferenceArea(TiglCPACSConfigurationHandle cpacsHandle,
+                                                            int rotorIndex,
+                                                            double *referenceAreaPtr);
+
+/**
+* @brief Returns the total blade planform area of the rotor.
+*
+* This function calculates the sum of the planform areas of all blades attached to the rotor hub.
+*
+* <b>Fortran syntax:</b>
+*
+* tigl_rotor_get_total_blade_planform_area(integer cpacsHandle, int rotorIndex, real totalBladePlanformAreaPtr, integer returnCode)
+*
+*
+* @param[in]  cpacsHandle               Handle for the CPACS configuration
+* @param[in]  rotorIndex                Index of the rotor to calculate the area, starting at 1
+*
+* @param[out] totalBladePlanformAreaPtr The total blade planform area of the rotor
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_INDEX_ERROR if rotorIndex is less or equal zero or greater than the rotor count
+*   - TIGL_NULL_POINTER if totalBladePlanformAreaPtr is a null pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetTotalBladePlanformArea(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                     int rotorIndex,
+                                                                     double *totalBladePlanformAreaPtr);
+
+/**
+* @brief Returns the solidity of the rotor.
+*
+* The rotor solidity ratio is calculated by dividing the total blade planform area by the rotor disk area.
+*
+* <b>Fortran syntax:</b>
+*
+* tigl_rotor_get_solidity(integer cpacsHandle, int rotorIndex, real solidityPtr, integer returnCode)
+*
+*
+* @param[in]  cpacsHandle       Handle for the CPACS configuration
+* @param[in]  rotorIndex        Index of the rotor to calculate the area, starting at 1
+*
+* @param[out] solidityPtr       The reference area of the rotor
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_INDEX_ERROR if rotorIndex is less or equal zero or greater than the rotor count
+*   - TIGL_NULL_POINTER if solidityPtr is a null pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetSolidity(TiglCPACSConfigurationHandle cpacsHandle,
+                                                       int rotorIndex,
+                                                       double *solidityPtr);
+
+/**
+* @brief Returns the surface area of the rotor.
+*
+* The returned surface area is the sum of the surface areas of all attached rotor blades.
+*
+* <b>Fortran syntax:</b>
+*
+* tigl_rotor_get_surface_area(integer cpacsHandle, int rotorIndex, real surfaceAreaPtr, integer returnCode)
+*
+*
+* @param[in]  cpacsHandle     Handle for the CPACS configuration
+* @param[in]  rotorIndex      Index of the Rotor to calculate the area, starting at 1
+* @param[out] surfaceAreaPtr  The surface area of the rotor
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_INDEX_ERROR if rotorIndex is less or equal zero or greater than the rotor count
+*   - TIGL_NULL_POINTER if surfaceAreaPtr is a null pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetSurfaceArea(TiglCPACSConfigurationHandle cpacsHandle, 
+                                                          int rotorIndex,
+                                                          double *surfaceAreaPtr);
+
+/**
+* @brief Returns the volume of the rotor.
+*
+* The returned volume is the sum of the volumes of all attached rotor blades.
+*
+* <b>Fortran syntax:</b>
+*
+* tigl_rotor_get_volume(integer cpacsHandle, int rotorIndex, real volumePtr, integer returnCode)
+*
+*
+* @param[in]  cpacsHandle     Handle for the CPACS configuration
+* @param[in]  rotorIndex      Index of the rotor to calculate the volume, starting at 1
+* @param[out] volumePtr       The volume of the rotor
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_INDEX_ERROR if rotorIndex is less or equal zero or greater than the rotor count
+*   - TIGL_NULL_POINTER if volumePtr is a null pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetVolume(TiglCPACSConfigurationHandle cpacsHandle, 
+                                                     int rotorIndex,
+                                                     double *volumePtr);
+
+/**
+* @brief Returns the tip speed of the rotor in [m/s].
+*
+* The rotor tip speed is calculated using the nominal rotation speed of the rotor and the rotor radius.
+*
+* <b>Fortran syntax:</b>
+*
+* tigl_rotor_get_tip_speed(integer cpacsHandle, int rotorIndex, real tipSpeedPtr, integer returnCode)
+*
+*
+* @param[in]  cpacsHandle       Handle for the CPACS configuration
+* @param[in]  rotorIndex        Index of the rotor to calculate the area, starting at 1
+*
+* @param[out] tipSpeedPtr       The tip speed of the rotor
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_INDEX_ERROR if rotorIndex is less or equal zero or greater than the rotor count
+*   - TIGL_NULL_POINTER if tipSpeedPtr is a null pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetTipSpeed(TiglCPACSConfigurationHandle cpacsHandle,
+                                                       int rotorIndex,
+                                                       double *tipSpeedPtr);
+
+/*@}*/  // end of doxygen group RotorFunctions
+/*****************************************************************************************************/
+
+
+/**
+  \defgroup RotorBladeFunctions Functions for rotor blade calculations
+    Functions to handle rotor blade geometries with TIGL.
+ */
+/*@{*/
+
+/**
+* @brief Returns the total number of rotor blades attached to a rotor.
+*
+*
+* <b>Fortran syntax:</b>
+*
+* tigl_get_rotor_blade_count(integer cpacsHandle, integer rotorIndex, integer rotorBladeCountPtr, integer returnCode)
+*
+*
+* @param[in]  cpacsHandle  Handle for the CPACS configuration
+* @param[in]  rotorIndex   Index of the rotor to count the attached rotor blades
+* @param[out] rotorBladeCountPtr Pointer to the number of rotor blades
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_NULL_POINTER if rotorBladeCountPtr is a null pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetRotorBladeCount(TiglCPACSConfigurationHandle cpacsHandle,
+                                                              int rotorIndex,
+                                                              int* rotorBladeCountPtr);
+
+/**
+* @brief Returns the index of the parent wing definition of a rotor blade.
+*
+* Returns the index of the wing definition referenced by the parent rotor blade attachment of the rotor blade with the index rotorBladeIndex.
+*
+* <b>Fortran syntax:</b>
+*
+* tigl_get_rotor_blade_wing_index(integer cpacsHandle, integer rotorIndex, integer rotorBladeIndex, integer wingIndexPtr, integer returnCode)
+*
+*
+* @param[in]  cpacsHandle       Handle for the CPACS configuration
+* @param[in]  rotorIndex        Index of the rotor
+* @param[in]  rotorBladeIndex   Index of the rotor blade
+* @param[out] wingIndexPtr      Pointer to the wing index
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_INDEX_ERROR if rotorIndex or rotorBladeIndex are invalid
+*   - TIGL_NULL_POINTER if wingIndexPtr is a null pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetWingIndex(TiglCPACSConfigurationHandle cpacsHandle,
+                                                             int rotorIndex,
+                                                             int rotorBladeIndex,
+                                                             int* wingIndexPtr);
+
+/**
+* @brief Returns the UID of the parent wing definition of a rotor blade.
+*
+* Returns the UID of the wing definition referenced by the parent rotor blade attachment of the rotor blade with the index rotorBladeIndex.
+*
+* <b>Fortran syntax:</b>
+*
+* tigl_get_rotor_blade_wing_uid(integer cpacsHandle, integer rotorIndex, integer rotorBladeIndex, character*n wingUIDPtr, integer returnCode)
+*
+*
+* @param[in]  cpacsHandle       Handle for the CPACS configuration
+* @param[in]  rotorIndex        Index of the rotor
+* @param[in]  rotorBladeIndex   Index of the rotor blade
+* @param[out] wingUIDPtr      Pointer to the wing index
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_INDEX_ERROR if rotorIndex or rotorBladeIndex are invalid
+*   - TIGL_NULL_POINTER if wingUIDPtr is a null pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetWingUID(TiglCPACSConfigurationHandle cpacsHandle,
+                                                           int rotorIndex,
+                                                           int rotorBladeIndex,
+                                                           char** wingUIDPtr);
+
+/**
+* @brief Returns the azimuth angle of a rotor blade in degrees.
+*
+* Returns the azimuth angle in degrees of the rotor blade with the index rotorBladeIndex attached to the rotor with the index rotorIndex.
+*
+* <b>Fortran syntax:</b>
+*
+* tigl_get_rotor_blade_azimuth(integer cpacsHandle, integer rotorIndex, integer rotorBladeIndex, real azimuthAngle, integer returnCode)
+*
+*
+* @param[in]  cpacsHandle       Handle for the CPACS configuration
+* @param[in]  rotorIndex        Index of the rotor
+* @param[in]  rotorBladeIndex   Index of the rotor blade
+* @param[out] azimuthAnglePtr   Pointer to the azimuth angle
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_INDEX_ERROR if rotorIndex or rotorBladeIndex are invalid
+*   - TIGL_NULL_POINTER if azimuthAnglePtr is a null pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetAzimuthAngle(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                int rotorIndex,
+                                                                int rotorBladeIndex,
+                                                                double* azimuthAnglePtr);
+
+/**
+* @brief Returns the radius of a rotor blade.
+*
+* Returns the radius of the rotor blade with the index rotorBladeIndex attached to the rotor with the index rotorIndex.
+* The maximum distance of a point on the quarter chord line of the rotor blade from the z axis of the rotor coordinate system is taken as the rotor blade radius.
+* It is calculated for the rotor blade at azimuth=0 and with no hinge transformations applied.
+*
+* <b>Fortran syntax:</b>
+*
+* tigl_get_rotor_blade_radius(integer cpacsHandle, integer rotorIndex, integer rotorBladeIndex, real radiusPtr, integer returnCode)
+*
+*
+* @param[in]  cpacsHandle       Handle for the CPACS configuration
+* @param[in]  rotorIndex        Index of the rotor
+* @param[in]  rotorBladeIndex   Index of the rotor blade
+* @param[out] radiusPtr         Pointer to the radius
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_INDEX_ERROR if rotorIndex or rotorBladeIndex are invalid
+*   - TIGL_NULL_POINTER if radiusPtr is a null pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetRadius(TiglCPACSConfigurationHandle cpacsHandle,
+                                                          int rotorIndex,
+                                                          int rotorBladeIndex,
+                                                          double* radiusPtr);
+
+/**
+* @brief Returns the planform area of the rotor blade.
+*
+* <b>Fortran syntax:</b>
+*
+* tigl_rotor_blade_get_planform_area(integer cpacsHandle, int rotorIndex, int rotorBladeIndex, real planformAreaPtr, integer returnCode)
+*
+*
+* @param[in]  cpacsHandle       Handle for the CPACS configuration
+* @param[in]  rotorIndex        Index of the rotor
+* @param[in]  rotorBladeIndex   Index of the rotor blade to calculate the area, starting at 1
+* @param[out] planformAreaPtr   The planform area of the rotor blade
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_INDEX_ERROR if rotorIndex or rotorBladeIndex are invalid
+*   - TIGL_NULL_POINTER if planformAreaPtr is a null pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetPlanformArea(TiglCPACSConfigurationHandle cpacsHandle, 
+                                                                int rotorIndex,
+                                                                int rotorBladeIndex,
+                                                                double *planformAreaPtr);
+
+/**
+* @brief Returns the surface area of the rotor blade.
+*
+* <b>Fortran syntax:</b>
+*
+* tigl_rotor_blade_get_surface_area(integer cpacsHandle, int rotorIndex, int rotorBladeIndex, real surfaceAreaPtr, integer returnCode)
+*
+*
+* @param[in]  cpacsHandle       Handle for the CPACS configuration
+* @param[in]  rotorIndex        Index of the rotor
+* @param[in]  rotorBladeIndex   Index of the rotor blade to calculate the area, starting at 1
+* @param[out] surfaceAreaPtr    The surface area of the rotor blade
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_INDEX_ERROR if rotorIndex or rotorBladeIndex are invalid
+*   - TIGL_NULL_POINTER if surfaceAreaPtr is a null pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetSurfaceArea(TiglCPACSConfigurationHandle cpacsHandle, 
+                                                               int rotorIndex,
+                                                               int rotorBladeIndex,
+                                                               double *surfaceAreaPtr);
+
+/**
+* @brief Returns the volume of the rotor blade.
+*
+* <b>Fortran syntax:</b>
+*
+* tigl_rotor_blade_get_volume(integer cpacsHandle, int rotorIndex, int rotorBladeIndex, real volumePtr, integer returnCode)
+*
+*
+* @param[in]  cpacsHandle     Handle for the CPACS configuration
+* @param[in]  rotorIndex      Index of the rotor
+* @param[in]  rotorBladeIndex Index of the rotor blade to calculate the volume, starting at 1
+* @param[out] volumePtr       The volume of the rotor blade
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_INDEX_ERROR if rotorIndex or rotorBladeIndex are invalid
+*   - TIGL_NULL_POINTER if volumePtr is a null pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetVolume(TiglCPACSConfigurationHandle cpacsHandle, 
+                                                          int rotorIndex,
+                                                          int rotorBladeIndex,
+                                                          double *volumePtr);
+
+/**
+* @brief Returns the tip speed of a rotor blade [m/s].
+*
+* The rotor blade tip speed is calculated using the nominal rotation speed of the rotor and the rotor blade radius.
+*
+* <b>Fortran syntax:</b>
+*
+* tigl_get_rotor_blade_tip_speed(integer cpacsHandle, integer rotorIndex, integer rotorBladeIndex, real tipSpeedPtr, integer returnCode)
+*
+*
+* @param[in]  cpacsHandle       Handle for the CPACS configuration
+* @param[in]  rotorIndex        Index of the rotor
+* @param[in]  rotorBladeIndex   Index of the rotor blade
+* @param[out] tipSpeedPtr       Pointer to the radius
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_INDEX_ERROR if rotorIndex or rotorBladeIndex are invalid
+*   - TIGL_NULL_POINTER if tipSpeedPtr is a null pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetTipSpeed(TiglCPACSConfigurationHandle cpacsHandle,
+                                                            int rotorIndex,
+                                                            int rotorBladeIndex,
+                                                            double* tipSpeedPtr);
+
+/**
+* @brief Returns the local radius of a rotor blade.
+*
+* Returns the local radius of the rotor blade with the index rotorBladeIndex attached to the rotor with the index rotorIndex.
+* The distance of the point with relative spanwise coordinate eta on the quarter chord line of the rotor blade segment segmentIndex 
+* from the z axis of the rotor coordinate system is taken as the local radius.
+* It is calculated for the rotor blade at azimuth=0 and with no hinge transformations applied.
+*
+* <b>Fortran syntax:</b>
+*
+* tigl_get_rotor_blade_local_radius(integer cpacsHandle,
+*                                   integer rotorIndex,
+*                                   integer rotorBladeIndex,
+*                                   integer segmentIndex,
+*                                   real eta,
+*                                   real radiusPtr,
+*                                   integer returnCode)
+*
+*
+* @param[in]  cpacsHandle       Handle for the CPACS configuration
+* @param[in]  rotorIndex        Index of the rotor
+* @param[in]  rotorBladeIndex   Index of the rotor blade
+* @param[in]  segmentIndex      Index of the segment of the referenced wing definition
+* @param[in]  eta               Relative spanwise segment coordinate: eta in the range 0.0 <= eta <= 1.0; eta = 0 for inner section , eta = 1 for outer section
+* @param[out] radiusPtr         Pointer to the local radius
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle or no point was found
+*   - TIGL_INDEX_ERROR if rotorIndex, rotorBladeIndex or segmentIndex are invalid
+*   - TIGL_NULL_POINTER if radiusPtr is a null pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetLocalRadius(TiglCPACSConfigurationHandle cpacsHandle,
+                                                               int rotorIndex,
+                                                               int rotorBladeIndex,
+                                                               int segmentIndex,
+                                                               double eta,
+                                                               double* radiusPtr);
+
+/**
+* @brief Returns the local chord length of a rotor blade.
+*
+* Returns the local chord length of the section at the relative spanwise coordinate eta of the segment segmentIndex of the rotor blade with the 
+* index rotorBladeIndex attached to the rotor with the index rotorIndex.
+*
+* <b>Fortran syntax:</b>
+*
+* tigl_get_rotor_blade_local_chord(integer cpacsHandle,
+*                                  integer rotorIndex,
+*                                  integer rotorBladeIndex,
+*                                  integer segmentIndex,
+*                                  real eta,
+*                                  real chordPtr,
+*                                  integer returnCode)
+*
+*
+* @param[in]  cpacsHandle       Handle for the CPACS configuration
+* @param[in]  rotorIndex        Index of the rotor
+* @param[in]  rotorBladeIndex   Index of the rotor blade
+* @param[in]  segmentIndex      Index of the segment of the referenced wing definition
+* @param[in]  eta               Relative spanwise segment coordinate: eta in the range 0.0 <= eta <= 1.0; eta = 0 for inner section , eta = 1 for outer section
+* @param[out] chordPtr          Pointer to the local chord length
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle or no point was found
+*   - TIGL_INDEX_ERROR if rotorIndex, rotorBladeIndex or segmentIndex are invalid
+*   - TIGL_NULL_POINTER if chordPtr is a null pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetLocalChord(TiglCPACSConfigurationHandle cpacsHandle,
+                                                              int rotorIndex,
+                                                              int rotorBladeIndex,
+                                                              int segmentIndex,
+                                                              double eta,
+                                                              double* chordPtr);
+
+/**
+* @brief Returns the local twist angle [deg] of a rotor blade.
+*
+* Returns the twist angle in degrees of the section at the relative spanwise coordinate eta of the segment segmentIndex of the rotor blade with the 
+* index rotorBladeIndex attached to the rotor with the index rotorIndex.
+*
+* <b>Fortran syntax:</b>
+*
+* tigl_get_rotor_blade_local_twist_angle(integer cpacsHandle,
+*                                        integer rotorIndex,
+*                                        integer rotorBladeIndex,
+*                                        integer segmentIndex,
+*                                        real eta,
+*                                        real twistAnglePtr,
+*                                        integer returnCode)
+*
+*
+* @param[in]  cpacsHandle       Handle for the CPACS configuration
+* @param[in]  rotorIndex        Index of the rotor
+* @param[in]  rotorBladeIndex   Index of the rotor blade
+* @param[in]  segmentIndex      Index of the segment of the referenced wing definition
+* @param[in]  eta               Relative spanwise segment coordinate: eta in the range 0.0 <= eta <= 1.0; eta = 0 for inner section , eta = 1 for outer section
+* @param[out] twistAnglePtr     Pointer to the local twist angle
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle or no point was found
+*   - TIGL_INDEX_ERROR if rotorIndex, rotorBladeIndex or segmentIndex are invalid
+*   - TIGL_NULL_POINTER if twistAnglePtr is a null pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetLocalTwistAngle(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                   int rotorIndex,
+                                                                   int rotorBladeIndex,
+                                                                   int segmentIndex,
+                                                                   double eta,
+                                                                   double* twistAnglePtr);
+
+/*@}*/  // end of doxygen group RotorBladeFunctions
+/*****************************************************************************************************/
+
+
 /**
   \defgroup BooleanFunctions Functions for boolean calculations
     Function for boolean calculations on wings/fuselages.
@@ -2713,6 +3401,26 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedGeometrySTL(TiglCPACSConfigura
 
 
 /**
+ * @brief Sets options for the VTK Export
+ *
+ * **Available Settings**:
+ *
+ *   - *key*: "normals_enabled" *valid values*: "0 or 1" *default*: "1".
+ *
+ *       Enables or disables the output of normal vectors.
+ *       A Normal vector and a vertex belong to the same logical structure. If there
+ *       are two identical vertices but with different normal vectors, the VTK export stores
+ *       them as two entries. Thus, a VTK file may have "duplicate" vertices. To disable this
+ *       behavior, set "normal_enabled" to "0".
+ *
+ * @return
+ *   - TIGL_SUCCESS if no error occurred
+ *   - TIGL_NULL_POINTER if key or value are a null pointer
+ *   - TIGL_ERROR if the specified key/value pair is invalid
+ */
+TIGL_COMMON_EXPORT TiglReturnCode tiglExportVTKSetOptions(const char* key, const char* value);
+
+/**
 * @brief Exports the boolean fused geometry of a wing (selected by id) meshed to VTK format.
 *
 *
@@ -3157,7 +3865,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentVolume(TiglCPACSConfigur
 
 /**
   \defgroup SurfaceAreaFunctions Functions for surface area calculations
-    Function for surface area calculations off wings/fuselages.
+    Function for surface area calculations of wings/fuselages.
  */
 /*@{*/
 

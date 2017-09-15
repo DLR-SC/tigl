@@ -30,7 +30,7 @@ namespace tigl
 {
 
 // Constructor
-CCPACSGuideCurveProfile::CCPACSGuideCurveProfile(const std::string& path) : GuideCurveProfileXPath(path)
+CCPACSGuideCurveProfile::CCPACSGuideCurveProfile()
 {
     Cleanup();
 }
@@ -48,37 +48,40 @@ void CCPACSGuideCurveProfile::Cleanup(void)
     uid        = "";
     description= "";
     coordinates.clear();
+    GuideCurveProfileXPath.clear();
 }
 
 // Read guide curve file
-void CCPACSGuideCurveProfile::ReadCPACS(TixiDocumentHandle tixiHandle)
+void CCPACSGuideCurveProfile::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& xpath)
 {
     Cleanup();
-    std::string namePath        = GuideCurveProfileXPath + "/name";
-    std::string describtionPath = GuideCurveProfileXPath + "/description";
-    std::string elementPath     = GuideCurveProfileXPath + "/pointList";
+    
+    GuideCurveProfileXPath = xpath;
+    const std::string namePath        = xpath + "/name";
+    const std::string describtionPath = xpath + "/description";
+    const std::string elementPath     = xpath + "/pointList";
 
     // Get subelement "name"
     char* ptrName = NULL;
-    if (tixiGetTextElement(tixiHandle, const_cast<char*>(namePath.c_str()), &ptrName) == SUCCESS) {
+    if (tixiGetTextElement(tixiHandle, namePath.c_str(), &ptrName) == SUCCESS) {
         name = ptrName;
     }
 
     // Get guide curve "uid"
     char* ptrUID = NULL;
-    if (tixiGetTextAttribute(tixiHandle, const_cast<char*>(GuideCurveProfileXPath.c_str()), "uID", &ptrUID) == SUCCESS) {
+    if (tixiGetTextAttribute(tixiHandle, xpath.c_str(), "uID", &ptrUID) == SUCCESS) {
         uid = ptrUID;
     }
 
     // Get subelement "description"
     char* ptrDescription = NULL;
-    if (tixiGetTextElement(tixiHandle, const_cast<char*>(describtionPath.c_str()), &ptrDescription) == SUCCESS) {
+    if (tixiGetTextElement(tixiHandle, describtionPath.c_str(), &ptrDescription) == SUCCESS) {
         description = ptrDescription;
     }
 
     /* Get point count */
     int   pointCount;
-    if (tixiGetNamedChildrenCount(tixiHandle, const_cast<char*>(elementPath.c_str()), "point", &pointCount) != SUCCESS) {
+    if (tixiGetNamedChildrenCount(tixiHandle, elementPath.c_str(), "point", &pointCount) != SUCCESS) {
         throw CTiglError("Error: tixiGetNamedChildrenCount failed in CCPACSGuideCurveProfile::ReadCPACS", TIGL_XML_ERROR);
     }
 
@@ -88,14 +91,14 @@ void CCPACSGuideCurveProfile::ReadCPACS(TixiDocumentHandle tixiHandle)
 
     // check the number of elements in all three vectors. It has to be the same, otherwise cancel
     int countX;
-    int countY;
-    int countZ;
     if (tixiGetVectorSize(tixiHandle, const_cast<char*>(xXpath.c_str()), &countX) != SUCCESS) {
         throw CTiglError("Error: XML error while reading point vector <x> in CCPACSGuideCurveProfile::ReadCPACS", TIGL_XML_ERROR);
     }
+    int countY;
     if (tixiGetVectorSize(tixiHandle, const_cast<char*>(yXpath.c_str()), &countY) != SUCCESS) {
         throw CTiglError("Error: XML error while reading point vector <y> in CCPACSGuideCurveProfile::ReadCPACS", TIGL_XML_ERROR);
     }
+    int countZ;
     if (tixiGetVectorSize(tixiHandle, const_cast<char*>(zXpath.c_str()), &countZ) != SUCCESS) {
         throw CTiglError("Error: XML error while reading point vector <z> in CCPACSGuideCurveProfile::ReadCPACS", TIGL_XML_ERROR);
     }
@@ -106,15 +109,14 @@ void CCPACSGuideCurveProfile::ReadCPACS(TixiDocumentHandle tixiHandle)
 
     // read in vectors, vectors are allocated and freed by tixi
     double* xCoordinates = NULL;
-    double* yCoordinates = NULL;
-    double* zCoordinates = NULL;
-
     if (tixiGetFloatVector(tixiHandle, const_cast<char*>(xXpath.c_str()), &xCoordinates, countX) != SUCCESS) {
         throw CTiglError("Error: XML error while reading point vector <x> in CCPACSGuideCurveProfile::ReadCPACS", TIGL_XML_ERROR);
     }
+    double* yCoordinates = NULL;
     if (tixiGetFloatVector(tixiHandle, const_cast<char*>(yXpath.c_str()), &yCoordinates, countY) != SUCCESS) {
         throw CTiglError("Error: XML error while reading point vector <y> in CCPACSGuideCurveProfile::ReadCPACS", TIGL_XML_ERROR);
     }
+    double* zCoordinates = NULL;
     if (tixiGetFloatVector(tixiHandle, const_cast<char*>(zXpath.c_str()), &zCoordinates, countZ) != SUCCESS) {
         throw CTiglError("Error: XML error while reading point vector <z> in CCPACSGuideCurveProfile::ReadCPACS", TIGL_XML_ERROR);
     }

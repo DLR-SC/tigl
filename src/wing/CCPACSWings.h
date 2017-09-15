@@ -57,8 +57,14 @@ public:
     // Read CPACS wings elements
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const char* configurationUID);
 
+    // Write CPACS wings elements
+    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& configurationUID);
+
     TIGL_EXPORT bool HasProfile(std::string uid) const;
-    
+
+    // Returns the wing profiles in this configuration
+    TIGL_EXPORT CCPACSWingProfiles& GetProfiles(void);
+
     // Returns the total count of wing profiles in this configuration
     TIGL_EXPORT int GetProfileCount(void) const;
 
@@ -71,11 +77,20 @@ public:
     // Returns the total count of wings in a configuration
     TIGL_EXPORT int GetWingCount(void) const;
 
+    // Returns the count of wings in a configuration with the property isRotorBlade set to true
+    TIGL_EXPORT int GetRotorBladeCount(void) const;
+
     // Returns the wing for a given index.
     TIGL_EXPORT CCPACSWing& GetWing(int index) const;
 
     // Returns the wing for a given UID.
     TIGL_EXPORT CCPACSWing& GetWing(const std::string& UID) const;
+    
+    // Adds a wing to the wing list
+    TIGL_EXPORT void AddWing(CCPACSWing* wing);
+
+    // Returns the wing index for a given UID.
+    TIGL_EXPORT int GetWingIndex(const std::string& UID) const;
 
 protected:
     // Cleanup routine
@@ -88,6 +103,11 @@ private:
     // Assignment operator
     void operator=(const CCPACSWings& );
 
+    void ReadCPACSWing(TixiDocumentHandle tixiHandle,
+                       const char* configurationUID,
+                       const char* wingsLibraryName,
+                       const char* wingElementName);
+    
 private:
     CCPACSWingProfiles   profiles;      /**< Wing profile elements */
     CCPACSWingContainer  wings;         /**< Wing elements */

@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 2.6)
+cmake_minimum_required (VERSION 2.8.12)
 
 # Set a default build type if none was specified
 if(NOT DEFINED CMAKE_BUILD_TYPE)
@@ -11,8 +11,8 @@ endif()
 
 project (TIGL)
 set(TIGL_VERSION_MAJOR 2)
-set(TIGL_VERSION_MINOR 1)
-set(TIGL_VERSION_PATCH 6)
+set(TIGL_VERSION_MINOR 2)
+set(TIGL_VERSION_PATCH 1)
 set(TIGL_VERSION "${TIGL_VERSION_MAJOR}.${TIGL_VERSION_MINOR}.${TIGL_VERSION_PATCH}")
 
 set(TIGL_ADD_INCLUDE_PATH "" CACHE PATH "Additional include path for package search")
@@ -120,7 +120,7 @@ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/src/tigl_config.h.in ${CMAKE_CURRENT_
 
 # code coverage analysis
 IF (CMAKE_BUILD_TYPE STREQUAL "Debug")
-        OPTION(TIGL_ENABLE_COVERAGE "Enable GCov coverage analysis (defines a 'coverage' target and enforces static build of tigl)" ON)
+        OPTION(TIGL_ENABLE_COVERAGE "Enable GCov coverage analysis (defines a 'coverage' target and enforces static build of tigl)" OFF)
         IF(TIGL_ENABLE_COVERAGE)
                 MESSAGE(STATUS "Coverage enabled")
                 INCLUDE(CodeCoverage)
@@ -148,6 +148,12 @@ if(WIN32)
     add_definitions(-DStandard_EXPORT=)
 endif(WIN32)
 
+option(TIGL_BINDINGS_JAVA "Build the java bindings of tigl (requires java)" OFF)
+
+if (TIGL_BINDINGS_JAVA)
+    find_package(Java 1.7.0 COMPONENTS Development REQUIRED)
+endif(TIGL_BINDINGS_JAVA)
+
 # style checks
 add_custom_target(checkstyle)
 add_custom_target(checkstylexml)
@@ -162,6 +168,7 @@ add_subdirectory(examples)
 option(TIGL_BUILD_TESTS "Build TIGL Testsuite" OFF)
 
 if(TIGL_BUILD_TESTS)
+  enable_testing()
   option(gtest_force_shared_crt "" ON)
   mark_as_advanced(gtest_force_shared_crt)
   set (gtest_SOURCE_DIR "thirdparty/gtest-1.6.0")

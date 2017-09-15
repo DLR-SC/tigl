@@ -10,7 +10,7 @@
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
 *
-* Â  Â  http://www.apache.org/licenses/LICENSE-2.0
+*     http://www.apache.org/licenses/LICENSE-2.0
 *
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
@@ -26,7 +26,7 @@
 
 #include "test.h" // Brings in the GTest framework
 #include "tigl.h"
-
+#include "tigl_version.h"
 
 /******************************************************************************/
 
@@ -208,6 +208,6 @@ TEST_F(tiglCPACSConfigurationHandleValid,validHandle)
 */
 TEST_F(tiglCPACSConfigurationHandleValid, version_valid)
 {
-    ASSERT_STREQ(tiglGetVersion(), TIGL_VERSION);
+    ASSERT_EQ(0, std::string(tiglGetVersion()).find(TIGL_VERSION_STRING));
 }
 
