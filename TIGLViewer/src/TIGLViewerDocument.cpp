@@ -1841,7 +1841,7 @@ void TIGLViewerDocument::drawFusedAircraft()
             }
             PNamedShape shape = *it;
             if (shape) {
-                app->getScene()->displayShape(shape->Shape(), colors[icol++]);
+                app->getScene()->displayShape(shape, true, colors[icol++]);
             }
         }
 
@@ -1849,7 +1849,7 @@ void TIGLViewerDocument::drawFusedAircraft()
         ListPNamedShape::const_iterator it2 = ints.begin();
         for (; it2 != ints.end(); ++it2) {
             if (*it2) {
-                app->getScene()->displayShape((*it2)->Shape(), true, Quantity_NOC_WHITE);
+                app->getScene()->displayShape((*it2), true, Quantity_NOC_WHITE);
             }
         }
 
