@@ -27,6 +27,7 @@
 #include <TiglSymmetryAxis.h>
 #include <tixi.h>
 #include "CPACSFuselageCutOuts.h"
+#include "CreateIfNotExists.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -87,6 +88,9 @@ namespace tigl
             
             TIGL_EXPORT virtual const boost::optional<CPACSFuselageCutOuts>& GetCutOuts() const;
             TIGL_EXPORT virtual boost::optional<CPACSFuselageCutOuts>& GetCutOuts();
+            
+            TIGL_EXPORT virtual CPACSFuselageCutOuts& GetCutOuts(CreateIfNotExistsTag);
+            TIGL_EXPORT virtual void RemoveCutOuts();
             
         protected:
             CCPACSFuselages* m_parent;

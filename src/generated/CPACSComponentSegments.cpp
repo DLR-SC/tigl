@@ -78,5 +78,22 @@ namespace tigl
             return m_componentSegments;
         }
         
+        CCPACSWingComponentSegment& CPACSComponentSegments::AddComponentSegment()
+        {
+            m_componentSegments.push_back(make_unique<CCPACSWingComponentSegment>(reinterpret_cast<CCPACSWingComponentSegments*>(this), m_uidMgr));
+            return *m_componentSegments.back();
+        }
+        
+        void CPACSComponentSegments::RemoveComponentSegment(CCPACSWingComponentSegment& ref)
+        {
+            for (std::size_t i = 0; i < m_componentSegments.size(); i++) {
+                if (m_componentSegments[i].get() == &ref) {
+                    m_componentSegments.erase(m_componentSegments.begin() + i);
+                    return;
+                }
+            }
+            throw CTiglError("Element not found");
+        }
+        
     }
 }

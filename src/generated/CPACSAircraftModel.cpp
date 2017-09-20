@@ -231,5 +231,41 @@ namespace tigl
             return m_genericGeometryComponents;
         }
         
+        CCPACSFuselages& CPACSAircraftModel::GetFuselages(CreateIfNotExistsTag)
+        {
+            if (!m_fuselages)
+                m_fuselages = boost::in_place(reinterpret_cast<CCPACSAircraftModel*>(this), m_uidMgr);
+            return *m_fuselages;
+        }
+        
+        void CPACSAircraftModel::RemoveFuselages()
+        {
+            m_fuselages = boost::none;
+        }
+        
+        CCPACSWings& CPACSAircraftModel::GetWings(CreateIfNotExistsTag)
+        {
+            if (!m_wings)
+                m_wings = boost::in_place(reinterpret_cast<CCPACSAircraftModel*>(this), m_uidMgr);
+            return *m_wings;
+        }
+        
+        void CPACSAircraftModel::RemoveWings()
+        {
+            m_wings = boost::none;
+        }
+        
+        CCPACSExternalObjects& CPACSAircraftModel::GetGenericGeometryComponents(CreateIfNotExistsTag)
+        {
+            if (!m_genericGeometryComponents)
+                m_genericGeometryComponents = boost::in_place(reinterpret_cast<CCPACSAircraftModel*>(this), m_uidMgr);
+            return *m_genericGeometryComponents;
+        }
+        
+        void CPACSAircraftModel::RemoveGenericGeometryComponents()
+        {
+            m_genericGeometryComponents = boost::none;
+        }
+        
     }
 }

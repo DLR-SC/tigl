@@ -53,6 +53,9 @@ namespace tigl
             TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSExternalObject> >& GetGenericGeometryComponents() const;
             TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSExternalObject> >& GetGenericGeometryComponents();
             
+            TIGL_EXPORT virtual CCPACSExternalObject& AddGenericGeometryComponent();
+            TIGL_EXPORT virtual void RemoveGenericGeometryComponent(CCPACSExternalObject& ref);
+            
         protected:
             CCPACSAircraftModel* m_parent;
             

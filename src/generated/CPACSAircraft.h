@@ -49,6 +49,9 @@ namespace tigl
             TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSAircraftModel> >& GetModels() const;
             TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSAircraftModel> >& GetModels();
             
+            TIGL_EXPORT virtual CCPACSAircraftModel& AddModel();
+            TIGL_EXPORT virtual void RemoveModel(CCPACSAircraftModel& ref);
+            
         protected:
             CTiglUIDManager* m_uidMgr;
             

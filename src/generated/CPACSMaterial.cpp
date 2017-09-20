@@ -1329,5 +1329,22 @@ namespace tigl
             m_tau23_choice3 = value;
         }
         
+        CPACSPostFailure& CPACSMaterial::AddPostFailure()
+        {
+            m_postFailures.push_back(make_unique<CPACSPostFailure>());
+            return *m_postFailures.back();
+        }
+        
+        void CPACSMaterial::RemovePostFailure(CPACSPostFailure& ref)
+        {
+            for (std::size_t i = 0; i < m_postFailures.size(); i++) {
+                if (m_postFailures[i].get() == &ref) {
+                    m_postFailures.erase(m_postFailures.begin() + i);
+                    return;
+                }
+            }
+            throw CTiglError("Element not found");
+        }
+        
     }
 }

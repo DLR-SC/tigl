@@ -382,5 +382,29 @@ namespace tigl
             return m_tangent;
         }
         
+        CPACSPointXYZ& CPACSGuideCurve::GetTangent_choice2(CreateIfNotExistsTag)
+        {
+            if (!m_tangent_choice2)
+                m_tangent_choice2 = boost::in_place(m_uidMgr);
+            return *m_tangent_choice2;
+        }
+        
+        void CPACSGuideCurve::RemoveTangent_choice2()
+        {
+            m_tangent_choice2 = boost::none;
+        }
+        
+        CPACSPointXYZ& CPACSGuideCurve::GetTangent(CreateIfNotExistsTag)
+        {
+            if (!m_tangent)
+                m_tangent = boost::in_place(m_uidMgr);
+            return *m_tangent;
+        }
+        
+        void CPACSGuideCurve::RemoveTangent()
+        {
+            m_tangent = boost::none;
+        }
+        
     }
 }

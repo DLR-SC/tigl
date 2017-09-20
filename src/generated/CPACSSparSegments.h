@@ -53,6 +53,9 @@ namespace tigl
             TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSWingSparSegment> >& GetSparSegments() const;
             TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSWingSparSegment> >& GetSparSegments();
             
+            TIGL_EXPORT virtual CCPACSWingSparSegment& AddSparSegment();
+            TIGL_EXPORT virtual void RemoveSparSegment(CCPACSWingSparSegment& ref);
+            
         protected:
             CCPACSWingSpars* m_parent;
             

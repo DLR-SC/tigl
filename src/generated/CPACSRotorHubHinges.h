@@ -53,6 +53,9 @@ namespace tigl
             TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSRotorHinge> >& GetHinges() const;
             TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSRotorHinge> >& GetHinges();
             
+            TIGL_EXPORT virtual CCPACSRotorHinge& AddHinge();
+            TIGL_EXPORT virtual void RemoveHinge(CCPACSRotorHinge& ref);
+            
         protected:
             CCPACSRotorBladeAttachment* m_parent;
             

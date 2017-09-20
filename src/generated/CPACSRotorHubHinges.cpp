@@ -78,5 +78,22 @@ namespace tigl
             return m_hinges;
         }
         
+        CCPACSRotorHinge& CPACSRotorHubHinges::AddHinge()
+        {
+            m_hinges.push_back(make_unique<CCPACSRotorHinge>(reinterpret_cast<CCPACSRotorHinges*>(this), m_uidMgr));
+            return *m_hinges.back();
+        }
+        
+        void CPACSRotorHubHinges::RemoveHinge(CCPACSRotorHinge& ref)
+        {
+            for (std::size_t i = 0; i < m_hinges.size(); i++) {
+                if (m_hinges[i].get() == &ref) {
+                    m_hinges.erase(m_hinges.begin() + i);
+                    return;
+                }
+            }
+            throw CTiglError("Element not found");
+        }
+        
     }
 }

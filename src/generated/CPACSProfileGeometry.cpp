@@ -262,5 +262,29 @@ namespace tigl
             return m_cst2D_choice2;
         }
         
+        CCPACSPointListXYZ& CPACSProfileGeometry::GetPointList_choice1(CreateIfNotExistsTag)
+        {
+            if (!m_pointList_choice1)
+                m_pointList_choice1 = boost::in_place();
+            return *m_pointList_choice1;
+        }
+        
+        void CPACSProfileGeometry::RemovePointList_choice1()
+        {
+            m_pointList_choice1 = boost::none;
+        }
+        
+        CCPACSWingProfileCST& CPACSProfileGeometry::GetCst2D_choice2(CreateIfNotExistsTag)
+        {
+            if (!m_cst2D_choice2)
+                m_cst2D_choice2 = boost::in_place();
+            return *m_cst2D_choice2;
+        }
+        
+        void CPACSProfileGeometry::RemoveCst2D_choice2()
+        {
+            m_cst2D_choice2 = boost::none;
+        }
+        
     }
 }

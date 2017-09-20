@@ -156,5 +156,17 @@ namespace tigl
             return m_cells;
         }
         
+        CCPACSWingCells& CPACSWingShell::GetCells(CreateIfNotExistsTag)
+        {
+            if (!m_cells)
+                m_cells = boost::in_place(reinterpret_cast<CCPACSWingShell*>(this), m_uidMgr);
+            return *m_cells;
+        }
+        
+        void CPACSWingShell::RemoveCells()
+        {
+            m_cells = boost::none;
+        }
+        
     }
 }

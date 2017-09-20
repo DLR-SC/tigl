@@ -67,5 +67,22 @@ namespace tigl
             return m_positionings;
         }
         
+        CCPACSPositioning& CPACSPositionings::AddPositioning()
+        {
+            m_positionings.push_back(make_unique<CCPACSPositioning>(m_uidMgr));
+            return *m_positionings.back();
+        }
+        
+        void CPACSPositionings::RemovePositioning(CCPACSPositioning& ref)
+        {
+            for (std::size_t i = 0; i < m_positionings.size(); i++) {
+                if (m_positionings[i].get() == &ref) {
+                    m_positionings.erase(m_positionings.begin() + i);
+                    return;
+                }
+            }
+            throw CTiglError("Element not found");
+        }
+        
     }
 }

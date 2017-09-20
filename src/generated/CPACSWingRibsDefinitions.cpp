@@ -78,5 +78,22 @@ namespace tigl
             return m_ribsDefinitions;
         }
         
+        CCPACSWingRibsDefinition& CPACSWingRibsDefinitions::AddRibsDefinition()
+        {
+            m_ribsDefinitions.push_back(make_unique<CCPACSWingRibsDefinition>(reinterpret_cast<CCPACSWingRibsDefinitions*>(this), m_uidMgr));
+            return *m_ribsDefinitions.back();
+        }
+        
+        void CPACSWingRibsDefinitions::RemoveRibsDefinition(CCPACSWingRibsDefinition& ref)
+        {
+            for (std::size_t i = 0; i < m_ribsDefinitions.size(); i++) {
+                if (m_ribsDefinitions[i].get() == &ref) {
+                    m_ribsDefinitions.erase(m_ribsDefinitions.begin() + i);
+                    return;
+                }
+            }
+            throw CTiglError("Element not found");
+        }
+        
     }
 }

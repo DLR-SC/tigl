@@ -205,5 +205,53 @@ namespace tigl
             return m_lowerCap;
         }
         
+        CPACSPointX& CPACSWingRibCrossSection::GetRibRotation(CreateIfNotExistsTag)
+        {
+            if (!m_ribRotation)
+                m_ribRotation = boost::in_place(m_uidMgr);
+            return *m_ribRotation;
+        }
+        
+        void CPACSWingRibCrossSection::RemoveRibRotation()
+        {
+            m_ribRotation = boost::none;
+        }
+        
+        CPACSWingRibCell& CPACSWingRibCrossSection::GetRibCell(CreateIfNotExistsTag)
+        {
+            if (!m_ribCell)
+                m_ribCell = boost::in_place(m_uidMgr);
+            return *m_ribCell;
+        }
+        
+        void CPACSWingRibCrossSection::RemoveRibCell()
+        {
+            m_ribCell = boost::none;
+        }
+        
+        CPACSCap& CPACSWingRibCrossSection::GetUpperCap(CreateIfNotExistsTag)
+        {
+            if (!m_upperCap)
+                m_upperCap = boost::in_place();
+            return *m_upperCap;
+        }
+        
+        void CPACSWingRibCrossSection::RemoveUpperCap()
+        {
+            m_upperCap = boost::none;
+        }
+        
+        CPACSCap& CPACSWingRibCrossSection::GetLowerCap(CreateIfNotExistsTag)
+        {
+            if (!m_lowerCap)
+                m_lowerCap = boost::in_place();
+            return *m_lowerCap;
+        }
+        
+        void CPACSWingRibCrossSection::RemoveLowerCap()
+        {
+            m_lowerCap = boost::none;
+        }
+        
     }
 }

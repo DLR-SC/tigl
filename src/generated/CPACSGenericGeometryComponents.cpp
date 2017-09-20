@@ -78,5 +78,22 @@ namespace tigl
             return m_genericGeometryComponents;
         }
         
+        CCPACSExternalObject& CPACSGenericGeometryComponents::AddGenericGeometryComponent()
+        {
+            m_genericGeometryComponents.push_back(make_unique<CCPACSExternalObject>(reinterpret_cast<CCPACSExternalObjects*>(this), m_uidMgr));
+            return *m_genericGeometryComponents.back();
+        }
+        
+        void CPACSGenericGeometryComponents::RemoveGenericGeometryComponent(CCPACSExternalObject& ref)
+        {
+            for (std::size_t i = 0; i < m_genericGeometryComponents.size(); i++) {
+                if (m_genericGeometryComponents[i].get() == &ref) {
+                    m_genericGeometryComponents.erase(m_genericGeometryComponents.begin() + i);
+                    return;
+                }
+            }
+            throw CTiglError("Element not found");
+        }
+        
     }
 }

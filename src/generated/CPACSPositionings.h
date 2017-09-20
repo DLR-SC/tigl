@@ -52,6 +52,9 @@ namespace tigl
             TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSPositioning> >& GetPositionings() const;
             TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSPositioning> >& GetPositionings();
             
+            TIGL_EXPORT virtual CCPACSPositioning& AddPositioning();
+            TIGL_EXPORT virtual void RemovePositioning(CCPACSPositioning& ref);
+            
         protected:
             CTiglUIDManager* m_uidMgr;
             

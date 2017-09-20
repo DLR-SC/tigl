@@ -74,6 +74,9 @@ namespace tigl
             TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSFuselage> >& GetFuselages() const;
             TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSFuselage> >& GetFuselages();
             
+            TIGL_EXPORT virtual CCPACSFuselage& AddFuselage();
+            TIGL_EXPORT virtual void RemoveFuselage(CCPACSFuselage& ref);
+            
         protected:
             void* m_parent;
             const std::type_info* m_parentType;

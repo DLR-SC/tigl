@@ -132,5 +132,29 @@ namespace tigl
             return m_toolspecific;
         }
         
+        CPACSVehicles& CPACSCpacs::GetVehicles(CreateIfNotExistsTag)
+        {
+            if (!m_vehicles)
+                m_vehicles = boost::in_place(m_uidMgr);
+            return *m_vehicles;
+        }
+        
+        void CPACSCpacs::RemoveVehicles()
+        {
+            m_vehicles = boost::none;
+        }
+        
+        CPACSToolspecific& CPACSCpacs::GetToolspecific(CreateIfNotExistsTag)
+        {
+            if (!m_toolspecific)
+                m_toolspecific = boost::in_place();
+            return *m_toolspecific;
+        }
+        
+        void CPACSCpacs::RemoveToolspecific()
+        {
+            m_toolspecific = boost::none;
+        }
+        
     }
 }

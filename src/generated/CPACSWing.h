@@ -28,6 +28,7 @@
 #include <TiglSymmetryAxis.h>
 #include <tixi.h>
 #include <typeinfo>
+#include "CreateIfNotExists.h"
 #include "CTiglError.h"
 #include "tigl_internal.h"
 
@@ -108,6 +109,12 @@ namespace tigl
             
             TIGL_EXPORT virtual const boost::optional<CCPACSWingComponentSegments>& GetComponentSegments() const;
             TIGL_EXPORT virtual boost::optional<CCPACSWingComponentSegments>& GetComponentSegments();
+            
+            TIGL_EXPORT virtual CCPACSPositionings& GetPositionings(CreateIfNotExistsTag);
+            TIGL_EXPORT virtual void RemovePositionings();
+            
+            TIGL_EXPORT virtual CCPACSWingComponentSegments& GetComponentSegments(CreateIfNotExistsTag);
+            TIGL_EXPORT virtual void RemoveComponentSegments();
             
         protected:
             void* m_parent;

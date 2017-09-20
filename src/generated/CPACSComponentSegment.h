@@ -22,6 +22,7 @@
 #include <CCPACSWingCSStructure.h>
 #include <string>
 #include <tixi.h>
+#include "CreateIfNotExists.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -68,6 +69,9 @@ namespace tigl
             
             TIGL_EXPORT virtual const boost::optional<CCPACSWingCSStructure>& GetStructure() const;
             TIGL_EXPORT virtual boost::optional<CCPACSWingCSStructure>& GetStructure();
+            
+            TIGL_EXPORT virtual CCPACSWingCSStructure& GetStructure(CreateIfNotExistsTag);
+            TIGL_EXPORT virtual void RemoveStructure();
             
         protected:
             CCPACSWingComponentSegments* m_parent;

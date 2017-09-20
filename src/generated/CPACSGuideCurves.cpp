@@ -67,5 +67,22 @@ namespace tigl
             return m_guideCurves;
         }
         
+        CPACSGuideCurve& CPACSGuideCurves::AddGuideCurve()
+        {
+            m_guideCurves.push_back(make_unique<CPACSGuideCurve>(m_uidMgr));
+            return *m_guideCurves.back();
+        }
+        
+        void CPACSGuideCurves::RemoveGuideCurve(CPACSGuideCurve& ref)
+        {
+            for (std::size_t i = 0; i < m_guideCurves.size(); i++) {
+                if (m_guideCurves[i].get() == &ref) {
+                    m_guideCurves.erase(m_guideCurves.begin() + i);
+                    return;
+                }
+            }
+            throw CTiglError("Element not found");
+        }
+        
     }
 }

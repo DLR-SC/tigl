@@ -230,5 +230,17 @@ namespace tigl
             return m_structure;
         }
         
+        CCPACSWingCSStructure& CPACSComponentSegment::GetStructure(CreateIfNotExistsTag)
+        {
+            if (!m_structure)
+                m_structure = boost::in_place(reinterpret_cast<CCPACSWingComponentSegment*>(this), m_uidMgr);
+            return *m_structure;
+        }
+        
+        void CPACSComponentSegment::RemoveStructure()
+        {
+            m_structure = boost::none;
+        }
+        
     }
 }

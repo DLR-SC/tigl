@@ -334,5 +334,17 @@ namespace tigl
             return m_cutOuts;
         }
         
+        CPACSFuselageCutOuts& CPACSFuselage::GetCutOuts(CreateIfNotExistsTag)
+        {
+            if (!m_cutOuts)
+                m_cutOuts = boost::in_place(m_uidMgr);
+            return *m_cutOuts;
+        }
+        
+        void CPACSFuselage::RemoveCutOuts()
+        {
+            m_cutOuts = boost::none;
+        }
+        
     }
 }

@@ -55,5 +55,22 @@ namespace tigl
             return m_updates;
         }
         
+        CPACSUpdate& CPACSUpdates::AddUpdate()
+        {
+            m_updates.push_back(make_unique<CPACSUpdate>());
+            return *m_updates.back();
+        }
+        
+        void CPACSUpdates::RemoveUpdate(CPACSUpdate& ref)
+        {
+            for (std::size_t i = 0; i < m_updates.size(); i++) {
+                if (m_updates[i].get() == &ref) {
+                    m_updates.erase(m_updates.begin() + i);
+                    return;
+                }
+            }
+            throw CTiglError("Element not found");
+        }
+        
     }
 }

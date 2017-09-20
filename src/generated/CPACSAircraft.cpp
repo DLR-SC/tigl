@@ -67,5 +67,22 @@ namespace tigl
             return m_models;
         }
         
+        CCPACSAircraftModel& CPACSAircraft::AddModel()
+        {
+            m_models.push_back(make_unique<CCPACSAircraftModel>(m_uidMgr));
+            return *m_models.back();
+        }
+        
+        void CPACSAircraft::RemoveModel(CCPACSAircraftModel& ref)
+        {
+            for (std::size_t i = 0; i < m_models.size(); i++) {
+                if (m_models[i].get() == &ref) {
+                    m_models.erase(m_models.begin() + i);
+                    return;
+                }
+            }
+            throw CTiglError("Element not found");
+        }
+        
     }
 }

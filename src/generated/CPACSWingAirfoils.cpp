@@ -67,5 +67,22 @@ namespace tigl
             return m_wingAirfoils;
         }
         
+        CPACSProfileGeometry& CPACSWingAirfoils::AddWingAirfoil()
+        {
+            m_wingAirfoils.push_back(make_unique<CPACSProfileGeometry>(m_uidMgr));
+            return *m_wingAirfoils.back();
+        }
+        
+        void CPACSWingAirfoils::RemoveWingAirfoil(CPACSProfileGeometry& ref)
+        {
+            for (std::size_t i = 0; i < m_wingAirfoils.size(); i++) {
+                if (m_wingAirfoils[i].get() == &ref) {
+                    m_wingAirfoils.erase(m_wingAirfoils.begin() + i);
+                    return;
+                }
+            }
+            throw CTiglError("Element not found");
+        }
+        
     }
 }

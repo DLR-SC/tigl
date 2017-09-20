@@ -319,5 +319,29 @@ namespace tigl
             m_numberOfBlades_choice2 = value;
         }
         
+        CCPACSRotorHinges& CPACSRotorBladeAttachment::GetHinges(CreateIfNotExistsTag)
+        {
+            if (!m_hinges)
+                m_hinges = boost::in_place(reinterpret_cast<CCPACSRotorBladeAttachment*>(this), m_uidMgr);
+            return *m_hinges;
+        }
+        
+        void CPACSRotorBladeAttachment::RemoveHinges()
+        {
+            m_hinges = boost::none;
+        }
+        
+        CCPACSStringVector& CPACSRotorBladeAttachment::GetAzimuthAngles_choice1(CreateIfNotExistsTag)
+        {
+            if (!m_azimuthAngles_choice1)
+                m_azimuthAngles_choice1 = boost::in_place();
+            return *m_azimuthAngles_choice1;
+        }
+        
+        void CPACSRotorBladeAttachment::RemoveAzimuthAngles_choice1()
+        {
+            m_azimuthAngles_choice1 = boost::none;
+        }
+        
     }
 }

@@ -23,6 +23,7 @@
 #include <CCPACSStringVector.h>
 #include <string>
 #include <tixi.h>
+#include "CreateIfNotExists.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -77,6 +78,12 @@ namespace tigl
             TIGL_EXPORT virtual const boost::optional<int>& GetNumberOfBlades_choice2() const;
             TIGL_EXPORT virtual void SetNumberOfBlades_choice2(const int& value);
             TIGL_EXPORT virtual void SetNumberOfBlades_choice2(const boost::optional<int>& value);
+            
+            TIGL_EXPORT virtual CCPACSRotorHinges& GetHinges(CreateIfNotExistsTag);
+            TIGL_EXPORT virtual void RemoveHinges();
+            
+            TIGL_EXPORT virtual CCPACSStringVector& GetAzimuthAngles_choice1(CreateIfNotExistsTag);
+            TIGL_EXPORT virtual void RemoveAzimuthAngles_choice1();
             
         protected:
             CCPACSRotorBladeAttachments* m_parent;

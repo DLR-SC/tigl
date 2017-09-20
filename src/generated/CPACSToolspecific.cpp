@@ -67,5 +67,17 @@ namespace tigl
             return m_cFD;
         }
         
+        CPACSCFDTool& CPACSToolspecific::GetCFD(CreateIfNotExistsTag)
+        {
+            if (!m_cFD)
+                m_cFD = boost::in_place();
+            return *m_cFD;
+        }
+        
+        void CPACSToolspecific::RemoveCFD()
+        {
+            m_cFD = boost::none;
+        }
+        
     }
 }

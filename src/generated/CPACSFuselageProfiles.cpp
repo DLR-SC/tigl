@@ -67,5 +67,22 @@ namespace tigl
             return m_fuselageProfiles;
         }
         
+        CPACSProfileGeometry& CPACSFuselageProfiles::AddFuselageProfile()
+        {
+            m_fuselageProfiles.push_back(make_unique<CPACSProfileGeometry>(m_uidMgr));
+            return *m_fuselageProfiles.back();
+        }
+        
+        void CPACSFuselageProfiles::RemoveFuselageProfile(CPACSProfileGeometry& ref)
+        {
+            for (std::size_t i = 0; i < m_fuselageProfiles.size(); i++) {
+                if (m_fuselageProfiles[i].get() == &ref) {
+                    m_fuselageProfiles.erase(m_fuselageProfiles.begin() + i);
+                    return;
+                }
+            }
+            throw CTiglError("Element not found");
+        }
+        
     }
 }

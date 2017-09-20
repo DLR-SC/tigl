@@ -98,5 +98,34 @@ namespace tigl
             return m_composites;
         }
         
+        CPACSMaterial& CPACSMaterials::AddMaterial()
+        {
+            m_materials.push_back(make_unique<CPACSMaterial>(m_uidMgr));
+            return *m_materials.back();
+        }
+        
+        void CPACSMaterials::RemoveMaterial(CPACSMaterial& ref)
+        {
+            for (std::size_t i = 0; i < m_materials.size(); i++) {
+                if (m_materials[i].get() == &ref) {
+                    m_materials.erase(m_materials.begin() + i);
+                    return;
+                }
+            }
+            throw CTiglError("Element not found");
+        }
+        
+        CPACSComposites& CPACSMaterials::GetComposites(CreateIfNotExistsTag)
+        {
+            if (!m_composites)
+                m_composites = boost::in_place(m_uidMgr);
+            return *m_composites;
+        }
+        
+        void CPACSMaterials::RemoveComposites()
+        {
+            m_composites = boost::none;
+        }
+        
     }
 }

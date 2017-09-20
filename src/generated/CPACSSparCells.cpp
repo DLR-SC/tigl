@@ -67,5 +67,22 @@ namespace tigl
             return m_sparCells;
         }
         
+        CPACSSparCell& CPACSSparCells::AddSparCell()
+        {
+            m_sparCells.push_back(make_unique<CPACSSparCell>(m_uidMgr));
+            return *m_sparCells.back();
+        }
+        
+        void CPACSSparCells::RemoveSparCell(CPACSSparCell& ref)
+        {
+            for (std::size_t i = 0; i < m_sparCells.size(); i++) {
+                if (m_sparCells[i].get() == &ref) {
+                    m_sparCells.erase(m_sparCells.begin() + i);
+                    return;
+                }
+            }
+            throw CTiglError("Element not found");
+        }
+        
     }
 }

@@ -228,5 +228,53 @@ namespace tigl
             m_rotation = value;
         }
         
+        CPACSCap& CPACSSparCrossSection::GetUpperCap(CreateIfNotExistsTag)
+        {
+            if (!m_upperCap)
+                m_upperCap = boost::in_place();
+            return *m_upperCap;
+        }
+        
+        void CPACSSparCrossSection::RemoveUpperCap()
+        {
+            m_upperCap = boost::none;
+        }
+        
+        CPACSCap& CPACSSparCrossSection::GetLowerCap(CreateIfNotExistsTag)
+        {
+            if (!m_lowerCap)
+                m_lowerCap = boost::in_place();
+            return *m_lowerCap;
+        }
+        
+        void CPACSSparCrossSection::RemoveLowerCap()
+        {
+            m_lowerCap = boost::none;
+        }
+        
+        CPACSWeb& CPACSSparCrossSection::GetWeb2(CreateIfNotExistsTag)
+        {
+            if (!m_web2)
+                m_web2 = boost::in_place();
+            return *m_web2;
+        }
+        
+        void CPACSSparCrossSection::RemoveWeb2()
+        {
+            m_web2 = boost::none;
+        }
+        
+        CPACSSparCells& CPACSSparCrossSection::GetSparCells(CreateIfNotExistsTag)
+        {
+            if (!m_sparCells)
+                m_sparCells = boost::in_place(m_uidMgr);
+            return *m_sparCells;
+        }
+        
+        void CPACSSparCrossSection::RemoveSparCells()
+        {
+            m_sparCells = boost::none;
+        }
+        
     }
 }

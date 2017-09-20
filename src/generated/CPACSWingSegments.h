@@ -53,6 +53,9 @@ namespace tigl
             TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSWingSegment> >& GetSegments() const;
             TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSWingSegment> >& GetSegments();
             
+            TIGL_EXPORT virtual CCPACSWingSegment& AddSegment();
+            TIGL_EXPORT virtual void RemoveSegment(CCPACSWingSegment& ref);
+            
         protected:
             CCPACSWing* m_parent;
             

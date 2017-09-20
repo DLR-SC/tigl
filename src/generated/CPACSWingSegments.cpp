@@ -78,5 +78,22 @@ namespace tigl
             return m_segments;
         }
         
+        CCPACSWingSegment& CPACSWingSegments::AddSegment()
+        {
+            m_segments.push_back(make_unique<CCPACSWingSegment>(reinterpret_cast<CCPACSWingSegments*>(this), m_uidMgr));
+            return *m_segments.back();
+        }
+        
+        void CPACSWingSegments::RemoveSegment(CCPACSWingSegment& ref)
+        {
+            for (std::size_t i = 0; i < m_segments.size(); i++) {
+                if (m_segments[i].get() == &ref) {
+                    m_segments.erase(m_segments.begin() + i);
+                    return;
+                }
+            }
+            throw CTiglError("Element not found");
+        }
+        
     }
 }

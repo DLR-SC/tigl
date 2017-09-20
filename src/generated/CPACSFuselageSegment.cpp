@@ -230,5 +230,17 @@ namespace tigl
             return m_guideCurves;
         }
         
+        CCPACSGuideCurves& CPACSFuselageSegment::GetGuideCurves(CreateIfNotExistsTag)
+        {
+            if (!m_guideCurves)
+                m_guideCurves = boost::in_place(m_uidMgr);
+            return *m_guideCurves;
+        }
+        
+        void CPACSFuselageSegment::RemoveGuideCurves()
+        {
+            m_guideCurves = boost::none;
+        }
+        
     }
 }

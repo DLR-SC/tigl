@@ -85,6 +85,9 @@ namespace tigl
             TIGL_EXPORT virtual void SetUltimateDamage_choice2(const double& value);
             TIGL_EXPORT virtual void SetUltimateDamage_choice2(const boost::optional<double>& value);
             
+            TIGL_EXPORT virtual CPACSPlasticityCurvePoint& AddPlasticityCurvePoint_choice1();
+            TIGL_EXPORT virtual void RemovePlasticityCurvePoint_choice1(CPACSPlasticityCurvePoint& ref);
+            
         protected:
             boost::optional<std::string>                        m_name;
             boost::optional<std::string>                        m_description;
