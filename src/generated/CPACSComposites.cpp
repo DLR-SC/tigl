@@ -44,8 +44,8 @@ namespace tigl
         void CPACSComposites::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element composite
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/composite")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/composite", m_composites, m_uidMgr);
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/composite")) {
+                tixi::TixiReadElements(tixiHandle, xpath + "/composite", m_composites, m_uidMgr);
             }
             
         }
@@ -53,7 +53,7 @@ namespace tigl
         void CPACSComposites::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element composite
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/composite", m_composites);
+            tixi::TixiSaveElements(tixiHandle, xpath + "/composite", m_composites);
             
         }
         

@@ -55,8 +55,8 @@ namespace tigl
         void CPACSWingRibsDefinitions::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element ribsDefinition
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/ribsDefinition")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/ribsDefinition", m_ribsDefinitions, reinterpret_cast<CCPACSWingRibsDefinitions*>(this), m_uidMgr);
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/ribsDefinition")) {
+                tixi::TixiReadElements(tixiHandle, xpath + "/ribsDefinition", m_ribsDefinitions, reinterpret_cast<CCPACSWingRibsDefinitions*>(this), m_uidMgr);
             }
             
         }
@@ -64,7 +64,7 @@ namespace tigl
         void CPACSWingRibsDefinitions::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element ribsDefinition
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/ribsDefinition", m_ribsDefinitions);
+            tixi::TixiSaveElements(tixiHandle, xpath + "/ribsDefinition", m_ribsDefinitions);
             
         }
         

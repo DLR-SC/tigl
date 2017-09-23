@@ -32,62 +32,62 @@ namespace tigl
         void CPACSPostFailure::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element name
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/name")) {
-                m_name = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
+                m_name = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
                 if (m_name->empty()) {
                     LOG(WARNING) << "Optional element name is present but empty at xpath " << xpath;
                 }
             }
             
             // read element description
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/description")) {
-                m_description = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
+                m_description = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
                 if (m_description->empty()) {
                     LOG(WARNING) << "Optional element description is present but empty at xpath " << xpath;
                 }
             }
             
             // read element materialLaw
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/materialLaw")) {
-                m_materialLaw = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/materialLaw");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/materialLaw")) {
+                m_materialLaw = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/materialLaw");
                 if (m_materialLaw->empty()) {
                     LOG(WARNING) << "Optional element materialLaw is present but empty at xpath " << xpath;
                 }
             }
             
             // read element plasticEliminationStrain
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/plasticEliminationStrain")) {
-                m_plasticEliminationStrain_choice1 = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/plasticEliminationStrain");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/plasticEliminationStrain")) {
+                m_plasticEliminationStrain_choice1 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/plasticEliminationStrain");
             }
             
             // read element plasticityCurvePoint
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/plasticityCurvePoint")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/plasticityCurvePoint", m_plasticityCurvePoints_choice1);
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/plasticityCurvePoint")) {
+                tixi::TixiReadElements(tixiHandle, xpath + "/plasticityCurvePoint", m_plasticityCurvePoints_choice1);
             }
             
             // read element initialEquivalentShearStrain
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/initialEquivalentShearStrain")) {
-                m_initialEquivalentShearStrain_choice2 = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/initialEquivalentShearStrain");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/initialEquivalentShearStrain")) {
+                m_initialEquivalentShearStrain_choice2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/initialEquivalentShearStrain");
             }
             
             // read element intermediateEquivalentShearStrain
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/intermediateEquivalentShearStrain")) {
-                m_intermediateEquivalentShearStrain_choice2 = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/intermediateEquivalentShearStrain");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/intermediateEquivalentShearStrain")) {
+                m_intermediateEquivalentShearStrain_choice2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/intermediateEquivalentShearStrain");
             }
             
             // read element ultimateEquivalentShearStrain
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/ultimateEquivalentShearStrain")) {
-                m_ultimateEquivalentShearStrain_choice2 = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/ultimateEquivalentShearStrain");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/ultimateEquivalentShearStrain")) {
+                m_ultimateEquivalentShearStrain_choice2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/ultimateEquivalentShearStrain");
             }
             
             // read element intermediateDamage
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/intermediateDamage")) {
-                m_intermediateDamage_choice2 = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/intermediateDamage");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/intermediateDamage")) {
+                m_intermediateDamage_choice2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/intermediateDamage");
             }
             
             // read element ultimateDamage
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/ultimateDamage")) {
-                m_ultimateDamage_choice2 = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/ultimateDamage");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/ultimateDamage")) {
+                m_ultimateDamage_choice2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/ultimateDamage");
             }
             
             if (!ValidateChoices()) {
@@ -99,94 +99,94 @@ namespace tigl
         {
             // write element name
             if (m_name) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
-                tixihelper::TixiSaveElement(tixiHandle, xpath + "/name", *m_name);
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
+                tixi::TixiSaveElement(tixiHandle, xpath + "/name", *m_name);
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/name")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/name");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/name");
                 }
             }
             
             // write element description
             if (m_description) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
-                tixihelper::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
+                tixi::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/description")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/description");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/description");
                 }
             }
             
             // write element materialLaw
             if (m_materialLaw) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/materialLaw");
-                tixihelper::TixiSaveElement(tixiHandle, xpath + "/materialLaw", *m_materialLaw);
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/materialLaw");
+                tixi::TixiSaveElement(tixiHandle, xpath + "/materialLaw", *m_materialLaw);
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/materialLaw")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/materialLaw");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/materialLaw")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/materialLaw");
                 }
             }
             
             // write element plasticEliminationStrain
             if (m_plasticEliminationStrain_choice1) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/plasticEliminationStrain");
-                tixihelper::TixiSaveElement(tixiHandle, xpath + "/plasticEliminationStrain", *m_plasticEliminationStrain_choice1);
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/plasticEliminationStrain");
+                tixi::TixiSaveElement(tixiHandle, xpath + "/plasticEliminationStrain", *m_plasticEliminationStrain_choice1);
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/plasticEliminationStrain")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/plasticEliminationStrain");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/plasticEliminationStrain")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/plasticEliminationStrain");
                 }
             }
             
             // write element plasticityCurvePoint
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/plasticityCurvePoint", m_plasticityCurvePoints_choice1);
+            tixi::TixiSaveElements(tixiHandle, xpath + "/plasticityCurvePoint", m_plasticityCurvePoints_choice1);
             
             // write element initialEquivalentShearStrain
             if (m_initialEquivalentShearStrain_choice2) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/initialEquivalentShearStrain");
-                tixihelper::TixiSaveElement(tixiHandle, xpath + "/initialEquivalentShearStrain", *m_initialEquivalentShearStrain_choice2);
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/initialEquivalentShearStrain");
+                tixi::TixiSaveElement(tixiHandle, xpath + "/initialEquivalentShearStrain", *m_initialEquivalentShearStrain_choice2);
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/initialEquivalentShearStrain")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/initialEquivalentShearStrain");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/initialEquivalentShearStrain")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/initialEquivalentShearStrain");
                 }
             }
             
             // write element intermediateEquivalentShearStrain
             if (m_intermediateEquivalentShearStrain_choice2) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/intermediateEquivalentShearStrain");
-                tixihelper::TixiSaveElement(tixiHandle, xpath + "/intermediateEquivalentShearStrain", *m_intermediateEquivalentShearStrain_choice2);
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/intermediateEquivalentShearStrain");
+                tixi::TixiSaveElement(tixiHandle, xpath + "/intermediateEquivalentShearStrain", *m_intermediateEquivalentShearStrain_choice2);
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/intermediateEquivalentShearStrain")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/intermediateEquivalentShearStrain");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/intermediateEquivalentShearStrain")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/intermediateEquivalentShearStrain");
                 }
             }
             
             // write element ultimateEquivalentShearStrain
             if (m_ultimateEquivalentShearStrain_choice2) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ultimateEquivalentShearStrain");
-                tixihelper::TixiSaveElement(tixiHandle, xpath + "/ultimateEquivalentShearStrain", *m_ultimateEquivalentShearStrain_choice2);
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ultimateEquivalentShearStrain");
+                tixi::TixiSaveElement(tixiHandle, xpath + "/ultimateEquivalentShearStrain", *m_ultimateEquivalentShearStrain_choice2);
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/ultimateEquivalentShearStrain")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/ultimateEquivalentShearStrain");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/ultimateEquivalentShearStrain")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/ultimateEquivalentShearStrain");
                 }
             }
             
             // write element intermediateDamage
             if (m_intermediateDamage_choice2) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/intermediateDamage");
-                tixihelper::TixiSaveElement(tixiHandle, xpath + "/intermediateDamage", *m_intermediateDamage_choice2);
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/intermediateDamage");
+                tixi::TixiSaveElement(tixiHandle, xpath + "/intermediateDamage", *m_intermediateDamage_choice2);
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/intermediateDamage")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/intermediateDamage");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/intermediateDamage")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/intermediateDamage");
                 }
             }
             
             // write element ultimateDamage
             if (m_ultimateDamage_choice2) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ultimateDamage");
-                tixihelper::TixiSaveElement(tixiHandle, xpath + "/ultimateDamage", *m_ultimateDamage_choice2);
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ultimateDamage");
+                tixi::TixiSaveElement(tixiHandle, xpath + "/ultimateDamage", *m_ultimateDamage_choice2);
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/ultimateDamage")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/ultimateDamage");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/ultimateDamage")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/ultimateDamage");
                 }
             }
             

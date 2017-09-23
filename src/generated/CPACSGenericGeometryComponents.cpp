@@ -55,8 +55,8 @@ namespace tigl
         void CPACSGenericGeometryComponents::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element genericGeometryComponent
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/genericGeometryComponent")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/genericGeometryComponent", m_genericGeometryComponents, reinterpret_cast<CCPACSExternalObjects*>(this), m_uidMgr);
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/genericGeometryComponent")) {
+                tixi::TixiReadElements(tixiHandle, xpath + "/genericGeometryComponent", m_genericGeometryComponents, reinterpret_cast<CCPACSExternalObjects*>(this), m_uidMgr);
             }
             
         }
@@ -64,7 +64,7 @@ namespace tigl
         void CPACSGenericGeometryComponents::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element genericGeometryComponent
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/genericGeometryComponent", m_genericGeometryComponents);
+            tixi::TixiSaveElements(tixiHandle, xpath + "/genericGeometryComponent", m_genericGeometryComponents);
             
         }
         

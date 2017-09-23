@@ -44,8 +44,8 @@ namespace tigl
         void CPACSWingAirfoils::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element wingAirfoil
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/wingAirfoil")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/wingAirfoil", m_wingAirfoils, m_uidMgr);
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/wingAirfoil")) {
+                tixi::TixiReadElements(tixiHandle, xpath + "/wingAirfoil", m_wingAirfoils, m_uidMgr);
             }
             
         }
@@ -53,7 +53,7 @@ namespace tigl
         void CPACSWingAirfoils::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element wingAirfoil
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/wingAirfoil", m_wingAirfoils);
+            tixi::TixiSaveElements(tixiHandle, xpath + "/wingAirfoil", m_wingAirfoils);
             
         }
         

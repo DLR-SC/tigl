@@ -44,8 +44,8 @@ namespace tigl
         void CPACSGuideCurveProfiles::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element guideCurveProfile
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/guideCurveProfile")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/guideCurveProfile", m_guideCurveProfiles, m_uidMgr);
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/guideCurveProfile")) {
+                tixi::TixiReadElements(tixiHandle, xpath + "/guideCurveProfile", m_guideCurveProfiles, m_uidMgr);
             }
             
         }
@@ -53,7 +53,7 @@ namespace tigl
         void CPACSGuideCurveProfiles::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element guideCurveProfile
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/guideCurveProfile", m_guideCurveProfiles);
+            tixi::TixiSaveElements(tixiHandle, xpath + "/guideCurveProfile", m_guideCurveProfiles);
             
         }
         

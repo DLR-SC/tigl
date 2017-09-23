@@ -58,36 +58,36 @@ namespace tigl
         void CPACSRotorHub::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read attribute uID
-            if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
-                m_uID = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
+            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+                m_uID = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
                 if (m_uID->empty()) {
                     LOG(WARNING) << "Optional attribute uID is present but empty at xpath " << xpath;
                 }
             }
             
             // read element name
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/name")) {
-                m_name = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
+                m_name = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
                 if (m_name->empty()) {
                     LOG(WARNING) << "Optional element name is present but empty at xpath " << xpath;
                 }
             }
             
             // read element description
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/description")) {
-                m_description = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
+                m_description = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
                 if (m_description->empty()) {
                     LOG(WARNING) << "Optional element description is present but empty at xpath " << xpath;
                 }
             }
             
             // read element type
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/type")) {
-                m_type = stringToTiglRotorHubType(tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/type"));
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/type")) {
+                m_type = stringToTiglRotorHubType(tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/type"));
             }
             
             // read element rotorBladeAttachments
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/rotorBladeAttachments")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/rotorBladeAttachments")) {
                 m_rotorBladeAttachments.ReadCPACS(tixiHandle, xpath + "/rotorBladeAttachments");
             }
             else {
@@ -101,45 +101,45 @@ namespace tigl
         {
             // write attribute uID
             if (m_uID) {
-                tixihelper::TixiSaveAttribute(tixiHandle, xpath, "uID", *m_uID);
+                tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", *m_uID);
             } else {
-                if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
-                    tixihelper::TixiRemoveAttribute(tixiHandle, xpath, "uID");
+                if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+                    tixi::TixiRemoveAttribute(tixiHandle, xpath, "uID");
                 }
             }
             
             // write element name
             if (m_name) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
-                tixihelper::TixiSaveElement(tixiHandle, xpath + "/name", *m_name);
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
+                tixi::TixiSaveElement(tixiHandle, xpath + "/name", *m_name);
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/name")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/name");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/name");
                 }
             }
             
             // write element description
             if (m_description) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
-                tixihelper::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
+                tixi::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/description")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/description");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/description");
                 }
             }
             
             // write element type
             if (m_type) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/type");
-                tixihelper::TixiSaveElement(tixiHandle, xpath + "/type", TiglRotorHubTypeToString(*m_type));
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/type");
+                tixi::TixiSaveElement(tixiHandle, xpath + "/type", TiglRotorHubTypeToString(*m_type));
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/type")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/type");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/type")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/type");
                 }
             }
             
             // write element rotorBladeAttachments
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/rotorBladeAttachments");
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/rotorBladeAttachments");
             m_rotorBladeAttachments.WriteCPACS(tixiHandle, xpath + "/rotorBladeAttachments");
             
         }

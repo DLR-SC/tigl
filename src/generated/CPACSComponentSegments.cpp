@@ -55,8 +55,8 @@ namespace tigl
         void CPACSComponentSegments::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element componentSegment
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/componentSegment")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/componentSegment", m_componentSegments, reinterpret_cast<CCPACSWingComponentSegments*>(this), m_uidMgr);
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/componentSegment")) {
+                tixi::TixiReadElements(tixiHandle, xpath + "/componentSegment", m_componentSegments, reinterpret_cast<CCPACSWingComponentSegments*>(this), m_uidMgr);
             }
             
         }
@@ -64,7 +64,7 @@ namespace tigl
         void CPACSComponentSegments::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element componentSegment
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/componentSegment", m_componentSegments);
+            tixi::TixiSaveElements(tixiHandle, xpath + "/componentSegment", m_componentSegments);
             
         }
         

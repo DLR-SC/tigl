@@ -55,8 +55,8 @@ namespace tigl
         void CPACSWingCells::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element cell
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/cell")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/cell", m_cells, reinterpret_cast<CCPACSWingCells*>(this), m_uidMgr);
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/cell")) {
+                tixi::TixiReadElements(tixiHandle, xpath + "/cell", m_cells, reinterpret_cast<CCPACSWingCells*>(this), m_uidMgr);
             }
             
         }
@@ -64,7 +64,7 @@ namespace tigl
         void CPACSWingCells::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element cell
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/cell", m_cells);
+            tixi::TixiSaveElements(tixiHandle, xpath + "/cell", m_cells);
             
         }
         

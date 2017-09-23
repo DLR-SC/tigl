@@ -55,8 +55,8 @@ namespace tigl
         void CPACSRotors::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element rotor
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/rotor")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/rotor", m_rotors, reinterpret_cast<CCPACSRotors*>(this), m_uidMgr);
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/rotor")) {
+                tixi::TixiReadElements(tixiHandle, xpath + "/rotor", m_rotors, reinterpret_cast<CCPACSRotors*>(this), m_uidMgr);
             }
             
         }
@@ -64,7 +64,7 @@ namespace tigl
         void CPACSRotors::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element rotor
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/rotor", m_rotors);
+            tixi::TixiSaveElements(tixiHandle, xpath + "/rotor", m_rotors);
             
         }
         

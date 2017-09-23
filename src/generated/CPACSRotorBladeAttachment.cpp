@@ -57,31 +57,31 @@ namespace tigl
         void CPACSRotorBladeAttachment::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read attribute uID
-            if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
-                m_uID = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
+            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+                m_uID = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
                 if (m_uID->empty()) {
                     LOG(WARNING) << "Optional attribute uID is present but empty at xpath " << xpath;
                 }
             }
             
             // read element name
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/name")) {
-                m_name = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
+                m_name = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
                 if (m_name->empty()) {
                     LOG(WARNING) << "Optional element name is present but empty at xpath " << xpath;
                 }
             }
             
             // read element description
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/description")) {
-                m_description = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
+                m_description = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
                 if (m_description->empty()) {
                     LOG(WARNING) << "Optional element description is present but empty at xpath " << xpath;
                 }
             }
             
             // read element hinges
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/hinges")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/hinges")) {
                 m_hinges = boost::in_place(reinterpret_cast<CCPACSRotorBladeAttachment*>(this), m_uidMgr);
                 try {
                     m_hinges->ReadCPACS(tixiHandle, xpath + "/hinges");
@@ -92,8 +92,8 @@ namespace tigl
             }
             
             // read element rotorBladeUID
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/rotorBladeUID")) {
-                m_rotorBladeUID = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/rotorBladeUID");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/rotorBladeUID")) {
+                m_rotorBladeUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/rotorBladeUID");
                 if (m_rotorBladeUID.empty()) {
                     LOG(WARNING) << "Required element rotorBladeUID is empty at xpath " << xpath;
                 }
@@ -103,7 +103,7 @@ namespace tigl
             }
             
             // read element azimuthAngles
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/azimuthAngles")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/azimuthAngles")) {
                 m_azimuthAngles_choice1 = boost::in_place();
                 try {
                     m_azimuthAngles_choice1->ReadCPACS(tixiHandle, xpath + "/azimuthAngles");
@@ -114,8 +114,8 @@ namespace tigl
             }
             
             // read element numberOfBlades
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/numberOfBlades")) {
-                m_numberOfBlades_choice2 = tixihelper::TixiGetElement<int>(tixiHandle, xpath + "/numberOfBlades");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/numberOfBlades")) {
+                m_numberOfBlades_choice2 = tixi::TixiGetElement<int>(tixiHandle, xpath + "/numberOfBlades");
             }
             
             if (m_uidMgr && m_uID) m_uidMgr->RegisterObject(*m_uID, *this);
@@ -128,64 +128,64 @@ namespace tigl
         {
             // write attribute uID
             if (m_uID) {
-                tixihelper::TixiSaveAttribute(tixiHandle, xpath, "uID", *m_uID);
+                tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", *m_uID);
             } else {
-                if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
-                    tixihelper::TixiRemoveAttribute(tixiHandle, xpath, "uID");
+                if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+                    tixi::TixiRemoveAttribute(tixiHandle, xpath, "uID");
                 }
             }
             
             // write element name
             if (m_name) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
-                tixihelper::TixiSaveElement(tixiHandle, xpath + "/name", *m_name);
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
+                tixi::TixiSaveElement(tixiHandle, xpath + "/name", *m_name);
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/name")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/name");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/name");
                 }
             }
             
             // write element description
             if (m_description) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
-                tixihelper::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
+                tixi::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/description")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/description");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/description");
                 }
             }
             
             // write element hinges
             if (m_hinges) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/hinges");
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/hinges");
                 m_hinges->WriteCPACS(tixiHandle, xpath + "/hinges");
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/hinges")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/hinges");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/hinges")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/hinges");
                 }
             }
             
             // write element rotorBladeUID
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/rotorBladeUID");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/rotorBladeUID", m_rotorBladeUID);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/rotorBladeUID");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/rotorBladeUID", m_rotorBladeUID);
             
             // write element azimuthAngles
             if (m_azimuthAngles_choice1) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/azimuthAngles");
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/azimuthAngles");
                 m_azimuthAngles_choice1->WriteCPACS(tixiHandle, xpath + "/azimuthAngles");
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/azimuthAngles")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/azimuthAngles");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/azimuthAngles")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/azimuthAngles");
                 }
             }
             
             // write element numberOfBlades
             if (m_numberOfBlades_choice2) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/numberOfBlades");
-                tixihelper::TixiSaveElement(tixiHandle, xpath + "/numberOfBlades", *m_numberOfBlades_choice2);
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/numberOfBlades");
+                tixi::TixiSaveElement(tixiHandle, xpath + "/numberOfBlades", *m_numberOfBlades_choice2);
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/numberOfBlades")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/numberOfBlades");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/numberOfBlades")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/numberOfBlades");
                 }
             }
             

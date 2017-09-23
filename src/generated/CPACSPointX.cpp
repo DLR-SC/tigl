@@ -47,16 +47,16 @@ namespace tigl
         void CPACSPointX::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read attribute uID
-            if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
-                m_uID = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
+            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+                m_uID = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
                 if (m_uID->empty()) {
                     LOG(WARNING) << "Optional attribute uID is present but empty at xpath " << xpath;
                 }
             }
             
             // read element x
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/x")) {
-                m_x = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/x");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/x")) {
+                m_x = tixi::TixiGetElement<double>(tixiHandle, xpath + "/x");
             }
             else {
                 LOG(ERROR) << "Required element x is missing at xpath " << xpath;
@@ -69,16 +69,16 @@ namespace tigl
         {
             // write attribute uID
             if (m_uID) {
-                tixihelper::TixiSaveAttribute(tixiHandle, xpath, "uID", *m_uID);
+                tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", *m_uID);
             } else {
-                if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
-                    tixihelper::TixiRemoveAttribute(tixiHandle, xpath, "uID");
+                if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+                    tixi::TixiRemoveAttribute(tixiHandle, xpath, "uID");
                 }
             }
             
             // write element x
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/x");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/x", m_x);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/x");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/x", m_x);
             
         }
         

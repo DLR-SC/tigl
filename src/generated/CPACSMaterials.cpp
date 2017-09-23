@@ -44,12 +44,12 @@ namespace tigl
         void CPACSMaterials::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element material
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/material")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/material", m_materials, m_uidMgr);
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/material")) {
+                tixi::TixiReadElements(tixiHandle, xpath + "/material", m_materials, m_uidMgr);
             }
             
             // read element composites
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/composites")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/composites")) {
                 m_composites = boost::in_place(m_uidMgr);
                 try {
                     m_composites->ReadCPACS(tixiHandle, xpath + "/composites");
@@ -64,15 +64,15 @@ namespace tigl
         void CPACSMaterials::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element material
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/material", m_materials);
+            tixi::TixiSaveElements(tixiHandle, xpath + "/material", m_materials);
             
             // write element composites
             if (m_composites) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/composites");
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/composites");
                 m_composites->WriteCPACS(tixiHandle, xpath + "/composites");
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/composites")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/composites");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/composites")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/composites");
                 }
             }
             

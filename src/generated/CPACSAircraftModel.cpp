@@ -46,8 +46,8 @@ namespace tigl
         void CPACSAircraftModel::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read attribute uID
-            if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
-                m_uID = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
+            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+                m_uID = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
                 if (m_uID.empty()) {
                     LOG(WARNING) << "Required attribute uID is empty at xpath " << xpath;
                 }
@@ -57,8 +57,8 @@ namespace tigl
             }
             
             // read element name
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/name")) {
-                m_name = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
+                m_name = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
                 if (m_name.empty()) {
                     LOG(WARNING) << "Required element name is empty at xpath " << xpath;
                 }
@@ -68,15 +68,15 @@ namespace tigl
             }
             
             // read element description
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/description")) {
-                m_description = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
+                m_description = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
                 if (m_description->empty()) {
                     LOG(WARNING) << "Optional element description is present but empty at xpath " << xpath;
                 }
             }
             
             // read element fuselages
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/fuselages")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/fuselages")) {
                 m_fuselages = boost::in_place(reinterpret_cast<CCPACSAircraftModel*>(this), m_uidMgr);
                 try {
                     m_fuselages->ReadCPACS(tixiHandle, xpath + "/fuselages");
@@ -87,7 +87,7 @@ namespace tigl
             }
             
             // read element wings
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/wings")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/wings")) {
                 m_wings = boost::in_place(reinterpret_cast<CCPACSAircraftModel*>(this), m_uidMgr);
                 try {
                     m_wings->ReadCPACS(tixiHandle, xpath + "/wings");
@@ -98,7 +98,7 @@ namespace tigl
             }
             
             // read element genericGeometryComponents
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/genericGeometryComponents")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/genericGeometryComponents")) {
                 m_genericGeometryComponents = boost::in_place(reinterpret_cast<CCPACSAircraftModel*>(this), m_uidMgr);
                 try {
                     m_genericGeometryComponents->ReadCPACS(tixiHandle, xpath + "/genericGeometryComponents");
@@ -114,49 +114,49 @@ namespace tigl
         void CPACSAircraftModel::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write attribute uID
-            tixihelper::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
+            tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
             
             // write element name
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/name", m_name);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/name", m_name);
             
             // write element description
             if (m_description) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
-                tixihelper::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
+                tixi::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/description")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/description");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/description");
                 }
             }
             
             // write element fuselages
             if (m_fuselages) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/fuselages");
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/fuselages");
                 m_fuselages->WriteCPACS(tixiHandle, xpath + "/fuselages");
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/fuselages")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/fuselages");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/fuselages")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/fuselages");
                 }
             }
             
             // write element wings
             if (m_wings) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/wings");
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/wings");
                 m_wings->WriteCPACS(tixiHandle, xpath + "/wings");
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/wings")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/wings");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/wings")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/wings");
                 }
             }
             
             // write element genericGeometryComponents
             if (m_genericGeometryComponents) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/genericGeometryComponents");
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/genericGeometryComponents");
                 m_genericGeometryComponents->WriteCPACS(tixiHandle, xpath + "/genericGeometryComponents");
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/genericGeometryComponents")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/genericGeometryComponents");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/genericGeometryComponents")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/genericGeometryComponents");
                 }
             }
             

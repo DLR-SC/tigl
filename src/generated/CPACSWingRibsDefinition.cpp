@@ -58,16 +58,16 @@ namespace tigl
         void CPACSWingRibsDefinition::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read attribute uID
-            if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
-                m_uID = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
+            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+                m_uID = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
                 if (m_uID->empty()) {
                     LOG(WARNING) << "Optional attribute uID is present but empty at xpath " << xpath;
                 }
             }
             
             // read element name
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/name")) {
-                m_name = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
+                m_name = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
                 if (m_name.empty()) {
                     LOG(WARNING) << "Required element name is empty at xpath " << xpath;
                 }
@@ -77,15 +77,15 @@ namespace tigl
             }
             
             // read element description
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/description")) {
-                m_description = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
+                m_description = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
                 if (m_description->empty()) {
                     LOG(WARNING) << "Optional element description is present but empty at xpath " << xpath;
                 }
             }
             
             // read element ribCrossSection
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/ribCrossSection")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/ribCrossSection")) {
                 m_ribCrossSection.ReadCPACS(tixiHandle, xpath + "/ribCrossSection");
             }
             else {
@@ -93,7 +93,7 @@ namespace tigl
             }
             
             // read element ribsPositioning
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/ribsPositioning")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/ribsPositioning")) {
                 m_ribsPositioning_choice1 = boost::in_place(reinterpret_cast<CCPACSWingRibsDefinition*>(this));
                 try {
                     m_ribsPositioning_choice1->ReadCPACS(tixiHandle, xpath + "/ribsPositioning");
@@ -104,7 +104,7 @@ namespace tigl
             }
             
             // read element ribExplicitPositioning
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/ribExplicitPositioning")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/ribExplicitPositioning")) {
                 m_ribExplicitPositioning_choice2 = boost::in_place(reinterpret_cast<CCPACSWingRibsDefinition*>(this));
                 try {
                     m_ribExplicitPositioning_choice2->ReadCPACS(tixiHandle, xpath + "/ribExplicitPositioning");
@@ -124,48 +124,48 @@ namespace tigl
         {
             // write attribute uID
             if (m_uID) {
-                tixihelper::TixiSaveAttribute(tixiHandle, xpath, "uID", *m_uID);
+                tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", *m_uID);
             } else {
-                if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
-                    tixihelper::TixiRemoveAttribute(tixiHandle, xpath, "uID");
+                if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+                    tixi::TixiRemoveAttribute(tixiHandle, xpath, "uID");
                 }
             }
             
             // write element name
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/name", m_name);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/name", m_name);
             
             // write element description
             if (m_description) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
-                tixihelper::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
+                tixi::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/description")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/description");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/description");
                 }
             }
             
             // write element ribCrossSection
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ribCrossSection");
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ribCrossSection");
             m_ribCrossSection.WriteCPACS(tixiHandle, xpath + "/ribCrossSection");
             
             // write element ribsPositioning
             if (m_ribsPositioning_choice1) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ribsPositioning");
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ribsPositioning");
                 m_ribsPositioning_choice1->WriteCPACS(tixiHandle, xpath + "/ribsPositioning");
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/ribsPositioning")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/ribsPositioning");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/ribsPositioning")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/ribsPositioning");
                 }
             }
             
             // write element ribExplicitPositioning
             if (m_ribExplicitPositioning_choice2) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ribExplicitPositioning");
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ribExplicitPositioning");
                 m_ribExplicitPositioning_choice2->WriteCPACS(tixiHandle, xpath + "/ribExplicitPositioning");
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/ribExplicitPositioning")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/ribExplicitPositioning");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/ribExplicitPositioning")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/ribExplicitPositioning");
                 }
             }
             

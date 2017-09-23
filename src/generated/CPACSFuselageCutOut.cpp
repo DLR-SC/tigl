@@ -54,8 +54,8 @@ namespace tigl
         void CPACSFuselageCutOut::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read attribute uID
-            if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
-                m_uID = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
+            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+                m_uID = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
                 if (m_uID.empty()) {
                     LOG(WARNING) << "Required attribute uID is empty at xpath " << xpath;
                 }
@@ -65,55 +65,55 @@ namespace tigl
             }
             
             // read element name
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/name")) {
-                m_name = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
+                m_name = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
                 if (m_name->empty()) {
                     LOG(WARNING) << "Optional element name is present but empty at xpath " << xpath;
                 }
             }
             
             // read element description
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/description")) {
-                m_description = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
+                m_description = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
                 if (m_description->empty()) {
                     LOG(WARNING) << "Optional element description is present but empty at xpath " << xpath;
                 }
             }
             
             // read element positionX
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/positionX")) {
-                m_positionX = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/positionX");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/positionX")) {
+                m_positionX = tixi::TixiGetElement<double>(tixiHandle, xpath + "/positionX");
             }
             else {
                 LOG(ERROR) << "Required element positionX is missing at xpath " << xpath;
             }
             
             // read element referenceY
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/referenceY")) {
-                m_referenceY = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/referenceY");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/referenceY")) {
+                m_referenceY = tixi::TixiGetElement<double>(tixiHandle, xpath + "/referenceY");
             }
             else {
                 LOG(ERROR) << "Required element referenceY is missing at xpath " << xpath;
             }
             
             // read element referenceZ
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/referenceZ")) {
-                m_referenceZ = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/referenceZ");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/referenceZ")) {
+                m_referenceZ = tixi::TixiGetElement<double>(tixiHandle, xpath + "/referenceZ");
             }
             else {
                 LOG(ERROR) << "Required element referenceZ is missing at xpath " << xpath;
             }
             
             // read element referenceAngle
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/referenceAngle")) {
-                m_referenceAngle = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/referenceAngle");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/referenceAngle")) {
+                m_referenceAngle = tixi::TixiGetElement<double>(tixiHandle, xpath + "/referenceAngle");
             }
             else {
                 LOG(ERROR) << "Required element referenceAngle is missing at xpath " << xpath;
             }
             
             // read element orientationVector
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/orientationVector")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/orientationVector")) {
                 m_orientationVector.ReadCPACS(tixiHandle, xpath + "/orientationVector");
             }
             else {
@@ -121,7 +121,7 @@ namespace tigl
             }
             
             // read element alignmentVector
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/alignmentVector")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/alignmentVector")) {
                 m_alignmentVector = boost::in_place(m_uidMgr);
                 try {
                     m_alignmentVector->ReadCPACS(tixiHandle, xpath + "/alignmentVector");
@@ -132,42 +132,42 @@ namespace tigl
             }
             
             // read element deltaY
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/deltaY")) {
-                m_deltaY = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/deltaY");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/deltaY")) {
+                m_deltaY = tixi::TixiGetElement<double>(tixiHandle, xpath + "/deltaY");
             }
             else {
                 LOG(ERROR) << "Required element deltaY is missing at xpath " << xpath;
             }
             
             // read element deltaZ
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/deltaZ")) {
-                m_deltaZ = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/deltaZ");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/deltaZ")) {
+                m_deltaZ = tixi::TixiGetElement<double>(tixiHandle, xpath + "/deltaZ");
             }
             else {
                 LOG(ERROR) << "Required element deltaZ is missing at xpath " << xpath;
             }
             
             // read element deltaY1
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/deltaY1")) {
-                m_deltaY1 = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/deltaY1");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/deltaY1")) {
+                m_deltaY1 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/deltaY1");
             }
             
             // read element deltaZ1
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/deltaZ1")) {
-                m_deltaZ1 = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/deltaZ1");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/deltaZ1")) {
+                m_deltaZ1 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/deltaZ1");
             }
             
             // read element filletRadius
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/filletRadius")) {
-                m_filletRadius = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/filletRadius");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/filletRadius")) {
+                m_filletRadius = tixi::TixiGetElement<double>(tixiHandle, xpath + "/filletRadius");
             }
             else {
                 LOG(ERROR) << "Required element filletRadius is missing at xpath " << xpath;
             }
             
             // read element cutoutType
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/cutoutType")) {
-                m_cutoutType = stringToCPACSFuselageCutOut_cutout(tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/cutoutType"));
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/cutoutType")) {
+                m_cutoutType = stringToCPACSFuselageCutOut_cutout(tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/cutoutType"));
             }
             else {
                 LOG(ERROR) << "Required element cutoutType is missing at xpath " << xpath;
@@ -179,93 +179,93 @@ namespace tigl
         void CPACSFuselageCutOut::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write attribute uID
-            tixihelper::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
+            tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
             
             // write element name
             if (m_name) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
-                tixihelper::TixiSaveElement(tixiHandle, xpath + "/name", *m_name);
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
+                tixi::TixiSaveElement(tixiHandle, xpath + "/name", *m_name);
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/name")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/name");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/name");
                 }
             }
             
             // write element description
             if (m_description) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
-                tixihelper::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
+                tixi::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/description")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/description");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/description");
                 }
             }
             
             // write element positionX
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/positionX");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/positionX", m_positionX);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/positionX");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/positionX", m_positionX);
             
             // write element referenceY
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/referenceY");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/referenceY", m_referenceY);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/referenceY");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/referenceY", m_referenceY);
             
             // write element referenceZ
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/referenceZ");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/referenceZ", m_referenceZ);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/referenceZ");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/referenceZ", m_referenceZ);
             
             // write element referenceAngle
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/referenceAngle");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/referenceAngle", m_referenceAngle);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/referenceAngle");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/referenceAngle", m_referenceAngle);
             
             // write element orientationVector
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/orientationVector");
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/orientationVector");
             m_orientationVector.WriteCPACS(tixiHandle, xpath + "/orientationVector");
             
             // write element alignmentVector
             if (m_alignmentVector) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/alignmentVector");
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/alignmentVector");
                 m_alignmentVector->WriteCPACS(tixiHandle, xpath + "/alignmentVector");
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/alignmentVector")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/alignmentVector");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/alignmentVector")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/alignmentVector");
                 }
             }
             
             // write element deltaY
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/deltaY");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/deltaY", m_deltaY);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/deltaY");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/deltaY", m_deltaY);
             
             // write element deltaZ
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/deltaZ");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/deltaZ", m_deltaZ);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/deltaZ");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/deltaZ", m_deltaZ);
             
             // write element deltaY1
             if (m_deltaY1) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/deltaY1");
-                tixihelper::TixiSaveElement(tixiHandle, xpath + "/deltaY1", *m_deltaY1);
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/deltaY1");
+                tixi::TixiSaveElement(tixiHandle, xpath + "/deltaY1", *m_deltaY1);
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/deltaY1")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/deltaY1");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/deltaY1")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/deltaY1");
                 }
             }
             
             // write element deltaZ1
             if (m_deltaZ1) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/deltaZ1");
-                tixihelper::TixiSaveElement(tixiHandle, xpath + "/deltaZ1", *m_deltaZ1);
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/deltaZ1");
+                tixi::TixiSaveElement(tixiHandle, xpath + "/deltaZ1", *m_deltaZ1);
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/deltaZ1")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/deltaZ1");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/deltaZ1")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/deltaZ1");
                 }
             }
             
             // write element filletRadius
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/filletRadius");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/filletRadius", m_filletRadius);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/filletRadius");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/filletRadius", m_filletRadius);
             
             // write element cutoutType
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/cutoutType");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/cutoutType", CPACSFuselageCutOut_cutoutToString(m_cutoutType));
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/cutoutType");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/cutoutType", CPACSFuselageCutOut_cutoutToString(m_cutoutType));
             
         }
         

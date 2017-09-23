@@ -55,8 +55,8 @@ namespace tigl
         void CPACSRotorBladeAttachments::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element rotorBladeAttachment
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/rotorBladeAttachment")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/rotorBladeAttachment", m_rotorBladeAttachments, reinterpret_cast<CCPACSRotorBladeAttachments*>(this), m_uidMgr);
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/rotorBladeAttachment")) {
+                tixi::TixiReadElements(tixiHandle, xpath + "/rotorBladeAttachment", m_rotorBladeAttachments, reinterpret_cast<CCPACSRotorBladeAttachments*>(this), m_uidMgr);
             }
             
         }
@@ -64,7 +64,7 @@ namespace tigl
         void CPACSRotorBladeAttachments::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element rotorBladeAttachment
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/rotorBladeAttachment", m_rotorBladeAttachments);
+            tixi::TixiSaveElements(tixiHandle, xpath + "/rotorBladeAttachment", m_rotorBladeAttachments);
             
         }
         

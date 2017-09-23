@@ -44,8 +44,8 @@ namespace tigl
         void CPACSRotorcraft::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element model
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/model")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/model", m_models, m_uidMgr);
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/model")) {
+                tixi::TixiReadElements(tixiHandle, xpath + "/model", m_models, m_uidMgr);
             }
             
         }
@@ -53,7 +53,7 @@ namespace tigl
         void CPACSRotorcraft::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element model
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/model", m_models);
+            tixi::TixiSaveElements(tixiHandle, xpath + "/model", m_models);
             
         }
         

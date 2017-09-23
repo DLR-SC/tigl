@@ -44,8 +44,8 @@ namespace tigl
         void CPACSPositionings::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element positioning
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/positioning")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/positioning", m_positionings, m_uidMgr);
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/positioning")) {
+                tixi::TixiReadElements(tixiHandle, xpath + "/positioning", m_positionings, m_uidMgr);
             }
             
         }
@@ -53,7 +53,7 @@ namespace tigl
         void CPACSPositionings::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element positioning
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/positioning", m_positionings);
+            tixi::TixiSaveElements(tixiHandle, xpath + "/positioning", m_positionings);
             
         }
         

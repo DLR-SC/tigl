@@ -55,8 +55,8 @@ namespace tigl
         void CPACSSparPositions::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element sparPosition
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/sparPosition")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/sparPosition", m_sparPositions, reinterpret_cast<CCPACSWingSparPositions*>(this), m_uidMgr);
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/sparPosition")) {
+                tixi::TixiReadElements(tixiHandle, xpath + "/sparPosition", m_sparPositions, reinterpret_cast<CCPACSWingSparPositions*>(this), m_uidMgr);
             }
             
         }
@@ -64,7 +64,7 @@ namespace tigl
         void CPACSSparPositions::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element sparPosition
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/sparPosition", m_sparPositions);
+            tixi::TixiSaveElements(tixiHandle, xpath + "/sparPosition", m_sparPositions);
             
         }
         

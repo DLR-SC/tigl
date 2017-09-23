@@ -31,7 +31,7 @@ namespace tigl
         void CPACSPointListXYZVector::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element x
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/x")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/x")) {
                 m_x.ReadCPACS(tixiHandle, xpath + "/x");
             }
             else {
@@ -39,7 +39,7 @@ namespace tigl
             }
             
             // read element y
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/y")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/y")) {
                 m_y.ReadCPACS(tixiHandle, xpath + "/y");
             }
             else {
@@ -47,7 +47,7 @@ namespace tigl
             }
             
             // read element z
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/z")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/z")) {
                 m_z.ReadCPACS(tixiHandle, xpath + "/z");
             }
             else {
@@ -59,15 +59,15 @@ namespace tigl
         void CPACSPointListXYZVector::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element x
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/x");
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/x");
             m_x.WriteCPACS(tixiHandle, xpath + "/x");
             
             // write element y
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/y");
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/y");
             m_y.WriteCPACS(tixiHandle, xpath + "/y");
             
             // write element z
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/z");
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/z");
             m_z.WriteCPACS(tixiHandle, xpath + "/z");
             
         }

@@ -43,7 +43,7 @@ namespace tigl
         void CPACSCpacs::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element header
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/header")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/header")) {
                 m_header.ReadCPACS(tixiHandle, xpath + "/header");
             }
             else {
@@ -51,7 +51,7 @@ namespace tigl
             }
             
             // read element vehicles
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/vehicles")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/vehicles")) {
                 m_vehicles = boost::in_place(m_uidMgr);
                 try {
                     m_vehicles->ReadCPACS(tixiHandle, xpath + "/vehicles");
@@ -62,7 +62,7 @@ namespace tigl
             }
             
             // read element toolspecific
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/toolspecific")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/toolspecific")) {
                 m_toolspecific = boost::in_place();
                 try {
                     m_toolspecific->ReadCPACS(tixiHandle, xpath + "/toolspecific");
@@ -77,26 +77,26 @@ namespace tigl
         void CPACSCpacs::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element header
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/header");
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/header");
             m_header.WriteCPACS(tixiHandle, xpath + "/header");
             
             // write element vehicles
             if (m_vehicles) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/vehicles");
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/vehicles");
                 m_vehicles->WriteCPACS(tixiHandle, xpath + "/vehicles");
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/vehicles")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/vehicles");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/vehicles")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/vehicles");
                 }
             }
             
             // write element toolspecific
             if (m_toolspecific) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/toolspecific");
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/toolspecific");
                 m_toolspecific->WriteCPACS(tixiHandle, xpath + "/toolspecific");
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/toolspecific")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/toolspecific");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/toolspecific")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/toolspecific");
                 }
             }
             

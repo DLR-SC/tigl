@@ -44,8 +44,8 @@ namespace tigl
         void CPACSFuselageSections::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element section
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/section")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/section", m_sections, m_uidMgr);
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/section")) {
+                tixi::TixiReadElements(tixiHandle, xpath + "/section", m_sections, m_uidMgr);
             }
             
         }
@@ -53,7 +53,7 @@ namespace tigl
         void CPACSFuselageSections::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element section
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/section", m_sections);
+            tixi::TixiSaveElements(tixiHandle, xpath + "/section", m_sections);
             
         }
         

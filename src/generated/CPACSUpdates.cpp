@@ -32,8 +32,8 @@ namespace tigl
         void CPACSUpdates::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element update
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/update")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/update", m_updates);
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/update")) {
+                tixi::TixiReadElements(tixiHandle, xpath + "/update", m_updates);
             }
             
         }
@@ -41,7 +41,7 @@ namespace tigl
         void CPACSUpdates::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element update
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/update", m_updates);
+            tixi::TixiSaveElements(tixiHandle, xpath + "/update", m_updates);
             
         }
         
