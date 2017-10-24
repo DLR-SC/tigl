@@ -69,6 +69,8 @@ if (TIGL_BINDINGS_PYTHON_INTERNAL)
         set(EXTENSION "so")
     endif(WIN32)
 
+    add_definitions(-DTIGL_INTERNAL_IMPORTS)
+
     foreach(MODULE ${MODULES})
         set_source_files_properties(${MODULE}.i PROPERTIES CPLUSPLUS ON)
         set(SWIG_MODULE_${MODULE}_EXTRA_DEPS common.i doc.i)
