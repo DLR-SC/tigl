@@ -387,5 +387,22 @@ namespace tigl
             m_ultimateDamage_choice2 = value;
         }
         
+        CPACSPlasticityCurvePoint& CPACSPostFailure::AddPlasticityCurvePoint_choice1()
+        {
+            m_plasticityCurvePoints_choice1.push_back(make_unique<CPACSPlasticityCurvePoint>());
+            return *m_plasticityCurvePoints_choice1.back();
+        }
+        
+        void CPACSPostFailure::RemovePlasticityCurvePoint_choice1(CPACSPlasticityCurvePoint& ref)
+        {
+            for (std::size_t i = 0; i < m_plasticityCurvePoints_choice1.size(); i++) {
+                if (m_plasticityCurvePoints_choice1[i].get() == &ref) {
+                    m_plasticityCurvePoints_choice1.erase(m_plasticityCurvePoints_choice1.begin() + i);
+                    return;
+                }
+            }
+            throw CTiglError("Element not found");
+        }
+        
     }
 }

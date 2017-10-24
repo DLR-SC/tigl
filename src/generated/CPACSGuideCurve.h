@@ -23,6 +23,7 @@
 #include <tixi.h>
 #include "CPACSGuideCurve_continuity.h"
 #include "CPACSPointXYZ.h"
+#include "CreateIfNotExists.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -82,6 +83,12 @@ namespace tigl
             
             TIGL_EXPORT virtual const boost::optional<CPACSPointXYZ>& GetTangent() const;
             TIGL_EXPORT virtual boost::optional<CPACSPointXYZ>& GetTangent();
+            
+            TIGL_EXPORT virtual CPACSPointXYZ& GetTangent_choice2(CreateIfNotExistsTag);
+            TIGL_EXPORT virtual void RemoveTangent_choice2();
+            
+            TIGL_EXPORT virtual CPACSPointXYZ& GetTangent(CreateIfNotExistsTag);
+            TIGL_EXPORT virtual void RemoveTangent();
             
         protected:
             CTiglUIDManager* m_uidMgr;

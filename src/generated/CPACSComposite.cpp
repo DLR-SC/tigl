@@ -199,5 +199,22 @@ namespace tigl
             return m_compositeLayers;
         }
         
+        CPACSCompositeLayer& CPACSComposite::AddCompositeLayer()
+        {
+            m_compositeLayers.push_back(make_unique<CPACSCompositeLayer>());
+            return *m_compositeLayers.back();
+        }
+        
+        void CPACSComposite::RemoveCompositeLayer(CPACSCompositeLayer& ref)
+        {
+            for (std::size_t i = 0; i < m_compositeLayers.size(); i++) {
+                if (m_compositeLayers[i].get() == &ref) {
+                    m_compositeLayers.erase(m_compositeLayers.begin() + i);
+                    return;
+                }
+            }
+            throw CTiglError("Element not found");
+        }
+        
     }
 }

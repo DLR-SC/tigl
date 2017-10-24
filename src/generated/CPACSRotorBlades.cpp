@@ -78,5 +78,22 @@ namespace tigl
             return m_rotorBlades;
         }
         
+        CCPACSWing& CPACSRotorBlades::AddRotorBlade()
+        {
+            m_rotorBlades.push_back(make_unique<CCPACSWing>(reinterpret_cast<CCPACSRotorBlades*>(this), m_uidMgr));
+            return *m_rotorBlades.back();
+        }
+        
+        void CPACSRotorBlades::RemoveRotorBlade(CCPACSWing& ref)
+        {
+            for (std::size_t i = 0; i < m_rotorBlades.size(); i++) {
+                if (m_rotorBlades[i].get() == &ref) {
+                    m_rotorBlades.erase(m_rotorBlades.begin() + i);
+                    return;
+                }
+            }
+            throw CTiglError("Element not found");
+        }
+        
     }
 }

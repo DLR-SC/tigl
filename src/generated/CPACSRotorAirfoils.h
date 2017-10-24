@@ -50,6 +50,9 @@ namespace tigl
             TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSProfileGeometry> >& GetRotorAirfoils() const;
             TIGL_EXPORT virtual std::vector<unique_ptr<CPACSProfileGeometry> >& GetRotorAirfoils();
             
+            TIGL_EXPORT virtual CPACSProfileGeometry& AddRotorAirfoil();
+            TIGL_EXPORT virtual void RemoveRotorAirfoil(CPACSProfileGeometry& ref);
+            
         protected:
             CTiglUIDManager* m_uidMgr;
             

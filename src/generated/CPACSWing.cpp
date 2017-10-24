@@ -350,5 +350,29 @@ namespace tigl
             return m_componentSegments;
         }
         
+        CCPACSPositionings& CPACSWing::GetPositionings(CreateIfNotExistsTag)
+        {
+            if (!m_positionings)
+                m_positionings = boost::in_place(m_uidMgr);
+            return *m_positionings;
+        }
+        
+        void CPACSWing::RemovePositionings()
+        {
+            m_positionings = boost::none;
+        }
+        
+        CCPACSWingComponentSegments& CPACSWing::GetComponentSegments(CreateIfNotExistsTag)
+        {
+            if (!m_componentSegments)
+                m_componentSegments = boost::in_place(reinterpret_cast<CCPACSWing*>(this), m_uidMgr);
+            return *m_componentSegments;
+        }
+        
+        void CPACSWing::RemoveComponentSegments()
+        {
+            m_componentSegments = boost::none;
+        }
+        
     }
 }

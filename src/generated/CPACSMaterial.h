@@ -198,6 +198,9 @@ namespace tigl
             TIGL_EXPORT virtual void SetTau23_choice3(const double& value);
             TIGL_EXPORT virtual void SetTau23_choice3(const boost::optional<double>& value);
             
+            TIGL_EXPORT virtual CPACSPostFailure& AddPostFailure();
+            TIGL_EXPORT virtual void RemovePostFailure(CPACSPostFailure& ref);
+            
         protected:
             CTiglUIDManager* m_uidMgr;
             

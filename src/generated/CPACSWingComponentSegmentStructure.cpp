@@ -167,5 +167,29 @@ namespace tigl
             return m_spars;
         }
         
+        CCPACSWingRibsDefinitions& CPACSWingComponentSegmentStructure::GetRibsDefinitions(CreateIfNotExistsTag)
+        {
+            if (!m_ribsDefinitions)
+                m_ribsDefinitions = boost::in_place(reinterpret_cast<CCPACSWingCSStructure*>(this), m_uidMgr);
+            return *m_ribsDefinitions;
+        }
+        
+        void CPACSWingComponentSegmentStructure::RemoveRibsDefinitions()
+        {
+            m_ribsDefinitions = boost::none;
+        }
+        
+        CCPACSWingSpars& CPACSWingComponentSegmentStructure::GetSpars(CreateIfNotExistsTag)
+        {
+            if (!m_spars)
+                m_spars = boost::in_place(reinterpret_cast<CCPACSWingCSStructure*>(this), m_uidMgr);
+            return *m_spars;
+        }
+        
+        void CPACSWingComponentSegmentStructure::RemoveSpars()
+        {
+            m_spars = boost::none;
+        }
+        
     }
 }

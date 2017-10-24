@@ -172,5 +172,53 @@ namespace tigl
             return m_rotorAirfoils;
         }
         
+        CCPACSFuselageProfiles& CPACSProfiles::GetFuselageProfiles(CreateIfNotExistsTag)
+        {
+            if (!m_fuselageProfiles)
+                m_fuselageProfiles = boost::in_place(m_uidMgr);
+            return *m_fuselageProfiles;
+        }
+        
+        void CPACSProfiles::RemoveFuselageProfiles()
+        {
+            m_fuselageProfiles = boost::none;
+        }
+        
+        CCPACSWingProfiles& CPACSProfiles::GetWingAirfoils(CreateIfNotExistsTag)
+        {
+            if (!m_wingAirfoils)
+                m_wingAirfoils = boost::in_place(m_uidMgr);
+            return *m_wingAirfoils;
+        }
+        
+        void CPACSProfiles::RemoveWingAirfoils()
+        {
+            m_wingAirfoils = boost::none;
+        }
+        
+        CCPACSGuideCurveProfiles& CPACSProfiles::GetGuideCurves(CreateIfNotExistsTag)
+        {
+            if (!m_guideCurves)
+                m_guideCurves = boost::in_place(m_uidMgr);
+            return *m_guideCurves;
+        }
+        
+        void CPACSProfiles::RemoveGuideCurves()
+        {
+            m_guideCurves = boost::none;
+        }
+        
+        CCPACSRotorProfiles& CPACSProfiles::GetRotorAirfoils(CreateIfNotExistsTag)
+        {
+            if (!m_rotorAirfoils)
+                m_rotorAirfoils = boost::in_place(m_uidMgr);
+            return *m_rotorAirfoils;
+        }
+        
+        void CPACSProfiles::RemoveRotorAirfoils()
+        {
+            m_rotorAirfoils = boost::none;
+        }
+        
     }
 }

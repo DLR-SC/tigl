@@ -262,5 +262,53 @@ namespace tigl
             return m_rotorBlades;
         }
         
+        CCPACSFuselages& CPACSRotorcraftModel::GetFuselages(CreateIfNotExistsTag)
+        {
+            if (!m_fuselages)
+                m_fuselages = boost::in_place(reinterpret_cast<CCPACSRotorcraftModel*>(this), m_uidMgr);
+            return *m_fuselages;
+        }
+        
+        void CPACSRotorcraftModel::RemoveFuselages()
+        {
+            m_fuselages = boost::none;
+        }
+        
+        CCPACSWings& CPACSRotorcraftModel::GetWings(CreateIfNotExistsTag)
+        {
+            if (!m_wings)
+                m_wings = boost::in_place(reinterpret_cast<CCPACSRotorcraftModel*>(this), m_uidMgr);
+            return *m_wings;
+        }
+        
+        void CPACSRotorcraftModel::RemoveWings()
+        {
+            m_wings = boost::none;
+        }
+        
+        CCPACSRotors& CPACSRotorcraftModel::GetRotors(CreateIfNotExistsTag)
+        {
+            if (!m_rotors)
+                m_rotors = boost::in_place(reinterpret_cast<CCPACSRotorcraftModel*>(this), m_uidMgr);
+            return *m_rotors;
+        }
+        
+        void CPACSRotorcraftModel::RemoveRotors()
+        {
+            m_rotors = boost::none;
+        }
+        
+        CCPACSRotorBlades& CPACSRotorcraftModel::GetRotorBlades(CreateIfNotExistsTag)
+        {
+            if (!m_rotorBlades)
+                m_rotorBlades = boost::in_place(reinterpret_cast<CCPACSRotorcraftModel*>(this), m_uidMgr);
+            return *m_rotorBlades;
+        }
+        
+        void CPACSRotorcraftModel::RemoveRotorBlades()
+        {
+            m_rotorBlades = boost::none;
+        }
+        
     }
 }

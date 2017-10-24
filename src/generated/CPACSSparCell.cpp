@@ -258,5 +258,17 @@ namespace tigl
             m_rotation = value;
         }
         
+        CPACSWeb& CPACSSparCell::GetWeb2(CreateIfNotExistsTag)
+        {
+            if (!m_web2)
+                m_web2 = boost::in_place();
+            return *m_web2;
+        }
+        
+        void CPACSSparCell::RemoveWeb2()
+        {
+            m_web2 = boost::none;
+        }
+        
     }
 }

@@ -53,6 +53,9 @@ namespace tigl
             TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSGuideCurve> >& GetGuideCurves() const;
             TIGL_EXPORT virtual std::vector<unique_ptr<CPACSGuideCurve> >& GetGuideCurves();
             
+            TIGL_EXPORT virtual CPACSGuideCurve& AddGuideCurve();
+            TIGL_EXPORT virtual void RemoveGuideCurve(CPACSGuideCurve& ref);
+            
         protected:
             CTiglUIDManager* m_uidMgr;
             

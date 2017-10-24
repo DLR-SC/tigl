@@ -172,5 +172,53 @@ namespace tigl
             return m_materials;
         }
         
+        CPACSAircraft& CPACSVehicles::GetAircraft(CreateIfNotExistsTag)
+        {
+            if (!m_aircraft)
+                m_aircraft = boost::in_place(m_uidMgr);
+            return *m_aircraft;
+        }
+        
+        void CPACSVehicles::RemoveAircraft()
+        {
+            m_aircraft = boost::none;
+        }
+        
+        CPACSRotorcraft& CPACSVehicles::GetRotorcraft(CreateIfNotExistsTag)
+        {
+            if (!m_rotorcraft)
+                m_rotorcraft = boost::in_place(m_uidMgr);
+            return *m_rotorcraft;
+        }
+        
+        void CPACSVehicles::RemoveRotorcraft()
+        {
+            m_rotorcraft = boost::none;
+        }
+        
+        CCPACSProfiles& CPACSVehicles::GetProfiles(CreateIfNotExistsTag)
+        {
+            if (!m_profiles)
+                m_profiles = boost::in_place(m_uidMgr);
+            return *m_profiles;
+        }
+        
+        void CPACSVehicles::RemoveProfiles()
+        {
+            m_profiles = boost::none;
+        }
+        
+        CPACSMaterials& CPACSVehicles::GetMaterials(CreateIfNotExistsTag)
+        {
+            if (!m_materials)
+                m_materials = boost::in_place(m_uidMgr);
+            return *m_materials;
+        }
+        
+        void CPACSVehicles::RemoveMaterials()
+        {
+            m_materials = boost::none;
+        }
+        
     }
 }

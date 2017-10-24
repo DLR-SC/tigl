@@ -83,5 +83,22 @@ namespace tigl
             return m_wings;
         }
         
+        CCPACSWing& CPACSWings::AddWing()
+        {
+            m_wings.push_back(make_unique<CCPACSWing>(reinterpret_cast<CCPACSWings*>(this), m_uidMgr));
+            return *m_wings.back();
+        }
+        
+        void CPACSWings::RemoveWing(CCPACSWing& ref)
+        {
+            for (std::size_t i = 0; i < m_wings.size(); i++) {
+                if (m_wings[i].get() == &ref) {
+                    m_wings.erase(m_wings.begin() + i);
+                    return;
+                }
+            }
+            throw CTiglError("Element not found");
+        }
+        
     }
 }

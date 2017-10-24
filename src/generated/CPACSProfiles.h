@@ -25,6 +25,7 @@
 #include <CCPACSWingProfiles.h>
 #include <string>
 #include <tixi.h>
+#include "CreateIfNotExists.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -60,6 +61,18 @@ namespace tigl
             
             TIGL_EXPORT virtual const boost::optional<CCPACSRotorProfiles>& GetRotorAirfoils() const;
             TIGL_EXPORT virtual boost::optional<CCPACSRotorProfiles>& GetRotorAirfoils();
+            
+            TIGL_EXPORT virtual CCPACSFuselageProfiles& GetFuselageProfiles(CreateIfNotExistsTag);
+            TIGL_EXPORT virtual void RemoveFuselageProfiles();
+            
+            TIGL_EXPORT virtual CCPACSWingProfiles& GetWingAirfoils(CreateIfNotExistsTag);
+            TIGL_EXPORT virtual void RemoveWingAirfoils();
+            
+            TIGL_EXPORT virtual CCPACSGuideCurveProfiles& GetGuideCurves(CreateIfNotExistsTag);
+            TIGL_EXPORT virtual void RemoveGuideCurves();
+            
+            TIGL_EXPORT virtual CCPACSRotorProfiles& GetRotorAirfoils(CreateIfNotExistsTag);
+            TIGL_EXPORT virtual void RemoveRotorAirfoils();
             
         protected:
             CTiglUIDManager* m_uidMgr;

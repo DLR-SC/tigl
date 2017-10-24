@@ -24,6 +24,7 @@
 #include <CCPACSWings.h>
 #include <string>
 #include <tixi.h>
+#include "CreateIfNotExists.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -66,6 +67,15 @@ namespace tigl
             
             TIGL_EXPORT virtual const boost::optional<CCPACSExternalObjects>& GetGenericGeometryComponents() const;
             TIGL_EXPORT virtual boost::optional<CCPACSExternalObjects>& GetGenericGeometryComponents();
+            
+            TIGL_EXPORT virtual CCPACSFuselages& GetFuselages(CreateIfNotExistsTag);
+            TIGL_EXPORT virtual void RemoveFuselages();
+            
+            TIGL_EXPORT virtual CCPACSWings& GetWings(CreateIfNotExistsTag);
+            TIGL_EXPORT virtual void RemoveWings();
+            
+            TIGL_EXPORT virtual CCPACSExternalObjects& GetGenericGeometryComponents(CreateIfNotExistsTag);
+            TIGL_EXPORT virtual void RemoveGenericGeometryComponents();
             
         protected:
             CTiglUIDManager* m_uidMgr;

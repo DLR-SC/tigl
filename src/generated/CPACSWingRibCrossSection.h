@@ -25,6 +25,7 @@
 #include "CPACSCap.h"
 #include "CPACSPointX.h"
 #include "CPACSWingRibCell.h"
+#include "CreateIfNotExists.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -67,6 +68,18 @@ namespace tigl
             
             TIGL_EXPORT virtual const boost::optional<CPACSCap>& GetLowerCap() const;
             TIGL_EXPORT virtual boost::optional<CPACSCap>& GetLowerCap();
+            
+            TIGL_EXPORT virtual CPACSPointX& GetRibRotation(CreateIfNotExistsTag);
+            TIGL_EXPORT virtual void RemoveRibRotation();
+            
+            TIGL_EXPORT virtual CPACSWingRibCell& GetRibCell(CreateIfNotExistsTag);
+            TIGL_EXPORT virtual void RemoveRibCell();
+            
+            TIGL_EXPORT virtual CPACSCap& GetUpperCap(CreateIfNotExistsTag);
+            TIGL_EXPORT virtual void RemoveUpperCap();
+            
+            TIGL_EXPORT virtual CPACSCap& GetLowerCap(CreateIfNotExistsTag);
+            TIGL_EXPORT virtual void RemoveLowerCap();
             
         protected:
             CCPACSWingRibsDefinition* m_parent;

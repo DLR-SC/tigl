@@ -24,6 +24,7 @@
 #include "CPACSCap.h"
 #include "CPACSSparCells.h"
 #include "CPACSWeb.h"
+#include "CreateIfNotExists.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -69,6 +70,18 @@ namespace tigl
             
             TIGL_EXPORT virtual const double& GetRotation() const;
             TIGL_EXPORT virtual void SetRotation(const double& value);
+            
+            TIGL_EXPORT virtual CPACSCap& GetUpperCap(CreateIfNotExistsTag);
+            TIGL_EXPORT virtual void RemoveUpperCap();
+            
+            TIGL_EXPORT virtual CPACSCap& GetLowerCap(CreateIfNotExistsTag);
+            TIGL_EXPORT virtual void RemoveLowerCap();
+            
+            TIGL_EXPORT virtual CPACSWeb& GetWeb2(CreateIfNotExistsTag);
+            TIGL_EXPORT virtual void RemoveWeb2();
+            
+            TIGL_EXPORT virtual CPACSSparCells& GetSparCells(CreateIfNotExistsTag);
+            TIGL_EXPORT virtual void RemoveSparCells();
             
         protected:
             CCPACSWingSparSegment* m_parent;

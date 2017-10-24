@@ -443,5 +443,17 @@ namespace tigl
             m_cutoutType = value;
         }
         
+        CPACSPointXYZ& CPACSFuselageCutOut::GetAlignmentVector(CreateIfNotExistsTag)
+        {
+            if (!m_alignmentVector)
+                m_alignmentVector = boost::in_place(m_uidMgr);
+            return *m_alignmentVector;
+        }
+        
+        void CPACSFuselageCutOut::RemoveAlignmentVector()
+        {
+            m_alignmentVector = boost::none;
+        }
+        
     }
 }

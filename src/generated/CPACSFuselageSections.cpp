@@ -67,5 +67,22 @@ namespace tigl
             return m_sections;
         }
         
+        CCPACSFuselageSection& CPACSFuselageSections::AddSection()
+        {
+            m_sections.push_back(make_unique<CCPACSFuselageSection>(m_uidMgr));
+            return *m_sections.back();
+        }
+        
+        void CPACSFuselageSections::RemoveSection(CCPACSFuselageSection& ref)
+        {
+            for (std::size_t i = 0; i < m_sections.size(); i++) {
+                if (m_sections[i].get() == &ref) {
+                    m_sections.erase(m_sections.begin() + i);
+                    return;
+                }
+            }
+            throw CTiglError("Element not found");
+        }
+        
     }
 }

@@ -53,6 +53,9 @@ namespace tigl
             TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSWingRibsDefinition> >& GetRibsDefinitions() const;
             TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSWingRibsDefinition> >& GetRibsDefinitions();
             
+            TIGL_EXPORT virtual CCPACSWingRibsDefinition& AddRibsDefinition();
+            TIGL_EXPORT virtual void RemoveRibsDefinition(CCPACSWingRibsDefinition& ref);
+            
         protected:
             CCPACSWingCSStructure* m_parent;
             

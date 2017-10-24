@@ -279,5 +279,29 @@ namespace tigl
             return m_ribExplicitPositioning_choice2;
         }
         
+        CCPACSWingRibsPositioning& CPACSWingRibsDefinition::GetRibsPositioning_choice1(CreateIfNotExistsTag)
+        {
+            if (!m_ribsPositioning_choice1)
+                m_ribsPositioning_choice1 = boost::in_place(reinterpret_cast<CCPACSWingRibsDefinition*>(this));
+            return *m_ribsPositioning_choice1;
+        }
+        
+        void CPACSWingRibsDefinition::RemoveRibsPositioning_choice1()
+        {
+            m_ribsPositioning_choice1 = boost::none;
+        }
+        
+        CPACSWingRibExplicitPositioning& CPACSWingRibsDefinition::GetRibExplicitPositioning_choice2(CreateIfNotExistsTag)
+        {
+            if (!m_ribExplicitPositioning_choice2)
+                m_ribExplicitPositioning_choice2 = boost::in_place(reinterpret_cast<CCPACSWingRibsDefinition*>(this));
+            return *m_ribExplicitPositioning_choice2;
+        }
+        
+        void CPACSWingRibsDefinition::RemoveRibExplicitPositioning_choice2()
+        {
+            m_ribExplicitPositioning_choice2 = boost::none;
+        }
+        
     }
 }

@@ -185,5 +185,41 @@ namespace tigl
             return m_translation;
         }
         
+        CCPACSPoint& CPACSTransformation::GetScaling(CreateIfNotExistsTag)
+        {
+            if (!m_scaling)
+                m_scaling = boost::in_place(m_uidMgr);
+            return *m_scaling;
+        }
+        
+        void CPACSTransformation::RemoveScaling()
+        {
+            m_scaling = boost::none;
+        }
+        
+        CCPACSPoint& CPACSTransformation::GetRotation(CreateIfNotExistsTag)
+        {
+            if (!m_rotation)
+                m_rotation = boost::in_place(m_uidMgr);
+            return *m_rotation;
+        }
+        
+        void CPACSTransformation::RemoveRotation()
+        {
+            m_rotation = boost::none;
+        }
+        
+        CCPACSPointAbsRel& CPACSTransformation::GetTranslation(CreateIfNotExistsTag)
+        {
+            if (!m_translation)
+                m_translation = boost::in_place(m_uidMgr);
+            return *m_translation;
+        }
+        
+        void CPACSTransformation::RemoveTranslation()
+        {
+            m_translation = boost::none;
+        }
+        
     }
 }

@@ -49,6 +49,9 @@ namespace tigl
             TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSWingSectionElement> >& GetElements() const;
             TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSWingSectionElement> >& GetElements();
             
+            TIGL_EXPORT virtual CCPACSWingSectionElement& AddElement();
+            TIGL_EXPORT virtual void RemoveElement(CCPACSWingSectionElement& ref);
+            
         protected:
             CTiglUIDManager* m_uidMgr;
             

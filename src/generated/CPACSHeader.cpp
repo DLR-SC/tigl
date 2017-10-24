@@ -223,5 +223,17 @@ namespace tigl
             return m_updates;
         }
         
+        CPACSUpdates& CPACSHeader::GetUpdates(CreateIfNotExistsTag)
+        {
+            if (!m_updates)
+                m_updates = boost::in_place();
+            return *m_updates;
+        }
+        
+        void CPACSHeader::RemoveUpdates()
+        {
+            m_updates = boost::none;
+        }
+        
     }
 }

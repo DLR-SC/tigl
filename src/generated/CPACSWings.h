@@ -74,6 +74,9 @@ namespace tigl
             TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSWing> >& GetWings() const;
             TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSWing> >& GetWings();
             
+            TIGL_EXPORT virtual CCPACSWing& AddWing();
+            TIGL_EXPORT virtual void RemoveWing(CCPACSWing& ref);
+            
         protected:
             void* m_parent;
             const std::type_info* m_parentType;
