@@ -28,7 +28,7 @@ std::string typeName(const std::type_info& ti);
 template <typename T>
 std::string typeName()
 {
-	return typeName(typeid(T));
+    return typeName(typeid(T));
 }
 
 }

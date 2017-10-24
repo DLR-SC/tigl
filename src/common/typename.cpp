@@ -25,16 +25,17 @@ namespace tigl
 
 std::string typeName(const std::type_info& ti)
 {
-	// name holds fully qualified class name
-	// boost::demangle is required for GCC, just passes through string on VC++
-	std::string name = boost::core::demangle(ti.name()); // e.g. "[class] tigl::CCPACSWing"
+    // name holds fully qualified class name
+    // boost::demangle is required for GCC, just passes through string on VC++
+    std::string name = boost::core::demangle(ti.name()); // e.g. "[class] tigl::CCPACSWing"
 
-	// strip leading "class" (VC++)
-	const size_t  pos = name.find_last_of(' ');
-	if (pos != std::string::npos)
-		name = name.substr(pos + 1); // e.g. "tigl::CCPACSWing"
+    // strip leading "class" (VC++)
+    const size_t  pos = name.find_last_of(' ');
+    if (pos != std::string::npos) {
+        name = name.substr(pos + 1); // e.g. "tigl::CCPACSWing"
+    }
 
-	return name;
+    return name;
 }
 
 } // namespace tigl
