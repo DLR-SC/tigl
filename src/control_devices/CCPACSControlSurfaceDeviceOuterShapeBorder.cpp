@@ -186,7 +186,7 @@ TopoDS_Wire CCPACSControlSurfaceDeviceOuterShapeBorder::getWire(PNamedShape wing
 CTiglControlSurfaceBorderCoordinateSystem CCPACSControlSurfaceDeviceOuterShapeBorder::getCoordinateSystem(gp_Vec upDir) const
 {
     gp_Pnt pLE = _segment->GetPoint(getEtaLE(), getXsiLE());
-    gp_Pnt pTE = _segment->GetPoint(getEtaLE(), getXsiTE());
+    gp_Pnt pTE = _segment->GetPoint(getEtaTE(), getXsiTE());
 
     CTiglControlSurfaceBorderCoordinateSystem coords(pLE, pTE, upDir);
     return coords;
