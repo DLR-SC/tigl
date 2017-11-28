@@ -39,11 +39,14 @@ class TIGLViewerSelectWingAndFlapStatusDialog : public QDialog
     Q_OBJECT
 public:
     explicit TIGLViewerSelectWingAndFlapStatusDialog(TIGLViewerDocument* document, QWidget* parent=0);
+    
+    void setWings(QStringList);
+    
     ~TIGLViewerSelectWingAndFlapStatusDialog();
     int exec(QStringList wings);
     std::string getSelectedWing();
     double getTrailingEdgeFlapValue( std::string uid );
-    std::map<std::string,double> getControlSurfaceStatus();
+    std::map<std::string,double> getDeflections();
 
 
 private slots:
@@ -54,7 +57,6 @@ private slots:
     void on_checkSpoiler_stateChanged(int arg1);
 
 private:
-    double linearInterpolation(std::vector<double> list1, std::vector<double> list2, double valueRelList1);
     Ui::TIGLViewerSelectWingAndFlapStatusDialog *ui;
 
     struct DeviceLabels {

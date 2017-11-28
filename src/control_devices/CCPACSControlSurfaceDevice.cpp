@@ -31,6 +31,8 @@
 #include "CCPACSControlSurfaceDeviceSteps.h"
 #include "tiglcommonfunctions.h"
 
+#include <BRepBuilderAPI_Transform.hxx>
+
 
 namespace tigl
 {
@@ -154,6 +156,26 @@ PNamedShape CCPACSControlSurfaceDevice::getFlapShape()
     return outerShape.GetLoft(
                 _segment->GetWing().GetWingCleanShape(),
                 getNormalOfControlSurfaceDevice());
+}
+
+PNamedShape CCPACSControlSurfaceDevice::getTransformedFlapShape(double deflection)
+{
+    PNamedShape deviceShape = getFlapShape()->DeepCopy();
+    gp_Trsf T = GetFlapTransform(deflection);
+    BRepBuilderAPI_Transform form(deviceShape->Shape(), T);
+    deviceShape->SetShape(form.Shape());
+    
+    // store the transformation property. Required e.g. for VTK metadata
+    gp_GTrsf gT(T);
+    CTiglTransformation tiglTrafo(gT);
+    unsigned int nFaces = deviceShape->GetFaceCount();
+    for (unsigned int iFace = 0; iFace < nFaces; ++iFace) {
+        CFaceTraits ft = deviceShape->GetFaceTraits(iFace);
+        ft.SetTransformation(tiglTrafo);
+        deviceShape->SetFaceTraits(iFace, ft);
+    }
+    
+    return deviceShape;
 }
 
 gp_Vec CCPACSControlSurfaceDevice::getNormalOfControlSurfaceDevice()

@@ -118,10 +118,11 @@ double getAbsDeflection (const TopoDS_Shape& theShape, double relDeflection)
 }
 
 TIGLViewerDocument::TIGLViewerDocument(TIGLViewerWindow *parentWidget)
-    : QObject(parentWidget)
+    : QObject(parentWidget), m_flapsDialog(new TIGLViewerSelectWingAndFlapStatusDialog(this))
 {
     app = parentWidget;
     m_cpacsHandle = -1;
+    connect(m_flapsDialog, SIGNAL(finished(int)), this, SLOT(onFlapsDialogClosed()));
 }
 
 TIGLViewerDocument::~TIGLViewerDocument( )
@@ -921,6 +922,22 @@ void TIGLViewerDocument::drawWing()
     }
 }
 
+void TIGLViewerDocument::onFlapsDialogClosed()
+{
+    if (!m_flapsDialog) {
+        return;
+    }
+    
+    try {
+        // apply transformation to the wing object
+        tigl::CCPACSWing& wing = GetConfiguration().GetWing( m_flapsDialog->getSelectedWing() );
+        //if (wing.)
+        wing.GroupedFlapsAndWingShapes(m_flapsDialog->getDeflections());
+    }
+    catch(tigl::CTiglError) {}
+
+}
+
 void TIGLViewerDocument::drawWingFlaps()
 {
     QStringList wings;
@@ -934,25 +951,10 @@ void TIGLViewerDocument::drawWingFlaps()
         wings << name.c_str();
     }
 
-    TIGLViewerSelectWingAndFlapStatusDialog dialog(this);
-    int dialogValue = dialog.exec(wings);
-    if ( dialogValue == 0 ) {
-        for ( int i = 1; i <= GetConfiguration().GetWingCount(); i++ ) {
-            GetConfiguration().GetWing(i).ResetWingShape();
-        }
-        app->getScene()->deleteAllObjects();
-        return;
-    }
-    else if ( dialog.getSelectedWing() == "" ) {
-        app->getScene()->deleteAllObjects();
-        return;
-    }
-    // Erase
-    app->getScene()->deleteAllObjects();
-
-    tigl::CCPACSWing& wing = GetConfiguration().GetWing( dialog.getSelectedWing() );
-    PNamedShape wingShape = wing.GroupedFlapsAndWingShapes(dialog.getControlSurfaceStatus());
-    app->getScene()->displayShape(wingShape->Shape());
+    m_flapsDialog->setWings(wings);
+    m_flapsDialog->show();
+    m_flapsDialog->raise();
+    m_flapsDialog->activateWindow();
 }
 
 

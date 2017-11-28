@@ -153,6 +153,8 @@ namespace
             loft->SetFaceTraits(i, traits);
         }
     }
+
+    size_t NumberOfControlSurfaces(CCPACSWing& wing);
 }
 
 
@@ -360,7 +362,6 @@ CTiglAbstractSegment & CCPACSWing::GetSegment(std::string uid)
 }
 
 // Get componentSegment count
-// Get componentSegment count
 int CCPACSWing::GetComponentSegmentCount(void)
 {
     return componentSegments.GetComponentSegmentCount();
@@ -391,6 +392,10 @@ void CCPACSWing::BuildWingWithCutouts()
 
     if (wingShapeWithCutouts) {
         // nothing to do, because everything is built already.
+        return;
+    }
+
+    if (NumberOfControlSurfaces(*this) == 0) {
         return;
     }
 
@@ -445,6 +450,11 @@ void CCPACSWing::BuildWingWithCutouts()
 // Builds a fuse shape of all wing segments with flaps
 PNamedShape CCPACSWing::GroupedFlapsAndWingShapes(std::map<std::string,double> flapStatus )
 {
+    // check whether there are control surfaces
+    if (NumberOfControlSurfaces(*this) == 0) {
+        return PNamedShape();
+    }
+    
     BuildWingWithCutouts();
 
     ListPNamedShape flapsAndWingShapes;
@@ -456,22 +466,8 @@ PNamedShape CCPACSWing::GroupedFlapsAndWingShapes(std::map<std::string,double> f
        for ( int j = controlSurfaceDevices->getControlSurfaceDeviceCount(); j > 0 ; j-- ) {
 
             CCPACSControlSurfaceDevice &controlSurfaceDevice = controlSurfaceDevices->getControlSurfaceDeviceByID(j);
-
-            PNamedShape deviceShape = controlSurfaceDevice.GetLoft()->DeepCopy();
-            gp_Trsf T = controlSurfaceDevice.GetFlapTransform(flapStatus[controlSurfaceDevice.GetUID()]);
-            BRepBuilderAPI_Transform form(deviceShape->Shape(), T);
-            deviceShape->SetShape(form.Shape());
-
-            // store the transformation property. Required e.g. for VTK metadata
-            gp_GTrsf gT(T);
-            CTiglTransformation tiglTrafo(gT);
-            unsigned int nFaces = deviceShape->GetFaceCount();
-            for (unsigned int iFace = 0; iFace < nFaces; ++iFace) {
-                CFaceTraits ft = deviceShape->GetFaceTraits(iFace);
-                ft.SetTransformation(tiglTrafo);
-                deviceShape->SetFaceTraits(iFace, ft);
-            }
-
+            double deflection = flapStatus[controlSurfaceDevice.GetUID()];
+            PNamedShape deviceShape = controlSurfaceDevice.getTransformedFlapShape(deflection);
             flapsAndWingShapes.push_back(deviceShape);
        }
     }
@@ -998,6 +994,24 @@ PNamedShape CCPACSWing::GetWingCleanShape()
     }
     
     return wingCleanShape;
+}
+
+namespace
+{
+
+    size_t NumberOfControlSurfaces(CCPACSWing& wing)
+    {
+        size_t nControlSurfaces = 0;
+        for ( int i = 1; i <= wing.GetComponentSegmentCount(); i++ ) {
+           CCPACSWingComponentSegment &componentSegment = static_cast<CCPACSWingComponentSegment&>(wing.GetComponentSegment(i));
+           CCPACSControlSurfaceDevices* controlSurfaceDevices = componentSegment.getControlSurfaces().getControlSurfaceDevices();
+           if (controlSurfaceDevices) {
+               nControlSurfaces += controlSurfaceDevices->getControlSurfaceDeviceCount();
+           }
+        }
+        return nControlSurfaces;
+    }
+
 }
 
 } // end namespace tigl

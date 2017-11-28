@@ -51,6 +51,7 @@ public:
     TIGL_EXPORT TiglGeometricComponentType GetComponentType(void) {return TIGL_COMPONENT_CONTROLSURF | TIGL_COMPONENT_PHYSICAL;}
     TIGL_EXPORT PNamedShape getCutOutShape(void);
     TIGL_EXPORT PNamedShape getFlapShape(void);
+    TIGL_EXPORT PNamedShape getTransformedFlapShape(double deflection);
 
     // Returns the flap transformation based on the deflection
     TIGL_EXPORT gp_Trsf GetFlapTransform(double deflection) const;

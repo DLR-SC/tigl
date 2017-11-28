@@ -23,6 +23,7 @@
 #include "CCPACSControlSurfaceDevice.h"
 #include "CCPACSWingComponentSegment.h"
 #include "CCPACSWing.h"
+#include "tiglcommonfunctions.h"
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -56,6 +57,15 @@ TIGLViewerSelectWingAndFlapStatusDialog::TIGLViewerSelectWingAndFlapStatusDialog
     _document = document;
     QPalette Pal(palette());
     ui->scrollArea->setPalette(Pal);
+
+}
+
+void TIGLViewerSelectWingAndFlapStatusDialog::setWings(QStringList list)
+{
+    bool wasBlocked = ui->comboBoxWings->blockSignals(true);
+    ui->comboBoxWings->clear();
+    ui->comboBoxWings->blockSignals(wasBlocked);
+    ui->comboBoxWings->addItems(list);
 }
 
 TIGLViewerSelectWingAndFlapStatusDialog::~TIGLViewerSelectWingAndFlapStatusDialog()
@@ -76,7 +86,7 @@ std::string TIGLViewerSelectWingAndFlapStatusDialog::getSelectedWing()
     return ui->comboBoxWings->currentText().toStdString();
 }
 
-std::map<std::string,double> TIGLViewerSelectWingAndFlapStatusDialog::getControlSurfaceStatus()
+std::map<std::string,double> TIGLViewerSelectWingAndFlapStatusDialog::getDeflections()
 {
     return _deflectionMap;
 }
@@ -106,34 +116,11 @@ double TIGLViewerSelectWingAndFlapStatusDialog::getTrailingEdgeFlapValue( std::s
     return _deflectionMap[uid];
 }
 
-double TIGLViewerSelectWingAndFlapStatusDialog::linearInterpolation(std::vector<double> list1, std::vector<double> list2, double valueRelList1)
-{
-    double min = 0;
-    double max = 0;
-    int idefRem = 1;
-    for ( std::vector<double>::size_type idef = 1; idef < list1.size(); idef++ ) {
-        if ( list1[idef-1] <= valueRelList1 && list1[idef] >= valueRelList1 ) {
-            min = list1[idef-1];
-            max = list1[idef];
-            idefRem = idef;
-            break;
-        }
-    }
-    double value = ( valueRelList1 - list1[idefRem-1] ) / ( list1[idefRem] - list1[idefRem-1] );
-    double min2 = list2[idefRem-1];
-    double max2 = list2[idefRem];
-    return value * ( max2 - min2 ) + min2;
-}
-
-
 // @TODO: rewrite using MVC and table layout
 void TIGLViewerSelectWingAndFlapStatusDialog::drawGUI(bool redrawModel)
 {
     cleanup();
-    std::string wingUID = ui->comboBoxWings->currentText().toStdString();
-    tigl::CCPACSConfiguration& config = _document->GetConfiguration();
-    tigl::CCPACSWing &wing = config.GetWing(wingUID);
-
+    
     QWidget* outerWidget = new QWidget;
     QVBoxLayout* vLayout = new QVBoxLayout;
     vLayout->setAlignment(Qt::AlignTop);
@@ -142,6 +129,10 @@ void TIGLViewerSelectWingAndFlapStatusDialog::drawGUI(bool redrawModel)
     QPalette Pal(palette());
     Pal.setColor(QPalette::Background, Qt::white);
     bool switcher = true;
+    
+    std::string wingUID = ui->comboBoxWings->currentText().toStdString();
+    tigl::CCPACSConfiguration& config = _document->GetConfiguration();
+    tigl::CCPACSWing &wing = config.GetWing(wingUID);
 
     int noDevices = wing.GetComponentSegmentCount();
     for ( int i = 1; i <= wing.GetComponentSegmentCount(); i++ ) {
@@ -149,8 +140,6 @@ void TIGLViewerSelectWingAndFlapStatusDialog::drawGUI(bool redrawModel)
         if ( componentSegment.getControlSurfaces().getControlSurfaceDevices()->getControlSurfaceDeviceCount() < 1) {
             noDevices--;
             if (noDevices < 1) {
-                QPushButton *okButton= ui->buttonBox->button(QDialogButtonBox::Ok);
-                okButton->setEnabled(false);
                 QLabel* error = new QLabel("This wing has no ControlSurfaces", this);
                 error->setMargin(50);
                 QWidget* innerWidgetE = new QWidget;
@@ -163,11 +152,7 @@ void TIGLViewerSelectWingAndFlapStatusDialog::drawGUI(bool redrawModel)
                 return;
             }
         }
-        else {
-            QPushButton *okButton= ui->buttonBox->button(QDialogButtonBox::Ok);
-            okButton->setEnabled(true);
-        }
-
+        
         for ( int j = 1; j <= componentSegment.getControlSurfaces().getControlSurfaceDevices()->getControlSurfaceDeviceCount(); j++ ) {
             tigl::CCPACSControlSurfaceDevice& controlSurfaceDevice = componentSegment.getControlSurfaces().getControlSurfaceDevices()->getControlSurfaceDeviceByID(j);
 
@@ -270,7 +255,7 @@ void TIGLViewerSelectWingAndFlapStatusDialog::drawGUI(bool redrawModel)
         ui->scrollArea->setWidget(outerWidget);
     }
     if (redrawModel) {
-        _document->drawWingFlapsForInteractiveUse(getSelectedWing(), getControlSurfaceStatus());
+        _document->drawWingFlapsForInteractiveUse(getSelectedWing(), getDeflections());
     }
 }
 
@@ -316,7 +301,7 @@ void TIGLViewerSelectWingAndFlapStatusDialog::updateLabels(std::string controlSu
 
     double inputDeflection = sliderToRelativeDeflect(slider, device->GetMinDeflection(), device->GetMaxDeflection());
     
-    double rotation = linearInterpolation( relDeflections, rotations, inputDeflection );
+    double rotation = Interpolate(relDeflections, rotations, inputDeflection);
 
     double percentage = 100. * (slider->value() - slider->minimum())/(double)(slider->maximum() - slider->minimum());
     textVal.append(QString::number(percentage));

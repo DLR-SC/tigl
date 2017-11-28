@@ -157,9 +157,12 @@ private slots:
     QString dlgGetFuselageSelection();
     QString dlgGetFuselageSegmentSelection();
     QString dlgGetFuselageProfileSelection();
+    
+    void onFlapsDialogClosed();
 
 
 private: 
+    class TIGLViewerSelectWingAndFlapStatusDialog* m_flapsDialog;
     TiglCPACSConfigurationHandle            m_cpacsHandle;
     TIGLViewerWindow*                       app;
     QString                                 loadedConfigurationFileName;
