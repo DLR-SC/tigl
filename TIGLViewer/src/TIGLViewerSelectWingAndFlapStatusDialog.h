@@ -28,6 +28,7 @@
 
 class QSlider;
 class QLabel;
+class QDoubleSpinBox;
 
 namespace Ui
 {
@@ -52,6 +53,7 @@ public:
 private slots:
     void on_comboBoxWings_currentIndexChanged(int index);
     void slider_value_changed(int k);
+    void spinBox_value_changed(double inputDeflection);
     void on_checkTED_stateChanged(int arg1);
     void on_checkLED_stateChanged(int arg1);
     void on_checkSpoiler_stateChanged(int arg1);
@@ -59,16 +61,35 @@ private slots:
 private:
     Ui::TIGLViewerSelectWingAndFlapStatusDialog *ui;
 
-    struct DeviceLabels {
+    struct DeviceWidgets {
+        QSlider* slider;
         QLabel* valueLabel;
-        QLabel* deflectionLabel;
+        QDoubleSpinBox* deflectionBox;
         QLabel* rotAngleLabel;
     };
-    std::map< std::string, DeviceLabels> _guiMap;
+    class SignalsBlocker
+    {
+    public:
+        SignalsBlocker(QObject* ptr):
+        _ptr(ptr)
+        {
+            _b = ptr->blockSignals(true);
+        }
+        ~SignalsBlocker()
+        {
+            _ptr->blockSignals(_b);
+        }
+
+    private:
+        QObject* _ptr;
+        bool _b;
+    };
+    std::map< std::string, DeviceWidgets> _guiMap;
     std::map< std::string, tigl::CCPACSControlSurfaceDevice*> _deviceMap;
 
     TIGLViewerDocument* _document;
-    void updateLabels(std::string controlSurfaceDeviceUID, const QSlider* slider);
+    void updateWidgets(std::string controlSurfaceDeviceUID,
+                       double inputDeflection);
     void drawGUI(bool redrawModel);
     void cleanup();
 
