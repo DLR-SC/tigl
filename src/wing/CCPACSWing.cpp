@@ -176,6 +176,9 @@ CCPACSWing::CCPACSWing(CCPACSRotorBlades* parent, CTiglUIDManager* uidMgr)
 // Destructor
 CCPACSWing::~CCPACSWing()
 {
+    // unregister
+    configuration->GetUIDManager().RemoveGeometricComponent(GetUID());
+
     Cleanup();
 }
 
@@ -194,7 +197,7 @@ void CCPACSWing::Invalidate()
 void CCPACSWing::Cleanup()
 {
     m_name = "";
-    m_description = "";
+    m_description = boost::none;
     isRotorBlade = false;
     m_transformation.reset();
 
@@ -230,6 +233,14 @@ void CCPACSWing::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& win
     configuration->GetUIDManager().AddGeometricComponent(m_uID, this);
 
     Update();
+}
+
+void CCPACSWing::SetUID(const std::string& uid) {
+    if (m_uidMgr) {
+        m_uidMgr->TryRemoveGeometricComponent(m_uID);
+        m_uidMgr->AddGeometricComponent(uid, this);
+    }
+    generated::CPACSWing::SetUID(uid);
 }
 
 std::string CCPACSWing::GetDefaultedUID() const {
@@ -312,7 +323,7 @@ const CCPACSWingComponentSegment& CCPACSWing::GetComponentSegment(const int inde
 }
 
 // Returns the segment for a given uid
-CCPACSWingComponentSegment& CCPACSWing::GetComponentSegment(std::string uid)
+CCPACSWingComponentSegment& CCPACSWing::GetComponentSegment(const std::string& uid)
 {
     return m_componentSegments->GetComponentSegment(uid);
 }

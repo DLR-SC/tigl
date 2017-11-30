@@ -31,14 +31,16 @@ class CCPACSExternalObject : public generated::CPACSGenericGeometricComponent, p
 {
 public:
     TIGL_EXPORT CCPACSExternalObject(CCPACSExternalObjects* parent, CTiglUIDManager* uidMgr);
-    
+
     TIGL_EXPORT virtual std::string GetDefaultedUID() const OVERRIDE;
 
     TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& objectXPath) OVERRIDE;
-    
+
+    TIGL_EXPORT virtual void SetUID(const std::string& uid) OVERRIDE;
+
     TIGL_EXPORT const std::string& GetFilePath() const;
     
-    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const;
+    TIGL_EXPORT virtual TiglGeometricComponentType GetComponentType() const OVERRIDE;
 
 private:
     /// reads in the CAD file

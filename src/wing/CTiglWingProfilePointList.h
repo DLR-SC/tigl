@@ -50,23 +50,18 @@ namespace tigl
 
 class CCPACSWingProfile;
 
-// TODO(bgruber): rename file
 class CTiglWingProfilePointList : public ITiglWingProfileAlgo
 {
 
 public:
     // Constructor
-    TIGL_EXPORT CTiglWingProfilePointList(const CCPACSWingProfile& profile, const CCPACSPointListXYZ& cpacsPointlist);
+    TIGL_EXPORT CTiglWingProfilePointList(const CCPACSWingProfile& profile, CCPACSPointListXYZ& cpacsPointlist);
 
-    DEPRECATED TIGL_EXPORT static std::string CPACSID();
-
-    // Cleanup routine
-    TIGL_EXPORT virtual void Cleanup() OVERRIDE;
-
-    // Update interna
     TIGL_EXPORT virtual void Update() OVERRIDE;
+    TIGL_EXPORT void OrderPoints();
 
     // Returns the profile points as read from TIXI.
+    TIGL_EXPORT virtual std::vector<CTiglPoint>& GetSamplePoints() OVERRIDE;
     TIGL_EXPORT virtual const std::vector<CTiglPoint>& GetSamplePoints() const OVERRIDE;
 
     // get upper wing profile wire
@@ -137,7 +132,7 @@ private:
     // stores whether the defined profile is closed or has a trailing edge
     bool                      profileIsClosed;
 
-    std::vector<CTiglPoint>             coordinates;    /**< Coordinates of a wing profile element */
+    std::vector<CTiglPoint>&            coordinates;    /**< Coordinates of a wing profile element */
     unique_ptr<ITiglWireAlgorithm> profileWireAlgo;/**< Pointer to wire algorithm (e.g. CTiglInterpolateBsplineWire) */
     const CCPACSWingProfile&            profileRef;     /**< Reference to the wing profile */
 

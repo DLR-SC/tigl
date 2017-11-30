@@ -118,7 +118,7 @@ namespace
     void SetFaceTraits (PNamedShape loft, unsigned int nSegments) 
     { 
         // designated names of the faces
-        std::vector<std::string> names(3);
+        std::vector<std::string> names(3); // TODO: use std::array
         names[0]="Bottom";
         names[1]="Top";
         names[2]="TrailingEdge";
@@ -158,7 +158,6 @@ namespace
 
 CCPACSWingComponentSegment::CCPACSWingComponentSegment(CCPACSWingComponentSegments* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSComponentSegment(parent, uidMgr)
-    , _uidMgr(uidMgr)
     , CTiglAbstractSegment(parent->GetComponentSegments(), parent->GetParent()->m_symmetry)
     , wing(parent->GetParent())
     , upperShape(make_unique<CTiglShapeGeomComponentAdaptor>(this, m_uidMgr))
@@ -1107,9 +1106,6 @@ MaterialList CCPACSWingComponentSegment::GetMaterials(double eta, double xsi, Ti
         int ncells = shell->GetCellCount();
         for (int i = 1; i <= ncells; ++i){
             CCPACSWingCell& cell = shell->GetCell(i);
-            if (!cell.GetMaterial().IsValid()) {
-                continue;
-            }
 
             if (cell.IsInside(eta,xsi)) {
                 list.push_back(&(cell.GetMaterial()));
@@ -1117,7 +1113,7 @@ MaterialList CCPACSWingComponentSegment::GetMaterials(double eta, double xsi, Ti
         }
 
         // add complete skin, only if no cells are defined
-        if (list.empty() && shell->GetMaterial().IsValid()){
+        if (list.empty()){
             list.push_back(&(shell->GetMaterial()));
         }
         

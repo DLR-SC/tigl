@@ -25,39 +25,19 @@
 #include "tigl_internal.h"
 #include "CTiglPoint.h"
 
-/**
- * The orthropy direction changed to the 2.3.0
- * release from a x,y,t vector to a double,
- * which contains now a rotation angle.
- */
-#define CPACS_VERSION VERSION_HEX_CODE(2,3,0)
-
 namespace tigl
 {
 
-class CCPACSMaterial : public generated::CPACSMaterialDefinition
+class CCPACSMaterialDefinition : public generated::CPACSMaterialDefinition
 {
 public:
-    TIGL_EXPORT CCPACSMaterial();
-    
-    TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& materialXPath) OVERRIDE;
+    TIGL_EXPORT CCPACSMaterialDefinition();
 
-    TIGL_EXPORT void Invalidate();
-    
-    // returns true, if the material could be read from CPACS file
-    TIGL_EXPORT bool IsValid() const;
-    
     TIGL_EXPORT bool isComposite() const;
     
-    TIGL_EXPORT void SetComposite(bool composite);
-
     TIGL_EXPORT const std::string& GetUID() const;
 
     TIGL_EXPORT void SetUID(const std::string& uid);
-
-private:
-    bool isvalid;
-    bool is_composite; // whether the material is a composite
 };
 
 } // namespace tigl

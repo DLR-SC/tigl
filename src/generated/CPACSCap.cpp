@@ -71,12 +71,12 @@ namespace tigl
             m_area = value;
         }
         
-        const CCPACSMaterial& CPACSCap::GetMaterial() const
+        const CCPACSMaterialDefinition& CPACSCap::GetMaterial() const
         {
             return m_material;
         }
         
-        CCPACSMaterial& CPACSCap::GetMaterial()
+        CCPACSMaterialDefinition& CPACSCap::GetMaterial()
         {
             return m_material;
         }

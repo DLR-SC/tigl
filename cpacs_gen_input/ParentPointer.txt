@@ -13,8 +13,12 @@ CPACSWingRibsDefinition
 CPACSWingRibsDefinitions
 CPACSWingRibsPositioning
 CPACSWingRibExplicitPositioning
+CPACSWingSection
+CPACSWingSections
 CPACSWingSegment
 CPACSWingSegments
+CPACSWingElement
+CPACSWingElements
 CPACSWingShell
 CPACSWingSpar
 CPACSSparCrossSection
@@ -27,8 +31,12 @@ CPACSComponentSegments
 
 CPACSFuselage
 CPACSFuselages
+CPACSFuselageSection
+CPACSFuselageSections
 CPACSFuselageSegment
 CPACSFuselageSegments
+CPACSFuselageElement
+CPACSFuselageElements
 
 CPACSRotorBlades
 CPACSRotor

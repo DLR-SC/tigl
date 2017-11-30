@@ -37,13 +37,12 @@ class CCPACSFuselageSectionElement : public generated::CPACSFuselageElement
 {
 public:
     // Constructor
-    TIGL_EXPORT CCPACSFuselageSectionElement(CTiglUIDManager* uidMgr);
-
-    // Read CPACS section element
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& elementXPath);
+    TIGL_EXPORT CCPACSFuselageSectionElement(CCPACSFuselageSectionElements* parent, CTiglUIDManager* uidMgr);
 
     // Returns the UID of the referenced wing profile
     TIGL_EXPORT std::string GetProfileIndex() const;
+
+    TIGL_EXPORT virtual void SetProfileUID(const std::string& value);
 
     // Gets the section element transformation
     TIGL_EXPORT CTiglTransformation GetSectionElementTransformation() const;

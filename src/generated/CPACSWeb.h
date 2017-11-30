@@ -17,7 +17,7 @@
 
 #pragma once
 
-#include <CCPACSMaterial.h>
+#include <CCPACSMaterialDefinition.h>
 #include <string>
 #include <tixi.h>
 #include <typeinfo>
@@ -42,15 +42,15 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT virtual const CCPACSMaterial& GetMaterial() const;
-            TIGL_EXPORT virtual CCPACSMaterial& GetMaterial();
+            TIGL_EXPORT virtual const CCPACSMaterialDefinition& GetMaterial() const;
+            TIGL_EXPORT virtual CCPACSMaterialDefinition& GetMaterial();
             
             TIGL_EXPORT virtual const double& GetRelPos() const;
             TIGL_EXPORT virtual void SetRelPos(const double& value);
             
         protected:
-            CCPACSMaterial m_material;
-            double         m_relPos;
+            CCPACSMaterialDefinition m_material;
+            double                   m_relPos;
             
         private:
             #ifdef HAVE_CPP11

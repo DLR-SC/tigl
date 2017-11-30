@@ -50,39 +50,29 @@ public:
 public:
     TIGL_EXPORT CCPACSWingRibsPositioning(CCPACSWingRibsDefinition* parent);
 
+    TIGL_EXPORT virtual void SetRibReference(const std::string& value) OVERRIDE;
+    TIGL_EXPORT virtual void SetRibStart(const std::string& value) OVERRIDE;
+    TIGL_EXPORT virtual void SetRibEnd(const std::string& value) OVERRIDE;
+
     TIGL_EXPORT StartDefinitionType GetStartDefinitionType() const;
-    
-    TIGL_EXPORT double GetEtaStart() const;
     TIGL_EXPORT void SetEtaStart(double);
-
-    TIGL_EXPORT const std::string& GetElementStartUID() const;
     TIGL_EXPORT void SetElementStartUID(const std::string&);
-
-    // NOTE: definition via spar position not conform with CPACS format (v2.3)
-    TIGL_EXPORT const std::string& GetSparPositionStartUID() const;
-    TIGL_EXPORT void SetSparPositionStartUID(const std::string&);
+    TIGL_EXPORT void SetSparPositionStartUID(const std::string&); // NOTE: definition via spar position not conform with CPACS format (v2.3)
 
     TIGL_EXPORT EndDefinitionType GetEndDefinitionType() const;
-
-    TIGL_EXPORT double GetEtaEnd() const;
     TIGL_EXPORT void SetEtaEnd(double);
-
-    TIGL_EXPORT const std::string& GetElementEndUID() const;
     TIGL_EXPORT void SetElementEndUID(const std::string&);
-
-    // NOTE: definition via spar position not conform with CPACS format (v2.3)
-    TIGL_EXPORT const std::string& GetSparPositionEndUID() const;
-    TIGL_EXPORT void SetSparPositionEndUID(const std::string&);
+    TIGL_EXPORT void SetSparPositionEndUID(const std::string&); // NOTE: definition via spar position not conform with CPACS format (v2.3)
 
     TIGL_EXPORT RibCountDefinitionType GetRibCountDefinitionType() const;
-
-    TIGL_EXPORT int GetNumberOfRibs() const;
     TIGL_EXPORT void SetNumberOfRibs(int);
-
-    TIGL_EXPORT double GetSpacing() const;
     TIGL_EXPORT void SetSpacing(double);
 
+    TIGL_EXPORT virtual void SetRibCrossingBehaviour(const generated::CPACSRibCrossingBehaviour& value) OVERRIDE;
+
 private:
+    friend class CCPACSWingRibRotation;
+
     void invalidateStructure();
 };
 

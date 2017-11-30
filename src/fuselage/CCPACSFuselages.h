@@ -63,9 +63,6 @@ public:
 
     // Returns the fuselage index for a given UID.
     TIGL_EXPORT int GetFuselageIndex(const std::string& UID) const;
-
-    TIGL_EXPORT void Add(CCPACSFuselage* fuselage);
-    TIGL_EXPORT void Remove(CCPACSFuselage* fuselage);
 };
 
 } // end namespace tigl

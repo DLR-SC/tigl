@@ -165,10 +165,10 @@ protected: // methods
     virtual void contextMenuEvent  (QContextMenuEvent *event);
 
 private: // members
-    void initializeOCC(const Handle_AIS_InteractiveContext& aContext = NULL);
+    void initializeOCC(const Handle(AIS_InteractiveContext)& aContext);
 
-    Handle_V3d_View                 myView;
-    Handle_V3d_Viewer               myViewer;
+    Handle(V3d_View)                myView;
+    Handle(V3d_Viewer)              myViewer;
 
 #if OCC_VERSION_HEX < 0x070000
     Handle_Visual3d_Layer           myLayer;

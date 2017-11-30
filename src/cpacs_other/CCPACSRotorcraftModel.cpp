@@ -35,6 +35,14 @@ void CCPACSRotorcraftModel::ReadCPACS(const TixiDocumentHandle& tixiHandle, cons
     }
 }
 
+void CCPACSRotorcraftModel::SetUID(const std::string& uid) {
+    if (m_uidMgr) {
+        m_uidMgr->TryRemoveGeometricComponent(m_uID);
+        m_uidMgr->AddGeometricComponent(uid, this);
+    }
+    generated::CPACSRotorcraftModel::SetUID(uid);
+}
+
 std::string CCPACSRotorcraftModel::GetDefaultedUID() const {
     return generated::CPACSRotorcraftModel::GetUID();
 }

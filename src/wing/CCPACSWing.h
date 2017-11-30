@@ -61,6 +61,8 @@ public:
     // Read CPACS wing elements
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & wingXPath);
 
+    TIGL_EXPORT virtual void SetUID(const std::string& uid) OVERRIDE;
+
     TIGL_EXPORT virtual std::string GetDefaultedUID() const OVERRIDE;
 
     // Returns whether this wing is a rotor blade
@@ -90,8 +92,8 @@ public:
 
     // Returns the segment for a given index or uid
     TIGL_EXPORT CCPACSWingComponentSegment& GetComponentSegment(const int index);
-	TIGL_EXPORT const CCPACSWingComponentSegment& GetComponentSegment(const int index) const;
-    TIGL_EXPORT CCPACSWingComponentSegment& GetComponentSegment(std::string uid);
+    TIGL_EXPORT const CCPACSWingComponentSegment& GetComponentSegment(const int index) const;
+    TIGL_EXPORT CCPACSWingComponentSegment& GetComponentSegment(const std::string& uid);
 
     // Gets the wing transformation
     TIGL_EXPORT CTiglTransformation GetWingTransformation();

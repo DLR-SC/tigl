@@ -38,7 +38,7 @@ public:
     TIGL_EXPORT CCPACSFuselageProfiles(CTiglUIDManager* uidMgr);
 
     // Read CPACS fuselage profiles
-    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+    TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) OVERRIDE;
 
     TIGL_EXPORT bool HasProfile(std::string uid) const;
 

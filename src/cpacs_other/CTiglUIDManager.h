@@ -53,10 +53,12 @@ public:
     // Constructor
     TIGL_EXPORT CTiglUIDManager();
 
+    TIGL_EXPORT bool IsUIDRegistered(const std::string& uid) const;
+
     TIGL_EXPORT void RegisterObject(const std::string& uid, void* object, const std::type_info& typeInfo);
 
     template<typename T>
-    void RegisterObject(const std::string& uid, T& object)
+    TIGL_EXPORT void RegisterObject(const std::string& uid, T& object)
     {
         RegisterObject(uid, &object, typeid(object));
     }
@@ -65,13 +67,13 @@ public:
     TIGL_EXPORT TypedPtr ResolveObject(const std::string& uid, const std::type_info& typeInfo) const;
 
     template<typename T>
-    T& ResolveObject(const std::string& uid) const
+    TIGL_EXPORT T& ResolveObject(const std::string& uid) const
     {
         return *static_cast<T* const>(ResolveObject(uid, typeid(T)).ptr);
     }
 
     template<typename T>
-    std::vector<T*> ResolveObjects() const
+    TIGL_EXPORT std::vector<T*> ResolveObjects() const
     {
         const std::type_info* ti = &typeid(T);
         std::vector<T*> objects;
@@ -89,6 +91,7 @@ public:
     TIGL_EXPORT void AddGeometricComponent(const std::string& uid, ITiglGeometricComponent* componentPtr);
 
     // Removes a component from the UID Manager
+    TIGL_EXPORT bool TryRemoveGeometricComponent(const std::string& uid); // returns false on failure
     TIGL_EXPORT void RemoveGeometricComponent(const std::string& uid);
 
     // Checks if a UID already exists.

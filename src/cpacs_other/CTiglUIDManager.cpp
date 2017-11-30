@@ -36,6 +36,10 @@ namespace tigl
 CTiglUIDManager::CTiglUIDManager()
     : invalidated(true), rootComponent(NULL) {}
 
+bool CTiglUIDManager::IsUIDRegistered(const std::string & uid) const {
+    return cpacsObjects.find(uid) != cpacsObjects.end();
+}
+
 void CTiglUIDManager::RegisterObject(const std::string& uid, void* object, const std::type_info& typeInfo)
 {
     if (uid.empty()) {
@@ -150,13 +154,21 @@ void CTiglUIDManager::AddGeometricComponent(const std::string& uid, ITiglGeometr
     invalidated = true;
 }
 
-void CTiglUIDManager::RemoveGeometricComponent(const std::string &uid)
+bool CTiglUIDManager::TryRemoveGeometricComponent(const std::string & uid)
 {
     const ShapeContainerType::iterator it = allShapes.find(uid);
     if (it == allShapes.end()) {
-        throw CTiglError("No shape is registered for uid \"" + uid + "\"");
+        return false;
     }
     allShapes.erase(it);
+    return true;
+}
+
+void CTiglUIDManager::RemoveGeometricComponent(const std::string &uid)
+{
+    if (!TryRemoveGeometricComponent(uid)) {
+        throw CTiglError("No shape is registered for uid \"" + uid + "\"");
+    }
 }
 
 // Checks if a UID already exists.

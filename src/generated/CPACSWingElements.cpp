@@ -15,7 +15,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <cassert>
 #include <CCPACSWingSectionElement.h>
+#include "CCPACSWingSection.h"
 #include "CPACSWingElements.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -26,10 +28,19 @@ namespace tigl
 {
     namespace generated
     {
-        CPACSWingElements::CPACSWingElements(CTiglUIDManager* uidMgr) :
-            m_uidMgr(uidMgr) {}
+        CPACSWingElements::CPACSWingElements(CCPACSWingSection* parent, CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr)
+        {
+            //assert(parent != NULL);
+            m_parent = parent;
+        }
         
         CPACSWingElements::~CPACSWingElements() {}
+        
+        CCPACSWingSection* CPACSWingElements::GetParent() const
+        {
+            return m_parent;
+        }
         
         CTiglUIDManager& CPACSWingElements::GetUIDManager()
         {
@@ -45,7 +56,7 @@ namespace tigl
         {
             // read element element
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/element")) {
-                tixi::TixiReadElements(tixiHandle, xpath + "/element", m_elements, m_uidMgr);
+                tixi::TixiReadElements(tixiHandle, xpath + "/element", m_elements, reinterpret_cast<CCPACSWingSectionElements*>(this), m_uidMgr);
             }
             
         }
@@ -69,7 +80,7 @@ namespace tigl
         
         CCPACSWingSectionElement& CPACSWingElements::AddElement()
         {
-            m_elements.push_back(make_unique<CCPACSWingSectionElement>(m_uidMgr));
+            m_elements.push_back(make_unique<CCPACSWingSectionElement>(reinterpret_cast<CCPACSWingSectionElements*>(this), m_uidMgr));
             return *m_elements.back();
         }
         

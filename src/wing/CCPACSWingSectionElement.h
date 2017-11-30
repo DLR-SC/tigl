@@ -36,10 +36,9 @@ namespace tigl
 class CCPACSWingSectionElement : public generated::CPACSWingElement
 {
 public:
-    TIGL_EXPORT CCPACSWingSectionElement(CTiglUIDManager* uidMgr);
-	
-    // Returns the UID of the profile of this element
-    TIGL_EXPORT const std::string& GetProfileUID() const;
+    TIGL_EXPORT CCPACSWingSectionElement(CCPACSWingSectionElements* parent, CTiglUIDManager* uidMgr);
+
+    TIGL_EXPORT virtual void SetAirfoilUID(const std::string& value) OVERRIDE;
 
     // Gets the section element transformation
     TIGL_EXPORT CTiglTransformation GetSectionElementTransformation() const;

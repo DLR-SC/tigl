@@ -54,7 +54,7 @@ public:
     TIGL_EXPORT void Invalidate();
 
     // Returns the positioning matrix for a given section-uid
-    TIGL_EXPORT CTiglTransformation GetPositioningTransformation(std::string sectionIndex);
+    TIGL_EXPORT CTiglTransformation GetPositioningTransformation(const std::string& sectionIndex);
 
     // Cleanup routine
     TIGL_EXPORT void Cleanup();

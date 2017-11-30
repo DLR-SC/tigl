@@ -16,53 +16,27 @@
 * limitations under the License.
 */
 
-#include "CCPACSMaterial.h"
+#include "CCPACSMaterialDefinition.h"
 
 #include "CTiglError.h"
-#include "CTiglLogging.h"
 
 namespace tigl
 {
+CCPACSMaterialDefinition::CCPACSMaterialDefinition()
+    : generated::CPACSMaterialDefinition() {}
 
-CCPACSMaterial::CCPACSMaterial()
-    : isvalid(false) { }
-
-void CCPACSMaterial::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
+bool CCPACSMaterialDefinition::isComposite() const
 {
-    generated::CPACSMaterialDefinition::ReadCPACS(tixiHandle, xpath);
-
     if (m_compositeUID_choice1) {
-        is_composite = true;
+        return true;
     } else if (m_materialUID_choice2) {
-        is_composite = false;
+        return false;
     } else {
-        throw CTiglError("Neither materialUID nor compositeUID specified in " + xpath, TIGL_ERROR);
+        throw CTiglError("Neither materialUID nor compositeUID specified", TIGL_ERROR);
     }
-
-    isvalid = true;
 }
 
-void CCPACSMaterial::Invalidate()
-{
-    isvalid = false;
-}
-
-bool CCPACSMaterial::isComposite() const
-{
-    return is_composite;
-}
-
-void CCPACSMaterial::SetComposite(bool composite)
-{
-    is_composite = composite;
-}
-
-bool CCPACSMaterial::IsValid() const
-{
-    return isvalid;
-}
-
-const std::string& CCPACSMaterial::GetUID() const
+const std::string& CCPACSMaterialDefinition::GetUID() const
 {
     if (isComposite())
         return *GetCompositeUID_choice1();
@@ -70,7 +44,7 @@ const std::string& CCPACSMaterial::GetUID() const
         return *GetMaterialUID_choice2();
 }
 
-void CCPACSMaterial::SetUID(const std::string& uid)
+void CCPACSMaterialDefinition::SetUID(const std::string& uid)
 {
     if (isComposite())
         return SetCompositeUID_choice1(uid);

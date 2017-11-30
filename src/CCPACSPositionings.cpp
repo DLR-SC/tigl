@@ -56,7 +56,7 @@ void CCPACSPositionings::Cleanup()
 }
 
 // Returns the positioning matrix for a given section index
-CTiglTransformation CCPACSPositionings::GetPositioningTransformation(std::string sectionIndex)
+CTiglTransformation CCPACSPositionings::GetPositioningTransformation(const std::string& sectionIndex)
 {
     Update();
     for (std::vector<unique_ptr<CCPACSPositioning> >::const_iterator it = m_positionings.begin(); it != m_positionings.end(); ++it) {
@@ -77,7 +77,7 @@ void UpdateNextPositioning(CCPACSPositioning* currPos, int depth)
         throw CTiglError("Recursive definition of positioning is not allowed");
     }
 
-    if (currPos->GetToSectionUID() == "") {
+        if (currPos->GetToSectionUID().empty()){
         throw CTiglError("illegal definition of positionings");
     }
 
@@ -105,22 +105,22 @@ void CCPACSPositionings::Update()
 
     // diconnect and reset
     for (std::vector<unique_ptr<CCPACSPositioning> >::iterator it = m_positionings.begin(); it != m_positionings.end(); ++it) {
-        CCPACSPositioning* actPos = it->get();
-        actPos->DisconnectDependentPositionings();
-        actPos->SetFromPoint(CTiglPoint(0,0,0));
+        CCPACSPositioning* pos = it->get();
+        pos->DisconnectDependentPositionings();
+        pos->SetFromPoint(CTiglPoint(0,0,0));
     }
 
     // connect positionings, find roots
     std::vector<CCPACSPositioning*> rootNodes;
     for (std::vector<unique_ptr<CCPACSPositioning> >::iterator it = m_positionings.begin(); it != m_positionings.end(); ++it) {
-        CCPACSPositioning* actPos = it->get();
+        CCPACSPositioning* pos = it->get();
         // fromSectionUID element may be present but empty
-        if (actPos->GetFromSectionUID() && !actPos->GetFromSectionUID()->empty()) {
-            const std::string fromUID = *actPos->GetFromSectionUID();
+        if (pos->GetFromSectionUID() && !pos->GetFromSectionUID()->empty()) {
+            const std::string& fromUID = *pos->GetFromSectionUID();
             bool found = false;
             for (std::vector<unique_ptr<CCPACSPositioning> >::iterator it2 = m_positionings.begin(); it2 != m_positionings.end(); ++it2) {
                 if ((*it2)->GetToSectionUID() == fromUID) {
-                    (*it2)->AddDependentPositioning(actPos);
+                    (*it2)->AddDependentPositioning(pos);
                     found = true;
                     break;
                 }
@@ -131,7 +131,7 @@ void CCPACSPositionings::Update()
             }
         }
         else {
-            rootNodes.push_back(actPos);
+            rootNodes.push_back(pos);
         }
     }
 

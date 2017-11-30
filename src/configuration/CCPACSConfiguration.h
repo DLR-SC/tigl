@@ -179,6 +179,7 @@ public:
 
     // Returns the uid manager
     TIGL_EXPORT CTiglUIDManager& GetUIDManager();
+    TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
 
     // Returns the algorithm for fusing the aircraft
     TIGL_EXPORT PTiglFusePlane AircraftFusingAlgo();
@@ -221,8 +222,8 @@ private:
 
 private:
     CTiglUIDManager                        uidManager;           /**< Stores the unique ids of the components. */ // list as first member, has to be created first and destroyed last
-    boost::optional<CCPACSAircraftModel>   aircraftModel;        /**< Root component for the CTiglUIDManager */
-    boost::optional<CCPACSRotorcraftModel> rotorcraftModel;      /**< Root component for the CTiglUIDManager */
+    boost::optional<CCPACSAircraftModel>   aircraftModel;
+    boost::optional<CCPACSRotorcraftModel> rotorcraftModel;
     boost::optional<CCPACSProfiles>        profiles;             /**< Wing airfoils, fuselage profiles, rotor airfoils, guide curve profiles */
     TixiDocumentHandle                     tixiDocumentHandle;   /**< Handle for internal TixiDocument */
     CCPACSHeader                           header;               /**< Configuration header element */
