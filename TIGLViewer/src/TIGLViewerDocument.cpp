@@ -1626,16 +1626,11 @@ void TIGLViewerDocument::exportFusedConfigBRep()
 
     START_COMMAND();
     try {
-        tigl::PTiglFusePlane fuser = GetConfiguration().AircraftFusingAlgo();
-        fuser->SetResultMode(tigl::FULL_PLANE);
-        PNamedShape airplane = fuser->FusedPlane();
-        if (!airplane) {
-            displayError("Error computing fused aircraft", "Error in BRep export");
+        TiglReturnCode err = tiglExportFusedBREP(m_cpacsHandle, qstringToCstring(fileName));
+        if (err != TIGL_SUCCESS) {
+            displayError(QString("Error in function <u>tiglExportBREP</u>. Error code: %1").arg(err), "TIGL Error");
             return;
         }
-        
-        TopoDS_Shape shape = airplane->Shape();
-        BRepTools::Write(shape, fileName.toStdString().c_str());
     }
     catch(tigl::CTiglError & error){
         displayError(error.what(), "Error in BRep export");
