@@ -44,8 +44,8 @@ namespace tigl
         void CPACSSparCells::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element sparCell
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/sparCell")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/sparCell", m_sparCells, m_uidMgr);
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/sparCell")) {
+                tixi::TixiReadElements(tixiHandle, xpath + "/sparCell", m_sparCells, m_uidMgr);
             }
             
         }
@@ -53,7 +53,7 @@ namespace tigl
         void CPACSSparCells::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element sparCell
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/sparCell", m_sparCells);
+            tixi::TixiSaveElements(tixiHandle, xpath + "/sparCell", m_sparCells);
             
         }
         
@@ -65,6 +65,23 @@ namespace tigl
         std::vector<unique_ptr<CPACSSparCell> >& CPACSSparCells::GetSparCells()
         {
             return m_sparCells;
+        }
+        
+        CPACSSparCell& CPACSSparCells::AddSparCell()
+        {
+            m_sparCells.push_back(make_unique<CPACSSparCell>(m_uidMgr));
+            return *m_sparCells.back();
+        }
+        
+        void CPACSSparCells::RemoveSparCell(CPACSSparCell& ref)
+        {
+            for (std::size_t i = 0; i < m_sparCells.size(); i++) {
+                if (m_sparCells[i].get() == &ref) {
+                    m_sparCells.erase(m_sparCells.begin() + i);
+                    return;
+                }
+            }
+            throw CTiglError("Element not found");
         }
         
     }

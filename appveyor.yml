@@ -42,13 +42,13 @@ install:
       Write-Output "Platform: $env:PLATFORM"
       $generator = "Visual Studio 14 2015"
       $ocedist = "oce.0.17.2.win32_msvc2015_static"
-      $tixidist = "TIXI-2.2.4-vc2015-win32"
+      $tixidist = "TIXI-3.0.0-win32"
       $qtdist = "5.7/msvc2015"
       if ($env:PLATFORM -eq "x64")
       {
           $generator = "$generator Win64"
           $ocedist = "oce.0.17.2.win64_msvc2015_static"
-          $tixidist = "TIXI-2.2.4-vc2015-win64"
+          $tixidist = "TIXI-3.0.0-win64"
           $qtdist = "5.7/msvc2015_64"
       }
       md c:\oce -Force | Out-Null
@@ -61,7 +61,7 @@ install:
       }
       If (!(Test-Path -Path "c:\tixi\$tixidist")) {
         Write-Output "Downloading TiXI"
-        (new-object System.Net.WebClient).Downloadfile("https://github.com/DLR-SC/tixi/releases/download/v2.2.4/$tixidist.zip", "c:\$tixidist.zip")
+        (new-object System.Net.WebClient).Downloadfile("https://github.com/DLR-SC/tixi/releases/download/v3.0.0/$tixidist.zip", "c:\$tixidist.zip")
         Write-Output "Extract TiXI"
         & 7z x -y "c:\$tixidist.zip" -oC:\tixi\ > null
       }

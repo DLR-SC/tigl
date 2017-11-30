@@ -23,6 +23,7 @@
 #include <string>
 #include <tixi.h>
 #include "CPACSWingSkin.h"
+#include "CreateIfNotExists.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -60,6 +61,9 @@ namespace tigl
             
             TIGL_EXPORT virtual const boost::optional<CCPACSWingCells>& GetCells() const;
             TIGL_EXPORT virtual boost::optional<CCPACSWingCells>& GetCells();
+            
+            TIGL_EXPORT virtual CCPACSWingCells& GetCells(CreateIfNotExistsTag);
+            TIGL_EXPORT virtual void RemoveCells();
             
         protected:
             CCPACSWingCSStructure* m_parent;

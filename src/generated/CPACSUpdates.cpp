@@ -32,8 +32,8 @@ namespace tigl
         void CPACSUpdates::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element update
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/update")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/update", m_updates);
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/update")) {
+                tixi::TixiReadElements(tixiHandle, xpath + "/update", m_updates);
             }
             
         }
@@ -41,7 +41,7 @@ namespace tigl
         void CPACSUpdates::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element update
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/update", m_updates);
+            tixi::TixiSaveElements(tixiHandle, xpath + "/update", m_updates);
             
         }
         
@@ -53,6 +53,23 @@ namespace tigl
         std::vector<unique_ptr<CPACSUpdate> >& CPACSUpdates::GetUpdates()
         {
             return m_updates;
+        }
+        
+        CPACSUpdate& CPACSUpdates::AddUpdate()
+        {
+            m_updates.push_back(make_unique<CPACSUpdate>());
+            return *m_updates.back();
+        }
+        
+        void CPACSUpdates::RemoveUpdate(CPACSUpdate& ref)
+        {
+            for (std::size_t i = 0; i < m_updates.size(); i++) {
+                if (m_updates[i].get() == &ref) {
+                    m_updates.erase(m_updates.begin() + i);
+                    return;
+                }
+            }
+            throw CTiglError("Element not found");
         }
         
     }

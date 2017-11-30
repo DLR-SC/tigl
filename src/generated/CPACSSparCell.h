@@ -23,6 +23,7 @@
 #include <tixi.h>
 #include "CPACSCap.h"
 #include "CPACSWeb.h"
+#include "CreateIfNotExists.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -71,6 +72,9 @@ namespace tigl
             
             TIGL_EXPORT virtual const double& GetRotation() const;
             TIGL_EXPORT virtual void SetRotation(const double& value);
+            
+            TIGL_EXPORT virtual CPACSWeb& GetWeb2(CreateIfNotExistsTag);
+            TIGL_EXPORT virtual void RemoveWeb2();
             
         protected:
             CTiglUIDManager* m_uidMgr;

@@ -47,16 +47,16 @@ namespace tigl
         void CPACSWingRibCell::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read attribute uID
-            if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
-                m_uID = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
+            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+                m_uID = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
                 if (m_uID->empty()) {
                     LOG(WARNING) << "Optional attribute uID is present but empty at xpath " << xpath;
                 }
             }
             
             // read element fromRib
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/fromRib")) {
-                m_fromRib = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/fromRib");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/fromRib")) {
+                m_fromRib = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/fromRib");
                 if (m_fromRib.empty()) {
                     LOG(WARNING) << "Required element fromRib is empty at xpath " << xpath;
                 }
@@ -66,8 +66,8 @@ namespace tigl
             }
             
             // read element toRib
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/toRib")) {
-                m_toRib = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/toRib");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/toRib")) {
+                m_toRib = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/toRib");
                 if (m_toRib.empty()) {
                     LOG(WARNING) << "Required element toRib is empty at xpath " << xpath;
                 }
@@ -77,7 +77,7 @@ namespace tigl
             }
             
             // read element ribRotation
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/ribRotation")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/ribRotation")) {
                 m_ribRotation.ReadCPACS(tixiHandle, xpath + "/ribRotation");
             }
             else {
@@ -85,7 +85,7 @@ namespace tigl
             }
             
             // read element material
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/material")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/material")) {
                 m_material.ReadCPACS(tixiHandle, xpath + "/material");
             }
             else {
@@ -93,7 +93,7 @@ namespace tigl
             }
             
             // read element upperCap
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/upperCap")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/upperCap")) {
                 m_upperCap.ReadCPACS(tixiHandle, xpath + "/upperCap");
             }
             else {
@@ -101,7 +101,7 @@ namespace tigl
             }
             
             // read element lowerCap
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/lowerCap")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/lowerCap")) {
                 m_lowerCap.ReadCPACS(tixiHandle, xpath + "/lowerCap");
             }
             else {
@@ -115,35 +115,35 @@ namespace tigl
         {
             // write attribute uID
             if (m_uID) {
-                tixihelper::TixiSaveAttribute(tixiHandle, xpath, "uID", *m_uID);
+                tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", *m_uID);
             } else {
-                if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
-                    tixihelper::TixiRemoveAttribute(tixiHandle, xpath, "uID");
+                if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+                    tixi::TixiRemoveAttribute(tixiHandle, xpath, "uID");
                 }
             }
             
             // write element fromRib
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/fromRib");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/fromRib", m_fromRib);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/fromRib");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/fromRib", m_fromRib);
             
             // write element toRib
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/toRib");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/toRib", m_toRib);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/toRib");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/toRib", m_toRib);
             
             // write element ribRotation
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ribRotation");
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ribRotation");
             m_ribRotation.WriteCPACS(tixiHandle, xpath + "/ribRotation");
             
             // write element material
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/material");
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/material");
             m_material.WriteCPACS(tixiHandle, xpath + "/material");
             
             // write element upperCap
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/upperCap");
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/upperCap");
             m_upperCap.WriteCPACS(tixiHandle, xpath + "/upperCap");
             
             // write element lowerCap
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/lowerCap");
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/lowerCap");
             m_lowerCap.WriteCPACS(tixiHandle, xpath + "/lowerCap");
             
         }

@@ -55,8 +55,8 @@ namespace tigl
         void CPACSWingSegments::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element segment
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/segment")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/segment", m_segments, reinterpret_cast<CCPACSWingSegments*>(this), m_uidMgr);
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/segment")) {
+                tixi::TixiReadElements(tixiHandle, xpath + "/segment", m_segments, reinterpret_cast<CCPACSWingSegments*>(this), m_uidMgr);
             }
             
         }
@@ -64,7 +64,7 @@ namespace tigl
         void CPACSWingSegments::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element segment
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/segment", m_segments);
+            tixi::TixiSaveElements(tixiHandle, xpath + "/segment", m_segments);
             
         }
         
@@ -76,6 +76,23 @@ namespace tigl
         std::vector<unique_ptr<CCPACSWingSegment> >& CPACSWingSegments::GetSegments()
         {
             return m_segments;
+        }
+        
+        CCPACSWingSegment& CPACSWingSegments::AddSegment()
+        {
+            m_segments.push_back(make_unique<CCPACSWingSegment>(reinterpret_cast<CCPACSWingSegments*>(this), m_uidMgr));
+            return *m_segments.back();
+        }
+        
+        void CPACSWingSegments::RemoveSegment(CCPACSWingSegment& ref)
+        {
+            for (std::size_t i = 0; i < m_segments.size(); i++) {
+                if (m_segments[i].get() == &ref) {
+                    m_segments.erase(m_segments.begin() + i);
+                    return;
+                }
+            }
+            throw CTiglError("Element not found");
         }
         
     }

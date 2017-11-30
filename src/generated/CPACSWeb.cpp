@@ -32,7 +32,7 @@ namespace tigl
         void CPACSWeb::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element material
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/material")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/material")) {
                 m_material.ReadCPACS(tixiHandle, xpath + "/material");
             }
             else {
@@ -40,8 +40,8 @@ namespace tigl
             }
             
             // read element relPos
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/relPos")) {
-                m_relPos = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/relPos");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/relPos")) {
+                m_relPos = tixi::TixiGetElement<double>(tixiHandle, xpath + "/relPos");
             }
             else {
                 LOG(ERROR) << "Required element relPos is missing at xpath " << xpath;
@@ -52,12 +52,12 @@ namespace tigl
         void CPACSWeb::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element material
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/material");
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/material");
             m_material.WriteCPACS(tixiHandle, xpath + "/material");
             
             // write element relPos
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/relPos");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/relPos", m_relPos);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/relPos");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/relPos", m_relPos);
             
         }
         

@@ -51,8 +51,8 @@ void CCPACSRotorProfiles::ImportCPACS(const TixiDocumentHandle& tixiHandle, cons
 {
     // we replace generated::CPACSRotorAirfoils::ReadCPACS and not call it to allow instantiation of CCPACSWingProfile instead of generated::CPACSProfileGeometry
     // read element wingAirfoil
-    if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/rotorAirfoil")) {
-        tixihelper::TixiReadElements(tixiHandle, xpath + "/rotorAirfoil", m_rotorAirfoils, tixihelper::ChildWithArgsReader1<CCPACSWingProfile, CTiglUIDManager>(m_uidMgr));
+    if (tixi::TixiCheckElement(tixiHandle, xpath + "/rotorAirfoil")) {
+        tixi::TixiReadElements(tixiHandle, xpath + "/rotorAirfoil", m_rotorAirfoils, tixi::ChildWithArgsReader1<CCPACSWingProfile, CTiglUIDManager>(m_uidMgr));
     }
 }
 

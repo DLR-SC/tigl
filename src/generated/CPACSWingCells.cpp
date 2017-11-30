@@ -55,8 +55,8 @@ namespace tigl
         void CPACSWingCells::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element cell
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/cell")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/cell", m_cells, reinterpret_cast<CCPACSWingCells*>(this), m_uidMgr);
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/cell")) {
+                tixi::TixiReadElements(tixiHandle, xpath + "/cell", m_cells, reinterpret_cast<CCPACSWingCells*>(this), m_uidMgr);
             }
             
         }
@@ -64,7 +64,7 @@ namespace tigl
         void CPACSWingCells::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element cell
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/cell", m_cells);
+            tixi::TixiSaveElements(tixiHandle, xpath + "/cell", m_cells);
             
         }
         
@@ -76,6 +76,23 @@ namespace tigl
         std::vector<unique_ptr<CCPACSWingCell> >& CPACSWingCells::GetCells()
         {
             return m_cells;
+        }
+        
+        CCPACSWingCell& CPACSWingCells::AddCell()
+        {
+            m_cells.push_back(make_unique<CCPACSWingCell>(reinterpret_cast<CCPACSWingCells*>(this), m_uidMgr));
+            return *m_cells.back();
+        }
+        
+        void CPACSWingCells::RemoveCell(CCPACSWingCell& ref)
+        {
+            for (std::size_t i = 0; i < m_cells.size(); i++) {
+                if (m_cells[i].get() == &ref) {
+                    m_cells.erase(m_cells.begin() + i);
+                    return;
+                }
+            }
+            throw CTiglError("Element not found");
         }
         
     }

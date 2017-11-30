@@ -55,8 +55,8 @@ namespace tigl
         void CPACSComponentSegments::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element componentSegment
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/componentSegment")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/componentSegment", m_componentSegments, reinterpret_cast<CCPACSWingComponentSegments*>(this), m_uidMgr);
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/componentSegment")) {
+                tixi::TixiReadElements(tixiHandle, xpath + "/componentSegment", m_componentSegments, reinterpret_cast<CCPACSWingComponentSegments*>(this), m_uidMgr);
             }
             
         }
@@ -64,7 +64,7 @@ namespace tigl
         void CPACSComponentSegments::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element componentSegment
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/componentSegment", m_componentSegments);
+            tixi::TixiSaveElements(tixiHandle, xpath + "/componentSegment", m_componentSegments);
             
         }
         
@@ -76,6 +76,23 @@ namespace tigl
         std::vector<unique_ptr<CCPACSWingComponentSegment> >& CPACSComponentSegments::GetComponentSegments()
         {
             return m_componentSegments;
+        }
+        
+        CCPACSWingComponentSegment& CPACSComponentSegments::AddComponentSegment()
+        {
+            m_componentSegments.push_back(make_unique<CCPACSWingComponentSegment>(reinterpret_cast<CCPACSWingComponentSegments*>(this), m_uidMgr));
+            return *m_componentSegments.back();
+        }
+        
+        void CPACSComponentSegments::RemoveComponentSegment(CCPACSWingComponentSegment& ref)
+        {
+            for (std::size_t i = 0; i < m_componentSegments.size(); i++) {
+                if (m_componentSegments[i].get() == &ref) {
+                    m_componentSegments.erase(m_componentSegments.begin() + i);
+                    return;
+                }
+            }
+            throw CTiglError("Element not found");
         }
         
     }

@@ -31,7 +31,7 @@ namespace tigl
         void CPACSToolspecific::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element cFD
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/cFD")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/cFD")) {
                 m_cFD = boost::in_place();
                 try {
                     m_cFD->ReadCPACS(tixiHandle, xpath + "/cFD");
@@ -47,11 +47,11 @@ namespace tigl
         {
             // write element cFD
             if (m_cFD) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/cFD");
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/cFD");
                 m_cFD->WriteCPACS(tixiHandle, xpath + "/cFD");
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/cFD")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/cFD");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/cFD")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/cFD");
                 }
             }
             
@@ -65,6 +65,18 @@ namespace tigl
         boost::optional<CPACSCFDTool>& CPACSToolspecific::GetCFD()
         {
             return m_cFD;
+        }
+        
+        CPACSCFDTool& CPACSToolspecific::GetCFD(CreateIfNotExistsTag)
+        {
+            if (!m_cFD)
+                m_cFD = boost::in_place();
+            return *m_cFD;
+        }
+        
+        void CPACSToolspecific::RemoveCFD()
+        {
+            m_cFD = boost::none;
         }
         
     }

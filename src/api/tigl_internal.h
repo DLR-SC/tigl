@@ -26,6 +26,8 @@
   // api to the dll interface (just for testing purposes!)
   #if defined (TIGL_INTERNAL_EXPORTS)
     #define TIGL_EXPORT __declspec (dllexport)
+  #elif defined (TIGL_INTERNAL_IMPORTS)
+    #define TIGL_EXPORT __declspec (dllimport)
   #else
     #define TIGL_EXPORT
   #endif

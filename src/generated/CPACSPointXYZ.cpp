@@ -49,32 +49,32 @@ namespace tigl
         void CPACSPointXYZ::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read attribute uID
-            if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
-                m_uID = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
+            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+                m_uID = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
                 if (m_uID->empty()) {
                     LOG(WARNING) << "Optional attribute uID is present but empty at xpath " << xpath;
                 }
             }
             
             // read element x
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/x")) {
-                m_x = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/x");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/x")) {
+                m_x = tixi::TixiGetElement<double>(tixiHandle, xpath + "/x");
             }
             else {
                 LOG(ERROR) << "Required element x is missing at xpath " << xpath;
             }
             
             // read element y
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/y")) {
-                m_y = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/y");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/y")) {
+                m_y = tixi::TixiGetElement<double>(tixiHandle, xpath + "/y");
             }
             else {
                 LOG(ERROR) << "Required element y is missing at xpath " << xpath;
             }
             
             // read element z
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/z")) {
-                m_z = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/z");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/z")) {
+                m_z = tixi::TixiGetElement<double>(tixiHandle, xpath + "/z");
             }
             else {
                 LOG(ERROR) << "Required element z is missing at xpath " << xpath;
@@ -87,24 +87,24 @@ namespace tigl
         {
             // write attribute uID
             if (m_uID) {
-                tixihelper::TixiSaveAttribute(tixiHandle, xpath, "uID", *m_uID);
+                tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", *m_uID);
             } else {
-                if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
-                    tixihelper::TixiRemoveAttribute(tixiHandle, xpath, "uID");
+                if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+                    tixi::TixiRemoveAttribute(tixiHandle, xpath, "uID");
                 }
             }
             
             // write element x
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/x");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/x", m_x);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/x");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/x", m_x);
             
             // write element y
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/y");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/y", m_y);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/y");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/y", m_y);
             
             // write element z
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/z");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/z", m_z);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/z");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/z", m_z);
             
         }
         

@@ -50,6 +50,9 @@ namespace tigl
             TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSProfileGeometry> >& GetFuselageProfiles() const;
             TIGL_EXPORT virtual std::vector<unique_ptr<CPACSProfileGeometry> >& GetFuselageProfiles();
             
+            TIGL_EXPORT virtual CPACSProfileGeometry& AddFuselageProfile();
+            TIGL_EXPORT virtual void RemoveFuselageProfile(CPACSProfileGeometry& ref);
+            
         protected:
             CTiglUIDManager* m_uidMgr;
             

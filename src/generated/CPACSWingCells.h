@@ -53,6 +53,9 @@ namespace tigl
             TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSWingCell> >& GetCells() const;
             TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSWingCell> >& GetCells();
             
+            TIGL_EXPORT virtual CCPACSWingCell& AddCell();
+            TIGL_EXPORT virtual void RemoveCell(CCPACSWingCell& ref);
+            
         protected:
             CCPACSWingShell* m_parent;
             

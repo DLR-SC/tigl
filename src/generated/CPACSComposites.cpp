@@ -44,8 +44,8 @@ namespace tigl
         void CPACSComposites::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element composite
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/composite")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/composite", m_composites, m_uidMgr);
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/composite")) {
+                tixi::TixiReadElements(tixiHandle, xpath + "/composite", m_composites, m_uidMgr);
             }
             
         }
@@ -53,7 +53,7 @@ namespace tigl
         void CPACSComposites::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element composite
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/composite", m_composites);
+            tixi::TixiSaveElements(tixiHandle, xpath + "/composite", m_composites);
             
         }
         
@@ -65,6 +65,23 @@ namespace tigl
         std::vector<unique_ptr<CPACSComposite> >& CPACSComposites::GetComposites()
         {
             return m_composites;
+        }
+        
+        CPACSComposite& CPACSComposites::AddComposite()
+        {
+            m_composites.push_back(make_unique<CPACSComposite>(m_uidMgr));
+            return *m_composites.back();
+        }
+        
+        void CPACSComposites::RemoveComposite(CPACSComposite& ref)
+        {
+            for (std::size_t i = 0; i < m_composites.size(); i++) {
+                if (m_composites[i].get() == &ref) {
+                    m_composites.erase(m_composites.begin() + i);
+                    return;
+                }
+            }
+            throw CTiglError("Element not found");
         }
         
     }

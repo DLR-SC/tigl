@@ -55,8 +55,8 @@ namespace tigl
         void CPACSSparPositions::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element sparPosition
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/sparPosition")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/sparPosition", m_sparPositions, reinterpret_cast<CCPACSWingSparPositions*>(this), m_uidMgr);
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/sparPosition")) {
+                tixi::TixiReadElements(tixiHandle, xpath + "/sparPosition", m_sparPositions, reinterpret_cast<CCPACSWingSparPositions*>(this), m_uidMgr);
             }
             
         }
@@ -64,7 +64,7 @@ namespace tigl
         void CPACSSparPositions::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element sparPosition
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/sparPosition", m_sparPositions);
+            tixi::TixiSaveElements(tixiHandle, xpath + "/sparPosition", m_sparPositions);
             
         }
         
@@ -76,6 +76,23 @@ namespace tigl
         std::vector<unique_ptr<CCPACSWingSparPosition> >& CPACSSparPositions::GetSparPositions()
         {
             return m_sparPositions;
+        }
+        
+        CCPACSWingSparPosition& CPACSSparPositions::AddSparPosition()
+        {
+            m_sparPositions.push_back(make_unique<CCPACSWingSparPosition>(reinterpret_cast<CCPACSWingSparPositions*>(this), m_uidMgr));
+            return *m_sparPositions.back();
+        }
+        
+        void CPACSSparPositions::RemoveSparPosition(CCPACSWingSparPosition& ref)
+        {
+            for (std::size_t i = 0; i < m_sparPositions.size(); i++) {
+                if (m_sparPositions[i].get() == &ref) {
+                    m_sparPositions.erase(m_sparPositions.begin() + i);
+                    return;
+                }
+            }
+            throw CTiglError("Element not found");
         }
         
     }

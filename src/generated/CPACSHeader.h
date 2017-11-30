@@ -23,6 +23,7 @@
 #include <string>
 #include <tixi.h>
 #include "CPACSUpdates.h"
+#include "CreateIfNotExists.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -63,6 +64,9 @@ namespace tigl
             
             TIGL_EXPORT virtual const boost::optional<CPACSUpdates>& GetUpdates() const;
             TIGL_EXPORT virtual boost::optional<CPACSUpdates>& GetUpdates();
+            
+            TIGL_EXPORT virtual CPACSUpdates& GetUpdates(CreateIfNotExistsTag);
+            TIGL_EXPORT virtual void RemoveUpdates();
             
         protected:
             std::string                   m_name;

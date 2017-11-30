@@ -55,8 +55,8 @@ namespace tigl
         void CPACSRotors::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element rotor
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/rotor")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/rotor", m_rotors, reinterpret_cast<CCPACSRotors*>(this), m_uidMgr);
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/rotor")) {
+                tixi::TixiReadElements(tixiHandle, xpath + "/rotor", m_rotors, reinterpret_cast<CCPACSRotors*>(this), m_uidMgr);
             }
             
         }
@@ -64,7 +64,7 @@ namespace tigl
         void CPACSRotors::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element rotor
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/rotor", m_rotors);
+            tixi::TixiSaveElements(tixiHandle, xpath + "/rotor", m_rotors);
             
         }
         
@@ -76,6 +76,23 @@ namespace tigl
         std::vector<unique_ptr<CCPACSRotor> >& CPACSRotors::GetRotors()
         {
             return m_rotors;
+        }
+        
+        CCPACSRotor& CPACSRotors::AddRotor()
+        {
+            m_rotors.push_back(make_unique<CCPACSRotor>(reinterpret_cast<CCPACSRotors*>(this), m_uidMgr));
+            return *m_rotors.back();
+        }
+        
+        void CPACSRotors::RemoveRotor(CCPACSRotor& ref)
+        {
+            for (std::size_t i = 0; i < m_rotors.size(); i++) {
+                if (m_rotors[i].get() == &ref) {
+                    m_rotors.erase(m_rotors.begin() + i);
+                    return;
+                }
+            }
+            throw CTiglError("Element not found");
         }
         
     }

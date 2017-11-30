@@ -44,8 +44,8 @@ namespace tigl
         void CPACSGuideCurves::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element guideCurve
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/guideCurve")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/guideCurve", m_guideCurves, m_uidMgr);
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/guideCurve")) {
+                tixi::TixiReadElements(tixiHandle, xpath + "/guideCurve", m_guideCurves, m_uidMgr);
             }
             
         }
@@ -53,7 +53,7 @@ namespace tigl
         void CPACSGuideCurves::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element guideCurve
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/guideCurve", m_guideCurves);
+            tixi::TixiSaveElements(tixiHandle, xpath + "/guideCurve", m_guideCurves);
             
         }
         
@@ -65,6 +65,23 @@ namespace tigl
         std::vector<unique_ptr<CPACSGuideCurve> >& CPACSGuideCurves::GetGuideCurves()
         {
             return m_guideCurves;
+        }
+        
+        CPACSGuideCurve& CPACSGuideCurves::AddGuideCurve()
+        {
+            m_guideCurves.push_back(make_unique<CPACSGuideCurve>(m_uidMgr));
+            return *m_guideCurves.back();
+        }
+        
+        void CPACSGuideCurves::RemoveGuideCurve(CPACSGuideCurve& ref)
+        {
+            for (std::size_t i = 0; i < m_guideCurves.size(); i++) {
+                if (m_guideCurves[i].get() == &ref) {
+                    m_guideCurves.erase(m_guideCurves.begin() + i);
+                    return;
+                }
+            }
+            throw CTiglError("Element not found");
         }
         
     }

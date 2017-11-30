@@ -23,7 +23,7 @@ import com.sun.jna.ptr.*;
 
 public class TixiNativeInterface {
     static {
-        Native.register("TIXI");
+        Native.register("tixi3");
     }
     
     static native int tixiOpenDocument (String xmlFilename, IntByReference handle);

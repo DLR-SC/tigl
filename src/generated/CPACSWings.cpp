@@ -60,8 +60,8 @@ namespace tigl
         void CPACSWings::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element wing
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/wing")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/wing", m_wings, reinterpret_cast<CCPACSWings*>(this), m_uidMgr);
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/wing")) {
+                tixi::TixiReadElements(tixiHandle, xpath + "/wing", m_wings, reinterpret_cast<CCPACSWings*>(this), m_uidMgr);
             }
             
         }
@@ -69,7 +69,7 @@ namespace tigl
         void CPACSWings::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element wing
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/wing", m_wings);
+            tixi::TixiSaveElements(tixiHandle, xpath + "/wing", m_wings);
             
         }
         
@@ -81,6 +81,23 @@ namespace tigl
         std::vector<unique_ptr<CCPACSWing> >& CPACSWings::GetWings()
         {
             return m_wings;
+        }
+        
+        CCPACSWing& CPACSWings::AddWing()
+        {
+            m_wings.push_back(make_unique<CCPACSWing>(reinterpret_cast<CCPACSWings*>(this), m_uidMgr));
+            return *m_wings.back();
+        }
+        
+        void CPACSWings::RemoveWing(CCPACSWing& ref)
+        {
+            for (std::size_t i = 0; i < m_wings.size(); i++) {
+                if (m_wings[i].get() == &ref) {
+                    m_wings.erase(m_wings.begin() + i);
+                    return;
+                }
+            }
+            throw CTiglError("Element not found");
         }
         
     }

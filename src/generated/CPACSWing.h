@@ -28,6 +28,7 @@
 #include <TiglSymmetryAxis.h>
 #include <tixi.h>
 #include <typeinfo>
+#include "CreateIfNotExists.h"
 #include "CTiglError.h"
 #include "tigl_internal.h"
 
@@ -53,13 +54,13 @@ namespace tigl
             TIGL_EXPORT virtual ~CPACSWing();
             
             template<typename P>
-            TIGL_EXPORT bool IsParent() const
+            bool IsParent() const
             {
                 return m_parentType != NULL && *m_parentType == typeid(P);
             }
             
             template<typename P>
-            TIGL_EXPORT P* GetParent() const
+            P* GetParent() const
             {
                 #ifdef HAVE_STDIS_SAME
                 static_assert(std::is_same<P, CCPACSRotorBlades>::value || std::is_same<P, CCPACSWings>::value, "template argument for P is not a parent class of CPACSWing");
@@ -108,6 +109,12 @@ namespace tigl
             
             TIGL_EXPORT virtual const boost::optional<CCPACSWingComponentSegments>& GetComponentSegments() const;
             TIGL_EXPORT virtual boost::optional<CCPACSWingComponentSegments>& GetComponentSegments();
+            
+            TIGL_EXPORT virtual CCPACSPositionings& GetPositionings(CreateIfNotExistsTag);
+            TIGL_EXPORT virtual void RemovePositionings();
+            
+            TIGL_EXPORT virtual CCPACSWingComponentSegments& GetComponentSegments(CreateIfNotExistsTag);
+            TIGL_EXPORT virtual void RemoveComponentSegments();
             
         protected:
             void* m_parent;

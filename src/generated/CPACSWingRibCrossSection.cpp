@@ -54,7 +54,7 @@ namespace tigl
         void CPACSWingRibCrossSection::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element material
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/material")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/material")) {
                 m_material.ReadCPACS(tixiHandle, xpath + "/material");
             }
             else {
@@ -62,7 +62,7 @@ namespace tigl
             }
             
             // read element ribRotation
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/ribRotation")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/ribRotation")) {
                 m_ribRotation = boost::in_place(m_uidMgr);
                 try {
                     m_ribRotation->ReadCPACS(tixiHandle, xpath + "/ribRotation");
@@ -73,7 +73,7 @@ namespace tigl
             }
             
             // read element ribCell
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/ribCell")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/ribCell")) {
                 m_ribCell = boost::in_place(m_uidMgr);
                 try {
                     m_ribCell->ReadCPACS(tixiHandle, xpath + "/ribCell");
@@ -84,7 +84,7 @@ namespace tigl
             }
             
             // read element upperCap
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/upperCap")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/upperCap")) {
                 m_upperCap = boost::in_place();
                 try {
                     m_upperCap->ReadCPACS(tixiHandle, xpath + "/upperCap");
@@ -95,7 +95,7 @@ namespace tigl
             }
             
             // read element lowerCap
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/lowerCap")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/lowerCap")) {
                 m_lowerCap = boost::in_place();
                 try {
                     m_lowerCap->ReadCPACS(tixiHandle, xpath + "/lowerCap");
@@ -110,46 +110,46 @@ namespace tigl
         void CPACSWingRibCrossSection::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element material
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/material");
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/material");
             m_material.WriteCPACS(tixiHandle, xpath + "/material");
             
             // write element ribRotation
             if (m_ribRotation) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ribRotation");
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ribRotation");
                 m_ribRotation->WriteCPACS(tixiHandle, xpath + "/ribRotation");
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/ribRotation")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/ribRotation");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/ribRotation")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/ribRotation");
                 }
             }
             
             // write element ribCell
             if (m_ribCell) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ribCell");
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ribCell");
                 m_ribCell->WriteCPACS(tixiHandle, xpath + "/ribCell");
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/ribCell")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/ribCell");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/ribCell")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/ribCell");
                 }
             }
             
             // write element upperCap
             if (m_upperCap) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/upperCap");
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/upperCap");
                 m_upperCap->WriteCPACS(tixiHandle, xpath + "/upperCap");
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/upperCap")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/upperCap");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/upperCap")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/upperCap");
                 }
             }
             
             // write element lowerCap
             if (m_lowerCap) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/lowerCap");
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/lowerCap");
                 m_lowerCap->WriteCPACS(tixiHandle, xpath + "/lowerCap");
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/lowerCap")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/lowerCap");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/lowerCap")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/lowerCap");
                 }
             }
             
@@ -203,6 +203,54 @@ namespace tigl
         boost::optional<CPACSCap>& CPACSWingRibCrossSection::GetLowerCap()
         {
             return m_lowerCap;
+        }
+        
+        CPACSPointX& CPACSWingRibCrossSection::GetRibRotation(CreateIfNotExistsTag)
+        {
+            if (!m_ribRotation)
+                m_ribRotation = boost::in_place(m_uidMgr);
+            return *m_ribRotation;
+        }
+        
+        void CPACSWingRibCrossSection::RemoveRibRotation()
+        {
+            m_ribRotation = boost::none;
+        }
+        
+        CPACSWingRibCell& CPACSWingRibCrossSection::GetRibCell(CreateIfNotExistsTag)
+        {
+            if (!m_ribCell)
+                m_ribCell = boost::in_place(m_uidMgr);
+            return *m_ribCell;
+        }
+        
+        void CPACSWingRibCrossSection::RemoveRibCell()
+        {
+            m_ribCell = boost::none;
+        }
+        
+        CPACSCap& CPACSWingRibCrossSection::GetUpperCap(CreateIfNotExistsTag)
+        {
+            if (!m_upperCap)
+                m_upperCap = boost::in_place();
+            return *m_upperCap;
+        }
+        
+        void CPACSWingRibCrossSection::RemoveUpperCap()
+        {
+            m_upperCap = boost::none;
+        }
+        
+        CPACSCap& CPACSWingRibCrossSection::GetLowerCap(CreateIfNotExistsTag)
+        {
+            if (!m_lowerCap)
+                m_lowerCap = boost::in_place();
+            return *m_lowerCap;
+        }
+        
+        void CPACSWingRibCrossSection::RemoveLowerCap()
+        {
+            m_lowerCap = boost::none;
         }
         
     }

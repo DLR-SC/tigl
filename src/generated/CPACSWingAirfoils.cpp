@@ -44,8 +44,8 @@ namespace tigl
         void CPACSWingAirfoils::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element wingAirfoil
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/wingAirfoil")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/wingAirfoil", m_wingAirfoils, m_uidMgr);
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/wingAirfoil")) {
+                tixi::TixiReadElements(tixiHandle, xpath + "/wingAirfoil", m_wingAirfoils, m_uidMgr);
             }
             
         }
@@ -53,7 +53,7 @@ namespace tigl
         void CPACSWingAirfoils::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element wingAirfoil
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/wingAirfoil", m_wingAirfoils);
+            tixi::TixiSaveElements(tixiHandle, xpath + "/wingAirfoil", m_wingAirfoils);
             
         }
         
@@ -65,6 +65,23 @@ namespace tigl
         std::vector<unique_ptr<CPACSProfileGeometry> >& CPACSWingAirfoils::GetWingAirfoils()
         {
             return m_wingAirfoils;
+        }
+        
+        CPACSProfileGeometry& CPACSWingAirfoils::AddWingAirfoil()
+        {
+            m_wingAirfoils.push_back(make_unique<CPACSProfileGeometry>(m_uidMgr));
+            return *m_wingAirfoils.back();
+        }
+        
+        void CPACSWingAirfoils::RemoveWingAirfoil(CPACSProfileGeometry& ref)
+        {
+            for (std::size_t i = 0; i < m_wingAirfoils.size(); i++) {
+                if (m_wingAirfoils[i].get() == &ref) {
+                    m_wingAirfoils.erase(m_wingAirfoils.begin() + i);
+                    return;
+                }
+            }
+            throw CTiglError("Element not found");
         }
         
     }

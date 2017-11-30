@@ -31,8 +31,8 @@ namespace tigl
         void CPACSTool::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element name
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/name")) {
-                m_name = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
+                m_name = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
                 if (m_name.empty()) {
                     LOG(WARNING) << "Required element name is empty at xpath " << xpath;
                 }
@@ -42,8 +42,8 @@ namespace tigl
             }
             
             // read element version
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/version")) {
-                m_version = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/version");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/version")) {
+                m_version = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/version");
                 if (m_version.empty()) {
                     LOG(WARNING) << "Required element version is empty at xpath " << xpath;
                 }
@@ -57,12 +57,12 @@ namespace tigl
         void CPACSTool::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element name
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/name", m_name);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/name", m_name);
             
             // write element version
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/version");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/version", m_version);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/version");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/version", m_version);
             
         }
         

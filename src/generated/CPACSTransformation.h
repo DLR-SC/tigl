@@ -24,6 +24,7 @@
 #include <string>
 #include <tixi.h>
 #include <typeinfo>
+#include "CreateIfNotExists.h"
 #include "CTiglError.h"
 #include "tigl_internal.h"
 
@@ -69,6 +70,15 @@ namespace tigl
             
             TIGL_EXPORT virtual const boost::optional<CCPACSPointAbsRel>& GetTranslation() const;
             TIGL_EXPORT virtual boost::optional<CCPACSPointAbsRel>& GetTranslation();
+            
+            TIGL_EXPORT virtual CCPACSPoint& GetScaling(CreateIfNotExistsTag);
+            TIGL_EXPORT virtual void RemoveScaling();
+            
+            TIGL_EXPORT virtual CCPACSPoint& GetRotation(CreateIfNotExistsTag);
+            TIGL_EXPORT virtual void RemoveRotation();
+            
+            TIGL_EXPORT virtual CCPACSPointAbsRel& GetTranslation(CreateIfNotExistsTag);
+            TIGL_EXPORT virtual void RemoveTranslation();
             
         protected:
             CTiglUIDManager* m_uidMgr;

@@ -24,6 +24,7 @@
 #include <string>
 #include <tixi.h>
 #include "CPACSWingRibExplicitPositioning.h"
+#include "CreateIfNotExists.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -73,6 +74,12 @@ namespace tigl
             
             TIGL_EXPORT virtual const boost::optional<CPACSWingRibExplicitPositioning>& GetRibExplicitPositioning_choice2() const;
             TIGL_EXPORT virtual boost::optional<CPACSWingRibExplicitPositioning>& GetRibExplicitPositioning_choice2();
+            
+            TIGL_EXPORT virtual CCPACSWingRibsPositioning& GetRibsPositioning_choice1(CreateIfNotExistsTag);
+            TIGL_EXPORT virtual void RemoveRibsPositioning_choice1();
+            
+            TIGL_EXPORT virtual CPACSWingRibExplicitPositioning& GetRibExplicitPositioning_choice2(CreateIfNotExistsTag);
+            TIGL_EXPORT virtual void RemoveRibExplicitPositioning_choice2();
             
         protected:
             CCPACSWingRibsDefinitions* m_parent;

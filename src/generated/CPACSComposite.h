@@ -67,6 +67,9 @@ namespace tigl
             TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSCompositeLayer> >& GetCompositeLayers() const;
             TIGL_EXPORT virtual std::vector<unique_ptr<CPACSCompositeLayer> >& GetCompositeLayers();
             
+            TIGL_EXPORT virtual CPACSCompositeLayer& AddCompositeLayer();
+            TIGL_EXPORT virtual void RemoveCompositeLayer(CPACSCompositeLayer& ref);
+            
         protected:
             CTiglUIDManager* m_uidMgr;
             

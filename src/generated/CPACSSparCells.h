@@ -50,6 +50,9 @@ namespace tigl
             TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSSparCell> >& GetSparCells() const;
             TIGL_EXPORT virtual std::vector<unique_ptr<CPACSSparCell> >& GetSparCells();
             
+            TIGL_EXPORT virtual CPACSSparCell& AddSparCell();
+            TIGL_EXPORT virtual void RemoveSparCell(CPACSSparCell& ref);
+            
         protected:
             CTiglUIDManager* m_uidMgr;
             

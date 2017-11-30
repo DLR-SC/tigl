@@ -48,13 +48,13 @@ namespace tigl
             TIGL_EXPORT virtual ~CPACSFuselages();
             
             template<typename P>
-            TIGL_EXPORT bool IsParent() const
+            bool IsParent() const
             {
                 return m_parentType != NULL && *m_parentType == typeid(P);
             }
             
             template<typename P>
-            TIGL_EXPORT P* GetParent() const
+            P* GetParent() const
             {
                 #ifdef HAVE_STDIS_SAME
                 static_assert(std::is_same<P, CCPACSAircraftModel>::value || std::is_same<P, CCPACSRotorcraftModel>::value, "template argument for P is not a parent class of CPACSFuselages");
@@ -73,6 +73,9 @@ namespace tigl
             
             TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSFuselage> >& GetFuselages() const;
             TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSFuselage> >& GetFuselages();
+            
+            TIGL_EXPORT virtual CCPACSFuselage& AddFuselage();
+            TIGL_EXPORT virtual void RemoveFuselage(CCPACSFuselage& ref);
             
         protected:
             void* m_parent;

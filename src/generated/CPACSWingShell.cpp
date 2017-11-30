@@ -57,15 +57,15 @@ namespace tigl
         void CPACSWingShell::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read attribute uID
-            if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
-                m_uID = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
+            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+                m_uID = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
                 if (m_uID->empty()) {
                     LOG(WARNING) << "Optional attribute uID is present but empty at xpath " << xpath;
                 }
             }
             
             // read element skin
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/skin")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/skin")) {
                 m_skin.ReadCPACS(tixiHandle, xpath + "/skin");
             }
             else {
@@ -73,7 +73,7 @@ namespace tigl
             }
             
             // read element cells
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/cells")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/cells")) {
                 m_cells = boost::in_place(reinterpret_cast<CCPACSWingShell*>(this), m_uidMgr);
                 try {
                     m_cells->ReadCPACS(tixiHandle, xpath + "/cells");
@@ -90,24 +90,24 @@ namespace tigl
         {
             // write attribute uID
             if (m_uID) {
-                tixihelper::TixiSaveAttribute(tixiHandle, xpath, "uID", *m_uID);
+                tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", *m_uID);
             } else {
-                if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
-                    tixihelper::TixiRemoveAttribute(tixiHandle, xpath, "uID");
+                if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+                    tixi::TixiRemoveAttribute(tixiHandle, xpath, "uID");
                 }
             }
             
             // write element skin
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/skin");
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/skin");
             m_skin.WriteCPACS(tixiHandle, xpath + "/skin");
             
             // write element cells
             if (m_cells) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/cells");
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/cells");
                 m_cells->WriteCPACS(tixiHandle, xpath + "/cells");
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/cells")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/cells");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/cells")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/cells");
                 }
             }
             
@@ -154,6 +154,18 @@ namespace tigl
         boost::optional<CCPACSWingCells>& CPACSWingShell::GetCells()
         {
             return m_cells;
+        }
+        
+        CCPACSWingCells& CPACSWingShell::GetCells(CreateIfNotExistsTag)
+        {
+            if (!m_cells)
+                m_cells = boost::in_place(reinterpret_cast<CCPACSWingShell*>(this), m_uidMgr);
+            return *m_cells;
+        }
+        
+        void CPACSWingShell::RemoveCells()
+        {
+            m_cells = boost::none;
         }
         
     }

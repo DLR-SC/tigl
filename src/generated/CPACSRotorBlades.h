@@ -53,6 +53,9 @@ namespace tigl
             TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSWing> >& GetRotorBlades() const;
             TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSWing> >& GetRotorBlades();
             
+            TIGL_EXPORT virtual CCPACSWing& AddRotorBlade();
+            TIGL_EXPORT virtual void RemoveRotorBlade(CCPACSWing& ref);
+            
         protected:
             CCPACSRotorcraftModel* m_parent;
             

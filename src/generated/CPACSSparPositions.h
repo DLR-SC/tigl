@@ -53,6 +53,9 @@ namespace tigl
             TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSWingSparPosition> >& GetSparPositions() const;
             TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSWingSparPosition> >& GetSparPositions();
             
+            TIGL_EXPORT virtual CCPACSWingSparPosition& AddSparPosition();
+            TIGL_EXPORT virtual void RemoveSparPosition(CCPACSWingSparPosition& ref);
+            
         protected:
             CCPACSWingSpars* m_parent;
             
