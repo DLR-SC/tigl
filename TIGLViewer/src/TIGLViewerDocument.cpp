@@ -1590,10 +1590,11 @@ void TIGLViewerDocument::exportWingBRep()
 
     if (!fileName.isEmpty()) {
         START_COMMAND();
-        tigl::ITiglGeometricComponent& wing = GetConfiguration().GetWing(wingUid.toStdString());
-        const TopoDS_Shape& loft = wing.GetLoft()->Shape();
-        BRepTools::Write(loft, fileName.toStdString().c_str());
-
+        TiglReturnCode err = tiglExportWingBREPByUID(m_cpacsHandle, qstringToCstring(wingUid), qstringToCstring(fileName));
+        if (err != TIGL_SUCCESS) {
+            displayError(QString("Error in function <u>tiglExportWingBREPByUID</u>. Error code: %1").arg(err), "TIGL Error");
+            return;
+        }
     }
 }
 
@@ -1612,7 +1613,7 @@ void TIGLViewerDocument::exportFuselageBRep()
         START_COMMAND();
         TiglReturnCode err = tiglExportFuselageBREPByUID(m_cpacsHandle, qstringToCstring(fuselageUid), qstringToCstring(fileName));
         if (err != TIGL_SUCCESS) {
-            displayError(QString("Error in function <u>exportFuselageBRep</u>. Error code: %1").arg(err), "TIGL Error");
+            displayError(QString("Error in function <u>exportFuselageBRepByUID</u>. Error code: %1").arg(err), "TIGL Error");
             return;
         }
     }
