@@ -5817,6 +5817,44 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportFusedBREP(TiglCPACSConfigurationHand
     }
 }
 
+TIGL_COMMON_EXPORT TiglReturnCode tiglExportFuselageBREPByUID(TiglCPACSConfigurationHandle cpacsHandle,
+                                                              const char* fuselageUID,
+                                                              const char* filenamePtr)
+{
+    if (filenamePtr == 0) {
+        LOG(ERROR) << "Null pointer argument for filenamePtr\n"
+                   << "in function call to tiglExportFuselageBREPByUID.";
+        return TIGL_NULL_POINTER;
+    }
+    if (fuselageUID == 0) {
+        LOG(ERROR) << "Null pointer argument for fuselageUID\n"
+                   << "in function call to tiglExportFuselageBREPByUID.";
+        return TIGL_INDEX_ERROR;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::CCPACSFuselage& fuselage = config.GetFuselage(fuselageUID);
+        tigl::CTiglExportBrep writer;
+        writer.AddShape(fuselage.GetLoft());
+        bool ret = writer.Write(filenamePtr);
+        return ret ? TIGL_SUCCESS : TIGL_WRITE_FAILED;
+    }
+    catch (const tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.what();
+        return ex.getCode();
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglExportFuselageBREPByUID!";
+        return TIGL_ERROR;
+    }
+}
+
 
 /*****************************************************************************************************/
 /*                     Material functions                                                            */

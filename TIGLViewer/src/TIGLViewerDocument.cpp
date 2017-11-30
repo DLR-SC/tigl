@@ -1323,7 +1323,7 @@ void TIGLViewerDocument::exportMeshedWingVTK()
         START_COMMAND();
         TiglReturnCode err = tiglExportMeshedWingVTKByUID(m_cpacsHandle, wingUid.toStdString().c_str(), qstringToCstring(fileName), settings.getDeflection());
         if (err != TIGL_SUCCESS) {
-            displayError(QString("Error in function <u>tiglExportMeshedWingVTKByIndex</u>. Error code: %1").arg(err), "TIGL Error");
+            displayError(QString("Error in function <u>tiglExportMeshedWingVTKByUID</u>. Error code: %1").arg(err), "TIGL Error");
         }
     }
 }
@@ -1471,7 +1471,7 @@ void TIGLViewerDocument::exportMeshedFuselageVTK()
         START_COMMAND();
         TiglReturnCode err = tiglExportMeshedFuselageVTKByUID(m_cpacsHandle, wingUid.toStdString().c_str(), qstringToCstring(fileName), settings.getDeflection());
         if (err != TIGL_SUCCESS) {
-            displayError(QString("Error in function <u>tiglExportMeshedFuselageVTKByIndex</u>. Error code: %1").arg(err), "TIGL Error");
+            displayError(QString("Error in function <u>tiglExportMeshedFuselageVTKByUID</u>. Error code: %1").arg(err), "TIGL Error");
         }
     }
 }
@@ -1610,10 +1610,11 @@ void TIGLViewerDocument::exportFuselageBRep()
 
     if (!fileName.isEmpty()) {
         START_COMMAND();
-        tigl::ITiglGeometricComponent& fuselage = GetConfiguration().GetFuselage(fuselageUid.toStdString());
-        const TopoDS_Shape& loft = fuselage.GetLoft()->Shape();
-        BRepTools::Write(loft, fileName.toStdString().c_str());
-
+        TiglReturnCode err = tiglExportFuselageBREPByUID(m_cpacsHandle, qstringToCstring(fuselageUid), qstringToCstring(fileName));
+        if (err != TIGL_SUCCESS) {
+            displayError(QString("Error in function <u>exportFuselageBRep</u>. Error code: %1").arg(err), "TIGL Error");
+            return;
+        }
     }
 }
 
