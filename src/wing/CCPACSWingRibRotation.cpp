@@ -28,10 +28,23 @@ CCPACSWingRibRotation::CCPACSWingRibRotation(CCPACSWingRibsPositioning* parent)
     m_z = 90;
 }
 
-void CCPACSWingRibRotation::SetZ(const double & value) {
+void CCPACSWingRibRotation::SetRibRotationReference(const ECPACSRibRotation_ribRotationReference& value)
+{
+    generated::CPACSRibRotation::SetRibRotationReference(value);
+    m_parent->invalidateStructure();
+}
+
+void CCPACSWingRibRotation::SetRibRotationReference(const boost::optional<ECPACSRibRotation_ribRotationReference>& value)
+{
+    generated::CPACSRibRotation::SetRibRotationReference(value);
+    m_parent->invalidateStructure();
+}
+
+void CCPACSWingRibRotation::SetZ(const double & value)
+{
     generated::CPACSRibRotation::SetZ(value);
     // invalidate whole component segment structure since rib may be referenced anywhere
-    m_parent->GetParent()->GetParent()->GetParent()->Invalidate();
+    m_parent->invalidateStructure();
 }
 
 } // end namespace tigl

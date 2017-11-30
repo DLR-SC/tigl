@@ -83,12 +83,20 @@ const double CTiglWingProfilePointList::c_trailingEdgeRelGap = 1E-2;
 const double CTiglWingProfilePointList::c_blendingDistance = 0.1;
 
 // Constructor
-CTiglWingProfilePointList::CTiglWingProfilePointList(const CCPACSWingProfile& profile, const CCPACSPointListXYZ& cpacsPointList)
-    : profileRef(profile), profileWireAlgo(new CTiglInterpolateBsplineWire) {
+CTiglWingProfilePointList::CTiglWingProfilePointList(const CCPACSWingProfile& profile, CCPACSPointListXYZ& cpacsPointList)
+    : profileRef(profile), coordinates(cpacsPointList.AsVector()), profileWireAlgo(new CTiglInterpolateBsplineWire) {
+    OrderPoints();
+}
 
+void CTiglWingProfilePointList::Update()
+{
+    OrderPoints();
+    BuildWires();
+}
+
+void CTiglWingProfilePointList::OrderPoints()
+{
     // points with maximal/minimal y-component
-    coordinates = cpacsPointList.AsVector();
-
     std::size_t minZIndex = 0;
     std::size_t maxZIndex = 0;
     for (std::size_t i = 1; i < coordinates.size(); i++) {
@@ -111,22 +119,6 @@ CTiglWingProfilePointList::CTiglWingProfilePointList(const CCPACSWingProfile& pr
     }
 }
 
-std::string CTiglWingProfilePointList::CPACSID()
-{
-    return "pointList";
-}
-
-// Cleanup routine
-void CTiglWingProfilePointList::Cleanup()
-{
-    coordinates.clear();
-}
-
-void CTiglWingProfilePointList::Update()
-{
-    BuildWires();
-}
-
 // Builds the wing profile wire. The returned wire is already transformed by the
 // wing profile element transformation.
 void CTiglWingProfilePointList::BuildWires()
@@ -134,7 +126,7 @@ void CTiglWingProfilePointList::BuildWires()
     ITiglWireAlgorithm::CPointContainer points;
     ITiglWireAlgorithm::CPointContainer openPoints, closedPoints;
 
-	for (std::vector<CTiglPoint>::const_iterator it = coordinates.begin(); it != coordinates.end(); ++it) {
+    for (std::vector<CTiglPoint>::const_iterator it = coordinates.begin(); it != coordinates.end(); ++it) {
         points.push_back(it->Get_gp_Pnt());
     }
     // special handling for supporting opened and closed profiles
@@ -260,7 +252,7 @@ void CTiglWingProfilePointList::BuildLETEPoints()
 
     // find the point with the max dist to TE point
     lePoint = tePoint;
-	for (std::vector<CTiglPoint>::const_iterator it = coordinates.begin(); it != coordinates.end(); ++it) {
+    for (std::vector<CTiglPoint>::const_iterator it = coordinates.begin(); it != coordinates.end(); ++it) {
         gp_Pnt point = it->Get_gp_Pnt();
         if (tePoint.Distance(point) > tePoint.Distance(lePoint)) {
             lePoint = point;
@@ -279,6 +271,10 @@ void CTiglWingProfilePointList::BuildLETEPoints()
     double alphaLast  = vlast  * vchord / vchord.SquareMagnitude();
     double alphamin = std::min(alphaFirst, alphaLast);
     tePoint = lePoint.XYZ() + alphamin*(vchord.XYZ());
+}
+
+std::vector<CTiglPoint>& CTiglWingProfilePointList::GetSamplePoints() {
+    return coordinates;
 }
 
 const std::vector<CTiglPoint>& CTiglWingProfilePointList::GetSamplePoints() const {

@@ -128,7 +128,7 @@ void CTiglWingConnection::resolve() const
                 m_resolved.sectionUidPtr = &section.GetUID();
                 m_resolved.sectionIndex = i;
                 m_resolved.elementIndex = j;
-                m_resolved.profileUIDPtr = &element.GetProfileUID();
+                m_resolved.profileUIDPtr = &element.GetAirfoilUID();
                 return;
             }
         }

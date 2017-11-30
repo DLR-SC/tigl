@@ -30,7 +30,7 @@ namespace tigl
         CPACSFuselage::CPACSFuselage(CCPACSFuselages* parent, CTiglUIDManager* uidMgr) :
             m_uidMgr(uidMgr), 
             m_transformation(m_uidMgr), 
-            m_sections(m_uidMgr), 
+            m_sections(reinterpret_cast<CCPACSFuselage*>(this), m_uidMgr), 
             m_positionings(m_uidMgr), 
             m_segments(reinterpret_cast<CCPACSFuselage*>(this), m_uidMgr)
         {

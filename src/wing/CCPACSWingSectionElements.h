@@ -39,7 +39,7 @@ namespace tigl
 class CCPACSWingSectionElements : public generated::CPACSWingElements
 {
 public:
-    TIGL_EXPORT CCPACSWingSectionElements(CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSWingSectionElements(CCPACSWingSection* parent, CTiglUIDManager* uidMgr);
 
     // Get element count for this section
     TIGL_EXPORT int GetSectionElementCount() const;

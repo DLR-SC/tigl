@@ -39,7 +39,7 @@ namespace tigl
 class CCPACSFuselageSection : public generated::CPACSFuselageSection
 {
 public:
-    TIGL_EXPORT CCPACSFuselageSection(CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSFuselageSection(CCPACSFuselageSections* parent, CTiglUIDManager* uidMgr);
 
     // Read CPACS section elements
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& sectionXPath);

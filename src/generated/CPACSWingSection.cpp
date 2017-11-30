@@ -15,6 +15,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <cassert>
+#include "CCPACSWingSections.h"
 #include "CPACSWingSection.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -25,14 +27,23 @@ namespace tigl
 {
     namespace generated
     {
-        CPACSWingSection::CPACSWingSection(CTiglUIDManager* uidMgr) :
+        CPACSWingSection::CPACSWingSection(CCPACSWingSections* parent, CTiglUIDManager* uidMgr) :
             m_uidMgr(uidMgr), 
             m_transformation(m_uidMgr), 
-            m_elements(m_uidMgr) {}
+            m_elements(reinterpret_cast<CCPACSWingSection*>(this), m_uidMgr)
+        {
+            //assert(parent != NULL);
+            m_parent = parent;
+        }
         
         CPACSWingSection::~CPACSWingSection()
         {
             if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
+        }
+        
+        CCPACSWingSections* CPACSWingSection::GetParent() const
+        {
+            return m_parent;
         }
         
         CTiglUIDManager& CPACSWingSection::GetUIDManager()

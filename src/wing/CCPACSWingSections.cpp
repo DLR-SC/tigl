@@ -28,8 +28,8 @@
 
 namespace tigl
 {
-CCPACSWingSections::CCPACSWingSections(CTiglUIDManager* uidMgr)
-    : generated::CPACSWingSections(uidMgr) {}
+CCPACSWingSections::CCPACSWingSections(CCPACSWing* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSWingSections(parent, uidMgr) {}
 
 // Get section count
 int CCPACSWingSections::GetSectionCount() const
@@ -46,5 +46,4 @@ CCPACSWingSection& CCPACSWingSections::GetSection(int index) const
     }
     return *m_sections[index];
 }
-
 } // end namespace tigl

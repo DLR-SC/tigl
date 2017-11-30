@@ -47,7 +47,6 @@ const std::string& CCPACSWingSparPosition::GetElementUID() const
 void CCPACSWingSparPosition::SetElementUID(const std::string& uid)
 {
     m_elementUID_choice2 = uid;
-
     m_eta_choice1 = boost::none;
 
     // invalidate whole component segment structure, since ribs or cells could reference the spar
@@ -65,8 +64,14 @@ double CCPACSWingSparPosition::GetEta() const
 void CCPACSWingSparPosition::SetEta(double value)
 {
     m_eta_choice1 = value;
-   
     m_elementUID_choice2 = boost::none;
+
+    // invalidate whole component segment structure, since ribs or cells could reference the spar
+    GetParent()->GetParent()->GetParent()->Invalidate();
+}
+
+void CCPACSWingSparPosition::SetXsi(const double& value) {
+    generated::CPACSSparPosition::SetXsi(value);
 
     // invalidate whole component segment structure, since ribs or cells could reference the spar
     GetParent()->GetParent()->GetParent()->Invalidate();

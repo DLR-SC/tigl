@@ -15,7 +15,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <cassert>
 #include <CCPACSFuselageSection.h>
+#include "CCPACSFuselage.h"
 #include "CPACSFuselageSections.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -26,10 +28,19 @@ namespace tigl
 {
     namespace generated
     {
-        CPACSFuselageSections::CPACSFuselageSections(CTiglUIDManager* uidMgr) :
-            m_uidMgr(uidMgr) {}
+        CPACSFuselageSections::CPACSFuselageSections(CCPACSFuselage* parent, CTiglUIDManager* uidMgr) :
+            m_uidMgr(uidMgr)
+        {
+            //assert(parent != NULL);
+            m_parent = parent;
+        }
         
         CPACSFuselageSections::~CPACSFuselageSections() {}
+        
+        CCPACSFuselage* CPACSFuselageSections::GetParent() const
+        {
+            return m_parent;
+        }
         
         CTiglUIDManager& CPACSFuselageSections::GetUIDManager()
         {
@@ -45,7 +56,7 @@ namespace tigl
         {
             // read element section
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/section")) {
-                tixi::TixiReadElements(tixiHandle, xpath + "/section", m_sections, m_uidMgr);
+                tixi::TixiReadElements(tixiHandle, xpath + "/section", m_sections, reinterpret_cast<CCPACSFuselageSections*>(this), m_uidMgr);
             }
             
         }
@@ -69,7 +80,7 @@ namespace tigl
         
         CCPACSFuselageSection& CPACSFuselageSections::AddSection()
         {
-            m_sections.push_back(make_unique<CCPACSFuselageSection>(m_uidMgr));
+            m_sections.push_back(make_unique<CCPACSFuselageSection>(reinterpret_cast<CCPACSFuselageSections*>(this), m_uidMgr));
             return *m_sections.back();
         }
         

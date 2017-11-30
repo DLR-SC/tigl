@@ -201,12 +201,12 @@ namespace tigl
             return m_ribRotation;
         }
         
-        const CCPACSMaterial& CPACSWingRibCell::GetMaterial() const
+        const CCPACSMaterialDefinition& CPACSWingRibCell::GetMaterial() const
         {
             return m_material;
         }
         
-        CCPACSMaterial& CPACSWingRibCell::GetMaterial()
+        CCPACSMaterialDefinition& CPACSWingRibCell::GetMaterial()
         {
             return m_material;
         }

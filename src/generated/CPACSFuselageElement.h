@@ -27,6 +27,7 @@
 namespace tigl
 {
     class CTiglUIDManager;
+    class CCPACSFuselageSectionElements;
     
     namespace generated
     {
@@ -37,8 +38,11 @@ namespace tigl
         class CPACSFuselageElement
         {
         public:
-            TIGL_EXPORT CPACSFuselageElement(CTiglUIDManager* uidMgr);
+            TIGL_EXPORT CPACSFuselageElement(CCPACSFuselageSectionElements* parent, CTiglUIDManager* uidMgr);
+            
             TIGL_EXPORT virtual ~CPACSFuselageElement();
+            
+            TIGL_EXPORT CCPACSFuselageSectionElements* GetParent() const;
             
             TIGL_EXPORT CTiglUIDManager& GetUIDManager();
             TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
@@ -63,6 +67,8 @@ namespace tigl
             TIGL_EXPORT virtual CCPACSTransformation& GetTransformation();
             
         protected:
+            CCPACSFuselageSectionElements* m_parent;
+            
             CTiglUIDManager* m_uidMgr;
             
             std::string                  m_uID;

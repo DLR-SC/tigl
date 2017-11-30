@@ -40,13 +40,11 @@ namespace tigl
 class ITiglWingProfileAlgo
 {
 public:
-    // Clean up 
-    virtual void Cleanup()  = 0;
-
     virtual void Update()   = 0;
 
     // Returns points on profile.
 
+    virtual std::vector<CTiglPoint>& GetSamplePoints() = 0;
     virtual const std::vector<CTiglPoint>& GetSamplePoints() const = 0;
 
     // get upper wing profile wire

@@ -270,12 +270,12 @@ void CCPACSWingCell::SetOuterBorderRib(const std::string& ribDefinitionUID, int 
     m_positioningOuterBorder.SetRib(ribDefinitionUID, ribNumber);
 }
 
-CCPACSMaterial& CCPACSWingCell::GetMaterial()
+CCPACSMaterialDefinition& CCPACSWingCell::GetMaterial()
 {
     return m_skin.GetMaterial();
 }
 
-const CCPACSMaterial& CCPACSWingCell::GetMaterial() const
+const CCPACSMaterialDefinition& CCPACSWingCell::GetMaterial() const
 {
     return m_skin.GetMaterial();
 }

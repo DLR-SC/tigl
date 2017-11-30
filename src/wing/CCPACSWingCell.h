@@ -35,7 +35,6 @@ namespace tigl
 
 // forward declarations
 class CCPACSWingCells;
-class CCPACSMaterial;
 class CCPACSWingCellPositionChordwise;
 class CCPACSWingCellPositionSpanwise;
 
@@ -75,8 +74,8 @@ public:
     TIGL_EXPORT void SetInnerBorderRib(const std::string& ribDefinitionUID, int ribNumber);
     TIGL_EXPORT void SetOuterBorderRib(const std::string& ribDefinitionUID, int ribNumber);
 
-    TIGL_EXPORT CCPACSMaterial& GetMaterial();
-    TIGL_EXPORT const CCPACSMaterial& GetMaterial() const;
+    TIGL_EXPORT CCPACSMaterialDefinition& GetMaterial();
+    TIGL_EXPORT const CCPACSMaterialDefinition& GetMaterial() const;
 
     TIGL_EXPORT void Update() const;
     

@@ -29,8 +29,8 @@
 
 namespace tigl
 {
-CCPACSFuselageSections::CCPACSFuselageSections(CTiglUIDManager* uidMgr)
-    : generated::CPACSFuselageSections(uidMgr) {}
+CCPACSFuselageSections::CCPACSFuselageSections(CCPACSFuselage* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSFuselageSections(parent, uidMgr) {}
 
 int CCPACSFuselageSections::GetSectionCount() const
 {

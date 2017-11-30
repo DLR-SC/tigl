@@ -29,8 +29,8 @@
 
 namespace tigl
 {
-CCPACSFuselageSection::CCPACSFuselageSection(CTiglUIDManager* uidMgr)
-    : generated::CPACSFuselageSection(uidMgr) {}
+CCPACSFuselageSection::CCPACSFuselageSection(CCPACSFuselageSections* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSFuselageSection(parent, uidMgr) {}
 
 // Cleanup routine
 void CCPACSFuselageSection::Cleanup()

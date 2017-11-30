@@ -825,8 +825,6 @@ void ObjectImpl::addPointNorm(const CTiglPoint& p, const CTiglPoint& n, long pol
 
 unsigned long ObjectImpl::addPointNorm(const CTiglPoint& p, const CTiglPoint& n) 
 {
-    using namespace std;
-
     //check if point is already in pointlist
     unsigned int index = static_cast<unsigned int>(pointlist.size());
     std::pair<PointMap::iterator,bool> ret;

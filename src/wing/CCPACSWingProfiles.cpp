@@ -43,8 +43,8 @@ CCPACSWingProfiles::CCPACSWingProfiles(CTiglUIDManager* uidMgr)
 // Invalidates internal state
 void CCPACSWingProfiles::Invalidate()
 {
-    for (int i = 1; i < GetProfileCount(); i++) {
-        GetProfile(i).Invalidate();
+    for (int i = 0; i < m_wingAirfoils.size(); i++) {
+        static_cast<CCPACSWingProfile&>(*m_wingAirfoils[i]).Invalidate();
     }
 }
 
@@ -66,22 +66,9 @@ void CCPACSWingProfiles::ImportCPACS(const TixiDocumentHandle& tixiHandle, const
     }
 }
 
-void CCPACSWingProfiles::AddProfile(CCPACSWingProfile* profile)
-{
-    // free memory for existing profiles
-    DeleteProfile(profile->GetUID());
-    m_wingAirfoils.push_back(unique_ptr<CCPACSWingProfile>(profile));
-}
-
-
-void CCPACSWingProfiles::DeleteProfile(std::string uid)
-{
-    for (std::vector<unique_ptr<CCPACSProfileGeometry> >::iterator it = m_wingAirfoils.begin(); it != m_wingAirfoils.end(); ++it) {
-        if ((*it)->GetUID() == uid) {
-            m_wingAirfoils.erase(it);
-            return;
-        }
-    }
+CCPACSWingProfile& CCPACSWingProfiles::AddWingAirfoil() {
+    m_wingAirfoils.push_back(make_unique<CCPACSWingProfile>(m_uidMgr));
+    return static_cast<CCPACSWingProfile&>(*m_wingAirfoils.back());
 }
 
 // Returns the total count of wing profiles in this configuration

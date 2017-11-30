@@ -214,6 +214,9 @@ CCPACSWingSegment::CCPACSWingSegment(CCPACSWingSegments* parent, CTiglUIDManager
 // Destructor
 CCPACSWingSegment::~CCPACSWingSegment()
 {
+    // unregister
+    GetWing().GetConfiguration().GetUIDManager().RemoveGeometricComponent(GetUID());
+
     Cleanup();
 }
 
@@ -244,15 +247,18 @@ void CCPACSWingSegment::Update()
 }
 
 // Read CPACS segment elements
-void CCPACSWingSegment::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& segmentXPath)
+void CCPACSWingSegment::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& segmentXPath)
 {
     Cleanup();
     generated::CPACSWingSegment::ReadCPACS(tixiHandle, segmentXPath);
 
-    GetWing().GetConfiguration().GetUIDManager().AddGeometricComponent(m_uID, this);
+    if (m_uidMgr) {
+        m_uidMgr->AddGeometricComponent(m_uID, this);
+    }
 
-    innerConnection = CTiglWingConnection(m_fromElementUID, this);
-    outerConnection = CTiglWingConnection(m_toElementUID, this);
+    // trigger creation of connections
+    SetFromElementUID(m_fromElementUID);
+    SetToElementUID(m_toElementUID);
 
     // check that the profiles are consistent
     if (innerConnection.GetProfile().HasBluntTE() !=
@@ -268,8 +274,26 @@ void CCPACSWingSegment::ReadCPACS(TixiDocumentHandle tixiHandle, const std::stri
     Update();
 }
 
+void CCPACSWingSegment::SetUID(const std::string& uid) {
+    if (m_uidMgr) {
+        m_uidMgr->TryRemoveGeometricComponent(m_uID);
+        m_uidMgr->AddGeometricComponent(uid, this);
+    }
+    generated::CPACSWingSegment::SetUID(uid);
+}
+
 std::string CCPACSWingSegment::GetDefaultedUID() const {
     return generated::CPACSWingSegment::GetUID();
+}
+
+void CCPACSWingSegment::SetFromElementUID(const std::string& value) {
+    generated::CPACSWingSegment::SetFromElementUID(value);
+    innerConnection = CTiglWingConnection(m_fromElementUID, this);
+}
+
+void CCPACSWingSegment::SetToElementUID(const std::string& value) {
+    generated::CPACSWingSegment::SetToElementUID(value);
+    outerConnection = CTiglWingConnection(m_toElementUID, this);
 }
 
 // Returns the wing this segment belongs to

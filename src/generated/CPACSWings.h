@@ -48,13 +48,13 @@ namespace tigl
             TIGL_EXPORT virtual ~CPACSWings();
             
             template<typename P>
-            bool IsParent() const
+            TIGL_EXPORT bool IsParent() const
             {
                 return m_parentType != NULL && *m_parentType == typeid(P);
             }
             
             template<typename P>
-            P* GetParent() const
+            TIGL_EXPORT P* GetParent() const
             {
                 #ifdef HAVE_STDIS_SAME
                 static_assert(std::is_same<P, CCPACSAircraftModel>::value || std::is_same<P, CCPACSRotorcraftModel>::value, "template argument for P is not a parent class of CPACSWings");
