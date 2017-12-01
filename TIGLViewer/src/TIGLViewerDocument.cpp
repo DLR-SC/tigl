@@ -118,7 +118,7 @@ double getAbsDeflection (const TopoDS_Shape& theShape, double relDeflection)
 }
 
 TIGLViewerDocument::TIGLViewerDocument(TIGLViewerWindow *parentWidget)
-    : QObject(parentWidget), m_flapsDialog(new TIGLViewerSelectWingAndFlapStatusDialog(this))
+    : QObject(parentWidget), m_flapsDialog(new TIGLViewerSelectWingAndFlapStatusDialog(this, parentWidget))
 {
     app = parentWidget;
     m_cpacsHandle = -1;
