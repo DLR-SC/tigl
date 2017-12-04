@@ -2332,6 +2332,64 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetSegmentUID(TiglCPAC
     }
 }
 
+TIGL_COMMON_EXPORT TiglReturnCode tiglGetControlSurfaceCount(TiglCPACSConfigurationHandle cpacsHandle,
+                                                             const char * componentSegmentUID,
+                                                             int * numControlSurfaces)
+{
+    if (componentSegmentUID == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for componentSegmentUID ";
+        LOG(ERROR) << "in function call to tiglGetControlSurfaceCount." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+
+    if (numControlSurfaces == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for numControlSurfaces ";
+        LOG(ERROR) << "in function call to tiglGetControlSurfaceCount." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+
+        *numControlSurfaces = 0;
+
+        // search for component segment
+        int nwings = config.GetWingCount();
+        for (int iwing = 1; iwing <= nwings; ++iwing) {
+            tigl::CCPACSWing& wing = config.GetWing(iwing);
+            try {
+                tigl::CCPACSWingComponentSegment & compSeg = (tigl::CCPACSWingComponentSegment &) wing.GetComponentSegment(componentSegmentUID);
+                *numControlSurfaces += compSeg.getControlSurfaces().getControlSurfaceDevices()->getControlSurfaceDeviceCount();
+            }
+            catch (tigl::CTiglError& err){
+                if (err.getCode() == TIGL_UID_ERROR) {
+                    continue;
+                }
+                else {
+                    throw;
+                }
+            }
+
+        }
+
+
+        return TIGL_SUCCESS;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglGetControlSurfaceCount!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
 
 /******************************************************************************/
 /* Fuselage Functions                                                         */

@@ -1467,6 +1467,25 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetSegmentUID(TiglCPAC
                                                                         int  segmentIndex,
                                                                         char ** segmentUID);
 
+/**
+* @brief Returns the number of control surfaces belonging to a component segment.
+*
+*
+* @param[in]  cpacsHandle             Handle for the CPACS configuration
+* @param[in]  componentSegmentUID     UID of the componentSegment
+* @param[out] numControlSurfaces      number of control surfaces of the componentSegment
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_UID_ERROR if the component segment does not exist
+*   - TIGL_INDEX_ERROR if the segment index is invalid
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglGetControlSurfaceCount(TiglCPACSConfigurationHandle cpacsHandle,
+                                                             const char * componentSegmentUID,
+                                                             int * numControlSurfaces);
+
 /*@}*/
 /*****************************************************************************************************/
 
