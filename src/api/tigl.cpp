@@ -2352,15 +2352,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetControlSurfaceCount(TiglCPACSConfigurat
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
 
-        *numControlSurfaces = 0;
-
         // search for component segment
         int nwings = config.GetWingCount();
         for (int iwing = 1; iwing <= nwings; ++iwing) {
             tigl::CCPACSWing& wing = config.GetWing(iwing);
             try {
                 tigl::CCPACSWingComponentSegment & compSeg = (tigl::CCPACSWingComponentSegment &) wing.GetComponentSegment(componentSegmentUID);
-                *numControlSurfaces += compSeg.getControlSurfaces().getControlSurfaceDevices()->getControlSurfaceDeviceCount();
+                *numControlSurfaces = compSeg.getControlSurfaces().getControlSurfaceDevices()->getControlSurfaceDeviceCount();
             }
             catch (tigl::CTiglError& err){
                 if (err.getCode() == TIGL_UID_ERROR) {
@@ -2386,6 +2384,71 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetControlSurfaceCount(TiglCPACSConfigurat
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglGetControlSurfaceCount!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglGetControlSurfaceUID(TiglCPACSConfigurationHandle cpacsHandle,
+                                                          const char * componentSegmentUID,
+                                                          int controlSurfaceIndex,
+                                                          char ** controlSurfaceUID)
+{
+    if (controlSurfaceIndex < 1 )
+        return TIGL_INDEX_ERROR;
+
+    if (componentSegmentUID == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for componentSegmentUID ";
+        LOG(ERROR) << "in function call to tiglGetControlSurfaceUID." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+
+    if (controlSurfaceUID == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for controlSurfaceUID ";
+        LOG(ERROR) << "in function call to tiglGetControlSurfaceUID." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+
+        // search for component segment
+        int nwings = config.GetWingCount();
+        for (int iwing = 1; iwing <= nwings; ++iwing) {
+            tigl::CCPACSWing& wing = config.GetWing(iwing);
+            try {
+                tigl::CCPACSWingComponentSegment & compSeg = (tigl::CCPACSWingComponentSegment &) wing.GetComponentSegment(componentSegmentUID);
+
+                if ( controlSurfaceIndex > compSeg.getControlSurfaces().getControlSurfaceDevices()->getControlSurfaceDeviceCount() )
+                    return TIGL_INDEX_ERROR;
+
+                *controlSurfaceUID = const_cast<char*>(compSeg.getControlSurfaces()    \
+                                                           .getControlSurfaceDevices() \
+                                                           ->getControlSurfaceDeviceByID(controlSurfaceIndex).GetUID().c_str()
+                                                       );
+            }
+            catch (tigl::CTiglError& err){
+                if (err.getCode() == TIGL_UID_ERROR) {
+                    continue;
+                }
+                else {
+                    throw;
+                }
+            }
+
+        }
+        return TIGL_SUCCESS;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglGetControlSurfaceUID!" << std::endl;
         return TIGL_ERROR;
     }
 }

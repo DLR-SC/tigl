@@ -1479,12 +1479,34 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetSegmentUID(TiglCPAC
 *   - TIGL_SUCCESS if no error occurred
 *   - TIGL_NOT_FOUND if no configuration was found for the given handle
 *   - TIGL_UID_ERROR if the component segment does not exist
-*   - TIGL_INDEX_ERROR if the segment index is invalid
+*   - TIGL_NULL_POINTER if either the componentSegmentUID or numControlSurfaces are NULL pointers
 *   - TIGL_ERROR if some other error occurred
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglGetControlSurfaceCount(TiglCPACSConfigurationHandle cpacsHandle,
                                                              const char * componentSegmentUID,
                                                              int * numControlSurfaces);
+
+/**
+* @brief Returns the UID of a control surface given its index in a component segment.
+*
+*
+* @param[in]  cpacsHandle             Handle for the CPACS configuration
+* @param[in]  componentSegmentUID     UID of the componentSegment
+* @param[in]  controlSurfaceIndex     Index of the control surface, starting at 1
+* @param[out] controlSurfaceUID       UID of the control surface
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_UID_ERROR if the component segment does not exist
+*   - TIGL_NULL_POINTER if either the componentSegmentUID or controlSurfaceUID are NULL pointers
+*   - TIGL_INDEX_ERROR if the control surface index is invalid
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglGetControlSurfaceUID(TiglCPACSConfigurationHandle cpacsHandle,
+                                                          const char * componentSegmentUID,
+                                                          int controlSurfaceIndex,
+                                                          char ** controlSurfaceUID);
 
 /*@}*/
 /*****************************************************************************************************/
