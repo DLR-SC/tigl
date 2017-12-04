@@ -1527,6 +1527,45 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetControlSurfaceType(TiglCPACSConfigurati
                                                             const char * controlSurfaceUID,
                                                             TiglControlSurfaceType * controlSurfaceType);
 
+
+/**
+* @brief Returns the minimum value for the deflection of a control device.
+*
+*
+* @param[in]  cpacsHandle             Handle for the CPACS configuration
+* @param[in]  controlSurfaceUID       UID of the control surface
+* @param[out] minDeflection           Minimum value for the deflection
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_UID_ERROR if the control surface does not exist
+*   - TIGL_NULL_POINTER if minDeflection is a NULL pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetMinimumDeflection(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                         const char * controlSurfaceUID,
+                                                                         double * minDeflection);
+
+/**
+* @brief Returns the maximum value for the deflection of a control device.
+*
+*
+* @param[in]  cpacsHandle             Handle for the CPACS configuration
+* @param[in]  controlSurfaceUID       UID of the control surface
+* @param[out] minDeflection           Maximum value for the deflection
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_UID_ERROR if the control surface does not exist
+*   - TIGL_NULL_POINTER if maxDeflection is a NULL pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetMaximumDeflection(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                         const char * controlSurfaceUID,
+                                                                         double * maxDeflection);
+
 /*@}*/
 /*****************************************************************************************************/
 
