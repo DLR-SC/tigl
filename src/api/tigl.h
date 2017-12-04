@@ -1508,6 +1508,25 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetControlSurfaceUID(TiglCPACSConfiguratio
                                                           int controlSurfaceIndex,
                                                           char ** controlSurfaceUID);
 
+/**
+* @brief Returns the type of a control surface given its UID.
+*
+*
+* @param[in]  cpacsHandle             Handle for the CPACS configuration
+* @param[in]  controlSurfaceUID       UID of the control surface
+* @param[out] controlSurfaceType      Type of the control surface
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_UID_ERROR if the control surface does not exist
+*   - TIGL_NULL_POINTER if controlSurfaceType is a NULL pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglGetControlSurfaceType(TiglCPACSConfigurationHandle cpacsHandle,
+                                                            const char * controlSurfaceUID,
+                                                            TiglControlSurfaceType * controlSurfaceType);
+
 /*@}*/
 /*****************************************************************************************************/
 

@@ -107,6 +107,17 @@ CCPACSControlSurfaceDevice& CCPACSControlSurfaceDevices::getControlSurfaceDevice
     return *controlSurfaceDevices[id-1];
 }
 
+CCPACSControlSurfaceDevice& CCPACSControlSurfaceDevices::getControlSurfaceDevice(
+        const std::string& uid)
+{
+    for ( int id = 0; id < controlSurfaceDevices.size(); id ++ ) {
+        if ( controlSurfaceDevices[id]->GetUID() == uid ) {
+            return (CCPACSControlSurfaceDevice &)(*(controlSurfaceDevices[id]));
+        }
+    }
+    throw CTiglError("Error: Invalid uid in CCPACSControlSurfaceDevices::getControlSurfaceDevice", TIGL_UID_ERROR);
+}
+
 int CCPACSControlSurfaceDevices::getControlSurfaceDeviceCount()
 {
     return controlSurfaceDevices.size();
