@@ -27,28 +27,15 @@ namespace tigl
 CCPACSWingSparPosition::CCPACSWingSparPosition(CCPACSWingSparPositions* sparPositions, CTiglUIDManager* uidMgr)
 : generated::CPACSSparPosition(sparPositions, uidMgr) {}
 
-CCPACSWingSparPosition::InputType CCPACSWingSparPosition::GetInputType() const
-{
-    if (m_eta_choice1)
-        return Eta;
-    if (m_elementUID_choice2)
-        return ElementUID;
-    throw CTiglError("Invalid input type");
-}
 
 const std::string& CCPACSWingSparPosition::GetElementUID() const
 {
-    if (!m_elementUID_choice2) {
-        throw CTiglError("SparPosition is not defined via elementUID. Please check InputType first before calling CCPACSWingSparPosition::GetElementUID()");
-    }
-    return *m_elementUID_choice2;
+    return GetSparPoint().GetReferenceUID();
 }
 
 void CCPACSWingSparPosition::SetElementUID(const std::string& uid)
 {
-    m_elementUID_choice2 = uid;
-
-    m_eta_choice1 = boost::none;
+    GetSparPoint().SetReferenceUID(uid);
 
     // invalidate whole component segment structure, since ribs or cells could reference the spar
     GetParent()->GetParent()->GetParent()->Invalidate();
@@ -56,17 +43,12 @@ void CCPACSWingSparPosition::SetElementUID(const std::string& uid)
 
 double CCPACSWingSparPosition::GetEta() const
 {
-    if (!m_eta_choice1) {
-        throw CTiglError("SparPosition is not defined via eta. Please check InputType first before calling CCPACSWingSparPosition::GetEta()");
-    }
-    return *m_eta_choice1;
+    return GetSparPoint().GetEta();
 }
 
 void CCPACSWingSparPosition::SetEta(double value)
 {
-    m_eta_choice1 = value;
-   
-    m_elementUID_choice2 = boost::none;
+    GetSparPoint().SetEta(value);
 
     // invalidate whole component segment structure, since ribs or cells could reference the spar
     GetParent()->GetParent()->GetParent()->Invalidate();

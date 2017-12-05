@@ -118,7 +118,7 @@ private:
     void BuildRibCapsGeometry() const;
 
     // Generates the cut shape for the rib at the passed eta position, or at the passed element or spar position
-    CutGeometry BuildRibCutGeometry(double currentEta, const std::string& elementUID, const std::string& sparPositionUID) const;
+    CutGeometry BuildRibCutGeometry(double currentEta, const std::string& elementUID) const;
 
     // Returns the wire of the rib reference line (either leadingEdge, 
     // trailingEdge, or spar midplane line)

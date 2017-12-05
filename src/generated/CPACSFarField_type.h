@@ -30,7 +30,7 @@ namespace tigl
         // This enum is used in:
         // CPACSFarField
         
-        // generated from /xsd:schema/xsd:complexType[317]/xsd:complexContent/xsd:extension/xsd:sequence/xsd:element[1]/xsd:complexType/xsd:simpleContent
+        // generated from /xsd:schema/xsd:complexType[325]/xsd:complexContent/xsd:extension/xsd:sequence/xsd:element[1]/xsd:complexType/xsd:simpleContent
         enum CPACSFarField_type
         {
             halfSphere,

@@ -82,7 +82,7 @@ public:
     TIGL_EXPORT CCPACSFuselageSegment& GetSegment(std::string uid);
 
     // Get the positioning transformation for a given section index
-    TIGL_EXPORT CTiglTransformation GetPositioningTransformation(const std::string& sectionUID);
+    TIGL_EXPORT boost::optional<CTiglTransformation> GetPositioningTransformation(const std::string& sectionUID);
 
     // Gets a point on the given fuselage segment in dependence of a parameters eta and zeta with
     // 0.0 <= eta <= 1.0 and 0.0 <= zeta <= 1.0. For eta = 0.0 the point lies on the start

@@ -35,7 +35,7 @@ namespace tigl
         // This class is used in:
         // CPACSWingSegments
         
-        // generated from /xsd:schema/xsd:complexType[921]
+        // generated from /xsd:schema/xsd:complexType[954]
         class CPACSWingSegment
         {
         public:

@@ -34,7 +34,7 @@ namespace tigl
         // This class is used in:
         // CPACSAircraftModel
         
-        // generated from /xsd:schema/xsd:complexType[388]
+        // generated from /xsd:schema/xsd:complexType[398]
         class CPACSGenericGeometryComponents
         {
         public:

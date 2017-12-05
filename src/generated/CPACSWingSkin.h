@@ -32,7 +32,7 @@ namespace tigl
         // CPACSWingCell
         // CPACSWingShell
         
-        // generated from /xsd:schema/xsd:complexType[925]
+        // generated from /xsd:schema/xsd:complexType[958]
         class CPACSWingSkin
         {
         public:

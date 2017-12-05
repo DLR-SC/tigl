@@ -127,15 +127,7 @@ bool IsOuterSparPointInSection(const std::string& sparUid, double eta, const CCP
     else {
         return false;
     }
-    const CCPACSWingSparPosition& pos = sparSegment.GetSparPosition(sparSegment.GetSparPositionUIDs().GetSparPositionUID(sparPositionIndex));
-    if (pos.GetInputType() == CCPACSWingSparPosition::ElementUID) {
-        return true;
-    }
-    else if (pos.GetInputType() == CCPACSWingSparPosition::Eta &&
-             (pos.GetEta() < Precision::Confusion() || pos.GetEta() > 1 - Precision::Confusion())) {
-        return true;
-    }
-    return false;
+    return true;
 }
 
 gp_Vec GetUpVectorWithoutXRotation(const std::string& ribReference, double currentEta, const gp_Pnt& startPnt, 
@@ -281,16 +273,8 @@ gp_Pnt GetSparMidplanePoint(const CCPACSWingSparPosition& sparPos, const CCPACSW
 {
     const CTiglWingStructureReference& wingStructureReference = structure.GetWingStructureReference();
     gp_Pnt midplanePoint;
-    if (sparPos.GetInputType() == CCPACSWingSparPosition::ElementUID) {
-        CCPACSWingComponentSegment& componentSegment = wingStructureReference.GetWingComponentSegment();
-        midplanePoint = getSectionElementChordlinePoint(componentSegment, sparPos.GetElementUID(), sparPos.GetXsi());
-    }
-    else if (sparPos.GetInputType() == CCPACSWingSparPosition::Eta) {
-        midplanePoint = wingStructureReference.GetPoint(sparPos.GetEta(), sparPos.GetXsi(), WING_COORDINATE_SYSTEM);
-    }
-    else {
-        throw CTiglError("Unknown SparPosition InputType found in CCPACSWingRibsDefinition::GetSparMidplanePoint");
-    }
+    midplanePoint = wingStructureReference.GetPoint(sparPos.GetSparPoint().GetEta(), sparPos.GetSparPoint().GetXsi(), WING_COORDINATE_SYSTEM);
+
     return midplanePoint;
 }
 

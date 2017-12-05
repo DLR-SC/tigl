@@ -21,6 +21,8 @@
 #include <boost/utility/in_place_factory.hpp>
 #include <string>
 #include <tixi.h>
+#include "CPACSEtaIsoLine.h"
+#include "CreateIfNotExists.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -32,7 +34,7 @@ namespace tigl
         // This class is used in:
         // CPACSWingCell
         
-        // generated from /xsd:schema/xsd:complexType[118]
+        // generated from /xsd:schema/xsd:complexType[116]
         class CPACSCellPositioningSpanwise
         {
         public:
@@ -47,13 +49,11 @@ namespace tigl
             
             TIGL_EXPORT bool ValidateChoices() const;
             
-            TIGL_EXPORT virtual const boost::optional<double>& GetEta1_choice1() const;
-            TIGL_EXPORT virtual void SetEta1_choice1(const double& value);
-            TIGL_EXPORT virtual void SetEta1_choice1(const boost::optional<double>& value);
+            TIGL_EXPORT virtual const boost::optional<CPACSEtaIsoLine>& GetEta1_choice1() const;
+            TIGL_EXPORT virtual boost::optional<CPACSEtaIsoLine>& GetEta1_choice1();
             
-            TIGL_EXPORT virtual const boost::optional<double>& GetEta2_choice1() const;
-            TIGL_EXPORT virtual void SetEta2_choice1(const double& value);
-            TIGL_EXPORT virtual void SetEta2_choice1(const boost::optional<double>& value);
+            TIGL_EXPORT virtual const boost::optional<CPACSEtaIsoLine>& GetEta2_choice1() const;
+            TIGL_EXPORT virtual boost::optional<CPACSEtaIsoLine>& GetEta2_choice1();
             
             TIGL_EXPORT virtual const boost::optional<int>& GetRibNumber_choice2() const;
             TIGL_EXPORT virtual void SetRibNumber_choice2(const int& value);
@@ -63,13 +63,19 @@ namespace tigl
             TIGL_EXPORT virtual void SetRibDefinitionUID_choice2(const std::string& value);
             TIGL_EXPORT virtual void SetRibDefinitionUID_choice2(const boost::optional<std::string>& value);
             
+            TIGL_EXPORT virtual CPACSEtaIsoLine& GetEta1_choice1(CreateIfNotExistsTag);
+            TIGL_EXPORT virtual void RemoveEta1_choice1();
+            
+            TIGL_EXPORT virtual CPACSEtaIsoLine& GetEta2_choice1(CreateIfNotExistsTag);
+            TIGL_EXPORT virtual void RemoveEta2_choice1();
+            
         protected:
             CCPACSWingCell* m_parent;
             
-            boost::optional<double>      m_eta1_choice1;
-            boost::optional<double>      m_eta2_choice1;
-            boost::optional<int>         m_ribNumber_choice2;
-            boost::optional<std::string> m_ribDefinitionUID_choice2;
+            boost::optional<CPACSEtaIsoLine> m_eta1_choice1;
+            boost::optional<CPACSEtaIsoLine> m_eta2_choice1;
+            boost::optional<int>             m_ribNumber_choice2;
+            boost::optional<std::string>     m_ribDefinitionUID_choice2;
             
         private:
             #ifdef HAVE_CPP11

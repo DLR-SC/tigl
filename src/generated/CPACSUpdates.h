@@ -32,7 +32,7 @@ namespace tigl
         // This class is used in:
         // CPACSHeader
         
-        // generated from /xsd:schema/xsd:complexType[858]
+        // generated from /xsd:schema/xsd:complexType[892]
         class CPACSUpdates
         {
         public:

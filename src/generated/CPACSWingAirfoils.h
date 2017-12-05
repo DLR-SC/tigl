@@ -34,7 +34,7 @@ namespace tigl
         // This class is used in:
         // CPACSProfiles
         
-        // generated from /xsd:schema/xsd:complexType[891]
+        // generated from /xsd:schema/xsd:complexType[924]
         class CPACSWingAirfoils
         {
         public:

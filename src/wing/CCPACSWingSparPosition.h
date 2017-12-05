@@ -28,16 +28,8 @@ class CCPACSWingSpars;
 class CCPACSWingSparPosition : public generated::CPACSSparPosition
 {
 public:
-    enum InputType
-    {
-        ElementUID,
-        Eta,
-        None
-    };
 
     TIGL_EXPORT CCPACSWingSparPosition(CCPACSWingSparPositions* sparPositions, CTiglUIDManager* uidMgr);
-
-    TIGL_EXPORT InputType GetInputType() const;
 
     TIGL_EXPORT const std::string& GetElementUID() const;
     TIGL_EXPORT void SetElementUID(const std::string&);

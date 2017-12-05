@@ -28,8 +28,7 @@ namespace tigl
     namespace generated
     {
         CPACSSparPosition::CPACSSparPosition(CCPACSWingSparPositions* parent, CTiglUIDManager* uidMgr) :
-            m_uidMgr(uidMgr), 
-            m_xsi(0)
+            m_uidMgr(uidMgr)
         {
             //assert(parent != NULL);
             m_parent = parent;
@@ -37,7 +36,7 @@ namespace tigl
         
         CPACSSparPosition::~CPACSSparPosition()
         {
-            if (m_uidMgr && m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
+            if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
         }
         
         CCPACSWingSparPositions* CPACSSparPosition::GetParent() const
@@ -60,106 +59,37 @@ namespace tigl
             // read attribute uID
             if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
                 m_uID = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
-                if (m_uID->empty()) {
-                    LOG(WARNING) << "Optional attribute uID is present but empty at xpath " << xpath;
+                if (m_uID.empty()) {
+                    LOG(WARNING) << "Required attribute uID is empty at xpath " << xpath;
                 }
-            }
-            
-            // read element xsi
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/xsi")) {
-                m_xsi = tixi::TixiGetElement<double>(tixiHandle, xpath + "/xsi");
             }
             else {
-                LOG(ERROR) << "Required element xsi is missing at xpath " << xpath;
+                LOG(ERROR) << "Required attribute uID is missing at xpath " << xpath;
             }
             
-            // read element eta
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/eta")) {
-                m_eta_choice1 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/eta");
+            // read element sparPoint
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/sparPoint")) {
+                m_sparPoint.ReadCPACS(tixiHandle, xpath + "/sparPoint");
+            }
+            else {
+                LOG(ERROR) << "Required element sparPoint is missing at xpath " << xpath;
             }
             
-            // read element elementUID
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/elementUID")) {
-                m_elementUID_choice2 = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/elementUID");
-                if (m_elementUID_choice2->empty()) {
-                    LOG(WARNING) << "Optional element elementUID is present but empty at xpath " << xpath;
-                }
-            }
-            
-            if (m_uidMgr && m_uID) m_uidMgr->RegisterObject(*m_uID, *this);
-            if (!ValidateChoices()) {
-                LOG(ERROR) << "Invalid choice configuration at xpath " << xpath;
-            }
+            if (m_uidMgr) m_uidMgr->RegisterObject(m_uID, *this);
         }
         
         void CPACSSparPosition::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write attribute uID
-            if (m_uID) {
-                tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", *m_uID);
-            } else {
-                if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
-                    tixi::TixiRemoveAttribute(tixiHandle, xpath, "uID");
-                }
-            }
+            tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
             
-            // write element xsi
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/xsi");
-            tixi::TixiSaveElement(tixiHandle, xpath + "/xsi", m_xsi);
-            
-            // write element eta
-            if (m_eta_choice1) {
-                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/eta");
-                tixi::TixiSaveElement(tixiHandle, xpath + "/eta", *m_eta_choice1);
-            } else {
-                if (tixi::TixiCheckElement(tixiHandle, xpath + "/eta")) {
-                    tixi::TixiRemoveElement(tixiHandle, xpath + "/eta");
-                }
-            }
-            
-            // write element elementUID
-            if (m_elementUID_choice2) {
-                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/elementUID");
-                tixi::TixiSaveElement(tixiHandle, xpath + "/elementUID", *m_elementUID_choice2);
-            } else {
-                if (tixi::TixiCheckElement(tixiHandle, xpath + "/elementUID")) {
-                    tixi::TixiRemoveElement(tixiHandle, xpath + "/elementUID");
-                }
-            }
+            // write element sparPoint
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/sparPoint");
+            m_sparPoint.WriteCPACS(tixiHandle, xpath + "/sparPoint");
             
         }
         
-        bool CPACSSparPosition::ValidateChoices() const
-        {
-            return
-            (
-                (
-                    (
-                        // mandatory elements of this choice must be there
-                        m_eta_choice1.is_initialized()
-                        &&
-                        // elements of other choices must not be there
-                        !(
-                            m_elementUID_choice2.is_initialized()
-                        )
-                    )
-                    +
-                    (
-                        // mandatory elements of this choice must be there
-                        m_elementUID_choice2.is_initialized()
-                        &&
-                        // elements of other choices must not be there
-                        !(
-                            m_eta_choice1.is_initialized()
-                        )
-                    )
-                    == 1
-                )
-            )
-            ;
-        }
-        
-        const boost::optional<std::string>& CPACSSparPosition::GetUID() const
+        const std::string& CPACSSparPosition::GetUID() const
         {
             return m_uID;
         }
@@ -167,59 +97,20 @@ namespace tigl
         void CPACSSparPosition::SetUID(const std::string& value)
         {
             if (m_uidMgr) {
-                if (m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
+                m_uidMgr->TryUnregisterObject(m_uID);
                 m_uidMgr->RegisterObject(value, *this);
             }
             m_uID = value;
         }
         
-        void CPACSSparPosition::SetUID(const boost::optional<std::string>& value)
+        const CPACSEtaXsiRelHeightPoint& CPACSSparPosition::GetSparPoint() const
         {
-            if (m_uidMgr) {
-                if (m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
-                if (value) m_uidMgr->RegisterObject(*value, *this);
-            }
-            m_uID = value;
+            return m_sparPoint;
         }
         
-        const double& CPACSSparPosition::GetXsi() const
+        CPACSEtaXsiRelHeightPoint& CPACSSparPosition::GetSparPoint()
         {
-            return m_xsi;
-        }
-        
-        void CPACSSparPosition::SetXsi(const double& value)
-        {
-            m_xsi = value;
-        }
-        
-        const boost::optional<double>& CPACSSparPosition::GetEta_choice1() const
-        {
-            return m_eta_choice1;
-        }
-        
-        void CPACSSparPosition::SetEta_choice1(const double& value)
-        {
-            m_eta_choice1 = value;
-        }
-        
-        void CPACSSparPosition::SetEta_choice1(const boost::optional<double>& value)
-        {
-            m_eta_choice1 = value;
-        }
-        
-        const boost::optional<std::string>& CPACSSparPosition::GetElementUID_choice2() const
-        {
-            return m_elementUID_choice2;
-        }
-        
-        void CPACSSparPosition::SetElementUID_choice2(const std::string& value)
-        {
-            m_elementUID_choice2 = value;
-        }
-        
-        void CPACSSparPosition::SetElementUID_choice2(const boost::optional<std::string>& value)
-        {
-            m_elementUID_choice2 = value;
+            return m_sparPoint;
         }
         
     }

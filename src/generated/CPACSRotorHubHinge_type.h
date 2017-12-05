@@ -30,7 +30,7 @@ namespace tigl
         // This enum is used in:
         // CPACSRotorHubHinge
         
-        // generated from /xsd:schema/xsd:complexType[740]/xsd:complexContent/xsd:extension/xsd:all/xsd:element[4]/xsd:simpleType
+        // generated from /xsd:schema/xsd:complexType[768]/xsd:complexContent/xsd:extension/xsd:all/xsd:element[4]/xsd:simpleType
         enum CPACSRotorHubHinge_type
         {
             flap,

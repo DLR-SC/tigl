@@ -35,7 +35,7 @@ namespace tigl
         // This class is used in:
         // CPACSFuselageCutOuts
         
-        // generated from /xsd:schema/xsd:complexType[359]
+        // generated from /xsd:schema/xsd:complexType[369]
         class CPACSFuselageCutOut
         {
         public:

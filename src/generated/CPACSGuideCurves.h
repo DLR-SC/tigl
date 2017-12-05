@@ -37,7 +37,7 @@ namespace tigl
         // CPACSFuselageSegment
         // CPACSWingSegment
         
-        // generated from /xsd:schema/xsd:complexType[422]
+        // generated from /xsd:schema/xsd:complexType[436]
         class CPACSGuideCurves
         {
         public:

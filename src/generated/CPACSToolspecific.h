@@ -32,7 +32,7 @@ namespace tigl
         // This class is used in:
         // CPACSCpacs
         
-        // generated from /xsd:schema/xsd:complexType[827]
+        // generated from /xsd:schema/xsd:complexType[861]
         class CPACSToolspecific
         {
         public:

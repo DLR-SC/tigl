@@ -34,7 +34,7 @@ namespace tigl
         // This class is used in:
         // CPACSRotorBladeAttachment
         
-        // generated from /xsd:schema/xsd:complexType[741]
+        // generated from /xsd:schema/xsd:complexType[769]
         class CPACSRotorHubHinges
         {
         public:

@@ -31,7 +31,7 @@ namespace tigl
         // This class is used in:
         // CPACSProfileGeometry
         
-        // generated from /xsd:schema/xsd:complexType[238]
+        // generated from /xsd:schema/xsd:complexType[236]
         class CPACSCst2D
         {
         public:

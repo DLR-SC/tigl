@@ -19,6 +19,7 @@
 
 #include <string>
 #include <tixi.h>
+#include "CPACSEtaIsoLine.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -30,7 +31,7 @@ namespace tigl
         // This class is used in:
         // CPACSWingRibsDefinition
         
-        // generated from /xsd:schema/xsd:complexType[913]
+        // generated from /xsd:schema/xsd:complexType[946]
         class CPACSWingRibExplicitPositioning
         {
         public:
@@ -46,22 +47,22 @@ namespace tigl
             TIGL_EXPORT virtual const std::string& GetStartReference() const;
             TIGL_EXPORT virtual void SetStartReference(const std::string& value);
             
-            TIGL_EXPORT virtual const double& GetEtaStart() const;
-            TIGL_EXPORT virtual void SetEtaStart(const double& value);
+            TIGL_EXPORT virtual const CPACSEtaIsoLine& GetEtaStart() const;
+            TIGL_EXPORT virtual CPACSEtaIsoLine& GetEtaStart();
             
             TIGL_EXPORT virtual const std::string& GetEndReference() const;
             TIGL_EXPORT virtual void SetEndReference(const std::string& value);
             
-            TIGL_EXPORT virtual const double& GetEtaEnd() const;
-            TIGL_EXPORT virtual void SetEtaEnd(const double& value);
+            TIGL_EXPORT virtual const CPACSEtaIsoLine& GetEtaEnd() const;
+            TIGL_EXPORT virtual CPACSEtaIsoLine& GetEtaEnd();
             
         protected:
             CCPACSWingRibsDefinition* m_parent;
             
-            std::string m_startReference;
-            double      m_etaStart;
-            std::string m_endReference;
-            double      m_etaEnd;
+            std::string     m_startReference;
+            CPACSEtaIsoLine m_etaStart;
+            std::string     m_endReference;
+            CPACSEtaIsoLine m_etaEnd;
             
         private:
             #ifdef HAVE_CPP11

@@ -30,7 +30,7 @@ namespace tigl
         // This enum is used in:
         // CPACSFuselageCutOut
         
-        // generated from /xsd:schema/xsd:complexType[359]/xsd:complexContent/xsd:extension/xsd:all/xsd:element[14]/xsd:complexType/xsd:simpleContent
+        // generated from /xsd:schema/xsd:complexType[369]/xsd:complexContent/xsd:extension/xsd:all/xsd:element[14]/xsd:complexType/xsd:simpleContent
         enum CPACSFuselageCutOut_cutout
         {
             window,

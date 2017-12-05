@@ -31,7 +31,6 @@ namespace tigl
             m_uidMgr(uidMgr), 
             m_transformation(m_uidMgr), 
             m_sections(m_uidMgr), 
-            m_positionings(m_uidMgr), 
             m_segments(reinterpret_cast<CCPACSFuselage*>(this), m_uidMgr)
         {
             //assert(parent != NULL);
@@ -121,10 +120,13 @@ namespace tigl
             
             // read element positionings
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/positionings")) {
-                m_positionings.ReadCPACS(tixiHandle, xpath + "/positionings");
-            }
-            else {
-                LOG(ERROR) << "Required element positionings is missing at xpath " << xpath;
+                m_positionings = boost::in_place(m_uidMgr);
+                try {
+                    m_positionings->ReadCPACS(tixiHandle, xpath + "/positionings");
+                } catch(const std::exception& e) {
+                    LOG(ERROR) << "Failed to read positionings at xpath " << xpath << ": " << e.what();
+                    m_positionings = boost::none;
+                }
             }
             
             // read element segments
@@ -196,8 +198,14 @@ namespace tigl
             m_sections.WriteCPACS(tixiHandle, xpath + "/sections");
             
             // write element positionings
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/positionings");
-            m_positionings.WriteCPACS(tixiHandle, xpath + "/positionings");
+            if (m_positionings) {
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/positionings");
+                m_positionings->WriteCPACS(tixiHandle, xpath + "/positionings");
+            } else {
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/positionings")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/positionings");
+                }
+            }
             
             // write element segments
             tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/segments");
@@ -304,12 +312,12 @@ namespace tigl
             return m_sections;
         }
         
-        const CCPACSPositionings& CPACSFuselage::GetPositionings() const
+        const boost::optional<CCPACSPositionings>& CPACSFuselage::GetPositionings() const
         {
             return m_positionings;
         }
         
-        CCPACSPositionings& CPACSFuselage::GetPositionings()
+        boost::optional<CCPACSPositionings>& CPACSFuselage::GetPositionings()
         {
             return m_positionings;
         }
@@ -332,6 +340,18 @@ namespace tigl
         boost::optional<CPACSFuselageCutOuts>& CPACSFuselage::GetCutOuts()
         {
             return m_cutOuts;
+        }
+        
+        CCPACSPositionings& CPACSFuselage::GetPositionings(CreateIfNotExistsTag)
+        {
+            if (!m_positionings)
+                m_positionings = boost::in_place(m_uidMgr);
+            return *m_positionings;
+        }
+        
+        void CPACSFuselage::RemovePositionings()
+        {
+            m_positionings = boost::none;
         }
         
         CPACSFuselageCutOuts& CPACSFuselage::GetCutOuts(CreateIfNotExistsTag)

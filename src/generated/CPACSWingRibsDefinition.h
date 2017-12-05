@@ -37,7 +37,7 @@ namespace tigl
         // This class is used in:
         // CPACSWingRibsDefinitions
         
-        // generated from /xsd:schema/xsd:complexType[914]
+        // generated from /xsd:schema/xsd:complexType[947]
         class CPACSWingRibsDefinition
         {
         public:
@@ -55,9 +55,8 @@ namespace tigl
             
             TIGL_EXPORT bool ValidateChoices() const;
             
-            TIGL_EXPORT virtual const boost::optional<std::string>& GetUID() const;
+            TIGL_EXPORT virtual const std::string& GetUID() const;
             TIGL_EXPORT virtual void SetUID(const std::string& value);
-            TIGL_EXPORT virtual void SetUID(const boost::optional<std::string>& value);
             
             TIGL_EXPORT virtual const std::string& GetName() const;
             TIGL_EXPORT virtual void SetName(const std::string& value);
@@ -86,7 +85,7 @@ namespace tigl
             
             CTiglUIDManager* m_uidMgr;
             
-            boost::optional<std::string>                     m_uID;
+            std::string                                      m_uID;
             std::string                                      m_name;
             boost::optional<std::string>                     m_description;
             CCPACSWingRibCrossSection                        m_ribCrossSection;

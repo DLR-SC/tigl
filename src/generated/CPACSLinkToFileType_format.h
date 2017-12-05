@@ -30,7 +30,7 @@ namespace tigl
         // This enum is used in:
         // CPACSLinkToFile
         
-        // generated from /xsd:schema/xsd:complexType[486]/xsd:complexContent/xsd:extension/xsd:attribute[1]/xsd:simpleType
+        // generated from /xsd:schema/xsd:complexType[497]/xsd:complexContent/xsd:extension/xsd:attribute[1]/xsd:simpleType
         enum CPACSLinkToFileType_format
         {
             Step,
