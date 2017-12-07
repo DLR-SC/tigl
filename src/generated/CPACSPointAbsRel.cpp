@@ -76,7 +76,7 @@ namespace tigl
                 m_z = tixi::TixiGetElement<double>(tixiHandle, xpath + "/z");
             }
             
-            if (m_uidMgr) m_uidMgr->RegisterObject(m_uID, *this);
+            if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
         }
         
         void CPACSPointAbsRel::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const

@@ -40,6 +40,7 @@ void CTiglUIDManager::RegisterObject(const std::string& uid, void* object, const
 {
     if (uid.empty()) {
         throw CTiglError("Tried to register an empty uid for type " + typeName(typeInfo));
+        return;
     }
 
     // check existence

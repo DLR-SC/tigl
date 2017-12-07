@@ -88,7 +88,7 @@ namespace tigl
                 LOG(ERROR) << "Required element pointList is missing at xpath " << xpath;
             }
             
-            if (m_uidMgr) m_uidMgr->RegisterObject(m_uID, *this);
+            if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
         }
         
         void CPACSGuideCurveProfileGeometry::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const

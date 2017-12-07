@@ -108,7 +108,7 @@ namespace tigl
                 }
             }
             
-            if (m_uidMgr) m_uidMgr->RegisterObject(m_uID, *this);
+            if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
         }
         
         void CPACSAircraftModel::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const

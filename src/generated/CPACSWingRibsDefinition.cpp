@@ -117,7 +117,7 @@ namespace tigl
                 }
             }
             
-            if (m_uidMgr) m_uidMgr->RegisterObject(m_uID, *this);
+            if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
             if (!ValidateChoices()) {
                 LOG(ERROR) << "Invalid choice configuration at xpath " << xpath;
             }
