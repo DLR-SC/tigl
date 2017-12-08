@@ -115,7 +115,7 @@ TEST(WingCell, IsInner)
     cell.SetLeadingEdgeOuterPoint (1,0);
     cell.SetTrailingEdgeInnerPoint(0,1);
     cell.SetTrailingEdgeOuterPoint(1,1);
-
+    
     // test inner lying points
     ASSERT_TRUE(cell.IsInside(0.5, 0.5));
     ASSERT_TRUE(cell.IsInside(0.2, 0.0));

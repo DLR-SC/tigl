@@ -198,4 +198,61 @@ namespace {
             true
         );
     }
+
+    TEST_F(tiglChoiceParsingTest, ribsPositioningBothChoices1) {
+        ReadAndValidateMaterial(
+            "<ribsPositioning>"
+            "    <ribReference>trailingEdge</ribReference>"
+            "    <elementStartUID>start</elementStartUID>" // choice 1
+            "    <etaStart>0.4</etaStart>" // choice 2
+            "    <elementEndUID>start</elementEndUID>" // choice 1
+            "    <ribStart>leadingEdge</ribStart>"
+            "    <ribEnd>trailingEdge</ribEnd>"
+            "    <numberOfRibs>42</numberOfRibs>" // choice 1
+            "    <ribCrossingBehaviour>cross</ribCrossingBehaviour>"
+            "    <ribRotation>"
+            "        <z>16.0</z>"
+            "    </ribRotation>"
+            "</ribsPositioning>",
+            false
+        );
+    }
+
+    TEST_F(tiglChoiceParsingTest, ribsPositioningBothChoices2) {
+        ReadAndValidateMaterial(
+            "<ribsPositioning>"
+            "    <ribReference>trailingEdge</ribReference>"
+            "    <elementStartUID>start</elementStartUID>" // choice 1
+            "    <elementEndUID>start</elementEndUID>" // choice 1
+            "    <etaEnd>3.7</etaEnd>" // choice 2
+            "    <ribStart>leadingEdge</ribStart>"
+            "    <ribEnd>trailingEdge</ribEnd>"
+            "    <numberOfRibs>42</numberOfRibs>" // choice 1
+            "    <ribCrossingBehaviour>cross</ribCrossingBehaviour>"
+            "    <ribRotation>"
+            "        <z>16.0</z>"
+            "    </ribRotation>"
+            "</ribsPositioning>",
+            false
+        );
+    }
+
+    TEST_F(tiglChoiceParsingTest, ribsPositioningBothChoices3) {
+        ReadAndValidateMaterial(
+            "<ribsPositioning>"
+            "    <ribReference>trailingEdge</ribReference>"
+            "    <elementStartUID>start</elementStartUID>" // choice 1
+            "    <elementEndUID>start</elementEndUID>" // choice 1
+            "    <ribStart>leadingEdge</ribStart>"
+            "    <ribEnd>trailingEdge</ribEnd>"
+            "    <numberOfRibs>42</numberOfRibs>" // choice 1
+            "    <spacing>2.4</spacing>" // choice 2
+            "    <ribCrossingBehaviour>cross</ribCrossingBehaviour>"
+            "    <ribRotation>"
+            "        <z>16.0</z>"
+            "    </ribRotation>"
+            "</ribsPositioning>",
+            false
+        );
+    }
 }

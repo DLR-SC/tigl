@@ -43,24 +43,12 @@ namespace tigl
         {
             // read element eta1
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/eta1")) {
-                m_eta1_choice1 = boost::in_place();
-                try {
-                    m_eta1_choice1->ReadCPACS(tixiHandle, xpath + "/eta1");
-                } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read eta1 at xpath " << xpath << ": " << e.what();
-                    m_eta1_choice1 = boost::none;
-                }
+                m_eta1_choice1 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/eta1");
             }
             
             // read element eta2
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/eta2")) {
-                m_eta2_choice1 = boost::in_place();
-                try {
-                    m_eta2_choice1->ReadCPACS(tixiHandle, xpath + "/eta2");
-                } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read eta2 at xpath " << xpath << ": " << e.what();
-                    m_eta2_choice1 = boost::none;
-                }
+                m_eta2_choice1 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/eta2");
             }
             
             // read element ribNumber
@@ -86,7 +74,7 @@ namespace tigl
             // write element eta1
             if (m_eta1_choice1) {
                 tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/eta1");
-                m_eta1_choice1->WriteCPACS(tixiHandle, xpath + "/eta1");
+                tixi::TixiSaveElement(tixiHandle, xpath + "/eta1", *m_eta1_choice1);
             } else {
                 if (tixi::TixiCheckElement(tixiHandle, xpath + "/eta1")) {
                     tixi::TixiRemoveElement(tixiHandle, xpath + "/eta1");
@@ -96,7 +84,7 @@ namespace tigl
             // write element eta2
             if (m_eta2_choice1) {
                 tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/eta2");
-                m_eta2_choice1->WriteCPACS(tixiHandle, xpath + "/eta2");
+                tixi::TixiSaveElement(tixiHandle, xpath + "/eta2", *m_eta2_choice1);
             } else {
                 if (tixi::TixiCheckElement(tixiHandle, xpath + "/eta2")) {
                     tixi::TixiRemoveElement(tixiHandle, xpath + "/eta2");
@@ -163,24 +151,34 @@ namespace tigl
             ;
         }
         
-        const boost::optional<CPACSEtaIsoLine>& CPACSCellPositioningSpanwise::GetEta1_choice1() const
+        const boost::optional<double>& CPACSCellPositioningSpanwise::GetEta1_choice1() const
         {
             return m_eta1_choice1;
         }
         
-        boost::optional<CPACSEtaIsoLine>& CPACSCellPositioningSpanwise::GetEta1_choice1()
+        void CPACSCellPositioningSpanwise::SetEta1_choice1(const double& value)
         {
-            return m_eta1_choice1;
+            m_eta1_choice1 = value;
         }
         
-        const boost::optional<CPACSEtaIsoLine>& CPACSCellPositioningSpanwise::GetEta2_choice1() const
+        void CPACSCellPositioningSpanwise::SetEta1_choice1(const boost::optional<double>& value)
+        {
+            m_eta1_choice1 = value;
+        }
+        
+        const boost::optional<double>& CPACSCellPositioningSpanwise::GetEta2_choice1() const
         {
             return m_eta2_choice1;
         }
         
-        boost::optional<CPACSEtaIsoLine>& CPACSCellPositioningSpanwise::GetEta2_choice1()
+        void CPACSCellPositioningSpanwise::SetEta2_choice1(const double& value)
         {
-            return m_eta2_choice1;
+            m_eta2_choice1 = value;
+        }
+        
+        void CPACSCellPositioningSpanwise::SetEta2_choice1(const boost::optional<double>& value)
+        {
+            m_eta2_choice1 = value;
         }
         
         const boost::optional<int>& CPACSCellPositioningSpanwise::GetRibNumber_choice2() const
@@ -211,30 +209,6 @@ namespace tigl
         void CPACSCellPositioningSpanwise::SetRibDefinitionUID_choice2(const boost::optional<std::string>& value)
         {
             m_ribDefinitionUID_choice2 = value;
-        }
-        
-        CPACSEtaIsoLine& CPACSCellPositioningSpanwise::GetEta1_choice1(CreateIfNotExistsTag)
-        {
-            if (!m_eta1_choice1)
-                m_eta1_choice1 = boost::in_place();
-            return *m_eta1_choice1;
-        }
-        
-        void CPACSCellPositioningSpanwise::RemoveEta1_choice1()
-        {
-            m_eta1_choice1 = boost::none;
-        }
-        
-        CPACSEtaIsoLine& CPACSCellPositioningSpanwise::GetEta2_choice1(CreateIfNotExistsTag)
-        {
-            if (!m_eta2_choice1)
-                m_eta2_choice1 = boost::in_place();
-            return *m_eta2_choice1;
-        }
-        
-        void CPACSCellPositioningSpanwise::RemoveEta2_choice1()
-        {
-            m_eta2_choice1 = boost::none;
         }
         
     }

@@ -116,8 +116,8 @@ double CCPACSWingSparSegment::GetSparLength() const
 gp_Pnt CCPACSWingSparSegment::GetMidplanePoint(int positionIndex) const
 {
     if (positionIndex > m_sparPositionUIDs.GetSparPositionUIDCount()) {
-        LOG(ERROR) << "Invalid spar position index " << positionIndex << " requested from spar segment \"" << m_uID << "\"!";
-        throw CTiglError("Invalid spar position index requested from spar segment \"" + m_uID + "\"!");
+        LOG(ERROR) << "Invalid spar position index " << positionIndex << " requested from spar segment \"" << m_uID.value_or("") << "\"!";
+        throw CTiglError("Invalid spar position index requested from spar segment \"" + m_uID.value_or("") + "\"!");
     }
 
     return GetMidplanePoint(m_sparPositionUIDs.GetSparPositionUID(positionIndex));
@@ -126,14 +126,25 @@ gp_Pnt CCPACSWingSparSegment::GetMidplanePoint(int positionIndex) const
 void CCPACSWingSparSegment::GetEtaXsi(int positionIndex, double& eta, double& xsi) const
 {
     if (positionIndex < 1 || positionIndex > m_sparPositionUIDs.GetSparPositionUIDCount()) {
-        LOG(ERROR) << "Invalid spar position index " << positionIndex << " requested from spar segment \"" << m_uID << "\"!";
-        throw CTiglError("Invalid spar position index requested from spar segment \"" + m_uID + "\"!");
+        LOG(ERROR) << "Invalid spar position index " << positionIndex << " requested from spar segment \"" << m_uID.value_or("") << "\"!";
+        throw CTiglError("Invalid spar position index requested from spar segment \"" + m_uID.value_or("") + "\"!");
     }
 
     const std::string& sparPositionUID = m_sparPositionUIDs.GetSparPositionUID(positionIndex);
     const CCPACSWingSparPosition& sparPosition = sparsNode.GetSparPositions().GetSparPosition(sparPositionUID);
 
-    eta = sparPosition.GetEta();
+    if (sparPosition.GetInputType() == CCPACSWingSparPosition::Eta) {
+        eta = sparPosition.GetEta();
+    }
+    else if (sparPosition.GetInputType() == CCPACSWingSparPosition::ElementUID) {
+        gp_Pnt sparPositionPoint = GetMidplanePoint(sparPositionUID);
+        double dummy;
+        sparsNode.GetParent()->GetWingStructureReference().GetMidplaneEtaXsi(sparPositionPoint, eta, dummy);
+        assert(fabs(dummy - xsi) < 1.E-6);
+    }
+    else {
+        throw CTiglError("Unknown SparPosition-InputType found in CCPACSWingSparSegment::GetEtaXsi");
+    }
     xsi = sparPosition.GetXsi();
 }
 
@@ -266,15 +277,19 @@ void CCPACSWingSparSegment::BuildAuxiliaryGeometry() const
     // container for all midplane points of the spar segment
     BRepBuilderAPI_MakeWire sparMidplaneLineBuilder;
 
+    // up-vector of spar, initialized at first spar segment
+    gp_Vec upVec;
+
     // check for defined rotation and print warning since it is not used in geometry code
     double rotation = m_sparCrossSection.GetRotation();
     if (fabs(rotation - 90.0) > Precision::Confusion()) {
-        LOG(WARNING) << "Spar \"" << m_uID << "\" has a cross section rotation defined which is not supported by the geometry code right now! The angle will be ignored and the wing's z-axis is used as up-vector of the spar!";
+        LOG(WARNING) << "Spar \"" << m_uID.value_or("") << "\" has a cross section rotation defined which is not supported by the geometry code right now! The angle will be ignored and the wing's z-axis is used as up-vector of the spar!";
     }
 
     // corner points for spar cut faces
     gp_Pnt innerPoint, outerPoint;
     gp_Vec innerUpVec, outerUpVec;
+    gp_Pnt p1, p2, p3, p4;
     std::string innerPositionUID, outerPositionUID;
 
     for (int i = 1; i < m_sparPositionUIDs.GetSparPositionUIDCount(); i++) {
@@ -304,13 +319,15 @@ void CCPACSWingSparSegment::BuildAuxiliaryGeometry() const
 
         // enlarge cut face for inner and outer sections
         // only extend in case the definition is not inside a section
-        if (sparsNode.GetSparPositions().GetSparPosition(innerPositionUID).GetEta() <= Precision::Confusion()) {
+        if (sparsNode.GetSparPositions().GetSparPosition(innerPositionUID).GetInputType() == CCPACSWingSparPosition::Eta &&
+            sparsNode.GetSparPositions().GetSparPosition(innerPositionUID).GetEta() <= Precision::Confusion()) {
             gp_Vec sparDir(outerPoint, innerPoint);
             p1.Translate(bboxSize * sparDir.Normalized());
             p2.Translate(bboxSize * sparDir.Normalized());
         }
         // only extend in case the definition is not inside a section
-        if (sparsNode.GetSparPositions().GetSparPosition(outerPositionUID).GetEta() >= (1 - Precision::Confusion())) {
+        if (sparsNode.GetSparPositions().GetSparPosition(outerPositionUID).GetInputType() == CCPACSWingSparPosition::Eta &&
+            sparsNode.GetSparPositions().GetSparPosition(outerPositionUID).GetEta() >= (1 - Precision::Confusion())) {
             gp_Vec sparDir(innerPoint, outerPoint);
             p3.Translate(bboxSize * sparDir.Normalized());
             p4.Translate(bboxSize * sparDir.Normalized());
@@ -466,13 +483,68 @@ gp_Pnt CCPACSWingSparSegment::GetMidplanePoint(const std::string& positionUID) c
     gp_Pnt midplanePoint;
     CCPACSWingSparPosition& position = sparsNode.GetSparPositions().GetSparPosition(positionUID);
     CTiglWingStructureReference wingStructureReference = sparsNode.GetParent()->GetWingStructureReference();
-    return wingStructureReference.GetPoint(position.GetEta(), position.GetXsi(), WING_COORDINATE_SYSTEM);
+
+    if (position.GetInputType() == CCPACSWingSparPosition::ElementUID) {
+        CCPACSWingComponentSegment& componentSegment = wingStructureReference.GetWingComponentSegment();
+        midplanePoint = getSectionElementChordlinePoint(componentSegment, position.GetElementUID(), position.GetXsi());
+    }
+    else if (position.GetInputType() == CCPACSWingSparPosition::Eta) {
+        midplanePoint = wingStructureReference.GetPoint(position.GetEta(), position.GetXsi(), WING_COORDINATE_SYSTEM);
+    }
+    else {
+        throw CTiglError("Unkwnonw SparPosition InputType found in CCPACSWingSparSegment::GetMidplanePoint");
+    }
+    return midplanePoint;
 }
 
 gp_Vec CCPACSWingSparSegment::GetUpVector(const std::string& positionUID, gp_Pnt midplanePnt) const
 {
     gp_Vec upVec;
+    CCPACSWingSparPosition& position = sparsNode.GetSparPositions().GetSparPosition(positionUID);
+    CTiglWingStructureReference wingStructureReference = sparsNode.GetParent()->GetWingStructureReference();
 
+    if (position.GetInputType() == CCPACSWingSparPosition::ElementUID) {
+        // get componentSegment required for getting chordline points of sections
+        CCPACSWingComponentSegment& componentSegment = wingStructureReference.GetWingComponentSegment();
+
+        // compute bounding box of section element face
+        TopoDS_Shape sectionFace = componentSegment.GetSectionElementFace(position.GetElementUID());
+        Bnd_Box bbox;
+        BRepBndLib::Add(sectionFace, bbox);
+        double sectionFaceSize = sqrt(bbox.SquareExtent());
+
+        // generate a cut face aligned in the YZ plane
+        gp_Pnt p1 = midplanePnt.Translated(gp_Vec(0, -sectionFaceSize, -sectionFaceSize));
+        gp_Pnt p2 = midplanePnt.Translated(gp_Vec(0, -sectionFaceSize,  sectionFaceSize));
+        gp_Pnt p3 = midplanePnt.Translated(gp_Vec(0,  sectionFaceSize, -sectionFaceSize));
+        gp_Pnt p4 = midplanePnt.Translated(gp_Vec(0,  sectionFaceSize,  sectionFaceSize));
+
+        // build face for cutting with the section face
+        TopoDS_Shape cutFace = BuildFace(p1, p2, p3, p4);
+
+        // cut faces with section face for getting the up vector line
+        TopoDS_Shape cutLine = CutShapes(sectionFace, cutFace);
+
+        // next get the two end points of the resulting cut line
+        TopTools_ListOfShape endVertices;
+        GetEndVertices(cutLine, endVertices);
+        if (endVertices.Extent() != 2) {
+            LOG(ERROR) << "Error computing up vector for section element: incorrect result of intersection!";
+            throw CTiglError("Error computing up vector for section element: incorrect result of intersection!");
+        }
+        const TopoDS_Vertex& vCut1 = TopoDS::Vertex(endVertices.First());
+        const TopoDS_Vertex& vCut2 = TopoDS::Vertex(endVertices.Last());
+        gp_Pnt pCut1 = BRep_Tool::Pnt(vCut1);
+        gp_Pnt pCut2 = BRep_Tool::Pnt(vCut2);
+
+        // build the up vector based on the end points, and ensure correct orientation
+        upVec = gp_Vec(pCut1, pCut2).Normalized();
+        if (upVec.Dot(gp_Vec(0, 0, 1)) < 0) {
+            upVec.Reverse();
+        }
+
+        return upVec;
+    }
 
     // BUG #149 and #152
     // because of issues with the spar up vectors in adjacent component
