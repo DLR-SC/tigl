@@ -293,49 +293,35 @@ void CCPACSWingRibsDefinition::BuildAuxGeomRibsPositioning() const
         // STEP 2: compute the current eta value
         double currentEta = ribSetDataCache.referenceEtaStart + ribSetDataCache.referenceEtaOffset * i;
 
-        // STEP 3: determine elementUID or sparPositionUID where rib should be placed
-        std::string elementUID = "";
-        if (i == 0 ) {
-            elementUID = m_ribsPositioning_choice1->GetRibStart();
-        }
-        // NOTE: we have to check the eta difference here (instead of the index) to support spacing definitions
-        else if (fabs(ribSetDataCache.referenceEtaEnd - currentEta) <= Precision::Confusion() ) {
-            elementUID = m_ribsPositioning_choice1->GetRibEnd();
-        }
-
         // STEP 4: build the rib cut geometry based on the current eta value
         //         and the element UID (if defined)
-        CutGeometry cutGeom = BuildRibCutGeometry(currentEta, elementUID);
+        CutGeometry cutGeom = BuildRibCutGeometry(currentEta);
         auxGeomCache.cutGeometries.push_back(cutGeom);
     }
 }
 
-CCPACSWingRibsDefinition::CutGeometry CCPACSWingRibsDefinition::BuildRibCutGeometry(double currentEta, const std::string& elementUID) const
+CCPACSWingRibsDefinition::CutGeometry CCPACSWingRibsDefinition::BuildRibCutGeometry(double currentEta) const
 {
     std::string ribStart = m_ribsPositioning_choice1->GetRibStart();
     std::string ribEnd = m_ribsPositioning_choice1->GetRibEnd();
     std::string ribReference = m_ribsPositioning_choice1->GetRibReference();
 
-    // handle case when rib lies within a section element (elementUID defined)
-    if (!elementUID.empty()) {
-        TopoDS_Face ribFace = GetSectionRibGeometry(elementUID, currentEta, ribStart, ribEnd);
-        // Compute rib start and end point for the cell definition
-        RibMidplanePoints midplanePoints = ComputeRibDefinitionPoints(ribStart, ribEnd, ribFace);
-        auxGeomCache.midplanePoints.push_back(midplanePoints);
-        return CutGeometry(ribFace, true);
-    }
-
     // handle case when rib lies within inner or outer section element
     if (currentEta < Precision::Confusion() || currentEta > 1 - Precision::Confusion()) {
         if (ribReference == "leadingEdge" || ribReference == "trailingEdge" || IsOuterSparPointInSection(ribReference, currentEta, getStructure())) {
-            TopoDS_Face ribFace = GetSectionRibGeometry("", currentEta, ribStart, ribEnd);
+            TopoDS_Face ribFace = GetSectionRibGeometry(currentEta, ribStart, ribEnd);
             // Compute rib start and end point for the cell definition
             RibMidplanePoints midplanePoints = ComputeRibDefinitionPoints(ribStart, ribEnd, ribFace);
             auxGeomCache.midplanePoints.push_back(midplanePoints);
             return CutGeometry(ribFace, true);
         }
     }
-    throw CTiglError("Error in CCPACSWingRibsDefinition::BuildRibCutGeometry!");
+
+    TopoDS_Face ribFace = GetSectionRibGeometry(currentEta, ribStart, ribEnd);
+    // Compute rib start and end point for the cell definition
+    RibMidplanePoints midplanePoints = ComputeRibDefinitionPoints(ribStart, ribEnd, ribFace);
+    auxGeomCache.midplanePoints.push_back(midplanePoints);
+    return CutGeometry(ribFace, true);
 }
 
 void CCPACSWingRibsDefinition::BuildAuxGeomExplicitRibPositioning() const
@@ -362,7 +348,7 @@ void CCPACSWingRibsDefinition::BuildAuxGeomExplicitRibPositioning() const
         (startEta > 1 - Precision::Confusion() && endEta > 1 - Precision::Confusion())) {
         if ((startReference == "leadingEdge" || startReference == "trailingEdge" || IsOuterSparPointInSection(startReference, startEta, getStructure())) &&
             (endReference == "leadingEdge" || endReference == "trailingEdge" || IsOuterSparPointInSection(endReference, endEta, getStructure()))) {
-            TopoDS_Face ribFace = GetSectionRibGeometry("", startEta, startReference, endReference);
+            TopoDS_Face ribFace = GetSectionRibGeometry(startEta, startReference, endReference);
             CutGeometry cutGeom(ribFace, true);
             auxGeomCache.cutGeometries.push_back(cutGeom);
             return;
@@ -609,7 +595,6 @@ double CCPACSWingRibsDefinition::ComputeReferenceEtaStart() const
 {
     assert(GetRibPositioningType() == RIBS_POSITIONING);
     return m_ribsPositioning_choice1->GetEtaStart().GetEta();
-
 }
 
 double CCPACSWingRibsDefinition::ComputeReferenceEtaEnd() const
@@ -732,25 +717,20 @@ double CCPACSWingRibsDefinition::ComputeEtaOffset(double etaStart, double etaEnd
     return etaOffset;
 }
 
-TopoDS_Face CCPACSWingRibsDefinition::GetSectionRibGeometry(const std::string& elementUID, double eta, const std::string& ribStart, const std::string& ribEnd) const
+TopoDS_Face CCPACSWingRibsDefinition::GetSectionRibGeometry(double eta, const std::string& ribStart, const std::string& ribEnd) const
 {
     const CTiglWingStructureReference& wingStructureReference = getStructure().GetWingStructureReference();
     TopoDS_Face ribFace;
-    if (!elementUID.empty()) {
-        CCPACSWingComponentSegment& componentSegment = wingStructureReference.GetWingComponentSegment();
-        ribFace = componentSegment.GetSectionElementFace(elementUID);
+
+    // NOTE: the check whether the eta value matches to the border of the
+    // component segment (in case it is a spar eta) was done before this
+    // method was called!
+    // TODO: find a better way, e.g. replace eta by enum
+    if (eta < Precision::Confusion()) {
+        ribFace = wingStructureReference.GetInnerFace();
     }
     else {
-        // NOTE: the check whether the eta value matches to the border of the 
-        // component segment (in case it is a spar eta) was done before this
-        // method was called!
-        // TODO: find a better way, e.g. replace eta by enum
-        if (eta < Precision::Confusion()) {
-            ribFace = wingStructureReference.GetInnerFace();
-        }
-        else {
-            ribFace = wingStructureReference.GetOuterFace();
-        }
+        ribFace = wingStructureReference.GetOuterFace();
     }
 
     // cut rib face in case it starts at spar

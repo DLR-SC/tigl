@@ -17,7 +17,6 @@
 #define CCPACSWINGRIBSPOSITIONING_H
 
 #include "generated/CPACSWingRibsPositioning.h"
-#include "generated/CPACSEtaIsoLine.h"
 #include "CCPACSWingRibRotation.h"
 
 namespace tigl
@@ -39,8 +38,10 @@ public:
     TIGL_EXPORT CCPACSWingRibsPositioning(CCPACSWingRibsDefinition* parent);
     
     TIGL_EXPORT void SetEtaStart(double);
-
     TIGL_EXPORT void SetEtaEnd(double);
+
+    TIGL_EXPORT void SetRibStart(const std::string&);
+    TIGL_EXPORT void SetRibEnd(const std::string&);
 
     TIGL_EXPORT RibCountDefinitionType GetRibCountDefinitionType() const;
 

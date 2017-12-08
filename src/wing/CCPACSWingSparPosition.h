@@ -31,11 +31,10 @@ public:
 
     TIGL_EXPORT CCPACSWingSparPosition(CCPACSWingSparPositions* sparPositions, CTiglUIDManager* uidMgr);
 
-    TIGL_EXPORT const std::string& GetElementUID() const;
-    TIGL_EXPORT void SetElementUID(const std::string&);
-
     TIGL_EXPORT double GetEta() const;
     TIGL_EXPORT void SetEta(double);
+
+    TIGL_EXPORT double GetXsi() const;
 };
 
 } // end namespace tigl

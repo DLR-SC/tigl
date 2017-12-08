@@ -134,7 +134,7 @@ void CCPACSWingSparSegment::GetEtaXsi(int positionIndex, double& eta, double& xs
     const CCPACSWingSparPosition& sparPosition = sparsNode.GetSparPositions().GetSparPosition(sparPositionUID);
 
     eta = sparPosition.GetEta();
-    xsi = sparPosition.GetSparPoint().GetXsi();
+    xsi = sparPosition.GetXsi();
 }
 
 TopoDS_Wire CCPACSWingSparSegment::GetSparMidplaneLine() const
@@ -266,9 +266,6 @@ void CCPACSWingSparSegment::BuildAuxiliaryGeometry() const
     // container for all midplane points of the spar segment
     BRepBuilderAPI_MakeWire sparMidplaneLineBuilder;
 
-    // up-vector of spar, initialized at first spar segment
-    gp_Vec upVec;
-
     // check for defined rotation and print warning since it is not used in geometry code
     double rotation = m_sparCrossSection.GetRotation();
     if (fabs(rotation - 90.0) > Precision::Confusion()) {
@@ -278,7 +275,6 @@ void CCPACSWingSparSegment::BuildAuxiliaryGeometry() const
     // corner points for spar cut faces
     gp_Pnt innerPoint, outerPoint;
     gp_Vec innerUpVec, outerUpVec;
-    gp_Pnt p1, p2, p3, p4;
     std::string innerPositionUID, outerPositionUID;
 
     for (int i = 1; i < m_sparPositionUIDs.GetSparPositionUIDCount(); i++) {
@@ -470,14 +466,13 @@ gp_Pnt CCPACSWingSparSegment::GetMidplanePoint(const std::string& positionUID) c
     gp_Pnt midplanePoint;
     CCPACSWingSparPosition& position = sparsNode.GetSparPositions().GetSparPosition(positionUID);
     CTiglWingStructureReference wingStructureReference = sparsNode.GetParent()->GetWingStructureReference();
-
-    midplanePoint = wingStructureReference.GetPoint(position.GetEta(), position.GetSparPoint().GetXsi(), WING_COORDINATE_SYSTEM);
-    return midplanePoint;
+    return wingStructureReference.GetPoint(position.GetEta(), position.GetXsi(), WING_COORDINATE_SYSTEM);
 }
 
 gp_Vec CCPACSWingSparSegment::GetUpVector(const std::string& positionUID, gp_Pnt midplanePnt) const
 {
     gp_Vec upVec;
+
 
     // BUG #149 and #152
     // because of issues with the spar up vectors in adjacent component

@@ -28,19 +28,6 @@ CCPACSWingSparPosition::CCPACSWingSparPosition(CCPACSWingSparPositions* sparPosi
 : generated::CPACSSparPosition(sparPositions, uidMgr) {}
 
 
-const std::string& CCPACSWingSparPosition::GetElementUID() const
-{
-    return GetSparPoint().GetReferenceUID();
-}
-
-void CCPACSWingSparPosition::SetElementUID(const std::string& uid)
-{
-    GetSparPoint().SetReferenceUID(uid);
-
-    // invalidate whole component segment structure, since ribs or cells could reference the spar
-    GetParent()->GetParent()->GetParent()->Invalidate();
-}
-
 double CCPACSWingSparPosition::GetEta() const
 {
     return GetSparPoint().GetEta();
@@ -52,6 +39,11 @@ void CCPACSWingSparPosition::SetEta(double value)
 
     // invalidate whole component segment structure, since ribs or cells could reference the spar
     GetParent()->GetParent()->GetParent()->Invalidate();
+}
+
+double CCPACSWingSparPosition::GetXsi() const
+{
+    return GetSparPoint().GetXsi();
 }
 
 } // end namespace tigl

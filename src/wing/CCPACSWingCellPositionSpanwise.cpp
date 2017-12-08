@@ -35,8 +35,11 @@ CCPACSWingCellPositionSpanwise::InputType CCPACSWingCellPositionSpanwise::GetInp
 
 // get and set Eta definition
 void CCPACSWingCellPositionSpanwise::SetEta(double eta1, double eta2) {
-    if (m_eta1_choice1) m_eta1_choice1->SetEta(eta1);
-    if (m_eta2_choice1) m_eta2_choice1->SetEta(eta2);
+
+    m_eta1_choice1 = boost::in_place();
+    m_eta2_choice1 = boost::in_place();
+    m_eta1_choice1->SetEta(eta1);
+    m_eta2_choice1->SetEta(eta2);
 
     m_ribNumber_choice2 = boost::none;
     m_ribDefinitionUID_choice2 = boost::none;

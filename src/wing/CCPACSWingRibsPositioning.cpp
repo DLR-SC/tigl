@@ -32,15 +32,30 @@ CCPACSWingRibsPositioning::CCPACSWingRibsPositioning(CCPACSWingRibsDefinition* p
 
 void CCPACSWingRibsPositioning::SetEtaStart(double value)
 {
-    GetEtaStart().SetEta(value);
+    m_etaStart.SetEta(value);
 
     // invalidate whole component segment structure, since cells could reference the ribs
     invalidateStructure();
 }
 
+
+void CCPACSWingRibsPositioning::SetRibStart(const std::string& uid)
+{
+    generated::CPACSWingRibsPositioning::SetRibStart(uid);
+
+    invalidateStructure();
+}
+
 void CCPACSWingRibsPositioning::SetEtaEnd(double value)
 {
-    GetEtaEnd().SetEta(value);
+    m_etaEnd.SetEta(value);
+
+    invalidateStructure();
+}
+
+void CCPACSWingRibsPositioning::SetRibEnd(const std::string& uid)
+{
+    generated::CPACSWingRibsPositioning::SetRibEnd(uid);
 
     invalidateStructure();
 }

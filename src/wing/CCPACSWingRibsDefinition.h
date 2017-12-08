@@ -118,7 +118,7 @@ private:
     void BuildRibCapsGeometry() const;
 
     // Generates the cut shape for the rib at the passed eta position, or at the passed element or spar position
-    CutGeometry BuildRibCutGeometry(double currentEta, const std::string& elementUID) const;
+    CutGeometry BuildRibCutGeometry(double currentEta) const;
 
     // Returns the wire of the rib reference line (either leadingEdge, 
     // trailingEdge, or spar midplane line)
@@ -153,7 +153,7 @@ private:
     // The elementUID value determines which section element should be used.
     // When no elementUID is passed the inner or outer section are used
     // depending on the passed eta value.
-    TopoDS_Face GetSectionRibGeometry(const std::string& elementUID, double eta, const std::string& ribStart,
+    TopoDS_Face GetSectionRibGeometry(double eta, const std::string& ribStart,
                                       const std::string& ribEnd) const;
 
     // Computes the direction vector for the rib
