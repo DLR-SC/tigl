@@ -19,8 +19,6 @@
 
 #include <string>
 #include <tixi.h>
-#include <typeinfo>
-#include "CTiglError.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -28,10 +26,7 @@ namespace tigl
     namespace generated
     {
         // This class is used in:
-        // CPACSCellPositioningSpanwise
         // CPACSSparCell
-        // CPACSWingRibExplicitPositioning
-        // CPACSWingRibsPositioning
         
         // generated from /xsd:schema/xsd:complexType[317]
         class CPACSEtaIsoLine

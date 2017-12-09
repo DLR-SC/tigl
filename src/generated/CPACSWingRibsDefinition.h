@@ -37,7 +37,7 @@ namespace tigl
         // This class is used in:
         // CPACSWingRibsDefinitions
         
-        // generated from /xsd:schema/xsd:complexType[926]
+        // generated from /xsd:schema/xsd:complexType[947]
         class CPACSWingRibsDefinition
         {
         public:

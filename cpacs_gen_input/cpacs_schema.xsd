@@ -5645,62 +5645,62 @@ jonas.jepsen@dlr.de
         </xsd:complexType>
 
 
-        <xsd:complexType name="cellPositioningSpanwiseType">
+		<xsd:complexType name="cellPositioningSpanwiseType">
 
-                <xsd:annotation>
-                        <xsd:appinfo>
-                                <sd:schemaDoc>
-                                        <ddue:summary>
-                                                <ddue:para>Spanwise positioning of wing cells.</ddue:para>
-                                        </ddue:summary>
-                                        <ddue:remarks>
-                                                <ddue:para>CellPositioningSpanwise defines the chordwise direction
-                                                        of a wing cell either in two eta (eta1 at leadingEdge and eta2 at
-                                                        trailingEdge) coordinates or via referencing to a rib.
-                                                </ddue:para>
-                                        </ddue:remarks>
-                                </sd:schemaDoc>
-                        </xsd:appinfo>
-                </xsd:annotation>
-                <xsd:complexContent>
-                        <xsd:extension base="complexBaseType">
-                                <xsd:sequence>
-                                        <xsd:choice>
-                                                <xsd:sequence>
-                                                        <xsd:element name="eta1" type="etaIsoLineType">
-                                                                <xsd:annotation>
-                                                                        <xsd:documentation>Relative spanwise position of the forward
-                                                                                end.</xsd:documentation>
-                                                                </xsd:annotation>
-                                                        </xsd:element>
-                                                        <xsd:element name="eta2" type="etaIsoLineType">
-                                                                <xsd:annotation>
-                                                                        <xsd:documentation>Relative spanwise position of the rear end.
-                                                                        </xsd:documentation>
-                                                                </xsd:annotation>
-                                                        </xsd:element>
-                                                </xsd:sequence>
-                                                <xsd:sequence>
-                                                        <xsd:element name="ribNumber" type="integerBaseType">
-                                                                <xsd:annotation>
-                                                                        <xsd:documentation>RibNumber is the reference to the rib number
-                                                                                of the rib set which is referenced by 'ribDefinitionUID'.
-                                                                        </xsd:documentation>
-                                                                </xsd:annotation>
-                                                        </xsd:element>
-                                                        <xsd:element name="ribDefinitionUID" type="stringUIDBaseType">
-                                                                <xsd:annotation>
-                                                                        <xsd:documentation>Reference to a ribDefinition set. The single
-                                                                                rib of this ribDefinition set is defined by using 'ribNumber'.
-                                                                        </xsd:documentation>
-                                                                </xsd:annotation>
-                                                        </xsd:element>
-                                                </xsd:sequence>
-                                        </xsd:choice>
-                                </xsd:sequence>
-                        </xsd:extension>
-                </xsd:complexContent>
-        </xsd:complexType>
+		<xsd:annotation>
+			<xsd:appinfo>
+				<sd:schemaDoc>
+					<ddue:summary>
+						<ddue:para>Spanwise positioning of wing cells.</ddue:para>
+					</ddue:summary>
+					<ddue:remarks>
+						<ddue:para>CellPositioningSpanwise defines the chordwise direction
+							of a wing cell either in two eta (eta1 at leadingEdge and eta2 at
+							trailingEdge) coordinates or via referencing to a rib.
+						</ddue:para>
+					</ddue:remarks>
+				</sd:schemaDoc>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="complexBaseType">
+				<xsd:sequence>
+					<xsd:choice>
+						<xsd:sequence>
+							<xsd:element name="eta1" type="doubleBaseType">
+								<xsd:annotation>
+									<xsd:documentation>Relative spanwise position of the forward
+										end.</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+							<xsd:element name="eta2" type="doubleBaseType">
+								<xsd:annotation>
+									<xsd:documentation>Relative spanwise position of the rear end.
+									</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+						</xsd:sequence>
+						<xsd:sequence>
+							<xsd:element name="ribNumber" type="integerBaseType">
+								<xsd:annotation>
+									<xsd:documentation>RibNumber is the reference to the rib number
+										of the rib set which is referenced by 'ribDefinitionUID'.
+									</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+							<xsd:element name="ribDefinitionUID" type="stringUIDBaseType">
+								<xsd:annotation>
+									<xsd:documentation>Reference to a ribDefinition set. The single
+										rib of this ribDefinition set is defined by using 'ribNumber'.
+									</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+						</xsd:sequence>
+					</xsd:choice>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
 
 
         <xsd:complexType name="centerFuselageAreaType">
@@ -35389,46 +35389,66 @@ jonas.jepsen@dlr.de
                                 </xsd:all>
                         </xsd:extension>
                 </xsd:complexContent>
-        </xsd:complexType>
+		</xsd:complexType>
 
 
         <xsd:complexType name="sparPositionType">
 
-                <xsd:annotation>
-                        <xsd:appinfo>
-                                <sd:schemaDoc>
-                                        <ddue:summary>
-                                                <ddue:para>Spar position on the wing</ddue:para>
-                                        </ddue:summary>
-                                        <ddue:remarks>
-                                                <ddue:content>
-                                                        <ddue:para>sparPositionType, a sparPostion defines a location
-                                                                within the componentSegment where a spar in mounted. Eta and xsi
-                                                                are relative to the componentSegment.</ddue:para>
-                                                        <ddue:para>Please find below a picture for an example definition
-                                                                of 3 spars in one wing, by using spar position points and spar
-                                                                segments:</ddue:para>
-                                                        <ddue:mediaLink>
-                                                                <ddue:image width="500" xlink:href="spars1"/>
-                                                        </ddue:mediaLink>
-                                                        <ddue:para>As an alternative to the relative eta coordinate it is
-                                                                possible to specify an elementUID so that the spar position is
-                                                                relative to the outer geometry, e.g. kink, of the wing.
-                                                        </ddue:para>
-                                                </ddue:content>
-                                        </ddue:remarks>
-                                </sd:schemaDoc>
-                        </xsd:appinfo>
-                </xsd:annotation>
-                <xsd:complexContent>
-                        <xsd:extension base="complexBaseType">
-                                <xsd:all>
-                                        <xsd:element name="sparPoint" type="etaXsiRelHeightPointType"/>
-                                </xsd:all>
-                                <xsd:attribute name="uID" type="xsd:string" use="required"/>
-                        </xsd:extension>
-                </xsd:complexContent>
-        </xsd:complexType>
+		<xsd:annotation>
+			<xsd:appinfo>
+				<sd:schemaDoc>
+					<ddue:summary>
+						<ddue:para>Spar position on the wing</ddue:para>
+					</ddue:summary>
+					<ddue:remarks>
+						<ddue:content>
+							<ddue:para>sparPositionType, a sparPostion defines a location
+								within the componentSegment where a spar in mounted. Eta and xsi
+								are relative to the componentSegment.</ddue:para>
+							<ddue:para>Please find below a picture for an example definition
+								of 3 spars in one wing, by using spar position points and spar
+								segments:</ddue:para>
+							<ddue:mediaLink>
+								<ddue:image width="500" xlink:href="spars1"/>
+							</ddue:mediaLink>
+							<ddue:para>As an alternative to the relative eta coordinate it is
+								possible to specify an elementUID so that the spar position is
+								relative to the outer geometry, e.g. kink, of the wing.
+							</ddue:para>
+						</ddue:content>
+					</ddue:remarks>
+				</sd:schemaDoc>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="complexBaseType">
+				<xsd:sequence>
+					<xsd:choice>
+						<xsd:element name="eta" type="doubleBaseType">
+							<xsd:annotation>
+								<xsd:documentation>Eta coordinate of the spar definition point.
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="elementUID" type="stringUIDBaseType">
+							<xsd:annotation>
+								<xsd:documentation>Link to a section element.
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+					</xsd:choice>
+					<xsd:element name="xsi" type="doubleBaseType">
+						<xsd:annotation>
+							<xsd:documentation>Xsi coordinate of the spar definition point.
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:sequence>
+				<xsd:attribute name="uID" type="xsd:string"/>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
 
 
         <xsd:complexType name="sparPositionUIDsType">
@@ -35504,42 +35524,43 @@ jonas.jepsen@dlr.de
 
         <xsd:complexType name="sparSegmentType">
 
-                <xsd:annotation>
-                        <xsd:appinfo>
-                                <sd:schemaDoc>
-                                        <ddue:summary>
-                                                <ddue:para>SparSegments (=spars) of the wing.</ddue:para>
-                                        </ddue:summary>
-                                        <ddue:remarks>
-                                                <ddue:para>SparSegmentType, each spar is defined by multiple
-                                                        sparPositions that are referenced via their uID. The spar cross
-                                                        section is defined in 'sparCrossSection'.</ddue:para>
-                                        </ddue:remarks>
-                                </sd:schemaDoc>
-                        </xsd:appinfo>
-                </xsd:annotation>
-                <xsd:complexContent>
-                        <xsd:extension base="complexBaseType">
-                                <xsd:all>
-                                        <xsd:element name="name" type="stringBaseType">
-                                                <xsd:annotation>
-                                                        <xsd:documentation>Name of the spar segment (=spar).
-                                                        </xsd:documentation>
-                                                </xsd:annotation>
-                                        </xsd:element>
-                                        <xsd:element name="description" type="stringBaseType">
-                                                <xsd:annotation>
-                                                        <xsd:documentation>Description of the spar segment (spar).
-                                                        </xsd:documentation>
-                                                </xsd:annotation>
-                                        </xsd:element>
-                                        <xsd:element name="sparPositionUIDs" type="sparPositionUIDsType"/>
-                                        <xsd:element name="sparCrossSection" type="sparCrossSectionType"/>
-                                </xsd:all>
-                                <xsd:attribute name="uID" type="xsd:string" use="required"/>
-                        </xsd:extension>
-                </xsd:complexContent>
-        </xsd:complexType>
+			<xsd:annotation>
+				<xsd:appinfo>
+					<sd:schemaDoc>
+						<ddue:summary>
+							<ddue:para>SparSegments (=spars) of the wing.</ddue:para>
+						</ddue:summary>
+						<ddue:remarks>
+							<ddue:para>SparSegmentType, each spar is defined by multiple
+								sparPositions that are referenced via their uID. The spar cross
+								section is defined in 'sparCrossSection'.</ddue:para>
+						</ddue:remarks>
+					</sd:schemaDoc>
+				</xsd:appinfo>
+			</xsd:annotation>
+			<xsd:complexContent>
+				<xsd:extension base="complexBaseType">
+					<xsd:all>
+						<xsd:element name="name" type="stringBaseType">
+							<xsd:annotation>
+								<xsd:documentation>Name of the spar segment (=spar).
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="description" type="stringBaseType">
+							<xsd:annotation>
+								<xsd:documentation>Description of the spar segment (spar).
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="sparPositionUIDs" type="sparPositionUIDsType"/>
+						<xsd:element name="sparCrossSection" type="sparCrossSectionType"/>
+					</xsd:all>
+					<xsd:attribute name="uID" type="xsd:string"/>
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+
 
 
         <xsd:complexType name="sparSegmentsType">
@@ -41112,108 +41133,109 @@ jonas.jepsen@dlr.de
 
         <xsd:complexType name="wingRibExplicitPositioningType">
 
-                <xsd:annotation>
-                        <xsd:appinfo>
-                                <sd:schemaDoc>
-                                        <ddue:summary>
-                                                <ddue:para>wingRibExplicitPositioningType</ddue:para>
-                                        </ddue:summary>
-                                        <ddue:remarks>
-                                                <ddue:content>
-                                                        <ddue:para>Use this type for an explicit positioning of every
-                                                                single rib.</ddue:para>
-                                                </ddue:content>
-                                        </ddue:remarks>
-                                </sd:schemaDoc>
-                        </xsd:appinfo>
-                </xsd:annotation>
-                <xsd:complexContent>
-                        <xsd:extension base="complexBaseType">
-                                <xsd:sequence>
-                                        <xsd:element name="startReference" type="stringBaseType">
-                                                <xsd:annotation>
-                                                        <xsd:documentation>
-                                                                The ribReference is the reference line for the geometrical rib
-                                                                placement. It can either
-                                                                be a sparUID or "trailingEdge" or "leadingEdge"
-                                                        </xsd:documentation>
-                                                </xsd:annotation>
-                                        </xsd:element>
-                                        <xsd:element name="etaStart" type="etaIsoLineType">
-                                                <xsd:annotation>
-                                                        <xsd:documentation>
-                                                                etaStart defines the start of the rib defined by the startReference and
-                                                                the eta coordinate
-                                                        </xsd:documentation>
-                                                </xsd:annotation>
-                                        </xsd:element>
-                                        <xsd:element name="endReference" type="stringBaseType">
-                                                <xsd:annotation>
-                                                        <xsd:documentation>
-                                                                The ribReference is the reference line for the geometrical rib
-                                                                placement. It can either
-                                                                be a sparUID or "trailingEdge" or "leadingEdge"
-                                                        </xsd:documentation>
-                                                </xsd:annotation>
-                                        </xsd:element>
-                                        <xsd:element name="etaEnd" type="etaIsoLineType">
-                                                <xsd:annotation>
-                                                        <xsd:documentation>
-                                                                etaEnd defines the end of the rib defined by the endReference and the
-                                                                eta coordinate
-                                                        </xsd:documentation>
-                                                </xsd:annotation>
-                                        </xsd:element>
-                                </xsd:sequence>
-                        </xsd:extension>
-                </xsd:complexContent>
-        </xsd:complexType>
+			<xsd:annotation>
+				<xsd:appinfo>
+					<sd:schemaDoc>
+						<ddue:summary>
+							<ddue:para>wingRibExplicitPositioningType</ddue:para>
+						</ddue:summary>
+						<ddue:remarks>
+							<ddue:content>
+								<ddue:para>Use this type for an explicit positioning of every
+									single rib.</ddue:para>
+							</ddue:content>
+						</ddue:remarks>
+					</sd:schemaDoc>
+				</xsd:appinfo>
+			</xsd:annotation>
+			<xsd:complexContent>
+				<xsd:extension base="complexBaseType">
+					<xsd:sequence>
+						<xsd:element name="startReference" type="stringBaseType">
+							<xsd:annotation>
+								<xsd:documentation>
+									The ribReference is the reference line for the geometrical rib
+									placement. It can either
+									be a sparUID or "trailingEdge" or "leadingEdge"
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="etaStart" type="doubleBaseType">
+							<xsd:annotation>
+								<xsd:documentation>
+									etaStart defines the start of the rib defined by the startReference and
+									the eta coordinate
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="endReference" type="stringBaseType">
+							<xsd:annotation>
+								<xsd:documentation>
+									The ribReference is the reference line for the geometrical rib
+									placement. It can either
+									be a sparUID or "trailingEdge" or "leadingEdge"
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="etaEnd" type="doubleBaseType">
+							<xsd:annotation>
+								<xsd:documentation>
+									etaEnd defines the end of the rib defined by the endReference and the
+									eta coordinate
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
 
 
         <xsd:complexType name="wingRibsDefinitionType">
 
-                <xsd:annotation>
-                        <xsd:appinfo>
-                                <sd:schemaDoc>
-                                        <ddue:summary>
-                                                <ddue:para>Definition of an rib set.</ddue:para>
-                                        </ddue:summary>
-                                        <ddue:remarks>
-                                                <ddue:content>
-                                                        <ddue:para>RibDefinitionType, containing the definition for ribs.
-                                                                Ribs are defined in sets of one or more ribs. The positions of
-                                                                the rib, as well as the orientation of the ribs are defined in
-                                                                'ribPositioing'. The cross section properties, as e.g.
-                                                                materials, are defined in 'ribCrossSection'.</ddue:para>
-                                                </ddue:content>
-                                        </ddue:remarks>
-                                </sd:schemaDoc>
-                        </xsd:appinfo>
-                </xsd:annotation>
-                <xsd:complexContent>
-                        <xsd:extension base="complexBaseType">
-                                <xsd:sequence>
-                                        <xsd:element name="name" type="stringBaseType">
-                                                <xsd:annotation>
-                                                        <xsd:documentation>Name of the rib set.</xsd:documentation>
-                                                </xsd:annotation>
-                                        </xsd:element>
-                                        <xsd:element minOccurs="0" name="description" type="stringBaseType">
-                                                <xsd:annotation>
-                                                        <xsd:documentation>Description of the rib set.
-                                                        </xsd:documentation>
-                                                </xsd:annotation>
-                                        </xsd:element>
-                                        <xsd:choice>
-                                                <xsd:element name="ribsPositioning" type="wingRibsPositioningType"/>
-                                                <xsd:element name="ribExplicitPositioning" type="wingRibExplicitPositioningType"/>
-                                        </xsd:choice>
-                                        <xsd:element name="ribCrossSection" type="wingRibCrossSectionType"/>
-                                </xsd:sequence>
-                                <xsd:attribute name="uID" type="xsd:string" use="required"/>
-                        </xsd:extension>
-                </xsd:complexContent>
-        </xsd:complexType>
+			<xsd:annotation>
+				<xsd:appinfo>
+					<sd:schemaDoc>
+						<ddue:summary>
+							<ddue:para>Definition of an rib set.</ddue:para>
+						</ddue:summary>
+						<ddue:remarks>
+							<ddue:content>
+								<ddue:para>RibDefinitionType, containing the definition for ribs.
+									Ribs are defined in sets of one or more ribs. The positions of
+									the rib, as well as the orientation of the ribs are defined in
+									'ribPositioing'. The cross section properties, as e.g.
+									materials, are defined in 'ribCrossSection'.</ddue:para>
+							</ddue:content>
+						</ddue:remarks>
+					</sd:schemaDoc>
+				</xsd:appinfo>
+			</xsd:annotation>
+			<xsd:complexContent>
+				<xsd:extension base="complexBaseType">
+					<xsd:sequence>
+						<xsd:element name="name" type="stringBaseType">
+							<xsd:annotation>
+								<xsd:documentation>Name of the rib set.</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element minOccurs="0" name="description" type="stringBaseType">
+							<xsd:annotation>
+								<xsd:documentation>Description of the rib set.
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:choice>
+							<xsd:element name="ribsPositioning" type="wingRibsPositioningType"/>
+							<xsd:element name="ribExplicitPositioning" type="wingRibExplicitPositioningType"/>
+						</xsd:choice>
+						<xsd:element name="ribCrossSection" type="wingRibCrossSectionType"/>
+					</xsd:sequence>
+					<xsd:attribute name="uID" type="xsd:string"/>
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+
 
 
         <xsd:complexType name="wingRibsDefinitionsType">
@@ -41242,126 +41264,167 @@ jonas.jepsen@dlr.de
 
         <xsd:complexType name="wingRibsPositioningType">
 
-                <xsd:annotation>
-                        <xsd:appinfo>
-                                <sd:schemaDoc>
-                                        <ddue:summary>
-                                                <ddue:para>wingRibsPositioningType</ddue:para>
-                                        </ddue:summary>
-                                        <ddue:remarks>
-                                                <ddue:content>
-                                                        <ddue:para>Within the ribsPositioing type the position and the
-                                                                orientaion of the ribs of the rib set are difend.</ddue:para>
-                                                        <ddue:para>The positions of the ribs are defined by placing the
-                                                                ribs on a reference line on the wing (ribReference). The inner
-                                                                and the outer beginning of the rib set is defined using etaStart
-                                                                and etaEnd. The position of the forward and rear end of the ribs
-                                                                is defiend by ribStart and ribEnd. The orientation of the ribs
-                                                                is defined in ribRotaton. The number of ribs of the current rib
-                                                                set is either defined by ribNumber or by spacing.</ddue:para>
-                                                        <ddue:para>Three examples how ribs can be placed on the wing can
-                                                                be found in the picture below. For more detailed information,
-                                                                pleas refer to the descripion of each parameter.</ddue:para>
-                                                        <ddue:mediaLink>
-                                                                <ddue:image xlink:href="ribs"/>
-                                                        </ddue:mediaLink>
-                                                </ddue:content>
-                                        </ddue:remarks>
-                                </sd:schemaDoc>
-                        </xsd:appinfo>
-                </xsd:annotation>
-                <xsd:complexContent>
-                        <xsd:extension base="complexBaseType">
-                                <xsd:sequence>
-                                        <xsd:element name="ribReference" type="stringBaseType">
-                                                <xsd:annotation>
-                                                        <xsd:documentation>
-                                                                The ribReference is the reference line for the geometrical rib
-                                                                placement. It can either
-                                                                be a sparUID or "trailingEdge" or "leadingEdge"
-                                                        </xsd:documentation>
-                                                </xsd:annotation>
-                                        </xsd:element>
-                                        <xsd:element name="etaStart" type="etaIsoLineType">
-                                                <xsd:annotation>
-                                                        <xsd:documentation>
-                                                                EtaStart defines the innerBorder location of the beginning of the rib
-                                                                set on the ribReference line.
-                                                        </xsd:documentation>
-                                                </xsd:annotation>
-                                        </xsd:element>
-                                        <xsd:element name="etaEnd" type="etaIsoLineType">
-                                                <xsd:annotation>
-                                                        <xsd:documentation>
-                                                                EtaEnd defines the outerBorder location of the end of the rib set on
-                                                                the
-                                                                ribReference line. Please note, the eta is relative to wing eta coordinate!
-                                                        </xsd:documentation>
-                                                </xsd:annotation>
-                                        </xsd:element>
-                                        <xsd:element name="ribStart" type="stringBaseType">
-                                                <xsd:annotation>
-                                                        <xsd:documentation>
-                                                                RibStart defines the forward beginning of the ribs. It can either be a
-                                                                sparUID or
-                                                                "trailingEdge" or "leadingEdge".
-                                                        </xsd:documentation>
-                                                </xsd:annotation>
-                                        </xsd:element>
-                                        <xsd:element name="ribEnd" type="stringBaseType">
-                                                <xsd:annotation>
-                                                        <xsd:documentation>
-                                                                RibEnd defines the backward ending of the ribs. It can either be a
-                                                                sparUID or
-                                                                "trailingEdge" or "leadingEdge".
-                                                        </xsd:documentation>
-                                                </xsd:annotation>
-                                        </xsd:element>
-                                        <xsd:choice>
-                                                <xsd:element name="spacing" type="doubleBaseType">
-                                                        <xsd:annotation>
-                                                                <xsd:documentation>
-                                                                        The spacing of the ribs defines the distance between two ribs,
-                                                                        measured on the
-                                                                        ribReferenceLine. First rib is placed at etaStart.
-                                                                </xsd:documentation>
-                                                        </xsd:annotation>
-                                                </xsd:element>
-                                                <xsd:element name="numberOfRibs" type="integerBaseType">
-                                                        <xsd:annotation>
-                                                                <xsd:documentation>
-                                                                        RibNumber defines the number of ribs in this ribSet. First rib is at
-                                                                        etaStart on the
-                                                                        referenceLine, last rib is at etaEnd. The spacing is constant on the
-                                                                        ribReferenceLine.
-                                                                </xsd:documentation>
-                                                        </xsd:annotation>
-                                                </xsd:element>
-                                        </xsd:choice>
-                                        <xsd:element name="ribCrossingBehaviour">
-                                                <xsd:complexType>
-                                                        <xsd:annotation>
-                                                                <xsd:documentation>
-                                                                        RibCrossingBehaviour can either be 'cross' or 'end'. If it is set to'end' the ribs
-                                                                        of this rib set will end at the intersection with another rib.
-                                                                        If it is set to
-                                                                        'cross' the ribs of this rib set will continue at the intersection
-                                                                        with another rib.
-                                                                </xsd:documentation>
-                                                        </xsd:annotation>
-                                                        <xsd:simpleContent>
-                                                                <xsd:restriction base="stringBaseType">
-                                                                        <xsd:enumeration value="cross"/>
-                                                                        <xsd:enumeration value="end"/>
-                                                                </xsd:restriction>
-                                                        </xsd:simpleContent>
-                                                </xsd:complexType>
-                                        </xsd:element>
-                                        <xsd:element name="ribRotation" type="ribRotationType"/>
-                                </xsd:sequence>
-                        </xsd:extension>
-                </xsd:complexContent>
-        </xsd:complexType>
+			<xsd:annotation>
+				<xsd:appinfo>
+					<sd:schemaDoc>
+						<ddue:summary>
+							<ddue:para>wingRibsPositioningType</ddue:para>
+						</ddue:summary>
+						<ddue:remarks>
+							<ddue:content>
+								<ddue:para>Within the ribsPositioing type the position and the
+									orientaion of the ribs of the rib set are difend.</ddue:para>
+								<ddue:para>The positions of the ribs are defined by placing the
+									ribs on a reference line on the wing (ribReference). The inner
+									and the outer beginning of the rib set is defined using etaStart
+									and etaEnd. The position of the forward and rear end of the ribs
+									is defiend by ribStart and ribEnd. The orientation of the ribs
+									is defined in ribRotaton. The number of ribs of the current rib
+									set is either defined by ribNumber or by spacing.</ddue:para>
+								<ddue:para>Three examples how ribs can be placed on the wing can
+									be found in the picture below. For more detailed information,
+									pleas refer to the descripion of each parameter.</ddue:para>
+								<ddue:mediaLink>
+									<ddue:image xlink:href="ribs"/>
+								</ddue:mediaLink>
+							</ddue:content>
+						</ddue:remarks>
+					</sd:schemaDoc>
+				</xsd:appinfo>
+			</xsd:annotation>
+			<xsd:complexContent>
+				<xsd:extension base="complexBaseType">
+					<xsd:sequence>
+						<xsd:element name="ribReference" type="stringBaseType">
+							<xsd:annotation>
+								<xsd:documentation>
+									The ribReference is the reference line for the geometrical rib
+									placement. It can either
+									be a sparUID or "trailingEdge" or "leadingEdge"
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:choice>
+							<xsd:element name="etaStart" type="doubleBaseType">
+								<xsd:annotation>
+									<xsd:documentation>
+										EtaStart defines the innerBorder location of the beginning of the rib
+										set on the
+										ribReference line. Please note, the eta is relative to wing eta coordinate!
+									</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+							<xsd:element name="elementStartUID" type="stringUIDBaseType">
+								<xsd:annotation>
+									<xsd:documentation>
+										elementStartUID defines the innerBorder location of the beginning of the rib
+										set on the
+										ribReference line. It is relative to a section element and hence linked to
+										the outer shape.
+									</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+							<xsd:element name="sparPositionStartUID" type="stringUIDBaseType">
+								<xsd:annotation>
+									<xsd:documentation>
+										TIGL extension
+									</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+						</xsd:choice>
+						<xsd:choice>
+							<xsd:element name="etaEnd" type="doubleBaseType">
+								<xsd:annotation>
+									<xsd:documentation>
+										EtaEnd defines the outerBorder location of the end of the rib set on
+										the
+										ribReference line. Please note, the eta is relative to wing eta coordinate!
+									</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+							<xsd:element name="elementEndUID" type="stringUIDBaseType">
+								<xsd:annotation>
+									<xsd:documentation>
+										elementEndUID defines the innerBorder location of the beginning of the rib
+										set on the
+										ribReference line. It is relative to a section element and hence linked to
+										the outer shape.
+									</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+							<xsd:element name="sparPositionEndUID" type="stringUIDBaseType">
+								<xsd:annotation>
+									<xsd:documentation>
+										TIGL extension
+									</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+						</xsd:choice>
+						<xsd:element name="ribStart" type="stringBaseType">
+							<xsd:annotation>
+								<xsd:documentation>
+									RibStart defines the forward beginning of the ribs. It can either be a
+									sparUID or
+									"trailingEdge" or "leadingEdge".
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="ribEnd" type="stringBaseType">
+							<xsd:annotation>
+								<xsd:documentation>
+									RibEnd defines the backward ending of the ribs. It can either be a
+									sparUID or
+									"trailingEdge" or "leadingEdge".
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:choice>
+							<xsd:element name="spacing" type="doubleBaseType">
+								<xsd:annotation>
+									<xsd:documentation>
+										The spacing of the ribs defines the distance between two ribs,
+										measured on the
+										ribReferenceLine. First rib is placed at etaStart.
+									</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+							<xsd:element name="numberOfRibs" type="integerBaseType">
+								<xsd:annotation>
+									<xsd:documentation>
+										RibNumber defines the number of ribs in this ribSet. First rib is at
+										etaStart on the
+										referenceLine, last rib is at etaEnd. The spacing is constant on the
+										ribReferenceLine.
+									</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+						</xsd:choice>
+						<xsd:element name="ribCrossingBehaviour">
+							<xsd:complexType>
+								<xsd:annotation>
+									<xsd:documentation>
+										RibCrossingBehaviour can either be 'cross' or 'end'. If it is set to'end' the ribs
+										of this rib set will end at the intersection with another rib.
+										If it is set to
+										'cross' the ribs of this rib set will continue at the intersection
+										with another rib.
+									</xsd:documentation>
+								</xsd:annotation>
+								<xsd:simpleContent>
+									<xsd:restriction base="stringBaseType">
+										<xsd:enumeration value="cross"/>
+										<xsd:enumeration value="end"/>
+									</xsd:restriction>
+								</xsd:simpleContent>
+							</xsd:complexType>
+						</xsd:element>
+						<xsd:element name="ribRotation" type="ribRotationType"/>
+					</xsd:sequence>
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+
+
 
 
         <xsd:complexType name="wingSectionType">
