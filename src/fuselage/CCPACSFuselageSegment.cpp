@@ -150,6 +150,9 @@ CCPACSFuselageSegment::CCPACSFuselageSegment(CCPACSFuselageSegments* parent, CTi
 // Destructor
 CCPACSFuselageSegment::~CCPACSFuselageSegment()
 {
+    // unregister
+    GetFuselage().GetConfiguration().GetUIDManager().RemoveGeometricComponent(m_uID);
+
     Cleanup();
 }
 
@@ -170,15 +173,18 @@ void CCPACSFuselageSegment::Invalidate()
 }
 
 // Read CPACS segment elements
-void CCPACSFuselageSegment::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& segmentXPath)
+void CCPACSFuselageSegment::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& segmentXPath)
 {
     Cleanup();
     generated::CPACSFuselageSegment::ReadCPACS(tixiHandle, segmentXPath);
 
-    GetFuselage().GetConfiguration().GetUIDManager().AddGeometricComponent(m_uID, this);
+    if (m_uidMgr) {
+        m_uidMgr->AddGeometricComponent(m_uID, this);
+    }
 
-    startConnection = CTiglFuselageConnection(m_fromElementUID, this);
-    endConnection = CTiglFuselageConnection(m_toElementUID, this);
+    // trigger creation of connections
+    SetFromElementUID(m_fromElementUID);
+    SetToElementUID(m_toElementUID);
 
     // TODO: continuity does not exist in CPACS spec
 
@@ -205,8 +211,26 @@ void CCPACSFuselageSegment::ReadCPACS(TixiDocumentHandle tixiHandle, const std::
     Invalidate();
 }
 
+void CCPACSFuselageSegment::SetUID(const std::string& uid) {
+    if (m_uidMgr) {
+        m_uidMgr->TryRemoveGeometricComponent(m_uID);
+        m_uidMgr->AddGeometricComponent(uid, this);
+    }
+    generated::CPACSFuselageSegment::SetUID(uid);
+}
+
 std::string CCPACSFuselageSegment::GetDefaultedUID() const {
     return generated::CPACSFuselageSegment::GetUID();
+}
+
+void CCPACSFuselageSegment::SetFromElementUID(const std::string& value) {
+    generated::CPACSFuselageSegment::SetFromElementUID(value);
+    startConnection = CTiglFuselageConnection(m_fromElementUID, this);
+}
+
+void CCPACSFuselageSegment::SetToElementUID(const std::string& value) {
+    generated::CPACSFuselageSegment::SetToElementUID(value);
+    endConnection = CTiglFuselageConnection(m_toElementUID, this);
 }
 
 // Returns the fuselage this segment belongs to
@@ -522,38 +546,42 @@ gp_Pnt CCPACSFuselageSegment::GetPoint(double eta, double zeta)
 
 
 // Returns the start profile points as read from TIXI. The points are already transformed.
-std::vector<CTiglPoint*> CCPACSFuselageSegment::GetRawStartProfilePoints()
+std::vector<CTiglPoint> CCPACSFuselageSegment::GetRawStartProfilePoints()
 {
     CCPACSFuselageProfile& startProfile = startConnection.GetProfile();
-    std::vector<CTiglPoint*> points = startProfile.GetCoordinateContainer();
-    std::vector<CTiglPoint*> pointsTransformed;
-    for (std::vector<tigl::CTiglPoint*>::size_type i = 0; i < points.size(); i++) {
-        gp_Pnt pnt = points[i]->Get_gp_Pnt();
+    if (startProfile.GetPointList_choice1()) {
+        const std::vector<CTiglPoint>& points = startProfile.GetPointList_choice1()->AsVector();
+        std::vector<CTiglPoint> pointsTransformed;
+        for (std::vector<CTiglPoint>::size_type i = 0; i < points.size(); i++) {
+            gp_Pnt pnt = points[i].Get_gp_Pnt();
 
-        pnt = transformProfilePoint(fuselage->GetTransformationMatrix(), startConnection, pnt);
+            pnt = transformProfilePoint(fuselage->GetTransformationMatrix(), startConnection, pnt);
 
-        CTiglPoint *tiglPoint = new CTiglPoint(pnt.X(), pnt.Y(), pnt.Z());
-        pointsTransformed.push_back(tiglPoint);
-    }
-    return pointsTransformed;
+            pointsTransformed.push_back(CTiglPoint(pnt.X(), pnt.Y(), pnt.Z()));
+        }
+        return pointsTransformed;
+    } else
+        return std::vector<CTiglPoint>();
 }
 
 
 // Returns the outer profile points as read from TIXI. The points are already transformed.
-std::vector<CTiglPoint*> CCPACSFuselageSegment::GetRawEndProfilePoints()
+std::vector<CTiglPoint> CCPACSFuselageSegment::GetRawEndProfilePoints()
 {
     CCPACSFuselageProfile& endProfile = endConnection.GetProfile();
-    std::vector<CTiglPoint*> points = endProfile.GetCoordinateContainer();
-    std::vector<CTiglPoint*> pointsTransformed;
-    for (std::vector<tigl::CTiglPoint*>::size_type i = 0; i < points.size(); i++) {
-        gp_Pnt pnt = points[i]->Get_gp_Pnt();
+    if (endProfile.GetPointList_choice1()) {
+        const std::vector<CTiglPoint>& points = endProfile.GetPointList_choice1()->AsVector();
+        std::vector<CTiglPoint> pointsTransformed;
+        for (std::vector<tigl::CTiglPoint>::size_type i = 0; i < points.size(); i++) {
+            gp_Pnt pnt = points[i].Get_gp_Pnt();
 
-        pnt = transformProfilePoint(fuselage->GetTransformationMatrix(), endConnection, pnt);
+            pnt = transformProfilePoint(fuselage->GetTransformationMatrix(), endConnection, pnt);
 
-        CTiglPoint *tiglPoint = new CTiglPoint(pnt.X(), pnt.Y(), pnt.Z());
-        pointsTransformed.push_back(tiglPoint);
-    }
-    return pointsTransformed;
+            pointsTransformed.push_back(CTiglPoint(pnt.X(), pnt.Y(), pnt.Z()));
+        }
+        return pointsTransformed;
+    } else
+        return std::vector<CTiglPoint>();
 }
 
 gp_Pnt CCPACSFuselageSegment::GetPointOnYPlane(double eta, double ypos, int pointIndex)

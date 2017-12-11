@@ -61,12 +61,12 @@ namespace tigl
             
         }
         
-        const CCPACSMaterial& CPACSWeb::GetMaterial() const
+        const CCPACSMaterialDefinition& CPACSWeb::GetMaterial() const
         {
             return m_material;
         }
         
-        CCPACSMaterial& CPACSWeb::GetMaterial()
+        CCPACSMaterialDefinition& CPACSWeb::GetMaterial()
         {
             return m_material;
         }

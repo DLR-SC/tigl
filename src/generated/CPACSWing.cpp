@@ -31,7 +31,7 @@ namespace tigl
         CPACSWing::CPACSWing(CCPACSRotorBlades* parent, CTiglUIDManager* uidMgr) :
             m_uidMgr(uidMgr), 
             m_transformation(m_uidMgr), 
-            m_sections(m_uidMgr), 
+            m_sections(reinterpret_cast<CCPACSWing*>(this), m_uidMgr), 
             m_segments(reinterpret_cast<CCPACSWing*>(this), m_uidMgr)
         {
             //assert(parent != NULL);
@@ -42,7 +42,7 @@ namespace tigl
         CPACSWing::CPACSWing(CCPACSWings* parent, CTiglUIDManager* uidMgr) :
             m_uidMgr(uidMgr), 
             m_transformation(m_uidMgr), 
-            m_sections(m_uidMgr), 
+            m_sections(reinterpret_cast<CCPACSWing*>(this), m_uidMgr), 
             m_segments(reinterpret_cast<CCPACSWing*>(this), m_uidMgr)
         {
             //assert(parent != NULL);

@@ -22,7 +22,7 @@
 #include "generated/CPACSWingShell.h"
 #include "tigl_internal.h"
 #include "CCPACSWingCells.h"
-#include "CCPACSMaterial.h"
+#include "CCPACSMaterialDefinition.h"
 
 #include "tigl.h"
 
@@ -47,8 +47,8 @@ public:
     TIGL_EXPORT const CCPACSWingCell& GetCell(int index) const;
     TIGL_EXPORT CCPACSWingCell& GetCell(int index);
 
-    TIGL_EXPORT const CCPACSMaterial& GetMaterial() const;
-    TIGL_EXPORT CCPACSMaterial& GetMaterial();
+    TIGL_EXPORT const CCPACSMaterialDefinition& GetMaterial() const;
+    TIGL_EXPORT CCPACSMaterialDefinition& GetMaterial();
 
     TIGL_EXPORT const CCPACSWingCSStructure& GetStructure() const;
     TIGL_EXPORT CCPACSWingCSStructure& GetStructure();

@@ -17,7 +17,7 @@
 
 #pragma once
 
-#include <CCPACSMaterial.h>
+#include <CCPACSMaterialDefinition.h>
 #include <string>
 #include <tixi.h>
 #include "CPACSCap.h"
@@ -58,8 +58,8 @@ namespace tigl
             TIGL_EXPORT virtual const CPACSPointX& GetRibRotation() const;
             TIGL_EXPORT virtual CPACSPointX& GetRibRotation();
             
-            TIGL_EXPORT virtual const CCPACSMaterial& GetMaterial() const;
-            TIGL_EXPORT virtual CCPACSMaterial& GetMaterial();
+            TIGL_EXPORT virtual const CCPACSMaterialDefinition& GetMaterial() const;
+            TIGL_EXPORT virtual CCPACSMaterialDefinition& GetMaterial();
             
             TIGL_EXPORT virtual const CPACSCap& GetUpperCap() const;
             TIGL_EXPORT virtual CPACSCap& GetUpperCap();
@@ -70,13 +70,13 @@ namespace tigl
         protected:
             CTiglUIDManager* m_uidMgr;
             
-            std::string    m_uID;
-            std::string    m_fromRib;
-            std::string    m_toRib;
-            CPACSPointX    m_ribRotation;
-            CCPACSMaterial m_material;
-            CPACSCap       m_upperCap;
-            CPACSCap       m_lowerCap;
+            std::string              m_uID;
+            std::string              m_fromRib;
+            std::string              m_toRib;
+            CPACSPointX              m_ribRotation;
+            CCPACSMaterialDefinition m_material;
+            CPACSCap                 m_upperCap;
+            CPACSCap                 m_lowerCap;
             
         private:
             #ifdef HAVE_CPP11

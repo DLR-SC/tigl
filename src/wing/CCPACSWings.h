@@ -56,8 +56,6 @@ public:
     // Returns the wing for a given UID.
     TIGL_EXPORT CCPACSWing& GetWing(const std::string& UID) const;
     
-    TIGL_EXPORT void Add(CCPACSWing* wing);
-    TIGL_EXPORT void Remove(CCPACSWing* wing);
     
     // Returns the wing index for a given UID.
     TIGL_EXPORT int GetWingIndex(const std::string& UID) const;

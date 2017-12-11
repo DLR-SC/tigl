@@ -83,9 +83,16 @@ void CCPACSExternalObject::ReadCPACS(const TixiDocumentHandle& tixiHandle, const
 
     // Register ourself at the unique id manager
     if (m_parent) {
-        CCPACSConfiguration& config = m_parent->GetParent()->GetConfiguration();
-        config.GetUIDManager().AddGeometricComponent(m_uID, this);
+        m_uidMgr->AddGeometricComponent(m_uID, this);
     }
+}
+
+void CCPACSExternalObject::SetUID(const std::string& uid) {
+    if (m_uidMgr) {
+        m_uidMgr->TryRemoveGeometricComponent(m_uID);
+        m_uidMgr->AddGeometricComponent(uid, this);
+    }
+    generated::CPACSGenericGeometricComponent::SetUID(uid);
 }
 
 const std::string& CCPACSExternalObject::GetFilePath() const

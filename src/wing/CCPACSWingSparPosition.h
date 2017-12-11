@@ -43,7 +43,9 @@ public:
     TIGL_EXPORT void SetElementUID(const std::string&);
 
     TIGL_EXPORT double GetEta() const;
-    TIGL_EXPORT void SetEta(double);
+    TIGL_EXPORT void SetEta(double value);
+
+    TIGL_EXPORT virtual void SetXsi(const double& value) OVERRIDE;
 };
 
 } // end namespace tigl

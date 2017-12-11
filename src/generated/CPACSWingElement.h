@@ -27,6 +27,7 @@
 namespace tigl
 {
     class CTiglUIDManager;
+    class CCPACSWingSectionElements;
     
     namespace generated
     {
@@ -37,8 +38,11 @@ namespace tigl
         class CPACSWingElement
         {
         public:
-            TIGL_EXPORT CPACSWingElement(CTiglUIDManager* uidMgr);
+            TIGL_EXPORT CPACSWingElement(CCPACSWingSectionElements* parent, CTiglUIDManager* uidMgr);
+            
             TIGL_EXPORT virtual ~CPACSWingElement();
+            
+            TIGL_EXPORT CCPACSWingSectionElements* GetParent() const;
             
             TIGL_EXPORT CTiglUIDManager& GetUIDManager();
             TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
@@ -63,6 +67,8 @@ namespace tigl
             TIGL_EXPORT virtual CCPACSTransformation& GetTransformation();
             
         protected:
+            CCPACSWingSectionElements* m_parent;
+            
             CTiglUIDManager* m_uidMgr;
             
             std::string                  m_uID;

@@ -8,40 +8,40 @@ namespace tigl
     namespace
     {
         const char sep = ';';
+    }
 
-        std::vector<double> toDoubleVec(const std::string& s)
-        {
-            std::stringstream ss(s);
-            std::vector<double> r;
-            std::string d;
-            while (std::getline(ss, d, sep)) {
-                r.push_back(std::strtod(d.c_str(), NULL));
-            }
-            return r;
+    std::vector<double> stringToDoubleVec(const std::string& s)
+    {
+        std::stringstream ss(s);
+        std::vector<double> r;
+        std::string d;
+        while (std::getline(ss, d, sep)) {
+            r.push_back(std::strtod(d.c_str(), NULL));
         }
+        return r;
+    }
 
-        std::string toString(const std::vector<double>& v)
-        {
-            std::stringstream ss;
-            for (std::vector<double>::const_iterator it = v.begin(); it != v.end(); ++it) {
-                ss << *it;
-                if (it != v.end() - 1) {
-                    ss << sep;
-                }
+    std::string doubleVecToString(const std::vector<double>& v)
+    {
+        std::stringstream ss;
+        for (std::vector<double>::const_iterator it = v.begin(); it != v.end(); ++it) {
+            ss << *it;
+            if (it != v.end() - 1) {
+                ss << sep;
             }
-            return ss.str();
         }
+        return ss.str();
     }
 
     void CCPACSStringVector::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string &xpath)
     {
         generated::CPACSStringVectorBase::ReadCPACS(tixiHandle, xpath);
-        m_vec = toDoubleVec(m_simpleContent);
+        m_vec = stringToDoubleVec(m_simpleContent);
     }
 
     void CCPACSStringVector::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const_cast<std::string&>(m_simpleContent) = toString(m_vec); // TODO: this is a terrible hack, but WriteCPACS() has to be const
+        const_cast<std::string&>(m_simpleContent) = doubleVecToString(m_vec); // TODO: this is a terrible hack, but WriteCPACS() has to be const
         generated::CPACSStringVectorBase::WriteCPACS(tixiHandle, xpath);
     }
 

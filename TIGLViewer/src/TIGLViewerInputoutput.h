@@ -56,7 +56,7 @@ public:
 
     bool exportModel( const QString fileName, 
                       const FileFormat format, 
-                      const Handle_AIS_InteractiveContext& ic);
+                      const Handle(AIS_InteractiveContext)& ic);
 
     QString info() const;
 
@@ -66,28 +66,28 @@ signals:
 
 private:
 
-    Handle_TopTools_HSequenceOfShape  importModel( const FileFormat format, 
+    Handle(TopTools_HSequenceOfShape) importModel( const FileFormat format, 
                                                    const QString& fileName);
     bool                              exportModel( const FileFormat format, 
                                                    const QString&,
-                                                   const Handle_TopTools_HSequenceOfShape& );
+                                                   const Handle(TopTools_HSequenceOfShape)& );
     
-    Handle_TopTools_HSequenceOfShape getShapes( const Handle_AIS_InteractiveContext& oc);
+    Handle(TopTools_HSequenceOfShape) getShapes( const Handle(AIS_InteractiveContext)& oc);
 
-    Handle_TopTools_HSequenceOfShape importBREP ( const QString& );
+    Handle(TopTools_HSequenceOfShape) importBREP ( const QString& );
 
-    Handle_TopTools_HSequenceOfShape importIGES ( const QString& );
-    Handle_TopTools_HSequenceOfShape importSTL  ( const QString& );
-    Handle_TopTools_HSequenceOfShape importSTEP ( const QString& );
-    Handle_TopTools_HSequenceOfShape importMESH ( const QString& );
+    Handle(TopTools_HSequenceOfShape) importIGES ( const QString& );
+    Handle(TopTools_HSequenceOfShape) importSTL  ( const QString& );
+    Handle(TopTools_HSequenceOfShape) importSTEP ( const QString& );
+    Handle(TopTools_HSequenceOfShape) importMESH ( const QString& );
 
-    bool exportBREP ( const QString& fileName, const Handle_TopTools_HSequenceOfShape& shapes );
-    bool exportIGES ( const QString& fileName, const Handle_TopTools_HSequenceOfShape& shapes );
-    bool exportSTEP ( const QString& fileName, const Handle_TopTools_HSequenceOfShape& shapes );
-    bool exportSTL  ( const QString& fileName, const Handle_TopTools_HSequenceOfShape& shapes );
-    bool exportVRML ( const QString& fileName, const Handle_TopTools_HSequenceOfShape& shapes );
+    bool exportBREP ( const QString& fileName, const Handle(TopTools_HSequenceOfShape)& shapes );
+    bool exportIGES ( const QString& fileName, const Handle(TopTools_HSequenceOfShape)& shapes );
+    bool exportSTEP ( const QString& fileName, const Handle(TopTools_HSequenceOfShape)& shapes );
+    bool exportSTL  ( const QString& fileName, const Handle(TopTools_HSequenceOfShape)& shapes );
+    bool exportVRML ( const QString& fileName, const Handle(TopTools_HSequenceOfShape)& shapes );
 
-    bool checkFacetedBrep( const Handle_TopTools_HSequenceOfShape& );
+    bool checkFacetedBrep( const Handle(TopTools_HSequenceOfShape)& );
 
     // Attributes
     

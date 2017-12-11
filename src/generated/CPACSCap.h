@@ -17,7 +17,7 @@
 
 #pragma once
 
-#include <CCPACSMaterial.h>
+#include <CCPACSMaterialDefinition.h>
 #include <string>
 #include <tixi.h>
 #include <typeinfo>
@@ -47,12 +47,12 @@ namespace tigl
             TIGL_EXPORT virtual const double& GetArea() const;
             TIGL_EXPORT virtual void SetArea(const double& value);
             
-            TIGL_EXPORT virtual const CCPACSMaterial& GetMaterial() const;
-            TIGL_EXPORT virtual CCPACSMaterial& GetMaterial();
+            TIGL_EXPORT virtual const CCPACSMaterialDefinition& GetMaterial() const;
+            TIGL_EXPORT virtual CCPACSMaterialDefinition& GetMaterial();
             
         protected:
-            double         m_area;
-            CCPACSMaterial m_material;
+            double                   m_area;
+            CCPACSMaterialDefinition m_material;
             
         private:
             #ifdef HAVE_CPP11

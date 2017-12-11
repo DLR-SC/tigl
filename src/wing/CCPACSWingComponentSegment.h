@@ -38,7 +38,7 @@
 #include "tigl_internal.h"
 
 #include "generated/UniquePtr.h"
-#include "CCPACSMaterial.h"
+#include "CCPACSMaterialDefinition.h"
 #include "CTiglWingConnection.h"
 #include "CCPACSWingCSStructure.h"
 #include "CCPACSWingShell.h"
@@ -55,8 +55,8 @@ class CCPACSWingSegment;
 class CTiglWingChordface;
 class CTiglShapeGeomComponentAdaptor;
 
-typedef std::vector<const CCPACSMaterial*>    MaterialList;
-typedef std::vector<CCPACSWingSegment*>       SegmentList;
+typedef std::vector<const CCPACSMaterialDefinition*> MaterialList;
+typedef std::vector<CCPACSWingSegment*>              SegmentList;
 
 class CCPACSWingComponentSegment : public generated::CPACSComponentSegment, public CTiglAbstractSegment<CCPACSWingComponentSegment>
 {
@@ -221,8 +221,6 @@ private:
 
 
 private:
-    CTiglUIDManager* _uidMgr;
-
     CCPACSWing*          wing;                 /**< Parent wing                             */
     double               myVolume;             /**< Volume of this segment                  */
     double               mySurfaceArea;        /**< Surface area of this segment            */

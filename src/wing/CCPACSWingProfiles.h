@@ -47,11 +47,7 @@ public:
     // profiles with same UID are overwritten
     TIGL_EXPORT void ImportCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
 
-    // add a CPACS wing profile to list
-    TIGL_EXPORT void AddProfile(CCPACSWingProfile* profile);
-        
-    // removes a CPACS wing profile from the list
-    TIGL_EXPORT void DeleteProfile( std::string uid );
+    TIGL_EXPORT virtual CCPACSWingProfile& AddWingAirfoil();
 
     // Returns the total count of wing profiles in this configuration
     TIGL_EXPORT int GetProfileCount() const;

@@ -89,5 +89,5 @@ namespace tigl
         };
     }
     
-    // CPACSMaterialDefinition is customized, use type CCPACSMaterial directly
+    // CPACSMaterialDefinition is customized, use type CCPACSMaterialDefinition directly
 }

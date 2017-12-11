@@ -102,6 +102,11 @@ void CCPACSWingProfileCST::BuildWires()
 }
 
 // Returns sample points
+std::vector<CTiglPoint>& CCPACSWingProfileCST::GetSamplePoints() {
+    static std::vector<CTiglPoint> dummy;
+    return dummy;
+}
+
 const std::vector<CTiglPoint>& CCPACSWingProfileCST::GetSamplePoints() const {
     static std::vector<CTiglPoint> dummy;
     return dummy;

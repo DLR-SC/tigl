@@ -155,12 +155,12 @@ namespace tigl
             
         }
         
-        const CCPACSMaterial& CPACSWingRibCrossSection::GetMaterial() const
+        const CCPACSMaterialDefinition& CPACSWingRibCrossSection::GetMaterial() const
         {
             return m_material;
         }
         
-        CCPACSMaterial& CPACSWingRibCrossSection::GetMaterial()
+        CCPACSMaterialDefinition& CPACSWingRibCrossSection::GetMaterial()
         {
             return m_material;
         }

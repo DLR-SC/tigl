@@ -102,18 +102,4 @@ bool CCPACSWings::HasWing(const std::string & uid) const
     return false;
 }
 
-void CCPACSWings::Add(CCPACSWing* wing)
-{
-    m_wings.push_back(unique_ptr<CCPACSWing>(wing));
-}
-
-void CCPACSWings::Remove(CCPACSWing* wing) {
-    for (std::vector<unique_ptr<CCPACSWing> >::iterator it = m_wings.begin(); it != m_wings.end(); ++it) {
-        if ((*it).get() == wing) {
-            m_wings.erase(it);
-            return;
-        }
-    }
-    throw CTiglError("Wing not found");
-}
 } // end namespace tigl

@@ -5,11 +5,17 @@
 
 namespace tigl
 {
+    std::vector<double> stringToDoubleVec(const std::string& s);
+    std::string doubleVecToString(const std::vector<double>& v);
+
     class CCPACSStringVector : private generated::CPACSStringVectorBase
     {
     public:
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string &xpath) OVERRIDE;
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const OVERRIDE;
+
+        using generated::CPACSStringVectorBase::GetMapType;
+        using generated::CPACSStringVectorBase::SetMapType;
 
         TIGL_EXPORT const std::vector<double>& AsVector() const;
         TIGL_EXPORT std::vector<double>& AsVector();

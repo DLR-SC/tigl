@@ -40,6 +40,6 @@ void CCPACSWingRibCrossSection::SetXRotation(double rotation)
     m_ribRotation->SetX(rotation);
 
     // invalidate whole component segment structure, since rib could be referenced anywher
-    GetParent()->GetParent()->Invalidate();
+    GetParent()->GetParent()->GetParent()->Invalidate();
 }
 } // end namespace tigl

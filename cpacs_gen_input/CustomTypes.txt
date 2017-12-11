@@ -11,7 +11,7 @@ CPACSRotorHub_type                 TiglRotorHubType
 CPACSAircraftModel                 CCPACSAircraftModel
 CPACSRotorcraftModel               CCPACSRotorcraftModel
 CPACSProfiles                      CCPACSProfiles
-CPACSMaterialDefinition            CCPACSMaterial
+CPACSMaterialDefinition            CCPACSMaterialDefinition
 CPACSFarField                      CCPACSFarField
 CPACSGuideCurves                   CCPACSGuideCurves
 CPACSGuideCurveProfileGeometry     CCPACSGuideCurveProfile

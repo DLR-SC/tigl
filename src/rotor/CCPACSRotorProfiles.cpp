@@ -33,8 +33,8 @@ CCPACSRotorProfiles::CCPACSRotorProfiles(CTiglUIDManager* uidMgr)
 // Invalidates internal state
 void CCPACSRotorProfiles::Invalidate()
 {
-    for (int i = 1; i < GetProfileCount(); i++) {
-        GetProfile(i).Invalidate();
+    for (int i = 0; i < m_rotorAirfoils.size(); i++) {
+        static_cast<CCPACSWingProfile&>(*m_rotorAirfoils[i]).Invalidate();
     }
 }
 

@@ -45,16 +45,14 @@ void CCPACSTransformation::reset()
 
 void CCPACSTransformation::setTranslation(const CTiglPoint & translation)
 {
-    setTranslation(translation, m_translation && m_translation->GetRefType() ? *m_translation->GetRefType() : ABS_LOCAL);
+    GetTranslation(CreateIfNotExists).SetAsPoint(translation);
 }
 
 void CCPACSTransformation::setTranslation(const CTiglPoint& translation, ECPACSTranslationType type)
 {
-    if (!m_translation) {
-        m_translation = boost::in_place(m_uidMgr);
-    }
-    m_translation->SetAsPoint(translation);
-    m_translation->SetRefType(type);
+    CCPACSPointAbsRel& t = GetTranslation(CreateIfNotExists);
+    t.SetAsPoint(translation);
+    t.SetRefType(type);
 }
 
 void CCPACSTransformation::setRotation(const CTiglPoint& rotation)

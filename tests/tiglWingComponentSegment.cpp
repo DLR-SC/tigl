@@ -30,7 +30,7 @@
 #include "CCPACSWing.h"
 #include "CCPACSWingComponentSegment.h"
 #include "CCPACSWingSegment.h"
-#include "CCPACSMaterial.h"
+#include "CCPACSMaterialDefinition.h"
 #include "CTiglWingChordface.h"
 
 /******************************************************************************/

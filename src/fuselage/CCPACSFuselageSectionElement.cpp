@@ -24,26 +24,29 @@
 */
 
 #include "CCPACSFuselageSectionElement.h"
-#include "CTiglError.h"
-#include <iostream>
+
+#include "CCPACSFuselageSectionElements.h"
+#include "CCPACSFuselageSections.h"
+#include "CCPACSFuselageSection.h"
+#include "CCPACSFuselage.h"
 
 namespace tigl
 {
 
 // Constructor
-CCPACSFuselageSectionElement::CCPACSFuselageSectionElement(CTiglUIDManager* uidMgr)
-    : generated::CPACSFuselageElement(uidMgr) {}
-
-// Read CPACS section elements
-void CCPACSFuselageSectionElement::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& elementXPath)
-{
-    generated::CPACSFuselageElement::ReadCPACS(tixiHandle, elementXPath);
-}
+CCPACSFuselageSectionElement::CCPACSFuselageSectionElement(CCPACSFuselageSectionElements* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSFuselageElement(parent, uidMgr) {}
 
 // Returns the UID of the referenced fuselage profile
 std::string CCPACSFuselageSectionElement::GetProfileIndex() const
 {
     return m_profileUID;
+}
+
+void CCPACSFuselageSectionElement::SetProfileUID(const std::string& value) {
+    generated::CPACSFuselageElement::SetProfileUID(value);
+    // invalidate fuselage
+    m_parent->GetParent()->GetParent()->GetParent()->Invalidate();
 }
 
 // Gets the section element transformation
