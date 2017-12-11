@@ -87,6 +87,17 @@ namespace tigl
                 LOG(ERROR) << "Required element guideCurveProfileUID is missing at xpath " << xpath;
             }
             
+            // read element rXDirection
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/rXDirection")) {
+                m_rXDirection = boost::in_place(m_uidMgr);
+                try {
+                    m_rXDirection->ReadCPACS(tixiHandle, xpath + "/rXDirection");
+                } catch(const std::exception& e) {
+                    LOG(ERROR) << "Failed to read rXDirection at xpath " << xpath << ": " << e.what();
+                    m_rXDirection = boost::none;
+                }
+            }
+            
             // read element fromGuideCurveUID
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/fromGuideCurveUID")) {
                 m_fromGuideCurveUID_choice1 = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/fromGuideCurveUID");
@@ -163,6 +174,16 @@ namespace tigl
             // write element guideCurveProfileUID
             tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/guideCurveProfileUID");
             tixi::TixiSaveElement(tixiHandle, xpath + "/guideCurveProfileUID", m_guideCurveProfileUID);
+            
+            // write element rXDirection
+            if (m_rXDirection) {
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/rXDirection");
+                m_rXDirection->WriteCPACS(tixiHandle, xpath + "/rXDirection");
+            } else {
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/rXDirection")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/rXDirection");
+                }
+            }
             
             // write element fromGuideCurveUID
             if (m_fromGuideCurveUID_choice1) {
@@ -307,6 +328,16 @@ namespace tigl
             m_guideCurveProfileUID = value;
         }
         
+        const boost::optional<CPACSPointXYZ>& CPACSGuideCurve::GetRXDirection() const
+        {
+            return m_rXDirection;
+        }
+        
+        boost::optional<CPACSPointXYZ>& CPACSGuideCurve::GetRXDirection()
+        {
+            return m_rXDirection;
+        }
+        
         const boost::optional<std::string>& CPACSGuideCurve::GetFromGuideCurveUID_choice1() const
         {
             return m_fromGuideCurveUID_choice1;
@@ -380,6 +411,18 @@ namespace tigl
         boost::optional<CPACSPointXYZ>& CPACSGuideCurve::GetTangent()
         {
             return m_tangent;
+        }
+        
+        CPACSPointXYZ& CPACSGuideCurve::GetRXDirection(CreateIfNotExistsTag)
+        {
+            if (!m_rXDirection)
+                m_rXDirection = boost::in_place(m_uidMgr);
+            return *m_rXDirection;
+        }
+        
+        void CPACSGuideCurve::RemoveRXDirection()
+        {
+            m_rXDirection = boost::none;
         }
         
         CPACSPointXYZ& CPACSGuideCurve::GetTangent_choice2(CreateIfNotExistsTag)

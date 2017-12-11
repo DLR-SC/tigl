@@ -88,6 +88,14 @@ TopoDS_Edge CTiglWingSegmentGuidecurveBuilder::BuildGuideCurve(CCPACSGuideCurve 
     CCPACSConfiguration& config = m_segment.GetWing().GetConfiguration();
     CCPACSGuideCurveProfile& guideCurveProfile = config.GetGuideCurveProfile(guideCurveProfileUID);
 
+    // get local x-direction for the guide curve
+    gp_Dir rxDir = gp_Dir(1., 0., 0.);
+    if (guideCurve->GetRXDirection()) {
+        rxDir.SetX(guideCurve->GetRXDirection()->GetX());
+        rxDir.SetY(guideCurve->GetRXDirection()->GetY());
+        rxDir.SetZ(guideCurve->GetRXDirection()->GetZ());
+    }
+
     // construct guide curve algorithm
     TopoDS_Edge guideCurveEdge = CCPACSGuideCurveAlgo<CCPACSWingProfileGetPointAlgo> (concatenatedInnerWires,
                                                                                       concatenatedOuterWires,
@@ -95,7 +103,7 @@ TopoDS_Edge CTiglWingSegmentGuidecurveBuilder::BuildGuideCurve(CCPACSGuideCurve 
                                                                                       toRelativeCircumference,
                                                                                       innerScale,
                                                                                       outerScale,
-                                                                                      gp_Dir(1.0, 0.0, 0.0),
+                                                                                      rxDir,
                                                                                       guideCurveProfile);
     return guideCurveEdge;
 }

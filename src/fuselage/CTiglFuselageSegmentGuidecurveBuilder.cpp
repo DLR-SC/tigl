@@ -83,6 +83,15 @@ TopoDS_Edge CTiglFuselageSegmentGuidecurveBuilder::BuildGuideCurve(CCPACSGuideCu
     CCPACSConfiguration& config = m_segment.GetFuselage().GetConfiguration();
     CCPACSGuideCurveProfile& guideCurveProfile = config.GetGuideCurveProfile(guideCurveProfileUID);
 
+    // get local x-direction for the guide curve
+    gp_Dir rxDir = gp_Dir(0., 0., 1.);
+    if (guideCurve->GetRXDirection()) {
+        rxDir.SetX(guideCurve->GetRXDirection()->GetX());
+        rxDir.SetY(guideCurve->GetRXDirection()->GetY());
+        rxDir.SetZ(guideCurve->GetRXDirection()->GetZ());
+    }
+
+
     // construct guide curve algorithm
     TopoDS_Edge guideCurveEdge = CCPACSGuideCurveAlgo<CCPACSFuselageProfileGetPointAlgo> (startWireContainer,
                                                                                           endWireContainer,
@@ -90,7 +99,7 @@ TopoDS_Edge CTiglFuselageSegmentGuidecurveBuilder::BuildGuideCurve(CCPACSGuideCu
                                                                                           toRelativeCircumference,
                                                                                           innerScale,
                                                                                           outerScale,
-                                                                                          gp_Dir(0.0, 0.0, 1.0),
+                                                                                          rxDir,
                                                                                           guideCurveProfile);
     return guideCurveEdge;
 }
