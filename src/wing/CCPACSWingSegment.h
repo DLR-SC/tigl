@@ -64,9 +64,14 @@ public:
     TIGL_EXPORT void Invalidate();
 
     // Read CPACS segment elements
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& segmentXPath);
+    TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& segmentXPath) OVERRIDE;
+
+    TIGL_EXPORT virtual void SetUID(const std::string& uid) OVERRIDE;
 
     TIGL_EXPORT virtual std::string GetDefaultedUID() const OVERRIDE;
+
+    TIGL_EXPORT virtual void SetFromElementUID(const std::string& value) OVERRIDE;
+    TIGL_EXPORT virtual void SetToElementUID(const std::string& value) OVERRIDE;
 
     // Returns the wing this segment belongs to
     TIGL_EXPORT CCPACSWing& GetWing() const;
@@ -231,7 +236,7 @@ private:
     CTiglWingConnection outerConnection;      /**< Outer segment connection (tip)          */
     CCPACSWing*          wing;                 /**< Parent wing                             */
     double               myVolume;             /**< Volume of this segment                  */
-    
+
     struct SurfaceCache
     {
         bool                 valid;

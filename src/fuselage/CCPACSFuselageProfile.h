@@ -25,6 +25,7 @@
 #ifndef CCPACSFUSELAGEPROFILE_H
 #define CCPACSFUSELAGEPROFILE_H
 
+#include "generated/UniquePtr.h"
 #include "generated/CPACSProfileGeometry.h"
 #include "tigl_internal.h"
 #include "tixi.h"
@@ -49,14 +50,11 @@ public:
     // Constructor
     TIGL_EXPORT CCPACSFuselageProfile(CTiglUIDManager* uidMgr);
 
-    // Virtual Destructor
+    // Destructor
     TIGL_EXPORT virtual ~CCPACSFuselageProfile();
 
     // Read CPACS fuselage profile file
-    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
-
-    // Write CPACS fuselage profile file
-    TIGL_EXPORT void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
+    TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) OVERRIDE;
 
     // Returns the name of the fuselage profile
     TIGL_EXPORT const int GetNumPoints() const;
@@ -76,16 +74,10 @@ public:
     // for zeta = 1.0 the last wire point.
     TIGL_EXPORT gp_Pnt GetPoint(double zeta);
 
-    // Returns the profile points as read from TIXI.
-    TIGL_EXPORT std::vector<CTiglPoint*> GetCoordinateContainer();
-
     // Returns the "diameter" line as a wire
     TIGL_EXPORT TopoDS_Wire GetDiameterWire();
 
 protected:
-    // Cleanup routine
-    void Cleanup();
-
     // Update the internal state, i.g. recalculates wire
     void Update();
 
@@ -113,15 +105,13 @@ private:
     bool checkSamePoints(gp_Pnt pointA, gp_Pnt pointB);
 
 private:
-    bool                                mirrorSymmetry; /**< Mirror symmetry with repect to the x-z plane */
-    std::vector<CTiglPoint>             coordinates;    /**< Coordinates of a fuselage profile element */
-    bool                                invalidated;    /**< Flag if element is invalid */
-    TopoDS_Wire                         wireOriginal;   /**< Original fuselage profile wire */
-    TopoDS_Wire                         wireClosed;     /**< Forced closed fuselage profile wire */
-    double                              wireLength;     /**< Length of fuselage profile wire */
-    unique_ptr<ITiglWireAlgorithm> profileWireAlgo;
-    gp_Pnt                              startDiameterPoint;
-    gp_Pnt                              endDiameterPoint;
+    bool                             mirrorSymmetry; /**< Mirror symmetry with repect to the x-z plane */
+    bool                             invalidated;    /**< Flag if element is invalid */
+    TopoDS_Wire                      wireOriginal;   /**< Original fuselage profile wire */
+    TopoDS_Wire                      wireClosed;     /**< Forced closed fuselage profile wire */
+    unique_ptr<ITiglWireAlgorithm>   profileWireAlgo;
+    gp_Pnt                           startDiameterPoint;
+    gp_Pnt                           endDiameterPoint;
     CTiglArcLengthReparameterization reparOriginal;
 
 };

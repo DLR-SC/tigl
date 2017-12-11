@@ -48,12 +48,12 @@ namespace tigl
             
         }
         
-        const CCPACSMaterial& CPACSWingSkin::GetMaterial() const
+        const CCPACSMaterialDefinition& CPACSWingSkin::GetMaterial() const
         {
             return m_material;
         }
         
-        CCPACSMaterial& CPACSWingSkin::GetMaterial()
+        CCPACSMaterialDefinition& CPACSWingSkin::GetMaterial()
         {
             return m_material;
         }

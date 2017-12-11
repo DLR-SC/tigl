@@ -44,31 +44,32 @@ public:
     TIGL_EXPORT CCPACSWingProfileCST();
 
     // Destructor
-    TIGL_EXPORT ~CCPACSWingProfileCST();
+    TIGL_EXPORT virtual ~CCPACSWingProfileCST();
 
     // Cleanup routine
     TIGL_EXPORT void Cleanup();
 
     // Update of wire points ...
-    TIGL_EXPORT void Update();
+    TIGL_EXPORT virtual void Update() OVERRIDE;
 
     // Returns the profile points as read from TIXI.
+    TIGL_EXPORT virtual std::vector<CTiglPoint>& GetSamplePoints() OVERRIDE; // TODO: why do we need those anyway, they just return an empty vector?
     TIGL_EXPORT virtual const std::vector<CTiglPoint>& GetSamplePoints() const OVERRIDE; // TODO: why do we need those anyway, they just return an empty vector?
 
     // get upper wing profile wire
-    TIGL_EXPORT const TopoDS_Edge & GetUpperEdge() const;
+    TIGL_EXPORT virtual const TopoDS_Edge & GetUpperWire() const OVERRIDE;
 
     // get lower wing profile wire
-    TIGL_EXPORT const TopoDS_Edge & GetLowerEdge() const;
+    TIGL_EXPORT virtual const TopoDS_Edge & GetLowerWire() const OVERRIDE;
 
     // get trailing edge
     TIGL_EXPORT const TopoDS_Edge & GetTrailingEdge() const;
 
     // get trailing edge for opened profile
-    TIGL_EXPORT const TopoDS_Edge & GetTrailingEdgeOpened() const;
+    TIGL_EXPORT virtual const TopoDS_Edge & GetTrailingEdgeOpened() const OVERRIDE;
 
     // gets the upper and lower wing profile into on edge
-    TIGL_EXPORT const TopoDS_Edge & GetUpperLowerEdge() const;
+    TIGL_EXPORT virtual const TopoDS_Edge & GetUpperLowerWire() const OVERRIDE;
 
     // Getter for upper wire of closed profile
     TIGL_EXPORT const TopoDS_Edge & GetUpperWireClosed() const;
@@ -83,21 +84,21 @@ public:
     TIGL_EXPORT const TopoDS_Edge & GetLowerWireOpened() const;
 
     // get leading edge point();
-    TIGL_EXPORT const gp_Pnt & GetLEPoint() const;
+    TIGL_EXPORT virtual const gp_Pnt & GetLEPoint() const OVERRIDE;
 
     // get trailing edge point();
-    TIGL_EXPORT const gp_Pnt & GetTEPoint() const;
+    TIGL_EXPORT virtual const gp_Pnt & GetTEPoint() const OVERRIDE;
 
     // CST profiles have always sharp trailing edges
-    TIGL_EXPORT bool HasBluntTE() const { return false;}
+    TIGL_EXPORT virtual bool HasBluntTE() const OVERRIDE { return false;}
 
 protected:
     // Builds the wing profile wires.
     void BuildWires();
 
 private:
-    TopoDS_Edge               upperEdge;          /**< wire of the upper wing profile */
-    TopoDS_Edge               lowerEdge;          /**< wire of the lower wing profile */
+    TopoDS_Edge               upperWire;          /**< wire of the upper wing profile */
+    TopoDS_Edge               lowerWire;          /**< wire of the lower wing profile */
     TopoDS_Edge               upperLowerEdge;     /**< edge consisting of upper and lower wing profile */
     TopoDS_Edge               trailingEdge;       /**< edge of the trailing edge */
     gp_Pnt                    lePoint;            /**< Leading edge point */

@@ -1481,7 +1481,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetProfileName(TiglCPACSConfigurationH
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
         const tigl::CCPACSWingSection& section = wing.GetSection(sectionIndex);
         const tigl::CCPACSWingSectionElement& element = section.GetSectionElement(elementIndex);
-        std::string profileUID = element.GetProfileUID();
+        std::string profileUID = element.GetAirfoilUID();
         tigl::CCPACSWingProfile& profile = config.GetWingProfile(profileUID);
 
         *profileNamePtr = const_cast<char*>(profile.GetName().c_str());
@@ -5999,7 +5999,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetMaterialUID(TiglCPA
                     return TIGL_INDEX_ERROR;
                 }
 
-                const tigl::CCPACSMaterial* material = list.at(materialIndex-1);
+                const tigl::CCPACSMaterialDefinition* material = list.at(materialIndex-1);
                 if (!material) {
                     return TIGL_ERROR;
                 }
@@ -6074,7 +6074,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetMaterialThickness(T
                     return TIGL_INDEX_ERROR;
                 }
 
-                const tigl::CCPACSMaterial* material = list.at(materialIndex-1);
+                const tigl::CCPACSMaterialDefinition* material = list.at(materialIndex-1);
                 if (!material) {
                     return TIGL_ERROR;
                 }

@@ -19,7 +19,7 @@
 
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
-#include <CCPACSMaterial.h>
+#include <CCPACSMaterialDefinition.h>
 #include <string>
 #include <tixi.h>
 #include "CPACSCap.h"
@@ -54,8 +54,8 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT virtual const CCPACSMaterial& GetMaterial() const;
-            TIGL_EXPORT virtual CCPACSMaterial& GetMaterial();
+            TIGL_EXPORT virtual const CCPACSMaterialDefinition& GetMaterial() const;
+            TIGL_EXPORT virtual CCPACSMaterialDefinition& GetMaterial();
             
             TIGL_EXPORT virtual const boost::optional<CPACSPointX>& GetRibRotation() const;
             TIGL_EXPORT virtual boost::optional<CPACSPointX>& GetRibRotation();
@@ -86,7 +86,7 @@ namespace tigl
             
             CTiglUIDManager* m_uidMgr;
             
-            CCPACSMaterial                    m_material;
+            CCPACSMaterialDefinition          m_material;
             boost::optional<CPACSPointX>      m_ribRotation;
             boost::optional<CPACSWingRibCell> m_ribCell;
             boost::optional<CPACSCap>         m_upperCap;

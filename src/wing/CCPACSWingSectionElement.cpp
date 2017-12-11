@@ -25,15 +25,18 @@
 
 #include "CCPACSWingSectionElement.h"
 
+#include "CCPACSWingSection.h"
+#include "CCPACSWing.h"
+
 namespace tigl
 {
-CCPACSWingSectionElement::CCPACSWingSectionElement(CTiglUIDManager* uidMgr)
-    : generated::CPACSWingElement(uidMgr) {}
-	
-// Returns the uid of the profile of this element
-const std::string& CCPACSWingSectionElement::GetProfileUID() const
-{
-    return m_airfoilUID;
+CCPACSWingSectionElement::CCPACSWingSectionElement(CCPACSWingSectionElements* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSWingElement(parent, uidMgr) {}
+
+void CCPACSWingSectionElement::SetAirfoilUID(const std::string& value) {
+    generated::CPACSWingElement::SetAirfoilUID(value);
+    // invalidate wing as we affect wing segments and component segments
+    m_parent->GetParent()->GetParent()->GetParent()->Invalidate();
 }
 
 // Gets the section element transformation

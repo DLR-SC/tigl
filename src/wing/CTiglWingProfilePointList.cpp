@@ -83,12 +83,20 @@ const double CTiglWingProfilePointList::c_trailingEdgeRelGap = 1E-2;
 const double CTiglWingProfilePointList::c_blendingDistance = 0.1;
 
 // Constructor
-CTiglWingProfilePointList::CTiglWingProfilePointList(const CCPACSWingProfile& profile, const CCPACSPointListXYZ& cpacsPointList)
-    : profileRef(profile), profileWireAlgo(new CTiglInterpolateBsplineWire) {
+CTiglWingProfilePointList::CTiglWingProfilePointList(const CCPACSWingProfile& profile, CCPACSPointListXYZ& cpacsPointList)
+    : profileRef(profile), coordinates(cpacsPointList.AsVector()), profileWireAlgo(new CTiglInterpolateBsplineWire) {
+    OrderPoints();
+}
 
+void CTiglWingProfilePointList::Update()
+{
+    OrderPoints();
+    BuildWires();
+}
+
+void CTiglWingProfilePointList::OrderPoints()
+{
     // points with maximal/minimal y-component
-    coordinates = cpacsPointList.AsVector();
-
     std::size_t minZIndex = 0;
     std::size_t maxZIndex = 0;
     for (std::size_t i = 1; i < coordinates.size(); i++) {
@@ -109,22 +117,6 @@ CTiglWingProfilePointList::CTiglWingProfilePointList(const CCPACSWingProfile& pr
         LOG(WARNING) << "The points in profile " << profileRef.GetUID() << " don't seem to be ordered in a mathematical positive sense.";
         std::reverse(coordinates.begin(), coordinates.end());
     }
-}
-
-std::string CTiglWingProfilePointList::CPACSID()
-{
-    return "pointList";
-}
-
-// Cleanup routine
-void CTiglWingProfilePointList::Cleanup()
-{
-    coordinates.clear();
-}
-
-void CTiglWingProfilePointList::Update()
-{
-    BuildWires();
 }
 
 // Builds the wing profile wire. The returned wire is already transformed by the
@@ -281,12 +273,16 @@ void CTiglWingProfilePointList::BuildLETEPoints()
     tePoint = lePoint.XYZ() + alphamin*(vchord.XYZ());
 }
 
+std::vector<CTiglPoint>& CTiglWingProfilePointList::GetSamplePoints() {
+    return coordinates;
+}
+
 const std::vector<CTiglPoint>& CTiglWingProfilePointList::GetSamplePoints() const {
     return coordinates;
 }
 
 // get upper wing profile wire
-const TopoDS_Edge& CTiglWingProfilePointList::GetUpperEdge() const
+const TopoDS_Edge& CTiglWingProfilePointList::GetUpperWire() const
 {
     if (profileIsClosed) {
         return upperWireClosed;
@@ -297,7 +293,7 @@ const TopoDS_Edge& CTiglWingProfilePointList::GetUpperEdge() const
 }
 
 // get lower wing profile wire
-const TopoDS_Edge& CTiglWingProfilePointList::GetLowerEdge() const
+const TopoDS_Edge& CTiglWingProfilePointList::GetLowerWire() const
 {
     if (profileIsClosed) {
         return lowerWireClosed;
@@ -308,7 +304,7 @@ const TopoDS_Edge& CTiglWingProfilePointList::GetLowerEdge() const
 }
 
 // get the upper and lower wing profile combined into one edge
-const TopoDS_Edge & CTiglWingProfilePointList::GetUpperLowerEdge() const
+const TopoDS_Edge & CTiglWingProfilePointList::GetUpperLowerWire() const
 {
     if (profileIsClosed) {
         return upperLowerEdgeClosed;

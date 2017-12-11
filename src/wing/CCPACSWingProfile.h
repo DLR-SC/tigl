@@ -50,10 +50,8 @@ class CCPACSWingProfile : public generated::CPACSProfileGeometry
 {
 
 public:
-    // Algo
     TIGL_EXPORT CCPACSWingProfile(CTiglUIDManager* uidMgr);
 
-    // Virtual Destructor
     TIGL_EXPORT virtual ~CCPACSWingProfile();
 
     // Read CPACS wing profile file
@@ -154,13 +152,9 @@ private:
     void operator=(const CCPACSWingProfile& );
 
 private:
-    std::string               name;           /**< CPACS wing profile name */
-    std::string               description;    /**< CPACS wing profile description */
-    std::string               uid;            /**< CPACS wing profile UID */
-    bool                      isRotorProfile; /**< Indicates if this profile is a rotor profile */
-    bool                                        invalidated;    /**< Flag if element is invalid */
-    ITiglWingProfileAlgo*                       profileAlgo; // points to the current profile algo (non-owning)
-    unique_ptr<CTiglWingProfilePointList> pointListAlgo; // is created in case the wing profile alg is a point list, otherwise cst2d constructed in the base class is used
+    bool                                  isRotorProfile; /**< Indicates if this profile is a rotor profile */
+    bool                                  invalidated;    /**< Flag if element is invalid */
+    unique_ptr<CTiglWingProfilePointList> pointListAlgo;  // is created in case the wing profile alg is a point list, otherwise cst2d constructed in the base class is used
 
 }; // class CCPACSWingProfile
 

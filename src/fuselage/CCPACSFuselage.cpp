@@ -70,6 +70,9 @@ CCPACSFuselage::CCPACSFuselage(CCPACSFuselages* parent, CTiglUIDManager* uidMgr)
 // Destructor
 CCPACSFuselage::~CCPACSFuselage()
 {
+    // unregister
+    configuration->GetUIDManager().RemoveGeometricComponent(m_uID);
+
     Cleanup();
 }
 
@@ -86,6 +89,7 @@ void CCPACSFuselage::Invalidate()
 void CCPACSFuselage::Cleanup()
 {
     m_name = "";
+    m_transformation.reset();
 
     // Calls ITiglGeometricComponent interface Reset to delete e.g. all childs.
     Reset();
@@ -103,7 +107,17 @@ void CCPACSFuselage::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string&
     ConnectGuideCurveSegments();
 
     // Register ourself at the unique id manager
-    configuration->GetUIDManager().AddGeometricComponent(m_uID, this);
+    if (m_uidMgr) {
+        m_uidMgr->AddGeometricComponent(m_uID, this);
+    }
+}
+
+void CCPACSFuselage::SetUID(const std::string& uid) {
+    if (m_uidMgr) {
+        m_uidMgr->TryRemoveGeometricComponent(m_uID);
+        m_uidMgr->AddGeometricComponent(uid, this);
+    }
+    generated::CPACSFuselage::SetUID(uid);
 }
 
 // Returns the parent configuration

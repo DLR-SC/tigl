@@ -147,7 +147,7 @@ int parseArguments(QStringList argList)
         }
         else if (arg.compare("--filename") == 0) {
             if (i+1 >= argList.size()) {
-                cout << "missing filename" << endl;
+                cout << "missing filename" << std::endl;
                 return -1;
             }
             else {
@@ -156,7 +156,7 @@ int parseArguments(QStringList argList)
         }
         else if (arg.compare("--script") == 0) {
             if (i+1 >= argList.size()) {
-                cout << "missing script filename" << endl;
+                cout << "missing script filename" << std::endl;
                 return -1;
             }
             else {
@@ -165,7 +165,7 @@ int parseArguments(QStringList argList)
         }
         else if (arg.compare("--windowtitle") == 0) {
             if (i+1 >= argList.size()) {
-                cout << "missing windowtitle" << endl;
+                cout << "missing windowtitle" << std::endl;
                 PARAMS.windowTitle = "TIGLViewer";
             }
             else {
@@ -174,7 +174,7 @@ int parseArguments(QStringList argList)
         }
         else if (arg.compare("--modelUID") == 0) {
             if (i+1 >= argList.size()) {
-                cout << "missing modelUID" << endl;
+                cout << "missing modelUID" << std::endl;
                 PARAMS.modelUID = "";
             }
             else {
@@ -183,7 +183,7 @@ int parseArguments(QStringList argList)
         }
         else if (arg.compare("--controlFile") == 0) {
             if (i+1 >= argList.size()) {
-                cout << "missing controlFile" << endl;
+                cout << "missing controlFile" << std::endl;
                 PARAMS.controlFile = "";
             }
             else {

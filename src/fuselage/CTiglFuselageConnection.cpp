@@ -92,7 +92,7 @@ CCPACSFuselageProfile& CTiglFuselageConnection::GetProfile() const
         for (int j=1; j <= section.GetSectionElementCount(); j++) {
             if (section.GetSectionElement(j).GetUID() == *elementUID ) {
                 CCPACSFuselageSectionElement& element = section.GetSectionElement(j);
-                profileUID = element.GetProfileIndex();
+                profileUID = element.GetProfileUID();
                 found = true;
                 break;
             }

@@ -48,12 +48,12 @@ CCPACSWingCell& CCPACSWingShell::GetCell(int index)
     return const_cast<CCPACSWingCell&>(static_cast<const CCPACSWingShell&>(*this).GetCell(index));
 }
 
-const CCPACSMaterial& CCPACSWingShell::GetMaterial() const
+const CCPACSMaterialDefinition& CCPACSWingShell::GetMaterial() const
 {
     return m_skin.GetMaterial();
 }
 
-CCPACSMaterial& CCPACSWingShell::GetMaterial()
+CCPACSMaterialDefinition& CCPACSWingShell::GetMaterial()
 {
     return m_skin.GetMaterial();
 }

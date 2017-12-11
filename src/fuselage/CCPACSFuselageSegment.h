@@ -58,9 +58,14 @@ public:
     TIGL_EXPORT void Invalidate();
 
     // Read CPACS segment elements
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& segmentXPath);
+    TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& segmentXPath) OVERRIDE;
+
+    TIGL_EXPORT virtual void SetUID(const std::string& uid) OVERRIDE;
 
     TIGL_EXPORT virtual std::string GetDefaultedUID() const OVERRIDE;
+
+    TIGL_EXPORT virtual void SetFromElementUID(const std::string& value) OVERRIDE;
+    TIGL_EXPORT virtual void SetToElementUID(const std::string& value) OVERRIDE;
 
     // Returns the fuselage this segment belongs to
     TIGL_EXPORT CCPACSFuselage& GetFuselage() const;
@@ -145,10 +150,10 @@ public:
     TIGL_EXPORT double GetCircumference(const double eta);
 
     // Returns the inner profile points as read from TIXI. The points are already transformed.
-    TIGL_EXPORT std::vector<CTiglPoint*> GetRawStartProfilePoints();
+    TIGL_EXPORT std::vector<CTiglPoint> GetRawStartProfilePoints();
 
     // Returns the outer profile points as read from TIXI. The points are already transformed.
-    TIGL_EXPORT std::vector<CTiglPoint*> GetRawEndProfilePoints();
+    TIGL_EXPORT std::vector<CTiglPoint> GetRawEndProfilePoints();
 
     TIGL_EXPORT TiglGeometricComponentType GetComponentType() const { return TIGL_COMPONENT_FUSELSEGMENT | TIGL_COMPONENT_SEGMENT | TIGL_COMPONENT_LOGICAL; }
 

@@ -76,7 +76,7 @@ void CCPACSWingProfileCST::BuildWires()
     CCSTCurveBuilder upperBuilder(m_upperN1, m_upperN2, m_upperB.AsVector());
     Handle(Geom_BSplineCurve) upperCurve = upperBuilder.Curve();
     upperCurve->Transform(yzSwitch);
-    upperEdge = BRepBuilderAPI_MakeEdge(upperCurve);
+    upperWire = BRepBuilderAPI_MakeEdge(upperCurve);
     
     // Build lower curve
     std::vector<double> binv = m_lowerB.AsVector();
@@ -88,9 +88,9 @@ void CCPACSWingProfileCST::BuildWires()
     Handle(Geom_BSplineCurve) lowerCurve = lowerBuilder.Curve();
     lowerCurve->Transform(yzSwitch);
     lowerCurve->Reverse();
-    lowerEdge = BRepBuilderAPI_MakeEdge(lowerCurve);
+    lowerWire = BRepBuilderAPI_MakeEdge(lowerCurve);
     
-    BRepBuilderAPI_MakeWire upperLowerWireMaker(lowerEdge, upperEdge);
+    BRepBuilderAPI_MakeWire upperLowerWireMaker(lowerWire, upperWire);
     TopoDS_Wire upperLowerWire = upperLowerWireMaker.Wire();
     
     // conatenate wire
@@ -102,6 +102,11 @@ void CCPACSWingProfileCST::BuildWires()
 }
 
 // Returns sample points
+std::vector<CTiglPoint>& CCPACSWingProfileCST::GetSamplePoints() {
+    static std::vector<CTiglPoint> dummy;
+    return dummy;
+}
+
 const std::vector<CTiglPoint>& CCPACSWingProfileCST::GetSamplePoints() const {
     static std::vector<CTiglPoint> dummy;
     return dummy;
@@ -110,13 +115,13 @@ const std::vector<CTiglPoint>& CCPACSWingProfileCST::GetSamplePoints() const {
 // Getter for upper wire of closed profile
 const TopoDS_Edge& CCPACSWingProfileCST::GetUpperWireClosed() const
 {
-    return upperEdge;
+    return upperWire;
 }
 
 // Getter for lower wire of closed profile
 const TopoDS_Edge& CCPACSWingProfileCST::GetLowerWireClosed() const
 {
-    return lowerEdge;
+    return lowerWire;
 }
 
 // Getter for upper wire of opened profile
@@ -132,19 +137,19 @@ const TopoDS_Edge& CCPACSWingProfileCST::GetLowerWireOpened() const
 }
 
 // get upper wing profile wire
-const TopoDS_Edge & CCPACSWingProfileCST::GetUpperEdge() const
+const TopoDS_Edge & CCPACSWingProfileCST::GetUpperWire() const
 {
-    return upperEdge;
+    return upperWire;
 }
             
 // get lower wing profile wire
-const TopoDS_Edge & CCPACSWingProfileCST::GetLowerEdge() const
+const TopoDS_Edge & CCPACSWingProfileCST::GetLowerWire() const
 {
-    return lowerEdge;
+    return lowerWire;
 }
 
 // gets the upper and lower wing profile into on edge
-const TopoDS_Edge & CCPACSWingProfileCST::GetUpperLowerEdge() const
+const TopoDS_Edge & CCPACSWingProfileCST::GetUpperLowerWire() const
 {
     return upperLowerEdge;
 }

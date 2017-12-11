@@ -869,29 +869,31 @@ void TIGLViewerDocument::drawFuselageProfiles()
     TopoDS_Wire wire        = profile.GetWire();
     app->getScene()->displayShape(wire, true,  Quantity_NOC_WHITE);
 
-    if (profile.GetCoordinateContainer().size() < 15) {
-        for (unsigned int i = 0; i < profile.GetCoordinateContainer().size(); ++i) {
-            tigl::CTiglPoint * p = profile.GetCoordinateContainer().at(i);
-            std::stringstream str;
-            str << i << ": (" << p->x << ", " << p->y << ", " << p->z << ")";
-            gp_Pnt pnt = p->Get_gp_Pnt();
-            app->getScene()->displayPoint(pnt, str.str().c_str(), Standard_False, 0., 0., 0., 6.);
-        }
-
-    }
-    else {
-        for (double zeta = 0.0; zeta <= 1.0; zeta += 0.1) {
-            try {
-              gp_Pnt wirePoint = profile.GetPoint(zeta);
-              std::ostringstream text;
-              text << "PT(" << zeta << ")";
-              app->getScene()->displayPoint(wirePoint, const_cast<char*>(text.str().c_str()), Standard_False, 0.0, 0.0, 0.0, 2.0);
-              text.str("");
-            }
-            catch (tigl::CTiglError& ex) {
-              displayError(ex.what());
+    if (profile.GetPointList_choice1()) {
+        const std::vector<tigl::CTiglPoint>& points = profile.GetPointList_choice1()->AsVector();
+        if (points.size() < 15) {
+            for (unsigned int i = 0; i < points.size(); ++i) {
+                const tigl::CTiglPoint& p = points.at(i);
+                std::stringstream str;
+                str << i << ": (" << p.x << ", " << p.y << ", " << p.z << ")";
+                gp_Pnt pnt = p.Get_gp_Pnt();
+                app->getScene()->displayPoint(pnt, str.str().c_str(), Standard_False, 0., 0., 0., 6.);
             }
         }
+        else {
+            for (double zeta = 0.0; zeta <= 1.0; zeta += 0.1) {
+                try {
+                  gp_Pnt wirePoint = profile.GetPoint(zeta);
+                  std::ostringstream text;
+                  text << "PT(" << zeta << ")";
+                  app->getScene()->displayPoint(wirePoint, const_cast<char*>(text.str().c_str()), Standard_False, 0.0, 0.0, 0.0, 2.0);
+                  text.str("");
+                }
+                catch (tigl::CTiglError& ex) {
+                  displayError(ex.what());
+                }
+             }
+         }
     }
 }
 

@@ -94,20 +94,4 @@ int CCPACSFuselages::GetFuselageIndex(const std::string& UID) const
     throw CTiglError("Invalid UID in CCPACSFuselages::GetFuselageIndex", TIGL_UID_ERROR);
 }
 
-void CCPACSFuselages::Add(CCPACSFuselage* fuselage)
-{
-    m_fuselages.push_back(unique_ptr<CCPACSFuselage>(fuselage));
-}
-
-void CCPACSFuselages::Remove(CCPACSFuselage* fuselage)
-{
-    for (std::size_t i = 0; i < m_fuselages.size(); i++) {
-        if (m_fuselages[i].get() == fuselage) {
-            m_fuselages.erase(m_fuselages.begin() + i);
-            return;
-        }
-    }
-    throw std::runtime_error("Fuselage not found");
-}
-
 } // end namespace tigl

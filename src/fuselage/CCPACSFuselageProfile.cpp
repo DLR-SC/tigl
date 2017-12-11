@@ -67,100 +67,29 @@
 
 namespace tigl
 {
-
 // Constructor
 CCPACSFuselageProfile::CCPACSFuselageProfile(CTiglUIDManager* uidMgr)
-    : generated::CPACSProfileGeometry(uidMgr), invalidated(true), profileWireAlgo(new CTiglInterpolateBsplineWire)
-{
-    Cleanup();
-}
+    : generated::CPACSProfileGeometry(uidMgr), invalidated(true), profileWireAlgo(new CTiglInterpolateBsplineWire), mirrorSymmetry(false) {}
 
-// Destructor
 CCPACSFuselageProfile::~CCPACSFuselageProfile() {}
-
-// Cleanup routine
-void CCPACSFuselageProfile::Cleanup()
-{
-    m_name       = "";
-    m_uID        = "";
-    m_description= "";
-    wireLength = 0.0;
-    mirrorSymmetry = false;
-
-    Invalidate();
-}
 
 // Read fuselage profile file
 void CCPACSFuselageProfile::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
 {
-    Cleanup();
+    Invalidate();
     generated::CPACSProfileGeometry::ReadCPACS(tixiHandle, xpath);
 
     // symmetry element does not conform to CPACS spec
     if (tixi::TixiCheckElement(tixiHandle, xpath + "/symmetry")) {
         mirrorSymmetry = tixi::TixiGetTextElement(tixiHandle, xpath + "/symmetry") == "half";
     }
-
-    // convert point list to coordinates
-    if (m_pointList_choice1) {
-
-        // points with maximal/minimal y-component
-        coordinates = m_pointList_choice1->AsVector();
-
-        std::size_t minYIndex = 0;
-        std::size_t maxYIndex = 0;
-        for (std::size_t i = 1; i < coordinates.size(); i++) {
-            if (coordinates[i].y < coordinates[minYIndex].y) {
-                minYIndex = i;
-            }
-            if (coordinates[i].y > coordinates[maxYIndex].y) {
-                maxYIndex = i;
-            }
-        }
-
-        // check if points with maximal/minimal y-component were calculated correctly
-        if (maxYIndex == minYIndex) {
-            throw CTiglError("CCPACSFuselageProfile::ReadCPACS: Unable to separate upper and lower wing profile from point list", TIGL_XML_ERROR);
-        }
-
-        if (!mirrorSymmetry) {
-            // force order of points to run through y>0 part first
-            if (minYIndex < maxYIndex) {
-                LOG(WARNING) << "The point list order in fuselage profile " << m_uID << " is reversed in order to run through y>0 part first" << endl;
-                std::reverse(coordinates.begin(), coordinates.end());
-            }
-        }
-    }
-
-    Update();
-}
-
-// Write fuselage profile file
-void CCPACSFuselageProfile::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
-{
-    // update point lists from coordinates
-    if (m_pointList_choice1) {
-        std::vector<double>& xs = const_cast<std::vector<double>&>(m_pointList_choice1->GetX().AsVector());
-        std::vector<double>& ys = const_cast<std::vector<double>&>(m_pointList_choice1->GetY().AsVector());
-        std::vector<double>& zs = const_cast<std::vector<double>&>(m_pointList_choice1->GetZ().AsVector());
-
-        xs.resize(coordinates.size());
-        ys.resize(coordinates.size());
-        zs.resize(coordinates.size());
-
-        for (unsigned int j = 0; j < coordinates.size(); j++) {
-            xs[j] = coordinates[j].x;
-            ys[j] = coordinates[j].y;
-            zs[j] = coordinates[j].z;
-        }
-    }
-
-    generated::CPACSProfileGeometry::WriteCPACS(tixiHandle, xpath);
 }
 
 const int CCPACSFuselageProfile::GetNumPoints() const 
 {
-    return static_cast<int>(coordinates.size());
+    if (!m_pointList_choice1)
+        return 0;
+    return static_cast<int>(m_pointList_choice1->AsVector().size());
 }
 
 // Returns the flag for the mirror symmetry with respect to the x-z-plane in the fuselage profile
@@ -212,12 +141,15 @@ bool CCPACSFuselageProfile::checkSamePoints(gp_Pnt pointA, gp_Pnt pointB)
 // fuselage profile element transformation.
 void CCPACSFuselageProfile::BuildWires()
 {
-    ITiglWireAlgorithm::CPointContainer points;
-
-    if (coordinates.size() < 2) {
+    if (!m_pointList_choice1)
+        throw CTiglError("No pointlist specified");
+    if (GetNumPoints() < 2) {
         throw CTiglError("Number of points is less than 2 in CCPACSFuselageProfile::BuildWire", TIGL_ERROR);
     }
 
+    const std::vector<CTiglPoint>& coordinates = m_pointList_choice1->AsVector();
+
+    ITiglWireAlgorithm::CPointContainer points;
     points.push_back(coordinates[0].Get_gp_Pnt());
     for (std::size_t i = 1; i < coordinates.size() -1 ; i++) {
         gp_Pnt p1 = coordinates[i-1].Get_gp_Pnt();
@@ -289,8 +221,6 @@ void CCPACSFuselageProfile::BuildWires()
 
     wireClosed   = tempWireClosed;
     wireOriginal = tempWireOriginal;
-
-    wireLength = GetWireLength(wireOriginal);
 }
 
 // Transforms a point by the fuselage profile transformation
@@ -330,6 +260,11 @@ gp_Pnt CCPACSFuselageProfile::GetPoint(double zeta)
 void CCPACSFuselageProfile::BuildDiameterPoints()
 {
     Update();
+
+    if (!m_pointList_choice1)
+        throw CTiglError("No pointlist specified");
+    const std::vector<CTiglPoint>& coordinates = m_pointList_choice1->AsVector();
+
     if (mirrorSymmetry) {
         startDiameterPoint = coordinates[0].Get_gp_Pnt();
         endDiameterPoint = coordinates[coordinates.size() - 1].Get_gp_Pnt();
@@ -345,7 +280,7 @@ void CCPACSFuselageProfile::BuildDiameterPoints()
 
         // find the point with the max dist to starting point
         endDiameterPoint = startDiameterPoint;
-        for (std::vector<CTiglPoint>::iterator it = coordinates.begin(); it != coordinates.end(); ++it) {
+        for (std::vector<CTiglPoint>::const_iterator it = coordinates.begin(); it != coordinates.end(); ++it) {
             gp_Pnt point = it->Get_gp_Pnt();
             if (startDiameterPoint.Distance(point) > startDiameterPoint.Distance(endDiameterPoint)) {
                 endDiameterPoint = point;
@@ -355,18 +290,6 @@ void CCPACSFuselageProfile::BuildDiameterPoints()
         endDiameterPoint.SetY(0.);
         startDiameterPoint.SetY(0.);
     }
-}
-
-// Returns the profile points as read from TIXI.
-std::vector<CTiglPoint*> CCPACSFuselageProfile::GetCoordinateContainer()
-{
-    std::vector<CTiglPoint*> newPointVector;
-    for (std::size_t i = 0; i < coordinates.size(); i++) {
-        gp_Pnt pnt = coordinates[i].Get_gp_Pnt();
-        pnt = TransformPoint(pnt);
-        newPointVector.push_back(new CTiglPoint(pnt.X(), pnt.Y(), pnt.Z()));
-    }
-    return newPointVector;
 }
 
 TopoDS_Wire CCPACSFuselageProfile::GetDiameterWire()

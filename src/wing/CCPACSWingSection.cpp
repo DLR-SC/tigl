@@ -28,8 +28,8 @@
 
 namespace tigl
 {
-CCPACSWingSection::CCPACSWingSection(CTiglUIDManager* uidMgr)
-    : generated::CPACSWingSection(uidMgr) {}
+CCPACSWingSection::CCPACSWingSection(CCPACSWingSections* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSWingSection(parent, uidMgr) {}
 
 // Get profile count for this section
 int CCPACSWingSection::GetSectionElementCount() const

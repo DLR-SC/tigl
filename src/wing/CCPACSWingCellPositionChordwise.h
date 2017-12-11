@@ -23,18 +23,14 @@
 
 #include <utility>
 
-#include <TopoDS_Shape.hxx>
-
 #include "generated/CPACSCellPositioningChordwise.h"
-#include "tigl_internal.h"
-
 
 namespace tigl
 {
 // forward declarations
 class CCPACSWingCell;
 
-class CCPACSWingCellPositionChordwise : private generated::CPACSCellPositioningChordwise
+class CCPACSWingCellPositionChordwise : public generated::CPACSCellPositioningChordwise
 {
 public:
     enum InputType
@@ -45,9 +41,6 @@ public:
     };
 
     TIGL_EXPORT CCPACSWingCellPositionChordwise(CCPACSWingCell* parent);
-
-    using generated::CPACSCellPositioningChordwise::ReadCPACS;
-    using generated::CPACSCellPositioningChordwise::WriteCPACS;
 
     TIGL_EXPORT InputType GetInputType() const;
 
