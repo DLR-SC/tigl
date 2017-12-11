@@ -84,8 +84,8 @@ build_script:
 - ps: |
     md _build -Force | Out-Null
     cd _build
-    Write-Output "Running cmake: -DCMAKE_INSTALL_PREFIX=install -DCASROOT=c:\oce\$ocedist -DTIXI_PATH=c:\tixi\$tixidist -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON -DTIGL_BUILD_TESTS=ON -DTIGL_NIGHTLY=$BUILD_NIGHTLY -DQT_PATH=c:\Qt\$qtdist -DDOXYGEN_EXECUTABLE=c:/doxygen-win/bin/doxygen.exe .."
-    & cmake -G "$generator" -DCMAKE_INSTALL_PREFIX=install -DCASROOT=c:\oce\$ocedist -DTIXI_PATH=c:\tixi\$tixidist -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON -DTIGL_BUILD_TESTS=ON -DTIGL_NIGHTLY="$BUILD_NIGHTLY" -DQT_PATH=c:\Qt\$qtdist -DDOXYGEN_EXECUTABLE=c:/doxygen-win/bin/doxygen.exe ..
+    Write-Output "Running cmake: -DCMAKE_INSTALL_PREFIX=install -DTIGL_OCE_COONS_PATCHED=ON -DCASROOT=c:\oce\$ocedist -DTIXI_PATH=c:\tixi\$tixidist -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON -DTIGL_BUILD_TESTS=ON -DTIGL_NIGHTLY=$BUILD_NIGHTLY -DQT_PATH=c:\Qt\$qtdist -DDOXYGEN_EXECUTABLE=c:/doxygen-win/bin/doxygen.exe .."
+    & cmake -G "$generator" -DCMAKE_INSTALL_PREFIX=install -DTIGL_OCE_COONS_PATCHED=ON -DCASROOT=c:\oce\$ocedist -DTIXI_PATH=c:\tixi\$tixidist -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON -DTIGL_BUILD_TESTS=ON -DTIGL_NIGHTLY="$BUILD_NIGHTLY" -DQT_PATH=c:\Qt\$qtdist -DDOXYGEN_EXECUTABLE=c:/doxygen-win/bin/doxygen.exe ..
     if ($LastExitCode -ne 0) {
         throw "Exec: $ErrorMessage"
     }
