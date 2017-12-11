@@ -29,7 +29,7 @@ namespace tigl
         // This class is used in:
         // CPACSProfileGeometry
         
-        // generated from /xsd:schema/xsd:complexType[685]
+        // generated from /xsd:schema/xsd:complexType[711]
         class CPACSPointListXYZVector
         {
         public:

@@ -3797,6 +3797,43 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportWingColladaByUID(const TiglCPACSConf
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportFusedBREP(TiglCPACSConfigurationHandle cpacsHandle,
                                                       const char* filename);
+
+/**
+* @brief Exports the boolean fused geometry of a fuselage (selected by uid) to BREP format.
+*
+*
+* @param[in]  cpacsHandle Handle for the CPACS configuration
+* @param[in]  fuselageUID UID of the Fuselage to export
+* @param[in]  filename    BREP export file name
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_NULL_POINTER if filenamePtr is a null pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglExportFuselageBREPByUID(TiglCPACSConfigurationHandle cpacsHandle,
+                                                              const char* fuselageUID,
+                                                              const char* filename);
+
+/**
+* @brief Exports the boolean fused geometry of a wing (selected by uid) to BREP format.
+*
+*
+* @param[in]  cpacsHandle Handle for the CPACS configuration
+* @param[in]  wingUID UID of the Fuselage to export
+* @param[in]  filename    BREP export file name
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_NULL_POINTER if filenamePtr is a null pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglExportWingBREPByUID(TiglCPACSConfigurationHandle cpacsHandle,
+                                                              const char* wingUID,
+                                                              const char* filename);
+
 /*@}*/
 /*****************************************************************************************************/
 

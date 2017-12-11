@@ -22,6 +22,9 @@
 #include <string>
 #include <tixi.h>
 #include <vector>
+#include "CPACSEmissivityMap.h"
+#include "CPACSSpecificHeatMap.h"
+#include "CreateIfNotExists.h"
 #include "tigl_internal.h"
 #include "UniquePtr.h"
 
@@ -36,7 +39,7 @@ namespace tigl
         // This class is used in:
         // CPACSMaterials
         
-        // generated from /xsd:schema/xsd:complexType[641]
+        // generated from /xsd:schema/xsd:complexType[656]
         class CPACSMaterial
         {
         public:
@@ -51,9 +54,8 @@ namespace tigl
             
             TIGL_EXPORT bool ValidateChoices() const;
             
-            TIGL_EXPORT virtual const boost::optional<std::string>& GetUID() const;
+            TIGL_EXPORT virtual const std::string& GetUID() const;
             TIGL_EXPORT virtual void SetUID(const std::string& value);
-            TIGL_EXPORT virtual void SetUID(const boost::optional<std::string>& value);
             
             TIGL_EXPORT virtual const std::string& GetName() const;
             TIGL_EXPORT virtual void SetName(const std::string& value);
@@ -81,6 +83,16 @@ namespace tigl
             
             TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSPostFailure> >& GetPostFailures() const;
             TIGL_EXPORT virtual std::vector<unique_ptr<CPACSPostFailure> >& GetPostFailures();
+            
+            TIGL_EXPORT virtual const boost::optional<double>& GetThermalConductivity() const;
+            TIGL_EXPORT virtual void SetThermalConductivity(const double& value);
+            TIGL_EXPORT virtual void SetThermalConductivity(const boost::optional<double>& value);
+            
+            TIGL_EXPORT virtual const boost::optional<CPACSSpecificHeatMap>& GetSpecificHeatMap() const;
+            TIGL_EXPORT virtual boost::optional<CPACSSpecificHeatMap>& GetSpecificHeatMap();
+            
+            TIGL_EXPORT virtual const boost::optional<CPACSEmissivityMap>& GetEmissivityMap() const;
+            TIGL_EXPORT virtual boost::optional<CPACSEmissivityMap>& GetEmissivityMap();
             
             TIGL_EXPORT virtual const boost::optional<double>& GetSig11_choice1() const;
             TIGL_EXPORT virtual void SetSig11_choice1(const double& value);
@@ -198,10 +210,19 @@ namespace tigl
             TIGL_EXPORT virtual void SetTau23_choice3(const double& value);
             TIGL_EXPORT virtual void SetTau23_choice3(const boost::optional<double>& value);
             
+            TIGL_EXPORT virtual CPACSPostFailure& AddPostFailure();
+            TIGL_EXPORT virtual void RemovePostFailure(CPACSPostFailure& ref);
+            
+            TIGL_EXPORT virtual CPACSSpecificHeatMap& GetSpecificHeatMap(CreateIfNotExistsTag);
+            TIGL_EXPORT virtual void RemoveSpecificHeatMap();
+            
+            TIGL_EXPORT virtual CPACSEmissivityMap& GetEmissivityMap(CreateIfNotExistsTag);
+            TIGL_EXPORT virtual void RemoveEmissivityMap();
+            
         protected:
             CTiglUIDManager* m_uidMgr;
             
-            boost::optional<std::string>               m_uID;
+            std::string                                m_uID;
             std::string                                m_name;
             boost::optional<std::string>               m_description;
             double                                     m_rho;
@@ -210,6 +231,9 @@ namespace tigl
             boost::optional<double>                    m_maxStrain;
             boost::optional<double>                    m_fatigueFactor;
             std::vector<unique_ptr<CPACSPostFailure> > m_postFailures;
+            boost::optional<double>                    m_thermalConductivity;
+            boost::optional<CPACSSpecificHeatMap>      m_specificHeatMap;
+            boost::optional<CPACSEmissivityMap>        m_emissivityMap;
             boost::optional<double>                    m_sig11_choice1;
             boost::optional<double>                    m_tau12_choice1;
             boost::optional<double>                    m_sig11yieldT_choice1;

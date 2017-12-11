@@ -31,34 +31,34 @@ namespace tigl
         void CPACSMaterialDefinition::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element compositeUID
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/compositeUID")) {
-                m_compositeUID_choice1 = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/compositeUID");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/compositeUID")) {
+                m_compositeUID_choice1 = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/compositeUID");
                 if (m_compositeUID_choice1->empty()) {
                     LOG(WARNING) << "Optional element compositeUID is present but empty at xpath " << xpath;
                 }
             }
             
             // read element orthotropyDirection
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/orthotropyDirection")) {
-                m_orthotropyDirection_choice1 = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/orthotropyDirection");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/orthotropyDirection")) {
+                m_orthotropyDirection_choice1 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/orthotropyDirection");
             }
             
             // read element thicknessScaling
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/thicknessScaling")) {
-                m_thicknessScaling_choice1 = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/thicknessScaling");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/thicknessScaling")) {
+                m_thicknessScaling_choice1 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/thicknessScaling");
             }
             
             // read element materialUID
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/materialUID")) {
-                m_materialUID_choice2 = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/materialUID");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/materialUID")) {
+                m_materialUID_choice2 = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/materialUID");
                 if (m_materialUID_choice2->empty()) {
                     LOG(WARNING) << "Optional element materialUID is present but empty at xpath " << xpath;
                 }
             }
             
             // read element thickness
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/thickness")) {
-                m_thickness_choice2 = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/thickness");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/thickness")) {
+                m_thickness_choice2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/thickness");
             }
             
             if (!ValidateChoices()) {
@@ -70,51 +70,51 @@ namespace tigl
         {
             // write element compositeUID
             if (m_compositeUID_choice1) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/compositeUID");
-                tixihelper::TixiSaveElement(tixiHandle, xpath + "/compositeUID", *m_compositeUID_choice1);
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/compositeUID");
+                tixi::TixiSaveElement(tixiHandle, xpath + "/compositeUID", *m_compositeUID_choice1);
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/compositeUID")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/compositeUID");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/compositeUID")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/compositeUID");
                 }
             }
             
             // write element orthotropyDirection
             if (m_orthotropyDirection_choice1) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/orthotropyDirection");
-                tixihelper::TixiSaveElement(tixiHandle, xpath + "/orthotropyDirection", *m_orthotropyDirection_choice1);
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/orthotropyDirection");
+                tixi::TixiSaveElement(tixiHandle, xpath + "/orthotropyDirection", *m_orthotropyDirection_choice1);
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/orthotropyDirection")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/orthotropyDirection");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/orthotropyDirection")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/orthotropyDirection");
                 }
             }
             
             // write element thicknessScaling
             if (m_thicknessScaling_choice1) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/thicknessScaling");
-                tixihelper::TixiSaveElement(tixiHandle, xpath + "/thicknessScaling", *m_thicknessScaling_choice1);
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/thicknessScaling");
+                tixi::TixiSaveElement(tixiHandle, xpath + "/thicknessScaling", *m_thicknessScaling_choice1);
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/thicknessScaling")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/thicknessScaling");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/thicknessScaling")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/thicknessScaling");
                 }
             }
             
             // write element materialUID
             if (m_materialUID_choice2) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/materialUID");
-                tixihelper::TixiSaveElement(tixiHandle, xpath + "/materialUID", *m_materialUID_choice2);
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/materialUID");
+                tixi::TixiSaveElement(tixiHandle, xpath + "/materialUID", *m_materialUID_choice2);
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/materialUID")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/materialUID");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/materialUID")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/materialUID");
                 }
             }
             
             // write element thickness
             if (m_thickness_choice2) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/thickness");
-                tixihelper::TixiSaveElement(tixiHandle, xpath + "/thickness", *m_thickness_choice2);
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/thickness");
+                tixi::TixiSaveElement(tixiHandle, xpath + "/thickness", *m_thickness_choice2);
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/thickness")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/thickness");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/thickness")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/thickness");
                 }
             }
             

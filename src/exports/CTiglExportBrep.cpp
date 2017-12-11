@@ -52,7 +52,7 @@ bool CTiglExportBrep::WriteImpl(const std::string& filename) const
        LOG(ERROR) << "Error: Empty filename in CTiglExportBrep::Write.";
        return false;
     }
-    
+
     if (NShapes() > 1) {
         TopoDS_Compound c;
         BRep_Builder b;

@@ -33,7 +33,7 @@ namespace tigl
         // This class is used in:
         // CPACSFuselage
         
-        // generated from /xsd:schema/xsd:complexType[367]
+        // generated from /xsd:schema/xsd:complexType[377]
         class CPACSFuselageSections
         {
         public:
@@ -48,6 +48,9 @@ namespace tigl
             
             TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSFuselageSection> >& GetSections() const;
             TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSFuselageSection> >& GetSections();
+            
+            TIGL_EXPORT virtual CCPACSFuselageSection& AddSection();
+            TIGL_EXPORT virtual void RemoveSection(CCPACSFuselageSection& ref);
             
         protected:
             CTiglUIDManager* m_uidMgr;

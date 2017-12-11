@@ -34,7 +34,7 @@ namespace tigl
         // This class is used in:
         // CPACSMaterial
         
-        // generated from /xsd:schema/xsd:complexType[699]
+        // generated from /xsd:schema/xsd:complexType[727]
         class CPACSPostFailure
         {
         public:
@@ -84,6 +84,9 @@ namespace tigl
             TIGL_EXPORT virtual const boost::optional<double>& GetUltimateDamage_choice2() const;
             TIGL_EXPORT virtual void SetUltimateDamage_choice2(const double& value);
             TIGL_EXPORT virtual void SetUltimateDamage_choice2(const boost::optional<double>& value);
+            
+            TIGL_EXPORT virtual CPACSPlasticityCurvePoint& AddPlasticityCurvePoint_choice1();
+            TIGL_EXPORT virtual void RemovePlasticityCurvePoint_choice1(CPACSPlasticityCurvePoint& ref);
             
         protected:
             boost::optional<std::string>                        m_name;

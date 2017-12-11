@@ -32,7 +32,7 @@ namespace tigl
         // This class is used in:
         // CPACSPositionings
         
-        // generated from /xsd:schema/xsd:complexType[697]
+        // generated from /xsd:schema/xsd:complexType[725]
         class CPACSPositioning
         {
         public:
@@ -45,9 +45,8 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT virtual const boost::optional<std::string>& GetUID() const;
+            TIGL_EXPORT virtual const std::string& GetUID() const;
             TIGL_EXPORT virtual void SetUID(const std::string& value);
-            TIGL_EXPORT virtual void SetUID(const boost::optional<std::string>& value);
             
             TIGL_EXPORT virtual const std::string& GetName() const;
             TIGL_EXPORT virtual void SetName(const std::string& value);
@@ -75,7 +74,7 @@ namespace tigl
         protected:
             CTiglUIDManager* m_uidMgr;
             
-            boost::optional<std::string> m_uID;
+            std::string                  m_uID;
             std::string                  m_name;
             boost::optional<std::string> m_description;
             double                       m_length;

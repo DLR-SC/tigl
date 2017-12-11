@@ -55,8 +55,8 @@ namespace tigl
         void CPACSRotorBladeAttachments::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element rotorBladeAttachment
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/rotorBladeAttachment")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/rotorBladeAttachment", m_rotorBladeAttachments, reinterpret_cast<CCPACSRotorBladeAttachments*>(this), m_uidMgr);
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/rotorBladeAttachment")) {
+                tixi::TixiReadElements(tixiHandle, xpath + "/rotorBladeAttachment", m_rotorBladeAttachments, reinterpret_cast<CCPACSRotorBladeAttachments*>(this), m_uidMgr);
             }
             
         }
@@ -64,7 +64,7 @@ namespace tigl
         void CPACSRotorBladeAttachments::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element rotorBladeAttachment
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/rotorBladeAttachment", m_rotorBladeAttachments);
+            tixi::TixiSaveElements(tixiHandle, xpath + "/rotorBladeAttachment", m_rotorBladeAttachments);
             
         }
         
@@ -76,6 +76,23 @@ namespace tigl
         std::vector<unique_ptr<CCPACSRotorBladeAttachment> >& CPACSRotorBladeAttachments::GetRotorBladeAttachments()
         {
             return m_rotorBladeAttachments;
+        }
+        
+        CCPACSRotorBladeAttachment& CPACSRotorBladeAttachments::AddRotorBladeAttachment()
+        {
+            m_rotorBladeAttachments.push_back(make_unique<CCPACSRotorBladeAttachment>(reinterpret_cast<CCPACSRotorBladeAttachments*>(this), m_uidMgr));
+            return *m_rotorBladeAttachments.back();
+        }
+        
+        void CPACSRotorBladeAttachments::RemoveRotorBladeAttachment(CCPACSRotorBladeAttachment& ref)
+        {
+            for (std::size_t i = 0; i < m_rotorBladeAttachments.size(); i++) {
+                if (m_rotorBladeAttachments[i].get() == &ref) {
+                    m_rotorBladeAttachments.erase(m_rotorBladeAttachments.begin() + i);
+                    return;
+                }
+            }
+            throw CTiglError("Element not found");
         }
         
     }

@@ -34,7 +34,7 @@ namespace tigl
         // This class is used in:
         // CPACSProfiles
         
-        // generated from /xsd:schema/xsd:complexType[891]
+        // generated from /xsd:schema/xsd:complexType[924]
         class CPACSWingAirfoils
         {
         public:
@@ -49,6 +49,9 @@ namespace tigl
             
             TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSProfileGeometry> >& GetWingAirfoils() const;
             TIGL_EXPORT virtual std::vector<unique_ptr<CPACSProfileGeometry> >& GetWingAirfoils();
+            
+            TIGL_EXPORT virtual CPACSProfileGeometry& AddWingAirfoil();
+            TIGL_EXPORT virtual void RemoveWingAirfoil(CPACSProfileGeometry& ref);
             
         protected:
             CTiglUIDManager* m_uidMgr;

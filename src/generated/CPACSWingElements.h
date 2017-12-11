@@ -33,7 +33,7 @@ namespace tigl
         // This class is used in:
         // CPACSWingSection
         
-        // generated from /xsd:schema/xsd:complexType[897]
+        // generated from /xsd:schema/xsd:complexType[930]
         class CPACSWingElements
         {
         public:
@@ -48,6 +48,9 @@ namespace tigl
             
             TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSWingSectionElement> >& GetElements() const;
             TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSWingSectionElement> >& GetElements();
+            
+            TIGL_EXPORT virtual CCPACSWingSectionElement& AddElement();
+            TIGL_EXPORT virtual void RemoveElement(CCPACSWingSectionElement& ref);
             
         protected:
             CTiglUIDManager* m_uidMgr;

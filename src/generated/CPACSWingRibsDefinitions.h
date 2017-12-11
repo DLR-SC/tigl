@@ -34,7 +34,7 @@ namespace tigl
         // This class is used in:
         // CPACSWingComponentSegmentStructure
         
-        // generated from /xsd:schema/xsd:complexType[915]
+        // generated from /xsd:schema/xsd:complexType[948]
         class CPACSWingRibsDefinitions
         {
         public:
@@ -52,6 +52,9 @@ namespace tigl
             
             TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSWingRibsDefinition> >& GetRibsDefinitions() const;
             TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSWingRibsDefinition> >& GetRibsDefinitions();
+            
+            TIGL_EXPORT virtual CCPACSWingRibsDefinition& AddRibsDefinition();
+            TIGL_EXPORT virtual void RemoveRibsDefinition(CCPACSWingRibsDefinition& ref);
             
         protected:
             CCPACSWingCSStructure* m_parent;

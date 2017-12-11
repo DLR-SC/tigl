@@ -34,7 +34,7 @@ namespace tigl
         // This class is used in:
         // CPACSGuideCurveProfiles
         
-        // generated from /xsd:schema/xsd:complexType[419]
+        // generated from /xsd:schema/xsd:complexType[433]
         class CPACSGuideCurveProfileGeometry
         {
         public:

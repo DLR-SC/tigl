@@ -37,7 +37,7 @@ namespace tigl
         // This class is used in:
         // CPACSRotors
         
-        // generated from /xsd:schema/xsd:complexType[743]
+        // generated from /xsd:schema/xsd:complexType[771]
         class CPACSRotor
         {
         public:

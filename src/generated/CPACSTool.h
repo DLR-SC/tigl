@@ -28,7 +28,7 @@ namespace tigl
         // This class is used in:
         // CPACSCFDTool
         
-        // generated from /xsd:schema/xsd:complexType[826]
+        // generated from /xsd:schema/xsd:complexType[860]
         class CPACSTool
         {
         public:

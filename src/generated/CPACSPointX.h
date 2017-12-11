@@ -17,8 +17,6 @@
 
 #pragma once
 
-#include <boost/optional.hpp>
-#include <boost/utility/in_place_factory.hpp>
 #include <string>
 #include <tixi.h>
 #include <typeinfo>
@@ -35,7 +33,7 @@ namespace tigl
         // CPACSWingRibCell
         // CPACSWingRibCrossSection
         
-        // generated from /xsd:schema/xsd:complexType[690]
+        // generated from /xsd:schema/xsd:complexType[718]
         class CPACSPointX
         {
         public:
@@ -48,9 +46,8 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT virtual const boost::optional<std::string>& GetUID() const;
+            TIGL_EXPORT virtual const std::string& GetUID() const;
             TIGL_EXPORT virtual void SetUID(const std::string& value);
-            TIGL_EXPORT virtual void SetUID(const boost::optional<std::string>& value);
             
             TIGL_EXPORT virtual const double& GetX() const;
             TIGL_EXPORT virtual void SetX(const double& value);
@@ -58,8 +55,8 @@ namespace tigl
         protected:
             CTiglUIDManager* m_uidMgr;
             
-            boost::optional<std::string> m_uID;
-            double                       m_x;
+            std::string m_uID;
+            double      m_x;
             
         private:
             #ifdef HAVE_CPP11

@@ -34,7 +34,7 @@ namespace tigl
         // This class is used in:
         // CPACSRotorBladeAttachment
         
-        // generated from /xsd:schema/xsd:complexType[741]
+        // generated from /xsd:schema/xsd:complexType[769]
         class CPACSRotorHubHinges
         {
         public:
@@ -52,6 +52,9 @@ namespace tigl
             
             TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSRotorHinge> >& GetHinges() const;
             TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSRotorHinge> >& GetHinges();
+            
+            TIGL_EXPORT virtual CCPACSRotorHinge& AddHinge();
+            TIGL_EXPORT virtual void RemoveHinge(CCPACSRotorHinge& ref);
             
         protected:
             CCPACSRotorBladeAttachment* m_parent;

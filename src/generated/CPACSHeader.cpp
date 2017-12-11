@@ -32,8 +32,8 @@ namespace tigl
         void CPACSHeader::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element name
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/name")) {
-                m_name = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
+                m_name = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
                 if (m_name.empty()) {
                     LOG(WARNING) << "Required element name is empty at xpath " << xpath;
                 }
@@ -43,16 +43,16 @@ namespace tigl
             }
             
             // read element description
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/description")) {
-                m_description = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
+                m_description = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
                 if (m_description->empty()) {
                     LOG(WARNING) << "Optional element description is present but empty at xpath " << xpath;
                 }
             }
             
             // read element creator
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/creator")) {
-                m_creator = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/creator");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/creator")) {
+                m_creator = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/creator");
                 if (m_creator.empty()) {
                     LOG(WARNING) << "Required element creator is empty at xpath " << xpath;
                 }
@@ -62,16 +62,16 @@ namespace tigl
             }
             
             // read element timestamp
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/timestamp")) {
-                m_timestamp = tixihelper::TixiGetElement<std::time_t>(tixiHandle, xpath + "/timestamp");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/timestamp")) {
+                m_timestamp = tixi::TixiGetElement<std::time_t>(tixiHandle, xpath + "/timestamp");
             }
             else {
                 LOG(ERROR) << "Required element timestamp is missing at xpath " << xpath;
             }
             
             // read element version
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/version")) {
-                m_version = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/version");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/version")) {
+                m_version = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/version");
                 if (m_version.empty()) {
                     LOG(WARNING) << "Required element version is empty at xpath " << xpath;
                 }
@@ -81,8 +81,8 @@ namespace tigl
             }
             
             // read element cpacsVersion
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/cpacsVersion")) {
-                m_cpacsVersion = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/cpacsVersion");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/cpacsVersion")) {
+                m_cpacsVersion = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/cpacsVersion");
                 if (m_cpacsVersion.empty()) {
                     LOG(WARNING) << "Required element cpacsVersion is empty at xpath " << xpath;
                 }
@@ -92,7 +92,7 @@ namespace tigl
             }
             
             // read element updates
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/updates")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/updates")) {
                 m_updates = boost::in_place();
                 try {
                     m_updates->ReadCPACS(tixiHandle, xpath + "/updates");
@@ -107,42 +107,42 @@ namespace tigl
         void CPACSHeader::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element name
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/name", m_name);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/name", m_name);
             
             // write element description
             if (m_description) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
-                tixihelper::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
+                tixi::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/description")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/description");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/description");
                 }
             }
             
             // write element creator
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/creator");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/creator", m_creator);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/creator");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/creator", m_creator);
             
             // write element timestamp
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/timestamp");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/timestamp", m_timestamp);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/timestamp");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/timestamp", m_timestamp);
             
             // write element version
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/version");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/version", m_version);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/version");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/version", m_version);
             
             // write element cpacsVersion
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/cpacsVersion");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/cpacsVersion", m_cpacsVersion);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/cpacsVersion");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/cpacsVersion", m_cpacsVersion);
             
             // write element updates
             if (m_updates) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/updates");
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/updates");
                 m_updates->WriteCPACS(tixiHandle, xpath + "/updates");
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/updates")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/updates");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/updates")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/updates");
                 }
             }
             
@@ -221,6 +221,18 @@ namespace tigl
         boost::optional<CPACSUpdates>& CPACSHeader::GetUpdates()
         {
             return m_updates;
+        }
+        
+        CPACSUpdates& CPACSHeader::GetUpdates(CreateIfNotExistsTag)
+        {
+            if (!m_updates)
+                m_updates = boost::in_place();
+            return *m_updates;
+        }
+        
+        void CPACSHeader::RemoveUpdates()
+        {
+            m_updates = boost::none;
         }
         
     }

@@ -31,8 +31,8 @@ namespace tigl
         void CPACSStringVectorBase::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read attribute mapType
-            if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "mapType")) {
-                m_mapType = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "mapType");
+            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "mapType")) {
+                m_mapType = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "mapType");
                 if (m_mapType.empty()) {
                     LOG(WARNING) << "Required attribute mapType is empty at xpath " << xpath;
                 }
@@ -41,73 +41,65 @@ namespace tigl
                 LOG(ERROR) << "Required attribute mapType is missing at xpath " << xpath;
             }
             
-            // read attribute uncertaintyFunctionName
-            if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uncertaintyFunctionName")) {
-                m_uncertaintyFunctionName = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "uncertaintyFunctionName");
-                if (m_uncertaintyFunctionName->empty()) {
-                    LOG(WARNING) << "Optional attribute uncertaintyFunctionName is present but empty at xpath " << xpath;
-                }
-            }
-            
             // read attribute mu
-            if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "mu")) {
-                m_mu = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "mu");
+            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "mu")) {
+                m_mu = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "mu");
                 if (m_mu->empty()) {
                     LOG(WARNING) << "Optional attribute mu is present but empty at xpath " << xpath;
                 }
             }
             
             // read attribute delta
-            if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "delta")) {
-                m_delta = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "delta");
+            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "delta")) {
+                m_delta = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "delta");
                 if (m_delta->empty()) {
                     LOG(WARNING) << "Optional attribute delta is present but empty at xpath " << xpath;
                 }
             }
             
             // read attribute a
-            if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "a")) {
-                m_a = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "a");
+            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "a")) {
+                m_a = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "a");
                 if (m_a->empty()) {
                     LOG(WARNING) << "Optional attribute a is present but empty at xpath " << xpath;
                 }
             }
             
             // read attribute b
-            if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "b")) {
-                m_b = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "b");
+            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "b")) {
+                m_b = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "b");
                 if (m_b->empty()) {
                     LOG(WARNING) << "Optional attribute b is present but empty at xpath " << xpath;
                 }
             }
             
             // read attribute c
-            if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "c")) {
-                m_c = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "c");
+            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "c")) {
+                m_c = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "c");
                 if (m_c->empty()) {
                     LOG(WARNING) << "Optional attribute c is present but empty at xpath " << xpath;
                 }
             }
             
             // read attribute v
-            if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "v")) {
-                m_v = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "v");
+            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "v")) {
+                m_v = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "v");
                 if (m_v->empty()) {
                     LOG(WARNING) << "Optional attribute v is present but empty at xpath " << xpath;
                 }
             }
             
             // read attribute w
-            if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "w")) {
-                m_w = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "w");
+            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "w")) {
+                m_w = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "w");
                 if (m_w->empty()) {
                     LOG(WARNING) << "Optional attribute w is present but empty at xpath " << xpath;
                 }
             }
             
             // read simpleContent 
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath)) {
-                m_simpleContent = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath);
+            if (tixi::TixiCheckElement(tixiHandle, xpath)) {
+                m_simpleContent = tixi::TixiGetElement<std::string>(tixiHandle, xpath);
                 if (m_simpleContent.empty()) {
                     LOG(WARNING) << "Required element  is empty at xpath " << xpath;
                 }
@@ -121,82 +113,73 @@ namespace tigl
         void CPACSStringVectorBase::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write attribute mapType
-            tixihelper::TixiSaveAttribute(tixiHandle, xpath, "mapType", m_mapType);
-            
-            // write attribute uncertaintyFunctionName
-            if (m_uncertaintyFunctionName) {
-                tixihelper::TixiSaveAttribute(tixiHandle, xpath, "uncertaintyFunctionName", *m_uncertaintyFunctionName);
-            } else {
-                if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uncertaintyFunctionName")) {
-                    tixihelper::TixiRemoveAttribute(tixiHandle, xpath, "uncertaintyFunctionName");
-                }
-            }
+            tixi::TixiSaveAttribute(tixiHandle, xpath, "mapType", m_mapType);
             
             // write attribute mu
             if (m_mu) {
-                tixihelper::TixiSaveAttribute(tixiHandle, xpath, "mu", *m_mu);
+                tixi::TixiSaveAttribute(tixiHandle, xpath, "mu", *m_mu);
             } else {
-                if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "mu")) {
-                    tixihelper::TixiRemoveAttribute(tixiHandle, xpath, "mu");
+                if (tixi::TixiCheckAttribute(tixiHandle, xpath, "mu")) {
+                    tixi::TixiRemoveAttribute(tixiHandle, xpath, "mu");
                 }
             }
             
             // write attribute delta
             if (m_delta) {
-                tixihelper::TixiSaveAttribute(tixiHandle, xpath, "delta", *m_delta);
+                tixi::TixiSaveAttribute(tixiHandle, xpath, "delta", *m_delta);
             } else {
-                if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "delta")) {
-                    tixihelper::TixiRemoveAttribute(tixiHandle, xpath, "delta");
+                if (tixi::TixiCheckAttribute(tixiHandle, xpath, "delta")) {
+                    tixi::TixiRemoveAttribute(tixiHandle, xpath, "delta");
                 }
             }
             
             // write attribute a
             if (m_a) {
-                tixihelper::TixiSaveAttribute(tixiHandle, xpath, "a", *m_a);
+                tixi::TixiSaveAttribute(tixiHandle, xpath, "a", *m_a);
             } else {
-                if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "a")) {
-                    tixihelper::TixiRemoveAttribute(tixiHandle, xpath, "a");
+                if (tixi::TixiCheckAttribute(tixiHandle, xpath, "a")) {
+                    tixi::TixiRemoveAttribute(tixiHandle, xpath, "a");
                 }
             }
             
             // write attribute b
             if (m_b) {
-                tixihelper::TixiSaveAttribute(tixiHandle, xpath, "b", *m_b);
+                tixi::TixiSaveAttribute(tixiHandle, xpath, "b", *m_b);
             } else {
-                if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "b")) {
-                    tixihelper::TixiRemoveAttribute(tixiHandle, xpath, "b");
+                if (tixi::TixiCheckAttribute(tixiHandle, xpath, "b")) {
+                    tixi::TixiRemoveAttribute(tixiHandle, xpath, "b");
                 }
             }
             
             // write attribute c
             if (m_c) {
-                tixihelper::TixiSaveAttribute(tixiHandle, xpath, "c", *m_c);
+                tixi::TixiSaveAttribute(tixiHandle, xpath, "c", *m_c);
             } else {
-                if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "c")) {
-                    tixihelper::TixiRemoveAttribute(tixiHandle, xpath, "c");
+                if (tixi::TixiCheckAttribute(tixiHandle, xpath, "c")) {
+                    tixi::TixiRemoveAttribute(tixiHandle, xpath, "c");
                 }
             }
             
             // write attribute v
             if (m_v) {
-                tixihelper::TixiSaveAttribute(tixiHandle, xpath, "v", *m_v);
+                tixi::TixiSaveAttribute(tixiHandle, xpath, "v", *m_v);
             } else {
-                if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "v")) {
-                    tixihelper::TixiRemoveAttribute(tixiHandle, xpath, "v");
+                if (tixi::TixiCheckAttribute(tixiHandle, xpath, "v")) {
+                    tixi::TixiRemoveAttribute(tixiHandle, xpath, "v");
                 }
             }
             
             // write attribute w
             if (m_w) {
-                tixihelper::TixiSaveAttribute(tixiHandle, xpath, "w", *m_w);
+                tixi::TixiSaveAttribute(tixiHandle, xpath, "w", *m_w);
             } else {
-                if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "w")) {
-                    tixihelper::TixiRemoveAttribute(tixiHandle, xpath, "w");
+                if (tixi::TixiCheckAttribute(tixiHandle, xpath, "w")) {
+                    tixi::TixiRemoveAttribute(tixiHandle, xpath, "w");
                 }
             }
             
             // write simpleContent 
-            tixihelper::TixiSaveElement(tixiHandle, xpath, m_simpleContent);
+            tixi::TixiSaveElement(tixiHandle, xpath, m_simpleContent);
             
         }
         
@@ -208,21 +191,6 @@ namespace tigl
         void CPACSStringVectorBase::SetMapType(const std::string& value)
         {
             m_mapType = value;
-        }
-        
-        const boost::optional<std::string>& CPACSStringVectorBase::GetUncertaintyFunctionName() const
-        {
-            return m_uncertaintyFunctionName;
-        }
-        
-        void CPACSStringVectorBase::SetUncertaintyFunctionName(const std::string& value)
-        {
-            m_uncertaintyFunctionName = value;
-        }
-        
-        void CPACSStringVectorBase::SetUncertaintyFunctionName(const boost::optional<std::string>& value)
-        {
-            m_uncertaintyFunctionName = value;
         }
         
         const boost::optional<std::string>& CPACSStringVectorBase::GetMu() const

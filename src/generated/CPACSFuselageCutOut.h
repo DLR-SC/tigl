@@ -23,6 +23,7 @@
 #include <tixi.h>
 #include "CPACSFuselageCutOut_cutout.h"
 #include "CPACSPointXYZ.h"
+#include "CreateIfNotExists.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -34,7 +35,7 @@ namespace tigl
         // This class is used in:
         // CPACSFuselageCutOuts
         
-        // generated from /xsd:schema/xsd:complexType[359]
+        // generated from /xsd:schema/xsd:complexType[369]
         class CPACSFuselageCutOut
         {
         public:
@@ -95,6 +96,9 @@ namespace tigl
             
             TIGL_EXPORT virtual const CPACSFuselageCutOut_cutout& GetCutoutType() const;
             TIGL_EXPORT virtual void SetCutoutType(const CPACSFuselageCutOut_cutout& value);
+            
+            TIGL_EXPORT virtual CPACSPointXYZ& GetAlignmentVector(CreateIfNotExistsTag);
+            TIGL_EXPORT virtual void RemoveAlignmentVector();
             
         protected:
             CTiglUIDManager* m_uidMgr;

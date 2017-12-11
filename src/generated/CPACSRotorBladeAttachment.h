@@ -23,6 +23,7 @@
 #include <CCPACSStringVector.h>
 #include <string>
 #include <tixi.h>
+#include "CreateIfNotExists.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -35,7 +36,7 @@ namespace tigl
         // This class is used in:
         // CPACSRotorBladeAttachments
         
-        // generated from /xsd:schema/xsd:complexType[737]
+        // generated from /xsd:schema/xsd:complexType[765]
         class CPACSRotorBladeAttachment
         {
         public:
@@ -53,9 +54,8 @@ namespace tigl
             
             TIGL_EXPORT bool ValidateChoices() const;
             
-            TIGL_EXPORT virtual const boost::optional<std::string>& GetUID() const;
+            TIGL_EXPORT virtual const std::string& GetUID() const;
             TIGL_EXPORT virtual void SetUID(const std::string& value);
-            TIGL_EXPORT virtual void SetUID(const boost::optional<std::string>& value);
             
             TIGL_EXPORT virtual const boost::optional<std::string>& GetName() const;
             TIGL_EXPORT virtual void SetName(const std::string& value);
@@ -78,12 +78,18 @@ namespace tigl
             TIGL_EXPORT virtual void SetNumberOfBlades_choice2(const int& value);
             TIGL_EXPORT virtual void SetNumberOfBlades_choice2(const boost::optional<int>& value);
             
+            TIGL_EXPORT virtual CCPACSRotorHinges& GetHinges(CreateIfNotExistsTag);
+            TIGL_EXPORT virtual void RemoveHinges();
+            
+            TIGL_EXPORT virtual CCPACSStringVector& GetAzimuthAngles_choice1(CreateIfNotExistsTag);
+            TIGL_EXPORT virtual void RemoveAzimuthAngles_choice1();
+            
         protected:
             CCPACSRotorBladeAttachments* m_parent;
             
             CTiglUIDManager* m_uidMgr;
             
-            boost::optional<std::string>        m_uID;
+            std::string                         m_uID;
             boost::optional<std::string>        m_name;
             boost::optional<std::string>        m_description;
             boost::optional<CCPACSRotorHinges>  m_hinges;

@@ -43,13 +43,13 @@ namespace tigl
         void CPACSRibRotation::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element ribRotationReference
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/ribRotationReference")) {
-                m_ribRotationReference = stringToCPACSRibRotation_ribRotationReference(tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/ribRotationReference"));
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/ribRotationReference")) {
+                m_ribRotationReference = stringToCPACSRibRotation_ribRotationReference(tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/ribRotationReference"));
             }
             
             // read element z
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/z")) {
-                m_z = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/z");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/z")) {
+                m_z = tixi::TixiGetElement<double>(tixiHandle, xpath + "/z");
             }
             else {
                 LOG(ERROR) << "Required element z is missing at xpath " << xpath;
@@ -61,17 +61,17 @@ namespace tigl
         {
             // write element ribRotationReference
             if (m_ribRotationReference) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ribRotationReference");
-                tixihelper::TixiSaveElement(tixiHandle, xpath + "/ribRotationReference", CPACSRibRotation_ribRotationReferenceToString(*m_ribRotationReference));
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ribRotationReference");
+                tixi::TixiSaveElement(tixiHandle, xpath + "/ribRotationReference", CPACSRibRotation_ribRotationReferenceToString(*m_ribRotationReference));
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/ribRotationReference")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/ribRotationReference");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/ribRotationReference")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/ribRotationReference");
                 }
             }
             
             // write element z
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/z");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/z", m_z);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/z");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/z", m_z);
             
         }
         

@@ -32,7 +32,7 @@ namespace tigl
         // This class is used in:
         // CPACSWingCell
         
-        // generated from /xsd:schema/xsd:complexType[118]
+        // generated from /xsd:schema/xsd:complexType[116]
         class CPACSCellPositioningSpanwise
         {
         public:

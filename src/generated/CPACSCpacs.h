@@ -24,6 +24,7 @@
 #include "CPACSHeader.h"
 #include "CPACSToolspecific.h"
 #include "CPACSVehicles.h"
+#include "CreateIfNotExists.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -33,7 +34,7 @@ namespace tigl
     namespace generated
     {
         // This class is used in:
-        // generated from /xsd:schema/xsd:element[1]/xsd:complexType
+        // generated from /xsd:schema/xsd:complexType[1]
         class CPACSCpacs
         {
         public:
@@ -54,6 +55,12 @@ namespace tigl
             
             TIGL_EXPORT virtual const boost::optional<CPACSToolspecific>& GetToolspecific() const;
             TIGL_EXPORT virtual boost::optional<CPACSToolspecific>& GetToolspecific();
+            
+            TIGL_EXPORT virtual CPACSVehicles& GetVehicles(CreateIfNotExistsTag);
+            TIGL_EXPORT virtual void RemoveVehicles();
+            
+            TIGL_EXPORT virtual CPACSToolspecific& GetToolspecific(CreateIfNotExistsTag);
+            TIGL_EXPORT virtual void RemoveToolspecific();
             
         protected:
             CTiglUIDManager* m_uidMgr;

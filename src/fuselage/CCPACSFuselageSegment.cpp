@@ -100,13 +100,40 @@ namespace
         trafo.PreMultiply(connection.GetSectionTransformation());
 
         // Do positioning transformations
-        trafo.PreMultiply(connection.GetPositioningTransformation());
+        boost::optional<tigl::CTiglTransformation> connectionTransform = connection.GetPositioningTransformation();
+        if (connectionTransform)
+            trafo.PreMultiply(*connectionTransform);
 
         trafo.PreMultiply(fuselTransform);
 
         gp_Pnt transformedPoint = trafo.Transform(pointOnProfile);
 
         return transformedPoint;
+    }
+
+    TopoDS_Wire transformProfileWire(const tigl::CTiglTransformation& fuselTransform, const tigl::CTiglFuselageConnection& connection, const TopoDS_Wire& wire)
+    {
+        // Do section element transformation on points
+        tigl::CTiglTransformation trafo = connection.GetSectionElementTransformation();
+
+        // Do section transformations
+        trafo.PreMultiply(connection.GetSectionTransformation());
+
+        // Do positioning transformations
+        boost::optional<tigl::CTiglTransformation> connectionTransform = connection.GetPositioningTransformation();
+        if (connectionTransform)
+            trafo.PreMultiply(*connectionTransform);
+
+        trafo.PreMultiply(fuselTransform);
+
+        TopoDS_Shape transformedWire = trafo.Transform(wire);
+
+        // Cast shapes to wires, see OpenCascade documentation
+        if (transformedWire.ShapeType() != TopAbs_WIRE) {
+            throw tigl::CTiglError("Wrong shape type in CCPACSFuselageSegment::transformProfileWire", TIGL_ERROR);
+        }
+
+        return TopoDS::Wire(transformedWire);
     }
 }
 

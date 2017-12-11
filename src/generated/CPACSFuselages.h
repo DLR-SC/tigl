@@ -38,7 +38,7 @@ namespace tigl
         // CPACSAircraftModel
         // CPACSRotorcraftModel
         
-        // generated from /xsd:schema/xsd:complexType[377]
+        // generated from /xsd:schema/xsd:complexType[387]
         class CPACSFuselages
         {
         public:
@@ -73,6 +73,9 @@ namespace tigl
             
             TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSFuselage> >& GetFuselages() const;
             TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSFuselage> >& GetFuselages();
+            
+            TIGL_EXPORT virtual CCPACSFuselage& AddFuselage();
+            TIGL_EXPORT virtual void RemoveFuselage(CCPACSFuselage& ref);
             
         protected:
             void* m_parent;

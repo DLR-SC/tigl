@@ -39,9 +39,10 @@ function printUsage {
     echo "Valid distributions:"
     echo "    SLE_11_SP2     Suse Linux Enterprise 11 SP2"
     echo "    SLE_12_SP1     Suse Linux Enterprise 12 SP1"
+    echo "    SLE_12_SP2     Suse Linux Enterprise 12 SP2"
     echo "    openSUSE_13.1  openSUSE 13.1"
-    echo "    ubuntu_12.04   Ubuntu 12.04"
     echo "    ubuntu_14.04   Ubuntu 14.04"
+    echo "    ubuntu_16.04   Ubuntu 16.04"
     echo "    fedora_20      Fedora 20"
     echo "    rhel_6         Red Hat Enterprise Linux 6"
     echo "    rhel_7         Red Hat Enterprise Linux 7"
@@ -77,23 +78,33 @@ function checkArguments {
     #check dist
     if [[ $tmp_dist == SLE_11_SP2 ]]; then
     	DIST=SLE_11_SP2
-	PACK_TYPE=rpm
-	if [[  $tmp_arch == i386 ]]; then
-	    PACK_ARCH=i586
-        else
-            PACK_ARCH=x86_64
-            LIBDIR=lib64
-	fi
+    	PACK_TYPE=rpm
+    	if [[  $tmp_arch == i386 ]]; then
+    	    PACK_ARCH=i586
+            else
+                PACK_ARCH=x86_64
+                LIBDIR=lib64
+    	fi
     elif [[ $tmp_dist == SLE_12_SP1 ]]; then
-	DIST=SLE_12_SP1
-	PACK_TYPE=rpm
-	if [[  $tmp_arch == i386 ]]; then
-	    echo "Error: x86 architecture not available on SLED 12"
-	    exit 1
-        else
-            PACK_ARCH=x86_64
-            LIBDIR=lib64
-	fi
+    	DIST=SLE_12_SP1
+    	PACK_TYPE=rpm
+    	if [[  $tmp_arch == i386 ]]; then
+    	    echo "Error: x86 architecture not available on SLED 12"
+    	    exit 1
+            else
+                PACK_ARCH=x86_64
+                LIBDIR=lib64
+    	fi
+    elif [[ $tmp_dist == SLE_12_SP2 ]]; then
+    	DIST=SLE_12_SP2
+    	PACK_TYPE=rpm
+    	if [[  $tmp_arch == i386 ]]; then
+    	    echo "Error: x86 architecture not available on SLED 12"
+    	    exit 1
+            else
+                PACK_ARCH=x86_64
+                LIBDIR=lib64
+    	fi
     elif [[ $tmp_dist == openSUSE_13.1 ]]; then
         DIST=openSUSE_13.1
         PACK_TYPE=rpm
@@ -140,16 +151,17 @@ function checkArguments {
             PACK_ARCH=x86_64
             LIBDIR=lib64
 	fi
-    elif [[ $tmp_dist == ubuntu_12.04 ]]; then
-    	DIST=xUbuntu_12.04
-	PACK_TYPE=deb
-	if [[  $tmp_arch == i386 ]]; then
-	    PACK_ARCH=i386
-        else
-            PACK_ARCH=amd64
-	fi
     elif [[ $tmp_dist == ubuntu_14.04 ]]; then
         DIST=xUbuntu_14.04
+        PACK_TYPE=deb
+        if [[  $tmp_arch == i386 ]]; then
+            PACK_ARCH=i386
+        else
+            PACK_ARCH=amd64
+        fi
+    else
+    elif [[ $tmp_dist == ubuntu_16.04 ]]; then
+        DIST=xUbuntu_16.04
         PACK_TYPE=deb
         if [[  $tmp_arch == i386 ]]; then
             PACK_ARCH=i386
@@ -187,7 +199,7 @@ echo "Downloading from repository $prefix"
 echo "Using working directory: $tmpdir"
 echo
 
-# get list of available files to download 
+# get list of available files to download
 wget -q $prefix/
 if [[ $? -ne 0 ]]; then
     echo "Error downloading file list from $prefix"
@@ -200,7 +212,7 @@ filelist=`cat index.html | grep  $PACK_TYPE | awk '{print $7}' |  cut -d'"' -f 2
 if [[ $PACK_TYPE == rpm ]]; then
   # select required files
   for file in $filelist; do
-	#opencascade	
+	#opencascade
 	if [[ $file == OCE*.rpm ]] && [[ $file != OCE-devel* ]] && [[ $file != *debuginfo* ]]
 	then
 		bin_file_list+=($file)
@@ -211,12 +223,12 @@ if [[ $PACK_TYPE == rpm ]]; then
 	then
 		bin_file_list+=($file)
 	fi
-	
+
 	#TIGL
 	if [[ $file == libTIGL2*.rpm ]] || [[ $file == tigl-*.rpm ]] && [[ $file != *debuginfo* ]]  && [[ $file != *debugsource* ]]
 	then
 		bin_file_list+=($file)
-        	#extract version number        
+        	#extract version number
 		if [[ $file == libTIGL2-*.rpm ]]; then
 			VERSION=`echo $file | awk '{split($0,array,"-")} END{print array[2]}'`
 		fi
@@ -225,23 +237,23 @@ if [[ $PACK_TYPE == rpm ]]; then
 elif [[ $PACK_TYPE == deb ]]; then
   # select required files
   for file in $filelist; do
-	#opencascade	
+	#opencascade
 	if [[ $file == liboce-*.deb ]] && [[ $file != liboce*dev* ]] && [[ $file != liboce*ocaf* ]]
 	then
 		bin_file_list+=($file)
 	fi
 
 	#TIXI
-	if [[ $file == libtixi2*.deb ]] 
+	if [[ $file == libtixi2*.deb ]]
 	then
 		bin_file_list+=($file)
 	fi
-	
+
 	#TIGL
 	if [[ $file == libtigl*.deb ]] || [[ $file == tigl-*.deb ]]
 	then
 		bin_file_list+=($file)
-        	#extract version number        
+        	#extract version number
 		if [[ $file == libtigl2_*.deb ]]; then
 			VERSION=`echo $file | awk '{split($0,array,"_")} END{print array[2]}' | awk '{split($0,array,"-")} END{print array[1]}'`
 		fi
@@ -279,7 +291,7 @@ done
 mv usr/ $NAME
 cd $NAME
 
-if [[ $DIST != RedHat_RHEL-5 ]]; then 
+if [[ $DIST != RedHat_RHEL-5 ]]; then
   #create start script for tiglviewer
   echo "#!/bin/bash" > tiglviewer.sh
   echo 'CURDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"' >> tiglviewer.sh
@@ -300,4 +312,4 @@ tar -czf $pwdir/$NAME.tar.gz $NAME
 
 rm -rf $tmpdir
 
-echo "Package generation done..." 
+echo "Package generation done..."

@@ -37,7 +37,7 @@ namespace tigl
         
         CPACSRotorHubHinge::~CPACSRotorHubHinge()
         {
-            if (m_uidMgr && m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
+            if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
         }
         
         CCPACSRotorHinges* CPACSRotorHubHinge::GetParent() const
@@ -58,31 +58,34 @@ namespace tigl
         void CPACSRotorHubHinge::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read attribute uID
-            if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
-                m_uID = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
-                if (m_uID->empty()) {
-                    LOG(WARNING) << "Optional attribute uID is present but empty at xpath " << xpath;
+            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+                m_uID = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
+                if (m_uID.empty()) {
+                    LOG(WARNING) << "Required attribute uID is empty at xpath " << xpath;
                 }
+            }
+            else {
+                LOG(ERROR) << "Required attribute uID is missing at xpath " << xpath;
             }
             
             // read element name
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/name")) {
-                m_name = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
+                m_name = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
                 if (m_name->empty()) {
                     LOG(WARNING) << "Optional element name is present but empty at xpath " << xpath;
                 }
             }
             
             // read element description
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/description")) {
-                m_description = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
+                m_description = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
                 if (m_description->empty()) {
                     LOG(WARNING) << "Optional element description is present but empty at xpath " << xpath;
                 }
             }
             
             // read element transformation
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/transformation")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/transformation")) {
                 m_transformation.ReadCPACS(tixiHandle, xpath + "/transformation");
             }
             else {
@@ -90,118 +93,112 @@ namespace tigl
             }
             
             // read element type
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/type")) {
-                m_type = stringToCPACSRotorHubHinge_type(tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/type"));
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/type")) {
+                m_type = stringToCPACSRotorHubHinge_type(tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/type"));
             }
             else {
                 LOG(ERROR) << "Required element type is missing at xpath " << xpath;
             }
             
             // read element neutralPosition
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/neutralPosition")) {
-                m_neutralPosition = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/neutralPosition");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/neutralPosition")) {
+                m_neutralPosition = tixi::TixiGetElement<double>(tixiHandle, xpath + "/neutralPosition");
             }
             
             // read element staticStiffness
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/staticStiffness")) {
-                m_staticStiffness = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/staticStiffness");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/staticStiffness")) {
+                m_staticStiffness = tixi::TixiGetElement<double>(tixiHandle, xpath + "/staticStiffness");
             }
             
             // read element dynamicStiffness
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/dynamicStiffness")) {
-                m_dynamicStiffness = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/dynamicStiffness");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/dynamicStiffness")) {
+                m_dynamicStiffness = tixi::TixiGetElement<double>(tixiHandle, xpath + "/dynamicStiffness");
             }
             
             // read element damping
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/damping")) {
-                m_damping = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/damping");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/damping")) {
+                m_damping = tixi::TixiGetElement<double>(tixiHandle, xpath + "/damping");
             }
             
-            if (m_uidMgr && m_uID) m_uidMgr->RegisterObject(*m_uID, *this);
+            if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
         }
         
         void CPACSRotorHubHinge::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write attribute uID
-            if (m_uID) {
-                tixihelper::TixiSaveAttribute(tixiHandle, xpath, "uID", *m_uID);
-            } else {
-                if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
-                    tixihelper::TixiRemoveAttribute(tixiHandle, xpath, "uID");
-                }
-            }
+            tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
             
             // write element name
             if (m_name) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
-                tixihelper::TixiSaveElement(tixiHandle, xpath + "/name", *m_name);
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
+                tixi::TixiSaveElement(tixiHandle, xpath + "/name", *m_name);
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/name")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/name");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/name");
                 }
             }
             
             // write element description
             if (m_description) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
-                tixihelper::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
+                tixi::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/description")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/description");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/description");
                 }
             }
             
             // write element transformation
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/transformation");
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/transformation");
             m_transformation.WriteCPACS(tixiHandle, xpath + "/transformation");
             
             // write element type
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/type");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/type", CPACSRotorHubHinge_typeToString(m_type));
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/type");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/type", CPACSRotorHubHinge_typeToString(m_type));
             
             // write element neutralPosition
             if (m_neutralPosition) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/neutralPosition");
-                tixihelper::TixiSaveElement(tixiHandle, xpath + "/neutralPosition", *m_neutralPosition);
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/neutralPosition");
+                tixi::TixiSaveElement(tixiHandle, xpath + "/neutralPosition", *m_neutralPosition);
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/neutralPosition")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/neutralPosition");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/neutralPosition")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/neutralPosition");
                 }
             }
             
             // write element staticStiffness
             if (m_staticStiffness) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/staticStiffness");
-                tixihelper::TixiSaveElement(tixiHandle, xpath + "/staticStiffness", *m_staticStiffness);
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/staticStiffness");
+                tixi::TixiSaveElement(tixiHandle, xpath + "/staticStiffness", *m_staticStiffness);
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/staticStiffness")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/staticStiffness");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/staticStiffness")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/staticStiffness");
                 }
             }
             
             // write element dynamicStiffness
             if (m_dynamicStiffness) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/dynamicStiffness");
-                tixihelper::TixiSaveElement(tixiHandle, xpath + "/dynamicStiffness", *m_dynamicStiffness);
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/dynamicStiffness");
+                tixi::TixiSaveElement(tixiHandle, xpath + "/dynamicStiffness", *m_dynamicStiffness);
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/dynamicStiffness")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/dynamicStiffness");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/dynamicStiffness")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/dynamicStiffness");
                 }
             }
             
             // write element damping
             if (m_damping) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/damping");
-                tixihelper::TixiSaveElement(tixiHandle, xpath + "/damping", *m_damping);
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/damping");
+                tixi::TixiSaveElement(tixiHandle, xpath + "/damping", *m_damping);
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/damping")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/damping");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/damping")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/damping");
                 }
             }
             
         }
         
-        const boost::optional<std::string>& CPACSRotorHubHinge::GetUID() const
+        const std::string& CPACSRotorHubHinge::GetUID() const
         {
             return m_uID;
         }
@@ -209,17 +206,8 @@ namespace tigl
         void CPACSRotorHubHinge::SetUID(const std::string& value)
         {
             if (m_uidMgr) {
-                if (m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
+                m_uidMgr->TryUnregisterObject(m_uID);
                 m_uidMgr->RegisterObject(value, *this);
-            }
-            m_uID = value;
-        }
-        
-        void CPACSRotorHubHinge::SetUID(const boost::optional<std::string>& value)
-        {
-            if (m_uidMgr) {
-                if (m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
-                if (value) m_uidMgr->RegisterObject(*value, *this);
             }
             m_uID = value;
         }

@@ -61,8 +61,8 @@ namespace tigl
         void CPACSWingCell::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read attribute uID
-            if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
-                m_uID = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
+            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+                m_uID = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
                 if (m_uID.empty()) {
                     LOG(WARNING) << "Required attribute uID is empty at xpath " << xpath;
                 }
@@ -72,7 +72,7 @@ namespace tigl
             }
             
             // read element skin
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/skin")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/skin")) {
                 m_skin.ReadCPACS(tixiHandle, xpath + "/skin");
             }
             else {
@@ -80,7 +80,7 @@ namespace tigl
             }
             
             // read element positioningLeadingEdge
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/positioningLeadingEdge")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/positioningLeadingEdge")) {
                 m_positioningLeadingEdge.ReadCPACS(tixiHandle, xpath + "/positioningLeadingEdge");
             }
             else {
@@ -88,7 +88,7 @@ namespace tigl
             }
             
             // read element positioningTrailingEdge
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/positioningTrailingEdge")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/positioningTrailingEdge")) {
                 m_positioningTrailingEdge.ReadCPACS(tixiHandle, xpath + "/positioningTrailingEdge");
             }
             else {
@@ -96,7 +96,7 @@ namespace tigl
             }
             
             // read element positioningInnerBorder
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/positioningInnerBorder")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/positioningInnerBorder")) {
                 m_positioningInnerBorder.ReadCPACS(tixiHandle, xpath + "/positioningInnerBorder");
             }
             else {
@@ -104,39 +104,39 @@ namespace tigl
             }
             
             // read element positioningOuterBorder
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/positioningOuterBorder")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/positioningOuterBorder")) {
                 m_positioningOuterBorder.ReadCPACS(tixiHandle, xpath + "/positioningOuterBorder");
             }
             else {
                 LOG(ERROR) << "Required element positioningOuterBorder is missing at xpath " << xpath;
             }
             
-            if (m_uidMgr) m_uidMgr->RegisterObject(m_uID, *this);
+            if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
         }
         
         void CPACSWingCell::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write attribute uID
-            tixihelper::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
+            tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
             
             // write element skin
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/skin");
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/skin");
             m_skin.WriteCPACS(tixiHandle, xpath + "/skin");
             
             // write element positioningLeadingEdge
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/positioningLeadingEdge");
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/positioningLeadingEdge");
             m_positioningLeadingEdge.WriteCPACS(tixiHandle, xpath + "/positioningLeadingEdge");
             
             // write element positioningTrailingEdge
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/positioningTrailingEdge");
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/positioningTrailingEdge");
             m_positioningTrailingEdge.WriteCPACS(tixiHandle, xpath + "/positioningTrailingEdge");
             
             // write element positioningInnerBorder
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/positioningInnerBorder");
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/positioningInnerBorder");
             m_positioningInnerBorder.WriteCPACS(tixiHandle, xpath + "/positioningInnerBorder");
             
             // write element positioningOuterBorder
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/positioningOuterBorder");
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/positioningOuterBorder");
             m_positioningOuterBorder.WriteCPACS(tixiHandle, xpath + "/positioningOuterBorder");
             
         }

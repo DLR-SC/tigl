@@ -56,7 +56,7 @@ namespace tigl
         void CPACSWingComponentSegmentStructure::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element upperShell
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/upperShell")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/upperShell")) {
                 m_upperShell.ReadCPACS(tixiHandle, xpath + "/upperShell");
             }
             else {
@@ -64,7 +64,7 @@ namespace tigl
             }
             
             // read element lowerShell
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/lowerShell")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/lowerShell")) {
                 m_lowerShell.ReadCPACS(tixiHandle, xpath + "/lowerShell");
             }
             else {
@@ -72,7 +72,7 @@ namespace tigl
             }
             
             // read element ribsDefinitions
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/ribsDefinitions")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/ribsDefinitions")) {
                 m_ribsDefinitions = boost::in_place(reinterpret_cast<CCPACSWingCSStructure*>(this), m_uidMgr);
                 try {
                     m_ribsDefinitions->ReadCPACS(tixiHandle, xpath + "/ribsDefinitions");
@@ -83,7 +83,7 @@ namespace tigl
             }
             
             // read element spars
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/spars")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/spars")) {
                 m_spars = boost::in_place(reinterpret_cast<CCPACSWingCSStructure*>(this), m_uidMgr);
                 try {
                     m_spars->ReadCPACS(tixiHandle, xpath + "/spars");
@@ -98,30 +98,30 @@ namespace tigl
         void CPACSWingComponentSegmentStructure::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element upperShell
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/upperShell");
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/upperShell");
             m_upperShell.WriteCPACS(tixiHandle, xpath + "/upperShell");
             
             // write element lowerShell
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/lowerShell");
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/lowerShell");
             m_lowerShell.WriteCPACS(tixiHandle, xpath + "/lowerShell");
             
             // write element ribsDefinitions
             if (m_ribsDefinitions) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ribsDefinitions");
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ribsDefinitions");
                 m_ribsDefinitions->WriteCPACS(tixiHandle, xpath + "/ribsDefinitions");
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/ribsDefinitions")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/ribsDefinitions");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/ribsDefinitions")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/ribsDefinitions");
                 }
             }
             
             // write element spars
             if (m_spars) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/spars");
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/spars");
                 m_spars->WriteCPACS(tixiHandle, xpath + "/spars");
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/spars")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/spars");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/spars")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/spars");
                 }
             }
             
@@ -165,6 +165,30 @@ namespace tigl
         boost::optional<CCPACSWingSpars>& CPACSWingComponentSegmentStructure::GetSpars()
         {
             return m_spars;
+        }
+        
+        CCPACSWingRibsDefinitions& CPACSWingComponentSegmentStructure::GetRibsDefinitions(CreateIfNotExistsTag)
+        {
+            if (!m_ribsDefinitions)
+                m_ribsDefinitions = boost::in_place(reinterpret_cast<CCPACSWingCSStructure*>(this), m_uidMgr);
+            return *m_ribsDefinitions;
+        }
+        
+        void CPACSWingComponentSegmentStructure::RemoveRibsDefinitions()
+        {
+            m_ribsDefinitions = boost::none;
+        }
+        
+        CCPACSWingSpars& CPACSWingComponentSegmentStructure::GetSpars(CreateIfNotExistsTag)
+        {
+            if (!m_spars)
+                m_spars = boost::in_place(reinterpret_cast<CCPACSWingCSStructure*>(this), m_uidMgr);
+            return *m_spars;
+        }
+        
+        void CPACSWingComponentSegmentStructure::RemoveSpars()
+        {
+            m_spars = boost::none;
         }
         
     }

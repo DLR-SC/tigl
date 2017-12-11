@@ -60,8 +60,8 @@ namespace tigl
         void CPACSFuselages::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element fuselage
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/fuselage")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/fuselage", m_fuselages, reinterpret_cast<CCPACSFuselages*>(this), m_uidMgr);
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/fuselage")) {
+                tixi::TixiReadElements(tixiHandle, xpath + "/fuselage", m_fuselages, reinterpret_cast<CCPACSFuselages*>(this), m_uidMgr);
             }
             
         }
@@ -69,7 +69,7 @@ namespace tigl
         void CPACSFuselages::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element fuselage
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/fuselage", m_fuselages);
+            tixi::TixiSaveElements(tixiHandle, xpath + "/fuselage", m_fuselages);
             
         }
         
@@ -81,6 +81,23 @@ namespace tigl
         std::vector<unique_ptr<CCPACSFuselage> >& CPACSFuselages::GetFuselages()
         {
             return m_fuselages;
+        }
+        
+        CCPACSFuselage& CPACSFuselages::AddFuselage()
+        {
+            m_fuselages.push_back(make_unique<CCPACSFuselage>(reinterpret_cast<CCPACSFuselages*>(this), m_uidMgr));
+            return *m_fuselages.back();
+        }
+        
+        void CPACSFuselages::RemoveFuselage(CCPACSFuselage& ref)
+        {
+            for (std::size_t i = 0; i < m_fuselages.size(); i++) {
+                if (m_fuselages[i].get() == &ref) {
+                    m_fuselages.erase(m_fuselages.begin() + i);
+                    return;
+                }
+            }
+            throw CTiglError("Element not found");
         }
         
     }

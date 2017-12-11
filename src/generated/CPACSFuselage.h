@@ -27,6 +27,7 @@
 #include <TiglSymmetryAxis.h>
 #include <tixi.h>
 #include "CPACSFuselageCutOuts.h"
+#include "CreateIfNotExists.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -39,7 +40,7 @@ namespace tigl
         // This class is used in:
         // CPACSFuselages
         
-        // generated from /xsd:schema/xsd:complexType[374]
+        // generated from /xsd:schema/xsd:complexType[384]
         class CPACSFuselage
         {
         public:
@@ -79,14 +80,20 @@ namespace tigl
             TIGL_EXPORT virtual const CCPACSFuselageSections& GetSections() const;
             TIGL_EXPORT virtual CCPACSFuselageSections& GetSections();
             
-            TIGL_EXPORT virtual const CCPACSPositionings& GetPositionings() const;
-            TIGL_EXPORT virtual CCPACSPositionings& GetPositionings();
+            TIGL_EXPORT virtual const boost::optional<CCPACSPositionings>& GetPositionings() const;
+            TIGL_EXPORT virtual boost::optional<CCPACSPositionings>& GetPositionings();
             
             TIGL_EXPORT virtual const CCPACSFuselageSegments& GetSegments() const;
             TIGL_EXPORT virtual CCPACSFuselageSegments& GetSegments();
             
             TIGL_EXPORT virtual const boost::optional<CPACSFuselageCutOuts>& GetCutOuts() const;
             TIGL_EXPORT virtual boost::optional<CPACSFuselageCutOuts>& GetCutOuts();
+            
+            TIGL_EXPORT virtual CCPACSPositionings& GetPositionings(CreateIfNotExistsTag);
+            TIGL_EXPORT virtual void RemovePositionings();
+            
+            TIGL_EXPORT virtual CPACSFuselageCutOuts& GetCutOuts(CreateIfNotExistsTag);
+            TIGL_EXPORT virtual void RemoveCutOuts();
             
         protected:
             CCPACSFuselages* m_parent;
@@ -100,7 +107,7 @@ namespace tigl
             boost::optional<std::string>          m_parentUID;
             CCPACSTransformation                  m_transformation;
             CCPACSFuselageSections                m_sections;
-            CCPACSPositionings                    m_positionings;
+            boost::optional<CCPACSPositionings>   m_positionings;
             CCPACSFuselageSegments                m_segments;
             boost::optional<CPACSFuselageCutOuts> m_cutOuts;
             

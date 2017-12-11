@@ -94,21 +94,20 @@ void CCPACSConfiguration::ReadCPACS(const std::string& configurationUID)
         throw CTiglError("XML error while reading in CCPACSConfiguration::ReadCPACS", TIGL_XML_ERROR);
     }
 
-    if (tixihelper::TixiCheckElement(tixiDocumentHandle, headerXPath)) {
+    if (tixi::TixiCheckElement(tixiDocumentHandle, headerXPath)) {
         header.ReadCPACS(tixiDocumentHandle, headerXPath);
     }
-
-    if (tixihelper::TixiCheckElement(tixiDocumentHandle, profilesXPath)) {
+    if (tixi::TixiCheckElement(tixiDocumentHandle, profilesXPath)) {
         profiles = boost::in_place(&uidManager);
         // read wing airfoils, fuselage profiles, rotor airfoils and guide curve profiles
         profiles->ReadCPACS(tixiDocumentHandle, profilesXPath);
     }
-    if (tixihelper::TixiCheckElement(tixiDocumentHandle, farFieldXPath)) {
+    if (tixi::TixiCheckElement(tixiDocumentHandle, farFieldXPath)) {
         farField.ReadCPACS(tixiDocumentHandle, farFieldXPath);
     }
 
     // create new root component for CTiglUIDManager
-    const bool isRotorcraft = tixihelper::TixiCheckElement(tixiDocumentHandle, "/cpacs/vehicles/rotorcraft/model[@uID='" + std::string(configurationUID) + "']");
+    const bool isRotorcraft = tixi::TixiCheckElement(tixiDocumentHandle, "/cpacs/vehicles/rotorcraft/model[@uID='" + std::string(configurationUID) + "']");
     if (isRotorcraft) {
         aircraftModel = boost::none;
         rotorcraftModel = boost::in_place(this);
@@ -141,12 +140,12 @@ void CCPACSConfiguration::WriteCPACS(const std::string& configurationUID)
 {
     header.WriteCPACS(tixiDocumentHandle, headerXPath);
     if (aircraftModel) {
-        tixihelper::TixiSaveAttribute(tixiDocumentHandle, "/cpacs/vehicles/aircraft/model", "uID", configurationUID); // patch uid in tixi, so xpath below is valid
+        tixi::TixiSaveAttribute(tixiDocumentHandle, "/cpacs/vehicles/aircraft/model", "uID", configurationUID); // patch uid in tixi, so xpath below is valid
         aircraftModel->SetUID(configurationUID);
         aircraftModel->WriteCPACS(tixiDocumentHandle, "/cpacs/vehicles/aircraft/model[@uID=\"" + configurationUID + "\"]");
     }
     if (rotorcraftModel) {
-        tixihelper::TixiSaveAttribute(tixiDocumentHandle, "/cpacs/vehicles/rotorcraft/model", "uID", configurationUID); // patch uid in tixi, so xpath below is valid
+        tixi::TixiSaveAttribute(tixiDocumentHandle, "/cpacs/vehicles/rotorcraft/model", "uID", configurationUID); // patch uid in tixi, so xpath below is valid
         rotorcraftModel->SetUID(configurationUID);
         rotorcraftModel->WriteCPACS(tixiDocumentHandle, "/cpacs/vehicles/rotorcraft/model[@uID=\"" + configurationUID + "\"]");
     }

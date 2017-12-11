@@ -31,7 +31,7 @@ namespace tigl
         void CPACSWingSkin::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element material
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/material")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/material")) {
                 m_material.ReadCPACS(tixiHandle, xpath + "/material");
             }
             else {
@@ -43,7 +43,7 @@ namespace tigl
         void CPACSWingSkin::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element material
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/material");
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/material");
             m_material.WriteCPACS(tixiHandle, xpath + "/material");
             
         }

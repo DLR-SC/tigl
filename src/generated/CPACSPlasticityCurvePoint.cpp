@@ -33,16 +33,16 @@ namespace tigl
         void CPACSPlasticityCurvePoint::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element tangentModulus
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/tangentModulus")) {
-                m_tangentModulus = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/tangentModulus");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/tangentModulus")) {
+                m_tangentModulus = tixi::TixiGetElement<double>(tixiHandle, xpath + "/tangentModulus");
             }
             else {
                 LOG(ERROR) << "Required element tangentModulus is missing at xpath " << xpath;
             }
             
             // read element trueStress
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/trueStress")) {
-                m_trueStress = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/trueStress");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/trueStress")) {
+                m_trueStress = tixi::TixiGetElement<double>(tixiHandle, xpath + "/trueStress");
             }
             else {
                 LOG(ERROR) << "Required element trueStress is missing at xpath " << xpath;
@@ -53,12 +53,12 @@ namespace tigl
         void CPACSPlasticityCurvePoint::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element tangentModulus
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/tangentModulus");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/tangentModulus", m_tangentModulus);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/tangentModulus");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/tangentModulus", m_tangentModulus);
             
             // write element trueStress
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/trueStress");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/trueStress", m_trueStress);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/trueStress");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/trueStress", m_trueStress);
             
         }
         

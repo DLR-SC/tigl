@@ -20,6 +20,10 @@
 %include std_vector.i
 
 %include tigl_config.h
+
+// swig cannot handle c++ 11 properly yet
+#undef HAVE_CPP11
+
 %include tigl_internal.h
 
 #ifdef HAVE_STDSHARED_PTR

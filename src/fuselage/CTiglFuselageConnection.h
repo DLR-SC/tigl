@@ -30,6 +30,7 @@
 #include "tigl_internal.h"
 #include "CTiglTransformation.h"
 #include <string>
+#include <boost/optional.hpp>
 
 namespace tigl
 {
@@ -61,7 +62,7 @@ public:
     TIGL_EXPORT CCPACSFuselageProfile& GetProfile() const;
 
     // Returns the positioning transformation (segment transformation) for the referenced section
-    TIGL_EXPORT CTiglTransformation GetPositioningTransformation() const;
+    TIGL_EXPORT boost::optional<CTiglTransformation> GetPositioningTransformation() const;
 
     // Returns the section matrix referenced by this connection
     TIGL_EXPORT CTiglTransformation GetSectionTransformation() const;

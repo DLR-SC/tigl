@@ -27,13 +27,11 @@ namespace tigl
     {
         CPACSSparCell::CPACSSparCell(CTiglUIDManager* uidMgr) :
             m_uidMgr(uidMgr), 
-            m_fromEta(0), 
-            m_toEta(0), 
             m_rotation(0) {}
         
         CPACSSparCell::~CPACSSparCell()
         {
-            if (m_uidMgr && m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
+            if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
         }
         
         CTiglUIDManager& CPACSSparCell::GetUIDManager()
@@ -49,31 +47,34 @@ namespace tigl
         void CPACSSparCell::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read attribute uID
-            if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
-                m_uID = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
-                if (m_uID->empty()) {
-                    LOG(WARNING) << "Optional attribute uID is present but empty at xpath " << xpath;
+            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+                m_uID = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
+                if (m_uID.empty()) {
+                    LOG(WARNING) << "Required attribute uID is empty at xpath " << xpath;
                 }
+            }
+            else {
+                LOG(ERROR) << "Required attribute uID is missing at xpath " << xpath;
             }
             
             // read element fromEta
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/fromEta")) {
-                m_fromEta = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/fromEta");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/fromEta")) {
+                m_fromEta.ReadCPACS(tixiHandle, xpath + "/fromEta");
             }
             else {
                 LOG(ERROR) << "Required element fromEta is missing at xpath " << xpath;
             }
             
             // read element toEta
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/toEta")) {
-                m_toEta = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/toEta");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/toEta")) {
+                m_toEta.ReadCPACS(tixiHandle, xpath + "/toEta");
             }
             else {
                 LOG(ERROR) << "Required element toEta is missing at xpath " << xpath;
             }
             
             // read element upperCap
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/upperCap")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/upperCap")) {
                 m_upperCap.ReadCPACS(tixiHandle, xpath + "/upperCap");
             }
             else {
@@ -81,7 +82,7 @@ namespace tigl
             }
             
             // read element lowerCap
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/lowerCap")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/lowerCap")) {
                 m_lowerCap.ReadCPACS(tixiHandle, xpath + "/lowerCap");
             }
             else {
@@ -89,7 +90,7 @@ namespace tigl
             }
             
             // read element web1
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/web1")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/web1")) {
                 m_web1.ReadCPACS(tixiHandle, xpath + "/web1");
             }
             else {
@@ -97,7 +98,7 @@ namespace tigl
             }
             
             // read element web2
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/web2")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/web2")) {
                 m_web2 = boost::in_place();
                 try {
                     m_web2->ReadCPACS(tixiHandle, xpath + "/web2");
@@ -108,64 +109,58 @@ namespace tigl
             }
             
             // read element rotation
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/rotation")) {
-                m_rotation = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/rotation");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/rotation")) {
+                m_rotation = tixi::TixiGetElement<double>(tixiHandle, xpath + "/rotation");
             }
             else {
                 LOG(ERROR) << "Required element rotation is missing at xpath " << xpath;
             }
             
-            if (m_uidMgr && m_uID) m_uidMgr->RegisterObject(*m_uID, *this);
+            if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
         }
         
         void CPACSSparCell::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write attribute uID
-            if (m_uID) {
-                tixihelper::TixiSaveAttribute(tixiHandle, xpath, "uID", *m_uID);
-            } else {
-                if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
-                    tixihelper::TixiRemoveAttribute(tixiHandle, xpath, "uID");
-                }
-            }
+            tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
             
             // write element fromEta
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/fromEta");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/fromEta", m_fromEta);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/fromEta");
+            m_fromEta.WriteCPACS(tixiHandle, xpath + "/fromEta");
             
             // write element toEta
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/toEta");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/toEta", m_toEta);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/toEta");
+            m_toEta.WriteCPACS(tixiHandle, xpath + "/toEta");
             
             // write element upperCap
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/upperCap");
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/upperCap");
             m_upperCap.WriteCPACS(tixiHandle, xpath + "/upperCap");
             
             // write element lowerCap
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/lowerCap");
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/lowerCap");
             m_lowerCap.WriteCPACS(tixiHandle, xpath + "/lowerCap");
             
             // write element web1
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/web1");
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/web1");
             m_web1.WriteCPACS(tixiHandle, xpath + "/web1");
             
             // write element web2
             if (m_web2) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/web2");
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/web2");
                 m_web2->WriteCPACS(tixiHandle, xpath + "/web2");
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/web2")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/web2");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/web2")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/web2");
                 }
             }
             
             // write element rotation
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/rotation");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/rotation", m_rotation);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/rotation");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/rotation", m_rotation);
             
         }
         
-        const boost::optional<std::string>& CPACSSparCell::GetUID() const
+        const std::string& CPACSSparCell::GetUID() const
         {
             return m_uID;
         }
@@ -173,39 +168,30 @@ namespace tigl
         void CPACSSparCell::SetUID(const std::string& value)
         {
             if (m_uidMgr) {
-                if (m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
+                m_uidMgr->TryUnregisterObject(m_uID);
                 m_uidMgr->RegisterObject(value, *this);
             }
             m_uID = value;
         }
         
-        void CPACSSparCell::SetUID(const boost::optional<std::string>& value)
-        {
-            if (m_uidMgr) {
-                if (m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
-                if (value) m_uidMgr->RegisterObject(*value, *this);
-            }
-            m_uID = value;
-        }
-        
-        const double& CPACSSparCell::GetFromEta() const
+        const CPACSEtaIsoLine& CPACSSparCell::GetFromEta() const
         {
             return m_fromEta;
         }
         
-        void CPACSSparCell::SetFromEta(const double& value)
+        CPACSEtaIsoLine& CPACSSparCell::GetFromEta()
         {
-            m_fromEta = value;
+            return m_fromEta;
         }
         
-        const double& CPACSSparCell::GetToEta() const
+        const CPACSEtaIsoLine& CPACSSparCell::GetToEta() const
         {
             return m_toEta;
         }
         
-        void CPACSSparCell::SetToEta(const double& value)
+        CPACSEtaIsoLine& CPACSSparCell::GetToEta()
         {
-            m_toEta = value;
+            return m_toEta;
         }
         
         const CPACSCap& CPACSSparCell::GetUpperCap() const
@@ -256,6 +242,18 @@ namespace tigl
         void CPACSSparCell::SetRotation(const double& value)
         {
             m_rotation = value;
+        }
+        
+        CPACSWeb& CPACSSparCell::GetWeb2(CreateIfNotExistsTag)
+        {
+            if (!m_web2)
+                m_web2 = boost::in_place();
+            return *m_web2;
+        }
+        
+        void CPACSSparCell::RemoveWeb2()
+        {
+            m_web2 = boost::none;
         }
         
     }

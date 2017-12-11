@@ -215,9 +215,6 @@ TEST_F(TiglIntersectionCalculation, tiglGetCurveIntersection)
     // check errorcodes of tiglGetCurveParameter
     ASSERT_EQ(TIGL_NOT_FOUND,    tiglGetCurveParameter (-1, id1, 1, p1x, p1y, p1z, &eta1) );
     ASSERT_EQ(TIGL_NULL_POINTER, tiglGetCurveParameter (tiglHandle, NULL, 1, p1x, p1y, p1z, &eta1) );
-    ASSERT_EQ(TIGL_NULL_POINTER, tiglGetCurveParameter (tiglHandle, id1, 1, NULL, p1y, p1z, &eta1) );
-    ASSERT_EQ(TIGL_NULL_POINTER, tiglGetCurveParameter (tiglHandle, id1, 1, p1x, NULL, p1z, &eta1) );
-    ASSERT_EQ(TIGL_NULL_POINTER, tiglGetCurveParameter (tiglHandle, id1, 1, p1x, p1y, NULL, &eta1) );
     ASSERT_EQ(TIGL_NULL_POINTER, tiglGetCurveParameter (tiglHandle, id1, 1, p1x, p1y, p1z, NULL) );
     ASSERT_EQ(TIGL_INDEX_ERROR,  tiglGetCurveParameter (tiglHandle, id1, 2, p1x, p1y, p1z, &eta1) );
 

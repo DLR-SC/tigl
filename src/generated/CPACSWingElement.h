@@ -33,7 +33,7 @@ namespace tigl
         // This class is used in:
         // CPACSWingElements
         
-        // generated from /xsd:schema/xsd:complexType[896]
+        // generated from /xsd:schema/xsd:complexType[929]
         class CPACSWingElement
         {
         public:

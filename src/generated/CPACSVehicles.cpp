@@ -43,7 +43,7 @@ namespace tigl
         void CPACSVehicles::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element aircraft
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/aircraft")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/aircraft")) {
                 m_aircraft = boost::in_place(m_uidMgr);
                 try {
                     m_aircraft->ReadCPACS(tixiHandle, xpath + "/aircraft");
@@ -54,7 +54,7 @@ namespace tigl
             }
             
             // read element rotorcraft
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/rotorcraft")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/rotorcraft")) {
                 m_rotorcraft = boost::in_place(m_uidMgr);
                 try {
                     m_rotorcraft->ReadCPACS(tixiHandle, xpath + "/rotorcraft");
@@ -65,7 +65,7 @@ namespace tigl
             }
             
             // read element profiles
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/profiles")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/profiles")) {
                 m_profiles = boost::in_place(m_uidMgr);
                 try {
                     m_profiles->ReadCPACS(tixiHandle, xpath + "/profiles");
@@ -76,7 +76,7 @@ namespace tigl
             }
             
             // read element materials
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/materials")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/materials")) {
                 m_materials = boost::in_place(m_uidMgr);
                 try {
                     m_materials->ReadCPACS(tixiHandle, xpath + "/materials");
@@ -92,41 +92,41 @@ namespace tigl
         {
             // write element aircraft
             if (m_aircraft) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/aircraft");
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/aircraft");
                 m_aircraft->WriteCPACS(tixiHandle, xpath + "/aircraft");
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/aircraft")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/aircraft");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/aircraft")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/aircraft");
                 }
             }
             
             // write element rotorcraft
             if (m_rotorcraft) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/rotorcraft");
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/rotorcraft");
                 m_rotorcraft->WriteCPACS(tixiHandle, xpath + "/rotorcraft");
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/rotorcraft")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/rotorcraft");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/rotorcraft")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/rotorcraft");
                 }
             }
             
             // write element profiles
             if (m_profiles) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/profiles");
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/profiles");
                 m_profiles->WriteCPACS(tixiHandle, xpath + "/profiles");
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/profiles")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/profiles");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/profiles")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/profiles");
                 }
             }
             
             // write element materials
             if (m_materials) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/materials");
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/materials");
                 m_materials->WriteCPACS(tixiHandle, xpath + "/materials");
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/materials")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/materials");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/materials")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/materials");
                 }
             }
             
@@ -170,6 +170,54 @@ namespace tigl
         boost::optional<CPACSMaterials>& CPACSVehicles::GetMaterials()
         {
             return m_materials;
+        }
+        
+        CPACSAircraft& CPACSVehicles::GetAircraft(CreateIfNotExistsTag)
+        {
+            if (!m_aircraft)
+                m_aircraft = boost::in_place(m_uidMgr);
+            return *m_aircraft;
+        }
+        
+        void CPACSVehicles::RemoveAircraft()
+        {
+            m_aircraft = boost::none;
+        }
+        
+        CPACSRotorcraft& CPACSVehicles::GetRotorcraft(CreateIfNotExistsTag)
+        {
+            if (!m_rotorcraft)
+                m_rotorcraft = boost::in_place(m_uidMgr);
+            return *m_rotorcraft;
+        }
+        
+        void CPACSVehicles::RemoveRotorcraft()
+        {
+            m_rotorcraft = boost::none;
+        }
+        
+        CCPACSProfiles& CPACSVehicles::GetProfiles(CreateIfNotExistsTag)
+        {
+            if (!m_profiles)
+                m_profiles = boost::in_place(m_uidMgr);
+            return *m_profiles;
+        }
+        
+        void CPACSVehicles::RemoveProfiles()
+        {
+            m_profiles = boost::none;
+        }
+        
+        CPACSMaterials& CPACSVehicles::GetMaterials(CreateIfNotExistsTag)
+        {
+            if (!m_materials)
+                m_materials = boost::in_place(m_uidMgr);
+            return *m_materials;
+        }
+        
+        void CPACSVehicles::RemoveMaterials()
+        {
+            m_materials = boost::none;
         }
         
     }

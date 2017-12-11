@@ -34,7 +34,7 @@ namespace tigl
         // This class is used in:
         // CPACSRotorHub
         
-        // generated from /xsd:schema/xsd:complexType[738]
+        // generated from /xsd:schema/xsd:complexType[766]
         class CPACSRotorBladeAttachments
         {
         public:
@@ -52,6 +52,9 @@ namespace tigl
             
             TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSRotorBladeAttachment> >& GetRotorBladeAttachments() const;
             TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSRotorBladeAttachment> >& GetRotorBladeAttachments();
+            
+            TIGL_EXPORT virtual CCPACSRotorBladeAttachment& AddRotorBladeAttachment();
+            TIGL_EXPORT virtual void RemoveRotorBladeAttachment(CCPACSRotorBladeAttachment& ref);
             
         protected:
             CCPACSRotorHub* m_parent;

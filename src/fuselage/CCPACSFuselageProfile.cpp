@@ -97,8 +97,8 @@ void CCPACSFuselageProfile::ReadCPACS(const TixiDocumentHandle& tixiHandle, cons
     generated::CPACSProfileGeometry::ReadCPACS(tixiHandle, xpath);
 
     // symmetry element does not conform to CPACS spec
-    if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/symmetry")) {
-        mirrorSymmetry = tixihelper::TixiGetTextElement(tixiHandle, xpath + "/symmetry") == "half";
+    if (tixi::TixiCheckElement(tixiHandle, xpath + "/symmetry")) {
+        mirrorSymmetry = tixi::TixiGetTextElement(tixiHandle, xpath + "/symmetry") == "half";
     }
 
     // convert point list to coordinates

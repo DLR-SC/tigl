@@ -34,7 +34,7 @@ namespace tigl
         // This class is used in:
         // CPACSWingShell
         
-        // generated from /xsd:schema/xsd:complexType[893]
+        // generated from /xsd:schema/xsd:complexType[926]
         class CPACSWingCells
         {
         public:
@@ -52,6 +52,9 @@ namespace tigl
             
             TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSWingCell> >& GetCells() const;
             TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSWingCell> >& GetCells();
+            
+            TIGL_EXPORT virtual CCPACSWingCell& AddCell();
+            TIGL_EXPORT virtual void RemoveCell(CCPACSWingCell& ref);
             
         protected:
             CCPACSWingShell* m_parent;

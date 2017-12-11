@@ -40,7 +40,7 @@ make package
 cp *.tar.gz $RECIPE_DIR/
 
 # install python packages
-mkdir $SP_DIR/tixi
-touch $SP_DIR/tixi/__init__.py
-cp lib/tixiwrapper.py $SP_DIR/tixi/
-python $RECIPE_DIR/fixosxload.py $SP_DIR/tixi/tixiwrapper.py libTIXI
+mkdir $SP_DIR/tixi3
+touch $SP_DIR/tixi3/__init__.py
+cp lib/tixi3wrapper.py $SP_DIR/tixi3/
+python $RECIPE_DIR/fixosxload.py $SP_DIR/tixi3/tixi3wrapper.py libTIXI

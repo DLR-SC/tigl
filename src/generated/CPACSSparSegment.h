@@ -35,7 +35,7 @@ namespace tigl
         // This class is used in:
         // CPACSSparSegments
         
-        // generated from /xsd:schema/xsd:complexType[789]
+        // generated from /xsd:schema/xsd:complexType[816]
         class CPACSSparSegment
         {
         public:

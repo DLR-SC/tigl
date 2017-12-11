@@ -44,8 +44,8 @@ namespace tigl
         void CPACSAircraft::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element model
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/model")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/model", m_models, m_uidMgr);
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/model")) {
+                tixi::TixiReadElements(tixiHandle, xpath + "/model", m_models, m_uidMgr);
             }
             
         }
@@ -53,7 +53,7 @@ namespace tigl
         void CPACSAircraft::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element model
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/model", m_models);
+            tixi::TixiSaveElements(tixiHandle, xpath + "/model", m_models);
             
         }
         
@@ -65,6 +65,23 @@ namespace tigl
         std::vector<unique_ptr<CCPACSAircraftModel> >& CPACSAircraft::GetModels()
         {
             return m_models;
+        }
+        
+        CCPACSAircraftModel& CPACSAircraft::AddModel()
+        {
+            m_models.push_back(make_unique<CCPACSAircraftModel>(m_uidMgr));
+            return *m_models.back();
+        }
+        
+        void CPACSAircraft::RemoveModel(CCPACSAircraftModel& ref)
+        {
+            for (std::size_t i = 0; i < m_models.size(); i++) {
+                if (m_models[i].get() == &ref) {
+                    m_models.erase(m_models.begin() + i);
+                    return;
+                }
+            }
+            throw CTiglError("Element not found");
         }
         
     }

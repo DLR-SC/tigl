@@ -36,7 +36,7 @@ namespace tigl
         // CPACSFuselageSegment
         // CPACSWingSegment
         
-        // generated from /xsd:schema/xsd:complexType[422]
+        // generated from /xsd:schema/xsd:complexType[436]
         class CPACSGuideCurves
         {
         public:
@@ -51,6 +51,9 @@ namespace tigl
             
             TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSGuideCurve> >& GetGuideCurves() const;
             TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSGuideCurve> >& GetGuideCurves();
+            
+            TIGL_EXPORT virtual CCPACSGuideCurve& AddGuideCurve();
+            TIGL_EXPORT virtual void RemoveGuideCurve(CCPACSGuideCurve& ref);
             
         protected:
             CTiglUIDManager* m_uidMgr;

@@ -36,7 +36,7 @@ namespace tigl
         // CPACSWingRibCrossSection
         // CPACSWingSkin
         
-        // generated from /xsd:schema/xsd:complexType[640]
+        // generated from /xsd:schema/xsd:complexType[655]
         class CPACSMaterialDefinition
         {
         public:

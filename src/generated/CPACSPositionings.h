@@ -36,7 +36,7 @@ namespace tigl
         // CPACSFuselage
         // CPACSWing
         
-        // generated from /xsd:schema/xsd:complexType[698]
+        // generated from /xsd:schema/xsd:complexType[726]
         class CPACSPositionings
         {
         public:
@@ -51,6 +51,9 @@ namespace tigl
             
             TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSPositioning> >& GetPositionings() const;
             TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSPositioning> >& GetPositionings();
+            
+            TIGL_EXPORT virtual CCPACSPositioning& AddPositioning();
+            TIGL_EXPORT virtual void RemovePositioning(CCPACSPositioning& ref);
             
         protected:
             CTiglUIDManager* m_uidMgr;

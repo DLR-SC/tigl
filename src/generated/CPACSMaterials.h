@@ -23,6 +23,7 @@
 #include <tixi.h>
 #include <vector>
 #include "CPACSComposites.h"
+#include "CreateIfNotExists.h"
 #include "tigl_internal.h"
 #include "UniquePtr.h"
 
@@ -37,7 +38,7 @@ namespace tigl
         // This class is used in:
         // CPACSVehicles
         
-        // generated from /xsd:schema/xsd:complexType[642]
+        // generated from /xsd:schema/xsd:complexType[657]
         class CPACSMaterials
         {
         public:
@@ -55,6 +56,12 @@ namespace tigl
             
             TIGL_EXPORT virtual const boost::optional<CPACSComposites>& GetComposites() const;
             TIGL_EXPORT virtual boost::optional<CPACSComposites>& GetComposites();
+            
+            TIGL_EXPORT virtual CPACSMaterial& AddMaterial();
+            TIGL_EXPORT virtual void RemoveMaterial(CPACSMaterial& ref);
+            
+            TIGL_EXPORT virtual CPACSComposites& GetComposites(CreateIfNotExistsTag);
+            TIGL_EXPORT virtual void RemoveComposites();
             
         protected:
             CTiglUIDManager* m_uidMgr;

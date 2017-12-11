@@ -43,7 +43,7 @@ namespace tigl
         void CPACSProfiles::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element fuselageProfiles
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/fuselageProfiles")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/fuselageProfiles")) {
                 m_fuselageProfiles = boost::in_place(m_uidMgr);
                 try {
                     m_fuselageProfiles->ReadCPACS(tixiHandle, xpath + "/fuselageProfiles");
@@ -54,7 +54,7 @@ namespace tigl
             }
             
             // read element wingAirfoils
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/wingAirfoils")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/wingAirfoils")) {
                 m_wingAirfoils = boost::in_place(m_uidMgr);
                 try {
                     m_wingAirfoils->ReadCPACS(tixiHandle, xpath + "/wingAirfoils");
@@ -65,7 +65,7 @@ namespace tigl
             }
             
             // read element guideCurves
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/guideCurves")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/guideCurves")) {
                 m_guideCurves = boost::in_place(m_uidMgr);
                 try {
                     m_guideCurves->ReadCPACS(tixiHandle, xpath + "/guideCurves");
@@ -76,7 +76,7 @@ namespace tigl
             }
             
             // read element rotorAirfoils
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/rotorAirfoils")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/rotorAirfoils")) {
                 m_rotorAirfoils = boost::in_place(m_uidMgr);
                 try {
                     m_rotorAirfoils->ReadCPACS(tixiHandle, xpath + "/rotorAirfoils");
@@ -92,41 +92,41 @@ namespace tigl
         {
             // write element fuselageProfiles
             if (m_fuselageProfiles) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/fuselageProfiles");
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/fuselageProfiles");
                 m_fuselageProfiles->WriteCPACS(tixiHandle, xpath + "/fuselageProfiles");
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/fuselageProfiles")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/fuselageProfiles");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/fuselageProfiles")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/fuselageProfiles");
                 }
             }
             
             // write element wingAirfoils
             if (m_wingAirfoils) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/wingAirfoils");
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/wingAirfoils");
                 m_wingAirfoils->WriteCPACS(tixiHandle, xpath + "/wingAirfoils");
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/wingAirfoils")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/wingAirfoils");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/wingAirfoils")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/wingAirfoils");
                 }
             }
             
             // write element guideCurves
             if (m_guideCurves) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/guideCurves");
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/guideCurves");
                 m_guideCurves->WriteCPACS(tixiHandle, xpath + "/guideCurves");
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/guideCurves")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/guideCurves");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/guideCurves")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/guideCurves");
                 }
             }
             
             // write element rotorAirfoils
             if (m_rotorAirfoils) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/rotorAirfoils");
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/rotorAirfoils");
                 m_rotorAirfoils->WriteCPACS(tixiHandle, xpath + "/rotorAirfoils");
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/rotorAirfoils")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/rotorAirfoils");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/rotorAirfoils")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/rotorAirfoils");
                 }
             }
             
@@ -170,6 +170,54 @@ namespace tigl
         boost::optional<CCPACSRotorProfiles>& CPACSProfiles::GetRotorAirfoils()
         {
             return m_rotorAirfoils;
+        }
+        
+        CCPACSFuselageProfiles& CPACSProfiles::GetFuselageProfiles(CreateIfNotExistsTag)
+        {
+            if (!m_fuselageProfiles)
+                m_fuselageProfiles = boost::in_place(m_uidMgr);
+            return *m_fuselageProfiles;
+        }
+        
+        void CPACSProfiles::RemoveFuselageProfiles()
+        {
+            m_fuselageProfiles = boost::none;
+        }
+        
+        CCPACSWingProfiles& CPACSProfiles::GetWingAirfoils(CreateIfNotExistsTag)
+        {
+            if (!m_wingAirfoils)
+                m_wingAirfoils = boost::in_place(m_uidMgr);
+            return *m_wingAirfoils;
+        }
+        
+        void CPACSProfiles::RemoveWingAirfoils()
+        {
+            m_wingAirfoils = boost::none;
+        }
+        
+        CCPACSGuideCurveProfiles& CPACSProfiles::GetGuideCurves(CreateIfNotExistsTag)
+        {
+            if (!m_guideCurves)
+                m_guideCurves = boost::in_place(m_uidMgr);
+            return *m_guideCurves;
+        }
+        
+        void CPACSProfiles::RemoveGuideCurves()
+        {
+            m_guideCurves = boost::none;
+        }
+        
+        CCPACSRotorProfiles& CPACSProfiles::GetRotorAirfoils(CreateIfNotExistsTag)
+        {
+            if (!m_rotorAirfoils)
+                m_rotorAirfoils = boost::in_place(m_uidMgr);
+            return *m_rotorAirfoils;
+        }
+        
+        void CPACSProfiles::RemoveRotorAirfoils()
+        {
+            m_rotorAirfoils = boost::none;
         }
         
     }

@@ -25,6 +25,7 @@
 #include "CPACSAircraft.h"
 #include "CPACSMaterials.h"
 #include "CPACSRotorcraft.h"
+#include "CreateIfNotExists.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -36,7 +37,7 @@ namespace tigl
         // This class is used in:
         // CPACSCpacs
         
-        // generated from /xsd:schema/xsd:complexType[872]
+        // generated from /xsd:schema/xsd:complexType[906]
         class CPACSVehicles
         {
         public:
@@ -60,6 +61,18 @@ namespace tigl
             
             TIGL_EXPORT virtual const boost::optional<CPACSMaterials>& GetMaterials() const;
             TIGL_EXPORT virtual boost::optional<CPACSMaterials>& GetMaterials();
+            
+            TIGL_EXPORT virtual CPACSAircraft& GetAircraft(CreateIfNotExistsTag);
+            TIGL_EXPORT virtual void RemoveAircraft();
+            
+            TIGL_EXPORT virtual CPACSRotorcraft& GetRotorcraft(CreateIfNotExistsTag);
+            TIGL_EXPORT virtual void RemoveRotorcraft();
+            
+            TIGL_EXPORT virtual CCPACSProfiles& GetProfiles(CreateIfNotExistsTag);
+            TIGL_EXPORT virtual void RemoveProfiles();
+            
+            TIGL_EXPORT virtual CPACSMaterials& GetMaterials(CreateIfNotExistsTag);
+            TIGL_EXPORT virtual void RemoveMaterials();
             
         protected:
             CTiglUIDManager* m_uidMgr;

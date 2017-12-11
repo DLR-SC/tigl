@@ -33,7 +33,7 @@ namespace tigl
         
         CPACSPositioning::~CPACSPositioning()
         {
-            if (m_uidMgr && m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
+            if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
         }
         
         CTiglUIDManager& CPACSPositioning::GetUIDManager()
@@ -49,16 +49,19 @@ namespace tigl
         void CPACSPositioning::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read attribute uID
-            if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
-                m_uID = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
-                if (m_uID->empty()) {
-                    LOG(WARNING) << "Optional attribute uID is present but empty at xpath " << xpath;
+            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+                m_uID = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
+                if (m_uID.empty()) {
+                    LOG(WARNING) << "Required attribute uID is empty at xpath " << xpath;
                 }
+            }
+            else {
+                LOG(ERROR) << "Required attribute uID is missing at xpath " << xpath;
             }
             
             // read element name
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/name")) {
-                m_name = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
+                m_name = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
                 if (m_name.empty()) {
                     LOG(WARNING) << "Required element name is empty at xpath " << xpath;
                 }
@@ -68,48 +71,48 @@ namespace tigl
             }
             
             // read element description
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/description")) {
-                m_description = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
+                m_description = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
                 if (m_description->empty()) {
                     LOG(WARNING) << "Optional element description is present but empty at xpath " << xpath;
                 }
             }
             
             // read element length
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/length")) {
-                m_length = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/length");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/length")) {
+                m_length = tixi::TixiGetElement<double>(tixiHandle, xpath + "/length");
             }
             else {
                 LOG(ERROR) << "Required element length is missing at xpath " << xpath;
             }
             
             // read element sweepAngle
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/sweepAngle")) {
-                m_sweepAngle = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/sweepAngle");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/sweepAngle")) {
+                m_sweepAngle = tixi::TixiGetElement<double>(tixiHandle, xpath + "/sweepAngle");
             }
             else {
                 LOG(ERROR) << "Required element sweepAngle is missing at xpath " << xpath;
             }
             
             // read element dihedralAngle
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/dihedralAngle")) {
-                m_dihedralAngle = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/dihedralAngle");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/dihedralAngle")) {
+                m_dihedralAngle = tixi::TixiGetElement<double>(tixiHandle, xpath + "/dihedralAngle");
             }
             else {
                 LOG(ERROR) << "Required element dihedralAngle is missing at xpath " << xpath;
             }
             
             // read element fromSectionUID
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/fromSectionUID")) {
-                m_fromSectionUID = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/fromSectionUID");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/fromSectionUID")) {
+                m_fromSectionUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/fromSectionUID");
                 if (m_fromSectionUID->empty()) {
                     LOG(WARNING) << "Optional element fromSectionUID is present but empty at xpath " << xpath;
                 }
             }
             
             // read element toSectionUID
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/toSectionUID")) {
-                m_toSectionUID = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/toSectionUID");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/toSectionUID")) {
+                m_toSectionUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/toSectionUID");
                 if (m_toSectionUID.empty()) {
                     LOG(WARNING) << "Required element toSectionUID is empty at xpath " << xpath;
                 }
@@ -118,63 +121,57 @@ namespace tigl
                 LOG(ERROR) << "Required element toSectionUID is missing at xpath " << xpath;
             }
             
-            if (m_uidMgr && m_uID) m_uidMgr->RegisterObject(*m_uID, *this);
+            if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
         }
         
         void CPACSPositioning::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write attribute uID
-            if (m_uID) {
-                tixihelper::TixiSaveAttribute(tixiHandle, xpath, "uID", *m_uID);
-            } else {
-                if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
-                    tixihelper::TixiRemoveAttribute(tixiHandle, xpath, "uID");
-                }
-            }
+            tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
             
             // write element name
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/name", m_name);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/name", m_name);
             
             // write element description
             if (m_description) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
-                tixihelper::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
+                tixi::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/description")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/description");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/description");
                 }
             }
             
             // write element length
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/length");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/length", m_length);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/length");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/length", m_length);
             
             // write element sweepAngle
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/sweepAngle");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/sweepAngle", m_sweepAngle);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/sweepAngle");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/sweepAngle", m_sweepAngle);
             
             // write element dihedralAngle
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/dihedralAngle");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/dihedralAngle", m_dihedralAngle);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/dihedralAngle");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/dihedralAngle", m_dihedralAngle);
             
             // write element fromSectionUID
             if (m_fromSectionUID) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/fromSectionUID");
-                tixihelper::TixiSaveElement(tixiHandle, xpath + "/fromSectionUID", *m_fromSectionUID);
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/fromSectionUID");
+                tixi::TixiSaveElement(tixiHandle, xpath + "/fromSectionUID", *m_fromSectionUID);
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/fromSectionUID")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/fromSectionUID");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/fromSectionUID")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/fromSectionUID");
                 }
             }
             
             // write element toSectionUID
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/toSectionUID");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/toSectionUID", m_toSectionUID);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/toSectionUID");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/toSectionUID", m_toSectionUID);
             
         }
         
-        const boost::optional<std::string>& CPACSPositioning::GetUID() const
+        const std::string& CPACSPositioning::GetUID() const
         {
             return m_uID;
         }
@@ -182,17 +179,8 @@ namespace tigl
         void CPACSPositioning::SetUID(const std::string& value)
         {
             if (m_uidMgr) {
-                if (m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
+                m_uidMgr->TryUnregisterObject(m_uID);
                 m_uidMgr->RegisterObject(value, *this);
-            }
-            m_uID = value;
-        }
-        
-        void CPACSPositioning::SetUID(const boost::optional<std::string>& value)
-        {
-            if (m_uidMgr) {
-                if (m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
-                if (value) m_uidMgr->RegisterObject(*value, *this);
             }
             m_uID = value;
         }

@@ -25,6 +25,7 @@
 #include <TiglSymmetryAxis.h>
 #include <tixi.h>
 #include <typeinfo>
+#include "CreateIfNotExists.h"
 #include "CTiglError.h"
 #include "tigl_internal.h"
 
@@ -39,7 +40,7 @@ namespace tigl
         // CPACSRotorAirfoils
         // CPACSWingAirfoils
         
-        // generated from /xsd:schema/xsd:complexType[707]
+        // generated from /xsd:schema/xsd:complexType[735]
         class CPACSProfileGeometry
         {
         public:
@@ -73,6 +74,12 @@ namespace tigl
             
             TIGL_EXPORT virtual const boost::optional<CCPACSWingProfileCST>& GetCst2D_choice2() const;
             TIGL_EXPORT virtual boost::optional<CCPACSWingProfileCST>& GetCst2D_choice2();
+            
+            TIGL_EXPORT virtual CCPACSPointListXYZ& GetPointList_choice1(CreateIfNotExistsTag);
+            TIGL_EXPORT virtual void RemovePointList_choice1();
+            
+            TIGL_EXPORT virtual CCPACSWingProfileCST& GetCst2D_choice2(CreateIfNotExistsTag);
+            TIGL_EXPORT virtual void RemoveCst2D_choice2();
             
         protected:
             CTiglUIDManager* m_uidMgr;

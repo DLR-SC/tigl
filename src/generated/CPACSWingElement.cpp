@@ -47,8 +47,8 @@ namespace tigl
         void CPACSWingElement::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read attribute uID
-            if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
-                m_uID = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
+            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+                m_uID = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
                 if (m_uID.empty()) {
                     LOG(WARNING) << "Required attribute uID is empty at xpath " << xpath;
                 }
@@ -58,8 +58,8 @@ namespace tigl
             }
             
             // read element name
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/name")) {
-                m_name = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
+                m_name = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
                 if (m_name.empty()) {
                     LOG(WARNING) << "Required element name is empty at xpath " << xpath;
                 }
@@ -69,16 +69,16 @@ namespace tigl
             }
             
             // read element description
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/description")) {
-                m_description = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
+                m_description = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
                 if (m_description->empty()) {
                     LOG(WARNING) << "Optional element description is present but empty at xpath " << xpath;
                 }
             }
             
             // read element airfoilUID
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/airfoilUID")) {
-                m_airfoilUID = tixihelper::TixiGetElement<std::string>(tixiHandle, xpath + "/airfoilUID");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/airfoilUID")) {
+                m_airfoilUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/airfoilUID");
                 if (m_airfoilUID.empty()) {
                     LOG(WARNING) << "Required element airfoilUID is empty at xpath " << xpath;
                 }
@@ -88,41 +88,41 @@ namespace tigl
             }
             
             // read element transformation
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/transformation")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/transformation")) {
                 m_transformation.ReadCPACS(tixiHandle, xpath + "/transformation");
             }
             else {
                 LOG(ERROR) << "Required element transformation is missing at xpath " << xpath;
             }
             
-            if (m_uidMgr) m_uidMgr->RegisterObject(m_uID, *this);
+            if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
         }
         
         void CPACSWingElement::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write attribute uID
-            tixihelper::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
+            tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
             
             // write element name
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/name", m_name);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/name", m_name);
             
             // write element description
             if (m_description) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
-                tixihelper::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
+                tixi::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/description")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/description");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/description");
                 }
             }
             
             // write element airfoilUID
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/airfoilUID");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/airfoilUID", m_airfoilUID);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/airfoilUID");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/airfoilUID", m_airfoilUID);
             
             // write element transformation
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/transformation");
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/transformation");
             m_transformation.WriteCPACS(tixiHandle, xpath + "/transformation");
             
         }

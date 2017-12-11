@@ -33,7 +33,7 @@ namespace tigl
         // This class is used in:
         // CPACSWingRibsPositioning
         
-        // generated from /xsd:schema/xsd:complexType[730]
+        // generated from /xsd:schema/xsd:complexType[758]
         class CPACSRibRotation
         {
         public:

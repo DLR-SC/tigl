@@ -24,6 +24,7 @@
 #include <CCPACSWingSpars.h>
 #include <string>
 #include <tixi.h>
+#include "CreateIfNotExists.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -36,7 +37,7 @@ namespace tigl
         // This class is used in:
         // CPACSComponentSegment
         
-        // generated from /xsd:schema/xsd:complexType[895]
+        // generated from /xsd:schema/xsd:complexType[928]
         class CPACSWingComponentSegmentStructure
         {
         public:
@@ -63,6 +64,12 @@ namespace tigl
             
             TIGL_EXPORT virtual const boost::optional<CCPACSWingSpars>& GetSpars() const;
             TIGL_EXPORT virtual boost::optional<CCPACSWingSpars>& GetSpars();
+            
+            TIGL_EXPORT virtual CCPACSWingRibsDefinitions& GetRibsDefinitions(CreateIfNotExistsTag);
+            TIGL_EXPORT virtual void RemoveRibsDefinitions();
+            
+            TIGL_EXPORT virtual CCPACSWingSpars& GetSpars(CreateIfNotExistsTag);
+            TIGL_EXPORT virtual void RemoveSpars();
             
         protected:
             CCPACSWingComponentSegment* m_parent;

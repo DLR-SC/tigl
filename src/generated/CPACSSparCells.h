@@ -34,7 +34,7 @@ namespace tigl
         // This class is used in:
         // CPACSSparCrossSection
         
-        // generated from /xsd:schema/xsd:complexType[784]
+        // generated from /xsd:schema/xsd:complexType[811]
         class CPACSSparCells
         {
         public:
@@ -49,6 +49,9 @@ namespace tigl
             
             TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSSparCell> >& GetSparCells() const;
             TIGL_EXPORT virtual std::vector<unique_ptr<CPACSSparCell> >& GetSparCells();
+            
+            TIGL_EXPORT virtual CPACSSparCell& AddSparCell();
+            TIGL_EXPORT virtual void RemoveSparCell(CPACSSparCell& ref);
             
         protected:
             CTiglUIDManager* m_uidMgr;

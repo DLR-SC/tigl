@@ -31,7 +31,7 @@ namespace tigl
         void CPACSPointListRelXYZVector::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element rX
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/rX")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/rX")) {
                 m_rX.ReadCPACS(tixiHandle, xpath + "/rX");
             }
             else {
@@ -39,7 +39,7 @@ namespace tigl
             }
             
             // read element rY
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/rY")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/rY")) {
                 m_rY.ReadCPACS(tixiHandle, xpath + "/rY");
             }
             else {
@@ -47,7 +47,7 @@ namespace tigl
             }
             
             // read element rZ
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/rZ")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/rZ")) {
                 m_rZ.ReadCPACS(tixiHandle, xpath + "/rZ");
             }
             else {
@@ -59,15 +59,15 @@ namespace tigl
         void CPACSPointListRelXYZVector::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element rX
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/rX");
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/rX");
             m_rX.WriteCPACS(tixiHandle, xpath + "/rX");
             
             // write element rY
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/rY");
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/rY");
             m_rY.WriteCPACS(tixiHandle, xpath + "/rY");
             
             // write element rZ
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/rZ");
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/rZ");
             m_rZ.WriteCPACS(tixiHandle, xpath + "/rZ");
             
         }

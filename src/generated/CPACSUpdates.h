@@ -32,7 +32,7 @@ namespace tigl
         // This class is used in:
         // CPACSHeader
         
-        // generated from /xsd:schema/xsd:complexType[858]
+        // generated from /xsd:schema/xsd:complexType[892]
         class CPACSUpdates
         {
         public:
@@ -44,6 +44,9 @@ namespace tigl
             
             TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSUpdate> >& GetUpdates() const;
             TIGL_EXPORT virtual std::vector<unique_ptr<CPACSUpdate> >& GetUpdates();
+            
+            TIGL_EXPORT virtual CPACSUpdate& AddUpdate();
+            TIGL_EXPORT virtual void RemoveUpdate(CPACSUpdate& ref);
             
         protected:
             std::vector<unique_ptr<CPACSUpdate> > m_updates;

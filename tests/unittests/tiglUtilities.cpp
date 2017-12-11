@@ -25,6 +25,7 @@
 #include "tiglcommonfunctions.h"
 #include "CTiglLogging.h"
 #include "CTiglInterpolateBsplineWire.h"
+#include "typename.h"
 
 #include "BRepBuilderAPI_MakeWire.hxx"
 #include "BRepBuilderAPI_MakeEdge.hxx"
@@ -133,4 +134,10 @@ TEST(Misc, getLogLevelString)
     ASSERT_STREQ("DBG2", tigl::getLogLevelString( TILOG_DEBUG2).c_str());
     ASSERT_STREQ("DBG3", tigl::getLogLevelString( TILOG_DEBUG3).c_str());
     ASSERT_STREQ("DBG4", tigl::getLogLevelString( TILOG_DEBUG4).c_str());
+}
+
+TEST(Misc, typeName)
+{
+    ASSERT_STREQ("tigl::CCPACSWing", tigl::typeName(typeid(tigl::CCPACSWing)).c_str());
+    ASSERT_STREQ("tigl::CCPACSWing", tigl::typeName<tigl::CCPACSWing>().c_str());
 }

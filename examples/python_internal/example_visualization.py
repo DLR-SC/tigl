@@ -1,6 +1,6 @@
 from __future__ import print_function
 
-from tixi import tixiwrapper
+from tixi3 import tixi3wrapper
 from tigl3 import tigl3wrapper
 import tigl3.configuration, tigl3.geometry, tigl3.boolean_ops, tigl3.exports
 import os
@@ -14,7 +14,7 @@ def display_configuration(tigl_handle):
     from OCC.Display.SimpleGui import init_display
 
     # get the configuration manager
-    mgr = tigl.configuration.CCPACSConfigurationManager_get_instance()
+    mgr = tigl3.configuration.CCPACSConfigurationManager_get_instance()
 
     # get the CPACS configuration, defined by the tigl handle
     # we need to access the underlying tigl handle (that is used in the C/C++ API)
@@ -62,11 +62,11 @@ def display_configuration(tigl_handle):
 
 
 if __name__ == '__main__':
-    tixi_h = tixiwrapper.Tixi()
+    tixi_h = tixi3wrapper.Tixi3()
     tigl_h = tigl3wrapper.Tigl3()
 
     dir_path = os.path.dirname(os.path.realpath(__file__))
-    tixi_h.open(dir_path + "/../../tests/TestData/D150_v201.xml")
+    tixi_h.open(dir_path + "/../../tests/TestData/D150_v30.xml")
     tigl_h.open(tixi_h, "")
 
     display_configuration(tigl_h)

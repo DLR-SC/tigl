@@ -34,7 +34,7 @@ namespace tigl
         // This class is used in:
         // CPACSMaterials
         
-        // generated from /xsd:schema/xsd:complexType[148]
+        // generated from /xsd:schema/xsd:complexType[146]
         class CPACSComposites
         {
         public:
@@ -49,6 +49,9 @@ namespace tigl
             
             TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSComposite> >& GetComposites() const;
             TIGL_EXPORT virtual std::vector<unique_ptr<CPACSComposite> >& GetComposites();
+            
+            TIGL_EXPORT virtual CPACSComposite& AddComposite();
+            TIGL_EXPORT virtual void RemoveComposite(CPACSComposite& ref);
             
         protected:
             CTiglUIDManager* m_uidMgr;

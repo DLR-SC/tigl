@@ -33,7 +33,7 @@ namespace tigl
         // This class is used in:
         // CPACSVehicles
         
-        // generated from /xsd:schema/xsd:complexType[752]
+        // generated from /xsd:schema/xsd:complexType[780]
         class CPACSRotorcraft
         {
         public:
@@ -48,6 +48,9 @@ namespace tigl
             
             TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSRotorcraftModel> >& GetModels() const;
             TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSRotorcraftModel> >& GetModels();
+            
+            TIGL_EXPORT virtual CCPACSRotorcraftModel& AddModel();
+            TIGL_EXPORT virtual void RemoveModel(CCPACSRotorcraftModel& ref);
             
         protected:
             CTiglUIDManager* m_uidMgr;

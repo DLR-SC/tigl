@@ -33,7 +33,7 @@ namespace tigl
         // This class is used in:
         // CPACSFuselageElements
         
-        // generated from /xsd:schema/xsd:complexType[361]
+        // generated from /xsd:schema/xsd:complexType[371]
         class CPACSFuselageElement
         {
         public:

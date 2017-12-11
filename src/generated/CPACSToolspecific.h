@@ -22,6 +22,7 @@
 #include <string>
 #include <tixi.h>
 #include "CPACSCFDTool.h"
+#include "CreateIfNotExists.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -31,7 +32,7 @@ namespace tigl
         // This class is used in:
         // CPACSCpacs
         
-        // generated from /xsd:schema/xsd:complexType[827]
+        // generated from /xsd:schema/xsd:complexType[861]
         class CPACSToolspecific
         {
         public:
@@ -43,6 +44,9 @@ namespace tigl
             
             TIGL_EXPORT virtual const boost::optional<CPACSCFDTool>& GetCFD() const;
             TIGL_EXPORT virtual boost::optional<CPACSCFDTool>& GetCFD();
+            
+            TIGL_EXPORT virtual CPACSCFDTool& GetCFD(CreateIfNotExistsTag);
+            TIGL_EXPORT virtual void RemoveCFD();
             
         protected:
             boost::optional<CPACSCFDTool> m_cFD;

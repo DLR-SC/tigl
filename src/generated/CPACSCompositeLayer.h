@@ -30,7 +30,7 @@ namespace tigl
         // This class is used in:
         // CPACSComposite
         
-        // generated from /xsd:schema/xsd:complexType[146]
+        // generated from /xsd:schema/xsd:complexType[144]
         class CPACSCompositeLayer
         {
         public:

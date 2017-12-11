@@ -55,8 +55,8 @@ namespace tigl
         void CPACSGenericGeometryComponents::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read element genericGeometryComponent
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/genericGeometryComponent")) {
-                tixihelper::TixiReadElements(tixiHandle, xpath + "/genericGeometryComponent", m_genericGeometryComponents, reinterpret_cast<CCPACSExternalObjects*>(this), m_uidMgr);
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/genericGeometryComponent")) {
+                tixi::TixiReadElements(tixiHandle, xpath + "/genericGeometryComponent", m_genericGeometryComponents, reinterpret_cast<CCPACSExternalObjects*>(this), m_uidMgr);
             }
             
         }
@@ -64,7 +64,7 @@ namespace tigl
         void CPACSGenericGeometryComponents::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write element genericGeometryComponent
-            tixihelper::TixiSaveElements(tixiHandle, xpath + "/genericGeometryComponent", m_genericGeometryComponents);
+            tixi::TixiSaveElements(tixiHandle, xpath + "/genericGeometryComponent", m_genericGeometryComponents);
             
         }
         
@@ -76,6 +76,23 @@ namespace tigl
         std::vector<unique_ptr<CCPACSExternalObject> >& CPACSGenericGeometryComponents::GetGenericGeometryComponents()
         {
             return m_genericGeometryComponents;
+        }
+        
+        CCPACSExternalObject& CPACSGenericGeometryComponents::AddGenericGeometryComponent()
+        {
+            m_genericGeometryComponents.push_back(make_unique<CCPACSExternalObject>(reinterpret_cast<CCPACSExternalObjects*>(this), m_uidMgr));
+            return *m_genericGeometryComponents.back();
+        }
+        
+        void CPACSGenericGeometryComponents::RemoveGenericGeometryComponent(CCPACSExternalObject& ref)
+        {
+            for (std::size_t i = 0; i < m_genericGeometryComponents.size(); i++) {
+                if (m_genericGeometryComponents[i].get() == &ref) {
+                    m_genericGeometryComponents.erase(m_genericGeometryComponents.begin() + i);
+                    return;
+                }
+            }
+            throw CTiglError("Element not found");
         }
         
     }

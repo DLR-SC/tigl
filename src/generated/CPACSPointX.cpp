@@ -31,7 +31,7 @@ namespace tigl
         
         CPACSPointX::~CPACSPointX()
         {
-            if (m_uidMgr && m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
+            if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
         }
         
         CTiglUIDManager& CPACSPointX::GetUIDManager()
@@ -47,42 +47,39 @@ namespace tigl
         void CPACSPointX::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read attribute uID
-            if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
-                m_uID = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
-                if (m_uID->empty()) {
-                    LOG(WARNING) << "Optional attribute uID is present but empty at xpath " << xpath;
+            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+                m_uID = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
+                if (m_uID.empty()) {
+                    LOG(WARNING) << "Required attribute uID is empty at xpath " << xpath;
                 }
+            }
+            else {
+                LOG(ERROR) << "Required attribute uID is missing at xpath " << xpath;
             }
             
             // read element x
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/x")) {
-                m_x = tixihelper::TixiGetElement<double>(tixiHandle, xpath + "/x");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/x")) {
+                m_x = tixi::TixiGetElement<double>(tixiHandle, xpath + "/x");
             }
             else {
                 LOG(ERROR) << "Required element x is missing at xpath " << xpath;
             }
             
-            if (m_uidMgr && m_uID) m_uidMgr->RegisterObject(*m_uID, *this);
+            if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
         }
         
         void CPACSPointX::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write attribute uID
-            if (m_uID) {
-                tixihelper::TixiSaveAttribute(tixiHandle, xpath, "uID", *m_uID);
-            } else {
-                if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
-                    tixihelper::TixiRemoveAttribute(tixiHandle, xpath, "uID");
-                }
-            }
+            tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
             
             // write element x
-            tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/x");
-            tixihelper::TixiSaveElement(tixiHandle, xpath + "/x", m_x);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/x");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/x", m_x);
             
         }
         
-        const boost::optional<std::string>& CPACSPointX::GetUID() const
+        const std::string& CPACSPointX::GetUID() const
         {
             return m_uID;
         }
@@ -90,17 +87,8 @@ namespace tigl
         void CPACSPointX::SetUID(const std::string& value)
         {
             if (m_uidMgr) {
-                if (m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
+                m_uidMgr->TryUnregisterObject(m_uID);
                 m_uidMgr->RegisterObject(value, *this);
-            }
-            m_uID = value;
-        }
-        
-        void CPACSPointX::SetUID(const boost::optional<std::string>& value)
-        {
-            if (m_uidMgr) {
-                if (m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
-                if (value) m_uidMgr->RegisterObject(*value, *this);
             }
             m_uID = value;
         }

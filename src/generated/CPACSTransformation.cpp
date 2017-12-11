@@ -30,7 +30,7 @@ namespace tigl
         
         CPACSTransformation::~CPACSTransformation()
         {
-            if (m_uidMgr && m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
+            if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
         }
         
         CTiglUIDManager& CPACSTransformation::GetUIDManager()
@@ -46,15 +46,18 @@ namespace tigl
         void CPACSTransformation::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
         {
             // read attribute uID
-            if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
-                m_uID = tixihelper::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
-                if (m_uID->empty()) {
-                    LOG(WARNING) << "Optional attribute uID is present but empty at xpath " << xpath;
+            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+                m_uID = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
+                if (m_uID.empty()) {
+                    LOG(WARNING) << "Required attribute uID is empty at xpath " << xpath;
                 }
+            }
+            else {
+                LOG(ERROR) << "Required attribute uID is missing at xpath " << xpath;
             }
             
             // read element scaling
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/scaling")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/scaling")) {
                 m_scaling = boost::in_place(m_uidMgr);
                 try {
                     m_scaling->ReadCPACS(tixiHandle, xpath + "/scaling");
@@ -65,7 +68,7 @@ namespace tigl
             }
             
             // read element rotation
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/rotation")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/rotation")) {
                 m_rotation = boost::in_place(m_uidMgr);
                 try {
                     m_rotation->ReadCPACS(tixiHandle, xpath + "/rotation");
@@ -76,7 +79,7 @@ namespace tigl
             }
             
             // read element translation
-            if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/translation")) {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/translation")) {
                 m_translation = boost::in_place(m_uidMgr);
                 try {
                     m_translation->ReadCPACS(tixiHandle, xpath + "/translation");
@@ -86,53 +89,47 @@ namespace tigl
                 }
             }
             
-            if (m_uidMgr && m_uID) m_uidMgr->RegisterObject(*m_uID, *this);
+            if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
         }
         
         void CPACSTransformation::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write attribute uID
-            if (m_uID) {
-                tixihelper::TixiSaveAttribute(tixiHandle, xpath, "uID", *m_uID);
-            } else {
-                if (tixihelper::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
-                    tixihelper::TixiRemoveAttribute(tixiHandle, xpath, "uID");
-                }
-            }
+            tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
             
             // write element scaling
             if (m_scaling) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/scaling");
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/scaling");
                 m_scaling->WriteCPACS(tixiHandle, xpath + "/scaling");
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/scaling")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/scaling");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/scaling")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/scaling");
                 }
             }
             
             // write element rotation
             if (m_rotation) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/rotation");
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/rotation");
                 m_rotation->WriteCPACS(tixiHandle, xpath + "/rotation");
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/rotation")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/rotation");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/rotation")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/rotation");
                 }
             }
             
             // write element translation
             if (m_translation) {
-                tixihelper::TixiCreateElementIfNotExists(tixiHandle, xpath + "/translation");
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/translation");
                 m_translation->WriteCPACS(tixiHandle, xpath + "/translation");
             } else {
-                if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/translation")) {
-                    tixihelper::TixiRemoveElement(tixiHandle, xpath + "/translation");
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/translation")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/translation");
                 }
             }
             
         }
         
-        const boost::optional<std::string>& CPACSTransformation::GetUID() const
+        const std::string& CPACSTransformation::GetUID() const
         {
             return m_uID;
         }
@@ -140,17 +137,8 @@ namespace tigl
         void CPACSTransformation::SetUID(const std::string& value)
         {
             if (m_uidMgr) {
-                if (m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
+                m_uidMgr->TryUnregisterObject(m_uID);
                 m_uidMgr->RegisterObject(value, *this);
-            }
-            m_uID = value;
-        }
-        
-        void CPACSTransformation::SetUID(const boost::optional<std::string>& value)
-        {
-            if (m_uidMgr) {
-                if (m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
-                if (value) m_uidMgr->RegisterObject(*value, *this);
             }
             m_uID = value;
         }
@@ -183,6 +171,42 @@ namespace tigl
         boost::optional<CCPACSPointAbsRel>& CPACSTransformation::GetTranslation()
         {
             return m_translation;
+        }
+        
+        CCPACSPoint& CPACSTransformation::GetScaling(CreateIfNotExistsTag)
+        {
+            if (!m_scaling)
+                m_scaling = boost::in_place(m_uidMgr);
+            return *m_scaling;
+        }
+        
+        void CPACSTransformation::RemoveScaling()
+        {
+            m_scaling = boost::none;
+        }
+        
+        CCPACSPoint& CPACSTransformation::GetRotation(CreateIfNotExistsTag)
+        {
+            if (!m_rotation)
+                m_rotation = boost::in_place(m_uidMgr);
+            return *m_rotation;
+        }
+        
+        void CPACSTransformation::RemoveRotation()
+        {
+            m_rotation = boost::none;
+        }
+        
+        CCPACSPointAbsRel& CPACSTransformation::GetTranslation(CreateIfNotExistsTag)
+        {
+            if (!m_translation)
+                m_translation = boost::in_place(m_uidMgr);
+            return *m_translation;
+        }
+        
+        void CPACSTransformation::RemoveTranslation()
+        {
+            m_translation = boost::none;
         }
         
     }

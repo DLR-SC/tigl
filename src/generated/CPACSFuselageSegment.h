@@ -22,6 +22,7 @@
 #include <CCPACSGuideCurves.h>
 #include <string>
 #include <tixi.h>
+#include "CreateIfNotExists.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -34,7 +35,7 @@ namespace tigl
         // This class is used in:
         // CPACSFuselageSegments
         
-        // generated from /xsd:schema/xsd:complexType[370]
+        // generated from /xsd:schema/xsd:complexType[380]
         class CPACSFuselageSegment
         {
         public:
@@ -68,6 +69,9 @@ namespace tigl
             
             TIGL_EXPORT virtual const boost::optional<CCPACSGuideCurves>& GetGuideCurves() const;
             TIGL_EXPORT virtual boost::optional<CCPACSGuideCurves>& GetGuideCurves();
+            
+            TIGL_EXPORT virtual CCPACSGuideCurves& GetGuideCurves(CreateIfNotExistsTag);
+            TIGL_EXPORT virtual void RemoveGuideCurves();
             
         protected:
             CCPACSFuselageSegments* m_parent;
