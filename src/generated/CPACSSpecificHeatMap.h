@@ -27,45 +27,46 @@ namespace tigl
     namespace generated
     {
         // This class is used in:
-        // CPACSProfileGeometry
+        // CPACSMaterial
         
-        // generated from /xsd:schema/xsd:complexType[711]
-        class CPACSPointListXYZVector
+        // generated from /xsd:schema/xsd:complexType[818]
+        class CPACSSpecificHeatMap
         {
         public:
-            TIGL_EXPORT CPACSPointListXYZVector();
-            TIGL_EXPORT virtual ~CPACSPointListXYZVector();
+            TIGL_EXPORT CPACSSpecificHeatMap();
+            TIGL_EXPORT virtual ~CPACSSpecificHeatMap();
             
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT virtual const CCPACSStringVector& GetX() const;
-            TIGL_EXPORT virtual CCPACSStringVector& GetX();
+            TIGL_EXPORT virtual const CCPACSStringVector& GetTemperature() const;
+            TIGL_EXPORT virtual CCPACSStringVector& GetTemperature();
             
-            TIGL_EXPORT virtual const CCPACSStringVector& GetY() const;
-            TIGL_EXPORT virtual CCPACSStringVector& GetY();
-            
-            TIGL_EXPORT virtual const CCPACSStringVector& GetZ() const;
-            TIGL_EXPORT virtual CCPACSStringVector& GetZ();
+            TIGL_EXPORT virtual const CCPACSStringVector& GetSpecificHeat() const;
+            TIGL_EXPORT virtual CCPACSStringVector& GetSpecificHeat();
             
         protected:
-            CCPACSStringVector m_x;
-            CCPACSStringVector m_y;
-            CCPACSStringVector m_z;
+            CCPACSStringVector m_temperature;
+            CCPACSStringVector m_specificHeat;
             
         private:
             #ifdef HAVE_CPP11
-            CPACSPointListXYZVector(const CPACSPointListXYZVector&) = delete;
-            CPACSPointListXYZVector& operator=(const CPACSPointListXYZVector&) = delete;
+            CPACSSpecificHeatMap(const CPACSSpecificHeatMap&) = delete;
+            CPACSSpecificHeatMap& operator=(const CPACSSpecificHeatMap&) = delete;
             
-            CPACSPointListXYZVector(CPACSPointListXYZVector&&) = delete;
-            CPACSPointListXYZVector& operator=(CPACSPointListXYZVector&&) = delete;
+            CPACSSpecificHeatMap(CPACSSpecificHeatMap&&) = delete;
+            CPACSSpecificHeatMap& operator=(CPACSSpecificHeatMap&&) = delete;
             #else
-            CPACSPointListXYZVector(const CPACSPointListXYZVector&);
-            CPACSPointListXYZVector& operator=(const CPACSPointListXYZVector&);
+            CPACSSpecificHeatMap(const CPACSSpecificHeatMap&);
+            CPACSSpecificHeatMap& operator=(const CPACSSpecificHeatMap&);
             #endif
         };
     }
     
-    // CPACSPointListXYZVector is customized, use type CCPACSPointListXYZ directly
+    // Aliases in tigl namespace
+    #ifdef HAVE_CPP11
+    using CCPACSSpecificHeatMap = generated::CPACSSpecificHeatMap;
+    #else
+    typedef generated::CPACSSpecificHeatMap CCPACSSpecificHeatMap;
+    #endif
 }

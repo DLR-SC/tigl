@@ -34,7 +34,7 @@ namespace tigl
         // This class is used in:
         // CPACSWingCells
         
-        // generated from /xsd:schema/xsd:complexType[892]
+        // generated from /xsd:schema/xsd:complexType[925]
         class CPACSWingCell
         {
         public:

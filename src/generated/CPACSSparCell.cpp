@@ -27,13 +27,11 @@ namespace tigl
     {
         CPACSSparCell::CPACSSparCell(CTiglUIDManager* uidMgr) :
             m_uidMgr(uidMgr), 
-            m_fromEta(0), 
-            m_toEta(0), 
             m_rotation(0) {}
         
         CPACSSparCell::~CPACSSparCell()
         {
-            if (m_uidMgr && m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
+            if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
         }
         
         CTiglUIDManager& CPACSSparCell::GetUIDManager()
@@ -51,14 +49,17 @@ namespace tigl
             // read attribute uID
             if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
                 m_uID = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
-                if (m_uID->empty()) {
-                    LOG(WARNING) << "Optional attribute uID is present but empty at xpath " << xpath;
+                if (m_uID.empty()) {
+                    LOG(WARNING) << "Required attribute uID is empty at xpath " << xpath;
                 }
+            }
+            else {
+                LOG(ERROR) << "Required attribute uID is missing at xpath " << xpath;
             }
             
             // read element fromEta
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/fromEta")) {
-                m_fromEta = tixi::TixiGetElement<double>(tixiHandle, xpath + "/fromEta");
+                m_fromEta.ReadCPACS(tixiHandle, xpath + "/fromEta");
             }
             else {
                 LOG(ERROR) << "Required element fromEta is missing at xpath " << xpath;
@@ -66,7 +67,7 @@ namespace tigl
             
             // read element toEta
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/toEta")) {
-                m_toEta = tixi::TixiGetElement<double>(tixiHandle, xpath + "/toEta");
+                m_toEta.ReadCPACS(tixiHandle, xpath + "/toEta");
             }
             else {
                 LOG(ERROR) << "Required element toEta is missing at xpath " << xpath;
@@ -115,27 +116,21 @@ namespace tigl
                 LOG(ERROR) << "Required element rotation is missing at xpath " << xpath;
             }
             
-            if (m_uidMgr && m_uID) m_uidMgr->RegisterObject(*m_uID, *this);
+            if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
         }
         
         void CPACSSparCell::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write attribute uID
-            if (m_uID) {
-                tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", *m_uID);
-            } else {
-                if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
-                    tixi::TixiRemoveAttribute(tixiHandle, xpath, "uID");
-                }
-            }
+            tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
             
             // write element fromEta
             tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/fromEta");
-            tixi::TixiSaveElement(tixiHandle, xpath + "/fromEta", m_fromEta);
+            m_fromEta.WriteCPACS(tixiHandle, xpath + "/fromEta");
             
             // write element toEta
             tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/toEta");
-            tixi::TixiSaveElement(tixiHandle, xpath + "/toEta", m_toEta);
+            m_toEta.WriteCPACS(tixiHandle, xpath + "/toEta");
             
             // write element upperCap
             tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/upperCap");
@@ -165,7 +160,7 @@ namespace tigl
             
         }
         
-        const boost::optional<std::string>& CPACSSparCell::GetUID() const
+        const std::string& CPACSSparCell::GetUID() const
         {
             return m_uID;
         }
@@ -173,39 +168,30 @@ namespace tigl
         void CPACSSparCell::SetUID(const std::string& value)
         {
             if (m_uidMgr) {
-                if (m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
+                m_uidMgr->TryUnregisterObject(m_uID);
                 m_uidMgr->RegisterObject(value, *this);
             }
             m_uID = value;
         }
         
-        void CPACSSparCell::SetUID(const boost::optional<std::string>& value)
-        {
-            if (m_uidMgr) {
-                if (m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
-                if (value) m_uidMgr->RegisterObject(*value, *this);
-            }
-            m_uID = value;
-        }
-        
-        const double& CPACSSparCell::GetFromEta() const
+        const CPACSEtaIsoLine& CPACSSparCell::GetFromEta() const
         {
             return m_fromEta;
         }
         
-        void CPACSSparCell::SetFromEta(const double& value)
+        CPACSEtaIsoLine& CPACSSparCell::GetFromEta()
         {
-            m_fromEta = value;
+            return m_fromEta;
         }
         
-        const double& CPACSSparCell::GetToEta() const
+        const CPACSEtaIsoLine& CPACSSparCell::GetToEta() const
         {
             return m_toEta;
         }
         
-        void CPACSSparCell::SetToEta(const double& value)
+        CPACSEtaIsoLine& CPACSSparCell::GetToEta()
         {
-            m_toEta = value;
+            return m_toEta;
         }
         
         const CPACSCap& CPACSSparCell::GetUpperCap() const

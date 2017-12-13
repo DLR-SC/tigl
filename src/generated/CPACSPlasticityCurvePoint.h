@@ -28,7 +28,7 @@ namespace tigl
         // This class is used in:
         // CPACSPostFailure
         
-        // generated from /xsd:schema/xsd:complexType[680]
+        // generated from /xsd:schema/xsd:complexType[705]
         class CPACSPlasticityCurvePoint
         {
         public:

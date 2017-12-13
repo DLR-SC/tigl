@@ -30,7 +30,7 @@ namespace tigl
         // This enum is used in:
         // CPACSRibRotation
         
-        // generated from /xsd:schema/xsd:complexType[730]/xsd:complexContent/xsd:extension/xsd:sequence/xsd:element[1]/xsd:complexType/xsd:simpleContent
+        // generated from /xsd:schema/xsd:complexType[758]/xsd:complexContent/xsd:extension/xsd:sequence/xsd:element[1]/xsd:complexType/xsd:simpleContent
         enum CPACSRibRotation_ribRotationReference
         {
             LeadingEdge,

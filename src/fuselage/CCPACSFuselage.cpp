@@ -78,7 +78,8 @@ void CCPACSFuselage::Invalidate()
 {
     loft.reset();
     m_segments.Invalidate();
-    m_positionings.Invalidate();
+    if (m_positionings)
+        m_positionings->Invalidate();
 }
 
 // Cleanup routine
@@ -241,9 +242,12 @@ PNamedShape CCPACSFuselage::BuildLoft()
 }
 
 // Get the positioning transformation for a given section index
-CTiglTransformation CCPACSFuselage::GetPositioningTransformation(const std::string &sectionUID)
+boost::optional<CTiglTransformation> CCPACSFuselage::GetPositioningTransformation(const std::string &sectionUID)
 {
-    return m_positionings.GetPositioningTransformation(sectionUID);
+    boost::optional<CTiglTransformation> ret;
+    if (m_positionings)
+        ret = m_positionings->GetPositioningTransformation(sectionUID);
+    return ret;
 }
 
 // Gets a point on the given fuselage segment in dependence of a parameters eta and zeta with

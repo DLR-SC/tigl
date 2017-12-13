@@ -36,7 +36,7 @@ namespace tigl
         // This class is used in:
         // CPACSWingComponentSegmentStructure
         
-        // generated from /xsd:schema/xsd:complexType[924]
+        // generated from /xsd:schema/xsd:complexType[957]
         class CPACSWingShell
         {
         public:
@@ -52,9 +52,8 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT virtual const boost::optional<std::string>& GetUID() const;
+            TIGL_EXPORT virtual const std::string& GetUID() const;
             TIGL_EXPORT virtual void SetUID(const std::string& value);
-            TIGL_EXPORT virtual void SetUID(const boost::optional<std::string>& value);
             
             TIGL_EXPORT virtual const CPACSWingSkin& GetSkin() const;
             TIGL_EXPORT virtual CPACSWingSkin& GetSkin();
@@ -70,7 +69,7 @@ namespace tigl
             
             CTiglUIDManager* m_uidMgr;
             
-            boost::optional<std::string>     m_uID;
+            std::string                      m_uID;
             CPACSWingSkin                    m_skin;
             boost::optional<CCPACSWingCells> m_cells;
             

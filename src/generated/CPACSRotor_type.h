@@ -30,7 +30,7 @@ namespace tigl
         // This enum is used in:
         // CPACSRotor
         
-        // generated from /xsd:schema/xsd:complexType[743]/xsd:complexContent/xsd:extension/xsd:all/xsd:element[4]/xsd:simpleType
+        // generated from /xsd:schema/xsd:complexType[771]/xsd:complexContent/xsd:extension/xsd:all/xsd:element[4]/xsd:simpleType
         enum CPACSRotor_type
         {
             mainRotor,

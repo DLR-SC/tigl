@@ -44,7 +44,7 @@ namespace tigl
         // CPACSRotorBlades
         // CPACSWings
         
-        // generated from /xsd:schema/xsd:complexType[929]
+        // generated from /xsd:schema/xsd:complexType[962]
         class CPACSWing
         {
         public:

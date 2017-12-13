@@ -38,7 +38,7 @@ namespace tigl
         // CPACSAircraftModel
         // CPACSRotorcraftModel
         
-        // generated from /xsd:schema/xsd:complexType[377]
+        // generated from /xsd:schema/xsd:complexType[387]
         class CPACSFuselages
         {
         public:

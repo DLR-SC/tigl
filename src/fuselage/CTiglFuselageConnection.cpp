@@ -107,7 +107,7 @@ CCPACSFuselageProfile& CTiglFuselageConnection::GetProfile() const
 }
 
 // Returns the positioning transformation for the referenced section
-CTiglTransformation CTiglFuselageConnection::GetPositioningTransformation() const
+boost::optional<CTiglTransformation> CTiglFuselageConnection::GetPositioningTransformation() const
 {
     return (segment->GetFuselage().GetPositioningTransformation(sectionUID));
 }

@@ -34,7 +34,7 @@ namespace tigl
         
         CPACSMaterial::~CPACSMaterial()
         {
-            if (m_uidMgr && m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
+            if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
         }
         
         CTiglUIDManager& CPACSMaterial::GetUIDManager()
@@ -52,9 +52,12 @@ namespace tigl
             // read attribute uID
             if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
                 m_uID = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
-                if (m_uID->empty()) {
-                    LOG(WARNING) << "Optional attribute uID is present but empty at xpath " << xpath;
+                if (m_uID.empty()) {
+                    LOG(WARNING) << "Required attribute uID is empty at xpath " << xpath;
                 }
+            }
+            else {
+                LOG(ERROR) << "Required attribute uID is missing at xpath " << xpath;
             }
             
             // read element name
@@ -113,6 +116,33 @@ namespace tigl
             // read element postFailure
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/postFailure")) {
                 tixi::TixiReadElements(tixiHandle, xpath + "/postFailure", m_postFailures);
+            }
+            
+            // read element thermalConductivity
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/thermalConductivity")) {
+                m_thermalConductivity = tixi::TixiGetElement<double>(tixiHandle, xpath + "/thermalConductivity");
+            }
+            
+            // read element specificHeatMap
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/specificHeatMap")) {
+                m_specificHeatMap = boost::in_place();
+                try {
+                    m_specificHeatMap->ReadCPACS(tixiHandle, xpath + "/specificHeatMap");
+                } catch(const std::exception& e) {
+                    LOG(ERROR) << "Failed to read specificHeatMap at xpath " << xpath << ": " << e.what();
+                    m_specificHeatMap = boost::none;
+                }
+            }
+            
+            // read element emissivityMap
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/emissivityMap")) {
+                m_emissivityMap = boost::in_place();
+                try {
+                    m_emissivityMap->ReadCPACS(tixiHandle, xpath + "/emissivityMap");
+                } catch(const std::exception& e) {
+                    LOG(ERROR) << "Failed to read emissivityMap at xpath " << xpath << ": " << e.what();
+                    m_emissivityMap = boost::none;
+                }
             }
             
             // read element sig11
@@ -260,7 +290,7 @@ namespace tigl
                 m_tau23_choice3 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/tau23");
             }
             
-            if (m_uidMgr && m_uID) m_uidMgr->RegisterObject(*m_uID, *this);
+            if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
             if (!ValidateChoices()) {
                 LOG(ERROR) << "Invalid choice configuration at xpath " << xpath;
             }
@@ -269,13 +299,7 @@ namespace tigl
         void CPACSMaterial::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write attribute uID
-            if (m_uID) {
-                tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", *m_uID);
-            } else {
-                if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
-                    tixi::TixiRemoveAttribute(tixiHandle, xpath, "uID");
-                }
-            }
+            tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
             
             // write element name
             tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
@@ -325,6 +349,36 @@ namespace tigl
             
             // write element postFailure
             tixi::TixiSaveElements(tixiHandle, xpath + "/postFailure", m_postFailures);
+            
+            // write element thermalConductivity
+            if (m_thermalConductivity) {
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/thermalConductivity");
+                tixi::TixiSaveElement(tixiHandle, xpath + "/thermalConductivity", *m_thermalConductivity);
+            } else {
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/thermalConductivity")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/thermalConductivity");
+                }
+            }
+            
+            // write element specificHeatMap
+            if (m_specificHeatMap) {
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/specificHeatMap");
+                m_specificHeatMap->WriteCPACS(tixiHandle, xpath + "/specificHeatMap");
+            } else {
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/specificHeatMap")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/specificHeatMap");
+                }
+            }
+            
+            // write element emissivityMap
+            if (m_emissivityMap) {
+                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/emissivityMap");
+                m_emissivityMap->WriteCPACS(tixiHandle, xpath + "/emissivityMap");
+            } else {
+                if (tixi::TixiCheckElement(tixiHandle, xpath + "/emissivityMap")) {
+                    tixi::TixiRemoveElement(tixiHandle, xpath + "/emissivityMap");
+                }
+            }
             
             // write element sig11
             if (m_sig11_choice1) {
@@ -776,7 +830,7 @@ namespace tigl
             ;
         }
         
-        const boost::optional<std::string>& CPACSMaterial::GetUID() const
+        const std::string& CPACSMaterial::GetUID() const
         {
             return m_uID;
         }
@@ -784,17 +838,8 @@ namespace tigl
         void CPACSMaterial::SetUID(const std::string& value)
         {
             if (m_uidMgr) {
-                if (m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
+                m_uidMgr->TryUnregisterObject(m_uID);
                 m_uidMgr->RegisterObject(value, *this);
-            }
-            m_uID = value;
-        }
-        
-        void CPACSMaterial::SetUID(const boost::optional<std::string>& value)
-        {
-            if (m_uidMgr) {
-                if (m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
-                if (value) m_uidMgr->RegisterObject(*value, *this);
             }
             m_uID = value;
         }
@@ -892,6 +937,41 @@ namespace tigl
         std::vector<unique_ptr<CPACSPostFailure> >& CPACSMaterial::GetPostFailures()
         {
             return m_postFailures;
+        }
+        
+        const boost::optional<double>& CPACSMaterial::GetThermalConductivity() const
+        {
+            return m_thermalConductivity;
+        }
+        
+        void CPACSMaterial::SetThermalConductivity(const double& value)
+        {
+            m_thermalConductivity = value;
+        }
+        
+        void CPACSMaterial::SetThermalConductivity(const boost::optional<double>& value)
+        {
+            m_thermalConductivity = value;
+        }
+        
+        const boost::optional<CPACSSpecificHeatMap>& CPACSMaterial::GetSpecificHeatMap() const
+        {
+            return m_specificHeatMap;
+        }
+        
+        boost::optional<CPACSSpecificHeatMap>& CPACSMaterial::GetSpecificHeatMap()
+        {
+            return m_specificHeatMap;
+        }
+        
+        const boost::optional<CPACSEmissivityMap>& CPACSMaterial::GetEmissivityMap() const
+        {
+            return m_emissivityMap;
+        }
+        
+        boost::optional<CPACSEmissivityMap>& CPACSMaterial::GetEmissivityMap()
+        {
+            return m_emissivityMap;
         }
         
         const boost::optional<double>& CPACSMaterial::GetSig11_choice1() const
@@ -1344,6 +1424,30 @@ namespace tigl
                 }
             }
             throw CTiglError("Element not found");
+        }
+        
+        CPACSSpecificHeatMap& CPACSMaterial::GetSpecificHeatMap(CreateIfNotExistsTag)
+        {
+            if (!m_specificHeatMap)
+                m_specificHeatMap = boost::in_place();
+            return *m_specificHeatMap;
+        }
+        
+        void CPACSMaterial::RemoveSpecificHeatMap()
+        {
+            m_specificHeatMap = boost::none;
+        }
+        
+        CPACSEmissivityMap& CPACSMaterial::GetEmissivityMap(CreateIfNotExistsTag)
+        {
+            if (!m_emissivityMap)
+                m_emissivityMap = boost::in_place();
+            return *m_emissivityMap;
+        }
+        
+        void CPACSMaterial::RemoveEmissivityMap()
+        {
+            m_emissivityMap = boost::none;
         }
         
     }

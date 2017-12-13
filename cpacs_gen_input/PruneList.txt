@@ -1,7 +1,10 @@
 // in cpacs
+CPACSAirlines
 CPACSAirports
 CPACSFleets
-CPACSMissions
+CPACSFlights
+CPACSMissionDefinitions
+CPACSStudies
 
 // in toolspecific
 CPACSAcCrashTool
@@ -51,6 +54,8 @@ CPACSStructuralProfiles
 
 // in aircraft model
 CPACSAircraftAnalyses
+CPACSPerformanceRequirements
+CPACSPerformanceCases
 CPACSAircraftGlobal
 CPACSMassBreakdown
 
@@ -89,3 +94,6 @@ CPACSWingIntermediateStructureCells
 
 // in component segment structure shell/cell
 CPACSWingStringer
+
+// in basic types
+CPACSUncertaintyFunction

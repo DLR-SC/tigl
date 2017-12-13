@@ -38,7 +38,7 @@ namespace tigl
         // This class is used in:
         // CPACSVehicles
         
-        // generated from /xsd:schema/xsd:complexType[642]
+        // generated from /xsd:schema/xsd:complexType[657]
         class CPACSMaterials
         {
         public:

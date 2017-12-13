@@ -38,7 +38,7 @@ namespace tigl
         // CPACSAircraftModel
         // CPACSRotorcraftModel
         
-        // generated from /xsd:schema/xsd:complexType[937]
+        // generated from /xsd:schema/xsd:complexType[970]
         class CPACSWings
         {
         public:

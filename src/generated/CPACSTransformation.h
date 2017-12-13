@@ -45,7 +45,7 @@ namespace tigl
         // CPACSWingElement
         // CPACSWingSection
         
-        // generated from /xsd:schema/xsd:complexType[848]
+        // generated from /xsd:schema/xsd:complexType[882]
         class CPACSTransformation
         {
         public:
@@ -58,9 +58,8 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT virtual const boost::optional<std::string>& GetUID() const;
+            TIGL_EXPORT virtual const std::string& GetUID() const;
             TIGL_EXPORT virtual void SetUID(const std::string& value);
-            TIGL_EXPORT virtual void SetUID(const boost::optional<std::string>& value);
             
             TIGL_EXPORT virtual const boost::optional<CCPACSPoint>& GetScaling() const;
             TIGL_EXPORT virtual boost::optional<CCPACSPoint>& GetScaling();
@@ -83,7 +82,7 @@ namespace tigl
         protected:
             CTiglUIDManager* m_uidMgr;
             
-            boost::optional<std::string>       m_uID;
+            std::string                        m_uID;
             boost::optional<CCPACSPoint>       m_scaling;
             boost::optional<CCPACSPoint>       m_rotation;
             boost::optional<CCPACSPointAbsRel> m_translation;

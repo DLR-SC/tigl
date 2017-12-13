@@ -32,7 +32,7 @@ namespace tigl
         // This class is used in:
         // CPACSTransformation
         
-        // generated from /xsd:schema/xsd:complexType[689]
+        // generated from /xsd:schema/xsd:complexType[717]
         class CPACSPoint
         {
         public:
@@ -45,9 +45,8 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT virtual const boost::optional<std::string>& GetUID() const;
+            TIGL_EXPORT virtual const std::string& GetUID() const;
             TIGL_EXPORT virtual void SetUID(const std::string& value);
-            TIGL_EXPORT virtual void SetUID(const boost::optional<std::string>& value);
             
             TIGL_EXPORT virtual const boost::optional<double>& GetX() const;
             TIGL_EXPORT virtual void SetX(const double& value);
@@ -64,10 +63,10 @@ namespace tigl
         protected:
             CTiglUIDManager* m_uidMgr;
             
-            boost::optional<std::string> m_uID;
-            boost::optional<double>      m_x;
-            boost::optional<double>      m_y;
-            boost::optional<double>      m_z;
+            std::string             m_uID;
+            boost::optional<double> m_x;
+            boost::optional<double> m_y;
+            boost::optional<double> m_z;
             
         private:
             #ifdef HAVE_CPP11

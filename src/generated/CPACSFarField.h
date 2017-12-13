@@ -29,7 +29,7 @@ namespace tigl
         // This class is used in:
         // CPACSCFDTool
         
-        // generated from /xsd:schema/xsd:complexType[317]
+        // generated from /xsd:schema/xsd:complexType[325]
         class CPACSFarField
         {
         public:

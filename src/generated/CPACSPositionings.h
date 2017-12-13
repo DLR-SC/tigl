@@ -36,7 +36,7 @@ namespace tigl
         // CPACSFuselage
         // CPACSWing
         
-        // generated from /xsd:schema/xsd:complexType[698]
+        // generated from /xsd:schema/xsd:complexType[726]
         class CPACSPositionings
         {
         public:

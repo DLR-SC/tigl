@@ -30,7 +30,7 @@ namespace tigl
         // This enum is used in:
         // CPACSGuideCurve
         
-        // generated from /xsd:schema/xsd:complexType[421]/xsd:complexContent/xsd:extension/xsd:sequence/xsd:choice[1]/xsd:sequence[1]/xsd:element[2]/xsd:complexType/xsd:simpleContent
+        // generated from /xsd:schema/xsd:complexType[435]/xsd:complexContent/xsd:extension/xsd:sequence/xsd:choice[1]/xsd:sequence[1]/xsd:element[2]/xsd:complexType/xsd:simpleContent
         enum CPACSGuideCurve_continuity
         {
             C0,

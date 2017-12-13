@@ -27,45 +27,46 @@ namespace tigl
     namespace generated
     {
         // This class is used in:
-        // CPACSProfileGeometry
+        // CPACSMaterial
         
-        // generated from /xsd:schema/xsd:complexType[711]
-        class CPACSPointListXYZVector
+        // generated from /xsd:schema/xsd:complexType[297]
+        class CPACSEmissivityMap
         {
         public:
-            TIGL_EXPORT CPACSPointListXYZVector();
-            TIGL_EXPORT virtual ~CPACSPointListXYZVector();
+            TIGL_EXPORT CPACSEmissivityMap();
+            TIGL_EXPORT virtual ~CPACSEmissivityMap();
             
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT virtual const CCPACSStringVector& GetX() const;
-            TIGL_EXPORT virtual CCPACSStringVector& GetX();
+            TIGL_EXPORT virtual const CCPACSStringVector& GetWaveLength() const;
+            TIGL_EXPORT virtual CCPACSStringVector& GetWaveLength();
             
-            TIGL_EXPORT virtual const CCPACSStringVector& GetY() const;
-            TIGL_EXPORT virtual CCPACSStringVector& GetY();
-            
-            TIGL_EXPORT virtual const CCPACSStringVector& GetZ() const;
-            TIGL_EXPORT virtual CCPACSStringVector& GetZ();
+            TIGL_EXPORT virtual const CCPACSStringVector& GetDiffuseEmissivity() const;
+            TIGL_EXPORT virtual CCPACSStringVector& GetDiffuseEmissivity();
             
         protected:
-            CCPACSStringVector m_x;
-            CCPACSStringVector m_y;
-            CCPACSStringVector m_z;
+            CCPACSStringVector m_waveLength;
+            CCPACSStringVector m_diffuseEmissivity;
             
         private:
             #ifdef HAVE_CPP11
-            CPACSPointListXYZVector(const CPACSPointListXYZVector&) = delete;
-            CPACSPointListXYZVector& operator=(const CPACSPointListXYZVector&) = delete;
+            CPACSEmissivityMap(const CPACSEmissivityMap&) = delete;
+            CPACSEmissivityMap& operator=(const CPACSEmissivityMap&) = delete;
             
-            CPACSPointListXYZVector(CPACSPointListXYZVector&&) = delete;
-            CPACSPointListXYZVector& operator=(CPACSPointListXYZVector&&) = delete;
+            CPACSEmissivityMap(CPACSEmissivityMap&&) = delete;
+            CPACSEmissivityMap& operator=(CPACSEmissivityMap&&) = delete;
             #else
-            CPACSPointListXYZVector(const CPACSPointListXYZVector&);
-            CPACSPointListXYZVector& operator=(const CPACSPointListXYZVector&);
+            CPACSEmissivityMap(const CPACSEmissivityMap&);
+            CPACSEmissivityMap& operator=(const CPACSEmissivityMap&);
             #endif
         };
     }
     
-    // CPACSPointListXYZVector is customized, use type CCPACSPointListXYZ directly
+    // Aliases in tigl namespace
+    #ifdef HAVE_CPP11
+    using CCPACSEmissivityMap = generated::CPACSEmissivityMap;
+    #else
+    typedef generated::CPACSEmissivityMap CCPACSEmissivityMap;
+    #endif
 }

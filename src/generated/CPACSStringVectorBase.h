@@ -31,11 +31,13 @@ namespace tigl
     {
         // This class is used in:
         // CPACSCst2D
+        // CPACSEmissivityMap
         // CPACSPointListRelXYZVector
         // CPACSPointListXYZVector
         // CPACSRotorBladeAttachment
+        // CPACSSpecificHeatMap
         
-        // generated from /xsd:schema/xsd:complexType[807]
+        // generated from /xsd:schema/xsd:complexType[837]
         class CPACSStringVectorBase
         {
         public:
@@ -47,10 +49,6 @@ namespace tigl
             
             TIGL_EXPORT virtual const std::string& GetMapType() const;
             TIGL_EXPORT virtual void SetMapType(const std::string& value);
-            
-            TIGL_EXPORT virtual const boost::optional<std::string>& GetUncertaintyFunctionName() const;
-            TIGL_EXPORT virtual void SetUncertaintyFunctionName(const std::string& value);
-            TIGL_EXPORT virtual void SetUncertaintyFunctionName(const boost::optional<std::string>& value);
             
             TIGL_EXPORT virtual const boost::optional<std::string>& GetMu() const;
             TIGL_EXPORT virtual void SetMu(const std::string& value);
@@ -85,7 +83,6 @@ namespace tigl
             
         protected:
             std::string                  m_mapType;
-            boost::optional<std::string> m_uncertaintyFunctionName;
             boost::optional<std::string> m_mu;
             boost::optional<std::string> m_delta;
             boost::optional<std::string> m_a;

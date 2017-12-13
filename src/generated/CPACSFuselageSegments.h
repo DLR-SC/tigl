@@ -34,7 +34,7 @@ namespace tigl
         // This class is used in:
         // CPACSFuselage
         
-        // generated from /xsd:schema/xsd:complexType[372]
+        // generated from /xsd:schema/xsd:complexType[382]
         class CPACSFuselageSegments
         {
         public:

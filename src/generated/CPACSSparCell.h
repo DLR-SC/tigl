@@ -22,6 +22,7 @@
 #include <string>
 #include <tixi.h>
 #include "CPACSCap.h"
+#include "CPACSEtaIsoLine.h"
 #include "CPACSWeb.h"
 #include "CreateIfNotExists.h"
 #include "tigl_internal.h"
@@ -35,7 +36,7 @@ namespace tigl
         // This class is used in:
         // CPACSSparCells
         
-        // generated from /xsd:schema/xsd:complexType[783]
+        // generated from /xsd:schema/xsd:complexType[810]
         class CPACSSparCell
         {
         public:
@@ -48,15 +49,14 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT virtual const boost::optional<std::string>& GetUID() const;
+            TIGL_EXPORT virtual const std::string& GetUID() const;
             TIGL_EXPORT virtual void SetUID(const std::string& value);
-            TIGL_EXPORT virtual void SetUID(const boost::optional<std::string>& value);
             
-            TIGL_EXPORT virtual const double& GetFromEta() const;
-            TIGL_EXPORT virtual void SetFromEta(const double& value);
+            TIGL_EXPORT virtual const CPACSEtaIsoLine& GetFromEta() const;
+            TIGL_EXPORT virtual CPACSEtaIsoLine& GetFromEta();
             
-            TIGL_EXPORT virtual const double& GetToEta() const;
-            TIGL_EXPORT virtual void SetToEta(const double& value);
+            TIGL_EXPORT virtual const CPACSEtaIsoLine& GetToEta() const;
+            TIGL_EXPORT virtual CPACSEtaIsoLine& GetToEta();
             
             TIGL_EXPORT virtual const CPACSCap& GetUpperCap() const;
             TIGL_EXPORT virtual CPACSCap& GetUpperCap();
@@ -79,14 +79,14 @@ namespace tigl
         protected:
             CTiglUIDManager* m_uidMgr;
             
-            boost::optional<std::string> m_uID;
-            double                       m_fromEta;
-            double                       m_toEta;
-            CPACSCap                     m_upperCap;
-            CPACSCap                     m_lowerCap;
-            CPACSWeb                     m_web1;
-            boost::optional<CPACSWeb>    m_web2;
-            double                       m_rotation;
+            std::string               m_uID;
+            CPACSEtaIsoLine           m_fromEta;
+            CPACSEtaIsoLine           m_toEta;
+            CPACSCap                  m_upperCap;
+            CPACSCap                  m_lowerCap;
+            CPACSWeb                  m_web1;
+            boost::optional<CPACSWeb> m_web2;
+            double                    m_rotation;
             
         private:
             #ifdef HAVE_CPP11

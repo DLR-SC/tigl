@@ -34,7 +34,7 @@ namespace tigl
         // This class is used in:
         // CPACSMaterial
         
-        // generated from /xsd:schema/xsd:complexType[699]
+        // generated from /xsd:schema/xsd:complexType[727]
         class CPACSPostFailure
         {
         public:

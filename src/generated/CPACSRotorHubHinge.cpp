@@ -37,7 +37,7 @@ namespace tigl
         
         CPACSRotorHubHinge::~CPACSRotorHubHinge()
         {
-            if (m_uidMgr && m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
+            if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
         }
         
         CCPACSRotorHinges* CPACSRotorHubHinge::GetParent() const
@@ -60,9 +60,12 @@ namespace tigl
             // read attribute uID
             if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
                 m_uID = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
-                if (m_uID->empty()) {
-                    LOG(WARNING) << "Optional attribute uID is present but empty at xpath " << xpath;
+                if (m_uID.empty()) {
+                    LOG(WARNING) << "Required attribute uID is empty at xpath " << xpath;
                 }
+            }
+            else {
+                LOG(ERROR) << "Required attribute uID is missing at xpath " << xpath;
             }
             
             // read element name
@@ -117,19 +120,13 @@ namespace tigl
                 m_damping = tixi::TixiGetElement<double>(tixiHandle, xpath + "/damping");
             }
             
-            if (m_uidMgr && m_uID) m_uidMgr->RegisterObject(*m_uID, *this);
+            if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
         }
         
         void CPACSRotorHubHinge::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
         {
             // write attribute uID
-            if (m_uID) {
-                tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", *m_uID);
-            } else {
-                if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
-                    tixi::TixiRemoveAttribute(tixiHandle, xpath, "uID");
-                }
-            }
+            tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
             
             // write element name
             if (m_name) {
@@ -201,7 +198,7 @@ namespace tigl
             
         }
         
-        const boost::optional<std::string>& CPACSRotorHubHinge::GetUID() const
+        const std::string& CPACSRotorHubHinge::GetUID() const
         {
             return m_uID;
         }
@@ -209,17 +206,8 @@ namespace tigl
         void CPACSRotorHubHinge::SetUID(const std::string& value)
         {
             if (m_uidMgr) {
-                if (m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
+                m_uidMgr->TryUnregisterObject(m_uID);
                 m_uidMgr->RegisterObject(value, *this);
-            }
-            m_uID = value;
-        }
-        
-        void CPACSRotorHubHinge::SetUID(const boost::optional<std::string>& value)
-        {
-            if (m_uidMgr) {
-                if (m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
-                if (value) m_uidMgr->RegisterObject(*value, *this);
             }
             m_uID = value;
         }

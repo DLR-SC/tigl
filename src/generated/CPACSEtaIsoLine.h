@@ -17,7 +17,6 @@
 
 #pragma once
 
-#include <CCPACSStringVector.h>
 #include <string>
 #include <tixi.h>
 #include "tigl_internal.h"
@@ -27,45 +26,46 @@ namespace tigl
     namespace generated
     {
         // This class is used in:
-        // CPACSProfileGeometry
+        // CPACSSparCell
         
-        // generated from /xsd:schema/xsd:complexType[711]
-        class CPACSPointListXYZVector
+        // generated from /xsd:schema/xsd:complexType[317]
+        class CPACSEtaIsoLine
         {
         public:
-            TIGL_EXPORT CPACSPointListXYZVector();
-            TIGL_EXPORT virtual ~CPACSPointListXYZVector();
+            TIGL_EXPORT CPACSEtaIsoLine();
+            TIGL_EXPORT virtual ~CPACSEtaIsoLine();
             
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT virtual const CCPACSStringVector& GetX() const;
-            TIGL_EXPORT virtual CCPACSStringVector& GetX();
+            TIGL_EXPORT virtual const double& GetEta() const;
+            TIGL_EXPORT virtual void SetEta(const double& value);
             
-            TIGL_EXPORT virtual const CCPACSStringVector& GetY() const;
-            TIGL_EXPORT virtual CCPACSStringVector& GetY();
-            
-            TIGL_EXPORT virtual const CCPACSStringVector& GetZ() const;
-            TIGL_EXPORT virtual CCPACSStringVector& GetZ();
+            TIGL_EXPORT virtual const std::string& GetReferenceUID() const;
+            TIGL_EXPORT virtual void SetReferenceUID(const std::string& value);
             
         protected:
-            CCPACSStringVector m_x;
-            CCPACSStringVector m_y;
-            CCPACSStringVector m_z;
+            double      m_eta;
+            std::string m_referenceUID;
             
         private:
             #ifdef HAVE_CPP11
-            CPACSPointListXYZVector(const CPACSPointListXYZVector&) = delete;
-            CPACSPointListXYZVector& operator=(const CPACSPointListXYZVector&) = delete;
+            CPACSEtaIsoLine(const CPACSEtaIsoLine&) = delete;
+            CPACSEtaIsoLine& operator=(const CPACSEtaIsoLine&) = delete;
             
-            CPACSPointListXYZVector(CPACSPointListXYZVector&&) = delete;
-            CPACSPointListXYZVector& operator=(CPACSPointListXYZVector&&) = delete;
+            CPACSEtaIsoLine(CPACSEtaIsoLine&&) = delete;
+            CPACSEtaIsoLine& operator=(CPACSEtaIsoLine&&) = delete;
             #else
-            CPACSPointListXYZVector(const CPACSPointListXYZVector&);
-            CPACSPointListXYZVector& operator=(const CPACSPointListXYZVector&);
+            CPACSEtaIsoLine(const CPACSEtaIsoLine&);
+            CPACSEtaIsoLine& operator=(const CPACSEtaIsoLine&);
             #endif
         };
     }
     
-    // CPACSPointListXYZVector is customized, use type CCPACSPointListXYZ directly
+    // Aliases in tigl namespace
+    #ifdef HAVE_CPP11
+    using CCPACSEtaIsoLine = generated::CPACSEtaIsoLine;
+    #else
+    typedef generated::CPACSEtaIsoLine CCPACSEtaIsoLine;
+    #endif
 }

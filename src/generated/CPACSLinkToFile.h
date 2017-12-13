@@ -31,7 +31,7 @@ namespace tigl
         // This class is used in:
         // CPACSGenericGeometricComponent
         
-        // generated from /xsd:schema/xsd:complexType[486]
+        // generated from /xsd:schema/xsd:complexType[497]
         class CPACSLinkToFile
         {
         public:

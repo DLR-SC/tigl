@@ -34,7 +34,7 @@ namespace tigl
         // This class is used in:
         // CPACSWingSpar
         
-        // generated from /xsd:schema/xsd:complexType[788]
+        // generated from /xsd:schema/xsd:complexType[815]
         class CPACSSparPositions
         {
         public:

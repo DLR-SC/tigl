@@ -37,7 +37,7 @@ namespace tigl
         // This class is used in:
         // CPACSRotorcraft
         
-        // generated from /xsd:schema/xsd:complexType[751]
+        // generated from /xsd:schema/xsd:complexType[779]
         class CPACSRotorcraftModel
         {
         public:

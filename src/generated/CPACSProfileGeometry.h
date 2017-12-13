@@ -40,7 +40,7 @@ namespace tigl
         // CPACSRotorAirfoils
         // CPACSWingAirfoils
         
-        // generated from /xsd:schema/xsd:complexType[707]
+        // generated from /xsd:schema/xsd:complexType[735]
         class CPACSProfileGeometry
         {
         public:

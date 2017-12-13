@@ -30,7 +30,7 @@ namespace tigl
         // This enum is used in:
         // CPACSRotorHub
         
-        // generated from /xsd:schema/xsd:complexType[742]/xsd:complexContent/xsd:extension/xsd:all/xsd:element[3]/xsd:simpleType
+        // generated from /xsd:schema/xsd:complexType[770]/xsd:complexContent/xsd:extension/xsd:all/xsd:element[3]/xsd:simpleType
         enum CPACSRotorHub_type
         {
             semiRigid,

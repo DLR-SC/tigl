@@ -41,14 +41,6 @@ namespace tigl
                 LOG(ERROR) << "Required attribute mapType is missing at xpath " << xpath;
             }
             
-            // read attribute uncertaintyFunctionName
-            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uncertaintyFunctionName")) {
-                m_uncertaintyFunctionName = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "uncertaintyFunctionName");
-                if (m_uncertaintyFunctionName->empty()) {
-                    LOG(WARNING) << "Optional attribute uncertaintyFunctionName is present but empty at xpath " << xpath;
-                }
-            }
-            
             // read attribute mu
             if (tixi::TixiCheckAttribute(tixiHandle, xpath, "mu")) {
                 m_mu = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "mu");
@@ -122,15 +114,6 @@ namespace tigl
         {
             // write attribute mapType
             tixi::TixiSaveAttribute(tixiHandle, xpath, "mapType", m_mapType);
-            
-            // write attribute uncertaintyFunctionName
-            if (m_uncertaintyFunctionName) {
-                tixi::TixiSaveAttribute(tixiHandle, xpath, "uncertaintyFunctionName", *m_uncertaintyFunctionName);
-            } else {
-                if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uncertaintyFunctionName")) {
-                    tixi::TixiRemoveAttribute(tixiHandle, xpath, "uncertaintyFunctionName");
-                }
-            }
             
             // write attribute mu
             if (m_mu) {
@@ -208,21 +191,6 @@ namespace tigl
         void CPACSStringVectorBase::SetMapType(const std::string& value)
         {
             m_mapType = value;
-        }
-        
-        const boost::optional<std::string>& CPACSStringVectorBase::GetUncertaintyFunctionName() const
-        {
-            return m_uncertaintyFunctionName;
-        }
-        
-        void CPACSStringVectorBase::SetUncertaintyFunctionName(const std::string& value)
-        {
-            m_uncertaintyFunctionName = value;
-        }
-        
-        void CPACSStringVectorBase::SetUncertaintyFunctionName(const boost::optional<std::string>& value)
-        {
-            m_uncertaintyFunctionName = value;
         }
         
         const boost::optional<std::string>& CPACSStringVectorBase::GetMu() const
