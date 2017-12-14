@@ -71,6 +71,12 @@ install:
         Write-Output "Extract Doxygen"
         & 7z x -y "c:\doxygen-win.zip" -oC:\ > null
       }
+      If (!(Test-Path -Path "c:\matlab-libs-win")) {
+        Write-Output "Downloading matlab libraries"
+        (new-object System.Net.WebClient).Downloadfile("https://sourceforge.net/projects/tigl/files/Thirdparty/matlab-libs-win.zip", "c:\matlab-libs-win.zip")
+        Write-Output "Extract matlab libraries"
+        & 7z x -y "c:\matlab-libs-win.zip" -oC:\ > null
+      }
   # check if release build, if yes we need nsis
   - ps: |
       $BUILD_RELEASE = $($env:appveyor_repo_tag -eq "true")
@@ -84,8 +90,8 @@ build_script:
 - ps: |
     md _build -Force | Out-Null
     cd _build
-    Write-Output "Running cmake: -DCMAKE_INSTALL_PREFIX=install -DTIGL_OCE_COONS_PATCHED=ON -DCASROOT=c:\oce\$ocedist -DTIXI_PATH=c:\tixi\$tixidist -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON -DTIGL_BUILD_TESTS=ON -DTIGL_NIGHTLY=$BUILD_NIGHTLY -DQT_PATH=c:\Qt\$qtdist -DDOXYGEN_EXECUTABLE=c:/doxygen-win/bin/doxygen.exe .."
-    & cmake -G "$generator" -DCMAKE_INSTALL_PREFIX=install -DTIGL_OCE_COONS_PATCHED=ON -DCASROOT=c:\oce\$ocedist -DTIXI_PATH=c:\tixi\$tixidist -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON -DTIGL_BUILD_TESTS=ON -DTIGL_NIGHTLY="$BUILD_NIGHTLY" -DQT_PATH=c:\Qt\$qtdist -DDOXYGEN_EXECUTABLE=c:/doxygen-win/bin/doxygen.exe ..
+    Write-Output "Running cmake: -DCMAKE_INSTALL_PREFIX=install -DTIGL_OCE_COONS_PATCHED=ON -DCASROOT=c:\oce\$ocedist -DTIXI_PATH=c:\tixi\$tixidist -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON -DTIGL_BUILD_TESTS=ON -DTIGL_NIGHTLY=$BUILD_NIGHTLY -DQT_PATH=c:\Qt\$qtdist -DDOXYGEN_EXECUTABLE=c:/doxygen-win/bin/doxygen.exe -DMATLAB_DIR=c:\matlab-libs-win .."
+    & cmake -G "$generator" -DCMAKE_INSTALL_PREFIX=install -DTIGL_OCE_COONS_PATCHED=ON -DCASROOT=c:\oce\$ocedist -DTIXI_PATH=c:\tixi\$tixidist -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON -DTIGL_BUILD_TESTS=ON -DTIGL_NIGHTLY="$BUILD_NIGHTLY" -DQT_PATH=c:\Qt\$qtdist -DDOXYGEN_EXECUTABLE=c:/doxygen-win/bin/doxygen.exe -DMATLAB_DIR=c:\matlab-libs-win ..
     if ($LastExitCode -ne 0) {
         throw "Exec: $ErrorMessage"
     }
@@ -127,3 +133,4 @@ cache:
  - c:\tixi -> appveyor.yml
  - c:\redist
  - c:\doxygen-win
+ - c:\matlab-libs-win
