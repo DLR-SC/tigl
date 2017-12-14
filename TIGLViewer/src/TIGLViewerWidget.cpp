@@ -554,6 +554,39 @@ void TIGLViewerWidget::viewReset()
     }
 }
 
+void TIGLViewerWidget::setLookAtPosition(double x, double y, double z)
+{
+    if (!myView.IsNull()) {
+        myView->SetAt(x, y, z);
+    }
+}
+
+void TIGLViewerWidget::setCameraPosition(double elevationAngleDegree, double azimuthAngleDegree)
+{
+    if (!myView.IsNull()) {
+
+        double elevationAngle = elevationAngleDegree / 180. * M_PI;
+        double azimuthAngle = azimuthAngleDegree / 180. * M_PI;
+
+        // retrieve look-at position
+        double xl = 0., yl = 0., zl = 0.;
+        myView->At(xl, yl, zl);
+
+        // retrieve current camera position
+        double xc = 0., yc = 0., zc = 0.;
+        myView->Eye(xc, yc, zc);
+
+        // get distance
+        double dist = sqrt((xc-xl)*(xc-xl) + (yc - yl)*(yc - yl) + (zc - zl)*(zc - zl));
+
+        myView->SetEye(
+            dist * cos(elevationAngle) * cos(azimuthAngle) + xl,
+            dist * cos(elevationAngle) * sin(azimuthAngle) + yl,
+            dist * sin(elevationAngle) + zl
+        );
+    }
+}
+
 void TIGLViewerWidget::hiddenLineOff()
 {
     if (!myView.IsNull()) {

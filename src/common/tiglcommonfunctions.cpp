@@ -42,6 +42,7 @@
 
 #include "Geom_Curve.hxx"
 #include "Geom_Surface.hxx"
+#include "GeomAdaptor_Curve.hxx"
 #include "BRep_Tool.hxx"
 #include "BRepTools_WireExplorer.hxx"
 #include "TopExp_Explorer.hxx"
@@ -65,6 +66,7 @@
 #include "Bnd_Box.hxx"
 #include "BRepBndLib.hxx"
 #include "BRepExtrema_ExtCF.hxx"
+#include "BRepIntCurveSurface_Inter.hxx"
 #include "BRepFill.hxx"
 #include "GProp_GProps.hxx"
 #include "BRepGProp.hxx"
@@ -545,24 +547,27 @@ Handle(Geom_BSplineCurve) GetBSplineCurve(const TopoDS_Edge& e)
 
 bool GetIntersectionPoint(const TopoDS_Face& face, const TopoDS_Edge& edge, gp_Pnt& dst)
 {
-    BRepExtrema_ExtCF edgeFaceIntersect(edge, face);
-    if (!edgeFaceIntersect.IsDone()) {
-        LOG(ERROR) << "Error intersecting edge and face in GetIntersectionPoint!";
-        throw tigl::CTiglError("Error intersecting edge and face in GetIntersectionPoint!");
-    }
-    double minDistance = std::numeric_limits<double>::max();
-    int minIndex = 0;
-    for (int i = 1; i <= edgeFaceIntersect.NbExt(); i++) {
-        double distance = edgeFaceIntersect.SquareDistance(i);
-        if (distance < minDistance) {
-            minDistance = distance;
-            minIndex = i;
-        }
-    }
+    BRepIntCurveSurface_Inter faceCurveInter;
 
-    if (minDistance <= Precision::Confusion()) {
-        dst = edgeFaceIntersect.PointOnEdge(minIndex);
+    double umin = 0., umax = 0.;
+    const Handle(Geom_Curve)& curve = BRep_Tool::Curve(edge, umin, umax);
+
+    faceCurveInter.Init(face, GeomAdaptor_Curve(curve, umin, umax), Precision::Confusion());
+
+
+    if ( faceCurveInter.More() ) {
+        dst = faceCurveInter.Pnt();
+        faceCurveInter.Next();
+        while (faceCurveInter.More()) {
+           if ( !dst.IsEqual(faceCurveInter.Pnt(), Precision::Confusion()) ) {
+               LOG(WARNING) << "Multiple Intersections found in GetIntersectionPoint";
+           }
+           faceCurveInter.Next();
+        }
         return true;
+    }
+    else {
+        LOG(WARNING) << "No Intersections found in GetIntersectionPoint";
     }
     return false;
 }

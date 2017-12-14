@@ -143,6 +143,8 @@ public slots:
     void viewTopFront();
     void viewGrid();
     void viewReset();
+    void setLookAtPosition(double x, double y, double z);
+    void setCameraPosition(double elevationAngleDegree, double azimuthAngleDegree);
     void setReset();
     void setTransparency();
     void setTransparency(int);
