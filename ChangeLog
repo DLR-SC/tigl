@@ -1,3 +1,55 @@
+Version 3.0.0
+-------------
+
+    - General Changes:
+       - CPACS 3 compatibility, including the new component-segment coordinate-system math.
+         Note: The wing structure is not yet adapted to CPACS 3 but uses the 2.3 definition.
+       - Guide curve support for wings and fuselages for high-fidelity surface modeling according to the CPACS 3 defintion.
+       - Automated creation of CPACS reading and writing routines. This allows much
+         better vality checks of the CPACS document.
+       - Improved speed of tiglFuselageGetPoint function. Also, the paramter xsi is now interpreted as the relative
+         curve parameter instead of the relative circumference.
+       - The TIGL library was renamed to tigl3. The TIGLViewer was renamed to tiglviewer-3.
+       - The windows builds are now using the Visual C++ 2015 Toolchain.
+
+
+    - New API functions:
+      - ```tiglWingComponentSegmentPointGetEtaXsi``` computes the eta/xsi coordinates of a point on the component segment.
+      - ```tiglIntersectWithPlaneSegment``` computes the intersection of a CPACS shape (e.g. wing) with a plane of finite size.
+      - ```tiglGetCurveIntersection``` to compute the intersection of two curves.
+      - ```tiglGetCurveIntersectionPoint``` to query the intersection point(s) computed by ```tiglGetCurveIntersection```.
+      - ```tiglGetCurveIntersectionCount``` returns the number of intersection points computed by ```tiglGetCurveIntersection```.
+      - ```tiglGetCurveParameter``` projects a point onto a curve and returns the cure parameter of the point.
+      - ```tiglFuselageGetSectionCenter``` computes the center of a fuselage section defined by its eta coordinate.
+      - ```tiglFuselageGetCrossSectionArea``` computes the area of a fuselage section.
+      - ```tiglFuselageGetCenterLineLength``` computes the length of the centerline of the fuselage.
+      - ```tiglCheckPointInside``` checks, whether a point lies inside some object (defined by its uid).
+      - ```tiglExportFuselageBREPbyUID``` and ```tiglExportWingBREPByUID```
+  
+    - Changed API:
+      - Removed deprectated intersection functions. These include
+        - tiglComponentIntersectionLineCount
+        - tiglComponentIntersectionPoint
+        - tiglComponentIntersectionPoints
+
+    - Fixes:
+      - TiGL Viewer: Fixed missing fonts on macOS
+
+    - Language bindings:
+      - Python: the tiglwrapper.py module was renamed to tigl3wrapper.py. The Tigl object is renamed to Tigl3.
+      - Java: the tigl package moved from de.dlr.sc.tigl to de.dlr.sc.tigl3
+
+    - TiGL Viewer:
+       - New design
+       - Custom OpenGL shaders. If problems with the 3D rendering occur, please file a bug.
+       - Display of reflection lines to inspect surface quality.
+       - Display of textured surfaces.
+       - Angle of perspective can be adjusted using the scripting API with ```setCameraPosition``` and ```setLookAtPosition```.
+         This allows e.g. to create videos of the geometry.
+       - Option to display face names.
+       - Number of U and V iso-lines can be adjusted independently.
+
+
 Version 2.2.1
 --------------
 18/08/2017
