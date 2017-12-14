@@ -109,8 +109,6 @@ public:
     // The Fuselage could be turned with a given angle at at given axis, specified by a point and a direction.
     TIGL_EXPORT gp_Pnt GetMinumumDistanceToGround(gp_Ax1 RAxis, double angle);
 
-    TIGL_EXPORT void SetSymmetryAxis(const std::string& axis);
-
     // Get the guide curve segment(partial guide curve) with a given UID
     TIGL_EXPORT CCPACSGuideCurve& GetGuideCurveSegment(std::string uid);
 
@@ -146,7 +144,7 @@ private:
     friend class CCPACSFuselageSegment;
 };
 
-TopoDS_Shape transformFuselageProfileGeometry(const CTiglTransformation& fuselTransform, const CTiglFuselageConnection& connection, const TopoDS_Shape& shape);
+TIGL_EXPORT TopoDS_Shape transformFuselageProfileGeometry(const CTiglTransformation& fuselTransform, const CTiglFuselageConnection& connection, const TopoDS_Shape& shape);
 
 } // end namespace tigl
 

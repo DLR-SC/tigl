@@ -593,6 +593,10 @@ CTiglUIDManager& CCPACSConfiguration::GetUIDManager()
     return uidManager;
 }
 
+const CTiglUIDManager& CCPACSConfiguration::GetUIDManager() const {
+    return uidManager;
+}
+
 double CCPACSConfiguration::GetAirplaneLenth()
 {
     Bnd_Box boundingBox;

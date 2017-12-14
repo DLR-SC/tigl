@@ -43,7 +43,7 @@
 #include "CTiglWingConnection.h"
 #include "CTiglFuselageConnection.h"
 #include "CCPACSWingCell.h"
-#include "CCPACSMaterial.h"
+#include "CCPACSMaterialDefinition.h"
 #include "CCPACSGenericSystem.h"
 #include "CCPACSRotorBladeAttachment.h"
 #include "generated/CPACSWingElement.h"
@@ -59,7 +59,7 @@
 %rename("%(undercase)s", %$isfunction) "";
 
 %include "generated/CPACSMaterialDefinition.h"
-%include "CCPACSMaterial.h"
+%include "CCPACSMaterialDefinition.h"
 %include "generated/CPACSWingSkin.h"
 %include "generated/CPACSFuselageCutOuts.h"
 %include "CPACSRotor_type.h"
