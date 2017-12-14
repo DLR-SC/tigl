@@ -15,11 +15,11 @@
 # limitations under the License.
 
 from tigl3wrapper import Tigl3, TiglBoolean
-from tixiwrapper import Tixi
+from tixi3wrapper import Tixi3
 import sys
 
 def python_demo(filename):
-    tixi = Tixi()
+    tixi = Tixi3()
     tigl = Tigl3()
     
     # open cpacs xml with tixi
