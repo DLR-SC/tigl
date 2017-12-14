@@ -33,6 +33,7 @@
 #include "tixi.h"
 #include "CTiglFuselageConnection.h"
 #include "CTiglAbstractSegment.h"
+#include "CCPACSGuideCurve.h"
 #include "CCPACSGuideCurves.h"
 #include "CCPACSTransformation.h"
 
@@ -156,15 +157,6 @@ public:
 
     TIGL_EXPORT TiglGeometricComponentType GetComponentType() const { return TIGL_COMPONENT_FUSELSEGMENT | TIGL_COMPONENT_SEGMENT | TIGL_COMPONENT_LOGICAL; }
 
-    // builds all guide curve wires
-    TIGL_EXPORT TopTools_SequenceOfShape& BuildGuideCurves();
-
-    // get guide curve for given UID
-    TIGL_EXPORT const CCPACSGuideCurve& GetGuideCurve(std::string UID);
-
-    // check if guide curve with a given UID exists
-    TIGL_EXPORT bool GuideCurveExists(std::string UID);
-
 protected:
     // Cleanup routine
     void Cleanup();
@@ -179,11 +171,11 @@ private:
 
     CTiglFuselageConnection startConnection;       /**< Start segment connection                */
     CTiglFuselageConnection endConnection;         /**< End segment connection                  */
-    CCPACSFuselage*          fuselage;             /**< Parent fuselage                         */
-    TopTools_SequenceOfShape guideCurveWires;      /**< container for the guide curve wires     */
-    double                   myVolume;             /**< Volume of this segment                  */
-    double                   mySurfaceArea;        /**< Surface Area of this segment            */
-    double                   myWireLength;         /**< Wire length of this segment for a given zeta */
+    CCPACSFuselage*         fuselage;             /**< Parent fuselage                         */
+    double                  myVolume;             /**< Volume of this segment                  */
+    double                  mySurfaceArea;        /**< Surface Area of this segment            */
+
+    unique_ptr<IGuideCurveBuilder> m_guideCurveBuilder;
 };
 
 } // end namespace tigl

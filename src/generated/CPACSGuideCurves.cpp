@@ -15,7 +15,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "CPACSGuideCurve.h"
+#include <CCPACSGuideCurve.h>
 #include "CPACSGuideCurves.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -57,23 +57,23 @@ namespace tigl
             
         }
         
-        const std::vector<unique_ptr<CPACSGuideCurve> >& CPACSGuideCurves::GetGuideCurves() const
+        const std::vector<unique_ptr<CCPACSGuideCurve> >& CPACSGuideCurves::GetGuideCurves() const
         {
             return m_guideCurves;
         }
         
-        std::vector<unique_ptr<CPACSGuideCurve> >& CPACSGuideCurves::GetGuideCurves()
+        std::vector<unique_ptr<CCPACSGuideCurve> >& CPACSGuideCurves::GetGuideCurves()
         {
             return m_guideCurves;
         }
         
-        CPACSGuideCurve& CPACSGuideCurves::AddGuideCurve()
+        CCPACSGuideCurve& CPACSGuideCurves::AddGuideCurve()
         {
-            m_guideCurves.push_back(make_unique<CPACSGuideCurve>(m_uidMgr));
+            m_guideCurves.push_back(make_unique<CCPACSGuideCurve>(m_uidMgr));
             return *m_guideCurves.back();
         }
         
-        void CPACSGuideCurves::RemoveGuideCurve(CPACSGuideCurve& ref)
+        void CPACSGuideCurves::RemoveGuideCurve(CCPACSGuideCurve& ref)
         {
             for (std::size_t i = 0; i < m_guideCurves.size(); i++) {
                 if (m_guideCurves[i].get() == &ref) {

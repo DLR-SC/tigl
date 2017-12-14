@@ -63,6 +63,9 @@ namespace tigl
             TIGL_EXPORT virtual const std::string& GetGuideCurveProfileUID() const;
             TIGL_EXPORT virtual void SetGuideCurveProfileUID(const std::string& value);
             
+            TIGL_EXPORT virtual const boost::optional<CPACSPointXYZ>& GetRXDirection() const;
+            TIGL_EXPORT virtual boost::optional<CPACSPointXYZ>& GetRXDirection();
+            
             TIGL_EXPORT virtual const boost::optional<std::string>& GetFromGuideCurveUID_choice1() const;
             TIGL_EXPORT virtual void SetFromGuideCurveUID_choice1(const std::string& value);
             TIGL_EXPORT virtual void SetFromGuideCurveUID_choice1(const boost::optional<std::string>& value);
@@ -84,6 +87,9 @@ namespace tigl
             TIGL_EXPORT virtual const boost::optional<CPACSPointXYZ>& GetTangent() const;
             TIGL_EXPORT virtual boost::optional<CPACSPointXYZ>& GetTangent();
             
+            TIGL_EXPORT virtual CPACSPointXYZ& GetRXDirection(CreateIfNotExistsTag);
+            TIGL_EXPORT virtual void RemoveRXDirection();
+            
             TIGL_EXPORT virtual CPACSPointXYZ& GetTangent_choice2(CreateIfNotExistsTag);
             TIGL_EXPORT virtual void RemoveTangent_choice2();
             
@@ -97,6 +103,7 @@ namespace tigl
             std::string                                 m_name;
             boost::optional<std::string>                m_description;
             std::string                                 m_guideCurveProfileUID;
+            boost::optional<CPACSPointXYZ>              m_rXDirection;
             boost::optional<std::string>                m_fromGuideCurveUID_choice1;
             boost::optional<CPACSGuideCurve_continuity> m_continuity_choice1;
             boost::optional<double>                     m_fromRelativeCircumference_choice2;
@@ -118,10 +125,5 @@ namespace tigl
         };
     }
     
-    // Aliases in tigl namespace
-    #ifdef HAVE_CPP11
-    using CCPACSGuideCurve = generated::CPACSGuideCurve;
-    #else
-    typedef generated::CPACSGuideCurve CCPACSGuideCurve;
-    #endif
+    // CPACSGuideCurve is customized, use type CCPACSGuideCurve directly
 }

@@ -26,6 +26,7 @@
 #include <cmath>
 
 #include "CCPACSFuselageSegment.h"
+#include "CTiglFuselageSegmentGuidecurveBuilder.h"
 #include "CCPACSFuselage.h"
 
 #include "CCPACSFuselageProfile.h"
@@ -143,6 +144,7 @@ CCPACSFuselageSegment::CCPACSFuselageSegment(CCPACSFuselageSegments* parent, CTi
     : generated::CPACSFuselageSegment(parent, uidMgr)
     , CTiglAbstractSegment(parent->GetSegments(), parent->GetParent()->m_symmetry)
     , fuselage(parent->GetParent())
+    , m_guideCurveBuilder(make_unique<CTiglFuselageSegmentGuidecurveBuilder>(*this))
 {
     Cleanup();
 }
@@ -162,7 +164,6 @@ void CCPACSFuselageSegment::Cleanup()
     m_name = "";
     myVolume      = 0.;
     mySurfaceArea = 0.;
-    myWireLength  = 0.;
     _continuity    = C2;
     CTiglAbstractGeometricComponent::Reset();
 }
@@ -188,25 +189,11 @@ void CCPACSFuselageSegment::ReadCPACS(const TixiDocumentHandle& tixiHandle, cons
 
     // TODO: continuity does not exist in CPACS spec
 
-    //// Continuity
-    //char* ptrCont = NULL;
-    //if (tixiGetTextElement(tixiHandle, (segmentXPath + "/continuity").c_str(); , &ptrCont) == SUCCESS) {
-    //    if (strcmp(ptrCont, "C0") == 0) {
-    //        continuity = TiglContinuity(C0);
-    //    }
-    //    else if (strcmp(ptrCont, "C1") == 0) {
-    //        continuity = TiglContinuity(C1);
-    //    }
-    //    else if (strcmp(ptrCont, "C2") == 0) {
-    //        continuity = TiglContinuity(C2);
-    //    }
-    //    else {
-    //        LOG(ERROR) << "Invalid continuity specifier " << ptrCont << " for UID " << GetUID();
-    //        continuity = C2;
-    //    }
-    //} else {
-    //    continuity = C2;
-    //}
+    if (m_guideCurves) {
+        for (int iguide = 1; iguide <= m_guideCurves->GetGuideCurveCount(); ++iguide) {
+            m_guideCurves->GetGuideCurve(iguide).SetGuideCurveBuilder(*m_guideCurveBuilder);
+        }
+    }
 
     Invalidate();
 }
@@ -243,14 +230,14 @@ CCPACSFuselage& CCPACSFuselageSegment::GetFuselage() const
 TopoDS_Wire CCPACSFuselageSegment::GetStartWire()
 {
     CCPACSFuselageProfile& startProfile = startConnection.GetProfile();
-    return transformProfileWire(GetFuselage().GetTransformationMatrix(), startConnection, startProfile.GetWire(true));
+    return TopoDS::Wire(transformFuselageProfileGeometry(GetFuselage().GetTransformationMatrix(), startConnection, startProfile.GetWire(true)));
 }
 
 // helper function to get the wire of the end section
 TopoDS_Wire CCPACSFuselageSegment::GetEndWire()
 {
     CCPACSFuselageProfile& endProfile = endConnection.GetProfile();
-    return transformProfileWire(GetFuselage().GetTransformationMatrix(), endConnection, endProfile.GetWire(true));
+    return TopoDS::Wire(transformFuselageProfileGeometry(GetFuselage().GetTransformationMatrix(), endConnection, endProfile.GetWire(true)));
 }
 
 // get short name for loft
@@ -278,6 +265,7 @@ std::string CCPACSFuselageSegment::GetShortShapeName()
 
 void CCPACSFuselageSegment::SetFaceTraits (PNamedShape loft, bool hasSymmetryPlane)
 {
+    // TODO: Face traits with guides must be made
     // this is currently only valid without guides
 
     int nFaces = GetNumberOfFaces(loft->Shape());
@@ -292,7 +280,8 @@ void CCPACSFuselageSegment::SetFaceTraits (PNamedShape loft, bool hasSymmetryPla
     int facesPerSegment = hasSymmetryPlane ? 2 : 1;
     int remainingFaces = nFaces - facesPerSegment;
     if (remainingFaces < 0 || remainingFaces > 2) {
-        throw CTiglError("Fuselage shape seems to be invalid");
+        LOG(WARNING) << "Fuselage segment faces cannot be names properly (maybe due to Guide Curves?)";
+        return;
     }
 
     int iFaceTotal = 0;
@@ -811,92 +800,7 @@ double CCPACSFuselageSegment::GetCircumference(const double eta)
 
     GProp_GProps System;
     BRepGProp::LinearProperties(intersectionWire,System);
-    myWireLength = System.Mass();
-    return myWireLength;
-}
-
-// get guide curve for given UID
-const CCPACSGuideCurve& CCPACSFuselageSegment::GetGuideCurve(std::string UID)
-{
-    return m_guideCurves->GetGuideCurve(UID);
-}
-
-// check if guide curve with a given UID exists
-bool CCPACSFuselageSegment::GuideCurveExists(std::string UID)
-{
-    return m_guideCurves->GuideCurveExists(UID);
-}
-
-// Creates all guide curves
-TopTools_SequenceOfShape& CCPACSFuselageSegment::BuildGuideCurves()
-{
-    guideCurveWires.Clear();
-    if (m_guideCurves) {
-
-        // get start and end profile
-        CCPACSFuselageProfile& startProfile = startConnection.GetProfile();
-        CCPACSFuselageProfile& endProfile   = endConnection.GetProfile();
-
-        // get wire and close it if the profile is not mirror symmetric
-        TopoDS_Wire startWire = startProfile.GetWire(!startProfile.GetMirrorSymmetry());
-        TopoDS_Wire endWire   = endProfile.GetWire(!endProfile.GetMirrorSymmetry());
-
-        // get profile wires in world coordinates
-        startWire = transformProfileWire(GetFuselage().GetTransformationMatrix(), startConnection, startWire);
-        endWire = transformProfileWire(GetFuselage().GetTransformationMatrix(), endConnection, endWire);
-
-        // put wires into container for guide curve algo
-        TopTools_SequenceOfShape startWireContainer;
-        startWireContainer.Append(startWire);
-        TopTools_SequenceOfShape endWireContainer;
-        endWireContainer.Append(endWire);
-
-        // get chord lengths for inner profile in word coordinates
-        TopoDS_Wire innerChordLineWire = transformProfileWire(GetFuselage().GetTransformationMatrix(), startConnection, startProfile.GetDiameterWire());
-        TopoDS_Wire outerChordLineWire = transformProfileWire(GetFuselage().GetTransformationMatrix(), endConnection, endProfile.GetDiameterWire());
-        double innerScale = GetWireLength(innerChordLineWire);
-        double outerScale = GetWireLength(outerChordLineWire);
-
-        // loop through all guide curves and construct the corresponding wires
-        int nGuideCurves = m_guideCurves ? m_guideCurves->GetGuideCurveCount() : 0;
-        for (int i=0; i!=nGuideCurves; i++) {
-            // get guide curve
-            const CCPACSGuideCurve& guideCurve = m_guideCurves->GetGuideCurve(i+1);
-            double fromRelativeCircumference;
-            // check if fromRelativeCircumference is given in the current guide curve
-            if (guideCurve.GetFromRelativeCircumference_choice2()) {
-                fromRelativeCircumference = *guideCurve.GetFromRelativeCircumference_choice2();
-            }
-            // otherwise get relative circumference from neighboring segment guide curve
-            else {
-                // get neighboring guide curve UID
-                std::string neighborGuideCurveUID = *guideCurve.GetFromGuideCurveUID_choice1();
-                // get neighboring guide curve
-                const CCPACSGuideCurve& neighborGuideCurve = fuselage->GetGuideCurve(neighborGuideCurveUID);
-                // get relative circumference from neighboring guide curve
-                fromRelativeCircumference = neighborGuideCurve.GetToRelativeCircumference();
-            }
-            // get relative circumference of outer profile
-            double toRelativeCircumference = guideCurve.GetToRelativeCircumference();
-            // get guide curve profile UID
-            std::string guideCurveProfileUID = guideCurve.GetGuideCurveProfileUID();
-            // get relative circumference of inner profile
-
-            // get guide curve profile
-            CCPACSConfiguration& config = fuselage->GetConfiguration();
-            CCPACSGuideCurveProfile& guideCurveProfile = config.GetGuideCurveProfile(guideCurveProfileUID);
-
-            // construct guide curve algorithm
-            TopoDS_Wire guideCurveWire = CCPACSGuideCurveAlgo<CCPACSFuselageProfileGetPointAlgo> (startWireContainer, endWireContainer, fromRelativeCircumference, toRelativeCircumference, innerScale, outerScale, guideCurveProfile);
-            guideCurveWires.Append(guideCurveWire);
-        }
-
-        // return container for guide curve wires
-        return guideCurveWires;
-    }
-    else {
-        return guideCurveWires;
-    }
+    return System.Mass();
 }
 
 } // end namespace tigl

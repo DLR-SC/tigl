@@ -815,16 +815,17 @@ void TIGLViewerDocument::drawWingOverlayProfilePoints()
 
 void TIGLViewerDocument::drawWingGuideCurves()
 {
-    START_COMMAND();
+    QString wingUid = dlgGetWingSelection();
+    if (wingUid == "") {
+        return;
+    }
 
-    // loop over all wings
-    tigl::CCPACSConfiguration& config = GetConfiguration();
-    int wingCount = config.GetWingCount();
-    for (int i = 1; i <= wingCount; i++) {
-        tigl::CCPACSWing& wing = config.GetWing(i);
-        if (!wing.IsRotorBlade()) {
-            drawWingGuideCurves(wing);
-        }
+    try {
+        tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
+        drawWingGuideCurves(wing);
+    }
+    catch (tigl::CTiglError& ex) {
+        displayError(ex.getError(), "Error");
     }
 }
 
@@ -835,20 +836,24 @@ void TIGLViewerDocument::drawWingGuideCurves()
 void TIGLViewerDocument::drawWingGuideCurves(tigl::CCPACSWing& wing)
 {
     START_COMMAND();
-    
-    // loop over all wing segments
-    for (int j = 1; j <= wing.GetSegmentCount(); ++j) {
-        tigl::CCPACSWingSegment& wingSeg = static_cast<tigl::CCPACSWingSegment&>(wing.GetSegment(j));
 
-        TopTools_SequenceOfShape& guideCurveContainer = wingSeg.GetGuideCurveWires();
-        for (int i=1; i<=guideCurveContainer.Length(); i++) {
-            TopoDS_Wire wire =TopoDS::Wire(guideCurveContainer(i));
-            Handle(AIS_Shape) shape = new AIS_Shape(wire);
-            shape->SetMaterial(Graphic3d_NOM_METALIZED);
-            app->getScene()->getContext()->Display(shape, Standard_True);
-        }
+    TopoDS_Compound& guideCurves = wing.GetGuideCurveWires();
+    TopoDS_Iterator anIter(guideCurves);
+    if (!anIter.More()) {
+        displayError("There are no guide curves defined for this wing.", "Cannot compute guide curves.");
+        return;
     }
+
+    for (; anIter.More(); anIter.Next()) {
+        TopoDS_Shape wire = anIter.Value();
+        Handle(AIS_Shape) shape = new AIS_Shape(wire);
+        shape->SetMaterial(Graphic3d_NOM_METALIZED);
+        app->getScene()->getContext()->Display(shape, Standard_False);
+    }
+
+    app->getScene()->getContext()->UpdateCurrentViewer();
 }
+
 
 void TIGLViewerDocument::drawFuselageProfiles()
 {
@@ -887,34 +892,36 @@ void TIGLViewerDocument::drawFuselageProfiles()
                 catch (tigl::CTiglError& ex) {
                   displayError(ex.what());
                 }
-            }
-        }
+             }
+         }
     }
 }
 
 void TIGLViewerDocument::drawFuselageGuideCurves()
 {
-    START_COMMAND();
-    // loop over all fuselage segments
-    tigl::CCPACSConfiguration& config = GetConfiguration();
-    int fuselageCount = config.GetFuselageCount();
-    for (int i = 1; i <= fuselageCount; i++) {
-        tigl::CCPACSFuselage& fuselage = config.GetFuselage(i);
-        std::string fuselageUid = fuselage.GetUID();
-        for (int j = 1; j <= fuselage.GetSegmentCount(); ++j) {
-            tigl::CCPACSFuselageSegment& segment = fuselage.GetSegment(j);
-            std::string fuselageSegUid = segment.GetUID();
-            tigl::CCPACSFuselage& fuselage = GetConfiguration().GetFuselage(fuselageUid);
-            tigl::CCPACSFuselageSegment& fuselageSeg = fuselage.GetSegment(fuselageSegUid);
-
-            TopTools_SequenceOfShape& guideCurveContainer = fuselageSeg.BuildGuideCurves();
-            for (int i=1; i<=guideCurveContainer.Length(); i++) {
-                TopoDS_Wire wire =TopoDS::Wire(guideCurveContainer(i));
-                app->getScene()->displayShape(wire, false);
-            }
-        }
-        app->getScene()->updateViewer();
+    QString fuselageUid = dlgGetFuselageSelection();
+    if (fuselageUid == "") {
+        return;
     }
+    
+    START_COMMAND();
+    tigl::CCPACSFuselage& fuselage = GetConfiguration().GetFuselage(fuselageUid.toStdString());
+    TopoDS_Compound& guideCurves = fuselage.GetGuideCurveWires();
+
+    TopoDS_Iterator anIter(guideCurves);
+    if (!anIter.More()) {
+        displayError("There are no guide curves defined for this fuselage.", "Cannot compute guide curves.");
+        return;
+    }
+
+    for (; anIter.More(); anIter.Next()) {
+        TopoDS_Shape wire = anIter.Value();
+        Handle(AIS_Shape) shape = new AIS_Shape(wire);
+        shape->SetMaterial(Graphic3d_NOM_METALIZED);
+        app->getScene()->getContext()->Display(shape, Standard_False);
+    }
+
+    app->getScene()->getContext()->UpdateCurrentViewer();
 }
 
 void TIGLViewerDocument::drawWing()
@@ -1665,39 +1672,28 @@ void TIGLViewerDocument::exportWingCurvesBRep()
     tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
     QString baseName = QDir(std::string(dirname.toStdString() + "/" + wing.GetUID()).c_str()).absolutePath();
     
-    TopoDS_Compound profiles, guides;
+    TopoDS_Compound profiles;
     BRep_Builder builder;
     builder.MakeCompound(profiles);
-    builder.MakeCompound(guides);
     
     Handle(TopTools_HSequenceOfShape) allGuides = new TopTools_HSequenceOfShape;
     for (int isegment = 1; isegment <= wing.GetSegmentCount(); ++isegment) {
-        // display profiles
+        // get profiles
         tigl::CCPACSWingSegment& segment = static_cast<tigl::CCPACSWingSegment&>(wing.GetSegment(isegment));
         builder.Add(profiles, segment.GetInnerWire());
         if (isegment == wing.GetSegmentCount()) {
             builder.Add(profiles, segment.GetOuterWire());
-        }
-        
-        // build guide curve container
-        TopTools_SequenceOfShape& wires = segment.GetGuideCurveWires();
-        for (int iwire = 1; iwire <= wires.Length(); ++iwire) {
-            for (TopExp_Explorer edgeExp(wires(iwire), TopAbs_EDGE); edgeExp.More(); edgeExp.Next()) {
-                allGuides->Append(edgeExp.Current());
-            }
         }
     }
     
     // write profiles to brep
     std::string profFileName = baseName.toStdString() + "_profiles.brep";
     BRepTools::Write(profiles, profFileName.c_str());
-    
-    if (allGuides->Length() > 0) {
-        ShapeAnalysis_FreeBounds::ConnectEdgesToWires(allGuides, Precision::Confusion(), false, allGuides);
-        for (int iwire = 1; iwire <= allGuides->Length(); ++iwire) {
-            builder.Add(guides, allGuides->Value(iwire));
-        }
-        
+
+
+    TopoDS_Compound guides = wing.GetGuideCurveWires();
+    TopoDS_Iterator it(guides);
+    if (it.More()) {
         // write to brep
         std::string guideFileName = baseName.toStdString() + "_guides.brep";
         BRepTools::Write(guides, guideFileName.c_str());
@@ -1724,26 +1720,17 @@ void TIGLViewerDocument::exportFuselageCurvesBRep()
     tigl::CCPACSFuselage& fuselage = GetConfiguration().GetFuselage(fuselageUid.toStdString());
     QString baseName = QDir(std::string(dirname.toStdString() + "/" + fuselage.GetUID()).c_str()).absolutePath();
     
-    TopoDS_Compound profiles, guides;
+    TopoDS_Compound profiles;
     BRep_Builder builder;
     builder.MakeCompound(profiles);
-    builder.MakeCompound(guides);
     
     Handle(TopTools_HSequenceOfShape) allGuides = new TopTools_HSequenceOfShape;
     for (int isegment = 1; isegment <= fuselage.GetSegmentCount(); ++isegment) {
-        // display profiles
+        // get profiles
         tigl::CCPACSFuselageSegment& segment = static_cast<tigl::CCPACSFuselageSegment&>(fuselage.GetSegment(isegment));
         builder.Add(profiles, segment.GetStartWire());
         if (isegment == fuselage.GetSegmentCount()) {
             builder.Add(profiles, segment.GetEndWire());
-        }
-        
-        // build guide curve container
-        TopTools_SequenceOfShape& wires = segment.BuildGuideCurves();
-        for (int iwire = 1; iwire <= wires.Length(); ++iwire) {
-            for (TopExp_Explorer edgeExp(wires(iwire), TopAbs_EDGE); edgeExp.More(); edgeExp.Next()) {
-                allGuides->Append(edgeExp.Current());
-            }
         }
     }
     
@@ -1751,12 +1738,9 @@ void TIGLViewerDocument::exportFuselageCurvesBRep()
     std::string profFileName = baseName.toStdString() + "_profiles.brep";
     BRepTools::Write(profiles, profFileName.c_str());
     
-    if (allGuides->Length() > 0) {
-        ShapeAnalysis_FreeBounds::ConnectEdgesToWires(allGuides, Precision::Confusion(), false, allGuides);
-        for (int iwire = 1; iwire <= allGuides->Length(); ++iwire) {
-            builder.Add(guides, allGuides->Value(iwire));
-        }
-        
+    TopoDS_Compound guides = fuselage.GetGuideCurveWires();
+    TopoDS_Iterator it(guides);
+    if (it.More()) {
         // write to brep
         std::string guideFileName = baseName.toStdString() + "_guides.brep";
         BRepTools::Write(guides, guideFileName.c_str());

@@ -28,11 +28,10 @@
 namespace tigl
 {
     class CTiglUIDManager;
+    class CCPACSGuideCurve;
     
     namespace generated
     {
-        class CPACSGuideCurve;
-        
         // This class is used in:
         // CPACSFuselageSegment
         // CPACSWingSegment
@@ -50,16 +49,16 @@ namespace tigl
             TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
-            TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSGuideCurve> >& GetGuideCurves() const;
-            TIGL_EXPORT virtual std::vector<unique_ptr<CPACSGuideCurve> >& GetGuideCurves();
+            TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSGuideCurve> >& GetGuideCurves() const;
+            TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSGuideCurve> >& GetGuideCurves();
             
-            TIGL_EXPORT virtual CPACSGuideCurve& AddGuideCurve();
-            TIGL_EXPORT virtual void RemoveGuideCurve(CPACSGuideCurve& ref);
+            TIGL_EXPORT virtual CCPACSGuideCurve& AddGuideCurve();
+            TIGL_EXPORT virtual void RemoveGuideCurve(CCPACSGuideCurve& ref);
             
         protected:
             CTiglUIDManager* m_uidMgr;
             
-            std::vector<unique_ptr<CPACSGuideCurve> > m_guideCurves;
+            std::vector<unique_ptr<CCPACSGuideCurve> > m_guideCurves;
             
         private:
             #ifdef HAVE_CPP11
@@ -76,11 +75,4 @@ namespace tigl
     }
     
     // CPACSGuideCurves is customized, use type CCPACSGuideCurves directly
-    
-    // Aliases in tigl namespace
-    #ifdef HAVE_CPP11
-    using CCPACSGuideCurve = generated::CPACSGuideCurve;
-    #else
-    typedef generated::CPACSGuideCurve CCPACSGuideCurve;
-    #endif
 }

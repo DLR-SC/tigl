@@ -39,6 +39,7 @@
 #include "CTiglLogging.h"
 #include "CCPACSWingCell.h"
 #include "CTiglApproximateBsplineWire.h"
+#include "CTiglMakeLoft.h"
 #include "CPointsToLinearBSpline.h"
 #include "tiglcommonfunctions.h"
 #include "CCPACSWingCSStructure.h"
@@ -811,17 +812,7 @@ PNamedShape CCPACSWingComponentSegment::BuildLoft()
     sfs->Init ( loftShape );
     sfs->Perform();
     loftShape = sfs->Shape();
-
-    // Calculate volume
-    GProp_GProps System;
-    BRepGProp::VolumeProperties(loftShape, System);
-    myVolume = System.Mass();
-
-    // Calculate surface area
-    GProp_GProps AreaSystem;
-    BRepGProp::SurfaceProperties(loftShape, AreaSystem);
-    mySurfaceArea = AreaSystem.Mass();
-        
+    
     // Set Names
     std::string loftName = m_uID;
     std::string loftShortName = GetShortShapeName();
@@ -1032,7 +1023,6 @@ void CCPACSWingComponentSegment::GetSegmentEtaXsi(double csEta, double csXsi, st
     sxsi = csXsi;
     segmentUID = segments[index]->GetUID();
 }
-
 
 // Returns the volume of this segment
 double CCPACSWingComponentSegment::GetVolume()

@@ -200,7 +200,12 @@ TopoDS_Wire CCPACSWingProfile::GetWire()
     if (!profileAlgo->GetTrailingEdge().IsNull()) {
         closedWireBuilder.Add(profileAlgo->GetTrailingEdge());
     }
-
+    closedWireBuilder.Build();
+    
+    if (!closedWireBuilder.IsDone()) {
+        throw CTiglError("Error creating closed wing profile");
+    }
+        
     return closedWireBuilder.Wire();
 }
 

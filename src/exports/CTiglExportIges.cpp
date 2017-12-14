@@ -253,9 +253,10 @@ void CTiglExportIges::SetTranslationParameters() const
      * BRep entities in IGES are experimental and untested.
      * They allow to specify things like shells and solids.
      * It seems, that CATIA does not support these entities.
-     * Hence we stay the compatible way.
+     * However, in order to fix Issue #182, BRep entities are
+     * necessary.
      */
-    Interface_Static::SetIVal("write.iges.brep.mode", 0);
+    Interface_Static::SetIVal("write.iges.brep.mode", 1);
     Interface_Static::SetCVal("write.iges.header.author", "TiGL");
     Interface_Static::SetCVal("write.iges.header.company", "German Aerospace Center (DLR), SC");
 }
@@ -295,7 +296,7 @@ bool CTiglExportIges::WriteImpl(const std::string& filename) const
 
     SetTranslationParameters();
 
-    IGESControl_Writer igesWriter("MM", 0);
+    IGESControl_Writer igesWriter("MM", 1);
     igesWriter.Model()->ApplyStatic();
 
     int level = 0;

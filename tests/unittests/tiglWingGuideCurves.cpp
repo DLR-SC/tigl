@@ -147,7 +147,7 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSGuideCurves)
 {
     tigl::CCPACSGuideCurves guideCurves(NULL);
     guideCurves.ReadCPACS(tixiHandle, "/cpacs/vehicles/aircraft/model/wings/wing/segments/segment[2]/guideCurves");
-    ASSERT_EQ(guideCurves.GetGuideCurveCount(), 5);
+    ASSERT_EQ(guideCurves.GetGuideCurveCount(), 3);
     const tigl::CCPACSGuideCurve& guideCurve = guideCurves.GetGuideCurve("GuideCurveModel_Wing_Seg_2_3_GuideCurve_LeadingEdge");
     ASSERT_EQ(guideCurve.GetUID(), "GuideCurveModel_Wing_Seg_2_3_GuideCurve_LeadingEdge");
     ASSERT_EQ(guideCurve.GetName(), "Leading Edge GuideCurve from GuideCurveModel - Wing Section 2 Main Element to GuideCurveModel - Wing Section 3 Main Element ");
@@ -362,15 +362,15 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSGuideCurveAlgo)
     tigl::CCPACSGuideCurveProfile guideCurveProfile(NULL);
     guideCurveProfile.ReadCPACS(tixiHandle, "/cpacs/vehicles/profiles/guideCurves/guideCurveProfile[7]");
 
-    TopoDS_Wire guideCurveWire;
+
+    TopoDS_Edge guideCurveEdge;
     // instantiate guideCurveAlgo
-    guideCurveWire = tigl::CCPACSGuideCurveAlgo<tigl::CCPACSWingProfileGetPointAlgo> (innerWireContainer, outerWireContainer, 0.0, 0.0, 2*radius1, 2*radius2, guideCurveProfile);
+    guideCurveEdge = tigl::CCPACSGuideCurveAlgo<tigl::CCPACSWingProfileGetPointAlgo> (innerWireContainer, outerWireContainer, 0.0, 0.0, 2*radius1, 2*radius2, gp_Dir(1., 0., 0.), guideCurveProfile);
 
     // check if guide curve runs through sample points
     // get curve
     Standard_Real u1, u2;
-    BRepTools_WireExplorer guideCurveExplorer(guideCurveWire);
-    Handle(Geom_Curve) curve =  BRep_Tool::Curve(guideCurveExplorer.Current(), u1, u2);
+    Handle(Geom_Curve) curve =  BRep_Tool::Curve(guideCurveEdge, u1, u2);
     // set predicted sample points from cpacs file
     const double temp[] = {0.0, 0.0, 0.01, 0.03, 0.09, 0.08, 0.07, 0.06, 0.02, 0.0, 0.0};
     std::vector<double> predictedSamplePointsX (temp, temp + sizeof(temp) / sizeof(temp[0]) );
@@ -385,8 +385,6 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSGuideCurveAlgo)
 
         // scale sample points since 2nd profile is scaled by a factor 2
         predictedSamplePointsX[i]*=(2*radius1+(2*radius2-2*radius1)*b);
-        // minus sign since gamma direction is negative x-direction for alpha=0
-        predictedSamplePointsX[i]*=-1.0;
         // check is guide curve runs through the predicted sample points
         ASSERT_NEAR(predictedSamplePointsX[i], point.X(), 1E-14);
         ASSERT_NEAR(b*distance, point.Y(), 1E-14);
@@ -404,23 +402,20 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSWingSegment)
     tigl::CCPACSWing& wing = config.GetWing(1);
 
     ASSERT_EQ(wing.GetSegmentCount(),3);
-    tigl::CCPACSWingSegment& segment1 = wing.GetSegment(1);
-    tigl::CCPACSWingSegment& segment2 = wing.GetSegment(2);
-    tigl::CCPACSWingSegment& segment3 = wing.GetSegment(3);
-    TopTools_SequenceOfShape& guideCurveContainer1 = segment1.GetGuideCurveWires();
-    TopTools_SequenceOfShape& guideCurveContainer2 = segment2.GetGuideCurveWires();
-    TopTools_SequenceOfShape& guideCurveContainer3 = segment3.GetGuideCurveWires();
 
-    ASSERT_EQ(guideCurveContainer3.Length(), 3);
+    tigl::CCPACSWingSegment& segment3 = wing.GetSegment(3);
+
+    ASSERT_TRUE(segment3.GetGuideCurves().get_ptr() != NULL);
+    tigl::CCPACSGuideCurves& guides = *segment3.GetGuideCurves();
+    ASSERT_EQ(guides.GetGuideCurveCount(), 3);
 
     // obtain leading edge guide curve 
-    TopoDS_Wire guideCurveWire = TopoDS::Wire(guideCurveContainer3(1));
+    TopoDS_Edge guideCurveEdge = guides.GetGuideCurve(1).GetCurve();
 
     // check if guide curve runs through sample points
     // get curve
     Standard_Real u1, u2;
-    BRepTools_WireExplorer guideCurveExplorer(guideCurveWire);
-    Handle(Geom_Curve) curve =  BRep_Tool::Curve(guideCurveExplorer.Current(), u1, u2);
+    Handle(Geom_Curve) curve =  BRep_Tool::Curve(guideCurveEdge, u1, u2);
     // gamma values of cpacs data points
     const double temp[] = {0.0, 0.0, 0.01, 0.03, 0.09, 0.08, 0.07, 0.06, 0.02, 0.0, 0.0};
     std::vector<double> gammaDeviation (temp, temp + sizeof(temp) / sizeof(temp[0]) );
@@ -441,7 +436,7 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSWingSegment)
         // n is the y direction rotated pi/6 (30 degrees) inside the x-y plane
         double b = width*i/double(N);
         gp_Pnt planeLocation = gp_Pnt(b*sin(angle), b*cos(angle)+position, 0.0);
-        Handle(Geom_Plane) plane = new Geom_Plane(planeLocation, gp_Dir(sin(angle), cos(angle), 0.0));
+        Handle(Geom_Plane) plane = new Geom_Plane(planeLocation, gp_Dir(0.0, 1.0, 0.0));
         GeomAPI_IntCS intersection (curve, plane);
         ASSERT_EQ(intersection.NbPoints(), 1);
         gp_Pnt point = intersection.Point(1);
@@ -453,7 +448,7 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSWingSegment)
         // scale sample points since outer profile's chordline smaller by a factor of 0.5
         double s=(innerScale+(outerScale-innerScale)*i/double(N));
         // go along direction perpendicular to the leading edge in the x-y plane
-        predictedPoint += gp_Vec(-cos(angle)*gammaDeviation[i]*s, sin(angle)*gammaDeviation[i]*s, 0.0);
+        predictedPoint += gp_Vec(gammaDeviation[i]*s, 0.0, 0.0);
 
         // check is guide curve runs through the predicted sample points
         ASSERT_NEAR(predictedPoint.X(), point.X(), 1E-5);

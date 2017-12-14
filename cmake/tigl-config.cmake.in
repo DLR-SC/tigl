@@ -1,0 +1,18 @@
+# - Config file for the TIGL package
+# It defines the following variables
+#  TIGL_INCLUDE_DIRS - include directories for TiXI
+#  TIGL_LIBRARIES    - libraries to link against
+
+@PACKAGE_INIT@
+
+# Compute paths
+set_and_check(TIGL_INCLUDE_DIRS "@PACKAGE_CMAKE_INSTALL_INCLUDE_DIR@")
+set_and_check(TIGL_CMAKE_DIR "@PACKAGE_CONFIG_INSTALL_DIR@")
+ 
+# Our library dependencies (contains definitions for IMPORTED targets)
+if(NOT TARGET TIGL)
+  include("${TIGL_CMAKE_DIR}/tigl-targets.cmake")
+endif()
+ 
+# These are IMPORTED targets created by tigl-targets.cmake
+set(TIGL_LIBRARIES TIGL)

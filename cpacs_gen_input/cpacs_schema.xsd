@@ -19168,6 +19168,14 @@ jonas.jepsen@dlr.de
                                                         </xsd:annotation>
                                                 </xsd:element>
                                         </xsd:sequence>
+										<xsd:element minOccurs="0" name="rXDirection" type="pointXYZType">
+												<xsd:annotation>
+														<xsd:documentation>Local direction along which the relative x-coordinates of
+														the guide curve points are defined. For the wing the default is
+														the wing's local x-axis, for the fuselage its the fuselage's local z-axis.
+														</xsd:documentation>
+												</xsd:annotation>
+                                        </xsd:element>
                                 </xsd:sequence>
                                 <xsd:attribute name="uID" type="xsd:string" use="required"/>
                         </xsd:extension>

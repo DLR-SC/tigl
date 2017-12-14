@@ -21,8 +21,8 @@
 */
 
 #include "CCPACSGuideCurves.h"
+#include "CCPACSGuideCurve.h"
 
-#include "generated/CPACSGuideCurve.h"
 
 namespace tigl
 {
@@ -61,6 +61,12 @@ const CCPACSGuideCurve& CCPACSGuideCurves::GetGuideCurve(int index) const
     return *m_guideCurves[index];
 }
 
+// Returns the guide curve for a given index
+CCPACSGuideCurve& CCPACSGuideCurves::GetGuideCurve(int index)
+{
+    return const_cast<CCPACSGuideCurve&>(static_cast<const CCPACSGuideCurves*>(this)->GetGuideCurve(index));
+}
+
 // Returns the guide curve for a given uid.
 const CCPACSGuideCurve& CCPACSGuideCurves::GetGuideCurve(std::string uid) const
 {
@@ -73,6 +79,12 @@ const CCPACSGuideCurve& CCPACSGuideCurves::GetGuideCurve(std::string uid) const
 }
 
 // Returns the guide curve for a given uid.
+CCPACSGuideCurve& CCPACSGuideCurves::GetGuideCurve(std::string uid)
+{
+    return const_cast<CCPACSGuideCurve&>(static_cast<const CCPACSGuideCurves*>(this)->GetGuideCurve(uid));
+}
+
+// Returns the guide curve for a given uid.
 bool CCPACSGuideCurves::GuideCurveExists(std::string uid) const
 {
     for (std::size_t i = 0; i < m_guideCurves.size(); i++) {
@@ -82,6 +94,7 @@ bool CCPACSGuideCurves::GuideCurveExists(std::string uid) const
     }
     return false;
 }
+
 
 } // end namespace tigl
 

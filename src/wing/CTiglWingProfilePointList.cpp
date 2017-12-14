@@ -304,7 +304,7 @@ const TopoDS_Edge& CTiglWingProfilePointList::GetLowerWire() const
 }
 
 // get the upper and lower wing profile combined into one edge
-const TopoDS_Edge & CTiglWingProfilePointList::GetUpperLowerWire() const 
+const TopoDS_Edge & CTiglWingProfilePointList::GetUpperLowerWire() const
 {
     if (profileIsClosed) {
         return upperLowerEdgeClosed;

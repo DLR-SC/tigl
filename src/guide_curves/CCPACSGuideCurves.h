@@ -40,8 +40,14 @@ public:
     // Returns the guide curve for a given index
     TIGL_EXPORT const CCPACSGuideCurve& GetGuideCurve(int index) const;
 
+    // Returns the guide curve for a given index
+    TIGL_EXPORT CCPACSGuideCurve& GetGuideCurve(int index);
+
     // Returns the guide curve for a given uid
     TIGL_EXPORT const CCPACSGuideCurve& GetGuideCurve(std::string uid) const;
+
+    // Returns the guide curve for a given uid
+    TIGL_EXPORT CCPACSGuideCurve& GetGuideCurve(std::string uid);
 
     // Check if guide curve with a given UID exists
     TIGL_EXPORT bool GuideCurveExists(std::string uid) const;

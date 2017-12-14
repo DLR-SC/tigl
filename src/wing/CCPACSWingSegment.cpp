@@ -28,8 +28,10 @@
 #include <string>
 #include <cassert>
 #include <cfloat>
+#include <map>
 
 #include "CCPACSWingSegment.h"
+#include "CTiglWingSegmentGuidecurveBuilder.h"
 #include "CCPACSWing.h"
 #include "CCPACSWingSegments.h"
 #include "CCPACSWingProfiles.h"
@@ -38,6 +40,7 @@
 #include "CCPACSWingProfileGetPointAlgo.h"
 #include "CCPACSConfiguration.h"
 #include "CTiglError.h"
+#include "CTiglMakeLoft.h"
 #include "tiglcommonfunctions.h"
 #include "tigl_config.h"
 #include "math/tiglmathfunctions.h"
@@ -134,26 +137,6 @@ namespace
         return transformedPoint;
     }
 
-    TopoDS_Shape transformProfileWire(const tigl::CTiglTransformation& wingTransform, const tigl::CTiglWingConnection& connection, const TopoDS_Shape& wire)
-    {
-        TopoDS_Shape transformedWire(wire);
-
-        // Do section element transformation on points
-        CTiglTransformation trafo = connection.GetSectionElementTransformation();
-
-        // Do section transformations
-        trafo.PreMultiply(connection.GetSectionTransformation());
-
-        // Do positioning transformations
-        trafo.PreMultiply(connection.GetPositioningTransformation());
-
-        trafo.PreMultiply(wingTransform);
-
-        transformedWire = trafo.Transform(transformedWire);
-
-        return transformedWire;
-    }
-
     // Set the face traits
     void SetFaceTraits (PNamedShape loft) 
     { 
@@ -207,7 +190,9 @@ namespace
 CCPACSWingSegment::CCPACSWingSegment(CCPACSWingSegments* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSWingSegment(parent, uidMgr)
     , CTiglAbstractSegment(parent->GetSegments(), parent->GetParent()->m_symmetry)
-    , wing(parent->GetParent()) {
+    , wing(parent->GetParent())
+    , m_guideCurveBuilder(make_unique<CTiglWingSegmentGuidecurveBuilder>(*this))
+{
     Cleanup();
 }
 
@@ -226,7 +211,6 @@ void CCPACSWingSegment::Invalidate()
     CTiglAbstractSegment::Reset();
     surfaceCache.valid = false;
     surfaceCache.chordsurfaceValid = false;
-    guideCurveWires.Clear();
 }
 
 // Cleanup routine
@@ -259,6 +243,16 @@ void CCPACSWingSegment::ReadCPACS(const TixiDocumentHandle& tixiHandle, const st
     // trigger creation of connections
     SetFromElementUID(m_fromElementUID);
     SetToElementUID(m_toElementUID);
+
+    if (m_guideCurves) {
+        for (int iguide = 1; iguide <= m_guideCurves->GetGuideCurveCount(); ++iguide) {
+            m_guideCurves->GetGuideCurve(iguide).SetGuideCurveBuilder(*m_guideCurveBuilder);
+        }
+    }
+
+    // TODO: check in case of guide curves, that the curves of the first
+    // segment have a relativeFromCircumference set, the others not
+
 
     // check that the profiles are consistent
     if (innerConnection.GetProfile().HasBluntTE() !=
@@ -314,25 +308,21 @@ TopoDS_Wire CCPACSWingSegment::GetInnerWire(TiglCoordinateSystem referenceCS) co
     * In all other cases, we need the splitted wire to distiguish
     * upper und lower wing surface
     */
-#ifdef LOFTALGO_FOUND
-    if (guideCurves.GetGuideCurveCount() > 0) {
+    if (m_guideCurves && m_guideCurves->GetGuideCurveCount() > 0) {
         w = innerProfile.GetWire();
     }
     else {
         w = innerProfile.GetSplitWire();
     }
-#else
-    w = innerProfile.GetSplitWire();
-#endif
 
         CTiglTransformation identity;
     
     switch (referenceCS) {
     case WING_COORDINATE_SYSTEM:
-        return TopoDS::Wire(transformProfileWire(identity, innerConnection, w));
+        return TopoDS::Wire(transformWingProfileGeometry(identity, innerConnection, w));
         break;
     case GLOBAL_COORDINATE_SYSTEM:
-        return TopoDS::Wire(transformProfileWire(GetWing().GetTransformationMatrix(), innerConnection, w));
+        return TopoDS::Wire(transformWingProfileGeometry(GetWing().GetTransformationMatrix(), innerConnection, w));
         break;
     default:
         throw CTiglError("Invalid coordinate system passed to CCPACSWingSegment::GetInnerWire");
@@ -351,25 +341,21 @@ TopoDS_Wire CCPACSWingSegment::GetOuterWire(TiglCoordinateSystem referenceCS) co
     * In all other cases, we need the splitted wire to distiguish
     * upper und lower wing surface
     */
-#ifdef LOFTALGO_FOUND
-    if (guideCurves.GetGuideCurveCount() > 0) {
+    if (m_guideCurves && m_guideCurves->GetGuideCurveCount() > 0) {
         w = outerProfile.GetWire();
     }
     else {
         w = outerProfile.GetSplitWire();
     }
-#else
-    w = outerProfile.GetSplitWire();
-#endif
 
         CTiglTransformation identity;
 
     switch (referenceCS) {
     case WING_COORDINATE_SYSTEM:
-        return TopoDS::Wire(transformProfileWire(identity, outerConnection, w));
+        return TopoDS::Wire(transformWingProfileGeometry(identity, outerConnection, w));
         break;
     case GLOBAL_COORDINATE_SYSTEM:
-        return TopoDS::Wire(transformProfileWire(GetWing().GetTransformationMatrix(), outerConnection, w));
+        return TopoDS::Wire(transformWingProfileGeometry(GetWing().GetTransformationMatrix(), outerConnection, w));
         break;
     default:
         throw CTiglError("Invalid coordinate system passed to CCPACSWingSegment::GetOuterWire");
@@ -385,10 +371,10 @@ TopoDS_Wire CCPACSWingSegment::GetInnerWireOpened(TiglCoordinateSystem reference
 
     switch (referenceCS) {
     case WING_COORDINATE_SYSTEM:
-        return TopoDS::Wire(transformProfileWire(identity, innerConnection, innerProfile.GetWireOpened()));
+        return TopoDS::Wire(transformWingProfileGeometry(identity, innerConnection, innerProfile.GetWireOpened()));
         break;
     case GLOBAL_COORDINATE_SYSTEM:
-        return TopoDS::Wire(transformProfileWire(GetWing().GetTransformationMatrix(), innerConnection, innerProfile.GetWireOpened()));
+        return TopoDS::Wire(transformWingProfileGeometry(GetWing().GetTransformationMatrix(), innerConnection, innerProfile.GetWireOpened()));
         break;
     default:
         throw CTiglError("Invalid coordinate system passed to CCPACSWingSegment::GetInnerWireOpened");
@@ -404,10 +390,10 @@ TopoDS_Wire CCPACSWingSegment::GetOuterWireOpened(TiglCoordinateSystem reference
 
     switch (referenceCS) {
     case WING_COORDINATE_SYSTEM:
-        return TopoDS::Wire(transformProfileWire(identity, outerConnection, outerProfile.GetWireOpened()));
+        return TopoDS::Wire(transformWingProfileGeometry(identity, outerConnection, outerProfile.GetWireOpened()));
         break;
     case GLOBAL_COORDINATE_SYSTEM:
-        return TopoDS::Wire(transformProfileWire(GetWing().GetTransformationMatrix(), outerConnection, outerProfile.GetWireOpened()));
+        return TopoDS::Wire(transformWingProfileGeometry(GetWing().GetTransformationMatrix(), outerConnection, outerProfile.GetWireOpened()));
         break;
     default:
         throw CTiglError("Invalid coordinate system passed to CCPACSWingSegment::GetInnerWireOpened");
@@ -461,14 +447,41 @@ PNamedShape CCPACSWingSegment::BuildLoft()
     TopoDS_Wire outerWire = GetOuterWire();
 
     // Build loft
-    //BRepOffsetAPI_ThruSections generator(Standard_False, Standard_False, Precision::Confusion());
-    BRepOffsetAPI_ThruSections generator(/* is solid (else shell) */ Standard_True, /* ruled (else smoothed out) */ Standard_False, Precision::Confusion());
-    generator.AddWire(innerWire);
-    generator.AddWire(outerWire);
-    generator.CheckCompatibility(/* check (defaults to true) */ Standard_False);
-    generator.Build();
-    TopoDS_Shape loftShape = generator.Shape();
+    CTiglMakeLoft lofter;
+    lofter.addProfiles(innerWire);
+    lofter.addProfiles(outerWire);
+    
 
+    if (m_guideCurves) {
+        CCPACSGuideCurves& curves = *m_guideCurves;
+        bool hasTrailingEdge = !innerConnection.GetProfile().GetTrailingEdge().IsNull();
+        
+        // order guide curves according to fromRelativeCircumeference
+        std::multimap<double, CCPACSGuideCurve*> guideMap;
+        for (int iguide = 1; iguide <= curves.GetGuideCurveCount(); ++iguide) {
+            CCPACSGuideCurve* curve = &curves.GetGuideCurve(iguide);
+            double value = *(curve->GetFromRelativeCircumference_choice2());
+            if (value >= 1. && !hasTrailingEdge) {
+                // this is a trailing edge profile, we should add it first
+                value = -1.;
+            }
+            guideMap.insert(std::make_pair(value, curve));
+        }
+        
+        std::multimap<double, CCPACSGuideCurve*>::iterator it;
+        for (it = guideMap.begin(); it != guideMap.end(); ++it) {
+            CCPACSGuideCurve* curve = it->second;
+            BRepBuilderAPI_MakeWire wireMaker(curve->GetCurve());
+            lofter.addGuides(wireMaker.Wire());
+        }
+    }
+    
+    TopoDS_Shape loftShape = lofter.Shape();
+    if (loftShape.IsNull()) {
+        LOG(ERROR) << "Cannot compute wing segment loft " << GetUID();
+        return PNamedShape();
+    }
+    
     Handle(ShapeFix_Shape) sfs = new ShapeFix_Shape;
     sfs->Init ( loftShape );
     sfs->Perform();
@@ -954,14 +967,14 @@ void CCPACSWingSegment::MakeSurfaces() const
     TopoDS_Edge ol_wire = outerConnection.GetProfile().GetLowerWire();
 
     CTiglTransformation identity;
-    TopoDS_Edge iu_wire_local = TopoDS::Edge(transformProfileWire(identity, innerConnection, iu_wire));
-    TopoDS_Edge ou_wire_local = TopoDS::Edge(transformProfileWire(identity, outerConnection, ou_wire));
-    TopoDS_Edge il_wire_local = TopoDS::Edge(transformProfileWire(identity, innerConnection, il_wire));
-    TopoDS_Edge ol_wire_local = TopoDS::Edge(transformProfileWire(identity, outerConnection, ol_wire));
-    iu_wire = TopoDS::Edge(transformProfileWire(wing->GetTransformationMatrix(), innerConnection, iu_wire));
-    ou_wire = TopoDS::Edge(transformProfileWire(wing->GetTransformationMatrix(), outerConnection, ou_wire));
-    il_wire = TopoDS::Edge(transformProfileWire(wing->GetTransformationMatrix(), innerConnection, il_wire));
-    ol_wire = TopoDS::Edge(transformProfileWire(wing->GetTransformationMatrix(), outerConnection, ol_wire));
+    TopoDS_Edge iu_wire_local = TopoDS::Edge(transformWingProfileGeometry(identity, innerConnection, iu_wire));
+    TopoDS_Edge ou_wire_local = TopoDS::Edge(transformWingProfileGeometry(identity, outerConnection, ou_wire));
+    TopoDS_Edge il_wire_local = TopoDS::Edge(transformWingProfileGeometry(identity, innerConnection, il_wire));
+    TopoDS_Edge ol_wire_local = TopoDS::Edge(transformWingProfileGeometry(identity, outerConnection, ol_wire));
+    iu_wire = TopoDS::Edge(transformWingProfileGeometry(wing->GetTransformationMatrix(), innerConnection, iu_wire));
+    ou_wire = TopoDS::Edge(transformWingProfileGeometry(wing->GetTransformationMatrix(), outerConnection, ou_wire));
+    il_wire = TopoDS::Edge(transformWingProfileGeometry(wing->GetTransformationMatrix(), innerConnection, il_wire));
+    ol_wire = TopoDS::Edge(transformWingProfileGeometry(wing->GetTransformationMatrix(), outerConnection, ol_wire));
 
     BRepOffsetAPI_ThruSections upperSections(Standard_False,Standard_True);
     upperSections.AddWire(BRepBuilderAPI_MakeWire(iu_wire));
@@ -1033,10 +1046,10 @@ void CCPACSWingSegment::MakeSurfaces() const
     TopoDS_Edge ou_wire_open = outerConnection.GetProfile().GetUpperWireOpened();
     TopoDS_Edge il_wire_open = innerConnection.GetProfile().GetLowerWireOpened();
     TopoDS_Edge ol_wire_open = outerConnection.GetProfile().GetLowerWireOpened();
-    iu_wire_open = TopoDS::Edge(transformProfileWire(identity, innerConnection, iu_wire_open));
-    ou_wire_open = TopoDS::Edge(transformProfileWire(identity, outerConnection, ou_wire_open));
-    il_wire_open = TopoDS::Edge(transformProfileWire(identity, innerConnection, il_wire_open));
-    ol_wire_open = TopoDS::Edge(transformProfileWire(identity, outerConnection, ol_wire_open));
+    iu_wire_open = TopoDS::Edge(transformWingProfileGeometry(identity, innerConnection, iu_wire_open));
+    ou_wire_open = TopoDS::Edge(transformWingProfileGeometry(identity, outerConnection, ou_wire_open));
+    il_wire_open = TopoDS::Edge(transformWingProfileGeometry(identity, innerConnection, il_wire_open));
+    ol_wire_open = TopoDS::Edge(transformWingProfileGeometry(identity, outerConnection, ol_wire_open));
 
     // compute upper and lower shapes for opened profile
     BRepOffsetAPI_ThruSections upperSectionsOpened(Standard_False,Standard_True);
@@ -1076,8 +1089,8 @@ void CCPACSWingSegment::MakeSurfaces() const
         throw CTiglError("trailing edge geometry of Wing Section Profile not found!");
     }
     // transform wires
-    innerTEWire = TopoDS::Edge(transformProfileWire(identity, innerConnection, innerTEWire));
-    outerTEWire = TopoDS::Edge(transformProfileWire(identity, outerConnection, outerTEWire));
+    innerTEWire = TopoDS::Edge(transformWingProfileGeometry(identity, innerConnection, innerTEWire));
+    outerTEWire = TopoDS::Edge(transformWingProfileGeometry(identity, outerConnection, outerTEWire));
     // generate face
     BRepOffsetAPI_ThruSections teGenerator(Standard_False, Standard_True);
     teGenerator.AddWire(BRepBuilderAPI_MakeWire(innerTEWire));
@@ -1205,102 +1218,6 @@ TopoDS_Shape& CCPACSWingSegment::GetLowerShape(TiglCoordinateSystem referenceCS)
     }
 }
 
-// get guide curve for given UID
-const CCPACSGuideCurve& CCPACSWingSegment::GetGuideCurve(std::string UID) const
-{
-    return m_guideCurves->GetGuideCurve(UID);
-}
-
-// check if guide curve with a given UID exists
-bool CCPACSWingSegment::GuideCurveExists(std::string UID) const
-{
-    return m_guideCurves->GuideCurveExists(UID);
-}
-
-TopTools_SequenceOfShape& CCPACSWingSegment::GetGuideCurveWires() const
-{
-    if (guideCurveWires.IsEmpty()) {
-        BuildGuideCurveWires();
-    }
-    return guideCurveWires;
-}
-
-// Creates all guide curves
-void CCPACSWingSegment::BuildGuideCurveWires() const
-{
-    guideCurveWires.Clear();
-    if (m_guideCurves) {
-        const tigl::CTiglTransformation& wingTransform = GetWing().GetTransformationMatrix();
-
-        // get upper and lower part of inner profile in world coordinates
-        CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
-        TopoDS_Edge upperInnerWire = TopoDS::Edge(transformProfileWire(wingTransform, innerConnection, innerProfile.GetUpperWire()));
-        TopoDS_Edge lowerInnerWire = TopoDS::Edge(transformProfileWire(wingTransform, innerConnection, innerProfile.GetLowerWire()));
-
-        // get upper and lower part of outer profile in world coordinates
-        CCPACSWingProfile& outerProfile = outerConnection.GetProfile();
-        TopoDS_Edge upperOuterWire = TopoDS::Edge(transformProfileWire(wingTransform, outerConnection, outerProfile.GetUpperWire()));
-        TopoDS_Edge lowerOuterWire = TopoDS::Edge(transformProfileWire(wingTransform, outerConnection, outerProfile.GetLowerWire()));
-
-        // concatenate inner profile wires for guide curve construction algorithm
-        TopTools_SequenceOfShape concatenatedInnerWires;
-        concatenatedInnerWires.Append(lowerInnerWire);
-        concatenatedInnerWires.Append(upperInnerWire);
-
-        // concatenate outer profile wires for guide curve construction algorithm
-        TopTools_SequenceOfShape concatenatedOuterWires;
-        concatenatedOuterWires.Append(lowerOuterWire);
-        concatenatedOuterWires.Append(upperOuterWire);
-
-        // get chord lengths for inner profile in word coordinates
-        TopoDS_Wire innerChordLineWire = TopoDS::Wire(transformProfileWire(wingTransform, innerConnection, innerProfile.GetChordLineWire()));
-        TopoDS_Wire outerChordLineWire = TopoDS::Wire(transformProfileWire(wingTransform, outerConnection, outerProfile.GetChordLineWire()));
-        double innerScale = GetWireLength(innerChordLineWire);
-        double outerScale = GetWireLength(outerChordLineWire);
-
-        // loop through all guide curves and construct the corresponding wires
-        int nGuideCurves = m_guideCurves->GetGuideCurveCount();
-        for (int i=0; i!=nGuideCurves; i++) {
-            // get guide curve
-            const CCPACSGuideCurve& guideCurve = m_guideCurves->GetGuideCurve(i+1);
-            double fromRelativeCircumference;
-            // check if fromRelativeCircumference is given in the current guide curve
-            if (guideCurve.GetFromRelativeCircumference_choice2()) {
-                fromRelativeCircumference = *guideCurve.GetFromRelativeCircumference_choice2();
-            }
-            // otherwise get relative circumference from neighboring segment guide curve
-            else {
-                // get neighboring guide curve UID
-                std::string neighborGuideCurveUID = *guideCurve.GetFromGuideCurveUID_choice1();
-                // get neighboring guide curve
-                const CCPACSGuideCurve& neighborGuideCurve = wing->GetGuideCurve(neighborGuideCurveUID);
-                // get relative circumference from neighboring guide curve
-                fromRelativeCircumference = neighborGuideCurve.GetToRelativeCircumference();
-            }
-            // get relative circumference of outer profile
-            double toRelativeCircumference = guideCurve.GetToRelativeCircumference();
-            // get guide curve profile UID
-            std::string guideCurveProfileUID = guideCurve.GetGuideCurveProfileUID();
-            // get relative circumference of inner profile
-
-            // get guide curve profile
-            CCPACSConfiguration& config = wing->GetConfiguration();
-            CCPACSGuideCurveProfile& guideCurveProfile = config.GetGuideCurveProfile(guideCurveProfileUID);
-
-            // construct guide curve algorithm
-            TopoDS_Wire guideCurveWire = CCPACSGuideCurveAlgo<CCPACSWingProfileGetPointAlgo>(concatenatedInnerWires, concatenatedOuterWires, fromRelativeCircumference, toRelativeCircumference, innerScale, outerScale, guideCurveProfile);
-            guideCurveWires.Append(guideCurveWire);
-        }
-    }
-}
-
-int CCPACSWingSegment::GetGuideCurveCount() const
-{
-    if (m_guideCurves)
-        return m_guideCurves->GetGuideCurveCount();
-    else
-        return 0;
-}
 
 } // end namespace tigl
 
