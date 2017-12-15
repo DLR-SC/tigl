@@ -1,3 +1,6 @@
+dist: trusty
+sudo: required
+
 os:
   - linux
   - osx
@@ -25,8 +28,8 @@ deploy:
 
 before_install:
   # Linux steps
-  - '[ "$TRAVIS_OS_NAME" != linux ] || curl http://download.opensuse.org/repositories/science:/dlr/xUbuntu_12.04/Release.key | sudo apt-key add - '
-  - '[ "$TRAVIS_OS_NAME" != linux ] || echo "deb http://download.opensuse.org/repositories/science:/dlr/xUbuntu_12.04/ /" | sudo tee -a /etc/apt/sources.list '
+  - '[ "$TRAVIS_OS_NAME" != linux ] || curl http://download.opensuse.org/repositories/science:/dlr/xUbuntu_14.04/Release.key | sudo apt-key add - '
+  - '[ "$TRAVIS_OS_NAME" != linux ] || echo "deb http://download.opensuse.org/repositories/science:/dlr/xUbuntu_14.04/ /" | sudo tee -a /etc/apt/sources.list '
   - '[ "$TRAVIS_OS_NAME" != linux ] || sudo apt-get update -qq '
   - '[ "$TRAVIS_OS_NAME" != linux ] || sudo apt-get install -y --force-yes libtixi3-dev liboce-dev doxygen cmake cmake-data sshpass'
 # oce ships a faulty config file, we have to remove it and use standard opencascade detection
