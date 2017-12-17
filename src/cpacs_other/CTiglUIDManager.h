@@ -58,7 +58,7 @@ public:
     TIGL_EXPORT void RegisterObject(const std::string& uid, void* object, const std::type_info& typeInfo);
 
     template<typename T>
-    void RegisterObject(const std::string& uid, T& object)
+    TIGL_EXPORT void RegisterObject(const std::string& uid, T& object)
     {
         RegisterObject(uid, &object, typeid(object));
     }
@@ -67,13 +67,13 @@ public:
     TIGL_EXPORT TypedPtr ResolveObject(const std::string& uid, const std::type_info& typeInfo) const;
 
     template<typename T>
-    T& ResolveObject(const std::string& uid) const
+    TIGL_EXPORT T& ResolveObject(const std::string& uid) const
     {
         return *static_cast<T* const>(ResolveObject(uid, typeid(T)).ptr);
     }
 
     template<typename T>
-    std::vector<T*> ResolveObjects() const
+    TIGL_EXPORT std::vector<T*> ResolveObjects() const
     {
         const std::type_info* ti = &typeid(T);
         std::vector<T*> objects;
@@ -105,6 +105,9 @@ public:
 
     // Returns the container with all root components of the geometric topology that have children.
     TIGL_EXPORT const RelativeComponentContainerType& GetRootGeometricComponents() const;
+
+    // Resolves all CTiglRelativelyPositionedComponent's parentUid to the actual objects
+    TIGL_EXPORT void SetParentComponents();
 
     // Returns the container with all registered shapes
     TIGL_EXPORT const ShapeContainerType& GetShapeContainer() const;

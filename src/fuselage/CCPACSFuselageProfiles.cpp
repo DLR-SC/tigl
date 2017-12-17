@@ -53,6 +53,11 @@ void CCPACSFuselageProfiles::ReadCPACS(const TixiDocumentHandle& tixiHandle, con
     }
 }
 
+CCPACSFuselageProfile& CCPACSFuselageProfiles::AddFuselageProfile() {
+    m_fuselageProfiles.push_back(make_unique<CCPACSFuselageProfile>(m_uidMgr));
+    return static_cast<CCPACSFuselageProfile&>(*m_fuselageProfiles.back());
+}
+
 bool CCPACSFuselageProfiles::HasProfile(std::string uid) const
 {
     for (std::vector<unique_ptr<CCPACSProfileGeometry> >::const_iterator it = m_fuselageProfiles.begin(); it != m_fuselageProfiles.end(); ++it)

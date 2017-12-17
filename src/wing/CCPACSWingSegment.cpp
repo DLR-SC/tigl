@@ -315,7 +315,7 @@ TopoDS_Wire CCPACSWingSegment::GetInnerWire(TiglCoordinateSystem referenceCS) co
         w = innerProfile.GetSplitWire();
     }
 
-        CTiglTransformation identity;
+    CTiglTransformation identity;
     
     switch (referenceCS) {
     case WING_COORDINATE_SYSTEM:
@@ -348,7 +348,7 @@ TopoDS_Wire CCPACSWingSegment::GetOuterWire(TiglCoordinateSystem referenceCS) co
         w = outerProfile.GetSplitWire();
     }
 
-        CTiglTransformation identity;
+    CTiglTransformation identity;
 
     switch (referenceCS) {
     case WING_COORDINATE_SYSTEM:
