@@ -169,8 +169,11 @@ Handle(V3d_Viewer) TIGLViewerContext::createViewer( const Standard_ExtString aNa
                             V3d_XposYnegZpos,
                             Quantity_NOC_BLACK,
                             V3d_ZBUFFER,
-                            V3d_GOURAUD,
-                            V3d_WAIT );
+                            V3d_GOURAUD
+#if OCC_VERSION_HEX < VERSION_HEX_CODE(7,2,0)
+                            , V3d_WAIT
+#endif
+                         );
 }
 /*! 
 \brief    Deletes all objects.
@@ -279,12 +282,7 @@ void TIGLViewerContext::gridCirc ( void )
 void TIGLViewerContext::wireFrame(bool wireframe) 
 {
     if (!myContext.IsNull()) {
-        if (wireframe) {
-            myContext->SetDisplayMode(AIS_WireFrame);
-        }
-        else {
-            myContext->SetDisplayMode(AIS_Shaded);
-        }
+        myContext->SetDisplayMode(wireframe ? AIS_WireFrame : AIS_Shaded, true);
     }
 }
 
@@ -470,8 +468,7 @@ void TIGLViewerContext::eraseSelected()
     if (!myContext.IsNull()) {
         myContext->EraseSelected(Standard_False);
 
-        myContext->ClearCurrents();
-        myContext->UpdateCurrentViewer();
+        myContext->ClearCurrents(true);
     }
 }
 
@@ -494,7 +491,7 @@ void TIGLViewerContext::setObjectsWireframe()
 {
     if (!myContext.IsNull()) {
         for (myContext->InitCurrent(); myContext->MoreCurrent(); myContext->NextCurrent()) {
-            myContext->SetDisplayMode(myContext->Current(), 0);
+            myContext->SetDisplayMode(myContext->Current(), 0, true);
         }
     }
 }
@@ -503,7 +500,7 @@ void TIGLViewerContext::setObjectsShading()
 {
     if (!myContext.IsNull()) {
         for (myContext->InitCurrent(); myContext->MoreCurrent(); myContext->NextCurrent()) {
-            myContext->SetDisplayMode(myContext->Current(), 1);
+            myContext->SetDisplayMode(myContext->Current(), 1, true);
         }
     }
 }
@@ -512,7 +509,7 @@ void TIGLViewerContext::setObjectsMaterial(Graphic3d_NameOfMaterial material)
 {
     if (!myContext.IsNull()) {
         for (myContext->InitCurrent(); myContext->MoreCurrent(); myContext->NextCurrent()) {
-             myContext->SetMaterial (myContext->Current(),  material);
+             myContext->SetMaterial (myContext->Current(),  material, true);
         }
     }
 }
@@ -528,7 +525,7 @@ void TIGLViewerContext::setObjectsTexture(const QString &filename)
                  shape->SetTextureFileName(filename.toStdString().c_str());
                  shape->SetTextureMapOn();
                  if (shape->DisplayMode() == 3) {
-                     myContext->RecomputePrsOnly (shape);
+                     myContext->RecomputePrsOnly (shape, true);
                  }
                  else {
                      myContext->SetDisplayMode (shape, 3, Standard_False);
@@ -558,7 +555,7 @@ void TIGLViewerContext::setObjectsColor(const QColor& color)
 {
     if (color.isValid() && !myContext.IsNull()) {
         for (myContext->InitCurrent(); myContext->MoreCurrent(); myContext->NextCurrent()) {
-            myContext->SetColor (myContext->Current(),Quantity_Color(color.red()/255., color.green()/255., color.blue()/255., Quantity_TOC_RGB));
+            myContext->SetColor (myContext->Current(),Quantity_Color(color.red()/255., color.green()/255., color.blue()/255., Quantity_TOC_RGB), true);
         }
     }
 }

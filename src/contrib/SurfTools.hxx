@@ -24,13 +24,10 @@
 
 #include "tigl_internal.h"
 
-#include <Handle_Geom_BSplineSurface.hxx>
+#include <Geom_BSplineSurface.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
-
-class TColGeom_SequenceOfSurface;
-
-
+#include <TColGeom_SequenceOfSurface.hxx>
 #include <Standard.hxx>
 
 class SurfTools
@@ -63,7 +60,7 @@ public:
     @param theUlast the value of the last parameter
     @return None
     */
-    TIGL_EXPORT static  void UReparametrize(Handle_Geom_BSplineSurface& theS,
+    TIGL_EXPORT static  void UReparametrize(Handle(Geom_BSplineSurface)& theS,
                                             const Standard_Real theUfirst,
                                             const Standard_Real theUlast) ;
 
@@ -75,7 +72,7 @@ public:
     @param theVlast the value of the last parameter
     @return None
     */
-    TIGL_EXPORT static  void VReparametrize(Handle_Geom_BSplineSurface& theS,
+    TIGL_EXPORT static  void VReparametrize(Handle(Geom_BSplineSurface)& theS,
                                             const Standard_Real theVfirst,
                                             const Standard_Real theVlast) ;
 
@@ -88,7 +85,7 @@ public:
     @param theInsertKnots the flag that allows to insert new knots.
     @return None
     */
-    TIGL_EXPORT static  void USmoothing(Handle_Geom_BSplineSurface& theS,
+    TIGL_EXPORT static  void USmoothing(Handle(Geom_BSplineSurface)& theS,
                                         const Standard_Integer theCont,const Standard_Real theTol,
                                         const Standard_Boolean theInsertKnots = Standard_True) ;
     
@@ -101,7 +98,7 @@ public:
     @param theInsertKnots the flag that allows to insert new knots.
     @return None
     */
-    TIGL_EXPORT static  void VSmoothing(Handle_Geom_BSplineSurface& theS,
+    TIGL_EXPORT static  void VSmoothing(Handle(Geom_BSplineSurface)& theS,
                                         const Standard_Integer theCont,const Standard_Real theTol,
                                         const Standard_Boolean theInsertKnots = Standard_True) ;
 
@@ -115,10 +112,10 @@ public:
     @return 0 if the concatenation has been done successfully
     */
     TIGL_EXPORT static  Standard_Integer 
-    ConcatenateSurfacesV(const Handle_Geom_BSplineSurface& theS1,
-                         const Handle_Geom_BSplineSurface& theS2,
+    ConcatenateSurfacesV(const Handle(Geom_BSplineSurface)& theS1,
+                         const Handle(Geom_BSplineSurface)& theS2,
                          const Standard_Real theTol,
-                         Handle_Geom_BSplineSurface& theS) ;
+                         Handle(Geom_BSplineSurface)& theS) ;
 
     /**
     @brief Concatenate two surfaces along U boundary
@@ -130,10 +127,10 @@ public:
     @return 0 if the concatenation has been done successfully
     */
     TIGL_EXPORT static  Standard_Integer 
-    ConcatenateSurfacesU(const Handle_Geom_BSplineSurface& theS1,
-                         const Handle_Geom_BSplineSurface& theS2,
+    ConcatenateSurfacesU(const Handle(Geom_BSplineSurface)& theS1,
+                         const Handle(Geom_BSplineSurface)& theS2,
                          const Standard_Real theTol,
-                         Handle_Geom_BSplineSurface& theS) ;
+                         Handle(Geom_BSplineSurface)& theS) ;
 
     /**
     @brief Concatenate two surfaces along any coinciding boundaries

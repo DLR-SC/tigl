@@ -58,7 +58,7 @@ private:
     gp_Pnt myPnt;
     gp_Dir myDir;
     Standard_Real myLength;
-    Quantity_Length myArrowLength;
+    Standard_Real myArrowLength;
 };
 
 #endif // AFX_ISession_Direction_H__767C0DB3_A3B0_11D1_8DA3_0800369C8A03__INCLUDED_

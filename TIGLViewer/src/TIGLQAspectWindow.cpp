@@ -167,10 +167,10 @@ Aspect_TypeOfResize TIGLQAspectWindow::DoResize() const
 // function : Ratio
 // purpose  :
 // =======================================================================
-Quantity_Ratio TIGLQAspectWindow::Ratio() const
+Standard_Real TIGLQAspectWindow::Ratio() const
 {
     QRect aRect = myWidget->rect();
-    return Quantity_Ratio( aRect.right() - aRect.left() ) / Quantity_Ratio( aRect.bottom() - aRect.top() );
+    return static_cast<Standard_Real>( aRect.right() - aRect.left() ) / static_cast<Standard_Real>( aRect.bottom() - aRect.top() );
 }
 
 // =======================================================================

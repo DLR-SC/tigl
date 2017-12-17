@@ -41,6 +41,8 @@
 
 #include <BOPTools.hxx>
 
+#include <Standard_Version.hxx>
+
 
 static 
   void TreatCompound(const TopoDS_Shape& aC, 
@@ -149,7 +151,11 @@ void GEOMAlgo_Splitter::Clear()
 //=======================================================================
 void GEOMAlgo_Splitter::BuildResult(const TopAbs_ShapeEnum theType)
 {
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,2,0)
+  myReport->Clear();
+#else
   myErrorStatus=0;
+#endif
   //
   TopAbs_ShapeEnum aType;
   BRep_Builder aBB;

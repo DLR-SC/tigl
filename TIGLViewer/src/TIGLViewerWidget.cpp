@@ -200,8 +200,10 @@ void TIGLViewerWidget::initializeOCC(const Handle(AIS_InteractiveContext)& aCont
 
         //myView->ColorScaleDisplay();
 
+#if OCC_VERSION_HEX < VERSION_HEX_CODE(7,1,0)
         // enable textures
         myView->SetSurfaceDetail(V3d_TEX_ALL);
+#endif
 
         // Map the window
         if (!myWindow->IsMapped()) {
@@ -943,7 +945,7 @@ AIS_StatusOfDetection TIGLViewerWidget::moveEvent( QPoint point )
     }
 
     Handle(AIS_InteractiveContext) myContext = viewerContext->getContext();
-    status = myContext->MoveTo( point.x(), point.y(), myView );
+    status = myContext->MoveTo( point.x(), point.y(), myView, true );
     return status;
 }
 
@@ -964,14 +966,14 @@ AIS_StatusOfPick TIGLViewerWidget::dragEvent( const QPoint startPoint, const QPo
                                        min (startPoint.y(), endPoint.y()),
                                        max (startPoint.x(), endPoint.x()),
                                        max (startPoint.y(), endPoint.y()),
-                                       myView );
+                                       myView, true );
     }
     else {
         pick = myContext->Select( min (startPoint.x(), endPoint.x()),
                                   min (startPoint.y(), endPoint.y()),
                                   max (startPoint.x(), endPoint.x()),
                                   max (startPoint.y(), endPoint.y()),
-                                  myView );
+                                  myView, true );
     }
     emit selectionChanged();
     return pick;
@@ -989,10 +991,10 @@ AIS_StatusOfPick TIGLViewerWidget::inputEvent( bool multi )
     Handle(AIS_InteractiveContext) myContext = viewerContext->getContext();
 
     if (multi) {
-        pick = myContext->ShiftSelect();
+        pick = myContext->ShiftSelect(true);
     }
     else {
-        pick = myContext->Select();
+        pick = myContext->Select(true);
     }
     if ( pick != AIS_SOP_NothingSelected ) {
         emit selectionChanged();
@@ -1239,7 +1241,11 @@ bool TIGLViewerWidget::makeScreenshot(const QString& filename, bool whiteBGEnabl
     for (unsigned int aRow = 0; aRow <  pixmap.Height(); ++aRow) {
       for (unsigned int aCol = 0; aCol < pixmap.Width(); ++aCol) {
         // extremely SLOW but universal (implemented for all supported pixel formats)
-        Quantity_Color aColor = pixmap.PixelColor ((Standard_Integer )aCol, (Standard_Integer )aRow);
+        Quantity_Color aColor = pixmap.PixelColor ((Standard_Integer )aCol, (Standard_Integer )aRow)
+#if OCC_VERSION_HEX >= 0x070200
+          .GetRGB()
+#endif
+          ;
         QColor qcol(aColor.Red()*255., aColor.Green()*255, aColor.Blue()*255);
         img.setPixel(aCol, aRow, qcol.rgb());
       }

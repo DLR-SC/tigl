@@ -45,7 +45,7 @@
 #include <ShapeFix_Wire.hxx>
 #include <ShapeFix_Shape.hxx>
 #include <NCollection_IncAllocator.hxx>
-
+#include <Standard_Version.hxx>
 
 
 gp_Pnt EdgeFirstPoint(TopoDS_Edge e) 
@@ -135,7 +135,11 @@ protected:
         //
         aPF.Perform();
 
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,2,0)
+        Standard_Integer iErr = aPF.HasErrors();
+#else
         Standard_Integer iErr = aPF.ErrorStatus();
+#endif
         ASSERT_FALSE(iErr);
         Fuser = new BRepAlgoAPI_Fuse(guides, profiles, aPF);
         ASSERT_TRUE(Fuser->IsDone());
