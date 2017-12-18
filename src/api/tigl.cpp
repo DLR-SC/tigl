@@ -1957,6 +1957,7 @@ TiglReturnCode tiglWingComponentSegmentPointGetEtaXsi(TiglCPACSConfigurationHand
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglWingComponentSegmentPointGetPoint!";
@@ -3269,7 +3270,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetProfileName(TiglCPACSConfigurat
         tigl::CCPACSFuselage& fuselage = config.GetFuselage(fuselageIndex);
         tigl::CCPACSFuselageSection& section = fuselage.GetSection(sectionIndex);
         tigl::CCPACSFuselageSectionElement& element = section.GetSectionElement(elementIndex);
-        std::string profileUID = element.GetProfileIndex();
+        std::string profileUID = element.GetProfileUID();
         tigl::CCPACSFuselageProfile& profile = config.GetFuselageProfile(profileUID);
 
         *profileNamePtr = const_cast<char*>(profile.GetName().c_str());

@@ -37,12 +37,6 @@ namespace tigl
 CCPACSFuselageSectionElement::CCPACSFuselageSectionElement(CCPACSFuselageSectionElements* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSFuselageElement(parent, uidMgr) {}
 
-// Returns the UID of the referenced fuselage profile
-std::string CCPACSFuselageSectionElement::GetProfileIndex() const
-{
-    return m_profileUID;
-}
-
 void CCPACSFuselageSectionElement::SetProfileUID(const std::string& value) {
     generated::CPACSFuselageElement::SetProfileUID(value);
     // invalidate fuselage

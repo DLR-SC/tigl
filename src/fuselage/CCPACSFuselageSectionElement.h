@@ -39,9 +39,6 @@ public:
     // Constructor
     TIGL_EXPORT CCPACSFuselageSectionElement(CCPACSFuselageSectionElements* parent, CTiglUIDManager* uidMgr);
 
-    // Returns the UID of the referenced wing profile
-    TIGL_EXPORT std::string GetProfileIndex() const;
-
     TIGL_EXPORT virtual void SetProfileUID(const std::string& value);
 
     // Gets the section element transformation
