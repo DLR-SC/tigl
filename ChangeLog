@@ -3,11 +3,12 @@ Version 3.0.0
 
     - General Changes:
        - CPACS 3 compatibility, including the new component-segment coordinate-system math.
+	     Note: As CPACS 3 is not officially released yet, the development version of CPACS as of December 18th, 2017 is used.
          Note: The wing structure is not yet adapted to CPACS 3 but uses the 2.3 definition.
        - Guide curve support for wings and fuselages for high-fidelity surface modeling according to the CPACS 3 defintion.
        - Automated creation of CPACS reading and writing routines. This allows much
          better vality checks of the CPACS document.
-       - Improved speed of tiglFuselageGetPoint function. Also, the paramter xsi is now interpreted as the relative
+       - Improved speed of ``::tiglFuselageGetPoint`` function. Also, the paramter xsi is now interpreted as the relative
          curve parameter instead of the relative circumference.
        - The TIGL library was renamed to tigl3. The TIGLViewer was renamed to tiglviewer-3.
        - The windows builds are now using the Visual C++ 2015 Toolchain.
@@ -19,7 +20,7 @@ Version 3.0.0
       - ```tiglGetCurveIntersection``` to compute the intersection of two curves.
       - ```tiglGetCurveIntersectionPoint``` to query the intersection point(s) computed by ```tiglGetCurveIntersection```.
       - ```tiglGetCurveIntersectionCount``` returns the number of intersection points computed by ```tiglGetCurveIntersection```.
-      - ```tiglGetCurveParameter``` projects a point onto a curve and returns the cure parameter of the point.
+      - ```tiglGetCurveParameter``` projects a point onto a curve and returns the curve parameter of the point.
       - ```tiglFuselageGetSectionCenter``` computes the center of a fuselage section defined by its eta coordinate.
       - ```tiglFuselageGetCrossSectionArea``` computes the area of a fuselage section.
       - ```tiglFuselageGetCenterLineLength``` computes the length of the centerline of the fuselage.
