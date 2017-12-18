@@ -12,7 +12,7 @@ endif()
 project (TiGL)
 set(TIGL_VERSION_MAJOR 3)
 set(TIGL_VERSION_MINOR 0)
-set(TIGL_VERSION_PATCH 0dev)
+set(TIGL_VERSION_PATCH 0rc1)
 set(TIGL_VERSION "${TIGL_VERSION_MAJOR}.${TIGL_VERSION_MINOR}.${TIGL_VERSION_PATCH}")
 
 set(TIGL_ADD_INCLUDE_PATH "" CACHE PATH "Additional include path for package search")
