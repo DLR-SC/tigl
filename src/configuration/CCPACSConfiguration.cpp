@@ -230,7 +230,7 @@ int CCPACSConfiguration::GetWingProfileCount() const
             count += profiles->GetWingAirfoils()->GetWingAirfoils().size();
         }
         if (profiles->GetRotorAirfoils()) {
-            count += static_cast<int>(profiles->GetRotorAirfoils()->GetRotorAirfoils().size());
+            count += profiles->GetRotorAirfoils()->GetRotorAirfoils().size();
         }
     }
     return static_cast<int>(count);
@@ -593,7 +593,8 @@ CTiglUIDManager& CCPACSConfiguration::GetUIDManager()
     return uidManager;
 }
 
-const CTiglUIDManager& CCPACSConfiguration::GetUIDManager() const {
+const CTiglUIDManager& CCPACSConfiguration::GetUIDManager() const
+{
     return uidManager;
 }
 
