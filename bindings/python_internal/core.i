@@ -36,19 +36,7 @@
 // rename file methods to python pep8 style
 %rename("%(undercase)s", %$isfunction) "";
 
-namespace tigl
-{
-    // define CreateIfNotExistsTag as a type which's values are compile-time constants (see implementation of boost::none)
-    namespace internal
-    {
-        struct CreateIfNotExistsTagHelper{};
-    }
-    typedef int internal::CreateIfNotExistsTagHelper::*CreateIfNotExistsTag;
-
-    // create constant CreateIfNotExists
-    // TODO: we should import the original CreateIfNotExists.h if we can figure out the problems with the following line
-    // const CreateIfNotExistsTag CreateIfNotExists = static_cast<CreateIfNotExistsTag>(0);
-}
+%include "CreateIfNotExists.h"
 %include "CTiglMemoryPool.h"
 %include "generated/CPACSStringVectorBase.h"
 %include "CCPACSStringVector.h"
