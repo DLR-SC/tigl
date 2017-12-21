@@ -194,7 +194,7 @@ if [[ $? -ne 0 ]]; then
     exit 7
 fi
 
-filelist=`cat index.html | grep  $PACK_TYPE | awk '{print $7}' |  cut -d'"' -f 2`
+filelist=`cat index.html | grep  $PACK_TYPE | cut -d'"' -f 4`
 
 
 if [[ $PACK_TYPE == rpm ]]; then
