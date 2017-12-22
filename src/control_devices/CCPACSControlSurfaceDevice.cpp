@@ -82,6 +82,7 @@ void CCPACSControlSurfaceDevice::ReadCPACS(TixiDocumentHandle tixiHandle, const 
     _type = type;
 
     currentDeflection = GetMinDeflection() > 0? GetMinDeflection() : 0;
+    currentDeflection = currentDeflection > GetMaxDeflection()? GetMaxDeflection() : currentDeflection;
 }
 
 PNamedShape CCPACSControlSurfaceDevice::BuildLoft()
