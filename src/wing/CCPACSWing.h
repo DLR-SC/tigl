@@ -105,7 +105,7 @@ public:
     // Adds all Segments of this wing and flaps to one shape
     // @TODO: this should not be called explicitly. Instead, it should be called by get loft, in case
     // The control surface deflections are not zero
-    TIGL_EXPORT PNamedShape GroupedFlapsAndWingShapes(std::map<std::string,double> flapStatus);
+    TIGL_EXPORT PNamedShape GroupedFlapsAndWingShapes();
 
     // builds Wing Without Flaps.
     TIGL_EXPORT void BuildWingWithCutouts();

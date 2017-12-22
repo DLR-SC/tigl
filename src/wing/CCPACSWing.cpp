@@ -382,9 +382,33 @@ CTiglAbstractSegment & CCPACSWing::GetComponentSegment(std::string uid)
 
 void CCPACSWing::ExtendFlap(std::string flapUID, double flapDeflectionPercentage )
 {
-    std::map<std::string,double> flapMap;
-    flapMap[flapUID] = flapDeflectionPercentage;
-    GroupedFlapsAndWingShapes(flapMap);
+    for ( int icompseg = 1; icompseg <= GetComponentSegmentCount(); icompseg++ ) {
+        tigl::CCPACSWingComponentSegment & compSeg
+                = (tigl::CCPACSWingComponentSegment &) GetComponentSegment(icompseg);
+        try {
+            CCPACSControlSurfaceDevice& controlDevice =
+                compSeg.getControlSurfaces() \
+                        .getControlSurfaceDevices() \
+                       ->getControlSurfaceDevice(flapUID);
+
+            double minDeflect = controlDevice.GetMinDeflection();
+            double maxDeflect = controlDevice.GetMaxDeflection();
+            double absDeflect = minDeflect + flapDeflectionPercentage*(maxDeflect - minDeflect)/100;
+
+            controlDevice.SetDeflection(absDeflect);
+            break;
+        }
+        catch (tigl::CTiglError& err){
+            if (err.getCode() == TIGL_UID_ERROR) {
+                continue;
+            }
+            else {
+                throw;
+            }
+        }
+    }
+
+    GroupedFlapsAndWingShapes();
 }
 
 void CCPACSWing::BuildWingWithCutouts()
@@ -448,7 +472,7 @@ void CCPACSWing::BuildWingWithCutouts()
 }
 
 // Builds a fuse shape of all wing segments with flaps
-PNamedShape CCPACSWing::GroupedFlapsAndWingShapes(std::map<std::string,double> flapStatus )
+PNamedShape CCPACSWing::GroupedFlapsAndWingShapes()
 {
     // check whether there are control surfaces
     if (NumberOfControlSurfaces(*this) == 0) {
@@ -466,8 +490,7 @@ PNamedShape CCPACSWing::GroupedFlapsAndWingShapes(std::map<std::string,double> f
        for ( int j = controlSurfaceDevices->getControlSurfaceDeviceCount(); j > 0 ; j-- ) {
 
             CCPACSControlSurfaceDevice &controlSurfaceDevice = controlSurfaceDevices->getControlSurfaceDeviceByID(j);
-            double deflection = flapStatus[controlSurfaceDevice.GetUID()];
-            PNamedShape deviceShape = controlSurfaceDevice.getTransformedFlapShape(deflection);
+            PNamedShape deviceShape = controlSurfaceDevice.getTransformedFlapShape();
             flapsAndWingShapes.push_back(deviceShape);
        }
     }
@@ -527,8 +550,7 @@ PNamedShape CCPACSWing::BuildLoft()
 TopoDS_Shape CCPACSWing::GetLoftWithCutouts()
 {
     if (!wingShapeWithCutouts) {
-        std::map<std::string,double> flapStatus;
-        GroupedFlapsAndWingShapes(flapStatus);
+        GroupedFlapsAndWingShapes();
     }
     return wingShapeWithCutouts->Shape();
 }

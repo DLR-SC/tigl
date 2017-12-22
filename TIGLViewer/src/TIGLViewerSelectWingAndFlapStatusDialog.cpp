@@ -34,11 +34,6 @@
 #include <QPushButton>
 #include <QDoubleSpinBox>
 
-// store deflections, values are from 0 ... 1
-// TODO: this should not be static, or at least it should be cleared, if new dialog is created with
-// new configuration
-static std::map< std::string, double> _deflectionMap;
-
 double sliderToRelativeDeflect(const QSlider* slider, const QDoubleSpinBox* spinBox) {
     
     double minSlider = (double) slider->minimum();
@@ -90,11 +85,6 @@ std::string TIGLViewerSelectWingAndFlapStatusDialog::getSelectedWing()
     return ui->comboBoxWings->currentText().toStdString();
 }
 
-std::map<std::string,double> TIGLViewerSelectWingAndFlapStatusDialog::getDeflections()
-{
-    return _deflectionMap;
-}
-
 void TIGLViewerSelectWingAndFlapStatusDialog::on_comboBoxWings_currentIndexChanged(int index)
 {
     drawGUI(true);
@@ -110,7 +100,7 @@ void TIGLViewerSelectWingAndFlapStatusDialog::slider_value_changed(int k)
     
     SignalsBlocker block(elms.deflectionBox);
     updateWidgets(uid, inputDeflection);
-    _document->updateControlSurfacesInteractiveObjects(getSelectedWing(),_deflectionMap, uid);
+    _document->updateControlSurfacesInteractiveObjects(getSelectedWing(), uid);
 }
 
 void TIGLViewerSelectWingAndFlapStatusDialog::spinBox_value_changed(double inputDeflection)
@@ -122,7 +112,7 @@ void TIGLViewerSelectWingAndFlapStatusDialog::spinBox_value_changed(double input
 
     SignalsBlocker block(elms.slider);
     updateWidgets(uid, inputDeflection);
-    _document->updateControlSurfacesInteractiveObjects(getSelectedWing(),_deflectionMap, uid);
+    _document->updateControlSurfacesInteractiveObjects(getSelectedWing(), uid);
 }
 
 void TIGLViewerSelectWingAndFlapStatusDialog::cleanup()
@@ -133,7 +123,18 @@ void TIGLViewerSelectWingAndFlapStatusDialog::cleanup()
 
 double TIGLViewerSelectWingAndFlapStatusDialog::getTrailingEdgeFlapValue( std::string uid )
 {
-    return _deflectionMap[uid];
+    try {
+        std::map< std::string, tigl::CCPACSControlSurfaceDevice*>::iterator it;
+        it = _deviceMap.find(uid);
+        if (it == _deviceMap.end()) {
+            throw tigl::CTiglError("getTrailingEdgeFlapValue: UID not found", TIGL_UID_ERROR);
+        }
+        tigl::CCPACSControlSurfaceDevice* device = it->second;
+        return device->GetDeflection();
+    }
+    catch(...) {
+        return 0;
+    }
 }
 
 // @TODO: rewrite using MVC and table layout
@@ -232,15 +233,7 @@ void TIGLViewerSelectWingAndFlapStatusDialog::drawGUI(bool redrawModel)
             labelDeflection->setFixedWidth(90);
             labelDeflection->setAlignment(Qt::AlignRight);
 
-            double savedValue;
-            if (_deflectionMap.find(uid.toStdString()) != _deflectionMap.end()) {
-                savedValue = _deflectionMap[uid.toStdString()];
-            }
-            else {
-                savedValue = controlSurfaceDevice.GetMinDeflection() > 0 ? controlSurfaceDevice.GetMinDeflection() : 0.;
-            }
-
-
+            double savedValue = controlSurfaceDevice.GetDeflection();
             labelValue->setText("Value: " + QString::number(savedValue) + "%");
 
             double minDeflect = controlSurfaceDevice.GetMinDeflection();
@@ -274,10 +267,6 @@ void TIGLViewerSelectWingAndFlapStatusDialog::drawGUI(bool redrawModel)
             spinBox->setWindowTitle( uid );
             vLayout->addWidget(innerWidget);
 
-            if (_deflectionMap.find(uid.toStdString()) == _deflectionMap.end()) {
-                _deflectionMap[uid.toStdString()] = controlSurfaceDevice.GetMinDeflection() > 0 ? controlSurfaceDevice.GetMinDeflection() : 0.;
-            }
-
             connect(slider, SIGNAL(valueChanged(int)), this, SLOT(slider_value_changed(int)));
             connect(spinBox, SIGNAL(valueChanged(double)), this, SLOT(spinBox_value_changed(double)));
             _deviceMap[uid.toStdString()] = &controlSurfaceDevice;
@@ -287,7 +276,7 @@ void TIGLViewerSelectWingAndFlapStatusDialog::drawGUI(bool redrawModel)
         ui->scrollArea->setWidget(outerWidget);
     }
     if (redrawModel) {
-        _document->drawWingFlapsForInteractiveUse(getSelectedWing(), getDeflections());
+        _document->drawWingFlapsForInteractiveUse(getSelectedWing());
     }
 }
 
@@ -343,5 +332,5 @@ void TIGLViewerSelectWingAndFlapStatusDialog::updateWidgets(std::string controlS
     elms.valueLabel->setText(textVal);
     elms.rotAngleLabel->setText(textRot);
 
-    _deflectionMap[controlSurfaceDeviceUID] = inputDeflection;
+    device->SetDeflection(inputDeflection);
 }

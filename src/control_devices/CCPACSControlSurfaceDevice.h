@@ -51,16 +51,20 @@ public:
     TIGL_EXPORT TiglGeometricComponentType GetComponentType(void) {return TIGL_COMPONENT_CONTROLSURF | TIGL_COMPONENT_PHYSICAL;}
     TIGL_EXPORT PNamedShape getCutOutShape(void);
     TIGL_EXPORT PNamedShape getFlapShape(void);
-    TIGL_EXPORT PNamedShape getTransformedFlapShape(double deflection);
+    TIGL_EXPORT PNamedShape getTransformedFlapShape();
 
-    // Returns the flap transformation based on the deflection
-    TIGL_EXPORT gp_Trsf GetFlapTransform(double deflection) const;
+    // Returns the flap transformation based on the current deflection
+    TIGL_EXPORT gp_Trsf GetFlapTransform() const;
 
-    // Returns the minimal deflaction value (defined in CPACS file)
+    // Returns the minimal deflection value (defined in CPACS file)
     TIGL_EXPORT double GetMinDeflection() const;
 
-    // Returns the minimal deflaction value (defined in CPACS file)
+    // Returns the minimal deflection value (defined in CPACS file)
     TIGL_EXPORT double GetMaxDeflection() const;
+
+    // Get and set the current deflection  value
+    TIGL_EXPORT double GetDeflection() const;
+    TIGL_EXPORT void SetDeflection(const double deflect);
 
 
     TIGL_EXPORT gp_Vec getNormalOfControlSurfaceDevice();
@@ -81,6 +85,8 @@ private:
     CCPACSControlSurfaceDeviceOuterShape outerShape;
     CSharedPtr<CCPACSControlSurfaceDeviceWingCutOut> wingCutOut;
     CSharedPtr<CTiglControlSurfaceHingeLine> _hingeLine;
+
+    double currentDeflection;
 
     // Helper members
     CCPACSWingComponentSegment* _segment;

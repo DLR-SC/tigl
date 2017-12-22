@@ -80,6 +80,8 @@ void CCPACSControlSurfaceDevice::ReadCPACS(TixiDocumentHandle tixiHandle, const 
     }
 
     _type = type;
+
+    currentDeflection = GetMinDeflection() > 0? GetMinDeflection() : 0;
 }
 
 PNamedShape CCPACSControlSurfaceDevice::BuildLoft()
@@ -97,7 +99,7 @@ const CCPACSControlSurfaceDevicePath& CCPACSControlSurfaceDevice::getMovementPat
     return path;
 }
 
-gp_Trsf CCPACSControlSurfaceDevice::GetFlapTransform(double deflection) const
+gp_Trsf CCPACSControlSurfaceDevice::GetFlapTransform() const
 {
     // this block of code calculates all needed values to rotate and move the controlSurfaceDevice according
     // to the given relDeflection by using a linearInterpolation.
@@ -115,12 +117,12 @@ gp_Trsf CCPACSControlSurfaceDevice::GetFlapTransform(double deflection) const
         rotations.push_back(step.getHingeLineRotation());
     }
     
-    double rotation = Interpolate( relDeflections, rotations, deflection );
-    double innerTranslationX = Interpolate( relDeflections, innerXTrans, deflection );
-    double innerTranslationY = Interpolate( relDeflections, innerYTrans, deflection );
-    double innerTranslationZ = Interpolate( relDeflections, innerZTrans, deflection );
-    double outerTranslationX = Interpolate( relDeflections, outerXTrans, deflection );
-    double outerTranslationZ = Interpolate( relDeflections, outerZTrans, deflection );
+    double rotation = Interpolate( relDeflections, rotations, currentDeflection );
+    double innerTranslationX = Interpolate( relDeflections, innerXTrans, currentDeflection );
+    double innerTranslationY = Interpolate( relDeflections, innerYTrans, currentDeflection );
+    double innerTranslationZ = Interpolate( relDeflections, innerZTrans, currentDeflection );
+    double outerTranslationX = Interpolate( relDeflections, outerXTrans, currentDeflection );
+    double outerTranslationZ = Interpolate( relDeflections, outerZTrans, currentDeflection );
 
     gp_Pnt innerHingeOld = _hingeLine->getInnerHingePoint();;
     gp_Pnt outerHingeOld = _hingeLine->getOuterHingePoint();;
@@ -158,10 +160,10 @@ PNamedShape CCPACSControlSurfaceDevice::getFlapShape()
                 getNormalOfControlSurfaceDevice());
 }
 
-PNamedShape CCPACSControlSurfaceDevice::getTransformedFlapShape(double deflection)
+PNamedShape CCPACSControlSurfaceDevice::getTransformedFlapShape()
 {
     PNamedShape deviceShape = getFlapShape()->DeepCopy();
-    gp_Trsf T = GetFlapTransform(deflection);
+    gp_Trsf T = GetFlapTransform();
     BRepBuilderAPI_Transform form(deviceShape->Shape(), T);
     deviceShape->SetShape(form.Shape());
     
@@ -248,6 +250,21 @@ double CCPACSControlSurfaceDevice::GetMaxDeflection() const
     CCPACSControlSurfaceDeviceStep step = steps.GetStep(steps.GetStepCount());
     
     return step.getRelDeflection();
+}
+
+double CCPACSControlSurfaceDevice::GetDeflection() const
+{
+    return currentDeflection;
+}
+
+void CCPACSControlSurfaceDevice::SetDeflection(const double deflect)
+{
+    double maxDeflect = GetMaxDeflection();
+    double minDeflect = GetMinDeflection();
+
+    // clamp currentDeflection ti minimum and maximum values
+    currentDeflection = (deflect > maxDeflect? maxDeflect : deflect);
+    currentDeflection = (currentDeflection < minDeflect? minDeflect : currentDeflection);
 }
 
 } // end namespace tigl

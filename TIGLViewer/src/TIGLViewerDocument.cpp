@@ -932,7 +932,7 @@ void TIGLViewerDocument::onFlapsDialogClosed()
         // apply transformation to the wing object
         tigl::CCPACSWing& wing = GetConfiguration().GetWing( m_flapsDialog->getSelectedWing() );
         //if (wing.)
-        wing.GroupedFlapsAndWingShapes(m_flapsDialog->getDeflections());
+        wing.GroupedFlapsAndWingShapes();
     }
     catch(tigl::CTiglError) {}
 
@@ -958,7 +958,7 @@ void TIGLViewerDocument::drawWingFlaps()
 }
 
 
-void TIGLViewerDocument::drawWingFlapsForInteractiveUse(std::string selectedWing, std::map<std::string,double> flapStatus)
+void TIGLViewerDocument::drawWingFlapsForInteractiveUse(std::string selectedWing)
 {
     try {
         START_COMMAND();
@@ -977,7 +977,7 @@ void TIGLViewerDocument::drawWingFlapsForInteractiveUse(std::string selectedWing
             for ( int j = 1; j <= controlSurfaceDevices->getControlSurfaceDeviceCount(); j++ ) {
                 tigl::CCPACSControlSurfaceDevice &controlSurfaceDevice = controlSurfaceDevices->getControlSurfaceDeviceByID(j);
                 flapsForInteractiveUse[controlSurfaceDevice.GetUID()] = app->getScene()->displayShape(controlSurfaceDevice.GetLoft()->Shape());
-                updateControlSurfacesInteractiveObjects(selectedWing,flapStatus,controlSurfaceDevice.GetUID());
+                updateControlSurfacesInteractiveObjects(selectedWing, controlSurfaceDevice.GetUID());
             }
         }
     }
@@ -986,7 +986,7 @@ void TIGLViewerDocument::drawWingFlapsForInteractiveUse(std::string selectedWing
     }
 }
 
-void TIGLViewerDocument::updateControlSurfacesInteractiveObjects(std::string selectedWing, std::map<std::string,double> flapStatus, std::string controlUID)
+void TIGLViewerDocument::updateControlSurfacesInteractiveObjects(std::string selectedWing, std::string controlUID)
 {
     tigl::CCPACSWing& wing = GetConfiguration().GetWing( selectedWing );
     for ( int i = 1; i <= wing.GetComponentSegmentCount(); i++ ) {
@@ -998,7 +998,7 @@ void TIGLViewerDocument::updateControlSurfacesInteractiveObjects(std::string sel
             tigl::CCPACSControlSurfaceDevice &controlSurfaceDevice = controlSurfaceDevices->getControlSurfaceDeviceByID(j);
 
             if (flapsForInteractiveUse.find(controlSurfaceDevice.GetUID()) != flapsForInteractiveUse.end() && controlUID == controlSurfaceDevice.GetUID()) {
-               gp_Trsf trsf = controlSurfaceDevice.GetFlapTransform(flapStatus[controlSurfaceDevice.GetUID()]);
+               gp_Trsf trsf = controlSurfaceDevice.GetFlapTransform();
                // @todo: check 
                Handle(AIS_Shape) flap = flapsForInteractiveUse[controlSurfaceDevice.GetUID()];
                app->getScene()->getContext()->SetLocation(flap, trsf);
