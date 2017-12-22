@@ -2669,6 +2669,58 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetDeflection(TiglCPACSConfi
 
 }
 
+TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceSetDeflection(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                  const char * controlSurfaceUID,
+                                                                  double deflection)
+{
+    if (controlSurfaceUID == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for controlSurfaceUID ";
+        LOG(ERROR) << "in function call to tiglControlSurfaceSetDeflection." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+
+    std::string uid(controlSurfaceUID);
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+
+        // search for component segment
+        int nwings = config.GetWingCount();
+        for (int iwing = 1; iwing <= nwings; ++iwing) {
+            tigl::CCPACSWing& wing = config.GetWing(iwing);
+
+            for ( int icompseg = 1; icompseg <= wing.GetComponentSegmentCount(); icompseg++ ) {
+                tigl::CCPACSWingComponentSegment & compSeg = (tigl::CCPACSWingComponentSegment &) wing.GetComponentSegment(icompseg);
+                try {
+                    compSeg.getControlSurfaces().getControlSurfaceDevices()->getControlSurfaceDevice(uid).SetDeflection(deflection);
+                    break;
+                }
+                catch (tigl::CTiglError& err){
+                    if (err.getCode() == TIGL_UID_ERROR) {
+                        continue;
+                    }
+                    else {
+                        throw;
+                    }
+                }
+            }
+        }
+        return TIGL_SUCCESS;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglControlSurfaceSetDeflection!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
 
 /******************************************************************************/
 /* Fuselage Functions                                                         */
