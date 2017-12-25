@@ -142,7 +142,7 @@ namespace tigl
 
 CCPACSFuselageSegment::CCPACSFuselageSegment(CCPACSFuselageSegments* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSFuselageSegment(parent, uidMgr)
-    , CTiglAbstractSegment(parent->GetSegments(), parent->GetParent()->m_symmetry)
+    , CTiglAbstractSegment<CCPACSFuselageSegment>(parent->GetSegments(), parent->GetParent()->m_symmetry)
     , fuselage(parent->GetParent())
     , m_guideCurveBuilder(make_unique<CTiglFuselageSegmentGuidecurveBuilder>(*this))
 {
@@ -170,7 +170,7 @@ void CCPACSFuselageSegment::Cleanup()
 
 void CCPACSFuselageSegment::Invalidate()
 {
-    CTiglAbstractSegment::Reset();
+    CTiglAbstractSegment<CCPACSFuselageSegment>::Reset();
 }
 
 // Read CPACS segment elements

@@ -159,7 +159,7 @@ namespace
 
 CCPACSWingComponentSegment::CCPACSWingComponentSegment(CCPACSWingComponentSegments* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSComponentSegment(parent, uidMgr)
-    , CTiglAbstractSegment(parent->GetComponentSegments(), parent->GetParent()->m_symmetry)
+    , CTiglAbstractSegment<CCPACSWingComponentSegment>(parent->GetComponentSegments(), parent->GetParent()->m_symmetry)
     , wing(parent->GetParent())
     , upperShape(make_unique<CTiglShapeGeomComponentAdaptor>(this, m_uidMgr))
     , lowerShape(make_unique<CTiglShapeGeomComponentAdaptor>(this, m_uidMgr))
@@ -179,7 +179,7 @@ CCPACSWingComponentSegment::~CCPACSWingComponentSegment()
 void CCPACSWingComponentSegment::Invalidate()
 {
     // call parent class instead of directly setting invalidated flag
-    CTiglAbstractSegment::Reset();
+    CTiglAbstractSegment<CCPACSWingComponentSegment>::Reset();
     wingSegments.clear();
     if (m_structure) {
         m_structure->Invalidate();
@@ -199,7 +199,7 @@ void CCPACSWingComponentSegment::Cleanup()
     myVolume       = 0.;
     mySurfaceArea  = 0.;
     linesAreValid = false;
-    CTiglAbstractSegment::Reset();
+    CTiglAbstractSegment<CCPACSWingComponentSegment>::Reset();
     wingSegments.clear();
 }
 

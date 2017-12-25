@@ -189,7 +189,7 @@ namespace
 
 CCPACSWingSegment::CCPACSWingSegment(CCPACSWingSegments* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSWingSegment(parent, uidMgr)
-    , CTiglAbstractSegment(parent->GetSegments(), parent->GetParent()->m_symmetry)
+    , CTiglAbstractSegment<CCPACSWingSegment>(parent->GetSegments(), parent->GetParent()->m_symmetry)
     , wing(parent->GetParent())
     , m_guideCurveBuilder(make_unique<CTiglWingSegmentGuidecurveBuilder>(*this))
 {
@@ -208,7 +208,7 @@ CCPACSWingSegment::~CCPACSWingSegment()
 // Invalidates internal state
 void CCPACSWingSegment::Invalidate()
 {
-    CTiglAbstractSegment::Reset();
+    CTiglAbstractSegment<CCPACSWingSegment>::Reset();
     surfaceCache.valid = false;
     surfaceCache.chordsurfaceValid = false;
 }
@@ -221,7 +221,7 @@ void CCPACSWingSegment::Cleanup()
     surfaceCache.trailingEdgeShape.Nullify();
     surfaceCache.valid = false;
     surfaceCache.chordsurfaceValid = false;
-    CTiglAbstractSegment::Reset();
+    CTiglAbstractSegment<CCPACSWingSegment>::Reset();
 }
 
 // Update internal segment data
@@ -894,7 +894,7 @@ bool CCPACSWingSegment::GetIsOnTop(gp_Pnt pnt) const
 
 bool CCPACSWingSegment::GetIsOn(const gp_Pnt& pnt)
 {
-    bool isOnLoft = CTiglAbstractSegment::GetIsOn(pnt);
+    bool isOnLoft = CTiglAbstractSegment<CCPACSWingSegment>::GetIsOn(pnt);
 
     if (isOnLoft) {
         return true;
