@@ -52,9 +52,18 @@ QString getShaderFile(const QString& filename)
 {
     QString result;
 
-    QFile inFile(":/shaders/" + filename);
+    // First try to open shader file from current dir
+    // If not available, load from resource
+    // This makes it possible, to debug the shader code
+    QFile inFile(filename);
     if (!inFile.open(QFile::ReadOnly | QFile::Text)) {
-        return "";
+        inFile.setFileName(":/shaders/" + filename);
+        if (!inFile.open(QFile::ReadOnly | QFile::Text)) {
+            return "";
+        }
+    }
+    else {
+        LOG(WARNING) << "Loading shader file \"" << filename.toStdString() << "\" from working directory.";
     }
 
     QTextStream stream(&inFile);
