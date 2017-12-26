@@ -32,12 +32,15 @@ ARCH=NO_ARCH
 LIBDIR=NO_DIR
 PACK_TYPE=NO_TYPE
 
+read_dom () {
+    local IFS=\>
+    read -d \< ENTITY CONTENT
+}
 
 function printUsage {
     echo "usage: get_tigl.sh <distro> <arch>"
     echo
     echo "Valid distributions:"
-    echo "    SLE_11_SP2     Suse Linux Enterprise 11 SP2"
     echo "    SLE_12_SP1     Suse Linux Enterprise 12 SP1"
     echo "    SLE_12_SP2     Suse Linux Enterprise 12 SP2"
     echo "    openSUSE_13.1  openSUSE 13.1"
@@ -76,16 +79,7 @@ function checkArguments {
     LIBDIR=lib
 
     #check dist
-    if [[ $tmp_dist == SLE_11_SP2 ]]; then
-    	DIST=SLE_11_SP2
-    	PACK_TYPE=rpm
-    	if [[  $tmp_arch == i386 ]]; then
-    	    PACK_ARCH=i586
-            else
-                PACK_ARCH=x86_64
-                LIBDIR=lib64
-    	fi
-    elif [[ $tmp_dist == SLE_12_SP1 ]]; then
+    if [[ $tmp_dist == SLE_12_SP1 ]]; then
     	DIST=SLE_12_SP1
     	PACK_TYPE=rpm
     	if [[  $tmp_arch == i386 ]]; then
@@ -159,7 +153,6 @@ function checkArguments {
         else
             PACK_ARCH=amd64
         fi
-    else
     elif [[ $tmp_dist == ubuntu_16.04 ]]; then
         DIST=xUbuntu_16.04
         PACK_TYPE=deb
@@ -206,63 +199,42 @@ if [[ $? -ne 0 ]]; then
     exit 7
 fi
 
-filelist=`cat index.html | grep  $PACK_TYPE | awk '{print $7}' |  cut -d'"' -f 2`
 
+# parse index.html for all packages 
+filelist=()
+while read_dom; do
+    if [[ "$CONTENT" == *.$PACK_TYPE ]]
+    then
+        filelist+=("$CONTENT")
+    fi
+done < index.html
+filelist="${filelist[@]}"
 
 if [[ $PACK_TYPE == rpm ]]; then
-  # select required files
-  for file in $filelist; do
-	#opencascade
-	if [[ $file == OCE*.rpm ]] && [[ $file != OCE-devel* ]] && [[ $file != *debuginfo* ]]
-	then
-		bin_file_list+=($file)
-	fi
-
-	#TIXI
-	if [[ $file == libTIXI2*.rpm ]]  || [[ $file == tixi-*.rpm ]] && [[ $file != *debuginfo* ]] && [[ $file != *debugsource* ]]
-	then
-		bin_file_list+=($file)
-	fi
-
-	#TIGL
-	if [[ $file == libTIGL2*.rpm ]] || [[ $file == tigl-*.rpm ]] && [[ $file != *debuginfo* ]]  && [[ $file != *debugsource* ]]
-	then
-		bin_file_list+=($file)
-        	#extract version number
-		if [[ $file == libTIGL2-*.rpm ]]; then
-			VERSION=`echo $file | awk '{split($0,array,"-")} END{print array[2]}'`
-		fi
-	fi
-  done
+    whitelist="OCE-0* libtigl-dev* libTIGL2* libTIXI2* tigl-devel* tixi-devel* tigl-viewer*"
 elif [[ $PACK_TYPE == deb ]]; then
-  # select required files
-  for file in $filelist; do
-	#opencascade
-	if [[ $file == liboce-*.deb ]] && [[ $file != liboce*dev* ]] && [[ $file != liboce*ocaf* ]]
-	then
-		bin_file_list+=($file)
-	fi
 
-	#TIXI
-	if [[ $file == libtixi2*.deb ]]
-	then
-		bin_file_list+=($file)
-	fi
-
-	#TIGL
-	if [[ $file == libtigl*.deb ]] || [[ $file == tigl-*.deb ]]
-	then
-		bin_file_list+=($file)
-        	#extract version number
-		if [[ $file == libtigl2_*.deb ]]; then
-			VERSION=`echo $file | awk '{split($0,array,"_")} END{print array[2]}' | awk '{split($0,array,"-")} END{print array[1]}'`
-		fi
-	fi
-  done
+    whitelist="liboce-foundation1* liboce-modeling1* liboce-visualization1* libtigl-dev* libtixi-dev* libtigl2* libtixi2* tigl-viewer*"
 else
     echo "Error: unknown package type"
     exit 4
 fi
+
+for file in $filelist; do
+	# select required files
+	for whitefile in $whitelist; do
+	    if [[ $file == $whitefile ]]; then
+		bin_file_list+=($file)
+
+		#extract version number
+		if [[ $file == libTIGL2-*.rpm ]]; then
+			VERSION=`echo $file | awk '{split($0,array,"-")} END{print array[2]}'`
+		elif [[ $file == libtigl2_*.deb ]]; then
+			VERSION=`echo $file | awk '{split($0,array,"_")} END{print array[2]}' | awk '{split($0,array,"-")} END{print array[1]}'`
+		fi
+	    fi
+	done
+done
 
 NAME="$PACKAGE-$VERSION-$FDIST-$ARCH"
 
