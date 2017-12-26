@@ -38,7 +38,7 @@ read_dom () {
 }
 
 function printUsage {
-    echo "usage: get_tigl.sh <distro> <arch>"
+    echo "usage: get_tigl.sh <distro> <arch> <version>(default=2)"
     echo
     echo "Valid distributions:"
     echo "    SLE_12_SP1     Suse Linux Enterprise 12 SP1"
@@ -55,16 +55,27 @@ function printUsage {
     echo "    x86_64        64 Bit"
     echo "    i386          32 Bit"
     echo
+    echo "Valid versions:"
+    echo "    2             TiGL 2"
+    echo "    3             TiGL 3"
 }
 
 function checkArguments {
 
     # check number of args
-    if [ $# -ne 2 ]
+    if [ $# -lt 2 ] || [ $# -gt 3 ]
     then
 	printUsage
         exit 1
     fi
+
+    if [ $# -eq 2 ]
+    then
+	tmp_ver="2"
+    else
+        tmp_ver=$3
+    fi
+
 
     tmp_dist=$1
     tmp_arch=$2
@@ -167,8 +178,17 @@ function checkArguments {
 	printUsage
 	exit 3
     fi
+
+    # check version
+    if [[ $tmp_ver -ne "2" ]] && [[ $tmp_ver -ne "3" ]]; then
+  	echo "Error: Unsupported TiGL version:" $tmp_ver
+	echo
+	printUsage
+	exit 4
+    fi
     ARCH=$tmp_arch
     FDIST=$tmp_dist
+    TIGLVER=$tmp_ver
 }
 
 
@@ -211,10 +231,17 @@ done < index.html
 filelist="${filelist[@]}"
 
 if [[ $PACK_TYPE == rpm ]]; then
-    whitelist="OCE-0* libtigl-dev* libTIGL2* libTIXI2* tigl-devel* tixi-devel* tigl-viewer*"
+    if [[ $TIGLVER -eq "2" ]]; then
+        whitelist="OCE-0* libTIGL2* libTIXI2* tigl-devel* tixi-devel* tigl-viewer*"
+    elif [[ $TIGLVER -eq "3" ]]; then
+        whitelist="OCE-0* libtigl3* libtixi3* tigl3-devel* tixi3-devel* tigl3-viewer*"
+    fi
 elif [[ $PACK_TYPE == deb ]]; then
-
-    whitelist="liboce-foundation1* liboce-modeling1* liboce-visualization1* libtigl-dev* libtixi-dev* libtigl2* libtixi2* tigl-viewer*"
+    if [[ $TIGLVER -eq "2" ]]; then
+        whitelist="liboce-foundation1* liboce-modeling1* liboce-visualization1* libtigl-dev* libtixi-dev* libtigl2* libtixi2* tigl-viewer*"
+    elif [[ $TIGLVER -eq "3" ]]; then
+        whitelist="liboce-foundation1* liboce-modeling1* liboce-visualization1* libtigl3* libtixi3* tigl3-viewer*"
+    fi
 else
     echo "Error: unknown package type"
     exit 4
@@ -229,7 +256,9 @@ for file in $filelist; do
 		#extract version number
 		if [[ $file == libTIGL2-*.rpm ]]; then
 			VERSION=`echo $file | awk '{split($0,array,"-")} END{print array[2]}'`
-		elif [[ $file == libtigl2_*.deb ]]; then
+		elif [[ $file == libtigl3-*.rpm ]]; then
+			VERSION=`echo $file | awk '{split($0,array,"-")} END{print array[3]}'`
+		elif [[ $file == libtigl2_*.deb ]] || [[ $file == libtigl3_*.deb ]]; then
 			VERSION=`echo $file | awk '{split($0,array,"_")} END{print array[2]}' | awk '{split($0,array,"-")} END{print array[1]}'`
 		fi
 	    fi
@@ -271,7 +300,11 @@ if [[ $DIST != RedHat_RHEL-5 ]]; then
   if [[ $PACK_TYPE == deb ]]; then
       echo 'export LD_LIBRARY_PATH=$CURDIR/'$LIBDIR/$ARCH-linux-gnu/':$LD_LIBRARY_PATH' >> tiglviewer.sh
   fi
-  echo '$CURDIR/bin/TIGLViewer' >> tiglviewer.sh
+  if [[ $TIGLVER -eq "2" ]]; then
+      echo '$CURDIR/bin/TIGLViewer' >> tiglviewer.sh
+  elif [[ $TIGLVER -eq "3" ]]; then
+      echo '$CURDIR/bin/tiglviewer-3' >> tiglviewer.sh
+  fi
   chmod +x tiglviewer.sh
 fi
 
