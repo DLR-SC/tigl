@@ -54,7 +54,6 @@ before_script:
 
 script:
   - '[ "$TRAVIS_OS_NAME" != osx ] || export CMAKE_PREFIX_PATH=`pwd`/../TIXI-3.0.0-Darwin:`pwd`/../oce.0.17.2.macos_static:`pwd`/../Qt5.4_clang64_macOS'
-  - '[ "$TRAVIS_OS_NAME" != osx ] || export CXXFLAGS=-Wno-inconsistent-missing-override '
   - '[ "$TRAVIS_OS_NAME" != linux ] || jdk_switcher use oraclejdk8'
   - cmake -DTIGL_BUILD_TESTS=ON -DTIGL_OCE_COONS_PATCHED=ON -DTIGL_NIGHTLY=$TIGL_NIGHTLY -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON -DCMAKE_INSTALL_PREFIX=`pwd`/install ..
   - make -j 4
