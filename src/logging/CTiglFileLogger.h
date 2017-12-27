@@ -34,10 +34,10 @@ class CTiglFileLogger : public ITiglLogger
 public:
     TIGL_EXPORT CTiglFileLogger(const char* filename);
     TIGL_EXPORT CTiglFileLogger(FILE * file);
-    TIGL_EXPORT virtual ~CTiglFileLogger();
+    TIGL_EXPORT ~CTiglFileLogger() OVERRIDE;
 
-    TIGL_EXPORT virtual void LogMessage(TiglLogLevel, const char * message);
-    TIGL_EXPORT virtual void SetVerbosity(TiglLogLevel);
+    TIGL_EXPORT void LogMessage(TiglLogLevel, const char * message) OVERRIDE;
+    TIGL_EXPORT void SetVerbosity(TiglLogLevel) OVERRIDE;
 
 private:
     FILE * logFileStream;

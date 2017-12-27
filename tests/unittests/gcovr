@@ -839,7 +839,7 @@ parser.add_option("-v","--verbose",
         dest="verbose",
         default=False)
 parser.add_option('--object-directory',
-        help="Specify the directory that contains the gcov data files.  gcovr must be able to identify the path between the *.gcda files and the directory where gcc was originally run.  Normally, gcovr can guess correctly.  This option overrides gcovr's normal path detection and can specify either the path from gcc to the gcda file (i.e. what was passed to gcc's '-o' option), or the path from the gcda file to gcc's original working directory.",
+        help="Specify the directory that contains the gcov data files.  gcovr must be able to identify the path between the *.gcda files and the directory where gcc was originally run.  Normally, gcovr can guess correctly.  This option OVERRIDEs gcovr's normal path detection and can specify either the path from gcc to the gcda file (i.e. what was passed to gcc's '-o' option), or the path from the gcda file to gcc's original working directory.",
         action="store",
         dest="objdir",
         default=None)

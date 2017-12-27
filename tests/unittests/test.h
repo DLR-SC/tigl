@@ -16,6 +16,7 @@
 * limitations under the License.
 */
 #include <gtest/gtest.h>
+#include "tigl_internal.h"
 
 /*
  * Define tests here

@@ -19,6 +19,7 @@
 #ifndef TIGLVIEWERLOGREDIRECTION_H
 #define TIGLVIEWERLOGREDIRECTION_H
 
+#include "tigl_internal.h"
 #include "ITiglLogger.h"
 #include <QObject>
 /**
@@ -32,9 +33,9 @@ class TIGLViewerLogRedirection : public QObject, public tigl::ITiglLogger
 public:
     TIGLViewerLogRedirection();
 
-    virtual ~TIGLViewerLogRedirection() {}
-    virtual void LogMessage(TiglLogLevel, const char * message);
-    virtual void SetVerbosity(TiglLogLevel);
+    ~TIGLViewerLogRedirection() OVERRIDE {}
+    void LogMessage(TiglLogLevel, const char * message) OVERRIDE;
+    void SetVerbosity(TiglLogLevel) OVERRIDE;
 
 private:
     TiglLogLevel verbosity;

@@ -19,6 +19,7 @@
 #ifndef TIGLVIEWERSCREENSHOTDIALOG_H
 #define TIGLVIEWERSCREENSHOTDIALOG_H
 
+#include "tigl_internal.h"
 #include <QDialog>
 
 namespace Ui
@@ -41,7 +42,7 @@ public:
     
     bool getWhiteBGEnabled() const;
 
-    ~TIGLViewerScreenshotDialog();
+    ~TIGLViewerScreenshotDialog() OVERRIDE;
     
 private:
     Ui::TiglViewerScreenshotDialog *ui;

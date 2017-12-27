@@ -50,9 +50,9 @@ public:
 public:
     TIGL_EXPORT CCPACSWingRibsPositioning(CCPACSWingRibsDefinition* parent);
 
-    TIGL_EXPORT virtual void SetRibReference(const std::string& value) OVERRIDE;
-    TIGL_EXPORT virtual void SetRibStart(const std::string& value) OVERRIDE;
-    TIGL_EXPORT virtual void SetRibEnd(const std::string& value) OVERRIDE;
+    TIGL_EXPORT void SetRibReference(const std::string& value) OVERRIDE;
+    TIGL_EXPORT void SetRibStart(const std::string& value) OVERRIDE;
+    TIGL_EXPORT void SetRibEnd(const std::string& value) OVERRIDE;
 
     TIGL_EXPORT StartDefinitionType GetStartDefinitionType() const;
     TIGL_EXPORT void SetEtaStart(double);
@@ -68,7 +68,7 @@ public:
     TIGL_EXPORT void SetNumberOfRibs(int);
     TIGL_EXPORT void SetSpacing(double);
 
-    TIGL_EXPORT virtual void SetRibCrossingBehaviour(const generated::CPACSRibCrossingBehaviour& value) OVERRIDE;
+    TIGL_EXPORT void SetRibCrossingBehaviour(const generated::CPACSRibCrossingBehaviour& value) OVERRIDE;
 
 private:
     friend class CCPACSWingRibRotation;

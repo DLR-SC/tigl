@@ -45,7 +45,7 @@ public:
     TIGL_EXPORT double GetEta() const;
     TIGL_EXPORT void SetEta(double value);
 
-    TIGL_EXPORT virtual void SetXsi(const double& value) OVERRIDE;
+    TIGL_EXPORT void SetXsi(const double& value) OVERRIDE;
 };
 
 } // end namespace tigl

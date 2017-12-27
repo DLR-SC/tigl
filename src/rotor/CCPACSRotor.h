@@ -61,17 +61,17 @@ public:
     // Invalidates internal state
     TIGL_EXPORT void Invalidate();
 
-    TIGL_EXPORT virtual std::string GetDefaultedUID() const OVERRIDE;
+    TIGL_EXPORT std::string GetDefaultedUID() const OVERRIDE;
 
-    TIGL_EXPORT virtual CTiglTransformation GetTransformationMatrix() const OVERRIDE;
+    TIGL_EXPORT CTiglTransformation GetTransformationMatrix() const OVERRIDE;
 
     // Read CPACS rotor elements
-    TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& rotorXPath) OVERRIDE;
+    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& rotorXPath) OVERRIDE;
 
-    TIGL_EXPORT virtual void SetUID(const std::string& uid) OVERRIDE;
+    TIGL_EXPORT void SetUID(const std::string& uid) OVERRIDE;
 
     // Sets the Translation object
-    TIGL_EXPORT virtual void Translate(CTiglPoint trans) OVERRIDE;
+    TIGL_EXPORT void Translate(CTiglPoint trans) OVERRIDE;
 
     // Returns the Translation
     TIGL_EXPORT CTiglPoint GetTranslation();
@@ -120,7 +120,7 @@ public:
     TIGL_EXPORT double GetSolidity();
 
     // Returns the Component Type TIGL_COMPONENT_ROTOR.
-    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE
     {
         return TIGL_COMPONENT_ROTOR | TIGL_COMPONENT_PHYSICAL;
     }
@@ -134,7 +134,7 @@ protected:
 
     // Returns the geometry of the whole rotor (assembly of all rotor blades).
     // Implementation for abstract base class CTiglAbstractGeometricComponent
-    PNamedShape BuildLoft();
+    PNamedShape BuildLoft() OVERRIDE;
 
 private:
     bool                   invalidated;                 /**< Internal state flag  */

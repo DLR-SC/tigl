@@ -11,8 +11,8 @@ namespace tigl
     class CCPACSStringVector : private generated::CPACSStringVectorBase
     {
     public:
-        TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string &xpath) OVERRIDE;
-        TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const OVERRIDE;
+        TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string &xpath) OVERRIDE;
+        TIGL_EXPORT void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const OVERRIDE;
 
         using generated::CPACSStringVectorBase::GetMapType;
         using generated::CPACSStringVectorBase::SetMapType;

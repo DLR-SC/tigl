@@ -20,6 +20,7 @@
 #ifndef TIGLSLIDERDIALOG_H
 #define TIGLSLIDERDIALOG_H
 
+#include "tigl_internal.h"
 #include <QDialog>
 
 namespace Ui {
@@ -32,7 +33,7 @@ class TIGLSliderDialog : public QDialog
 
 public:
     explicit TIGLSliderDialog(QWidget *parent = 0);
-    ~TIGLSliderDialog();
+    ~TIGLSliderDialog() OVERRIDE;
 
     void setIntValue(int value);
     void setIntRange(int min, int max);
@@ -41,7 +42,7 @@ signals:
     void intValueChanged(int);
 
 protected:
-    bool eventFilter(QObject *obj, QEvent *event);
+    bool eventFilter(QObject *obj, QEvent *event) OVERRIDE;
 
 private:
     Ui::TIGLSliderDialog *ui;

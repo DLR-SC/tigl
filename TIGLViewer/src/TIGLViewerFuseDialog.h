@@ -19,6 +19,7 @@
 #ifndef TIGLVIEWERFUSEDIALOG_H
 #define TIGLVIEWERFUSEDIALOG_H
 
+#include "tigl_internal.h"
 #include <QDialog>
 
 namespace Ui
@@ -32,7 +33,7 @@ class FuseDialog : public QDialog
     
 public:
     explicit FuseDialog(QWidget *parent = 0);
-    ~FuseDialog();
+    ~FuseDialog() OVERRIDE;
 
     bool UseSymmetries() const;
     bool TrimWithFarField() const;

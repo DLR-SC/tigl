@@ -58,20 +58,20 @@ public:
     TIGL_EXPORT CCPACSWingSegment(CCPACSWingSegments* parent, CTiglUIDManager* uidMgr);
 
     // Virtual Destructor
-    TIGL_EXPORT virtual ~CCPACSWingSegment();
+    TIGL_EXPORT ~CCPACSWingSegment() OVERRIDE;
 
     // Invalidates internal state
     TIGL_EXPORT void Invalidate();
 
     // Read CPACS segment elements
-    TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& segmentXPath) OVERRIDE;
+    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& segmentXPath) OVERRIDE;
 
-    TIGL_EXPORT virtual void SetUID(const std::string& uid) OVERRIDE;
+    TIGL_EXPORT void SetUID(const std::string& uid) OVERRIDE;
 
-    TIGL_EXPORT virtual std::string GetDefaultedUID() const OVERRIDE;
+    TIGL_EXPORT std::string GetDefaultedUID() const OVERRIDE;
 
-    TIGL_EXPORT virtual void SetFromElementUID(const std::string& value) OVERRIDE;
-    TIGL_EXPORT virtual void SetToElementUID(const std::string& value) OVERRIDE;
+    TIGL_EXPORT void SetFromElementUID(const std::string& value) OVERRIDE;
+    TIGL_EXPORT void SetToElementUID(const std::string& value) OVERRIDE;
 
     // Returns the wing this segment belongs to
     TIGL_EXPORT CCPACSWing& GetWing() const;
@@ -167,7 +167,7 @@ public:
     TIGL_EXPORT bool GetIsOnTop(gp_Pnt pnt) const;
 
     // return if pnt lies on the loft or on the segment chord face
-    TIGL_EXPORT bool GetIsOn(const gp_Pnt &pnt);
+    TIGL_EXPORT bool GetIsOn(const gp_Pnt &pnt) OVERRIDE;
 
     // Returns the reference area of the quadrilateral portion of the wing segment
     // by projecting the wing segment into the plane defined by the user
@@ -200,7 +200,7 @@ public:
     // starting at a point on the chord face with the given direction dir.
     TIGL_EXPORT gp_Pnt GetPointDirection(double eta, double xsi, double dirx, double diry, double dirz, bool fromUpper, double& deviation) const;
 
-    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE
     {
         return TIGL_COMPONENT_WINGSEGMENT | TIGL_COMPONENT_SEGMENT | TIGL_COMPONENT_LOGICAL;
     }
@@ -213,7 +213,7 @@ protected:
     void Update();
 
     // Builds the loft between the two segment sections
-    PNamedShape BuildLoft();
+    PNamedShape BuildLoft() OVERRIDE;
 
 private:
     // get short name for loft

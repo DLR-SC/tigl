@@ -42,7 +42,7 @@
 class WingCSTProfile : public ::testing::Test 
 {
 protected:
-    virtual void SetUp() 
+    void SetUp() OVERRIDE 
     {
         const char* filename = "TestData/CPACS_30_CST_simple.xml";
         ReturnCode tixiRet;
@@ -76,7 +76,7 @@ protected:
 
     }
 
-    void TearDown() 
+    void TearDown() OVERRIDE 
     {
         ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == TIGL_SUCCESS);
         ASSERT_TRUE(tixiCloseDocument(tixiHandle) == SUCCESS);

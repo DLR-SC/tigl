@@ -19,6 +19,7 @@
 #ifndef TIGLVIEWERETAXSIDIALOG_H
 #define TIGLVIEWERETAXSIDIALOG_H
 
+#include "tigl_internal.h"
 #include <QDialog>
 
 namespace Ui
@@ -32,7 +33,7 @@ class EtaXsiDialog : public QDialog
     
 public:
     explicit EtaXsiDialog(QWidget *parent = 0);
-    ~EtaXsiDialog();
+    ~EtaXsiDialog() OVERRIDE;
     
     static int getEtaXsi(QWidget * parent, double& eta, double& xsi);
     

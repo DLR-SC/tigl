@@ -49,7 +49,7 @@
 class FuselageGuideCurve : public ::testing::Test
 {
 protected:
-    virtual void SetUp()
+    void SetUp() OVERRIDE
     {
         const char* filename = "TestData/simple_test_guide_curves.xml";
         ReturnCode tixiRet;
@@ -70,7 +70,7 @@ protected:
         gamma=std::vector<double>(tempz, tempz + sizeof(tempz) / sizeof(tempz[0]) );
     }
 
-    void TearDown()
+    void TearDown() OVERRIDE
     {
         ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == TIGL_SUCCESS);
         ASSERT_TRUE(tixiCloseDocument(tixiHandle) == SUCCESS);

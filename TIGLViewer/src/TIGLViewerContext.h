@@ -48,7 +48,7 @@ class QOCC_DECLSPEC TIGLViewerContext : public QObject
 public:
 
     TIGLViewerContext();
-    ~TIGLViewerContext();
+    ~TIGLViewerContext() OVERRIDE;
 
     Handle(V3d_Viewer)&              getViewer();
     Handle(AIS_InteractiveContext)&  getContext();

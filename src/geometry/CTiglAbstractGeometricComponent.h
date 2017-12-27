@@ -47,7 +47,7 @@ public:
     TIGL_EXPORT virtual TiglSymmetryAxis GetSymmetryAxis() const;
 
     // Gets the loft of a geometric component
-    TIGL_EXPORT virtual PNamedShape GetLoft();
+    TIGL_EXPORT PNamedShape GetLoft() OVERRIDE;
 
     // Get the loft mirrored at the mirror plane
     TIGL_EXPORT virtual PNamedShape GetMirroredLoft();

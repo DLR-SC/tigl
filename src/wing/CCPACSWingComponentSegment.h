@@ -65,7 +65,7 @@ public:
     TIGL_EXPORT CCPACSWingComponentSegment(CCPACSWingComponentSegments* parent, CTiglUIDManager* uidMgr);
 
     // Virtual Destructor
-    TIGL_EXPORT virtual ~CCPACSWingComponentSegment();
+    TIGL_EXPORT ~CCPACSWingComponentSegment() OVERRIDE;
 
     // Invalidates internal state
     TIGL_EXPORT void Invalidate();
@@ -73,7 +73,7 @@ public:
     // Read CPACS segment elements
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & segmentXPath);
 
-    TIGL_EXPORT virtual std::string GetDefaultedUID() const OVERRIDE;
+    TIGL_EXPORT std::string GetDefaultedUID() const OVERRIDE;
 
     TIGL_EXPORT CCPACSWing& GetWing() const;
 
@@ -133,7 +133,7 @@ public:
     // Returns null if the point is not an that wing, i.e. deviates more than 1 cm from the wing
     TIGL_EXPORT const CCPACSWingSegment* findSegment(double x, double y, double z, gp_Pnt& nearestPoint, double& deviation) const;
 
-    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const { return TIGL_COMPONENT_WINGCOMPSEGMENT | TIGL_COMPONENT_SEGMENT | TIGL_COMPONENT_LOGICAL; }
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE { return TIGL_COMPONENT_WINGCOMPSEGMENT | TIGL_COMPONENT_SEGMENT | TIGL_COMPONENT_LOGICAL; }
 
     TIGL_EXPORT MaterialList GetMaterials(double eta, double xsi, TiglStructureType);
 
@@ -200,7 +200,7 @@ protected:
     void Update();
 
     // Builds the loft between the two segment sections
-    PNamedShape BuildLoft();
+    PNamedShape BuildLoft() OVERRIDE;
 
     // Method for building wires for eta-, leading edge-, trailing edge-lines
     void BuildLines() const;

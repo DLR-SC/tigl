@@ -54,7 +54,7 @@ public:
     TIGL_EXPORT CCPACSFuselage(CCPACSFuselages* parent, CTiglUIDManager* uidMgr);
 
     // Virtual Destructor
-    TIGL_EXPORT virtual ~CCPACSFuselage();
+    TIGL_EXPORT ~CCPACSFuselage() OVERRIDE;
 
     // Invalidates internal state
     TIGL_EXPORT void Invalidate();
@@ -62,12 +62,12 @@ public:
     // Read CPACS fuselage elements
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& fuselageXPath);
 
-    TIGL_EXPORT virtual void SetUID(const std::string& uid) OVERRIDE;
+    TIGL_EXPORT void SetUID(const std::string& uid) OVERRIDE;
 
     // Returns the parent configuration
     TIGL_EXPORT CCPACSConfiguration & GetConfiguration() const;
 
-    TIGL_EXPORT virtual std::string GetDefaultedUID() const OVERRIDE;
+    TIGL_EXPORT std::string GetDefaultedUID() const OVERRIDE;
 
     // Get section count
     TIGL_EXPORT int GetSectionCount() const;
@@ -103,7 +103,7 @@ public:
     TIGL_EXPORT double GetCircumference(int segmentIndex, double eta);
 
     // Returns the Component Type TIGL_COMPONENT_FUSELAGE
-    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const {return TIGL_COMPONENT_FUSELAGE | TIGL_COMPONENT_PHYSICAL;}
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE {return TIGL_COMPONENT_FUSELAGE | TIGL_COMPONENT_PHYSICAL;}
 
     // Returns the point where the distance between the selected fuselage and the ground is at minimum.
     // The Fuselage could be turned with a given angle at at given axis, specified by a point and a direction.
@@ -124,7 +124,7 @@ protected:
     void Cleanup();
 
     // Adds all segments of this fuselage to one shape
-    PNamedShape BuildLoft();
+    PNamedShape BuildLoft() OVERRIDE;
     
     void SetFaceTraits(PNamedShape loft, bool hasSymmetryPlane, bool smoothSurface);
 

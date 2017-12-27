@@ -55,7 +55,7 @@ public:
     * @param tixiHandle Handle to the xml document
     * @param transformationXPath XPath to the parent object
     */
-    TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& transformationXPath) OVERRIDE;
+    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& transformationXPath) OVERRIDE;
 
 private:
     // caches the transformation created from scaling, rotation and translation

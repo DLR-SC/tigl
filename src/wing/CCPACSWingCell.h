@@ -42,7 +42,7 @@ class CCPACSWingCell : public generated::CPACSWingCell
 {
 public:
     TIGL_EXPORT CCPACSWingCell(CCPACSWingCells* parentCells, CTiglUIDManager* uidMgr);
-    TIGL_EXPORT virtual ~CCPACSWingCell();
+    TIGL_EXPORT ~CCPACSWingCell() OVERRIDE;
 
     TIGL_EXPORT void Invalidate();
 
@@ -54,7 +54,7 @@ public:
     // TODO: missing support for spar cell borders
     TIGL_EXPORT bool IsConvex() const;
     
-    TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& cellXPath) OVERRIDE;
+    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& cellXPath) OVERRIDE;
 
     // get corner coordinates of cell
     TIGL_EXPORT void GetLeadingEdgeInnerPoint (double* eta, double* xsi) const;

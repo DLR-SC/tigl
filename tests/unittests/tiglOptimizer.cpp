@@ -36,14 +36,14 @@ namespace
 class Rosenbrock2d : public tigl::ITiglObjectiveFunction
 {
 public:
-    int getParameterCount() const { return 2; }
+    int getParameterCount() const OVERRIDE { return 2; }
 
-    bool hasAnalyticGradient() const{ return true; };
-    bool hasAnalyticHessian () const{ return true; };
+    bool hasAnalyticGradient() const OVERRIDE{ return true; };
+    bool hasAnalyticHessian () const OVERRIDE{ return true; };
 
-    double getFunctionValue(const double * x) const;
-    void  getGradient(const double * x, double * dx) const;
-    void  getHessian (const double * x, double * H) const;
+    double getFunctionValue(const double * x) const OVERRIDE;
+    void  getGradient(const double * x, double * dx) const OVERRIDE;
+    void  getHessian (const double * x, double * H) const OVERRIDE;
 };
 
 

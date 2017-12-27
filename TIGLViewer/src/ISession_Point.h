@@ -32,6 +32,7 @@
 #include <AIS_InteractiveObject.hxx>
 #include <gp_Pnt.hxx>
 #include <occt_compat.h>
+#include "tigl_internal.h"
 
 DEFINE_STANDARD_HANDLE(ISession_Point,AIS_InteractiveObject)
 class ISession_Point : public AIS_InteractiveObject  
@@ -42,23 +43,23 @@ public:
     ISession_Point(gp_Pnt2d& aPoint,Standard_Real Elevation = 0);
     ISession_Point(gp_Pnt& aPoint);
 
-    virtual ~ISession_Point();
+    ~ISession_Point() OVERRIDE;
     DEFINE_STANDARD_RTTIEXT(ISession_Point,AIS_InteractiveObject)
 
 private :
 
      void Compute          (const Handle(PrsMgr_PresentationManager3d)& aPresentationManager,
                             const Handle(Prs3d_Presentation)& aPresentation,
-                            const Standard_Integer aMode);
+                            const Standard_Integer aMode) OVERRIDE;
      void Compute          (const Handle(Prs3d_Projector)& aProjector,
-                            const Handle(Prs3d_Presentation)& aPresentation) ;
+                            const Handle(Prs3d_Presentation)& aPresentation) OVERRIDE ;
      #if 0
      void Compute          (const Handle(PrsMgr_PresentationManager2d)& aPresentationManager,
                             const Handle(Graphic2d_GraphicObject)& aGrObj,
                             const Standard_Integer unMode = 0) ;
      #endif
      void ComputeSelection (const Handle(SelectMgr_Selection)& aSelection,
-                            const Standard_Integer unMode) ;
+                            const Standard_Integer unMode) OVERRIDE ;
      
      gp_Pnt myPoint;
 

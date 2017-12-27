@@ -19,6 +19,7 @@
 #include <SelectMgr_SelectableObject.hxx>
 
 #include <occt_compat.h>
+#include "tigl_internal.h"
 
 class TCollection_AsciiString;
 class SelectMgr_Selection;
@@ -47,9 +48,9 @@ public:
                              const Standard_Integer         aFontIndex  = 1   ,
                              const Quantity_Factor          aScale      = 0.1   );
 
-    virtual ~ISession_Text();
+    ~ISession_Text() OVERRIDE;
 
-    inline   Standard_Integer        NbPossibleSelection() const;
+    inline   Standard_Integer        NbPossibleSelection() const OVERRIDE;
     inline   TCollection_AsciiString GetText() const;
     inline   void                    SetText(const TCollection_AsciiString& atext) ;
     inline   void                    GetCoord(Standard_Real& X, Standard_Real& Y, Standard_Real& Z) const ;
@@ -72,11 +73,11 @@ private:
 
     void Compute          (const Handle(PrsMgr_PresentationManager3d)& aPresentationManager,
                            const Handle(Prs3d_Presentation)& aPresentation,
-                           const Standard_Integer aMode);
+                           const Standard_Integer aMode) OVERRIDE;
     void Compute          (const Handle(Prs3d_Projector)& aProjector,
-                           const Handle(Prs3d_Presentation)& aPresentation);
+                           const Handle(Prs3d_Presentation)& aPresentation) OVERRIDE;
     void ComputeSelection (const Handle(SelectMgr_Selection)& aSelection,
-                           const Standard_Integer unMode) ;
+                           const Standard_Integer unMode) OVERRIDE ;
 
 
  // Fields PRIVATE

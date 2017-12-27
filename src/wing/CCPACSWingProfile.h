@@ -52,10 +52,10 @@ class CCPACSWingProfile : public generated::CPACSProfileGeometry
 public:
     TIGL_EXPORT CCPACSWingProfile(CTiglUIDManager* uidMgr);
 
-    TIGL_EXPORT virtual ~CCPACSWingProfile();
+    TIGL_EXPORT ~CCPACSWingProfile() OVERRIDE;
 
     // Read CPACS wing profile file
-    TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) OVERRIDE;
+    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) OVERRIDE;
 
     // Returns whether the profile is a rotor profile
     TIGL_EXPORT bool IsRotorProfile() const;

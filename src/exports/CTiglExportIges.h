@@ -52,7 +52,7 @@ public:
 
 private:
     // Actual implementation of the IGES file writing
-    TIGL_EXPORT bool WriteImpl(const std::string& filename) const;
+    TIGL_EXPORT bool WriteImpl(const std::string& filename) const OVERRIDE;
 
     // Assignment operator
     void operator=(const CTiglExportIges& );
