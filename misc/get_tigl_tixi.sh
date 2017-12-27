@@ -32,12 +32,15 @@ ARCH=NO_ARCH
 LIBDIR=NO_DIR
 PACK_TYPE=NO_TYPE
 
+read_dom () {
+    local IFS=\>
+    read -d \< ENTITY CONTENT
+}
 
 function printUsage {
-    echo "usage: get_tigl.sh <distro> <arch>"
+    echo "usage: get_tigl.sh <distro> <arch> <version>(default=2)"
     echo
     echo "Valid distributions:"
-    echo "    SLE_11_SP2     Suse Linux Enterprise 11 SP2"
     echo "    SLE_12_SP1     Suse Linux Enterprise 12 SP1"
     echo "    SLE_12_SP2     Suse Linux Enterprise 12 SP2"
     echo "    openSUSE_13.1  openSUSE 13.1"
@@ -52,16 +55,27 @@ function printUsage {
     echo "    x86_64        64 Bit"
     echo "    i386          32 Bit"
     echo
+    echo "Valid versions:"
+    echo "    2             TiGL 2"
+    echo "    3             TiGL 3"
 }
 
 function checkArguments {
 
     # check number of args
-    if [ $# -ne 2 ]
+    if [ $# -lt 2 ] || [ $# -gt 3 ]
     then
 	printUsage
         exit 1
     fi
+
+    if [ $# -eq 2 ]
+    then
+	tmp_ver="2"
+    else
+        tmp_ver=$3
+    fi
+
 
     tmp_dist=$1
     tmp_arch=$2
@@ -76,16 +90,7 @@ function checkArguments {
     LIBDIR=lib
 
     #check dist
-    if [[ $tmp_dist == SLE_11_SP2 ]]; then
-    	DIST=SLE_11_SP2
-    	PACK_TYPE=rpm
-    	if [[  $tmp_arch == i386 ]]; then
-    	    PACK_ARCH=i586
-            else
-                PACK_ARCH=x86_64
-                LIBDIR=lib64
-    	fi
-    elif [[ $tmp_dist == SLE_12_SP1 ]]; then
+    if [[ $tmp_dist == SLE_12_SP1 ]]; then
     	DIST=SLE_12_SP1
     	PACK_TYPE=rpm
     	if [[  $tmp_arch == i386 ]]; then
@@ -159,7 +164,6 @@ function checkArguments {
         else
             PACK_ARCH=amd64
         fi
-    else
     elif [[ $tmp_dist == ubuntu_16.04 ]]; then
         DIST=xUbuntu_16.04
         PACK_TYPE=deb
@@ -174,8 +178,17 @@ function checkArguments {
 	printUsage
 	exit 3
     fi
+
+    # check version
+    if [[ $tmp_ver -ne "2" ]] && [[ $tmp_ver -ne "3" ]]; then
+  	echo "Error: Unsupported TiGL version:" $tmp_ver
+	echo
+	printUsage
+	exit 4
+    fi
     ARCH=$tmp_arch
     FDIST=$tmp_dist
+    TIGLVER=$tmp_ver
 }
 
 
@@ -206,63 +219,51 @@ if [[ $? -ne 0 ]]; then
     exit 7
 fi
 
-filelist=`cat index.html | grep  $PACK_TYPE | awk '{print $7}' |  cut -d'"' -f 2`
 
+# parse index.html for all packages 
+filelist=()
+while read_dom; do
+    if [[ "$CONTENT" == *.$PACK_TYPE ]]
+    then
+        filelist+=("$CONTENT")
+    fi
+done < index.html
+filelist="${filelist[@]}"
 
 if [[ $PACK_TYPE == rpm ]]; then
-  # select required files
-  for file in $filelist; do
-	#opencascade
-	if [[ $file == OCE*.rpm ]] && [[ $file != OCE-devel* ]] && [[ $file != *debuginfo* ]]
-	then
-		bin_file_list+=($file)
-	fi
-
-	#TIXI
-	if [[ $file == libTIXI2*.rpm ]]  || [[ $file == tixi-*.rpm ]] && [[ $file != *debuginfo* ]] && [[ $file != *debugsource* ]]
-	then
-		bin_file_list+=($file)
-	fi
-
-	#TIGL
-	if [[ $file == libTIGL2*.rpm ]] || [[ $file == tigl-*.rpm ]] && [[ $file != *debuginfo* ]]  && [[ $file != *debugsource* ]]
-	then
-		bin_file_list+=($file)
-        	#extract version number
-		if [[ $file == libTIGL2-*.rpm ]]; then
-			VERSION=`echo $file | awk '{split($0,array,"-")} END{print array[2]}'`
-		fi
-	fi
-  done
+    if [[ $TIGLVER -eq "2" ]]; then
+        whitelist="OCE-0* libTIGL2* libTIXI2* tigl-devel* tixi-devel* tigl-viewer*"
+    elif [[ $TIGLVER -eq "3" ]]; then
+        whitelist="OCE-0* libtigl3* libtixi3* tigl3-devel* tixi3-devel* tigl3-viewer*"
+    fi
 elif [[ $PACK_TYPE == deb ]]; then
-  # select required files
-  for file in $filelist; do
-	#opencascade
-	if [[ $file == liboce-*.deb ]] && [[ $file != liboce*dev* ]] && [[ $file != liboce*ocaf* ]]
-	then
-		bin_file_list+=($file)
-	fi
-
-	#TIXI
-	if [[ $file == libtixi2*.deb ]]
-	then
-		bin_file_list+=($file)
-	fi
-
-	#TIGL
-	if [[ $file == libtigl*.deb ]] || [[ $file == tigl-*.deb ]]
-	then
-		bin_file_list+=($file)
-        	#extract version number
-		if [[ $file == libtigl2_*.deb ]]; then
-			VERSION=`echo $file | awk '{split($0,array,"_")} END{print array[2]}' | awk '{split($0,array,"-")} END{print array[1]}'`
-		fi
-	fi
-  done
+    if [[ $TIGLVER -eq "2" ]]; then
+        whitelist="liboce-foundation1* liboce-modeling1* liboce-visualization1* libtigl-dev* libtixi-dev* libtigl2* libtixi2* tigl-viewer*"
+    elif [[ $TIGLVER -eq "3" ]]; then
+        whitelist="liboce-foundation1* liboce-modeling1* liboce-visualization1* libtigl3* libtixi3* tigl3-viewer*"
+    fi
 else
     echo "Error: unknown package type"
     exit 4
 fi
+
+for file in $filelist; do
+	# select required files
+	for whitefile in $whitelist; do
+	    if [[ $file == $whitefile ]]; then
+		bin_file_list+=($file)
+
+		#extract version number
+		if [[ $file == libTIGL2-*.rpm ]]; then
+			VERSION=`echo $file | awk '{split($0,array,"-")} END{print array[2]}'`
+		elif [[ $file == libtigl3-*.rpm ]]; then
+			VERSION=`echo $file | awk '{split($0,array,"-")} END{print array[3]}'`
+		elif [[ $file == libtigl2_*.deb ]] || [[ $file == libtigl3_*.deb ]]; then
+			VERSION=`echo $file | awk '{split($0,array,"_")} END{print array[2]}' | awk '{split($0,array,"-")} END{print array[1]}'`
+		fi
+	    fi
+	done
+done
 
 NAME="$PACKAGE-$VERSION-$FDIST-$ARCH"
 
@@ -299,7 +300,11 @@ if [[ $DIST != RedHat_RHEL-5 ]]; then
   if [[ $PACK_TYPE == deb ]]; then
       echo 'export LD_LIBRARY_PATH=$CURDIR/'$LIBDIR/$ARCH-linux-gnu/':$LD_LIBRARY_PATH' >> tiglviewer.sh
   fi
-  echo '$CURDIR/bin/TIGLViewer' >> tiglviewer.sh
+  if [[ $TIGLVER -eq "2" ]]; then
+      echo '$CURDIR/bin/TIGLViewer' >> tiglviewer.sh
+  elif [[ $TIGLVER -eq "3" ]]; then
+      echo '$CURDIR/bin/tiglviewer-3' >> tiglviewer.sh
+  fi
   chmod +x tiglviewer.sh
 fi
 
