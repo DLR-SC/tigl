@@ -44,7 +44,7 @@ public:
 
 private:
 
-    bool WriteImpl(const std::string& filename) const;
+    bool WriteImpl(const std::string& filename) const OVERRIDE;
 
     // Assignment operator
     void operator=(const CTiglExportStl& ) { /* Do nothing */ }

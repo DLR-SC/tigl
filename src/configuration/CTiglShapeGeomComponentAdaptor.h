@@ -70,12 +70,12 @@ public:
     }
 
     // Returns the unique id of this component or an empty string if the component does not have a uid
-    virtual std::string GetDefaultedUID() const
+    std::string GetDefaultedUID() const OVERRIDE
     {
         return m_uid;
     }
 
-    virtual PNamedShape GetLoft()
+    PNamedShape GetLoft() OVERRIDE
     {
         if (m_parent) {
             // The shape has to be build somewhere
@@ -86,7 +86,7 @@ public:
         return m_shape;
     }
 
-    virtual TiglGeometricComponentType GetComponentType() const
+    TiglGeometricComponentType GetComponentType() const OVERRIDE
     {
         return TIGL_COMPONENT_PHYSICAL;
     }

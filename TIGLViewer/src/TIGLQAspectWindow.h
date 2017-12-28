@@ -22,6 +22,7 @@
 #define QTASPECTWINDOW_H
 
 
+#include "tigl_internal.h"
 #include <Aspect_Window.hxx>
 #include <Aspect_Drawable.hxx>
 #include "occt_compat.h"
@@ -53,45 +54,45 @@ public:
     
     TIGLQAspectWindow( QWidget* theWidget, const Quantity_NameOfColor theBackColor = Quantity_NOC_MATRAGRAY );
     
-    virtual void Destroy();
+    void Destroy() OVERRIDE;
     
     //! Destructor
-    ~TIGLQAspectWindow()
+    ~TIGLQAspectWindow() OVERRIDE
     {
         Destroy();
     }
     
     //! Returns native Window handle
-    virtual Aspect_Drawable NativeHandle() const;
+    Aspect_Drawable NativeHandle() const OVERRIDE;
     
     //! Returns parent of native Window handle.
-    virtual Aspect_Drawable NativeParentHandle() const;
+    Aspect_Drawable NativeParentHandle() const OVERRIDE;
     
     //! Applies the resizing to the window <me>
-    virtual Aspect_TypeOfResize DoResize() const;
+    Aspect_TypeOfResize DoResize() const OVERRIDE;
     
     //! Returns True if the window <me> is opened
     //! and False if the window is closed.
-    virtual Standard_Boolean IsMapped() const;
+    Standard_Boolean IsMapped() const OVERRIDE;
     
     //! Apply the mapping change to the window <me>
     //! and returns TRUE if the window is mapped at screen.
-    virtual Standard_Boolean DoMapping() const { return Standard_True; }
+    Standard_Boolean DoMapping() const OVERRIDE { return Standard_True; }
     
     //! Opens the window <me>.
-    virtual void Map() const;
+    void Map() const OVERRIDE;
     
     //! Closes the window <me>.
-    virtual void Unmap() const;
+    void Unmap() const OVERRIDE;
     
-    virtual void Position( Standard_Integer& theX1, Standard_Integer& theY1,
-                           Standard_Integer& theX2, Standard_Integer& theY2 ) const;
+    void Position( Standard_Integer& theX1, Standard_Integer& theY1,
+                           Standard_Integer& theX2, Standard_Integer& theY2 ) const OVERRIDE;
     
     //! Returns The Window RATIO equal to the physical
     //! WIDTH/HEIGHT dimensions.
-    virtual Quantity_Ratio Ratio() const;
+    Quantity_Ratio Ratio() const OVERRIDE;
     
-    virtual void Size( Standard_Integer& theWidth, Standard_Integer& theHeight ) const;
+    void Size( Standard_Integer& theWidth, Standard_Integer& theHeight ) const OVERRIDE;
     
 #if OCC_VERSION_HEX >= 0x070000
     virtual Aspect_FBConfig NativeFBConfig() const Standard_OVERRIDE { return NULL; }

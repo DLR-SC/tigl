@@ -92,7 +92,7 @@ public:
 public:
     TIGLViewerWidget(QWidget*);
 
-    ~TIGLViewerWidget();
+    ~TIGLViewerWidget() OVERRIDE;
 
     // the scene context must be set before first use
     void setContext(TIGLViewerContext* aContext);
@@ -100,7 +100,7 @@ public:
     Handle_V3d_View                  getView( void )    { return myView; }
 
     //Overrides
-    QPaintEngine*   paintEngine() const;
+    QPaintEngine*   paintEngine() const OVERRIDE;
     class QToolBar* myToolBar;
 
     void redraw( bool isPainting = false );
@@ -155,16 +155,16 @@ public slots:
 
 protected: // methods
 
-    virtual void paintEvent        ( QPaintEvent* e );
-    virtual void resizeEvent       ( QResizeEvent* e );
-    virtual void mousePressEvent   ( QMouseEvent* e );
-    virtual void mouseReleaseEvent ( QMouseEvent* e );
-    virtual void mouseMoveEvent    ( QMouseEvent* e );
-    virtual void wheelEvent        ( QWheelEvent* e );
-    virtual void keyPressEvent     ( QKeyEvent* e );
+    void paintEvent        ( QPaintEvent* e ) OVERRIDE;
+    void resizeEvent       ( QResizeEvent* e ) OVERRIDE;
+    void mousePressEvent   ( QMouseEvent* e ) OVERRIDE;
+    void mouseReleaseEvent ( QMouseEvent* e ) OVERRIDE;
+    void mouseMoveEvent    ( QMouseEvent* e ) OVERRIDE;
+    void wheelEvent        ( QWheelEvent* e ) OVERRIDE;
+    void keyPressEvent     ( QKeyEvent* e ) OVERRIDE;
 
-    virtual void leaveEvent           ( QEvent * );
-    virtual void contextMenuEvent  (QContextMenuEvent *event);
+    void leaveEvent           ( QEvent * ) OVERRIDE;
+    void contextMenuEvent  (QContextMenuEvent *event) OVERRIDE;
 
 private: // members
     void initializeOCC(const Handle(AIS_InteractiveContext)& aContext);

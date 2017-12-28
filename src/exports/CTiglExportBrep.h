@@ -44,7 +44,7 @@ public:
 private:
     // Writes the shapes to BREP. In multiple shapes were added
     // a compound is created.
-    TIGL_EXPORT bool WriteImpl(const std::string& filename) const;
+    TIGL_EXPORT bool WriteImpl(const std::string& filename) const OVERRIDE;
 };
 
 } // namespace tigl

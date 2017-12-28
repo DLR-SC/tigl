@@ -60,7 +60,7 @@ public:
     GEOMAlgo_Splitter(const Handle(NCollection_BaseAllocator)& theAllocator);
   
   TIGL_EXPORT
-    virtual ~GEOMAlgo_Splitter();
+    ~GEOMAlgo_Splitter() OVERRIDE;
 
   TIGL_EXPORT
     void AddTool(const TopoDS_Shape& theShape);
@@ -81,14 +81,14 @@ public:
     Standard_Integer LimitMode()const;
 
   TIGL_EXPORT
-    virtual void Clear();
+    void Clear() OVERRIDE;
 
  protected:
   TIGL_EXPORT
-    virtual void BuildResult(const TopAbs_ShapeEnum theType);
+    void BuildResult(const TopAbs_ShapeEnum theType) OVERRIDE;
 
   TIGL_EXPORT
-    virtual void PostTreat();
+    void PostTreat() OVERRIDE;
   
  protected:
   BOPCol_ListOfShape myTools;

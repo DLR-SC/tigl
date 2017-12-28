@@ -57,7 +57,7 @@ public:
     TIGL_EXPORT CCPACSGuideCurve(CTiglUIDManager* uidMgr);
 
     // Virtual Destructor
-    TIGL_EXPORT virtual ~CCPACSGuideCurve(void);
+    TIGL_EXPORT ~CCPACSGuideCurve(void) OVERRIDE;
 
     TIGL_EXPORT const TopoDS_Edge& GetCurve();
 

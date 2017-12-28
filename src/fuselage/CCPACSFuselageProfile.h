@@ -51,10 +51,10 @@ public:
     TIGL_EXPORT CCPACSFuselageProfile(CTiglUIDManager* uidMgr);
 
     // Destructor
-    TIGL_EXPORT virtual ~CCPACSFuselageProfile();
+    TIGL_EXPORT ~CCPACSFuselageProfile() OVERRIDE;
 
     // Read CPACS fuselage profile file
-    TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) OVERRIDE;
+    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) OVERRIDE;
 
     // Returns the name of the fuselage profile
     TIGL_EXPORT const int GetNumPoints() const;

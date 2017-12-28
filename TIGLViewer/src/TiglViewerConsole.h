@@ -24,6 +24,7 @@
 
 #include <QtGui>
 #include <QPlainTextEdit>
+#include "tigl_internal.h"
 
 class Console : public QPlainTextEdit
 {
@@ -60,10 +61,10 @@ public slots:
     void scrollDown();
 
 protected:
-    void keyPressEvent(QKeyEvent *);
-    void mousePressEvent(QMouseEvent *);
-    void mouseReleaseEvent(QMouseEvent *);
-    void contextMenuEvent(QContextMenuEvent *);
+    void keyPressEvent(QKeyEvent *) OVERRIDE;
+    void mousePressEvent(QMouseEvent *) OVERRIDE;
+    void mouseReleaseEvent(QMouseEvent *) OVERRIDE;
+    void contextMenuEvent(QContextMenuEvent *) OVERRIDE;
 
 private:
     QString _prompt;

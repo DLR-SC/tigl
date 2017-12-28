@@ -64,7 +64,7 @@ public:
         throw CTiglError("Invalid parent?"); // cannot happen, this is always part of the container of its parent class
     }
 
-    TIGL_EXPORT virtual TiglSymmetryAxis GetSymmetryAxis() const OVERRIDE
+    TIGL_EXPORT TiglSymmetryAxis GetSymmetryAxis() const OVERRIDE
     {
         if (_parentSymmetry)
             return *_parentSymmetry;

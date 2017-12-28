@@ -19,6 +19,7 @@
 #ifndef QDEBUGSTREAM_H
 #define QDEBUGSTREAM_H
 
+#include "tigl_internal.h"
 #include <QObject>
 #include <QMutex>
 #include <iostream>
@@ -39,7 +40,7 @@ public:
       m_old_buf = stream.rdbuf();
       stream.rdbuf(this);
     }
-    ~QDebugStream()
+    ~QDebugStream() OVERRIDE
     {
         // output anything that is left
         if (!m_string.empty()) {
@@ -54,7 +55,7 @@ public:
     }
 
 protected:
-    virtual int_type overflow(int_type v)
+    int_type overflow(int_type v) OVERRIDE
     {
         mutex.lock();      
         if (v == '\n') {
@@ -69,7 +70,7 @@ protected:
         return v;
     }
 
-    virtual std::streamsize xsputn(const char *p, std::streamsize n) 
+    std::streamsize xsputn(const char *p, std::streamsize n) OVERRIDE 
     {
         mutex.lock();
       

@@ -56,7 +56,7 @@ public:
     TIGL_EXPORT CCPACSWing(CCPACSRotorBlades* parent, CTiglUIDManager* uidMgr);
 
     // Virtual destructor
-    TIGL_EXPORT virtual ~CCPACSWing();
+    TIGL_EXPORT ~CCPACSWing() OVERRIDE;
 
     // Invalidates internal state
     TIGL_EXPORT void Invalidate();
@@ -64,9 +64,9 @@ public:
     // Read CPACS wing elements
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & wingXPath);
 
-    TIGL_EXPORT virtual void SetUID(const std::string& uid) OVERRIDE;
+    TIGL_EXPORT void SetUID(const std::string& uid) OVERRIDE;
 
-    TIGL_EXPORT virtual std::string GetDefaultedUID() const OVERRIDE;
+    TIGL_EXPORT std::string GetDefaultedUID() const OVERRIDE;
 
     // Returns whether this wing is a rotor blade
     TIGL_EXPORT bool IsRotorBlade() const;
@@ -123,7 +123,7 @@ public:
     TIGL_EXPORT double GetVolume();
 
     // Sets a Transformation object
-    TIGL_EXPORT virtual void Translate(CTiglPoint trans) OVERRIDE;
+    TIGL_EXPORT void Translate(CTiglPoint trans) OVERRIDE;
 
     // Gets the surfade area of this wing
     TIGL_EXPORT double GetSurfaceArea();
@@ -150,7 +150,7 @@ public:
     TIGL_EXPORT int GetSegmentEtaXsi(const gp_Pnt& xyz, double& eta, double& xsi, bool &onTop);
 
     // Returns the Component Type TIGL_COMPONENT_WING.
-    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const { return TIGL_COMPONENT_WING | TIGL_COMPONENT_PHYSICAL; }
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE { return TIGL_COMPONENT_WING | TIGL_COMPONENT_PHYSICAL; }
 
     // Returns the lower Surface of a Segment
     TIGL_EXPORT Handle(Geom_Surface) GetLowerSegmentSurface(int index);
@@ -178,7 +178,7 @@ protected:
     // Adds all Segments of this wing to one shape
     PNamedShape BuildFusedSegments(bool splitWingInUpperAndLower);
         
-    PNamedShape BuildLoft();
+    PNamedShape BuildLoft() OVERRIDE;
         
     void BuildUpperLowerShells();
 

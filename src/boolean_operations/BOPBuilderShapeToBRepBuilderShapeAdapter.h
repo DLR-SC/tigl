@@ -32,9 +32,9 @@ public:
     TIGL_EXPORT const TopoDS_Shape& Shape() const;
     TIGL_EXPORT operator TopoDS_Shape() const;
 
-    TIGL_EXPORT virtual const TopTools_ListOfShape& Generated(const TopoDS_Shape& S) ;
-    TIGL_EXPORT virtual const TopTools_ListOfShape& Modified(const TopoDS_Shape& S) ;
-    TIGL_EXPORT virtual  Standard_Boolean IsDeleted(const TopoDS_Shape& S) ;
+    TIGL_EXPORT const TopTools_ListOfShape& Generated(const TopoDS_Shape& S) OVERRIDE;
+    TIGL_EXPORT const TopTools_ListOfShape& Modified(const TopoDS_Shape& S) OVERRIDE;
+    TIGL_EXPORT Standard_Boolean IsDeleted(const TopoDS_Shape& S) OVERRIDE;
 
 private:
     BOPAlgo_BuilderShape& _adaptee;

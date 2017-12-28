@@ -58,8 +58,8 @@ protected:
         tixiHandle = -1;
     }
 
-    virtual void SetUp() {}
-    virtual void TearDown() {}
+    void SetUp() OVERRIDE {}
+    void TearDown() OVERRIDE {}
 
 
     static TixiDocumentHandle           tixiHandle;
@@ -100,8 +100,8 @@ protected:
         tixiSimpleHandle = -1;
     }
 
-    virtual void SetUp() {}
-    virtual void TearDown() {}
+    void SetUp() OVERRIDE {}
+    void TearDown() OVERRIDE {}
 
 
     static TixiDocumentHandle           tixiSimpleHandle;
@@ -142,8 +142,8 @@ protected:
         tixiSpecialHandle = -1;
     }
 
-    virtual void SetUp() {}
-    virtual void TearDown() {}
+    void SetUp() OVERRIDE {}
+    void TearDown() OVERRIDE {}
 
 
     static TixiDocumentHandle           tixiSpecialHandle;

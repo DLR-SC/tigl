@@ -38,7 +38,7 @@ class CCPACSWingSectionElement : public generated::CPACSWingElement
 public:
     TIGL_EXPORT CCPACSWingSectionElement(CCPACSWingSectionElements* parent, CTiglUIDManager* uidMgr);
 
-    TIGL_EXPORT virtual void SetAirfoilUID(const std::string& value) OVERRIDE;
+    TIGL_EXPORT void SetAirfoilUID(const std::string& value) OVERRIDE;
 
     // Gets the section element transformation
     TIGL_EXPORT CTiglTransformation GetSectionElementTransformation() const;

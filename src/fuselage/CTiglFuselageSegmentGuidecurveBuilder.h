@@ -39,7 +39,7 @@ public:
 
     // IGuideCurveBuilder interface
 public:
-    TopoDS_Edge BuildGuideCurve(CCPACSGuideCurve *);
+    TopoDS_Edge BuildGuideCurve(CCPACSGuideCurve *) OVERRIDE;
 
 private:
     class CCPACSFuselageSegment& m_segment;

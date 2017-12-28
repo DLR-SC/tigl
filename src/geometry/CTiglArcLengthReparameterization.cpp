@@ -42,15 +42,15 @@ public:
     // returns the total length of the spline
     double getTotalLength();
 
-    virtual double valueX(double t) {
+    double valueX(double t) OVERRIDE {
         return getParameter(t);
     }
 
-    virtual double valueY(double t)
+    double valueY(double t) OVERRIDE
     {
         return 0.;
     }
-    virtual double valueZ(double t)
+    double valueZ(double t) OVERRIDE
     {
         return 0.;
     }

@@ -44,9 +44,9 @@ public:
     // Constructor
     TIGL_EXPORT CTiglAttachedRotorBlade(CCPACSRotorBladeAttachment* parent, CCPACSWing& rotorBlade, int index);
 
-    TIGL_EXPORT virtual std::string GetDefaultedUID() const OVERRIDE;
+    TIGL_EXPORT std::string GetDefaultedUID() const OVERRIDE;
 
-    TIGL_EXPORT virtual CTiglTransformation GetTransformationMatrix() const OVERRIDE;
+    TIGL_EXPORT CTiglTransformation GetTransformationMatrix() const OVERRIDE;
 
     // Invalidates internal state
     TIGL_EXPORT void Invalidate();
@@ -55,7 +55,7 @@ public:
     TIGL_EXPORT void Update();
 
     // Returns the Component Type TIGL_COMPONENT_ROTORBLADE
-    TIGL_EXPORT virtual TiglGeometricComponentType GetComponentType() const OVERRIDE
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE
     {
         return TIGL_COMPONENT_ROTORBLADE;
     }
@@ -110,7 +110,7 @@ protected:
     void BuildMatrix();
 
     // Create the rotor blade geometry by copying and transforming the original unattached rotor blade geometry
-    PNamedShape BuildLoft();
+    PNamedShape BuildLoft() OVERRIDE;
 
 private:
     // Copy constructor

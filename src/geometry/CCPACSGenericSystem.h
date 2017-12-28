@@ -48,7 +48,7 @@ public:
     TIGL_EXPORT const std::string& GetUID() const;
     TIGL_EXPORT void SetUID(const std::string& uid);
 
-    TIGL_EXPORT virtual std::string GetDefaultedUID() const OVERRIDE;
+    TIGL_EXPORT std::string GetDefaultedUID() const OVERRIDE;
 
     // Invalidates internal state
     TIGL_EXPORT void Invalidate();
@@ -63,10 +63,10 @@ public:
     TIGL_EXPORT CCPACSConfiguration & GetConfiguration() const;
 
     // Sets a Transformation object
-    TIGL_EXPORT virtual void Translate(CTiglPoint trans) OVERRIDE;
+    TIGL_EXPORT void Translate(CTiglPoint trans) OVERRIDE;
 
     // Returns the Component Type TIGL_COMPONENT_GENERICSYSTEM.
-    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const {return TIGL_COMPONENT_GENERICSYSTEM | TIGL_COMPONENT_PHYSICAL;}
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE {return TIGL_COMPONENT_GENERICSYSTEM | TIGL_COMPONENT_PHYSICAL;}
 
 
 protected:
@@ -77,7 +77,7 @@ protected:
     void Update();
         
     // Build the shape of the system
-    PNamedShape BuildLoft();
+    PNamedShape BuildLoft() OVERRIDE;
 
 private:
     // get short name for loft

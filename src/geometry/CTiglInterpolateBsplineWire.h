@@ -48,29 +48,29 @@ public:
     TIGL_EXPORT CTiglInterpolateBsplineWire();
 
     // Destructor
-    TIGL_EXPORT virtual ~CTiglInterpolateBsplineWire();
+    TIGL_EXPORT ~CTiglInterpolateBsplineWire() OVERRIDE;
 
     // Builds the wire from the given points
-    TIGL_EXPORT virtual TopoDS_Wire BuildWire(const CPointContainer& points, bool forceClosed = false) const;
+    TIGL_EXPORT TopoDS_Wire BuildWire(const CPointContainer& points, bool forceClosed = false) const OVERRIDE;
 
 
     // if set to true, the endpoints of a closed wire will be c1 steady
     TIGL_EXPORT virtual void setEndpointContinuity(enum ETiglContinuity cont) { continuity = cont; }
 
     // Returns the algorithm code identifier for an algorithm
-    TIGL_EXPORT virtual TiglAlgorithmCode GetAlgorithmCode() const;
+    TIGL_EXPORT TiglAlgorithmCode GetAlgorithmCode() const OVERRIDE;
 
     // Returns the point on the wire with the smallest x value
-    TIGL_EXPORT virtual gp_Pnt GetPointWithMinX(const CPointContainer& points) const;
+    TIGL_EXPORT gp_Pnt GetPointWithMinX(const CPointContainer& points) const OVERRIDE;
 
     // Returns the point on the wire with the biggest x value
-    TIGL_EXPORT virtual gp_Pnt GetPointWithMaxX(const CPointContainer& points) const;
+    TIGL_EXPORT gp_Pnt GetPointWithMaxX(const CPointContainer& points) const OVERRIDE;
 
     // Returns the point on the wire with the smallest y value
-    TIGL_EXPORT virtual gp_Pnt GetPointWithMinY(const CPointContainer& points) const;
+    TIGL_EXPORT gp_Pnt GetPointWithMinY(const CPointContainer& points) const OVERRIDE;
 
     // Returns the point on the wire with the biggest y value
-    TIGL_EXPORT virtual gp_Pnt GetPointWithMaxY(const CPointContainer& points) const;
+    TIGL_EXPORT gp_Pnt GetPointWithMaxY(const CPointContainer& points) const OVERRIDE;
 
 protected:
 

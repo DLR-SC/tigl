@@ -41,13 +41,13 @@ public:
     TIGL_EXPORT CCPACSWingProfiles(CTiglUIDManager* uidMgr);
 
     // Read CPACS wing profiles
-    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) OVERRIDE;
 
     // importing profiles from CPACS
     // profiles with same UID are overwritten
     TIGL_EXPORT void ImportCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
 
-    TIGL_EXPORT virtual CCPACSWingProfile& AddWingAirfoil();
+    TIGL_EXPORT CCPACSWingProfile& AddWingAirfoil() OVERRIDE;
 
     // Returns the total count of wing profiles in this configuration
     TIGL_EXPORT int GetProfileCount() const;

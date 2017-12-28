@@ -57,49 +57,49 @@ public:
     // Constructor
     TIGL_EXPORT CTiglWingProfilePointList(const CCPACSWingProfile& profile, CCPACSPointListXYZ& cpacsPointlist);
 
-    TIGL_EXPORT virtual void Update() OVERRIDE;
+    TIGL_EXPORT void Update() OVERRIDE;
     TIGL_EXPORT void OrderPoints();
 
     // Returns the profile points as read from TIXI.
-    TIGL_EXPORT virtual std::vector<CTiglPoint>& GetSamplePoints() OVERRIDE;
-    TIGL_EXPORT virtual const std::vector<CTiglPoint>& GetSamplePoints() const OVERRIDE;
+    TIGL_EXPORT std::vector<CTiglPoint>& GetSamplePoints() OVERRIDE;
+    TIGL_EXPORT const std::vector<CTiglPoint>& GetSamplePoints() const OVERRIDE;
 
     // get upper wing profile wire
-    TIGL_EXPORT virtual const TopoDS_Edge& GetUpperWire() const OVERRIDE;
+    TIGL_EXPORT const TopoDS_Edge& GetUpperWire() const OVERRIDE;
 
     // get lower wing profile wire
-    TIGL_EXPORT virtual const TopoDS_Edge& GetLowerWire() const OVERRIDE;
+    TIGL_EXPORT const TopoDS_Edge& GetLowerWire() const OVERRIDE;
 
     // get the upper and lower wing profile combined into one edge
-    TIGL_EXPORT virtual const TopoDS_Edge & GetUpperLowerWire() const OVERRIDE;
+    TIGL_EXPORT const TopoDS_Edge & GetUpperLowerWire() const OVERRIDE;
 
     // get trailing edge if existing in definition
-    TIGL_EXPORT virtual const TopoDS_Edge& GetTrailingEdge() const OVERRIDE;
+    TIGL_EXPORT const TopoDS_Edge& GetTrailingEdge() const OVERRIDE;
 
     // returns the trailing edge for the opened wing profile
-    TIGL_EXPORT virtual const TopoDS_Edge& GetTrailingEdgeOpened() const OVERRIDE;
+    TIGL_EXPORT const TopoDS_Edge& GetTrailingEdgeOpened() const OVERRIDE;
 
     // getter for upper wire of closed profile
-    TIGL_EXPORT virtual const TopoDS_Edge& GetUpperWireClosed() const OVERRIDE;
+    TIGL_EXPORT const TopoDS_Edge& GetUpperWireClosed() const OVERRIDE;
 
     // getter for lower wire of closed profile
-    TIGL_EXPORT virtual const TopoDS_Edge& GetLowerWireClosed() const OVERRIDE;
+    TIGL_EXPORT const TopoDS_Edge& GetLowerWireClosed() const OVERRIDE;
 
     // getter for upper wire of opened profile
-    TIGL_EXPORT virtual const TopoDS_Edge& GetUpperWireOpened() const OVERRIDE;
+    TIGL_EXPORT const TopoDS_Edge& GetUpperWireOpened() const OVERRIDE;
 
     // getter for lower wire of opened profile
-    TIGL_EXPORT virtual const TopoDS_Edge& GetLowerWireOpened() const OVERRIDE;
+    TIGL_EXPORT const TopoDS_Edge& GetLowerWireOpened() const OVERRIDE;
 
     // get leading edge point();
-    TIGL_EXPORT virtual const gp_Pnt& GetLEPoint() const OVERRIDE;
+    TIGL_EXPORT const gp_Pnt& GetLEPoint() const OVERRIDE;
 
     // get trailing edge point();
-    TIGL_EXPORT virtual const gp_Pnt& GetTEPoint() const OVERRIDE;
+    TIGL_EXPORT const gp_Pnt& GetTEPoint() const OVERRIDE;
 
     // Checks, whether the trailing edge is blunt or
     // not by comparing first and last point.
-    TIGL_EXPORT virtual bool HasBluntTE() const OVERRIDE;
+    TIGL_EXPORT bool HasBluntTE() const OVERRIDE;
 
 protected:
     // Builds the wing profile wires.

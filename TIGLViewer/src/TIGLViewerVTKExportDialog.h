@@ -19,6 +19,7 @@
 #ifndef TIGLVIEWERVTKEXPORTDIALOG_H
 #define TIGLVIEWERVTKEXPORTDIALOG_H
 
+#include "tigl_internal.h"
 #include <QDialog>
 
 namespace Ui {
@@ -38,7 +39,7 @@ public:
     void setNormalsEnabled(bool enabled);
     bool normalsEnabled() const;
 
-    ~TIGLViewerVTKExportDialog();
+    ~TIGLViewerVTKExportDialog() OVERRIDE;
 
 private slots:
     void onOkayPressed() const;

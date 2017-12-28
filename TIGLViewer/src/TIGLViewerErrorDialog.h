@@ -19,6 +19,7 @@
 #ifndef TIGLVIEWERERRORDIALOG_H
 #define TIGLVIEWERERRORDIALOG_H
 
+#include "tigl_internal.h"
 #include <QDialog>
 #include <QPushButton>
 
@@ -37,7 +38,7 @@ public:
     void setMessage(const QString& msg);
     void setDetailsText(const QString& msg);
     //void setHistoryLog(ITiglLogger*);
-    ~TIGLViewerErrorDialog();
+    ~TIGLViewerErrorDialog() OVERRIDE;
 
 private slots:
     void toggleDetails();

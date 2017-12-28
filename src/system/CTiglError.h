@@ -42,7 +42,7 @@ public:
     TIGL_EXPORT CTiglError(std::string error = "", TiglReturnCode errorCode = TIGL_ERROR) throw();
 
     // Destructor
-    TIGL_EXPORT virtual ~CTiglError() throw();
+    TIGL_EXPORT ~CTiglError() throw() OVERRIDE;
 
     // Default copy constructor and assignment operator are correct since
     // memberwise copy is enough for this class.
@@ -50,7 +50,7 @@ public:
     // Returns the error string as C string (char*)
     DEPRECATED TIGL_EXPORT virtual const char* getError() const throw();
 
-    TIGL_EXPORT virtual const char* what() const throw() OVERRIDE;
+    TIGL_EXPORT const char* what() const throw() OVERRIDE;
 
     // Returns the error code
     TIGL_EXPORT virtual TiglReturnCode getCode() const throw();

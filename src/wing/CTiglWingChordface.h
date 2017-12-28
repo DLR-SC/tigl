@@ -48,9 +48,9 @@ public:
 
     TIGL_EXPORT virtual void Reset();
 
-    TIGL_EXPORT virtual std::string GetDefaultedUID() const OVERRIDE;
+    TIGL_EXPORT std::string GetDefaultedUID() const OVERRIDE;
 
-    TIGL_EXPORT virtual TiglGeometricComponentType GetComponentType() const OVERRIDE
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE
     {
         return TIGL_COMPONENT_PHYSICAL;
     }
@@ -65,7 +65,7 @@ public:
     TIGL_EXPORT const Handle(Geom_BSplineSurface) GetSurface() const;
 
 protected:
-    virtual PNamedShape BuildLoft() OVERRIDE;
+    PNamedShape BuildLoft() OVERRIDE;
 
 private:
     CTiglWingChordface(const CTiglWingChordface&); // disabled copy constructor

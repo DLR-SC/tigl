@@ -57,8 +57,8 @@ protected:
         tixiHandle = -1;
     }
 
-    virtual void SetUp() {}
-    virtual void TearDown() {}
+    void SetUp() OVERRIDE {}
+    void TearDown() OVERRIDE {}
 
     static TixiDocumentHandle           tixiHandle;
     static TiglCPACSConfigurationHandle tiglHandle;
@@ -93,8 +93,8 @@ protected:
         tixiHandle = -1;
     }
 
-    virtual void SetUp() {}
-    virtual void TearDown() {}
+    void SetUp() OVERRIDE {}
+    void TearDown() OVERRIDE {}
 
     static TixiDocumentHandle           tixiHandle;
     static TiglCPACSConfigurationHandle tiglHandle;

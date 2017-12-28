@@ -82,18 +82,18 @@ private:
         {
         }
 
-        TIGL_EXPORT virtual ~SegmentProjection(){}
+        TIGL_EXPORT ~SegmentProjection() OVERRIDE{}
 
         TIGL_EXPORT void setProjectionPoint(const CTiglPoint& p);
 
-        TIGL_EXPORT virtual double getFunctionValue(const double * x) const ;
-        TIGL_EXPORT void   getGradient     (const double * x, double * dx) const  ;
-        TIGL_EXPORT void   getHessian      (const double * x, double * H)  const  ;
-        TIGL_EXPORT void   getGradientHessian(const double * x, double * dx, double * H) const;
+        TIGL_EXPORT double getFunctionValue(const double * x) const OVERRIDE;
+        TIGL_EXPORT void   getGradient     (const double * x, double * dx) const OVERRIDE;
+        TIGL_EXPORT void   getHessian      (const double * x, double * H)  const OVERRIDE;
+        TIGL_EXPORT void   getGradientHessian(const double * x, double * dx, double * H) const OVERRIDE;
 
-        TIGL_EXPORT virtual int getParameterCount() const { return 2; }
-        TIGL_EXPORT virtual bool hasAnalyticGradient() const { return true; }
-        TIGL_EXPORT virtual bool hasAnalyticHessian () const { return true; }
+        TIGL_EXPORT int getParameterCount() const OVERRIDE { return 2; }
+        TIGL_EXPORT bool hasAnalyticGradient() const OVERRIDE { return true; }
+        TIGL_EXPORT bool hasAnalyticHessian () const OVERRIDE { return true; }
 
     private:
         CTiglPointTranslator& _t;

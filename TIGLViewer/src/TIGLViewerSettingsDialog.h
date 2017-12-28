@@ -21,6 +21,7 @@
 
 #include "ui_TIGLViewerSettingsDialog.h"
 
+#include "tigl_internal.h"
 #include <QColor>
 
 class TIGLViewerSettingsDialog : public QDialog, private Ui::TIGLViewerSettingsDialog
@@ -29,7 +30,7 @@ class TIGLViewerSettingsDialog : public QDialog, private Ui::TIGLViewerSettingsD
 public:
     TIGLViewerSettingsDialog(class TIGLViewerSettings&, class QWidget *parent=NULL);
 
-    virtual ~TIGLViewerSettingsDialog();
+    ~TIGLViewerSettingsDialog() OVERRIDE;
 
 public slots:
     void updateEntries();

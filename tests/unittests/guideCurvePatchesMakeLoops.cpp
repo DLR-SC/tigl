@@ -80,7 +80,7 @@ class guideCurvePatchesMakeLoops: public ::testing::TestWithParam<std::vector<st
 {
     
 protected:
-    virtual void SetUp()
+    void SetUp() OVERRIDE
     {
         // get name of the test case
         name = GetParam()[0];
@@ -213,7 +213,7 @@ protected:
 
     }
 
-    void TearDown()
+    void TearDown() OVERRIDE
     {
     }
     // guides as input for makeLoops

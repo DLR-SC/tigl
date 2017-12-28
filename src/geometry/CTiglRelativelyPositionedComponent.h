@@ -56,7 +56,7 @@ public:
 
     TIGL_EXPORT void Reset();
 
-    TIGL_EXPORT virtual TiglSymmetryAxis GetSymmetryAxis() const OVERRIDE; // resolves to parent components if no symmetry is available
+    TIGL_EXPORT TiglSymmetryAxis GetSymmetryAxis() const OVERRIDE; // resolves to parent components if no symmetry is available
     TIGL_EXPORT virtual void SetSymmetryAxis(const TiglSymmetryAxis& axis);
 
     TIGL_EXPORT virtual CTiglTransformation GetTransformationMatrix() const;

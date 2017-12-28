@@ -42,7 +42,7 @@ class TIGLViewerDocument : public QObject
 public:
 
     TIGLViewerDocument(TIGLViewerWindow *parentWidget);
-    ~TIGLViewerDocument( );
+    ~TIGLViewerDocument( ) OVERRIDE;
 
     TiglReturnCode openCpacsConfiguration(const QString fileName);
     void closeCpacsConfiguration();

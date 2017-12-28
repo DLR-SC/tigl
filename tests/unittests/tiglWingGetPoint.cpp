@@ -54,8 +54,8 @@ protected:
         tixiHandle = -1;
     }
 
-    virtual void SetUp() {}
-    virtual void TearDown() {}
+    void SetUp() OVERRIDE {}
+    void TearDown() OVERRIDE {}
 
 
     static TixiDocumentHandle           tixiHandle;
@@ -65,7 +65,7 @@ protected:
 class WingGetPointSimple : public ::testing::Test 
 {
 protected:
-    virtual void SetUp() 
+    void SetUp() OVERRIDE 
     {
         const char* filename = "TestData/simpletest.cpacs.xml";
         ReturnCode tixiRet;
@@ -81,7 +81,7 @@ protected:
         ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
     }
 
-    virtual void TearDown() 
+    void TearDown() OVERRIDE 
     {
         ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == TIGL_SUCCESS);
         ASSERT_TRUE(tixiCloseDocument(tixiHandle) == SUCCESS);

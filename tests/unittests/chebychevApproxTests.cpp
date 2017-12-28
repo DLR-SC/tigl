@@ -34,8 +34,8 @@ protected:
     {
     }
 
-    virtual void SetUp() {}
-    virtual void TearDown() {}
+    void SetUp() OVERRIDE {}
+    void TearDown() OVERRIDE {}
 };
 
 namespace
@@ -51,7 +51,7 @@ namespace
         {
         }
 
-        double value(double t)
+        double value(double t) OVERRIDE
         {
             return _func(t, _p);
         }

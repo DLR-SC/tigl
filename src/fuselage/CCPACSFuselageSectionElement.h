@@ -39,7 +39,7 @@ public:
     // Constructor
     TIGL_EXPORT CCPACSFuselageSectionElement(CCPACSFuselageSectionElements* parent, CTiglUIDManager* uidMgr);
 
-    TIGL_EXPORT virtual void SetProfileUID(const std::string& value);
+    TIGL_EXPORT void SetProfileUID(const std::string& value) OVERRIDE;
 
     // Gets the section element transformation
     TIGL_EXPORT CTiglTransformation GetSectionElementTransformation() const;

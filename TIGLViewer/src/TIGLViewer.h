@@ -35,6 +35,8 @@
 #include <Quantity_NameOfColor.hxx>
 #include <V3d_Coordinate.hxx>
 
+#include "tigl_internal.h"
+
 #ifdef QOCC_STATIC
 #define QOCC_DECLSPEC
 #else

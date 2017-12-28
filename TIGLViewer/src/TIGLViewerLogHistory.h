@@ -19,6 +19,7 @@
 #ifndef TIGLVIEWERLOGHISTORY_H
 #define TIGLVIEWERLOGHISTORY_H
 
+#include "tigl_internal.h"
 #include "ITiglLogger.h"
 
 #include <QString>
@@ -37,9 +38,9 @@ public:
     };
     TIGLViewerLogHistory();
 
-    virtual ~TIGLViewerLogHistory() {}
-    virtual void LogMessage(TiglLogLevel, const char * message);
-    virtual void SetVerbosity(TiglLogLevel);
+    ~TIGLViewerLogHistory() OVERRIDE {}
+    void LogMessage(TiglLogLevel, const char * message) OVERRIDE;
+    void SetVerbosity(TiglLogLevel) OVERRIDE;
 
     QString GetAllMessages() const;
     const HistoryLogEntry& GetMessage(unsigned int) const;

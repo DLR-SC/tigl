@@ -44,7 +44,7 @@ public:
     };
 
     TIGLViewerInputOutput();
-    ~TIGLViewerInputOutput();
+    ~TIGLViewerInputOutput() OVERRIDE;
 
     bool importModel( const QString fileName, 
                       const FileFormat format, 
