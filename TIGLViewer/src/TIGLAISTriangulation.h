@@ -62,9 +62,9 @@ protected:
 private: 
 
   
-  Standard_EXPORT    void Compute(const Handle(PrsMgr_PresentationManager3d)& aPresentationManager,const Handle(Prs3d_Presentation)& aPresentation,const Standard_Integer aMode = 0) OVERRIDE ;
+  Standard_EXPORT    void Compute(const Handle(PrsMgr_PresentationManager3d)& aPresentationManager,const Handle(Prs3d_Presentation)& aPresentation,const Standard_Integer aMode = 0) OVERRIDE;
   
-  Standard_EXPORT    void ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,const Standard_Integer aMode) OVERRIDE ;
+  Standard_EXPORT    void ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,const Standard_Integer aMode) OVERRIDE;
   //! Attenuates 32-bit color by a given attenuation factor (0...1): <br>
 //! aColor = Alpha << 24 + Blue << 16 + Green << 8 + Red <br>
 //! All color components are multiplied by aComponent, the result is then packed again as 32-bit integer. <br>

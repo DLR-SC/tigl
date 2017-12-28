@@ -52,8 +52,8 @@ private:
                           const Handle(Prs3d_Presentation)& aPresentation,
                           const Standard_Integer aMode) OVERRIDE;
     void Compute         (const Handle(Prs3d_Projector)& aProjector,
-                          const Handle(Prs3d_Presentation)& aPresentation) OVERRIDE ;
-    void ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,const Standard_Integer aMode) OVERRIDE ;
+                          const Handle(Prs3d_Presentation)& aPresentation) OVERRIDE;
+    void ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,const Standard_Integer aMode) OVERRIDE;
 
     gp_Pnt myPnt;
     gp_Dir myDir;

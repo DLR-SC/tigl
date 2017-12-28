@@ -52,14 +52,14 @@ private :
                             const Handle(Prs3d_Presentation)& aPresentation,
                             const Standard_Integer aMode) OVERRIDE;
      void Compute          (const Handle(Prs3d_Projector)& aProjector,
-                            const Handle(Prs3d_Presentation)& aPresentation) OVERRIDE ;
+                            const Handle(Prs3d_Presentation)& aPresentation) OVERRIDE;
      #if 0
      void Compute          (const Handle(PrsMgr_PresentationManager2d)& aPresentationManager,
                             const Handle(Graphic2d_GraphicObject)& aGrObj,
                             const Standard_Integer unMode = 0) ;
      #endif
      void ComputeSelection (const Handle(SelectMgr_Selection)& aSelection,
-                            const Standard_Integer unMode) OVERRIDE ;
+                            const Standard_Integer unMode) OVERRIDE;
      
      gp_Pnt myPoint;
 

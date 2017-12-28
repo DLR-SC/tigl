@@ -32,7 +32,7 @@ public:
     TIGL_EXPORT const TopoDS_Shape& Shape() const;
     TIGL_EXPORT operator TopoDS_Shape() const;
 
-    TIGL_EXPORT const TopTools_ListOfShape& Modified(const TopoDS_Shape& S) OVERRIDE ;
+    TIGL_EXPORT const TopTools_ListOfShape& Modified(const TopoDS_Shape& S) OVERRIDE;
 
 private:
     BRepBuilderAPI_Sewing& _adaptee;

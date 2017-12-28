@@ -77,7 +77,7 @@ private:
     void Compute          (const Handle(Prs3d_Projector)& aProjector,
                            const Handle(Prs3d_Presentation)& aPresentation) OVERRIDE;
     void ComputeSelection (const Handle(SelectMgr_Selection)& aSelection,
-                           const Standard_Integer unMode) OVERRIDE ;
+                           const Standard_Integer unMode) OVERRIDE;
 
 
  // Fields PRIVATE
