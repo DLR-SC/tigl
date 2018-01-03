@@ -113,21 +113,7 @@ void CTiglRelativelyPositionedComponent::SetSymmetryAxis(const TiglSymmetryAxis&
 CTiglTransformation CTiglRelativelyPositionedComponent::GetTransformationMatrix() const
 {
     const CTiglTransformation thisTransformation = _transformation ? _transformation->getTransformationMatrix() : CTiglTransformation();
-    // TODO(bgruber): this is currently disabled, as it breaks existing behavior
-    //if (_parent) {
-    //    const auto& pm = _parent->GetTransformationMatrix();
-
-    //    // we only transform with the parent's translation
-    //    // TODO(bgruber): is this correct with CPACS schema?
-    //    CTiglTransformation trans;
-    //    trans.AddTranslation(
-    //        pm.GetValue(0, 3),
-    //        pm.GetValue(1, 3),
-    //        pm.GetValue(2, 3)
-    //    );
-    //    return trans * thisTransformation;
-    //} else
-        return thisTransformation;
+    return thisTransformation;
 }
 
 CTiglPoint CTiglRelativelyPositionedComponent::GetRotation() const

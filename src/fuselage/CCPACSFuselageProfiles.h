@@ -40,7 +40,7 @@ public:
     // Read CPACS fuselage profiles
     TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) OVERRIDE;
 
-    TIGL_EXPORT virtual CCPACSFuselageProfile& AddFuselageProfile() OVERRIDE;
+    TIGL_EXPORT CCPACSFuselageProfile& AddFuselageProfile() OVERRIDE;
 
     TIGL_EXPORT bool HasProfile(std::string uid) const;
 
