@@ -112,10 +112,8 @@ void CTiglRelativelyPositionedComponent::SetSymmetryAxis(const TiglSymmetryAxis&
 
 CTiglTransformation CTiglRelativelyPositionedComponent::GetTransformationMatrix() const
 {
-    if (_transformation)
-        return _transformation->getTransformationMatrix();
-    else
-        return CTiglTransformation();
+    const CTiglTransformation thisTransformation = _transformation ? _transformation->getTransformationMatrix() : CTiglTransformation();
+    return thisTransformation;
 }
 
 CTiglPoint CTiglRelativelyPositionedComponent::GetRotation() const

@@ -237,6 +237,11 @@ const RelativeComponentContainerType& CTiglUIDManager::GetRootGeometricComponent
     return rootComponents;
 }
 
+void CTiglUIDManager::SetParentComponents()
+{
+    BuildTree();
+}
+
 // Builds the parent child relationships.
 void CTiglUIDManager::BuildTree()
 {
