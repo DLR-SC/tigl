@@ -90,7 +90,7 @@ public:
     
     //! Returns The Window RATIO equal to the physical
     //! WIDTH/HEIGHT dimensions.
-    Quantity_Ratio Ratio() const OVERRIDE;
+    Standard_Real Ratio() const OVERRIDE;
     
     void Size( Standard_Integer& theWidth, Standard_Integer& theHeight ) const OVERRIDE;
     

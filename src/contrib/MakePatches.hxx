@@ -17,9 +17,9 @@
 #include <TopoDS_Shape.hxx>
 #include <Standard_Real.hxx>
 #include <GeomFill_FillingStyle.hxx>
-#include <Handle_Geom_Surface.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard.hxx>
+#include <TColGeom_SequenceOfBoundedCurve.hxx>
 
 /**
  * \brief Return code of make patches algorithm
@@ -36,8 +36,7 @@ enum MakePatchesStatus
 
 class TopoDS_Shape;
 class Handle_Geom_BSplineSurface;
-class TColGeom_SequenceOfBoundedCurve;
-
+class Geom_BSplineSurface;
 /**
  * Implementation of algorithm for filling 4-sides closed frames\n
  * of edges with Coons surfaces to get faces.
@@ -134,7 +133,7 @@ public:
      * The style of filling, to provide C2 continuity between patches it is necessary using\n
      * GeomFill_CoonsC2Style
      */
-    TIGL_EXPORT static  Handle_Geom_BSplineSurface
+    TIGL_EXPORT static  Handle(Geom_BSplineSurface)
     BuildSurface(const TColGeom_SequenceOfBoundedCurve& theCurves,
                  const Standard_Real theTolConf,
                  const Standard_Real theTolParam,

@@ -97,6 +97,7 @@
 #include <GEOMAlgo_Splitter.hxx>
 #include <ShapeFix_Wire.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <Standard_Version.hxx>
 
 #include "ShapeAnalysis_FreeBounds.hxx"
 
@@ -1214,7 +1215,11 @@ TopoDS_Shape SplitShape(const TopoDS_Shape& src, const TopoDS_Shape& tool)
         LOG(ERROR) << ss.str();
         throw tigl::CTiglError(ss.str());
     }
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,2,0)
+    if (splitter.HasErrors()) {
+#else
     if (splitter.ErrorStatus() != 0) {
+#endif
         LOG(ERROR) << "unable to split passed shapes!";
         throw tigl::CTiglError("unable to split passed shapes!");
     }

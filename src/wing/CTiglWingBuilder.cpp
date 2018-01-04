@@ -36,6 +36,7 @@
 #include <BRepBuilderAPI_FindPlane.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepLib.hxx>
+#include <Geom_Plane.hxx>
 
 #include <cassert>
 

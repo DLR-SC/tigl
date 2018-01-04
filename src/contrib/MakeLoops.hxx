@@ -18,7 +18,7 @@
 #include <TopoDS_Shape.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
-#include <Handle_TopTools_HArray2OfShape.hxx>
+#include <TopTools_HArray2OfShape.hxx>
 #include <NCollection_DataMap.hxx>
 
 /**

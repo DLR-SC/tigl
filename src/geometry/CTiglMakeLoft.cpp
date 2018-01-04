@@ -35,6 +35,7 @@
 #include <BRepClass3d_SolidClassifier.hxx>
 #include <BRepAlgo.hxx>
 #include <BRepBuilderAPI_Sewing.hxx>
+#include <Geom_Plane.hxx>
 #include <StdFail_NotDone.hxx>
 #include <Precision.hxx>
 
