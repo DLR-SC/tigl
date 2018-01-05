@@ -1,10 +1,11 @@
 Version 3.0.0
 -------------
+-/01/2018
 
     - General Changes:
        - CPACS 3 compatibility, including the new component-segment coordinate-system math.
-	     Note: As CPACS 3 is not officially released yet, the development version of CPACS as of December 18th, 2017 is used.
-         Note: The wing structure is not yet adapted to CPACS 3 but uses the 2.3 definition.
+           - Note: As CPACS 3 is not officially released yet, the development version of CPACS as of December 18th, 2017 is used.
+           - Note: The wing structure is not yet adapted to CPACS 3 but uses the 2.3 definition.
        - Guide curve support for wings and fuselages for high-fidelity surface modeling according to the CPACS 3 defintion.
        - Automated creation of CPACS reading and writing routines. This allows much
          better vality checks of the CPACS document.
@@ -15,23 +16,23 @@ Version 3.0.0
 
 
     - New API functions:
-      - ```tiglWingComponentSegmentPointGetEtaXsi``` computes the eta/xsi coordinates of a point on the component segment.
-      - ```tiglIntersectWithPlaneSegment``` computes the intersection of a CPACS shape (e.g. wing) with a plane of finite size.
-      - ```tiglGetCurveIntersection``` to compute the intersection of two curves.
-      - ```tiglGetCurveIntersectionPoint``` to query the intersection point(s) computed by ```tiglGetCurveIntersection```.
-      - ```tiglGetCurveIntersectionCount``` returns the number of intersection points computed by ```tiglGetCurveIntersection```.
-      - ```tiglGetCurveParameter``` projects a point onto a curve and returns the curve parameter of the point.
-      - ```tiglFuselageGetSectionCenter``` computes the center of a fuselage section defined by its eta coordinate.
-      - ```tiglFuselageGetCrossSectionArea``` computes the area of a fuselage section.
-      - ```tiglFuselageGetCenterLineLength``` computes the length of the centerline of the fuselage.
-      - ```tiglCheckPointInside``` checks, whether a point lies inside some object (defined by its uid).
-      - ```tiglExportFuselageBREPbyUID``` and ```tiglExportWingBREPByUID```
+      - ``::tiglWingComponentSegmentPointGetEtaXsi`` computes the eta/xsi coordinates of a point on the component segment.
+      - ``::tiglIntersectWithPlaneSegment`` computes the intersection of a CPACS shape (e.g. wing) with a plane of finite size.
+      - ``::tiglGetCurveIntersection`` to compute the intersection of two curves.
+      - ``::tiglGetCurveIntersectionPoint`` to query the intersection point(s) computed by ``::tiglGetCurveIntersection``.
+      - ``::tiglGetCurveIntersectionCount`` returns the number of intersection points computed by ``::tiglGetCurveIntersection``.
+      - ``::tiglGetCurveParameter`` projects a point onto a curve and returns the curve parameter of the point.
+      - ``::tiglFuselageGetSectionCenter`` computes the center of a fuselage section defined by its eta coordinate.
+      - ``::tiglFuselageGetCrossSectionArea`` computes the area of a fuselage section.
+      - ``::tiglFuselageGetCenterLineLength`` computes the length of the centerline of the fuselage.
+      - ``::tiglCheckPointInside`` checks, whether a point lies inside some object (defined by its uid).
+      - ``::tiglExportFuselageBREPByUID`` and ``::tiglExportWingBREPByUID``
   
     - Changed API:
       - Removed deprectated intersection functions. These include
-        - tiglComponentIntersectionLineCount
-        - tiglComponentIntersectionPoint
-        - tiglComponentIntersectionPoints
+       - tiglComponentIntersectionLineCount
+       - tiglComponentIntersectionPoint
+       - tiglComponentIntersectionPoints
 
     - Fixes:
       - TiGL Viewer: Fixed missing fonts on macOS
@@ -45,7 +46,7 @@ Version 3.0.0
        - Custom OpenGL shaders. If problems with the 3D rendering occur, please file a bug.
        - Display of reflection lines to inspect surface quality.
        - Display of textured surfaces.
-       - Angle of perspective can be adjusted using the scripting API with ```setCameraPosition``` and ```setLookAtPosition```.
+       - Angle of perspective can be adjusted using the scripting API with ``setCameraPosition`` and ``setLookAtPosition``.
          This allows e.g. to create videos of the geometry.
        - Option to display face names.
        - Number of U and V iso-lines can be adjusted independently.
