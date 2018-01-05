@@ -163,6 +163,12 @@ vec4 computeLighting (in vec3 theNormal,
     {
       spotLight (anIndex, theNormal, theView, aPoint);
     }
+    else
+    {
+      // on some hardware, aType is always zero. 
+      // as a workaround, we use the directional light
+      directionalLight (anIndex, theNormal, theView);
+    }
   }
 
   vec4 aMaterialAmbient  = gl_FrontFacing ? occFrontMaterial_Ambient()  : occBackMaterial_Ambient();
