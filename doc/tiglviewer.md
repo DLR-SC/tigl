@@ -25,7 +25,7 @@ or making some debug plots.
 The most often used navigation functions are included in the tool bar 
 
 @image html images/tiglviewer-navigation.png
-@image latex images/tiglviewer-navigation.pdf  "The navigation panel" width=9cm
+@image latex images/tiglviewer-navigation.pdf  "The navigation panel" width=11cm
 
 Here, one can use
 
@@ -34,11 +34,13 @@ Here, one can use
  * "Pan view" to translate the whole geometry with the mouse
  * "Rotate view" to rotate the view point with the mouse
  * "Zoom" to zoom in or out with the mouse
+ * "Fit to view" to fit all objects into the current view
 
  * "Top" to see the top view of the geometry
  * "Side" to see the side view of the geometry
  * "Front" to see the front view of the geometry
  * "Axonometric" to see the axonometric view of the geometry
+ * "Reflection plot" to visualize C1 and C2 surface discontinuities
 
 More functions can be found in the "View" menu. 
 
