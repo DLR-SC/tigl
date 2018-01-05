@@ -112,8 +112,8 @@ select the objects of interest and __press the right mouse button__ inside the 3
  * Setting the object color and transparency
  * Toggle between wireframe and shading rendering
  
-@image html images/tiglviewer-shading-web.jpg "Different shading settings (glossy red, plastic blue, wireframe)"
-@image latex images/tiglviewer-shading.png  "Different shading settings (glossy red, plastic blue, wireframe)" width=12cm
+@image html images/tiglviewer-shading-web.jpg "Different shading settings (textured, plastic blue, wireframe)"
+@image latex images/tiglviewer-shading.png  "Different shading settings (textured, plastic blue, wireframe)" width=12cm
 
 @section mobile Mobile platforms
 
