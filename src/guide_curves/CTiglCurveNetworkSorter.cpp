@@ -151,8 +151,8 @@ void CTiglCurveNetworkSorter::swapProfiles(size_t idx1, size_t idx2)
         return;
     }
 
-    std::iter_swap(m_profiles.begin() + idx1, m_profiles.begin() + idx2);
-    std::iter_swap(m_profIdx.begin() + idx1, m_profIdx.begin() + idx2);
+    std::swap(m_profiles[idx1], m_profiles[idx2]);
+    std::swap(m_profIdx[idx1], m_profIdx[idx2]);
     m_parmsIntersGuides.SwapRow(static_cast<Standard_Integer>(idx1), static_cast<Standard_Integer>(idx2));
     m_parmsIntersProfiles.SwapRow(static_cast<Standard_Integer>(idx1), static_cast<Standard_Integer>(idx2));
 }
@@ -163,8 +163,8 @@ void CTiglCurveNetworkSorter::swapGuides(size_t idx1, size_t idx2)
         return;
     }
 
-    std::iter_swap(m_guides.begin() + idx1, m_guides.begin() + idx2);
-    std::iter_swap(m_guidIdx.begin() + idx1, m_guidIdx.begin() + idx2);
+    std::swap(m_guides[idx1], m_guides[idx2]);
+    std::swap(m_guidIdx[idx1], m_guidIdx[idx2]);
     m_parmsIntersGuides.SwapCol(static_cast<Standard_Integer>(idx1), static_cast<Standard_Integer>(idx2));
     m_parmsIntersProfiles.SwapCol(static_cast<Standard_Integer>(idx1), static_cast<Standard_Integer>(idx2));
 }
