@@ -41,9 +41,6 @@ public:
     TIGL_EXPORT void setScaling(const CTiglPoint& scale);
     TIGL_EXPORT void setTransformationMatrix(const CTiglTransformation& matrix); // sets only the current matrix, does not update rotation, scaling and translation, changes are lost when updateMatrix() is called
     
-    /// this function must be called explitly after the previous setters
-    TIGL_EXPORT void updateMatrix();
-    
     TIGL_EXPORT CTiglPoint getTranslationVector() const;
     TIGL_EXPORT CTiglPoint getRotation() const;
     TIGL_EXPORT CTiglPoint getScaling() const;
@@ -58,8 +55,11 @@ public:
     TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& transformationXPath) OVERRIDE;
 
 private:
+    void updateMatrix() const;
+
     // caches the transformation created from scaling, rotation and translation
-    CTiglTransformation _transformationMatrix;
+    mutable bool invalidated;
+    mutable CTiglTransformation _transformationMatrix;
 };
 
 } // namespace tigl

@@ -152,7 +152,6 @@ void CTiglRelativelyPositionedComponent::Translate(CTiglPoint trans)
 {
     if (_transformation) {
         _transformation->setTranslation(GetTranslation() + trans, GetTranslationType());
-        _transformation->updateMatrix();
     }
     else
         throw CTiglError("Type does not have a _transformation");

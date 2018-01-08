@@ -68,12 +68,6 @@ std::string CCPACSGenericSystem::GetDefaultedUID() const {
     return uid;
 }
 
-// Invalidates internal state
-void CCPACSGenericSystem::Invalidate()
-{
-    invalidated = true;
-}
-
 // Cleanup routine
 void CCPACSGenericSystem::Cleanup()
 {
@@ -82,19 +76,6 @@ void CCPACSGenericSystem::Cleanup()
 
     // Calls ITiglGeometricComponent interface Reset to delete e.g. all childs.
     Reset();
-
-    Invalidate();
-}
-
-// Update internal generic system data
-void CCPACSGenericSystem::Update()
-{
-    if (!invalidated) {
-        return;
-    }
-
-    transformation.updateMatrix();
-    invalidated = false;
 }
 
 // Read CPACS generic system element
@@ -143,8 +124,6 @@ void CCPACSGenericSystem::ReadCPACS(TixiDocumentHandle tixiHandle, const std::st
     if (tixiGetTextAttribute(tixiHandle, const_cast<char*>(genericSysXPath.c_str()), const_cast<char*>(tempString.c_str()), &ptrSym) == SUCCESS) {
         SetSymmetryAxis(stringToTiglSymmetryAxis(ptrSym));
     }
-
-    Update();
 }
 
 // Returns the name of the generic system
@@ -220,8 +199,6 @@ std::string CCPACSGenericSystem::GetShortShapeName()
 void CCPACSGenericSystem::Translate(CTiglPoint trans)
 {
     CTiglRelativelyPositionedComponent::Translate(trans);
-    invalidated = true;
-    Update();
 }
 
 } // end namespace tigl
