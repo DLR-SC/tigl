@@ -42,8 +42,8 @@ public:
      *
      * @param profiles Profile curves
      * @param guides   Guide curves
-     * @param parmsIntersProfiles Intersection parameters on the profiles with the guides
-     * @param parmsIntersGuides   Intersection parameters on the guides with the profiles
+     * @param ProfileIntersectionParms Intersection parameters on the profiles with the guides
+     * @param GuideIntersectionParms   Intersection parameters on the guides with the profiles
      */
     CTiglCurveNetworkSorter(const std::vector<Handle(Geom_Curve)>& profiles,
                             const std::vector<Handle(Geom_Curve)>& guides,

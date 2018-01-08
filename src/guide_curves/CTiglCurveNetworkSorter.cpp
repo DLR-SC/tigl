@@ -132,13 +132,13 @@ CTiglCurveNetworkSorter::CTiglCurveNetworkSorter(const std::vector<Handle (Geom_
     assert(m_parmsIntersProfiles.UpperCol() == n_guides - 1);
 
     // create helper vectors with indices
-    for (int i = 0; i < n_profiles; ++i) {
+    for (size_t i = 0; i < n_profiles; ++i) {
         std::stringstream str;
         str << i;
         m_profIdx.push_back(str.str());
     }
 
-    for (int i = 0; i < n_guides; ++i) {
+    for (size_t i = 0; i < n_guides; ++i) {
         std::stringstream str;
         str << i;
         m_guidIdx.push_back(str.str());
@@ -151,8 +151,8 @@ void CTiglCurveNetworkSorter::swapProfiles(size_t idx1, size_t idx2)
         return;
     }
 
-    std::iter_swap(m_profiles.begin() + idx1, m_profiles.begin() + idx2);
-    std::iter_swap(m_profIdx.begin() + idx1, m_profIdx.begin() + idx2);
+    std::swap(m_profiles[idx1], m_profiles[idx2]);
+    std::swap(m_profIdx[idx1], m_profIdx[idx2]);
     m_parmsIntersGuides.SwapRow(static_cast<Standard_Integer>(idx1), static_cast<Standard_Integer>(idx2));
     m_parmsIntersProfiles.SwapRow(static_cast<Standard_Integer>(idx1), static_cast<Standard_Integer>(idx2));
 }
@@ -163,8 +163,8 @@ void CTiglCurveNetworkSorter::swapGuides(size_t idx1, size_t idx2)
         return;
     }
 
-    std::iter_swap(m_guides.begin() + idx1, m_guides.begin() + idx2);
-    std::iter_swap(m_guidIdx.begin() + idx1, m_guidIdx.begin() + idx2);
+    std::swap(m_guides[idx1], m_guides[idx2]);
+    std::swap(m_guidIdx[idx1], m_guidIdx[idx2]);
     m_parmsIntersGuides.SwapCol(static_cast<Standard_Integer>(idx1), static_cast<Standard_Integer>(idx2));
     m_parmsIntersProfiles.SwapCol(static_cast<Standard_Integer>(idx1), static_cast<Standard_Integer>(idx2));
 }
@@ -297,7 +297,7 @@ void CTiglCurveNetworkSorter::reverseProfile(size_t profileIdx)
 
 
     // compute new parameters
-    for (int icol = 0; icol < NGuides(); ++icol) {
+    for (int icol = 0; icol < static_cast<int>(NGuides()); ++icol) {
         m_parmsIntersProfiles(pIdx, icol) = -m_parmsIntersProfiles(pIdx, icol) + firstParm + lastParm;
     }
 
@@ -323,7 +323,7 @@ void CTiglCurveNetworkSorter::reverseGuide(size_t guideIdx)
                 m_parmsIntersGuides(static_cast<Standard_Integer>(minColIndex(m_parmsIntersGuides, gIdx)), gIdx);
 
     // compute new parameter
-    for (int irow = 0; irow < NProfiles(); ++irow) {
+    for (int irow = 0; irow < static_cast<int>(NProfiles()); ++irow) {
         m_parmsIntersGuides(irow, gIdx) = -m_parmsIntersGuides(irow, gIdx) + firstParm + lastParm;
     }
 
