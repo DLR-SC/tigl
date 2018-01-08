@@ -42,7 +42,7 @@ namespace tigl
 
 TopoDS_Shape ApplyWingTransformation(const CCPACSWingCSStructure& structure, const TopoDS_Shape& shape)
 {
-    return structure.GetWingStructureReference().GetWing().GetWingTransformation().Transform(shape);
+    return structure.GetWingStructureReference().GetWing().GetTransformationMatrix().Transform(shape);
 }
 
 TopoDS_Shape CutShapeWithSpars(const TopoDS_Shape& shape, const CCPACSWingCSStructure& structure)

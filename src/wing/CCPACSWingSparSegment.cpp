@@ -49,7 +49,7 @@
 // TODO: const sparsNode
 TopoDS_Shape ApplyWingTransformation(tigl::CCPACSWingSpars& sparsNode, const TopoDS_Shape& shape)
 {
-    return sparsNode.GetParent()->GetWingStructureReference().GetWing().GetWingTransformation().Transform(shape);
+    return sparsNode.GetParent()->GetWingStructureReference().GetWing().GetTransformationMatrix().Transform(shape);
 }
 
 namespace tigl
