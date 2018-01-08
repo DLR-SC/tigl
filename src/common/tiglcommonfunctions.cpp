@@ -460,7 +460,7 @@ IntStatus IntersectLinePlane(gp_Pnt p1, gp_Pnt p2, gp_Pln plane, gp_Pnt& result)
     if (alpha >= 0. && alpha <= 1.) {
         return BetweenPoints;
     }
-    else if (alpha < 0.){
+    else if (alpha < 0.) {
         return OutsideBefore;
     }
     else {

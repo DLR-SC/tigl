@@ -19,6 +19,7 @@
 #ifndef ICADIMPORTERCREATOR_H
 #define ICADIMPORTERCREATOR_H
 
+#include "tigl_internal.h"
 #include "ITiglCADImporter.h"
 
 namespace tigl

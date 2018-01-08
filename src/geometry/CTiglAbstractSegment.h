@@ -56,24 +56,28 @@ public:
         : _segments(segments), _parentSymmetry(parentSymmetry), _continuity(::C0) {}
 
     // Returns the segment index of this segment
-    TIGL_EXPORT int GetSegmentIndex() const
+    int GetSegmentIndex() const
     {
-        for (std::size_t i = 0; i < _segments.size(); i++)
-            if (_segments[i].get() == static_cast<const SegmentType*>(this))
+        for (std::size_t i = 0; i < _segments.size(); i++) {
+            if (_segments[i].get() == static_cast<const SegmentType*>(this)) {
                 return static_cast<int>(i + 1);
+            }
+        }
         throw CTiglError("Invalid parent?"); // cannot happen, this is always part of the container of its parent class
     }
 
-    TIGL_EXPORT TiglSymmetryAxis GetSymmetryAxis() const OVERRIDE
+    TiglSymmetryAxis GetSymmetryAxis() const OVERRIDE
     {
-        if (_parentSymmetry)
+        if (_parentSymmetry) {
             return *_parentSymmetry;
-        else
+        }
+        else {
             return TIGL_NO_SYMMETRY;
+        }
     }
 
     // Returns the continuityof the connection to the next segment
-    TIGL_EXPORT TiglContinuity GetContinuity() const
+    TiglContinuity GetContinuity() const
     {
         return _continuity;
     }
