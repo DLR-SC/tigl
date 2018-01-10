@@ -137,11 +137,6 @@ void CCPACSGenericSystem::ReadCPACS(TixiDocumentHandle tixiHandle, const std::st
     // Get Transformation
     transformation.ReadCPACS(tixiHandle, genericSysXPath);
 
-    // Register ourself at the unique id manager
-    if (configuration) {
-        configuration->GetUIDManager().AddGeometricComponent(ptrUID, this);
-    }
-
     // Get symmetry axis attribute
     char* ptrSym = NULL;
     tempString   = "symmetry";
