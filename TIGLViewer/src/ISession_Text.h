@@ -50,7 +50,11 @@ public:
 
     ~ISession_Text() OVERRIDE;
 
+#if OCC_VERSION_HEX >= 0x060900
+    inline   Standard_Integer        NbPossibleSelection() const;
+#else
     inline   Standard_Integer        NbPossibleSelection() const OVERRIDE;
+#endif
     inline   TCollection_AsciiString GetText() const;
     inline   void                    SetText(const TCollection_AsciiString& atext) ;
     inline   void                    GetCoord(Standard_Real& X, Standard_Real& Y, Standard_Real& Z) const ;

@@ -54,8 +54,12 @@ public:
     
     TIGLQAspectWindow( QWidget* theWidget, const Quantity_NameOfColor theBackColor = Quantity_NOC_MATRAGRAY );
     
+#if OCC_VERSION_HEX >= 0x070000
+    void Destroy();
+#else
     void Destroy() OVERRIDE;
-    
+#endif
+
     //! Destructor
     ~TIGLQAspectWindow() OVERRIDE
     {
