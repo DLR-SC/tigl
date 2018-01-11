@@ -539,8 +539,8 @@ std::ostream& operator<<(std::ostream& os, const CTiglTransformation& t)
 
 CTiglTransformation operator*(const CTiglTransformation & a, const CTiglTransformation & b)
 {
-    CTiglTransformation result = a;
-    result.PreMultiply(b);
+    CTiglTransformation result = b;
+    result.PreMultiply(a);
     return result;
 }
 

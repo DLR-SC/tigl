@@ -21,6 +21,7 @@
 #include <vector>
 
 #include "CTiglPoint.h"
+#include "CTiglTransformation.h"
 
 #include <math_Matrix.hxx>
 
@@ -305,4 +306,36 @@ TEST(TiglMath, DistancePointFromLine)
     ASSERT_NEAR(0., tigl::distance_point_from_line(tigl::CTiglPoint(0., 0., 0.), x0, dx), 1e-10);
     ASSERT_NEAR(0., tigl::distance_point_from_line(tigl::CTiglPoint(3., 3., 0.), x0, dx), 1e-10);
     ASSERT_NEAR(sqrt(0.5), tigl::distance_point_from_line(tigl::CTiglPoint(1., 0., 0.), x0, dx), 1e-10);
+}
+
+TEST(TiglMath, CTiglTransformation_Multiply)
+{
+    tigl::CTiglTransformation a;
+    tigl::CTiglTransformation b;
+    
+    a.AddTranslation(2., 0., 0);
+    
+    b.AddScaling(0.4, 0.4, 0.4);
+    b.AddTranslation(-0.1, 0.9, -0.3);
+    
+    tigl::CTiglTransformation c = a * b;
+    EXPECT_NEAR(0.4, c.GetValue(0, 0), 1e-10);
+    EXPECT_NEAR(0.0, c.GetValue(0, 1), 1e-10);
+    EXPECT_NEAR(0.0, c.GetValue(0, 2), 1e-10);
+    EXPECT_NEAR(1.9, c.GetValue(0, 3), 1e-10);
+    
+    EXPECT_NEAR(0.0, c.GetValue(1, 0), 1e-10);
+    EXPECT_NEAR(0.4, c.GetValue(1, 1), 1e-10);
+    EXPECT_NEAR(0.0, c.GetValue(1, 2), 1e-10);
+    EXPECT_NEAR(0.9, c.GetValue(1, 3), 1e-10);
+    
+    EXPECT_NEAR(0.0, c.GetValue(2, 0), 1e-10);
+    EXPECT_NEAR(0.0, c.GetValue(2, 1), 1e-10);
+    EXPECT_NEAR(0.4, c.GetValue(2, 2), 1e-10);
+    EXPECT_NEAR(-0.3, c.GetValue(2, 3), 1e-10);
+    
+    EXPECT_NEAR(0.0, c.GetValue(3, 0), 1e-10);
+    EXPECT_NEAR(0.0, c.GetValue(3, 1), 1e-10);
+    EXPECT_NEAR(0.0, c.GetValue(3, 2), 1e-10);
+    EXPECT_NEAR(1.0, c.GetValue(3, 3), 1e-10);
 }
