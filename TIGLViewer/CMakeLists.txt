@@ -286,6 +286,7 @@ if (WIN32 OR APPLE)
     if(WIN32)
       set(QT_PLUGINS  "qwindows")
     endif()
+    set(QT_PLUGINS "${QT_PLUGINS};qjpeg")
 
     include(DeployQt5)
     INSTALL_QT5_EXECUTABLE(${APPS} "${QT_PLUGINS}" "" "${DIRS}" "" "" viewer)
