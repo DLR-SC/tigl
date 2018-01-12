@@ -44,9 +44,6 @@ public:
     // Virtual Destructor
     TIGL_EXPORT virtual ~CCPACSGenericSystems();
 
-    // Invalidates internal state
-    TIGL_EXPORT void Invalidate();
-
     // Read CPACS generic system elements
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& configurationUID);
 

@@ -69,7 +69,7 @@ def main():
     print ("Using TiGL Version:", tigl_handle.version)
 
     dir_path = os.path.dirname(os.path.realpath(__file__))
-    tixi_handle.open(dir_path + "/../../tests/TestData/simpletest.cpacs.xml")
+    tixi_handle.open(dir_path + "/../../tests/unittests/TestData/simpletest.cpacs.xml")
     tigl_handle.open(tixi_handle, "")
 
     # cpacs indexing starts at 1

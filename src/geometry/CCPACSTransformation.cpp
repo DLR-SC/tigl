@@ -23,7 +23,7 @@ namespace tigl
 {
 
 CCPACSTransformation::CCPACSTransformation(CTiglUIDManager* uidMgr)
-    : generated::CPACSTransformation(uidMgr)
+    : generated::CPACSTransformation(uidMgr), invalidated(true)
 {
     _transformationMatrix.SetIdentity();
 }
@@ -41,11 +41,13 @@ void CCPACSTransformation::reset()
         m_translation->SetRefType(boost::optional<ECPACSTranslationType>());
     }
     _transformationMatrix.SetIdentity();
+    invalidated = false;
 }
 
 void CCPACSTransformation::setTranslation(const CTiglPoint & translation)
 {
     GetTranslation(CreateIfNotExists).SetAsPoint(translation);
+    invalidated = true;
 }
 
 void CCPACSTransformation::setTranslation(const CTiglPoint& translation, ECPACSTranslationType type)
@@ -53,6 +55,7 @@ void CCPACSTransformation::setTranslation(const CTiglPoint& translation, ECPACST
     CCPACSPointAbsRel& t = GetTranslation(CreateIfNotExists);
     t.SetAsPoint(translation);
     t.SetRefType(type);
+    invalidated = true;
 }
 
 void CCPACSTransformation::setRotation(const CTiglPoint& rotation)
@@ -61,6 +64,7 @@ void CCPACSTransformation::setRotation(const CTiglPoint& rotation)
         m_rotation = boost::in_place(m_uidMgr);
     }
     m_rotation->SetAsPoint(rotation);
+    invalidated = true;
 }
 
 void CCPACSTransformation::setScaling(const CTiglPoint& scale)
@@ -69,15 +73,17 @@ void CCPACSTransformation::setScaling(const CTiglPoint& scale)
         m_scaling = boost::in_place(m_uidMgr);
     }
     m_scaling->SetAsPoint(scale);
+    invalidated = true;
 }
 
 void CCPACSTransformation::setTransformationMatrix(const CTiglTransformation& matrix)
 {
     // TODO(bgruber): implement matrix decomposition into m_rotation, m_scaling and m_translation
     _transformationMatrix = matrix;
+    invalidated = false;
 }
 
-void CCPACSTransformation::updateMatrix()
+void CCPACSTransformation::updateMatrix() const
 {
     _transformationMatrix.SetIdentity();
     if (m_scaling) {
@@ -94,6 +100,7 @@ void CCPACSTransformation::updateMatrix()
         const CTiglPoint& t = m_translation->AsPoint();
         _transformationMatrix.AddTranslation(t.x, t.y, t.z);
     }
+    invalidated = false;
 }
 
 CTiglPoint CCPACSTransformation::getTranslationVector() const
@@ -118,6 +125,9 @@ ECPACSTranslationType CCPACSTransformation::getTranslationType() const
 
 CTiglTransformation CCPACSTransformation::getTransformationMatrix() const
 {
+    if (invalidated) {
+        updateMatrix();
+    }
     return _transformationMatrix;
 }
 

@@ -55,7 +55,7 @@ if __name__ == '__main__':
     tigl_h = tigl3wrapper.Tigl3()
 
     dir_path = os.path.dirname(os.path.realpath(__file__))
-    tixi_h.open(dir_path + "/../../tests/TestData/simpletest.cpacs.xml")
+    tixi_h.open(dir_path + "/../../tests/unittests/TestData/simpletest.cpacs.xml")
     tigl_h.open(tixi_h, "")
 
     fused_ac = get_fused_shape(tigl_h)
