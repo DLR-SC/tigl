@@ -66,7 +66,7 @@ if __name__ == '__main__':
     tigl_h = tigl3wrapper.Tigl3()
 
     dir_path = os.path.dirname(os.path.realpath(__file__))
-    tixi_h.open(dir_path + "/../../tests/TestData/D150_v30.xml")
+    tixi_h.open(dir_path + "/../../tests/unittests/TestData/D150_v30.xml")
     tigl_h.open(tixi_h, "")
 
     display_configuration(tigl_h)
