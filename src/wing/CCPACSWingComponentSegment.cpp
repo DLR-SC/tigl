@@ -332,7 +332,7 @@ gp_Vec CCPACSWingComponentSegment::GetLeadingEdgeDirection(const std::string& se
 // Parameter defaultSegmentUID can be used for inner/outer segment when point is in extended volume
 gp_Vec CCPACSWingComponentSegment::GetLeadingEdgeDirection(const gp_Pnt& point, const std::string& defaultSegmentUID) const
 {
-    gp_Pnt globalPnt = wing->GetWingTransformation().Transform(point);
+    gp_Pnt globalPnt = wing->GetTransformationMatrix().Transform(point);
 
     std::string segmentUID = defaultSegmentUID;
     gp_Pnt dummy;
@@ -361,7 +361,7 @@ gp_Vec CCPACSWingComponentSegment::GetTrailingEdgeDirection(const std::string& s
 // Parameter defaultSegmentUID can be used for inner/outer segment when point is in extended volume
 gp_Vec CCPACSWingComponentSegment::GetTrailingEdgeDirection(const gp_Pnt& point, const std::string& defaultSegmentUID) const
 {
-    gp_Pnt globalPnt = wing->GetWingTransformation().Transform(point);
+    gp_Pnt globalPnt = wing->GetTransformationMatrix().Transform(point);
 
     std::string segmentUID = defaultSegmentUID;
     gp_Pnt dummy;
@@ -401,8 +401,8 @@ TopoDS_Wire CCPACSWingComponentSegment::GetMidplaneLine(const gp_Pnt& startPoint
     // copy of variables because we have to modify them in case the points lie within a section
     gp_Pnt startPnt = startPoint;
     gp_Pnt endPnt = endPoint;
-    gp_Pnt globalStartPnt = wing->GetWingTransformation().Transform(startPnt);
-    gp_Pnt globalEndPnt = wing->GetWingTransformation().Transform(endPnt);
+    gp_Pnt globalStartPnt = wing->GetTransformationMatrix().Transform(startPnt);
+    gp_Pnt globalEndPnt = wing->GetTransformationMatrix().Transform(endPnt);
 
     // determine wing segments containing the start and end points
     std::string startSegmentUID, endSegmentUID;
@@ -909,7 +909,7 @@ gp_Pnt CCPACSWingComponentSegment::GetPoint(double eta, double xsi, TiglCoordina
 
     switch (referenceCS) {
     case WING_COORDINATE_SYSTEM:
-        result = wing->GetWingTransformation().Inverted().Transform(result);
+        result = wing->GetTransformationMatrix().Inverted().Transform(result);
         break;
     case GLOBAL_COORDINATE_SYSTEM:
         // nothing needs to be done
@@ -933,7 +933,7 @@ void CCPACSWingComponentSegment::GetEtaXsi(const gp_Pnt& p, double& eta, double&
 // TODO (siggel): remove this function as it duplicates GetEtaXsi
 void CCPACSWingComponentSegment::GetMidplaneEtaXsi(const gp_Pnt& p, double& eta, double& xsi) const
 {
-    gp_Pnt globalPoint = wing->GetWingTransformation().Transform(p);
+    gp_Pnt globalPoint = wing->GetTransformationMatrix().Transform(p);
 
     GetEtaXsi(globalPoint, eta, xsi);
 }

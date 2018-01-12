@@ -101,14 +101,6 @@ CTiglTransformation CCPACSRotor::GetTransformationMatrix() const
     return m_transformation.getTransformationMatrix();
 }
 
-// Sets the Transformation object
-void CCPACSRotor::Translate(CTiglPoint trans)
-{
-    CTiglRelativelyPositionedComponent::Translate(trans);
-    Invalidate();
-    Update();
-}
-
 // Get Translation
 CTiglPoint CCPACSRotor::GetTranslation()
 {

@@ -98,9 +98,6 @@ public:
     TIGL_EXPORT const CCPACSWingComponentSegment& GetComponentSegment(const int index) const;
     TIGL_EXPORT CCPACSWingComponentSegment& GetComponentSegment(const std::string& uid);
 
-    // Gets the wing transformation
-    TIGL_EXPORT CTiglTransformation GetWingTransformation();
-
     // Get the positioning transformation for a given section uid
     TIGL_EXPORT CTiglTransformation GetPositioningTransformation(std::string sectionUID);
 
@@ -121,9 +118,6 @@ public:
 
     // Gets the volume of this wing
     TIGL_EXPORT double GetVolume();
-
-    // Sets a Transformation object
-    TIGL_EXPORT void Translate(CTiglPoint trans) OVERRIDE;
 
     // Gets the surfade area of this wing
     TIGL_EXPORT double GetSurfaceArea();

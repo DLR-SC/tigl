@@ -365,8 +365,8 @@ void CCPACSWing::BuildUpperLowerShells()
         CTiglWingConnection& startConnection = m_segments.GetSegment(i).GetInnerConnection();
         CCPACSWingProfile& startProfile = startConnection.GetProfile();
         TopoDS_Wire upperWire, lowerWire;
-        upperWire = TopoDS::Wire(transformWingProfileGeometry(GetWingTransformation(), startConnection, BRepBuilderAPI_MakeWire(startProfile.GetUpperWire())));
-        lowerWire = TopoDS::Wire(transformWingProfileGeometry(GetWingTransformation(), startConnection, BRepBuilderAPI_MakeWire(startProfile.GetLowerWire())));
+        upperWire = TopoDS::Wire(transformWingProfileGeometry(GetTransformationMatrix(), startConnection, BRepBuilderAPI_MakeWire(startProfile.GetUpperWire())));
+        lowerWire = TopoDS::Wire(transformWingProfileGeometry(GetTransformationMatrix(), startConnection, BRepBuilderAPI_MakeWire(startProfile.GetLowerWire())));
         generatorUp.AddWire(upperWire);
         generatorLow.AddWire(lowerWire);
     }
@@ -375,8 +375,8 @@ void CCPACSWing::BuildUpperLowerShells()
     CCPACSWingProfile& endProfile = endConnection.GetProfile();
     TopoDS_Wire endUpWire, endLowWire;
 
-    endUpWire  = TopoDS::Wire(transformWingProfileGeometry(GetWingTransformation(), endConnection, BRepBuilderAPI_MakeWire(endProfile.GetUpperWire())));
-    endLowWire = TopoDS::Wire(transformWingProfileGeometry(GetWingTransformation(), endConnection, BRepBuilderAPI_MakeWire(endProfile.GetLowerWire())));
+    endUpWire  = TopoDS::Wire(transformWingProfileGeometry(GetTransformationMatrix(), endConnection, BRepBuilderAPI_MakeWire(endProfile.GetUpperWire())));
+    endLowWire = TopoDS::Wire(transformWingProfileGeometry(GetTransformationMatrix(), endConnection, BRepBuilderAPI_MakeWire(endProfile.GetLowerWire())));
 
     generatorUp.AddWire(endUpWire);
     generatorLow.AddWire(endLowWire);
@@ -386,12 +386,6 @@ void CCPACSWing::BuildUpperLowerShells()
     lowerShape = generatorLow.Shape();
 }
 
-
-// Gets the wing transformation (original wing implementation, but see GetTransformation)
-CTiglTransformation CCPACSWing::GetWingTransformation()
-{
-    return m_transformation.getTransformationMatrix();
-}
 
 // Get the positioning transformation for a given section-uid
 CTiglTransformation CCPACSWing::GetPositioningTransformation(std::string sectionUID)
@@ -430,17 +424,6 @@ double CCPACSWing::GetVolume()
     BRepGProp::VolumeProperties(fusedSegments, System);
     double myVolume = System.Mass();
     return myVolume;
-}
-
-// Sets the Transformation object
-void CCPACSWing::Translate(CTiglPoint trans)
-{
-    CTiglRelativelyPositionedComponent::Translate(trans);
-    invalidated = true;
-    m_segments.Invalidate();
-    if(m_componentSegments)
-        m_componentSegments->Invalidate();
-    Update();
 }
 
 // Returns the surface area of this wing

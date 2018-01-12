@@ -778,8 +778,8 @@ gp_Pnt CCPACSWingSegment::GetPoint(double eta, double xsi, bool fromUpper, TiglC
         outerProfilePoint = transformProfilePoint(identity, outerConnection, outerProfilePoint);
         break;
     case GLOBAL_COORDINATE_SYSTEM:
-        innerProfilePoint = transformProfilePoint(GetWing().GetWingTransformation(), innerConnection, innerProfilePoint);
-        outerProfilePoint = transformProfilePoint(GetWing().GetWingTransformation(), outerConnection, outerProfilePoint);
+        innerProfilePoint = transformProfilePoint(GetWing().GetTransformationMatrix(), innerConnection, innerProfilePoint);
+        outerProfilePoint = transformProfilePoint(GetWing().GetTransformationMatrix(), outerConnection, outerProfilePoint);
         break;
     default:
         throw CTiglError("Invalid coordinate system passed to CCPACSWingSegment::GetPoint");

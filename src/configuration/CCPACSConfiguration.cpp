@@ -126,17 +126,8 @@ void CCPACSConfiguration::ReadCPACS(const std::string& configurationUID)
 
     acSystems.ReadCPACS(tixiDocumentHandle, configurationUID);
 
-    // Now do parent <-> child transformations. Child should use the
-    // parent coordinate system as root.
-    try {
-        const RelativeComponentContainerType& allRootComponentsWithChildren = uidManager.GetRootGeometricComponents();
-        for (RelativeComponentContainerType::const_iterator it = allRootComponentsWithChildren.begin(); it != allRootComponentsWithChildren.end(); ++it) {
-            transformAllComponents(it->second);
-        }
-    }
-    catch (const CTiglError& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
-    }
+    // Now do parent <-> child transformations. Child should use the parent coordinate system as root.
+    uidManager.SetParentComponents();
 }
 
 // Write CPACS structure to tixiHandle
@@ -155,26 +146,6 @@ void CCPACSConfiguration::WriteCPACS(const std::string& configurationUID)
     }
     if (profiles) {
         profiles->WriteCPACS(tixiDocumentHandle, profilesXPath);
-    }
-}
-
-// transform all components relative to their parents
-void CCPACSConfiguration::transformAllComponents(CTiglRelativelyPositionedComponent* parent)
-{
-    if (!parent) {
-        return;
-    }
-
-    CTiglRelativelyPositionedComponent::ChildContainerType children = parent->GetChildren(false);
-    CTiglRelativelyPositionedComponent::ChildContainerType::iterator pIter;
-    CTiglPoint parentTranslation = parent->GetTranslation();
-    for (pIter = children.begin(); pIter != children.end(); ++pIter) {
-        CTiglRelativelyPositionedComponent* child = *pIter;
-        if (child->GetTranslationType() == ABS_LOCAL) {
-            child->Translate(parentTranslation);
-        }
-        transformAllComponents(child);
-
     }
 }
 

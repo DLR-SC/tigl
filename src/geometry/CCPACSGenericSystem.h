@@ -59,9 +59,6 @@ public:
     // Returns the parent configuration
     TIGL_EXPORT CCPACSConfiguration & GetConfiguration() const;
 
-    // Sets a Transformation object
-    TIGL_EXPORT void Translate(CTiglPoint trans) OVERRIDE;
-
     // Returns the Component Type TIGL_COMPONENT_GENERICSYSTEM.
     TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE {return TIGL_COMPONENT_GENERICSYSTEM | TIGL_COMPONENT_PHYSICAL;}
 

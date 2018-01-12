@@ -113,7 +113,19 @@ void CTiglRelativelyPositionedComponent::SetSymmetryAxis(const TiglSymmetryAxis&
 CTiglTransformation CTiglRelativelyPositionedComponent::GetTransformationMatrix() const
 {
     const CTiglTransformation thisTransformation = _transformation ? _transformation->getTransformationMatrix() : CTiglTransformation();
-    return thisTransformation;
+    if (_parent && GetTranslationType() == ABS_LOCAL) {
+        const auto& parentTransformation = _parent->GetTransformationMatrix();
+
+        // we only transform with the parent's translation
+        CTiglTransformation parentTranslation;
+        parentTranslation.AddTranslation(
+            parentTransformation.GetValue(0, 3),
+            parentTransformation.GetValue(1, 3),
+            parentTransformation.GetValue(2, 3)
+        );
+        return parentTranslation * thisTransformation;
+    } else
+        return thisTransformation;
 }
 
 CTiglPoint CTiglRelativelyPositionedComponent::GetRotation() const
@@ -147,16 +159,6 @@ ECPACSTranslationType CTiglRelativelyPositionedComponent::GetTranslationType() c
     else
         return ABS_GLOBAL; // TODO(bgruber): is this a valid default?
 }
-
-void CTiglRelativelyPositionedComponent::Translate(CTiglPoint trans)
-{
-    if (_transformation) {
-        _transformation->setTranslation(GetTranslation() + trans, GetTranslationType());
-    }
-    else
-        throw CTiglError("Type does not have a _transformation");
-}
-
 
 // Returns a pointer to the list of children of a component.
 CTiglRelativelyPositionedComponent::ChildContainerType CTiglRelativelyPositionedComponent::GetChildren(bool recursive)

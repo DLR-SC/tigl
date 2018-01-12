@@ -70,9 +70,6 @@ public:
 
     TIGL_EXPORT void SetUID(const std::string& uid) OVERRIDE;
 
-    // Sets the Translation object
-    TIGL_EXPORT void Translate(CTiglPoint trans) OVERRIDE;
-
     // Returns the Translation
     TIGL_EXPORT CTiglPoint GetTranslation();
 

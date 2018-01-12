@@ -66,8 +66,6 @@ public:
     TIGL_EXPORT virtual CTiglPoint GetTranslation() const;
     TIGL_EXPORT virtual ECPACSTranslationType GetTranslationType() const;
 
-    TIGL_EXPORT virtual void Translate(CTiglPoint trans);
-
     TIGL_EXPORT boost::optional<const std::string&> GetParentUID() const;
     TIGL_EXPORT void SetParentUID(const std::string& parentUID);
 

@@ -209,10 +209,6 @@ public:
 
     TIGL_EXPORT CCPACSACSystems& GetACSystems();
 
-protected:
-    // transform all components relative to their parents
-    void transformAllComponents(CTiglRelativelyPositionedComponent* parent);
-
 private:
     // Copy constructor
     CCPACSConfiguration(const CCPACSConfiguration&);

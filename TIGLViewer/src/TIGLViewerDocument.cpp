@@ -2460,7 +2460,7 @@ void TIGLViewerDocument::drawWingOverlayProfilePoints(tigl::CCPACSWing& wing)
         tigl::CTiglTransformation innerT = innerConnection.GetSectionElementTransformation();
         innerT.PreMultiply(innerConnection.GetSectionTransformation());
         innerT.PreMultiply(innerConnection.GetPositioningTransformation());
-        innerT.PreMultiply(wing.GetWingTransformation());
+        innerT.PreMultiply(wing.GetTransformationMatrix());
         for (std::vector<tigl::CTiglPoint*>::size_type i = 0; i < innerProfilePointList.size(); i++) {
 
             gp_Pnt pnt = innerProfilePointList[i].Get_gp_Pnt();
@@ -2478,7 +2478,7 @@ void TIGLViewerDocument::drawWingOverlayProfilePoints(tigl::CCPACSWing& wing)
         tigl::CTiglTransformation outerT = outerConnection.GetSectionElementTransformation();
         outerT.PreMultiply(outerConnection.GetSectionTransformation());
         outerT.PreMultiply(outerConnection.GetPositioningTransformation());
-        outerT.PreMultiply(wing.GetWingTransformation());
+        outerT.PreMultiply(wing.GetTransformationMatrix());
         for (std::vector<tigl::CTiglPoint*>::size_type i = 0; i < outerProfilePointList.size(); i++) {
 
             gp_Pnt pnt = outerProfilePointList[i].Get_gp_Pnt();

@@ -195,10 +195,4 @@ std::string CCPACSGenericSystem::GetShortShapeName()
     return "UNKNOWN";
 }
 
-// Sets the Transformation object
-void CCPACSGenericSystem::Translate(CTiglPoint trans)
-{
-    CTiglRelativelyPositionedComponent::Translate(trans);
-}
-
 } // end namespace tigl
