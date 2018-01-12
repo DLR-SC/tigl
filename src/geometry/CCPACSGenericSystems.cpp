@@ -44,14 +44,6 @@ CCPACSGenericSystems::~CCPACSGenericSystems()
     Cleanup();
 }
 
-// Invalidates internal state
-void CCPACSGenericSystems::Invalidate()
-{
-    for (int i = 1; i <= GetGenericSystemCount(); i++) {
-        GetGenericSystem(i).Invalidate();
-    }
-}
-
 // Cleanup routine
 void CCPACSGenericSystems::Cleanup()
 {

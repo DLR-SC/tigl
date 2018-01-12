@@ -33,31 +33,16 @@ CCPACSACSystems::CCPACSACSystems(CCPACSConfiguration* config)
     : configuration(config)
     , genericSystems(config)
 {
-    Cleanup();
 }
 
 // Destructor
 CCPACSACSystems::~CCPACSACSystems()
 {
-    Cleanup();
-}
-
-// Invalidates internal state
-void CCPACSACSystems::Invalidate()
-{
-    genericSystems.Invalidate();
-}
-
-// Cleanup routine
-void CCPACSACSystems::Cleanup()
-{
-    Invalidate();
 }
 
 // Read CPACS systems element
 void CCPACSACSystems::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& configurationUID)
 {
-    Cleanup();
     char *tmpString = NULL;
 
     if (tixiUIDGetXPath(tixiHandle, configurationUID.c_str(), &tmpString) != SUCCESS) {

@@ -50,9 +50,6 @@ public:
 
     TIGL_EXPORT std::string GetDefaultedUID() const OVERRIDE;
 
-    // Invalidates internal state
-    TIGL_EXPORT void Invalidate();
-
     // Read CPACS generic system elements
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & genericSysXPath);
 
@@ -73,9 +70,6 @@ protected:
     // Cleanup routine
     void Cleanup();
 
-    // Update internal wing data
-    void Update();
-        
     // Build the shape of the system
     PNamedShape BuildLoft() OVERRIDE;
 
@@ -96,7 +90,6 @@ private:
     TiglSymmetryAxis               symmetryAxis;
     CCPACSTransformation           transformation;
     CCPACSConfiguration*           configuration;            /**< Parent configuration*/
-    bool                           invalidated;              /**< Internal state flag */
 };
 
 } // end namespace tigl

@@ -178,7 +178,6 @@ void CCPACSWing::Update()
         return;
     }
 
-    m_transformation.updateMatrix();
     invalidated = false;
     rebuildFusedSegments = true;    // forces a rebuild of all segments with regards to the updated translation
     rebuildShells = true;

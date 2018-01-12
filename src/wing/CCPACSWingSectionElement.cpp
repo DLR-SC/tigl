@@ -63,19 +63,16 @@ CTiglPoint CCPACSWingSectionElement::GetScaling() const
 void CCPACSWingSectionElement::SetTranslation(const CTiglPoint &trans)
 {
     m_transformation.setTranslation(trans, ABS_LOCAL);
-    m_transformation.updateMatrix();
 }
 
 void CCPACSWingSectionElement::SetRotation(const CTiglPoint &rot)
 {
     m_transformation.setRotation(rot);
-    m_transformation.updateMatrix();
 }
 
 void CCPACSWingSectionElement::SetScaling(const CTiglPoint &scaling)
 {
     m_transformation.setScaling(scaling);
-    m_transformation.updateMatrix();
 }
 
 } // end namespace tigl
