@@ -222,32 +222,40 @@ void CCPACSWingCell::GetTrailingEdgeOuterPoint(double* eta, double* xsi) const
     *xsi = cache.value().outerTrailingEdgePoint.xsi;
 }
 
-void CCPACSWingCell::SetLeadingEdgeInnerPoint(double eta, double xsi)
+void CCPACSWingCell::SetLeadingEdgeInnerPoint(double eta1, double xsi1)
 {
     UpdateCache();
-    m_positioningInnerBorder.SetEta(eta, cache.value().innerTrailingEdgePoint.eta);
-    m_positioningLeadingEdge.SetXsi(xsi, cache.value().outerLeadingEdgePoint.xsi);
+    const double eta2 = cache.value().innerTrailingEdgePoint.eta;
+    const double xsi2 = cache.value().outerLeadingEdgePoint.xsi;
+    m_positioningInnerBorder.SetEta(eta1, eta2);
+    m_positioningLeadingEdge.SetXsi(xsi1, xsi2);
 }
 
-void CCPACSWingCell::SetLeadingEdgeOuterPoint(double eta, double xsi)
+void CCPACSWingCell::SetLeadingEdgeOuterPoint(double eta1, double xsi2)
 {
     UpdateCache();
-    m_positioningOuterBorder.SetEta(eta, cache.value().outerTrailingEdgePoint.eta);
-    m_positioningLeadingEdge.SetXsi(cache.value().innerLeadingEdgePoint.xsi, xsi);
+    const double eta2 = cache.value().outerTrailingEdgePoint.eta;
+    const double xsi1 = cache.value().innerLeadingEdgePoint.xsi;
+    m_positioningOuterBorder.SetEta(eta1, eta2);
+    m_positioningLeadingEdge.SetXsi(xsi1, xsi2);
 }
 
-void CCPACSWingCell::SetTrailingEdgeInnerPoint(double eta, double xsi)
+void CCPACSWingCell::SetTrailingEdgeInnerPoint(double eta2, double xsi1)
 {
     UpdateCache();
-    m_positioningInnerBorder.SetEta(cache.value().innerLeadingEdgePoint.eta, eta);
-    m_positioningTrailingEdge.SetXsi(xsi, cache.value().outerTrailingEdgePoint.xsi);
+    const double eta1 = cache.value().innerLeadingEdgePoint.eta;
+    const double xsi2 = cache.value().outerTrailingEdgePoint.xsi;
+    m_positioningInnerBorder.SetEta(eta1, eta2);
+    m_positioningTrailingEdge.SetXsi(xsi1, xsi2);
 }
 
-void CCPACSWingCell::SetTrailingEdgeOuterPoint(double eta, double xsi)
+void CCPACSWingCell::SetTrailingEdgeOuterPoint(double eta2, double xsi2)
 {
     UpdateCache();
-    m_positioningOuterBorder.SetEta(cache.value().outerLeadingEdgePoint.eta, eta);
-    m_positioningTrailingEdge.SetXsi(cache.value().innerTrailingEdgePoint.xsi, xsi);
+    const double eta1 = cache.value().outerLeadingEdgePoint.eta;
+    const double xsi1 = cache.value().innerTrailingEdgePoint.xsi;
+    m_positioningOuterBorder.SetEta(eta1, eta2);
+    m_positioningTrailingEdge.SetXsi(xsi1, xsi2);
 }
 
 void CCPACSWingCell::SetLeadingEdgeSpar(const std::string& sparUID)

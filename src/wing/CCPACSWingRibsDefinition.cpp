@@ -280,6 +280,7 @@ void CCPACSWingRibsDefinition::BuildAuxGeomRibsPositioning() const
     }
     assert(ribSetDataCache);
 
+    auxGeomCache.emplace();
     // STEP 1: iterate over all ribs for this rib definition
     for (int i = 0; i < ribSetDataCache.value().numberOfRibs; i++) {
 
@@ -317,7 +318,7 @@ CCPACSWingRibsDefinition::CutGeometry CCPACSWingRibsDefinition::BuildRibCutGeome
     std::string ribEnd = m_ribsPositioning_choice1->GetRibEnd();
     std::string ribReference = m_ribsPositioning_choice1->GetRibReference();
 
-    auxGeomCache.emplace();
+    assert(auxGeomCache);
 
     // handle case when rib lies within a section element (elementUID defined)
     if (!elementUID.empty()) {
