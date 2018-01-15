@@ -21,7 +21,7 @@
 #include <boost/utility/in_place_factory.hpp>
 #include <string>
 #include <tixi.h>
-#include "CPACSFuselageCutOut_cutout.h"
+#include "CPACSFuselageCutOut_cutoutType.h"
 #include "CPACSPointXYZ.h"
 #include "CreateIfNotExists.h"
 #include "tigl_internal.h"
@@ -94,8 +94,8 @@ namespace tigl
             TIGL_EXPORT virtual const double& GetFilletRadius() const;
             TIGL_EXPORT virtual void SetFilletRadius(const double& value);
             
-            TIGL_EXPORT virtual const CPACSFuselageCutOut_cutout& GetCutoutType() const;
-            TIGL_EXPORT virtual void SetCutoutType(const CPACSFuselageCutOut_cutout& value);
+            TIGL_EXPORT virtual const CPACSFuselageCutOut_cutoutType& GetCutoutType() const;
+            TIGL_EXPORT virtual void SetCutoutType(const CPACSFuselageCutOut_cutoutType& value);
             
             TIGL_EXPORT virtual CPACSPointXYZ& GetAlignmentVector(CreateIfNotExistsTag);
             TIGL_EXPORT virtual void RemoveAlignmentVector();
@@ -117,7 +117,7 @@ namespace tigl
             boost::optional<double>        m_deltaY1;
             boost::optional<double>        m_deltaZ1;
             double                         m_filletRadius;
-            CPACSFuselageCutOut_cutout     m_cutoutType;
+            CPACSFuselageCutOut_cutoutType m_cutoutType;
             
         private:
             #ifdef HAVE_CPP11
