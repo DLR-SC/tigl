@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <cpacs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://cpacs.googlecode.com/files/CPACS_21_Schema.xsd">
   <header>
     <name>TransformationTest</name>
@@ -7,6 +7,15 @@
     <timestamp>2018-01-11T14:23:25</timestamp>
     <version>0.1</version>
     <cpacsVersion>3.0</cpacsVersion>
+    <updates>
+      <update>
+        <modification>Converted to cpacs 3.0 using cpacs2to3 - does not include structure update</modification>
+        <creator>cpacs2to3</creator>
+        <timestamp>2018-01-15T09:26:01</timestamp>
+        <version>0.1</version>
+        <cpacsVersion>3.0</cpacsVersion>
+      </update>
+    </updates>
   </header>
   <vehicles>
     <aircraft>
@@ -25,18 +34,18 @@
           <wing uID="Wing0" symmetry="x-z-plane">
             <name>Wing0</name>
             <description>This wing has been generated to test CATIA2CPACS.</description>
-            <transformation>
-              <scaling>
+            <transformation uID="Wing0_transformation1">
+              <scaling uID="Wing0_transformation1_scaling1">
                 <x>1</x>
                 <y>1</y>
                 <z>1</z>
               </scaling>
-              <rotation>
+              <rotation uID="Wing0_transformation1_rotation1">
                 <x>0</x>
                 <y>0</y>
                 <z>0</z>
               </rotation>
-              <translation refType="absGlobal">
+              <translation refType="absGlobal" uID="Wing0_transformation1_translation1">
                 <x>1</x>
                 <y>0</y>
                 <z>0</z>
@@ -46,18 +55,18 @@
               <section uID="Cpacs2Test_Wing_Sec1">
                 <name>Cpacs2Test - Wing Section 1</name>
                 <description>Cpacs2Test - Wing Section 1</description>
-                <transformation>
-                  <scaling>
+                <transformation uID="Cpacs2Test_Wing_Sec1_transformation1">
+                  <scaling uID="Cpacs2Test_Wing_Sec1_transformation1_scaling1">
                     <x>1</x>
                     <y>1</y>
                     <z>1</z>
                   </scaling>
-                  <rotation>
+                  <rotation uID="Cpacs2Test_Wing_Sec1_transformation1_rotation1">
                     <x>0</x>
                     <y>0</y>
                     <z>0</z>
                   </rotation>
-                  <translation refType="absLocal">
+                  <translation refType="absLocal" uID="Cpacs2Test_Wing_Sec1_transformation1_translation1">
                     <x>0</x>
                     <y>0</y>
                     <z>0</z>
@@ -68,18 +77,18 @@
                     <name>Cpacs2Test - Wing Section 1 Main Element</name>
                     <description>Cpacs2Test - Wing Section 1 Main Element</description>
                     <airfoilUID>NACA0012</airfoilUID>
-                    <transformation>
-                      <scaling>
+                    <transformation uID="Cpacs2Test_Wing_Sec1_El1_transformation1">
+                      <scaling uID="Cpacs2Test_Wing_Sec1_El1_transformation1_scaling1">
                         <x>1</x>
                         <y>1</y>
                         <z>1</z>
                       </scaling>
-                      <rotation>
+                      <rotation uID="Cpacs2Test_Wing_Sec1_El1_transformation1_rotation1">
                         <x>0</x>
                         <y>0</y>
                         <z>0</z>
                       </rotation>
-                      <translation refType="absLocal">
+                      <translation refType="absLocal" uID="Cpacs2Test_Wing_Sec1_El1_transformation1_translation1">
                         <x>0</x>
                         <y>0</y>
                         <z>0</z>
@@ -91,18 +100,18 @@
               <section uID="Cpacs2Test_Wing_Sec2">
                 <name>Cpacs2Test - Wing Section 2</name>
                 <description>Cpacs2Test - Wing Section 2</description>
-                <transformation>
-                  <scaling>
+                <transformation uID="Cpacs2Test_Wing_Sec2_transformation1">
+                  <scaling uID="Cpacs2Test_Wing_Sec2_transformation1_scaling1">
                     <x>1</x>
                     <y>1</y>
                     <z>1</z>
                   </scaling>
-                  <rotation>
+                  <rotation uID="Cpacs2Test_Wing_Sec2_transformation1_rotation1">
                     <x>0</x>
                     <y>0</y>
                     <z>0</z>
                   </rotation>
-                  <translation refType="absLocal">
+                  <translation refType="absLocal" uID="Cpacs2Test_Wing_Sec2_transformation1_translation1">
                     <x>0</x>
                     <y>0</y>
                     <z>0</z>
@@ -113,18 +122,18 @@
                     <name>Cpacs2Test - Wing Section 2 Main Element</name>
                     <description>Cpacs2Test - Wing Section 2 Main Element</description>
                     <airfoilUID>NACA0012</airfoilUID>
-                    <transformation>
-                      <scaling>
+                    <transformation uID="Cpacs2Test_Wing_Sec2_El1_transformation1">
+                      <scaling uID="Cpacs2Test_Wing_Sec2_El1_transformation1_scaling1">
                         <x>1</x>
                         <y>1</y>
                         <z>1</z>
                       </scaling>
-                      <rotation>
+                      <rotation uID="Cpacs2Test_Wing_Sec2_El1_transformation1_rotation1">
                         <x>0</x>
                         <y>0</y>
                         <z>0</z>
                       </rotation>
-                      <translation refType="absLocal">
+                      <translation refType="absLocal" uID="Cpacs2Test_Wing_Sec2_El1_transformation1_translation1">
                         <x>0</x>
                         <y>0</y>
                         <z>0</z>
@@ -135,7 +144,7 @@
               </section>
             </sections>
             <positionings>
-              <positioning>
+              <positioning uID="Wing0_positioning1">
                 <name>Cpacs2Test - Wing Section 1 Positioning</name>
                 <description>Cpacs2Test - Wing Section 1 Positioning</description>
                 <length>0</length>
@@ -143,7 +152,7 @@
                 <dihedralAngle>0</dihedralAngle>
                 <toSectionUID>Cpacs2Test_Wing_Sec1</toSectionUID>
               </positioning>
-              <positioning>
+              <positioning uID="Wing0_positioning2">
                 <name>Cpacs2Test - Wing Section 2 Positioning</name>
                 <description>Cpacs2Test - Wing Section 2 Positioning</description>
                 <length>1</length>
@@ -166,18 +175,18 @@
             <name>Wing</name>
             <parentUID>Wing0</parentUID>
             <description>This wing has been generated to test CATIA2CPACS.</description>
-            <transformation>
-              <scaling>
+            <transformation uID="Wing1_transformation1">
+              <scaling uID="Wing1_transformation1_scaling1">
                 <x>1</x>
                 <y>1</y>
                 <z>1</z>
               </scaling>
-              <rotation>
+              <rotation uID="Wing1_transformation1_rotation1">
                 <x>0</x>
                 <y>0</y>
                 <z>0</z>
               </rotation>
-              <translation refType="absLocal">
+              <translation refType="absLocal" uID="Wing1_transformation1_translation1">
                 <x>0</x>
                 <y>1</y>
                 <z>0</z>
@@ -187,18 +196,18 @@
               <section uID="Cpacs2Test_Wing1_Sec1">
                 <name>Cpacs2Test - Wing Section 1</name>
                 <description>Cpacs2Test - Wing Section 1</description>
-                <transformation>
-                  <scaling>
+                <transformation uID="Cpacs2Test_Wing1_Sec1_transformation1">
+                  <scaling uID="Cpacs2Test_Wing1_Sec1_transformation1_scaling1">
                     <x>1</x>
                     <y>1</y>
                     <z>1</z>
                   </scaling>
-                  <rotation>
+                  <rotation uID="Cpacs2Test_Wing1_Sec1_transformation1_rotation1">
                     <x>0</x>
                     <y>0</y>
                     <z>0</z>
                   </rotation>
-                  <translation refType="absLocal">
+                  <translation refType="absLocal" uID="Cpacs2Test_Wing1_Sec1_transformation1_translation1">
                     <x>0</x>
                     <y>0</y>
                     <z>0</z>
@@ -209,18 +218,18 @@
                     <name>Cpacs2Test - Wing Section 1 Main Element</name>
                     <description>Cpacs2Test - Wing Section 1 Main Element</description>
                     <airfoilUID>NACA0012</airfoilUID>
-                    <transformation>
-                      <scaling>
+                    <transformation uID="Cpacs2Test_Wing1_Sec1_El1_transformation1">
+                      <scaling uID="Cpacs2Test_Wing1_Sec1_El1_transformation1_scaling1">
                         <x>1</x>
                         <y>1</y>
                         <z>1</z>
                       </scaling>
-                      <rotation>
+                      <rotation uID="Cpacs2Test_Wing1_Sec1_El1_transformation1_rotation1">
                         <x>0</x>
                         <y>0</y>
                         <z>0</z>
                       </rotation>
-                      <translation refType="absLocal">
+                      <translation refType="absLocal" uID="Cpacs2Test_Wing1_Sec1_El1_transformation1_translation1">
                         <x>0</x>
                         <y>0</y>
                         <z>0</z>
@@ -232,18 +241,18 @@
               <section uID="Cpacs2Test_Wing1_Sec2">
                 <name>Cpacs2Test - Wing Section 2</name>
                 <description>Cpacs2Test - Wing Section 2</description>
-                <transformation>
-                  <scaling>
+                <transformation uID="Cpacs2Test_Wing1_Sec2_transformation1">
+                  <scaling uID="Cpacs2Test_Wing1_Sec2_transformation1_scaling1">
                     <x>1</x>
                     <y>1</y>
                     <z>1</z>
                   </scaling>
-                  <rotation>
+                  <rotation uID="Cpacs2Test_Wing1_Sec2_transformation1_rotation1">
                     <x>0</x>
                     <y>0</y>
                     <z>0</z>
                   </rotation>
-                  <translation refType="absLocal">
+                  <translation refType="absLocal" uID="Cpacs2Test_Wing1_Sec2_transformation1_translation1">
                     <x>0</x>
                     <y>0</y>
                     <z>0</z>
@@ -254,18 +263,18 @@
                     <name>Cpacs2Test - Wing Section 2 Main Element</name>
                     <description>Cpacs2Test - Wing Section 2 Main Element</description>
                     <airfoilUID>NACA0012</airfoilUID>
-                    <transformation>
-                      <scaling>
+                    <transformation uID="Cpacs2Test_Wing1_Sec2_El1_transformation1">
+                      <scaling uID="Cpacs2Test_Wing1_Sec2_El1_transformation1_scaling1">
                         <x>1</x>
                         <y>1</y>
                         <z>1</z>
                       </scaling>
-                      <rotation>
+                      <rotation uID="Cpacs2Test_Wing1_Sec2_El1_transformation1_rotation1">
                         <x>0</x>
                         <y>0</y>
                         <z>0</z>
                       </rotation>
-                      <translation refType="absLocal">
+                      <translation refType="absLocal" uID="Cpacs2Test_Wing1_Sec2_El1_transformation1_translation1">
                         <x>0</x>
                         <y>0</y>
                         <z>0</z>
@@ -276,7 +285,7 @@
               </section>
             </sections>
             <positionings>
-              <positioning>
+              <positioning uID="Wing1_positioning1">
                 <name>Cpacs2Test - Wing1 Section 1 Positioning</name>
                 <description>Cpacs2Test - Wing Section 1 Positioning</description>
                 <length>0</length>
@@ -284,7 +293,7 @@
                 <dihedralAngle>0</dihedralAngle>
                 <toSectionUID>Cpacs2Test_Wing1_Sec1</toSectionUID>
               </positioning>
-              <positioning>
+              <positioning uID="Wing1_positioning2">
                 <name>Cpacs2Test - Wing Section 2 Positioning</name>
                 <description>Cpacs2Test - Wing Section 2 Positioning</description>
                 <length>1</length>
@@ -307,18 +316,18 @@
             <name>Wing</name>
             <parentUID>Wing1</parentUID>
             <description>This wing has been generated to test CATIA2CPACS.</description>
-            <transformation>
-              <scaling>
+            <transformation uID="Wing2_transformation1">
+              <scaling uID="Wing2_transformation1_scaling1">
                 <x>1</x>
                 <y>1</y>
                 <z>1</z>
               </scaling>
-              <rotation>
+              <rotation uID="Wing2_transformation1_rotation1">
                 <x>0</x>
                 <y>0</y>
                 <z>0</z>
               </rotation>
-              <translation refType="absLocal">
+              <translation refType="absLocal" uID="Wing2_transformation1_translation1">
                 <x>0.5</x>
                 <y>1</y>
                 <z>0</z>
@@ -328,18 +337,18 @@
               <section uID="Cpacs2Test_Wing2_Sec1">
                 <name>Cpacs2Test - Wing Section 1</name>
                 <description>Cpacs2Test - Wing Section 1</description>
-                <transformation>
-                  <scaling>
+                <transformation uID="Cpacs2Test_Wing2_Sec1_transformation1">
+                  <scaling uID="Cpacs2Test_Wing2_Sec1_transformation1_scaling1">
                     <x>1</x>
                     <y>1</y>
                     <z>1</z>
                   </scaling>
-                  <rotation>
+                  <rotation uID="Cpacs2Test_Wing2_Sec1_transformation1_rotation1">
                     <x>0</x>
                     <y>0</y>
                     <z>0</z>
                   </rotation>
-                  <translation refType="absLocal">
+                  <translation refType="absLocal" uID="Cpacs2Test_Wing2_Sec1_transformation1_translation1">
                     <x>-0.5</x>
                     <y>0</y>
                     <z>0</z>
@@ -350,18 +359,18 @@
                     <name>Cpacs2Test - Wing Section 1 Main Element</name>
                     <description>Cpacs2Test - Wing Section 1 Main Element</description>
                     <airfoilUID>NACA0012</airfoilUID>
-                    <transformation>
-                      <scaling>
+                    <transformation uID="Cpacs2Test_Wing2_Sec1_El1_transformation1">
+                      <scaling uID="Cpacs2Test_Wing2_Sec1_El1_transformation1_scaling1">
                         <x>1</x>
                         <y>1</y>
                         <z>1</z>
                       </scaling>
-                      <rotation>
+                      <rotation uID="Cpacs2Test_Wing2_Sec1_El1_transformation1_rotation1">
                         <x>0</x>
                         <y>0</y>
                         <z>0</z>
                       </rotation>
-                      <translation refType="absLocal">
+                      <translation refType="absLocal" uID="Cpacs2Test_Wing2_Sec1_El1_transformation1_translation1">
                         <x>0</x>
                         <y>0</y>
                         <z>0</z>
@@ -373,18 +382,18 @@
               <section uID="Cpacs2Test_Wing2_Sec2">
                 <name>Cpacs2Test - Wing Section 2</name>
                 <description>Cpacs2Test - Wing Section 2</description>
-                <transformation>
-                  <scaling>
+                <transformation uID="Cpacs2Test_Wing2_Sec2_transformation1">
+                  <scaling uID="Cpacs2Test_Wing2_Sec2_transformation1_scaling1">
                     <x>1</x>
                     <y>1</y>
                     <z>1</z>
                   </scaling>
-                  <rotation>
+                  <rotation uID="Cpacs2Test_Wing2_Sec2_transformation1_rotation1">
                     <x>0</x>
                     <y>0</y>
                     <z>0</z>
                   </rotation>
-                  <translation refType="absLocal">
+                  <translation refType="absLocal" uID="Cpacs2Test_Wing2_Sec2_transformation1_translation1">
                     <x>-0.5</x>
                     <y>0</y>
                     <z>0</z>
@@ -395,18 +404,18 @@
                     <name>Cpacs2Test - Wing Section 2 Main Element</name>
                     <description>Cpacs2Test - Wing Section 2 Main Element</description>
                     <airfoilUID>NACA0012</airfoilUID>
-                    <transformation>
-                      <scaling>
+                    <transformation uID="Cpacs2Test_Wing2_Sec2_El1_transformation1">
+                      <scaling uID="Cpacs2Test_Wing2_Sec2_El1_transformation1_scaling1">
                         <x>1</x>
                         <y>1</y>
                         <z>1</z>
                       </scaling>
-                      <rotation>
+                      <rotation uID="Cpacs2Test_Wing2_Sec2_El1_transformation1_rotation1">
                         <x>0</x>
                         <y>0</y>
                         <z>0</z>
                       </rotation>
-                      <translation refType="absLocal">
+                      <translation refType="absLocal" uID="Cpacs2Test_Wing2_Sec2_El1_transformation1_translation1">
                         <x>0</x>
                         <y>0</y>
                         <z>0</z>
@@ -417,7 +426,7 @@
               </section>
             </sections>
             <positionings>
-              <positioning>
+              <positioning uID="Wing2_positioning1">
                 <name>Cpacs2Test - Wing2 Section 1 Positioning</name>
                 <description>Cpacs2Test - Wing Section 1 Positioning</description>
                 <length>0</length>
@@ -425,7 +434,7 @@
                 <dihedralAngle>0</dihedralAngle>
                 <toSectionUID>Cpacs2Test_Wing2_Sec1</toSectionUID>
               </positioning>
-              <positioning>
+              <positioning uID="Wing2_positioning2">
                 <name>Cpacs2Test - Wing Section 2 Positioning</name>
                 <description>Cpacs2Test - Wing Section 2 Positioning</description>
                 <length>1</length>
@@ -448,18 +457,18 @@
             <name>Wing</name>
             <parentUID>Wing2</parentUID>
             <description>This wing has been generated to test CATIA2CPACS.</description>
-            <transformation>
-              <scaling>
+            <transformation uID="Wing3_transformation1">
+              <scaling uID="Wing3_transformation1_scaling1">
                 <x>1</x>
                 <y>1</y>
                 <z>1</z>
               </scaling>
-              <rotation>
+              <rotation uID="Wing3_transformation1_rotation1">
                 <x>0</x>
                 <y>0</y>
                 <z>0</z>
               </rotation>
-              <translation refType="absGlobal">
+              <translation refType="absGlobal" uID="Wing3_transformation1_translation1">
                 <x>1.5</x>
                 <y>3</y>
                 <z>0</z>
@@ -469,18 +478,18 @@
               <section uID="Cpacs2Test_Wing3_Sec1">
                 <name>Cpacs2Test - Wing Section 1</name>
                 <description>Cpacs2Test - Wing Section 1</description>
-                <transformation>
-                  <scaling>
+                <transformation uID="Cpacs2Test_Wing3_Sec1_transformation1">
+                  <scaling uID="Cpacs2Test_Wing3_Sec1_transformation1_scaling1">
                     <x>1</x>
                     <y>1</y>
                     <z>1</z>
                   </scaling>
-                  <rotation>
+                  <rotation uID="Cpacs2Test_Wing3_Sec1_transformation1_rotation1">
                     <x>0</x>
                     <y>0</y>
                     <z>0</z>
                   </rotation>
-                  <translation refType="absLocal">
+                  <translation refType="absLocal" uID="Cpacs2Test_Wing3_Sec1_transformation1_translation1">
                     <x>-0.5</x>
                     <y>0</y>
                     <z>0</z>
@@ -491,18 +500,18 @@
                     <name>Cpacs2Test - Wing Section 1 Main Element</name>
                     <description>Cpacs2Test - Wing Section 1 Main Element</description>
                     <airfoilUID>NACA0012</airfoilUID>
-                    <transformation>
-                      <scaling>
+                    <transformation uID="Cpacs2Test_Wing3_Sec1_El1_transformation1">
+                      <scaling uID="Cpacs2Test_Wing3_Sec1_El1_transformation1_scaling1">
                         <x>1</x>
                         <y>1</y>
                         <z>1</z>
                       </scaling>
-                      <rotation>
+                      <rotation uID="Cpacs2Test_Wing3_Sec1_El1_transformation1_rotation1">
                         <x>0</x>
                         <y>0</y>
                         <z>0</z>
                       </rotation>
-                      <translation refType="absLocal">
+                      <translation refType="absLocal" uID="Cpacs2Test_Wing3_Sec1_El1_transformation1_translation1">
                         <x>0</x>
                         <y>0</y>
                         <z>0</z>
@@ -514,18 +523,18 @@
               <section uID="Cpacs2Test_Wing3_Sec2">
                 <name>Cpacs2Test - Wing Section 2</name>
                 <description>Cpacs2Test - Wing Section 2</description>
-                <transformation>
-                  <scaling>
+                <transformation uID="Cpacs2Test_Wing3_Sec2_transformation1">
+                  <scaling uID="Cpacs2Test_Wing3_Sec2_transformation1_scaling1">
                     <x>1</x>
                     <y>1</y>
                     <z>1</z>
                   </scaling>
-                  <rotation>
+                  <rotation uID="Cpacs2Test_Wing3_Sec2_transformation1_rotation1">
                     <x>0</x>
                     <y>0</y>
                     <z>0</z>
                   </rotation>
-                  <translation refType="absLocal">
+                  <translation refType="absLocal" uID="Cpacs2Test_Wing3_Sec2_transformation1_translation1">
                     <x>-0.5</x>
                     <y>0</y>
                     <z>0</z>
@@ -536,18 +545,18 @@
                     <name>Cpacs2Test - Wing Section 2 Main Element</name>
                     <description>Cpacs2Test - Wing Section 2 Main Element</description>
                     <airfoilUID>NACA0012</airfoilUID>
-                    <transformation>
-                      <scaling>
+                    <transformation uID="Cpacs2Test_Wing3_Sec2_El1_transformation1">
+                      <scaling uID="Cpacs2Test_Wing3_Sec2_El1_transformation1_scaling1">
                         <x>1</x>
                         <y>1</y>
                         <z>1</z>
                       </scaling>
-                      <rotation>
+                      <rotation uID="Cpacs2Test_Wing3_Sec2_El1_transformation1_rotation1">
                         <x>0</x>
                         <y>0</y>
                         <z>0</z>
                       </rotation>
-                      <translation refType="absLocal">
+                      <translation refType="absLocal" uID="Cpacs2Test_Wing3_Sec2_El1_transformation1_translation1">
                         <x>0</x>
                         <y>0</y>
                         <z>0</z>
@@ -558,7 +567,7 @@
               </section>
             </sections>
             <positionings>
-              <positioning>
+              <positioning uID="Wing3_positioning1">
                 <name>Cpacs2Test - Wing3 Section 1 Positioning</name>
                 <description>Cpacs2Test - Wing Section 1 Positioning</description>
                 <length>0</length>
@@ -566,7 +575,7 @@
                 <dihedralAngle>0</dihedralAngle>
                 <toSectionUID>Cpacs2Test_Wing3_Sec1</toSectionUID>
               </positioning>
-              <positioning>
+              <positioning uID="Wing3_positioning2">
                 <name>Cpacs2Test - Wing Section 2 Positioning</name>
                 <description>Cpacs2Test - Wing Section 2 Positioning</description>
                 <length>1</length>

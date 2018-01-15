@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <cpacs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../schema/CPACS4RIDE.xsd">
   <header>
     <name>SimpleTestRotors</name>
@@ -7,6 +7,15 @@
     <timestamp>2014-04-23T12:00:00</timestamp>
     <version>1.1</version>
     <cpacsVersion>3.0</cpacsVersion>
+    <updates>
+      <update>
+        <modification>Converted to cpacs 3.0 using cpacs2to3 - does not include structure update</modification>
+        <creator>cpacs2to3</creator>
+        <timestamp>2018-01-15T09:22:23</timestamp>
+        <version>1.1</version>
+        <cpacsVersion>3.0</cpacsVersion>
+      </update>
+    </updates>
   </header>
   <vehicles>
     <rotorcraft>
@@ -27,18 +36,18 @@
             <name>MainRotor1</name>
             <description>MainRotor1 description</description>
             <type>mainRotor</type>
-            <transformation>
-              <scaling>
+            <transformation uID="MainRotor1_transformation1">
+              <scaling uID="MainRotor1_transformation1_scaling1">
                 <x>1</x>
                 <y>1</y>
                 <z>1</z>
               </scaling>
-              <rotation>
+              <rotation uID="MainRotor1_transformation1_rotation1">
                 <x>0</x>
                 <y>-3</y>
                 <z>0</z>
               </rotation>
-              <translation>
+              <translation uID="MainRotor1_transformation1_translation1">
                 <x>2.94</x>
                 <y>0</y>
                 <z>2.90</z>
@@ -49,14 +58,14 @@
               <description>MainRotor1Hub</description>
               <type>articulated</type>
               <rotorBladeAttachments>
-                <rotorBladeAttachment>
+                <rotorBladeAttachment uID="MainRotor1Hub_rotorBladeAttachment1">
                   <numberOfBlades>4</numberOfBlades>
                   <hinges>
                     <hinge uID="MainRotor1_leadLagHinge">
                       <name>MainRotor1_leadLagHinge</name>
                       <description>MainRotor1_leadLagHinge</description>
-                      <transformation>
-                        <translation>
+                      <transformation uID="MainRotor1_leadLagHinge_transformation1">
+                        <translation uID="MainRotor1_leadLagHinge_transformation1_translation1">
                           <x>0.18</x>
                           <y>0.0</y>
                           <z>0.0</z>
@@ -70,8 +79,8 @@
                     </hinge>
                     <hinge uID="MainRotor1_flapHinge">
                       <name>MainRotor1_flapHinge</name>
-                      <transformation>
-                        <translation>
+                      <transformation uID="MainRotor1_flapHinge_transformation1">
+                        <translation uID="MainRotor1_flapHinge_transformation1_translation1">
                           <x>0.0025</x>
                           <y>0</y>
                           <z>0</z>
@@ -81,8 +90,8 @@
                     </hinge>
                     <hinge uID="MainRotor1_pitchHinge">
                       <name>MainRotor1_pitchHinge</name>
-                      <transformation>
-                        <translation>
+                      <transformation uID="MainRotor1_pitchHinge_transformation1">
+                        <translation uID="MainRotor1_pitchHinge_transformation1_translation1">
                           <x>0.20</x>
                           <y>0</y>
                           <z>0</z>
@@ -102,18 +111,18 @@
             <description>MainRotor2 description</description>
             <parentUID>MainRotor1</parentUID>
             <type>mainRotor</type>
-            <transformation>
-              <scaling>
+            <transformation uID="MainRotor2_transformation1">
+              <scaling uID="MainRotor2_transformation1_scaling1">
                 <x>1</x>
                 <y>1</y>
                 <z>1</z>
               </scaling>
-              <rotation>
+              <rotation uID="MainRotor2_transformation1_rotation1">
                 <x>0</x>
                 <y>-3</y>
                 <z>0</z>
               </rotation>
-              <translation>
+              <translation uID="MainRotor2_transformation1_translation1">
                 <x>-0.02093</x>
                 <y>0</y>
                 <z>0.39945</z>
@@ -124,13 +133,13 @@
               <description>MainRotor2Hub</description>
               <type>articulated</type>
               <rotorBladeAttachments>
-                <rotorBladeAttachment>
+                <rotorBladeAttachment uID="MainRotor2Hub_rotorBladeAttachment1">
                   <numberOfBlades>4</numberOfBlades>
                   <hinges>
                     <hinge uID="MainRotor2_leadLagHinge">
                       <name>MainRotor2_leadLagHinge</name>
-                      <transformation>
-                        <translation>
+                      <transformation uID="MainRotor2_leadLagHinge_transformation1">
+                        <translation uID="MainRotor2_leadLagHinge_transformation1_translation1">
                           <x>0.18</x>
                           <y>0.0</y>
                           <z>0.0</z>
@@ -144,8 +153,8 @@
                     </hinge>
                     <hinge uID="MainRotor2_flapHinge">
                       <name>MainRotor2_flapHinge</name>
-                      <transformation>
-                        <translation>
+                      <transformation uID="MainRotor2_flapHinge_transformation1">
+                        <translation uID="MainRotor2_flapHinge_transformation1_translation1">
                           <x>0.0025</x>
                           <y>0</y>
                           <z>0</z>
@@ -155,8 +164,8 @@
                     </hinge>
                     <hinge uID="MainRotor2_pitchHinge">
                       <name>MainRotor2_pitchHinge</name>
-                      <transformation>
-                        <translation>
+                      <transformation uID="MainRotor2_pitchHinge_transformation1">
+                        <translation uID="MainRotor2_pitchHinge_transformation1_translation1">
                           <x>0.20</x>
                           <y>0</y>
                           <z>0</z>
@@ -175,18 +184,18 @@
             <name>TailRotor</name>
             <description>TailRotor description</description>
             <type>tailRotor</type>
-            <transformation>
-              <scaling>
+            <transformation uID="TailRotor_transformation1">
+              <scaling uID="TailRotor_transformation1_scaling1">
                 <x>1</x>
                 <y>1</y>
                 <z>1</z>
               </scaling>
-              <rotation>
+              <rotation uID="TailRotor_transformation1_rotation1">
                 <x>90</x>
                 <y>3</y>
                 <z>0</z>
               </rotation>
-              <translation>
+              <translation uID="TailRotor_transformation1_translation1">
                 <x>9.00</x>
                 <y>-0.40</y>
                 <z>3.00</z>
@@ -197,13 +206,13 @@
               <description>TailRotorHub</description>
               <type>articulated</type>
               <rotorBladeAttachments>
-                <rotorBladeAttachment>
+                <rotorBladeAttachment uID="TailRotorHub_rotorBladeAttachment1">
                   <azimuthAngles mapType="vector">15;195</azimuthAngles>
                   <hinges>
                     <hinge uID="TailRotor_flapHinge1">
                       <name>TailRotor_flapHinge1</name>
-                      <transformation>
-                        <translation>
+                      <transformation uID="TailRotor_flapHinge1_transformation1">
+                        <translation uID="TailRotor_flapHinge1_transformation1_translation1">
                           <x>0</x>
                           <y>0</y>
                           <z>0</z>
@@ -213,8 +222,8 @@
                     </hinge>
                     <hinge uID="TailRotor_pitchHinge1">
                       <name>TailRotor_pitchHinge1</name>
-                      <transformation>
-                        <translation>
+                      <transformation uID="TailRotor_pitchHinge1_transformation1">
+                        <translation uID="TailRotor_pitchHinge1_transformation1_translation1">
                           <x>0.05</x>
                           <y>0</y>
                           <z>0</z>
@@ -225,13 +234,13 @@
                   </hinges>
                   <rotorBladeUID>TailRotor_blade</rotorBladeUID>
                 </rotorBladeAttachment>
-                <rotorBladeAttachment>
+                <rotorBladeAttachment uID="TailRotorHub_rotorBladeAttachment2">
                   <azimuthAngles mapType="vector">135;315</azimuthAngles>
                   <hinges>
                     <hinge uID="TailRotor_flapHinge2">
                       <name>TailRotor_flapHinge2</name>
-                      <transformation>
-                        <translation>
+                      <transformation uID="TailRotor_flapHinge2_transformation1">
+                        <translation uID="TailRotor_flapHinge2_transformation1_translation1">
                           <x>0</x>
                           <y>0</y>
                           <z>0</z>
@@ -241,8 +250,8 @@
                     </hinge>
                     <hinge uID="TailRotor_pitchHinge2">
                       <name>TailRotor_pitchHinge2</name>
-                      <transformation>
-                        <translation>
+                      <transformation uID="TailRotor_pitchHinge2_transformation1">
+                        <translation uID="TailRotor_pitchHinge2_transformation1_translation1">
                           <x>0.05</x>
                           <y>0</y>
                           <z>0</z>
@@ -261,18 +270,18 @@
             <name>Propeller</name>
             <description>Propeller description</description>
             <type>propeller</type>
-            <transformation>
-              <scaling>
+            <transformation uID="Propeller_transformation1">
+              <scaling uID="Propeller_transformation1_scaling1">
                 <x>1</x>
                 <y>1</y>
                 <z>1</z>
               </scaling>
-              <rotation>
+              <rotation uID="Propeller_transformation1_rotation1">
                 <x>0</x>
                 <y>-90</y>
                 <z>0</z>
               </rotation>
-              <translation>
+              <translation uID="Propeller_transformation1_translation1">
                 <x>2.20</x>
                 <y>3.00</y>
                 <z>1.50</z>
@@ -283,13 +292,13 @@
               <description>PropellerHub</description>
               <type>rigid</type>
               <rotorBladeAttachments>
-                <rotorBladeAttachment>
+                <rotorBladeAttachment uID="PropellerHub_rotorBladeAttachment1">
                   <numberOfBlades>10</numberOfBlades>
                   <hinges>
                     <hinge uID="Propeller_pitchHinge">
                       <name>Propeller_pitchHinge</name>
-                      <transformation>
-                        <translation>
+                      <transformation uID="Propeller_pitchHinge_transformation1">
+                        <translation uID="Propeller_pitchHinge_transformation1_translation1">
                           <x>0.10</x>
                           <y>0</y>
                           <z>0</z>
@@ -310,18 +319,18 @@
           <rotorBlade uID="MainRotor_blade">
             <name>MainRotor_blade</name>
             <description>MainRotor_blade description</description>
-            <transformation>
-              <scaling>
+            <transformation uID="MainRotor_blade_transformation1">
+              <scaling uID="MainRotor_blade_transformation1_scaling1">
                 <x>1</x>
                 <y>1</y>
                 <z>1</z>
               </scaling>
-              <rotation>
+              <rotation uID="MainRotor_blade_transformation1_rotation1">
                 <x>0</x>
                 <y>0</y>
                 <z>0</z>
               </rotation>
-              <translation refType="absLocal">
+              <translation refType="absLocal" uID="MainRotor_blade_transformation1_translation1">
                 <x>0</x>
                 <y>0</y>
                 <z>0</z>
@@ -330,18 +339,18 @@
             <sections>
               <section uID="MainRotor_blade_section1">
                 <name>MainRotor_blade_section1</name>
-                <transformation>
-                  <scaling>
+                <transformation uID="MainRotor_blade_section1_transformation1">
+                  <scaling uID="MainRotor_blade_section1_transformation1_scaling1">
                     <x>0.30</x>
                     <y>0.30</y>
                     <z>0.30</z>
                   </scaling>
-                  <rotation>
+                  <rotation uID="MainRotor_blade_section1_transformation1_rotation1">
                     <x>0</x>
                     <y>0</y>
                     <z>0</z>
                   </rotation>
-                  <translation refType="absLocal">
+                  <translation refType="absLocal" uID="MainRotor_blade_section1_transformation1_translation1">
                     <x>0</x>
                     <y>0</y>
                     <z>0</z>
@@ -351,18 +360,18 @@
                   <element uID="MainRotor_blade_section1_element1">
                     <name>MainRotor_blade_section1_element_1</name>
                     <airfoilUID>NACA0012</airfoilUID>
-                    <transformation>
-                      <scaling>
+                    <transformation uID="MainRotor_blade_section1_element1_transformation1">
+                      <scaling uID="MainRotor_blade_section1_element1_transformation1_scaling1">
                         <x>1</x>
                         <y>1</y>
                         <z>1</z>
                       </scaling>
-                      <rotation>
+                      <rotation uID="MainRotor_blade_section1_element1_transformation1_rotation1">
                         <x>0</x>
                         <y>0</y>
                         <z>-90</z>
                       </rotation>
-                      <translation refType="absLocal">
+                      <translation refType="absLocal" uID="MainRotor_blade_section1_element1_transformation1_translation1">
                         <x>0</x>
                         <y>0.25</y>
                         <z>0</z>
@@ -373,18 +382,18 @@
               </section>
               <section uID="MainRotor_blade_section2">
                 <name>MainRotor_blade_section2</name>
-                <transformation>
-                  <scaling>
+                <transformation uID="MainRotor_blade_section2_transformation1">
+                  <scaling uID="MainRotor_blade_section2_transformation1_scaling1">
                     <x>0.30</x>
                     <y>0.30</y>
                     <z>0.30</z>
                   </scaling>
-                  <rotation>
+                  <rotation uID="MainRotor_blade_section2_transformation1_rotation1">
                     <x>-4.545</x>
                     <y>0</y>
                     <z>0</z>
                   </rotation>
-                  <translation refType="absLocal">
+                  <translation refType="absLocal" uID="MainRotor_blade_section2_transformation1_translation1">
                     <x>0</x>
                     <y>0</y>
                     <z>0</z>
@@ -394,18 +403,18 @@
                   <element uID="MainRotor_blade_section2_element1">
                     <name>MainRotor_blade_section2_element1</name>
                     <airfoilUID>NACA0012</airfoilUID>
-                    <transformation>
-                      <scaling>
+                    <transformation uID="MainRotor_blade_section2_element1_transformation1">
+                      <scaling uID="MainRotor_blade_section2_element1_transformation1_scaling1">
                         <x>1</x>
                         <y>1</y>
                         <z>1</z>
                       </scaling>
-                      <rotation>
+                      <rotation uID="MainRotor_blade_section2_element1_transformation1_rotation1">
                         <x>0</x>
                         <y>0</y>
                         <z>-90</z>
                       </rotation>
-                      <translation refType="absLocal">
+                      <translation refType="absLocal" uID="MainRotor_blade_section2_element1_transformation1_translation1">
                         <x>0</x>
                         <y>0.25</y>
                         <z>0</z>
@@ -416,18 +425,18 @@
               </section>
               <section uID="MainRotor_blade_section3">
                 <name>MainRotor_blade_section3</name>
-                <transformation>
-                  <scaling>
+                <transformation uID="MainRotor_blade_section3_transformation1">
+                  <scaling uID="MainRotor_blade_section3_transformation1_scaling1">
                     <x>0.30</x>
                     <y>0.30</y>
                     <z>0.30</z>
                   </scaling>
-                  <rotation>
+                  <rotation uID="MainRotor_blade_section3_transformation1_rotation1">
                     <x>-3.49</x>
                     <y>0</y>
                     <z>0</z>
                   </rotation>
-                  <translation refType="absLocal">
+                  <translation refType="absLocal" uID="MainRotor_blade_section3_transformation1_translation1">
                     <x>0</x>
                     <y>0</y>
                     <z>0</z>
@@ -437,18 +446,18 @@
                   <element uID="MainRotor_blade_section3_element1">
                     <name>MainRotor_blade_section3_element1</name>
                     <airfoilUID>NACA0010</airfoilUID>
-                    <transformation>
-                      <scaling>
+                    <transformation uID="MainRotor_blade_section3_element1_transformation1">
+                      <scaling uID="MainRotor_blade_section3_element1_transformation1_scaling1">
                         <x>1</x>
                         <y>1</y>
                         <z>1</z>
                       </scaling>
-                      <rotation>
+                      <rotation uID="MainRotor_blade_section3_element1_transformation1_rotation1">
                         <x>0</x>
                         <y>0</y>
                         <z>-90</z>
                       </rotation>
-                      <translation refType="absLocal">
+                      <translation refType="absLocal" uID="MainRotor_blade_section3_element1_transformation1_translation1">
                         <x>0</x>
                         <y>0.25</y>
                         <z>0</z>
@@ -459,18 +468,18 @@
               </section>
               <section uID="MainRotor_blade_section4">
                 <name>MainRotor_blade_section4</name>
-                <transformation>
-                  <scaling>
+                <transformation uID="MainRotor_blade_section4_transformation1">
+                  <scaling uID="MainRotor_blade_section4_transformation1_scaling1">
                     <x>0.20</x>
                     <y>0.20</y>
                     <z>0.20</z>
                   </scaling>
-                  <rotation>
+                  <rotation uID="MainRotor_blade_section4_transformation1_rotation1">
                     <x>-4.32</x>
                     <y>0</y>
                     <z>0</z>
                   </rotation>
-                  <translation refType="absLocal">
+                  <translation refType="absLocal" uID="MainRotor_blade_section4_transformation1_translation1">
                     <x>0</x>
                     <y>0</y>
                     <z>0</z>
@@ -480,18 +489,18 @@
                   <element uID="MainRotor_blade_section4_element1">
                     <name>MainRotor_blade_section4_element1</name>
                     <airfoilUID>NACA0010</airfoilUID>
-                    <transformation>
-                      <scaling>
+                    <transformation uID="MainRotor_blade_section4_element1_transformation1">
+                      <scaling uID="MainRotor_blade_section4_element1_transformation1_scaling1">
                         <x>1</x>
                         <y>1</y>
                         <z>1</z>
                       </scaling>
-                      <rotation>
+                      <rotation uID="MainRotor_blade_section4_element1_transformation1_rotation1">
                         <x>0</x>
                         <y>0</y>
                         <z>-90</z>
                       </rotation>
-                      <translation refType="absLocal">
+                      <translation refType="absLocal" uID="MainRotor_blade_section4_element1_transformation1_translation1">
                         <x>0</x>
                         <y>0.25</y>
                         <z>0</z>
@@ -555,18 +564,18 @@
           <rotorBlade uID="TailRotor_blade">
             <name>TailRotor_blade</name>
             <description>TailRotor_blade description</description>
-            <transformation>
-              <scaling>
+            <transformation uID="TailRotor_blade_transformation1">
+              <scaling uID="TailRotor_blade_transformation1_scaling1">
                 <x>1</x>
                 <y>1</y>
                 <z>1</z>
               </scaling>
-              <rotation>
+              <rotation uID="TailRotor_blade_transformation1_rotation1">
                 <x>0</x>
                 <y>0</y>
                 <z>0</z>
               </rotation>
-              <translation refType="absLocal">
+              <translation refType="absLocal" uID="TailRotor_blade_transformation1_translation1">
                 <x>0</x>
                 <y>0</y>
                 <z>0</z>
@@ -575,18 +584,18 @@
             <sections>
               <section uID="TailRotor_blade_section1">
                 <name>TailRotor_blade_section1</name>
-                <transformation>
-                  <scaling>
+                <transformation uID="TailRotor_blade_section1_transformation1">
+                  <scaling uID="TailRotor_blade_section1_transformation1_scaling1">
                     <x>0.18</x>
                     <y>0.18</y>
                     <z>0.18</z>
                   </scaling>
-                  <rotation>
+                  <rotation uID="TailRotor_blade_section1_transformation1_rotation1">
                     <x>0</x>
                     <y>0</y>
                     <z>0</z>
                   </rotation>
-                  <translation refType="absLocal">
+                  <translation refType="absLocal" uID="TailRotor_blade_section1_transformation1_translation1">
                     <x>0</x>
                     <y>0</y>
                     <z>0</z>
@@ -596,18 +605,18 @@
                   <element uID="TailRotor_blade_section1_element1">
                     <name>TailRotor_blade_section1_element_1</name>
                     <airfoilUID>NACA0010</airfoilUID>
-                    <transformation>
-                      <scaling>
+                    <transformation uID="TailRotor_blade_section1_element1_transformation1">
+                      <scaling uID="TailRotor_blade_section1_element1_transformation1_scaling1">
                         <x>1</x>
                         <y>1</y>
                         <z>1</z>
                       </scaling>
-                      <rotation>
+                      <rotation uID="TailRotor_blade_section1_element1_transformation1_rotation1">
                         <x>0</x>
                         <y>0</y>
                         <z>-90</z>
                       </rotation>
-                      <translation refType="absLocal">
+                      <translation refType="absLocal" uID="TailRotor_blade_section1_element1_transformation1_translation1">
                         <x>0</x>
                         <y>0.25</y>
                         <z>0</z>
@@ -618,18 +627,18 @@
               </section>
               <section uID="TailRotor_blade_section2">
                 <name>TailRotor_blade_section2</name>
-                <transformation>
-                  <scaling>
+                <transformation uID="TailRotor_blade_section2_transformation1">
+                  <scaling uID="TailRotor_blade_section2_transformation1_scaling1">
                     <x>0.18</x>
                     <y>0.18</y>
                     <z>0.18</z>
                   </scaling>
-                  <rotation>
+                  <rotation uID="TailRotor_blade_section2_transformation1_rotation1">
                     <x>0</x>
                     <y>0</y>
                     <z>0</z>
                   </rotation>
-                  <translation refType="absLocal">
+                  <translation refType="absLocal" uID="TailRotor_blade_section2_transformation1_translation1">
                     <x>0</x>
                     <y>0</y>
                     <z>0</z>
@@ -639,18 +648,18 @@
                   <element uID="TailRotor_blade_section2_element1">
                     <name>TailRotor_blade_section2_element1</name>
                     <airfoilUID>NACA0010</airfoilUID>
-                    <transformation>
-                      <scaling>
+                    <transformation uID="TailRotor_blade_section2_element1_transformation1">
+                      <scaling uID="TailRotor_blade_section2_element1_transformation1_scaling1">
                         <x>1</x>
                         <y>1</y>
                         <z>1</z>
                       </scaling>
-                      <rotation>
+                      <rotation uID="TailRotor_blade_section2_element1_transformation1_rotation1">
                         <x>0</x>
                         <y>0</y>
                         <z>-90</z>
                       </rotation>
-                      <translation refType="absLocal">
+                      <translation refType="absLocal" uID="TailRotor_blade_section2_element1_transformation1_translation1">
                         <x>0</x>
                         <y>0.25</y>
                         <z>0</z>
@@ -688,18 +697,18 @@
           <rotorBlade uID="Propeller_blade">
             <name>Propeller_blade</name>
             <description>Propeller_blade description</description>
-            <transformation>
-              <scaling>
+            <transformation uID="Propeller_blade_transformation1">
+              <scaling uID="Propeller_blade_transformation1_scaling1">
                 <x>0.625</x>
                 <y>0.625</y>
                 <z>0.625</z>
               </scaling>
-              <rotation>
+              <rotation uID="Propeller_blade_transformation1_rotation1">
                 <x>0</x>
                 <y>0</y>
                 <z>0</z>
               </rotation>
-              <translation refType="absLocal">
+              <translation refType="absLocal" uID="Propeller_blade_transformation1_translation1">
                 <x>0</x>
                 <y>0</y>
                 <z>0</z>
@@ -708,18 +717,18 @@
             <sections>
               <section uID="Propeller_blade_section1">
                 <name>Propeller_blade_section1</name>
-                <transformation>
-                  <scaling>
+                <transformation uID="Propeller_blade_section1_transformation1">
+                  <scaling uID="Propeller_blade_section1_transformation1_scaling1">
                     <x>0.29</x>
                     <y>0.29</y>
                     <z>0.29</z>
                   </scaling>
-                  <rotation>
+                  <rotation uID="Propeller_blade_section1_transformation1_rotation1">
                     <x>14.56</x>
                     <y>0</y>
                     <z>29.77</z>
                   </rotation>
-                  <translation refType="absLocal">
+                  <translation refType="absLocal" uID="Propeller_blade_section1_transformation1_translation1">
                     <x>0</x>
                     <y>0</y>
                     <z>0</z>
@@ -729,18 +738,18 @@
                   <element uID="Propeller_blade_section1_element1">
                     <name>Propeller_blade_section1_element_1</name>
                     <airfoilUID>NACA0010</airfoilUID>
-                    <transformation>
-                      <scaling>
+                    <transformation uID="Propeller_blade_section1_element1_transformation1">
+                      <scaling uID="Propeller_blade_section1_element1_transformation1_scaling1">
                         <x>1</x>
                         <y>1</y>
                         <z>1.75</z>
                       </scaling>
-                      <rotation>
+                      <rotation uID="Propeller_blade_section1_element1_transformation1_rotation1">
                         <x>0</x>
                         <y>0</y>
                         <z>-90</z>
                       </rotation>
-                      <translation refType="absLocal">
+                      <translation refType="absLocal" uID="Propeller_blade_section1_element1_transformation1_translation1">
                         <x>0</x>
                         <y>0.5</y>
                         <z>0</z>
@@ -751,18 +760,18 @@
               </section>
               <section uID="Propeller_blade_section2">
                 <name>Propeller_blade_section2</name>
-                <transformation>
-                  <scaling>
+                <transformation uID="Propeller_blade_section2_transformation1">
+                  <scaling uID="Propeller_blade_section2_transformation1_scaling1">
                     <x>0.29</x>
                     <y>0.29</y>
                     <z>0.29</z>
                   </scaling>
-                  <rotation>
+                  <rotation uID="Propeller_blade_section2_transformation1_rotation1">
                     <x>13.71</x>
                     <y>0</y>
                     <z>21.31</z>
                   </rotation>
-                  <translation refType="absLocal">
+                  <translation refType="absLocal" uID="Propeller_blade_section2_transformation1_translation1">
                     <x>0</x>
                     <y>0</y>
                     <z>0</z>
@@ -772,18 +781,18 @@
                   <element uID="Propeller_blade_section2_element1">
                     <name>Propeller_blade_section2_element1</name>
                     <airfoilUID>NACA0010</airfoilUID>
-                    <transformation>
-                      <scaling>
+                    <transformation uID="Propeller_blade_section2_element1_transformation1">
+                      <scaling uID="Propeller_blade_section2_element1_transformation1_scaling1">
                         <x>1</x>
                         <y>1</y>
                         <z>1.04</z>
                       </scaling>
-                      <rotation>
+                      <rotation uID="Propeller_blade_section2_element1_transformation1_rotation1">
                         <x>0</x>
                         <y>0</y>
                         <z>-90</z>
                       </rotation>
-                      <translation refType="absLocal">
+                      <translation refType="absLocal" uID="Propeller_blade_section2_element1_transformation1_translation1">
                         <x>0</x>
                         <y>0.5</y>
                         <z>0</z>
@@ -794,18 +803,18 @@
               </section>
               <section uID="Propeller_blade_section3">
                 <name>Propeller_blade_section3</name>
-                <transformation>
-                  <scaling>
+                <transformation uID="Propeller_blade_section3_transformation1">
+                  <scaling uID="Propeller_blade_section3_transformation1_scaling1">
                     <x>0.30</x>
                     <y>0.30</y>
                     <z>0.30</z>
                   </scaling>
-                  <rotation>
+                  <rotation uID="Propeller_blade_section3_transformation1_rotation1">
                     <x>12.82</x>
                     <y>0</y>
                     <z>16.96</z>
                   </rotation>
-                  <translation refType="absLocal">
+                  <translation refType="absLocal" uID="Propeller_blade_section3_transformation1_translation1">
                     <x>0</x>
                     <y>0</y>
                     <z>0</z>
@@ -815,18 +824,18 @@
                   <element uID="Propeller_blade_section3_element1">
                     <name>Propeller_blade_section3_element1</name>
                     <airfoilUID>NACA0010</airfoilUID>
-                    <transformation>
-                      <scaling>
+                    <transformation uID="Propeller_blade_section3_element1_transformation1">
+                      <scaling uID="Propeller_blade_section3_element1_transformation1_scaling1">
                         <x>1</x>
                         <y>1</y>
                         <z>0.68</z>
                       </scaling>
-                      <rotation>
+                      <rotation uID="Propeller_blade_section3_element1_transformation1_rotation1">
                         <x>0</x>
                         <y>0</y>
                         <z>-90</z>
                       </rotation>
-                      <translation refType="absLocal">
+                      <translation refType="absLocal" uID="Propeller_blade_section3_element1_transformation1_translation1">
                         <x>0</x>
                         <y>0.5</y>
                         <z>0</z>
@@ -837,18 +846,18 @@
               </section>
               <section uID="Propeller_blade_section4">
                 <name>Propeller_blade_section4</name>
-                <transformation>
-                  <scaling>
+                <transformation uID="Propeller_blade_section4_transformation1">
+                  <scaling uID="Propeller_blade_section4_transformation1_scaling1">
                     <x>0.31</x>
                     <y>0.31</y>
                     <z>0.31</z>
                   </scaling>
-                  <rotation>
+                  <rotation uID="Propeller_blade_section4_transformation1_rotation1">
                     <x>10.44</x>
                     <y>0</y>
                     <z>-3.72</z>
                   </rotation>
-                  <translation refType="absLocal">
+                  <translation refType="absLocal" uID="Propeller_blade_section4_transformation1_translation1">
                     <x>0</x>
                     <y>0</y>
                     <z>0</z>
@@ -858,18 +867,18 @@
                   <element uID="Propeller_blade_section4_element1">
                     <name>Propeller_blade_section4_element1</name>
                     <airfoilUID>NACA0010</airfoilUID>
-                    <transformation>
-                      <scaling>
+                    <transformation uID="Propeller_blade_section4_element1_transformation1">
+                      <scaling uID="Propeller_blade_section4_element1_transformation1_scaling1">
                         <x>1</x>
                         <y>1</y>
                         <z>0.51</z>
                       </scaling>
-                      <rotation>
+                      <rotation uID="Propeller_blade_section4_element1_transformation1_rotation1">
                         <x>0</x>
                         <y>0</y>
                         <z>-90</z>
                       </rotation>
-                      <translation refType="absLocal">
+                      <translation refType="absLocal" uID="Propeller_blade_section4_element1_transformation1_translation1">
                         <x>0</x>
                         <y>0.5</y>
                         <z>0</z>
@@ -880,18 +889,18 @@
               </section>
               <section uID="Propeller_blade_section5">
                 <name>Propeller_blade_section5</name>
-                <transformation>
-                  <scaling>
+                <transformation uID="Propeller_blade_section5_transformation1">
+                  <scaling uID="Propeller_blade_section5_transformation1_scaling1">
                     <x>0.32</x>
                     <y>0.32</y>
                     <z>0.32</z>
                   </scaling>
-                  <rotation>
+                  <rotation uID="Propeller_blade_section5_transformation1_rotation1">
                     <x>5.97</x>
                     <y>0</y>
                     <z>-11.42</z>
                   </rotation>
-                  <translation refType="absLocal">
+                  <translation refType="absLocal" uID="Propeller_blade_section5_transformation1_translation1">
                     <x>0</x>
                     <y>0</y>
                     <z>0</z>
@@ -901,18 +910,18 @@
                   <element uID="Propeller_blade_section5_element1">
                     <name>Propeller_blade_section5_element1</name>
                     <airfoilUID>NACA0010</airfoilUID>
-                    <transformation>
-                      <scaling>
+                    <transformation uID="Propeller_blade_section5_element1_transformation1">
+                      <scaling uID="Propeller_blade_section5_element1_transformation1_scaling1">
                         <x>1</x>
                         <y>1</y>
                         <z>0.39</z>
                       </scaling>
-                      <rotation>
+                      <rotation uID="Propeller_blade_section5_element1_transformation1_rotation1">
                         <x>0</x>
                         <y>0</y>
                         <z>-90</z>
                       </rotation>
-                      <translation refType="absLocal">
+                      <translation refType="absLocal" uID="Propeller_blade_section5_element1_transformation1_translation1">
                         <x>0</x>
                         <y>0.5</y>
                         <z>0</z>
@@ -923,18 +932,18 @@
               </section>
               <section uID="Propeller_blade_section6">
                 <name>Propeller_blade_section6</name>
-                <transformation>
-                  <scaling>
+                <transformation uID="Propeller_blade_section6_transformation1">
+                  <scaling uID="Propeller_blade_section6_transformation1_scaling1">
                     <x>0.31</x>
                     <y>0.31</y>
                     <z>0.31</z>
                   </scaling>
-                  <rotation>
+                  <rotation uID="Propeller_blade_section6_transformation1_rotation1">
                     <x>2.19</x>
                     <y>0</y>
                     <z>-15.38</z>
                   </rotation>
-                  <translation refType="absLocal">
+                  <translation refType="absLocal" uID="Propeller_blade_section6_transformation1_translation1">
                     <x>0</x>
                     <y>0</y>
                     <z>0</z>
@@ -944,18 +953,18 @@
                   <element uID="Propeller_blade_section6_element1">
                     <name>Propeller_blade_section6_element1</name>
                     <airfoilUID>NACA0010</airfoilUID>
-                    <transformation>
-                      <scaling>
+                    <transformation uID="Propeller_blade_section6_element1_transformation1">
+                      <scaling uID="Propeller_blade_section6_element1_transformation1_scaling1">
                         <x>1</x>
                         <y>1</y>
                         <z>0.31</z>
                       </scaling>
-                      <rotation>
+                      <rotation uID="Propeller_blade_section6_element1_transformation1_rotation1">
                         <x>0</x>
                         <y>0</y>
                         <z>-90</z>
                       </rotation>
-                      <translation refType="absLocal">
+                      <translation refType="absLocal" uID="Propeller_blade_section6_element1_transformation1_translation1">
                         <x>0</x>
                         <y>0.5</y>
                         <z>0</z>
@@ -966,18 +975,18 @@
               </section>
               <section uID="Propeller_blade_section7">
                 <name>Propeller_blade_section7</name>
-                <transformation>
-                  <scaling>
+                <transformation uID="Propeller_blade_section7_transformation1">
+                  <scaling uID="Propeller_blade_section7_transformation1_scaling1">
                     <x>0.29</x>
                     <y>0.29</y>
                     <z>0.29</z>
                   </scaling>
-                  <rotation>
+                  <rotation uID="Propeller_blade_section7_transformation1_rotation1">
                     <x>-1.02</x>
                     <y>0</y>
                     <z>-27.34</z>
                   </rotation>
-                  <translation refType="absLocal">
+                  <translation refType="absLocal" uID="Propeller_blade_section7_transformation1_translation1">
                     <x>0</x>
                     <y>0</y>
                     <z>0</z>
@@ -987,18 +996,18 @@
                   <element uID="Propeller_blade_section7_element1">
                     <name>Propeller_blade_section7_element1</name>
                     <airfoilUID>NACA0010</airfoilUID>
-                    <transformation>
-                      <scaling>
+                    <transformation uID="Propeller_blade_section7_element1_transformation1">
+                      <scaling uID="Propeller_blade_section7_element1_transformation1_scaling1">
                         <x>1</x>
                         <y>1</y>
                         <z>0.24</z>
                       </scaling>
-                      <rotation>
+                      <rotation uID="Propeller_blade_section7_element1_transformation1_rotation1">
                         <x>0</x>
                         <y>0</y>
                         <z>-90</z>
                       </rotation>
-                      <translation refType="absLocal">
+                      <translation refType="absLocal" uID="Propeller_blade_section7_element1_transformation1_translation1">
                         <x>0</x>
                         <y>0.5</y>
                         <z>0</z>
@@ -1009,18 +1018,18 @@
               </section>
               <section uID="Propeller_blade_section8">
                 <name>Propeller_blade_section8</name>
-                <transformation>
-                  <scaling>
+                <transformation uID="Propeller_blade_section8_transformation1">
+                  <scaling uID="Propeller_blade_section8_transformation1_scaling1">
                     <x>0.26</x>
                     <y>0.26</y>
                     <z>0.26</z>
                   </scaling>
-                  <rotation>
+                  <rotation uID="Propeller_blade_section8_transformation1_rotation1">
                     <x>-4.09</x>
                     <y>0</y>
                     <z>-36.61</z>
                   </rotation>
-                  <translation refType="absLocal">
+                  <translation refType="absLocal" uID="Propeller_blade_section8_transformation1_translation1">
                     <x>0</x>
                     <y>0</y>
                     <z>0</z>
@@ -1030,18 +1039,18 @@
                   <element uID="Propeller_blade_section8_element1">
                     <name>Propeller_blade_section8_element1</name>
                     <airfoilUID>NACA0010</airfoilUID>
-                    <transformation>
-                      <scaling>
+                    <transformation uID="Propeller_blade_section8_element1_transformation1">
+                      <scaling uID="Propeller_blade_section8_element1_transformation1_scaling1">
                         <x>1</x>
                         <y>1</y>
                         <z>0.21</z>
                       </scaling>
-                      <rotation>
+                      <rotation uID="Propeller_blade_section8_element1_transformation1_rotation1">
                         <x>0</x>
                         <y>0</y>
                         <z>-90</z>
                       </rotation>
-                      <translation refType="absLocal">
+                      <translation refType="absLocal" uID="Propeller_blade_section8_element1_transformation1_translation1">
                         <x>0</x>
                         <y>0.5</y>
                         <z>0</z>
@@ -1052,18 +1061,18 @@
               </section>
               <section uID="Propeller_blade_section9">
                 <name>Propeller_blade_section9</name>
-                <transformation>
-                  <scaling>
+                <transformation uID="Propeller_blade_section9_transformation1">
+                  <scaling uID="Propeller_blade_section9_transformation1_scaling1">
                     <x>0.25</x>
                     <y>0.25</y>
                     <z>0.25</z>
                   </scaling>
-                  <rotation>
+                  <rotation uID="Propeller_blade_section9_transformation1_rotation1">
                     <x>-7.48</x>
                     <y>0</y>
                     <z>-41.67</z>
                   </rotation>
-                  <translation refType="absLocal">
+                  <translation refType="absLocal" uID="Propeller_blade_section9_transformation1_translation1">
                     <x>0</x>
                     <y>0</y>
                     <z>0</z>
@@ -1073,18 +1082,18 @@
                   <element uID="Propeller_blade_section9_element1">
                     <name>Propeller_blade_section9_element1</name>
                     <airfoilUID>NACA0010</airfoilUID>
-                    <transformation>
-                      <scaling>
+                    <transformation uID="Propeller_blade_section9_element1_transformation1">
+                      <scaling uID="Propeller_blade_section9_element1_transformation1_scaling1">
                         <x>1</x>
                         <y>1</y>
                         <z>0.18</z>
                       </scaling>
-                      <rotation>
+                      <rotation uID="Propeller_blade_section9_element1_transformation1_rotation1">
                         <x>0</x>
                         <y>0</y>
                         <z>-90</z>
                       </rotation>
-                      <translation refType="absLocal">
+                      <translation refType="absLocal" uID="Propeller_blade_section9_element1_transformation1_translation1">
                         <x>0</x>
                         <y>0.5</y>
                         <z>0</z>
@@ -1095,18 +1104,18 @@
               </section>
               <section uID="Propeller_blade_section10">
                 <name>Propeller_blade_section10</name>
-                <transformation>
-                  <scaling>
+                <transformation uID="Propeller_blade_section10_transformation1">
+                  <scaling uID="Propeller_blade_section10_transformation1_scaling1">
                     <x>0.22</x>
                     <y>0.22</y>
                     <z>0.22</z>
                   </scaling>
-                  <rotation>
+                  <rotation uID="Propeller_blade_section10_transformation1_rotation1">
                     <x>-9.18</x>
                     <y>0</y>
                     <z>-42.55</z>
                   </rotation>
-                  <translation refType="absLocal">
+                  <translation refType="absLocal" uID="Propeller_blade_section10_transformation1_translation1">
                     <x>0</x>
                     <y>0</y>
                     <z>0</z>
@@ -1116,18 +1125,18 @@
                   <element uID="Propeller_blade_section10_element1">
                     <name>Propeller_blade_section10_element1</name>
                     <airfoilUID>NACA0010</airfoilUID>
-                    <transformation>
-                      <scaling>
+                    <transformation uID="Propeller_blade_section10_element1_transformation1">
+                      <scaling uID="Propeller_blade_section10_element1_transformation1_scaling1">
                         <x>1</x>
                         <y>1</y>
                         <z>0.18</z>
                       </scaling>
-                      <rotation>
+                      <rotation uID="Propeller_blade_section10_element1_transformation1_rotation1">
                         <x>0</x>
                         <y>0</y>
                         <z>-90</z>
                       </rotation>
-                      <translation refType="absLocal">
+                      <translation refType="absLocal" uID="Propeller_blade_section10_element1_transformation1_translation1">
                         <x>0</x>
                         <y>0.5</y>
                         <z>0</z>

@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="utf-8"?>
 <cpacs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.airbusds.com/cpacs/2.3">
   <header>
     <name>Descartes Model</name>
@@ -7,6 +7,15 @@
     <timestamp>2016-08-03T11:58:57</timestamp>
     <version>1.1</version>
     <cpacsVersion>3.0</cpacsVersion>
+    <updates>
+      <update>
+        <modification>Converted to cpacs 3.0 using cpacs2to3</modification>
+        <creator>cpacs2to3</creator>
+        <timestamp>2018-01-15T09:35:36</timestamp>
+        <version>1.1</version>
+        <cpacsVersion>3.0</cpacsVersion>
+      </update>
+    </updates>
   </header>
   <vehicles>
     <aircraft>
@@ -15,18 +24,18 @@
         <wings>
           <wing uID="Wing">
             <name>Wing</name>
-            <transformation>
-              <scaling>
+            <transformation uID="Wing_transformation1">
+              <scaling uID="Wing_transformation1_scaling1">
                 <x>1</x>
                 <y>1</y>
                 <z>1</z>
               </scaling>
-              <rotation>
+              <rotation uID="Wing_transformation1_rotation1">
                 <x>0</x>
                 <y>0</y>
                 <z>0</z>
               </rotation>
-              <translation refType="absLocal">
+              <translation refType="absLocal" uID="Wing_transformation1_translation1">
                 <x>0</x>
                 <y>0</y>
                 <z>0</z>
@@ -35,18 +44,18 @@
             <sections>
               <section uID="Wing_section1">
                 <name>Wing_section1</name>
-                <transformation>
-                  <scaling>
+                <transformation uID="Wing_section1_transformation1">
+                  <scaling uID="Wing_section1_transformation1_scaling1">
                     <x>1</x>
                     <y>1</y>
                     <z>1</z>
                   </scaling>
-                  <rotation>
+                  <rotation uID="Wing_section1_transformation1_rotation1">
                     <x>0</x>
                     <y>0</y>
                     <z>0</z>
                   </rotation>
-                  <translation refType="absLocal">
+                  <translation refType="absLocal" uID="Wing_section1_transformation1_translation1">
                     <x>0</x>
                     <y>0</y>
                     <z>0</z>
@@ -56,18 +65,18 @@
                   <element uID="Wing_section1_element1">
                     <name>Wing_section1_element1</name>
                     <airfoilUID>NACA0012</airfoilUID>
-                    <transformation>
-                      <scaling>
+                    <transformation uID="Wing_section1_element1_transformation1">
+                      <scaling uID="Wing_section1_element1_transformation1_scaling1">
                         <x>0.5</x>
                         <y>0.5</y>
                         <z>0.5</z>
                       </scaling>
-                      <rotation>
+                      <rotation uID="Wing_section1_element1_transformation1_rotation1">
                         <x>0</x>
                         <y>0</y>
                         <z>0</z>
                       </rotation>
-                      <translation refType="absLocal">
+                      <translation refType="absLocal" uID="Wing_section1_element1_transformation1_translation1">
                         <x>0</x>
                         <y>0</y>
                         <z>0</z>
@@ -78,18 +87,18 @@
               </section>
               <section uID="Wing_section2">
                 <name>Wing_section2</name>
-                <transformation>
-                  <scaling>
+                <transformation uID="Wing_section2_transformation1">
+                  <scaling uID="Wing_section2_transformation1_scaling1">
                     <x>1</x>
                     <y>1</y>
                     <z>1</z>
                   </scaling>
-                  <rotation>
+                  <rotation uID="Wing_section2_transformation1_rotation1">
                     <x>0</x>
                     <y>0</y>
                     <z>0</z>
                   </rotation>
-                  <translation refType="absLocal">
+                  <translation refType="absLocal" uID="Wing_section2_transformation1_translation1">
                     <x>0</x>
                     <y>1</y>
                     <z>0</z>
@@ -99,18 +108,18 @@
                   <element uID="Wing_section2_element1">
                     <name>Wing_section2_element1</name>
                     <airfoilUID>NACA0012</airfoilUID>
-                    <transformation>
-                      <scaling>
+                    <transformation uID="Wing_section2_element1_transformation1">
+                      <scaling uID="Wing_section2_element1_transformation1_scaling1">
                         <x>0.5</x>
                         <y>0.5</y>
                         <z>0.5</z>
                       </scaling>
-                      <rotation>
+                      <rotation uID="Wing_section2_element1_transformation1_rotation1">
                         <x>0</x>
                         <y>0</y>
                         <z>0</z>
                       </rotation>
-                      <translation refType="absLocal">
+                      <translation refType="absLocal" uID="Wing_section2_element1_transformation1_translation1">
                         <x>0</x>
                         <y>0</y>
                         <z>0</z>
@@ -128,180 +137,212 @@
               </segment>
             </segments>
             <componentSegments>
-            	<componentSegment uID="CS1">
-            		<name>Wing_CS</name>
-            		<fromElementUID>Wing_section1_element1</fromElementUID>
-            		<toElementUID>Wing_section2_element1</toElementUID>
-            		<structure>
-            			<upperShell>
-            				<skin>
-            					<material>
-            						<materialUID>
+              <componentSegment uID="CS1">
+                <name>Wing_CS</name>
+                <fromElementUID>Wing_section1_element1</fromElementUID>
+                <toElementUID>Wing_section2_element1</toElementUID>
+                <structure>
+                  <upperShell uID="CS1_upperShell1">
+                    <skin>
+                      <material>
+                        <materialUID>
             							materialUID
-            						</materialUID></material>
-            				</skin>
-            				<cells>
-            					<cell uID="Wing_CS_upperShell_Cell1">
-            						<skin>
-            							<material>
-            								<materialUID>
+            						</materialUID>
+                      </material>
+                    </skin>
+                    <cells>
+                      <cell uID="Wing_CS_upperShell_Cell1">
+                        <skin>
+                          <material>
+                            <materialUID>
             									materialUID
-            								</materialUID></material>
-            						</skin>
-            						<positioningLeadingEdge>
-            							<sparUID>Wing_CS_spar1</sparUID></positioningLeadingEdge>
-            						<positioningTrailingEdge>
-            							<xsi1>0.8</xsi1>
-            							<xsi2>0.8</xsi2></positioningTrailingEdge>
-            						<positioningInnerBorder>
-            							<eta1>0.0</eta1>
-            							<eta2>0.0</eta2></positioningInnerBorder>
-            						<positioningOuterBorder>
-            							<eta1>0.1</eta1>
-            							<eta2>0.1</eta2></positioningOuterBorder>
-            					</cell>
-            					<cell uID="Wing_CS_upperShell_Cell2">
-            						<skin>
-            							<material>
-            								<materialUID>materialUID</materialUID></material>
-            						</skin>
-            						<positioningLeadingEdge>
-            							<sparUID>Wing_CS_spar1</sparUID></positioningLeadingEdge>
-            						<positioningTrailingEdge>
-            							<xsi1>0.7</xsi1>
-            							<xsi2>0.7</xsi2></positioningTrailingEdge>
-            						<positioningInnerBorder>
-            							<eta1>0.3</eta1>
-            							<eta2>0.3</eta2></positioningInnerBorder>
-            						<positioningOuterBorder>
-            							<eta1>0.4</eta1>
-            							<eta2>0.45</eta2></positioningOuterBorder>
-            					</cell>
-            					<cell uID="Wing_CS_upperShell_Cell3">
-            						<skin>
-            							<material>
-            								<materialUID>materialUID</materialUID></material>
-            						</skin>
-            						<positioningLeadingEdge>
-            							<sparUID>Wing_CS_spar1</sparUID></positioningLeadingEdge>
-            						<positioningTrailingEdge>
-            							<xsi1>0.8</xsi1>
-            							<xsi2>0.8</xsi2></positioningTrailingEdge>
-            						<positioningInnerBorder>
-            							<eta1>0.2</eta1>
-            							<eta2>0.2</eta2></positioningInnerBorder>
-            						<positioningOuterBorder>
-            							<eta1>0.55</eta1>
-            							<eta2>0.55</eta2></positioningOuterBorder>
-            					</cell>
-            					<cell uID="Wing_CS_upperShell_Cell4">
-            						<skin>
-            							<material>
-            								<materialUID>materialUID</materialUID></material>
-            						</skin>
-            						<positioningLeadingEdge>
-            							<sparUID>Wing_CS_spar1</sparUID></positioningLeadingEdge>
-            						<positioningTrailingEdge>
-            							<xsi1>0.9</xsi1>
-            							<xsi2>0.9</xsi2></positioningTrailingEdge>
-            						<positioningInnerBorder>
-            							<eta1>0.15</eta1>
-            							<eta2>0.15</eta2></positioningInnerBorder>
-            						<positioningOuterBorder>
-            							<eta1>0.95</eta1>
-            							<eta2>0.95</eta2></positioningOuterBorder>
-            					</cell>
-            					<cell uID="Wing_CS_upperShell_Cell5">
-            						<skin>
-            							<material>
-            								<materialUID>materialUID</materialUID></material>
-            						</skin>
-            						<positioningLeadingEdge>
-            							<sparUID>Wing_CS_spar1</sparUID></positioningLeadingEdge>
-            						<positioningTrailingEdge>
-            							<xsi1>0.8</xsi1>
-            							<xsi2>0.8</xsi2></positioningTrailingEdge>
-            						<positioningInnerBorder>
-            							<eta1>0.75</eta1>
-            							<eta2>0.75</eta2></positioningInnerBorder>
-            						<positioningOuterBorder>
-            							<eta1>0.95</eta1>
-            							<eta2>0.9</eta2></positioningOuterBorder>
-            					</cell>
-            					<cell uID="Wing_CS_upperShell_Cell6">
-            						<skin>
-            							<material>
-            								<materialUID>materialUID</materialUID></material>
-            						</skin>
-            						<positioningLeadingEdge>
-            							<sparUID>Wing_CS_spar1</sparUID></positioningLeadingEdge>
-            						<positioningTrailingEdge>
-            							<xsi1>0.7</xsi1>
-            							<xsi2>0.7</xsi2></positioningTrailingEdge>
-            						
-            						<positioningInnerBorder>
-            							<eta1>0.9</eta1>
-            							<eta2>0.9</eta2></positioningInnerBorder><positioningOuterBorder>
-            							<eta1>1.0</eta1>
-            							<eta2>1.0</eta2></positioningOuterBorder>
-            					</cell>
-            				</cells>
-            			</upperShell>
-            			<lowerShell>
-            				<skin>
-            					<material>
-            						<materialUID>
+            								</materialUID>
+                          </material>
+                        </skin>
+                        <positioningLeadingEdge>
+                          <sparUID>Wing_CS_spar1</sparUID>
+                        </positioningLeadingEdge>
+                        <positioningTrailingEdge>
+                          <xsi1>0.8</xsi1>
+                          <xsi2>0.8</xsi2>
+                        </positioningTrailingEdge>
+                        <positioningInnerBorder>
+                          <eta1>0.0</eta1>
+                          <eta2>0.0</eta2>
+                        </positioningInnerBorder>
+                        <positioningOuterBorder>
+                          <eta1>0.1</eta1>
+                          <eta2>0.1</eta2>
+                        </positioningOuterBorder>
+                      </cell>
+                      <cell uID="Wing_CS_upperShell_Cell2">
+                        <skin>
+                          <material>
+                            <materialUID>materialUID</materialUID>
+                          </material>
+                        </skin>
+                        <positioningLeadingEdge>
+                          <sparUID>Wing_CS_spar1</sparUID>
+                        </positioningLeadingEdge>
+                        <positioningTrailingEdge>
+                          <xsi1>0.7</xsi1>
+                          <xsi2>0.7</xsi2>
+                        </positioningTrailingEdge>
+                        <positioningInnerBorder>
+                          <eta1>0.3</eta1>
+                          <eta2>0.3</eta2>
+                        </positioningInnerBorder>
+                        <positioningOuterBorder>
+                          <eta1>0.4</eta1>
+                          <eta2>0.45</eta2>
+                        </positioningOuterBorder>
+                      </cell>
+                      <cell uID="Wing_CS_upperShell_Cell3">
+                        <skin>
+                          <material>
+                            <materialUID>materialUID</materialUID>
+                          </material>
+                        </skin>
+                        <positioningLeadingEdge>
+                          <sparUID>Wing_CS_spar1</sparUID>
+                        </positioningLeadingEdge>
+                        <positioningTrailingEdge>
+                          <xsi1>0.8</xsi1>
+                          <xsi2>0.8</xsi2>
+                        </positioningTrailingEdge>
+                        <positioningInnerBorder>
+                          <eta1>0.2</eta1>
+                          <eta2>0.2</eta2>
+                        </positioningInnerBorder>
+                        <positioningOuterBorder>
+                          <eta1>0.55</eta1>
+                          <eta2>0.55</eta2>
+                        </positioningOuterBorder>
+                      </cell>
+                      <cell uID="Wing_CS_upperShell_Cell4">
+                        <skin>
+                          <material>
+                            <materialUID>materialUID</materialUID>
+                          </material>
+                        </skin>
+                        <positioningLeadingEdge>
+                          <sparUID>Wing_CS_spar1</sparUID>
+                        </positioningLeadingEdge>
+                        <positioningTrailingEdge>
+                          <xsi1>0.9</xsi1>
+                          <xsi2>0.9</xsi2>
+                        </positioningTrailingEdge>
+                        <positioningInnerBorder>
+                          <eta1>0.15</eta1>
+                          <eta2>0.15</eta2>
+                        </positioningInnerBorder>
+                        <positioningOuterBorder>
+                          <eta1>0.95</eta1>
+                          <eta2>0.95</eta2>
+                        </positioningOuterBorder>
+                      </cell>
+                      <cell uID="Wing_CS_upperShell_Cell5">
+                        <skin>
+                          <material>
+                            <materialUID>materialUID</materialUID>
+                          </material>
+                        </skin>
+                        <positioningLeadingEdge>
+                          <sparUID>Wing_CS_spar1</sparUID>
+                        </positioningLeadingEdge>
+                        <positioningTrailingEdge>
+                          <xsi1>0.8</xsi1>
+                          <xsi2>0.8</xsi2>
+                        </positioningTrailingEdge>
+                        <positioningInnerBorder>
+                          <eta1>0.75</eta1>
+                          <eta2>0.75</eta2>
+                        </positioningInnerBorder>
+                        <positioningOuterBorder>
+                          <eta1>0.95</eta1>
+                          <eta2>0.9</eta2>
+                        </positioningOuterBorder>
+                      </cell>
+                      <cell uID="Wing_CS_upperShell_Cell6">
+                        <skin>
+                          <material>
+                            <materialUID>materialUID</materialUID>
+                          </material>
+                        </skin>
+                        <positioningLeadingEdge>
+                          <sparUID>Wing_CS_spar1</sparUID>
+                        </positioningLeadingEdge>
+                        <positioningTrailingEdge>
+                          <xsi1>0.7</xsi1>
+                          <xsi2>0.7</xsi2>
+                        </positioningTrailingEdge>
+                        <positioningInnerBorder>
+                          <eta1>0.9</eta1>
+                          <eta2>0.9</eta2>
+                        </positioningInnerBorder>
+                        <positioningOuterBorder>
+                          <eta1>1.0</eta1>
+                          <eta2>1.0</eta2>
+                        </positioningOuterBorder>
+                      </cell>
+                    </cells>
+                  </upperShell>
+                  <lowerShell uID="CS1_lowerShell1">
+                    <skin>
+                      <material>
+                        <materialUID>
             							materialUID
-            						</materialUID></material>
-            				</skin>
-            			</lowerShell>
-            			<spars>
-            				<sparPositions>
-            					<sparPosition uID="Wing_CS_spar1_Pos1">
-            						<eta>0.0</eta>
-            						<xsi>0.2</xsi>
-            					</sparPosition>
-            					<sparPosition uID="Wing_CS_spar1_Pos2">
-            						<eta>0.4</eta>
-            						<xsi>0.4</xsi>
-            					</sparPosition>
-            					<sparPosition uID="Wing_CS_spar1_Pos3">
-            						<eta>0.9</eta>
-            						<xsi>0.5</xsi>
-            					</sparPosition>
-            					<sparPosition uID="Wing_CS_spar1_Pos4">
-            						<eta>1.0</eta>
-            						<xsi>0.3</xsi>
-            					</sparPosition>
-            				</sparPositions>
-            				<sparSegments>
-            					<sparSegment uID="Wing_CS_spar1">
-            						<name>Wing_CS_spar1</name>
-            						<description>
+            						</materialUID>
+                      </material>
+                    </skin>
+                  </lowerShell>
+                  <spars>
+                    <sparPositions>
+                      <sparPosition uID="Wing_CS_spar1_Pos1">
+                        <eta>0.0</eta>
+                        <xsi>0.2</xsi>
+                      </sparPosition>
+                      <sparPosition uID="Wing_CS_spar1_Pos2">
+                        <eta>0.4</eta>
+                        <xsi>0.4</xsi>
+                      </sparPosition>
+                      <sparPosition uID="Wing_CS_spar1_Pos3">
+                        <eta>0.9</eta>
+                        <xsi>0.5</xsi>
+                      </sparPosition>
+                      <sparPosition uID="Wing_CS_spar1_Pos4">
+                        <eta>1.0</eta>
+                        <xsi>0.3</xsi>
+                      </sparPosition>
+                    </sparPositions>
+                    <sparSegments>
+                      <sparSegment uID="Wing_CS_spar1">
+                        <name>Wing_CS_spar1</name>
+                        <description>
             							description
             						</description>
-            						<sparPositionUIDs>
-            							<sparPositionUID>Wing_CS_spar1_Pos1</sparPositionUID>
-            							<sparPositionUID>Wing_CS_spar1_Pos2</sparPositionUID>
-            							<sparPositionUID>Wing_CS_spar1_Pos3</sparPositionUID>
-            							<sparPositionUID>Wing_CS_spar1_Pos4</sparPositionUID>
-            						</sparPositionUIDs>
-            						<sparCrossSection>
-            							<web1>
-            								<material>
-            									<materialUID>
+                        <sparPositionUIDs>
+                          <sparPositionUID>Wing_CS_spar1_Pos1</sparPositionUID>
+                          <sparPositionUID>Wing_CS_spar1_Pos2</sparPositionUID>
+                          <sparPositionUID>Wing_CS_spar1_Pos3</sparPositionUID>
+                          <sparPositionUID>Wing_CS_spar1_Pos4</sparPositionUID>
+                        </sparPositionUIDs>
+                        <sparCrossSection>
+                          <web1>
+                            <material>
+                              <materialUID>
             										materialUID
             									</materialUID>
-            								</material>
-            								<relPos>0.0</relPos>
-            							</web1>
-            							<rotation>0.0</rotation>
-            						</sparCrossSection>
-            					</sparSegment>
-            				</sparSegments>
-            			</spars>
-            		</structure>
-            	</componentSegment>
+                            </material>
+                            <relPos>0.0</relPos>
+                          </web1>
+                          <rotation>0.0</rotation>
+                        </sparCrossSection>
+                      </sparSegment>
+                    </sparSegments>
+                  </spars>
+                </structure>
+              </componentSegment>
             </componentSegments>
           </wing>
         </wings>

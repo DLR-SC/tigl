@@ -20,7 +20,7 @@
 							<parentUID>None</parentUID>
 							<description>Example system component for testing the visualization in TIGLViewer</description>
 							<geometricBaseType>cone</geometricBaseType>
-							<transformation uID="transformationUID123764">
+							<transformation uID="transformationUID123764_0">
 								<translation refType="absGlobal">
 									<x>-1</x>
 									<y>0</y>
@@ -66,7 +66,7 @@
 							<parentUID>None</parentUID>
 							<description>Example system component for testing the visualization in TIGLViewer</description>
 							<geometricBaseType>cube</geometricBaseType>
-							<transformation uID="transformationUID123764">
+							<transformation uID="transformationUID123764_1">
 								<translation refType="absGlobal">
 									<x>0</x>
 									<y>0</y>
@@ -89,7 +89,7 @@
 							<parentUID>None</parentUID>
 							<description>Example system component for testing the visualization in TIGLViewer</description>
 							<geometricBaseType>sphere</geometricBaseType>
-							<transformation uID="transformationUID123764">
+							<transformation uID="transformationUID123764_2">
 								<translation refType="absGlobal">
 									<x>-1</x>
 									<y>0</y>
