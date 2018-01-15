@@ -95,15 +95,13 @@ private:
 
     struct Cache
     {
-        Cache() : valid(false) {};
-        bool valid;
         EtaXsi innerLeadingEdgePoint;
         EtaXsi innerTrailingEdgePoint;
         EtaXsi outerLeadingEdgePoint;
         EtaXsi outerTrailingEdgePoint;
     };
 
-    mutable Cache cache;
+    mutable boost::optional<Cache> cache;
 
 };
 

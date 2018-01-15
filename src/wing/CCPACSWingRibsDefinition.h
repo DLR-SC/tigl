@@ -178,7 +178,6 @@ private:
     // ribsPositioning (defining a set or ribs)
     struct RibSetDataCache
     {
-        bool valid;
         int numberOfRibs;
         double referenceEtaStart;
         double referenceEtaEnd;
@@ -189,42 +188,34 @@ private:
     // shapes for the single ribs
     struct AuxiliaryGeomCache
     {
-        void clear() { midplanePoints.clear(); cutGeometries.clear(); };
-
-        bool valid;
         std::vector<RibMidplanePoints> midplanePoints;
         std::vector<CutGeometry> cutGeometries;
     };
 
     struct RibGeometryCache
     {
-        void clear() { ribFaces.clear(); };
-
-        bool valid;
         TopoDS_Shape shape;
         std::vector<TopoDS_Face> ribFaces;
     };
 
     struct SplittedRibGeometryCache
     {
-        bool valid;
         TopoDS_Shape shape;
     };
 
     struct RibCapsGeometryCache
     {
-        bool valid;
         TopoDS_Shape upperCapsShape;
         TopoDS_Shape lowerCapsShape;
     };
 
 private:
-    mutable RibSetDataCache ribSetDataCache;
+    mutable boost::optional<RibSetDataCache> ribSetDataCache;
 
-    mutable AuxiliaryGeomCache auxGeomCache;
-    mutable RibGeometryCache ribGeometryCache;
-    mutable SplittedRibGeometryCache splittedRibGeomCache;
-    mutable RibCapsGeometryCache ribCapsCache;
+    mutable boost::optional<AuxiliaryGeomCache> auxGeomCache;
+    mutable boost::optional<RibGeometryCache> ribGeometryCache;
+    mutable boost::optional<SplittedRibGeometryCache> splittedRibGeomCache;
+    mutable boost::optional<RibCapsGeometryCache> ribCapsCache;
 };
 
 } // end namespace tigl

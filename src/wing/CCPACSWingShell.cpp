@@ -75,25 +75,24 @@ void CCPACSWingShell::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string
 
 void CCPACSWingShell::Invalidate()
 {
-    geometryCache.valid = false;
+    geometryCache = boost::none;
     if (m_cells)
         m_cells->Invalidate();
 }
 
 bool CCPACSWingShell::IsValid() const
 {
-    return geometryCache.valid;
+    return geometryCache.is_initialized();
 }
 
 void CCPACSWingShell::Update() const
 {
-    if ( geometryCache.valid) {
+    if (geometryCache) {
         return;
     }
+    geometryCache.emplace();
 
     // TODO: build stringer geometry
-
-    geometryCache.valid = true;
 }
 
 TiglLoftSide CCPACSWingShell::GetLoftSide() const

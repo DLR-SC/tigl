@@ -97,26 +97,22 @@ private:
 
     struct AuxiliaryGeomCache
     {
-        bool valid;
         TopoDS_Wire sparMidplaneLine;
         TopoDS_Shape sparCutShape;
     };
 
     struct GeometryCache
     {
-        bool valid;
         TopoDS_Shape shape;
     };
 
     struct SplittedGeomCache
     {
-        bool valid;
         TopoDS_Shape shape;
     };
 
     struct SparCapsCache
     {
-        bool valid;
         TopoDS_Shape upperCapsShape;
         TopoDS_Shape lowerCapsShape;
     };
@@ -124,10 +120,10 @@ private:
 private:
     CCPACSWingSpars& sparsNode;
 
-    mutable AuxiliaryGeomCache auxGeomCache;
-    mutable GeometryCache geometryCache;
-    mutable SplittedGeomCache splittedGeomCache;
-    mutable SparCapsCache sparCapsCache;
+    mutable boost::optional<AuxiliaryGeomCache> auxGeomCache;
+    mutable boost::optional<GeometryCache> geometryCache;
+    mutable boost::optional<SplittedGeomCache> splittedGeomCache;
+    mutable boost::optional<SparCapsCache> sparCapsCache;
 };
 
 } // end namespace tigl

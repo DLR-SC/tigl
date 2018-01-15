@@ -239,8 +239,6 @@ private:
 
     struct SurfaceCache
     {
-        bool                 valid;
-        bool                 chordsurfaceValid;
         double               mySurfaceArea;    /**< Surface area of this segment            */
         TopoDS_Shape         upperShape;       /**< Upper shape of this segment             */
         TopoDS_Shape         lowerShape;       /**< Lower shape of this segment             */
@@ -253,10 +251,15 @@ private:
         Handle(Geom_Surface) lowerSurface;
         Handle(Geom_Surface) upperSurfaceLocal;
         Handle(Geom_Surface) lowerSurfaceLocal;
+    };
+    mutable boost::optional<SurfaceCache> surfaceCache;
+
+    struct SurfaceCoordCache
+    {
         CTiglPointTranslator cordSurface;
         Handle(Geom_Surface) cordFace;
     };
-    mutable SurfaceCache surfaceCache;
+    mutable boost::optional<SurfaceCoordCache> surfaceCoordCache;
 
     unique_ptr<IGuideCurveBuilder> m_guideCurveBuilder;
 };
