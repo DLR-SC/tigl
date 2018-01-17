@@ -31,7 +31,7 @@ namespace tigl
         // CPACSFuselageCutOut
         
         // generated from /xsd:schema/xsd:complexType[369]/xsd:complexContent/xsd:extension/xsd:all/xsd:element[14]/xsd:complexType/xsd:simpleContent
-        enum CPACSFuselageCutOut_cutout
+        enum CPACSFuselageCutOut_cutoutType
         {
             window,
             door,
@@ -41,7 +41,7 @@ namespace tigl
             ramp
         };
         
-        inline std::string CPACSFuselageCutOut_cutoutToString(const CPACSFuselageCutOut_cutout& value)
+        inline std::string CPACSFuselageCutOut_cutoutTypeToString(const CPACSFuselageCutOut_cutoutType& value)
         {
             switch(value) {
             case window: return "window";
@@ -50,10 +50,10 @@ namespace tigl
             case emergencyDoor: return "emergencyDoor";
             case cargoDoor: return "cargoDoor";
             case ramp: return "ramp";
-            default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSFuselageCutOut_cutout");
+            default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSFuselageCutOut_cutoutType");
             }
         }
-        inline CPACSFuselageCutOut_cutout stringToCPACSFuselageCutOut_cutout(const std::string& value)
+        inline CPACSFuselageCutOut_cutoutType stringToCPACSFuselageCutOut_cutoutType(const std::string& value)
         {
             struct ToLower { std::string operator()(std::string str) { for (std::size_t i = 0; i < str.length(); i++) { str[i] = std::tolower(str[i]); } return str; } } toLower;
             if (toLower(value) == "window") { return window; }
@@ -62,15 +62,15 @@ namespace tigl
             if (toLower(value) == "emergencydoor") { return emergencyDoor; }
             if (toLower(value) == "cargodoor") { return cargoDoor; }
             if (toLower(value) == "ramp") { return ramp; }
-            throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSFuselageCutOut_cutout");
+            throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSFuselageCutOut_cutoutType");
         }
     }
     
     // Aliases in tigl namespace
     #ifdef HAVE_CPP11
-    using ECPACSFuselageCutOut_cutout = generated::CPACSFuselageCutOut_cutout;
+    using ECPACSFuselageCutOut_cutoutType = generated::CPACSFuselageCutOut_cutoutType;
     #else
-    typedef generated::CPACSFuselageCutOut_cutout ECPACSFuselageCutOut_cutout;
+    typedef generated::CPACSFuselageCutOut_cutoutType ECPACSFuselageCutOut_cutoutType;
     #endif
     using generated::window;
     using generated::door;
