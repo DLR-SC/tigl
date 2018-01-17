@@ -288,11 +288,6 @@ namespace tigl
             return m_name;
         }
         
-        void CPACSFuselageCutOut::SetName(const std::string& value)
-        {
-            m_name = value;
-        }
-        
         void CPACSFuselageCutOut::SetName(const boost::optional<std::string>& value)
         {
             m_name = value;
@@ -301,11 +296,6 @@ namespace tigl
         const boost::optional<std::string>& CPACSFuselageCutOut::GetDescription() const
         {
             return m_description;
-        }
-        
-        void CPACSFuselageCutOut::SetDescription(const std::string& value)
-        {
-            m_description = value;
         }
         
         void CPACSFuselageCutOut::SetDescription(const boost::optional<std::string>& value)
@@ -398,11 +388,6 @@ namespace tigl
             return m_deltaY1;
         }
         
-        void CPACSFuselageCutOut::SetDeltaY1(const double& value)
-        {
-            m_deltaY1 = value;
-        }
-        
         void CPACSFuselageCutOut::SetDeltaY1(const boost::optional<double>& value)
         {
             m_deltaY1 = value;
@@ -411,11 +396,6 @@ namespace tigl
         const boost::optional<double>& CPACSFuselageCutOut::GetDeltaZ1() const
         {
             return m_deltaZ1;
-        }
-        
-        void CPACSFuselageCutOut::SetDeltaZ1(const double& value)
-        {
-            m_deltaZ1 = value;
         }
         
         void CPACSFuselageCutOut::SetDeltaZ1(const boost::optional<double>& value)

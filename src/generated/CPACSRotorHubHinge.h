@@ -55,11 +55,9 @@ namespace tigl
             TIGL_EXPORT virtual void SetUID(const std::string& value);
             
             TIGL_EXPORT virtual const boost::optional<std::string>& GetName() const;
-            TIGL_EXPORT virtual void SetName(const std::string& value);
             TIGL_EXPORT virtual void SetName(const boost::optional<std::string>& value);
             
             TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
-            TIGL_EXPORT virtual void SetDescription(const std::string& value);
             TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
             
             TIGL_EXPORT virtual const CCPACSTransformation& GetTransformation() const;
@@ -69,19 +67,15 @@ namespace tigl
             TIGL_EXPORT virtual void SetType(const CPACSRotorHubHinge_type& value);
             
             TIGL_EXPORT virtual const boost::optional<double>& GetNeutralPosition() const;
-            TIGL_EXPORT virtual void SetNeutralPosition(const double& value);
             TIGL_EXPORT virtual void SetNeutralPosition(const boost::optional<double>& value);
             
             TIGL_EXPORT virtual const boost::optional<double>& GetStaticStiffness() const;
-            TIGL_EXPORT virtual void SetStaticStiffness(const double& value);
             TIGL_EXPORT virtual void SetStaticStiffness(const boost::optional<double>& value);
             
             TIGL_EXPORT virtual const boost::optional<double>& GetDynamicStiffness() const;
-            TIGL_EXPORT virtual void SetDynamicStiffness(const double& value);
             TIGL_EXPORT virtual void SetDynamicStiffness(const boost::optional<double>& value);
             
             TIGL_EXPORT virtual const boost::optional<double>& GetDamping() const;
-            TIGL_EXPORT virtual void SetDamping(const double& value);
             TIGL_EXPORT virtual void SetDamping(const boost::optional<double>& value);
             
         protected:

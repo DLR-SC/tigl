@@ -190,11 +190,6 @@ namespace tigl
             return m_description;
         }
         
-        void CPACSFuselageSegment::SetDescription(const std::string& value)
-        {
-            m_description = value;
-        }
-        
         void CPACSFuselageSegment::SetDescription(const boost::optional<std::string>& value)
         {
             m_description = value;

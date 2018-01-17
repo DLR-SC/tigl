@@ -58,11 +58,9 @@ namespace tigl
             TIGL_EXPORT virtual void SetUID(const std::string& value);
             
             TIGL_EXPORT virtual const boost::optional<std::string>& GetName() const;
-            TIGL_EXPORT virtual void SetName(const std::string& value);
             TIGL_EXPORT virtual void SetName(const boost::optional<std::string>& value);
             
             TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
-            TIGL_EXPORT virtual void SetDescription(const std::string& value);
             TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
             
             TIGL_EXPORT virtual const boost::optional<CCPACSRotorHinges>& GetHinges() const;
@@ -75,7 +73,6 @@ namespace tigl
             TIGL_EXPORT virtual boost::optional<CCPACSStringVector>& GetAzimuthAngles_choice1();
             
             TIGL_EXPORT virtual const boost::optional<int>& GetNumberOfBlades_choice2() const;
-            TIGL_EXPORT virtual void SetNumberOfBlades_choice2(const int& value);
             TIGL_EXPORT virtual void SetNumberOfBlades_choice2(const boost::optional<int>& value);
             
             TIGL_EXPORT virtual CCPACSRotorHinges& GetHinges(CreateIfNotExistsTag);

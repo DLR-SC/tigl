@@ -214,11 +214,6 @@ namespace tigl
             return m_trailingEdgeThickness;
         }
         
-        void CPACSCst2D::SetTrailingEdgeThickness(const double& value)
-        {
-            m_trailingEdgeThickness = value;
-        }
-        
         void CPACSCst2D::SetTrailingEdgeThickness(const boost::optional<double>& value)
         {
             m_trailingEdgeThickness = value;

@@ -57,7 +57,6 @@ namespace tigl
             TIGL_EXPORT virtual void SetName(const std::string& value);
             
             TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
-            TIGL_EXPORT virtual void SetDescription(const std::string& value);
             TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
             
             TIGL_EXPORT virtual const std::string& GetGuideCurveProfileUID() const;
@@ -67,15 +66,12 @@ namespace tigl
             TIGL_EXPORT virtual boost::optional<CPACSPointXYZ>& GetRXDirection();
             
             TIGL_EXPORT virtual const boost::optional<std::string>& GetFromGuideCurveUID_choice1() const;
-            TIGL_EXPORT virtual void SetFromGuideCurveUID_choice1(const std::string& value);
             TIGL_EXPORT virtual void SetFromGuideCurveUID_choice1(const boost::optional<std::string>& value);
             
             TIGL_EXPORT virtual const boost::optional<CPACSGuideCurve_continuity>& GetContinuity_choice1() const;
-            TIGL_EXPORT virtual void SetContinuity_choice1(const CPACSGuideCurve_continuity& value);
             TIGL_EXPORT virtual void SetContinuity_choice1(const boost::optional<CPACSGuideCurve_continuity>& value);
             
             TIGL_EXPORT virtual const boost::optional<double>& GetFromRelativeCircumference_choice2() const;
-            TIGL_EXPORT virtual void SetFromRelativeCircumference_choice2(const double& value);
             TIGL_EXPORT virtual void SetFromRelativeCircumference_choice2(const boost::optional<double>& value);
             
             TIGL_EXPORT virtual const boost::optional<CPACSPointXYZ>& GetTangent_choice2() const;

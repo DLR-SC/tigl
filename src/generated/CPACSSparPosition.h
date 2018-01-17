@@ -52,18 +52,15 @@ namespace tigl
             TIGL_EXPORT bool ValidateChoices() const;
             
             TIGL_EXPORT virtual const boost::optional<std::string>& GetUID() const;
-            TIGL_EXPORT virtual void SetUID(const std::string& value);
             TIGL_EXPORT virtual void SetUID(const boost::optional<std::string>& value);
             
             TIGL_EXPORT virtual const double& GetXsi() const;
             TIGL_EXPORT virtual void SetXsi(const double& value);
             
             TIGL_EXPORT virtual const boost::optional<double>& GetEta_choice1() const;
-            TIGL_EXPORT virtual void SetEta_choice1(const double& value);
             TIGL_EXPORT virtual void SetEta_choice1(const boost::optional<double>& value);
             
             TIGL_EXPORT virtual const boost::optional<std::string>& GetElementUID_choice2() const;
-            TIGL_EXPORT virtual void SetElementUID_choice2(const std::string& value);
             TIGL_EXPORT virtual void SetElementUID_choice2(const boost::optional<std::string>& value);
             
         protected:

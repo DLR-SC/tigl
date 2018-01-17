@@ -45,7 +45,6 @@ namespace tigl
             TIGL_EXPORT virtual void SetBase(const std::string& value);
             
             TIGL_EXPORT virtual const boost::optional<CPACSLinkToFileType_format>& GetFormat() const;
-            TIGL_EXPORT virtual void SetFormat(const CPACSLinkToFileType_format& value);
             TIGL_EXPORT virtual void SetFormat(const boost::optional<CPACSLinkToFileType_format>& value);
             
         protected:

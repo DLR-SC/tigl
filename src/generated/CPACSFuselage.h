@@ -60,18 +60,15 @@ namespace tigl
             TIGL_EXPORT virtual void SetUID(const std::string& value);
             
             TIGL_EXPORT virtual const boost::optional<TiglSymmetryAxis>& GetSymmetry() const;
-            TIGL_EXPORT virtual void SetSymmetry(const TiglSymmetryAxis& value);
             TIGL_EXPORT virtual void SetSymmetry(const boost::optional<TiglSymmetryAxis>& value);
             
             TIGL_EXPORT virtual const std::string& GetName() const;
             TIGL_EXPORT virtual void SetName(const std::string& value);
             
             TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
-            TIGL_EXPORT virtual void SetDescription(const std::string& value);
             TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
             
             TIGL_EXPORT virtual const boost::optional<std::string>& GetParentUID() const;
-            TIGL_EXPORT virtual void SetParentUID(const std::string& value);
             TIGL_EXPORT virtual void SetParentUID(const boost::optional<std::string>& value);
             
             TIGL_EXPORT virtual const CCPACSTransformation& GetTransformation() const;

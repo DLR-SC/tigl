@@ -247,11 +247,6 @@ namespace tigl
             return m_name;
         }
         
-        void CPACSPostFailure::SetName(const std::string& value)
-        {
-            m_name = value;
-        }
-        
         void CPACSPostFailure::SetName(const boost::optional<std::string>& value)
         {
             m_name = value;
@@ -260,11 +255,6 @@ namespace tigl
         const boost::optional<std::string>& CPACSPostFailure::GetDescription() const
         {
             return m_description;
-        }
-        
-        void CPACSPostFailure::SetDescription(const std::string& value)
-        {
-            m_description = value;
         }
         
         void CPACSPostFailure::SetDescription(const boost::optional<std::string>& value)
@@ -277,11 +267,6 @@ namespace tigl
             return m_materialLaw;
         }
         
-        void CPACSPostFailure::SetMaterialLaw(const std::string& value)
-        {
-            m_materialLaw = value;
-        }
-        
         void CPACSPostFailure::SetMaterialLaw(const boost::optional<std::string>& value)
         {
             m_materialLaw = value;
@@ -290,11 +275,6 @@ namespace tigl
         const boost::optional<double>& CPACSPostFailure::GetPlasticEliminationStrain_choice1() const
         {
             return m_plasticEliminationStrain_choice1;
-        }
-        
-        void CPACSPostFailure::SetPlasticEliminationStrain_choice1(const double& value)
-        {
-            m_plasticEliminationStrain_choice1 = value;
         }
         
         void CPACSPostFailure::SetPlasticEliminationStrain_choice1(const boost::optional<double>& value)
@@ -317,11 +297,6 @@ namespace tigl
             return m_initialEquivalentShearStrain_choice2;
         }
         
-        void CPACSPostFailure::SetInitialEquivalentShearStrain_choice2(const double& value)
-        {
-            m_initialEquivalentShearStrain_choice2 = value;
-        }
-        
         void CPACSPostFailure::SetInitialEquivalentShearStrain_choice2(const boost::optional<double>& value)
         {
             m_initialEquivalentShearStrain_choice2 = value;
@@ -330,11 +305,6 @@ namespace tigl
         const boost::optional<double>& CPACSPostFailure::GetIntermediateEquivalentShearStrain_choice2() const
         {
             return m_intermediateEquivalentShearStrain_choice2;
-        }
-        
-        void CPACSPostFailure::SetIntermediateEquivalentShearStrain_choice2(const double& value)
-        {
-            m_intermediateEquivalentShearStrain_choice2 = value;
         }
         
         void CPACSPostFailure::SetIntermediateEquivalentShearStrain_choice2(const boost::optional<double>& value)
@@ -347,11 +317,6 @@ namespace tigl
             return m_ultimateEquivalentShearStrain_choice2;
         }
         
-        void CPACSPostFailure::SetUltimateEquivalentShearStrain_choice2(const double& value)
-        {
-            m_ultimateEquivalentShearStrain_choice2 = value;
-        }
-        
         void CPACSPostFailure::SetUltimateEquivalentShearStrain_choice2(const boost::optional<double>& value)
         {
             m_ultimateEquivalentShearStrain_choice2 = value;
@@ -362,11 +327,6 @@ namespace tigl
             return m_intermediateDamage_choice2;
         }
         
-        void CPACSPostFailure::SetIntermediateDamage_choice2(const double& value)
-        {
-            m_intermediateDamage_choice2 = value;
-        }
-        
         void CPACSPostFailure::SetIntermediateDamage_choice2(const boost::optional<double>& value)
         {
             m_intermediateDamage_choice2 = value;
@@ -375,11 +335,6 @@ namespace tigl
         const boost::optional<double>& CPACSPostFailure::GetUltimateDamage_choice2() const
         {
             return m_ultimateDamage_choice2;
-        }
-        
-        void CPACSPostFailure::SetUltimateDamage_choice2(const double& value)
-        {
-            m_ultimateDamage_choice2 = value;
         }
         
         void CPACSPostFailure::SetUltimateDamage_choice2(const boost::optional<double>& value)

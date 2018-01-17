@@ -52,7 +52,6 @@ namespace tigl
             TIGL_EXPORT virtual void SetName(const std::string& value);
             
             TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
-            TIGL_EXPORT virtual void SetDescription(const std::string& value);
             TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
             
             TIGL_EXPORT virtual const double& GetLength() const;
@@ -65,7 +64,6 @@ namespace tigl
             TIGL_EXPORT virtual void SetDihedralAngle(const double& value);
             
             TIGL_EXPORT virtual const boost::optional<std::string>& GetFromSectionUID() const;
-            TIGL_EXPORT virtual void SetFromSectionUID(const std::string& value);
             TIGL_EXPORT virtual void SetFromSectionUID(const boost::optional<std::string>& value);
             
             TIGL_EXPORT virtual const std::string& GetToSectionUID() const;

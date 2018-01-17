@@ -137,11 +137,6 @@ namespace tigl
             return m_sparUID_choice1;
         }
         
-        void CPACSCellPositioningChordwise::SetSparUID_choice1(const std::string& value)
-        {
-            m_sparUID_choice1 = value;
-        }
-        
         void CPACSCellPositioningChordwise::SetSparUID_choice1(const boost::optional<std::string>& value)
         {
             m_sparUID_choice1 = value;
@@ -152,11 +147,6 @@ namespace tigl
             return m_xsi1_choice2;
         }
         
-        void CPACSCellPositioningChordwise::SetXsi1_choice2(const double& value)
-        {
-            m_xsi1_choice2 = value;
-        }
-        
         void CPACSCellPositioningChordwise::SetXsi1_choice2(const boost::optional<double>& value)
         {
             m_xsi1_choice2 = value;
@@ -165,11 +155,6 @@ namespace tigl
         const boost::optional<double>& CPACSCellPositioningChordwise::GetXsi2_choice2() const
         {
             return m_xsi2_choice2;
-        }
-        
-        void CPACSCellPositioningChordwise::SetXsi2_choice2(const double& value)
-        {
-            m_xsi2_choice2 = value;
         }
         
         void CPACSCellPositioningChordwise::SetXsi2_choice2(const boost::optional<double>& value)

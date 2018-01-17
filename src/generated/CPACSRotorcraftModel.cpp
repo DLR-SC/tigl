@@ -212,11 +212,6 @@ namespace tigl
             return m_description;
         }
         
-        void CPACSRotorcraftModel::SetDescription(const std::string& value)
-        {
-            m_description = value;
-        }
-        
         void CPACSRotorcraftModel::SetDescription(const boost::optional<std::string>& value)
         {
             m_description = value;

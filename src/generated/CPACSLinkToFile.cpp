@@ -79,11 +79,6 @@ namespace tigl
             return m_format;
         }
         
-        void CPACSLinkToFile::SetFormat(const CPACSLinkToFileType_format& value)
-        {
-            m_format = value;
-        }
-        
         void CPACSLinkToFile::SetFormat(const boost::optional<CPACSLinkToFileType_format>& value)
         {
             m_format = value;

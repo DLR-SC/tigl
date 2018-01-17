@@ -163,11 +163,6 @@ namespace tigl
             return m_description;
         }
         
-        void CPACSHeader::SetDescription(const std::string& value)
-        {
-            m_description = value;
-        }
-        
         void CPACSHeader::SetDescription(const boost::optional<std::string>& value)
         {
             m_description = value;

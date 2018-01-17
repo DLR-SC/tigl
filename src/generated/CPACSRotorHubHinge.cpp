@@ -217,11 +217,6 @@ namespace tigl
             return m_name;
         }
         
-        void CPACSRotorHubHinge::SetName(const std::string& value)
-        {
-            m_name = value;
-        }
-        
         void CPACSRotorHubHinge::SetName(const boost::optional<std::string>& value)
         {
             m_name = value;
@@ -230,11 +225,6 @@ namespace tigl
         const boost::optional<std::string>& CPACSRotorHubHinge::GetDescription() const
         {
             return m_description;
-        }
-        
-        void CPACSRotorHubHinge::SetDescription(const std::string& value)
-        {
-            m_description = value;
         }
         
         void CPACSRotorHubHinge::SetDescription(const boost::optional<std::string>& value)
@@ -267,11 +257,6 @@ namespace tigl
             return m_neutralPosition;
         }
         
-        void CPACSRotorHubHinge::SetNeutralPosition(const double& value)
-        {
-            m_neutralPosition = value;
-        }
-        
         void CPACSRotorHubHinge::SetNeutralPosition(const boost::optional<double>& value)
         {
             m_neutralPosition = value;
@@ -280,11 +265,6 @@ namespace tigl
         const boost::optional<double>& CPACSRotorHubHinge::GetStaticStiffness() const
         {
             return m_staticStiffness;
-        }
-        
-        void CPACSRotorHubHinge::SetStaticStiffness(const double& value)
-        {
-            m_staticStiffness = value;
         }
         
         void CPACSRotorHubHinge::SetStaticStiffness(const boost::optional<double>& value)
@@ -297,11 +277,6 @@ namespace tigl
             return m_dynamicStiffness;
         }
         
-        void CPACSRotorHubHinge::SetDynamicStiffness(const double& value)
-        {
-            m_dynamicStiffness = value;
-        }
-        
         void CPACSRotorHubHinge::SetDynamicStiffness(const boost::optional<double>& value)
         {
             m_dynamicStiffness = value;
@@ -310,11 +285,6 @@ namespace tigl
         const boost::optional<double>& CPACSRotorHubHinge::GetDamping() const
         {
             return m_damping;
-        }
-        
-        void CPACSRotorHubHinge::SetDamping(const double& value)
-        {
-            m_damping = value;
         }
         
         void CPACSRotorHubHinge::SetDamping(const boost::optional<double>& value)

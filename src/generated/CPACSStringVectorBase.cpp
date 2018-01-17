@@ -198,11 +198,6 @@ namespace tigl
             return m_mu;
         }
         
-        void CPACSStringVectorBase::SetMu(const std::string& value)
-        {
-            m_mu = value;
-        }
-        
         void CPACSStringVectorBase::SetMu(const boost::optional<std::string>& value)
         {
             m_mu = value;
@@ -211,11 +206,6 @@ namespace tigl
         const boost::optional<std::string>& CPACSStringVectorBase::GetDelta() const
         {
             return m_delta;
-        }
-        
-        void CPACSStringVectorBase::SetDelta(const std::string& value)
-        {
-            m_delta = value;
         }
         
         void CPACSStringVectorBase::SetDelta(const boost::optional<std::string>& value)
@@ -228,11 +218,6 @@ namespace tigl
             return m_a;
         }
         
-        void CPACSStringVectorBase::SetA(const std::string& value)
-        {
-            m_a = value;
-        }
-        
         void CPACSStringVectorBase::SetA(const boost::optional<std::string>& value)
         {
             m_a = value;
@@ -241,11 +226,6 @@ namespace tigl
         const boost::optional<std::string>& CPACSStringVectorBase::GetB() const
         {
             return m_b;
-        }
-        
-        void CPACSStringVectorBase::SetB(const std::string& value)
-        {
-            m_b = value;
         }
         
         void CPACSStringVectorBase::SetB(const boost::optional<std::string>& value)
@@ -258,11 +238,6 @@ namespace tigl
             return m_c;
         }
         
-        void CPACSStringVectorBase::SetC(const std::string& value)
-        {
-            m_c = value;
-        }
-        
         void CPACSStringVectorBase::SetC(const boost::optional<std::string>& value)
         {
             m_c = value;
@@ -273,11 +248,6 @@ namespace tigl
             return m_v;
         }
         
-        void CPACSStringVectorBase::SetV(const std::string& value)
-        {
-            m_v = value;
-        }
-        
         void CPACSStringVectorBase::SetV(const boost::optional<std::string>& value)
         {
             m_v = value;
@@ -286,11 +256,6 @@ namespace tigl
         const boost::optional<std::string>& CPACSStringVectorBase::GetW() const
         {
             return m_w;
-        }
-        
-        void CPACSStringVectorBase::SetW(const std::string& value)
-        {
-            m_w = value;
         }
         
         void CPACSStringVectorBase::SetW(const boost::optional<std::string>& value)

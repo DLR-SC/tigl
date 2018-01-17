@@ -250,11 +250,6 @@ namespace tigl
             return m_symmetry;
         }
         
-        void CPACSWing::SetSymmetry(const TiglSymmetryAxis& value)
-        {
-            m_symmetry = value;
-        }
-        
         void CPACSWing::SetSymmetry(const boost::optional<TiglSymmetryAxis>& value)
         {
             m_symmetry = value;
@@ -275,11 +270,6 @@ namespace tigl
             return m_description;
         }
         
-        void CPACSWing::SetDescription(const std::string& value)
-        {
-            m_description = value;
-        }
-        
         void CPACSWing::SetDescription(const boost::optional<std::string>& value)
         {
             m_description = value;
@@ -288,11 +278,6 @@ namespace tigl
         const boost::optional<std::string>& CPACSWing::GetParentUID() const
         {
             return m_parentUID;
-        }
-        
-        void CPACSWing::SetParentUID(const std::string& value)
-        {
-            m_parentUID = value;
         }
         
         void CPACSWing::SetParentUID(const boost::optional<std::string>& value)

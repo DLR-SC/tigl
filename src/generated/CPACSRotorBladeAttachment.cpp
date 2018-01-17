@@ -237,11 +237,6 @@ namespace tigl
             return m_name;
         }
         
-        void CPACSRotorBladeAttachment::SetName(const std::string& value)
-        {
-            m_name = value;
-        }
-        
         void CPACSRotorBladeAttachment::SetName(const boost::optional<std::string>& value)
         {
             m_name = value;
@@ -250,11 +245,6 @@ namespace tigl
         const boost::optional<std::string>& CPACSRotorBladeAttachment::GetDescription() const
         {
             return m_description;
-        }
-        
-        void CPACSRotorBladeAttachment::SetDescription(const std::string& value)
-        {
-            m_description = value;
         }
         
         void CPACSRotorBladeAttachment::SetDescription(const boost::optional<std::string>& value)
@@ -295,11 +285,6 @@ namespace tigl
         const boost::optional<int>& CPACSRotorBladeAttachment::GetNumberOfBlades_choice2() const
         {
             return m_numberOfBlades_choice2;
-        }
-        
-        void CPACSRotorBladeAttachment::SetNumberOfBlades_choice2(const int& value)
-        {
-            m_numberOfBlades_choice2 = value;
         }
         
         void CPACSRotorBladeAttachment::SetNumberOfBlades_choice2(const boost::optional<int>& value)

@@ -50,19 +50,15 @@ namespace tigl
             TIGL_EXPORT virtual void SetUID(const std::string& value);
             
             TIGL_EXPORT virtual const boost::optional<ECPACSTranslationType>& GetRefType() const;
-            TIGL_EXPORT virtual void SetRefType(const ECPACSTranslationType& value);
             TIGL_EXPORT virtual void SetRefType(const boost::optional<ECPACSTranslationType>& value);
             
             TIGL_EXPORT virtual const boost::optional<double>& GetX() const;
-            TIGL_EXPORT virtual void SetX(const double& value);
             TIGL_EXPORT virtual void SetX(const boost::optional<double>& value);
             
             TIGL_EXPORT virtual const boost::optional<double>& GetY() const;
-            TIGL_EXPORT virtual void SetY(const double& value);
             TIGL_EXPORT virtual void SetY(const boost::optional<double>& value);
             
             TIGL_EXPORT virtual const boost::optional<double>& GetZ() const;
-            TIGL_EXPORT virtual void SetZ(const double& value);
             TIGL_EXPORT virtual void SetZ(const boost::optional<double>& value);
             
         protected:
