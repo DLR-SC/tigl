@@ -67,9 +67,8 @@ private:
 
     struct GeometryCache
     {
-        bool valid;
     };
-    mutable GeometryCache geometryCache;
+    mutable boost::optional<GeometryCache> geometryCache;
 };
 
 } // namespace tigl

@@ -209,18 +209,13 @@ CCPACSWingSegment::~CCPACSWingSegment()
 void CCPACSWingSegment::Invalidate()
 {
     CTiglAbstractSegment<CCPACSWingSegment>::Reset();
-    surfaceCache.valid = false;
-    surfaceCache.chordsurfaceValid = false;
+    surfaceCache = boost::none;
 }
 
 // Cleanup routine
 void CCPACSWingSegment::Cleanup()
 {
-    surfaceCache.upperShape.Nullify();
-    surfaceCache.lowerShape.Nullify();
-    surfaceCache.trailingEdgeShape.Nullify();
-    surfaceCache.valid = false;
-    surfaceCache.chordsurfaceValid = false;
+    surfaceCache = boost::none;
     CTiglAbstractSegment<CCPACSWingSegment>::Reset();
 }
 
@@ -585,7 +580,7 @@ double CCPACSWingSegment::GetVolume()
 double CCPACSWingSegment::GetSurfaceArea() const
 {
     MakeSurfaces();
-    return(surfaceCache.mySurfaceArea);
+    return(surfaceCache.value().mySurfaceArea);
 }
 
 void CCPACSWingSegment::etaXsiToUV(bool isFromUpper, double eta, double xsi, double& u, double& v) const
@@ -594,10 +589,10 @@ void CCPACSWingSegment::etaXsiToUV(bool isFromUpper, double eta, double xsi, dou
 
     Handle(Geom_Surface) surf;
     if (isFromUpper) {
-        surf = surfaceCache.upperSurface;
+        surf = surfaceCache.value().upperSurface;
     }
     else {
-        surf = surfaceCache.lowerSurface;
+        surf = surfaceCache.value().lowerSurface;
     }
 
     GeomAPI_ProjectPointOnSurf Proj(pnt, surf);
@@ -630,10 +625,10 @@ double CCPACSWingSegment::GetSurfaceArea(bool fromUpper,
     
     TopoDS_Face face;
     if (fromUpper) {
-        face = TopoDS::Face(surfaceCache.upperShape);
+        face = TopoDS::Face(surfaceCache.value().upperShape);
     }
     else {
-        face = TopoDS::Face(surfaceCache.lowerShape);
+        face = TopoDS::Face(surfaceCache.value().lowerShape);
     }
 
     // convert eta xsi coordinates to u,v
@@ -807,7 +802,7 @@ gp_Pnt CCPACSWingSegment::GetPointDirection(double eta, double xsi, double dirx,
         throw CTiglError("Direction must not be a null vector in CCPACSWingSegment::GetPointDirection.", TIGL_MATH_ERROR);
     }
 
-    if (!surfaceCache.valid) {
+    if (!surfaceCache) {
         MakeSurfaces();
     }
 
@@ -904,7 +899,7 @@ bool CCPACSWingSegment::GetIsOn(const gp_Pnt& pnt)
 
     // check if point on chord surface
     double tolerance = 0.03;
-    GeomAPI_ProjectPointOnSurf Proj(pnt, surfaceCache.cordFace);
+    GeomAPI_ProjectPointOnSurf Proj(pnt, surfaceCoordCache.value().cordFace);
     if (Proj.NbPoints() > 0 && Proj.LowerDistance() < tolerance) {
         return true;
     }
@@ -915,9 +910,10 @@ bool CCPACSWingSegment::GetIsOn(const gp_Pnt& pnt)
 
 void CCPACSWingSegment::MakeChordSurface() const
 {
-    if (surfaceCache.chordsurfaceValid) {
+    if (surfaceCoordCache) {
         return;
     }
+    surfaceCoordCache.emplace();
     
     CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
     CCPACSWingProfile& outerProfile = outerConnection.GetProfile();
@@ -934,22 +930,20 @@ void CCPACSWingSegment::MakeChordSurface() const
     outer_lep = transformProfilePoint(wing->GetTransformationMatrix(), outerConnection, outer_lep);
     outer_tep = transformProfilePoint(wing->GetTransformationMatrix(), outerConnection, outer_tep);
 
-    surfaceCache.cordSurface.setQuadriangle(inner_lep.XYZ(), outer_lep.XYZ(), inner_tep.XYZ(), outer_tep.XYZ());
+    surfaceCoordCache->cordSurface.setQuadriangle(inner_lep.XYZ(), outer_lep.XYZ(), inner_tep.XYZ(), outer_tep.XYZ());
 
     Handle(Geom_TrimmedCurve) innerEdge = GC_MakeSegment(inner_lep, inner_tep).Value();
     Handle(Geom_TrimmedCurve) outerEdge = GC_MakeSegment(outer_lep, outer_tep).Value();
-    surfaceCache.cordFace = GeomFill::Surface(innerEdge, outerEdge);
-
-    surfaceCache.chordsurfaceValid = true;
+    surfaceCoordCache->cordFace = GeomFill::Surface(innerEdge, outerEdge);
 }
 
 CTiglPointTranslator& CCPACSWingSegment::ChordFace() const
 {
-    if (!surfaceCache.chordsurfaceValid) {
+    if (!surfaceCoordCache) {
         MakeChordSurface();
     }
 
-    return surfaceCache.cordSurface;
+    return surfaceCoordCache.value().cordSurface;
 }
 
 // Builds upper/lower surfaces as shapes
@@ -957,9 +951,10 @@ CTiglPointTranslator& CCPACSWingSegment::ChordFace() const
 // To do so, we have to determine, what is up
 void CCPACSWingSegment::MakeSurfaces() const
 {
-    if (surfaceCache.valid) {
+    if (surfaceCache) {
         return;
     }
+    surfaceCache.emplace();
 
     TopoDS_Edge iu_wire = innerConnection.GetProfile().GetUpperWire();
     TopoDS_Edge ou_wire = outerConnection.GetProfile().GetUpperWire();
@@ -1008,38 +1003,38 @@ void CCPACSWingSegment::MakeSurfaces() const
 #ifndef NDEBUG
     assert(faceExplorer.More());
 #endif
-    surfaceCache.upperShape = faceExplorer.Current();
-    surfaceCache.upperSurface = BRep_Tool::Surface(TopoDS::Face(surfaceCache.upperShape));
+    surfaceCache.value().upperShape = faceExplorer.Current();
+    surfaceCache.value().upperSurface = BRep_Tool::Surface(TopoDS::Face(surfaceCache.value().upperShape));
 
     faceExplorer.Init(upperSectionsLocal.Shape(), TopAbs_FACE);
 #ifndef NDEBUG
     assert(faceExplorer.More());
 #endif
-    surfaceCache.upperShapeLocal = faceExplorer.Current();
-    surfaceCache.upperSurfaceLocal = BRep_Tool::Surface(TopoDS::Face(surfaceCache.upperShapeLocal));
+    surfaceCache.value().upperShapeLocal = faceExplorer.Current();
+    surfaceCache.value().upperSurfaceLocal = BRep_Tool::Surface(TopoDS::Face(surfaceCache.value().upperShapeLocal));
 
     faceExplorer.Init(lowerSections.Shape(), TopAbs_FACE);
 #ifndef NDEBUG
     assert(faceExplorer.More());
 #endif
-    surfaceCache.lowerShape = faceExplorer.Current();
-    surfaceCache.lowerSurface = BRep_Tool::Surface(TopoDS::Face(surfaceCache.lowerShape));
+    surfaceCache.value().lowerShape = faceExplorer.Current();
+    surfaceCache.value().lowerSurface = BRep_Tool::Surface(TopoDS::Face(surfaceCache.value().lowerShape));
 
     faceExplorer.Init(lowerSectionsLocal.Shape(), TopAbs_FACE);
 #ifndef NDEBUG
     assert(faceExplorer.More());
 #endif
-    surfaceCache.lowerShapeLocal = faceExplorer.Current();
-    surfaceCache.lowerSurfaceLocal = BRep_Tool::Surface(TopoDS::Face(surfaceCache.lowerShapeLocal));
+    surfaceCache.value().lowerShapeLocal = faceExplorer.Current();
+    surfaceCache.value().lowerSurfaceLocal = BRep_Tool::Surface(TopoDS::Face(surfaceCache.value().lowerShapeLocal));
 
     // compute total surface area
     GProp_GProps sprops;
-    BRepGProp::SurfaceProperties(surfaceCache.upperShape, sprops);
+    BRepGProp::SurfaceProperties(surfaceCache.value().upperShape, sprops);
     double upperArea = sprops.Mass();
-    BRepGProp::SurfaceProperties(surfaceCache.lowerShape, sprops);
+    BRepGProp::SurfaceProperties(surfaceCache.value().lowerShape, sprops);
     double lowerArea = sprops.Mass();
     
-    surfaceCache.mySurfaceArea = upperArea + lowerArea;
+    surfaceCache.value().mySurfaceArea = upperArea + lowerArea;
 
     // compute shapes for opened profiles
     TopoDS_Edge iu_wire_open = innerConnection.GetProfile().GetUpperWireOpened();
@@ -1071,13 +1066,13 @@ void CCPACSWingSegment::MakeSurfaces() const
 #ifndef NDEBUG
     assert(faceExplorer.More());
 #endif
-    surfaceCache.upperShapeOpened = faceExplorer.Current();
+    surfaceCache.value().upperShapeOpened = faceExplorer.Current();
 
     faceExplorer.Init(lowerSectionsOpened.Shape(), TopAbs_FACE);
 #ifndef NDEBUG
     assert(faceExplorer.More());
 #endif
-    surfaceCache.lowerShapeOpened = faceExplorer.Current();
+    surfaceCache.value().lowerShapeOpened = faceExplorer.Current();
 
     CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
     CCPACSWingProfile& outerProfile = outerConnection.GetProfile();
@@ -1096,9 +1091,7 @@ void CCPACSWingSegment::MakeSurfaces() const
     teGenerator.AddWire(BRepBuilderAPI_MakeWire(innerTEWire));
     teGenerator.AddWire(BRepBuilderAPI_MakeWire(outerTEWire));
     teGenerator.Build();
-    surfaceCache.trailingEdgeShape = teGenerator.Shape();
-
-    surfaceCache.valid = true;
+    surfaceCache.value().trailingEdgeShape = teGenerator.Shape();
 }
 
 
@@ -1145,16 +1138,16 @@ double CCPACSWingSegment::GetReferenceArea(TiglSymmetryAxis symPlane) const
 // Returns the lower Surface of this Segment
 Handle(Geom_Surface) CCPACSWingSegment::GetLowerSurface(TiglCoordinateSystem referenceCS) const
 {
-    if (!surfaceCache.valid) {
+    if (!surfaceCache) {
         MakeSurfaces();
     }
 
     switch (referenceCS) {
     case WING_COORDINATE_SYSTEM:
-        return surfaceCache.lowerSurfaceLocal;
+        return surfaceCache.value().lowerSurfaceLocal;
         break;
     case GLOBAL_COORDINATE_SYSTEM:
-        return surfaceCache.lowerSurface;
+        return surfaceCache.value().lowerSurface;
         break;
     default:
         throw CTiglError("Invalid coordinate system passed to CCPACSWingSegment::GetLowerSurface");
@@ -1164,16 +1157,16 @@ Handle(Geom_Surface) CCPACSWingSegment::GetLowerSurface(TiglCoordinateSystem ref
 // Returns the upper Surface of this Segment
 Handle(Geom_Surface) CCPACSWingSegment::GetUpperSurface(TiglCoordinateSystem referenceCS) const
 {
-    if (!surfaceCache.valid) {
+    if (!surfaceCache) {
         MakeSurfaces();
     }
 
     switch (referenceCS) {
     case WING_COORDINATE_SYSTEM:
-        return surfaceCache.upperSurfaceLocal;
+        return surfaceCache.value().upperSurfaceLocal;
         break;
     case GLOBAL_COORDINATE_SYSTEM:
-        return surfaceCache.upperSurface;
+        return surfaceCache.value().upperSurface;
         break;
     default:
         throw CTiglError("Invalid coordinate system passed to CCPACSWingSegment::GetUpperSurface");
@@ -1183,16 +1176,16 @@ Handle(Geom_Surface) CCPACSWingSegment::GetUpperSurface(TiglCoordinateSystem ref
 // Returns the upper wing shape of this Segment
 TopoDS_Shape& CCPACSWingSegment::GetUpperShape(TiglCoordinateSystem referenceCS) const
 {
-    if (!surfaceCache.valid) {
+    if (!surfaceCache) {
         MakeSurfaces();
     }
 
     switch (referenceCS) {
     case WING_COORDINATE_SYSTEM:
-        return surfaceCache.upperShapeLocal;
+        return surfaceCache.value().upperShapeLocal;
         break;
     case GLOBAL_COORDINATE_SYSTEM:
-        return surfaceCache.upperShape;
+        return surfaceCache.value().upperShape;
         break;
     default:
         throw CTiglError("Invalid coordinate system passed to CCPACSWingSegment::GetUpperShape");
@@ -1202,16 +1195,16 @@ TopoDS_Shape& CCPACSWingSegment::GetUpperShape(TiglCoordinateSystem referenceCS)
 // Returns the lower wing shape of this Segment
 TopoDS_Shape& CCPACSWingSegment::GetLowerShape(TiglCoordinateSystem referenceCS) const
 {
-    if (!surfaceCache.valid) {
+    if (!surfaceCache) {
         MakeSurfaces();
     }
 
     switch (referenceCS) {
     case WING_COORDINATE_SYSTEM:
-        return surfaceCache.lowerShapeLocal;
+        return surfaceCache.value().lowerShapeLocal;
         break;
     case GLOBAL_COORDINATE_SYSTEM:
-        return surfaceCache.lowerShape;
+        return surfaceCache.value().lowerShape;
         break;
     default:
         throw CTiglError("Invalid coordinate system passed to CCPACSWingSegment::GetLowerShape");

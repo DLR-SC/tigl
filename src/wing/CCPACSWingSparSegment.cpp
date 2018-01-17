@@ -63,10 +63,10 @@ CCPACSWingSparSegment::CCPACSWingSparSegment(CCPACSWingSparSegments* sparSegment
 
 void CCPACSWingSparSegment::Invalidate()
 {
-    auxGeomCache.valid = false;
-    geometryCache.valid = false;
-    splittedGeomCache.valid = false;
-    sparCapsCache.valid = false;
+    auxGeomCache = boost::none;
+    geometryCache = boost::none;
+    splittedGeomCache = boost::none;
+    sparCapsCache = boost::none;
 }
 
 CCPACSWingSparPosition& CCPACSWingSparSegment::GetSparPosition(std::string uID)
@@ -150,27 +150,27 @@ void CCPACSWingSparSegment::GetEtaXsi(int positionIndex, double& eta, double& xs
 
 TopoDS_Wire CCPACSWingSparSegment::GetSparMidplaneLine() const
 {
-    if (!auxGeomCache.valid) {
+    if (!auxGeomCache) {
         BuildAuxiliaryGeometry();
     }
-    assert(auxGeomCache.valid);
+    assert(auxGeomCache);
 
-    return auxGeomCache.sparMidplaneLine;
+    return auxGeomCache.value().sparMidplaneLine;
 }
 
 TopoDS_Shape CCPACSWingSparSegment::GetSparGeometry(TiglCoordinateSystem referenceCS) const
 {
-    if (!geometryCache.valid) {
+    if (!geometryCache) {
         BuildGeometry();
     }
-    assert(geometryCache.valid);
+    assert(geometryCache);
 
     switch (referenceCS) {
     case WING_COORDINATE_SYSTEM:
-        return geometryCache.shape;
+        return geometryCache.value().shape;
         break;
     case GLOBAL_COORDINATE_SYSTEM:
-        return ApplyWingTransformation(sparsNode, geometryCache.shape);
+        return ApplyWingTransformation(sparsNode, geometryCache.value().shape);
         break;
     default:
         throw CTiglError("Unsupported Coordinate System passed to CCPACSWingSparSegment::GetSparGeometry!");
@@ -179,13 +179,13 @@ TopoDS_Shape CCPACSWingSparSegment::GetSparGeometry(TiglCoordinateSystem referen
 
 TopoDS_Shape CCPACSWingSparSegment::GetSplittedSparGeometry(TiglCoordinateSystem referenceCS) const
 {
-    if (!splittedGeomCache.valid) {
+    if (!splittedGeomCache) {
         BuildSplittedSparGeometry();
     }
-    assert(splittedGeomCache.valid);
+    assert(splittedGeomCache);
 
     TopoDS_Shape splittedSparShape;
-    splittedSparShape = splittedGeomCache.shape;
+    splittedSparShape = splittedGeomCache.value().shape;
 
     switch (referenceCS) {
     case WING_COORDINATE_SYSTEM:
@@ -201,17 +201,17 @@ TopoDS_Shape CCPACSWingSparSegment::GetSplittedSparGeometry(TiglCoordinateSystem
 
 TopoDS_Shape CCPACSWingSparSegment::GetSparCutGeometry(TiglCoordinateSystem referenceCS) const
 {
-    if (!auxGeomCache.valid) {
+    if (!auxGeomCache) {
         BuildAuxiliaryGeometry();
     }
-    assert(auxGeomCache.valid);
+    assert(auxGeomCache);
 
     switch (referenceCS) {
     case WING_COORDINATE_SYSTEM:
-        return auxGeomCache.sparCutShape;
+        return auxGeomCache.value().sparCutShape;
         break;
     case GLOBAL_COORDINATE_SYSTEM:
-        return ApplyWingTransformation(sparsNode, auxGeomCache.sparCutShape);
+        return ApplyWingTransformation(sparsNode, auxGeomCache.value().sparCutShape);
         break;
     default:
         throw CTiglError("Unsupported Coordinate System passed to CCPACSWingSparSegment::GetSparCutGeometry!");
@@ -234,17 +234,17 @@ bool CCPACSWingSparSegment::HasCap(SparCapSide side) const
 
 TopoDS_Shape CCPACSWingSparSegment::GetSparCapsGeometry(SparCapSide side, TiglCoordinateSystem referenceCS) const
 {
-    if (!sparCapsCache.valid) {
+    if (!sparCapsCache) {
         BuildSparCapsGeometry();
     }
-    assert(sparCapsCache.valid);
+    assert(sparCapsCache);
 
     TopoDS_Shape capsShape;
     if (side == UPPER) {
-        capsShape = sparCapsCache.upperCapsShape;
+        capsShape = sparCapsCache.value().upperCapsShape;
     }
     else { // side == LOWER
-        capsShape = sparCapsCache.lowerCapsShape;
+        capsShape = sparCapsCache.value().lowerCapsShape;
     }
 
     switch (referenceCS) {
@@ -344,12 +344,12 @@ void CCPACSWingSparSegment::BuildAuxiliaryGeometry() const
         sparMidplaneLineBuilder.Add(sparMidplaneLinePart);
     }
 
+    auxGeomCache.emplace();
     // store spar midplane line (required for rib position computation)
-    auxGeomCache.sparMidplaneLine = sparMidplaneLineBuilder.Wire();
+    auxGeomCache->sparMidplaneLine = sparMidplaneLineBuilder.Wire();
     // and generate sewed cut geometry
     cutGeomSewer.Perform();
-    auxGeomCache.sparCutShape = cutGeomSewer.SewedShape();
-    auxGeomCache.valid = true;
+    auxGeomCache->sparCutShape = cutGeomSewer.SewedShape();
 }
 
 void CCPACSWingSparSegment::BuildGeometry() const
@@ -396,20 +396,20 @@ void CCPACSWingSparSegment::BuildGeometry() const
 
     // return spar geometry
     sewing.Perform();
-    geometryCache.shape = sewing.SewedShape();
-    geometryCache.valid = true;
+    geometryCache.emplace();
+    geometryCache->shape = sewing.SewedShape();
 }
 
 // Builds the spar geometry splitted with the ribs
 void CCPACSWingSparSegment::BuildSplittedSparGeometry() const
 {
     // first build the spar geometry itself
-    if (!geometryCache.valid) {
+    if (!geometryCache) {
         BuildGeometry();
     }
-    assert(geometryCache.valid);
+    assert(geometryCache);
     // initialize splitted spar geometry with unsplitted one
-    TopoDS_Shape splittedSparGeometry = geometryCache.shape;
+    TopoDS_Shape splittedSparGeometry = geometryCache.value().shape;
 
     // next iterate over all ribs from the component segment
     const CCPACSWingCSStructure& structure = *sparsNode.GetParent();
@@ -429,8 +429,8 @@ void CCPACSWingSparSegment::BuildSplittedSparGeometry() const
     // split the spar geometry with the rib split geometry
     splittedSparGeometry = SplitShape(splittedSparGeometry, compound);
 
-    splittedGeomCache.shape = splittedSparGeometry;
-    splittedGeomCache.valid = true;
+    splittedGeomCache.emplace();
+    splittedGeomCache->shape = splittedSparGeometry;
 }
 
 void CCPACSWingSparSegment::BuildSparCapsGeometry() const
@@ -472,9 +472,9 @@ void CCPACSWingSparSegment::BuildSparCapsGeometry() const
         }
     }
 
-    sparCapsCache.upperCapsShape = upperCompound;
-    sparCapsCache.lowerCapsShape = lowerCompound;
-    sparCapsCache.valid = true;
+    sparCapsCache.emplace();
+    sparCapsCache->upperCapsShape = upperCompound;
+    sparCapsCache->lowerCapsShape = lowerCompound;
 }
 
 // Builds the cutting geometry for the spar as well as the midplane line
