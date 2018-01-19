@@ -22,6 +22,7 @@
 #include <CCPACSFuselageProfiles.h>
 #include <CCPACSGuideCurveProfiles.h>
 #include <CCPACSRotorProfiles.h>
+#include <CCPACSStructuralProfiles.h>
 #include <CCPACSWingProfiles.h>
 #include <string>
 #include <tixi.h>
@@ -62,6 +63,9 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CCPACSRotorProfiles>& GetRotorAirfoils() const;
         TIGL_EXPORT virtual boost::optional<CCPACSRotorProfiles>& GetRotorAirfoils();
 
+        TIGL_EXPORT virtual const boost::optional<CCPACSStructuralProfiles>& GetStructuralProfiles() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSStructuralProfiles>& GetStructuralProfiles();
+
         TIGL_EXPORT virtual CCPACSFuselageProfiles& GetFuselageProfiles(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveFuselageProfiles();
 
@@ -74,6 +78,9 @@ namespace generated
         TIGL_EXPORT virtual CCPACSRotorProfiles& GetRotorAirfoils(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveRotorAirfoils();
 
+        TIGL_EXPORT virtual CCPACSStructuralProfiles& GetStructuralProfiles(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveStructuralProfiles();
+
     protected:
         CTiglUIDManager* m_uidMgr;
 
@@ -81,6 +88,7 @@ namespace generated
         boost::optional<CCPACSWingProfiles>       m_wingAirfoils;
         boost::optional<CCPACSGuideCurveProfiles> m_guideCurves;
         boost::optional<CCPACSRotorProfiles>      m_rotorAirfoils;
+        boost::optional<CCPACSStructuralProfiles> m_structuralProfiles;
 
     private:
 #ifdef HAVE_CPP11
