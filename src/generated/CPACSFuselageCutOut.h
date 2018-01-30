@@ -52,11 +52,9 @@ namespace tigl
             TIGL_EXPORT virtual void SetUID(const std::string& value);
             
             TIGL_EXPORT virtual const boost::optional<std::string>& GetName() const;
-            TIGL_EXPORT virtual void SetName(const std::string& value);
             TIGL_EXPORT virtual void SetName(const boost::optional<std::string>& value);
             
             TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
-            TIGL_EXPORT virtual void SetDescription(const std::string& value);
             TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
             
             TIGL_EXPORT virtual const double& GetPositionX() const;
@@ -84,11 +82,9 @@ namespace tigl
             TIGL_EXPORT virtual void SetDeltaZ(const double& value);
             
             TIGL_EXPORT virtual const boost::optional<double>& GetDeltaY1() const;
-            TIGL_EXPORT virtual void SetDeltaY1(const double& value);
             TIGL_EXPORT virtual void SetDeltaY1(const boost::optional<double>& value);
             
             TIGL_EXPORT virtual const boost::optional<double>& GetDeltaZ1() const;
-            TIGL_EXPORT virtual void SetDeltaZ1(const double& value);
             TIGL_EXPORT virtual void SetDeltaZ1(const boost::optional<double>& value);
             
             TIGL_EXPORT virtual const double& GetFilletRadius() const;

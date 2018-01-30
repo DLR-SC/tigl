@@ -144,11 +144,6 @@ namespace tigl
             return m_refType;
         }
         
-        void CPACSPointAbsRel::SetRefType(const ECPACSTranslationType& value)
-        {
-            m_refType = value;
-        }
-        
         void CPACSPointAbsRel::SetRefType(const boost::optional<ECPACSTranslationType>& value)
         {
             m_refType = value;
@@ -157,11 +152,6 @@ namespace tigl
         const boost::optional<double>& CPACSPointAbsRel::GetX() const
         {
             return m_x;
-        }
-        
-        void CPACSPointAbsRel::SetX(const double& value)
-        {
-            m_x = value;
         }
         
         void CPACSPointAbsRel::SetX(const boost::optional<double>& value)
@@ -174,11 +164,6 @@ namespace tigl
             return m_y;
         }
         
-        void CPACSPointAbsRel::SetY(const double& value)
-        {
-            m_y = value;
-        }
-        
         void CPACSPointAbsRel::SetY(const boost::optional<double>& value)
         {
             m_y = value;
@@ -187,11 +172,6 @@ namespace tigl
         const boost::optional<double>& CPACSPointAbsRel::GetZ() const
         {
             return m_z;
-        }
-        
-        void CPACSPointAbsRel::SetZ(const double& value)
-        {
-            m_z = value;
         }
         
         void CPACSPointAbsRel::SetZ(const boost::optional<double>& value)

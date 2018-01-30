@@ -160,11 +160,6 @@ namespace tigl
             return m_name;
         }
         
-        void CPACSRotorHub::SetName(const std::string& value)
-        {
-            m_name = value;
-        }
-        
         void CPACSRotorHub::SetName(const boost::optional<std::string>& value)
         {
             m_name = value;
@@ -175,11 +170,6 @@ namespace tigl
             return m_description;
         }
         
-        void CPACSRotorHub::SetDescription(const std::string& value)
-        {
-            m_description = value;
-        }
-        
         void CPACSRotorHub::SetDescription(const boost::optional<std::string>& value)
         {
             m_description = value;
@@ -188,11 +178,6 @@ namespace tigl
         const boost::optional<TiglRotorHubType>& CPACSRotorHub::GetType() const
         {
             return m_type;
-        }
-        
-        void CPACSRotorHub::SetType(const TiglRotorHubType& value)
-        {
-            m_type = value;
         }
         
         void CPACSRotorHub::SetType(const boost::optional<TiglRotorHubType>& value)

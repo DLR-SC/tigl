@@ -140,15 +140,6 @@ namespace tigl
             return m_uID;
         }
         
-        void CPACSSparSegment::SetUID(const std::string& value)
-        {
-            if (m_uidMgr) {
-                if (m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
-                m_uidMgr->RegisterObject(value, *this);
-            }
-            m_uID = value;
-        }
-        
         void CPACSSparSegment::SetUID(const boost::optional<std::string>& value)
         {
             if (m_uidMgr) {

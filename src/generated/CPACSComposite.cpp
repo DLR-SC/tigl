@@ -152,11 +152,6 @@ namespace tigl
             return m_description;
         }
         
-        void CPACSComposite::SetDescription(const std::string& value)
-        {
-            m_description = value;
-        }
-        
         void CPACSComposite::SetDescription(const boost::optional<std::string>& value)
         {
             m_description = value;
@@ -165,11 +160,6 @@ namespace tigl
         const boost::optional<double>& CPACSComposite::GetOffset() const
         {
             return m_offset;
-        }
-        
-        void CPACSComposite::SetOffset(const double& value)
-        {
-            m_offset = value;
         }
         
         void CPACSComposite::SetOffset(const boost::optional<double>& value)

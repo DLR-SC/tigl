@@ -52,7 +52,6 @@ namespace tigl
             TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
             
             TIGL_EXPORT virtual const boost::optional<std::string>& GetUID() const;
-            TIGL_EXPORT virtual void SetUID(const std::string& value);
             TIGL_EXPORT virtual void SetUID(const boost::optional<std::string>& value);
             
             TIGL_EXPORT virtual const std::string& GetName() const;

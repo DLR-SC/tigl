@@ -200,11 +200,6 @@ namespace tigl
             return m_description;
         }
         
-        void CPACSPositioning::SetDescription(const std::string& value)
-        {
-            m_description = value;
-        }
-        
         void CPACSPositioning::SetDescription(const boost::optional<std::string>& value)
         {
             m_description = value;
@@ -243,11 +238,6 @@ namespace tigl
         const boost::optional<std::string>& CPACSPositioning::GetFromSectionUID() const
         {
             return m_fromSectionUID;
-        }
-        
-        void CPACSPositioning::SetFromSectionUID(const std::string& value)
-        {
-            m_fromSectionUID = value;
         }
         
         void CPACSPositioning::SetFromSectionUID(const boost::optional<std::string>& value)

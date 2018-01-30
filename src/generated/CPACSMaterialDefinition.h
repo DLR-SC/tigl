@@ -49,23 +49,18 @@ namespace tigl
             TIGL_EXPORT bool ValidateChoices() const;
             
             TIGL_EXPORT virtual const boost::optional<std::string>& GetCompositeUID_choice1() const;
-            TIGL_EXPORT virtual void SetCompositeUID_choice1(const std::string& value);
             TIGL_EXPORT virtual void SetCompositeUID_choice1(const boost::optional<std::string>& value);
             
             TIGL_EXPORT virtual const boost::optional<double>& GetOrthotropyDirection_choice1() const;
-            TIGL_EXPORT virtual void SetOrthotropyDirection_choice1(const double& value);
             TIGL_EXPORT virtual void SetOrthotropyDirection_choice1(const boost::optional<double>& value);
             
             TIGL_EXPORT virtual const boost::optional<double>& GetThicknessScaling_choice1() const;
-            TIGL_EXPORT virtual void SetThicknessScaling_choice1(const double& value);
             TIGL_EXPORT virtual void SetThicknessScaling_choice1(const boost::optional<double>& value);
             
             TIGL_EXPORT virtual const boost::optional<std::string>& GetMaterialUID_choice2() const;
-            TIGL_EXPORT virtual void SetMaterialUID_choice2(const std::string& value);
             TIGL_EXPORT virtual void SetMaterialUID_choice2(const boost::optional<std::string>& value);
             
             TIGL_EXPORT virtual const boost::optional<double>& GetThickness_choice2() const;
-            TIGL_EXPORT virtual void SetThickness_choice2(const double& value);
             TIGL_EXPORT virtual void SetThickness_choice2(const boost::optional<double>& value);
             
         protected:

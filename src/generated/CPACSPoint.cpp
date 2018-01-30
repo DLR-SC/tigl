@@ -130,11 +130,6 @@ namespace tigl
             return m_x;
         }
         
-        void CPACSPoint::SetX(const double& value)
-        {
-            m_x = value;
-        }
-        
         void CPACSPoint::SetX(const boost::optional<double>& value)
         {
             m_x = value;
@@ -145,11 +140,6 @@ namespace tigl
             return m_y;
         }
         
-        void CPACSPoint::SetY(const double& value)
-        {
-            m_y = value;
-        }
-        
         void CPACSPoint::SetY(const boost::optional<double>& value)
         {
             m_y = value;
@@ -158,11 +148,6 @@ namespace tigl
         const boost::optional<double>& CPACSPoint::GetZ() const
         {
             return m_z;
-        }
-        
-        void CPACSPoint::SetZ(const double& value)
-        {
-            m_z = value;
         }
         
         void CPACSPoint::SetZ(const boost::optional<double>& value)

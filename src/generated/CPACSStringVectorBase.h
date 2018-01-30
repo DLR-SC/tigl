@@ -51,31 +51,24 @@ namespace tigl
             TIGL_EXPORT virtual void SetMapType(const std::string& value);
             
             TIGL_EXPORT virtual const boost::optional<std::string>& GetMu() const;
-            TIGL_EXPORT virtual void SetMu(const std::string& value);
             TIGL_EXPORT virtual void SetMu(const boost::optional<std::string>& value);
             
             TIGL_EXPORT virtual const boost::optional<std::string>& GetDelta() const;
-            TIGL_EXPORT virtual void SetDelta(const std::string& value);
             TIGL_EXPORT virtual void SetDelta(const boost::optional<std::string>& value);
             
             TIGL_EXPORT virtual const boost::optional<std::string>& GetA() const;
-            TIGL_EXPORT virtual void SetA(const std::string& value);
             TIGL_EXPORT virtual void SetA(const boost::optional<std::string>& value);
             
             TIGL_EXPORT virtual const boost::optional<std::string>& GetB() const;
-            TIGL_EXPORT virtual void SetB(const std::string& value);
             TIGL_EXPORT virtual void SetB(const boost::optional<std::string>& value);
             
             TIGL_EXPORT virtual const boost::optional<std::string>& GetC() const;
-            TIGL_EXPORT virtual void SetC(const std::string& value);
             TIGL_EXPORT virtual void SetC(const boost::optional<std::string>& value);
             
             TIGL_EXPORT virtual const boost::optional<std::string>& GetV() const;
-            TIGL_EXPORT virtual void SetV(const std::string& value);
             TIGL_EXPORT virtual void SetV(const boost::optional<std::string>& value);
             
             TIGL_EXPORT virtual const boost::optional<std::string>& GetW() const;
-            TIGL_EXPORT virtual void SetW(const std::string& value);
             TIGL_EXPORT virtual void SetW(const boost::optional<std::string>& value);
             
             TIGL_EXPORT virtual const std::string& GetSimpleContent() const;

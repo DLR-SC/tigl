@@ -308,11 +308,6 @@ namespace tigl
             return m_description;
         }
         
-        void CPACSGuideCurve::SetDescription(const std::string& value)
-        {
-            m_description = value;
-        }
-        
         void CPACSGuideCurve::SetDescription(const boost::optional<std::string>& value)
         {
             m_description = value;
@@ -343,11 +338,6 @@ namespace tigl
             return m_fromGuideCurveUID_choice1;
         }
         
-        void CPACSGuideCurve::SetFromGuideCurveUID_choice1(const std::string& value)
-        {
-            m_fromGuideCurveUID_choice1 = value;
-        }
-        
         void CPACSGuideCurve::SetFromGuideCurveUID_choice1(const boost::optional<std::string>& value)
         {
             m_fromGuideCurveUID_choice1 = value;
@@ -358,11 +348,6 @@ namespace tigl
             return m_continuity_choice1;
         }
         
-        void CPACSGuideCurve::SetContinuity_choice1(const CPACSGuideCurve_continuity& value)
-        {
-            m_continuity_choice1 = value;
-        }
-        
         void CPACSGuideCurve::SetContinuity_choice1(const boost::optional<CPACSGuideCurve_continuity>& value)
         {
             m_continuity_choice1 = value;
@@ -371,11 +356,6 @@ namespace tigl
         const boost::optional<double>& CPACSGuideCurve::GetFromRelativeCircumference_choice2() const
         {
             return m_fromRelativeCircumference_choice2;
-        }
-        
-        void CPACSGuideCurve::SetFromRelativeCircumference_choice2(const double& value)
-        {
-            m_fromRelativeCircumference_choice2 = value;
         }
         
         void CPACSGuideCurve::SetFromRelativeCircumference_choice2(const boost::optional<double>& value)

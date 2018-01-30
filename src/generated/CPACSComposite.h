@@ -56,11 +56,9 @@ namespace tigl
             TIGL_EXPORT virtual void SetName(const std::string& value);
             
             TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
-            TIGL_EXPORT virtual void SetDescription(const std::string& value);
             TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
             
             TIGL_EXPORT virtual const boost::optional<double>& GetOffset() const;
-            TIGL_EXPORT virtual void SetOffset(const double& value);
             TIGL_EXPORT virtual void SetOffset(const boost::optional<double>& value);
             
             TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSCompositeLayer> >& GetCompositeLayers() const;

@@ -55,15 +55,12 @@ namespace tigl
             TIGL_EXPORT virtual void SetUID(const std::string& value);
             
             TIGL_EXPORT virtual const boost::optional<std::string>& GetName() const;
-            TIGL_EXPORT virtual void SetName(const std::string& value);
             TIGL_EXPORT virtual void SetName(const boost::optional<std::string>& value);
             
             TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
-            TIGL_EXPORT virtual void SetDescription(const std::string& value);
             TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
             
             TIGL_EXPORT virtual const boost::optional<TiglRotorHubType>& GetType() const;
-            TIGL_EXPORT virtual void SetType(const TiglRotorHubType& value);
             TIGL_EXPORT virtual void SetType(const boost::optional<TiglRotorHubType>& value);
             
             TIGL_EXPORT virtual const CCPACSRotorBladeAttachments& GetRotorBladeAttachments() const;

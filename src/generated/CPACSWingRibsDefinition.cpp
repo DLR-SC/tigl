@@ -206,15 +206,6 @@ namespace tigl
             return m_uID;
         }
         
-        void CPACSWingRibsDefinition::SetUID(const std::string& value)
-        {
-            if (m_uidMgr) {
-                if (m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
-                m_uidMgr->RegisterObject(value, *this);
-            }
-            m_uID = value;
-        }
-        
         void CPACSWingRibsDefinition::SetUID(const boost::optional<std::string>& value)
         {
             if (m_uidMgr) {
@@ -237,11 +228,6 @@ namespace tigl
         const boost::optional<std::string>& CPACSWingRibsDefinition::GetDescription() const
         {
             return m_description;
-        }
-        
-        void CPACSWingRibsDefinition::SetDescription(const std::string& value)
-        {
-            m_description = value;
         }
         
         void CPACSWingRibsDefinition::SetDescription(const boost::optional<std::string>& value)

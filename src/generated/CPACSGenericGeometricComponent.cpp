@@ -186,11 +186,6 @@ namespace tigl
             return m_symmetry;
         }
         
-        void CPACSGenericGeometricComponent::SetSymmetry(const TiglSymmetryAxis& value)
-        {
-            m_symmetry = value;
-        }
-        
         void CPACSGenericGeometricComponent::SetSymmetry(const boost::optional<TiglSymmetryAxis>& value)
         {
             m_symmetry = value;
@@ -211,11 +206,6 @@ namespace tigl
             return m_description;
         }
         
-        void CPACSGenericGeometricComponent::SetDescription(const std::string& value)
-        {
-            m_description = value;
-        }
-        
         void CPACSGenericGeometricComponent::SetDescription(const boost::optional<std::string>& value)
         {
             m_description = value;
@@ -224,11 +214,6 @@ namespace tigl
         const boost::optional<std::string>& CPACSGenericGeometricComponent::GetParentUID() const
         {
             return m_parentUID;
-        }
-        
-        void CPACSGenericGeometricComponent::SetParentUID(const std::string& value)
-        {
-            m_parentUID = value;
         }
         
         void CPACSGenericGeometricComponent::SetParentUID(const boost::optional<std::string>& value)

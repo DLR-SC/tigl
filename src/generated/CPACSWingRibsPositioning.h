@@ -65,35 +65,27 @@ namespace tigl
             TIGL_EXPORT virtual CCPACSWingRibRotation& GetRibRotation();
             
             TIGL_EXPORT virtual const boost::optional<double>& GetEtaStart_choice1() const;
-            TIGL_EXPORT virtual void SetEtaStart_choice1(const double& value);
             TIGL_EXPORT virtual void SetEtaStart_choice1(const boost::optional<double>& value);
             
             TIGL_EXPORT virtual const boost::optional<std::string>& GetElementStartUID_choice2() const;
-            TIGL_EXPORT virtual void SetElementStartUID_choice2(const std::string& value);
             TIGL_EXPORT virtual void SetElementStartUID_choice2(const boost::optional<std::string>& value);
             
             TIGL_EXPORT virtual const boost::optional<std::string>& GetSparPositionStartUID_choice3() const;
-            TIGL_EXPORT virtual void SetSparPositionStartUID_choice3(const std::string& value);
             TIGL_EXPORT virtual void SetSparPositionStartUID_choice3(const boost::optional<std::string>& value);
             
             TIGL_EXPORT virtual const boost::optional<double>& GetEtaEnd_choice1() const;
-            TIGL_EXPORT virtual void SetEtaEnd_choice1(const double& value);
             TIGL_EXPORT virtual void SetEtaEnd_choice1(const boost::optional<double>& value);
             
             TIGL_EXPORT virtual const boost::optional<std::string>& GetElementEndUID_choice2() const;
-            TIGL_EXPORT virtual void SetElementEndUID_choice2(const std::string& value);
             TIGL_EXPORT virtual void SetElementEndUID_choice2(const boost::optional<std::string>& value);
             
             TIGL_EXPORT virtual const boost::optional<std::string>& GetSparPositionEndUID_choice3() const;
-            TIGL_EXPORT virtual void SetSparPositionEndUID_choice3(const std::string& value);
             TIGL_EXPORT virtual void SetSparPositionEndUID_choice3(const boost::optional<std::string>& value);
             
             TIGL_EXPORT virtual const boost::optional<double>& GetSpacing_choice1() const;
-            TIGL_EXPORT virtual void SetSpacing_choice1(const double& value);
             TIGL_EXPORT virtual void SetSpacing_choice1(const boost::optional<double>& value);
             
             TIGL_EXPORT virtual const boost::optional<int>& GetNumberOfRibs_choice2() const;
-            TIGL_EXPORT virtual void SetNumberOfRibs_choice2(const int& value);
             TIGL_EXPORT virtual void SetNumberOfRibs_choice2(const boost::optional<int>& value);
             
         protected:

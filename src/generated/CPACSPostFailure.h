@@ -47,42 +47,33 @@ namespace tigl
             TIGL_EXPORT bool ValidateChoices() const;
             
             TIGL_EXPORT virtual const boost::optional<std::string>& GetName() const;
-            TIGL_EXPORT virtual void SetName(const std::string& value);
             TIGL_EXPORT virtual void SetName(const boost::optional<std::string>& value);
             
             TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
-            TIGL_EXPORT virtual void SetDescription(const std::string& value);
             TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
             
             TIGL_EXPORT virtual const boost::optional<std::string>& GetMaterialLaw() const;
-            TIGL_EXPORT virtual void SetMaterialLaw(const std::string& value);
             TIGL_EXPORT virtual void SetMaterialLaw(const boost::optional<std::string>& value);
             
             TIGL_EXPORT virtual const boost::optional<double>& GetPlasticEliminationStrain_choice1() const;
-            TIGL_EXPORT virtual void SetPlasticEliminationStrain_choice1(const double& value);
             TIGL_EXPORT virtual void SetPlasticEliminationStrain_choice1(const boost::optional<double>& value);
             
             TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSPlasticityCurvePoint> >& GetPlasticityCurvePoints_choice1() const;
             TIGL_EXPORT virtual std::vector<unique_ptr<CPACSPlasticityCurvePoint> >& GetPlasticityCurvePoints_choice1();
             
             TIGL_EXPORT virtual const boost::optional<double>& GetInitialEquivalentShearStrain_choice2() const;
-            TIGL_EXPORT virtual void SetInitialEquivalentShearStrain_choice2(const double& value);
             TIGL_EXPORT virtual void SetInitialEquivalentShearStrain_choice2(const boost::optional<double>& value);
             
             TIGL_EXPORT virtual const boost::optional<double>& GetIntermediateEquivalentShearStrain_choice2() const;
-            TIGL_EXPORT virtual void SetIntermediateEquivalentShearStrain_choice2(const double& value);
             TIGL_EXPORT virtual void SetIntermediateEquivalentShearStrain_choice2(const boost::optional<double>& value);
             
             TIGL_EXPORT virtual const boost::optional<double>& GetUltimateEquivalentShearStrain_choice2() const;
-            TIGL_EXPORT virtual void SetUltimateEquivalentShearStrain_choice2(const double& value);
             TIGL_EXPORT virtual void SetUltimateEquivalentShearStrain_choice2(const boost::optional<double>& value);
             
             TIGL_EXPORT virtual const boost::optional<double>& GetIntermediateDamage_choice2() const;
-            TIGL_EXPORT virtual void SetIntermediateDamage_choice2(const double& value);
             TIGL_EXPORT virtual void SetIntermediateDamage_choice2(const boost::optional<double>& value);
             
             TIGL_EXPORT virtual const boost::optional<double>& GetUltimateDamage_choice2() const;
-            TIGL_EXPORT virtual void SetUltimateDamage_choice2(const double& value);
             TIGL_EXPORT virtual void SetUltimateDamage_choice2(const boost::optional<double>& value);
             
             TIGL_EXPORT virtual CPACSPlasticityCurvePoint& AddPlasticityCurvePoint_choice1();

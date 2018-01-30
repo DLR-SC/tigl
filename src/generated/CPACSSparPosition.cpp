@@ -164,15 +164,6 @@ namespace tigl
             return m_uID;
         }
         
-        void CPACSSparPosition::SetUID(const std::string& value)
-        {
-            if (m_uidMgr) {
-                if (m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
-                m_uidMgr->RegisterObject(value, *this);
-            }
-            m_uID = value;
-        }
-        
         void CPACSSparPosition::SetUID(const boost::optional<std::string>& value)
         {
             if (m_uidMgr) {
@@ -197,11 +188,6 @@ namespace tigl
             return m_eta_choice1;
         }
         
-        void CPACSSparPosition::SetEta_choice1(const double& value)
-        {
-            m_eta_choice1 = value;
-        }
-        
         void CPACSSparPosition::SetEta_choice1(const boost::optional<double>& value)
         {
             m_eta_choice1 = value;
@@ -210,11 +196,6 @@ namespace tigl
         const boost::optional<std::string>& CPACSSparPosition::GetElementUID_choice2() const
         {
             return m_elementUID_choice2;
-        }
-        
-        void CPACSSparPosition::SetElementUID_choice2(const std::string& value)
-        {
-            m_elementUID_choice2 = value;
         }
         
         void CPACSSparPosition::SetElementUID_choice2(const boost::optional<std::string>& value)

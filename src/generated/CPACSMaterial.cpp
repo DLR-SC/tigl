@@ -859,11 +859,6 @@ namespace tigl
             return m_description;
         }
         
-        void CPACSMaterial::SetDescription(const std::string& value)
-        {
-            m_description = value;
-        }
-        
         void CPACSMaterial::SetDescription(const boost::optional<std::string>& value)
         {
             m_description = value;
@@ -904,11 +899,6 @@ namespace tigl
             return m_maxStrain;
         }
         
-        void CPACSMaterial::SetMaxStrain(const double& value)
-        {
-            m_maxStrain = value;
-        }
-        
         void CPACSMaterial::SetMaxStrain(const boost::optional<double>& value)
         {
             m_maxStrain = value;
@@ -917,11 +907,6 @@ namespace tigl
         const boost::optional<double>& CPACSMaterial::GetFatigueFactor() const
         {
             return m_fatigueFactor;
-        }
-        
-        void CPACSMaterial::SetFatigueFactor(const double& value)
-        {
-            m_fatigueFactor = value;
         }
         
         void CPACSMaterial::SetFatigueFactor(const boost::optional<double>& value)
@@ -942,11 +927,6 @@ namespace tigl
         const boost::optional<double>& CPACSMaterial::GetThermalConductivity() const
         {
             return m_thermalConductivity;
-        }
-        
-        void CPACSMaterial::SetThermalConductivity(const double& value)
-        {
-            m_thermalConductivity = value;
         }
         
         void CPACSMaterial::SetThermalConductivity(const boost::optional<double>& value)
@@ -979,11 +959,6 @@ namespace tigl
             return m_sig11_choice1;
         }
         
-        void CPACSMaterial::SetSig11_choice1(const double& value)
-        {
-            m_sig11_choice1 = value;
-        }
-        
         void CPACSMaterial::SetSig11_choice1(const boost::optional<double>& value)
         {
             m_sig11_choice1 = value;
@@ -992,11 +967,6 @@ namespace tigl
         const boost::optional<double>& CPACSMaterial::GetTau12_choice1() const
         {
             return m_tau12_choice1;
-        }
-        
-        void CPACSMaterial::SetTau12_choice1(const double& value)
-        {
-            m_tau12_choice1 = value;
         }
         
         void CPACSMaterial::SetTau12_choice1(const boost::optional<double>& value)
@@ -1009,11 +979,6 @@ namespace tigl
             return m_sig11yieldT_choice1;
         }
         
-        void CPACSMaterial::SetSig11yieldT_choice1(const double& value)
-        {
-            m_sig11yieldT_choice1 = value;
-        }
-        
         void CPACSMaterial::SetSig11yieldT_choice1(const boost::optional<double>& value)
         {
             m_sig11yieldT_choice1 = value;
@@ -1022,11 +987,6 @@ namespace tigl
         const boost::optional<double>& CPACSMaterial::GetSig11yieldC_choice1() const
         {
             return m_sig11yieldC_choice1;
-        }
-        
-        void CPACSMaterial::SetSig11yieldC_choice1(const double& value)
-        {
-            m_sig11yieldC_choice1 = value;
         }
         
         void CPACSMaterial::SetSig11yieldC_choice1(const boost::optional<double>& value)
@@ -1039,11 +999,6 @@ namespace tigl
             return m_k22_choice2;
         }
         
-        void CPACSMaterial::SetK22_choice2(const double& value)
-        {
-            m_k22_choice2 = value;
-        }
-        
         void CPACSMaterial::SetK22_choice2(const boost::optional<double>& value)
         {
             m_k22_choice2 = value;
@@ -1052,11 +1007,6 @@ namespace tigl
         const boost::optional<double>& CPACSMaterial::GetK23_choice2() const
         {
             return m_k23_choice2;
-        }
-        
-        void CPACSMaterial::SetK23_choice2(const double& value)
-        {
-            m_k23_choice2 = value;
         }
         
         void CPACSMaterial::SetK23_choice2(const boost::optional<double>& value)
@@ -1069,11 +1019,6 @@ namespace tigl
             return m_k66_choice2;
         }
         
-        void CPACSMaterial::SetK66_choice2(const double& value)
-        {
-            m_k66_choice2 = value;
-        }
-        
         void CPACSMaterial::SetK66_choice2(const boost::optional<double>& value)
         {
             m_k66_choice2 = value;
@@ -1082,11 +1027,6 @@ namespace tigl
         const boost::optional<double>& CPACSMaterial::GetSig11t_choice2() const
         {
             return m_sig11t_choice2;
-        }
-        
-        void CPACSMaterial::SetSig11t_choice2(const double& value)
-        {
-            m_sig11t_choice2 = value;
         }
         
         void CPACSMaterial::SetSig11t_choice2(const boost::optional<double>& value)
@@ -1099,11 +1039,6 @@ namespace tigl
             return m_sig11c_choice2;
         }
         
-        void CPACSMaterial::SetSig11c_choice2(const double& value)
-        {
-            m_sig11c_choice2 = value;
-        }
-        
         void CPACSMaterial::SetSig11c_choice2(const boost::optional<double>& value)
         {
             m_sig11c_choice2 = value;
@@ -1112,11 +1047,6 @@ namespace tigl
         const boost::optional<double>& CPACSMaterial::GetSig22t_choice2() const
         {
             return m_sig22t_choice2;
-        }
-        
-        void CPACSMaterial::SetSig22t_choice2(const double& value)
-        {
-            m_sig22t_choice2 = value;
         }
         
         void CPACSMaterial::SetSig22t_choice2(const boost::optional<double>& value)
@@ -1129,11 +1059,6 @@ namespace tigl
             return m_sig22c_choice2;
         }
         
-        void CPACSMaterial::SetSig22c_choice2(const double& value)
-        {
-            m_sig22c_choice2 = value;
-        }
-        
         void CPACSMaterial::SetSig22c_choice2(const boost::optional<double>& value)
         {
             m_sig22c_choice2 = value;
@@ -1142,11 +1067,6 @@ namespace tigl
         const boost::optional<double>& CPACSMaterial::GetTau12_choice2() const
         {
             return m_tau12_choice2;
-        }
-        
-        void CPACSMaterial::SetTau12_choice2(const double& value)
-        {
-            m_tau12_choice2 = value;
         }
         
         void CPACSMaterial::SetTau12_choice2(const boost::optional<double>& value)
@@ -1159,11 +1079,6 @@ namespace tigl
             return m_tau23_choice2;
         }
         
-        void CPACSMaterial::SetTau23_choice2(const double& value)
-        {
-            m_tau23_choice2 = value;
-        }
-        
         void CPACSMaterial::SetTau23_choice2(const boost::optional<double>& value)
         {
             m_tau23_choice2 = value;
@@ -1172,11 +1087,6 @@ namespace tigl
         const boost::optional<double>& CPACSMaterial::GetK13_choice3() const
         {
             return m_k13_choice3;
-        }
-        
-        void CPACSMaterial::SetK13_choice3(const double& value)
-        {
-            m_k13_choice3 = value;
         }
         
         void CPACSMaterial::SetK13_choice3(const boost::optional<double>& value)
@@ -1189,11 +1099,6 @@ namespace tigl
             return m_k22_choice3;
         }
         
-        void CPACSMaterial::SetK22_choice3(const double& value)
-        {
-            m_k22_choice3 = value;
-        }
-        
         void CPACSMaterial::SetK22_choice3(const boost::optional<double>& value)
         {
             m_k22_choice3 = value;
@@ -1202,11 +1107,6 @@ namespace tigl
         const boost::optional<double>& CPACSMaterial::GetK23_choice3() const
         {
             return m_k23_choice3;
-        }
-        
-        void CPACSMaterial::SetK23_choice3(const double& value)
-        {
-            m_k23_choice3 = value;
         }
         
         void CPACSMaterial::SetK23_choice3(const boost::optional<double>& value)
@@ -1219,11 +1119,6 @@ namespace tigl
             return m_k33_choice3;
         }
         
-        void CPACSMaterial::SetK33_choice3(const double& value)
-        {
-            m_k33_choice3 = value;
-        }
-        
         void CPACSMaterial::SetK33_choice3(const boost::optional<double>& value)
         {
             m_k33_choice3 = value;
@@ -1232,11 +1127,6 @@ namespace tigl
         const boost::optional<double>& CPACSMaterial::GetK44_choice3() const
         {
             return m_k44_choice3;
-        }
-        
-        void CPACSMaterial::SetK44_choice3(const double& value)
-        {
-            m_k44_choice3 = value;
         }
         
         void CPACSMaterial::SetK44_choice3(const boost::optional<double>& value)
@@ -1249,11 +1139,6 @@ namespace tigl
             return m_k55_choice3;
         }
         
-        void CPACSMaterial::SetK55_choice3(const double& value)
-        {
-            m_k55_choice3 = value;
-        }
-        
         void CPACSMaterial::SetK55_choice3(const boost::optional<double>& value)
         {
             m_k55_choice3 = value;
@@ -1262,11 +1147,6 @@ namespace tigl
         const boost::optional<double>& CPACSMaterial::GetK66_choice3() const
         {
             return m_k66_choice3;
-        }
-        
-        void CPACSMaterial::SetK66_choice3(const double& value)
-        {
-            m_k66_choice3 = value;
         }
         
         void CPACSMaterial::SetK66_choice3(const boost::optional<double>& value)
@@ -1279,11 +1159,6 @@ namespace tigl
             return m_sig11t_choice3;
         }
         
-        void CPACSMaterial::SetSig11t_choice3(const double& value)
-        {
-            m_sig11t_choice3 = value;
-        }
-        
         void CPACSMaterial::SetSig11t_choice3(const boost::optional<double>& value)
         {
             m_sig11t_choice3 = value;
@@ -1292,11 +1167,6 @@ namespace tigl
         const boost::optional<double>& CPACSMaterial::GetSig11c_choice3() const
         {
             return m_sig11c_choice3;
-        }
-        
-        void CPACSMaterial::SetSig11c_choice3(const double& value)
-        {
-            m_sig11c_choice3 = value;
         }
         
         void CPACSMaterial::SetSig11c_choice3(const boost::optional<double>& value)
@@ -1309,11 +1179,6 @@ namespace tigl
             return m_sig22t_choice3;
         }
         
-        void CPACSMaterial::SetSig22t_choice3(const double& value)
-        {
-            m_sig22t_choice3 = value;
-        }
-        
         void CPACSMaterial::SetSig22t_choice3(const boost::optional<double>& value)
         {
             m_sig22t_choice3 = value;
@@ -1322,11 +1187,6 @@ namespace tigl
         const boost::optional<double>& CPACSMaterial::GetSig22c_choice3() const
         {
             return m_sig22c_choice3;
-        }
-        
-        void CPACSMaterial::SetSig22c_choice3(const double& value)
-        {
-            m_sig22c_choice3 = value;
         }
         
         void CPACSMaterial::SetSig22c_choice3(const boost::optional<double>& value)
@@ -1339,11 +1199,6 @@ namespace tigl
             return m_sig33t_choice3;
         }
         
-        void CPACSMaterial::SetSig33t_choice3(const double& value)
-        {
-            m_sig33t_choice3 = value;
-        }
-        
         void CPACSMaterial::SetSig33t_choice3(const boost::optional<double>& value)
         {
             m_sig33t_choice3 = value;
@@ -1352,11 +1207,6 @@ namespace tigl
         const boost::optional<double>& CPACSMaterial::GetSig33c_choice3() const
         {
             return m_sig33c_choice3;
-        }
-        
-        void CPACSMaterial::SetSig33c_choice3(const double& value)
-        {
-            m_sig33c_choice3 = value;
         }
         
         void CPACSMaterial::SetSig33c_choice3(const boost::optional<double>& value)
@@ -1369,11 +1219,6 @@ namespace tigl
             return m_tau12_choice3;
         }
         
-        void CPACSMaterial::SetTau12_choice3(const double& value)
-        {
-            m_tau12_choice3 = value;
-        }
-        
         void CPACSMaterial::SetTau12_choice3(const boost::optional<double>& value)
         {
             m_tau12_choice3 = value;
@@ -1384,11 +1229,6 @@ namespace tigl
             return m_tau13_choice3;
         }
         
-        void CPACSMaterial::SetTau13_choice3(const double& value)
-        {
-            m_tau13_choice3 = value;
-        }
-        
         void CPACSMaterial::SetTau13_choice3(const boost::optional<double>& value)
         {
             m_tau13_choice3 = value;
@@ -1397,11 +1237,6 @@ namespace tigl
         const boost::optional<double>& CPACSMaterial::GetTau23_choice3() const
         {
             return m_tau23_choice3;
-        }
-        
-        void CPACSMaterial::SetTau23_choice3(const double& value)
-        {
-            m_tau23_choice3 = value;
         }
         
         void CPACSMaterial::SetTau23_choice3(const boost::optional<double>& value)

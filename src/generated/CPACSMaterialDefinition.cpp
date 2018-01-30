@@ -167,11 +167,6 @@ namespace tigl
             return m_compositeUID_choice1;
         }
         
-        void CPACSMaterialDefinition::SetCompositeUID_choice1(const std::string& value)
-        {
-            m_compositeUID_choice1 = value;
-        }
-        
         void CPACSMaterialDefinition::SetCompositeUID_choice1(const boost::optional<std::string>& value)
         {
             m_compositeUID_choice1 = value;
@@ -180,11 +175,6 @@ namespace tigl
         const boost::optional<double>& CPACSMaterialDefinition::GetOrthotropyDirection_choice1() const
         {
             return m_orthotropyDirection_choice1;
-        }
-        
-        void CPACSMaterialDefinition::SetOrthotropyDirection_choice1(const double& value)
-        {
-            m_orthotropyDirection_choice1 = value;
         }
         
         void CPACSMaterialDefinition::SetOrthotropyDirection_choice1(const boost::optional<double>& value)
@@ -197,11 +187,6 @@ namespace tigl
             return m_thicknessScaling_choice1;
         }
         
-        void CPACSMaterialDefinition::SetThicknessScaling_choice1(const double& value)
-        {
-            m_thicknessScaling_choice1 = value;
-        }
-        
         void CPACSMaterialDefinition::SetThicknessScaling_choice1(const boost::optional<double>& value)
         {
             m_thicknessScaling_choice1 = value;
@@ -212,11 +197,6 @@ namespace tigl
             return m_materialUID_choice2;
         }
         
-        void CPACSMaterialDefinition::SetMaterialUID_choice2(const std::string& value)
-        {
-            m_materialUID_choice2 = value;
-        }
-        
         void CPACSMaterialDefinition::SetMaterialUID_choice2(const boost::optional<std::string>& value)
         {
             m_materialUID_choice2 = value;
@@ -225,11 +205,6 @@ namespace tigl
         const boost::optional<double>& CPACSMaterialDefinition::GetThickness_choice2() const
         {
             return m_thickness_choice2;
-        }
-        
-        void CPACSMaterialDefinition::SetThickness_choice2(const double& value)
-        {
-            m_thickness_choice2 = value;
         }
         
         void CPACSMaterialDefinition::SetThickness_choice2(const boost::optional<double>& value)

@@ -80,11 +80,6 @@ namespace tigl
             return m_ribRotationReference;
         }
         
-        void CPACSRibRotation::SetRibRotationReference(const CPACSRibRotation_ribRotationReference& value)
-        {
-            m_ribRotationReference = value;
-        }
-        
         void CPACSRibRotation::SetRibRotationReference(const boost::optional<CPACSRibRotation_ribRotationReference>& value)
         {
             m_ribRotationReference = value;

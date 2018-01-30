@@ -57,7 +57,6 @@ namespace tigl
             TIGL_EXPORT virtual void SetName(const std::string& value);
             
             TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
-            TIGL_EXPORT virtual void SetDescription(const std::string& value);
             TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
             
             TIGL_EXPORT virtual const std::string& GetProfileUID() const;

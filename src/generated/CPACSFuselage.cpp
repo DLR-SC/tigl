@@ -242,11 +242,6 @@ namespace tigl
             return m_symmetry;
         }
         
-        void CPACSFuselage::SetSymmetry(const TiglSymmetryAxis& value)
-        {
-            m_symmetry = value;
-        }
-        
         void CPACSFuselage::SetSymmetry(const boost::optional<TiglSymmetryAxis>& value)
         {
             m_symmetry = value;
@@ -267,11 +262,6 @@ namespace tigl
             return m_description;
         }
         
-        void CPACSFuselage::SetDescription(const std::string& value)
-        {
-            m_description = value;
-        }
-        
         void CPACSFuselage::SetDescription(const boost::optional<std::string>& value)
         {
             m_description = value;
@@ -280,11 +270,6 @@ namespace tigl
         const boost::optional<std::string>& CPACSFuselage::GetParentUID() const
         {
             return m_parentUID;
-        }
-        
-        void CPACSFuselage::SetParentUID(const std::string& value)
-        {
-            m_parentUID = value;
         }
         
         void CPACSFuselage::SetParentUID(const boost::optional<std::string>& value)

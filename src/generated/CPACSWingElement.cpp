@@ -167,11 +167,6 @@ namespace tigl
             return m_description;
         }
         
-        void CPACSWingElement::SetDescription(const std::string& value)
-        {
-            m_description = value;
-        }
-        
         void CPACSWingElement::SetDescription(const boost::optional<std::string>& value)
         {
             m_description = value;
