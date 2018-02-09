@@ -2043,8 +2043,8 @@ public class CpacsConfiguration implements AutoCloseable {
             for (int icp = 0; icp < ncp.getValue(); ++icp) {
                 TiglPoint p = new TiglPoint();
                 p.setX(cpx.getDouble(icp * Native.getNativeSize(Double.TYPE)));
-                p.setY(cpx.getDouble(icp * Native.getNativeSize(Double.TYPE)));
-                p.setZ(cpx.getDouble(icp * Native.getNativeSize(Double.TYPE)));
+                p.setY(cpy.getDouble(icp * Native.getNativeSize(Double.TYPE)));
+                p.setZ(cpz.getDouble(icp * Native.getNativeSize(Double.TYPE)));
                 
                 spline.controlPoints.add(p);
             }
