@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="utf-8"?>
 <cpacs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.airbusds.com/cpacs/2.3">
   <header>
     <name>Descartes Model</name>
@@ -7,6 +7,15 @@
     <creator>Descartes</creator>
     <description>CPACS aircraft model designed using Descartes</description>
     <timestamp>2016-08-08T18:03:00</timestamp>
+    <updates>
+      <update>
+        <modification>Converted to cpacs 3.0 using cpacs2to3</modification>
+        <creator>cpacs2to3</creator>
+        <timestamp>2018-01-15T09:21:41</timestamp>
+        <version>1.1</version>
+        <cpacsVersion>3.0</cpacsVersion>
+      </update>
+    </updates>
   </header>
   <vehicles>
     <aircraft>
@@ -15,18 +24,18 @@
         <wings>
           <wing uID="Wing">
             <name>Wing</name>
-            <transformation>
-              <scaling>
+            <transformation uID="Wing_transformation1">
+              <scaling uID="Wing_transformation1_scaling1">
                 <x>1</x>
                 <y>1</y>
                 <z>1</z>
               </scaling>
-              <rotation>
+              <rotation uID="Wing_transformation1_rotation1">
                 <x>0</x>
                 <y>0</y>
                 <z>0</z>
               </rotation>
-              <translation refType="absLocal">
+              <translation refType="absLocal" uID="Wing_transformation1_translation1">
                 <x>0</x>
                 <y>0</y>
                 <z>0</z>
@@ -35,18 +44,18 @@
             <sections>
               <section uID="Wing_section1">
                 <name>Wing_section1</name>
-                <transformation>
-                  <scaling>
+                <transformation uID="Wing_section1_transformation1">
+                  <scaling uID="Wing_section1_transformation1_scaling1">
                     <x>1</x>
                     <y>1</y>
                     <z>1</z>
                   </scaling>
-                  <rotation>
+                  <rotation uID="Wing_section1_transformation1_rotation1">
                     <x>0</x>
                     <y>0</y>
                     <z>0</z>
                   </rotation>
-                  <translation refType="absLocal">
+                  <translation refType="absLocal" uID="Wing_section1_transformation1_translation1">
                     <x>0</x>
                     <y>0</y>
                     <z>0</z>
@@ -56,18 +65,18 @@
                   <element uID="Wing_section1_element1">
                     <name>Wing_section1_element1</name>
                     <airfoilUID>NACA0012</airfoilUID>
-                    <transformation>
-                      <scaling>
+                    <transformation uID="Wing_section1_element1_transformation1">
+                      <scaling uID="Wing_section1_element1_transformation1_scaling1">
                         <x>0.384615</x>
                         <y>0.384615</y>
                         <z>0.384615</z>
                       </scaling>
-                      <rotation>
+                      <rotation uID="Wing_section1_element1_transformation1_rotation1">
                         <x>0</x>
                         <y>0</y>
                         <z>0</z>
                       </rotation>
-                      <translation refType="absLocal">
+                      <translation refType="absLocal" uID="Wing_section1_element1_transformation1_translation1">
                         <x>0</x>
                         <y>0</y>
                         <z>0</z>
@@ -78,18 +87,18 @@
               </section>
               <section uID="Wing_section2">
                 <name>Wing_section2</name>
-                <transformation>
-                  <scaling>
+                <transformation uID="Wing_section2_transformation1">
+                  <scaling uID="Wing_section2_transformation1_scaling1">
                     <x>0.508696</x>
                     <y>0.508696</y>
                     <z>0.508696</z>
                   </scaling>
-                  <rotation>
+                  <rotation uID="Wing_section2_transformation1_rotation1">
                     <x>-0.96433</x>
                     <y>-5.68983</y>
                     <z>20.3424</z>
                   </rotation>
-                  <translation refType="absLocal">
+                  <translation refType="absLocal" uID="Wing_section2_transformation1_translation1">
                     <x>0.0587757</x>
                     <y>0.288675</y>
                     <z>-0.166667</z>
@@ -99,18 +108,18 @@
                   <element uID="Wing_section2_element1">
                     <name>Wing_section2_element1</name>
                     <airfoilUID>NACA0012</airfoilUID>
-                    <transformation>
-                      <scaling>
+                    <transformation uID="Wing_section2_element1_transformation1">
+                      <scaling uID="Wing_section2_element1_transformation1_scaling1">
                         <x>0.294872</x>
                         <y>0.294872</y>
                         <z>0.294872</z>
                       </scaling>
-                      <rotation>
+                      <rotation uID="Wing_section2_element1_transformation1_rotation1">
                         <x>0</x>
                         <y>0</y>
                         <z>0</z>
                       </rotation>
-                      <translation refType="absLocal">
+                      <translation refType="absLocal" uID="Wing_section2_element1_transformation1_translation1">
                         <x>0</x>
                         <y>0</y>
                         <z>0</z>
@@ -121,18 +130,18 @@
               </section>
               <section uID="Wing_section3">
                 <name>Wing_section3</name>
-                <transformation>
-                  <scaling>
+                <transformation uID="Wing_section3_transformation1">
+                  <scaling uID="Wing_section3_transformation1_scaling1">
                     <x>1</x>
                     <y>1</y>
                     <z>1</z>
                   </scaling>
-                  <rotation>
+                  <rotation uID="Wing_section3_transformation1_rotation1">
                     <x>-3.33924</x>
                     <y>18.9524</y>
                     <z>-2.15054</z>
                   </rotation>
-                  <translation refType="absLocal">
+                  <translation refType="absLocal" uID="Wing_section3_transformation1_translation1">
                     <x>0.180099</x>
                     <y>0.524377</y>
                     <z>0.0690356</z>
@@ -142,18 +151,18 @@
                   <element uID="Wing_section3_element1">
                     <name>Wing_section3_element1</name>
                     <airfoilUID>NACA0012</airfoilUID>
-                    <transformation>
-                      <scaling>
+                    <transformation uID="Wing_section3_element1_transformation1">
+                      <scaling uID="Wing_section3_element1_transformation1_scaling1">
                         <x>0.205128</x>
                         <y>0.205128</y>
                         <z>0.205128</z>
                       </scaling>
-                      <rotation>
+                      <rotation uID="Wing_section3_element1_transformation1_rotation1">
                         <x>0</x>
                         <y>0</y>
                         <z>0</z>
                       </rotation>
-                      <translation refType="absLocal">
+                      <translation refType="absLocal" uID="Wing_section3_element1_transformation1_translation1">
                         <x>0</x>
                         <y>0</y>
                         <z>0</z>
@@ -164,18 +173,18 @@
               </section>
               <section uID="Wing_section4">
                 <name>Wing_section4</name>
-                <transformation>
-                  <scaling>
+                <transformation uID="Wing_section4_transformation1">
+                  <scaling uID="Wing_section4_transformation1_scaling1">
                     <x>0.433333</x>
                     <y>0.433333</y>
                     <z>0.433333</z>
                   </scaling>
-                  <rotation>
+                  <rotation uID="Wing_section4_transformation1_rotation1">
                     <x>0</x>
                     <y>18.8038</y>
                     <z>0</z>
                   </rotation>
-                  <translation refType="absLocal">
+                  <translation refType="absLocal" uID="Wing_section4_transformation1_translation1">
                     <x>0.513432</x>
                     <y>0.857711</y>
                     <z>0.0690356</z>
@@ -185,18 +194,18 @@
                   <element uID="Wing_section4_element1">
                     <name>Wing_section4_element1</name>
                     <airfoilUID>NACA0012</airfoilUID>
-                    <transformation>
-                      <scaling>
+                    <transformation uID="Wing_section4_element1_transformation1">
+                      <scaling uID="Wing_section4_element1_transformation1_scaling1">
                         <x>0.115385</x>
                         <y>0.115385</y>
                         <z>0.115385</z>
                       </scaling>
-                      <rotation>
+                      <rotation uID="Wing_section4_element1_transformation1_rotation1">
                         <x>0</x>
                         <y>0</y>
                         <z>0</z>
                       </rotation>
-                      <translation refType="absLocal">
+                      <translation refType="absLocal" uID="Wing_section4_element1_transformation1_translation1">
                         <x>0</x>
                         <y>0</y>
                         <z>0</z>
@@ -229,14 +238,14 @@
                 <fromElementUID>Wing_section1_element1</fromElementUID>
                 <toElementUID>Wing_section4_element1</toElementUID>
                 <structure>
-                  <upperShell>
+                  <upperShell uID="Wing_CS_upperShell1">
                     <skin>
                       <material>
                         <materialUID>materialUID</materialUID>
                       </material>
                     </skin>
                   </upperShell>
-                  <lowerShell>
+                  <lowerShell uID="Wing_CS_lowerShell1">
                     <skin>
                       <material>
                         <materialUID>materialUID</materialUID>
@@ -254,7 +263,7 @@
                         <ribEnd>trailingEdge</ribEnd>
                         <numberOfRibs>4</numberOfRibs>
                         <ribCrossingBehaviour>cross</ribCrossingBehaviour>
-                        <ribRotation>
+                        <ribRotation uID="Wing_Ribs1_ribRotation1">
                           <z>85</z>
                           <ribRotationReference>leadingEdge</ribRotationReference>
                         </ribRotation>
@@ -263,7 +272,7 @@
                         <material>
                           <materialUID>materialUID</materialUID>
                         </material>
-                        <ribRotation>
+                        <ribRotation uID="Wing_Ribs1_ribRotation2">
                           <x>90</x>
                         </ribRotation>
                       </ribCrossSection>
