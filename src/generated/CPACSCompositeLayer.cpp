@@ -22,146 +22,152 @@
 
 namespace tigl
 {
-    namespace generated
+namespace generated
+{
+    CPACSCompositeLayer::CPACSCompositeLayer()
+        : m_thickness(0)
+        , m_phi(0)
     {
-        CPACSCompositeLayer::CPACSCompositeLayer() :
-            m_thickness(0), 
-            m_phi(0) {}
-        
-        CPACSCompositeLayer::~CPACSCompositeLayer() {}
-        
-        void CPACSCompositeLayer::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
-        {
-            // read element name
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
-                m_name = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
-                if (m_name->empty()) {
-                    LOG(WARNING) << "Optional element name is present but empty at xpath " << xpath;
-                }
+    }
+    
+    CPACSCompositeLayer::~CPACSCompositeLayer()
+    {
+    }
+    
+    void CPACSCompositeLayer::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
+    {
+        // read element name
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
+            m_name = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
+            if (m_name->empty()) {
+                LOG(WARNING) << "Optional element name is present but empty at xpath " << xpath;
             }
-            
-            // read element description
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
-                m_description = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
-                if (m_description->empty()) {
-                    LOG(WARNING) << "Optional element description is present but empty at xpath " << xpath;
-                }
+        }
+        
+        // read element description
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
+            m_description = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
+            if (m_description->empty()) {
+                LOG(WARNING) << "Optional element description is present but empty at xpath " << xpath;
             }
-            
-            // read element thickness
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/thickness")) {
-                m_thickness = tixi::TixiGetElement<double>(tixiHandle, xpath + "/thickness");
+        }
+        
+        // read element thickness
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/thickness")) {
+            m_thickness = tixi::TixiGetElement<double>(tixiHandle, xpath + "/thickness");
+        }
+        else {
+            LOG(ERROR) << "Required element thickness is missing at xpath " << xpath;
+        }
+        
+        // read element phi
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/phi")) {
+            m_phi = tixi::TixiGetElement<double>(tixiHandle, xpath + "/phi");
+        }
+        else {
+            LOG(ERROR) << "Required element phi is missing at xpath " << xpath;
+        }
+        
+        // read element materialUID
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/materialUID")) {
+            m_materialUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/materialUID");
+            if (m_materialUID.empty()) {
+                LOG(WARNING) << "Required element materialUID is empty at xpath " << xpath;
             }
-            else {
-                LOG(ERROR) << "Required element thickness is missing at xpath " << xpath;
-            }
-            
-            // read element phi
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/phi")) {
-                m_phi = tixi::TixiGetElement<double>(tixiHandle, xpath + "/phi");
-            }
-            else {
-                LOG(ERROR) << "Required element phi is missing at xpath " << xpath;
-            }
-            
-            // read element materialUID
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/materialUID")) {
-                m_materialUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/materialUID");
-                if (m_materialUID.empty()) {
-                    LOG(WARNING) << "Required element materialUID is empty at xpath " << xpath;
-                }
-            }
-            else {
-                LOG(ERROR) << "Required element materialUID is missing at xpath " << xpath;
-            }
-            
         }
-        
-        void CPACSCompositeLayer::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
-        {
-            // write element name
-            if (m_name) {
-                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
-                tixi::TixiSaveElement(tixiHandle, xpath + "/name", *m_name);
-            } else {
-                if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
-                    tixi::TixiRemoveElement(tixiHandle, xpath + "/name");
-                }
-            }
-            
-            // write element description
-            if (m_description) {
-                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
-                tixi::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
-            } else {
-                if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
-                    tixi::TixiRemoveElement(tixiHandle, xpath + "/description");
-                }
-            }
-            
-            // write element thickness
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/thickness");
-            tixi::TixiSaveElement(tixiHandle, xpath + "/thickness", m_thickness);
-            
-            // write element phi
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/phi");
-            tixi::TixiSaveElement(tixiHandle, xpath + "/phi", m_phi);
-            
-            // write element materialUID
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/materialUID");
-            tixi::TixiSaveElement(tixiHandle, xpath + "/materialUID", m_materialUID);
-            
-        }
-        
-        const boost::optional<std::string>& CPACSCompositeLayer::GetName() const
-        {
-            return m_name;
-        }
-        
-        void CPACSCompositeLayer::SetName(const boost::optional<std::string>& value)
-        {
-            m_name = value;
-        }
-        
-        const boost::optional<std::string>& CPACSCompositeLayer::GetDescription() const
-        {
-            return m_description;
-        }
-        
-        void CPACSCompositeLayer::SetDescription(const boost::optional<std::string>& value)
-        {
-            m_description = value;
-        }
-        
-        const double& CPACSCompositeLayer::GetThickness() const
-        {
-            return m_thickness;
-        }
-        
-        void CPACSCompositeLayer::SetThickness(const double& value)
-        {
-            m_thickness = value;
-        }
-        
-        const double& CPACSCompositeLayer::GetPhi() const
-        {
-            return m_phi;
-        }
-        
-        void CPACSCompositeLayer::SetPhi(const double& value)
-        {
-            m_phi = value;
-        }
-        
-        const std::string& CPACSCompositeLayer::GetMaterialUID() const
-        {
-            return m_materialUID;
-        }
-        
-        void CPACSCompositeLayer::SetMaterialUID(const std::string& value)
-        {
-            m_materialUID = value;
+        else {
+            LOG(ERROR) << "Required element materialUID is missing at xpath " << xpath;
         }
         
     }
-}
+    
+    void CPACSCompositeLayer::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
+    {
+        // write element name
+        if (m_name) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/name", *m_name);
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/name");
+            }
+        }
+        
+        // write element description
+        if (m_description) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/description");
+            }
+        }
+        
+        // write element thickness
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/thickness");
+        tixi::TixiSaveElement(tixiHandle, xpath + "/thickness", m_thickness);
+        
+        // write element phi
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/phi");
+        tixi::TixiSaveElement(tixiHandle, xpath + "/phi", m_phi);
+        
+        // write element materialUID
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/materialUID");
+        tixi::TixiSaveElement(tixiHandle, xpath + "/materialUID", m_materialUID);
+        
+    }
+    
+    const boost::optional<std::string>& CPACSCompositeLayer::GetName() const
+    {
+        return m_name;
+    }
+    
+    void CPACSCompositeLayer::SetName(const boost::optional<std::string>& value)
+    {
+        m_name = value;
+    }
+    
+    const boost::optional<std::string>& CPACSCompositeLayer::GetDescription() const
+    {
+        return m_description;
+    }
+    
+    void CPACSCompositeLayer::SetDescription(const boost::optional<std::string>& value)
+    {
+        m_description = value;
+    }
+    
+    const double& CPACSCompositeLayer::GetThickness() const
+    {
+        return m_thickness;
+    }
+    
+    void CPACSCompositeLayer::SetThickness(const double& value)
+    {
+        m_thickness = value;
+    }
+    
+    const double& CPACSCompositeLayer::GetPhi() const
+    {
+        return m_phi;
+    }
+    
+    void CPACSCompositeLayer::SetPhi(const double& value)
+    {
+        m_phi = value;
+    }
+    
+    const std::string& CPACSCompositeLayer::GetMaterialUID() const
+    {
+        return m_materialUID;
+    }
+    
+    void CPACSCompositeLayer::SetMaterialUID(const std::string& value)
+    {
+        m_materialUID = value;
+    }
+    
+} // namespace generated
+} // namespace tigl

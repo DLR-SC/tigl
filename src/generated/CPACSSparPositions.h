@@ -25,57 +25,57 @@
 
 namespace tigl
 {
-    class CTiglUIDManager;
-    class CCPACSWingSparPosition;
-    class CCPACSWingSpars;
+class CTiglUIDManager;
+class CCPACSWingSparPosition;
+class CCPACSWingSpars;
+
+namespace generated
+{
+    // This class is used in:
+    // CPACSWingSpar
     
-    namespace generated
+    // generated from /xsd:schema/xsd:complexType[815]
+    class CPACSSparPositions
     {
-        // This class is used in:
-        // CPACSWingSpar
+    public:
+        TIGL_EXPORT CPACSSparPositions(CCPACSWingSpars* parent, CTiglUIDManager* uidMgr);
         
-        // generated from /xsd:schema/xsd:complexType[815]
-        class CPACSSparPositions
-        {
-        public:
-            TIGL_EXPORT CPACSSparPositions(CCPACSWingSpars* parent, CTiglUIDManager* uidMgr);
-            
-            TIGL_EXPORT virtual ~CPACSSparPositions();
-            
-            TIGL_EXPORT CCPACSWingSpars* GetParent() const;
-            
-            TIGL_EXPORT CTiglUIDManager& GetUIDManager();
-            TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
-            
-            TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
-            TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
-            
-            TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSWingSparPosition> >& GetSparPositions() const;
-            TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSWingSparPosition> >& GetSparPositions();
-            
-            TIGL_EXPORT virtual CCPACSWingSparPosition& AddSparPosition();
-            TIGL_EXPORT virtual void RemoveSparPosition(CCPACSWingSparPosition& ref);
-            
-        protected:
-            CCPACSWingSpars* m_parent;
-            
-            CTiglUIDManager* m_uidMgr;
-            
-            std::vector<unique_ptr<CCPACSWingSparPosition> > m_sparPositions;
-            
-        private:
-            #ifdef HAVE_CPP11
-            CPACSSparPositions(const CPACSSparPositions&) = delete;
-            CPACSSparPositions& operator=(const CPACSSparPositions&) = delete;
-            
-            CPACSSparPositions(CPACSSparPositions&&) = delete;
-            CPACSSparPositions& operator=(CPACSSparPositions&&) = delete;
-            #else
-            CPACSSparPositions(const CPACSSparPositions&);
-            CPACSSparPositions& operator=(const CPACSSparPositions&);
-            #endif
-        };
-    }
-    
-    // CPACSSparPositions is customized, use type CCPACSWingSparPositions directly
-}
+        TIGL_EXPORT virtual ~CPACSSparPositions();
+        
+        TIGL_EXPORT CCPACSWingSpars* GetParent() const;
+        
+        TIGL_EXPORT CTiglUIDManager& GetUIDManager();
+        TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
+        
+        TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+        TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
+        
+        TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSWingSparPosition> >& GetSparPositions() const;
+        TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSWingSparPosition> >& GetSparPositions();
+        
+        TIGL_EXPORT virtual CCPACSWingSparPosition& AddSparPosition();
+        TIGL_EXPORT virtual void RemoveSparPosition(CCPACSWingSparPosition& ref);
+        
+    protected:
+        CCPACSWingSpars* m_parent;
+        
+        CTiglUIDManager* m_uidMgr;
+        
+        std::vector<unique_ptr<CCPACSWingSparPosition> > m_sparPositions;
+        
+    private:
+#ifdef HAVE_CPP11
+        CPACSSparPositions(const CPACSSparPositions&) = delete;
+        CPACSSparPositions& operator=(const CPACSSparPositions&) = delete;
+        
+        CPACSSparPositions(CPACSSparPositions&&) = delete;
+        CPACSSparPositions& operator=(CPACSSparPositions&&) = delete;
+#else
+        CPACSSparPositions(const CPACSSparPositions&);
+        CPACSSparPositions& operator=(const CPACSSparPositions&);
+#endif
+    };
+} // namespace generated
+
+// CPACSSparPositions is customized, use type CCPACSWingSparPositions directly
+} // namespace tigl

@@ -27,63 +27,63 @@
 
 namespace tigl
 {
-    class CTiglUIDManager;
+class CTiglUIDManager;
+
+namespace generated
+{
+    // This class is used in:
+    // CPACSGuideCurveProfiles
     
-    namespace generated
+    // generated from /xsd:schema/xsd:complexType[433]
+    class CPACSGuideCurveProfileGeometry
     {
-        // This class is used in:
-        // CPACSGuideCurveProfiles
+    public:
+        TIGL_EXPORT CPACSGuideCurveProfileGeometry(CTiglUIDManager* uidMgr);
+        TIGL_EXPORT virtual ~CPACSGuideCurveProfileGeometry();
         
-        // generated from /xsd:schema/xsd:complexType[433]
-        class CPACSGuideCurveProfileGeometry
-        {
-        public:
-            TIGL_EXPORT CPACSGuideCurveProfileGeometry(CTiglUIDManager* uidMgr);
-            TIGL_EXPORT virtual ~CPACSGuideCurveProfileGeometry();
-            
-            TIGL_EXPORT CTiglUIDManager& GetUIDManager();
-            TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
-            
-            TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
-            TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
-            
-            TIGL_EXPORT virtual const boost::optional<TiglSymmetryAxis>& GetSymmetry() const;
-            TIGL_EXPORT virtual void SetSymmetry(const boost::optional<TiglSymmetryAxis>& value);
-            
-            TIGL_EXPORT virtual const std::string& GetUID() const;
-            TIGL_EXPORT virtual void SetUID(const std::string& value);
-            
-            TIGL_EXPORT virtual const std::string& GetName() const;
-            TIGL_EXPORT virtual void SetName(const std::string& value);
-            
-            TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
-            TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
-            
-            TIGL_EXPORT virtual const CCPACSPointListRelXYZ& GetPointList() const;
-            TIGL_EXPORT virtual CCPACSPointListRelXYZ& GetPointList();
-            
-        protected:
-            CTiglUIDManager* m_uidMgr;
-            
-            boost::optional<TiglSymmetryAxis> m_symmetry;
-            std::string                       m_uID;
-            std::string                       m_name;
-            boost::optional<std::string>      m_description;
-            CCPACSPointListRelXYZ             m_pointList;
-            
-        private:
-            #ifdef HAVE_CPP11
-            CPACSGuideCurveProfileGeometry(const CPACSGuideCurveProfileGeometry&) = delete;
-            CPACSGuideCurveProfileGeometry& operator=(const CPACSGuideCurveProfileGeometry&) = delete;
-            
-            CPACSGuideCurveProfileGeometry(CPACSGuideCurveProfileGeometry&&) = delete;
-            CPACSGuideCurveProfileGeometry& operator=(CPACSGuideCurveProfileGeometry&&) = delete;
-            #else
-            CPACSGuideCurveProfileGeometry(const CPACSGuideCurveProfileGeometry&);
-            CPACSGuideCurveProfileGeometry& operator=(const CPACSGuideCurveProfileGeometry&);
-            #endif
-        };
-    }
-    
-    // CPACSGuideCurveProfileGeometry is customized, use type CCPACSGuideCurveProfile directly
-}
+        TIGL_EXPORT CTiglUIDManager& GetUIDManager();
+        TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
+        
+        TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+        TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
+        
+        TIGL_EXPORT virtual const boost::optional<TiglSymmetryAxis>& GetSymmetry() const;
+        TIGL_EXPORT virtual void SetSymmetry(const boost::optional<TiglSymmetryAxis>& value);
+        
+        TIGL_EXPORT virtual const std::string& GetUID() const;
+        TIGL_EXPORT virtual void SetUID(const std::string& value);
+        
+        TIGL_EXPORT virtual const std::string& GetName() const;
+        TIGL_EXPORT virtual void SetName(const std::string& value);
+        
+        TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
+        TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
+        
+        TIGL_EXPORT virtual const CCPACSPointListRelXYZ& GetPointList() const;
+        TIGL_EXPORT virtual CCPACSPointListRelXYZ& GetPointList();
+        
+    protected:
+        CTiglUIDManager* m_uidMgr;
+        
+        boost::optional<TiglSymmetryAxis> m_symmetry;
+        std::string                       m_uID;
+        std::string                       m_name;
+        boost::optional<std::string>      m_description;
+        CCPACSPointListRelXYZ             m_pointList;
+        
+    private:
+#ifdef HAVE_CPP11
+        CPACSGuideCurveProfileGeometry(const CPACSGuideCurveProfileGeometry&) = delete;
+        CPACSGuideCurveProfileGeometry& operator=(const CPACSGuideCurveProfileGeometry&) = delete;
+        
+        CPACSGuideCurveProfileGeometry(CPACSGuideCurveProfileGeometry&&) = delete;
+        CPACSGuideCurveProfileGeometry& operator=(CPACSGuideCurveProfileGeometry&&) = delete;
+#else
+        CPACSGuideCurveProfileGeometry(const CPACSGuideCurveProfileGeometry&);
+        CPACSGuideCurveProfileGeometry& operator=(const CPACSGuideCurveProfileGeometry&);
+#endif
+    };
+} // namespace generated
+
+// CPACSGuideCurveProfileGeometry is customized, use type CCPACSGuideCurveProfile directly
+} // namespace tigl

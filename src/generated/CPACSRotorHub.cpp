@@ -25,175 +25,178 @@
 
 namespace tigl
 {
-    namespace generated
+namespace generated
+{
+    CPACSRotorHub::CPACSRotorHub(CCPACSRotor* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+        , m_rotorBladeAttachments(reinterpret_cast<CCPACSRotorHub*>(this), m_uidMgr)
     {
-        CPACSRotorHub::CPACSRotorHub(CCPACSRotor* parent, CTiglUIDManager* uidMgr) :
-            m_uidMgr(uidMgr), 
-            m_rotorBladeAttachments(reinterpret_cast<CCPACSRotorHub*>(this), m_uidMgr)
-        {
-            //assert(parent != NULL);
-            m_parent = parent;
-        }
-        
-        CPACSRotorHub::~CPACSRotorHub()
-        {
-            if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
-        }
-        
-        CCPACSRotor* CPACSRotorHub::GetParent() const
-        {
-            return m_parent;
-        }
-        
-        CTiglUIDManager& CPACSRotorHub::GetUIDManager()
-        {
-            return *m_uidMgr;
-        }
-        
-        const CTiglUIDManager& CPACSRotorHub::GetUIDManager() const
-        {
-            return *m_uidMgr;
-        }
-        
-        void CPACSRotorHub::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
-        {
-            // read attribute uID
-            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
-                m_uID = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
-                if (m_uID.empty()) {
-                    LOG(WARNING) << "Required attribute uID is empty at xpath " << xpath;
-                }
+        //assert(parent != NULL);
+        m_parent = parent;
+    }
+    
+    CPACSRotorHub::~CPACSRotorHub()
+    {
+        if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
+    }
+    
+    CCPACSRotor* CPACSRotorHub::GetParent() const
+    {
+        return m_parent;
+    }
+    
+    CTiglUIDManager& CPACSRotorHub::GetUIDManager()
+    {
+        return *m_uidMgr;
+    }
+    
+    const CTiglUIDManager& CPACSRotorHub::GetUIDManager() const
+    {
+        return *m_uidMgr;
+    }
+    
+    void CPACSRotorHub::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
+    {
+        // read attribute uID
+        if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+            m_uID = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
+            if (m_uID.empty()) {
+                LOG(WARNING) << "Required attribute uID is empty at xpath " << xpath;
             }
-            else {
-                LOG(ERROR) << "Required attribute uID is missing at xpath " << xpath;
+        }
+        else {
+            LOG(ERROR) << "Required attribute uID is missing at xpath " << xpath;
+        }
+        
+        // read element name
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
+            m_name = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
+            if (m_name->empty()) {
+                LOG(WARNING) << "Optional element name is present but empty at xpath " << xpath;
             }
-            
-            // read element name
+        }
+        
+        // read element description
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
+            m_description = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
+            if (m_description->empty()) {
+                LOG(WARNING) << "Optional element description is present but empty at xpath " << xpath;
+            }
+        }
+        
+        // read element type
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/type")) {
+            m_type = stringToTiglRotorHubType(tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/type"));
+        }
+        
+        // read element rotorBladeAttachments
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/rotorBladeAttachments")) {
+            m_rotorBladeAttachments.ReadCPACS(tixiHandle, xpath + "/rotorBladeAttachments");
+        }
+        else {
+            LOG(ERROR) << "Required element rotorBladeAttachments is missing at xpath " << xpath;
+        }
+        
+        if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
+    }
+    
+    void CPACSRotorHub::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
+    {
+        // write attribute uID
+        tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
+        
+        // write element name
+        if (m_name) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/name", *m_name);
+        }
+        else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
-                m_name = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
-                if (m_name->empty()) {
-                    LOG(WARNING) << "Optional element name is present but empty at xpath " << xpath;
-                }
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/name");
             }
-            
-            // read element description
+        }
+        
+        // write element description
+        if (m_description) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
+        }
+        else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
-                m_description = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
-                if (m_description->empty()) {
-                    LOG(WARNING) << "Optional element description is present but empty at xpath " << xpath;
-                }
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/description");
             }
-            
-            // read element type
+        }
+        
+        // write element type
+        if (m_type) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/type");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/type", TiglRotorHubTypeToString(*m_type));
+        }
+        else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/type")) {
-                m_type = stringToTiglRotorHubType(tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/type"));
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/type");
             }
-            
-            // read element rotorBladeAttachments
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/rotorBladeAttachments")) {
-                m_rotorBladeAttachments.ReadCPACS(tixiHandle, xpath + "/rotorBladeAttachments");
-            }
-            else {
-                LOG(ERROR) << "Required element rotorBladeAttachments is missing at xpath " << xpath;
-            }
-            
-            if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
         }
         
-        void CPACSRotorHub::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
-        {
-            // write attribute uID
-            tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
-            
-            // write element name
-            if (m_name) {
-                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
-                tixi::TixiSaveElement(tixiHandle, xpath + "/name", *m_name);
-            } else {
-                if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
-                    tixi::TixiRemoveElement(tixiHandle, xpath + "/name");
-                }
-            }
-            
-            // write element description
-            if (m_description) {
-                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
-                tixi::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
-            } else {
-                if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
-                    tixi::TixiRemoveElement(tixiHandle, xpath + "/description");
-                }
-            }
-            
-            // write element type
-            if (m_type) {
-                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/type");
-                tixi::TixiSaveElement(tixiHandle, xpath + "/type", TiglRotorHubTypeToString(*m_type));
-            } else {
-                if (tixi::TixiCheckElement(tixiHandle, xpath + "/type")) {
-                    tixi::TixiRemoveElement(tixiHandle, xpath + "/type");
-                }
-            }
-            
-            // write element rotorBladeAttachments
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/rotorBladeAttachments");
-            m_rotorBladeAttachments.WriteCPACS(tixiHandle, xpath + "/rotorBladeAttachments");
-            
-        }
-        
-        const std::string& CPACSRotorHub::GetUID() const
-        {
-            return m_uID;
-        }
-        
-        void CPACSRotorHub::SetUID(const std::string& value)
-        {
-            if (m_uidMgr) {
-                m_uidMgr->TryUnregisterObject(m_uID);
-                m_uidMgr->RegisterObject(value, *this);
-            }
-            m_uID = value;
-        }
-        
-        const boost::optional<std::string>& CPACSRotorHub::GetName() const
-        {
-            return m_name;
-        }
-        
-        void CPACSRotorHub::SetName(const boost::optional<std::string>& value)
-        {
-            m_name = value;
-        }
-        
-        const boost::optional<std::string>& CPACSRotorHub::GetDescription() const
-        {
-            return m_description;
-        }
-        
-        void CPACSRotorHub::SetDescription(const boost::optional<std::string>& value)
-        {
-            m_description = value;
-        }
-        
-        const boost::optional<TiglRotorHubType>& CPACSRotorHub::GetType() const
-        {
-            return m_type;
-        }
-        
-        void CPACSRotorHub::SetType(const boost::optional<TiglRotorHubType>& value)
-        {
-            m_type = value;
-        }
-        
-        const CCPACSRotorBladeAttachments& CPACSRotorHub::GetRotorBladeAttachments() const
-        {
-            return m_rotorBladeAttachments;
-        }
-        
-        CCPACSRotorBladeAttachments& CPACSRotorHub::GetRotorBladeAttachments()
-        {
-            return m_rotorBladeAttachments;
-        }
+        // write element rotorBladeAttachments
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/rotorBladeAttachments");
+        m_rotorBladeAttachments.WriteCPACS(tixiHandle, xpath + "/rotorBladeAttachments");
         
     }
-}
+    
+    const std::string& CPACSRotorHub::GetUID() const
+    {
+        return m_uID;
+    }
+    
+    void CPACSRotorHub::SetUID(const std::string& value)
+    {
+        if (m_uidMgr) {
+            m_uidMgr->TryUnregisterObject(m_uID);
+            m_uidMgr->RegisterObject(value, *this);
+        }
+        m_uID = value;
+    }
+    
+    const boost::optional<std::string>& CPACSRotorHub::GetName() const
+    {
+        return m_name;
+    }
+    
+    void CPACSRotorHub::SetName(const boost::optional<std::string>& value)
+    {
+        m_name = value;
+    }
+    
+    const boost::optional<std::string>& CPACSRotorHub::GetDescription() const
+    {
+        return m_description;
+    }
+    
+    void CPACSRotorHub::SetDescription(const boost::optional<std::string>& value)
+    {
+        m_description = value;
+    }
+    
+    const boost::optional<TiglRotorHubType>& CPACSRotorHub::GetType() const
+    {
+        return m_type;
+    }
+    
+    void CPACSRotorHub::SetType(const boost::optional<TiglRotorHubType>& value)
+    {
+        m_type = value;
+    }
+    
+    const CCPACSRotorBladeAttachments& CPACSRotorHub::GetRotorBladeAttachments() const
+    {
+        return m_rotorBladeAttachments;
+    }
+    
+    CCPACSRotorBladeAttachments& CPACSRotorHub::GetRotorBladeAttachments()
+    {
+        return m_rotorBladeAttachments;
+    }
+    
+} // namespace generated
+} // namespace tigl

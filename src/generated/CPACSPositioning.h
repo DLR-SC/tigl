@@ -25,75 +25,75 @@
 
 namespace tigl
 {
-    class CTiglUIDManager;
+class CTiglUIDManager;
+
+namespace generated
+{
+    // This class is used in:
+    // CPACSPositionings
     
-    namespace generated
+    // generated from /xsd:schema/xsd:complexType[725]
+    class CPACSPositioning
     {
-        // This class is used in:
-        // CPACSPositionings
+    public:
+        TIGL_EXPORT CPACSPositioning(CTiglUIDManager* uidMgr);
+        TIGL_EXPORT virtual ~CPACSPositioning();
         
-        // generated from /xsd:schema/xsd:complexType[725]
-        class CPACSPositioning
-        {
-        public:
-            TIGL_EXPORT CPACSPositioning(CTiglUIDManager* uidMgr);
-            TIGL_EXPORT virtual ~CPACSPositioning();
-            
-            TIGL_EXPORT CTiglUIDManager& GetUIDManager();
-            TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
-            
-            TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
-            TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
-            
-            TIGL_EXPORT virtual const std::string& GetUID() const;
-            TIGL_EXPORT virtual void SetUID(const std::string& value);
-            
-            TIGL_EXPORT virtual const std::string& GetName() const;
-            TIGL_EXPORT virtual void SetName(const std::string& value);
-            
-            TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
-            TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
-            
-            TIGL_EXPORT virtual const double& GetLength() const;
-            TIGL_EXPORT virtual void SetLength(const double& value);
-            
-            TIGL_EXPORT virtual const double& GetSweepAngle() const;
-            TIGL_EXPORT virtual void SetSweepAngle(const double& value);
-            
-            TIGL_EXPORT virtual const double& GetDihedralAngle() const;
-            TIGL_EXPORT virtual void SetDihedralAngle(const double& value);
-            
-            TIGL_EXPORT virtual const boost::optional<std::string>& GetFromSectionUID() const;
-            TIGL_EXPORT virtual void SetFromSectionUID(const boost::optional<std::string>& value);
-            
-            TIGL_EXPORT virtual const std::string& GetToSectionUID() const;
-            TIGL_EXPORT virtual void SetToSectionUID(const std::string& value);
-            
-        protected:
-            CTiglUIDManager* m_uidMgr;
-            
-            std::string                  m_uID;
-            std::string                  m_name;
-            boost::optional<std::string> m_description;
-            double                       m_length;
-            double                       m_sweepAngle;
-            double                       m_dihedralAngle;
-            boost::optional<std::string> m_fromSectionUID;
-            std::string                  m_toSectionUID;
-            
-        private:
-            #ifdef HAVE_CPP11
-            CPACSPositioning(const CPACSPositioning&) = delete;
-            CPACSPositioning& operator=(const CPACSPositioning&) = delete;
-            
-            CPACSPositioning(CPACSPositioning&&) = delete;
-            CPACSPositioning& operator=(CPACSPositioning&&) = delete;
-            #else
-            CPACSPositioning(const CPACSPositioning&);
-            CPACSPositioning& operator=(const CPACSPositioning&);
-            #endif
-        };
-    }
-    
-    // CPACSPositioning is customized, use type CCPACSPositioning directly
-}
+        TIGL_EXPORT CTiglUIDManager& GetUIDManager();
+        TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
+        
+        TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+        TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
+        
+        TIGL_EXPORT virtual const std::string& GetUID() const;
+        TIGL_EXPORT virtual void SetUID(const std::string& value);
+        
+        TIGL_EXPORT virtual const std::string& GetName() const;
+        TIGL_EXPORT virtual void SetName(const std::string& value);
+        
+        TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
+        TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
+        
+        TIGL_EXPORT virtual const double& GetLength() const;
+        TIGL_EXPORT virtual void SetLength(const double& value);
+        
+        TIGL_EXPORT virtual const double& GetSweepAngle() const;
+        TIGL_EXPORT virtual void SetSweepAngle(const double& value);
+        
+        TIGL_EXPORT virtual const double& GetDihedralAngle() const;
+        TIGL_EXPORT virtual void SetDihedralAngle(const double& value);
+        
+        TIGL_EXPORT virtual const boost::optional<std::string>& GetFromSectionUID() const;
+        TIGL_EXPORT virtual void SetFromSectionUID(const boost::optional<std::string>& value);
+        
+        TIGL_EXPORT virtual const std::string& GetToSectionUID() const;
+        TIGL_EXPORT virtual void SetToSectionUID(const std::string& value);
+        
+    protected:
+        CTiglUIDManager* m_uidMgr;
+        
+        std::string                  m_uID;
+        std::string                  m_name;
+        boost::optional<std::string> m_description;
+        double                       m_length;
+        double                       m_sweepAngle;
+        double                       m_dihedralAngle;
+        boost::optional<std::string> m_fromSectionUID;
+        std::string                  m_toSectionUID;
+        
+    private:
+#ifdef HAVE_CPP11
+        CPACSPositioning(const CPACSPositioning&) = delete;
+        CPACSPositioning& operator=(const CPACSPositioning&) = delete;
+        
+        CPACSPositioning(CPACSPositioning&&) = delete;
+        CPACSPositioning& operator=(CPACSPositioning&&) = delete;
+#else
+        CPACSPositioning(const CPACSPositioning&);
+        CPACSPositioning& operator=(const CPACSPositioning&);
+#endif
+    };
+} // namespace generated
+
+// CPACSPositioning is customized, use type CCPACSPositioning directly
+} // namespace tigl

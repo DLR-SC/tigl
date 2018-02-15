@@ -26,76 +26,76 @@
 
 namespace tigl
 {
-    class CTiglUIDManager;
+class CTiglUIDManager;
+
+namespace generated
+{
+    // This class is used in:
+    // CPACSWingRibCrossSection
     
-    namespace generated
+    // generated from /xsd:schema/xsd:complexType[944]
+    class CPACSWingRibCell
     {
-        // This class is used in:
-        // CPACSWingRibCrossSection
+    public:
+        TIGL_EXPORT CPACSWingRibCell(CTiglUIDManager* uidMgr);
+        TIGL_EXPORT virtual ~CPACSWingRibCell();
         
-        // generated from /xsd:schema/xsd:complexType[944]
-        class CPACSWingRibCell
-        {
-        public:
-            TIGL_EXPORT CPACSWingRibCell(CTiglUIDManager* uidMgr);
-            TIGL_EXPORT virtual ~CPACSWingRibCell();
-            
-            TIGL_EXPORT CTiglUIDManager& GetUIDManager();
-            TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
-            
-            TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
-            TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
-            
-            TIGL_EXPORT virtual const std::string& GetUID() const;
-            TIGL_EXPORT virtual void SetUID(const std::string& value);
-            
-            TIGL_EXPORT virtual const std::string& GetFromRib() const;
-            TIGL_EXPORT virtual void SetFromRib(const std::string& value);
-            
-            TIGL_EXPORT virtual const std::string& GetToRib() const;
-            TIGL_EXPORT virtual void SetToRib(const std::string& value);
-            
-            TIGL_EXPORT virtual const CPACSPointX& GetRibRotation() const;
-            TIGL_EXPORT virtual CPACSPointX& GetRibRotation();
-            
-            TIGL_EXPORT virtual const CCPACSMaterialDefinition& GetMaterial() const;
-            TIGL_EXPORT virtual CCPACSMaterialDefinition& GetMaterial();
-            
-            TIGL_EXPORT virtual const CPACSCap& GetUpperCap() const;
-            TIGL_EXPORT virtual CPACSCap& GetUpperCap();
-            
-            TIGL_EXPORT virtual const CPACSCap& GetLowerCap() const;
-            TIGL_EXPORT virtual CPACSCap& GetLowerCap();
-            
-        protected:
-            CTiglUIDManager* m_uidMgr;
-            
-            std::string              m_uID;
-            std::string              m_fromRib;
-            std::string              m_toRib;
-            CPACSPointX              m_ribRotation;
-            CCPACSMaterialDefinition m_material;
-            CPACSCap                 m_upperCap;
-            CPACSCap                 m_lowerCap;
-            
-        private:
-            #ifdef HAVE_CPP11
-            CPACSWingRibCell(const CPACSWingRibCell&) = delete;
-            CPACSWingRibCell& operator=(const CPACSWingRibCell&) = delete;
-            
-            CPACSWingRibCell(CPACSWingRibCell&&) = delete;
-            CPACSWingRibCell& operator=(CPACSWingRibCell&&) = delete;
-            #else
-            CPACSWingRibCell(const CPACSWingRibCell&);
-            CPACSWingRibCell& operator=(const CPACSWingRibCell&);
-            #endif
-        };
-    }
-    
-    // Aliases in tigl namespace
-    #ifdef HAVE_CPP11
-    using CCPACSWingRibCell = generated::CPACSWingRibCell;
-    #else
-    typedef generated::CPACSWingRibCell CCPACSWingRibCell;
-    #endif
-}
+        TIGL_EXPORT CTiglUIDManager& GetUIDManager();
+        TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
+        
+        TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+        TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
+        
+        TIGL_EXPORT virtual const std::string& GetUID() const;
+        TIGL_EXPORT virtual void SetUID(const std::string& value);
+        
+        TIGL_EXPORT virtual const std::string& GetFromRib() const;
+        TIGL_EXPORT virtual void SetFromRib(const std::string& value);
+        
+        TIGL_EXPORT virtual const std::string& GetToRib() const;
+        TIGL_EXPORT virtual void SetToRib(const std::string& value);
+        
+        TIGL_EXPORT virtual const CPACSPointX& GetRibRotation() const;
+        TIGL_EXPORT virtual CPACSPointX& GetRibRotation();
+        
+        TIGL_EXPORT virtual const CCPACSMaterialDefinition& GetMaterial() const;
+        TIGL_EXPORT virtual CCPACSMaterialDefinition& GetMaterial();
+        
+        TIGL_EXPORT virtual const CPACSCap& GetUpperCap() const;
+        TIGL_EXPORT virtual CPACSCap& GetUpperCap();
+        
+        TIGL_EXPORT virtual const CPACSCap& GetLowerCap() const;
+        TIGL_EXPORT virtual CPACSCap& GetLowerCap();
+        
+    protected:
+        CTiglUIDManager* m_uidMgr;
+        
+        std::string              m_uID;
+        std::string              m_fromRib;
+        std::string              m_toRib;
+        CPACSPointX              m_ribRotation;
+        CCPACSMaterialDefinition m_material;
+        CPACSCap                 m_upperCap;
+        CPACSCap                 m_lowerCap;
+        
+    private:
+#ifdef HAVE_CPP11
+        CPACSWingRibCell(const CPACSWingRibCell&) = delete;
+        CPACSWingRibCell& operator=(const CPACSWingRibCell&) = delete;
+        
+        CPACSWingRibCell(CPACSWingRibCell&&) = delete;
+        CPACSWingRibCell& operator=(CPACSWingRibCell&&) = delete;
+#else
+        CPACSWingRibCell(const CPACSWingRibCell&);
+        CPACSWingRibCell& operator=(const CPACSWingRibCell&);
+#endif
+    };
+} // namespace generated
+
+// Aliases in tigl namespace
+#ifdef HAVE_CPP11
+using CCPACSWingRibCell = generated::CPACSWingRibCell;
+#else
+typedef generated::CPACSWingRibCell CCPACSWingRibCell;
+#endif
+} // namespace tigl

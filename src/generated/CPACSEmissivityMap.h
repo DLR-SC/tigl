@@ -24,49 +24,49 @@
 
 namespace tigl
 {
-    namespace generated
-    {
-        // This class is used in:
-        // CPACSMaterial
-        
-        // generated from /xsd:schema/xsd:complexType[297]
-        class CPACSEmissivityMap
-        {
-        public:
-            TIGL_EXPORT CPACSEmissivityMap();
-            TIGL_EXPORT virtual ~CPACSEmissivityMap();
-            
-            TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
-            TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
-            
-            TIGL_EXPORT virtual const CCPACSStringVector& GetWaveLength() const;
-            TIGL_EXPORT virtual CCPACSStringVector& GetWaveLength();
-            
-            TIGL_EXPORT virtual const CCPACSStringVector& GetDiffuseEmissivity() const;
-            TIGL_EXPORT virtual CCPACSStringVector& GetDiffuseEmissivity();
-            
-        protected:
-            CCPACSStringVector m_waveLength;
-            CCPACSStringVector m_diffuseEmissivity;
-            
-        private:
-            #ifdef HAVE_CPP11
-            CPACSEmissivityMap(const CPACSEmissivityMap&) = delete;
-            CPACSEmissivityMap& operator=(const CPACSEmissivityMap&) = delete;
-            
-            CPACSEmissivityMap(CPACSEmissivityMap&&) = delete;
-            CPACSEmissivityMap& operator=(CPACSEmissivityMap&&) = delete;
-            #else
-            CPACSEmissivityMap(const CPACSEmissivityMap&);
-            CPACSEmissivityMap& operator=(const CPACSEmissivityMap&);
-            #endif
-        };
-    }
+namespace generated
+{
+    // This class is used in:
+    // CPACSMaterial
     
-    // Aliases in tigl namespace
-    #ifdef HAVE_CPP11
-    using CCPACSEmissivityMap = generated::CPACSEmissivityMap;
-    #else
-    typedef generated::CPACSEmissivityMap CCPACSEmissivityMap;
-    #endif
-}
+    // generated from /xsd:schema/xsd:complexType[297]
+    class CPACSEmissivityMap
+    {
+    public:
+        TIGL_EXPORT CPACSEmissivityMap();
+        TIGL_EXPORT virtual ~CPACSEmissivityMap();
+        
+        TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+        TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
+        
+        TIGL_EXPORT virtual const CCPACSStringVector& GetWaveLength() const;
+        TIGL_EXPORT virtual CCPACSStringVector& GetWaveLength();
+        
+        TIGL_EXPORT virtual const CCPACSStringVector& GetDiffuseEmissivity() const;
+        TIGL_EXPORT virtual CCPACSStringVector& GetDiffuseEmissivity();
+        
+    protected:
+        CCPACSStringVector m_waveLength;
+        CCPACSStringVector m_diffuseEmissivity;
+        
+    private:
+#ifdef HAVE_CPP11
+        CPACSEmissivityMap(const CPACSEmissivityMap&) = delete;
+        CPACSEmissivityMap& operator=(const CPACSEmissivityMap&) = delete;
+        
+        CPACSEmissivityMap(CPACSEmissivityMap&&) = delete;
+        CPACSEmissivityMap& operator=(CPACSEmissivityMap&&) = delete;
+#else
+        CPACSEmissivityMap(const CPACSEmissivityMap&);
+        CPACSEmissivityMap& operator=(const CPACSEmissivityMap&);
+#endif
+    };
+} // namespace generated
+
+// Aliases in tigl namespace
+#ifdef HAVE_CPP11
+using CCPACSEmissivityMap = generated::CPACSEmissivityMap;
+#else
+typedef generated::CPACSEmissivityMap CCPACSEmissivityMap;
+#endif
+} // namespace tigl

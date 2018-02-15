@@ -24,65 +24,69 @@
 
 namespace tigl
 {
-    namespace generated
+namespace generated
+{
+    CPACSWingAirfoils::CPACSWingAirfoils(CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
     {
-        CPACSWingAirfoils::CPACSWingAirfoils(CTiglUIDManager* uidMgr) :
-            m_uidMgr(uidMgr) {}
-        
-        CPACSWingAirfoils::~CPACSWingAirfoils() {}
-        
-        CTiglUIDManager& CPACSWingAirfoils::GetUIDManager()
-        {
-            return *m_uidMgr;
-        }
-        
-        const CTiglUIDManager& CPACSWingAirfoils::GetUIDManager() const
-        {
-            return *m_uidMgr;
-        }
-        
-        void CPACSWingAirfoils::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
-        {
-            // read element wingAirfoil
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/wingAirfoil")) {
-                tixi::TixiReadElements(tixiHandle, xpath + "/wingAirfoil", m_wingAirfoils, m_uidMgr);
-            }
-            
-        }
-        
-        void CPACSWingAirfoils::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
-        {
-            // write element wingAirfoil
-            tixi::TixiSaveElements(tixiHandle, xpath + "/wingAirfoil", m_wingAirfoils);
-            
-        }
-        
-        const std::vector<unique_ptr<CPACSProfileGeometry> >& CPACSWingAirfoils::GetWingAirfoils() const
-        {
-            return m_wingAirfoils;
-        }
-        
-        std::vector<unique_ptr<CPACSProfileGeometry> >& CPACSWingAirfoils::GetWingAirfoils()
-        {
-            return m_wingAirfoils;
-        }
-        
-        CPACSProfileGeometry& CPACSWingAirfoils::AddWingAirfoil()
-        {
-            m_wingAirfoils.push_back(make_unique<CPACSProfileGeometry>(m_uidMgr));
-            return *m_wingAirfoils.back();
-        }
-        
-        void CPACSWingAirfoils::RemoveWingAirfoil(CPACSProfileGeometry& ref)
-        {
-            for (std::size_t i = 0; i < m_wingAirfoils.size(); i++) {
-                if (m_wingAirfoils[i].get() == &ref) {
-                    m_wingAirfoils.erase(m_wingAirfoils.begin() + i);
-                    return;
-                }
-            }
-            throw CTiglError("Element not found");
+    }
+    
+    CPACSWingAirfoils::~CPACSWingAirfoils()
+    {
+    }
+    
+    CTiglUIDManager& CPACSWingAirfoils::GetUIDManager()
+    {
+        return *m_uidMgr;
+    }
+    
+    const CTiglUIDManager& CPACSWingAirfoils::GetUIDManager() const
+    {
+        return *m_uidMgr;
+    }
+    
+    void CPACSWingAirfoils::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
+    {
+        // read element wingAirfoil
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/wingAirfoil")) {
+            tixi::TixiReadElements(tixiHandle, xpath + "/wingAirfoil", m_wingAirfoils, m_uidMgr);
         }
         
     }
-}
+    
+    void CPACSWingAirfoils::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
+    {
+        // write element wingAirfoil
+        tixi::TixiSaveElements(tixiHandle, xpath + "/wingAirfoil", m_wingAirfoils);
+        
+    }
+    
+    const std::vector<unique_ptr<CPACSProfileGeometry> >& CPACSWingAirfoils::GetWingAirfoils() const
+    {
+        return m_wingAirfoils;
+    }
+    
+    std::vector<unique_ptr<CPACSProfileGeometry> >& CPACSWingAirfoils::GetWingAirfoils()
+    {
+        return m_wingAirfoils;
+    }
+    
+    CPACSProfileGeometry& CPACSWingAirfoils::AddWingAirfoil()
+    {
+        m_wingAirfoils.push_back(make_unique<CPACSProfileGeometry>(m_uidMgr));
+        return *m_wingAirfoils.back();
+    }
+    
+    void CPACSWingAirfoils::RemoveWingAirfoil(CPACSProfileGeometry& ref)
+    {
+        for (std::size_t i = 0; i < m_wingAirfoils.size(); i++) {
+            if (m_wingAirfoils[i].get() == &ref) {
+                m_wingAirfoils.erase(m_wingAirfoils.begin() + i);
+                return;
+            }
+        }
+        throw CTiglError("Element not found");
+    }
+    
+} // namespace generated
+} // namespace tigl

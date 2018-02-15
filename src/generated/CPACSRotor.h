@@ -29,85 +29,85 @@
 
 namespace tigl
 {
-    class CTiglUIDManager;
-    class CCPACSRotors;
+class CTiglUIDManager;
+class CCPACSRotors;
+
+namespace generated
+{
+    // This class is used in:
+    // CPACSRotors
     
-    namespace generated
+    // generated from /xsd:schema/xsd:complexType[771]
+    class CPACSRotor
     {
-        // This class is used in:
-        // CPACSRotors
+    public:
+        TIGL_EXPORT CPACSRotor(CCPACSRotors* parent, CTiglUIDManager* uidMgr);
         
-        // generated from /xsd:schema/xsd:complexType[771]
-        class CPACSRotor
-        {
-        public:
-            TIGL_EXPORT CPACSRotor(CCPACSRotors* parent, CTiglUIDManager* uidMgr);
-            
-            TIGL_EXPORT virtual ~CPACSRotor();
-            
-            TIGL_EXPORT CCPACSRotors* GetParent() const;
-            
-            TIGL_EXPORT CTiglUIDManager& GetUIDManager();
-            TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
-            
-            TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
-            TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
-            
-            TIGL_EXPORT virtual const std::string& GetUID() const;
-            TIGL_EXPORT virtual void SetUID(const std::string& value);
-            
-            TIGL_EXPORT virtual const boost::optional<TiglSymmetryAxis>& GetSymmetry() const;
-            TIGL_EXPORT virtual void SetSymmetry(const boost::optional<TiglSymmetryAxis>& value);
-            
-            TIGL_EXPORT virtual const std::string& GetName() const;
-            TIGL_EXPORT virtual void SetName(const std::string& value);
-            
-            TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
-            TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
-            
-            TIGL_EXPORT virtual const boost::optional<std::string>& GetParentUID() const;
-            TIGL_EXPORT virtual void SetParentUID(const boost::optional<std::string>& value);
-            
-            TIGL_EXPORT virtual const boost::optional<CPACSRotor_type>& GetType() const;
-            TIGL_EXPORT virtual void SetType(const boost::optional<CPACSRotor_type>& value);
-            
-            TIGL_EXPORT virtual const boost::optional<double>& GetNominalRotationsPerMinute() const;
-            TIGL_EXPORT virtual void SetNominalRotationsPerMinute(const boost::optional<double>& value);
-            
-            TIGL_EXPORT virtual const CCPACSTransformation& GetTransformation() const;
-            TIGL_EXPORT virtual CCPACSTransformation& GetTransformation();
-            
-            TIGL_EXPORT virtual const CCPACSRotorHub& GetRotorHub() const;
-            TIGL_EXPORT virtual CCPACSRotorHub& GetRotorHub();
-            
-        protected:
-            CCPACSRotors* m_parent;
-            
-            CTiglUIDManager* m_uidMgr;
-            
-            std::string                       m_uID;
-            boost::optional<TiglSymmetryAxis> m_symmetry;
-            std::string                       m_name;
-            boost::optional<std::string>      m_description;
-            boost::optional<std::string>      m_parentUID;
-            boost::optional<CPACSRotor_type>  m_type;
-            boost::optional<double>           m_nominalRotationsPerMinute;
-            CCPACSTransformation              m_transformation;
-            CCPACSRotorHub                    m_rotorHub;
-            
-        private:
-            #ifdef HAVE_CPP11
-            CPACSRotor(const CPACSRotor&) = delete;
-            CPACSRotor& operator=(const CPACSRotor&) = delete;
-            
-            CPACSRotor(CPACSRotor&&) = delete;
-            CPACSRotor& operator=(CPACSRotor&&) = delete;
-            #else
-            CPACSRotor(const CPACSRotor&);
-            CPACSRotor& operator=(const CPACSRotor&);
-            #endif
-        };
-    }
-    
-    // CPACSRotor is customized, use type CCPACSRotor directly
-}
+        TIGL_EXPORT virtual ~CPACSRotor();
+        
+        TIGL_EXPORT CCPACSRotors* GetParent() const;
+        
+        TIGL_EXPORT CTiglUIDManager& GetUIDManager();
+        TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
+        
+        TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+        TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
+        
+        TIGL_EXPORT virtual const std::string& GetUID() const;
+        TIGL_EXPORT virtual void SetUID(const std::string& value);
+        
+        TIGL_EXPORT virtual const boost::optional<TiglSymmetryAxis>& GetSymmetry() const;
+        TIGL_EXPORT virtual void SetSymmetry(const boost::optional<TiglSymmetryAxis>& value);
+        
+        TIGL_EXPORT virtual const std::string& GetName() const;
+        TIGL_EXPORT virtual void SetName(const std::string& value);
+        
+        TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
+        TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
+        
+        TIGL_EXPORT virtual const boost::optional<std::string>& GetParentUID() const;
+        TIGL_EXPORT virtual void SetParentUID(const boost::optional<std::string>& value);
+        
+        TIGL_EXPORT virtual const boost::optional<CPACSRotor_type>& GetType() const;
+        TIGL_EXPORT virtual void SetType(const boost::optional<CPACSRotor_type>& value);
+        
+        TIGL_EXPORT virtual const boost::optional<double>& GetNominalRotationsPerMinute() const;
+        TIGL_EXPORT virtual void SetNominalRotationsPerMinute(const boost::optional<double>& value);
+        
+        TIGL_EXPORT virtual const CCPACSTransformation& GetTransformation() const;
+        TIGL_EXPORT virtual CCPACSTransformation& GetTransformation();
+        
+        TIGL_EXPORT virtual const CCPACSRotorHub& GetRotorHub() const;
+        TIGL_EXPORT virtual CCPACSRotorHub& GetRotorHub();
+        
+    protected:
+        CCPACSRotors* m_parent;
+        
+        CTiglUIDManager* m_uidMgr;
+        
+        std::string                       m_uID;
+        boost::optional<TiglSymmetryAxis> m_symmetry;
+        std::string                       m_name;
+        boost::optional<std::string>      m_description;
+        boost::optional<std::string>      m_parentUID;
+        boost::optional<CPACSRotor_type>  m_type;
+        boost::optional<double>           m_nominalRotationsPerMinute;
+        CCPACSTransformation              m_transformation;
+        CCPACSRotorHub                    m_rotorHub;
+        
+    private:
+#ifdef HAVE_CPP11
+        CPACSRotor(const CPACSRotor&) = delete;
+        CPACSRotor& operator=(const CPACSRotor&) = delete;
+        
+        CPACSRotor(CPACSRotor&&) = delete;
+        CPACSRotor& operator=(CPACSRotor&&) = delete;
+#else
+        CPACSRotor(const CPACSRotor&);
+        CPACSRotor& operator=(const CPACSRotor&);
+#endif
+    };
+} // namespace generated
+
+// CPACSRotor is customized, use type CCPACSRotor directly
+} // namespace tigl

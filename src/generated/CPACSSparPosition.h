@@ -25,67 +25,67 @@
 
 namespace tigl
 {
-    class CTiglUIDManager;
-    class CCPACSWingSparPositions;
+class CTiglUIDManager;
+class CCPACSWingSparPositions;
+
+namespace generated
+{
+    // This class is used in:
+    // CPACSSparPositions
     
-    namespace generated
+    // generated from /xsd:schema/xsd:complexType[813]
+    class CPACSSparPosition
     {
-        // This class is used in:
-        // CPACSSparPositions
+    public:
+        TIGL_EXPORT CPACSSparPosition(CCPACSWingSparPositions* parent, CTiglUIDManager* uidMgr);
         
-        // generated from /xsd:schema/xsd:complexType[813]
-        class CPACSSparPosition
-        {
-        public:
-            TIGL_EXPORT CPACSSparPosition(CCPACSWingSparPositions* parent, CTiglUIDManager* uidMgr);
-            
-            TIGL_EXPORT virtual ~CPACSSparPosition();
-            
-            TIGL_EXPORT CCPACSWingSparPositions* GetParent() const;
-            
-            TIGL_EXPORT CTiglUIDManager& GetUIDManager();
-            TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
-            
-            TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
-            TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
-            
-            TIGL_EXPORT bool ValidateChoices() const;
-            
-            TIGL_EXPORT virtual const boost::optional<std::string>& GetUID() const;
-            TIGL_EXPORT virtual void SetUID(const boost::optional<std::string>& value);
-            
-            TIGL_EXPORT virtual const double& GetXsi() const;
-            TIGL_EXPORT virtual void SetXsi(const double& value);
-            
-            TIGL_EXPORT virtual const boost::optional<double>& GetEta_choice1() const;
-            TIGL_EXPORT virtual void SetEta_choice1(const boost::optional<double>& value);
-            
-            TIGL_EXPORT virtual const boost::optional<std::string>& GetElementUID_choice2() const;
-            TIGL_EXPORT virtual void SetElementUID_choice2(const boost::optional<std::string>& value);
-            
-        protected:
-            CCPACSWingSparPositions* m_parent;
-            
-            CTiglUIDManager* m_uidMgr;
-            
-            boost::optional<std::string> m_uID;
-            double                       m_xsi;
-            boost::optional<double>      m_eta_choice1;
-            boost::optional<std::string> m_elementUID_choice2;
-            
-        private:
-            #ifdef HAVE_CPP11
-            CPACSSparPosition(const CPACSSparPosition&) = delete;
-            CPACSSparPosition& operator=(const CPACSSparPosition&) = delete;
-            
-            CPACSSparPosition(CPACSSparPosition&&) = delete;
-            CPACSSparPosition& operator=(CPACSSparPosition&&) = delete;
-            #else
-            CPACSSparPosition(const CPACSSparPosition&);
-            CPACSSparPosition& operator=(const CPACSSparPosition&);
-            #endif
-        };
-    }
-    
-    // CPACSSparPosition is customized, use type CCPACSWingSparPosition directly
-}
+        TIGL_EXPORT virtual ~CPACSSparPosition();
+        
+        TIGL_EXPORT CCPACSWingSparPositions* GetParent() const;
+        
+        TIGL_EXPORT CTiglUIDManager& GetUIDManager();
+        TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
+        
+        TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+        TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
+        
+        TIGL_EXPORT bool ValidateChoices() const;
+        
+        TIGL_EXPORT virtual const boost::optional<std::string>& GetUID() const;
+        TIGL_EXPORT virtual void SetUID(const boost::optional<std::string>& value);
+        
+        TIGL_EXPORT virtual const double& GetXsi() const;
+        TIGL_EXPORT virtual void SetXsi(const double& value);
+        
+        TIGL_EXPORT virtual const boost::optional<double>& GetEta_choice1() const;
+        TIGL_EXPORT virtual void SetEta_choice1(const boost::optional<double>& value);
+        
+        TIGL_EXPORT virtual const boost::optional<std::string>& GetElementUID_choice2() const;
+        TIGL_EXPORT virtual void SetElementUID_choice2(const boost::optional<std::string>& value);
+        
+    protected:
+        CCPACSWingSparPositions* m_parent;
+        
+        CTiglUIDManager* m_uidMgr;
+        
+        boost::optional<std::string> m_uID;
+        double                       m_xsi;
+        boost::optional<double>      m_eta_choice1;
+        boost::optional<std::string> m_elementUID_choice2;
+        
+    private:
+#ifdef HAVE_CPP11
+        CPACSSparPosition(const CPACSSparPosition&) = delete;
+        CPACSSparPosition& operator=(const CPACSSparPosition&) = delete;
+        
+        CPACSSparPosition(CPACSSparPosition&&) = delete;
+        CPACSSparPosition& operator=(CPACSSparPosition&&) = delete;
+#else
+        CPACSSparPosition(const CPACSSparPosition&);
+        CPACSSparPosition& operator=(const CPACSSparPosition&);
+#endif
+    };
+} // namespace generated
+
+// CPACSSparPosition is customized, use type CCPACSWingSparPosition directly
+} // namespace tigl

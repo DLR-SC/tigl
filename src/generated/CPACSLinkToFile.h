@@ -26,49 +26,49 @@
 
 namespace tigl
 {
-    namespace generated
-    {
-        // This class is used in:
-        // CPACSGenericGeometricComponent
-        
-        // generated from /xsd:schema/xsd:complexType[497]
-        class CPACSLinkToFile
-        {
-        public:
-            TIGL_EXPORT CPACSLinkToFile();
-            TIGL_EXPORT virtual ~CPACSLinkToFile();
-            
-            TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
-            TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
-            
-            TIGL_EXPORT virtual const std::string& GetBase() const;
-            TIGL_EXPORT virtual void SetBase(const std::string& value);
-            
-            TIGL_EXPORT virtual const boost::optional<CPACSLinkToFileType_format>& GetFormat() const;
-            TIGL_EXPORT virtual void SetFormat(const boost::optional<CPACSLinkToFileType_format>& value);
-            
-        protected:
-            std::string                                 m_base;
-            boost::optional<CPACSLinkToFileType_format> m_format;
-            
-        private:
-            #ifdef HAVE_CPP11
-            CPACSLinkToFile(const CPACSLinkToFile&) = delete;
-            CPACSLinkToFile& operator=(const CPACSLinkToFile&) = delete;
-            
-            CPACSLinkToFile(CPACSLinkToFile&&) = delete;
-            CPACSLinkToFile& operator=(CPACSLinkToFile&&) = delete;
-            #else
-            CPACSLinkToFile(const CPACSLinkToFile&);
-            CPACSLinkToFile& operator=(const CPACSLinkToFile&);
-            #endif
-        };
-    }
+namespace generated
+{
+    // This class is used in:
+    // CPACSGenericGeometricComponent
     
-    // Aliases in tigl namespace
-    #ifdef HAVE_CPP11
-    using CCPACSLinkToFile = generated::CPACSLinkToFile;
-    #else
-    typedef generated::CPACSLinkToFile CCPACSLinkToFile;
-    #endif
-}
+    // generated from /xsd:schema/xsd:complexType[497]
+    class CPACSLinkToFile
+    {
+    public:
+        TIGL_EXPORT CPACSLinkToFile();
+        TIGL_EXPORT virtual ~CPACSLinkToFile();
+        
+        TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+        TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
+        
+        TIGL_EXPORT virtual const std::string& GetBase() const;
+        TIGL_EXPORT virtual void SetBase(const std::string& value);
+        
+        TIGL_EXPORT virtual const boost::optional<CPACSLinkToFileType_format>& GetFormat() const;
+        TIGL_EXPORT virtual void SetFormat(const boost::optional<CPACSLinkToFileType_format>& value);
+        
+    protected:
+        std::string                                 m_base;
+        boost::optional<CPACSLinkToFileType_format> m_format;
+        
+    private:
+#ifdef HAVE_CPP11
+        CPACSLinkToFile(const CPACSLinkToFile&) = delete;
+        CPACSLinkToFile& operator=(const CPACSLinkToFile&) = delete;
+        
+        CPACSLinkToFile(CPACSLinkToFile&&) = delete;
+        CPACSLinkToFile& operator=(CPACSLinkToFile&&) = delete;
+#else
+        CPACSLinkToFile(const CPACSLinkToFile&);
+        CPACSLinkToFile& operator=(const CPACSLinkToFile&);
+#endif
+    };
+} // namespace generated
+
+// Aliases in tigl namespace
+#ifdef HAVE_CPP11
+using CCPACSLinkToFile = generated::CPACSLinkToFile;
+#else
+typedef generated::CPACSLinkToFile CCPACSLinkToFile;
+#endif
+} // namespace tigl

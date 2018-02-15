@@ -22,62 +22,67 @@
 
 namespace tigl
 {
-    namespace generated
+namespace generated
+{
+    CPACSToolspecific::CPACSToolspecific()
     {
-        CPACSToolspecific::CPACSToolspecific() {}
-        
-        CPACSToolspecific::~CPACSToolspecific() {}
-        
-        void CPACSToolspecific::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
-        {
-            // read element cFD
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/cFD")) {
-                m_cFD = boost::in_place();
-                try {
-                    m_cFD->ReadCPACS(tixiHandle, xpath + "/cFD");
-                } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read cFD at xpath " << xpath << ": " << e.what();
-                    m_cFD = boost::none;
-                }
+    }
+    
+    CPACSToolspecific::~CPACSToolspecific()
+    {
+    }
+    
+    void CPACSToolspecific::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
+    {
+        // read element cFD
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/cFD")) {
+            m_cFD = boost::in_place();
+            try {
+                m_cFD->ReadCPACS(tixiHandle, xpath + "/cFD");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read cFD at xpath " << xpath << ": " << e.what();
+                m_cFD = boost::none;
             }
-            
-        }
-        
-        void CPACSToolspecific::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
-        {
-            // write element cFD
-            if (m_cFD) {
-                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/cFD");
-                m_cFD->WriteCPACS(tixiHandle, xpath + "/cFD");
-            } else {
-                if (tixi::TixiCheckElement(tixiHandle, xpath + "/cFD")) {
-                    tixi::TixiRemoveElement(tixiHandle, xpath + "/cFD");
-                }
-            }
-            
-        }
-        
-        const boost::optional<CPACSCFDTool>& CPACSToolspecific::GetCFD() const
-        {
-            return m_cFD;
-        }
-        
-        boost::optional<CPACSCFDTool>& CPACSToolspecific::GetCFD()
-        {
-            return m_cFD;
-        }
-        
-        CPACSCFDTool& CPACSToolspecific::GetCFD(CreateIfNotExistsTag)
-        {
-            if (!m_cFD)
-                m_cFD = boost::in_place();
-            return *m_cFD;
-        }
-        
-        void CPACSToolspecific::RemoveCFD()
-        {
-            m_cFD = boost::none;
         }
         
     }
-}
+    
+    void CPACSToolspecific::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
+    {
+        // write element cFD
+        if (m_cFD) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/cFD");
+            m_cFD->WriteCPACS(tixiHandle, xpath + "/cFD");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/cFD")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/cFD");
+            }
+        }
+        
+    }
+    
+    const boost::optional<CPACSCFDTool>& CPACSToolspecific::GetCFD() const
+    {
+        return m_cFD;
+    }
+    
+    boost::optional<CPACSCFDTool>& CPACSToolspecific::GetCFD()
+    {
+        return m_cFD;
+    }
+    
+    CPACSCFDTool& CPACSToolspecific::GetCFD(CreateIfNotExistsTag)
+    {
+        if (!m_cFD)
+            m_cFD = boost::in_place();
+        return *m_cFD;
+    }
+    
+    void CPACSToolspecific::RemoveCFD()
+    {
+        m_cFD = boost::none;
+    }
+    
+} // namespace generated
+} // namespace tigl

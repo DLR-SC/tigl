@@ -23,341 +23,354 @@
 
 namespace tigl
 {
-    namespace generated
+namespace generated
+{
+    CPACSPostFailure::CPACSPostFailure()
     {
-        CPACSPostFailure::CPACSPostFailure() {}
+    }
+    
+    CPACSPostFailure::~CPACSPostFailure()
+    {
+    }
+    
+    void CPACSPostFailure::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
+    {
+        // read element name
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
+            m_name = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
+            if (m_name->empty()) {
+                LOG(WARNING) << "Optional element name is present but empty at xpath " << xpath;
+            }
+        }
         
-        CPACSPostFailure::~CPACSPostFailure() {}
+        // read element description
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
+            m_description = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
+            if (m_description->empty()) {
+                LOG(WARNING) << "Optional element description is present but empty at xpath " << xpath;
+            }
+        }
         
-        void CPACSPostFailure::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
-        {
-            // read element name
+        // read element materialLaw
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/materialLaw")) {
+            m_materialLaw = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/materialLaw");
+            if (m_materialLaw->empty()) {
+                LOG(WARNING) << "Optional element materialLaw is present but empty at xpath " << xpath;
+            }
+        }
+        
+        // read element plasticEliminationStrain
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/plasticEliminationStrain")) {
+            m_plasticEliminationStrain_choice1 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/plasticEliminationStrain");
+        }
+        
+        // read element plasticityCurvePoint
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/plasticityCurvePoint")) {
+            tixi::TixiReadElements(tixiHandle, xpath + "/plasticityCurvePoint", m_plasticityCurvePoints_choice1);
+        }
+        
+        // read element initialEquivalentShearStrain
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/initialEquivalentShearStrain")) {
+            m_initialEquivalentShearStrain_choice2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/initialEquivalentShearStrain");
+        }
+        
+        // read element intermediateEquivalentShearStrain
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/intermediateEquivalentShearStrain")) {
+            m_intermediateEquivalentShearStrain_choice2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/intermediateEquivalentShearStrain");
+        }
+        
+        // read element ultimateEquivalentShearStrain
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/ultimateEquivalentShearStrain")) {
+            m_ultimateEquivalentShearStrain_choice2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/ultimateEquivalentShearStrain");
+        }
+        
+        // read element intermediateDamage
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/intermediateDamage")) {
+            m_intermediateDamage_choice2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/intermediateDamage");
+        }
+        
+        // read element ultimateDamage
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/ultimateDamage")) {
+            m_ultimateDamage_choice2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/ultimateDamage");
+        }
+        
+        if (!ValidateChoices()) {
+            LOG(ERROR) << "Invalid choice configuration at xpath " << xpath;
+        }
+    }
+    
+    void CPACSPostFailure::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
+    {
+        // write element name
+        if (m_name) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/name", *m_name);
+        }
+        else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
-                m_name = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
-                if (m_name->empty()) {
-                    LOG(WARNING) << "Optional element name is present but empty at xpath " << xpath;
-                }
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/name");
             }
-            
-            // read element description
+        }
+        
+        // write element description
+        if (m_description) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
+        }
+        else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
-                m_description = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
-                if (m_description->empty()) {
-                    LOG(WARNING) << "Optional element description is present but empty at xpath " << xpath;
-                }
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/description");
             }
-            
-            // read element materialLaw
+        }
+        
+        // write element materialLaw
+        if (m_materialLaw) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/materialLaw");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/materialLaw", *m_materialLaw);
+        }
+        else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/materialLaw")) {
-                m_materialLaw = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/materialLaw");
-                if (m_materialLaw->empty()) {
-                    LOG(WARNING) << "Optional element materialLaw is present but empty at xpath " << xpath;
-                }
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/materialLaw");
             }
-            
-            // read element plasticEliminationStrain
+        }
+        
+        // write element plasticEliminationStrain
+        if (m_plasticEliminationStrain_choice1) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/plasticEliminationStrain");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/plasticEliminationStrain", *m_plasticEliminationStrain_choice1);
+        }
+        else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/plasticEliminationStrain")) {
-                m_plasticEliminationStrain_choice1 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/plasticEliminationStrain");
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/plasticEliminationStrain");
             }
-            
-            // read element plasticityCurvePoint
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/plasticityCurvePoint")) {
-                tixi::TixiReadElements(tixiHandle, xpath + "/plasticityCurvePoint", m_plasticityCurvePoints_choice1);
-            }
-            
-            // read element initialEquivalentShearStrain
+        }
+        
+        // write element plasticityCurvePoint
+        tixi::TixiSaveElements(tixiHandle, xpath + "/plasticityCurvePoint", m_plasticityCurvePoints_choice1);
+        
+        // write element initialEquivalentShearStrain
+        if (m_initialEquivalentShearStrain_choice2) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/initialEquivalentShearStrain");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/initialEquivalentShearStrain", *m_initialEquivalentShearStrain_choice2);
+        }
+        else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/initialEquivalentShearStrain")) {
-                m_initialEquivalentShearStrain_choice2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/initialEquivalentShearStrain");
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/initialEquivalentShearStrain");
             }
-            
-            // read element intermediateEquivalentShearStrain
+        }
+        
+        // write element intermediateEquivalentShearStrain
+        if (m_intermediateEquivalentShearStrain_choice2) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/intermediateEquivalentShearStrain");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/intermediateEquivalentShearStrain", *m_intermediateEquivalentShearStrain_choice2);
+        }
+        else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/intermediateEquivalentShearStrain")) {
-                m_intermediateEquivalentShearStrain_choice2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/intermediateEquivalentShearStrain");
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/intermediateEquivalentShearStrain");
             }
-            
-            // read element ultimateEquivalentShearStrain
+        }
+        
+        // write element ultimateEquivalentShearStrain
+        if (m_ultimateEquivalentShearStrain_choice2) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ultimateEquivalentShearStrain");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/ultimateEquivalentShearStrain", *m_ultimateEquivalentShearStrain_choice2);
+        }
+        else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/ultimateEquivalentShearStrain")) {
-                m_ultimateEquivalentShearStrain_choice2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/ultimateEquivalentShearStrain");
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/ultimateEquivalentShearStrain");
             }
-            
-            // read element intermediateDamage
+        }
+        
+        // write element intermediateDamage
+        if (m_intermediateDamage_choice2) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/intermediateDamage");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/intermediateDamage", *m_intermediateDamage_choice2);
+        }
+        else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/intermediateDamage")) {
-                m_intermediateDamage_choice2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/intermediateDamage");
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/intermediateDamage");
             }
-            
-            // read element ultimateDamage
+        }
+        
+        // write element ultimateDamage
+        if (m_ultimateDamage_choice2) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ultimateDamage");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/ultimateDamage", *m_ultimateDamage_choice2);
+        }
+        else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/ultimateDamage")) {
-                m_ultimateDamage_choice2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/ultimateDamage");
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/ultimateDamage");
             }
-            
-            if (!ValidateChoices()) {
-                LOG(ERROR) << "Invalid choice configuration at xpath " << xpath;
-            }
-        }
-        
-        void CPACSPostFailure::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
-        {
-            // write element name
-            if (m_name) {
-                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
-                tixi::TixiSaveElement(tixiHandle, xpath + "/name", *m_name);
-            } else {
-                if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
-                    tixi::TixiRemoveElement(tixiHandle, xpath + "/name");
-                }
-            }
-            
-            // write element description
-            if (m_description) {
-                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
-                tixi::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
-            } else {
-                if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
-                    tixi::TixiRemoveElement(tixiHandle, xpath + "/description");
-                }
-            }
-            
-            // write element materialLaw
-            if (m_materialLaw) {
-                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/materialLaw");
-                tixi::TixiSaveElement(tixiHandle, xpath + "/materialLaw", *m_materialLaw);
-            } else {
-                if (tixi::TixiCheckElement(tixiHandle, xpath + "/materialLaw")) {
-                    tixi::TixiRemoveElement(tixiHandle, xpath + "/materialLaw");
-                }
-            }
-            
-            // write element plasticEliminationStrain
-            if (m_plasticEliminationStrain_choice1) {
-                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/plasticEliminationStrain");
-                tixi::TixiSaveElement(tixiHandle, xpath + "/plasticEliminationStrain", *m_plasticEliminationStrain_choice1);
-            } else {
-                if (tixi::TixiCheckElement(tixiHandle, xpath + "/plasticEliminationStrain")) {
-                    tixi::TixiRemoveElement(tixiHandle, xpath + "/plasticEliminationStrain");
-                }
-            }
-            
-            // write element plasticityCurvePoint
-            tixi::TixiSaveElements(tixiHandle, xpath + "/plasticityCurvePoint", m_plasticityCurvePoints_choice1);
-            
-            // write element initialEquivalentShearStrain
-            if (m_initialEquivalentShearStrain_choice2) {
-                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/initialEquivalentShearStrain");
-                tixi::TixiSaveElement(tixiHandle, xpath + "/initialEquivalentShearStrain", *m_initialEquivalentShearStrain_choice2);
-            } else {
-                if (tixi::TixiCheckElement(tixiHandle, xpath + "/initialEquivalentShearStrain")) {
-                    tixi::TixiRemoveElement(tixiHandle, xpath + "/initialEquivalentShearStrain");
-                }
-            }
-            
-            // write element intermediateEquivalentShearStrain
-            if (m_intermediateEquivalentShearStrain_choice2) {
-                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/intermediateEquivalentShearStrain");
-                tixi::TixiSaveElement(tixiHandle, xpath + "/intermediateEquivalentShearStrain", *m_intermediateEquivalentShearStrain_choice2);
-            } else {
-                if (tixi::TixiCheckElement(tixiHandle, xpath + "/intermediateEquivalentShearStrain")) {
-                    tixi::TixiRemoveElement(tixiHandle, xpath + "/intermediateEquivalentShearStrain");
-                }
-            }
-            
-            // write element ultimateEquivalentShearStrain
-            if (m_ultimateEquivalentShearStrain_choice2) {
-                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ultimateEquivalentShearStrain");
-                tixi::TixiSaveElement(tixiHandle, xpath + "/ultimateEquivalentShearStrain", *m_ultimateEquivalentShearStrain_choice2);
-            } else {
-                if (tixi::TixiCheckElement(tixiHandle, xpath + "/ultimateEquivalentShearStrain")) {
-                    tixi::TixiRemoveElement(tixiHandle, xpath + "/ultimateEquivalentShearStrain");
-                }
-            }
-            
-            // write element intermediateDamage
-            if (m_intermediateDamage_choice2) {
-                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/intermediateDamage");
-                tixi::TixiSaveElement(tixiHandle, xpath + "/intermediateDamage", *m_intermediateDamage_choice2);
-            } else {
-                if (tixi::TixiCheckElement(tixiHandle, xpath + "/intermediateDamage")) {
-                    tixi::TixiRemoveElement(tixiHandle, xpath + "/intermediateDamage");
-                }
-            }
-            
-            // write element ultimateDamage
-            if (m_ultimateDamage_choice2) {
-                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ultimateDamage");
-                tixi::TixiSaveElement(tixiHandle, xpath + "/ultimateDamage", *m_ultimateDamage_choice2);
-            } else {
-                if (tixi::TixiCheckElement(tixiHandle, xpath + "/ultimateDamage")) {
-                    tixi::TixiRemoveElement(tixiHandle, xpath + "/ultimateDamage");
-                }
-            }
-            
-        }
-        
-        bool CPACSPostFailure::ValidateChoices() const
-        {
-            return
-            (
-                (
-                    (
-                        // mandatory elements of this choice must be there
-                        true // m_plasticEliminationStrain_choice1 is optional in choice
-                        &&
-                        true // m_plasticityCurvePoints_choice1 is optional in choice
-                        &&
-                        // elements of other choices must not be there
-                        !(
-                            m_initialEquivalentShearStrain_choice2.is_initialized()
-                            ||
-                            m_intermediateEquivalentShearStrain_choice2.is_initialized()
-                            ||
-                            m_ultimateEquivalentShearStrain_choice2.is_initialized()
-                            ||
-                            m_intermediateDamage_choice2.is_initialized()
-                            ||
-                            m_ultimateDamage_choice2.is_initialized()
-                        )
-                    )
-                    +
-                    (
-                        // mandatory elements of this choice must be there
-                        m_initialEquivalentShearStrain_choice2.is_initialized()
-                        &&
-                        m_intermediateEquivalentShearStrain_choice2.is_initialized()
-                        &&
-                        m_ultimateEquivalentShearStrain_choice2.is_initialized()
-                        &&
-                        m_intermediateDamage_choice2.is_initialized()
-                        &&
-                        m_ultimateDamage_choice2.is_initialized()
-                        &&
-                        // elements of other choices must not be there
-                        !(
-                            m_plasticEliminationStrain_choice1.is_initialized()
-                            ||
-                            !m_plasticityCurvePoints_choice1.empty()
-                        )
-                    )
-                    == 1
-                )
-            )
-            ;
-        }
-        
-        const boost::optional<std::string>& CPACSPostFailure::GetName() const
-        {
-            return m_name;
-        }
-        
-        void CPACSPostFailure::SetName(const boost::optional<std::string>& value)
-        {
-            m_name = value;
-        }
-        
-        const boost::optional<std::string>& CPACSPostFailure::GetDescription() const
-        {
-            return m_description;
-        }
-        
-        void CPACSPostFailure::SetDescription(const boost::optional<std::string>& value)
-        {
-            m_description = value;
-        }
-        
-        const boost::optional<std::string>& CPACSPostFailure::GetMaterialLaw() const
-        {
-            return m_materialLaw;
-        }
-        
-        void CPACSPostFailure::SetMaterialLaw(const boost::optional<std::string>& value)
-        {
-            m_materialLaw = value;
-        }
-        
-        const boost::optional<double>& CPACSPostFailure::GetPlasticEliminationStrain_choice1() const
-        {
-            return m_plasticEliminationStrain_choice1;
-        }
-        
-        void CPACSPostFailure::SetPlasticEliminationStrain_choice1(const boost::optional<double>& value)
-        {
-            m_plasticEliminationStrain_choice1 = value;
-        }
-        
-        const std::vector<unique_ptr<CPACSPlasticityCurvePoint> >& CPACSPostFailure::GetPlasticityCurvePoints_choice1() const
-        {
-            return m_plasticityCurvePoints_choice1;
-        }
-        
-        std::vector<unique_ptr<CPACSPlasticityCurvePoint> >& CPACSPostFailure::GetPlasticityCurvePoints_choice1()
-        {
-            return m_plasticityCurvePoints_choice1;
-        }
-        
-        const boost::optional<double>& CPACSPostFailure::GetInitialEquivalentShearStrain_choice2() const
-        {
-            return m_initialEquivalentShearStrain_choice2;
-        }
-        
-        void CPACSPostFailure::SetInitialEquivalentShearStrain_choice2(const boost::optional<double>& value)
-        {
-            m_initialEquivalentShearStrain_choice2 = value;
-        }
-        
-        const boost::optional<double>& CPACSPostFailure::GetIntermediateEquivalentShearStrain_choice2() const
-        {
-            return m_intermediateEquivalentShearStrain_choice2;
-        }
-        
-        void CPACSPostFailure::SetIntermediateEquivalentShearStrain_choice2(const boost::optional<double>& value)
-        {
-            m_intermediateEquivalentShearStrain_choice2 = value;
-        }
-        
-        const boost::optional<double>& CPACSPostFailure::GetUltimateEquivalentShearStrain_choice2() const
-        {
-            return m_ultimateEquivalentShearStrain_choice2;
-        }
-        
-        void CPACSPostFailure::SetUltimateEquivalentShearStrain_choice2(const boost::optional<double>& value)
-        {
-            m_ultimateEquivalentShearStrain_choice2 = value;
-        }
-        
-        const boost::optional<double>& CPACSPostFailure::GetIntermediateDamage_choice2() const
-        {
-            return m_intermediateDamage_choice2;
-        }
-        
-        void CPACSPostFailure::SetIntermediateDamage_choice2(const boost::optional<double>& value)
-        {
-            m_intermediateDamage_choice2 = value;
-        }
-        
-        const boost::optional<double>& CPACSPostFailure::GetUltimateDamage_choice2() const
-        {
-            return m_ultimateDamage_choice2;
-        }
-        
-        void CPACSPostFailure::SetUltimateDamage_choice2(const boost::optional<double>& value)
-        {
-            m_ultimateDamage_choice2 = value;
-        }
-        
-        CPACSPlasticityCurvePoint& CPACSPostFailure::AddPlasticityCurvePoint_choice1()
-        {
-            m_plasticityCurvePoints_choice1.push_back(make_unique<CPACSPlasticityCurvePoint>());
-            return *m_plasticityCurvePoints_choice1.back();
-        }
-        
-        void CPACSPostFailure::RemovePlasticityCurvePoint_choice1(CPACSPlasticityCurvePoint& ref)
-        {
-            for (std::size_t i = 0; i < m_plasticityCurvePoints_choice1.size(); i++) {
-                if (m_plasticityCurvePoints_choice1[i].get() == &ref) {
-                    m_plasticityCurvePoints_choice1.erase(m_plasticityCurvePoints_choice1.begin() + i);
-                    return;
-                }
-            }
-            throw CTiglError("Element not found");
         }
         
     }
-}
+    
+    bool CPACSPostFailure::ValidateChoices() const
+    {
+        return
+        (
+            (
+                (
+                    // mandatory elements of this choice must be there
+                    true // m_plasticEliminationStrain_choice1 is optional in choice
+                    &&
+                    true // m_plasticityCurvePoints_choice1 is optional in choice
+                    &&
+                    // elements of other choices must not be there
+                    !(
+                        m_initialEquivalentShearStrain_choice2.is_initialized()
+                        ||
+                        m_intermediateEquivalentShearStrain_choice2.is_initialized()
+                        ||
+                        m_ultimateEquivalentShearStrain_choice2.is_initialized()
+                        ||
+                        m_intermediateDamage_choice2.is_initialized()
+                        ||
+                        m_ultimateDamage_choice2.is_initialized()
+                    )
+                )
+                +
+                (
+                    // mandatory elements of this choice must be there
+                    m_initialEquivalentShearStrain_choice2.is_initialized()
+                    &&
+                    m_intermediateEquivalentShearStrain_choice2.is_initialized()
+                    &&
+                    m_ultimateEquivalentShearStrain_choice2.is_initialized()
+                    &&
+                    m_intermediateDamage_choice2.is_initialized()
+                    &&
+                    m_ultimateDamage_choice2.is_initialized()
+                    &&
+                    // elements of other choices must not be there
+                    !(
+                        m_plasticEliminationStrain_choice1.is_initialized()
+                        ||
+                        !m_plasticityCurvePoints_choice1.empty()
+                    )
+                )
+                == 1
+            )
+        )
+        ;
+    }
+    
+    const boost::optional<std::string>& CPACSPostFailure::GetName() const
+    {
+        return m_name;
+    }
+    
+    void CPACSPostFailure::SetName(const boost::optional<std::string>& value)
+    {
+        m_name = value;
+    }
+    
+    const boost::optional<std::string>& CPACSPostFailure::GetDescription() const
+    {
+        return m_description;
+    }
+    
+    void CPACSPostFailure::SetDescription(const boost::optional<std::string>& value)
+    {
+        m_description = value;
+    }
+    
+    const boost::optional<std::string>& CPACSPostFailure::GetMaterialLaw() const
+    {
+        return m_materialLaw;
+    }
+    
+    void CPACSPostFailure::SetMaterialLaw(const boost::optional<std::string>& value)
+    {
+        m_materialLaw = value;
+    }
+    
+    const boost::optional<double>& CPACSPostFailure::GetPlasticEliminationStrain_choice1() const
+    {
+        return m_plasticEliminationStrain_choice1;
+    }
+    
+    void CPACSPostFailure::SetPlasticEliminationStrain_choice1(const boost::optional<double>& value)
+    {
+        m_plasticEliminationStrain_choice1 = value;
+    }
+    
+    const std::vector<unique_ptr<CPACSPlasticityCurvePoint> >& CPACSPostFailure::GetPlasticityCurvePoints_choice1() const
+    {
+        return m_plasticityCurvePoints_choice1;
+    }
+    
+    std::vector<unique_ptr<CPACSPlasticityCurvePoint> >& CPACSPostFailure::GetPlasticityCurvePoints_choice1()
+    {
+        return m_plasticityCurvePoints_choice1;
+    }
+    
+    const boost::optional<double>& CPACSPostFailure::GetInitialEquivalentShearStrain_choice2() const
+    {
+        return m_initialEquivalentShearStrain_choice2;
+    }
+    
+    void CPACSPostFailure::SetInitialEquivalentShearStrain_choice2(const boost::optional<double>& value)
+    {
+        m_initialEquivalentShearStrain_choice2 = value;
+    }
+    
+    const boost::optional<double>& CPACSPostFailure::GetIntermediateEquivalentShearStrain_choice2() const
+    {
+        return m_intermediateEquivalentShearStrain_choice2;
+    }
+    
+    void CPACSPostFailure::SetIntermediateEquivalentShearStrain_choice2(const boost::optional<double>& value)
+    {
+        m_intermediateEquivalentShearStrain_choice2 = value;
+    }
+    
+    const boost::optional<double>& CPACSPostFailure::GetUltimateEquivalentShearStrain_choice2() const
+    {
+        return m_ultimateEquivalentShearStrain_choice2;
+    }
+    
+    void CPACSPostFailure::SetUltimateEquivalentShearStrain_choice2(const boost::optional<double>& value)
+    {
+        m_ultimateEquivalentShearStrain_choice2 = value;
+    }
+    
+    const boost::optional<double>& CPACSPostFailure::GetIntermediateDamage_choice2() const
+    {
+        return m_intermediateDamage_choice2;
+    }
+    
+    void CPACSPostFailure::SetIntermediateDamage_choice2(const boost::optional<double>& value)
+    {
+        m_intermediateDamage_choice2 = value;
+    }
+    
+    const boost::optional<double>& CPACSPostFailure::GetUltimateDamage_choice2() const
+    {
+        return m_ultimateDamage_choice2;
+    }
+    
+    void CPACSPostFailure::SetUltimateDamage_choice2(const boost::optional<double>& value)
+    {
+        m_ultimateDamage_choice2 = value;
+    }
+    
+    CPACSPlasticityCurvePoint& CPACSPostFailure::AddPlasticityCurvePoint_choice1()
+    {
+        m_plasticityCurvePoints_choice1.push_back(make_unique<CPACSPlasticityCurvePoint>());
+        return *m_plasticityCurvePoints_choice1.back();
+    }
+    
+    void CPACSPostFailure::RemovePlasticityCurvePoint_choice1(CPACSPlasticityCurvePoint& ref)
+    {
+        for (std::size_t i = 0; i < m_plasticityCurvePoints_choice1.size(); i++) {
+            if (m_plasticityCurvePoints_choice1[i].get() == &ref) {
+                m_plasticityCurvePoints_choice1.erase(m_plasticityCurvePoints_choice1.begin() + i);
+                return;
+            }
+        }
+        throw CTiglError("Element not found");
+    }
+    
+} // namespace generated
+} // namespace tigl

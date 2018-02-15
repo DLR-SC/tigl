@@ -25,40 +25,40 @@
 
 namespace tigl
 {
-    namespace generated
+namespace generated
+{
+    // This enum is used in:
+    // CPACSRotorHub
+    
+    // generated from /xsd:schema/xsd:complexType[770]/xsd:complexContent/xsd:extension/xsd:all/xsd:element[3]/xsd:simpleType
+    enum CPACSRotorHub_type
     {
-        // This enum is used in:
-        // CPACSRotorHub
-        
-        // generated from /xsd:schema/xsd:complexType[770]/xsd:complexContent/xsd:extension/xsd:all/xsd:element[3]/xsd:simpleType
-        enum CPACSRotorHub_type
-        {
-            semiRigid,
-            rigid,
-            articulated,
-            hingeless
-        };
-        
-        inline std::string TiglRotorHubTypeToString(const CPACSRotorHub_type& value)
-        {
-            switch(value) {
-            case semiRigid: return "semiRigid";
-            case rigid: return "rigid";
-            case articulated: return "articulated";
-            case hingeless: return "hingeless";
-            default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSRotorHub_type");
-            }
-        }
-        inline CPACSRotorHub_type stringToTiglRotorHubType(const std::string& value)
-        {
-            struct ToLower { std::string operator()(std::string str) { for (std::size_t i = 0; i < str.length(); i++) { str[i] = std::tolower(str[i]); } return str; } } toLower;
-            if (toLower(value) == "semirigid") { return semiRigid; }
-            if (toLower(value) == "rigid") { return rigid; }
-            if (toLower(value) == "articulated") { return articulated; }
-            if (toLower(value) == "hingeless") { return hingeless; }
-            throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSRotorHub_type");
+        semiRigid,
+        rigid,
+        articulated,
+        hingeless
+    };
+    
+    inline std::string TiglRotorHubTypeToString(const CPACSRotorHub_type& value)
+    {
+        switch(value) {
+        case semiRigid: return "semiRigid";
+        case rigid: return "rigid";
+        case articulated: return "articulated";
+        case hingeless: return "hingeless";
+        default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSRotorHub_type");
         }
     }
-    
-    // CPACSRotorHub_type is customized, use type TiglRotorHubType directly
-}
+    inline CPACSRotorHub_type stringToTiglRotorHubType(const std::string& value)
+    {
+        struct ToLower { std::string operator()(std::string str) { for (std::size_t i = 0; i < str.length(); i++) { str[i] = std::tolower(str[i]); } return str; } } toLower;
+        if (toLower(value) == "semirigid") { return semiRigid; }
+        if (toLower(value) == "rigid") { return rigid; }
+        if (toLower(value) == "articulated") { return articulated; }
+        if (toLower(value) == "hingeless") { return hingeless; }
+        throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSRotorHub_type");
+    }
+} // namespace generated
+
+// CPACSRotorHub_type is customized, use type TiglRotorHubType directly
+} // namespace tigl

@@ -25,57 +25,57 @@
 
 namespace tigl
 {
-    class CTiglUIDManager;
-    class CCPACSExternalObject;
-    class CCPACSAircraftModel;
+class CTiglUIDManager;
+class CCPACSExternalObject;
+class CCPACSAircraftModel;
+
+namespace generated
+{
+    // This class is used in:
+    // CPACSAircraftModel
     
-    namespace generated
+    // generated from /xsd:schema/xsd:complexType[398]
+    class CPACSGenericGeometryComponents
     {
-        // This class is used in:
-        // CPACSAircraftModel
+    public:
+        TIGL_EXPORT CPACSGenericGeometryComponents(CCPACSAircraftModel* parent, CTiglUIDManager* uidMgr);
         
-        // generated from /xsd:schema/xsd:complexType[398]
-        class CPACSGenericGeometryComponents
-        {
-        public:
-            TIGL_EXPORT CPACSGenericGeometryComponents(CCPACSAircraftModel* parent, CTiglUIDManager* uidMgr);
-            
-            TIGL_EXPORT virtual ~CPACSGenericGeometryComponents();
-            
-            TIGL_EXPORT CCPACSAircraftModel* GetParent() const;
-            
-            TIGL_EXPORT CTiglUIDManager& GetUIDManager();
-            TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
-            
-            TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
-            TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
-            
-            TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSExternalObject> >& GetGenericGeometryComponents() const;
-            TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSExternalObject> >& GetGenericGeometryComponents();
-            
-            TIGL_EXPORT virtual CCPACSExternalObject& AddGenericGeometryComponent();
-            TIGL_EXPORT virtual void RemoveGenericGeometryComponent(CCPACSExternalObject& ref);
-            
-        protected:
-            CCPACSAircraftModel* m_parent;
-            
-            CTiglUIDManager* m_uidMgr;
-            
-            std::vector<unique_ptr<CCPACSExternalObject> > m_genericGeometryComponents;
-            
-        private:
-            #ifdef HAVE_CPP11
-            CPACSGenericGeometryComponents(const CPACSGenericGeometryComponents&) = delete;
-            CPACSGenericGeometryComponents& operator=(const CPACSGenericGeometryComponents&) = delete;
-            
-            CPACSGenericGeometryComponents(CPACSGenericGeometryComponents&&) = delete;
-            CPACSGenericGeometryComponents& operator=(CPACSGenericGeometryComponents&&) = delete;
-            #else
-            CPACSGenericGeometryComponents(const CPACSGenericGeometryComponents&);
-            CPACSGenericGeometryComponents& operator=(const CPACSGenericGeometryComponents&);
-            #endif
-        };
-    }
-    
-    // CPACSGenericGeometryComponents is customized, use type CCPACSExternalObjects directly
-}
+        TIGL_EXPORT virtual ~CPACSGenericGeometryComponents();
+        
+        TIGL_EXPORT CCPACSAircraftModel* GetParent() const;
+        
+        TIGL_EXPORT CTiglUIDManager& GetUIDManager();
+        TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
+        
+        TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+        TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
+        
+        TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSExternalObject> >& GetGenericGeometryComponents() const;
+        TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSExternalObject> >& GetGenericGeometryComponents();
+        
+        TIGL_EXPORT virtual CCPACSExternalObject& AddGenericGeometryComponent();
+        TIGL_EXPORT virtual void RemoveGenericGeometryComponent(CCPACSExternalObject& ref);
+        
+    protected:
+        CCPACSAircraftModel* m_parent;
+        
+        CTiglUIDManager* m_uidMgr;
+        
+        std::vector<unique_ptr<CCPACSExternalObject> > m_genericGeometryComponents;
+        
+    private:
+#ifdef HAVE_CPP11
+        CPACSGenericGeometryComponents(const CPACSGenericGeometryComponents&) = delete;
+        CPACSGenericGeometryComponents& operator=(const CPACSGenericGeometryComponents&) = delete;
+        
+        CPACSGenericGeometryComponents(CPACSGenericGeometryComponents&&) = delete;
+        CPACSGenericGeometryComponents& operator=(CPACSGenericGeometryComponents&&) = delete;
+#else
+        CPACSGenericGeometryComponents(const CPACSGenericGeometryComponents&);
+        CPACSGenericGeometryComponents& operator=(const CPACSGenericGeometryComponents&);
+#endif
+    };
+} // namespace generated
+
+// CPACSGenericGeometryComponents is customized, use type CCPACSExternalObjects directly
+} // namespace tigl

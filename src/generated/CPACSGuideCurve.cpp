@@ -23,411 +23,420 @@
 
 namespace tigl
 {
-    namespace generated
+namespace generated
+{
+    CPACSGuideCurve::CPACSGuideCurve(CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+        , m_toRelativeCircumference(0)
     {
-        CPACSGuideCurve::CPACSGuideCurve(CTiglUIDManager* uidMgr) :
-            m_uidMgr(uidMgr), 
-            m_toRelativeCircumference(0) {}
-        
-        CPACSGuideCurve::~CPACSGuideCurve()
-        {
-            if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
+    }
+    
+    CPACSGuideCurve::~CPACSGuideCurve()
+    {
+        if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
+    }
+    
+    CTiglUIDManager& CPACSGuideCurve::GetUIDManager()
+    {
+        return *m_uidMgr;
+    }
+    
+    const CTiglUIDManager& CPACSGuideCurve::GetUIDManager() const
+    {
+        return *m_uidMgr;
+    }
+    
+    void CPACSGuideCurve::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
+    {
+        // read attribute uID
+        if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+            m_uID = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
+            if (m_uID.empty()) {
+                LOG(WARNING) << "Required attribute uID is empty at xpath " << xpath;
+            }
+        }
+        else {
+            LOG(ERROR) << "Required attribute uID is missing at xpath " << xpath;
         }
         
-        CTiglUIDManager& CPACSGuideCurve::GetUIDManager()
-        {
-            return *m_uidMgr;
+        // read element name
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
+            m_name = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
+            if (m_name.empty()) {
+                LOG(WARNING) << "Required element name is empty at xpath " << xpath;
+            }
+        }
+        else {
+            LOG(ERROR) << "Required element name is missing at xpath " << xpath;
         }
         
-        const CTiglUIDManager& CPACSGuideCurve::GetUIDManager() const
-        {
-            return *m_uidMgr;
+        // read element description
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
+            m_description = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
+            if (m_description->empty()) {
+                LOG(WARNING) << "Optional element description is present but empty at xpath " << xpath;
+            }
         }
         
-        void CPACSGuideCurve::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
-        {
-            // read attribute uID
-            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
-                m_uID = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
-                if (m_uID.empty()) {
-                    LOG(WARNING) << "Required attribute uID is empty at xpath " << xpath;
-                }
+        // read element guideCurveProfileUID
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/guideCurveProfileUID")) {
+            m_guideCurveProfileUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/guideCurveProfileUID");
+            if (m_guideCurveProfileUID.empty()) {
+                LOG(WARNING) << "Required element guideCurveProfileUID is empty at xpath " << xpath;
             }
-            else {
-                LOG(ERROR) << "Required attribute uID is missing at xpath " << xpath;
+        }
+        else {
+            LOG(ERROR) << "Required element guideCurveProfileUID is missing at xpath " << xpath;
+        }
+        
+        // read element rXDirection
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/rXDirection")) {
+            m_rXDirection = boost::in_place(m_uidMgr);
+            try {
+                m_rXDirection->ReadCPACS(tixiHandle, xpath + "/rXDirection");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read rXDirection at xpath " << xpath << ": " << e.what();
+                m_rXDirection = boost::none;
             }
-            
-            // read element name
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
-                m_name = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
-                if (m_name.empty()) {
-                    LOG(WARNING) << "Required element name is empty at xpath " << xpath;
-                }
+        }
+        
+        // read element fromGuideCurveUID
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/fromGuideCurveUID")) {
+            m_fromGuideCurveUID_choice1 = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/fromGuideCurveUID");
+            if (m_fromGuideCurveUID_choice1->empty()) {
+                LOG(WARNING) << "Optional element fromGuideCurveUID is present but empty at xpath " << xpath;
             }
-            else {
-                LOG(ERROR) << "Required element name is missing at xpath " << xpath;
+        }
+        
+        // read element continuity
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/continuity")) {
+            m_continuity_choice1 = stringToCPACSGuideCurve_continuity(tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/continuity"));
+        }
+        
+        // read element fromRelativeCircumference
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/fromRelativeCircumference")) {
+            m_fromRelativeCircumference_choice2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/fromRelativeCircumference");
+        }
+        
+        // read element tangent
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/tangent")) {
+            m_tangent_choice2 = boost::in_place(m_uidMgr);
+            try {
+                m_tangent_choice2->ReadCPACS(tixiHandle, xpath + "/tangent");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read tangent at xpath " << xpath << ": " << e.what();
+                m_tangent_choice2 = boost::none;
             }
-            
-            // read element description
+        }
+        
+        // read element toRelativeCircumference
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/toRelativeCircumference")) {
+            m_toRelativeCircumference = tixi::TixiGetElement<double>(tixiHandle, xpath + "/toRelativeCircumference");
+        }
+        else {
+            LOG(ERROR) << "Required element toRelativeCircumference is missing at xpath " << xpath;
+        }
+        
+        // read element tangent
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/tangent")) {
+            m_tangent = boost::in_place(m_uidMgr);
+            try {
+                m_tangent->ReadCPACS(tixiHandle, xpath + "/tangent");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read tangent at xpath " << xpath << ": " << e.what();
+                m_tangent = boost::none;
+            }
+        }
+        
+        if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
+        if (!ValidateChoices()) {
+            LOG(ERROR) << "Invalid choice configuration at xpath " << xpath;
+        }
+    }
+    
+    void CPACSGuideCurve::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
+    {
+        // write attribute uID
+        tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
+        
+        // write element name
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
+        tixi::TixiSaveElement(tixiHandle, xpath + "/name", m_name);
+        
+        // write element description
+        if (m_description) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
+        }
+        else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
-                m_description = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
-                if (m_description->empty()) {
-                    LOG(WARNING) << "Optional element description is present but empty at xpath " << xpath;
-                }
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/description");
             }
-            
-            // read element guideCurveProfileUID
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/guideCurveProfileUID")) {
-                m_guideCurveProfileUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/guideCurveProfileUID");
-                if (m_guideCurveProfileUID.empty()) {
-                    LOG(WARNING) << "Required element guideCurveProfileUID is empty at xpath " << xpath;
-                }
-            }
-            else {
-                LOG(ERROR) << "Required element guideCurveProfileUID is missing at xpath " << xpath;
-            }
-            
-            // read element rXDirection
+        }
+        
+        // write element guideCurveProfileUID
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/guideCurveProfileUID");
+        tixi::TixiSaveElement(tixiHandle, xpath + "/guideCurveProfileUID", m_guideCurveProfileUID);
+        
+        // write element rXDirection
+        if (m_rXDirection) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/rXDirection");
+            m_rXDirection->WriteCPACS(tixiHandle, xpath + "/rXDirection");
+        }
+        else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/rXDirection")) {
-                m_rXDirection = boost::in_place(m_uidMgr);
-                try {
-                    m_rXDirection->ReadCPACS(tixiHandle, xpath + "/rXDirection");
-                } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read rXDirection at xpath " << xpath << ": " << e.what();
-                    m_rXDirection = boost::none;
-                }
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/rXDirection");
             }
-            
-            // read element fromGuideCurveUID
+        }
+        
+        // write element fromGuideCurveUID
+        if (m_fromGuideCurveUID_choice1) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/fromGuideCurveUID");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/fromGuideCurveUID", *m_fromGuideCurveUID_choice1);
+        }
+        else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/fromGuideCurveUID")) {
-                m_fromGuideCurveUID_choice1 = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/fromGuideCurveUID");
-                if (m_fromGuideCurveUID_choice1->empty()) {
-                    LOG(WARNING) << "Optional element fromGuideCurveUID is present but empty at xpath " << xpath;
-                }
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/fromGuideCurveUID");
             }
-            
-            // read element continuity
+        }
+        
+        // write element continuity
+        if (m_continuity_choice1) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/continuity");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/continuity", CPACSGuideCurve_continuityToString(*m_continuity_choice1));
+        }
+        else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/continuity")) {
-                m_continuity_choice1 = stringToCPACSGuideCurve_continuity(tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/continuity"));
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/continuity");
             }
-            
-            // read element fromRelativeCircumference
+        }
+        
+        // write element fromRelativeCircumference
+        if (m_fromRelativeCircumference_choice2) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/fromRelativeCircumference");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/fromRelativeCircumference", *m_fromRelativeCircumference_choice2);
+        }
+        else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/fromRelativeCircumference")) {
-                m_fromRelativeCircumference_choice2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/fromRelativeCircumference");
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/fromRelativeCircumference");
             }
-            
-            // read element tangent
+        }
+        
+        // write element tangent
+        if (m_tangent_choice2) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/tangent");
+            m_tangent_choice2->WriteCPACS(tixiHandle, xpath + "/tangent");
+        }
+        else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/tangent")) {
-                m_tangent_choice2 = boost::in_place(m_uidMgr);
-                try {
-                    m_tangent_choice2->ReadCPACS(tixiHandle, xpath + "/tangent");
-                } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read tangent at xpath " << xpath << ": " << e.what();
-                    m_tangent_choice2 = boost::none;
-                }
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/tangent");
             }
-            
-            // read element toRelativeCircumference
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/toRelativeCircumference")) {
-                m_toRelativeCircumference = tixi::TixiGetElement<double>(tixiHandle, xpath + "/toRelativeCircumference");
-            }
-            else {
-                LOG(ERROR) << "Required element toRelativeCircumference is missing at xpath " << xpath;
-            }
-            
-            // read element tangent
+        }
+        
+        // write element toRelativeCircumference
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/toRelativeCircumference");
+        tixi::TixiSaveElement(tixiHandle, xpath + "/toRelativeCircumference", m_toRelativeCircumference);
+        
+        // write element tangent
+        if (m_tangent) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/tangent");
+            m_tangent->WriteCPACS(tixiHandle, xpath + "/tangent");
+        }
+        else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/tangent")) {
-                m_tangent = boost::in_place(m_uidMgr);
-                try {
-                    m_tangent->ReadCPACS(tixiHandle, xpath + "/tangent");
-                } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read tangent at xpath " << xpath << ": " << e.what();
-                    m_tangent = boost::none;
-                }
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/tangent");
             }
-            
-            if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
-            if (!ValidateChoices()) {
-                LOG(ERROR) << "Invalid choice configuration at xpath " << xpath;
-            }
-        }
-        
-        void CPACSGuideCurve::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
-        {
-            // write attribute uID
-            tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
-            
-            // write element name
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
-            tixi::TixiSaveElement(tixiHandle, xpath + "/name", m_name);
-            
-            // write element description
-            if (m_description) {
-                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
-                tixi::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
-            } else {
-                if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
-                    tixi::TixiRemoveElement(tixiHandle, xpath + "/description");
-                }
-            }
-            
-            // write element guideCurveProfileUID
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/guideCurveProfileUID");
-            tixi::TixiSaveElement(tixiHandle, xpath + "/guideCurveProfileUID", m_guideCurveProfileUID);
-            
-            // write element rXDirection
-            if (m_rXDirection) {
-                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/rXDirection");
-                m_rXDirection->WriteCPACS(tixiHandle, xpath + "/rXDirection");
-            } else {
-                if (tixi::TixiCheckElement(tixiHandle, xpath + "/rXDirection")) {
-                    tixi::TixiRemoveElement(tixiHandle, xpath + "/rXDirection");
-                }
-            }
-            
-            // write element fromGuideCurveUID
-            if (m_fromGuideCurveUID_choice1) {
-                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/fromGuideCurveUID");
-                tixi::TixiSaveElement(tixiHandle, xpath + "/fromGuideCurveUID", *m_fromGuideCurveUID_choice1);
-            } else {
-                if (tixi::TixiCheckElement(tixiHandle, xpath + "/fromGuideCurveUID")) {
-                    tixi::TixiRemoveElement(tixiHandle, xpath + "/fromGuideCurveUID");
-                }
-            }
-            
-            // write element continuity
-            if (m_continuity_choice1) {
-                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/continuity");
-                tixi::TixiSaveElement(tixiHandle, xpath + "/continuity", CPACSGuideCurve_continuityToString(*m_continuity_choice1));
-            } else {
-                if (tixi::TixiCheckElement(tixiHandle, xpath + "/continuity")) {
-                    tixi::TixiRemoveElement(tixiHandle, xpath + "/continuity");
-                }
-            }
-            
-            // write element fromRelativeCircumference
-            if (m_fromRelativeCircumference_choice2) {
-                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/fromRelativeCircumference");
-                tixi::TixiSaveElement(tixiHandle, xpath + "/fromRelativeCircumference", *m_fromRelativeCircumference_choice2);
-            } else {
-                if (tixi::TixiCheckElement(tixiHandle, xpath + "/fromRelativeCircumference")) {
-                    tixi::TixiRemoveElement(tixiHandle, xpath + "/fromRelativeCircumference");
-                }
-            }
-            
-            // write element tangent
-            if (m_tangent_choice2) {
-                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/tangent");
-                m_tangent_choice2->WriteCPACS(tixiHandle, xpath + "/tangent");
-            } else {
-                if (tixi::TixiCheckElement(tixiHandle, xpath + "/tangent")) {
-                    tixi::TixiRemoveElement(tixiHandle, xpath + "/tangent");
-                }
-            }
-            
-            // write element toRelativeCircumference
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/toRelativeCircumference");
-            tixi::TixiSaveElement(tixiHandle, xpath + "/toRelativeCircumference", m_toRelativeCircumference);
-            
-            // write element tangent
-            if (m_tangent) {
-                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/tangent");
-                m_tangent->WriteCPACS(tixiHandle, xpath + "/tangent");
-            } else {
-                if (tixi::TixiCheckElement(tixiHandle, xpath + "/tangent")) {
-                    tixi::TixiRemoveElement(tixiHandle, xpath + "/tangent");
-                }
-            }
-            
-        }
-        
-        bool CPACSGuideCurve::ValidateChoices() const
-        {
-            return
-            (
-                (
-                    (
-                        // mandatory elements of this choice must be there
-                        m_fromGuideCurveUID_choice1.is_initialized()
-                        &&
-                        true // m_continuity_choice1 is optional in choice
-                        &&
-                        // elements of other choices must not be there
-                        !(
-                            m_fromRelativeCircumference_choice2.is_initialized()
-                            ||
-                            m_tangent_choice2.is_initialized()
-                        )
-                    )
-                    +
-                    (
-                        // mandatory elements of this choice must be there
-                        m_fromRelativeCircumference_choice2.is_initialized()
-                        &&
-                        true // m_tangent_choice2 is optional in choice
-                        &&
-                        // elements of other choices must not be there
-                        !(
-                            m_fromGuideCurveUID_choice1.is_initialized()
-                            ||
-                            m_continuity_choice1.is_initialized()
-                        )
-                    )
-                    == 1
-                )
-            )
-            ;
-        }
-        
-        const std::string& CPACSGuideCurve::GetUID() const
-        {
-            return m_uID;
-        }
-        
-        void CPACSGuideCurve::SetUID(const std::string& value)
-        {
-            if (m_uidMgr) {
-                m_uidMgr->TryUnregisterObject(m_uID);
-                m_uidMgr->RegisterObject(value, *this);
-            }
-            m_uID = value;
-        }
-        
-        const std::string& CPACSGuideCurve::GetName() const
-        {
-            return m_name;
-        }
-        
-        void CPACSGuideCurve::SetName(const std::string& value)
-        {
-            m_name = value;
-        }
-        
-        const boost::optional<std::string>& CPACSGuideCurve::GetDescription() const
-        {
-            return m_description;
-        }
-        
-        void CPACSGuideCurve::SetDescription(const boost::optional<std::string>& value)
-        {
-            m_description = value;
-        }
-        
-        const std::string& CPACSGuideCurve::GetGuideCurveProfileUID() const
-        {
-            return m_guideCurveProfileUID;
-        }
-        
-        void CPACSGuideCurve::SetGuideCurveProfileUID(const std::string& value)
-        {
-            m_guideCurveProfileUID = value;
-        }
-        
-        const boost::optional<CPACSPointXYZ>& CPACSGuideCurve::GetRXDirection() const
-        {
-            return m_rXDirection;
-        }
-        
-        boost::optional<CPACSPointXYZ>& CPACSGuideCurve::GetRXDirection()
-        {
-            return m_rXDirection;
-        }
-        
-        const boost::optional<std::string>& CPACSGuideCurve::GetFromGuideCurveUID_choice1() const
-        {
-            return m_fromGuideCurveUID_choice1;
-        }
-        
-        void CPACSGuideCurve::SetFromGuideCurveUID_choice1(const boost::optional<std::string>& value)
-        {
-            m_fromGuideCurveUID_choice1 = value;
-        }
-        
-        const boost::optional<CPACSGuideCurve_continuity>& CPACSGuideCurve::GetContinuity_choice1() const
-        {
-            return m_continuity_choice1;
-        }
-        
-        void CPACSGuideCurve::SetContinuity_choice1(const boost::optional<CPACSGuideCurve_continuity>& value)
-        {
-            m_continuity_choice1 = value;
-        }
-        
-        const boost::optional<double>& CPACSGuideCurve::GetFromRelativeCircumference_choice2() const
-        {
-            return m_fromRelativeCircumference_choice2;
-        }
-        
-        void CPACSGuideCurve::SetFromRelativeCircumference_choice2(const boost::optional<double>& value)
-        {
-            m_fromRelativeCircumference_choice2 = value;
-        }
-        
-        const boost::optional<CPACSPointXYZ>& CPACSGuideCurve::GetTangent_choice2() const
-        {
-            return m_tangent_choice2;
-        }
-        
-        boost::optional<CPACSPointXYZ>& CPACSGuideCurve::GetTangent_choice2()
-        {
-            return m_tangent_choice2;
-        }
-        
-        const double& CPACSGuideCurve::GetToRelativeCircumference() const
-        {
-            return m_toRelativeCircumference;
-        }
-        
-        void CPACSGuideCurve::SetToRelativeCircumference(const double& value)
-        {
-            m_toRelativeCircumference = value;
-        }
-        
-        const boost::optional<CPACSPointXYZ>& CPACSGuideCurve::GetTangent() const
-        {
-            return m_tangent;
-        }
-        
-        boost::optional<CPACSPointXYZ>& CPACSGuideCurve::GetTangent()
-        {
-            return m_tangent;
-        }
-        
-        CPACSPointXYZ& CPACSGuideCurve::GetRXDirection(CreateIfNotExistsTag)
-        {
-            if (!m_rXDirection)
-                m_rXDirection = boost::in_place(m_uidMgr);
-            return *m_rXDirection;
-        }
-        
-        void CPACSGuideCurve::RemoveRXDirection()
-        {
-            m_rXDirection = boost::none;
-        }
-        
-        CPACSPointXYZ& CPACSGuideCurve::GetTangent_choice2(CreateIfNotExistsTag)
-        {
-            if (!m_tangent_choice2)
-                m_tangent_choice2 = boost::in_place(m_uidMgr);
-            return *m_tangent_choice2;
-        }
-        
-        void CPACSGuideCurve::RemoveTangent_choice2()
-        {
-            m_tangent_choice2 = boost::none;
-        }
-        
-        CPACSPointXYZ& CPACSGuideCurve::GetTangent(CreateIfNotExistsTag)
-        {
-            if (!m_tangent)
-                m_tangent = boost::in_place(m_uidMgr);
-            return *m_tangent;
-        }
-        
-        void CPACSGuideCurve::RemoveTangent()
-        {
-            m_tangent = boost::none;
         }
         
     }
-}
+    
+    bool CPACSGuideCurve::ValidateChoices() const
+    {
+        return
+        (
+            (
+                (
+                    // mandatory elements of this choice must be there
+                    m_fromGuideCurveUID_choice1.is_initialized()
+                    &&
+                    true // m_continuity_choice1 is optional in choice
+                    &&
+                    // elements of other choices must not be there
+                    !(
+                        m_fromRelativeCircumference_choice2.is_initialized()
+                        ||
+                        m_tangent_choice2.is_initialized()
+                    )
+                )
+                +
+                (
+                    // mandatory elements of this choice must be there
+                    m_fromRelativeCircumference_choice2.is_initialized()
+                    &&
+                    true // m_tangent_choice2 is optional in choice
+                    &&
+                    // elements of other choices must not be there
+                    !(
+                        m_fromGuideCurveUID_choice1.is_initialized()
+                        ||
+                        m_continuity_choice1.is_initialized()
+                    )
+                )
+                == 1
+            )
+        )
+        ;
+    }
+    
+    const std::string& CPACSGuideCurve::GetUID() const
+    {
+        return m_uID;
+    }
+    
+    void CPACSGuideCurve::SetUID(const std::string& value)
+    {
+        if (m_uidMgr) {
+            m_uidMgr->TryUnregisterObject(m_uID);
+            m_uidMgr->RegisterObject(value, *this);
+        }
+        m_uID = value;
+    }
+    
+    const std::string& CPACSGuideCurve::GetName() const
+    {
+        return m_name;
+    }
+    
+    void CPACSGuideCurve::SetName(const std::string& value)
+    {
+        m_name = value;
+    }
+    
+    const boost::optional<std::string>& CPACSGuideCurve::GetDescription() const
+    {
+        return m_description;
+    }
+    
+    void CPACSGuideCurve::SetDescription(const boost::optional<std::string>& value)
+    {
+        m_description = value;
+    }
+    
+    const std::string& CPACSGuideCurve::GetGuideCurveProfileUID() const
+    {
+        return m_guideCurveProfileUID;
+    }
+    
+    void CPACSGuideCurve::SetGuideCurveProfileUID(const std::string& value)
+    {
+        m_guideCurveProfileUID = value;
+    }
+    
+    const boost::optional<CPACSPointXYZ>& CPACSGuideCurve::GetRXDirection() const
+    {
+        return m_rXDirection;
+    }
+    
+    boost::optional<CPACSPointXYZ>& CPACSGuideCurve::GetRXDirection()
+    {
+        return m_rXDirection;
+    }
+    
+    const boost::optional<std::string>& CPACSGuideCurve::GetFromGuideCurveUID_choice1() const
+    {
+        return m_fromGuideCurveUID_choice1;
+    }
+    
+    void CPACSGuideCurve::SetFromGuideCurveUID_choice1(const boost::optional<std::string>& value)
+    {
+        m_fromGuideCurveUID_choice1 = value;
+    }
+    
+    const boost::optional<CPACSGuideCurve_continuity>& CPACSGuideCurve::GetContinuity_choice1() const
+    {
+        return m_continuity_choice1;
+    }
+    
+    void CPACSGuideCurve::SetContinuity_choice1(const boost::optional<CPACSGuideCurve_continuity>& value)
+    {
+        m_continuity_choice1 = value;
+    }
+    
+    const boost::optional<double>& CPACSGuideCurve::GetFromRelativeCircumference_choice2() const
+    {
+        return m_fromRelativeCircumference_choice2;
+    }
+    
+    void CPACSGuideCurve::SetFromRelativeCircumference_choice2(const boost::optional<double>& value)
+    {
+        m_fromRelativeCircumference_choice2 = value;
+    }
+    
+    const boost::optional<CPACSPointXYZ>& CPACSGuideCurve::GetTangent_choice2() const
+    {
+        return m_tangent_choice2;
+    }
+    
+    boost::optional<CPACSPointXYZ>& CPACSGuideCurve::GetTangent_choice2()
+    {
+        return m_tangent_choice2;
+    }
+    
+    const double& CPACSGuideCurve::GetToRelativeCircumference() const
+    {
+        return m_toRelativeCircumference;
+    }
+    
+    void CPACSGuideCurve::SetToRelativeCircumference(const double& value)
+    {
+        m_toRelativeCircumference = value;
+    }
+    
+    const boost::optional<CPACSPointXYZ>& CPACSGuideCurve::GetTangent() const
+    {
+        return m_tangent;
+    }
+    
+    boost::optional<CPACSPointXYZ>& CPACSGuideCurve::GetTangent()
+    {
+        return m_tangent;
+    }
+    
+    CPACSPointXYZ& CPACSGuideCurve::GetRXDirection(CreateIfNotExistsTag)
+    {
+        if (!m_rXDirection)
+            m_rXDirection = boost::in_place(m_uidMgr);
+        return *m_rXDirection;
+    }
+    
+    void CPACSGuideCurve::RemoveRXDirection()
+    {
+        m_rXDirection = boost::none;
+    }
+    
+    CPACSPointXYZ& CPACSGuideCurve::GetTangent_choice2(CreateIfNotExistsTag)
+    {
+        if (!m_tangent_choice2)
+            m_tangent_choice2 = boost::in_place(m_uidMgr);
+        return *m_tangent_choice2;
+    }
+    
+    void CPACSGuideCurve::RemoveTangent_choice2()
+    {
+        m_tangent_choice2 = boost::none;
+    }
+    
+    CPACSPointXYZ& CPACSGuideCurve::GetTangent(CreateIfNotExistsTag)
+    {
+        if (!m_tangent)
+            m_tangent = boost::in_place(m_uidMgr);
+        return *m_tangent;
+    }
+    
+    void CPACSGuideCurve::RemoveTangent()
+    {
+        m_tangent = boost::none;
+    }
+    
+} // namespace generated
+} // namespace tigl

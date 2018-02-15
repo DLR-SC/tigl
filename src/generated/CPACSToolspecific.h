@@ -27,48 +27,48 @@
 
 namespace tigl
 {
-    namespace generated
-    {
-        // This class is used in:
-        // CPACSCpacs
-        
-        // generated from /xsd:schema/xsd:complexType[861]
-        class CPACSToolspecific
-        {
-        public:
-            TIGL_EXPORT CPACSToolspecific();
-            TIGL_EXPORT virtual ~CPACSToolspecific();
-            
-            TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
-            TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
-            
-            TIGL_EXPORT virtual const boost::optional<CPACSCFDTool>& GetCFD() const;
-            TIGL_EXPORT virtual boost::optional<CPACSCFDTool>& GetCFD();
-            
-            TIGL_EXPORT virtual CPACSCFDTool& GetCFD(CreateIfNotExistsTag);
-            TIGL_EXPORT virtual void RemoveCFD();
-            
-        protected:
-            boost::optional<CPACSCFDTool> m_cFD;
-            
-        private:
-            #ifdef HAVE_CPP11
-            CPACSToolspecific(const CPACSToolspecific&) = delete;
-            CPACSToolspecific& operator=(const CPACSToolspecific&) = delete;
-            
-            CPACSToolspecific(CPACSToolspecific&&) = delete;
-            CPACSToolspecific& operator=(CPACSToolspecific&&) = delete;
-            #else
-            CPACSToolspecific(const CPACSToolspecific&);
-            CPACSToolspecific& operator=(const CPACSToolspecific&);
-            #endif
-        };
-    }
+namespace generated
+{
+    // This class is used in:
+    // CPACSCpacs
     
-    // Aliases in tigl namespace
-    #ifdef HAVE_CPP11
-    using CCPACSToolspecific = generated::CPACSToolspecific;
-    #else
-    typedef generated::CPACSToolspecific CCPACSToolspecific;
-    #endif
-}
+    // generated from /xsd:schema/xsd:complexType[861]
+    class CPACSToolspecific
+    {
+    public:
+        TIGL_EXPORT CPACSToolspecific();
+        TIGL_EXPORT virtual ~CPACSToolspecific();
+        
+        TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+        TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
+        
+        TIGL_EXPORT virtual const boost::optional<CPACSCFDTool>& GetCFD() const;
+        TIGL_EXPORT virtual boost::optional<CPACSCFDTool>& GetCFD();
+        
+        TIGL_EXPORT virtual CPACSCFDTool& GetCFD(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveCFD();
+        
+    protected:
+        boost::optional<CPACSCFDTool> m_cFD;
+        
+    private:
+#ifdef HAVE_CPP11
+        CPACSToolspecific(const CPACSToolspecific&) = delete;
+        CPACSToolspecific& operator=(const CPACSToolspecific&) = delete;
+        
+        CPACSToolspecific(CPACSToolspecific&&) = delete;
+        CPACSToolspecific& operator=(CPACSToolspecific&&) = delete;
+#else
+        CPACSToolspecific(const CPACSToolspecific&);
+        CPACSToolspecific& operator=(const CPACSToolspecific&);
+#endif
+    };
+} // namespace generated
+
+// Aliases in tigl namespace
+#ifdef HAVE_CPP11
+using CCPACSToolspecific = generated::CPACSToolspecific;
+#else
+typedef generated::CPACSToolspecific CCPACSToolspecific;
+#endif
+} // namespace tigl

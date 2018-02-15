@@ -29,66 +29,66 @@
 
 namespace tigl
 {
-    class CTiglUIDManager;
+class CTiglUIDManager;
+
+namespace generated
+{
+    class CPACSMaterial;
     
-    namespace generated
+    // This class is used in:
+    // CPACSVehicles
+    
+    // generated from /xsd:schema/xsd:complexType[657]
+    class CPACSMaterials
     {
-        class CPACSMaterial;
+    public:
+        TIGL_EXPORT CPACSMaterials(CTiglUIDManager* uidMgr);
+        TIGL_EXPORT virtual ~CPACSMaterials();
         
-        // This class is used in:
-        // CPACSVehicles
+        TIGL_EXPORT CTiglUIDManager& GetUIDManager();
+        TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
         
-        // generated from /xsd:schema/xsd:complexType[657]
-        class CPACSMaterials
-        {
-        public:
-            TIGL_EXPORT CPACSMaterials(CTiglUIDManager* uidMgr);
-            TIGL_EXPORT virtual ~CPACSMaterials();
-            
-            TIGL_EXPORT CTiglUIDManager& GetUIDManager();
-            TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
-            
-            TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
-            TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
-            
-            TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSMaterial> >& GetMaterials() const;
-            TIGL_EXPORT virtual std::vector<unique_ptr<CPACSMaterial> >& GetMaterials();
-            
-            TIGL_EXPORT virtual const boost::optional<CPACSComposites>& GetComposites() const;
-            TIGL_EXPORT virtual boost::optional<CPACSComposites>& GetComposites();
-            
-            TIGL_EXPORT virtual CPACSMaterial& AddMaterial();
-            TIGL_EXPORT virtual void RemoveMaterial(CPACSMaterial& ref);
-            
-            TIGL_EXPORT virtual CPACSComposites& GetComposites(CreateIfNotExistsTag);
-            TIGL_EXPORT virtual void RemoveComposites();
-            
-        protected:
-            CTiglUIDManager* m_uidMgr;
-            
-            std::vector<unique_ptr<CPACSMaterial> > m_materials;
-            boost::optional<CPACSComposites>        m_composites;
-            
-        private:
-            #ifdef HAVE_CPP11
-            CPACSMaterials(const CPACSMaterials&) = delete;
-            CPACSMaterials& operator=(const CPACSMaterials&) = delete;
-            
-            CPACSMaterials(CPACSMaterials&&) = delete;
-            CPACSMaterials& operator=(CPACSMaterials&&) = delete;
-            #else
-            CPACSMaterials(const CPACSMaterials&);
-            CPACSMaterials& operator=(const CPACSMaterials&);
-            #endif
-        };
-    }
-    
-    // Aliases in tigl namespace
-    #ifdef HAVE_CPP11
-    using CCPACSMaterials = generated::CPACSMaterials;
-    using CCPACSMaterial = generated::CPACSMaterial;
-    #else
-    typedef generated::CPACSMaterials CCPACSMaterials;
-    typedef generated::CPACSMaterial CCPACSMaterial;
-    #endif
-}
+        TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+        TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
+        
+        TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSMaterial> >& GetMaterials() const;
+        TIGL_EXPORT virtual std::vector<unique_ptr<CPACSMaterial> >& GetMaterials();
+        
+        TIGL_EXPORT virtual const boost::optional<CPACSComposites>& GetComposites() const;
+        TIGL_EXPORT virtual boost::optional<CPACSComposites>& GetComposites();
+        
+        TIGL_EXPORT virtual CPACSMaterial& AddMaterial();
+        TIGL_EXPORT virtual void RemoveMaterial(CPACSMaterial& ref);
+        
+        TIGL_EXPORT virtual CPACSComposites& GetComposites(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveComposites();
+        
+    protected:
+        CTiglUIDManager* m_uidMgr;
+        
+        std::vector<unique_ptr<CPACSMaterial> > m_materials;
+        boost::optional<CPACSComposites>        m_composites;
+        
+    private:
+#ifdef HAVE_CPP11
+        CPACSMaterials(const CPACSMaterials&) = delete;
+        CPACSMaterials& operator=(const CPACSMaterials&) = delete;
+        
+        CPACSMaterials(CPACSMaterials&&) = delete;
+        CPACSMaterials& operator=(CPACSMaterials&&) = delete;
+#else
+        CPACSMaterials(const CPACSMaterials&);
+        CPACSMaterials& operator=(const CPACSMaterials&);
+#endif
+    };
+} // namespace generated
+
+// Aliases in tigl namespace
+#ifdef HAVE_CPP11
+using CCPACSMaterials = generated::CPACSMaterials;
+using CCPACSMaterial = generated::CPACSMaterial;
+#else
+typedef generated::CPACSMaterials CCPACSMaterials;
+typedef generated::CPACSMaterial CCPACSMaterial;
+#endif
+} // namespace tigl

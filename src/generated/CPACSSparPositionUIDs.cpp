@@ -22,37 +22,41 @@
 
 namespace tigl
 {
-    namespace generated
+namespace generated
+{
+    CPACSSparPositionUIDs::CPACSSparPositionUIDs()
     {
-        CPACSSparPositionUIDs::CPACSSparPositionUIDs() {}
-        
-        CPACSSparPositionUIDs::~CPACSSparPositionUIDs() {}
-        
-        void CPACSSparPositionUIDs::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
-        {
-            // read element sparPositionUID
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/sparPositionUID")) {
-                tixi::TixiReadElements(tixiHandle, xpath + "/sparPositionUID", m_sparPositionUIDs);
-            }
-            
-        }
-        
-        void CPACSSparPositionUIDs::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
-        {
-            // write element sparPositionUID
-            tixi::TixiSaveElements(tixiHandle, xpath + "/sparPositionUID", m_sparPositionUIDs);
-            
-        }
-        
-        const std::vector<std::string>& CPACSSparPositionUIDs::GetSparPositionUIDs() const
-        {
-            return m_sparPositionUIDs;
-        }
-        
-        std::vector<std::string>& CPACSSparPositionUIDs::GetSparPositionUIDs()
-        {
-            return m_sparPositionUIDs;
+    }
+    
+    CPACSSparPositionUIDs::~CPACSSparPositionUIDs()
+    {
+    }
+    
+    void CPACSSparPositionUIDs::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
+    {
+        // read element sparPositionUID
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/sparPositionUID")) {
+            tixi::TixiReadElements(tixiHandle, xpath + "/sparPositionUID", m_sparPositionUIDs);
         }
         
     }
-}
+    
+    void CPACSSparPositionUIDs::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
+    {
+        // write element sparPositionUID
+        tixi::TixiSaveElements(tixiHandle, xpath + "/sparPositionUID", m_sparPositionUIDs);
+        
+    }
+    
+    const std::vector<std::string>& CPACSSparPositionUIDs::GetSparPositionUIDs() const
+    {
+        return m_sparPositionUIDs;
+    }
+    
+    std::vector<std::string>& CPACSSparPositionUIDs::GetSparPositionUIDs()
+    {
+        return m_sparPositionUIDs;
+    }
+    
+} // namespace generated
+} // namespace tigl

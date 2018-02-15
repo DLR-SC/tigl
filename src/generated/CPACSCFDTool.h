@@ -25,53 +25,53 @@
 
 namespace tigl
 {
-    namespace generated
-    {
-        // This class is used in:
-        // CPACSToolspecific
-        
-        // generated from /xsd:schema/xsd:complexType[98]
-        class CPACSCFDTool
-        {
-        public:
-            TIGL_EXPORT CPACSCFDTool();
-            TIGL_EXPORT virtual ~CPACSCFDTool();
-            
-            TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
-            TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
-            
-            TIGL_EXPORT virtual const CPACSTool& GetTool() const;
-            TIGL_EXPORT virtual CPACSTool& GetTool();
-            
-            TIGL_EXPORT virtual const std::string& GetAircraftModelUID() const;
-            TIGL_EXPORT virtual void SetAircraftModelUID(const std::string& value);
-            
-            TIGL_EXPORT virtual const CCPACSFarField& GetFarField() const;
-            TIGL_EXPORT virtual CCPACSFarField& GetFarField();
-            
-        protected:
-            CPACSTool      m_tool;
-            std::string    m_aircraftModelUID;
-            CCPACSFarField m_farField;
-            
-        private:
-            #ifdef HAVE_CPP11
-            CPACSCFDTool(const CPACSCFDTool&) = delete;
-            CPACSCFDTool& operator=(const CPACSCFDTool&) = delete;
-            
-            CPACSCFDTool(CPACSCFDTool&&) = delete;
-            CPACSCFDTool& operator=(CPACSCFDTool&&) = delete;
-            #else
-            CPACSCFDTool(const CPACSCFDTool&);
-            CPACSCFDTool& operator=(const CPACSCFDTool&);
-            #endif
-        };
-    }
+namespace generated
+{
+    // This class is used in:
+    // CPACSToolspecific
     
-    // Aliases in tigl namespace
-    #ifdef HAVE_CPP11
-    using CCPACSCFDTool = generated::CPACSCFDTool;
-    #else
-    typedef generated::CPACSCFDTool CCPACSCFDTool;
-    #endif
-}
+    // generated from /xsd:schema/xsd:complexType[98]
+    class CPACSCFDTool
+    {
+    public:
+        TIGL_EXPORT CPACSCFDTool();
+        TIGL_EXPORT virtual ~CPACSCFDTool();
+        
+        TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+        TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
+        
+        TIGL_EXPORT virtual const CPACSTool& GetTool() const;
+        TIGL_EXPORT virtual CPACSTool& GetTool();
+        
+        TIGL_EXPORT virtual const std::string& GetAircraftModelUID() const;
+        TIGL_EXPORT virtual void SetAircraftModelUID(const std::string& value);
+        
+        TIGL_EXPORT virtual const CCPACSFarField& GetFarField() const;
+        TIGL_EXPORT virtual CCPACSFarField& GetFarField();
+        
+    protected:
+        CPACSTool      m_tool;
+        std::string    m_aircraftModelUID;
+        CCPACSFarField m_farField;
+        
+    private:
+#ifdef HAVE_CPP11
+        CPACSCFDTool(const CPACSCFDTool&) = delete;
+        CPACSCFDTool& operator=(const CPACSCFDTool&) = delete;
+        
+        CPACSCFDTool(CPACSCFDTool&&) = delete;
+        CPACSCFDTool& operator=(CPACSCFDTool&&) = delete;
+#else
+        CPACSCFDTool(const CPACSCFDTool&);
+        CPACSCFDTool& operator=(const CPACSCFDTool&);
+#endif
+    };
+} // namespace generated
+
+// Aliases in tigl namespace
+#ifdef HAVE_CPP11
+using CCPACSCFDTool = generated::CPACSCFDTool;
+#else
+typedef generated::CPACSCFDTool CCPACSCFDTool;
+#endif
+} // namespace tigl

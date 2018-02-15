@@ -34,115 +34,115 @@
 
 namespace tigl
 {
-    class CTiglUIDManager;
-    class CCPACSRotorBlades;
-    class CCPACSWings;
+class CTiglUIDManager;
+class CCPACSRotorBlades;
+class CCPACSWings;
+
+namespace generated
+{
+    // This class is used in:
+    // CPACSRotorBlades
+    // CPACSWings
     
-    namespace generated
+    // generated from /xsd:schema/xsd:complexType[962]
+    class CPACSWing
     {
-        // This class is used in:
-        // CPACSRotorBlades
-        // CPACSWings
+    public:
+        TIGL_EXPORT CPACSWing(CCPACSRotorBlades* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSWing(CCPACSWings* parent, CTiglUIDManager* uidMgr);
         
-        // generated from /xsd:schema/xsd:complexType[962]
-        class CPACSWing
+        TIGL_EXPORT virtual ~CPACSWing();
+        
+        template<typename P>
+        bool IsParent() const
         {
-        public:
-            TIGL_EXPORT CPACSWing(CCPACSRotorBlades* parent, CTiglUIDManager* uidMgr);
-            TIGL_EXPORT CPACSWing(CCPACSWings* parent, CTiglUIDManager* uidMgr);
-            
-            TIGL_EXPORT virtual ~CPACSWing();
-            
-            template<typename P>
-            bool IsParent() const
-            {
-                return m_parentType != NULL && *m_parentType == typeid(P);
+            return m_parentType != NULL && *m_parentType == typeid(P);
+        }
+        
+        template<typename P>
+        P* GetParent() const
+        {
+#ifdef HAVE_STDIS_SAME
+            static_assert(std::is_same<P, CCPACSRotorBlades>::value || std::is_same<P, CCPACSWings>::value, "template argument for P is not a parent class of CPACSWing");
+#endif
+            if (!IsParent<P>()) {
+                throw CTiglError("bad parent");
             }
-            
-            template<typename P>
-            P* GetParent() const
-            {
-                #ifdef HAVE_STDIS_SAME
-                static_assert(std::is_same<P, CCPACSRotorBlades>::value || std::is_same<P, CCPACSWings>::value, "template argument for P is not a parent class of CPACSWing");
-                #endif
-                if (!IsParent<P>()) {
-                    throw CTiglError("bad parent");
-                }
-                return static_cast<P*>(m_parent);
-            }
-            
-            TIGL_EXPORT CTiglUIDManager& GetUIDManager();
-            TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
-            
-            TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
-            TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
-            
-            TIGL_EXPORT virtual const std::string& GetUID() const;
-            TIGL_EXPORT virtual void SetUID(const std::string& value);
-            
-            TIGL_EXPORT virtual const boost::optional<TiglSymmetryAxis>& GetSymmetry() const;
-            TIGL_EXPORT virtual void SetSymmetry(const boost::optional<TiglSymmetryAxis>& value);
-            
-            TIGL_EXPORT virtual const std::string& GetName() const;
-            TIGL_EXPORT virtual void SetName(const std::string& value);
-            
-            TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
-            TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
-            
-            TIGL_EXPORT virtual const boost::optional<std::string>& GetParentUID() const;
-            TIGL_EXPORT virtual void SetParentUID(const boost::optional<std::string>& value);
-            
-            TIGL_EXPORT virtual const CCPACSTransformation& GetTransformation() const;
-            TIGL_EXPORT virtual CCPACSTransformation& GetTransformation();
-            
-            TIGL_EXPORT virtual const CCPACSWingSections& GetSections() const;
-            TIGL_EXPORT virtual CCPACSWingSections& GetSections();
-            
-            TIGL_EXPORT virtual const boost::optional<CCPACSPositionings>& GetPositionings() const;
-            TIGL_EXPORT virtual boost::optional<CCPACSPositionings>& GetPositionings();
-            
-            TIGL_EXPORT virtual const CCPACSWingSegments& GetSegments() const;
-            TIGL_EXPORT virtual CCPACSWingSegments& GetSegments();
-            
-            TIGL_EXPORT virtual const boost::optional<CCPACSWingComponentSegments>& GetComponentSegments() const;
-            TIGL_EXPORT virtual boost::optional<CCPACSWingComponentSegments>& GetComponentSegments();
-            
-            TIGL_EXPORT virtual CCPACSPositionings& GetPositionings(CreateIfNotExistsTag);
-            TIGL_EXPORT virtual void RemovePositionings();
-            
-            TIGL_EXPORT virtual CCPACSWingComponentSegments& GetComponentSegments(CreateIfNotExistsTag);
-            TIGL_EXPORT virtual void RemoveComponentSegments();
-            
-        protected:
-            void* m_parent;
-            const std::type_info* m_parentType;
-            
-            CTiglUIDManager* m_uidMgr;
-            
-            std::string                                  m_uID;
-            boost::optional<TiglSymmetryAxis>            m_symmetry;
-            std::string                                  m_name;
-            boost::optional<std::string>                 m_description;
-            boost::optional<std::string>                 m_parentUID;
-            CCPACSTransformation                         m_transformation;
-            CCPACSWingSections                           m_sections;
-            boost::optional<CCPACSPositionings>          m_positionings;
-            CCPACSWingSegments                           m_segments;
-            boost::optional<CCPACSWingComponentSegments> m_componentSegments;
-            
-        private:
-            #ifdef HAVE_CPP11
-            CPACSWing(const CPACSWing&) = delete;
-            CPACSWing& operator=(const CPACSWing&) = delete;
-            
-            CPACSWing(CPACSWing&&) = delete;
-            CPACSWing& operator=(CPACSWing&&) = delete;
-            #else
-            CPACSWing(const CPACSWing&);
-            CPACSWing& operator=(const CPACSWing&);
-            #endif
-        };
-    }
-    
-    // CPACSWing is customized, use type CCPACSWing directly
-}
+            return static_cast<P*>(m_parent);
+        }
+        
+        TIGL_EXPORT CTiglUIDManager& GetUIDManager();
+        TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
+        
+        TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+        TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
+        
+        TIGL_EXPORT virtual const std::string& GetUID() const;
+        TIGL_EXPORT virtual void SetUID(const std::string& value);
+        
+        TIGL_EXPORT virtual const boost::optional<TiglSymmetryAxis>& GetSymmetry() const;
+        TIGL_EXPORT virtual void SetSymmetry(const boost::optional<TiglSymmetryAxis>& value);
+        
+        TIGL_EXPORT virtual const std::string& GetName() const;
+        TIGL_EXPORT virtual void SetName(const std::string& value);
+        
+        TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
+        TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
+        
+        TIGL_EXPORT virtual const boost::optional<std::string>& GetParentUID() const;
+        TIGL_EXPORT virtual void SetParentUID(const boost::optional<std::string>& value);
+        
+        TIGL_EXPORT virtual const CCPACSTransformation& GetTransformation() const;
+        TIGL_EXPORT virtual CCPACSTransformation& GetTransformation();
+        
+        TIGL_EXPORT virtual const CCPACSWingSections& GetSections() const;
+        TIGL_EXPORT virtual CCPACSWingSections& GetSections();
+        
+        TIGL_EXPORT virtual const boost::optional<CCPACSPositionings>& GetPositionings() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSPositionings>& GetPositionings();
+        
+        TIGL_EXPORT virtual const CCPACSWingSegments& GetSegments() const;
+        TIGL_EXPORT virtual CCPACSWingSegments& GetSegments();
+        
+        TIGL_EXPORT virtual const boost::optional<CCPACSWingComponentSegments>& GetComponentSegments() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSWingComponentSegments>& GetComponentSegments();
+        
+        TIGL_EXPORT virtual CCPACSPositionings& GetPositionings(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemovePositionings();
+        
+        TIGL_EXPORT virtual CCPACSWingComponentSegments& GetComponentSegments(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveComponentSegments();
+        
+    protected:
+        void* m_parent;
+        const std::type_info* m_parentType;
+        
+        CTiglUIDManager* m_uidMgr;
+        
+        std::string                                  m_uID;
+        boost::optional<TiglSymmetryAxis>            m_symmetry;
+        std::string                                  m_name;
+        boost::optional<std::string>                 m_description;
+        boost::optional<std::string>                 m_parentUID;
+        CCPACSTransformation                         m_transformation;
+        CCPACSWingSections                           m_sections;
+        boost::optional<CCPACSPositionings>          m_positionings;
+        CCPACSWingSegments                           m_segments;
+        boost::optional<CCPACSWingComponentSegments> m_componentSegments;
+        
+    private:
+#ifdef HAVE_CPP11
+        CPACSWing(const CPACSWing&) = delete;
+        CPACSWing& operator=(const CPACSWing&) = delete;
+        
+        CPACSWing(CPACSWing&&) = delete;
+        CPACSWing& operator=(CPACSWing&&) = delete;
+#else
+        CPACSWing(const CPACSWing&);
+        CPACSWing& operator=(const CPACSWing&);
+#endif
+    };
+} // namespace generated
+
+// CPACSWing is customized, use type CCPACSWing directly
+} // namespace tigl

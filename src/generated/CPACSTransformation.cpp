@@ -23,191 +23,196 @@
 
 namespace tigl
 {
-    namespace generated
+namespace generated
+{
+    CPACSTransformation::CPACSTransformation(CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
     {
-        CPACSTransformation::CPACSTransformation(CTiglUIDManager* uidMgr) :
-            m_uidMgr(uidMgr) {}
-        
-        CPACSTransformation::~CPACSTransformation()
-        {
-            if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
-        }
-        
-        CTiglUIDManager& CPACSTransformation::GetUIDManager()
-        {
-            return *m_uidMgr;
-        }
-        
-        const CTiglUIDManager& CPACSTransformation::GetUIDManager() const
-        {
-            return *m_uidMgr;
-        }
-        
-        void CPACSTransformation::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
-        {
-            // read attribute uID
-            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
-                m_uID = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
-                if (m_uID.empty()) {
-                    LOG(WARNING) << "Required attribute uID is empty at xpath " << xpath;
-                }
+    }
+    
+    CPACSTransformation::~CPACSTransformation()
+    {
+        if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
+    }
+    
+    CTiglUIDManager& CPACSTransformation::GetUIDManager()
+    {
+        return *m_uidMgr;
+    }
+    
+    const CTiglUIDManager& CPACSTransformation::GetUIDManager() const
+    {
+        return *m_uidMgr;
+    }
+    
+    void CPACSTransformation::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
+    {
+        // read attribute uID
+        if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+            m_uID = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
+            if (m_uID.empty()) {
+                LOG(WARNING) << "Required attribute uID is empty at xpath " << xpath;
             }
-            else {
-                LOG(ERROR) << "Required attribute uID is missing at xpath " << xpath;
+        }
+        else {
+            LOG(ERROR) << "Required attribute uID is missing at xpath " << xpath;
+        }
+        
+        // read element scaling
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/scaling")) {
+            m_scaling = boost::in_place(m_uidMgr);
+            try {
+                m_scaling->ReadCPACS(tixiHandle, xpath + "/scaling");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read scaling at xpath " << xpath << ": " << e.what();
+                m_scaling = boost::none;
             }
-            
-            // read element scaling
+        }
+        
+        // read element rotation
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/rotation")) {
+            m_rotation = boost::in_place(m_uidMgr);
+            try {
+                m_rotation->ReadCPACS(tixiHandle, xpath + "/rotation");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read rotation at xpath " << xpath << ": " << e.what();
+                m_rotation = boost::none;
+            }
+        }
+        
+        // read element translation
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/translation")) {
+            m_translation = boost::in_place(m_uidMgr);
+            try {
+                m_translation->ReadCPACS(tixiHandle, xpath + "/translation");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read translation at xpath " << xpath << ": " << e.what();
+                m_translation = boost::none;
+            }
+        }
+        
+        if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
+    }
+    
+    void CPACSTransformation::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
+    {
+        // write attribute uID
+        tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
+        
+        // write element scaling
+        if (m_scaling) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/scaling");
+            m_scaling->WriteCPACS(tixiHandle, xpath + "/scaling");
+        }
+        else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/scaling")) {
-                m_scaling = boost::in_place(m_uidMgr);
-                try {
-                    m_scaling->ReadCPACS(tixiHandle, xpath + "/scaling");
-                } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read scaling at xpath " << xpath << ": " << e.what();
-                    m_scaling = boost::none;
-                }
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/scaling");
             }
-            
-            // read element rotation
+        }
+        
+        // write element rotation
+        if (m_rotation) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/rotation");
+            m_rotation->WriteCPACS(tixiHandle, xpath + "/rotation");
+        }
+        else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/rotation")) {
-                m_rotation = boost::in_place(m_uidMgr);
-                try {
-                    m_rotation->ReadCPACS(tixiHandle, xpath + "/rotation");
-                } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read rotation at xpath " << xpath << ": " << e.what();
-                    m_rotation = boost::none;
-                }
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/rotation");
             }
-            
-            // read element translation
+        }
+        
+        // write element translation
+        if (m_translation) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/translation");
+            m_translation->WriteCPACS(tixiHandle, xpath + "/translation");
+        }
+        else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/translation")) {
-                m_translation = boost::in_place(m_uidMgr);
-                try {
-                    m_translation->ReadCPACS(tixiHandle, xpath + "/translation");
-                } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read translation at xpath " << xpath << ": " << e.what();
-                    m_translation = boost::none;
-                }
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/translation");
             }
-            
-            if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
-        }
-        
-        void CPACSTransformation::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
-        {
-            // write attribute uID
-            tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
-            
-            // write element scaling
-            if (m_scaling) {
-                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/scaling");
-                m_scaling->WriteCPACS(tixiHandle, xpath + "/scaling");
-            } else {
-                if (tixi::TixiCheckElement(tixiHandle, xpath + "/scaling")) {
-                    tixi::TixiRemoveElement(tixiHandle, xpath + "/scaling");
-                }
-            }
-            
-            // write element rotation
-            if (m_rotation) {
-                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/rotation");
-                m_rotation->WriteCPACS(tixiHandle, xpath + "/rotation");
-            } else {
-                if (tixi::TixiCheckElement(tixiHandle, xpath + "/rotation")) {
-                    tixi::TixiRemoveElement(tixiHandle, xpath + "/rotation");
-                }
-            }
-            
-            // write element translation
-            if (m_translation) {
-                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/translation");
-                m_translation->WriteCPACS(tixiHandle, xpath + "/translation");
-            } else {
-                if (tixi::TixiCheckElement(tixiHandle, xpath + "/translation")) {
-                    tixi::TixiRemoveElement(tixiHandle, xpath + "/translation");
-                }
-            }
-            
-        }
-        
-        const std::string& CPACSTransformation::GetUID() const
-        {
-            return m_uID;
-        }
-        
-        void CPACSTransformation::SetUID(const std::string& value)
-        {
-            if (m_uidMgr) {
-                m_uidMgr->TryUnregisterObject(m_uID);
-                m_uidMgr->RegisterObject(value, *this);
-            }
-            m_uID = value;
-        }
-        
-        const boost::optional<CCPACSPoint>& CPACSTransformation::GetScaling() const
-        {
-            return m_scaling;
-        }
-        
-        boost::optional<CCPACSPoint>& CPACSTransformation::GetScaling()
-        {
-            return m_scaling;
-        }
-        
-        const boost::optional<CCPACSPoint>& CPACSTransformation::GetRotation() const
-        {
-            return m_rotation;
-        }
-        
-        boost::optional<CCPACSPoint>& CPACSTransformation::GetRotation()
-        {
-            return m_rotation;
-        }
-        
-        const boost::optional<CCPACSPointAbsRel>& CPACSTransformation::GetTranslation() const
-        {
-            return m_translation;
-        }
-        
-        boost::optional<CCPACSPointAbsRel>& CPACSTransformation::GetTranslation()
-        {
-            return m_translation;
-        }
-        
-        CCPACSPoint& CPACSTransformation::GetScaling(CreateIfNotExistsTag)
-        {
-            if (!m_scaling)
-                m_scaling = boost::in_place(m_uidMgr);
-            return *m_scaling;
-        }
-        
-        void CPACSTransformation::RemoveScaling()
-        {
-            m_scaling = boost::none;
-        }
-        
-        CCPACSPoint& CPACSTransformation::GetRotation(CreateIfNotExistsTag)
-        {
-            if (!m_rotation)
-                m_rotation = boost::in_place(m_uidMgr);
-            return *m_rotation;
-        }
-        
-        void CPACSTransformation::RemoveRotation()
-        {
-            m_rotation = boost::none;
-        }
-        
-        CCPACSPointAbsRel& CPACSTransformation::GetTranslation(CreateIfNotExistsTag)
-        {
-            if (!m_translation)
-                m_translation = boost::in_place(m_uidMgr);
-            return *m_translation;
-        }
-        
-        void CPACSTransformation::RemoveTranslation()
-        {
-            m_translation = boost::none;
         }
         
     }
-}
+    
+    const std::string& CPACSTransformation::GetUID() const
+    {
+        return m_uID;
+    }
+    
+    void CPACSTransformation::SetUID(const std::string& value)
+    {
+        if (m_uidMgr) {
+            m_uidMgr->TryUnregisterObject(m_uID);
+            m_uidMgr->RegisterObject(value, *this);
+        }
+        m_uID = value;
+    }
+    
+    const boost::optional<CCPACSPoint>& CPACSTransformation::GetScaling() const
+    {
+        return m_scaling;
+    }
+    
+    boost::optional<CCPACSPoint>& CPACSTransformation::GetScaling()
+    {
+        return m_scaling;
+    }
+    
+    const boost::optional<CCPACSPoint>& CPACSTransformation::GetRotation() const
+    {
+        return m_rotation;
+    }
+    
+    boost::optional<CCPACSPoint>& CPACSTransformation::GetRotation()
+    {
+        return m_rotation;
+    }
+    
+    const boost::optional<CCPACSPointAbsRel>& CPACSTransformation::GetTranslation() const
+    {
+        return m_translation;
+    }
+    
+    boost::optional<CCPACSPointAbsRel>& CPACSTransformation::GetTranslation()
+    {
+        return m_translation;
+    }
+    
+    CCPACSPoint& CPACSTransformation::GetScaling(CreateIfNotExistsTag)
+    {
+        if (!m_scaling)
+            m_scaling = boost::in_place(m_uidMgr);
+        return *m_scaling;
+    }
+    
+    void CPACSTransformation::RemoveScaling()
+    {
+        m_scaling = boost::none;
+    }
+    
+    CCPACSPoint& CPACSTransformation::GetRotation(CreateIfNotExistsTag)
+    {
+        if (!m_rotation)
+            m_rotation = boost::in_place(m_uidMgr);
+        return *m_rotation;
+    }
+    
+    void CPACSTransformation::RemoveRotation()
+    {
+        m_rotation = boost::none;
+    }
+    
+    CCPACSPointAbsRel& CPACSTransformation::GetTranslation(CreateIfNotExistsTag)
+    {
+        if (!m_translation)
+            m_translation = boost::in_place(m_uidMgr);
+        return *m_translation;
+    }
+    
+    void CPACSTransformation::RemoveTranslation()
+    {
+        m_translation = boost::none;
+    }
+    
+} // namespace generated
+} // namespace tigl

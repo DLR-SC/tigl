@@ -25,57 +25,57 @@
 
 namespace tigl
 {
-    class CTiglUIDManager;
-    class CCPACSWingSegment;
-    class CCPACSWing;
+class CTiglUIDManager;
+class CCPACSWingSegment;
+class CCPACSWing;
+
+namespace generated
+{
+    // This class is used in:
+    // CPACSWing
     
-    namespace generated
+    // generated from /xsd:schema/xsd:complexType[956]
+    class CPACSWingSegments
     {
-        // This class is used in:
-        // CPACSWing
+    public:
+        TIGL_EXPORT CPACSWingSegments(CCPACSWing* parent, CTiglUIDManager* uidMgr);
         
-        // generated from /xsd:schema/xsd:complexType[956]
-        class CPACSWingSegments
-        {
-        public:
-            TIGL_EXPORT CPACSWingSegments(CCPACSWing* parent, CTiglUIDManager* uidMgr);
-            
-            TIGL_EXPORT virtual ~CPACSWingSegments();
-            
-            TIGL_EXPORT CCPACSWing* GetParent() const;
-            
-            TIGL_EXPORT CTiglUIDManager& GetUIDManager();
-            TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
-            
-            TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
-            TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
-            
-            TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSWingSegment> >& GetSegments() const;
-            TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSWingSegment> >& GetSegments();
-            
-            TIGL_EXPORT virtual CCPACSWingSegment& AddSegment();
-            TIGL_EXPORT virtual void RemoveSegment(CCPACSWingSegment& ref);
-            
-        protected:
-            CCPACSWing* m_parent;
-            
-            CTiglUIDManager* m_uidMgr;
-            
-            std::vector<unique_ptr<CCPACSWingSegment> > m_segments;
-            
-        private:
-            #ifdef HAVE_CPP11
-            CPACSWingSegments(const CPACSWingSegments&) = delete;
-            CPACSWingSegments& operator=(const CPACSWingSegments&) = delete;
-            
-            CPACSWingSegments(CPACSWingSegments&&) = delete;
-            CPACSWingSegments& operator=(CPACSWingSegments&&) = delete;
-            #else
-            CPACSWingSegments(const CPACSWingSegments&);
-            CPACSWingSegments& operator=(const CPACSWingSegments&);
-            #endif
-        };
-    }
-    
-    // CPACSWingSegments is customized, use type CCPACSWingSegments directly
-}
+        TIGL_EXPORT virtual ~CPACSWingSegments();
+        
+        TIGL_EXPORT CCPACSWing* GetParent() const;
+        
+        TIGL_EXPORT CTiglUIDManager& GetUIDManager();
+        TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
+        
+        TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+        TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
+        
+        TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSWingSegment> >& GetSegments() const;
+        TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSWingSegment> >& GetSegments();
+        
+        TIGL_EXPORT virtual CCPACSWingSegment& AddSegment();
+        TIGL_EXPORT virtual void RemoveSegment(CCPACSWingSegment& ref);
+        
+    protected:
+        CCPACSWing* m_parent;
+        
+        CTiglUIDManager* m_uidMgr;
+        
+        std::vector<unique_ptr<CCPACSWingSegment> > m_segments;
+        
+    private:
+#ifdef HAVE_CPP11
+        CPACSWingSegments(const CPACSWingSegments&) = delete;
+        CPACSWingSegments& operator=(const CPACSWingSegments&) = delete;
+        
+        CPACSWingSegments(CPACSWingSegments&&) = delete;
+        CPACSWingSegments& operator=(CPACSWingSegments&&) = delete;
+#else
+        CPACSWingSegments(const CPACSWingSegments&);
+        CPACSWingSegments& operator=(const CPACSWingSegments&);
+#endif
+    };
+} // namespace generated
+
+// CPACSWingSegments is customized, use type CCPACSWingSegments directly
+} // namespace tigl

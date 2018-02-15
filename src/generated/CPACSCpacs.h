@@ -29,64 +29,64 @@
 
 namespace tigl
 {
-    class CTiglUIDManager;
-    
-    namespace generated
+class CTiglUIDManager;
+
+namespace generated
+{
+    // This class is used in:
+    // generated from /xsd:schema/xsd:complexType[1]
+    class CPACSCpacs
     {
-        // This class is used in:
-        // generated from /xsd:schema/xsd:complexType[1]
-        class CPACSCpacs
-        {
-        public:
-            TIGL_EXPORT CPACSCpacs(CTiglUIDManager* uidMgr);
-            TIGL_EXPORT virtual ~CPACSCpacs();
-            
-            TIGL_EXPORT CTiglUIDManager& GetUIDManager();
-            TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
-            
-            TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
-            TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
-            
-            TIGL_EXPORT virtual const CPACSHeader& GetHeader() const;
-            TIGL_EXPORT virtual CPACSHeader& GetHeader();
-            
-            TIGL_EXPORT virtual const boost::optional<CPACSVehicles>& GetVehicles() const;
-            TIGL_EXPORT virtual boost::optional<CPACSVehicles>& GetVehicles();
-            
-            TIGL_EXPORT virtual const boost::optional<CPACSToolspecific>& GetToolspecific() const;
-            TIGL_EXPORT virtual boost::optional<CPACSToolspecific>& GetToolspecific();
-            
-            TIGL_EXPORT virtual CPACSVehicles& GetVehicles(CreateIfNotExistsTag);
-            TIGL_EXPORT virtual void RemoveVehicles();
-            
-            TIGL_EXPORT virtual CPACSToolspecific& GetToolspecific(CreateIfNotExistsTag);
-            TIGL_EXPORT virtual void RemoveToolspecific();
-            
-        protected:
-            CTiglUIDManager* m_uidMgr;
-            
-            CPACSHeader                        m_header;
-            boost::optional<CPACSVehicles>     m_vehicles;
-            boost::optional<CPACSToolspecific> m_toolspecific;
-            
-        private:
-            #ifdef HAVE_CPP11
-            CPACSCpacs(const CPACSCpacs&) = delete;
-            CPACSCpacs& operator=(const CPACSCpacs&) = delete;
-            
-            CPACSCpacs(CPACSCpacs&&) = delete;
-            CPACSCpacs& operator=(CPACSCpacs&&) = delete;
-            #else
-            CPACSCpacs(const CPACSCpacs&);
-            CPACSCpacs& operator=(const CPACSCpacs&);
-            #endif
-        };
-    }
-    
-    // Aliases in tigl namespace
-    #ifdef HAVE_CPP11
-    using CCPACSCpacs = generated::CPACSCpacs;
-    #else
-    typedef generated::CPACSCpacs CCPACSCpacs;
-    #endif
-}
+    public:
+        TIGL_EXPORT CPACSCpacs(CTiglUIDManager* uidMgr);
+        TIGL_EXPORT virtual ~CPACSCpacs();
+        
+        TIGL_EXPORT CTiglUIDManager& GetUIDManager();
+        TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
+        
+        TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+        TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
+        
+        TIGL_EXPORT virtual const CPACSHeader& GetHeader() const;
+        TIGL_EXPORT virtual CPACSHeader& GetHeader();
+        
+        TIGL_EXPORT virtual const boost::optional<CPACSVehicles>& GetVehicles() const;
+        TIGL_EXPORT virtual boost::optional<CPACSVehicles>& GetVehicles();
+        
+        TIGL_EXPORT virtual const boost::optional<CPACSToolspecific>& GetToolspecific() const;
+        TIGL_EXPORT virtual boost::optional<CPACSToolspecific>& GetToolspecific();
+        
+        TIGL_EXPORT virtual CPACSVehicles& GetVehicles(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveVehicles();
+        
+        TIGL_EXPORT virtual CPACSToolspecific& GetToolspecific(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveToolspecific();
+        
+    protected:
+        CTiglUIDManager* m_uidMgr;
+        
+        CPACSHeader                        m_header;
+        boost::optional<CPACSVehicles>     m_vehicles;
+        boost::optional<CPACSToolspecific> m_toolspecific;
+        
+    private:
+#ifdef HAVE_CPP11
+        CPACSCpacs(const CPACSCpacs&) = delete;
+        CPACSCpacs& operator=(const CPACSCpacs&) = delete;
+        
+        CPACSCpacs(CPACSCpacs&&) = delete;
+        CPACSCpacs& operator=(CPACSCpacs&&) = delete;
+#else
+        CPACSCpacs(const CPACSCpacs&);
+        CPACSCpacs& operator=(const CPACSCpacs&);
+#endif
+    };
+} // namespace generated
+
+// Aliases in tigl namespace
+#ifdef HAVE_CPP11
+using CCPACSCpacs = generated::CPACSCpacs;
+#else
+typedef generated::CPACSCpacs CCPACSCpacs;
+#endif
+} // namespace tigl

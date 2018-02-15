@@ -22,41 +22,45 @@
 
 namespace tigl
 {
-    namespace generated
+namespace generated
+{
+    CPACSWingSkin::CPACSWingSkin()
     {
-        CPACSWingSkin::CPACSWingSkin() {}
-        
-        CPACSWingSkin::~CPACSWingSkin() {}
-        
-        void CPACSWingSkin::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
-        {
-            // read element material
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/material")) {
-                m_material.ReadCPACS(tixiHandle, xpath + "/material");
-            }
-            else {
-                LOG(ERROR) << "Required element material is missing at xpath " << xpath;
-            }
-            
+    }
+    
+    CPACSWingSkin::~CPACSWingSkin()
+    {
+    }
+    
+    void CPACSWingSkin::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
+    {
+        // read element material
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/material")) {
+            m_material.ReadCPACS(tixiHandle, xpath + "/material");
         }
-        
-        void CPACSWingSkin::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
-        {
-            // write element material
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/material");
-            m_material.WriteCPACS(tixiHandle, xpath + "/material");
-            
-        }
-        
-        const CCPACSMaterialDefinition& CPACSWingSkin::GetMaterial() const
-        {
-            return m_material;
-        }
-        
-        CCPACSMaterialDefinition& CPACSWingSkin::GetMaterial()
-        {
-            return m_material;
+        else {
+            LOG(ERROR) << "Required element material is missing at xpath " << xpath;
         }
         
     }
-}
+    
+    void CPACSWingSkin::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
+    {
+        // write element material
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/material");
+        m_material.WriteCPACS(tixiHandle, xpath + "/material");
+        
+    }
+    
+    const CCPACSMaterialDefinition& CPACSWingSkin::GetMaterial() const
+    {
+        return m_material;
+    }
+    
+    CCPACSMaterialDefinition& CPACSWingSkin::GetMaterial()
+    {
+        return m_material;
+    }
+    
+} // namespace generated
+} // namespace tigl

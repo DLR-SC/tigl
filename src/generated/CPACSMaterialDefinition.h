@@ -27,62 +27,62 @@
 
 namespace tigl
 {
-    namespace generated
-    {
-        // This class is used in:
-        // CPACSCap
-        // CPACSWeb
-        // CPACSWingRibCell
-        // CPACSWingRibCrossSection
-        // CPACSWingSkin
-        
-        // generated from /xsd:schema/xsd:complexType[655]
-        class CPACSMaterialDefinition
-        {
-        public:
-            TIGL_EXPORT CPACSMaterialDefinition();
-            TIGL_EXPORT virtual ~CPACSMaterialDefinition();
-            
-            TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
-            TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
-            
-            TIGL_EXPORT bool ValidateChoices() const;
-            
-            TIGL_EXPORT virtual const boost::optional<std::string>& GetCompositeUID_choice1() const;
-            TIGL_EXPORT virtual void SetCompositeUID_choice1(const boost::optional<std::string>& value);
-            
-            TIGL_EXPORT virtual const boost::optional<double>& GetOrthotropyDirection_choice1() const;
-            TIGL_EXPORT virtual void SetOrthotropyDirection_choice1(const boost::optional<double>& value);
-            
-            TIGL_EXPORT virtual const boost::optional<double>& GetThicknessScaling_choice1() const;
-            TIGL_EXPORT virtual void SetThicknessScaling_choice1(const boost::optional<double>& value);
-            
-            TIGL_EXPORT virtual const boost::optional<std::string>& GetMaterialUID_choice2() const;
-            TIGL_EXPORT virtual void SetMaterialUID_choice2(const boost::optional<std::string>& value);
-            
-            TIGL_EXPORT virtual const boost::optional<double>& GetThickness_choice2() const;
-            TIGL_EXPORT virtual void SetThickness_choice2(const boost::optional<double>& value);
-            
-        protected:
-            boost::optional<std::string> m_compositeUID_choice1;
-            boost::optional<double>      m_orthotropyDirection_choice1;
-            boost::optional<double>      m_thicknessScaling_choice1;
-            boost::optional<std::string> m_materialUID_choice2;
-            boost::optional<double>      m_thickness_choice2;
-            
-        private:
-            #ifdef HAVE_CPP11
-            CPACSMaterialDefinition(const CPACSMaterialDefinition&) = delete;
-            CPACSMaterialDefinition& operator=(const CPACSMaterialDefinition&) = delete;
-            
-            CPACSMaterialDefinition(CPACSMaterialDefinition&&) = delete;
-            CPACSMaterialDefinition& operator=(CPACSMaterialDefinition&&) = delete;
-            #else
-            CPACSMaterialDefinition(const CPACSMaterialDefinition&);
-            CPACSMaterialDefinition& operator=(const CPACSMaterialDefinition&);
-            #endif
-        };
-    }
+namespace generated
+{
+    // This class is used in:
+    // CPACSCap
+    // CPACSWeb
+    // CPACSWingRibCell
+    // CPACSWingRibCrossSection
+    // CPACSWingSkin
     
-    // CPACSMaterialDefinition is customized, use type CCPACSMaterialDefinition directly
-}
+    // generated from /xsd:schema/xsd:complexType[655]
+    class CPACSMaterialDefinition
+    {
+    public:
+        TIGL_EXPORT CPACSMaterialDefinition();
+        TIGL_EXPORT virtual ~CPACSMaterialDefinition();
+        
+        TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+        TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
+        
+        TIGL_EXPORT bool ValidateChoices() const;
+        
+        TIGL_EXPORT virtual const boost::optional<std::string>& GetCompositeUID_choice1() const;
+        TIGL_EXPORT virtual void SetCompositeUID_choice1(const boost::optional<std::string>& value);
+        
+        TIGL_EXPORT virtual const boost::optional<double>& GetOrthotropyDirection_choice1() const;
+        TIGL_EXPORT virtual void SetOrthotropyDirection_choice1(const boost::optional<double>& value);
+        
+        TIGL_EXPORT virtual const boost::optional<double>& GetThicknessScaling_choice1() const;
+        TIGL_EXPORT virtual void SetThicknessScaling_choice1(const boost::optional<double>& value);
+        
+        TIGL_EXPORT virtual const boost::optional<std::string>& GetMaterialUID_choice2() const;
+        TIGL_EXPORT virtual void SetMaterialUID_choice2(const boost::optional<std::string>& value);
+        
+        TIGL_EXPORT virtual const boost::optional<double>& GetThickness_choice2() const;
+        TIGL_EXPORT virtual void SetThickness_choice2(const boost::optional<double>& value);
+        
+    protected:
+        boost::optional<std::string> m_compositeUID_choice1;
+        boost::optional<double>      m_orthotropyDirection_choice1;
+        boost::optional<double>      m_thicknessScaling_choice1;
+        boost::optional<std::string> m_materialUID_choice2;
+        boost::optional<double>      m_thickness_choice2;
+        
+    private:
+#ifdef HAVE_CPP11
+        CPACSMaterialDefinition(const CPACSMaterialDefinition&) = delete;
+        CPACSMaterialDefinition& operator=(const CPACSMaterialDefinition&) = delete;
+        
+        CPACSMaterialDefinition(CPACSMaterialDefinition&&) = delete;
+        CPACSMaterialDefinition& operator=(CPACSMaterialDefinition&&) = delete;
+#else
+        CPACSMaterialDefinition(const CPACSMaterialDefinition&);
+        CPACSMaterialDefinition& operator=(const CPACSMaterialDefinition&);
+#endif
+    };
+} // namespace generated
+
+// CPACSMaterialDefinition is customized, use type CCPACSMaterialDefinition directly
+} // namespace tigl

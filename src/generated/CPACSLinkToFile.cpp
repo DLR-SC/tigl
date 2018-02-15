@@ -22,67 +22,72 @@
 
 namespace tigl
 {
-    namespace generated
+namespace generated
+{
+    CPACSLinkToFile::CPACSLinkToFile()
     {
-        CPACSLinkToFile::CPACSLinkToFile() {}
-        
-        CPACSLinkToFile::~CPACSLinkToFile() {}
-        
-        void CPACSLinkToFile::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
-        {
-            // read fundamental type base class 
-            if (tixi::TixiCheckElement(tixiHandle, xpath)) {
-                m_base = tixi::TixiGetElement<std::string>(tixiHandle, xpath);
-                if (m_base.empty()) {
-                    LOG(WARNING) << "Required element  is empty at xpath " << xpath;
-                }
+    }
+    
+    CPACSLinkToFile::~CPACSLinkToFile()
+    {
+    }
+    
+    void CPACSLinkToFile::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
+    {
+        // read fundamental type base class 
+        if (tixi::TixiCheckElement(tixiHandle, xpath)) {
+            m_base = tixi::TixiGetElement<std::string>(tixiHandle, xpath);
+            if (m_base.empty()) {
+                LOG(WARNING) << "Required element  is empty at xpath " << xpath;
             }
-            else {
-                LOG(ERROR) << "Required fundamental type base class  is missing at xpath " << xpath;
-            }
-            
-            // read attribute format
-            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "format")) {
-                m_format = stringToCPACSLinkToFileType_format(tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "format"));
-            }
-            
+        }
+        else {
+            LOG(ERROR) << "Required fundamental type base class  is missing at xpath " << xpath;
         }
         
-        void CPACSLinkToFile::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
-        {
-            // write fundamental type base class 
-            tixi::TixiSaveElement(tixiHandle, xpath, m_base);
-            
-            // write attribute format
-            if (m_format) {
-                tixi::TixiSaveAttribute(tixiHandle, xpath, "format", CPACSLinkToFileType_formatToString(*m_format));
-            } else {
-                if (tixi::TixiCheckAttribute(tixiHandle, xpath, "format")) {
-                    tixi::TixiRemoveAttribute(tixiHandle, xpath, "format");
-                }
-            }
-            
-        }
-        
-        const std::string& CPACSLinkToFile::GetBase() const
-        {
-            return m_base;
-        }
-        
-        void CPACSLinkToFile::SetBase(const std::string& value)
-        {
-            m_base = value;
-        }
-        
-        const boost::optional<CPACSLinkToFileType_format>& CPACSLinkToFile::GetFormat() const
-        {
-            return m_format;
-        }
-        
-        void CPACSLinkToFile::SetFormat(const boost::optional<CPACSLinkToFileType_format>& value)
-        {
-            m_format = value;
+        // read attribute format
+        if (tixi::TixiCheckAttribute(tixiHandle, xpath, "format")) {
+            m_format = stringToCPACSLinkToFileType_format(tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "format"));
         }
         
     }
-}
+    
+    void CPACSLinkToFile::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
+    {
+        // write fundamental type base class 
+        tixi::TixiSaveElement(tixiHandle, xpath, m_base);
+        
+        // write attribute format
+        if (m_format) {
+            tixi::TixiSaveAttribute(tixiHandle, xpath, "format", CPACSLinkToFileType_formatToString(*m_format));
+        }
+        else {
+            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "format")) {
+                tixi::TixiRemoveAttribute(tixiHandle, xpath, "format");
+            }
+        }
+        
+    }
+    
+    const std::string& CPACSLinkToFile::GetBase() const
+    {
+        return m_base;
+    }
+    
+    void CPACSLinkToFile::SetBase(const std::string& value)
+    {
+        m_base = value;
+    }
+    
+    const boost::optional<CPACSLinkToFileType_format>& CPACSLinkToFile::GetFormat() const
+    {
+        return m_format;
+    }
+    
+    void CPACSLinkToFile::SetFormat(const boost::optional<CPACSLinkToFileType_format>& value)
+    {
+        m_format = value;
+    }
+    
+} // namespace generated
+} // namespace tigl

@@ -24,49 +24,49 @@
 
 namespace tigl
 {
-    namespace generated
-    {
-        // This class is used in:
-        // CPACSMaterial
-        
-        // generated from /xsd:schema/xsd:complexType[818]
-        class CPACSSpecificHeatMap
-        {
-        public:
-            TIGL_EXPORT CPACSSpecificHeatMap();
-            TIGL_EXPORT virtual ~CPACSSpecificHeatMap();
-            
-            TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
-            TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
-            
-            TIGL_EXPORT virtual const CCPACSStringVector& GetTemperature() const;
-            TIGL_EXPORT virtual CCPACSStringVector& GetTemperature();
-            
-            TIGL_EXPORT virtual const CCPACSStringVector& GetSpecificHeat() const;
-            TIGL_EXPORT virtual CCPACSStringVector& GetSpecificHeat();
-            
-        protected:
-            CCPACSStringVector m_temperature;
-            CCPACSStringVector m_specificHeat;
-            
-        private:
-            #ifdef HAVE_CPP11
-            CPACSSpecificHeatMap(const CPACSSpecificHeatMap&) = delete;
-            CPACSSpecificHeatMap& operator=(const CPACSSpecificHeatMap&) = delete;
-            
-            CPACSSpecificHeatMap(CPACSSpecificHeatMap&&) = delete;
-            CPACSSpecificHeatMap& operator=(CPACSSpecificHeatMap&&) = delete;
-            #else
-            CPACSSpecificHeatMap(const CPACSSpecificHeatMap&);
-            CPACSSpecificHeatMap& operator=(const CPACSSpecificHeatMap&);
-            #endif
-        };
-    }
+namespace generated
+{
+    // This class is used in:
+    // CPACSMaterial
     
-    // Aliases in tigl namespace
-    #ifdef HAVE_CPP11
-    using CCPACSSpecificHeatMap = generated::CPACSSpecificHeatMap;
-    #else
-    typedef generated::CPACSSpecificHeatMap CCPACSSpecificHeatMap;
-    #endif
-}
+    // generated from /xsd:schema/xsd:complexType[818]
+    class CPACSSpecificHeatMap
+    {
+    public:
+        TIGL_EXPORT CPACSSpecificHeatMap();
+        TIGL_EXPORT virtual ~CPACSSpecificHeatMap();
+        
+        TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+        TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
+        
+        TIGL_EXPORT virtual const CCPACSStringVector& GetTemperature() const;
+        TIGL_EXPORT virtual CCPACSStringVector& GetTemperature();
+        
+        TIGL_EXPORT virtual const CCPACSStringVector& GetSpecificHeat() const;
+        TIGL_EXPORT virtual CCPACSStringVector& GetSpecificHeat();
+        
+    protected:
+        CCPACSStringVector m_temperature;
+        CCPACSStringVector m_specificHeat;
+        
+    private:
+#ifdef HAVE_CPP11
+        CPACSSpecificHeatMap(const CPACSSpecificHeatMap&) = delete;
+        CPACSSpecificHeatMap& operator=(const CPACSSpecificHeatMap&) = delete;
+        
+        CPACSSpecificHeatMap(CPACSSpecificHeatMap&&) = delete;
+        CPACSSpecificHeatMap& operator=(CPACSSpecificHeatMap&&) = delete;
+#else
+        CPACSSpecificHeatMap(const CPACSSpecificHeatMap&);
+        CPACSSpecificHeatMap& operator=(const CPACSSpecificHeatMap&);
+#endif
+    };
+} // namespace generated
+
+// Aliases in tigl namespace
+#ifdef HAVE_CPP11
+using CCPACSSpecificHeatMap = generated::CPACSSpecificHeatMap;
+#else
+typedef generated::CPACSSpecificHeatMap CCPACSSpecificHeatMap;
+#endif
+} // namespace tigl

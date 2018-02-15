@@ -22,63 +22,67 @@
 
 namespace tigl
 {
-    namespace generated
+namespace generated
+{
+    CPACSEmissivityMap::CPACSEmissivityMap()
     {
-        CPACSEmissivityMap::CPACSEmissivityMap() {}
-        
-        CPACSEmissivityMap::~CPACSEmissivityMap() {}
-        
-        void CPACSEmissivityMap::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
-        {
-            // read element waveLength
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/waveLength")) {
-                m_waveLength.ReadCPACS(tixiHandle, xpath + "/waveLength");
-            }
-            else {
-                LOG(ERROR) << "Required element waveLength is missing at xpath " << xpath;
-            }
-            
-            // read element diffuseEmissivity
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/diffuseEmissivity")) {
-                m_diffuseEmissivity.ReadCPACS(tixiHandle, xpath + "/diffuseEmissivity");
-            }
-            else {
-                LOG(ERROR) << "Required element diffuseEmissivity is missing at xpath " << xpath;
-            }
-            
+    }
+    
+    CPACSEmissivityMap::~CPACSEmissivityMap()
+    {
+    }
+    
+    void CPACSEmissivityMap::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
+    {
+        // read element waveLength
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/waveLength")) {
+            m_waveLength.ReadCPACS(tixiHandle, xpath + "/waveLength");
+        }
+        else {
+            LOG(ERROR) << "Required element waveLength is missing at xpath " << xpath;
         }
         
-        void CPACSEmissivityMap::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
-        {
-            // write element waveLength
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/waveLength");
-            m_waveLength.WriteCPACS(tixiHandle, xpath + "/waveLength");
-            
-            // write element diffuseEmissivity
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/diffuseEmissivity");
-            m_diffuseEmissivity.WriteCPACS(tixiHandle, xpath + "/diffuseEmissivity");
-            
+        // read element diffuseEmissivity
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/diffuseEmissivity")) {
+            m_diffuseEmissivity.ReadCPACS(tixiHandle, xpath + "/diffuseEmissivity");
         }
-        
-        const CCPACSStringVector& CPACSEmissivityMap::GetWaveLength() const
-        {
-            return m_waveLength;
-        }
-        
-        CCPACSStringVector& CPACSEmissivityMap::GetWaveLength()
-        {
-            return m_waveLength;
-        }
-        
-        const CCPACSStringVector& CPACSEmissivityMap::GetDiffuseEmissivity() const
-        {
-            return m_diffuseEmissivity;
-        }
-        
-        CCPACSStringVector& CPACSEmissivityMap::GetDiffuseEmissivity()
-        {
-            return m_diffuseEmissivity;
+        else {
+            LOG(ERROR) << "Required element diffuseEmissivity is missing at xpath " << xpath;
         }
         
     }
-}
+    
+    void CPACSEmissivityMap::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
+    {
+        // write element waveLength
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/waveLength");
+        m_waveLength.WriteCPACS(tixiHandle, xpath + "/waveLength");
+        
+        // write element diffuseEmissivity
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/diffuseEmissivity");
+        m_diffuseEmissivity.WriteCPACS(tixiHandle, xpath + "/diffuseEmissivity");
+        
+    }
+    
+    const CCPACSStringVector& CPACSEmissivityMap::GetWaveLength() const
+    {
+        return m_waveLength;
+    }
+    
+    CCPACSStringVector& CPACSEmissivityMap::GetWaveLength()
+    {
+        return m_waveLength;
+    }
+    
+    const CCPACSStringVector& CPACSEmissivityMap::GetDiffuseEmissivity() const
+    {
+        return m_diffuseEmissivity;
+    }
+    
+    CCPACSStringVector& CPACSEmissivityMap::GetDiffuseEmissivity()
+    {
+        return m_diffuseEmissivity;
+    }
+    
+} // namespace generated
+} // namespace tigl

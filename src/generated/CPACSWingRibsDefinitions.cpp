@@ -26,74 +26,76 @@
 
 namespace tigl
 {
-    namespace generated
+namespace generated
+{
+    CPACSWingRibsDefinitions::CPACSWingRibsDefinitions(CCPACSWingCSStructure* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
     {
-        CPACSWingRibsDefinitions::CPACSWingRibsDefinitions(CCPACSWingCSStructure* parent, CTiglUIDManager* uidMgr) :
-            m_uidMgr(uidMgr)
-        {
-            //assert(parent != NULL);
-            m_parent = parent;
-        }
-        
-        CPACSWingRibsDefinitions::~CPACSWingRibsDefinitions() {}
-        
-        CCPACSWingCSStructure* CPACSWingRibsDefinitions::GetParent() const
-        {
-            return m_parent;
-        }
-        
-        CTiglUIDManager& CPACSWingRibsDefinitions::GetUIDManager()
-        {
-            return *m_uidMgr;
-        }
-        
-        const CTiglUIDManager& CPACSWingRibsDefinitions::GetUIDManager() const
-        {
-            return *m_uidMgr;
-        }
-        
-        void CPACSWingRibsDefinitions::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
-        {
-            // read element ribsDefinition
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/ribsDefinition")) {
-                tixi::TixiReadElements(tixiHandle, xpath + "/ribsDefinition", m_ribsDefinitions, reinterpret_cast<CCPACSWingRibsDefinitions*>(this), m_uidMgr);
-            }
-            
-        }
-        
-        void CPACSWingRibsDefinitions::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
-        {
-            // write element ribsDefinition
-            tixi::TixiSaveElements(tixiHandle, xpath + "/ribsDefinition", m_ribsDefinitions);
-            
-        }
-        
-        const std::vector<unique_ptr<CCPACSWingRibsDefinition> >& CPACSWingRibsDefinitions::GetRibsDefinitions() const
-        {
-            return m_ribsDefinitions;
-        }
-        
-        std::vector<unique_ptr<CCPACSWingRibsDefinition> >& CPACSWingRibsDefinitions::GetRibsDefinitions()
-        {
-            return m_ribsDefinitions;
-        }
-        
-        CCPACSWingRibsDefinition& CPACSWingRibsDefinitions::AddRibsDefinition()
-        {
-            m_ribsDefinitions.push_back(make_unique<CCPACSWingRibsDefinition>(reinterpret_cast<CCPACSWingRibsDefinitions*>(this), m_uidMgr));
-            return *m_ribsDefinitions.back();
-        }
-        
-        void CPACSWingRibsDefinitions::RemoveRibsDefinition(CCPACSWingRibsDefinition& ref)
-        {
-            for (std::size_t i = 0; i < m_ribsDefinitions.size(); i++) {
-                if (m_ribsDefinitions[i].get() == &ref) {
-                    m_ribsDefinitions.erase(m_ribsDefinitions.begin() + i);
-                    return;
-                }
-            }
-            throw CTiglError("Element not found");
+        //assert(parent != NULL);
+        m_parent = parent;
+    }
+    
+    CPACSWingRibsDefinitions::~CPACSWingRibsDefinitions()
+    {
+    }
+    
+    CCPACSWingCSStructure* CPACSWingRibsDefinitions::GetParent() const
+    {
+        return m_parent;
+    }
+    
+    CTiglUIDManager& CPACSWingRibsDefinitions::GetUIDManager()
+    {
+        return *m_uidMgr;
+    }
+    
+    const CTiglUIDManager& CPACSWingRibsDefinitions::GetUIDManager() const
+    {
+        return *m_uidMgr;
+    }
+    
+    void CPACSWingRibsDefinitions::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
+    {
+        // read element ribsDefinition
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/ribsDefinition")) {
+            tixi::TixiReadElements(tixiHandle, xpath + "/ribsDefinition", m_ribsDefinitions, reinterpret_cast<CCPACSWingRibsDefinitions*>(this), m_uidMgr);
         }
         
     }
-}
+    
+    void CPACSWingRibsDefinitions::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
+    {
+        // write element ribsDefinition
+        tixi::TixiSaveElements(tixiHandle, xpath + "/ribsDefinition", m_ribsDefinitions);
+        
+    }
+    
+    const std::vector<unique_ptr<CCPACSWingRibsDefinition> >& CPACSWingRibsDefinitions::GetRibsDefinitions() const
+    {
+        return m_ribsDefinitions;
+    }
+    
+    std::vector<unique_ptr<CCPACSWingRibsDefinition> >& CPACSWingRibsDefinitions::GetRibsDefinitions()
+    {
+        return m_ribsDefinitions;
+    }
+    
+    CCPACSWingRibsDefinition& CPACSWingRibsDefinitions::AddRibsDefinition()
+    {
+        m_ribsDefinitions.push_back(make_unique<CCPACSWingRibsDefinition>(reinterpret_cast<CCPACSWingRibsDefinitions*>(this), m_uidMgr));
+        return *m_ribsDefinitions.back();
+    }
+    
+    void CPACSWingRibsDefinitions::RemoveRibsDefinition(CCPACSWingRibsDefinition& ref)
+    {
+        for (std::size_t i = 0; i < m_ribsDefinitions.size(); i++) {
+            if (m_ribsDefinitions[i].get() == &ref) {
+                m_ribsDefinitions.erase(m_ribsDefinitions.begin() + i);
+                return;
+            }
+        }
+        throw CTiglError("Element not found");
+    }
+    
+} // namespace generated
+} // namespace tigl

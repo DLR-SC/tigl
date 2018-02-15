@@ -23,49 +23,49 @@
 
 namespace tigl
 {
-    namespace generated
-    {
-        // This class is used in:
-        // CPACSSparCell
-        
-        // generated from /xsd:schema/xsd:complexType[317]
-        class CPACSEtaIsoLine
-        {
-        public:
-            TIGL_EXPORT CPACSEtaIsoLine();
-            TIGL_EXPORT virtual ~CPACSEtaIsoLine();
-            
-            TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
-            TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
-            
-            TIGL_EXPORT virtual const double& GetEta() const;
-            TIGL_EXPORT virtual void SetEta(const double& value);
-            
-            TIGL_EXPORT virtual const std::string& GetReferenceUID() const;
-            TIGL_EXPORT virtual void SetReferenceUID(const std::string& value);
-            
-        protected:
-            double      m_eta;
-            std::string m_referenceUID;
-            
-        private:
-            #ifdef HAVE_CPP11
-            CPACSEtaIsoLine(const CPACSEtaIsoLine&) = delete;
-            CPACSEtaIsoLine& operator=(const CPACSEtaIsoLine&) = delete;
-            
-            CPACSEtaIsoLine(CPACSEtaIsoLine&&) = delete;
-            CPACSEtaIsoLine& operator=(CPACSEtaIsoLine&&) = delete;
-            #else
-            CPACSEtaIsoLine(const CPACSEtaIsoLine&);
-            CPACSEtaIsoLine& operator=(const CPACSEtaIsoLine&);
-            #endif
-        };
-    }
+namespace generated
+{
+    // This class is used in:
+    // CPACSSparCell
     
-    // Aliases in tigl namespace
-    #ifdef HAVE_CPP11
-    using CCPACSEtaIsoLine = generated::CPACSEtaIsoLine;
-    #else
-    typedef generated::CPACSEtaIsoLine CCPACSEtaIsoLine;
-    #endif
-}
+    // generated from /xsd:schema/xsd:complexType[317]
+    class CPACSEtaIsoLine
+    {
+    public:
+        TIGL_EXPORT CPACSEtaIsoLine();
+        TIGL_EXPORT virtual ~CPACSEtaIsoLine();
+        
+        TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+        TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
+        
+        TIGL_EXPORT virtual const double& GetEta() const;
+        TIGL_EXPORT virtual void SetEta(const double& value);
+        
+        TIGL_EXPORT virtual const std::string& GetReferenceUID() const;
+        TIGL_EXPORT virtual void SetReferenceUID(const std::string& value);
+        
+    protected:
+        double      m_eta;
+        std::string m_referenceUID;
+        
+    private:
+#ifdef HAVE_CPP11
+        CPACSEtaIsoLine(const CPACSEtaIsoLine&) = delete;
+        CPACSEtaIsoLine& operator=(const CPACSEtaIsoLine&) = delete;
+        
+        CPACSEtaIsoLine(CPACSEtaIsoLine&&) = delete;
+        CPACSEtaIsoLine& operator=(CPACSEtaIsoLine&&) = delete;
+#else
+        CPACSEtaIsoLine(const CPACSEtaIsoLine&);
+        CPACSEtaIsoLine& operator=(const CPACSEtaIsoLine&);
+#endif
+    };
+} // namespace generated
+
+// Aliases in tigl namespace
+#ifdef HAVE_CPP11
+using CCPACSEtaIsoLine = generated::CPACSEtaIsoLine;
+#else
+typedef generated::CPACSEtaIsoLine CCPACSEtaIsoLine;
+#endif
+} // namespace tigl

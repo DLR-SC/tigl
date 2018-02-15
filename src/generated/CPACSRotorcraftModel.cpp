@@ -23,287 +23,294 @@
 
 namespace tigl
 {
-    namespace generated
+namespace generated
+{
+    CPACSRotorcraftModel::CPACSRotorcraftModel(CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
     {
-        CPACSRotorcraftModel::CPACSRotorcraftModel(CTiglUIDManager* uidMgr) :
-            m_uidMgr(uidMgr) {}
-        
-        CPACSRotorcraftModel::~CPACSRotorcraftModel()
-        {
-            if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
+    }
+    
+    CPACSRotorcraftModel::~CPACSRotorcraftModel()
+    {
+        if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
+    }
+    
+    CTiglUIDManager& CPACSRotorcraftModel::GetUIDManager()
+    {
+        return *m_uidMgr;
+    }
+    
+    const CTiglUIDManager& CPACSRotorcraftModel::GetUIDManager() const
+    {
+        return *m_uidMgr;
+    }
+    
+    void CPACSRotorcraftModel::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
+    {
+        // read attribute uID
+        if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+            m_uID = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
+            if (m_uID.empty()) {
+                LOG(WARNING) << "Required attribute uID is empty at xpath " << xpath;
+            }
+        }
+        else {
+            LOG(ERROR) << "Required attribute uID is missing at xpath " << xpath;
         }
         
-        CTiglUIDManager& CPACSRotorcraftModel::GetUIDManager()
-        {
-            return *m_uidMgr;
+        // read element name
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
+            m_name = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
+            if (m_name.empty()) {
+                LOG(WARNING) << "Required element name is empty at xpath " << xpath;
+            }
+        }
+        else {
+            LOG(ERROR) << "Required element name is missing at xpath " << xpath;
         }
         
-        const CTiglUIDManager& CPACSRotorcraftModel::GetUIDManager() const
-        {
-            return *m_uidMgr;
+        // read element description
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
+            m_description = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
+            if (m_description->empty()) {
+                LOG(WARNING) << "Optional element description is present but empty at xpath " << xpath;
+            }
         }
         
-        void CPACSRotorcraftModel::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
-        {
-            // read attribute uID
-            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
-                m_uID = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
-                if (m_uID.empty()) {
-                    LOG(WARNING) << "Required attribute uID is empty at xpath " << xpath;
-                }
+        // read element fuselages
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/fuselages")) {
+            m_fuselages = boost::in_place(reinterpret_cast<CCPACSRotorcraftModel*>(this), m_uidMgr);
+            try {
+                m_fuselages->ReadCPACS(tixiHandle, xpath + "/fuselages");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read fuselages at xpath " << xpath << ": " << e.what();
+                m_fuselages = boost::none;
             }
-            else {
-                LOG(ERROR) << "Required attribute uID is missing at xpath " << xpath;
+        }
+        
+        // read element wings
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/wings")) {
+            m_wings = boost::in_place(reinterpret_cast<CCPACSRotorcraftModel*>(this), m_uidMgr);
+            try {
+                m_wings->ReadCPACS(tixiHandle, xpath + "/wings");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read wings at xpath " << xpath << ": " << e.what();
+                m_wings = boost::none;
             }
-            
-            // read element name
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
-                m_name = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
-                if (m_name.empty()) {
-                    LOG(WARNING) << "Required element name is empty at xpath " << xpath;
-                }
+        }
+        
+        // read element rotors
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/rotors")) {
+            m_rotors = boost::in_place(reinterpret_cast<CCPACSRotorcraftModel*>(this), m_uidMgr);
+            try {
+                m_rotors->ReadCPACS(tixiHandle, xpath + "/rotors");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read rotors at xpath " << xpath << ": " << e.what();
+                m_rotors = boost::none;
             }
-            else {
-                LOG(ERROR) << "Required element name is missing at xpath " << xpath;
+        }
+        
+        // read element rotorBlades
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/rotorBlades")) {
+            m_rotorBlades = boost::in_place(reinterpret_cast<CCPACSRotorcraftModel*>(this), m_uidMgr);
+            try {
+                m_rotorBlades->ReadCPACS(tixiHandle, xpath + "/rotorBlades");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read rotorBlades at xpath " << xpath << ": " << e.what();
+                m_rotorBlades = boost::none;
             }
-            
-            // read element description
+        }
+        
+        if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
+    }
+    
+    void CPACSRotorcraftModel::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
+    {
+        // write attribute uID
+        tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
+        
+        // write element name
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
+        tixi::TixiSaveElement(tixiHandle, xpath + "/name", m_name);
+        
+        // write element description
+        if (m_description) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
+        }
+        else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
-                m_description = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
-                if (m_description->empty()) {
-                    LOG(WARNING) << "Optional element description is present but empty at xpath " << xpath;
-                }
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/description");
             }
-            
-            // read element fuselages
+        }
+        
+        // write element fuselages
+        if (m_fuselages) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/fuselages");
+            m_fuselages->WriteCPACS(tixiHandle, xpath + "/fuselages");
+        }
+        else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/fuselages")) {
-                m_fuselages = boost::in_place(reinterpret_cast<CCPACSRotorcraftModel*>(this), m_uidMgr);
-                try {
-                    m_fuselages->ReadCPACS(tixiHandle, xpath + "/fuselages");
-                } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read fuselages at xpath " << xpath << ": " << e.what();
-                    m_fuselages = boost::none;
-                }
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/fuselages");
             }
-            
-            // read element wings
+        }
+        
+        // write element wings
+        if (m_wings) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/wings");
+            m_wings->WriteCPACS(tixiHandle, xpath + "/wings");
+        }
+        else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/wings")) {
-                m_wings = boost::in_place(reinterpret_cast<CCPACSRotorcraftModel*>(this), m_uidMgr);
-                try {
-                    m_wings->ReadCPACS(tixiHandle, xpath + "/wings");
-                } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read wings at xpath " << xpath << ": " << e.what();
-                    m_wings = boost::none;
-                }
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/wings");
             }
-            
-            // read element rotors
+        }
+        
+        // write element rotors
+        if (m_rotors) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/rotors");
+            m_rotors->WriteCPACS(tixiHandle, xpath + "/rotors");
+        }
+        else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/rotors")) {
-                m_rotors = boost::in_place(reinterpret_cast<CCPACSRotorcraftModel*>(this), m_uidMgr);
-                try {
-                    m_rotors->ReadCPACS(tixiHandle, xpath + "/rotors");
-                } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read rotors at xpath " << xpath << ": " << e.what();
-                    m_rotors = boost::none;
-                }
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/rotors");
             }
-            
-            // read element rotorBlades
+        }
+        
+        // write element rotorBlades
+        if (m_rotorBlades) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/rotorBlades");
+            m_rotorBlades->WriteCPACS(tixiHandle, xpath + "/rotorBlades");
+        }
+        else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/rotorBlades")) {
-                m_rotorBlades = boost::in_place(reinterpret_cast<CCPACSRotorcraftModel*>(this), m_uidMgr);
-                try {
-                    m_rotorBlades->ReadCPACS(tixiHandle, xpath + "/rotorBlades");
-                } catch(const std::exception& e) {
-                    LOG(ERROR) << "Failed to read rotorBlades at xpath " << xpath << ": " << e.what();
-                    m_rotorBlades = boost::none;
-                }
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/rotorBlades");
             }
-            
-            if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
-        }
-        
-        void CPACSRotorcraftModel::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
-        {
-            // write attribute uID
-            tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
-            
-            // write element name
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
-            tixi::TixiSaveElement(tixiHandle, xpath + "/name", m_name);
-            
-            // write element description
-            if (m_description) {
-                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
-                tixi::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
-            } else {
-                if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
-                    tixi::TixiRemoveElement(tixiHandle, xpath + "/description");
-                }
-            }
-            
-            // write element fuselages
-            if (m_fuselages) {
-                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/fuselages");
-                m_fuselages->WriteCPACS(tixiHandle, xpath + "/fuselages");
-            } else {
-                if (tixi::TixiCheckElement(tixiHandle, xpath + "/fuselages")) {
-                    tixi::TixiRemoveElement(tixiHandle, xpath + "/fuselages");
-                }
-            }
-            
-            // write element wings
-            if (m_wings) {
-                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/wings");
-                m_wings->WriteCPACS(tixiHandle, xpath + "/wings");
-            } else {
-                if (tixi::TixiCheckElement(tixiHandle, xpath + "/wings")) {
-                    tixi::TixiRemoveElement(tixiHandle, xpath + "/wings");
-                }
-            }
-            
-            // write element rotors
-            if (m_rotors) {
-                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/rotors");
-                m_rotors->WriteCPACS(tixiHandle, xpath + "/rotors");
-            } else {
-                if (tixi::TixiCheckElement(tixiHandle, xpath + "/rotors")) {
-                    tixi::TixiRemoveElement(tixiHandle, xpath + "/rotors");
-                }
-            }
-            
-            // write element rotorBlades
-            if (m_rotorBlades) {
-                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/rotorBlades");
-                m_rotorBlades->WriteCPACS(tixiHandle, xpath + "/rotorBlades");
-            } else {
-                if (tixi::TixiCheckElement(tixiHandle, xpath + "/rotorBlades")) {
-                    tixi::TixiRemoveElement(tixiHandle, xpath + "/rotorBlades");
-                }
-            }
-            
-        }
-        
-        const std::string& CPACSRotorcraftModel::GetUID() const
-        {
-            return m_uID;
-        }
-        
-        void CPACSRotorcraftModel::SetUID(const std::string& value)
-        {
-            if (m_uidMgr) {
-                m_uidMgr->TryUnregisterObject(m_uID);
-                m_uidMgr->RegisterObject(value, *this);
-            }
-            m_uID = value;
-        }
-        
-        const std::string& CPACSRotorcraftModel::GetName() const
-        {
-            return m_name;
-        }
-        
-        void CPACSRotorcraftModel::SetName(const std::string& value)
-        {
-            m_name = value;
-        }
-        
-        const boost::optional<std::string>& CPACSRotorcraftModel::GetDescription() const
-        {
-            return m_description;
-        }
-        
-        void CPACSRotorcraftModel::SetDescription(const boost::optional<std::string>& value)
-        {
-            m_description = value;
-        }
-        
-        const boost::optional<CCPACSFuselages>& CPACSRotorcraftModel::GetFuselages() const
-        {
-            return m_fuselages;
-        }
-        
-        boost::optional<CCPACSFuselages>& CPACSRotorcraftModel::GetFuselages()
-        {
-            return m_fuselages;
-        }
-        
-        const boost::optional<CCPACSWings>& CPACSRotorcraftModel::GetWings() const
-        {
-            return m_wings;
-        }
-        
-        boost::optional<CCPACSWings>& CPACSRotorcraftModel::GetWings()
-        {
-            return m_wings;
-        }
-        
-        const boost::optional<CCPACSRotors>& CPACSRotorcraftModel::GetRotors() const
-        {
-            return m_rotors;
-        }
-        
-        boost::optional<CCPACSRotors>& CPACSRotorcraftModel::GetRotors()
-        {
-            return m_rotors;
-        }
-        
-        const boost::optional<CCPACSRotorBlades>& CPACSRotorcraftModel::GetRotorBlades() const
-        {
-            return m_rotorBlades;
-        }
-        
-        boost::optional<CCPACSRotorBlades>& CPACSRotorcraftModel::GetRotorBlades()
-        {
-            return m_rotorBlades;
-        }
-        
-        CCPACSFuselages& CPACSRotorcraftModel::GetFuselages(CreateIfNotExistsTag)
-        {
-            if (!m_fuselages)
-                m_fuselages = boost::in_place(reinterpret_cast<CCPACSRotorcraftModel*>(this), m_uidMgr);
-            return *m_fuselages;
-        }
-        
-        void CPACSRotorcraftModel::RemoveFuselages()
-        {
-            m_fuselages = boost::none;
-        }
-        
-        CCPACSWings& CPACSRotorcraftModel::GetWings(CreateIfNotExistsTag)
-        {
-            if (!m_wings)
-                m_wings = boost::in_place(reinterpret_cast<CCPACSRotorcraftModel*>(this), m_uidMgr);
-            return *m_wings;
-        }
-        
-        void CPACSRotorcraftModel::RemoveWings()
-        {
-            m_wings = boost::none;
-        }
-        
-        CCPACSRotors& CPACSRotorcraftModel::GetRotors(CreateIfNotExistsTag)
-        {
-            if (!m_rotors)
-                m_rotors = boost::in_place(reinterpret_cast<CCPACSRotorcraftModel*>(this), m_uidMgr);
-            return *m_rotors;
-        }
-        
-        void CPACSRotorcraftModel::RemoveRotors()
-        {
-            m_rotors = boost::none;
-        }
-        
-        CCPACSRotorBlades& CPACSRotorcraftModel::GetRotorBlades(CreateIfNotExistsTag)
-        {
-            if (!m_rotorBlades)
-                m_rotorBlades = boost::in_place(reinterpret_cast<CCPACSRotorcraftModel*>(this), m_uidMgr);
-            return *m_rotorBlades;
-        }
-        
-        void CPACSRotorcraftModel::RemoveRotorBlades()
-        {
-            m_rotorBlades = boost::none;
         }
         
     }
-}
+    
+    const std::string& CPACSRotorcraftModel::GetUID() const
+    {
+        return m_uID;
+    }
+    
+    void CPACSRotorcraftModel::SetUID(const std::string& value)
+    {
+        if (m_uidMgr) {
+            m_uidMgr->TryUnregisterObject(m_uID);
+            m_uidMgr->RegisterObject(value, *this);
+        }
+        m_uID = value;
+    }
+    
+    const std::string& CPACSRotorcraftModel::GetName() const
+    {
+        return m_name;
+    }
+    
+    void CPACSRotorcraftModel::SetName(const std::string& value)
+    {
+        m_name = value;
+    }
+    
+    const boost::optional<std::string>& CPACSRotorcraftModel::GetDescription() const
+    {
+        return m_description;
+    }
+    
+    void CPACSRotorcraftModel::SetDescription(const boost::optional<std::string>& value)
+    {
+        m_description = value;
+    }
+    
+    const boost::optional<CCPACSFuselages>& CPACSRotorcraftModel::GetFuselages() const
+    {
+        return m_fuselages;
+    }
+    
+    boost::optional<CCPACSFuselages>& CPACSRotorcraftModel::GetFuselages()
+    {
+        return m_fuselages;
+    }
+    
+    const boost::optional<CCPACSWings>& CPACSRotorcraftModel::GetWings() const
+    {
+        return m_wings;
+    }
+    
+    boost::optional<CCPACSWings>& CPACSRotorcraftModel::GetWings()
+    {
+        return m_wings;
+    }
+    
+    const boost::optional<CCPACSRotors>& CPACSRotorcraftModel::GetRotors() const
+    {
+        return m_rotors;
+    }
+    
+    boost::optional<CCPACSRotors>& CPACSRotorcraftModel::GetRotors()
+    {
+        return m_rotors;
+    }
+    
+    const boost::optional<CCPACSRotorBlades>& CPACSRotorcraftModel::GetRotorBlades() const
+    {
+        return m_rotorBlades;
+    }
+    
+    boost::optional<CCPACSRotorBlades>& CPACSRotorcraftModel::GetRotorBlades()
+    {
+        return m_rotorBlades;
+    }
+    
+    CCPACSFuselages& CPACSRotorcraftModel::GetFuselages(CreateIfNotExistsTag)
+    {
+        if (!m_fuselages)
+            m_fuselages = boost::in_place(reinterpret_cast<CCPACSRotorcraftModel*>(this), m_uidMgr);
+        return *m_fuselages;
+    }
+    
+    void CPACSRotorcraftModel::RemoveFuselages()
+    {
+        m_fuselages = boost::none;
+    }
+    
+    CCPACSWings& CPACSRotorcraftModel::GetWings(CreateIfNotExistsTag)
+    {
+        if (!m_wings)
+            m_wings = boost::in_place(reinterpret_cast<CCPACSRotorcraftModel*>(this), m_uidMgr);
+        return *m_wings;
+    }
+    
+    void CPACSRotorcraftModel::RemoveWings()
+    {
+        m_wings = boost::none;
+    }
+    
+    CCPACSRotors& CPACSRotorcraftModel::GetRotors(CreateIfNotExistsTag)
+    {
+        if (!m_rotors)
+            m_rotors = boost::in_place(reinterpret_cast<CCPACSRotorcraftModel*>(this), m_uidMgr);
+        return *m_rotors;
+    }
+    
+    void CPACSRotorcraftModel::RemoveRotors()
+    {
+        m_rotors = boost::none;
+    }
+    
+    CCPACSRotorBlades& CPACSRotorcraftModel::GetRotorBlades(CreateIfNotExistsTag)
+    {
+        if (!m_rotorBlades)
+            m_rotorBlades = boost::in_place(reinterpret_cast<CCPACSRotorcraftModel*>(this), m_uidMgr);
+        return *m_rotorBlades;
+    }
+    
+    void CPACSRotorcraftModel::RemoveRotorBlades()
+    {
+        m_rotorBlades = boost::none;
+    }
+    
+} // namespace generated
+} // namespace tigl

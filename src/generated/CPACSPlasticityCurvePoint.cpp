@@ -22,65 +22,69 @@
 
 namespace tigl
 {
-    namespace generated
+namespace generated
+{
+    CPACSPlasticityCurvePoint::CPACSPlasticityCurvePoint()
+        : m_tangentModulus(0)
+        , m_trueStress(0)
     {
-        CPACSPlasticityCurvePoint::CPACSPlasticityCurvePoint() :
-            m_tangentModulus(0), 
-            m_trueStress(0) {}
-        
-        CPACSPlasticityCurvePoint::~CPACSPlasticityCurvePoint() {}
-        
-        void CPACSPlasticityCurvePoint::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
-        {
-            // read element tangentModulus
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/tangentModulus")) {
-                m_tangentModulus = tixi::TixiGetElement<double>(tixiHandle, xpath + "/tangentModulus");
-            }
-            else {
-                LOG(ERROR) << "Required element tangentModulus is missing at xpath " << xpath;
-            }
-            
-            // read element trueStress
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/trueStress")) {
-                m_trueStress = tixi::TixiGetElement<double>(tixiHandle, xpath + "/trueStress");
-            }
-            else {
-                LOG(ERROR) << "Required element trueStress is missing at xpath " << xpath;
-            }
-            
+    }
+    
+    CPACSPlasticityCurvePoint::~CPACSPlasticityCurvePoint()
+    {
+    }
+    
+    void CPACSPlasticityCurvePoint::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
+    {
+        // read element tangentModulus
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/tangentModulus")) {
+            m_tangentModulus = tixi::TixiGetElement<double>(tixiHandle, xpath + "/tangentModulus");
+        }
+        else {
+            LOG(ERROR) << "Required element tangentModulus is missing at xpath " << xpath;
         }
         
-        void CPACSPlasticityCurvePoint::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
-        {
-            // write element tangentModulus
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/tangentModulus");
-            tixi::TixiSaveElement(tixiHandle, xpath + "/tangentModulus", m_tangentModulus);
-            
-            // write element trueStress
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/trueStress");
-            tixi::TixiSaveElement(tixiHandle, xpath + "/trueStress", m_trueStress);
-            
+        // read element trueStress
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/trueStress")) {
+            m_trueStress = tixi::TixiGetElement<double>(tixiHandle, xpath + "/trueStress");
         }
-        
-        const double& CPACSPlasticityCurvePoint::GetTangentModulus() const
-        {
-            return m_tangentModulus;
-        }
-        
-        void CPACSPlasticityCurvePoint::SetTangentModulus(const double& value)
-        {
-            m_tangentModulus = value;
-        }
-        
-        const double& CPACSPlasticityCurvePoint::GetTrueStress() const
-        {
-            return m_trueStress;
-        }
-        
-        void CPACSPlasticityCurvePoint::SetTrueStress(const double& value)
-        {
-            m_trueStress = value;
+        else {
+            LOG(ERROR) << "Required element trueStress is missing at xpath " << xpath;
         }
         
     }
-}
+    
+    void CPACSPlasticityCurvePoint::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
+    {
+        // write element tangentModulus
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/tangentModulus");
+        tixi::TixiSaveElement(tixiHandle, xpath + "/tangentModulus", m_tangentModulus);
+        
+        // write element trueStress
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/trueStress");
+        tixi::TixiSaveElement(tixiHandle, xpath + "/trueStress", m_trueStress);
+        
+    }
+    
+    const double& CPACSPlasticityCurvePoint::GetTangentModulus() const
+    {
+        return m_tangentModulus;
+    }
+    
+    void CPACSPlasticityCurvePoint::SetTangentModulus(const double& value)
+    {
+        m_tangentModulus = value;
+    }
+    
+    const double& CPACSPlasticityCurvePoint::GetTrueStress() const
+    {
+        return m_trueStress;
+    }
+    
+    void CPACSPlasticityCurvePoint::SetTrueStress(const double& value)
+    {
+        m_trueStress = value;
+    }
+    
+} // namespace generated
+} // namespace tigl

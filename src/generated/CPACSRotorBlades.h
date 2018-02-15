@@ -25,57 +25,57 @@
 
 namespace tigl
 {
-    class CTiglUIDManager;
-    class CCPACSWing;
-    class CCPACSRotorcraftModel;
+class CTiglUIDManager;
+class CCPACSWing;
+class CCPACSRotorcraftModel;
+
+namespace generated
+{
+    // This class is used in:
+    // CPACSRotorcraftModel
     
-    namespace generated
+    // generated from /xsd:schema/xsd:complexType[767]
+    class CPACSRotorBlades
     {
-        // This class is used in:
-        // CPACSRotorcraftModel
+    public:
+        TIGL_EXPORT CPACSRotorBlades(CCPACSRotorcraftModel* parent, CTiglUIDManager* uidMgr);
         
-        // generated from /xsd:schema/xsd:complexType[767]
-        class CPACSRotorBlades
-        {
-        public:
-            TIGL_EXPORT CPACSRotorBlades(CCPACSRotorcraftModel* parent, CTiglUIDManager* uidMgr);
-            
-            TIGL_EXPORT virtual ~CPACSRotorBlades();
-            
-            TIGL_EXPORT CCPACSRotorcraftModel* GetParent() const;
-            
-            TIGL_EXPORT CTiglUIDManager& GetUIDManager();
-            TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
-            
-            TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
-            TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
-            
-            TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSWing> >& GetRotorBlades() const;
-            TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSWing> >& GetRotorBlades();
-            
-            TIGL_EXPORT virtual CCPACSWing& AddRotorBlade();
-            TIGL_EXPORT virtual void RemoveRotorBlade(CCPACSWing& ref);
-            
-        protected:
-            CCPACSRotorcraftModel* m_parent;
-            
-            CTiglUIDManager* m_uidMgr;
-            
-            std::vector<unique_ptr<CCPACSWing> > m_rotorBlades;
-            
-        private:
-            #ifdef HAVE_CPP11
-            CPACSRotorBlades(const CPACSRotorBlades&) = delete;
-            CPACSRotorBlades& operator=(const CPACSRotorBlades&) = delete;
-            
-            CPACSRotorBlades(CPACSRotorBlades&&) = delete;
-            CPACSRotorBlades& operator=(CPACSRotorBlades&&) = delete;
-            #else
-            CPACSRotorBlades(const CPACSRotorBlades&);
-            CPACSRotorBlades& operator=(const CPACSRotorBlades&);
-            #endif
-        };
-    }
-    
-    // CPACSRotorBlades is customized, use type CCPACSRotorBlades directly
-}
+        TIGL_EXPORT virtual ~CPACSRotorBlades();
+        
+        TIGL_EXPORT CCPACSRotorcraftModel* GetParent() const;
+        
+        TIGL_EXPORT CTiglUIDManager& GetUIDManager();
+        TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
+        
+        TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+        TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
+        
+        TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSWing> >& GetRotorBlades() const;
+        TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSWing> >& GetRotorBlades();
+        
+        TIGL_EXPORT virtual CCPACSWing& AddRotorBlade();
+        TIGL_EXPORT virtual void RemoveRotorBlade(CCPACSWing& ref);
+        
+    protected:
+        CCPACSRotorcraftModel* m_parent;
+        
+        CTiglUIDManager* m_uidMgr;
+        
+        std::vector<unique_ptr<CCPACSWing> > m_rotorBlades;
+        
+    private:
+#ifdef HAVE_CPP11
+        CPACSRotorBlades(const CPACSRotorBlades&) = delete;
+        CPACSRotorBlades& operator=(const CPACSRotorBlades&) = delete;
+        
+        CPACSRotorBlades(CPACSRotorBlades&&) = delete;
+        CPACSRotorBlades& operator=(CPACSRotorBlades&&) = delete;
+#else
+        CPACSRotorBlades(const CPACSRotorBlades&);
+        CPACSRotorBlades& operator=(const CPACSRotorBlades&);
+#endif
+    };
+} // namespace generated
+
+// CPACSRotorBlades is customized, use type CCPACSRotorBlades directly
+} // namespace tigl

@@ -22,88 +22,92 @@
 
 namespace tigl
 {
-    namespace generated
+namespace generated
+{
+    CPACSCFDTool::CPACSCFDTool()
     {
-        CPACSCFDTool::CPACSCFDTool() {}
+    }
+    
+    CPACSCFDTool::~CPACSCFDTool()
+    {
+    }
+    
+    void CPACSCFDTool::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
+    {
+        // read element tool
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/tool")) {
+            m_tool.ReadCPACS(tixiHandle, xpath + "/tool");
+        }
+        else {
+            LOG(ERROR) << "Required element tool is missing at xpath " << xpath;
+        }
         
-        CPACSCFDTool::~CPACSCFDTool() {}
-        
-        void CPACSCFDTool::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
-        {
-            // read element tool
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/tool")) {
-                m_tool.ReadCPACS(tixiHandle, xpath + "/tool");
+        // read element aircraftModelUID
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/aircraftModelUID")) {
+            m_aircraftModelUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/aircraftModelUID");
+            if (m_aircraftModelUID.empty()) {
+                LOG(WARNING) << "Required element aircraftModelUID is empty at xpath " << xpath;
             }
-            else {
-                LOG(ERROR) << "Required element tool is missing at xpath " << xpath;
-            }
-            
-            // read element aircraftModelUID
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/aircraftModelUID")) {
-                m_aircraftModelUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/aircraftModelUID");
-                if (m_aircraftModelUID.empty()) {
-                    LOG(WARNING) << "Required element aircraftModelUID is empty at xpath " << xpath;
-                }
-            }
-            else {
-                LOG(ERROR) << "Required element aircraftModelUID is missing at xpath " << xpath;
-            }
-            
-            // read element farField
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/farField")) {
-                m_farField.ReadCPACS(tixiHandle, xpath + "/farField");
-            }
-            else {
-                LOG(ERROR) << "Required element farField is missing at xpath " << xpath;
-            }
-            
+        }
+        else {
+            LOG(ERROR) << "Required element aircraftModelUID is missing at xpath " << xpath;
         }
         
-        void CPACSCFDTool::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
-        {
-            // write element tool
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/tool");
-            m_tool.WriteCPACS(tixiHandle, xpath + "/tool");
-            
-            // write element aircraftModelUID
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/aircraftModelUID");
-            tixi::TixiSaveElement(tixiHandle, xpath + "/aircraftModelUID", m_aircraftModelUID);
-            
-            // write element farField
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/farField");
-            m_farField.WriteCPACS(tixiHandle, xpath + "/farField");
-            
+        // read element farField
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/farField")) {
+            m_farField.ReadCPACS(tixiHandle, xpath + "/farField");
         }
-        
-        const CPACSTool& CPACSCFDTool::GetTool() const
-        {
-            return m_tool;
-        }
-        
-        CPACSTool& CPACSCFDTool::GetTool()
-        {
-            return m_tool;
-        }
-        
-        const std::string& CPACSCFDTool::GetAircraftModelUID() const
-        {
-            return m_aircraftModelUID;
-        }
-        
-        void CPACSCFDTool::SetAircraftModelUID(const std::string& value)
-        {
-            m_aircraftModelUID = value;
-        }
-        
-        const CCPACSFarField& CPACSCFDTool::GetFarField() const
-        {
-            return m_farField;
-        }
-        
-        CCPACSFarField& CPACSCFDTool::GetFarField()
-        {
-            return m_farField;
+        else {
+            LOG(ERROR) << "Required element farField is missing at xpath " << xpath;
         }
         
     }
-}
+    
+    void CPACSCFDTool::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
+    {
+        // write element tool
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/tool");
+        m_tool.WriteCPACS(tixiHandle, xpath + "/tool");
+        
+        // write element aircraftModelUID
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/aircraftModelUID");
+        tixi::TixiSaveElement(tixiHandle, xpath + "/aircraftModelUID", m_aircraftModelUID);
+        
+        // write element farField
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/farField");
+        m_farField.WriteCPACS(tixiHandle, xpath + "/farField");
+        
+    }
+    
+    const CPACSTool& CPACSCFDTool::GetTool() const
+    {
+        return m_tool;
+    }
+    
+    CPACSTool& CPACSCFDTool::GetTool()
+    {
+        return m_tool;
+    }
+    
+    const std::string& CPACSCFDTool::GetAircraftModelUID() const
+    {
+        return m_aircraftModelUID;
+    }
+    
+    void CPACSCFDTool::SetAircraftModelUID(const std::string& value)
+    {
+        m_aircraftModelUID = value;
+    }
+    
+    const CCPACSFarField& CPACSCFDTool::GetFarField() const
+    {
+        return m_farField;
+    }
+    
+    CCPACSFarField& CPACSCFDTool::GetFarField()
+    {
+        return m_farField;
+    }
+    
+} // namespace generated
+} // namespace tigl

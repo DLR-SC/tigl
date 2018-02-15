@@ -23,131 +23,133 @@
 
 namespace tigl
 {
-    namespace generated
+namespace generated
+{
+    CPACSPointXYZ::CPACSPointXYZ(CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+        , m_x(0)
+        , m_y(0)
+        , m_z(0)
     {
-        CPACSPointXYZ::CPACSPointXYZ(CTiglUIDManager* uidMgr) :
-            m_uidMgr(uidMgr), 
-            m_x(0), 
-            m_y(0), 
-            m_z(0) {}
-        
-        CPACSPointXYZ::~CPACSPointXYZ()
-        {
-            if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
-        }
-        
-        CTiglUIDManager& CPACSPointXYZ::GetUIDManager()
-        {
-            return *m_uidMgr;
-        }
-        
-        const CTiglUIDManager& CPACSPointXYZ::GetUIDManager() const
-        {
-            return *m_uidMgr;
-        }
-        
-        void CPACSPointXYZ::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
-        {
-            // read attribute uID
-            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
-                m_uID = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
-                if (m_uID.empty()) {
-                    LOG(WARNING) << "Required attribute uID is empty at xpath " << xpath;
-                }
+    }
+    
+    CPACSPointXYZ::~CPACSPointXYZ()
+    {
+        if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
+    }
+    
+    CTiglUIDManager& CPACSPointXYZ::GetUIDManager()
+    {
+        return *m_uidMgr;
+    }
+    
+    const CTiglUIDManager& CPACSPointXYZ::GetUIDManager() const
+    {
+        return *m_uidMgr;
+    }
+    
+    void CPACSPointXYZ::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
+    {
+        // read attribute uID
+        if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+            m_uID = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
+            if (m_uID.empty()) {
+                LOG(WARNING) << "Required attribute uID is empty at xpath " << xpath;
             }
-            else {
-                LOG(ERROR) << "Required attribute uID is missing at xpath " << xpath;
-            }
-            
-            // read element x
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/x")) {
-                m_x = tixi::TixiGetElement<double>(tixiHandle, xpath + "/x");
-            }
-            else {
-                LOG(ERROR) << "Required element x is missing at xpath " << xpath;
-            }
-            
-            // read element y
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/y")) {
-                m_y = tixi::TixiGetElement<double>(tixiHandle, xpath + "/y");
-            }
-            else {
-                LOG(ERROR) << "Required element y is missing at xpath " << xpath;
-            }
-            
-            // read element z
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/z")) {
-                m_z = tixi::TixiGetElement<double>(tixiHandle, xpath + "/z");
-            }
-            else {
-                LOG(ERROR) << "Required element z is missing at xpath " << xpath;
-            }
-            
-            if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
+        }
+        else {
+            LOG(ERROR) << "Required attribute uID is missing at xpath " << xpath;
         }
         
-        void CPACSPointXYZ::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
-        {
-            // write attribute uID
-            tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
-            
-            // write element x
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/x");
-            tixi::TixiSaveElement(tixiHandle, xpath + "/x", m_x);
-            
-            // write element y
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/y");
-            tixi::TixiSaveElement(tixiHandle, xpath + "/y", m_y);
-            
-            // write element z
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/z");
-            tixi::TixiSaveElement(tixiHandle, xpath + "/z", m_z);
-            
+        // read element x
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/x")) {
+            m_x = tixi::TixiGetElement<double>(tixiHandle, xpath + "/x");
+        }
+        else {
+            LOG(ERROR) << "Required element x is missing at xpath " << xpath;
         }
         
-        const std::string& CPACSPointXYZ::GetUID() const
-        {
-            return m_uID;
+        // read element y
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/y")) {
+            m_y = tixi::TixiGetElement<double>(tixiHandle, xpath + "/y");
+        }
+        else {
+            LOG(ERROR) << "Required element y is missing at xpath " << xpath;
         }
         
-        void CPACSPointXYZ::SetUID(const std::string& value)
-        {
-            if (m_uidMgr) {
-                m_uidMgr->TryUnregisterObject(m_uID);
-                m_uidMgr->RegisterObject(value, *this);
-            }
-            m_uID = value;
+        // read element z
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/z")) {
+            m_z = tixi::TixiGetElement<double>(tixiHandle, xpath + "/z");
+        }
+        else {
+            LOG(ERROR) << "Required element z is missing at xpath " << xpath;
         }
         
-        const double& CPACSPointXYZ::GetX() const
-        {
-            return m_x;
-        }
+        if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
+    }
+    
+    void CPACSPointXYZ::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
+    {
+        // write attribute uID
+        tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
         
-        void CPACSPointXYZ::SetX(const double& value)
-        {
-            m_x = value;
-        }
+        // write element x
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/x");
+        tixi::TixiSaveElement(tixiHandle, xpath + "/x", m_x);
         
-        const double& CPACSPointXYZ::GetY() const
-        {
-            return m_y;
-        }
+        // write element y
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/y");
+        tixi::TixiSaveElement(tixiHandle, xpath + "/y", m_y);
         
-        void CPACSPointXYZ::SetY(const double& value)
-        {
-            m_y = value;
-        }
-        
-        const double& CPACSPointXYZ::GetZ() const
-        {
-            return m_z;
-        }
-        
-        void CPACSPointXYZ::SetZ(const double& value)
-        {
-            m_z = value;
-        }
+        // write element z
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/z");
+        tixi::TixiSaveElement(tixiHandle, xpath + "/z", m_z);
         
     }
-}
+    
+    const std::string& CPACSPointXYZ::GetUID() const
+    {
+        return m_uID;
+    }
+    
+    void CPACSPointXYZ::SetUID(const std::string& value)
+    {
+        if (m_uidMgr) {
+            m_uidMgr->TryUnregisterObject(m_uID);
+            m_uidMgr->RegisterObject(value, *this);
+        }
+        m_uID = value;
+    }
+    
+    const double& CPACSPointXYZ::GetX() const
+    {
+        return m_x;
+    }
+    
+    void CPACSPointXYZ::SetX(const double& value)
+    {
+        m_x = value;
+    }
+    
+    const double& CPACSPointXYZ::GetY() const
+    {
+        return m_y;
+    }
+    
+    void CPACSPointXYZ::SetY(const double& value)
+    {
+        m_y = value;
+    }
+    
+    const double& CPACSPointXYZ::GetZ() const
+    {
+        return m_z;
+    }
+    
+    void CPACSPointXYZ::SetZ(const double& value)
+    {
+        m_z = value;
+    }
+    
+} // namespace generated
+} // namespace tigl

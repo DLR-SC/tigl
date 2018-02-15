@@ -25,59 +25,59 @@
 
 namespace tigl
 {
-    class CTiglUIDManager;
+class CTiglUIDManager;
+
+namespace generated
+{
+    class CPACSProfileGeometry;
     
-    namespace generated
+    // This class is used in:
+    // CPACSProfiles
+    
+    // generated from /xsd:schema/xsd:complexType[375]
+    class CPACSFuselageProfiles
     {
-        class CPACSProfileGeometry;
+    public:
+        TIGL_EXPORT CPACSFuselageProfiles(CTiglUIDManager* uidMgr);
+        TIGL_EXPORT virtual ~CPACSFuselageProfiles();
         
-        // This class is used in:
-        // CPACSProfiles
+        TIGL_EXPORT CTiglUIDManager& GetUIDManager();
+        TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
         
-        // generated from /xsd:schema/xsd:complexType[375]
-        class CPACSFuselageProfiles
-        {
-        public:
-            TIGL_EXPORT CPACSFuselageProfiles(CTiglUIDManager* uidMgr);
-            TIGL_EXPORT virtual ~CPACSFuselageProfiles();
-            
-            TIGL_EXPORT CTiglUIDManager& GetUIDManager();
-            TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
-            
-            TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
-            TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
-            
-            TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSProfileGeometry> >& GetFuselageProfiles() const;
-            TIGL_EXPORT virtual std::vector<unique_ptr<CPACSProfileGeometry> >& GetFuselageProfiles();
-            
-            TIGL_EXPORT virtual CPACSProfileGeometry& AddFuselageProfile();
-            TIGL_EXPORT virtual void RemoveFuselageProfile(CPACSProfileGeometry& ref);
-            
-        protected:
-            CTiglUIDManager* m_uidMgr;
-            
-            std::vector<unique_ptr<CPACSProfileGeometry> > m_fuselageProfiles;
-            
-        private:
-            #ifdef HAVE_CPP11
-            CPACSFuselageProfiles(const CPACSFuselageProfiles&) = delete;
-            CPACSFuselageProfiles& operator=(const CPACSFuselageProfiles&) = delete;
-            
-            CPACSFuselageProfiles(CPACSFuselageProfiles&&) = delete;
-            CPACSFuselageProfiles& operator=(CPACSFuselageProfiles&&) = delete;
-            #else
-            CPACSFuselageProfiles(const CPACSFuselageProfiles&);
-            CPACSFuselageProfiles& operator=(const CPACSFuselageProfiles&);
-            #endif
-        };
-    }
-    
-    // CPACSFuselageProfiles is customized, use type CCPACSFuselageProfiles directly
-    
-    // Aliases in tigl namespace
-    #ifdef HAVE_CPP11
-    using CCPACSProfileGeometry = generated::CPACSProfileGeometry;
-    #else
-    typedef generated::CPACSProfileGeometry CCPACSProfileGeometry;
-    #endif
-}
+        TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+        TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
+        
+        TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSProfileGeometry> >& GetFuselageProfiles() const;
+        TIGL_EXPORT virtual std::vector<unique_ptr<CPACSProfileGeometry> >& GetFuselageProfiles();
+        
+        TIGL_EXPORT virtual CPACSProfileGeometry& AddFuselageProfile();
+        TIGL_EXPORT virtual void RemoveFuselageProfile(CPACSProfileGeometry& ref);
+        
+    protected:
+        CTiglUIDManager* m_uidMgr;
+        
+        std::vector<unique_ptr<CPACSProfileGeometry> > m_fuselageProfiles;
+        
+    private:
+#ifdef HAVE_CPP11
+        CPACSFuselageProfiles(const CPACSFuselageProfiles&) = delete;
+        CPACSFuselageProfiles& operator=(const CPACSFuselageProfiles&) = delete;
+        
+        CPACSFuselageProfiles(CPACSFuselageProfiles&&) = delete;
+        CPACSFuselageProfiles& operator=(CPACSFuselageProfiles&&) = delete;
+#else
+        CPACSFuselageProfiles(const CPACSFuselageProfiles&);
+        CPACSFuselageProfiles& operator=(const CPACSFuselageProfiles&);
+#endif
+    };
+} // namespace generated
+
+// CPACSFuselageProfiles is customized, use type CCPACSFuselageProfiles directly
+
+// Aliases in tigl namespace
+#ifdef HAVE_CPP11
+using CCPACSProfileGeometry = generated::CPACSProfileGeometry;
+#else
+typedef generated::CPACSProfileGeometry CCPACSProfileGeometry;
+#endif
+} // namespace tigl

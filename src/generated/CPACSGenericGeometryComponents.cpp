@@ -26,74 +26,76 @@
 
 namespace tigl
 {
-    namespace generated
+namespace generated
+{
+    CPACSGenericGeometryComponents::CPACSGenericGeometryComponents(CCPACSAircraftModel* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
     {
-        CPACSGenericGeometryComponents::CPACSGenericGeometryComponents(CCPACSAircraftModel* parent, CTiglUIDManager* uidMgr) :
-            m_uidMgr(uidMgr)
-        {
-            //assert(parent != NULL);
-            m_parent = parent;
-        }
-        
-        CPACSGenericGeometryComponents::~CPACSGenericGeometryComponents() {}
-        
-        CCPACSAircraftModel* CPACSGenericGeometryComponents::GetParent() const
-        {
-            return m_parent;
-        }
-        
-        CTiglUIDManager& CPACSGenericGeometryComponents::GetUIDManager()
-        {
-            return *m_uidMgr;
-        }
-        
-        const CTiglUIDManager& CPACSGenericGeometryComponents::GetUIDManager() const
-        {
-            return *m_uidMgr;
-        }
-        
-        void CPACSGenericGeometryComponents::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
-        {
-            // read element genericGeometryComponent
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/genericGeometryComponent")) {
-                tixi::TixiReadElements(tixiHandle, xpath + "/genericGeometryComponent", m_genericGeometryComponents, reinterpret_cast<CCPACSExternalObjects*>(this), m_uidMgr);
-            }
-            
-        }
-        
-        void CPACSGenericGeometryComponents::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
-        {
-            // write element genericGeometryComponent
-            tixi::TixiSaveElements(tixiHandle, xpath + "/genericGeometryComponent", m_genericGeometryComponents);
-            
-        }
-        
-        const std::vector<unique_ptr<CCPACSExternalObject> >& CPACSGenericGeometryComponents::GetGenericGeometryComponents() const
-        {
-            return m_genericGeometryComponents;
-        }
-        
-        std::vector<unique_ptr<CCPACSExternalObject> >& CPACSGenericGeometryComponents::GetGenericGeometryComponents()
-        {
-            return m_genericGeometryComponents;
-        }
-        
-        CCPACSExternalObject& CPACSGenericGeometryComponents::AddGenericGeometryComponent()
-        {
-            m_genericGeometryComponents.push_back(make_unique<CCPACSExternalObject>(reinterpret_cast<CCPACSExternalObjects*>(this), m_uidMgr));
-            return *m_genericGeometryComponents.back();
-        }
-        
-        void CPACSGenericGeometryComponents::RemoveGenericGeometryComponent(CCPACSExternalObject& ref)
-        {
-            for (std::size_t i = 0; i < m_genericGeometryComponents.size(); i++) {
-                if (m_genericGeometryComponents[i].get() == &ref) {
-                    m_genericGeometryComponents.erase(m_genericGeometryComponents.begin() + i);
-                    return;
-                }
-            }
-            throw CTiglError("Element not found");
+        //assert(parent != NULL);
+        m_parent = parent;
+    }
+    
+    CPACSGenericGeometryComponents::~CPACSGenericGeometryComponents()
+    {
+    }
+    
+    CCPACSAircraftModel* CPACSGenericGeometryComponents::GetParent() const
+    {
+        return m_parent;
+    }
+    
+    CTiglUIDManager& CPACSGenericGeometryComponents::GetUIDManager()
+    {
+        return *m_uidMgr;
+    }
+    
+    const CTiglUIDManager& CPACSGenericGeometryComponents::GetUIDManager() const
+    {
+        return *m_uidMgr;
+    }
+    
+    void CPACSGenericGeometryComponents::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
+    {
+        // read element genericGeometryComponent
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/genericGeometryComponent")) {
+            tixi::TixiReadElements(tixiHandle, xpath + "/genericGeometryComponent", m_genericGeometryComponents, reinterpret_cast<CCPACSExternalObjects*>(this), m_uidMgr);
         }
         
     }
-}
+    
+    void CPACSGenericGeometryComponents::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
+    {
+        // write element genericGeometryComponent
+        tixi::TixiSaveElements(tixiHandle, xpath + "/genericGeometryComponent", m_genericGeometryComponents);
+        
+    }
+    
+    const std::vector<unique_ptr<CCPACSExternalObject> >& CPACSGenericGeometryComponents::GetGenericGeometryComponents() const
+    {
+        return m_genericGeometryComponents;
+    }
+    
+    std::vector<unique_ptr<CCPACSExternalObject> >& CPACSGenericGeometryComponents::GetGenericGeometryComponents()
+    {
+        return m_genericGeometryComponents;
+    }
+    
+    CCPACSExternalObject& CPACSGenericGeometryComponents::AddGenericGeometryComponent()
+    {
+        m_genericGeometryComponents.push_back(make_unique<CCPACSExternalObject>(reinterpret_cast<CCPACSExternalObjects*>(this), m_uidMgr));
+        return *m_genericGeometryComponents.back();
+    }
+    
+    void CPACSGenericGeometryComponents::RemoveGenericGeometryComponent(CCPACSExternalObject& ref)
+    {
+        for (std::size_t i = 0; i < m_genericGeometryComponents.size(); i++) {
+            if (m_genericGeometryComponents[i].get() == &ref) {
+                m_genericGeometryComponents.erase(m_genericGeometryComponents.begin() + i);
+                return;
+            }
+        }
+        throw CTiglError("Element not found");
+    }
+    
+} // namespace generated
+} // namespace tigl

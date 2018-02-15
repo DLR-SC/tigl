@@ -23,64 +23,64 @@
 
 namespace tigl
 {
-    class CCPACSWingRibsDefinition;
+class CCPACSWingRibsDefinition;
+
+namespace generated
+{
+    // This class is used in:
+    // CPACSWingRibsDefinition
     
-    namespace generated
+    // generated from /xsd:schema/xsd:complexType[946]
+    class CPACSWingRibExplicitPositioning
     {
-        // This class is used in:
-        // CPACSWingRibsDefinition
+    public:
+        TIGL_EXPORT CPACSWingRibExplicitPositioning(CCPACSWingRibsDefinition* parent);
         
-        // generated from /xsd:schema/xsd:complexType[946]
-        class CPACSWingRibExplicitPositioning
-        {
-        public:
-            TIGL_EXPORT CPACSWingRibExplicitPositioning(CCPACSWingRibsDefinition* parent);
-            
-            TIGL_EXPORT virtual ~CPACSWingRibExplicitPositioning();
-            
-            TIGL_EXPORT CCPACSWingRibsDefinition* GetParent() const;
-            
-            TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
-            TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
-            
-            TIGL_EXPORT virtual const std::string& GetStartReference() const;
-            TIGL_EXPORT virtual void SetStartReference(const std::string& value);
-            
-            TIGL_EXPORT virtual const double& GetEtaStart() const;
-            TIGL_EXPORT virtual void SetEtaStart(const double& value);
-            
-            TIGL_EXPORT virtual const std::string& GetEndReference() const;
-            TIGL_EXPORT virtual void SetEndReference(const std::string& value);
-            
-            TIGL_EXPORT virtual const double& GetEtaEnd() const;
-            TIGL_EXPORT virtual void SetEtaEnd(const double& value);
-            
-        protected:
-            CCPACSWingRibsDefinition* m_parent;
-            
-            std::string m_startReference;
-            double      m_etaStart;
-            std::string m_endReference;
-            double      m_etaEnd;
-            
-        private:
-            #ifdef HAVE_CPP11
-            CPACSWingRibExplicitPositioning(const CPACSWingRibExplicitPositioning&) = delete;
-            CPACSWingRibExplicitPositioning& operator=(const CPACSWingRibExplicitPositioning&) = delete;
-            
-            CPACSWingRibExplicitPositioning(CPACSWingRibExplicitPositioning&&) = delete;
-            CPACSWingRibExplicitPositioning& operator=(CPACSWingRibExplicitPositioning&&) = delete;
-            #else
-            CPACSWingRibExplicitPositioning(const CPACSWingRibExplicitPositioning&);
-            CPACSWingRibExplicitPositioning& operator=(const CPACSWingRibExplicitPositioning&);
-            #endif
-        };
-    }
-    
-    // Aliases in tigl namespace
-    #ifdef HAVE_CPP11
-    using CCPACSWingRibExplicitPositioning = generated::CPACSWingRibExplicitPositioning;
-    #else
-    typedef generated::CPACSWingRibExplicitPositioning CCPACSWingRibExplicitPositioning;
-    #endif
-}
+        TIGL_EXPORT virtual ~CPACSWingRibExplicitPositioning();
+        
+        TIGL_EXPORT CCPACSWingRibsDefinition* GetParent() const;
+        
+        TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+        TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
+        
+        TIGL_EXPORT virtual const std::string& GetStartReference() const;
+        TIGL_EXPORT virtual void SetStartReference(const std::string& value);
+        
+        TIGL_EXPORT virtual const double& GetEtaStart() const;
+        TIGL_EXPORT virtual void SetEtaStart(const double& value);
+        
+        TIGL_EXPORT virtual const std::string& GetEndReference() const;
+        TIGL_EXPORT virtual void SetEndReference(const std::string& value);
+        
+        TIGL_EXPORT virtual const double& GetEtaEnd() const;
+        TIGL_EXPORT virtual void SetEtaEnd(const double& value);
+        
+    protected:
+        CCPACSWingRibsDefinition* m_parent;
+        
+        std::string m_startReference;
+        double      m_etaStart;
+        std::string m_endReference;
+        double      m_etaEnd;
+        
+    private:
+#ifdef HAVE_CPP11
+        CPACSWingRibExplicitPositioning(const CPACSWingRibExplicitPositioning&) = delete;
+        CPACSWingRibExplicitPositioning& operator=(const CPACSWingRibExplicitPositioning&) = delete;
+        
+        CPACSWingRibExplicitPositioning(CPACSWingRibExplicitPositioning&&) = delete;
+        CPACSWingRibExplicitPositioning& operator=(CPACSWingRibExplicitPositioning&&) = delete;
+#else
+        CPACSWingRibExplicitPositioning(const CPACSWingRibExplicitPositioning&);
+        CPACSWingRibExplicitPositioning& operator=(const CPACSWingRibExplicitPositioning&);
+#endif
+    };
+} // namespace generated
+
+// Aliases in tigl namespace
+#ifdef HAVE_CPP11
+using CCPACSWingRibExplicitPositioning = generated::CPACSWingRibExplicitPositioning;
+#else
+typedef generated::CPACSWingRibExplicitPositioning CCPACSWingRibExplicitPositioning;
+#endif
+} // namespace tigl

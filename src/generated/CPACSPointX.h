@@ -25,57 +25,57 @@
 
 namespace tigl
 {
-    class CTiglUIDManager;
+class CTiglUIDManager;
+
+namespace generated
+{
+    // This class is used in:
+    // CPACSWingRibCell
+    // CPACSWingRibCrossSection
     
-    namespace generated
+    // generated from /xsd:schema/xsd:complexType[718]
+    class CPACSPointX
     {
-        // This class is used in:
-        // CPACSWingRibCell
-        // CPACSWingRibCrossSection
+    public:
+        TIGL_EXPORT CPACSPointX(CTiglUIDManager* uidMgr);
+        TIGL_EXPORT virtual ~CPACSPointX();
         
-        // generated from /xsd:schema/xsd:complexType[718]
-        class CPACSPointX
-        {
-        public:
-            TIGL_EXPORT CPACSPointX(CTiglUIDManager* uidMgr);
-            TIGL_EXPORT virtual ~CPACSPointX();
-            
-            TIGL_EXPORT CTiglUIDManager& GetUIDManager();
-            TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
-            
-            TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
-            TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
-            
-            TIGL_EXPORT virtual const std::string& GetUID() const;
-            TIGL_EXPORT virtual void SetUID(const std::string& value);
-            
-            TIGL_EXPORT virtual const double& GetX() const;
-            TIGL_EXPORT virtual void SetX(const double& value);
-            
-        protected:
-            CTiglUIDManager* m_uidMgr;
-            
-            std::string m_uID;
-            double      m_x;
-            
-        private:
-            #ifdef HAVE_CPP11
-            CPACSPointX(const CPACSPointX&) = delete;
-            CPACSPointX& operator=(const CPACSPointX&) = delete;
-            
-            CPACSPointX(CPACSPointX&&) = delete;
-            CPACSPointX& operator=(CPACSPointX&&) = delete;
-            #else
-            CPACSPointX(const CPACSPointX&);
-            CPACSPointX& operator=(const CPACSPointX&);
-            #endif
-        };
-    }
-    
-    // Aliases in tigl namespace
-    #ifdef HAVE_CPP11
-    using CCPACSPointX = generated::CPACSPointX;
-    #else
-    typedef generated::CPACSPointX CCPACSPointX;
-    #endif
-}
+        TIGL_EXPORT CTiglUIDManager& GetUIDManager();
+        TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
+        
+        TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+        TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
+        
+        TIGL_EXPORT virtual const std::string& GetUID() const;
+        TIGL_EXPORT virtual void SetUID(const std::string& value);
+        
+        TIGL_EXPORT virtual const double& GetX() const;
+        TIGL_EXPORT virtual void SetX(const double& value);
+        
+    protected:
+        CTiglUIDManager* m_uidMgr;
+        
+        std::string m_uID;
+        double      m_x;
+        
+    private:
+#ifdef HAVE_CPP11
+        CPACSPointX(const CPACSPointX&) = delete;
+        CPACSPointX& operator=(const CPACSPointX&) = delete;
+        
+        CPACSPointX(CPACSPointX&&) = delete;
+        CPACSPointX& operator=(CPACSPointX&&) = delete;
+#else
+        CPACSPointX(const CPACSPointX&);
+        CPACSPointX& operator=(const CPACSPointX&);
+#endif
+    };
+} // namespace generated
+
+// Aliases in tigl namespace
+#ifdef HAVE_CPP11
+using CCPACSPointX = generated::CPACSPointX;
+#else
+typedef generated::CPACSPointX CCPACSPointX;
+#endif
+} // namespace tigl

@@ -26,74 +26,76 @@
 
 namespace tigl
 {
-    namespace generated
+namespace generated
+{
+    CPACSSparSegments::CPACSSparSegments(CCPACSWingSpars* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
     {
-        CPACSSparSegments::CPACSSparSegments(CCPACSWingSpars* parent, CTiglUIDManager* uidMgr) :
-            m_uidMgr(uidMgr)
-        {
-            //assert(parent != NULL);
-            m_parent = parent;
-        }
-        
-        CPACSSparSegments::~CPACSSparSegments() {}
-        
-        CCPACSWingSpars* CPACSSparSegments::GetParent() const
-        {
-            return m_parent;
-        }
-        
-        CTiglUIDManager& CPACSSparSegments::GetUIDManager()
-        {
-            return *m_uidMgr;
-        }
-        
-        const CTiglUIDManager& CPACSSparSegments::GetUIDManager() const
-        {
-            return *m_uidMgr;
-        }
-        
-        void CPACSSparSegments::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
-        {
-            // read element sparSegment
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/sparSegment")) {
-                tixi::TixiReadElements(tixiHandle, xpath + "/sparSegment", m_sparSegments, reinterpret_cast<CCPACSWingSparSegments*>(this), m_uidMgr);
-            }
-            
-        }
-        
-        void CPACSSparSegments::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
-        {
-            // write element sparSegment
-            tixi::TixiSaveElements(tixiHandle, xpath + "/sparSegment", m_sparSegments);
-            
-        }
-        
-        const std::vector<unique_ptr<CCPACSWingSparSegment> >& CPACSSparSegments::GetSparSegments() const
-        {
-            return m_sparSegments;
-        }
-        
-        std::vector<unique_ptr<CCPACSWingSparSegment> >& CPACSSparSegments::GetSparSegments()
-        {
-            return m_sparSegments;
-        }
-        
-        CCPACSWingSparSegment& CPACSSparSegments::AddSparSegment()
-        {
-            m_sparSegments.push_back(make_unique<CCPACSWingSparSegment>(reinterpret_cast<CCPACSWingSparSegments*>(this), m_uidMgr));
-            return *m_sparSegments.back();
-        }
-        
-        void CPACSSparSegments::RemoveSparSegment(CCPACSWingSparSegment& ref)
-        {
-            for (std::size_t i = 0; i < m_sparSegments.size(); i++) {
-                if (m_sparSegments[i].get() == &ref) {
-                    m_sparSegments.erase(m_sparSegments.begin() + i);
-                    return;
-                }
-            }
-            throw CTiglError("Element not found");
+        //assert(parent != NULL);
+        m_parent = parent;
+    }
+    
+    CPACSSparSegments::~CPACSSparSegments()
+    {
+    }
+    
+    CCPACSWingSpars* CPACSSparSegments::GetParent() const
+    {
+        return m_parent;
+    }
+    
+    CTiglUIDManager& CPACSSparSegments::GetUIDManager()
+    {
+        return *m_uidMgr;
+    }
+    
+    const CTiglUIDManager& CPACSSparSegments::GetUIDManager() const
+    {
+        return *m_uidMgr;
+    }
+    
+    void CPACSSparSegments::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
+    {
+        // read element sparSegment
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/sparSegment")) {
+            tixi::TixiReadElements(tixiHandle, xpath + "/sparSegment", m_sparSegments, reinterpret_cast<CCPACSWingSparSegments*>(this), m_uidMgr);
         }
         
     }
-}
+    
+    void CPACSSparSegments::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
+    {
+        // write element sparSegment
+        tixi::TixiSaveElements(tixiHandle, xpath + "/sparSegment", m_sparSegments);
+        
+    }
+    
+    const std::vector<unique_ptr<CCPACSWingSparSegment> >& CPACSSparSegments::GetSparSegments() const
+    {
+        return m_sparSegments;
+    }
+    
+    std::vector<unique_ptr<CCPACSWingSparSegment> >& CPACSSparSegments::GetSparSegments()
+    {
+        return m_sparSegments;
+    }
+    
+    CCPACSWingSparSegment& CPACSSparSegments::AddSparSegment()
+    {
+        m_sparSegments.push_back(make_unique<CCPACSWingSparSegment>(reinterpret_cast<CCPACSWingSparSegments*>(this), m_uidMgr));
+        return *m_sparSegments.back();
+    }
+    
+    void CPACSSparSegments::RemoveSparSegment(CCPACSWingSparSegment& ref)
+    {
+        for (std::size_t i = 0; i < m_sparSegments.size(); i++) {
+            if (m_sparSegments[i].get() == &ref) {
+                m_sparSegments.erase(m_sparSegments.begin() + i);
+                return;
+            }
+        }
+        throw CTiglError("Element not found");
+    }
+    
+} // namespace generated
+} // namespace tigl

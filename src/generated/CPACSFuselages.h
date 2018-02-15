@@ -27,77 +27,77 @@
 
 namespace tigl
 {
-    class CTiglUIDManager;
-    class CCPACSFuselage;
-    class CCPACSAircraftModel;
-    class CCPACSRotorcraftModel;
+class CTiglUIDManager;
+class CCPACSFuselage;
+class CCPACSAircraftModel;
+class CCPACSRotorcraftModel;
+
+namespace generated
+{
+    // This class is used in:
+    // CPACSAircraftModel
+    // CPACSRotorcraftModel
     
-    namespace generated
+    // generated from /xsd:schema/xsd:complexType[387]
+    class CPACSFuselages
     {
-        // This class is used in:
-        // CPACSAircraftModel
-        // CPACSRotorcraftModel
+    public:
+        TIGL_EXPORT CPACSFuselages(CCPACSAircraftModel* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSFuselages(CCPACSRotorcraftModel* parent, CTiglUIDManager* uidMgr);
         
-        // generated from /xsd:schema/xsd:complexType[387]
-        class CPACSFuselages
+        TIGL_EXPORT virtual ~CPACSFuselages();
+        
+        template<typename P>
+        bool IsParent() const
         {
-        public:
-            TIGL_EXPORT CPACSFuselages(CCPACSAircraftModel* parent, CTiglUIDManager* uidMgr);
-            TIGL_EXPORT CPACSFuselages(CCPACSRotorcraftModel* parent, CTiglUIDManager* uidMgr);
-            
-            TIGL_EXPORT virtual ~CPACSFuselages();
-            
-            template<typename P>
-            bool IsParent() const
-            {
-                return m_parentType != NULL && *m_parentType == typeid(P);
+            return m_parentType != NULL && *m_parentType == typeid(P);
+        }
+        
+        template<typename P>
+        P* GetParent() const
+        {
+#ifdef HAVE_STDIS_SAME
+            static_assert(std::is_same<P, CCPACSAircraftModel>::value || std::is_same<P, CCPACSRotorcraftModel>::value, "template argument for P is not a parent class of CPACSFuselages");
+#endif
+            if (!IsParent<P>()) {
+                throw CTiglError("bad parent");
             }
-            
-            template<typename P>
-            P* GetParent() const
-            {
-                #ifdef HAVE_STDIS_SAME
-                static_assert(std::is_same<P, CCPACSAircraftModel>::value || std::is_same<P, CCPACSRotorcraftModel>::value, "template argument for P is not a parent class of CPACSFuselages");
-                #endif
-                if (!IsParent<P>()) {
-                    throw CTiglError("bad parent");
-                }
-                return static_cast<P*>(m_parent);
-            }
-            
-            TIGL_EXPORT CTiglUIDManager& GetUIDManager();
-            TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
-            
-            TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
-            TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
-            
-            TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSFuselage> >& GetFuselages() const;
-            TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSFuselage> >& GetFuselages();
-            
-            TIGL_EXPORT virtual CCPACSFuselage& AddFuselage();
-            TIGL_EXPORT virtual void RemoveFuselage(CCPACSFuselage& ref);
-            
-        protected:
-            void* m_parent;
-            const std::type_info* m_parentType;
-            
-            CTiglUIDManager* m_uidMgr;
-            
-            std::vector<unique_ptr<CCPACSFuselage> > m_fuselages;
-            
-        private:
-            #ifdef HAVE_CPP11
-            CPACSFuselages(const CPACSFuselages&) = delete;
-            CPACSFuselages& operator=(const CPACSFuselages&) = delete;
-            
-            CPACSFuselages(CPACSFuselages&&) = delete;
-            CPACSFuselages& operator=(CPACSFuselages&&) = delete;
-            #else
-            CPACSFuselages(const CPACSFuselages&);
-            CPACSFuselages& operator=(const CPACSFuselages&);
-            #endif
-        };
-    }
-    
-    // CPACSFuselages is customized, use type CCPACSFuselages directly
-}
+            return static_cast<P*>(m_parent);
+        }
+        
+        TIGL_EXPORT CTiglUIDManager& GetUIDManager();
+        TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
+        
+        TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+        TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
+        
+        TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSFuselage> >& GetFuselages() const;
+        TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSFuselage> >& GetFuselages();
+        
+        TIGL_EXPORT virtual CCPACSFuselage& AddFuselage();
+        TIGL_EXPORT virtual void RemoveFuselage(CCPACSFuselage& ref);
+        
+    protected:
+        void* m_parent;
+        const std::type_info* m_parentType;
+        
+        CTiglUIDManager* m_uidMgr;
+        
+        std::vector<unique_ptr<CCPACSFuselage> > m_fuselages;
+        
+    private:
+#ifdef HAVE_CPP11
+        CPACSFuselages(const CPACSFuselages&) = delete;
+        CPACSFuselages& operator=(const CPACSFuselages&) = delete;
+        
+        CPACSFuselages(CPACSFuselages&&) = delete;
+        CPACSFuselages& operator=(CPACSFuselages&&) = delete;
+#else
+        CPACSFuselages(const CPACSFuselages&);
+        CPACSFuselages& operator=(const CPACSFuselages&);
+#endif
+    };
+} // namespace generated
+
+// CPACSFuselages is customized, use type CCPACSFuselages directly
+} // namespace tigl

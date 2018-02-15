@@ -27,75 +27,75 @@
 
 namespace tigl
 {
-    class CTiglUIDManager;
+class CTiglUIDManager;
+
+namespace generated
+{
+    class CPACSCompositeLayer;
     
-    namespace generated
+    // This class is used in:
+    // CPACSComposites
+    
+    // generated from /xsd:schema/xsd:complexType[145]
+    class CPACSComposite
     {
-        class CPACSCompositeLayer;
+    public:
+        TIGL_EXPORT CPACSComposite(CTiglUIDManager* uidMgr);
+        TIGL_EXPORT virtual ~CPACSComposite();
         
-        // This class is used in:
-        // CPACSComposites
+        TIGL_EXPORT CTiglUIDManager& GetUIDManager();
+        TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
         
-        // generated from /xsd:schema/xsd:complexType[145]
-        class CPACSComposite
-        {
-        public:
-            TIGL_EXPORT CPACSComposite(CTiglUIDManager* uidMgr);
-            TIGL_EXPORT virtual ~CPACSComposite();
-            
-            TIGL_EXPORT CTiglUIDManager& GetUIDManager();
-            TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
-            
-            TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
-            TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
-            
-            TIGL_EXPORT virtual const std::string& GetUID() const;
-            TIGL_EXPORT virtual void SetUID(const std::string& value);
-            
-            TIGL_EXPORT virtual const std::string& GetName() const;
-            TIGL_EXPORT virtual void SetName(const std::string& value);
-            
-            TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
-            TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
-            
-            TIGL_EXPORT virtual const boost::optional<double>& GetOffset() const;
-            TIGL_EXPORT virtual void SetOffset(const boost::optional<double>& value);
-            
-            TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSCompositeLayer> >& GetCompositeLayers() const;
-            TIGL_EXPORT virtual std::vector<unique_ptr<CPACSCompositeLayer> >& GetCompositeLayers();
-            
-            TIGL_EXPORT virtual CPACSCompositeLayer& AddCompositeLayer();
-            TIGL_EXPORT virtual void RemoveCompositeLayer(CPACSCompositeLayer& ref);
-            
-        protected:
-            CTiglUIDManager* m_uidMgr;
-            
-            std::string                                   m_uID;
-            std::string                                   m_name;
-            boost::optional<std::string>                  m_description;
-            boost::optional<double>                       m_offset;
-            std::vector<unique_ptr<CPACSCompositeLayer> > m_compositeLayers;
-            
-        private:
-            #ifdef HAVE_CPP11
-            CPACSComposite(const CPACSComposite&) = delete;
-            CPACSComposite& operator=(const CPACSComposite&) = delete;
-            
-            CPACSComposite(CPACSComposite&&) = delete;
-            CPACSComposite& operator=(CPACSComposite&&) = delete;
-            #else
-            CPACSComposite(const CPACSComposite&);
-            CPACSComposite& operator=(const CPACSComposite&);
-            #endif
-        };
-    }
-    
-    // Aliases in tigl namespace
-    #ifdef HAVE_CPP11
-    using CCPACSComposite = generated::CPACSComposite;
-    using CCPACSCompositeLayer = generated::CPACSCompositeLayer;
-    #else
-    typedef generated::CPACSComposite CCPACSComposite;
-    typedef generated::CPACSCompositeLayer CCPACSCompositeLayer;
-    #endif
-}
+        TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+        TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
+        
+        TIGL_EXPORT virtual const std::string& GetUID() const;
+        TIGL_EXPORT virtual void SetUID(const std::string& value);
+        
+        TIGL_EXPORT virtual const std::string& GetName() const;
+        TIGL_EXPORT virtual void SetName(const std::string& value);
+        
+        TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
+        TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
+        
+        TIGL_EXPORT virtual const boost::optional<double>& GetOffset() const;
+        TIGL_EXPORT virtual void SetOffset(const boost::optional<double>& value);
+        
+        TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSCompositeLayer> >& GetCompositeLayers() const;
+        TIGL_EXPORT virtual std::vector<unique_ptr<CPACSCompositeLayer> >& GetCompositeLayers();
+        
+        TIGL_EXPORT virtual CPACSCompositeLayer& AddCompositeLayer();
+        TIGL_EXPORT virtual void RemoveCompositeLayer(CPACSCompositeLayer& ref);
+        
+    protected:
+        CTiglUIDManager* m_uidMgr;
+        
+        std::string                                   m_uID;
+        std::string                                   m_name;
+        boost::optional<std::string>                  m_description;
+        boost::optional<double>                       m_offset;
+        std::vector<unique_ptr<CPACSCompositeLayer> > m_compositeLayers;
+        
+    private:
+#ifdef HAVE_CPP11
+        CPACSComposite(const CPACSComposite&) = delete;
+        CPACSComposite& operator=(const CPACSComposite&) = delete;
+        
+        CPACSComposite(CPACSComposite&&) = delete;
+        CPACSComposite& operator=(CPACSComposite&&) = delete;
+#else
+        CPACSComposite(const CPACSComposite&);
+        CPACSComposite& operator=(const CPACSComposite&);
+#endif
+    };
+} // namespace generated
+
+// Aliases in tigl namespace
+#ifdef HAVE_CPP11
+using CCPACSComposite = generated::CPACSComposite;
+using CCPACSCompositeLayer = generated::CPACSCompositeLayer;
+#else
+typedef generated::CPACSComposite CCPACSComposite;
+typedef generated::CPACSCompositeLayer CCPACSCompositeLayer;
+#endif
+} // namespace tigl

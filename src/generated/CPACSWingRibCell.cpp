@@ -23,201 +23,203 @@
 
 namespace tigl
 {
-    namespace generated
+namespace generated
+{
+    CPACSWingRibCell::CPACSWingRibCell(CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+        , m_ribRotation(m_uidMgr)
     {
-        CPACSWingRibCell::CPACSWingRibCell(CTiglUIDManager* uidMgr) :
-            m_uidMgr(uidMgr), 
-            m_ribRotation(m_uidMgr) {}
-        
-        CPACSWingRibCell::~CPACSWingRibCell()
-        {
-            if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
-        }
-        
-        CTiglUIDManager& CPACSWingRibCell::GetUIDManager()
-        {
-            return *m_uidMgr;
-        }
-        
-        const CTiglUIDManager& CPACSWingRibCell::GetUIDManager() const
-        {
-            return *m_uidMgr;
-        }
-        
-        void CPACSWingRibCell::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
-        {
-            // read attribute uID
-            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
-                m_uID = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
-                if (m_uID.empty()) {
-                    LOG(WARNING) << "Required attribute uID is empty at xpath " << xpath;
-                }
+    }
+    
+    CPACSWingRibCell::~CPACSWingRibCell()
+    {
+        if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
+    }
+    
+    CTiglUIDManager& CPACSWingRibCell::GetUIDManager()
+    {
+        return *m_uidMgr;
+    }
+    
+    const CTiglUIDManager& CPACSWingRibCell::GetUIDManager() const
+    {
+        return *m_uidMgr;
+    }
+    
+    void CPACSWingRibCell::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
+    {
+        // read attribute uID
+        if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+            m_uID = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
+            if (m_uID.empty()) {
+                LOG(WARNING) << "Required attribute uID is empty at xpath " << xpath;
             }
-            else {
-                LOG(ERROR) << "Required attribute uID is missing at xpath " << xpath;
+        }
+        else {
+            LOG(ERROR) << "Required attribute uID is missing at xpath " << xpath;
+        }
+        
+        // read element fromRib
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/fromRib")) {
+            m_fromRib = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/fromRib");
+            if (m_fromRib.empty()) {
+                LOG(WARNING) << "Required element fromRib is empty at xpath " << xpath;
             }
-            
-            // read element fromRib
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/fromRib")) {
-                m_fromRib = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/fromRib");
-                if (m_fromRib.empty()) {
-                    LOG(WARNING) << "Required element fromRib is empty at xpath " << xpath;
-                }
+        }
+        else {
+            LOG(ERROR) << "Required element fromRib is missing at xpath " << xpath;
+        }
+        
+        // read element toRib
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/toRib")) {
+            m_toRib = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/toRib");
+            if (m_toRib.empty()) {
+                LOG(WARNING) << "Required element toRib is empty at xpath " << xpath;
             }
-            else {
-                LOG(ERROR) << "Required element fromRib is missing at xpath " << xpath;
-            }
-            
-            // read element toRib
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/toRib")) {
-                m_toRib = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/toRib");
-                if (m_toRib.empty()) {
-                    LOG(WARNING) << "Required element toRib is empty at xpath " << xpath;
-                }
-            }
-            else {
-                LOG(ERROR) << "Required element toRib is missing at xpath " << xpath;
-            }
-            
-            // read element ribRotation
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/ribRotation")) {
-                m_ribRotation.ReadCPACS(tixiHandle, xpath + "/ribRotation");
-            }
-            else {
-                LOG(ERROR) << "Required element ribRotation is missing at xpath " << xpath;
-            }
-            
-            // read element material
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/material")) {
-                m_material.ReadCPACS(tixiHandle, xpath + "/material");
-            }
-            else {
-                LOG(ERROR) << "Required element material is missing at xpath " << xpath;
-            }
-            
-            // read element upperCap
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/upperCap")) {
-                m_upperCap.ReadCPACS(tixiHandle, xpath + "/upperCap");
-            }
-            else {
-                LOG(ERROR) << "Required element upperCap is missing at xpath " << xpath;
-            }
-            
-            // read element lowerCap
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/lowerCap")) {
-                m_lowerCap.ReadCPACS(tixiHandle, xpath + "/lowerCap");
-            }
-            else {
-                LOG(ERROR) << "Required element lowerCap is missing at xpath " << xpath;
-            }
-            
-            if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
+        }
+        else {
+            LOG(ERROR) << "Required element toRib is missing at xpath " << xpath;
         }
         
-        void CPACSWingRibCell::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
-        {
-            // write attribute uID
-            tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
-            
-            // write element fromRib
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/fromRib");
-            tixi::TixiSaveElement(tixiHandle, xpath + "/fromRib", m_fromRib);
-            
-            // write element toRib
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/toRib");
-            tixi::TixiSaveElement(tixiHandle, xpath + "/toRib", m_toRib);
-            
-            // write element ribRotation
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ribRotation");
-            m_ribRotation.WriteCPACS(tixiHandle, xpath + "/ribRotation");
-            
-            // write element material
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/material");
-            m_material.WriteCPACS(tixiHandle, xpath + "/material");
-            
-            // write element upperCap
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/upperCap");
-            m_upperCap.WriteCPACS(tixiHandle, xpath + "/upperCap");
-            
-            // write element lowerCap
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/lowerCap");
-            m_lowerCap.WriteCPACS(tixiHandle, xpath + "/lowerCap");
-            
+        // read element ribRotation
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/ribRotation")) {
+            m_ribRotation.ReadCPACS(tixiHandle, xpath + "/ribRotation");
+        }
+        else {
+            LOG(ERROR) << "Required element ribRotation is missing at xpath " << xpath;
         }
         
-        const std::string& CPACSWingRibCell::GetUID() const
-        {
-            return m_uID;
+        // read element material
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/material")) {
+            m_material.ReadCPACS(tixiHandle, xpath + "/material");
+        }
+        else {
+            LOG(ERROR) << "Required element material is missing at xpath " << xpath;
         }
         
-        void CPACSWingRibCell::SetUID(const std::string& value)
-        {
-            if (m_uidMgr) {
-                m_uidMgr->TryUnregisterObject(m_uID);
-                m_uidMgr->RegisterObject(value, *this);
-            }
-            m_uID = value;
+        // read element upperCap
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/upperCap")) {
+            m_upperCap.ReadCPACS(tixiHandle, xpath + "/upperCap");
+        }
+        else {
+            LOG(ERROR) << "Required element upperCap is missing at xpath " << xpath;
         }
         
-        const std::string& CPACSWingRibCell::GetFromRib() const
-        {
-            return m_fromRib;
+        // read element lowerCap
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/lowerCap")) {
+            m_lowerCap.ReadCPACS(tixiHandle, xpath + "/lowerCap");
+        }
+        else {
+            LOG(ERROR) << "Required element lowerCap is missing at xpath " << xpath;
         }
         
-        void CPACSWingRibCell::SetFromRib(const std::string& value)
-        {
-            m_fromRib = value;
-        }
+        if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
+    }
+    
+    void CPACSWingRibCell::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
+    {
+        // write attribute uID
+        tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
         
-        const std::string& CPACSWingRibCell::GetToRib() const
-        {
-            return m_toRib;
-        }
+        // write element fromRib
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/fromRib");
+        tixi::TixiSaveElement(tixiHandle, xpath + "/fromRib", m_fromRib);
         
-        void CPACSWingRibCell::SetToRib(const std::string& value)
-        {
-            m_toRib = value;
-        }
+        // write element toRib
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/toRib");
+        tixi::TixiSaveElement(tixiHandle, xpath + "/toRib", m_toRib);
         
-        const CPACSPointX& CPACSWingRibCell::GetRibRotation() const
-        {
-            return m_ribRotation;
-        }
+        // write element ribRotation
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ribRotation");
+        m_ribRotation.WriteCPACS(tixiHandle, xpath + "/ribRotation");
         
-        CPACSPointX& CPACSWingRibCell::GetRibRotation()
-        {
-            return m_ribRotation;
-        }
+        // write element material
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/material");
+        m_material.WriteCPACS(tixiHandle, xpath + "/material");
         
-        const CCPACSMaterialDefinition& CPACSWingRibCell::GetMaterial() const
-        {
-            return m_material;
-        }
+        // write element upperCap
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/upperCap");
+        m_upperCap.WriteCPACS(tixiHandle, xpath + "/upperCap");
         
-        CCPACSMaterialDefinition& CPACSWingRibCell::GetMaterial()
-        {
-            return m_material;
-        }
-        
-        const CPACSCap& CPACSWingRibCell::GetUpperCap() const
-        {
-            return m_upperCap;
-        }
-        
-        CPACSCap& CPACSWingRibCell::GetUpperCap()
-        {
-            return m_upperCap;
-        }
-        
-        const CPACSCap& CPACSWingRibCell::GetLowerCap() const
-        {
-            return m_lowerCap;
-        }
-        
-        CPACSCap& CPACSWingRibCell::GetLowerCap()
-        {
-            return m_lowerCap;
-        }
+        // write element lowerCap
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/lowerCap");
+        m_lowerCap.WriteCPACS(tixiHandle, xpath + "/lowerCap");
         
     }
-}
+    
+    const std::string& CPACSWingRibCell::GetUID() const
+    {
+        return m_uID;
+    }
+    
+    void CPACSWingRibCell::SetUID(const std::string& value)
+    {
+        if (m_uidMgr) {
+            m_uidMgr->TryUnregisterObject(m_uID);
+            m_uidMgr->RegisterObject(value, *this);
+        }
+        m_uID = value;
+    }
+    
+    const std::string& CPACSWingRibCell::GetFromRib() const
+    {
+        return m_fromRib;
+    }
+    
+    void CPACSWingRibCell::SetFromRib(const std::string& value)
+    {
+        m_fromRib = value;
+    }
+    
+    const std::string& CPACSWingRibCell::GetToRib() const
+    {
+        return m_toRib;
+    }
+    
+    void CPACSWingRibCell::SetToRib(const std::string& value)
+    {
+        m_toRib = value;
+    }
+    
+    const CPACSPointX& CPACSWingRibCell::GetRibRotation() const
+    {
+        return m_ribRotation;
+    }
+    
+    CPACSPointX& CPACSWingRibCell::GetRibRotation()
+    {
+        return m_ribRotation;
+    }
+    
+    const CCPACSMaterialDefinition& CPACSWingRibCell::GetMaterial() const
+    {
+        return m_material;
+    }
+    
+    CCPACSMaterialDefinition& CPACSWingRibCell::GetMaterial()
+    {
+        return m_material;
+    }
+    
+    const CPACSCap& CPACSWingRibCell::GetUpperCap() const
+    {
+        return m_upperCap;
+    }
+    
+    CPACSCap& CPACSWingRibCell::GetUpperCap()
+    {
+        return m_upperCap;
+    }
+    
+    const CPACSCap& CPACSWingRibCell::GetLowerCap() const
+    {
+        return m_lowerCap;
+    }
+    
+    CPACSCap& CPACSWingRibCell::GetLowerCap()
+    {
+        return m_lowerCap;
+    }
+    
+} // namespace generated
+} // namespace tigl

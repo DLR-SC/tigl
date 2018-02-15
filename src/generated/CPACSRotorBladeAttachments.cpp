@@ -26,74 +26,76 @@
 
 namespace tigl
 {
-    namespace generated
+namespace generated
+{
+    CPACSRotorBladeAttachments::CPACSRotorBladeAttachments(CCPACSRotorHub* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
     {
-        CPACSRotorBladeAttachments::CPACSRotorBladeAttachments(CCPACSRotorHub* parent, CTiglUIDManager* uidMgr) :
-            m_uidMgr(uidMgr)
-        {
-            //assert(parent != NULL);
-            m_parent = parent;
-        }
-        
-        CPACSRotorBladeAttachments::~CPACSRotorBladeAttachments() {}
-        
-        CCPACSRotorHub* CPACSRotorBladeAttachments::GetParent() const
-        {
-            return m_parent;
-        }
-        
-        CTiglUIDManager& CPACSRotorBladeAttachments::GetUIDManager()
-        {
-            return *m_uidMgr;
-        }
-        
-        const CTiglUIDManager& CPACSRotorBladeAttachments::GetUIDManager() const
-        {
-            return *m_uidMgr;
-        }
-        
-        void CPACSRotorBladeAttachments::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
-        {
-            // read element rotorBladeAttachment
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/rotorBladeAttachment")) {
-                tixi::TixiReadElements(tixiHandle, xpath + "/rotorBladeAttachment", m_rotorBladeAttachments, reinterpret_cast<CCPACSRotorBladeAttachments*>(this), m_uidMgr);
-            }
-            
-        }
-        
-        void CPACSRotorBladeAttachments::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
-        {
-            // write element rotorBladeAttachment
-            tixi::TixiSaveElements(tixiHandle, xpath + "/rotorBladeAttachment", m_rotorBladeAttachments);
-            
-        }
-        
-        const std::vector<unique_ptr<CCPACSRotorBladeAttachment> >& CPACSRotorBladeAttachments::GetRotorBladeAttachments() const
-        {
-            return m_rotorBladeAttachments;
-        }
-        
-        std::vector<unique_ptr<CCPACSRotorBladeAttachment> >& CPACSRotorBladeAttachments::GetRotorBladeAttachments()
-        {
-            return m_rotorBladeAttachments;
-        }
-        
-        CCPACSRotorBladeAttachment& CPACSRotorBladeAttachments::AddRotorBladeAttachment()
-        {
-            m_rotorBladeAttachments.push_back(make_unique<CCPACSRotorBladeAttachment>(reinterpret_cast<CCPACSRotorBladeAttachments*>(this), m_uidMgr));
-            return *m_rotorBladeAttachments.back();
-        }
-        
-        void CPACSRotorBladeAttachments::RemoveRotorBladeAttachment(CCPACSRotorBladeAttachment& ref)
-        {
-            for (std::size_t i = 0; i < m_rotorBladeAttachments.size(); i++) {
-                if (m_rotorBladeAttachments[i].get() == &ref) {
-                    m_rotorBladeAttachments.erase(m_rotorBladeAttachments.begin() + i);
-                    return;
-                }
-            }
-            throw CTiglError("Element not found");
+        //assert(parent != NULL);
+        m_parent = parent;
+    }
+    
+    CPACSRotorBladeAttachments::~CPACSRotorBladeAttachments()
+    {
+    }
+    
+    CCPACSRotorHub* CPACSRotorBladeAttachments::GetParent() const
+    {
+        return m_parent;
+    }
+    
+    CTiglUIDManager& CPACSRotorBladeAttachments::GetUIDManager()
+    {
+        return *m_uidMgr;
+    }
+    
+    const CTiglUIDManager& CPACSRotorBladeAttachments::GetUIDManager() const
+    {
+        return *m_uidMgr;
+    }
+    
+    void CPACSRotorBladeAttachments::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
+    {
+        // read element rotorBladeAttachment
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/rotorBladeAttachment")) {
+            tixi::TixiReadElements(tixiHandle, xpath + "/rotorBladeAttachment", m_rotorBladeAttachments, reinterpret_cast<CCPACSRotorBladeAttachments*>(this), m_uidMgr);
         }
         
     }
-}
+    
+    void CPACSRotorBladeAttachments::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
+    {
+        // write element rotorBladeAttachment
+        tixi::TixiSaveElements(tixiHandle, xpath + "/rotorBladeAttachment", m_rotorBladeAttachments);
+        
+    }
+    
+    const std::vector<unique_ptr<CCPACSRotorBladeAttachment> >& CPACSRotorBladeAttachments::GetRotorBladeAttachments() const
+    {
+        return m_rotorBladeAttachments;
+    }
+    
+    std::vector<unique_ptr<CCPACSRotorBladeAttachment> >& CPACSRotorBladeAttachments::GetRotorBladeAttachments()
+    {
+        return m_rotorBladeAttachments;
+    }
+    
+    CCPACSRotorBladeAttachment& CPACSRotorBladeAttachments::AddRotorBladeAttachment()
+    {
+        m_rotorBladeAttachments.push_back(make_unique<CCPACSRotorBladeAttachment>(reinterpret_cast<CCPACSRotorBladeAttachments*>(this), m_uidMgr));
+        return *m_rotorBladeAttachments.back();
+    }
+    
+    void CPACSRotorBladeAttachments::RemoveRotorBladeAttachment(CCPACSRotorBladeAttachment& ref)
+    {
+        for (std::size_t i = 0; i < m_rotorBladeAttachments.size(); i++) {
+            if (m_rotorBladeAttachments[i].get() == &ref) {
+                m_rotorBladeAttachments.erase(m_rotorBladeAttachments.begin() + i);
+                return;
+            }
+        }
+        throw CTiglError("Element not found");
+    }
+    
+} // namespace generated
+} // namespace tigl

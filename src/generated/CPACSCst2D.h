@@ -26,68 +26,68 @@
 
 namespace tigl
 {
-    namespace generated
-    {
-        // This class is used in:
-        // CPACSProfileGeometry
-        
-        // generated from /xsd:schema/xsd:complexType[236]
-        class CPACSCst2D
-        {
-        public:
-            TIGL_EXPORT CPACSCst2D();
-            TIGL_EXPORT virtual ~CPACSCst2D();
-            
-            TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
-            TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
-            
-            TIGL_EXPORT virtual const CCPACSStringVector& GetPsi() const;
-            TIGL_EXPORT virtual CCPACSStringVector& GetPsi();
-            
-            TIGL_EXPORT virtual const double& GetUpperN1() const;
-            TIGL_EXPORT virtual void SetUpperN1(const double& value);
-            
-            TIGL_EXPORT virtual const double& GetUpperN2() const;
-            TIGL_EXPORT virtual void SetUpperN2(const double& value);
-            
-            TIGL_EXPORT virtual const CCPACSStringVector& GetUpperB() const;
-            TIGL_EXPORT virtual CCPACSStringVector& GetUpperB();
-            
-            TIGL_EXPORT virtual const double& GetLowerN1() const;
-            TIGL_EXPORT virtual void SetLowerN1(const double& value);
-            
-            TIGL_EXPORT virtual const double& GetLowerN2() const;
-            TIGL_EXPORT virtual void SetLowerN2(const double& value);
-            
-            TIGL_EXPORT virtual const CCPACSStringVector& GetLowerB() const;
-            TIGL_EXPORT virtual CCPACSStringVector& GetLowerB();
-            
-            TIGL_EXPORT virtual const boost::optional<double>& GetTrailingEdgeThickness() const;
-            TIGL_EXPORT virtual void SetTrailingEdgeThickness(const boost::optional<double>& value);
-            
-        protected:
-            CCPACSStringVector      m_psi;
-            double                  m_upperN1;
-            double                  m_upperN2;
-            CCPACSStringVector      m_upperB;
-            double                  m_lowerN1;
-            double                  m_lowerN2;
-            CCPACSStringVector      m_lowerB;
-            boost::optional<double> m_trailingEdgeThickness;
-            
-        private:
-            #ifdef HAVE_CPP11
-            CPACSCst2D(const CPACSCst2D&) = delete;
-            CPACSCst2D& operator=(const CPACSCst2D&) = delete;
-            
-            CPACSCst2D(CPACSCst2D&&) = delete;
-            CPACSCst2D& operator=(CPACSCst2D&&) = delete;
-            #else
-            CPACSCst2D(const CPACSCst2D&);
-            CPACSCst2D& operator=(const CPACSCst2D&);
-            #endif
-        };
-    }
+namespace generated
+{
+    // This class is used in:
+    // CPACSProfileGeometry
     
-    // CPACSCst2D is customized, use type CCPACSWingProfileCST directly
-}
+    // generated from /xsd:schema/xsd:complexType[236]
+    class CPACSCst2D
+    {
+    public:
+        TIGL_EXPORT CPACSCst2D();
+        TIGL_EXPORT virtual ~CPACSCst2D();
+        
+        TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+        TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
+        
+        TIGL_EXPORT virtual const CCPACSStringVector& GetPsi() const;
+        TIGL_EXPORT virtual CCPACSStringVector& GetPsi();
+        
+        TIGL_EXPORT virtual const double& GetUpperN1() const;
+        TIGL_EXPORT virtual void SetUpperN1(const double& value);
+        
+        TIGL_EXPORT virtual const double& GetUpperN2() const;
+        TIGL_EXPORT virtual void SetUpperN2(const double& value);
+        
+        TIGL_EXPORT virtual const CCPACSStringVector& GetUpperB() const;
+        TIGL_EXPORT virtual CCPACSStringVector& GetUpperB();
+        
+        TIGL_EXPORT virtual const double& GetLowerN1() const;
+        TIGL_EXPORT virtual void SetLowerN1(const double& value);
+        
+        TIGL_EXPORT virtual const double& GetLowerN2() const;
+        TIGL_EXPORT virtual void SetLowerN2(const double& value);
+        
+        TIGL_EXPORT virtual const CCPACSStringVector& GetLowerB() const;
+        TIGL_EXPORT virtual CCPACSStringVector& GetLowerB();
+        
+        TIGL_EXPORT virtual const boost::optional<double>& GetTrailingEdgeThickness() const;
+        TIGL_EXPORT virtual void SetTrailingEdgeThickness(const boost::optional<double>& value);
+        
+    protected:
+        CCPACSStringVector      m_psi;
+        double                  m_upperN1;
+        double                  m_upperN2;
+        CCPACSStringVector      m_upperB;
+        double                  m_lowerN1;
+        double                  m_lowerN2;
+        CCPACSStringVector      m_lowerB;
+        boost::optional<double> m_trailingEdgeThickness;
+        
+    private:
+#ifdef HAVE_CPP11
+        CPACSCst2D(const CPACSCst2D&) = delete;
+        CPACSCst2D& operator=(const CPACSCst2D&) = delete;
+        
+        CPACSCst2D(CPACSCst2D&&) = delete;
+        CPACSCst2D& operator=(CPACSCst2D&&) = delete;
+#else
+        CPACSCst2D(const CPACSCst2D&);
+        CPACSCst2D& operator=(const CPACSCst2D&);
+#endif
+    };
+} // namespace generated
+
+// CPACSCst2D is customized, use type CCPACSWingProfileCST directly
+} // namespace tigl

@@ -25,57 +25,57 @@
 
 namespace tigl
 {
-    class CTiglUIDManager;
-    class CCPACSWingSectionElement;
-    class CCPACSWingSection;
+class CTiglUIDManager;
+class CCPACSWingSectionElement;
+class CCPACSWingSection;
+
+namespace generated
+{
+    // This class is used in:
+    // CPACSWingSection
     
-    namespace generated
+    // generated from /xsd:schema/xsd:complexType[930]
+    class CPACSWingElements
     {
-        // This class is used in:
-        // CPACSWingSection
+    public:
+        TIGL_EXPORT CPACSWingElements(CCPACSWingSection* parent, CTiglUIDManager* uidMgr);
         
-        // generated from /xsd:schema/xsd:complexType[930]
-        class CPACSWingElements
-        {
-        public:
-            TIGL_EXPORT CPACSWingElements(CCPACSWingSection* parent, CTiglUIDManager* uidMgr);
-            
-            TIGL_EXPORT virtual ~CPACSWingElements();
-            
-            TIGL_EXPORT CCPACSWingSection* GetParent() const;
-            
-            TIGL_EXPORT CTiglUIDManager& GetUIDManager();
-            TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
-            
-            TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
-            TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
-            
-            TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSWingSectionElement> >& GetElements() const;
-            TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSWingSectionElement> >& GetElements();
-            
-            TIGL_EXPORT virtual CCPACSWingSectionElement& AddElement();
-            TIGL_EXPORT virtual void RemoveElement(CCPACSWingSectionElement& ref);
-            
-        protected:
-            CCPACSWingSection* m_parent;
-            
-            CTiglUIDManager* m_uidMgr;
-            
-            std::vector<unique_ptr<CCPACSWingSectionElement> > m_elements;
-            
-        private:
-            #ifdef HAVE_CPP11
-            CPACSWingElements(const CPACSWingElements&) = delete;
-            CPACSWingElements& operator=(const CPACSWingElements&) = delete;
-            
-            CPACSWingElements(CPACSWingElements&&) = delete;
-            CPACSWingElements& operator=(CPACSWingElements&&) = delete;
-            #else
-            CPACSWingElements(const CPACSWingElements&);
-            CPACSWingElements& operator=(const CPACSWingElements&);
-            #endif
-        };
-    }
-    
-    // CPACSWingElements is customized, use type CCPACSWingSectionElements directly
-}
+        TIGL_EXPORT virtual ~CPACSWingElements();
+        
+        TIGL_EXPORT CCPACSWingSection* GetParent() const;
+        
+        TIGL_EXPORT CTiglUIDManager& GetUIDManager();
+        TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
+        
+        TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+        TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
+        
+        TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSWingSectionElement> >& GetElements() const;
+        TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSWingSectionElement> >& GetElements();
+        
+        TIGL_EXPORT virtual CCPACSWingSectionElement& AddElement();
+        TIGL_EXPORT virtual void RemoveElement(CCPACSWingSectionElement& ref);
+        
+    protected:
+        CCPACSWingSection* m_parent;
+        
+        CTiglUIDManager* m_uidMgr;
+        
+        std::vector<unique_ptr<CCPACSWingSectionElement> > m_elements;
+        
+    private:
+#ifdef HAVE_CPP11
+        CPACSWingElements(const CPACSWingElements&) = delete;
+        CPACSWingElements& operator=(const CPACSWingElements&) = delete;
+        
+        CPACSWingElements(CPACSWingElements&&) = delete;
+        CPACSWingElements& operator=(CPACSWingElements&&) = delete;
+#else
+        CPACSWingElements(const CPACSWingElements&);
+        CPACSWingElements& operator=(const CPACSWingElements&);
+#endif
+    };
+} // namespace generated
+
+// CPACSWingElements is customized, use type CCPACSWingSectionElements directly
+} // namespace tigl

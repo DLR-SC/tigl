@@ -26,69 +26,69 @@
 
 namespace tigl
 {
-    class CTiglUIDManager;
-    class CCPACSWingSectionElements;
+class CTiglUIDManager;
+class CCPACSWingSectionElements;
+
+namespace generated
+{
+    // This class is used in:
+    // CPACSWingElements
     
-    namespace generated
+    // generated from /xsd:schema/xsd:complexType[929]
+    class CPACSWingElement
     {
-        // This class is used in:
-        // CPACSWingElements
+    public:
+        TIGL_EXPORT CPACSWingElement(CCPACSWingSectionElements* parent, CTiglUIDManager* uidMgr);
         
-        // generated from /xsd:schema/xsd:complexType[929]
-        class CPACSWingElement
-        {
-        public:
-            TIGL_EXPORT CPACSWingElement(CCPACSWingSectionElements* parent, CTiglUIDManager* uidMgr);
-            
-            TIGL_EXPORT virtual ~CPACSWingElement();
-            
-            TIGL_EXPORT CCPACSWingSectionElements* GetParent() const;
-            
-            TIGL_EXPORT CTiglUIDManager& GetUIDManager();
-            TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
-            
-            TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
-            TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
-            
-            TIGL_EXPORT virtual const std::string& GetUID() const;
-            TIGL_EXPORT virtual void SetUID(const std::string& value);
-            
-            TIGL_EXPORT virtual const std::string& GetName() const;
-            TIGL_EXPORT virtual void SetName(const std::string& value);
-            
-            TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
-            TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
-            
-            TIGL_EXPORT virtual const std::string& GetAirfoilUID() const;
-            TIGL_EXPORT virtual void SetAirfoilUID(const std::string& value);
-            
-            TIGL_EXPORT virtual const CCPACSTransformation& GetTransformation() const;
-            TIGL_EXPORT virtual CCPACSTransformation& GetTransformation();
-            
-        protected:
-            CCPACSWingSectionElements* m_parent;
-            
-            CTiglUIDManager* m_uidMgr;
-            
-            std::string                  m_uID;
-            std::string                  m_name;
-            boost::optional<std::string> m_description;
-            std::string                  m_airfoilUID;
-            CCPACSTransformation         m_transformation;
-            
-        private:
-            #ifdef HAVE_CPP11
-            CPACSWingElement(const CPACSWingElement&) = delete;
-            CPACSWingElement& operator=(const CPACSWingElement&) = delete;
-            
-            CPACSWingElement(CPACSWingElement&&) = delete;
-            CPACSWingElement& operator=(CPACSWingElement&&) = delete;
-            #else
-            CPACSWingElement(const CPACSWingElement&);
-            CPACSWingElement& operator=(const CPACSWingElement&);
-            #endif
-        };
-    }
-    
-    // CPACSWingElement is customized, use type CCPACSWingSectionElement directly
-}
+        TIGL_EXPORT virtual ~CPACSWingElement();
+        
+        TIGL_EXPORT CCPACSWingSectionElements* GetParent() const;
+        
+        TIGL_EXPORT CTiglUIDManager& GetUIDManager();
+        TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
+        
+        TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+        TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
+        
+        TIGL_EXPORT virtual const std::string& GetUID() const;
+        TIGL_EXPORT virtual void SetUID(const std::string& value);
+        
+        TIGL_EXPORT virtual const std::string& GetName() const;
+        TIGL_EXPORT virtual void SetName(const std::string& value);
+        
+        TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
+        TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
+        
+        TIGL_EXPORT virtual const std::string& GetAirfoilUID() const;
+        TIGL_EXPORT virtual void SetAirfoilUID(const std::string& value);
+        
+        TIGL_EXPORT virtual const CCPACSTransformation& GetTransformation() const;
+        TIGL_EXPORT virtual CCPACSTransformation& GetTransformation();
+        
+    protected:
+        CCPACSWingSectionElements* m_parent;
+        
+        CTiglUIDManager* m_uidMgr;
+        
+        std::string                  m_uID;
+        std::string                  m_name;
+        boost::optional<std::string> m_description;
+        std::string                  m_airfoilUID;
+        CCPACSTransformation         m_transformation;
+        
+    private:
+#ifdef HAVE_CPP11
+        CPACSWingElement(const CPACSWingElement&) = delete;
+        CPACSWingElement& operator=(const CPACSWingElement&) = delete;
+        
+        CPACSWingElement(CPACSWingElement&&) = delete;
+        CPACSWingElement& operator=(CPACSWingElement&&) = delete;
+#else
+        CPACSWingElement(const CPACSWingElement&);
+        CPACSWingElement& operator=(const CPACSWingElement&);
+#endif
+    };
+} // namespace generated
+
+// CPACSWingElement is customized, use type CCPACSWingSectionElement directly
+} // namespace tigl

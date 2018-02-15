@@ -23,49 +23,49 @@
 
 namespace tigl
 {
-    namespace generated
-    {
-        // This class is used in:
-        // CPACSPostFailure
-        
-        // generated from /xsd:schema/xsd:complexType[705]
-        class CPACSPlasticityCurvePoint
-        {
-        public:
-            TIGL_EXPORT CPACSPlasticityCurvePoint();
-            TIGL_EXPORT virtual ~CPACSPlasticityCurvePoint();
-            
-            TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
-            TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
-            
-            TIGL_EXPORT virtual const double& GetTangentModulus() const;
-            TIGL_EXPORT virtual void SetTangentModulus(const double& value);
-            
-            TIGL_EXPORT virtual const double& GetTrueStress() const;
-            TIGL_EXPORT virtual void SetTrueStress(const double& value);
-            
-        protected:
-            double m_tangentModulus;
-            double m_trueStress;
-            
-        private:
-            #ifdef HAVE_CPP11
-            CPACSPlasticityCurvePoint(const CPACSPlasticityCurvePoint&) = delete;
-            CPACSPlasticityCurvePoint& operator=(const CPACSPlasticityCurvePoint&) = delete;
-            
-            CPACSPlasticityCurvePoint(CPACSPlasticityCurvePoint&&) = delete;
-            CPACSPlasticityCurvePoint& operator=(CPACSPlasticityCurvePoint&&) = delete;
-            #else
-            CPACSPlasticityCurvePoint(const CPACSPlasticityCurvePoint&);
-            CPACSPlasticityCurvePoint& operator=(const CPACSPlasticityCurvePoint&);
-            #endif
-        };
-    }
+namespace generated
+{
+    // This class is used in:
+    // CPACSPostFailure
     
-    // Aliases in tigl namespace
-    #ifdef HAVE_CPP11
-    using CCPACSPlasticityCurvePoint = generated::CPACSPlasticityCurvePoint;
-    #else
-    typedef generated::CPACSPlasticityCurvePoint CCPACSPlasticityCurvePoint;
-    #endif
-}
+    // generated from /xsd:schema/xsd:complexType[705]
+    class CPACSPlasticityCurvePoint
+    {
+    public:
+        TIGL_EXPORT CPACSPlasticityCurvePoint();
+        TIGL_EXPORT virtual ~CPACSPlasticityCurvePoint();
+        
+        TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+        TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
+        
+        TIGL_EXPORT virtual const double& GetTangentModulus() const;
+        TIGL_EXPORT virtual void SetTangentModulus(const double& value);
+        
+        TIGL_EXPORT virtual const double& GetTrueStress() const;
+        TIGL_EXPORT virtual void SetTrueStress(const double& value);
+        
+    protected:
+        double m_tangentModulus;
+        double m_trueStress;
+        
+    private:
+#ifdef HAVE_CPP11
+        CPACSPlasticityCurvePoint(const CPACSPlasticityCurvePoint&) = delete;
+        CPACSPlasticityCurvePoint& operator=(const CPACSPlasticityCurvePoint&) = delete;
+        
+        CPACSPlasticityCurvePoint(CPACSPlasticityCurvePoint&&) = delete;
+        CPACSPlasticityCurvePoint& operator=(CPACSPlasticityCurvePoint&&) = delete;
+#else
+        CPACSPlasticityCurvePoint(const CPACSPlasticityCurvePoint&);
+        CPACSPlasticityCurvePoint& operator=(const CPACSPlasticityCurvePoint&);
+#endif
+    };
+} // namespace generated
+
+// Aliases in tigl namespace
+#ifdef HAVE_CPP11
+using CCPACSPlasticityCurvePoint = generated::CPACSPlasticityCurvePoint;
+#else
+typedef generated::CPACSPlasticityCurvePoint CCPACSPlasticityCurvePoint;
+#endif
+} // namespace tigl

@@ -23,49 +23,49 @@
 
 namespace tigl
 {
-    namespace generated
-    {
-        // This class is used in:
-        // CPACSCFDTool
-        
-        // generated from /xsd:schema/xsd:complexType[860]
-        class CPACSTool
-        {
-        public:
-            TIGL_EXPORT CPACSTool();
-            TIGL_EXPORT virtual ~CPACSTool();
-            
-            TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
-            TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
-            
-            TIGL_EXPORT virtual const std::string& GetName() const;
-            TIGL_EXPORT virtual void SetName(const std::string& value);
-            
-            TIGL_EXPORT virtual const std::string& GetVersion() const;
-            TIGL_EXPORT virtual void SetVersion(const std::string& value);
-            
-        protected:
-            std::string m_name;
-            std::string m_version;
-            
-        private:
-            #ifdef HAVE_CPP11
-            CPACSTool(const CPACSTool&) = delete;
-            CPACSTool& operator=(const CPACSTool&) = delete;
-            
-            CPACSTool(CPACSTool&&) = delete;
-            CPACSTool& operator=(CPACSTool&&) = delete;
-            #else
-            CPACSTool(const CPACSTool&);
-            CPACSTool& operator=(const CPACSTool&);
-            #endif
-        };
-    }
+namespace generated
+{
+    // This class is used in:
+    // CPACSCFDTool
     
-    // Aliases in tigl namespace
-    #ifdef HAVE_CPP11
-    using CCPACSTool = generated::CPACSTool;
-    #else
-    typedef generated::CPACSTool CCPACSTool;
-    #endif
-}
+    // generated from /xsd:schema/xsd:complexType[860]
+    class CPACSTool
+    {
+    public:
+        TIGL_EXPORT CPACSTool();
+        TIGL_EXPORT virtual ~CPACSTool();
+        
+        TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+        TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
+        
+        TIGL_EXPORT virtual const std::string& GetName() const;
+        TIGL_EXPORT virtual void SetName(const std::string& value);
+        
+        TIGL_EXPORT virtual const std::string& GetVersion() const;
+        TIGL_EXPORT virtual void SetVersion(const std::string& value);
+        
+    protected:
+        std::string m_name;
+        std::string m_version;
+        
+    private:
+#ifdef HAVE_CPP11
+        CPACSTool(const CPACSTool&) = delete;
+        CPACSTool& operator=(const CPACSTool&) = delete;
+        
+        CPACSTool(CPACSTool&&) = delete;
+        CPACSTool& operator=(CPACSTool&&) = delete;
+#else
+        CPACSTool(const CPACSTool&);
+        CPACSTool& operator=(const CPACSTool&);
+#endif
+    };
+} // namespace generated
+
+// Aliases in tigl namespace
+#ifdef HAVE_CPP11
+using CCPACSTool = generated::CPACSTool;
+#else
+typedef generated::CPACSTool CCPACSTool;
+#endif
+} // namespace tigl

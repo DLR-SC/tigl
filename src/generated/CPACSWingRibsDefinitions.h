@@ -25,57 +25,57 @@
 
 namespace tigl
 {
-    class CTiglUIDManager;
-    class CCPACSWingRibsDefinition;
-    class CCPACSWingCSStructure;
+class CTiglUIDManager;
+class CCPACSWingRibsDefinition;
+class CCPACSWingCSStructure;
+
+namespace generated
+{
+    // This class is used in:
+    // CPACSWingComponentSegmentStructure
     
-    namespace generated
+    // generated from /xsd:schema/xsd:complexType[948]
+    class CPACSWingRibsDefinitions
     {
-        // This class is used in:
-        // CPACSWingComponentSegmentStructure
+    public:
+        TIGL_EXPORT CPACSWingRibsDefinitions(CCPACSWingCSStructure* parent, CTiglUIDManager* uidMgr);
         
-        // generated from /xsd:schema/xsd:complexType[948]
-        class CPACSWingRibsDefinitions
-        {
-        public:
-            TIGL_EXPORT CPACSWingRibsDefinitions(CCPACSWingCSStructure* parent, CTiglUIDManager* uidMgr);
-            
-            TIGL_EXPORT virtual ~CPACSWingRibsDefinitions();
-            
-            TIGL_EXPORT CCPACSWingCSStructure* GetParent() const;
-            
-            TIGL_EXPORT CTiglUIDManager& GetUIDManager();
-            TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
-            
-            TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
-            TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
-            
-            TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSWingRibsDefinition> >& GetRibsDefinitions() const;
-            TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSWingRibsDefinition> >& GetRibsDefinitions();
-            
-            TIGL_EXPORT virtual CCPACSWingRibsDefinition& AddRibsDefinition();
-            TIGL_EXPORT virtual void RemoveRibsDefinition(CCPACSWingRibsDefinition& ref);
-            
-        protected:
-            CCPACSWingCSStructure* m_parent;
-            
-            CTiglUIDManager* m_uidMgr;
-            
-            std::vector<unique_ptr<CCPACSWingRibsDefinition> > m_ribsDefinitions;
-            
-        private:
-            #ifdef HAVE_CPP11
-            CPACSWingRibsDefinitions(const CPACSWingRibsDefinitions&) = delete;
-            CPACSWingRibsDefinitions& operator=(const CPACSWingRibsDefinitions&) = delete;
-            
-            CPACSWingRibsDefinitions(CPACSWingRibsDefinitions&&) = delete;
-            CPACSWingRibsDefinitions& operator=(CPACSWingRibsDefinitions&&) = delete;
-            #else
-            CPACSWingRibsDefinitions(const CPACSWingRibsDefinitions&);
-            CPACSWingRibsDefinitions& operator=(const CPACSWingRibsDefinitions&);
-            #endif
-        };
-    }
-    
-    // CPACSWingRibsDefinitions is customized, use type CCPACSWingRibsDefinitions directly
-}
+        TIGL_EXPORT virtual ~CPACSWingRibsDefinitions();
+        
+        TIGL_EXPORT CCPACSWingCSStructure* GetParent() const;
+        
+        TIGL_EXPORT CTiglUIDManager& GetUIDManager();
+        TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
+        
+        TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+        TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
+        
+        TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSWingRibsDefinition> >& GetRibsDefinitions() const;
+        TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSWingRibsDefinition> >& GetRibsDefinitions();
+        
+        TIGL_EXPORT virtual CCPACSWingRibsDefinition& AddRibsDefinition();
+        TIGL_EXPORT virtual void RemoveRibsDefinition(CCPACSWingRibsDefinition& ref);
+        
+    protected:
+        CCPACSWingCSStructure* m_parent;
+        
+        CTiglUIDManager* m_uidMgr;
+        
+        std::vector<unique_ptr<CCPACSWingRibsDefinition> > m_ribsDefinitions;
+        
+    private:
+#ifdef HAVE_CPP11
+        CPACSWingRibsDefinitions(const CPACSWingRibsDefinitions&) = delete;
+        CPACSWingRibsDefinitions& operator=(const CPACSWingRibsDefinitions&) = delete;
+        
+        CPACSWingRibsDefinitions(CPACSWingRibsDefinitions&&) = delete;
+        CPACSWingRibsDefinitions& operator=(CPACSWingRibsDefinitions&&) = delete;
+#else
+        CPACSWingRibsDefinitions(const CPACSWingRibsDefinitions&);
+        CPACSWingRibsDefinitions& operator=(const CPACSWingRibsDefinitions&);
+#endif
+    };
+} // namespace generated
+
+// CPACSWingRibsDefinitions is customized, use type CCPACSWingRibsDefinitions directly
+} // namespace tigl

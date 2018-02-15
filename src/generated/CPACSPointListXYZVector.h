@@ -24,48 +24,48 @@
 
 namespace tigl
 {
-    namespace generated
-    {
-        // This class is used in:
-        // CPACSProfileGeometry
-        
-        // generated from /xsd:schema/xsd:complexType[711]
-        class CPACSPointListXYZVector
-        {
-        public:
-            TIGL_EXPORT CPACSPointListXYZVector();
-            TIGL_EXPORT virtual ~CPACSPointListXYZVector();
-            
-            TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
-            TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
-            
-            TIGL_EXPORT virtual const CCPACSStringVector& GetX() const;
-            TIGL_EXPORT virtual CCPACSStringVector& GetX();
-            
-            TIGL_EXPORT virtual const CCPACSStringVector& GetY() const;
-            TIGL_EXPORT virtual CCPACSStringVector& GetY();
-            
-            TIGL_EXPORT virtual const CCPACSStringVector& GetZ() const;
-            TIGL_EXPORT virtual CCPACSStringVector& GetZ();
-            
-        protected:
-            CCPACSStringVector m_x;
-            CCPACSStringVector m_y;
-            CCPACSStringVector m_z;
-            
-        private:
-            #ifdef HAVE_CPP11
-            CPACSPointListXYZVector(const CPACSPointListXYZVector&) = delete;
-            CPACSPointListXYZVector& operator=(const CPACSPointListXYZVector&) = delete;
-            
-            CPACSPointListXYZVector(CPACSPointListXYZVector&&) = delete;
-            CPACSPointListXYZVector& operator=(CPACSPointListXYZVector&&) = delete;
-            #else
-            CPACSPointListXYZVector(const CPACSPointListXYZVector&);
-            CPACSPointListXYZVector& operator=(const CPACSPointListXYZVector&);
-            #endif
-        };
-    }
+namespace generated
+{
+    // This class is used in:
+    // CPACSProfileGeometry
     
-    // CPACSPointListXYZVector is customized, use type CCPACSPointListXYZ directly
-}
+    // generated from /xsd:schema/xsd:complexType[711]
+    class CPACSPointListXYZVector
+    {
+    public:
+        TIGL_EXPORT CPACSPointListXYZVector();
+        TIGL_EXPORT virtual ~CPACSPointListXYZVector();
+        
+        TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+        TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
+        
+        TIGL_EXPORT virtual const CCPACSStringVector& GetX() const;
+        TIGL_EXPORT virtual CCPACSStringVector& GetX();
+        
+        TIGL_EXPORT virtual const CCPACSStringVector& GetY() const;
+        TIGL_EXPORT virtual CCPACSStringVector& GetY();
+        
+        TIGL_EXPORT virtual const CCPACSStringVector& GetZ() const;
+        TIGL_EXPORT virtual CCPACSStringVector& GetZ();
+        
+    protected:
+        CCPACSStringVector m_x;
+        CCPACSStringVector m_y;
+        CCPACSStringVector m_z;
+        
+    private:
+#ifdef HAVE_CPP11
+        CPACSPointListXYZVector(const CPACSPointListXYZVector&) = delete;
+        CPACSPointListXYZVector& operator=(const CPACSPointListXYZVector&) = delete;
+        
+        CPACSPointListXYZVector(CPACSPointListXYZVector&&) = delete;
+        CPACSPointListXYZVector& operator=(CPACSPointListXYZVector&&) = delete;
+#else
+        CPACSPointListXYZVector(const CPACSPointListXYZVector&);
+        CPACSPointListXYZVector& operator=(const CPACSPointListXYZVector&);
+#endif
+    };
+} // namespace generated
+
+// CPACSPointListXYZVector is customized, use type CCPACSPointListXYZ directly
+} // namespace tigl

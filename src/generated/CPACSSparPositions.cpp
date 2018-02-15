@@ -26,74 +26,76 @@
 
 namespace tigl
 {
-    namespace generated
+namespace generated
+{
+    CPACSSparPositions::CPACSSparPositions(CCPACSWingSpars* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
     {
-        CPACSSparPositions::CPACSSparPositions(CCPACSWingSpars* parent, CTiglUIDManager* uidMgr) :
-            m_uidMgr(uidMgr)
-        {
-            //assert(parent != NULL);
-            m_parent = parent;
-        }
-        
-        CPACSSparPositions::~CPACSSparPositions() {}
-        
-        CCPACSWingSpars* CPACSSparPositions::GetParent() const
-        {
-            return m_parent;
-        }
-        
-        CTiglUIDManager& CPACSSparPositions::GetUIDManager()
-        {
-            return *m_uidMgr;
-        }
-        
-        const CTiglUIDManager& CPACSSparPositions::GetUIDManager() const
-        {
-            return *m_uidMgr;
-        }
-        
-        void CPACSSparPositions::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
-        {
-            // read element sparPosition
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/sparPosition")) {
-                tixi::TixiReadElements(tixiHandle, xpath + "/sparPosition", m_sparPositions, reinterpret_cast<CCPACSWingSparPositions*>(this), m_uidMgr);
-            }
-            
-        }
-        
-        void CPACSSparPositions::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
-        {
-            // write element sparPosition
-            tixi::TixiSaveElements(tixiHandle, xpath + "/sparPosition", m_sparPositions);
-            
-        }
-        
-        const std::vector<unique_ptr<CCPACSWingSparPosition> >& CPACSSparPositions::GetSparPositions() const
-        {
-            return m_sparPositions;
-        }
-        
-        std::vector<unique_ptr<CCPACSWingSparPosition> >& CPACSSparPositions::GetSparPositions()
-        {
-            return m_sparPositions;
-        }
-        
-        CCPACSWingSparPosition& CPACSSparPositions::AddSparPosition()
-        {
-            m_sparPositions.push_back(make_unique<CCPACSWingSparPosition>(reinterpret_cast<CCPACSWingSparPositions*>(this), m_uidMgr));
-            return *m_sparPositions.back();
-        }
-        
-        void CPACSSparPositions::RemoveSparPosition(CCPACSWingSparPosition& ref)
-        {
-            for (std::size_t i = 0; i < m_sparPositions.size(); i++) {
-                if (m_sparPositions[i].get() == &ref) {
-                    m_sparPositions.erase(m_sparPositions.begin() + i);
-                    return;
-                }
-            }
-            throw CTiglError("Element not found");
+        //assert(parent != NULL);
+        m_parent = parent;
+    }
+    
+    CPACSSparPositions::~CPACSSparPositions()
+    {
+    }
+    
+    CCPACSWingSpars* CPACSSparPositions::GetParent() const
+    {
+        return m_parent;
+    }
+    
+    CTiglUIDManager& CPACSSparPositions::GetUIDManager()
+    {
+        return *m_uidMgr;
+    }
+    
+    const CTiglUIDManager& CPACSSparPositions::GetUIDManager() const
+    {
+        return *m_uidMgr;
+    }
+    
+    void CPACSSparPositions::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
+    {
+        // read element sparPosition
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/sparPosition")) {
+            tixi::TixiReadElements(tixiHandle, xpath + "/sparPosition", m_sparPositions, reinterpret_cast<CCPACSWingSparPositions*>(this), m_uidMgr);
         }
         
     }
-}
+    
+    void CPACSSparPositions::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
+    {
+        // write element sparPosition
+        tixi::TixiSaveElements(tixiHandle, xpath + "/sparPosition", m_sparPositions);
+        
+    }
+    
+    const std::vector<unique_ptr<CCPACSWingSparPosition> >& CPACSSparPositions::GetSparPositions() const
+    {
+        return m_sparPositions;
+    }
+    
+    std::vector<unique_ptr<CCPACSWingSparPosition> >& CPACSSparPositions::GetSparPositions()
+    {
+        return m_sparPositions;
+    }
+    
+    CCPACSWingSparPosition& CPACSSparPositions::AddSparPosition()
+    {
+        m_sparPositions.push_back(make_unique<CCPACSWingSparPosition>(reinterpret_cast<CCPACSWingSparPositions*>(this), m_uidMgr));
+        return *m_sparPositions.back();
+    }
+    
+    void CPACSSparPositions::RemoveSparPosition(CCPACSWingSparPosition& ref)
+    {
+        for (std::size_t i = 0; i < m_sparPositions.size(); i++) {
+            if (m_sparPositions[i].get() == &ref) {
+                m_sparPositions.erase(m_sparPositions.begin() + i);
+                return;
+            }
+        }
+        throw CTiglError("Element not found");
+    }
+    
+} // namespace generated
+} // namespace tigl

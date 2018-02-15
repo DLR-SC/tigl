@@ -25,59 +25,59 @@
 
 namespace tigl
 {
-    class CTiglUIDManager;
+class CTiglUIDManager;
+
+namespace generated
+{
+    class CPACSSparCell;
     
-    namespace generated
+    // This class is used in:
+    // CPACSSparCrossSection
+    
+    // generated from /xsd:schema/xsd:complexType[811]
+    class CPACSSparCells
     {
-        class CPACSSparCell;
+    public:
+        TIGL_EXPORT CPACSSparCells(CTiglUIDManager* uidMgr);
+        TIGL_EXPORT virtual ~CPACSSparCells();
         
-        // This class is used in:
-        // CPACSSparCrossSection
+        TIGL_EXPORT CTiglUIDManager& GetUIDManager();
+        TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
         
-        // generated from /xsd:schema/xsd:complexType[811]
-        class CPACSSparCells
-        {
-        public:
-            TIGL_EXPORT CPACSSparCells(CTiglUIDManager* uidMgr);
-            TIGL_EXPORT virtual ~CPACSSparCells();
-            
-            TIGL_EXPORT CTiglUIDManager& GetUIDManager();
-            TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
-            
-            TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
-            TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
-            
-            TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSSparCell> >& GetSparCells() const;
-            TIGL_EXPORT virtual std::vector<unique_ptr<CPACSSparCell> >& GetSparCells();
-            
-            TIGL_EXPORT virtual CPACSSparCell& AddSparCell();
-            TIGL_EXPORT virtual void RemoveSparCell(CPACSSparCell& ref);
-            
-        protected:
-            CTiglUIDManager* m_uidMgr;
-            
-            std::vector<unique_ptr<CPACSSparCell> > m_sparCells;
-            
-        private:
-            #ifdef HAVE_CPP11
-            CPACSSparCells(const CPACSSparCells&) = delete;
-            CPACSSparCells& operator=(const CPACSSparCells&) = delete;
-            
-            CPACSSparCells(CPACSSparCells&&) = delete;
-            CPACSSparCells& operator=(CPACSSparCells&&) = delete;
-            #else
-            CPACSSparCells(const CPACSSparCells&);
-            CPACSSparCells& operator=(const CPACSSparCells&);
-            #endif
-        };
-    }
-    
-    // Aliases in tigl namespace
-    #ifdef HAVE_CPP11
-    using CCPACSSparCells = generated::CPACSSparCells;
-    using CCPACSSparCell = generated::CPACSSparCell;
-    #else
-    typedef generated::CPACSSparCells CCPACSSparCells;
-    typedef generated::CPACSSparCell CCPACSSparCell;
-    #endif
-}
+        TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+        TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
+        
+        TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSSparCell> >& GetSparCells() const;
+        TIGL_EXPORT virtual std::vector<unique_ptr<CPACSSparCell> >& GetSparCells();
+        
+        TIGL_EXPORT virtual CPACSSparCell& AddSparCell();
+        TIGL_EXPORT virtual void RemoveSparCell(CPACSSparCell& ref);
+        
+    protected:
+        CTiglUIDManager* m_uidMgr;
+        
+        std::vector<unique_ptr<CPACSSparCell> > m_sparCells;
+        
+    private:
+#ifdef HAVE_CPP11
+        CPACSSparCells(const CPACSSparCells&) = delete;
+        CPACSSparCells& operator=(const CPACSSparCells&) = delete;
+        
+        CPACSSparCells(CPACSSparCells&&) = delete;
+        CPACSSparCells& operator=(CPACSSparCells&&) = delete;
+#else
+        CPACSSparCells(const CPACSSparCells&);
+        CPACSSparCells& operator=(const CPACSSparCells&);
+#endif
+    };
+} // namespace generated
+
+// Aliases in tigl namespace
+#ifdef HAVE_CPP11
+using CCPACSSparCells = generated::CPACSSparCells;
+using CCPACSSparCell = generated::CPACSSparCell;
+#else
+typedef generated::CPACSSparCells CCPACSSparCells;
+typedef generated::CPACSSparCell CCPACSSparCell;
+#endif
+} // namespace tigl

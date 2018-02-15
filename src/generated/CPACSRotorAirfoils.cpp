@@ -24,65 +24,69 @@
 
 namespace tigl
 {
-    namespace generated
+namespace generated
+{
+    CPACSRotorAirfoils::CPACSRotorAirfoils(CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
     {
-        CPACSRotorAirfoils::CPACSRotorAirfoils(CTiglUIDManager* uidMgr) :
-            m_uidMgr(uidMgr) {}
-        
-        CPACSRotorAirfoils::~CPACSRotorAirfoils() {}
-        
-        CTiglUIDManager& CPACSRotorAirfoils::GetUIDManager()
-        {
-            return *m_uidMgr;
-        }
-        
-        const CTiglUIDManager& CPACSRotorAirfoils::GetUIDManager() const
-        {
-            return *m_uidMgr;
-        }
-        
-        void CPACSRotorAirfoils::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
-        {
-            // read element rotorAirfoil
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/rotorAirfoil")) {
-                tixi::TixiReadElements(tixiHandle, xpath + "/rotorAirfoil", m_rotorAirfoils, m_uidMgr);
-            }
-            
-        }
-        
-        void CPACSRotorAirfoils::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
-        {
-            // write element rotorAirfoil
-            tixi::TixiSaveElements(tixiHandle, xpath + "/rotorAirfoil", m_rotorAirfoils);
-            
-        }
-        
-        const std::vector<unique_ptr<CPACSProfileGeometry> >& CPACSRotorAirfoils::GetRotorAirfoils() const
-        {
-            return m_rotorAirfoils;
-        }
-        
-        std::vector<unique_ptr<CPACSProfileGeometry> >& CPACSRotorAirfoils::GetRotorAirfoils()
-        {
-            return m_rotorAirfoils;
-        }
-        
-        CPACSProfileGeometry& CPACSRotorAirfoils::AddRotorAirfoil()
-        {
-            m_rotorAirfoils.push_back(make_unique<CPACSProfileGeometry>(m_uidMgr));
-            return *m_rotorAirfoils.back();
-        }
-        
-        void CPACSRotorAirfoils::RemoveRotorAirfoil(CPACSProfileGeometry& ref)
-        {
-            for (std::size_t i = 0; i < m_rotorAirfoils.size(); i++) {
-                if (m_rotorAirfoils[i].get() == &ref) {
-                    m_rotorAirfoils.erase(m_rotorAirfoils.begin() + i);
-                    return;
-                }
-            }
-            throw CTiglError("Element not found");
+    }
+    
+    CPACSRotorAirfoils::~CPACSRotorAirfoils()
+    {
+    }
+    
+    CTiglUIDManager& CPACSRotorAirfoils::GetUIDManager()
+    {
+        return *m_uidMgr;
+    }
+    
+    const CTiglUIDManager& CPACSRotorAirfoils::GetUIDManager() const
+    {
+        return *m_uidMgr;
+    }
+    
+    void CPACSRotorAirfoils::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
+    {
+        // read element rotorAirfoil
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/rotorAirfoil")) {
+            tixi::TixiReadElements(tixiHandle, xpath + "/rotorAirfoil", m_rotorAirfoils, m_uidMgr);
         }
         
     }
-}
+    
+    void CPACSRotorAirfoils::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
+    {
+        // write element rotorAirfoil
+        tixi::TixiSaveElements(tixiHandle, xpath + "/rotorAirfoil", m_rotorAirfoils);
+        
+    }
+    
+    const std::vector<unique_ptr<CPACSProfileGeometry> >& CPACSRotorAirfoils::GetRotorAirfoils() const
+    {
+        return m_rotorAirfoils;
+    }
+    
+    std::vector<unique_ptr<CPACSProfileGeometry> >& CPACSRotorAirfoils::GetRotorAirfoils()
+    {
+        return m_rotorAirfoils;
+    }
+    
+    CPACSProfileGeometry& CPACSRotorAirfoils::AddRotorAirfoil()
+    {
+        m_rotorAirfoils.push_back(make_unique<CPACSProfileGeometry>(m_uidMgr));
+        return *m_rotorAirfoils.back();
+    }
+    
+    void CPACSRotorAirfoils::RemoveRotorAirfoil(CPACSProfileGeometry& ref)
+    {
+        for (std::size_t i = 0; i < m_rotorAirfoils.size(); i++) {
+            if (m_rotorAirfoils[i].get() == &ref) {
+                m_rotorAirfoils.erase(m_rotorAirfoils.begin() + i);
+                return;
+            }
+        }
+        throw CTiglError("Element not found");
+    }
+    
+} // namespace generated
+} // namespace tigl

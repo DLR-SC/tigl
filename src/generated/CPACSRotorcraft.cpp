@@ -24,65 +24,69 @@
 
 namespace tigl
 {
-    namespace generated
+namespace generated
+{
+    CPACSRotorcraft::CPACSRotorcraft(CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
     {
-        CPACSRotorcraft::CPACSRotorcraft(CTiglUIDManager* uidMgr) :
-            m_uidMgr(uidMgr) {}
-        
-        CPACSRotorcraft::~CPACSRotorcraft() {}
-        
-        CTiglUIDManager& CPACSRotorcraft::GetUIDManager()
-        {
-            return *m_uidMgr;
-        }
-        
-        const CTiglUIDManager& CPACSRotorcraft::GetUIDManager() const
-        {
-            return *m_uidMgr;
-        }
-        
-        void CPACSRotorcraft::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
-        {
-            // read element model
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/model")) {
-                tixi::TixiReadElements(tixiHandle, xpath + "/model", m_models, m_uidMgr);
-            }
-            
-        }
-        
-        void CPACSRotorcraft::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
-        {
-            // write element model
-            tixi::TixiSaveElements(tixiHandle, xpath + "/model", m_models);
-            
-        }
-        
-        const std::vector<unique_ptr<CCPACSRotorcraftModel> >& CPACSRotorcraft::GetModels() const
-        {
-            return m_models;
-        }
-        
-        std::vector<unique_ptr<CCPACSRotorcraftModel> >& CPACSRotorcraft::GetModels()
-        {
-            return m_models;
-        }
-        
-        CCPACSRotorcraftModel& CPACSRotorcraft::AddModel()
-        {
-            m_models.push_back(make_unique<CCPACSRotorcraftModel>(m_uidMgr));
-            return *m_models.back();
-        }
-        
-        void CPACSRotorcraft::RemoveModel(CCPACSRotorcraftModel& ref)
-        {
-            for (std::size_t i = 0; i < m_models.size(); i++) {
-                if (m_models[i].get() == &ref) {
-                    m_models.erase(m_models.begin() + i);
-                    return;
-                }
-            }
-            throw CTiglError("Element not found");
+    }
+    
+    CPACSRotorcraft::~CPACSRotorcraft()
+    {
+    }
+    
+    CTiglUIDManager& CPACSRotorcraft::GetUIDManager()
+    {
+        return *m_uidMgr;
+    }
+    
+    const CTiglUIDManager& CPACSRotorcraft::GetUIDManager() const
+    {
+        return *m_uidMgr;
+    }
+    
+    void CPACSRotorcraft::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
+    {
+        // read element model
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/model")) {
+            tixi::TixiReadElements(tixiHandle, xpath + "/model", m_models, m_uidMgr);
         }
         
     }
-}
+    
+    void CPACSRotorcraft::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
+    {
+        // write element model
+        tixi::TixiSaveElements(tixiHandle, xpath + "/model", m_models);
+        
+    }
+    
+    const std::vector<unique_ptr<CCPACSRotorcraftModel> >& CPACSRotorcraft::GetModels() const
+    {
+        return m_models;
+    }
+    
+    std::vector<unique_ptr<CCPACSRotorcraftModel> >& CPACSRotorcraft::GetModels()
+    {
+        return m_models;
+    }
+    
+    CCPACSRotorcraftModel& CPACSRotorcraft::AddModel()
+    {
+        m_models.push_back(make_unique<CCPACSRotorcraftModel>(m_uidMgr));
+        return *m_models.back();
+    }
+    
+    void CPACSRotorcraft::RemoveModel(CCPACSRotorcraftModel& ref)
+    {
+        for (std::size_t i = 0; i < m_models.size(); i++) {
+            if (m_models[i].get() == &ref) {
+                m_models.erase(m_models.begin() + i);
+                return;
+            }
+        }
+        throw CTiglError("Element not found");
+    }
+    
+} // namespace generated
+} // namespace tigl

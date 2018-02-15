@@ -24,40 +24,40 @@
 
 namespace tigl
 {
-    namespace generated
-    {
-        // This class is used in:
-        // CPACSSparSegment
-        
-        // generated from /xsd:schema/xsd:complexType[814]
-        class CPACSSparPositionUIDs
-        {
-        public:
-            TIGL_EXPORT CPACSSparPositionUIDs();
-            TIGL_EXPORT virtual ~CPACSSparPositionUIDs();
-            
-            TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
-            TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
-            
-            TIGL_EXPORT virtual const std::vector<std::string>& GetSparPositionUIDs() const;
-            TIGL_EXPORT virtual std::vector<std::string>& GetSparPositionUIDs();
-            
-        protected:
-            std::vector<std::string> m_sparPositionUIDs;
-            
-        private:
-            #ifdef HAVE_CPP11
-            CPACSSparPositionUIDs(const CPACSSparPositionUIDs&) = delete;
-            CPACSSparPositionUIDs& operator=(const CPACSSparPositionUIDs&) = delete;
-            
-            CPACSSparPositionUIDs(CPACSSparPositionUIDs&&) = delete;
-            CPACSSparPositionUIDs& operator=(CPACSSparPositionUIDs&&) = delete;
-            #else
-            CPACSSparPositionUIDs(const CPACSSparPositionUIDs&);
-            CPACSSparPositionUIDs& operator=(const CPACSSparPositionUIDs&);
-            #endif
-        };
-    }
+namespace generated
+{
+    // This class is used in:
+    // CPACSSparSegment
     
-    // CPACSSparPositionUIDs is customized, use type CCPACSWingSparPositionUIDs directly
-}
+    // generated from /xsd:schema/xsd:complexType[814]
+    class CPACSSparPositionUIDs
+    {
+    public:
+        TIGL_EXPORT CPACSSparPositionUIDs();
+        TIGL_EXPORT virtual ~CPACSSparPositionUIDs();
+        
+        TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+        TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
+        
+        TIGL_EXPORT virtual const std::vector<std::string>& GetSparPositionUIDs() const;
+        TIGL_EXPORT virtual std::vector<std::string>& GetSparPositionUIDs();
+        
+    protected:
+        std::vector<std::string> m_sparPositionUIDs;
+        
+    private:
+#ifdef HAVE_CPP11
+        CPACSSparPositionUIDs(const CPACSSparPositionUIDs&) = delete;
+        CPACSSparPositionUIDs& operator=(const CPACSSparPositionUIDs&) = delete;
+        
+        CPACSSparPositionUIDs(CPACSSparPositionUIDs&&) = delete;
+        CPACSSparPositionUIDs& operator=(CPACSSparPositionUIDs&&) = delete;
+#else
+        CPACSSparPositionUIDs(const CPACSSparPositionUIDs&);
+        CPACSSparPositionUIDs& operator=(const CPACSSparPositionUIDs&);
+#endif
+    };
+} // namespace generated
+
+// CPACSSparPositionUIDs is customized, use type CCPACSWingSparPositionUIDs directly
+} // namespace tigl

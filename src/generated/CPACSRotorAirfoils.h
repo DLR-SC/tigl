@@ -25,59 +25,59 @@
 
 namespace tigl
 {
-    class CTiglUIDManager;
+class CTiglUIDManager;
+
+namespace generated
+{
+    class CPACSProfileGeometry;
     
-    namespace generated
+    // This class is used in:
+    // CPACSProfiles
+    
+    // generated from /xsd:schema/xsd:complexType[764]
+    class CPACSRotorAirfoils
     {
-        class CPACSProfileGeometry;
+    public:
+        TIGL_EXPORT CPACSRotorAirfoils(CTiglUIDManager* uidMgr);
+        TIGL_EXPORT virtual ~CPACSRotorAirfoils();
         
-        // This class is used in:
-        // CPACSProfiles
+        TIGL_EXPORT CTiglUIDManager& GetUIDManager();
+        TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
         
-        // generated from /xsd:schema/xsd:complexType[764]
-        class CPACSRotorAirfoils
-        {
-        public:
-            TIGL_EXPORT CPACSRotorAirfoils(CTiglUIDManager* uidMgr);
-            TIGL_EXPORT virtual ~CPACSRotorAirfoils();
-            
-            TIGL_EXPORT CTiglUIDManager& GetUIDManager();
-            TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
-            
-            TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
-            TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
-            
-            TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSProfileGeometry> >& GetRotorAirfoils() const;
-            TIGL_EXPORT virtual std::vector<unique_ptr<CPACSProfileGeometry> >& GetRotorAirfoils();
-            
-            TIGL_EXPORT virtual CPACSProfileGeometry& AddRotorAirfoil();
-            TIGL_EXPORT virtual void RemoveRotorAirfoil(CPACSProfileGeometry& ref);
-            
-        protected:
-            CTiglUIDManager* m_uidMgr;
-            
-            std::vector<unique_ptr<CPACSProfileGeometry> > m_rotorAirfoils;
-            
-        private:
-            #ifdef HAVE_CPP11
-            CPACSRotorAirfoils(const CPACSRotorAirfoils&) = delete;
-            CPACSRotorAirfoils& operator=(const CPACSRotorAirfoils&) = delete;
-            
-            CPACSRotorAirfoils(CPACSRotorAirfoils&&) = delete;
-            CPACSRotorAirfoils& operator=(CPACSRotorAirfoils&&) = delete;
-            #else
-            CPACSRotorAirfoils(const CPACSRotorAirfoils&);
-            CPACSRotorAirfoils& operator=(const CPACSRotorAirfoils&);
-            #endif
-        };
-    }
-    
-    // CPACSRotorAirfoils is customized, use type CCPACSRotorProfiles directly
-    
-    // Aliases in tigl namespace
-    #ifdef HAVE_CPP11
-    using CCPACSProfileGeometry = generated::CPACSProfileGeometry;
-    #else
-    typedef generated::CPACSProfileGeometry CCPACSProfileGeometry;
-    #endif
-}
+        TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+        TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
+        
+        TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSProfileGeometry> >& GetRotorAirfoils() const;
+        TIGL_EXPORT virtual std::vector<unique_ptr<CPACSProfileGeometry> >& GetRotorAirfoils();
+        
+        TIGL_EXPORT virtual CPACSProfileGeometry& AddRotorAirfoil();
+        TIGL_EXPORT virtual void RemoveRotorAirfoil(CPACSProfileGeometry& ref);
+        
+    protected:
+        CTiglUIDManager* m_uidMgr;
+        
+        std::vector<unique_ptr<CPACSProfileGeometry> > m_rotorAirfoils;
+        
+    private:
+#ifdef HAVE_CPP11
+        CPACSRotorAirfoils(const CPACSRotorAirfoils&) = delete;
+        CPACSRotorAirfoils& operator=(const CPACSRotorAirfoils&) = delete;
+        
+        CPACSRotorAirfoils(CPACSRotorAirfoils&&) = delete;
+        CPACSRotorAirfoils& operator=(CPACSRotorAirfoils&&) = delete;
+#else
+        CPACSRotorAirfoils(const CPACSRotorAirfoils&);
+        CPACSRotorAirfoils& operator=(const CPACSRotorAirfoils&);
+#endif
+    };
+} // namespace generated
+
+// CPACSRotorAirfoils is customized, use type CCPACSRotorProfiles directly
+
+// Aliases in tigl namespace
+#ifdef HAVE_CPP11
+using CCPACSProfileGeometry = generated::CPACSProfileGeometry;
+#else
+typedef generated::CPACSProfileGeometry CCPACSProfileGeometry;
+#endif
+} // namespace tigl

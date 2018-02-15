@@ -24,48 +24,48 @@
 
 namespace tigl
 {
-    namespace generated
-    {
-        // This class is used in:
-        // CPACSCFDTool
-        
-        // generated from /xsd:schema/xsd:complexType[325]
-        class CPACSFarField
-        {
-        public:
-            TIGL_EXPORT CPACSFarField();
-            TIGL_EXPORT virtual ~CPACSFarField();
-            
-            TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
-            TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
-            
-            TIGL_EXPORT virtual const TiglFarFieldType& GetType() const;
-            TIGL_EXPORT virtual void SetType(const TiglFarFieldType& value);
-            
-            TIGL_EXPORT virtual const double& GetReferenceLength() const;
-            TIGL_EXPORT virtual void SetReferenceLength(const double& value);
-            
-            TIGL_EXPORT virtual const double& GetMultiplier() const;
-            TIGL_EXPORT virtual void SetMultiplier(const double& value);
-            
-        protected:
-            TiglFarFieldType m_type;
-            double           m_referenceLength;
-            double           m_multiplier;
-            
-        private:
-            #ifdef HAVE_CPP11
-            CPACSFarField(const CPACSFarField&) = delete;
-            CPACSFarField& operator=(const CPACSFarField&) = delete;
-            
-            CPACSFarField(CPACSFarField&&) = delete;
-            CPACSFarField& operator=(CPACSFarField&&) = delete;
-            #else
-            CPACSFarField(const CPACSFarField&);
-            CPACSFarField& operator=(const CPACSFarField&);
-            #endif
-        };
-    }
+namespace generated
+{
+    // This class is used in:
+    // CPACSCFDTool
     
-    // CPACSFarField is customized, use type CCPACSFarField directly
-}
+    // generated from /xsd:schema/xsd:complexType[325]
+    class CPACSFarField
+    {
+    public:
+        TIGL_EXPORT CPACSFarField();
+        TIGL_EXPORT virtual ~CPACSFarField();
+        
+        TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+        TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
+        
+        TIGL_EXPORT virtual const TiglFarFieldType& GetType() const;
+        TIGL_EXPORT virtual void SetType(const TiglFarFieldType& value);
+        
+        TIGL_EXPORT virtual const double& GetReferenceLength() const;
+        TIGL_EXPORT virtual void SetReferenceLength(const double& value);
+        
+        TIGL_EXPORT virtual const double& GetMultiplier() const;
+        TIGL_EXPORT virtual void SetMultiplier(const double& value);
+        
+    protected:
+        TiglFarFieldType m_type;
+        double           m_referenceLength;
+        double           m_multiplier;
+        
+    private:
+#ifdef HAVE_CPP11
+        CPACSFarField(const CPACSFarField&) = delete;
+        CPACSFarField& operator=(const CPACSFarField&) = delete;
+        
+        CPACSFarField(CPACSFarField&&) = delete;
+        CPACSFarField& operator=(CPACSFarField&&) = delete;
+#else
+        CPACSFarField(const CPACSFarField&);
+        CPACSFarField& operator=(const CPACSFarField&);
+#endif
+    };
+} // namespace generated
+
+// CPACSFarField is customized, use type CCPACSFarField directly
+} // namespace tigl

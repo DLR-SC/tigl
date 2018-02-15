@@ -26,52 +26,52 @@
 
 namespace tigl
 {
-    namespace generated
-    {
-        // This class is used in:
-        // CPACSSparCell
-        // CPACSSparCrossSection
-        // CPACSWingRibCell
-        // CPACSWingRibCrossSection
-        
-        // generated from /xsd:schema/xsd:complexType[111]
-        class CPACSCap
-        {
-        public:
-            TIGL_EXPORT CPACSCap();
-            TIGL_EXPORT virtual ~CPACSCap();
-            
-            TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
-            TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
-            
-            TIGL_EXPORT virtual const double& GetArea() const;
-            TIGL_EXPORT virtual void SetArea(const double& value);
-            
-            TIGL_EXPORT virtual const CCPACSMaterialDefinition& GetMaterial() const;
-            TIGL_EXPORT virtual CCPACSMaterialDefinition& GetMaterial();
-            
-        protected:
-            double                   m_area;
-            CCPACSMaterialDefinition m_material;
-            
-        private:
-            #ifdef HAVE_CPP11
-            CPACSCap(const CPACSCap&) = delete;
-            CPACSCap& operator=(const CPACSCap&) = delete;
-            
-            CPACSCap(CPACSCap&&) = delete;
-            CPACSCap& operator=(CPACSCap&&) = delete;
-            #else
-            CPACSCap(const CPACSCap&);
-            CPACSCap& operator=(const CPACSCap&);
-            #endif
-        };
-    }
+namespace generated
+{
+    // This class is used in:
+    // CPACSSparCell
+    // CPACSSparCrossSection
+    // CPACSWingRibCell
+    // CPACSWingRibCrossSection
     
-    // Aliases in tigl namespace
-    #ifdef HAVE_CPP11
-    using CCPACSCap = generated::CPACSCap;
-    #else
-    typedef generated::CPACSCap CCPACSCap;
-    #endif
-}
+    // generated from /xsd:schema/xsd:complexType[111]
+    class CPACSCap
+    {
+    public:
+        TIGL_EXPORT CPACSCap();
+        TIGL_EXPORT virtual ~CPACSCap();
+        
+        TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+        TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
+        
+        TIGL_EXPORT virtual const double& GetArea() const;
+        TIGL_EXPORT virtual void SetArea(const double& value);
+        
+        TIGL_EXPORT virtual const CCPACSMaterialDefinition& GetMaterial() const;
+        TIGL_EXPORT virtual CCPACSMaterialDefinition& GetMaterial();
+        
+    protected:
+        double                   m_area;
+        CCPACSMaterialDefinition m_material;
+        
+    private:
+#ifdef HAVE_CPP11
+        CPACSCap(const CPACSCap&) = delete;
+        CPACSCap& operator=(const CPACSCap&) = delete;
+        
+        CPACSCap(CPACSCap&&) = delete;
+        CPACSCap& operator=(CPACSCap&&) = delete;
+#else
+        CPACSCap(const CPACSCap&);
+        CPACSCap& operator=(const CPACSCap&);
+#endif
+    };
+} // namespace generated
+
+// Aliases in tigl namespace
+#ifdef HAVE_CPP11
+using CCPACSCap = generated::CPACSCap;
+#else
+typedef generated::CPACSCap CCPACSCap;
+#endif
+} // namespace tigl

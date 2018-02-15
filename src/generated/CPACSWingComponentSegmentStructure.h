@@ -29,71 +29,71 @@
 
 namespace tigl
 {
-    class CTiglUIDManager;
-    class CCPACSWingComponentSegment;
+class CTiglUIDManager;
+class CCPACSWingComponentSegment;
+
+namespace generated
+{
+    // This class is used in:
+    // CPACSComponentSegment
     
-    namespace generated
+    // generated from /xsd:schema/xsd:complexType[928]
+    class CPACSWingComponentSegmentStructure
     {
-        // This class is used in:
-        // CPACSComponentSegment
+    public:
+        TIGL_EXPORT CPACSWingComponentSegmentStructure(CCPACSWingComponentSegment* parent, CTiglUIDManager* uidMgr);
         
-        // generated from /xsd:schema/xsd:complexType[928]
-        class CPACSWingComponentSegmentStructure
-        {
-        public:
-            TIGL_EXPORT CPACSWingComponentSegmentStructure(CCPACSWingComponentSegment* parent, CTiglUIDManager* uidMgr);
-            
-            TIGL_EXPORT virtual ~CPACSWingComponentSegmentStructure();
-            
-            TIGL_EXPORT CCPACSWingComponentSegment* GetParent() const;
-            
-            TIGL_EXPORT CTiglUIDManager& GetUIDManager();
-            TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
-            
-            TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
-            TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
-            
-            TIGL_EXPORT virtual const CCPACSWingShell& GetUpperShell() const;
-            TIGL_EXPORT virtual CCPACSWingShell& GetUpperShell();
-            
-            TIGL_EXPORT virtual const CCPACSWingShell& GetLowerShell() const;
-            TIGL_EXPORT virtual CCPACSWingShell& GetLowerShell();
-            
-            TIGL_EXPORT virtual const boost::optional<CCPACSWingRibsDefinitions>& GetRibsDefinitions() const;
-            TIGL_EXPORT virtual boost::optional<CCPACSWingRibsDefinitions>& GetRibsDefinitions();
-            
-            TIGL_EXPORT virtual const boost::optional<CCPACSWingSpars>& GetSpars() const;
-            TIGL_EXPORT virtual boost::optional<CCPACSWingSpars>& GetSpars();
-            
-            TIGL_EXPORT virtual CCPACSWingRibsDefinitions& GetRibsDefinitions(CreateIfNotExistsTag);
-            TIGL_EXPORT virtual void RemoveRibsDefinitions();
-            
-            TIGL_EXPORT virtual CCPACSWingSpars& GetSpars(CreateIfNotExistsTag);
-            TIGL_EXPORT virtual void RemoveSpars();
-            
-        protected:
-            CCPACSWingComponentSegment* m_parent;
-            
-            CTiglUIDManager* m_uidMgr;
-            
-            CCPACSWingShell                            m_upperShell;
-            CCPACSWingShell                            m_lowerShell;
-            boost::optional<CCPACSWingRibsDefinitions> m_ribsDefinitions;
-            boost::optional<CCPACSWingSpars>           m_spars;
-            
-        private:
-            #ifdef HAVE_CPP11
-            CPACSWingComponentSegmentStructure(const CPACSWingComponentSegmentStructure&) = delete;
-            CPACSWingComponentSegmentStructure& operator=(const CPACSWingComponentSegmentStructure&) = delete;
-            
-            CPACSWingComponentSegmentStructure(CPACSWingComponentSegmentStructure&&) = delete;
-            CPACSWingComponentSegmentStructure& operator=(CPACSWingComponentSegmentStructure&&) = delete;
-            #else
-            CPACSWingComponentSegmentStructure(const CPACSWingComponentSegmentStructure&);
-            CPACSWingComponentSegmentStructure& operator=(const CPACSWingComponentSegmentStructure&);
-            #endif
-        };
-    }
-    
-    // CPACSWingComponentSegmentStructure is customized, use type CCPACSWingCSStructure directly
-}
+        TIGL_EXPORT virtual ~CPACSWingComponentSegmentStructure();
+        
+        TIGL_EXPORT CCPACSWingComponentSegment* GetParent() const;
+        
+        TIGL_EXPORT CTiglUIDManager& GetUIDManager();
+        TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
+        
+        TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+        TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
+        
+        TIGL_EXPORT virtual const CCPACSWingShell& GetUpperShell() const;
+        TIGL_EXPORT virtual CCPACSWingShell& GetUpperShell();
+        
+        TIGL_EXPORT virtual const CCPACSWingShell& GetLowerShell() const;
+        TIGL_EXPORT virtual CCPACSWingShell& GetLowerShell();
+        
+        TIGL_EXPORT virtual const boost::optional<CCPACSWingRibsDefinitions>& GetRibsDefinitions() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSWingRibsDefinitions>& GetRibsDefinitions();
+        
+        TIGL_EXPORT virtual const boost::optional<CCPACSWingSpars>& GetSpars() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSWingSpars>& GetSpars();
+        
+        TIGL_EXPORT virtual CCPACSWingRibsDefinitions& GetRibsDefinitions(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveRibsDefinitions();
+        
+        TIGL_EXPORT virtual CCPACSWingSpars& GetSpars(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveSpars();
+        
+    protected:
+        CCPACSWingComponentSegment* m_parent;
+        
+        CTiglUIDManager* m_uidMgr;
+        
+        CCPACSWingShell                            m_upperShell;
+        CCPACSWingShell                            m_lowerShell;
+        boost::optional<CCPACSWingRibsDefinitions> m_ribsDefinitions;
+        boost::optional<CCPACSWingSpars>           m_spars;
+        
+    private:
+#ifdef HAVE_CPP11
+        CPACSWingComponentSegmentStructure(const CPACSWingComponentSegmentStructure&) = delete;
+        CPACSWingComponentSegmentStructure& operator=(const CPACSWingComponentSegmentStructure&) = delete;
+        
+        CPACSWingComponentSegmentStructure(CPACSWingComponentSegmentStructure&&) = delete;
+        CPACSWingComponentSegmentStructure& operator=(CPACSWingComponentSegmentStructure&&) = delete;
+#else
+        CPACSWingComponentSegmentStructure(const CPACSWingComponentSegmentStructure&);
+        CPACSWingComponentSegmentStructure& operator=(const CPACSWingComponentSegmentStructure&);
+#endif
+    };
+} // namespace generated
+
+// CPACSWingComponentSegmentStructure is customized, use type CCPACSWingCSStructure directly
+} // namespace tigl

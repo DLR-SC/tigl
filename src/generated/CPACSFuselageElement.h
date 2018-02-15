@@ -26,69 +26,69 @@
 
 namespace tigl
 {
-    class CTiglUIDManager;
-    class CCPACSFuselageSectionElements;
+class CTiglUIDManager;
+class CCPACSFuselageSectionElements;
+
+namespace generated
+{
+    // This class is used in:
+    // CPACSFuselageElements
     
-    namespace generated
+    // generated from /xsd:schema/xsd:complexType[371]
+    class CPACSFuselageElement
     {
-        // This class is used in:
-        // CPACSFuselageElements
+    public:
+        TIGL_EXPORT CPACSFuselageElement(CCPACSFuselageSectionElements* parent, CTiglUIDManager* uidMgr);
         
-        // generated from /xsd:schema/xsd:complexType[371]
-        class CPACSFuselageElement
-        {
-        public:
-            TIGL_EXPORT CPACSFuselageElement(CCPACSFuselageSectionElements* parent, CTiglUIDManager* uidMgr);
-            
-            TIGL_EXPORT virtual ~CPACSFuselageElement();
-            
-            TIGL_EXPORT CCPACSFuselageSectionElements* GetParent() const;
-            
-            TIGL_EXPORT CTiglUIDManager& GetUIDManager();
-            TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
-            
-            TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
-            TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
-            
-            TIGL_EXPORT virtual const std::string& GetUID() const;
-            TIGL_EXPORT virtual void SetUID(const std::string& value);
-            
-            TIGL_EXPORT virtual const std::string& GetName() const;
-            TIGL_EXPORT virtual void SetName(const std::string& value);
-            
-            TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
-            TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
-            
-            TIGL_EXPORT virtual const std::string& GetProfileUID() const;
-            TIGL_EXPORT virtual void SetProfileUID(const std::string& value);
-            
-            TIGL_EXPORT virtual const CCPACSTransformation& GetTransformation() const;
-            TIGL_EXPORT virtual CCPACSTransformation& GetTransformation();
-            
-        protected:
-            CCPACSFuselageSectionElements* m_parent;
-            
-            CTiglUIDManager* m_uidMgr;
-            
-            std::string                  m_uID;
-            std::string                  m_name;
-            boost::optional<std::string> m_description;
-            std::string                  m_profileUID;
-            CCPACSTransformation         m_transformation;
-            
-        private:
-            #ifdef HAVE_CPP11
-            CPACSFuselageElement(const CPACSFuselageElement&) = delete;
-            CPACSFuselageElement& operator=(const CPACSFuselageElement&) = delete;
-            
-            CPACSFuselageElement(CPACSFuselageElement&&) = delete;
-            CPACSFuselageElement& operator=(CPACSFuselageElement&&) = delete;
-            #else
-            CPACSFuselageElement(const CPACSFuselageElement&);
-            CPACSFuselageElement& operator=(const CPACSFuselageElement&);
-            #endif
-        };
-    }
-    
-    // CPACSFuselageElement is customized, use type CCPACSFuselageSectionElement directly
-}
+        TIGL_EXPORT virtual ~CPACSFuselageElement();
+        
+        TIGL_EXPORT CCPACSFuselageSectionElements* GetParent() const;
+        
+        TIGL_EXPORT CTiglUIDManager& GetUIDManager();
+        TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
+        
+        TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+        TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
+        
+        TIGL_EXPORT virtual const std::string& GetUID() const;
+        TIGL_EXPORT virtual void SetUID(const std::string& value);
+        
+        TIGL_EXPORT virtual const std::string& GetName() const;
+        TIGL_EXPORT virtual void SetName(const std::string& value);
+        
+        TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
+        TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
+        
+        TIGL_EXPORT virtual const std::string& GetProfileUID() const;
+        TIGL_EXPORT virtual void SetProfileUID(const std::string& value);
+        
+        TIGL_EXPORT virtual const CCPACSTransformation& GetTransformation() const;
+        TIGL_EXPORT virtual CCPACSTransformation& GetTransformation();
+        
+    protected:
+        CCPACSFuselageSectionElements* m_parent;
+        
+        CTiglUIDManager* m_uidMgr;
+        
+        std::string                  m_uID;
+        std::string                  m_name;
+        boost::optional<std::string> m_description;
+        std::string                  m_profileUID;
+        CCPACSTransformation         m_transformation;
+        
+    private:
+#ifdef HAVE_CPP11
+        CPACSFuselageElement(const CPACSFuselageElement&) = delete;
+        CPACSFuselageElement& operator=(const CPACSFuselageElement&) = delete;
+        
+        CPACSFuselageElement(CPACSFuselageElement&&) = delete;
+        CPACSFuselageElement& operator=(CPACSFuselageElement&&) = delete;
+#else
+        CPACSFuselageElement(const CPACSFuselageElement&);
+        CPACSFuselageElement& operator=(const CPACSFuselageElement&);
+#endif
+    };
+} // namespace generated
+
+// CPACSFuselageElement is customized, use type CCPACSFuselageSectionElement directly
+} // namespace tigl

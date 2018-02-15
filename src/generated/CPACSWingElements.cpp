@@ -26,74 +26,76 @@
 
 namespace tigl
 {
-    namespace generated
+namespace generated
+{
+    CPACSWingElements::CPACSWingElements(CCPACSWingSection* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
     {
-        CPACSWingElements::CPACSWingElements(CCPACSWingSection* parent, CTiglUIDManager* uidMgr) :
-            m_uidMgr(uidMgr)
-        {
-            //assert(parent != NULL);
-            m_parent = parent;
-        }
-        
-        CPACSWingElements::~CPACSWingElements() {}
-        
-        CCPACSWingSection* CPACSWingElements::GetParent() const
-        {
-            return m_parent;
-        }
-        
-        CTiglUIDManager& CPACSWingElements::GetUIDManager()
-        {
-            return *m_uidMgr;
-        }
-        
-        const CTiglUIDManager& CPACSWingElements::GetUIDManager() const
-        {
-            return *m_uidMgr;
-        }
-        
-        void CPACSWingElements::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
-        {
-            // read element element
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/element")) {
-                tixi::TixiReadElements(tixiHandle, xpath + "/element", m_elements, reinterpret_cast<CCPACSWingSectionElements*>(this), m_uidMgr);
-            }
-            
-        }
-        
-        void CPACSWingElements::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
-        {
-            // write element element
-            tixi::TixiSaveElements(tixiHandle, xpath + "/element", m_elements);
-            
-        }
-        
-        const std::vector<unique_ptr<CCPACSWingSectionElement> >& CPACSWingElements::GetElements() const
-        {
-            return m_elements;
-        }
-        
-        std::vector<unique_ptr<CCPACSWingSectionElement> >& CPACSWingElements::GetElements()
-        {
-            return m_elements;
-        }
-        
-        CCPACSWingSectionElement& CPACSWingElements::AddElement()
-        {
-            m_elements.push_back(make_unique<CCPACSWingSectionElement>(reinterpret_cast<CCPACSWingSectionElements*>(this), m_uidMgr));
-            return *m_elements.back();
-        }
-        
-        void CPACSWingElements::RemoveElement(CCPACSWingSectionElement& ref)
-        {
-            for (std::size_t i = 0; i < m_elements.size(); i++) {
-                if (m_elements[i].get() == &ref) {
-                    m_elements.erase(m_elements.begin() + i);
-                    return;
-                }
-            }
-            throw CTiglError("Element not found");
+        //assert(parent != NULL);
+        m_parent = parent;
+    }
+    
+    CPACSWingElements::~CPACSWingElements()
+    {
+    }
+    
+    CCPACSWingSection* CPACSWingElements::GetParent() const
+    {
+        return m_parent;
+    }
+    
+    CTiglUIDManager& CPACSWingElements::GetUIDManager()
+    {
+        return *m_uidMgr;
+    }
+    
+    const CTiglUIDManager& CPACSWingElements::GetUIDManager() const
+    {
+        return *m_uidMgr;
+    }
+    
+    void CPACSWingElements::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
+    {
+        // read element element
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/element")) {
+            tixi::TixiReadElements(tixiHandle, xpath + "/element", m_elements, reinterpret_cast<CCPACSWingSectionElements*>(this), m_uidMgr);
         }
         
     }
-}
+    
+    void CPACSWingElements::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
+    {
+        // write element element
+        tixi::TixiSaveElements(tixiHandle, xpath + "/element", m_elements);
+        
+    }
+    
+    const std::vector<unique_ptr<CCPACSWingSectionElement> >& CPACSWingElements::GetElements() const
+    {
+        return m_elements;
+    }
+    
+    std::vector<unique_ptr<CCPACSWingSectionElement> >& CPACSWingElements::GetElements()
+    {
+        return m_elements;
+    }
+    
+    CCPACSWingSectionElement& CPACSWingElements::AddElement()
+    {
+        m_elements.push_back(make_unique<CCPACSWingSectionElement>(reinterpret_cast<CCPACSWingSectionElements*>(this), m_uidMgr));
+        return *m_elements.back();
+    }
+    
+    void CPACSWingElements::RemoveElement(CCPACSWingSectionElement& ref)
+    {
+        for (std::size_t i = 0; i < m_elements.size(); i++) {
+            if (m_elements[i].get() == &ref) {
+                m_elements.erase(m_elements.begin() + i);
+                return;
+            }
+        }
+        throw CTiglError("Element not found");
+    }
+    
+} // namespace generated
+} // namespace tigl

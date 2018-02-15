@@ -25,57 +25,57 @@
 
 namespace tigl
 {
-    class CTiglUIDManager;
-    class CCPACSWingComponentSegment;
-    class CCPACSWing;
+class CTiglUIDManager;
+class CCPACSWingComponentSegment;
+class CCPACSWing;
+
+namespace generated
+{
+    // This class is used in:
+    // CPACSWing
     
-    namespace generated
+    // generated from /xsd:schema/xsd:complexType[143]
+    class CPACSComponentSegments
     {
-        // This class is used in:
-        // CPACSWing
+    public:
+        TIGL_EXPORT CPACSComponentSegments(CCPACSWing* parent, CTiglUIDManager* uidMgr);
         
-        // generated from /xsd:schema/xsd:complexType[143]
-        class CPACSComponentSegments
-        {
-        public:
-            TIGL_EXPORT CPACSComponentSegments(CCPACSWing* parent, CTiglUIDManager* uidMgr);
-            
-            TIGL_EXPORT virtual ~CPACSComponentSegments();
-            
-            TIGL_EXPORT CCPACSWing* GetParent() const;
-            
-            TIGL_EXPORT CTiglUIDManager& GetUIDManager();
-            TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
-            
-            TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
-            TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
-            
-            TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSWingComponentSegment> >& GetComponentSegments() const;
-            TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSWingComponentSegment> >& GetComponentSegments();
-            
-            TIGL_EXPORT virtual CCPACSWingComponentSegment& AddComponentSegment();
-            TIGL_EXPORT virtual void RemoveComponentSegment(CCPACSWingComponentSegment& ref);
-            
-        protected:
-            CCPACSWing* m_parent;
-            
-            CTiglUIDManager* m_uidMgr;
-            
-            std::vector<unique_ptr<CCPACSWingComponentSegment> > m_componentSegments;
-            
-        private:
-            #ifdef HAVE_CPP11
-            CPACSComponentSegments(const CPACSComponentSegments&) = delete;
-            CPACSComponentSegments& operator=(const CPACSComponentSegments&) = delete;
-            
-            CPACSComponentSegments(CPACSComponentSegments&&) = delete;
-            CPACSComponentSegments& operator=(CPACSComponentSegments&&) = delete;
-            #else
-            CPACSComponentSegments(const CPACSComponentSegments&);
-            CPACSComponentSegments& operator=(const CPACSComponentSegments&);
-            #endif
-        };
-    }
-    
-    // CPACSComponentSegments is customized, use type CCPACSWingComponentSegments directly
-}
+        TIGL_EXPORT virtual ~CPACSComponentSegments();
+        
+        TIGL_EXPORT CCPACSWing* GetParent() const;
+        
+        TIGL_EXPORT CTiglUIDManager& GetUIDManager();
+        TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
+        
+        TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+        TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
+        
+        TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSWingComponentSegment> >& GetComponentSegments() const;
+        TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSWingComponentSegment> >& GetComponentSegments();
+        
+        TIGL_EXPORT virtual CCPACSWingComponentSegment& AddComponentSegment();
+        TIGL_EXPORT virtual void RemoveComponentSegment(CCPACSWingComponentSegment& ref);
+        
+    protected:
+        CCPACSWing* m_parent;
+        
+        CTiglUIDManager* m_uidMgr;
+        
+        std::vector<unique_ptr<CCPACSWingComponentSegment> > m_componentSegments;
+        
+    private:
+#ifdef HAVE_CPP11
+        CPACSComponentSegments(const CPACSComponentSegments&) = delete;
+        CPACSComponentSegments& operator=(const CPACSComponentSegments&) = delete;
+        
+        CPACSComponentSegments(CPACSComponentSegments&&) = delete;
+        CPACSComponentSegments& operator=(CPACSComponentSegments&&) = delete;
+#else
+        CPACSComponentSegments(const CPACSComponentSegments&);
+        CPACSComponentSegments& operator=(const CPACSComponentSegments&);
+#endif
+    };
+} // namespace generated
+
+// CPACSComponentSegments is customized, use type CCPACSWingComponentSegments directly
+} // namespace tigl

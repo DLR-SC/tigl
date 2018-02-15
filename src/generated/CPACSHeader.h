@@ -28,72 +28,72 @@
 
 namespace tigl
 {
-    namespace generated
-    {
-        // This class is used in:
-        // CPACSCpacs
-        
-        // generated from /xsd:schema/xsd:complexType[457]
-        class CPACSHeader
-        {
-        public:
-            TIGL_EXPORT CPACSHeader();
-            TIGL_EXPORT virtual ~CPACSHeader();
-            
-            TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
-            TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
-            
-            TIGL_EXPORT virtual const std::string& GetName() const;
-            TIGL_EXPORT virtual void SetName(const std::string& value);
-            
-            TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
-            TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
-            
-            TIGL_EXPORT virtual const std::string& GetCreator() const;
-            TIGL_EXPORT virtual void SetCreator(const std::string& value);
-            
-            TIGL_EXPORT virtual const std::time_t& GetTimestamp() const;
-            TIGL_EXPORT virtual void SetTimestamp(const std::time_t& value);
-            
-            TIGL_EXPORT virtual const std::string& GetVersion() const;
-            TIGL_EXPORT virtual void SetVersion(const std::string& value);
-            
-            TIGL_EXPORT virtual const std::string& GetCpacsVersion() const;
-            TIGL_EXPORT virtual void SetCpacsVersion(const std::string& value);
-            
-            TIGL_EXPORT virtual const boost::optional<CPACSUpdates>& GetUpdates() const;
-            TIGL_EXPORT virtual boost::optional<CPACSUpdates>& GetUpdates();
-            
-            TIGL_EXPORT virtual CPACSUpdates& GetUpdates(CreateIfNotExistsTag);
-            TIGL_EXPORT virtual void RemoveUpdates();
-            
-        protected:
-            std::string                   m_name;
-            boost::optional<std::string>  m_description;
-            std::string                   m_creator;
-            std::time_t                   m_timestamp;
-            std::string                   m_version;
-            std::string                   m_cpacsVersion;
-            boost::optional<CPACSUpdates> m_updates;
-            
-        private:
-            #ifdef HAVE_CPP11
-            CPACSHeader(const CPACSHeader&) = delete;
-            CPACSHeader& operator=(const CPACSHeader&) = delete;
-            
-            CPACSHeader(CPACSHeader&&) = delete;
-            CPACSHeader& operator=(CPACSHeader&&) = delete;
-            #else
-            CPACSHeader(const CPACSHeader&);
-            CPACSHeader& operator=(const CPACSHeader&);
-            #endif
-        };
-    }
+namespace generated
+{
+    // This class is used in:
+    // CPACSCpacs
     
-    // Aliases in tigl namespace
-    #ifdef HAVE_CPP11
-    using CCPACSHeader = generated::CPACSHeader;
-    #else
-    typedef generated::CPACSHeader CCPACSHeader;
-    #endif
-}
+    // generated from /xsd:schema/xsd:complexType[457]
+    class CPACSHeader
+    {
+    public:
+        TIGL_EXPORT CPACSHeader();
+        TIGL_EXPORT virtual ~CPACSHeader();
+        
+        TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+        TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
+        
+        TIGL_EXPORT virtual const std::string& GetName() const;
+        TIGL_EXPORT virtual void SetName(const std::string& value);
+        
+        TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
+        TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
+        
+        TIGL_EXPORT virtual const std::string& GetCreator() const;
+        TIGL_EXPORT virtual void SetCreator(const std::string& value);
+        
+        TIGL_EXPORT virtual const std::time_t& GetTimestamp() const;
+        TIGL_EXPORT virtual void SetTimestamp(const std::time_t& value);
+        
+        TIGL_EXPORT virtual const std::string& GetVersion() const;
+        TIGL_EXPORT virtual void SetVersion(const std::string& value);
+        
+        TIGL_EXPORT virtual const std::string& GetCpacsVersion() const;
+        TIGL_EXPORT virtual void SetCpacsVersion(const std::string& value);
+        
+        TIGL_EXPORT virtual const boost::optional<CPACSUpdates>& GetUpdates() const;
+        TIGL_EXPORT virtual boost::optional<CPACSUpdates>& GetUpdates();
+        
+        TIGL_EXPORT virtual CPACSUpdates& GetUpdates(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveUpdates();
+        
+    protected:
+        std::string                   m_name;
+        boost::optional<std::string>  m_description;
+        std::string                   m_creator;
+        std::time_t                   m_timestamp;
+        std::string                   m_version;
+        std::string                   m_cpacsVersion;
+        boost::optional<CPACSUpdates> m_updates;
+        
+    private:
+#ifdef HAVE_CPP11
+        CPACSHeader(const CPACSHeader&) = delete;
+        CPACSHeader& operator=(const CPACSHeader&) = delete;
+        
+        CPACSHeader(CPACSHeader&&) = delete;
+        CPACSHeader& operator=(CPACSHeader&&) = delete;
+#else
+        CPACSHeader(const CPACSHeader&);
+        CPACSHeader& operator=(const CPACSHeader&);
+#endif
+    };
+} // namespace generated
+
+// Aliases in tigl namespace
+#ifdef HAVE_CPP11
+using CCPACSHeader = generated::CPACSHeader;
+#else
+typedef generated::CPACSHeader CCPACSHeader;
+#endif
+} // namespace tigl

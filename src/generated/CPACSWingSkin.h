@@ -26,46 +26,46 @@
 
 namespace tigl
 {
-    namespace generated
-    {
-        // This class is used in:
-        // CPACSWingCell
-        // CPACSWingShell
-        
-        // generated from /xsd:schema/xsd:complexType[958]
-        class CPACSWingSkin
-        {
-        public:
-            TIGL_EXPORT CPACSWingSkin();
-            TIGL_EXPORT virtual ~CPACSWingSkin();
-            
-            TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
-            TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
-            
-            TIGL_EXPORT virtual const CCPACSMaterialDefinition& GetMaterial() const;
-            TIGL_EXPORT virtual CCPACSMaterialDefinition& GetMaterial();
-            
-        protected:
-            CCPACSMaterialDefinition m_material;
-            
-        private:
-            #ifdef HAVE_CPP11
-            CPACSWingSkin(const CPACSWingSkin&) = delete;
-            CPACSWingSkin& operator=(const CPACSWingSkin&) = delete;
-            
-            CPACSWingSkin(CPACSWingSkin&&) = delete;
-            CPACSWingSkin& operator=(CPACSWingSkin&&) = delete;
-            #else
-            CPACSWingSkin(const CPACSWingSkin&);
-            CPACSWingSkin& operator=(const CPACSWingSkin&);
-            #endif
-        };
-    }
+namespace generated
+{
+    // This class is used in:
+    // CPACSWingCell
+    // CPACSWingShell
     
-    // Aliases in tigl namespace
-    #ifdef HAVE_CPP11
-    using CCPACSWingSkin = generated::CPACSWingSkin;
-    #else
-    typedef generated::CPACSWingSkin CCPACSWingSkin;
-    #endif
-}
+    // generated from /xsd:schema/xsd:complexType[958]
+    class CPACSWingSkin
+    {
+    public:
+        TIGL_EXPORT CPACSWingSkin();
+        TIGL_EXPORT virtual ~CPACSWingSkin();
+        
+        TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+        TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
+        
+        TIGL_EXPORT virtual const CCPACSMaterialDefinition& GetMaterial() const;
+        TIGL_EXPORT virtual CCPACSMaterialDefinition& GetMaterial();
+        
+    protected:
+        CCPACSMaterialDefinition m_material;
+        
+    private:
+#ifdef HAVE_CPP11
+        CPACSWingSkin(const CPACSWingSkin&) = delete;
+        CPACSWingSkin& operator=(const CPACSWingSkin&) = delete;
+        
+        CPACSWingSkin(CPACSWingSkin&&) = delete;
+        CPACSWingSkin& operator=(CPACSWingSkin&&) = delete;
+#else
+        CPACSWingSkin(const CPACSWingSkin&);
+        CPACSWingSkin& operator=(const CPACSWingSkin&);
+#endif
+    };
+} // namespace generated
+
+// Aliases in tigl namespace
+#ifdef HAVE_CPP11
+using CCPACSWingSkin = generated::CPACSWingSkin;
+#else
+typedef generated::CPACSWingSkin CCPACSWingSkin;
+#endif
+} // namespace tigl

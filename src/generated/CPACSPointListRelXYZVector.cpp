@@ -22,85 +22,89 @@
 
 namespace tigl
 {
-    namespace generated
+namespace generated
+{
+    CPACSPointListRelXYZVector::CPACSPointListRelXYZVector()
     {
-        CPACSPointListRelXYZVector::CPACSPointListRelXYZVector() {}
-        
-        CPACSPointListRelXYZVector::~CPACSPointListRelXYZVector() {}
-        
-        void CPACSPointListRelXYZVector::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
-        {
-            // read element rX
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/rX")) {
-                m_rX.ReadCPACS(tixiHandle, xpath + "/rX");
-            }
-            else {
-                LOG(ERROR) << "Required element rX is missing at xpath " << xpath;
-            }
-            
-            // read element rY
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/rY")) {
-                m_rY.ReadCPACS(tixiHandle, xpath + "/rY");
-            }
-            else {
-                LOG(ERROR) << "Required element rY is missing at xpath " << xpath;
-            }
-            
-            // read element rZ
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/rZ")) {
-                m_rZ.ReadCPACS(tixiHandle, xpath + "/rZ");
-            }
-            else {
-                LOG(ERROR) << "Required element rZ is missing at xpath " << xpath;
-            }
-            
+    }
+    
+    CPACSPointListRelXYZVector::~CPACSPointListRelXYZVector()
+    {
+    }
+    
+    void CPACSPointListRelXYZVector::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
+    {
+        // read element rX
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/rX")) {
+            m_rX.ReadCPACS(tixiHandle, xpath + "/rX");
+        }
+        else {
+            LOG(ERROR) << "Required element rX is missing at xpath " << xpath;
         }
         
-        void CPACSPointListRelXYZVector::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
-        {
-            // write element rX
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/rX");
-            m_rX.WriteCPACS(tixiHandle, xpath + "/rX");
-            
-            // write element rY
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/rY");
-            m_rY.WriteCPACS(tixiHandle, xpath + "/rY");
-            
-            // write element rZ
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/rZ");
-            m_rZ.WriteCPACS(tixiHandle, xpath + "/rZ");
-            
+        // read element rY
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/rY")) {
+            m_rY.ReadCPACS(tixiHandle, xpath + "/rY");
+        }
+        else {
+            LOG(ERROR) << "Required element rY is missing at xpath " << xpath;
         }
         
-        const CCPACSStringVector& CPACSPointListRelXYZVector::GetRX() const
-        {
-            return m_rX;
+        // read element rZ
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/rZ")) {
+            m_rZ.ReadCPACS(tixiHandle, xpath + "/rZ");
         }
-        
-        CCPACSStringVector& CPACSPointListRelXYZVector::GetRX()
-        {
-            return m_rX;
-        }
-        
-        const CCPACSStringVector& CPACSPointListRelXYZVector::GetRY() const
-        {
-            return m_rY;
-        }
-        
-        CCPACSStringVector& CPACSPointListRelXYZVector::GetRY()
-        {
-            return m_rY;
-        }
-        
-        const CCPACSStringVector& CPACSPointListRelXYZVector::GetRZ() const
-        {
-            return m_rZ;
-        }
-        
-        CCPACSStringVector& CPACSPointListRelXYZVector::GetRZ()
-        {
-            return m_rZ;
+        else {
+            LOG(ERROR) << "Required element rZ is missing at xpath " << xpath;
         }
         
     }
-}
+    
+    void CPACSPointListRelXYZVector::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
+    {
+        // write element rX
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/rX");
+        m_rX.WriteCPACS(tixiHandle, xpath + "/rX");
+        
+        // write element rY
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/rY");
+        m_rY.WriteCPACS(tixiHandle, xpath + "/rY");
+        
+        // write element rZ
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/rZ");
+        m_rZ.WriteCPACS(tixiHandle, xpath + "/rZ");
+        
+    }
+    
+    const CCPACSStringVector& CPACSPointListRelXYZVector::GetRX() const
+    {
+        return m_rX;
+    }
+    
+    CCPACSStringVector& CPACSPointListRelXYZVector::GetRX()
+    {
+        return m_rX;
+    }
+    
+    const CCPACSStringVector& CPACSPointListRelXYZVector::GetRY() const
+    {
+        return m_rY;
+    }
+    
+    CCPACSStringVector& CPACSPointListRelXYZVector::GetRY()
+    {
+        return m_rY;
+    }
+    
+    const CCPACSStringVector& CPACSPointListRelXYZVector::GetRZ() const
+    {
+        return m_rZ;
+    }
+    
+    CCPACSStringVector& CPACSPointListRelXYZVector::GetRZ()
+    {
+        return m_rZ;
+    }
+    
+} // namespace generated
+} // namespace tigl

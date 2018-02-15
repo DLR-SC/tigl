@@ -27,76 +27,76 @@
 
 namespace tigl
 {
-    class CTiglUIDManager;
-    class CCPACSFuselageSegments;
+class CTiglUIDManager;
+class CCPACSFuselageSegments;
+
+namespace generated
+{
+    // This class is used in:
+    // CPACSFuselageSegments
     
-    namespace generated
+    // generated from /xsd:schema/xsd:complexType[380]
+    class CPACSFuselageSegment
     {
-        // This class is used in:
-        // CPACSFuselageSegments
+    public:
+        TIGL_EXPORT CPACSFuselageSegment(CCPACSFuselageSegments* parent, CTiglUIDManager* uidMgr);
         
-        // generated from /xsd:schema/xsd:complexType[380]
-        class CPACSFuselageSegment
-        {
-        public:
-            TIGL_EXPORT CPACSFuselageSegment(CCPACSFuselageSegments* parent, CTiglUIDManager* uidMgr);
-            
-            TIGL_EXPORT virtual ~CPACSFuselageSegment();
-            
-            TIGL_EXPORT CCPACSFuselageSegments* GetParent() const;
-            
-            TIGL_EXPORT CTiglUIDManager& GetUIDManager();
-            TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
-            
-            TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
-            TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
-            
-            TIGL_EXPORT virtual const std::string& GetUID() const;
-            TIGL_EXPORT virtual void SetUID(const std::string& value);
-            
-            TIGL_EXPORT virtual const std::string& GetName() const;
-            TIGL_EXPORT virtual void SetName(const std::string& value);
-            
-            TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
-            TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
-            
-            TIGL_EXPORT virtual const std::string& GetFromElementUID() const;
-            TIGL_EXPORT virtual void SetFromElementUID(const std::string& value);
-            
-            TIGL_EXPORT virtual const std::string& GetToElementUID() const;
-            TIGL_EXPORT virtual void SetToElementUID(const std::string& value);
-            
-            TIGL_EXPORT virtual const boost::optional<CCPACSGuideCurves>& GetGuideCurves() const;
-            TIGL_EXPORT virtual boost::optional<CCPACSGuideCurves>& GetGuideCurves();
-            
-            TIGL_EXPORT virtual CCPACSGuideCurves& GetGuideCurves(CreateIfNotExistsTag);
-            TIGL_EXPORT virtual void RemoveGuideCurves();
-            
-        protected:
-            CCPACSFuselageSegments* m_parent;
-            
-            CTiglUIDManager* m_uidMgr;
-            
-            std::string                        m_uID;
-            std::string                        m_name;
-            boost::optional<std::string>       m_description;
-            std::string                        m_fromElementUID;
-            std::string                        m_toElementUID;
-            boost::optional<CCPACSGuideCurves> m_guideCurves;
-            
-        private:
-            #ifdef HAVE_CPP11
-            CPACSFuselageSegment(const CPACSFuselageSegment&) = delete;
-            CPACSFuselageSegment& operator=(const CPACSFuselageSegment&) = delete;
-            
-            CPACSFuselageSegment(CPACSFuselageSegment&&) = delete;
-            CPACSFuselageSegment& operator=(CPACSFuselageSegment&&) = delete;
-            #else
-            CPACSFuselageSegment(const CPACSFuselageSegment&);
-            CPACSFuselageSegment& operator=(const CPACSFuselageSegment&);
-            #endif
-        };
-    }
-    
-    // CPACSFuselageSegment is customized, use type CCPACSFuselageSegment directly
-}
+        TIGL_EXPORT virtual ~CPACSFuselageSegment();
+        
+        TIGL_EXPORT CCPACSFuselageSegments* GetParent() const;
+        
+        TIGL_EXPORT CTiglUIDManager& GetUIDManager();
+        TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
+        
+        TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+        TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
+        
+        TIGL_EXPORT virtual const std::string& GetUID() const;
+        TIGL_EXPORT virtual void SetUID(const std::string& value);
+        
+        TIGL_EXPORT virtual const std::string& GetName() const;
+        TIGL_EXPORT virtual void SetName(const std::string& value);
+        
+        TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
+        TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
+        
+        TIGL_EXPORT virtual const std::string& GetFromElementUID() const;
+        TIGL_EXPORT virtual void SetFromElementUID(const std::string& value);
+        
+        TIGL_EXPORT virtual const std::string& GetToElementUID() const;
+        TIGL_EXPORT virtual void SetToElementUID(const std::string& value);
+        
+        TIGL_EXPORT virtual const boost::optional<CCPACSGuideCurves>& GetGuideCurves() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSGuideCurves>& GetGuideCurves();
+        
+        TIGL_EXPORT virtual CCPACSGuideCurves& GetGuideCurves(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveGuideCurves();
+        
+    protected:
+        CCPACSFuselageSegments* m_parent;
+        
+        CTiglUIDManager* m_uidMgr;
+        
+        std::string                        m_uID;
+        std::string                        m_name;
+        boost::optional<std::string>       m_description;
+        std::string                        m_fromElementUID;
+        std::string                        m_toElementUID;
+        boost::optional<CCPACSGuideCurves> m_guideCurves;
+        
+    private:
+#ifdef HAVE_CPP11
+        CPACSFuselageSegment(const CPACSFuselageSegment&) = delete;
+        CPACSFuselageSegment& operator=(const CPACSFuselageSegment&) = delete;
+        
+        CPACSFuselageSegment(CPACSFuselageSegment&&) = delete;
+        CPACSFuselageSegment& operator=(CPACSFuselageSegment&&) = delete;
+#else
+        CPACSFuselageSegment(const CPACSFuselageSegment&);
+        CPACSFuselageSegment& operator=(const CPACSFuselageSegment&);
+#endif
+    };
+} // namespace generated
+
+// CPACSFuselageSegment is customized, use type CCPACSFuselageSegment directly
+} // namespace tigl

@@ -25,59 +25,59 @@
 
 namespace tigl
 {
-    class CTiglUIDManager;
+class CTiglUIDManager;
+
+namespace generated
+{
+    class CPACSFuselageCutOut;
     
-    namespace generated
+    // This class is used in:
+    // CPACSFuselage
+    
+    // generated from /xsd:schema/xsd:complexType[370]
+    class CPACSFuselageCutOuts
     {
-        class CPACSFuselageCutOut;
+    public:
+        TIGL_EXPORT CPACSFuselageCutOuts(CTiglUIDManager* uidMgr);
+        TIGL_EXPORT virtual ~CPACSFuselageCutOuts();
         
-        // This class is used in:
-        // CPACSFuselage
+        TIGL_EXPORT CTiglUIDManager& GetUIDManager();
+        TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
         
-        // generated from /xsd:schema/xsd:complexType[370]
-        class CPACSFuselageCutOuts
-        {
-        public:
-            TIGL_EXPORT CPACSFuselageCutOuts(CTiglUIDManager* uidMgr);
-            TIGL_EXPORT virtual ~CPACSFuselageCutOuts();
-            
-            TIGL_EXPORT CTiglUIDManager& GetUIDManager();
-            TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
-            
-            TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
-            TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
-            
-            TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSFuselageCutOut> >& GetElements() const;
-            TIGL_EXPORT virtual std::vector<unique_ptr<CPACSFuselageCutOut> >& GetElements();
-            
-            TIGL_EXPORT virtual CPACSFuselageCutOut& AddElement();
-            TIGL_EXPORT virtual void RemoveElement(CPACSFuselageCutOut& ref);
-            
-        protected:
-            CTiglUIDManager* m_uidMgr;
-            
-            std::vector<unique_ptr<CPACSFuselageCutOut> > m_elements;
-            
-        private:
-            #ifdef HAVE_CPP11
-            CPACSFuselageCutOuts(const CPACSFuselageCutOuts&) = delete;
-            CPACSFuselageCutOuts& operator=(const CPACSFuselageCutOuts&) = delete;
-            
-            CPACSFuselageCutOuts(CPACSFuselageCutOuts&&) = delete;
-            CPACSFuselageCutOuts& operator=(CPACSFuselageCutOuts&&) = delete;
-            #else
-            CPACSFuselageCutOuts(const CPACSFuselageCutOuts&);
-            CPACSFuselageCutOuts& operator=(const CPACSFuselageCutOuts&);
-            #endif
-        };
-    }
-    
-    // Aliases in tigl namespace
-    #ifdef HAVE_CPP11
-    using CCPACSFuselageCutOuts = generated::CPACSFuselageCutOuts;
-    using CCPACSFuselageCutOut = generated::CPACSFuselageCutOut;
-    #else
-    typedef generated::CPACSFuselageCutOuts CCPACSFuselageCutOuts;
-    typedef generated::CPACSFuselageCutOut CCPACSFuselageCutOut;
-    #endif
-}
+        TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+        TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
+        
+        TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSFuselageCutOut> >& GetElements() const;
+        TIGL_EXPORT virtual std::vector<unique_ptr<CPACSFuselageCutOut> >& GetElements();
+        
+        TIGL_EXPORT virtual CPACSFuselageCutOut& AddElement();
+        TIGL_EXPORT virtual void RemoveElement(CPACSFuselageCutOut& ref);
+        
+    protected:
+        CTiglUIDManager* m_uidMgr;
+        
+        std::vector<unique_ptr<CPACSFuselageCutOut> > m_elements;
+        
+    private:
+#ifdef HAVE_CPP11
+        CPACSFuselageCutOuts(const CPACSFuselageCutOuts&) = delete;
+        CPACSFuselageCutOuts& operator=(const CPACSFuselageCutOuts&) = delete;
+        
+        CPACSFuselageCutOuts(CPACSFuselageCutOuts&&) = delete;
+        CPACSFuselageCutOuts& operator=(CPACSFuselageCutOuts&&) = delete;
+#else
+        CPACSFuselageCutOuts(const CPACSFuselageCutOuts&);
+        CPACSFuselageCutOuts& operator=(const CPACSFuselageCutOuts&);
+#endif
+    };
+} // namespace generated
+
+// Aliases in tigl namespace
+#ifdef HAVE_CPP11
+using CCPACSFuselageCutOuts = generated::CPACSFuselageCutOuts;
+using CCPACSFuselageCutOut = generated::CPACSFuselageCutOut;
+#else
+typedef generated::CPACSFuselageCutOuts CCPACSFuselageCutOuts;
+typedef generated::CPACSFuselageCutOut CCPACSFuselageCutOut;
+#endif
+} // namespace tigl

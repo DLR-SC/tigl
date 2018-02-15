@@ -22,64 +22,68 @@
 
 namespace tigl
 {
-    namespace generated
+namespace generated
+{
+    CPACSCap::CPACSCap()
+        : m_area(0)
     {
-        CPACSCap::CPACSCap() :
-            m_area(0) {}
-        
-        CPACSCap::~CPACSCap() {}
-        
-        void CPACSCap::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
-        {
-            // read element area
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/area")) {
-                m_area = tixi::TixiGetElement<double>(tixiHandle, xpath + "/area");
-            }
-            else {
-                LOG(ERROR) << "Required element area is missing at xpath " << xpath;
-            }
-            
-            // read element material
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/material")) {
-                m_material.ReadCPACS(tixiHandle, xpath + "/material");
-            }
-            else {
-                LOG(ERROR) << "Required element material is missing at xpath " << xpath;
-            }
-            
+    }
+    
+    CPACSCap::~CPACSCap()
+    {
+    }
+    
+    void CPACSCap::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
+    {
+        // read element area
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/area")) {
+            m_area = tixi::TixiGetElement<double>(tixiHandle, xpath + "/area");
+        }
+        else {
+            LOG(ERROR) << "Required element area is missing at xpath " << xpath;
         }
         
-        void CPACSCap::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
-        {
-            // write element area
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/area");
-            tixi::TixiSaveElement(tixiHandle, xpath + "/area", m_area);
-            
-            // write element material
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/material");
-            m_material.WriteCPACS(tixiHandle, xpath + "/material");
-            
+        // read element material
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/material")) {
+            m_material.ReadCPACS(tixiHandle, xpath + "/material");
         }
-        
-        const double& CPACSCap::GetArea() const
-        {
-            return m_area;
-        }
-        
-        void CPACSCap::SetArea(const double& value)
-        {
-            m_area = value;
-        }
-        
-        const CCPACSMaterialDefinition& CPACSCap::GetMaterial() const
-        {
-            return m_material;
-        }
-        
-        CCPACSMaterialDefinition& CPACSCap::GetMaterial()
-        {
-            return m_material;
+        else {
+            LOG(ERROR) << "Required element material is missing at xpath " << xpath;
         }
         
     }
-}
+    
+    void CPACSCap::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
+    {
+        // write element area
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/area");
+        tixi::TixiSaveElement(tixiHandle, xpath + "/area", m_area);
+        
+        // write element material
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/material");
+        m_material.WriteCPACS(tixiHandle, xpath + "/material");
+        
+    }
+    
+    const double& CPACSCap::GetArea() const
+    {
+        return m_area;
+    }
+    
+    void CPACSCap::SetArea(const double& value)
+    {
+        m_area = value;
+    }
+    
+    const CCPACSMaterialDefinition& CPACSCap::GetMaterial() const
+    {
+        return m_material;
+    }
+    
+    CCPACSMaterialDefinition& CPACSCap::GetMaterial()
+    {
+        return m_material;
+    }
+    
+} // namespace generated
+} // namespace tigl

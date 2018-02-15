@@ -22,67 +22,71 @@
 
 namespace tigl
 {
-    namespace generated
+namespace generated
+{
+    CPACSEtaIsoLine::CPACSEtaIsoLine()
+        : m_eta(0)
     {
-        CPACSEtaIsoLine::CPACSEtaIsoLine() :
-            m_eta(0) {}
+    }
+    
+    CPACSEtaIsoLine::~CPACSEtaIsoLine()
+    {
+    }
+    
+    void CPACSEtaIsoLine::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
+    {
+        // read element eta
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/eta")) {
+            m_eta = tixi::TixiGetElement<double>(tixiHandle, xpath + "/eta");
+        }
+        else {
+            LOG(ERROR) << "Required element eta is missing at xpath " << xpath;
+        }
         
-        CPACSEtaIsoLine::~CPACSEtaIsoLine() {}
-        
-        void CPACSEtaIsoLine::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
-        {
-            // read element eta
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/eta")) {
-                m_eta = tixi::TixiGetElement<double>(tixiHandle, xpath + "/eta");
+        // read element referenceUID
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/referenceUID")) {
+            m_referenceUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/referenceUID");
+            if (m_referenceUID.empty()) {
+                LOG(WARNING) << "Required element referenceUID is empty at xpath " << xpath;
             }
-            else {
-                LOG(ERROR) << "Required element eta is missing at xpath " << xpath;
-            }
-            
-            // read element referenceUID
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/referenceUID")) {
-                m_referenceUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/referenceUID");
-                if (m_referenceUID.empty()) {
-                    LOG(WARNING) << "Required element referenceUID is empty at xpath " << xpath;
-                }
-            }
-            else {
-                LOG(ERROR) << "Required element referenceUID is missing at xpath " << xpath;
-            }
-            
         }
-        
-        void CPACSEtaIsoLine::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
-        {
-            // write element eta
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/eta");
-            tixi::TixiSaveElement(tixiHandle, xpath + "/eta", m_eta);
-            
-            // write element referenceUID
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/referenceUID");
-            tixi::TixiSaveElement(tixiHandle, xpath + "/referenceUID", m_referenceUID);
-            
-        }
-        
-        const double& CPACSEtaIsoLine::GetEta() const
-        {
-            return m_eta;
-        }
-        
-        void CPACSEtaIsoLine::SetEta(const double& value)
-        {
-            m_eta = value;
-        }
-        
-        const std::string& CPACSEtaIsoLine::GetReferenceUID() const
-        {
-            return m_referenceUID;
-        }
-        
-        void CPACSEtaIsoLine::SetReferenceUID(const std::string& value)
-        {
-            m_referenceUID = value;
+        else {
+            LOG(ERROR) << "Required element referenceUID is missing at xpath " << xpath;
         }
         
     }
-}
+    
+    void CPACSEtaIsoLine::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
+    {
+        // write element eta
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/eta");
+        tixi::TixiSaveElement(tixiHandle, xpath + "/eta", m_eta);
+        
+        // write element referenceUID
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/referenceUID");
+        tixi::TixiSaveElement(tixiHandle, xpath + "/referenceUID", m_referenceUID);
+        
+    }
+    
+    const double& CPACSEtaIsoLine::GetEta() const
+    {
+        return m_eta;
+    }
+    
+    void CPACSEtaIsoLine::SetEta(const double& value)
+    {
+        m_eta = value;
+    }
+    
+    const std::string& CPACSEtaIsoLine::GetReferenceUID() const
+    {
+        return m_referenceUID;
+    }
+    
+    void CPACSEtaIsoLine::SetReferenceUID(const std::string& value)
+    {
+        m_referenceUID = value;
+    }
+    
+} // namespace generated
+} // namespace tigl

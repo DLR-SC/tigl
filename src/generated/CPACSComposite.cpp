@@ -24,175 +24,179 @@
 
 namespace tigl
 {
-    namespace generated
+namespace generated
+{
+    CPACSComposite::CPACSComposite(CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
     {
-        CPACSComposite::CPACSComposite(CTiglUIDManager* uidMgr) :
-            m_uidMgr(uidMgr) {}
-        
-        CPACSComposite::~CPACSComposite()
-        {
-            if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
+    }
+    
+    CPACSComposite::~CPACSComposite()
+    {
+        if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
+    }
+    
+    CTiglUIDManager& CPACSComposite::GetUIDManager()
+    {
+        return *m_uidMgr;
+    }
+    
+    const CTiglUIDManager& CPACSComposite::GetUIDManager() const
+    {
+        return *m_uidMgr;
+    }
+    
+    void CPACSComposite::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
+    {
+        // read attribute uID
+        if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+            m_uID = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
+            if (m_uID.empty()) {
+                LOG(WARNING) << "Required attribute uID is empty at xpath " << xpath;
+            }
+        }
+        else {
+            LOG(ERROR) << "Required attribute uID is missing at xpath " << xpath;
         }
         
-        CTiglUIDManager& CPACSComposite::GetUIDManager()
-        {
-            return *m_uidMgr;
+        // read element name
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
+            m_name = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
+            if (m_name.empty()) {
+                LOG(WARNING) << "Required element name is empty at xpath " << xpath;
+            }
+        }
+        else {
+            LOG(ERROR) << "Required element name is missing at xpath " << xpath;
         }
         
-        const CTiglUIDManager& CPACSComposite::GetUIDManager() const
-        {
-            return *m_uidMgr;
+        // read element description
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
+            m_description = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
+            if (m_description->empty()) {
+                LOG(WARNING) << "Optional element description is present but empty at xpath " << xpath;
+            }
         }
         
-        void CPACSComposite::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
-        {
-            // read attribute uID
-            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
-                m_uID = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
-                if (m_uID.empty()) {
-                    LOG(WARNING) << "Required attribute uID is empty at xpath " << xpath;
-                }
-            }
-            else {
-                LOG(ERROR) << "Required attribute uID is missing at xpath " << xpath;
-            }
-            
-            // read element name
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
-                m_name = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
-                if (m_name.empty()) {
-                    LOG(WARNING) << "Required element name is empty at xpath " << xpath;
-                }
-            }
-            else {
-                LOG(ERROR) << "Required element name is missing at xpath " << xpath;
-            }
-            
-            // read element description
+        // read element offset
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/offset")) {
+            m_offset = tixi::TixiGetElement<double>(tixiHandle, xpath + "/offset");
+        }
+        
+        // read element compositeLayer
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/compositeLayer")) {
+            tixi::TixiReadElements(tixiHandle, xpath + "/compositeLayer", m_compositeLayers);
+        }
+        
+        if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
+    }
+    
+    void CPACSComposite::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
+    {
+        // write attribute uID
+        tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
+        
+        // write element name
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
+        tixi::TixiSaveElement(tixiHandle, xpath + "/name", m_name);
+        
+        // write element description
+        if (m_description) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
+        }
+        else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
-                m_description = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
-                if (m_description->empty()) {
-                    LOG(WARNING) << "Optional element description is present but empty at xpath " << xpath;
-                }
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/description");
             }
-            
-            // read element offset
+        }
+        
+        // write element offset
+        if (m_offset) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/offset");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/offset", *m_offset);
+        }
+        else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/offset")) {
-                m_offset = tixi::TixiGetElement<double>(tixiHandle, xpath + "/offset");
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/offset");
             }
-            
-            // read element compositeLayer
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/compositeLayer")) {
-                tixi::TixiReadElements(tixiHandle, xpath + "/compositeLayer", m_compositeLayers);
-            }
-            
-            if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
         }
         
-        void CPACSComposite::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
-        {
-            // write attribute uID
-            tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
-            
-            // write element name
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
-            tixi::TixiSaveElement(tixiHandle, xpath + "/name", m_name);
-            
-            // write element description
-            if (m_description) {
-                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
-                tixi::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
-            } else {
-                if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
-                    tixi::TixiRemoveElement(tixiHandle, xpath + "/description");
-                }
-            }
-            
-            // write element offset
-            if (m_offset) {
-                tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/offset");
-                tixi::TixiSaveElement(tixiHandle, xpath + "/offset", *m_offset);
-            } else {
-                if (tixi::TixiCheckElement(tixiHandle, xpath + "/offset")) {
-                    tixi::TixiRemoveElement(tixiHandle, xpath + "/offset");
-                }
-            }
-            
-            // write element compositeLayer
-            tixi::TixiSaveElements(tixiHandle, xpath + "/compositeLayer", m_compositeLayers);
-            
-        }
-        
-        const std::string& CPACSComposite::GetUID() const
-        {
-            return m_uID;
-        }
-        
-        void CPACSComposite::SetUID(const std::string& value)
-        {
-            if (m_uidMgr) {
-                m_uidMgr->TryUnregisterObject(m_uID);
-                m_uidMgr->RegisterObject(value, *this);
-            }
-            m_uID = value;
-        }
-        
-        const std::string& CPACSComposite::GetName() const
-        {
-            return m_name;
-        }
-        
-        void CPACSComposite::SetName(const std::string& value)
-        {
-            m_name = value;
-        }
-        
-        const boost::optional<std::string>& CPACSComposite::GetDescription() const
-        {
-            return m_description;
-        }
-        
-        void CPACSComposite::SetDescription(const boost::optional<std::string>& value)
-        {
-            m_description = value;
-        }
-        
-        const boost::optional<double>& CPACSComposite::GetOffset() const
-        {
-            return m_offset;
-        }
-        
-        void CPACSComposite::SetOffset(const boost::optional<double>& value)
-        {
-            m_offset = value;
-        }
-        
-        const std::vector<unique_ptr<CPACSCompositeLayer> >& CPACSComposite::GetCompositeLayers() const
-        {
-            return m_compositeLayers;
-        }
-        
-        std::vector<unique_ptr<CPACSCompositeLayer> >& CPACSComposite::GetCompositeLayers()
-        {
-            return m_compositeLayers;
-        }
-        
-        CPACSCompositeLayer& CPACSComposite::AddCompositeLayer()
-        {
-            m_compositeLayers.push_back(make_unique<CPACSCompositeLayer>());
-            return *m_compositeLayers.back();
-        }
-        
-        void CPACSComposite::RemoveCompositeLayer(CPACSCompositeLayer& ref)
-        {
-            for (std::size_t i = 0; i < m_compositeLayers.size(); i++) {
-                if (m_compositeLayers[i].get() == &ref) {
-                    m_compositeLayers.erase(m_compositeLayers.begin() + i);
-                    return;
-                }
-            }
-            throw CTiglError("Element not found");
-        }
+        // write element compositeLayer
+        tixi::TixiSaveElements(tixiHandle, xpath + "/compositeLayer", m_compositeLayers);
         
     }
-}
+    
+    const std::string& CPACSComposite::GetUID() const
+    {
+        return m_uID;
+    }
+    
+    void CPACSComposite::SetUID(const std::string& value)
+    {
+        if (m_uidMgr) {
+            m_uidMgr->TryUnregisterObject(m_uID);
+            m_uidMgr->RegisterObject(value, *this);
+        }
+        m_uID = value;
+    }
+    
+    const std::string& CPACSComposite::GetName() const
+    {
+        return m_name;
+    }
+    
+    void CPACSComposite::SetName(const std::string& value)
+    {
+        m_name = value;
+    }
+    
+    const boost::optional<std::string>& CPACSComposite::GetDescription() const
+    {
+        return m_description;
+    }
+    
+    void CPACSComposite::SetDescription(const boost::optional<std::string>& value)
+    {
+        m_description = value;
+    }
+    
+    const boost::optional<double>& CPACSComposite::GetOffset() const
+    {
+        return m_offset;
+    }
+    
+    void CPACSComposite::SetOffset(const boost::optional<double>& value)
+    {
+        m_offset = value;
+    }
+    
+    const std::vector<unique_ptr<CPACSCompositeLayer> >& CPACSComposite::GetCompositeLayers() const
+    {
+        return m_compositeLayers;
+    }
+    
+    std::vector<unique_ptr<CPACSCompositeLayer> >& CPACSComposite::GetCompositeLayers()
+    {
+        return m_compositeLayers;
+    }
+    
+    CPACSCompositeLayer& CPACSComposite::AddCompositeLayer()
+    {
+        m_compositeLayers.push_back(make_unique<CPACSCompositeLayer>());
+        return *m_compositeLayers.back();
+    }
+    
+    void CPACSComposite::RemoveCompositeLayer(CPACSCompositeLayer& ref)
+    {
+        for (std::size_t i = 0; i < m_compositeLayers.size(); i++) {
+            if (m_compositeLayers[i].get() == &ref) {
+                m_compositeLayers.erase(m_compositeLayers.begin() + i);
+                return;
+            }
+        }
+        throw CTiglError("Element not found");
+    }
+    
+} // namespace generated
+} // namespace tigl

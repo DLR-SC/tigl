@@ -27,69 +27,69 @@
 
 namespace tigl
 {
-    class CTiglUIDManager;
-    class CCPACSWingSparSegments;
+class CTiglUIDManager;
+class CCPACSWingSparSegments;
+
+namespace generated
+{
+    // This class is used in:
+    // CPACSSparSegments
     
-    namespace generated
+    // generated from /xsd:schema/xsd:complexType[816]
+    class CPACSSparSegment
     {
-        // This class is used in:
-        // CPACSSparSegments
+    public:
+        TIGL_EXPORT CPACSSparSegment(CCPACSWingSparSegments* parent, CTiglUIDManager* uidMgr);
         
-        // generated from /xsd:schema/xsd:complexType[816]
-        class CPACSSparSegment
-        {
-        public:
-            TIGL_EXPORT CPACSSparSegment(CCPACSWingSparSegments* parent, CTiglUIDManager* uidMgr);
-            
-            TIGL_EXPORT virtual ~CPACSSparSegment();
-            
-            TIGL_EXPORT CCPACSWingSparSegments* GetParent() const;
-            
-            TIGL_EXPORT CTiglUIDManager& GetUIDManager();
-            TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
-            
-            TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
-            TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
-            
-            TIGL_EXPORT virtual const boost::optional<std::string>& GetUID() const;
-            TIGL_EXPORT virtual void SetUID(const boost::optional<std::string>& value);
-            
-            TIGL_EXPORT virtual const std::string& GetName() const;
-            TIGL_EXPORT virtual void SetName(const std::string& value);
-            
-            TIGL_EXPORT virtual const std::string& GetDescription() const;
-            TIGL_EXPORT virtual void SetDescription(const std::string& value);
-            
-            TIGL_EXPORT virtual const CCPACSWingSparPositionUIDs& GetSparPositionUIDs() const;
-            TIGL_EXPORT virtual CCPACSWingSparPositionUIDs& GetSparPositionUIDs();
-            
-            TIGL_EXPORT virtual const CPACSSparCrossSection& GetSparCrossSection() const;
-            TIGL_EXPORT virtual CPACSSparCrossSection& GetSparCrossSection();
-            
-        protected:
-            CCPACSWingSparSegments* m_parent;
-            
-            CTiglUIDManager* m_uidMgr;
-            
-            boost::optional<std::string> m_uID;
-            std::string                  m_name;
-            std::string                  m_description;
-            CCPACSWingSparPositionUIDs   m_sparPositionUIDs;
-            CPACSSparCrossSection        m_sparCrossSection;
-            
-        private:
-            #ifdef HAVE_CPP11
-            CPACSSparSegment(const CPACSSparSegment&) = delete;
-            CPACSSparSegment& operator=(const CPACSSparSegment&) = delete;
-            
-            CPACSSparSegment(CPACSSparSegment&&) = delete;
-            CPACSSparSegment& operator=(CPACSSparSegment&&) = delete;
-            #else
-            CPACSSparSegment(const CPACSSparSegment&);
-            CPACSSparSegment& operator=(const CPACSSparSegment&);
-            #endif
-        };
-    }
-    
-    // CPACSSparSegment is customized, use type CCPACSWingSparSegment directly
-}
+        TIGL_EXPORT virtual ~CPACSSparSegment();
+        
+        TIGL_EXPORT CCPACSWingSparSegments* GetParent() const;
+        
+        TIGL_EXPORT CTiglUIDManager& GetUIDManager();
+        TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
+        
+        TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+        TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
+        
+        TIGL_EXPORT virtual const boost::optional<std::string>& GetUID() const;
+        TIGL_EXPORT virtual void SetUID(const boost::optional<std::string>& value);
+        
+        TIGL_EXPORT virtual const std::string& GetName() const;
+        TIGL_EXPORT virtual void SetName(const std::string& value);
+        
+        TIGL_EXPORT virtual const std::string& GetDescription() const;
+        TIGL_EXPORT virtual void SetDescription(const std::string& value);
+        
+        TIGL_EXPORT virtual const CCPACSWingSparPositionUIDs& GetSparPositionUIDs() const;
+        TIGL_EXPORT virtual CCPACSWingSparPositionUIDs& GetSparPositionUIDs();
+        
+        TIGL_EXPORT virtual const CPACSSparCrossSection& GetSparCrossSection() const;
+        TIGL_EXPORT virtual CPACSSparCrossSection& GetSparCrossSection();
+        
+    protected:
+        CCPACSWingSparSegments* m_parent;
+        
+        CTiglUIDManager* m_uidMgr;
+        
+        boost::optional<std::string> m_uID;
+        std::string                  m_name;
+        std::string                  m_description;
+        CCPACSWingSparPositionUIDs   m_sparPositionUIDs;
+        CPACSSparCrossSection        m_sparCrossSection;
+        
+    private:
+#ifdef HAVE_CPP11
+        CPACSSparSegment(const CPACSSparSegment&) = delete;
+        CPACSSparSegment& operator=(const CPACSSparSegment&) = delete;
+        
+        CPACSSparSegment(CPACSSparSegment&&) = delete;
+        CPACSSparSegment& operator=(CPACSSparSegment&&) = delete;
+#else
+        CPACSSparSegment(const CPACSSparSegment&);
+        CPACSSparSegment& operator=(const CPACSSparSegment&);
+#endif
+    };
+} // namespace generated
+
+// CPACSSparSegment is customized, use type CCPACSWingSparSegment directly
+} // namespace tigl

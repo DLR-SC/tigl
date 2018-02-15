@@ -28,64 +28,64 @@
 
 namespace tigl
 {
-    class CTiglUIDManager;
-    class CCPACSWingCSStructure;
+class CTiglUIDManager;
+class CCPACSWingCSStructure;
+
+namespace generated
+{
+    // This class is used in:
+    // CPACSWingComponentSegmentStructure
     
-    namespace generated
+    // generated from /xsd:schema/xsd:complexType[957]
+    class CPACSWingShell
     {
-        // This class is used in:
-        // CPACSWingComponentSegmentStructure
+    public:
+        TIGL_EXPORT CPACSWingShell(CCPACSWingCSStructure* parent, CTiglUIDManager* uidMgr);
         
-        // generated from /xsd:schema/xsd:complexType[957]
-        class CPACSWingShell
-        {
-        public:
-            TIGL_EXPORT CPACSWingShell(CCPACSWingCSStructure* parent, CTiglUIDManager* uidMgr);
-            
-            TIGL_EXPORT virtual ~CPACSWingShell();
-            
-            TIGL_EXPORT CCPACSWingCSStructure* GetParent() const;
-            
-            TIGL_EXPORT CTiglUIDManager& GetUIDManager();
-            TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
-            
-            TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
-            TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
-            
-            TIGL_EXPORT virtual const std::string& GetUID() const;
-            TIGL_EXPORT virtual void SetUID(const std::string& value);
-            
-            TIGL_EXPORT virtual const CPACSWingSkin& GetSkin() const;
-            TIGL_EXPORT virtual CPACSWingSkin& GetSkin();
-            
-            TIGL_EXPORT virtual const boost::optional<CCPACSWingCells>& GetCells() const;
-            TIGL_EXPORT virtual boost::optional<CCPACSWingCells>& GetCells();
-            
-            TIGL_EXPORT virtual CCPACSWingCells& GetCells(CreateIfNotExistsTag);
-            TIGL_EXPORT virtual void RemoveCells();
-            
-        protected:
-            CCPACSWingCSStructure* m_parent;
-            
-            CTiglUIDManager* m_uidMgr;
-            
-            std::string                      m_uID;
-            CPACSWingSkin                    m_skin;
-            boost::optional<CCPACSWingCells> m_cells;
-            
-        private:
-            #ifdef HAVE_CPP11
-            CPACSWingShell(const CPACSWingShell&) = delete;
-            CPACSWingShell& operator=(const CPACSWingShell&) = delete;
-            
-            CPACSWingShell(CPACSWingShell&&) = delete;
-            CPACSWingShell& operator=(CPACSWingShell&&) = delete;
-            #else
-            CPACSWingShell(const CPACSWingShell&);
-            CPACSWingShell& operator=(const CPACSWingShell&);
-            #endif
-        };
-    }
-    
-    // CPACSWingShell is customized, use type CCPACSWingShell directly
-}
+        TIGL_EXPORT virtual ~CPACSWingShell();
+        
+        TIGL_EXPORT CCPACSWingCSStructure* GetParent() const;
+        
+        TIGL_EXPORT CTiglUIDManager& GetUIDManager();
+        TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
+        
+        TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+        TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
+        
+        TIGL_EXPORT virtual const std::string& GetUID() const;
+        TIGL_EXPORT virtual void SetUID(const std::string& value);
+        
+        TIGL_EXPORT virtual const CPACSWingSkin& GetSkin() const;
+        TIGL_EXPORT virtual CPACSWingSkin& GetSkin();
+        
+        TIGL_EXPORT virtual const boost::optional<CCPACSWingCells>& GetCells() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSWingCells>& GetCells();
+        
+        TIGL_EXPORT virtual CCPACSWingCells& GetCells(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveCells();
+        
+    protected:
+        CCPACSWingCSStructure* m_parent;
+        
+        CTiglUIDManager* m_uidMgr;
+        
+        std::string                      m_uID;
+        CPACSWingSkin                    m_skin;
+        boost::optional<CCPACSWingCells> m_cells;
+        
+    private:
+#ifdef HAVE_CPP11
+        CPACSWingShell(const CPACSWingShell&) = delete;
+        CPACSWingShell& operator=(const CPACSWingShell&) = delete;
+        
+        CPACSWingShell(CPACSWingShell&&) = delete;
+        CPACSWingShell& operator=(CPACSWingShell&&) = delete;
+#else
+        CPACSWingShell(const CPACSWingShell&);
+        CPACSWingShell& operator=(const CPACSWingShell&);
+#endif
+    };
+} // namespace generated
+
+// CPACSWingShell is customized, use type CCPACSWingShell directly
+} // namespace tigl

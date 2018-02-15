@@ -24,61 +24,61 @@
 
 namespace tigl
 {
-    namespace generated
-    {
-        // This class is used in:
-        // CPACSUpdates
-        
-        // generated from /xsd:schema/xsd:complexType[891]
-        class CPACSUpdate
-        {
-        public:
-            TIGL_EXPORT CPACSUpdate();
-            TIGL_EXPORT virtual ~CPACSUpdate();
-            
-            TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
-            TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
-            
-            TIGL_EXPORT virtual const std::string& GetModification() const;
-            TIGL_EXPORT virtual void SetModification(const std::string& value);
-            
-            TIGL_EXPORT virtual const std::string& GetCreator() const;
-            TIGL_EXPORT virtual void SetCreator(const std::string& value);
-            
-            TIGL_EXPORT virtual const std::time_t& GetTimestamp() const;
-            TIGL_EXPORT virtual void SetTimestamp(const std::time_t& value);
-            
-            TIGL_EXPORT virtual const std::string& GetVersion() const;
-            TIGL_EXPORT virtual void SetVersion(const std::string& value);
-            
-            TIGL_EXPORT virtual const std::string& GetCpacsVersion() const;
-            TIGL_EXPORT virtual void SetCpacsVersion(const std::string& value);
-            
-        protected:
-            std::string m_modification;
-            std::string m_creator;
-            std::time_t m_timestamp;
-            std::string m_version;
-            std::string m_cpacsVersion;
-            
-        private:
-            #ifdef HAVE_CPP11
-            CPACSUpdate(const CPACSUpdate&) = delete;
-            CPACSUpdate& operator=(const CPACSUpdate&) = delete;
-            
-            CPACSUpdate(CPACSUpdate&&) = delete;
-            CPACSUpdate& operator=(CPACSUpdate&&) = delete;
-            #else
-            CPACSUpdate(const CPACSUpdate&);
-            CPACSUpdate& operator=(const CPACSUpdate&);
-            #endif
-        };
-    }
+namespace generated
+{
+    // This class is used in:
+    // CPACSUpdates
     
-    // Aliases in tigl namespace
-    #ifdef HAVE_CPP11
-    using CCPACSUpdate = generated::CPACSUpdate;
-    #else
-    typedef generated::CPACSUpdate CCPACSUpdate;
-    #endif
-}
+    // generated from /xsd:schema/xsd:complexType[891]
+    class CPACSUpdate
+    {
+    public:
+        TIGL_EXPORT CPACSUpdate();
+        TIGL_EXPORT virtual ~CPACSUpdate();
+        
+        TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+        TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
+        
+        TIGL_EXPORT virtual const std::string& GetModification() const;
+        TIGL_EXPORT virtual void SetModification(const std::string& value);
+        
+        TIGL_EXPORT virtual const std::string& GetCreator() const;
+        TIGL_EXPORT virtual void SetCreator(const std::string& value);
+        
+        TIGL_EXPORT virtual const std::time_t& GetTimestamp() const;
+        TIGL_EXPORT virtual void SetTimestamp(const std::time_t& value);
+        
+        TIGL_EXPORT virtual const std::string& GetVersion() const;
+        TIGL_EXPORT virtual void SetVersion(const std::string& value);
+        
+        TIGL_EXPORT virtual const std::string& GetCpacsVersion() const;
+        TIGL_EXPORT virtual void SetCpacsVersion(const std::string& value);
+        
+    protected:
+        std::string m_modification;
+        std::string m_creator;
+        std::time_t m_timestamp;
+        std::string m_version;
+        std::string m_cpacsVersion;
+        
+    private:
+#ifdef HAVE_CPP11
+        CPACSUpdate(const CPACSUpdate&) = delete;
+        CPACSUpdate& operator=(const CPACSUpdate&) = delete;
+        
+        CPACSUpdate(CPACSUpdate&&) = delete;
+        CPACSUpdate& operator=(CPACSUpdate&&) = delete;
+#else
+        CPACSUpdate(const CPACSUpdate&);
+        CPACSUpdate& operator=(const CPACSUpdate&);
+#endif
+    };
+} // namespace generated
+
+// Aliases in tigl namespace
+#ifdef HAVE_CPP11
+using CCPACSUpdate = generated::CPACSUpdate;
+#else
+typedef generated::CPACSUpdate CCPACSUpdate;
+#endif
+} // namespace tigl

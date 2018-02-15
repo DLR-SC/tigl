@@ -26,74 +26,76 @@
 
 namespace tigl
 {
-    namespace generated
+namespace generated
+{
+    CPACSFuselageSegments::CPACSFuselageSegments(CCPACSFuselage* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
     {
-        CPACSFuselageSegments::CPACSFuselageSegments(CCPACSFuselage* parent, CTiglUIDManager* uidMgr) :
-            m_uidMgr(uidMgr)
-        {
-            //assert(parent != NULL);
-            m_parent = parent;
-        }
-        
-        CPACSFuselageSegments::~CPACSFuselageSegments() {}
-        
-        CCPACSFuselage* CPACSFuselageSegments::GetParent() const
-        {
-            return m_parent;
-        }
-        
-        CTiglUIDManager& CPACSFuselageSegments::GetUIDManager()
-        {
-            return *m_uidMgr;
-        }
-        
-        const CTiglUIDManager& CPACSFuselageSegments::GetUIDManager() const
-        {
-            return *m_uidMgr;
-        }
-        
-        void CPACSFuselageSegments::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
-        {
-            // read element segment
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/segment")) {
-                tixi::TixiReadElements(tixiHandle, xpath + "/segment", m_segments, reinterpret_cast<CCPACSFuselageSegments*>(this), m_uidMgr);
-            }
-            
-        }
-        
-        void CPACSFuselageSegments::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
-        {
-            // write element segment
-            tixi::TixiSaveElements(tixiHandle, xpath + "/segment", m_segments);
-            
-        }
-        
-        const std::vector<unique_ptr<CCPACSFuselageSegment> >& CPACSFuselageSegments::GetSegments() const
-        {
-            return m_segments;
-        }
-        
-        std::vector<unique_ptr<CCPACSFuselageSegment> >& CPACSFuselageSegments::GetSegments()
-        {
-            return m_segments;
-        }
-        
-        CCPACSFuselageSegment& CPACSFuselageSegments::AddSegment()
-        {
-            m_segments.push_back(make_unique<CCPACSFuselageSegment>(reinterpret_cast<CCPACSFuselageSegments*>(this), m_uidMgr));
-            return *m_segments.back();
-        }
-        
-        void CPACSFuselageSegments::RemoveSegment(CCPACSFuselageSegment& ref)
-        {
-            for (std::size_t i = 0; i < m_segments.size(); i++) {
-                if (m_segments[i].get() == &ref) {
-                    m_segments.erase(m_segments.begin() + i);
-                    return;
-                }
-            }
-            throw CTiglError("Element not found");
+        //assert(parent != NULL);
+        m_parent = parent;
+    }
+    
+    CPACSFuselageSegments::~CPACSFuselageSegments()
+    {
+    }
+    
+    CCPACSFuselage* CPACSFuselageSegments::GetParent() const
+    {
+        return m_parent;
+    }
+    
+    CTiglUIDManager& CPACSFuselageSegments::GetUIDManager()
+    {
+        return *m_uidMgr;
+    }
+    
+    const CTiglUIDManager& CPACSFuselageSegments::GetUIDManager() const
+    {
+        return *m_uidMgr;
+    }
+    
+    void CPACSFuselageSegments::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
+    {
+        // read element segment
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/segment")) {
+            tixi::TixiReadElements(tixiHandle, xpath + "/segment", m_segments, reinterpret_cast<CCPACSFuselageSegments*>(this), m_uidMgr);
         }
         
     }
-}
+    
+    void CPACSFuselageSegments::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
+    {
+        // write element segment
+        tixi::TixiSaveElements(tixiHandle, xpath + "/segment", m_segments);
+        
+    }
+    
+    const std::vector<unique_ptr<CCPACSFuselageSegment> >& CPACSFuselageSegments::GetSegments() const
+    {
+        return m_segments;
+    }
+    
+    std::vector<unique_ptr<CCPACSFuselageSegment> >& CPACSFuselageSegments::GetSegments()
+    {
+        return m_segments;
+    }
+    
+    CCPACSFuselageSegment& CPACSFuselageSegments::AddSegment()
+    {
+        m_segments.push_back(make_unique<CCPACSFuselageSegment>(reinterpret_cast<CCPACSFuselageSegments*>(this), m_uidMgr));
+        return *m_segments.back();
+    }
+    
+    void CPACSFuselageSegments::RemoveSegment(CCPACSFuselageSegment& ref)
+    {
+        for (std::size_t i = 0; i < m_segments.size(); i++) {
+            if (m_segments[i].get() == &ref) {
+                m_segments.erase(m_segments.begin() + i);
+                return;
+            }
+        }
+        throw CTiglError("Element not found");
+    }
+    
+} // namespace generated
+} // namespace tigl

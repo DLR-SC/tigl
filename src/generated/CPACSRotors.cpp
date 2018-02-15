@@ -26,74 +26,76 @@
 
 namespace tigl
 {
-    namespace generated
+namespace generated
+{
+    CPACSRotors::CPACSRotors(CCPACSRotorcraftModel* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
     {
-        CPACSRotors::CPACSRotors(CCPACSRotorcraftModel* parent, CTiglUIDManager* uidMgr) :
-            m_uidMgr(uidMgr)
-        {
-            //assert(parent != NULL);
-            m_parent = parent;
-        }
-        
-        CPACSRotors::~CPACSRotors() {}
-        
-        CCPACSRotorcraftModel* CPACSRotors::GetParent() const
-        {
-            return m_parent;
-        }
-        
-        CTiglUIDManager& CPACSRotors::GetUIDManager()
-        {
-            return *m_uidMgr;
-        }
-        
-        const CTiglUIDManager& CPACSRotors::GetUIDManager() const
-        {
-            return *m_uidMgr;
-        }
-        
-        void CPACSRotors::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
-        {
-            // read element rotor
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/rotor")) {
-                tixi::TixiReadElements(tixiHandle, xpath + "/rotor", m_rotors, reinterpret_cast<CCPACSRotors*>(this), m_uidMgr);
-            }
-            
-        }
-        
-        void CPACSRotors::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
-        {
-            // write element rotor
-            tixi::TixiSaveElements(tixiHandle, xpath + "/rotor", m_rotors);
-            
-        }
-        
-        const std::vector<unique_ptr<CCPACSRotor> >& CPACSRotors::GetRotors() const
-        {
-            return m_rotors;
-        }
-        
-        std::vector<unique_ptr<CCPACSRotor> >& CPACSRotors::GetRotors()
-        {
-            return m_rotors;
-        }
-        
-        CCPACSRotor& CPACSRotors::AddRotor()
-        {
-            m_rotors.push_back(make_unique<CCPACSRotor>(reinterpret_cast<CCPACSRotors*>(this), m_uidMgr));
-            return *m_rotors.back();
-        }
-        
-        void CPACSRotors::RemoveRotor(CCPACSRotor& ref)
-        {
-            for (std::size_t i = 0; i < m_rotors.size(); i++) {
-                if (m_rotors[i].get() == &ref) {
-                    m_rotors.erase(m_rotors.begin() + i);
-                    return;
-                }
-            }
-            throw CTiglError("Element not found");
+        //assert(parent != NULL);
+        m_parent = parent;
+    }
+    
+    CPACSRotors::~CPACSRotors()
+    {
+    }
+    
+    CCPACSRotorcraftModel* CPACSRotors::GetParent() const
+    {
+        return m_parent;
+    }
+    
+    CTiglUIDManager& CPACSRotors::GetUIDManager()
+    {
+        return *m_uidMgr;
+    }
+    
+    const CTiglUIDManager& CPACSRotors::GetUIDManager() const
+    {
+        return *m_uidMgr;
+    }
+    
+    void CPACSRotors::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
+    {
+        // read element rotor
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/rotor")) {
+            tixi::TixiReadElements(tixiHandle, xpath + "/rotor", m_rotors, reinterpret_cast<CCPACSRotors*>(this), m_uidMgr);
         }
         
     }
-}
+    
+    void CPACSRotors::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
+    {
+        // write element rotor
+        tixi::TixiSaveElements(tixiHandle, xpath + "/rotor", m_rotors);
+        
+    }
+    
+    const std::vector<unique_ptr<CCPACSRotor> >& CPACSRotors::GetRotors() const
+    {
+        return m_rotors;
+    }
+    
+    std::vector<unique_ptr<CCPACSRotor> >& CPACSRotors::GetRotors()
+    {
+        return m_rotors;
+    }
+    
+    CCPACSRotor& CPACSRotors::AddRotor()
+    {
+        m_rotors.push_back(make_unique<CCPACSRotor>(reinterpret_cast<CCPACSRotors*>(this), m_uidMgr));
+        return *m_rotors.back();
+    }
+    
+    void CPACSRotors::RemoveRotor(CCPACSRotor& ref)
+    {
+        for (std::size_t i = 0; i < m_rotors.size(); i++) {
+            if (m_rotors[i].get() == &ref) {
+                m_rotors.erase(m_rotors.begin() + i);
+                return;
+            }
+        }
+        throw CTiglError("Element not found");
+    }
+    
+} // namespace generated
+} // namespace tigl

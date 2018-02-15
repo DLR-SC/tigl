@@ -29,90 +29,90 @@
 
 namespace tigl
 {
-    class CTiglUIDManager;
-    class CCPACSWingSparSegment;
+class CTiglUIDManager;
+class CCPACSWingSparSegment;
+
+namespace generated
+{
+    // This class is used in:
+    // CPACSSparSegment
     
-    namespace generated
+    // generated from /xsd:schema/xsd:complexType[812]
+    class CPACSSparCrossSection
     {
-        // This class is used in:
-        // CPACSSparSegment
+    public:
+        TIGL_EXPORT CPACSSparCrossSection(CCPACSWingSparSegment* parent, CTiglUIDManager* uidMgr);
         
-        // generated from /xsd:schema/xsd:complexType[812]
-        class CPACSSparCrossSection
-        {
-        public:
-            TIGL_EXPORT CPACSSparCrossSection(CCPACSWingSparSegment* parent, CTiglUIDManager* uidMgr);
-            
-            TIGL_EXPORT virtual ~CPACSSparCrossSection();
-            
-            TIGL_EXPORT CCPACSWingSparSegment* GetParent() const;
-            
-            TIGL_EXPORT CTiglUIDManager& GetUIDManager();
-            TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
-            
-            TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
-            TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
-            
-            TIGL_EXPORT virtual const boost::optional<CPACSCap>& GetUpperCap() const;
-            TIGL_EXPORT virtual boost::optional<CPACSCap>& GetUpperCap();
-            
-            TIGL_EXPORT virtual const boost::optional<CPACSCap>& GetLowerCap() const;
-            TIGL_EXPORT virtual boost::optional<CPACSCap>& GetLowerCap();
-            
-            TIGL_EXPORT virtual const CPACSWeb& GetWeb1() const;
-            TIGL_EXPORT virtual CPACSWeb& GetWeb1();
-            
-            TIGL_EXPORT virtual const boost::optional<CPACSWeb>& GetWeb2() const;
-            TIGL_EXPORT virtual boost::optional<CPACSWeb>& GetWeb2();
-            
-            TIGL_EXPORT virtual const boost::optional<CPACSSparCells>& GetSparCells() const;
-            TIGL_EXPORT virtual boost::optional<CPACSSparCells>& GetSparCells();
-            
-            TIGL_EXPORT virtual const double& GetRotation() const;
-            TIGL_EXPORT virtual void SetRotation(const double& value);
-            
-            TIGL_EXPORT virtual CPACSCap& GetUpperCap(CreateIfNotExistsTag);
-            TIGL_EXPORT virtual void RemoveUpperCap();
-            
-            TIGL_EXPORT virtual CPACSCap& GetLowerCap(CreateIfNotExistsTag);
-            TIGL_EXPORT virtual void RemoveLowerCap();
-            
-            TIGL_EXPORT virtual CPACSWeb& GetWeb2(CreateIfNotExistsTag);
-            TIGL_EXPORT virtual void RemoveWeb2();
-            
-            TIGL_EXPORT virtual CPACSSparCells& GetSparCells(CreateIfNotExistsTag);
-            TIGL_EXPORT virtual void RemoveSparCells();
-            
-        protected:
-            CCPACSWingSparSegment* m_parent;
-            
-            CTiglUIDManager* m_uidMgr;
-            
-            boost::optional<CPACSCap>       m_upperCap;
-            boost::optional<CPACSCap>       m_lowerCap;
-            CPACSWeb                        m_web1;
-            boost::optional<CPACSWeb>       m_web2;
-            boost::optional<CPACSSparCells> m_sparCells;
-            double                          m_rotation;
-            
-        private:
-            #ifdef HAVE_CPP11
-            CPACSSparCrossSection(const CPACSSparCrossSection&) = delete;
-            CPACSSparCrossSection& operator=(const CPACSSparCrossSection&) = delete;
-            
-            CPACSSparCrossSection(CPACSSparCrossSection&&) = delete;
-            CPACSSparCrossSection& operator=(CPACSSparCrossSection&&) = delete;
-            #else
-            CPACSSparCrossSection(const CPACSSparCrossSection&);
-            CPACSSparCrossSection& operator=(const CPACSSparCrossSection&);
-            #endif
-        };
-    }
-    
-    // Aliases in tigl namespace
-    #ifdef HAVE_CPP11
-    using CCPACSSparCrossSection = generated::CPACSSparCrossSection;
-    #else
-    typedef generated::CPACSSparCrossSection CCPACSSparCrossSection;
-    #endif
-}
+        TIGL_EXPORT virtual ~CPACSSparCrossSection();
+        
+        TIGL_EXPORT CCPACSWingSparSegment* GetParent() const;
+        
+        TIGL_EXPORT CTiglUIDManager& GetUIDManager();
+        TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
+        
+        TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+        TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
+        
+        TIGL_EXPORT virtual const boost::optional<CPACSCap>& GetUpperCap() const;
+        TIGL_EXPORT virtual boost::optional<CPACSCap>& GetUpperCap();
+        
+        TIGL_EXPORT virtual const boost::optional<CPACSCap>& GetLowerCap() const;
+        TIGL_EXPORT virtual boost::optional<CPACSCap>& GetLowerCap();
+        
+        TIGL_EXPORT virtual const CPACSWeb& GetWeb1() const;
+        TIGL_EXPORT virtual CPACSWeb& GetWeb1();
+        
+        TIGL_EXPORT virtual const boost::optional<CPACSWeb>& GetWeb2() const;
+        TIGL_EXPORT virtual boost::optional<CPACSWeb>& GetWeb2();
+        
+        TIGL_EXPORT virtual const boost::optional<CPACSSparCells>& GetSparCells() const;
+        TIGL_EXPORT virtual boost::optional<CPACSSparCells>& GetSparCells();
+        
+        TIGL_EXPORT virtual const double& GetRotation() const;
+        TIGL_EXPORT virtual void SetRotation(const double& value);
+        
+        TIGL_EXPORT virtual CPACSCap& GetUpperCap(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveUpperCap();
+        
+        TIGL_EXPORT virtual CPACSCap& GetLowerCap(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveLowerCap();
+        
+        TIGL_EXPORT virtual CPACSWeb& GetWeb2(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveWeb2();
+        
+        TIGL_EXPORT virtual CPACSSparCells& GetSparCells(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveSparCells();
+        
+    protected:
+        CCPACSWingSparSegment* m_parent;
+        
+        CTiglUIDManager* m_uidMgr;
+        
+        boost::optional<CPACSCap>       m_upperCap;
+        boost::optional<CPACSCap>       m_lowerCap;
+        CPACSWeb                        m_web1;
+        boost::optional<CPACSWeb>       m_web2;
+        boost::optional<CPACSSparCells> m_sparCells;
+        double                          m_rotation;
+        
+    private:
+#ifdef HAVE_CPP11
+        CPACSSparCrossSection(const CPACSSparCrossSection&) = delete;
+        CPACSSparCrossSection& operator=(const CPACSSparCrossSection&) = delete;
+        
+        CPACSSparCrossSection(CPACSSparCrossSection&&) = delete;
+        CPACSSparCrossSection& operator=(CPACSSparCrossSection&&) = delete;
+#else
+        CPACSSparCrossSection(const CPACSSparCrossSection&);
+        CPACSSparCrossSection& operator=(const CPACSSparCrossSection&);
+#endif
+    };
+} // namespace generated
+
+// Aliases in tigl namespace
+#ifdef HAVE_CPP11
+using CCPACSSparCrossSection = generated::CPACSSparCrossSection;
+#else
+typedef generated::CPACSSparCrossSection CCPACSSparCrossSection;
+#endif
+} // namespace tigl

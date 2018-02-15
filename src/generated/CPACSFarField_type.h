@@ -25,40 +25,40 @@
 
 namespace tigl
 {
-    namespace generated
+namespace generated
+{
+    // This enum is used in:
+    // CPACSFarField
+    
+    // generated from /xsd:schema/xsd:complexType[325]/xsd:complexContent/xsd:extension/xsd:sequence/xsd:element[1]/xsd:complexType/xsd:simpleContent
+    enum CPACSFarField_type
     {
-        // This enum is used in:
-        // CPACSFarField
-        
-        // generated from /xsd:schema/xsd:complexType[325]/xsd:complexContent/xsd:extension/xsd:sequence/xsd:element[1]/xsd:complexType/xsd:simpleContent
-        enum CPACSFarField_type
-        {
-            halfSphere,
-            fullSphere,
-            halfCube,
-            fullCube
-        };
-        
-        inline std::string TiglFarFieldTypeToString(const CPACSFarField_type& value)
-        {
-            switch(value) {
-            case halfSphere: return "halfSphere";
-            case fullSphere: return "fullSphere";
-            case halfCube: return "halfCube";
-            case fullCube: return "fullCube";
-            default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSFarField_type");
-            }
-        }
-        inline CPACSFarField_type stringToTiglFarFieldType(const std::string& value)
-        {
-            struct ToLower { std::string operator()(std::string str) { for (std::size_t i = 0; i < str.length(); i++) { str[i] = std::tolower(str[i]); } return str; } } toLower;
-            if (toLower(value) == "halfsphere") { return halfSphere; }
-            if (toLower(value) == "fullsphere") { return fullSphere; }
-            if (toLower(value) == "halfcube") { return halfCube; }
-            if (toLower(value) == "fullcube") { return fullCube; }
-            throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSFarField_type");
+        halfSphere,
+        fullSphere,
+        halfCube,
+        fullCube
+    };
+    
+    inline std::string TiglFarFieldTypeToString(const CPACSFarField_type& value)
+    {
+        switch(value) {
+        case halfSphere: return "halfSphere";
+        case fullSphere: return "fullSphere";
+        case halfCube: return "halfCube";
+        case fullCube: return "fullCube";
+        default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSFarField_type");
         }
     }
-    
-    // CPACSFarField_type is customized, use type TiglFarFieldType directly
-}
+    inline CPACSFarField_type stringToTiglFarFieldType(const std::string& value)
+    {
+        struct ToLower { std::string operator()(std::string str) { for (std::size_t i = 0; i < str.length(); i++) { str[i] = std::tolower(str[i]); } return str; } } toLower;
+        if (toLower(value) == "halfsphere") { return halfSphere; }
+        if (toLower(value) == "fullsphere") { return fullSphere; }
+        if (toLower(value) == "halfcube") { return halfCube; }
+        if (toLower(value) == "fullcube") { return fullCube; }
+        throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSFarField_type");
+    }
+} // namespace generated
+
+// CPACSFarField_type is customized, use type TiglFarFieldType directly
+} // namespace tigl

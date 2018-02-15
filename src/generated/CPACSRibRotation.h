@@ -26,51 +26,51 @@
 
 namespace tigl
 {
-    class CCPACSWingRibsPositioning;
+class CCPACSWingRibsPositioning;
+
+namespace generated
+{
+    // This class is used in:
+    // CPACSWingRibsPositioning
     
-    namespace generated
+    // generated from /xsd:schema/xsd:complexType[758]
+    class CPACSRibRotation
     {
-        // This class is used in:
-        // CPACSWingRibsPositioning
+    public:
+        TIGL_EXPORT CPACSRibRotation(CCPACSWingRibsPositioning* parent);
         
-        // generated from /xsd:schema/xsd:complexType[758]
-        class CPACSRibRotation
-        {
-        public:
-            TIGL_EXPORT CPACSRibRotation(CCPACSWingRibsPositioning* parent);
-            
-            TIGL_EXPORT virtual ~CPACSRibRotation();
-            
-            TIGL_EXPORT CCPACSWingRibsPositioning* GetParent() const;
-            
-            TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
-            TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
-            
-            TIGL_EXPORT virtual const boost::optional<CPACSRibRotation_ribRotationReference>& GetRibRotationReference() const;
-            TIGL_EXPORT virtual void SetRibRotationReference(const boost::optional<CPACSRibRotation_ribRotationReference>& value);
-            
-            TIGL_EXPORT virtual const double& GetZ() const;
-            TIGL_EXPORT virtual void SetZ(const double& value);
-            
-        protected:
-            CCPACSWingRibsPositioning* m_parent;
-            
-            boost::optional<CPACSRibRotation_ribRotationReference> m_ribRotationReference;
-            double                                                 m_z;
-            
-        private:
-            #ifdef HAVE_CPP11
-            CPACSRibRotation(const CPACSRibRotation&) = delete;
-            CPACSRibRotation& operator=(const CPACSRibRotation&) = delete;
-            
-            CPACSRibRotation(CPACSRibRotation&&) = delete;
-            CPACSRibRotation& operator=(CPACSRibRotation&&) = delete;
-            #else
-            CPACSRibRotation(const CPACSRibRotation&);
-            CPACSRibRotation& operator=(const CPACSRibRotation&);
-            #endif
-        };
-    }
-    
-    // CPACSRibRotation is customized, use type CCPACSWingRibRotation directly
-}
+        TIGL_EXPORT virtual ~CPACSRibRotation();
+        
+        TIGL_EXPORT CCPACSWingRibsPositioning* GetParent() const;
+        
+        TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+        TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
+        
+        TIGL_EXPORT virtual const boost::optional<CPACSRibRotation_ribRotationReference>& GetRibRotationReference() const;
+        TIGL_EXPORT virtual void SetRibRotationReference(const boost::optional<CPACSRibRotation_ribRotationReference>& value);
+        
+        TIGL_EXPORT virtual const double& GetZ() const;
+        TIGL_EXPORT virtual void SetZ(const double& value);
+        
+    protected:
+        CCPACSWingRibsPositioning* m_parent;
+        
+        boost::optional<CPACSRibRotation_ribRotationReference> m_ribRotationReference;
+        double                                                 m_z;
+        
+    private:
+#ifdef HAVE_CPP11
+        CPACSRibRotation(const CPACSRibRotation&) = delete;
+        CPACSRibRotation& operator=(const CPACSRibRotation&) = delete;
+        
+        CPACSRibRotation(CPACSRibRotation&&) = delete;
+        CPACSRibRotation& operator=(CPACSRibRotation&&) = delete;
+#else
+        CPACSRibRotation(const CPACSRibRotation&);
+        CPACSRibRotation& operator=(const CPACSRibRotation&);
+#endif
+    };
+} // namespace generated
+
+// CPACSRibRotation is customized, use type CCPACSWingRibRotation directly
+} // namespace tigl

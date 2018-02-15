@@ -25,57 +25,57 @@
 
 namespace tigl
 {
-    namespace generated
+namespace generated
+{
+    // This enum is used in:
+    // CPACSFuselageCutOut
+    
+    // generated from /xsd:schema/xsd:complexType[369]/xsd:complexContent/xsd:extension/xsd:all/xsd:element[14]/xsd:complexType/xsd:simpleContent
+    enum CPACSFuselageCutOut_cutoutType
     {
-        // This enum is used in:
-        // CPACSFuselageCutOut
-        
-        // generated from /xsd:schema/xsd:complexType[369]/xsd:complexContent/xsd:extension/xsd:all/xsd:element[14]/xsd:complexType/xsd:simpleContent
-        enum CPACSFuselageCutOut_cutoutType
-        {
-            window,
-            door,
-            paxDoor,
-            emergencyDoor,
-            cargoDoor,
-            ramp
-        };
-        
-        inline std::string CPACSFuselageCutOut_cutoutTypeToString(const CPACSFuselageCutOut_cutoutType& value)
-        {
-            switch(value) {
-            case window: return "window";
-            case door: return "door";
-            case paxDoor: return "paxDoor";
-            case emergencyDoor: return "emergencyDoor";
-            case cargoDoor: return "cargoDoor";
-            case ramp: return "ramp";
-            default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSFuselageCutOut_cutoutType");
-            }
-        }
-        inline CPACSFuselageCutOut_cutoutType stringToCPACSFuselageCutOut_cutoutType(const std::string& value)
-        {
-            struct ToLower { std::string operator()(std::string str) { for (std::size_t i = 0; i < str.length(); i++) { str[i] = std::tolower(str[i]); } return str; } } toLower;
-            if (toLower(value) == "window") { return window; }
-            if (toLower(value) == "door") { return door; }
-            if (toLower(value) == "paxdoor") { return paxDoor; }
-            if (toLower(value) == "emergencydoor") { return emergencyDoor; }
-            if (toLower(value) == "cargodoor") { return cargoDoor; }
-            if (toLower(value) == "ramp") { return ramp; }
-            throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSFuselageCutOut_cutoutType");
+        window,
+        door,
+        paxDoor,
+        emergencyDoor,
+        cargoDoor,
+        ramp
+    };
+    
+    inline std::string CPACSFuselageCutOut_cutoutTypeToString(const CPACSFuselageCutOut_cutoutType& value)
+    {
+        switch(value) {
+        case window: return "window";
+        case door: return "door";
+        case paxDoor: return "paxDoor";
+        case emergencyDoor: return "emergencyDoor";
+        case cargoDoor: return "cargoDoor";
+        case ramp: return "ramp";
+        default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSFuselageCutOut_cutoutType");
         }
     }
-    
-    // Aliases in tigl namespace
-    #ifdef HAVE_CPP11
-    using ECPACSFuselageCutOut_cutoutType = generated::CPACSFuselageCutOut_cutoutType;
-    #else
-    typedef generated::CPACSFuselageCutOut_cutoutType ECPACSFuselageCutOut_cutoutType;
-    #endif
-    using generated::window;
-    using generated::door;
-    using generated::paxDoor;
-    using generated::emergencyDoor;
-    using generated::cargoDoor;
-    using generated::ramp;
-}
+    inline CPACSFuselageCutOut_cutoutType stringToCPACSFuselageCutOut_cutoutType(const std::string& value)
+    {
+        struct ToLower { std::string operator()(std::string str) { for (std::size_t i = 0; i < str.length(); i++) { str[i] = std::tolower(str[i]); } return str; } } toLower;
+        if (toLower(value) == "window") { return window; }
+        if (toLower(value) == "door") { return door; }
+        if (toLower(value) == "paxdoor") { return paxDoor; }
+        if (toLower(value) == "emergencydoor") { return emergencyDoor; }
+        if (toLower(value) == "cargodoor") { return cargoDoor; }
+        if (toLower(value) == "ramp") { return ramp; }
+        throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSFuselageCutOut_cutoutType");
+    }
+} // namespace generated
+
+// Aliases in tigl namespace
+#ifdef HAVE_CPP11
+using ECPACSFuselageCutOut_cutoutType = generated::CPACSFuselageCutOut_cutoutType;
+#else
+typedef generated::CPACSFuselageCutOut_cutoutType ECPACSFuselageCutOut_cutoutType;
+#endif
+using generated::window;
+using generated::door;
+using generated::paxDoor;
+using generated::emergencyDoor;
+using generated::cargoDoor;
+using generated::ramp;
+} // namespace tigl

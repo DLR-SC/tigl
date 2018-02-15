@@ -25,57 +25,57 @@
 
 namespace tigl
 {
-    class CTiglUIDManager;
-    class CCPACSFuselageSegment;
-    class CCPACSFuselage;
+class CTiglUIDManager;
+class CCPACSFuselageSegment;
+class CCPACSFuselage;
+
+namespace generated
+{
+    // This class is used in:
+    // CPACSFuselage
     
-    namespace generated
+    // generated from /xsd:schema/xsd:complexType[382]
+    class CPACSFuselageSegments
     {
-        // This class is used in:
-        // CPACSFuselage
+    public:
+        TIGL_EXPORT CPACSFuselageSegments(CCPACSFuselage* parent, CTiglUIDManager* uidMgr);
         
-        // generated from /xsd:schema/xsd:complexType[382]
-        class CPACSFuselageSegments
-        {
-        public:
-            TIGL_EXPORT CPACSFuselageSegments(CCPACSFuselage* parent, CTiglUIDManager* uidMgr);
-            
-            TIGL_EXPORT virtual ~CPACSFuselageSegments();
-            
-            TIGL_EXPORT CCPACSFuselage* GetParent() const;
-            
-            TIGL_EXPORT CTiglUIDManager& GetUIDManager();
-            TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
-            
-            TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
-            TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
-            
-            TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSFuselageSegment> >& GetSegments() const;
-            TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSFuselageSegment> >& GetSegments();
-            
-            TIGL_EXPORT virtual CCPACSFuselageSegment& AddSegment();
-            TIGL_EXPORT virtual void RemoveSegment(CCPACSFuselageSegment& ref);
-            
-        protected:
-            CCPACSFuselage* m_parent;
-            
-            CTiglUIDManager* m_uidMgr;
-            
-            std::vector<unique_ptr<CCPACSFuselageSegment> > m_segments;
-            
-        private:
-            #ifdef HAVE_CPP11
-            CPACSFuselageSegments(const CPACSFuselageSegments&) = delete;
-            CPACSFuselageSegments& operator=(const CPACSFuselageSegments&) = delete;
-            
-            CPACSFuselageSegments(CPACSFuselageSegments&&) = delete;
-            CPACSFuselageSegments& operator=(CPACSFuselageSegments&&) = delete;
-            #else
-            CPACSFuselageSegments(const CPACSFuselageSegments&);
-            CPACSFuselageSegments& operator=(const CPACSFuselageSegments&);
-            #endif
-        };
-    }
-    
-    // CPACSFuselageSegments is customized, use type CCPACSFuselageSegments directly
-}
+        TIGL_EXPORT virtual ~CPACSFuselageSegments();
+        
+        TIGL_EXPORT CCPACSFuselage* GetParent() const;
+        
+        TIGL_EXPORT CTiglUIDManager& GetUIDManager();
+        TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
+        
+        TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+        TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
+        
+        TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSFuselageSegment> >& GetSegments() const;
+        TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSFuselageSegment> >& GetSegments();
+        
+        TIGL_EXPORT virtual CCPACSFuselageSegment& AddSegment();
+        TIGL_EXPORT virtual void RemoveSegment(CCPACSFuselageSegment& ref);
+        
+    protected:
+        CCPACSFuselage* m_parent;
+        
+        CTiglUIDManager* m_uidMgr;
+        
+        std::vector<unique_ptr<CCPACSFuselageSegment> > m_segments;
+        
+    private:
+#ifdef HAVE_CPP11
+        CPACSFuselageSegments(const CPACSFuselageSegments&) = delete;
+        CPACSFuselageSegments& operator=(const CPACSFuselageSegments&) = delete;
+        
+        CPACSFuselageSegments(CPACSFuselageSegments&&) = delete;
+        CPACSFuselageSegments& operator=(CPACSFuselageSegments&&) = delete;
+#else
+        CPACSFuselageSegments(const CPACSFuselageSegments&);
+        CPACSFuselageSegments& operator=(const CPACSFuselageSegments&);
+#endif
+    };
+} // namespace generated
+
+// CPACSFuselageSegments is customized, use type CCPACSFuselageSegments directly
+} // namespace tigl

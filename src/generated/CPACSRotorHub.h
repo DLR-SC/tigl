@@ -27,69 +27,69 @@
 
 namespace tigl
 {
-    class CTiglUIDManager;
-    class CCPACSRotor;
+class CTiglUIDManager;
+class CCPACSRotor;
+
+namespace generated
+{
+    // This class is used in:
+    // CPACSRotor
     
-    namespace generated
+    // generated from /xsd:schema/xsd:complexType[770]
+    class CPACSRotorHub
     {
-        // This class is used in:
-        // CPACSRotor
+    public:
+        TIGL_EXPORT CPACSRotorHub(CCPACSRotor* parent, CTiglUIDManager* uidMgr);
         
-        // generated from /xsd:schema/xsd:complexType[770]
-        class CPACSRotorHub
-        {
-        public:
-            TIGL_EXPORT CPACSRotorHub(CCPACSRotor* parent, CTiglUIDManager* uidMgr);
-            
-            TIGL_EXPORT virtual ~CPACSRotorHub();
-            
-            TIGL_EXPORT CCPACSRotor* GetParent() const;
-            
-            TIGL_EXPORT CTiglUIDManager& GetUIDManager();
-            TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
-            
-            TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
-            TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
-            
-            TIGL_EXPORT virtual const std::string& GetUID() const;
-            TIGL_EXPORT virtual void SetUID(const std::string& value);
-            
-            TIGL_EXPORT virtual const boost::optional<std::string>& GetName() const;
-            TIGL_EXPORT virtual void SetName(const boost::optional<std::string>& value);
-            
-            TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
-            TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
-            
-            TIGL_EXPORT virtual const boost::optional<TiglRotorHubType>& GetType() const;
-            TIGL_EXPORT virtual void SetType(const boost::optional<TiglRotorHubType>& value);
-            
-            TIGL_EXPORT virtual const CCPACSRotorBladeAttachments& GetRotorBladeAttachments() const;
-            TIGL_EXPORT virtual CCPACSRotorBladeAttachments& GetRotorBladeAttachments();
-            
-        protected:
-            CCPACSRotor* m_parent;
-            
-            CTiglUIDManager* m_uidMgr;
-            
-            std::string                       m_uID;
-            boost::optional<std::string>      m_name;
-            boost::optional<std::string>      m_description;
-            boost::optional<TiglRotorHubType> m_type;
-            CCPACSRotorBladeAttachments       m_rotorBladeAttachments;
-            
-        private:
-            #ifdef HAVE_CPP11
-            CPACSRotorHub(const CPACSRotorHub&) = delete;
-            CPACSRotorHub& operator=(const CPACSRotorHub&) = delete;
-            
-            CPACSRotorHub(CPACSRotorHub&&) = delete;
-            CPACSRotorHub& operator=(CPACSRotorHub&&) = delete;
-            #else
-            CPACSRotorHub(const CPACSRotorHub&);
-            CPACSRotorHub& operator=(const CPACSRotorHub&);
-            #endif
-        };
-    }
-    
-    // CPACSRotorHub is customized, use type CCPACSRotorHub directly
-}
+        TIGL_EXPORT virtual ~CPACSRotorHub();
+        
+        TIGL_EXPORT CCPACSRotor* GetParent() const;
+        
+        TIGL_EXPORT CTiglUIDManager& GetUIDManager();
+        TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
+        
+        TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+        TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
+        
+        TIGL_EXPORT virtual const std::string& GetUID() const;
+        TIGL_EXPORT virtual void SetUID(const std::string& value);
+        
+        TIGL_EXPORT virtual const boost::optional<std::string>& GetName() const;
+        TIGL_EXPORT virtual void SetName(const boost::optional<std::string>& value);
+        
+        TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
+        TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
+        
+        TIGL_EXPORT virtual const boost::optional<TiglRotorHubType>& GetType() const;
+        TIGL_EXPORT virtual void SetType(const boost::optional<TiglRotorHubType>& value);
+        
+        TIGL_EXPORT virtual const CCPACSRotorBladeAttachments& GetRotorBladeAttachments() const;
+        TIGL_EXPORT virtual CCPACSRotorBladeAttachments& GetRotorBladeAttachments();
+        
+    protected:
+        CCPACSRotor* m_parent;
+        
+        CTiglUIDManager* m_uidMgr;
+        
+        std::string                       m_uID;
+        boost::optional<std::string>      m_name;
+        boost::optional<std::string>      m_description;
+        boost::optional<TiglRotorHubType> m_type;
+        CCPACSRotorBladeAttachments       m_rotorBladeAttachments;
+        
+    private:
+#ifdef HAVE_CPP11
+        CPACSRotorHub(const CPACSRotorHub&) = delete;
+        CPACSRotorHub& operator=(const CPACSRotorHub&) = delete;
+        
+        CPACSRotorHub(CPACSRotorHub&&) = delete;
+        CPACSRotorHub& operator=(CPACSRotorHub&&) = delete;
+#else
+        CPACSRotorHub(const CPACSRotorHub&);
+        CPACSRotorHub& operator=(const CPACSRotorHub&);
+#endif
+    };
+} // namespace generated
+
+// CPACSRotorHub is customized, use type CCPACSRotorHub directly
+} // namespace tigl

@@ -22,63 +22,67 @@
 
 namespace tigl
 {
-    namespace generated
+namespace generated
+{
+    CPACSSpecificHeatMap::CPACSSpecificHeatMap()
     {
-        CPACSSpecificHeatMap::CPACSSpecificHeatMap() {}
-        
-        CPACSSpecificHeatMap::~CPACSSpecificHeatMap() {}
-        
-        void CPACSSpecificHeatMap::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
-        {
-            // read element temperature
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/temperature")) {
-                m_temperature.ReadCPACS(tixiHandle, xpath + "/temperature");
-            }
-            else {
-                LOG(ERROR) << "Required element temperature is missing at xpath " << xpath;
-            }
-            
-            // read element specificHeat
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/specificHeat")) {
-                m_specificHeat.ReadCPACS(tixiHandle, xpath + "/specificHeat");
-            }
-            else {
-                LOG(ERROR) << "Required element specificHeat is missing at xpath " << xpath;
-            }
-            
+    }
+    
+    CPACSSpecificHeatMap::~CPACSSpecificHeatMap()
+    {
+    }
+    
+    void CPACSSpecificHeatMap::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
+    {
+        // read element temperature
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/temperature")) {
+            m_temperature.ReadCPACS(tixiHandle, xpath + "/temperature");
+        }
+        else {
+            LOG(ERROR) << "Required element temperature is missing at xpath " << xpath;
         }
         
-        void CPACSSpecificHeatMap::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
-        {
-            // write element temperature
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/temperature");
-            m_temperature.WriteCPACS(tixiHandle, xpath + "/temperature");
-            
-            // write element specificHeat
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/specificHeat");
-            m_specificHeat.WriteCPACS(tixiHandle, xpath + "/specificHeat");
-            
+        // read element specificHeat
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/specificHeat")) {
+            m_specificHeat.ReadCPACS(tixiHandle, xpath + "/specificHeat");
         }
-        
-        const CCPACSStringVector& CPACSSpecificHeatMap::GetTemperature() const
-        {
-            return m_temperature;
-        }
-        
-        CCPACSStringVector& CPACSSpecificHeatMap::GetTemperature()
-        {
-            return m_temperature;
-        }
-        
-        const CCPACSStringVector& CPACSSpecificHeatMap::GetSpecificHeat() const
-        {
-            return m_specificHeat;
-        }
-        
-        CCPACSStringVector& CPACSSpecificHeatMap::GetSpecificHeat()
-        {
-            return m_specificHeat;
+        else {
+            LOG(ERROR) << "Required element specificHeat is missing at xpath " << xpath;
         }
         
     }
-}
+    
+    void CPACSSpecificHeatMap::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
+    {
+        // write element temperature
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/temperature");
+        m_temperature.WriteCPACS(tixiHandle, xpath + "/temperature");
+        
+        // write element specificHeat
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/specificHeat");
+        m_specificHeat.WriteCPACS(tixiHandle, xpath + "/specificHeat");
+        
+    }
+    
+    const CCPACSStringVector& CPACSSpecificHeatMap::GetTemperature() const
+    {
+        return m_temperature;
+    }
+    
+    CCPACSStringVector& CPACSSpecificHeatMap::GetTemperature()
+    {
+        return m_temperature;
+    }
+    
+    const CCPACSStringVector& CPACSSpecificHeatMap::GetSpecificHeat() const
+    {
+        return m_specificHeat;
+    }
+    
+    CCPACSStringVector& CPACSSpecificHeatMap::GetSpecificHeat()
+    {
+        return m_specificHeat;
+    }
+    
+} // namespace generated
+} // namespace tigl

@@ -26,50 +26,50 @@
 
 namespace tigl
 {
-    namespace generated
-    {
-        // This class is used in:
-        // CPACSSparCell
-        // CPACSSparCrossSection
-        
-        // generated from /xsd:schema/xsd:complexType[909]
-        class CPACSWeb
-        {
-        public:
-            TIGL_EXPORT CPACSWeb();
-            TIGL_EXPORT virtual ~CPACSWeb();
-            
-            TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
-            TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
-            
-            TIGL_EXPORT virtual const CCPACSMaterialDefinition& GetMaterial() const;
-            TIGL_EXPORT virtual CCPACSMaterialDefinition& GetMaterial();
-            
-            TIGL_EXPORT virtual const double& GetRelPos() const;
-            TIGL_EXPORT virtual void SetRelPos(const double& value);
-            
-        protected:
-            CCPACSMaterialDefinition m_material;
-            double                   m_relPos;
-            
-        private:
-            #ifdef HAVE_CPP11
-            CPACSWeb(const CPACSWeb&) = delete;
-            CPACSWeb& operator=(const CPACSWeb&) = delete;
-            
-            CPACSWeb(CPACSWeb&&) = delete;
-            CPACSWeb& operator=(CPACSWeb&&) = delete;
-            #else
-            CPACSWeb(const CPACSWeb&);
-            CPACSWeb& operator=(const CPACSWeb&);
-            #endif
-        };
-    }
+namespace generated
+{
+    // This class is used in:
+    // CPACSSparCell
+    // CPACSSparCrossSection
     
-    // Aliases in tigl namespace
-    #ifdef HAVE_CPP11
-    using CCPACSWeb = generated::CPACSWeb;
-    #else
-    typedef generated::CPACSWeb CCPACSWeb;
-    #endif
-}
+    // generated from /xsd:schema/xsd:complexType[909]
+    class CPACSWeb
+    {
+    public:
+        TIGL_EXPORT CPACSWeb();
+        TIGL_EXPORT virtual ~CPACSWeb();
+        
+        TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+        TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
+        
+        TIGL_EXPORT virtual const CCPACSMaterialDefinition& GetMaterial() const;
+        TIGL_EXPORT virtual CCPACSMaterialDefinition& GetMaterial();
+        
+        TIGL_EXPORT virtual const double& GetRelPos() const;
+        TIGL_EXPORT virtual void SetRelPos(const double& value);
+        
+    protected:
+        CCPACSMaterialDefinition m_material;
+        double                   m_relPos;
+        
+    private:
+#ifdef HAVE_CPP11
+        CPACSWeb(const CPACSWeb&) = delete;
+        CPACSWeb& operator=(const CPACSWeb&) = delete;
+        
+        CPACSWeb(CPACSWeb&&) = delete;
+        CPACSWeb& operator=(CPACSWeb&&) = delete;
+#else
+        CPACSWeb(const CPACSWeb&);
+        CPACSWeb& operator=(const CPACSWeb&);
+#endif
+    };
+} // namespace generated
+
+// Aliases in tigl namespace
+#ifdef HAVE_CPP11
+using CCPACSWeb = generated::CPACSWeb;
+#else
+typedef generated::CPACSWeb CCPACSWeb;
+#endif
+} // namespace tigl
