@@ -60,7 +60,10 @@ namespace external_object_private
 using namespace external_object_private;
 
 CCPACSExternalObject::CCPACSExternalObject(CCPACSExternalObjects* parent, CTiglUIDManager* uidMgr)
-    : generated::CPACSGenericGeometricComponent(parent, uidMgr), CTiglRelativelyPositionedComponent(&m_parentUID, &m_transformation) {}
+    : generated::CPACSGenericGeometricComponent(parent, uidMgr)
+    , CTiglRelativelyPositionedComponent(&m_parentUID, &m_transformation, &m_symmetry)
+{
+}
 
 std::string CCPACSExternalObject::GetDefaultedUID() const {
     return generated::CPACSGenericGeometricComponent::GetUID();
@@ -82,7 +85,7 @@ void CCPACSExternalObject::ReadCPACS(const TixiDocumentHandle& tixiHandle, const
     }
 
     // Register ourself at the unique id manager
-    if (m_parent) {
+    if (!m_uID.empty() && m_uidMgr) {
         m_uidMgr->AddGeometricComponent(m_uID, this);
     }
 }
