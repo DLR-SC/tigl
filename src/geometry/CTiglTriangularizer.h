@@ -85,10 +85,7 @@ public:
 
     TIGL_EXPORT CTiglTriangularizer(const CTiglUIDManager& uidMgr, PNamedShape shape, double deflection,
                                     ComponentTraingMode mode = NO_INFO, const CTiglTriangularizerOptions& options = CTiglTriangularizerOptions());
-    
-    TIGL_EXPORT CTiglTriangularizer(CCPACSConfiguration& config, double deflection,
-                                    ComponentTraingMode mode = NO_INFO, const CTiglTriangularizerOptions& options = CTiglTriangularizerOptions());
-    
+
     const CTiglPolyData& getTriangulation() const
     {
         return polys;

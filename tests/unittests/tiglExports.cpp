@@ -192,7 +192,7 @@ TEST_F(tiglExport, export_meshed_wing_simple_success)
 TEST_F(tiglExport, export_meshed_fuselage_success)
 {
     const char* vtkFuselageFilename = "TestData/export/D150modelID_fuselage1.vtp";
-    ASSERT_TRUE(tiglExportMeshedFuselageVTKSimpleByUID(tiglHandle, "D150_VAMP_FL1", vtkFuselageFilename, 0.03) == TIGL_SUCCESS);
+    ASSERT_TRUE(tiglExportMeshedFuselageVTKByUID(tiglHandle, "D150_VAMP_FL1", vtkFuselageFilename, 0.03) == TIGL_SUCCESS);
 }
 
 TEST_F(tiglExport, export_fuselage_collada_success)

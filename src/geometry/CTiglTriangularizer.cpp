@@ -115,17 +115,6 @@ CTiglTriangularizer::CTiglTriangularizer(const CTiglUIDManager& uidMgr, PNamedSh
     
 }
 
-CTiglTriangularizer::CTiglTriangularizer(CCPACSConfiguration &config, double deflection, ComponentTraingMode mode, const CTiglTriangularizerOptions &options)
-    : m_options(options)
-{
-    LOG(INFO) << "Calculating fused plane";
-    PTiglFusePlane fuser = config.AircraftFusingAlgo();
-    fuser->SetResultMode(FULL_PLANE);
-    PNamedShape fusedAirplane = fuser->FusedPlane();
-    
-    triangularizeComponent(config.GetUIDManager(), fusedAirplane, deflection, mode);
-}
-
 bool isValidCoord(double c) 
 {
     double tolerance = 2.e-4;

@@ -112,7 +112,8 @@ CTiglExportVtk::~CTiglExportVtk()
 bool CTiglExportVtk::WriteImpl(const std::string &filename) const
 {
     TixiDocumentHandle handle;
-    createVTKHeader(handle);
+    tixiCreateDocument("VTKFile", &handle);
+    writeVTKHeader(handle);
 
     size_t nTotalVertices = 0;
     size_t nTotalPolys = 0;
@@ -138,96 +139,6 @@ bool CTiglExportVtk::WriteImpl(const std::string &filename) const
 }
 
 
-// Exports a by index selected wing, boolean fused and meshed, as STL file
-void CTiglExportVtk::ExportMeshedWingVTKByIndex(const int wingIndex, const std::string& filename, const double deflection)
-{
-    const std::string& wingUID = myConfig.GetWing(wingIndex).GetUID();
-    ExportMeshedWingVTKByUID(wingUID, filename, deflection);
-}
-
-// Exports a by UID selected wing, boolean fused and meshed, as STL file
-void CTiglExportVtk::ExportMeshedWingVTKByUID(const std::string& wingUID, const std::string& filename, const double deflection)
-{
-    tigl::CCPACSWing& wing = myConfig.GetWing(wingUID);
-    CTiglTriangularizer wingTrian(myConfig.GetUIDManager(), wing.GetLoft(), deflection, SEGMENT_INFO, getOptions(*this));
-    writeVTK(wingTrian.getTriangulation(), filename.c_str());
-}
-
-
-
-// Exports a by index selected fuselage, boolean fused and meshed, as VTK file
-void CTiglExportVtk::ExportMeshedFuselageVTKByIndex(const int fuselageIndex, const std::string& filename, const double deflection)
-{
-    CTiglRelativelyPositionedComponent & component = myConfig.GetFuselage(fuselageIndex);
-    ExportMeshedFuselageVTKByUID(component.GetDefaultedUID(), filename, deflection);
-}
-
-// Exports a by UID selected fuselage, boolean fused and meshed, as VTK file
-void CTiglExportVtk::ExportMeshedFuselageVTKByUID(const std::string& fuselageUID, const std::string& filename, const double deflection)
-{
-    CTiglRelativelyPositionedComponent & component = myConfig.GetFuselage(fuselageUID);
-    CTiglTriangularizer trian(component.GetLoft(), deflection, getOptions(*this));
-    writeVTK(trian.getTriangulation(), filename.c_str());
-}
-
-
-// Exports a whole geometry, boolean fused and meshed, as VTK file
-void CTiglExportVtk::ExportMeshedGeometryVTK(const std::string& filename, const double deflection)
-{
-    // TODO: 122 enable fusing
-    tigl::CTiglTriangularizer trian(myConfig, deflection, SEGMENT_INFO, getOptions(*this));
-    writeVTK(trian.getTriangulation(), filename.c_str());
-}
-
-/************* Simple ones *************************/
-// Exports a by UID selected wing, boolean fused and meshed, as STL file
-void CTiglExportVtk::ExportMeshedWingVTKSimpleByUID(const std::string& wingUID, const std::string& filename, const double deflection)
-{
-    CCPACSWing & component = dynamic_cast<CCPACSWing&>(myConfig.GetWing(wingUID));
-    CTiglTriangularizer loftTrian(component.GetLoft(), deflection, getOptions(*this));
-    writeVTK(loftTrian.getTriangulation(), filename.c_str());
-}
-
-/************* Simple ones *************************/
-// Exports a by UID selected wing, boolean fused and meshed, as STL file
-void CTiglExportVtk::ExportMeshedWingVTKSimpleByIndex(const int wingIndex, const std::string& filename, const double deflection)
-{
-    const std::string& wingUID = myConfig.GetWing(wingIndex).GetUID();
-    ExportMeshedWingVTKSimpleByUID(wingUID, filename, deflection);
-}
-
-// Exports a by UID selected fuselage, boolean fused and meshed, as VTK file
-void CTiglExportVtk::ExportMeshedFuselageVTKSimpleByUID(const std::string& fuselageUID, const std::string& filename, const double deflection)
-{
-    CTiglRelativelyPositionedComponent & component = myConfig.GetFuselage(fuselageUID);
-    CTiglTriangularizer loftTrian(component.GetLoft(), deflection, getOptions(*this));
-    writeVTK(loftTrian.getTriangulation(), filename.c_str());
-}
-
-// Exports a by UID selected fuselage, boolean fused and meshed, as VTK file
-void CTiglExportVtk::ExportMeshedFuselageVTKSimpleByIndex(const int fuselageIndex, const std::string& filename, const double deflection)
-{
-    const std::string& fuselageUID = myConfig.GetFuselage(fuselageIndex).GetUID();
-    ExportMeshedFuselageVTKSimpleByUID(fuselageUID, filename, deflection);
-}
-
-
-// Exports a whole geometry, boolean fused and meshed, as VTK file
-void CTiglExportVtk::ExportMeshedGeometryVTKSimple(const std::string& filename, const double deflection)
-{
-    // TODO: 122 fuse
-    tigl::CTiglTriangularizer trian(myConfig, deflection, NO_INFO, getOptions(*this));
-    writeVTK(trian.getTriangulation(), filename.c_str());
-}
-
-// Exports a whole geometry, not fused and meshed, as VTK file
-void CTiglExportVtk::ExportMeshedGeometryVTKNoFuse(const std::string& filename, const double deflection)
-{
-    // TODO: 122 don't fuse
-    tigl::CTiglTriangularizer trian(myConfig, deflection, NO_INFO, getOptions(*this));
-    writeVTK(trian.getTriangulation(), filename.c_str());
-}
-
 void CTiglExportVtk::SetOptions(const std::string &key, const std::string &value)
 {
     if (key == "normals_enabled") {
@@ -247,10 +158,14 @@ void CTiglExportVtk::SetOptions(const std::string &key, const std::string &value
     }
 }
 
-void CTiglExportVtk::writeVTK(const CTiglPolyData& polys, const char *filename)
+void CTiglExportVtk::WritePolys(const CTiglPolyData& polys, const char *filename)
 {
     TixiDocumentHandle handle;
-    createVTK(polys, handle);
+    tixiCreateDocument("VTKFile", &handle);
+    writeVTKHeader(handle);
+    for (unsigned int iObj = 1; iObj <= polys.getNObjects(); ++iObj) {
+        writeVTKPiece(polys.getObject(iObj), handle, iObj);
+    }
     if (tixiSaveDocument(handle, filename)!= SUCCESS) {
         throw CTiglError("Error saving vtk file!");
     }
@@ -258,9 +173,8 @@ void CTiglExportVtk::writeVTK(const CTiglPolyData& polys, const char *filename)
               << " polygons and " << polys.getTotalVertexCount() << " vertices." << std::endl;
 }
 
-void CTiglExportVtk::createVTKHeader(TixiDocumentHandle& handle)
+void CTiglExportVtk::writeVTKHeader(TixiDocumentHandle& handle)
 {
-    tixiCreateDocument("VTKFile", &handle);
     tixiAddTextAttribute(handle, "/VTKFile", "type", "PolyData");
     tixiAddTextAttribute(handle, "/VTKFile", "version", "0.1");
     tixiAddTextAttribute(handle, "/VTKFile", "byte_order", "LittleEndian");
@@ -272,15 +186,6 @@ void CTiglExportVtk::createVTKHeader(TixiDocumentHandle& handle)
     tixiAddTextAttribute(handle, "/VTKFile/MetaData", "creator", stream.str().c_str());
     
     tixiCreateElement(handle, "/VTKFile", "PolyData");
-}
-
-void CTiglExportVtk::createVTK(const CTiglPolyData& polys, TixiDocumentHandle& handle)
-{
-    createVTKHeader(handle);
-
-    for (unsigned int iobj = 1; iobj <= polys.getNObjects(); ++iobj ) {
-        writeVTKPiece(polys.getObject(iobj), handle, iobj);
-    }
 }
 
 // writes the polygon data of a surface (in vtk they call it piece)

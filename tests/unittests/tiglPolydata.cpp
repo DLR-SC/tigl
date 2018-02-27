@@ -204,7 +204,7 @@ TEST(TiglPolyData, cube_export_vtk_standard)
     co.setPolyDataReal(4,"value",4);
     co.setPolyDataReal(5,"value",5);
     
-    CTiglExportVtk::writeVTK(poly, "vtk_cube_standard.vtp");
+    CTiglExportVtk::WritePolys(poly, "vtk_cube_standard.vtp");
     
     ASSERT_EQ(0, co.getPolyDataReal(0,"value"));
     ASSERT_EQ(1, co.getPolyDataReal(1,"value"));
@@ -301,7 +301,7 @@ TEST(TiglPolyData, cube_export_vtk_withnormals)
 
     co.addPolygon(f6);
 
-    CTiglExportVtk::writeVTK(poly, "vtk_cube+normals.vtp");
+    CTiglExportVtk::WritePolys(poly, "vtk_cube+normals.vtp");
 }
 
 TEST(TiglPolyData, cube_export_vtk_withpieces)
@@ -365,7 +365,7 @@ TEST(TiglPolyData, cube_export_vtk_withpieces)
     f6.addPoint(p1);
     co->addPolygon(f6);
 
-    CTiglExportVtk::writeVTK(poly, "vtk_cube+pieces.vtp");
+    CTiglExportVtk::WritePolys(poly, "vtk_cube+pieces.vtp");
 }
 
 TEST_F(TriangularizeShape, exportVTK_FusedWing)
@@ -378,7 +378,7 @@ TEST_F(TriangularizeShape, exportVTK_FusedWing)
 
     tigl::CTiglTriangularizer t(wing.GetLoft(), 0.001);
     try {
-        CTiglExportVtk::writeVTK(t.getTriangulation(), "exported_fused_wing_simple.vtp");
+        CTiglExportVtk::WritePolys(t.getTriangulation(), "exported_fused_wing_simple.vtp");
     }
     catch (...) {
         exportError = true;
@@ -412,7 +412,7 @@ TEST_F(TriangularizeShape, exportVTK_CompoundWing)
     std::cout << "Number of Polygons/Vertices: " << t.getTriangulation().currentObject().getNPolygons() << "/"
               << t.getTriangulation().currentObject().getNVertices()<<std::endl;
     try {
-        CTiglExportVtk::writeVTK(t.getTriangulation(), "exported_compund_wing_simple.vtp");
+        CTiglExportVtk::WritePolys(t.getTriangulation(), "exported_compund_wing_simple.vtp");
     }
     catch (...) {
         exportError = true;
@@ -437,7 +437,7 @@ TEST_F(TriangularizeShape, exportVTK_WingSegmentInfo)
     stop = clock();
     std::cout << "Triangularization time [ms]: " << (stop-start)/(double)CLOCKS_PER_SEC * 1000. << std::endl;
     std::cout << "Number of Polygons/Vertices: " << polys.currentObject().getNPolygons() << "/" << polys.currentObject().getNVertices()<<std::endl;
-    ASSERT_NO_THROW(CTiglExportVtk::writeVTK(polys, vtkWingFilename));
+    ASSERT_NO_THROW(CTiglExportVtk::WritePolys(polys, vtkWingFilename));
 }
 
 TEST_F(TriangularizeShape, exportVTK_FullPlane_long)
@@ -446,11 +446,13 @@ TEST_F(TriangularizeShape, exportVTK_FullPlane_long)
 
     tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
     tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
-    
-    // TODO: 122 Enable fusing
-    tigl::CTiglTriangularizer mesher(config, 0.001, SEGMENT_INFO);
+    PTiglFusePlane algo = config.AircraftFusingAlgo();
+    algo->SetResultMode(FULL_PLANE);
+    PNamedShape shape = algo->FusedPlane();
+
+    tigl::CTiglTriangularizer mesher(config.GetUIDManager(), shape, 0.001, SEGMENT_INFO);
     const tigl::CTiglPolyData& polys = mesher.getTriangulation();
 
     std::cout << "Number of Polygons/Vertices: " << polys.currentObject().getNPolygons() << "/" << polys.currentObject().getNVertices()<<std::endl;
-    ASSERT_NO_THROW(CTiglExportVtk::writeVTK(polys, vtkWingFilename));
+    ASSERT_NO_THROW(CTiglExportVtk::WritePolys(polys, vtkWingFilename));
 }

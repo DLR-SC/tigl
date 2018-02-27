@@ -48,6 +48,7 @@
 %include "CTiglExportBrep.h"
 %include "CTiglExportStep.h"
 %include "CTiglExportIges.h"
+%include "CTiglTriangularizer.h"
 %include "CTiglExportStl.h"
 %include "CTiglExportVtk.h"
 %include "CTiglExportCollada.h"

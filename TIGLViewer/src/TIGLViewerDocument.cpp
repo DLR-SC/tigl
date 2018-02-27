@@ -1487,37 +1487,6 @@ void TIGLViewerDocument::exportMeshedFuselageVTK()
 }
 
 
-void TIGLViewerDocument::exportMeshedFuselageVTKsimple()
-{
-    QString fileName;
-    QString fuselageUid = dlgGetFuselageSelection();
-
-    fileName = QFileDialog::getSaveFileName(app, tr("Save as..."), myLastFolder, tr("Export VTK(*.vtp)"));
-
-    if (fileName.isEmpty()) {
-        return;
-    }
-
-    double deflection = 1.0;
-    if (1) {
-        START_COMMAND();
-        deflection = GetConfiguration().GetAirplaneLenth()
-                * TIGLViewerSettings::Instance().triangulationAccuracy();
-    }
-
-    TIGLViewerVTKExportDialog settings(app);
-    settings.setDeflection(deflection);
-
-    if (settings.exec()) {
-        writeToStatusBar(tr("Saving meshed Fuselage as simple VTK file with TIGL..."));
-        START_COMMAND();
-        TiglReturnCode err = tiglExportMeshedFuselageVTKSimpleByUID(m_cpacsHandle, qstringToCstring(fuselageUid), qstringToCstring(fileName), settings.getDeflection());
-        if (err != TIGL_SUCCESS) {
-            displayError(QString("Error in function <u>tiglExportMeshedFuselageVTKSimpleByUID</u>. Error code: %1").arg(err), "TIGL Error");
-        }
-    }
-}
-
 void TIGLViewerDocument::exportMeshedConfigVTK()
 {
     QString     fileName;
@@ -1540,17 +1509,8 @@ void TIGLViewerDocument::exportMeshedConfigVTK()
     if (settings.exec()) {
         START_COMMAND();
         writeToStatusBar("Calculating fused airplane, this can take a while");
-        // calculating loft, is cached afterwards
-        tigl::PTiglFusePlane fuser = GetConfiguration().AircraftFusingAlgo();
-        if (fuser) {
-            // invoke fusing algo
-            fuser->SetResultMode(tigl::FULL_PLANE);
-            fuser->FusedPlane();
-        }
-        writeToStatusBar("Writing meshed vtk file");
-        tigl::CTiglExportVtk exporter(GetConfiguration());
 
-        exporter.ExportMeshedGeometryVTK(fileName.toStdString(), settings.getDeflection());
+        tiglExportMeshedGeometryVTK(m_cpacsHandle, fileName.toStdString().c_str(), settings.getDeflection());
 
         writeToStatusBar("");
     }
@@ -1578,10 +1538,14 @@ void TIGLViewerDocument::exportMeshedConfigVTKNoFuse()
     if (settings.exec()) {
         START_COMMAND();
         writeToStatusBar("Writing meshed vtk file");
-        tigl::CTiglExportVtk exporter(GetConfiguration());
 
-        exporter.ExportMeshedGeometryVTKNoFuse(fileName.toStdString(), settings.getDeflection());
+        tigl::ExportOptions options(settings.getDeflection());
+        options.applySymmetries = true;
+        options.includeFarField = false;
+        tigl::CTiglExportVtk exporter(GetConfiguration(), tigl::NO_INFO);
+        exporter.AddConfiguration(GetConfiguration(), options);
 
+        exporter.Write(fileName.toStdString());
         writeToStatusBar("");
     }
 }
