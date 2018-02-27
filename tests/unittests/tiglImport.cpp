@@ -30,7 +30,7 @@ TEST(TiglImport, Step)
     ASSERT_EQ(1, shapes.size());
 
     // test shape names
-    ASSERT_STREQ("Nacelle", shapes[0]->Name());
+    ASSERT_STREQ("Nacelle", shapes[0]->Name().c_str());
 }
 
 TEST(TiglImport, ImporterFactory)

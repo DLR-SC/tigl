@@ -52,13 +52,16 @@ public:
     // origin is the other shape and iface is the face index in the original shape
     TIGL_EXPORT void SetDerivedFromShape(PNamedShape origin, unsigned int iface);
     
-    TIGL_EXPORT const char* Name() const;
-    TIGL_EXPORT void SetName(const char* );
+    TIGL_EXPORT std::string Name() const;
+    TIGL_EXPORT void SetName(const std::string&);
+    
+    //TIGL_EXPORT SetComponentUID(const std::string& uid);
     
 private:
     PNamedShape  _origin;        /** Pointer to the original shape where this face was created */
     unsigned int _indexInOrigin; /** Index of face in original shape */
     std::string   _faceName;     /** Name of the face */
+    std::string _componentUID;   /** UID of the TiGL component the face belongs to */
 };
 
 /**
@@ -69,8 +72,8 @@ class CNamedShape
 {
 public:
     TIGL_EXPORT CNamedShape();
-    TIGL_EXPORT CNamedShape(const TopoDS_Shape& shape, const char* shapeName);
-    TIGL_EXPORT CNamedShape(const TopoDS_Shape& shape, const char* shapeName, const char* shapeShortName);
+    TIGL_EXPORT CNamedShape(const TopoDS_Shape& shape, const std::string& shapeName);
+    TIGL_EXPORT CNamedShape(const TopoDS_Shape& shape, const std::string &shapeName, const std::string &shapeShortName);
     TIGL_EXPORT CNamedShape(const CNamedShape&);
     TIGL_EXPORT CNamedShape &operator= (const CNamedShape&);
     TIGL_EXPORT ~CNamedShape();
@@ -82,8 +85,8 @@ public:
 
     // getters
     TIGL_EXPORT const TopoDS_Shape& Shape() const;
-    TIGL_EXPORT const char*         Name()  const;
-    TIGL_EXPORT const char*         ShortName() const;
+    TIGL_EXPORT std::string Name()  const;
+    TIGL_EXPORT std::string ShortName() const;
 
     TIGL_EXPORT unsigned int GetFaceCount() const;
     TIGL_EXPORT const CFaceTraits& GetFaceTraits(int iFace) const;
@@ -91,8 +94,8 @@ public:
     
     // setters
     TIGL_EXPORT void SetShape(const TopoDS_Shape&);
-    TIGL_EXPORT void SetName(const char*);
-    TIGL_EXPORT void SetShortName(const char*);
+    TIGL_EXPORT void SetName(const std::string&);
+    TIGL_EXPORT void SetShortName(const std::string &);
     TIGL_EXPORT void SetFaceTraits(int iFace, const CFaceTraits& traits);
 
 protected:
