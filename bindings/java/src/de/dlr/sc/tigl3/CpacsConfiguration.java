@@ -2151,26 +2151,6 @@ public class CpacsConfiguration implements AutoCloseable {
     /**
      * 
      * Exports a CPACS fuselage geometry in VTK format to a local file.
-     * Uses simple and fast method to export quick results!
-     * 
-     * @param fuselageUID - The UID of the fuselage to export.
-     * @param fileName - The filename to save with.
-     * @param deflection - The deflection of the meshing.
-     * @throws TiglException 
-     */
-    public void exportMeshedFuselageVTKSimple(final String fuselageUID, final String fileName, final double deflection) throws TiglException {
-        checkTiglConfiguration();
-
-        // export to the file
-        errorCode = TiglNativeInterface.tiglExportMeshedFuselageVTKSimpleByUID(cpacsHandle, fuselageUID, fileName, deflection); 
-        throwIfError("tiglExportMeshedFuselageVTKSimpleByUID", errorCode);
-    }    
-
-    /**
-     * 
-     * Exports a CPACS fuselage geometry in VTK format to a local file.
-     * This method adds metadata to the VTK file and is a bit slower than
-     * exportMeshedFuselageVTKSimple.
      * 
      * @param fuselageUID - The UID of the fuselage to export.
      * @param fileName - The filename to save with.
@@ -2182,7 +2162,7 @@ public class CpacsConfiguration implements AutoCloseable {
 
         // export to the file
         errorCode = TiglNativeInterface.tiglExportMeshedFuselageVTKByUID(cpacsHandle, fuselageUID, fileName, deflection); 
-        throwIfError("tiglExportMeshedFuselageVTKSimpleByUID", errorCode);
+        throwIfError("tiglExportMeshedFuselageVTKByUID", errorCode);
     }
     
     /**

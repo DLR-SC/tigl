@@ -17,7 +17,7 @@
 */
 
 /* 
-* This file is automatically created from tigl.h on 2017-07-02.
+* This file is automatically created from tigl.h on 2018-02-27.
 * If you experience any bugs please contact the authors
 */
 
@@ -78,6 +78,9 @@ public class TiglNativeInterface {
     public static native int tiglWingComponentSegmentGetSegmentUID(int cpacsHandle, String componentSegmentUID, int segmentIndex, PointerByReference segmentUID);
     public static native int tiglGetFuselageCount(int cpacsHandle, IntByReference fuselageCountPtr);
     public static native int tiglFuselageGetSegmentCount(int cpacsHandle, int fuselageIndex, IntByReference segmentCountPtr);
+    public static native int tiglFuselageGetSectionCenter(int cpacsHandle, String fuselageSegmentUID, double eta, DoubleByReference pointX, DoubleByReference pointY, DoubleByReference pointZ);
+    public static native int tiglFuselageGetCrossSectionArea(int cpacsHandle, String fuselageSegmentUID, double eta, DoubleByReference area);
+    public static native int tiglFuselageGetCenterLineLength(int cpacsHandle, String fuselageUID, DoubleByReference length);
     public static native int tiglFuselageGetPoint(int cpacsHandle, int fuselageIndex, int segmentIndex, double eta, double zeta, DoubleByReference pointXPtr, DoubleByReference pointYPtr, DoubleByReference pointZPtr);
     public static native int tiglFuselageGetPointAngle(int cpacsHandle, int fuselageIndex, int segmentIndex, double eta, double alpha, DoubleByReference pointXPtr, DoubleByReference pointYPtr, DoubleByReference pointZPtr);
     public static native int tiglFuselageGetPointAngleTranslated(int cpacsHandle, int fuselageIndex, int segmentIndex, double eta, double alpha, double y_cs, double z_cs, DoubleByReference pointXPtr, DoubleByReference pointYPtr, DoubleByReference pointZPtr);
@@ -127,8 +130,13 @@ public class TiglNativeInterface {
     public static native int tiglRotorBladeGetLocalTwistAngle(int cpacsHandle, int rotorIndex, int rotorBladeIndex, int segmentIndex, double eta, DoubleByReference twistAnglePtr);
     public static native int tiglIntersectComponents(int cpacsHandle, String componentUidOne, String componentUidTwo, PointerByReference intersectionID);
     public static native int tiglIntersectWithPlane(int cpacsHandle, String componentUid, double px, double py, double pz, double nx, double ny, double nz, PointerByReference intersectionID);
+    public static native int tiglIntersectWithPlaneSegment(int cpacsHandle, String componentUid, double p1x, double p1y, double p1z, double p2x, double p2y, double p2z, double wx, double wy, double wz, PointerByReference intersectionID);
+    public static native int tiglGetCurveIntersection(int cpacsHandle, String curvesID1, int curve1Idx, String curvesID2, int curve2Idx, double tolerance, PointerByReference intersectionID);
     public static native int tiglIntersectGetLineCount(int cpacsHandle, String intersectionID, IntByReference lineCount);
+    public static native int tiglGetCurveIntersectionCount(int cpacsHandle, String intersectionID, IntByReference pointCount);
     public static native int tiglIntersectGetPoint(int cpacsHandle, String intersectionID, int lineIdx, double eta, DoubleByReference pointX, DoubleByReference pointY, DoubleByReference pointZ);
+    public static native int tiglGetCurveIntersectionPoint(int cpacsHandle, String intersectionID, int pointIdx, DoubleByReference pointX, DoubleByReference pointY, DoubleByReference pointZ);
+    public static native int tiglGetCurveParameter(int cpacsHandle, String curveID, int curveIdx, double pointX, double pointY, double pointZ, DoubleByReference eta);
     public static native int tiglExportIGES(int cpacsHandle, String filenamePtr);
     public static native int tiglExportFusedWingFuselageIGES(int cpacsHandle, String filenamePtr);
     public static native int tiglExportSTEP(int cpacsHandle, String filenamePtr);
@@ -145,11 +153,12 @@ public class TiglNativeInterface {
     public static native int tiglExportMeshedFuselageVTKByUID(int cpacsHandle, String fuselageUID, String filenamePtr, double deflection);
     public static native int tiglExportMeshedGeometryVTK(int cpacsHandle, String filenamePtr, double deflection);
     public static native int tiglExportMeshedWingVTKSimpleByUID(int cpacsHandle, String wingUID, String filenamePtr, double deflection);
-    public static native int tiglExportMeshedFuselageVTKSimpleByUID(int cpacsHandle, String fuselageUID, String filenamePtr, double deflection);
     public static native int tiglExportMeshedGeometryVTKSimple(int cpacsHandle, String filenamePtr, double deflection);
     public static native int tiglExportFuselageColladaByUID(int cpacsHandle, String fuselageUID, String filename, double deflection);
     public static native int tiglExportWingColladaByUID(int cpacsHandle, String wingUID, String filename, double deflection);
     public static native int tiglExportFusedBREP(int cpacsHandle, String filename);
+    public static native int tiglExportFuselageBREPByUID(int cpacsHandle, String fuselageUID, String filename);
+    public static native int tiglExportWingBREPByUID(int cpacsHandle, String wingUID, String filename);
     public static native int tiglWingComponentSegmentGetMaterialCount(int cpacsHandle, String compSegmentUID, int structureType, double eta, double xsi, IntByReference materialCount);
     public static native int tiglWingComponentSegmentGetMaterialUID(int cpacsHandle, String compSegmentUID, int structureType, double eta, double xsi, int materialIndex, PointerByReference uid);
     public static native int tiglWingComponentSegmentGetMaterialThickness(int cpacsHandle, String compSegmentUID, int structureType, double eta, double xsi, int materialIndex, DoubleByReference thickness);
