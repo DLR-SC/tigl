@@ -468,7 +468,6 @@
         </wings>
         <genericGeometryComponents>
           <genericGeometryComponent uID="nacelle" symmetry="x-z-plane">
-            <parentUID>Wing</parentUID>
             <name>Nacelle</name>
             <transformation uID="nacelle_transformation1">
               <scaling uID="nacelle_transformation1_scaling1">

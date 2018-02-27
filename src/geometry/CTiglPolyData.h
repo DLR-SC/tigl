@@ -149,12 +149,12 @@ public:
     TIGL_EXPORT ~CTiglPolyData();
 
     // returns number of object
-    TIGL_EXPORT unsigned int getNObjects();
+    TIGL_EXPORT unsigned int getNObjects() const;
 
     // returns the total number of polygons, including all objects
-    TIGL_EXPORT unsigned long getTotalPolygonCount();
+    TIGL_EXPORT unsigned long getTotalPolygonCount() const;
     // returns the total number of vertices, including all objects
-    TIGL_EXPORT unsigned long getTotalVertexCount();
+    TIGL_EXPORT unsigned long getTotalVertexCount() const;
 
     // creates a new object, switches current object to the new one
     // we store the polygon data as different object
@@ -165,12 +165,10 @@ public:
 
     // changes the current surface, we count from 1 to getNObjects
     TIGL_EXPORT CTiglPolyObject& switchObject(unsigned int iObject);
-
-    TIGL_EXPORT void writeVTK(const char * filename);
+    
+    TIGL_EXPORT const CTiglPolyObject& getObject(unsigned int iObject) const;
 
 private:
-    void writeVTKPiece(TixiDocumentHandle& handle, unsigned int iObject);
-    void createVTK(TixiDocumentHandle& handle);
 
     std::vector<CTiglPolyObject*> _objects;
     std::vector<CTiglPolyObject*>::iterator itCurrentObj;

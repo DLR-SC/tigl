@@ -33,6 +33,8 @@
 namespace tigl 
 {
 
+class CTiglPolyData;
+
 enum VTK_EXPORT_MODE
     {
     TIGL_VTK_SIMPLE = 0,
@@ -85,11 +87,15 @@ public:
 
     TIGL_EXPORT static void SetOptions(const std::string& key, const std::string& value);
 
-
     // Options
     TIGL_EXPORT static bool normalsEnabled;
+    
+    TIGL_EXPORT static void writeVTK(const CTiglPolyData& polys, const char * filename);
 
 private:
+    static void writeVTKPiece(const CTiglPolyData& polys, TixiDocumentHandle& handle, unsigned int iObject); 
+    static void createVTK(const CTiglPolyData& polys, TixiDocumentHandle& handle);
+
     class CCPACSConfiguration & myConfig;       /**< TIGL configuration object */
 
 };
