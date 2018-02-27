@@ -140,34 +140,28 @@ bool isValidCoord(double c)
 void CTiglTriangularizer::writeFaceDummyMeta(unsigned long iPolyLower, unsigned long iPolyUpper)
 {
     for (unsigned int iPoly = iPolyLower; iPoly <= iPolyUpper; iPoly++) {
+        polys.currentObject().setPolyDataReal(iPoly, "is_upper", 0.);
+        polys.currentObject().setPolyDataReal(iPoly, "segment_index", 0.);
+        polys.currentObject().setPolyDataReal(iPoly, "eta", 0.);
+        polys.currentObject().setPolyDataReal(iPoly, "xsi", 0.);
+        
         polys.currentObject().setPolyMetadata(iPoly,"\"\" 0 0.0 0.0 0");
-    }    
+    }
 }
 
-bool CTiglTriangularizer::writeWingMeta(CCPACSWing& wing, gp_Pnt centralP, unsigned long iPolyLower, unsigned long iPolyUpper)
+bool CTiglTriangularizer::writeWingMeta(ITiglGeometricComponent& wingComponent, gp_Pnt centralP, unsigned long iPolyLower, unsigned long iPolyUpper)
 {
-    int iSegmentFound = 0;
-    bool pointOnMirroredShape = false;
-    for (int iSegment = 1 ; iSegment <= wing.GetSegmentCount(); ++iSegment) {
-        CCPACSWingSegment& segment = (CCPACSWingSegment&) wing.GetSegment(iSegment);
-        if (segment.GetIsOn(centralP) == true) {
-            iSegmentFound = iSegment;
-            break;
+    if (wingComponent.GetComponentType() & TIGL_COMPONENT_WING) {
+        CCPACSWing& wing = dynamic_cast<CCPACSWing&>(wingComponent);
+        for (int iSegment = 1 ; iSegment <= wing.GetSegmentCount(); ++iSegment) {
+            CCPACSWingSegment& segment = (CCPACSWingSegment&) wing.GetSegment(iSegment);
+            if (writeWingSegmentMeta(segment, centralP, iPolyLower, iPolyUpper)) {
+                return true;
+            }
         }
-        else if (wing.GetSymmetryAxis() != TIGL_NO_SYMMETRY && segment.GetIsOnMirrored(centralP) == true){
-            iSegmentFound = iSegment;
-            pointOnMirroredShape = true;
-            break;
-        }
-    } // for segments
-    if (iSegmentFound > 0) {
-        CCPACSWingSegment& segment = (CCPACSWingSegment&) wing.GetSegment(iSegmentFound);
-        writeWingSegmentMeta(segment, centralP, pointOnMirroredShape, iPolyLower, iPolyUpper);
-        return true;
     }
-    else {
-        return false;
-    }
+
+    return false;
 }
 
 int CTiglTriangularizer::triangularizeComponent(const CTiglUIDManager& uidMgr, PNamedShape pshape, double deflection, ComponentTraingMode mode)
@@ -183,7 +177,7 @@ int CTiglTriangularizer::triangularizeComponent(const CTiglUIDManager& uidMgr, P
     LOG(INFO) << "Done meshing";
 
     polys.currentObject().enableNormals(m_options.normalsEnabled());
-    
+
     TopTools_IndexedMapOfShape faceMap;
     TopExp::MapShapes(shape, TopAbs_FACE, faceMap);
     for (int iface = 1; iface <= faceMap.Extent(); ++iface) {
@@ -204,20 +198,22 @@ int CTiglTriangularizer::triangularizeComponent(const CTiglUIDManager& uidMgr, P
             
             gp_Pnt centralP; gp_Vec n;
             prop.Normal(umean,vmean,centralP,n);
-            
-            bool found = false;
-            
+
             try {
-                CCPACSWing& wing = uidMgr.ResolveObject<CCPACSWing>(faceTraits.ComponentUID());
-                found = writeWingMeta(wing, centralP, iPolyLower, iPolyUpper);
+                ITiglGeometricComponent& component = uidMgr.GetGeometricComponent(faceTraits.ComponentUID());
+                if (writeWingMeta(component, centralP, iPolyLower, iPolyUpper)) {
+                    continue;
+                }
+                
+                if (writeWingSegmentMeta(component, centralP, iPolyLower, iPolyUpper)) {
+                    continue;
+                }
             }
             catch(CTiglError&) {
-                // not a wing
+                // uid is not a component. do nothing
             }
-            
-            if (!found) {
-                writeFaceDummyMeta(iPolyLower, iPolyUpper);
-            }
+            writeFaceDummyMeta(iPolyLower, iPolyUpper);
+
         }
     }
     if (m_options.useMultipleObjects()) {
@@ -236,8 +232,26 @@ int CTiglTriangularizer::triangularizeComponent(const CTiglUIDManager& uidMgr, P
  * @param iPolyLower Lower index of the polygons to annotate.
  * @param iPolyUpper Upper index of the polygons to annotate.
  */
-void CTiglTriangularizer::writeWingSegmentMeta(tigl::CCPACSWingSegment &segment, gp_Pnt pointOnSegmentFace, bool pointOnMirroredShape, unsigned long iPolyLower, unsigned long iPolyUpper)
+bool CTiglTriangularizer::writeWingSegmentMeta(tigl::ITiglGeometricComponent &segmentComponent, gp_Pnt pointOnSegmentFace, unsigned long iPolyLower, unsigned long iPolyUpper)
 {
+    if (!(segmentComponent.GetComponentType() & TIGL_COMPONENT_WINGSEGMENT)) {
+        return false;
+    }
+    
+    CCPACSWingSegment& segment = dynamic_cast<CCPACSWingSegment&>(segmentComponent);
+    
+    bool pointOnMirroredShape = false;
+    if (segment.GetIsOn(pointOnSegmentFace) == true) {
+        pointOnMirroredShape = false;
+    }
+    else if (segment.GetSymmetryAxis() != TIGL_NO_SYMMETRY && segment.GetIsOnMirrored(pointOnSegmentFace) == true) {
+        pointOnMirroredShape = true;
+    }
+    else {
+        // point is not on this segment
+        return false;
+    }
+    
     if (pointOnMirroredShape) {
         pointOnSegmentFace = mirrorPoint(pointOnSegmentFace, segment.GetSymmetryAxis());
     }
@@ -275,6 +289,8 @@ void CTiglTriangularizer::writeWingSegmentMeta(tigl::CCPACSWingSegment &segment,
         stream << "\"" << segment.GetUID() << symm << "\" " << segment.GetSegmentIndex() << " " << eta << " " << xsi << " " << isUpperFace;
         polys.currentObject().setPolyMetadata(iPoly, stream.str().c_str());
     }
+    
+    return true;
 }
 
 int CTiglTriangularizer::triangularizeFace(const TopoDS_Face & face, unsigned long &nVertices, unsigned long &iPolyLower, unsigned long &iPolyUpper)

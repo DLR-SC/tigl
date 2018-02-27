@@ -27,6 +27,8 @@
 #define CTIGLEXPORTVTK_H
 
 #include "tigl_internal.h"
+#include "CTiglCADExporter.h"
+#include "CTiglTriangularizer.h"
 
 #include <string>
 
@@ -34,6 +36,7 @@ namespace tigl
 {
 
 class CTiglPolyData;
+class CTiglPolyObject;
 
 enum VTK_EXPORT_MODE
     {
@@ -41,11 +44,11 @@ enum VTK_EXPORT_MODE
     TIGL_VTK_COMPLEX  = 1
     };
 
-class CTiglExportVtk
+class CTiglExportVtk : public CTiglCADExporter
 {
 public:
     // Constructor
-    TIGL_EXPORT CTiglExportVtk(class CCPACSConfiguration & config);
+    TIGL_EXPORT CTiglExportVtk(class CCPACSConfiguration & config, ComponentTraingMode mode = NO_INFO);
 
     // Virtual Destructor
     TIGL_EXPORT virtual ~CTiglExportVtk();
@@ -93,10 +96,14 @@ public:
     TIGL_EXPORT static void writeVTK(const CTiglPolyData& polys, const char * filename);
 
 private:
-    static void writeVTKPiece(const CTiglPolyData& polys, TixiDocumentHandle& handle, unsigned int iObject); 
-    static void createVTK(const CTiglPolyData& polys, TixiDocumentHandle& handle);
+    bool WriteImpl(const std::string& filename) const OVERRIDE;
 
+    static void writeVTKPiece(const CTiglPolyObject& co, TixiDocumentHandle& handle, unsigned int iObject); 
+    static void createVTK(const CTiglPolyData& polys, TixiDocumentHandle& handle);
+    static void createVTKHeader(TixiDocumentHandle& handle);
+    
     class CCPACSConfiguration & myConfig;       /**< TIGL configuration object */
+    ComponentTraingMode myMode;
 
 };
 

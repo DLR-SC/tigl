@@ -138,7 +138,7 @@ namespace
     }
 
     // Set the face traits
-    void SetFaceTraits (PNamedShape loft) 
+    void SetFaceTraits (PNamedShape loft, std::string shapeUID) 
     { 
         // designated names of the faces
         std::vector<std::string> names(5);
@@ -150,7 +150,11 @@ namespace
 
         // map of faces
         TopTools_IndexedMapOfShape map;
-        TopExp::MapShapes(loft->Shape(),   TopAbs_FACE, map);
+        TopExp::MapShapes(loft->Shape(), TopAbs_FACE, map);
+        
+        for (int iFace = 0; iFace < map.Extent(); ++iFace) {
+            loft->FaceTraits(iFace).SetComponentUID(shapeUID);
+        }
 
         // check if number of faces is correct (only valid for ruled surfaces lofts)
         if (map.Extent() != 5 && map.Extent() != 4) {
@@ -491,7 +495,7 @@ PNamedShape CCPACSWingSegment::BuildLoft()
     std::string loftName = GetUID();
     std::string loftShortName = GetShortShapeName();
     PNamedShape loft (new CNamedShape(loftShape, loftName.c_str(), loftShortName.c_str()));
-    SetFaceTraits(loft);
+    SetFaceTraits(loft, GetUID());
     return loft;
 }
 

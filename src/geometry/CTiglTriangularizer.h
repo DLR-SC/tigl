@@ -37,7 +37,7 @@ class CTiglRelativelyPositionedComponent;
 class CCPACSConfiguration;
 class CCPACSWingSegment;
 class CTiglUIDManager;
-class CCPACSWing;
+class ITiglGeometricComponent;
 
 enum ComponentTraingMode 
 {
@@ -100,8 +100,8 @@ private:
     int triangularizeFace(const TopoDS_Face&, unsigned long& nVertices, unsigned long& iPolyLow, unsigned long& iPolyUp);
 
     void writeFaceDummyMeta(unsigned long iPolyLower, unsigned long iPolyUpper);
-    bool writeWingMeta(CCPACSWing& wing, gp_Pnt centralP, unsigned long iPolyLower, unsigned long iPolyUpper);
-    void writeWingSegmentMeta(CCPACSWingSegment& segment, gp_Pnt centralP, bool pointOnMirroredShape, unsigned long iPolyLower, unsigned long iPolyUpper);
+    bool writeWingMeta(ITiglGeometricComponent& wing, gp_Pnt centralP, unsigned long iPolyLower, unsigned long iPolyUpper);
+    bool writeWingSegmentMeta(ITiglGeometricComponent& segment, gp_Pnt centralP, unsigned long iPolyLower, unsigned long iPolyUpper);
 
     // some options
     CTiglTriangularizerOptions m_options;

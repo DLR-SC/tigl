@@ -98,14 +98,43 @@ namespace tigl
 bool CTiglExportVtk::normalsEnabled = true;
 
 // Constructor
-CTiglExportVtk::CTiglExportVtk(CCPACSConfiguration& config)
-    :myConfig(config)
+CTiglExportVtk::CTiglExportVtk(CCPACSConfiguration& config, ComponentTraingMode mode)
+    : myConfig(config)
+    , myMode(mode)
 {
 }
 
 // Destructor
 CTiglExportVtk::~CTiglExportVtk()
 {
+}
+
+bool CTiglExportVtk::WriteImpl(const std::string &filename) const
+{
+    TixiDocumentHandle handle;
+    createVTKHeader(handle);
+
+    size_t nTotalVertices = 0;
+    size_t nTotalPolys = 0;
+    for (unsigned int i = 0; i < NShapes(); ++i) {
+        // Do the meshing
+        PNamedShape pshape = GetShape(i);
+        double deflection = GetOptions(i).deflection;
+
+        CTiglTriangularizer mesher(myConfig.GetUIDManager(), pshape, deflection, myMode, getOptions(*this));
+        const CTiglPolyData& polys = mesher.getTriangulation();
+        writeVTKPiece(polys.currentObject(), handle, i + 1);
+        
+        nTotalVertices += polys.getTotalVertexCount();
+        nTotalPolys += polys.getTotalPolygonCount();
+    }
+    
+    if (tixiSaveDocument(handle, filename.c_str())!= SUCCESS) {
+        return false;
+    }
+    LOG(INFO) << "VTK Export succeeded with " << nTotalPolys
+              << " polygons and " << nTotalVertices << " vertices." << std::endl;
+    return true;
 }
 
 
@@ -229,7 +258,7 @@ void CTiglExportVtk::writeVTK(const CTiglPolyData& polys, const char *filename)
               << " polygons and " << polys.getTotalVertexCount() << " vertices." << std::endl;
 }
 
-void CTiglExportVtk::createVTK(const CTiglPolyData& polys, TixiDocumentHandle& handle)
+void CTiglExportVtk::createVTKHeader(TixiDocumentHandle& handle)
 {
     tixiCreateDocument("VTKFile", &handle);
     tixiAddTextAttribute(handle, "/VTKFile", "type", "PolyData");
@@ -243,17 +272,20 @@ void CTiglExportVtk::createVTK(const CTiglPolyData& polys, TixiDocumentHandle& h
     tixiAddTextAttribute(handle, "/VTKFile/MetaData", "creator", stream.str().c_str());
     
     tixiCreateElement(handle, "/VTKFile", "PolyData");
+}
+
+void CTiglExportVtk::createVTK(const CTiglPolyData& polys, TixiDocumentHandle& handle)
+{
+    createVTKHeader(handle);
 
     for (unsigned int iobj = 1; iobj <= polys.getNObjects(); ++iobj ) {
-        writeVTKPiece(polys, handle, iobj);
+        writeVTKPiece(polys.getObject(iobj), handle, iobj);
     }
 }
 
 // writes the polygon data of a surface (in vtk they call it piece)
-void CTiglExportVtk::writeVTKPiece(const CTiglPolyData& polys, TixiDocumentHandle& handle, unsigned int iObject)
+void CTiglExportVtk::writeVTKPiece(const CTiglPolyObject& co, TixiDocumentHandle& handle, unsigned int iObject)
 {
-    const CTiglPolyObject& co = polys.getObject(iObject);
-
     if (co.getNPolygons() == 0) {
         return;
     }
