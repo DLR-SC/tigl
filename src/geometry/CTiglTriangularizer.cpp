@@ -65,11 +65,6 @@ namespace
 namespace tigl
 {
 
-CTiglTriangularizer::CTiglTriangularizer(const CTiglTriangularizerOptions& options)
-    : m_options(options)
-{
-}
-
 CTiglTriangularizer::CTiglTriangularizer(const TopoDS_Shape& shape, double deflection, const CTiglTriangularizerOptions& options)
     : m_options(options)
 {
@@ -90,7 +85,7 @@ int CTiglTriangularizer::triangularizeShape(const TopoDS_Shape& shape)
     for (shellExplorer.Init(shape, TopAbs_SHELL); shellExplorer.More(); shellExplorer.Next()) {
         const TopoDS_Shell shell = TopoDS::Shell(shellExplorer.Current());
         
-        currentObject().enableNormals(m_options.normalsEnabled());
+        polys.currentObject().enableNormals(m_options.normalsEnabled());
 
         for (faceExplorer.Init(shell, TopAbs_FACE); faceExplorer.More(); faceExplorer.Next()) {
             TopoDS_Face face = TopoDS::Face(faceExplorer.Current());
@@ -98,7 +93,7 @@ int CTiglTriangularizer::triangularizeShape(const TopoDS_Shape& shape)
             triangularizeFace(face, nVertices, iPolyLower, iPolyUpper);
         } // for faces
         if (m_options.useMultipleObjects()) {
-            createNewObject();
+            polys.createNewObject();
         }
     } // for shells
     
@@ -197,7 +192,7 @@ int CTiglTriangularizer::triangularizeComponent(const std::vector<CTiglRelativel
     BRepMesh_IncrementalMesh(shape, deflection);
     LOG(INFO) << "Done meshing";
 
-    currentObject().enableNormals(m_options.normalsEnabled());
+    polys.currentObject().enableNormals(m_options.normalsEnabled());
     
     TopExp_Explorer faceExplorer;
     for (faceExplorer.Init(shape, TopAbs_FACE); faceExplorer.More(); faceExplorer.Next()) {
@@ -251,13 +246,13 @@ int CTiglTriangularizer::triangularizeComponent(const std::vector<CTiglRelativel
             if ( !found ) {
                 //make dummy annotation for non wing faces
                 for (unsigned int iPoly = iPolyLower; iPoly <= iPolyUpper; iPoly++) {
-                    currentObject().setPolyMetadata(iPoly,"\"\" 0 0.0 0.0 0");
+                    polys.currentObject().setPolyMetadata(iPoly,"\"\" 0 0.0 0.0 0");
                 }
             } // ! found
         }
     }
     if (m_options.useMultipleObjects()) {
-        createNewObject();
+        polys.createNewObject();
     }
 
     return TIGL_SUCCESS;
@@ -282,15 +277,15 @@ void CTiglTriangularizer::annotateWingSegment(tigl::CCPACSWingSegment &segment, 
     bool isUpperFace = segment.GetIsOnTop(pointOnSegmentFace);
     
     for (unsigned long iPoly = iPolyLower; iPoly <= iPolyUpper; iPoly++) {
-        currentObject().setPolyDataReal(iPoly, "is_upper", (double) isUpperFace);
-        currentObject().setPolyDataReal(iPoly, "segment_index", (double) segment.GetSegmentIndex());
+        polys.currentObject().setPolyDataReal(iPoly, "is_upper", (double) isUpperFace);
+        polys.currentObject().setPolyDataReal(iPoly, "segment_index", (double) segment.GetSegmentIndex());
         
-        unsigned long npoints = currentObject().getNPointsOfPolygon(iPoly);
+        unsigned long npoints = polys.currentObject().getNPointsOfPolygon(iPoly);
         
         CTiglPoint baryCenter(0.,0.,0.);
         for (unsigned long jPoint = 0; jPoint < npoints; ++jPoint) {
-            unsigned long index = currentObject().getVertexIndexOfPolygon(jPoint, iPoly);
-            baryCenter += currentObject().getVertexPoint(index);
+            unsigned long index = polys.currentObject().getVertexIndexOfPolygon(jPoint, iPoly);
+            baryCenter += polys.currentObject().getVertexPoint(index);
         }
         baryCenter = baryCenter*(double)(1./(double)npoints);
         if (pointOnMirroredShape) {
@@ -299,8 +294,8 @@ void CTiglTriangularizer::annotateWingSegment(tigl::CCPACSWingSegment &segment, 
         
         double eta = 0., xsi = 0.;
         segment.GetEtaXsi(baryCenter.Get_gp_Pnt(), eta, xsi);
-        currentObject().setPolyDataReal(iPoly, "eta", eta);
-        currentObject().setPolyDataReal(iPoly, "xsi", xsi);
+        polys.currentObject().setPolyDataReal(iPoly, "eta", eta);
+        polys.currentObject().setPolyDataReal(iPoly, "xsi", xsi);
         
         // create metadata string
         std::stringstream stream;
@@ -309,7 +304,7 @@ void CTiglTriangularizer::annotateWingSegment(tigl::CCPACSWingSegment &segment, 
             symm = "_sym";
         }
         stream << "\"" << segment.GetUID() << symm << "\" " << segment.GetSegmentIndex() << " " << eta << " " << xsi << " " << isUpperFace;
-        currentObject().setPolyMetadata(iPoly, stream.str().c_str());
+        polys.currentObject().setPolyMetadata(iPoly, stream.str().c_str());
     }
 }
 
@@ -349,7 +344,7 @@ int CTiglTriangularizer::triangularizeFace(const TopoDS_Face & face, unsigned lo
             if (face.Orientation() == TopAbs_INTERNAL) {
                 n.Reverse();
             }
-            indexBuffer.push_back(currentObject().addPointNormal(p.XYZ(), n.XYZ()));
+            indexBuffer.push_back(polys.currentObject().addPointNormal(p.XYZ(), n.XYZ()));
         }
     } 
     else {
@@ -361,7 +356,7 @@ int CTiglTriangularizer::triangularizeFace(const TopoDS_Face & face, unsigned lo
         iBufferSize = nodes.Upper()-nodes.Lower()+1;
         indexBuffer.reserve(iBufferSize);        for (int inode = nodes.Lower(); inode <= nodes.Upper(); inode++) {
             const gp_Pnt& p = nodes(inode).Transformed(nodeTransformation);
-            indexBuffer.push_back(currentObject().addPointNormal(p.XYZ(), CTiglPoint(1,0,0)));
+            indexBuffer.push_back(polys.currentObject().addPointNormal(p.XYZ(), CTiglPoint(1,0,0)));
         }
     }
 
@@ -382,10 +377,10 @@ int CTiglTriangularizer::triangularizeFace(const TopoDS_Face & face, unsigned lo
         unsigned long iPolyIndex = 0;
         
         if (face.Orientation() != TopAbs_REVERSED && face.Orientation() != TopAbs_INTERNAL) {
-            iPolyIndex = currentObject().addTriangleByVertexIndex(index1, index2, index3);
+            iPolyIndex = polys.currentObject().addTriangleByVertexIndex(index1, index2, index3);
         }
         else {
-            iPolyIndex = currentObject().addTriangleByVertexIndex(index1, index3, index2);
+            iPolyIndex = polys.currentObject().addTriangleByVertexIndex(index1, index3, index2);
         }
         
         // In some rare cases, 2 indices are the same

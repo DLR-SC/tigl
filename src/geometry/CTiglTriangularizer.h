@@ -75,11 +75,9 @@ private:
     bool m_normalsEnabled;
 };
 
-class CTiglTriangularizer : public CTiglPolyData
+class CTiglTriangularizer
 {
 public:
-    TIGL_EXPORT CTiglTriangularizer(const CTiglTriangularizerOptions& options = CTiglTriangularizerOptions());
-
     TIGL_EXPORT CTiglTriangularizer(const TopoDS_Shape&, double deflection, const CTiglTriangularizerOptions& options = CTiglTriangularizerOptions());
 
     TIGL_EXPORT CTiglTriangularizer(class CTiglRelativelyPositionedComponent &comp, double deflection,
@@ -87,6 +85,11 @@ public:
 
     TIGL_EXPORT CTiglTriangularizer(class CCPACSConfiguration& config, bool fuseShapes, double deflection, ComponentTraingMode mode,
                                     const CTiglTriangularizerOptions& options = CTiglTriangularizerOptions());
+    
+    const CTiglPolyData& getTriangulation() const
+    {
+        return polys;
+    }
 
 private:
     int triangularizeComponent(CTiglRelativelyPositionedComponent& component, bool includeChilds, const TopoDS_Shape& shape, double deflection, ComponentTraingMode = NO_INFO);
@@ -98,6 +101,7 @@ private:
 
     // some options
     CTiglTriangularizerOptions m_options;
+    CTiglPolyData polys;
 };
 
 }

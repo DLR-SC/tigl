@@ -131,7 +131,7 @@ bool writeMeshArray(TixiDocumentHandle handle, std::string meshPath, int sourceI
     return true;
 }
 
-bool writeGeometryMesh(TixiDocumentHandle handle, CTiglPolyData& polyData, std::string col_id, int& geometryIndex)
+bool writeGeometryMesh(TixiDocumentHandle handle, const CTiglPolyData& polyData, std::string col_id, int& geometryIndex)
 {
     // create vertex, normal and triangle strings
     std::stringstream stream_verts;
@@ -140,7 +140,7 @@ bool writeGeometryMesh(TixiDocumentHandle handle, CTiglPolyData& polyData, std::
     unsigned long count_pos =0, count_norm =0, count_vert =0; // count Points, Normals, Verticies for COLLADA-schema arrays
 
     for (unsigned int i = 1; i <= polyData.getNObjects(); ++i) {
-        CTiglPolyObject& obj = polyData.switchObject(i);
+        const CTiglPolyObject& obj = polyData.getObject(i);
 
         unsigned long nvert = obj.getNVertices();
         for (unsigned long jvert = 0; jvert < nvert; ++jvert) {
@@ -289,9 +289,9 @@ bool CTiglExportCollada::WriteImpl(const std::string& filename) const
         // Do the meshing
         PNamedShape pshape = GetShape(i);
         double deflection = GetOptions(i).deflection;
-        CTiglTriangularizer polyData(pshape->Shape(), deflection);
+        CTiglTriangularizer mesher(pshape->Shape(), deflection);
         
-        writeGeometryMesh(handle, polyData, std::string(pshape->Name()) + "-geom", geomIndex);
+        writeGeometryMesh(handle, mesher.getTriangulation(), std::string(pshape->Name()) + "-geom", geomIndex);
     }
     
     // write the scene and link object to geometry

@@ -378,7 +378,7 @@ TEST_F(TriangularizeShape, exportVTK_FusedWing)
 
     tigl::CTiglTriangularizer t(wing.GetLoft()->Shape(), 0.001);
     try {
-        CTiglExportVtk::writeVTK(t, "exported_fused_wing_simple.vtp");
+        CTiglExportVtk::writeVTK(t.getTriangulation(), "exported_fused_wing_simple.vtp");
     }
     catch (...) {
         exportError = true;
@@ -408,9 +408,10 @@ TEST_F(TriangularizeShape, exportVTK_CompoundWing)
     tigl::CTiglTriangularizer t(compound, 0.001);
     stop = clock();
     std::cout << "Triangularization time [ms]: " << (stop-start)/(double)CLOCKS_PER_SEC * 1000. << std::endl;
-    std::cout << "Number of Polygons/Vertices: " << t.currentObject().getNPolygons() << "/" << t.currentObject().getNVertices()<<std::endl;
+    std::cout << "Number of Polygons/Vertices: " << t.getTriangulation().currentObject().getNPolygons() << "/"
+              << t.getTriangulation().currentObject().getNVertices()<<std::endl;
     try {
-        CTiglExportVtk::writeVTK(t, "exported_compund_wing_simple.vtp");
+        CTiglExportVtk::writeVTK(t.getTriangulation(), "exported_compund_wing_simple.vtp");
     }
     catch (...) {
         exportError = true;
@@ -429,12 +430,13 @@ TEST_F(TriangularizeShape, exportVTK_WingSegmentInfo)
 
     clock_t start, stop;
     start = clock();
-    tigl::CTiglTriangularizer trian(wing, 0.0001, SEGMENT_INFO);
+    tigl::CTiglTriangularizer mesher(wing, 0.0001, SEGMENT_INFO);
+    const tigl::CTiglPolyData& polys = mesher.getTriangulation();
 
     stop = clock();
     std::cout << "Triangularization time [ms]: " << (stop-start)/(double)CLOCKS_PER_SEC * 1000. << std::endl;
-    std::cout << "Number of Polygons/Vertices: " << trian.currentObject().getNPolygons() << "/" << trian.currentObject().getNVertices()<<std::endl;
-    ASSERT_NO_THROW(CTiglExportVtk::writeVTK(trian, vtkWingFilename));
+    std::cout << "Number of Polygons/Vertices: " << polys.currentObject().getNPolygons() << "/" << polys.currentObject().getNVertices()<<std::endl;
+    ASSERT_NO_THROW(CTiglExportVtk::writeVTK(polys, vtkWingFilename));
 }
 
 TEST_F(TriangularizeShape, exportVTK_FullPlane_long)
@@ -444,8 +446,9 @@ TEST_F(TriangularizeShape, exportVTK_FullPlane_long)
     tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
     tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
     
-    tigl::CTiglTriangularizer trian(config, true, 0.001, SEGMENT_INFO);
+    tigl::CTiglTriangularizer mesher(config, true, 0.001, SEGMENT_INFO);
+    const tigl::CTiglPolyData& polys = mesher.getTriangulation();
 
-    std::cout << "Number of Polygons/Vertices: " << trian.currentObject().getNPolygons() << "/" << trian.currentObject().getNVertices()<<std::endl;
-    ASSERT_NO_THROW(CTiglExportVtk::writeVTK(trian, vtkWingFilename));
+    std::cout << "Number of Polygons/Vertices: " << polys.currentObject().getNPolygons() << "/" << polys.currentObject().getNVertices()<<std::endl;
+    ASSERT_NO_THROW(CTiglExportVtk::writeVTK(polys, vtkWingFilename));
 }

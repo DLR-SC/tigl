@@ -162,6 +162,7 @@ public:
     TIGL_EXPORT CTiglPolyObject& createNewObject();
 
     TIGL_EXPORT CTiglPolyObject& currentObject();
+    TIGL_EXPORT const CTiglPolyObject& currentObject() const;
 
     // changes the current surface, we count from 1 to getNObjects
     TIGL_EXPORT CTiglPolyObject& switchObject(unsigned int iObject);

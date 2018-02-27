@@ -283,6 +283,11 @@ CTiglPolyObject& CTiglPolyData::currentObject()
     return **itCurrentObj;
 }
 
+const CTiglPolyObject& CTiglPolyData::currentObject() const
+{
+    return **itCurrentObj;
+}
+
 CTiglPolyObject& CTiglPolyData::createNewObject() 
 {
     _objects.push_back(new CTiglPolyObject());
