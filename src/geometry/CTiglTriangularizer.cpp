@@ -41,6 +41,8 @@
 #include <gp_Pnt2d.hxx>
 
 #include <TColgp_Array1OfPnt2d.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
+#include <TopExp.hxx>
 #include <climits>
 
 namespace 
@@ -65,10 +67,14 @@ namespace
 namespace tigl
 {
 
-CTiglTriangularizer::CTiglTriangularizer(const TopoDS_Shape& shape, double deflection, const CTiglTriangularizerOptions& options)
+CTiglTriangularizer::CTiglTriangularizer(PNamedShape pshape, double deflection, const CTiglTriangularizerOptions& options)
     : m_options(options)
 {
+    if (!pshape) {
+        throw CTiglError("Null pointer shape in CTiglTriangularizer", TIGL_NULL_POINTER);
+    }
     
+    const TopoDS_Shape& shape = pshape->Shape();
     // check if we have already a mesh with given deflection
     if (!BRepTools::Triangulation (shape, deflection)) {
         BRepTools::Clean (shape);
@@ -100,66 +106,24 @@ int CTiglTriangularizer::triangularizeShape(const TopoDS_Shape& shape)
     return 0;
 }
 
-CTiglTriangularizer::CTiglTriangularizer(CTiglRelativelyPositionedComponent& comp, double deflection, ComponentTraingMode mode, const CTiglTriangularizerOptions& options)
+CTiglTriangularizer::CTiglTriangularizer(const CTiglUIDManager& uidMgr, PNamedShape shape, double deflection, ComponentTraingMode mode, const CTiglTriangularizerOptions& options)
+    : m_options(options)
+{
+
+    m_options.setMutipleObjectsEnabled(false);
+    triangularizeComponent(uidMgr, shape, deflection, mode);
+    
+}
+
+CTiglTriangularizer::CTiglTriangularizer(CCPACSConfiguration &config, double deflection, ComponentTraingMode mode, const CTiglTriangularizerOptions &options)
     : m_options(options)
 {
     LOG(INFO) << "Calculating fused plane";
-    triangularizeComponent(comp, false, comp.GetLoft()->Shape(), deflection, mode);
-}
-
-CTiglTriangularizer::CTiglTriangularizer(CCPACSConfiguration& config, bool fuseShapes, double deflection, ComponentTraingMode mode ,const CTiglTriangularizerOptions& options)
-    : m_options(options)
-{
-    if (fuseShapes){
-        PTiglFusePlane fuser = config.AircraftFusingAlgo();
-        fuser->SetResultMode(FULL_PLANE);
-        if (!fuser->FusedPlane()) {
-            throw CTiglError("Error computing fused aircraft in CTiglTriangularizer", TIGL_ERROR);
-        }
-
-        TopoDS_Shape planeShape = fuser->FusedPlane()->Shape();
-
-        m_options.setMutipleObjectsEnabled(false);
-        std::vector<CTiglRelativelyPositionedComponent*> rootComponentPtrs;
-        const RelativeComponentContainerType& rootComponents = config.GetUIDManager().GetRootGeometricComponents();
-        for (RelativeComponentContainerType::const_iterator it = rootComponents.begin(); it != rootComponents.end(); ++it)
-            rootComponentPtrs.push_back(it->second);
-        triangularizeComponent(rootComponentPtrs, true, planeShape, deflection, mode);
-    }
-    else {
-        m_options.setMutipleObjectsEnabled(false);
-        for (int iWing = 1; iWing <= config.GetWingCount(); ++iWing) {
-            CCPACSWing& wing = config.GetWing(iWing);
-
-            TopoDS_Shape wshape = wing.GetLoft()->Shape();
-            BRepMesh_IncrementalMesh(wshape,deflection);
-            triangularizeShape(wshape);
-
-            if (wing.GetSymmetryAxis() == TIGL_NO_SYMMETRY) {
-                continue;
-            }
-
-            TopoDS_Shape wshape_m = wing.GetMirroredLoft()->Shape();
-            BRepMesh_IncrementalMesh(wshape_m,deflection);
-            triangularizeShape(wshape_m);
-        }
-
-        for (int iFuselage = 1; iFuselage <= config.GetFuselageCount(); ++iFuselage) {
-            CCPACSFuselage& fuselage = config.GetFuselage(iFuselage);
-
-            TopoDS_Shape wshape = fuselage.GetLoft()->Shape();
-            BRepMesh_IncrementalMesh(wshape,deflection);
-            triangularizeShape(wshape);
-
-            if (fuselage.GetSymmetryAxis() == TIGL_NO_SYMMETRY) {
-                continue;
-            }
-
-            TopoDS_Shape wshape_m = fuselage.GetMirroredLoft()->Shape();
-            BRepMesh_IncrementalMesh(wshape_m,deflection);
-            triangularizeShape(wshape_m);
-        }
-    }
+    PTiglFusePlane fuser = config.AircraftFusingAlgo();
+    fuser->SetResultMode(FULL_PLANE);
+    PNamedShape fusedAirplane = fuser->FusedPlane();
+    
+    triangularizeComponent(config.GetUIDManager(), fusedAirplane, deflection, mode);
 }
 
 bool isValidCoord(double c) 
@@ -173,30 +137,58 @@ bool isValidCoord(double c)
     }
 }
 
-int CTiglTriangularizer::triangularizeComponent(CTiglRelativelyPositionedComponent& component, bool include_childs, const TopoDS_Shape& shape, double deflection, ComponentTraingMode mode)
+void CTiglTriangularizer::writeFaceDummyMeta(unsigned long iPolyLower, unsigned long iPolyUpper)
 {
-    return triangularizeComponent(std::vector<CTiglRelativelyPositionedComponent*>(1, &component), include_childs, shape, deflection, mode);
+    for (unsigned int iPoly = iPolyLower; iPoly <= iPolyUpper; iPoly++) {
+        polys.currentObject().setPolyMetadata(iPoly,"\"\" 0 0.0 0.0 0");
+    }    
 }
 
-int CTiglTriangularizer::triangularizeComponent(const std::vector<CTiglRelativelyPositionedComponent*>& components, bool include_childs, const TopoDS_Shape& shape, double deflection, ComponentTraingMode mode)
+bool CTiglTriangularizer::writeWingMeta(CCPACSWing& wing, gp_Pnt centralP, unsigned long iPolyLower, unsigned long iPolyUpper)
 {
-    // create list of child components
-    CTiglRelativelyPositionedComponent::ChildContainerType allcomponents;
-    for (std::vector<CTiglRelativelyPositionedComponent*>::const_iterator it = components.begin(); it != components.end(); ++it) {
-        CTiglRelativelyPositionedComponent::ChildContainerType children = (*it)->GetChildren(true);
-        allcomponents.push_back(*it);
-        allcomponents.insert(allcomponents.end(), children.begin(), children.end());
+    int iSegmentFound = 0;
+    bool pointOnMirroredShape = false;
+    for (int iSegment = 1 ; iSegment <= wing.GetSegmentCount(); ++iSegment) {
+        CCPACSWingSegment& segment = (CCPACSWingSegment&) wing.GetSegment(iSegment);
+        if (segment.GetIsOn(centralP) == true) {
+            iSegmentFound = iSegment;
+            break;
+        }
+        else if (wing.GetSymmetryAxis() != TIGL_NO_SYMMETRY && segment.GetIsOnMirrored(centralP) == true){
+            iSegmentFound = iSegment;
+            pointOnMirroredShape = true;
+            break;
+        }
+    } // for segments
+    if (iSegmentFound > 0) {
+        CCPACSWingSegment& segment = (CCPACSWingSegment&) wing.GetSegment(iSegmentFound);
+        writeWingSegmentMeta(segment, centralP, pointOnMirroredShape, iPolyLower, iPolyUpper);
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+int CTiglTriangularizer::triangularizeComponent(const CTiglUIDManager& uidMgr, PNamedShape pshape, double deflection, ComponentTraingMode mode)
+{
+    if (!pshape) {
+        return TIGL_NULL_POINTER;
     }
     
+    
+    TopoDS_Shape shape = pshape->Shape();
     BRepTools::Clean (shape);
     BRepMesh_IncrementalMesh(shape, deflection);
     LOG(INFO) << "Done meshing";
 
     polys.currentObject().enableNormals(m_options.normalsEnabled());
     
-    TopExp_Explorer faceExplorer;
-    for (faceExplorer.Init(shape, TopAbs_FACE); faceExplorer.More(); faceExplorer.Next()) {
-        TopoDS_Face face = TopoDS::Face(faceExplorer.Current());
+    TopTools_IndexedMapOfShape faceMap;
+    TopExp::MapShapes(shape, TopAbs_FACE, faceMap);
+    for (int iface = 1; iface <= faceMap.Extent(); ++iface) {
+        TopoDS_Face face = TopoDS::Face(faceMap(iface));
+        const CFaceTraits& faceTraits = pshape->GetFaceTraits(iface-1);
         unsigned long nVertices, iPolyLower, iPolyUpper;
         triangularizeFace(face, nVertices, iPolyLower, iPolyUpper);
         
@@ -213,42 +205,19 @@ int CTiglTriangularizer::triangularizeComponent(const std::vector<CTiglRelativel
             gp_Pnt centralP; gp_Vec n;
             prop.Normal(umean,vmean,centralP,n);
             
-            // search to which component the current face belongs to
             bool found = false;
-            CTiglRelativelyPositionedComponent::ChildContainerType::iterator compit;
-            for (compit = allcomponents.begin(); compit != allcomponents.end(); ++compit) {
-                CTiglRelativelyPositionedComponent& curcomp = *(*compit);
-                if (curcomp.GetComponentType() & TIGL_COMPONENT_WING){
-                    // check to which segment this face belongs
-                    CCPACSWing& wing = dynamic_cast<CCPACSWing&>(curcomp);
-                    int iSegmentFound = 0;
-                    bool pointOnMirroredShape = false;
-                    for (int iSegment = 1 ; iSegment <= wing.GetSegmentCount(); ++iSegment) {
-                        CCPACSWingSegment& segment = (CCPACSWingSegment&) wing.GetSegment(iSegment);
-                        if (segment.GetIsOn(centralP) == true) {
-                            iSegmentFound = iSegment;
-                            break;
-                        }
-                        else if (wing.GetSymmetryAxis() != TIGL_NO_SYMMETRY && segment.GetIsOnMirrored(centralP) == true){
-                            iSegmentFound = iSegment;
-                            pointOnMirroredShape = true;
-                            break;
-                        }
-                    }
-                    if (iSegmentFound > 0) {
-                        CCPACSWingSegment& segment = (CCPACSWingSegment&) wing.GetSegment(iSegmentFound);
-                        annotateWingSegment(segment, centralP, pointOnMirroredShape, iPolyLower, iPolyUpper);
-                        found = true;
-                        break;
-                    }
-                } // is wing
-            } // for components
-            if ( !found ) {
-                //make dummy annotation for non wing faces
-                for (unsigned int iPoly = iPolyLower; iPoly <= iPolyUpper; iPoly++) {
-                    polys.currentObject().setPolyMetadata(iPoly,"\"\" 0 0.0 0.0 0");
-                }
-            } // ! found
+            
+            try {
+                CCPACSWing& wing = uidMgr.ResolveObject<CCPACSWing>(faceTraits.ComponentUID());
+                found = writeWingMeta(wing, centralP, iPolyLower, iPolyUpper);
+            }
+            catch(CTiglError&) {
+                // not a wing
+            }
+            
+            if (!found) {
+                writeFaceDummyMeta(iPolyLower, iPolyUpper);
+            }
         }
     }
     if (m_options.useMultipleObjects()) {
@@ -267,7 +236,7 @@ int CTiglTriangularizer::triangularizeComponent(const std::vector<CTiglRelativel
  * @param iPolyLower Lower index of the polygons to annotate.
  * @param iPolyUpper Upper index of the polygons to annotate.
  */
-void CTiglTriangularizer::annotateWingSegment(tigl::CCPACSWingSegment &segment, gp_Pnt pointOnSegmentFace, bool pointOnMirroredShape, unsigned long iPolyLower, unsigned long iPolyUpper)
+void CTiglTriangularizer::writeWingSegmentMeta(tigl::CCPACSWingSegment &segment, gp_Pnt pointOnSegmentFace, bool pointOnMirroredShape, unsigned long iPolyLower, unsigned long iPolyUpper)
 {
     if (pointOnMirroredShape) {
         pointOnSegmentFace = mirrorPoint(pointOnSegmentFace, segment.GetSymmetryAxis());

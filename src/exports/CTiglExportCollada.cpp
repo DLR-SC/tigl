@@ -289,7 +289,7 @@ bool CTiglExportCollada::WriteImpl(const std::string& filename) const
         // Do the meshing
         PNamedShape pshape = GetShape(i);
         double deflection = GetOptions(i).deflection;
-        CTiglTriangularizer mesher(pshape->Shape(), deflection);
+        CTiglTriangularizer mesher(pshape, deflection);
         
         writeGeometryMesh(handle, mesher.getTriangulation(), std::string(pshape->Name()) + "-geom", geomIndex);
     }

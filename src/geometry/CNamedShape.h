@@ -55,7 +55,8 @@ public:
     TIGL_EXPORT std::string Name() const;
     TIGL_EXPORT void SetName(const std::string&);
     
-    //TIGL_EXPORT SetComponentUID(const std::string& uid);
+    TIGL_EXPORT void SetComponentUID(const std::string& uid);
+    TIGL_EXPORT std::string ComponentUID() const;
     
 private:
     PNamedShape  _origin;        /** Pointer to the original shape where this face was created */

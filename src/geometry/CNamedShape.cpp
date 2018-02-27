@@ -153,6 +153,16 @@ void CFaceTraits::SetName(const std::string& name)
     _faceName = name;
 }
 
+void CFaceTraits::SetComponentUID(const std::string &uid)
+{
+    _componentUID = uid;
+}
+
+std::string CFaceTraits::ComponentUID() const
+{
+    return _componentUID;
+}
+
 std::string CFaceTraits::Name() const
 {
     return _faceName.c_str();

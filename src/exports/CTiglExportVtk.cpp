@@ -120,7 +120,7 @@ void CTiglExportVtk::ExportMeshedWingVTKByIndex(const int wingIndex, const std::
 void CTiglExportVtk::ExportMeshedWingVTKByUID(const std::string& wingUID, const std::string& filename, const double deflection)
 {
     tigl::CCPACSWing& wing = myConfig.GetWing(wingUID);
-    CTiglTriangularizer wingTrian(wing, deflection, SEGMENT_INFO, getOptions(*this));
+    CTiglTriangularizer wingTrian(myConfig.GetUIDManager(), wing.GetLoft(), deflection, SEGMENT_INFO, getOptions(*this));
     writeVTK(wingTrian.getTriangulation(), filename.c_str());
 }
 
@@ -137,8 +137,7 @@ void CTiglExportVtk::ExportMeshedFuselageVTKByIndex(const int fuselageIndex, con
 void CTiglExportVtk::ExportMeshedFuselageVTKByUID(const std::string& fuselageUID, const std::string& filename, const double deflection)
 {
     CTiglRelativelyPositionedComponent & component = myConfig.GetFuselage(fuselageUID);
-    const TopoDS_Shape& shape = component.GetLoft()->Shape();
-    CTiglTriangularizer trian(shape, deflection, getOptions(*this));
+    CTiglTriangularizer trian(component.GetLoft(), deflection, getOptions(*this));
     writeVTK(trian.getTriangulation(), filename.c_str());
 }
 
@@ -146,7 +145,8 @@ void CTiglExportVtk::ExportMeshedFuselageVTKByUID(const std::string& fuselageUID
 // Exports a whole geometry, boolean fused and meshed, as VTK file
 void CTiglExportVtk::ExportMeshedGeometryVTK(const std::string& filename, const double deflection)
 {
-    tigl::CTiglTriangularizer trian(myConfig, true, deflection, SEGMENT_INFO, getOptions(*this));
+    // TODO: 122 enable fusing
+    tigl::CTiglTriangularizer trian(myConfig, deflection, SEGMENT_INFO, getOptions(*this));
     writeVTK(trian.getTriangulation(), filename.c_str());
 }
 
@@ -155,8 +155,7 @@ void CTiglExportVtk::ExportMeshedGeometryVTK(const std::string& filename, const 
 void CTiglExportVtk::ExportMeshedWingVTKSimpleByUID(const std::string& wingUID, const std::string& filename, const double deflection)
 {
     CCPACSWing & component = dynamic_cast<CCPACSWing&>(myConfig.GetWing(wingUID));
-    TopoDS_Shape& loft = component.GetLoftWithLeadingEdge();
-    CTiglTriangularizer loftTrian(loft, deflection, getOptions(*this));
+    CTiglTriangularizer loftTrian(component.GetLoft(), deflection, getOptions(*this));
     writeVTK(loftTrian.getTriangulation(), filename.c_str());
 }
 
@@ -172,8 +171,7 @@ void CTiglExportVtk::ExportMeshedWingVTKSimpleByIndex(const int wingIndex, const
 void CTiglExportVtk::ExportMeshedFuselageVTKSimpleByUID(const std::string& fuselageUID, const std::string& filename, const double deflection)
 {
     CTiglRelativelyPositionedComponent & component = myConfig.GetFuselage(fuselageUID);
-    const TopoDS_Shape& shape = component.GetLoft()->Shape();
-    CTiglTriangularizer loftTrian(shape, deflection, getOptions(*this));
+    CTiglTriangularizer loftTrian(component.GetLoft(), deflection, getOptions(*this));
     writeVTK(loftTrian.getTriangulation(), filename.c_str());
 }
 
@@ -188,14 +186,16 @@ void CTiglExportVtk::ExportMeshedFuselageVTKSimpleByIndex(const int fuselageInde
 // Exports a whole geometry, boolean fused and meshed, as VTK file
 void CTiglExportVtk::ExportMeshedGeometryVTKSimple(const std::string& filename, const double deflection)
 {
-    tigl::CTiglTriangularizer trian(myConfig, true, deflection, NO_INFO, getOptions(*this));
+    // TODO: 122 fuse
+    tigl::CTiglTriangularizer trian(myConfig, deflection, NO_INFO, getOptions(*this));
     writeVTK(trian.getTriangulation(), filename.c_str());
 }
 
 // Exports a whole geometry, not fused and meshed, as VTK file
 void CTiglExportVtk::ExportMeshedGeometryVTKNoFuse(const std::string& filename, const double deflection)
 {
-    tigl::CTiglTriangularizer trian(myConfig, false, deflection, NO_INFO, getOptions(*this));
+    // TODO: 122 don't fuse
+    tigl::CTiglTriangularizer trian(myConfig, deflection, NO_INFO, getOptions(*this));
     writeVTK(trian.getTriangulation(), filename.c_str());
 }
 
