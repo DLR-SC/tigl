@@ -332,5 +332,5 @@ void TIGLViewerSelectWingAndFlapStatusDialog::updateWidgets(std::string controlS
     elms.valueLabel->setText(textVal);
     elms.rotAngleLabel->setText(textRot);
 
-    device->SetDeflection(inputDeflection);
+    device->SetDeflection(inputDeflection, false);
 }

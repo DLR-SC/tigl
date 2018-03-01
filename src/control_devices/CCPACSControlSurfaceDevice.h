@@ -64,7 +64,7 @@ public:
 
     // Get and set the current deflection  value
     TIGL_EXPORT double GetDeflection() const;
-    TIGL_EXPORT void SetDeflection(const double deflect);
+    TIGL_EXPORT void SetDeflection(const double deflect, bool updateWingLoft = true);
 
 
     TIGL_EXPORT gp_Vec getNormalOfControlSurfaceDevice();
