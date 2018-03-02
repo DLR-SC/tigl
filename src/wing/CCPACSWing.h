@@ -99,9 +99,6 @@ public:
     TIGL_EXPORT CTiglAbstractSegment & GetComponentSegment(const int index);
     TIGL_EXPORT CTiglAbstractSegment & GetComponentSegment(std::string uid);
 
-    // Extends given flap of this wing
-    TIGL_EXPORT void ExtendFlap(std::string flapUID, double flapDeflectionPercentage);
-
     // Determine wether the wing should be lofted with the flaps or not
     TIGL_EXPORT void SetBuildFlaps(bool input);
 

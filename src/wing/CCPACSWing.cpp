@@ -380,38 +380,6 @@ CTiglAbstractSegment & CCPACSWing::GetComponentSegment(std::string uid)
     return (CTiglAbstractSegment &) componentSegments.GetComponentSegment(uid);
 }
 
-
-void CCPACSWing::ExtendFlap(std::string flapUID, double flapDeflectionPercentage )
-{
-    for ( int icompseg = 1; icompseg <= GetComponentSegmentCount(); icompseg++ ) {
-        tigl::CCPACSWingComponentSegment & compSeg
-                = (tigl::CCPACSWingComponentSegment &) GetComponentSegment(icompseg);
-        try {
-            CCPACSControlSurfaceDevice& controlDevice =
-                compSeg.getControlSurfaces() \
-                        .getControlSurfaceDevices() \
-                       ->getControlSurfaceDevice(flapUID);
-
-            double minDeflect = controlDevice.GetMinDeflection();
-            double maxDeflect = controlDevice.GetMaxDeflection();
-            double absDeflect = minDeflect + flapDeflectionPercentage*(maxDeflect - minDeflect)/100;
-
-            controlDevice.SetDeflection(absDeflect);
-            break;
-        }
-        catch (tigl::CTiglError& err){
-            if (err.getCode() == TIGL_UID_ERROR) {
-                continue;
-            }
-            else {
-                throw;
-            }
-        }
-    }
-
-    GroupedFlapsAndWingShapes();
-}
-
 void CCPACSWing::SetBuildFlaps(bool input)
 {
     buildFlaps = input;
