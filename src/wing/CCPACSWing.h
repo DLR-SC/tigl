@@ -102,6 +102,9 @@ public:
     // Extends given flap of this wing
     TIGL_EXPORT void ExtendFlap(std::string flapUID, double flapDeflectionPercentage);
 
+    // Determine wether the wing should be lofted with the flaps or not
+    TIGL_EXPORT void SetBuildFlaps(bool input);
+
     // Adds all Segments of this wing and flaps to one shape
     // @TODO: this should not be called explicitly. Instead, it should be called by get loft, in case
     // The control surface deflections are not zero
@@ -236,6 +239,7 @@ private:
     bool                           rebuildFusedSegments;     /**< Indicates if segmentation fusing need rebuild */
     bool                           rebuildFusedSegWEdge;     /**< Indicates if segmentation fusing need rebuild */
     bool                           rebuildShells;
+    bool                           buildFlaps;               /**< Indicactes if the wing's loft shall include flaps */
     FusedElementsContainerType     fusedElements;            /**< Stores already fused segments */
     double                         myVolume;                 /**< Volume of this Wing           */
 };

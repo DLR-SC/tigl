@@ -157,7 +157,7 @@ private slots:
     QString dlgGetFuselageSelection();
     QString dlgGetFuselageSegmentSelection();
     QString dlgGetFuselageProfileSelection();
-    
+
     void onFlapsDialogClosed();
 
 

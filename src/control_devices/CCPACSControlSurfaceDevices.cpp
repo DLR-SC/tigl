@@ -120,7 +120,7 @@ CCPACSControlSurfaceDevice& CCPACSControlSurfaceDevices::getControlSurfaceDevice
 
 int CCPACSControlSurfaceDevices::getControlSurfaceDeviceCount()
 {
-    return controlSurfaceDevices.size();
+    return (int)controlSurfaceDevices.size();
 }
 
 } // end namespace tigl

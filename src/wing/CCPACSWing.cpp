@@ -166,6 +166,7 @@ CCPACSWing::CCPACSWing(CCPACSConfiguration* config)
     , rebuildFusedSegments(true)
     , rebuildFusedSegWEdge(true)
     , rebuildShells(true)
+    , buildFlaps(false)
 {
     Cleanup();
 }
@@ -411,6 +412,11 @@ void CCPACSWing::ExtendFlap(std::string flapUID, double flapDeflectionPercentage
     GroupedFlapsAndWingShapes();
 }
 
+void CCPACSWing::SetBuildFlaps(bool input)
+{
+    buildFlaps = input;
+}
+
 void CCPACSWing::BuildWingWithCutouts()
 {
 
@@ -425,7 +431,7 @@ void CCPACSWing::BuildWingWithCutouts()
 
     if ( !wingCleanShape ) {
         // remember old wing loft
-        wingCleanShape = GetLoft();
+        wingCleanShape = BuildFusedSegments(true);
     }
 
     TopoDS_Compound allFlapPrisms;
@@ -478,9 +484,8 @@ PNamedShape CCPACSWing::GroupedFlapsAndWingShapes()
     if (NumberOfControlSurfaces(*this) == 0) {
         return PNamedShape();
     }
-    
-    BuildWingWithCutouts();
 
+    BuildWingWithCutouts();
     ListPNamedShape flapsAndWingShapes;
     for ( int i = 1; i <= GetComponentSegmentCount(); i++ ) {
 
@@ -543,8 +548,12 @@ std::string CCPACSWing::GetShortShapeName()
 // build loft
 PNamedShape CCPACSWing::BuildLoft()
 {
-    wingCleanShape = BuildFusedSegments(true);
-    return wingCleanShape;
+    if (buildFlaps) {
+        return GroupedFlapsAndWingShapes();
+    } else {
+        wingCleanShape = BuildFusedSegments(true);
+        return wingCleanShape;
+    }
 }
 
 TopoDS_Shape CCPACSWing::GetLoftWithCutouts()

@@ -258,18 +258,18 @@ double CCPACSControlSurfaceDevice::GetDeflection() const
     return currentDeflection;
 }
 
-void CCPACSControlSurfaceDevice::SetDeflection(const double deflect, bool updateWingLoft)
+void CCPACSControlSurfaceDevice::SetDeflection(const double deflect)
 {
     double maxDeflect = GetMaxDeflection();
     double minDeflect = GetMinDeflection();
 
-    // clamp currentDeflection ti minimum and maximum values
+    // clamp currentDeflection to minimum and maximum values
     currentDeflection = (deflect > maxDeflect? maxDeflect : deflect);
     currentDeflection = (currentDeflection < minDeflect? minDeflect : currentDeflection);
 
-    if (updateWingLoft) {
-        _segment->GetWing().GroupedFlapsAndWingShapes();
-    }
+    // make sure the wing gets relofted with with flaps
+    _segment->GetWing().SetBuildFlaps(true);
+    _segment->GetWing().Invalidate();
 }
 
 } // end namespace tigl
