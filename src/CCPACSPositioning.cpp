@@ -29,6 +29,7 @@
 
 namespace tigl
 {
+
 CCPACSPositioning::CCPACSPositioning(CTiglUIDManager* uidMgr)
     : generated::CPACSPositioning(uidMgr) {}
 
@@ -140,4 +141,5 @@ const std::vector<CCPACSPositioning*> CCPACSPositioning::GetDependentPositioning
 {
     return _dependentPositionings;
 }
-}
+
+} // namespace tigl
