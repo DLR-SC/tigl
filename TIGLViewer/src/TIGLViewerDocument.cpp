@@ -922,22 +922,6 @@ void TIGLViewerDocument::drawWing()
     }
 }
 
-void TIGLViewerDocument::onFlapsDialogClosed()
-{
-    if (!m_flapsDialog) {
-        return;
-    }
-
-    try {
-        // apply transformation to the wing object
-        tigl::CCPACSWing& wing = GetConfiguration().GetWing( m_flapsDialog->getSelectedWing() );
-        //if (wing.)
-        wing.GroupedFlapsAndWingShapes();
-    }
-    catch(tigl::CTiglError) {}
-
-}
-
 void TIGLViewerDocument::drawWingFlaps()
 {
     QStringList wings;

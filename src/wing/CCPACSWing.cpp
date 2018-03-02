@@ -184,6 +184,7 @@ void CCPACSWing::Invalidate(void)
     segments.Invalidate();
     positionings.Invalidate();
     componentSegments.Invalidate();
+    loft.reset();
 }
 
 // Cleanup routine

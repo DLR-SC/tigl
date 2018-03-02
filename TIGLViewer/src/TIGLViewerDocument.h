@@ -158,8 +158,6 @@ private slots:
     QString dlgGetFuselageSegmentSelection();
     QString dlgGetFuselageProfileSelection();
 
-    void onFlapsDialogClosed();
-
 
 private: 
     class TIGLViewerSelectWingAndFlapStatusDialog* m_flapsDialog;

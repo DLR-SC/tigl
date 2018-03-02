@@ -102,11 +102,6 @@ public:
     // Determine wether the wing should be lofted with the flaps or not
     TIGL_EXPORT void SetBuildFlaps(bool input);
 
-    // Adds all Segments of this wing and flaps to one shape
-    // @TODO: this should not be called explicitly. Instead, it should be called by get loft, in case
-    // The control surface deflections are not zero
-    TIGL_EXPORT PNamedShape GroupedFlapsAndWingShapes();
-
     // builds Wing Without Flaps.
     TIGL_EXPORT void BuildWingWithCutouts();
 
@@ -192,6 +187,10 @@ public:
 
 
 protected:
+
+    // Adds all Segments of this wing and flaps to one shape
+    TIGL_EXPORT PNamedShape GroupedFlapsAndWingShapes();
+
     // Cleanup routine
     void Cleanup(void);
 
