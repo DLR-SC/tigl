@@ -51,6 +51,7 @@ public:
 
     // Options
     TIGL_EXPORT static bool normalsEnabled;
+    TIGL_EXPORT static bool multiplePieces;
     
     /// Exports a polygonal data representation directly
     TIGL_EXPORT static void WritePolys(const CTiglPolyData& polys, const char * filename);

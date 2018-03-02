@@ -48,14 +48,8 @@ enum ComponentTraingMode
 class CTiglTriangularizerOptions {
 public:
     CTiglTriangularizerOptions()
-        : m_useMultipleObjects(false),
-          m_normalsEnabled(true)
+        : m_normalsEnabled(true)
     {
-    }
-
-    bool useMultipleObjects() const
-    {
-        return m_useMultipleObjects;
     }
 
     bool normalsEnabled() const
@@ -68,13 +62,7 @@ public:
         m_normalsEnabled = enabled;
     }
 
-    void setMutipleObjectsEnabled(bool enabled)
-    {
-        m_useMultipleObjects = enabled;
-    }
-
 private:
-    bool m_useMultipleObjects;
     bool m_normalsEnabled;
 };
 

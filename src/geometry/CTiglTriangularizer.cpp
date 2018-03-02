@@ -98,9 +98,6 @@ int CTiglTriangularizer::triangularizeShape(const TopoDS_Shape& shape)
             unsigned long nVertices, iPolyLower, iPolyUpper;
             triangularizeFace(face, nVertices, iPolyLower, iPolyUpper);
         } // for faces
-        if (m_options.useMultipleObjects()) {
-            polys.createNewObject();
-        }
     } // for shells
     
     return 0;
@@ -110,7 +107,6 @@ CTiglTriangularizer::CTiglTriangularizer(const CTiglUIDManager& uidMgr, PNamedSh
     : m_options(options)
 {
 
-    m_options.setMutipleObjectsEnabled(false);
     triangularizeComponent(uidMgr, shape, deflection, mode);
     
 }
@@ -204,9 +200,6 @@ int CTiglTriangularizer::triangularizeComponent(const CTiglUIDManager& uidMgr, P
             writeFaceDummyMeta(iPolyLower, iPolyUpper);
 
         }
-    }
-    if (m_options.useMultipleObjects()) {
-        polys.createNewObject();
     }
 
     return TIGL_SUCCESS;

@@ -37,6 +37,7 @@
 #include "CCPACSConfigurationManager.h"
 #include "CCPACSWingSegment.h"
 #include "CNamedShape.h"
+#include "CGroupShapes.h"
 
 // algorithms
 #include "BRepMesh.hxx"
@@ -96,6 +97,7 @@ namespace tigl
 {
 
 bool CTiglExportVtk::normalsEnabled = true;
+bool CTiglExportVtk::multiplePieces = false;
 
 // Constructor
 CTiglExportVtk::CTiglExportVtk(CCPACSConfiguration& config, ComponentTraingMode mode)
@@ -117,15 +119,37 @@ bool CTiglExportVtk::WriteImpl(const std::string &filename) const
 
     size_t nTotalVertices = 0;
     size_t nTotalPolys = 0;
-    for (unsigned int i = 0; i < NShapes(); ++i) {
-        // Do the meshing
-        PNamedShape pshape = GetShape(i);
-        double deflection = GetOptions(i).deflection;
 
-        CTiglTriangularizer mesher(myConfig.GetUIDManager(), pshape, deflection, myMode, getOptions(*this));
+    if (multiplePieces) {
+        for (unsigned int i = 0; i < NShapes(); ++i) {
+            // Do the meshing
+            PNamedShape pshape = GetShape(i);
+            double deflection = GetOptions(i).deflection;
+
+            CTiglTriangularizer mesher(myConfig.GetUIDManager(), pshape, deflection, myMode, getOptions(*this));
+            const CTiglPolyData& polys = mesher.getTriangulation();
+            writeVTKPiece(polys.currentObject(), handle, i + 1);
+
+            nTotalVertices += polys.getTotalVertexCount();
+            nTotalPolys += polys.getTotalPolygonCount();
+        }
+    }
+    else {
+        double minDeflection = FLT_MAX;
+        ListPNamedShape shapes;
+        for (unsigned int i = 0; i < NShapes(); ++i) {
+            shapes.push_back(GetShape(i));
+            double deflection = GetOptions(i).deflection;
+            if (deflection < minDeflection) {
+                minDeflection = deflection;
+            }
+        }
+
+        PNamedShape groupedShape = CGroupShapes(shapes);
+        CTiglTriangularizer mesher(myConfig.GetUIDManager(), groupedShape, minDeflection, myMode, getOptions(*this));
         const CTiglPolyData& polys = mesher.getTriangulation();
-        writeVTKPiece(polys.currentObject(), handle, i + 1);
-        
+        writeVTKPiece(polys.currentObject(), handle, 1);
+
         nTotalVertices += polys.getTotalVertexCount();
         nTotalPolys += polys.getTotalPolygonCount();
     }
