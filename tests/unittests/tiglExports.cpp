@@ -32,6 +32,7 @@
 #include "CCPACSConfigurationManager.h"
 #include "CCPACSConfiguration.h"
 #include "CCPACSWing.h"
+#include "CTiglExporterFactory.h"
 
 
 /******************************************************************************/
@@ -280,6 +281,23 @@ TEST_F(tiglExportSimple, export_componentplane_vtk_newapi_meta)
     ASSERT_EQ(true, ret);
 }
 
+TEST_F(tiglExportSimple, export_generic_stl)
+{
+    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglSimpleHandle);
+
+    tigl::CTiglExporterFactory& factory = tigl::CTiglExporterFactory::Instance();
+    tigl::PTiglCADExporter stlExporter = factory.Create("stl");
+
+    tigl::ExportOptions options(0.01);
+    options.includeFarField = false;
+    options.applySymmetries = true;
+    stlExporter->AddConfiguration(config, options);
+    bool ret = stlExporter->Write("TestData/export/simpletest_export_generic.stl");
+
+    ASSERT_EQ(true, ret);
+}
+
 // check if face names were set correctly in the case with a trailing edge
 TEST_F(tiglExportSimple, check_face_traits)
 {
@@ -297,4 +315,20 @@ TEST_F(tiglExportRectangularWing, check_face_traits)
 {
     ASSERT_EQ(TIGL_SUCCESS, tiglExportIGES(tiglRectangularWingHandle,"TestData/export/rectangular_wing_test.iges"));
     ASSERT_EQ(TIGL_SUCCESS, tiglExportFusedWingFuselageIGES(tiglRectangularWingHandle,"TestData/export/rectangular_wing_test_fused.iges"));
+}
+
+TEST(TiglExportFactory, supportedTypes)
+{
+    tigl::CTiglExporterFactory& factory = tigl::CTiglExporterFactory::Instance();
+
+    ASSERT_TRUE(factory.ExporterSupported("step"));
+    ASSERT_TRUE(factory.ExporterSupported("stp"));
+    ASSERT_TRUE(factory.ExporterSupported("brep"));
+    ASSERT_TRUE(factory.ExporterSupported("igs"));
+    ASSERT_TRUE(factory.ExporterSupported("iges"));
+    ASSERT_TRUE(factory.ExporterSupported("dae"));
+    ASSERT_TRUE(factory.ExporterSupported("vtp"));
+    ASSERT_TRUE(factory.ExporterSupported("stl"));
+
+    ASSERT_FALSE(factory.ExporterSupported("unknown"));
 }
