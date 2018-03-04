@@ -47,10 +47,6 @@ CPACSVSAeroTool
 // in vehicles
 CPACSEngines
 CPACSFuels
-CPACSStructuralElements
-
-// in profiles
-CPACSStructuralProfiles
 
 // in aircraft model
 CPACSAircraftAnalyses
@@ -74,9 +70,19 @@ CPACSReference
 
 // in fuselage
 CPACSDecks
-CPACSFuselateCutOuts
+CPACSFuselageCutOuts
 CPACSFuselageFuelTanks
-CPACSFuselageStructure
+CPACSCenterFuselageAreasAssembly
+CPACSFloorPanels
+CPACSGeneralStructuralMembersAssembly
+CPACSIntercostalsAssembly
+CPACSInterfaceDefinitions
+CPACSPaxCrossBeamStrutsAssembly
+CPACSPaxCrossBeamsAssembly
+CPACSPaxDoorsAssembly
+CPACSTailplaneAttachmentArea
+CPACSUIDGroupDefinitions
+CPACSWindowsAssembly
 
 // in wing
 CPACSDynamicAircraftModel

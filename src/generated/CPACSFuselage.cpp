@@ -137,14 +137,14 @@ namespace generated
             LOG(ERROR) << "Required element segments is missing at xpath " << xpath;
         }
 
-        // read element cutOuts
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/cutOuts")) {
-            m_cutOuts = boost::in_place(m_uidMgr);
+        // read element structure
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/structure")) {
+            m_structure = boost::in_place(reinterpret_cast<CCPACSFuselage*>(this), m_uidMgr);
             try {
-                m_cutOuts->ReadCPACS(tixiHandle, xpath + "/cutOuts");
+                m_structure->ReadCPACS(tixiHandle, xpath + "/structure");
             } catch(const std::exception& e) {
-                LOG(ERROR) << "Failed to read cutOuts at xpath " << xpath << ": " << e.what();
-                m_cutOuts = boost::none;
+                LOG(ERROR) << "Failed to read structure at xpath " << xpath << ": " << e.what();
+                m_structure = boost::none;
             }
         }
 
@@ -215,14 +215,14 @@ namespace generated
         tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/segments");
         m_segments.WriteCPACS(tixiHandle, xpath + "/segments");
 
-        // write element cutOuts
-        if (m_cutOuts) {
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/cutOuts");
-            m_cutOuts->WriteCPACS(tixiHandle, xpath + "/cutOuts");
+        // write element structure
+        if (m_structure) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/structure");
+            m_structure->WriteCPACS(tixiHandle, xpath + "/structure");
         }
         else {
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/cutOuts")) {
-                tixi::TixiRemoveElement(tixiHandle, xpath + "/cutOuts");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/structure")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/structure");
             }
         }
 
@@ -322,14 +322,14 @@ namespace generated
         return m_segments;
     }
 
-    const boost::optional<CPACSFuselageCutOuts>& CPACSFuselage::GetCutOuts() const
+    const boost::optional<CCPACSFuselageStructure>& CPACSFuselage::GetStructure() const
     {
-        return m_cutOuts;
+        return m_structure;
     }
 
-    boost::optional<CPACSFuselageCutOuts>& CPACSFuselage::GetCutOuts()
+    boost::optional<CCPACSFuselageStructure>& CPACSFuselage::GetStructure()
     {
-        return m_cutOuts;
+        return m_structure;
     }
 
     CCPACSPositionings& CPACSFuselage::GetPositionings(CreateIfNotExistsTag)
@@ -344,16 +344,16 @@ namespace generated
         m_positionings = boost::none;
     }
 
-    CPACSFuselageCutOuts& CPACSFuselage::GetCutOuts(CreateIfNotExistsTag)
+    CCPACSFuselageStructure& CPACSFuselage::GetStructure(CreateIfNotExistsTag)
     {
-        if (!m_cutOuts)
-            m_cutOuts = boost::in_place(m_uidMgr);
-        return *m_cutOuts;
+        if (!m_structure)
+            m_structure = boost::in_place(reinterpret_cast<CCPACSFuselage*>(this), m_uidMgr);
+        return *m_structure;
     }
 
-    void CPACSFuselage::RemoveCutOuts()
+    void CPACSFuselage::RemoveStructure()
     {
-        m_cutOuts = boost::none;
+        m_structure = boost::none;
     }
 
 } // namespace generated

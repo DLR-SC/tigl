@@ -78,3 +78,31 @@ CPACSRotorBlades                   CCPACSRotorBlades
 CPACSRotorHub                      CCPACSRotorHub
 CPACSRotorHubHinge                 CCPACSRotorHinge
 CPACSRotorHubHinges                CCPACSRotorHinges
+
+// fuselage structure
+CPACSDoorAssemblyPosition                 CCPACSDoorAssemblyPosition
+CPACSDoors                                CCPACSDoors
+CPACSPressureBulkhead                     CCPACSPressureBulkhead
+CPACSPressureBulkheadAssembly             CCPACSPressureBulkheadAssembly
+CPACSPressureBulkheadAssemblyPosition     CCPACSPressureBulkheadAssemblyPosition
+CPACSPressureBulkheads                    CCPACSPressureBulkheads
+CPACSProfileBasedStructuralElements       CCPACSProfileBasedStructuralElements
+CPACSProfileBasedStructuralElement        CCPACSProfileBasedStructuralElement
+CPACSSheetBasedStructuralElements         CCPACSSheetBasedStructuralElements
+CPACSSheetList                            CCPACSStructuralProfileSheets
+CPACSStructuralProfiles                   CCPACSStructuralProfiles
+CPACSCrossBeamAssemblyPosition            CCPACSCrossBeamAssemblyPosition
+CPACSCargoCrossBeamsAssembly              CCPACSCargoCrossBeamsAssembly
+CPACSCrossBeamStrutAssemblyPosition       CCPACSCrossBeamStrutAssemblyPosition
+CPACSCargoCrossBeamStrutsAssembly         CCPACSCargoCrossBeamStrutsAssembly
+CPACSFrame                                CCPACSFrame
+CPACSFramesAssembly                       CCPACSFramesAssembly
+CPACSLongFloorBeam                        CCPACSLongFloorBeam
+CPACSLongFloorBeamPosition                CCPACSLongFloorBeamPosition
+CPACSLongFloorBeamsAssembly               CCPACSLongFloorBeamsAssembly
+CPACSPointListXY                          CCPACSPointListXY
+CPACSStringersAssembly                    CCPACSStringersAssembly
+CPACSFuselageStructure                    CCPACSFuselageStructure
+CPACSStringer                             CCPACSFuselageStringer
+CPACSPointXY                              CCPACSPointXY
+CPACSStringerFramePosition                CCPACSFuselageStringerFramePosition

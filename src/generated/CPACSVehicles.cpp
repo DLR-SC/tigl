@@ -79,6 +79,17 @@ namespace generated
             }
         }
 
+        // read element structuralElements
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/structuralElements")) {
+            m_structuralElements = boost::in_place(m_uidMgr);
+            try {
+                m_structuralElements->ReadCPACS(tixiHandle, xpath + "/structuralElements");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read structuralElements at xpath " << xpath << ": " << e.what();
+                m_structuralElements = boost::none;
+            }
+        }
+
         // read element materials
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/materials")) {
             m_materials = boost::in_place(m_uidMgr);
@@ -127,6 +138,17 @@ namespace generated
             }
         }
 
+        // write element structuralElements
+        if (m_structuralElements) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/structuralElements");
+            m_structuralElements->WriteCPACS(tixiHandle, xpath + "/structuralElements");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/structuralElements")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/structuralElements");
+            }
+        }
+
         // write element materials
         if (m_materials) {
             tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/materials");
@@ -168,6 +190,16 @@ namespace generated
     boost::optional<CCPACSProfiles>& CPACSVehicles::GetProfiles()
     {
         return m_profiles;
+    }
+
+    const boost::optional<CPACSStructuralElements>& CPACSVehicles::GetStructuralElements() const
+    {
+        return m_structuralElements;
+    }
+
+    boost::optional<CPACSStructuralElements>& CPACSVehicles::GetStructuralElements()
+    {
+        return m_structuralElements;
     }
 
     const boost::optional<CPACSMaterials>& CPACSVehicles::GetMaterials() const
@@ -214,6 +246,18 @@ namespace generated
     void CPACSVehicles::RemoveProfiles()
     {
         m_profiles = boost::none;
+    }
+
+    CPACSStructuralElements& CPACSVehicles::GetStructuralElements(CreateIfNotExistsTag)
+    {
+        if (!m_structuralElements)
+            m_structuralElements = boost::in_place(m_uidMgr);
+        return *m_structuralElements;
+    }
+
+    void CPACSVehicles::RemoveStructuralElements()
+    {
+        m_structuralElements = boost::none;
     }
 
     CPACSMaterials& CPACSVehicles::GetMaterials(CreateIfNotExistsTag)

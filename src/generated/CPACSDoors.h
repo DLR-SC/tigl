@@ -29,17 +29,17 @@ class CTiglUIDManager;
 
 namespace generated
 {
-    class CPACSFuselageCutOut;
+    class CPACSDoorCutOut;
 
     // This class is used in:
-    // CPACSFuselage
+    // CPACSStructuralElements
 
-    // generated from /xsd:schema/xsd:complexType[370]
-    class CPACSFuselageCutOuts
+    // generated from /xsd:schema/xsd:complexType[288]
+    class CPACSDoors
     {
     public:
-        TIGL_EXPORT CPACSFuselageCutOuts(CTiglUIDManager* uidMgr);
-        TIGL_EXPORT virtual ~CPACSFuselageCutOuts();
+        TIGL_EXPORT CPACSDoors(CTiglUIDManager* uidMgr);
+        TIGL_EXPORT virtual ~CPACSDoors();
 
         TIGL_EXPORT CTiglUIDManager& GetUIDManager();
         TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
@@ -47,37 +47,37 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSFuselageCutOut> >& GetElements() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CPACSFuselageCutOut> >& GetElements();
+        TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSDoorCutOut> >& GetDoors() const;
+        TIGL_EXPORT virtual std::vector<unique_ptr<CPACSDoorCutOut> >& GetDoors();
 
-        TIGL_EXPORT virtual CPACSFuselageCutOut& AddElement();
-        TIGL_EXPORT virtual void RemoveElement(CPACSFuselageCutOut& ref);
+        TIGL_EXPORT virtual CPACSDoorCutOut& AddDoor();
+        TIGL_EXPORT virtual void RemoveDoor(CPACSDoorCutOut& ref);
 
     protected:
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<unique_ptr<CPACSFuselageCutOut> > m_elements;
+        std::vector<unique_ptr<CPACSDoorCutOut> > m_doors;
 
     private:
 #ifdef HAVE_CPP11
-        CPACSFuselageCutOuts(const CPACSFuselageCutOuts&) = delete;
-        CPACSFuselageCutOuts& operator=(const CPACSFuselageCutOuts&) = delete;
+        CPACSDoors(const CPACSDoors&) = delete;
+        CPACSDoors& operator=(const CPACSDoors&) = delete;
 
-        CPACSFuselageCutOuts(CPACSFuselageCutOuts&&) = delete;
-        CPACSFuselageCutOuts& operator=(CPACSFuselageCutOuts&&) = delete;
+        CPACSDoors(CPACSDoors&&) = delete;
+        CPACSDoors& operator=(CPACSDoors&&) = delete;
 #else
-        CPACSFuselageCutOuts(const CPACSFuselageCutOuts&);
-        CPACSFuselageCutOuts& operator=(const CPACSFuselageCutOuts&);
+        CPACSDoors(const CPACSDoors&);
+        CPACSDoors& operator=(const CPACSDoors&);
 #endif
     };
 } // namespace generated
 
+// CPACSDoors is customized, use type CCPACSDoors directly
+
 // Aliases in tigl namespace
 #ifdef HAVE_CPP11
-using CCPACSFuselageCutOuts = generated::CPACSFuselageCutOuts;
-using CCPACSFuselageCutOut = generated::CPACSFuselageCutOut;
+using CCPACSDoorCutOut = generated::CPACSDoorCutOut;
 #else
-typedef generated::CPACSFuselageCutOuts CCPACSFuselageCutOuts;
-typedef generated::CPACSFuselageCutOut CCPACSFuselageCutOut;
+typedef generated::CPACSDoorCutOut CCPACSDoorCutOut;
 #endif
 } // namespace tigl

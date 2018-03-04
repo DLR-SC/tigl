@@ -21,6 +21,8 @@
 #include <boost/utility/in_place_factory.hpp>
 #include <string>
 #include <tixi.h>
+#include <typeinfo>
+#include "CTiglError.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -30,6 +32,8 @@ class CTiglUIDManager;
 namespace generated
 {
     // This class is used in:
+    // CPACSPointList
+    // CPACSSeatModule
     // CPACSTransformation
 
     // generated from /xsd:schema/xsd:complexType[717]

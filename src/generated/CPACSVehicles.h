@@ -25,6 +25,7 @@
 #include "CPACSAircraft.h"
 #include "CPACSMaterials.h"
 #include "CPACSRotorcraft.h"
+#include "CPACSStructuralElements.h"
 #include "CreateIfNotExists.h"
 #include "tigl_internal.h"
 
@@ -59,6 +60,9 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CCPACSProfiles>& GetProfiles() const;
         TIGL_EXPORT virtual boost::optional<CCPACSProfiles>& GetProfiles();
 
+        TIGL_EXPORT virtual const boost::optional<CPACSStructuralElements>& GetStructuralElements() const;
+        TIGL_EXPORT virtual boost::optional<CPACSStructuralElements>& GetStructuralElements();
+
         TIGL_EXPORT virtual const boost::optional<CPACSMaterials>& GetMaterials() const;
         TIGL_EXPORT virtual boost::optional<CPACSMaterials>& GetMaterials();
 
@@ -71,16 +75,20 @@ namespace generated
         TIGL_EXPORT virtual CCPACSProfiles& GetProfiles(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveProfiles();
 
+        TIGL_EXPORT virtual CPACSStructuralElements& GetStructuralElements(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveStructuralElements();
+
         TIGL_EXPORT virtual CPACSMaterials& GetMaterials(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveMaterials();
 
     protected:
         CTiglUIDManager* m_uidMgr;
 
-        boost::optional<CPACSAircraft>   m_aircraft;
-        boost::optional<CPACSRotorcraft> m_rotorcraft;
-        boost::optional<CCPACSProfiles>  m_profiles;
-        boost::optional<CPACSMaterials>  m_materials;
+        boost::optional<CPACSAircraft>           m_aircraft;
+        boost::optional<CPACSRotorcraft>         m_rotorcraft;
+        boost::optional<CCPACSProfiles>          m_profiles;
+        boost::optional<CPACSStructuralElements> m_structuralElements;
+        boost::optional<CPACSMaterials>          m_materials;
 
     private:
 #ifdef HAVE_CPP11

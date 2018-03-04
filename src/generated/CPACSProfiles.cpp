@@ -90,6 +90,17 @@ namespace generated
             }
         }
 
+        // read element structuralProfiles
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/structuralProfiles")) {
+            m_structuralProfiles = boost::in_place(m_uidMgr);
+            try {
+                m_structuralProfiles->ReadCPACS(tixiHandle, xpath + "/structuralProfiles");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read structuralProfiles at xpath " << xpath << ": " << e.what();
+                m_structuralProfiles = boost::none;
+            }
+        }
+
     }
 
     void CPACSProfiles::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
@@ -138,6 +149,17 @@ namespace generated
             }
         }
 
+        // write element structuralProfiles
+        if (m_structuralProfiles) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/structuralProfiles");
+            m_structuralProfiles->WriteCPACS(tixiHandle, xpath + "/structuralProfiles");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/structuralProfiles")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/structuralProfiles");
+            }
+        }
+
     }
 
     const boost::optional<CCPACSFuselageProfiles>& CPACSProfiles::GetFuselageProfiles() const
@@ -178,6 +200,16 @@ namespace generated
     boost::optional<CCPACSRotorProfiles>& CPACSProfiles::GetRotorAirfoils()
     {
         return m_rotorAirfoils;
+    }
+
+    const boost::optional<CCPACSStructuralProfiles>& CPACSProfiles::GetStructuralProfiles() const
+    {
+        return m_structuralProfiles;
+    }
+
+    boost::optional<CCPACSStructuralProfiles>& CPACSProfiles::GetStructuralProfiles()
+    {
+        return m_structuralProfiles;
     }
 
     CCPACSFuselageProfiles& CPACSProfiles::GetFuselageProfiles(CreateIfNotExistsTag)
@@ -226,6 +258,18 @@ namespace generated
     void CPACSProfiles::RemoveRotorAirfoils()
     {
         m_rotorAirfoils = boost::none;
+    }
+
+    CCPACSStructuralProfiles& CPACSProfiles::GetStructuralProfiles(CreateIfNotExistsTag)
+    {
+        if (!m_structuralProfiles)
+            m_structuralProfiles = boost::in_place(m_uidMgr);
+        return *m_structuralProfiles;
+    }
+
+    void CPACSProfiles::RemoveStructuralProfiles()
+    {
+        m_structuralProfiles = boost::none;
     }
 
 } // namespace generated

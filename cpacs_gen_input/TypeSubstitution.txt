@@ -5,5 +5,7 @@ stringBaseType    std::string
 doubleBaseType    double
 integerBaseType   int
 booleanBaseType   bool
+dateBaseType      std::time_t
 dateTimeBaseType  std::time_t
+timeBaseType      std::time_t
 complexBaseType

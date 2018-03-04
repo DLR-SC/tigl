@@ -21,12 +21,12 @@
 #include <boost/utility/in_place_factory.hpp>
 #include <CCPACSFuselageSections.h>
 #include <CCPACSFuselageSegments.h>
+#include <CCPACSFuselageStructure.h>
 #include <CCPACSPositionings.h>
 #include <CCPACSTransformation.h>
 #include <string>
 #include <TiglSymmetryAxis.h>
 #include <tixi.h>
-#include "CPACSFuselageCutOuts.h"
 #include "CreateIfNotExists.h"
 #include "tigl_internal.h"
 
@@ -83,30 +83,30 @@ namespace generated
         TIGL_EXPORT virtual const CCPACSFuselageSegments& GetSegments() const;
         TIGL_EXPORT virtual CCPACSFuselageSegments& GetSegments();
 
-        TIGL_EXPORT virtual const boost::optional<CPACSFuselageCutOuts>& GetCutOuts() const;
-        TIGL_EXPORT virtual boost::optional<CPACSFuselageCutOuts>& GetCutOuts();
+        TIGL_EXPORT virtual const boost::optional<CCPACSFuselageStructure>& GetStructure() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSFuselageStructure>& GetStructure();
 
         TIGL_EXPORT virtual CCPACSPositionings& GetPositionings(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemovePositionings();
 
-        TIGL_EXPORT virtual CPACSFuselageCutOuts& GetCutOuts(CreateIfNotExistsTag);
-        TIGL_EXPORT virtual void RemoveCutOuts();
+        TIGL_EXPORT virtual CCPACSFuselageStructure& GetStructure(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveStructure();
 
     protected:
         CCPACSFuselages* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
-        std::string                           m_uID;
-        boost::optional<TiglSymmetryAxis>     m_symmetry;
-        std::string                           m_name;
-        boost::optional<std::string>          m_description;
-        boost::optional<std::string>          m_parentUID;
-        CCPACSTransformation                  m_transformation;
-        CCPACSFuselageSections                m_sections;
-        boost::optional<CCPACSPositionings>   m_positionings;
-        CCPACSFuselageSegments                m_segments;
-        boost::optional<CPACSFuselageCutOuts> m_cutOuts;
+        std::string                              m_uID;
+        boost::optional<TiglSymmetryAxis>        m_symmetry;
+        std::string                              m_name;
+        boost::optional<std::string>             m_description;
+        boost::optional<std::string>             m_parentUID;
+        CCPACSTransformation                     m_transformation;
+        CCPACSFuselageSections                   m_sections;
+        boost::optional<CCPACSPositionings>      m_positionings;
+        CCPACSFuselageSegments                   m_segments;
+        boost::optional<CCPACSFuselageStructure> m_structure;
 
     private:
 #ifdef HAVE_CPP11
