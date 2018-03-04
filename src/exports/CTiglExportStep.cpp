@@ -30,6 +30,8 @@
 #include "CCPACSWingSegment.h"
 #include "CTiglFusePlane.h"
 #include "tiglcommonfunctions.h"
+#include "CTiglExporterFactory.h"
+#include "CTiglTypeRegistry.h"
 
 #include "TopoDS_Shape.hxx"
 #include "STEPControl_Controller.hxx"
@@ -235,6 +237,13 @@ namespace
 
 namespace tigl 
 {
+
+AUTORUN(CTiglExportStep)
+{
+    static CCADExporterBuilder<CTiglExportStep> stepExporterBuilder;
+    CTiglExporterFactory::Instance().RegisterExporter(&stepExporterBuilder);
+    return true;
+}
 
 // Constructor
 CTiglExportStep::CTiglExportStep()

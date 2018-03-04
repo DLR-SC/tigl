@@ -39,6 +39,11 @@ public:
 private:
     bool WriteImpl(const std::string& filename) const OVERRIDE;
 
+    std::string SupportedFileTypeImpl() const OVERRIDE
+    {
+        return "dae";
+    }
+
     /// Exports a polygon object to a collada file, the true export code
     TiglReturnCode writeToDisc(class CTiglPolyData &polyData, const char * id, const char * filename);
 };

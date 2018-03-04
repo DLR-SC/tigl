@@ -54,6 +54,11 @@ private:
     // Actual implementation of the IGES file writing
     TIGL_EXPORT bool WriteImpl(const std::string& filename) const OVERRIDE;
 
+    std::string SupportedFileTypeImpl() const OVERRIDE
+    {
+        return "igs;iges";
+    }
+
     // Assignment operator
     void operator=(const CTiglExportIges& );
     void AddToIges(PNamedShape shape, IGESControl_Writer& writer, int level = 0) const;

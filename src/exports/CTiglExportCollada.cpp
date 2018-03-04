@@ -28,6 +28,8 @@ TODO:
 #include "CTiglPolyData.h"
 #include "CTiglTriangularizer.h"
 #include "CCPACSConfiguration.h"
+#include "CTiglExporterFactory.h"
+#include "CTiglTypeRegistry.h"
 
 #include <tixi.h>
 
@@ -53,6 +55,13 @@ namespace
 
 namespace tigl
 {
+
+AUTORUN(CTiglExportCollada)
+{
+    static CCADExporterBuilder<CTiglExportCollada> colladaExporterBuilder;
+    CTiglExporterFactory::Instance().RegisterExporter(&colladaExporterBuilder);
+    return true;
+}
 
 CTiglExportCollada::CTiglExportCollada()
 {

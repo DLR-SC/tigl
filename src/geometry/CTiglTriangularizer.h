@@ -71,7 +71,7 @@ class CTiglTriangularizer
 public:
     TIGL_EXPORT CTiglTriangularizer(PNamedShape shape, double deflection, const CTiglTriangularizerOptions& options = CTiglTriangularizerOptions());
 
-    TIGL_EXPORT CTiglTriangularizer(const CTiglUIDManager& uidMgr, PNamedShape shape, double deflection,
+    TIGL_EXPORT CTiglTriangularizer(const CTiglUIDManager* uidMgr, PNamedShape shape, double deflection,
                                     ComponentTraingMode mode = NO_INFO, const CTiglTriangularizerOptions& options = CTiglTriangularizerOptions());
 
     const CTiglPolyData& getTriangulation() const
@@ -80,8 +80,7 @@ public:
     }
 
 private:
-    int triangularizeComponent(const CTiglUIDManager& uidMgr, PNamedShape shape, double deflection, ComponentTraingMode = NO_INFO);
-    int triangularizeShape(const TopoDS_Shape&);
+    int triangularizeComponent(const CTiglUIDManager* uidMgr, PNamedShape shape, double deflection, ComponentTraingMode = NO_INFO);
     int triangularizeFace(const TopoDS_Face&, unsigned long& nVertices, unsigned long& iPolyLow, unsigned long& iPolyUp);
 
     void writeFaceDummyMeta(unsigned long iPolyLower, unsigned long iPolyUpper);
@@ -91,6 +90,7 @@ private:
     // some options
     CTiglTriangularizerOptions m_options;
     CTiglPolyData polys;
+    void writeFaceMeta(const CTiglUIDManager* uidMgr, const std::string& componentUID, TopoDS_Face face, unsigned long iPolyLower, unsigned long iPolyUpper);
 };
 
 }

@@ -1542,7 +1542,7 @@ void TIGLViewerDocument::exportMeshedConfigVTKNoFuse()
         tigl::ExportOptions options(settings.getDeflection());
         options.applySymmetries = true;
         options.includeFarField = false;
-        tigl::CTiglExportVtk exporter(GetConfiguration(), tigl::SEGMENT_INFO);
+        tigl::CTiglExportVtk exporter;
         exporter.AddConfiguration(GetConfiguration(), options);
 
         exporter.Write(fileName.toStdString());

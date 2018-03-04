@@ -46,6 +46,11 @@ private:
 
     bool WriteImpl(const std::string& filename) const OVERRIDE;
 
+    std::string SupportedFileTypeImpl() const OVERRIDE
+    {
+        return "stl";
+    }
+
     // Assignment operator
     void operator=(const CTiglExportStl& ) { /* Do nothing */ }
 };

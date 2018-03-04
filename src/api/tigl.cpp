@@ -5420,7 +5420,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingVTKByIndex(const TiglCPACS
         tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
-        tigl::CTiglExportVtk exporter(config, tigl::SEGMENT_INFO);
+        tigl::CTiglExportVtk exporter;
 
         exporter.AddShape(wing.GetLoft(), deflection);
         if (exporter.Write(filenamePtr)) {
@@ -5472,9 +5472,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingVTKByUID(const TiglCPACSCo
         tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingUID);
-        tigl::CTiglExportVtk exporter(config, tigl::SEGMENT_INFO);
+        tigl::CTiglExportVtk exporter;
 
-        exporter.AddShape(wing.GetLoft(), deflection);
+        exporter.AddShape(wing.GetLoft(), &config, deflection);
         if (exporter.Write(filenamePtr)) {
             return TIGL_SUCCESS;
         }
@@ -5524,7 +5524,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageVTKByIndex(const TiglC
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSFuselage& fuselage = config.GetFuselage(fuselageIndex);
-        tigl::CTiglExportVtk exporter(config, tigl::NO_INFO);
+        tigl::CTiglExportVtk exporter;
         exporter.AddShape(fuselage.GetLoft(), deflection);
         if (exporter.Write(filenamePtr)) {
             return TIGL_SUCCESS;
@@ -5566,7 +5566,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageVTKByUID(const TiglCPA
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSFuselage& fuselage = config.GetFuselage(fuselageUID);
-        tigl::CTiglExportVtk exporter(config, tigl::NO_INFO);
+        tigl::CTiglExportVtk exporter;
         exporter.AddShape(fuselage.GetLoft(), deflection);
         if (exporter.Write(filenamePtr)) {
             return TIGL_SUCCESS;
@@ -5606,7 +5606,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedGeometryVTK(const TiglCPACSCon
         tigl::ExportOptions options(deflection);
         options.applySymmetries = true;
         options.includeFarField = false;
-        tigl::CTiglExportVtk exporter(config, tigl::SEGMENT_INFO);
+        tigl::CTiglExportVtk exporter;
         exporter.AddFusedConfiguration(config, options);
         if (exporter.Write(filenamePtr)) {
             return TIGL_SUCCESS;
@@ -5650,7 +5650,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingVTKSimpleByUID(const TiglC
         tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingUID);
-        tigl::CTiglExportVtk exporter(config, tigl::NO_INFO);
+        tigl::CTiglExportVtk exporter;
 
         exporter.AddShape(wing.GetLoft(), deflection);
         if (exporter.Write(filenamePtr)) {
@@ -5769,7 +5769,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedGeometryVTKSimple(const TiglCP
     try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
-        tigl::CTiglExportVtk exporter(config, tigl::NO_INFO);
+        tigl::CTiglExportVtk exporter;
+        // TODO: #367 disable meta data writing
         tigl::ExportOptions options(deflection);
         options.applySymmetries = true;
         options.includeFarField = false;

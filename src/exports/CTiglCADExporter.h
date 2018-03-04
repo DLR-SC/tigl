@@ -67,6 +67,9 @@ public:
     /// Adds a shape
     TIGL_EXPORT void AddShape(PNamedShape shape, ExportOptions options = ExportOptions());
 
+    TIGL_EXPORT void AddShape(PNamedShape shape, const CCPACSConfiguration* config, ExportOptions options = ExportOptions());
+    
+
     ///  Adds the whole non-fused configuration, to the exporter
     TIGL_EXPORT void AddConfiguration(CCPACSConfiguration &config, ExportOptions options = ExportOptions());
 
@@ -83,13 +86,41 @@ public:
 
     TIGL_EXPORT ExportOptions GetOptions(size_t iShape) const;
 
+    TIGL_EXPORT std::string SupportedFileType() const;
+
+protected:
+    /// Can also be NULL!
+    const CCPACSConfiguration* GetConfiguration(size_t iShape) const;
+
 private:
     /// must be overridden by the concrete implementation
     virtual bool WriteImpl(const std::string& filename) const = 0;
+    
+    /// must be overridden. If multiple types supported, separate with a ";"
+    virtual std::string SupportedFileTypeImpl() const = 0;
 
     ListPNamedShape _shapes;
     std::vector<ExportOptions> _options;
+    std::vector<const CCPACSConfiguration*> _configs; //!< TIGL configurations */
 
+};
+
+typedef CSharedPtr<CTiglCADExporter> PTiglCADExporter;
+
+class ICADExporterBuilder
+{
+public:
+   virtual PTiglCADExporter create() const = 0;
+};
+
+template <class T>
+class CCADExporterBuilder : public ICADExporterBuilder
+{
+public:
+   PTiglCADExporter create() const OVERRIDE
+   {
+       return PTiglCADExporter(new T);
+   }
 };
 
 } // namespace tigl

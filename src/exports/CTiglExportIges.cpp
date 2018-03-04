@@ -32,6 +32,8 @@
 #include "CNamedShape.h"
 #include "tiglcommonfunctions.h"
 #include "CTiglFusePlane.h"
+#include "CTiglExporterFactory.h"
+#include "CTiglTypeRegistry.h"
 
 #include "TopoDS_Shape.hxx"
 #include "TopoDS_Edge.hxx"
@@ -237,6 +239,13 @@ namespace
 
 namespace tigl
 {
+
+AUTORUN(CTiglExportIges)
+{
+    static CCADExporterBuilder<CTiglExportIges> igesExporterBuilder;
+    CTiglExporterFactory::Instance().RegisterExporter(&igesExporterBuilder);
+    return true;
+}
 
 // Constructor
 CTiglExportIges::CTiglExportIges()

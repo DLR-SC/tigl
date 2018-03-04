@@ -38,6 +38,8 @@
 #include "CCPACSWingSegment.h"
 #include "CNamedShape.h"
 #include "CGroupShapes.h"
+#include "CTiglExporterFactory.h"
+#include "CTiglTypeRegistry.h"
 
 // algorithms
 #include "BRepMesh.hxx"
@@ -99,10 +101,16 @@ namespace tigl
 bool CTiglExportVtk::normalsEnabled = true;
 bool CTiglExportVtk::multiplePieces = false;
 
+AUTORUN(CTiglExportVtk)
+{
+    static CCADExporterBuilder<CTiglExportVtk> vtkExporterBuilder;
+    CTiglExporterFactory::Instance().RegisterExporter(&vtkExporterBuilder);
+    return true;
+}
+
 // Constructor
-CTiglExportVtk::CTiglExportVtk(CCPACSConfiguration& config, ComponentTraingMode mode)
-    : myConfig(config)
-    , myMode(mode)
+CTiglExportVtk::CTiglExportVtk()
+   : myMode(SEGMENT_INFO)
 {
 }
 
@@ -126,7 +134,8 @@ bool CTiglExportVtk::WriteImpl(const std::string &filename) const
             PNamedShape pshape = GetShape(i);
             double deflection = GetOptions(i).deflection;
 
-            CTiglTriangularizer mesher(myConfig.GetUIDManager(), pshape, deflection, myMode, getOptions(*this));
+            const CTiglUIDManager* mgr = GetConfiguration(i) ? &(GetConfiguration(i)->GetUIDManager()) : NULL;
+            CTiglTriangularizer mesher(mgr, pshape, deflection, myMode, getOptions(*this));
             const CTiglPolyData& polys = mesher.getTriangulation();
             writeVTKPiece(polys.currentObject(), handle, i + 1);
 
@@ -144,9 +153,18 @@ bool CTiglExportVtk::WriteImpl(const std::string &filename) const
                 minDeflection = deflection;
             }
         }
+  
+        // search for the first uid manager available
+        const CTiglUIDManager* mgr = NULL;
+        for (unsigned int i = 0; i < NShapes(); ++i) {
+            if (GetConfiguration(i)) {
+                mgr = &(GetConfiguration(i)->GetUIDManager());
+                break;
+            }
+        }
 
         PNamedShape groupedShape = CGroupShapes(shapes);
-        CTiglTriangularizer mesher(myConfig.GetUIDManager(), groupedShape, minDeflection, myMode, getOptions(*this));
+        CTiglTriangularizer mesher(mgr, groupedShape, minDeflection, myMode, getOptions(*this));
         const CTiglPolyData& polys = mesher.getTriangulation();
         writeVTKPiece(polys.currentObject(), handle, 1);
 

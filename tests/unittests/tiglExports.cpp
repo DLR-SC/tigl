@@ -230,7 +230,7 @@ TEST_F(tiglExportSimple, export_wing_vtk_newapi_simple)
     tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglSimpleHandle);
     tigl::CCPACSWing& wing = config.GetWing(1);
 
-    tigl::CTiglExportVtk vtkWriter(config);
+    tigl::CTiglExportVtk vtkWriter;
     vtkWriter.AddShape(wing.GetLoft(), 0.001);
     bool ret = vtkWriter.Write("TestData/export/simpletest_wing_simple_newapi.vtp");
 
@@ -243,8 +243,8 @@ TEST_F(tiglExportSimple, export_wing_vtk_newapi_meta)
     tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglSimpleHandle);
     tigl::CCPACSWing& wing = config.GetWing(1);
 
-    tigl::CTiglExportVtk vtkWriter(config, tigl::SEGMENT_INFO);
-    vtkWriter.AddShape(wing.GetLoft(), 0.001);
+    tigl::CTiglExportVtk vtkWriter;
+    vtkWriter.AddShape(wing.GetLoft(), &config, 0.001);
     bool ret = vtkWriter.Write("TestData/export/simpletest_wing_meta_newapi.vtp");
 
     ASSERT_EQ(true, ret);
@@ -255,7 +255,7 @@ TEST_F(tiglExportSimple, export_fusedplane_vtk_newapi_meta)
     tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
     tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglSimpleHandle);
 
-    tigl::CTiglExportVtk vtkWriter(config, tigl::SEGMENT_INFO);
+    tigl::CTiglExportVtk vtkWriter;
     tigl::ExportOptions options(0.01);
     options.includeFarField = false;
     options.applySymmetries = true;
@@ -270,7 +270,7 @@ TEST_F(tiglExportSimple, export_componentplane_vtk_newapi_meta)
     tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
     tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglSimpleHandle);
 
-    tigl::CTiglExportVtk vtkWriter(config, tigl::SEGMENT_INFO);
+    tigl::CTiglExportVtk vtkWriter;
     tigl::ExportOptions options(0.01);
     options.includeFarField = false;
     options.applySymmetries = true;

@@ -25,6 +25,8 @@
 
 #include "CTiglExportStl.h"
 #include "CCPACSConfiguration.h"
+#include "CTiglExporterFactory.h"
+#include "CTiglTypeRegistry.h"
 
 #include "TopoDS_Shape.hxx"
 #include "Standard_CString.hxx"
@@ -41,6 +43,13 @@
 
 namespace tigl 
 {
+
+AUTORUN(CTiglExportStl)
+{
+    static CCADExporterBuilder<CTiglExportStl> stlExporterBuilder;
+    CTiglExporterFactory::Instance().RegisterExporter(&stlExporterBuilder);
+    return true;
+}
 
 // Constructor
 CTiglExportStl::CTiglExportStl()

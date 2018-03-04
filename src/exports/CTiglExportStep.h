@@ -53,6 +53,11 @@ private:
     // Writes the step file
     TIGL_EXPORT bool WriteImpl(const std::string& filename) const OVERRIDE;
 
+    std::string SupportedFileTypeImpl() const OVERRIDE
+    {
+        return "step;stp";
+    }
+
     // Assignment operator
     void operator=(const CTiglExportStep& ) { /* Do nothing */ }
 

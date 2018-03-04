@@ -431,7 +431,7 @@ TEST_F(TriangularizeShape, exportVTK_WingSegmentInfo)
 
     clock_t start, stop;
     start = clock();
-    tigl::CTiglTriangularizer mesher(config.GetUIDManager(), wing.GetLoft(), 0.0001, SEGMENT_INFO);
+    tigl::CTiglTriangularizer mesher(&config.GetUIDManager(), wing.GetLoft(), 0.0001, SEGMENT_INFO);
     const tigl::CTiglPolyData& polys = mesher.getTriangulation();
 
     stop = clock();
@@ -450,7 +450,7 @@ TEST_F(TriangularizeShape, exportVTK_FullPlane_long)
     algo->SetResultMode(FULL_PLANE);
     PNamedShape shape = algo->FusedPlane();
 
-    tigl::CTiglTriangularizer mesher(config.GetUIDManager(), shape, 0.001, SEGMENT_INFO);
+    tigl::CTiglTriangularizer mesher(&config.GetUIDManager(), shape, 0.001, SEGMENT_INFO);
     const tigl::CTiglPolyData& polys = mesher.getTriangulation();
 
     std::cout << "Number of Polygons/Vertices: " << polys.currentObject().getNPolygons() << "/" << polys.currentObject().getNVertices()<<std::endl;
