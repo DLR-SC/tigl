@@ -103,7 +103,7 @@ namespace
         }
         Handle(StepBasic_Product) product = prodDef->Formation()->OfProduct();
         
-        Handle(TCollection_HAsciiString) str = new TCollection_HAsciiString(shape->Name());
+        Handle(TCollection_HAsciiString) str = new TCollection_HAsciiString(shape->Name().c_str());
         product->SetId ( str );
         product->SetName ( str );
     }
@@ -256,7 +256,7 @@ void CTiglExportStep::AddToStep(PNamedShape shape, STEPControl_Writer& writer) c
     Handle(Transfer_FinderProcess) FP = writer.WS()->TransferWriter()->FinderProcess();
 
     TopTools_IndexedMapOfShape faceMap;
-    TopExp::MapShapes(shape->Shape(),   TopAbs_FACE, faceMap);
+    TopExp::MapShapes(shape->Shape(), TopAbs_FACE, faceMap);
     // any faces?
     if (faceMap.Extent() > 0) {
         int ret = writer.Transfer(shape->Shape(), STEP_WRITEMODE);

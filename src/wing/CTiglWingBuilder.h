@@ -36,7 +36,7 @@ public:
     PNamedShape BuildShape();
 
 private:
-    void SetFaceTraits (PNamedShape loft, bool hasBluntTE);
+    void SetFaceTraits (const std::string& uid, PNamedShape loft, bool hasBluntTE);
 
     CCPACSWing& _wing;
 };

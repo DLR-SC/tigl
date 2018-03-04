@@ -67,7 +67,7 @@ TEST_F(TiglExternalComponent, getShape)
     
     PNamedShape shape = object.GetLoft();
     ASSERT_TRUE(shape != NULL);
-    ASSERT_STREQ("nacelle", shape->Name());
+    ASSERT_STREQ("nacelle", shape->Name().c_str());
 }
 
 TEST_F(TiglExternalComponent, invalidFiletype)

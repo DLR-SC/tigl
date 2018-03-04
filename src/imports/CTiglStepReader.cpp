@@ -147,7 +147,7 @@ ListPNamedShape CTiglStepReader::Read(const std::string stepFileName)
         shapeName << "StepImport_" << ishape;
         shapeShortName << "STEP" << ishape;
 
-        PNamedShape pshape(new CNamedShape(aReader.Shape(ishape), shapeName.str().c_str(), shapeShortName.str().c_str()));
+        PNamedShape pshape(new CNamedShape(aReader.Shape(ishape), shapeName.str().c_str(), shapeShortName.str()));
         shapeList.push_back(pshape);
     }
 

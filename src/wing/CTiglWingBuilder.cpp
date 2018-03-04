@@ -212,7 +212,7 @@ PNamedShape CTiglWingBuilder::BuildShape()
     std::string loftName = _wing.GetUID();
     std::string loftShortName = _wing.GetShortShapeName();
     PNamedShape loft(new CNamedShape(solid, loftName.c_str(), loftShortName.c_str()));
-    SetFaceTraits(loft, hasBluntTE);
+    SetFaceTraits(_wing.GetUID(), loft, hasBluntTE);
 
     return loft;
 }
@@ -256,7 +256,7 @@ CTiglWingBuilder::operator PNamedShape()
     return BuildShape();
 }
 // Set the name of each wing face
-void CTiglWingBuilder::SetFaceTraits (PNamedShape loft, bool hasBluntTE)
+void CTiglWingBuilder::SetFaceTraits (const std::string& wingUID, PNamedShape loft, bool hasBluntTE)
 {
     unsigned int nSegments = _wing.GetSegmentCount();
 
@@ -271,6 +271,10 @@ void CTiglWingBuilder::SetFaceTraits (PNamedShape loft, bool hasBluntTE)
 
     unsigned int nFaces = GetNumberOfFaces(loft->Shape());
 
+    for (unsigned int i = 0; i < nFaces; i++) {
+        loft->FaceTraits(i).SetComponentUID(wingUID);
+    }
+    
     // check if number of faces without inside and outside surface (nFaces-2)
     // is a multiple of 2 (without Trailing Edges) or 3 (with Trailing Edges)
     if (!((nFaces-2)/nSegments == 2 || (nFaces-2)/nSegments == 3) || nFaces < 4) {

@@ -816,7 +816,7 @@ PNamedShape CCPACSWingComponentSegment::BuildLoft()
     // Set Names
     std::string loftName = m_uID;
     std::string loftShortName = GetShortShapeName();
-    PNamedShape loft (new CNamedShape(loftShape, loftName.c_str(), loftShortName.c_str()));
+    PNamedShape loft (new CNamedShape(loftShape, loftName.c_str(), loftShortName));
     SetFaceTraits(loft, static_cast<unsigned int>(segments.size()));
     return loft;
 }

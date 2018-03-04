@@ -29,14 +29,14 @@ CNamedShape::CNamedShape()
     Clear();
 }
 
-CNamedShape::CNamedShape(const TopoDS_Shape &shape, const char *shapeName)
+CNamedShape::CNamedShape(const TopoDS_Shape &shape, const std::string& shapeName)
     : _myshape(shape), _myname(shapeName)
 {
     SetShortName(shapeName);
     InitFaceTraits();
 }
 
-CNamedShape::CNamedShape(const TopoDS_Shape &shape, const char *shapeName, const char *shapeShortName)
+CNamedShape::CNamedShape(const TopoDS_Shape &shape, const std::string &shapeName, const std::string &shapeShortName)
     : _myshape(shape), _myname(shapeName), _myshortName(shapeShortName)
 {
     InitFaceTraits();
@@ -78,14 +78,14 @@ const TopoDS_Shape& CNamedShape::Shape() const
     return _myshape;
 }
 
-const char* CNamedShape::Name() const
+std::string CNamedShape::Name() const
 {
-    return _myname.c_str();
+    return _myname;
 }
 
-const char* CNamedShape::ShortName()  const
+std::string CNamedShape::ShortName()  const
 {
-    return _myshortName.c_str();
+    return _myshortName;
 }
 
 unsigned int CNamedShape::GetFaceCount() const
@@ -100,13 +100,13 @@ void CNamedShape::SetShape(const TopoDS_Shape& shape)
     _myshape = shape;
 }
 
-void CNamedShape::SetName(const char * name)
+void CNamedShape::SetName(const std::string& name)
 {
     _myname = name;
 }
 
 
-void CNamedShape::SetShortName(const char* name)
+void CNamedShape::SetShortName(const std::string& name)
 {
     std::string sname = name;
     if (sname.size() > 8) {
@@ -148,12 +148,22 @@ CFaceTraits::CFaceTraits()
     : _origin(), _indexInOrigin(0), _faceName("")
 {}
 
-void CFaceTraits::SetName(const char* name)
+void CFaceTraits::SetName(const std::string& name)
 {
     _faceName = name;
 }
 
-const char* CFaceTraits::Name() const
+void CFaceTraits::SetComponentUID(const std::string &uid)
+{
+    _componentUID = uid;
+}
+
+std::string CFaceTraits::ComponentUID() const
+{
+    return _componentUID;
+}
+
+std::string CFaceTraits::Name() const
 {
     return _faceName.c_str();
 }

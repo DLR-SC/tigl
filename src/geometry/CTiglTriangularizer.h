@@ -26,6 +26,7 @@
 #include "tigl_internal.h"
 #include "CTiglPolyData.h"
 #include <gp_Pnt.hxx>
+#include "PNamedShape.h"
 
 class TopoDS_Shape;
 class TopoDS_Face;
@@ -35,6 +36,8 @@ namespace tigl
 class CTiglRelativelyPositionedComponent;
 class CCPACSConfiguration;
 class CCPACSWingSegment;
+class CTiglUIDManager;
+class ITiglGeometricComponent;
 
 enum ComponentTraingMode 
 {
@@ -45,14 +48,8 @@ enum ComponentTraingMode
 class CTiglTriangularizerOptions {
 public:
     CTiglTriangularizerOptions()
-        : m_useMultipleObjects(false),
-          m_normalsEnabled(true)
+        : m_normalsEnabled(true)
     {
-    }
-
-    bool useMultipleObjects() const
-    {
-        return m_useMultipleObjects;
     }
 
     bool normalsEnabled() const
@@ -65,39 +62,35 @@ public:
         m_normalsEnabled = enabled;
     }
 
-    void setMutipleObjectsEnabled(bool enabled)
-    {
-        m_useMultipleObjects = enabled;
-    }
-
 private:
-    bool m_useMultipleObjects;
     bool m_normalsEnabled;
 };
 
-class CTiglTriangularizer : public CTiglPolyData
+class CTiglTriangularizer
 {
 public:
-    TIGL_EXPORT CTiglTriangularizer(const CTiglTriangularizerOptions& options = CTiglTriangularizerOptions());
+    TIGL_EXPORT CTiglTriangularizer(PNamedShape shape, double deflection, const CTiglTriangularizerOptions& options = CTiglTriangularizerOptions());
 
-    TIGL_EXPORT CTiglTriangularizer(const TopoDS_Shape&, double deflection, const CTiglTriangularizerOptions& options = CTiglTriangularizerOptions());
+    TIGL_EXPORT CTiglTriangularizer(const CTiglUIDManager& uidMgr, PNamedShape shape, double deflection,
+                                    ComponentTraingMode mode = NO_INFO, const CTiglTriangularizerOptions& options = CTiglTriangularizerOptions());
 
-    TIGL_EXPORT CTiglTriangularizer(class CTiglRelativelyPositionedComponent &comp, double deflection,
-                                    ComponentTraingMode mode, const CTiglTriangularizerOptions& options = CTiglTriangularizerOptions());
-
-    TIGL_EXPORT CTiglTriangularizer(class CCPACSConfiguration& config, bool fuseShapes, double deflection, ComponentTraingMode mode,
-                                    const CTiglTriangularizerOptions& options = CTiglTriangularizerOptions());
+    const CTiglPolyData& getTriangulation() const
+    {
+        return polys;
+    }
 
 private:
-    int triangularizeComponent(CTiglRelativelyPositionedComponent& component, bool includeChilds, const TopoDS_Shape& shape, double deflection, ComponentTraingMode = NO_INFO);
-    int triangularizeComponent(const std::vector<CTiglRelativelyPositionedComponent*>& components, bool includeChilds, const TopoDS_Shape& shape, double deflection, ComponentTraingMode = NO_INFO);
+    int triangularizeComponent(const CTiglUIDManager& uidMgr, PNamedShape shape, double deflection, ComponentTraingMode = NO_INFO);
     int triangularizeShape(const TopoDS_Shape&);
-    void annotateWingSegment(CCPACSWingSegment& segment, gp_Pnt centralP, bool pointOnMirroredShape, unsigned long iPolyLow, unsigned long iPolyUp);
     int triangularizeFace(const TopoDS_Face&, unsigned long& nVertices, unsigned long& iPolyLow, unsigned long& iPolyUp);
-    int computeVTKMetaData(class CCPACSWing&);
+
+    void writeFaceDummyMeta(unsigned long iPolyLower, unsigned long iPolyUpper);
+    bool writeWingMeta(ITiglGeometricComponent& wing, gp_Pnt centralP, unsigned long iPolyLower, unsigned long iPolyUpper);
+    bool writeWingSegmentMeta(ITiglGeometricComponent& segment, gp_Pnt centralP, unsigned long iPolyLower, unsigned long iPolyUpper);
 
     // some options
     CTiglTriangularizerOptions m_options;
+    CTiglPolyData polys;
 };
 
 }

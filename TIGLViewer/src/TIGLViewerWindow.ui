@@ -101,7 +101,6 @@
       <addaction name="tiglExportMeshedWingVTK"/>
       <addaction name="tiglExportMeshedWingVTKsimple"/>
       <addaction name="tiglExportMeshedFuselageVTK"/>
-      <addaction name="tiglExportMeshedFuselageVTKsimple"/>
       <addaction name="tiglExportMeshedConfigVTKNoFuse"/>
       <addaction name="tiglExportMeshedConfigVTK"/>
      </widget>
