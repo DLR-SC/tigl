@@ -21,6 +21,7 @@
 #include <exception>
 #include <cassert>
 #include <algorithm>
+#include <limits>
 
 #include "CCPACSControlSurfaceDevice.h"
 #include "CCPACSWingComponentSegment.h"
@@ -240,17 +241,23 @@ void CCPACSControlSurfaceDevice::SetUID(const std::string& uid)
 double CCPACSControlSurfaceDevice::GetMinDeflection() const
 {
     CCPACSControlSurfaceDeviceSteps steps = getMovementPath().getSteps();
-    CCPACSControlSurfaceDeviceStep step = steps.GetStep(1);
-    
-    return step.getRelDeflection();
+    double ret = std::numeric_limits<double>::max();
+    for (int i=1; i<= steps.GetStepCount(); i++) {
+        double deflect = steps.GetStep(i).getRelDeflection();
+        ret = std::min(ret, deflect);
+    }
+    return ret;
 }
 
 double CCPACSControlSurfaceDevice::GetMaxDeflection() const
 {
     CCPACSControlSurfaceDeviceSteps steps = getMovementPath().getSteps();
-    CCPACSControlSurfaceDeviceStep step = steps.GetStep(steps.GetStepCount());
-    
-    return step.getRelDeflection();
+    double ret = -std::numeric_limits<double>::max();
+    for (int i=1; i<= steps.GetStepCount(); i++) {
+        double deflect = steps.GetStep(i).getRelDeflection();
+        ret = std::max(ret, deflect);
+    }
+    return ret;
 }
 
 double CCPACSControlSurfaceDevice::GetDeflection() const
