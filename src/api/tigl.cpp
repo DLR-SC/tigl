@@ -2348,6 +2348,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetControlSurfaceCount(TiglCPACSConfigurat
         return TIGL_NULL_POINTER;
     }
 
+    TiglReturnCode errorCode = TIGL_SUCCESS;
+
     try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
@@ -2361,6 +2363,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetControlSurfaceCount(TiglCPACSConfigurat
                 *numControlSurfaces = compSeg.getControlSurfaces().getControlSurfaceDevices()->getControlSurfaceDeviceCount();
             }
             catch (tigl::CTiglError& err){
+                errorCode = err.getCode();
                 if (err.getCode() == TIGL_UID_ERROR) {
                     continue;
                 }
@@ -2368,11 +2371,11 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetControlSurfaceCount(TiglCPACSConfigurat
                     throw;
                 }
             }
-
+            errorCode = TIGL_SUCCESS;
+            break;
         }
 
-
-        return TIGL_SUCCESS;
+        return errorCode;
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what() << std::endl;
@@ -2412,6 +2415,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetControlSurfaceUID(TiglCPACSConfiguratio
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
 
+        TiglReturnCode errorCode = TIGL_SUCCESS;
+
         // search for component segment
         int nwings = config.GetWingCount();
         for (int iwing = 1; iwing <= nwings; ++iwing) {
@@ -2428,6 +2433,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetControlSurfaceUID(TiglCPACSConfiguratio
                                                        );
             }
             catch (tigl::CTiglError& err){
+                errorCode = err.getCode();
                 if (err.getCode() == TIGL_UID_ERROR) {
                     continue;
                 }
@@ -2435,9 +2441,11 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetControlSurfaceUID(TiglCPACSConfiguratio
                     throw;
                 }
             }
+            errorCode = TIGL_SUCCESS;
+            break;
 
         }
-        return TIGL_SUCCESS;
+        return errorCode;
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what() << std::endl;
@@ -2464,6 +2472,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetControlSurfaceType(TiglCPACSConfigurati
     }
 
     std::string uid(controlSurfaceUID);
+    TiglReturnCode errorCode = TIGL_SUCCESS;
 
     try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
@@ -2478,9 +2487,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetControlSurfaceType(TiglCPACSConfigurati
                 tigl::CCPACSWingComponentSegment & compSeg = (tigl::CCPACSWingComponentSegment &) wing.GetComponentSegment(icompseg);
                 try {
                     *controlSurfaceType = compSeg.getControlSurfaces().getControlSurfaceDevices()->getControlSurfaceDevice(uid).getType();
-                    break;
                 }
                 catch (tigl::CTiglError& err){
+                    errorCode = err.getCode();
                     if (err.getCode() == TIGL_UID_ERROR) {
                         continue;
                     }
@@ -2488,9 +2497,11 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetControlSurfaceType(TiglCPACSConfigurati
                         throw;
                     }
                 }
+                errorCode = TIGL_SUCCESS;
+                return errorCode;
             }
         }
-        return TIGL_SUCCESS;
+        return errorCode;
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what() << std::endl;
@@ -2517,6 +2528,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetMinimumDeflection(TiglCPA
     }
 
     std::string uid(controlSurfaceUID);
+    TiglReturnCode errorCode = TIGL_SUCCESS;
 
     try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
@@ -2532,9 +2544,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetMinimumDeflection(TiglCPA
                 tigl::CCPACSWingComponentSegment & compSeg = (tigl::CCPACSWingComponentSegment &) wing.GetComponentSegment(icompseg);
                 try {
                     *minDeflection = compSeg.getControlSurfaces().getControlSurfaceDevices()->getControlSurfaceDevice(uid).GetMinDeflection();
-                    break;
                 }
                 catch (tigl::CTiglError& err){
+                    errorCode = err.getCode();
                     if (err.getCode() == TIGL_UID_ERROR) {
                         continue;
                     }
@@ -2542,9 +2554,11 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetMinimumDeflection(TiglCPA
                         throw;
                     }
                 }
+                errorCode = TIGL_SUCCESS;
+                return errorCode;
             }
         }
-        return TIGL_SUCCESS;
+        return errorCode;
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what() << std::endl;
@@ -2572,6 +2586,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetMaximumDeflection(TiglCPA
     }
 
     std::string uid(controlSurfaceUID);
+    TiglReturnCode errorCode = TIGL_SUCCESS;
 
     try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
@@ -2586,9 +2601,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetMaximumDeflection(TiglCPA
                 tigl::CCPACSWingComponentSegment & compSeg = (tigl::CCPACSWingComponentSegment &) wing.GetComponentSegment(icompseg);
                 try {
                     *maxDeflection = compSeg.getControlSurfaces().getControlSurfaceDevices()->getControlSurfaceDevice(uid).GetMaxDeflection();
-                    break;
                 }
                 catch (tigl::CTiglError& err){
+                    errorCode = err.getCode();
                     if (err.getCode() == TIGL_UID_ERROR) {
                         continue;
                     }
@@ -2596,9 +2611,11 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetMaximumDeflection(TiglCPA
                         throw;
                     }
                 }
+                errorCode = TIGL_SUCCESS;
+                return errorCode;
             }
         }
-        return TIGL_SUCCESS;
+        return errorCode;
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what() << std::endl;
@@ -2626,6 +2643,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetDeflection(TiglCPACSConfi
     }
 
     std::string uid(controlSurfaceUID);
+    TiglReturnCode errorCode = TIGL_SUCCESS;
 
     try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
@@ -2640,9 +2658,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetDeflection(TiglCPACSConfi
                 tigl::CCPACSWingComponentSegment & compSeg = (tigl::CCPACSWingComponentSegment &) wing.GetComponentSegment(icompseg);
                 try {
                     *deflection = compSeg.getControlSurfaces().getControlSurfaceDevices()->getControlSurfaceDevice(uid).GetDeflection();
-                    break;
                 }
                 catch (tigl::CTiglError& err){
+                    errorCode = err.getCode();
                     if (err.getCode() == TIGL_UID_ERROR) {
                         continue;
                     }
@@ -2650,9 +2668,11 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetDeflection(TiglCPACSConfi
                         throw;
                     }
                 }
+                errorCode = TIGL_SUCCESS;
+                return errorCode;
             }
         }
-        return TIGL_SUCCESS;
+        return errorCode;
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what() << std::endl;
@@ -2680,6 +2700,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceSetDeflection(TiglCPACSConfi
     }
 
     std::string uid(controlSurfaceUID);
+    TiglReturnCode errorCode = TIGL_SUCCESS;
 
     try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
@@ -2694,9 +2715,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceSetDeflection(TiglCPACSConfi
                 tigl::CCPACSWingComponentSegment & compSeg = (tigl::CCPACSWingComponentSegment &) wing.GetComponentSegment(icompseg);
                 try {
                     compSeg.getControlSurfaces().getControlSurfaceDevices()->getControlSurfaceDevice(uid).SetDeflection(deflection);
-                    break;
                 }
                 catch (tigl::CTiglError& err){
+                    errorCode = err.getCode();
                     if (err.getCode() == TIGL_UID_ERROR) {
                         continue;
                     }
@@ -2704,9 +2725,11 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceSetDeflection(TiglCPACSConfi
                         throw;
                     }
                 }
+                errorCode = TIGL_SUCCESS;
+                return errorCode;
             }
         }
-        return TIGL_SUCCESS;
+        return errorCode;
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what() << std::endl;
