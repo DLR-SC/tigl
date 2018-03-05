@@ -152,6 +152,86 @@ TopoDS_Wire CControlSurfaceBoarderBuilder::boarderWithLEShape(double rLEHeight, 
     return result;
 }
 
+TopoDS_Wire CControlSurfaceBoarderBuilder::boarderWithInnerShape(double rTEHeight, double xsiTail, double xsiTEUpper, double xsiTELower)
+{
+    // compute position of the leading and trailing edge in local coords
+    gp_Pln plane = _coords.getPlane();
+    _le2d = ProjectPointOnPlane(plane, _coords.getLe());
+    _te2d = ProjectPointOnPlane(plane, _coords.getTe());
+
+    computeSkinPoints(xsiTEUpper, xsiTELower);
+
+    // Determine the tail point of the slat defined by rTEHeight
+    gp_Pnt2d upTmp, loTmp;
+    gp_Vec2d dummyVec;
+    computeSkinPointsImpl(xsiTail, upTmp, dummyVec, loTmp, dummyVec);
+    gp_Pnt2d tail2d = loTmp.XY() * (1. - rTEHeight) + upTmp.XY()*rTEHeight;
+
+    // Compute normals
+    gp_Vec2d upNorm2d(-_upTan2d.Y(), _upTan2d.X());
+    gp_Vec2d loNorm2d(-_loTan2d.Y(), _loTan2d.X());
+
+    if (upNorm2d.Y() < 0) {
+        upNorm2d.Multiply(-1.);
+    }
+
+    if (loNorm2d.Y() > 0) {
+        loNorm2d.Multiply(-1.);
+    }
+
+    // Compute the trailing edge by interpolating upper, lower and tail point
+    Handle(TColgp_HArray1OfPnt2d) points = new TColgp_HArray1OfPnt2d(1,3);
+    points->SetValue(1, _lp2d);
+    points->SetValue(2, tail2d);
+    points->SetValue(3, _up2d);
+
+    Geom2dAPI_Interpolate interp(points, false, Precision::Confusion());
+
+    // make the upper tangent point away from the trailing edge
+    if ((tail2d.X() > _up2d.X()) != (_upTan2d.X() < 0)) {
+        _upTan2d.Multiply(-1.);
+    }
+
+    // make the lower tangent point to the trailing edge
+    if ((tail2d.X() > _lp2d.X()) != (_loTan2d.X() > 0)) {
+        _loTan2d.Multiply(-1.);
+    }
+
+    interp.Load(_loTan2d, _upTan2d);
+    interp.Perform();
+
+    TopoDS_Edge trailEdge = BRepBuilderAPI_MakeEdge(interp.Curve(), new Geom_Plane(plane));
+    BRepLib::BuildCurves3d(trailEdge);
+
+    // compute some extra points with enough offset, to close the wire outside the wing
+    double offset_factor = 5.;
+    double ymax = std::max(fabs(_lp2d.Y()), fabs(_up2d.Y())) * offset_factor;
+    double alphaUp = (ymax - _up2d.Y())/upNorm2d.Y();
+    double alphaLo = (-ymax - _lp2d.Y())/loNorm2d.Y();
+
+    gp_Pnt2d upFront2d = _up2d.XY() + alphaUp*upNorm2d.XY();
+    gp_Pnt2d loFront2d = _lp2d.XY() + alphaLo*loNorm2d.XY();
+
+    double xmax = _le2d.X() - offset_factor*(_te2d.X() - _le2d.X());
+
+    gp_Pnt2d upBack2d(xmax, ymax);
+    gp_Pnt2d loBack2d(xmax, -ymax);
+
+    Handle(Geom_Surface) surf = new Geom_Plane(plane);
+
+    // create the wire
+    BRepBuilderAPI_MakeWire wiremaker;
+    wiremaker.Add(trailEdge);
+    wiremaker.Add(pointsToEdge( surf, _up2d, upFront2d));
+    wiremaker.Add(pointsToEdge( surf, upFront2d, upBack2d));
+    wiremaker.Add(pointsToEdge( surf, upBack2d, loBack2d));
+    wiremaker.Add(pointsToEdge( surf, loBack2d, loFront2d));
+    wiremaker.Add(pointsToEdge( surf, loFront2d, _lp2d));
+
+    TopoDS_Wire result = wiremaker.Wire();
+    return result;
+}
+
 TopoDS_Wire CControlSurfaceBoarderBuilder::boarderSimple(double xsiUpper, double xsiLower)
 {
     // compute position of the leading and trailing edge in local coords

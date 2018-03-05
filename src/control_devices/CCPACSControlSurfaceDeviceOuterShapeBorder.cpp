@@ -86,10 +86,30 @@ void CCPACSControlSurfaceDeviceOuterShapeBorder::ReadCPACS(
     }
     else if (type == LEADING_EDGE_DEVICE) {
 
-        tempString = BorderXPath + "/xsiTEUpper";
+        tempString = BorderXPath + "/xsiTE";
         elementPath = const_cast<char*>(tempString.c_str());
         if (tixiGetDoubleElement(tixiHandle, elementPath, &xsiTE) != SUCCESS) {
-            // couldnt read xsiLE
+            // couldnt read xsiTE
+            // error
+            // xsiTE = 1;
+        }
+        tempString = BorderXPath + "/xsiTEUpper";
+        elementPath = const_cast<char*>(tempString.c_str());
+        if (tixiGetDoubleElement(tixiHandle, elementPath, &xsiTEUpper) != SUCCESS) {
+            // couldnt read xsiTEUpper
+            xsiTEUpper = 0;
+        }
+        tempString = BorderXPath + "/xsiTELower";
+        elementPath = const_cast<char*>(tempString.c_str());
+        if (tixiGetDoubleElement(tixiHandle, elementPath, &xsiTELower) != SUCCESS) {
+            // couldnt read xsiTELower
+            xsiTELower = 0;
+        }
+        tempString = BorderXPath + "/innerShape";
+        elementPath = const_cast<char*>(tempString.c_str());
+        if (tixiCheckElement(tixiHandle,elementPath) == SUCCESS) {
+            innerShape = CCPACSControlSurfaceDeviceBorderInnerShapePtr(new CCPACSControlSurfaceDeviceBorderInnerShape);
+            innerShape->ReadCPACS(tixiHandle,elementPath,LEADING_EDGE_DEVICE);
         }
 
         xsiLE = 0;
@@ -167,6 +187,9 @@ TopoDS_Wire CCPACSControlSurfaceDeviceOuterShapeBorder::getWire(PNamedShape wing
                                           leadingEdgeShape->getXsiUpperSkin(),
                                           leadingEdgeShape->getXsiLowerSkin());
     }
+    else if (innerShape) {
+        wire = builder.boarderWithInnerShape(innerShape->getRelHeightTE(), innerShape->getXsiTE(), xsiTEUpper, xsiTELower);
+    }
     else if (airfoil) {
         wire = airfoil->GetWire(coords);
     }
@@ -195,6 +218,11 @@ CTiglControlSurfaceBorderCoordinateSystem CCPACSControlSurfaceDeviceOuterShapeBo
 CCPACSControlSurfaceDeviceBorderLeadingEdgeShapePtr CCPACSControlSurfaceDeviceOuterShapeBorder::getLeadingEdgeShape() const
 {
     return leadingEdgeShape;
+}
+
+CCPACSControlSurfaceDeviceBorderInnerShapePtr CCPACSControlSurfaceDeviceOuterShapeBorder::getInnerShape() const
+{
+    return innerShape;
 }
 
 CCPACSControlSurfaceDeviceAirfoilPtr CCPACSControlSurfaceDeviceOuterShapeBorder::getAirfoil() const
