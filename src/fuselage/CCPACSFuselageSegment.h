@@ -115,10 +115,10 @@ public:
     TIGL_EXPORT int GetEndConnectedSegmentIndex(int n);
 
     // helper function to get the wire of the start section
-    TIGL_EXPORT TopoDS_Wire GetStartWire();
+    TIGL_EXPORT TopoDS_Wire GetStartWire(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
 
     // helper function to get the wire of the end section
-    TIGL_EXPORT TopoDS_Wire GetEndWire();
+    TIGL_EXPORT TopoDS_Wire GetEndWire(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
 
     // Gets a point on the fuselage segment in dependence of parameters eta and zeta with
     // 0.0 <= eta <= 1.0 and 0.0 <= zeta <= 1.0. For eta = 0.0 the point lies on the start
@@ -158,14 +158,27 @@ public:
 
     TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE { return TIGL_COMPONENT_FUSELSEGMENT | TIGL_COMPONENT_SEGMENT | TIGL_COMPONENT_LOGICAL; }
 
+    TIGL_EXPORT TopoDS_Shape GetShell(TiglCoordinateSystem referenceCS) const;
+
+    TIGL_EXPORT TopoDS_Shape GetFrontClosure(TiglCoordinateSystem referenceCS) const;
+
+    TIGL_EXPORT TopoDS_Shape GetBackClosure(TiglCoordinateSystem referenceCS) const;
+
 protected:
     // Cleanup routine
     void Cleanup();
+
+    // Builds up the shape cache
+    void UpdateShapeCache() const;
 
     // Builds the loft between the two segment sections
     PNamedShape BuildLoft() OVERRIDE;
 
     void SetFaceTraits(PNamedShape loft, bool hasSymmetryPlane);
+
+    // Builds up the shell faces
+    void BuildShell() const;
+
 private:
     // get short name for loft
     std::string GetShortShapeName();
@@ -177,6 +190,13 @@ private:
     double                  mySurfaceArea;        /**< Surface Area of this segment            */
 
     unique_ptr<IGuideCurveBuilder> m_guideCurveBuilder;
+
+    struct ShapeCache {
+        TopoDS_Shape shell;
+        TopoDS_Shape frontClosure;
+        TopoDS_Shape backClosure;
+    };
+    mutable boost::optional<ShapeCache> shapeCache;
 };
 
 } // end namespace tigl

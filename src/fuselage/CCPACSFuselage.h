@@ -112,6 +112,8 @@ public:
     // Get the guide curve segment(partial guide curve) with a given UID
     TIGL_EXPORT CCPACSGuideCurve& GetGuideCurveSegment(std::string uid);
 
+    TIGL_EXPORT TopoDS_Shape GetLoftFromFusedSegments(); // this is different from GetLoft(), which returns a smoothly interpolated loft between the sections
+
     // Returns all guide curve wires as a compound
     TIGL_EXPORT TopoDS_Compound& GetGuideCurveWires();
 

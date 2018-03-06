@@ -227,17 +227,25 @@ CCPACSFuselage& CCPACSFuselageSegment::GetFuselage() const
 }
 
 // helper function to get the wire of the start section
-TopoDS_Wire CCPACSFuselageSegment::GetStartWire()
+TopoDS_Wire CCPACSFuselageSegment::GetStartWire(TiglCoordinateSystem referenceCS) const
 {
     CCPACSFuselageProfile& startProfile = startConnection.GetProfile();
-    return TopoDS::Wire(transformFuselageProfileGeometry(GetFuselage().GetTransformationMatrix(), startConnection, startProfile.GetWire(true)));
+    TopoDS_Wire startWire = startProfile.GetWire(true);
+    if (referenceCS == GLOBAL_COORDINATE_SYSTEM)
+        return TopoDS::Wire(transformFuselageProfileGeometry(GetFuselage().GetTransformationMatrix(), startConnection, startWire));
+    else
+        return startWire;
 }
 
 // helper function to get the wire of the end section
-TopoDS_Wire CCPACSFuselageSegment::GetEndWire()
+TopoDS_Wire CCPACSFuselageSegment::GetEndWire(TiglCoordinateSystem referenceCS) const
 {
     CCPACSFuselageProfile& endProfile = endConnection.GetProfile();
-    return TopoDS::Wire(transformFuselageProfileGeometry(GetFuselage().GetTransformationMatrix(), endConnection, endProfile.GetWire(true)));
+    TopoDS_Wire endWire = endProfile.GetWire(true);
+    if (referenceCS == GLOBAL_COORDINATE_SYSTEM)
+        return TopoDS::Wire(transformFuselageProfileGeometry(GetFuselage().GetTransformationMatrix(), endConnection, endWire));
+    else
+        return endWire;
 }
 
 // get short name for loft
@@ -791,4 +799,82 @@ double CCPACSFuselageSegment::GetCircumference(const double eta)
     return System.Mass();
 }
 
+
+void CCPACSFuselageSegment::BuildShell() const
+{
+    shapeCache = boost::none;
+    
+    TopoDS_Wire startWire = GetStartWire(FUSELAGE_COORDINATE_SYSTEM);
+    TopoDS_Wire endWire = GetEndWire(FUSELAGE_COORDINATE_SYSTEM);
+
+    BRepOffsetAPI_ThruSections generator(Standard_False, Standard_False, Precision::Confusion());
+    generator.AddWire(startWire);
+    generator.AddWire(endWire);
+    generator.CheckCompatibility(Standard_False);
+    generator.Build();
+
+    shapeCache = ShapeCache();
+    shapeCache->shell = generator.Shape();
+
+    shapeCache->frontClosure.Nullify();
+    shapeCache->backClosure.Nullify();
+    BRepBuilderAPI_MakeFace frontFaceBuilder(startWire);
+    if (frontFaceBuilder.IsDone()) {
+        shapeCache->frontClosure = frontFaceBuilder.Shape();
+    }
+    BRepBuilderAPI_MakeFace backFaceBuilder(endWire);
+    if (backFaceBuilder.IsDone()) {
+        shapeCache->backClosure = backFaceBuilder.Shape();
+    }
+}
+
+void CCPACSFuselageSegment::UpdateShapeCache() const
+{
+    if (!shapeCache) {
+        BuildShell();
+    }
+    assert(shapeCache);
+}
+
+TopoDS_Shape CCPACSFuselageSegment::GetShell(TiglCoordinateSystem referenceCS) const
+{
+    UpdateShapeCache();
+
+    switch (referenceCS) {
+    case FUSELAGE_COORDINATE_SYSTEM:
+        return shapeCache.value().shell;
+    case GLOBAL_COORDINATE_SYSTEM:
+        return GetFuselage().GetTransformationMatrix().Transform(shapeCache.value().shell);
+    default:
+        throw CTiglError("Invalid coordinate system passed to CCPACSFuselageSegment::GetShell");
+    }
+}
+
+TopoDS_Shape CCPACSFuselageSegment::GetFrontClosure(TiglCoordinateSystem referenceCS) const
+{
+    UpdateShapeCache();
+
+    switch (referenceCS) {
+    case FUSELAGE_COORDINATE_SYSTEM:
+        return shapeCache.value().frontClosure;
+    case GLOBAL_COORDINATE_SYSTEM:
+        return GetFuselage().GetTransformationMatrix().Transform(shapeCache.value().frontClosure);
+    default:
+        throw CTiglError("Invalid coordinate system passed to CCPACSFuselageSegment::GetFrontClosure");
+    }
+}
+
+TopoDS_Shape CCPACSFuselageSegment::GetBackClosure(TiglCoordinateSystem referenceCS) const
+{
+    UpdateShapeCache();
+
+    switch (referenceCS) {
+    case FUSELAGE_COORDINATE_SYSTEM:
+        return shapeCache.value().backClosure;
+    case GLOBAL_COORDINATE_SYSTEM:
+        return GetFuselage().GetTransformationMatrix().Transform(shapeCache.value().backClosure);
+    default:
+        throw CTiglError("Invalid coordinate system passed to CCPACSFuselageSegment::GetBackClosure");
+    }
+}
 } // end namespace tigl

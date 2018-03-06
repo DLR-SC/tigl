@@ -49,6 +49,7 @@
 #include "BRepBuilderAPI_MakeWire.hxx"
 #include "GC_MakeSegment.hxx"
 #include "BRepExtrema_DistShapeShape.hxx"
+#include <ShapeFix_ShapeTolerance.hxx>
 #include "ShapeFix_Wire.hxx"
 #include "CTiglMakeLoft.h"
 #include "TopExp.hxx"
@@ -175,6 +176,59 @@ std::string CCPACSFuselage::GetShortShapeName ()
         }
     }
     return "UNKNOWN";
+}
+
+namespace {
+    auto fuselageSegmentAeroLoft(CCPACSFuselage& f, int i) -> TopoDS_Shape {
+        auto segmentType = INNER_SEGMENT;
+
+        if (i == 0 &&  f.GetSegmentCount() == 1) {
+            segmentType = INNER_OUTER_SEGMENT;
+        } else if (i > 0 && i < f.GetSegmentCount() - 1) {
+            segmentType = MID_SEGMENT;
+        } else if (i == f.GetSegmentCount() - 1) {
+            segmentType = OUTER_SEGMENT;
+        }
+
+        TopoDS_Builder builder;
+        // TODO: kept compound for compatibility with old implementation, shell might be the better choice here!!!
+        TopoDS_Compound comp;
+        builder.MakeCompound(comp);
+
+        TopoDS_Shape shell = f.GetSegment(i + 1).GetShell(FUSELAGE_COORDINATE_SYSTEM);
+
+        // TODO: check if this is still needed
+        // fix shape tolerance, required for GeomAlgo_Splitter and millimeter models
+        ShapeFix_ShapeTolerance st;
+        st.SetTolerance(shell, 1E-06);
+
+        builder.Add(comp, shell);
+        // add inner face if required
+        if ((segmentType == INNER_SEGMENT || segmentType == INNER_OUTER_SEGMENT)) {
+            const TopoDS_Shape frontClosure = f.GetSegment(i + 1).GetFrontClosure(FUSELAGE_COORDINATE_SYSTEM);
+            if (!frontClosure.IsNull()) {
+                builder.Add(comp, frontClosure);
+            }
+        }
+        // add outer face if required
+        if ((segmentType == OUTER_SEGMENT || segmentType == INNER_OUTER_SEGMENT)) {
+            const TopoDS_Shape backClosure = f.GetSegment(i + 1).GetBackClosure(FUSELAGE_COORDINATE_SYSTEM);
+            if (!backClosure.IsNull()) {
+                builder.Add(comp, backClosure);
+            }
+        }
+
+        return comp;
+    }
+}
+
+TopoDS_Shape CCPACSFuselage::GetLoftFromFusedSegments() {
+    TopoDS_Builder builder;
+    TopoDS_Compound compFuselage;
+    builder.MakeCompound(compFuselage);
+    for (int i = 0; i < GetSegmentCount(); i++)
+        builder.Add(compFuselage, fuselageSegmentAeroLoft(*this, i));
+    return compFuselage;
 }
 
 void CCPACSFuselage::SetFaceTraits (PNamedShape loft, bool hasSymmetryPlane, bool smoothSurface)
