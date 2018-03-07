@@ -124,8 +124,6 @@ public:
     TIGL_EXPORT gp_Pnt GetChordPoint(int segmentIndex, double eta, double xsi);
 
     // Gets the loft of the whole wing
-    TIGL_EXPORT TopoDS_Shape & GetLoftWithLeadingEdge(void);
-
     TIGL_EXPORT TopoDS_Shape & GetUpperShape();
     TIGL_EXPORT TopoDS_Shape & GetLowerShape();
 

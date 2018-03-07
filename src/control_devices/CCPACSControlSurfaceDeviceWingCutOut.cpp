@@ -22,7 +22,7 @@
 #include "CCPACSControlSurfaceDeviceWingCutOutProfiles.h"
 
 #include "CCPACSControlSurfaceDeviceOuterShape.h"
-#include "CControlSurfaceBoarderBuilder.h"
+#include "CControlSurfaceBorderBuilder.h"
 #include "CTiglControlSurfaceBorderCoordinateSystem.h"
 #include "CCPACSControlSurfaceDevice.h"
 #include "CCPACSWingComponentSegment.h"
@@ -157,7 +157,7 @@ TopoDS_Wire CCPACSControlSurfaceDeviceWingCutOut::getCutoutWire(bool isInnerBord
     TopoDS_Wire wire;
 
     CTiglControlSurfaceBorderCoordinateSystem coords(getCutoutCS(isInnerBorder, outerBorder, upDir));
-    CControlSurfaceBoarderBuilder builder(coords, wingCleanShape->Shape());
+    CControlSurfaceBorderBuilder builder(coords, wingCleanShape->Shape());
 
     double xsiUpper, xsiLower;
     if (isInnerBorder) {
@@ -184,10 +184,10 @@ TopoDS_Wire CCPACSControlSurfaceDeviceWingCutOut::getCutoutWire(bool isInnerBord
         double xsiNose = lePoint->xsi();
         // TODO: calculate xsiNose into coordinate system of the border
 
-        wire = builder.boarderWithLEShape(lePoint->relHeight(), xsiNose, xsiUpper, xsiLower);
+        wire = builder.borderWithLEShape(lePoint->relHeight(), xsiNose, xsiUpper, xsiLower);
     }
     else {
-        wire = builder.boarderSimple(xsiUpper, xsiLower);
+        wire = builder.borderSimple(xsiUpper, xsiLower);
     }
 
     return wire;
