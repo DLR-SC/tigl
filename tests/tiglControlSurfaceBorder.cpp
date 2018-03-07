@@ -18,7 +18,7 @@
 
 #include "test.h"
 
-#include "CControlSurfaceBoarderBuilder.h"
+#include "CControlSurfaceBorderBuilder.h"
 #include "CTiglControlSurfaceBorderCoordinateSystem.h"
 
 #include <TopoDS_Shape.hxx>

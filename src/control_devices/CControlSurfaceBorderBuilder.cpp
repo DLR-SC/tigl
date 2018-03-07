@@ -16,7 +16,7 @@
 * limitations under the License.
 */
 
-#include "CControlSurfaceBoarderBuilder.h"
+#include "CControlSurfaceBorderBuilder.h"
 
 #include "CTiglError.h"
 #include "tiglcommonfunctions.h"

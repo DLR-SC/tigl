@@ -17,7 +17,7 @@
  */
 
 #include "CCPACSControlSurfaceDeviceOuterShapeBorder.h"
-#include "CControlSurfaceBoarderBuilder.h"
+#include "CControlSurfaceBorderBuilder.h"
 #include "CNamedShape.h"
 #include "CCPACSWingComponentSegment.h"
 #include "CCPACSWing.h"

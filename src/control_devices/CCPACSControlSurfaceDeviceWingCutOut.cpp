@@ -22,7 +22,7 @@
 #include "CCPACSControlSurfaceDeviceWingCutOutProfiles.h"
 
 #include "CCPACSControlSurfaceDeviceOuterShape.h"
-#include "CControlSurfaceBoarderBuilder.h"
+#include "CControlSurfaceBorderBuilder.h"
 #include "CTiglControlSurfaceBorderCoordinateSystem.h"
 #include "CCPACSControlSurfaceDevice.h"
 #include "CCPACSWingComponentSegment.h"
