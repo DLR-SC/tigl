@@ -122,7 +122,6 @@ TIGLViewerDocument::TIGLViewerDocument(TIGLViewerWindow *parentWidget)
 {
     app = parentWidget;
     m_cpacsHandle = -1;
-    connect(m_flapsDialog, SIGNAL(finished(int)), this, SLOT(onFlapsDialogClosed()));
 }
 
 TIGLViewerDocument::~TIGLViewerDocument( )
