@@ -1091,9 +1091,9 @@
 													<etaTE>0.12</etaTE>
 													<xsiLE>0.8</xsiLE>
 													<leadingEdgeShape>
-														<relHeightLE>0.2</relHeightLE>
+														<relHeightLE>0.3</relHeightLE>
 														<xsiUpperSkin>0.5</xsiUpperSkin>
-														<xsiLowerSkin>0.95</xsiLowerSkin>
+														<xsiLowerSkin>0.8</xsiLowerSkin>
 													</leadingEdgeShape>
 												</innerBorder>
 												<outerBorder>
@@ -1247,7 +1247,7 @@
 											</structure>
 											<path>
 												<innerHingePoint>
-													<hingeXsi>0.789562336672</hingeXsi>
+													<hingeXsi>0.83</hingeXsi>
 													<hingeRelHeight>0.5</hingeRelHeight>
 												</innerHingePoint>
 												<outerHingePoint>
@@ -1286,11 +1286,11 @@
 														<innerHingeTranslation>
 															<x>0.508899568018</x>
 															<y>0.0</y>
-															<z>0.0</z>
+															<z>-0.1</z>
 														</innerHingeTranslation>
 														<outerHingeTranslation>
 															<x>0.508899568018</x>
-															<z>0.0</z>
+															<z>-0.1</z>
 														</outerHingeTranslation>
 														<hingeLineRotation>40.0</hingeLineRotation>
 													</step>
