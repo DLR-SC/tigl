@@ -63,26 +63,26 @@ namespace
 namespace tigl
 {
 
-CControlSurfaceBoarderBuilder::CControlSurfaceBoarderBuilder(const CTiglControlSurfaceBorderCoordinateSystem& coords, TopoDS_Shape wingShape)
+CControlSurfaceBorderBuilder::CControlSurfaceBorderBuilder(const CTiglControlSurfaceBorderCoordinateSystem& coords, TopoDS_Shape wingShape)
     : _coords(coords), _wingShape(wingShape)
 {
 }
 
-CControlSurfaceBoarderBuilder::~CControlSurfaceBoarderBuilder()
+CControlSurfaceBorderBuilder::~CControlSurfaceBorderBuilder()
 {
 }
 
-TopoDS_Wire CControlSurfaceBoarderBuilder::boarderWithLEShape(double rLEHeight, double xsiNose, double xsiUpper, double xsiLower)
+TopoDS_Wire CControlSurfaceBorderBuilder::borderWithLEShape(double rLEHeight, double xsiNose, double xsiUpper, double xsiLower)
 {
     return boarderWithInnerShapeImpl(rLEHeight, xsiNose, xsiUpper, xsiLower, 5.0);
 }
 
-TopoDS_Wire CControlSurfaceBoarderBuilder::boarderWithInnerShape(double rTEHeight, double xsiTail, double xsiTEUpper, double xsiTELower)
+TopoDS_Wire CControlSurfaceBorderBuilder::borderWithInnerShape(double rTEHeight, double xsiTail, double xsiTEUpper, double xsiTELower)
 {
     return boarderWithInnerShapeImpl(rTEHeight, xsiTail, xsiTEUpper, xsiTELower, -5.0);
 }
 
-TopoDS_Wire CControlSurfaceBoarderBuilder::boarderSimple(double xsiUpper, double xsiLower)
+TopoDS_Wire CControlSurfaceBorderBuilder::borderSimple(double xsiUpper, double xsiLower)
 {
     // compute position of the leading and trailing edge in local coords
     gp_Pln plane = _coords.getPlane();
@@ -132,27 +132,27 @@ TopoDS_Wire CControlSurfaceBoarderBuilder::boarderSimple(double xsiUpper, double
     return result;
 }
 
-gp_Pnt2d CControlSurfaceBoarderBuilder::upperPoint()
+gp_Pnt2d CControlSurfaceBorderBuilder::upperPoint()
 {
     return _up2d;
 }
 
-gp_Pnt2d CControlSurfaceBoarderBuilder::lowerPoint()
+gp_Pnt2d CControlSurfaceBorderBuilder::lowerPoint()
 {
     return _lp2d;
 }
 
-gp_Vec2d CControlSurfaceBoarderBuilder::upperTangent()
+gp_Vec2d CControlSurfaceBorderBuilder::upperTangent()
 {
     return _upTan2d;
 }
 
-gp_Vec2d CControlSurfaceBoarderBuilder::lowerTangent()
+gp_Vec2d CControlSurfaceBorderBuilder::lowerTangent()
 {
     return _loTan2d;
 }
 
-TopoDS_Wire CControlSurfaceBoarderBuilder::boarderWithInnerShapeImpl(double relHeightCenterPoint, double xsiCenterPoint, double xsiEdgeUpper, double xsiEdgeLower, double offset_factor)
+TopoDS_Wire CControlSurfaceBorderBuilder::boarderWithInnerShapeImpl(double relHeightCenterPoint, double xsiCenterPoint, double xsiEdgeUpper, double xsiEdgeLower, double offset_factor)
 {
     // compute position of the leading and trailing edge in local coords
     gp_Pln plane = _coords.getPlane();
@@ -232,7 +232,7 @@ TopoDS_Wire CControlSurfaceBoarderBuilder::boarderWithInnerShapeImpl(double relH
 }
 
 
-void CControlSurfaceBoarderBuilder::computeSkinPointsImpl(double xsi, gp_Pnt2d& pntUp, gp_Vec2d& tanUp, gp_Pnt2d& pntLo, gp_Vec2d& tanLo)
+void CControlSurfaceBorderBuilder::computeSkinPointsImpl(double xsi, gp_Pnt2d& pntUp, gp_Vec2d& tanUp, gp_Pnt2d& pntLo, gp_Vec2d& tanLo)
 {
     gp_Pnt start3d = _coords.getTe().XYZ() * (1-xsi) + _coords.getLe().XYZ()*xsi;
     gp_Lin line3d(start3d, _coords.getYDir().XYZ());
@@ -286,7 +286,7 @@ void CControlSurfaceBoarderBuilder::computeSkinPointsImpl(double xsi, gp_Pnt2d& 
     tanLo = lowerInters.tangent;
 }
 
-void CControlSurfaceBoarderBuilder::computeSkinPoints(double xsiUpper, double xsiLower)
+void CControlSurfaceBorderBuilder::computeSkinPoints(double xsiUpper, double xsiLower)
 {
     // get the points on the skin
     if (fabs(xsiUpper-xsiLower) < 1e-10) {

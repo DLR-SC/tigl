@@ -179,23 +179,23 @@ TopoDS_Wire CCPACSControlSurfaceDeviceOuterShapeBorder::getWire(PNamedShape wing
 
     // Compute cutout plane
     CTiglControlSurfaceBorderCoordinateSystem coords = getCoordinateSystem(upDir);
-    CControlSurfaceBoarderBuilder builder(coords, wingShape->Shape());
+    CControlSurfaceBorderBuilder builder(coords, wingShape->Shape());
 
     TopoDS_Wire wire;
     if (leadingEdgeShape) {
-        wire = builder.boarderWithLEShape(leadingEdgeShape->getRelHeightLE(), 1.0,
+        wire = builder.borderWithLEShape(leadingEdgeShape->getRelHeightLE(), 1.0,
                                           leadingEdgeShape->getXsiUpperSkin(),
                                           leadingEdgeShape->getXsiLowerSkin());
     }
     else if (innerShape) {
-        wire = builder.boarderWithInnerShape(innerShape->getRelHeightTE(),
+        wire = builder.borderWithInnerShape(innerShape->getRelHeightTE(),
                                              innerShape->getXsiTE(), xsiTEUpper, xsiTELower);
     }
     else if (airfoil) {
         wire = airfoil->GetWire(coords);
     }
     else {
-        wire = builder.boarderSimple(1.0, 1.0);
+        wire = builder.borderSimple(1.0, 1.0);
     }
 
 #ifdef DEBUG

@@ -16,8 +16,8 @@
 * limitations under the License.
 */
 
-#ifndef CCONTROLSURFACEBOARDERBUILDER_H
-#define CCONTROLSURFACEBOARDERBUILDER_H
+#ifndef CCONTROLSURFACEBORDERBUILDER_H
+#define CCONTROLSURFACEBORDERBUILDER_H
 
 #include "CTiglControlSurfaceBorderCoordinateSystem.h"
 
@@ -32,11 +32,11 @@
 namespace tigl
 {
 
-class CControlSurfaceBoarderBuilder
+class CControlSurfaceBorderBuilder
 {
 public:
-    CControlSurfaceBoarderBuilder(const CTiglControlSurfaceBorderCoordinateSystem& coords, TopoDS_Shape wingShape);
-    ~CControlSurfaceBoarderBuilder();
+    CControlSurfaceBorderBuilder(const CTiglControlSurfaceBorderCoordinateSystem& coords, TopoDS_Shape wingShape);
+    ~CControlSurfaceBorderBuilder();
 
     /**
      * @brief Computes the cutout wire with a defined leading edge shape according to 
@@ -47,7 +47,7 @@ public:
      * @param xsiUpper Upper skin point, where xsi=1 is the flap leading edge, and xsi=0 the trailing edge
      * @param xsiLower Lower skin point, where xsi=1 is the flap leading edge, and xsi=0 the trailing edge
      */
-    TopoDS_Wire boarderWithLEShape(double rLEHeight, double xsiNose, double xsiUpper, double xsiLower);
+    TopoDS_Wire borderWithLEShape(double rLEHeight, double xsiNose, double xsiUpper, double xsiLower);
 
     /**
      * @brief Computes the cutout wire with a defined trailing edge shape according to 
@@ -59,7 +59,7 @@ public:
      * @param xsiTELower Lower skin point of the edge, where xsi=1 is the flap leading edge, and xsi=0 the trailing edge
      * @return 
      */
-    TopoDS_Wire boarderWithInnerShape(double rTEHeight, double xsiTail, double xsiTEUpper, double xsiTELower);
+    TopoDS_Wire borderWithInnerShape(double rTEHeight, double xsiTail, double xsiTEUpper, double xsiTELower);
 
     /**
      * @brief Simplified cutout without any center point definition
@@ -68,7 +68,7 @@ public:
      * @param xsiLower Lower skin point o the edge, where xsi=1 is the flap leading edge, and xsi=0 the trailing edge
      * @return 
      */
-    TopoDS_Wire boarderSimple(double xsiUpper, double xsiLower);
+    TopoDS_Wire borderSimple(double xsiUpper, double xsiLower);
 
     gp_Pnt2d upperPoint();
     gp_Pnt2d lowerPoint();
@@ -77,7 +77,7 @@ public:
     gp_Vec2d lowerTangent();
 
 private:
-    CControlSurfaceBoarderBuilder();
+    CControlSurfaceBorderBuilder();
     
     /// Computes the points on the wing skin and their tangents
     TopoDS_Wire boarderWithInnerShapeImpl(double rTEHeight, double xsiTail, double xsiTEUpper, double xsiTELower, double offset);
@@ -93,4 +93,4 @@ private:
 
 
 }
-#endif // CCONTROLSURFACEBOARDERBUILDER_H
+#endif // CCONTROLSURFACEBORDERBUILDER_H

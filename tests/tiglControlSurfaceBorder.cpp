@@ -50,14 +50,14 @@ TEST_F(TiglControlSurfaceBorder, boarderBuilder)
     double lex = 0.5;
 
     tigl::CTiglControlSurfaceBorderCoordinateSystem coordsystem(gp_Pnt(lex, 0.5, 0), gp_Pnt(1, 0.5, 0), gp_Vec(0, 0, 1.));
-    tigl::CControlSurfaceBoarderBuilder builder(coordsystem, wingShape);
+    tigl::CControlSurfaceBorderBuilder builder(coordsystem, wingShape);
 
-    builder.boarderSimple(1.0, 1.0);
+    builder.borderSimple(1.0, 1.0);
 
     double upperXsi = 0.8;
     double lowerXsi = 0.8;
     double relHeight = 0.5;
-    builder.boarderWithLEShape(relHeight, 1.0, upperXsi, lowerXsi);
+    builder.borderWithLEShape(relHeight, 1.0, upperXsi, lowerXsi);
 
     ASSERT_NEAR((upperXsi - 1.)*(lex - 1.), builder.upperPoint().X(), 1e-8);
     ASSERT_TRUE(builder.upperPoint().Y() > 0.);
