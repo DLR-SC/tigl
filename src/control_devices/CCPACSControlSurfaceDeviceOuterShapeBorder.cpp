@@ -188,7 +188,8 @@ TopoDS_Wire CCPACSControlSurfaceDeviceOuterShapeBorder::getWire(PNamedShape wing
                                           leadingEdgeShape->getXsiLowerSkin());
     }
     else if (innerShape) {
-        wire = builder.boarderWithInnerShape(innerShape->getRelHeightTE(), innerShape->getXsiTE(), xsiTEUpper, xsiTELower);
+        wire = builder.boarderWithInnerShape(innerShape->getRelHeightTE(),
+                                             innerShape->getXsiTE(), xsiTEUpper, xsiTELower);
     }
     else if (airfoil) {
         wire = airfoil->GetWire(coords);

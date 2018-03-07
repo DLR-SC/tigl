@@ -43,11 +43,31 @@ public:
      * the CPACS definition.
      * 
      * @param rLEHeight Relative height of the nose point
+     * @param xsiNode Depth coordinate of the nose point
      * @param xsiUpper Upper skin point, where xsi=1 is the flap leading edge, and xsi=0 the trailing edge
      * @param xsiLower Lower skin point, where xsi=1 is the flap leading edge, and xsi=0 the trailing edge
      */
     TopoDS_Wire boarderWithLEShape(double rLEHeight, double xsiNose, double xsiUpper, double xsiLower);
+
+    /**
+     * @brief Computes the cutout wire with a defined trailing edge shape according to 
+     * the CPACS definition of a leading edge device.
+     * 
+     * @param rTEHeight Relative height of the center point of the edge
+     * @param xsiTail   Depth coordinate of the center point
+     * @param xsiTEUpper Upper skin point of the edge, where xsi=1 is the flap leading edge, and xsi=0 the trailing edge
+     * @param xsiTELower Lower skin point of the edge, where xsi=1 is the flap leading edge, and xsi=0 the trailing edge
+     * @return 
+     */
     TopoDS_Wire boarderWithInnerShape(double rTEHeight, double xsiTail, double xsiTEUpper, double xsiTELower);
+
+    /**
+     * @brief Simplified cutout without any center point definition
+     * 
+     * @param xsiUpper Upper skin point o the edge, where xsi=1 is the flap leading edge, and xsi=0 the trailing edge
+     * @param xsiLower Lower skin point o the edge, where xsi=1 is the flap leading edge, and xsi=0 the trailing edge
+     * @return 
+     */
     TopoDS_Wire boarderSimple(double xsiUpper, double xsiLower);
 
     gp_Pnt2d upperPoint();
@@ -60,13 +80,14 @@ private:
     CControlSurfaceBoarderBuilder();
     
     /// Computes the points on the wing skin and their tangents
+    TopoDS_Wire boarderWithInnerShapeImpl(double rTEHeight, double xsiTail, double xsiTEUpper, double xsiTELower, double offset);
     void computeSkinPointsImpl(double xsi, gp_Pnt2d& pntUp, gp_Vec2d& tangentUp, gp_Pnt2d& pntLo, gp_Vec2d& tanLo);
     void computeSkinPoints(double xsiUpper, double xsiLower);
     
     TopoDS_Shape _wingShape;
     const CTiglControlSurfaceBorderCoordinateSystem& _coords;
     
-    gp_Pnt2d _up2d, _lp2d, _le2d, _te2d;
+    gp_Pnt2d _up2d, _lp2d;
     gp_Vec2d _upTan2d, _loTan2d;
 };
 
