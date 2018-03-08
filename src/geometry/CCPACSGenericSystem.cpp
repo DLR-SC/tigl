@@ -37,15 +37,6 @@
 namespace tigl
 {
 
-namespace
-{
-    inline double max(double a, double b)
-    {
-        return a > b? a : b;
-    }
-}
-
-
 // Constructor
 CCPACSGenericSystem::CCPACSGenericSystem(CCPACSConfiguration* config)
     : configuration(config)

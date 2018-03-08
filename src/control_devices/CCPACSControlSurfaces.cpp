@@ -26,7 +26,6 @@ namespace tigl
 {
 
 CCPACSControlSurfaces::CCPACSControlSurfaces(CCPACSConfiguration* cfg, CCPACSWingComponentSegment* cs)
-    : _componentSegment(cs), _config(cfg)
 {
     controlSurfaceDevices = CCPACSControlSurfaceDevicesPtr(new CCPACSControlSurfaceDevices(cfg, cs));
 }

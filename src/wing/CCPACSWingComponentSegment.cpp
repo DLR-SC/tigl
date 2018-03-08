@@ -105,16 +105,6 @@ namespace tigl
 
 namespace
 {
-    bool inBetween(const gp_Pnt& p, const gp_Pnt& p1, const gp_Pnt& p2) // TODO: move to utils?
-    {
-        gp_Vec b(p1, p2);
-        gp_Vec v1(p, p1);
-        gp_Vec v2(p, p2);
-
-        double res = (b*v1)*(b*v2);
-        return res <= 0.;
-    }
-
     double GetNearestValidParameter(double p) // TODO: this is clamp(p, 0, 1), aka. saturate(p), rename?
     {
         if (p < 0.) {
@@ -130,7 +120,7 @@ namespace
     void SetFaceTraits (PNamedShape loft, unsigned int nSegments)
     {
         // designated names of the faces
-        std::vector<std::string> names(3); // TODO: use std::array
+        std::vector<std::string> names(3);
         names[0]="Bottom";
         names[1]="Top";
         names[2]="TrailingEdge";

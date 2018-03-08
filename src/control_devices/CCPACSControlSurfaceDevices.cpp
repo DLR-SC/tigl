@@ -52,29 +52,24 @@ void CCPACSControlSurfaceDevices::ReadCPACS(
         TixiDocumentHandle tixiHandle,
         const std::string& controlSurfaceDevicesXPath, TiglControlSurfaceType type)
 {
-    ReturnCode tixiRet;
-    int controlSurfaceDeviceCount;
-    std::string tempString;
-    char* elementPath;
-
-    // Get ControlSurfaceDevive element count
-    tempString = controlSurfaceDevicesXPath;
-    elementPath = const_cast<char*>(tempString.c_str());
+    std::string typestring = "";
 
     if (type == TRAILING_EDGE_DEVICE) {
-        tixiRet = tixiGetNamedChildrenCount(tixiHandle, elementPath,
-                "trailingEdgeDevice", &controlSurfaceDeviceCount);
+        typestring = "trailingEdgeDevice";
     }
     else if (type == LEADING_EDGE_DEVICE) {
-        tixiRet = tixiGetNamedChildrenCount(tixiHandle, elementPath,
-                "leadingEdgeDevice", &controlSurfaceDeviceCount);
+        typestring = "leadingEdgeDevice";
     }
     else if (type == SPOILER) {
-        tixiRet = tixiGetNamedChildrenCount(tixiHandle, elementPath,
-                "spoiler", &controlSurfaceDeviceCount);
+        typestring = "spoiler";
+    }
+    else {
+        return;
     }
 
-    if (tixiRet != SUCCESS) {
+    // Get ControlSurfaceDevive element count
+    int controlSurfaceDeviceCount;
+    if (tixiGetNamedChildrenCount(tixiHandle, controlSurfaceDevicesXPath.c_str(), typestring.c_str(), &controlSurfaceDeviceCount) != SUCCESS) {
         return;
     }
 
@@ -84,19 +79,8 @@ void CCPACSControlSurfaceDevices::ReadCPACS(
                 new CCPACSControlSurfaceDevice(_config, _componentSegment);
         controlSurfaceDevices.push_back(controlSurfaceDevice);
 
-
-        if (type == LEADING_EDGE_DEVICE) {
-            tempString = controlSurfaceDevicesXPath + "/leadingEdgeDevice[";
-        }
-        else if (type == TRAILING_EDGE_DEVICE) {
-            tempString = controlSurfaceDevicesXPath + "/trailingEdgeDevice[";
-        }
-        else if (type == SPOILER) {
-            tempString = controlSurfaceDevicesXPath + "/spoiler[";
-        }
-
         std::ostringstream xpath;
-        xpath << tempString << i << "]";
+        xpath << controlSurfaceDevicesXPath << "/" << typestring + "[" << i << "]";
         controlSurfaceDevice->ReadCPACS(tixiHandle, xpath.str(), type);
     }
 }

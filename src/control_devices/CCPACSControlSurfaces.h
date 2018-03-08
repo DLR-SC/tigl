@@ -50,8 +50,6 @@ public:
 
 private:
     CCPACSControlSurfaceDevicesPtr controlSurfaceDevices;
-    CCPACSWingComponentSegment* _componentSegment;
-    CCPACSConfiguration* _config;
 };
 
 typedef CSharedPtr<CCPACSControlSurfaces> CCPACSControlSurfacesPtr;
