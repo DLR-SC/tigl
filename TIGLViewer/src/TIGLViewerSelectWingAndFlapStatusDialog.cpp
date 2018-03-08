@@ -73,13 +73,6 @@ TIGLViewerSelectWingAndFlapStatusDialog::~TIGLViewerSelectWingAndFlapStatusDialo
     delete ui;
 }
 
-int TIGLViewerSelectWingAndFlapStatusDialog::exec(QStringList wings)
-{
-    ui->comboBoxWings->addItems(wings);
-    int res = QDialog::exec();
-    return res;
-}
-
 std::string TIGLViewerSelectWingAndFlapStatusDialog::getSelectedWing()
 {
     return ui->comboBoxWings->currentText().toStdString();
