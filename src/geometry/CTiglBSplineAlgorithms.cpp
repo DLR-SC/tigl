@@ -346,6 +346,8 @@ CTiglBSplineAlgorithms::computeParamsBSplineSurf(const TColgp_Array2OfPnt& point
 
 std::vector<Handle(Geom_BSplineCurve)> CTiglBSplineAlgorithms::createCommonKnotsVectorCurve(const std::vector<Handle(Geom_BSplineCurve)>& splines_vector)
 {
+    // TODO: Match parameter range
+
     return createCommonKnotsVectorImpl<Handle(Geom_BSplineCurve)>(splines_vector,
                                                                   reinterpret_cast<KnotInsertionCall>(insert_knot_curve),
                                                                   reinterpret_cast<GetIntCall>(get_nbknots_curve),
@@ -357,6 +359,7 @@ std::vector<Handle(Geom_BSplineCurve)> CTiglBSplineAlgorithms::createCommonKnots
 std::vector<Handle(Geom_BSplineSurface) > CTiglBSplineAlgorithms::createCommonKnotsVectorSurface(const std::vector<Handle(Geom_BSplineSurface) >& old_surfaces_vector)
 {
     // all B-spline surfaces must have the same parameter range in u- and v-direction
+    // TODO: Match parameter range
 
     // create a copy of the old B-spline surfaces in order to get no shadow effects
     std::vector<Handle(Geom_BSplineSurface)> surfaces_vector;
@@ -381,8 +384,7 @@ std::vector<Handle(Geom_BSplineSurface) > CTiglBSplineAlgorithms::createCommonKn
 }
 
 Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::skinnedBSplineSurfaceParams(const std::vector<Handle(Geom_BSplineCurve) >& splines_vector,
-                                                                                const Handle(TColStd_HArray1OfReal) v_parameters,
-                                                                                bool is_closed_v)
+                                                                                const Handle(TColStd_HArray1OfReal) v_parameters)
 {
     // check amount of given parameters
     if (v_parameters->Length() != splines_vector.size()) {
@@ -420,18 +422,13 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::skinnedBSplineSurfaceParams(
 
     // create first spline that interoplates first column of control points in v-direction
     // separately in order to get knots_v and mults_v for creating the Geom_BSplineSurface:
-    GeomAPI_Interpolate interpolationObject_v(controlPoints_spline_v, v_parameters, false /*is_closed_v */, 1e-15);
+    GeomAPI_Interpolate interpolationObject_v(controlPoints_spline_v, v_parameters, false, 1e-15);
     interpolationObject_v.Perform();
 
     // check that interpolation was successful
     assert(interpolationObject_v.IsDone());
 
     Handle(Geom_BSplineCurve) spline_v = interpolationObject_v.Curve();
-
-    // support for closed v-directional B-splines
-    /*if (spline_v->IsClosed()) {
-        spline_v->SetNotPeriodic();
-    }*/
 
     unsigned int degree_v = spline_v->Degree();
 
@@ -484,10 +481,8 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::skinnedBSplineSurfaceParams(
     return skinnedSurface;
 }
 
-Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::skinnedBSplineSurface(const std::vector<Handle(Geom_BSplineCurve) >& splines_vector, bool is_closed_v)
+Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::skinnedBSplineSurface(const std::vector<Handle(Geom_BSplineCurve) >& splines_vector)
 {
-    // // // // // // // // // // for computing control points ---beginning
-
     // match degree of given B-splines
     int new_degree = 0;
     for (unsigned int spline_idx = 0; spline_idx < splines_vector.size(); ++spline_idx) {
@@ -503,8 +498,6 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::skinnedBSplineSurface(const 
     // create a common knot vector for all splines
     std::vector<Handle(Geom_BSplineCurve) > ready_splines_vector = CTiglBSplineAlgorithms::createCommonKnotsVectorCurve(splines_vector);
 
-    // // // // // // // // // // for computing control points ---end
-
     // create a matrix of control points of all B-splines (splines do have the same amount of control points now)
     TColgp_Array2OfPnt controlPoints(1, ready_splines_vector[0]->NbPoles(), 1, ready_splines_vector.size());
     for (unsigned int spline_idx = 1; spline_idx <= ready_splines_vector.size(); ++spline_idx) {
@@ -519,7 +512,7 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::skinnedBSplineSurface(const 
         v_parameters->SetValue(param_idx, parameters.second->Value(param_idx));
     }
 
-    return CTiglBSplineAlgorithms::skinnedBSplineSurfaceParams(ready_splines_vector, v_parameters, is_closed_v);
+    return CTiglBSplineAlgorithms::skinnedBSplineSurfaceParams(ready_splines_vector, v_parameters);
 }
 
 Handle(Geom_BSplineCurve) CTiglBSplineAlgorithms::reparametrizeBSpline(const Handle(Geom_BSplineCurve) spline, const TColStd_Array1OfReal& old_parameters, const TColStd_Array1OfReal& new_parameters)
@@ -851,7 +844,7 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::interpolatingSurface(const T
     }
 
     // now create a skinned surface with these B-splines which represents the interpolating surface
-    Handle(Geom_BSplineSurface) interpolatingSurf = CTiglBSplineAlgorithms::skinnedBSplineSurfaceParams(splines_u_vector, parameters_v, is_closed_v);
+    Handle(Geom_BSplineSurface) interpolatingSurf = CTiglBSplineAlgorithms::skinnedBSplineSurfaceParams(splines_u_vector, parameters_v);
 
     return interpolatingSurf;
 }
@@ -884,13 +877,7 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::createGordonSurface(const st
     }
 
     // find out the 'average' scale of the B-splines in order to being able to handle a more approximate dataset and find its intersections
-    // u-directional splines
-    double splines_scale = CTiglBSplineAlgorithms::scaleOfBSplines(profiles);
-
-    // v-directional splines
-    double splines_v_scale = CTiglBSplineAlgorithms::scaleOfBSplines(guides);
-
-    splines_scale = (splines_scale + splines_v_scale) / 2.;
+    double splines_scale = 0.5 * (CTiglBSplineAlgorithms::scaleOfBSplines(profiles)+ CTiglBSplineAlgorithms::scaleOfBSplines(guides));
 
     if (std::abs(intersection_params_spline_u->Value(1)) > splines_scale * 1e-5 || std::abs(intersection_params_spline_u->Value(intersection_params_spline_u->Upper()) - 1.) > splines_scale * 1e-5) {
         throw tigl::CTiglError("WARNING: B-splines in u-direction mustn't stick out, spline network must be 'closed'!");
@@ -899,7 +886,6 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::createGordonSurface(const st
     if (std::abs(intersection_params_spline_v->Value(1)) > splines_scale * 1e-5 || std::abs(intersection_params_spline_v->Value(intersection_params_spline_v->Upper()) - 1.) > splines_scale * 1e-5) {
         throw tigl::CTiglError("WARNING: B-splines in v-direction mustn't stick out, spline network must be 'closed'!");
     }
-
 
     // check compatibilty of network
     for (int u_param_idx = intersection_params_spline_u->Lower(); u_param_idx <= intersection_params_spline_u->Upper(); ++u_param_idx) {
@@ -920,13 +906,11 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::createGordonSurface(const st
     }
 
     // Skinning in v-direction with u directional B-Splines
-    unsigned int degree_v_dir = profiles.size() - 1;
-    Handle(Geom_BSplineSurface) surface_v = skinnedBSplineSurfaceParams(profiles, intersection_params_spline_v, guides[0]->IsClosed());
+    Handle(Geom_BSplineSurface) surface_v = skinnedBSplineSurfaceParams(profiles, intersection_params_spline_v);
     // therefore reparametrization before this method
 
     // Skinning in u-direction with v directional B-Splines
-    unsigned int degree_u_dir = guides.size() - 1;
-    Handle(Geom_BSplineSurface) surface_u_unflipped = skinnedBSplineSurfaceParams(guides, intersection_params_spline_u, profiles[0]->IsClosed());
+    Handle(Geom_BSplineSurface) surface_u_unflipped = skinnedBSplineSurfaceParams(guides, intersection_params_spline_u);
 
     // flipping of the surface in v-direction; flipping is redundant here, therefore the next line is a comment!
     Handle(Geom_BSplineSurface) surface_u = flipSurface(surface_u_unflipped);
