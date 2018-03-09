@@ -27,6 +27,7 @@
 #include <iostream>
 #include <vector>
 #include <cmath>
+#include <algorithm>
 
 using namespace std;
 
@@ -94,8 +95,8 @@ void BSplineFit::initSystem(math_Matrix& A, math_Vector& rhsx, math_Vector& rhsy
         BSplCLib::EvalBsplineBasis(1, 0, order, _knots, tk, basis_start_index, bspl_basis);
         basis_start_index--;
 
-        int start = max(1, basis_start_index);
-        int stop  = min(n_vars + 1, max(1, basis_start_index + order));
+        int start = std::max(1, basis_start_index);
+        int stop  = std::min(n_vars + 1, max(1, basis_start_index + order));
 
         // first and last basis element
         double N0 = 0.;
