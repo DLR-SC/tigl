@@ -62,7 +62,7 @@ public:
      * @param parameters
      *          reference of the TColStd_Array1OfReal parameters, that is created beforehand
      */
-    TIGL_EXPORT static Handle(TColStd_HArray1OfReal) computeParamsBSplineCurve(const TColgp_Array1OfPnt& points, double alpha=0.5);
+    TIGL_EXPORT static Handle(TColStd_HArray1OfReal) computeParamsBSplineCurve(const Handle(TColgp_HArray1OfPnt)& points, double alpha=0.5);
 
 
     /**
