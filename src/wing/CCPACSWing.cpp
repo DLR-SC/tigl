@@ -184,6 +184,11 @@ void CCPACSWing::Invalidate(void)
     segments.Invalidate();
     positionings.Invalidate();
     componentSegments.Invalidate();
+    ResetLoft();
+}
+
+void CCPACSWing::ResetLoft()
+{
     loft.reset();
 }
 

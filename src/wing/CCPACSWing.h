@@ -61,6 +61,9 @@ public:
     // Invalidates internal state
     TIGL_EXPORT void Invalidate(void);
 
+    // Resets the loft
+    TIGL_EXPORT void ResetLoft();
+
     // Read CPACS wing elements
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & wingXPath);
 
