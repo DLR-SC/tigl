@@ -251,6 +251,28 @@ namespace
 
         return splines_vector;
     }
+    
+    void array2GetColumn(const TColgp_Array2OfPnt& matrix, int colIndex, TColgp_Array1OfPnt& colVector)
+    {
+        if (matrix.LowerRow() != colVector.Lower() || matrix.UpperRow() != colVector.Upper()) {
+            throw tigl::CTiglError("matrix does not match input vector", TIGL_MATH_ERROR);
+        }
+        
+        for (int rowIdx = matrix.LowerRow(); rowIdx <= matrix.UpperRow(); ++rowIdx) {
+            colVector(rowIdx) = matrix(rowIdx, colIndex);
+        }
+    }
+    
+    void array2GetRow(const TColgp_Array2OfPnt& matrix, int rowIndex, TColgp_Array1OfPnt& rowVector)
+    {
+        if (matrix.LowerCol() != rowVector.Lower() || matrix.UpperCol() != rowVector.Upper()) {
+            throw tigl::CTiglError("matrix does not match input vector", TIGL_MATH_ERROR);
+        }
+        
+        for (int colIdx = matrix.LowerCol(); colIdx <= matrix.UpperCol(); ++colIdx) {
+            rowVector(colIdx) = matrix(rowIndex, colIdx);
+        }
+    }
 
 }
 
@@ -279,67 +301,44 @@ Handle(TColStd_HArray1OfReal) CTiglBSplineAlgorithms::computeParamsBSplineCurve(
     return parameters;
 }
 
-
 std::pair<Handle(TColStd_HArray1OfReal), Handle(TColStd_HArray1OfReal) >
 CTiglBSplineAlgorithms::computeParamsBSplineSurf(const TColgp_Array2OfPnt& points, double alpha)
 {
-    // B-splines must have  the same amount of control points
-
     // first for parameters in u-direction:
-    TColStd_Array2OfReal parameters_u(points.LowerRow(), points.UpperRow(), points.LowerCol(), points.UpperCol());
-    for (int v_idx = points.LowerCol(); v_idx <= points.UpperCol(); ++v_idx) {
+    Handle(TColStd_HArray1OfReal) paramsU(new TColStd_HArray1OfReal(points.LowerRow(), points.UpperRow()));
+    paramsU->Init(0.);
+    for (int vIdx = points.LowerCol(); vIdx <= points.UpperCol(); ++vIdx) {
         TColgp_Array1OfPnt points_u_line(points.LowerRow(), points.UpperRow());
-
-        for (int cp_idx = points.LowerRow(); cp_idx <= points.UpperRow(); ++cp_idx) {
-            points_u_line(cp_idx) = points(cp_idx, v_idx);
-        }
+        array2GetColumn(points, vIdx, points_u_line);
 
         Handle(TColStd_HArray1OfReal) parameters_u_line = computeParamsBSplineCurve(points_u_line, alpha);
 
-        // save these parameters_spline in parameters_u
-        for (int param_idx = parameters_u_line->Lower(); param_idx <= parameters_u_line->Upper(); ++param_idx) {
-            parameters_u(param_idx, v_idx) = parameters_u_line->Value(param_idx);
+        // average over columns
+        for (int uIdx = parameters_u_line->Lower(); uIdx <= parameters_u_line->Upper(); ++uIdx) {
+            double val = paramsU->Value(uIdx) + parameters_u_line->Value(uIdx)/(double)points.RowLength();
+            paramsU->SetValue(uIdx, val);
         }
     }
 
-    // averaging along v-direction
-    Handle(TColStd_HArray1OfReal) parameters_u_average(new TColStd_HArray1OfReal(points.LowerRow(), points.UpperRow()));
-    for (int param_idx = parameters_u.LowerRow(); param_idx <= parameters_u.UpperRow(); ++param_idx) {
-        double sum = 0;
-        for (int spline_idx = parameters_u.LowerCol(); spline_idx <= parameters_u.UpperCol(); ++spline_idx) {
-            sum += parameters_u(param_idx, spline_idx);
-        }
-        parameters_u_average->SetValue(param_idx, sum / points.RowLength());
-    }
 
     // now for parameters in v-direction:
-    TColStd_Array2OfReal parameters_v(points.LowerRow(), points.UpperRow(), points.LowerCol(), points.UpperCol());
-    for (int param_idx = points.LowerRow(); param_idx <= points.UpperRow(); ++param_idx) {
+    Handle(TColStd_HArray1OfReal) paramsV = new TColStd_HArray1OfReal (points.LowerCol(), points.UpperCol());
+    paramsV->Init(0.);
+    for (int uIdx = points.LowerRow(); uIdx <= points.UpperRow(); ++uIdx) {
         TColgp_Array1OfPnt points_v(points.LowerCol(), points.UpperCol());
+        array2GetRow(points, uIdx, points_v);
 
-        for (int cp_v_idx = points.LowerCol(); cp_v_idx <= points.UpperCol(); ++cp_v_idx) {
-            points_v(cp_v_idx) = points(param_idx, cp_v_idx);
-        }
         Handle(TColStd_HArray1OfReal) parameters_v_line = computeParamsBSplineCurve(points_v, alpha);
 
-        // save these parameters_v_spline in parameters_v
-        for (int spline_idx = points.LowerCol(); spline_idx <= points.UpperCol(); ++spline_idx) {
-            parameters_v(param_idx, spline_idx) = parameters_v_line->Value(spline_idx);
+        // average over rows
+        for (int vIdx = points.LowerCol(); vIdx <= points.UpperCol(); ++vIdx) {
+            double val = paramsV->Value(vIdx) + parameters_v_line->Value(vIdx)/(double)points.ColLength();
+            paramsV->SetValue(vIdx, val);
         }
-    }
-
-    // averaging along u-direction
-    Handle(TColStd_HArray1OfReal) parameters_v_average = new TColStd_HArray1OfReal (points.LowerCol(), points.UpperCol());
-    for (int spline_idx = points.LowerCol(); spline_idx <= points.UpperCol(); ++spline_idx) {
-        double sum = 0;
-        for (int param_idx = points.LowerRow(); param_idx <= points.UpperRow(); ++param_idx) {
-            sum += parameters_v(param_idx, spline_idx);
-        }
-        parameters_v_average->SetValue(spline_idx, sum / points.ColLength());
     }
 
     // put computed parameters for both u- and v-direction in output tuple
-    return std::make_pair(parameters_u_average, parameters_v_average);
+    return std::make_pair(paramsU, paramsV);
 
 }
 
@@ -383,7 +382,7 @@ std::vector<Handle(Geom_BSplineSurface) > CTiglBSplineAlgorithms::createCommonKn
     return surfaces_vector;
 }
 
-Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::skinnedBSplineSurfaceParams(const std::vector<Handle(Geom_BSplineCurve) >& splines_vector,
+Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::curvesToSurface(const std::vector<Handle(Geom_BSplineCurve) >& splines_vector,
                                                                                 const Handle(TColStd_HArray1OfReal) v_parameters)
 {
     // check amount of given parameters
@@ -481,38 +480,45 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::skinnedBSplineSurfaceParams(
     return skinnedSurface;
 }
 
-Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::skinnedBSplineSurface(const std::vector<Handle(Geom_BSplineCurve) >& splines_vector)
+void CTiglBSplineAlgorithms::matchDegree(const std::vector<Handle(Geom_BSplineCurve) >& bsplines)
 {
-    // match degree of given B-splines
-    int new_degree = 0;
-    for (unsigned int spline_idx = 0; spline_idx < splines_vector.size(); ++spline_idx) {
-        if (splines_vector[spline_idx]->Degree() > new_degree) {
-            new_degree = splines_vector[spline_idx]->Degree();
+    int maxDegree = 0;
+    for (std::vector<Handle(Geom_BSplineCurve) >::const_iterator it = bsplines.begin(); it != bsplines.end(); ++it) {
+        int curDegree = (*it)->Degree();
+        if (curDegree > maxDegree) {
+            maxDegree = curDegree;
         }
     }
 
-    for (unsigned int spline_idx = 0; spline_idx < splines_vector.size(); ++spline_idx) {
-        splines_vector[spline_idx]->IncreaseDegree(new_degree);
+    for (std::vector<Handle(Geom_BSplineCurve) >::const_iterator it = bsplines.begin(); it != bsplines.end(); ++it) {
+        int curDegree = (*it)->Degree();
+        if (curDegree < maxDegree) {
+            (*it)->IncreaseDegree(maxDegree);
+        }
     }
+}
+
+Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::curvesToSurface(const std::vector<Handle(Geom_BSplineCurve) >& bsplCurves)
+{
+    matchDegree(bsplCurves);
 
     // create a common knot vector for all splines
-    std::vector<Handle(Geom_BSplineCurve) > ready_splines_vector = CTiglBSplineAlgorithms::createCommonKnotsVectorCurve(splines_vector);
+    std::vector<Handle(Geom_BSplineCurve) > compatibleSplines = CTiglBSplineAlgorithms::createCommonKnotsVectorCurve(bsplCurves);
 
     // create a matrix of control points of all B-splines (splines do have the same amount of control points now)
-    TColgp_Array2OfPnt controlPoints(1, ready_splines_vector[0]->NbPoles(), 1, ready_splines_vector.size());
-    for (unsigned int spline_idx = 1; spline_idx <= ready_splines_vector.size(); ++spline_idx) {
-        for (int point_idx = 1; point_idx <= ready_splines_vector[0]->NbPoles(); ++point_idx) {
-            controlPoints(point_idx, spline_idx) = ready_splines_vector[spline_idx - 1]->Pole(point_idx);
+    TColgp_Array2OfPnt controlPoints(1, compatibleSplines[0]->NbPoles(),
+                                     1, static_cast<Standard_Integer>(compatibleSplines.size()));
+
+    for (unsigned int spline_idx = 1; spline_idx <= compatibleSplines.size(); ++spline_idx) {
+        for (int point_idx = 1; point_idx <= compatibleSplines[0]->NbPoles(); ++point_idx) {
+            controlPoints(point_idx, spline_idx) = compatibleSplines[spline_idx - 1]->Pole(point_idx);
         }
     }
 
-    std::pair<Handle(TColStd_HArray1OfReal), Handle(TColStd_HArray1OfReal) > parameters = CTiglBSplineAlgorithms::computeParamsBSplineSurf(controlPoints);
-    Handle(TColStd_HArray1OfReal) v_parameters = new TColStd_HArray1OfReal(1, parameters.second->Length());
-    for (int param_idx = 1; param_idx <= parameters.second->Length(); ++param_idx) {
-        v_parameters->SetValue(param_idx, parameters.second->Value(param_idx));
-    }
+    std::pair<Handle(TColStd_HArray1OfReal), Handle(TColStd_HArray1OfReal) > parameters
+            = CTiglBSplineAlgorithms::computeParamsBSplineSurf(controlPoints);
 
-    return CTiglBSplineAlgorithms::skinnedBSplineSurfaceParams(ready_splines_vector, v_parameters);
+    return CTiglBSplineAlgorithms::curvesToSurface(compatibleSplines, parameters.second);
 }
 
 Handle(Geom_BSplineCurve) CTiglBSplineAlgorithms::reparametrizeBSpline(const Handle(Geom_BSplineCurve) spline, const TColStd_Array1OfReal& old_parameters, const TColStd_Array1OfReal& new_parameters)
@@ -844,7 +850,7 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::interpolatingSurface(const T
     }
 
     // now create a skinned surface with these B-splines which represents the interpolating surface
-    Handle(Geom_BSplineSurface) interpolatingSurf = CTiglBSplineAlgorithms::skinnedBSplineSurfaceParams(splines_u_vector, parameters_v);
+    Handle(Geom_BSplineSurface) interpolatingSurf = CTiglBSplineAlgorithms::curvesToSurface(splines_u_vector, parameters_v);
 
     return interpolatingSurf;
 }
@@ -906,11 +912,11 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::createGordonSurface(const st
     }
 
     // Skinning in v-direction with u directional B-Splines
-    Handle(Geom_BSplineSurface) surface_v = skinnedBSplineSurfaceParams(profiles, intersection_params_spline_v);
+    Handle(Geom_BSplineSurface) surface_v = curvesToSurface(profiles, intersection_params_spline_v);
     // therefore reparametrization before this method
 
     // Skinning in u-direction with v directional B-Splines
-    Handle(Geom_BSplineSurface) surface_u_unflipped = skinnedBSplineSurfaceParams(guides, intersection_params_spline_u);
+    Handle(Geom_BSplineSurface) surface_u_unflipped = curvesToSurface(guides, intersection_params_spline_u);
 
     // flipping of the surface in v-direction; flipping is redundant here, therefore the next line is a comment!
     Handle(Geom_BSplineSurface) surface_u = flipSurface(surface_u_unflipped);
