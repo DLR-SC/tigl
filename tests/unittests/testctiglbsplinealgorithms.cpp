@@ -449,7 +449,7 @@ TEST(TiglBSplineAlgorithms, testSkinnedBSplineSurface)
     splines_vector.push_back(curve1);
     splines_vector.push_back(curve2);
 
-    Handle(Geom_BSplineSurface) skinnedSurface = CTiglBSplineAlgorithms::skinnedBSplineSurface(splines_vector, false);
+    Handle(Geom_BSplineSurface) skinnedSurface = CTiglBSplineAlgorithms::curvesToSurface(splines_vector);
 
 
     // now test the skinned surface
