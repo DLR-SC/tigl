@@ -113,7 +113,7 @@ public:
      *          the created skinned surface
      */
     TIGL_EXPORT static Handle(Geom_BSplineSurface) skinnedBSplineSurfaceParams(const std::vector<Handle(Geom_BSplineCurve) >& splines_vector,
-                                                                               const Handle(TColStd_HArray1OfReal) v_params, bool is_closed_v);
+                                                                               const Handle(TColStd_HArray1OfReal) v_params);
 
     /**
      * @brief skinnedBSplineSurfaceParams:
@@ -124,7 +124,7 @@ public:
      * @return
      *          the created skinned surface
      */
-    TIGL_EXPORT static Handle(Geom_BSplineSurface) skinnedBSplineSurface(const std::vector<Handle(Geom_BSplineCurve) >& splines_vector, bool is_closed_v);
+    TIGL_EXPORT static Handle(Geom_BSplineSurface) skinnedBSplineSurface(const std::vector<Handle(Geom_BSplineCurve) >& splines_vector);
 
     /**
      * @brief reparametrizeBSpline:
