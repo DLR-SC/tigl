@@ -79,6 +79,13 @@ public:
 
 
     /**
+     * @brief Matches the degree of all b-splines by raising the degree to the maximum degree
+     * 
+     * @param bsplines The splines to be matched (in/out)
+     */
+    TIGL_EXPORT static void matchDegree(const std::vector<Handle(Geom_BSplineCurve) >& bsplines);
+    
+    /**
      * @brief createCommonKnotsVectorCurve:
      *          Creates a common knots vector of the given vector of B-splines
      *          The common knot vector contains all knots of all splines with the highest multiplicity of all splines.
@@ -102,29 +109,29 @@ public:
     TIGL_EXPORT static std::vector<Handle(Geom_BSplineSurface) > createCommonKnotsVectorSurface(const std::vector<Handle(Geom_BSplineSurface)>& old_surfaces_vector);
 
     /**
-     * @brief skinnedBSplineSurfaceParams:
-     *          Skinning of a vector of B-splines and creating a common knot vector for all the B-splines beforehand
-     *          !!! Uses the method createCommonKnotsVectorCurve !!!
-     * @param splines_vector:
-     *          given vector of B-splines (which are parametrized in u-direction)
-     * @param v_params
-     *          array of parameters that each given B-spline should have as an isocurve of the created skinned surface
-     * @return
-     *          the created skinned surface
+     * @brief Surface skinning algorithm
+     * 
+     * Creates a surface by interpolation of B-spline curves. The direction of the input curves
+     * is treated as u direction. The skinning will be performed in v direction.
+     *
+     * @param splines_vector Curves to be interpolated.
+     * @param v_params V parameters at which the resulting surface should interpolate the input curves.
+     * @return The interpolation b-spline surface.
      */
-    TIGL_EXPORT static Handle(Geom_BSplineSurface) skinnedBSplineSurfaceParams(const std::vector<Handle(Geom_BSplineCurve) >& splines_vector,
-                                                                               const Handle(TColStd_HArray1OfReal) v_params);
+    TIGL_EXPORT static Handle(Geom_BSplineSurface) curvesToSurface(const std::vector<Handle(Geom_BSplineCurve) >& splines_vector,
+                                                                   const Handle(TColStd_HArray1OfReal) v_params);
 
     /**
-     * @brief skinnedBSplineSurfaceParams:
-     *          Skinning of a vector of B-splines and creating a common knot vector for all the B-splines beforehand
-     *          !!! Computes the parameters by the centripetal method which are used for the given B-splines for the skinned surface and then uses the method skinnedBSplineSurfaceParams !!!
-     * @param splines_vector:
-     *          given vector of B-splines (which are parametrized in u-direction)
-     * @return
-     *          the created skinned surface
+     * @brief Surface skinning algorithm
+     * 
+     * Creates a surface by interpolation of B-spline curves. The direction of the input curves
+     * is treated as u direction. The skinning will be performed in v direction. The interpolation
+     * parameters will be determined automatically.
+     *
+     * @param splines_vector Curves to be interpolated.
+     * @return The interpolation b-spline surface.
      */
-    TIGL_EXPORT static Handle(Geom_BSplineSurface) skinnedBSplineSurface(const std::vector<Handle(Geom_BSplineCurve) >& splines_vector);
+    TIGL_EXPORT static Handle(Geom_BSplineSurface) curvesToSurface(const std::vector<Handle(Geom_BSplineCurve) >& splines_vector);
 
     /**
      * @brief reparametrizeBSpline:
