@@ -10,6 +10,7 @@
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_HArray1OfReal.hxx>
+#include <TColgp_HArray1OfPnt.hxx>
 #include <vector>
 #include <cmath>
 
@@ -37,11 +38,11 @@ TEST(TiglBSplineAlgorithms, testComputeParamsBSplineCurve)
     // test for method computeParamsBSplineCurve
 
     // create B-spline
-    TColgp_Array1OfPnt controlPoints(1, 4);
-    controlPoints(1) = gp_Pnt(0, 0, 0);
-    controlPoints(2) = gp_Pnt(1, 1, 0);
-    controlPoints(3) = gp_Pnt(3, -1, 0);
-    controlPoints(4) = gp_Pnt(4, 0, 0);
+    Handle(TColgp_HArray1OfPnt) controlPoints = new TColgp_HArray1OfPnt(1, 4);
+    controlPoints->SetValue(1, gp_Pnt(0, 0, 0));
+    controlPoints->SetValue(2, gp_Pnt(1, 1, 0));
+    controlPoints->SetValue(3, gp_Pnt(3, -1, 0));
+    controlPoints->SetValue(4, gp_Pnt(4, 0, 0));
 
     TColStd_Array1OfReal Weights(1, 4);
     Weights(1) = 1;
@@ -59,7 +60,7 @@ TEST(TiglBSplineAlgorithms, testComputeParamsBSplineCurve)
 
     Standard_Integer Degree = 3;
 
-    Handle(Geom_BSplineCurve) bspline = new Geom_BSplineCurve(controlPoints, Weights, Knots, Multiplicities, Degree);
+    Handle(Geom_BSplineCurve) bspline = new Geom_BSplineCurve(controlPoints->Array1(), Weights, Knots, Multiplicities, Degree);
 
     // compute centripetal parameters by the method that shall be tested here
     double alpha = 0.5;
@@ -67,9 +68,9 @@ TEST(TiglBSplineAlgorithms, testComputeParamsBSplineCurve)
 
     // compute right parameters by hand
     TColStd_Array1OfReal right_parameters(1, 4);
-    double first_to_second = pow(controlPoints(1).SquareDistance(controlPoints(2)), 0.5);
-    double second_to_third = pow(controlPoints(2).SquareDistance(controlPoints(3)), 0.5);
-    double third_to_fourth = pow(controlPoints(3).SquareDistance(controlPoints(4)), 0.5);
+    double first_to_second = pow(controlPoints->Value(1).SquareDistance(controlPoints->Value(2)), 0.5);
+    double second_to_third = pow(controlPoints->Value(2).SquareDistance(controlPoints->Value(3)), 0.5);
+    double third_to_fourth = pow(controlPoints->Value(3).SquareDistance(controlPoints->Value(4)), 0.5);
     double polygon_length_alpha = pow(first_to_second, alpha) + pow(second_to_third, alpha) + pow(third_to_fourth, alpha);
 
     right_parameters(1) = 0;
