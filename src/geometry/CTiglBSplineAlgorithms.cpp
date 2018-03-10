@@ -29,9 +29,12 @@
 #include <GeomAPI_Interpolate.hxx>
 #include <GeomAPI_ExtremaCurveCurve.hxx>
 #include <TColStd_Array2OfReal.hxx>
+#include <TColStd_HArray1OfReal.hxx>
+#include <TColStd_HArray1OfInteger.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
 #include <TColgp_HArray1OfPnt2d.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
+#include <TColgp_HArray2OfPnt.hxx>
 #include <BSplCLib.hxx>
 #include <GeomAPI_PointsToBSpline.hxx>
 #include <BRepTools.hxx>
@@ -394,93 +397,75 @@ std::vector<Handle(Geom_BSplineSurface) > CTiglBSplineAlgorithms::createCommonKn
     return std::vector<Handle(Geom_BSplineSurface)>(adapterSplines.begin(), adapterSplines.end());
 }
 
-Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::curvesToSurface(const std::vector<Handle(Geom_BSplineCurve) >& splines_vector,
-                                                                                const Handle(TColStd_HArray1OfReal) v_parameters)
+Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::curvesToSurface(const std::vector<Handle(Geom_BSplineCurve) >& curves,
+                                                                    const Handle(TColStd_HArray1OfReal) vParameters)
 {
     // check amount of given parameters
-    if (v_parameters->Length() != splines_vector.size()) {
+    if (vParameters->Length() != curves.size()) {
         throw CTiglError("The amount of given parameters has to be equal to the amount of given B-splines!", TIGL_MATH_ERROR);
     }
 
-    matchDegree(splines_vector);
+    matchDegree(curves);
+    size_t nCurves = curves.size();
 
     // create a common knot vector for all splines
-    std::vector<Handle(Geom_BSplineCurve) > ready_splines_vector = CTiglBSplineAlgorithms::createCommonKnotsVectorCurve(splines_vector);
+    std::vector<Handle(Geom_BSplineCurve) > compatSplines = CTiglBSplineAlgorithms::createCommonKnotsVectorCurve(curves);
 
-    // create a matrix of control points of all B-splines (splines do have the same amount of control points now)
-    TColgp_Array2OfPnt controlPoints(1, ready_splines_vector[0]->NbPoles(),
-                                     1, static_cast<Standard_Integer>(ready_splines_vector.size()));
+    const Handle(Geom_BSplineCurve)& firstCurve = compatSplines[0];
+    size_t numControlPointsU = firstCurve->NbPoles();
 
-    for (unsigned int spline_idx = 1; spline_idx <= ready_splines_vector.size(); ++spline_idx) {
-        for (int point_idx = 1; point_idx <= ready_splines_vector[0]->NbPoles(); ++point_idx) {
-            controlPoints(point_idx, spline_idx) = ready_splines_vector[spline_idx - 1]->Pole(point_idx);
-        }
-    }
-
-    // again create spline to get knots and multiplicities in v-direction
-    Handle(TColgp_HArray1OfPnt) controlPoints_spline_v = new TColgp_HArray1OfPnt(controlPoints.LowerCol(), controlPoints.UpperCol());
-    for (int point_v_idx = controlPoints.LowerCol(); point_v_idx <= controlPoints.UpperCol(); ++point_v_idx) {
-        controlPoints_spline_v->SetValue(point_v_idx, controlPoints(1, point_v_idx));
-    }
-
-    // create first spline that interoplates first column of control points in v-direction
-    // separately in order to get knots_v and mults_v for creating the Geom_BSplineSurface:
-    GeomAPI_Interpolate interpolationObject_v(controlPoints_spline_v, v_parameters, false, 1e-15);
-    interpolationObject_v.Perform();
-
-    // check that interpolation was successful
-    assert(interpolationObject_v.IsDone());
-
-    Handle(Geom_BSplineCurve) spline_v = interpolationObject_v.Curve();
-
-    unsigned int degree_v = spline_v->Degree();
+    unsigned int degreeV = 0;
+    unsigned int degreeU = firstCurve->Degree();
+    Handle(TColStd_HArray1OfReal) knotsV;
+    Handle(TColStd_HArray1OfInteger) multsV;
 
     // create matrix of new control points with size which is possibly DIFFERENT from the size of controlPoints
-    TColgp_Array2OfPnt new_controlPoints(1, ready_splines_vector[0]->NbPoles(), 1, spline_v->NbPoles());
-    for (int i = new_controlPoints.LowerCol(); i <= new_controlPoints.UpperCol(); ++i) {
-        new_controlPoints(1, i) = spline_v->Pole(i);
-    }
+    Handle(TColgp_HArray2OfPnt) cpSurf;
+    Handle(TColgp_HArray1OfPnt) interpPointsVDir = new TColgp_HArray1OfPnt(1, static_cast<Standard_Integer>(nCurves));
 
     // now continue to create new control points by interpolating the remaining columns of controlPoints in Skinning direction (here v-direction) by B-splines
-    for (int point_u_idx = controlPoints.LowerRow() + 1; point_u_idx <= controlPoints.UpperRow(); ++point_u_idx) {
-        Handle(TColgp_HArray1OfPnt) controlPoints_spline = new TColgp_HArray1OfPnt(controlPoints.LowerCol(), controlPoints.UpperCol());
-        for (int point_v_idx = controlPoints.LowerCol(); point_v_idx <= controlPoints.UpperCol(); ++point_v_idx) {
-            controlPoints_spline->SetValue(point_v_idx, controlPoints(point_u_idx, point_v_idx));
+    for (int cpUIdx = 1; cpUIdx <= numControlPointsU; ++cpUIdx) {
+        for (int cpVIdx = 1; cpVIdx <= nCurves; ++cpVIdx) {
+            interpPointsVDir->SetValue(cpVIdx, compatSplines[cpVIdx - 1]->Pole(cpUIdx));
         }
-        GeomAPI_Interpolate interpolationObject(controlPoints_spline, v_parameters, false, 1e-5);
+        GeomAPI_Interpolate interpolationObject(interpPointsVDir, vParameters, false, 1e-5);
         interpolationObject.Perform();
 
         // check that interpolation was successful
-        assert(interpolationObject.IsDone());
+        if (!interpolationObject.IsDone()) {
+            throw CTiglError("Error computing skinning surface", TIGL_MATH_ERROR);
+        }
 
-        Handle(Geom_BSplineCurve) spline = interpolationObject.Curve();
+        Handle(Geom_BSplineCurve) interpSpline = interpolationObject.Curve();
+        
+        if (cpUIdx == 1) {
+            degreeV = interpSpline->Degree();
+            knotsV = new TColStd_HArray1OfReal(1, interpSpline->NbKnots());
+            interpSpline->Knots(knotsV->ChangeArray1());
+            multsV = new TColStd_HArray1OfInteger(1, interpSpline->NbKnots());
+            interpSpline->Multiplicities(multsV->ChangeArray1());
+            cpSurf = new TColgp_HArray2OfPnt(1, static_cast<Standard_Integer>(numControlPointsU), 1, interpSpline->NbPoles());
+        }
 
-        // support for closed B-spline curves
-        /*if (spline->IsClosed()) {
-            spline->SetNotPeriodic();
-        }*/
-
-        for (int i = new_controlPoints.LowerCol(); i <= new_controlPoints.UpperCol(); ++i) {
-            new_controlPoints(point_u_idx, i) = spline->Pole(i);
+        // the final surface control points are the control points resulting from
+        // the interpolation
+        for (int i = cpSurf->LowerCol(); i <= cpSurf->UpperCol(); ++i) {
+            cpSurf->SetValue(cpUIdx, i, interpSpline->Pole(i));
         }
 
         // check degree always the same
-        assert(degree_v == spline->Degree());
+        assert(degreeV == spline->Degree());
     }
 
-    TColStd_Array1OfReal knots_v(1, spline_v->NbKnots());
-    spline_v->Knots(knots_v);
-    TColStd_Array1OfInteger mults_v(1, spline_v->NbKnots());
-    spline_v->Multiplicities(mults_v);
+    TColStd_Array1OfReal knotsU(1, firstCurve->NbKnots());
+    firstCurve->Knots(knotsU);
+    TColStd_Array1OfInteger multsU(1, firstCurve->NbKnots());
+    firstCurve->Multiplicities(multsU);
 
-    const Handle(Geom_BSplineCurve) firstCurve = ready_splines_vector[0];
-    TColStd_Array1OfReal knots_u(1, firstCurve->NbKnots());
-    firstCurve->Knots(knots_u);
-    TColStd_Array1OfInteger mults_u(1, firstCurve->NbKnots());
-    firstCurve->Multiplicities(mults_u);
-
-    int u_degree = splines_vector[0]->Degree();
-    Handle(Geom_BSplineSurface) skinnedSurface = new Geom_BSplineSurface(new_controlPoints, knots_u, knots_v, mults_u, mults_v, u_degree, degree_v);
+    Handle(Geom_BSplineSurface) skinnedSurface = new Geom_BSplineSurface(cpSurf->Array2(),
+                                                                         knotsU, knotsV->Array1(),
+                                                                         multsU, multsV->Array1(),
+                                                                         degreeU, degreeV);
 
     return skinnedSurface;
 }
@@ -815,17 +800,17 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::flipSurface(const Handle(Geo
         }
     }
 
-    TColStd_Array1OfReal knots_u(1, surface->NbUKnots());
-    surface->UKnots(knots_u);
-    TColStd_Array1OfReal knots_v(1, surface->NbVKnots());
-    surface->VKnots(knots_v);
+    TColStd_Array1OfReal knotsU(1, surface->NbUKnots());
+    surface->UKnots(knotsU);
+    TColStd_Array1OfReal knotsV(1, surface->NbVKnots());
+    surface->VKnots(knotsV);
 
-    TColStd_Array1OfInteger mults_u(1, surface->NbUKnots());
-    surface->UMultiplicities(mults_u);
+    TColStd_Array1OfInteger multsU(1, surface->NbUKnots());
+    surface->UMultiplicities(multsU);
     TColStd_Array1OfInteger mults_v(1, surface->NbVKnots());
     surface->VMultiplicities(mults_v);
 
-    Handle(Geom_BSplineSurface) flippedSurface = new Geom_BSplineSurface(swapped_control_points, knots_v, knots_u, mults_v, mults_u, surface->VDegree(), surface->UDegree());
+    Handle(Geom_BSplineSurface) flippedSurface = new Geom_BSplineSurface(swapped_control_points, knotsV, knotsU, mults_v, multsU, surface->VDegree(), surface->UDegree());
 
     return flippedSurface;
 }
@@ -834,10 +819,10 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::interpolatingSurface(const T
 
     // first interpolate all points by B-splines in u-direction
     std::vector<Handle(Geom_BSplineCurve)> splines_u_vector;
-    for (int point_v_idx = points.LowerCol(); point_v_idx <= points.UpperCol(); ++point_v_idx) {
+    for (int cpVIdx = points.LowerCol(); cpVIdx <= points.UpperCol(); ++cpVIdx) {
         Handle(TColgp_HArray1OfPnt) points_u = new TColgp_HArray1OfPnt(points.LowerRow(), points.UpperRow());
-        for (int point_u_idx = points.LowerRow(); point_u_idx <= points.UpperRow(); ++point_u_idx) {
-            points_u->SetValue(point_u_idx, points(point_u_idx, point_v_idx));
+        for (int cpUIdx = points.LowerRow(); cpUIdx <= points.UpperRow(); ++cpUIdx) {
+            points_u->SetValue(cpUIdx, points(cpUIdx, cpVIdx));
         }
         GeomAPI_Interpolate interpolationObject(points_u, parameters_u, false /*is_closed_u*/, 1e-15);
         interpolationObject.Perform();
