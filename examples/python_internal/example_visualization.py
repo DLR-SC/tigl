@@ -3,6 +3,7 @@ from __future__ import print_function
 from tixi3 import tixi3wrapper
 from tigl3 import tigl3wrapper
 import tigl3.configuration, tigl3.geometry, tigl3.boolean_ops, tigl3.exports
+from OCC.Quantity import Quantity_NOC_RED
 import os
 
 def display_configuration(tigl_handle):
@@ -35,14 +36,34 @@ def display_configuration(tigl_handle):
     for iwing in range(1, config.get_wing_count() + 1):
         wing = config.get_wing(iwing)
 
-        for isegment in range(1, wing.get_segment_count() + 1):
-            segment = wing.get_segment(isegment)
+        display.DisplayShape(wing.get_loft().shape(), update=True, transparency=0.3)
 
-            display.DisplayShape(segment.get_loft().shape(), update=True)
+        mirrored_shape = wing   .get_mirrored_loft()
+        if mirrored_shape is not None:
+            display.DisplayShape(mirrored_shape.shape(), update=True)
 
-            mirrored_shape = segment.get_mirrored_loft()
-            if mirrored_shape is not None:
-                display.DisplayShape(mirrored_shape.shape(), update=True)
+        for i_comp_seg in range(1, wing.get_component_segment_count()+1):
+
+            cs = wing.get_component_segment(i_comp_seg)
+            structure = cs.get_structure()
+
+            if structure is not None:
+                # draw spars
+                for ispar in range(1, structure.get_spar_segment_count() + 1):
+                    spar = structure.get_spar_segment(ispar)
+                    sparGeom = spar.get_spar_geometry()
+                    display.DisplayShape(sparGeom, color=Quantity_NOC_RED, update=True)
+
+                # draw ribs
+                for irib in range(1,structure.get_ribs_definition_count()+1):
+                    rib = structure.get_ribs_definition(irib)
+                    try:
+                        ribGeom = rib.get_ribs_geometry()
+                        display.DisplayShape(ribGeom, color=Quantity_NOC_RED, update=True)
+                    except RuntimeError as e:
+                        print (e)
+
+
 
     for iobj in range(1, config.get_external_object_count()+1):
         obj = config.get_external_object(iobj)
