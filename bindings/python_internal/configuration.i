@@ -51,6 +51,9 @@
 #include "CCPACSWingSection.h"
 #include "generated/CPACSGuideCurveProfileGeometry.h"
 #include "CCPACSGuideCurveProfile.h"
+#include "generated/CPACSSparSegment.h"
+#include "CCPACSWingSparSegment.h"
+#include "CCPACSWingRibsDefinition.h"
 %}
 
 %feature("autodoc", "3");
@@ -83,6 +86,66 @@
 %include "CTiglRelativelyPositionedComponent.h"
 %include "CTiglAttachedRotorBlade.h"
 %include "CPACSRotorHubHinge_type.h"
+
+// wrap optional return values
+%typemap(out) boost::optional<tigl::CCPACSWingCSStructure>& %{
+    if ($1) {
+        tigl::CCPACSWingCSStructure& structure = *(*$1);
+        $result =SWIG_NewPointerObj(SWIG_as_voidptr(&structure), SWIGTYPE_p_tigl__CCPACSWingCSStructure, 0 | 0 );
+    }
+    else {
+        $result = Py_None;
+        Py_INCREF(Py_None);
+    }
+%}
+
+namespace tigl {
+class CCPACSWingCSStructure;
+class CCPACSWingSparSegment;
+class CCPACSWingRibsPositioning;
+}
+%include "generated/CPACSRibRotation_ribRotationReference.h"
+%include "generated/CPACSWingRibExplicitPositioning.h"
+%include "CCPACSWingRibRotation.h"
+%include "generated/CPACSRibCrossingBehaviour.h"
+%include "generated/CPACSWingRibsPositioning.h"
+%include "CCPACSWingRibsPositioning.h"
+%include "generated/CPACSCap.h"
+%include "generated/CPACSPointX.h"
+%include "generated/CPACSWingRibCell.h"
+%include "generated/CPACSWingRibCrossSection.h"
+%include "CCPACSWingRibCrossSection.h"
+%include "generated/CPACSWingRibsDefinition.h"
+%include "CCPACSWingRibsDefinition.h"
+%include "generated/CPACSSparPositionUIDs.h"
+%include "CCPACSWingSparPositionUIDs.h"
+%include "generated/CPACSSparCells.h"
+%include "generated/CPACSWeb.h"
+%include "generated/CPACSSparCrossSection.h"
+%include "generated/CPACSSparPositions.h"
+%include "generated/CPACSSparSegments.h"
+%include "generated/CPACSSparSegment.h"
+%include "CCPACSWingSparSegments.h"
+%include "CCPACSWingSparSegment.h"
+%include "CCPACSWingSparPositions.h"
+%include "CTiglWingStructureReference.h"
+%include "generated/CPACSWingSpar.h"
+%include "CCPACSWingSpars.h"
+%include "generated/CPACSWingRibsDefinitions.h"
+%include "CCPACSWingRibsDefinitions.h"
+%include "generated/CPACSCellPositioningSpanwise.h"
+%include "CCPACSWingCellPositionSpanwise.h"
+%include "generated/CPACSCellPositioningChordwise.h"
+%include "CCPACSWingCellPositionChordwise.h"
+%include "generated/CPACSWingCell.h"
+%include "CCPACSWingCell.h"
+%include "generated/CPACSWingShell.h"
+%include "CCPACSWingShell.h"
+%template (WingComponentSegmentTemplate) tigl::CTiglAbstractSegment<tigl::CCPACSWingComponentSegment>;
+%include "generated/CPACSComponentSegment.h"
+%include "CCPACSWingComponentSegment.h"
+%include "generated/CPACSWingComponentSegmentStructure.h"
+%include "CCPACSWingCSStructure.h"
 %include "generated/CPACSComponentSegments.h"
 %include "CCPACSWingComponentSegments.h"
 %include "generated/CPACSPositionings.h"
