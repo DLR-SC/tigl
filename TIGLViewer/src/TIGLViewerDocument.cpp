@@ -825,7 +825,7 @@ void TIGLViewerDocument::drawWingGuideCurves()
         drawWingGuideCurves(wing);
     }
     catch (tigl::CTiglError& ex) {
-        displayError(ex.getError(), "Error");
+        displayError(ex.what(), "Error");
     }
 }
 
