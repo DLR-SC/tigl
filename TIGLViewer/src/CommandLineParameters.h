@@ -32,6 +32,4 @@ struct CommandLineParameters
     QString controlFile;
 };
 
-extern struct CommandLineParameters PARAMS;
-
 #endif /* COMMANDLINEPARAMETERS_H */

@@ -715,6 +715,7 @@ void TIGLViewerWindow::connectSignals()
 
 
     connect( myOCC, SIGNAL(sendStatus(const QString)), this,  SLOT  (statusMessage(const QString)) );
+    connect( myOCC, SIGNAL(initialized()), this, SIGNAL(windowInitialized()));
 
     connect(stdoutStream, SIGNAL(sendString(QString)), console, SLOT(output(QString)));
     connect(errorStream , SIGNAL(sendString(QString)), console, SLOT(output(QString)));

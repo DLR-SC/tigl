@@ -72,7 +72,6 @@ endforeach()
 include_directories(${TIGL_INCLUDES})
 
 set(tv_src
-    CommandLineParameters.cpp
     ISession_Point.cpp
     ISession_Direction.cpp
     ISession_Text.cpp
@@ -105,6 +104,7 @@ set(tv_src
     TIGLQAspectWindow.cpp
     TIGLViewerVTKExportDialog.cpp
     TIGLSliderDialog.cpp
+    TIGLViewerApp.cpp
 )
 	
 # normal header files
@@ -147,6 +147,7 @@ set(tv_hdr_qobj
 	TIGLViewerScreenshotDialog.h
 	TIGLViewerVTKExportDialog.h
 	TIGLSliderDialog.h
+	TIGLViewerApp.h
 )
 
 set(tv_ui_comp
