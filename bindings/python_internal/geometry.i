@@ -63,6 +63,7 @@
 #include "CCPACSPointListXYZ.h"
 #include "CCPACSPointListRelXYZ.h"
 #include "generated/CPACSPointXYZ.h"
+#include "generated/CPACSPointX.h"
 %}
 
 
@@ -74,6 +75,11 @@
 
 %template(CPointContainer) std::vector<gp_Pnt>;
 
+WRAP_BOOST_OPTIONAL_CLASS(tigl::generated::CPACSPointX)
+WRAP_BOOST_OPTIONAL_CLASS(tigl::generated::CPACSPointXYZ)
+WRAP_BOOST_OPTIONAL_CLASS(tigl::CCPACSPointListXYZ)
+
+%include "generated/CPACSPointX.h"
 %include "ECPACSTranslationType.h"
 %include "generated/CPACSPoint.h"
 %include "generated/CPACSPointAbsRel.h"

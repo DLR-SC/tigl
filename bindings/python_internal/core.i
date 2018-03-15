@@ -36,6 +36,8 @@
 // rename file methods to python pep8 style
 %rename("%(undercase)s", %$isfunction) "";
 
+WRAP_BOOST_OPTIONAL_CLASS(tigl::CCPACSStringVector)
+
 %include "CreateIfNotExists.h"
 %include "CTiglMemoryPool.h"
 %include "generated/CPACSStringVectorBase.h"
@@ -82,6 +84,8 @@ enum TiglBoolean
     TIGL_FALSE = 0,
     TIGL_TRUE  = 1
 };
+
+WRAP_BOOST_OPTIONAL_CLASS(TiglSymmetryAxis)
 
 enum TiglSymmetryAxis
 {

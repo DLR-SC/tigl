@@ -61,6 +61,41 @@
 // rename file methods to python pep8 style
 %rename("%(undercase)s", %$isfunction) "";
 
+// wrap optional classes
+WRAP_BOOST_OPTIONAL_CLASS(tigl::CCPACSWingCSStructure)
+WRAP_BOOST_OPTIONAL_CLASS(tigl::generated::CPACSSkinSegments)
+WRAP_BOOST_OPTIONAL_CLASS(tigl::generated::CPACSSkin)
+WRAP_BOOST_OPTIONAL_CLASS(tigl::CCPACSStringersAssembly)
+WRAP_BOOST_OPTIONAL_CLASS(tigl::CCPACSFramesAssembly)
+WRAP_BOOST_OPTIONAL_CLASS(tigl::CCPACSCargoCrossBeamsAssembly)
+WRAP_BOOST_OPTIONAL_CLASS(tigl::CCPACSCargoCrossBeamStrutsAssembly)
+WRAP_BOOST_OPTIONAL_CLASS(tigl::CCPACSLongFloorBeamsAssembly)
+WRAP_BOOST_OPTIONAL_CLASS(tigl::CCPACSPressureBulkheadAssembly)
+WRAP_BOOST_OPTIONAL_CLASS(tigl::generated::CPACSCargoDoorsAssembly)
+WRAP_BOOST_OPTIONAL_CLASS(tigl::ECPACSRibRotation_ribRotationReference)
+WRAP_BOOST_OPTIONAL_CLASS(tigl::generated::CPACSWingRibCell)
+WRAP_BOOST_OPTIONAL_CLASS(tigl::generated::CPACSCap)
+WRAP_BOOST_OPTIONAL_CLASS(tigl::CCPACSWingRibsPositioning)
+WRAP_BOOST_OPTIONAL_CLASS(tigl::generated::CPACSWingRibExplicitPositioning)
+WRAP_BOOST_OPTIONAL_CLASS(tigl::generated::CPACSWeb)
+WRAP_BOOST_OPTIONAL_CLASS(tigl::generated::CPACSSparCells)
+WRAP_BOOST_OPTIONAL_CLASS(tigl::CCPACSGuideCurves)
+WRAP_BOOST_OPTIONAL_CLASS(tigl::CCPACSPositionings)
+WRAP_BOOST_OPTIONAL_CLASS(tigl::CCPACSWingComponentSegments)
+WRAP_BOOST_OPTIONAL_CLASS(tigl::CCPACSWingRibsDefinitions)
+WRAP_BOOST_OPTIONAL_CLASS(tigl::CCPACSWingSpars)
+WRAP_BOOST_OPTIONAL_CLASS(tigl::generated::CPACSGuideCurve_continuity)
+WRAP_BOOST_OPTIONAL_CLASS(tigl::CCPACSWingProfileCST)
+WRAP_BOOST_OPTIONAL_CLASS(tigl::CTiglTransformation)
+WRAP_BOOST_OPTIONAL_CLASS(tigl::CCPACSRotorHinges)
+WRAP_BOOST_OPTIONAL_CLASS(tigl::generated::CPACSRotorHub)
+WRAP_BOOST_OPTIONAL_CLASS(tigl::TiglRotorHubType)
+WRAP_BOOST_OPTIONAL_CLASS(tigl::generated::CPACSRotor_type)
+WRAP_BOOST_OPTIONAL_CLASS(tigl::CCPACSFuselageStructure)
+WRAP_BOOST_OPTIONAL_CLASS(tigl::generated::CPACSLinkToFileType_format)
+WRAP_BOOST_OPTIONAL_CLASS(tigl::CCPACSWingCells)
+
+
 %include "generated/CPACSCargoDoorsAssembly.h"
 %include "generated/CPACSPressureBulkheadAssembly.h"
 %include "CCPACSPressureBulkheadAssembly.h"
@@ -87,18 +122,6 @@
 %include "CTiglAttachedRotorBlade.h"
 %include "CPACSRotorHubHinge_type.h"
 
-// wrap optional return values
-%typemap(out) boost::optional<tigl::CCPACSWingCSStructure>& %{
-    if ($1) {
-        tigl::CCPACSWingCSStructure& structure = *(*$1);
-        $result =SWIG_NewPointerObj(SWIG_as_voidptr(&structure), SWIGTYPE_p_tigl__CCPACSWingCSStructure, 0 | 0 );
-    }
-    else {
-        $result = Py_None;
-        Py_INCREF(Py_None);
-    }
-%}
-
 namespace tigl {
 class CCPACSWingCSStructure;
 class CCPACSWingSparSegment;
@@ -111,7 +134,6 @@ class CCPACSWingRibsPositioning;
 %include "generated/CPACSWingRibsPositioning.h"
 %include "CCPACSWingRibsPositioning.h"
 %include "generated/CPACSCap.h"
-%include "generated/CPACSPointX.h"
 %include "generated/CPACSWingRibCell.h"
 %include "generated/CPACSWingRibCrossSection.h"
 %include "CCPACSWingRibCrossSection.h"

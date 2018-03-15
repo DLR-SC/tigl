@@ -34,6 +34,8 @@
 
 %include unique_pointer.i
 
+%include boost_optional.i
+
 
 #define Handle(ClassName)  Handle_##ClassName
 #define TixiDocumentHandle int
