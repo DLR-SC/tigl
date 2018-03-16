@@ -22,15 +22,14 @@
 #include <iostream>
 #include <fstream>
 #include <clocale>
+#include <sstream>
 
 #include <QString>
+#include <QFile>
 #include <QMessageBox>
 
-#include "TIGLViewerWindow.h"
-#include "CommandLineParameters.h"
-
 #include <Standard_Version.hxx>
-#include <QApplication>
+#include "TIGLViewerApp.h"
 
 using namespace std;
 
@@ -41,17 +40,17 @@ void loadStyle();
 
 int main(int argc, char *argv[])
 {
-    QApplication app(argc, argv);
+    TIGLViewerApp app(argc, argv);
 
 #ifdef __APPLE__
     app.setAttribute(Qt::AA_DontCreateNativeWidgetSiblings, true);
 #endif
 
-    loadStyle();
+    app.loadStyle();
 
 #if defined __linux__
     // we need to set us locale as we use "." for decimal point
-    putenv("LC_NUMERIC=C");
+    qputenv("LC_NUMERIC", "C");
     setlocale(LC_NUMERIC, "C");
 #elif defined __APPLE__
     setlocale(LC_NUMERIC, "C");
@@ -88,124 +87,6 @@ int main(int argc, char *argv[])
     }
 #endif
 
-    int retval = parseArguments(app.arguments());
-    if (retval != 0) {
-        showHelp(app.arguments().at(0));
-        return retval;
-    }
-
-    TIGLViewerWindow window;
-    window.show();
-
-    if (!PARAMS.controlFile.isEmpty()){
-        window.setInitialControlFile(PARAMS.controlFile);
-    }
-
-    // if a filename is given, open the configuration
-    if (!PARAMS.initialFilename.isEmpty()) {
-        window.openFile(PARAMS.initialFilename);
-    }
-    
-    // if a script is given
-    if (!PARAMS.initialScript.isEmpty()) {
-        window.openScript(PARAMS.initialScript);
-    }
-
-    retval = app.exec();
+    int retval = app.run();
     return retval;
 }
-
-/**
- * Show a dialog with command line information.
- */
-void showHelp(QString appName)
-{
-    QString helpText = appName + " [--help] [--filename <filename>]\n\n";
-    helpText += "  --help                      This help page\n";
-    helpText += "  --filename <filename>    Initial CPACS file to open and display.\n";
-    helpText += "  --modelUID <uid>         Initial model uid open and display.\n";
-    helpText += "  --script <filename>       Script to execute.\n";
-    helpText += "  --windowtitle <title>    The titel of the TIGLViewer window.\n";
-    helpText += "  --controlFile <filename>    Name of the control file.\n";
-    helpText += "  --JediMode <on|off>      Makes you some kind of superhero like CPACS-Ninja.\n";
-
-    QMessageBox::information(0, "TIGLViewer Argument Error",
-                                 helpText,
-                                 QMessageBox::Ok );
-}
-
-/**
- * Parsing the command line arguments. The values will be saved
- * in a global structure "PARAMS".
- */
-int parseArguments(QStringList argList)
-{
-    for (int i = 1; i < argList.size(); i++) {
-        QString arg = argList.at(i);
-        if (arg.compare("--help") == 0) {
-            return -1;
-        }
-        else if (arg.compare("--filename") == 0) {
-            if (i+1 >= argList.size()) {
-                cout << "missing filename" << std::endl;
-                return -1;
-            }
-            else {
-                PARAMS.initialFilename = argList.at(++i);
-            }
-        }
-        else if (arg.compare("--script") == 0) {
-            if (i+1 >= argList.size()) {
-                cout << "missing script filename" << std::endl;
-                return -1;
-            }
-            else {
-                PARAMS.initialScript = argList.at(++i);
-            }
-        }
-        else if (arg.compare("--windowtitle") == 0) {
-            if (i+1 >= argList.size()) {
-                cout << "missing windowtitle" << std::endl;
-                PARAMS.windowTitle = "TIGLViewer";
-            }
-            else {
-                PARAMS.windowTitle = argList.at(++i);
-            }
-        }
-        else if (arg.compare("--modelUID") == 0) {
-            if (i+1 >= argList.size()) {
-                cout << "missing modelUID" << std::endl;
-                PARAMS.modelUID = "";
-            }
-            else {
-                PARAMS.modelUID = argList.at(++i);
-            }
-        }
-        else if (arg.compare("--controlFile") == 0) {
-            if (i+1 >= argList.size()) {
-                cout << "missing controlFile" << std::endl;
-                PARAMS.controlFile = "";
-            }
-            else {
-                PARAMS.controlFile = argList.at(++i);
-            }
-        }
-        /* when there is a string behind the executable, we assume its the filename */
-        else {
-            PARAMS.initialFilename = arg;
-        }
-    }
-
-    return 0;
-}
-
-void loadStyle()
-{
-    QFile styleFile(":/qdarkstyle/style.qss");
-    styleFile.open(QFile::ReadOnly);
-    if (styleFile.isOpen()) {
-        QString StyleSheet = QLatin1String(styleFile.readAll());
-        qApp->setStyleSheet(StyleSheet);
-    }
-}
-

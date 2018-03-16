@@ -65,6 +65,9 @@ protected:
      void dropEvent(QDropEvent *ev) OVERRIDE;
      void dragEnterEvent(QDragEnterEvent *ev) OVERRIDE;
 
+signals:
+     void windowInitialized();
+
 public slots:
     void openFile(const QString& fileName);
     void openScript(const QString& scriptFileName);
