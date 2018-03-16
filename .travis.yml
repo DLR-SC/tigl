@@ -7,6 +7,8 @@ os:
 
 language: cpp
 
+cache: ccache
+
 env:
   global:
     - secure: "x+x2IMHk0IJKuvDAWcNMi5ifR0dNwpvAkM2axK67YqN2zb0CJzpj87daiEGvf+4268gHk5nBtHQtVxTIjk6B6LmUnya6OwOcs55ZBMrkgc6NiWVxB9+i6n2phdVNbXogWknOBDZhQqTtqqdvbQBJAO3UppdFrDZQF3eb9j+YWMs="
@@ -45,6 +47,8 @@ before_install:
   - '[ "$TRAVIS_OS_NAME" != osx ] || tar xf doxygen-macOS.tar.gz -C /tmp && export PATH=$PATH:/tmp/doxygen'
   - '[ "$TRAVIS_OS_NAME" != osx ] || tar xf oce.0.17.2.macos_static.tar.gz'
   - '[ "$TRAVIS_OS_NAME" != osx ] || tar xf TIXI-3.0.0-Darwin.tar.gz '
+  - '[ "$TRAVIS_OS_NAME" != osx ] || brew install ccache '
+  - '[ "$TRAVIS_OS_NAME" != osx ] || export PATH="/usr/local/opt/ccache/libexec:$PATH" '
   # If a tag/release is build, disable the nighty build flag
   - export TIGL_NIGHTLY=$([ "$TRAVIS_EVENT_TYPE" == "cron" ] && echo "ON" || echo "OFF")
 
@@ -55,7 +59,7 @@ before_script:
 script:
   - '[ "$TRAVIS_OS_NAME" != osx ] || export CMAKE_PREFIX_PATH=`pwd`/../TIXI-3.0.0-Darwin:`pwd`/../oce.0.17.2.macos_static:`pwd`/../Qt5.4_clang64_macOS'
   - '[ "$TRAVIS_OS_NAME" != linux ] || jdk_switcher use oraclejdk8'
-  - cmake -DTIGL_BUILD_TESTS=ON -DTIGL_OCE_COONS_PATCHED=ON -DTIGL_NIGHTLY=$TIGL_NIGHTLY -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON -DCMAKE_INSTALL_PREFIX=`pwd`/install ..
+  - cmake -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DTIGL_BUILD_TESTS=ON -DTIGL_OCE_COONS_PATCHED=ON -DTIGL_NIGHTLY=$TIGL_NIGHTLY -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON -DCMAKE_INSTALL_PREFIX=`pwd`/install ..
   - make -j 4
   - make doc
   - make install
