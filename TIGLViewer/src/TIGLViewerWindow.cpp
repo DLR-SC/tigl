@@ -516,7 +516,7 @@ void TIGLViewerWindow::about()
     text += makeLink("TiGL", "https://github.com/dlr-sc/tigl") + ": v" + tiglVersion + "<br/>";
     text += makeLink("OpenCASCADE", "https://www.opencascade.com/") + ": v" + occtVersion + "<br/><br/>";
 
-    text += "Visit the TiGL project page at " + makeLink("http://software.dlr.de/p/tigl/", "http://software.dlr.de/p/tigl/")+ "<br/><br/>";
+    text += "Visit the TiGL project page at " + makeLink("https://github.com/DLR-SC/tigl", "https://github.com/dlr-sc/tigl")+ "<br/><br/>";
 
     text += "&copy; 2017 German Aerospace Center (DLR) ";
 
