@@ -40,11 +40,10 @@ class TIGLViewerSelectWingAndFlapStatusDialog : public QDialog
     Q_OBJECT
 public:
     explicit TIGLViewerSelectWingAndFlapStatusDialog(TIGLViewerDocument* document, QWidget* parent=0);
-    
+
     void setWings(QStringList);
-    
+
     ~TIGLViewerSelectWingAndFlapStatusDialog();
-    int exec(QStringList wings);
     std::string getSelectedWing();
     double getTrailingEdgeFlapValue( std::string uid );
     std::map<std::string,double> getDeflections();
