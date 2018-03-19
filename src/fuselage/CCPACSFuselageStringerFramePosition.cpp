@@ -145,14 +145,13 @@ void CCPACSFuselageStringerFramePosition::GetZBorders(double& zmin, double& zmax
 
 void CCPACSFuselageStringerFramePosition::UpdateRelativePositioning() const
 {
-    auto* structure = [&] {
-        if (IsParent<CCPACSFuselageStringer>())
-            return GetParent<CCPACSFuselageStringer>()->GetParent()->GetParent();
-        else if (IsParent<CCPACSFrame>())
-            return GetParent<CCPACSFrame>()->GetParent()->GetParent();
-        else
-            throw CTiglError("invalid parent");
-    }();
+    CCPACSFuselageStructure* structure = NULL;
+    if (IsParent<CCPACSFuselageStringer>())
+        structure = GetParent<CCPACSFuselageStringer>()->GetParent()->GetParent();
+    else if (IsParent<CCPACSFrame>())
+        structure = GetParent<CCPACSFrame>()->GetParent()->GetParent();
+    else
+        throw CTiglError("invalid parent");
     const TopoDS_Shape& fuselageLoft = structure->GetParent()->GetLoft()->Shape();
         
     Bnd_Box bBox1;
