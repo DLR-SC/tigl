@@ -49,7 +49,6 @@
 #include "BRepBuilderAPI_MakeWire.hxx"
 #include "GC_MakeSegment.hxx"
 #include "BRepExtrema_DistShapeShape.hxx"
-#include <ShapeFix_ShapeTolerance.hxx>
 #include "ShapeFix_Wire.hxx"
 #include "CTiglMakeLoft.h"
 #include "TopExp.hxx"
