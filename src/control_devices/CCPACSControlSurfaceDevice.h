@@ -31,6 +31,7 @@
 #include "CTiglControlSurfaceHingeLine.h"
 #include "CCPACSControlSurfaceDeviceWingCutOut.h"
 #include "CCPACSControlSurfaceDevicePath.h"
+#include "CTiglFusePlane.h"
 
 namespace tigl
 {
@@ -76,6 +77,7 @@ public:
 
 protected:
     PNamedShape BuildLoft();
+    void InvalidateShapes();
 
 private:
     CCPACSControlSurfaceDevice(const CCPACSControlSurfaceDevice& segment); /* disable copy constructor */

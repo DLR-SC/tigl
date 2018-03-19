@@ -267,9 +267,15 @@ void CCPACSControlSurfaceDevice::SetDeflection(const double deflect)
     currentDeflection = (deflect > maxDeflect? maxDeflect : deflect);
     currentDeflection = (currentDeflection < minDeflect? minDeflect : currentDeflection);
 
-    // make sure the wing gets relofted with with flaps
+    // make sure the wing gets relofted with flaps
+    InvalidateShapes();
+}
+
+void CCPACSControlSurfaceDevice::InvalidateShapes()
+{
     _segment->GetWing().SetBuildFlaps(true);
     _segment->GetWing().Invalidate();
+    _config->AircraftFusingAlgo()->Invalidate();
 }
 
 } // end namespace tigl
