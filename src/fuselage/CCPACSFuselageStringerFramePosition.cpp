@@ -153,7 +153,7 @@ void CCPACSFuselageStringerFramePosition::UpdateRelativePositioning() const
         else
             throw CTiglError("invalid parent");
     }();
-    const auto& fuselageLoft = structure->GetParent()->GetLoftFromFusedSegments();
+    const TopoDS_Shape& fuselageLoft = structure->GetParent()->GetLoft()->Shape();
         
     Bnd_Box bBox1;
     BRepBndLib::Add(fuselageLoft, bBox1);

@@ -158,12 +158,6 @@ public:
 
     TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE { return TIGL_COMPONENT_FUSELSEGMENT | TIGL_COMPONENT_SEGMENT | TIGL_COMPONENT_LOGICAL; }
 
-    TIGL_EXPORT TopoDS_Shape GetShell(TiglCoordinateSystem referenceCS) const;
-
-    TIGL_EXPORT TopoDS_Shape GetFrontClosure(TiglCoordinateSystem referenceCS) const;
-
-    TIGL_EXPORT TopoDS_Shape GetBackClosure(TiglCoordinateSystem referenceCS) const;
-
 protected:
     // Cleanup routine
     void Cleanup();
@@ -176,9 +170,6 @@ protected:
 
     void SetFaceTraits(PNamedShape loft, bool hasSymmetryPlane);
 
-    // Builds up the shell faces
-    void BuildShell() const;
-
 private:
     // get short name for loft
     std::string GetShortShapeName();
@@ -190,13 +181,6 @@ private:
     double                  mySurfaceArea;        /**< Surface Area of this segment            */
 
     unique_ptr<IGuideCurveBuilder> m_guideCurveBuilder;
-
-    struct ShapeCache {
-        TopoDS_Shape shell;
-        TopoDS_Shape frontClosure;
-        TopoDS_Shape backClosure;
-    };
-    mutable boost::optional<ShapeCache> shapeCache;
 };
 
 } // end namespace tigl
