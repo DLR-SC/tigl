@@ -1,0 +1,14 @@
+# Building the generated source files takes a lot of time
+# Since they are normally not changed, we concatenate all
+# files into the file src_generated.cpp
+
+include(@PROJECT_SOURCE_DIR@/cmake/tiglmacros.cmake)
+
+message("Concatenting all files from src/generated")
+
+file(GLOB GENERATED_SRC "@PROJECT_SOURCE_DIR@/src/generated/*.cpp")
+
+file(REMOVE "@PROJECT_BINARY_DIR@/src/src_generated.cpp")
+foreach(PACKAGE_SQL_FILE ${GENERATED_SRC})
+    cat(${PACKAGE_SQL_FILE} "@PROJECT_BINARY_DIR@/src/src_generated.cpp")
+endforeach()

@@ -54,3 +54,13 @@ macro(SUBDIRLIST result curdir)
   endforeach()
   set(${result} ${dirlist})
 endmacro()
+
+# Concatenate files
+#
+# Parameters :
+# IN - input file)
+# OUT - output file
+FUNCTION(CAT IN OUT)
+    FILE(READ ${IN} CONTENTS)
+    FILE(APPEND ${OUT} "${CONTENTS}")
+ENDFUNCTION(CAT IN OUT)
