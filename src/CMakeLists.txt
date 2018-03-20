@@ -18,7 +18,6 @@ source_group(generated FILES ${TIGL_GENERATED_SRC})
 # add all subdirectories to include path
 set(TIGL_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR})
 subdirlist(SUBDIRS ${CMAKE_CURRENT_SOURCE_DIR})
-list(REMOVE_ITEM SUBDIRS generated)
 foreach(subdir ${SUBDIRS})
   set(TIGL_INCLUDES ${TIGL_INCLUDES} ${CMAKE_CURRENT_SOURCE_DIR}/${subdir})
 endforeach()
@@ -42,6 +41,34 @@ file(GLOB_RECURSE TIGL_SRC
     "*.cxx"
 )
 set(TIGL_SRC ${TIGL_SRC} ${BOOST_SRC})
+
+option(TIGL_CONCAT_GENERATED_FILES "Concatenate all generated files into one. This should speed up compiliation" OFF)
+if (TIGL_CONCAT_GENERATED_FILES)
+    # Building the generated source files takes a lot of time
+    # Since they are normally not changed, we concatenate all
+    # files into the file src_generated.cpp
+
+    file(GLOB GENERATED_SRC "generated/*.cpp")
+
+    # remove all generated files from the tigl target
+    list(REMOVE_ITEM TIGL_SRC ${GENERATED_SRC})
+
+    configure_file (
+      "${PROJECT_SOURCE_DIR}/cmake/concat_generated.cmake.in"
+       "${PROJECT_BINARY_DIR}/cmake/concat_generated.cmake"
+       @ONLY
+    )
+
+    add_custom_command(OUTPUT "${PROJECT_BINARY_DIR}/src/src_generated.cpp"
+      DEPENDS ${GENERATED_SRC}
+      COMMAND ${CMAKE_COMMAND} -P
+      ${PROJECT_BINARY_DIR}/cmake/concat_generated.cmake
+    )
+    list(APPEND TIGL_SRC "${PROJECT_BINARY_DIR}/src/src_generated.cpp")
+
+else(TIGL_CONCAT_GENERATED_FILES)
+    list(REMOVE_ITEM SUBDIRS generated)
+endif(TIGL_CONCAT_GENERATED_FILES)
 
 if(MSVC)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS=1 /wd4355 -DTIGL_INTERNAL_EXPORTS)
