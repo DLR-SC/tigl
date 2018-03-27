@@ -45,23 +45,13 @@ deploy:
 
 install:
   - call %CONDA_INSTALL_LOCN%\Scripts\activate.bat
-  - conda install --yes  tixi3 ninja doxygen swig>=3.10 -c dlr-sc
+  - conda install --yes  tixi3 oce-static ninja doxygen swig>=3.10 freetype-static=2.6 freeimageplus-static=3.17.0 -c dlr-sc -c dlr-sc/label/tigl-dev
   - ps: |
       Write-Output "Platform: $env:ARCH"
       $qtdist = "5.7/msvc2015"
-      $ocedist = "oce.0.17.2.win32_msvc2015_static"
       if ($env:ARCH -eq "amd64")
       {
-          $ocedist = "oce.0.17.2.win64_msvc2015_static"
           $qtdist = "5.7/msvc2015_64"
-      }
-  - ps: |
-      md c:\oce -Force | Out-Null
-      If (!(Test-Path -Path "c:\oce\$ocedist")) {
-        Write-Output "Downloading OCE"
-        (new-object System.Net.WebClient).Downloadfile("https://sourceforge.net/projects/tigl/files/Thirdparty/$ocedist.7z", "c:\$ocedist.7z")
-        Write-Output "Extract OCE"
-        & 7z x -y "c:\$ocedist.7z" -oC:\oce\ > null
       }
   - ps: |
       If (!(Test-Path -Path "c:\matlab-libs-win")) {
@@ -100,8 +90,8 @@ build_script:
 - ps: |
     md _build -Force | Out-Null
     cd _build
-    Write-Output "Running cmake: -G "$env:GENERATOR" -DCMAKE_INSTALL_PREFIX=install -DTIGL_CONCAT_GENERATED_FILES=ON -DTIGL_OCE_COONS_PATCHED=ON -DCASROOT=c:\oce\$ocedist -DCMAKE_PREFIX_PATH=$env:CONDA_INSTALL_LOCN\Library -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON -DTIGL_BUILD_TESTS=ON -DTIGL_NIGHTLY=$BUILD_NIGHTLY -DQT_PATH=c:\Qt\$qtdist -DMATLAB_DIR=c:\matlab-libs-win .."
-    & cmake -G "$env:GENERATOR" -DCMAKE_INSTALL_PREFIX=install -DTIGL_CONCAT_GENERATED_FILES=ON -DTIGL_OCE_COONS_PATCHED=ON -DCASROOT=c:\oce\$ocedist -DCMAKE_PREFIX_PATH=$env:CONDA_INSTALL_LOCN\Library -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON -DTIGL_BUILD_TESTS=ON -DTIGL_NIGHTLY="$BUILD_NIGHTLY" -DQT_PATH=c:\Qt\$qtdist -DMATLAB_DIR=c:\matlab-libs-win ..
+    Write-Output "Running cmake: -G "$env:GENERATOR" -DCMAKE_INSTALL_PREFIX=install -DTIGL_CONCAT_GENERATED_FILES=ON -DTIGL_OCE_COONS_PATCHED=ON -DCMAKE_PREFIX_PATH=$env:CONDA_INSTALL_LOCN\Library -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON -DTIGL_BUILD_TESTS=ON -DTIGL_NIGHTLY=$BUILD_NIGHTLY -DQT_PATH=c:\Qt\$qtdist -DMATLAB_DIR=c:\matlab-libs-win .."
+    & cmake -G "$env:GENERATOR" -DCMAKE_INSTALL_PREFIX=install -DTIGL_CONCAT_GENERATED_FILES=ON -DTIGL_OCE_COONS_PATCHED=ON -DCMAKE_PREFIX_PATH=$env:CONDA_INSTALL_LOCN\Library -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON -DTIGL_BUILD_TESTS=ON -DTIGL_NIGHTLY="$BUILD_NIGHTLY" -DQT_PATH=c:\Qt\$qtdist -DMATLAB_DIR=c:\matlab-libs-win ..
     if ($LastExitCode -ne 0) {
         throw "Exec: $ErrorMessage"
     }

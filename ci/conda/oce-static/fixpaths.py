@@ -20,6 +20,9 @@ if __name__ == "__main__":
 
     text = text.replace("\\", "/")
 
+
     replace(filename, text)
     text = text[0].lower() + text[1:]
+    replace(filename, text)
+    text = text[0].upper() + text[1:]
     replace(filename, text)

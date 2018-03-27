@@ -17,7 +17,7 @@ source:
 
 build:
   detect_binary_files_with_prefix: True
-  number: 5
+  number: 6
   features:
     - vc9              # [win and py27]
     - vc10             # [win and py34]
