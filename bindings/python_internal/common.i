@@ -46,6 +46,34 @@
 #include<Standard_ErrorHandler.hxx>
 #include<Standard_Failure.hxx>
 #include "tigl.h"
+#include "CTiglError.h"
+
+namespace
+{
+PyObject* tiglError_to_PyExc(const tigl::CTiglError& err) {
+  PyObject* exc_class = PyExc_RuntimeError;
+
+  int code = err.getCode();
+  switch (code) {
+  case TIGL_INDEX_ERROR:
+    exc_class = PyExc_IndexError;
+    break;
+  case TIGL_UID_ERROR:
+    exc_class = PyExc_KeyError;
+    break;
+  case TIGL_MATH_ERROR:
+    exc_class = PyExc_ArithmeticError;
+    break;
+  case TIGL_NULL_POINTER:
+    exc_class = PyExc_ValueError;
+    break;
+  default:
+    exc_class = PyExc_RuntimeError;
+  }
+  return exc_class;
+}
+}
+
 %}
 
 %include doc.i

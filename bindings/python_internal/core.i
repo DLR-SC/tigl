@@ -135,28 +135,7 @@ enum TiglImportExportFormat
         $action
     }
     catch (tigl::CTiglError & err) {
-
-        int code = err.getCode();
-        PyObject* exc_class = PyExc_RuntimeError;
-
-        switch (code) {
-        case TIGL_INDEX_ERROR:
-            exc_class = PyExc_IndexError;
-            break;
-        case TIGL_UID_ERROR:
-            exc_class = PyExc_KeyError;
-            break;
-        case TIGL_MATH_ERROR:
-            exc_class = PyExc_ArithmeticError;
-            break;
-        case TIGL_NULL_POINTER:
-            exc_class = PyExc_ValueError;
-            break;
-        default:
-            exc_class = PyExc_RuntimeError;
-        }
-
-        PyErr_SetString(exc_class, const_cast<char*>(err.what()));
+        PyErr_SetString(tiglError_to_PyExc(err), const_cast<char*>(err.what()));
         SWIG_fail;
     }
     catch(Standard_Failure & err) {
