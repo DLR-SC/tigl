@@ -61,6 +61,20 @@ endif(TIGL_NIGHTLY)
 
 set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
 
+if (MSVC)
+    option(TIGL_USE_CLCACHE "Use clcache if available (only nmake or ninja)" ON)
+    mark_as_advanced(TIGL_USE_CLCACHE)
+endif(MSVC)
+
+if (MSVC AND TIGL_USE_CLCACHE AND
+     (("${CMAKE_GENERATOR}" STREQUAL "NMake Makefiles") OR
+      ("${CMAKE_GENERATOR}" STREQUAL "Ninja")))
+  find_program(CLCACHE_FOUND clcache)
+  if(CLCACHE_FOUND)
+    set(CMAKE_CXX_COMPILER ${CLCACHE_FOUND})
+  endif(CLCACHE_FOUND)
+endif()
+
 # required opencascade libraries
 # please don't change the order of libraries as this can cause linking problems
 set (OCC_LIBS 
