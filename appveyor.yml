@@ -61,17 +61,15 @@ install:
         & 7z x -y "c:\matlab-libs-win.zip" -oC:\ > null
       }
   # Download clcache
-  - ps: |
-      If (!(Test-Path -Path "c:\clcache")) {
-        Write-Output "Downloading clcache"
-        (new-object System.Net.WebClient).Downloadfile("https://sourceforge.net/projects/tigl/files/Thirdparty/clcache.7z", "c:\clcache.7z")
-        Write-Output "Extract clcache"
-        & 7z x -y "c:\clcache.7z" -oC:\ > null
-      }
-  - c:\clcache\clcache.exe -s
-  - set CC=c:\clcache\clcache.exe
-  - set CXX=c:\clcache\clcache.exe
+  - pip install git+https://github.com/frerich/clcache.git
+  - set CLCACHE_DIR=c:\clcache-cache\vc2015\%ARCH%
+  - clcache.exe -s
+  - set CC=clcache.exe
+  - set CXX=clcache.exe
+  - set CLCACHE_SERVER=1
   - set CLCACHE_HARDLINK=1
+  # start the clcache server
+  - powershell.exe -Command "Start-Process clcache-server"
 
   # check if release build, if yes we need nsis
   - ps: |
@@ -101,7 +99,7 @@ build_script:
     }
 
 after_build:
-  - c:\clcache\clcache.exe -s
+  - clcache.exe -s
 
 test_script:
   - cd tests/unittests
@@ -126,6 +124,5 @@ after_test:
 
 cache:
  - c:\redist
- - c:\doxygen-win
  - c:\matlab-libs-win
- - c:\Users\Appveyor\clcache
+ - c:\clcache-cache
