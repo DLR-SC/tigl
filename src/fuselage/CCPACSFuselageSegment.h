@@ -115,10 +115,10 @@ public:
     TIGL_EXPORT int GetEndConnectedSegmentIndex(int n);
 
     // helper function to get the wire of the start section
-    TIGL_EXPORT TopoDS_Wire GetStartWire();
+    TIGL_EXPORT TopoDS_Wire GetStartWire(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
 
     // helper function to get the wire of the end section
-    TIGL_EXPORT TopoDS_Wire GetEndWire();
+    TIGL_EXPORT TopoDS_Wire GetEndWire(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
 
     // Gets a point on the fuselage segment in dependence of parameters eta and zeta with
     // 0.0 <= eta <= 1.0 and 0.0 <= zeta <= 1.0. For eta = 0.0 the point lies on the start
@@ -162,10 +162,14 @@ protected:
     // Cleanup routine
     void Cleanup();
 
+    // Builds up the shape cache
+    void UpdateShapeCache() const;
+
     // Builds the loft between the two segment sections
     PNamedShape BuildLoft() OVERRIDE;
 
     void SetFaceTraits(PNamedShape loft, bool hasSymmetryPlane);
+
 private:
     // get short name for loft
     std::string GetShortShapeName();

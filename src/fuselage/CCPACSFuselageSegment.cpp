@@ -227,17 +227,25 @@ CCPACSFuselage& CCPACSFuselageSegment::GetFuselage() const
 }
 
 // helper function to get the wire of the start section
-TopoDS_Wire CCPACSFuselageSegment::GetStartWire()
+TopoDS_Wire CCPACSFuselageSegment::GetStartWire(TiglCoordinateSystem referenceCS) const
 {
     CCPACSFuselageProfile& startProfile = startConnection.GetProfile();
-    return TopoDS::Wire(transformFuselageProfileGeometry(GetFuselage().GetTransformationMatrix(), startConnection, startProfile.GetWire(true)));
+    TopoDS_Wire startWire = startProfile.GetWire(true);
+    if (referenceCS == GLOBAL_COORDINATE_SYSTEM)
+        return TopoDS::Wire(transformFuselageProfileGeometry(GetFuselage().GetTransformationMatrix(), startConnection, startWire));
+    else
+        return startWire;
 }
 
 // helper function to get the wire of the end section
-TopoDS_Wire CCPACSFuselageSegment::GetEndWire()
+TopoDS_Wire CCPACSFuselageSegment::GetEndWire(TiglCoordinateSystem referenceCS) const
 {
     CCPACSFuselageProfile& endProfile = endConnection.GetProfile();
-    return TopoDS::Wire(transformFuselageProfileGeometry(GetFuselage().GetTransformationMatrix(), endConnection, endProfile.GetWire(true)));
+    TopoDS_Wire endWire = endProfile.GetWire(true);
+    if (referenceCS == GLOBAL_COORDINATE_SYSTEM)
+        return TopoDS::Wire(transformFuselageProfileGeometry(GetFuselage().GetTransformationMatrix(), endConnection, endWire));
+    else
+        return endWire;
 }
 
 // get short name for loft
@@ -790,5 +798,4 @@ double CCPACSFuselageSegment::GetCircumference(const double eta)
     BRepGProp::LinearProperties(intersectionWire,System);
     return System.Mass();
 }
-
 } // end namespace tigl
