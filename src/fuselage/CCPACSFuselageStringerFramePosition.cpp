@@ -41,12 +41,9 @@ CCPACSFuselageStringerFramePosition::CCPACSFuselageStringerFramePosition(CCPACSF
 CCPACSFuselageStringerFramePosition::CCPACSFuselageStringerFramePosition(CCPACSFuselageStringer* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSStringerFramePosition(parent, uidMgr) {}
 
-gp_Pnt CCPACSFuselageStringerFramePosition::GetRefPoint() const {
-    return {
-        m_positionX,
-        m_referenceY,
-        m_referenceZ
-    };
+gp_Pnt CCPACSFuselageStringerFramePosition::GetRefPoint() const
+{
+    return gp_Pnt(m_positionX, m_referenceY, m_referenceZ);
 }
 
 void CCPACSFuselageStringerFramePosition::SetPositionX(const double& value)
