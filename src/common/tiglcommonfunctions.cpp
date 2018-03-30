@@ -697,18 +697,27 @@ bool IsFileReadable(const std::string& filename)
 #endif
 }
 
-/**
- * @brief Returns the starting point of the wire
- */
-gp_Pnt WireGetFirstPoint(const TopoDS_Wire& w)
+gp_Pnt GetFirstPoint(const TopoDS_Shape& wireOrEdge)
+{
+    if (wireOrEdge.ShapeType() == TopAbs_ShapeEnum::TopAbs_WIRE)
+        return GetFirstPoint(TopoDS::Wire(wireOrEdge));
+    if (wireOrEdge.ShapeType() == TopAbs_ShapeEnum::TopAbs_EDGE)
+        return GetFirstPoint(TopoDS::Edge(wireOrEdge));
+    throw tigl::CTiglError("Shape must be wire or edge");
+}
+
+gp_Pnt GetFirstPoint(const TopoDS_Wire& w)
 {
     TopTools_IndexedMapOfShape wireMap;
-    TopExp::MapShapes(w,TopAbs_EDGE, wireMap);
+    TopExp::MapShapes(w, TopAbs_EDGE, wireMap);
     TopoDS_Edge e = TopoDS::Edge(wireMap(1));
+    return GetFirstPoint(e);
+}
 
+gp_Pnt GetFirstPoint(const TopoDS_Edge& e)
+{
     double u1, u2;
     Handle_Geom_Curve c = BRep_Tool::Curve(e, u1, u2);
-
 
     if (e.Orientation() == TopAbs_REVERSED) {
         return c->Value(u2);
@@ -718,18 +727,27 @@ gp_Pnt WireGetFirstPoint(const TopoDS_Wire& w)
     }
 }
 
-/**
- * @brief Returns the endpoint of the wire
- */
-gp_Pnt WireGetLastPoint(const TopoDS_Wire& w)
+gp_Pnt GetLastPoint(const TopoDS_Shape& wireOrEdge)
+{
+    if (wireOrEdge.ShapeType() == TopAbs_ShapeEnum::TopAbs_WIRE)
+        return GetLastPoint(TopoDS::Wire(wireOrEdge));
+    if (wireOrEdge.ShapeType() == TopAbs_ShapeEnum::TopAbs_EDGE)
+        return GetLastPoint(TopoDS::Edge(wireOrEdge));
+    throw tigl::CTiglError("Shape must be wire or edge");
+}
+
+gp_Pnt GetLastPoint(const TopoDS_Wire& w)
 {
     TopTools_IndexedMapOfShape wireMap;
-    TopExp::MapShapes(w,TopAbs_EDGE, wireMap);
+    TopExp::MapShapes(w, TopAbs_EDGE, wireMap);
     TopoDS_Edge e = TopoDS::Edge(wireMap(wireMap.Extent()));
+    return GetLastPoint(e);
+}
 
+gp_Pnt GetLastPoint(const TopoDS_Edge& e)
+{
     double u1, u2;
     Handle_Geom_Curve c = BRep_Tool::Curve(e, u1, u2);
-
 
     if (e.Orientation() == TopAbs_REVERSED) {
         return c->Value(u1);
@@ -738,6 +756,7 @@ gp_Pnt WireGetLastPoint(const TopoDS_Wire& w)
         return c->Value(u2);
     }
 }
+
 TiglContinuity getEdgeContinuity(const TopoDS_Edge& edge1, const TopoDS_Edge& edge2)
 {
     // **********************************************************************************
