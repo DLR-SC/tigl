@@ -21,13 +21,13 @@
 #include <boost/utility/in_place_factory.hpp>
 #include <CCPACSDoors.h>
 #include <CCPACSPressureBulkheads.h>
-#include <CCPACSProfileBasedStructuralElements.h>
-#include <CCPACSSheetBasedStructuralElements.h>
 #include <string>
 #include <tixi.h>
 #include "CPACSDoorSurroundStructuresAssembly.h"
+#include "CPACSProfileBasedStructuralElements.h"
 #include "CPACSRivets.h"
 #include "CPACSSeatModules.h"
+#include "CPACSSheetBasedStructuralElements.h"
 #include "CPACSWindows.h"
 #include "CreateIfNotExists.h"
 #include "tigl_internal.h"
@@ -54,11 +54,11 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const boost::optional<CCPACSSheetBasedStructuralElements>& GetSheetBasedStructuralElements() const;
-        TIGL_EXPORT virtual boost::optional<CCPACSSheetBasedStructuralElements>& GetSheetBasedStructuralElements();
+        TIGL_EXPORT virtual const boost::optional<CPACSSheetBasedStructuralElements>& GetSheetBasedStructuralElements() const;
+        TIGL_EXPORT virtual boost::optional<CPACSSheetBasedStructuralElements>& GetSheetBasedStructuralElements();
 
-        TIGL_EXPORT virtual const boost::optional<CCPACSProfileBasedStructuralElements>& GetProfileBasedStructuralElements() const;
-        TIGL_EXPORT virtual boost::optional<CCPACSProfileBasedStructuralElements>& GetProfileBasedStructuralElements();
+        TIGL_EXPORT virtual const boost::optional<CPACSProfileBasedStructuralElements>& GetProfileBasedStructuralElements() const;
+        TIGL_EXPORT virtual boost::optional<CPACSProfileBasedStructuralElements>& GetProfileBasedStructuralElements();
 
         TIGL_EXPORT virtual const boost::optional<CCPACSPressureBulkheads>& GetPressureBulkheads() const;
         TIGL_EXPORT virtual boost::optional<CCPACSPressureBulkheads>& GetPressureBulkheads();
@@ -78,10 +78,10 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CPACSRivets>& GetRivets() const;
         TIGL_EXPORT virtual boost::optional<CPACSRivets>& GetRivets();
 
-        TIGL_EXPORT virtual CCPACSSheetBasedStructuralElements& GetSheetBasedStructuralElements(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual CPACSSheetBasedStructuralElements& GetSheetBasedStructuralElements(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveSheetBasedStructuralElements();
 
-        TIGL_EXPORT virtual CCPACSProfileBasedStructuralElements& GetProfileBasedStructuralElements(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual CPACSProfileBasedStructuralElements& GetProfileBasedStructuralElements(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveProfileBasedStructuralElements();
 
         TIGL_EXPORT virtual CCPACSPressureBulkheads& GetPressureBulkheads(CreateIfNotExistsTag);
@@ -105,14 +105,14 @@ namespace generated
     protected:
         CTiglUIDManager* m_uidMgr;
 
-        boost::optional<CCPACSSheetBasedStructuralElements>   m_sheetBasedStructuralElements;
-        boost::optional<CCPACSProfileBasedStructuralElements> m_profileBasedStructuralElements;
-        boost::optional<CCPACSPressureBulkheads>              m_pressureBulkheads;
-        boost::optional<CPACSWindows>                         m_windows;
-        boost::optional<CCPACSDoors>                          m_doors;
-        boost::optional<CPACSDoorSurroundStructuresAssembly>  m_doorSurroundStructures;
-        boost::optional<CPACSSeatModules>                     m_seatModules;
-        boost::optional<CPACSRivets>                          m_rivets;
+        boost::optional<CPACSSheetBasedStructuralElements>   m_sheetBasedStructuralElements;
+        boost::optional<CPACSProfileBasedStructuralElements> m_profileBasedStructuralElements;
+        boost::optional<CCPACSPressureBulkheads>             m_pressureBulkheads;
+        boost::optional<CPACSWindows>                        m_windows;
+        boost::optional<CCPACSDoors>                         m_doors;
+        boost::optional<CPACSDoorSurroundStructuresAssembly> m_doorSurroundStructures;
+        boost::optional<CPACSSeatModules>                    m_seatModules;
+        boost::optional<CPACSRivets>                         m_rivets;
 
     private:
 #ifdef HAVE_CPP11

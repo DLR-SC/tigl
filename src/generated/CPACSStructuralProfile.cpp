@@ -181,12 +181,12 @@ namespace generated
         return m_pointList;
     }
 
-    const CCPACSStructuralProfileSheets& CPACSStructuralProfile::GetSheetList() const
+    const CCPACSSheetList& CPACSStructuralProfile::GetSheetList() const
     {
         return m_sheetList;
     }
 
-    CCPACSStructuralProfileSheets& CPACSStructuralProfile::GetSheetList()
+    CCPACSSheetList& CPACSStructuralProfile::GetSheetList()
     {
         return m_sheetList;
     }

@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2018 RISC Software GmbH
+* Copyright (c) 2018 Airbus Defence and Space and RISC Software GmbH
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -16,7 +16,12 @@
 
 #pragma once
 
+#include <TopoDS_Shape.hxx>
+
 #include "generated/CPACSProfileBasedStructuralElement.h"
+
+class TopoDS_Wire;
+class gp_Pln;
 
 namespace tigl
 {
@@ -24,6 +29,8 @@ class CCPACSProfileBasedStructuralElement : public generated::CPACSProfileBasedS
 {
 public:
     TIGL_EXPORT CCPACSProfileBasedStructuralElement(CTiglUIDManager* uidMgr);
+
+    TIGL_EXPORT TopoDS_Shape makeFromWire(const TopoDS_Wire& spine, const gp_Pln& profilePlane) const;
 };
 
 } // namespace tigl

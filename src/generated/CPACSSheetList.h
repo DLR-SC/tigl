@@ -78,7 +78,7 @@ namespace generated
     };
 } // namespace generated
 
-// CPACSSheetList is customized, use type CCPACSStructuralProfileSheets directly
+// CPACSSheetList is customized, use type CCPACSSheetList directly
 
 // Aliases in tigl namespace
 #ifdef HAVE_CPP11

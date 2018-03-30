@@ -228,22 +228,22 @@ namespace generated
 
     }
 
-    const boost::optional<CCPACSSheetBasedStructuralElements>& CPACSStructuralElements::GetSheetBasedStructuralElements() const
+    const boost::optional<CPACSSheetBasedStructuralElements>& CPACSStructuralElements::GetSheetBasedStructuralElements() const
     {
         return m_sheetBasedStructuralElements;
     }
 
-    boost::optional<CCPACSSheetBasedStructuralElements>& CPACSStructuralElements::GetSheetBasedStructuralElements()
+    boost::optional<CPACSSheetBasedStructuralElements>& CPACSStructuralElements::GetSheetBasedStructuralElements()
     {
         return m_sheetBasedStructuralElements;
     }
 
-    const boost::optional<CCPACSProfileBasedStructuralElements>& CPACSStructuralElements::GetProfileBasedStructuralElements() const
+    const boost::optional<CPACSProfileBasedStructuralElements>& CPACSStructuralElements::GetProfileBasedStructuralElements() const
     {
         return m_profileBasedStructuralElements;
     }
 
-    boost::optional<CCPACSProfileBasedStructuralElements>& CPACSStructuralElements::GetProfileBasedStructuralElements()
+    boost::optional<CPACSProfileBasedStructuralElements>& CPACSStructuralElements::GetProfileBasedStructuralElements()
     {
         return m_profileBasedStructuralElements;
     }
@@ -308,7 +308,7 @@ namespace generated
         return m_rivets;
     }
 
-    CCPACSSheetBasedStructuralElements& CPACSStructuralElements::GetSheetBasedStructuralElements(CreateIfNotExistsTag)
+    CPACSSheetBasedStructuralElements& CPACSStructuralElements::GetSheetBasedStructuralElements(CreateIfNotExistsTag)
     {
         if (!m_sheetBasedStructuralElements)
             m_sheetBasedStructuralElements = boost::in_place(m_uidMgr);
@@ -320,7 +320,7 @@ namespace generated
         m_sheetBasedStructuralElements = boost::none;
     }
 
-    CCPACSProfileBasedStructuralElements& CPACSStructuralElements::GetProfileBasedStructuralElements(CreateIfNotExistsTag)
+    CPACSProfileBasedStructuralElements& CPACSStructuralElements::GetProfileBasedStructuralElements(CreateIfNotExistsTag)
     {
         if (!m_profileBasedStructuralElements)
             m_profileBasedStructuralElements = boost::in_place(m_uidMgr);

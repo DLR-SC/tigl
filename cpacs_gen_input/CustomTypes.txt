@@ -86,10 +86,8 @@ CPACSPressureBulkhead                     CCPACSPressureBulkhead
 CPACSPressureBulkheadAssembly             CCPACSPressureBulkheadAssembly
 CPACSPressureBulkheadAssemblyPosition     CCPACSPressureBulkheadAssemblyPosition
 CPACSPressureBulkheads                    CCPACSPressureBulkheads
-CPACSProfileBasedStructuralElements       CCPACSProfileBasedStructuralElements
 CPACSProfileBasedStructuralElement        CCPACSProfileBasedStructuralElement
-CPACSSheetBasedStructuralElements         CCPACSSheetBasedStructuralElements
-CPACSSheetList                            CCPACSStructuralProfileSheets
+CPACSSheetList                            CCPACSSheetList
 CPACSStructuralProfiles                   CCPACSStructuralProfiles
 CPACSCrossBeamAssemblyPosition            CCPACSCrossBeamAssemblyPosition
 CPACSCargoCrossBeamsAssembly              CCPACSCargoCrossBeamsAssembly
