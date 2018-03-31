@@ -415,10 +415,9 @@ gp_Lin CCPACSFuselage::Intersection(const CCPACSFuselageStringerFramePosition& p
 
 namespace
 {
-    template <typename T> TopoDS_Wire project(TopoDS_Shape wireOrEdge, TopoDS_Shape fuselage, T originOrDir)
+    TopoDS_Wire project(TopoDS_Shape wireOrEdge, BRepProj_Projection& proj)
     {
         BRepBuilderAPI_MakeWire wireBuilder;
-        BRepProj_Projection proj(wireOrEdge, fuselage, originOrDir);
         for (; proj.More(); proj.Next())
             wireBuilder.Add(proj.Current());
 
@@ -452,12 +451,14 @@ namespace
 
 TopoDS_Wire CCPACSFuselage::projectConic(TopoDS_Shape wireOrEdge, gp_Pnt origin)
 {
-    return project(wireOrEdge, GetLoft()->Shape(), origin);
+    BRepProj_Projection proj(wireOrEdge, GetLoft()->Shape(), origin);
+    return project(wireOrEdge, proj);
 }
 
 TopoDS_Wire CCPACSFuselage::projectParallel(TopoDS_Shape wireOrEdge, gp_Dir direction)
 {
-    return project(wireOrEdge, GetLoft()->Shape(), direction);
+    BRepProj_Projection proj(wireOrEdge, GetLoft()->Shape(), direction);
+    return project(wireOrEdge, proj);
 }
 
 void CCPACSFuselage::BuildGuideCurves()
