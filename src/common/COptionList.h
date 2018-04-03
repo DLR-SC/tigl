@@ -22,10 +22,10 @@
 #include "tigl_internal.h"
 #include "CTiglError.h"
 #include "typename.h"
+#include "any.h"
 
 #include <map>
 #include <vector>
-#include <boost/any.hpp>
 #include <boost/core/typeinfo.hpp>
 
 namespace tigl
@@ -47,9 +47,9 @@ public:
         }
         else {
             try {
-                return boost::any_cast<T>(it->second);
+                return tigl::any_cast<T>(it->second);
             }
-            catch(const boost::bad_any_cast&) {
+            catch(const CTiglError&) {
                 throw CTiglError("Cannot convert option \"" + it->first +
                                  "\" to " + typeName(typeid(T)) + ". Expecting " + 
                                  boost::core::demangled_name(it->second.type()));
@@ -87,7 +87,18 @@ public:
             it->second = value;
         }
     }
-    
+
+    void SetOption_FromString(const std::string& name, const std::string& value)
+    {
+        OptionsMap::iterator it = m_options.find(name);
+        if (it == m_options.end()) {
+            throw CTiglError("No such option: " + name);
+        }
+        else {
+            it->second.from_string(value);
+        }
+    }
+
     void SetDoubleOption(const std::string& name, double value)
     {
         SetOption(name, value);
@@ -139,7 +150,7 @@ protected:
     }
 
 private:
-    typedef std::map<std::string, boost::any> OptionsMap;
+    typedef std::map<std::string, tigl::any> OptionsMap;
     OptionsMap m_options;
     std::vector<OptionsMap::iterator> m_iters;
 };

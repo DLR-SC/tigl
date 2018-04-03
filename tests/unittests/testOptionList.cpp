@@ -20,6 +20,7 @@
 #include "test.h"
 
 #include "COptionList.h"
+#include "any.h"
 
 class MockOptions : public tigl::COptionList
 {
@@ -37,6 +38,14 @@ TEST(OptionList, AddGetSet)
 
     double v1 = options.GetOption<double>("my_double");
     EXPECT_NEAR(0.0, v1, 1e-10);
+
+    options.SetDoubleOption("my_double", 10.);
+    v1 = options.GetOption<double>("my_double");
+    EXPECT_NEAR(10.0, v1, 1e-10);
+
+    options.SetOption_FromString("my_double", "20.");
+    v1 = options.GetOption<double>("my_double");
+    EXPECT_NEAR(20.0, v1, 1e-10);
 
     std::string v2 = options.GetOption<std::string>("my_string");
     EXPECT_STREQ("Hallo", v2.c_str());
@@ -62,6 +71,9 @@ TEST(OptionList, AddGetSet)
 
     // no such option
     EXPECT_THROW(options.GetOption<int>("my_new_double"), tigl::CTiglError);
+
+    // cannot convert "welt" to a double
+    EXPECT_THROW(options.SetOption_FromString("my_doublee", "welt"), tigl::CTiglError);
 }
 
 TEST(OptionList, OptionNames)
