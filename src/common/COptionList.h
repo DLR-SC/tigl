@@ -95,7 +95,7 @@ public:
             throw CTiglError("No such option: " + name);
         }
         else {
-            it->second.from_string(value);
+            tigl::from_string(value, it->second);
         }
     }
 

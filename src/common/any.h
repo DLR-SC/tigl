@@ -22,7 +22,9 @@
 
 #include "tigl_internal.h"
 #include "CTiglError.h"
+
 #include <boost/lexical_cast.hpp>
+#include <algorithm> // For swap
 
 namespace tigl
 {
@@ -57,8 +59,7 @@ public:
         any tmp(other);
 
         // move from tmp
-        this->pimpl = tmp.pimpl;
-        tmp.pimpl = NULL;
+        std::swap(this->pimpl, tmp.pimpl);
         return *this;
     }
 
@@ -89,16 +90,7 @@ public:
         }
     }
 
-    any& from_string(const std::string& s)
-    {
-        if (!empty()) {
-            pimpl->from_string(s);
-            return *this;
-        }
-        else {
-            throw CTiglError("Empty any element");
-        }
-    }
+    friend void from_string(const std::string& s, any& a);
 
     ~any()
     {
@@ -156,6 +148,16 @@ T any_cast(const any& any)
     }
     else {
         throw tigl::CTiglError("Cannot convert");
+    }
+}
+
+inline void from_string(const std::string& s, any& a)
+{
+    if (!a.empty()) {
+        a.pimpl->from_string(s);
+    }
+    else {
+        throw CTiglError("Empty any element");
     }
 }
 
