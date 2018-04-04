@@ -59,7 +59,7 @@ namespace tigl
 AUTORUN(CTiglExportCollada)
 {
     static CCADExporterBuilder<CTiglExportCollada> colladaExporterBuilder;
-    CTiglExporterFactory::Instance().RegisterExporter(&colladaExporterBuilder);
+    CTiglExporterFactory::Instance().RegisterExporter(&colladaExporterBuilder, ColladaOptions());
     return true;
 }
 

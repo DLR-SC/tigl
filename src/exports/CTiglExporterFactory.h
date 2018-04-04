@@ -31,7 +31,7 @@ public:
     TIGL_EXPORT static CTiglExporterFactory& Instance();
 
     /// Registers a CAD Exporter at the factory
-    TIGL_EXPORT void RegisterExporter(ICADExporterBuilder* creator);
+    TIGL_EXPORT void RegisterExporter(ICADExporterBuilder* creator, const ExporterOptions& exporterConfig);
 
     /// Creates an exporter for the matching file format
     /// Returns NULL, if the format is unknown

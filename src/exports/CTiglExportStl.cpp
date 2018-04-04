@@ -47,7 +47,7 @@ namespace tigl
 AUTORUN(CTiglExportStl)
 {
     static CCADExporterBuilder<CTiglExportStl> stlExporterBuilder;
-    CTiglExporterFactory::Instance().RegisterExporter(&stlExporterBuilder);
+    CTiglExporterFactory::Instance().RegisterExporter(&stlExporterBuilder, StlOptions());
     return true;
 }
 

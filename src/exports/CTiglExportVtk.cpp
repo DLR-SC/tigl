@@ -64,14 +64,6 @@ namespace
         return options;
     }
 
-    std::string to_lower(const std::string& str)
-    {
-        std::string result = str;
-        std::transform(result.begin(), result.end(), result.begin(), ::tolower);
-
-        return result;
-    }
-    
     void setMinMax(const tigl::CTiglPoint& p, double* oldmin, double* oldmax)
     {
         if (p.x > *oldmax) {
@@ -106,7 +98,7 @@ namespace tigl
 AUTORUN(CTiglExportVtk)
 {
     static CCADExporterBuilder<CTiglExportVtk> vtkExporterBuilder;
-    CTiglExporterFactory::Instance().RegisterExporter(&vtkExporterBuilder);
+    CTiglExporterFactory::Instance().RegisterExporter(&vtkExporterBuilder, VtkOptions());
     return true;
 }
 

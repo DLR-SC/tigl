@@ -44,6 +44,12 @@ public:
         Set("ApplySymmetries", true);
         Set("IncludeFarfield", false);
     }
+
+    StlOptions()
+    {
+        Set("ApplySymmetries", true);
+        Set("IncludeFarfield", false);
+    }
 };
 
 class CTiglExportStl : public CTiglCADExporter

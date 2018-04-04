@@ -243,7 +243,7 @@ namespace tigl
 AUTORUN(CTiglExportIges)
 {
     static CCADExporterBuilder<CTiglExportIges> igesExporterBuilder;
-    CTiglExporterFactory::Instance().RegisterExporter(&igesExporterBuilder);
+    CTiglExporterFactory::Instance().RegisterExporter(&igesExporterBuilder, IgesOptions());
     return true;
 }
 

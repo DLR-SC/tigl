@@ -51,7 +51,7 @@ namespace tigl
 AUTORUN(CTiglExportBrep)
 {
     static CCADExporterBuilder<CTiglExportBrep> brepExporterBuilder;
-    CTiglExporterFactory::Instance().RegisterExporter(&brepExporterBuilder);
+    CTiglExporterFactory::Instance().RegisterExporter(&brepExporterBuilder, BRepOptions());
     return true;
 }
 

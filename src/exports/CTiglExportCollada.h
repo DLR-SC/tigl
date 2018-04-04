@@ -60,7 +60,7 @@ private:
 
     std::string SupportedFileTypeImpl() const OVERRIDE
     {
-        return "dae";
+        return "dae;collada";
     }
 
     /// Exports a polygon object to a collada file, the true export code

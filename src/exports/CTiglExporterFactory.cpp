@@ -15,26 +15,12 @@
 */
 
 #include "CTiglExporterFactory.h"
+#include "CGlobalExporterConfigs.h"
+#include "stringtools.h"
 
 #include <algorithm>
 #include <iostream>
 #include <sstream>
-
-namespace
-{
-
-std::vector<std::string> split_string(const std::string& mystring, char delimiter)
-{
-    std::vector<std::string> strings;
-    std::istringstream f(mystring);
-    std::string s;
-    while (std::getline(f, s, delimiter)) {
-        strings.push_back(s);
-    }
-    return strings;
-}
-
-}
 
 namespace tigl
 {
@@ -45,17 +31,18 @@ CTiglExporterFactory& CTiglExporterFactory::Instance()
     return factory;
 }
 
-void CTiglExporterFactory::RegisterExporter(ICADExporterBuilder *creator)
+void CTiglExporterFactory::RegisterExporter(ICADExporterBuilder *creator, const ExporterOptions& exporterConfig)
 {
     if (creator) {
         // build an importer to get supported file type
         PTiglCADExporter exporter = creator->create();
         if (exporter) {
             std::string filetype = exporter->SupportedFileType();
+            CGlobalExporterConfigs::Instance().Add(filetype, exporterConfig);
             std::vector<std::string> fileTypes = split_string(filetype, ';');
             for (std::vector<std::string>::const_iterator it = fileTypes.begin(); it != fileTypes.end(); ++it) {
                 std::string type = *it;
-                _exporterBuilders[type] = creator;
+                _exporterBuilders[to_lower(type)] = creator;
             }
         }
     }
@@ -64,8 +51,7 @@ void CTiglExporterFactory::RegisterExporter(ICADExporterBuilder *creator)
 PTiglCADExporter CTiglExporterFactory::Create(const std::string &filetype) const
 {
     // make the requested filetype to lowercase
-    std::string fileTypeToLower = filetype;
-    std::transform(fileTypeToLower.begin(), fileTypeToLower.end(), fileTypeToLower.begin(), ::tolower);
+    std::string fileTypeToLower = to_lower(filetype);
 
     ExporterMap::const_iterator it = _exporterBuilders.find(fileTypeToLower);
     if (it != _exporterBuilders.end()) {
@@ -80,8 +66,7 @@ PTiglCADExporter CTiglExporterFactory::Create(const std::string &filetype) const
 bool CTiglExporterFactory::ExporterSupported(const std::string &filetype) const
 {
     // make the requested filetype to lowercase
-    std::string fileTypeToLower = filetype;
-    std::transform(fileTypeToLower.begin(), fileTypeToLower.end(), fileTypeToLower.begin(), ::tolower);
+    std::string fileTypeToLower = to_lower(filetype);
 
     ExporterMap::const_iterator it = _exporterBuilders.find(fileTypeToLower);
     if (it != _exporterBuilders.end()) {

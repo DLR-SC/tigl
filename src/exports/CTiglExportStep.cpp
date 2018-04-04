@@ -241,7 +241,7 @@ namespace tigl
 AUTORUN(CTiglExportStep)
 {
     static CCADExporterBuilder<CTiglExportStep> stepExporterBuilder;
-    CTiglExporterFactory::Instance().RegisterExporter(&stepExporterBuilder);
+    CTiglExporterFactory::Instance().RegisterExporter(&stepExporterBuilder, StepOptions());
     return true;
 }
 

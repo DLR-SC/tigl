@@ -80,7 +80,7 @@ private:
 
     std::string SupportedFileTypeImpl() const OVERRIDE
     {
-        return "vtp";
+        return "vtp;vtk";
     }
 
     static void writeVTKPiece(const CTiglPolyObject& co, TixiDocumentHandle& handle, unsigned int iObject); 
