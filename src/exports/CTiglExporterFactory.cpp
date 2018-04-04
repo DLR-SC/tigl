@@ -48,15 +48,17 @@ void CTiglExporterFactory::RegisterExporter(ICADExporterBuilder *creator, const 
     }
 }
 
-PTiglCADExporter CTiglExporterFactory::Create(const std::string &filetype) const
+PTiglCADExporter CTiglExporterFactory::Create(const std::string &filetype, const ExporterOptions& theOptions) const
 {
     // make the requested filetype to lowercase
     std::string fileTypeToLower = to_lower(filetype);
 
+    const ExporterOptions& options = theOptions.IsDefault() ? getExportConfig(fileTypeToLower) : theOptions;
+
     ExporterMap::const_iterator it = _exporterBuilders.find(fileTypeToLower);
     if (it != _exporterBuilders.end()) {
         ICADExporterBuilder* creator = it->second;
-        return creator->create();
+        return creator->create(options);
     }
     else {
         return PTiglCADExporter();

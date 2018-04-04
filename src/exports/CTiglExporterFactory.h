@@ -35,7 +35,7 @@ public:
 
     /// Creates an exporter for the matching file format
     /// Returns NULL, if the format is unknown
-    TIGL_EXPORT PTiglCADExporter Create(const std::string& filetype) const;
+    TIGL_EXPORT PTiglCADExporter Create(const std::string& filetype, const ExporterOptions& options = DefaultExporterOption()) const;
 
     /// Returns true, if an exporter was registered for the specified file type
     TIGL_EXPORT bool ExporterSupported(const std::string& filetype) const;
@@ -46,6 +46,11 @@ private:
     typedef std::map<std::string, ICADExporterBuilder*>  ExporterMap;
     ExporterMap _exporterBuilders;
 };
+
+inline PTiglCADExporter createExporter(const std::string& filetype, const ExporterOptions& options = DefaultExporterOption())
+{
+    return CTiglExporterFactory::Instance().Create(filetype, options);
+}
 
 } // namespace tigl
 

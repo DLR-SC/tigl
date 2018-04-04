@@ -44,20 +44,23 @@ class IgesOptions : public ExporterOptions
 public:
     IgesOptions()
     {
-        AddOption("Layer", 0);
-
         Set("ApplySymmetries", false);
         Set("IncludeFarfield", true);
         Set("ShapeGroupMode", NAMED_COMPOUNDS);
     }
+};
 
-    IgesOptions(int layer)
+class IgesShapeOptions : public ShapeExportOptions
+{
+public:
+    IgesShapeOptions()
+    {
+        AddOption("Layer", -1);
+    }
+
+    IgesShapeOptions(int layer)
     {
         AddOption("Layer", layer);
-
-        Set("ApplySymmetries", false);
-        Set("IncludeFarfield", true);
-        Set("ShapeGroupMode", NAMED_COMPOUNDS);
     }
 
     void SetLayer(int layer)
@@ -71,9 +74,10 @@ class CTiglExportIges : public CTiglCADExporter
 
 public:
     // Constructor
-    TIGL_EXPORT CTiglExportIges();
+    TIGL_EXPORT CTiglExportIges(const ExporterOptions& = DefaultExporterOption());
 
     TIGL_EXPORT ExporterOptions GetDefaultOptions() const OVERRIDE;
+    TIGL_EXPORT ShapeExportOptions GetDefaultShapeOptions() const OVERRIDE;
 
 private:
     // Actual implementation of the IGES file writing

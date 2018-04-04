@@ -50,9 +50,12 @@ class CTiglExportBrep : public CTiglCADExporter
 
 public:
     // Constructor
-    TIGL_EXPORT CTiglExportBrep(){}
+    TIGL_EXPORT CTiglExportBrep(const ExporterOptions& opt = DefaultExporterOption())
+        : CTiglCADExporter(opt)
+    {}
 
     TIGL_EXPORT ExporterOptions GetDefaultOptions() const OVERRIDE;
+    TIGL_EXPORT ShapeExportOptions GetDefaultShapeOptions() const OVERRIDE;
 
 private:
     // Writes the shapes to BREP. In multiple shapes were added

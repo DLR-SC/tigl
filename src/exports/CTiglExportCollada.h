@@ -31,16 +31,9 @@
 namespace tigl 
 {
 
-class ColladaOptions : public TriangulatedExportOptions
+class ColladaOptions : public ExporterOptions
 {
 public:
-    ColladaOptions(double deflection)
-        : TriangulatedExportOptions(deflection)
-    {
-        Set("ApplySymmetries", true);
-        Set("IncludeFarfield", false);
-    }
-
     ColladaOptions()
     {
         Set("ApplySymmetries", true);
@@ -51,9 +44,10 @@ public:
 class CTiglExportCollada : public CTiglCADExporter
 {
 public:
-    TIGL_EXPORT CTiglExportCollada();
+    TIGL_EXPORT CTiglExportCollada(const ExporterOptions& opt = DefaultExporterOption());
 
     TIGL_EXPORT ExporterOptions GetDefaultOptions() const OVERRIDE;
+    TIGL_EXPORT ShapeExportOptions GetDefaultShapeOptions() const OVERRIDE;
 
 private:
     bool WriteImpl(const std::string& filename) const OVERRIDE;

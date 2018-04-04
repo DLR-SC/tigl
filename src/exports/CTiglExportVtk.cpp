@@ -51,15 +51,10 @@
 
 namespace
 {
-    tigl::CTiglTriangularizerOptions toTrianOptions(const tigl::ExporterOptions& exOpt)
+    tigl::CTiglTriangularizerOptions toTrianOptions(bool normalsEnabled)
     {
         tigl::CTiglTriangularizerOptions options;
-        try {
-            options.setNormalsEnabled(exOpt.Get<bool>("NormalsEnabled"));
-        }
-        catch(tigl::CTiglError&) {
-            options.setNormalsEnabled(tigl::CTiglExportVtk().GetDefaultOptions().Get<bool>("NormalsEnabled"));
-        }
+        options.setNormalsEnabled(normalsEnabled);
 
         return options;
     }
@@ -103,9 +98,19 @@ AUTORUN(CTiglExportVtk)
 }
 
 // Constructor
-CTiglExportVtk::CTiglExportVtk()
-   : myMode(SEGMENT_INFO)
+CTiglExportVtk::CTiglExportVtk(const ExporterOptions& opt)
+    : CTiglCADExporter(opt)
 {
+}
+
+ExporterOptions CTiglExportVtk::GetDefaultOptions() const
+{
+    return VtkOptions();
+}
+
+ShapeExportOptions CTiglExportVtk::GetDefaultShapeOptions() const
+{
+    return TriangulatedExportOptions(0.001);
 }
 
 // Destructor
@@ -122,9 +127,14 @@ bool CTiglExportVtk::WriteImpl(const std::string &filename) const
     size_t nTotalVertices = 0;
     size_t nTotalPolys = 0;
 
-    // TODO: global option required
-    bool multiplePieces = false;
-    bool normalsEnabled = true;
+    bool multiplePieces = GlobalExportOptions().Get<bool>("MultiplePieces");
+    bool normalsEnabled = GlobalExportOptions().Get<bool>("NormalsEnabled");
+
+    ComponentTraingMode myMode = NO_INFO;
+    if (GlobalExportOptions().Get<bool>("WriteMetaData")) {
+        myMode = SEGMENT_INFO;
+    }
+
     if (multiplePieces) {
         for (unsigned int i = 0; i < NShapes(); ++i) {
             // Do the meshing
@@ -132,7 +142,7 @@ bool CTiglExportVtk::WriteImpl(const std::string &filename) const
             double deflection = GetOptions(i).Get<double>("Deflection");
 
             const CTiglUIDManager* mgr = GetConfiguration(i) ? &(GetConfiguration(i)->GetUIDManager()) : NULL;
-            CTiglTriangularizer mesher(mgr, pshape, deflection, myMode, toTrianOptions(GetOptions(i)));
+            CTiglTriangularizer mesher(mgr, pshape, deflection, myMode, toTrianOptions(normalsEnabled));
             const CTiglPolyData& polys = mesher.getTriangulation();
             writeVTKPiece(polys.currentObject(), handle, i + 1);
 

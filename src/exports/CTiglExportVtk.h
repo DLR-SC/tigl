@@ -39,24 +39,14 @@ namespace tigl
 class CTiglPolyData;
 class CTiglPolyObject;
 
-class VtkOptions : public TriangulatedExportOptions
+class VtkOptions : public ExporterOptions
 {
 public:
-    VtkOptions(double deflection)
-        : TriangulatedExportOptions(deflection)
-    {
-        AddOption("NormalsEnabled", true);
-        AddOption("MultiplePieces", false);
-        AddOption("WriteMetaData", true);
-
-        Set("ApplySymmetries", true);
-        Set("IncludeFarfield", false);
-    }
-
     VtkOptions()
     {
         AddOption("NormalsEnabled", true);
         AddOption("MultiplePieces", false);
+        AddOption("WriteMetaData", true);
 
         Set("ApplySymmetries", true);
         Set("IncludeFarfield", false);
@@ -67,7 +57,11 @@ class CTiglExportVtk : public CTiglCADExporter
 {
 public:
     // Constructor
-    TIGL_EXPORT CTiglExportVtk();
+    TIGL_EXPORT CTiglExportVtk(const ExporterOptions& opt = DefaultExporterOption());
+
+    TIGL_EXPORT ExporterOptions GetDefaultOptions() const OVERRIDE;
+    TIGL_EXPORT ShapeExportOptions GetDefaultShapeOptions() const OVERRIDE;
+
 
     // Virtual Destructor
     TIGL_EXPORT virtual ~CTiglExportVtk();
@@ -85,9 +79,6 @@ private:
 
     static void writeVTKPiece(const CTiglPolyObject& co, TixiDocumentHandle& handle, unsigned int iObject); 
     static void writeVTKHeader(TixiDocumentHandle& handle);
-
-    ComponentTraingMode myMode;
-
 };
 
 } // end namespace tigl

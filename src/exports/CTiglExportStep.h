@@ -47,11 +47,12 @@ public:
         Set("IncludeFarfield", true);
         Set("ShapeGroupMode", NAMED_COMPOUNDS);
     }
+};
 
-    ShapeGroupMode GroupMode() const
-    {
-        return Get<ShapeGroupMode>("ShapeGroupMode");
-    }
+class StepShapeOptions : public ShapeExportOptions
+{
+public:
+    StepShapeOptions(){}
 };
 
 class CTiglExportStep : public CTiglCADExporter
@@ -59,10 +60,10 @@ class CTiglExportStep : public CTiglCADExporter
 
 public:
     // Constructor
-    TIGL_EXPORT CTiglExportStep();
+    TIGL_EXPORT CTiglExportStep(const ExporterOptions& opt = DefaultExporterOption());
 
     TIGL_EXPORT ExporterOptions GetDefaultOptions() const OVERRIDE;
-
+    TIGL_EXPORT ShapeExportOptions GetDefaultShapeOptions() const OVERRIDE;
 
 private:
     // Writes the step file

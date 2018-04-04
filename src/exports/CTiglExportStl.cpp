@@ -52,15 +52,20 @@ AUTORUN(CTiglExportStl)
 }
 
 // Constructor
-CTiglExportStl::CTiglExportStl()
+CTiglExportStl::CTiglExportStl(const ExporterOptions& opt)
+    : CTiglCADExporter(opt)
 {
 }
 
 ExporterOptions CTiglExportStl::GetDefaultOptions() const
 {
-    return StlOptions(0.001);
+    return StlOptions();
 }
 
+ShapeExportOptions CTiglExportStl::GetDefaultShapeOptions() const
+{
+    return TriangulatedExportOptions(0.001);
+}
 
 bool CTiglExportStl::WriteImpl(const std::string& filename) const
 {

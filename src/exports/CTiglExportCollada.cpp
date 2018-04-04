@@ -63,13 +63,19 @@ AUTORUN(CTiglExportCollada)
     return true;
 }
 
-CTiglExportCollada::CTiglExportCollada()
+CTiglExportCollada::CTiglExportCollada(const ExporterOptions& opt)
+    : CTiglCADExporter(opt)
 {
 }
 
 ExporterOptions CTiglExportCollada::GetDefaultOptions() const
 {
     return ColladaOptions();
+}
+
+ShapeExportOptions CTiglExportCollada::GetDefaultShapeOptions() const
+{
+    return TriangulatedExportOptions(0.001);
 }
 
 

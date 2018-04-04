@@ -62,6 +62,11 @@ public:
     {
         return Get<ShapeGroupMode>("ShapeGroupMode");
     }
+
+    bool IsDefault() const
+    {
+        return Get<bool>("IsDefault");
+    }
 };
 
 class DefaultExporterOption : public ExporterOptions
@@ -73,7 +78,30 @@ public:
     }
 };
 
-class TriangulatedExportOptions : public ExporterOptions
+class ShapeExportOptions : public COptionList
+{
+public:
+    ShapeExportOptions()
+    {
+        AddOption("IsDefault", false);
+    }
+
+    bool IsDefault() const
+    {
+        return Get<bool>("IsDefault");
+    }
+};
+
+class DefaultShapeExportOptions : public ShapeExportOptions
+{
+public:
+    DefaultShapeExportOptions()
+    {
+        Set("IsDefault", true);
+    }
+};
+
+class TriangulatedExportOptions : public ShapeExportOptions
 {
 public:
     TriangulatedExportOptions()
@@ -97,24 +125,25 @@ class CTiglCADExporter
 {
 public:
     /// Constructor
-    TIGL_EXPORT CTiglCADExporter(){}
+    TIGL_EXPORT CTiglCADExporter(const ExporterOptions& options = DefaultExporterOption());
 
     // Empty destructor
     TIGL_EXPORT virtual ~CTiglCADExporter() { /* empty */}
 
-    TIGL_EXPORT virtual ExporterOptions GetDefaultOptions() const;
+    virtual ExporterOptions GetDefaultOptions() const = 0;
+    virtual ShapeExportOptions GetDefaultShapeOptions() const = 0;
 
     /// Adds a shape
-    TIGL_EXPORT void AddShape(PNamedShape shape, const ExporterOptions& options = DefaultExporterOption());
+    TIGL_EXPORT void AddShape(PNamedShape shape, const ShapeExportOptions& options = DefaultShapeExportOptions());
 
-    TIGL_EXPORT void AddShape(PNamedShape shape, const CCPACSConfiguration* config, const ExporterOptions& options = DefaultExporterOption());
+    TIGL_EXPORT void AddShape(PNamedShape shape, const CCPACSConfiguration* config, const ShapeExportOptions& options = DefaultShapeExportOptions());
     
 
     ///  Adds the whole non-fused configuration, to the exporter
-    TIGL_EXPORT void AddConfiguration(CCPACSConfiguration &config, const ExporterOptions& options = DefaultExporterOption());
+    TIGL_EXPORT void AddConfiguration(CCPACSConfiguration &config, const ShapeExportOptions& options = DefaultShapeExportOptions());
 
     /// Adds a whole geometry, boolean fused and meshed
-    TIGL_EXPORT void AddFusedConfiguration(CCPACSConfiguration& config, const ExporterOptions& options = DefaultExporterOption());
+    TIGL_EXPORT void AddFusedConfiguration(CCPACSConfiguration& config, const ShapeExportOptions& options = DefaultShapeExportOptions());
 
     TIGL_EXPORT bool Write(const std::string& filename) const;
 
@@ -124,7 +153,8 @@ public:
     /// Returns all shapes added to the exporter
     TIGL_EXPORT PNamedShape GetShape(size_t iShape) const;
 
-    TIGL_EXPORT const ExporterOptions& GetOptions(size_t iShape) const;
+    TIGL_EXPORT const ShapeExportOptions& GetOptions(size_t iShape) const;
+    TIGL_EXPORT const ExporterOptions& GlobalExportOptions() const;
 
     TIGL_EXPORT std::string SupportedFileType() const;
 
@@ -133,6 +163,7 @@ protected:
     const CCPACSConfiguration* GetConfiguration(size_t iShape) const;
 
 private:
+
     /// must be overridden by the concrete implementation
     virtual bool WriteImpl(const std::string& filename) const = 0;
     
@@ -140,7 +171,8 @@ private:
     virtual std::string SupportedFileTypeImpl() const = 0;
 
     ListPNamedShape _shapes;
-    std::vector<ExporterOptions> _options;
+    mutable ExporterOptions _globalOptions;
+    std::vector<ShapeExportOptions> _shapeOptions;
     std::vector<const CCPACSConfiguration*> _configs; //!< TIGL configurations */
 
 };
@@ -150,16 +182,16 @@ typedef CSharedPtr<CTiglCADExporter> PTiglCADExporter;
 class ICADExporterBuilder
 {
 public:
-   virtual PTiglCADExporter create() const = 0;
+   virtual PTiglCADExporter create(const ExporterOptions& options = DefaultExporterOption()) const = 0;
 };
 
 template <class T>
 class CCADExporterBuilder : public ICADExporterBuilder
 {
 public:
-   PTiglCADExporter create() const OVERRIDE
+   PTiglCADExporter create(const ExporterOptions& options = DefaultExporterOption()) const OVERRIDE
    {
-       return PTiglCADExporter(new T);
+       return PTiglCADExporter(new T(options));
    }
 };
 

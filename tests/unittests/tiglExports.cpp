@@ -207,7 +207,7 @@ TEST_F(tiglExportSimple, export_wing_collada)
     tigl::CCPACSWing& wing = config.GetWing(1);
 
     tigl::CTiglExportCollada colladaWriter;
-    colladaWriter.AddShape(wing.GetLoft(), tigl::ColladaOptions(0.001));
+    colladaWriter.AddShape(wing.GetLoft(), tigl::TriangulatedExportOptions(0.001));
     bool ret = colladaWriter.Write("TestData/export/simpletest_wing.dae");
 
     ASSERT_EQ(true, ret);
@@ -220,7 +220,7 @@ TEST_F(tiglExportSimple, export_wing_vtk_newapi_simple)
     tigl::CCPACSWing& wing = config.GetWing(1);
 
     tigl::CTiglExportVtk vtkWriter;
-    vtkWriter.AddShape(wing.GetLoft(), tigl::VtkOptions(0.001));
+    vtkWriter.AddShape(wing.GetLoft(), tigl::TriangulatedExportOptions(0.001));
     bool ret = vtkWriter.Write("TestData/export/simpletest_wing_simple_newapi.vtp");
 
     ASSERT_EQ(true, ret);
@@ -233,7 +233,7 @@ TEST_F(tiglExportSimple, export_wing_vtk_newapi_meta)
     tigl::CCPACSWing& wing = config.GetWing(1);
 
     tigl::CTiglExportVtk vtkWriter;
-    vtkWriter.AddShape(wing.GetLoft(), &config, tigl::VtkOptions(0.001));
+    vtkWriter.AddShape(wing.GetLoft(), &config, tigl::TriangulatedExportOptions(0.001));
     bool ret = vtkWriter.Write("TestData/export/simpletest_wing_meta_newapi.vtp");
 
     ASSERT_EQ(true, ret);
@@ -245,8 +245,7 @@ TEST_F(tiglExportSimple, export_fusedplane_vtk_newapi_meta)
     tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglSimpleHandle);
 
     tigl::CTiglExportVtk vtkWriter;
-    tigl::VtkOptions options(0.01);
-    vtkWriter.AddFusedConfiguration(config, options);
+    vtkWriter.AddFusedConfiguration(config, tigl::TriangulatedExportOptions(0.01));
     bool ret = vtkWriter.Write("TestData/export/simpletest_fusedplane_meta_newapi.vtp");
 
     ASSERT_EQ(true, ret);
@@ -258,8 +257,7 @@ TEST_F(tiglExportSimple, export_componentplane_vtk_newapi_meta)
     tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglSimpleHandle);
 
     tigl::CTiglExportVtk vtkWriter;
-    tigl::VtkOptions options(0.01);
-    vtkWriter.AddConfiguration(config, options);
+    vtkWriter.AddConfiguration(config, tigl::TriangulatedExportOptions(0.01));
     bool ret = vtkWriter.Write("TestData/export/simpletest_nonfusedplane_meta_newapi.vtp");
 
     ASSERT_EQ(true, ret);
@@ -273,7 +271,7 @@ TEST_F(tiglExportSimple, export_generic_stl)
     tigl::CTiglExporterFactory& factory = tigl::CTiglExporterFactory::Instance();
     tigl::PTiglCADExporter stlExporter = factory.Create("stl");
 
-    tigl::VtkOptions options(0.01);
+    tigl::TriangulatedExportOptions options(0.01);
     stlExporter->AddConfiguration(config, options);
     bool ret = stlExporter->Write("TestData/export/simpletest_export_generic.stl");
 

@@ -61,6 +61,11 @@ ExporterOptions CTiglExportBrep::GetDefaultOptions() const
     return BRepOptions();
 }
 
+ShapeExportOptions CTiglExportBrep::GetDefaultShapeOptions() const
+{
+    return ShapeExportOptions();
+}
+
 bool CTiglExportBrep::WriteImpl(const std::string& filename) const
 {
     if (filename.empty()) {

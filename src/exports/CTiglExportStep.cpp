@@ -246,13 +246,19 @@ AUTORUN(CTiglExportStep)
 }
 
 // Constructor
-CTiglExportStep::CTiglExportStep()
+CTiglExportStep::CTiglExportStep(const ExporterOptions& opt)
+    : CTiglCADExporter(opt)
 {
 }
 
 ExporterOptions CTiglExportStep::GetDefaultOptions() const
 {
     return StepOptions();
+}
+
+ShapeExportOptions CTiglExportStep::GetDefaultShapeOptions() const
+{
+    return StepShapeOptions();
 }
 
 /**
