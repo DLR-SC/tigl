@@ -48,7 +48,7 @@ public:
     }
 
     any(const any& other)
-        : pimpl(other.pimpl->clone())
+        : pimpl(other.pimpl ? other.pimpl->clone() : NULL)
     {
     }
     
@@ -114,8 +114,9 @@ private:
         virtual any_concept* clone() const  = 0;
         virtual const std::type_info& type() const = 0;
         virtual void from_string(const std::string& s) = 0;
+        virtual ~any_concept(){}
     };
-    
+
     template <class T>
     class any_conceptImpl : public any_concept
     {
@@ -134,7 +135,7 @@ private:
         {
             return typeid(value);
         }
-        
+
         void from_string(const std::string& s) OVERRIDE
         {
             tigl::from_string(s, value);
