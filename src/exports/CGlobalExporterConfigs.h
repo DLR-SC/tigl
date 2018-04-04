@@ -47,6 +47,11 @@ private:
     IndexMap m_index_map;
 };
 
+inline ExporterOptions& getExportConfig(const std::string& filetype)
+{
+    return CGlobalExporterConfigs::Instance().Get(filetype);
+}
+
 } // namespace tigl
 
 #endif // CGLOBALEXPORTERCONFIGS_H
