@@ -38,6 +38,22 @@ namespace tigl
 
 class CCPACSConfiguration;
 
+class StepOptions : public ExporterOptions
+{
+public:
+    StepOptions()
+    {
+        Set("ApplySymmetries", false);
+        Set("IncludeFarfield", true);
+        Set("ShapeGroupMode", NAMED_COMPOUNDS);
+    }
+
+    ShapeGroupMode GroupMode() const
+    {
+        return Get<ShapeGroupMode>("ShapeGroupMode");
+    }
+};
+
 class CTiglExportStep : public CTiglCADExporter
 {
 
@@ -45,8 +61,7 @@ public:
     // Constructor
     TIGL_EXPORT CTiglExportStep();
 
-    // Sets the type of storing shapes to iges
-    TIGL_EXPORT void SetGroupMode(ShapeGroupMode mode);
+    TIGL_EXPORT ExporterOptions GetDefaultOptions() const OVERRIDE;
 
 
 private:
@@ -61,7 +76,6 @@ private:
     // Assignment operator
     void operator=(const CTiglExportStep& ) { /* Do nothing */ }
 
-    ShapeGroupMode                _groupMode;    /**< Type specifying how to group faces in the step file */
     void AddToStep(PNamedShape shape, STEPControl_Writer &writer) const;
 };
 

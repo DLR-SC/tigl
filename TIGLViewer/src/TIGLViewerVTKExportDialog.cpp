@@ -59,10 +59,5 @@ TIGLViewerVTKExportDialog::~TIGLViewerVTKExportDialog()
 void TIGLViewerVTKExportDialog::onOkayPressed() const
 {
     bool enabled = normalsEnabled();
-    if (enabled) {
-        tiglExportVTKSetOptions("normals_enabled", "1");
-    }
-    else {
-        tiglExportVTKSetOptions("normals_enabled", "0");
-    }
+    // TODO: set using new api
 }

@@ -56,6 +56,11 @@ AUTORUN(CTiglExportBrep)
 }
 
 
+ExporterOptions CTiglExportBrep::GetDefaultOptions() const
+{
+    return BRepOptions();
+}
+
 bool CTiglExportBrep::WriteImpl(const std::string& filename) const
 {
     if (filename.empty()) {

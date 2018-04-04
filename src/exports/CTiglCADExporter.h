@@ -23,34 +23,72 @@
 #include "PNamedShape.h"
 #include "ListPNamedShape.h"
 #include "CTiglFusePlane.h"
+#include "COptionList.h"
+#include "CCPACSImportExport.h"
 
 namespace tigl
 {
 
 class CCPACSConfiguration;
 
-struct ExportOptions
+
+class ExporterOptions : public COptionList
 {
 public:
-    ExportOptions()
-        : deflection(0.1)
-        , applySymmetries(false)
-        , includeFarField(true)
+    ExporterOptions()
     {
+        AddOption("IsDefault", false);
+        AddOption("ApplySymmetries", false);
+        AddOption("IncludeFarfield", false);
+        AddOption("ShapeGroupMode", WHOLE_SHAPE);
     }
 
-    // allow implicit conversion
-    ExportOptions(double deflect)
-        : deflection(deflect)
-        , applySymmetries(false)
-        , includeFarField(true)
+    void SetApplySymmetries(bool apply)
     {
+        Set("ApplySymmetries", apply);
     }
 
-    double deflection;
-    bool applySymmetries;
-    bool includeFarField;
+    void SetIncludeFarfield(bool include)
+    {
+        Set("IncludeFarfield", include);
+    }
+
+    void SetShapeGroupMode(tigl::ShapeGroupMode mode)
+    {
+        Set("ShapeGroupMode", mode);
+    }
+
+    ShapeGroupMode GroupMode() const
+    {
+        return Get<ShapeGroupMode>("ShapeGroupMode");
+    }
 };
+
+class DefaultExporterOption : public ExporterOptions
+{
+public:
+    DefaultExporterOption()
+    {
+        Set("IsDefault", true);
+    }
+};
+
+class TriangulatedExportOptions : public ExporterOptions
+{
+public:
+    TriangulatedExportOptions()
+    {
+        AddOption("Deflection", 0.001);
+    }
+
+    TriangulatedExportOptions(double deflection)
+    {
+        AddOption("Deflection", deflection);
+    }
+};
+
+template<>
+TIGL_EXPORT void from_string<ShapeGroupMode>(const std::string& s, ShapeGroupMode& t);
 
 /**
  * @brief Abstract base class for CAD exports
@@ -64,17 +102,19 @@ public:
     // Empty destructor
     TIGL_EXPORT virtual ~CTiglCADExporter() { /* empty */}
 
-    /// Adds a shape
-    TIGL_EXPORT void AddShape(PNamedShape shape, ExportOptions options = ExportOptions());
+    TIGL_EXPORT virtual ExporterOptions GetDefaultOptions() const;
 
-    TIGL_EXPORT void AddShape(PNamedShape shape, const CCPACSConfiguration* config, ExportOptions options = ExportOptions());
+    /// Adds a shape
+    TIGL_EXPORT void AddShape(PNamedShape shape, const ExporterOptions& options = DefaultExporterOption());
+
+    TIGL_EXPORT void AddShape(PNamedShape shape, const CCPACSConfiguration* config, const ExporterOptions& options = DefaultExporterOption());
     
 
     ///  Adds the whole non-fused configuration, to the exporter
-    TIGL_EXPORT void AddConfiguration(CCPACSConfiguration &config, ExportOptions options = ExportOptions());
+    TIGL_EXPORT void AddConfiguration(CCPACSConfiguration &config, const ExporterOptions& options = DefaultExporterOption());
 
     /// Adds a whole geometry, boolean fused and meshed
-    TIGL_EXPORT void AddFusedConfiguration(CCPACSConfiguration& config, ExportOptions options = ExportOptions());
+    TIGL_EXPORT void AddFusedConfiguration(CCPACSConfiguration& config, const ExporterOptions& options = DefaultExporterOption());
 
     TIGL_EXPORT bool Write(const std::string& filename) const;
 
@@ -84,7 +124,7 @@ public:
     /// Returns all shapes added to the exporter
     TIGL_EXPORT PNamedShape GetShape(size_t iShape) const;
 
-    TIGL_EXPORT ExportOptions GetOptions(size_t iShape) const;
+    TIGL_EXPORT const ExporterOptions& GetOptions(size_t iShape) const;
 
     TIGL_EXPORT std::string SupportedFileType() const;
 
@@ -100,7 +140,7 @@ private:
     virtual std::string SupportedFileTypeImpl() const = 0;
 
     ListPNamedShape _shapes;
-    std::vector<ExportOptions> _options;
+    std::vector<ExporterOptions> _options;
     std::vector<const CCPACSConfiguration*> _configs; //!< TIGL configurations */
 
 };

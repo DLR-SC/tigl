@@ -39,7 +39,7 @@ public:
     }
 
     template <class T>
-    T GetOption(const std::string& name) const
+    T Get(const std::string& name) const
     {
         OptionsMap::const_iterator it = m_options.find(name);
         if (it == m_options.end()) {
@@ -57,23 +57,23 @@ public:
         }
     }
 
-    double GetDoubleOption(const std::string& name) const
+    double GetDouble(const std::string& name) const
     {
-        return GetOption<double>(name);
+        return Get<double>(name);
     }
 
-    int GetIntOption(const std::string& name) const
+    int GetInt(const std::string& name) const
     {
-        return GetOption<int>(name);
+        return Get<int>(name);
     }
 
-    std::string GetStringOption(const std::string& name) const
+    std::string GetString(const std::string& name) const
     {
-        return GetOption<std::string>(name);
+        return Get<std::string>(name);
     }
 
     template <class T>
-    void SetOption(const std::string& name, const T& value)
+    void Set(const std::string& name, const T& value)
     {
         OptionsMap::iterator it = m_options.find(name);
         if (it == m_options.end()) {
@@ -88,7 +88,7 @@ public:
         }
     }
 
-    void SetOption_FromString(const std::string& name, const std::string& value)
+    void SetFromString(const std::string& name, const std::string& value)
     {
         OptionsMap::iterator it = m_options.find(name);
         if (it == m_options.end()) {
@@ -99,19 +99,19 @@ public:
         }
     }
 
-    void SetDoubleOption(const std::string& name, double value)
+    void SetDouble(const std::string& name, double value)
     {
-        SetOption(name, value);
+        Set(name, value);
     }
 
-    void SetIntOption(const std::string& name, int value)
+    void SetInt(const std::string& name, int value)
     {
-        SetOption(name, value);
+        Set(name, value);
     }
 
-    void SetStringOption(const std::string& name, const std::string& value)
+    void SetString(const std::string& name, const std::string& value)
     {
-        SetOption(name, value);
+        Set(name, value);
     }
 
     size_t GetNOptions() const
@@ -134,9 +134,28 @@ public:
         return m_options.find(name) != m_options.end();
     }
 
+    COptionList Merged(const tigl::COptionList& other) const
+    {
+        COptionList l1(*this);
+
+        for (OptionsMap::const_iterator it = other.m_options.begin();
+             it != other.m_options.end(); ++it) {
+            const std::string& name = it->first;
+            const any& value = it->second;
+            l1.AddOption(name, value);
+        }
+
+        return l1;
+    }
+
 protected:
     template <class T>
     void AddOption(const std::string& name, const T& default_value)
+    {
+        AddOption(name, tigl::any(default_value));
+    }
+    
+    void AddOption(const std::string& name, const any& default_value)
     {
         size_t old_size = m_options.size();
         m_options[name] = default_value;

@@ -39,6 +39,33 @@ namespace tigl
 
 class CCPACSConfiguration;
 
+class IgesOptions : public ExporterOptions
+{
+public:
+    IgesOptions()
+    {
+        AddOption("Layer", 0);
+
+        Set("ApplySymmetries", false);
+        Set("IncludeFarfield", true);
+        Set("ShapeGroupMode", NAMED_COMPOUNDS);
+    }
+
+    IgesOptions(int layer)
+    {
+        AddOption("Layer", layer);
+
+        Set("ApplySymmetries", false);
+        Set("IncludeFarfield", true);
+        Set("ShapeGroupMode", NAMED_COMPOUNDS);
+    }
+
+    void SetLayer(int layer)
+    {
+        Set("Layer", layer);
+    }
+};
+
 class CTiglExportIges : public CTiglCADExporter
 {
 
@@ -46,9 +73,7 @@ public:
     // Constructor
     TIGL_EXPORT CTiglExportIges();
 
-    // Sets the type of storing shapes to iges
-    TIGL_EXPORT void SetGroupMode(ShapeGroupMode mode);
-
+    TIGL_EXPORT ExporterOptions GetDefaultOptions() const OVERRIDE;
 
 private:
     // Actual implementation of the IGES file writing
@@ -63,7 +88,6 @@ private:
     void operator=(const CTiglExportIges& );
     void AddToIges(PNamedShape shape, IGESControl_Writer& writer, int level = 0) const;
 
-    ShapeGroupMode  _groupMode;    /**< Type specifying how to group faces in the iges file */
     void SetTranslationParameters() const;
 };
 

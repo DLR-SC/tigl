@@ -34,12 +34,25 @@ namespace tigl
 
 class CCPACSConfiguration;
 
+class BRepOptions : public ExporterOptions
+{
+public:
+    BRepOptions()
+    {
+        Set("ApplySymmetries", false);
+        Set("IncludeFarfield", false);
+        Set("ShapeGroupMode", WHOLE_SHAPE);
+    }
+};
+
 class CTiglExportBrep : public CTiglCADExporter
 {
 
 public:
     // Constructor
     TIGL_EXPORT CTiglExportBrep(){}
+
+    TIGL_EXPORT ExporterOptions GetDefaultOptions() const OVERRIDE;
 
 private:
     // Writes the shapes to BREP. In multiple shapes were added

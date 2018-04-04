@@ -30,9 +30,10 @@ Version 3.0.0
   
     - Changed API:
       - Removed deprectated intersection functions. These include
-       - tiglComponentIntersectionLineCount
-       - tiglComponentIntersectionPoint
-       - tiglComponentIntersectionPoints
+       - ``tiglComponentIntersectionLineCount``
+       - ``tiglComponentIntersectionPoint``
+       - ``tiglComponentIntersectionPoints``
+      - Removed function ``tiglExportVTKSetOptions``. This is now replace by __TODO__
 
     - Fixes:
       - TiGL Viewer: Fixed missing fonts on macOS

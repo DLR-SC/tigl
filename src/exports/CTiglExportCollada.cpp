@@ -67,6 +67,11 @@ CTiglExportCollada::CTiglExportCollada()
 {
 }
 
+ExporterOptions CTiglExportCollada::GetDefaultOptions() const
+{
+    return ColladaOptions();
+}
+
 
 bool writeHeader(TixiDocumentHandle handle)
 {
@@ -297,7 +302,7 @@ bool CTiglExportCollada::WriteImpl(const std::string& filename) const
     for (unsigned int i = 0; i < NShapes(); ++i) {
         // Do the meshing
         PNamedShape pshape = GetShape(i);
-        double deflection = GetOptions(i).deflection;
+        double deflection = GetOptions(i).Get<double>("Deflection");
         CTiglTriangularizer mesher(pshape, deflection);
         
         writeGeometryMesh(handle, mesher.getTriangulation(), std::string(pshape->Name()) + "-geom", geomIndex);

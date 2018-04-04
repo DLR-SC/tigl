@@ -32,48 +32,57 @@ public:
     }
 };
 
+class MockOptionsOther : public tigl::COptionList
+{
+public:
+    MockOptionsOther()
+    {
+        AddOption<int>("my_int", 10);
+    }
+};
+
 TEST(OptionList, AddGetSet)
 {
     MockOptions options;
 
-    double v1 = options.GetOption<double>("my_double");
+    double v1 = options.Get<double>("my_double");
     EXPECT_NEAR(0.0, v1, 1e-10);
 
-    options.SetDoubleOption("my_double", 10.);
-    v1 = options.GetOption<double>("my_double");
+    options.SetDouble("my_double", 10.);
+    v1 = options.Get<double>("my_double");
     EXPECT_NEAR(10.0, v1, 1e-10);
 
-    options.SetOption_FromString("my_double", "20.");
-    v1 = options.GetOption<double>("my_double");
+    options.SetFromString("my_double", "20.");
+    v1 = options.Get<double>("my_double");
     EXPECT_NEAR(20.0, v1, 1e-10);
 
-    std::string v2 = options.GetOption<std::string>("my_string");
+    std::string v2 = options.Get<std::string>("my_string");
     EXPECT_STREQ("Hallo", v2.c_str());
 
-    options.SetOption<std::string>("my_string", "welt");
-    v2 = options.GetOption<std::string>("my_string");
+    options.Set<std::string>("my_string", "welt");
+    v2 = options.Get<std::string>("my_string");
     EXPECT_STREQ("welt", v2.c_str());
 
-    options.SetStringOption("my_string", "hello world");
-    v2 = options.GetStringOption("my_string");
+    options.SetString("my_string", "hello world");
+    v2 = options.GetString("my_string");
     EXPECT_STREQ("hello world", v2.c_str());
 
     // check failures
     // connot convert
-    EXPECT_THROW(options.SetOption("my_string", 2.0), tigl::CTiglError);
+    EXPECT_THROW(options.Set("my_string", 2.0), tigl::CTiglError);
 
     // no such option
-    EXPECT_THROW(options.SetOption<std::string>("my_new_string", "welt"),
+    EXPECT_THROW(options.Set<std::string>("my_new_string", "welt"),
                  tigl::CTiglError);
 
     // cannot convert
-    EXPECT_THROW(options.GetOption<int>("my_double"), tigl::CTiglError);
+    EXPECT_THROW(options.Get<int>("my_double"), tigl::CTiglError);
 
     // no such option
-    EXPECT_THROW(options.GetOption<int>("my_new_double"), tigl::CTiglError);
+    EXPECT_THROW(options.Get<int>("my_new_double"), tigl::CTiglError);
 
     // cannot convert "welt" to a double
-    EXPECT_THROW(options.SetOption_FromString("my_doublee", "welt"), tigl::CTiglError);
+    EXPECT_THROW(options.SetFromString("my_doublee", "welt"), tigl::CTiglError);
 }
 
 TEST(OptionList, OptionNames)
@@ -93,6 +102,25 @@ TEST(OptionList, HasOption)
 
     EXPECT_TRUE(options.HasOption("my_string"));
     EXPECT_TRUE(options.HasOption("my_double"));
+
+    EXPECT_FALSE(options.HasOption("my_new_string"));
+}
+
+TEST(OptionList, Merged)
+{
+    MockOptions first;
+    MockOptionsOther second;
+    tigl::COptionList options = first.Merged(second);
+
+    EXPECT_TRUE(options.HasOption("my_string"));
+    EXPECT_TRUE(options.HasOption("my_double"));
+    EXPECT_TRUE(options.HasOption("my_int"));
+
+    double v1 = options.Get<double>("my_double");
+    EXPECT_NEAR(0.0, v1, 1e-10);
+
+    int v2 = options.Get<int>("my_int");
+    EXPECT_EQ(10, v2);
 
     EXPECT_FALSE(options.HasOption("my_new_string"));
 }

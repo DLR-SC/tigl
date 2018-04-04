@@ -35,12 +35,25 @@
 namespace tigl 
 {
 
+class StlOptions : public TriangulatedExportOptions
+{
+public:
+    StlOptions(double deflection)
+        : TriangulatedExportOptions(deflection)
+    {
+        Set("ApplySymmetries", true);
+        Set("IncludeFarfield", false);
+    }
+};
+
 class CTiglExportStl : public CTiglCADExporter
 {
 
 public:
     // Constructor
     TIGL_EXPORT CTiglExportStl();
+
+    TIGL_EXPORT ExporterOptions GetDefaultOptions() const OVERRIDE;
 
 private:
 

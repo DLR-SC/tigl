@@ -248,7 +248,11 @@ AUTORUN(CTiglExportStep)
 // Constructor
 CTiglExportStep::CTiglExportStep()
 {
-    SetGroupMode(NAMED_COMPOUNDS);
+}
+
+ExporterOptions CTiglExportStep::GetDefaultOptions() const
+{
+    return StepOptions();
 }
 
 /**
@@ -311,8 +315,11 @@ bool CTiglExportStep::WriteImpl(const std::string& filename) const
     Interface_Static::SetCVal("write.step.unit", "M");
 
     ListPNamedShape list;
+    size_t iShape = 0;
     for (size_t ishape = 0; ishape < NShapes(); ++ishape) {
-        ListPNamedShape templist = GroupFaces(GetShape(ishape), _groupMode);
+        ShapeGroupMode groupMode = GetOptions(iShape).Get<ShapeGroupMode>("ShapeGroupMode");
+
+        ListPNamedShape templist = GroupFaces(GetShape(ishape), groupMode);
         for (ListPNamedShape::iterator it2 = templist.begin(); it2 != templist.end(); ++it2) {
             list.push_back(*it2);
         }
@@ -326,11 +333,6 @@ bool CTiglExportStep::WriteImpl(const std::string& filename) const
     }
 
     return stepWriter.Write(const_cast<char*>(filename.c_str())) <= IFSelect_RetDone;
-}
-
-void CTiglExportStep::SetGroupMode(ShapeGroupMode mode)
-{
-    _groupMode = mode;
 }
 
 } // end namespace tigl

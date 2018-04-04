@@ -250,7 +250,11 @@ AUTORUN(CTiglExportIges)
 // Constructor
 CTiglExportIges::CTiglExportIges()
 {
-    _groupMode = NAMED_COMPOUNDS;
+}
+
+ExporterOptions CTiglExportIges::GetDefaultOptions() const
+{
+    return IgesOptions();
 }
 
 
@@ -295,12 +299,16 @@ bool CTiglExportIges::WriteImpl(const std::string& filename) const
         }
     }
 
+    size_t iShape = 0;
     ListPNamedShape list;
     for (it = shapeScaled.begin(); it != shapeScaled.end(); ++it) {
-        ListPNamedShape templist = GroupFaces(*it, _groupMode);
+        ShapeGroupMode groupMode = GetOptions(iShape).Get<ShapeGroupMode>("ShapeGroupMode");
+
+        ListPNamedShape templist = GroupFaces(*it, groupMode);
         for (ListPNamedShape::iterator it2 = templist.begin(); it2 != templist.end(); ++it2) {
             list.push_back(*it2);
         }
+        iShape++;
     }
 
     SetTranslationParameters();
@@ -317,11 +325,6 @@ bool CTiglExportIges::WriteImpl(const std::string& filename) const
     igesWriter.ComputeModel();
 
     return toBool(igesWriter.Write(const_cast<char*>(filename.c_str())));
-}
-
-void CTiglExportIges::SetGroupMode(ShapeGroupMode mode)
-{
-    _groupMode = mode;
 }
 
 /**

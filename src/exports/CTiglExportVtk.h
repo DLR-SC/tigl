@@ -39,6 +39,30 @@ namespace tigl
 class CTiglPolyData;
 class CTiglPolyObject;
 
+class VtkOptions : public TriangulatedExportOptions
+{
+public:
+    VtkOptions(double deflection)
+        : TriangulatedExportOptions(deflection)
+    {
+        AddOption("NormalsEnabled", true);
+        AddOption("MultiplePieces", false);
+        AddOption("WriteMetaData", true);
+
+        Set("ApplySymmetries", true);
+        Set("IncludeFarfield", false);
+    }
+
+    VtkOptions()
+    {
+        AddOption("NormalsEnabled", true);
+        AddOption("MultiplePieces", false);
+
+        Set("ApplySymmetries", true);
+        Set("IncludeFarfield", false);
+    }
+};
+
 class CTiglExportVtk : public CTiglCADExporter
 {
 public:
@@ -47,12 +71,6 @@ public:
 
     // Virtual Destructor
     TIGL_EXPORT virtual ~CTiglExportVtk();
-
-    TIGL_EXPORT static void SetOptions(const std::string& key, const std::string& value);
-
-    // Options
-    TIGL_EXPORT static bool normalsEnabled;
-    TIGL_EXPORT static bool multiplePieces;
 
     /// Exports a polygonal data representation directly
     TIGL_EXPORT static void WritePolys(const CTiglPolyData& polys, const char * filename);

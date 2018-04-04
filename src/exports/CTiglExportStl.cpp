@@ -56,13 +56,18 @@ CTiglExportStl::CTiglExportStl()
 {
 }
 
+ExporterOptions CTiglExportStl::GetDefaultOptions() const
+{
+    return StlOptions(0.001);
+}
+
 
 bool CTiglExportStl::WriteImpl(const std::string& filename) const
 {
     for (size_t ishape = 0; ishape < NShapes(); ++ishape) {
         PNamedShape shape = GetShape(ishape);
         if (shape) {
-            BRepMesh_IncrementalMesh(shape->Shape(), GetOptions(ishape).deflection);
+            BRepMesh_IncrementalMesh(shape->Shape(), GetOptions(ishape).Get<double>("Deflection"));
         }
     }
 

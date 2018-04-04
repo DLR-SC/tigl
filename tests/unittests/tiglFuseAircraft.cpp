@@ -181,7 +181,7 @@ TEST_P(tiglFuseAircraftCPACS, exportFusedAircraftToBrep)
     tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
     tigl::CCPACSConfiguration& config = manager.GetConfiguration(tiglHandle);
     tigl::CTiglExportBrep exporter;
-    exporter.AddFusedConfiguration(config);
+    exporter.AddFusedConfiguration(config, tigl::BRepOptions());
     ASSERT_TRUE(exporter.Write("TestData/export/" + name + "_fused.brep"));
 }
 
@@ -198,7 +198,7 @@ TEST_P(tiglFuseAircraftCPACS, fusedAircraft)
     ASSERT_TRUE(BRepTools::Write(wingLoft->Shape(), ("TestData/export/" + name + "_wing.brep").c_str()));
 
     tigl::CTiglExportIges igesExporterWing;
-    igesExporterWing.AddShape(wingLoft);
+    igesExporterWing.AddShape(wingLoft, tigl::IgesOptions());
     igesExporterWing.Write(("TestData/export/" + name + "_wing.igs").c_str());
 
     tigl::CCPACSFuselage& fuselage = config.GetFuselage(1);
@@ -207,7 +207,7 @@ TEST_P(tiglFuseAircraftCPACS, fusedAircraft)
     ASSERT_TRUE(BRepTools::Write(fuselageLoft->Shape(), ("TestData/export/" + name + "_fuselage.brep").c_str()));
 
     tigl::CTiglExportIges igesExporterFuselage;
-    igesExporterFuselage.AddShape(fuselageLoft);
+    igesExporterFuselage.AddShape(fuselageLoft, tigl::IgesOptions());
     igesExporterFuselage.Write(("TestData/export/" + name + "_fuselage.igs").c_str());
 
     ListPNamedShape fuseTools;

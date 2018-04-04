@@ -51,12 +51,17 @@
 
 namespace
 {
-    tigl::CTiglTriangularizerOptions getOptions(const tigl::CTiglExportVtk& /* exporter */)
+    tigl::CTiglTriangularizerOptions toTrianOptions(const tigl::ExporterOptions& exOpt)
     {
         tigl::CTiglTriangularizerOptions options;
-        options.setNormalsEnabled(tigl::CTiglExportVtk::normalsEnabled);
+        try {
+            options.setNormalsEnabled(exOpt.Get<bool>("NormalsEnabled"));
+        }
+        catch(tigl::CTiglError&) {
+            options.setNormalsEnabled(tigl::CTiglExportVtk().GetDefaultOptions().Get<bool>("NormalsEnabled"));
+        }
 
-        return options ;
+        return options;
     }
 
     std::string to_lower(const std::string& str)
@@ -98,9 +103,6 @@ namespace
 namespace tigl 
 {
 
-bool CTiglExportVtk::normalsEnabled = true;
-bool CTiglExportVtk::multiplePieces = false;
-
 AUTORUN(CTiglExportVtk)
 {
     static CCADExporterBuilder<CTiglExportVtk> vtkExporterBuilder;
@@ -128,14 +130,17 @@ bool CTiglExportVtk::WriteImpl(const std::string &filename) const
     size_t nTotalVertices = 0;
     size_t nTotalPolys = 0;
 
+    // TODO: global option required
+    bool multiplePieces = false;
+    bool normalsEnabled = true;
     if (multiplePieces) {
         for (unsigned int i = 0; i < NShapes(); ++i) {
             // Do the meshing
             PNamedShape pshape = GetShape(i);
-            double deflection = GetOptions(i).deflection;
+            double deflection = GetOptions(i).Get<double>("Deflection");
 
             const CTiglUIDManager* mgr = GetConfiguration(i) ? &(GetConfiguration(i)->GetUIDManager()) : NULL;
-            CTiglTriangularizer mesher(mgr, pshape, deflection, myMode, getOptions(*this));
+            CTiglTriangularizer mesher(mgr, pshape, deflection, myMode, toTrianOptions(GetOptions(i)));
             const CTiglPolyData& polys = mesher.getTriangulation();
             writeVTKPiece(polys.currentObject(), handle, i + 1);
 
@@ -148,7 +153,7 @@ bool CTiglExportVtk::WriteImpl(const std::string &filename) const
         ListPNamedShape shapes;
         for (unsigned int i = 0; i < NShapes(); ++i) {
             shapes.push_back(GetShape(i));
-            double deflection = GetOptions(i).deflection;
+            double deflection = GetOptions(i).Get<double>("Deflection");
             if (deflection < minDeflection) {
                 minDeflection = deflection;
             }
@@ -164,7 +169,9 @@ bool CTiglExportVtk::WriteImpl(const std::string &filename) const
         }
 
         PNamedShape groupedShape = CGroupShapes(shapes);
-        CTiglTriangularizer mesher(mgr, groupedShape, minDeflection, myMode, getOptions(*this));
+        CTiglTriangularizerOptions options;
+        options.setNormalsEnabled(normalsEnabled);
+        CTiglTriangularizer mesher(mgr, groupedShape, minDeflection, myMode, options);
         const CTiglPolyData& polys = mesher.getTriangulation();
         writeVTKPiece(polys.currentObject(), handle, 1);
 
@@ -178,26 +185,6 @@ bool CTiglExportVtk::WriteImpl(const std::string &filename) const
     LOG(INFO) << "VTK Export succeeded with " << nTotalPolys
               << " polygons and " << nTotalVertices << " vertices." << std::endl;
     return true;
-}
-
-
-void CTiglExportVtk::SetOptions(const std::string &key, const std::string &value)
-{
-    if (key == "normals_enabled") {
-        if (value == "1" || to_lower(value) == "true") {
-            CTiglExportVtk::normalsEnabled = true;
-        }
-        else if (value == "0" || to_lower(value) == "false") {
-            CTiglExportVtk::normalsEnabled = false;
-        }
-        else {
-            throw CTiglError("Wrong value for 'normals_enabled' in vtk export: " + value);
-        }
-    }
-
-    else {
-        throw CTiglError("Invalid key in vtk export: " + key);
-    }
 }
 
 void CTiglExportVtk::WritePolys(const CTiglPolyData& polys, const char *filename)
