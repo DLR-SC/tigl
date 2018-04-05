@@ -129,7 +129,12 @@ bool CTiglTriangularizer::writeWingMeta(ITiglGeometricComponent& wingComponent, 
 void CTiglTriangularizer::writeFaceMeta(const CTiglUIDManager* uidMgr, const std::string& componentUID,
                                         TopoDS_Face face, unsigned long iPolyLower, unsigned long iPolyUpper)
 {
-    if (!uidMgr || componentUID.empty()) {
+    if (!uidMgr) {
+        return;
+    }
+
+    if (componentUID.empty()) {
+        writeFaceDummyMeta(iPolyLower, iPolyUpper);
         return;
     }
 
