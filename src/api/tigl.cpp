@@ -5382,7 +5382,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingVTKByIndex(const TiglCPACS
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
         tigl::PTiglCADExporter exporter = tigl::createExporter("vtk");
 
-        exporter->AddShape(wing.GetLoft(), tigl::TriangulatedExportOptions(deflection));
+        exporter->AddShape(wing.GetLoft(), &config, tigl::TriangulatedExportOptions(deflection));
         if (exporter->Write(filenamePtr)) {
             return TIGL_SUCCESS;
         }
@@ -5607,9 +5607,11 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingVTKSimpleByUID(const TiglC
         tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingUID);
-        tigl::PTiglCADExporter exporter = tigl::createExporter("vtk");
+        tigl::ExporterOptions exportOptions = tigl::getExportConfig("vtk");
+        exportOptions.Set("WriteMetaData", false);
+        tigl::PTiglCADExporter exporter = tigl::createExporter("vtk", exportOptions);
 
-        exporter->AddShape(wing.GetLoft(), tigl::TriangulatedExportOptions(deflection));
+        exporter->AddShape(wing.GetLoft(), &config, tigl::TriangulatedExportOptions(deflection));
         if (exporter->Write(filenamePtr)) {
             return TIGL_SUCCESS;
         }
