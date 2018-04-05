@@ -20,10 +20,12 @@
 #include <string>
 #include <typeinfo>
 
+#include "tigl_internal.h"
+
 namespace tigl
 {
 
-std::string typeName(const std::type_info& ti);
+TIGL_EXPORT std::string typeName(const std::type_info& ti);
 
 template <typename T>
 std::string typeName()
