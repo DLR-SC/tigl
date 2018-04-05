@@ -1433,9 +1433,7 @@ void TIGLViewerDocument::exportConfigCollada()
         START_COMMAND();
         TIGLViewerSettings& settings = TIGLViewerSettings::Instance();
         double relDeflect = settings.triangulationAccuracy();
-        tigl::ExportOptions options;
-        options.deflection = relDeflect;
-        options.includeFarField = false;
+        tigl::TriangulatedExportOptions options(relDeflect);
 
         tigl::CTiglExportCollada exporter;
         tigl::CCPACSConfiguration& config = GetConfiguration();
@@ -1539,11 +1537,8 @@ void TIGLViewerDocument::exportMeshedConfigVTKNoFuse()
         START_COMMAND();
         writeToStatusBar("Writing meshed vtk file");
 
-        tigl::ExportOptions options(settings.getDeflection());
-        options.applySymmetries = true;
-        options.includeFarField = false;
-        tigl::CTiglExportVtk exporter(GetConfiguration(), tigl::SEGMENT_INFO);
-        exporter.AddConfiguration(GetConfiguration(), options);
+        tigl::CTiglExportVtk exporter;
+        exporter.AddConfiguration(GetConfiguration(), tigl::TriangulatedExportOptions(settings.getDeflection()));
 
         exporter.Write(fileName.toStdString());
         writeToStatusBar("");

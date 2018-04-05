@@ -38,6 +38,8 @@
 #include "CCPACSWingSegment.h"
 #include "CNamedShape.h"
 #include "CGroupShapes.h"
+#include "CTiglExporterFactory.h"
+#include "CTiglTypeRegistry.h"
 
 // algorithms
 #include "BRepMesh.hxx"
@@ -49,22 +51,6 @@
 
 namespace
 {
-    tigl::CTiglTriangularizerOptions getOptions(const tigl::CTiglExportVtk& /* exporter */)
-    {
-        tigl::CTiglTriangularizerOptions options;
-        options.setNormalsEnabled(tigl::CTiglExportVtk::normalsEnabled);
-
-        return options ;
-    }
-
-    std::string to_lower(const std::string& str)
-    {
-        std::string result = str;
-        std::transform(result.begin(), result.end(), result.begin(), ::tolower);
-
-        return result;
-    }
-    
     void setMinMax(const tigl::CTiglPoint& p, double* oldmin, double* oldmax)
     {
         if (p.x > *oldmax) {
@@ -96,14 +82,27 @@ namespace
 namespace tigl 
 {
 
-bool CTiglExportVtk::normalsEnabled = true;
-bool CTiglExportVtk::multiplePieces = false;
+AUTORUN(CTiglExportVtk)
+{
+    static CCADExporterBuilder<CTiglExportVtk> vtkExporterBuilder;
+    CTiglExporterFactory::Instance().RegisterExporter(&vtkExporterBuilder, VtkOptions());
+    return true;
+}
 
 // Constructor
-CTiglExportVtk::CTiglExportVtk(CCPACSConfiguration& config, ComponentTraingMode mode)
-    : myConfig(config)
-    , myMode(mode)
+CTiglExportVtk::CTiglExportVtk(const ExporterOptions& opt)
+    : CTiglCADExporter(opt)
 {
+}
+
+ExporterOptions CTiglExportVtk::GetDefaultOptions() const
+{
+    return VtkOptions();
+}
+
+ShapeExportOptions CTiglExportVtk::GetDefaultShapeOptions() const
+{
+    return TriangulatedExportOptions(0.001);
 }
 
 // Destructor
@@ -120,13 +119,22 @@ bool CTiglExportVtk::WriteImpl(const std::string &filename) const
     size_t nTotalVertices = 0;
     size_t nTotalPolys = 0;
 
+    bool multiplePieces = GlobalExportOptions().Get<bool>("MultiplePieces");
+    bool normalsEnabled = GlobalExportOptions().Get<bool>("WriteNormals");
+
+    ComponentTraingMode myMode = NO_INFO;
+    if (GlobalExportOptions().Get<bool>("WriteMetaData")) {
+        myMode = SEGMENT_INFO;
+    }
+
     if (multiplePieces) {
         for (unsigned int i = 0; i < NShapes(); ++i) {
             // Do the meshing
             PNamedShape pshape = GetShape(i);
-            double deflection = GetOptions(i).deflection;
+            double deflection = GetOptions(i).Get<double>("Deflection");
 
-            CTiglTriangularizer mesher(myConfig.GetUIDManager(), pshape, deflection, myMode, getOptions(*this));
+            const CTiglUIDManager* mgr = GetConfiguration(i) ? &(GetConfiguration(i)->GetUIDManager()) : NULL;
+            CTiglTriangularizer mesher(mgr, pshape, deflection, myMode, normalsEnabled);
             const CTiglPolyData& polys = mesher.getTriangulation();
             writeVTKPiece(polys.currentObject(), handle, i + 1);
 
@@ -139,14 +147,23 @@ bool CTiglExportVtk::WriteImpl(const std::string &filename) const
         ListPNamedShape shapes;
         for (unsigned int i = 0; i < NShapes(); ++i) {
             shapes.push_back(GetShape(i));
-            double deflection = GetOptions(i).deflection;
+            double deflection = GetOptions(i).Get<double>("Deflection");
             if (deflection < minDeflection) {
                 minDeflection = deflection;
             }
         }
+  
+        // search for the first uid manager available
+        const CTiglUIDManager* mgr = NULL;
+        for (unsigned int i = 0; i < NShapes(); ++i) {
+            if (GetConfiguration(i)) {
+                mgr = &(GetConfiguration(i)->GetUIDManager());
+                break;
+            }
+        }
 
         PNamedShape groupedShape = CGroupShapes(shapes);
-        CTiglTriangularizer mesher(myConfig.GetUIDManager(), groupedShape, minDeflection, myMode, getOptions(*this));
+        CTiglTriangularizer mesher(mgr, groupedShape, minDeflection, myMode, normalsEnabled);
         const CTiglPolyData& polys = mesher.getTriangulation();
         writeVTKPiece(polys.currentObject(), handle, 1);
 
@@ -160,26 +177,6 @@ bool CTiglExportVtk::WriteImpl(const std::string &filename) const
     LOG(INFO) << "VTK Export succeeded with " << nTotalPolys
               << " polygons and " << nTotalVertices << " vertices." << std::endl;
     return true;
-}
-
-
-void CTiglExportVtk::SetOptions(const std::string &key, const std::string &value)
-{
-    if (key == "normals_enabled") {
-        if (value == "1" || to_lower(value) == "true") {
-            CTiglExportVtk::normalsEnabled = true;
-        }
-        else if (value == "0" || to_lower(value) == "false") {
-            CTiglExportVtk::normalsEnabled = false;
-        }
-        else {
-            throw CTiglError("Wrong value for 'normals_enabled' in vtk export: " + value);
-        }
-    }
-
-    else {
-        throw CTiglError("Invalid key in vtk export: " + key);
-    }
 }
 
 void CTiglExportVtk::WritePolys(const CTiglPolyData& polys, const char *filename)

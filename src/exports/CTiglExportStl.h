@@ -35,16 +35,34 @@
 namespace tigl 
 {
 
+class StlOptions : public ExporterOptions
+{
+public:
+    StlOptions()
+    {
+        Set("ApplySymmetries", true);
+        Set("IncludeFarfield", false);
+    }
+};
+
 class CTiglExportStl : public CTiglCADExporter
 {
 
 public:
     // Constructor
-    TIGL_EXPORT CTiglExportStl();
+    TIGL_EXPORT CTiglExportStl(const ExporterOptions& opt = DefaultExporterOption());
+
+    TIGL_EXPORT ExporterOptions GetDefaultOptions() const OVERRIDE;
+    TIGL_EXPORT ShapeExportOptions GetDefaultShapeOptions() const OVERRIDE;
 
 private:
 
     bool WriteImpl(const std::string& filename) const OVERRIDE;
+
+    std::string SupportedFileTypeImpl() const OVERRIDE
+    {
+        return "stl";
+    }
 
     // Assignment operator
     void operator=(const CTiglExportStl& ) { /* Do nothing */ }

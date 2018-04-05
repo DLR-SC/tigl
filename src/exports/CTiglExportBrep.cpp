@@ -25,6 +25,8 @@
 #include "CTiglFusePlane.h"
 #include "CCPACSWingSegment.h"
 #include "CCPACSFuselageSegment.h"
+#include "CTiglExporterFactory.h"
+#include "CTiglTypeRegistry.h"
 
 // OCCT includes
 #include <BRep_Builder.hxx>
@@ -45,6 +47,24 @@ namespace
 
 namespace tigl
 {
+
+AUTORUN(CTiglExportBrep)
+{
+    static CCADExporterBuilder<CTiglExportBrep> brepExporterBuilder;
+    CTiglExporterFactory::Instance().RegisterExporter(&brepExporterBuilder, BRepOptions());
+    return true;
+}
+
+
+ExporterOptions CTiglExportBrep::GetDefaultOptions() const
+{
+    return BRepOptions();
+}
+
+ShapeExportOptions CTiglExportBrep::GetDefaultShapeOptions() const
+{
+    return ShapeExportOptions();
+}
 
 bool CTiglExportBrep::WriteImpl(const std::string& filename) const
 {

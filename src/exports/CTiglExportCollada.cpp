@@ -28,6 +28,8 @@ TODO:
 #include "CTiglPolyData.h"
 #include "CTiglTriangularizer.h"
 #include "CCPACSConfiguration.h"
+#include "CTiglExporterFactory.h"
+#include "CTiglTypeRegistry.h"
 
 #include <tixi.h>
 
@@ -54,8 +56,26 @@ namespace
 namespace tigl
 {
 
-CTiglExportCollada::CTiglExportCollada()
+AUTORUN(CTiglExportCollada)
 {
+    static CCADExporterBuilder<CTiglExportCollada> colladaExporterBuilder;
+    CTiglExporterFactory::Instance().RegisterExporter(&colladaExporterBuilder, ColladaOptions());
+    return true;
+}
+
+CTiglExportCollada::CTiglExportCollada(const ExporterOptions& opt)
+    : CTiglCADExporter(opt)
+{
+}
+
+ExporterOptions CTiglExportCollada::GetDefaultOptions() const
+{
+    return ColladaOptions();
+}
+
+ShapeExportOptions CTiglExportCollada::GetDefaultShapeOptions() const
+{
+    return TriangulatedExportOptions(0.001);
 }
 
 
@@ -288,7 +308,7 @@ bool CTiglExportCollada::WriteImpl(const std::string& filename) const
     for (unsigned int i = 0; i < NShapes(); ++i) {
         // Do the meshing
         PNamedShape pshape = GetShape(i);
-        double deflection = GetOptions(i).deflection;
+        double deflection = GetOptions(i).Get<double>("Deflection");
         CTiglTriangularizer mesher(pshape, deflection);
         
         writeGeometryMesh(handle, mesher.getTriangulation(), std::string(pshape->Name()) + "-geom", geomIndex);

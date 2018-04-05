@@ -39,26 +39,59 @@ namespace tigl
 
 class CCPACSConfiguration;
 
+class IgesOptions : public ExporterOptions
+{
+public:
+    IgesOptions()
+    {
+        Set("ApplySymmetries", false);
+        Set("IncludeFarfield", true);
+        Set("ShapeGroupMode", NAMED_COMPOUNDS);
+    }
+};
+
+class IgesShapeOptions : public ShapeExportOptions
+{
+public:
+    IgesShapeOptions()
+    {
+        AddOption("Layer", -1);
+    }
+
+    IgesShapeOptions(int layer)
+    {
+        AddOption("Layer", layer);
+    }
+
+    void SetLayer(int layer)
+    {
+        Set("Layer", layer);
+    }
+};
+
 class CTiglExportIges : public CTiglCADExporter
 {
 
 public:
     // Constructor
-    TIGL_EXPORT CTiglExportIges();
+    TIGL_EXPORT CTiglExportIges(const ExporterOptions& = DefaultExporterOption());
 
-    // Sets the type of storing shapes to iges
-    TIGL_EXPORT void SetGroupMode(ShapeGroupMode mode);
-
+    TIGL_EXPORT ExporterOptions GetDefaultOptions() const OVERRIDE;
+    TIGL_EXPORT ShapeExportOptions GetDefaultShapeOptions() const OVERRIDE;
 
 private:
     // Actual implementation of the IGES file writing
     TIGL_EXPORT bool WriteImpl(const std::string& filename) const OVERRIDE;
 
+    std::string SupportedFileTypeImpl() const OVERRIDE
+    {
+        return "igs;iges";
+    }
+
     // Assignment operator
     void operator=(const CTiglExportIges& );
     void AddToIges(PNamedShape shape, IGESControl_Writer& writer, int level = 0) const;
 
-    ShapeGroupMode  _groupMode;    /**< Type specifying how to group faces in the iges file */
     void SetTranslationParameters() const;
 };
 

@@ -27,6 +27,12 @@ namespace tigl
 
 // register all dynamic types to prevent linker optimization
 REGISTER_TYPE(CTiglStepReader)
+REGISTER_TYPE(CTiglExportStep)
+REGISTER_TYPE(CTiglExportIges)
+REGISTER_TYPE(CTiglExportVtk)
+REGISTER_TYPE(CTiglExportCollada)
+REGISTER_TYPE(CTiglExportStl)
+REGISTER_TYPE(CTiglExportBrep)
 
 
 void CTiglTypeRegistry::Init()

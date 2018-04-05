@@ -20,10 +20,11 @@
 #include "ui_TIGLViewerVTKExportDialog.h"
 
 #include <tigl.h>
+#include "CGlobalExporterConfigs.h"
 
-TIGLViewerVTKExportDialog::TIGLViewerVTKExportDialog(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::TIGLViewerVTKExportDialog)
+TIGLViewerVTKExportDialog::TIGLViewerVTKExportDialog(QWidget* parent)
+    : QDialog(parent)
+    , ui(new Ui::TIGLViewerVTKExportDialog)
 {
     ui->setupUi(this);
 
@@ -58,11 +59,5 @@ TIGLViewerVTKExportDialog::~TIGLViewerVTKExportDialog()
 
 void TIGLViewerVTKExportDialog::onOkayPressed() const
 {
-    bool enabled = normalsEnabled();
-    if (enabled) {
-        tiglExportVTKSetOptions("normals_enabled", "1");
-    }
-    else {
-        tiglExportVTKSetOptions("normals_enabled", "0");
-    }
+    tigl::getExportConfig("vtk").Set("WriteNormals", normalsEnabled());
 }

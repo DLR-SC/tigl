@@ -19,7 +19,9 @@
 #ifndef CCPACSIMPORTEXPORT_H
 #define CCPACSIMPORTEXPORT_H
 
-
+#include "stringtools.h"
+#include "CTiglError.h"
+#include <string>
 
 namespace tigl
 {
@@ -30,6 +32,25 @@ enum ShapeGroupMode
     NAMED_COMPOUNDS,       /** Collects all faces with the same origin into compounds. All faces are named correctly */
     FACES                  /** Exports each face as its own group. The group name and the face name are identical    */
 };
+
+template <>
+inline void from_string<ShapeGroupMode>(const std::string &s, ShapeGroupMode &t)
+{
+    std::string value = tigl::to_upper(s);
+    if (value == "WHOLE_SHAPE") {
+        t = WHOLE_SHAPE;
+    }
+    else if (value == "NAMED_COMPOUNDS") {
+        t = NAMED_COMPOUNDS;
+    }
+    else if (value == "FACES") {
+        t = FACES;
+    }
+    else {
+        throw CTiglError("Cannot convert string to ShapeGroupMode");
+    }
+}
+
 
 } // end namespace tigl
 

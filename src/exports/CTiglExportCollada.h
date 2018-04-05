@@ -31,13 +31,31 @@
 namespace tigl 
 {
 
+class ColladaOptions : public ExporterOptions
+{
+public:
+    ColladaOptions()
+    {
+        Set("ApplySymmetries", true);
+        Set("IncludeFarfield", false);
+    }
+};
+
 class CTiglExportCollada : public CTiglCADExporter
 {
 public:
-    TIGL_EXPORT CTiglExportCollada();
+    TIGL_EXPORT CTiglExportCollada(const ExporterOptions& opt = DefaultExporterOption());
+
+    TIGL_EXPORT ExporterOptions GetDefaultOptions() const OVERRIDE;
+    TIGL_EXPORT ShapeExportOptions GetDefaultShapeOptions() const OVERRIDE;
 
 private:
     bool WriteImpl(const std::string& filename) const OVERRIDE;
+
+    std::string SupportedFileTypeImpl() const OVERRIDE
+    {
+        return "dae;collada";
+    }
 
     /// Exports a polygon object to a collada file, the true export code
     TiglReturnCode writeToDisc(class CTiglPolyData &polyData, const char * id, const char * filename);

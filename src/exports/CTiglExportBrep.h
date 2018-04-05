@@ -34,17 +34,39 @@ namespace tigl
 
 class CCPACSConfiguration;
 
+class BRepOptions : public ExporterOptions
+{
+public:
+    BRepOptions()
+    {
+        Set("ApplySymmetries", false);
+        Set("IncludeFarfield", false);
+        Set("ShapeGroupMode", WHOLE_SHAPE);
+    }
+};
+
 class CTiglExportBrep : public CTiglCADExporter
 {
 
 public:
     // Constructor
-    TIGL_EXPORT CTiglExportBrep(){}
+    TIGL_EXPORT CTiglExportBrep(const ExporterOptions& opt = DefaultExporterOption())
+        : CTiglCADExporter(opt)
+    {
+    }
+
+    TIGL_EXPORT ExporterOptions GetDefaultOptions() const OVERRIDE;
+    TIGL_EXPORT ShapeExportOptions GetDefaultShapeOptions() const OVERRIDE;
 
 private:
     // Writes the shapes to BREP. In multiple shapes were added
     // a compound is created.
     TIGL_EXPORT bool WriteImpl(const std::string& filename) const OVERRIDE;
+
+    std::string SupportedFileTypeImpl() const OVERRIDE
+    {
+        return "brep";
+    }
 };
 
 } // namespace tigl

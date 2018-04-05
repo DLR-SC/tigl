@@ -3339,6 +3339,38 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetCurveParameter (TiglCPACSConfigurationH
 
 /*@{*/
 
+/**
+* @brief Sets options for the geometry export
+* 
+* Generic options for all exporters:
+*   - ApplySymmetries (Values: "true", "false"): Whether symmetric cpacs objects (e.g. wings) should be written.
+*   - IncludeFarfield (Values: "true", "false"): Whether to include the far field into the export or not.
+*   - ShapeGroupMode  (Values: "WHOLE_SHAPE", "NAMED_COMPOUNDS", "FACES"): Adjust, how shapes are grouped.
+* 
+* Exporter-specific options:
+*  - VTK:
+*    - WriteNormals (Values: "true", "false"): Whether to write normal vectors or not.
+*      To avoid duplicate vertices, normals should be disabled.
+*    - MultiplePieces (Values: "true", "false"): Whether to export the shapes into multiple vtk pieces.
+*    - WriteMetaData (Values: "true", "false"): Whether to add meta data (e.g. wing segments etc...)
+*
+* Example: The IGES export normally does only write half-models. It does not apply symmetries.
+* to change this, just call 
+  @verbatim
+  tiglSetExportOptions("iges", "ApplySymmetries", "true");
+  @endverbatim
+* 
+* @param[in] exporter_name File format of the export. E.g. "vtk", "iges", "step", "collada", "brep" or "stl"
+* @param[in] option_name   Name of the option to be set
+* @param[in] option_value  Value of the options to be set
+*
+* @return 
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if the specifid exporter or the option does not exist
+*   - TIGL_NULL_POINTER if exporter_name, option_name or option_value is a null pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglSetExportOptions(const char* exporter_name, const char* option_name, const char* option_value);
 
 /**
 * @brief Exports the geometry of a CPACS configuration to IGES format.
@@ -3524,27 +3556,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageSTLByUID(TiglCPACSConf
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedGeometrySTL(TiglCPACSConfigurationHandle cpacsHandle, 
                                                               const char* filenamePtr,
                                                               double deflection);
-
-
-/**
- * @brief Sets options for the VTK Export
- *
- * **Available Settings**:
- *
- *   - *key*: "normals_enabled" *valid values*: "0 or 1" *default*: "1".
- *
- *       Enables or disables the output of normal vectors.
- *       A Normal vector and a vertex belong to the same logical structure. If there
- *       are two identical vertices but with different normal vectors, the VTK export stores
- *       them as two entries. Thus, a VTK file may have "duplicate" vertices. To disable this
- *       behavior, set "normal_enabled" to "0".
- *
- * @return
- *   - TIGL_SUCCESS if no error occurred
- *   - TIGL_NULL_POINTER if key or value are a null pointer
- *   - TIGL_ERROR if the specified key/value pair is invalid
- */
-TIGL_COMMON_EXPORT TiglReturnCode tiglExportVTKSetOptions(const char* key, const char* value);
 
 /**
 * @brief Exports the boolean fused geometry of a wing (selected by id) meshed to VTK format.

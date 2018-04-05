@@ -32,6 +32,9 @@
 #include "CCPACSConfigurationManager.h"
 #include "CCPACSConfiguration.h"
 #include "CCPACSWing.h"
+#include "CTiglExporterFactory.h"
+#include "CGlobalExporterConfigs.h"
+#include "CTiglExportIges.h"
 
 
 /******************************************************************************/
@@ -159,18 +162,6 @@ TiglCPACSConfigurationHandle tiglExportRectangularWing::tiglRectangularWingHandl
 //    writer.ExportMeshedWingVTK
 //}
 
-TEST_F(tiglExport, vtkOptions)
-{
-    ASSERT_EQ(TIGL_SUCCESS, tiglExportVTKSetOptions("normals_enabled", "0"));
-    ASSERT_EQ(TIGL_SUCCESS, tiglExportVTKSetOptions("normals_enabled", "1"));
-
-    ASSERT_EQ(TIGL_ERROR, tiglExportVTKSetOptions("normals_enabled", "no"));
-    ASSERT_EQ(TIGL_ERROR, tiglExportVTKSetOptions("invalid options", "0"));
-
-    ASSERT_EQ(TIGL_NULL_POINTER, tiglExportVTKSetOptions(NULL, "0"));
-    ASSERT_EQ(TIGL_NULL_POINTER, tiglExportVTKSetOptions("normals_enabled", NULL));
-}
-
 /**
 * Tests tiglWingGetProfileName with invalid CPACS handle.
 */
@@ -218,7 +209,7 @@ TEST_F(tiglExportSimple, export_wing_collada)
     tigl::CCPACSWing& wing = config.GetWing(1);
 
     tigl::CTiglExportCollada colladaWriter;
-    colladaWriter.AddShape(wing.GetLoft(), 0.001);
+    colladaWriter.AddShape(wing.GetLoft(), tigl::TriangulatedExportOptions(0.001));
     bool ret = colladaWriter.Write("TestData/export/simpletest_wing.dae");
 
     ASSERT_EQ(true, ret);
@@ -230,8 +221,8 @@ TEST_F(tiglExportSimple, export_wing_vtk_newapi_simple)
     tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglSimpleHandle);
     tigl::CCPACSWing& wing = config.GetWing(1);
 
-    tigl::CTiglExportVtk vtkWriter(config);
-    vtkWriter.AddShape(wing.GetLoft(), 0.001);
+    tigl::CTiglExportVtk vtkWriter;
+    vtkWriter.AddShape(wing.GetLoft(), tigl::TriangulatedExportOptions(0.001));
     bool ret = vtkWriter.Write("TestData/export/simpletest_wing_simple_newapi.vtp");
 
     ASSERT_EQ(true, ret);
@@ -243,8 +234,8 @@ TEST_F(tiglExportSimple, export_wing_vtk_newapi_meta)
     tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglSimpleHandle);
     tigl::CCPACSWing& wing = config.GetWing(1);
 
-    tigl::CTiglExportVtk vtkWriter(config, tigl::SEGMENT_INFO);
-    vtkWriter.AddShape(wing.GetLoft(), 0.001);
+    tigl::CTiglExportVtk vtkWriter;
+    vtkWriter.AddShape(wing.GetLoft(), &config, tigl::TriangulatedExportOptions(0.001));
     bool ret = vtkWriter.Write("TestData/export/simpletest_wing_meta_newapi.vtp");
 
     ASSERT_EQ(true, ret);
@@ -255,11 +246,8 @@ TEST_F(tiglExportSimple, export_fusedplane_vtk_newapi_meta)
     tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
     tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglSimpleHandle);
 
-    tigl::CTiglExportVtk vtkWriter(config, tigl::SEGMENT_INFO);
-    tigl::ExportOptions options(0.01);
-    options.includeFarField = false;
-    options.applySymmetries = true;
-    vtkWriter.AddFusedConfiguration(config, options);
+    tigl::CTiglExportVtk vtkWriter;
+    vtkWriter.AddFusedConfiguration(config, tigl::TriangulatedExportOptions(0.01));
     bool ret = vtkWriter.Write("TestData/export/simpletest_fusedplane_meta_newapi.vtp");
 
     ASSERT_EQ(true, ret);
@@ -270,12 +258,79 @@ TEST_F(tiglExportSimple, export_componentplane_vtk_newapi_meta)
     tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
     tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglSimpleHandle);
 
-    tigl::CTiglExportVtk vtkWriter(config, tigl::SEGMENT_INFO);
-    tigl::ExportOptions options(0.01);
-    options.includeFarField = false;
-    options.applySymmetries = true;
-    vtkWriter.AddConfiguration(config, options);
+    tigl::CTiglExportVtk vtkWriter;
+    vtkWriter.AddConfiguration(config, tigl::TriangulatedExportOptions(0.01));
     bool ret = vtkWriter.Write("TestData/export/simpletest_nonfusedplane_meta_newapi.vtp");
+
+    ASSERT_EQ(true, ret);
+}
+
+TEST_F(tiglExportSimple, export_generic_stl)
+{
+    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglSimpleHandle);
+
+    tigl::CTiglExporterFactory& factory = tigl::CTiglExporterFactory::Instance();
+    tigl::PTiglCADExporter stlExporter = factory.Create("stl");
+
+    tigl::TriangulatedExportOptions options(0.01);
+    stlExporter->AddConfiguration(config, options);
+    bool ret = stlExporter->Write("TestData/export/simpletest_export_generic.stl");
+
+    ASSERT_EQ(true, ret);
+}
+
+TEST_F(tiglExportSimple, export_iges_layers)
+{
+    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglSimpleHandle);
+
+    tigl::PTiglCADExporter igesExporter = tigl::createExporter("iges");
+
+    igesExporter->AddShape(config.GetWing(1).GetLoft(), tigl::IgesShapeOptions(111));
+    igesExporter->AddShape(config.GetFuselage(1).GetLoft(), tigl::IgesShapeOptions(222));
+    bool ret = igesExporter->Write("TestData/export/simpletest_export_igeslayer.igs");
+
+    ASSERT_EQ(true, ret);
+}
+
+TEST_F(tiglExportSimple, set_export_options_api)
+{
+    EXPECT_EQ(TIGL_NOT_FOUND, tiglSetExportOptions("unknown", "ApplySymmetries", "true"));
+    EXPECT_EQ(TIGL_NOT_FOUND, tiglSetExportOptions("vtk", "unknown", "true"));
+    EXPECT_EQ(TIGL_ERROR, tiglSetExportOptions("vtk", "ApplySymmetries", "unknown"));
+
+    EXPECT_EQ(TIGL_SUCCESS, tiglSetExportOptions("vtk", "ApplySymmetries", "false"));
+    EXPECT_EQ(TIGL_SUCCESS, tiglSetExportOptions("vtk", "ApplySymmetries", "true"));
+    EXPECT_EQ(TIGL_SUCCESS, tiglSetExportOptions("vtk", "IncludeFarfield", "true"));
+    EXPECT_EQ(TIGL_SUCCESS, tiglSetExportOptions("vtk", "IncludeFarfield", "false"));
+    EXPECT_EQ(TIGL_SUCCESS, tiglSetExportOptions("vtk", "WriteNormals", "false"));
+    EXPECT_EQ(TIGL_SUCCESS, tiglSetExportOptions("vtk", "WriteNormals", "true"));
+    EXPECT_EQ(TIGL_SUCCESS, tiglSetExportOptions("vtk", "WriteNormals", "yes"));
+    EXPECT_EQ(TIGL_ERROR, tiglSetExportOptions("vtk", "WriteNormals", "yyeeesss"));
+
+    EXPECT_EQ(TIGL_NULL_POINTER, tiglSetExportOptions(0, "ApplySymmetries", "false"));
+    EXPECT_EQ(TIGL_NULL_POINTER, tiglSetExportOptions("vtk", 0, "false"));
+    EXPECT_EQ(TIGL_NULL_POINTER, tiglSetExportOptions("vtk", "ApplySymmetries", 0));
+
+    EXPECT_EQ(TIGL_SUCCESS, tiglSetExportOptions("brep", "ShapeGroupMode", "NAMED_COMPOUNDS"));
+    EXPECT_EQ(TIGL_SUCCESS, tiglSetExportOptions("brep", "ShapeGroupMode", "FACES"));
+    EXPECT_EQ(TIGL_SUCCESS, tiglSetExportOptions("brep", "ShapeGroupMode", "WHOLE_SHAPE"));
+    EXPECT_EQ(TIGL_ERROR, tiglSetExportOptions("brep", "ShapeGroupMode", "INVALID"));
+}
+
+TEST_F(tiglExportSimple, export_iges_symmetry)
+{
+    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglSimpleHandle);
+
+    tigl::ExporterOptions options = tigl::getExportConfig("iges");
+    options.SetApplySymmetries(true);
+    options.SetIncludeFarfield(false);
+    tigl::PTiglCADExporter igesExporter = tigl::createExporter("iges", options);
+
+    igesExporter->AddConfiguration(config);
+    bool ret = igesExporter->Write("TestData/export/simpletest_export_iges_sym.igs");
 
     ASSERT_EQ(true, ret);
 }
@@ -297,4 +352,20 @@ TEST_F(tiglExportRectangularWing, check_face_traits)
 {
     ASSERT_EQ(TIGL_SUCCESS, tiglExportIGES(tiglRectangularWingHandle,"TestData/export/rectangular_wing_test.iges"));
     ASSERT_EQ(TIGL_SUCCESS, tiglExportFusedWingFuselageIGES(tiglRectangularWingHandle,"TestData/export/rectangular_wing_test_fused.iges"));
+}
+
+TEST(TiglExportFactory, supportedTypes)
+{
+    tigl::CTiglExporterFactory& factory = tigl::CTiglExporterFactory::Instance();
+
+    ASSERT_TRUE(factory.ExporterSupported("step"));
+    ASSERT_TRUE(factory.ExporterSupported("stp"));
+    ASSERT_TRUE(factory.ExporterSupported("brep"));
+    ASSERT_TRUE(factory.ExporterSupported("igs"));
+    ASSERT_TRUE(factory.ExporterSupported("iges"));
+    ASSERT_TRUE(factory.ExporterSupported("dae"));
+    ASSERT_TRUE(factory.ExporterSupported("vtp"));
+    ASSERT_TRUE(factory.ExporterSupported("stl"));
+
+    ASSERT_FALSE(factory.ExporterSupported("unknown"));
 }

@@ -27,12 +27,14 @@ Version 3.0.0
       - ``::tiglFuselageGetCenterLineLength`` computes the length of the centerline of the fuselage.
       - ``::tiglCheckPointInside`` checks, whether a point lies inside some object (defined by its uid).
       - ``::tiglExportFuselageBREPByUID`` and ``::tiglExportWingBREPByUID``
+	  - ``::tiglSetExportOptions`` sets exports-specific options
   
     - Changed API:
       - Removed deprectated intersection functions. These include
-       - tiglComponentIntersectionLineCount
-       - tiglComponentIntersectionPoint
-       - tiglComponentIntersectionPoints
+       - ``tiglComponentIntersectionLineCount``
+       - ``tiglComponentIntersectionPoint``
+       - ``tiglComponentIntersectionPoints``
+      - Removed function ``tiglExportVTKSetOptions``. This is now replaced by ``::tiglSetExportOptions``
 
     - Fixes:
       - TiGL Viewer: Fixed missing fonts on macOS
@@ -61,7 +63,7 @@ Version 2.2.1
         - Improved calculation time of ``::tiglFuselageGetPoint`` by applying caching. This leads only to a benefit in case of a large number of GetPoint calls (~30) per fuselage segment. This will be even improved in TiGL 3.
 
     - New API functions:
-        - New API function ``::tiglExportVTKSetOptions``. This function can be used e.g to disable
+        - New API function ``tiglExportVTKSetOptions``. This function can be used e.g to disable
           normal vector writing in the VTK export.
 
     - Changed API:

@@ -67,45 +67,22 @@ namespace
 namespace tigl
 {
 
-CTiglTriangularizer::CTiglTriangularizer(PNamedShape pshape, double deflection, const CTiglTriangularizerOptions& options)
-    : m_options(options)
+CTiglTriangularizer::CTiglTriangularizer(PNamedShape pshape, double deflection, bool computeNormals)
+    : m_computeNormals(computeNormals)
 {
     if (!pshape) {
         throw CTiglError("Null pointer shape in CTiglTriangularizer", TIGL_NULL_POINTER);
     }
-    
-    const TopoDS_Shape& shape = pshape->Shape();
-    // check if we have already a mesh with given deflection
-    if (!BRepTools::Triangulation (shape, deflection)) {
-        BRepTools::Clean (shape);
-        BRepMesh_IncrementalMesh(shape, deflection);
+
+    triangularizeComponent(NULL, pshape, deflection, NO_INFO);
+}
+
+CTiglTriangularizer::CTiglTriangularizer(const CTiglUIDManager* uidMgr, PNamedShape shape, double deflection, ComponentTraingMode mode, bool computeNormals)
+    : m_computeNormals(computeNormals)
+{
+    if (!shape) {
+        throw CTiglError("Null pointer shape in CTiglTriangularizer", TIGL_NULL_POINTER);
     }
-    triangularizeShape(shape);
-}
-
-int CTiglTriangularizer::triangularizeShape(const TopoDS_Shape& shape)
-{
-    TopExp_Explorer shellExplorer;
-    TopExp_Explorer faceExplorer;
-    
-    for (shellExplorer.Init(shape, TopAbs_SHELL); shellExplorer.More(); shellExplorer.Next()) {
-        const TopoDS_Shell shell = TopoDS::Shell(shellExplorer.Current());
-        
-        polys.currentObject().enableNormals(m_options.normalsEnabled());
-
-        for (faceExplorer.Init(shell, TopAbs_FACE); faceExplorer.More(); faceExplorer.Next()) {
-            TopoDS_Face face = TopoDS::Face(faceExplorer.Current());
-            unsigned long nVertices, iPolyLower, iPolyUpper;
-            triangularizeFace(face, nVertices, iPolyLower, iPolyUpper);
-        } // for faces
-    } // for shells
-    
-    return 0;
-}
-
-CTiglTriangularizer::CTiglTriangularizer(const CTiglUIDManager& uidMgr, PNamedShape shape, double deflection, ComponentTraingMode mode, const CTiglTriangularizerOptions& options)
-    : m_options(options)
-{
 
     triangularizeComponent(uidMgr, shape, deflection, mode);
     
@@ -129,7 +106,7 @@ void CTiglTriangularizer::writeFaceDummyMeta(unsigned long iPolyLower, unsigned 
         polys.currentObject().setPolyDataReal(iPoly, "segment_index", 0.);
         polys.currentObject().setPolyDataReal(iPoly, "eta", 0.);
         polys.currentObject().setPolyDataReal(iPoly, "xsi", 0.);
-        
+
         polys.currentObject().setPolyMetadata(iPoly,"\"\" 0 0.0 0.0 0");
     }
 }
@@ -149,56 +126,69 @@ bool CTiglTriangularizer::writeWingMeta(ITiglGeometricComponent& wingComponent, 
     return false;
 }
 
-int CTiglTriangularizer::triangularizeComponent(const CTiglUIDManager& uidMgr, PNamedShape pshape, double deflection, ComponentTraingMode mode)
+void CTiglTriangularizer::writeFaceMeta(const CTiglUIDManager* uidMgr, const std::string& componentUID,
+                                        TopoDS_Face face, unsigned long iPolyLower, unsigned long iPolyUpper)
+{
+    if (!uidMgr) {
+        return;
+    }
+
+    if (componentUID.empty()) {
+        writeFaceDummyMeta(iPolyLower, iPolyUpper);
+        return;
+    }
+
+    // compute a central point on the face
+    BRepGProp_Face prop(face);
+    Standard_Real umin, umax, vmin, vmax;
+    prop.Bounds(umin, umax, vmin, vmax);
+
+    Standard_Real umean = 0.5*(umin+umax);
+    Standard_Real vmean = 0.5*(vmin+vmax);
+
+    gp_Pnt centralP; gp_Vec n;
+    prop.Normal(umean,vmean,centralP,n);
+
+    try {
+        ITiglGeometricComponent& component = uidMgr->GetGeometricComponent(componentUID);
+        if (writeWingMeta(component, centralP, iPolyLower, iPolyUpper)) {
+            return;
+        }
+        
+        if (writeWingSegmentMeta(component, centralP, iPolyLower, iPolyUpper)) {
+            return;
+        }
+    }
+    catch(CTiglError&) {
+        // uid is not a component. do nothing
+    }
+    writeFaceDummyMeta(iPolyLower, iPolyUpper);
+}
+
+int CTiglTriangularizer::triangularizeComponent(const CTiglUIDManager* uidMgr, PNamedShape pshape, double deflection, ComponentTraingMode mode)
 {
     if (!pshape) {
         return TIGL_NULL_POINTER;
     }
-    
-    
+
     TopoDS_Shape shape = pshape->Shape();
     BRepTools::Clean (shape);
     BRepMesh_IncrementalMesh(shape, deflection);
     LOG(INFO) << "Done meshing";
 
-    polys.currentObject().enableNormals(m_options.normalsEnabled());
+    polys.currentObject().enableNormals(m_computeNormals);
 
     TopTools_IndexedMapOfShape faceMap;
     TopExp::MapShapes(shape, TopAbs_FACE, faceMap);
     for (int iface = 1; iface <= faceMap.Extent(); ++iface) {
         TopoDS_Face face = TopoDS::Face(faceMap(iface));
-        const CFaceTraits& faceTraits = pshape->GetFaceTraits(iface-1);
+        std::string componentUID = pshape->GetFaceTraits(iface-1).ComponentUID();
         unsigned long nVertices, iPolyLower, iPolyUpper;
         triangularizeFace(face, nVertices, iPolyLower, iPolyUpper);
-        
-        // find to which segment the face belongs
-        if (nVertices > 0  &&  mode ==  SEGMENT_INFO) {
-            // compute a central point on the face
-            BRepGProp_Face prop(face);
-            Standard_Real umin, umax, vmin, vmax;
-            prop.Bounds(umin, umax, vmin, vmax);
-            
-            Standard_Real umean = 0.5*(umin+umax);
-            Standard_Real vmean = 0.5*(vmin+vmax);
-            
-            gp_Pnt centralP; gp_Vec n;
-            prop.Normal(umean,vmean,centralP,n);
 
-            try {
-                ITiglGeometricComponent& component = uidMgr.GetGeometricComponent(faceTraits.ComponentUID());
-                if (writeWingMeta(component, centralP, iPolyLower, iPolyUpper)) {
-                    continue;
-                }
-                
-                if (writeWingSegmentMeta(component, centralP, iPolyLower, iPolyUpper)) {
-                    continue;
-                }
-            }
-            catch(CTiglError&) {
-                // uid is not a component. do nothing
-            }
-            writeFaceDummyMeta(iPolyLower, iPolyUpper);
-
+        if (nVertices > 0 && mode ==  SEGMENT_INFO) {
+            // write face metadata
+            writeFaceMeta(uidMgr, componentUID, face, iPolyLower, iPolyUpper);
         }
     }
 
@@ -279,19 +269,18 @@ int CTiglTriangularizer::triangularizeFace(const TopoDS_Face & face, unsigned lo
 {
     TopLoc_Location location;
     std::vector<unsigned long> indexBuffer;
-    
+
     const Handle(Poly_Triangulation) triangulation = BRep_Tool::Triangulation(face, location);
     if (triangulation.IsNull()) {
         return 0;
     }
-    
+
     gp_Trsf nodeTransformation = location;
-    
-    
+
     unsigned long ilower = 0;
     unsigned long iBufferSize = 0;
     
-    if (triangulation->HasUVNodes() && m_options.normalsEnabled()) {
+    if (triangulation->HasUVNodes() && m_computeNormals) {
         // we use the uv nodes to compute normal vectors for each point
         
         BRepGProp_Face prop(face);
@@ -319,15 +308,15 @@ int CTiglTriangularizer::triangularizeFace(const TopoDS_Face & face, unsigned lo
         
         const TColgp_Array1OfPnt& nodes = triangulation->Nodes(); // get (face-local) list of nodes
         ilower = nodes.Lower();
-        
+
         iBufferSize = nodes.Upper()-nodes.Lower()+1;
-        indexBuffer.reserve(iBufferSize);        for (int inode = nodes.Lower(); inode <= nodes.Upper(); inode++) {
+        indexBuffer.reserve(iBufferSize);
+        for (int inode = nodes.Lower(); inode <= nodes.Upper(); inode++) {
             const gp_Pnt& p = nodes(inode).Transformed(nodeTransformation);
             indexBuffer.push_back(polys.currentObject().addPointNormal(p.XYZ(), CTiglPoint(1,0,0)));
         }
     }
 
-    
     const Poly_Array1OfTriangle& triangles = triangulation->Triangles();
     iPolyLower = ULONG_MAX;
     iPolyUpper = 0;
@@ -340,16 +329,16 @@ int CTiglTriangularizer::triangularizeFace(const TopoDS_Face & face, unsigned lo
         index1 = indexBuffer[occindex1-ilower];
         index2 = indexBuffer[occindex2-ilower];
         index3 = indexBuffer[occindex3-ilower];
-        
+
         unsigned long iPolyIndex = 0;
-        
+
         if (face.Orientation() != TopAbs_REVERSED && face.Orientation() != TopAbs_INTERNAL) {
             iPolyIndex = polys.currentObject().addTriangleByVertexIndex(index1, index2, index3);
         }
         else {
             iPolyIndex = polys.currentObject().addTriangleByVertexIndex(index1, index3, index2);
         }
-        
+
         // In some rare cases, 2 indices are the same
         // which means, that we dont have a true triangle.
         // Ignore this triangle

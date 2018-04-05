@@ -32,6 +32,8 @@
 #include "CNamedShape.h"
 #include "tiglcommonfunctions.h"
 #include "CTiglFusePlane.h"
+#include "CTiglExporterFactory.h"
+#include "CTiglTypeRegistry.h"
 
 #include "TopoDS_Shape.hxx"
 #include "TopoDS_Edge.hxx"
@@ -238,12 +240,28 @@ namespace
 namespace tigl
 {
 
-// Constructor
-CTiglExportIges::CTiglExportIges()
+AUTORUN(CTiglExportIges)
 {
-    _groupMode = NAMED_COMPOUNDS;
+    static CCADExporterBuilder<CTiglExportIges> igesExporterBuilder;
+    CTiglExporterFactory::Instance().RegisterExporter(&igesExporterBuilder, IgesOptions());
+    return true;
 }
 
+// Constructor
+CTiglExportIges::CTiglExportIges(const ExporterOptions& opt)
+    : CTiglCADExporter(opt)
+{
+}
+
+ExporterOptions CTiglExportIges::GetDefaultOptions() const
+{
+    return IgesOptions();
+}
+
+ShapeExportOptions CTiglExportIges::GetDefaultShapeOptions() const
+{
+    return IgesShapeOptions();
+}
 
 void CTiglExportIges::SetTranslationParameters() const
 {
@@ -286,12 +304,25 @@ bool CTiglExportIges::WriteImpl(const std::string& filename) const
         }
     }
 
+    size_t iShape = 0;
+    size_t iLevel = 0;
     ListPNamedShape list;
+    std::vector<size_t> levels;
     for (it = shapeScaled.begin(); it != shapeScaled.end(); ++it) {
-        ListPNamedShape templist = GroupFaces(*it, _groupMode);
+        ShapeGroupMode groupMode = GlobalExportOptions().GroupMode();
+        ListPNamedShape templist = GroupFaces(*it, groupMode);
+
+        int level = GetOptions(iShape).Get<int>("Layer");
+        if (level >= 0) {
+            iLevel = static_cast<size_t>(level);
+        }
+
         for (ListPNamedShape::iterator it2 = templist.begin(); it2 != templist.end(); ++it2) {
             list.push_back(*it2);
+            levels.push_back(iLevel);
         }
+        iShape++;
+        iLevel++;
     }
 
     SetTranslationParameters();
@@ -299,20 +330,13 @@ bool CTiglExportIges::WriteImpl(const std::string& filename) const
     IGESControl_Writer igesWriter("MM", 1);
     igesWriter.Model()->ApplyStatic();
 
-    int level = 0;
-    for (it = list.begin(); it != list.end(); ++it) {
-        PNamedShape pshape = *it;
-        AddToIges(pshape, igesWriter, level++);
+    for (size_t i = 0; i < list.size(); ++i) {
+        AddToIges(list[i], igesWriter, static_cast<int>(levels[i]));
     }
 
     igesWriter.ComputeModel();
 
     return toBool(igesWriter.Write(const_cast<char*>(filename.c_str())));
-}
-
-void CTiglExportIges::SetGroupMode(ShapeGroupMode mode)
-{
-    _groupMode = mode;
 }
 
 /**

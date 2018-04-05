@@ -30,6 +30,8 @@
 #include "CCPACSWingSegment.h"
 #include "CTiglFusePlane.h"
 #include "tiglcommonfunctions.h"
+#include "CTiglExporterFactory.h"
+#include "CTiglTypeRegistry.h"
 
 #include "TopoDS_Shape.hxx"
 #include "STEPControl_Controller.hxx"
@@ -236,10 +238,27 @@ namespace
 namespace tigl 
 {
 
-// Constructor
-CTiglExportStep::CTiglExportStep()
+AUTORUN(CTiglExportStep)
 {
-    SetGroupMode(NAMED_COMPOUNDS);
+    static CCADExporterBuilder<CTiglExportStep> stepExporterBuilder;
+    CTiglExporterFactory::Instance().RegisterExporter(&stepExporterBuilder, StepOptions());
+    return true;
+}
+
+// Constructor
+CTiglExportStep::CTiglExportStep(const ExporterOptions& opt)
+    : CTiglCADExporter(opt)
+{
+}
+
+ExporterOptions CTiglExportStep::GetDefaultOptions() const
+{
+    return StepOptions();
+}
+
+ShapeExportOptions CTiglExportStep::GetDefaultShapeOptions() const
+{
+    return StepShapeOptions();
 }
 
 /**
@@ -302,8 +321,11 @@ bool CTiglExportStep::WriteImpl(const std::string& filename) const
     Interface_Static::SetCVal("write.step.unit", "M");
 
     ListPNamedShape list;
+    size_t iShape = 0;
     for (size_t ishape = 0; ishape < NShapes(); ++ishape) {
-        ListPNamedShape templist = GroupFaces(GetShape(ishape), _groupMode);
+        ShapeGroupMode groupMode = GetOptions(iShape).Get<ShapeGroupMode>("ShapeGroupMode");
+
+        ListPNamedShape templist = GroupFaces(GetShape(ishape), groupMode);
         for (ListPNamedShape::iterator it2 = templist.begin(); it2 != templist.end(); ++it2) {
             list.push_back(*it2);
         }
@@ -317,11 +339,6 @@ bool CTiglExportStep::WriteImpl(const std::string& filename) const
     }
 
     return stepWriter.Write(const_cast<char*>(filename.c_str())) <= IFSelect_RetDone;
-}
-
-void CTiglExportStep::SetGroupMode(ShapeGroupMode mode)
-{
-    _groupMode = mode;
 }
 
 } // end namespace tigl

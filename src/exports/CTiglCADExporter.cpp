@@ -25,6 +25,7 @@
 #include "CCPACSExternalObject.h"
 
 #include <string>
+#include <algorithm>
 #include <cassert>
 
 
@@ -36,15 +37,26 @@ bool CTiglCADExporter::Write(const std::string &filename) const
     return WriteImpl(filename);
 }
 
-void CTiglCADExporter::AddShape(PNamedShape shape, ExportOptions options)
+CTiglCADExporter::CTiglCADExporter(const ExporterOptions &options)
+    : _globalOptions(options)
+{
+}
+
+void CTiglCADExporter::AddShape(PNamedShape shape, const ShapeExportOptions& options)
+{
+    AddShape(shape, NULL, options);
+}
+
+void CTiglCADExporter::AddShape(PNamedShape shape, const CCPACSConfiguration* config, const ShapeExportOptions& options)
 {
     if (shape) {
         _shapes.push_back(shape);
-        _options.push_back(options);
+        _shapeOptions.push_back(options.Get<bool>("IsDefault") ? GetDefaultShapeOptions() : options);
+        _configs.push_back(config);
     }
 }
 
-void CTiglCADExporter::AddConfiguration(CCPACSConfiguration& config, ExportOptions options)
+void CTiglCADExporter::AddConfiguration(CCPACSConfiguration& config, const ShapeExportOptions& options)
 {
     // Export all wings of the configuration
     for (int w = 1; w <= config.GetWingCount(); w++) {
@@ -53,10 +65,10 @@ void CTiglCADExporter::AddConfiguration(CCPACSConfiguration& config, ExportOptio
         for (int i = 1; i <= wing.GetSegmentCount(); i++) {
             CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
             PNamedShape loft = segment.GetLoft();
-            AddShape(loft, options);
+            AddShape(loft, &config, options);
 
-            if (options.applySymmetries && segment.GetSymmetryAxis() != TIGL_NO_SYMMETRY) {
-                AddShape(segment.GetMirroredLoft(), options);
+            if (GlobalExportOptions().Get<bool>("ApplySymmetries") && segment.GetSymmetryAxis() != TIGL_NO_SYMMETRY) {
+                AddShape(segment.GetMirroredLoft(), &config, options);
             }
         }
     }
@@ -68,10 +80,10 @@ void CTiglCADExporter::AddConfiguration(CCPACSConfiguration& config, ExportOptio
         for (int i = 1; i <= fuselage.GetSegmentCount(); i++) {
             CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(i);
             PNamedShape loft = segment.GetLoft();
-            AddShape(loft, options);
+            AddShape(loft, &config, options);
 
-            if (options.applySymmetries && segment.GetSymmetryAxis() != TIGL_NO_SYMMETRY) {
-                AddShape(segment.GetMirroredLoft(), options);
+            if (GlobalExportOptions().Get<bool>("ApplySymmetries") && segment.GetSymmetryAxis() != TIGL_NO_SYMMETRY) {
+                AddShape(segment.GetMirroredLoft(), &config, options);
             }
         }
     }
@@ -80,31 +92,31 @@ void CTiglCADExporter::AddConfiguration(CCPACSConfiguration& config, ExportOptio
     for (int e = 1; e <= config.GetExternalObjectCount(); e++) {
         CCPACSExternalObject& obj = config.GetExternalObject(e);
         PNamedShape loft = obj.GetLoft();
-        AddShape(loft, options);
+        AddShape(loft, &config, options);
 
-        if (options.applySymmetries && obj.GetSymmetryAxis() != TIGL_NO_SYMMETRY) {
-            AddShape(obj.GetMirroredLoft(), options);
+        if (GlobalExportOptions().Get<bool>("ApplySymmetries") && obj.GetSymmetryAxis() != TIGL_NO_SYMMETRY) {
+            AddShape(obj.GetMirroredLoft(), &config, options);
         }
     }
 
-    if (options.includeFarField) {
+    if (GlobalExportOptions().Get<bool>("IncludeFarfield")) {
         CCPACSFarField& farfield = config.GetFarField();
         if (farfield.GetType() != NONE) {
-            AddShape(farfield.GetLoft(),options);
+            AddShape(farfield.GetLoft(), &config, options);
         }
     }
 }
 
-void CTiglCADExporter::AddFusedConfiguration(CCPACSConfiguration &config, ExportOptions options)
+void CTiglCADExporter::AddFusedConfiguration(CCPACSConfiguration &config, const ShapeExportOptions& options)
 {
     PTiglFusePlane fuser = config.AircraftFusingAlgo();
 
     TiglFuseResultMode mode = HALF_PLANE_TRIMMED_FF;
-    if (options.applySymmetries) {
-        mode = options.includeFarField ? FULL_PLANE_TRIMMED_FF : FULL_PLANE;
+    if (GlobalExportOptions().Get<bool>("ApplySymmetries")) {
+        mode = GlobalExportOptions().Get<bool>("IncludeFarfield") ? FULL_PLANE_TRIMMED_FF : FULL_PLANE;
     }
     else {
-        mode = options.includeFarField ? HALF_PLANE_TRIMMED_FF : HALF_PLANE;
+        mode = GlobalExportOptions().Get<bool>("IncludeFarfield") ? HALF_PLANE_TRIMMED_FF : HALF_PLANE;
     }
 
     fuser->SetResultMode(mode);
@@ -116,14 +128,14 @@ void CTiglCADExporter::AddFusedConfiguration(CCPACSConfiguration &config, Export
         throw CTiglError("Error computing fused airplane.", TIGL_NULL_POINTER);
     }
 
-    AddShape(fusedAirplane, options);
-    AddShape(farField, options);
+    AddShape(fusedAirplane, &config, options);
+    AddShape(farField, &config, options);
 
     // add intersections
     const ListPNamedShape& ints = fuser->Intersections();
     ListPNamedShape::const_iterator it;
     for (it = ints.begin(); it != ints.end(); ++it) {
-        AddShape(*it, options);
+        AddShape(*it, &config, options);
     }
 }
 
@@ -137,9 +149,27 @@ PNamedShape CTiglCADExporter::GetShape(size_t iShape) const
     return _shapes.at(iShape);
 }
 
-ExportOptions CTiglCADExporter::GetOptions(size_t iShape) const
+const ShapeExportOptions& CTiglCADExporter::GetOptions(size_t iShape) const
 {
-    return _options.at(iShape);
+    return _shapeOptions.at(iShape);
+}
+
+const ExporterOptions &CTiglCADExporter::GlobalExportOptions() const
+{
+    if (_globalOptions.IsDefault()) {
+        _globalOptions = GetDefaultOptions();
+    }
+    return _globalOptions;
+}
+
+const CCPACSConfiguration *CTiglCADExporter::GetConfiguration(size_t iShape) const
+{
+    return _configs.at(iShape);
+}
+
+std::string CTiglCADExporter::SupportedFileType() const
+{
+    return SupportedFileTypeImpl();
 }
 
 } // namespace tigl

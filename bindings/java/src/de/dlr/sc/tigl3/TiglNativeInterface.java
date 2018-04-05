@@ -146,7 +146,6 @@ public class TiglNativeInterface {
     public static native int tiglExportMeshedFuselageSTL(int cpacsHandle, int fuselageIndex, String filenamePtr, double deflection);
     public static native int tiglExportMeshedFuselageSTLByUID(int cpacsHandle, String fuselageUID, String filenamePtr, double deflection);
     public static native int tiglExportMeshedGeometrySTL(int cpacsHandle, String filenamePtr, double deflection);
-    public static native int tiglExportVTKSetOptions(String key, String value);
     public static native int tiglExportMeshedWingVTKByIndex(int cpacsHandle, int wingIndex, String filenamePtr, double deflection);
     public static native int tiglExportMeshedWingVTKByUID(int cpacsHandle, String wingUID, String filenamePtr, double deflection);
     public static native int tiglExportMeshedFuselageVTKByIndex(int cpacsHandle, int fuselageIndex, String filenamePtr, double deflection);
