@@ -33,6 +33,8 @@
 #include "CCPACSConfiguration.h"
 #include "CCPACSWing.h"
 #include "CTiglExporterFactory.h"
+#include "CGlobalExporterConfigs.h"
+#include "CTiglExportIges.h"
 
 
 /******************************************************************************/
@@ -274,6 +276,36 @@ TEST_F(tiglExportSimple, export_generic_stl)
     tigl::TriangulatedExportOptions options(0.01);
     stlExporter->AddConfiguration(config, options);
     bool ret = stlExporter->Write("TestData/export/simpletest_export_generic.stl");
+
+    ASSERT_EQ(true, ret);
+}
+
+TEST_F(tiglExportSimple, export_iges_layers)
+{
+    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglSimpleHandle);
+
+    tigl::PTiglCADExporter igesExporter = tigl::createExporter("iges");
+
+    igesExporter->AddShape(config.GetWing(1).GetLoft(), tigl::IgesShapeOptions(111));
+    igesExporter->AddShape(config.GetFuselage(1).GetLoft(), tigl::IgesShapeOptions(222));
+    bool ret = igesExporter->Write("TestData/export/simpletest_export_igeslayer.igs");
+
+    ASSERT_EQ(true, ret);
+}
+
+TEST_F(tiglExportSimple, export_iges_symmetry)
+{
+    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglSimpleHandle);
+
+    tigl::ExporterOptions options = tigl::getExportConfig("iges");
+    options.SetApplySymmetries(true);
+    options.SetIncludeFarfield(false);
+    tigl::PTiglCADExporter igesExporter = tigl::createExporter("iges", options);
+
+    igesExporter->AddConfiguration(config);
+    bool ret = igesExporter->Write("TestData/export/simpletest_export_iges_sym.igs");
 
     ASSERT_EQ(true, ret);
 }
