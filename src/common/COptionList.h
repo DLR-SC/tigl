@@ -92,7 +92,7 @@ public:
     {
         OptionsMap::iterator it = m_options.find(name);
         if (it == m_options.end()) {
-            throw CTiglError("No such option: " + name);
+            throw CTiglError("No such option: " + name, TIGL_NOT_FOUND);
         }
         else {
             tigl::from_string(value, it->second);

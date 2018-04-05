@@ -3339,6 +3339,38 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetCurveParameter (TiglCPACSConfigurationH
 
 /*@{*/
 
+/**
+* @brief Sets options for the geometry export
+* 
+* Generic options for all exporters:
+*   - ApplySymmetries (Values: "true", "false"): Whether symmetric cpacs objects (e.g. wings) should be written.
+*   - IncludeFarfield (Values: "true", "false"): Whether to include the far field into the export or not.
+*   - ShapeGroupMode  (Values: "WHOLE_SHAPE", "NAMED_COMPOUNDS", "FACES"): Adjust, how shapes are grouped.
+* 
+* Exporter-specific options:
+*  - VTK:
+*    - WriteNormals (Values: "true", "false"): Whether to write normal vectors or not.
+*      To avoid duplicate vertices, normals should be disabled.
+*    - MultiplePieces (Values: "true", "false"): Whether to export the shapes into multiple vtk pieces.
+*    - WriteMetaData (Values: "true", "false"): Whether to add meta data (e.g. wing segments etc...)
+*
+* Example: The IGES export normally does only write half-models. It does not apply symmetries.
+* to change this, just call 
+  @verbatim
+  tiglSetExportOptions("iges", "ApplySymmetries", "true");
+  @endverbatim
+* 
+* @param[in] exporter_name File format of the export. E.g. "vtk", "iges", "step", "collada", "brep" or "stl"
+* @param[in] option_name   Name of the option to be set
+* @param[in] option_value  Value of the options to be set
+*
+* @return 
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if the specifid exporter or the option does not exist
+*   - TIGL_NULL_POINTER if exporter_name, option_name or option_value is a null pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglSetExportOptions(const char* exporter_name, const char* option_name, const char* option_value);
 
 /**
 * @brief Exports the geometry of a CPACS configuration to IGES format.

@@ -6848,3 +6848,38 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglCheckPointInside(TiglCPACSConfigurationHan
     }
     return TIGL_ERROR;
 }
+
+TiglReturnCode tiglSetExportOptions(const char *exporter_name, const char *option_name, const char *option_value)
+{
+    if (!exporter_name) {
+        LOG(ERROR) << "Argument exporter_name is NULL in tiglSetExportOptions!";
+        return TIGL_NULL_POINTER;
+    }
+
+    if (!option_name) {
+        LOG(ERROR) << "Argument option_name is NULL in tiglSetExportOptions!";
+        return TIGL_NULL_POINTER;
+    }
+
+    if (!option_value) {
+        LOG(ERROR) << "Argument option_value is NULL in tiglSetExportOptions!";
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        tigl::ExporterOptions& options = tigl::getExportConfig(exporter_name);
+        options.SetFromString(option_name, option_value);
+        return TIGL_SUCCESS;
+    }
+    catch (const tigl::CTiglError& ex) {
+        LOG(ERROR) << "In tiglSetExportOptions: " << ex.what();
+        return ex.getCode();
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << "In tiglSetExportOptions: " << ex.what();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglSetExportOptions!";
+    }
+    return TIGL_ERROR;
+}

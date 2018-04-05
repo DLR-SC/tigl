@@ -294,6 +294,31 @@ TEST_F(tiglExportSimple, export_iges_layers)
     ASSERT_EQ(true, ret);
 }
 
+TEST_F(tiglExportSimple, set_export_options_api)
+{
+    EXPECT_EQ(TIGL_NOT_FOUND, tiglSetExportOptions("unknown", "ApplySymmetries", "true"));
+    EXPECT_EQ(TIGL_NOT_FOUND, tiglSetExportOptions("vtk", "unknown", "true"));
+    EXPECT_EQ(TIGL_ERROR, tiglSetExportOptions("vtk", "ApplySymmetries", "unknown"));
+
+    EXPECT_EQ(TIGL_SUCCESS, tiglSetExportOptions("vtk", "ApplySymmetries", "false"));
+    EXPECT_EQ(TIGL_SUCCESS, tiglSetExportOptions("vtk", "ApplySymmetries", "true"));
+    EXPECT_EQ(TIGL_SUCCESS, tiglSetExportOptions("vtk", "IncludeFarfield", "true"));
+    EXPECT_EQ(TIGL_SUCCESS, tiglSetExportOptions("vtk", "IncludeFarfield", "false"));
+    EXPECT_EQ(TIGL_SUCCESS, tiglSetExportOptions("vtk", "WriteNormals", "false"));
+    EXPECT_EQ(TIGL_SUCCESS, tiglSetExportOptions("vtk", "WriteNormals", "true"));
+    EXPECT_EQ(TIGL_SUCCESS, tiglSetExportOptions("vtk", "WriteNormals", "yes"));
+    EXPECT_EQ(TIGL_ERROR, tiglSetExportOptions("vtk", "WriteNormals", "yyeeesss"));
+
+    EXPECT_EQ(TIGL_NULL_POINTER, tiglSetExportOptions(0, "ApplySymmetries", "false"));
+    EXPECT_EQ(TIGL_NULL_POINTER, tiglSetExportOptions("vtk", 0, "false"));
+    EXPECT_EQ(TIGL_NULL_POINTER, tiglSetExportOptions("vtk", "ApplySymmetries", 0));
+
+    EXPECT_EQ(TIGL_SUCCESS, tiglSetExportOptions("brep", "ShapeGroupMode", "NAMED_COMPOUNDS"));
+    EXPECT_EQ(TIGL_SUCCESS, tiglSetExportOptions("brep", "ShapeGroupMode", "FACES"));
+    EXPECT_EQ(TIGL_SUCCESS, tiglSetExportOptions("brep", "ShapeGroupMode", "WHOLE_SHAPE"));
+    EXPECT_EQ(TIGL_ERROR, tiglSetExportOptions("brep", "ShapeGroupMode", "INVALID"));
+}
+
 TEST_F(tiglExportSimple, export_iges_symmetry)
 {
     tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();

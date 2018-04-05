@@ -22,6 +22,7 @@
 
 #include "tigl_internal.h"
 #include "CTiglError.h"
+#include "stringtools.h"
 
 #include <boost/lexical_cast.hpp>
 #include <boost/core/demangle.hpp>
@@ -181,6 +182,20 @@ void from_string(const std::string& s, to_value& t) {
     catch (boost::bad_lexical_cast&) {
         throw tigl::CTiglError("Cannot convert string to " +
                                boost::core::demangle(typeid(to_value).name()));
+    }
+}
+
+template <>
+inline void from_string<bool>(const std::string& s, bool& t) {
+    std::string str = tigl::to_lower(s);
+    if (str == "1" || str == "true" || str == "yes") {
+        t = true;
+    }
+    else if (str == "0" || str == "false" || str == "no") {
+        t = false;
+    }
+    else {
+        throw tigl::CTiglError("Cannot convert string '" + s + "' to bool.");
     }
 }
 
