@@ -44,7 +44,7 @@ class VtkOptions : public ExporterOptions
 public:
     VtkOptions()
     {
-        AddOption("NormalsEnabled", true);
+        AddOption("WriteNormals", true);
         AddOption("MultiplePieces", false);
         AddOption("WriteMetaData", true);
 

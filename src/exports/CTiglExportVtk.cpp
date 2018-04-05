@@ -128,7 +128,7 @@ bool CTiglExportVtk::WriteImpl(const std::string &filename) const
     size_t nTotalPolys = 0;
 
     bool multiplePieces = GlobalExportOptions().Get<bool>("MultiplePieces");
-    bool normalsEnabled = GlobalExportOptions().Get<bool>("NormalsEnabled");
+    bool normalsEnabled = GlobalExportOptions().Get<bool>("WriteNormals");
 
     ComponentTraingMode myMode = NO_INFO;
     if (GlobalExportOptions().Get<bool>("WriteMetaData")) {
