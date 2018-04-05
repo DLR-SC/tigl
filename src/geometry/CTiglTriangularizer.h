@@ -45,34 +45,13 @@ enum ComponentTraingMode
     SEGMENT_INFO
 };
 
-class CTiglTriangularizerOptions {
-public:
-    CTiglTriangularizerOptions()
-        : m_normalsEnabled(true)
-    {
-    }
-
-    bool normalsEnabled() const
-    {
-        return m_normalsEnabled;
-    }
-
-    void setNormalsEnabled(bool enabled)
-    {
-        m_normalsEnabled = enabled;
-    }
-
-private:
-    bool m_normalsEnabled;
-};
-
 class CTiglTriangularizer
 {
 public:
-    TIGL_EXPORT CTiglTriangularizer(PNamedShape shape, double deflection, const CTiglTriangularizerOptions& options = CTiglTriangularizerOptions());
+    TIGL_EXPORT CTiglTriangularizer(PNamedShape shape, double deflection, bool computeNormals = true);
 
     TIGL_EXPORT CTiglTriangularizer(const CTiglUIDManager* uidMgr, PNamedShape shape, double deflection,
-                                    ComponentTraingMode mode = NO_INFO, const CTiglTriangularizerOptions& options = CTiglTriangularizerOptions());
+                                    ComponentTraingMode mode = NO_INFO, bool computeNormals = true);
 
     const CTiglPolyData& getTriangulation() const
     {
@@ -88,7 +67,7 @@ private:
     bool writeWingSegmentMeta(ITiglGeometricComponent& segment, gp_Pnt centralP, unsigned long iPolyLower, unsigned long iPolyUpper);
 
     // some options
-    CTiglTriangularizerOptions m_options;
+    bool m_computeNormals;
     CTiglPolyData polys;
     void writeFaceMeta(const CTiglUIDManager* uidMgr, const std::string& componentUID, TopoDS_Face face, unsigned long iPolyLower, unsigned long iPolyUpper);
 };

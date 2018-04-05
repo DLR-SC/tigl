@@ -51,14 +51,6 @@
 
 namespace
 {
-    tigl::CTiglTriangularizerOptions toTrianOptions(bool normalsEnabled)
-    {
-        tigl::CTiglTriangularizerOptions options;
-        options.setNormalsEnabled(normalsEnabled);
-
-        return options;
-    }
-
     void setMinMax(const tigl::CTiglPoint& p, double* oldmin, double* oldmax)
     {
         if (p.x > *oldmax) {
@@ -142,7 +134,7 @@ bool CTiglExportVtk::WriteImpl(const std::string &filename) const
             double deflection = GetOptions(i).Get<double>("Deflection");
 
             const CTiglUIDManager* mgr = GetConfiguration(i) ? &(GetConfiguration(i)->GetUIDManager()) : NULL;
-            CTiglTriangularizer mesher(mgr, pshape, deflection, myMode, toTrianOptions(normalsEnabled));
+            CTiglTriangularizer mesher(mgr, pshape, deflection, myMode, normalsEnabled);
             const CTiglPolyData& polys = mesher.getTriangulation();
             writeVTKPiece(polys.currentObject(), handle, i + 1);
 
@@ -171,9 +163,7 @@ bool CTiglExportVtk::WriteImpl(const std::string &filename) const
         }
 
         PNamedShape groupedShape = CGroupShapes(shapes);
-        CTiglTriangularizerOptions options;
-        options.setNormalsEnabled(normalsEnabled);
-        CTiglTriangularizer mesher(mgr, groupedShape, minDeflection, myMode, options);
+        CTiglTriangularizer mesher(mgr, groupedShape, minDeflection, myMode, normalsEnabled);
         const CTiglPolyData& polys = mesher.getTriangulation();
         writeVTKPiece(polys.currentObject(), handle, 1);
 

@@ -67,8 +67,8 @@ namespace
 namespace tigl
 {
 
-CTiglTriangularizer::CTiglTriangularizer(PNamedShape pshape, double deflection, const CTiglTriangularizerOptions& options)
-    : m_options(options)
+CTiglTriangularizer::CTiglTriangularizer(PNamedShape pshape, double deflection, bool computeNormals)
+    : m_computeNormals(computeNormals)
 {
     if (!pshape) {
         throw CTiglError("Null pointer shape in CTiglTriangularizer", TIGL_NULL_POINTER);
@@ -77,8 +77,8 @@ CTiglTriangularizer::CTiglTriangularizer(PNamedShape pshape, double deflection, 
     triangularizeComponent(NULL, pshape, deflection, NO_INFO);
 }
 
-CTiglTriangularizer::CTiglTriangularizer(const CTiglUIDManager* uidMgr, PNamedShape shape, double deflection, ComponentTraingMode mode, const CTiglTriangularizerOptions& options)
-    : m_options(options)
+CTiglTriangularizer::CTiglTriangularizer(const CTiglUIDManager* uidMgr, PNamedShape shape, double deflection, ComponentTraingMode mode, bool computeNormals)
+    : m_computeNormals(computeNormals)
 {
     if (!shape) {
         throw CTiglError("Null pointer shape in CTiglTriangularizer", TIGL_NULL_POINTER);
@@ -176,7 +176,7 @@ int CTiglTriangularizer::triangularizeComponent(const CTiglUIDManager* uidMgr, P
     BRepMesh_IncrementalMesh(shape, deflection);
     LOG(INFO) << "Done meshing";
 
-    polys.currentObject().enableNormals(m_options.normalsEnabled());
+    polys.currentObject().enableNormals(m_computeNormals);
 
     TopTools_IndexedMapOfShape faceMap;
     TopExp::MapShapes(shape, TopAbs_FACE, faceMap);
@@ -280,7 +280,7 @@ int CTiglTriangularizer::triangularizeFace(const TopoDS_Face & face, unsigned lo
     unsigned long ilower = 0;
     unsigned long iBufferSize = 0;
     
-    if (triangulation->HasUVNodes() && m_options.normalsEnabled()) {
+    if (triangulation->HasUVNodes() && m_computeNormals) {
         // we use the uv nodes to compute normal vectors for each point
         
         BRepGProp_Face prop(face);
