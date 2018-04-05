@@ -29,6 +29,7 @@
 
 #include "CCPACSFuselage.h"
 #include "CCPACSFuselageSegment.h"
+#include "CCPACSFuselageStringerFramePosition.h"
 #include "CCPACSConfiguration.h"
 #include "CCPACSWingSegment.h"
 #include "tiglcommonfunctions.h"
@@ -53,6 +54,11 @@
 #include "CTiglMakeLoft.h"
 #include "TopExp.hxx"
 #include "TopTools_IndexedMapOfShape.hxx"
+#include <TopExp_Explorer.hxx>
+#include <IntCurvesFace_Intersector.hxx>
+#include <BRepBuilderAPI_MakeVertex.hxx>
+#include <BRepProj_Projection.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
 
 namespace tigl
 {
@@ -370,6 +376,89 @@ TopoDS_Compound &CCPACSFuselage::GetGuideCurveWires()
 {
     BuildGuideCurves();
     return guideCurves;
+}
+
+gp_Lin CCPACSFuselage::Intersection(gp_Pnt pRef, double angleRef)
+{
+    const gp_Ax1 xAxe(
+        pRef,
+        gp_Dir(1, 0,
+               0)); // to have a left-handed coordinates system for the intersection computation (see documentation)
+    const gp_Dir ZReference(0, 0, 1);
+    const gp_Dir angleDir = ZReference.Rotated(xAxe, angleRef + M_PI);
+
+    // build a line to position the intersection with the fuselage shape
+    gp_Lin line(pRef, angleDir);
+
+    // get the list of shape from the fuselage shape
+    TopExp_Explorer exp;
+    for (exp.Init(GetLoft()->Shape(), TopAbs_FACE); exp.More(); exp.Next()) {
+        IntCurvesFace_Intersector intersection(TopoDS::Face(exp.Current()), 0.1); // intersection builder
+        intersection.Perform(line, -std::numeric_limits<Standard_Real>::max(), // replace by std::numeric_limits<Standard_Real>::lowest() when C++11 available
+                             std::numeric_limits<Standard_Real>::max());
+        if (intersection.IsDone() && intersection.NbPnt() > 0) {
+            gp_Lin result(intersection.Pnt(1), line.Direction());
+            // return the line with the point on the fuselage as the origin, and the previous line's direction
+            return result;
+        }
+    }
+
+    throw std::logic_error("Error computing intersection line");
+}
+
+gp_Lin CCPACSFuselage::Intersection(const CCPACSFuselageStringerFramePosition& pos)
+{
+    const gp_Pnt pRef        = pos.GetRefPoint();
+    const double angleRefRad = (M_PI / 180.) * pos.GetReferenceAngle();
+    return Intersection(pRef, angleRefRad);
+}
+
+namespace
+{
+    TopoDS_Wire project(TopoDS_Shape wireOrEdge, BRepProj_Projection& proj)
+    {
+        BRepBuilderAPI_MakeWire wireBuilder;
+        for (; proj.More(); proj.Next())
+            wireBuilder.Add(proj.Current());
+
+        TopTools_ListOfShape wireList;
+        BuildWiresFromConnectedEdges(proj.Shape(), wireList);
+
+        if (wireList.Extent() == 0)
+            throw CTiglError("Projection returned no wires");
+        if (wireList.Extent() == 1)
+            return TopoDS::Wire(wireList.First());
+
+        // select the wire which is closest to the wire we projected
+        for (TopTools_ListIteratorOfListOfShape it(wireList); it.More(); it.Next()) {
+            const TopoDS_Wire w                = TopoDS::Wire(it.Value());
+            const gp_Pnt wStart     = GetFirstPoint(w);
+            const gp_Pnt wEnd       = GetLastPoint(w);
+            const gp_Pnt inputStart = GetFirstPoint(wireOrEdge);
+            const gp_Pnt inputEnd   = GetLastPoint(wireOrEdge);
+
+            const double pointEqualEpsilon = 1e-4;
+            if ((wStart.IsEqual(inputStart, pointEqualEpsilon) && wEnd.IsEqual(inputEnd, pointEqualEpsilon)) ||
+                (wEnd.IsEqual(inputStart, pointEqualEpsilon) && wStart.IsEqual(inputEnd, pointEqualEpsilon))) {
+                return w;
+            }
+        }
+
+        // give up
+        throw CTiglError("Failed to project wire/edge onto fuselage");
+    }
+}
+
+TopoDS_Wire CCPACSFuselage::projectConic(TopoDS_Shape wireOrEdge, gp_Pnt origin)
+{
+    BRepProj_Projection proj(wireOrEdge, GetLoft()->Shape(), origin);
+    return project(wireOrEdge, proj);
+}
+
+TopoDS_Wire CCPACSFuselage::projectParallel(TopoDS_Shape wireOrEdge, gp_Dir direction)
+{
+    BRepProj_Projection proj(wireOrEdge, GetLoft()->Shape(), direction);
+    return project(wireOrEdge, proj);
 }
 
 void CCPACSFuselage::BuildGuideCurves()

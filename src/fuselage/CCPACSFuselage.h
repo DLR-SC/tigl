@@ -42,10 +42,12 @@
 #include "TopoDS_Shape.hxx"
 #include "TopoDS_Compound.hxx"
 #include "BRep_Builder.hxx"
+#include <gp_Lin.hxx>
 
 namespace tigl
 {
 class CCPACSConfiguration;
+class CCPACSFuselageStringerFramePosition;
 
 class CCPACSFuselage : public generated::CPACSFuselage, public CTiglRelativelyPositionedComponent
 {
@@ -114,6 +116,14 @@ public:
 
     // Returns all guide curve wires as a compound
     TIGL_EXPORT TopoDS_Compound& GetGuideCurveWires();
+
+    // create the line intersecting the fuselage for the stringer/frame profile
+    TIGL_EXPORT gp_Lin Intersection(gp_Pnt pRef, double angleRef);
+    TIGL_EXPORT gp_Lin Intersection(const CCPACSFuselageStringerFramePosition& pos);
+
+    // project the edge/wire onto the fuselage loft
+    TIGL_EXPORT TopoDS_Wire projectConic(TopoDS_Shape wireOrEdge, gp_Pnt origin);
+    TIGL_EXPORT TopoDS_Wire projectParallel(TopoDS_Shape wireOrEdge, gp_Dir direction);
 
 protected:
     void BuildGuideCurves();

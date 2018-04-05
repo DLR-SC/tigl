@@ -97,8 +97,8 @@ PNamedShape CTiglWingBuilder::BuildShape()
             }
             TopoDS_Wire aeroProfile = wireMaker.Wire();
             lofter.addProfiles(aeroProfile);
-            upperTEPoints.push_back(WireGetLastPoint(aeroProfile));
-            lowerTEPoints.push_back(WireGetFirstPoint(aeroProfile));
+            upperTEPoints.push_back(GetLastPoint(aeroProfile));
+            lowerTEPoints.push_back(GetFirstPoint(aeroProfile));
 
         }
         else {
@@ -123,8 +123,8 @@ PNamedShape CTiglWingBuilder::BuildShape()
         lofter.addProfiles(aeroProfile);
 
         // add the trailing edge points
-        upperTEPoints.push_back(WireGetLastPoint(aeroProfile));
-        lowerTEPoints.push_back(WireGetFirstPoint(aeroProfile));
+        upperTEPoints.push_back(GetLastPoint(aeroProfile));
+        lowerTEPoints.push_back(GetFirstPoint(aeroProfile));
 
     }
     else {
