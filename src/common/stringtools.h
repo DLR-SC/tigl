@@ -19,10 +19,15 @@
 #ifndef STRINGTOOLS_H
 #define STRINGTOOLS_H
 
+#include "CTiglError.h"
+
 #include <vector>
 #include <string>
 #include <algorithm>
 #include <sstream>
+
+#include <boost/lexical_cast.hpp>
+#include <boost/core/demangle.hpp>
 
 namespace tigl
 {
@@ -52,6 +57,33 @@ inline std::vector<std::string> split_string(const std::string& mystring, char d
         strings.push_back(s);
     }
     return strings;
+}
+
+template <class to_value>
+void from_string(const std::string& s, to_value& t)
+{
+    try {
+        t = boost::lexical_cast<to_value>(s);
+    }
+    catch (boost::bad_lexical_cast&) {
+        throw tigl::CTiglError("Cannot convert string to " +
+                               boost::core::demangle(typeid(to_value).name()));
+    }
+}
+
+template <>
+inline void from_string<bool>(const std::string& s, bool& t)
+{
+    std::string str = tigl::to_lower(s);
+    if (str == "1" || str == "true" || str == "yes") {
+        t = true;
+    }
+    else if (str == "0" || str == "false" || str == "no") {
+        t = false;
+    }
+    else {
+        throw tigl::CTiglError("Cannot convert string '" + s + "' to bool.");
+    }
 }
 
 } // namespace tigl

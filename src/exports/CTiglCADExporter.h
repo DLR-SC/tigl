@@ -115,9 +115,6 @@ public:
     }
 };
 
-template<>
-TIGL_EXPORT void from_string<ShapeGroupMode>(const std::string& s, ShapeGroupMode& t);
-
 /**
  * @brief Abstract base class for CAD exports
  */
@@ -163,7 +160,6 @@ protected:
     const CCPACSConfiguration* GetConfiguration(size_t iShape) const;
 
 private:
-
     /// must be overridden by the concrete implementation
     virtual bool WriteImpl(const std::string& filename) const = 0;
     

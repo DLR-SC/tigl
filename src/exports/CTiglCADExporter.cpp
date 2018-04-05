@@ -172,23 +172,4 @@ std::string CTiglCADExporter::SupportedFileType() const
     return SupportedFileTypeImpl();
 }
 
-template <>
-void from_string<ShapeGroupMode>(const std::string &s, ShapeGroupMode &t)
-{
-    std::string value(s);
-    std::transform(value.begin(), value.end(), value.begin(), ::toupper);
-    if (s == "WHOLE_SHAPE") {
-        t = WHOLE_SHAPE;
-    }
-    else if (s == "NAMED_COMPOUNDS") {
-        t = NAMED_COMPOUNDS;
-    }
-    else if (s == "FACES") {
-        t = FACES;
-    }
-    else {
-        throw CTiglError("Cannot convert string to ShapeGroupMode");
-    }
-}
-
 } // namespace tigl
