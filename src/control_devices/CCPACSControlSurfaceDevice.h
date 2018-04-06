@@ -73,7 +73,7 @@ public:
     TIGL_EXPORT TiglControlSurfaceType getType();
 
     TIGL_EXPORT void SetUID(const std::string& uid);
-    TIGL_EXPORT std::string GetShortShapeName();
+    TIGL_EXPORT std::string GetShortShapeName() const;
 
 protected:
     PNamedShape BuildLoft();

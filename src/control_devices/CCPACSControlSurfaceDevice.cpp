@@ -38,7 +38,9 @@ namespace tigl
 {
 
 CCPACSControlSurfaceDevice::CCPACSControlSurfaceDevice(CCPACSConfiguration* config, CCPACSWingComponentSegment* segment)
-    : outerShape(this, segment), _segment(segment), _config(config)
+    : outerShape(this, segment)
+    , _segment(segment)
+    , _config(config)
 {
     SetUID("ControlDevice");
     _hingeLine = CSharedPtr<CTiglControlSurfaceHingeLine>(new CTiglControlSurfaceHingeLine(&outerShape, &path,_segment));
@@ -71,11 +73,11 @@ void CCPACSControlSurfaceDevice::ReadCPACS(TixiDocumentHandle tixiHandle, const 
         SetUID(ptrUID);
     }
 
-    // Get WingCutOut, this is not implemented yet.
+    // Get WingCutOut
     tempString = controlSurfaceDeviceXPath + "/wingCutOut";
     elementPath = const_cast<char*>(tempString.c_str());
     if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS) {
-        wingCutOut = CSharedPtr<CCPACSControlSurfaceDeviceWingCutOut>(new CCPACSControlSurfaceDeviceWingCutOut(this, _segment));
+        wingCutOut = CSharedPtr<CCPACSControlSurfaceDeviceWingCutOut>(new CCPACSControlSurfaceDeviceWingCutOut(*this, *_segment));
         wingCutOut->ReadCPACS(tixiHandle, elementPath);
     }
 
@@ -201,11 +203,11 @@ CCPACSWingComponentSegment* CCPACSControlSurfaceDevice::getSegment()
 }
 
 // get short name for loft
-std::string CCPACSControlSurfaceDevice::GetShortShapeName()
+std::string CCPACSControlSurfaceDevice::GetShortShapeName() const
 {
     std::string tmp = _segment->GetLoft()->ShortName();
-    for (int j = 1; j <= _segment->getControlSurfaces().getControlSurfaceDevices()->getControlSurfaceDeviceCount(); j++) {
-        tigl::CCPACSControlSurfaceDevice& csd = _segment->getControlSurfaces().getControlSurfaceDevices()->getControlSurfaceDeviceByID(j);
+    for (size_t j = 1; j <= _segment->getControlSurfaces().getControlSurfaceDevices()->getControlSurfaceDeviceCount(); j++) {
+        const tigl::CCPACSControlSurfaceDevice& csd = _segment->getControlSurfaces().getControlSurfaceDevices()->getControlSurfaceDeviceByID(j);
         if (GetUID() == csd.GetUID()) {
             std::stringstream shortName;
             if (_type == LEADING_EDGE_DEVICE) {

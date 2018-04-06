@@ -38,8 +38,10 @@
 namespace tigl
 {
 
-CCPACSControlSurfaceDeviceWingCutOut::CCPACSControlSurfaceDeviceWingCutOut(CCPACSControlSurfaceDevice* dev, CCPACSWingComponentSegment* cs)
-    : _segment(cs), _csDevice(dev)
+CCPACSControlSurfaceDeviceWingCutOut::CCPACSControlSurfaceDeviceWingCutOut(const CCPACSControlSurfaceDevice& dev,
+                                                                           const CCPACSWingComponentSegment& cs)
+    : _segment(cs)
+    , _csDevice(dev)
 {
 }
 
@@ -121,7 +123,7 @@ PNamedShape CCPACSControlSurfaceDeviceWingCutOut::GetLoft(PNamedShape wingCleanS
         return _loft;
     }
 
-    DLOG(INFO) << "Building " << _csDevice->GetUID() << " wing cutout shape";
+    DLOG(INFO) << "Building " << _csDevice.GetUID() << " wing cutout shape";
 
     // Get Wires definng the Shape of the more complex CutOutShape.
     TopoDS_Wire innerWire = getCutoutWire(true, wingCleanShape, &outerShape->getInnerBorder(), upDir);
@@ -133,7 +135,7 @@ PNamedShape CCPACSControlSurfaceDeviceWingCutOut::GetLoft(PNamedShape wingCleanS
     thrusections.AddWire(innerWire);
     thrusections.Build();
 
-    _loft = PNamedShape(new CNamedShape(thrusections.Shape(), _csDevice->GetUID().c_str()));
+    _loft = PNamedShape(new CNamedShape(thrusections.Shape(), _csDevice.GetUID().c_str()));
 
 #ifdef DEBUG
     std::stringstream filenamestr;
@@ -142,7 +144,7 @@ PNamedShape CCPACSControlSurfaceDeviceWingCutOut::GetLoft(PNamedShape wingCleanS
 #endif
 
 
-    _loft->SetShortName(_csDevice->GetShortShapeName().c_str());
+    _loft->SetShortName(_csDevice.GetShortShapeName().c_str());
 
     return _loft;
 }
@@ -210,8 +212,8 @@ CCPACSControlSurfaceDeviceWingCutOut::getCutoutCS(bool isInnerBorder,
     double tEta = cutOutBorder->etaTE();
     double tXsi = outerShapeBorder->getXsiTE();
 
-    gp_Pnt pLE = _segment->GetPoint(lEta, lXsi);
-    gp_Pnt pTE = _segment->GetPoint(tEta, tXsi);
+    gp_Pnt pLE = _segment.GetPoint(lEta, lXsi);
+    gp_Pnt pTE = _segment.GetPoint(tEta, tXsi);
 
     CTiglControlSurfaceBorderCoordinateSystem coords(pLE, pTE, upDir);
     return coords;

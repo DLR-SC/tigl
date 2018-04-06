@@ -69,4 +69,9 @@ CCPACSControlSurfaceDevices* CCPACSControlSurfaces::getControlSurfaceDevices()
     return controlSurfaceDevices.get();
 }
 
+CCPACSControlSurfaceDevices const * CCPACSControlSurfaces::getControlSurfaceDevices() const
+{
+    return controlSurfaceDevices.get();
+}
+
 } // end namespace tigl

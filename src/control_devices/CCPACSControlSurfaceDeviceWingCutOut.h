@@ -42,7 +42,7 @@ class CCPACSControlSurfaceDevice;
 class CCPACSControlSurfaceDeviceWingCutOut
 {
 public:
-    TIGL_EXPORT CCPACSControlSurfaceDeviceWingCutOut(CCPACSControlSurfaceDevice*, CCPACSWingComponentSegment*);
+    TIGL_EXPORT CCPACSControlSurfaceDeviceWingCutOut(const CCPACSControlSurfaceDevice&, const CCPACSWingComponentSegment&);
 
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle,
                                const std::string & controlSurfaceDeviceWingCutOutXPath);
@@ -64,8 +64,8 @@ protected:
     CCPACSControlSurfaceSkinCutoutBorderPtr _innerBorder, _outerBorder;
 
 private:
-    CCPACSWingComponentSegment* _segment;
-    CCPACSControlSurfaceDevice* _csDevice;
+    const CCPACSWingComponentSegment& _segment;
+    const CCPACSControlSurfaceDevice& _csDevice;
     PNamedShape _loft;
 
     TopoDS_Wire getCutoutWire(bool isInnerBorder,

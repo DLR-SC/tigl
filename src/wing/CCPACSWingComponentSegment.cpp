@@ -1495,6 +1495,11 @@ CCPACSControlSurfaces& CCPACSWingComponentSegment::getControlSurfaces()
     return *controlSurfaces;
 }
 
+const CCPACSControlSurfaces& CCPACSWingComponentSegment::getControlSurfaces() const
+{
+    return *controlSurfaces;
+}
+
 gp_Pnt CCPACSWingComponentSegment::GetPointDirection(double eta, double xsi, double dirx, double diry, double dirz, bool fromUpper)
 {
     if (eta < 0.0 || eta > 1.0) {
