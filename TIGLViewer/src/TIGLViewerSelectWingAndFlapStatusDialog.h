@@ -93,6 +93,7 @@ private:
     void cleanup();
 
 
+    QWidget* buildFlapRow(const tigl::CCPACSControlSurfaceDevice& controlSurfaceDevice, const QPalette& Pal);
 };
 
 #endif // TIGLVIEWERSELECTWINGANDFLAPSTATUSDIALOG_H

@@ -130,6 +130,87 @@ double TIGLViewerSelectWingAndFlapStatusDialog::getTrailingEdgeFlapValue( std::s
     }
 }
 
+QWidget* TIGLViewerSelectWingAndFlapStatusDialog::buildFlapRow(const tigl::CCPACSControlSurfaceDevice& controlSurfaceDevice, const QPalette& Pal)
+{
+    QHBoxLayout* hLayout = new QHBoxLayout;
+    QWidget* innerWidget = new QWidget;
+    QWidget* innerWidget2 = new QWidget;
+    innerWidget->setAutoFillBackground(true);
+    innerWidget->setPalette(Pal);
+    innerWidget2->setAutoFillBackground(true);
+    innerWidget2->setPalette(Pal);
+
+    QString uid = controlSurfaceDevice.GetUID().c_str();
+    QLabel* labelUID = new QLabel(uid, this);
+    labelUID->setFixedSize(250,15);
+    QSlider* slider = new QSlider(Qt::Horizontal);
+    slider->setFixedSize(90,15);
+    slider->setMaximum(1000);
+
+    QLabel* labelValue = new QLabel("0%   ", this);
+    labelValue->setFixedHeight(15);
+    QString def = "Deflection: ";
+    QDoubleSpinBox* spinBox = new QDoubleSpinBox();
+    spinBox->setDecimals(3);
+    spinBox->setFixedWidth(60);
+    spinBox->setSingleStep(0.005);
+    QString rot = "Rotation: ";
+
+    // @todo: refactor, chained object calls are ugly
+    if ( controlSurfaceDevice.getMovementPath().getSteps().GetStepCount() > 0 ) {
+        rot.append(QString::number(controlSurfaceDevice.getMovementPath().getSteps().GetStep(1).getHingeLineRotation()));
+    }
+
+    QLabel* labelRotation   = new QLabel(rot, this);
+    QLabel* labelDeflection = new QLabel(def, this);
+    labelValue->setMargin(0);
+    labelRotation->setMargin(0);
+    labelRotation->setFixedHeight(15);
+
+    labelValue->setFixedWidth(40);
+    labelRotation->setFixedWidth(90);
+    labelDeflection->setFixedWidth(90);
+    labelDeflection->setAlignment(Qt::AlignRight);
+
+    double savedValue = controlSurfaceDevice.GetDeflection();
+    labelValue->setText("Value: " + QString::number(savedValue) + "%");
+
+    double minDeflect = controlSurfaceDevice.GetMinDeflection();
+    double maxDeflect = controlSurfaceDevice.GetMaxDeflection();
+    
+    int newSliderValue = static_cast<int>((slider->maximum() - slider->minimum()) / (maxDeflect-minDeflect) * (savedValue - minDeflect))
+                        + slider->minimum();
+    slider->setValue(newSliderValue);
+
+    spinBox->setMinimum(minDeflect);
+    spinBox->setValue(savedValue);
+    spinBox->setMaximum(maxDeflect);
+    
+    DeviceWidgets elements;
+    elements.slider = slider;
+    elements.valueLabel = labelValue;
+    elements.deflectionBox = spinBox;
+    elements.rotAngleLabel = labelRotation;
+    _guiMap[uid.toStdString()] = elements;
+
+    slider->setWindowTitle( uid );
+    spinBox->setWindowTitle( uid );
+
+    connect(slider, SIGNAL(valueChanged(int)), this, SLOT(slider_value_changed(int)));
+    connect(spinBox, SIGNAL(valueChanged(double)), this, SLOT(spinBox_value_changed(double)));
+
+    hLayout->addWidget(labelUID);
+    hLayout->addWidget(slider);
+    hLayout->addWidget(labelValue);
+    hLayout->addWidget(labelDeflection);
+    hLayout->addWidget(spinBox);
+    hLayout->addWidget(labelRotation);
+
+    innerWidget->setLayout(hLayout);
+    
+    return innerWidget;
+}
+
 // @TODO: rewrite using MVC and table layout
 void TIGLViewerSelectWingAndFlapStatusDialog::drawGUI(bool redrawModel)
 {
@@ -150,7 +231,7 @@ void TIGLViewerSelectWingAndFlapStatusDialog::drawGUI(bool redrawModel)
 
     int noDevices = wing.GetComponentSegmentCount();
     for ( int i = 1; i <= wing.GetComponentSegmentCount(); i++ ) {
-        tigl::CCPACSWingComponentSegment& componentSegment = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(i);
+        tigl::CCPACSWingComponentSegment& componentSegment = static_cast<tigl::CCPACSWingComponentSegment&>(wing.GetComponentSegment(i));
         if ( componentSegment.getControlSurfaces().getControlSurfaceDevices()->getControlSurfaceDeviceCount() < 1) {
             noDevices--;
             if (noDevices < 1) {
@@ -177,93 +258,14 @@ void TIGLViewerSelectWingAndFlapStatusDialog::drawGUI(bool redrawModel)
                 continue;
             }
 
-            if (switcher) {
-                Pal.setColor(QPalette::Background, Qt::white);
-                switcher = false;
-            }
-            else {
-                Pal.setColor(QPalette::Background, Qt::lightGray);
-                switcher = true;
-            }
+            QColor col = switcher ? Qt::white : Qt::lightGray;
+            Pal.setColor(QPalette::Background, col);
+            switcher = switcher ^ 1;
 
-            QHBoxLayout* hLayout = new QHBoxLayout;
-            QWidget* innerWidget = new QWidget;
-            QWidget* innerWidget2 = new QWidget;
-            innerWidget->setAutoFillBackground(true);
-            innerWidget->setPalette(Pal);
-            innerWidget2->setAutoFillBackground(true);
-            innerWidget2->setPalette(Pal);
+            vLayout->addWidget(buildFlapRow(controlSurfaceDevice, Pal));
 
-            QString uid = controlSurfaceDevice.GetUID().c_str();
-            QLabel* labelUID = new QLabel(uid, this);
-            labelUID->setFixedSize(250,15);
-            QSlider* slider = new QSlider(Qt::Horizontal);
-            slider->setFixedSize(90,15);
-            slider->setMaximum(1000);
-
-            QLabel* labelValue = new QLabel("0%   ", this);
-            labelValue->setFixedHeight(15);
-            QString def = "Deflection: ";
-            QDoubleSpinBox* spinBox = new QDoubleSpinBox();
-            spinBox->setDecimals(3);
-            spinBox->setFixedWidth(60);
-            spinBox->setSingleStep(0.005);
-            QString rot = "Rotation: ";
-
-            // @todo: refactor, chained object calls are ugly
-            if ( controlSurfaceDevice.getMovementPath().getSteps().GetStepCount() > 0 ) {
-                rot.append(QString::number(controlSurfaceDevice.getMovementPath().getSteps().GetStep(1).getHingeLineRotation()));
-            }
-
-            QLabel* labelRotation   = new QLabel(rot, this);
-            QLabel* labelDeflection = new QLabel(def, this);
-            labelValue->setMargin(0);
-            labelRotation->setMargin(0);
-            labelRotation->setFixedHeight(15);
-
-            labelValue->setFixedWidth(40);
-            labelRotation->setFixedWidth(90);
-            labelDeflection->setFixedWidth(90);
-            labelDeflection->setAlignment(Qt::AlignRight);
-
-            double savedValue = controlSurfaceDevice.GetDeflection();
-            labelValue->setText("Value: " + QString::number(savedValue) + "%");
-
-            double minDeflect = controlSurfaceDevice.GetMinDeflection();
-            double maxDeflect = controlSurfaceDevice.GetMaxDeflection();
-            
-            int newSliderValue = (slider->maximum() - slider->minimum())/ (maxDeflect-minDeflect) * (savedValue - minDeflect)
-                    + slider->minimum();
-            slider->setValue(newSliderValue);
-
-            spinBox->setMinimum(minDeflect);
-            spinBox->setValue(savedValue);
-            spinBox->setMaximum(maxDeflect);
-            
-            DeviceWidgets elements;
-            elements.slider = slider;
-            elements.valueLabel = labelValue;
-            elements.deflectionBox = spinBox;
-            elements.rotAngleLabel = labelRotation;
-            _guiMap[uid.toStdString()] = elements;
-
-            hLayout->addWidget(labelUID);
-            hLayout->addWidget(slider);
-            hLayout->addWidget(labelValue);
-            hLayout->addWidget(labelDeflection);
-            hLayout->addWidget(spinBox);
-            hLayout->addWidget(labelRotation);
-
-            innerWidget->setLayout(hLayout);
-
-            slider->setWindowTitle( uid );
-            spinBox->setWindowTitle( uid );
-            vLayout->addWidget(innerWidget);
-
-            connect(slider, SIGNAL(valueChanged(int)), this, SLOT(slider_value_changed(int)));
-            connect(spinBox, SIGNAL(valueChanged(double)), this, SLOT(spinBox_value_changed(double)));
-            _deviceMap[uid.toStdString()] = &controlSurfaceDevice;
-            updateWidgets(uid.toStdString(), savedValue );
+            _deviceMap[controlSurfaceDevice.GetUID()] = &controlSurfaceDevice;
+            updateWidgets(controlSurfaceDevice.GetUID(), controlSurfaceDevice.GetDeflection() );
         }
         outerWidget->setLayout(vLayout);
         ui->scrollArea->setWidget(outerWidget);
@@ -273,17 +275,17 @@ void TIGLViewerSelectWingAndFlapStatusDialog::drawGUI(bool redrawModel)
     }
 }
 
-void TIGLViewerSelectWingAndFlapStatusDialog::on_checkTED_stateChanged(int arg1)
+void TIGLViewerSelectWingAndFlapStatusDialog::on_checkTED_stateChanged(int)
 {
    drawGUI(false);
 }
 
-void TIGLViewerSelectWingAndFlapStatusDialog::on_checkLED_stateChanged(int arg1)
+void TIGLViewerSelectWingAndFlapStatusDialog::on_checkLED_stateChanged(int)
 {
     drawGUI(false);
 }
 
-void TIGLViewerSelectWingAndFlapStatusDialog::on_checkSpoiler_stateChanged(int arg1)
+void TIGLViewerSelectWingAndFlapStatusDialog::on_checkSpoiler_stateChanged(int)
 {
     drawGUI(false);
 }
