@@ -158,9 +158,11 @@ PNamedShape CCPACSControlSurfaceDevice::getCutOutShape()
 
 PNamedShape CCPACSControlSurfaceDevice::getFlapShape()
 {
-    return outerShape.GetLoft(
+    PNamedShape loft =  outerShape.GetLoft(
                 _segment->GetWing().GetWingCleanShape(),
                 getNormalOfControlSurfaceDevice());
+    loft->SetName(GetUID().c_str());
+    return loft;
 }
 
 PNamedShape CCPACSControlSurfaceDevice::getTransformedFlapShape()

@@ -29,6 +29,7 @@
 #include "ISession_Point.h"
 #include "ISession_Text.h"
 #include "ISession_Direction.h"
+#include "AIS_TexturedShape.hxx"
 
 #include <OpenGl_GraphicDriver.hxx>
 
@@ -227,7 +228,7 @@ void TIGLViewerContext::setGridOffset (Quantity_Length offset)
 Handle(AIS_Shape) TIGLViewerContext::displayShape(const TopoDS_Shape& loft, Quantity_Color color, double transparency)
 {
     TIGLViewerSettings& settings = TIGLViewerSettings::Instance();
-    Handle(AIS_Shape) shape = new AIS_Shape(loft);
+    Handle(AIS_Shape) shape = new AIS_TexturedShape(loft);
     myContext->SetMaterial(shape, Graphic3d_NOM_METALIZED, Standard_False);
     myContext->SetColor(shape, color, Standard_False);
     myContext->SetTransparency(shape, transparency, Standard_False);
@@ -245,6 +246,41 @@ Handle(AIS_Shape) TIGLViewerContext::displayShape(const TopoDS_Shape& loft, Quan
         }
     }
 
+    return shape;
+}
+
+// a small helper when we just want to display a shape
+Handle(AIS_Shape) TIGLViewerContext::displayShape(const PNamedShape& pshape, Standard_Boolean updateViewer, Quantity_Color color, double transparency)
+{
+    if (!pshape) {
+        return NULL;
+    }
+
+    TIGLViewerSettings& settings = TIGLViewerSettings::Instance();
+    Handle(AIS_TexturedShape) shape = new AIS_TexturedShape(pshape->Shape());
+
+    myContext->SetMaterial(shape, Graphic3d_NOM_METALIZED, Standard_False);
+    myContext->SetColor(shape, color, Standard_False);
+    myContext->SetTransparency(shape, transparency, Standard_False);
+    shape->SetOwnDeviationCoefficient(settings.tesselationAccuracy());
+
+    myContext->Display(shape, updateViewer);
+
+    if (settings.enumerateFaces()) {
+        TopTools_IndexedMapOfShape shapeMap;
+        TopExp::MapShapes(pshape->Shape(), TopAbs_FACE, shapeMap);
+        for (int i = 1; i <= shapeMap.Extent(); ++i) {
+            const TopoDS_Face& face = TopoDS::Face(shapeMap(i));
+            std::string faceName = pshape->GetFaceTraits(i - 1).Name();
+            if (faceName != std::string(pshape->Name())) {
+                faceName = faceName + " (" + std::string(pshape->Name()) + ")";
+            }
+            gp_Pnt p = GetCentralFacePoint(face);
+            QString s = QString("%1 - %2").arg(i).arg(faceName.c_str());
+            displayPoint(p, s.toStdString().c_str(), false, 0., 0., 0., 10.);
+        }
+    }
+    GetShapeManager().addObject(pshape, shape);
     return shape;
 }
 
@@ -289,6 +325,11 @@ void TIGLViewerContext::displayVector(const gp_Pnt& aPoint,
                                                  aPoint.Z() + aZoffset);
     aGraphicText->SetScale(TextScale);
     myContext->Display(aGraphicText,UpdateViewer);
+}
+
+InteractiveShapeManager& TIGLViewerContext::GetShapeManager()
+{
+    return myShapeManager;
 }
 
 // convenience wrapper

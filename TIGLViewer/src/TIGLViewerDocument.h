@@ -164,8 +164,6 @@ private:
     TiglCPACSConfigurationHandle            m_cpacsHandle;
     TIGLViewerWindow*                       app;
     QString                                 loadedConfigurationFileName;
-    // @todo: remove flapsForInteractiveUse from class
-    std::map<std::string, Handle_AIS_Shape> flapsForInteractiveUse;
 
     void writeToStatusBar(QString text);
     void displayError(QString text, QString header="");
