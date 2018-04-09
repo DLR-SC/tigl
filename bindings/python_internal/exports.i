@@ -42,8 +42,16 @@
 // rename file methods to python pep8 style
 %rename("%(undercase)s", %$isfunction) "";
 
-
-%include "CCPACSImportExport.h"
+%include "COptionList.h"
+namespace tigl
+{
+    enum ShapeGroupMode
+    {
+        WHOLE_SHAPE,
+        NAMED_COMPOUNDS,
+        FACES
+    };
+}
 %include "CTiglCADExporter.h"
 %include "CTiglExportBrep.h"
 %include "CTiglExportStep.h"
