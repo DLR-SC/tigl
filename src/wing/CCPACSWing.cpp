@@ -40,6 +40,7 @@
 #include "tiglcommonfunctions.h"
 #include "tiglmathfunctions.h"
 #include "CNamedShape.h"
+#include "CTiglCurveConnector.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "BRepAlgoAPI_Fuse.hxx"
@@ -749,10 +750,6 @@ void CCPACSWing::BuildGuideCurveWires()
         return;
     }
     
-    guideCurves.Nullify();
-    BRep_Builder b;
-    b.MakeCompound(guideCurves);
-    
     // check, if the wing has a blunt trailing edge
     bool hasBluntTE = true;
     if (GetSectionCount() > 0) {
@@ -762,7 +759,7 @@ void CCPACSWing::BuildGuideCurveWires()
     
     // the guide curves will be sorted according to the inner
     // from relativeCircumference
-    std::multimap<double, CCPACSGuideCurve*> roots;
+    std::vector<CCPACSGuideCurve*> roots;
     
     // connect the belonging guide curve segments
     for (int isegment = 1; isegment <= GetSegmentCount(); ++isegment) {
@@ -777,11 +774,7 @@ void CCPACSWing::BuildGuideCurveWires()
             CCPACSGuideCurve& curve = segmentCurves.GetGuideCurve(iguide);
             if (!curve.GetFromGuideCurveUID_choice1()) {
                 // this is a root curve
-                double fromRef = *curve.GetFromRelativeCircumference_choice2();
-                if (fromRef >= 1. && !hasBluntTE) {
-                    fromRef = -1.;
-                }
-                roots.insert(std::make_pair(fromRef, &curve));
+                roots.push_back(&curve);
             }
             else {
                 CCPACSGuideCurve& fromCurve = GetGuideCurveSegment(*curve.GetFromGuideCurveUID_choice1());
@@ -789,26 +782,10 @@ void CCPACSWing::BuildGuideCurveWires()
             }
         }
     }
-    
-    // connect belonging guide curves to wires
-    std::multimap<double, CCPACSGuideCurve*>::iterator it;
-    for (it = roots.begin(); it != roots.end(); ++it) {
-        CCPACSGuideCurve* curCurve = it->second;
-        BRepBuilderAPI_MakeWire wireMaker;
-        while (curCurve) {
-            const TopoDS_Edge& edge = curCurve->GetCurve();
-            wireMaker.Add(edge);
-            curCurve = curCurve->GetConnectedCurve();
-        }
-        TopoDS_Wire result = wireMaker.Wire();
-        // Fix Shape, might be necessary since the order of edges could be wrong
-        ShapeFix_Wire wireFixer;
-        wireFixer.Load(result);
-        wireFixer.FixReorder();
-        wireFixer.Perform();
-        result = wireFixer.Wire();
-        b.Add(guideCurves, result);
-    }
+
+    // connect guide curve segments to a spline with given continuity conditions and tangents
+    CTiglCurveConnector connector(roots);
+    guideCurves = connector.GetGuideCurves();
 }
 
 TopoDS_Shape transformWingProfileGeometry(const CTiglTransformation& wingTransform, const CTiglWingConnection& connection, const TopoDS_Shape& wire)
