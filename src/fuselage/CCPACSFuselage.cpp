@@ -55,6 +55,7 @@
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepProj_Projection.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <CTiglCurveConnector.h>
 
 namespace tigl
 {
@@ -464,9 +465,7 @@ void CCPACSFuselage::BuildGuideCurves()
     }
     
     guideCurves.Nullify();
-    BRep_Builder b;
-    b.MakeCompound(guideCurves);
-    std::multimap<double, CCPACSGuideCurve*> roots;
+    std::vector<CCPACSGuideCurve*> roots;
     
     // find roots and connect the belonging guide curve segments
     for (int isegment = 1; isegment <= GetSegmentCount(); ++isegment) {
@@ -481,10 +480,7 @@ void CCPACSFuselage::BuildGuideCurves()
             CCPACSGuideCurve& curve = segmentCurves.GetGuideCurve(iguide);
             if (!curve.GetFromGuideCurveUID_choice1()) {
                 // this is a root curve
-                double relCirc= *curve.GetFromRelativeCircumference_choice2();
-                //TODO: determine if half fuselage or not. If not
-                //the guide curve at relCirc=1 should be inserted at relCirc=0
-                roots.insert(std::make_pair(relCirc, &curve));
+                roots.push_back(&curve);
             }
             else {
                 CCPACSGuideCurve& fromCurve = GetGuideCurveSegment(*curve.GetFromGuideCurveUID_choice1());
@@ -493,25 +489,9 @@ void CCPACSFuselage::BuildGuideCurves()
         }
     }
     
-    // connect belonging guide curves to wires
-    std::multimap<double, CCPACSGuideCurve*>::iterator it;
-    for (it = roots.begin(); it != roots.end(); ++it) {
-        CCPACSGuideCurve* curCurve = it->second;
-        BRepBuilderAPI_MakeWire wireMaker;
-        while (curCurve) {
-            const TopoDS_Edge& edge = curCurve->GetCurve();
-            wireMaker.Add(edge);
-            curCurve = curCurve->GetConnectedCurve();
-        }
-        TopoDS_Wire result = wireMaker.Wire();
-        // Fix Shape, might be necessary since the order of edges could be wrong
-        ShapeFix_Wire wireFixer;
-        wireFixer.Load(result);
-        wireFixer.FixReorder();
-        wireFixer.Perform();
-        result = wireFixer.Wire();
-        b.Add(guideCurves, result);
-    }
+    // connect guide curve segments to a spline with given continuity conditions and tangents
+    CTiglCurveConnector connector(roots);
+    guideCurves = connector.GetGuideCurves();
 }
 
 void CCPACSFuselage::ConnectGuideCurveSegments(void)
