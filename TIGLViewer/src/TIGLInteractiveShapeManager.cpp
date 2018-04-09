@@ -18,11 +18,11 @@
 
 #include "TIGLInteractiveShapeManager.h"
 #include "CNamedShape.h"
+#include "CTiglError.h"
+#include "CTiglLogging.h"
 #include "Handle_AIS_InteractiveObject.hxx"
 
 #include <algorithm>
-
-//#define DEBUG
 
 InteractiveShapeManager::InteractiveShapeManager()
 {
@@ -83,8 +83,7 @@ ShapeEntry& InteractiveShapeManager::GetShapeEntry(const std::string& name)
 
     if (shapeIt == _shapeEntries.end())
     {
-        printf("No shape with name found");
-        throw;
+        throw tigl::CTiglError("No shape with name '" + name + "' found", TIGL_UID_ERROR);
     }
 
     return shapeIt->second;
@@ -162,7 +161,7 @@ void InteractiveShapeManager::addObject(PNamedShape shape, Handle_AIS_Interactiv
         entry.aisObjects.push_back(iObject);
 
 #ifdef DEBUG
-        std::cout << "added shape " << name << std::endl;
+        DLOG(INFO) << "added shape " << name;
 #endif
     }
     else
@@ -174,7 +173,7 @@ void InteractiveShapeManager::addObject(PNamedShape shape, Handle_AIS_Interactiv
         _shapeEntries.insert(shapeIt, ShapeMap::value_type(name, entry));
 
 #ifdef DEBUG
-        std::cout << "Created new shape " << name << std::endl;
+        DLOG(INFO) << "Created new shape " << name;
 #endif
     }
 
