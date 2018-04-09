@@ -321,9 +321,8 @@ bool CTiglExportStep::WriteImpl(const std::string& filename) const
     Interface_Static::SetCVal("write.step.unit", "M");
 
     ListPNamedShape list;
-    size_t iShape = 0;
     for (size_t ishape = 0; ishape < NShapes(); ++ishape) {
-        ShapeGroupMode groupMode = GetOptions(iShape).Get<ShapeGroupMode>("ShapeGroupMode");
+        ShapeGroupMode groupMode = GlobalExportOptions().Get<ShapeGroupMode>("ShapeGroupMode");
 
         ListPNamedShape templist = GroupFaces(GetShape(ishape), groupMode);
         for (ListPNamedShape::iterator it2 = templist.begin(); it2 != templist.end(); ++it2) {
