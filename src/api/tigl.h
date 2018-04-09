@@ -3366,11 +3366,78 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetCurveParameter (TiglCPACSConfigurationH
 *
 * @return 
 *   - TIGL_SUCCESS if no error occurred
-*   - TIGL_NOT_FOUND if the specifid exporter or the option does not exist
+*   - TIGL_NOT_FOUND if the specified exporter or the option does not exist
 *   - TIGL_NULL_POINTER if exporter_name, option_name or option_value is a null pointer
 *   - TIGL_ERROR if some other error occurred
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglSetExportOptions(const char* exporter_name, const char* option_name, const char* option_value);
+
+/**
+* @brief Exports a geometric component (e.g. a wing, a fuselage etc.)
+* 
+* The component to be exported is definied via its uid. The export format
+* is specified with the file extension of fileName.
+* 
+* The export can be configured in more detail using ::tiglSetExportOptions.
+* 
+* Supported file formats are: STEP (*.stp), IGES (*.igs), VTK (*.vtp), Collada (*.dae), STL (*.stl) and BREP (*.brep)
+* 
+* Example: Export a wing to IGES format
+  @verbatim
+  tiglExportComponent(handle, "MyWingUID", "wing.igs", 0.);
+  @endverbatim
+* 
+* @param[in] cpacsHandle Handle for the CPACS configuration
+* @param[in] uid         Uid of the component to be exported
+* @param[in] fileName    File name of the exported file
+* @param[in] deflection  Deflection parameter. This is only used for meshed exports (e.g. VTK, STL, Collada).
+*
+* @return 
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no exporter is found for the specified file name
+*   - TIGL_NULL_POINTER if uid or fileName is a null pointer
+*   - TIGL_WRITE_FAILED if the file could not be written
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglExportComponent(TiglCPACSConfigurationHandle cpacsHandle,
+                                                      const char* uid,
+                                                      const char* fileName,
+                                                      double deflection);
+
+
+/**
+* @brief Exports the whole configuration into a file.
+* 
+* It can be specified, whether the configuration should be exported as a fused geometry (i.e.
+* all shapes are trimmed with each other). The export format is specified with the
+* file extension of fileName.
+* 
+* The export can be configured in more detail using ::tiglSetExportOptions.
+* 
+* Supported file formats are: STEP (*.stp), IGES (*.igs), VTK (*.vtp), Collada (*.dae), STL (*.stl) and BREP (*.brep)
+* 
+* Example: Export the fused configuration to STEP format
+  @verbatim
+  tiglExportConfiguration(handle, "aircraft.stp", TIGL_TRUE, 0.);
+  @endverbatim
+*
+* @param[in] cpacsHandle   Handle for the CPACS configuration
+* @param[in] fileName      File name of the exported file
+* @param[in] fuseAllShapes Whether to fuse the geometry of not. Fusing can take a lot of time!
+* @param[in] deflection    Deflection parameter. This is only used for meshed exports (e.g. VTK, STL, Collada).
+*
+* @return 
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no exporter is found for the specified file name
+*   - TIGL_NULL_POINTER if fileName is a null pointer
+*   - TIGL_WRITE_FAILED if the file could not be written
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglExportConfiguration(TiglCPACSConfigurationHandle cpacsHandle,
+                                                          const char* fileName,
+                                                          TiglBoolean fuseAllShapes,
+                                                          double deflection);
+
 
 /**
 * @brief Exports the geometry of a CPACS configuration to IGES format.
@@ -3389,7 +3456,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglSetExportOptions(const char* exporter_name
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportIGES(TiglCPACSConfigurationHandle cpacsHandle,
                                                  const char* filenamePtr);
-
 
 /**
 * @brief Exports the boolean fused geometry of a CPACS configuration to IGES format.

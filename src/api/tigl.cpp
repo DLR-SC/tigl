@@ -6883,3 +6883,93 @@ TiglReturnCode tiglSetExportOptions(const char *exporter_name, const char *optio
     }
     return TIGL_ERROR;
 }
+
+TiglReturnCode tiglExportComponent(TiglCPACSConfigurationHandle cpacsHandle, const char *uid, const char *fileName, double deflection)
+{
+    if (!uid) {
+        LOG(ERROR) << "Argument uid is NULL in tiglExportComponent!";
+        return TIGL_NULL_POINTER;
+    }
+
+    if (!fileName) {
+        LOG(ERROR) << "Argument fileName is NULL in tiglExportComponent!";
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        const tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::ITiglGeometricComponent& component = config.GetUIDManager().GetGeometricComponent(uid);
+
+        std::string extension = FileExtension(fileName);
+        if (extension.empty()) {
+            LOG(ERROR) << "In tiglExportComponent: Cannot export to '" << fileName << "'. No file extension given.";
+            return TIGL_WRITE_FAILED;
+        }
+
+        tigl::PTiglCADExporter exporter = tigl::createExporter(extension);
+        exporter->AddShape(component.GetLoft(), &config, tigl::TriangulatedExportOptions(deflection));
+        if (exporter->Write(fileName) == true) {
+            return TIGL_SUCCESS;
+        }
+        else {
+            return TIGL_WRITE_FAILED;
+        }
+    }
+    catch (const tigl::CTiglError& ex) {
+        LOG(ERROR) << "In tiglExportComponent: " << ex.what();
+        return ex.getCode();
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << "In tiglExportComponent: " << ex.what();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglExportComponent!";
+    }
+    return TIGL_ERROR;
+}
+
+TiglReturnCode tiglExportConfiguration(TiglCPACSConfigurationHandle cpacsHandle, const char *fileName, TiglBoolean fuseAllShapes, double deflection)
+{
+    if (!fileName) {
+        LOG(ERROR) << "Argument fileName is NULL in tiglExportConfiguration!";
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        const tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+
+        std::string extension = FileExtension(fileName);
+        if (extension.empty()) {
+            LOG(ERROR) << "In tiglExportConfiguration: Cannot export to '" << fileName << "'. No file extension given.";
+            return TIGL_WRITE_FAILED;
+        }
+
+        tigl::PTiglCADExporter exporter = tigl::createExporter(extension);
+        if (fuseAllShapes) {
+            exporter->AddFusedConfiguration(config, tigl::TriangulatedExportOptions(deflection));
+        }
+        else {
+            exporter->AddConfiguration(config, tigl::TriangulatedExportOptions(deflection));
+        }
+
+        if (exporter->Write(fileName) == true) {
+            return TIGL_SUCCESS;
+        }
+        else {
+            return TIGL_WRITE_FAILED;
+        }
+    }
+    catch (const tigl::CTiglError& ex) {
+        LOG(ERROR) << "In tiglExportConfiguration: " << ex.what();
+        return ex.getCode();
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << "In tiglExportConfiguration: " << ex.what();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglExportConfiguration!";
+    }
+    return TIGL_ERROR;
+}

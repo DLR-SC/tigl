@@ -57,6 +57,8 @@ public slots:
     QScriptValue componentGetHashCode (QString componentUID);
     
     // exports
+    QScriptValue exportComponent (QString uid, QString filename, double deflection);
+    QScriptValue exportConfiguration (QString filename, bool fuseAllShapes, double deflection);
     QScriptValue exportFusedWingFuselageIGES (QString filename);
     QScriptValue exportIGES (QString filename);
     QScriptValue exportSTEP (QString filename);

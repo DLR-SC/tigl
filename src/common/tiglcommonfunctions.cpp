@@ -697,6 +697,16 @@ bool IsFileReadable(const std::string& filename)
 #endif
 }
 
+std::string FileExtension(const std::string &filename)
+{
+    if(filename.find_last_of(".") != std::string::npos) {
+        return filename.substr(filename.find_last_of(".")+1);
+    }
+    else {
+        return "";
+    }
+}
+
 gp_Pnt GetFirstPoint(const TopoDS_Shape& wireOrEdge)
 {
     if (wireOrEdge.ShapeType() == TopAbs_ShapeEnum::TopAbs_WIRE)
