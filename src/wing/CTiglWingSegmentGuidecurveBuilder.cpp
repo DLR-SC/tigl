@@ -25,10 +25,12 @@
 #include "CCPACSGuideCurveAlgo.h"
 #include "CCPACSWingProfileGetPointAlgo.h"
 
+#include "tiglcommonfunctions.h"
+
 namespace tigl
 {
 
-TopoDS_Edge CTiglWingSegmentGuidecurveBuilder::BuildGuideCurve(CCPACSGuideCurve * guideCurve)
+std::vector<gp_Pnt> CTiglWingSegmentGuidecurveBuilder::BuildGuideCurvePnts(CCPACSGuideCurve * guideCurve)
 {
     assert(guideCurve);
 
@@ -97,15 +99,15 @@ TopoDS_Edge CTiglWingSegmentGuidecurveBuilder::BuildGuideCurve(CCPACSGuideCurve 
     }
 
     // construct guide curve algorithm
-    TopoDS_Edge guideCurveEdge = CCPACSGuideCurveAlgo<CCPACSWingProfileGetPointAlgo> (concatenatedInnerWires,
-                                                                                      concatenatedOuterWires,
-                                                                                      fromRelativeCircumference,
-                                                                                      toRelativeCircumference,
-                                                                                      innerScale,
-                                                                                      outerScale,
-                                                                                      rxDir,
-                                                                                      guideCurveProfile);
-    return guideCurveEdge;
+    std::vector<gp_Pnt> guideCurvePnts = CCPACSGuideCurveAlgo<CCPACSWingProfileGetPointAlgo> (concatenatedInnerWires,
+                                                                                              concatenatedOuterWires,
+                                                                                              fromRelativeCircumference,
+                                                                                              toRelativeCircumference,
+                                                                                              innerScale,
+                                                                                              outerScale,
+                                                                                              rxDir,
+                                                                                              guideCurveProfile);
+    return guideCurvePnts;
 }
 
 } // namespace tigl

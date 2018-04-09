@@ -25,6 +25,7 @@
 #include "CTiglError.h"
 #include "CTiglPoint.h"
 #include "CTiglLogging.h"
+#include "tiglcommonfunctions.h"
 
 #include <TopoDS_Edge.hxx>
 
@@ -56,10 +57,23 @@ void CCPACSGuideCurve::Cleanup(void)
 const TopoDS_Edge& CCPACSGuideCurve::GetCurve()
 {
     if (m_builder && !isBuild) {
-        guideCurveTopo = m_builder->BuildGuideCurve(this);
+
+        // interpolate B-Spline curve through guide curve points
+        std::vector<gp_Pnt> guideCurvePnts = GetCurvePoints();
+        guideCurveTopo = EdgeSplineFromPoints(guideCurvePnts);
+
         isBuild = true;
     }
     return guideCurveTopo;
+}
+
+const std::vector<gp_Pnt> CCPACSGuideCurve::GetCurvePoints()
+{
+    if (!m_builder) {
+        throw CTiglError("Cannot get Guide Curve Points: Null pointer to guide curve builder", TIGL_NULL_POINTER);
+    }
+    std::vector<gp_Pnt> guideCurvePnts = m_builder->BuildGuideCurvePnts(this);
+    return guideCurvePnts;
 }
 
 void CCPACSGuideCurve::ConnectToCurve(CCPACSGuideCurve *guide)

@@ -28,7 +28,6 @@
 
 #include "tigl_internal.h"
 #include "CCPACSGuideCurveProfile.h"
-#include "tiglcommonfunctions.h"
 #include "CTiglLogging.h"
 
 namespace tigl
@@ -78,7 +77,7 @@ public:
     {
     }
 
-    TIGL_EXPORT operator TopoDS_Edge()
+    TIGL_EXPORT operator std::vector<gp_Pnt>()
     {
         // get guide Curve points in local coordinates
         std::vector<CTiglPoint> guideCurveProfilePoints = _guideCurveProfile.GetGuideCurveProfilePoints();
@@ -117,10 +116,7 @@ public:
             guideCurvePoints[i+1]=gp_Pnt(vec_global.XYZ()) ;
         }
 
-        // interpolate B-Spline curve through guide curve points
-        TopoDS_Edge guideCurveEdge = EdgeSplineFromPoints(guideCurvePoints);
-
-        return guideCurveEdge;
+        return guideCurvePoints;
     }
 
 private:
