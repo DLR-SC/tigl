@@ -50,14 +50,12 @@ void CTiglCADExporter::AddConfiguration(CCPACSConfiguration& config, ExportOptio
     for (int w = 1; w <= config.GetWingCount(); w++) {
         CCPACSWing& wing = config.GetWing(w);
 
-        for (int i = 1; i <= wing.GetSegmentCount(); i++) {
-            CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
-            PNamedShape loft = segment.GetLoft();
-            AddShape(loft, options);
 
-            if (options.applySymmetries && segment.GetSymmetryAxis() != TIGL_NO_SYMMETRY) {
-                AddShape(segment.GetMirroredLoft(), options);
-            }
+        PNamedShape loft = wing.GetLoft();
+        AddShape(loft, options);
+
+        if (options.applySymmetries && wing.GetSymmetryAxis() != TIGL_NO_SYMMETRY) {
+            AddShape(wing.GetMirroredLoft(), options);
         }
     }
 

@@ -91,6 +91,8 @@
 #include <ShapeFix_Wire.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 
+#include <gp_Pln.hxx>
+
 #include "ShapeAnalysis_FreeBounds.hxx"
 
 #include <list>
@@ -274,6 +276,30 @@ Standard_Real ProjectPointOnWire(const TopoDS_Wire& wire, gp_Pnt p)
         normalizedLength = 0.0;
     }
     return normalizedLength;
+}
+
+/// Projects the point onto the plane pln
+gp_Pnt2d ProjectPointOnPlane(gp_Pln pln, gp_Pnt p)
+{
+    gp_Ax1 xAx = pln.XAxis();
+    gp_Ax1 yAx = pln.YAxis();
+    
+    double px = (p.XYZ() - xAx.Location().XYZ()) * xAx.Direction().XYZ();
+    double py = (p.XYZ() - yAx.Location().XYZ()) * yAx.Direction().XYZ();
+    
+    return gp_Pnt2d(px,py);
+}
+
+/// Projects the vector v onto the plane pln
+gp_Vec2d ProjectVecOnPlane(gp_Pln pln, gp_Vec v)
+{
+    gp_Ax1 xAx = pln.XAxis();
+    gp_Ax1 yAx = pln.YAxis();
+    
+    double vx = v.XYZ() * xAx.Direction().XYZ();
+    double vy = v.XYZ() * yAx.Direction().XYZ();
+    
+    return gp_Vec2d(vx,vy);
 }
 
 gp_Pnt GetCentralFacePoint(const TopoDS_Face& face)
@@ -1159,3 +1185,68 @@ TopoDS_Shape RemoveDuplicateEdges(const TopoDS_Shape& shape)
     return result;
 }
 
+/// searches for i, such that xdata[i] <= x < xdata[i+1]
+/// used by linear interpolation function
+size_t FindPosition(const std::vector<double>& xdata, double x)
+{
+    // we assume, that the xvalues are ordered in ascending order
+    unsigned int ilow = 0;
+    unsigned int ihigh = xdata.size()-1;
+
+    assert(xdata.size() >= 2);
+
+    // check extrapolation cases
+    if (x < xdata[ilow]) {
+        return ilow;
+    }
+
+    if (x >= xdata[ihigh]) {
+        return ihigh - 1;
+    }
+
+    // now do the search
+    while (ilow < ihigh - 1) {
+        unsigned int imid = (ilow + ihigh)/2;
+        if (xdata[ilow]<= x && x < xdata[imid]) {
+            ihigh = imid;
+        }
+        else if(xdata[imid] <= x && x < xdata[ihigh]) {
+            ilow = imid;
+        }
+        else {
+            // this case can only occur, if
+            // input data are not ordered
+            return xdata.size();
+        }
+    }
+
+    // we found the value
+    assert(xdata[ilow] <= x && x < xdata[ilow+1]);
+    return ilow;
+}
+
+/// linear interpolation in of xdata<->ydata array at position x
+double Interpolate(const std::vector<double>& xdata, const std::vector<double>& ydata, double x)
+{
+    if (xdata.size() == 0) {
+        return 0.;
+    }
+
+    if (xdata.size() == 1) {
+        return ydata[0];
+    }
+
+    if (x < xdata[0] || x > xdata[xdata.size() -1]) {
+        // extrapolation
+        LOG(WARNING) << "Extrapolating at x=" << x << ". XData is in range "
+                     << xdata[0] << "..." << xdata[xdata.size() -1] << ".";
+    }
+
+    size_t pos = FindPosition(xdata, x);
+
+    assert(pos < (unsigned int)(xdata.size() - 1));
+    assert(ydata.size() == xdata.size());
+
+    double y = (ydata[pos+1] - ydata[pos])/(xdata[pos+1]-xdata[pos]) * (x - xdata[pos]) + ydata[pos];
+    return y;
+}

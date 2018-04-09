@@ -181,6 +181,7 @@
      <addaction name="drawWingTriangulationAction"/>
      <addaction name="drawWingProfilesAction"/>
      <addaction name="drawWingGuideCurvesAction"/>
+     <addaction name="drawWingFlapsAction"/>
      <addaction name="separator"/>
      <addaction name="drawWingSamplePointsAction"/>
      <addaction name="drawWingOverlayCPACSProfilePointsAction"/>
@@ -1316,6 +1317,11 @@
   <action name="tiglExportFusedConfigBRep">
    <property name="text">
     <string>Export Fused Configuration (slow)</string>
+   </property>
+  </action>
+  <action name="drawWingFlapsAction">
+   <property name="text">
+    <string>Show Wing Flaps</string>
    </property>
   </action>
   <action name="drawWingGuideCurvesAction">

@@ -4111,23 +4111,23 @@
                                             <parentUID>D150_wing_CS</parentUID>
                                             <outerShape>
                                                 <innerBorder>
-                                                    <etaLE>0.11015</etaLE>
+                                                    <etaLE>0.13015</etaLE>
                                                     <etaTE>0.11015</etaTE>
-                                                    <xsiLE>0.828</xsiLE>
+                                                    <xsiLE>0.754</xsiLE>
                                                     <leadingEdgeShape>
-                                                        <relHeightLE>0.211</relHeightLE>
-                                                        <xsiUpperSkin>0.5</xsiUpperSkin>
-                                                        <xsiLowerSkin>0.964</xsiLowerSkin>
+                                                        <relHeightLE>0.35</relHeightLE>
+                                                        <xsiUpperSkin>0.834</xsiUpperSkin>
+                                                        <xsiLowerSkin>0.854</xsiLowerSkin>
                                                     </leadingEdgeShape>
                                                 </innerBorder>
                                                 <outerBorder>
                                                     <etaLE>0.3735</etaLE>
                                                     <etaTE>0.3735</etaTE>
-                                                    <xsiLE>0.730</xsiLE>
+                                                    <xsiLE>0.680</xsiLE>
                                                     <leadingEdgeShape>
-                                                        <relHeightLE>0.211</relHeightLE>
-                                                        <xsiUpperSkin>0.5</xsiUpperSkin>
-                                                        <xsiLowerSkin>0.964</xsiLowerSkin>
+                                                        <relHeightLE>0.35</relHeightLE>
+                                                        <xsiUpperSkin>0.784</xsiUpperSkin>
+                                                        <xsiLowerSkin>0.804</xsiLowerSkin>
                                                     </leadingEdgeShape>
                                                 </outerBorder>
                                             </outerShape>
@@ -4354,11 +4354,11 @@
                                             </structure>
                                             <path>
                                                 <innerHingePoint>
-                                                    <hingeXsi>1</hingeXsi>
+                                                    <hingeXsi>0.85</hingeXsi>
                                                     <hingeRelHeight>0.5</hingeRelHeight>
                                                 </innerHingePoint>
                                                 <outerHingePoint>
-                                                    <hingeXsi>1</hingeXsi>
+                                                    <hingeXsi>0.85</hingeXsi>
                                                     <hingeRelHeight>0.5</hingeRelHeight>
                                                 </outerHingePoint>
                                                 <steps>
@@ -4378,12 +4378,12 @@
                                                     <step>
                                                         <relDeflection>1</relDeflection>
                                                         <innerHingeTranslation>
-                                                            <x>0.2728</x>
+                                                            <x>0.4728</x>
                                                             <y>0.0</y>
                                                             <z>-0.2507</z>
                                                         </innerHingeTranslation>
                                                         <outerHingeTranslation>
-                                                            <x>0.2885</x>
+                                                            <x>0.4885</x>
                                                             <z>-0.2368</z>
                                                         </outerHingeTranslation>
                                                         <hingeLineRotation>10</hingeLineRotation>
@@ -4391,12 +4391,12 @@
                                                     <step>
                                                         <relDeflection>4</relDeflection>
                                                         <innerHingeTranslation>
-                                                            <x>0.2667</x>
+                                                            <x>0.5728</x>
                                                             <y>0.0</y>
                                                             <z>-0.6280</z>
                                                         </innerHingeTranslation>
                                                         <outerHingeTranslation>
-                                                            <x>0.2667</x>
+                                                            <x>0.5885</x>
                                                             <z>-0.6280</z>
                                                         </outerHingeTranslation>
                                                         <hingeLineRotation>40</hingeLineRotation>
@@ -4477,21 +4477,21 @@
                                                 <innerBorder>
                                                     <etaLE>0.3735</etaLE>
                                                     <etaTE>0.3735</etaTE>
-                                                    <xsiLE>0.730</xsiLE>
+                                                    <xsiLE>0.680</xsiLE>
                                                     <leadingEdgeShape>
-                                                        <relHeightLE>0.211</relHeightLE>
-                                                        <xsiUpperSkin>0.5</xsiUpperSkin>
-                                                        <xsiLowerSkin>0.964</xsiLowerSkin>
+                                                        <relHeightLE>0.35</relHeightLE>
+                                                        <xsiUpperSkin>0.784</xsiUpperSkin>
+                                                        <xsiLowerSkin>0.804</xsiLowerSkin>
                                                     </leadingEdgeShape>
                                                 </innerBorder>
                                                 <outerBorder>
                                                     <etaLE>0.779</etaLE>
                                                     <etaTE>0.779</etaTE>
-                                                    <xsiLE>0.723</xsiLE>
+                                                    <xsiLE>0.680</xsiLE>
                                                     <leadingEdgeShape>
-                                                        <relHeightLE>0.211</relHeightLE>
-                                                        <xsiUpperSkin>0.27</xsiUpperSkin>
-                                                        <xsiLowerSkin>0.964</xsiLowerSkin>
+                                                        <relHeightLE>0.35</relHeightLE>
+                                                        <xsiUpperSkin>0.784</xsiUpperSkin>
+                                                        <xsiLowerSkin>0.804</xsiLowerSkin>
                                                     </leadingEdgeShape>
                                                 </outerBorder>
                                             </outerShape>
@@ -4662,18 +4662,19 @@
                                                     </sparSegments>
                                                 </spars>
                                             </structure>
+                                           
                                             <path>
                                                 <innerHingePoint>
-                                                    <hingeXsi>1</hingeXsi>
+                                                    <hingeXsi>0.85</hingeXsi>
                                                     <hingeRelHeight>0.5</hingeRelHeight>
                                                 </innerHingePoint>
                                                 <outerHingePoint>
-                                                    <hingeXsi>1</hingeXsi>
+                                                    <hingeXsi>0.85</hingeXsi>
                                                     <hingeRelHeight>0.5</hingeRelHeight>
                                                 </outerHingePoint>
                                                 <steps>
                                                     <step>
-                                                        <relDeflection>0</relDeflection>
+                                                        <relDeflection>0.0</relDeflection>
                                                         <innerHingeTranslation>
                                                             <x>0.0</x>
                                                             <y>0.0</y>
@@ -4686,30 +4687,30 @@
                                                         <hingeLineRotation>0.0</hingeLineRotation>
                                                     </step>
                                                     <step>
-                                                        <relDeflection>.961</relDeflection>
+                                                        <relDeflection>1</relDeflection>
                                                         <innerHingeTranslation>
-                                                            <x>0.2886</x>
+                                                            <x>0.4728</x>
                                                             <y>0.0</y>
-                                                            <z>-0.2097</z>
+                                                            <z>-0.2507</z>
                                                         </innerHingeTranslation>
                                                         <outerHingeTranslation>
-                                                            <x>0.3017</x>
-                                                            <z>-0.1553</z>
+                                                            <x>0.4885</x>
+                                                            <z>-0.2368</z>
                                                         </outerHingeTranslation>
-                                                        <hingeLineRotation>9.61</hingeLineRotation>
+                                                        <hingeLineRotation>10</hingeLineRotation>
                                                     </step>
                                                     <step>
-                                                        <relDeflection>3.845</relDeflection>
+                                                        <relDeflection>4</relDeflection>
                                                         <innerHingeTranslation>
-                                                            <x>0.2683</x>
+                                                            <x>0.5728</x>
                                                             <y>0.0</y>
-                                                            <z>-0.5903</z>
+                                                            <z>-0.6280</z>
                                                         </innerHingeTranslation>
                                                         <outerHingeTranslation>
-                                                            <x>0.3565</x>
-                                                            <z>-0.423</z>
+                                                            <x>0.5885</x>
+                                                            <z>-0.6280</z>
                                                         </outerHingeTranslation>
-                                                        <hingeLineRotation>38.45</hingeLineRotation>
+                                                        <hingeLineRotation>40</hingeLineRotation>
                                                     </step>
                                                 </steps>
                                             </path>
@@ -5904,12 +5905,12 @@
                                             </structure>
                                             <path>
                                                 <innerHingePoint>
-                                                    <hingeXsi>0.6714</hingeXsi>
-                                                    <hingeRelHeight>1</hingeRelHeight>
+                                                    <hingeXsi>0.75</hingeXsi>
+                                                    <hingeRelHeight>.4</hingeRelHeight>
                                                 </innerHingePoint>
                                                 <outerHingePoint>
-                                                    <hingeXsi>0.664</hingeXsi>
-                                                    <hingeRelHeight>1</hingeRelHeight>
+                                                    <hingeXsi>0.73</hingeXsi>
+                                                    <hingeRelHeight>.4</hingeRelHeight>
                                                 </outerHingePoint>
                                                 <steps>
                                                     <step>

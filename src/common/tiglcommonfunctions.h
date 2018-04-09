@@ -56,6 +56,12 @@ TIGL_EXPORT Standard_Real ProjectPointOnWire(const TopoDS_Wire& wire, gp_Pnt p);
 // projects a point onto the line (lineStart<->lineStop) and returns the projection parameter
 TIGL_EXPORT Standard_Real ProjectPointOnLine(gp_Pnt p, gp_Pnt lineStart, gp_Pnt lineStop);
 
+// projects a point onto a plane and returns the point in parameters of the plane
+TIGL_EXPORT gp_Pnt2d ProjectPointOnPlane(gp_Pln pln, gp_Pnt p);
+
+// projects a vector onto a plane and returns the vector in parameters of the plane
+TIGL_EXPORT gp_Vec2d ProjectVecOnPlane(gp_Pln pln, gp_Vec v);
+
 enum IntStatus
 {
     BetweenPoints, // The intersection point lies between p1 and p2
@@ -199,5 +205,8 @@ TIGL_EXPORT gp_Pnt GetCenterOfMass(const TopoDS_Shape& shape);
 // NOTE: THIS METHOD ONLY CHECKS THE VERTEX POSITIONS, AND THE MIDDLE POINT 
 //       OF THE EDGES, BUT DOES NOT COMPARE THE CURVES EXACTLY
 TIGL_EXPORT TopoDS_Shape RemoveDuplicateEdges(const TopoDS_Shape& shape);
+
+//Linear interpolation in of xdata<->ydata array at position x
+TIGL_EXPORT double Interpolate(const std::vector<double>& xdata, const std::vector<double>& ydata, double x);
 
 #endif // TIGLCOMMONFUNCTIONS_H

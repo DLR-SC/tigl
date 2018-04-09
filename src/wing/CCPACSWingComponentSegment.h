@@ -1,8 +1,8 @@
-/* 
+/*
 * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
-* Changed: $Id$ 
+* Changed: $Id$
 *
 * Version: $Revision$
 *
@@ -45,6 +45,7 @@
 #include "CTiglPoint.h"
 #include "CTiglPointTranslator.h"
 
+#include "CCPACSControlSurfaces.h"
 
 namespace tigl
 {
@@ -125,11 +126,17 @@ public:
     // Get the eta xsi coordinate from a segment point (given by seta, sxsi)
     TIGL_EXPORT void GetEtaXsiFromSegmentEtaXsi(const std::string &segmentUID, double seta, double sxsi, double &eta, double &xsi) const;
 
+    TIGL_EXPORT CCPACSWingSegment* GetSegmentEtaXsi(double cseta, double csxsi, double& seta, double& sxsi);
+
     // Gets the volume of this segment
     TIGL_EXPORT double GetVolume();
 
     // Gets the surface area of this segment
     TIGL_EXPORT double GetSurfaceArea();
+
+    // gets the controlSurfaces
+    TIGL_EXPORT CCPACSControlSurfaces& getControlSurfaces();
+    TIGL_EXPORT const CCPACSControlSurfaces& getControlSurfaces() const;
 
     // Gets the fromElementUID of this segment
     TIGL_EXPORT const std::string & GetFromElementUID(void) const;
@@ -148,10 +155,15 @@ public:
     // returns a list of segments that belong to this component segment
     // TODO: return const-reference to avoid potential harmful modification of wingSegments member
     TIGL_EXPORT SegmentList& GetSegmentList() const;
-        
-    // creates an (iso) component segment line 
+
+    // creates an (iso) component segment line
     TIGL_EXPORT TopoDS_Wire GetCSLine(double eta1, double xsi1, double eta2, double xsi2, int NSTEPS=101);
-        
+
+    TIGL_EXPORT gp_Pnt GetPointDirection(double eta, double xsi, double dirx, double diry, double dirz, bool fromUpper);
+
+    // Gets the Normal of a point on the Wing Geometry.
+    TIGL_EXPORT void GetPointDirectionNormal(double eta, double xsi, double dirx, double diry, double dirz, bool fromUpper, gp_Pnt& point, gp_Vec& vec);
+
     // calculates the intersection of a segment iso eta line with a component segment line (defined by its start and end point)
     // returns the xsi coordinate of the intersection
     TIGL_EXPORT void GetSegmentIntersection(const std::string& segmentUID, double csEta1, double csXsi1, double csEta2, double csXsi2, double eta, double& xsi);
@@ -200,6 +212,7 @@ public:
 
     // computes the xsi coordinate on a straight line in global space, given an eta coordinate
     TIGL_EXPORT void InterpolateOnLine(double csEta1, double csXsi1, double csEta2, double csXsi2, double eta, double &xsi, double &errorDistance);
+
 protected:
     // Cleanup routine
     void Cleanup(void);
@@ -261,6 +274,7 @@ private:
     Handle(Geom_Surface) upperSurface;
     Handle(Geom_Surface) lowerSurface;
     bool                 surfacesAreValid;
+    CCPACSControlSurfacesPtr controlSurfaces;
 
     mutable TopoDS_Wire  etaLine;                  // 2d version (in YZ plane) of leadingEdgeLine
     mutable TopoDS_Wire  extendedEtaLine;          // 2d version (in YZ plane) of extendedLeadingEdgeLine

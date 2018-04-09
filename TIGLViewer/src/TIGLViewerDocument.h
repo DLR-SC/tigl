@@ -27,6 +27,7 @@
 #include "CCPACSConfiguration.h"
 
 #include <Quantity_Color.hxx>
+#include <AIS_Shape.hxx>
 
 class TIGLViewerWindow;
 
@@ -50,6 +51,9 @@ public:
 
     // Returns the CPACS configuration
     tigl::CCPACSConfiguration& GetConfiguration(void) const;
+
+    void drawWingFlapsForInteractiveUse(std::string selectedWing);
+    void updateControlSurfacesInteractiveObjects(std::string selectedWing, std::string controlUID);
 
 signals:
     void documentUpdated(TiglCPACSConfigurationHandle);
@@ -75,6 +79,7 @@ public slots:
     void drawWingComponentSegment();
     void drawWingComponentSegmentPoints();
     void drawWingShells();
+    void drawWingFlaps();
     void drawWingStructure();
 
     // Fuselage slots
@@ -176,7 +181,7 @@ private:
     void drawWingShells(tigl::CCPACSWing& wing);
 
     void createShapeTriangulation(const class TopoDS_Shape& shape, class TopoDS_Compound& compound);
-    
+
 };
 
 Q_DECLARE_METATYPE(TIGLViewerDocument*)

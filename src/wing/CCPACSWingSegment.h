@@ -88,7 +88,7 @@ public:
     TIGL_EXPORT gp_Pnt GetChordPoint(double eta, double xsi) const;
 
     // Gets the point on the wing chord surface in relative wing coordinates for a given eta and xsi
-    TIGL_EXPORT gp_Pnt GetChordNormal(double eta, double xsi) const;
+    TIGL_EXPORT gp_Vec GetChordNormal(double eta, double xsi) const;
 
     // Returns the inner section UID of this segment
     TIGL_EXPORT const std::string& GetInnerSectionUID(void) const;

@@ -154,8 +154,8 @@ namespace
     }
 
     // Set the face traits
-    void SetFaceTraits (PNamedShape loft) 
-    { 
+    void SetFaceTraits (PNamedShape loft)
+    {
         // designated names of the faces
         std::vector<std::string> names(5);
         names[0]="Bottom";
@@ -454,7 +454,7 @@ TopoDS_Shape CCPACSWingSegment::GetOuterClosure(TiglCoordinateSystem referenceCS
 }
 
 // get short name for loft
-std::string CCPACSWingSegment::GetShortShapeName () 
+std::string CCPACSWingSegment::GetShortShapeName ()
 {
     unsigned int windex = 0;
     unsigned int wsindex = 0;
@@ -870,12 +870,12 @@ gp_Pnt CCPACSWingSegment::GetChordPoint(double eta, double xsi) const
     return profilePoint.Get_gp_Pnt();
 }
 
-gp_Pnt CCPACSWingSegment::GetChordNormal(double eta, double xsi) const
+gp_Vec CCPACSWingSegment::GetChordNormal(double eta, double xsi) const
 {
     CTiglPoint normal; 
     ChordFace().getNormal(eta,xsi, &normal);
 
-    return normal.Get_gp_Pnt();
+    return gp_Vec(normal.Get_gp_Pnt().XYZ());
 }
 
 // TODO: remove this function if favour of Standard GetEta
@@ -981,7 +981,7 @@ void CCPACSWingSegment::MakeChordSurface() const
     if (surfaceCache.chordsurfaceValid) {
         return;
     }
-    
+
     CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
     CCPACSWingProfile& outerProfile = outerConnection.GetProfile();
 

@@ -834,7 +834,7 @@ unsigned long ObjectImpl::addPointNorm(const CTiglPoint& p, const CTiglPoint& n)
     ret = pointlist.insert(std::pair<PointImpl, int>(PointImpl(p,n),index));
     index = ret.first->second;
 /*#ifndef NDEBUG
-    if(ret.second == false){
+    if (ret.second == false) {
         double dist = ret.first->first.dist2(p);
         assert(pointlist.size() == 0 ||  dist < 1e-9);
     }

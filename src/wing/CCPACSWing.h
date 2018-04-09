@@ -1,8 +1,8 @@
-/* 
+/*
 * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
-* Changed: $Id$ 
+* Changed: $Id$
 *
 * Version: $Revision$
 *
@@ -61,6 +61,9 @@ public:
     // Invalidates internal state
     TIGL_EXPORT void Invalidate(void);
 
+    // Resets the loft
+    TIGL_EXPORT void ResetLoft();
+
     // Read CPACS wing elements
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & wingXPath);
 
@@ -99,6 +102,12 @@ public:
     TIGL_EXPORT CTiglAbstractSegment & GetComponentSegment(const int index);
     TIGL_EXPORT CTiglAbstractSegment & GetComponentSegment(std::string uid);
 
+    // Determine wether the wing should be lofted with the flaps or not
+    TIGL_EXPORT void SetBuildFlaps(bool input);
+
+    // builds Wing Without Flaps.
+    TIGL_EXPORT void BuildWingWithCutouts();
+
     // Gets the wing transformation
     TIGL_EXPORT CTiglTransformation GetWingTransformation(void);
 
@@ -111,12 +120,13 @@ public:
     // Gets the upper point in absolute (world) coordinates for a given segment, eta, xsi
     TIGL_EXPORT gp_Pnt GetLowerPoint(int segmentIndex, double eta, double xsi);
 
+    TIGL_EXPORT TopoDS_Shape GetWingWithoutFlaps();
+    TIGL_EXPORT TopoDS_Shape GetLoftWithCutouts();
+
     // Gets a point on the chord surface in absolute (world) coordinates for a given segment, eta, xsi
     TIGL_EXPORT gp_Pnt GetChordPoint(int segmentIndex, double eta, double xsi);
 
     // Gets the loft of the whole wing
-    TIGL_EXPORT TopoDS_Shape & GetLoftWithLeadingEdge(void);
-        
     TIGL_EXPORT TopoDS_Shape & GetUpperShape();
     TIGL_EXPORT TopoDS_Shape & GetLowerShape();
 
@@ -125,7 +135,7 @@ public:
 
     // Get the Transformation object
     TIGL_EXPORT CTiglTransformation GetTransformation(void);
-        
+
     // Sets a Transformation object
     TIGL_EXPORT void Translate(CTiglPoint trans);
 
@@ -167,10 +177,21 @@ public:
     // Get the guide curve with a given UID
     TIGL_EXPORT CCPACSGuideCurve& GetGuideCurve(std::string uid);
 
+    // resets wing Shape to cleanShape
+    TIGL_EXPORT void ResetWingShape();
+
     // Getter for positionings
     TIGL_EXPORT CCPACSWingPositionings& GetPositionings();
 
+    // Returns the wing shape without any extended flaps
+    TIGL_EXPORT PNamedShape GetWingCleanShape();
+
+
 protected:
+
+    // Adds all Segments of this wing and flaps to one shape
+    TIGL_EXPORT PNamedShape GroupedFlapsAndWingShapes();
+
     // Cleanup routine
     void Cleanup(void);
 
@@ -179,9 +200,9 @@ protected:
 
     // Adds all Segments of this wing to one shape
     PNamedShape BuildFusedSegments(bool splitWingInUpperAndLower);
-        
+
     PNamedShape BuildLoft(void);
-        
+
     void BuildUpperLowerShells();
 
 
@@ -195,6 +216,8 @@ private:
     // Assignment operator
     void operator=(const CCPACSWing & );
 
+    double linearInterpolation(std::vector<double> list1, std::vector<double> list2, double valueRelList1);
+
 private:
     std::string                    name;                     /**< Wing name           */
     std::string                    description;              /**< Wing description    */
@@ -204,13 +227,16 @@ private:
     CCPACSWingComponentSegments    componentSegments;        /**< Wing ComponentSegments */
     CCPACSWingPositionings         positionings;             /**< Wing positionings   */
     CCPACSConfiguration*           configuration;            /**< Parent configuration*/
-    TopoDS_Shape                   fusedSegmentWithEdge;     /**< All Segments in one shape plus modelled leading edge */ 
+    TopoDS_Shape                   fusedSegmentWithEdge;     /**< All Segments in one shape plus modelled leading edge */
     TopoDS_Shape                   upperShape;
     TopoDS_Shape                   lowerShape;
+    PNamedShape                    wingShapeWithCutouts;          /**< Wing without flaps / flaps removed */
+    PNamedShape                    wingCleanShape;           /**< Clean wing surface without flaps cutout*/
     bool                           invalidated;              /**< Internal state flag */
     bool                           rebuildFusedSegments;     /**< Indicates if segmentation fusing need rebuild */
     bool                           rebuildFusedSegWEdge;     /**< Indicates if segmentation fusing need rebuild */
     bool                           rebuildShells;
+    bool                           buildFlaps;               /**< Indicactes if the wing's loft shall include flaps */
     FusedElementsContainerType     fusedElements;            /**< Stores already fused segments */
     double                         myVolume;                 /**< Volume of this Wing           */
 };

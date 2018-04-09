@@ -92,12 +92,14 @@ set(tv_src
     TIGLViewerFuseDialog.cpp
     TIGLViewerShapeIntersectionDialog.cpp
     TIGLViewerScreenshotDialog.cpp
+    TIGLViewerSelectWingAndFlapStatusDialog.cpp
     TIGLViewerDrawVectorDialog.cpp
     TIGLViewerScopedCommand.cpp
     TIGLQAspectWindow.cpp
     TIGLViewerVTKExportDialog.cpp
+    TIGLInteractiveShapeManager.cpp
 )
-	
+
 # normal header files
 set(tv_hdr
     CommandLineParameters.h
@@ -113,6 +115,7 @@ set(tv_hdr
     TIGLViewerLoggerHTMLDecorator.h
     TIGLViewerScopedCommand.h
     TIGLQAspectWindow.h
+    TIGLInteractiveShapeManager.h
 )
 
 # qobject header files that have to be moced
@@ -133,6 +136,7 @@ set(tv_hdr_qobj
 	TIGLViewerErrorDialog.h
 	TIGLViewerDrawVectorDialog.h
 	TIGLViewerLogRedirection.h
+	TIGLViewerSelectWingAndFlapStatusDialog.h
 	TIGLViewerFuseDialog.h
 	TIGLViewerShapeIntersectionDialog.h
 	TIGLViewerScreenshotDialog.h
@@ -144,13 +148,14 @@ set(tv_ui_comp
 	src/TIGLViewerSettingsDialog.ui
 	src/TIGLViewerEtaXsiDialog.ui
 	src/TIGLViewerErrorDialog.ui
+	src/TIGLViewerSelectWingAndFlapStatusDialog.ui
 	src/TIGLViewerFuseDialog.ui
 	src/TIGLViewerShapeIntersectionDialog.ui
 	src/TIGLViewerScreenshotDialog.ui
 	src/TIGLViewerDrawVectorDialog.ui
 	src/TIGLViewerVTKExportDialog.ui
 )
-	
+
 foreach ( _fname ${tv_src})
    set(tv_src_comp ${tv_src_comp} src/${_fname})
 endforeach()
@@ -170,6 +175,10 @@ QTX_ADD_RESOURCES( tv_rcrs src/TIGLViewer.qrc )
 add_definitions(-DCSFDB -DQOCC_STATIC)
 
 include_directories( ${OpenCASCADE_INCLUDE_DIR} ${TIXI_INCLUDE_DIRS})
+include_directories( ${PROJECT_SOURCE_DIR}/src
+                     ${PROJECT_SOURCE_DIR}/src/control_devices
+                     ${CMAKE_CURRENT_SOURCE_DIR}/src
+                     ${PROJECT_BINARY_DIR}/src)
 
 # opengl
 include_directories(${OPENGL_INCLUDE_DIR})
@@ -207,13 +216,13 @@ if(APPLE)
 endif()
 
 add_executable(${PROGNAME} ${TYPE}
-		${tv_src_comp} 
-		${tv_hdr_MOC} 
- 		${tv_hdr_qobj_comp}        
-		${tv_hdr_comp} 
-		${tv_ui_comp}
-		${tv_rcrs}
-		${tv_icon_rc}
+        ${tv_src_comp}
+        ${tv_hdr_MOC}
+        ${tv_hdr_qobj_comp}
+        ${tv_hdr_comp}
+        ${tv_ui_comp}
+        ${tv_rcrs}
+        ${tv_icon_rc}
 )
 
 target_link_libraries(${PROGNAME} 
@@ -237,7 +246,7 @@ endif(GLOG_FOUND)
 #--------------------------------------------------------------------------------
 # Install the TIGLViewer application, on Apple, the bundle is at the root of the
 # install tree, and on other platforms it'll go into the bin directory.
-INSTALL(TARGETS ${PROGNAME} 
+INSTALL(TARGETS ${PROGNAME}
     BUNDLE DESTINATION . COMPONENT viewer
     RUNTIME DESTINATION bin COMPONENT viewer
     )
@@ -263,7 +272,7 @@ ENDIF(WIN32)
 SET(CMAKE_INSTALL_OPENMP_LIBRARIES "ON")
 INCLUDE(InstallRequiredSystemLibraries)
 
-	
+
 # set directories to look for dependencies
 set(DIRS ${TIXI_LIB_PATH} ${OpenCASCADE_DLL_DIRECTORY} ${OpenCASCADE_LINK_DIRECTORY} ${TIGL_ADD_LIB_PATH})
 

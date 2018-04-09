@@ -27,6 +27,7 @@
 #include <QObject>
 #include "TIGLViewer.h"
 #include "TIGLViewerColors.h"
+#include "TIGLInteractiveShapeManager.h"
 #include <QMetaType>
 
 class TopoDS_Shape;
@@ -69,8 +70,12 @@ public:
                        Standard_Real aZoffset,
                        Standard_Real TextScale);
 
+    InteractiveShapeManager& GetShapeManager();
+
 public slots:
-    void displayShape(const TopoDS_Shape& loft, Quantity_Color color = Quantity_NOC_ShapeCol, double transparency=0.);
+    Handle_AIS_Shape displayShape(const TopoDS_Shape& loft, Quantity_Color color = Quantity_NOC_ShapeCol, double transparency=0.);
+    Handle_AIS_Shape displayShape(const PNamedShape& pshape, Standard_Boolean updateViewer, Quantity_Color color = Quantity_NOC_ShapeCol, double transparency=0.);
+
     void drawPoint(double x, double y, double z);
     void drawVector(double x, double y, double z, double dirx, double diry, double dirz);
     void deleteAllObjects();
@@ -96,6 +101,7 @@ private:
     Aspect_GridDrawMode             myGridMode;
     Quantity_NameOfColor            myGridColor;
     Quantity_NameOfColor            myGridTenthColor;
+    InteractiveShapeManager         myShapeManager;
 
 };
 
