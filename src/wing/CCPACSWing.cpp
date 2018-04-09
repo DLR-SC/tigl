@@ -32,7 +32,6 @@
 #include "CCPACSWingSegment.h"
 #include "CTiglError.h"
 #include "tiglcommonfunctions.h"
-#include "CBopCommon.h"
 #include "CGroupShapes.h"
 #include "TixiSaveExt.h"
 #include "tiglmathfunctions.h"
@@ -50,13 +49,6 @@
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <TopExp.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
-#include "BRepBuilderAPI_Transform.hxx"
-#include "BRepAlgoAPI_Common.hxx"
-#include "BRepAlgoAPI_Section.hxx"
-#include "BOPCol_ListOfShape.hxx"
-#include "BOPAlgo_PaveFiller.hxx"
-#include <gce_MakeLin.hxx>
-#include <gce_MakeRotation.hxx>
 #include "CFuseShapes.h"
 
 
@@ -419,7 +411,7 @@ void CCPACSWing::BuildWingWithCutouts()
        CCPACSWingComponentSegment &componentSegment = componentSegments.GetComponentSegment(i);
        CCPACSControlSurfaceDevices* controlSurfaceDevices = componentSegment.getControlSurfaces().getControlSurfaceDevices();
 
-        for ( int j = controlSurfaceDevices->getControlSurfaceDeviceCount(); j > 0 ; j-- ) {
+        for ( size_t j = controlSurfaceDevices->getControlSurfaceDeviceCount(); j > 0 ; j-- ) {
             CCPACSControlSurfaceDevice &controlSurfaceDevice = controlSurfaceDevices->getControlSurfaceDeviceByID(j);
 
             PNamedShape controlSurfacePrism = controlSurfaceDevice.getCutOutShape();
@@ -444,7 +436,7 @@ void CCPACSWing::BuildWingWithCutouts()
     CCutShape cutter(wingCleanShape, fusedBoxes);
     cutter.Perform();
     wingShapeWithCutouts = cutter.NamedShape();
-    for (unsigned int iFace = 0; iFace < wingShapeWithCutouts->GetFaceCount(); ++iFace) {
+    for (int iFace = 0; iFace < static_cast<int>(wingShapeWithCutouts->GetFaceCount()); ++iFace) {
         CFaceTraits ft = wingShapeWithCutouts->GetFaceTraits(iFace);
         ft.SetOrigin(wingCleanShape);
         wingShapeWithCutouts->SetFaceTraits(iFace, ft);
@@ -466,7 +458,7 @@ PNamedShape CCPACSWing::GroupedFlapsAndWingShapes()
        CCPACSWingComponentSegment &componentSegment = componentSegments.GetComponentSegment(i);
        CCPACSControlSurfaceDevices* controlSurfaceDevices = componentSegment.getControlSurfaces().getControlSurfaceDevices();
 
-       for ( int j = controlSurfaceDevices->getControlSurfaceDeviceCount(); j > 0 ; j-- ) {
+       for ( size_t j = controlSurfaceDevices->getControlSurfaceDeviceCount(); j > 0 ; j-- ) {
 
             CCPACSControlSurfaceDevice &controlSurfaceDevice = controlSurfaceDevices->getControlSurfaceDeviceByID(j);
             PNamedShape deviceShape = controlSurfaceDevice.getTransformedFlapShape();

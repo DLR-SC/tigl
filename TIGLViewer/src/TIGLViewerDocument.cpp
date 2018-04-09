@@ -36,14 +36,9 @@
 
 // OpenCascade Stuff
 #include <AIS_Shape.hxx>
-#include <AIS_InteractiveContext.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepMesh_IncrementalMesh.hxx>
-#include <TopoDS_Shell.hxx>
 #include <Poly_Triangulation.hxx>
-#include <BRepBuilderAPI_MakePolygon.hxx>
-#include <BRepBuilderAPI_MakeFace.hxx>
-#include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepBuilderAPI_Transform.hxx>
 #include <gce_MakeLin.hxx>
 #include <GC_MakeSegment.hxx>
