@@ -160,7 +160,6 @@ private slots:
 
 
 private: 
-    class TIGLViewerSelectWingAndFlapStatusDialog* m_flapsDialog;
     TiglCPACSConfigurationHandle            m_cpacsHandle;
     TIGLViewerWindow*                       app;
     QString                                 loadedConfigurationFileName;

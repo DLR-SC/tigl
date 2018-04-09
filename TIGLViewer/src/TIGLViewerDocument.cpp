@@ -48,15 +48,6 @@
 #include <gce_MakeLin.hxx>
 #include <GC_MakeSegment.hxx>
 #include <BRepBndLib.hxx>
-#include <BRepPrimAPI_MakeBox.hxx>
-#include <BRepBuilderAPI_MakeWire.hxx>
-#include <BRepAlgo_Fuse.hxx>
-#include <BRepAlgo_Cut.hxx>
-#include <BRepAlgo_Common.hxx>
-#include <BRepBuilderAPI_Transform.hxx>
-#include <BRepPrimAPI_MakePrism.hxx>
-#include <BRepAlgoAPI_Common.hxx>
-#include <BRepAlgoAPI_Cut.hxx>
 
 // TIGLViewer includes
 #include "TIGLViewerInternal.h"
@@ -85,7 +76,6 @@
 #include "CCPACSGenericSystem.h"
 #include "tiglcommonfunctions.h"
 #include "CTiglPoint.h"
-#include "CCPACSControlSurfaceDeviceOuterShapeBorder.h"
 #include "CCPACSControlSurfaces.h"
 #include "CCPACSControlSurfaceDevice.h"
 #include "CCPACSWingComponentSegment.h"
@@ -118,7 +108,7 @@ double getAbsDeflection (const TopoDS_Shape& theShape, double relDeflection)
 }
 
 TIGLViewerDocument::TIGLViewerDocument(TIGLViewerWindow *parentWidget)
-    : QObject(parentWidget), m_flapsDialog(new TIGLViewerSelectWingAndFlapStatusDialog(this, parentWidget))
+    : QObject(parentWidget)
 {
     app = parentWidget;
     m_cpacsHandle = -1;
@@ -934,6 +924,7 @@ void TIGLViewerDocument::drawWingFlaps()
         wings << name.c_str();
     }
 
+    static TIGLViewerSelectWingAndFlapStatusDialog* m_flapsDialog(new TIGLViewerSelectWingAndFlapStatusDialog(this, app));
     m_flapsDialog->setWings(wings);
     m_flapsDialog->show();
     m_flapsDialog->raise();
