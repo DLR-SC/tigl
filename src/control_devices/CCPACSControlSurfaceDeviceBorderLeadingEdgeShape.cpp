@@ -17,6 +17,7 @@
  */
 
 #include "CCPACSControlSurfaceDeviceBorderLeadingEdgeShape.h"
+#include "CTiglLogging.h"
 
 namespace tigl
 {
@@ -41,18 +42,21 @@ void CCPACSControlSurfaceDeviceBorderLeadingEdgeShape::ReadCPACS(
     elementPath = const_cast<char*>(tempString.c_str());
     if (tixiGetDoubleElement(tixiHandle, elementPath, &relHeightLE) != SUCCESS) {
         // couldnt read relHeightLE
+        LOG(ERROR) << "Required element relHeightTE is missing at xpath " << leadingEdgeShapeXPath;
     }
 
     tempString = leadingEdgeShapeXPath + "/xsiUpperSkin";
     elementPath = const_cast<char*>(tempString.c_str());
     if (tixiGetDoubleElement(tixiHandle, elementPath, &xsiUpperSkin) != SUCCESS) {
         // couldnt read xsiUpperSkin
+        LOG(ERROR) << "Required element xsiUpperSkin is missing at xpath " << leadingEdgeShapeXPath;
     }
 
     tempString = leadingEdgeShapeXPath + "/xsiLowerSkin";
     elementPath = const_cast<char*>(tempString.c_str());
     if (tixiGetDoubleElement(tixiHandle, elementPath, &xsiLowerSkin) != SUCCESS) {
         // couldnt read xsiLowerSkin
+        LOG(ERROR) << "Required element xsiLowerSkin is missing at xpath " << leadingEdgeShapeXPath;
     }
 }
 

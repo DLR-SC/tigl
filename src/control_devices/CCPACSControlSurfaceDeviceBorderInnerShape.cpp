@@ -17,6 +17,7 @@
  */
 
 #include "CCPACSControlSurfaceDeviceBorderInnerShape.h"
+#include "CTiglLogging.h"
 
 namespace tigl
 {
@@ -35,17 +36,18 @@ void CCPACSControlSurfaceDeviceBorderInnerShape::ReadCPACS(
     std::string tempString;
     // getting subelements
 
-    // @todo: handle missing cpacs values
     tempString = innerShapeXPath + "/relHeightTE";
     elementPath = const_cast<char*>(tempString.c_str());
     if (tixiGetDoubleElement(tixiHandle, elementPath, &relHeightTE) != SUCCESS) {
         // couldnt read relHeightTE
+        LOG(ERROR) << "Required element relHeightTE is missing at xpath " << innerShapeXPath;
     }
 
     tempString = innerShapeXPath + "/xsiTE";
     elementPath = const_cast<char*>(tempString.c_str());
     if (tixiGetDoubleElement(tixiHandle, elementPath, &xsiTE) != SUCCESS) {
         // couldnt read xsiTE
+        LOG(ERROR) << "Required element xsiTE is missing at xpath " << innerShapeXPath;
     }
 }
 
