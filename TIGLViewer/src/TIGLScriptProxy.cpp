@@ -120,6 +120,17 @@ QScriptValue TIGLScriptProxy::exportSTEP (QString filenamePtr)
     }
 }
 
+QScriptValue TIGLScriptProxy::exportFusedSTEP (QString filenamePtr)
+{
+    TiglReturnCode ret = ::tiglExportFusedSTEP(getTiglHandle(), qString2char(filenamePtr));
+    if (ret != TIGL_SUCCESS) {
+        return context()->throwError(tiglGetErrorString(ret));
+    }
+    else {
+        return QScriptValue::UndefinedValue;
+    }
+}
+
 QScriptValue TIGLScriptProxy::exportMeshedFuselageSTL (int fuselageIndex, QString filename, double deflection)
 {
     TiglReturnCode ret = ::tiglExportMeshedFuselageSTL(getTiglHandle(), fuselageIndex, qString2char(filename), deflection);
@@ -145,6 +156,17 @@ QScriptValue TIGLScriptProxy::exportMeshedFuselageVTKByIndex (int fuselageIndex,
 QScriptValue TIGLScriptProxy::exportMeshedFuselageVTKByUID (QString fuselageUID, QString filenamePtr, double deflection)
 {
     TiglReturnCode ret = ::tiglExportMeshedFuselageVTKByUID(getTiglHandle(), qString2char(fuselageUID), qString2char(filenamePtr), deflection);
+    if (ret != TIGL_SUCCESS) {
+        return context()->throwError(tiglGetErrorString(ret));
+    }
+    else {
+        return QScriptValue::UndefinedValue;
+    }
+}
+
+QScriptValue TIGLScriptProxy::setExportOptions(QString exporter, QString optionName, QString optionValue)
+{
+    TiglReturnCode ret = ::tiglSetExportOptions(qString2char(exporter), qString2char(optionName), qString2char(optionValue));
     if (ret != TIGL_SUCCESS) {
         return context()->throwError(tiglGetErrorString(ret));
     }

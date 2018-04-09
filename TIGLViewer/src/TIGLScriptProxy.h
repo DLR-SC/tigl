@@ -60,9 +60,11 @@ public slots:
     QScriptValue exportFusedWingFuselageIGES (QString filename);
     QScriptValue exportIGES (QString filename);
     QScriptValue exportSTEP (QString filename);
+    QScriptValue exportFusedSTEP (QString filename);
     QScriptValue exportMeshedFuselageSTL(int fuselageIndex, QString filename, double deflection);
     QScriptValue exportMeshedFuselageVTKByIndex (int fuselageIndex, QString filename, double deflection);
     QScriptValue exportMeshedFuselageVTKByUID (QString fuselageUID, QString filename, double deflection);
+    QScriptValue setExportOptions(QString exporter, QString optionName, QString optionValue);
     
     // fuselage stuff
     QScriptValue fuselageGetUID(int fuselageIndex);
