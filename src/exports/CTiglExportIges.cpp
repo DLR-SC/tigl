@@ -312,9 +312,11 @@ bool CTiglExportIges::WriteImpl(const std::string& filename) const
         ShapeGroupMode groupMode = GlobalExportOptions().GroupMode();
         ListPNamedShape templist = GroupFaces(*it, groupMode);
 
-        int level = GetOptions(iShape).Get<int>("Layer");
-        if (level >= 0) {
-            iLevel = static_cast<size_t>(level);
+        if (GetOptions(iShape).HasOption("Layer")) {
+            int level = GetOptions(iShape).Get<int>("Layer");
+            if (level >= 0) {
+                iLevel = static_cast<size_t>(level);
+            }
         }
 
         for (ListPNamedShape::iterator it2 = templist.begin(); it2 != templist.end(); ++it2) {

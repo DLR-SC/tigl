@@ -200,6 +200,8 @@ TEST_F(tiglExport, export_wing_collada_success)
     ASSERT_TRUE(tiglExportWingColladaByUID(tiglHandle, "D150_VAMP_HL1", colladaWing2Filename, 0.001) == TIGL_SUCCESS);
     const char* colladaWing3Filename = "TestData/export/D150modelID_wing3.dae";
     ASSERT_TRUE(tiglExportWingColladaByUID(tiglHandle, "D150_VAMP_SL1", colladaWing3Filename, 0.001) == TIGL_SUCCESS);
+
+    ASSERT_EQ(TIGL_SUCCESS, tiglExportComponent(tiglHandle, "D150_VAMP_W1",  "TestData/export/D150modelID_wing1_new.dae", 0.001));
 }
 
 TEST_F(tiglExportSimple, export_wing_collada)
@@ -294,6 +296,23 @@ TEST_F(tiglExportSimple, export_iges_layers)
     ASSERT_EQ(true, ret);
 }
 
+TEST_F(tiglExportSimple, export_component_api_errors)
+{
+    EXPECT_EQ(TIGL_NULL_POINTER, tiglExportComponent(tiglSimpleHandle, "Wing", 0, 0.001));
+    EXPECT_EQ(TIGL_NULL_POINTER, tiglExportComponent(tiglSimpleHandle, 0, "TestData/export/simple_wing_new.dae", 0.001));
+    
+    EXPECT_EQ(TIGL_NOT_FOUND, tiglExportComponent(tiglSimpleHandle, "Wing", "TestData/export/simple_wing_new.txt", 0.001));
+    EXPECT_EQ(TIGL_WRITE_FAILED, tiglExportComponent(tiglSimpleHandle, "Wing", "TestData/export/simple_wing_new", 0.001));
+    EXPECT_EQ(TIGL_UID_ERROR, tiglExportComponent(tiglSimpleHandle, "NoComponentUid", "TestData/export/simple_wing_new.dae", 0.001));
+}
+
+TEST_F(tiglExportSimple, export_configuration_api_errors)
+{
+    EXPECT_EQ(TIGL_NULL_POINTER, tiglExportConfiguration(tiglSimpleHandle, 0, TIGL_FALSE, 0.001));
+    EXPECT_EQ(TIGL_NOT_FOUND, tiglExportConfiguration(tiglSimpleHandle, "TestData/export/simpletest-export.txt", TIGL_FALSE, 0.001));
+    EXPECT_EQ(TIGL_WRITE_FAILED, tiglExportConfiguration(tiglSimpleHandle, "TestData/export/simpletest-export", TIGL_FALSE, 0.001));
+}
+
 TEST_F(tiglExportSimple, set_export_options_api)
 {
     EXPECT_EQ(TIGL_NOT_FOUND, tiglSetExportOptions("unknown", "ApplySymmetries", "true"));
@@ -345,6 +364,7 @@ TEST_F(tiglExportSimple, check_face_traits)
 TEST_F(tiglExportSimple, exportFusedBRep)
 {
     ASSERT_EQ(TIGL_SUCCESS, tiglExportFusedBREP(tiglSimpleHandle,"TestData/export/simpletest.brep"));
+    ASSERT_EQ(TIGL_SUCCESS, tiglExportConfiguration(tiglSimpleHandle,"TestData/export/simpletest2.brep", TIGL_TRUE, 0.));
 }
 
 // check if face names were set correctly in the case without a trailing edge

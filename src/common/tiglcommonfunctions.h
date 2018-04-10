@@ -138,6 +138,8 @@ TIGL_EXPORT bool IsPathRelative(const std::string&);
 // Returns true, if a file is readable
 TIGL_EXPORT bool IsFileReadable(const std::string& filename);
 
+TIGL_EXPORT std::string FileExtension(const std::string& filename);
+
 // get the continuity of two edges which share a common vertex
 TIGL_EXPORT TiglContinuity getEdgeContinuity(const TopoDS_Edge& edge1, const TopoDS_Edge& edge2);
 

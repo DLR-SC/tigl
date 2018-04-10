@@ -87,6 +87,28 @@ QScriptValue TIGLScriptProxy::componentGetHashCode (QString componentUID)
     }
 }
 
+QScriptValue TIGLScriptProxy::exportComponent (QString uid, QString filename, double deflection)
+{
+    TiglReturnCode ret = ::tiglExportComponent(getTiglHandle(), qString2char(uid), qString2char(filename), deflection);
+    if (ret != TIGL_SUCCESS) {
+        return context()->throwError(tiglGetErrorString(ret));
+    }
+    else {
+        return QScriptValue::UndefinedValue;
+    }
+}
+
+QScriptValue TIGLScriptProxy::exportConfiguration (QString filename, bool fuseAllShapes, double deflection)
+{
+    TiglReturnCode ret = ::tiglExportConfiguration(getTiglHandle(), qString2char(filename), fuseAllShapes ? TIGL_TRUE : TIGL_FALSE, deflection);
+    if (ret != TIGL_SUCCESS) {
+        return context()->throwError(tiglGetErrorString(ret));
+    }
+    else {
+        return QScriptValue::UndefinedValue;
+    }
+}
+
 QScriptValue TIGLScriptProxy::exportFusedWingFuselageIGES (QString filenamePtr)
 {
     TiglReturnCode ret = ::tiglExportFusedWingFuselageIGES(getTiglHandle(), qString2char(filenamePtr));
