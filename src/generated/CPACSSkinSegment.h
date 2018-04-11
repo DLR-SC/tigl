@@ -29,6 +29,8 @@ class CTiglUIDManager;
 
 namespace generated
 {
+    class CPACSSkinSegments;
+
     // This class is used in:
     // CPACSSkinSegments
 
@@ -36,8 +38,11 @@ namespace generated
     class CPACSSkinSegment
     {
     public:
-        TIGL_EXPORT CPACSSkinSegment(CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSSkinSegment(CPACSSkinSegments* parent, CTiglUIDManager* uidMgr);
+
         TIGL_EXPORT virtual ~CPACSSkinSegment();
+
+        TIGL_EXPORT CPACSSkinSegments* GetParent() const;
 
         TIGL_EXPORT CTiglUIDManager& GetUIDManager();
         TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
@@ -64,6 +69,8 @@ namespace generated
         TIGL_EXPORT virtual void SetEndStringerUID(const boost::optional<std::string>& value);
 
     protected:
+        CPACSSkinSegments* m_parent;
+
         CTiglUIDManager* m_uidMgr;
 
         std::string                  m_uID;
@@ -87,10 +94,12 @@ namespace generated
     };
 } // namespace generated
 
+// CPACSSkinSegment is customized, use type CCPACSSkinSegment directly
+
 // Aliases in tigl namespace
 #ifdef HAVE_CPP11
-using CCPACSSkinSegment = generated::CPACSSkinSegment;
+using CCPACSSkinSegments = generated::CPACSSkinSegments;
 #else
-typedef generated::CPACSSkinSegment CCPACSSkinSegment;
+typedef generated::CPACSSkinSegments CCPACSSkinSegments;
 #endif
 } // namespace tigl

@@ -15,6 +15,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <cassert>
+#include "CCPACSFuselageStructure.h"
 #include "CPACSSkin.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -25,13 +27,20 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSSkin::CPACSSkin(CTiglUIDManager* uidMgr)
+    CPACSSkin::CPACSSkin(CCPACSFuselageStructure* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
+        //assert(parent != NULL);
+        m_parent = parent;
     }
 
     CPACSSkin::~CPACSSkin()
     {
+    }
+
+    CCPACSFuselageStructure* CPACSSkin::GetParent() const
+    {
+        return m_parent;
     }
 
     CTiglUIDManager& CPACSSkin::GetUIDManager()
@@ -56,7 +65,7 @@ namespace generated
 
         // read element skinSegments
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/skinSegments")) {
-            m_skinSegments = boost::in_place(m_uidMgr);
+            m_skinSegments = boost::in_place(this, m_uidMgr);
             try {
                 m_skinSegments->ReadCPACS(tixiHandle, xpath + "/skinSegments");
             } catch(const std::exception& e) {
@@ -116,7 +125,7 @@ namespace generated
     CPACSSkinSegments& CPACSSkin::GetSkinSegments(CreateIfNotExistsTag)
     {
         if (!m_skinSegments)
-            m_skinSegments = boost::in_place(m_uidMgr);
+            m_skinSegments = boost::in_place(this, m_uidMgr);
         return *m_skinSegments;
     }
 
