@@ -785,7 +785,7 @@ void CCPACSWing::BuildGuideCurveWires()
 
     // connect guide curve segments to a spline with given continuity conditions and tangents
     CTiglCurveConnector connector(roots);
-    guideCurves = connector.GetGuideCurves();
+    guideCurves = connector.GetConnectedGuideCurves();
 }
 
 TopoDS_Shape transformWingProfileGeometry(const CTiglTransformation& wingTransform, const CTiglWingConnection& connection, const TopoDS_Shape& wire)

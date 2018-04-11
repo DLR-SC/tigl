@@ -38,7 +38,22 @@ namespace tigl {
 
 CTiglCurveConnector::CTiglCurveConnector(std::vector<CCPACSGuideCurve*> roots)
     : m_roots(roots)
-{}
+{
+    // check if every guidecurve consists of the same number of segments
+    int numSegments_prev = 0;
+    for (int i =0; i<m_roots.size(); i++) {
+        m_numSegments = 0;
+        CCPACSGuideCurve* curCurve = m_roots[i];
+        while(curCurve) {
+            m_numSegments++;
+            curCurve = curCurve->GetConnectedCurve();
+        }
+        if (i>0 && m_numSegments != numSegments_prev ) {
+           throw(CTiglError("The guide curves to be connected do not have the same number of segments!"));
+        }
+        numSegments_prev = m_numSegments;
+    }
+}
 
 void CTiglCurveConnector::Invalidate()
 {
@@ -46,7 +61,7 @@ void CTiglCurveConnector::Invalidate()
     m_isBuilt = false;
 }
 
-TopoDS_Compound CTiglCurveConnector::GetGuideCurves()
+TopoDS_Compound CTiglCurveConnector::GetConnectedGuideCurves()
 {
     if( m_isBuilt ) {
         return m_result;
@@ -63,7 +78,7 @@ TopoDS_Compound CTiglCurveConnector::GetGuideCurves()
         TopoDS_Wire connectedGuide = GetInterpolatedCurveFromRoot(curCurve);
         builder.Add(m_result, connectedGuide);
 
-    } // for roots
+    }
 
     m_isBuilt = true;
     return m_result;
@@ -73,29 +88,37 @@ TopoDS_Wire CTiglCurveConnector::GetInterpolatedCurveFromRoot(CCPACSGuideCurve* 
 {
     // interpolate guide curve points of all segments with a B-Spline
     std::vector<gp_Pnt> points;
+    std::vector<double> params;
     std::vector<gp_Vec> tangents;
     std::vector<bool>   tangentFlags;
 
     // add root point of the guide curve
     points.push_back( curCurve->GetCurvePoints()[0] );
+    params.push_back(0);
 
+    // build vectors of points, parameters and tangents for the interpolation
     size_t idx_start = 1;
     size_t idx_end = 0;
+    int curSegment = 0;
     while (curCurve) {
+
+        // get the start and end parameter of the current segment
+        double startParam = (double)curSegment/m_numSegments;
+        double endParam = (double)(curSegment+1)/m_numSegments;
 
         // get points of current curve and append point list
         std::vector<gp_Pnt> curPoints = curCurve->GetCurvePoints();
 
-        // check if the first point is too close to the last one
-        if ( points.back().Distance(curPoints[0]) < Precision::Confusion() ) {
-            // ignore first point to avoid duplicity
-            idx_end = idx_start + curPoints.size() - 2;
-            points.insert( points.end(), curPoints.begin()+1, curPoints.end() );
+        // ignore first point to avoid duplicity
+        idx_end = idx_start + curPoints.size() - 2;
+        points.insert( points.end(), curPoints.begin()+1, curPoints.end() );
+
+        // set the parameters for each point.
+        std::vector<double> curParams(curPoints.size()-1);
+        for(int i = 1; i<= curParams.size(); i++) {
+            curParams[i-1] = startParam + (endParam-startParam)*i/curParams.size();
         }
-        else {
-            idx_end = idx_start + curPoints.size() - 1;
-            points.insert( points.end(), curPoints.begin(), curPoints.end() );
-        }
+        params.insert( params.end(), curParams.begin(), curParams.end() );
 
         // no tangents given for the points by default
         std::vector<gp_Vec> curTangents(curPoints.size());
@@ -122,20 +145,23 @@ TopoDS_Wire CTiglCurveConnector::GetInterpolatedCurveFromRoot(CCPACSGuideCurve* 
 
         curCurve = curCurve->GetConnectedCurve();
         idx_start = idx_end+1;
-    }
+        curSegment++;
+    } // while (curCurve)
 
     int pointCount = (int)idx_start;
     Handle(TColgp_HArray1OfPnt) hpoints = new TColgp_HArray1OfPnt(1, pointCount);
+    Handle(TColStd_HArray1OfReal) hparams = new TColStd_HArray1OfReal(1, pointCount);
     Handle(TColStd_HArray1OfBoolean) htangentFlags = new TColStd_HArray1OfBoolean(1, pointCount);
     TColgp_Array1OfVec htangents(1, pointCount);
 
     for (int j = 0; j < pointCount; j++) {
         hpoints->SetValue(j+1, points[j]);
+        hparams->SetValue(j+1, params[j]);
         htangents.SetValue(j+1, tangents[j]);
         htangentFlags->SetValue(j+1, tangentFlags[j]);
     }
 
-    GeomAPI_Interpolate interpol(hpoints, Standard_False, Precision::Confusion());
+    GeomAPI_Interpolate interpol(hpoints, hparams, Standard_False, Precision::Confusion());
     interpol.Load(htangents, htangentFlags);
     interpol.Perform();
 
