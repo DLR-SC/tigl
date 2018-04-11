@@ -163,6 +163,7 @@ private:
     TiglCPACSConfigurationHandle            m_cpacsHandle;
     TIGLViewerWindow*                       app;
     QString                                 loadedConfigurationFileName;
+    class TIGLViewerSelectWingAndFlapStatusDialog* m_flapsDialog;
 
     void writeToStatusBar(QString text);
     void displayError(QString text, QString header="");

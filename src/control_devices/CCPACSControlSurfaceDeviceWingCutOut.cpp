@@ -139,7 +139,7 @@ PNamedShape CCPACSControlSurfaceDeviceWingCutOut::GetLoft(PNamedShape wingCleanS
 
 #ifdef DEBUG
     std::stringstream filenamestr;
-    filenamestr << _csDevice->GetUID() << "_cutout.brep";
+    filenamestr << _csDevice.GetUID() << "_cutout.brep";
     BRepTools::Write(_loft->Shape(), filenamestr.str().c_str());
 #endif
 
