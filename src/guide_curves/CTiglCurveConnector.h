@@ -21,8 +21,10 @@
 
 #include <vector>
 
-#include <TopoDS_Compound.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
 #include <TopoDS_Wire.hxx>
+#include <TopoDS_Compound.hxx>
 
 #include <CCPACSGuideCurves.h>
 
@@ -30,16 +32,21 @@ namespace tigl {
 
 class CTiglCurveConnector
 {
+
 public:
     CTiglCurveConnector(std::vector<CCPACSGuideCurve*> roots);
 
-    TopoDS_Compound GetGuideCurves();
+    TopoDS_Compound GetConnectedGuideCurves();
     void Invalidate();
 
 private:
     TopoDS_Wire GetInterpolatedCurveFromRoot(CCPACSGuideCurve* curve);
 
+    // the root guide curve (segments)
     std::vector<CCPACSGuideCurve*> m_roots;
+
+    // the number of segments per guide curve
+    int m_numSegments;
 
     TopoDS_Compound m_result;
     bool m_isBuilt = false;

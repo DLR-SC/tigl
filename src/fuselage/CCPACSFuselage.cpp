@@ -491,7 +491,7 @@ void CCPACSFuselage::BuildGuideCurves()
     
     // connect guide curve segments to a spline with given continuity conditions and tangents
     CTiglCurveConnector connector(roots);
-    guideCurves = connector.GetGuideCurves();
+    guideCurves = connector.GetConnectedGuideCurves();
 }
 
 void CCPACSFuselage::ConnectGuideCurveSegments(void)
