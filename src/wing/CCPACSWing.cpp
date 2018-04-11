@@ -743,6 +743,28 @@ TopoDS_Compound& CCPACSWing::GetGuideCurveWires()
     return guideCurves;
 }
 
+std::vector<gp_Pnt> CCPACSWing::GetGuideCurvePoints()
+{
+    std::vector<gp_Pnt> points;
+
+    // connect the belonging guide curve segments
+    for (int isegment = 1; isegment <= GetSegmentCount(); ++isegment) {
+        CCPACSWingSegment& segment = m_segments.GetSegment(isegment);
+
+        if (!segment.GetGuideCurves()) {
+            continue;
+        }
+
+        CCPACSGuideCurves& segmentCurves = *segment.GetGuideCurves();
+        for (int iguide = 1; iguide <=  segmentCurves.GetGuideCurveCount(); ++iguide) {
+            CCPACSGuideCurve& curve = segmentCurves.GetGuideCurve(iguide);
+            std::vector<gp_Pnt> curPoints = curve.GetCurvePoints();
+            points.insert(points.end(), curPoints.begin(), curPoints.end());
+        }
+    }
+    return points;
+}
+
 
 void CCPACSWing::BuildGuideCurveWires()
 {
