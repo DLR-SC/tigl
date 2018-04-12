@@ -23,7 +23,7 @@
 
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
-#include <TopoDS_Wire.hxx>
+#include <TopoDS_Edge.hxx>
 #include <TopoDS_Compound.hxx>
 
 #include <CCPACSGuideCurves.h>
@@ -32,24 +32,74 @@ namespace tigl {
 
 class CTiglCurveConnector
 {
+    enum dependencyType
+    {
+        none = 0,
+        C2_from_previous,
+        C2_to_previous
+    };
+
+    struct guideCurvePart
+    {
+        std::vector<CCPACSGuideCurve*> localGuides;
+
+        std::vector<double> startParameters; //TODO unused so far.
+        dependencyType dependency = none;
+
+        TopoDS_Edge localCurve;
+    };
+
+    struct guideCurveConnected
+    {
+    public:
+        std::vector<guideCurvePart> parts;
+        std::vector<int> interpolationOrder;
+    };
 
 public:
-    CTiglCurveConnector(std::vector<CCPACSGuideCurve*> roots);
+    CTiglCurveConnector (std::vector<CCPACSGuideCurve*> roots);
 
-    TopoDS_Compound GetConnectedGuideCurves();
-    void Invalidate();
+    /**
+     * @brief GetConnectedGuideCurves
+     * @return
+     */
+    TopoDS_Compound GetConnectedGuideCurves ();
 
 private:
-    TopoDS_Wire GetInterpolatedCurveFromRoot(CCPACSGuideCurve* curve);
 
-    // the root guide curve (segments)
-    std::vector<CCPACSGuideCurve*> m_roots;
+    /**
+     * @brief Verifies that all connected guide curves intersect the same
+     * number of segments
+     */
+    void VerifyNumberOfSegments (std::vector<CCPACSGuideCurve*>& roots);
 
-    // the number of segments per guide curve
-    int m_numSegments;
+    /**
+     * @brief Creates the list of partial curves for every connected guide
+     * curve recursively
+     *
+     * The list of segmentwise guidecurves for a connected guide curve
+     * is broken into partial curves. The breakpoints are at the guidecurve
+     * with a prescribed continuity condition.
+     *
+     */
+    void CreatePartialCurves (guideCurveConnected& connectedCurve,
+                              CCPACSGuideCurve* current);
 
-    TopoDS_Compound m_result;
-    bool m_isBuilt = false;
+    /**
+     * @brief Creates the interpolation order for the partial curves,
+     * based on their interdependencies (from/to continuities)
+     */
+    void CreateInterpolationOrder (guideCurveConnected& connectedCurve);
+
+    /**
+     * @brief interpolates a partial curve given its continuity conditions
+     * and prescribed tangents
+     */
+    void InterpolateGuideCurvePart(guideCurvePart curvePart);
+
+
+
+    std::vector<guideCurveConnected> m_connectedCurves;
 };
 
 } // namespace tigl
