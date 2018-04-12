@@ -41,8 +41,9 @@ CCPACSFrame::CCPACSFrame(CCPACSFramesAssembly* parent, CTiglUIDManager* uidMgr)
 
 void CCPACSFrame::Invalidate()
 {
-    for (auto& c : m_geomCache)
-        c = boost::none;
+    for (int i = 0; i < 2; ++i) {
+        m_geomCache[i] = boost::none;
+    }
 }
 
 TopoDS_Shape CCPACSFrame::GetGeometry(bool just1DElements, TiglCoordinateSystem cs)
@@ -50,7 +51,7 @@ TopoDS_Shape CCPACSFrame::GetGeometry(bool just1DElements, TiglCoordinateSystem 
     if (!m_geomCache[just1DElements])
         BuildGeometry(just1DElements);
 
-    auto shape = m_geomCache[just1DElements].value();
+    const TopoDS_Shape shape = m_geomCache[just1DElements].value();
     if (cs == TiglCoordinateSystem::GLOBAL_COORDINATE_SYSTEM) {
         CTiglTransformation trafo = m_parent->GetParent()->GetParent()->GetTransformationMatrix();
         return trafo.Transform(shape);
@@ -78,7 +79,7 @@ void CCPACSFrame::BuildGeometry(bool just1DElements)
 
     if (m_framePositions.size() == 1) {
         // if there is 1 position ==> the path is around the fuselage, in an X normal orientated plane
-        const auto& fp = *m_framePositions[0];
+        const CCPACSFuselageStringerFramePosition& fp = *m_framePositions[0];
 
         TopoDS_Shape section = BRepAlgoAPI_Section(fuselageLoft, gp_Pln(fp.GetRefPoint(), gp_Dir(1, 0, 0))).Shape();
         path                 = BuildWireFromEdges(section);
@@ -97,12 +98,12 @@ void CCPACSFrame::BuildGeometry(bool just1DElements)
 
         // -1) place every points in the fuselage loft
         std::vector<gp_Lin> pointList;
-        for (int i = 0; i < m_framePositions.size(); i++)
+        for (size_t i = 0; i < m_framePositions.size(); i++)
             pointList.push_back(fuselage.Intersection(*m_framePositions[i]));
 
         // with a ShapeExtend_WireData, the individual segment orientation is not crucial during the wire building
         Handle(ShapeExtend_WireData) wirePath = new ShapeExtend_WireData;
-        for (int i = 0; i < pointList.size() - 1; i++) {
+        for (size_t i = 0; i < pointList.size() - 1; i++) {
             const gp_Pnt p1 = pointList.at(i + 0).Location();
             const gp_Pnt p3 = pointList.at(i + 1).Location();
 
@@ -148,10 +149,11 @@ void CCPACSFrame::BuildGeometry(bool just1DElements)
         }
     }
 
-    if (just1DElements)
+    if (just1DElements) {
         m_geomCache[true] = path;
+    }
     else {
-        const auto& pbse = m_uidMgr->ResolveObject<CCPACSProfileBasedStructuralElement>(
+        const CCPACSProfileBasedStructuralElement& pbse = m_uidMgr->ResolveObject<CCPACSProfileBasedStructuralElement>(
             m_framePositions.front()->GetStructuralElementUID());
         m_geomCache[false] = pbse.makeFromWire(path, profilePlane);
     }
