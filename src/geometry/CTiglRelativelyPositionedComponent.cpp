@@ -114,7 +114,7 @@ CTiglTransformation CTiglRelativelyPositionedComponent::GetTransformationMatrix(
 {
     const CTiglTransformation thisTransformation = _transformation ? _transformation->getTransformationMatrix() : CTiglTransformation();
     if (_parent && GetTranslationType() == ABS_LOCAL) {
-        const auto& parentTransformation = _parent->GetTransformationMatrix();
+        const CTiglTransformation& parentTransformation = _parent->GetTransformationMatrix();
 
         // we only transform with the parent's translation
         CTiglTransformation parentTranslation;

@@ -42,16 +42,18 @@ CCPACSFuselageStringer::CCPACSFuselageStringer(CCPACSStringersAssembly* parent, 
 
 void CCPACSFuselageStringer::Invalidate()
 {
-    for (auto& c : m_geomCache)
-        c = boost::none;
+    for (int i = 0; i < 2; ++i) {
+        m_geomCache[i] = boost::none;
+    }
 }
 
 TopoDS_Shape CCPACSFuselageStringer::GetGeometry(bool just1DElements, TiglCoordinateSystem cs)
 {
-    if (!m_geomCache[just1DElements])
+    if (!m_geomCache[just1DElements]) {
         BuildGeometry(just1DElements);
+    }
 
-    auto shape = m_geomCache[just1DElements].value();
+    const TopoDS_Shape shape = m_geomCache[just1DElements].value();
     if (cs == TiglCoordinateSystem::GLOBAL_COORDINATE_SYSTEM) {
         CTiglTransformation trafo = m_parent->GetParent()->GetParent()->GetTransformationMatrix();
         return trafo.Transform(shape);
@@ -77,7 +79,7 @@ void CCPACSFuselageStringer::BuildGeometry(bool just1DElements)
     // -1) place every points in the fuselage loft
     CCPACSFuselage& fuselage  = *m_parent->GetParent()->GetParent();
     std::vector<gp_Lin> pointList;
-    for (int i = 0; i < m_stringerPositions.size(); i++) {
+    for (size_t i = 0; i < m_stringerPositions.size(); i++) {
         pointList.push_back(fuselage.Intersection(*m_stringerPositions[i]));
     }
 
@@ -91,23 +93,24 @@ void CCPACSFuselageStringer::BuildGeometry(bool just1DElements)
     profilePlane.Rotate(gp_Ax1(pointList.front().Location(), pointList.front().Direction()),
                         M_PI / 2.); // correct the orientation of the stringer plane (parallel to the Y-Z reference)
 
-    for (int i = 0; i < pointList.size() - 1; i++) {
+    for (size_t i = 0; i < pointList.size() - 1; i++) {
         const gp_Pnt p1 = pointList.at(i + 0).Location();
         const gp_Pnt p3 = pointList.at(i + 1).Location();
 
         // determine the direction of the projection
         const gp_Pnt midPointOnStringer = (p1.XYZ() + p3.XYZ()) / 2;
         const gp_Pnt midPointRefs =
-            (m_stringerPositions[i]->GetRefPoint().XYZ() + m_stringerPositions[i + 1]->GetRefPoint().XYZ()) / 2;
+            (m_stringerPositions[i]->GetRefPoint().XYZ() + m_stringerPositions[i + 1]->GetRefPoint().XYZ()) / 2.;
         const gp_Dir interDir(0, midPointOnStringer.Y() - midPointRefs.Y(), midPointOnStringer.Z() - midPointRefs.Z());
 
         // then, we project the segment on the fuselage, and get the resulting wire
         const TopoDS_Wire path = fuselage.projectParallel(BRepBuilderAPI_MakeEdge(p1, p3).Edge(), interDir);
 
-        if (just1DElements)
+        if (just1DElements) {
             builder.Add(compound, path);
+        }
         else {
-            const auto& pbse = m_uidMgr->ResolveObject<CCPACSProfileBasedStructuralElement>(
+            const CCPACSProfileBasedStructuralElement& pbse = m_uidMgr->ResolveObject<CCPACSProfileBasedStructuralElement>(
                 m_stringerPositions.front()->GetStructuralElementUID());
             builder.Add(compound, pbse.makeFromWire(path, profilePlane));
         }
