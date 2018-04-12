@@ -72,12 +72,12 @@ namespace generated
     };
 } // namespace generated
 
-// CPACSSheetBasedStructuralElements is customized, use type CCPACSSheetBasedStructuralElements directly
-
 // Aliases in tigl namespace
 #ifdef HAVE_CPP11
+using CCPACSSheetBasedStructuralElements = generated::CPACSSheetBasedStructuralElements;
 using CCPACSSheetBasedStructuralElement = generated::CPACSSheetBasedStructuralElement;
 #else
+typedef generated::CPACSSheetBasedStructuralElements CCPACSSheetBasedStructuralElements;
 typedef generated::CPACSSheetBasedStructuralElement CCPACSSheetBasedStructuralElement;
 #endif
 } // namespace tigl
