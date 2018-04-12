@@ -19,7 +19,7 @@
 #include "CTiglCurveConnector.h"
 
 #include <algorithm>
-#include <map>
+#include <stack>
 
 #include <CCPACSGuideCurve.h>
 #include <CPACSPointXYZ.h>
@@ -28,6 +28,7 @@
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <GeomAPI_Interpolate.hxx>
+#include <Geom_BSplineCurve.hxx>
 #include <Precision.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
 #include <TColStd_HArray1OfReal.hxx>
@@ -37,88 +38,170 @@
 namespace tigl {
 
 CTiglCurveConnector::CTiglCurveConnector(std::vector<CCPACSGuideCurve*> roots)
-    : m_roots(roots)
 {
-    // check if every guidecurve consists of the same number of segments
-    int numSegments_prev = 0;
-    for (int i =0; i<m_roots.size(); i++) {
-        m_numSegments = 0;
-        CCPACSGuideCurve* curCurve = m_roots[i];
-        while(curCurve) {
-            m_numSegments++;
-            curCurve = curCurve->GetConnectedCurve();
-        }
-        if (i>0 && m_numSegments != numSegments_prev ) {
-           throw(CTiglError("The guide curves to be connected do not have the same number of segments!"));
-        }
-        numSegments_prev = m_numSegments;
+    // check if all guide curves have the same number of segments
+    VerifyNumberOfSegments(roots);
+
+    // at each root, a connected guide curve starts.
+    //  * A connected guide curve consists of a list of partial guide curves.
+    //  * A partial guide curve consists of a list of segmentwise guide curves.
+    m_connectedCurves.reserve(roots.size());
+    for (int i=0; i< roots.size(); i++) {
+        guideCurveConnected connectedCurve;
+        m_connectedCurves.push_back(connectedCurve);
+        CreatePartialCurves(m_connectedCurves.back(), roots[i]);
+    }
+
+    // For every connected guide curve, create the interpolation order according
+    // to the depencies of the partial curves
+    for (int i=0; i< roots.size(); i++) {
+        CreateInterpolationOrder(m_connectedCurves[i]);
     }
 }
 
-void CTiglCurveConnector::Invalidate()
+void CTiglCurveConnector::VerifyNumberOfSegments(std::vector<CCPACSGuideCurve*>& roots)
 {
-    m_result.Nullify();
-    m_isBuilt = false;
+    // check if every guidecurve consists of the same number of segments
+    int numSegments_prev = 0;
+    int numSegments = 0;
+    for (int i =0; i<roots.size(); i++) {
+        numSegments = 0;
+        CCPACSGuideCurve* curCurve = roots[i];
+        while (curCurve) {
+            numSegments++;
+            curCurve = curCurve->GetConnectedCurve();
+        }
+        if (i>0 && numSegments != numSegments_prev ) {
+           throw(CTiglError("The guide curves to be connected do not have the same number of segments!"));
+        }
+        numSegments_prev = numSegments;
+    }
+}
+
+void CTiglCurveConnector::CreatePartialCurves(guideCurveConnected& connectedCurve, CCPACSGuideCurve* current)
+{
+    connectedCurve.parts.push_back(guideCurvePart());
+
+    while (current && !current->GetContinuity_choice1() ) {
+        connectedCurve.parts.back().localGuides.push_back(current);
+        current = current->GetConnectedCurve();
+    }
+
+    if (current) {
+        CreatePartialCurves(connectedCurve, current);
+    }
+
+}
+
+void CTiglCurveConnector::CreateInterpolationOrder (guideCurveConnected& connectedCurve)
+{
+    // this is essentially a topological sort
+
+    size_t nparts = connectedCurve.parts.size();
+
+    //compute in-degree of all partial curves
+    std::vector<int> indegrees(nparts);
+    for(int ipart=0; ipart<nparts; ipart++) {
+        indegrees[ipart]=0;
+        CCPACSGuideCurve* partRoot = connectedCurve.parts[ipart].localGuides[0];
+        if ( partRoot->GetContinuity_choice1() ) {
+
+            bool from =    partRoot->GetContinuity_choice1() == generated::C1_from_previous
+                        || partRoot->GetContinuity_choice1() == generated::C2_from_previous;
+            bool to   =    partRoot->GetContinuity_choice1() == generated::C1_to_previous
+                        || partRoot->GetContinuity_choice1() == generated::C2_to_previous;
+            if ( to ) {
+                connectedCurve.parts[ipart].dependency = C2_to_previous;
+                indegrees[ipart-1]++;
+            } else if ( from ) {
+                connectedCurve.parts[ipart].dependency = C2_from_previous;
+                indegrees[ipart]++;
+            }
+        }
+    }
+
+    // add all partial curves with zero degree to the stack
+    std::stack<int> stack;
+    for(int ipart=0; ipart<nparts; ipart++) {
+        if (indegrees[ipart]==0 ) {
+            stack.push(ipart);
+        }
+    }
+
+    // DFS through the dependency tree
+    int counter = 0;
+    while ( !stack.empty() ) {
+
+        // top of stack is the next in the topo sort
+        int idx = stack.top();
+        stack.pop();
+        connectedCurve.interpolationOrder.push_back(idx);
+
+        // see if we can add neighbors to the stack
+        if ( connectedCurve.parts[idx].dependency == C2_to_previous ) {
+            indegrees[idx-1]--;
+            if ( indegrees[idx-1]==0 ) {
+                stack.push(idx-1);
+            }
+        }
+        if ( connectedCurve.parts[idx+1].dependency == C2_from_previous ) {
+            indegrees[idx+1]--;
+            if ( indegrees[idx+1]==0 ) {
+                stack.push(idx+1);
+            }
+        }
+
+    } // while ( !stack.empty() )
 }
 
 TopoDS_Compound CTiglCurveConnector::GetConnectedGuideCurves()
 {
-    if( m_isBuilt ) {
-        return m_result;
-    }
-
-    Invalidate();
+    TopoDS_Compound result;
     BRep_Builder builder;
-    builder.MakeCompound(m_result);
+    builder.MakeCompound(result);
 
-    std::vector<CCPACSGuideCurve*>::iterator it;
-    for (it = m_roots.begin(); it != m_roots.end(); ++it) {
+    std::vector<guideCurveConnected>::iterator it;
+    for (it = m_connectedCurves.begin(); it != m_connectedCurves.end(); ++it) {
+        guideCurveConnected curCurve = *it;
 
-        CCPACSGuideCurve* curCurve = *it;
-        TopoDS_Wire connectedGuide = GetInterpolatedCurveFromRoot(curCurve);
-        builder.Add(m_result, connectedGuide);
+        std::cout<<" GetConnectedGuideCurves 0 "<<std::endl;
 
+        // interpolate the guide curve parts
+        for ( int i=0; i< curCurve.parts.size(); i++ ) {
+            int idx = curCurve.interpolationOrder[i];
+            InterpolateGuideCurvePart(curCurve.parts[idx]);
+        }
+
+        // connect the guide curve parts to a wire
+        BRepBuilderAPI_MakeWire wireMaker;
+        for ( int i=0; i< curCurve.parts.size(); i++ ) {
+            wireMaker.Add(curCurve.parts[i].localCurve);
+        }
+        builder.Add(result, wireMaker.Wire());
     }
 
-    m_isBuilt = true;
-    return m_result;
+    return result;
 }
 
-TopoDS_Wire CTiglCurveConnector::GetInterpolatedCurveFromRoot(CCPACSGuideCurve* curCurve)
-{
-    // interpolate guide curve points of all segments with a B-Spline
+void CTiglCurveConnector::InterpolateGuideCurvePart(guideCurvePart curvePart) {
+
+    // interpolate guide curve points of all segments of the part with a B-Spline
     std::vector<gp_Pnt> points;
-    std::vector<double> params;
+//    std::vector<double> params;
     std::vector<gp_Vec> tangents;
     std::vector<bool>   tangentFlags;
 
-    // add root point of the guide curve
-    points.push_back( curCurve->GetCurvePoints()[0] );
-    params.push_back(0);
+    points.push_back( curvePart.localGuides[0]->GetCurvePoints()[0] );
+    for (int isegment = 0; isegment< curvePart.localGuides.size(); isegment++) {
 
-    // build vectors of points, parameters and tangents for the interpolation
-    size_t idx_start = 1;
-    size_t idx_end = 0;
-    int curSegment = 0;
-    while (curCurve) {
+        size_t idx_start = points.size();
 
-        // get the start and end parameter of the current segment
-        double startParam = (double)curSegment/m_numSegments;
-        double endParam = (double)(curSegment+1)/m_numSegments;
-
-        // get points of current curve and append point list
-        std::vector<gp_Pnt> curPoints = curCurve->GetCurvePoints();
-
-        // ignore first point to avoid duplicity
-        idx_end = idx_start + curPoints.size() - 2;
+        // append point list with points of the given segment
+        // igore the first point on the section to avoid duplicity
+        std::vector<gp_Pnt> curPoints = curvePart.localGuides[isegment]->GetCurvePoints();
         points.insert( points.end(), curPoints.begin()+1, curPoints.end() );
 
-        // set the parameters for each point.
-        std::vector<double> curParams(curPoints.size()-1);
-        for(int i = 1; i<= curParams.size(); i++) {
-            curParams[i-1] = startParam + (endParam-startParam)*i/curParams.size();
-        }
-        params.insert( params.end(), curParams.begin(), curParams.end() );
+        size_t idx_end = points.size();
 
         // no tangents given for the points by default
         std::vector<gp_Vec> curTangents(curPoints.size());
@@ -130,47 +213,43 @@ TopoDS_Wire CTiglCurveConnector::GetInterpolatedCurveFromRoot(CCPACSGuideCurve* 
         tangentFlags.insert(tangentFlags.end(), curTangentFlags.begin(), curTangentFlags.end());
 
         // check if a tangent for the first point is given (only at root).
-        if ( curCurve->GetTangent_choice2() ) {
-            generated::CPACSPointXYZ& tangent = *(curCurve->GetTangent_choice2());
+        if ( curvePart.localGuides[isegment]->GetTangent_choice2() ) {
+            generated::CPACSPointXYZ& tangent = *(curvePart.localGuides[isegment]->GetTangent_choice2());
             tangents[idx_start] = gp_Vec( tangent.GetX(), tangent.GetY(), tangent.GetZ());
             tangentFlags[idx_start] = true;
         }
 
         // check if a tangent for the last point is given
-        if ( curCurve->GetTangent() ) {
-            generated::CPACSPointXYZ& tangent = *(curCurve->GetTangent());
+        if ( curvePart.localGuides[isegment]->GetTangent() ) {
+            generated::CPACSPointXYZ& tangent = *(curvePart.localGuides[isegment]->GetTangent());
             tangents[idx_end] = gp_Vec( tangent.GetX(), tangent.GetY(), tangent.GetZ());
             tangentFlags[idx_end] = true;
         }
 
-        curCurve = curCurve->GetConnectedCurve();
-        idx_start = idx_end+1;
-        curSegment++;
-    } // while (curCurve)
+    } // for all local guides
 
-    int pointCount = (int)idx_start;
+    int pointCount = (int)points.size();
     Handle(TColgp_HArray1OfPnt) hpoints = new TColgp_HArray1OfPnt(1, pointCount);
-    Handle(TColStd_HArray1OfReal) hparams = new TColStd_HArray1OfReal(1, pointCount);
+//    Handle(TColStd_HArray1OfReal) hparams = new TColStd_HArray1OfReal(1, pointCount);
     Handle(TColStd_HArray1OfBoolean) htangentFlags = new TColStd_HArray1OfBoolean(1, pointCount);
     TColgp_Array1OfVec htangents(1, pointCount);
 
     for (int j = 0; j < pointCount; j++) {
         hpoints->SetValue(j+1, points[j]);
-        hparams->SetValue(j+1, params[j]);
+//        hparams->SetValue(j+1, params[j]);
         htangents.SetValue(j+1, tangents[j]);
         htangentFlags->SetValue(j+1, tangentFlags[j]);
     }
 
-    GeomAPI_Interpolate interpol(hpoints, hparams, Standard_False, Precision::Confusion());
+//    GeomAPI_Interpolate interpol(hpoints, hparams, Standard_False, Precision::Confusion());
+    GeomAPI_Interpolate interpol(hpoints, Standard_False, Precision::Confusion());
     interpol.Load(htangents, htangentFlags);
     interpol.Perform();
 
     Handle(Geom_BSplineCurve) hcurve = interpol.Curve();
-    TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(hcurve);
-    BRepBuilderAPI_MakeWire wireMaker;
-    wireMaker.Add(edge);
-    return wireMaker.Wire();
+    curvePart.localCurve = BRepBuilderAPI_MakeEdge(hcurve);
 }
+
 
 } // namespace tigl
 
