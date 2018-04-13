@@ -70,75 +70,44 @@ bool CCPACSSkinSegment::Contains(const gp_Pnt& point)
     if (!m_borderCache)
         UpdateBorders();
 
-    double x_mn = 0, x_mx = 0, y_mn = 0, y_mx = 0, z_mn = 0, z_mx = 0;
-    Bnd_Box boundingBox;
-    BRepBndLib::Add(m_parent->GetParent()->GetParent()->GetParent()->GetLoft()->Shape(), boundingBox);
-    boundingBox.Get(x_mn, y_mn, z_mn, x_mx, y_mx, z_mx);
-
-    double ym = (y_mx + y_mn) / 2;
-
-    const BorderCache& c = m_borderCache.value();
     const double angleLower = Radians(45.);
     const double angleUpper = Radians(89.);
-    gp_Ax1 test1(c.sFrame_sStringer.Location(), gp_Vec(c.sFrame_sStringer.Location(), point));
-    if (test1.Angle(c.sFrame_sStringer) < angleLower) {
-        gp_Ax1 test2(c.sFrame_eStringer.Location(), gp_Vec(c.sFrame_eStringer.Location(), point));
-        if (test2.Angle(c.sFrame_eStringer) < angleLower) {
-            gp_Ax1 test3(c.eFrame_sStringer.Location(), gp_Vec(c.eFrame_sStringer.Location(), point));
-            if (test3.Angle(c.eFrame_sStringer) < angleLower) {
-                gp_Ax1 test4(c.eFrame_eStringer.Location(), gp_Vec(c.eFrame_eStringer.Location(), point));
-                if (test4.Angle(c.eFrame_eStringer) < angleLower) {
 
-                    gp_Pnt mPnt1 = (c.sFrame_sStringer.Location().XYZ() + c.eFrame_sStringer.Location().XYZ()) / 2;
-                    gp_Pnt mPnt2 = (c.eFrame_sStringer.Location().XYZ() + c.eFrame_eStringer.Location().XYZ()) / 2;
-                    gp_Pnt mPnt3 = (c.eFrame_eStringer.Location().XYZ() + c.sFrame_eStringer.Location().XYZ()) / 2;
-                    gp_Pnt mPnt4 = (c.sFrame_eStringer.Location().XYZ() + c.sFrame_sStringer.Location().XYZ()) / 2;
-                    gp_Pnt mPnt5 = (c.sFrame_sStringer.Location().XYZ() + c.eFrame_eStringer.Location().XYZ()) / 2;
-                    gp_Pnt mPnt6(mPnt5.X(), ym, mPnt5.Z());
+    const BorderCache& c = m_borderCache.value();
+    if (gp_Ax1(c.sFrame_sStringer.Location(), gp_Vec(c.sFrame_sStringer.Location(), point)).Angle(c.sFrame_sStringer) >= angleLower) return false;
+    if (gp_Ax1(c.sFrame_eStringer.Location(), gp_Vec(c.sFrame_eStringer.Location(), point)).Angle(c.sFrame_eStringer) >= angleLower) return false;
+    if (gp_Ax1(c.eFrame_sStringer.Location(), gp_Vec(c.eFrame_sStringer.Location(), point)).Angle(c.eFrame_sStringer) >= angleLower) return false;
+    if (gp_Ax1(c.eFrame_eStringer.Location(), gp_Vec(c.eFrame_eStringer.Location(), point)).Angle(c.eFrame_eStringer) >= angleLower) return false;
 
-                    gp_Ax1 ref1(mPnt1, gp_Vec(mPnt1, mPnt3));
-                    gp_Ax1 ref2(mPnt2, gp_Vec(mPnt2, mPnt4));
-                    gp_Ax1 ref3(mPnt3, gp_Vec(mPnt3, mPnt1));
-                    gp_Ax1 ref4(mPnt4, gp_Vec(mPnt4, mPnt2));
-                    gp_Ax1 ref5(mPnt6, gp_Vec(mPnt6, mPnt5));
+    const gp_Pnt p1 = (c.sFrame_sStringer.Location().XYZ() + c.eFrame_sStringer.Location().XYZ()) / 2;
+    const gp_Pnt p2 = (c.eFrame_sStringer.Location().XYZ() + c.eFrame_eStringer.Location().XYZ()) / 2;
+    const gp_Pnt p3 = (c.eFrame_eStringer.Location().XYZ() + c.sFrame_eStringer.Location().XYZ()) / 2;
+    const gp_Pnt p4 = (c.sFrame_eStringer.Location().XYZ() + c.sFrame_sStringer.Location().XYZ()) / 2;
+    const gp_Pnt p5 = (c.sFrame_sStringer.Location().XYZ() + c.eFrame_eStringer.Location().XYZ()) / 2;
 
-                    gp_Ax1 test5(mPnt1, gp_Vec(mPnt1, point));
-                    if (test5.Angle(ref1) < angleUpper) {
-                        gp_Ax1 test6(mPnt2, gp_Vec(mPnt2, point));
-                        if (test6.Angle(ref2) < angleUpper) {
-                            gp_Ax1 test7(mPnt3, gp_Vec(mPnt3, point));
-                            if (test7.Angle(ref3) < angleUpper) {
-                                gp_Ax1 test8(mPnt4, gp_Vec(mPnt4, point));
-                                if (test8.Angle(ref4) < angleUpper) {
-                                    double maxAngle = 0;
+    Bnd_Box boundingBox;
+    BRepBndLib::Add(m_parent->GetParent()->GetParent()->GetParent()->GetLoft()->Shape(), boundingBox);
+    const double yMid = (boundingBox.CornerMax().Y() + boundingBox.CornerMin().Y()) / 2;
+    const gp_Pnt p6(p5.X(), yMid, p5.Z());
 
-                                    gp_Ax1 a1(mPnt6, gp_Vec(mPnt6, c.sFrame_sStringer.Location()));
-                                    if (a1.Angle(ref5) > maxAngle)
-                                        maxAngle = a1.Angle(ref5);
-                                    gp_Ax1 a2(mPnt6, gp_Vec(mPnt6, c.eFrame_sStringer.Location()));
-                                    if (a2.Angle(ref5) > maxAngle)
-                                        maxAngle = a2.Angle(ref5);
-                                    gp_Ax1 a3(mPnt6, gp_Vec(mPnt6, c.sFrame_eStringer.Location()));
-                                    if (a3.Angle(ref5) > maxAngle)
-                                        maxAngle = a3.Angle(ref5);
-                                    gp_Ax1 a4(mPnt6, gp_Vec(mPnt6, c.eFrame_eStringer.Location()));
-                                    if (a4.Angle(ref5) > maxAngle)
-                                        maxAngle = a4.Angle(ref5);
+    const gp_Ax1 ref1(p1, gp_Vec(p1, p3));
+    const gp_Ax1 ref2(p2, gp_Vec(p2, p4));
+    const gp_Ax1 ref3(p3, gp_Vec(p3, p1));
+    const gp_Ax1 ref4(p4, gp_Vec(p4, p2));
+    const gp_Ax1 ref5(p6, gp_Vec(p6, p5));
 
-                                    gp_Ax1 test9(mPnt6, gp_Vec(mPnt6, point));
-                                    if (test9.Angle(ref5) < maxAngle) {
-                                        return true;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+    if (gp_Ax1(p1, gp_Vec(p1, point)).Angle(ref1) >= angleUpper) return false;
+    if (gp_Ax1(p2, gp_Vec(p2, point)).Angle(ref2) >= angleUpper) return false;
+    if (gp_Ax1(p3, gp_Vec(p3, point)).Angle(ref3) >= angleUpper) return false;
+    if (gp_Ax1(p4, gp_Vec(p4, point)).Angle(ref4) >= angleUpper) return false;
 
-    return false;
+    double maxAngle = 0;
+    maxAngle = std::max(maxAngle, gp_Ax1(p6, gp_Vec(p6, c.sFrame_sStringer.Location())).Angle(ref5));
+    maxAngle = std::max(maxAngle, gp_Ax1(p6, gp_Vec(p6, c.eFrame_sStringer.Location())).Angle(ref5));
+    maxAngle = std::max(maxAngle, gp_Ax1(p6, gp_Vec(p6, c.sFrame_eStringer.Location())).Angle(ref5));
+    maxAngle = std::max(maxAngle, gp_Ax1(p6, gp_Vec(p6, c.eFrame_eStringer.Location())).Angle(ref5));
+
+    return gp_Ax1(p6, gp_Vec(p6, point)).Angle(ref5) < maxAngle;
 }
 
 void CCPACSSkinSegment::UpdateBorders()
