@@ -153,3 +153,6 @@ WRAP_BOOST_OPTIONAL_BASIC_TYPE(unsigned int, PyLong_FromUnsignedLong, PyLong_AsU
 WRAP_BOOST_OPTIONAL_BASIC_TYPE(double, PyFloat_FromDouble, PyFloat_AsDouble)
 WRAP_BOOST_OPTIONAL_BASIC_TYPE(float, PyFloat_FromDouble, PyFloat_AsDouble)
 
+%define %boost_optional(TYPE)
+WRAP_BOOST_OPTIONAL_CLASS(TYPE)
+%enddef

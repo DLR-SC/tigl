@@ -75,12 +75,12 @@
 
 %template(CPointContainer) std::vector<gp_Pnt>;
 
-WRAP_BOOST_OPTIONAL_CLASS(tigl::CCPACSPointAbsRel)
-WRAP_BOOST_OPTIONAL_CLASS(tigl::CCPACSPoint)
-WRAP_BOOST_OPTIONAL_CLASS(tigl::ECPACSTranslationType)
-WRAP_BOOST_OPTIONAL_CLASS(tigl::generated::CPACSPointX)
-WRAP_BOOST_OPTIONAL_CLASS(tigl::generated::CPACSPointXYZ)
-WRAP_BOOST_OPTIONAL_CLASS(tigl::CCPACSPointListXYZ)
+%boost_optional(tigl::CCPACSPointAbsRel)
+%boost_optional(tigl::CCPACSPoint)
+%boost_optional(tigl::ECPACSTranslationType)
+%boost_optional(tigl::generated::CPACSPointX)
+%boost_optional(tigl::generated::CPACSPointXYZ)
+%boost_optional(tigl::CCPACSPointListXYZ)
 
 %include "generated/CPACSPointX.h"
 %include "ECPACSTranslationType.h"
