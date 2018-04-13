@@ -35,6 +35,8 @@
 #include <TColgp_Array1OfVec.hxx>
 #include <TColStd_HArray1OfBoolean.hxx>
 
+#include <BRepTools.hxx>
+
 namespace tigl {
 
 CTiglCurveConnector::CTiglCurveConnector(std::vector<CCPACSGuideCurve*> roots)
@@ -164,8 +166,6 @@ TopoDS_Compound CTiglCurveConnector::GetConnectedGuideCurves()
     for (it = m_connectedCurves.begin(); it != m_connectedCurves.end(); ++it) {
         guideCurveConnected curCurve = *it;
 
-        std::cout<<" GetConnectedGuideCurves 0 "<<std::endl;
-
         // interpolate the guide curve parts
         for ( int i=0; i< curCurve.parts.size(); i++ ) {
             int idx = curCurve.interpolationOrder[i];
@@ -183,7 +183,7 @@ TopoDS_Compound CTiglCurveConnector::GetConnectedGuideCurves()
     return result;
 }
 
-void CTiglCurveConnector::InterpolateGuideCurvePart(guideCurvePart curvePart) {
+void CTiglCurveConnector::InterpolateGuideCurvePart(guideCurvePart& curvePart) {
 
     // interpolate guide curve points of all segments of the part with a B-Spline
     std::vector<gp_Pnt> points;
@@ -212,14 +212,14 @@ void CTiglCurveConnector::InterpolateGuideCurvePart(guideCurvePart curvePart) {
         std::fill(curTangentFlags.begin(), curTangentFlags.end(), false);
         tangentFlags.insert(tangentFlags.end(), curTangentFlags.begin(), curTangentFlags.end());
 
-        // check if a tangent for the first point is given (only at root).
+        // check if a tangent for the first point is prescribed in CPACS (only at root).
         if ( curvePart.localGuides[isegment]->GetTangent_choice2() ) {
             generated::CPACSPointXYZ& tangent = *(curvePart.localGuides[isegment]->GetTangent_choice2());
             tangents[idx_start] = gp_Vec( tangent.GetX(), tangent.GetY(), tangent.GetZ());
             tangentFlags[idx_start] = true;
         }
 
-        // check if a tangent for the last point is given
+        // check if a tangent for the last point is prescribed in CPACS
         if ( curvePart.localGuides[isegment]->GetTangent() ) {
             generated::CPACSPointXYZ& tangent = *(curvePart.localGuides[isegment]->GetTangent());
             tangents[idx_end] = gp_Vec( tangent.GetX(), tangent.GetY(), tangent.GetZ());
@@ -245,7 +245,6 @@ void CTiglCurveConnector::InterpolateGuideCurvePart(guideCurvePart curvePart) {
     GeomAPI_Interpolate interpol(hpoints, Standard_False, Precision::Confusion());
     interpol.Load(htangents, htangentFlags);
     interpol.Perform();
-
     Handle(Geom_BSplineCurve) hcurve = interpol.Curve();
     curvePart.localCurve = BRepBuilderAPI_MakeEdge(hcurve);
 }
