@@ -75,6 +75,9 @@
 
 %template(CPointContainer) std::vector<gp_Pnt>;
 
+WRAP_BOOST_OPTIONAL_CLASS(tigl::CCPACSPointAbsRel)
+WRAP_BOOST_OPTIONAL_CLASS(tigl::CCPACSPoint)
+WRAP_BOOST_OPTIONAL_CLASS(tigl::ECPACSTranslationType)
 WRAP_BOOST_OPTIONAL_CLASS(tigl::generated::CPACSPointX)
 WRAP_BOOST_OPTIONAL_CLASS(tigl::generated::CPACSPointXYZ)
 WRAP_BOOST_OPTIONAL_CLASS(tigl::CCPACSPointListXYZ)

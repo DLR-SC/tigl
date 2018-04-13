@@ -36,6 +36,7 @@
 // rename file methods to python pep8 style
 %rename("%(undercase)s", %$isfunction) "";
 
+WRAP_BOOST_OPTIONAL_CLASS(tigl::generated::CPACSUpdates)
 WRAP_BOOST_OPTIONAL_CLASS(tigl::CCPACSStringVector)
 
 %include "CreateIfNotExists.h"

@@ -80,7 +80,7 @@
   }
 }
 
-%typemap(out, noblock=1) boost::optional<type> {
+%typemap(out, noblock=1) boost::optional<type>, boost::optional<const type&> {
   if ($1) {
     $result = PyFun_Convert($1.get());
   } else {
