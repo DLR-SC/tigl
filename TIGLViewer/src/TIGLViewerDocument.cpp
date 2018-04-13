@@ -851,11 +851,12 @@ void TIGLViewerDocument::drawWingGuideCurves(tigl::CCPACSWing& wing)
         app->getScene()->getContext()->Display(shape, Standard_False);
     }
 
+    //display guide curve points (TODO: these points are not sorted and
+    // there are probably duplicates)
     std::vector<gp_Pnt> points = wing.GetGuideCurvePoints();
     for (int i=0; i<points.size(); i++) {
         app->getScene()->displayPoint(points[i], "", Standard_True, 0, 0, 0, 1.);
     }
-
 
     app->getScene()->getContext()->UpdateCurrentViewer();
 }

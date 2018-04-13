@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2017 German Aerospace Center (DLR/SC)
+* Copyright (C) 2018 German Aerospace Center (DLR/SC)
 *
 * Created: 2018 Jan Kleinert <Jan.Kleinert@dlr.de>
 *
@@ -95,7 +95,7 @@ private:
      * @brief interpolates a partial curve given its continuity conditions
      * and prescribed tangents
      */
-    void InterpolateGuideCurvePart(guideCurvePart curvePart);
+    void InterpolateGuideCurvePart(guideCurvePart& curvePart);
 
 
 
