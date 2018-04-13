@@ -239,4 +239,9 @@ TIGL_EXPORT std::vector<double> GetCentripetalParameters(const std::vector<gp_Pn
                                                          double endParam = 1,
                                                          double exponent = 1);
 
+inline double Radians(double degree)
+{
+    return degree / 180. * M_PI;
+}
+
 #endif // TIGLCOMMONFUNCTIONS_H

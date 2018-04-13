@@ -34,6 +34,7 @@
 #include "CCPACSFuselage.h"
 #include "CTiglUIDManager.h"
 #include "CNamedShape.h"
+#include "tiglcommonfunctions.h"
 
 namespace tigl
 {
@@ -77,14 +78,16 @@ bool CCPACSSkinSegment::Contains(const gp_Pnt& point)
     double ym = (y_mx + y_mn) / 2;
 
     const BorderCache& c = m_borderCache.value();
+    const double angleLower = Radians(45.);
+    const double angleUpper = Radians(89.);
     gp_Ax1 test1(c.sFrame_sStringer.Location(), gp_Vec(c.sFrame_sStringer.Location(), point));
-    if (test1.Angle(c.sFrame_sStringer) < (45.0 * (M_PI / 180.))) {
+    if (test1.Angle(c.sFrame_sStringer) < angleLower) {
         gp_Ax1 test2(c.sFrame_eStringer.Location(), gp_Vec(c.sFrame_eStringer.Location(), point));
-        if (test2.Angle(c.sFrame_eStringer) < (45.0 * (M_PI / 180.))) {
+        if (test2.Angle(c.sFrame_eStringer) < angleLower) {
             gp_Ax1 test3(c.eFrame_sStringer.Location(), gp_Vec(c.eFrame_sStringer.Location(), point));
-            if (test3.Angle(c.eFrame_sStringer) < (45.0 * (M_PI / 180.))) {
+            if (test3.Angle(c.eFrame_sStringer) < angleLower) {
                 gp_Ax1 test4(c.eFrame_eStringer.Location(), gp_Vec(c.eFrame_eStringer.Location(), point));
-                if (test4.Angle(c.eFrame_eStringer) < (45.0 * (M_PI / 180.))) {
+                if (test4.Angle(c.eFrame_eStringer) < angleLower) {
 
                     gp_Pnt mPnt1 = (c.sFrame_sStringer.Location().XYZ() + c.eFrame_sStringer.Location().XYZ()) / 2;
                     gp_Pnt mPnt2 = (c.eFrame_sStringer.Location().XYZ() + c.eFrame_eStringer.Location().XYZ()) / 2;
@@ -100,13 +103,13 @@ bool CCPACSSkinSegment::Contains(const gp_Pnt& point)
                     gp_Ax1 ref5(mPnt6, gp_Vec(mPnt6, mPnt5));
 
                     gp_Ax1 test5(mPnt1, gp_Vec(mPnt1, point));
-                    if (test5.Angle(ref1) < (89.0 * (M_PI / 180.))) {
+                    if (test5.Angle(ref1) < angleUpper) {
                         gp_Ax1 test6(mPnt2, gp_Vec(mPnt2, point));
-                        if (test6.Angle(ref2) < (89.0 * (M_PI / 180.))) {
+                        if (test6.Angle(ref2) < angleUpper) {
                             gp_Ax1 test7(mPnt3, gp_Vec(mPnt3, point));
-                            if (test7.Angle(ref3) < (89.0 * (M_PI / 180.))) {
+                            if (test7.Angle(ref3) < angleUpper) {
                                 gp_Ax1 test8(mPnt4, gp_Vec(mPnt4, point));
-                                if (test8.Angle(ref4) < (89.0 * (M_PI / 180.))) {
+                                if (test8.Angle(ref4) < angleUpper) {
                                     double maxAngle = 0;
 
                                     gp_Ax1 a1(mPnt6, gp_Vec(mPnt6, c.sFrame_sStringer.Location()));
