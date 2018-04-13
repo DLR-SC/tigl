@@ -45,7 +45,6 @@ class CTiglCurveConnector
 
         std::vector<double> startParameters; //TODO unused so far.
         dependencyType dependency = none;
-
         TopoDS_Edge localCurve;
     };
 
@@ -95,7 +94,7 @@ private:
      * @brief interpolates a partial curve given its continuity conditions
      * and prescribed tangents
      */
-    void InterpolateGuideCurvePart(guideCurvePart& curvePart);
+    void InterpolateGuideCurvePart(guideCurveConnected& connectedCurve, int partIndex);
 
 
 

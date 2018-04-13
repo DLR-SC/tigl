@@ -61,6 +61,36 @@ CTiglCurveConnector::CTiglCurveConnector(std::vector<CCPACSGuideCurve*> roots)
     }
 }
 
+TopoDS_Compound CTiglCurveConnector::GetConnectedGuideCurves()
+{
+    TopoDS_Compound result;
+    BRep_Builder builder;
+    builder.MakeCompound(result);
+
+    // iterate list of guide curves
+    std::vector<guideCurveConnected>::iterator it;
+    for (it = m_connectedCurves.begin(); it != m_connectedCurves.end(); ++it) {
+        guideCurveConnected curCurve = *it;
+
+        // interpolate the guide curve parts of the current guide curve
+        for ( int i=0; i< curCurve.parts.size(); i++ ) {
+            int idx = curCurve.interpolationOrder[i];
+            InterpolateGuideCurvePart(curCurve, idx);
+        }
+
+        // connect the guide curve parts to a wire
+        BRepBuilderAPI_MakeWire wireMaker;
+        for ( int i=0; i< curCurve.parts.size(); i++ ) {
+            wireMaker.Add(curCurve.parts[i].localCurve);
+        }
+
+        // add the wire of the current guide curve to the compound
+        builder.Add(result, wireMaker.Wire());
+    }
+
+    return result;
+}
+
 void CTiglCurveConnector::VerifyNumberOfSegments(std::vector<CCPACSGuideCurve*>& roots)
 {
     // check if every guidecurve consists of the same number of segments
@@ -156,34 +186,9 @@ void CTiglCurveConnector::CreateInterpolationOrder (guideCurveConnected& connect
     } // while ( !stack.empty() )
 }
 
-TopoDS_Compound CTiglCurveConnector::GetConnectedGuideCurves()
-{
-    TopoDS_Compound result;
-    BRep_Builder builder;
-    builder.MakeCompound(result);
+void CTiglCurveConnector::InterpolateGuideCurvePart(guideCurveConnected& connectedCurve, int partIndex) {
 
-    std::vector<guideCurveConnected>::iterator it;
-    for (it = m_connectedCurves.begin(); it != m_connectedCurves.end(); ++it) {
-        guideCurveConnected curCurve = *it;
-
-        // interpolate the guide curve parts
-        for ( int i=0; i< curCurve.parts.size(); i++ ) {
-            int idx = curCurve.interpolationOrder[i];
-            InterpolateGuideCurvePart(curCurve.parts[idx]);
-        }
-
-        // connect the guide curve parts to a wire
-        BRepBuilderAPI_MakeWire wireMaker;
-        for ( int i=0; i< curCurve.parts.size(); i++ ) {
-            wireMaker.Add(curCurve.parts[i].localCurve);
-        }
-        builder.Add(result, wireMaker.Wire());
-    }
-
-    return result;
-}
-
-void CTiglCurveConnector::InterpolateGuideCurvePart(guideCurvePart& curvePart) {
+    guideCurvePart& curvePart = connectedCurve.parts[partIndex];
 
     // interpolate guide curve points of all segments of the part with a B-Spline
     std::vector<gp_Pnt> points;
@@ -191,10 +196,25 @@ void CTiglCurveConnector::InterpolateGuideCurvePart(guideCurvePart& curvePart) {
     std::vector<gp_Vec> tangents;
     std::vector<bool>   tangentFlags;
 
+    // add first point of this partial curve to the point list
     points.push_back( curvePart.localGuides[0]->GetCurvePoints()[0] );
-    for (int isegment = 0; isegment< curvePart.localGuides.size(); isegment++) {
 
-        size_t idx_start = points.size();
+    // check if a tangent for the first point is prescribed in CPACS
+    if ( curvePart.localGuides[0]->GetTangent_choice2() ) {
+        generated::CPACSPointXYZ& tangent = *(curvePart.localGuides[0]->GetTangent_choice2());
+        tangents[0] = gp_Vec( tangent.GetX(), tangent.GetY(), tangent.GetZ());
+        tangentFlags[0] = true;
+    }
+
+    // check if we have a "from" dependency and prescribe tangent accordingly
+    if ( partIndex > 0 && curvePart.dependency == C2_from_previous ) {
+        guideCurvePart leftNeighbor = connectedCurve.parts[partIndex-1];
+        // get tangent at last point of leftNeighbor.localCurve
+
+    }
+
+    // construct point list and prescribed tangents
+    for (int isegment = 0; isegment< curvePart.localGuides.size(); isegment++) {
 
         // append point list with points of the given segment
         // igore the first point on the section to avoid duplicity
@@ -212,13 +232,6 @@ void CTiglCurveConnector::InterpolateGuideCurvePart(guideCurvePart& curvePart) {
         std::fill(curTangentFlags.begin(), curTangentFlags.end(), false);
         tangentFlags.insert(tangentFlags.end(), curTangentFlags.begin(), curTangentFlags.end());
 
-        // check if a tangent for the first point is prescribed in CPACS (only at root).
-        if ( curvePart.localGuides[isegment]->GetTangent_choice2() ) {
-            generated::CPACSPointXYZ& tangent = *(curvePart.localGuides[isegment]->GetTangent_choice2());
-            tangents[idx_start] = gp_Vec( tangent.GetX(), tangent.GetY(), tangent.GetZ());
-            tangentFlags[idx_start] = true;
-        }
-
         // check if a tangent for the last point is prescribed in CPACS
         if ( curvePart.localGuides[isegment]->GetTangent() ) {
             generated::CPACSPointXYZ& tangent = *(curvePart.localGuides[isegment]->GetTangent());
@@ -227,6 +240,14 @@ void CTiglCurveConnector::InterpolateGuideCurvePart(guideCurvePart& curvePart) {
         }
 
     } // for all local guides
+
+    // check if we have a "from" dependency and prescribe tangent accordingly
+    if ( partIndex+1 < connectedCurve.parts.size() ) {
+        guideCurvePart rightNeighbor = connectedCurve.parts[partIndex+1];
+        if ( rightNeighbor.dependency == C2_to_previous ) {
+            // get tangent at first point of rightNeighbor.localCurve
+        }
+    }
 
     int pointCount = (int)points.size();
     Handle(TColgp_HArray1OfPnt) hpoints = new TColgp_HArray1OfPnt(1, pointCount);
