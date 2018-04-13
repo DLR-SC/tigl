@@ -34,8 +34,7 @@
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColgp_Array1OfVec.hxx>
 #include <TColStd_HArray1OfBoolean.hxx>
-
-#include <BRepTools.hxx>
+#include <ShapeAnalysis_Edge.hxx>
 
 namespace tigl {
 
@@ -210,7 +209,15 @@ void CTiglCurveConnector::InterpolateGuideCurvePart(guideCurveConnected& connect
     if ( partIndex > 0 && curvePart.dependency == C2_from_previous ) {
         guideCurvePart leftNeighbor = connectedCurve.parts[partIndex-1];
         // get tangent at last point of leftNeighbor.localCurve
-
+        ShapeAnalysis_Edge edgeAnalyser;
+        Handle(Geom_Curve) geomCurve;
+        Standard_Real startParam, endParam;
+        gp_Pnt endPoint;
+        gp_Vec endTangent;
+        edgeAnalyser.Curve3d(leftNeighbor.localCurve, geomCurve, startParam, endParam);
+        geomCurve->D1(endParam, endPoint, endTangent);
+        tangents[0] = endTangent;
+        tangentFlags[0] = true;
     }
 
     // construct point list and prescribed tangents
@@ -246,6 +253,15 @@ void CTiglCurveConnector::InterpolateGuideCurvePart(guideCurveConnected& connect
         guideCurvePart rightNeighbor = connectedCurve.parts[partIndex+1];
         if ( rightNeighbor.dependency == C2_to_previous ) {
             // get tangent at first point of rightNeighbor.localCurve
+            ShapeAnalysis_Edge edgeAnalyser;
+            Handle(Geom_Curve) geomCurve;
+            Standard_Real startParam, endParam;
+            gp_Pnt startPoint;
+            gp_Vec startTangent;
+            edgeAnalyser.Curve3d(rightNeighbor.localCurve, geomCurve, startParam, endParam);
+            geomCurve->D1(startParam, startPoint, startTangent);
+            tangents.back() = startTangent;
+            tangentFlags.back() = true;
         }
     }
 

@@ -93,6 +93,10 @@ private:
     /**
      * @brief interpolates a partial curve given its continuity conditions
      * and prescribed tangents
+     *
+     * It is important that the parts of one guide curve are interpolated in
+     * the order given by CreateInterpolationOrder to ensure that the tangents
+     * needed for the continuity conditions are available.
      */
     void InterpolateGuideCurvePart(guideCurveConnected& connectedCurve, int partIndex);
 
