@@ -44,7 +44,7 @@ const ExporterOptions& CGlobalExporterConfigs::Get(const std::string &fileType) 
 {
     IndexMap::const_iterator it = m_index_map.find(to_lower(fileType));
     if (it == m_index_map.end()) {
-        throw CTiglError("No Exporter '" + fileType + "'", TIGL_NOT_FOUND);
+        throw CTiglError("No Exporter for type '" + fileType + "'", TIGL_NOT_FOUND);
     }
     else {
         size_t idx = it->second;

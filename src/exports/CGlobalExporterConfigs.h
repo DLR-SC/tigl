@@ -31,12 +31,12 @@ namespace tigl
 class CGlobalExporterConfigs
 {
 public:
-    static CGlobalExporterConfigs &Instance();
+    TIGL_EXPORT static CGlobalExporterConfigs &Instance();
 
-    void Add(const std::string& supportedFileTypes, const ExporterOptions& config);
+    TIGL_EXPORT void Add(const std::string& supportedFileTypes, const ExporterOptions& config);
 
-    const ExporterOptions& Get(const std::string& fileType) const;
-    ExporterOptions& Get(const std::string& fileType);
+    TIGL_EXPORT const ExporterOptions& Get(const std::string& fileType) const;
+    TIGL_EXPORT ExporterOptions& Get(const std::string& fileType);
 
 private:
     CGlobalExporterConfigs();

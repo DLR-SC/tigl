@@ -61,7 +61,7 @@ PTiglCADExporter CTiglExporterFactory::Create(const std::string &filetype, const
         return creator->create(options);
     }
     else {
-        return PTiglCADExporter();
+        throw CTiglError("No exporter for type '" + filetype + "'", TIGL_NOT_FOUND);
     }
 }
 

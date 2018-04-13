@@ -5,23 +5,23 @@ from tixi3 import tixi3wrapper
 from tigl3 import tigl3wrapper
 from tigl3.configuration import CCPACSConfigurationManager_get_instance
 from tigl3.boolean_ops import CFuseShapes
-from tigl3.exports import CTiglExportStep
+from tigl3.exports import TriangulatedExportOptions, create_exporter as tigl_create_exporter
 
 import os
 
 
-def export_step(named_shapes, filename):
+def export_shapes(named_shapes, filename, deflection=0.001):
     """
-    Exports the named shapes array to STEP
+    Exports the named shapes array to file
     """
+    file_type = os.path.splitext(filename)[1][1:]
+    print("Exporting %s file..." % file_type)
 
-    print("Exporting step file...")
-
-    # write iges file
-    step_writer = CTiglExportStep()
+    # write step file
+    writer = tigl_create_exporter(file_type)
     for shape in named_shapes:
-        step_writer.add_shape(shape)
-    step_writer.write(filename)
+        writer.add_shape(shape, TriangulatedExportOptions(deflection))
+    writer.write(filename)
 
 
 def get_fused_shape(tigl_handle):
@@ -59,4 +59,4 @@ if __name__ == '__main__':
     tigl_h.open(tixi_h, "")
 
     fused_ac = get_fused_shape(tigl_h)
-    export_step([fused_ac], "simpletest.stp")
+    export_shapes([fused_ac], "simpletest.stp")
