@@ -111,13 +111,21 @@ void CTiglCurveConnector::VerifyNumberOfSegments(std::vector<CCPACSGuideCurve*>&
 
 void CTiglCurveConnector::CreatePartialCurves(guideCurveConnected& connectedCurve, CCPACSGuideCurve* current)
 {
+    // create new guide curve part and add current curve
     connectedCurve.parts.push_back(guideCurvePart());
 
+    if (current) {
+        connectedCurve.parts.back().localGuides.push_back(current);
+        current = current->GetConnectedCurve();
+    }
+
+    // add guide curves to guide curve part until we hit a continuity condition
     while (current && !current->GetContinuity_choice1() ) {
         connectedCurve.parts.back().localGuides.push_back(current);
         current = current->GetConnectedCurve();
     }
 
+    // we must have hit a continuity condition. Start new guide curve part from here
     if (current) {
         CreatePartialCurves(connectedCurve, current);
     }
@@ -197,6 +205,8 @@ void CTiglCurveConnector::InterpolateGuideCurvePart(guideCurveConnected& connect
 
     // add first point of this partial curve to the point list
     points.push_back( curvePart.localGuides[0]->GetCurvePoints()[0] );
+    tangents.push_back(gp_Vec(0, 0, 0));
+    tangentFlags.push_back(false);
 
     // check if a tangent for the first point is prescribed in CPACS
     if ( curvePart.localGuides[0]->GetTangent_choice2() ) {
@@ -231,11 +241,11 @@ void CTiglCurveConnector::InterpolateGuideCurvePart(guideCurveConnected& connect
         size_t idx_end = points.size();
 
         // no tangents given for the points by default
-        std::vector<gp_Vec> curTangents(curPoints.size());
+        std::vector<gp_Vec> curTangents(curPoints.size()-1);
         std::fill(curTangents.begin(), curTangents.end(), gp_Vec(0, 0, 0));
         tangents.insert(tangents.end(), curTangents.begin(), curTangents.end());
 
-        std::vector<bool> curTangentFlags(curPoints.size());
+        std::vector<bool> curTangentFlags(curPoints.size()-1);
         std::fill(curTangentFlags.begin(), curTangentFlags.end(), false);
         tangentFlags.insert(tangentFlags.end(), curTangentFlags.begin(), curTangentFlags.end());
 
@@ -248,7 +258,7 @@ void CTiglCurveConnector::InterpolateGuideCurvePart(guideCurveConnected& connect
 
     } // for all local guides
 
-    // check if we have a "from" dependency and prescribe tangent accordingly
+    // check if we have a "to" dependency and prescribe tangent accordingly
     if ( partIndex+1 < connectedCurve.parts.size() ) {
         guideCurvePart rightNeighbor = connectedCurve.parts[partIndex+1];
         if ( rightNeighbor.dependency == C2_to_previous ) {
