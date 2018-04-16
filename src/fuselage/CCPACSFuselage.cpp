@@ -379,6 +379,28 @@ TopoDS_Compound &CCPACSFuselage::GetGuideCurveWires()
     return guideCurves;
 }
 
+std::vector<gp_Pnt> CCPACSFuselage::GetGuideCurvePoints()
+{
+    std::vector<gp_Pnt> points;
+
+    // connect the belonging guide curve segments
+    for (int isegment = 1; isegment <= GetSegmentCount(); ++isegment) {
+        CCPACSFuselageSegment& segment = m_segments.GetSegment(isegment);
+
+        if (!segment.GetGuideCurves()) {
+            continue;
+        }
+
+        CCPACSGuideCurves& segmentCurves = *segment.GetGuideCurves();
+        for (int iguide = 1; iguide <=  segmentCurves.GetGuideCurveCount(); ++iguide) {
+            CCPACSGuideCurve& curve = segmentCurves.GetGuideCurve(iguide);
+            std::vector<gp_Pnt> curPoints = curve.GetCurvePoints();
+            points.insert(points.end(), curPoints.begin(), curPoints.end());
+        }
+    }
+    return points;
+}
+
 gp_Lin CCPACSFuselage::Intersection(gp_Pnt pRef, double angleRef)
 {
     const gp_Ax1 xAxe(
@@ -469,7 +491,7 @@ void CCPACSFuselage::BuildGuideCurves()
     }
     
     guideCurves.Nullify();
-    std::vector<CCPACSGuideCurve*> roots;
+    std::map<double, CCPACSGuideCurve*> roots;
     
     // find roots and connect the belonging guide curve segments
     for (int isegment = 1; isegment <= GetSegmentCount(); ++isegment) {
@@ -484,7 +506,10 @@ void CCPACSFuselage::BuildGuideCurves()
             CCPACSGuideCurve& curve = segmentCurves.GetGuideCurve(iguide);
             if (!curve.GetFromGuideCurveUID_choice1()) {
                 // this is a root curve
-                roots.push_back(&curve);
+                double relCirc= *curve.GetFromRelativeCircumference_choice2();
+                //TODO: determine if half fuselage or not. If not
+                //the guide curve at relCirc=1 should be inserted at relCirc=0
+                roots.insert(std::make_pair(relCirc, &curve));
             }
             else {
                 CCPACSGuideCurve& fromCurve = GetGuideCurveSegment(*curve.GetFromGuideCurveUID_choice1());

@@ -25,6 +25,7 @@
 
 #include <iostream>
 #include <algorithm>
+#include <map>
 
 #include "generated/CPACSRotorBlades.h"
 #include "CCPACSWing.h"
@@ -781,7 +782,7 @@ void CCPACSWing::BuildGuideCurveWires()
     
     // the guide curves will be sorted according to the inner
     // from relativeCircumference
-    std::vector<CCPACSGuideCurve*> roots;
+    std::map<double, CCPACSGuideCurve*> roots;
     
     // connect the belonging guide curve segments
     for (int isegment = 1; isegment <= GetSegmentCount(); ++isegment) {
@@ -796,7 +797,11 @@ void CCPACSWing::BuildGuideCurveWires()
             CCPACSGuideCurve& curve = segmentCurves.GetGuideCurve(iguide);
             if (!curve.GetFromGuideCurveUID_choice1()) {
                 // this is a root curve
-                roots.push_back(&curve);
+                double fromRef = *curve.GetFromRelativeCircumference_choice2();
+                if (fromRef >= 1. && !hasBluntTE) {
+                    fromRef = -1.;
+                }
+                roots.insert(std::make_pair(fromRef, &curve));
             }
             else {
                 CCPACSGuideCurve& fromCurve = GetGuideCurveSegment(*curve.GetFromGuideCurveUID_choice1());
