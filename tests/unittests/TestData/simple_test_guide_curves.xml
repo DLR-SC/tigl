@@ -551,6 +551,7 @@
                     <description>Lower Trailing Edge GuideCurve from GuideCurveModel - Wing Section 2 Main Element to GuideCurveModel - Wing Section 3 Main Element </description>
                     <guideCurveProfileUID>GuideCurveModel_Wing_GuideCurveProfile_TrailingEdgeLower_NonLinear</guideCurveProfileUID>
                     <fromGuideCurveUID>GuideCurveModel_Wing_Seg_1_2_GuideCurve_TrailingEdgeLower</fromGuideCurveUID>
+					<continuity>C0</continuity>
                     <toRelativeCircumference>-1.0</toRelativeCircumference>
                   </guideCurve>
                   <guideCurve uID="GuideCurveModel_Wing_Seg_2_3_GuideCurve_LeadingEdge">
@@ -565,6 +566,7 @@
                     <description>Upper Trailing Edge GuideCurve from GuideCurveModel - Wing Section 2 Main Element to GuideCurveModel - Wing Section 3 Main Element </description>
                     <guideCurveProfileUID>GuideCurveModel_Wing_GuideCurveProfile_TrailingEdgeUpper_NonLinear</guideCurveProfileUID>
                     <fromGuideCurveUID>GuideCurveModel_Wing_Seg_1_2_GuideCurve_TrailingEdgeUpper</fromGuideCurveUID>
+					<continuity>C0</continuity>
                     <toRelativeCircumference>1.0</toRelativeCircumference>
                   </guideCurve>
                 </guideCurves>
@@ -580,6 +582,7 @@
                     <description>Lower Trailing Edge GuideCurve from GuideCurveModel - Wing Section 3 Main Element to GuideCurveModel - Wing Section 4 Main Element </description>
                     <guideCurveProfileUID>GuideCurveModel_Wing_GuideCurveProfile_TrailingEdgeLower_NonLinear</guideCurveProfileUID>
                     <fromGuideCurveUID>GuideCurveModel_Wing_Seg_2_3_GuideCurve_TrailingEdgeLower</fromGuideCurveUID>
+					<continuity>C2 from previous</continuity>
                     <toRelativeCircumference>-1.0</toRelativeCircumference>
                   </guideCurve>
                   <guideCurve uID="GuideCurveModel_Wing_Seg_3_4_GuideCurve_LeadingEdge">
@@ -587,6 +590,7 @@
                     <description>Leading Edge GuideCurve from GuideCurveModel - Wing Section 3 Main Element to GuideCurveModel - Wing Section 4 Main Element </description>
                     <guideCurveProfileUID>GuideCurveModel_Wing_GuideCurveProfile_LeadingEdge_NonLinear</guideCurveProfileUID>
                     <fromGuideCurveUID>GuideCurveModel_Wing_Seg_2_3_GuideCurve_LeadingEdge</fromGuideCurveUID>
+					<continuity>C2 to previous</continuity>
                     <toRelativeCircumference>0.0</toRelativeCircumference>
                   </guideCurve>
                   <guideCurve uID="GuideCurveModel_Wing_Seg_3_4_GuideCurve_TrailingEdgeUpper">
@@ -594,6 +598,7 @@
                     <description>Upper Trailing Edge GuideCurve from GuideCurveModel - Wing Section 3 Main Element to GuideCurveModel - Wing Section 4 Main Element </description>
                     <guideCurveProfileUID>GuideCurveModel_Wing_GuideCurveProfile_TrailingEdgeUpper_NonLinear</guideCurveProfileUID>
                     <fromGuideCurveUID>GuideCurveModel_Wing_Seg_2_3_GuideCurve_TrailingEdgeUpper</fromGuideCurveUID>
+					<continuity>C2 from previous</continuity>
                     <toRelativeCircumference>1.0</toRelativeCircumference>
                   </guideCurve>
                 </guideCurves>
