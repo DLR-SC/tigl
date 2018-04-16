@@ -38,7 +38,7 @@
 
 namespace tigl {
 
-CTiglCurveConnector::CTiglCurveConnector(std::vector<CCPACSGuideCurve*> roots)
+CTiglCurveConnector::CTiglCurveConnector(std::map<double, CCPACSGuideCurve*>& roots)
 {
     // check if all guide curves have the same number of segments
     VerifyNumberOfSegments(roots);
@@ -47,10 +47,11 @@ CTiglCurveConnector::CTiglCurveConnector(std::vector<CCPACSGuideCurve*> roots)
     //  * A connected guide curve consists of a list of partial guide curves.
     //  * A partial guide curve consists of a list of segmentwise guide curves.
     m_connectedCurves.reserve(roots.size());
-    for (int i=0; i< roots.size(); i++) {
+    std::map<double, CCPACSGuideCurve*>::iterator it;
+    for ( it=roots.begin(); it != roots.end(); it++) {
         guideCurveConnected connectedCurve;
         m_connectedCurves.push_back(connectedCurve);
-        CreatePartialCurves(m_connectedCurves.back(), roots[i]);
+        CreatePartialCurves(m_connectedCurves.back(), it->second);
     }
 
     // For every connected guide curve, create the interpolation order according
@@ -90,19 +91,20 @@ TopoDS_Compound CTiglCurveConnector::GetConnectedGuideCurves()
     return result;
 }
 
-void CTiglCurveConnector::VerifyNumberOfSegments(std::vector<CCPACSGuideCurve*>& roots)
+void CTiglCurveConnector::VerifyNumberOfSegments(std::map<double, CCPACSGuideCurve*>& roots)
 {
     // check if every guidecurve consists of the same number of segments
     int numSegments_prev = 0;
     int numSegments = 0;
-    for (int i =0; i<roots.size(); i++) {
+    std::map<double, CCPACSGuideCurve*>::iterator it;
+    for (it = roots.begin(); it != roots.end(); it++) {
         numSegments = 0;
-        CCPACSGuideCurve* curCurve = roots[i];
+        CCPACSGuideCurve* curCurve = it->second;
         while (curCurve) {
             numSegments++;
             curCurve = curCurve->GetConnectedCurve();
         }
-        if (i>0 && numSegments != numSegments_prev ) {
+        if (it != roots.begin() && numSegments != numSegments_prev ) {
            throw(CTiglError("The guide curves to be connected do not have the same number of segments!"));
         }
         numSegments_prev = numSegments;
@@ -290,7 +292,7 @@ void CTiglCurveConnector::InterpolateGuideCurvePart(guideCurveConnected& connect
 
 //    GeomAPI_Interpolate interpol(hpoints, hparams, Standard_False, Precision::Confusion());
     GeomAPI_Interpolate interpol(hpoints, Standard_False, Precision::Confusion());
-    interpol.Load(htangents, htangentFlags);
+    interpol.Load(htangents, htangentFlags, false);
     interpol.Perform();
     Handle(Geom_BSplineCurve) hcurve = interpol.Curve();
     curvePart.localCurve = BRepBuilderAPI_MakeEdge(hcurve);

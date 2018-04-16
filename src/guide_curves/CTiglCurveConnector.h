@@ -19,7 +19,7 @@
 #ifndef CTIGLCURVECONNECTOR_H
 #define CTIGLCURVECONNECTOR_H
 
-#include <vector>
+#include <map>
 
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
@@ -56,11 +56,16 @@ class CTiglCurveConnector
     };
 
 public:
-    CTiglCurveConnector (std::vector<CCPACSGuideCurve*> roots);
+    /**
+     * @brief CTiglCurveConnector interpolates the guide curves for all segments
+     *
+     * The algorithm interpolates the guide curves for all segments,
+     * respecting prescribed tangents and continuity conditions
+     */
+    CTiglCurveConnector (std::map<double, CCPACSGuideCurve*>& roots);
 
     /**
-     * @brief GetConnectedGuideCurves
-     * @return
+     * @brief Returns the interpolated guide curves of the object
      */
     TopoDS_Compound GetConnectedGuideCurves ();
 
@@ -70,7 +75,7 @@ private:
      * @brief Verifies that all connected guide curves intersect the same
      * number of segments
      */
-    void VerifyNumberOfSegments (std::vector<CCPACSGuideCurve*>& roots);
+    void VerifyNumberOfSegments (std::map<double, CCPACSGuideCurve*>& roots);
 
     /**
      * @brief Creates the list of partial curves for every connected guide

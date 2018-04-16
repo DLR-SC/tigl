@@ -113,6 +113,9 @@ public:
     // Returns all guide curve wires as a compound
     TIGL_EXPORT TopoDS_Compound& GetGuideCurveWires();
 
+    // Returns all guide curve points
+    TIGL_EXPORT std::vector<gp_Pnt> GetGuideCurvePoints();
+
     // create the line intersecting the fuselage for the stringer/frame profile
     TIGL_EXPORT gp_Lin Intersection(gp_Pnt pRef, double angleRef);
     TIGL_EXPORT gp_Lin Intersection(const CCPACSFuselageStringerFramePosition& pos);
