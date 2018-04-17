@@ -975,7 +975,7 @@ TEST(TiglBSplineAlgorithms, testIntersectionFinder)
 
     Handle(Geom_BSplineCurve) spline_v = new Geom_BSplineCurve(controlPoints_v, knots, mults, degree);
 
-    std::vector<std::pair<double, double> > intersection_vector = CTiglBSplineAlgorithms::intersectionFinder(spline_u, spline_v);
+    std::vector<std::pair<double, double> > intersection_vector = CTiglBSplineAlgorithms::intersections(spline_u, spline_v);
 
     // splines should intersect at u = 0.5 + std::sqrt(0.1) and v = 4. / 5
     ASSERT_NEAR(intersection_vector[0].first, 0.5 + std::sqrt(0.1), 1e-15);
@@ -1249,7 +1249,7 @@ TEST(TiglBSplineAlgorithms, testIntersectionFinderClosed)
         splines_v_vector.push_back(spline);
     }
 
-    std::vector<std::pair<double, double> > intersection_params_vector = CTiglBSplineAlgorithms::intersectionFinder(splines_u_vector[5], splines_v_vector[2]);
+    std::vector<std::pair<double, double> > intersection_params_vector = CTiglBSplineAlgorithms::intersections(splines_u_vector[5], splines_v_vector[2]);
 }
 
 /*
