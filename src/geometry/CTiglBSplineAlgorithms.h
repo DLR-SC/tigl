@@ -224,7 +224,7 @@ public:
                                                                        const Handle(TColStd_HArray1OfReal) intersection_params_spline_v);
 
     /**
-     * @brief intersectionFinder:
+     * @brief intersections:
      *          Returns all intersections of two B-splines
      * @param spline1:
      *          first B-spline
@@ -233,7 +233,7 @@ public:
      * @return:
      *          intersections of spline1 with spline2 as a vector of (parameter of spline1, parameter of spline2)-pairs
      */
-    TIGL_EXPORT static std::vector<std::pair<double, double> > intersectionFinder(const Handle(Geom_BSplineCurve) spline1, const Handle(Geom_BSplineCurve) spline2);
+    TIGL_EXPORT static std::vector<std::pair<double, double> > intersections(const Handle(Geom_BSplineCurve) spline1, const Handle(Geom_BSplineCurve) spline2);
 
     /**
      * @brief scaleOfBSplines:
@@ -244,6 +244,16 @@ public:
      *          the scale
      */
     TIGL_EXPORT static double scaleOfBSplines(const std::vector<Handle(Geom_BSplineCurve)>& splines_vector);
+
+    /**
+     * @brief scaleOfBSplines:
+     *          Returns the approximate scale of the B-spline curve
+     * @param spline:
+     *          B-spline curve
+     * @return:
+     *          the scale
+     */
+    TIGL_EXPORT static double scaleOfBSpline(const Handle(Geom_BSplineCurve)& spline);
 
     /**
      * @brief eliminateInaccuraciesNetworkIntersections:
