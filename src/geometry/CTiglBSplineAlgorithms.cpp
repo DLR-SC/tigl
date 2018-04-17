@@ -51,11 +51,21 @@
 namespace
 {
 
-    // helper function for std::unique
-    bool helper_function_unique(double a, double b)
+    class helper_function_unique
     {
-        return (fabs(a - b) < 1e-15);
-    }
+    public:
+        helper_function_unique(double tolerance = 1e-15)
+            : _tol(tolerance)
+        {}
+
+        // helper function for std::unique
+        bool operator()(double a, double b)
+        {
+            return (fabs(a - b) < _tol);
+        }
+    private:
+        double _tol;
+    };
     
     enum SurfAdapterDir
     {
@@ -71,9 +81,8 @@ namespace
         {
         }
 
-        void insertKnot(double knot, int mult)
+        void insertKnot(double knot, int mult, double tolerance=1e-15)
         {
-            double tolerance = 1e-15;
             if (_dir == udir) {
                 _surf->InsertUKnot(knot, mult, tolerance, false);
             }
@@ -144,9 +153,8 @@ namespace
         {
         }
 
-        void insertKnot(double knot, int mult)
+        void insertKnot(double knot, int mult, double tolerance=1e-15)
         {
-            double tolerance = 1e-15;
             _curve->InsertKnot(knot, mult, tolerance, false);
         }
 
@@ -208,10 +216,10 @@ namespace
     }
     
     template <class SplineAdapter>
-    int findKnot(const SplineAdapter& spline, double knot)
+    int findKnot(const SplineAdapter& spline, double knot, double tolerance=1e-15)
     {
         for (int curSplineKnotIdx = 1; curSplineKnotIdx <= spline.getNKnots(); ++curSplineKnotIdx) {
-            if (std::abs(spline.getKnot(curSplineKnotIdx) - knot) < 1e-15) {
+            if (std::abs(spline.getKnot(curSplineKnotIdx) - knot) < tolerance) {
                 return curSplineKnotIdx;
             }
         }
@@ -226,7 +234,7 @@ namespace
      *          the given vector of B-spline splines that could have a different knot vector in u- or v-direction
      */
     template <class SplineAdapter>
-    void makeGeometryCompatibleImpl(std::vector<SplineAdapter>& splines_vector)
+    void makeGeometryCompatibleImpl(std::vector<SplineAdapter>& splines_vector, double par_tolerance)
     {
         // all B-spline splines must have the same parameter range in the chosen direction
         if (!haveSameRange(splines_vector)) {
@@ -251,7 +259,7 @@ namespace
         std::sort(resultKnots.begin(), resultKnots.end());
 
         // delete duplicate knots, so that in all_knots are all unique knots
-        resultKnots.erase(std::unique(resultKnots.begin(), resultKnots.end(), helper_function_unique), resultKnots.end());
+        resultKnots.erase(std::unique(resultKnots.begin(), resultKnots.end(), helper_function_unique(par_tolerance)), resultKnots.end());
 
         // find highest multiplicities
         std::vector<int> resultMults(resultKnots.size(), 0);
@@ -259,7 +267,7 @@ namespace
             const SplineAdapter& spline = *splineIt;
             for (unsigned int knotIdx = 0; knotIdx < resultKnots.size(); ++knotIdx) {
                 // get multiplicity of current knot in surface
-                int splKnotIdx = findKnot(spline, resultKnots[knotIdx]);
+                int splKnotIdx = findKnot(spline, resultKnots[knotIdx], par_tolerance);
                 if (splKnotIdx > 0) {
                     resultMults[knotIdx] = std::max(resultMults[knotIdx], spline.getMult(splKnotIdx));
                 }
@@ -273,11 +281,12 @@ namespace
                 spline.insertKnot(resultKnots[knotIdx], resultMults[knotIdx]);
             }
         }
-    }
+    } // makeGeometryCompatibleImpl
     
-    Handle(TColgp_HArray1OfPnt) array2GetColumn(const TColgp_Array2OfPnt& matrix, int colIndex)
+    template <class OccMatrix, class OccVector, class OccHandleVector>
+    OccHandleVector array2GetColumn(const OccMatrix& matrix, int colIndex)
     {
-        Handle(TColgp_HArray1OfPnt) colVector =  new TColgp_HArray1OfPnt(matrix.LowerRow(), matrix.UpperRow());
+        OccHandleVector colVector =  new OccVector(matrix.LowerRow(), matrix.UpperRow());
 
         for (int rowIdx = matrix.LowerRow(); rowIdx <= matrix.UpperRow(); ++rowIdx) {
             colVector->SetValue(rowIdx, matrix(rowIdx, colIndex));
@@ -286,9 +295,10 @@ namespace
         return colVector;
     }
     
-    Handle(TColgp_HArray1OfPnt) array2GetRow(const TColgp_Array2OfPnt& matrix, int rowIndex)
+    template <class OccMatrix, class OccVector, class OccHandleVector>
+    OccHandleVector array2GetRow(const OccMatrix& matrix, int rowIndex)
     {
-        Handle(TColgp_HArray1OfPnt) rowVector = new TColgp_HArray1OfPnt(matrix.LowerCol(), matrix.UpperCol());
+        OccHandleVector rowVector = new OccVector(matrix.LowerCol(), matrix.UpperCol());
         
         for (int colIdx = matrix.LowerCol(); colIdx <= matrix.UpperCol(); ++colIdx) {
             rowVector->SetValue(colIdx, matrix(rowIndex, colIdx));
@@ -297,6 +307,30 @@ namespace
         return rowVector;
     }
 
+    Handle_TColgp_HArray1OfPnt pntArray2GetColumn(const TColgp_Array2OfPnt& matrix, int colIndex)
+    {
+        return array2GetColumn<TColgp_Array2OfPnt, TColgp_HArray1OfPnt, Handle_TColgp_HArray1OfPnt>(matrix, colIndex);
+    }
+
+    Handle_TColgp_HArray1OfPnt pntArray2GetRow(const TColgp_Array2OfPnt& matrix, int rowIndex)
+    {
+        return array2GetRow<TColgp_Array2OfPnt, TColgp_HArray1OfPnt, Handle_TColgp_HArray1OfPnt>(matrix, rowIndex);
+    }
+
+    std::vector<double> toVector(const TColStd_Array1OfReal& array)
+    {
+        std::vector<double> result(array.Length());
+        int low = array.Lower();
+        for (int i = array.Lower(); i <= array.Upper(); ++i) {
+            result[i-low] = array.Value(i);
+        }
+        return result;
+    }
+
+    inline double sqr(const double v)
+    {
+        return v*v;
+    }
 }
 
 
@@ -331,7 +365,7 @@ CTiglBSplineAlgorithms::computeParamsBSplineSurf(const TColgp_Array2OfPnt& point
     Handle(TColStd_HArray1OfReal) paramsU(new TColStd_HArray1OfReal(points.LowerRow(), points.UpperRow()));
     paramsU->Init(0.);
     for (int vIdx = points.LowerCol(); vIdx <= points.UpperCol(); ++vIdx) {
-        Handle(TColStd_HArray1OfReal) parameters_u_line = computeParamsBSplineCurve(array2GetColumn(points, vIdx), alpha);
+        Handle(TColStd_HArray1OfReal) parameters_u_line = computeParamsBSplineCurve(pntArray2GetColumn(points, vIdx), alpha);
 
         // average over columns
         for (int uIdx = parameters_u_line->Lower(); uIdx <= parameters_u_line->Upper(); ++uIdx) {
@@ -345,7 +379,7 @@ CTiglBSplineAlgorithms::computeParamsBSplineSurf(const TColgp_Array2OfPnt& point
     Handle(TColStd_HArray1OfReal) paramsV = new TColStd_HArray1OfReal (points.LowerCol(), points.UpperCol());
     paramsV->Init(0.);
     for (int uIdx = points.LowerRow(); uIdx <= points.UpperRow(); ++uIdx) {
-        Handle(TColStd_HArray1OfReal) parameters_v_line = computeParamsBSplineCurve(array2GetRow(points, uIdx), alpha);
+        Handle(TColStd_HArray1OfReal) parameters_v_line = computeParamsBSplineCurve(pntArray2GetRow(points, uIdx), alpha);
 
         // average over rows
         for (int vIdx = points.LowerCol(); vIdx <= points.UpperCol(); ++vIdx) {
@@ -370,7 +404,7 @@ std::vector<Handle(Geom_BSplineCurve)> CTiglBSplineAlgorithms::createCommonKnots
         splines_adapter.push_back(Handle(Geom_BSplineCurve)::DownCast(splines_vector[i]->Copy()));
     }
 
-    makeGeometryCompatibleImpl(splines_adapter);
+    makeGeometryCompatibleImpl(splines_adapter, 1e-15);
 
     return std::vector<Handle(Geom_BSplineCurve)>(splines_adapter.begin(), splines_adapter.end());
 }
@@ -387,12 +421,12 @@ std::vector<Handle(Geom_BSplineSurface) > CTiglBSplineAlgorithms::createCommonKn
     }
 
     // first in u direction
-    makeGeometryCompatibleImpl(adapterSplines);
+    makeGeometryCompatibleImpl(adapterSplines, 1e-15);
 
     for (size_t i = 0; i < old_surfaces_vector.size(); ++i) adapterSplines[i].setDir(vdir);
 
     // now in v direction
-    makeGeometryCompatibleImpl(adapterSplines);
+    makeGeometryCompatibleImpl(adapterSplines, 1e-15);
 
     return std::vector<Handle(Geom_BSplineSurface)>(adapterSplines.begin(), adapterSplines.end());
 }
@@ -522,15 +556,8 @@ Handle(Geom_BSplineCurve) CTiglBSplineAlgorithms::reparametrizeBSpline(const Han
     Handle(Geom_BSplineCurve) copied_spline = Handle(Geom_BSplineCurve)::DownCast(spline->Copy());
 
     // sort parameter arrays
-    std::vector<double> old_parameters_vector;
-    for (int i = 1; i <= old_parameters.Length(); ++i) {
-        old_parameters_vector.push_back(old_parameters(i));
-    }
-
-    std::vector<double> new_parameters_vector;
-    for (int i = 1; i <= new_parameters.Length(); ++i) {
-        new_parameters_vector.push_back(new_parameters(i));
-    }
+    std::vector<double> old_parameters_vector(toVector(old_parameters));
+    std::vector<double> new_parameters_vector(toVector(new_parameters));
 
     std::sort(old_parameters_vector.begin(), old_parameters_vector.end());
     std::sort(new_parameters_vector.begin(), new_parameters_vector.end());
@@ -538,30 +565,10 @@ Handle(Geom_BSplineCurve) CTiglBSplineAlgorithms::reparametrizeBSpline(const Han
     // insert knots at old parameter values, so that one can reparametrize intervals between these old parameter values afterwards
     for (unsigned int i = 0; i < old_parameters_vector.size(); ++i) {
         // if between parameter range of B-spline
-        if (old_parameters_vector[i] - copied_spline->Knot(1) > 1e-15 && std::abs(copied_spline->Knot(copied_spline->NbKnots()) - old_parameters_vector[i]) > 1e-15) {
+        double parm = old_parameters_vector[i];
+        if (parm - copied_spline->Knot(1) > 1e-15 && std::abs(copied_spline->Knot(copied_spline->NbKnots()) - parm) > 1e-15) {
             // insert knot degree-times
-
-            bool is_there = false;
-            unsigned int is_there_idx = 0;
-            for (int knot_idx = 1; knot_idx <= copied_spline->NbKnots(); ++knot_idx) {
-                if (std::abs(old_parameters_vector[i] - copied_spline->Knot(knot_idx)) < 1e-7) {
-                    is_there = true;
-                    is_there_idx = knot_idx;
-                }
-            }
-
-            if (is_there) {
-                copied_spline->IncreaseMultiplicity(is_there_idx, copied_spline->Degree());
-            }
-            else {
-                copied_spline->InsertKnot(old_parameters_vector[i]);
-                for (int knot_idx = 1; knot_idx <= copied_spline->NbKnots(); ++knot_idx) {
-                    if (std::abs(old_parameters_vector[i] - copied_spline->Knot(knot_idx)) < 1e-15) {  // found inserted knot
-                        copied_spline->IncreaseMultiplicity(knot_idx, copied_spline->Degree());  // already inserted above (M=1 already)
-                    }
-                }
-            }
-            //copied_spline->InsertKnot(old_parameters_vector[i], copied_spline->Degree(), 0, Standard_False);
+            CurveAdapterView(copied_spline).insertKnot(parm, copied_spline->Degree(), 1e-7);
         }
     }
 
@@ -600,29 +607,6 @@ Handle(Geom_BSplineCurve) CTiglBSplineAlgorithms::reparametrizeBSpline(const Han
 
     // the multiplicity of the knots is not modified by reparametrization itself, but by knot insertion above (degree times):
     copied_spline->SetKnots(knots);
-
-//    // decrease the multiplicities of the knots at the (now new) parameters except at the beginning and end parameter which are at the
-//    // beginning and end of the parameter range of the B-spline
-//    std::vector<Handle(Geom_BSplineCurve)> spline_vector;
-//    spline_vector.push_back(copied_spline);
-//    double spline_geom_scale = CTiglBSplineAlgorithms::scaleOfBSplines(spline_vector);
-//    double spline_param_scale = copied_spline->Knot(copied_spline->NbKnots()) - copied_spline->Knot(1);
-//    double smoothing_interval_length = 5e-2;
-
-//    for (int parameter_idx = 2; parameter_idx <= new_parameters.Length() - 1; ++parameter_idx) {
-//        copied_spline->InsertKnot(new_parameters(parameter_idx) - smoothing_interval_length / 2. * spline_param_scale);
-//        copied_spline->InsertKnot(new_parameters(parameter_idx) + smoothing_interval_length / 2. * spline_param_scale);
-
-//        // search for knot index
-//        unsigned int knot_idx = 0;
-//        for (int i = 1; i <= copied_spline->NbKnots(); ++i) {
-//            if (std::abs(copied_spline->Knot(i) - new_parameters(parameter_idx)) < 1e-10) {
-//                knot_idx = i;
-//            }
-//        }
-
-//        copied_spline->RemoveKnot(knot_idx, std::max(1, copied_spline->Degree() - 2), 0.5 * spline_geom_scale);
-//    }
 
     return copied_spline;
 }
@@ -791,11 +775,7 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::interpolatingSurface(const T
     // first interpolate all points by B-splines in u-direction
     std::vector<Handle(Geom_BSplineCurve)> splines_u_vector;
     for (int cpVIdx = points.LowerCol(); cpVIdx <= points.UpperCol(); ++cpVIdx) {
-        Handle(TColgp_HArray1OfPnt) points_u = new TColgp_HArray1OfPnt(points.LowerRow(), points.UpperRow());
-        for (int cpUIdx = points.LowerRow(); cpUIdx <= points.UpperRow(); ++cpUIdx) {
-            points_u->SetValue(cpUIdx, points(cpUIdx, cpVIdx));
-        }
-        GeomAPI_Interpolate interpolationObject(points_u, parameters_u, false /*is_closed_u*/, 1e-15);
+        GeomAPI_Interpolate interpolationObject(pntArray2GetColumn(points, cpVIdx), parameters_u, false /*is_closed_u*/, 1e-15);
         interpolationObject.Perform();
 
         // check that interpolation was successful
@@ -975,21 +955,13 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::createGordonSurface(const st
     return surface_u;
 }
 
-std::vector<std::pair<double, double> > CTiglBSplineAlgorithms::intersectionFinder(const Handle(Geom_BSplineCurve) spline1, const Handle(Geom_BSplineCurve) spline2) {
+std::vector<std::pair<double, double> > CTiglBSplineAlgorithms::intersections(const Handle(Geom_BSplineCurve) spline1, const Handle(Geom_BSplineCurve) spline2) {
     // light weight simple minimizer
 
     // check parametrization of B-splines beforehand
 
     // find out the average scale of the two B-splines in order to being able to handle a more approximate curves and find its intersections
-    std::vector<Handle(Geom_BSplineCurve)> spline1_vector;
-    spline1_vector.push_back(spline1);
-    double splines_scale = CTiglBSplineAlgorithms::scaleOfBSplines(spline1_vector);
-
-    std::vector<Handle(Geom_BSplineCurve)> spline2_vector;
-    spline2_vector.push_back(spline2);
-    double spline2_scale = CTiglBSplineAlgorithms::scaleOfBSplines(spline2_vector);
-
-    splines_scale = (splines_scale + spline2_scale) / 2.;
+    double splines_scale = (CTiglBSplineAlgorithms::scaleOfBSpline(spline1) + CTiglBSplineAlgorithms::scaleOfBSpline(spline2)) / 2.;
 
     std::vector<std::pair<double, double> > intersection_params_vector;
     GeomAPI_ExtremaCurveCurve intersectionObj(spline1, spline2);
@@ -1001,7 +973,8 @@ std::vector<std::pair<double, double> > CTiglBSplineAlgorithms::intersectionFind
         // filter out real intersections
         gp_Pnt point1 = spline1->Value(param1);
         gp_Pnt point2 = spline2->Value(param2);
-        if (std::pow(point1.X() - point2.X(), 2) + std::pow(point1.Y() - point2.Y(), 2) + std::pow(point1.Z() - point2.Z(), 2) < 1e-7 * splines_scale) {
+        // TODO: check: splines-scale evaluates at distance, here we have square distance
+        if (point1.SquareDistance(point2) < 1e-7 * splines_scale) {
             intersection_params_vector.push_back(std::make_pair(param1, param2));
         }
 
@@ -1031,22 +1004,26 @@ std::vector<std::pair<double, double> > CTiglBSplineAlgorithms::intersectionFind
     return intersection_params_vector;
 }
 
-double CTiglBSplineAlgorithms::scaleOfBSplines(const std::vector<Handle(Geom_BSplineCurve)>& splines_vector) {
-    double scale = 0.;
-    for (unsigned int spline_idx = 0; spline_idx < splines_vector.size(); ++spline_idx) {
-
-        gp_Pnt first_ctrl_pnt = splines_vector[spline_idx]->Pole(1);
-        for (int ctrl_pnt_idx = 2; ctrl_pnt_idx <= splines_vector[spline_idx]->NbPoles(); ++ctrl_pnt_idx) {
-            // compute distance of the first control point to the others and save biggest distance
-            gp_Pnt ctrl_pnt = splines_vector[spline_idx]->Pole(ctrl_pnt_idx);
-            double distance = std::sqrt(std::pow(first_ctrl_pnt.X() - ctrl_pnt.X(), 2) + std::pow(first_ctrl_pnt.Y() - ctrl_pnt.Y(), 2) + std::pow(first_ctrl_pnt.Z() - ctrl_pnt.Z(), 2));
-
-            if (scale < distance) {
-                scale = distance;
-            }
-        }
+double CTiglBSplineAlgorithms::scaleOfBSplines(const std::vector<Handle(Geom_BSplineCurve)>& splines_vector)
+{
+    double maxScale = 0.;
+    for (std::vector<Handle(Geom_BSplineCurve)>::const_iterator it = splines_vector.begin(); it != splines_vector.end(); ++it) {
+        maxScale = std::max(scaleOfBSpline(*it), maxScale);
     }
 
+    return maxScale;
+}
+
+double CTiglBSplineAlgorithms::scaleOfBSpline(const Handle(Geom_BSplineCurve)& spline)
+{
+    double scale = 0.;
+    gp_Pnt first_ctrl_pnt = spline->Pole(1);
+    for (int ctrl_pnt_idx = 2; ctrl_pnt_idx <= spline->NbPoles(); ++ctrl_pnt_idx) {
+        // compute distance of the first control point to the others and save biggest distance
+        double distance = first_ctrl_pnt.Distance(spline->Pole(ctrl_pnt_idx));
+
+        scale = std::max(scale, distance);
+    }
     return scale;
 }
 
@@ -1163,7 +1140,7 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::createGordonSurfaceGeneral(c
 
     for (unsigned int spline_u_idx = 0; spline_u_idx < splines_u_vector.size(); ++spline_u_idx) {
         for (unsigned int spline_v_idx = 0; spline_v_idx < splines_v_vector.size(); ++spline_v_idx) {
-            std::vector<std::pair<double, double> > intersection_params_vector = CTiglBSplineAlgorithms::intersectionFinder(splines_u_vector[spline_u_idx], splines_v_vector[spline_v_idx]);
+            std::vector<std::pair<double, double> > intersection_params_vector = CTiglBSplineAlgorithms::intersections(splines_u_vector[spline_u_idx], splines_v_vector[spline_v_idx]);
 
             if (intersection_params_vector.size() < 1) {
                 throw tigl::CTiglError("U-directional B-spline and v-directional B-spline don't intersect each other!");
