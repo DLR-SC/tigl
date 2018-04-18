@@ -48,7 +48,7 @@ public:
     TIGL_EXPORT const PNamedShape FarField();
     TIGL_EXPORT const ListPNamedShape& Intersections();
 
-    void Invalidate();
+    TIGL_EXPORT void Invalidate();
 
 private:
     PNamedShape FuseWithChilds(CTiglAbstractPhysicalComponent* parent);

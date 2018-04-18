@@ -120,7 +120,6 @@ public:
     // Gets the upper point in absolute (world) coordinates for a given segment, eta, xsi
     TIGL_EXPORT gp_Pnt GetLowerPoint(int segmentIndex, double eta, double xsi);
 
-    TIGL_EXPORT TopoDS_Shape GetWingWithoutFlaps();
     TIGL_EXPORT TopoDS_Shape GetLoftWithCutouts();
 
     // Gets a point on the chord surface in absolute (world) coordinates for a given segment, eta, xsi

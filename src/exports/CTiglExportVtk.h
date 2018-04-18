@@ -87,7 +87,7 @@ public:
 
 
     // Options
-    static bool normalsEnabled;
+    TIGL_EXPORT static bool normalsEnabled;
 
 private:
     class CCPACSConfiguration & myConfig;       /**< TIGL configuration object */
