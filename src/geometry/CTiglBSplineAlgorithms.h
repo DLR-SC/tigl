@@ -93,7 +93,7 @@ public:
      *          vector of B-splines that could have a different knot vector
      * @return the given vector of B-splines with a common knot vector, the B-spline geometry isn't changed
      */
-    TIGL_EXPORT static std::vector<Handle(Geom_BSplineCurve)> createCommonKnotsVectorCurve(const std::vector<Handle(Geom_BSplineCurve)>& splines_vector);
+    TIGL_EXPORT static std::vector<Handle(Geom_BSplineCurve)> createCommonKnotsVectorCurve(const std::vector<Handle(Geom_BSplineCurve)>& splines_vector, double tol);
 
     /**
      * @brief createCommonKnotsVectorSurface:
@@ -134,6 +134,10 @@ public:
     TIGL_EXPORT static Handle(Geom_BSplineSurface) curvesToSurface(const std::vector<Handle(Geom_BSplineCurve) >& splines_vector);
 
     /**
+     */
+    TIGL_EXPORT static void reparametrizeBSpline(Geom_BSplineCurve& spline, double umin, double umax, double tol=1e-15);
+
+    /**
      * @brief reparametrizeBSpline:
      *          Reparametrizes a given B-spline by giving an array of its old parameters that should have the values of the given array of new parameters after this function call.
      *          The B-spline geometry remains the same, but:
@@ -165,7 +169,7 @@ public:
      *          the continuously reparametrized given B-spline
      */
     TIGL_EXPORT static Handle(Geom_BSplineCurve) reparametrizeBSplineContinuouslyApprox(const Handle(Geom_BSplineCurve) spline, const TColStd_Array1OfReal& old_parameters,
-                                                                                        const TColStd_Array1OfReal& new_parameters, unsigned int n_control_pnts=30);
+                                                                                        const TColStd_Array1OfReal& new_parameters, unsigned int n_control_pnts);
 
     /**
      * @brief flipSurface:

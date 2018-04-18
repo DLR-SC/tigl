@@ -210,7 +210,7 @@ TEST(TiglBSplineAlgorithms, testCreateCommonKnotsVectorCurve)
     splines_vector.push_back(bspline2);
     splines_vector.push_back(bspline3);
 
-    std::vector<Handle(Geom_BSplineCurve)> modified_splines_vector = CTiglBSplineAlgorithms::createCommonKnotsVectorCurve(splines_vector);
+    std::vector<Handle(Geom_BSplineCurve)> modified_splines_vector = CTiglBSplineAlgorithms::createCommonKnotsVectorCurve(splines_vector, 1e-15);
 
     TColStd_Array1OfReal computed_knot_vector(1, 7);
     modified_splines_vector[0]->Knots(computed_knot_vector);
@@ -226,12 +226,70 @@ TEST(TiglBSplineAlgorithms, testCreateCommonKnotsVectorCurve)
     ASSERT_NEAR(right_knot_vector(6), computed_knot_vector(6), 1e-15);
     ASSERT_NEAR(right_knot_vector(7), computed_knot_vector(7), 1e-15);
 
-    // create B-spline with different degree
-//    int wrong_degree = 2;
-//    Handle(Geom_BSplineCurve) bspline_ = new Geom_BSplineCurve(controlPoints1, Weights1, Knots1, Multiplicities1, wrong_degree);
-//    splines_vector.push_back(bspline_);
-//    ASSERT_THROW(std::vector<Handle(Geom_BSplineCurve)> new_spline_vector = CTiglBSplineAlgorithms::createCommonKnotsVectorCurve(splines_vector), tigl::CTiglError);
+}
 
+TEST(TiglBSplineAlgorithms, testCreateCommonKnotsVectorTolerance)
+{
+    // We use two splines, that also have common knots (0, 0.5) in the tolerance of 0.01
+    // We don't want to insert those, which are within the tolerance
+
+    int degree = 2;
+
+    TColgp_Array1OfPnt controlPoints1(1, 4);
+
+    TColStd_Array1OfReal Knots1(1, 3);
+    Knots1(1) = 0.009;
+    Knots1(2) = 0.5;
+    Knots1(3) = 1;
+
+    TColStd_Array1OfInteger Multiplicities1(1, 3);
+    Multiplicities1(1) = 3;
+    Multiplicities1(2) = 1;
+    Multiplicities1(3) = 3;
+
+    Handle(Geom_BSplineCurve) bspline1 = new Geom_BSplineCurve(controlPoints1,  Knots1, Multiplicities1, degree);
+
+    TColgp_Array1OfPnt controlPoints2(1, 6);
+
+    TColStd_Array1OfReal Knots2(1, 4);
+    Knots2(1) = 0.;
+    Knots2(2) = 0.491;
+    Knots2(3) = 0.8;
+    Knots2(4) = 1;
+
+    TColStd_Array1OfInteger Multiplicities2(1, 4);
+    Multiplicities2(1) = 3;
+    Multiplicities2(2) = 2;
+    Multiplicities2(3) = 1;
+    Multiplicities2(4) = 3;
+
+    Handle(Geom_BSplineCurve) bspline2 = new Geom_BSplineCurve(controlPoints2,  Knots2, Multiplicities2, degree);
+
+    std::vector<Handle(Geom_BSplineCurve)> curves;
+    curves.push_back(bspline1);
+    curves.push_back(bspline2);
+
+    curves = tigl::CTiglBSplineAlgorithms::createCommonKnotsVectorCurve(curves, 0.01);
+    ASSERT_EQ(4, curves[0]->NbKnots());
+    ASSERT_EQ(4, curves[1]->NbKnots());
+
+    EXPECT_NEAR(0.009, curves[0]->Knot(1), 1e-10);
+    EXPECT_NEAR(0.500, curves[0]->Knot(2), 1e-10);
+    EXPECT_NEAR(0.800, curves[0]->Knot(3), 1e-10);
+    EXPECT_NEAR(1.000, curves[0]->Knot(4), 1e-10);
+    EXPECT_EQ(3, curves[0]->Multiplicity(1));
+    EXPECT_EQ(2, curves[0]->Multiplicity(2));
+    EXPECT_EQ(1, curves[0]->Multiplicity(3));
+    EXPECT_EQ(3, curves[0]->Multiplicity(4));
+
+    EXPECT_NEAR(0.000, curves[1]->Knot(1), 1e-10);
+    EXPECT_NEAR(0.491, curves[1]->Knot(2), 1e-10);
+    EXPECT_NEAR(0.800, curves[1]->Knot(3), 1e-10);
+    EXPECT_NEAR(1.000, curves[1]->Knot(4), 1e-10);
+    EXPECT_EQ(3, curves[1]->Multiplicity(1));
+    EXPECT_EQ(2, curves[1]->Multiplicity(2));
+    EXPECT_EQ(1, curves[1]->Multiplicity(3));
+    EXPECT_EQ(3, curves[1]->Multiplicity(4));
 }
 
 TEST(TiglBSplineAlgorithms, testCreateCommonKnotsVectorSurface)
