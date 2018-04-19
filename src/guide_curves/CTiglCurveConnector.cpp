@@ -17,6 +17,7 @@
 */
 
 #include "CTiglCurveConnector.h"
+#include "tiglcommonfunctions.h"
 
 #include <algorithm>
 #include <stack>
@@ -38,10 +39,13 @@
 
 namespace tigl {
 
-CTiglCurveConnector::CTiglCurveConnector(std::map<double, CCPACSGuideCurve*>& roots)
+
+CTiglCurveConnector::CTiglCurveConnector(std::map<double, CCPACSGuideCurve*>& roots,
+                                         const std::vector<double>& params)
 {
     // check if all guide curves have the same number of segments
-    VerifyNumberOfSegments(roots);
+    int numSegments = (int)(params.size()-1);
+    VerifyNumberOfSegments(roots, numSegments);
 
     // at each root, a connected guide curve starts.
     //  * A connected guide curve consists of a list of partial guide curves.
@@ -58,6 +62,17 @@ CTiglCurveConnector::CTiglCurveConnector(std::map<double, CCPACSGuideCurve*>& ro
     // to the depencies of the partial curves
     for (int i=0; i< roots.size(); i++) {
         CreateInterpolationOrder(m_connectedCurves[i]);
+    }
+
+    // set the parameters for every part (this is a bit icky...)
+    int paramIdx = 0;
+    for (int i=0; i < m_connectedCurves.size(); i++ ) {
+        for(int j=0; j < m_connectedCurves[i].parts.size(); j++ ) {
+            for(int k=0; k < m_connectedCurves[i].parts[j].localGuides.size(); k++ ) {
+                m_connectedCurves[i].parts[j].sectionParameters.push_back(params[paramIdx++]);
+            }
+            m_connectedCurves[i].parts[j].sectionParameters.push_back(params[paramIdx]);
+        }
     }
 }
 
@@ -91,10 +106,10 @@ TopoDS_Compound CTiglCurveConnector::GetConnectedGuideCurves()
     return result;
 }
 
-void CTiglCurveConnector::VerifyNumberOfSegments(std::map<double, CCPACSGuideCurve*>& roots)
+void CTiglCurveConnector::VerifyNumberOfSegments(std::map<double, CCPACSGuideCurve*>& roots,
+                                                 int shouldBeThisMany)
 {
     // check if every guidecurve consists of the same number of segments
-    int numSegments_prev = 0;
     int numSegments = 0;
     std::map<double, CCPACSGuideCurve*>::iterator it;
     for (it = roots.begin(); it != roots.end(); it++) {
@@ -104,10 +119,11 @@ void CTiglCurveConnector::VerifyNumberOfSegments(std::map<double, CCPACSGuideCur
             numSegments++;
             curCurve = curCurve->GetConnectedCurve();
         }
-        if (it != roots.begin() && numSegments != numSegments_prev ) {
-           throw(CTiglError("The guide curves to be connected do not have the same number of segments!"));
+
+        if ( shouldBeThisMany != numSegments )
+        {
+            throw(CTiglError("The number of segments does not match the specified number of sections!"));
         }
-        numSegments_prev = numSegments;
     }
 }
 
@@ -136,7 +152,7 @@ void CTiglCurveConnector::CreatePartialCurves(guideCurveConnected& connectedCurv
 
 void CTiglCurveConnector::CreateInterpolationOrder (guideCurveConnected& connectedCurve)
 {
-    // this is essentially a topological sort
+    // this is essentially Kahn's method
 
     size_t nparts = connectedCurve.parts.size();
 
@@ -170,7 +186,6 @@ void CTiglCurveConnector::CreateInterpolationOrder (guideCurveConnected& connect
     }
 
     // DFS through the dependency tree
-    int counter = 0;
     while ( !stack.empty() ) {
 
         // top of stack is the next in the topo sort
@@ -201,12 +216,13 @@ void CTiglCurveConnector::InterpolateGuideCurvePart(guideCurveConnected& connect
 
     // interpolate guide curve points of all segments of the part with a B-Spline
     std::vector<gp_Pnt> points;
-//    std::vector<double> params;
+    std::vector<double> params;
     std::vector<gp_Vec> tangents;
     std::vector<bool>   tangentFlags;
 
     // add first point of this partial curve to the point list
     points.push_back( curvePart.localGuides[0]->GetCurvePoints()[0] );
+    params.push_back( curvePart.sectionParameters[0]);
     tangents.push_back(gp_Vec(0, 0, 0));
     tangentFlags.push_back(false);
 
@@ -241,6 +257,12 @@ void CTiglCurveConnector::InterpolateGuideCurvePart(guideCurveConnected& connect
         points.insert( points.end(), curPoints.begin()+1, curPoints.end() );
 
         size_t idx_end = points.size();
+
+        // get the parameters for the current points
+        double p1 = curvePart.sectionParameters[isegment  ];
+        double p2 = curvePart.sectionParameters[isegment+1];
+        std::vector<double> curParams = GetCentripetalParameters(curPoints, p1, p2);
+        params.insert( params.end(), curParams.begin()+1, curParams.end() );
 
         // no tangents given for the points by default
         std::vector<gp_Vec> curTangents(curPoints.size()-1);
@@ -279,19 +301,18 @@ void CTiglCurveConnector::InterpolateGuideCurvePart(guideCurveConnected& connect
 
     int pointCount = (int)points.size();
     Handle(TColgp_HArray1OfPnt) hpoints = new TColgp_HArray1OfPnt(1, pointCount);
-//    Handle(TColStd_HArray1OfReal) hparams = new TColStd_HArray1OfReal(1, pointCount);
+    Handle(TColStd_HArray1OfReal) hparams = new TColStd_HArray1OfReal(1, pointCount);
     Handle(TColStd_HArray1OfBoolean) htangentFlags = new TColStd_HArray1OfBoolean(1, pointCount);
     TColgp_Array1OfVec htangents(1, pointCount);
 
     for (int j = 0; j < pointCount; j++) {
         hpoints->SetValue(j+1, points[j]);
-//        hparams->SetValue(j+1, params[j]);
+        hparams->SetValue(j+1, params[j]);
         htangents.SetValue(j+1, tangents[j]);
         htangentFlags->SetValue(j+1, tangentFlags[j]);
     }
 
-//    GeomAPI_Interpolate interpol(hpoints, hparams, Standard_False, Precision::Confusion());
-    GeomAPI_Interpolate interpol(hpoints, Standard_False, Precision::Confusion());
+    GeomAPI_Interpolate interpol(hpoints, hparams, Standard_False, Precision::Confusion());
     interpol.Load(htangents, htangentFlags, false);
     interpol.Perform();
     Handle(Geom_BSplineCurve) hcurve = interpol.Curve();

@@ -43,26 +43,29 @@ class CTiglCurveConnector
     {
         std::vector<CCPACSGuideCurve*> localGuides;
 
-        std::vector<double> startParameters; //TODO unused so far.
+        std::vector<double> sectionParameters;
         dependencyType dependency = none;
         TopoDS_Edge localCurve;
     };
 
     struct guideCurveConnected
     {
-    public:
         std::vector<guideCurvePart> parts;
         std::vector<int> interpolationOrder;
     };
 
 public:
+
     /**
-     * @brief CTiglCurveConnector interpolates the guide curves for all segments
+     * @brief CTiglCurveConnector interpolates the guide curves for all segments.
+     * The interpolation is parametrized with the centripetal method for the given
+     * parameters at the sections.
      *
      * The algorithm interpolates the guide curves for all segments,
      * respecting prescribed tangents and continuity conditions
      */
-    CTiglCurveConnector (std::map<double, CCPACSGuideCurve*>& roots);
+    CTiglCurveConnector(std::map<double, CCPACSGuideCurve*>& roots,
+                        const std::vector<double>& params);
 
     /**
      * @brief Returns the interpolated guide curves of the object
@@ -75,7 +78,7 @@ private:
      * @brief Verifies that all connected guide curves intersect the same
      * number of segments
      */
-    void VerifyNumberOfSegments (std::map<double, CCPACSGuideCurve*>& roots);
+    void VerifyNumberOfSegments (std::map<double, CCPACSGuideCurve*>& roots, int shouldBeThisMany = -1);
 
     /**
      * @brief Creates the list of partial curves for every connected guide
@@ -104,8 +107,6 @@ private:
      * needed for the continuity conditions are available.
      */
     void InterpolateGuideCurvePart(guideCurveConnected& connectedCurve, int partIndex);
-
-
 
     std::vector<guideCurveConnected> m_connectedCurves;
 };
