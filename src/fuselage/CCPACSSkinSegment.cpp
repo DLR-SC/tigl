@@ -85,8 +85,9 @@ bool CCPACSSkinSegment::Contains(const gp_Pnt& point)
     const gp_Pnt p4 = (c.sFrame_eStringer.Location().XYZ() + c.sFrame_sStringer.Location().XYZ()) / 2;
     const gp_Pnt p5 = (c.sFrame_sStringer.Location().XYZ() + c.eFrame_eStringer.Location().XYZ()) / 2;
 
+    const TopoDS_Shape fuselageLoft = m_parent->GetParent()->GetParent()->GetParent()->GetLoft()->Shape();
     Bnd_Box boundingBox;
-    BRepBndLib::Add(m_parent->GetParent()->GetParent()->GetParent()->GetLoft()->Shape(), boundingBox);
+    BRepBndLib::Add(fuselageLoft, boundingBox);
     const double yMid = (boundingBox.CornerMax().Y() + boundingBox.CornerMin().Y()) / 2;
     const gp_Pnt p6(p5.X(), yMid, p5.Z());
 
