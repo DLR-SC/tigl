@@ -65,8 +65,8 @@ CTiglCurveConnector::CTiglCurveConnector(std::map<double, CCPACSGuideCurve*>& ro
     }
 
     // set the parameters for every part (this is a bit icky...)
-    int paramIdx = 0;
     for (int i=0; i < m_connectedCurves.size(); i++ ) {
+        int paramIdx = 0;
         for(int j=0; j < m_connectedCurves[i].parts.size(); j++ ) {
             for(int k=0; k < m_connectedCurves[i].parts[j].localGuides.size(); k++ ) {
                 m_connectedCurves[i].parts[j].sectionParameters.push_back(params[paramIdx++]);
@@ -261,7 +261,7 @@ void CTiglCurveConnector::InterpolateGuideCurvePart(guideCurveConnected& connect
         // get the parameters for the current points
         double p1 = curvePart.sectionParameters[isegment  ];
         double p2 = curvePart.sectionParameters[isegment+1];
-        std::vector<double> curParams = GetCentripetalParameters(curPoints, p1, p2);
+        std::vector<double> curParams = GetCentripetalParameters(curPoints, p1, p2, 0.5);
         params.insert( params.end(), curParams.begin()+1, curParams.end() );
 
         // no tangents given for the points by default

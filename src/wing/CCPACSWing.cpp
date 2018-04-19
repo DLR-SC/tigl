@@ -825,7 +825,7 @@ void CCPACSWing::BuildGuideCurveWires()
     }
 
     // get the parameters at the section centers
-    std::vector<double> sectionParams = GetCentripetalParameters(sectionCenters);
+    std::vector<double> sectionParams = GetCentripetalParameters(sectionCenters, 0., 1., 0.5);
 
     // connect guide curve segments to a spline with given continuity conditions and tangents
     CTiglCurveConnector connector(roots, sectionParams);
