@@ -68,12 +68,9 @@ TopoDS_Shape CCPACSPressureBulkheadAssemblyPosition::GetGeometry()
 
 void CCPACSPressureBulkheadAssemblyPosition::BuildGeometry()
 {
-    CCPACSFuselage& fuselage = *m_parent->GetParent()->GetParent();
     CCPACSFrame& frame = m_uidMgr->ResolveObject<CCPACSFrame>(m_frameUID);
 
     if (frame.GetFramePositions().size() == 1) {
-        // one frame position
-
         TopTools_IndexedMapOfShape edgeMap;
         TopExp::MapShapes(frame.GetGeometry(true), TopAbs_EDGE, edgeMap);
 
@@ -82,15 +79,10 @@ void CCPACSPressureBulkheadAssemblyPosition::BuildGeometry()
         }
 
         TopoDS_Edge edge = TopoDS::Edge(edgeMap(1));
-        TopoDS_Wire wire = BRepBuilderAPI_MakeWire(edge); //turn the edge into wire
-        TopoDS_Face Face = BRepBuilderAPI_MakeFace(wire); //make the face from the wire
-        m_geometry       = Face;
-    } else if (frame.GetFramePositions().size() >= 2) {
-        // two ore more frame positions
+        m_geometry       = BRepBuilderAPI_MakeFace(BRepBuilderAPI_MakeWire(edge));
 
-        //BRep_Builder builder;
-        //TopoDS_Compound compound;
-        //builder.MakeCompound(compound);
+    } else if (frame.GetFramePositions().size() >= 2) {
+        CCPACSFuselage& fuselage = *m_parent->GetParent()->GetParent();
 
         std::vector<TopoDS_Edge> edges;
         std::vector<gp_Pnt> refPoints;
@@ -99,24 +91,17 @@ void CCPACSPressureBulkheadAssemblyPosition::BuildGeometry()
             const gp_Pnt refPoint = framePosition.GetRefPoint();
             const gp_Pnt intersectionPoint = fuselage.Intersection(framePosition).Location();
 
-            //TopoDS_Vertex vertex;
-            //builder.MakeVertex(vertex, intersectionPoint, precision);
-            //builder.Add(compound, vertex);
-
             const TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(refPoint, intersectionPoint);
-            //builder.Add(compound, edge);
 
             edges.push_back(edge);
             refPoints.push_back(refPoint);
         }
 
         // we have to make the wires in the order of construction (clockwise)
-        // so we turn the first edge into a wire, then the edge-frame and then the last edge
         BRepBuilderAPI_MakeWire wireMaker;
-
         wireMaker.Add(edges[0]); // first edge
 
-        // create all the edges of the frame (which is made of several edges)
+        // create all the edges of the frame
         TopTools_IndexedMapOfShape edgeMap;
         TopExp::MapShapes(frame.GetGeometry(true), TopAbs_EDGE, edgeMap);
         for (int i = 1; i <= edgeMap.Extent(); i++)
@@ -133,14 +118,6 @@ void CCPACSPressureBulkheadAssemblyPosition::BuildGeometry()
 
         const double precision = 1e-6;
 
-        // check if 2 reference points are the same for adding edgeRef
-        int diffFramePosition = 0; // contains the number of different frame positions, to be able to create the "edgesRef" vector with the appropiate size(edgesRef are the edges between the reference points).
-        for (int i = 0; i < refPoints.size() - 1; i++) {
-            if (!refPoints[i].IsEqual(refPoints[i + 1], precision)) {
-                diffFramePosition++;
-            }
-        }
-
         // generate edges between non-equal points
         std::vector<TopoDS_Edge> edgesRef;
         for (int i = 0; i < refPoints.size() - 1; i++) {
@@ -154,15 +131,11 @@ void CCPACSPressureBulkheadAssemblyPosition::BuildGeometry()
             wireMaker.Add(edgesRef[edgesRef.size() - 1 - i]);
         }
 
-        TopoDS_Wire wire = wireMaker.Wire();
-        //builder.Add(compound, wire);
-        //m_geometry = compound;
-
         if (!wireMaker.IsDone()) {
             throw CTiglError("Wire generation failed");
         }
 
-        m_geometry = BRepBuilderAPI_MakeFace(wire);
+        m_geometry = BRepBuilderAPI_MakeFace(wireMaker.Wire());
     }
 }
 } // namespace tigl
