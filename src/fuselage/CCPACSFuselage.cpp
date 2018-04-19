@@ -489,14 +489,13 @@ void CCPACSFuselage::BuildGuideCurves()
     guideCurves.Nullify();
     std::map<double, CCPACSGuideCurve*> roots;
 
-    // get chord centers on each section for the centripetal parametrization
+    // get section centers for the centripetal parametrization
     std::vector<gp_Pnt> sectionCenters(GetSegmentCount()+1);
 
-    // get inner chord face center of first segment
+    // get center of inner section of first segment
     CCPACSFuselageSegment& innerSegment = m_segments.GetSegment(1);
-    sectionCenters[0] = innerSegment.GetPoint(0., 0.);  // inner front
-    gp_Pnt back       = innerSegment.GetPoint(0., 1.);  // inner back
-    back.BaryCenter(0.5, sectionCenters[0], 0.5);            // inner chord center
+    TopoDS_Shape wireOnLoft = innerSegment.getWireOnLoft(0.);
+    sectionCenters[0] = GetCenterOfMass(wireOnLoft);
     
     // find roots and connect the belonging guide curve segments
     for (int isegment = 1; isegment <= GetSegmentCount(); ++isegment) {
@@ -506,10 +505,9 @@ void CCPACSFuselage::BuildGuideCurves()
             continue;
         }
 
-        // get outer chord face center of current segment
-        sectionCenters[isegment] = segment.GetPoint(1., 0.);   // outer front
-        back                     = segment.GetPoint(1., 1.);   // outer back
-        back.BaryCenter(0.5, sectionCenters[isegment], 0.5);        // outer chord center
+        // get center of outer section
+        TopoDS_Shape wireOnLoft = segment.getWireOnLoft(1.0);
+        sectionCenters[isegment] = GetCenterOfMass(wireOnLoft);
 
         CCPACSGuideCurves& segmentCurves = *segment.GetGuideCurves();
         for (int iguide = 1; iguide <=  segmentCurves.GetGuideCurveCount(); ++iguide) {
@@ -529,8 +527,8 @@ void CCPACSFuselage::BuildGuideCurves()
     }
 
     // get the parameters at the section centers
-    std::vector<double> sectionParams = GetCentripetalParameters(sectionCenters);
-    
+    std::vector<double> sectionParams = GetCentripetalParameters(sectionCenters, 0., 1., 0.5);
+
     // connect guide curve segments to a spline with given continuity conditions and tangents
     CTiglCurveConnector connector(roots, sectionParams);
     guideCurves = connector.GetConnectedGuideCurves();

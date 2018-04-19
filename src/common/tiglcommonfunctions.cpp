@@ -1462,7 +1462,6 @@ std::vector<double> GetCentripetalParameters(const std::vector<gp_Pnt>& points,
                                              double endParam,
                                              double exponent)
 {
-
     if ( endParam <= startParam ) {
         throw tigl::CTiglError("The specified start parameter is larger than the specified end parameter");
     }
@@ -1473,8 +1472,19 @@ std::vector<double> GetCentripetalParameters(const std::vector<gp_Pnt>& points,
     for (int i = 1; i<points.size(); i++) {
         params[i]=params[i-1] + pow(points[i].Distance(points[i-1]), exponent);
     }
+    bool equidistant = false;
+    if (params.back()<1e-10) {
+        // the total length is almost zero. Falling back to equidistant parametrization
+        equidistant = true;
+    }
     for (int i = 1; i<points.size(); i++) {
-        double ratio = params[i]/params.back();
+        double ratio;
+        if (equidistant) {
+            ratio=(double)i/(params.size()-1);
+        }
+        else {
+            ratio = params[i]/params.back();
+        }
         params[i] = startParam + ratio*(endParam - startParam);
     }
 
