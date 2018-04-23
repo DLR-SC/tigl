@@ -122,6 +122,11 @@ public:
     // the point is the start point of the profile wire, for zeta = 1.0 the last profile wire point.
     TIGL_EXPORT gp_Pnt GetPoint(double eta, double zeta);
 
+    // Gets the origin (0, 0, 0) of the inner & outer profiles after trafo
+    // These should be a good approximation for the center point
+    TIGL_EXPORT gp_Pnt GetTransformedProfileOriginStart() const;
+    TIGL_EXPORT gp_Pnt GetTransformedProfileOriginEnd() const;
+
     TIGL_EXPORT int GetNumPointsOnYPlane(double eta, double ypos);
     TIGL_EXPORT gp_Pnt GetPointOnYPlane(double eta, double ypos, int pointIndex);
 

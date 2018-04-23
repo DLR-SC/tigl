@@ -785,9 +785,9 @@ void CCPACSWing::BuildGuideCurveWires()
 
     // get inner chord face center of first segment
     CCPACSWingSegment& innerSegment = m_segments.GetSegment(1);
-    sectionCenters[0] = innerSegment.GetChordPoint(0., 0.);  // inner front
-    gp_Pnt back       = innerSegment.GetChordPoint(0., 1.);  // inner back
-    back.BaryCenter(0.5, sectionCenters[0], 0.5);            // inner chord center
+    sectionCenters[0] = innerSegment.GetInnerProfilePoint(0.);  // inner front
+    gp_Pnt back       = innerSegment.GetInnerProfilePoint(1.);  // inner back
+    back.BaryCenter(0.5, sectionCenters[0], 0.5);               // inner chord center
     
     // connect the belonging guide curve segments
     for (int isegment = 1; isegment <= GetSegmentCount(); ++isegment) {
@@ -798,9 +798,9 @@ void CCPACSWing::BuildGuideCurveWires()
         }
 
         // get outer chord face center of current segment
-        sectionCenters[isegment] = segment.GetChordPoint(1., 0.);   // outer front
-        back                     = segment.GetChordPoint(1., 1.);   // outer back
-        back.BaryCenter(0.5, sectionCenters[isegment], 0.5);        // outer chord center
+        sectionCenters[isegment] = segment.GetOuterProfilePoint(0.);   // outer front
+        back                     = segment.GetOuterProfilePoint(1.);   // outer back
+        back.BaryCenter(0.5, sectionCenters[isegment], 0.5);           // outer chord center
 
         CCPACSGuideCurves& segmentCurves = *segment.GetGuideCurves();
         for (int iguide = 1; iguide <=  segmentCurves.GetGuideCurveCount(); ++iguide) {

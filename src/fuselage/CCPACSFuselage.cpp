@@ -494,8 +494,7 @@ void CCPACSFuselage::BuildGuideCurves()
 
     // get center of inner section of first segment
     CCPACSFuselageSegment& innerSegment = m_segments.GetSegment(1);
-    TopoDS_Shape wireOnLoft = innerSegment.getWireOnLoft(0.);
-    sectionCenters[0] = GetCenterOfMass(wireOnLoft);
+    sectionCenters[0] = innerSegment.GetTransformedProfileOriginStart();
     
     // find roots and connect the belonging guide curve segments
     for (int isegment = 1; isegment <= GetSegmentCount(); ++isegment) {
@@ -506,8 +505,7 @@ void CCPACSFuselage::BuildGuideCurves()
         }
 
         // get center of outer section
-        TopoDS_Shape wireOnLoft = segment.getWireOnLoft(1.0);
-        sectionCenters[isegment] = GetCenterOfMass(wireOnLoft);
+        sectionCenters[isegment] = segment.GetTransformedProfileOriginEnd();
 
         CCPACSGuideCurves& segmentCurves = *segment.GetGuideCurves();
         for (int iguide = 1; iguide <=  segmentCurves.GetGuideCurveCount(); ++iguide) {

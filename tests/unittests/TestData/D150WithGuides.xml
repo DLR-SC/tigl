@@ -5256,12 +5256,14 @@
                     <name>GuideCurve_D150_wing_1Segment3ID_TE</name>
                     <guideCurveProfileUID>guideCurveProfileWingTE</guideCurveProfileUID>
                     <fromGuideCurveUID>GuideCurve_D150_wing_1Segment2ID_TE</fromGuideCurveUID>
+					<continuity>C1 from previous</continuity>
                     <toRelativeCircumference>-1.000000</toRelativeCircumference>
                   </guideCurve>
                   <guideCurve uID="GuideCurve_D150_wing_1Segment3ID_LE">
                     <name>GuideCurve_D150_wing_1Segment3ID_LE</name>
                     <guideCurveProfileUID>guideCurveProfileWingLE</guideCurveProfileUID>
                     <fromGuideCurveUID>GuideCurve_D150_wing_1Segment2ID_LE</fromGuideCurveUID>
+					<continuity>C1 from previous</continuity>
                     <toRelativeCircumference>0.000000</toRelativeCircumference>
                   </guideCurve>
                 </guideCurves>
@@ -5275,12 +5277,14 @@
                     <name>GuideCurve_D150_wing_1Segment4ID_TE</name>
                     <guideCurveProfileUID>guideCurveProfileWingTE</guideCurveProfileUID>
                     <fromGuideCurveUID>GuideCurve_D150_wing_1Segment3ID_TE</fromGuideCurveUID>
+					<continuity>C0</continuity>
                     <toRelativeCircumference>-1.000000</toRelativeCircumference>
                   </guideCurve>
                   <guideCurve uID="GuideCurve_D150_wing_1Segment4ID_LE">
                     <name>GuideCurve_D150_wing_1Segment4ID_LE</name>
                     <guideCurveProfileUID>guideCurveProfileWingLE</guideCurveProfileUID>
                     <fromGuideCurveUID>GuideCurve_D150_wing_1Segment3ID_LE</fromGuideCurveUID>
+					<continuity>C1 to previous</continuity>
                     <toRelativeCircumference>0.000000</toRelativeCircumference>
                   </guideCurve>
                 </guideCurves>

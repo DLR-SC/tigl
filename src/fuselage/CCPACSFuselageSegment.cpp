@@ -536,6 +536,15 @@ gp_Pnt CCPACSFuselageSegment::GetPoint(double eta, double zeta)
     return profilePoint;
 }
 
+TIGL_EXPORT gp_Pnt CCPACSFuselageSegment::GetTransformedProfileOriginStart() const
+{
+    return transformProfilePoint(GetFuselage().GetTransformationMatrix(), startConnection, gp_Pnt(0., 0., 0.));
+}
+
+TIGL_EXPORT gp_Pnt CCPACSFuselageSegment::GetTransformedProfileOriginEnd() const
+{
+    return transformProfilePoint(GetFuselage().GetTransformationMatrix(), endConnection, gp_Pnt(0., 0., 0.));
+}
 
 
 // Returns the start profile points as read from TIXI. The points are already transformed.

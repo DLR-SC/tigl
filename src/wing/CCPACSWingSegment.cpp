@@ -909,6 +909,26 @@ bool CCPACSWingSegment::GetIsOn(const gp_Pnt& pnt)
     }
 }
 
+gp_Pnt CCPACSWingSegment::GetInnerProfilePoint(double xsi)  const
+{
+    if (xsi < 0.0 || xsi > 1.0) {
+        throw CTiglError("Parameter xsi not in the range 0.0 <= xsi <= 1.0 in CCPACSWingSegment::GetPointOnInnerProfile", TIGL_ERROR);
+    }
+
+    gp_Pnt untransformed = innerConnection.GetProfile().GetChordPoint(xsi);
+    return transformProfilePoint(wing->GetTransformationMatrix(), innerConnection, untransformed);
+}
+
+gp_Pnt CCPACSWingSegment::GetOuterProfilePoint(double xsi) const
+{
+    if (xsi < 0.0 || xsi > 1.0) {
+        throw CTiglError("Parameter xsi not in the range 0.0 <= xsi <= 1.0 in CCPACSWingSegment::GetPointOnInnerProfile", TIGL_ERROR);
+    }
+
+    gp_Pnt untransformed = outerConnection.GetProfile().GetChordPoint(xsi);
+    return transformProfilePoint(wing->GetTransformationMatrix(), outerConnection, untransformed);
+}
+
 void CCPACSWingSegment::MakeChordSurface() const
 {
     if (surfaceCoordCache) {
