@@ -29,6 +29,49 @@
 #include <math_Matrix.hxx>
 #include <math_Gauss.hxx>
 
+namespace
+{
+
+class helper_function_find
+{
+public:
+    helper_function_find(double val, double tolerance = 1e-15)
+        : _val(val), _tol(tolerance)
+    {}
+
+    // helper function for std::unique
+    bool operator()(double a)
+    {
+        return (fabs(_val - a) < _tol);
+    }
+private:
+    double _val;
+    double _tol;
+};
+
+void insertKnot(double knot, int count, int degree, std::vector<double>& knots, std::vector<int>& mults, double tol=1e-5) {
+    if (knot < knots.front() || knot > knots.back()) {
+        throw tigl::CTiglError("knot out of range");
+    }
+
+    size_t pos = std::find_if(knots.begin(), knots.end(), helper_function_find(knot, tol)) - knots.begin();
+    if (pos >= knots.size()) {
+        // knot not found, insert new one
+        pos = 0;
+        while (knots[pos] < knot) {
+            pos++;
+        }
+        knots.insert(knots.begin() + pos, knot);
+        mults.insert(mults.begin() + pos, std::min(count, degree));
+    }
+    else {
+        // knot found, increase multiplicity
+        mults[pos] = std::min(mults[pos] + count, degree);
+    }
+}
+
+}
+
 namespace tigl
 {
 
@@ -90,13 +133,16 @@ std::vector<double> CTiglBSplineApproxInterp::computeParameters(double alpha) co
     return t;
 }
 
-void CTiglBSplineApproxInterp::computeKnots(int ncp, double umin, double umax, std::vector<double>& knots, std::vector<int>& mults) const
+void CTiglBSplineApproxInterp::computeKnots(int ncp, const std::vector<double>& parms, std::vector<double>& knots, std::vector<int>& mults) const
 {
     int order = m_degree + 1;
     if (ncp < order) {
         throw CTiglError("Number of control points to small!", TIGL_MATH_ERROR);
     }
-    
+
+    double umin = *std::min_element(parms.begin(), parms.end());
+    double umax = *std::max_element(parms.begin(), parms.end());
+
     knots.resize(static_cast<size_t>(ncp - m_degree + 1));
     mults.resize(static_cast<size_t>(ncp - m_degree + 1));
 
@@ -115,6 +161,11 @@ void CTiglBSplineApproxInterp::computeKnots(int ncp, double umin, double umax, s
     // fill multiplicity at end
     knots[N+1] = umax;
     mults[N+1] = order;
+
+    for (std::vector<size_t>::const_iterator it = m_indexOfKinks.begin(); it != m_indexOfKinks.end(); ++it) {
+        size_t idx = *it;
+        insertKnot(parms[idx], m_degree, m_degree, knots, mults, 1e-4);
+    }
 }
 
 CTiglApproxResult CTiglBSplineApproxInterp::FitCurve(const std::vector<double> &initialParms) const
@@ -135,9 +186,7 @@ CTiglApproxResult CTiglBSplineApproxInterp::FitCurve(const std::vector<double> &
     // Compute knots from parameters
     std::vector<double> knots;
     std::vector<int> mults;
-    computeKnots(m_ncp,
-                 *std::min_element(parms.begin(), parms.end()),
-                 *std::max_element(parms.begin(), parms.end()),
+    computeKnots(m_ncp, parms,
                  knots, mults);
 
     TColStd_Array1OfInteger occMults(1, static_cast<Standard_Integer>(mults.size()));
@@ -170,9 +219,7 @@ CTiglApproxResult CTiglBSplineApproxInterp::FitCurveOptimal(const std::vector<do
     // Compute knots from parameters
     std::vector<double> knots;
     std::vector<int> mults;
-    computeKnots(m_ncp,
-                 *std::min_element(parms.begin(), parms.end()),
-                 *std::max_element(parms.begin(), parms.end()),
+    computeKnots(m_ncp, parms,
                  knots, mults);
 
     TColStd_Array1OfInteger occMults(1, static_cast<Standard_Integer>(mults.size()));

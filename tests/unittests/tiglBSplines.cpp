@@ -284,3 +284,16 @@ TEST_F(BSplineInterpolation, ownParms)
 
     StoreResult("TestData/analysis/BSplineInterpolation-ownParms.brep", result.curve);
 }
+
+TEST_F(BSplineInterpolation, tipKink)
+{
+    tigl::CTiglBSplineApproxInterp app(pnts, 31, 3);
+    app.InterpolatePoint(0);
+    app.InterpolatePoint(50, true);
+    app.InterpolatePoint(100);
+    tigl::CTiglApproxResult result = app.FitCurveOptimal();
+    EXPECT_NEAR(0.0, result.curve->Value(parms[0]).Distance(pnts.Value(1)), 1e-10);
+    EXPECT_NEAR(0.0, result.curve->Value(parms[100]).Distance(pnts.Value(101)), 1e-10);
+
+    StoreResult("TestData/analysis/BSplineInterpolation-tipKink.brep", result.curve);
+}

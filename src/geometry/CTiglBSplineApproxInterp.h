@@ -65,7 +65,7 @@ public:
 private:
     ProjectResult projectOnCurve(const gp_Pnt& pnt, const Handle(Geom_Curve)& curve, double inital_Parm) const;
     std::vector<double> computeParameters(double alpha) const;
-    void computeKnots(int ncp, double umin, double umax, std::vector<double>& knots, std::vector<int>& mults) const;
+    void computeKnots(int ncp, const std::vector<double>& params, std::vector<double>& knots, std::vector<int>& mults) const;
 
     CTiglApproxResult solve(const std::vector<double>& params, const TColStd_Array1OfReal& knots, const TColStd_Array1OfInteger& mults) const;
 
