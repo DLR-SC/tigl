@@ -1,0 +1,394 @@
+/*
+* Copyright (C) 2018 German Aerospace Center (DLR/SC)
+*
+* Created: 2019-04-24 Martin Siggel <Martin.Siggel@dlr.de>
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+
+#include "CTiglBSplineApproxInterp.h"
+
+#include <CTiglError.h>
+#include <CTiglBSplineAlgorithms.h>
+
+#include <TColgp_Array1OfPnt.hxx>
+#include <Geom_BSplineCurve.hxx>
+
+#include <algorithm>
+#include <BSplCLib.hxx>
+#include <math_Matrix.hxx>
+#include <math_Gauss.hxx>
+
+namespace tigl
+{
+
+/**
+ * @brief Copies the curve points
+ */
+CTiglBSplineApproxInterp::CTiglBSplineApproxInterp(const TColgp_Array1OfPnt &points, int nControlPoints, int degree)
+    : m_pnts(1, points.Length())
+    , m_indexOfApproximated(static_cast<size_t>(points.Length()))
+    , m_degree(degree)
+    , m_ncp(nControlPoints)
+{
+    for (Standard_Integer i = 0; i < points.Length(); ++i) {
+        size_t idx = static_cast<size_t>(i);
+        m_indexOfApproximated[idx] = idx;
+        m_pnts.SetValue(i + 1, points.Value(points.Lower() + i));
+    }
+}
+
+void CTiglBSplineApproxInterp::InterpolatePoint(size_t pointIndex, bool withKink)
+{
+    std::vector<size_t>::iterator it = std::find(m_indexOfApproximated.begin(), m_indexOfApproximated.end(), pointIndex);
+    if (it == m_indexOfApproximated.end()) {
+        throw CTiglError("Invalid index in CTiglBSplineApproxInterp::InterpolatePoint", TIGL_INDEX_ERROR);
+    }
+    m_indexOfApproximated.erase(it);
+
+    m_indexOfInterpolated.push_back(pointIndex);
+    if (withKink) {
+        m_indexOfKinks.push_back(pointIndex);
+    }
+}
+
+std::vector<double> CTiglBSplineApproxInterp::computeParameters(double alpha) const
+{
+    double sum = 0.0;
+    std::vector<double> t;
+
+    size_t nPoints = static_cast<size_t>(m_pnts.Length());
+    t.resize(nPoints);
+
+    t[0]=0.0;
+    // calc total arc length: dt^2 = dx^2 + dy^2
+    for (size_t i=1; i < nPoints; i++) {
+        Standard_Integer idx = static_cast<Standard_Integer>(i);
+        double len2 = m_pnts.Value(idx).SquareDistance(m_pnts.Value(idx+1));
+        sum += pow(len2, alpha/2.);
+        t[i] = sum;
+    }
+
+    // normalize parameter with maximum
+    double tmax = t[nPoints-1];
+    for (size_t i=1; i < nPoints; i++) {
+        t[i] /= tmax;
+    }
+
+    // reset end value to achieve a better accuracy
+    t[nPoints-1] = 1.0;
+    return t;
+}
+
+void CTiglBSplineApproxInterp::computeKnots(int ncp, double umin, double umax, std::vector<double>& knots, std::vector<int>& mults) const
+{
+    int order = m_degree + 1;
+    if (ncp < order) {
+        throw CTiglError("Number of control points to small!", TIGL_MATH_ERROR);
+    }
+    
+    knots.resize(static_cast<size_t>(ncp - m_degree + 1));
+    mults.resize(static_cast<size_t>(ncp - m_degree + 1));
+
+    // fill multiplicity at start
+    knots[0] = umin;
+    mults[0] = order;
+    
+    // number of knots between the multiplicities
+    size_t N = (static_cast<size_t>(ncp - order));
+    // set uniform knot distribution
+    for (size_t i=1; i <= N; ++i ) {
+        knots[i] = umin + (umax - umin) * double(i)/double(N+1);
+        mults[i] = 1;
+    }
+
+    // fill multiplicity at end
+    knots[N+1] = umax;
+    mults[N+1] = order;
+}
+
+CTiglApproxResult CTiglBSplineApproxInterp::FitCurve(const std::vector<double> &initialParms) const
+{
+    std::vector<double> parms;
+    // compute initial parameters, if initialParms emtpy
+    if (initialParms.empty()) {
+        parms = computeParameters(0.5);
+    }
+    else {
+        parms = initialParms;
+    }
+
+    if (parms.size() != static_cast<size_t>(m_pnts.Length())) {
+        throw CTiglError("Number of parameters don't match number of points");
+    }
+
+    // Compute knots from parameters
+    std::vector<double> knots;
+    std::vector<int> mults;
+    computeKnots(m_ncp,
+                 *std::min_element(parms.begin(), parms.end()),
+                 *std::max_element(parms.begin(), parms.end()),
+                 knots, mults);
+
+    TColStd_Array1OfInteger occMults(1, static_cast<Standard_Integer>(mults.size()));
+    TColStd_Array1OfReal occKnots(1, static_cast<Standard_Integer>(knots.size()));
+    for (size_t i = 0; i < knots.size(); ++i) {
+        Standard_Integer idx = static_cast<Standard_Integer>(i + 1);
+        occKnots.SetValue(idx, knots[i]);
+        occMults.SetValue(idx, mults[i]);
+    }
+    
+    // solve system
+    return solve(parms, occKnots, occMults);
+}
+
+CTiglApproxResult CTiglBSplineApproxInterp::FitCurveOptimal(const std::vector<double> &initialParms, int maxIter) const
+{
+    std::vector<double> parms;
+    // compute initial parameters, if initialParms emtpy
+    if (initialParms.empty()) {
+        parms = computeParameters(0.5);
+    }
+    else {
+        parms = initialParms;
+    }
+
+    if (parms.size() != static_cast<size_t>(m_pnts.Length())) {
+        throw CTiglError("Number of parameters don't match number of points");
+    }
+
+    // Compute knots from parameters
+    std::vector<double> knots;
+    std::vector<int> mults;
+    computeKnots(m_ncp,
+                 *std::min_element(parms.begin(), parms.end()),
+                 *std::max_element(parms.begin(), parms.end()),
+                 knots, mults);
+
+    TColStd_Array1OfInteger occMults(1, static_cast<Standard_Integer>(mults.size()));
+    TColStd_Array1OfReal occKnots(1, static_cast<Standard_Integer>(knots.size()));
+    for (size_t i = 0; i < knots.size(); ++i) {
+        Standard_Integer idx = static_cast<Standard_Integer>(i + 1);
+        occKnots.SetValue(idx, knots[i]);
+        occMults.SetValue(idx, mults[i]);
+    }
+
+    int iteration = 0;
+
+    // solve system
+    CTiglApproxResult result = solve(parms, occKnots, occMults);
+    double old_error = result.error * 2.;
+
+    while(result.error > 0 && (old_error - result.error) / std::max(result.error, 1e-6) > 1e-3 && iteration < maxIter) {
+        old_error = result.error;
+
+        optimizeParameters(result.curve, parms);
+        result = solve(parms, occKnots, occMults);
+
+        iteration++;
+    }
+
+    return result;
+}
+
+ProjectResult CTiglBSplineApproxInterp::projectOnCurve(const gp_Pnt &pnt, const Handle(Geom_Curve) &curve, double inital_Parm) const
+{
+    const int maxIter = 10; // maximum No of iterations
+    const double eps  = 1.0E-6; // accuracy of arc length parameter
+
+    double t = inital_Parm;
+    
+    // newton step
+    double dt = 0;
+
+    double f = 0;
+
+    int iter = 0; // iteration counter
+    do { // Newton iteration to get a better t parameter
+
+        // Get the derivatives of the spline wrt parameter t
+        gp_Vec p   = curve->DN(t, 0);
+        gp_Vec dp  = curve->DN(t, 1);
+        gp_Vec d2p = curve->DN(t, 2);
+        
+
+        // compute objective function and their derivative
+        f = pnt.SquareDistance(p.XYZ());
+
+        double df = (p.XYZ() - pnt.XYZ()).Dot(dp.XYZ());
+        double d2f = (p.XYZ() - pnt.XYZ()).Dot(d2p.XYZ()) + dp.SquareMagnitude();
+
+        // newton iterate
+        dt = -df / d2f;
+        double t_new = t + dt;
+
+        // if parameter out of range reset it to the start value
+        if (t_new < curve->FirstParameter() || t_new > curve->LastParameter()) {
+            t_new = inital_Parm;
+            dt = 0.;
+        }
+        t = t_new;
+
+        iter++;
+    } while (fabs(dt) > eps && iter < maxIter);
+
+    return ProjectResult(t, sqrt(f));
+}
+
+CTiglApproxResult CTiglBSplineApproxInterp::solve(const std::vector<double>& params, const TColStd_Array1OfReal& knots, const TColStd_Array1OfInteger& mults) const
+{
+
+    // compute flat knots to solve system
+    Standard_Integer nFlatKnots = BSplCLib::KnotSequenceLength(mults, m_degree, false);
+    TColStd_Array1OfReal flatKnots(1, nFlatKnots);
+    BSplCLib::KnotSequence(knots, mults, flatKnots);
+
+    Standard_Integer n_apprxmated = static_cast<Standard_Integer>(m_indexOfApproximated.size());
+    Standard_Integer n_intpolated = static_cast<Standard_Integer>(m_indexOfInterpolated.size());
+
+    // Number of control points required
+    Standard_Integer nCtrPnts = flatKnots.Length() - m_degree - 1;
+
+    // Write b vector. These are the points to be approximated
+    TColStd_Array1OfReal appParams(1, n_apprxmated);
+    math_Vector bx(1, n_apprxmated);
+    math_Vector by(1, n_apprxmated);
+    math_Vector bz(1, n_apprxmated);
+
+    Standard_Integer appIndex = 1;
+    for (std::vector<size_t>::const_iterator it_idx = m_indexOfApproximated.begin(); it_idx != m_indexOfApproximated.end(); ++it_idx) {
+        Standard_Integer ipnt = static_cast<Standard_Integer>(*it_idx + 1);
+        const gp_Pnt& p = m_pnts.Value(ipnt);
+        bx(appIndex) = p.X();
+        by(appIndex) = p.Y();
+        bz(appIndex) = p.Z();
+        appParams(appIndex) = params[*it_idx];
+        appIndex++;
+    }
+
+    // Solve constrained linear least squares
+    // min(Ax - b) s.t. Cx = d
+    // Create left hand side block matrix
+    // A.T*A  C.T
+    // C      0
+    math_Matrix A = CTiglBSplineAlgorithms::bsplineBasisMat(m_degree, flatKnots, appParams);
+    math_Matrix At = A.Transposed();
+
+    // Build left hand side of the equation
+    Standard_Integer n_vars = nCtrPnts + n_intpolated;
+    math_Matrix lhs(1, n_vars, 1, n_vars);
+    lhs.Init(0.);
+    lhs.Set(1, nCtrPnts, 1, nCtrPnts, At.Multiplied(A));
+
+    // Set the right hand side:
+    // A.T*b
+    // d
+    math_Vector rhsx(1, n_vars);
+    math_Vector rhsy(1, n_vars);
+    math_Vector rhsz(1, n_vars);
+
+    rhsx.Set(1, nCtrPnts, At.Multiplied(bx));
+    rhsy.Set(1, nCtrPnts, At.Multiplied(by));
+    rhsz.Set(1, nCtrPnts, At.Multiplied(bz));
+
+    if (n_intpolated > 0) {
+        // Write d vector. These are the points the should be interpolated
+        TColStd_Array1OfReal interpParams(1, n_intpolated);
+        math_Vector dx(1, n_intpolated);
+        math_Vector dy(1, n_intpolated);
+        math_Vector dz(1, n_intpolated);
+        Standard_Integer intpIndex = 1;
+        for (std::vector<size_t>::const_iterator it_idx = m_indexOfInterpolated.begin(); it_idx != m_indexOfInterpolated.end(); ++it_idx) {
+            Standard_Integer ipnt = static_cast<Standard_Integer>(*it_idx + 1);
+            const gp_Pnt& p = m_pnts.Value(ipnt);
+            dx(intpIndex) = p.X();
+            dy(intpIndex) = p.Y();
+            dz(intpIndex) = p.Z();
+            interpParams(intpIndex) = params[*it_idx];
+            intpIndex++;
+        }
+
+        math_Matrix C = CTiglBSplineAlgorithms::bsplineBasisMat(m_degree, flatKnots, interpParams);
+        math_Matrix Ct = C.Transposed();
+
+        lhs.Set(1, nCtrPnts, nCtrPnts + 1, nCtrPnts + n_intpolated, Ct);
+        lhs.Set(nCtrPnts + 1,  nCtrPnts + n_intpolated, 1, nCtrPnts, C);
+
+        rhsx.Set(nCtrPnts + 1, n_vars, dx);
+        rhsy.Set(nCtrPnts + 1, n_vars, dy);
+        rhsz.Set(nCtrPnts + 1, n_vars, dz);
+    }
+    
+    math_Gauss solver(lhs);
+
+    math_Vector cp_x(1, n_vars);
+    math_Vector cp_y(1, n_vars);
+    math_Vector cp_z(1 ,n_vars);
+
+    solver.Solve(rhsx, cp_x);
+    if (!solver.IsDone()) {
+        throw CTiglError("Singular Matrix", TIGL_MATH_ERROR);
+    }
+
+    solver.Solve(rhsy, cp_y);
+    if (!solver.IsDone()) {
+        throw CTiglError("Singular Matrix", TIGL_MATH_ERROR);
+    }
+
+    solver.Solve(rhsz, cp_z);
+    if (!solver.IsDone()) {
+        throw CTiglError("Singular Matrix", TIGL_MATH_ERROR);
+    }
+
+    TColgp_Array1OfPnt poles(1, nCtrPnts);
+    for (Standard_Integer icp = 1; icp <= nCtrPnts; ++icp) {
+        gp_Pnt pnt(cp_x.Value(icp), cp_y.Value(icp), cp_z.Value(icp));
+        poles.SetValue(icp, pnt);
+    }
+
+    CTiglApproxResult result;
+    result.curve = new Geom_BSplineCurve(poles, knots, mults, m_degree, false);
+
+    // compute error
+    double max_error = 0.;
+    for (std::vector<size_t>::const_iterator it_idx = m_indexOfApproximated.begin(); it_idx != m_indexOfApproximated.end(); ++it_idx) {
+        Standard_Integer ipnt = static_cast<Standard_Integer>(*it_idx + 1);
+        const gp_Pnt& p = m_pnts.Value(ipnt);
+        double par = params[*it_idx];
+
+        double error = result.curve->Value(par).Distance(p);
+        max_error = std::max(max_error, error);
+    }
+    result.error = max_error;
+
+    return result;
+}
+
+/**
+ * @brief Recalculates the curve parameters t_k after the
+ * control points are fitted to achieve an even better fit.
+ */
+void CTiglBSplineApproxInterp::optimizeParameters(const Handle_Geom_Curve &curve, std::vector<double> &m_t) const
+{
+    // optimize each parameter by finding it's position on the curve
+    for (std::vector<size_t>::const_iterator it_idx = m_indexOfApproximated.begin(); it_idx != m_indexOfApproximated.end(); ++it_idx) {
+        size_t idx = *it_idx;
+
+        ProjectResult res = projectOnCurve(m_pnts.Value(static_cast<Standard_Integer>(idx + 1)), curve, m_t[idx]);
+
+        // store optimised parameter
+        m_t[idx] = res.parameter;
+    }
+}
+
+} // namespace tigl
