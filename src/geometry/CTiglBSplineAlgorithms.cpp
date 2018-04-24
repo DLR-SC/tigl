@@ -1277,4 +1277,20 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::createGordonSurfaceGeneral(c
     Handle(Geom_BSplineSurface) gordonSurface = CTiglBSplineAlgorithms::createGordonSurface(reparam_splines_u, reparam_splines_v, av_intersection_params_u, av_intersection_params_v);
     return gordonSurface;
 }
+
+math_Matrix CTiglBSplineAlgorithms::bsplineBasisMat(int degree, const TColStd_Array1OfReal& knots, const TColStd_Array1OfReal& params)
+{
+    Standard_Integer ncp = knots.Length() - degree - 1;
+    math_Matrix mx(1, params.Length(), 1, ncp);
+    mx.Init(0.);
+    math_Matrix bspl_basis(1, 1, 1, degree+1);
+    bspl_basis.Init(0.);
+    for (Standard_Integer iparm = 1; iparm <= params.Length(); ++iparm) {
+        Standard_Integer basis_start_index = 0;
+        BSplCLib::EvalBsplineBasis(1, 0, degree+1, knots, params.Value(iparm), basis_start_index, bspl_basis);
+        mx.Set(iparm, iparm, basis_start_index, basis_start_index + degree, bspl_basis);
+    }
+    return mx;
+}
+
 } // namespace tigl

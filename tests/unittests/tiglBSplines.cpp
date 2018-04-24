@@ -23,6 +23,15 @@
 #include "CTiglError.h"
 #include <Geom_BSplineCurve.hxx>
 #include <GeomAPI_ProjectPointOnCurve.hxx>
+#include <TColgp_Array1OfPnt.hxx>
+#include "CTiglBSplineApproxInterp.h"
+#include "stringtools.h"
+#include "UniquePtr.h"
+#include <BRepTools.hxx>
+#include <BRepBuilderAPI_MakeVertex.hxx>
+#include <BRepBuilderAPI_MakeEdge.hxx>
+#include <BRep_Builder.hxx>
+#include <TopoDS_Compound.hxx>
 
 TEST(BSplines, pointsToLinear)
 {
@@ -156,4 +165,122 @@ TEST(BSplines, symmetricBSpline_invalidInput2)
     tigl::CTiglSymetricSplineBuilder builder(points);
 
     ASSERT_THROW(curve = builder.GetBSpline(), tigl::CTiglError);
+}
+
+class BSplineInterpolation : public ::testing::Test
+{
+protected:
+    BSplineInterpolation()
+        : pnts(1, 101)
+    {}
+
+    void SetUp() OVERRIDE
+    {
+        // load in the airfoil point example
+        std::string line;
+        std::ifstream file ("TestData/airfoil_points.txt");
+        Standard_Integer irow = 1;
+        while(!file.eof()) {
+            std::getline(file, line);
+            std::vector<std::string> cols = tigl::split_string(line, ' ');
+            if (cols.size() != 8) {
+                continue;
+            }
+            double px, py, pz, t;
+            tigl::from_string<>(cols[0], px);
+            tigl::from_string<>(cols[2], py);
+            tigl::from_string<>(cols[4], pz);
+            tigl::from_string<>(cols[7], t);
+            pnts.SetValue(irow, gp_Pnt(px, py, pz));
+            parms.push_back(t);
+            irow++;
+        }
+        ASSERT_EQ(parms.size(), pnts.Length());
+    }
+
+    void TearDown() OVERRIDE
+    {
+    }
+
+    void StoreResult(const std::string& filename, const Handle(Geom_BSplineCurve)& curve)
+    {
+        TopoDS_Compound c;
+        BRep_Builder b;
+        b.MakeCompound(c);
+
+        TopoDS_Shape e = BRepBuilderAPI_MakeEdge(curve);
+        b.Add(c, e);
+
+        for (Standard_Integer i = pnts.Lower(); i <= pnts.Upper(); ++i) {
+            const gp_Pnt& p = pnts.Value(i);
+            TopoDS_Shape v = BRepBuilderAPI_MakeVertex(p);
+            b.Add(c, v);
+        }
+
+        BRepTools::Write(c, filename.c_str());
+    }
+
+    std::vector<double> parms;
+    TColgp_Array1OfPnt pnts;
+};
+
+TEST_F(BSplineInterpolation, approxAndInterpolate)
+{
+    tigl::CTiglBSplineApproxInterp app(pnts, 30, 3);
+    app.InterpolatePoint(0);
+    app.InterpolatePoint(50);
+    app.InterpolatePoint(100);
+    tigl::CTiglApproxResult result = app.FitCurve(parms);
+    // Value from different splinelib implementation
+    EXPECT_NEAR(0.01317089, result.error, 1e-5);
+    EXPECT_NEAR(0.0, result.curve->Value(parms[0]).Distance(pnts.Value(1)), 1e-10);
+    EXPECT_NEAR(0.0, result.curve->Value(parms[50]).Distance(pnts.Value(51)), 1e-10);
+    EXPECT_NEAR(0.0, result.curve->Value(parms[100]).Distance(pnts.Value(101)), 1e-10);
+
+    result = app.FitCurveOptimal(parms);
+    EXPECT_NEAR(0.000393704, result.error, 1e-5);
+    EXPECT_NEAR(0.0, result.curve->Value(parms[0]).Distance(pnts.Value(1)), 1e-10);
+    EXPECT_NEAR(0.0, result.curve->Value(parms[50]).Distance(pnts.Value(51)), 1e-10);
+    EXPECT_NEAR(0.0, result.curve->Value(parms[100]).Distance(pnts.Value(101)), 1e-10);
+
+    StoreResult("TestData/analysis/BSplineInterpolation-approxAndInterpolate.brep", result.curve);
+}
+
+TEST_F(BSplineInterpolation, approxOnly)
+{
+    tigl::CTiglBSplineApproxInterp app(pnts, 15, 3);
+    tigl::CTiglApproxResult result = app.FitCurve(parms);
+    // Value from different splinelib implementation
+    EXPECT_NEAR(0.01898, result.error, 1e-5);
+
+    result = app.FitCurveOptimal(parms);
+    EXPECT_NEAR(0.00238, result.error, 1e-5);
+
+    StoreResult("TestData/analysis/BSplineInterpolation-approxOnly.brep", result.curve);
+}
+
+TEST_F(BSplineInterpolation, gordonIssue)
+{
+    tigl::CTiglBSplineApproxInterp app(pnts, 31, 3);
+    app.InterpolatePoint(0);
+    app.InterpolatePoint(100);
+    tigl::CTiglApproxResult result = app.FitCurve(parms);
+    EXPECT_NEAR(0.0, result.curve->Value(parms[0]).Distance(pnts.Value(1)), 1e-10);
+    EXPECT_NEAR(0.0, result.curve->Value(parms[100]).Distance(pnts.Value(101)), 1e-10);
+    EXPECT_NEAR(0.0055298, result.error, 1e-5);
+
+    StoreResult("TestData/analysis/BSplineInterpolation-gordonIssue.brep", result.curve);
+}
+
+TEST_F(BSplineInterpolation, ownParms)
+{
+    tigl::CTiglBSplineApproxInterp app(pnts, 31, 3);
+    app.InterpolatePoint(0);
+    app.InterpolatePoint(100);
+    tigl::CTiglApproxResult result = app.FitCurve(parms);
+    result = app.FitCurveOptimal();
+    EXPECT_NEAR(0.0, result.curve->Value(parms[0]).Distance(pnts.Value(1)), 1e-10);
+    EXPECT_NEAR(0.0, result.curve->Value(parms[100]).Distance(pnts.Value(101)), 1e-10);
+
+    StoreResult("TestData/analysis/BSplineInterpolation-ownParms.brep", result.curve);
 }
