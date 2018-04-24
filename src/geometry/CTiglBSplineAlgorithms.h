@@ -64,6 +64,14 @@ public:
      */
     TIGL_EXPORT static Handle(TColStd_HArray1OfReal) computeParamsBSplineCurve(const Handle(TColgp_HArray1OfPnt)& points, double alpha=0.5);
 
+    /**
+     * @brief Computes a full blown bspline basis matrix of size (params.Length(), flatKnots.Length() + degree + 1)
+     * @param degree    Degree of the bspline
+     * @param flatKnots Flatted know vector
+     * @param params    Parameters of B-Spline evaluation
+     * @return          The B-spline matrix
+     */
+    TIGL_EXPORT static math_Matrix bsplineBasisMat(int degree, const TColStd_Array1OfReal& flatKnots, const TColStd_Array1OfReal& params);
 
     /**
      * @brief computeParamsBSplineSurf:
