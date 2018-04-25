@@ -68,11 +68,6 @@ CCPACSWingCSStructure& CCPACSWingShell::GetStructure()
     return *m_parent;
 }
 
-void CCPACSWingShell::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string &shellXPath)
-{
-    generated::CPACSWingShell::ReadCPACS(tixiHandle, shellXPath);
-}
-
 void CCPACSWingShell::Invalidate()
 {
     geometryCache = boost::none;

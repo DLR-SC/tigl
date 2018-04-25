@@ -55,8 +55,8 @@ TopoDS_Edge CTiglFuselageSegmentGuidecurveBuilder::BuildGuideCurve(CCPACSGuideCu
     // get chord lengths for inner profile in word coordinates
     TopoDS_Wire innerChordLineWire = TopoDS::Wire(transformFuselageProfileGeometry(m_segment.GetFuselage().GetTransformationMatrix(), startConnection, startProfile.GetDiameterWire()));
     TopoDS_Wire outerChordLineWire = TopoDS::Wire(transformFuselageProfileGeometry(m_segment.GetFuselage().GetTransformationMatrix(), endConnection, endProfile.GetDiameterWire()));
-    double innerScale = GetWireLength(innerChordLineWire);
-    double outerScale = GetWireLength(outerChordLineWire);
+    double innerScale = GetLength(innerChordLineWire);
+    double outerScale = GetLength(outerChordLineWire);
 
 
     double fromRelativeCircumference;

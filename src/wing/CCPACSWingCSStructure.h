@@ -20,8 +20,6 @@
 #define CCPACSWINGCSSTRUCTURE_H
 
 #include "generated/CPACSWingComponentSegmentStructure.h"
-#include "tigl_internal.h"
-#include "CCPACSWingShell.h"
 #include "CTiglWingStructureReference.h"
 
 

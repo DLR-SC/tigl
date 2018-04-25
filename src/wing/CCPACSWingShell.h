@@ -53,8 +53,6 @@ public:
     TIGL_EXPORT const CCPACSWingCSStructure& GetStructure() const;
     TIGL_EXPORT CCPACSWingCSStructure& GetStructure();
 
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& shellXPath);
-
     TIGL_EXPORT void Invalidate();
     TIGL_EXPORT bool IsValid() const;
 

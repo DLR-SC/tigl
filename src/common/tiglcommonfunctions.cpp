@@ -122,13 +122,13 @@ namespace
 } // anonymous namespace
 
 // calculates a wire's circumference
-Standard_Real GetWireLength(const TopoDS_Wire& wire)
+Standard_Real GetLength(const TopoDS_Wire& wire)
 {
     BRepAdaptor_CompCurve aCompoundCurve(wire, Standard_True);
     return GCPnts_AbscissaPoint::Length( aCompoundCurve );
 }
 
-Standard_Real GetEdgeLength(const TopoDS_Edge &edge)
+Standard_Real GetLength(const TopoDS_Edge &edge)
 {
     Standard_Real umin, umax;
     Handle(Geom_Curve) curve = BRep_Tool::Curve(edge, umin, umax);
@@ -281,7 +281,7 @@ Standard_Real ProjectPointOnWire(const TopoDS_Wire& wire, gp_Pnt p)
     }
 
     // return relative coordinate
-    double normalizedLength = partLength/GetWireLength(wire);
+    double normalizedLength = partLength/GetLength(wire);
     if (normalizedLength > 1.0) {
         normalizedLength = 1.0;
     }

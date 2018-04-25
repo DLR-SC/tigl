@@ -53,8 +53,8 @@ CCPACSWingProfileGetPointAlgo::CCPACSWingProfileGetPointAlgo (const TopTools_Seq
         throw CTiglError("CCPACSWingProfileGetPointAlgo: Separation of upper and lower profiles failed", TIGL_ERROR);
     }
 
-    lowerWireLength = GetEdgeLength(lowerWire);
-    upperWireLength = GetEdgeLength(upperWire);
+    lowerWireLength = GetLength(lowerWire);
+    upperWireLength = GetLength(upperWire);
 }
 
 void CCPACSWingProfileGetPointAlgo::GetPointTangent(const double& alpha, gp_Pnt& point, gp_Vec& tangent)

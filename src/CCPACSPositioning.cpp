@@ -83,7 +83,7 @@ void CCPACSPositioning::Invalidate()
 }
 
 // Read CPACS segment elements
-void CCPACSPositioning::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& positioningXPath)
+void CCPACSPositioning::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& positioningXPath)
 {
     generated::CPACSPositioning::ReadCPACS(tixiHandle, positioningXPath);
     Update();

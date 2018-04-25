@@ -58,7 +58,7 @@ public:
     TIGL_EXPORT void Invalidate();
 
     // Read CPACS wing elements
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & wingXPath);
+    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& wingXPath) OVERRIDE;
 
     TIGL_EXPORT void SetUID(const std::string& uid) OVERRIDE;
 

@@ -214,7 +214,7 @@ void CCPACSWingComponentSegment::Update()
 }
 
 // Read CPACS segment elements
-void CCPACSWingComponentSegment::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& segmentXPath)
+void CCPACSWingComponentSegment::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& segmentXPath)
 {
     Cleanup();
     generated::CPACSComponentSegment::ReadCPACS(tixiHandle, segmentXPath);
@@ -1093,7 +1093,7 @@ MaterialList CCPACSWingComponentSegment::GetMaterials(double eta, double xsi, Ti
         for (int i = 1; i <= ncells; ++i){
             CCPACSWingCell& cell = shell->GetCell(i);
 
-            if (cell.IsInside(eta,xsi)) {
+            if (cell.IsInside(eta, xsi)) {
                 list.push_back(&(cell.GetMaterial()));
             }
         }

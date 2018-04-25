@@ -52,7 +52,7 @@ public:
     TIGL_EXPORT void SetRib(const std::string& ribUid, int ribNumber);
 
 protected:
-    void invalidateParent();
+    void InvalidateParent();
 };
 
 } // end namespace tigl

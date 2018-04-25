@@ -51,13 +51,20 @@ public:
     TIGL_EXPORT CTiglUIDManager();
 
     TIGL_EXPORT bool IsUIDRegistered(const std::string& uid) const;
+    TIGL_EXPORT bool IsUIDRegistered(const std::string& uid, const std::type_info& typeInfo) const;
+
+    template <typename T>
+    bool IsUIDRegistered(const std::string& uid) const
+    {
+        return IsUIDRegistered(uid, typeid(T));
+    }
 
     TIGL_EXPORT void RegisterObject(const std::string& uid, void* object, const std::type_info& typeInfo);
 
     template<typename T>
     void RegisterObject(const std::string& uid, T& object)
     {
-        RegisterObject(uid, &object, typeid(object));
+        RegisterObject(uid, &object, typeid(object)); // typeid(T) may yield a base class of object
     }
 
     TIGL_EXPORT TypedPtr ResolveObject(const std::string& uid) const;

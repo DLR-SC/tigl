@@ -59,8 +59,8 @@ TopoDS_Edge CTiglWingSegmentGuidecurveBuilder::BuildGuideCurve(CCPACSGuideCurve 
     // get chord lengths for inner profile in word coordinates
     TopoDS_Wire innerChordLineWire = TopoDS::Wire(transformWingProfileGeometry(wingTransform, innerConnection, innerProfile.GetChordLineWire()));
     TopoDS_Wire outerChordLineWire = TopoDS::Wire(transformWingProfileGeometry(wingTransform, outerConnection, outerProfile.GetChordLineWire()));
-    double innerScale = GetWireLength(innerChordLineWire);
-    double outerScale = GetWireLength(outerChordLineWire);
+    double innerScale = GetLength(innerChordLineWire);
+    double outerScale = GetLength(outerChordLineWire);
 
 
     double fromRelativeCircumference;

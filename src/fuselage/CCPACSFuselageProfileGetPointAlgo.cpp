@@ -50,7 +50,7 @@ CCPACSFuselageProfileGetPointAlgo::CCPACSFuselageProfileGetPointAlgo (const TopT
     catch(...) {
         throw CTiglError("CCPACSFuselageProfileGetPointAlgo: Conversion of shape to wire failed", TIGL_ERROR);
     }
-    wireLength = GetWireLength(wire);
+    wireLength = GetLength(wire);
 }
 
 void CCPACSFuselageProfileGetPointAlgo::GetPointTangent(const double& alpha, gp_Pnt& point, gp_Vec& tangent)

@@ -94,8 +94,8 @@ public:
 private:
     void unregisterShape()
     {
-        if (!m_uid.empty() && m_uidMgr && m_uidMgr->HasGeometricComponent(GetDefaultedUID())) {
-            m_uidMgr->RemoveGeometricComponent(GetDefaultedUID());
+        if (!m_uid.empty() && m_uidMgr) {
+            m_uidMgr->TryRemoveGeometricComponent(GetDefaultedUID());
         }
     }
 
