@@ -119,6 +119,7 @@ namespace
 
         double _tol;
     };
+
 } // anonymous namespace
 
 // calculates a wire's circumference
@@ -1455,4 +1456,39 @@ bool IsPointInsideShape(const TopoDS_Shape &solid, gp_Pnt point)
     algo.Perform(point, 1e-3);
 
     return ((algo.State() == TopAbs_IN) != shapeIsReversed ) || (algo.State() == TopAbs_ON);
+}
+
+std::vector<double> LinspaceWithBreaks(double umin, double umax, size_t n_values, const std::vector<double>& breaks)
+{
+    double du = (umax - umin) / static_cast<double>(n_values - 1);
+
+    std::vector<double> result(n_values);
+    for (int i = 0; i < n_values; ++i) {
+        result[i] = i * du + umin;
+    }
+
+    // now insert the break
+
+    double eps = 0.3;
+    // remove points, that are closer to each break point than du*eps
+    for (std::vector<double>::const_iterator it = breaks.begin(); it != breaks.end(); ++it) {
+        double breakpoint = *it;
+        std::vector<double>::iterator pos = std::find_if(result.begin(), result.end(), IsInsideTolerance(breakpoint, du*eps));
+        if (pos != result.end()) {
+            // point found, replace it
+            *pos = breakpoint;
+        }
+        else {
+            // find closest element
+            pos = std::find_if(result.begin(), result.end(), IsInsideTolerance(breakpoint, du/2.));
+            if (*pos > breakpoint) {
+                result.insert(pos, breakpoint);
+            }
+            else {
+                result.insert(pos+1, breakpoint);
+            }
+        }
+    }
+
+    return result;
 }

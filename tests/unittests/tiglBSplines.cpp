@@ -202,7 +202,7 @@ protected:
     {
     }
 
-    void StoreResult(const std::string& filename, const Handle(Geom_BSplineCurve)& curve)
+    void StoreResult(const std::string& filename, const Handle(Geom_BSplineCurve)& curve, const TColgp_Array1OfPnt& pt)
     {
         TopoDS_Compound c;
         BRep_Builder b;
@@ -211,8 +211,8 @@ protected:
         TopoDS_Shape e = BRepBuilderAPI_MakeEdge(curve);
         b.Add(c, e);
 
-        for (Standard_Integer i = pnts.Lower(); i <= pnts.Upper(); ++i) {
-            const gp_Pnt& p = pnts.Value(i);
+        for (Standard_Integer i = pt.Lower(); i <= pt.Upper(); ++i) {
+            const gp_Pnt& p = pt.Value(i);
             TopoDS_Shape v = BRepBuilderAPI_MakeVertex(p);
             b.Add(c, v);
         }
@@ -243,7 +243,7 @@ TEST_F(BSplineInterpolation, approxAndInterpolate)
     EXPECT_NEAR(0.0, result.curve->Value(parms[50]).Distance(pnts.Value(51)), 1e-10);
     EXPECT_NEAR(0.0, result.curve->Value(parms[100]).Distance(pnts.Value(101)), 1e-10);
 
-    StoreResult("TestData/analysis/BSplineInterpolation-approxAndInterpolate.brep", result.curve);
+    StoreResult("TestData/analysis/BSplineInterpolation-approxAndInterpolate.brep", result.curve, pnts);
 }
 
 TEST_F(BSplineInterpolation, approxOnly)
@@ -256,7 +256,7 @@ TEST_F(BSplineInterpolation, approxOnly)
     result = app.FitCurveOptimal(parms);
     EXPECT_NEAR(0.00238, result.error, 1e-5);
 
-    StoreResult("TestData/analysis/BSplineInterpolation-approxOnly.brep", result.curve);
+    StoreResult("TestData/analysis/BSplineInterpolation-approxOnly.brep", result.curve, pnts);
 }
 
 TEST_F(BSplineInterpolation, gordonIssue)
@@ -269,7 +269,7 @@ TEST_F(BSplineInterpolation, gordonIssue)
     EXPECT_NEAR(0.0, result.curve->Value(parms[100]).Distance(pnts.Value(101)), 1e-10);
     EXPECT_NEAR(0.0055298, result.error, 1e-5);
 
-    StoreResult("TestData/analysis/BSplineInterpolation-gordonIssue.brep", result.curve);
+    StoreResult("TestData/analysis/BSplineInterpolation-gordonIssue.brep", result.curve, pnts);
 }
 
 TEST_F(BSplineInterpolation, ownParms)
@@ -282,7 +282,7 @@ TEST_F(BSplineInterpolation, ownParms)
     EXPECT_NEAR(0.0, result.curve->Value(parms[0]).Distance(pnts.Value(1)), 1e-10);
     EXPECT_NEAR(0.0, result.curve->Value(parms[100]).Distance(pnts.Value(101)), 1e-10);
 
-    StoreResult("TestData/analysis/BSplineInterpolation-ownParms.brep", result.curve);
+    StoreResult("TestData/analysis/BSplineInterpolation-ownParms.brep", result.curve, pnts);
 }
 
 TEST_F(BSplineInterpolation, tipKink)
@@ -295,5 +295,40 @@ TEST_F(BSplineInterpolation, tipKink)
     EXPECT_NEAR(0.0, result.curve->Value(parms[0]).Distance(pnts.Value(1)), 1e-10);
     EXPECT_NEAR(0.0, result.curve->Value(parms[100]).Distance(pnts.Value(101)), 1e-10);
 
-    StoreResult("TestData/analysis/BSplineInterpolation-tipKink.brep", result.curve);
+    StoreResult("TestData/analysis/BSplineInterpolation-tipKink.brep", result.curve, pnts);
+}
+
+TEST_F(BSplineInterpolation, tipKink2)
+{
+    std::vector<double> parms2;
+    parms2.push_back(0. / 4.);
+    parms2.push_back(0.5 / 4.);
+    parms2.push_back(1.0 / 4.);
+    parms2.push_back(1.5 / 4.);
+    parms2.push_back(2.0 / 4.);
+    parms2.push_back(2.5 / 4.);
+    parms2.push_back(3.0 / 4.);
+    parms2.push_back(3.5 / 4.);
+    parms2.push_back(4.0 / 4.);
+
+    TColgp_Array1OfPnt pnt2(1, 9);
+    pnt2.SetValue(1, gp_Pnt(0., 0., 0.));
+    pnt2.SetValue(2, gp_Pnt(0.5, 0., -0.2));
+    pnt2.SetValue(3, gp_Pnt(1.0, 0., 0.));
+    pnt2.SetValue(4, gp_Pnt(0.8, 0., 0.5));
+    pnt2.SetValue(5, gp_Pnt(1.0, 0., 1.0));
+    pnt2.SetValue(6, gp_Pnt(0.5, 0., 1.2));
+    pnt2.SetValue(7, gp_Pnt(0.0, 0., 1.0));
+    pnt2.SetValue(8, gp_Pnt(0.2, 0., 0.5));
+    pnt2.SetValue(9, gp_Pnt(0., 0., 0.));
+
+    tigl::CTiglBSplineApproxInterp app(pnt2, 4, 2);
+    app.InterpolatePoint(0);
+    app.InterpolatePoint(2, true);
+    app.InterpolatePoint(4, true);
+    app.InterpolatePoint(6, true);
+    app.InterpolatePoint(8);
+    tigl::CTiglApproxResult result = app.FitCurve(parms2);
+
+    StoreResult("TestData/analysis/BSplineInterpolation-tipKink2.brep", result.curve, pnt2);
 }
