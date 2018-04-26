@@ -41,6 +41,22 @@
 
 typedef std::map<std::string, PNamedShape> ShapeMap;
 
+// helper function for std::find
+struct IsInsideTolerance
+{
+    IsInsideTolerance(double value, double tolerance = 1e-15)
+        : _a(value), _tol(tolerance)
+    {}
+
+    bool operator()(double v)
+    {
+        return (fabs(_a - v) < _tol);
+    }
+
+    double _a;
+    double _tol;
+};
+
 // calculates a wire's circumfence
 TIGL_EXPORT Standard_Real GetLength(const TopoDS_Wire& wire);
 
@@ -243,5 +259,10 @@ inline double Radians(double degree)
 {
     return degree / 180. * M_PI;
 }
+
+// Creates a linear spaces array but with some additional breaking points
+// If the breaking points are very close to a point, the point will be replaced
+// Else, the breaking point will be inserted
+TIGL_EXPORT std::vector<double> LinspaceWithBreaks(double umin, double umax, size_t n_values, const std::vector<double>& breaks);
 
 #endif // TIGLCOMMONFUNCTIONS_H

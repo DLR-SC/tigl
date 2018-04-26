@@ -20,8 +20,9 @@
 #include "CTiglCurveNetworkSorter.h"
 #include "CTiglError.h"
 #include "CSharedPtr.h"
-#include "CTiglBSplineFit.h"
+#include "CTiglBSplineApproxInterp.h"
 #include "to_string.h"
+#include "tiglcommonfunctions.h"
 
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
@@ -717,6 +718,10 @@ Handle(Geom_BSplineCurve) CTiglBSplineAlgorithms::reparametrizeBSplineContinuous
                                                                                          const TColStd_Array1OfReal& new_parameters,
                                                                                          unsigned int n_control_pnts)
 {
+    if (old_parameters.Length() != new_parameters.Length()) {
+        throw CTiglError("parameter sizes dont match");
+    }
+
     // create a B-spline as a function for reparametrization
     Handle(TColgp_HArray1OfPnt2d) old_parameters_pnts = new TColgp_HArray1OfPnt2d(1, old_parameters.Length());
     for (int parameter_idx = 1; parameter_idx <= old_parameters.Length(); ++parameter_idx) {
@@ -732,38 +737,43 @@ Handle(Geom_BSplineCurve) CTiglBSplineAlgorithms::reparametrizeBSplineContinuous
     interpolationObject.Perform();
 
     // check that interpolation was successful
-    assert(interpolationObject.IsDone());
+    if (!interpolationObject.IsDone()) {
+        throw CTiglError("Cannot reparametrize", TIGL_MATH_ERROR);
+    }
 
     Handle(Geom2d_BSplineCurve) reparametrizing_spline = interpolationObject.Curve();
 
-    int rep_points = std::max(static_cast<unsigned int>(101), n_control_pnts+1);
+    // Create a vector of parameters including the intersection parameters
+    std::vector<double> breaks;
+    for (Standard_Integer i = new_parameters.Lower() + 1; i < new_parameters.Upper(); ++i) {
+        breaks.push_back(new_parameters.Value(i));
+    }
+    std::vector<double> new_params_std = LinspaceWithBreaks(new_parameters(new_parameters.Lower()),
+                                                            new_parameters(new_parameters.Upper()),
+                                                            std::max(static_cast<unsigned int>(101), n_control_pnts*2),
+                                                            breaks);
 
-    TColStd_Array1OfReal t(1, rep_points);
-    for (int i = 1; i <= rep_points; ++i) {
-        t(i) = (i - 1)/double(rep_points-1) * (new_parameters(new_parameters.Length()) - new_parameters(1)) + new_parameters(1);
+    // Compute points on spline at the new parameters
+    // Those will be approximated later on
+    TColgp_Array1OfPnt points(1, static_cast<Standard_Integer>(new_params_std.size()));
+    for (int i = 1; i <= new_params_std.size(); ++i) {
+        double oldParameter = reparametrizing_spline->Value(new_params_std[static_cast<Standard_Integer>(i-1)]).X();
+        points(i) = spline->Value(oldParameter);
     }
 
-    TColStd_Array1OfReal old_t(1, t.Length());
-    for (int i = 1; i <= t.Length(); ++i) {
-        gp_Pnt2d old_t_pnt = reparametrizing_spline->Value(t(i));
-        old_t(i) = old_t_pnt.X();
+    // Create the new spline as a interpolation of the old one
+    CTiglBSplineApproxInterp approximationObj(points, n_control_pnts, 3);
+
+    // Interpolate points at breaking parameters (required for gordon surface)
+    for (Standard_Integer iparm = new_parameters.Lower(); iparm <= new_parameters.Upper(); ++iparm) {
+        double thebreak = new_parameters.Value(iparm);
+        size_t idx = std::find_if(new_params_std.begin(), new_params_std.end(), IsInsideTolerance(thebreak)) - new_params_std.begin();
+        approximationObj.InterpolatePoint(idx);
     }
 
-    TColgp_Array1OfPnt points(1, old_t.Length());
-    for (int i = 1; i <= t.Length(); ++i) {
-        points(i) = spline->Value(old_t(i));
-    }
+    CTiglApproxResult result = approximationObj.FitCurveOptimal(new_params_std);
+    Handle(Geom_BSplineCurve) reparametrized_spline = result.curve;
 
-    // type conversion for new parameters t
-    std::vector<double> t_vector;
-    for (int parameter_idx = 1; parameter_idx <= t.Length(); ++parameter_idx) {
-        t_vector.push_back(t(parameter_idx));
-    }
-
-    BSplineFit approximationObj(3, n_control_pnts);
-    approximationObj.Fit(points, t_vector);
-
-    Handle(Geom_BSplineCurve) reparametrized_spline = approximationObj.Curve();
     assert(!reparametrized_spline.IsNull());
 
     return reparametrized_spline;
@@ -1196,6 +1206,9 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::createGordonSurfaceGeneral(c
     for(std::vector<Handle(Geom_BSplineCurve)>::const_iterator it = guides.begin(); it != guides.end(); ++it) {
         max_cp_v = std::max(max_cp_v, (*it)->NbPoles());
     }
+    // we want to use at least 30 control points to be able to reparametrize the geometry properly
+    max_cp_u = std::max(30, max_cp_u + 10);
+    max_cp_v = std::max(30, max_cp_v + 10);
 
 
     // reparametrize u-directional B-splines
@@ -1226,7 +1239,7 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::createGordonSurfaceGeneral(c
         }
 
 
-        Handle(Geom_BSplineCurve) reparam_spline_u = CTiglBSplineAlgorithms::reparametrizeBSplineContinuouslyApprox(profiles[spline_u_idx], old_parameters, average_intersection_params_u, max_cp_u*2 + 1);
+        Handle(Geom_BSplineCurve) reparam_spline_u = CTiglBSplineAlgorithms::reparametrizeBSplineContinuouslyApprox(profiles[spline_u_idx], old_parameters, average_intersection_params_u, max_cp_u);
         reparam_splines_u.push_back(reparam_spline_u);
     }
 
@@ -1257,7 +1270,7 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::createGordonSurfaceGeneral(c
             average_intersection_params_v(average_intersection_params_v.Length()) = 1;
         }
 
-        Handle(Geom_BSplineCurve) reparam_spline_v = CTiglBSplineAlgorithms::reparametrizeBSplineContinuouslyApprox(guides[spline_v_idx], old_parameters, average_intersection_params_v, max_cp_v*2 + 1);
+        Handle(Geom_BSplineCurve) reparam_spline_v = CTiglBSplineAlgorithms::reparametrizeBSplineContinuouslyApprox(guides[spline_v_idx], old_parameters, average_intersection_params_v, max_cp_v);
         reparam_splines_v.push_back(reparam_spline_v);
     }
 

@@ -130,3 +130,27 @@ TEST(TiglCommonFunctions, tiglCheckPointInside_api)
 
 
 }
+
+TEST(TiglCommonFunctions, LinspaceWithBreaks)
+{
+    std::vector<double> breaks;
+    breaks.push_back(0.25);
+    breaks.push_back(0.49);
+    breaks.push_back(0.62);
+    breaks.push_back(0.);
+    breaks.push_back(1.0);
+    std::vector<double> res = LinspaceWithBreaks(0., 1., 11, breaks);
+    ASSERT_EQ(12, res.size());
+    EXPECT_NEAR(0.00, res[0], 1e-10);
+    EXPECT_NEAR(0.10, res[1], 1e-10);
+    EXPECT_NEAR(0.20, res[2], 1e-10);
+    EXPECT_NEAR(0.25, res[3], 1e-10);
+    EXPECT_NEAR(0.30, res[4], 1e-10);
+    EXPECT_NEAR(0.40, res[5], 1e-10);
+    EXPECT_NEAR(0.49, res[6], 1e-10);
+    EXPECT_NEAR(0.62, res[7], 1e-10);
+    EXPECT_NEAR(0.70, res[8], 1e-10);
+    EXPECT_NEAR(0.80, res[9], 1e-10);
+    EXPECT_NEAR(0.90, res[10], 1e-10);
+    EXPECT_NEAR(1.00, res[11], 1e-10);
+}
