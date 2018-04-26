@@ -242,10 +242,12 @@ public:
      *          first B-spline
      * @param spline2:
      *          second B-spline
+     * @param tolerance
+     *          relative tolerance to check intersection (relative to overall size)
      * @return:
      *          intersections of spline1 with spline2 as a vector of (parameter of spline1, parameter of spline2)-pairs
      */
-    TIGL_EXPORT static std::vector<std::pair<double, double> > intersections(const Handle(Geom_BSplineCurve) spline1, const Handle(Geom_BSplineCurve) spline2);
+    TIGL_EXPORT static std::vector<std::pair<double, double> > intersections(const Handle(Geom_BSplineCurve) spline1, const Handle(Geom_BSplineCurve) spline2, double tolerance=3e-4);
 
     /**
      * @brief scaleOfBSplines:
