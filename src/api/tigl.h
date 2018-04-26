@@ -233,6 +233,15 @@ enum TiglCoordinateSystem
 
 typedef enum TiglCoordinateSystem TiglCoordinateSystem;
 
+enum TiglShapeModifier
+{
+    UNMODIFIED_SHAPE   = 0,
+    SHARP_TRAILINGEDGE = 1,
+    BLUNT_TRAILINGEDGE = 2
+};
+
+typedef enum TiglShapeModifier TiglShapeModifier;
+
 enum TiglContinuity
 {
     C0 = 0,

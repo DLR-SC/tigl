@@ -270,4 +270,8 @@ TIGL_EXPORT size_t Clamp(size_t val, size_t min, size_t max);
 // Else, the breaking point will be inserted
 TIGL_EXPORT std::vector<double> LinspaceWithBreaks(double umin, double umax, size_t n_values, const std::vector<double>& breaks);
 
+TopoDS_Shape transformedShape(const tigl::CTiglTransformation& transformationToGlobal, TiglCoordinateSystem cs, const TopoDS_Shape& shape);
+TopoDS_Shape transformedShape(const tigl::CCPACSWing& wing, TiglCoordinateSystem cs, const TopoDS_Shape& shape);
+TopoDS_Shape transformedShape(const tigl::CCPACSFuselage& fuselage, TiglCoordinateSystem cs, const TopoDS_Shape& shape);
+
 #endif // TIGLCOMMONFUNCTIONS_H

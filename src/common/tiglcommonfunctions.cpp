@@ -1554,3 +1554,27 @@ size_t Clamp(size_t val, size_t min, size_t max)
 {
     return Clamp<>(val, min, max);
 }
+
+TopoDS_Shape transformedShape(const tigl::CTiglTransformation& transformationToGlobal, TiglCoordinateSystem cs, const TopoDS_Shape& shape)
+{
+    switch (cs) {
+    case WING_COORDINATE_SYSTEM:
+    case FUSELAGE_COORDINATE_SYSTEM:
+        return shape;
+    case GLOBAL_COORDINATE_SYSTEM:
+        return transformationToGlobal.Transform(shape);
+    default:
+        throw tigl::CTiglError("Invalid coordinate system");
+    }
+}
+
+TopoDS_Shape transformedShape(const tigl::CCPACSWing& wing, TiglCoordinateSystem cs, const TopoDS_Shape& shape)
+{
+    return transformedShape(wing.GetTransformationMatrix(), cs, shape);
+}
+
+TopoDS_Shape transformedShape(const tigl::CCPACSFuselage& fuselage, TiglCoordinateSystem cs, const TopoDS_Shape& shape)
+{
+    return transformedShape(fuselage.GetTransformationMatrix(), cs, shape);
+}
+

@@ -62,31 +62,16 @@ public:
     TIGL_EXPORT const std::vector<CTiglPoint>& GetSamplePoints() const OVERRIDE;
 
     // get upper wing profile wire
-    TIGL_EXPORT const TopoDS_Edge& GetUpperWire() const OVERRIDE;
+    TIGL_EXPORT const TopoDS_Edge& GetUpperWire(TiglShapeModifier mod = UNMODIFIED_SHAPE) const OVERRIDE;
 
     // get lower wing profile wire
-    TIGL_EXPORT const TopoDS_Edge& GetLowerWire() const OVERRIDE;
+    TIGL_EXPORT const TopoDS_Edge& GetLowerWire(TiglShapeModifier mod = UNMODIFIED_SHAPE) const OVERRIDE;
 
     // get the upper and lower wing profile combined into one edge
-    TIGL_EXPORT const TopoDS_Edge & GetUpperLowerWire() const OVERRIDE;
+    TIGL_EXPORT const TopoDS_Edge& GetUpperLowerWire(TiglShapeModifier mod = UNMODIFIED_SHAPE) const OVERRIDE;
 
     // get trailing edge if existing in definition
-    TIGL_EXPORT const TopoDS_Edge& GetTrailingEdge() const OVERRIDE;
-
-    // returns the trailing edge for the opened wing profile
-    TIGL_EXPORT const TopoDS_Edge& GetTrailingEdgeOpened() const OVERRIDE;
-
-    // getter for upper wire of closed profile
-    TIGL_EXPORT const TopoDS_Edge& GetUpperWireClosed() const OVERRIDE;
-
-    // getter for lower wire of closed profile
-    TIGL_EXPORT const TopoDS_Edge& GetLowerWireClosed() const OVERRIDE;
-
-    // getter for upper wire of opened profile
-    TIGL_EXPORT const TopoDS_Edge& GetUpperWireOpened() const OVERRIDE;
-
-    // getter for lower wire of opened profile
-    TIGL_EXPORT const TopoDS_Edge& GetLowerWireOpened() const OVERRIDE;
+    TIGL_EXPORT const TopoDS_Edge& GetTrailingEdge(TiglShapeModifier mod = UNMODIFIED_SHAPE) const OVERRIDE;
 
     // get leading edge point();
     TIGL_EXPORT const gp_Pnt& GetLEPoint() const OVERRIDE;
