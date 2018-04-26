@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2018 RISC Software GmbH
+* Copyright (c) 2018 Airbus Defence and Space and RISC Software GmbH
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -16,17 +16,13 @@
 
 #include "CCPACSDoorAssemblyPosition.h"
 
+#include "CCPACSFuselageStructure.h"
+
 namespace tigl
 {
 CCPACSDoorAssemblyPosition::CCPACSDoorAssemblyPosition(CCPACSCargoDoorsAssembly* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSDoorAssemblyPosition(parent, uidMgr)
-    , invalidated(true)
+    , CTiglStringerFrameBorderedObject(*uidMgr, *parent->GetParent()->GetParent(), generated::CPACSDoorAssemblyPosition::m_startFrameUID, generated::CPACSDoorAssemblyPosition::m_endFrameUID, generated::CPACSDoorAssemblyPosition::m_startStringerUID, generated::CPACSDoorAssemblyPosition::m_endStringerUID)
 {
 }
-
-void CCPACSDoorAssemblyPosition::Invalidate()
-{
-    invalidated = true;
-}
-
 } // namespace tigl

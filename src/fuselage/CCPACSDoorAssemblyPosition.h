@@ -17,18 +17,14 @@
 #pragma once
 
 #include "generated/CPACSDoorAssemblyPosition.h"
+#include "CTiglStringerFrameBorderedObject.h"
 
 namespace tigl
 {
-class CCPACSDoorAssemblyPosition : public generated::CPACSDoorAssemblyPosition
+class CCPACSDoorAssemblyPosition : public generated::CPACSDoorAssemblyPosition, public CTiglStringerFrameBorderedObject
 {
 public:
     CCPACSDoorAssemblyPosition(CCPACSCargoDoorsAssembly* parent, CTiglUIDManager* uidMgr);
-
-    TIGL_EXPORT void Invalidate();
-
-private:
-    bool invalidated;
 };
 
 } // namespace tigl

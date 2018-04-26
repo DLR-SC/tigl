@@ -32,11 +32,14 @@ public:
     TIGL_EXPORT void Invalidate();
 
     TIGL_EXPORT TopoDS_Shape GetGeometry(bool just1DElements, TiglCoordinateSystem cs = GLOBAL_COORDINATE_SYSTEM);
+    TIGL_EXPORT TopoDS_Shape GetCutGeometry(TiglCoordinateSystem cs = GLOBAL_COORDINATE_SYSTEM);
 
 private:
     void BuildGeometry(bool just1DElements);
+    void BuildCutGeometry();
 private:
     boost::optional<TopoDS_Shape> m_geomCache[2];      // [0] is 3D, [1] is 1D
+    boost::optional<TopoDS_Shape> m_cutGeomCache;
 };
 
 } // namespace tigl

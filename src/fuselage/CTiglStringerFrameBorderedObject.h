@@ -43,7 +43,7 @@ public:
                                                  boost::variant<std::string&, boost::optional<std::string>&> endStringerUID);
 
     TIGL_EXPORT void Invalidate();
-    //TIGL_EXPORT TopoDS_Shape GetGeometry(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM);
+    TIGL_EXPORT TopoDS_Shape GetGeometry(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM);
 
     TIGL_EXPORT bool Contains(const TopoDS_Face& face);
     TIGL_EXPORT bool Contains(const TopoDS_Edge& edge);

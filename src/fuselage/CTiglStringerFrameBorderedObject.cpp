@@ -32,6 +32,7 @@
 #include <BRepBndLib.hxx>
 
 #include "tiglcommonfunctions.h"
+#include "CNamedShape.h"
 
 namespace tigl
 {
@@ -53,7 +54,6 @@ void CTiglStringerFrameBorderedObject::Invalidate()
     m_geometry    = boost::none;
 }
 
-/*
 TopoDS_Shape CTiglStringerFrameBorderedObject::GetGeometry(TiglCoordinateSystem referenceCS)
 {
     if (!m_geometry)
@@ -64,7 +64,6 @@ TopoDS_Shape CTiglStringerFrameBorderedObject::GetGeometry(TiglCoordinateSystem 
     else
         return m_geometry.value();
 }
-*/
 
 bool CTiglStringerFrameBorderedObject::Contains(const TopoDS_Face& face)
 {
@@ -108,7 +107,7 @@ bool CTiglStringerFrameBorderedObject::Contains(const gp_Pnt& point)
 
     return false;
 }
-/*
+
 void CTiglStringerFrameBorderedObject::BuildGeometry()
 {
     if (!m_borderCache)
@@ -130,7 +129,7 @@ void CTiglStringerFrameBorderedObject::BuildGeometry()
     builder.Add(cutCompound, eStringer.GetCutGeometry(FUSELAGE_COORDINATE_SYSTEM));
 
     // split fuselage loft
-    const TopoDS_Shape loft         = m_fuselage.GetLoftFromFusedSegments();
+    const TopoDS_Shape loft         = const_cast<CCPACSFuselage&>(m_fuselage).GetLoft()->Shape();
     const TopoDS_Shape splittedLoft = SplitShape(loft, cutCompound);
 
     // find door face
@@ -150,7 +149,6 @@ void CTiglStringerFrameBorderedObject::BuildGeometry()
 
     m_geometry = compound;
 }
-*/
 
 void CTiglStringerFrameBorderedObject::UpdateBorders()
 {
