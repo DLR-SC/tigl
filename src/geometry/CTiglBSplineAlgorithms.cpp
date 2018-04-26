@@ -816,7 +816,7 @@ void checkCurveNetworkCompatibility(const std::vector<Handle(Geom_BSplineCurve) 
                                     const std::vector<Handle(Geom_BSplineCurve) >& guides,
                                     const std::vector<double>& intersection_params_spline_u,
                                     const std::vector<double>& intersection_params_spline_v,
-                                    double tol = 2e-3)
+                                    double tol = 3e-4)
 {
     // find out the 'average' scale of the B-splines in order to being able to handle a more approximate dataset and find its intersections
     double splines_scale = 0.5 * (CTiglBSplineAlgorithms::scaleOfBSplines(profiles)+ CTiglBSplineAlgorithms::scaleOfBSplines(guides));
@@ -950,7 +950,7 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::createGordonSurface(const st
     return surface_u;
 }
 
-std::vector<std::pair<double, double> > CTiglBSplineAlgorithms::intersections(const Handle(Geom_BSplineCurve) spline1, const Handle(Geom_BSplineCurve) spline2) {
+std::vector<std::pair<double, double> > CTiglBSplineAlgorithms::intersections(const Handle(Geom_BSplineCurve) spline1, const Handle(Geom_BSplineCurve) spline2, double tolerance) {
     // light weight simple minimizer
 
     // check parametrization of B-splines beforehand
@@ -968,9 +968,12 @@ std::vector<std::pair<double, double> > CTiglBSplineAlgorithms::intersections(co
         // filter out real intersections
         gp_Pnt point1 = spline1->Value(param1);
         gp_Pnt point2 = spline2->Value(param2);
-        // TODO: check: splines-scale evaluates at distance, here we have square distance
-        if (point1.SquareDistance(point2) < 1e-7 * splines_scale) {
+
+        if (point1.Distance(point2) < tolerance * splines_scale) {
             intersection_params_vector.push_back(std::make_pair(param1, param2));
+        }
+        else {
+            throw CTiglError("Curves do not intersect each other", TIGL_MATH_ERROR);
         }
 
         // for closed B-splines:
