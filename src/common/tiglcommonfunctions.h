@@ -49,7 +49,7 @@ struct IsInsideTolerance
 
     bool operator()(double v)
     {
-        return (fabs(_a - v) < _tol);
+        return (fabs(_a - v) <= _tol);
     }
 
     double _a;

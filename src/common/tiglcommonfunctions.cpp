@@ -1480,7 +1480,8 @@ std::vector<double> LinspaceWithBreaks(double umin, double umax, size_t n_values
         }
         else {
             // find closest element
-            pos = std::find_if(result.begin(), result.end(), IsInsideTolerance(breakpoint, du/2.));
+            pos = std::find_if(result.begin(), result.end(), IsInsideTolerance(breakpoint, (0.5 + 1e-8)*du));
+
             if (*pos > breakpoint) {
                 result.insert(pos, breakpoint);
             }
