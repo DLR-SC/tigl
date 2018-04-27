@@ -56,13 +56,14 @@ void CCPACSPressureBulkheadAssemblyPosition::SetPressureBulkheadElementUID(const
 
 void CCPACSPressureBulkheadAssemblyPosition::Invalidate()
 {
-    m_geometry      = boost::none;
+    m_geometry = boost::none;
 }
 
 TopoDS_Shape CCPACSPressureBulkheadAssemblyPosition::GetGeometry()
 {
-    if (!m_geometry)
+    if (!m_geometry) {
         BuildGeometry();
+    }
     return m_geometry.value();
 }
 
@@ -81,12 +82,13 @@ void CCPACSPressureBulkheadAssemblyPosition::BuildGeometry()
         TopoDS_Edge edge = TopoDS::Edge(edgeMap(1));
         m_geometry       = BRepBuilderAPI_MakeFace(BRepBuilderAPI_MakeWire(edge));
 
-    } else if (frame.GetFramePositions().size() >= 2) {
+    }
+    else if (frame.GetFramePositions().size() >= 2) {
         CCPACSFuselage& fuselage = *m_parent->GetParent()->GetParent();
 
         std::vector<TopoDS_Edge> edges;
         std::vector<gp_Pnt> refPoints;
-        for (int i = 0; i < frame.GetFramePositions().size(); i++) {
+        for (size_t i = 0; i < frame.GetFramePositions().size(); i++) {
             const CCPACSFuselageStringerFramePosition& framePosition = *frame.GetFramePositions()[i];
             const gp_Pnt refPoint = framePosition.GetRefPoint();
             const gp_Pnt intersectionPoint = fuselage.Intersection(framePosition).Location();
@@ -104,13 +106,14 @@ void CCPACSPressureBulkheadAssemblyPosition::BuildGeometry()
         // create all the edges of the frame
         TopTools_IndexedMapOfShape edgeMap;
         TopExp::MapShapes(frame.GetGeometry(true), TopAbs_EDGE, edgeMap);
-        for (int i = 1; i <= edgeMap.Extent(); i++)
+        for (int i = 1; i <= edgeMap.Extent(); i++) {
             wireMaker.Add(TopoDS::Edge(edgeMap(i)));
+        }
 
         wireMaker.Add(edges[edges.size() - 1]); // last edge
 
         // check if X coords of all ref points are the same
-        for (int i = 0; i < refPoints.size() - 1; i++) {
+        for (size_t i = 0; i < refPoints.size() - 1; i++) {
             if (refPoints[i].X() != refPoints[i + 1].X()) {
                 throw CTiglError("X coordinates of reference points are different (which is not available)");
             }
@@ -120,14 +123,14 @@ void CCPACSPressureBulkheadAssemblyPosition::BuildGeometry()
 
         // generate edges between non-equal points
         std::vector<TopoDS_Edge> edgesRef;
-        for (int i = 0; i < refPoints.size() - 1; i++) {
+        for (size_t i = 0; i < refPoints.size() - 1; i++) {
             if (!refPoints[i].IsEqual(refPoints[i + 1], precision)) {
                 edgesRef.push_back(BRepBuilderAPI_MakeEdge(refPoints[i + 1], refPoints[i]));
             }
         }
 
         // add edges to wire in reverse order
-        for (int i = 0; i < edgesRef.size(); i++) {
+        for (size_t i = 0; i < edgesRef.size(); i++) {
             wireMaker.Add(edgesRef[edgesRef.size() - 1 - i]);
         }
 
