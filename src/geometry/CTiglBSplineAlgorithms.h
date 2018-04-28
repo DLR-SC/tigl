@@ -297,6 +297,11 @@ public:
      */
     TIGL_EXPORT static Handle(Geom_BSplineSurface) createGordonSurfaceGeneral(const std::vector<Handle(Geom_BSplineCurve) >& splines_u_vector,
                                                                               const std::vector<Handle(Geom_BSplineCurve) >& splines_v_vector);
+
+    /**
+     * Returns positions, where the curve has kinks (C1 Discontinuities)
+     */
+    TIGL_EXPORT static std::vector<double> getKinkParameters(const Handle(Geom_BSplineCurve)& curve);
 };
 } // namespace tigl
 
