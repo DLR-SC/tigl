@@ -1309,4 +1309,27 @@ math_Matrix CTiglBSplineAlgorithms::bsplineBasisMat(int degree, const TColStd_Ar
     return mx;
 }
 
+std::vector<double> CTiglBSplineAlgorithms::getKinkParameters(const Handle(Geom_BSplineCurve)& curve)
+{
+    if (curve.IsNull()) {
+        throw CTiglError("Null Pointer curve", TIGL_NULL_POINTER);
+    }
+
+    double eps = 1e-8;
+
+    std::vector<double> kinks;
+    for (int knotIndex = 2; knotIndex < curve->NbKnots(); ++knotIndex) {
+        if (curve->Multiplicity(knotIndex) == curve->Degree()) {
+            double knot = curve->Knot(knotIndex);
+            // check if really a kink
+            double deviation = (curve->DN(knot + eps, 1) - curve->DN(knot - eps, 1)).Magnitude();
+            if (deviation > 100.*eps) {
+                kinks.push_back(knot);
+            }
+        }
+    }
+
+    return kinks;
+}
+
 } // namespace tigl
