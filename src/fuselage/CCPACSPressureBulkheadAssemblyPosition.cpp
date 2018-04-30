@@ -32,6 +32,7 @@
 #include "CCPACSFuselageStringerFramePosition.h"
 #include "CTiglUIDManager.h"
 #include "tiglcommonfunctions.h"
+#include "CNamedShape.h"
 
 namespace tigl
 {
@@ -52,6 +53,21 @@ void CCPACSPressureBulkheadAssemblyPosition::SetPressureBulkheadElementUID(const
 {
     generated::CPACSPressureBulkheadAssemblyPosition::SetPressureBulkheadElementUID(value);
     Invalidate();
+}
+
+std::string CCPACSPressureBulkheadAssemblyPosition::GetDefaultedUID() const
+{
+    return m_uID;
+}
+
+PNamedShape CCPACSPressureBulkheadAssemblyPosition::GetLoft()
+{
+    return PNamedShape(new CNamedShape(GetGeometry(), GetDefaultedUID()));
+}
+
+TiglGeometricComponentType CCPACSPressureBulkheadAssemblyPosition::GetComponentType() const
+{
+    return TIGL_COMPONENT_PHYSICAL | TIGL_COMPONENT_PRESSURE_BULKHEAD;
 }
 
 void CCPACSPressureBulkheadAssemblyPosition::Invalidate()

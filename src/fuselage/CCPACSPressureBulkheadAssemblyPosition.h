@@ -20,17 +20,22 @@
 #include <TopoDS_Shape.hxx>
 
 #include "generated/CPACSPressureBulkheadAssemblyPosition.h"
+#include "ITiglGeometricComponent.h"
 
 namespace tigl
 {
 
-class CCPACSPressureBulkheadAssemblyPosition : public generated::CPACSPressureBulkheadAssemblyPosition
+class CCPACSPressureBulkheadAssemblyPosition : public generated::CPACSPressureBulkheadAssemblyPosition, public ITiglGeometricComponent
 {
 public:
     TIGL_EXPORT CCPACSPressureBulkheadAssemblyPosition(CCPACSPressureBulkheadAssembly* parent, CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT virtual void SetFrameUID(const std::string& value) OVERRIDE;
     TIGL_EXPORT virtual void SetPressureBulkheadElementUID(const std::string& value) OVERRIDE;
+
+    TIGL_EXPORT std::string GetDefaultedUID() const OVERRIDE;
+    TIGL_EXPORT PNamedShape GetLoft() OVERRIDE;
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE;
 
     TIGL_EXPORT void Invalidate();
 
