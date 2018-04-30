@@ -730,9 +730,7 @@ Handle(Geom_BSplineCurve) CTiglBSplineAlgorithms::reparametrizeBSplineContinuous
 
     // convert type of new_parameters
     Handle(TColStd_HArray1OfReal) new_parameters_modtype = new TColStd_HArray1OfReal(1, new_parameters.Length());
-    for (int parameter_idx = 1; parameter_idx <= new_parameters.Length(); ++parameter_idx) {
-        new_parameters_modtype->SetValue(parameter_idx, new_parameters(parameter_idx));
-    }
+    new_parameters_modtype->ChangeArray1().Assign(new_parameters);
     Geom2dAPI_Interpolate interpolationObject(old_parameters_pnts, new_parameters_modtype, false, 1e-15);
     interpolationObject.Perform();
 
@@ -748,32 +746,70 @@ Handle(Geom_BSplineCurve) CTiglBSplineAlgorithms::reparametrizeBSplineContinuous
     for (Standard_Integer i = new_parameters.Lower() + 1; i < new_parameters.Upper(); ++i) {
         breaks.push_back(new_parameters.Value(i));
     }
-    std::vector<double> new_params_std = LinspaceWithBreaks(new_parameters(new_parameters.Lower()),
+
+    double par_tol = 1e-10;
+
+#define MODEL_KINKS
+#ifdef MODEL_KINKS
+    // remove kinks from breaks
+    std::vector<double> kinks = CTiglBSplineAlgorithms::getKinkParameters(spline);
+    for (size_t ikink = 0; ikink < kinks.size(); ++ikink) {
+        double kink = kinks[ikink];
+        std::vector<double>::iterator it = std::find_if(breaks.begin(), breaks.end(), IsInsideTolerance(kink, par_tol));
+        if (it != breaks.end()) {
+            breaks.erase(it);
+        }
+    }
+#endif
+
+    // create equidistance array of parameters, including the breaks
+    std::vector<double> parameters = LinspaceWithBreaks(new_parameters(new_parameters.Lower()),
                                                             new_parameters(new_parameters.Upper()),
                                                             std::max(static_cast<unsigned int>(101), n_control_pnts*2),
                                                             breaks);
+#ifdef MODEL_KINKS
+    // insert kinks into parameters array at the correct position
+    for (size_t ikink = 0; ikink < kinks.size(); ++ikink) {
+        double kink = kinks[ikink];
+        parameters.insert( 
+            std::upper_bound( parameters.begin(), parameters.end(), kink),
+            kink);
+    }
+#endif
 
     // Compute points on spline at the new parameters
     // Those will be approximated later on
-    TColgp_Array1OfPnt points(1, static_cast<Standard_Integer>(new_params_std.size()));
-    for (size_t i = 1; i <= new_params_std.size(); ++i) {
-        double oldParameter = reparametrizing_spline->Value(new_params_std[i-1]).X();
+    TColgp_Array1OfPnt points(1, static_cast<Standard_Integer>(parameters.size()));
+    for (size_t i = 1; i <= parameters.size(); ++i) {
+        double oldParameter = reparametrizing_spline->Value(parameters[i-1]).X();
         points(static_cast<Standard_Integer>(i)) = spline->Value(oldParameter);
     }
 
     // Create the new spline as a interpolation of the old one
     CTiglBSplineApproxInterp approximationObj(points, static_cast<int>(n_control_pnts), 3);
 
+    breaks.insert(breaks.begin(), new_parameters(new_parameters.Lower()));
+    breaks.push_back(new_parameters(new_parameters.Upper()));
     // Interpolate points at breaking parameters (required for gordon surface)
-    for (Standard_Integer iparm = new_parameters.Lower(); iparm <= new_parameters.Upper(); ++iparm) {
-        double thebreak = new_parameters.Value(iparm);
+    for (size_t ibreak = 0; ibreak < breaks.size(); ++ibreak) {
+        double thebreak = breaks[ibreak];
         size_t idx = static_cast<size_t>(
-            std::find_if(new_params_std.begin(), new_params_std.end(), IsInsideTolerance(thebreak)) -
-            new_params_std.begin());
+            std::find_if(parameters.begin(), parameters.end(), IsInsideTolerance(thebreak)) -
+            parameters.begin());
         approximationObj.InterpolatePoint(idx);
     }
 
-    CTiglApproxResult result = approximationObj.FitCurveOptimal(new_params_std);
+#ifdef MODEL_KINKS
+    for (size_t ikink = 0; ikink < kinks.size(); ++ikink) {
+        double kink = kinks[ikink];
+        size_t idx = static_cast<size_t>(
+            std::find_if(parameters.begin(), parameters.end(), IsInsideTolerance(kink, par_tol)) -
+            parameters.begin());
+        approximationObj.InterpolatePoint(idx, true);
+    }
+#endif
+
+    CTiglApproxResult result = approximationObj.FitCurveOptimal(parameters);
     Handle(Geom_BSplineCurve) reparametrized_spline = result.curve;
 
     assert(!reparametrized_spline.IsNull());
