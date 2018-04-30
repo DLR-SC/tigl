@@ -756,18 +756,20 @@ Handle(Geom_BSplineCurve) CTiglBSplineAlgorithms::reparametrizeBSplineContinuous
     // Compute points on spline at the new parameters
     // Those will be approximated later on
     TColgp_Array1OfPnt points(1, static_cast<Standard_Integer>(new_params_std.size()));
-    for (int i = 1; i <= new_params_std.size(); ++i) {
-        double oldParameter = reparametrizing_spline->Value(new_params_std[static_cast<Standard_Integer>(i-1)]).X();
-        points(i) = spline->Value(oldParameter);
+    for (size_t i = 1; i <= new_params_std.size(); ++i) {
+        double oldParameter = reparametrizing_spline->Value(new_params_std[i-1]).X();
+        points(static_cast<Standard_Integer>(i)) = spline->Value(oldParameter);
     }
 
     // Create the new spline as a interpolation of the old one
-    CTiglBSplineApproxInterp approximationObj(points, n_control_pnts, 3);
+    CTiglBSplineApproxInterp approximationObj(points, static_cast<int>(n_control_pnts), 3);
 
     // Interpolate points at breaking parameters (required for gordon surface)
     for (Standard_Integer iparm = new_parameters.Lower(); iparm <= new_parameters.Upper(); ++iparm) {
         double thebreak = new_parameters.Value(iparm);
-        size_t idx = std::find_if(new_params_std.begin(), new_params_std.end(), IsInsideTolerance(thebreak)) - new_params_std.begin();
+        size_t idx = static_cast<size_t>(
+            std::find_if(new_params_std.begin(), new_params_std.end(), IsInsideTolerance(thebreak)) -
+            new_params_std.begin());
         approximationObj.InterpolatePoint(idx);
     }
 
@@ -1322,8 +1324,8 @@ std::vector<double> CTiglBSplineAlgorithms::getKinkParameters(const Handle(Geom_
         if (curve->Multiplicity(knotIndex) == curve->Degree()) {
             double knot = curve->Knot(knotIndex);
             // check if really a kink
-            double deviation = (curve->DN(knot + eps, 1) - curve->DN(knot - eps, 1)).Magnitude();
-            if (deviation > 100.*eps) {
+            double angle = curve->DN(knot + eps, 1).Angle(curve->DN(knot - eps, 1));
+            if (angle > 6./180. * M_PI) {
                 kinks.push_back(knot);
             }
         }
