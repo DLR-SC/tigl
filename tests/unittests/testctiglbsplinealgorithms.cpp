@@ -1429,7 +1429,8 @@ INSTANTIATE_TEST_CASE_P(TiglBSplineAlgorithms, GordonSurface, ::testing::Values(
                             "spiralwing",
                             "test_surface4_sorted",
                             "test_surface4",
-                            "wing3"
+                            "wing3",
+                            "bellyfairing"
                             ));
 
 } // namespace tigl
