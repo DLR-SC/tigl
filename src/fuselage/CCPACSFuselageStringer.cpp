@@ -72,10 +72,6 @@ void CCPACSFuselageStringer::BuildGeometry(bool just1DElements)
     // 1) path definition (projection on the fuselage)
     // 2) if not just 1D element, build and sweep the profile all along the path
 
-    TopoDS_Compound compound;
-    TopoDS_Builder builder;
-    builder.MakeCompound(compound);
-
     // -1) place every points in the fuselage loft
     CCPACSFuselage& fuselage  = *m_parent->GetParent()->GetParent();
     std::vector<gp_Lin> pointList;
@@ -93,6 +89,9 @@ void CCPACSFuselageStringer::BuildGeometry(bool just1DElements)
     profilePlane.Rotate(gp_Ax1(pointList.front().Location(), pointList.front().Direction()),
                         M_PI / 2.); // correct the orientation of the stringer plane (parallel to the Y-Z reference)
 
+    TopoDS_Compound compound;
+    TopoDS_Builder builder;
+    builder.MakeCompound(compound);
     for (size_t i = 0; i < pointList.size() - 1; i++) {
         const gp_Pnt p1 = pointList.at(i + 0).Location();
         const gp_Pnt p3 = pointList.at(i + 1).Location();
@@ -116,6 +115,9 @@ void CCPACSFuselageStringer::BuildGeometry(bool just1DElements)
         }
     }
 
-    m_geomCache[just1DElements] = compound;
+    if (just1DElements)
+        m_geomCache[just1DElements] = BuildWireFromEdges(compound); // make sure the geometry is a single wire
+    else
+        m_geomCache[just1DElements] = compound;
 }
 } // namespace tigl

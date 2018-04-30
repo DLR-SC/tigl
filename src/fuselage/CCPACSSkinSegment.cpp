@@ -141,29 +141,10 @@ void CCPACSSkinSegment::UpdateBorders()
 
 void CCPACSSkinSegment::UpdateBorder(gp_Ax1& b, TopoDS_Shape s1, TopoDS_Shape s2)
 {
-    b.SetLocation(GetIntersectionPoint(s1, s2));
-}
-
-gp_Pnt CCPACSSkinSegment::GetIntersectionPoint(TopoDS_Shape s1, TopoDS_Shape s2) const
-{
-    TopTools_IndexedMapOfShape edgeMap1;
-    edgeMap1.Clear();
-    TopExp::MapShapes(s1, TopAbs_EDGE, edgeMap1);
-
-    TopTools_IndexedMapOfShape edgeMap2;
-    edgeMap2.Clear();
-    TopExp::MapShapes(s2, TopAbs_EDGE, edgeMap2);
-
-    for (int i = 1; i <= edgeMap1.Extent(); i++) {
-        for (int j = 1; j <= edgeMap2.Extent(); j++) {
-            BRepExtrema_ExtCC pG(TopoDS::Edge(edgeMap1(i)), TopoDS::Edge(edgeMap2(j)));
-            if (pG.NbExt() == 1) {
-                return pG.PointOnE1(1);
-            }
-        }
-    }
-
-    throw CTiglError("No intersection between frame and stringer");
+    intersectionPointList intersections;
+    if (!GetIntersectionPoint(TopoDS::Wire(s1), TopoDS::Wire(s2), intersections))
+        throw CTiglError("No intersection");
+    b.SetLocation(intersections.front().Center);
 }
 
 } // namespace tigl

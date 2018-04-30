@@ -41,7 +41,6 @@ public:
 private:
     void UpdateBorders();
     void UpdateBorder(gp_Ax1& b, TopoDS_Shape s1, TopoDS_Shape s2);
-    gp_Pnt GetIntersectionPoint(TopoDS_Shape, TopoDS_Shape) const;
 
 private:
     struct BorderCache {
