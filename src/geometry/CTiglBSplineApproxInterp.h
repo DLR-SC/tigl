@@ -19,6 +19,7 @@
 #ifndef CTIGLBSPLINEAPPROXINTERP_H
 #define CTIGLBSPLINEAPPROXINTERP_H
 
+#include "tigl_internal.h"
 #include <vector>
 #include <Handle_Geom_BSplineCurve.hxx>
 #include <TColStd_Array1OfReal.hxx>
@@ -50,17 +51,17 @@ struct CTiglApproxResult
 class CTiglBSplineApproxInterp
 {
 public:
-    CTiglBSplineApproxInterp(const TColgp_Array1OfPnt& points, int nControlPoints, int degree=3);
+    TIGL_EXPORT CTiglBSplineApproxInterp(const TColgp_Array1OfPnt& points, int nControlPoints, int degree=3);
 
     /// The specified point will be interpolated instead of approximated
-    void InterpolatePoint(size_t pointIndex, bool withKink=false);
+    TIGL_EXPORT void InterpolatePoint(size_t pointIndex, bool withKink=false);
 
     /// Returns the resulting curve and the fit error
-    CTiglApproxResult FitCurve(const std::vector<double>& initialParms = std::vector<double>()) const;
+    TIGL_EXPORT CTiglApproxResult FitCurve(const std::vector<double>& initialParms = std::vector<double>()) const;
 
     /// Fits the curve by optimizing the parameters.
     /// Important: Parameters of points that are interpolated are not optimized
-    CTiglApproxResult FitCurveOptimal(const std::vector<double>& initialParms = std::vector<double>(), int maxIter=10) const;
+    TIGL_EXPORT CTiglApproxResult FitCurveOptimal(const std::vector<double>& initialParms = std::vector<double>(), int maxIter=10) const;
 
 private:
     ProjectResult projectOnCurve(const gp_Pnt& pnt, const Handle(Geom_Curve)& curve, double inital_Parm) const;
