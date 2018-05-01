@@ -33,8 +33,15 @@ namespace tigl
 CTiglUIDManager::CTiglUIDManager()
     : invalidated(true), rootComponent(NULL) {}
 
-bool CTiglUIDManager::IsUIDRegistered(const std::string & uid) const {
+bool CTiglUIDManager::IsUIDRegistered(const std::string & uid) const
+{
     return cpacsObjects.find(uid) != cpacsObjects.end();
+}
+
+bool CTiglUIDManager::IsUIDRegistered(const std::string& uid, const std::type_info& typeInfo) const
+{
+    const auto it = cpacsObjects.find(uid);
+    return it != cpacsObjects.end() && it->second.type == &typeInfo;
 }
 
 void CTiglUIDManager::RegisterObject(const std::string& uid, void* object, const std::type_info& typeInfo)

@@ -45,6 +45,7 @@ public:
 
     // Adds a rotor blade to the  rotor blade container
     TIGL_EXPORT void AddRotorBlade(CCPACSWing* rotorBlade);
+    using generated::CPACSRotorBlades::AddRotorBlade;
 
     // Returns the total count of rotor blades of a rotor blade attachment
     TIGL_EXPORT int GetRotorBladeCount() const;

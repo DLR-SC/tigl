@@ -120,7 +120,12 @@ CTiglPoint CCPACSTransformation::getScaling() const
 
 ECPACSTranslationType CCPACSTransformation::getTranslationType() const
 {
-    return m_translation->GetRefDefaultedType();
+    if (m_translation) {
+        return m_translation->GetRefDefaultedType();
+    }
+    else {
+        return CCPACSPointAbsRel::defaultTranslationType;
+    }
 }
 
 CTiglTransformation CCPACSTransformation::getTransformationMatrix() const

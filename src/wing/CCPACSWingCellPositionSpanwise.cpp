@@ -41,7 +41,7 @@ void CCPACSWingCellPositionSpanwise::SetEta(double eta1, double eta2) {
     m_ribNumber_choice2 = boost::none;
     m_ribDefinitionUID_choice2 = boost::none;
 
-    invalidateParent();
+    InvalidateParent();
 }
 
 void CCPACSWingCellPositionSpanwise::GetEta(double& eta1, double& eta2) const {
@@ -55,7 +55,7 @@ std::pair<double, double> CCPACSWingCellPositionSpanwise::GetEta() const {
     if (GetInputType() != Eta) {
         throw CTiglError("CCPACSWingCellPositionSpanwise::GetEta method called, but position is defined via ribDefinitionUID!");
     }
-    return std::make_pair(*m_eta1_choice1, *m_eta2_choice1);
+    return std::make_pair(m_eta1_choice1.value(), m_eta2_choice1.value());
 }
 
 void CCPACSWingCellPositionSpanwise::SetRib(const std::string& ribUId, int nRib) {
@@ -65,7 +65,7 @@ void CCPACSWingCellPositionSpanwise::SetRib(const std::string& ribUId, int nRib)
     m_ribNumber_choice2 = nRib;
     m_ribDefinitionUID_choice2 = ribUId;
 
-    invalidateParent();
+    InvalidateParent();
 }
 
 void CCPACSWingCellPositionSpanwise::GetRib(std::string& ribUid, int& ribNumber) const {
@@ -81,10 +81,9 @@ std::pair<std::string, int> CCPACSWingCellPositionSpanwise::GetRib() const {
     }
     return std::make_pair(*m_ribDefinitionUID_choice2, *m_ribNumber_choice2);
 }
-void CCPACSWingCellPositionSpanwise::invalidateParent()
+
+void CCPACSWingCellPositionSpanwise::InvalidateParent()
 {
-    //if (IsParent<CCPACSWingCell>())
-    //    GetParent<CCPACSWingCell>()->Invalidate();
     GetParent()->Invalidate();
 }
 

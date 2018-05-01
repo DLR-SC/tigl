@@ -73,7 +73,7 @@ CCPACSFuselage::CCPACSFuselage(CCPACSFuselages* parent, CTiglUIDManager* uidMgr)
 CCPACSFuselage::~CCPACSFuselage()
 {
     // unregister
-    configuration->GetUIDManager().RemoveGeometricComponent(m_uID);
+    configuration->GetUIDManager().TryRemoveGeometricComponent(m_uID);
 
     Cleanup();
 }
@@ -85,6 +85,8 @@ void CCPACSFuselage::Invalidate()
     m_segments.Invalidate();
     if (m_positionings)
         m_positionings->Invalidate();
+    if (m_structure)
+        m_structure->Invalidate();
 }
 
 // Cleanup routine
@@ -100,7 +102,7 @@ void CCPACSFuselage::Cleanup()
 }
 
 // Read CPACS fuselage element
-void CCPACSFuselage::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& fuselageXPath)
+void CCPACSFuselage::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& fuselageXPath)
 {
     Cleanup();
 

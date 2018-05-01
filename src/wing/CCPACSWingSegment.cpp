@@ -201,7 +201,7 @@ CCPACSWingSegment::CCPACSWingSegment(CCPACSWingSegments* parent, CTiglUIDManager
 CCPACSWingSegment::~CCPACSWingSegment()
 {
     // unregister
-    GetWing().GetConfiguration().GetUIDManager().RemoveGeometricComponent(GetUID());
+    GetWing().GetConfiguration().GetUIDManager().TryRemoveGeometricComponent(GetUID());
 
     Cleanup();
 }
@@ -590,10 +590,10 @@ void CCPACSWingSegment::etaXsiToUV(bool isFromUpper, double eta, double xsi, dou
 
     Handle(Geom_Surface) surf;
     if (isFromUpper) {
-        surf = surfaceCache.value().upperSurface;
+        surf = GetUpperSurface();
     }
     else {
-        surf = surfaceCache.value().lowerSurface;
+        surf = GetLowerSurface();
     }
 
     GeomAPI_ProjectPointOnSurf Proj(pnt, surf);
@@ -626,10 +626,10 @@ double CCPACSWingSegment::GetSurfaceArea(bool fromUpper,
     
     TopoDS_Face face;
     if (fromUpper) {
-        face = TopoDS::Face(surfaceCache.value().upperShape);
+        face = TopoDS::Face(GetUpperShape());
     }
     else {
-        face = TopoDS::Face(surfaceCache.value().lowerShape);
+        face = TopoDS::Face(GetLowerShape());
     }
 
     // convert eta xsi coordinates to u,v

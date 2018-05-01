@@ -20,6 +20,7 @@
 #include <Standard_Integer.hxx>
 #include <Standard.hxx>
 #include <TColGeom_SequenceOfBoundedCurve.hxx>
+#include <Geom_BSplineSurface.hxx>
 
 /**
  * \brief Return code of make patches algorithm
@@ -35,8 +36,6 @@ enum MakePatchesStatus
 };
 
 class TopoDS_Shape;
-class Handle_Geom_BSplineSurface;
-class Geom_BSplineSurface;
 /**
  * Implementation of algorithm for filling 4-sides closed frames\n
  * of edges with Coons surfaces to get faces.

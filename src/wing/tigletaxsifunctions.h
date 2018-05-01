@@ -22,7 +22,7 @@
 #include <gp_Pnt.hxx>
 
 #include "tigl_internal.h"
-
+#include "EtaXsi.h"
 
 namespace tigl
 {
@@ -32,15 +32,6 @@ class CCPACSWingComponentSegment;
 class CCPACSWingRibsDefinition;
 class CCPACSWingSparSegment;
 class CTiglWingStructureReference;
-
-// TODO: find a better place for this struct
-struct EtaXsi
-{
-    EtaXsi() : eta(0), xsi(0) {};
-    EtaXsi(double eta, double xsi) : eta(eta), xsi(xsi) {};
-    double eta;
-    double xsi;
-};
 
 /**
 * @brief Returns the chordline point of the section element at the passed xsi value

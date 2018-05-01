@@ -41,9 +41,9 @@
 typedef std::map<std::string, PNamedShape> ShapeMap;
 
 // calculates a wire's circumfence
-TIGL_EXPORT Standard_Real GetWireLength(const class TopoDS_Wire& wire);
+TIGL_EXPORT Standard_Real GetLength(const TopoDS_Wire& wire);
 
-TIGL_EXPORT Standard_Real GetEdgeLength(const class TopoDS_Edge& edge);
+TIGL_EXPORT Standard_Real GetLength(const TopoDS_Edge& edge);
 
 // returns a point on the wire (0 <= alpha <= 1)
 TIGL_EXPORT gp_Pnt WireGetPoint(const TopoDS_Wire& wire, double alpha);

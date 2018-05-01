@@ -44,7 +44,7 @@ TEST(Misc, WireGetPoint)
     wireBuilder.Add(BRepBuilderAPI_MakeEdge(p1, p2));
     wireBuilder.Add(BRepBuilderAPI_MakeEdge(p2, p3));
     
-    ASSERT_NEAR(4.0, GetWireLength(wireBuilder.Wire()), 1e-7);
+    ASSERT_NEAR(4.0, GetLength(wireBuilder.Wire()), 1e-7);
     gp_Pnt p1_ = WireGetPoint(wireBuilder.Wire(), 0.0);
     gp_Pnt p2_ = WireGetPoint(wireBuilder.Wire(), 0.25);
     gp_Pnt p3_ = WireGetPoint(wireBuilder.Wire(), 1.0);

@@ -107,12 +107,9 @@ PNamedShape CTiglWingChordface::BuildLoft()
 
 void CTiglWingChordface::unregisterShape()
 {
-    try {
-        if (_uidManager && _uidManager->HasGeometricComponent(GetDefaultedUID())) {
-            _uidManager->RemoveGeometricComponent(GetDefaultedUID());
-        }
+    if (_uidManager) {
+        _uidManager->TryRemoveGeometricComponent(GetDefaultedUID());
     }
-    catch(...){}
 }
 
 void CTiglWingChordface::BuildChordSurface() const

@@ -114,7 +114,7 @@ CCPACSWing::CCPACSWing(CCPACSRotorBlades* parent, CTiglUIDManager* uidMgr)
 CCPACSWing::~CCPACSWing()
 {
     // unregister
-    configuration->GetUIDManager().RemoveGeometricComponent(GetUID());
+    configuration->GetUIDManager().TryRemoveGeometricComponent(GetUID());
 
     Cleanup();
 }
@@ -180,7 +180,7 @@ void CCPACSWing::Update()
 }
 
 // Read CPACS wing element
-void CCPACSWing::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& wingXPath)
+void CCPACSWing::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& wingXPath)
 {
     Cleanup();
     generated::CPACSWing::ReadCPACS(tixiHandle, wingXPath);

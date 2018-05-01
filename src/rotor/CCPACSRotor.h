@@ -71,7 +71,7 @@ public:
     TIGL_EXPORT void SetUID(const std::string& uid) OVERRIDE;
 
     // Returns the Translation
-    TIGL_EXPORT CTiglPoint GetTranslation();
+    TIGL_EXPORT CTiglPoint GetTranslation() const OVERRIDE;
 
     // Returns the type of the rotor
     TIGL_EXPORT TiglRotorType GetDefaultedType() const;

@@ -21,10 +21,11 @@
 
 namespace tigl
 {
-
 class CCPACSPointAbsRel : public generated::CPACSPointAbsRel
 {
 public:
+    static ECPACSTranslationType defaultTranslationType;
+
     TIGL_EXPORT CCPACSPointAbsRel(CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT CTiglPoint AsPoint() const; // missing coordinates default to zero

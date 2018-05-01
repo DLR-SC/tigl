@@ -38,7 +38,7 @@ public:
     TIGL_EXPORT void Invalidate();
 
     // Read CPACS segment elements
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& positioningXPath);
+    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& positioningXPath) OVERRIDE;
 
     TIGL_EXPORT void SetFromPoint(const CTiglPoint& aPoint);
     TIGL_EXPORT const CTiglPoint& GetFromPoint();

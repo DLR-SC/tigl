@@ -149,7 +149,7 @@ CCPACSFuselageSegment::CCPACSFuselageSegment(CCPACSFuselageSegments* parent, CTi
 CCPACSFuselageSegment::~CCPACSFuselageSegment()
 {
     // unregister
-    GetFuselage().GetConfiguration().GetUIDManager().RemoveGeometricComponent(m_uID);
+    GetFuselage().GetConfiguration().GetUIDManager().TryRemoveGeometricComponent(m_uID);
 
     Cleanup();
 }

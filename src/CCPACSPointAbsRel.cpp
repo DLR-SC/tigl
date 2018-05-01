@@ -19,6 +19,7 @@
 
 namespace tigl
 {
+ECPACSTranslationType CCPACSPointAbsRel::defaultTranslationType = ABS_LOCAL;
 
 CCPACSPointAbsRel::CCPACSPointAbsRel(CTiglUIDManager* uidMgr)
     : generated::CPACSPointAbsRel(uidMgr)
@@ -49,7 +50,7 @@ ECPACSTranslationType CCPACSPointAbsRel::GetRefDefaultedType() const
         return *m_refType;
     }
     else {
-        return ABS_LOCAL;
+        return defaultTranslationType;
     }
 }
 

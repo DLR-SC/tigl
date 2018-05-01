@@ -102,9 +102,9 @@ CTiglTransformation CCPACSRotor::GetTransformationMatrix() const
 }
 
 // Get Translation
-CTiglPoint CCPACSRotor::GetTranslation()
+CTiglPoint CCPACSRotor::GetTranslation() const
 {
-    Update();
+    const_cast<CCPACSRotor&>(*this).Update();
     return m_transformation.getTranslationVector();
 }
 
