@@ -116,7 +116,7 @@ void CCPACSGenericSystem::ReadCPACS(TixiDocumentHandle tixiHandle, const std::st
     }
 
     // Get Transformation
-    transformation.ReadCPACS(tixiHandle, genericSysXPath);
+    transformation.ReadCPACS(tixiHandle, genericSysXPath + "/transformation");
 
     // Get symmetry axis attribute
     char* ptrSym = NULL;
