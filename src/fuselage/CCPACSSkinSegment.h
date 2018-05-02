@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2018 Airbus Defence and Space and RISC Software GmbH
+* Copyright (c) 2018 RISC Software GmbH
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -16,40 +16,14 @@
 
 #pragma once
 
-#include <boost/optional.hpp>
-#include <gp_Ax1.hxx>
-#include <TopoDS_Shape.hxx>
-
 #include "generated/CPACSSkinSegment.h"
-
-class TopoDS_Face;
-class TopoDS_Edge;
+#include "CTiglStringerFrameBorderedObject.h"
 
 namespace tigl
 {
-class CCPACSSkinSegment : public generated::CPACSSkinSegment
+class CCPACSSkinSegment : public generated::CPACSSkinSegment, public CTiglStringerFrameBorderedObject
 {
 public:
     TIGL_EXPORT CCPACSSkinSegment(CCPACSSkinSegments* parent, CTiglUIDManager* uidMgr);
-
-    TIGL_EXPORT void Invalidate();
-
-    TIGL_EXPORT bool Contains(const TopoDS_Face& face);
-    TIGL_EXPORT bool Contains(const TopoDS_Edge& edge);
-    TIGL_EXPORT bool Contains(const gp_Pnt& point);
-
-private:
-    void UpdateBorders();
-    void UpdateBorder(gp_Ax1& b, TopoDS_Shape s1, TopoDS_Shape s2);
-
-private:
-    struct BorderCache {
-        gp_Ax1 sFrame_sStringer;
-        gp_Ax1 sFrame_eStringer;
-        gp_Ax1 eFrame_sStringer;
-        gp_Ax1 eFrame_eStringer;
-    };
-
-    boost::optional<BorderCache> m_borderCache;
 };
-}
+} // namespace tigl
