@@ -24,6 +24,7 @@
 
 #include <CCPACSGuideCurve.h>
 #include <CPACSPointXYZ.h>
+#include <CWireToCurve.h>
 
 #include <BRep_Builder.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
@@ -99,10 +100,15 @@ TopoDS_Compound CTiglCurveConnector::GetConnectedGuideCurves()
             wireMaker.Add(curCurve.parts[i].localCurve);
         }
 
-        // add the wire of the current guide curve to the compound
-        builder.Add(result, wireMaker.Wire());
-    }
+        // Convert wire consisting of serval parts -> single curve -> single edge -> single wire
+        TopoDS_Wire connectedWire = wireMaker.Wire();
+        Handle(Geom_BSplineCurve) connectedCurve = CWireToCurve(connectedWire, false, 1e-6).curve();
+        TopoDS_Edge guideCurveEdge = BRepBuilderAPI_MakeEdge(connectedCurve).Edge();
+        TopoDS_Wire guideCurveWire = BRepBuilderAPI_MakeWire(guideCurveEdge).Wire();
 
+        // add the wire of the current guide curve to the compound
+        builder.Add(result, guideCurveWire);
+    }
     return result;
 }
 
