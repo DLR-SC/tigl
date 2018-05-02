@@ -58,8 +58,8 @@ const std::string& CCPACSGenericSystem::GetUID() const {
 
 void CCPACSGenericSystem::SetUID(const std::string& uid) {
     if (configuration) {
-        configuration->GetUIDManager().TryRemoveGeometricComponent(this->uid);
-        configuration->GetUIDManager().AddGeometricComponent(uid, this);
+        configuration->GetUIDManager().TryUnregisterObject(this->uid);
+        configuration->GetUIDManager().RegisterObject(uid, *this);
     }
     this->uid = uid;
 }

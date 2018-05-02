@@ -68,8 +68,6 @@ public:
     // Read CPACS rotor elements
     TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& rotorXPath) OVERRIDE;
 
-    TIGL_EXPORT void SetUID(const std::string& uid) OVERRIDE;
-
     // Returns the Translation
     TIGL_EXPORT CTiglPoint GetTranslation() const OVERRIDE;
 

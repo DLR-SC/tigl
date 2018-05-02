@@ -83,19 +83,6 @@ void CCPACSExternalObject::ReadCPACS(const TixiDocumentHandle& tixiHandle, const
     if (!IsFileReadable(_filePath)) {
         throw tigl::CTiglError("File " + _filePath + " can not be read!", TIGL_OPEN_FAILED);
     }
-
-    // Register ourself at the unique id manager
-    if (!m_uID.empty() && m_uidMgr) {
-        m_uidMgr->AddGeometricComponent(m_uID, this);
-    }
-}
-
-void CCPACSExternalObject::SetUID(const std::string& uid) {
-    if (m_uidMgr) {
-        m_uidMgr->TryRemoveGeometricComponent(m_uID);
-        m_uidMgr->AddGeometricComponent(uid, this);
-    }
-    generated::CPACSGenericGeometricComponent::SetUID(uid);
 }
 
 const std::string& CCPACSExternalObject::GetFilePath() const

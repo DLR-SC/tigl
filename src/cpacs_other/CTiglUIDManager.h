@@ -59,12 +59,13 @@ public:
         return IsUIDRegistered(uid, typeid(T));
     }
 
-    TIGL_EXPORT void RegisterObject(const std::string& uid, void* object, const std::type_info& typeInfo);
-
     template<typename T>
     void RegisterObject(const std::string& uid, T& object)
     {
         RegisterObject(uid, &object, typeid(object)); // typeid(T) may yield a base class of object
+        if (ITiglGeometricComponent* p = dynamic_cast<ITiglGeometricComponent*>(&object)) {
+            AddGeometricComponent(uid, p);
+        }
     }
 
     TIGL_EXPORT TypedPtr ResolveObject(const std::string& uid) const;
@@ -91,13 +92,6 @@ public:
     TIGL_EXPORT bool TryUnregisterObject(const std::string& uid); // returns false on failure
     TIGL_EXPORT void UnregisterObject(const std::string& uid); // throws on failure
 
-    // Function to add a UID and a geometric component to the uid store.
-    TIGL_EXPORT void AddGeometricComponent(const std::string& uid, ITiglGeometricComponent* componentPtr);
-
-    // Removes a component from the UID Manager
-    TIGL_EXPORT bool TryRemoveGeometricComponent(const std::string& uid); // returns false on failure
-    TIGL_EXPORT void RemoveGeometricComponent(const std::string& uid);
-
     // Checks if a UID already exists.
     TIGL_EXPORT bool HasGeometricComponent(const std::string& uid) const;
 
@@ -119,7 +113,15 @@ public:
     // Clears the uid store
     TIGL_EXPORT void Clear();
 
-protected:
+private:
+    // Function to add a UID and a geometric component to the uid store.
+    void AddGeometricComponent(const std::string& uid, ITiglGeometricComponent* componentPtr);
+
+    void RegisterObject(const std::string& uid, void* object, const std::type_info& typeInfo);
+
+    // Removes a component from the UID Manager
+    bool TryRemoveGeometricComponent(const std::string& uid); // returns false on failure
+
     // Update internal UID manager data.
     void Update();
 

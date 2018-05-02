@@ -92,6 +92,10 @@ bool CTiglUIDManager::TryUnregisterObject(const std::string& uid)
         return false;
     }
     cpacsObjects.erase(it);
+
+    // also remove the geometric component if it exists
+    TryRemoveGeometricComponent(uid);
+
     return true;
 }
 
@@ -168,13 +172,6 @@ bool CTiglUIDManager::TryRemoveGeometricComponent(const std::string & uid)
     return true;
 }
 
-void CTiglUIDManager::RemoveGeometricComponent(const std::string &uid)
-{
-    if (!TryRemoveGeometricComponent(uid)) {
-        throw CTiglError("No shape is registered for uid \"" + uid + "\"");
-    }
-}
-
 // Checks if a UID already exists.
 bool CTiglUIDManager::HasGeometricComponent(const std::string& uid) const
 {
@@ -213,7 +210,6 @@ CTiglRelativelyPositionedComponent& CTiglUIDManager::GetRelativeComponent(const 
 
     return *it->second;
 }
-
 
 // Clears the uid store
 void CTiglUIDManager::Clear()

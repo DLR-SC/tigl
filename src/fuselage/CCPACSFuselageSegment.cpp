@@ -148,9 +148,6 @@ CCPACSFuselageSegment::CCPACSFuselageSegment(CCPACSFuselageSegments* parent, CTi
 // Destructor
 CCPACSFuselageSegment::~CCPACSFuselageSegment()
 {
-    // unregister
-    GetFuselage().GetConfiguration().GetUIDManager().TryRemoveGeometricComponent(m_uID);
-
     Cleanup();
 }
 
@@ -175,10 +172,6 @@ void CCPACSFuselageSegment::ReadCPACS(const TixiDocumentHandle& tixiHandle, cons
     Cleanup();
     generated::CPACSFuselageSegment::ReadCPACS(tixiHandle, segmentXPath);
 
-    if (m_uidMgr) {
-        m_uidMgr->AddGeometricComponent(m_uID, this);
-    }
-
     // trigger creation of connections
     SetFromElementUID(m_fromElementUID);
     SetToElementUID(m_toElementUID);
@@ -192,14 +185,6 @@ void CCPACSFuselageSegment::ReadCPACS(const TixiDocumentHandle& tixiHandle, cons
     }
 
     Invalidate();
-}
-
-void CCPACSFuselageSegment::SetUID(const std::string& uid) {
-    if (m_uidMgr) {
-        m_uidMgr->TryRemoveGeometricComponent(m_uID);
-        m_uidMgr->AddGeometricComponent(uid, this);
-    }
-    generated::CPACSFuselageSegment::SetUID(uid);
 }
 
 std::string CCPACSFuselageSegment::GetDefaultedUID() const {

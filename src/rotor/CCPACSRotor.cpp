@@ -80,18 +80,7 @@ void CCPACSRotor::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::str
 {
     Cleanup();
     generated::CPACSRotor::ReadCPACS(tixiHandle, rotorXPath);
-    if (m_uidMgr) {
-        m_uidMgr->AddGeometricComponent(m_uID, this);
-    }
     Update();
-}
-
-void CCPACSRotor::SetUID(const std::string& uid) {
-    if (m_uidMgr) {
-        m_uidMgr->TryRemoveGeometricComponent(m_uID);
-        m_uidMgr->AddGeometricComponent(uid, this);
-    }
-    generated::CPACSRotor::SetUID(uid);
 }
 
 // Get the Transformation object

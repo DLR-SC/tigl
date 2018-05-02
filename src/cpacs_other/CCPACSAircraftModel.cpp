@@ -35,21 +35,6 @@ CCPACSAircraftModel::CCPACSAircraftModel(CCPACSConfiguration* config)
 CCPACSAircraftModel::CCPACSAircraftModel(CTiglUIDManager* uidMgr)
     : generated::CPACSAircraftModel(uidMgr), CTiglRelativelyPositionedComponent(NULL, NULL), config(NULL) {}
 
-void CCPACSAircraftModel::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) {
-    generated::CPACSAircraftModel::ReadCPACS(tixiHandle, xpath);
-    if (m_uidMgr) {
-        m_uidMgr->AddGeometricComponent(m_uID, this);
-    }
-}
-
-void CCPACSAircraftModel::SetUID(const std::string& uid) {
-    if (m_uidMgr) {
-        m_uidMgr->TryRemoveGeometricComponent(m_uID);
-        m_uidMgr->AddGeometricComponent(uid, this);
-    }
-    generated::CPACSAircraftModel::SetUID(uid);
-}
-
 std::string CCPACSAircraftModel::GetDefaultedUID() const {
     return generated::CPACSAircraftModel::GetUID();
 }

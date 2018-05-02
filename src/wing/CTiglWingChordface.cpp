@@ -76,7 +76,7 @@ void CTiglWingChordface::SetUID(const std::string &uid)
     _uid = uid;
 
     if (_uidManager) {
-        _uidManager->AddGeometricComponent(GetDefaultedUID(), this);
+        _uidManager->RegisterObject(GetDefaultedUID(), *this);
     }
 }
 
@@ -108,7 +108,7 @@ PNamedShape CTiglWingChordface::BuildLoft()
 void CTiglWingChordface::unregisterShape()
 {
     if (_uidManager) {
-        _uidManager->TryRemoveGeometricComponent(GetDefaultedUID());
+        _uidManager->TryUnregisterObject(GetDefaultedUID());
     }
 }
 
