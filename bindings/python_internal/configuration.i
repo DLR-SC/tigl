@@ -256,15 +256,22 @@ class CCPACSWingRibsPositioning;
 
 namespace tigl
 {
+typedef std::map<const std::string, ITiglGeometricComponent*> ShapeContainerType;
+typedef std::map<const std::string, CTiglRelativelyPositionedComponent*> RelativeComponentContainerType;
+
 class CTiglUIDManager
 {
 public:
     CTiglUIDManager();
-    void AddGeometricComponent(const std::string& uid, ITiglGeometricComponent* componentPtr);
-    void RemoveGeometricComponent(const std::string& uid);
+    bool IsUIDRegistered(const std::string& uid) const;
+    bool TryUnregisterObject(const std::string& uid);
+    void UnregisterObject(const std::string& uid);
     bool HasGeometricComponent(const std::string& uid) const;
     ITiglGeometricComponent& GetGeometricComponent(const std::string& uid) const;
     CTiglRelativelyPositionedComponent* GetParentGeometricComponent(const std::string& uid) const;
+    const RelativeComponentContainerType& GetRootGeometricComponents() const;
+    void SetParentComponents();
+    const ShapeContainerType& GetShapeContainer() const;
     void Clear();
 };
 } // namespace tigl

@@ -207,10 +207,6 @@ void CCPACSWingComponentSegment::Update()
     chordFace->SetUID(GetDefaultedUID() + "_chordface");
     lowerShape->SetUID(GetDefaultedUID() + "_lower");
     upperShape->SetUID(GetDefaultedUID() + "_upper");
-
-    if (!GetDefaultedUID().empty() && m_uidMgr) {
-        m_uidMgr->AddGeometricComponent(GetDefaultedUID(), this);
-    }
 }
 
 // Read CPACS segment elements

@@ -60,8 +60,6 @@ public:
     // Read CPACS fuselage elements
     TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& fuselageXPath) OVERRIDE;
 
-    TIGL_EXPORT void SetUID(const std::string& uid) OVERRIDE;
-
     // Returns the parent configuration
     TIGL_EXPORT CCPACSConfiguration & GetConfiguration() const;
 

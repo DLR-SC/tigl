@@ -63,8 +63,6 @@ public:
     // Read CPACS segment elements
     TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& segmentXPath) OVERRIDE;
 
-    TIGL_EXPORT void SetUID(const std::string& uid) OVERRIDE;
-
     TIGL_EXPORT std::string GetDefaultedUID() const OVERRIDE;
 
     TIGL_EXPORT void SetFromElementUID(const std::string& value) OVERRIDE;

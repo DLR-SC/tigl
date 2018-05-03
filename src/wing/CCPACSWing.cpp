@@ -113,9 +113,6 @@ CCPACSWing::CCPACSWing(CCPACSRotorBlades* parent, CTiglUIDManager* uidMgr)
 // Destructor
 CCPACSWing::~CCPACSWing()
 {
-    // unregister
-    configuration->GetUIDManager().TryRemoveGeometricComponent(GetUID());
-
     Cleanup();
 }
 
@@ -191,18 +188,7 @@ void CCPACSWing::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::stri
 
     ConnectGuideCurveSegments();
 
-    // Register ourself at the unique id manager
-    configuration->GetUIDManager().AddGeometricComponent(m_uID, this);
-
     Update();
-}
-
-void CCPACSWing::SetUID(const std::string& uid) {
-    if (m_uidMgr) {
-        m_uidMgr->TryRemoveGeometricComponent(m_uID);
-        m_uidMgr->AddGeometricComponent(uid, this);
-    }
-    generated::CPACSWing::SetUID(uid);
 }
 
 std::string CCPACSWing::GetDefaultedUID() const {

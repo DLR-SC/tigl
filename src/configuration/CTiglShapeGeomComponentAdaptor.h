@@ -54,12 +54,10 @@ public:
     void SetUID(const std::string &uid)
     {
         unregisterShape();
-
-        m_uid = uid;
-
         if (!m_uid.empty() && m_uidMgr) {
-            m_uidMgr->AddGeometricComponent(GetDefaultedUID(), this);
+            m_uidMgr->RegisterObject(m_uid, *this);
         }
+        m_uid = uid;
     }
 
 
@@ -95,7 +93,7 @@ private:
     void unregisterShape()
     {
         if (!m_uid.empty() && m_uidMgr) {
-            m_uidMgr->TryRemoveGeometricComponent(GetDefaultedUID());
+            m_uidMgr->TryUnregisterObject(m_uid);
         }
     }
 

@@ -200,9 +200,6 @@ CCPACSWingSegment::CCPACSWingSegment(CCPACSWingSegments* parent, CTiglUIDManager
 // Destructor
 CCPACSWingSegment::~CCPACSWingSegment()
 {
-    // unregister
-    GetWing().GetConfiguration().GetUIDManager().TryRemoveGeometricComponent(GetUID());
-
     Cleanup();
 }
 
@@ -232,10 +229,6 @@ void CCPACSWingSegment::ReadCPACS(const TixiDocumentHandle& tixiHandle, const st
     Cleanup();
     generated::CPACSWingSegment::ReadCPACS(tixiHandle, segmentXPath);
 
-    if (m_uidMgr) {
-        m_uidMgr->AddGeometricComponent(m_uID, this);
-    }
-
     // trigger creation of connections
     SetFromElementUID(m_fromElementUID);
     SetToElementUID(m_toElementUID);
@@ -262,14 +255,6 @@ void CCPACSWingSegment::ReadCPACS(const TixiDocumentHandle& tixiHandle, const st
     }
 
     Update();
-}
-
-void CCPACSWingSegment::SetUID(const std::string& uid) {
-    if (m_uidMgr) {
-        m_uidMgr->TryRemoveGeometricComponent(m_uID);
-        m_uidMgr->AddGeometricComponent(uid, this);
-    }
-    generated::CPACSWingSegment::SetUID(uid);
 }
 
 std::string CCPACSWingSegment::GetDefaultedUID() const {

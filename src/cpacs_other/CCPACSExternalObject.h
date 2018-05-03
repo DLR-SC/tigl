@@ -36,8 +36,6 @@ public:
 
     TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& objectXPath) OVERRIDE;
 
-    TIGL_EXPORT void SetUID(const std::string& uid) OVERRIDE;
-
     TIGL_EXPORT const std::string& GetFilePath() const;
     
     TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE;

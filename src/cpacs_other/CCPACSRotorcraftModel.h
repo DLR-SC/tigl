@@ -33,10 +33,6 @@ public:
     TIGL_EXPORT CCPACSRotorcraftModel(CCPACSConfiguration* config = NULL);
     TIGL_EXPORT CCPACSRotorcraftModel(CTiglUIDManager* uidMgr);
 
-    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) OVERRIDE;
-
-    TIGL_EXPORT void SetUID(const std::string& uid) OVERRIDE;
-
     TIGL_EXPORT std::string GetDefaultedUID() const OVERRIDE;
 
     // Returns the Geometric type of this component, e.g. Wing or Fuselage

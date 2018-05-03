@@ -72,9 +72,6 @@ CCPACSFuselage::CCPACSFuselage(CCPACSFuselages* parent, CTiglUIDManager* uidMgr)
 // Destructor
 CCPACSFuselage::~CCPACSFuselage()
 {
-    // unregister
-    configuration->GetUIDManager().TryRemoveGeometricComponent(m_uID);
-
     Cleanup();
 }
 
@@ -109,19 +106,6 @@ void CCPACSFuselage::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::
     generated::CPACSFuselage::ReadCPACS(tixiHandle, fuselageXPath);
 
     ConnectGuideCurveSegments();
-
-    // Register ourself at the unique id manager
-    if (m_uidMgr) {
-        m_uidMgr->AddGeometricComponent(m_uID, this);
-    }
-}
-
-void CCPACSFuselage::SetUID(const std::string& uid) {
-    if (m_uidMgr) {
-        m_uidMgr->TryRemoveGeometricComponent(m_uID);
-        m_uidMgr->AddGeometricComponent(uid, this);
-    }
-    generated::CPACSFuselage::SetUID(uid);
 }
 
 // Returns the parent configuration

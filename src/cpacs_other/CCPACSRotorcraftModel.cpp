@@ -28,21 +28,6 @@ CCPACSRotorcraftModel::CCPACSRotorcraftModel(CCPACSConfiguration* config)
 CCPACSRotorcraftModel::CCPACSRotorcraftModel(CTiglUIDManager* uidMgr)
     : generated::CPACSRotorcraftModel(uidMgr), CTiglRelativelyPositionedComponent(NULL, NULL), config(NULL) {}
 
-void CCPACSRotorcraftModel::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) {
-    generated::CPACSRotorcraftModel::ReadCPACS(tixiHandle, xpath);
-    if (config) {
-        config->GetUIDManager().AddGeometricComponent(m_uID, this);
-    }
-}
-
-void CCPACSRotorcraftModel::SetUID(const std::string& uid) {
-    if (m_uidMgr) {
-        m_uidMgr->TryRemoveGeometricComponent(m_uID);
-        m_uidMgr->AddGeometricComponent(uid, this);
-    }
-    generated::CPACSRotorcraftModel::SetUID(uid);
-}
-
 std::string CCPACSRotorcraftModel::GetDefaultedUID() const {
     return generated::CPACSRotorcraftModel::GetUID();
 }
