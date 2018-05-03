@@ -830,16 +830,14 @@ void TIGLViewerDocument::drawWingGuideCurves(tigl::CCPACSWing& wing)
 
     for (; anIter.More(); anIter.Next()) {
         TopoDS_Shape wire = anIter.Value();
-        Handle(AIS_Shape) shape = new AIS_Shape(wire);
-        shape->SetMaterial(Graphic3d_NOM_METALIZED);
-        app->getScene()->getContext()->Display(shape, Standard_False);
+        app->getScene()->displayShape(wire, Standard_False, Quantity_NOC_RED);
     }
 
     //display guide curve points (TODO: these points are not sorted and
     // there are probably duplicates)
     std::vector<gp_Pnt> points = wing.GetGuideCurvePoints();
-    for (int i=0; i<points.size(); i++) {
-        app->getScene()->displayPoint(points[i], "", Standard_True, 0, 0, 0, 1.);
+    for (size_t i=0; i < points.size(); i++) {
+        app->getScene()->displayPoint(points[i], "", Standard_False, 0, 0, 0, 1.);
     }
 
     app->getScene()->getContext()->UpdateCurrentViewer();
@@ -907,16 +905,14 @@ void TIGLViewerDocument::drawFuselageGuideCurves()
 
     for (; anIter.More(); anIter.Next()) {
         TopoDS_Shape wire = anIter.Value();
-        Handle(AIS_Shape) shape = new AIS_Shape(wire);
-        shape->SetMaterial(Graphic3d_NOM_METALIZED);
-        app->getScene()->getContext()->Display(shape, Standard_False);
+        app->getScene()->displayShape(wire, Standard_False, Quantity_NOC_RED);
     }
 
     //display guide curve points (TODO: these points are not sorted and
     // there are probably duplicates)
     std::vector<gp_Pnt> points = fuselage.GetGuideCurvePoints();
-    for (int i=0; i<points.size(); i++) {
-        app->getScene()->displayPoint(points[i], "", Standard_True, 0, 0, 0, 1.);
+    for (size_t i=0; i < points.size(); i++) {
+        app->getScene()->displayPoint(points[i], "", Standard_False, 0, 0, 0, 1.);
     }
 
     app->getScene()->getContext()->UpdateCurrentViewer();
