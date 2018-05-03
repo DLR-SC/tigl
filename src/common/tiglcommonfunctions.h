@@ -231,4 +231,11 @@ TIGL_EXPORT double GetArea(const TopoDS_Shape &shape);
 //       OF THE EDGES, BUT DOES NOT COMPARE THE CURVES EXACTLY
 TIGL_EXPORT TopoDS_Shape RemoveDuplicateEdges(const TopoDS_Shape& shape);
 
+// Calculate centripetal parameters for a sequence of points. This can be used
+// to influence the parametrization in the interpolation algorithm
+TIGL_EXPORT std::vector<double> GetCentripetalParameters(const std::vector<gp_Pnt>& points,
+                                                         double startParam = 0,
+                                                         double endParam = 1,
+                                                         double exponent = 1);
+
 #endif // TIGLCOMMONFUNCTIONS_H

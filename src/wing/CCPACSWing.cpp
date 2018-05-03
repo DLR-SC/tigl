@@ -21,6 +21,7 @@
 
 #include <iostream>
 #include <algorithm>
+#include <map>
 
 #include "generated/CPACSRotorBlades.h"
 #include "CCPACSWing.h"
@@ -36,6 +37,7 @@
 #include "tiglcommonfunctions.h"
 #include "tiglmathfunctions.h"
 #include "CNamedShape.h"
+#include "CTiglCurveConnector.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "BRepAlgoAPI_Fuse.hxx"
@@ -724,16 +726,34 @@ TopoDS_Compound& CCPACSWing::GetGuideCurveWires()
     return guideCurves;
 }
 
+std::vector<gp_Pnt> CCPACSWing::GetGuideCurvePoints()
+{
+    std::vector<gp_Pnt> points;
+
+    // connect the belonging guide curve segments
+    for (int isegment = 1; isegment <= GetSegmentCount(); ++isegment) {
+        CCPACSWingSegment& segment = m_segments.GetSegment(isegment);
+
+        if (!segment.GetGuideCurves()) {
+            continue;
+        }
+
+        CCPACSGuideCurves& segmentCurves = *segment.GetGuideCurves();
+        for (int iguide = 1; iguide <=  segmentCurves.GetGuideCurveCount(); ++iguide) {
+            CCPACSGuideCurve& curve = segmentCurves.GetGuideCurve(iguide);
+            std::vector<gp_Pnt> curPoints = curve.GetCurvePoints();
+            points.insert(points.end(), curPoints.begin(), curPoints.end());
+        }
+    }
+    return points;
+}
+
 
 void CCPACSWing::BuildGuideCurveWires()
 {
     if (!guideCurves.IsNull()) {
         return;
     }
-    
-    guideCurves.Nullify();
-    BRep_Builder b;
-    b.MakeCompound(guideCurves);
     
     // check, if the wing has a blunt trailing edge
     bool hasBluntTE = true;
@@ -744,7 +764,16 @@ void CCPACSWing::BuildGuideCurveWires()
     
     // the guide curves will be sorted according to the inner
     // from relativeCircumference
-    std::multimap<double, CCPACSGuideCurve*> roots;
+    std::map<double, CCPACSGuideCurve*> roots;
+
+    // get chord centers on each section for the centripetal parametrization
+    std::vector<gp_Pnt> sectionCenters(GetSegmentCount()+1);
+
+    // get inner chord face center of first segment
+    CCPACSWingSegment& innerSegment = m_segments.GetSegment(1);
+    sectionCenters[0] = innerSegment.GetInnerProfilePoint(0.);  // inner front
+    gp_Pnt back       = innerSegment.GetInnerProfilePoint(1.);  // inner back
+    back.BaryCenter(0.5, sectionCenters[0], 0.5);               // inner chord center
     
     // connect the belonging guide curve segments
     for (int isegment = 1; isegment <= GetSegmentCount(); ++isegment) {
@@ -753,6 +782,11 @@ void CCPACSWing::BuildGuideCurveWires()
         if (!segment.GetGuideCurves()) {
             continue;
         }
+
+        // get outer chord face center of current segment
+        sectionCenters[isegment] = segment.GetOuterProfilePoint(0.);   // outer front
+        back                     = segment.GetOuterProfilePoint(1.);   // outer back
+        back.BaryCenter(0.5, sectionCenters[isegment], 0.5);           // outer chord center
 
         CCPACSGuideCurves& segmentCurves = *segment.GetGuideCurves();
         for (int iguide = 1; iguide <=  segmentCurves.GetGuideCurveCount(); ++iguide) {
@@ -771,26 +805,13 @@ void CCPACSWing::BuildGuideCurveWires()
             }
         }
     }
-    
-    // connect belonging guide curves to wires
-    std::multimap<double, CCPACSGuideCurve*>::iterator it;
-    for (it = roots.begin(); it != roots.end(); ++it) {
-        CCPACSGuideCurve* curCurve = it->second;
-        BRepBuilderAPI_MakeWire wireMaker;
-        while (curCurve) {
-            const TopoDS_Edge& edge = curCurve->GetCurve();
-            wireMaker.Add(edge);
-            curCurve = curCurve->GetConnectedCurve();
-        }
-        TopoDS_Wire result = wireMaker.Wire();
-        // Fix Shape, might be necessary since the order of edges could be wrong
-        ShapeFix_Wire wireFixer;
-        wireFixer.Load(result);
-        wireFixer.FixReorder();
-        wireFixer.Perform();
-        result = wireFixer.Wire();
-        b.Add(guideCurves, result);
-    }
+
+    // get the parameters at the section centers
+    std::vector<double> sectionParams = GetCentripetalParameters(sectionCenters, 0., 1., 0.5);
+
+    // connect guide curve segments to a spline with given continuity conditions and tangents
+    CTiglCurveConnector connector(roots, sectionParams);
+    guideCurves = connector.GetConnectedGuideCurves();
 }
 
 TopoDS_Shape transformWingProfileGeometry(const CTiglTransformation& wingTransform, const CTiglWingConnection& connection, const TopoDS_Shape& wire)

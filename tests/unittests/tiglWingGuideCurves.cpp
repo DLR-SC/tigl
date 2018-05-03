@@ -50,6 +50,7 @@
 #include "CCPACSWingProfileGetPointAlgo.h"
 #include "CCPACSGuideCurveAlgo.h"
 #include "CCPACSWingSegment.h"
+#include "tiglcommonfunctions.h"
 
 /******************************************************************************/
 
@@ -363,9 +364,10 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSGuideCurveAlgo)
     guideCurveProfile.ReadCPACS(tixiHandle, "/cpacs/vehicles/profiles/guideCurves/guideCurveProfile[7]");
 
 
-    TopoDS_Edge guideCurveEdge;
+    std::vector<gp_Pnt> guideCurvePnts;
     // instantiate guideCurveAlgo
-    guideCurveEdge = tigl::CCPACSGuideCurveAlgo<tigl::CCPACSWingProfileGetPointAlgo> (innerWireContainer, outerWireContainer, 0.0, 0.0, 2*radius1, 2*radius2, gp_Dir(1., 0., 0.), guideCurveProfile);
+     guideCurvePnts = tigl::CCPACSGuideCurveAlgo<tigl::CCPACSWingProfileGetPointAlgo> (innerWireContainer, outerWireContainer, 0.0, 0.0, 2*radius1, 2*radius2, gp_Dir(1., 0., 0.), guideCurveProfile);
+    TopoDS_Edge guideCurveEdge = EdgeSplineFromPoints(guideCurvePnts);;
 
     // check if guide curve runs through sample points
     // get curve

@@ -32,14 +32,13 @@ class CTiglFuselageSegmentGuidecurveBuilder : public IGuideCurveBuilder
 {
 
 public:
-    CTiglFuselageSegmentGuidecurveBuilder(class CCPACSFuselageSegment& segment)
-        : m_segment(segment)
-    {
-    }
+    CTiglFuselageSegmentGuidecurveBuilder(class CCPACSFuselageSegment& segment);
+
+    virtual ~CTiglFuselageSegmentGuidecurveBuilder();
 
     // IGuideCurveBuilder interface
 public:
-    TopoDS_Edge BuildGuideCurve(CCPACSGuideCurve *) OVERRIDE;
+    std::vector<gp_Pnt> BuildGuideCurvePnts(CCPACSGuideCurve *) OVERRIDE;
 
 private:
     class CCPACSFuselageSegment& m_segment;

@@ -59,6 +59,7 @@ public:
     // Virtual Destructor
     TIGL_EXPORT ~CCPACSGuideCurve(void) OVERRIDE;
 
+    TIGL_EXPORT const std::vector<gp_Pnt> GetCurvePoints();
     TIGL_EXPORT const TopoDS_Edge& GetCurve();
 
     // Connects the current guide curve segment with another segment guide
@@ -90,7 +91,7 @@ private:
 class IGuideCurveBuilder
 {
 public:
-    virtual TopoDS_Edge BuildGuideCurve(CCPACSGuideCurve*) = 0;
+    virtual std::vector<gp_Pnt> BuildGuideCurvePnts(CCPACSGuideCurve*) = 0;
 };
 
 } // end namespace tigl

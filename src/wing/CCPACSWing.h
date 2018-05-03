@@ -149,6 +149,9 @@ public:
     // Get the guide curve segment (partial guide curve) with a given UID
     TIGL_EXPORT CCPACSGuideCurve& GetGuideCurveSegment(std::string uid);
 
+    // Returns all points that define the guide curves
+    TIGL_EXPORT std::vector<gp_Pnt> GetGuideCurvePoints();
+
     // Returns all guide curve wires as a compound
     TIGL_EXPORT TopoDS_Compound& GetGuideCurveWires();
 

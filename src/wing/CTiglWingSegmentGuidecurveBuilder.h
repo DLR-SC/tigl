@@ -32,14 +32,13 @@ class CTiglWingSegmentGuidecurveBuilder : public IGuideCurveBuilder
 {
 
 public:
-    CTiglWingSegmentGuidecurveBuilder(class CCPACSWingSegment& segment)
-        : m_segment(segment)
-    {
-    }
+    CTiglWingSegmentGuidecurveBuilder(class CCPACSWingSegment& segment);
+
+    virtual ~CTiglWingSegmentGuidecurveBuilder();
 
     // IGuideCurveBuilder interface
 public:
-    TopoDS_Edge BuildGuideCurve(CCPACSGuideCurve *) OVERRIDE;
+    std::vector<gp_Pnt> BuildGuideCurvePnts(CCPACSGuideCurve *) OVERRIDE;
 
 private:
     class CCPACSWingSegment& m_segment;

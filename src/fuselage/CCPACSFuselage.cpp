@@ -55,6 +55,7 @@
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepProj_Projection.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <CTiglCurveConnector.h>
 
 namespace tigl
 {
@@ -360,6 +361,28 @@ TopoDS_Compound &CCPACSFuselage::GetGuideCurveWires()
     return guideCurves;
 }
 
+std::vector<gp_Pnt> CCPACSFuselage::GetGuideCurvePoints()
+{
+    std::vector<gp_Pnt> points;
+
+    // connect the belonging guide curve segments
+    for (int isegment = 1; isegment <= GetSegmentCount(); ++isegment) {
+        CCPACSFuselageSegment& segment = m_segments.GetSegment(isegment);
+
+        if (!segment.GetGuideCurves()) {
+            continue;
+        }
+
+        CCPACSGuideCurves& segmentCurves = *segment.GetGuideCurves();
+        for (int iguide = 1; iguide <=  segmentCurves.GetGuideCurveCount(); ++iguide) {
+            CCPACSGuideCurve& curve = segmentCurves.GetGuideCurve(iguide);
+            std::vector<gp_Pnt> curPoints = curve.GetCurvePoints();
+            points.insert(points.end(), curPoints.begin(), curPoints.end());
+        }
+    }
+    return points;
+}
+
 gp_Lin CCPACSFuselage::Intersection(gp_Pnt pRef, double angleRef)
 {
     const gp_Ax1 xAxe(
@@ -450,9 +473,14 @@ void CCPACSFuselage::BuildGuideCurves()
     }
     
     guideCurves.Nullify();
-    BRep_Builder b;
-    b.MakeCompound(guideCurves);
-    std::multimap<double, CCPACSGuideCurve*> roots;
+    std::map<double, CCPACSGuideCurve*> roots;
+
+    // get section centers for the centripetal parametrization
+    std::vector<gp_Pnt> sectionCenters(GetSegmentCount()+1);
+
+    // get center of inner section of first segment
+    CCPACSFuselageSegment& innerSegment = m_segments.GetSegment(1);
+    sectionCenters[0] = innerSegment.GetTransformedProfileOriginStart();
     
     // find roots and connect the belonging guide curve segments
     for (int isegment = 1; isegment <= GetSegmentCount(); ++isegment) {
@@ -461,6 +489,9 @@ void CCPACSFuselage::BuildGuideCurves()
         if (!segment.GetGuideCurves()) {
             continue;
         }
+
+        // get center of outer section
+        sectionCenters[isegment] = segment.GetTransformedProfileOriginEnd();
 
         CCPACSGuideCurves& segmentCurves = *segment.GetGuideCurves();
         for (int iguide = 1; iguide <=  segmentCurves.GetGuideCurveCount(); ++iguide) {
@@ -478,26 +509,13 @@ void CCPACSFuselage::BuildGuideCurves()
             }
         }
     }
-    
-    // connect belonging guide curves to wires
-    std::multimap<double, CCPACSGuideCurve*>::iterator it;
-    for (it = roots.begin(); it != roots.end(); ++it) {
-        CCPACSGuideCurve* curCurve = it->second;
-        BRepBuilderAPI_MakeWire wireMaker;
-        while (curCurve) {
-            const TopoDS_Edge& edge = curCurve->GetCurve();
-            wireMaker.Add(edge);
-            curCurve = curCurve->GetConnectedCurve();
-        }
-        TopoDS_Wire result = wireMaker.Wire();
-        // Fix Shape, might be necessary since the order of edges could be wrong
-        ShapeFix_Wire wireFixer;
-        wireFixer.Load(result);
-        wireFixer.FixReorder();
-        wireFixer.Perform();
-        result = wireFixer.Wire();
-        b.Add(guideCurves, result);
-    }
+
+    // get the parameters at the section centers
+    std::vector<double> sectionParams = GetCentripetalParameters(sectionCenters, 0., 1., 0.5);
+
+    // connect guide curve segments to a spline with given continuity conditions and tangents
+    CTiglCurveConnector connector(roots, sectionParams);
+    guideCurves = connector.GetConnectedGuideCurves();
 }
 
 void CCPACSFuselage::ConnectGuideCurveSegments(void)

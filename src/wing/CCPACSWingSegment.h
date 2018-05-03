@@ -74,6 +74,10 @@ public:
     TIGL_EXPORT TopoDS_Shape GetInnerClosure(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
     TIGL_EXPORT TopoDS_Shape GetOuterClosure(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
 
+    // Returns points on the inner/outer profile without building the shape
+    TIGL_EXPORT gp_Pnt GetInnerProfilePoint(double xsi) const;
+    TIGL_EXPORT gp_Pnt GetOuterProfilePoint(double xsi) const;
+
     // Gets the upper point in relative wing coordinates for a given eta and xsi
     TIGL_EXPORT gp_Pnt GetUpperPoint(double eta, double xsi) const;
 
