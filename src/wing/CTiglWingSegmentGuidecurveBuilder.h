@@ -32,10 +32,9 @@ class CTiglWingSegmentGuidecurveBuilder : public IGuideCurveBuilder
 {
 
 public:
-    CTiglWingSegmentGuidecurveBuilder(class CCPACSWingSegment& segment)
-        : m_segment(segment)
-    {
-    }
+    CTiglWingSegmentGuidecurveBuilder(class CCPACSWingSegment& segment);
+
+    virtual ~CTiglWingSegmentGuidecurveBuilder();
 
     // IGuideCurveBuilder interface
 public:

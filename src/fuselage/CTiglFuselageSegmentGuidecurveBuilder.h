@@ -32,10 +32,9 @@ class CTiglFuselageSegmentGuidecurveBuilder : public IGuideCurveBuilder
 {
 
 public:
-    CTiglFuselageSegmentGuidecurveBuilder(class CCPACSFuselageSegment& segment)
-        : m_segment(segment)
-    {
-    }
+    CTiglFuselageSegmentGuidecurveBuilder(class CCPACSFuselageSegment& segment);
+
+    virtual ~CTiglFuselageSegmentGuidecurveBuilder();
 
     // IGuideCurveBuilder interface
 public:

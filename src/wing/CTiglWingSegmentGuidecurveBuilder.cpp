@@ -30,6 +30,15 @@
 namespace tigl
 {
 
+CTiglWingSegmentGuidecurveBuilder::CTiglWingSegmentGuidecurveBuilder(CCPACSWingSegment &segment)
+    : m_segment(segment)
+{
+}
+
+CTiglWingSegmentGuidecurveBuilder::~CTiglWingSegmentGuidecurveBuilder()
+{
+}
+
 std::vector<gp_Pnt> CTiglWingSegmentGuidecurveBuilder::BuildGuideCurvePnts(CCPACSGuideCurve * guideCurve)
 {
     assert(guideCurve);
