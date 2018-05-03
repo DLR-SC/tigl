@@ -109,7 +109,7 @@ public:
             Standard_Real scale = (1.0-beta)*_scale1 + beta*_scale2;
 
             // add alpha component along global x and gamma component along z_vec
-            vec_global.SetX( vec_global.X() + scale*alpha );
+            vec_global += scale*alpha*gp_Vec(_x_direction);
             vec_global += scale*gamma*z_vec;
 
             // save to container
