@@ -64,6 +64,7 @@
 #include "CCPACSPointListRelXYZ.h"
 #include "generated/CPACSPointXYZ.h"
 #include "generated/CPACSPointX.h"
+#include "tiglcommonfunctions.h"
 %}
 
 
@@ -82,6 +83,7 @@
 %boost_optional(tigl::generated::CPACSPointXYZ)
 %boost_optional(tigl::CCPACSPointListXYZ)
 
+%include "tiglcommonfunctions.h"
 %include "generated/CPACSPointX.h"
 %include "ECPACSTranslationType.h"
 %include "generated/CPACSPoint.h"

@@ -24,6 +24,7 @@
 #include "Standard.hxx"
 #include "gp_Pnt.hxx"
 #include "gp_Vec.hxx"
+#include "gp_Pln.hxx"
 #include "TopoDS_Shape.hxx"
 #include <TopoDS_Edge.hxx>
 #include "PNamedShape.h"

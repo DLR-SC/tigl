@@ -24,7 +24,7 @@ namespace tigl
 class CCPACSPointAbsRel : public generated::CPACSPointAbsRel
 {
 public:
-    static ECPACSTranslationType defaultTranslationType;
+    TIGL_EXPORT static ECPACSTranslationType defaultTranslationType;
 
     TIGL_EXPORT CCPACSPointAbsRel(CTiglUIDManager* uidMgr);
 
