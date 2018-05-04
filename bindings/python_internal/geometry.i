@@ -65,6 +65,13 @@
 #include "generated/CPACSPointXYZ.h"
 #include "generated/CPACSPointX.h"
 #include "tiglcommonfunctions.h"
+#include "CTiglBSplineAlgorithms.h"
+#include "CTiglBSplineApproxInterp.h"
+#include "CTiglBSplineFit.h"
+#include "CPointsToLinearBSpline.h"
+#include "CTiglArcLengthReparameterization.h"
+#include "CTiglMakeLoft.h"
+#include "CTiglProjectOnLinearSpline.h"
 %}
 
 
@@ -84,6 +91,13 @@
 %boost_optional(tigl::CCPACSPointListXYZ)
 
 %include "tiglcommonfunctions.h"
+%include "CTiglProjectOnLinearSpline.h"
+%include "CTiglMakeLoft.h"
+%include "CTiglArcLengthReparameterization.h"
+%include "CPointsToLinearBSpline.h"
+%include "CTiglBSplineApproxInterp.h"
+%include "CTiglBSplineFit.h"
+%include "CTiglBSplineAlgorithms.h"
 %include "generated/CPACSPointX.h"
 %include "ECPACSTranslationType.h"
 %include "generated/CPACSPoint.h"

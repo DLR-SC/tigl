@@ -19,6 +19,8 @@
 #ifndef CTIGLARCLENGTHREPARAMETERIZATION_H
 #define CTIGLARCLENGTHREPARAMETERIZATION_H
 
+#include "tigl_internal.h"
+
 #include <Geom_BSplineCurve.hxx>
 
 namespace tigl
@@ -34,16 +36,16 @@ namespace tigl
 class CTiglArcLengthReparameterization
 {
 public:
-    CTiglArcLengthReparameterization();
+    TIGL_EXPORT CTiglArcLengthReparameterization();
 
-    void init(const Handle(Geom_BSplineCurve) curve, double accuracy=1e-5);
+    TIGL_EXPORT void init(const Handle(Geom_BSplineCurve) curve, double accuracy=1e-5);
 
-    bool isInitialized() const;
+    TIGL_EXPORT bool isInitialized() const;
 
     /// Returns the curve parameter for the given arc length
-    double parameter(double arcLength) const;
+    TIGL_EXPORT double parameter(double arcLength) const;
 
-    double totalLength() const;
+    TIGL_EXPORT double totalLength() const;
 
 private:
     Handle(Geom_BSplineCurve) _reparCurve;
