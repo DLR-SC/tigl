@@ -14,10 +14,11 @@ source:
     - oceonly-freeimage_staticlib_support.patch
     - fix-fonts.patch
     - glibc.patch                     # [linux]
+    - fix-geomapi_extremacurvecurve.patch
 
 build:
   detect_binary_files_with_prefix: True
-  number: 6
+  number: 7
   features:
     - vc9              # [win and py27]
     - vc10             # [win and py34]
