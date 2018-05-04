@@ -1270,7 +1270,7 @@ TEST(TiglBSplineAlgorithms, testIntersectionFinderClosed)
 
     BRep_Builder builder_u;
 
-    BRepTools::Read(shape_u, "TestData/spiralwing/profiles.brep", builder_u);
+    BRepTools::Read(shape_u, "TestData/CurveNetworks/spiralwing/profiles.brep", builder_u);
 
     TopExp_Explorer Explorer;
     // get the splines in u-direction from the Edges
@@ -1290,7 +1290,7 @@ TEST(TiglBSplineAlgorithms, testIntersectionFinderClosed)
 
     BRep_Builder builder_v;
 
-    BRepTools::Read(shape_v, "TestData/spiralwing/guides.brep", builder_v);
+    BRepTools::Read(shape_v, "TestData/CurveNetworks/spiralwing/guides.brep", builder_v);
 
     // now filter out the Edges
     TopTools_IndexedMapOfShape mapEdges_v;
@@ -1358,9 +1358,9 @@ protected:
     virtual void SetUp()
     {
         // get the name of the folder with the B-spline network data
-        path_profiles = "TestData/" + GetParam() + "/profiles.brep";
-        path_guides = "TestData/" + GetParam() + "/guides.brep";
-        path_output = "TestData/" + GetParam() + "/result_gordon.brep";
+        path_profiles = "TestData/CurveNetworks/" + GetParam() + "/profiles.brep";
+        path_guides = "TestData/CurveNetworks/" + GetParam() + "/guides.brep";
+        path_output = "TestData/CurveNetworks/" + GetParam() + "/result_gordon.brep";
     }
 
     void TearDown()
