@@ -30,18 +30,18 @@ namespace  tigl
 class CTiglProjectOnLinearSpline
 {
 public:
-    CTiglProjectOnLinearSpline(Handle(Geom_BSplineCurve) curve, gp_Pnt p);
+    TIGL_EXPORT CTiglProjectOnLinearSpline(Handle(Geom_BSplineCurve) curve, gp_Pnt p);
 
     /// If false, no projection could be computed
-    bool IsDone();
+    TIGL_EXPORT bool IsDone();
 
     /// Returns the point projected
-    gp_Pnt Point();
+    TIGL_EXPORT gp_Pnt Point();
 
     /// Returns the curve parameter of the projected point
-    double Parameter();
+    TIGL_EXPORT double Parameter();
 
-    ~CTiglProjectOnLinearSpline();
+    TIGL_EXPORT ~CTiglProjectOnLinearSpline();
 
 private:
     bool compute();

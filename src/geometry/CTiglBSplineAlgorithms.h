@@ -43,8 +43,8 @@ public:
     Handle(TColStd_HArray1OfReal) old_parameters;
     Handle(TColStd_HArray1OfReal) new_parameters;
 
-    ParametrizingFunction(const TColStd_Array1OfReal& old_params, const TColStd_Array1OfReal& new_params);
-    virtual void Evaluate(const Standard_Integer theDerivativeRequest, const Standard_Real * theStartEnd, const Standard_Real theParameter,
+    TIGL_EXPORT ParametrizingFunction(const TColStd_Array1OfReal& old_params, const TColStd_Array1OfReal& new_params);
+    TIGL_EXPORT virtual void Evaluate(const Standard_Integer theDerivativeRequest, const Standard_Real * theStartEnd, const Standard_Real theParameter,
                           Standard_Real & theResult, Standard_Integer & theErrorCode) const;
 };
 

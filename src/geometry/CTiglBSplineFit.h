@@ -17,6 +17,8 @@
 #ifndef BSPLINEFIT_H
 #define BSPLINEFIT_H
 
+#include "tigl_internal.h"
+
 #include <vector>
 #include <TColStd_Array1OfReal.hxx>
 #include <Handle_Geom_BSplineCurve.hxx>
@@ -34,7 +36,7 @@ public:
      * @param eps Tolerance of the iterative method
      * @param maxIter Maximum number of iterations
      */
-    BSplineFit(int deg, int ncp);
+    TIGL_EXPORT BSplineFit(int deg, int ncp);
 
     enum error
     {
@@ -45,21 +47,21 @@ public:
 
 
     /// Fits the given points by a B-spline
-    error Fit(const TColgp_Array1OfPnt& points, const std::vector<double>& parameters);
+    TIGL_EXPORT error Fit(const TColgp_Array1OfPnt& points, const std::vector<double>& parameters);
 
     /// Fits the given points by a B-spline using the centripetal paramterization scheme (alpha=0.5)
-    error Fit(const TColgp_Array1OfPnt& points, double alpha=1.0);
+    TIGL_EXPORT error Fit(const TColgp_Array1OfPnt& points, double alpha=1.0);
 
     /// Fits, by optimizing the fit parameters
     /// This is an iterative algorithm and requires more time than the other fit algorithms
-    error FitOptimal(const TColgp_Array1OfPnt& points, double alpha=1.0, double eps=1.0E-3, int maxIter=100);
+    TIGL_EXPORT error FitOptimal(const TColgp_Array1OfPnt& points, double alpha=1.0, double eps=1.0E-3, int maxIter=100);
 
     /// Returns the resulting curve. Returns
     /// Null in case of an error
-    Handle_Geom_BSplineCurve Curve() const;
+    TIGL_EXPORT Handle_Geom_BSplineCurve Curve() const;
 
     /// Computes the maximum error of the fit
-    double GetMaxError();
+    TIGL_EXPORT double GetMaxError();
 
 
 private:
