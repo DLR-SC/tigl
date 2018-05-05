@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2018 RISC Software GmbH
+* Copyright (c) 2018 Airbus Defence and Space and RISC Software GmbH
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -16,7 +16,11 @@
 
 #pragma once
 
+#include <TopoDS_Face.hxx>
+#include <gp_Pnt.hxx>
+
 #include "generated/CPACSLongFloorBeamPosition.h"
+#include "tigl.h"
 
 namespace tigl
 {
@@ -25,6 +29,19 @@ class CCPACSLongFloorBeamPosition : public generated::CPACSLongFloorBeamPosition
 {
 public:
     TIGL_EXPORT CCPACSLongFloorBeamPosition(CCPACSLongFloorBeam* parent, CTiglUIDManager* uidMgr);
+
+    TIGL_EXPORT void SetPositionY(const double& value) OVERRIDE;
+
+    TIGL_EXPORT void Invalidate();
+
+    TIGL_EXPORT gp_Pnt GetCrossBeamIntersection(TiglCoordinateSystem cs = GLOBAL_COORDINATE_SYSTEM);
+    TIGL_EXPORT TopoDS_Face GetCutGeometryForCrossBeam(TiglCoordinateSystem cs = GLOBAL_COORDINATE_SYSTEM);
+
+private:
+    void BuildCutGeometryForCrossBeam();
+
+private:
+    boost::optional<TopoDS_Face> m_cutGeometryForCrossBeam;
 };
 
 } // namespace tigl
