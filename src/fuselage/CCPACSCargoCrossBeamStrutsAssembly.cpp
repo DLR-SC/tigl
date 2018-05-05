@@ -16,8 +16,6 @@
 
 #include "CCPACSCargoCrossBeamStrutsAssembly.h"
 
-#include "CTiglLogging.h"
-#include "CTiglError.h"
 #include "CCPACSCrossBeamStrutAssemblyPosition.h"
 
 namespace tigl
