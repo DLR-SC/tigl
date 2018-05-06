@@ -51,7 +51,7 @@ struct CTiglApproxResult
 class CTiglBSplineApproxInterp
 {
 public:
-    TIGL_EXPORT CTiglBSplineApproxInterp(const TColgp_Array1OfPnt& points, int nControlPoints, int degree=3);
+    TIGL_EXPORT CTiglBSplineApproxInterp(const TColgp_Array1OfPnt& points, int nControlPoints, int degree=3, bool continuous_if_closed=false);
 
     /// The specified point will be interpolated instead of approximated
     TIGL_EXPORT void InterpolatePoint(size_t pointIndex, bool withKink=false);
@@ -84,6 +84,15 @@ private:
 
     /// Number of control points of the B-spline
     int m_ncp;
+
+    /// determines whether the  curve is closed or not
+    bool is_closed;
+
+    /// determines whether the first as well as the last point has to be interpolated
+    bool first_and_last;
+
+    /// determines the contiuous closing of curve
+    bool  C2_continuous;
 };
 
 } // namespace tigl

@@ -71,7 +71,7 @@ public:
      * @param params    Parameters of B-Spline evaluation
      * @return          The B-spline matrix
      */
-    TIGL_EXPORT static math_Matrix bsplineBasisMat(int degree, const TColStd_Array1OfReal& flatKnots, const TColStd_Array1OfReal& params);
+    TIGL_EXPORT static math_Matrix bsplineBasisMat(int degree, const TColStd_Array1OfReal& flatKnots, const TColStd_Array1OfReal& params, unsigned int derivOrder=0);
 
     /**
      * @brief computeParamsBSplineSurf:
