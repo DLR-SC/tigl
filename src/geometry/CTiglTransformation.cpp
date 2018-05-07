@@ -404,7 +404,7 @@ TopoDS_Shape CTiglTransformation::Transform(const TopoDS_Shape& shape) const
 #else
                 ,1e-10, 1e-10);
 #endif
-        BRepBuilderAPI_Transform trafo(shape, t);
+        BRepBuilderAPI_Transform trafo(shape, t, Standard_True);
         return trafo.Shape();
     }
     else {
