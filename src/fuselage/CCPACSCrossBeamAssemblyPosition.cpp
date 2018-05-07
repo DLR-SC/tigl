@@ -48,37 +48,42 @@ CCPACSCrossBeamAssemblyPosition::CCPACSCrossBeamAssemblyPosition(CCPACSCargoCros
 
 void CCPACSCrossBeamAssemblyPosition::Invalidate()
 {
-    for (auto& c : m_geometry)
-        c = boost::none;
+    for (size_t i=0; i<2; i++) {
+        m_geometry[i] = boost::none;
+    }
     m_cutGeometry = boost::none;
 }
 
 TopoDS_Shape CCPACSCrossBeamAssemblyPosition::GetGeometry(bool just1DElements, TiglCoordinateSystem cs)
 {
-    if (!m_geometry[just1DElements])
+    if (!m_geometry[just1DElements]) {
         BuildGeometry(just1DElements);
+    }
 
     TopoDS_Shape shape = m_geometry[just1DElements].value();
     if (cs == GLOBAL_COORDINATE_SYSTEM) {
         CTiglTransformation trafo = m_parent->GetParent()->GetParent()->GetTransformationMatrix();
         return trafo.Transform(shape);
     }
-    else
+    else {
         return shape;
+    }
 }
 
 TopoDS_Shape CCPACSCrossBeamAssemblyPosition::GetCutGeometry(TiglCoordinateSystem cs)
 {
-    if (!m_cutGeometry)
+    if (!m_cutGeometry) {
         BuildCutGeometry();
+    }
 
     TopoDS_Shape shape = m_cutGeometry.value();
     if (cs == GLOBAL_COORDINATE_SYSTEM) {
         CTiglTransformation trafo = m_parent->GetParent()->GetParent()->GetTransformationMatrix();
         return trafo.Transform(shape);
     }
-    else
+    else {
         return shape;
+    }
 }
 
 void CCPACSCrossBeamAssemblyPosition::BuildGeometry(bool just1DElements)
@@ -101,12 +106,13 @@ void CCPACSCrossBeamAssemblyPosition::BuildGeometry(bool just1DElements)
         const TopoDS_Wire wire = BuildWireFromEdges(cutResult);
 
         m_geometry[just1DElements] = wire;
-    } else {
+    }
+    else {
         // get the profile based structural element for the first position
         CCPACSProfileBasedStructuralElement& structuralElement =
             m_uidMgr->ResolveObject<CCPACSProfileBasedStructuralElement>(GetStructuralElementUID());
         CCPACSStructuralProfile& structuralProfile = m_uidMgr->ResolveObject<CCPACSStructuralProfile>(
-            structuralElement.GetStructuralProfileUID_choice1().value());
+                                                         structuralElement.GetStructuralProfileUID_choice1().value());
 
         TopoDS_Compound compound;
         TopoDS_Builder builder;
@@ -115,8 +121,7 @@ void CCPACSCrossBeamAssemblyPosition::BuildGeometry(bool just1DElements)
         // we have to build the profile, to orientate it, and to sweep it all along the path
         TopTools_IndexedMapOfShape edgeMap;
         TopExp::MapShapes(GetGeometry(true), TopAbs_EDGE, edgeMap);
-        for (int i = 1; i <= edgeMap.Extent(); i++) //for each peace of the crossBeam
-        {
+        for (int i = 1; i <= edgeMap.Extent(); i++) { //for each peace of the crossBeam
             TopTools_IndexedMapOfShape vertexMap;
             TopExp::MapShapes(TopoDS::Edge(edgeMap(i)), TopAbs_VERTEX, vertexMap);
             if (vertexMap.Extent() > 2) {
@@ -126,8 +131,9 @@ void CCPACSCrossBeamAssemblyPosition::BuildGeometry(bool just1DElements)
             // get extrem points of the cross beam and order them
             gp_Pnt pnt1 = BRep_Tool::Pnt(TopoDS::Vertex(vertexMap(1)));
             gp_Pnt pnt2 = BRep_Tool::Pnt(TopoDS::Vertex(vertexMap(2)));
-            if (pnt1.Y() < pnt2.Y())
+            if (pnt1.Y() < pnt2.Y()) {
                 std::swap(pnt1, pnt2);
+            }
 
             // create profile plane
             gp_Vec crossBeamVec(pnt1, pnt2);
@@ -138,8 +144,9 @@ void CCPACSCrossBeamAssemblyPosition::BuildGeometry(bool just1DElements)
             TopoDS_Wire profile = structuralProfile.GetSheetList().CreateProfileWire(profilePlan);
             BRepPrimAPI_MakePrism frameShell(profile, crossBeamVec);
             frameShell.Build();
-            if (!frameShell.IsDone())
+            if (!frameShell.IsDone()) {
                 throw CTiglError("Failed to sweep cross beam");
+            }
             builder.Add(compound, frameShell.Shape());
         }
         m_geometry[just1DElements] = compound;
