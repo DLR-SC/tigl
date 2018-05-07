@@ -710,9 +710,9 @@ std::string FileExtension(const std::string &filename)
 
 gp_Pnt GetFirstPoint(const TopoDS_Shape& wireOrEdge)
 {
-    if (wireOrEdge.ShapeType() == TopAbs_ShapeEnum::TopAbs_WIRE)
+    if (wireOrEdge.ShapeType() == TopAbs_WIRE)
         return GetFirstPoint(TopoDS::Wire(wireOrEdge));
-    if (wireOrEdge.ShapeType() == TopAbs_ShapeEnum::TopAbs_EDGE)
+    if (wireOrEdge.ShapeType() == TopAbs_EDGE)
         return GetFirstPoint(TopoDS::Edge(wireOrEdge));
     throw tigl::CTiglError("Shape must be wire or edge");
 }
@@ -740,9 +740,9 @@ gp_Pnt GetFirstPoint(const TopoDS_Edge& e)
 
 gp_Pnt GetLastPoint(const TopoDS_Shape& wireOrEdge)
 {
-    if (wireOrEdge.ShapeType() == TopAbs_ShapeEnum::TopAbs_WIRE)
+    if (wireOrEdge.ShapeType() == TopAbs_WIRE)
         return GetLastPoint(TopoDS::Wire(wireOrEdge));
-    if (wireOrEdge.ShapeType() == TopAbs_ShapeEnum::TopAbs_EDGE)
+    if (wireOrEdge.ShapeType() == TopAbs_EDGE)
         return GetLastPoint(TopoDS::Edge(wireOrEdge));
     throw tigl::CTiglError("Shape must be wire or edge");
 }

@@ -31,7 +31,7 @@ public:
     TIGL_EXPORT void Invalidate();
 
 private:
-    bool invalidated = true;
+    bool invalidated;
 };
 
 } // namespace tigl

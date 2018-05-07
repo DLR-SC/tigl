@@ -21,6 +21,7 @@ namespace tigl
 CCPACSCrossBeamStrutAssemblyPosition::CCPACSCrossBeamStrutAssemblyPosition(CCPACSCargoCrossBeamStrutsAssembly* parent,
                                                                            CTiglUIDManager* uidMgr)
     : generated::CPACSCrossBeamStrutAssemblyPosition(parent, uidMgr)
+    , invalidated(true)
 {
 }
 

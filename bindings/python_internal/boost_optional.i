@@ -21,7 +21,7 @@
 %define WRAP_BOOST_OPTIONAL_CLASS(type)
 
 %typemap(out, noblock=1) boost::optional<type> const &, boost::optional<type const> const &, boost::optional<type>&, boost::optional<type const>& {
-  if (*$1) {
+  if (*$1 != boost::none) {
     $result = SWIG_NewPointerObj(SWIG_as_voidptr((type*)&$1->get()), $descriptor(type*), 0 | 0 );
   } else {
     $result = Py_None;
@@ -30,7 +30,7 @@
 }
 
 %typemap(out, noblock=1) boost::optional<type> {
-  if ($1) {
+  if (*(&$1) != boost::none) {
     type* p_copy = new type(static_cast< const type& >($1.get()));
     $result = SWIG_NewPointerObj(SWIG_as_voidptr(p_copy), $descriptor(type*), SWIG_POINTER_OWN | 0 );
   } else {
@@ -40,7 +40,7 @@
 }
 
 %typemap(out, noblock=1) boost::optional<const type&>, boost::optional<type&> {
-  if ($1) {
+  if (*(&$1) != boost::none) {
     $result = SWIG_NewPointerObj(SWIG_as_voidptr((type*)&($1.get())), $descriptor(type*), 0 | 0 );
   } else {
     $result = Py_None;
@@ -63,7 +63,7 @@
 %enddef
 
 %typemap(in, noblock=1) boost::optional<std::string> {
-  if($input == Py_None) {
+  if ($input == Py_None) {
     $1 = boost::optional<type>();
   } else {
     $1 = boost::optional<type>(PyFun_ConvertToNative($input));
@@ -72,7 +72,7 @@
 
 %define WRAP_BOOST_OPTIONAL_BASIC_TYPE(type, PyFun_Convert, PyFun_ConvertToNative)
 %typemap(out, noblock=1) boost::optional<type>&, const boost::optional<type>& {
-  if (*$1) {
+  if (*$1 != boost::none) {
     $result = PyFun_Convert($1->get());
   } else {
     $result = Py_None;
@@ -81,7 +81,7 @@
 }
 
 %typemap(out, noblock=1) boost::optional<type>, boost::optional<const type&> {
-  if ($1) {
+  if (*(&$1) != boost::none) {
     $result = PyFun_Convert($1.get());
   } else {
     $result = Py_None;
@@ -91,13 +91,13 @@
 
 %typemap(in, noblock=1) const boost::optional<type>& (boost::optional<type> arg_optional_val) {
   $1 = &arg_optional_val;
-  if($input != Py_None) {
+  if ($input != Py_None) {
     *$1 = PyFun_ConvertToNative($input);
   }
 }
 
 %typemap(in, noblock=1) boost::optional<type> {
-  if($input == Py_None) {
+  if ($input == Py_None) {
     $1 = boost::optional<type>();
   } else {
     $1 = boost::optional<type>(PyFun_ConvertToNative($input));

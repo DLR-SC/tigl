@@ -42,10 +42,15 @@ class CTiglCurveConnector
 
     struct guideCurvePart
     {
+        guideCurvePart()
+            : dependency(none)
+        {
+        }
+        
         std::vector<CCPACSGuideCurve*> localGuides;
 
         std::vector<double> sectionParameters;
-        dependencyType dependency = none;
+        dependencyType dependency;
         TopoDS_Edge localCurve;
     };
 

@@ -22,6 +22,7 @@ namespace tigl
 CCPACSPressureBulkheadAssemblyPosition::CCPACSPressureBulkheadAssemblyPosition(CCPACSPressureBulkheadAssembly* parent,
                                                                                CTiglUIDManager* uidMgr)
     : generated::CPACSPressureBulkheadAssemblyPosition(parent, uidMgr)
+    , invalidated(true)
 {
 }
 

@@ -20,6 +20,7 @@ namespace tigl
 {
 CCPACSLongFloorBeam::CCPACSLongFloorBeam(CCPACSLongFloorBeamsAssembly* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSLongFloorBeam(parent, uidMgr)
+    , invalidated(true)
 {
 }
 
