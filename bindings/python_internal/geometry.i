@@ -82,6 +82,8 @@
 %rename("%(undercase)s", %$isfunction) "";
 
 %template(CPointContainer) std::vector<gp_Pnt>;
+%template(BSplineCurveList) std::vector<Handle_Geom_BSplineCurve>;
+
 
 %boost_optional(tigl::CCPACSPointAbsRel)
 %boost_optional(tigl::CCPACSPoint)
