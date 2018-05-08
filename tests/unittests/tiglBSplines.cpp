@@ -32,7 +32,9 @@
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRep_Builder.hxx>
 #include <TopoDS_Compound.hxx>
+#include <CTiglBSplineAlgorithms.h>
 #include <cmath>
+#include <math_Matrix.hxx>
 
 TEST(BSplines, pointsToLinear)
 {
@@ -166,6 +168,78 @@ TEST(BSplines, symmetricBSpline_invalidInput2)
     tigl::CTiglSymetricSplineBuilder builder(points);
 
     ASSERT_THROW(curve = builder.GetBSpline(), tigl::CTiglError);
+}
+
+// tests the bspline basis matrix function with derivative = 0
+TEST(BSplines, bSplineMatDeriv0)
+{
+    TColStd_Array1OfReal knots(1, 6);
+    knots.SetValue(1, 0.);
+    knots.SetValue(2, 0.);
+    knots.SetValue(3, 0.);
+    knots.SetValue(4, 1.);
+    knots.SetValue(5, 1.);
+    knots.SetValue(6, 1.);
+
+    TColStd_Array1OfReal params(1, 4);
+    params.SetValue(1, 0.);
+    params.SetValue(2, 1. / 3.);
+    params.SetValue(3, 2. / 3.);
+    params.SetValue(4, 1.);
+    math_Matrix A = tigl::CTiglBSplineAlgorithms::bsplineBasisMat(2, knots, params);
+
+    // compare with python implementation
+    EXPECT_NEAR(A.Value(1,1), 1., 1e-10);
+    EXPECT_NEAR(A.Value(1,2), 0., 1e-10);
+    EXPECT_NEAR(A.Value(1,3), 0., 1e-10);
+
+    EXPECT_NEAR(A.Value(2,1), 4.444444444444445308e-01, 1e-10);
+    EXPECT_NEAR(A.Value(2,2), 4.444444444444444753e-01, 1e-10);
+    EXPECT_NEAR(A.Value(2,3), 1.111111111111111049e-01, 1e-10);
+
+    EXPECT_NEAR(A.Value(3,1), 1.111111111111111327e-01, 1e-10);
+    EXPECT_NEAR(A.Value(3,2), 4.444444444444444753e-01, 1e-10);
+    EXPECT_NEAR(A.Value(3,3), 4.444444444444444198e-01, 1e-10);
+
+    EXPECT_NEAR(A.Value(4,1), 0., 1e-10);
+    EXPECT_NEAR(A.Value(4,2), 0., 1e-10);
+    EXPECT_NEAR(A.Value(4,3), 1., 1e-10);
+}
+
+// tests the bspline basis matrix function with derivative = 1
+TEST(BSplines, bSplineMatDeriv1)
+{
+    TColStd_Array1OfReal knots(1, 6);
+    knots.SetValue(1, 0.);
+    knots.SetValue(2, 0.);
+    knots.SetValue(3, 0.);
+    knots.SetValue(4, 1.);
+    knots.SetValue(5, 1.);
+    knots.SetValue(6, 1.);
+
+    TColStd_Array1OfReal params(1, 4);
+    params.SetValue(1, 0.);
+    params.SetValue(2, 1. / 3.);
+    params.SetValue(3, 2. / 3.);
+    params.SetValue(4, 1.);
+    math_Matrix A = tigl::CTiglBSplineAlgorithms::bsplineBasisMat(2, knots, params, 1);
+
+    // compare with python implementation
+    EXPECT_NEAR(A.Value(1,1), -2., 1e-10);
+    EXPECT_NEAR(A.Value(1,2), 2., 1e-10);
+    EXPECT_NEAR(A.Value(1,3), 0., 1e-10);
+
+    EXPECT_NEAR(A.Value(2,1), -1.333333333333333481e+00, 1e-10);
+    EXPECT_NEAR(A.Value(2,2), 6.666666666666668517e-01, 1e-10);
+    EXPECT_NEAR(A.Value(2,3), 6.666666666666666297e-01, 1e-10);
+
+    EXPECT_NEAR(A.Value(3,1), -6.666666666666667407e-01, 1e-10);
+    EXPECT_NEAR(A.Value(3,2), -6.666666666666665186e-01, 1e-10);
+    EXPECT_NEAR(A.Value(3,3), 1.333333333333333259e+00, 1e-10);
+
+    EXPECT_NEAR(A.Value(4,1), 0., 1e-10);
+    EXPECT_NEAR(A.Value(4,2), -2., 1e-10);
+    EXPECT_NEAR(A.Value(4,3), 2., 1e-10);
 }
 
 class BSplineInterpolation : public ::testing::Test
