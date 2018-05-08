@@ -114,20 +114,9 @@ bool CTiglBSplineApproxInterp::isClosed() const
 
 bool CTiglBSplineApproxInterp::firstAndLastInterpolated() const
 {
-    bool first = false;
-    bool last = false;
-    for (Standard_Integer i = 0; i < m_indexOfInterpolated.size(); ++i) {
-        if (m_indexOfInterpolated[i] == 0) {
-            first = true;
-        }
-        if (m_indexOfInterpolated[i] == m_pnts.Length() - 1) {
-            last = true;
-        }
-    }
-    if (first && last) {
-        return true;
-    }
-    return false;
+    bool first = std::find(m_indexOfInterpolated.begin(), m_indexOfInterpolated.end(), 0) != m_indexOfInterpolated.end();
+    bool last = std::find(m_indexOfInterpolated.begin(), m_indexOfInterpolated.end(), m_pnts.Length() - 1) != m_indexOfInterpolated.end();
+    return first && last;
 }
 
 std::vector<double> CTiglBSplineApproxInterp::computeParameters(double alpha) const

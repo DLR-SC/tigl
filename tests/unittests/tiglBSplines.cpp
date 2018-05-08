@@ -247,7 +247,41 @@ TEST_F(BSplineInterpolation, approxAndInterpolate)
     StoreResult("TestData/analysis/BSplineInterpolation-approxAndInterpolate.brep", result.curve, pnts);
 }
 
-TEST_F(BSplineInterpolation, approxAndInterpolateContinuous)
+// tests whether the approximation of a given unit circle is C2 continuous at the closing without interpolating any knots
+TEST_F(BSplineInterpolation, approxAndInterpolateContinuous1)
+{
+    int nPoints = 21;
+    TColgp_Array1OfPnt pnt2(1, nPoints);
+
+    for (int i = 0; i < nPoints; ++i) {
+        pnt2.SetValue(i + 1, gp_Pnt(cos((i * 2.*M_PI) / static_cast<double>(nPoints - 1)),
+                                    0.,
+                                    sin((i * 2.*M_PI) / static_cast<double>(nPoints - 1))));
+    }
+
+    tigl::CTiglBSplineApproxInterp app(pnt2, 9, 3, true);
+    tigl::CTiglApproxResult result = app.FitCurve();
+    Handle(Geom_BSplineCurve) curve = result.curve;
+
+    // tests if closed curve is C2-continuous at the boundaries:
+    gp_Pnt p1;
+    gp_Vec deriv1_1;
+    gp_Vec deriv1_2;
+    curve->D2(0., p1, deriv1_1, deriv1_2);
+    gp_Pnt p2;
+    gp_Vec deriv2_1;
+    gp_Vec deriv2_2;
+    curve->D2(1., p2, deriv2_1, deriv2_2);
+
+    EXPECT_TRUE(p1.IsEqual(p2, 1e-10));
+    EXPECT_TRUE(deriv1_1.IsEqual(deriv2_1, 1e-10, 1e-10));
+    EXPECT_TRUE(deriv1_2.IsEqual(deriv2_2, 1e-10, 1e-10));
+
+    StoreResult("TestData/analysis/BSplineInterpolation-approxAndInterpolateContinuous1.brep", curve, pnt2);
+}
+
+// tests whether the approximation of a given unit circle is C2 continuous at the closing with interpolating the first and the last knot
+TEST_F(BSplineInterpolation, approxAndInterpolateContinuous2)
 {
     int nPoints = 21;
     TColgp_Array1OfPnt pnt2(1, nPoints);
@@ -278,7 +312,26 @@ TEST_F(BSplineInterpolation, approxAndInterpolateContinuous)
     EXPECT_TRUE(deriv1_1.IsEqual(deriv2_1, 1e-10, 1e-10));
     EXPECT_TRUE(deriv1_2.IsEqual(deriv2_2, 1e-10, 1e-10));
 
-    StoreResult("TestData/analysis/BSplineInterpolation-approxAndInterpolateContinuous.brep", curve, pnt2);
+    StoreResult("TestData/analysis/BSplineInterpolation-approxAndInterpolateContinuous2.brep", curve, pnt2);
+}
+
+// tests whether the BSplineApproxInterp method works also for a non-closed part of a circle
+TEST_F(BSplineInterpolation, approxAndInterpolateContinuous3)
+{
+    int nPoints = 21;
+    TColgp_Array1OfPnt pnt2(1, nPoints - 1);
+
+    for (int i = 0; i < nPoints - 1; ++i) {
+        pnt2.SetValue(i + 1, gp_Pnt(cos((i * 2.*M_PI) / static_cast<double>(nPoints - 1)),
+                                    0.,
+                                    sin((i * 2.*M_PI) / static_cast<double>(nPoints - 1))));
+    }
+
+    tigl::CTiglBSplineApproxInterp app(pnt2, 9, 3, true);
+    tigl::CTiglApproxResult result = app.FitCurve();
+    Handle(Geom_BSplineCurve) curve = result.curve;
+
+    StoreResult("TestData/analysis/BSplineInterpolation-approxAndInterpolateContinuous3.brep", curve, pnt2);
 }
 
 TEST_F(BSplineInterpolation, approxOnly)
