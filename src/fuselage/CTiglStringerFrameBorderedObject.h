@@ -69,6 +69,7 @@ private:
         gp_Ax1 eFrame_sStringer;
         gp_Ax1 eFrame_eStringer;
     };
+    BorderCache& GetBorderCache();
 
     boost::optional<BorderCache> m_borderCache;
     boost::optional<TopoDS_Shape> m_geometry;

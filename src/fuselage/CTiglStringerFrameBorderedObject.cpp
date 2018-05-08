@@ -68,9 +68,6 @@ TopoDS_Shape CTiglStringerFrameBorderedObject::GetGeometry(TiglCoordinateSystem 
 
 bool CTiglStringerFrameBorderedObject::Contains(const TopoDS_Face& face)
 {
-    if (!m_borderCache)
-        UpdateBorders();
-
     // compute center point of face
     double u_min = 0., u_max = 0., v_min = 0., v_max = 0.;
     BRepTools::UVBounds(face, u_min, u_max, v_min, v_max);
@@ -82,9 +79,6 @@ bool CTiglStringerFrameBorderedObject::Contains(const TopoDS_Face& face)
 
 bool CTiglStringerFrameBorderedObject::Contains(const TopoDS_Edge& edge)
 {
-    if (!m_borderCache)
-        UpdateBorders();
-
     // compute center point of edge
     double u_min = 0., u_max = 0.;
     Handle(Geom_Curve) curve = BRep_Tool::Curve(edge, u_min, u_max);
@@ -97,7 +91,7 @@ bool CTiglStringerFrameBorderedObject::Contains(const gp_Pnt& point)
 {
     const double _45DegInRad = Radians(45.0);
 
-    const BorderCache& c = m_borderCache.value();
+    const CTiglStringerFrameBorderedObject::BorderCache& c = GetBorderCache();
     gp_Ax1 test1(c.sFrame_sStringer.Location(), gp_Vec(c.sFrame_sStringer.Location(), point));
     if (test1.Angle(c.sFrame_sStringer) < _45DegInRad) {
         gp_Ax1 test2(c.sFrame_eStringer.Location(), gp_Vec(c.sFrame_eStringer.Location(), point));
@@ -212,6 +206,14 @@ std::string CTiglStringerFrameBorderedObject::GetEndStringerUid() const
         }
     } v;
     return m_endStringerUID.apply_visitor(v);
+}
+
+CTiglStringerFrameBorderedObject::BorderCache& CTiglStringerFrameBorderedObject::GetBorderCache()
+{
+    if (!m_borderCache) {
+        UpdateBorders();
+    }
+    return m_borderCache.value();
 }
 
 } // namespace tigl
