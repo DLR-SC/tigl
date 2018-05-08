@@ -74,6 +74,9 @@ private:
 
     bool isClosed() const;
     bool firstAndLastInterpolated() const;
+
+    /// computes the maximum distance of the given points
+    double maxDistanceOfBoundingBox(const TColgp_Array1OfPnt& points) const;
     
     /// curve coordinates to be fitted by the B-spline
     TColgp_Array1OfPnt m_pnts;

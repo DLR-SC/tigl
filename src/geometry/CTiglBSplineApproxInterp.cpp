@@ -107,9 +107,26 @@ void CTiglBSplineApproxInterp::InterpolatePoint(size_t pointIndex, bool withKink
     }
 }
 
+double CTiglBSplineApproxInterp::maxDistanceOfBoundingBox(const TColgp_Array1OfPnt& points) const
+{
+    double distance;
+    double maxDistance = 0.;
+    for(int i = 1; i < points.Length(); ++i) {
+        for(int j = 1; j < points.Length(); ++j) {
+            distance = points.Value(i).Distance(points.Value(j));
+            if(maxDistance < distance) {
+                maxDistance = distance;
+            }
+        }
+    }
+    return maxDistance;
+}
+
 bool CTiglBSplineApproxInterp::isClosed() const
 {
-    return m_pnts.Value(m_pnts.Lower()).IsEqual(m_pnts.Value(m_pnts.Upper()), 1e-5);
+    double maxDistance = maxDistanceOfBoundingBox(m_pnts);
+    double error = 1e-12*maxDistance;
+    return m_pnts.Value(m_pnts.Lower()).IsEqual(m_pnts.Value(m_pnts.Upper()), error);
 }
 
 bool CTiglBSplineApproxInterp::firstAndLastInterpolated() const
