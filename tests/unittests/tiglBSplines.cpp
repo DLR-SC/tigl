@@ -247,7 +247,7 @@ TEST_F(BSplineInterpolation, approxAndInterpolate)
     StoreResult("TestData/analysis/BSplineInterpolation-approxAndInterpolate.brep", result.curve, pnts);
 }
 
-// tests whether the approximation of a given unit circle is C2 continuous at the closing without interpolating any knots
+// tests whether the approximation of a given unit circle is C2 continuous at the closing without interpolating any points
 TEST_F(BSplineInterpolation, approxAndInterpolateContinuous1)
 {
     int nPoints = 21;
@@ -280,7 +280,7 @@ TEST_F(BSplineInterpolation, approxAndInterpolateContinuous1)
     StoreResult("TestData/analysis/BSplineInterpolation-approxAndInterpolateContinuous1.brep", curve, pnt2);
 }
 
-// tests whether the approximation of a given unit circle is C2 continuous at the closing with interpolating the first and the last knot
+// tests whether the approximation of a given unit circle is C2 continuous at the closing with interpolating the first and the last point
 TEST_F(BSplineInterpolation, approxAndInterpolateContinuous2)
 {
     int nPoints = 21;
