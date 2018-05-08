@@ -1334,9 +1334,6 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::createGordonSurfaceGeneral(c
 
 math_Matrix CTiglBSplineAlgorithms::bsplineBasisMat(int degree, const TColStd_Array1OfReal& knots, const TColStd_Array1OfReal& params, unsigned int derivOrder)
 {
-    if(derivOrder == NULL) {
-        derivOrder = 0;
-    }
     Standard_Integer ncp = knots.Length() - degree - 1;
     math_Matrix mx(1, params.Length(), 1, ncp);
     mx.Init(0.);

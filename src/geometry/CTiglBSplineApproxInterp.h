@@ -71,6 +71,9 @@ private:
     CTiglApproxResult solve(const std::vector<double>& params, const TColStd_Array1OfReal& knots, const TColStd_Array1OfInteger& mults) const;
 
     void optimizeParameters(const Handle(Geom_Curve)& curve, std::vector<double>& parms) const;
+
+    bool isClosed() const;
+    bool firstAndLastInterpolated() const;
     
     /// curve coordinates to be fitted by the B-spline
     TColgp_Array1OfPnt m_pnts;
@@ -85,14 +88,8 @@ private:
     /// Number of control points of the B-spline
     int m_ncp;
 
-    /// determines whether the  curve is closed or not
-    bool is_closed;
-
-    /// determines whether the first as well as the last point has to be interpolated
-    bool first_and_last;
-
-    /// determines the contiuous closing of curve
-    bool  C2_continuous;
+    /// determines the continuous closing of curve
+    bool  m_C2Continuous;
 };
 
 } // namespace tigl

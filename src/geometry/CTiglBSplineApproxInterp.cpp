@@ -84,9 +84,7 @@ CTiglBSplineApproxInterp::CTiglBSplineApproxInterp(const TColgp_Array1OfPnt& poi
     , m_indexOfApproximated(static_cast<size_t>(points.Length()))
     , m_degree(degree)
     , m_ncp(nControlPoints)
-    , is_closed(points.Value(points.Lower()).IsEqual(points.Value(points.Upper()), 1e-5))
-    , first_and_last(false)
-    , C2_continuous(continuous_if_closed)
+    , m_C2Continuous(continuous_if_closed)
 {
     for (Standard_Integer i = 0; i < points.Length(); ++i) {
         size_t idx = static_cast<size_t>(i);
@@ -107,6 +105,15 @@ void CTiglBSplineApproxInterp::InterpolatePoint(size_t pointIndex, bool withKink
     if (withKink) {
         m_indexOfKinks.push_back(pointIndex);
     }
+}
+
+bool CTiglBSplineApproxInterp::isClosed() const
+{
+    return m_pnts.Value(m_pnts.Lower()).IsEqual(m_pnts.Value(m_pnts.Upper()), 1e-5);
+}
+
+bool CTiglBSplineApproxInterp::firstAndLastInterpolated() const
+{
     bool first = false;
     bool last = false;
     for (Standard_Integer i = 0; i < m_indexOfInterpolated.size(); ++i) {
@@ -118,8 +125,9 @@ void CTiglBSplineApproxInterp::InterpolatePoint(size_t pointIndex, bool withKink
         }
     }
     if (first && last) {
-        first_and_last = true;
+        return true;
     }
+    return false;
 }
 
 std::vector<double> CTiglBSplineApproxInterp::computeParameters(double alpha) const
@@ -351,9 +359,9 @@ CTiglApproxResult CTiglBSplineApproxInterp::solve(const std::vector<double>& par
 
     // Build left hand side of the equation
     Standard_Integer contin_cons = 0;
-    if(is_closed && C2_continuous) {
+    if(isClosed() && m_C2Continuous) {
         contin_cons = 3;
-        if(first_and_last) {
+        if(firstAndLastInterpolated()) {
             contin_cons = 2;
         }
     }
@@ -397,7 +405,7 @@ CTiglApproxResult CTiglBSplineApproxInterp::solve(const std::vector<double>& par
         }
 
         // sets the C2 continuity constraints for closed curves on the left hand side if requested
-        if(is_closed && C2_continuous) {
+        if(isClosed() && m_C2Continuous) {
             math_Matrix continuity_entries(1, contin_cons, 1, nCtrPnts);
             continuity_entries.Init(0.);
             TColStd_Array1OfReal continuity_params1(1, 1);
@@ -412,7 +420,7 @@ CTiglApproxResult CTiglBSplineApproxInterp::solve(const std::vector<double>& par
             math_Matrix diff2 = diff2_1 - diff2_2;
             continuity_entries.Set(1, 1, 1, nCtrPnts, diff1);
             continuity_entries.Set(2, 2, 1, nCtrPnts, diff2);
-            if(first_and_last == false) {
+            if(firstAndLastInterpolated() == false) {
                 math_Matrix diff0_1 = CTiglBSplineAlgorithms::bsplineBasisMat(m_degree, flatKnots, continuity_params1, 0);
                 math_Matrix diff0_2 = CTiglBSplineAlgorithms::bsplineBasisMat(m_degree, flatKnots, continuity_params2, 0);
                 math_Matrix diff0 = diff0_1 - diff0_2;
