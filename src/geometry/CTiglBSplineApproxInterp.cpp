@@ -111,8 +111,8 @@ double CTiglBSplineApproxInterp::maxDistanceOfBoundingBox(const TColgp_Array1OfP
 {
     double distance;
     double maxDistance = 0.;
-    for (int i = 1; i < points.Length(); ++i) {
-        for (int j = 1; j < points.Length(); ++j) {
+    for (int i = points.Lower(); i <= points.Upper(); ++i) {
+        for (int j = points.Lower(); j <= points.Upper(); ++j) {
             distance = points.Value(i).Distance(points.Value(j));
             if (maxDistance < distance) {
                 maxDistance = distance;
