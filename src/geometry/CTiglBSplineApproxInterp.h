@@ -51,7 +51,7 @@ struct CTiglApproxResult
 class CTiglBSplineApproxInterp
 {
 public:
-    TIGL_EXPORT CTiglBSplineApproxInterp(const TColgp_Array1OfPnt& points, int nControlPoints, int degree=3, bool continuous_if_closed=false);
+    TIGL_EXPORT CTiglBSplineApproxInterp(const TColgp_Array1OfPnt& points, int nControlPoints, int degree = 3, bool continuous_if_closed = false);
 
     /// The specified point will be interpolated instead of approximated
     TIGL_EXPORT void InterpolatePoint(size_t pointIndex, bool withKink=false);

@@ -1334,22 +1334,26 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::createGordonSurfaceGeneral(c
 
 math_Matrix CTiglBSplineAlgorithms::bsplineBasisMat(int degree, const TColStd_Array1OfReal& knots, const TColStd_Array1OfReal& params, unsigned int derivOrder)
 {
-    if(derivOrder == NULL) derivOrder = 0;
+    if(derivOrder == NULL) {
+        derivOrder = 0;
+    }
     Standard_Integer ncp = knots.Length() - degree - 1;
     math_Matrix mx(1, params.Length(), 1, ncp);
     mx.Init(0.);
-    math_Matrix bspl_basis(1, derivOrder + 1, 1, degree+1);
+    math_Matrix bspl_basis(1, derivOrder + 1, 1, degree + 1);
     bspl_basis.Init(0.);
     for (Standard_Integer iparm = 1; iparm <= params.Length(); ++iparm) {
         Standard_Integer basis_start_index = 0;
-        BSplCLib::EvalBsplineBasis(1, derivOrder, degree+1, knots, params.Value(iparm), basis_start_index, bspl_basis);
+        BSplCLib::EvalBsplineBasis(1, derivOrder, degree + 1, knots, params.Value(iparm), basis_start_index, bspl_basis);
         if(derivOrder > 0) {
             math_Vector help_vector(1, ncp);
             help_vector.Init(0.);
             help_vector.Set(basis_start_index, basis_start_index + degree, bspl_basis.Row(derivOrder + 1));
-            mx.SetRow(iparm,help_vector);
+            mx.SetRow(iparm, help_vector);
         }
-        else mx.Set(iparm, iparm, basis_start_index, basis_start_index + degree, bspl_basis);
+        else {
+            mx.Set(iparm, iparm, basis_start_index, basis_start_index + degree, bspl_basis);
+        }
     }
     return mx;
 }

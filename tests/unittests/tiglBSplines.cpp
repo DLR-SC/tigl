@@ -1,4 +1,4 @@
-/* 
+/*
 * Copyright (C) 2015 German Aerospace Center (DLR/SC)
 *
 * Created: 2015-06-01 Martin Siggel <Martin.Siggel@dlr.de>
@@ -252,10 +252,10 @@ TEST_F(BSplineInterpolation, approxAndInterpolateContinuous)
     int nPoints = 21;
     TColgp_Array1OfPnt pnt2(1, nPoints);
 
-    for (int i=0; i < nPoints; ++i) {
-        pnt2.SetValue(i + 1, gp_Pnt(cos((i*2.*M_PI)/static_cast<double>(nPoints-1)),
+    for (int i = 0; i < nPoints; ++i) {
+        pnt2.SetValue(i + 1, gp_Pnt(cos((i * 2.*M_PI) / static_cast<double>(nPoints - 1)),
                                     0.,
-                                    sin((i*2.*M_PI)/static_cast<double>(nPoints-1))));
+                                    sin((i * 2.*M_PI) / static_cast<double>(nPoints - 1))));
     }
 
     tigl::CTiglBSplineApproxInterp app(pnt2, 9, 3, true);
@@ -268,15 +268,15 @@ TEST_F(BSplineInterpolation, approxAndInterpolateContinuous)
     gp_Pnt p1;
     gp_Vec deriv1_1;
     gp_Vec deriv1_2;
-    curve->D2(0.,p1,deriv1_1,deriv1_2);
+    curve->D2(0., p1, deriv1_1, deriv1_2);
     gp_Pnt p2;
     gp_Vec deriv2_1;
     gp_Vec deriv2_2;
-    curve->D2(1.,p2,deriv2_1,deriv2_2);
+    curve->D2(1., p2, deriv2_1, deriv2_2);
 
-    EXPECT_TRUE(p1.IsEqual(p2,1e-10));
-    EXPECT_TRUE(deriv1_1.IsEqual(deriv2_1,1e-10,1e-10));
-    EXPECT_TRUE(deriv1_2.IsEqual(deriv2_2,1e-10,1e-10));
+    EXPECT_TRUE(p1.IsEqual(p2, 1e-10));
+    EXPECT_TRUE(deriv1_1.IsEqual(deriv2_1, 1e-10, 1e-10));
+    EXPECT_TRUE(deriv1_2.IsEqual(deriv2_2, 1e-10, 1e-10));
 
     StoreResult("TestData/analysis/BSplineInterpolation-approxAndInterpolateContinuous.brep", curve, pnt2);
 }
