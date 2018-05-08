@@ -37,10 +37,10 @@ class CCPACSFuselage;
 class CTiglStringerFrameBorderedObject
 {
 public:
-    CTiglStringerFrameBorderedObject(const CTiglUIDManager& uidMgr, const CCPACSFuselage& fuselage,
-                                     std::string& startFrameUID, std::string& endFrameUID,
-                                     std::string& startStringerUID,
-                                     boost::variant<std::string&, boost::optional<std::string>&> endStringerUID);
+    TIGL_EXPORT CTiglStringerFrameBorderedObject(const CTiglUIDManager& uidMgr, const CCPACSFuselage& fuselage,
+                                                 std::string& startFrameUID, std::string& endFrameUID,
+                                                 std::string& startStringerUID,
+                                                 boost::variant<std::string&, boost::optional<std::string>&> endStringerUID);
 
     TIGL_EXPORT void Invalidate();
     //TIGL_EXPORT TopoDS_Shape GetGeometry(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM);
