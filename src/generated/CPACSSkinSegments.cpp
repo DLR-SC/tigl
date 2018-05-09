@@ -15,7 +15,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "CPACSSkinSegment.h"
+#include <cassert>
+#include <CCPACSSkinSegment.h>
+#include "CPACSSkin.h"
 #include "CPACSSkinSegments.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -26,13 +28,20 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSSkinSegments::CPACSSkinSegments(CTiglUIDManager* uidMgr)
+    CPACSSkinSegments::CPACSSkinSegments(CPACSSkin* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
+        //assert(parent != NULL);
+        m_parent = parent;
     }
 
     CPACSSkinSegments::~CPACSSkinSegments()
     {
+    }
+
+    CPACSSkin* CPACSSkinSegments::GetParent() const
+    {
+        return m_parent;
     }
 
     CTiglUIDManager& CPACSSkinSegments::GetUIDManager()
@@ -49,7 +58,7 @@ namespace generated
     {
         // read element skinSegment
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/skinSegment")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/skinSegment", m_skinSegments, m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/skinSegment", m_skinSegments, this, m_uidMgr);
         }
 
     }
@@ -61,23 +70,23 @@ namespace generated
 
     }
 
-    const std::vector<unique_ptr<CPACSSkinSegment> >& CPACSSkinSegments::GetSkinSegments() const
+    const std::vector<unique_ptr<CCPACSSkinSegment> >& CPACSSkinSegments::GetSkinSegments() const
     {
         return m_skinSegments;
     }
 
-    std::vector<unique_ptr<CPACSSkinSegment> >& CPACSSkinSegments::GetSkinSegments()
+    std::vector<unique_ptr<CCPACSSkinSegment> >& CPACSSkinSegments::GetSkinSegments()
     {
         return m_skinSegments;
     }
 
-    CPACSSkinSegment& CPACSSkinSegments::AddSkinSegment()
+    CCPACSSkinSegment& CPACSSkinSegments::AddSkinSegment()
     {
-        m_skinSegments.push_back(make_unique<CPACSSkinSegment>(m_uidMgr));
+        m_skinSegments.push_back(make_unique<CCPACSSkinSegment>(this, m_uidMgr));
         return *m_skinSegments.back();
     }
 
-    void CPACSSkinSegments::RemoveSkinSegment(CPACSSkinSegment& ref)
+    void CPACSSkinSegments::RemoveSkinSegment(CCPACSSkinSegment& ref)
     {
         for (std::size_t i = 0; i < m_skinSegments.size(); i++) {
             if (m_skinSegments[i].get() == &ref) {

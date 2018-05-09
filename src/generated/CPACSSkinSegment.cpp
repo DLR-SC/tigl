@@ -15,7 +15,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <cassert>
 #include "CPACSSkinSegment.h"
+#include "CPACSSkinSegments.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -25,14 +27,21 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSSkinSegment::CPACSSkinSegment(CTiglUIDManager* uidMgr)
+    CPACSSkinSegment::CPACSSkinSegment(CPACSSkinSegments* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
+        //assert(parent != NULL);
+        m_parent = parent;
     }
 
     CPACSSkinSegment::~CPACSSkinSegment()
     {
         if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
+    }
+
+    CPACSSkinSegments* CPACSSkinSegment::GetParent() const
+    {
+        return m_parent;
     }
 
     CTiglUIDManager& CPACSSkinSegment::GetUIDManager()

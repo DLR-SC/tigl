@@ -54,6 +54,7 @@
 #include "generated/CPACSSparSegment.h"
 #include "CCPACSWingSparSegment.h"
 #include "CCPACSWingRibsDefinition.h"
+#include "CCPACSSkinSegment.h"
 %}
 
 %feature("autodoc", "3");
@@ -62,6 +63,7 @@
 %rename("%(undercase)s", %$isfunction) "";
 
 // wrap optional classes
+%boost_optional(tigl::generated::CPACSRibRotation_ribRotationReference)
 %boost_optional(tigl::CCPACSWingCSStructure)
 %boost_optional(tigl::generated::CPACSSkinSegments)
 %boost_optional(tigl::generated::CPACSSkin)
@@ -95,7 +97,8 @@
 %boost_optional(tigl::generated::CPACSLinkToFileType_format)
 %boost_optional(tigl::CCPACSWingCells)
 
-
+%include "generated/CPACSSkinSegment.h"
+%include "CCPACSSkinSegment.h"
 %include "generated/CPACSCargoDoorsAssembly.h"
 %include "generated/CPACSPressureBulkheadAssembly.h"
 %include "CCPACSPressureBulkheadAssembly.h"
@@ -129,6 +132,7 @@ class CCPACSWingRibsPositioning;
 }
 %include "generated/CPACSRibRotation_ribRotationReference.h"
 %include "generated/CPACSWingRibExplicitPositioning.h"
+%include "generated/CPACSRibRotation.h"
 %include "CCPACSWingRibRotation.h"
 %include "generated/CPACSRibCrossingBehaviour.h"
 %include "generated/CPACSWingRibsPositioning.h"

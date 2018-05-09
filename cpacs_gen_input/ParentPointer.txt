@@ -71,3 +71,7 @@ CPACSCrossBeamStrutAssemblyPosition
 CPACSCargoCrossBeamStrutsAssembly
 CPACSLongFloorBeamsAssembly
 CPACSLongFloorBeamPosition
+CPACSSkin
+CPACSSkinSegment
+CPACSSkinSegments
+

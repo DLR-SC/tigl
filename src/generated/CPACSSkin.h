@@ -28,6 +28,7 @@
 namespace tigl
 {
 class CTiglUIDManager;
+class CCPACSFuselageStructure;
 
 namespace generated
 {
@@ -38,8 +39,11 @@ namespace generated
     class CPACSSkin
     {
     public:
-        TIGL_EXPORT CPACSSkin(CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSSkin(CCPACSFuselageStructure* parent, CTiglUIDManager* uidMgr);
+
         TIGL_EXPORT virtual ~CPACSSkin();
+
+        TIGL_EXPORT CCPACSFuselageStructure* GetParent() const;
 
         TIGL_EXPORT CTiglUIDManager& GetUIDManager();
         TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
@@ -57,6 +61,8 @@ namespace generated
         TIGL_EXPORT virtual void RemoveSkinSegments();
 
     protected:
+        CCPACSFuselageStructure* m_parent;
+
         CTiglUIDManager* m_uidMgr;
 
         boost::optional<std::string>       m_standardSheetElementUID;

@@ -57,7 +57,7 @@ namespace generated
     {
         // read element skin
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/skin")) {
-            m_skin = boost::in_place(m_uidMgr);
+            m_skin = boost::in_place(reinterpret_cast<CCPACSFuselageStructure*>(this), m_uidMgr);
             try {
                 m_skin->ReadCPACS(tixiHandle, xpath + "/skin");
             } catch(const std::exception& e) {
@@ -320,7 +320,7 @@ namespace generated
     CPACSSkin& CPACSFuselageStructure::GetSkin(CreateIfNotExistsTag)
     {
         if (!m_skin)
-            m_skin = boost::in_place(m_uidMgr);
+            m_skin = boost::in_place(reinterpret_cast<CCPACSFuselageStructure*>(this), m_uidMgr);
         return *m_skin;
     }
 

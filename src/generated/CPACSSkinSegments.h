@@ -26,10 +26,11 @@
 namespace tigl
 {
 class CTiglUIDManager;
+class CCPACSSkinSegment;
 
 namespace generated
 {
-    class CPACSSkinSegment;
+    class CPACSSkin;
 
     // This class is used in:
     // CPACSSkin
@@ -38,8 +39,11 @@ namespace generated
     class CPACSSkinSegments
     {
     public:
-        TIGL_EXPORT CPACSSkinSegments(CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSSkinSegments(CPACSSkin* parent, CTiglUIDManager* uidMgr);
+
         TIGL_EXPORT virtual ~CPACSSkinSegments();
+
+        TIGL_EXPORT CPACSSkin* GetParent() const;
 
         TIGL_EXPORT CTiglUIDManager& GetUIDManager();
         TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
@@ -47,16 +51,18 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSSkinSegment> >& GetSkinSegments() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CPACSSkinSegment> >& GetSkinSegments();
+        TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSSkinSegment> >& GetSkinSegments() const;
+        TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSSkinSegment> >& GetSkinSegments();
 
-        TIGL_EXPORT virtual CPACSSkinSegment& AddSkinSegment();
-        TIGL_EXPORT virtual void RemoveSkinSegment(CPACSSkinSegment& ref);
+        TIGL_EXPORT virtual CCPACSSkinSegment& AddSkinSegment();
+        TIGL_EXPORT virtual void RemoveSkinSegment(CCPACSSkinSegment& ref);
 
     protected:
+        CPACSSkin* m_parent;
+
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<unique_ptr<CPACSSkinSegment> > m_skinSegments;
+        std::vector<unique_ptr<CCPACSSkinSegment> > m_skinSegments;
 
     private:
 #ifdef HAVE_CPP11
@@ -75,9 +81,9 @@ namespace generated
 // Aliases in tigl namespace
 #ifdef HAVE_CPP11
 using CCPACSSkinSegments = generated::CPACSSkinSegments;
-using CCPACSSkinSegment = generated::CPACSSkinSegment;
+using CCPACSSkin = generated::CPACSSkin;
 #else
 typedef generated::CPACSSkinSegments CCPACSSkinSegments;
-typedef generated::CPACSSkinSegment CCPACSSkinSegment;
+typedef generated::CPACSSkin CCPACSSkin;
 #endif
 } // namespace tigl

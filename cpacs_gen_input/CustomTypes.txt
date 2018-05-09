@@ -104,3 +104,4 @@ CPACSFuselageStructure                    CCPACSFuselageStructure
 CPACSStringer                             CCPACSFuselageStringer
 CPACSPointXY                              CCPACSPointXY
 CPACSStringerFramePosition                CCPACSFuselageStringerFramePosition
+CPACSSkinSegment                          CCPACSSkinSegment
