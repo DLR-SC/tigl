@@ -24,6 +24,7 @@
 #include <Handle_Geom_BSplineCurve.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColgp_Array1OfPnt.hxx>
+#include <math_Matrix.hxx>
 
 class TColgp_Array1OfPnt;
 class TColStd_Array1OfInteger;
@@ -69,6 +70,7 @@ private:
     void computeKnots(int ncp, const std::vector<double>& params, std::vector<double>& knots, std::vector<int>& mults) const;
 
     CTiglApproxResult solve(const std::vector<double>& params, const TColStd_Array1OfReal& knots, const TColStd_Array1OfInteger& mults) const;
+    math_Matrix getContinuityMatrix(int nCtrPnts, int contin_cons, const std::vector<double>& params, const TColStd_Array1OfReal& flatKnots) const;
 
     void optimizeParameters(const Handle(Geom_Curve)& curve, std::vector<double>& parms) const;
 

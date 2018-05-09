@@ -324,6 +324,32 @@ ProjectResult CTiglBSplineApproxInterp::projectOnCurve(const gp_Pnt& pnt, const 
     return ProjectResult(t, sqrt(f));
 }
 
+math_Matrix CTiglBSplineApproxInterp::getContinuityMatrix(int nCtrPnts, int contin_cons, const std::vector<double>& params, const TColStd_Array1OfReal& flatKnots) const
+{
+    math_Matrix continuity_entries(1, contin_cons, 1, nCtrPnts);
+    continuity_entries.Init(0.);
+    TColStd_Array1OfReal continuity_params1(params[0], 1, 1);
+    TColStd_Array1OfReal continuity_params2(params[params.size() - 1], 1, 1);
+
+    math_Matrix diff1_1 = CTiglBSplineAlgorithms::bsplineBasisMat(m_degree, flatKnots, continuity_params1, 1);
+    math_Matrix diff1_2 = CTiglBSplineAlgorithms::bsplineBasisMat(m_degree, flatKnots, continuity_params2, 1);
+
+    math_Matrix diff2_1 = CTiglBSplineAlgorithms::bsplineBasisMat(m_degree, flatKnots, continuity_params1, 2);
+    math_Matrix diff2_2 = CTiglBSplineAlgorithms::bsplineBasisMat(m_degree, flatKnots, continuity_params2, 2);
+
+    // Set C1 condition
+    continuity_entries.Set(1, 1, 1, nCtrPnts, diff1_1 - diff1_2);
+    
+    // Set C2 consition
+    continuity_entries.Set(2, 2, 1, nCtrPnts, diff2_1 - diff2_2);
+    if (!firstAndLastInterpolated()) {
+        math_Matrix diff0_1 = CTiglBSplineAlgorithms::bsplineBasisMat(m_degree, flatKnots, continuity_params1, 0);
+        math_Matrix diff0_2 = CTiglBSplineAlgorithms::bsplineBasisMat(m_degree, flatKnots, continuity_params2, 0);
+        continuity_entries.Set(3, 3, 1, nCtrPnts, diff0_1 - diff0_2);
+    }
+    return continuity_entries;
+}
+
 CTiglApproxResult CTiglBSplineApproxInterp::solve(const std::vector<double>& params, const TColStd_Array1OfReal& knots, const TColStd_Array1OfInteger& mults) const
 {
 
@@ -364,14 +390,16 @@ CTiglApproxResult CTiglBSplineApproxInterp::solve(const std::vector<double>& par
     math_Matrix At = A.Transposed();
 
     // Build left hand side of the equation
-    Standard_Integer contin_cons = 0;
-    if(isClosed() && m_C2Continuous) {
-        contin_cons = 3;
-        if(firstAndLastInterpolated()) {
-            contin_cons = 2;
+    Standard_Integer n_continuityConditions = 0;
+    if (isClosed() && m_C2Continuous) {
+        // C0, C1, C2
+        n_continuityConditions = 3;
+        if (firstAndLastInterpolated()) {
+            // Remove C0 as they are already equal by design
+            n_continuityConditions--;
         }
     }
-    Standard_Integer n_vars = nCtrPnts + n_intpolated + contin_cons;
+    Standard_Integer n_vars = nCtrPnts + n_intpolated + n_continuityConditions;
     math_Matrix lhs(1, n_vars, 1, n_vars);
     lhs.Init(0.);
     lhs.Set(1, nCtrPnts, 1, nCtrPnts, At.Multiplied(A));
@@ -387,11 +415,11 @@ CTiglApproxResult CTiglBSplineApproxInterp::solve(const std::vector<double>& par
     rhsy.Set(1, nCtrPnts, At.Multiplied(by));
     rhsz.Set(1, nCtrPnts, At.Multiplied(bz));
 
-    if (n_intpolated + contin_cons > 0) {
+    if (n_intpolated + n_continuityConditions > 0) {
         // Write d vector. These are the points that should be interpolated as well as the continuity constraints for closed curve
-        math_Vector dx(1, n_intpolated + contin_cons, 0.);
-        math_Vector dy(1, n_intpolated + contin_cons, 0.);
-        math_Vector dz(1, n_intpolated + contin_cons, 0.);
+        math_Vector dx(1, n_intpolated + n_continuityConditions, 0.);
+        math_Vector dy(1, n_intpolated + n_continuityConditions, 0.);
+        math_Vector dz(1, n_intpolated + n_continuityConditions, 0.);
         if(n_intpolated > 0) {
             TColStd_Array1OfReal interpParams(1, n_intpolated);
             Standard_Integer intpIndex = 1;
@@ -411,30 +439,10 @@ CTiglApproxResult CTiglBSplineApproxInterp::solve(const std::vector<double>& par
         }
 
         // sets the C2 continuity constraints for closed curves on the left hand side if requested
-        if(isClosed() && m_C2Continuous) {
-            math_Matrix continuity_entries(1, contin_cons, 1, nCtrPnts);
-            continuity_entries.Init(0.);
-            TColStd_Array1OfReal continuity_params1(1, 1);
-            TColStd_Array1OfReal continuity_params2(1, 1);
-            continuity_params1(1) = params[0];
-            continuity_params2(1) = params[params.size() - 1];
-            math_Matrix diff1_1 = CTiglBSplineAlgorithms::bsplineBasisMat(m_degree, flatKnots, continuity_params1, 1);
-            math_Matrix diff1_2 = CTiglBSplineAlgorithms::bsplineBasisMat(m_degree, flatKnots, continuity_params2, 1);
-            math_Matrix diff1 = diff1_1 - diff1_2;
-            math_Matrix diff2_1 = CTiglBSplineAlgorithms::bsplineBasisMat(m_degree, flatKnots, continuity_params1, 2);
-            math_Matrix diff2_2 = CTiglBSplineAlgorithms::bsplineBasisMat(m_degree, flatKnots, continuity_params2, 2);
-            math_Matrix diff2 = diff2_1 - diff2_2;
-            continuity_entries.Set(1, 1, 1, nCtrPnts, diff1);
-            continuity_entries.Set(2, 2, 1, nCtrPnts, diff2);
-            if(firstAndLastInterpolated() == false) {
-                math_Matrix diff0_1 = CTiglBSplineAlgorithms::bsplineBasisMat(m_degree, flatKnots, continuity_params1, 0);
-                math_Matrix diff0_2 = CTiglBSplineAlgorithms::bsplineBasisMat(m_degree, flatKnots, continuity_params2, 0);
-                math_Matrix diff0 = diff0_1 - diff0_2;
-                continuity_entries.Set(3, 3, 1, nCtrPnts, diff0);
-            }
-            math_Matrix continuity_entriest = continuity_entries.Transposed();
-            lhs.Set(nCtrPnts + n_intpolated + 1, nCtrPnts + n_intpolated + contin_cons, 1, nCtrPnts, continuity_entries);
-            lhs.Set(1, nCtrPnts, nCtrPnts + n_intpolated + 1, nCtrPnts + n_intpolated + contin_cons, continuity_entriest);
+        if (isClosed() && m_C2Continuous) {
+            math_Matrix continuity_entries = getContinuityMatrix(nCtrPnts, n_continuityConditions, params, flatKnots);
+            lhs.Set(nCtrPnts + n_intpolated + 1, nCtrPnts + n_intpolated + n_continuityConditions, 1, nCtrPnts, continuity_entries);
+            lhs.Set(1, nCtrPnts, nCtrPnts + n_intpolated + 1, nCtrPnts + n_intpolated + n_continuityConditions, continuity_entries.Transposed());
         }
         rhsx.Set(nCtrPnts + 1, n_vars, dx);
         rhsy.Set(nCtrPnts + 1, n_vars, dy);
