@@ -1,4 +1,4 @@
-/* 
+/*
 * Copyright (C) 2015 German Aerospace Center (DLR/SC)
 *
 * Created: 2015-06-01 Martin Siggel <Martin.Siggel@dlr.de>
@@ -32,6 +32,9 @@
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRep_Builder.hxx>
 #include <TopoDS_Compound.hxx>
+#include <CTiglBSplineAlgorithms.h>
+#include <cmath>
+#include <math_Matrix.hxx>
 
 TEST(BSplines, pointsToLinear)
 {
@@ -167,6 +170,78 @@ TEST(BSplines, symmetricBSpline_invalidInput2)
     ASSERT_THROW(curve = builder.GetBSpline(), tigl::CTiglError);
 }
 
+// tests the bspline basis matrix function with derivative = 0
+TEST(BSplines, bSplineMatDeriv0)
+{
+    TColStd_Array1OfReal knots(1, 6);
+    knots.SetValue(1, 0.);
+    knots.SetValue(2, 0.);
+    knots.SetValue(3, 0.);
+    knots.SetValue(4, 1.);
+    knots.SetValue(5, 1.);
+    knots.SetValue(6, 1.);
+
+    TColStd_Array1OfReal params(1, 4);
+    params.SetValue(1, 0.);
+    params.SetValue(2, 1. / 3.);
+    params.SetValue(3, 2. / 3.);
+    params.SetValue(4, 1.);
+    math_Matrix A = tigl::CTiglBSplineAlgorithms::bsplineBasisMat(2, knots, params);
+
+    // compare with python implementation
+    EXPECT_NEAR(A.Value(1,1), 1., 1e-10);
+    EXPECT_NEAR(A.Value(1,2), 0., 1e-10);
+    EXPECT_NEAR(A.Value(1,3), 0., 1e-10);
+
+    EXPECT_NEAR(A.Value(2,1), 4.444444444444445308e-01, 1e-10);
+    EXPECT_NEAR(A.Value(2,2), 4.444444444444444753e-01, 1e-10);
+    EXPECT_NEAR(A.Value(2,3), 1.111111111111111049e-01, 1e-10);
+
+    EXPECT_NEAR(A.Value(3,1), 1.111111111111111327e-01, 1e-10);
+    EXPECT_NEAR(A.Value(3,2), 4.444444444444444753e-01, 1e-10);
+    EXPECT_NEAR(A.Value(3,3), 4.444444444444444198e-01, 1e-10);
+
+    EXPECT_NEAR(A.Value(4,1), 0., 1e-10);
+    EXPECT_NEAR(A.Value(4,2), 0., 1e-10);
+    EXPECT_NEAR(A.Value(4,3), 1., 1e-10);
+}
+
+// tests the bspline basis matrix function with derivative = 1
+TEST(BSplines, bSplineMatDeriv1)
+{
+    TColStd_Array1OfReal knots(1, 6);
+    knots.SetValue(1, 0.);
+    knots.SetValue(2, 0.);
+    knots.SetValue(3, 0.);
+    knots.SetValue(4, 1.);
+    knots.SetValue(5, 1.);
+    knots.SetValue(6, 1.);
+
+    TColStd_Array1OfReal params(1, 4);
+    params.SetValue(1, 0.);
+    params.SetValue(2, 1. / 3.);
+    params.SetValue(3, 2. / 3.);
+    params.SetValue(4, 1.);
+    math_Matrix A = tigl::CTiglBSplineAlgorithms::bsplineBasisMat(2, knots, params, 1);
+
+    // compare with python implementation
+    EXPECT_NEAR(A.Value(1,1), -2., 1e-10);
+    EXPECT_NEAR(A.Value(1,2), 2., 1e-10);
+    EXPECT_NEAR(A.Value(1,3), 0., 1e-10);
+
+    EXPECT_NEAR(A.Value(2,1), -1.333333333333333481e+00, 1e-10);
+    EXPECT_NEAR(A.Value(2,2), 6.666666666666668517e-01, 1e-10);
+    EXPECT_NEAR(A.Value(2,3), 6.666666666666666297e-01, 1e-10);
+
+    EXPECT_NEAR(A.Value(3,1), -6.666666666666667407e-01, 1e-10);
+    EXPECT_NEAR(A.Value(3,2), -6.666666666666665186e-01, 1e-10);
+    EXPECT_NEAR(A.Value(3,3), 1.333333333333333259e+00, 1e-10);
+
+    EXPECT_NEAR(A.Value(4,1), 0., 1e-10);
+    EXPECT_NEAR(A.Value(4,2), -2., 1e-10);
+    EXPECT_NEAR(A.Value(4,3), 2., 1e-10);
+}
+
 class BSplineInterpolation : public ::testing::Test
 {
 protected:
@@ -244,6 +319,93 @@ TEST_F(BSplineInterpolation, approxAndInterpolate)
     EXPECT_NEAR(0.0, result.curve->Value(parms[100]).Distance(pnts.Value(101)), 1e-10);
 
     StoreResult("TestData/analysis/BSplineInterpolation-approxAndInterpolate.brep", result.curve, pnts);
+}
+
+// tests whether the approximation of a given unit circle is C2 continuous at the closing without interpolating any points
+TEST_F(BSplineInterpolation, approxAndInterpolateContinuous1)
+{
+    int nPoints = 21;
+    TColgp_Array1OfPnt pnt2(1, nPoints);
+
+    for (int i = 0; i < nPoints; ++i) {
+        pnt2.SetValue(i + 1, gp_Pnt(cos((i * 2.*M_PI) / static_cast<double>(nPoints - 1)),
+                                    0.,
+                                    sin((i * 2.*M_PI) / static_cast<double>(nPoints - 1))));
+    }
+
+    tigl::CTiglBSplineApproxInterp app(pnt2, 9, 3, true);
+    tigl::CTiglApproxResult result = app.FitCurve();
+    Handle(Geom_BSplineCurve) curve = result.curve;
+
+    // tests if closed curve is C2-continuous at the boundaries:
+    gp_Pnt p1;
+    gp_Vec deriv1_1;
+    gp_Vec deriv1_2;
+    curve->D2(0., p1, deriv1_1, deriv1_2);
+    gp_Pnt p2;
+    gp_Vec deriv2_1;
+    gp_Vec deriv2_2;
+    curve->D2(1., p2, deriv2_1, deriv2_2);
+
+    EXPECT_TRUE(p1.IsEqual(p2, 1e-10));
+    EXPECT_TRUE(deriv1_1.IsEqual(deriv2_1, 1e-10, 1e-10));
+    EXPECT_TRUE(deriv1_2.IsEqual(deriv2_2, 1e-10, 1e-10));
+
+    StoreResult("TestData/analysis/BSplineInterpolation-approxAndInterpolateContinuous1.brep", curve, pnt2);
+}
+
+// tests whether the approximation of a given unit circle is C2 continuous at the closing with interpolating the first and the last point
+TEST_F(BSplineInterpolation, approxAndInterpolateContinuous2)
+{
+    int nPoints = 21;
+    TColgp_Array1OfPnt pnt2(1, nPoints);
+
+    for (int i = 0; i < nPoints; ++i) {
+        pnt2.SetValue(i + 1, gp_Pnt(cos((i * 2.*M_PI) / static_cast<double>(nPoints - 1)),
+                                    0.,
+                                    sin((i * 2.*M_PI) / static_cast<double>(nPoints - 1))));
+    }
+
+    tigl::CTiglBSplineApproxInterp app(pnt2, 9, 3, true);
+    app.InterpolatePoint(0);
+    app.InterpolatePoint(nPoints - 1);
+    tigl::CTiglApproxResult result = app.FitCurve();
+    Handle(Geom_BSplineCurve) curve = result.curve;
+
+    // tests if closed curve is C2-continuous at the boundaries:
+    gp_Pnt p1;
+    gp_Vec deriv1_1;
+    gp_Vec deriv1_2;
+    curve->D2(0., p1, deriv1_1, deriv1_2);
+    gp_Pnt p2;
+    gp_Vec deriv2_1;
+    gp_Vec deriv2_2;
+    curve->D2(1., p2, deriv2_1, deriv2_2);
+
+    EXPECT_TRUE(p1.IsEqual(p2, 1e-10));
+    EXPECT_TRUE(deriv1_1.IsEqual(deriv2_1, 1e-10, 1e-10));
+    EXPECT_TRUE(deriv1_2.IsEqual(deriv2_2, 1e-10, 1e-10));
+
+    StoreResult("TestData/analysis/BSplineInterpolation-approxAndInterpolateContinuous2.brep", curve, pnt2);
+}
+
+// tests whether the BSplineApproxInterp method works also for a non-closed part of a circle
+TEST_F(BSplineInterpolation, approxAndInterpolateContinuous3)
+{
+    int nPoints = 21;
+    TColgp_Array1OfPnt pnt2(1, nPoints - 1);
+
+    for (int i = 0; i < nPoints - 1; ++i) {
+        pnt2.SetValue(i + 1, gp_Pnt(cos((i * 2.*M_PI) / static_cast<double>(nPoints - 1)),
+                                    0.,
+                                    sin((i * 2.*M_PI) / static_cast<double>(nPoints - 1))));
+    }
+
+    tigl::CTiglBSplineApproxInterp app(pnt2, 9, 3, true);
+    tigl::CTiglApproxResult result = app.FitCurve();
+    Handle(Geom_BSplineCurve) curve = result.curve;
+
+    StoreResult("TestData/analysis/BSplineInterpolation-approxAndInterpolateContinuous3.brep", curve, pnt2);
 }
 
 TEST_F(BSplineInterpolation, approxOnly)

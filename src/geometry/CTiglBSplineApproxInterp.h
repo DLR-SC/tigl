@@ -51,7 +51,7 @@ struct CTiglApproxResult
 class CTiglBSplineApproxInterp
 {
 public:
-    TIGL_EXPORT CTiglBSplineApproxInterp(const TColgp_Array1OfPnt& points, int nControlPoints, int degree=3);
+    TIGL_EXPORT CTiglBSplineApproxInterp(const TColgp_Array1OfPnt& points, int nControlPoints, int degree = 3, bool continuous_if_closed = false);
 
     /// The specified point will be interpolated instead of approximated
     TIGL_EXPORT void InterpolatePoint(size_t pointIndex, bool withKink=false);
@@ -71,6 +71,12 @@ private:
     CTiglApproxResult solve(const std::vector<double>& params, const TColStd_Array1OfReal& knots, const TColStd_Array1OfInteger& mults) const;
 
     void optimizeParameters(const Handle(Geom_Curve)& curve, std::vector<double>& parms) const;
+
+    bool isClosed() const;
+    bool firstAndLastInterpolated() const;
+
+    /// computes the maximum distance of the given points
+    double maxDistanceOfBoundingBox(const TColgp_Array1OfPnt& points) const;
     
     /// curve coordinates to be fitted by the B-spline
     TColgp_Array1OfPnt m_pnts;
@@ -84,6 +90,9 @@ private:
 
     /// Number of control points of the B-spline
     int m_ncp;
+
+    /// determines the continuous closing of curve
+    bool  m_C2Continuous;
 };
 
 } // namespace tigl
