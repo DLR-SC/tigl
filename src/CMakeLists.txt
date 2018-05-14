@@ -8,13 +8,6 @@ configure_file (
   "${CMAKE_CURRENT_BINARY_DIR}/api/tigl_version.h"
 )
 
-source_group(Fuselage REGULAR_EXPRESSION "CCPACSFuselage")
-source_group(Rotor REGULAR_EXPRESSION "CCPACSRotor")
-source_group(Wing REGULAR_EXPRESSION "CCPACSWing")
-
-file(GLOB_RECURSE TIGL_GENERATED_SRC generated/*)
-source_group(generated FILES ${TIGL_GENERATED_SRC})
-
 # add all subdirectories to include path
 set(TIGL_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR})
 subdirlist(SUBDIRS ${CMAKE_CURRENT_SOURCE_DIR})
@@ -69,6 +62,14 @@ if (TIGL_CONCAT_GENERATED_FILES)
 else(TIGL_CONCAT_GENERATED_FILES)
     list(REMOVE_ITEM SUBDIRS generated)
 endif(TIGL_CONCAT_GENERATED_FILES)
+
+# group sources as on filesystem
+foreach(source ${TIGL_SRC})
+	get_filename_component(sourcePath "${source}" DIRECTORY)
+	file(RELATIVE_PATH sourcePath ${CMAKE_CURRENT_SOURCE_DIR} ${sourcePath})
+	string(REPLACE "/" "\\" sourcePathNoBS "${sourcePath}")
+	source_group("${sourcePathNoBS}" FILES "${source}")
+endforeach()
 
 if(MSVC)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS=1 /wd4355 -DTIGL_INTERNAL_EXPORTS)
