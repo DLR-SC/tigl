@@ -54,7 +54,7 @@ std::string CCPACSCrossBeamAssemblyPosition::GetDefaultedUID() const
 
 PNamedShape CCPACSCrossBeamAssemblyPosition::GetLoft()
 {
-    return PNamedShape( new CNamedShape(GetGeometry(false), GetDefaultedUID()) );
+    return PNamedShape( new CNamedShape(GetGeometry(true), GetDefaultedUID()) );
 }
 
 TiglGeometricComponentType CCPACSCrossBeamAssemblyPosition::GetComponentType() const
