@@ -25,6 +25,7 @@
 #include <gp_Pln.hxx>
 #include <ShapeFix_ShapeTolerance.hxx>
 
+#include "CNamedShape.h"
 #include "generated/CPACSStructuralProfile.h"
 #include "generated/CPACSSheetList.h"
 #include "CCPACSFuselage.h"
@@ -44,6 +45,21 @@ CCPACSCrossBeamAssemblyPosition::CCPACSCrossBeamAssemblyPosition(CCPACSCargoCros
     : generated::CPACSCrossBeamAssemblyPosition(parent, uidMgr)
     , invalidated(true)
 {
+}
+
+std::string CCPACSCrossBeamAssemblyPosition::GetDefaultedUID() const
+{
+    return GetUID();
+}
+
+PNamedShape CCPACSCrossBeamAssemblyPosition::GetLoft()
+{
+    return PNamedShape( new CNamedShape(GetGeometry(false), GetDefaultedUID()) );
+}
+
+TiglGeometricComponentType CCPACSCrossBeamAssemblyPosition::GetComponentType() const
+{
+    return TIGL_COMPONENT_GENERICSYSTEM | TIGL_COMPONENT_PHYSICAL;
 }
 
 void CCPACSCrossBeamAssemblyPosition::Invalidate()
