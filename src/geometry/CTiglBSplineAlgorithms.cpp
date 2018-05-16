@@ -27,6 +27,8 @@
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <GeomConvert.hxx>
 #include <Geom2dAPI_Interpolate.hxx>
 #include <GeomAPI_Interpolate.hxx>
 #include <GeomAPI_ExtremaCurveCurve.hxx>
@@ -52,6 +54,8 @@
 
 namespace
 {
+
+    static const double REL_TOL_CLOSED = 1e-8;
 
     class helper_function_unique
     {
@@ -335,6 +339,54 @@ namespace
             throw tigl::CTiglError("Curve not in range [" + tigl::std_to_string(umin) + ", " + tigl::std_to_string(umax) + "].");
         }
     }
+
+    bool isUDirClosed(const TColgp_Array2OfPnt& points, double tolerance)
+    {
+        bool uDirClosed = true;
+        int ulo = points.LowerRow();
+        int uhi = points.UpperRow();
+        // check that first row and last row are the same
+        for (int v_idx = points.LowerCol(); v_idx <= points.UpperCol(); ++v_idx) {
+            gp_Pnt pfirst = points.Value(ulo, v_idx);
+            gp_Pnt pLast = points.Value(uhi, v_idx);
+            uDirClosed = uDirClosed & pfirst.IsEqual(pLast, tolerance);
+        }
+        return uDirClosed;
+    }
+
+    bool isVDirClosed(const TColgp_Array2OfPnt& points, double tolerance)
+    {
+        bool vDirClosed = true;
+        int vlo = points.LowerCol();
+        int vhi = points.UpperCol();
+        for (int u_idx = points.LowerRow(); u_idx <= points.UpperRow(); ++u_idx) {
+            vDirClosed = vDirClosed & points.Value(u_idx, vlo).IsEqual(points.Value(u_idx, vhi), tolerance);
+        }
+        return vDirClosed;
+    }
+
+    void clampBSpline(Handle(Geom_BSplineCurve)& curve)
+    {
+        if (!curve->IsPeriodic()) {
+            return;
+        }
+        curve->SetNotPeriodic();
+
+        Handle(Geom_Curve) c = new Geom_TrimmedCurve(curve, curve->FirstParameter(), curve->LastParameter());
+        curve = GeomConvert::CurveToBSplineCurve(c);
+    }
+    
+    double scale(const TColgp_Array2OfPnt& points) {
+        double theScale = 0.;
+        for (int uidx = points.LowerRow(); uidx <= points.UpperRow(); ++uidx) {
+            gp_Pnt pFirst = points.Value(uidx, points.LowerCol());
+            for (int vidx = points.LowerCol() + 1; vidx <= points.UpperCol(); ++vidx) {
+                double dist = pFirst.Distance(points.Value(uidx, vidx));
+                theScale = std::max(theScale, dist);
+            }
+        }
+        return theScale;
+    }
 }
 
 
@@ -436,12 +488,16 @@ std::vector<Handle(Geom_BSplineSurface) > CTiglBSplineAlgorithms::createCommonKn
 }
 
 Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::curvesToSurface(const std::vector<Handle(Geom_BSplineCurve) >& curves,
-                                                                    const Handle(TColStd_HArray1OfReal) vParameters)
+                                                                    const Handle(TColStd_HArray1OfReal) vParameters, bool continuousIfClosed)
 {
     // check amount of given parameters
     if (vParameters->Length() != curves.size()) {
         throw CTiglError("The amount of given parameters has to be equal to the amount of given B-splines!", TIGL_MATH_ERROR);
     }
+
+    // check if all curves are closed
+    double tolerance = scaleOfBSplines(curves) * REL_TOL_CLOSED;
+    bool makeClosed = continuousIfClosed & curves.front()->IsEqual(curves.back(), tolerance);
 
     matchDegree(curves);
     size_t nCurves = curves.size();
@@ -457,16 +513,18 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::curvesToSurface(const std::v
     Handle(TColStd_HArray1OfReal) knotsV;
     Handle(TColStd_HArray1OfInteger) multsV;
 
+    size_t nPointsAdapt = makeClosed ? nCurves - 1 : nCurves;
+
     // create matrix of new control points with size which is possibly DIFFERENT from the size of controlPoints
     Handle(TColgp_HArray2OfPnt) cpSurf;
-    Handle(TColgp_HArray1OfPnt) interpPointsVDir = new TColgp_HArray1OfPnt(1, static_cast<Standard_Integer>(nCurves));
+    Handle(TColgp_HArray1OfPnt) interpPointsVDir = new TColgp_HArray1OfPnt(1, static_cast<Standard_Integer>(nPointsAdapt));
 
     // now continue to create new control points by interpolating the remaining columns of controlPoints in Skinning direction (here v-direction) by B-splines
     for (int cpUIdx = 1; cpUIdx <= numControlPointsU; ++cpUIdx) {
-        for (int cpVIdx = 1; cpVIdx <= nCurves; ++cpVIdx) {
+        for (int cpVIdx = 1; cpVIdx <= nPointsAdapt; ++cpVIdx) {
             interpPointsVDir->SetValue(cpVIdx, compatSplines[cpVIdx - 1]->Pole(cpUIdx));
         }
-        GeomAPI_Interpolate interpolationObject(interpPointsVDir, vParameters, false, 1e-5);
+        GeomAPI_Interpolate interpolationObject(interpPointsVDir, vParameters, makeClosed, 1e-5);
         interpolationObject.Perform();
 
         // check that interpolation was successful
@@ -475,7 +533,11 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::curvesToSurface(const std::v
         }
 
         Handle(Geom_BSplineCurve) interpSpline = interpolationObject.Curve();
-        
+
+        if (makeClosed) {
+            clampBSpline(interpSpline);
+        }
+
         if (cpUIdx == 1) {
             degreeV = interpSpline->Degree();
             knotsV = new TColStd_HArray1OfReal(1, interpSpline->NbKnots());
@@ -526,7 +588,7 @@ void CTiglBSplineAlgorithms::matchDegree(const std::vector<Handle(Geom_BSplineCu
     }
 }
 
-Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::curvesToSurface(const std::vector<Handle(Geom_BSplineCurve) >& bsplCurves)
+Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::curvesToSurface(const std::vector<Handle(Geom_BSplineCurve) >& bsplCurves, bool continuousIfClosed)
 {
     matchDegree(bsplCurves);
 
@@ -546,7 +608,7 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::curvesToSurface(const std::v
     std::pair<Handle(TColStd_HArray1OfReal), Handle(TColStd_HArray1OfReal) > parameters
             = CTiglBSplineAlgorithms::computeParamsBSplineSurf(controlPoints);
 
-    return CTiglBSplineAlgorithms::curvesToSurface(compatibleSplines, parameters.second);
+    return CTiglBSplineAlgorithms::curvesToSurface(compatibleSplines, parameters.second, continuousIfClosed);
 }
 
 Handle(Geom_BSplineCurve) CTiglBSplineAlgorithms::reparametrizeBSpline(const Handle(Geom_BSplineCurve) spline, const TColStd_Array1OfReal& old_parameters, const TColStd_Array1OfReal& new_parameters)
@@ -785,8 +847,11 @@ Handle(Geom_BSplineCurve) CTiglBSplineAlgorithms::reparametrizeBSplineContinuous
         points(static_cast<Standard_Integer>(i)) = spline->Value(oldParameter);
     }
 
+    bool makeContinous = spline->IsClosed() &&
+            spline->DN(spline->FirstParameter(), 1).Angle(spline->DN(spline->LastParameter(), 1)) < 6. / 180. * M_PI;
+
     // Create the new spline as a interpolation of the old one
-    CTiglBSplineApproxInterp approximationObj(points, static_cast<int>(n_control_pnts), 3);
+    CTiglBSplineApproxInterp approximationObj(points, static_cast<int>(n_control_pnts), 3, makeContinous);
 
     breaks.insert(breaks.begin(), new_parameters(new_parameters.Lower()));
     breaks.push_back(new_parameters(new_parameters.Upper()));
@@ -824,12 +889,30 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::flipSurface(const Handle(Geo
     return result;
 }
 
-Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::interpolatingSurface(const TColgp_Array2OfPnt& points, const Handle(TColStd_HArray1OfReal) parameters_u, const Handle(TColStd_HArray1OfReal) parameters_v, bool is_closed_u, bool is_closed_v) {
+Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::interpolatingSurface(const TColgp_Array2OfPnt& points,
+                                                                         const Handle(TColStd_HArray1OfReal) uParams,
+                                                                         const Handle(TColStd_HArray1OfReal) vParams,
+                                                                         bool uContinousIfClosed, bool vContinousIfClosed)
+{
+
+    double tolerance = REL_TOL_CLOSED * scale(points);
+    bool makeVDirClosed = vContinousIfClosed & isVDirClosed(points, tolerance);
+    bool makeUDirClosed = uContinousIfClosed & isUDirClosed(points, tolerance);
+
+    // GeomAPI_Interpolate does not want to have the last point,
+    // if the curve should be closed. It internally uses the first point
+    // as the last point
+    int nPointsUpper = makeUDirClosed ? points.UpperRow() -1 : points.UpperRow();
 
     // first interpolate all points by B-splines in u-direction
-    std::vector<Handle(Geom_BSplineCurve)> splines_u_vector;
+    std::vector<Handle(Geom_BSplineCurve)> uSplines;
     for (int cpVIdx = points.LowerCol(); cpVIdx <= points.UpperCol(); ++cpVIdx) {
-        GeomAPI_Interpolate interpolationObject(pntArray2GetColumn(points, cpVIdx), parameters_u, false /*is_closed_u*/, 1e-15);
+        Handle_TColgp_HArray1OfPnt points_u = new TColgp_HArray1OfPnt(points.LowerRow(), nPointsUpper);
+        for (int iPointU = points_u->Lower(); iPointU <= points_u->Upper(); ++iPointU) {
+            points_u->SetValue(iPointU, points.Value(iPointU, cpVIdx));
+        }
+
+        GeomAPI_Interpolate interpolationObject(points_u, uParams, makeUDirClosed, 1e-15);
         interpolationObject.Perform();
 
         // check that interpolation was successful
@@ -837,15 +920,15 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::interpolatingSurface(const T
 
         Handle(Geom_BSplineCurve) curve = interpolationObject.Curve();
 
-        // support for closed B-spline curves
-        /*if (curve->IsClosed()) {
-            curve->SetNotPeriodic();
-        }*/
-        splines_u_vector.push_back(curve);
+        // for further processing, we have to unperiodise / clamp the curve
+        if (makeUDirClosed) {
+            clampBSpline(curve);
+        }
+        uSplines.push_back(curve);
     }
 
     // now create a skinned surface with these B-splines which represents the interpolating surface
-    Handle(Geom_BSplineSurface) interpolatingSurf = CTiglBSplineAlgorithms::curvesToSurface(splines_u_vector, parameters_v);
+    Handle(Geom_BSplineSurface) interpolatingSurf = CTiglBSplineAlgorithms::curvesToSurface(uSplines, vParams, makeVDirClosed );
 
     return interpolatingSurf;
 }
@@ -916,16 +999,6 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::createGordonSurface(const st
                                    toVector(intersection_params_spline_u->Array1()),
                                    toVector(intersection_params_spline_v->Array1()));
 
-    // Skinning in v-direction with u directional B-Splines
-    Handle(Geom_BSplineSurface) surface_v = curvesToSurface(profiles, intersection_params_spline_v);
-    // therefore reparametrization before this method
-
-    // Skinning in u-direction with v directional B-Splines
-    Handle(Geom_BSplineSurface) surface_u_unflipped = curvesToSurface(guides, intersection_params_spline_u);
-
-    // flipping of the surface in v-direction; flipping is redundant here, therefore the next line is a comment!
-    Handle(Geom_BSplineSurface) surface_u = flipSurface(surface_u_unflipped);
-
     // setting everything up for creating Tensor Product Surface by interpolating intersection points of profiles and guides with B-Spline surface
     // find the intersection points:
     TColgp_Array2OfPnt intersection_pnts(1, intersection_params_spline_u->Upper(), 1, intersection_params_spline_v->Upper());
@@ -939,10 +1012,28 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::createGordonSurface(const st
         }
     }
 
+    // check, whether to build a closed continous surface
+    double curve_u_tolerance = REL_TOL_CLOSED * scaleOfBSplines(guides);
+    double curve_v_tolerance = REL_TOL_CLOSED * scaleOfBSplines(profiles);
+    double tp_tolerance = REL_TOL_CLOSED * scale(intersection_pnts);
+
+    bool makeUClosed = isUDirClosed(intersection_pnts, tp_tolerance) && guides.front()->IsEqual(guides.back(), curve_u_tolerance);
+    bool makeVClosed = isVDirClosed(intersection_pnts, tp_tolerance) && profiles.front()->IsEqual(profiles.back(), curve_v_tolerance);
+
+    // Skinning in v-direction with u directional B-Splines
+    Handle(Geom_BSplineSurface) surface_v = curvesToSurface(profiles, intersection_params_spline_v, makeVClosed);
+    // therefore reparametrization before this method
+
+    // Skinning in u-direction with v directional B-Splines
+    Handle(Geom_BSplineSurface) surface_u_unflipped = curvesToSurface(guides, intersection_params_spline_u, makeUClosed);
+
+    // flipping of the surface in v-direction; flipping is redundant here, therefore the next line is a comment!
+    Handle(Geom_BSplineSurface) surface_u = flipSurface(surface_u_unflipped);
+
     // if there are too little points for degree in u-direction = 3 and degree in v-direction=3 creating an interpolation B-spline surface isn't possible in Open CASCADE
 
     // Open CASCADE doesn't have a B-spline surface interpolation method where one can give the u- and v-directional parameters as arguments
-    Handle(Geom_BSplineSurface) tensorProdSurf = CTiglBSplineAlgorithms::interpolatingSurface(intersection_pnts, intersection_params_spline_u, intersection_params_spline_v, profiles[0]->IsClosed(), guides[0]->IsClosed());
+    Handle(Geom_BSplineSurface) tensorProdSurf = CTiglBSplineAlgorithms::interpolatingSurface(intersection_pnts, intersection_params_spline_u, intersection_params_spline_v, makeUClosed, makeVClosed);
 
     // match degree of all three surfaces
     Standard_Integer degreeU = std::max(std::max(surface_u->UDegree(),

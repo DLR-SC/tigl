@@ -124,10 +124,11 @@ public:
      *
      * @param splines_vector Curves to be interpolated.
      * @param v_params V parameters at which the resulting surface should interpolate the input curves.
+     * @param continuousIfClosed Make a C2 continous surface at the start/end junction if the first and last curve are the same
      * @return The interpolation b-spline surface.
      */
     TIGL_EXPORT static Handle(Geom_BSplineSurface) curvesToSurface(const std::vector<Handle(Geom_BSplineCurve) >& splines_vector,
-                                                                   const Handle(TColStd_HArray1OfReal) v_params);
+                                                                   const Handle(TColStd_HArray1OfReal) v_params, bool continuousIfClosed = false);
 
     /**
      * @brief Surface skinning algorithm
@@ -137,9 +138,10 @@ public:
      * parameters will be determined automatically.
      *
      * @param splines_vector Curves to be interpolated.
+     * @param continuousIfClosed Make a C2 continous surface at the start/end junction if the first and last curve are the same
      * @return The interpolation b-spline surface.
      */
-    TIGL_EXPORT static Handle(Geom_BSplineSurface) curvesToSurface(const std::vector<Handle(Geom_BSplineCurve) >& splines_vector);
+    TIGL_EXPORT static Handle(Geom_BSplineSurface) curvesToSurface(const std::vector<Handle(Geom_BSplineCurve) >& splines_vector, bool continuousIfClosed = false);
 
     /**
      */
@@ -195,15 +197,21 @@ public:
      *          ! Uses a skinned surface !
      * @param points:
      *          matrix of points that shall be interpolated
-     * @param parameters_u:
+     * @param uParams:
      *          parameters in u-direction where the points shall be at on the interpolating surface
-     * @param parameters_v:
+     * @param vParams:
      *          parameters in v-direction where the points shall be at on the interpolating surface
+     * @param uContinousIfClosed:
+     *          Make a continous junction in u d-directions, if the u direction is closed
+     * @param vContinousIfClosed:
+     *          Make a continous junction in v d-directions, if the v direction is closed
      * @return
      *          B-spline surface which interpolates the given points with the given parameters
      */
-    TIGL_EXPORT static Handle(Geom_BSplineSurface) interpolatingSurface(const TColgp_Array2OfPnt& points, const Handle(TColStd_HArray1OfReal) parameters_u,
-                                                                        const Handle(TColStd_HArray1OfReal) parameters_v, bool is_closed_u, bool is_closed_v);
+    TIGL_EXPORT static Handle(Geom_BSplineSurface) interpolatingSurface(const TColgp_Array2OfPnt& points,
+                                                                        const Handle(TColStd_HArray1OfReal) uParams,
+                                                                        const Handle(TColStd_HArray1OfReal) vParams,
+                                                                        bool uContinousIfClosed, bool vContinousIfClosed);
 
     /**
      * @brief createGordonSurface:

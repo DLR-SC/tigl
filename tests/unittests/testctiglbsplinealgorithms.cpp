@@ -529,6 +529,44 @@ TEST(TiglBSplineAlgorithms, testSkinnedBSplineSurface)
     }
 }
 
+TEST(TiglBSplineAlgorithms, curvesToSurfaceContinous)
+{
+    // Read in nacelle data from BRep
+    TopoDS_Shape shape_u;
+
+    BRep_Builder builder_u;
+
+    BRepTools::Read(shape_u, "TestData/CurveNetworks/fuselage1/guides.brep", builder_u);
+
+    // get the splines in u-direction from the Edges
+    std::vector<Handle(Geom_BSplineCurve)> curves;
+    for (TopExp_Explorer exp(shape_u, TopAbs_EDGE); exp.More(); exp.Next()) {
+        TopoDS_Edge curve_edge = TopoDS::Edge(exp.Current());
+        double beginning = 0;
+        double end = 1;
+        Handle(Geom_Curve) curve = BRep_Tool::Curve(curve_edge, beginning, end);
+        Handle(Geom_BSplineCurve) spline = GeomConvert::CurveToBSplineCurve(curve);
+        curves.push_back(spline);
+    }
+
+    Handle(Geom_BSplineSurface) surface = tigl::CTiglBSplineAlgorithms::curvesToSurface(curves, true);
+
+    double umin, umax, vmin, vmax;
+    surface->Bounds(umin, umax, vmin, vmax);
+    EXPECT_TRUE(surface->DN(umin, vmin, 0, 0).IsEqual(surface->DN(umin, vmax, 0, 0), 1e-10, 1e-6));
+    EXPECT_TRUE(surface->DN(umin, vmin, 0, 1).IsEqual(surface->DN(umin, vmax, 0, 1), 1e-10, 1e-6));
+
+    double umean = 0.5 * (umin + umax);
+    EXPECT_TRUE(surface->DN(umean, vmin, 0, 0).IsEqual(surface->DN(umean, vmax, 0, 0), 1e-10, 1e-6));
+    EXPECT_TRUE(surface->DN(umean, vmin, 0, 1).IsEqual(surface->DN(umean, vmax, 0, 1), 1e-10, 1e-6));
+
+    EXPECT_TRUE(surface->DN(umax, vmin, 0, 0).IsEqual(surface->DN(umax, vmax, 0, 0), 1e-10, 1e-6));
+    EXPECT_TRUE(surface->DN(umax, vmin, 0, 1).IsEqual(surface->DN(umax, vmax, 0, 1), 1e-10, 1e-6));
+    
+    // Write surface
+    BRepTools::Write(BRepBuilderAPI_MakeFace(surface, Precision::Confusion()).Face(), "TestData/curvesToSurfaceContinous.brep");
+}
+
 TEST(TiglBSplineAlgorithms, testReparametrizeBSpline)
 {
     /*
