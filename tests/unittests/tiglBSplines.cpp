@@ -408,6 +408,108 @@ TEST_F(BSplineInterpolation, approxAndInterpolateContinuous3)
     StoreResult("TestData/analysis/BSplineInterpolation-approxAndInterpolateContinuous3.brep", curve, pnt2);
 }
 
+TEST_F(BSplineInterpolation, interpolateAll)
+{
+    int nPoints = 8;
+    TColgp_Array1OfPnt pnt2(1, nPoints);
+
+    double dx = 2. * M_PI / (nPoints - 1);
+    for (int i = 0; i < nPoints; ++i) {
+        pnt2.SetValue(i + 1, gp_Pnt(cos(i*dx),
+                                    0.,
+                                    sin(i*dx)));
+    }
+
+    tigl::CTiglBSplineApproxInterp app(pnt2, nPoints, 2, false);
+    for (int i = 0; i < nPoints; ++i) {
+        app.InterpolatePoint(static_cast<size_t>(i));
+    }
+
+    tigl::CTiglApproxResult result = app.FitCurve();
+    Handle(Geom_BSplineCurve) curve = result.curve;
+
+    StoreResult("TestData/analysis/BSplineInterpolation-interpolateAll.brep", curve, pnt2);
+}
+
+TEST_F(BSplineInterpolation, interpolateAllContinous)
+{
+    int nPoints = 8;
+    TColgp_Array1OfPnt pnt2(1, nPoints);
+
+    double dx = 2. * M_PI / (nPoints - 1);
+    for (int i = 0; i < nPoints; ++i) {
+        pnt2.SetValue(i + 1, gp_Pnt(cos(i*dx),
+                                    0.,
+                                    sin(i*dx)));
+    }
+
+    // We need two more control points than interpolation points since we force c2 continuity
+    tigl::CTiglBSplineApproxInterp app(pnt2, nPoints + 2, 2, true);
+    for (int i = 0; i < nPoints; ++i) {
+        app.InterpolatePoint(static_cast<size_t>(i));
+    }
+
+    tigl::CTiglApproxResult result = app.FitCurve();
+    Handle(Geom_BSplineCurve) curve = result.curve;
+
+    StoreResult("TestData/analysis/BSplineInterpolation-interpolateAllCont.brep", curve, pnt2);
+}
+
+TEST_F(BSplineInterpolation, interpolateAllContinousHalfCircle)
+{
+    int nPoints = 8;
+    TColgp_Array1OfPnt pnt2(1, nPoints);
+
+    double dx = 2.*M_PI / (nPoints - 1);
+    for (int i = 0; i < nPoints; ++i) {
+        pnt2.SetValue(i + 1, gp_Pnt(cos(i*dx),
+                                    0.,
+                                    sin(i*dx)));
+    }
+
+    // We need two more control points than interpolation points since we force c2 continuity
+    tigl::CTiglBSplineApproxInterp app(pnt2, nPoints + 2, 2, true);
+    for (int i = 0; i < nPoints; ++i) {
+        app.InterpolatePoint(static_cast<size_t>(i));
+    }
+
+    tigl::CTiglApproxResult result = app.FitCurve();
+    Handle(Geom_BSplineCurve) curve = result.curve;
+
+    StoreResult("TestData/analysis/BSplineInterpolation-interpolateAllCont.brep", curve, pnt2);
+}
+
+TEST_F(BSplineInterpolation, interpolateErrors)
+{
+    int nPoints = 8;
+    TColgp_Array1OfPnt pnt2(1, nPoints);
+
+    double dx = 2.*M_PI / (nPoints - 1);
+    for (int i = 0; i < nPoints; ++i) {
+        pnt2.SetValue(i + 1, gp_Pnt(cos(i*dx),
+                                    0.,
+                                    sin(i*dx)));
+    }
+
+
+    tigl::CTiglBSplineApproxInterp app(pnt2, nPoints, 2, true);
+    for (int i = 0; i < nPoints; ++i) {
+        app.InterpolatePoint(static_cast<size_t>(i));
+    }
+
+    // too few control points
+    ASSERT_THROW(app.FitCurve(), tigl::CTiglError);
+
+    tigl::CTiglBSplineApproxInterp app2(pnt2, nPoints + 1, 2, false);
+    for (int i = 0; i < nPoints; ++i) {
+        app2.InterpolatePoint(static_cast<size_t>(i));
+    }
+
+    // too many control points
+    ASSERT_THROW(app2.FitCurve(), tigl::CTiglError);
+}
+
+
 TEST_F(BSplineInterpolation, approxOnly)
 {
     tigl::CTiglBSplineApproxInterp app(pnts, 15, 3);

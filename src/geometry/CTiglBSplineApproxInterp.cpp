@@ -360,36 +360,6 @@ CTiglApproxResult CTiglBSplineApproxInterp::solve(const std::vector<double>& par
 
     Standard_Integer n_apprxmated = static_cast<Standard_Integer>(m_indexOfApproximated.size());
     Standard_Integer n_intpolated = static_cast<Standard_Integer>(m_indexOfInterpolated.size());
-
-    // Number of control points required
-    Standard_Integer nCtrPnts = flatKnots.Length() - m_degree - 1;
-
-    // Write b vector. These are the points to be approximated
-    TColStd_Array1OfReal appParams(1, n_apprxmated);
-    math_Vector bx(1, n_apprxmated);
-    math_Vector by(1, n_apprxmated);
-    math_Vector bz(1, n_apprxmated);
-
-    Standard_Integer appIndex = 1;
-    for (std::vector<size_t>::const_iterator it_idx = m_indexOfApproximated.begin(); it_idx != m_indexOfApproximated.end(); ++it_idx) {
-        Standard_Integer ipnt = static_cast<Standard_Integer>(*it_idx + 1);
-        const gp_Pnt& p = m_pnts.Value(ipnt);
-        bx(appIndex) = p.X();
-        by(appIndex) = p.Y();
-        bz(appIndex) = p.Z();
-        appParams(appIndex) = params[*it_idx];
-        appIndex++;
-    }
-
-    // Solve constrained linear least squares
-    // min(Ax - b) s.t. Cx = d
-    // Create left hand side block matrix
-    // A.T*A  C.T
-    // C      0
-    math_Matrix A = CTiglBSplineAlgorithms::bsplineBasisMat(m_degree, flatKnots, appParams);
-    math_Matrix At = A.Transposed();
-
-    // Build left hand side of the equation
     Standard_Integer n_continuityConditions = 0;
     if (isClosed() && m_C2Continuous) {
         // C0, C1, C2
@@ -399,21 +369,60 @@ CTiglApproxResult CTiglBSplineApproxInterp::solve(const std::vector<double>& par
             n_continuityConditions--;
         }
     }
+    
+    // Number of control points required
+    Standard_Integer nCtrPnts = flatKnots.Length() - m_degree - 1;
+
+    if (nCtrPnts < n_intpolated + n_continuityConditions) {
+        throw tigl::CTiglError("Too few control points for curve interpolation!");
+    }
+
+    if (n_apprxmated == 0 && nCtrPnts != n_intpolated + n_continuityConditions) {
+        throw tigl::CTiglError("Wrong number of control points for curve interpolation!");
+    }
+
+    // Build left hand side of the equation
     Standard_Integer n_vars = nCtrPnts + n_intpolated + n_continuityConditions;
     math_Matrix lhs(1, n_vars, 1, n_vars);
     lhs.Init(0.);
-    lhs.Set(1, nCtrPnts, 1, nCtrPnts, At.Multiplied(A));
-
-    // Set the right hand side:
-    // A.T*b
-    // d
+    
+    // Allocate right hand side
     math_Vector rhsx(1, n_vars);
     math_Vector rhsy(1, n_vars);
     math_Vector rhsz(1, n_vars);
 
-    rhsx.Set(1, nCtrPnts, At.Multiplied(bx));
-    rhsy.Set(1, nCtrPnts, At.Multiplied(by));
-    rhsz.Set(1, nCtrPnts, At.Multiplied(bz));
+    if (n_apprxmated > 0) {
+        // Write b vector. These are the points to be approximated
+        TColStd_Array1OfReal appParams(1, n_apprxmated);
+        math_Vector bx(1, n_apprxmated);
+        math_Vector by(1, n_apprxmated);
+        math_Vector bz(1, n_apprxmated);
+    
+        Standard_Integer appIndex = 1;
+        for (std::vector<size_t>::const_iterator it_idx = m_indexOfApproximated.begin(); it_idx != m_indexOfApproximated.end(); ++it_idx) {
+            Standard_Integer ipnt = static_cast<Standard_Integer>(*it_idx + 1);
+            const gp_Pnt& p = m_pnts.Value(ipnt);
+            bx(appIndex) = p.X();
+            by(appIndex) = p.Y();
+            bz(appIndex) = p.Z();
+            appParams(appIndex) = params[*it_idx];
+            appIndex++;
+        }
+
+        // Solve constrained linear least squares
+        // min(Ax - b) s.t. Cx = d
+        // Create left hand side block matrix
+        // A.T*A  C.T
+        // C      0
+        math_Matrix A = CTiglBSplineAlgorithms::bsplineBasisMat(m_degree, flatKnots, appParams);
+        math_Matrix At = A.Transposed();
+
+        lhs.Set(1, nCtrPnts, 1, nCtrPnts, At.Multiplied(A));
+
+        rhsx.Set(1, nCtrPnts, At.Multiplied(bx));
+        rhsy.Set(1, nCtrPnts, At.Multiplied(by));
+        rhsz.Set(1, nCtrPnts, At.Multiplied(bz));
+    }
 
     if (n_intpolated + n_continuityConditions > 0) {
         // Write d vector. These are the points that should be interpolated as well as the continuity constraints for closed curve

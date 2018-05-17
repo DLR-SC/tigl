@@ -387,7 +387,16 @@ namespace
         }
         return theScale;
     }
-}
+
+    template<class T>
+    T clamp(const T& val, const T& min, const T& max) {
+        if (min > max) {
+            throw tigl::CTiglError("Minimum may not be larger than maximum in clamp!");
+        }
+
+        return std::max(min, std::min(val, max));
+    }
+} // namespace
 
 
 namespace tigl
@@ -1338,10 +1347,21 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::createGordonSurfaceGeneral(c
     for(std::vector<Handle(Geom_BSplineCurve)>::const_iterator it = guides.begin(); it != guides.end(); ++it) {
         max_cp_v = std::max(max_cp_v, (*it)->NbPoles());
     }
-    // we want to use at least 30 control points to be able to reparametrize the geometry properly
-    max_cp_u = std::max(30, max_cp_u + 10);
-    max_cp_v = std::max(30, max_cp_v + 10);
 
+    // we want to use at least 10 and max 80 control points to be able to reparametrize the geometry properly
+    size_t mincp = 10;
+    size_t maxcp = 80;
+
+    // since we interpolate the intersections, we cannot use fewer control points than curves
+    // We need to add two since we want c2 continuity, which adds two equations
+    size_t min_u = std::max(guides.size() + 2, mincp);
+    size_t min_v = std::max(profiles.size() + 2, mincp);
+
+    size_t max_u = std::max(min_u, maxcp);
+    size_t max_v = std::max(min_v, maxcp);
+
+    max_cp_u = clamp(max_cp_u + 10, static_cast<int>(min_u), static_cast<int>(max_u));
+    max_cp_v = clamp(max_cp_v + 10, static_cast<int>(min_v), static_cast<int>(max_v));
 
     // reparametrize u-directional B-splines
     std::vector<Handle(Geom_BSplineCurve)> reparam_splines_u;
