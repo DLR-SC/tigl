@@ -373,7 +373,7 @@ CTiglApproxResult CTiglBSplineApproxInterp::solve(const std::vector<double>& par
     // Number of control points required
     Standard_Integer nCtrPnts = flatKnots.Length() - m_degree - 1;
 
-    if (nCtrPnts < n_intpolated + n_continuityConditions) {
+    if (nCtrPnts < n_intpolated + n_continuityConditions || nCtrPnts < m_degree + 1 + n_continuityConditions) {
         throw tigl::CTiglError("Too few control points for curve interpolation!");
     }
 
