@@ -64,7 +64,7 @@ TEST(TiglBSplineAlgorithms, testComputeParamsBSplineCurve)
 
     // compute centripetal parameters by the method that shall be tested here
     double alpha = 0.5;
-    Handle(TColStd_HArray1OfReal) parameters = CTiglBSplineAlgorithms::computeParamsBSplineCurve(controlPoints, alpha);
+    std::vector<double> parameters = CTiglBSplineAlgorithms::computeParamsBSplineCurve(controlPoints, alpha);
 
     // compute right parameters by hand
     TColStd_Array1OfReal right_parameters(1, 4);
@@ -79,10 +79,10 @@ TEST(TiglBSplineAlgorithms, testComputeParamsBSplineCurve)
     right_parameters(4) = 1;
 
     // assure that computed parameters are right
-    ASSERT_NEAR(parameters->Value(1), right_parameters(1), 1e-15);
-    ASSERT_NEAR(parameters->Value(2), right_parameters(2), 1e-15);
-    ASSERT_NEAR(parameters->Value(3), right_parameters(3), 1e-15);
-    ASSERT_NEAR(parameters->Value(4), right_parameters(4), 1e-15);
+    ASSERT_NEAR(parameters[0], right_parameters(1), 1e-15);
+    ASSERT_NEAR(parameters[1], right_parameters(2), 1e-15);
+    ASSERT_NEAR(parameters[2], right_parameters(3), 1e-15);
+    ASSERT_NEAR(parameters[3], right_parameters(4), 1e-15);
 }
 
 TEST(TiglBSplineAlgorithms, testComputeParamsBSplineSurface)
@@ -709,23 +709,23 @@ TEST(TiglBSplineAlgorithms, testReparametrizeBSplineContinuouslyApprox)
 
     Handle(Geom_BSplineCurve) spline = new Geom_BSplineCurve(controlPoints, knots, mults, degree);
 
-    TColStd_Array1OfReal old_parameters(1, 7);
-    old_parameters(1) = 0.;
-    old_parameters(2) = 0.2;
-    old_parameters(3) = 0.4;
-    old_parameters(4) = 0.5;
-    old_parameters(5) = 0.6;
-    old_parameters(6) = 0.8;
-    old_parameters(7) = 1.;
+    std::vector<double> old_parameters(7, 0.);
+    old_parameters[0] = 0.;
+    old_parameters[1] = 0.2;
+    old_parameters[2] = 0.4;
+    old_parameters[3] = 0.5;
+    old_parameters[4] = 0.6;
+    old_parameters[5] = 0.8;
+    old_parameters[6] = 1.;
 
-    TColStd_Array1OfReal new_parameters(1, 7);
-    new_parameters(1) = 0.;
-    new_parameters(2) = 0.1;
-    new_parameters(3) = 0.2;
-    new_parameters(4) = 0.3;
-    new_parameters(5) = 0.7;
-    new_parameters(6) = 0.95;
-    new_parameters(7) = 1.;
+    std::vector<double> new_parameters(7, 0.);
+    new_parameters[0] = 0.;
+    new_parameters[1] = 0.1;
+    new_parameters[2] = 0.2;
+    new_parameters[3] = 0.3;
+    new_parameters[4] = 0.7;
+    new_parameters[5] = 0.95;
+    new_parameters[6] = 1.;
 
     Handle(Geom_BSplineCurve) reparam_spline = CTiglBSplineAlgorithms::reparametrizeBSplineContinuouslyApprox(spline, old_parameters, new_parameters, 100);
 
@@ -737,23 +737,23 @@ TEST(TiglBSplineAlgorithms, testReparametrizeBSplineContinuouslyApprox)
     TColStd_Array1OfReal test_point_new_params(1, 101);
 
     for (int i = test_point_params.Lower(); i <= test_point_params.Upper(); ++i) {
-        for (int j = old_parameters.Lower(); j <= old_parameters.Upper() - 1; ++j) {
-            if (std::abs(test_point_params(i) - old_parameters(j + 1)) < 1e-15) {
-                test_point_new_params(i) = new_parameters(j + 1);
+        for (size_t j = 0; j < old_parameters.size() - 1; ++j) {
+            if (std::abs(test_point_params(i) - old_parameters[j + 1]) < 1e-15) {
+                test_point_new_params(i) = new_parameters[j + 1];
             }
-            else if (std::abs(test_point_params(i) - old_parameters(1)) < 1e-15) {
-                test_point_new_params(i) = new_parameters(1);
+            else if (std::abs(test_point_params(i) - old_parameters[0]) < 1e-15) {
+                test_point_new_params(i) = new_parameters[0];
             }
-            else if (old_parameters(j + 1) > test_point_params(i) && test_point_params(i) > old_parameters(j)) {
-                test_point_new_params(i) = test_point_params(i) * (new_parameters(j + 1) - new_parameters(j)) / (old_parameters(j + 1) - old_parameters(j));
+            else if (old_parameters[j + 1] > test_point_params(i) && test_point_params(i) > old_parameters[j]) {
+                test_point_new_params(i) = test_point_params(i) * (new_parameters[j + 1] - new_parameters[j]) / (old_parameters[j + 1] - old_parameters[j]);
             }
         }
     }
 
     // check that B-spline geometry remains approximately the same
-    for (int param_idx = old_parameters.Lower(); param_idx <= old_parameters.Upper(); ++param_idx) {
-        gp_Pnt old_point = spline->Value(old_parameters(param_idx));
-        gp_Pnt new_point = reparam_spline->Value(new_parameters(param_idx));
+    for (size_t param_idx = 0; param_idx < old_parameters.size(); ++param_idx) {
+        gp_Pnt old_point = spline->Value(old_parameters[param_idx]);
+        gp_Pnt new_point = reparam_spline->Value(new_parameters[param_idx]);
         ASSERT_NEAR(old_point.X(), new_point.X(), 1e-10);
         ASSERT_NEAR(old_point.Y(), new_point.Y(), 1e-10);
         ASSERT_NEAR(old_point.Z(), new_point.Z(), 1e-10);
@@ -868,14 +868,14 @@ TEST(TiglBSplineAlgorithms, testInterpolatingSurface)
         }
     }
 
-    std::pair<Handle(TColStd_HArray1OfReal), Handle(TColStd_HArray1OfReal)> parameters = CTiglBSplineAlgorithms::computeParamsBSplineSurf(points);
+    std::pair<std::vector<double>, std::vector<double> > parameters = CTiglBSplineAlgorithms::computeParamsBSplineSurf(points);
 
     Handle(Geom_BSplineSurface) interpolatingSurf = CTiglBSplineAlgorithms::interpolatingSurface(points, parameters.first, parameters.second, false, false);
 
     for (unsigned int u_idx = 1; u_idx <= 100; ++u_idx) {
         for (unsigned int v_idx = 1; v_idx <= 100; ++v_idx) {
             gp_Pnt surf_pnt = surface->Value(u_idx / 100., v_idx / 100.);
-            gp_Pnt interp_pnt = interpolatingSurf->Value(parameters.first->Value(u_idx), parameters.second->Value(v_idx));
+            gp_Pnt interp_pnt = interpolatingSurf->Value(parameters.first[u_idx - 1], parameters.second[v_idx - 1]);
             ASSERT_NEAR(interp_pnt.X(), surf_pnt.X(), 4e-15);
             ASSERT_NEAR(interp_pnt.Y(), surf_pnt.Y(), 4e-15);
             ASSERT_NEAR(interp_pnt.Z(), surf_pnt.Z(), 4e-15);

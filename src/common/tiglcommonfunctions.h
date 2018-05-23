@@ -260,6 +260,10 @@ inline double Radians(double degree)
     return degree / 180. * M_PI;
 }
 
+// Clamps val between min and max
+int Clamp(int val, int min, int max);
+double Clamp(double val, double min, double max);
+
 // Creates a linear spaces array but with some additional breaking points
 // If the breaking points are very close to a point, the point will be replaced
 // Else, the breaking point will be inserted

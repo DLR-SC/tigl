@@ -1529,3 +1529,23 @@ std::vector<double> LinspaceWithBreaks(double umin, double umax, size_t n_values
 
     return result;
 }
+
+template <class T>
+T Clamp(T val, T min, T max)
+{
+    if (min > max) {
+        throw tigl::CTiglError("Minimum may not be larger than maximum in clamp!");
+    }
+    
+    return std::max(min, std::min(val, max));
+}
+
+double Clamp(double val, double min, double max)
+{
+    return Clamp<>(val, min, max);
+}
+
+int Clamp(int val, int min, int max)
+{
+    return Clamp<>(val, min, max);
+}

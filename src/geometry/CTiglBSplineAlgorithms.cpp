@@ -55,8 +55,6 @@
 namespace
 {
 
-    static const double REL_TOL_CLOSED = 1e-8;
-
     class helper_function_unique
     {
     public:
@@ -340,31 +338,6 @@ namespace
         }
     }
 
-    bool isUDirClosed(const TColgp_Array2OfPnt& points, double tolerance)
-    {
-        bool uDirClosed = true;
-        int ulo = points.LowerRow();
-        int uhi = points.UpperRow();
-        // check that first row and last row are the same
-        for (int v_idx = points.LowerCol(); v_idx <= points.UpperCol(); ++v_idx) {
-            gp_Pnt pfirst = points.Value(ulo, v_idx);
-            gp_Pnt pLast = points.Value(uhi, v_idx);
-            uDirClosed = uDirClosed & pfirst.IsEqual(pLast, tolerance);
-        }
-        return uDirClosed;
-    }
-
-    bool isVDirClosed(const TColgp_Array2OfPnt& points, double tolerance)
-    {
-        bool vDirClosed = true;
-        int vlo = points.LowerCol();
-        int vhi = points.UpperCol();
-        for (int u_idx = points.LowerRow(); u_idx <= points.UpperRow(); ++u_idx) {
-            vDirClosed = vDirClosed & points.Value(u_idx, vlo).IsEqual(points.Value(u_idx, vhi), tolerance);
-        }
-        return vDirClosed;
-    }
-
     void clampBSpline(Handle(Geom_BSplineCurve)& curve)
     {
         if (!curve->IsPeriodic()) {
@@ -376,25 +349,15 @@ namespace
         curve = GeomConvert::CurveToBSplineCurve(c);
     }
     
-    double scale(const TColgp_Array2OfPnt& points) {
-        double theScale = 0.;
-        for (int uidx = points.LowerRow(); uidx <= points.UpperRow(); ++uidx) {
-            gp_Pnt pFirst = points.Value(uidx, points.LowerCol());
-            for (int vidx = points.LowerCol() + 1; vidx <= points.UpperCol(); ++vidx) {
-                double dist = pFirst.Distance(points.Value(uidx, vidx));
-                theScale = std::max(theScale, dist);
-            }
-        }
-        return theScale;
-    }
-
-    template<class T>
-    T clamp(const T& val, const T& min, const T& max) {
-        if (min > max) {
-            throw tigl::CTiglError("Minimum may not be larger than maximum in clamp!");
+    Handle(TColStd_HArray1OfReal) toArray(const std::vector<double>& vector)
+    {
+        Handle(TColStd_HArray1OfReal) array = new TColStd_HArray1OfReal(1, static_cast<int>(vector.size()));
+        int ipos = 1;
+        for (std::vector<double>::const_iterator it = vector.begin(); it != vector.end(); ++it, ipos++) {
+            array->SetValue(ipos, *it);
         }
 
-        return std::max(min, std::min(val, max));
+        return array;
     }
 } // namespace
 
@@ -402,54 +365,89 @@ namespace
 namespace tigl
 {
 
+const double CTiglBSplineAlgorithms::REL_TOL_CLOSED = 1e-8;
 
-Handle(TColStd_HArray1OfReal) CTiglBSplineAlgorithms::computeParamsBSplineCurve(const Handle(TColgp_HArray1OfPnt)& points, const double alpha)
+bool CTiglBSplineAlgorithms::isUDirClosed(const TColgp_Array2OfPnt& points, double tolerance)
 {
-    Handle(TColStd_HArray1OfReal) parameters(new TColStd_HArray1OfReal(points->Lower(), points->Upper()));
+    bool uDirClosed = true;
+    int ulo = points.LowerRow();
+    int uhi = points.UpperRow();
+    // check that first row and last row are the same
+    for (int v_idx = points.LowerCol(); v_idx <= points.UpperCol(); ++v_idx) {
+        gp_Pnt pfirst = points.Value(ulo, v_idx);
+        gp_Pnt pLast = points.Value(uhi, v_idx);
+        uDirClosed = uDirClosed & pfirst.IsEqual(pLast, tolerance);
+    }
+    return uDirClosed;
+}
 
-    parameters->SetValue(points->Lower(), 0.);
+bool CTiglBSplineAlgorithms::isVDirClosed(const TColgp_Array2OfPnt& points, double tolerance)
+{
+    bool vDirClosed = true;
+    int vlo = points.LowerCol();
+    int vhi = points.UpperCol();
+    for (int u_idx = points.LowerRow(); u_idx <= points.UpperRow(); ++u_idx) {
+        vDirClosed = vDirClosed & points.Value(u_idx, vlo).IsEqual(points.Value(u_idx, vhi), tolerance);
+    }
+    return vDirClosed;
+}
 
-    for (int i = points->Lower() + 1; i <= points->Upper(); ++i) {
-        double length = pow(points->Value(i).SquareDistance(points->Value(i - 1)), alpha / 2.);
-        parameters->SetValue(i, length + parameters->Value(i-1));
+double CTiglBSplineAlgorithms::scale(const TColgp_Array2OfPnt& points)
+{
+    double theScale = 0.;
+    for (int uidx = points.LowerRow(); uidx <= points.UpperRow(); ++uidx) {
+        gp_Pnt pFirst = points.Value(uidx, points.LowerCol());
+        for (int vidx = points.LowerCol() + 1; vidx <= points.UpperCol(); ++vidx) {
+            double dist = pFirst.Distance(points.Value(uidx, vidx));
+            theScale = std::max(theScale, dist);
+        }
+    }
+    return theScale;
+}
+
+std::vector<double> CTiglBSplineAlgorithms::computeParamsBSplineCurve(const Handle(TColgp_HArray1OfPnt)& points, const double alpha)
+{
+    std::vector<double> parameters(points->Length());
+
+    parameters[0] = 0.;
+
+    for (size_t i = 1; i < parameters.size(); ++i) {
+        int iArray = static_cast<int>(i) + points->Lower();
+        double length = pow(points->Value(iArray).SquareDistance(points->Value(iArray - 1)), alpha / 2.);
+        parameters[i] = parameters[i - 1] + length;
     }
 
-
-    double totalLength = parameters->Value(parameters->Upper());
-    for (int i = parameters->Lower() + 1; i <= parameters->Upper(); ++i) {
-         parameters->SetValue(i, parameters->Value(i) / totalLength);
+    double totalLength = parameters.back();
+    for (size_t i = 0; i < parameters.size(); ++i) {
+        parameters[i] /= totalLength;
     }
 
     return parameters;
 }
 
-std::pair<Handle(TColStd_HArray1OfReal), Handle(TColStd_HArray1OfReal) >
+std::pair<std::vector<double>, std::vector<double> >
 CTiglBSplineAlgorithms::computeParamsBSplineSurf(const TColgp_Array2OfPnt& points, double alpha)
 {
     // first for parameters in u-direction:
-    Handle(TColStd_HArray1OfReal) paramsU(new TColStd_HArray1OfReal(points.LowerRow(), points.UpperRow()));
-    paramsU->Init(0.);
+    std::vector<double> paramsU(static_cast<size_t>(points.ColLength()), 0.);
     for (int vIdx = points.LowerCol(); vIdx <= points.UpperCol(); ++vIdx) {
-        Handle(TColStd_HArray1OfReal) parameters_u_line = computeParamsBSplineCurve(pntArray2GetColumn(points, vIdx), alpha);
+        std::vector<double> parameters_u_line = computeParamsBSplineCurve(pntArray2GetColumn(points, vIdx), alpha);
 
         // average over columns
-        for (int uIdx = parameters_u_line->Lower(); uIdx <= parameters_u_line->Upper(); ++uIdx) {
-            double val = paramsU->Value(uIdx) + parameters_u_line->Value(uIdx)/(double)points.RowLength();
-            paramsU->SetValue(uIdx, val);
+        for (size_t uIdx = 0; uIdx < parameters_u_line.size(); ++uIdx) {
+            paramsU[uIdx] += parameters_u_line[uIdx]/(double)points.RowLength();
         }
     }
 
 
     // now for parameters in v-direction:
-    Handle(TColStd_HArray1OfReal) paramsV = new TColStd_HArray1OfReal (points.LowerCol(), points.UpperCol());
-    paramsV->Init(0.);
+    std::vector<double> paramsV(static_cast<size_t>(points.RowLength()), 0.);
     for (int uIdx = points.LowerRow(); uIdx <= points.UpperRow(); ++uIdx) {
-        Handle(TColStd_HArray1OfReal) parameters_v_line = computeParamsBSplineCurve(pntArray2GetRow(points, uIdx), alpha);
+        std::vector<double> parameters_v_line = computeParamsBSplineCurve(pntArray2GetRow(points, uIdx), alpha);
 
         // average over rows
-        for (int vIdx = points.LowerCol(); vIdx <= points.UpperCol(); ++vIdx) {
-            double val = paramsV->Value(vIdx) + parameters_v_line->Value(vIdx)/(double)points.ColLength();
-            paramsV->SetValue(vIdx, val);
+        for (size_t vIdx = 0; vIdx < parameters_v_line.size(); ++vIdx) {
+            paramsV[vIdx] += parameters_v_line[vIdx]/(double)points.ColLength();
         }
     }
 
@@ -497,15 +495,15 @@ std::vector<Handle(Geom_BSplineSurface) > CTiglBSplineAlgorithms::createCommonKn
 }
 
 Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::curvesToSurface(const std::vector<Handle(Geom_BSplineCurve) >& curves,
-                                                                    const Handle(TColStd_HArray1OfReal) vParameters, bool continuousIfClosed)
+                                                                    const std::vector<double>& vParameters, bool continuousIfClosed)
 {
     // check amount of given parameters
-    if (vParameters->Length() != curves.size()) {
+    if (vParameters.size() != curves.size()) {
         throw CTiglError("The amount of given parameters has to be equal to the amount of given B-splines!", TIGL_MATH_ERROR);
     }
 
     // check if all curves are closed
-    double tolerance = scaleOfBSplines(curves) * REL_TOL_CLOSED;
+    double tolerance = scale(curves) * REL_TOL_CLOSED;
     bool makeClosed = continuousIfClosed & curves.front()->IsEqual(curves.back(), tolerance);
 
     matchDegree(curves);
@@ -533,7 +531,7 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::curvesToSurface(const std::v
         for (int cpVIdx = 1; cpVIdx <= nPointsAdapt; ++cpVIdx) {
             interpPointsVDir->SetValue(cpVIdx, compatSplines[cpVIdx - 1]->Pole(cpUIdx));
         }
-        GeomAPI_Interpolate interpolationObject(interpPointsVDir, vParameters, makeClosed, 1e-5);
+        GeomAPI_Interpolate interpolationObject(interpPointsVDir, toArray(vParameters), makeClosed, 1e-5);
         interpolationObject.Perform();
 
         // check that interpolation was successful
@@ -614,7 +612,7 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::curvesToSurface(const std::v
         }
     }
 
-    std::pair<Handle(TColStd_HArray1OfReal), Handle(TColStd_HArray1OfReal) > parameters
+    std::pair<std::vector<double>, std::vector<double> > parameters
             = CTiglBSplineAlgorithms::computeParamsBSplineSurf(controlPoints);
 
     return CTiglBSplineAlgorithms::curvesToSurface(compatibleSplines, parameters.second, continuousIfClosed);
@@ -785,24 +783,22 @@ void ParametrizingFunction::Evaluate(const Standard_Integer theDerivativeRequest
 }
 
 Handle(Geom_BSplineCurve) CTiglBSplineAlgorithms::reparametrizeBSplineContinuouslyApprox(const Handle(Geom_BSplineCurve) spline,
-                                                                                         const TColStd_Array1OfReal& old_parameters,
-                                                                                         const TColStd_Array1OfReal& new_parameters,
+                                                                                         const std::vector<double>& old_parameters,
+                                                                                         const std::vector<double>& new_parameters,
                                                                                          unsigned int n_control_pnts)
 {
-    if (old_parameters.Length() != new_parameters.Length()) {
+    if (old_parameters.size() != new_parameters.size()) {
         throw CTiglError("parameter sizes dont match");
     }
 
     // create a B-spline as a function for reparametrization
-    Handle(TColgp_HArray1OfPnt2d) old_parameters_pnts = new TColgp_HArray1OfPnt2d(1, old_parameters.Length());
-    for (int parameter_idx = 1; parameter_idx <= old_parameters.Length(); ++parameter_idx) {
-        old_parameters_pnts->SetValue(parameter_idx, gp_Pnt2d(old_parameters(parameter_idx), 0));
+    Handle(TColgp_HArray1OfPnt2d) old_parameters_pnts = new TColgp_HArray1OfPnt2d(1, old_parameters.size());
+    for (size_t parameter_idx = 0; parameter_idx < old_parameters.size(); ++parameter_idx) {
+        int occIdx = static_cast<int>(parameter_idx + 1);
+        old_parameters_pnts->SetValue(occIdx, gp_Pnt2d(old_parameters[parameter_idx], 0));
     }
 
-    // convert type of new_parameters
-    Handle(TColStd_HArray1OfReal) new_parameters_modtype = new TColStd_HArray1OfReal(1, new_parameters.Length());
-    new_parameters_modtype->ChangeArray1().Assign(new_parameters);
-    Geom2dAPI_Interpolate interpolationObject(old_parameters_pnts, new_parameters_modtype, false, 1e-15);
+    Geom2dAPI_Interpolate interpolationObject(old_parameters_pnts, toArray(new_parameters), false, 1e-15);
     interpolationObject.Perform();
 
     // check that interpolation was successful
@@ -814,8 +810,8 @@ Handle(Geom_BSplineCurve) CTiglBSplineAlgorithms::reparametrizeBSplineContinuous
 
     // Create a vector of parameters including the intersection parameters
     std::vector<double> breaks;
-    for (Standard_Integer i = new_parameters.Lower() + 1; i < new_parameters.Upper(); ++i) {
-        breaks.push_back(new_parameters.Value(i));
+    for (size_t ipar = 1; ipar < new_parameters.size() - 1; ++ipar) {
+        breaks.push_back(new_parameters[ipar]);
     }
 
     double par_tol = 1e-10;
@@ -834,10 +830,10 @@ Handle(Geom_BSplineCurve) CTiglBSplineAlgorithms::reparametrizeBSplineContinuous
 #endif
 
     // create equidistance array of parameters, including the breaks
-    std::vector<double> parameters = LinspaceWithBreaks(new_parameters(new_parameters.Lower()),
-                                                            new_parameters(new_parameters.Upper()),
-                                                            std::max(static_cast<unsigned int>(101), n_control_pnts*2),
-                                                            breaks);
+    std::vector<double> parameters = LinspaceWithBreaks(new_parameters.front(),
+                                                        new_parameters.back(),
+                                                        std::max(static_cast<unsigned int>(101), n_control_pnts*2),
+                                                        breaks);
 #ifdef MODEL_KINKS
     // insert kinks into parameters array at the correct position
     for (size_t ikink = 0; ikink < kinks.size(); ++ikink) {
@@ -862,8 +858,8 @@ Handle(Geom_BSplineCurve) CTiglBSplineAlgorithms::reparametrizeBSplineContinuous
     // Create the new spline as a interpolation of the old one
     CTiglBSplineApproxInterp approximationObj(points, static_cast<int>(n_control_pnts), 3, makeContinous);
 
-    breaks.insert(breaks.begin(), new_parameters(new_parameters.Lower()));
-    breaks.push_back(new_parameters(new_parameters.Upper()));
+    breaks.insert(breaks.begin(), new_parameters.front());
+    breaks.push_back(new_parameters.back());
     // Interpolate points at breaking parameters (required for gordon surface)
     for (size_t ibreak = 0; ibreak < breaks.size(); ++ibreak) {
         double thebreak = breaks[ibreak];
@@ -899,8 +895,8 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::flipSurface(const Handle(Geo
 }
 
 Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::interpolatingSurface(const TColgp_Array2OfPnt& points,
-                                                                         const Handle(TColStd_HArray1OfReal) uParams,
-                                                                         const Handle(TColStd_HArray1OfReal) vParams,
+                                                                         const std::vector<double>& uParams,
+                                                                         const std::vector<double>& vParams,
                                                                          bool uContinousIfClosed, bool vContinousIfClosed)
 {
 
@@ -921,7 +917,7 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::interpolatingSurface(const T
             points_u->SetValue(iPointU, points.Value(iPointU, cpVIdx));
         }
 
-        GeomAPI_Interpolate interpolationObject(points_u, uParams, makeUDirClosed, 1e-15);
+        GeomAPI_Interpolate interpolationObject(points_u, toArray(uParams), makeUDirClosed, 1e-15);
         interpolationObject.Perform();
 
         // check that interpolation was successful
@@ -949,7 +945,7 @@ void checkCurveNetworkCompatibility(const std::vector<Handle(Geom_BSplineCurve) 
                                     double tol = 3e-4)
 {
     // find out the 'average' scale of the B-splines in order to being able to handle a more approximate dataset and find its intersections
-    double splines_scale = 0.5 * (CTiglBSplineAlgorithms::scaleOfBSplines(profiles)+ CTiglBSplineAlgorithms::scaleOfBSplines(guides));
+    double splines_scale = 0.5 * (CTiglBSplineAlgorithms::scale(profiles)+ CTiglBSplineAlgorithms::scale(guides));
 
     if (std::abs(intersection_params_spline_u.front()) > splines_scale * tol || std::abs(intersection_params_spline_u.back() - 1.) > splines_scale * tol) {
         throw tigl::CTiglError("WARNING: B-splines in u-direction mustn't stick out, spline network must be 'closed'!");
@@ -1022,19 +1018,19 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::createGordonSurface(const st
     }
 
     // check, whether to build a closed continous surface
-    double curve_u_tolerance = REL_TOL_CLOSED * scaleOfBSplines(guides);
-    double curve_v_tolerance = REL_TOL_CLOSED * scaleOfBSplines(profiles);
+    double curve_u_tolerance = REL_TOL_CLOSED * scale(guides);
+    double curve_v_tolerance = REL_TOL_CLOSED * scale(profiles);
     double tp_tolerance = REL_TOL_CLOSED * scale(intersection_pnts);
 
     bool makeUClosed = isUDirClosed(intersection_pnts, tp_tolerance) && guides.front()->IsEqual(guides.back(), curve_u_tolerance);
     bool makeVClosed = isVDirClosed(intersection_pnts, tp_tolerance) && profiles.front()->IsEqual(profiles.back(), curve_v_tolerance);
 
     // Skinning in v-direction with u directional B-Splines
-    Handle(Geom_BSplineSurface) surface_v = curvesToSurface(profiles, intersection_params_spline_v, makeVClosed);
+    Handle(Geom_BSplineSurface) surface_v = curvesToSurface(profiles, toVector(intersection_params_spline_v->Array1()), makeVClosed);
     // therefore reparametrization before this method
 
     // Skinning in u-direction with v directional B-Splines
-    Handle(Geom_BSplineSurface) surface_u_unflipped = curvesToSurface(guides, intersection_params_spline_u, makeUClosed);
+    Handle(Geom_BSplineSurface) surface_u_unflipped = curvesToSurface(guides, toVector(intersection_params_spline_u->Array1()), makeUClosed);
 
     // flipping of the surface in v-direction; flipping is redundant here, therefore the next line is a comment!
     Handle(Geom_BSplineSurface) surface_u = flipSurface(surface_u_unflipped);
@@ -1042,7 +1038,7 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::createGordonSurface(const st
     // if there are too little points for degree in u-direction = 3 and degree in v-direction=3 creating an interpolation B-spline surface isn't possible in Open CASCADE
 
     // Open CASCADE doesn't have a B-spline surface interpolation method where one can give the u- and v-directional parameters as arguments
-    Handle(Geom_BSplineSurface) tensorProdSurf = CTiglBSplineAlgorithms::interpolatingSurface(intersection_pnts, intersection_params_spline_u, intersection_params_spline_v, makeUClosed, makeVClosed);
+    Handle(Geom_BSplineSurface) tensorProdSurf = CTiglBSplineAlgorithms::interpolatingSurface(intersection_pnts, toVector(intersection_params_spline_u->Array1()), toVector(intersection_params_spline_v->Array1()), makeUClosed, makeVClosed);
 
     // match degree of all three surfaces
     Standard_Integer degreeU = std::max(std::max(surface_u->UDegree(),
@@ -1094,7 +1090,7 @@ std::vector<std::pair<double, double> > CTiglBSplineAlgorithms::intersections(co
     // check parametrization of B-splines beforehand
 
     // find out the average scale of the two B-splines in order to being able to handle a more approximate curves and find its intersections
-    double splines_scale = (CTiglBSplineAlgorithms::scaleOfBSpline(spline1) + CTiglBSplineAlgorithms::scaleOfBSpline(spline2)) / 2.;
+    double splines_scale = (CTiglBSplineAlgorithms::scale(spline1) + CTiglBSplineAlgorithms::scale(spline2)) / 2.;
 
     std::vector<std::pair<double, double> > intersection_params_vector;
     GeomAPI_ExtremaCurveCurve intersectionObj(spline1, spline2);
@@ -1140,17 +1136,17 @@ std::vector<std::pair<double, double> > CTiglBSplineAlgorithms::intersections(co
     return intersection_params_vector;
 }
 
-double CTiglBSplineAlgorithms::scaleOfBSplines(const std::vector<Handle(Geom_BSplineCurve)>& splines_vector)
+double CTiglBSplineAlgorithms::scale(const std::vector<Handle(Geom_BSplineCurve)>& splines_vector)
 {
     double maxScale = 0.;
     for (std::vector<Handle(Geom_BSplineCurve)>::const_iterator it = splines_vector.begin(); it != splines_vector.end(); ++it) {
-        maxScale = std::max(scaleOfBSpline(*it), maxScale);
+        maxScale = std::max(scale(*it), maxScale);
     }
 
     return maxScale;
 }
 
-double CTiglBSplineAlgorithms::scaleOfBSpline(const Handle(Geom_BSplineCurve)& spline)
+double CTiglBSplineAlgorithms::scale(const Handle(Geom_BSplineCurve)& spline)
 {
     double scale = 0.;
     gp_Pnt first_ctrl_pnt = spline->Pole(1);
@@ -1214,36 +1210,8 @@ void CTiglBSplineAlgorithms::reparametrizeBSpline(Geom_BSplineCurve& spline, dou
     }
 }
 
-Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::createGordonSurfaceGeneral(const std::vector<Handle(Geom_BSplineCurve) >& splines_u_vector_in,
-                                                                               const std::vector<Handle(Geom_BSplineCurve) >& splines_v_vector_in)
+void computeIntersections(const std::vector<Handle(Geom_BSplineCurve)>& profiles, const std::vector<Handle(Geom_BSplineCurve)>& guides, math_Matrix& intersection_params_u, math_Matrix& intersection_params_v)
 {
-
-    std::vector<Handle(Geom_BSplineCurve) > profiles(splines_u_vector_in);
-    std::vector<Handle(Geom_BSplineCurve) > guides(splines_v_vector_in);
-
-    // check whether there are any u-directional and v-directional B-splines in the vectors
-    if (profiles.size() == 0) {
-        throw tigl::CTiglError("There are no profile curves!");
-    }
-
-    if (guides.size() == 0) {
-        throw tigl::CTiglError("There are no guide curves!");
-    }
-
-    // reparametrize into [0,1]
-    for (unsigned int spline_u_idx = 0; spline_u_idx < profiles.size(); ++spline_u_idx) {
-        reparametrizeBSpline(*profiles[spline_u_idx], 0., 1., 1e-15);
-    }
-
-    for (unsigned int spline_v_idx = 0; spline_v_idx < guides.size(); ++spline_v_idx) {
-        reparametrizeBSpline(*guides[spline_v_idx], 0., 1., 1e-15);
-    }
-    // now the parameter range of all  profiles and guides is [0, 1]
-
-    // now find all intersections of all B-splines with each other
-    math_Matrix intersection_params_u(0, profiles.size() - 1, 0, guides.size() - 1);
-    math_Matrix intersection_params_v(0, profiles.size() - 1, 0, guides.size() - 1);
-
     for (unsigned int spline_u_idx = 0; spline_u_idx < profiles.size(); ++spline_u_idx) {
         for (unsigned int spline_v_idx = 0; spline_v_idx < guides.size(); ++spline_v_idx) {
             std::vector<std::pair<double, double> > intersection_params_vector = CTiglBSplineAlgorithms::intersections(profiles[spline_u_idx], guides[spline_v_idx]);
@@ -1296,7 +1264,39 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::createGordonSurfaceGeneral(c
                 throw tigl::CTiglError("U-directional B-spline and v-directional B-spline have more than two intersections with each other!");
             }
         }
+    }    
+}
+
+Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::createGordonSurfaceGeneral(const std::vector<Handle(Geom_BSplineCurve) >& splines_u_vector_in,
+                                                                               const std::vector<Handle(Geom_BSplineCurve) >& splines_v_vector_in)
+{
+
+    std::vector<Handle(Geom_BSplineCurve) > profiles(splines_u_vector_in);
+    std::vector<Handle(Geom_BSplineCurve) > guides(splines_v_vector_in);
+
+    // check whether there are any u-directional and v-directional B-splines in the vectors
+    if (profiles.size() == 0) {
+        throw tigl::CTiglError("There are no profile curves!");
     }
+
+    if (guides.size() == 0) {
+        throw tigl::CTiglError("There are no guide curves!");
+    }
+
+    // reparametrize into [0,1]
+    for (unsigned int spline_u_idx = 0; spline_u_idx < profiles.size(); ++spline_u_idx) {
+        reparametrizeBSpline(*profiles[spline_u_idx], 0., 1., 1e-15);
+    }
+
+    for (unsigned int spline_v_idx = 0; spline_v_idx < guides.size(); ++spline_v_idx) {
+        reparametrizeBSpline(*guides[spline_v_idx], 0., 1., 1e-15);
+    }
+    // now the parameter range of all  profiles and guides is [0, 1]
+
+    // now find all intersections of all B-splines with each other
+    math_Matrix intersection_params_u(0, profiles.size() - 1, 0, guides.size() - 1);
+    math_Matrix intersection_params_v(0, profiles.size() - 1, 0, guides.size() - 1);
+    computeIntersections(profiles, guides, intersection_params_u, intersection_params_v);
 
     // sort intersection_params_u and intersection_params_v and u-directional and v-directional B-spline curves
     tigl::CTiglCurveNetworkSorter sorterObj(std::vector<Handle(Geom_Curve)>(profiles.begin(), profiles.end()),
@@ -1360,8 +1360,8 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::createGordonSurfaceGeneral(c
     size_t max_u = std::max(min_u, maxcp);
     size_t max_v = std::max(min_v, maxcp);
 
-    max_cp_u = clamp(max_cp_u + 10, static_cast<int>(min_u), static_cast<int>(max_u));
-    max_cp_v = clamp(max_cp_v + 10, static_cast<int>(min_v), static_cast<int>(max_v));
+    max_cp_u = Clamp(max_cp_u + 10, static_cast<int>(min_u), static_cast<int>(max_u));
+    max_cp_v = Clamp(max_cp_v + 10, static_cast<int>(min_v), static_cast<int>(max_v));
 
     // reparametrize u-directional B-splines
     std::vector<Handle(Geom_BSplineCurve)> reparam_splines_u;
@@ -1391,7 +1391,7 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::createGordonSurfaceGeneral(c
         }
 
 
-        Handle(Geom_BSplineCurve) reparam_spline_u = CTiglBSplineAlgorithms::reparametrizeBSplineContinuouslyApprox(profiles[spline_u_idx], old_parameters, average_intersection_params_u, max_cp_u);
+        Handle(Geom_BSplineCurve) reparam_spline_u = CTiglBSplineAlgorithms::reparametrizeBSplineContinuouslyApprox(profiles[spline_u_idx], toVector(old_parameters), toVector(average_intersection_params_u), max_cp_u);
         reparam_splines_u.push_back(reparam_spline_u);
     }
 
@@ -1422,7 +1422,10 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::createGordonSurfaceGeneral(c
             average_intersection_params_v(average_intersection_params_v.Length()) = 1;
         }
 
-        Handle(Geom_BSplineCurve) reparam_spline_v = CTiglBSplineAlgorithms::reparametrizeBSplineContinuouslyApprox(guides[spline_v_idx], old_parameters, average_intersection_params_v, max_cp_v);
+        Handle(Geom_BSplineCurve) reparam_spline_v = CTiglBSplineAlgorithms::reparametrizeBSplineContinuouslyApprox(guides[spline_v_idx],
+                                                                                                                    toVector(old_parameters),
+                                                                                                                    toVector(average_intersection_params_v),
+                                                                                                                    max_cp_v);
         reparam_splines_v.push_back(reparam_spline_v);
     }
 

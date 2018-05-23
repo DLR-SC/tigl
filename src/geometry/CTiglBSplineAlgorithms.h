@@ -52,6 +52,9 @@ class CTiglBSplineAlgorithms
 {
 public:
 
+    /// Tolerance for closed curve detection
+    static const double REL_TOL_CLOSED;
+
     /**
      * @brief computeParamsBSplineCurve:
      *          Computes the parameters of a Geom_BSplineCurve at the given points
@@ -62,7 +65,7 @@ public:
      * @param parameters
      *          reference of the TColStd_Array1OfReal parameters, that is created beforehand
      */
-    TIGL_EXPORT static Handle(TColStd_HArray1OfReal) computeParamsBSplineCurve(const Handle(TColgp_HArray1OfPnt)& points, double alpha=0.5);
+    TIGL_EXPORT static std::vector<double> computeParamsBSplineCurve(const Handle(TColgp_HArray1OfPnt)& points, double alpha=0.5);
 
     /**
      * @brief Computes a full blown bspline basis matrix of size (params.Length(), flatKnots.Length() + degree + 1)
@@ -82,7 +85,7 @@ public:
      *          Exponent for the computation of the parameters; alpha=0.5 means, that this method uses the centripetal method
      * @return  a std::pair of Handle(TColStd_HArray1OfReal) of the parameters in u- and in v-direction
      */
-    TIGL_EXPORT static std::pair<Handle(TColStd_HArray1OfReal), Handle(TColStd_HArray1OfReal) >
+    TIGL_EXPORT static std::pair<std::vector<double>, std::vector<double> >
     computeParamsBSplineSurf(const TColgp_Array2OfPnt& points, double alpha=0.5);
 
 
@@ -123,12 +126,12 @@ public:
      * is treated as u direction. The skinning will be performed in v direction.
      *
      * @param splines_vector Curves to be interpolated.
-     * @param v_params V parameters at which the resulting surface should interpolate the input curves.
+     * @param parameters Parameters of v-direction at which the resulting surface should interpolate the input curves.
      * @param continuousIfClosed Make a C2 continous surface at the start/end junction if the first and last curve are the same
      * @return The interpolation b-spline surface.
      */
     TIGL_EXPORT static Handle(Geom_BSplineSurface) curvesToSurface(const std::vector<Handle(Geom_BSplineCurve) >& splines_vector,
-                                                                   const Handle(TColStd_HArray1OfReal) v_params, bool continuousIfClosed = false);
+                                                                   const std::vector<double>& parameters, bool continuousIfClosed = false);
 
     /**
      * @brief Surface skinning algorithm
@@ -178,8 +181,8 @@ public:
      * @return
      *          the continuously reparametrized given B-spline
      */
-    TIGL_EXPORT static Handle(Geom_BSplineCurve) reparametrizeBSplineContinuouslyApprox(const Handle(Geom_BSplineCurve) spline, const TColStd_Array1OfReal& old_parameters,
-                                                                                        const TColStd_Array1OfReal& new_parameters, unsigned int n_control_pnts);
+    TIGL_EXPORT static Handle(Geom_BSplineCurve) reparametrizeBSplineContinuouslyApprox(const Handle(Geom_BSplineCurve) spline, const std::vector<double>& old_parameters,
+                                                                                        const std::vector<double>& new_parameters, unsigned int n_control_pnts);
 
     /**
      * @brief flipSurface:
@@ -209,8 +212,8 @@ public:
      *          B-spline surface which interpolates the given points with the given parameters
      */
     TIGL_EXPORT static Handle(Geom_BSplineSurface) interpolatingSurface(const TColgp_Array2OfPnt& points,
-                                                                        const Handle(TColStd_HArray1OfReal) uParams,
-                                                                        const Handle(TColStd_HArray1OfReal) vParams,
+                                                                        const std::vector<double>& uParams,
+                                                                        const std::vector<double>& vParams,
                                                                         bool uContinousIfClosed, bool vContinousIfClosed);
 
     /**
@@ -258,24 +261,27 @@ public:
     TIGL_EXPORT static std::vector<std::pair<double, double> > intersections(const Handle(Geom_BSplineCurve) spline1, const Handle(Geom_BSplineCurve) spline2, double tolerance=3e-4);
 
     /**
-     * @brief scaleOfBSplines:
+     * @brief scale:
      *          Returns the approximate scale of the biggest given B-spline curve
      * @param splines_vector:
      *          vector of B-spline curves
      * @return:
      *          the scale
      */
-    TIGL_EXPORT static double scaleOfBSplines(const std::vector<Handle(Geom_BSplineCurve)>& splines_vector);
+    TIGL_EXPORT static double scale(const std::vector<Handle(Geom_BSplineCurve)>& splines_vector);
 
     /**
-     * @brief scaleOfBSplines:
+     * @brief scale:
      *          Returns the approximate scale of the B-spline curve
      * @param spline:
      *          B-spline curve
      * @return:
      *          the scale
      */
-    TIGL_EXPORT static double scaleOfBSpline(const Handle(Geom_BSplineCurve)& spline);
+    TIGL_EXPORT static double scale(const Handle(Geom_BSplineCurve)& spline);
+
+    /// Returns the scale of the point matrix
+    TIGL_EXPORT static double scale(const TColgp_Array2OfPnt& points);
 
     /**
      * @brief eliminateInaccuraciesNetworkIntersections:
@@ -310,6 +316,12 @@ public:
      * Returns positions, where the curve has kinks (C1 Discontinuities)
      */
     TIGL_EXPORT static std::vector<double> getKinkParameters(const Handle(Geom_BSplineCurve)& curve);
+
+    /// Checks, whether the point matrix points is closed in u direction
+    TIGL_EXPORT static bool isUDirClosed(const TColgp_Array2OfPnt& points, double tolerance);
+
+    /// Checks, whether the point matrix points is closed in u direction
+    TIGL_EXPORT static bool isVDirClosed(const TColgp_Array2OfPnt& points, double tolerance);
 };
 } // namespace tigl
 
