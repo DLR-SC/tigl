@@ -894,10 +894,10 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::flipSurface(const Handle(Geo
     return result;
 }
 
-Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::interpolatingSurface(const TColgp_Array2OfPnt& points,
-                                                                         const std::vector<double>& uParams,
-                                                                         const std::vector<double>& vParams,
-                                                                         bool uContinousIfClosed, bool vContinousIfClosed)
+Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::pointsToSurface(const TColgp_Array2OfPnt& points,
+                                                                    const std::vector<double>& uParams,
+                                                                    const std::vector<double>& vParams,
+                                                                    bool uContinousIfClosed, bool vContinousIfClosed)
 {
 
     double tolerance = REL_TOL_CLOSED * scale(points);
@@ -1038,7 +1038,10 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::createGordonSurface(const st
     // if there are too little points for degree in u-direction = 3 and degree in v-direction=3 creating an interpolation B-spline surface isn't possible in Open CASCADE
 
     // Open CASCADE doesn't have a B-spline surface interpolation method where one can give the u- and v-directional parameters as arguments
-    Handle(Geom_BSplineSurface) tensorProdSurf = CTiglBSplineAlgorithms::interpolatingSurface(intersection_pnts, toVector(intersection_params_spline_u->Array1()), toVector(intersection_params_spline_v->Array1()), makeUClosed, makeVClosed);
+    Handle(Geom_BSplineSurface) tensorProdSurf = CTiglBSplineAlgorithms::pointsToSurface(intersection_pnts,
+                                                                                         toVector(intersection_params_spline_u->Array1()),
+                                                                                         toVector(intersection_params_spline_v->Array1()),
+                                                                                         makeUClosed, makeVClosed);
 
     // match degree of all three surfaces
     Standard_Integer degreeU = std::max(std::max(surface_u->UDegree(),

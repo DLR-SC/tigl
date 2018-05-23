@@ -870,7 +870,7 @@ TEST(TiglBSplineAlgorithms, testInterpolatingSurface)
 
     std::pair<std::vector<double>, std::vector<double> > parameters = CTiglBSplineAlgorithms::computeParamsBSplineSurf(points);
 
-    Handle(Geom_BSplineSurface) interpolatingSurf = CTiglBSplineAlgorithms::interpolatingSurface(points, parameters.first, parameters.second, false, false);
+    Handle(Geom_BSplineSurface) interpolatingSurf = CTiglBSplineAlgorithms::pointsToSurface(points, parameters.first, parameters.second, false, false);
 
     for (unsigned int u_idx = 1; u_idx <= 100; ++u_idx) {
         for (unsigned int v_idx = 1; v_idx <= 100; ++v_idx) {

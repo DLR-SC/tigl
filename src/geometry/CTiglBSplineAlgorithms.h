@@ -195,7 +195,7 @@ public:
     TIGL_EXPORT static Handle(Geom_BSplineSurface) flipSurface(const Handle(Geom_BSplineSurface) surface);
 
     /**
-     * @brief interpolatingSurface:
+     * @brief pointsToSurface:
      *          interpolates a matrix of points by a B-spline surface with parameters in u- and in v-direction where the points shall be at
      *          ! Uses a skinned surface !
      * @param points:
@@ -211,10 +211,10 @@ public:
      * @return
      *          B-spline surface which interpolates the given points with the given parameters
      */
-    TIGL_EXPORT static Handle(Geom_BSplineSurface) interpolatingSurface(const TColgp_Array2OfPnt& points,
-                                                                        const std::vector<double>& uParams,
-                                                                        const std::vector<double>& vParams,
-                                                                        bool uContinousIfClosed, bool vContinousIfClosed);
+    TIGL_EXPORT static Handle(Geom_BSplineSurface) pointsToSurface(const TColgp_Array2OfPnt& points,
+                                                                   const std::vector<double>& uParams,
+                                                                   const std::vector<double>& vParams,
+                                                                   bool uContinousIfClosed, bool vContinousIfClosed);
 
     /**
      * @brief createGordonSurface:
