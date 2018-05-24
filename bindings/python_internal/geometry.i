@@ -65,6 +65,14 @@
 #include "generated/CPACSPointXYZ.h"
 #include "generated/CPACSPointX.h"
 #include "tiglcommonfunctions.h"
+#include "CTiglBSplineAlgorithms.h"
+#include "CTiglBSplineApproxInterp.h"
+#include "CTiglBSplineFit.h"
+#include "CPointsToLinearBSpline.h"
+#include "CTiglArcLengthReparameterization.h"
+#include "CTiglMakeLoft.h"
+#include "CTiglProjectOnLinearSpline.h"
+#include "CTiglInterpolateCurveNetwork.h"
 %}
 
 
@@ -75,6 +83,8 @@
 %rename("%(undercase)s", %$isfunction) "";
 
 %template(CPointContainer) std::vector<gp_Pnt>;
+%template(BSplineCurveList) std::vector<Handle_Geom_BSplineCurve>;
+
 
 %boost_optional(tigl::CCPACSPointAbsRel)
 %boost_optional(tigl::CCPACSPoint)
@@ -83,7 +93,15 @@
 %boost_optional(tigl::generated::CPACSPointXYZ)
 %boost_optional(tigl::CCPACSPointListXYZ)
 
+%include "CTiglInterpolateCurveNetwork.h"
 %include "tiglcommonfunctions.h"
+%include "CTiglProjectOnLinearSpline.h"
+%include "CTiglMakeLoft.h"
+%include "CTiglArcLengthReparameterization.h"
+%include "CPointsToLinearBSpline.h"
+%include "CTiglBSplineApproxInterp.h"
+%include "CTiglBSplineFit.h"
+%include "CTiglBSplineAlgorithms.h"
 %include "generated/CPACSPointX.h"
 %include "ECPACSTranslationType.h"
 %include "generated/CPACSPoint.h"

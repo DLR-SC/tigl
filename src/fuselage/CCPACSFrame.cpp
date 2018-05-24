@@ -52,7 +52,7 @@ TopoDS_Shape CCPACSFrame::GetGeometry(bool just1DElements, TiglCoordinateSystem 
         BuildGeometry(just1DElements);
 
     const TopoDS_Shape shape = m_geomCache[just1DElements].value();
-    if (cs == TiglCoordinateSystem::GLOBAL_COORDINATE_SYSTEM) {
+    if (cs == GLOBAL_COORDINATE_SYSTEM) {
         CTiglTransformation trafo = m_parent->GetParent()->GetParent()->GetTransformationMatrix();
         return trafo.Transform(shape);
     }

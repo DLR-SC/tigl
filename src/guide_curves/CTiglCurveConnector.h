@@ -19,6 +19,7 @@
 #ifndef CTIGLCURVECONNECTOR_H
 #define CTIGLCURVECONNECTOR_H
 
+#include "tigl_internal.h"
 #include <map>
 
 #include <gp_Pnt.hxx>
@@ -41,10 +42,15 @@ class CTiglCurveConnector
 
     struct guideCurvePart
     {
+        guideCurvePart()
+            : dependency(none)
+        {
+        }
+        
         std::vector<CCPACSGuideCurve*> localGuides;
 
         std::vector<double> sectionParameters;
-        dependencyType dependency = none;
+        dependencyType dependency;
         TopoDS_Edge localCurve;
     };
 
@@ -64,13 +70,13 @@ public:
      * The algorithm interpolates the guide curves for all segments,
      * respecting prescribed tangents and continuity conditions
      */
-    CTiglCurveConnector(std::map<double, CCPACSGuideCurve*>& roots,
-                        const std::vector<double>& params);
+    TIGL_EXPORT CTiglCurveConnector(std::map<double, CCPACSGuideCurve*>& roots,
+                                    const std::vector<double>& params);
 
     /**
      * @brief Returns the interpolated guide curves of the object
      */
-    TopoDS_Compound GetConnectedGuideCurves ();
+    TIGL_EXPORT TopoDS_Compound GetConnectedGuideCurves ();
 
 private:
 

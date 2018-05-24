@@ -40,7 +40,7 @@ bool CTiglUIDManager::IsUIDRegistered(const std::string & uid) const
 
 bool CTiglUIDManager::IsUIDRegistered(const std::string& uid, const std::type_info& typeInfo) const
 {
-    const auto it = cpacsObjects.find(uid);
+    CPACSObjectMap::const_iterator it = cpacsObjects.find(uid);
     return it != cpacsObjects.end() && it->second.type == &typeInfo;
 }
 

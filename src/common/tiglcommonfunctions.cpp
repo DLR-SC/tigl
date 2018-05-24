@@ -119,6 +119,7 @@ namespace
 
         double _tol;
     };
+
 } // anonymous namespace
 
 // calculates a wire's circumference
@@ -709,9 +710,9 @@ std::string FileExtension(const std::string &filename)
 
 gp_Pnt GetFirstPoint(const TopoDS_Shape& wireOrEdge)
 {
-    if (wireOrEdge.ShapeType() == TopAbs_ShapeEnum::TopAbs_WIRE)
+    if (wireOrEdge.ShapeType() == TopAbs_WIRE)
         return GetFirstPoint(TopoDS::Wire(wireOrEdge));
-    if (wireOrEdge.ShapeType() == TopAbs_ShapeEnum::TopAbs_EDGE)
+    if (wireOrEdge.ShapeType() == TopAbs_EDGE)
         return GetFirstPoint(TopoDS::Edge(wireOrEdge));
     throw tigl::CTiglError("Shape must be wire or edge");
 }
@@ -739,9 +740,9 @@ gp_Pnt GetFirstPoint(const TopoDS_Edge& e)
 
 gp_Pnt GetLastPoint(const TopoDS_Shape& wireOrEdge)
 {
-    if (wireOrEdge.ShapeType() == TopAbs_ShapeEnum::TopAbs_WIRE)
+    if (wireOrEdge.ShapeType() == TopAbs_WIRE)
         return GetLastPoint(TopoDS::Wire(wireOrEdge));
-    if (wireOrEdge.ShapeType() == TopAbs_ShapeEnum::TopAbs_EDGE)
+    if (wireOrEdge.ShapeType() == TopAbs_EDGE)
         return GetLastPoint(TopoDS::Edge(wireOrEdge));
     throw tigl::CTiglError("Shape must be wire or edge");
 }
@@ -1491,4 +1492,65 @@ std::vector<double> GetCentripetalParameters(const std::vector<gp_Pnt>& points,
     }
 
     return params;
+}
+
+std::vector<double> LinspaceWithBreaks(double umin, double umax, size_t n_values, const std::vector<double>& breaks)
+{
+    double du = (umax - umin) / static_cast<double>(n_values - 1);
+
+    std::vector<double> result(n_values);
+    for (int i = 0; i < n_values; ++i) {
+        result[i] = i * du + umin;
+    }
+
+    // now insert the break
+
+    double eps = 0.3;
+    // remove points, that are closer to each break point than du*eps
+    for (std::vector<double>::const_iterator it = breaks.begin(); it != breaks.end(); ++it) {
+        double breakpoint = *it;
+        std::vector<double>::iterator pos = std::find_if(result.begin(), result.end(), IsInsideTolerance(breakpoint, du*eps));
+        if (pos != result.end()) {
+            // point found, replace it
+            *pos = breakpoint;
+        }
+        else {
+            // find closest element
+            pos = std::find_if(result.begin(), result.end(), IsInsideTolerance(breakpoint, (0.5 + 1e-8)*du));
+
+            if (*pos > breakpoint) {
+                result.insert(pos, breakpoint);
+            }
+            else {
+                result.insert(pos+1, breakpoint);
+            }
+        }
+    }
+
+    return result;
+}
+
+template <class T>
+T Clamp(T val, T min, T max)
+{
+    if (min > max) {
+        throw tigl::CTiglError("Minimum may not be larger than maximum in clamp!");
+    }
+    
+    return std::max(min, std::min(val, max));
+}
+
+double Clamp(double val, double min, double max)
+{
+    return Clamp<>(val, min, max);
+}
+
+int Clamp(int val, int min, int max)
+{
+    return Clamp<>(val, min, max);
+}
+
+size_t Clamp(size_t val, size_t min, size_t max)
+{
+    return Clamp<>(val, min, max);
 }
