@@ -1549,3 +1549,8 @@ int Clamp(int val, int min, int max)
 {
     return Clamp<>(val, min, max);
 }
+
+size_t Clamp(size_t val, size_t min, size_t max)
+{
+    return Clamp<>(val, min, max);
+}

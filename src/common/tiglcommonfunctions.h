@@ -261,8 +261,9 @@ inline double Radians(double degree)
 }
 
 // Clamps val between min and max
-int Clamp(int val, int min, int max);
-double Clamp(double val, double min, double max);
+TIGL_EXPORT int Clamp(int val, int min, int max);
+TIGL_EXPORT double Clamp(double val, double min, double max);
+TIGL_EXPORT size_t Clamp(size_t val, size_t min, size_t max);
 
 // Creates a linear spaces array but with some additional breaking points
 // If the breaking points are very close to a point, the point will be replaced

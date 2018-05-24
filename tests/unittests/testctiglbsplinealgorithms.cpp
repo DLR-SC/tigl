@@ -15,6 +15,7 @@
 #include <cmath>
 
 #include <CTiglBSplineAlgorithms.h>
+#include <CTiglInterpolateCurveNetwork.h>
 
 #include <BRepTools.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
@@ -1456,7 +1457,7 @@ TEST_P(GordonSurface, testFromBRep)
         splines_v_vector.push_back(spline);
     }
 
-    Handle(Geom_BSplineSurface) gordonSurface = CTiglBSplineAlgorithms::createGordonSurfaceGeneral(splines_u_vector, splines_v_vector);
+    Handle(Geom_BSplineSurface) gordonSurface = CTiglInterpolateCurveNetwork(splines_u_vector, splines_v_vector, 3e-4).Surface();
     BRepTools::Write(BRepBuilderAPI_MakeFace(gordonSurface, Precision::Confusion()), path_output.c_str());
 }
 

@@ -785,7 +785,7 @@ void ParametrizingFunction::Evaluate(const Standard_Integer theDerivativeRequest
 Handle(Geom_BSplineCurve) CTiglBSplineAlgorithms::reparametrizeBSplineContinuouslyApprox(const Handle(Geom_BSplineCurve) spline,
                                                                                          const std::vector<double>& old_parameters,
                                                                                          const std::vector<double>& new_parameters,
-                                                                                         unsigned int n_control_pnts)
+                                                                                         size_t n_control_pnts)
 {
     if (old_parameters.size() != new_parameters.size()) {
         throw CTiglError("parameter sizes dont match");
@@ -832,7 +832,7 @@ Handle(Geom_BSplineCurve) CTiglBSplineAlgorithms::reparametrizeBSplineContinuous
     // create equidistance array of parameters, including the breaks
     std::vector<double> parameters = LinspaceWithBreaks(new_parameters.front(),
                                                         new_parameters.back(),
-                                                        std::max(static_cast<unsigned int>(101), n_control_pnts*2),
+                                                        std::max(static_cast<size_t>(101), n_control_pnts*2),
                                                         breaks);
 #ifdef MODEL_KINKS
     // insert kinks into parameters array at the correct position

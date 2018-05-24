@@ -72,6 +72,7 @@
 #include "CTiglArcLengthReparameterization.h"
 #include "CTiglMakeLoft.h"
 #include "CTiglProjectOnLinearSpline.h"
+#include "CTiglInterpolateCurveNetwork.h"
 %}
 
 
@@ -92,6 +93,7 @@
 %boost_optional(tigl::generated::CPACSPointXYZ)
 %boost_optional(tigl::CCPACSPointListXYZ)
 
+%include "CTiglInterpolateCurveNetwork.h"
 %include "tiglcommonfunctions.h"
 %include "CTiglProjectOnLinearSpline.h"
 %include "CTiglMakeLoft.h"

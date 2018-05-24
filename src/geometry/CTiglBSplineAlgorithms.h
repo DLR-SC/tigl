@@ -53,7 +53,7 @@ class CTiglBSplineAlgorithms
 public:
 
     /// Tolerance for closed curve detection
-    static const double REL_TOL_CLOSED;
+    TIGL_EXPORT static const double REL_TOL_CLOSED;
 
     /**
      * @brief computeParamsBSplineCurve:
@@ -182,7 +182,7 @@ public:
      *          the continuously reparametrized given B-spline
      */
     TIGL_EXPORT static Handle(Geom_BSplineCurve) reparametrizeBSplineContinuouslyApprox(const Handle(Geom_BSplineCurve) spline, const std::vector<double>& old_parameters,
-                                                                                        const std::vector<double>& new_parameters, unsigned int n_control_pnts);
+                                                                                        const std::vector<double>& new_parameters, size_t n_control_pnts);
 
     /**
      * @brief flipSurface:
