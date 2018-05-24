@@ -83,6 +83,13 @@ TopoDS_Shape CCPACSPressureBulkheadAssemblyPosition::GetGeometry()
     return m_geometry.value();
 }
 
+void CCPACSPressureBulkheadAssemblyPosition::ReadCPACS(const TixiDocumentHandle &tixiHandle, const std::string &xpath)
+{
+    generated::CPACSPressureBulkheadAssemblyPosition::ReadCPACS(tixiHandle, xpath);
+    
+    if (m_uidMgr && !m_uID.empty()) m_uidMgr->AddGeometricComponent(m_uID, this);
+}
+
 void CCPACSPressureBulkheadAssemblyPosition::BuildGeometry()
 {
     CCPACSFrame& frame = m_uidMgr->ResolveObject<CCPACSFrame>(m_frameUID);
