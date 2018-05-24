@@ -140,11 +140,11 @@ int as_boost_optional_string(PyObject *obj, boost::optional<std::string>& result
 // wrap some standard types
 WRAP_BOOST_OPTIONAL_BASIC_TYPE(std::string, PYSTR_FROM_STD_STRING, ___ )
 
-%typemap(in, noblock=1, fragment="boost_optional") const boost::optional<std::string>& (boost::optional<std::string> arg_optional_val) {
+%typemap(in, noblock=1, fragment="boost_optional") const boost::optional<std::string>& (boost::optional<std::string> arg_optional_val, int res_opt) {
   $1 = &arg_optional_val;
-  int res = as_boost_optional_string($input, arg_optional_val);
-  if (!SWIG_IsOK(res)) {
-    %argument_fail(res, string, $symname, $argnum); 
+  res_opt = as_boost_optional_string($input, arg_optional_val);
+  if (!SWIG_IsOK(res_opt)) {
+    %argument_fail(res_opt, string, $symname, $argnum); 
   }
 }
 
