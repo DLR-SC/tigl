@@ -16,6 +16,7 @@
 
 #include <CTiglBSplineAlgorithms.h>
 #include <CTiglInterpolateCurveNetwork.h>
+#include <CTiglGordonSurfaceBuilder.h>
 
 #include <BRepTools.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
@@ -568,113 +569,6 @@ TEST(TiglBSplineAlgorithms, curvesToSurfaceContinous)
     BRepTools::Write(BRepBuilderAPI_MakeFace(surface, Precision::Confusion()).Face(), "TestData/curvesToSurfaceContinous.brep");
 }
 
-TEST(TiglBSplineAlgorithms, testReparametrizeBSpline)
-{
-    /*
-     * Tests the method reparametrizeBSpline(spline, old_parameters, new_parameters)
-     */
-
-    // create B-spline
-    unsigned int degree = 3;
-
-    TColgp_Array1OfPnt controlPoints(1, 8);
-    controlPoints(1) = gp_Pnt(0., -1., 0.);
-    controlPoints(2) = gp_Pnt(2., 3., 1.);
-    controlPoints(3) = gp_Pnt(1., 5., -2.);
-    controlPoints(4) = gp_Pnt(2., 8., -1.);
-    controlPoints(5) = gp_Pnt(0., 10., 2.);
-    controlPoints(6) = gp_Pnt(-1., 12., 4.);
-    controlPoints(7) = gp_Pnt(-2., 16., 5.);
-    controlPoints(8) = gp_Pnt(0., 17., 0.);
-
-    TColStd_Array1OfReal knots(1, 5);
-    knots(1) = 0.;
-    knots(2) = 0.1;
-    knots(3) = 0.3;
-    knots(4) = 0.8;
-    knots(5) = 1.;
-
-    TColStd_Array1OfInteger mults(1, 5);
-    mults(1) = 4;
-    mults(2) = 1;
-    mults(3) = 2;
-    mults(4) = 1;
-    mults(5) = 4;
-
-    Handle(Geom_BSplineCurve) spline = new Geom_BSplineCurve(controlPoints, knots, mults, degree);
-
-    TColStd_Array1OfReal old_parameters(1, 7);
-    old_parameters(1) = 0.;
-    old_parameters(2) = 0.2;
-    old_parameters(3) = 0.4;
-    old_parameters(4) = 0.5;
-    old_parameters(5) = 0.6;
-    old_parameters(6) = 0.8;
-    old_parameters(7) = 1.;
-
-    TColStd_Array1OfReal new_parameters(1, 7);
-    new_parameters(1) = 0.;
-    new_parameters(2) = 0.1;
-    new_parameters(3) = 0.2;
-    new_parameters(4) = 0.3;
-    new_parameters(5) = 0.7;
-    new_parameters(6) = 0.95;
-    new_parameters(7) = 1.;
-
-    Handle(Geom_BSplineCurve) reparam_spline = CTiglBSplineAlgorithms::reparametrizeBSpline(spline, old_parameters, new_parameters);
-
-    TColStd_Array1OfReal test_point_params(1, 101);
-    for (int i = 0; i < 101; ++i) {
-        test_point_params(i + 1) = i / 100.;
-    }
-
-    TColStd_Array1OfReal test_point_new_params(1, 101);
-
-    for (int i = test_point_params.Lower(); i <= test_point_params.Upper(); ++i) {
-        for (int j = old_parameters.Lower(); j <= old_parameters.Upper() - 1; ++j) {
-            if (std::abs(test_point_params(i) - old_parameters(j + 1)) < 1e-15) {
-                test_point_new_params(i) = new_parameters(j + 1);
-            }
-            else if (std::abs(test_point_params(i) - old_parameters(1)) < 1e-15) {
-                test_point_new_params(i) = new_parameters(1);
-            }
-            else if (old_parameters(j + 1) > test_point_params(i) && test_point_params(i) > old_parameters(j)) {
-                test_point_new_params(i) = test_point_params(i) * (new_parameters(j + 1) - new_parameters(j)) / (old_parameters(j + 1) - old_parameters(j));
-            }
-        }
-    }
-
-    // check that B-spline geometry remains the same
-    for (int param_idx = old_parameters.Lower(); param_idx <= old_parameters.Upper(); ++param_idx) {
-        gp_Pnt old_point = spline->Value(old_parameters(param_idx));
-        gp_Pnt new_point = reparam_spline->Value(new_parameters(param_idx));
-        ASSERT_NEAR(old_point.X(), new_point.X(), 1e-14);
-        ASSERT_NEAR(old_point.Y(), new_point.Y(), 1e-14);
-        ASSERT_NEAR(old_point.Z(), new_point.Z(), 1e-14);
-    }
-
-    // check that knots are inserted number_of_degree-times at each new parameter
-    ASSERT_NEAR(reparam_spline->Knot(1), 0., 1e-15);
-    ASSERT_NEAR(reparam_spline->Knot(2), 0.05, 1e-15);
-    ASSERT_NEAR(reparam_spline->Knot(3), 0.1, 1e-15);
-    ASSERT_NEAR(reparam_spline->Knot(4), 0.15, 1e-15);
-    ASSERT_NEAR(reparam_spline->Knot(5), 0.2, 1e-15);
-    ASSERT_NEAR(reparam_spline->Knot(6), 0.3, 1e-15);
-    ASSERT_NEAR(reparam_spline->Knot(7), 0.7, 1e-15);
-    ASSERT_NEAR(reparam_spline->Knot(8), 0.95, 1e-15);
-    ASSERT_NEAR(reparam_spline->Knot(9), 1., 1e-15);
-
-    ASSERT_EQ(reparam_spline->Multiplicity(1), 4);
-    ASSERT_EQ(reparam_spline->Multiplicity(2), 1);
-    ASSERT_EQ(reparam_spline->Multiplicity(3), 3);
-    ASSERT_EQ(reparam_spline->Multiplicity(4), 2);
-    ASSERT_EQ(reparam_spline->Multiplicity(5), 3);
-    ASSERT_EQ(reparam_spline->Multiplicity(6), 3);
-    ASSERT_EQ(reparam_spline->Multiplicity(7), 3);
-    ASSERT_EQ(reparam_spline->Multiplicity(8), 3);
-    ASSERT_EQ(reparam_spline->Multiplicity(9), 4);
-}
-
 TEST(TiglBSplineAlgorithms, testReparametrizeBSplineContinuouslyApprox)
 {
     /*
@@ -996,21 +890,22 @@ TEST(TiglBSplineAlgorithms, testCreateGordonSurface)
     compatible_splines_v_vector.push_back(spline_v5);
 
     // intersection point parameters of v-directional curve with u-directional curves:
-    Handle(TColStd_HArray1OfReal) intersection_params_v = new TColStd_HArray1OfReal(1, 4);
-    intersection_params_v->SetValue(1, 0.);
-    intersection_params_v->SetValue(2, 3. / 5);
-    intersection_params_v->SetValue(3, 4. / 5);
-    intersection_params_v->SetValue(4, 1.);
+    std::vector<double> intersection_params_v;
+    intersection_params_v.push_back(0.);
+    intersection_params_v.push_back(3. / 5.);
+    intersection_params_v.push_back(4. / 5.);
+    intersection_params_v.push_back(1.);
 
     // intersection point parameters of u-directional curve with v-directional curves:
-    Handle(TColStd_HArray1OfReal) intersection_params_u = new TColStd_HArray1OfReal(1, 5);
-    intersection_params_u->SetValue(1, 0.);
-    intersection_params_u->SetValue(2, 0.5 - std::sqrt(0.1));
-    intersection_params_u->SetValue(3, 0.5 - std::sqrt(0.05));
-    intersection_params_u->SetValue(4, 0.5 + std::sqrt(0.1));
-    intersection_params_u->SetValue(5, 1.);
+    std::vector<double> intersection_params_u;
+    intersection_params_u.push_back(0.);
+    intersection_params_u.push_back(0.5 - std::sqrt(0.1));
+    intersection_params_u.push_back(0.5 - std::sqrt(0.05));
+    intersection_params_u.push_back(0.5 + std::sqrt(0.1));
+    intersection_params_u.push_back(1.);
 
-    Handle(Geom_BSplineSurface) gordonSurface = CTiglBSplineAlgorithms::createGordonSurface(compatible_splines_u_vector, compatible_splines_v_vector, intersection_params_u, intersection_params_v);
+    Handle(Geom_BSplineSurface) gordonSurface = CTiglGordonSurfaceBuilder(compatible_splines_u_vector, compatible_splines_v_vector,
+                                                                          intersection_params_u, intersection_params_v, 1e-6).SurfaceGordon();
 
     // after creating the test surface above, now test it:
     for (int u_idx = 0; u_idx <= 100; ++u_idx) {
@@ -1029,17 +924,6 @@ TEST(TiglBSplineAlgorithms, testCreateGordonSurface)
         }
     }
 
-//    // location of the intersection points
-//    for (int spline_u_idx = 1; spline_u_idx <= intersection_params_v->Length(); ++spline_u_idx) {
-//        for (int spline_v_idx = 1; spline_v_idx <= intersection_params_u->Length(); ++spline_v_idx) {
-//            gp_Pnt surface_point = gordonSurface->Value(intersection_params_u->Value(spline_v_idx), intersection_params_v->Value(spline_u_idx));
-//            gp_Pnt real_intersection = compatible_splines_u_vector[spline_u_idx]->Value(intersection_params_u->Value(spline_v_idx));
-
-//            ASSERT_NEAR(surface_point.X(), real_intersection.X(), 1e-5);
-//            ASSERT_NEAR(surface_point.Y(), real_intersection.Y(), 1e-5);
-//            ASSERT_NEAR(surface_point.Z(), real_intersection.Z(), 1e-5);
-//        }
-//    }
 }
 
 TEST(TiglBSplineAlgorithms, testIntersectionFinder)
@@ -1281,7 +1165,7 @@ TEST(TiglBSplineAlgorithms, testCreateGordonSurfaceGeneral)
     splines_v_vector.push_back(spline_v3);
     splines_v_vector.push_back(spline_v1);
 
-    Handle(Geom_BSplineSurface) gordonSurface = CTiglBSplineAlgorithms::createGordonSurfaceGeneral(splines_u_vector, splines_v_vector);
+    Handle(Geom_BSplineSurface) gordonSurface = tigl::curveNetworkToSurface(splines_u_vector, splines_v_vector);
     BRepTools::Write(BRepBuilderAPI_MakeFace(gordonSurface, Precision::Confusion()), "TestData/GordonNew.brep");
     // after creating the test surface above, now test it:
     for (int u_idx = 0; u_idx <= 100; ++u_idx) {

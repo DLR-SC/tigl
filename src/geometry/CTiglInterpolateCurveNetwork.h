@@ -51,8 +51,8 @@ public:
      * @param spatialTolerance Maximum allowed distance between each guide and profile (in theory they must intersect)
      */
     TIGL_EXPORT CTiglInterpolateCurveNetwork(const std::vector<Handle(Geom_BSplineCurve)>& profiles,
-                                 const std::vector<Handle(Geom_BSplineCurve)>& guides,
-                                 double spatialTolerance);
+                                             const std::vector<Handle(Geom_BSplineCurve)>& guides,
+                                             double spatialTolerance);
 
     TIGL_EXPORT operator Handle(Geom_BSplineSurface) ();
     
@@ -77,11 +77,6 @@ public:
 private:
     void Perform();
 
-    void CheckCurveNetworkCompatibility(const std::vector<Handle(Geom_BSplineCurve) >& profiles,
-                                        const std::vector<Handle(Geom_BSplineCurve) >& guides,
-                                        const std::vector<double>& intersection_params_spline_u,
-                                        const std::vector<double>& intersection_params_spline_v,
-                                        double tol = 3e-4);
 
     void ComputeIntersections(math_Matrix& intersection_params_u,
                               math_Matrix& intersection_params_v) const;
@@ -90,11 +85,6 @@ private:
     void SortCurves(math_Matrix& intersection_params_u, math_Matrix& intersection_params_v);
 
     void MakeCurvesCompatible();
-
-    void CreateGordonSurface(const std::vector<Handle (Geom_BSplineCurve)>& profiles,
-                             const std::vector<Handle (Geom_BSplineCurve)>& guides,
-                             const std::vector<double>& intersection_params_spline_u,
-                             const std::vector<double>& intersection_params_spline_v);
 
     void EliminateInaccuraciesNetworkIntersections(const std::vector<Handle(Geom_BSplineCurve)> & sorted_splines_u,
                                                    const std::vector<Handle(Geom_BSplineCurve)> & sorted_splines_v,

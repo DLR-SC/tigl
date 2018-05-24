@@ -38,16 +38,6 @@
 namespace tigl
 {
 
-class ParametrizingFunction : public BSplCLib_EvaluatorFunction {
-public:
-    Handle(TColStd_HArray1OfReal) old_parameters;
-    Handle(TColStd_HArray1OfReal) new_parameters;
-
-    TIGL_EXPORT ParametrizingFunction(const TColStd_Array1OfReal& old_params, const TColStd_Array1OfReal& new_params);
-    TIGL_EXPORT virtual void Evaluate(const Standard_Integer theDerivativeRequest, const Standard_Real * theStartEnd, const Standard_Real theParameter,
-                          Standard_Real & theResult, Standard_Integer & theErrorCode) const;
-};
-
 class CTiglBSplineAlgorithms
 {
 public:
@@ -151,25 +141,6 @@ public:
     TIGL_EXPORT static void reparametrizeBSpline(Geom_BSplineCurve& spline, double umin, double umax, double tol=1e-15);
 
     /**
-     * @brief reparametrizeBSpline:
-     *          Reparametrizes a given B-spline by giving an array of its old parameters that should have the values of the given array of new parameters after this function call.
-     *          The B-spline geometry remains the same, but:
-     *          In general after this reparametrization the spline isn't continuously differentiable considering its parametrization anymore
-     * @param spline:
-     *          B-spline which shall be reparametrized
-     * @param old_parameters:
-     *          array of the old parameters that shall have the values of the new parameters
-     * @param new_parameters:
-     *          array of the new parameters the old parameters should become
-     * @return
-     *          the reparametrized given B-spline
-     */
-    TIGL_EXPORT static Handle(Geom_BSplineCurve) reparametrizeBSpline(const Handle(Geom_BSplineCurve) spline, const TColStd_Array1OfReal& old_parameters,
-                                                                      const TColStd_Array1OfReal& new_parameters);
-
-    TIGL_EXPORT static Handle(Geom_BSplineCurve) reparametrizeBSplineContinuously(const Handle(Geom_BSplineCurve) spline, const TColStd_Array1OfReal& old_parameters,
-                                                                                  const TColStd_Array1OfReal& new_parameters);
-    /**
      * @brief reparametrizeBSplineContinuouslyApprox:
      *          Reparametrizes a given B-spline by giving an array of its old parameters that should have the values of the given array of new parameters after this function call.
      *          The B-spline geometry remains approximately the same, and:
@@ -217,36 +188,6 @@ public:
                                                                    bool uContinousIfClosed, bool vContinousIfClosed);
 
     /**
-     * @brief createGordonSurface:
-     *          Returns a Gordon Surface of a given compatible network of B-splines
-     *          All parameters must be in the right order and the B-spline network must be 'closed', i.e., B-splines mustn't stick out!
-     * @param compatible_splines_u_vector:
-     *          vector of B-splines in u-direction
-     *          compatible means: intersection parameters with v-directional B-splines are equal
-     *                            (if not: reparametrize -> change B-spline knots)
-     *                            DON'T need to have common knot vector because skinning method is creating it when
-     *                            needed (for surface_u)
-     * @param compatible_splines_v_vector:
-     *          vector of B-splines in v-direction, orthogonal to u-direction
-     *          compatible means: intersection parameters with u-directional B-splines are equal
-     *                            (if not: reparametrize -> change B-spline knots)
-     *                            DON'T need to have common knot vector because skinning method is creating it when
-     *                            needed (for surface_v)
-     * @param intersection_params_spline_u:
-     *          array of intersection parameters of the u-directional B-splines with all the v-directional B-splines
-     *          These intersection parameters must be the same for all u-directional B-splines (because compatible).
-     * @param intersection_params_spline_v:
-     *          array of intersection parameters of the v-directional B-splines with all the u-directional B-splines
-     *          These intersection parameters are the same for all v-directional B-splines (because compatible).
-     * @return:
-     *          the Gordon Surface as a B-spline surface
-     */
-    TIGL_EXPORT static Handle(Geom_BSplineSurface) createGordonSurface(const std::vector<Handle(Geom_BSplineCurve) >& compatible_splines_u_vector,
-                                                                       const std::vector<Handle(Geom_BSplineCurve) >& compatible_splines_v_vector,
-                                                                       const Handle(TColStd_HArray1OfReal) intersection_params_spline_u,
-                                                                       const Handle(TColStd_HArray1OfReal) intersection_params_spline_v);
-
-    /**
      * @brief intersections:
      *          Returns all intersections of two B-splines
      * @param spline1:
@@ -282,35 +223,6 @@ public:
 
     /// Returns the scale of the point matrix
     TIGL_EXPORT static double scale(const TColgp_Array2OfPnt& points);
-
-    /**
-     * @brief eliminateInaccuraciesNetworkIntersections:
-     *          Eliminates small inaccuracies of the intersection parameter values at the beginning and end of each B-spline curve of a B-spline curve network
-     * @param sorted_splines_u:
-     *          u-directional B-spline curves in an order
-     * @param sorted_splines_v:
-     *          v-directional B-spline curves in an order
-     * @param intersection_params_u:
-     *          the two-dimensional array of intersection parameters of every u-directional B-spline with every v-directional B-spline
-     * @param intersection_params_v:
-     *          the two-dimensional array of intersection parameters of every v-directional B-spline with every u-directional B-spline
-     */
-    TIGL_EXPORT static void eliminateInaccuraciesNetworkIntersections(const std::vector<Handle(Geom_BSplineCurve)> & sorted_splines_u, const std::vector<Handle(Geom_BSplineCurve)> & sorted_splines_v, math_Matrix & intersection_params_u, math_Matrix & intersection_params_v);
-
-    /**
-     * @brief createGordonSurfaceGeneral:
-     *          Returns a Gordon Surface of a given compatible network of B-splines
-     * @param splines_u_vector:
-     *          vector of B-splines parametrized in u-direction which don't need to be compatible yet
-     *          ! Have to be in the right order (from small v to bigger v) !
-     * @param splines_v_vector:
-     *          vector of B-splines parametrized in v-direction which don't need to be compatible yet
-     *          ! Have to be in the right order (from small u to bigger u) !
-     * @return:
-     *          the Gordon Surface as a B-spline surface
-     */
-    TIGL_EXPORT static Handle(Geom_BSplineSurface) createGordonSurfaceGeneral(const std::vector<Handle(Geom_BSplineCurve) >& splines_u_vector,
-                                                                              const std::vector<Handle(Geom_BSplineCurve) >& splines_v_vector);
 
     /**
      * Returns positions, where the curve has kinks (C1 Discontinuities)
