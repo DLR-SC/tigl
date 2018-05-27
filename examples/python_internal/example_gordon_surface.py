@@ -51,7 +51,7 @@ def main():
         profile_curves.append(curve)
 
     # create the gordon surface
-    surface = curve_network_to_surface(profile_curves, guide_curves, 3e-4)
+    surface = curve_network_to_surface(profile_curves, guide_curves, 1.e-4)
 
     # display curves and resulting surface
     display, start_display, add_menu, add_function_to_menu = init_display()
