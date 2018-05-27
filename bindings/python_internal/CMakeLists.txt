@@ -63,20 +63,27 @@ if (TIGL_BINDINGS_PYTHON_INTERNAL)
 
     set(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR})
 
-    if(WIN32)
-       set(EXTENSION "pyd")
-    else(WIN32)
-        set(EXTENSION "so")
-    endif(WIN32)
-
     add_definitions(-DTIGL_INTERNAL_IMPORTS)
+
+    if (UNIX)
+        # find out python linking commands
+        execute_process(COMMAND ${PYTHON_EXECUTABLE} -c "from distutils import sysconfig; print(sysconfig.get_config_vars('CFLAGS')[0])" OUTPUT_VARIABLE PYTHON_CFLAGS OUTPUT_STRIP_TRAILING_WHITESPACE )
+        execute_process(COMMAND ${PYTHON_EXECUTABLE} -c "from distutils import sysconfig; print(sysconfig.get_config_vars('BLDSHARED')[0].split(' ', 1)[1])" OUTPUT_VARIABLE PYTHON_LDFLAGS OUTPUT_STRIP_TRAILING_WHITESPACE )
+    endif(UNIX)
 
     foreach(MODULE ${MODULES})
         set_source_files_properties(${MODULE}.i PROPERTIES CPLUSPLUS ON)
         set(SWIG_MODULE_${MODULE}_EXTRA_DEPS common.i doc.i)
 
         swig_add_module(${MODULE} python ${MODULE}.i )
-        swig_link_libraries(${MODULE} ${PYTHON_LIBRARIES} tigl3)
+        swig_link_libraries(${MODULE} tigl3)
+
+        if (UNIX)
+            set_target_properties(${SWIG_MODULE_${MODULE}_REAL_NAME} PROPERTIES COMPILE_FLAGS ${PYTHON_CFLAGS})
+            set_target_properties(${SWIG_MODULE_${MODULE}_REAL_NAME} PROPERTIES LINK_FLAGS ${PYTHON_LDFLAGS})
+        else(UNIX)
+            swig_link_libraries(${MODULE} ${PYTHON_LIBRARIES})
+        endif(UNIX)
 
         install(TARGETS _${MODULE}
                 DESTINATION share/tigl3/python/internal
