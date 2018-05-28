@@ -21,13 +21,12 @@
 
 #include "tigl_internal.h"
 #include <vector>
-#include <Handle_Geom_BSplineCurve.hxx>
+#include <Geom_BSplineCurve.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <math_Matrix.hxx>
+#include <TColStd_Array1OfInteger.hxx>
 
-class TColgp_Array1OfPnt;
-class TColStd_Array1OfInteger;
 class gp_Pnt;
 
 namespace tigl {

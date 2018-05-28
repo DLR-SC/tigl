@@ -16,6 +16,7 @@
 
 #include "CTiglBSplineFit.h"
 
+#include <Standard_Version.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <math_Matrix.hxx>
@@ -92,7 +93,11 @@ void BSplineFit::initSystem(math_Matrix& A, math_Vector& rhsx, math_Vector& rhsy
         double tk = t[k];
 
         int basis_start_index;
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,1,0)
+        BSplCLib::EvalBsplineBasis(0, order, _knots, tk, basis_start_index, bspl_basis);
+#else
         BSplCLib::EvalBsplineBasis(1, 0, order, _knots, tk, basis_start_index, bspl_basis);
+#endif
         basis_start_index--;
 
         int start = std::max(1, basis_start_index);

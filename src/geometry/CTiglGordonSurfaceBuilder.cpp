@@ -195,8 +195,8 @@ void CTiglGordonSurfaceBuilder::CreateGordonSurface(const std::vector<Handle(Geo
     m_skinningSurfProfiles = surfaces_vector[1];
     m_tensorProdSurf = surfaces_vector[2];
 
-    assert(m_skinningSurfU->NbUPoles() == m_skinningSurfV->NbUPoles() && m_skinningSurfV->NbUPoles() == m_tensorProdSurf->NbUPoles());
-    assert(m_skinningSurfU->NbVPoles() == m_skinningSurfV->NbVPoles() && m_skinningSurfV->NbVPoles() == m_tensorProdSurf->NbVPoles());
+    assert(m_skinningSurfGuides->NbUPoles() == m_skinningSurfProfiles->NbUPoles() && m_skinningSurfProfiles->NbUPoles() == m_tensorProdSurf->NbUPoles());
+    assert(m_skinningSurfGuides->NbVPoles() == m_skinningSurfProfiles->NbVPoles() && m_skinningSurfProfiles->NbVPoles() == m_tensorProdSurf->NbVPoles());
 
     m_gordonSurf = Handle(Geom_BSplineSurface)::DownCast(m_skinningSurfProfiles->Copy());
 
