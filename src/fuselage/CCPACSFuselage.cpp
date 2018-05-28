@@ -120,6 +120,15 @@ std::string CCPACSFuselage::GetDefaultedUID() const
     return generated::CPACSFuselage::GetUID();
 }
 
+TopoDS_Shape CCPACSFuselage::GetLoft(TiglCoordinateSystem cs)
+{
+    const TopoDS_Shape loft = GetLoft()->Shape();
+    if (cs == GLOBAL_COORDINATE_SYSTEM)
+        return loft;
+    else
+        return GetTransformationMatrix().Inverted().Transform(loft);
+}
+
 // Get section count
 int CCPACSFuselage::GetSectionCount() const
 {
@@ -395,9 +404,12 @@ gp_Lin CCPACSFuselage::Intersection(gp_Pnt pRef, double angleRef)
     // build a line to position the intersection with the fuselage shape
     gp_Lin line(pRef, angleDir);
 
+    // fuselage loft
+    const TopoDS_Shape loft = GetLoft(FUSELAGE_COORDINATE_SYSTEM);
+
     // get the list of shape from the fuselage shape
     TopExp_Explorer exp;
-    for (exp.Init(GetLoft()->Shape(), TopAbs_FACE); exp.More(); exp.Next()) {
+    for (exp.Init(loft, TopAbs_FACE); exp.More(); exp.Next()) {
         IntCurvesFace_Intersector intersection(TopoDS::Face(exp.Current()), 0.1); // intersection builder
         intersection.Perform(line, -std::numeric_limits<Standard_Real>::max(), // replace by std::numeric_limits<Standard_Real>::lowest() when C++11 available
                              std::numeric_limits<Standard_Real>::max());
@@ -456,13 +468,17 @@ namespace
 
 TopoDS_Wire CCPACSFuselage::projectConic(TopoDS_Shape wireOrEdge, gp_Pnt origin)
 {
-    BRepProj_Projection proj(wireOrEdge, GetLoft()->Shape(), origin);
+    const TopoDS_Shape loft = GetLoft(FUSELAGE_COORDINATE_SYSTEM);
+
+    BRepProj_Projection proj(wireOrEdge, loft, origin);
     return project(wireOrEdge, proj);
 }
 
 TopoDS_Wire CCPACSFuselage::projectParallel(TopoDS_Shape wireOrEdge, gp_Dir direction)
 {
-    BRepProj_Projection proj(wireOrEdge, GetLoft()->Shape(), direction);
+    const TopoDS_Shape loft = GetLoft(FUSELAGE_COORDINATE_SYSTEM);
+
+    BRepProj_Projection proj(wireOrEdge, loft, direction);
     return project(wireOrEdge, proj);
 }
 
