@@ -71,7 +71,6 @@ void CCPACSFrame::BuildGeometry(bool just1DElements)
     // 2) if not just 1D element, build and sweep the profile all along the path
 
     CCPACSFuselage& fuselage        = *m_parent->GetParent()->GetParent();
-    const TopoDS_Shape fuselageLoft = fuselage.GetLoft()->Shape();
 
     // initialize object needed for the frame build
     gp_Pln profilePlane;
@@ -81,8 +80,9 @@ void CCPACSFrame::BuildGeometry(bool just1DElements)
         // if there is 1 position ==> the path is around the fuselage, in an X normal orientated plane
         const CCPACSFuselageStringerFramePosition& fp = *m_framePositions[0];
 
-        TopoDS_Shape section = BRepAlgoAPI_Section(fuselageLoft, gp_Pln(fp.GetRefPoint(), gp_Dir(1, 0, 0))).Shape();
-        path                 = BuildWireFromEdges(section);
+        const TopoDS_Shape fuselageLoft = fuselage.GetLoft(FUSELAGE_COORDINATE_SYSTEM);
+        const TopoDS_Shape section = BRepAlgoAPI_Section(fuselageLoft, gp_Pln(fp.GetRefPoint(), gp_Dir(1, 0, 0))).Shape();
+        path = BuildWireFromEdges(section);
 
         if (!just1DElements) {
             // -1) place the point and the plane (X Axis as normal vector)
