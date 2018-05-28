@@ -25,6 +25,10 @@
 #include <BRepBndLib.hxx>
 #include <gp_Ax3.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
+#include <ShapeAnalysis_Wire.hxx>
+#include <ShapeFix_ShapeTolerance.hxx>
+
+#include <numeric>
 
 #include "CCPACSFuselage.h"
 #include "CCPACSFrame.h"
@@ -61,7 +65,7 @@ std::string CCPACSPressureBulkheadAssemblyPosition::GetDefaultedUID() const
 
 PNamedShape CCPACSPressureBulkheadAssemblyPosition::GetLoft()
 {
-    return PNamedShape(new CNamedShape(GetGeometry(), GetDefaultedUID()));
+    return PNamedShape(new CNamedShape(GetGeometry(GLOBAL_COORDINATE_SYSTEM), GetDefaultedUID()));
 }
 
 TiglGeometricComponentType CCPACSPressureBulkheadAssemblyPosition::GetComponentType() const
@@ -74,12 +78,18 @@ void CCPACSPressureBulkheadAssemblyPosition::Invalidate()
     m_geometry = boost::none;
 }
 
-TopoDS_Shape CCPACSPressureBulkheadAssemblyPosition::GetGeometry()
+TopoDS_Shape CCPACSPressureBulkheadAssemblyPosition::GetGeometry(TiglCoordinateSystem cs)
 {
     if (!m_geometry) {
         BuildGeometry();
     }
-    return m_geometry.value();
+    if (cs == GLOBAL_COORDINATE_SYSTEM) {
+        CTiglTransformation trafo = m_parent->GetParent()->GetParent()->GetTransformationMatrix();
+        return trafo.Transform(m_geometry.value());
+    }
+    else {
+        return m_geometry.value();
+    }
 }
 
 void CCPACSPressureBulkheadAssemblyPosition::BuildGeometry()
@@ -87,73 +97,72 @@ void CCPACSPressureBulkheadAssemblyPosition::BuildGeometry()
     CCPACSFrame& frame = m_uidMgr->ResolveObject<CCPACSFrame>(m_frameUID);
 
     if (frame.GetFramePositions().size() == 1) {
-        TopTools_IndexedMapOfShape edgeMap;
-        TopExp::MapShapes(frame.GetGeometry(true), TopAbs_EDGE, edgeMap);
+        TopTools_IndexedMapOfShape wireMap;
+        TopExp::MapShapes(frame.GetGeometry(true, FUSELAGE_COORDINATE_SYSTEM), TopAbs_WIRE, wireMap);
 
-        if (edgeMap.Extent() != 1) {
-            throw CTiglError("1D frame geometry should have exactly one edge");
+        if (wireMap.Extent() != 1) {
+            throw CTiglError("1D frame geometry should have exactly one wire");
         }
 
-        TopoDS_Edge edge = TopoDS::Edge(edgeMap(1));
-        m_geometry       = BRepBuilderAPI_MakeFace(BRepBuilderAPI_MakeWire(edge));
-
+        m_geometry = BRepBuilderAPI_MakeFace(TopoDS::Wire(wireMap(1)));
     }
     else if (frame.GetFramePositions().size() >= 2) {
         CCPACSFuselage& fuselage = *m_parent->GetParent()->GetParent();
 
-        std::vector<TopoDS_Edge> edges;
         std::vector<gp_Pnt> refPoints;
         for (size_t i = 0; i < frame.GetFramePositions().size(); i++) {
             const CCPACSFuselageStringerFramePosition& framePosition = *frame.GetFramePositions()[i];
             const gp_Pnt refPoint = framePosition.GetRefPoint();
-            const gp_Pnt intersectionPoint = fuselage.Intersection(framePosition).Location();
-
-            const TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(refPoint, intersectionPoint);
-
-            edges.push_back(edge);
             refPoints.push_back(refPoint);
         }
 
-        // we have to make the wires in the order of construction (clockwise)
+        // build wire, starting with frame wire
         BRepBuilderAPI_MakeWire wireMaker;
-        wireMaker.Add(edges[0]); // first edge
-
-        // create all the edges of the frame
-        TopTools_IndexedMapOfShape edgeMap;
-        TopExp::MapShapes(frame.GetGeometry(true), TopAbs_EDGE, edgeMap);
-        for (int i = 1; i <= edgeMap.Extent(); i++) {
-            wireMaker.Add(TopoDS::Edge(edgeMap(i)));
-        }
-
-        wireMaker.Add(edges[edges.size() - 1]); // last edge
-
-        // check if X coords of all ref points are the same
-        for (size_t i = 0; i < refPoints.size() - 1; i++) {
-            if (refPoints[i].X() != refPoints[i + 1].X()) {
-                throw CTiglError("X coordinates of reference points are different (which is not available)");
-            }
-        }
-
-        const double precision = 1e-6;
-
-        // generate edges between non-equal points
-        std::vector<TopoDS_Edge> edgesRef;
-        for (size_t i = 0; i < refPoints.size() - 1; i++) {
-            if (!refPoints[i].IsEqual(refPoints[i + 1], precision)) {
-                edgesRef.push_back(BRepBuilderAPI_MakeEdge(refPoints[i + 1], refPoints[i]));
-            }
-        }
-
-        // add edges to wire in reverse order
-        for (size_t i = 0; i < edgesRef.size(); i++) {
-            wireMaker.Add(edgesRef[edgesRef.size() - 1 - i]);
-        }
+        wireMaker.Add(TopoDS::Wire(frame.GetGeometry(true, FUSELAGE_COORDINATE_SYSTEM)));
 
         if (!wireMaker.IsDone()) {
             throw CTiglError("Wire generation failed");
         }
+        if (wireMaker.Error() != BRepBuilderAPI_WireDone) {
+            throw CTiglError("Wire generation failed: " + std::to_string(wireMaker.Error()));
+        }
 
-        m_geometry = BRepBuilderAPI_MakeFace(wireMaker.Wire());
+        TopoDS_Wire wire = wireMaker.Wire();
+
+        ShapeAnalysis_Wire analysis;
+        analysis.Load(wire);
+        if (analysis.CheckSelfIntersection()) {
+            throw CTiglError("Wire is self-intersecting. This may be caused by an unfortunate positioning of the frame positions");
+        }
+
+        wire = CloseWire(wire);
+
+        BRepBuilderAPI_MakeFace makeFace(wire);
+        if (!makeFace.IsDone()) {
+            LOG(WARNING) << "Failed to create shape for bulkhead \"" << GetDefaultedUID() << "\", retrying planar one";
+
+            // retry with xz plane put at average ref point
+            const gp_Pnt avgRefPoint = std::accumulate(refPoints.begin(), refPoints.end(), gp_Pnt(), [](gp_Pnt a, gp_Pnt b) {
+                return gp_Pnt(a.XYZ() + b.XYZ());
+            }).XYZ() / static_cast<double>(refPoints.size());
+            const gp_Pln plane(avgRefPoint, gp_Dir(1, 0, 0));
+            makeFace = BRepBuilderAPI_MakeFace(plane, wire);
+            if (!makeFace.IsDone()) {
+                throw CTiglError("Face generation failed");
+            }
+            if (makeFace.Error()) {
+                throw CTiglError("Face generation failed: " + std::to_string(makeFace.Error()));
+            }
+        }
+
+        TopoDS_Face face = makeFace.Face();
+
+        // for some rediculous reason, BRepBuilderAPI_MakeFace alters the tolerance of the underlying wire's edges and vertices,
+        // causing subsequent boolean operations to fail (self intersections)
+        ShapeFix_ShapeTolerance().SetTolerance(face, Precision::Confusion());
+
+        m_geometry = face;
     }
 }
+
 } // namespace tigl

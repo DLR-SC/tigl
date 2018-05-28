@@ -39,7 +39,7 @@ public:
 
     TIGL_EXPORT void Invalidate();
 
-    TIGL_EXPORT TopoDS_Shape GetGeometry();
+    TIGL_EXPORT TopoDS_Shape GetGeometry(TiglCoordinateSystem cs = GLOBAL_COORDINATE_SYSTEM);
 
 private:
     void BuildGeometry();
