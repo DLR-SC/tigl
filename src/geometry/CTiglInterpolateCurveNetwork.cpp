@@ -137,8 +137,14 @@ void CTiglInterpolateCurveNetwork::SortCurves(math_Matrix& intersection_params_u
     intersection_params_v = sorterObj.GuideIntersectionParms();
 
     // copy sorted curves back into our curve arrays
-    std::transform(sorterObj.Profiles().begin(), sorterObj.Profiles().end(), m_profiles.begin(), Handle(Geom_BSplineCurve)::DownCast);
-    std::transform(sorterObj.Guides().begin(), sorterObj.Guides().end(), m_guides.begin(), Handle(Geom_BSplineCurve)::DownCast);
+    struct Caster {
+        Handle(Geom_BSplineCurve) operator()(const Handle(Geom_Curve)& curve) {
+            return Handle(Geom_BSplineCurve)::DownCast(curve);
+        }
+    } caster;
+
+    std::transform(sorterObj.Profiles().begin(), sorterObj.Profiles().end(), m_profiles.begin(), caster);
+    std::transform(sorterObj.Guides().begin(), sorterObj.Guides().end(), m_guides.begin(), caster);
 }
 
 void CTiglInterpolateCurveNetwork::MakeCurvesCompatible()

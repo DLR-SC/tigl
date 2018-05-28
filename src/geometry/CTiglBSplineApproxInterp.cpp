@@ -507,7 +507,7 @@ CTiglApproxResult CTiglBSplineApproxInterp::solve(const std::vector<double>& par
  * @brief Recalculates the curve parameters t_k after the
  * control points are fitted to achieve an even better fit.
  */
-void CTiglBSplineApproxInterp::optimizeParameters(const Handle_Geom_Curve& curve, std::vector<double>& m_t) const
+void CTiglBSplineApproxInterp::optimizeParameters(const Handle(Geom_Curve)& curve, std::vector<double>& m_t) const
 {
     // optimize each parameter by finding it's position on the curve
     for (std::vector<size_t>::const_iterator it_idx = m_indexOfApproximated.begin(); it_idx != m_indexOfApproximated.end(); ++it_idx) {

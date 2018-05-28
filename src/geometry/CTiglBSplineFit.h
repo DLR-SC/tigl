@@ -21,9 +21,8 @@
 
 #include <vector>
 #include <TColStd_Array1OfReal.hxx>
-#include <Handle_Geom_BSplineCurve.hxx>
-
-class TColgp_Array1OfPnt;
+#include <Geom_BSplineCurve.hxx>
+#include <TColgp_Array1OfPnt.hxx>
 
 class BSplineFit
 {

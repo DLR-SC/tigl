@@ -24,6 +24,7 @@
 #include "to_string.h"
 #include "tiglcommonfunctions.h"
 
+#include <Standard_Version.hxx>
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
@@ -852,7 +853,11 @@ math_Matrix CTiglBSplineAlgorithms::bsplineBasisMat(int degree, const TColStd_Ar
     bspl_basis.Init(0.);
     for (Standard_Integer iparm = 1; iparm <= params.Length(); ++iparm) {
         Standard_Integer basis_start_index = 0;
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,1,0)
+        BSplCLib::EvalBsplineBasis(derivOrder, degree + 1, knots, params.Value(iparm), basis_start_index, bspl_basis);
+#else
         BSplCLib::EvalBsplineBasis(1, derivOrder, degree + 1, knots, params.Value(iparm), basis_start_index, bspl_basis);
+#endif
         if(derivOrder > 0) {
             math_Vector help_vector(1, ncp);
             help_vector.Init(0.);
