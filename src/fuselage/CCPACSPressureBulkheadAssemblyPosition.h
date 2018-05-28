@@ -41,8 +41,6 @@ public:
 
     TIGL_EXPORT TopoDS_Shape GetGeometry();
 
-    TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) OVERRIDE;
-
 private:
     void BuildGeometry();
 

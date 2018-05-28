@@ -39,7 +39,6 @@ namespace tigl
 CCPACSPressureBulkheadAssemblyPosition::CCPACSPressureBulkheadAssemblyPosition(CCPACSPressureBulkheadAssembly* parent,
                                                                                CTiglUIDManager* uidMgr)
     : generated::CPACSPressureBulkheadAssemblyPosition(parent, uidMgr)
-    , invalidated(true)
 {
 }
 
@@ -81,13 +80,6 @@ TopoDS_Shape CCPACSPressureBulkheadAssemblyPosition::GetGeometry()
         BuildGeometry();
     }
     return m_geometry.value();
-}
-
-void CCPACSPressureBulkheadAssemblyPosition::ReadCPACS(const TixiDocumentHandle &tixiHandle, const std::string &xpath)
-{
-    generated::CPACSPressureBulkheadAssemblyPosition::ReadCPACS(tixiHandle, xpath);
-    
-    if (m_uidMgr && !m_uID.empty()) m_uidMgr->AddGeometricComponent(m_uID, this);
 }
 
 void CCPACSPressureBulkheadAssemblyPosition::BuildGeometry()
