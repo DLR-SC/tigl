@@ -37,6 +37,7 @@
 #include "CTiglUIDManager.h"
 #include "tiglcommonfunctions.h"
 #include "CNamedShape.h"
+#include "to_string.h"
 
 namespace tigl
 {
@@ -124,7 +125,7 @@ void CCPACSPressureBulkheadAssemblyPosition::BuildGeometry()
             throw CTiglError("Wire generation failed");
         }
         if (wireMaker.Error() != BRepBuilderAPI_WireDone) {
-            throw CTiglError("Wire generation failed: " + std::to_string(wireMaker.Error()));
+            throw CTiglError("Wire generation failed: " + std_to_string(wireMaker.Error()));
         }
 
         TopoDS_Wire wire = wireMaker.Wire();
@@ -151,7 +152,7 @@ void CCPACSPressureBulkheadAssemblyPosition::BuildGeometry()
                 throw CTiglError("Face generation failed");
             }
             if (makeFace.Error()) {
-                throw CTiglError("Face generation failed: " + std::to_string(makeFace.Error()));
+                throw CTiglError("Face generation failed: " + std_to_string(makeFace.Error()));
             }
         }
 
