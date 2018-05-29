@@ -1,0 +1,907 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cpacs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.airbusds.com/cpacs/2.3">
+  <header>
+    <name>FuselageStructureTest</name>
+    <description>Model for testing fuselage structure</description>
+    <creator>Bernhard Manfred Gruber</creator>
+    <timestamp>2018-05-02T13:05:02</timestamp>
+    <version>1.0</version>
+    <cpacsVersion>3.0</cpacsVersion>
+    <updates>
+      <update>
+        <modification>Converted to cpacs 3.0 using cpacs2to3</modification>
+        <creator>cpacs2to3</creator>
+        <timestamp>2018-05-24T16:40:52</timestamp>
+        <version>ver1</version>
+        <cpacsVersion>3.0</cpacsVersion>
+      </update>
+    </updates>
+  </header>
+  <vehicles>
+    <aircraft>
+      <model uID="FuselageStructureTest">
+        <name>FuselageStructureTest</name>
+        <description>Model for testing fuselage structure</description>
+        <reference>
+          <area>1</area>
+          <length>1</length>
+          <point>
+            <x>0</x>
+            <y>0</y>
+            <z>0</z>
+          </point>
+        </reference>
+        <fuselages>
+          <fuselage uID="Fuselage">
+            <name>Fuselage</name>
+            <description>This fuselage has been generated using CATIA2CPACS.</description>
+            <transformation uID="Fuselage_transformation1">
+              <translation refType="absGlobal" uID="Fuselage_transformation1_translation1">
+                <x>2500</x>
+                <y>0</y>
+                <z>3000</z>
+              </translation>
+            </transformation>
+            <sections>
+              <section uID="section1">
+                <name>section1</name>
+                <transformation uID="section1_transformation1">
+                  <translation refType="absLocal" uID="section1_transformation1_translation1">
+                    <x>1930.88</x>
+                    <y>-7.39251e-13</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="section1_element1">
+                    <name>section1_element1</name>
+                    <profileUID>fuselageProfile1</profileUID>
+                    <transformation uID="section1_element1_transformation1">
+                      <scaling uID="section1_element1_transformation1_scaling1">
+                        <x>0</x>
+                        <y>1391.24</y>
+                        <z>1703.33</z>
+                      </scaling>
+                      <translation refType="absLocal" uID="section1_element1_transformation1_translation1">
+                        <x>0</x>
+                        <y>-3.11942e-12</y>
+                        <z>217.14</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="section2">
+                <name>section2</name>
+                <transformation uID="section2_transformation1">
+                  <translation refType="absLocal" uID="section2_transformation1_translation1">
+                    <x>2312.22</x>
+                    <y>-8.8525e-13</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="section2_element1">
+                    <name>section2_element1</name>
+                    <profileUID>fuselageProfile2</profileUID>
+                    <transformation uID="section2_element1_transformation1">
+                      <scaling uID="section2_element1_transformation1_scaling1">
+                        <x>0</x>
+                        <y>1472.79</y>
+                        <z>1781.4</z>
+                      </scaling>
+                      <translation refType="absLocal" uID="section2_element1_transformation1_translation1">
+                        <x>0</x>
+                        <y>-3.73549e-12</y>
+                        <z>217.122</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="section3">
+                <name>section3</name>
+                <transformation uID="section3_transformation1">
+                  <translation refType="absLocal" uID="section3_transformation1_translation1">
+                    <x>2720.54</x>
+                    <y>-1.04158e-12</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="section3_element1">
+                    <name>section3_element1 - Fuselage Section 13 Main Element</name>
+                    <profileUID>fuselageProfile3</profileUID>
+                    <transformation uID="section3_element1_transformation1">
+                      <scaling uID="section3_element1_transformation1_scaling1">
+                        <x>0</x>
+                        <y>1537.34</y>
+                        <z>1812.14</z>
+                      </scaling>
+                      <translation refType="absLocal" uID="section3_element1_transformation1_translation1">
+                        <x>0</x>
+                        <y>-4.39514e-12</y>
+                        <z>203.777</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="section4">
+                <name>section4</name>
+                <transformation uID="section4_transformation1">
+                  <translation refType="absLocal" uID="section4_transformation1_translation1">
+                    <x>3153.43</x>
+                    <y>-1.20731e-12</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="section4_element1">
+                    <name>section4_element1</name>
+                    <profileUID>fuselageProfile4</profileUID>
+                    <transformation uID="section4_element1_transformation1">
+                      <scaling uID="section4_element1_transformation1_scaling1">
+                        <x>0</x>
+                        <y>1583.53</y>
+                        <z>1800.47</z>
+                      </scaling>
+                      <translation refType="absLocal" uID="section4_element1_transformation1_translation1">
+                        <x>0</x>
+                        <y>-5.0945e-12</y>
+                        <z>178.457</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="section5">
+                <name>section5</name>
+                <transformation uID="section5_transformation1">
+                  <translation refType="absLocal" uID="section5_transformation1_translation1">
+                    <x>3608.37</x>
+                    <y>-1.38149e-12</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="section5_element1">
+                    <name>section5_element1</name>
+                    <profileUID>fuselageProfile5</profileUID>
+                    <transformation uID="section5_element1_transformation1">
+                      <scaling uID="section5_element1_transformation1_scaling1">
+                        <x>0</x>
+                        <y>1604.28</y>
+                        <z>1753.54</z>
+                      </scaling>
+                      <translation refType="absLocal" uID="section5_element1_transformation1_translation1">
+                        <x>0</x>
+                        <y>-5.82947e-12</y>
+                        <z>144.497</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="section6">
+                <name>section6</name>
+                <transformation uID="section6_transformation1">
+                  <translation refType="absLocal" uID="section6_transformation1_translation1">
+                    <x>4082.67</x>
+                    <y>-1.56308e-12</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="section6_element1">
+                    <name>section6_element1</name>
+                    <profileUID>fuselageProfile6</profileUID>
+                    <transformation uID="section6_element1_transformation1">
+                      <scaling uID="section6_element1_transformation1_scaling1">
+                        <x>0</x>
+                        <y>1606.99</y>
+                        <z>1686.3</z>
+                      </scaling>
+                      <translation refType="absLocal" uID="section6_element1_transformation1_translation1">
+                        <x>0</x>
+                        <y>-6.59572e-12</y>
+                        <z>106.791</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+            </sections>
+            <segments>
+              <segment uID="segment1">
+                <name>segment1</name>
+                <fromElementUID>section1_element1</fromElementUID>
+                <toElementUID>section2_element1</toElementUID>
+              </segment>
+              <segment uID="segment2">
+                <name>segment2</name>
+                <fromElementUID>section2_element1</fromElementUID>
+                <toElementUID>section3_element1</toElementUID>
+              </segment>
+              <segment uID="segment3">
+                <name>segment3</name>
+                <fromElementUID>section3_element1</fromElementUID>
+                <toElementUID>section4_element1</toElementUID>
+              </segment>
+              <segment uID="segment4">
+                <name>segment4</name>
+                <fromElementUID>section4_element1</fromElementUID>
+                <toElementUID>section5_element1</toElementUID>
+              </segment>
+              <segment uID="segment5">
+                <name>segment5</name>
+                <fromElementUID>section5_element1</fromElementUID>
+                <toElementUID>section6_element1</toElementUID>
+              </segment>
+            </segments>
+            <structure>
+              <frames>
+                <frame uID="holed_frame">
+                  <framePosition uID="holed_frameframe_position1">
+                    <structuralElementUID>TODO</structuralElementUID>
+                    <positionX>2000</positionX>
+                    <referenceY>0</referenceY>
+                    <referenceZ>-410</referenceZ>
+                    <referenceAngle>0</referenceAngle>
+                  </framePosition>
+                  <framePosition uID="holed_frameframe_position2">
+                    <structuralElementUID>TODO</structuralElementUID>
+                    <positionX>2000</positionX>
+                    <referenceY>100</referenceY>
+                    <referenceZ>-400</referenceZ>
+                    <referenceAngle>90</referenceAngle>
+                  </framePosition>
+                  <framePosition uID="holed_frameframe_position3">
+                    <structuralElementUID>TODO</structuralElementUID>
+                    <positionX>2000</positionX>
+                    <referenceY>130</referenceY>
+                    <referenceZ>-300</referenceZ>
+                    <referenceAngle>110</referenceAngle>
+                  </framePosition>
+                </frame>
+                <frame uID="half_frame">
+                  <framePosition uID="half_frame_position1">
+                    <structuralElementUID>TODO</structuralElementUID>
+                    <positionX>2200</positionX>
+                    <referenceY>0</referenceY>
+                    <referenceZ>0</referenceZ>
+                    <referenceAngle>-90</referenceAngle>
+                  </framePosition>
+                  <framePosition uID="half_frame_position2">
+                    <structuralElementUID>TODO</structuralElementUID>
+                    <positionX>2200</positionX>
+                    <referenceY>0</referenceY>
+                    <referenceZ>0</referenceZ>
+                    <referenceAngle>0</referenceAngle>
+                  </framePosition>
+                  <framePosition uID="half_frame_position3">
+                    <structuralElementUID>TODO</structuralElementUID>
+                    <positionX>2200</positionX>
+                    <referenceY>0</referenceY>
+                    <referenceZ>0</referenceZ>
+                    <referenceAngle>90</referenceAngle>
+                  </framePosition>
+                </frame>
+                <frame uID="frame1">
+                  <framePosition uID="frame1_position1">
+                    <structuralElementUID>TODO</structuralElementUID>
+                    <positionX>2515</positionX>
+                    <referenceY>0</referenceY>
+                    <referenceZ>0</referenceZ>
+                    <referenceAngle>-180</referenceAngle>
+                  </framePosition>
+                </frame>
+                <frame uID="frame2">
+                  <framePosition uID="frame2_position1">
+                    <structuralElementUID>TODO</structuralElementUID>
+                    <positionX>2935.5</positionX>
+                    <referenceY>0</referenceY>
+                    <referenceZ>0</referenceZ>
+                    <referenceAngle>-180</referenceAngle>
+                  </framePosition>
+                </frame>
+                <frame uID="riffled_frame">
+                  <framePosition uID="riffled_frame_position1">
+                    <structuralElementUID>TODO</structuralElementUID>
+                    <positionX>3500</positionX>
+                    <referenceY>0</referenceY>
+                    <referenceZ>0</referenceZ>
+                    <referenceAngle>0</referenceAngle>
+                  </framePosition>
+                  <framePosition uID="riffled_frame_position2">
+                    <structuralElementUID>TODO</structuralElementUID>
+                    <positionX>3250</positionX>
+                    <referenceY>0</referenceY>
+                    <referenceZ>0</referenceZ>
+                    <referenceAngle>20</referenceAngle>
+                  </framePosition>
+                  <framePosition uID="riffled_frame_position3">
+                    <structuralElementUID>TODO</structuralElementUID>
+                    <positionX>3500</positionX>
+                    <referenceY>0</referenceY>
+                    <referenceZ>0</referenceZ>
+                    <referenceAngle>40</referenceAngle>
+                  </framePosition>
+                  <framePosition uID="riffled_frame_position4">
+                    <structuralElementUID>TODO</structuralElementUID>
+                    <positionX>3250</positionX>
+                    <referenceY>0</referenceY>
+                    <referenceZ>0</referenceZ>
+                    <referenceAngle>60</referenceAngle>
+                  </framePosition>
+                  <framePosition uID="riffled_frame_position5">
+                    <structuralElementUID>TODO</structuralElementUID>
+                    <positionX>3500</positionX>
+                    <referenceY>0</referenceY>
+                    <referenceZ>0</referenceZ>
+                    <referenceAngle>80</referenceAngle>
+                  </framePosition>
+                  <framePosition uID="riffled_frame_position6">
+                    <structuralElementUID>TODO</structuralElementUID>
+                    <positionX>3250</positionX>
+                    <referenceY>0</referenceY>
+                    <referenceZ>0</referenceZ>
+                    <referenceAngle>100</referenceAngle>
+                  </framePosition>
+                  <framePosition uID="riffled_frame_position7">
+                    <structuralElementUID>TODO</structuralElementUID>
+                    <positionX>3500</positionX>
+                    <referenceY>0</referenceY>
+                    <referenceZ>0</referenceZ>
+                    <referenceAngle>120</referenceAngle>
+                  </framePosition>
+                  <framePosition uID="riffled_frame_position8">
+                    <structuralElementUID>TODO</structuralElementUID>
+                    <positionX>3250</positionX>
+                    <referenceY>0</referenceY>
+                    <referenceZ>0</referenceZ>
+                    <referenceAngle>140</referenceAngle>
+                  </framePosition>
+                  <framePosition uID="riffled_frame_position9">
+                    <structuralElementUID>TODO</structuralElementUID>
+                    <positionX>3500</positionX>
+                    <referenceY>0</referenceY>
+                    <referenceZ>0</referenceZ>
+                    <referenceAngle>160</referenceAngle>
+                  </framePosition>
+                  <framePosition uID="riffled_frame_position10">
+                    <structuralElementUID>TODO</structuralElementUID>
+                    <positionX>3250</positionX>
+                    <referenceY>0</referenceY>
+                    <referenceZ>0</referenceZ>
+                    <referenceAngle>180</referenceAngle>
+                  </framePosition>
+                  <framePosition uID="riffled_frame_position11">
+                    <structuralElementUID>TODO</structuralElementUID>
+                    <positionX>3500</positionX>
+                    <referenceY>0</referenceY>
+                    <referenceZ>0</referenceZ>
+                    <referenceAngle>200</referenceAngle>
+                  </framePosition>
+                  <framePosition uID="riffled_frame_position12">
+                    <structuralElementUID>TODO</structuralElementUID>
+                    <positionX>3250</positionX>
+                    <referenceY>0</referenceY>
+                    <referenceZ>0</referenceZ>
+                    <referenceAngle>220</referenceAngle>
+                  </framePosition>
+                  <framePosition uID="riffled_frame_position13">
+                    <structuralElementUID>TODO</structuralElementUID>
+                    <positionX>3500</positionX>
+                    <referenceY>0</referenceY>
+                    <referenceZ>0</referenceZ>
+                    <referenceAngle>240</referenceAngle>
+                  </framePosition>
+                  <framePosition uID="riffled_frame_position14">
+                    <structuralElementUID>TODO</structuralElementUID>
+                    <positionX>3250</positionX>
+                    <referenceY>0</referenceY>
+                    <referenceZ>0</referenceZ>
+                    <referenceAngle>260</referenceAngle>
+                  </framePosition>
+                  <framePosition uID="riffled_frame_position15">
+                    <structuralElementUID>TODO</structuralElementUID>
+                    <positionX>3500</positionX>
+                    <referenceY>0</referenceY>
+                    <referenceZ>0</referenceZ>
+                    <referenceAngle>280</referenceAngle>
+                  </framePosition>
+                  <framePosition uID="riffled_frame_position16">
+                    <structuralElementUID>TODO</structuralElementUID>
+                    <positionX>3250</positionX>
+                    <referenceY>0</referenceY>
+                    <referenceZ>0</referenceZ>
+                    <referenceAngle>300</referenceAngle>
+                  </framePosition>
+                  <framePosition uID="riffled_frame_position17">
+                    <structuralElementUID>TODO</structuralElementUID>
+                    <positionX>3500</positionX>
+                    <referenceY>0</referenceY>
+                    <referenceZ>0</referenceZ>
+                    <referenceAngle>320</referenceAngle>
+                  </framePosition>
+                  <framePosition uID="riffled_frame_position18">
+                    <structuralElementUID>TODO</structuralElementUID>
+                    <positionX>3250</positionX>
+                    <referenceY>0</referenceY>
+                    <referenceZ>0</referenceZ>
+                    <referenceAngle>340</referenceAngle>
+                  </framePosition>
+                  <framePosition uID="riffled_frame_position19">
+                    <structuralElementUID>TODO</structuralElementUID>
+                    <positionX>3500</positionX>
+                    <referenceY>0</referenceY>
+                    <referenceZ>0</referenceZ>
+                    <referenceAngle>360</referenceAngle>
+                  </framePosition>
+                </frame>
+                <frame uID="frame3">
+                  <framePosition uID="frame3_position1">
+                    <structuralElementUID>TODO</structuralElementUID>
+                    <positionX>3800</positionX>
+                    <referenceY>0</referenceY>
+                    <referenceZ>0</referenceZ>
+                    <referenceAngle>0</referenceAngle>
+                  </framePosition>
+                </frame>
+              </frames>
+              <stringers>
+                <stringer uID="stringer1">
+                  <stringerPosition uID="stringer1_position1">
+                    <structuralElementUID>stringerElement1</structuralElementUID>
+                    <positionX>2100</positionX>
+                    <referenceY>0</referenceY>
+                    <referenceZ>0</referenceZ>
+                    <referenceAngle>-45</referenceAngle>
+                  </stringerPosition>
+                  <stringerPosition uID="stringer1_position2">
+                    <structuralElementUID>stringerElement1</structuralElementUID>
+                    <positionX>2935.5</positionX>
+                    <referenceY>0</referenceY>
+                    <referenceZ>50</referenceZ>
+                    <referenceAngle>-45</referenceAngle>
+                  </stringerPosition>
+                </stringer>
+                <stringer uID="stringer2">
+                  <stringerPosition uID="stringer2_position1">
+                    <structuralElementUID>stringerElement1</structuralElementUID>
+                    <positionX>2515</positionX>
+                    <referenceY>0.16</referenceY>
+                    <referenceZ>-0.0509994</referenceZ>
+                    <referenceAngle>-90</referenceAngle>
+                  </stringerPosition>
+                  <stringerPosition uID="stringer2_position2">
+                    <structuralElementUID>stringerElement1</structuralElementUID>
+                    <positionX>2935.5</positionX>
+                    <referenceY>-0.578397</referenceY>
+                    <referenceZ>50</referenceZ>
+                    <referenceAngle>-90</referenceAngle>
+                  </stringerPosition>
+                </stringer>
+                <stringer uID="stringer3">
+                  <stringerPosition uID="stringer3_position1">
+                    <structuralElementUID>stringerElement1</structuralElementUID>
+                    <positionX>2515</positionX>
+                    <referenceY>0.16</referenceY>
+                    <referenceZ>-0.0509994</referenceZ>
+                    <referenceAngle>-135</referenceAngle>
+                  </stringerPosition>
+                  <stringerPosition uID="stringer3_position2">
+                    <structuralElementUID>stringerElement1</structuralElementUID>
+                    <positionX>2935.5</positionX>
+                    <referenceY>-0.578397</referenceY>
+                    <referenceZ>50</referenceZ>
+                    <referenceAngle>-135</referenceAngle>
+                  </stringerPosition>
+                </stringer>
+                <stringer uID="stringer4">
+                  <stringerPosition uID="stringer4_position1">
+                    <structuralElementUID>stringerElement1</structuralElementUID>
+                    <positionX>2515</positionX>
+                    <referenceY>0.16</referenceY>
+                    <referenceZ>-0.0509994</referenceZ>
+                    <referenceAngle>180</referenceAngle>
+                  </stringerPosition>
+                  <stringerPosition uID="stringer4_position2">
+                    <structuralElementUID>stringerElement1</structuralElementUID>
+                    <positionX>2935.5</positionX>
+                    <referenceY>-0.578397</referenceY>
+                    <referenceZ>50</referenceZ>
+                    <referenceAngle>180</referenceAngle>
+                  </stringerPosition>
+                </stringer>
+                <stringer uID="stringer5">
+                  <stringerPosition uID="stringer5_position1">
+                    <structuralElementUID>stringerElement1</structuralElementUID>
+                    <positionX>2515</positionX>
+                    <referenceY>0.16</referenceY>
+                    <referenceZ>-0.0509994</referenceZ>
+                    <referenceAngle>135</referenceAngle>
+                  </stringerPosition>
+                  <stringerPosition uID="stringer5_position2">
+                    <structuralElementUID>stringerElement1</structuralElementUID>
+                    <positionX>2935.5</positionX>
+                    <referenceY>-0.578397</referenceY>
+                    <referenceZ>40</referenceZ>
+                    <referenceAngle>135</referenceAngle>
+                  </stringerPosition>
+                </stringer>
+                <stringer uID="stringer6">
+                  <stringerPosition uID="stringer6_position1">
+                    <structuralElementUID>stringerElement1</structuralElementUID>
+                    <positionX>2515</positionX>
+                    <referenceY>0.16</referenceY>
+                    <referenceZ>-0.0509994</referenceZ>
+                    <referenceAngle>90</referenceAngle>
+                  </stringerPosition>
+                  <stringerPosition uID="stringer6_position2">
+                    <structuralElementUID>stringerElement1</structuralElementUID>
+                    <positionX>2935.5</positionX>
+                    <referenceY>-0.578397</referenceY>
+                    <referenceZ>40</referenceZ>
+                    <referenceAngle>90</referenceAngle>
+                  </stringerPosition>
+                </stringer>
+                <stringer uID="stringer7">
+                  <stringerPosition uID="stringer7_position1">
+                    <structuralElementUID>stringerElement1</structuralElementUID>
+                    <positionX>2100</positionX>
+                    <referenceY>0.16</referenceY>
+                    <referenceZ>-0.0509994</referenceZ>
+                    <referenceAngle>45</referenceAngle>
+                  </stringerPosition>
+                  <stringerPosition uID="stringer7_position2">
+                    <structuralElementUID>stringerElement1</structuralElementUID>
+                    <positionX>2935.5</positionX>
+                    <referenceY>-0.578397</referenceY>
+                    <referenceZ>40</referenceZ>
+                    <referenceAngle>45</referenceAngle>
+                  </stringerPosition>
+                </stringer>
+                <stringer uID="stringer8">
+                  <stringerPosition uID="stringer8_position1">
+                    <structuralElementUID>stringerElement1</structuralElementUID>
+                    <positionX>2515</positionX>
+                    <referenceY>0.16</referenceY>
+                    <referenceZ>-0.0509994</referenceZ>
+                    <referenceAngle>0</referenceAngle>
+                  </stringerPosition>
+                  <stringerPosition uID="stringer8_position2">
+                    <structuralElementUID>stringerElement1</structuralElementUID>
+                    <positionX>2935.5</positionX>
+                    <referenceY>-0.578397</referenceY>
+                    <referenceZ>40</referenceZ>
+                    <referenceAngle>0</referenceAngle>
+                  </stringerPosition>
+                </stringer>
+              </stringers>
+              <skinSegments>
+                <skinSegment uID="skinSegment1">
+                  <sheetElementUID>TODO</sheetElementUID>
+                  <startFrameUID>half_frame</startFrameUID>
+                  <endFrameUID>frame1</endFrameUID>
+                  <startStringerUID>stringer1</startStringerUID>
+                  <endStringerUID>stringer7</endStringerUID>
+                </skinSegment>
+              </skinSegments>
+              <cargoDoors>
+                <cargoDoor uID="cargoDoor1">
+                  <doorElementUID>TODO</doorElementUID>
+                  <endFrameUID>frame2</endFrameUID>
+                  <endStringerUID>stringer3</endStringerUID>
+                  <startFrameUID>frame1</startFrameUID>
+                  <startStringerUID>stringer2</startStringerUID>
+                </cargoDoor>
+                <cargoDoor uID="cargoDoor2">
+                  <doorElementUID>TODO</doorElementUID>
+                  <endFrameUID>frame2</endFrameUID>
+                  <endStringerUID>stringer5</endStringerUID>
+                  <startFrameUID>frame1</startFrameUID>
+                  <startStringerUID>stringer6</startStringerUID>
+                </cargoDoor>
+              </cargoDoors>
+              <cargoCrossBeams>
+                <cargoCrossBeam uID="cargoCrossBeam1">
+                  <frameUID>half_frame</frameUID>
+                  <positionZ>-100</positionZ>
+                  <structuralElementUID>TODO</structuralElementUID>
+                </cargoCrossBeam>
+                <cargoCrossBeam uID="cargoCrossBeam2">
+                  <frameUID>frame1</frameUID>
+                  <positionZ>-100</positionZ>
+                  <structuralElementUID>TODO</structuralElementUID>
+                </cargoCrossBeam>
+                <cargoCrossBeam uID="cargoCrossBeam3">
+                  <frameUID>frame2</frameUID>
+                  <positionZ>-100</positionZ>
+                  <structuralElementUID>TODO</structuralElementUID>
+                </cargoCrossBeam>
+              </cargoCrossBeams>
+              <cargoCrossBeamStruts>
+                <cargoCrossBeamStrut uID="cargoCrossBeamStrut1">
+                  <frameUID>half_frame</frameUID>
+                  <crossBeamUID>cargoCrossBeam1</crossBeamUID>
+                  <positionYAtCrossBeam>-500</positionYAtCrossBeam>
+                  <structuralElementUID>TODO</structuralElementUID>
+                  <angleX>30</angleX>
+                </cargoCrossBeamStrut>
+                <cargoCrossBeamStrut uID="cargoCrossBeamStrut2">
+                  <frameUID>frame1</frameUID>
+                  <crossBeamUID>cargoCrossBeam1</crossBeamUID>
+                  <positionYAtCrossBeam>-400</positionYAtCrossBeam>
+                  <structuralElementUID>TODO</structuralElementUID>
+                  <angleX>60</angleX>
+                </cargoCrossBeamStrut>
+                <cargoCrossBeamStrut uID="cargoCrossBeamStrut3">
+                  <frameUID>frame1</frameUID>
+                  <crossBeamUID>cargoCrossBeam1</crossBeamUID>
+                  <positionYAtCrossBeam>400</positionYAtCrossBeam>
+                  <structuralElementUID>TODO</structuralElementUID>
+                  <angleX>120</angleX>
+                </cargoCrossBeamStrut>
+                <cargoCrossBeamStrut uID="cargoCrossBeamStrut4">
+                  <frameUID>half_frame</frameUID>
+                  <crossBeamUID>cargoCrossBeam1</crossBeamUID>
+                  <positionYAtCrossBeam>500</positionYAtCrossBeam>
+                  <structuralElementUID>TODO</structuralElementUID>
+                  <angleX>150</angleX>
+                </cargoCrossBeamStrut>
+                <cargoCrossBeamStrut uID="cargoCrossBeamStrut5">
+                  <frameUID>frame1</frameUID>
+                  <crossBeamUID>cargoCrossBeam2</crossBeamUID>
+                  <positionYAtCrossBeam>-200</positionYAtCrossBeam>
+                  <structuralElementUID>TODO</structuralElementUID>
+                  <angleX>80</angleX>
+                </cargoCrossBeamStrut>
+                <cargoCrossBeamStrut uID="cargoCrossBeamStrut6">
+                  <frameUID>frame1</frameUID>
+                  <crossBeamUID>cargoCrossBeam2</crossBeamUID>
+                  <positionYAtCrossBeam>200</positionYAtCrossBeam>
+                  <structuralElementUID>TODO</structuralElementUID>
+                  <angleX>100</angleX>
+                </cargoCrossBeamStrut>
+                <cargoCrossBeamStrut uID="cargoCrossBeamStrut7">
+                  <frameUID>frame2</frameUID>
+                  <crossBeamUID>cargoCrossBeam3</crossBeamUID>
+                  <positionYAtCrossBeam>-200</positionYAtCrossBeam>
+                  <structuralElementUID>TODO</structuralElementUID>
+                  <angleX>60</angleX>
+                </cargoCrossBeamStrut>
+                <cargoCrossBeamStrut uID="cargoCrossBeamStrut8">
+                  <frameUID>frame2</frameUID>
+                  <crossBeamUID>cargoCrossBeam3</crossBeamUID>
+                  <positionYAtCrossBeam>200</positionYAtCrossBeam>
+                  <structuralElementUID>TODO</structuralElementUID>
+                  <angleX>120</angleX>
+                </cargoCrossBeamStrut>
+              </cargoCrossBeamStruts>
+              <longFloorBeams>
+                <longFloorBeam uID="longFloorBeam1">
+                  <longFloorBeamPosition uID="longFloorBeam1_position1">
+                    <crossBeamUID>cargoCrossBeam1</crossBeamUID>
+                    <positionY>-300</positionY>
+                    <structuralElementUID>TODO</structuralElementUID>
+                  </longFloorBeamPosition>
+                  <longFloorBeamPosition uID="longFloorBeam1_position2">
+                    <crossBeamUID>cargoCrossBeam2</crossBeamUID>
+                    <positionY>-200</positionY>
+                    <structuralElementUID>TODO</structuralElementUID>
+                  </longFloorBeamPosition>
+                  <longFloorBeamPosition uID="longFloorBeam1_position3">
+                    <crossBeamUID>cargoCrossBeam3</crossBeamUID>
+                    <positionY>-200</positionY>
+                    <structuralElementUID>TODO</structuralElementUID>
+                  </longFloorBeamPosition>
+                </longFloorBeam>
+                <longFloorBeam uID="longFloorBeam2">
+                  <longFloorBeamPosition uID="longFloorBeam2_position1">
+                    <crossBeamUID>cargoCrossBeam1</crossBeamUID>
+                    <positionY>300</positionY>
+                    <structuralElementUID>TODO</structuralElementUID>
+                  </longFloorBeamPosition>
+                  <longFloorBeamPosition uID="longFloorBeam2_position2">
+                    <crossBeamUID>cargoCrossBeam2</crossBeamUID>
+                    <positionY>200</positionY>
+                    <structuralElementUID>TODO</structuralElementUID>
+                  </longFloorBeamPosition>
+                  <longFloorBeamPosition uID="longFloorBeam2_position3">
+                    <crossBeamUID>cargoCrossBeam3</crossBeamUID>
+                    <positionY>200</positionY>
+                    <structuralElementUID>TODO</structuralElementUID>
+                  </longFloorBeamPosition>
+                </longFloorBeam>
+              </longFloorBeams>
+              <pressureBulkheads>
+                <pressureBulkhead uID="holed_bulkhead">
+                  <frameUID>holed_frame</frameUID>
+                  <pressureBulkheadElementUID>pressureBulkheadElement1</pressureBulkheadElementUID>
+                </pressureBulkhead>
+                <pressureBulkhead uID="half_bulkhead">
+                  <frameUID>half_frame</frameUID>
+                  <pressureBulkheadElementUID>pressureBulkheadElement1</pressureBulkheadElementUID>
+                </pressureBulkhead>
+                <pressureBulkhead uID="riffled_bulkhead">
+                  <frameUID>riffled_frame</frameUID>
+                  <pressureBulkheadElementUID>pressureBulkheadElement1</pressureBulkheadElementUID>
+                </pressureBulkhead>
+                <pressureBulkhead uID="simple_bulkhead">
+                  <frameUID>frame3</frameUID>
+                  <pressureBulkheadElementUID>pressureBulkheadElement1</pressureBulkheadElementUID>
+                </pressureBulkhead>
+              </pressureBulkheads>
+            </structure>
+          </fuselage>
+        </fuselages>
+      </model>
+    </aircraft>
+    <profiles>
+      <fuselageProfiles>
+        <fuselageProfile uID="fuselageProfile1">
+          <name>fuselageProfile1</name>
+          <pointList>
+            <x mapType="vector">0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0</x>
+            <y mapType="vector">0;0.0604682;0.120933;0.181382;0.241288;0.29909;0.352944;0.400748;0.440579;0.470913;0.490857;0.499591;0.498986;0.497784;0.497239;0.496717;0.496117;0.495319;0.49455;0.493647;0.495764;0.496594;0.486575;0.465874;0.435351;0.39616;0.349349;0.297568;0.241161;0.181399;0.120931;0.0604647;0;-0.0604647;-0.120931;-0.181399;-0.241161;-0.297568;-0.349349;-0.39616;-0.435351;-0.465874;-0.486575;-0.496594;-0.495764;-0.493647;-0.49455;-0.495319;-0.496117;-0.496717;-0.497239;-0.497784;-0.498986;-0.499591;-0.490857;-0.470913;-0.440579;-0.400748;-0.352944;-0.29909;-0.241288;-0.181382;-0.120933;-0.0604682;0</y>
+            <z mapType="vector">-0.499295;-0.498972;-0.498387;-0.497391;-0.490817;-0.476542;-0.454222;-0.424101;-0.387042;-0.344405;-0.297854;-0.24906;-0.199686;-0.150306;-0.100918;-0.0515298;-0.0021422;0.0472435;0.0966295;0.146013;0.195367;0.244697;0.293333;0.339666;0.382228;0.419751;0.450921;0.476369;0.493933;0.500642;0.500397;0.49992;0.499295;0.49992;0.500397;0.500642;0.493933;0.476369;0.450921;0.419751;0.382228;0.339666;0.293333;0.244697;0.195367;0.146013;0.0966295;0.0472435;-0.0021422;-0.0515298;-0.100918;-0.150306;-0.199686;-0.24906;-0.297854;-0.344405;-0.387042;-0.424101;-0.454222;-0.476542;-0.490817;-0.497391;-0.498387;-0.498972;-0.499295</z>
+          </pointList>
+        </fuselageProfile>
+        <fuselageProfile uID="fuselageProfile2">
+          <name>fuselageProfile2</name>
+          <pointList>
+            <x mapType="vector">0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0</x>
+            <y mapType="vector">0;0.0600974;0.120195;0.180287;0.23985;0.2972;0.350468;0.39779;0.437475;0.468159;0.488885;0.498987;0.499616;0.49909;0.498835;0.498619;0.498347;0.497976;0.497565;0.497057;0.497624;0.49716;0.486706;0.465816;0.435195;0.395879;0.349028;0.296566;0.239787;0.180287;0.120192;0.0600958;0;-0.0600958;-0.120192;-0.180287;-0.239787;-0.296566;-0.349028;-0.395879;-0.435195;-0.465816;-0.486706;-0.49716;-0.497624;-0.497057;-0.497565;-0.497976;-0.498347;-0.498619;-0.498835;-0.49909;-0.499616;-0.498987;-0.488885;-0.468159;-0.437475;-0.39779;-0.350468;-0.2972;-0.23985;-0.180287;-0.120195;-0.0600974;0</y>
+            <z mapType="vector">-0.499504;-0.499446;-0.499359;-0.499062;-0.492808;-0.478188;-0.455327;-0.424817;-0.3876;-0.34496;-0.298395;-0.24949;-0.199828;-0.150143;-0.100457;-0.0507714;-0.00108576;0.0485995;0.0982845;0.147969;0.197652;0.247303;0.296163;0.342679;0.385355;0.422844;0.453858;0.477994;0.494029;0.500397;0.500212;0.499867;0.499504;0.499867;0.500212;0.500397;0.494029;0.477994;0.453858;0.422844;0.385355;0.342679;0.296163;0.247303;0.197652;0.147969;0.0982845;0.0485995;-0.00108576;-0.0507714;-0.100457;-0.150143;-0.199828;-0.24949;-0.298395;-0.34496;-0.3876;-0.424817;-0.455327;-0.478188;-0.492808;-0.499062;-0.499359;-0.499446;-0.499504</z>
+          </pointList>
+        </fuselageProfile>
+        <fuselageProfile uID="fuselageProfile3">
+          <name>fuselageProfile3</name>
+          <pointList>
+            <x mapType="vector">0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0</x>
+            <y mapType="vector">0;0.0589445;0.117889;0.176832;0.235178;0.291093;0.342868;0.389003;0.428241;0.459404;0.48152;0.493775;0.496618;0.497326;0.497696;0.497952;0.498284;0.498715;0.499274;0.499877;0.499562;0.496566;0.48462;0.462614;0.431236;0.391452;0.344625;0.291938;0.235268;0.176838;0.117883;0.0589417;0;-0.0589417;-0.117883;-0.176838;-0.235268;-0.291938;-0.344625;-0.391452;-0.431236;-0.462614;-0.48462;-0.496566;-0.499562;-0.499877;-0.499274;-0.498715;-0.498284;-0.497952;-0.497696;-0.497326;-0.496618;-0.493775;-0.48152;-0.459404;-0.428241;-0.389003;-0.342868;-0.291093;-0.235178;-0.176832;-0.117889;-0.0589445;0</y>
+            <z mapType="vector">-0.499918;-0.499968;-0.500017;-0.499837;-0.4934;-0.477794;-0.454032;-0.423004;-0.385771;-0.343397;-0.297113;-0.248264;-0.198348;-0.148346;-0.0983414;-0.0483361;0.00166916;0.0516734;0.101677;0.15168;0.201683;0.251606;0.300506;0.346824;0.389077;0.425884;0.456147;0.478353;0.491933;0.498161;0.49893;0.499424;0.499918;0.499424;0.49893;0.498161;0.491933;0.478353;0.456147;0.425884;0.389077;0.346824;0.300506;0.251606;0.201683;0.15168;0.101677;0.0516734;0.00166916;-0.0483361;-0.0983414;-0.148346;-0.198348;-0.248264;-0.297113;-0.343397;-0.385771;-0.423004;-0.454032;-0.477794;-0.4934;-0.499837;-0.500017;-0.499968;-0.499918</z>
+          </pointList>
+        </fuselageProfile>
+        <fuselageProfile uID="fuselageProfile4">
+          <name>fuselageProfile4</name>
+          <pointList>
+            <x mapType="vector">0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0</x>
+            <y mapType="vector">0;0.0575395;0.115079;0.172618;0.229603;0.284093;0.334563;0.379673;0.418558;0.450126;0.473511;0.487628;0.492565;0.494274;0.495245;0.495756;0.496404;0.497195;0.498267;0.499432;0.499422;0.494546;0.481245;0.45811;0.425876;0.385512;0.338507;0.286073;0.229774;0.172568;0.115053;0.0575267;0;-0.0575267;-0.115053;-0.172568;-0.229774;-0.286073;-0.338507;-0.385512;-0.425876;-0.45811;-0.481245;-0.494546;-0.499422;-0.499432;-0.498267;-0.497195;-0.496404;-0.495756;-0.495245;-0.494274;-0.492565;-0.487628;-0.473511;-0.450126;-0.418558;-0.379673;-0.334563;-0.284093;-0.229603;-0.172618;-0.115079;-0.0575395;0</y>
+            <z mapType="vector">-0.49981;-0.499925;-0.500038;-0.499898;-0.49393;-0.477848;-0.453686;-0.422357;-0.385131;-0.342884;-0.296711;-0.247713;-0.197341;-0.146757;-0.0961581;-0.0455529;0.00505056;0.0556525;0.10625;0.156847;0.207442;0.257846;0.307012;0.353272;0.395108;0.431075;0.460149;0.480704;0.491015;0.49627;0.497665;0.498738;0.49981;0.498738;0.497665;0.49627;0.491015;0.480704;0.460149;0.431075;0.395108;0.353272;0.307012;0.257846;0.207442;0.156847;0.10625;0.0556525;0.00505056;-0.0455529;-0.0961581;-0.146757;-0.197341;-0.247713;-0.296711;-0.342884;-0.385131;-0.422357;-0.453686;-0.477848;-0.49393;-0.499898;-0.500038;-0.499925;-0.49981</z>
+          </pointList>
+        </fuselageProfile>
+        <fuselageProfile uID="fuselageProfile5">
+          <name>fuselageProfile5</name>
+          <pointList>
+            <x mapType="vector">0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0</x>
+            <y mapType="vector">0;0.0563921;0.112784;0.169176;0.225177;0.278831;0.328764;0.373578;0.412586;0.44471;0.469194;0.484825;0.491429;0.493626;0.494966;0.495564;0.496191;0.496945;0.497954;0.499107;0.499749;0.494222;0.479915;0.455742;0.422503;0.381293;0.333674;0.281205;0.225376;0.169125;0.112774;0.0563775;0;-0.0563775;-0.112774;-0.169125;-0.225376;-0.281205;-0.333674;-0.381293;-0.422503;-0.455742;-0.479915;-0.494222;-0.499749;-0.499107;-0.497954;-0.496945;-0.496191;-0.495564;-0.494966;-0.493626;-0.491429;-0.484825;-0.469194;-0.44471;-0.412586;-0.373578;-0.328764;-0.278831;-0.225177;-0.169176;-0.112784;-0.0563921;0</y>
+            <z mapType="vector">-0.499774;-0.499911;-0.500046;-0.499946;-0.495065;-0.479354;-0.455526;-0.424298;-0.387113;-0.344774;-0.298361;-0.248854;-0.197678;-0.146125;-0.0945475;-0.0429583;0.0086311;0.0602189;0.111803;0.163385;0.214965;0.266269;0.316097;0.362625;0.404209;0.439311;0.466817;0.485431;0.49242;0.495985;0.49741;0.498592;0.499774;0.498592;0.49741;0.495985;0.49242;0.485431;0.466817;0.439311;0.404209;0.362625;0.316097;0.266269;0.214965;0.163385;0.111803;0.0602189;0.0086311;-0.0429583;-0.0945475;-0.146125;-0.197678;-0.248854;-0.298361;-0.344774;-0.387113;-0.424298;-0.455526;-0.479354;-0.495065;-0.499946;-0.500046;-0.499911;-0.499774</z>
+          </pointList>
+        </fuselageProfile>
+        <fuselageProfile uID="fuselageProfile6">
+          <name>fuselageProfile6</name>
+          <pointList>
+            <x mapType="vector">0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0</x>
+            <y mapType="vector">0;0.0555436;0.111087;0.166631;0.221963;0.275387;0.325533;0.370855;0.410525;0.443441;0.46881;0.485568;0.493305;0.495257;0.49649;0.49705;0.497434;0.497915;0.498506;0.49924;0.499995;0.495194;0.480387;0.455387;0.421104;0.378846;0.330323;0.27746;0.222125;0.166609;0.111074;0.0555369;0;-0.0555369;-0.111074;-0.166609;-0.222125;-0.27746;-0.330323;-0.378846;-0.421104;-0.455387;-0.480387;-0.495194;-0.499995;-0.49924;-0.498506;-0.497915;-0.497434;-0.49705;-0.49649;-0.495257;-0.493305;-0.485568;-0.46881;-0.443441;-0.410525;-0.370855;-0.325533;-0.275387;-0.221963;-0.166631;-0.111087;-0.0555436;0</y>
+            <z mapType="vector">-0.499821;-0.499932;-0.500041;-0.499986;-0.496488;-0.482267;-0.459632;-0.429135;-0.392167;-0.349602;-0.302579;-0.252183;-0.199828;-0.14693;-0.0940124;-0.0410841;0.0118459;0.0647752;0.117704;0.17063;0.223557;0.276222;0.327152;0.374322;0.415856;0.450069;0.475656;0.491569;0.495568;0.497228;0.498158;0.49899;0.499821;0.49899;0.498158;0.497228;0.495568;0.491569;0.475656;0.450069;0.415856;0.374322;0.327152;0.276222;0.223557;0.17063;0.117704;0.0647752;0.0118459;-0.0410841;-0.0940124;-0.14693;-0.199828;-0.252183;-0.302579;-0.349602;-0.392167;-0.429135;-0.459632;-0.482267;-0.496488;-0.499986;-0.500041;-0.499932;-0.499821</z>
+          </pointList>
+        </fuselageProfile>
+      </fuselageProfiles>
+    </profiles>
+    <materials>
+      <material uID="aluminium7075">
+        <name>aluminium7075</name>
+        <rho>2.8e-09</rho>
+        <tau12>331</tau12>
+        <sig11t>572</sig11t>
+        <sig11c>572</sig11c>
+        <E1>72000</E1>
+        <nue>0.33</nue>
+      </material>
+    </materials>
+    <structuralElements>
+      <pressureBulkheads>
+        <pressureBulkhead uID="pressureBulkheadElement1">
+          <sheetElementUID>TODO</sheetElementUID>
+          <reinforcementNumberHorizontal>4</reinforcementNumberHorizontal>
+          <structuralElementHorizontalUID>TODO</structuralElementHorizontalUID>
+          <reinforcementNumberVertical>4</reinforcementNumberVertical>
+          <structuralElementVerticalUID>TODO</structuralElementVerticalUID>
+        </pressureBulkhead>
+      </pressureBulkheads>
+      <profileBasedStructuralElements>
+        <profileBasedStructuralElement uID="stringerElement1">
+          <standardProfileType>T</standardProfileType>
+          <globalBeamProperties uID="stringerElement1_properties">
+            <beamCrossSection>
+              <area>321</area>
+              <yMin>0</yMin>
+              <yMax>40</yMax>
+              <xMax>0</xMax>
+              <xMin>0</xMin>
+            </beamCrossSection>
+            <beamStiffness>
+              <EIxx>5.28542e+09</EIxx>
+              <EIyy>3.78735e+09</EIyy>
+              <EA>2.247e+07</EA>
+              <EIxy>0</EIxy>
+              <G>0</G>
+              <GIt>0</GIt>
+              <It>0</It>
+            </beamStiffness>
+            <beamCOG>
+              <x>0</x>
+              <y>0</y>
+            </beamCOG>
+            <beamShearCenter>
+              <x>0</x>
+              <y>0</y>
+            </beamShearCenter>
+            <consistancy>false</consistancy>
+            <source>TODO</source>
+            <materialUID>aluminium7075</materialUID>
+          </globalBeamProperties>
+        </profileBasedStructuralElement>
+      </profileBasedStructuralElements>
+    </structuralElements>
+  </vehicles>
+  <toolspecific>
+    <descartes xmlns="http://www.airbusds.com/cpacs/descartes_toolspecific">
+      <tool>
+        <name>descartes</name>
+        <version>0.1</version>
+      </tool>
+      <femModel>
+        <meshGemsSurfaceMesher>
+          <param name="anisotropic_ratio" value="0.000000"/>
+          <param name="bad_surface_element_aspect_ratio" value="1000.000000"/>
+          <param name="chordal_error" value="2579.170000"/>
+          <param name="closed_geometry" value="no"/>
+          <param name="correct_surface_intersections" value="yes"/>
+          <param name="create_tag_on_collision" value="yes"/>
+          <param name="debug" value="no"/>
+          <param name="discard_input_topology" value="no"/>
+          <param name="element_generation" value="quad_dominant"/>
+          <param name="element_order" value="linear"/>
+          <param name="enforce_cad_edge_sizes" value="no"/>
+          <param name="force_bad_surface_element_removal" value="no"/>
+          <param name="geometric_approximation_angle" value="8.000000"/>
+          <param name="geometric_size_mode" value="none"/>
+          <param name="global_physical_size" value="100.000000"/>
+          <param name="gradation" value="1000000000000000019884624838656.000000"/>
+          <param name="jacobian_rectification_respect_geometry" value="yes"/>
+          <param name="manifold_geometry" value="no"/>
+          <param name="max_number_of_points_per_patch" value="100000"/>
+          <param name="max_size" value="515.834000"/>
+          <param name="merge_edges" value="yes"/>
+          <param name="metric" value="isotropic"/>
+          <param name="min_size" value="0.000000"/>
+          <param name="optimisation" value="yes"/>
+          <param name="optimise_tiny_edges" value="yes"/>
+          <param name="periodic_tolerance" value="0.025792"/>
+          <param name="physical_size_mode" value="none"/>
+          <param name="process_3d_topology" value="yes"/>
+          <param name="rectify_jacobian" value="yes"/>
+          <param name="remove_duplicate_cad_faces" value="yes"/>
+          <param name="remove_tiny_edges" value="no"/>
+          <param name="required_entities" value="respect"/>
+          <param name="respect_geometry" value="yes"/>
+          <param name="scaled_jacobian_threshold_value" value="0.001000"/>
+          <param name="sewing_tolerance" value="1.289590"/>
+          <param name="surface_intersections_processing_max_cost" value="15.000000"/>
+          <param name="tags" value="respect"/>
+          <param name="tiny_edge_avoid_surface_intersections" value="yes"/>
+          <param name="tiny_edge_length" value="0.002579"/>
+          <param name="tiny_edge_optimisation_length" value="0.02579"/>
+          <param name="use_absolute_jacobian" value="no"/>
+          <param name="verbose" value="3"/>
+          <param name="volume_gradation" value="1000000000000000019884624838656.000000"/>
+        </meshGemsSurfaceMesher>
+        <halfModel>false</halfModel>
+      </femModel>
+    </descartes>
+  </toolspecific>
+</cpacs>

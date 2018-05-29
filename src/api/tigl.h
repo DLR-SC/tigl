@@ -191,19 +191,20 @@ enum TiglAlgorithmCode
 */
 typedef unsigned int TiglGeometricComponentType;
 
-#define  TIGL_COMPONENT_PHYSICAL        1        /**< A phyisical component like a fuselage, wing, nacelle, something you could touch */
-#define  TIGL_COMPONENT_LOGICAL         2        /**< A logical component, like a wing segment */
-#define  TIGL_COMPONENT_PLANE           4        /**< The whole aircraft */
-#define  TIGL_COMPONENT_FUSELAGE        8        /**< The Component is a fuselage */
-#define  TIGL_COMPONENT_WING            16       /**< The Component is a wing */
-#define  TIGL_COMPONENT_SEGMENT         32       /**< The Component is a general segment */
-#define  TIGL_COMPONENT_WINGSEGMENT     64       /**< The Component is a wing segment */
-#define  TIGL_COMPONENT_FUSELSEGMENT    128      /**< The Component is a fuselage segment */
-#define  TIGL_COMPONENT_WINGCOMPSEGMENT 256      /**< The Component is a wing component segment */
-#define  TIGL_COMPONENT_WINGSHELL       512      /**< The Component is a face of the wing (e.g. upper wing surface) */
-#define  TIGL_COMPONENT_GENERICSYSTEM   1024     /**< The Component is a generic system */
-#define  TIGL_COMPONENT_ROTOR           2048     /**< The Component is a rotor */
-#define  TIGL_COMPONENT_ROTORBLADE      4096     /**< The Component is a rotor blade */
+#define  TIGL_COMPONENT_PHYSICAL          1        /**< A phyisical component like a fuselage, wing, nacelle, something you could touch */
+#define  TIGL_COMPONENT_LOGICAL           2        /**< A logical component, like a wing segment */
+#define  TIGL_COMPONENT_PLANE             4        /**< The whole aircraft */
+#define  TIGL_COMPONENT_FUSELAGE          8        /**< The Component is a fuselage */
+#define  TIGL_COMPONENT_WING              16       /**< The Component is a wing */
+#define  TIGL_COMPONENT_SEGMENT           32       /**< The Component is a general segment */
+#define  TIGL_COMPONENT_WINGSEGMENT       64       /**< The Component is a wing segment */
+#define  TIGL_COMPONENT_FUSELSEGMENT      128      /**< The Component is a fuselage segment */
+#define  TIGL_COMPONENT_WINGCOMPSEGMENT   256      /**< The Component is a wing component segment */
+#define  TIGL_COMPONENT_WINGSHELL         512      /**< The Component is a face of the wing (e.g. upper wing surface) */
+#define  TIGL_COMPONENT_GENERICSYSTEM     1024     /**< The Component is a generic system */
+#define  TIGL_COMPONENT_ROTOR             2048     /**< The Component is a rotor */
+#define  TIGL_COMPONENT_ROTORBLADE        4096     /**< The Component is a rotor blade */
+#define  TIGL_COMPONENT_PRESSURE_BULKHEAD 8192     /**< The Component is a pressure bulkhead */
 
 enum TiglStructureType 
 {
