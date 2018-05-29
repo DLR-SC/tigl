@@ -187,7 +187,7 @@ include_directories( ${OpenCASCADE_INCLUDE_DIR} ${TIXI_INCLUDE_DIRS})
 include_directories(${OPENGL_INCLUDE_DIR})
 
 # boost
-include_directories(${PROJECT_SOURCE_DIR}/thirdparty/boost_1_63_0)
+include_directories(${PROJECT_SOURCE_DIR}/thirdparty/boost_1_67_0)
 
 include_directories( ${PROJECT_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/src ${PROJECT_BINARY_DIR}/src)
 
