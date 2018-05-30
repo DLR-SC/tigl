@@ -1,7 +1,6 @@
 mkdir build
 cd build
 
-export MACOSX_DEPLOYMENT_TARGET=10.8
 
 # Configure step
 cmake -G "Ninja" -DCMAKE_INSTALL_PREFIX=$PREFIX \
