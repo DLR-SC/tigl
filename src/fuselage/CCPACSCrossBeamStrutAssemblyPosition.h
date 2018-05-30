@@ -20,18 +20,24 @@
 #include <TopoDS_Shape.hxx>
 
 #include "generated/CPACSCrossBeamStrutAssemblyPosition.h"
+#include "ITiglGeometricComponent.h"
 
 namespace tigl
 {
-class CCPACSCrossBeamStrutAssemblyPosition : public generated::CPACSCrossBeamStrutAssemblyPosition
+class CCPACSCrossBeamStrutAssemblyPosition : public generated::CPACSCrossBeamStrutAssemblyPosition, public ITiglGeometricComponent
 {
 public:
     TIGL_EXPORT CCPACSCrossBeamStrutAssemblyPosition(CCPACSCargoCrossBeamStrutsAssembly* parent,
                                                      CTiglUIDManager* uidMgr);
 
+    TIGL_EXPORT std::string GetDefaultedUID() const OVERRIDE;
+    TIGL_EXPORT PNamedShape GetLoft() OVERRIDE;
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE;
+
     TIGL_EXPORT void Invalidate();
 
     TIGL_EXPORT TopoDS_Shape GetGeometry(bool just1DElements, TiglCoordinateSystem cs = GLOBAL_COORDINATE_SYSTEM);
+
 private:
     void BuildGeometry(bool just1DElements);
 

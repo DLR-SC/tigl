@@ -24,6 +24,7 @@
 #include "CCPACSFuselageStringerFramePosition.h"
 #include "CTiglUIDManager.h"
 #include "tiglcommonfunctions.h"
+#include "CNamedShape.h"
 
 #include <gp_Ax3.hxx>
 #include <gp_Pln.hxx>
@@ -45,6 +46,21 @@ CCPACSCrossBeamStrutAssemblyPosition::CCPACSCrossBeamStrutAssemblyPosition(CCPAC
                                                                            CTiglUIDManager* uidMgr)
     : generated::CPACSCrossBeamStrutAssemblyPosition(parent, uidMgr)
 {
+}
+
+std::string CCPACSCrossBeamStrutAssemblyPosition::GetDefaultedUID() const
+{
+    return GetUID();
+}
+
+PNamedShape CCPACSCrossBeamStrutAssemblyPosition::GetLoft()
+{
+    return PNamedShape(new CNamedShape(GetGeometry(true), GetDefaultedUID()));
+}
+
+TiglGeometricComponentType CCPACSCrossBeamStrutAssemblyPosition::GetComponentType() const
+{
+    return TIGL_COMPONENT_CROSS_BEAM_STRUT | TIGL_COMPONENT_PHYSICAL;
 }
 
 void CCPACSCrossBeamStrutAssemblyPosition::Invalidate()
