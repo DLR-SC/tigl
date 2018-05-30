@@ -18,13 +18,18 @@
 
 #include "generated/CPACSDoorAssemblyPosition.h"
 #include "CTiglStringerFrameBorderedObject.h"
+#include "ITiglGeometricComponent.h"
 
 namespace tigl
 {
-class CCPACSDoorAssemblyPosition : public generated::CPACSDoorAssemblyPosition, public CTiglStringerFrameBorderedObject
+class CCPACSDoorAssemblyPosition : public generated::CPACSDoorAssemblyPosition, public CTiglStringerFrameBorderedObject, public ITiglGeometricComponent
 {
 public:
     CCPACSDoorAssemblyPosition(CCPACSCargoDoorsAssembly* parent, CTiglUIDManager* uidMgr);
+
+    TIGL_EXPORT std::string GetDefaultedUID() const OVERRIDE;
+    TIGL_EXPORT PNamedShape GetLoft() OVERRIDE;
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE;
 };
 
 } // namespace tigl

@@ -17,6 +17,7 @@
 #include "CCPACSDoorAssemblyPosition.h"
 
 #include "CCPACSFuselageStructure.h"
+#include "CNamedShape.h"
 
 namespace tigl
 {
@@ -25,4 +26,20 @@ CCPACSDoorAssemblyPosition::CCPACSDoorAssemblyPosition(CCPACSCargoDoorsAssembly*
     , CTiglStringerFrameBorderedObject(*uidMgr, *parent->GetParent()->GetParent(), generated::CPACSDoorAssemblyPosition::m_startFrameUID, generated::CPACSDoorAssemblyPosition::m_endFrameUID, generated::CPACSDoorAssemblyPosition::m_startStringerUID, generated::CPACSDoorAssemblyPosition::m_endStringerUID)
 {
 }
+
+std::string CCPACSDoorAssemblyPosition::GetDefaultedUID() const
+{
+    return GetUID();
+}
+
+PNamedShape CCPACSDoorAssemblyPosition::GetLoft()
+{
+    return PNamedShape(new CNamedShape(GetGeometry(), GetUID()));
+}
+
+TiglGeometricComponentType CCPACSDoorAssemblyPosition::GetComponentType() const
+{
+    return TIGL_COMPONENT_CARGO_DOOR | TIGL_COMPONENT_PHYSICAL;
+}
+
 } // namespace tigl
