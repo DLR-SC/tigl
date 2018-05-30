@@ -15,10 +15,11 @@ source:
     - fix-fonts.patch
     - glibc.patch                     # [linux]
     - fix-geomapi_extremacurvecurve.patch
+    - fix_time_osx.patch              # [osx]
 
 build:
   detect_binary_files_with_prefix: True
-  number: 7
+  number: 8
   features:
     - vc9              # [win and py27]
     - vc10             # [win and py34]
