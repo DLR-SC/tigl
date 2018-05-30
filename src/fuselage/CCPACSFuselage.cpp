@@ -411,8 +411,7 @@ gp_Lin CCPACSFuselage::Intersection(gp_Pnt pRef, double angleRef)
     TopExp_Explorer exp;
     for (exp.Init(loft, TopAbs_FACE); exp.More(); exp.Next()) {
         IntCurvesFace_Intersector intersection(TopoDS::Face(exp.Current()), 0.1); // intersection builder
-        intersection.Perform(line, -std::numeric_limits<Standard_Real>::max(), // replace by std::numeric_limits<Standard_Real>::lowest() when C++11 available
-                             std::numeric_limits<Standard_Real>::max());
+        intersection.Perform(line, 0, std::numeric_limits<Standard_Real>::max());
         if (intersection.IsDone() && intersection.NbPnt() > 0) {
             gp_Lin result(intersection.Pnt(1), line.Direction());
             // return the line with the point on the fuselage as the origin, and the previous line's direction

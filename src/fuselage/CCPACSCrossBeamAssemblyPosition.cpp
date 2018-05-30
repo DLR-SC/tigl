@@ -37,6 +37,7 @@
 #include "CCPACSLongFloorBeamPosition.h"
 #include "CTiglUIDManager.h"
 #include "tiglcommonfunctions.h"
+//#include "Debugging.h"
 
 namespace tigl
 {
@@ -104,21 +105,33 @@ TopoDS_Shape CCPACSCrossBeamAssemblyPosition::GetCutGeometry(TiglCoordinateSyste
 void CCPACSCrossBeamAssemblyPosition::BuildGeometry(bool just1DElements)
 {
     if (just1DElements) {
+        //DEBUG_SCOPE(debug);
+
         // the crossBeam is an edge resulting from the intersection between the face of a frame and a plane
         CCPACSFrame& frame = m_uidMgr->ResolveObject<CCPACSFrame>(m_frameUID);
 
         const TopoDS_Shape frameGeometry = frame.GetGeometry(true, FUSELAGE_COORDINATE_SYSTEM);
+        //debug.addShape(frameGeometry, "frameGeometry");
         const TopoDS_Shape frameFace = BRepBuilderAPI_MakeFace(CloseWire(TopoDS::Wire(frameGeometry)));
 
         // for some rediculous reason, BRepBuilderAPI_MakeFace alters the tolerance of the underlying wire's edges and vertices,
         // causing subsequent boolean operations to fail (self intersections)
         ShapeFix_ShapeTolerance().SetTolerance(frameFace, Precision::Confusion());
+        //debug.addShape(frameFace, "frameFace");
 
         const TopoDS_Shape cutGeom = GetCutGeometry(FUSELAGE_COORDINATE_SYSTEM);
+        //debug.addShape(cutGeom, "cutGeom");
         const TopoDS_Shape cutResult = CutShapes(cutGeom, frameFace);
+        //debug.addShape(cutResult, "cutResult");
+
+        TopTools_IndexedMapOfShape typeMap;
+        TopExp::MapShapes(cutResult, TopAbs_EDGE, typeMap);
+        if (typeMap.IsEmpty())
+            throw CTiglError("The cut between the frame geometry and the cross beam plane yielded no edges. Do they really intersect?", TIGL_XML_ERROR);
 
         // make sure the geometry is a single wire
         const TopoDS_Wire wire = BuildWireFromEdges(cutResult);
+        //debug.addShape(wire, "wire");
 
         m_geometry[just1DElements] = wire;
     }
