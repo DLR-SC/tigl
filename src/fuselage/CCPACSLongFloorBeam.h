@@ -20,14 +20,18 @@
 #include <TopoDS_Shape.hxx>
 
 #include "generated/CPACSLongFloorBeam.h"
-#include "tigl.h"
+#include "ITiglGeometricComponent.h"
 
 namespace tigl
 {
-class CCPACSLongFloorBeam : public generated::CPACSLongFloorBeam
+class CCPACSLongFloorBeam : public generated::CPACSLongFloorBeam, public ITiglGeometricComponent
 {
 public:
     TIGL_EXPORT CCPACSLongFloorBeam(CCPACSLongFloorBeamsAssembly* parent, CTiglUIDManager* uidMgr);
+
+    TIGL_EXPORT std::string GetDefaultedUID() const OVERRIDE;
+    TIGL_EXPORT PNamedShape GetLoft() OVERRIDE;
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE;
 
     TIGL_EXPORT void Invalidate();
 

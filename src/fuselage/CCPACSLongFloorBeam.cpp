@@ -26,13 +26,28 @@
 #include "CCPACSLongFloorBeamPosition.h"
 #include "CCPACSProfileBasedStructuralElement.h"
 #include "CTiglUIDManager.h"
+#include "CNamedShape.h"
 
 namespace tigl
 {
 CCPACSLongFloorBeam::CCPACSLongFloorBeam(CCPACSLongFloorBeamsAssembly* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSLongFloorBeam(parent, uidMgr)
-    , invalidated(true)
 {
+}
+
+std::string CCPACSLongFloorBeam::GetDefaultedUID() const
+{
+    return GetUID();
+}
+
+PNamedShape CCPACSLongFloorBeam::GetLoft()
+{
+    return PNamedShape(new CNamedShape(GetGeometry(true), GetUID()));
+}
+
+TiglGeometricComponentType CCPACSLongFloorBeam::GetComponentType() const
+{
+    return TIGL_COMPONENT_LONG_FLOOR_BEAM | TIGL_COMPONENT_PHYSICAL;
 }
 
 void CCPACSLongFloorBeam::Invalidate()
@@ -98,4 +113,5 @@ void CCPACSLongFloorBeam::BuildGeometry(bool just1DElements)
         m_geometry[just1DElements] = compound;
     }
 }
+
 } // namespace tigl
