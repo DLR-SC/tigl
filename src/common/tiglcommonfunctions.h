@@ -263,11 +263,6 @@ TIGL_EXPORT std::vector<double> GetCentripetalParameters(const std::vector<gp_Pn
                                                          double endParam = 1,
                                                          double exponent = 1);
 
-inline double Radians(double degree)
-{
-    return degree / 180. * M_PI;
-}
-
 // Clamps val between min and max
 TIGL_EXPORT int Clamp(int val, int min, int max);
 TIGL_EXPORT double Clamp(double val, double min, double max);

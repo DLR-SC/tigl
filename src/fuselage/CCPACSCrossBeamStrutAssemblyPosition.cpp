@@ -44,14 +44,14 @@ namespace tigl
 CCPACSCrossBeamStrutAssemblyPosition::CCPACSCrossBeamStrutAssemblyPosition(CCPACSCargoCrossBeamStrutsAssembly* parent,
                                                                            CTiglUIDManager* uidMgr)
     : generated::CPACSCrossBeamStrutAssemblyPosition(parent, uidMgr)
-    , invalidated(true)
 {
 }
 
 void CCPACSCrossBeamStrutAssemblyPosition::Invalidate()
 {
-    for (auto& c : m_geometry)
-        c = boost::none;
+    for (size_t i = 0; i<2; i++) {
+        m_geometry[i] = boost::none;
+    }
 }
 
 TopoDS_Shape CCPACSCrossBeamStrutAssemblyPosition::GetGeometry(bool just1DElements, TiglCoordinateSystem cs)
