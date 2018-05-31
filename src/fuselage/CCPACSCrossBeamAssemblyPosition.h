@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2018 RISC Software GmbH
+* Copyright (c) 2018 Airbus Defence and Space and RISC Software GmbH
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -16,21 +16,34 @@
 
 #pragma once
 
+#include <boost/optional.hpp>
+#include <TopoDS_Shape.hxx>
+
+#include "ITiglGeometricComponent.h"
 #include "generated/CPACSCrossBeamAssemblyPosition.h"
 
 namespace tigl
 {
-class CCPACSFrame;
-
-class CCPACSCrossBeamAssemblyPosition : public generated::CPACSCrossBeamAssemblyPosition
+class CCPACSCrossBeamAssemblyPosition : public generated::CPACSCrossBeamAssemblyPosition, public ITiglGeometricComponent
 {
 public:
     TIGL_EXPORT CCPACSCrossBeamAssemblyPosition(CCPACSCargoCrossBeamsAssembly* parent, CTiglUIDManager* uidMgr);
 
+    TIGL_EXPORT std::string GetDefaultedUID() const OVERRIDE;
+    TIGL_EXPORT PNamedShape GetLoft() OVERRIDE;
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE;
+
     TIGL_EXPORT void Invalidate();
 
+    TIGL_EXPORT TopoDS_Shape GetGeometry(bool just1DElements, TiglCoordinateSystem cs = GLOBAL_COORDINATE_SYSTEM);
+    TIGL_EXPORT TopoDS_Shape GetCutGeometry(TiglCoordinateSystem cs = GLOBAL_COORDINATE_SYSTEM);
+
 private:
-    bool invalidated;
+    void BuildCutGeometry();
+    void BuildGeometry(bool just1DElements);
+private:
+    boost::optional<TopoDS_Shape> m_geometry[2]; // [0] is 3D, [1] is 1D
+    boost::optional<TopoDS_Shape> m_cutGeometry;
 };
 
 } // namespace tigl
