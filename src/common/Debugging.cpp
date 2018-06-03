@@ -63,7 +63,8 @@ TracePoint::TracePoint(const std::string& outputDir)
     : m_outputDir(outputDir)
     , m_counter(0)
 {
-    for (char& c : m_outputDir) {
+    for (std::string::iterator it = m_outputDir.begin(); it != m_outputDir.end(); ++it) {
+        char& c = *it;
         if (!std::isalnum(c)) {
             c = '_';
         }
