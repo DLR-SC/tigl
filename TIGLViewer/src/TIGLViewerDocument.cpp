@@ -697,7 +697,7 @@ void TIGLViewerDocument::drawAllFuselagesAndWings( )
             app->getScene()->displayShape(wing.GetLoft(), false);
 
             if ( !(wing.GetSymmetryAxis() == TIGL_NO_SYMMETRY)) {
-                app->getScene()->displayShape(wing.GetMirroredLoft(), false);
+                app->getScene()->displayShape(wing.GetMirroredLoft(), false, Quantity_NOC_MirrShapeCol);
             }
 
             app->getScene()->updateViewer();
@@ -710,7 +710,7 @@ void TIGLViewerDocument::drawAllFuselagesAndWings( )
             app->getScene()->displayShape(fuselage.GetLoft(), false);
     
             if ( !(fuselage.GetSymmetryAxis() == TIGL_NO_SYMMETRY) ) {
-                app->getScene()->displayShape(fuselage.GetMirroredLoft(), false);
+                app->getScene()->displayShape(fuselage.GetMirroredLoft(), false, Quantity_NOC_MirrShapeCol);
             }
 
             app->getScene()->updateViewer();
