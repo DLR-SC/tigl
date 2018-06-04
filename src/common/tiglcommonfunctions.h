@@ -211,6 +211,9 @@ TIGL_EXPORT bool GetMinMaxPoint(const TopoDS_Shape& shape, const gp_Vec& dir, gp
 // Returns the list of shapes of the passed type from the passed shape
 TIGL_EXPORT void GetListOfShape(const TopoDS_Shape& shape, TopAbs_ShapeEnum type, TopTools_ListOfShape& result);
 
+// Returns all shapes with the given type contained in the given shape
+TIGL_EXPORT std::vector<TopoDS_Shape> GetSubShapes(const TopoDS_Shape& shape, TopAbs_ShapeEnum type);
+
 // Cuts two shapes and returns the common geometry (e.g. intersection edges)
 // Throws an exception in case the interesection failed
 TIGL_EXPORT TopoDS_Shape CutShapes(const TopoDS_Shape& shape1, const TopoDS_Shape& shape2);
@@ -248,17 +251,17 @@ TIGL_EXPORT double GetArea(const TopoDS_Shape &shape);
 //       OF THE EDGES, BUT DOES NOT COMPARE THE CURVES EXACTLY
 TIGL_EXPORT TopoDS_Shape RemoveDuplicateEdges(const TopoDS_Shape& shape);
 
+inline double Radians(double degree)
+{
+    return degree / 180. * M_PI;
+}
+
 // Calculate centripetal parameters for a sequence of points. This can be used
 // to influence the parametrization in the interpolation algorithm
 TIGL_EXPORT std::vector<double> GetCentripetalParameters(const std::vector<gp_Pnt>& points,
                                                          double startParam = 0,
                                                          double endParam = 1,
                                                          double exponent = 1);
-
-inline double Radians(double degree)
-{
-    return degree / 180. * M_PI;
-}
 
 // Clamps val between min and max
 TIGL_EXPORT int Clamp(int val, int min, int max);

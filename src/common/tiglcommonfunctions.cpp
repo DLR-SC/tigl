@@ -1218,6 +1218,18 @@ void GetListOfShape(const TopoDS_Shape& shape, TopAbs_ShapeEnum type, TopTools_L
     }
 }
 
+std::vector<TopoDS_Shape> GetSubShapes(const TopoDS_Shape& shape, TopAbs_ShapeEnum type) {
+    std::vector<TopoDS_Shape> result;
+
+    TopTools_IndexedMapOfShape typeMap;
+    TopExp::MapShapes(shape, type, typeMap);
+    for (int i = 1; i <= typeMap.Extent(); i++) {
+        result.push_back(typeMap.FindKey(i));
+    }
+
+    return result;
+}
+
 TopoDS_Shape CutShapes(const TopoDS_Shape& shape1, const TopoDS_Shape& shape2)
 {
     BRepAlgoAPI_Section cutter(shape1, shape2, Standard_False);

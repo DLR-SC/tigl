@@ -205,6 +205,7 @@ typedef unsigned int TiglGeometricComponentType;
 #define  TIGL_COMPONENT_ROTOR             2048     /**< The Component is a rotor */
 #define  TIGL_COMPONENT_ROTORBLADE        4096     /**< The Component is a rotor blade */
 #define  TIGL_COMPONENT_PRESSURE_BULKHEAD 8192     /**< The Component is a pressure bulkhead */
+#define  TIGL_COMPONENT_CROSS_BEAM_STRUT  16384    /**< The Component is a cross beam strut */
 
 enum TiglStructureType 
 {
