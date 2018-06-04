@@ -30,6 +30,7 @@
 #include "CCPACSWingSegment.h"
 #include "tiglcommonfunctions.h"
 #include "CNamedShape.h"
+#include "Debugging.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "BRepAlgoAPI_Fuse.hxx"
@@ -419,6 +420,10 @@ gp_Lin CCPACSFuselage::Intersection(gp_Pnt pRef, double angleRef)
         }
     }
 
+    TRACE_POINT(debug);
+    debug.dumpShape(loft, "loft");
+    debug.dumpShape(BRepBuilderAPI_MakeEdge(pRef, pRef.XYZ() + angleDir.XYZ() * 1000), "line");
+
     throw std::logic_error("Error computing intersection line");
 }
 
@@ -431,7 +436,7 @@ gp_Lin CCPACSFuselage::Intersection(const CCPACSFuselageStringerFramePosition& p
 
 namespace
 {
-    TopoDS_Wire project(TopoDS_Shape wireOrEdge, BRepProj_Projection& proj)
+    TopoDS_Wire project(TopoDS_Shape wireOrEdge, BRepProj_Projection& proj, DebugScope& debug)
     {
         BRepBuilderAPI_MakeWire wireBuilder;
         for (; proj.More(); proj.Next())
@@ -440,8 +445,11 @@ namespace
         TopTools_ListOfShape wireList;
         BuildWiresFromConnectedEdges(proj.Shape(), wireList);
 
-        if (wireList.Extent() == 0)
+        if (wireList.Extent() == 0) {
+            debug.addShape(proj.Shape(), "projection");
+
             throw CTiglError("Projection returned no wires");
+        }
         if (wireList.Extent() == 1)
             return TopoDS::Wire(wireList.First());
 
@@ -460,6 +468,15 @@ namespace
             }
         }
 
+        TopoDS_Compound c;
+        TopoDS_Builder b;
+        b.MakeCompound(c);
+        for (TopTools_ListIteratorOfListOfShape it(wireList); it.More(); it.Next()) {
+            b.Add(c, it.Value());
+        }
+        debug.addShape(proj.Shape(), "projection");
+        debug.addShape(c, "wireList");
+
         // give up
         throw CTiglError("Failed to project wire/edge onto fuselage");
     }
@@ -469,16 +486,31 @@ TopoDS_Wire CCPACSFuselage::projectConic(TopoDS_Shape wireOrEdge, gp_Pnt origin)
 {
     const TopoDS_Shape loft = GetLoft(FUSELAGE_COORDINATE_SYSTEM);
 
+    DEBUG_SCOPE(debug);
+    debug.addShape(wireOrEdge, "wireOrEdge");
+    debug.addShape(loft, "loft");
+    debug.addShape(BRepBuilderAPI_MakeVertex(origin), "origin");
+
     BRepProj_Projection proj(wireOrEdge, loft, origin);
-    return project(wireOrEdge, proj);
+    return project(wireOrEdge, proj, debug);
 }
 
 TopoDS_Wire CCPACSFuselage::projectParallel(TopoDS_Shape wireOrEdge, gp_Dir direction)
 {
     const TopoDS_Shape loft = GetLoft(FUSELAGE_COORDINATE_SYSTEM);
 
+    const TopoDS_Shape directionLine = BRepBuilderAPI_MakeEdge(
+        BRepBuilderAPI_MakeVertex(gp_Pnt(0, 0, 0)).Vertex(),
+        BRepBuilderAPI_MakeVertex(gp_Pnt(direction.XYZ() * 1000)).Vertex()
+    ).Shape();
+
+    DEBUG_SCOPE(debug);
+    debug.addShape(wireOrEdge, "wireOrEdge");
+    debug.addShape(loft, "loft");
+    debug.addShape(directionLine, "direction");
+
     BRepProj_Projection proj(wireOrEdge, loft, direction);
-    return project(wireOrEdge, proj);
+    return project(wireOrEdge, proj, debug);
 }
 
 void CCPACSFuselage::BuildGuideCurves()

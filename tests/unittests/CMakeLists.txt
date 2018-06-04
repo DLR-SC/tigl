@@ -14,7 +14,7 @@ INCLUDE_DIRECTORIES(${TIGL_INCLUDES})
 
 INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/src ${PROJECT_BINARY_DIR}/src ${PROJECT_BINARY_DIR}/src/api ${XML_INCLUDE_DIRS} ${TIXI_INCLUDE_DIRS} ${OpenCASCADE_INCLUDE_DIR})
 # boost
-INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/thirdparty/boost_1_63_0)
+INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/thirdparty/boost_1_67_0)
 
 LINK_DIRECTORIES(${LIBRARY_OUTPUT_PATH})
 ADD_EXECUTABLE(${test_BIN} ${test_SRCS} )
@@ -27,7 +27,7 @@ if(GLOG_FOUND)
 endif(GLOG_FOUND)
 
 # boost
-include_directories(${PROJECT_SOURCE_DIR}/thirdparty/boost_1_63_0)
+include_directories(${PROJECT_SOURCE_DIR}/thirdparty/boost_1_67_0)
 
 ADD_CUSTOM_TARGET(check ${test_BIN} --gtest_output=xml DEPENDS ${test_BIN} COMMENT "Executing unit tests..." VERBATIM SOURCES ${test_SRCS})
 

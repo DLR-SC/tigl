@@ -214,6 +214,9 @@ if(WIN32)
     endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
 endif(WIN32)
 
+# disable auto linking for Boost, as we include the cpp files ourselves
+add_definitions(-DBOOST_ALL_NO_LIB)
+
 if(WIN32)
     # avoid export of oce/occt classes into tigl library
     add_definitions(-DStandard_EXPORT=)
