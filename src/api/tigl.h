@@ -207,6 +207,8 @@ typedef unsigned int TiglGeometricComponentType;
 #define  TIGL_COMPONENT_PRESSURE_BULKHEAD 8192     /**< The Component is a pressure bulkhead */
 #define  TIGL_COMPONENT_CROSS_BEAM_STRUT  16384    /**< The Component is a cross beam strut */
 
+#define  TIGL_COMPONENT_CARGO_DOOR        32768    /**< The Component is a cargo door */
+
 enum TiglStructureType 
 {
     UPPER_SHELL = 0,

@@ -19,9 +19,19 @@
 #include <gp_Pnt.hxx>
 #include <gp_Pln.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
+#include <BRepBuilderAPI_MakeWire.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
+#include <TopExp_Explorer.hxx>
 #include <ShapeExtend_WireData.hxx>
 #include <ShapeFix_Wire.hxx>
+#include <BRepOffsetAPI_MakePipeShell.hxx>
+#include <ShapeAnalysis_Surface.hxx>
+#include <BRepBndLib.hxx>
+#include <GeomLProp_SLProps.hxx>
 #include <BRepAlgoAPI_Section.hxx>
+#include <Bnd_Box.hxx>
+#include <TopExp.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
 
 #include "tiglcommonfunctions.h"
 #include "CNamedShape.h"
@@ -44,6 +54,7 @@ void CCPACSFrame::Invalidate()
     for (int i = 0; i < 2; ++i) {
         m_geomCache[i] = boost::none;
     }
+    m_cutGeomCache = boost::none;
 }
 
 TopoDS_Shape CCPACSFrame::GetGeometry(bool just1DElements, TiglCoordinateSystem cs)
@@ -60,6 +71,19 @@ TopoDS_Shape CCPACSFrame::GetGeometry(bool just1DElements, TiglCoordinateSystem 
         return shape;
 }
 
+TopoDS_Shape CCPACSFrame::GetCutGeometry(TiglCoordinateSystem cs)
+{
+    if (!m_cutGeomCache)
+        BuildCutGeometry();
+
+    TopoDS_Shape shape = m_cutGeomCache.value();
+    if (cs == TiglCoordinateSystem::GLOBAL_COORDINATE_SYSTEM) {
+        CTiglTransformation trafo = m_parent->GetParent()->GetParent()->GetTransformationMatrix();
+        return trafo.Transform(shape);
+    }
+    else
+        return shape;
+}
 
 void CCPACSFrame::BuildGeometry(bool just1DElements)
 {
@@ -153,6 +177,79 @@ void CCPACSFrame::BuildGeometry(bool just1DElements)
         const CCPACSProfileBasedStructuralElement& pbse = m_uidMgr->ResolveObject<CCPACSProfileBasedStructuralElement>(
             m_framePositions.front()->GetStructuralElementUID());
         m_geomCache[false] = pbse.makeFromWire(path, profilePlane);
+    }
+}
+
+void CCPACSFrame::BuildCutGeometry()
+{
+    if (m_framePositions.size() == 1)
+        m_cutGeomCache = BRepBuilderAPI_MakeFace(gp_Pln(m_framePositions[0]->GetRefPoint(), gp_Dir(1, 0, 0)));
+    else {
+        TopoDS_Compound compound;
+        TopoDS_Builder builder;
+        builder.MakeCompound(compound);
+
+        TopoDS_Shape fuselageLoft = m_parent->GetParent()->GetParent()->GetLoft()->Shape();
+
+        Bnd_Box fuselageBox;
+        BRepBndLib::Add(fuselageLoft, fuselageBox);
+
+        TopoDS_Shape geometry = GetGeometry(true, TiglCoordinateSystem::FUSELAGE_COORDINATE_SYSTEM);
+
+        TopTools_IndexedMapOfShape edgeMap;
+        TopExp::MapShapes(geometry, TopAbs_EDGE, edgeMap);
+        for (int e = 1; e <= edgeMap.Extent(); e++) {
+            const TopoDS_Edge& edge = TopoDS::Edge(edgeMap(e));
+            gp_Pnt pntA      = GetFirstPoint(edge);
+
+            //  Loop over all fuselage faces
+            TopTools_IndexedMapOfShape faceMap;
+            TopExp::MapShapes(fuselageLoft, TopAbs_FACE, faceMap);
+
+            TopoDS_Edge normalEdge;
+            bool frameOnFace = false;
+            for (int k = 1; k <= faceMap.Extent();
+                 k++) // check if the pntA is on the surface and then create the normal
+            {
+                // check if it is there
+                Bnd_Box boundingBox;
+                BRepBndLib::Add(TopoDS::Face(faceMap(k)), boundingBox);
+
+                if (!boundingBox.IsOut(pntA)) // check if the pntA is inside the boundingBox
+                {
+                    // project the point of the edge on the face
+                    Handle(Geom_Surface) surf             = BRep_Tool::Surface(TopoDS::Face(faceMap(k)));
+                    Handle(ShapeAnalysis_Surface) SA_surf = new ShapeAnalysis_Surface(surf);
+
+                    const gp_Pnt2d uv      = SA_surf->ValueOfUV(pntA, 0);
+                    const gp_Pnt pnt2      = SA_surf->Value(uv.X(), uv.Y());
+                    const double precision = 1e-3;
+                    if (pntA.IsEqual(pnt2, precision) != 0) {
+                        frameOnFace                = true;
+                        const gp_Vec vN            = gp_Vec(GeomLProp_SLProps(surf, uv.X(), uv.Y(), 1, 0.01).Normal());
+                        const double cutPlaneDepth = fuselageBox.SquareExtent() * 2.e-7 + 0.125;
+                        normalEdge                 = BRepBuilderAPI_MakeEdge(pntA.Translated(-vN * cutPlaneDepth),
+                                                             pntA.Translated(vN * cutPlaneDepth));
+                        break;
+                    }
+                }
+            }
+
+            if (frameOnFace) {
+                BRepOffsetAPI_MakePipeShell frameShell(BRepBuilderAPI_MakeWire(edge).Wire());
+                frameShell.SetMode(gp_Dir(
+                    1, 0, 0)); // to force the profile plane being not twisted (profile stay perpendicular to X axis)
+                // frameShell.SetMode(false);
+                frameShell.Add(BRepBuilderAPI_MakeWire(normalEdge).Wire());
+                frameShell.Build();
+                if (frameShell.IsDone())
+                    builder.Add(compound, frameShell.Shape());
+                else
+                    throw CTiglError("Error during the frame cut geometry  sweeping", TIGL_XML_ERROR);
+            }
+        }
+
+        m_cutGeomCache = compound;
     }
 }
 } // namespace tigl

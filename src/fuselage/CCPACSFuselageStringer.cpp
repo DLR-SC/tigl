@@ -32,6 +32,7 @@
 #include "CCPACSFuselage.h"
 #include "CCPACSFuselageStringerFramePosition.h"
 #include "CCPACSFrame.h"
+#include "CNamedShape.h"
 
 namespace tigl
 {
@@ -45,6 +46,7 @@ void CCPACSFuselageStringer::Invalidate()
     for (int i = 0; i < 2; ++i) {
         m_geomCache[i] = boost::none;
     }
+    m_cutGeomCache = boost::none;
 }
 
 TopoDS_Shape CCPACSFuselageStringer::GetGeometry(bool just1DElements, TiglCoordinateSystem cs)
@@ -55,6 +57,20 @@ TopoDS_Shape CCPACSFuselageStringer::GetGeometry(bool just1DElements, TiglCoordi
 
     const TopoDS_Shape shape = m_geomCache[just1DElements].value();
     if (cs == GLOBAL_COORDINATE_SYSTEM) {
+        CTiglTransformation trafo = m_parent->GetParent()->GetParent()->GetTransformationMatrix();
+        return trafo.Transform(shape);
+    }
+    else
+        return shape;
+}
+
+TopoDS_Shape CCPACSFuselageStringer::GetCutGeometry(TiglCoordinateSystem cs)
+{
+    if (!m_cutGeomCache)
+        BuildCutGeometry();
+
+    TopoDS_Shape shape = m_cutGeomCache.value();
+    if (cs == TiglCoordinateSystem::GLOBAL_COORDINATE_SYSTEM) {
         CTiglTransformation trafo = m_parent->GetParent()->GetParent()->GetTransformationMatrix();
         return trafo.Transform(shape);
     }
@@ -119,5 +135,82 @@ void CCPACSFuselageStringer::BuildGeometry(bool just1DElements)
         m_geomCache[just1DElements] = BuildWireFromEdges(compound); // make sure the geometry is a single wire
     else
         m_geomCache[just1DElements] = compound;
+}
+
+void CCPACSFuselageStringer::BuildCutGeometry()
+{
+    const TopoDS_Shape fuselageLoft = m_parent->GetParent()->GetParent()->GetLoft(FUSELAGE_COORDINATE_SYSTEM);
+
+    Bnd_Box fuselageBox;
+    BRepBndLib::Add(fuselageLoft, fuselageBox);
+
+    TopTools_IndexedMapOfShape edgeMap;
+    TopExp::MapShapes(GetGeometry(true, FUSELAGE_COORDINATE_SYSTEM), TopAbs_EDGE, edgeMap);
+
+    TopoDS_Edge normalEdge;
+    BRepBuilderAPI_MakeWire wireBuilder;
+    bool stringerOnFace = false;
+    gp_Vec normalVector;
+    for (int e = 1; e <= edgeMap.Extent(); e++) {
+        const TopoDS_Edge& edge  = TopoDS::Edge(edgeMap(e));
+        const gp_Pnt pntA = GetFirstPoint(edge);
+
+        //  Loop over all fuselage faces
+        TopTools_IndexedMapOfShape faceMap;
+        TopExp::MapShapes(fuselageLoft, TopAbs_FACE, faceMap);
+
+        int aux = faceMap.Extent();
+        for (int k = 1; k <= faceMap.Extent(); k++) // check if the pntA is on the surface and then create the normal
+        {
+            // check if it is there
+            Bnd_Box faceBox;
+            BRepBndLib::Add(TopoDS::Face(faceMap(k)), faceBox);
+
+            if (!faceBox.IsOut(pntA)) {
+                // project the point of the edge on the face
+                // face im geom surface umwandeln
+                Handle(Geom_Surface) surf = BRep_Tool::Surface(TopoDS::Face(faceMap(k))); //convert Face into Surface
+                Handle(ShapeAnalysis_Surface) SA_surf =
+                    new ShapeAnalysis_Surface(surf); //convert Surface into ShapeAnalysis-Surface
+
+                // uv koordinaten errechen
+                const gp_Pnt2d uv = SA_surf->ValueOfUV(pntA, 0);
+                // einen 3d punkt mit diesen uv koords zurueckrechnen
+                const gp_Pnt pnt2            = SA_surf->Value(uv.X(), uv.Y());
+                const double pointEqualEpsilon = fuselageBox.SquareExtent() * 1e-6;
+                if (pntA.IsEqual(pnt2, pointEqualEpsilon)) {
+                    stringerOnFace      = true;
+                    const gp_Vec normal = gp_Vec(GeomLProp_SLProps(surf, uv.X(), uv.Y(), 1, 0.01).Normal());
+                    const double cutPlaneDepth =
+                        fuselageBox.SquareExtent() * 1e-6; // fuselageBox.SquareExtent()*1.994e-7 + 0.125;
+                    normalEdge = BRepBuilderAPI_MakeEdge(pntA.Translated(-normal * cutPlaneDepth),
+                                                         pntA.Translated(normal * cutPlaneDepth));
+                    wireBuilder.Add(edge);
+
+                    normalVector = normal;
+                    break;
+                }
+            }
+        }
+    }
+
+    if (stringerOnFace) {
+        // in case of a curve line
+        BRepOffsetAPI_MakePipeShell frameShell(wireBuilder.Wire());
+        // frameShell.SetMode(gp_Dir(1,0,0)); // to force the profile plane being not twisted (profile stay perpendicular to X axis)
+        // frameShell.SetMode(false);
+        frameShell.SetMode(gp_Dir(normalVector));
+        frameShell.Add(BRepBuilderAPI_MakeWire(normalEdge).Wire());
+        frameShell.Build();
+        if (!frameShell.IsDone())
+            throw CTiglError("Error during the frame cut geometry sweeping");
+        m_cutGeomCache = frameShell.Shape();
+    }
+    else {
+        TopoDS_Compound empty;
+        TopoDS_Builder builder;
+        builder.MakeCompound(empty);
+        m_cutGeomCache = empty;
+    }
 }
 } // namespace tigl
