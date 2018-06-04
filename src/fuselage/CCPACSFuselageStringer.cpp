@@ -139,13 +139,13 @@ void CCPACSFuselageStringer::BuildGeometry(bool just1DElements)
 
 void CCPACSFuselageStringer::BuildCutGeometry()
 {
-    TopoDS_Shape fuselageLoft = m_parent->GetParent()->GetParent()->GetLoft()->Shape();
+    const TopoDS_Shape fuselageLoft = m_parent->GetParent()->GetParent()->GetLoft(FUSELAGE_COORDINATE_SYSTEM);
 
     Bnd_Box fuselageBox;
     BRepBndLib::Add(fuselageLoft, fuselageBox);
 
     TopTools_IndexedMapOfShape edgeMap;
-    TopExp::MapShapes(GetGeometry(true, TiglCoordinateSystem::FUSELAGE_COORDINATE_SYSTEM), TopAbs_EDGE, edgeMap);
+    TopExp::MapShapes(GetGeometry(true, FUSELAGE_COORDINATE_SYSTEM), TopAbs_EDGE, edgeMap);
 
     TopoDS_Edge normalEdge;
     BRepBuilderAPI_MakeWire wireBuilder;

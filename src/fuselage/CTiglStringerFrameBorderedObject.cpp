@@ -33,6 +33,7 @@
 
 #include "tiglcommonfunctions.h"
 #include "CNamedShape.h"
+//#include "Debugging.h"
 
 namespace tigl
 {
@@ -129,8 +130,13 @@ void CTiglStringerFrameBorderedObject::BuildGeometry()
     builder.Add(cutCompound, eStringer.GetCutGeometry(FUSELAGE_COORDINATE_SYSTEM));
 
     // split fuselage loft
-    const TopoDS_Shape loft         = const_cast<CCPACSFuselage&>(m_fuselage).GetLoft()->Shape();
+    const TopoDS_Shape loft         = const_cast<CCPACSFuselage&>(m_fuselage).GetLoft(FUSELAGE_COORDINATE_SYSTEM);
     const TopoDS_Shape splittedLoft = SplitShape(loft, cutCompound);
+
+    //TRACE_POINT(debug);
+    //debug.dumpShape(loft, "loft");
+    //debug.dumpShape(splittedLoft, "splittedLoft");
+    //debug.dumpShape(cutCompound, "cutCompound");
 
     // find door face
     TopTools_IndexedMapOfShape faceMap;
@@ -146,6 +152,8 @@ void CTiglStringerFrameBorderedObject::BuildGeometry()
             builder.Add(compound, f);
         }
     }
+
+    //debug.dumpShape(compound, "doorFaces");
 
     m_geometry = compound;
 }
