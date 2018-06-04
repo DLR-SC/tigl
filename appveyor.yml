@@ -48,10 +48,10 @@ install:
   - conda install --yes  tixi3 oce-static ninja doxygen swig>=3.10 freetype-static=2.6 freeimageplus-static=3.17.0 -c dlr-sc -c dlr-sc/label/tigl-dev
   - ps: |
       Write-Output "Platform: $env:ARCH"
-      $qtdist = "5.7/msvc2015"
+      $qtdist = "5.10.1/msvc2015"
       if ($env:ARCH -eq "amd64")
       {
-          $qtdist = "5.7/msvc2015_64"
+          $qtdist = "5.10.1/msvc2015_64"
       }
   - ps: |
       If (!(Test-Path -Path "c:\matlab-libs-win")) {
