@@ -39,6 +39,7 @@
 #include "ListPNamedShape.h"
 #include "CNamedShape.h"
 #include "PNamedShape.h"
+#include "CTiglRelativelyPositionedComponent.h"
 
 #include "Geom_Curve.hxx"
 #include "Geom_Surface.hxx"
@@ -1555,7 +1556,7 @@ size_t Clamp(size_t val, size_t min, size_t max)
     return Clamp<>(val, min, max);
 }
 
-TopoDS_Shape transformedShape(const tigl::CTiglTransformation& transformationToGlobal, TiglCoordinateSystem cs, const TopoDS_Shape& shape)
+TopoDS_Shape TransformedShape(const tigl::CTiglTransformation& transformationToGlobal, TiglCoordinateSystem cs, const TopoDS_Shape& shape)
 {
     switch (cs) {
     case WING_COORDINATE_SYSTEM:
@@ -1568,13 +1569,9 @@ TopoDS_Shape transformedShape(const tigl::CTiglTransformation& transformationToG
     }
 }
 
-TopoDS_Shape transformedShape(const tigl::CCPACSWing& wing, TiglCoordinateSystem cs, const TopoDS_Shape& shape)
+TopoDS_Shape TransformedShape(const tigl::CTiglRelativelyPositionedComponent& component, TiglCoordinateSystem cs, const TopoDS_Shape& shape)
 {
-    return transformedShape(wing.GetTransformationMatrix(), cs, shape);
+    return TransformedShape(component.GetTransformationMatrix(), cs, shape);
 }
 
-TopoDS_Shape transformedShape(const tigl::CCPACSFuselage& fuselage, TiglCoordinateSystem cs, const TopoDS_Shape& shape)
-{
-    return transformedShape(fuselage.GetTransformationMatrix(), cs, shape);
-}
 

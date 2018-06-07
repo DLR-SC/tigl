@@ -1054,7 +1054,7 @@ TopoDS_Shape CCPACSWingSegment::GetUpperShape(TiglCoordinateSystem referenceCS, 
         throw CTiglError("Unknown TiglShapeModifier passed to CCPACSWingSegment::GetUpperShape");
     }
 
-    return transformedShape(*wing, referenceCS, upperShape);
+    return TransformedShape(*wing, referenceCS, upperShape);
 }
 
 // Returns the lower wing shape of this Segment
@@ -1078,7 +1078,7 @@ TopoDS_Shape CCPACSWingSegment::GetLowerShape(TiglCoordinateSystem referenceCS, 
         throw CTiglError("Unknown TiglShapeModifier passed to CCPACSWingSegment::GetLowerShape");
     }
 
-    return transformedShape(*wing, referenceCS, lowerShape);
+    return TransformedShape(*wing, referenceCS, lowerShape);
 }
 
 TIGL_EXPORT TopoDS_Shape CCPACSWingSegment::GetTrailingEdgeShape(TiglCoordinateSystem referenceCS,
@@ -1102,7 +1102,7 @@ TIGL_EXPORT TopoDS_Shape CCPACSWingSegment::GetTrailingEdgeShape(TiglCoordinateS
         throw CTiglError("Unknown TiglShapeModifier passed to CCPACSWingSegment::GetTrailingEdgeShape");
     }
 
-    return transformedShape(*wing, referenceCS, trailingEdgeShape);
+    return TransformedShape(*wing, referenceCS, trailingEdgeShape);
 }
 
 
