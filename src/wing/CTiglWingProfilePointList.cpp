@@ -282,77 +282,95 @@ const std::vector<CTiglPoint>& CTiglWingProfilePointList::GetSamplePoints() cons
 }
 
 // get upper wing profile wire
-const TopoDS_Edge& CTiglWingProfilePointList::GetUpperWire() const
+const TopoDS_Edge& CTiglWingProfilePointList::GetUpperWire(TiglShapeModifier mod) const
 {
-    if (profileIsClosed) {
+    switch (mod) {
+    case UNMODIFIED_SHAPE:
+        if (profileIsClosed) {
+            return upperWireClosed;
+        }
+        else {
+            return upperWireOpened;
+        }
+        break;
+    case SHARP_TRAILINGEDGE:
         return upperWireClosed;
-    }
-    else {
+        break;
+    case BLUNT_TRAILINGEDGE:
         return upperWireOpened;
+        break;
+    default:
+        throw CTiglError("Unknown TiglShapeModifier passed to CTiglWingProfilePointList::GetUpperWire");
     }
 }
 
 // get lower wing profile wire
-const TopoDS_Edge& CTiglWingProfilePointList::GetLowerWire() const
+const TopoDS_Edge& CTiglWingProfilePointList::GetLowerWire(TiglShapeModifier mod) const
 {
-    if (profileIsClosed) {
+    switch (mod) {
+    case UNMODIFIED_SHAPE:
+        if (profileIsClosed) {
+            return lowerWireClosed;
+        }
+        else {
+            return lowerWireOpened;
+        }
+        break;
+    case SHARP_TRAILINGEDGE:
         return lowerWireClosed;
-    }
-    else {
+        break;
+    case BLUNT_TRAILINGEDGE:
         return lowerWireOpened;
+        break;
+    default:
+        throw CTiglError("Unknown TiglShapeModifier passed to CTiglWingProfilePointList::GetLowerWire");
     }
 }
 
 // get the upper and lower wing profile combined into one edge
-const TopoDS_Edge & CTiglWingProfilePointList::GetUpperLowerWire() const
+const TopoDS_Edge& CTiglWingProfilePointList::GetUpperLowerWire(TiglShapeModifier mod) const
 {
-    if (profileIsClosed) {
+    switch (mod) {
+    case UNMODIFIED_SHAPE:
+        if (profileIsClosed) {
+            return upperLowerEdgeClosed;
+        }
+        else {
+            return upperLowerEdgeOpened;
+        }
+        break;
+    case SHARP_TRAILINGEDGE:
         return upperLowerEdgeClosed;
-    }
-    else {
+        break;
+    case BLUNT_TRAILINGEDGE:
         return upperLowerEdgeOpened;
+        break;
+    default:
+        throw CTiglError("Unknown TiglShapeModifier passed to CTiglWingProfilePointList::GetUpperLowerWire");
     }
 }
 
 // get trailing edge
-const TopoDS_Edge& CTiglWingProfilePointList::GetTrailingEdge() const
+const TopoDS_Edge& CTiglWingProfilePointList::GetTrailingEdge(TiglShapeModifier mod) const
 {
-    if (profileIsClosed) {
+    switch (mod) {
+    case UNMODIFIED_SHAPE:
+        if (profileIsClosed) {
+            return trailingEdgeClosed;
+        }
+        else {
+            return trailingEdgeOpened;
+        }
+        break;
+    case SHARP_TRAILINGEDGE:
         return trailingEdgeClosed;
-    }
-    else {
+        break;
+    case BLUNT_TRAILINGEDGE:
         return trailingEdgeOpened;
+        break;
+    default:
+        throw CTiglError("Unknown TiglShapeModifier passed to CTiglWingProfilePointList::GetTrailingEdge");
     }
-}
-
-// get trailing edge
-const TopoDS_Edge& CTiglWingProfilePointList::GetTrailingEdgeOpened() const
-{
-    return trailingEdgeOpened;
-}
-
-// Getter for upper wire of closed profile
-const TopoDS_Edge& CTiglWingProfilePointList::GetUpperWireClosed() const
-{
-    return upperWireClosed;
-}
-
-// Getter for lower wire of closed profile
-const TopoDS_Edge& CTiglWingProfilePointList::GetLowerWireClosed() const
-{
-    return lowerWireClosed;
-}
-
-// Getter for upper wire of closed profile
-const TopoDS_Edge& CTiglWingProfilePointList::GetUpperWireOpened() const
-{
-    return upperWireOpened;
-}
-
-// Getter for lower wire of closed profile
-const TopoDS_Edge& CTiglWingProfilePointList::GetLowerWireOpened() const
-{
-    return lowerWireOpened;
 }
 
 // get leading edge point();

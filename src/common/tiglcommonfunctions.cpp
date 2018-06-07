@@ -39,6 +39,7 @@
 #include "ListPNamedShape.h"
 #include "CNamedShape.h"
 #include "PNamedShape.h"
+#include "CTiglRelativelyPositionedComponent.h"
 
 #include "Geom_Curve.hxx"
 #include "Geom_Surface.hxx"
@@ -1566,3 +1567,23 @@ size_t Clamp(size_t val, size_t min, size_t max)
 {
     return Clamp<>(val, min, max);
 }
+
+TopoDS_Shape TransformedShape(const tigl::CTiglTransformation& transformationToGlobal, TiglCoordinateSystem cs, const TopoDS_Shape& shape)
+{
+    switch (cs) {
+    case WING_COORDINATE_SYSTEM:
+    case FUSELAGE_COORDINATE_SYSTEM:
+        return shape;
+    case GLOBAL_COORDINATE_SYSTEM:
+        return transformationToGlobal.Transform(shape);
+    default:
+        throw tigl::CTiglError("Invalid coordinate system");
+    }
+}
+
+TopoDS_Shape TransformedShape(const tigl::CTiglRelativelyPositionedComponent& component, TiglCoordinateSystem cs, const TopoDS_Shape& shape)
+{
+    return TransformedShape(component.GetTransformationMatrix(), cs, shape);
+}
+
+

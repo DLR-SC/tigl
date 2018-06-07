@@ -273,4 +273,8 @@ TIGL_EXPORT size_t Clamp(size_t val, size_t min, size_t max);
 // Else, the breaking point will be inserted
 TIGL_EXPORT std::vector<double> LinspaceWithBreaks(double umin, double umax, size_t n_values, const std::vector<double>& breaks);
 
+// Transforms a shape accourding to the given coordinate transformation
+TIGL_EXPORT TopoDS_Shape TransformedShape(const tigl::CTiglTransformation& transformationToGlobal, TiglCoordinateSystem cs, const TopoDS_Shape& shape);
+TIGL_EXPORT TopoDS_Shape TransformedShape(const tigl::CTiglRelativelyPositionedComponent& component, TiglCoordinateSystem cs, const TopoDS_Shape& shape);
+
 #endif // TIGLCOMMONFUNCTIONS_H

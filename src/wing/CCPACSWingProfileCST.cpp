@@ -112,58 +112,52 @@ const std::vector<CTiglPoint>& CCPACSWingProfileCST::GetSamplePoints() const {
     return dummy;
 }
 
-// Getter for upper wire of closed profile
-const TopoDS_Edge& CCPACSWingProfileCST::GetUpperWireClosed() const
-{
-    return upperWire;
-}
-
-// Getter for lower wire of closed profile
-const TopoDS_Edge& CCPACSWingProfileCST::GetLowerWireClosed() const
-{
-    return lowerWire;
-}
-
-// Getter for upper wire of opened profile
-const TopoDS_Edge& CCPACSWingProfileCST::GetUpperWireOpened() const
-{
-    throw CTiglError("GetUpperWireOpened not implemented yet for CCPACSWingProfileCST!");
-}
-
-// Getter for lower wire of opened profile
-const TopoDS_Edge& CCPACSWingProfileCST::GetLowerWireOpened() const
-{
-    throw CTiglError("GetLowerWireOpened not implemented yet for CCPACSWingProfileCST!");
-}
-
 // get upper wing profile wire
-const TopoDS_Edge & CCPACSWingProfileCST::GetUpperWire() const
+const TopoDS_Edge& CCPACSWingProfileCST::GetUpperWire(TiglShapeModifier mod) const
 {
-    return upperWire;
+    switch (mod) {
+    case UNMODIFIED_SHAPE:
+        return upperWire;
+        break;
+    default:
+        throw CTiglError("GetUpperWire with profile modifications not implemented for CCPACSWingProfileCST yet!");
+    }
 }
-            
+
 // get lower wing profile wire
-const TopoDS_Edge & CCPACSWingProfileCST::GetLowerWire() const
+const TopoDS_Edge& CCPACSWingProfileCST::GetLowerWire(TiglShapeModifier mod) const
 {
-    return lowerWire;
+    switch (mod) {
+    case UNMODIFIED_SHAPE:
+        return lowerWire;
+        break;
+    default:
+        throw CTiglError("GetLowerWire with profile modifications not implemented for CCPACSWingProfileCST yet!");
+    }
 }
 
 // gets the upper and lower wing profile into on edge
-const TopoDS_Edge & CCPACSWingProfileCST::GetUpperLowerWire() const
+const TopoDS_Edge& CCPACSWingProfileCST::GetUpperLowerWire(TiglShapeModifier mod) const
 {
-    return upperLowerEdge;
+    switch (mod) {
+    case UNMODIFIED_SHAPE:
+        return upperLowerEdge;
+        break;
+    default:
+        throw CTiglError("GetUpperLowerWire with profile modifications not implemented for CCPACSWingProfileCST yet!");
+    }
 }
 
 // get trailing edge
-const TopoDS_Edge & CCPACSWingProfileCST::GetTrailingEdge() const
+const TopoDS_Edge& CCPACSWingProfileCST::GetTrailingEdge(TiglShapeModifier mod) const
 {
-    return trailingEdge;
-}
-
-// get trailing edge
-const TopoDS_Edge & CCPACSWingProfileCST::GetTrailingEdgeOpened() const
-{
-    throw CTiglError("GetTrailingEdgeOpened not implemented yet for CCPACSWingProfileCST!");
+    switch (mod) {
+    case UNMODIFIED_SHAPE:
+        return trailingEdge;
+        break;
+    default:
+        throw CTiglError("GetTrailingEdge with profile modifications not implemented for CCPACSWingProfileCST yet!");
+    }
 }
 
 // get leading edge point();

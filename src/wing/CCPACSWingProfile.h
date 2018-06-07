@@ -60,32 +60,15 @@ public:
     TIGL_EXPORT void Invalidate();
 
     // Returns the wing profile wire, splitted at the leading edge
-    TIGL_EXPORT TopoDS_Wire GetSplitWire();
-    
-    // Returns the wing profile wire
-    TIGL_EXPORT TopoDS_Wire GetWire();
-    
-    // Returns the wing profile wire with flat trailing edge
-    TIGL_EXPORT TopoDS_Wire GetWireOpened();
+    TIGL_EXPORT TopoDS_Wire GetSplitWire(TiglShapeModifier mod = UNMODIFIED_SHAPE);
 
-    // Returns the wing profile wire with pointed trailing edge
-    TIGL_EXPORT TopoDS_Wire GetWireClosed();
+    // Returns the wing profile wire
+    TIGL_EXPORT TopoDS_Wire GetWire(TiglShapeModifier mod = UNMODIFIED_SHAPE);
 
     // Returns ths wing upper and lower profile wire
-    TIGL_EXPORT TopoDS_Edge GetUpperWire();
-    TIGL_EXPORT TopoDS_Edge GetLowerWire();
-    TIGL_EXPORT TopoDS_Edge GetTrailingEdge();
-
-    // Returns the wing upper and lower profile wire for opened profile
-    TIGL_EXPORT TopoDS_Edge GetUpperWireOpened();
-    TIGL_EXPORT TopoDS_Edge GetLowerWireOpened();
-
-    // Returns the wing upper and lower profile wire for closed profile
-    TIGL_EXPORT TopoDS_Edge GetUpperWireClosed();
-    TIGL_EXPORT TopoDS_Edge GetLowerWireClosed();
-
-    // Returns the trailing edge for the opened profile
-    TIGL_EXPORT TopoDS_Edge GetTrailingEdgeOpened();
+    TIGL_EXPORT TopoDS_Edge GetUpperWire(TiglShapeModifier mod = UNMODIFIED_SHAPE);
+    TIGL_EXPORT TopoDS_Edge GetLowerWire(TiglShapeModifier mod = UNMODIFIED_SHAPE);
+    TIGL_EXPORT TopoDS_Edge GetTrailingEdge(TiglShapeModifier mod = UNMODIFIED_SHAPE);
 
     // Returns the leading edge point of the wing profile wire. The leading edge point
     // is already transformed by the wing profile element transformation.
