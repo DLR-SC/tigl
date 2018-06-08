@@ -53,6 +53,7 @@
 #include "CCPACSFuselageSegment.h"
 #include "PNamedShape.h"
 #include "CNamedShape.h"
+#include "CCPACSGuideCurve.h"
 
 #include "gp_Pnt.hxx"
 #include "TopoDS_Shape.hxx"
@@ -358,6 +359,87 @@ TIGL_COMMON_EXPORT const char* tiglGetVersion()
 
 /*** General geometry function ***/
 
+TIGL_COMMON_EXPORT TiglReturnCode tiglGetGuideCurvePoints(TiglCPACSConfigurationHandle cpacsHandle,
+                                                          const char* curveUID,
+                                                          int numPoints,
+                                                          double* x, double* y, double* z)
+{
+    // input data check
+    if (!curveUID) {
+        LOG(ERROR) << "Null pointer for argument curveUID in tiglGetGuideCurvePoints";
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration & config = manager.GetConfiguration(cpacsHandle);
+
+        std::vector<gp_Pnt> points;
+
+        // search for guide curve in wings
+        bool found = false;
+        tigl::CCPACSWings* wings = config.GetWings();
+        for ( int widx=1; widx<=wings->GetWingCount(); widx++ ) {
+            tigl::CCPACSWing& wing = wings->GetWing(widx);
+            for (int sidx=1; sidx<=wing.GetSegmentCount(); sidx++) {
+                tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment&) wing.GetSegment(sidx);
+                try {
+                    points = segment.GetGuideCurvePoints(std::string(curveUID));
+                    found = true;
+                    break;
+                }
+                catch (const tigl::CTiglError&) {
+                    continue;
+                }
+            }
+        }
+
+        if (!found) {
+            // search for guide curve in fuselages
+            tigl::CCPACSFuselages& fuselages = config.GetFuselages();
+            for (int fidx = 1 ; fidx <= fuselages.GetFuselageCount(); fidx++ ) {
+                tigl::CCPACSFuselage& fuselage = fuselages.GetFuselage(fidx);
+                for (int sidx = 1; sidx <= fuselage.GetSegmentCount(); sidx++) {
+                    tigl::CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment&) fuselage.GetSegment(sidx);
+                    try {
+                        points = segment.GetGuideCurvePoints(std::string(curveUID));
+                        found = true;
+                        break;
+                    }
+                    catch (const tigl::CTiglError&) {
+                        continue;
+                    }
+                }
+            }
+        }
+
+        if (found) {
+            if ( numPoints != points.size() ) {
+                throw tigl::CTiglError("Argument numPoints does not match the number of guide curve profile points in tiglGetGuideCurvePoints.");
+            }
+
+            for (size_t pidx = 0; pidx < points.size(); ++pidx) {
+                gp_Pnt p = points[pidx];
+                x[pidx] = p.X();
+                y[pidx] = p.Y();
+                z[pidx] = p.Z();
+            }
+            return TIGL_SUCCESS;
+        }
+        else {
+            LOG(ERROR) << "Could not find a guide curve with uid "<<curveUID<<" in tiglGetGuideCurvePoints.";
+            return TIGL_NOT_FOUND;
+        }
+    }
+    catch (tigl::CTiglError& err) {
+        LOG(ERROR) << err.getError();
+        return err.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Unknown error in tiglGetGuideCurvePoints";
+        return TIGL_ERROR;
+    }
+}
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglProfileGetBSplineCount(TiglCPACSConfigurationHandle cpacsHandle,
                                                              const char* profileUID,

@@ -227,6 +227,8 @@ public:
     // Getter for the number of guide curves
     TIGL_EXPORT int GetGuideCurveCount() const;
 
+    TIGL_EXPORT std::vector<gp_Pnt> GetGuideCurvePoints(std::string guideUID);
+
 protected:
     // Cleanup routine
     void Cleanup(void);

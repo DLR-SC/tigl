@@ -1301,6 +1301,73 @@ TopTools_SequenceOfShape& CCPACSWingSegment::GetGuideCurveWires() const
     return guideCurveWires;
 }
 
+// Get the guide curve points
+std::vector<gp_Pnt> CCPACSWingSegment::GetGuideCurvePoints(std::string guideUID)
+{
+    //TODO code duplicate of BuildGuideCurveWires
+
+    std::vector<gp_Pnt> guideCurvePnts;
+    if (guideCurvesPresent) {
+        // get upper and lower part of inner profile in world coordinates
+        CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
+        TopoDS_Edge upperInnerWire = TopoDS::Edge(transformProfileWire(GetWing().GetTransformation(), innerConnection, innerProfile.GetUpperWire()));
+        TopoDS_Edge lowerInnerWire = TopoDS::Edge(transformProfileWire(GetWing().GetTransformation(), innerConnection, innerProfile.GetLowerWire()));
+
+        // get upper and lower part of outer profile in world coordinates
+        CCPACSWingProfile& outerProfile = outerConnection.GetProfile();
+        TopoDS_Edge upperOuterWire = TopoDS::Edge(transformProfileWire(GetWing().GetTransformation(), outerConnection, outerProfile.GetUpperWire()));
+        TopoDS_Edge lowerOuterWire = TopoDS::Edge(transformProfileWire(GetWing().GetTransformation(), outerConnection, outerProfile.GetLowerWire()));
+
+        // concatenate inner profile wires for guide curve construction algorithm
+        TopTools_SequenceOfShape concatenatedInnerWires;
+        concatenatedInnerWires.Append(lowerInnerWire);
+        concatenatedInnerWires.Append(upperInnerWire);
+
+        // concatenate outer profile wires for guide curve construction algorithm
+        TopTools_SequenceOfShape concatenatedOuterWires;
+        concatenatedOuterWires.Append(lowerOuterWire);
+        concatenatedOuterWires.Append(upperOuterWire);
+
+        // get chord lengths for inner profile in word coordinates
+        TopoDS_Wire innerChordLineWire = TopoDS::Wire(transformProfileWire(GetWing().GetTransformation(), innerConnection, innerProfile.GetChordLineWire()));
+        TopoDS_Wire outerChordLineWire = TopoDS::Wire(transformProfileWire(GetWing().GetTransformation(), outerConnection, outerProfile.GetChordLineWire()));
+        double innerScale = GetWireLength(innerChordLineWire);
+        double outerScale = GetWireLength(outerChordLineWire);
+
+        CCPACSGuideCurve& guideCurve = guideCurves.GetGuideCurve(guideUID);
+        double fromRelativeCircumference;
+        // check if fromRelativeCircumference is given in the current guide curve
+        if (guideCurve.GetFromRelativeCircumferenceIsSet()) {
+            fromRelativeCircumference = guideCurve.GetFromRelativeCircumference();
+        }
+        // otherwise get relative circumference from neighboring segment guide curve
+        else {
+            // get neighboring guide curve UID
+            std::string neighborGuideCurveUID = guideCurve.GetFromGuideCurveUID();
+            // get neighboring guide curve
+            CCPACSGuideCurve& neighborGuideCurve = wing->GetGuideCurve(neighborGuideCurveUID);
+            // get relative circumference from neighboring guide curve
+            fromRelativeCircumference = neighborGuideCurve.GetToRelativeCircumference();
+        }
+        // get relative circumference of outer profile
+        double toRelativeCircumference = guideCurve.GetToRelativeCircumference();
+        // get guide curve profile UID
+        std::string guideCurveProfileUID = guideCurve.GetGuideCurveProfileUID();
+        // get relative circumference of inner profile
+
+        // get guide curve profile
+        CCPACSConfiguration& config = wing->GetConfiguration();
+        CCPACSGuideCurveProfile& guideCurveProfile = config.GetGuideCurveProfile(guideCurveProfileUID);
+
+        // construct guide curve algorithm
+        guideCurvePnts = CCPACSGuideCurveAlgo<CCPACSWingProfileGetPointAlgo> (concatenatedInnerWires, concatenatedOuterWires, fromRelativeCircumference, toRelativeCircumference, innerScale, outerScale, guideCurveProfile);
+    }
+    else {
+        CTiglError("Cannot get guide curve points, no guide curves are present!");
+    }
+    return guideCurvePnts;
+}
+
 // Creates all guide curves
 void CCPACSWingSegment::BuildGuideCurveWires(void) const
 {
@@ -1362,8 +1429,13 @@ void CCPACSWingSegment::BuildGuideCurveWires(void) const
             CCPACSGuideCurveProfile& guideCurveProfile = config.GetGuideCurveProfile(guideCurveProfileUID);
 
             // construct guide curve algorithm
-            TopoDS_Wire guideCurveWire = CCPACSGuideCurveAlgo<CCPACSWingProfileGetPointAlgo> (concatenatedInnerWires, concatenatedOuterWires, fromRelativeCircumference, toRelativeCircumference, innerScale, outerScale, guideCurveProfile);
-            guideCurveWires.Append(guideCurveWire);
+            std::vector<gp_Pnt> guideCurvePoints = CCPACSGuideCurveAlgo<CCPACSWingProfileGetPointAlgo> (concatenatedInnerWires, concatenatedOuterWires, fromRelativeCircumference, toRelativeCircumference, innerScale, outerScale, guideCurveProfile);
+
+            // interpolate B-Spline curve through guide curve points
+            CTiglInterpolateBsplineWire wireBuilder;
+            TopoDS_Wire guideCurveWire = wireBuilder.BuildWire(guideCurvePoints, false);
+
+             guideCurveWires.Append(guideCurveWire);
         }
     }
 }
