@@ -4228,6 +4228,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetWettedArea(TiglCPACSConfigurationHa
 /**
 * @brief Returns the points on the airplane geometry in global coordinates for a given guide curve.
 *
+* The output vectors of the x, y, and z vectors must be allocated by the user first. The number of guide
+* curve points coincides with the number of points in the corresponding guide curve profile.
+*
 * @param[in]    cpacsHandle     Handle for the CPACS configuration
 * @param[in]    curveUID        UID of the guide curve
 * @param[in]    numPoints       number of guide curve points (this should coincide with the number of
