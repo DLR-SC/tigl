@@ -63,5 +63,14 @@ void CCPACSControlSurfaceDeviceWingCutOutProfiles::ReadCPACS(
     }
 }
 
+CCPACSControlSurfaceDeviceWingCutOutProfiles::~CCPACSControlSurfaceDeviceWingCutOutProfiles()
+{
+    for (ControlSurfaceDeviceCutOutProfileContainer::iterator it = wingCutOutProfiles.begin(); it != wingCutOutProfiles.end(); ++it) {
+        delete *it;
+        *it = 0;
+    }
+    wingCutOutProfiles.clear();
+}
+
 }
 // end namespace tigl

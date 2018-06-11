@@ -52,29 +52,24 @@ void CCPACSControlSurfaceDevices::ReadCPACS(
         TixiDocumentHandle tixiHandle,
         const std::string& controlSurfaceDevicesXPath, TiglControlSurfaceType type)
 {
-    ReturnCode tixiRet;
-    int controlSurfaceDeviceCount;
-    std::string tempString;
-    char* elementPath;
-
-    // Get ControlSurfaceDevive element count
-    tempString = controlSurfaceDevicesXPath;
-    elementPath = const_cast<char*>(tempString.c_str());
+    std::string typestring = "";
 
     if (type == TRAILING_EDGE_DEVICE) {
-        tixiRet = tixiGetNamedChildrenCount(tixiHandle, elementPath,
-                "trailingEdgeDevice", &controlSurfaceDeviceCount);
+        typestring = "trailingEdgeDevice";
     }
     else if (type == LEADING_EDGE_DEVICE) {
-        tixiRet = tixiGetNamedChildrenCount(tixiHandle, elementPath,
-                "leadingEdgeDevice", &controlSurfaceDeviceCount);
+        typestring = "leadingEdgeDevice";
     }
     else if (type == SPOILER) {
-        tixiRet = tixiGetNamedChildrenCount(tixiHandle, elementPath,
-                "spoiler", &controlSurfaceDeviceCount);
+        typestring = "spoiler";
+    }
+    else {
+        return;
     }
 
-    if (tixiRet != SUCCESS) {
+    // Get ControlSurfaceDevive element count
+    int controlSurfaceDeviceCount;
+    if (tixiGetNamedChildrenCount(tixiHandle, controlSurfaceDevicesXPath.c_str(), typestring.c_str(), &controlSurfaceDeviceCount) != SUCCESS) {
         return;
     }
 
@@ -84,43 +79,51 @@ void CCPACSControlSurfaceDevices::ReadCPACS(
                 new CCPACSControlSurfaceDevice(_config, _componentSegment);
         controlSurfaceDevices.push_back(controlSurfaceDevice);
 
-
-        if (type == LEADING_EDGE_DEVICE) {
-            tempString = controlSurfaceDevicesXPath + "/leadingEdgeDevice[";
-        }
-        else if (type == TRAILING_EDGE_DEVICE) {
-            tempString = controlSurfaceDevicesXPath + "/trailingEdgeDevice[";
-        }
-        else if (type == SPOILER) {
-            tempString = controlSurfaceDevicesXPath + "/spoiler[";
-        }
-
         std::ostringstream xpath;
-        xpath << tempString << i << "]";
+        xpath << controlSurfaceDevicesXPath << "/" << typestring + "[" << i << "]";
         controlSurfaceDevice->ReadCPACS(tixiHandle, xpath.str(), type);
     }
 }
 
 CCPACSControlSurfaceDevice& CCPACSControlSurfaceDevices::getControlSurfaceDeviceByID(
-        int id)
+        size_t id)
 {
+    return const_cast<CCPACSControlSurfaceDevice&>(
+        static_cast<const CCPACSControlSurfaceDevices*>(this)->getControlSurfaceDeviceByID(id)
+    );
+}
+
+const CCPACSControlSurfaceDevice& CCPACSControlSurfaceDevices::getControlSurfaceDeviceByID(
+        size_t id) const
+{
+    if (id < 1 || id > controlSurfaceDevices.size()) {
+        throw CTiglError("Invalid index in CCPACSControlSurfaceDevices::getControlSurfaceDeviceByID.", TIGL_INDEX_ERROR);
+    }
+    
     return *controlSurfaceDevices[id-1];
 }
 
-CCPACSControlSurfaceDevice& CCPACSControlSurfaceDevices::getControlSurfaceDevice(
-        const std::string& uid)
+const CCPACSControlSurfaceDevice& CCPACSControlSurfaceDevices::getControlSurfaceDevice(
+        const std::string& uid) const
 {
-    for ( int id = 0; id < controlSurfaceDevices.size(); id ++ ) {
+    for (size_t id = 0; id < controlSurfaceDevices.size(); id ++ ) {
         if ( controlSurfaceDevices[id]->GetUID() == uid ) {
-            return (CCPACSControlSurfaceDevice &)(*(controlSurfaceDevices[id]));
+            return *controlSurfaceDevices[id];
         }
     }
     throw CTiglError("Error: Invalid uid in CCPACSControlSurfaceDevices::getControlSurfaceDevice", TIGL_UID_ERROR);
 }
 
-int CCPACSControlSurfaceDevices::getControlSurfaceDeviceCount()
+CCPACSControlSurfaceDevice& CCPACSControlSurfaceDevices::getControlSurfaceDevice(const std::string& uid)
 {
-    return (int)controlSurfaceDevices.size();
+    return const_cast<CCPACSControlSurfaceDevice&>(
+        static_cast<const CCPACSControlSurfaceDevices*>(this)->getControlSurfaceDevice(uid)
+    );
+}
+
+size_t CCPACSControlSurfaceDevices::getControlSurfaceDeviceCount() const
+{
+    return controlSurfaceDevices.size();
 }
 
 } // end namespace tigl

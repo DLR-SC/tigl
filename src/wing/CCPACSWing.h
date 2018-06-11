@@ -61,6 +61,9 @@ public:
     // Invalidates internal state
     TIGL_EXPORT void Invalidate(void);
 
+    // Resets the loft
+    TIGL_EXPORT void ResetLoft();
+
     // Read CPACS wing elements
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & wingXPath);
 
@@ -124,8 +127,6 @@ public:
     TIGL_EXPORT gp_Pnt GetChordPoint(int segmentIndex, double eta, double xsi);
 
     // Gets the loft of the whole wing
-    TIGL_EXPORT TopoDS_Shape & GetLoftWithLeadingEdge(void);
-
     TIGL_EXPORT TopoDS_Shape & GetUpperShape();
     TIGL_EXPORT TopoDS_Shape & GetLowerShape();
 

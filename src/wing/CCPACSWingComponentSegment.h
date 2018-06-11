@@ -136,6 +136,7 @@ public:
 
     // gets the controlSurfaces
     TIGL_EXPORT CCPACSControlSurfaces& getControlSurfaces();
+    TIGL_EXPORT const CCPACSControlSurfaces& getControlSurfaces() const;
 
     // Gets the fromElementUID of this segment
     TIGL_EXPORT const std::string & GetFromElementUID(void) const;

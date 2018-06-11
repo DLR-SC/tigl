@@ -26,7 +26,6 @@ namespace tigl
 {
 
 CCPACSControlSurfaces::CCPACSControlSurfaces(CCPACSConfiguration* cfg, CCPACSWingComponentSegment* cs)
-    : _componentSegment(cs), _config(cfg)
 {
     controlSurfaceDevices = CCPACSControlSurfaceDevicesPtr(new CCPACSControlSurfaceDevices(cfg, cs));
 }
@@ -66,6 +65,11 @@ void CCPACSControlSurfaces::ReadCPACS(TixiDocumentHandle tixiHandle,
 }
 
 CCPACSControlSurfaceDevices* CCPACSControlSurfaces::getControlSurfaceDevices()
+{
+    return controlSurfaceDevices.get();
+}
+
+CCPACSControlSurfaceDevices const * CCPACSControlSurfaces::getControlSurfaceDevices() const
 {
     return controlSurfaceDevices.get();
 }

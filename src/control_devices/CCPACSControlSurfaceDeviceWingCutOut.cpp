@@ -22,7 +22,7 @@
 #include "CCPACSControlSurfaceDeviceWingCutOutProfiles.h"
 
 #include "CCPACSControlSurfaceDeviceOuterShape.h"
-#include "CControlSurfaceBoarderBuilder.h"
+#include "CControlSurfaceBorderBuilder.h"
 #include "CTiglControlSurfaceBorderCoordinateSystem.h"
 #include "CCPACSControlSurfaceDevice.h"
 #include "CCPACSWingComponentSegment.h"
@@ -38,8 +38,10 @@
 namespace tigl
 {
 
-CCPACSControlSurfaceDeviceWingCutOut::CCPACSControlSurfaceDeviceWingCutOut(CCPACSControlSurfaceDevice* dev, CCPACSWingComponentSegment* cs)
-    : _segment(cs), _csDevice(dev)
+CCPACSControlSurfaceDeviceWingCutOut::CCPACSControlSurfaceDeviceWingCutOut(const CCPACSControlSurfaceDevice& dev,
+                                                                           const CCPACSWingComponentSegment& cs)
+    : _segment(cs)
+    , _csDevice(dev)
 {
 }
 
@@ -121,7 +123,7 @@ PNamedShape CCPACSControlSurfaceDeviceWingCutOut::GetLoft(PNamedShape wingCleanS
         return _loft;
     }
 
-    DLOG(INFO) << "Building " << _csDevice->GetUID() << " wing cutout shape";
+    DLOG(INFO) << "Building " << _csDevice.GetUID() << " wing cutout shape";
 
     // Get Wires definng the Shape of the more complex CutOutShape.
     TopoDS_Wire innerWire = getCutoutWire(true, wingCleanShape, &outerShape->getInnerBorder(), upDir);
@@ -133,16 +135,16 @@ PNamedShape CCPACSControlSurfaceDeviceWingCutOut::GetLoft(PNamedShape wingCleanS
     thrusections.AddWire(innerWire);
     thrusections.Build();
 
-    _loft = PNamedShape(new CNamedShape(thrusections.Shape(), _csDevice->GetUID().c_str()));
+    _loft = PNamedShape(new CNamedShape(thrusections.Shape(), _csDevice.GetUID().c_str()));
 
 #ifdef DEBUG
     std::stringstream filenamestr;
-    filenamestr << _csDevice->GetUID() << "_cutout.brep";
+    filenamestr << _csDevice.GetUID() << "_cutout.brep";
     BRepTools::Write(_loft->Shape(), filenamestr.str().c_str());
 #endif
 
 
-    _loft->SetShortName(_csDevice->GetShortShapeName().c_str());
+    _loft->SetShortName(_csDevice.GetShortShapeName().c_str());
 
     return _loft;
 }
@@ -157,7 +159,7 @@ TopoDS_Wire CCPACSControlSurfaceDeviceWingCutOut::getCutoutWire(bool isInnerBord
     TopoDS_Wire wire;
 
     CTiglControlSurfaceBorderCoordinateSystem coords(getCutoutCS(isInnerBorder, outerBorder, upDir));
-    CControlSurfaceBoarderBuilder builder(coords, wingCleanShape->Shape());
+    CControlSurfaceBorderBuilder builder(coords, wingCleanShape->Shape());
 
     double xsiUpper, xsiLower;
     if (isInnerBorder) {
@@ -184,10 +186,10 @@ TopoDS_Wire CCPACSControlSurfaceDeviceWingCutOut::getCutoutWire(bool isInnerBord
         double xsiNose = lePoint->xsi();
         // TODO: calculate xsiNose into coordinate system of the border
 
-        wire = builder.boarderWithLEShape(lePoint->relHeight(), xsiNose, xsiUpper, xsiLower);
+        wire = builder.borderWithLEShape(lePoint->relHeight(), xsiNose, xsiUpper, xsiLower);
     }
     else {
-        wire = builder.boarderSimple(xsiUpper, xsiLower);
+        wire = builder.borderSimple(xsiUpper, xsiLower);
     }
 
     return wire;
@@ -210,8 +212,8 @@ CCPACSControlSurfaceDeviceWingCutOut::getCutoutCS(bool isInnerBorder,
     double tEta = cutOutBorder->etaTE();
     double tXsi = outerShapeBorder->getXsiTE();
 
-    gp_Pnt pLE = _segment->GetPoint(lEta, lXsi);
-    gp_Pnt pTE = _segment->GetPoint(tEta, tXsi);
+    gp_Pnt pLE = _segment.GetPoint(lEta, lXsi);
+    gp_Pnt pTE = _segment.GetPoint(tEta, tXsi);
 
     CTiglControlSurfaceBorderCoordinateSystem coords(pLE, pTE, upDir);
     return coords;

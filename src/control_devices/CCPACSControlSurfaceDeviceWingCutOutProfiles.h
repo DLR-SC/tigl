@@ -37,6 +37,8 @@ public:
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle,
                                const std::string & controlSurfaceDeviceWingCutOutProfilesXPath);
 
+    TIGL_EXPORT virtual ~CCPACSControlSurfaceDeviceWingCutOutProfiles();
+
 private:
     typedef std::vector<CCPACSControlSurfaceDeviceWingCutOutProfile*> ControlSurfaceDeviceCutOutProfileContainer;
     ControlSurfaceDeviceCutOutProfileContainer wingCutOutProfiles;

@@ -19,11 +19,17 @@
 #include <iostream>
 #include <exception>
 #include <sstream>
+#include <algorithm>
 #include "CCPACSControlSurfaceDeviceSteps.h"
 
 
 namespace tigl
 {
+
+bool CCPACSControlSurfaceDeviceStepsLessThan(const CCPACSControlSurfaceDeviceStep* step1, const CCPACSControlSurfaceDeviceStep* step2)
+{
+    return (step1->getRelDeflection() < step2->getRelDeflection());
+}
 
 CCPACSControlSurfaceDeviceSteps::CCPACSControlSurfaceDeviceSteps()
 {
@@ -74,6 +80,8 @@ void CCPACSControlSurfaceDeviceSteps::ReadCPACS(
         xpath << tempString << i << "]";
         controlSurfaceDeviceStep->ReadCPACS(tixiHandle, xpath.str());
     }
+
+    std::sort(controlSurfaceDeviceSteps.begin(), controlSurfaceDeviceSteps.end(), CCPACSControlSurfaceDeviceStepsLessThan);
 }
 
 

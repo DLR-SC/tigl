@@ -1,3 +1,31 @@
+Version 2.2.2
+--------------
+11/04/2018
+
+    - General changes:
+        - Modelling of control surfaces as trailing and leading edge devices
+        - The wing is now written a one entity instead of several segments in the file exports 
+    
+    - New API functions:
+        - ``tiglControlSurfaceGetDeflection`` to query the deflection of the given control surface device
+        - ``tiglControlSurfaceSetDeflection`` to set the deflection of the given control surface device
+        - ``tiglGetControlSurfaceCount`` to get the number of control surface devices
+        - ``tiglGetControlSurfaceType`` to query the type of the control surface device (leading + trailing edge device)
+        - ``tiglGetControlSurfaceUID`` to query the UID of the control surface device
+        - ``tiglControlSurfaceGetMinimumDeflection`` and ``tiglControlSurfaceGetMaximumDeflection`` to
+          get the minimum and maximum deflection of the control surface device
+
+    - Fixes:
+        - Fixed bug JAVA bindings getProfileSplines (issue #357)
+        
+    - TiGLViewer:
+        - The control surface devices can be extended and retracted from inside the GUI
+        - Added functions to set camera positions. The following functions where added:
+          - setLookAtPosition(x, y, z)
+          - setCameraPosition(elevationAngle, azimuthAngle)
+          They can be used from the console to e.g. create movies. 
+
+
 Version 2.2.1
 --------------
 18/08/2017

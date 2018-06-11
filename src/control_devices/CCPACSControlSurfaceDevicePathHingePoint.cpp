@@ -21,6 +21,7 @@
 #include <exception>
 
 #include "CCPACSControlSurfaceDevicePathHingePoint.h"
+#include "CTiglLogging.h"
 
 namespace tigl
 {
@@ -44,13 +45,15 @@ void CCPACSControlSurfaceDevicePathHingePoint::ReadCPACS(
     tempString = controlSurfaceDevicePathHingePointXPath + "/hingeXsi";
     elementPath = const_cast<char*>(tempString.c_str());
     if (tixiGetDoubleElement(tixiHandle, elementPath, &xsi) != SUCCESS) {
-        // couldnt read xsi valu
+        // couldnt read xsi value
+        LOG(ERROR) << "Required element hingeXsi is missing at xpath " << controlSurfaceDevicePathHingePointXPath;
     }
 
     tempString = controlSurfaceDevicePathHingePointXPath + "/hingeRelHeight";
     elementPath = const_cast<char*>(tempString.c_str());
     if (tixiGetDoubleElement(tixiHandle, elementPath, &relHeight) != SUCCESS) {
         // couldnt read relHeight
+        LOG(ERROR) << "Required element hingeRelHeight is missing at xpath " << controlSurfaceDevicePathHingePointXPath;
     }
 }
 

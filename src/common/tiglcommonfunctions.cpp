@@ -1187,7 +1187,7 @@ TopoDS_Shape RemoveDuplicateEdges(const TopoDS_Shape& shape)
 
 /// searches for i, such that xdata[i] <= x < xdata[i+1]
 /// used by linear interpolation function
-unsigned int FindPosition(const std::vector<double>& xdata, double x)
+size_t FindPosition(const std::vector<double>& xdata, double x)
 {
     // we assume, that the xvalues are ordered in ascending order
     unsigned int ilow = 0;
@@ -1238,10 +1238,11 @@ double Interpolate(const std::vector<double>& xdata, const std::vector<double>& 
 
     if (x < xdata[0] || x > xdata[xdata.size() -1]) {
         // extrapolation
-        // TODO: inform the user
+        LOG(WARNING) << "Extrapolating at x=" << x << ". XData is in range "
+                     << xdata[0] << "..." << xdata[xdata.size() -1] << ".";
     }
 
-    unsigned int pos = FindPosition(xdata, x);
+    size_t pos = FindPosition(xdata, x);
 
     assert(pos < (unsigned int)(xdata.size() - 1));
     assert(ydata.size() == xdata.size());

@@ -36,27 +36,13 @@
 
 // OpenCascade Stuff
 #include <AIS_Shape.hxx>
-#include <AIS_InteractiveContext.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepMesh_IncrementalMesh.hxx>
-#include <TopoDS_Shell.hxx>
 #include <Poly_Triangulation.hxx>
-#include <BRepBuilderAPI_MakePolygon.hxx>
-#include <BRepBuilderAPI_MakeFace.hxx>
-#include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepBuilderAPI_Transform.hxx>
 #include <gce_MakeLin.hxx>
 #include <GC_MakeSegment.hxx>
 #include <BRepBndLib.hxx>
-#include <BRepPrimAPI_MakeBox.hxx>
-#include <BRepBuilderAPI_MakeWire.hxx>
-#include <BRepAlgo_Fuse.hxx>
-#include <BRepAlgo_Cut.hxx>
-#include <BRepAlgo_Common.hxx>
-#include <BRepBuilderAPI_Transform.hxx>
-#include <BRepPrimAPI_MakePrism.hxx>
-#include <BRepAlgoAPI_Common.hxx>
-#include <BRepAlgoAPI_Cut.hxx>
 
 // TIGLViewer includes
 #include "TIGLViewerInternal.h"
@@ -85,7 +71,6 @@
 #include "CCPACSGenericSystem.h"
 #include "tiglcommonfunctions.h"
 #include "CTiglPoint.h"
-#include "CCPACSControlSurfaceDeviceOuterShapeBorder.h"
 #include "CCPACSControlSurfaces.h"
 #include "CCPACSControlSurfaceDevice.h"
 #include "CCPACSWingComponentSegment.h"
@@ -118,11 +103,11 @@ double getAbsDeflection (const TopoDS_Shape& theShape, double relDeflection)
 }
 
 TIGLViewerDocument::TIGLViewerDocument(TIGLViewerWindow *parentWidget)
-    : QObject(parentWidget), m_flapsDialog(new TIGLViewerSelectWingAndFlapStatusDialog(this, parentWidget))
+    : QObject(parentWidget)
+    , m_flapsDialog(new TIGLViewerSelectWingAndFlapStatusDialog(this, parentWidget))
 {
     app = parentWidget;
     m_cpacsHandle = -1;
-    connect(m_flapsDialog, SIGNAL(finished(int)), this, SLOT(onFlapsDialogClosed()));
 }
 
 TIGLViewerDocument::~TIGLViewerDocument( )
@@ -946,21 +931,21 @@ void TIGLViewerDocument::drawWingFlapsForInteractiveUse(std::string selectedWing
 {
     try {
         START_COMMAND();
-        flapsForInteractiveUse.clear();
+
         app->getScene()->deleteAllObjects();
         tigl::CCPACSWing& wing = GetConfiguration().GetWing( selectedWing );
-    
+
         TopoDS_Shape wingWithoutFlaps = wing.GetLoftWithCutouts();
         app->getScene()->displayShape(wingWithoutFlaps);
-    
+
         for ( int i = 1; i <= wing.GetComponentSegmentCount(); i++ ) {
-    
-            tigl::CCPACSWingComponentSegment &componentSegment = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(i);
+
+            tigl::CCPACSWingComponentSegment &componentSegment = static_cast<tigl::CCPACSWingComponentSegment&>(wing.GetComponentSegment(i));
             tigl::CCPACSControlSurfaceDevices* controlSurfaceDevices = componentSegment.getControlSurfaces().getControlSurfaceDevices();
     
-            for ( int j = 1; j <= controlSurfaceDevices->getControlSurfaceDeviceCount(); j++ ) {
+            for ( size_t j = 1; j <= controlSurfaceDevices->getControlSurfaceDeviceCount(); j++ ) {
                 tigl::CCPACSControlSurfaceDevice &controlSurfaceDevice = controlSurfaceDevices->getControlSurfaceDeviceByID(j);
-                flapsForInteractiveUse[controlSurfaceDevice.GetUID()] = app->getScene()->displayShape(controlSurfaceDevice.GetLoft()->Shape());
+                app->getScene()->displayShape(controlSurfaceDevice.GetLoft(), false);
                 updateControlSurfacesInteractiveObjects(selectedWing, controlSurfaceDevice.GetUID());
             }
         }
@@ -975,17 +960,20 @@ void TIGLViewerDocument::updateControlSurfacesInteractiveObjects(std::string sel
     tigl::CCPACSWing& wing = GetConfiguration().GetWing( selectedWing );
     for ( int i = 1; i <= wing.GetComponentSegmentCount(); i++ ) {
 
-        tigl::CCPACSWingComponentSegment &componentSegment = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(i);
+        tigl::CCPACSWingComponentSegment &componentSegment = static_cast<tigl::CCPACSWingComponentSegment&>(wing.GetComponentSegment(i));
         tigl::CCPACSControlSurfaceDevices* controlSurfaceDevices = componentSegment.getControlSurfaces().getControlSurfaceDevices();
 
-        for ( int j = 1; j <= controlSurfaceDevices->getControlSurfaceDeviceCount(); j++ ) {
+        for (size_t j = 1; j <= controlSurfaceDevices->getControlSurfaceDeviceCount(); j++ ) {
             tigl::CCPACSControlSurfaceDevice &controlSurfaceDevice = controlSurfaceDevices->getControlSurfaceDeviceByID(j);
 
-            if (flapsForInteractiveUse.find(controlSurfaceDevice.GetUID()) != flapsForInteractiveUse.end() && controlUID == controlSurfaceDevice.GetUID()) {
+            if (controlUID == controlSurfaceDevice.GetUID()) {
                gp_Trsf trsf = controlSurfaceDevice.GetFlapTransform();
-               // @todo: check 
-               Handle(AIS_Shape) flap = flapsForInteractiveUse[controlSurfaceDevice.GetUID()];
-               app->getScene()->getContext()->SetLocation(flap, trsf);
+
+               IObjectList flaps = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(controlSurfaceDevice.GetUID());
+               for (IObjectList::iterator it = flaps.begin(); it != flaps.end(); ++it) {
+                   Handle(AIS_InteractiveObject)& flap = *it;
+                   app->getScene()->getContext()->SetLocation(flap, trsf);
+               }
             }
         }
     }

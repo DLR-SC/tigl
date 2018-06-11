@@ -47,11 +47,10 @@ public:
                                const std::string & segmentXPath);
 
     TIGL_EXPORT CCPACSControlSurfaceDevices* getControlSurfaceDevices();
+    TIGL_EXPORT CCPACSControlSurfaceDevices const * getControlSurfaceDevices() const;
 
 private:
     CCPACSControlSurfaceDevicesPtr controlSurfaceDevices;
-    CCPACSWingComponentSegment* _componentSegment;
-    CCPACSConfiguration* _config;
 };
 
 typedef CSharedPtr<CCPACSControlSurfaces> CCPACSControlSurfacesPtr;

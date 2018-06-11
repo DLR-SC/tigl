@@ -803,7 +803,6 @@ double CCPACSWingRibsDefinition::ComputeReferenceEtaStart() const
 {
     assert(ribPositioningType == RIBS_POSITIONING);
 
-    const CTiglWingStructureReference& wingStructureReference = structure.GetWingStructureReference();
     if (ribsPositioning->GetStartDefinitionType() == CCPACSWingRibsPositioning::ETA_START) {
         return ribsPositioning->GetEtaStart();
     }
@@ -822,7 +821,6 @@ double CCPACSWingRibsDefinition::ComputeReferenceEtaEnd() const
 {
     assert(ribPositioningType == RIBS_POSITIONING);
 
-    const CTiglWingStructureReference& wingStructureReference = structure.GetWingStructureReference();
     if (ribsPositioning->GetEndDefinitionType() == CCPACSWingRibsPositioning::ETA_END) {
         return ribsPositioning->GetEtaEnd();
     }
