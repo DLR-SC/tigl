@@ -247,21 +247,21 @@
                     <positionX>2000</positionX>
                     <referenceY>0</referenceY>
                     <referenceZ>-410</referenceZ>
-                    <referenceAngle>0</referenceAngle>
+                    <referenceAngle>180</referenceAngle>
                   </framePosition>
                   <framePosition uID="holed_frameframe_position2">
                     <structuralElementUID>TODO</structuralElementUID>
                     <positionX>2000</positionX>
                     <referenceY>100</referenceY>
                     <referenceZ>-400</referenceZ>
-                    <referenceAngle>90</referenceAngle>
+                    <referenceAngle>270</referenceAngle>
                   </framePosition>
                   <framePosition uID="holed_frameframe_position3">
                     <structuralElementUID>TODO</structuralElementUID>
                     <positionX>2000</positionX>
                     <referenceY>130</referenceY>
                     <referenceZ>-300</referenceZ>
-                    <referenceAngle>110</referenceAngle>
+                    <referenceAngle>290</referenceAngle>
                   </framePosition>
                 </frame>
                 <frame uID="half_frame">
@@ -270,21 +270,21 @@
                     <positionX>2200</positionX>
                     <referenceY>0</referenceY>
                     <referenceZ>0</referenceZ>
-                    <referenceAngle>-90</referenceAngle>
+                    <referenceAngle>90</referenceAngle>
                   </framePosition>
                   <framePosition uID="half_frame_position2">
                     <structuralElementUID>TODO</structuralElementUID>
                     <positionX>2200</positionX>
                     <referenceY>0</referenceY>
                     <referenceZ>0</referenceZ>
-                    <referenceAngle>0</referenceAngle>
+                    <referenceAngle>180</referenceAngle>
                   </framePosition>
                   <framePosition uID="half_frame_position3">
                     <structuralElementUID>TODO</structuralElementUID>
                     <positionX>2200</positionX>
                     <referenceY>0</referenceY>
                     <referenceZ>0</referenceZ>
-                    <referenceAngle>90</referenceAngle>
+                    <referenceAngle>270</referenceAngle>
                   </framePosition>
                 </frame>
                 <frame uID="frame1">
@@ -293,7 +293,7 @@
                     <positionX>2515</positionX>
                     <referenceY>0</referenceY>
                     <referenceZ>0</referenceZ>
-                    <referenceAngle>-180</referenceAngle>
+                    <referenceAngle>0</referenceAngle>
                   </framePosition>
                 </frame>
                 <frame uID="frame2">
@@ -302,7 +302,7 @@
                     <positionX>2935.5</positionX>
                     <referenceY>0</referenceY>
                     <referenceZ>0</referenceZ>
-                    <referenceAngle>-180</referenceAngle>
+                    <referenceAngle>0</referenceAngle>
                   </framePosition>
                 </frame>
                 <frame uID="riffled_frame">
@@ -457,14 +457,14 @@
                     <positionX>2100</positionX>
                     <referenceY>0</referenceY>
                     <referenceZ>0</referenceZ>
-                    <referenceAngle>-45</referenceAngle>
+                    <referenceAngle>135</referenceAngle>
                   </stringerPosition>
                   <stringerPosition uID="stringer1_position2">
                     <structuralElementUID>stringerElement1</structuralElementUID>
                     <positionX>2935.5</positionX>
                     <referenceY>0</referenceY>
                     <referenceZ>50</referenceZ>
-                    <referenceAngle>-45</referenceAngle>
+                    <referenceAngle>135</referenceAngle>
                   </stringerPosition>
                 </stringer>
                 <stringer uID="stringer2">
@@ -473,14 +473,14 @@
                     <positionX>2515</positionX>
                     <referenceY>0.16</referenceY>
                     <referenceZ>-0.0509994</referenceZ>
-                    <referenceAngle>-90</referenceAngle>
+                    <referenceAngle>90</referenceAngle>
                   </stringerPosition>
                   <stringerPosition uID="stringer2_position2">
                     <structuralElementUID>stringerElement1</structuralElementUID>
                     <positionX>2935.5</positionX>
                     <referenceY>-0.578397</referenceY>
                     <referenceZ>50</referenceZ>
-                    <referenceAngle>-90</referenceAngle>
+                    <referenceAngle>90</referenceAngle>
                   </stringerPosition>
                 </stringer>
                 <stringer uID="stringer3">
@@ -489,14 +489,14 @@
                     <positionX>2515</positionX>
                     <referenceY>0.16</referenceY>
                     <referenceZ>-0.0509994</referenceZ>
-                    <referenceAngle>-135</referenceAngle>
+                    <referenceAngle>45</referenceAngle>
                   </stringerPosition>
                   <stringerPosition uID="stringer3_position2">
                     <structuralElementUID>stringerElement1</structuralElementUID>
                     <positionX>2935.5</positionX>
                     <referenceY>-0.578397</referenceY>
                     <referenceZ>50</referenceZ>
-                    <referenceAngle>-135</referenceAngle>
+                    <referenceAngle>45</referenceAngle>
                   </stringerPosition>
                 </stringer>
                 <stringer uID="stringer4">
@@ -505,14 +505,14 @@
                     <positionX>2515</positionX>
                     <referenceY>0.16</referenceY>
                     <referenceZ>-0.0509994</referenceZ>
-                    <referenceAngle>180</referenceAngle>
+                    <referenceAngle>0</referenceAngle>
                   </stringerPosition>
                   <stringerPosition uID="stringer4_position2">
                     <structuralElementUID>stringerElement1</structuralElementUID>
                     <positionX>2935.5</positionX>
                     <referenceY>-0.578397</referenceY>
                     <referenceZ>50</referenceZ>
-                    <referenceAngle>180</referenceAngle>
+                    <referenceAngle>0</referenceAngle>
                   </stringerPosition>
                 </stringer>
                 <stringer uID="stringer5">
@@ -521,14 +521,14 @@
                     <positionX>2515</positionX>
                     <referenceY>0.16</referenceY>
                     <referenceZ>-0.0509994</referenceZ>
-                    <referenceAngle>135</referenceAngle>
+                    <referenceAngle>-45</referenceAngle>
                   </stringerPosition>
                   <stringerPosition uID="stringer5_position2">
                     <structuralElementUID>stringerElement1</structuralElementUID>
                     <positionX>2935.5</positionX>
                     <referenceY>-0.578397</referenceY>
                     <referenceZ>40</referenceZ>
-                    <referenceAngle>135</referenceAngle>
+                    <referenceAngle>-45</referenceAngle>
                   </stringerPosition>
                 </stringer>
                 <stringer uID="stringer6">
@@ -537,14 +537,14 @@
                     <positionX>2515</positionX>
                     <referenceY>0.16</referenceY>
                     <referenceZ>-0.0509994</referenceZ>
-                    <referenceAngle>90</referenceAngle>
+                    <referenceAngle>-90</referenceAngle>
                   </stringerPosition>
                   <stringerPosition uID="stringer6_position2">
                     <structuralElementUID>stringerElement1</structuralElementUID>
                     <positionX>2935.5</positionX>
                     <referenceY>-0.578397</referenceY>
                     <referenceZ>40</referenceZ>
-                    <referenceAngle>90</referenceAngle>
+                    <referenceAngle>-90</referenceAngle>
                   </stringerPosition>
                 </stringer>
                 <stringer uID="stringer7">
@@ -553,14 +553,14 @@
                     <positionX>2100</positionX>
                     <referenceY>0.16</referenceY>
                     <referenceZ>-0.0509994</referenceZ>
-                    <referenceAngle>45</referenceAngle>
+                    <referenceAngle>-135</referenceAngle>
                   </stringerPosition>
                   <stringerPosition uID="stringer7_position2">
                     <structuralElementUID>stringerElement1</structuralElementUID>
                     <positionX>2935.5</positionX>
                     <referenceY>-0.578397</referenceY>
                     <referenceZ>40</referenceZ>
-                    <referenceAngle>45</referenceAngle>
+                    <referenceAngle>-135</referenceAngle>
                   </stringerPosition>
                 </stringer>
                 <stringer uID="stringer8">
@@ -569,14 +569,14 @@
                     <positionX>2515</positionX>
                     <referenceY>0.16</referenceY>
                     <referenceZ>-0.0509994</referenceZ>
-                    <referenceAngle>0</referenceAngle>
+                    <referenceAngle>180</referenceAngle>
                   </stringerPosition>
                   <stringerPosition uID="stringer8_position2">
                     <structuralElementUID>stringerElement1</structuralElementUID>
                     <positionX>2935.5</positionX>
                     <referenceY>-0.578397</referenceY>
                     <referenceZ>40</referenceZ>
-                    <referenceAngle>0</referenceAngle>
+                    <referenceAngle>180</referenceAngle>
                   </stringerPosition>
                 </stringer>
               </stringers>
