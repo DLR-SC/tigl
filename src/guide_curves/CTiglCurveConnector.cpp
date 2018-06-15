@@ -127,7 +127,7 @@ void CTiglCurveConnector::VerifyNumberOfSegments(std::map<double, CCPACSGuideCur
         }
 
         if ( shouldBeThisMany != numSegments ) {
-            throw CTiglError("The number of segments does not match the specified number of sections!");
+            throw CTiglError("The guide curves of the segments cannot be connected. Does your curve network have internal hanging nodes?");
         }
     }
 }
