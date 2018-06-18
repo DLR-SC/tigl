@@ -4226,6 +4226,36 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetWettedArea(TiglCPACSConfigurationHa
 /*@{*/
 
 /**
+* @brief Returns the points on the airplane geometry in global coordinates for a given guide curve.
+*
+* The output vectors of the x, y, and z vectors must be allocated by the user first. The number of guide
+* curve points coincides with the number of points in the corresponding guide curve profile.
+*
+* @param[in]    cpacsHandle     Handle for the CPACS configuration
+* @param[in]    curveUID        UID of the guide curve
+* @param[in]    numPoints       number of guide curve points (this should coincide with the number of
+*                               guide curve profile points)
+* @param[out]   x               x-values of the guide curve points
+* @param[out]   y               y-values of the guide curve points
+* @param[out]   z               z-values of the guide curve points
+*
+* @cond
+* #annotate out: 3AM(2), 4AM(2), 5AM(2)#
+* @endcond
+*
+* @return
+*   - TIGL_SUCCESS if no error occured
+*   - TIGL_NOT_FOUND if no guide curve with the given uid was found
+*   - TIGL_NULL_POINTER if curveUID is NULL NULL
+*   - TIGL_ERROR if some other error occurred
+*
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglGetGuideCurvePoints(TiglCPACSConfigurationHandle cpacsHandle,
+                                                          const char* curveUID,
+                                                          int numPoints,
+                                                          double * x, double * y, double * z);
+
+/**
 * @brief Returns the number of curves the given profile is made of.
 * 
 * The given profile may be a fuselage profile or a wing profile. Typically,

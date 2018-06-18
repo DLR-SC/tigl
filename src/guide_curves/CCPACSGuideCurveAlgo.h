@@ -75,7 +75,7 @@ public:
     {
     }
 
-    TIGL_EXPORT operator TopoDS_Wire()
+    TIGL_EXPORT operator std::vector<gp_Pnt>()
     {
         // get guide Curve points in local coordinates
         std::vector<PCTiglPoint> guideCurveProfilePoints = _guideCurveProfile.GetGuideCurveProfilePoints();
@@ -137,11 +137,7 @@ public:
             guideCurvePoints[i+1]=gp_Pnt(guideCurvePoint.X(), guideCurvePoint.Y(), guideCurvePoint.Z()) ;
         }
 
-        // interpolate B-Spline curve through guide curve points
-        CTiglInterpolateBsplineWire wireBuilder;
-        TopoDS_Wire guideCurveWire = wireBuilder.BuildWire(guideCurvePoints, false);
-
-        return guideCurveWire;
+        return guideCurvePoints;
     }
 
 private:

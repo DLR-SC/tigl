@@ -324,9 +324,12 @@ TEST_F(FuselageGuideCurve, tiglFuselageGuideCurve_CCPACSGuideCurveAlgo)
     tigl::CCPACSGuideCurveProfile guideCurveProfile;
     guideCurveProfile.ReadCPACS(tixiHandle, "/cpacs/vehicles/profiles/guideCurveProfiles/guideCurveProfile[2]");
 
-    TopoDS_Wire guideCurveWire;
     // instantiate guideCurveAlgo
-    guideCurveWire = tigl::CCPACSGuideCurveAlgo<tigl::CCPACSFuselageProfileGetPointAlgo> (wireContainer1, wireContainer2, 0.5, 0.5, 2*radius1, 2*radius2, guideCurveProfile);
+    std::vector<gp_Pnt> guideCurvePoints = tigl::CCPACSGuideCurveAlgo<tigl::CCPACSFuselageProfileGetPointAlgo> (wireContainer1, wireContainer2, 0.5, 0.5, 2*radius1, 2*radius2, guideCurveProfile);
+
+    // interpolate B-Spline curve through guide curve points
+    tigl::CTiglInterpolateBsplineWire wireBuilder;
+    TopoDS_Wire guideCurveWire = wireBuilder.BuildWire(guideCurvePoints, false);
 
     // check if guide curve runs through sample points
     // get curve

@@ -164,6 +164,8 @@ public:
     // check if guide curve with a given UID exists
     TIGL_EXPORT bool GuideCurveExists(std::string UID);
 
+    TIGL_EXPORT std::vector<gp_Pnt> GetGuideCurvePoints(std::string guideUID);
+
 protected:
     // Cleanup routine
     void Cleanup(void);
