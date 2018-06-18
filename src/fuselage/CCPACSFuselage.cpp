@@ -395,12 +395,10 @@ std::vector<gp_Pnt> CCPACSFuselage::GetGuideCurvePoints()
 
 gp_Lin CCPACSFuselage::Intersection(gp_Pnt pRef, double angleRef)
 {
-    const gp_Ax1 xAxe(
-        pRef,
-        gp_Dir(1, 0,
-               0)); // to have a left-handed coordinates system for the intersection computation (see documentation)
-    const gp_Dir ZReference(0, 0, 1);
-    const gp_Dir angleDir = ZReference.Rotated(xAxe, angleRef + M_PI);
+    // to have a left-handed coordinates system for the intersection computation (see documentation)
+    const gp_Ax1 xAxe(pRef, gp_Dir(1, 0, 0));
+    const gp_Dir zReference(0, 0, 1);
+    const gp_Dir angleDir = zReference.Rotated(xAxe, angleRef);
 
     // build a line to position the intersection with the fuselage shape
     gp_Lin line(pRef, angleDir);
