@@ -174,12 +174,13 @@ void BSplineFit::computeKnots()
  void BSplineFit::computeParameters(double alpha)
  {
      double sum = 0.0;
+
+     size_t nPoints = _px.size();
+     t.resize(nPoints, 0.);
      t[0]=0.0;
 
-     unsigned int nPoints = _px.size();
-
      // calc total arc length: dt^2 = dx^2 + dy^2
-     for (unsigned int i=0; i<nPoints-1; i++) {
+     for (size_t i=0; i<nPoints-1; i++) {
          double len2 = (_px[i]-_px[i+1])*(_px[i]-_px[i+1])
                  + (_py[i]-_py[i+1])*(_py[i]-_py[i+1])
                  + (_pz[i]-_pz[i+1])*(_pz[i]-_pz[i+1]);
@@ -189,7 +190,7 @@ void BSplineFit::computeKnots()
 
      // normalize parameter with maximum
      double tmax = t[nPoints-1];
-     for (unsigned int i=0; i<nPoints; i++) {
+     for (size_t i=0; i<nPoints; i++) {
          t[i] /= tmax;
      }
 

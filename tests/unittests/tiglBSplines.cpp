@@ -35,6 +35,7 @@
 #include <CTiglBSplineAlgorithms.h>
 #include <cmath>
 #include <math_Matrix.hxx>
+#include "CTiglBSplineFit.h"
 
 TEST(BSplines, pointsToLinear)
 {
@@ -595,4 +596,29 @@ TEST_F(BSplineInterpolation, tipKink2)
     tigl::CTiglApproxResult result = app.FitCurve(parms2);
 
     StoreResult("TestData/analysis/BSplineInterpolation-tipKink2.brep", result.curve, pnt2);
+}
+
+/*
+ * A test case for issue #440
+ */
+TEST_F(BSplineInterpolation, errorParamsNotResized)
+{
+    TColgp_Array1OfPnt pnts(1, 11);
+    pnts.SetValue( 1 , gp_Pnt( -1.0 , 0.25 , 0.0 ));
+    pnts.SetValue( 2 , gp_Pnt( -0.504 , 0.24975 , 0.0 ));
+    pnts.SetValue( 3 , gp_Pnt( -0.03200000000000003 , 0.248 , 0.0 ));
+    pnts.SetValue( 4 , gp_Pnt( 0.3920000000000001 , 0.24325 , 0.0 ));
+    pnts.SetValue( 5 , gp_Pnt( 0.7440000000000002 , 0.23399999999999999 , 0.0 ));
+    pnts.SetValue( 6 , gp_Pnt( 1.0000000000000004 , 0.21875 , 0.0 ));
+    pnts.SetValue( 7 , gp_Pnt( 1.1360000000000006 , 0.196 , 0.0 ));
+    pnts.SetValue( 8 , gp_Pnt( 1.1280000000000006 , 0.16425 , 0.0 ));
+    pnts.SetValue( 9 , gp_Pnt( 0.9520000000000008 , 0.12199999999999997 , 0.0 ));
+    pnts.SetValue( 10 , gp_Pnt( 0.584000000000001 , 0.06774999999999998 , 0.0 ));
+    pnts.SetValue( 11 , gp_Pnt( 8.881784197001252e-16 , 0.0 , 0.0 ));
+    
+    BSplineFit fit(3, 8);
+    ASSERT_EQ(BSplineFit::NoError, fit.FitOptimal(pnts, 1.));
+    EXPECT_NEAR(0., fit.GetMaxError(), 2e-3);
+    
+    StoreResult("TestData/analysis/BSplineFit-errorParamsNotResized.brep", fit.Curve(), pnts);
 }
