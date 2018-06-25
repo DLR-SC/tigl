@@ -52,20 +52,24 @@ TiglGeometricComponentType CCPACSLongFloorBeam::GetComponentType() const
 
 void CCPACSLongFloorBeam::Invalidate()
 {
-    for (auto& g : m_geometry)
-        g = boost::none;
+    for (size_t igeom = 0; igeom < sizeof(m_geometry) / sizeof(m_geometry[0]); ++igeom) {
+        m_geometry[igeom] = boost::none;
+    }
 }
 
 TopoDS_Shape CCPACSLongFloorBeam::GetGeometry(bool just1DElements, TiglCoordinateSystem cs)
 {
-    if (!m_geometry[just1DElements])
+    if (!m_geometry[just1DElements]) {
         BuildGeometry(just1DElements);
+    }
 
     TopoDS_Shape shape = m_geometry[just1DElements].value();
-    if (cs == TiglCoordinateSystem::GLOBAL_COORDINATE_SYSTEM)
+    if (cs == TiglCoordinateSystem::GLOBAL_COORDINATE_SYSTEM) {
         return m_parent->GetParent()->GetParent()->GetTransformationMatrix().Transform(shape);
-    else
+    }
+    else {
         return shape;
+    }
 }
 
 void CCPACSLongFloorBeam::BuildGeometry(bool just1DElements)
@@ -78,19 +82,20 @@ void CCPACSLongFloorBeam::BuildGeometry(bool just1DElements)
 
     // connect points by edges
     BRepBuilderAPI_MakeWire wire;
-    for (int i = 1; i < points.size(); i++) {
+    for (size_t i = 1; i < points.size(); i++) {
         wire.Add(BRepBuilderAPI_MakeEdge(points[i - 1], points[i]));
     }
 
-    if (just1DElements)
+    if (just1DElements) {
         m_geometry[just1DElements] = wire;
+    }
     else {
         TopoDS_Compound compound;
         TopoDS_Builder builder;
         builder.MakeCompound(compound);
 
         // sweep the profiles between each pair of positions
-        for (int i = 1; i < points.size(); i++) {
+        for (size_t i = 1; i < points.size(); i++) {
             const CCPACSProfileBasedStructuralElement& pbse =
                 m_uidMgr->ResolveObject<CCPACSProfileBasedStructuralElement>(
                     m_longFloorBeamPositions[i - 1]->GetStructuralElementUID());
@@ -106,8 +111,9 @@ void CCPACSLongFloorBeam::BuildGeometry(bool just1DElements)
 
             BRepPrimAPI_MakePrism frameShell(sheetList.CreateProfileWire(profilePlan), vector);
             frameShell.Build();
-            if (!frameShell.IsDone())
+            if (!frameShell.IsDone()) {
                 throw CTiglError("Error during the frame sweeping", TIGL_XML_ERROR);
+            }
             builder.Add(compound, frameShell.Shape());
         }
         m_geometry[just1DElements] = compound;
