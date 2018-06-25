@@ -18,6 +18,7 @@
 
 %module (package="tigl3") configuration
 
+%include <typemaps.i>
 %include common.i
 
 %include Geom_headers.i
@@ -97,6 +98,8 @@
 %boost_optional(tigl::generated::CPACSLinkToFileType_format)
 %boost_optional(tigl::CCPACSWingCells)
 
+%apply double *OUTPUT { double* eta, double* xsi };
+
 %include "generated/CPACSSkinSegment.h"
 %include "CCPACSSkinSegment.h"
 %include "generated/CPACSCargoDoorsAssembly.h"
@@ -152,9 +155,13 @@ class CCPACSWingRibsPositioning;
 %include "generated/CPACSSparSegments.h"
 %include "generated/CPACSSparSegment.h"
 %include "CCPACSWingSparSegments.h"
+
+%apply double &OUTPUT { double& eta, double& xsi };
 %include "CCPACSWingSparSegment.h"
 %include "CCPACSWingSparPositions.h"
 %include "CTiglWingStructureReference.h"
+%clear double& eta, double& xsi;
+
 %include "generated/CPACSWingSpar.h"
 %include "CCPACSWingSpars.h"
 %include "generated/CPACSWingRibsDefinitions.h"
@@ -169,7 +176,11 @@ class CCPACSWingRibsPositioning;
 %include "CCPACSWingShell.h"
 %template (WingComponentSegmentTemplate) tigl::CTiglAbstractSegment<tigl::CCPACSWingComponentSegment>;
 %include "generated/CPACSComponentSegment.h"
+
+%apply double &OUTPUT { double& eta, double& xsi, double& errorDistance};
 %include "CCPACSWingComponentSegment.h"
+%clear double& eta, double& xsi, double& errorDistance;
+
 %include "generated/CPACSWingComponentSegmentStructure.h"
 %include "CCPACSWingCSStructure.h"
 %include "generated/CPACSComponentSegments.h"
@@ -212,8 +223,12 @@ class CCPACSWingRibsPositioning;
 %include "generated/CPACSGuideCurveProfileGeometry.h"
 %include "CCPACSGuideCurveProfile.h"
 %include "generated/CPACSWingSegment.h"
+
 %template (WingSegmentTemplate) tigl::CTiglAbstractSegment<tigl::CCPACSWingSegment>;
+%apply double &OUTPUT { double& eta, double& xsi };
 %include "CCPACSWingSegment.h"
+%clear double& eta, double& xsi;
+
 %include "generated/CPACSFuselageSegment.h"
 %template (FuselageSegmentTemplate) tigl::CTiglAbstractSegment<tigl::CCPACSFuselageSegment>;
 %include "CCPACSFuselageSegment.h"
@@ -221,7 +236,13 @@ class CCPACSWingRibsPositioning;
 %include "CCPACSWingProfiles.h"
 %include "CTiglRelativelyPositionedComponent.h"
 %include "generated/CPACSWing.h"
+
+%apply double& OUTPUT { double& mac_chord, double& mac_x, double& mac_y, double& mac_z };
+%apply bool& OUTPUT { double& onTop };
 %include "CCPACSWing.h"
+%clear double &mac_chord, double &mac_x, double &mac_y, double &mac_z;
+%clear bool& onTop;
+
 %include "generated/CPACSWings.h"
 %include "CCPACSWings.h"
 %include "generated/CPACSRotorHubHinge.h"
@@ -289,3 +310,5 @@ public:
 %include "CCPACSConfiguration.h"
 %include "CCPACSConfigurationManager.h"
 %include "CTiglFusePlane.h"
+
+%clear double* eta, double* xsi;
