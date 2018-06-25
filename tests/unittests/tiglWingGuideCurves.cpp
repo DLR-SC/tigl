@@ -108,7 +108,7 @@ protected:
 TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSGuideCurveProfile)
 {
     tigl::CCPACSGuideCurveProfile guideCurve(NULL);
-    guideCurve.ReadCPACS(tixiHandle, "/cpacs/vehicles/profiles/guideCurves/guideCurveProfile[7]");
+    guideCurve.ReadCPACS(tixiHandle, "/cpacs/vehicles/profiles/guideCurves/guideCurveProfile[5]");
     ASSERT_EQ(guideCurve.GetUID(), "GuideCurveModel_Wing_GuideCurveProfile_LeadingEdge_NonLinear");
     ASSERT_EQ(guideCurve.GetName(), "NonLinear Leading Edge Guide Curve Profile for GuideCurveModel - Wing");
 }
@@ -120,7 +120,7 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSGuideCurveProfiles)
 {
     tigl::CCPACSGuideCurveProfiles guideCurves(NULL);
     guideCurves.ReadCPACS(tixiHandle, "/cpacs/vehicles/profiles/guideCurves");
-    ASSERT_EQ(guideCurves.GetGuideCurveProfileCount(), 11);
+    ASSERT_EQ(guideCurves.GetGuideCurveProfileCount(), 6);
     tigl::CCPACSGuideCurveProfile& guideCurve = guideCurves.GetGuideCurveProfile("GuideCurveModel_Wing_GuideCurveProfile_LeadingEdge_NonLinear");
     ASSERT_EQ(guideCurve.GetUID(), "GuideCurveModel_Wing_GuideCurveProfile_LeadingEdge_NonLinear");
     ASSERT_EQ(guideCurve.GetName(), "NonLinear Leading Edge Guide Curve Profile for GuideCurveModel - Wing");
@@ -361,7 +361,7 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSGuideCurveAlgo)
 
     // get guide curve profile
     tigl::CCPACSGuideCurveProfile guideCurveProfile(NULL);
-    guideCurveProfile.ReadCPACS(tixiHandle, "/cpacs/vehicles/profiles/guideCurves/guideCurveProfile[7]");
+    guideCurveProfile.ReadCPACS(tixiHandle, "/cpacs/vehicles/profiles/guideCurves/guideCurveProfile[5]");
 
 
     std::vector<gp_Pnt> guideCurvePnts;
@@ -374,7 +374,7 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSGuideCurveAlgo)
     Standard_Real u1, u2;
     Handle(Geom_Curve) curve =  BRep_Tool::Curve(guideCurveEdge, u1, u2);
     // set predicted sample points from cpacs file
-    const double temp[] = {0.0, 0.0, 0.01, 0.03, 0.09, 0.08, 0.07, 0.06, 0.02, 0.0, 0.0};
+    const double temp[] = {0.0, 0.0, -0.01, -0.03, -0.09, -0.08, -0.07, -0.06, -0.02, 0.0, 0.0};
     std::vector<double> predictedSamplePointsX (temp, temp + sizeof(temp) / sizeof(temp[0]) );
     for (unsigned int i = 0; i <= 10; ++i) {
         // get intersection point of the guide curve with planes parallel to the x-z plane located at b
@@ -419,7 +419,7 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSWingSegment)
     Standard_Real u1, u2;
     Handle(Geom_Curve) curve =  BRep_Tool::Curve(guideCurveEdge, u1, u2);
     // gamma values of cpacs data points
-    const double temp[] = {0.0, 0.0, 0.01, 0.03, 0.09, 0.08, 0.07, 0.06, 0.02, 0.0, 0.0};
+    const double temp[] = {0.0, 0.0, -0.01, -0.03, -0.09, -0.08, -0.07, -0.06, -0.02, 0.0, 0.0};
     std::vector<double> gammaDeviation (temp, temp + sizeof(temp) / sizeof(temp[0]) );
     // number of sample points
     unsigned int N=10;

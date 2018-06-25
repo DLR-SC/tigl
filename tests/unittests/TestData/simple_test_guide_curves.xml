@@ -677,7 +677,7 @@
           <pointList>
             <rX mapType="vector">0;0;0</rX>
             <rY mapType="vector">0.1;0.5;0.9</rY>
-            <rZ mapType="vector">0;0;-3.04213e-32</rZ>
+            <rZ mapType="vector">0;0;0</rZ>
           </pointList>
         </guideCurveProfile>
         <guideCurveProfile uID="GuideCurveModel_Fuselage_GuideCurveProfile_Middle_NonLinear">
@@ -686,7 +686,7 @@
           <pointList>
             <rX mapType="vector">0;0;0;0;0;0;0;0;0</rX>
             <rY mapType="vector">0.1;0.2;0.3;0.4;0.5;0.6;0.7;0.8;0.9</rY>
-            <rZ mapType="vector">0;0.0122205;0.0366616;0.109985;0.0977644;0.0855438;0.0733233;0.0244411;4.27914e-17</rZ>
+            <rZ mapType="vector">0;0.012;0.037;0.110;0.098;0.086;0.073;0.024;0</rZ>
           </pointList>
         </guideCurveProfile>
         <guideCurveProfile uID="GuideCurveModel_Fuselage_GuideCurveProfile_Upper_Linear">
@@ -695,34 +695,34 @@
           <pointList>
             <rX mapType="vector">0;0;0</rX>
             <rY mapType="vector">0.1;0.5;0.9</rY>
-            <rZ mapType="vector">0;0;6.41187e-32</rZ>
+            <rZ mapType="vector">0;0;0</rZ>
           </pointList>
         </guideCurveProfile>
         <guideCurveProfile uID="GuideCurveModel_Wing_GuideCurveProfile_TrailingEdgeLower_NonLinear">
           <name>Linear Lower Trailing Edge Guide Curve Profile for GuideCurveModel - Wing</name>
           <description>Linear Lower Trailing Edge Guide Curve Profile for GuideCurveModel - Wing</description>
           <pointList>
-            <rX mapType="vector">0.00101433;0.0101433;0.00101433</rX>
+            <rX mapType="vector">0.001;0.01;0.001</rX>
             <rY mapType="vector">0.1;0.5;0.9</rY>
-            <rZ mapType="vector">-9.75521e-05;-0.00097552;-9.7552e-05</rZ>
+            <rZ mapType="vector">0;0;0</rZ>
           </pointList>
         </guideCurveProfile>
         <guideCurveProfile uID="GuideCurveModel_Wing_GuideCurveProfile_LeadingEdge_NonLinear">
           <name>NonLinear Leading Edge Guide Curve Profile for GuideCurveModel - Wing</name>
           <description>NonLinear Leading Edge Guide Curve Profile for GuideCurveModel - Wing</description>
           <pointList>
-            <rX mapType="vector">0;-0.00999654;-0.0299896;-0.0899689;-0.0799724;-0.0699758;-0.0599793;-0.0199931;0</rX>
+            <rX mapType="vector">0;-0.01;-0.03;-0.09;-0.08;-0.07;-0.06;-0.02;0</rX>
             <rY mapType="vector">0.1;0.2;0.3;0.4;0.5;0.6;0.7;0.8;0.9</rY>
-            <rZ mapType="vector">0;0.000262863;0.000788588;0.00236576;0.0021029;0.00184004;0.00157718;0.000525726;0</rZ>
+            <rZ mapType="vector">0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0</rZ>
           </pointList>
         </guideCurveProfile>
         <guideCurveProfile uID="GuideCurveModel_Wing_GuideCurveProfile_TrailingEdgeUpper_NonLinear">
           <name>Linear Upper Trailing Edge Guide Curve Profile for GuideCurveModel - Wing</name>
           <description>Linear Upper Trailing Edge Guide Curve Profile for GuideCurveModel - Wing</description>
           <pointList>
-            <rX mapType="vector">0.000997645;0.00997645;0.000997645</rX>
+            <rX mapType="vector">0.001;0.01;0.001</rX>
             <rY mapType="vector">0.1;0.5;0.9</rY>
-            <rZ mapType="vector">-0.000223526;-0.00223526;-0.000223526</rZ>
+            <rZ mapType="vector">0.0;0.0;0.0</rZ>
           </pointList>
         </guideCurveProfile>
       </guideCurves>
