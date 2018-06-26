@@ -24,6 +24,8 @@ class CCPACSFramesAssembly : public generated::CPACSFramesAssembly
 {
 public:
     TIGL_EXPORT CCPACSFramesAssembly(CCPACSFuselageStructure* parent, CTiglUIDManager* uidMgr);
+
+    TIGL_EXPORT void Invalidate();
 };
 
 } // namespace tigl

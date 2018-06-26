@@ -16,12 +16,18 @@
 
 #include "CCPACSFramesAssembly.h"
 
+#include "CCPACSFrame.h"
+
 namespace tigl
 {
-
 CCPACSFramesAssembly::CCPACSFramesAssembly(CCPACSFuselageStructure* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSFramesAssembly(parent, uidMgr)
 {
 }
 
+void CCPACSFramesAssembly::Invalidate()
+{
+    for (size_t i = 0; i < m_frames.size(); i++)
+        m_frames[i]->Invalidate();
+}
 } // namespace tigl

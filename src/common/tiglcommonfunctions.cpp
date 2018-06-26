@@ -497,7 +497,7 @@ int GetComponentHashCode(tigl::ITiglGeometricComponent& component)
 // Creates an Edge from the given Points by B-Spline interpolation
 TopoDS_Edge EdgeSplineFromPoints(const std::vector<gp_Pnt>& points)
 {
-    unsigned int pointCount = points.size();
+    unsigned int pointCount = static_cast<int>(points.size());
     
     Handle(TColgp_HArray1OfPnt) hpoints = new TColgp_HArray1OfPnt(1, pointCount);
     for (unsigned int j = 0; j < pointCount; j++) {

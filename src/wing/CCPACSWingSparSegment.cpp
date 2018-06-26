@@ -139,7 +139,7 @@ void CCPACSWingSparSegment::GetEtaXsi(int positionIndex, double& eta, double& xs
     else if (sparPosition.GetInputType() == CCPACSWingSparPosition::ElementUID) {
         gp_Pnt sparPositionPoint = GetMidplanePoint(sparPositionUID);
         double dummy;
-        sparsNode.GetParent()->GetWingStructureReference().GetMidplaneEtaXsi(sparPositionPoint, eta, dummy);
+        sparsNode.GetParent()->GetWingStructureReference().GetEtaXsiLocal(sparPositionPoint, eta, dummy);
         assert(fabs(dummy - xsi) < 1.E-6);
     }
     else {
@@ -370,7 +370,7 @@ void CCPACSWingSparSegment::BuildGeometry() const
     TopExp_Explorer exp;
     for (exp.Init(sparCutGeometry, TopAbs_FACE); exp.More(); exp.Next()) {
         TopoDS_Face sparCutFace = TopoDS::Face(exp.Current());
-            
+
         // intersect spar cut face with loft
         TopoDS_Shape sparCutEdges = CutShapes(loft, sparCutFace);
 

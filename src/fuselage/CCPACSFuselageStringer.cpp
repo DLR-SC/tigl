@@ -159,7 +159,6 @@ void CCPACSFuselageStringer::BuildCutGeometry()
         TopTools_IndexedMapOfShape faceMap;
         TopExp::MapShapes(fuselageLoft, TopAbs_FACE, faceMap);
 
-        int aux = faceMap.Extent();
         for (int k = 1; k <= faceMap.Extent(); k++) // check if the pntA is on the surface and then create the normal
         {
             // check if it is there

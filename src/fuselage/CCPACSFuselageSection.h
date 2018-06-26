@@ -38,7 +38,7 @@ public:
     TIGL_EXPORT CCPACSFuselageSection(CCPACSFuselageSections* parent, CTiglUIDManager* uidMgr);
 
     // Read CPACS section elements
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& sectionXPath);
+    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& sectionXPath) OVERRIDE;
 
     // Get element count for this section
     TIGL_EXPORT int GetSectionElementCount() const;

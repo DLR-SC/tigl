@@ -23,7 +23,7 @@
 #include "CCPACSWingCell.h"
 
 
-namespace tigl 
+namespace tigl
 {
 
 CCPACSWingShell::CCPACSWingShell(CCPACSWingCSStructure* parent, CTiglUIDManager* uidMgr)

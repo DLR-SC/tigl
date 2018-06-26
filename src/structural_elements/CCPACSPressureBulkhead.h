@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2018 RISC Software GmbH
+* Copyright (c) 2018 Airbus Defence and Space and RISC Software GmbH
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -24,6 +24,9 @@ class CCPACSPressureBulkhead : public generated::CPACSPressureBulkhead
 {
 public:
     TIGL_EXPORT CCPACSPressureBulkhead(CCPACSPressureBulkheads* parent, CTiglUIDManager* uidMgr);
+
+    TIGL_EXPORT int GetReinforcementNumberVertical() const;
+    TIGL_EXPORT int GetReinforcementNumberHorizontal() const;
 };
 
 } // namespace tigl

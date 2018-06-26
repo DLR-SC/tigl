@@ -78,7 +78,7 @@ public:
     TIGL_EXPORT const CCPACSMaterialDefinition& GetMaterial() const;
 
     TIGL_EXPORT void Update() const;
-    
+
 private:
     std::pair<double, double> computePositioningEtaXsi(const CCPACSWingCellPositionSpanwise& spanwisePos, 
                                                        const CCPACSWingCellPositionChordwise& chordwisePos, 

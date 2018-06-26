@@ -30,7 +30,7 @@ class CCPACSWingRibsPositioning : public generated::CPACSWingRibsPositioning
 public:
     // NOTE: definition of start/end of rib via spar position not conform with CPACS format (v2.3)
     enum StartDefinitionType
-    { 
+    {
         ELEMENT_START,
         ETA_START,
         SPARPOSITION_START

@@ -85,7 +85,7 @@ double computeSparXsiValue(const CTiglWingStructureReference& wsr, const CCPACSW
         throw CTiglError("Error in computation of spar eta point in tigletaxsifunctions::computeSparXsiValue");
     }
     double newEta, xsi;
-    wsr.GetMidplaneEtaXsi(etaXsiPoint, newEta, xsi);
+    wsr.GetEtaXsiLocal(etaXsiPoint, newEta, xsi);
     return xsi;
 }
 
@@ -96,8 +96,8 @@ double computeRibEtaValue(const CTiglWingStructureReference& wsr, const CCPACSWi
     rib.GetRibMidplanePoints(ribIndex, ribStartPoint, ribEndPoint);
 
     double startEta, startXsi, endEta, endXsi;
-    wsr.GetMidplaneEtaXsi(ribStartPoint, startEta, startXsi);
-    wsr.GetMidplaneEtaXsi(ribEndPoint, endEta, endXsi);
+    wsr.GetEtaXsiLocal(ribStartPoint, startEta, startXsi);
+    wsr.GetEtaXsiLocal(ribEndPoint, endEta, endXsi);
 
     // fix numeric inaccuracy in xsi
     double precision = 1.E-8;
@@ -123,8 +123,8 @@ EtaXsi computeRibSparIntersectionEtaXsi(const CTiglWingStructureReference& wsr, 
     rib.GetRibMidplanePoints(ribIndex, ribStartPoint, ribEndPoint);
 
     EtaXsi ribStart, ribEnd;
-    wsr.GetMidplaneEtaXsi(ribStartPoint, ribStart.eta, ribStart.xsi);
-    wsr.GetMidplaneEtaXsi(ribEndPoint, ribEnd.eta, ribEnd.xsi);
+    wsr.GetEtaXsiLocal(ribStartPoint, ribStart.eta, ribStart.xsi);
+    wsr.GetEtaXsiLocal(ribEndPoint, ribEnd.eta, ribEnd.xsi);
 
     // determine number of spar positions
     int numSparPositions = spar.GetSparPositionUIDs().GetSparPositionUIDCount();

@@ -47,6 +47,12 @@ class IGuideCurveBuilder;
 
 class CCPACSGuideCurve : public generated::CPACSGuideCurve
 {
+public:
+    enum FromDefinition
+    {
+        UID,
+        CIRCUMFERENCE
+    };
 
 private:
     // Typedefs for a container to store the coordinates of a guide curve element.
@@ -58,6 +64,8 @@ public:
 
     // Virtual Destructor
     TIGL_EXPORT ~CCPACSGuideCurve(void) OVERRIDE;
+
+    TIGL_EXPORT FromDefinition GetFromDefinition() const;
 
     TIGL_EXPORT const std::vector<gp_Pnt> GetCurvePoints();
     TIGL_EXPORT const TopoDS_Edge& GetCurve();

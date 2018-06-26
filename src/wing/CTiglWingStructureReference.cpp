@@ -129,9 +129,9 @@ TopoDS_Wire CTiglWingStructureReference::GetTrailingEdgeLine() const
     DISPATCH(GetTrailingEdgeLine())
 }
 
-void CTiglWingStructureReference::GetMidplaneEtaXsi(const gp_Pnt& p, double& eta, double& xsi) const
+void CTiglWingStructureReference::GetEtaXsiLocal(const gp_Pnt& p, double& eta, double& xsi) const
 {
-    DISPATCH(GetMidplaneEtaXsi(p, eta, xsi));
+    DISPATCH(GetEtaXsiLocal(p, eta, xsi));
 }
 
 gp_Vec CTiglWingStructureReference::GetMidplaneEtaDir(double eta) const

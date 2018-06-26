@@ -81,10 +81,6 @@
 #include "ShapeAnalysis_Surface.hxx"
 #include "BRepLib_FindSurface.hxx"
 
-#ifndef max
-#define max(a, b) (((a) > (b)) ? (a) : (b))
-#endif
-
 namespace
 {
     gp_Pnt transformProfilePoint(const tigl::CTiglTransformation& fuselTransform, const tigl::CTiglFuselageConnection& connection, const gp_Pnt& pointOnProfile)
@@ -757,7 +753,7 @@ gp_Pnt CCPACSFuselageSegment::GetPointAngle(double eta, double alpha, double y_c
     boundingBox.Get(xmin, ymin, zmin, xmax, ymax, zmax);
     double yw = ymax - ymin;
     double zw = zmax - zmin;
-    double length = 2*max(yw, zw);
+    double length = 2*std::max(yw, zw);
 
     //create a rectangular face
     double angle = alpha/180. * M_PI;

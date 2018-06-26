@@ -182,19 +182,19 @@ void CCPACSFrame::BuildGeometry(bool just1DElements)
 
 void CCPACSFrame::BuildCutGeometry()
 {
+    TopoDS_Shape fuselageLoft = m_parent->GetParent()->GetParent()->GetLoft(FUSELAGE_COORDINATE_SYSTEM)->Shape();
+    Bnd_Box fuselageBox;
+    BRepBndLib::Add(fuselageLoft, fuselageBox);
+    double bbSize = fuselageBox.SquareExtent();
+
     if (m_framePositions.size() == 1)
-        m_cutGeomCache = BRepBuilderAPI_MakeFace(gp_Pln(m_framePositions[0]->GetRefPoint(), gp_Dir(1, 0, 0)));
+        m_cutGeomCache = BRepBuilderAPI_MakeFace(gp_Pln(m_framePositions[0]->GetRefPoint(), gp_Dir(1, 0, 0)), -bbSize, bbSize, -bbSize, bbSize);
     else {
         TopoDS_Compound compound;
         TopoDS_Builder builder;
         builder.MakeCompound(compound);
 
-        TopoDS_Shape fuselageLoft = m_parent->GetParent()->GetParent()->GetLoft()->Shape();
-
-        Bnd_Box fuselageBox;
-        BRepBndLib::Add(fuselageLoft, fuselageBox);
-
-        TopoDS_Shape geometry = GetGeometry(true, TiglCoordinateSystem::FUSELAGE_COORDINATE_SYSTEM);
+        TopoDS_Shape geometry = GetGeometry(true, FUSELAGE_COORDINATE_SYSTEM);
 
         TopTools_IndexedMapOfShape edgeMap;
         TopExp::MapShapes(geometry, TopAbs_EDGE, edgeMap);
@@ -227,7 +227,7 @@ void CCPACSFrame::BuildCutGeometry()
                     if (pntA.IsEqual(pnt2, precision) != 0) {
                         frameOnFace                = true;
                         const gp_Vec vN            = gp_Vec(GeomLProp_SLProps(surf, uv.X(), uv.Y(), 1, 0.01).Normal());
-                        const double cutPlaneDepth = fuselageBox.SquareExtent() * 2.e-7 + 0.125;
+                        const double cutPlaneDepth = bbSize * 2.e-7 + 0.125;
                         normalEdge                 = BRepBuilderAPI_MakeEdge(pntA.Translated(-vN * cutPlaneDepth),
                                                              pntA.Translated(vN * cutPlaneDepth));
                         break;
