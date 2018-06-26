@@ -431,8 +431,8 @@ TopoDS_Wire CCPACSWingComponentSegment::GetMidplaneLine(const gp_Pnt& startPoint
     // get minimum and maximum z-value of bounding box
     Bnd_Box bbox;
     BRepBndLib::Add(localLoft, bbox);
-    double zmin, zmax, temp;
-    bbox.Get(temp, temp, zmin, temp, temp, zmax);
+    const double zmin = bbox.CornerMin().Z();
+    const double zmax = bbox.CornerMax().Z();
 
     // build cut face
     gp_Pnt p0 = startPnt;
@@ -567,7 +567,7 @@ SegmentList& CCPACSWingComponentSegment::GetSegmentList() const
 
     return wingSegments;
 }
-    
+
 // Determines, which segments belong to the component segment
 std::vector<int> CCPACSWingComponentSegment::findPath(const std::string& fromUID, const::std::string& toUID, const std::vector<int>& curPath, bool forward) const
 {
@@ -913,21 +913,18 @@ gp_Pnt CCPACSWingComponentSegment::GetPoint(double eta, double xsi, TiglCoordina
     return result;
 }
 
-void CCPACSWingComponentSegment::GetEtaXsi(const gp_Pnt& p, double& eta, double& xsi) const
+void CCPACSWingComponentSegment::GetEtaXsi(const gp_Pnt& globalPoint, double& eta, double& xsi) const
 {
     UpdateChordFace();
 
     // TODO (siggel): check that point is part of component segment
 
-    chordFace->GetEtaXsi(p, eta, xsi);
+    chordFace->GetEtaXsi(globalPoint, eta, xsi);
 }
 
-// TODO (siggel): remove this function as it duplicates GetEtaXsi
-void CCPACSWingComponentSegment::GetMidplaneEtaXsi(const gp_Pnt& p, double& eta, double& xsi) const
+void CCPACSWingComponentSegment::GetEtaXsiLocal(const gp_Pnt& localPoint, double& eta, double& xsi) const
 {
-    gp_Pnt globalPoint = wing->GetTransformationMatrix().Transform(p);
-
-    GetEtaXsi(globalPoint, eta, xsi);
+    return GetEtaXsi(GetWing().GetTransformationMatrix().Transform(localPoint), eta, xsi);
 }
 
 // Getter for eta direction of midplane

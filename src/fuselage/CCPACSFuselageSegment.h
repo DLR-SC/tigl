@@ -139,7 +139,7 @@ public:
 
     // Gets the volume of this segment
     TIGL_EXPORT double GetVolume();
-        
+
     // Gets the surface area of this segment
     TIGL_EXPORT double GetSurfaceArea();
 

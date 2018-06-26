@@ -103,8 +103,6 @@ private:
         gp_Pnt endPnt;
     };
 
-    void Cleanup();
-
     void UpdateRibSetDataCache() const;
 
     void BuildAuxiliaryGeometry() const;

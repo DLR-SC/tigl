@@ -141,7 +141,7 @@ void CCPACSPositionings::Update()
 }
 
 // Read CPACS positionings element
-void CCPACSPositionings::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& wingXPath)
+void CCPACSPositionings::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& wingXPath)
 {
     Cleanup();
     generated::CPACSPositionings::ReadCPACS(tixiHandle, wingXPath);

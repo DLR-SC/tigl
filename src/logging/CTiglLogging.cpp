@@ -60,6 +60,7 @@ CTiglLogging::~CTiglLogging()
 {
 #ifdef GLOG_FOUND
     // TODO (bgruber): this is problematic, as the application linking to TIGL may also use glog after TIGL has been shutdown
+    // TODO (bgruber): enabling this also causes an abort() at the end of the application if glog was linked statically by TIGL and the application
     google::ShutdownGoogleLogging();
 #endif
 }
@@ -94,6 +95,7 @@ CTiglLogging& CTiglLogging::Instance()
 void CTiglLogging::initLogger()
 {
 #ifdef GLOG_FOUND
+    // TODO (bgruber): this is problematic, as the application linking to TIGL may also use glog and initialize it itself
     // Initialize Google's logging library.
     google::InitGoogleLogging("TIGL-log");
 #endif

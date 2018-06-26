@@ -25,9 +25,9 @@ CCPACSFuselageStructure::CCPACSFuselageStructure(CCPACSFuselage* parent, CTiglUI
 
 void CCPACSFuselageStructure::Invalidate()
 {
-    //if (m_frames) {
-    //    m_frames->Invalidate();
-    //}
+    if (m_frames) {
+        m_frames->Invalidate();
+    }
     if (m_stringers) {
         m_stringers->Invalidate();
     }

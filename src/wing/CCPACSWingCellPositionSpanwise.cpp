@@ -79,7 +79,7 @@ std::pair<std::string, int> CCPACSWingCellPositionSpanwise::GetRib() const {
     if (GetInputType() != Rib) {
         throw CTiglError("CCPACSWingCellPositionSpanwise::GetRib method called, but position is defined via eta1/eta2!");
     }
-    return std::make_pair(*m_ribDefinitionUID_choice2, *m_ribNumber_choice2);
+    return std::make_pair(m_ribDefinitionUID_choice2.value(), m_ribNumber_choice2.value());
 }
 
 void CCPACSWingCellPositionSpanwise::InvalidateParent()

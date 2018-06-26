@@ -37,7 +37,7 @@ void CCPACSFuselageSection::Cleanup()
 }
 
 // Read CPACS section elements
-void CCPACSFuselageSection::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& sectionXPath)
+void CCPACSFuselageSection::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& sectionXPath)
 {
     Cleanup();
     generated::CPACSFuselageSection::ReadCPACS(tixiHandle, sectionXPath);

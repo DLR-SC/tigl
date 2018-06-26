@@ -145,7 +145,7 @@ gp_Vec GetUpVectorWithoutXRotation(const std::string& ribReference, double curre
 
     // use the midplane normal as up vector
     double midplaneEta, dummy;
-    wingStructureReference.GetMidplaneEtaXsi(startPnt, midplaneEta, dummy);
+    wingStructureReference.GetEtaXsiLocal(startPnt, midplaneEta, dummy);
     gp_Vec upVec = wingStructureReference.GetMidplaneNormal(midplaneEta);
 
     // Bug #408: special handling in case the rib is defined at the spar position or start or end point of a spar

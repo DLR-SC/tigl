@@ -45,6 +45,16 @@ CCPACSGuideCurve::~CCPACSGuideCurve(void)
     Cleanup();
 }
 
+CCPACSGuideCurve::FromDefinition CCPACSGuideCurve::GetFromDefinition() const {
+    if (!ValidateChoices())
+        throw CTiglError("Choices not valid", TIGL_XML_ERROR);
+    if (m_fromRelativeCircumference_choice2)
+        return FromDefinition::CIRCUMFERENCE;
+    if (m_fromGuideCurveUID_choice1)
+        return FromDefinition::UID;
+    throw CTiglError("Logic error in FromDefinition detection");
+}
+
 // Cleanup routine
 void CCPACSGuideCurve::Cleanup(void)
 {

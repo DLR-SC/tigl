@@ -89,7 +89,8 @@ public:
     TIGL_EXPORT gp_Pnt GetPoint(double eta, double xsi, TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
 
     // Returns the eta xsi coordinates of a points projected onto the midplane / chordface
-    TIGL_EXPORT void GetEtaXsi(const gp_Pnt& p, double& eta, double& xsi) const;
+    TIGL_EXPORT void GetEtaXsi(const gp_Pnt& globalPoint, double& eta, double& xsi) const;
+    TIGL_EXPORT void GetEtaXsiLocal(const gp_Pnt& localPoint, double& eta, double& xsi) const;
 
     // Getter for leading edge point at the relative position, which must be
     // defined between 0 (inner point on leadinge edge) and 1 (outer point)
@@ -101,11 +102,6 @@ public:
 
     // Getter for section element face
     TIGL_EXPORT TopoDS_Face GetSectionElementFace(const std::string& sectionElementUID) const;
-
-    // Getter for eta and xsi for passed point
-    // Passed point must be in wing coordinate system
-    // TODO (siggel): remove this function as it duplicates GetEtaXsi
-    TIGL_EXPORT void GetMidplaneEtaXsi(const gp_Pnt& p, double& eta, double& xsi) const;
 
     // Getter for eta direction of midplane (no X-component)
     TIGL_EXPORT gp_Vec GetMidplaneEtaDir(double eta) const;

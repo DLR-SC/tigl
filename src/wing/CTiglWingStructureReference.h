@@ -64,7 +64,7 @@ public:
     TIGL_EXPORT gp_Vec GetTrailingEdgeDirection(const gp_Pnt& point, const std::string& defaultSegmentUID = "") const;
     TIGL_EXPORT TopoDS_Wire GetLeadingEdgeLine() const;
     TIGL_EXPORT TopoDS_Wire GetTrailingEdgeLine() const;
-    TIGL_EXPORT void GetMidplaneEtaXsi(const gp_Pnt& p, double& eta, double& xsi) const;
+    TIGL_EXPORT void GetEtaXsiLocal(const gp_Pnt& p, double& eta, double& xsi) const;
     TIGL_EXPORT gp_Vec GetMidplaneEtaDir(double eta) const;
     TIGL_EXPORT gp_Vec GetMidplaneNormal(double eta) const;
     TIGL_EXPORT TopoDS_Shape GetMidplaneShape() const;
