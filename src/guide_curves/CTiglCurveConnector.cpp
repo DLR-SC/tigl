@@ -206,7 +206,7 @@ void CTiglCurveConnector::CreateInterpolationOrder (guideCurveConnected& connect
                 stack.push(idx-1);
             }
         }
-        if ( connectedCurve.parts[idx+1].dependency == C2_from_previous ) {
+        if ( idx+1<nparts && connectedCurve.parts[idx+1].dependency == C2_from_previous ) {
             indegrees[idx+1]--;
             if ( indegrees[idx+1]==0 ) {
                 stack.push(idx+1);
