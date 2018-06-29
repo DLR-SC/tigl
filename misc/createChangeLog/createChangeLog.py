@@ -7,7 +7,7 @@ import re
 
 
 def run(cmd):
-    return subprocess.check_output(cmd, shell=True)
+    return (subprocess.check_output(cmd, shell=True)).decode()
 
 
 # TIGL changelog (subset of restructured text)
@@ -23,7 +23,7 @@ class changelog:
         f.close()
 
     def plot(self):
-        print self.body
+        print(self.body)
 
     def blank(self):
         self.body += '\n'
@@ -177,7 +177,7 @@ def main():
     # check if on master branch
     branch = run("git rev-parse --abbrev-ref HEAD").rsplit('\n')[0]
     if branch != 'master':
-        print "You are not on the master branch! Break."
+        print("You are not on the master branch! Break.")
         exit(1)
 
     # get relevant commit messages
@@ -213,8 +213,8 @@ def main():
     logs = decorate(logs)
 
     # split between tigl and tigl-viewer messages
-    viewer = filter(lambda l: 'tiglviewer' in l.lower(), logs)
-    logs = filter(lambda l: 'tiglviewer' not in l.lower(), logs)
+    viewer = [l for l in logs if 'tiglviewer' in l.lower()]
+    logs = [l for l in logs if 'tiglviewer' not in l.lower()]
 
     # filter out changed api messages
     changed_api = getChangedAPI(logs)
@@ -233,7 +233,7 @@ def main():
     viewer.sort()
 
     cl = changelog()
-    cl.subheadline("Version " + args.new_tag)
+    cl.subheadline("Version " + (args.new_tag)[1:])
     cl.date()
     cl.blank()
     cl.subitems('- Changed API:', changed_api)
@@ -255,7 +255,7 @@ def main():
         for l in lines:
             f.write(l)
         f.close()
-        print "written new change log to ", args.file
+        print("written new change log to ", args.file)
 
 if __name__ == "__main__":
     main()
