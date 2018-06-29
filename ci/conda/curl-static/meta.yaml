@@ -7,25 +7,26 @@ package:
 source:
   fn: curl-{{ version }}.tar.gz
   url: http://curl.haxx.se/download/curl-{{ version }}.tar.gz
+  md5: 870e16fd88a88b52e26a4f04dfc161db
 
 build:
-  number: 0
+  number: 1
   features:
     - vc9              # [win and py27]
-    - vc10             # [win and py34]
-    - vc14             # [win and py35]
+    - vc14             # [win and (py35 or py36)]
 
 requirements:
   build:
-    - python
+    - python           # [win]
+    - vc 9             # [win and py27]
+    - vc 14            # [win and (py35 or py36)]
     - gcc              # [linux]
 
-test:
-  requires:
-    - python 2.7.*     # [win and py27]
-    - python 3.4.*     # [win and py34]
-    - python 3.5.*     # [win and py35]
+  run:
+    - vc 9  # [win and py27]
+    - vc 14  # [win and (py35 or py36)]
 
+test:
   commands:
     - curl --version
 

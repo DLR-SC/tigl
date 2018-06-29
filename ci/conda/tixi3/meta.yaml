@@ -1,4 +1,4 @@
-{% set version = "3.0.0" %}
+{% set version = "3.0.1" %}
 
 package:
   name: tixi3
@@ -7,20 +7,22 @@ package:
 source:
   fn: tixi-{{ version }}.tar.gz
   url: https://github.com/DLR-SC/tixi/archive/v{{ version }}.tar.gz
+  md5: 8617793a8ae8ba904ce9555e15ba7f25
   patches:
     - remove_hard_links.patch
-    - tixiwrapper-fix.patch
 
 build:
-  number: 2
+  number: 1
   features:
     - vc9              # [win and py27]
-    - vc10             # [win and py34]
-    - vc14             # [win and py35]
+    - vc14             # [win and (py35 or py36)]
 
 requirements:
   build:
+    - patch             # [win]
     - python
+    - vc 9              # [win and py27]
+    - vc 14             # [win and (py35 or py36)]
     - doxygen ==1.8.10
     - curl-static ==7.50.3
     - libxml2-static ==2.9.3
@@ -29,14 +31,11 @@ requirements:
 
   run:
     - python
+    - vc 9              # [win and py27]
+    - vc 14             # [win and (py35 or py36)]
 
 test:
-  requires:
-    - python 2.7.*     # [win and py27]
-    - python 3.4.*     # [win and py34]
-    - python 3.5.*     # [win and py35]
-
-  commands:
+    commands:
     - tixiDemo
 
 about:
