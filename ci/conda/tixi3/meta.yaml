@@ -12,7 +12,7 @@ source:
     - remove_hard_links.patch
 
 build:
-  number: 1
+  number: 2
   features:
     - vc9              # [win and py27]
     - vc14             # [win and (py35 or py36)]
