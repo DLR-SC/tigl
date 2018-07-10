@@ -121,13 +121,23 @@ std::string CCPACSFuselage::GetDefaultedUID() const
     return generated::CPACSFuselage::GetUID();
 }
 
-TopoDS_Shape CCPACSFuselage::GetLoft(TiglCoordinateSystem cs)
+PNamedShape CCPACSFuselage::GetLoft(TiglCoordinateSystem cs)
 {
-    const TopoDS_Shape loft = GetLoft()->Shape();
-    if (cs == GLOBAL_COORDINATE_SYSTEM)
+    PNamedShape loft = CTiglRelativelyPositionedComponent::GetLoft();
+    if (!loft) {
         return loft;
-    else
-        return GetTransformationMatrix().Inverted().Transform(loft);
+    }
+
+    if (cs == GLOBAL_COORDINATE_SYSTEM) {
+        return loft;
+    }
+    else {
+        // we want to modify the shape. we have to create a copy first
+        loft = loft->DeepCopy();
+        TopoDS_Shape transformedLoft = GetTransformationMatrix().Inverted().Transform(loft->Shape());
+        loft->SetShape(transformedLoft);
+        return loft;
+    }
 }
 
 // Get section count
@@ -404,7 +414,7 @@ gp_Lin CCPACSFuselage::Intersection(gp_Pnt pRef, double angleRef)
     gp_Lin line(pRef, angleDir);
 
     // fuselage loft
-    const TopoDS_Shape loft = GetLoft(FUSELAGE_COORDINATE_SYSTEM);
+    const TopoDS_Shape loft = GetLoft(FUSELAGE_COORDINATE_SYSTEM)->Shape();
 
     // get the list of shape from the fuselage shape
     TopExp_Explorer exp;
@@ -482,7 +492,7 @@ namespace
 
 TopoDS_Wire CCPACSFuselage::projectConic(TopoDS_Shape wireOrEdge, gp_Pnt origin)
 {
-    const TopoDS_Shape loft = GetLoft(FUSELAGE_COORDINATE_SYSTEM);
+    const TopoDS_Shape loft = GetLoft(FUSELAGE_COORDINATE_SYSTEM)->Shape();
 
     DEBUG_SCOPE(debug);
     debug.addShape(wireOrEdge, "wireOrEdge");
@@ -495,7 +505,7 @@ TopoDS_Wire CCPACSFuselage::projectConic(TopoDS_Shape wireOrEdge, gp_Pnt origin)
 
 TopoDS_Wire CCPACSFuselage::projectParallel(TopoDS_Shape wireOrEdge, gp_Dir direction)
 {
-    const TopoDS_Shape loft = GetLoft(FUSELAGE_COORDINATE_SYSTEM);
+    const TopoDS_Shape loft = GetLoft(FUSELAGE_COORDINATE_SYSTEM)->Shape();
 
     const TopoDS_Shape directionLine = BRepBuilderAPI_MakeEdge(
         BRepBuilderAPI_MakeVertex(gp_Pnt(0, 0, 0)).Vertex(),

@@ -139,7 +139,7 @@ void CCPACSFuselageStringer::BuildGeometry(bool just1DElements)
 
 void CCPACSFuselageStringer::BuildCutGeometry()
 {
-    const TopoDS_Shape fuselageLoft = m_parent->GetParent()->GetParent()->GetLoft(FUSELAGE_COORDINATE_SYSTEM);
+    const TopoDS_Shape fuselageLoft = m_parent->GetParent()->GetParent()->GetLoft(FUSELAGE_COORDINATE_SYSTEM)->Shape();
 
     Bnd_Box fuselageBox;
     BRepBndLib::Add(fuselageLoft, fuselageBox);

@@ -65,8 +65,7 @@ public:
 
     TIGL_EXPORT std::string GetDefaultedUID() const OVERRIDE;
 
-    using CTiglRelativelyPositionedComponent::GetLoft;
-    TIGL_EXPORT TopoDS_Shape GetLoft(TiglCoordinateSystem cs); // TODO(bgruber): highly inconsistent return type
+    TIGL_EXPORT PNamedShape GetLoft(TiglCoordinateSystem cs = GLOBAL_COORDINATE_SYSTEM);
 
     // Get section count
     TIGL_EXPORT int GetSectionCount() const;

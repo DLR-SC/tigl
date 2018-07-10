@@ -130,7 +130,7 @@ void CTiglStringerFrameBorderedObject::BuildGeometry()
     builder.Add(cutCompound, eStringer.GetCutGeometry(FUSELAGE_COORDINATE_SYSTEM));
 
     // split fuselage loft
-    const TopoDS_Shape loft         = const_cast<CCPACSFuselage&>(m_fuselage).GetLoft(FUSELAGE_COORDINATE_SYSTEM);
+    const TopoDS_Shape loft         = const_cast<CCPACSFuselage&>(m_fuselage).GetLoft(FUSELAGE_COORDINATE_SYSTEM)->Shape();
     const TopoDS_Shape splittedLoft = SplitShape(loft, cutCompound);
 
     //TRACE_POINT(debug);

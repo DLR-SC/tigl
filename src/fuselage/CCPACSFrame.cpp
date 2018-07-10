@@ -104,7 +104,7 @@ void CCPACSFrame::BuildGeometry(bool just1DElements)
         // if there is 1 position ==> the path is around the fuselage, in an X normal orientated plane
         const CCPACSFuselageStringerFramePosition& fp = *m_framePositions[0];
 
-        const TopoDS_Shape fuselageLoft = fuselage.GetLoft(FUSELAGE_COORDINATE_SYSTEM);
+        const TopoDS_Shape fuselageLoft = fuselage.GetLoft(FUSELAGE_COORDINATE_SYSTEM)->Shape();
         const TopoDS_Shape section = BRepAlgoAPI_Section(fuselageLoft, gp_Pln(fp.GetRefPoint(), gp_Dir(1, 0, 0))).Shape();
         path = BuildWireFromEdges(section);
 
