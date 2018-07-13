@@ -25,16 +25,9 @@
 
 %{
 #include<TopoDS.hxx>
-#include <math_Vector.hxx>
-#include <math_Matrix.hxx>
-#include <Handle_Geom_BSplineCurve.hxx>
 %}
 
-// Import python-occ definitions to
-// have a compatible interface
-%import math.i
-%import Geom.i
-%import TopoDS.i
+%include math_headers.i
 %import tmath.i
 %import core.i
 

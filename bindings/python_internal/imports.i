@@ -19,11 +19,10 @@
 %module (package="tigl3") imports
 
 %include common.i
+%include math_headers.i
 
 %shared_ptr(tigl::ITiglCADImporter)
 %shared_ptr(tigl::CTiglStepReader)
-
-
 
 %import core.i
 %import geometry.i

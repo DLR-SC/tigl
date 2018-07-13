@@ -21,10 +21,7 @@
 %include common.i
 
 
-%{
-#include <math_Vector.hxx>
-#include <math_Matrix.hxx>
-%}
+%include math_headers.i
 
 %import math.i
 %import core.i

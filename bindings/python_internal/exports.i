@@ -19,6 +19,7 @@
 %module (package="tigl3") exports
 
 %include common.i
+%include math_headers.i
 
 %shared_ptr(tigl::CTiglCADExporter)
 %shared_ptr(tigl::CTiglExportBrep)

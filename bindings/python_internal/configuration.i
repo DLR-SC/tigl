@@ -20,14 +20,10 @@
 
 %include <typemaps.i>
 %include common.i
-
-%include Geom_headers.i
-
+%include math_headers.i
 
 %import geometry.i
 %import core.i
-%import Geom.i
-%import TopoDS.i
 
 %{
 // All includes that are required for the wrapper compilation
@@ -56,6 +52,10 @@
 #include "CCPACSWingSparSegment.h"
 #include "CCPACSWingRibsDefinition.h"
 #include "CCPACSSkinSegment.h"
+#include <TopoDS_TEdge.hxx>
+#include <TopoDS_HShape.hxx>
+#include <TopLoc_IndexedMapNodeOfIndexedMapOfLocation.hxx>
+#include <TopLoc_StdMapNodeOfMapOfLocation.hxx>
 %}
 
 %feature("autodoc", "3");
@@ -187,6 +187,12 @@ class CCPACSWingRibsPositioning;
 %include "CCPACSWingComponentSegments.h"
 %include "generated/CPACSPositionings.h"
 %include "CCPACSPositionings.h"
+// We have to rename the enums since they collide with those from tigl.h
+%rename(GuideCurve_C0) tigl::generated::C0;
+%rename(GuideCurve_C1_from_previous) tigl::generated::C1_from_previous;
+%rename(GuideCurve_C2_from_previous) tigl::generated::C2_from_previous;
+%rename(GuideCurve_C1_to_previous) tigl::generated::C1_to_previous;
+%rename(GuideCurve_C2_to_previous) tigl::generated::C2_to_previous;
 %include "CPACSGuideCurve_continuity.h"
 %include "generated/CPACSGuideCurve.h"
 %include "generated/CPACSGuideCurves.h"

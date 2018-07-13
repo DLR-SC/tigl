@@ -20,17 +20,12 @@
 
 %include common.i
 
-%{
-// OCCT includes
-#include <TopoDS.hxx>
-#include <TopoDS_CompSolid.hxx>
-#include <BRepBuilderAPI.hxx>
-%}
 
+%include BRepBuilderAPI_headers.i
+
+%import BRepBuilderAPI.i
 %import core.i
 %import geometry.i
-%import TopoDS.i
-%import BRepBuilderAPI.i
 
 %{
 #include "CBooleanOperTools.h"

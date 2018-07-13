@@ -24,15 +24,11 @@
 // includes are required to for compilation
 #include<Standard_ErrorHandler.hxx>
 #include<Standard_Failure.hxx>
-#include <math_Vector.hxx>
-#include <math_Matrix.hxx>
 #include <sstream>
 %}
 
-// Import python-occ definitions to
-// have a compatible interface
+%include math_headers.i
 %import math.i
-
 
 // enable printing matrix (python)
 %extend math_Matrix {
