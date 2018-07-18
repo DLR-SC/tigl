@@ -18,6 +18,7 @@
 
 #include "CTiglBSplineAlgorithms.h"
 #include "CTiglCurveNetworkSorter.h"
+#include "CTiglCurvesToSurface.h"
 #include "CTiglError.h"
 #include "CSharedPtr.h"
 #include "CTiglBSplineApproxInterp.h"
@@ -556,77 +557,6 @@ std::vector<Handle(Geom_BSplineSurface) > CTiglBSplineAlgorithms::createCommonKn
     return std::vector<Handle(Geom_BSplineSurface)>(adapterSplines.begin(), adapterSplines.end());
 }
 
-Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::curvesToSurface(const std::vector<Handle(Geom_BSplineCurve) >& curves,
-                                                                    const std::vector<double>& vParameters, bool continuousIfClosed)
-{
-    // check amount of given parameters
-    if (vParameters.size() != curves.size()) {
-        throw CTiglError("The amount of given parameters has to be equal to the amount of given B-splines!", TIGL_MATH_ERROR);
-    }
-
-    // check if all curves are closed
-    double tolerance = scale(curves) * REL_TOL_CLOSED;
-    bool makeClosed = continuousIfClosed & curves.front()->IsEqual(curves.back(), tolerance);
-
-    matchDegree(curves);
-    size_t nCurves = curves.size();
-
-    // create a common knot vector for all splines
-    std::vector<Handle(Geom_BSplineCurve) > compatSplines = CTiglBSplineAlgorithms::createCommonKnotsVectorCurve(curves, 1e-15);
-
-    const Handle(Geom_BSplineCurve)& firstCurve = compatSplines[0];
-    size_t numControlPointsU = firstCurve->NbPoles();
-
-    int degreeV = 0;
-    int degreeU = firstCurve->Degree();
-    Handle(TColStd_HArray1OfReal) knotsV;
-    Handle(TColStd_HArray1OfInteger) multsV;
-
-    // create matrix of new control points with size which is possibly DIFFERENT from the size of controlPoints
-    Handle(TColgp_HArray2OfPnt) cpSurf;
-    Handle(TColgp_HArray1OfPnt) interpPointsVDir = new TColgp_HArray1OfPnt(1, static_cast<Standard_Integer>(nCurves));
-
-    // now continue to create new control points by interpolating the remaining columns of controlPoints in Skinning direction (here v-direction) by B-splines
-    for (int cpUIdx = 1; cpUIdx <= numControlPointsU; ++cpUIdx) {
-        for (int cpVIdx = 1; cpVIdx <= nCurves; ++cpVIdx) {
-            interpPointsVDir->SetValue(cpVIdx, compatSplines[cpVIdx - 1]->Pole(cpUIdx));
-        }
-        CTiglPointsToBSplineInterpolation interpolationObject(interpPointsVDir, vParameters, 3, makeClosed);
-
-        Handle(Geom_BSplineCurve) interpSpline = interpolationObject.Curve();
-
-        if (cpUIdx == 1) {
-            degreeV = interpSpline->Degree();
-            knotsV = new TColStd_HArray1OfReal(1, interpSpline->NbKnots());
-            interpSpline->Knots(knotsV->ChangeArray1());
-            multsV = new TColStd_HArray1OfInteger(1, interpSpline->NbKnots());
-            interpSpline->Multiplicities(multsV->ChangeArray1());
-            cpSurf = new TColgp_HArray2OfPnt(1, static_cast<Standard_Integer>(numControlPointsU), 1, interpSpline->NbPoles());
-        }
-
-        // the final surface control points are the control points resulting from
-        // the interpolation
-        for (int i = cpSurf->LowerCol(); i <= cpSurf->UpperCol(); ++i) {
-            cpSurf->SetValue(cpUIdx, i, interpSpline->Pole(i));
-        }
-
-        // check degree always the same
-        assert(degreeV == interpSpline->Degree());
-    }
-
-    TColStd_Array1OfReal knotsU(1, firstCurve->NbKnots());
-    firstCurve->Knots(knotsU);
-    TColStd_Array1OfInteger multsU(1, firstCurve->NbKnots());
-    firstCurve->Multiplicities(multsU);
-
-    Handle(Geom_BSplineSurface) skinnedSurface = new Geom_BSplineSurface(cpSurf->Array2(),
-                                                                         knotsU, knotsV->Array1(),
-                                                                         multsU, multsV->Array1(),
-                                                                         degreeU, degreeV);
-
-    return skinnedSurface;
-}
-
 void CTiglBSplineAlgorithms::matchDegree(const std::vector<Handle(Geom_BSplineCurve) >& bsplines)
 {
     int maxDegree = 0;
@@ -643,29 +573,6 @@ void CTiglBSplineAlgorithms::matchDegree(const std::vector<Handle(Geom_BSplineCu
             (*it)->IncreaseDegree(maxDegree);
         }
     }
-}
-
-Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::curvesToSurface(const std::vector<Handle(Geom_BSplineCurve) >& bsplCurves, bool continuousIfClosed)
-{
-    matchDegree(bsplCurves);
-
-    // create a common knot vector for all splines
-    std::vector<Handle(Geom_BSplineCurve) > compatibleSplines = CTiglBSplineAlgorithms::createCommonKnotsVectorCurve(bsplCurves, 1e-15);
-
-    // create a matrix of control points of all B-splines (splines do have the same amount of control points now)
-    TColgp_Array2OfPnt controlPoints(1, compatibleSplines[0]->NbPoles(),
-                                     1, static_cast<Standard_Integer>(compatibleSplines.size()));
-
-    for (unsigned int spline_idx = 1; spline_idx <= compatibleSplines.size(); ++spline_idx) {
-        for (int point_idx = 1; point_idx <= compatibleSplines[0]->NbPoles(); ++point_idx) {
-            controlPoints(point_idx, spline_idx) = compatibleSplines[spline_idx - 1]->Pole(point_idx);
-        }
-    }
-
-    std::pair<std::vector<double>, std::vector<double> > parameters
-            = CTiglBSplineAlgorithms::computeParamsBSplineSurf(controlPoints);
-
-    return CTiglBSplineAlgorithms::curvesToSurface(compatibleSplines, parameters.second, continuousIfClosed);
 }
 
 Handle(Geom_BSplineCurve) CTiglBSplineAlgorithms::reparametrizeBSplineContinuouslyApprox(const Handle(Geom_BSplineCurve) spline,
@@ -801,7 +708,8 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::pointsToSurface(const TColgp
     }
 
     // now create a skinned surface with these B-splines which represents the interpolating surface
-    Handle(Geom_BSplineSurface) interpolatingSurf = CTiglBSplineAlgorithms::curvesToSurface(uSplines, vParams, makeVDirClosed );
+    CTiglCurvesToSurface skinner(uSplines, vParams, makeVDirClosed );
+    Handle(Geom_BSplineSurface) interpolatingSurf = skinner.Surface();
 
     return interpolatingSurf;
 }

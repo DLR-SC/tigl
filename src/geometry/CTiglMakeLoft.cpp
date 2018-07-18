@@ -21,6 +21,9 @@
 #include "tiglcommonfunctions.h"
 #include "CTiglLogging.h"
 
+#include "CTiglCurvesToSurface.h"
+#include "CWireToCurve.h"
+
 #include "contrib/MakePatches.hxx"
 
 #include <TopoDS.hxx>
@@ -209,7 +212,7 @@ void CTiglMakeLoft::makeLoftWithGuides()
     GeomFill_FillingStyle style = GeomFill_CoonsStyle;
 #endif
     SurfMaker.Perform(_myTolerance, _mySameKnotTolerance, style, Standard_True);
-    TopoDS_Shape faces = SurfMaker.Patches();
+    _result = SurfMaker.Patches();
     if (SurfMaker.GetStatus() > 0) {
         LOG(ERROR) << "Could not create loft with guide curves. " << "Error code = " << SurfMaker.GetStatus();
         return;
@@ -219,27 +222,51 @@ void CTiglMakeLoft::makeLoftWithGuides()
     // store intermediate result
     std::stringstream spatches;
     spatches << "patches" << iLoft << ".brep";
-    BRepTools::Write(faces, spatches.str().c_str());
+    BRepTools::Write(_result, spatches.str().c_str());
 #endif
     
-    if (_makeSolid) {
+    FinalizeShape();
+    BRepLib::EncodeRegularity(_result);
+}
+
+void CTiglMakeLoft::makeLoftWithoutGuides()
+{
+    std::vector<Handle(Geom_BSplineCurve)> profileCurves;
+    profileCurves.reserve(profiles.size());
+    for (unsigned i=0; i<profiles.size(); ++i ) {
+        Handle(Geom_BSplineCurve) profileCurve =
+                tigl::CWireToCurve(profiles[i]).curve();
+        profileCurves.push_back(profileCurve);
+    }
+    tigl::CTiglCurvesToSurface surfaceSkinner(profileCurves);
+    Handle(Geom_BSplineSurface) surface = surfaceSkinner.Surface();
+            //tigl::CTiglBSplineAlgorithms::curvesToSurface(profileCurves);
+    BRepBuilderAPI_MakeFace faceMaker(surface, Precision::Confusion());
+    _result = faceMaker.Face();
+    FinalizeShape();
+}
+
+void CTiglMakeLoft::FinalizeShape()
+{
+    TopoDS_Shape faces = _result;
+    if (_makeSolid && !(faces.ShapeType()==TopAbs_SOLID) ) {
         // check if the first wire is the same as the last
         Standard_Boolean vClosed = (profiles[0].IsSame(profiles[profiles.size()-1]));
-        
+
         if (vClosed) {
             // we dont need side caps, just make shell and close it
             TopoDS_Shape shell = MakeShells(faces, _myTolerance);
-            
+
             TopoDS_Solid solid;
             BRep_Builder B;
-            B.MakeSolid(solid); 
+            B.MakeSolid(solid);
             B.Add(solid, shell);
-            
+
             // verify the orientation of the solid
             BRepClass3d_SolidClassifier clas3d(solid);
             clas3d.PerformInfinitePoint(Precision::Confusion());
             if (clas3d.State() == TopAbs_IN) {
-                B.MakeSolid(solid); 
+                B.MakeSolid(solid);
                 TopoDS_Shape aLocalShape = faces.Reversed();
                 B.Add(solid, TopoDS::Shell(aLocalShape));
             }
@@ -252,7 +279,7 @@ void CTiglMakeLoft::makeLoftWithGuides()
             TopoDS_Face innerCap, outerCap;
             _result = faces;
             _result = MakeSolid(faces, wire1, wire2, 1e-6, innerCap, outerCap);
-            
+
 #ifdef DEBUG
             // store solid result
             std::stringstream ssolid;
@@ -260,30 +287,11 @@ void CTiglMakeLoft::makeLoftWithGuides()
             BRepTools::Write(_result, ssolid.str().c_str());
 #endif
         }
-    }
-    else {
+    }else {
         // don't make solid
         _result = MakeShells(faces, _myTolerance);
     }
     BRepLib::EncodeRegularity(_result);
-}
-
-void CTiglMakeLoft::makeLoftWithoutGuides()
-{
-    bool isRuled = !_makeSmooth;
-    BRepOffsetAPI_ThruSections lofter(_makeSolid, isRuled, _myTolerance);
-    for (unsigned int i = 0; i < profiles.size(); ++i) {
-        TopoDS_Wire& profile =  profiles[i];
-        lofter.AddWire(profile);
-    }
-    lofter.CheckCompatibility(Standard_False);
-
-    if (_makeSmooth) {
-        lofter.SetMaxDegree(2); //surfaces will be C1-continuous
-        lofter.SetParType(Approx_Centripetal);
-    }
-
-    _result = lofter.Shape();
 }
 
 namespace

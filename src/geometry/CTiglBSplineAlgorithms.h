@@ -110,33 +110,6 @@ public:
     TIGL_EXPORT static std::vector<Handle(Geom_BSplineSurface) > createCommonKnotsVectorSurface(const std::vector<Handle(Geom_BSplineSurface)>& old_surfaces_vector);
 
     /**
-     * @brief Surface skinning algorithm
-     * 
-     * Creates a surface by interpolation of B-spline curves. The direction of the input curves
-     * is treated as u direction. The skinning will be performed in v direction.
-     *
-     * @param splines_vector Curves to be interpolated.
-     * @param parameters Parameters of v-direction at which the resulting surface should interpolate the input curves.
-     * @param continuousIfClosed Make a C2 continous surface at the start/end junction if the first and last curve are the same
-     * @return The interpolation b-spline surface.
-     */
-    TIGL_EXPORT static Handle(Geom_BSplineSurface) curvesToSurface(const std::vector<Handle(Geom_BSplineCurve) >& splines_vector,
-                                                                   const std::vector<double>& parameters, bool continuousIfClosed = false);
-
-    /**
-     * @brief Surface skinning algorithm
-     * 
-     * Creates a surface by interpolation of B-spline curves. The direction of the input curves
-     * is treated as u direction. The skinning will be performed in v direction. The interpolation
-     * parameters will be determined automatically.
-     *
-     * @param splines_vector Curves to be interpolated.
-     * @param continuousIfClosed Make a C2 continous surface at the start/end junction if the first and last curve are the same
-     * @return The interpolation b-spline surface.
-     */
-    TIGL_EXPORT static Handle(Geom_BSplineSurface) curvesToSurface(const std::vector<Handle(Geom_BSplineCurve) >& splines_vector, bool continuousIfClosed = false);
-
-    /**
      */
     TIGL_EXPORT static void reparametrizeBSpline(Geom_BSplineCurve& spline, double umin, double umax, double tol=1e-15);
 

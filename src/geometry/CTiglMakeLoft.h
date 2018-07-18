@@ -80,6 +80,12 @@ public:
 private:
     void makeLoftWithGuides();
     void makeLoftWithoutGuides();
+
+    /**
+     * @brief transform the shape to a solid if the correspondig flag is set,
+     * transform it to a shell otherwise
+     */
+    void FinalizeShape();
     
     /**
      * \brief Tolerance for the MakeSolid, MakeShells, BRepOffsetAPI_ThruSections
