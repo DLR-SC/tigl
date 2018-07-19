@@ -56,6 +56,7 @@
 #include "tigletaxsifunctions.h"
 #include "to_string.h"
 #include "tiglcommonfunctions.h"
+#include "CNamedShape.h"
 
 namespace tigl
 {
@@ -876,4 +877,20 @@ bool CCPACSWingCell::IsPartOfCell(TopoDS_Edge e)
 
     return false;
 }
+
+std::string CCPACSWingCell::GetDefaultedUID() const
+{
+    return GetUID();
+}
+
+PNamedShape CCPACSWingCell::GetLoft()
+{
+    return PNamedShape(new CNamedShape(GetCellSkinGeometry(true), GetUID()));
+}
+
+TiglGeometricComponentType CCPACSWingCell::GetComponentType() const
+{
+    return TIGL_COMPONENT_LOGICAL;
+}
+
 } // namespace tigl

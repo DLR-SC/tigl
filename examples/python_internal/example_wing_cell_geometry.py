@@ -23,8 +23,8 @@ def display_wing_cell_geom(configuration):
     cs = wing.get_component_segment(1)
     structure = cs.get_structure()
     cell = structure.get_upper_shell().get_cell(1)
-    cell_shape = cell.get_cell_skin_geometry()
-    display.DisplayShape(cell_shape, color=Quantity_NOC_RED, transparency=0.3)
+    cell_shape = cell.get_loft()
+    display.DisplayShape(cell_shape.shape(), color=Quantity_NOC_RED, transparency=0.3)
 
     # display spars and ribs
     spar = structure.get_spar_segment(1)

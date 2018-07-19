@@ -19,6 +19,11 @@
 #ifndef CCPACSWINGCELL_H
 #define CCPACSWINGCELL_H
 
+#include "ITiglGeometricComponent.h"
+#include "generated/CPACSWingCell.h"
+#include "generated/UniquePtr.h"
+#include "tigletaxsifunctions.h"
+
 #include <gp_Pln.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Face.hxx>
@@ -26,9 +31,6 @@
 
 #include <vector>
 
-#include "generated/CPACSWingCell.h"
-#include "generated/UniquePtr.h"
-#include "tigletaxsifunctions.h"
 
 namespace tigl
 {
@@ -38,7 +40,7 @@ class CCPACSWingCells;
 class CCPACSWingCellPositionChordwise;
 class CCPACSWingCellPositionSpanwise;
 
-class CCPACSWingCell : public generated::CPACSWingCell
+class CCPACSWingCell : public generated::CPACSWingCell, public ITiglGeometricComponent
 {
 public:
     TIGL_EXPORT CCPACSWingCell(CCPACSWingCells* parentCells, CTiglUIDManager* uidMgr);
@@ -83,6 +85,10 @@ public:
 
     TIGL_EXPORT bool IsPartOfCell(TopoDS_Face);
     TIGL_EXPORT bool IsPartOfCell(TopoDS_Edge);
+
+    TIGL_EXPORT std::string GetDefaultedUID() const OVERRIDE;
+    TIGL_EXPORT PNamedShape GetLoft() OVERRIDE;
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE;
 
 private:
     std::pair<double, double> computePositioningEtaXsi(const CCPACSWingCellPositionSpanwise& spanwisePos,
