@@ -27,6 +27,8 @@
 #include "CCPACSWingRibsPositioning.h"
 #include "CCPACSWingSegment.h"
 
+#include <BRepTools.hxx>
+
 using namespace tigl;
 
 typedef std::pair<double, double> DP;
@@ -274,4 +276,23 @@ TEST_F(WingCellRibSpar, etaXsi) {
     expectedEtaXsi = std::vector< std::pair<double, double> > (arr3, arr3 + sizeof(arr3) / sizeof(arr3[0]));
     // precision at 1E-2 since expected values are estimated based on geometric inspection
     checkCellEtaXsis(cell, expectedEtaXsi, 1.E-2);
+}
+
+TEST_F(WingCellRibSpar, computeGeometry) {
+    // See: cell_rib_spar_test.png for placement of cells
+
+    // next compute the expected XSI values on the spar
+    const std::pair<double, double> arr[] = { DP(0.2, 0.3), DP(0.95, 0.4), DP(0.2, 0.8), DP(0.95, 1.0) };
+    std::vector< std::pair<double, double> > expectedEtaXsi (arr, arr + sizeof(arr) / sizeof(arr[0]));
+
+    // get Component Segment
+    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
+    tigl::CCPACSWing& wing = config.GetWing(1);
+    tigl::CCPACSWingComponentSegment& componentSegment = static_cast<tigl::CCPACSWingComponentSegment&>(wing.GetComponentSegment(1));
+    tigl::CCPACSWingCSStructure& structure = *componentSegment.GetStructure();
+
+    tigl::CCPACSWingCell& cell = componentSegment.GetStructure()->GetUpperShell().GetCell(1);
+    TopoDS_Shape cellGeom = cell.GetCellSkinGeometry();
+    BRepTools::Write(cellGeom, "TestData/export/WingCellRibSpar_CellGeometry.brep");
 }
