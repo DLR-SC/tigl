@@ -21,8 +21,9 @@
 #include "tiglcommonfunctions.h"
 #include "CTiglLogging.h"
 
+
+#include "CTiglBSplineAlgorithms.h"
 #include "CTiglCurvesToSurface.h"
-#include "CWireToCurve.h"
 
 #include "contrib/MakePatches.hxx"
 
@@ -41,6 +42,9 @@
 #include <Geom_Plane.hxx>
 #include <StdFail_NotDone.hxx>
 #include <Precision.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <BRepAdaptor_Curve.hxx>
+#include <GeomConvert.hxx>
 
 namespace 
 {
@@ -226,23 +230,46 @@ void CTiglMakeLoft::makeLoftWithGuides()
 #endif
     
     FinalizeShape();
-    BRepLib::EncodeRegularity(_result);
 }
 
 void CTiglMakeLoft::makeLoftWithoutGuides()
 {
-    std::vector<Handle(Geom_BSplineCurve)> profileCurves;
-    profileCurves.reserve(profiles.size());
-    for (unsigned i=0; i<profiles.size(); ++i ) {
-        Handle(Geom_BSplineCurve) profileCurve =
-                tigl::CWireToCurve(profiles[i]).curve();
-        profileCurves.push_back(profileCurve);
+    TopoDS_Compound faces;
+    BRep_Builder faceBuilder;
+    faceBuilder.MakeCompound(faces);
+
+    // get number of edges per profile wire
+    // --> should be the same for all profiles
+    TopTools_IndexedMapOfShape firstProfileMap;
+    TopExp::MapShapes(profiles[0], TopAbs_EDGE, firstProfileMap);
+    int const nEdgesPerProfile = firstProfileMap.Extent();
+
+    // skin the surface edge by adge
+    // CAUTION: Here it is assumed that the edges are ordered
+    // in the same way along each profile (e.g. lower edge,
+    // upper edge, trailing edge for a wing)
+    for ( unsigned iE = 1; iE<=nEdgesPerProfile; ++iE ) {
+
+        // get the curves
+        std::vector<Handle(Geom_BSplineCurve)> profileCurves;
+        profileCurves.reserve(profiles.size());
+        for (unsigned iP=0; iP<profiles.size(); ++iP ) {
+
+            TopTools_IndexedMapOfShape profileMap;
+            TopExp::MapShapes(profiles[iP], TopAbs_EDGE, profileMap);
+            assert( profileMap.Extent() >= iE );
+
+            TopoDS_Edge edge = TopoDS::Edge(profileMap(iE));
+            profileCurves.push_back(GetBSplineCurve(edge));
+        }
+
+        // skin the curves
+        tigl::CTiglCurvesToSurface surfaceSkinner(profileCurves);
+        Handle(Geom_BSplineSurface) surface = surfaceSkinner.Surface();
+        BRepBuilderAPI_MakeFace faceMaker(surface, Precision::Confusion());
+        faceBuilder.Add(faces, faceMaker.Face());
     }
-    tigl::CTiglCurvesToSurface surfaceSkinner(profileCurves);
-    Handle(Geom_BSplineSurface) surface = surfaceSkinner.Surface();
-            //tigl::CTiglBSplineAlgorithms::curvesToSurface(profileCurves);
-    BRepBuilderAPI_MakeFace faceMaker(surface, Precision::Confusion());
-    _result = faceMaker.Face();
+    _result = faces;
     FinalizeShape();
 }
 
@@ -279,13 +306,6 @@ void CTiglMakeLoft::FinalizeShape()
             TopoDS_Face innerCap, outerCap;
             _result = faces;
             _result = MakeSolid(faces, wire1, wire2, 1e-6, innerCap, outerCap);
-
-#ifdef DEBUG
-            // store solid result
-            std::stringstream ssolid;
-            ssolid << "solid" << iLoft << ".brep";
-            BRepTools::Write(_result, ssolid.str().c_str());
-#endif
         }
     }else {
         // don't make solid

@@ -21,6 +21,7 @@
 #include "CTiglCurvesToSurface.h"
 #include "CTiglError.h"
 #include "CTiglBSplineAlgorithms.h"
+#include "CTiglLogging.h"
 
 #include <GeomAPI_Interpolate.hxx>
 #include <Geom_TrimmedCurve.hxx>

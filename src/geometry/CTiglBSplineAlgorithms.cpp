@@ -522,7 +522,8 @@ CTiglBSplineAlgorithms::computeParamsBSplineSurf(const TColgp_Array2OfPnt& point
 
 std::vector<Handle(Geom_BSplineCurve)> CTiglBSplineAlgorithms::createCommonKnotsVectorCurve(const std::vector<Handle(Geom_BSplineCurve)>& splines_vector, double tol)
 {
-    // TODO: Match parameter range
+    // Match parameter range
+    matchParameterRange(splines_vector);
 
     // Create a copy that we can modify
     std::vector<CurveAdapterView> splines_adapter;
@@ -555,6 +556,19 @@ std::vector<Handle(Geom_BSplineSurface) > CTiglBSplineAlgorithms::createCommonKn
     makeGeometryCompatibleImpl(adapterSplines, 1e-15);
 
     return std::vector<Handle(Geom_BSplineSurface)>(adapterSplines.begin(), adapterSplines.end());
+}
+
+void CTiglBSplineAlgorithms::matchParameterRange(std::vector<Handle(Geom_BSplineCurve)> const& bsplines)
+{
+    Standard_Real umin = bsplines[0]->FirstParameter();
+    Standard_Real umax = bsplines[0]->LastParameter();
+    for (unsigned iP=1; iP<bsplines.size(); ++iP) {
+        Handle(Geom_BSplineCurve) bspl = bsplines[iP];
+        if (    abs(bspl->FirstParameter() - umin) > Precision::Confusion()
+             || abs(bspl->LastParameter() - umax) > Precision::Confusion() ) {
+            tigl::CTiglBSplineAlgorithms::reparametrizeBSpline(*bspl, umin, umax);
+        }
+    }
 }
 
 void CTiglBSplineAlgorithms::matchDegree(const std::vector<Handle(Geom_BSplineCurve) >& bsplines)
@@ -795,7 +809,7 @@ void CTiglBSplineAlgorithms::reparametrizeBSpline(Geom_BSplineCurve& spline, dou
     if (std::abs(spline.Knot(1) - umin) > tol || std::abs(spline.Knot(spline.NbKnots()) - umax) > tol) {
         TColStd_Array1OfReal aKnots (1, spline.NbKnots());
         spline.Knots (aKnots);
-        BSplCLib::Reparametrize (0., 1., aKnots);
+        BSplCLib::Reparametrize (umin, umax, aKnots);
         spline.SetKnots (aKnots);
     }
 }

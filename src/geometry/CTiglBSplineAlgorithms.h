@@ -78,6 +78,12 @@ public:
     TIGL_EXPORT static std::pair<std::vector<double>, std::vector<double> >
     computeParamsBSplineSurf(const TColgp_Array2OfPnt& points, double alpha=0.5);
 
+    /**
+     * @brief Matches the parameter range of all b-splines to the parameter range of the first b-spline
+     *
+     * @param bsplines The splines to be matched (in/out)
+     */
+    TIGL_EXPORT static void matchParameterRange(const std::vector<Handle(Geom_BSplineCurve) >& bsplines);
 
     /**
      * @brief Matches the degree of all b-splines by raising the degree to the maximum degree
