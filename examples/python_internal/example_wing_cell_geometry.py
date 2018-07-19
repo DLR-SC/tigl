@@ -3,7 +3,7 @@ from __future__ import print_function
 from tixi3 import tixi3wrapper
 from tigl3 import tigl3wrapper
 import tigl3.configuration
-from OCC.Quantity import Quantity_NOC_RED, Quantity_NOC_GREEN, Quantity_NOC_BLUE1
+from OCC.Quantity import Quantity_NOC_RED
 import os
 
 
@@ -16,26 +16,15 @@ def display_wing_cell_geom(configuration):
     from OCC.Display.SimpleGui import init_display
     display, start_display, add_menu, add_function_to_menu = init_display()
 
-    wing = configuration.get_wing(1)
+    uid_mgr = configuration.get_uidmanager()
+    wing = uid_mgr.get_geometric_component("Wing")
+    # wing = configuration.get_wing(1)
     display.DisplayShape(wing.get_loft().shape(), transparency=0.7)
 
     # display cell geometry
-    cs = wing.get_component_segment(1)
-    structure = cs.get_structure()
-    cell = structure.get_upper_shell().get_cell(1)
+    cell = uid_mgr.get_geometric_component("Wing_CS_upperShell_Cell1")
     cell_shape = cell.get_loft()
-    display.DisplayShape(cell_shape.shape(), color=Quantity_NOC_RED, transparency=0.3)
-
-    # display spars and ribs
-    spar = structure.get_spar_segment(1)
-    spar_shape = spar.get_spar_geometry()
-    display.DisplayShape(spar_shape, color=Quantity_NOC_GREEN, update=True)
-
-    # draw ribs
-    for i_rib in range(1, structure.get_ribs_definition_count() + 1):
-        rib = structure.get_ribs_definition(i_rib)
-        rib_shape = rib.get_ribs_geometry()
-        display.DisplayShape(rib_shape, color=Quantity_NOC_BLUE1, update=True)
+    display.DisplayShape(cell_shape.shape(), transparency=0.3, color=Quantity_NOC_RED)
 
     display.FitAll()
 
