@@ -661,10 +661,10 @@ void CCPACSWingCell::BuildSkinGeometry() const
         bool sparTest = false, plainTest = false;
 
         if (m_positioningLeadingEdge.GetInputType() == CCPACSWingCellPositionChordwise::InputType::Spar) {
-            sparTest = m_parent->GetParentElement()->SparSegmentsTest(cutPlaneLE.Axis(), pTest, sparShapeLE);
+            sparTest = CCPACSWingShell::SparSegmentsTest(cutPlaneLE.Axis(), pTest, sparShapeLE);
         }
         else {
-            plainTest = a1Test.Angle(cutPlaneLE.Axis()) < (90.0 * (M_PI / 180.));
+            plainTest = a1Test.Angle(cutPlaneLE.Axis()) < M_PI_2;
         }
 
         if (plainTest || sparTest) {
@@ -676,10 +676,10 @@ void CCPACSWingCell::BuildSkinGeometry() const
             sparTest  = false;
             plainTest = false;
             if (m_positioningTrailingEdge.GetInputType() == CCPACSWingCellPositionChordwise::InputType::Spar) {
-                sparTest = m_parent->GetParentElement()->SparSegmentsTest(cutPlaneTE.Axis(), pTest, sparShapeTE);
+                sparTest = CCPACSWingShell::SparSegmentsTest(cutPlaneTE.Axis(), pTest, sparShapeTE);
             }
             else {
-                plainTest = a1Test.Angle(cutPlaneTE.Axis()) < (90.0 * (M_PI / 180.));
+                plainTest = a1Test.Angle(cutPlaneTE.Axis()) < M_PI_2;
             }
 
             if (plainTest || sparTest) {
@@ -687,12 +687,12 @@ void CCPACSWingCell::BuildSkinGeometry() const
                 midPnt = (pC1.XYZ() + pC3.XYZ()) / 2;
                 vTest  = gp_Vec(midPnt, pTest);
                 a1Test = gp_Ax1(midPnt, vTest);
-                if (a1Test.Angle(cutPlaneIB.Axis()) < (90.0 * (M_PI / 180.))) {
+                if (a1Test.Angle(cutPlaneIB.Axis()) < M_PI_2) {
                     // create an Ax1 from the outer border plane origin to the midpoint of the current face
                     midPnt = (pC2.XYZ() + pC4.XYZ()) / 2;
                     vTest  = gp_Vec(midPnt, pTest);
                     a1Test = gp_Ax1(midPnt, vTest);
-                    if (a1Test.Angle(cutPlaneOB.Axis()) < (90.0 * (M_PI / 180.))) {
+                    if (a1Test.Angle(cutPlaneOB.Axis()) < M_PI_2) {
                         builder.Add(compound, loftFace);
                         notFound = false;
                     }
@@ -761,10 +761,10 @@ bool CCPACSWingCell::IsPartOfCell(TopoDS_Face f)
     bool sparTest = false, plainTest = false;
 
     if (m_positioningLeadingEdge.GetInputType() == CCPACSWingCellPositionChordwise::InputType::Spar) {
-        sparTest = m_parent->GetParentElement()->SparSegmentsTest(cutPlaneLE.Axis(), pTest, sparShapeLE);
+        sparTest = CCPACSWingShell::SparSegmentsTest(cutPlaneLE.Axis(), pTest, sparShapeLE);
     }
     else {
-        plainTest = a1Test.Angle(cutPlaneLE.Axis()) < (90.0 * (M_PI / 180.));
+        plainTest = a1Test.Angle(cutPlaneLE.Axis()) < M_PI_2;
     }
 
     if (plainTest || sparTest) {
@@ -776,10 +776,10 @@ bool CCPACSWingCell::IsPartOfCell(TopoDS_Face f)
         sparTest  = false;
         plainTest = false;
         if (m_positioningTrailingEdge.GetInputType() == CCPACSWingCellPositionChordwise::InputType::Spar) {
-            sparTest = m_parent->GetParentElement()->SparSegmentsTest(cutPlaneTE.Axis(), pTest, sparShapeTE);
+            sparTest = CCPACSWingShell::SparSegmentsTest(cutPlaneTE.Axis(), pTest, sparShapeTE);
         }
         else {
-            plainTest = a1Test.Angle(cutPlaneTE.Axis()) < (90.0 * (M_PI / 180.));
+            plainTest = a1Test.Angle(cutPlaneTE.Axis()) < M_PI_2;
         }
 
         if (plainTest || sparTest) {
@@ -787,12 +787,12 @@ bool CCPACSWingCell::IsPartOfCell(TopoDS_Face f)
             midPnt = (pC1.XYZ() + pC3.XYZ()) / 2;
             vTest  = gp_Vec(midPnt, pTest);
             a1Test = gp_Ax1(midPnt, vTest);
-            if (a1Test.Angle(cutPlaneIB.Axis()) < (90.0 * (M_PI / 180.))) {
+            if (a1Test.Angle(cutPlaneIB.Axis()) < M_PI_2) {
                 // create an Ax1 from the outer border plane origin to the midpoint of the current face
                 midPnt = (pC2.XYZ() + pC4.XYZ()) / 2;
                 vTest  = gp_Vec(midPnt, pTest);
                 a1Test = gp_Ax1(midPnt, vTest);
-                if (a1Test.Angle(cutPlaneOB.Axis()) < (90.0 * (M_PI / 180.))) {
+                if (a1Test.Angle(cutPlaneOB.Axis()) < M_PI_2) {
                     return true;
                 }
             }
@@ -837,10 +837,10 @@ bool CCPACSWingCell::IsPartOfCell(TopoDS_Edge e)
     bool sparTest = false, plainTest = false;
 
     if (m_positioningLeadingEdge.GetInputType() == CCPACSWingCellPositionChordwise::InputType::Spar) {
-        sparTest = m_parent->GetParentElement()->SparSegmentsTest(cutPlaneLE.Axis(), pTest, sparShapeLE);
+        sparTest = CCPACSWingShell::SparSegmentsTest(cutPlaneLE.Axis(), pTest, sparShapeLE);
     }
     else {
-        plainTest = a1Test.Angle(cutPlaneLE.Axis()) < (90.0 * (M_PI / 180.));
+        plainTest = a1Test.Angle(cutPlaneLE.Axis()) < M_PI_2;
     }
 
     if (plainTest || sparTest) {
@@ -852,10 +852,10 @@ bool CCPACSWingCell::IsPartOfCell(TopoDS_Edge e)
         sparTest  = false;
         plainTest = false;
         if (m_positioningTrailingEdge.GetInputType() == CCPACSWingCellPositionChordwise::InputType::Spar) {
-            sparTest = m_parent->GetParentElement()->SparSegmentsTest(cutPlaneTE.Axis(), pTest, sparShapeTE);
+            sparTest = CCPACSWingShell::SparSegmentsTest(cutPlaneTE.Axis(), pTest, sparShapeTE);
         }
         else {
-            plainTest = a1Test.Angle(cutPlaneTE.Axis()) < (90.0 * (M_PI / 180.));
+            plainTest = a1Test.Angle(cutPlaneTE.Axis()) < M_PI_2;
         }
 
         if (plainTest || sparTest) {
@@ -863,12 +863,12 @@ bool CCPACSWingCell::IsPartOfCell(TopoDS_Edge e)
             midPnt = (pC1.XYZ() + pC3.XYZ()) / 2;
             vTest  = gp_Vec(midPnt, pTest);
             a1Test = gp_Ax1(midPnt, vTest);
-            if (a1Test.Angle(cutPlaneIB.Axis()) < (90.0 * (M_PI / 180.))) {
+            if (a1Test.Angle(cutPlaneIB.Axis()) < M_PI_2) {
                 // create an Ax1 from the outer border plane origin to the midpoint of the current face
                 midPnt = (pC2.XYZ() + pC4.XYZ()) / 2;
                 vTest  = gp_Vec(midPnt, pTest);
                 a1Test = gp_Ax1(midPnt, vTest);
-                if (a1Test.Angle(cutPlaneOB.Axis()) < (90.0 * (M_PI / 180.))) {
+                if (a1Test.Angle(cutPlaneOB.Axis()) < M_PI_2) {
                     return true;
                 }
             }

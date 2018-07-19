@@ -21,6 +21,7 @@
 #include "CCPACSWingCSStructure.h"
 #include "CTiglError.h"
 #include "CCPACSWingCell.h"
+#include "tiglcommonfunctions.h"
 
 #include <TopTools_IndexedMapOfShape.hxx>
 #include <TopExp.hxx>
@@ -108,7 +109,7 @@ TiglLoftSide CCPACSWingShell::GetLoftSide() const
     throw CTiglError("Cannot determine loft side, this shell is neither lower nor upper shell of parent");
 }
 
-bool CCPACSWingShell::SparSegmentsTest(gp_Ax1 nNormal, gp_Pnt nTestPoint, TopoDS_Shape nSparSegments) const
+bool CCPACSWingShell::SparSegmentsTest(gp_Ax1 nNormal, gp_Pnt nTestPoint, TopoDS_Shape nSparSegments)
 {
     TopTools_IndexedMapOfShape faceMap;
     TopExp::MapShapes(nSparSegments, TopAbs_FACE, faceMap);
@@ -117,29 +118,22 @@ bool CCPACSWingShell::SparSegmentsTest(gp_Ax1 nNormal, gp_Pnt nTestPoint, TopoDS
     // for symmetry
     nTestPoint.SetY(fabs(nTestPoint.Y()));
 
-    CTiglWingStructureReference wingStructureReference = m_parent->GetWingStructureReference();
     for (int f = 1; f <= faceMap.Extent(); f++) {
         TopoDS_Face loftFace = TopoDS::Face(faceMap(f));
         BRepAdaptor_Surface surf(loftFace);
         Handle(Geom_Surface) geomSurf = BRep_Tool::Surface(loftFace);
 
         BRepTools::UVBounds(TopoDS::Face(faceMap(f)), u_min, u_max, v_min, v_max);
-        gp_Pnt midPnt = surf.Value(u_min + ((u_max - u_min) / 2), v_min + ((v_max - v_min) / 2));
 
         gp_Pnt startPnt = surf.Value(u_min, v_min + ((v_max - v_min) / 2));
         gp_Pnt endPnt   = surf.Value(u_max, v_min + ((v_max - v_min) / 2));
 
         // if the U / V direction of the spar plane is changed
-
         gp_Ax1 a1Test0   = gp_Ax1(startPnt, gp_Vec(startPnt, endPnt));
         gp_Ax1 a1TestZ   = gp_Ax1(startPnt, gp_Vec(gp_Pnt(0., 0., 0.), gp_Pnt(0., 0., 1.)));
         gp_Ax1 a1Test_mZ = gp_Ax1(startPnt, gp_Vec(gp_Pnt(0., 0., 0.), gp_Pnt(0., 0., -1.)));
 
-        if (a1Test0.Angle(a1TestZ) < (20.0 * (M_PI / 180.))) {
-            startPnt = surf.Value(u_min + ((u_max - u_min) / 2), v_min);
-            endPnt   = surf.Value(u_min + ((u_max - u_min) / 2), v_max);
-        }
-        else if (a1Test0.Angle(a1Test_mZ) < (20.0 * (M_PI / 180.))) {
+        if (a1Test0.Angle(a1TestZ) < Radians(20.0) || a1Test0.Angle(a1Test_mZ) < Radians(20.0)) {
             startPnt = surf.Value(u_min + ((u_max - u_min) / 2), v_min);
             endPnt   = surf.Value(u_min + ((u_max - u_min) / 2), v_max);
         }
@@ -167,7 +161,7 @@ bool CCPACSWingShell::SparSegmentsTest(gp_Ax1 nNormal, gp_Pnt nTestPoint, TopoDS
 
         gp_Ax1 planeNormal(pTestProj, normal);
 
-        if (nNormal.Angle(planeNormal) > (90.0 * (M_PI / 180.))) {
+        if (nNormal.Angle(planeNormal) > Radians(90.0)) {
             planeNormal = planeNormal.Reversed();
         }
 
@@ -179,7 +173,7 @@ bool CCPACSWingShell::SparSegmentsTest(gp_Ax1 nNormal, gp_Pnt nTestPoint, TopoDS
 
         gp_Ax1 a1Test = gp_Ax1(pTestProj, vTest);
 
-        if (a1Test.Angle(planeNormal) < (89.0 * (M_PI / 180.))) {
+        if (a1Test.Angle(planeNormal) < Radians(89.0)) {
             return true;
         }
         else {
