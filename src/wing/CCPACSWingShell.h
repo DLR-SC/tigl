@@ -27,6 +27,7 @@
 #include "tigl.h"
 
 #include <gp_Vec.hxx>
+#include <TopoDS_Shape.hxx>
 
 #include <string>
 
@@ -60,6 +61,8 @@ public:
 
     TIGL_EXPORT TiglLoftSide GetLoftSide() const;
 
+    // TODO: Description of this method! Can this be put outside of the class?
+    TIGL_EXPORT bool SparSegmentsTest(gp_Ax1 nNormal, gp_Pnt nTestPoint, TopoDS_Shape nSparSegments) const;
 private:
     //@todo stringers
 

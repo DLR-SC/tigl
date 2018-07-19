@@ -49,22 +49,22 @@ public:
     // determines if a given eta xsi coordinate is inside this cell
     // TODO: missing support for spar cell borders
     TIGL_EXPORT bool IsInside(double eta, double xsi) const;
-    
+
     // determines if the cell defines a convex qudriangle or not
     // TODO: missing support for spar cell borders
     TIGL_EXPORT bool IsConvex() const;
-    
+
     TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& cellXPath) OVERRIDE;
 
     // get corner coordinates of cell
-    TIGL_EXPORT void GetLeadingEdgeInnerPoint (double* eta, double* xsi) const;
-    TIGL_EXPORT void GetLeadingEdgeOuterPoint (double* eta, double* xsi) const;
+    TIGL_EXPORT void GetLeadingEdgeInnerPoint(double* eta, double* xsi) const;
+    TIGL_EXPORT void GetLeadingEdgeOuterPoint(double* eta, double* xsi) const;
     TIGL_EXPORT void GetTrailingEdgeInnerPoint(double* eta, double* xsi) const;
     TIGL_EXPORT void GetTrailingEdgeOuterPoint(double* eta, double* xsi) const;
-    
+
     // sets corner coordinates of cell
-    TIGL_EXPORT void SetLeadingEdgeInnerPoint (double eta, double xsi);
-    TIGL_EXPORT void SetLeadingEdgeOuterPoint (double eta, double xsi);
+    TIGL_EXPORT void SetLeadingEdgeInnerPoint(double eta, double xsi);
+    TIGL_EXPORT void SetLeadingEdgeOuterPoint(double eta, double xsi);
     TIGL_EXPORT void SetTrailingEdgeInnerPoint(double eta, double xsi);
     TIGL_EXPORT void SetTrailingEdgeOuterPoint(double eta, double xsi);
 
@@ -79,10 +79,15 @@ public:
 
     TIGL_EXPORT void Update() const;
 
+    TIGL_EXPORT TopoDS_Shape GetCellSkinGeometry(bool transform = true) const;
+
+    TIGL_EXPORT bool IsPartOfCell(TopoDS_Face);
+    TIGL_EXPORT bool IsPartOfCell(TopoDS_Edge);
+
 private:
-    std::pair<double, double> computePositioningEtaXsi(const CCPACSWingCellPositionSpanwise& spanwisePos, 
-                                                       const CCPACSWingCellPositionChordwise& chordwisePos, 
-                                                       bool inner, bool front) const;
+    std::pair<double, double> computePositioningEtaXsi(const CCPACSWingCellPositionSpanwise& spanwisePos,
+                                                       const CCPACSWingCellPositionChordwise& chordwisePos, bool inner,
+                                                       bool front) const;
 
     // calculates the Eta/Xsi values of the the cell's corner points and stores
     // them in the cache
@@ -93,16 +98,34 @@ private:
 
     void Reset();
 
+    void BuildSkinGeometry() const;
+
+    TopoDS_Shape GetSparCutGeometry(const std::string& sparUID) const;
+
+    TopoDS_Shape GetRibCutGeometry(std::pair<std::string, int> ribUidAndIndex) const;
+
+    // TODO: add Cache struct
+    mutable bool geometryValid;
+    mutable TopoDS_Shape cellSkinGeometry;
+
     struct Cache
     {
+        Cache()
+            : valid(false){};
+        bool valid;
         EtaXsi innerLeadingEdgePoint;
         EtaXsi innerTrailingEdgePoint;
         EtaXsi outerLeadingEdgePoint;
         EtaXsi outerTrailingEdgePoint;
     };
 
-    mutable boost::optional<Cache> cache;
+    mutable Cache cache;
 
+    // TODO: add Cache struct
+    mutable gp_Pln cutPlaneLE, cutPlaneTE, cutPlaneIB, cutPlaneOB;
+    mutable TopoDS_Shape planeShapeLE, planeShapeTE, planeShapeIB, planeShapeOB;
+    mutable TopoDS_Shape sparShapeLE, sparShapeTE;
+    mutable gp_Pnt pC1, pC2, pC3, pC4;
 };
 
 namespace WingCellInternal

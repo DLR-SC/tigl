@@ -22,6 +22,15 @@
 #include "CTiglError.h"
 #include "CCPACSWingCell.h"
 
+#include <TopTools_IndexedMapOfShape.hxx>
+#include <TopExp.hxx>
+#include <TopoDS.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <ShapeAnalysis_Surface.hxx>
+#include <GeomLProp_SLProps.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepTools.hxx>
+
 
 namespace tigl
 {
@@ -97,6 +106,88 @@ TiglLoftSide CCPACSWingShell::GetLoftSide() const
     if (&GetParent()->GetUpperShell() == this)
         return UPPER_SIDE;
     throw CTiglError("Cannot determine loft side, this shell is neither lower nor upper shell of parent");
+}
+
+bool CCPACSWingShell::SparSegmentsTest(gp_Ax1 nNormal, gp_Pnt nTestPoint, TopoDS_Shape nSparSegments) const
+{
+    TopTools_IndexedMapOfShape faceMap;
+    TopExp::MapShapes(nSparSegments, TopAbs_FACE, faceMap);
+    double u_min = 0., u_max = 0., v_min = 0., v_max = 0.;
+
+    // for symmetry
+    nTestPoint.SetY(fabs(nTestPoint.Y()));
+
+    CTiglWingStructureReference wingStructureReference = m_parent->GetWingStructureReference();
+    for (int f = 1; f <= faceMap.Extent(); f++) {
+        TopoDS_Face loftFace = TopoDS::Face(faceMap(f));
+        BRepAdaptor_Surface surf(loftFace);
+        Handle(Geom_Surface) geomSurf = BRep_Tool::Surface(loftFace);
+
+        BRepTools::UVBounds(TopoDS::Face(faceMap(f)), u_min, u_max, v_min, v_max);
+        gp_Pnt midPnt = surf.Value(u_min + ((u_max - u_min) / 2), v_min + ((v_max - v_min) / 2));
+
+        gp_Pnt startPnt = surf.Value(u_min, v_min + ((v_max - v_min) / 2));
+        gp_Pnt endPnt   = surf.Value(u_max, v_min + ((v_max - v_min) / 2));
+
+        // if the U / V direction of the spar plane is changed
+
+        gp_Ax1 a1Test0   = gp_Ax1(startPnt, gp_Vec(startPnt, endPnt));
+        gp_Ax1 a1TestZ   = gp_Ax1(startPnt, gp_Vec(gp_Pnt(0., 0., 0.), gp_Pnt(0., 0., 1.)));
+        gp_Ax1 a1Test_mZ = gp_Ax1(startPnt, gp_Vec(gp_Pnt(0., 0., 0.), gp_Pnt(0., 0., -1.)));
+
+        if (a1Test0.Angle(a1TestZ) < (20.0 * (M_PI / 180.))) {
+            startPnt = surf.Value(u_min + ((u_max - u_min) / 2), v_min);
+            endPnt   = surf.Value(u_min + ((u_max - u_min) / 2), v_max);
+        }
+        else if (a1Test0.Angle(a1Test_mZ) < (20.0 * (M_PI / 180.))) {
+            startPnt = surf.Value(u_min + ((u_max - u_min) / 2), v_min);
+            endPnt   = surf.Value(u_min + ((u_max - u_min) / 2), v_max);
+        }
+
+        // Here it is checked if the stringer is in the Y area of the corresponding spar face
+
+        if (endPnt.Y() > startPnt.Y()) {
+            if (startPnt.Y() > nTestPoint.Y() || endPnt.Y() < nTestPoint.Y()) {
+                continue;
+            }
+        }
+        else {
+            if (startPnt.Y() < fabs(nTestPoint.Y()) || endPnt.Y() > fabs(nTestPoint.Y())) {
+                continue;
+            }
+        }
+
+        // project test point onto the surface
+        Handle(ShapeAnalysis_Surface) SA_surf = new ShapeAnalysis_Surface(geomSurf);
+        gp_Pnt2d uv                           = SA_surf->ValueOfUV(nTestPoint, 0.0);
+        gp_Pnt pTestProj                      = surf.Value(uv.X(), uv.Y());
+
+        GeomLProp_SLProps prop(geomSurf, uv.X(), uv.Y(), 1, 0.01);
+        gp_Dir normal = prop.Normal();
+
+        gp_Ax1 planeNormal(pTestProj, normal);
+
+        if (nNormal.Angle(planeNormal) > (90.0 * (M_PI / 180.))) {
+            planeNormal = planeNormal.Reversed();
+        }
+
+        gp_Vec vTest = gp_Vec(pTestProj, nTestPoint);
+
+        if (vTest.Magnitude() == 0.) {
+            continue;
+        }
+
+        gp_Ax1 a1Test = gp_Ax1(pTestProj, vTest);
+
+        if (a1Test.Angle(planeNormal) < (89.0 * (M_PI / 180.))) {
+            return true;
+        }
+        else {
+            continue;
+        }
+    }
+
+    return false;
 }
 
 } // namespace tigl
