@@ -226,9 +226,6 @@ void CCPACSFuselage::SetFaceTraits (PNamedShape loft, bool hasSymmetryPlane, boo
 // Builds a fused shape of all fuselage segments
 PNamedShape CCPACSFuselage::BuildLoft()
 {
-    // Get Continuity of first segment
-    // TODO: adapt lofting to have multiple different continuities
-
     TiglContinuity cont = m_segments.GetSegment(1).GetContinuity();
     Standard_Boolean smooth = (cont == ::C0? false : true);
 
@@ -242,7 +239,6 @@ PNamedShape CCPACSFuselage::BuildLoft()
     // add guides
     lofter.addGuides(GetGuideCurveWires());
 
-    lofter.setMakeSmooth(smooth);
     lofter.setMakeSolid(true);
 
     TopoDS_Shape loftShape =  lofter.Shape();

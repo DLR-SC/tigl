@@ -62,7 +62,6 @@ CTiglMakeLoft::CTiglMakeLoft(double tolerance, double sameKnotTolerance)
     _result.Nullify();
     _myTolerance = tolerance;
     _mySameKnotTolerance = sameKnotTolerance;
-    _makeSmooth = false;
 }
 
 CTiglMakeLoft::CTiglMakeLoft(const TopoDS_Shape& profiles, const TopoDS_Shape& guides, double tolerance, double sameKnotTolerance)
@@ -133,11 +132,6 @@ void CTiglMakeLoft::Perform()
 void CTiglMakeLoft::setMakeSolid(bool enabled)
 {
     _makeSolid = enabled;
-}
-
-void CTiglMakeLoft::setMakeSmooth(bool enabled)
-{
-    _makeSmooth = enabled;
 }
 
 /**
@@ -229,14 +223,14 @@ void CTiglMakeLoft::makeLoftWithGuides()
     BRepTools::Write(_result, spatches.str().c_str());
 #endif
     
-    FinalizeShape();
+    FinalizeShape(_result);
 }
 
 void CTiglMakeLoft::makeLoftWithoutGuides()
 {
     TopoDS_Compound faces;
-    BRep_Builder faceBuilder;
-    faceBuilder.MakeCompound(faces);
+    BRep_Builder builder;
+    builder.MakeCompound(faces);
 
     // get number of edges per profile wire
     // --> should be the same for all profiles
@@ -267,16 +261,14 @@ void CTiglMakeLoft::makeLoftWithoutGuides()
         tigl::CTiglCurvesToSurface surfaceSkinner(profileCurves);
         Handle(Geom_BSplineSurface) surface = surfaceSkinner.Surface();
         BRepBuilderAPI_MakeFace faceMaker(surface, Precision::Confusion());
-        faceBuilder.Add(faces, faceMaker.Face());
+        builder.Add(faces, faceMaker.Face());
     }
-    _result = faces;
-    FinalizeShape();
+    FinalizeShape(faces);
 }
 
-void CTiglMakeLoft::FinalizeShape()
+void CTiglMakeLoft::FinalizeShape(TopoDS_Shape& faces)
 {
-    TopoDS_Shape faces = _result;
-    if (_makeSolid && !(faces.ShapeType()==TopAbs_SOLID) ) {
+    if (_makeSolid) {
         // check if the first wire is the same as the last
         Standard_Boolean vClosed = (profiles[0].IsSame(profiles[profiles.size()-1]));
 
@@ -304,7 +296,6 @@ void CTiglMakeLoft::FinalizeShape()
             TopoDS_Wire wire1 = TopoDS::Wire(profiles[0]);
             TopoDS_Wire wire2 = TopoDS::Wire(profiles[profiles.size()-1]);
             TopoDS_Face innerCap, outerCap;
-            _result = faces;
             _result = MakeSolid(faces, wire1, wire2, 1e-6, innerCap, outerCap);
         }
     }else {
@@ -368,7 +359,7 @@ namespace
         BRepBuilderAPI_Sewing sewingAlgo;
         sewingAlgo.Add(shell);
 
-        
+
         if (!B) {
             // It is necessary to close the extremities 
             B =  CreateSideCap(wire1, presPln, face1);

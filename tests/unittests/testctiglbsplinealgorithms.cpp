@@ -240,7 +240,7 @@ TEST(TiglBSplineAlgorithms, testCreateCommonKnotsVectorTolerance)
     TColgp_Array1OfPnt controlPoints1(1, 4);
 
     TColStd_Array1OfReal Knots1(1, 3);
-    Knots1(1) = 0.009;
+    Knots1(1) = 0.;
     Knots1(2) = 0.5;
     Knots1(3) = 1;
 
@@ -275,7 +275,7 @@ TEST(TiglBSplineAlgorithms, testCreateCommonKnotsVectorTolerance)
     ASSERT_EQ(4, curves[0]->NbKnots());
     ASSERT_EQ(4, curves[1]->NbKnots());
 
-    EXPECT_NEAR(0.009, curves[0]->Knot(1), 1e-10);
+    EXPECT_NEAR(0.000, curves[0]->Knot(1), 1e-10);
     EXPECT_NEAR(0.500, curves[0]->Knot(2), 1e-10);
     EXPECT_NEAR(0.800, curves[0]->Knot(3), 1e-10);
     EXPECT_NEAR(1.000, curves[0]->Knot(4), 1e-10);
@@ -557,6 +557,41 @@ TEST(TiglBSplineAlgorithms, testReparametrizeBSplineContinuouslyApprox)
     }
 }
 
+TEST(TiglBSplineAlgorithms, reparametrizeBSpline)
+{
+    // create B-spline
+    unsigned int degree = 3;
+
+    TColgp_Array1OfPnt controlPoints(1, 8);
+    controlPoints(1) = gp_Pnt(0., -1., 0.);
+    controlPoints(2) = gp_Pnt(2., 3., 1.);
+    controlPoints(3) = gp_Pnt(1., 5., -2.);
+    controlPoints(4) = gp_Pnt(2., 8., -1.);
+    controlPoints(5) = gp_Pnt(0., 10., 2.);
+    controlPoints(6) = gp_Pnt(-1., 12., 4.);
+    controlPoints(7) = gp_Pnt(-2., 16., 5.);
+    controlPoints(8) = gp_Pnt(0., 17., 0.);
+
+    TColStd_Array1OfReal knots(1, 5);
+    knots(1) = 0.;
+    knots(2) = 0.1;
+    knots(3) = 0.3;
+    knots(4) = 0.8;
+    knots(5) = 1.;
+
+    TColStd_Array1OfInteger mults(1, 5);
+    mults(1) = 4;
+    mults(2) = 1;
+    mults(3) = 2;
+    mults(4) = 1;
+    mults(5) = 4;
+
+    Handle(Geom_BSplineCurve) spline = new Geom_BSplineCurve(controlPoints, knots, mults, degree);
+
+    CTiglBSplineAlgorithms::reparametrizeBSpline(*spline, -5, 5);
+    ASSERT_NEAR(spline->FirstParameter(), -5, 1e-10);
+    ASSERT_NEAR(spline->LastParameter(),  5, 1e-10);
+}
 
 TEST(TiglBSplineAlgorithms, testFlipSurface)
 {

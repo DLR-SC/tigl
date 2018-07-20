@@ -63,6 +63,8 @@ private:
     TIGL_EXPORT void Perform(std::vector<Handle(Geom_BSplineCurve) > const& curves);
 
     Handle(Geom_BSplineSurface) _skinnedSurface = nullptr;
+
+    std::vector<Handle(Geom_BSplineCurve) > _compatibleSplines;
     std::vector<double> _parameters;
     bool _continuousIfClosed = false;
 };

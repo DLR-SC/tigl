@@ -83,15 +83,17 @@ TIGL_EXPORT void CTiglCurvesToSurface::CalculateParameters(std::vector<Handle(Ge
 
 
     // create a common knot vector for all splines
-    std::vector<Handle(Geom_BSplineCurve) > compatibleSplines = CTiglBSplineAlgorithms::createCommonKnotsVectorCurve(splines_vector, 1e-15);
+    if ( _compatibleSplines.size() == 0 ) {
+         _compatibleSplines = CTiglBSplineAlgorithms::createCommonKnotsVectorCurve(splines_vector, 1e-10);
+    }
 
     // create a matrix of control points of all B-splines (splines do have the same amount of control points now)
-    TColgp_Array2OfPnt controlPoints(1, compatibleSplines[0]->NbPoles(),
-                                     1, static_cast<Standard_Integer>(compatibleSplines.size()));
+    TColgp_Array2OfPnt controlPoints(1, _compatibleSplines[0]->NbPoles(),
+                                     1, static_cast<Standard_Integer>(_compatibleSplines.size()));
 
-    for (unsigned int spline_idx = 1; spline_idx <= compatibleSplines.size(); ++spline_idx) {
-        for (int point_idx = 1; point_idx <= compatibleSplines[0]->NbPoles(); ++point_idx) {
-            controlPoints(point_idx, spline_idx) = compatibleSplines[spline_idx - 1]->Pole(point_idx);
+    for (unsigned int spline_idx = 1; spline_idx <= _compatibleSplines.size(); ++spline_idx) {
+        for (int point_idx = 1; point_idx <= _compatibleSplines[0]->NbPoles(); ++point_idx) {
+            controlPoints(point_idx, spline_idx) = _compatibleSplines[spline_idx - 1]->Pole(point_idx);
         }
     }
 
@@ -114,9 +116,11 @@ TIGL_EXPORT void CTiglCurvesToSurface::Perform(std::vector<Handle(Geom_BSplineCu
     size_t nCurves = curves.size();
 
     // create a common knot vector for all splines
-    std::vector<Handle(Geom_BSplineCurve) > compatSplines = CTiglBSplineAlgorithms::createCommonKnotsVectorCurve(curves, 1e-15);
+    if ( _compatibleSplines.size() == 0 ) {
+        _compatibleSplines = CTiglBSplineAlgorithms::createCommonKnotsVectorCurve(curves, 1e-10);
+    }
 
-    const Handle(Geom_BSplineCurve)& firstCurve = compatSplines[0];
+    const Handle(Geom_BSplineCurve)& firstCurve = _compatibleSplines[0];
     size_t numControlPointsU = firstCurve->NbPoles();
 
     int degreeV = 0;
@@ -133,7 +137,7 @@ TIGL_EXPORT void CTiglCurvesToSurface::Perform(std::vector<Handle(Geom_BSplineCu
     // now continue to create new control points by interpolating the remaining columns of controlPoints in Skinning direction (here v-direction) by B-splines
     for (int cpUIdx = 1; cpUIdx <= numControlPointsU; ++cpUIdx) {
         for (int cpVIdx = 1; cpVIdx <= nPointsAdapt; ++cpVIdx) {
-            interpPointsVDir->SetValue(cpVIdx, compatSplines[cpVIdx - 1]->Pole(cpUIdx));
+            interpPointsVDir->SetValue(cpVIdx, _compatibleSplines[cpVIdx - 1]->Pole(cpUIdx));
         }
         GeomAPI_Interpolate interpolationObject(interpPointsVDir, toArray(_parameters), makeClosed, 1e-5);
         interpolationObject.Perform();

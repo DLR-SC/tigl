@@ -73,13 +73,12 @@ PNamedShape CTiglWingBuilder::BuildShape()
     // we assume, that all profiles of one wing are either blunt or not
     // this is checked during cpacs loading of each wing segment
     bool hasBluntTE = innerProfile.HasBluntTE();
-    bool hasGuideCurves = guides.size() > 0;
+    //bool hasGuideCurves = guides.size() > 0;
 
 
     CTiglMakeLoft lofter;
-    lofter.setMakeSolid(false);
+    lofter.setMakeSolid(true);
 
-    std::vector<gp_Pnt> upperTEPoints, lowerTEPoints;
     for (int i=1; i <= segments.GetSegmentCount(); i++) {
         const TopoDS_Wire& startWire = segments.GetSegment(i).GetInnerWire();
 
@@ -97,9 +96,6 @@ PNamedShape CTiglWingBuilder::BuildShape()
             }
             TopoDS_Wire aeroProfile = wireMaker.Wire();
             lofter.addProfiles(aeroProfile);
-            upperTEPoints.push_back(GetLastPoint(aeroProfile));
-            lowerTEPoints.push_back(GetFirstPoint(aeroProfile));
-
         }
         else {
             lofter.addProfiles(startWire);
@@ -121,11 +117,6 @@ PNamedShape CTiglWingBuilder::BuildShape()
         }
         TopoDS_Wire aeroProfile = wireMaker.Wire();
         lofter.addProfiles(aeroProfile);
-
-        // add the trailing edge points
-        upperTEPoints.push_back(GetLastPoint(aeroProfile));
-        lowerTEPoints.push_back(GetFirstPoint(aeroProfile));
-
     }
     else {
         lofter.addProfiles(endWire);
@@ -135,83 +126,9 @@ PNamedShape CTiglWingBuilder::BuildShape()
     lofter.addGuides(guideCurves);
 
     TopoDS_Shape aeroShape = lofter.Shape();
-    BRepBuilderAPI_Sewing sewingAlgo;
-    sewingAlgo.Add(aeroShape);
-
-    // If blunt trailing edge is available, model it explicitly
-    if (hasBluntTE) {
-
-        TopoDS_Wire upperTE, lowerTE;
-        if (hasGuideCurves) {
-            // The guide curves are sorted in the order of the relative starting coordinate
-            // at the innermost section
-            upperTE = guides.back();
-            lowerTE = guides.front();
-        }
-        else {
-            // model the edges by taking the first and last profile points
-
-            assert(lowerTEPoints.size() == upperTEPoints.size());
-            assert(lowerTEPoints.size() > 1);
-
-            // build upper edge
-            BRepBuilderAPI_MakeWire upperWireMaker, lowerWireMaker;
-            for (unsigned int i = 0; i < upperTEPoints.size() - 1; ++i) {
-                upperWireMaker.Add(BRepBuilderAPI_MakeEdge(upperTEPoints.at(i), upperTEPoints.at(i+1)));
-                lowerWireMaker.Add(BRepBuilderAPI_MakeEdge(lowerTEPoints.at(i), lowerTEPoints.at(i+1)));
-            }
-            upperTE = upperWireMaker.Wire();
-            lowerTE = lowerWireMaker.Wire();
-        }
-
-        // the TE is build using a ruled loft
-        BRepOffsetAPI_ThruSections trailingEdgeBuilder(Standard_False, Standard_True);
-        trailingEdgeBuilder.AddWire(upperTE);
-        trailingEdgeBuilder.AddWire(lowerTE);
-        trailingEdgeBuilder.Build();
-        TopoDS_Shape trailingEdge = trailingEdgeBuilder.Shape();
-        sewingAlgo.Add(trailingEdge);
-
-    } // hasBluntTE
-
-
-    // get the profiles
-    TopoDS_Wire innerWire = segments.GetSegment(1).GetInnerWire();
-    TopoDS_Wire outerWire = segments.GetSegment(segments.GetSegmentCount()).GetOuterWire();
-
-    TopoDS_Face innerFace, outerFace;
-    CreateSideCap(innerWire, 1e-6, innerFace);
-    CreateSideCap(outerWire, 1e-6, outerFace);
-
-    sewingAlgo.Add(innerFace);
-    sewingAlgo.Add(outerFace);
-
-    sewingAlgo.Perform();
-    TopoDS_Shape shellClosed  = sewingAlgo.SewedShape();
-    shellClosed.Closed(Standard_True);
-
-    // make solid from shell
-    TopoDS_Solid solid;
-    BRep_Builder solidMaker;
-    solidMaker.MakeSolid(solid);
-    solidMaker.Add(solid, shellClosed);
-
-    // verify the orientation the solid
-    BRepClass3d_SolidClassifier clas3d(solid);
-    clas3d.PerformInfinitePoint(Precision::Confusion());
-    if (clas3d.State() == TopAbs_IN) {
-        solidMaker.MakeSolid(solid);
-        TopoDS_Shape aLocalShape = shellClosed.Reversed();
-        solidMaker.Add(solid, TopoDS::Shell(aLocalShape));
-    }
-
-    solid.Closed(Standard_True);
-    BRepLib::EncodeRegularity(solid);
-
-
     std::string loftName = _wing.GetUID();
     std::string loftShortName = _wing.GetShortShapeName();
-    PNamedShape loft(new CNamedShape(solid, loftName.c_str(), loftShortName.c_str()));
+    PNamedShape loft(new CNamedShape(aeroShape, loftName.c_str(), loftShortName.c_str()));
     SetFaceTraits(_wing.GetUID(), loft, hasBluntTE);
 
     return loft;
