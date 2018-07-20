@@ -25,7 +25,7 @@ namespace tigl
 class CCPACSDoorAssemblyPosition : public generated::CPACSDoorAssemblyPosition, public CTiglStringerFrameBorderedObject, public ITiglGeometricComponent
 {
 public:
-    CCPACSDoorAssemblyPosition(CCPACSCargoDoorsAssembly* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSDoorAssemblyPosition(CCPACSCargoDoorsAssembly* parent, CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT std::string GetDefaultedUID() const OVERRIDE;
     TIGL_EXPORT PNamedShape GetLoft() OVERRIDE;

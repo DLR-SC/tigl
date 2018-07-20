@@ -19,6 +19,7 @@
 %module (package="tigl3") configuration
 
 %include <typemaps.i>
+%include <factory.i>
 %include common.i
 %include math_headers.i
 
@@ -52,6 +53,14 @@
 #include "CCPACSWingSparSegment.h"
 #include "CCPACSWingRibsDefinition.h"
 #include "CCPACSSkinSegment.h"
+#include "CTiglWingChordface.h"
+#include "CCPACSCrossBeamAssemblyPosition.h"
+#include "CCPACSCrossBeamStrutAssemblyPosition.h"
+#include "generated/CPACSCrossBeamStrutAssemblyPosition.h"
+#include "CCPACSDoorAssemblyPosition.h"
+#include "CCPACSLongFloorBeam.h"
+#include "CCPACSLongFloorBeamPosition.h"
+#include "CCPACSPressureBulkheadAssemblyPosition.h"
 #include <TopoDS_TEdge.hxx>
 #include <TopoDS_HShape.hxx>
 #include <TopLoc_IndexedMapNodeOfIndexedMapOfLocation.hxx>
@@ -97,9 +106,13 @@
 %boost_optional(tigl::CCPACSFuselageStructure)
 %boost_optional(tigl::generated::CPACSLinkToFileType_format)
 %boost_optional(tigl::CCPACSWingCells)
+%boost_optional(tigl::generated::CPACSAlignmentCrossBeam)
+%boost_optional(tigl::generated::CPACSDoorAssemblyPosition_doorType)
 
 %apply double *OUTPUT { double* eta, double* xsi };
 
+%ignore tigl::CTiglStringerFrameBorderedObject;
+%include "CTiglStringerFrameBorderedObject.h"
 %include "generated/CPACSSkinSegment.h"
 %include "CCPACSSkinSegment.h"
 %include "generated/CPACSCargoDoorsAssembly.h"
@@ -111,6 +124,13 @@
 %include "CCPACSCargoCrossBeamStrutsAssembly.h"
 %include "generated/CPACSCargoCrossBeamsAssembly.h"
 %include "CCPACSCargoCrossBeamsAssembly.h"
+%include "generated/CPACSAlignmentCrossBeam.h"
+%include "generated/CPACSCrossBeamAssemblyPosition.h"
+%include "CCPACSCrossBeamAssemblyPosition.h"
+%include "generated/CPACSCrossBeamStrutAssemblyPosition.h"
+%include "CCPACSCrossBeamStrutAssemblyPosition.h"
+%include "generated/CPACSPressureBulkheadAssemblyPosition.h"
+%include "CCPACSPressureBulkheadAssemblyPosition.h"
 %include "generated/CPACSFramesAssembly.h"
 %include "CCPACSFramesAssembly.h"
 %include "generated/CPACSStringersAssembly.h"
@@ -284,6 +304,28 @@ class CCPACSWingRibsPositioning;
 %include "generated/CPACSLinkToFile.h"
 %include "generated/CPACSGenericGeometricComponent.h"
 %include "CCPACSExternalObject.h"
+%include "CTiglWingSegmentList.h"
+%include "CTiglWingChordface.h"
+
+// CTiglUIDManager::GetGeometricComponent returns the interface type ITiglGeometricComponent
+// In the target language, we want to get the concrete type back
+%factory(tigl::ITiglGeometricComponent& tigl::CTiglUIDManager::GetGeometricComponent,
+         tigl::CCPACSFuselage,
+         tigl::CCPACSFuselageSegment,
+         tigl::CCPACSWing,
+         tigl::CCPACSWingSegment,
+         tigl::CCPACSWingComponentSegment,
+         tigl::CTiglWingChordface,
+         tigl::CCPACSExternalObject,
+         tigl::CCPACSGenericSystem,
+         tigl::CCPACSRotor,
+         tigl::CTiglAttachedRotorBlade,
+         tigl::CCPACSCrossBeamAssemblyPosition,
+         tigl::CCPACSCrossBeamStrutAssemblyPosition,
+         tigl::CCPACSDoorAssemblyPosition,
+         tigl::CCPACSLongFloorBeam,
+         tigl::CCPACSPressureBulkheadAssemblyPosition
+);
 
 namespace tigl
 {
@@ -316,5 +358,10 @@ public:
 %include "CCPACSConfiguration.h"
 %include "CCPACSConfigurationManager.h"
 %include "CTiglFusePlane.h"
+%include "generated/CPACSDoorAssemblyPosition_doorType.h"
+%include "generated/CPACSDoorAssemblyPosition.h"
+%include "CCPACSDoorAssemblyPosition.h"
+%include "generated/CPACSLongFloorBeam.h"
+%include "CCPACSLongFloorBeam.h"
 
 %clear double* eta, double* xsi;

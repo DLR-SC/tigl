@@ -103,7 +103,17 @@
 %include "CCPACSPointAbsRel.h"
 %include "ECPACSTranslationType.h"
 %include "CTiglTransformation.h"
+
+// we want to replace Shape with another Shape function that returns by value
+// as returning by ref can cause crashes in python
+%extend CNamedShape {
+    TopoDS_Shape Shape() const {
+        return self->Shape();
+    }
+}
+%ignore CNamedShape::Shape;
 %include "CNamedShape.h"
+
 %include "CSharedPtr.h"
 %include "PNamedShape.h"
 %include "CTiglPoint.h"
