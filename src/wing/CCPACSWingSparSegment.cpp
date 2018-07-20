@@ -259,6 +259,21 @@ TopoDS_Shape CCPACSWingSparSegment::GetSparCapsGeometry(SparCapSide side, TiglCo
     }
 }
 
+std::string CCPACSWingSparSegment::GetDefaultedUID() const
+{
+    if (GetUID().is_initialized()) {
+        return GetUID().value();
+    }
+    else {
+        return "Unknown_Spar_Segment";
+    }
+}
+
+TiglGeometricComponentType CCPACSWingSparSegment::GetComponentType() const
+{
+    return TIGL_COMPONENT_PHYSICAL;
+}
+
 // Builds the cutting geometry for the spar as well as the midplane line
 void CCPACSWingSparSegment::BuildAuxiliaryGeometry() const
 {
@@ -575,6 +590,11 @@ gp_Vec CCPACSWingSparSegment::GetUpVector(const std::string& positionUID, gp_Pnt
     */
     
     return upVec;
+}
+
+PNamedShape CCPACSWingSparSegment::BuildLoft()
+{
+    return PNamedShape(new CNamedShape(GetSparGeometry(GLOBAL_COORDINATE_SYSTEM), GetDefaultedUID()));
 }
 
 } // end namespace tigl

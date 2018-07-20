@@ -25,12 +25,13 @@
 #include <vector>
 
 #include "generated/CPACSWingRibsDefinition.h"
+#include "CTiglAbstractGeometricComponent.h"
 
 namespace tigl
 {
 class CCPACSWingCSStructure;
 
-class CCPACSWingRibsDefinition : public generated::CPACSWingRibsDefinition
+class CCPACSWingRibsDefinition : public generated::CPACSWingRibsDefinition, public CTiglAbstractGeometricComponent
 {
 public:
     /**
@@ -92,6 +93,15 @@ public:
     // Returns whether rib caps are defined or not
     TIGL_EXPORT bool HasCaps() const;
     TIGL_EXPORT TopoDS_Shape GetRibCapsGeometry(RibCapSide side, TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
+
+    // ---------- INTERFACE OF CTiglAbstractGeometricComponent ------------- //
+    TIGL_EXPORT virtual std::string GetDefaultedUID() const OVERRIDE;
+
+    // Returns the Geometric type of this component, e.g. Wing or Fuselage
+    TIGL_EXPORT virtual TiglGeometricComponentType GetComponentType() const OVERRIDE;
+
+protected:
+    PNamedShape BuildLoft() OVERRIDE;
 
 private:
     // Structure for storing the start and end point of a single rib in the 
