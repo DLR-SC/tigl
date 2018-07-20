@@ -958,5 +958,25 @@ const CCPACSWingCSStructure & CCPACSWingRibsDefinition::getStructure() const
     return *m_parent->GetParent();
 }
 
+std::string CCPACSWingRibsDefinition::GetDefaultedUID() const
+{
+    if (GetUID().is_initialized()) {
+        return GetUID().value();
+    }
+    else {
+        return "Unknown_Ribs_Definition";
+    }
+}
+
+TiglGeometricComponentType CCPACSWingRibsDefinition::GetComponentType() const
+{
+    return TIGL_COMPONENT_PHYSICAL;
+}
+
+
+PNamedShape CCPACSWingRibsDefinition::BuildLoft()
+{
+    return PNamedShape(new CNamedShape(GetRibsGeometry(GLOBAL_COORDINATE_SYSTEM), GetDefaultedUID()));
+}
 
 } // end namespace tigl

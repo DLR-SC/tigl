@@ -23,6 +23,7 @@
 #include "generated/CPACSSparSegment.h"
 #include "CCPACSWingSparPositionUIDs.h"
 #include "tigl.h"
+#include "CTiglAbstractGeometricComponent.h"
 
 // forward declarations
 class gp_Pnt;
@@ -37,7 +38,7 @@ class CCPACSWingSpars;
 class CCPACSWingSparPosition;
 
 
-class CCPACSWingSparSegment : public generated::CPACSSparSegment
+class CCPACSWingSparSegment : public generated::CPACSSparSegment, public CTiglAbstractGeometricComponent
 {
 public:
     enum SparCapSide
@@ -76,6 +77,12 @@ public:
 
     TIGL_EXPORT TopoDS_Shape GetSparCapsGeometry(SparCapSide side, TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
 
+    // ---------- INTERFACE OF CTiglAbstractGeometricComponent ------------- //
+    TIGL_EXPORT virtual std::string GetDefaultedUID() const OVERRIDE;
+
+    // Returns the Geometric type of this component, e.g. Wing or Fuselage
+    TIGL_EXPORT virtual TiglGeometricComponentType GetComponentType() const OVERRIDE;
+
 protected:
     // Builds the cutting geometry for the spar as well as the midplane line
     void BuildAuxiliaryGeometry() const;
@@ -90,6 +97,8 @@ protected:
     gp_Pnt GetMidplanePoint(const std::string& positionUID) const;
 
     gp_Vec GetUpVector(const std::string& positionUID, gp_Pnt midplanePnt) const;
+
+    PNamedShape BuildLoft() OVERRIDE;
 
 private:
     CCPACSWingSparSegment(const CCPACSWingSparSegment&);
