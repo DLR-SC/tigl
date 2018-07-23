@@ -108,14 +108,14 @@ CCPACSWingCell::~CCPACSWingCell()
 void CCPACSWingCell::Invalidate()
 {
     geometryValid = false;
-    cache.valid   = false;
+    cache = boost::none;
 }
 
 void CCPACSWingCell::Reset()
 {
     m_uID         = "";
     geometryValid = false;
-    cache.valid   = false;
+    cache = boost::none;
 }
 
 bool CCPACSWingCell::IsConvex() const
@@ -203,57 +203,65 @@ void CCPACSWingCell::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::
 void CCPACSWingCell::GetLeadingEdgeInnerPoint(double* eta, double* xsi) const
 {
     UpdateCache();
-    *eta = cache.innerLeadingEdgePoint.eta;
-    *xsi = cache.innerLeadingEdgePoint.xsi;
+    *eta = cache.value().innerLeadingEdgePoint.eta;
+    *xsi = cache.value().innerLeadingEdgePoint.xsi;
 }
 
 void CCPACSWingCell::GetLeadingEdgeOuterPoint(double* eta, double* xsi) const
 {
     UpdateCache();
-    *eta = cache.outerLeadingEdgePoint.eta;
-    *xsi = cache.outerLeadingEdgePoint.xsi;
+    *eta = cache.value().outerLeadingEdgePoint.eta;
+    *xsi = cache.value().outerLeadingEdgePoint.xsi;
 }
 
 void CCPACSWingCell::GetTrailingEdgeInnerPoint(double* eta, double* xsi) const
 {
     UpdateCache();
-    *eta = cache.innerTrailingEdgePoint.eta;
-    *xsi = cache.innerTrailingEdgePoint.xsi;
+    *eta = cache.value().innerTrailingEdgePoint.eta;
+    *xsi = cache.value().innerTrailingEdgePoint.xsi;
 }
 
 void CCPACSWingCell::GetTrailingEdgeOuterPoint(double* eta, double* xsi) const
 {
     UpdateCache();
-    *eta = cache.outerTrailingEdgePoint.eta;
-    *xsi = cache.outerTrailingEdgePoint.xsi;
+    *eta = cache.value().outerTrailingEdgePoint.eta;
+    *xsi = cache.value().outerTrailingEdgePoint.xsi;
 }
 
-void CCPACSWingCell::SetLeadingEdgeInnerPoint(double eta, double xsi)
+void CCPACSWingCell::SetLeadingEdgeInnerPoint(double eta1, double xsi1)
 {
     UpdateCache();
-    m_positioningInnerBorder.SetEta(eta, cache.innerTrailingEdgePoint.eta);
-    m_positioningLeadingEdge.SetXsi(xsi, cache.outerLeadingEdgePoint.xsi);
+    const double eta2 = cache.value().innerTrailingEdgePoint.eta;
+    const double xsi2 = cache.value().outerLeadingEdgePoint.xsi;
+    m_positioningInnerBorder.SetEta(eta1, eta2);
+    m_positioningLeadingEdge.SetXsi(xsi1, xsi2);
 }
 
-void CCPACSWingCell::SetLeadingEdgeOuterPoint(double eta, double xsi)
+void CCPACSWingCell::SetLeadingEdgeOuterPoint(double eta1, double xsi2)
 {
     UpdateCache();
-    m_positioningOuterBorder.SetEta(eta, cache.outerTrailingEdgePoint.eta);
-    m_positioningLeadingEdge.SetXsi(cache.innerLeadingEdgePoint.xsi, xsi);
+    const double eta2 = cache.value().outerTrailingEdgePoint.eta;
+    const double xsi1 = cache.value().innerLeadingEdgePoint.xsi;
+    m_positioningOuterBorder.SetEta(eta1, eta2);
+    m_positioningLeadingEdge.SetXsi(xsi1, xsi2);
 }
 
-void CCPACSWingCell::SetTrailingEdgeInnerPoint(double eta, double xsi)
+void CCPACSWingCell::SetTrailingEdgeInnerPoint(double eta2, double xsi1)
 {
     UpdateCache();
-    m_positioningInnerBorder.SetEta(cache.innerLeadingEdgePoint.eta, eta);
-    m_positioningTrailingEdge.SetXsi(xsi, cache.outerTrailingEdgePoint.xsi);
+    const double eta1 = cache.value().innerLeadingEdgePoint.eta;
+    const double xsi2 = cache.value().outerTrailingEdgePoint.xsi;
+    m_positioningInnerBorder.SetEta(eta1, eta2);
+    m_positioningTrailingEdge.SetXsi(xsi1, xsi2);
 }
 
-void CCPACSWingCell::SetTrailingEdgeOuterPoint(double eta, double xsi)
+void CCPACSWingCell::SetTrailingEdgeOuterPoint(double eta2, double xsi2)
 {
     UpdateCache();
-    m_positioningOuterBorder.SetEta(cache.outerLeadingEdgePoint.eta, eta);
-    m_positioningTrailingEdge.SetXsi(cache.innerTrailingEdgePoint.xsi, xsi);
+    const double eta1 = cache.value().outerLeadingEdgePoint.eta;
+    const double xsi1 = cache.value().innerTrailingEdgePoint.xsi;
+    m_positioningOuterBorder.SetEta(eta1, eta2);
+    m_positioningTrailingEdge.SetXsi(xsi1, xsi2);
 }
 
 void CCPACSWingCell::SetLeadingEdgeSpar(const std::string& sparUID)
@@ -288,11 +296,12 @@ const CCPACSMaterialDefinition& CCPACSWingCell::GetMaterial() const
 
 void CCPACSWingCell::UpdateCache() const
 {
-    if (!cache.valid) {
+    if (!cache) {
         UpdateEtaXsiValues();
     }
-    assert(cache.valid);
+    assert(cache);
 }
+
 
 std::pair<double, double> CCPACSWingCell::computePositioningEtaXsi(const CCPACSWingCellPositionSpanwise& spanwisePos,
                                                                    const CCPACSWingCellPositionChordwise& chordwisePos,
@@ -366,29 +375,27 @@ std::pair<double, double> CCPACSWingCell::computePositioningEtaXsi(const CCPACSW
 
 void CCPACSWingCell::UpdateEtaXsiValues() const
 {
-    cache.valid = false;
+    cache.emplace();
 
     std::pair<double, double> innerLePoint =
         computePositioningEtaXsi(m_positioningInnerBorder, m_positioningLeadingEdge, true, true);
-    cache.innerLeadingEdgePoint.eta = innerLePoint.first;
-    cache.innerLeadingEdgePoint.xsi = innerLePoint.second;
+    cache->innerLeadingEdgePoint.eta = innerLePoint.first;
+    cache->innerLeadingEdgePoint.xsi = innerLePoint.second;
 
     std::pair<double, double> outerLePoint =
         computePositioningEtaXsi(m_positioningOuterBorder, m_positioningLeadingEdge, false, true);
-    cache.outerLeadingEdgePoint.eta = outerLePoint.first;
-    cache.outerLeadingEdgePoint.xsi = outerLePoint.second;
+    cache->outerLeadingEdgePoint.eta = outerLePoint.first;
+    cache->outerLeadingEdgePoint.xsi = outerLePoint.second;
 
     std::pair<double, double> innerTePoint =
         computePositioningEtaXsi(m_positioningInnerBorder, m_positioningTrailingEdge, true, false);
-    cache.innerTrailingEdgePoint.eta = innerTePoint.first;
-    cache.innerTrailingEdgePoint.xsi = innerTePoint.second;
+    cache->innerTrailingEdgePoint.eta = innerTePoint.first;
+    cache->innerTrailingEdgePoint.xsi = innerTePoint.second;
 
     std::pair<double, double> outerTePoint =
         computePositioningEtaXsi(m_positioningOuterBorder, m_positioningTrailingEdge, false, false);
-    cache.outerTrailingEdgePoint.eta = outerTePoint.first;
-    cache.outerTrailingEdgePoint.xsi = outerTePoint.second;
-
-    cache.valid = true;
+    cache->outerTrailingEdgePoint.eta = outerTePoint.first;
+    cache->outerTrailingEdgePoint.xsi = outerTePoint.second;
 }
 
 void CCPACSWingCell::Update() const
@@ -469,22 +476,22 @@ void CCPACSWingCell::BuildSkinGeometry() const
     gp_Vec diagonal(xmax - xmin, ymax - ymin, zmax - zmin);
     Standard_Real bboxSize = diagonal.Magnitude();
 
-    if (!cache.valid) {
+    if (!cache) {
         UpdateCache();
     }
-    assert(cache.valid);
+    assert(cache);
 
     double LEXsi1, LEXsi2, TEXsi1, TEXsi2;
     double IBEta1, IBEta2, OBEta1, OBEta2;
 
-    LEXsi1 = cache.innerLeadingEdgePoint.xsi;
-    LEXsi2 = cache.outerLeadingEdgePoint.xsi;
-    TEXsi1 = cache.innerTrailingEdgePoint.xsi;
-    TEXsi2 = cache.outerTrailingEdgePoint.xsi;
-    IBEta1 = cache.innerLeadingEdgePoint.eta;
-    IBEta2 = cache.innerTrailingEdgePoint.eta;
-    OBEta1 = cache.outerLeadingEdgePoint.eta;
-    OBEta2 = cache.outerTrailingEdgePoint.eta;
+    LEXsi1 = cache.value().innerLeadingEdgePoint.xsi;
+    LEXsi2 = cache.value().outerLeadingEdgePoint.xsi;
+    TEXsi1 = cache.value().innerTrailingEdgePoint.xsi;
+    TEXsi2 = cache.value().outerTrailingEdgePoint.xsi;
+    IBEta1 = cache.value().innerLeadingEdgePoint.eta;
+    IBEta2 = cache.value().innerTrailingEdgePoint.eta;
+    OBEta1 = cache.value().outerLeadingEdgePoint.eta;
+    OBEta2 = cache.value().outerTrailingEdgePoint.eta;
 
     pC1 = wsr.GetPoint(IBEta1, LEXsi1, WING_COORDINATE_SYSTEM);
     pC2 = wsr.GetPoint(OBEta1, LEXsi2, WING_COORDINATE_SYSTEM);
