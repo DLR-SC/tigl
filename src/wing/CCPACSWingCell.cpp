@@ -107,15 +107,15 @@ CCPACSWingCell::~CCPACSWingCell()
 
 void CCPACSWingCell::Invalidate()
 {
-    geometryValid = false;
-    cache = boost::none;
+    m_geometryCache = boost::none;
+    m_etaXsiCache = boost::none;
 }
 
 void CCPACSWingCell::Reset()
 {
     m_uID         = "";
-    geometryValid = false;
-    cache = boost::none;
+    m_geometryCache = boost::none;
+    m_etaXsiCache = boost::none;
 }
 
 bool CCPACSWingCell::IsConvex() const
@@ -202,64 +202,64 @@ void CCPACSWingCell::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::
 
 void CCPACSWingCell::GetLeadingEdgeInnerPoint(double* eta, double* xsi) const
 {
-    UpdateCache();
-    *eta = cache.value().innerLeadingEdgePoint.eta;
-    *xsi = cache.value().innerLeadingEdgePoint.xsi;
+    UpdateEtaXsiValues();
+    *eta = m_etaXsiCache.value().innerLeadingEdgePoint.eta;
+    *xsi = m_etaXsiCache.value().innerLeadingEdgePoint.xsi;
 }
 
 void CCPACSWingCell::GetLeadingEdgeOuterPoint(double* eta, double* xsi) const
 {
-    UpdateCache();
-    *eta = cache.value().outerLeadingEdgePoint.eta;
-    *xsi = cache.value().outerLeadingEdgePoint.xsi;
+    UpdateEtaXsiValues();
+    *eta = m_etaXsiCache.value().outerLeadingEdgePoint.eta;
+    *xsi = m_etaXsiCache.value().outerLeadingEdgePoint.xsi;
 }
 
 void CCPACSWingCell::GetTrailingEdgeInnerPoint(double* eta, double* xsi) const
 {
-    UpdateCache();
-    *eta = cache.value().innerTrailingEdgePoint.eta;
-    *xsi = cache.value().innerTrailingEdgePoint.xsi;
+    UpdateEtaXsiValues();
+    *eta = m_etaXsiCache.value().innerTrailingEdgePoint.eta;
+    *xsi = m_etaXsiCache.value().innerTrailingEdgePoint.xsi;
 }
 
 void CCPACSWingCell::GetTrailingEdgeOuterPoint(double* eta, double* xsi) const
 {
-    UpdateCache();
-    *eta = cache.value().outerTrailingEdgePoint.eta;
-    *xsi = cache.value().outerTrailingEdgePoint.xsi;
+    UpdateEtaXsiValues();
+    *eta = m_etaXsiCache.value().outerTrailingEdgePoint.eta;
+    *xsi = m_etaXsiCache.value().outerTrailingEdgePoint.xsi;
 }
 
 void CCPACSWingCell::SetLeadingEdgeInnerPoint(double eta1, double xsi1)
 {
-    UpdateCache();
-    const double eta2 = cache.value().innerTrailingEdgePoint.eta;
-    const double xsi2 = cache.value().outerLeadingEdgePoint.xsi;
+    UpdateEtaXsiValues();
+    const double eta2 = m_etaXsiCache.value().innerTrailingEdgePoint.eta;
+    const double xsi2 = m_etaXsiCache.value().outerLeadingEdgePoint.xsi;
     m_positioningInnerBorder.SetEta(eta1, eta2);
     m_positioningLeadingEdge.SetXsi(xsi1, xsi2);
 }
 
 void CCPACSWingCell::SetLeadingEdgeOuterPoint(double eta1, double xsi2)
 {
-    UpdateCache();
-    const double eta2 = cache.value().outerTrailingEdgePoint.eta;
-    const double xsi1 = cache.value().innerLeadingEdgePoint.xsi;
+    UpdateEtaXsiValues();
+    const double eta2 = m_etaXsiCache.value().outerTrailingEdgePoint.eta;
+    const double xsi1 = m_etaXsiCache.value().innerLeadingEdgePoint.xsi;
     m_positioningOuterBorder.SetEta(eta1, eta2);
     m_positioningLeadingEdge.SetXsi(xsi1, xsi2);
 }
 
 void CCPACSWingCell::SetTrailingEdgeInnerPoint(double eta2, double xsi1)
 {
-    UpdateCache();
-    const double eta1 = cache.value().innerLeadingEdgePoint.eta;
-    const double xsi2 = cache.value().outerTrailingEdgePoint.xsi;
+    UpdateEtaXsiValues();
+    const double eta1 = m_etaXsiCache.value().innerLeadingEdgePoint.eta;
+    const double xsi2 = m_etaXsiCache.value().outerTrailingEdgePoint.xsi;
     m_positioningInnerBorder.SetEta(eta1, eta2);
     m_positioningTrailingEdge.SetXsi(xsi1, xsi2);
 }
 
 void CCPACSWingCell::SetTrailingEdgeOuterPoint(double eta2, double xsi2)
 {
-    UpdateCache();
-    const double eta1 = cache.value().outerLeadingEdgePoint.eta;
-    const double xsi1 = cache.value().innerTrailingEdgePoint.xsi;
+    UpdateEtaXsiValues();
+    const double eta1 = m_etaXsiCache.value().outerLeadingEdgePoint.eta;
+    const double xsi1 = m_etaXsiCache.value().innerTrailingEdgePoint.xsi;
     m_positioningOuterBorder.SetEta(eta1, eta2);
     m_positioningTrailingEdge.SetXsi(xsi1, xsi2);
 }
@@ -292,14 +292,6 @@ CCPACSMaterialDefinition& CCPACSWingCell::GetMaterial()
 const CCPACSMaterialDefinition& CCPACSWingCell::GetMaterial() const
 {
     return m_skin.GetMaterial();
-}
-
-void CCPACSWingCell::UpdateCache() const
-{
-    if (!cache) {
-        UpdateEtaXsiValues();
-    }
-    assert(cache);
 }
 
 
@@ -375,37 +367,40 @@ std::pair<double, double> CCPACSWingCell::computePositioningEtaXsi(const CCPACSW
 
 void CCPACSWingCell::UpdateEtaXsiValues() const
 {
-    cache.emplace();
+    if (m_etaXsiCache) {
+        return;
+    }
+
+    m_etaXsiCache.emplace();
 
     std::pair<double, double> innerLePoint =
         computePositioningEtaXsi(m_positioningInnerBorder, m_positioningLeadingEdge, true, true);
-    cache->innerLeadingEdgePoint.eta = innerLePoint.first;
-    cache->innerLeadingEdgePoint.xsi = innerLePoint.second;
+    m_etaXsiCache->innerLeadingEdgePoint.eta = innerLePoint.first;
+    m_etaXsiCache->innerLeadingEdgePoint.xsi = innerLePoint.second;
 
     std::pair<double, double> outerLePoint =
         computePositioningEtaXsi(m_positioningOuterBorder, m_positioningLeadingEdge, false, true);
-    cache->outerLeadingEdgePoint.eta = outerLePoint.first;
-    cache->outerLeadingEdgePoint.xsi = outerLePoint.second;
+    m_etaXsiCache->outerLeadingEdgePoint.eta = outerLePoint.first;
+    m_etaXsiCache->outerLeadingEdgePoint.xsi = outerLePoint.second;
 
     std::pair<double, double> innerTePoint =
         computePositioningEtaXsi(m_positioningInnerBorder, m_positioningTrailingEdge, true, false);
-    cache->innerTrailingEdgePoint.eta = innerTePoint.first;
-    cache->innerTrailingEdgePoint.xsi = innerTePoint.second;
+    m_etaXsiCache->innerTrailingEdgePoint.eta = innerTePoint.first;
+    m_etaXsiCache->innerTrailingEdgePoint.xsi = innerTePoint.second;
 
     std::pair<double, double> outerTePoint =
         computePositioningEtaXsi(m_positioningOuterBorder, m_positioningTrailingEdge, false, false);
-    cache->outerTrailingEdgePoint.eta = outerTePoint.first;
-    cache->outerTrailingEdgePoint.xsi = outerTePoint.second;
+    m_etaXsiCache->outerTrailingEdgePoint.eta = outerTePoint.first;
+    m_etaXsiCache->outerTrailingEdgePoint.xsi = outerTePoint.second;
 }
 
 void CCPACSWingCell::Update() const
 {
-    if (geometryValid) {
+    if (m_geometryCache) {
         return;
     }
 
     BuildSkinGeometry();
-    geometryValid = true;
 }
 
 TopoDS_Shape CCPACSWingCell::GetCellSkinGeometry(TiglCoordinateSystem cs) const
@@ -419,10 +414,10 @@ TopoDS_Shape CCPACSWingCell::GetCellSkinGeometry(TiglCoordinateSystem cs) const
             .GetWingComponentSegment()
             .GetWing()
             .GetTransformationMatrix()
-            .Transform(cellSkinGeometry);
+            .Transform(m_geometryCache.value().cellSkinGeometry);
     }
     else if (cs == WING_COORDINATE_SYSTEM) {
-        return cellSkinGeometry;
+        return m_geometryCache.value().cellSkinGeometry;
     }
     else {
         throw CTiglError("Invalid coordinate system passed to CCPACSWingCell::GetCellSkinGeometry");
@@ -431,6 +426,7 @@ TopoDS_Shape CCPACSWingCell::GetCellSkinGeometry(TiglCoordinateSystem cs) const
 
 void CCPACSWingCell::BuildSkinGeometry() const
 {
+
     // variable for uv bounds
     double u_min = 0, u_max = 0, v_min = 0, v_max = 0;
 
@@ -479,22 +475,42 @@ void CCPACSWingCell::BuildSkinGeometry() const
     gp_Vec diagonal(xmax - xmin, ymax - ymin, zmax - zmin);
     Standard_Real bboxSize = diagonal.Magnitude();
 
-    if (!cache) {
-        UpdateCache();
+    if (!m_etaXsiCache) {
+        UpdateEtaXsiValues();
     }
-    assert(cache);
+    assert(m_etaXsiCache);
 
     double LEXsi1, LEXsi2, TEXsi1, TEXsi2;
     double IBEta1, IBEta2, OBEta1, OBEta2;
 
-    LEXsi1 = cache.value().innerLeadingEdgePoint.xsi;
-    LEXsi2 = cache.value().outerLeadingEdgePoint.xsi;
-    TEXsi1 = cache.value().innerTrailingEdgePoint.xsi;
-    TEXsi2 = cache.value().outerTrailingEdgePoint.xsi;
-    IBEta1 = cache.value().innerLeadingEdgePoint.eta;
-    IBEta2 = cache.value().innerTrailingEdgePoint.eta;
-    OBEta1 = cache.value().outerLeadingEdgePoint.eta;
-    OBEta2 = cache.value().outerTrailingEdgePoint.eta;
+    LEXsi1 = m_etaXsiCache.value().innerLeadingEdgePoint.xsi;
+    LEXsi2 = m_etaXsiCache.value().outerLeadingEdgePoint.xsi;
+    TEXsi1 = m_etaXsiCache.value().innerTrailingEdgePoint.xsi;
+    TEXsi2 = m_etaXsiCache.value().outerTrailingEdgePoint.xsi;
+    IBEta1 = m_etaXsiCache.value().innerLeadingEdgePoint.eta;
+    IBEta2 = m_etaXsiCache.value().innerTrailingEdgePoint.eta;
+    OBEta1 = m_etaXsiCache.value().outerLeadingEdgePoint.eta;
+    OBEta2 = m_etaXsiCache.value().outerTrailingEdgePoint.eta;
+
+    m_geometryCache.emplace();
+
+    // Get references to all objects in geometry cache
+    gp_Pnt& pC1 = m_geometryCache->pC1;
+    gp_Pnt& pC2 = m_geometryCache->pC2;
+    gp_Pnt& pC3 = m_geometryCache->pC3;
+    gp_Pnt& pC4 = m_geometryCache->pC4;
+    
+    gp_Pln& cutPlaneLE = m_geometryCache->cutPlaneLE;
+    gp_Pln& cutPlaneTE = m_geometryCache->cutPlaneTE;
+    gp_Pln& cutPlaneIB = m_geometryCache->cutPlaneIB;
+    gp_Pln& cutPlaneOB = m_geometryCache->cutPlaneOB;
+    
+    TopoDS_Shape& planeShapeLE = m_geometryCache->planeShapeLE;
+    TopoDS_Shape& planeShapeTE = m_geometryCache->planeShapeTE;
+    TopoDS_Shape& planeShapeIB = m_geometryCache->planeShapeIB;
+    TopoDS_Shape& planeShapeOB = m_geometryCache->planeShapeOB;
+    TopoDS_Shape& sparShapeLE  = m_geometryCache->sparShapeLE;
+    TopoDS_Shape& sparShapeTE  = m_geometryCache->sparShapeTE;
 
     pC1 = wsr.GetPoint(IBEta1, LEXsi1, WING_COORDINATE_SYSTEM);
     pC2 = wsr.GetPoint(OBEta1, LEXsi2, WING_COORDINATE_SYSTEM);
@@ -715,7 +731,7 @@ void CCPACSWingCell::BuildSkinGeometry() const
         throw CTiglError("Can not find a matching edge for cell input CCPACSWingCell::BuildSkinGeometry!");
     }
 
-    cellSkinGeometry = compound;
+    m_geometryCache->cellSkinGeometry = compound;
 }
 
 TopoDS_Shape CCPACSWingCell::GetSparCutGeometry(const std::string& sparUID) const
@@ -744,7 +760,7 @@ bool CCPACSWingCell::IsPartOfCell(TopoDS_Face f)
     Update();
 
     Bnd_Box bBox1, bBox2;
-    BRepBndLib::Add(cellSkinGeometry, bBox1);
+    BRepBndLib::Add(m_geometryCache.value().cellSkinGeometry, bBox1);
     TopoDS_Face face = TopoDS::Face(m_parent->GetParentElement()
                                         ->GetStructure()
                                         .GetWingStructureReference()
@@ -764,45 +780,45 @@ bool CCPACSWingCell::IsPartOfCell(TopoDS_Face f)
     BRepTools::UVBounds(face, u_min, u_max, v_min, v_max);
     gp_Pnt pTest = surf->Value(u_min + ((u_max - u_min) / 2), v_min + ((v_max - v_min) / 2));
 
-    gp_Pnt midPnt = (pC1.XYZ() + pC2.XYZ()) / 2;
+    gp_Pnt midPnt = (m_geometryCache.value().pC1.XYZ() + m_geometryCache.value().pC2.XYZ()) / 2;
     gp_Vec vTest(midPnt, pTest);
     gp_Ax1 a1Test(midPnt, vTest);
 
     bool sparTest = false, plainTest = false;
 
     if (m_positioningLeadingEdge.GetInputType() == CCPACSWingCellPositionChordwise::InputType::Spar) {
-        sparTest = CCPACSWingShell::SparSegmentsTest(cutPlaneLE.Axis(), pTest, sparShapeLE);
+        sparTest = CCPACSWingShell::SparSegmentsTest(m_geometryCache.value().cutPlaneLE.Axis(), pTest, m_geometryCache.value().sparShapeLE);
     }
     else {
-        plainTest = a1Test.Angle(cutPlaneLE.Axis()) < M_PI_2;
+        plainTest = a1Test.Angle(m_geometryCache.value().cutPlaneLE.Axis()) < M_PI_2;
     }
 
     if (plainTest || sparTest) {
         // create an Ax1 from the trailing edge plane origin to the midpoint of the current face
-        midPnt = (pC3.XYZ() + pC4.XYZ()) / 2;
+        midPnt = (m_geometryCache.value().pC3.XYZ() + m_geometryCache.value().pC4.XYZ()) / 2;
         vTest  = gp_Vec(midPnt, pTest);
         a1Test = gp_Ax1(midPnt, vTest);
 
         sparTest  = false;
         plainTest = false;
         if (m_positioningTrailingEdge.GetInputType() == CCPACSWingCellPositionChordwise::InputType::Spar) {
-            sparTest = CCPACSWingShell::SparSegmentsTest(cutPlaneTE.Axis(), pTest, sparShapeTE);
+            sparTest = CCPACSWingShell::SparSegmentsTest(m_geometryCache.value().cutPlaneTE.Axis(), pTest, m_geometryCache.value().sparShapeTE);
         }
         else {
-            plainTest = a1Test.Angle(cutPlaneTE.Axis()) < M_PI_2;
+            plainTest = a1Test.Angle(m_geometryCache.value().cutPlaneTE.Axis()) < M_PI_2;
         }
 
         if (plainTest || sparTest) {
             // create an Ax1 from the inner border plane origin to the midpoint of the current face
-            midPnt = (pC1.XYZ() + pC3.XYZ()) / 2;
+            midPnt = (m_geometryCache.value().pC1.XYZ() + m_geometryCache.value().pC3.XYZ()) / 2.;
             vTest  = gp_Vec(midPnt, pTest);
             a1Test = gp_Ax1(midPnt, vTest);
-            if (a1Test.Angle(cutPlaneIB.Axis()) < M_PI_2) {
+            if (a1Test.Angle(m_geometryCache.value().cutPlaneIB.Axis()) < M_PI_2) {
                 // create an Ax1 from the outer border plane origin to the midpoint of the current face
-                midPnt = (pC2.XYZ() + pC4.XYZ()) / 2;
+                midPnt = (m_geometryCache.value().pC2.XYZ() + m_geometryCache.value().pC4.XYZ()) / 2.;
                 vTest  = gp_Vec(midPnt, pTest);
                 a1Test = gp_Ax1(midPnt, vTest);
-                if (a1Test.Angle(cutPlaneOB.Axis()) < M_PI_2) {
+                if (a1Test.Angle(m_geometryCache.value().cutPlaneOB.Axis()) < M_PI_2) {
                     return true;
                 }
             }
@@ -817,7 +833,7 @@ bool CCPACSWingCell::IsPartOfCell(TopoDS_Edge e)
     Update();
 
     Bnd_Box bBox1, bBox2;
-    BRepBndLib::Add(cellSkinGeometry, bBox1);
+    BRepBndLib::Add(m_geometryCache.value().cellSkinGeometry, bBox1);
     TopoDS_Edge edge = TopoDS::Edge(m_parent->GetParentElement()
                                         ->GetStructure()
                                         .GetWingStructureReference()
@@ -840,45 +856,45 @@ bool CCPACSWingCell::IsPartOfCell(TopoDS_Edge e)
 
     gp_Pnt pTest = curve.Value(u_min + ((u_max - u_min) / 2));
 
-    gp_Pnt midPnt = (pC1.XYZ() + pC2.XYZ()) / 2;
+    gp_Pnt midPnt = (m_geometryCache.value().pC1.XYZ() + m_geometryCache.value().pC2.XYZ()) / 2;
     gp_Vec vTest(midPnt, pTest);
     gp_Ax1 a1Test(midPnt, vTest);
 
     bool sparTest = false, plainTest = false;
 
     if (m_positioningLeadingEdge.GetInputType() == CCPACSWingCellPositionChordwise::InputType::Spar) {
-        sparTest = CCPACSWingShell::SparSegmentsTest(cutPlaneLE.Axis(), pTest, sparShapeLE);
+        sparTest = CCPACSWingShell::SparSegmentsTest(m_geometryCache.value().cutPlaneLE.Axis(), pTest, m_geometryCache.value().sparShapeLE);
     }
     else {
-        plainTest = a1Test.Angle(cutPlaneLE.Axis()) < M_PI_2;
+        plainTest = a1Test.Angle(m_geometryCache.value().cutPlaneLE.Axis()) < M_PI_2;
     }
 
     if (plainTest || sparTest) {
         // create an Ax1 from the trailing edge plane origin to the midpoint of the current face
-        midPnt = (pC3.XYZ() + pC4.XYZ()) / 2;
+        midPnt = (m_geometryCache.value().pC3.XYZ() + m_geometryCache.value().pC4.XYZ()) / 2;
         vTest  = gp_Vec(midPnt, pTest);
         a1Test = gp_Ax1(midPnt, vTest);
 
         sparTest  = false;
         plainTest = false;
         if (m_positioningTrailingEdge.GetInputType() == CCPACSWingCellPositionChordwise::InputType::Spar) {
-            sparTest = CCPACSWingShell::SparSegmentsTest(cutPlaneTE.Axis(), pTest, sparShapeTE);
+            sparTest = CCPACSWingShell::SparSegmentsTest(m_geometryCache.value().cutPlaneTE.Axis(), pTest, m_geometryCache.value().sparShapeTE);
         }
         else {
-            plainTest = a1Test.Angle(cutPlaneTE.Axis()) < M_PI_2;
+            plainTest = a1Test.Angle(m_geometryCache.value().cutPlaneTE.Axis()) < M_PI_2;
         }
 
         if (plainTest || sparTest) {
             // create an Ax1 from the inner border plane origin to the midpoint of the current face
-            midPnt = (pC1.XYZ() + pC3.XYZ()) / 2;
+            midPnt = (m_geometryCache.value().pC1.XYZ() + m_geometryCache.value().pC3.XYZ()) / 2;
             vTest  = gp_Vec(midPnt, pTest);
             a1Test = gp_Ax1(midPnt, vTest);
-            if (a1Test.Angle(cutPlaneIB.Axis()) < M_PI_2) {
+            if (a1Test.Angle(m_geometryCache.value().cutPlaneIB.Axis()) < M_PI_2) {
                 // create an Ax1 from the outer border plane origin to the midpoint of the current face
-                midPnt = (pC2.XYZ() + pC4.XYZ()) / 2;
+                midPnt = (m_geometryCache.value().pC2.XYZ() + m_geometryCache.value().pC4.XYZ()) / 2;
                 vTest  = gp_Vec(midPnt, pTest);
                 a1Test = gp_Ax1(midPnt, vTest);
-                if (a1Test.Angle(cutPlaneOB.Axis()) < M_PI_2) {
+                if (a1Test.Angle(m_geometryCache.value().cutPlaneOB.Axis()) < M_PI_2) {
                     return true;
                 }
             }

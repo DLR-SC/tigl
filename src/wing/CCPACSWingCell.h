@@ -99,9 +99,6 @@ private:
     // them in the cache
     void UpdateEtaXsiValues() const;
 
-    // helper method which updates the cache in case it is not valid
-    void UpdateCache() const;
-
     void Reset();
 
     void BuildSkinGeometry() const;
@@ -110,11 +107,7 @@ private:
 
     TopoDS_Shape GetRibCutGeometry(std::pair<std::string, int> ribUidAndIndex) const;
 
-    // TODO: add Cache struct
-    mutable bool geometryValid;
-    mutable TopoDS_Shape cellSkinGeometry;
-
-    struct Cache
+    struct EtaXsiCache
     {
         EtaXsi innerLeadingEdgePoint;
         EtaXsi innerTrailingEdgePoint;
@@ -122,13 +115,19 @@ private:
         EtaXsi outerTrailingEdgePoint;
     };
 
-    mutable boost::optional<Cache> cache;
+    mutable boost::optional<EtaXsiCache> m_etaXsiCache;
 
-    // TODO: add Cache struct
-    mutable gp_Pln cutPlaneLE, cutPlaneTE, cutPlaneIB, cutPlaneOB;
-    mutable TopoDS_Shape planeShapeLE, planeShapeTE, planeShapeIB, planeShapeOB;
-    mutable TopoDS_Shape sparShapeLE, sparShapeTE;
-    mutable gp_Pnt pC1, pC2, pC3, pC4;
+    struct GeometryCache
+    {
+        TopoDS_Shape cellSkinGeometry;
+        
+        gp_Pln cutPlaneLE, cutPlaneTE, cutPlaneIB, cutPlaneOB;
+        TopoDS_Shape planeShapeLE, planeShapeTE, planeShapeIB, planeShapeOB;
+        TopoDS_Shape sparShapeLE, sparShapeTE;
+        gp_Pnt pC1, pC2, pC3, pC4;
+    };
+    mutable boost::optional<GeometryCache> m_geometryCache;
+
 };
 
 namespace WingCellInternal
