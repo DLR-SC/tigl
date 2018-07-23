@@ -81,7 +81,7 @@ public:
 
     TIGL_EXPORT void Update() const;
 
-    TIGL_EXPORT TopoDS_Shape GetCellSkinGeometry(bool transform = true) const;
+    TIGL_EXPORT TopoDS_Shape GetCellSkinGeometry(TiglCoordinateSystem cs = GLOBAL_COORDINATE_SYSTEM) const;
 
     TIGL_EXPORT bool IsPartOfCell(TopoDS_Face);
     TIGL_EXPORT bool IsPartOfCell(TopoDS_Edge);

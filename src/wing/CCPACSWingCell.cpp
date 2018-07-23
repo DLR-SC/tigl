@@ -408,11 +408,11 @@ void CCPACSWingCell::Update() const
     geometryValid = true;
 }
 
-TopoDS_Shape CCPACSWingCell::GetCellSkinGeometry(bool transform) const
+TopoDS_Shape CCPACSWingCell::GetCellSkinGeometry(TiglCoordinateSystem cs) const
 {
     Update();
 
-    if (transform) {
+    if (cs == GLOBAL_COORDINATE_SYSTEM) {
         return m_parent->GetParentElement()
             ->GetStructure()
             .GetWingStructureReference()
@@ -421,8 +421,11 @@ TopoDS_Shape CCPACSWingCell::GetCellSkinGeometry(bool transform) const
             .GetTransformationMatrix()
             .Transform(cellSkinGeometry);
     }
-    else {
+    else if (cs == WING_COORDINATE_SYSTEM) {
         return cellSkinGeometry;
+    }
+    else {
+        throw CTiglError("Invalid coordinate system passed to CCPACSWingCell::GetCellSkinGeometry");
     }
 }
 
@@ -892,7 +895,7 @@ std::string CCPACSWingCell::GetDefaultedUID() const
 
 PNamedShape CCPACSWingCell::GetLoft()
 {
-    return PNamedShape(new CNamedShape(GetCellSkinGeometry(true), GetUID()));
+    return PNamedShape(new CNamedShape(GetCellSkinGeometry(GLOBAL_COORDINATE_SYSTEM), GetUID()));
 }
 
 TiglGeometricComponentType CCPACSWingCell::GetComponentType() const
