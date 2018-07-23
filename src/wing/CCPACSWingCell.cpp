@@ -309,7 +309,7 @@ const CCPACSMaterialDefinition& CCPACSWingCell::GetMaterial() const
 }
 
 
-std::pair<double, double> CCPACSWingCell::computePositioningEtaXsi(const CCPACSWingCellPositionSpanwise& spanwisePos,
+EtaXsi CCPACSWingCell::computePositioningEtaXsi(const CCPACSWingCellPositionSpanwise& spanwisePos,
                                                                    const CCPACSWingCellPositionChordwise& chordwisePos,
                                                                    bool inner, bool front) const
 {
@@ -376,7 +376,7 @@ std::pair<double, double> CCPACSWingCell::computePositioningEtaXsi(const CCPACSW
         xsi                 = result.xsi;
     }
 
-    return std::make_pair(eta, xsi);
+    return EtaXsi(eta, xsi);
 }
 
 void CCPACSWingCell::UpdateEtaXsiValues() const
@@ -387,25 +387,25 @@ void CCPACSWingCell::UpdateEtaXsiValues() const
 
     m_etaXsiCache.emplace();
 
-    std::pair<double, double> innerLePoint =
+    EtaXsi innerLePoint =
         computePositioningEtaXsi(m_positioningInnerBorder, m_positioningLeadingEdge, true, true);
-    m_etaXsiCache->innerLeadingEdgePoint.eta = innerLePoint.first;
-    m_etaXsiCache->innerLeadingEdgePoint.xsi = innerLePoint.second;
+    m_etaXsiCache->innerLeadingEdgePoint.eta = innerLePoint.eta;
+    m_etaXsiCache->innerLeadingEdgePoint.xsi = innerLePoint.xsi;
 
-    std::pair<double, double> outerLePoint =
+    EtaXsi outerLePoint =
         computePositioningEtaXsi(m_positioningOuterBorder, m_positioningLeadingEdge, false, true);
-    m_etaXsiCache->outerLeadingEdgePoint.eta = outerLePoint.first;
-    m_etaXsiCache->outerLeadingEdgePoint.xsi = outerLePoint.second;
+    m_etaXsiCache->outerLeadingEdgePoint.eta = outerLePoint.eta;
+    m_etaXsiCache->outerLeadingEdgePoint.xsi = outerLePoint.xsi;
 
-    std::pair<double, double> innerTePoint =
+    EtaXsi innerTePoint =
         computePositioningEtaXsi(m_positioningInnerBorder, m_positioningTrailingEdge, true, false);
-    m_etaXsiCache->innerTrailingEdgePoint.eta = innerTePoint.first;
-    m_etaXsiCache->innerTrailingEdgePoint.xsi = innerTePoint.second;
+    m_etaXsiCache->innerTrailingEdgePoint.eta = innerTePoint.eta;
+    m_etaXsiCache->innerTrailingEdgePoint.xsi = innerTePoint.xsi;
 
-    std::pair<double, double> outerTePoint =
+    EtaXsi outerTePoint =
         computePositioningEtaXsi(m_positioningOuterBorder, m_positioningTrailingEdge, false, false);
-    m_etaXsiCache->outerTrailingEdgePoint.eta = outerTePoint.first;
-    m_etaXsiCache->outerTrailingEdgePoint.xsi = outerTePoint.second;
+    m_etaXsiCache->outerTrailingEdgePoint.eta = outerTePoint.eta;
+    m_etaXsiCache->outerTrailingEdgePoint.xsi = outerTePoint.xsi;
 }
 
 void CCPACSWingCell::Update() const
@@ -440,9 +440,6 @@ TopoDS_Shape CCPACSWingCell::GetCellSkinGeometry(TiglCoordinateSystem cs) const
 
 void CCPACSWingCell::BuildSkinGeometry() const
 {
-
-    // variable for uv bounds
-    double u_min = 0, u_max = 0, v_min = 0, v_max = 0;
 
     BRep_Builder builder;
 
@@ -613,29 +610,21 @@ void CCPACSWingCell::BuildSkinGeometry() const
     planeShapeOB = BRepBuilderAPI_MakeFace(cutPlaneOB).Face();
 
     // If any border is defined by a rib or a spar, the cutting plane is changed
-
-    double u05 = 0.5, u1 = 1., v0 = 0., v1 = 1.;
-
     if (m_positioningLeadingEdge.GetInputType() == CCPACSWingCellPositionChordwise::InputType::Spar) {
-        planeShapeLE = GetSparCutGeometry(m_positioningLeadingEdge.GetSparUId());
-        sparShapeLE  = m_parent->GetParentElement()
-                          ->GetStructure()
-                          .GetSpars()
-                          ->GetSparSegments()
-                          .GetSparSegment(m_positioningLeadingEdge.GetSparUId())
+        planeShapeLE = m_uidMgr->ResolveObject<CCPACSWingSparSegment>(m_positioningLeadingEdge.GetSparUId())
+                          .GetSparCutGeometry(WING_COORDINATE_SYSTEM);
+        sparShapeLE  = m_uidMgr->ResolveObject<CCPACSWingSparSegment>(m_positioningLeadingEdge.GetSparUId())
                           .GetSparGeometry(WING_COORDINATE_SYSTEM);
     }
 
     if (m_positioningTrailingEdge.GetInputType() == CCPACSWingCellPositionChordwise::InputType::Spar) {
-        planeShapeTE = GetSparCutGeometry(m_positioningTrailingEdge.GetSparUId());
-        sparShapeTE  = m_parent->GetParentElement()
-                          ->GetStructure()
-                          .GetSpars()
-                          ->GetSparSegments()
-                          .GetSparSegment(m_positioningTrailingEdge.GetSparUId())
+        planeShapeTE = m_uidMgr->ResolveObject<CCPACSWingSparSegment>(m_positioningTrailingEdge.GetSparUId())
+                          .GetSparCutGeometry(WING_COORDINATE_SYSTEM);
+        sparShapeTE  = m_uidMgr->ResolveObject<CCPACSWingSparSegment>(m_positioningTrailingEdge.GetSparUId())
                           .GetSparGeometry(WING_COORDINATE_SYSTEM);
     }
 
+    double u05 = 0.5, u1 = 1., v0 = 0., v1 = 1.;
     if (m_positioningInnerBorder.GetInputType() == CCPACSWingCellPositionSpanwise::InputType::Rib) {
         planeShapeIB = GetRibCutGeometry(m_positioningInnerBorder.GetRib());
     }
@@ -687,6 +676,9 @@ void CCPACSWingCell::BuildSkinGeometry() const
 
         TopoDS_Face loftFace      = TopoDS::Face(faceMap(f));
         Handle(Geom_Surface) surf = BRep_Tool::Surface(loftFace);
+
+        // variable for uv bounds
+        double u_min = 0, u_max = 0, v_min = 0, v_max = 0;
         BRepTools::UVBounds(loftFace, u_min, u_max, v_min, v_max);
         gp_Pnt pTest = surf->Value(u_min + ((u_max - u_min) / 2), v_min + ((v_max - v_min) / 2));
 
@@ -748,17 +740,13 @@ void CCPACSWingCell::BuildSkinGeometry() const
     m_geometryCache->cellSkinGeometry = compound;
 }
 
-TopoDS_Shape CCPACSWingCell::GetSparCutGeometry(const std::string& sparUID) const
-{
-    const CCPACSWingCSStructure& structure   = m_parent->GetParentElement()->GetStructure();
-    const CCPACSWingSparSegment& sparSegment = structure.GetSparSegment(sparUID);
-    return sparSegment.GetSparCutGeometry(WING_COORDINATE_SYSTEM);
-}
-
 TopoDS_Shape CCPACSWingCell::GetRibCutGeometry(std::pair<std::string, int> ribUidAndIndex) const
 {
-    const CCPACSWingCSStructure& structure                   = m_parent->GetParentElement()->GetStructure();
-    const CCPACSWingRibsDefinition& ribsDefinition           = structure.GetRibsDefinition(ribUidAndIndex.first);
+    if (!m_uidMgr) {
+        throw CTiglError("No uid manager in CCPACSWingCell::GetRibCutGeometry");
+    }
+    
+    const CCPACSWingRibsDefinition& ribsDefinition = m_uidMgr->ResolveObject<CCPACSWingRibsDefinition>(ribUidAndIndex.first);
     const CCPACSWingRibsDefinition::CutGeometry& cutGeometry = ribsDefinition.GetRibCutGeometry(ribUidAndIndex.second);
 
     // obtain plane from rib cut geometry, in case this is already the final face
@@ -776,15 +764,15 @@ bool CCPACSWingCell::IsPartOfCellImpl(T t)
 
     Bnd_Box bBox1, bBox2;
     BRepBndLib::Add(m_geometryCache.value().cellSkinGeometry, bBox1);
-    TopoDS_Edge edge = TopoDS::Edge(m_parent->GetParentElement()
+    TopoDS_Shape t_transformed = m_parent->GetParentElement()
                                         ->GetStructure()
                                         .GetWingStructureReference()
                                         .GetWingComponentSegment()
                                         .GetWing()
                                         .GetTransformationMatrix()
                                         .Inverted()
-                                        .Transform(t));
-    BRepBndLib::Add(edge, bBox2);
+                                        .Transform(t);
+    BRepBndLib::Add(t_transformed, bBox2);
 
     if (bBox1.IsOut(bBox2)) {
         return false;

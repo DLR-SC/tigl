@@ -94,9 +94,9 @@ private:
     template<class T>
     bool IsPartOfCellImpl(T t);
     
-    std::pair<double, double> computePositioningEtaXsi(const CCPACSWingCellPositionSpanwise& spanwisePos,
-                                                       const CCPACSWingCellPositionChordwise& chordwisePos, bool inner,
-                                                       bool front) const;
+    EtaXsi computePositioningEtaXsi(const CCPACSWingCellPositionSpanwise& spanwisePos,
+                                    const CCPACSWingCellPositionChordwise& chordwisePos, bool inner,
+                                    bool front) const;
 
     // calculates the Eta/Xsi values of the the cell's corner points and stores
     // them in the cache
@@ -105,8 +105,6 @@ private:
     void Reset();
 
     void BuildSkinGeometry() const;
-
-    TopoDS_Shape GetSparCutGeometry(const std::string& sparUID) const;
 
     TopoDS_Shape GetRibCutGeometry(std::pair<std::string, int> ribUidAndIndex) const;
 
