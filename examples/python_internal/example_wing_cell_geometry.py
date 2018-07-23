@@ -3,7 +3,6 @@ from __future__ import print_function
 from tixi3 import tixi3wrapper
 from tigl3 import tigl3wrapper
 import tigl3.configuration
-from OCC.Quantity import Quantity_NOC_RED
 import os
 
 
@@ -15,16 +14,22 @@ def display_wing_cell_geom(configuration):
 
     from OCC.Display.SimpleGui import init_display
     display, start_display, add_menu, add_function_to_menu = init_display()
+    display.Context.SetDeviationCoefficient(0.0001)
 
     uid_mgr = configuration.get_uidmanager()
     wing = uid_mgr.get_geometric_component("Wing")
-    # wing = configuration.get_wing(1)
     display.DisplayShape(wing.get_loft().shape(), transparency=0.7)
 
     # display cell geometry
     cell = uid_mgr.get_geometric_component("Wing_CS_upperShell_Cell1")
-    cell_shape = cell.get_loft()
-    display.DisplayShape(cell_shape.shape(), transparency=0.3, color=Quantity_NOC_RED)
+    display.DisplayShape(cell.get_loft().shape(), transparency=0.3, color="green")
+
+    # display ribs and spar
+    ribs = uid_mgr.get_geometric_component("Wing_CS_RibDef1")
+    display.DisplayShape(ribs.get_loft().shape(),color="blue")
+
+    spar = uid_mgr.get_geometric_component("Wing_CS_spar1")
+    display.DisplayShape(spar.get_loft().shape(),color="blue")
 
     display.FitAll()
 

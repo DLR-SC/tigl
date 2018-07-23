@@ -324,7 +324,10 @@ class CCPACSWingRibsPositioning;
          tigl::CCPACSCrossBeamStrutAssemblyPosition,
          tigl::CCPACSDoorAssemblyPosition,
          tigl::CCPACSLongFloorBeam,
-         tigl::CCPACSPressureBulkheadAssemblyPosition
+         tigl::CCPACSPressureBulkheadAssemblyPosition,
+         tigl::CCPACSWingCell,
+         tigl::CCPACSWingRibsDefinition,
+         tigl::CCPACSWingSparSegment
 );
 
 namespace tigl
