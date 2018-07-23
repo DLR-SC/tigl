@@ -27,6 +27,7 @@
 #include "tigl.h"
 
 #include <gp_Vec.hxx>
+#include <TopoDS_Shape.hxx>
 
 #include <string>
 
@@ -59,7 +60,6 @@ public:
     TIGL_EXPORT void Update() const;
 
     TIGL_EXPORT TiglLoftSide GetLoftSide() const;
-
 private:
     //@todo stringers
 

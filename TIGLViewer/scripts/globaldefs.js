@@ -105,7 +105,7 @@ function drawVector() {
 }
 
 function drawShape(shape) {
-    app.scene.displayShape(shape)
+    app.scene.displayShape(shape, true)
 }
 
 function _getObjectMethods(obj) {

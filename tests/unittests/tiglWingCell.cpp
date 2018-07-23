@@ -27,6 +27,8 @@
 #include "CCPACSWingRibsPositioning.h"
 #include "CCPACSWingSegment.h"
 
+#include <BRepTools.hxx>
+
 using namespace tigl;
 
 typedef std::pair<double, double> DP;
@@ -214,33 +216,32 @@ TEST_F(WingCellSpar, sparCellXsi) {
         double xsi2Exp = it->second;
 
         tigl::CCPACSWingCell& cell = componentSegment.GetStructure()->GetUpperShell().GetCell(cellIndex++);
-        double xsi1, xsi2, dummy;
-        cell.GetLeadingEdgeInnerPoint(&dummy, &xsi1);
-        cell.GetLeadingEdgeOuterPoint(&dummy, &xsi2);
-        ASSERT_NEAR(xsi1, xsi1Exp, 1e-7);
-        ASSERT_NEAR(xsi2, xsi2Exp, 1e-7);
+        tigl::EtaXsi etaxsi1 = cell.GetLeadingEdgeInnerPoint();
+        tigl::EtaXsi etaxsi2 = cell.GetLeadingEdgeOuterPoint();
+        ASSERT_NEAR(etaxsi1.xsi, xsi1Exp, 1e-7);
+        ASSERT_NEAR(etaxsi2.xsi, xsi2Exp, 1e-7);
     }
 }
 
 namespace {
     void checkCellEtaXsis(const tigl::CCPACSWingCell& cell, const std::vector< std::pair<double, double> >& expectedEtaXsi, double precision = 1e-7) {
-        double eta, xsi;
-        int etaXsiIndex = 0;
-        cell.GetLeadingEdgeInnerPoint(&eta, &xsi);
-        ASSERT_NEAR(eta, expectedEtaXsi[etaXsiIndex].first, precision);
-        ASSERT_NEAR(xsi, expectedEtaXsi[etaXsiIndex].second, precision);
+        tigl::EtaXsi etaxsi;
+        unsigned int etaXsiIndex = 0;
+        etaxsi = cell.GetLeadingEdgeInnerPoint();
+        ASSERT_NEAR(etaxsi.eta, expectedEtaXsi[etaXsiIndex].first, precision);
+        ASSERT_NEAR(etaxsi.xsi, expectedEtaXsi[etaXsiIndex].second, precision);
         ++etaXsiIndex;
-        cell.GetLeadingEdgeOuterPoint(&eta, &xsi);
-        ASSERT_NEAR(eta, expectedEtaXsi[etaXsiIndex].first, precision);
-        ASSERT_NEAR(xsi, expectedEtaXsi[etaXsiIndex].second, precision);
+        etaxsi = cell.GetLeadingEdgeOuterPoint();
+        ASSERT_NEAR(etaxsi.eta, expectedEtaXsi[etaXsiIndex].first, precision);
+        ASSERT_NEAR(etaxsi.xsi, expectedEtaXsi[etaXsiIndex].second, precision);
         ++etaXsiIndex;
-        cell.GetTrailingEdgeInnerPoint(&eta, &xsi);
-        ASSERT_NEAR(eta, expectedEtaXsi[etaXsiIndex].first, precision);
-        ASSERT_NEAR(xsi, expectedEtaXsi[etaXsiIndex].second, precision);
+        etaxsi = cell.GetTrailingEdgeInnerPoint();
+        ASSERT_NEAR(etaxsi.eta, expectedEtaXsi[etaXsiIndex].first, precision);
+        ASSERT_NEAR(etaxsi.xsi, expectedEtaXsi[etaXsiIndex].second, precision);
         ++etaXsiIndex;
-        cell.GetTrailingEdgeOuterPoint(&eta, &xsi);
-        ASSERT_NEAR(eta, expectedEtaXsi[etaXsiIndex].first, precision);
-        ASSERT_NEAR(xsi, expectedEtaXsi[etaXsiIndex].second, precision);
+        etaxsi = cell.GetTrailingEdgeOuterPoint();
+        ASSERT_NEAR(etaxsi.eta, expectedEtaXsi[etaXsiIndex].first, precision);
+        ASSERT_NEAR(etaxsi.xsi, expectedEtaXsi[etaXsiIndex].second, precision);
     }
 }
 
@@ -274,4 +275,23 @@ TEST_F(WingCellRibSpar, etaXsi) {
     expectedEtaXsi = std::vector< std::pair<double, double> > (arr3, arr3 + sizeof(arr3) / sizeof(arr3[0]));
     // precision at 1E-2 since expected values are estimated based on geometric inspection
     checkCellEtaXsis(cell, expectedEtaXsi, 1.E-2);
+}
+
+TEST_F(WingCellRibSpar, computeGeometry) {
+    // See: cell_rib_spar_test.png for placement of cells
+
+    // next compute the expected XSI values on the spar
+    const std::pair<double, double> arr[] = { DP(0.2, 0.3), DP(0.95, 0.4), DP(0.2, 0.8), DP(0.95, 1.0) };
+    std::vector< std::pair<double, double> > expectedEtaXsi (arr, arr + sizeof(arr) / sizeof(arr[0]));
+
+    // get Component Segment
+    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
+    tigl::CCPACSWing& wing = config.GetWing(1);
+    tigl::CCPACSWingComponentSegment& componentSegment = static_cast<tigl::CCPACSWingComponentSegment&>(wing.GetComponentSegment(1));
+    tigl::CCPACSWingCSStructure& structure = *componentSegment.GetStructure();
+
+    tigl::CCPACSWingCell& cell = componentSegment.GetStructure()->GetUpperShell().GetCell(1);
+    TopoDS_Shape cellGeom = cell.GetCellSkinGeometry();
+    BRepTools::Write(cellGeom, "TestData/export/WingCellRibSpar_CellGeometry.brep");
 }

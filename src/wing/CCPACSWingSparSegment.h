@@ -135,6 +135,13 @@ private:
     mutable boost::optional<SparCapsCache> sparCapsCache;
 };
 
+/** 
+ * Tests whether the test point is in front of the spar segment geometry or behind.
+ * 
+ * The reference axis is given in normal.
+ */
+TIGL_EXPORT bool PointIsInfrontSparGeometry(gp_Ax1 normal, gp_Pnt point, TopoDS_Shape sparGeometry);
+
 } // end namespace tigl
 
 #endif // CCPACSWINGSPARSEGMENT_H

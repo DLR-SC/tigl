@@ -21,6 +21,7 @@
 #include "CCPACSWingCSStructure.h"
 #include "CTiglError.h"
 #include "CCPACSWingCell.h"
+#include "tiglcommonfunctions.h"
 
 
 namespace tigl

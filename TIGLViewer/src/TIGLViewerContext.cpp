@@ -316,7 +316,7 @@ void TIGLViewerContext::setGridOffset (Quantity_Length offset)
 }
 
 // a small helper when we just want to display a shape
-void TIGLViewerContext::displayShape(const TopoDS_Shape& loft, Standard_Boolean updateViewer, Quantity_Color color, double transparency)
+void TIGLViewerContext::displayShape(const TopoDS_Shape& loft, bool updateViewer, Quantity_Color color, double transparency)
 {
     TIGLViewerSettings& settings = TIGLViewerSettings::Instance();
     Handle(AIS_TexturedShape) shape = new AIS_TexturedShape(loft);
@@ -347,7 +347,7 @@ void TIGLViewerContext::displayShape(const TopoDS_Shape& loft, Standard_Boolean 
 }
 
 // a small helper when we just want to display a shape
-void TIGLViewerContext::displayShape(const PNamedShape& pshape, Standard_Boolean updateViewer, Quantity_Color color, double transparency)
+void TIGLViewerContext::displayShape(const PNamedShape& pshape, bool updateViewer, Quantity_Color color, double transparency)
 {
     if (!pshape) {
         return;

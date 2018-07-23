@@ -190,6 +190,7 @@ class CCPACSWingRibsPositioning;
 %include "CCPACSWingCellPositionSpanwise.h"
 %include "generated/CPACSCellPositioningChordwise.h"
 %include "CCPACSWingCellPositionChordwise.h"
+%include "EtaXsi.h"
 %include "generated/CPACSWingCell.h"
 %include "CCPACSWingCell.h"
 %include "generated/CPACSWingShell.h"
@@ -324,7 +325,10 @@ class CCPACSWingRibsPositioning;
          tigl::CCPACSCrossBeamStrutAssemblyPosition,
          tigl::CCPACSDoorAssemblyPosition,
          tigl::CCPACSLongFloorBeam,
-         tigl::CCPACSPressureBulkheadAssemblyPosition
+         tigl::CCPACSPressureBulkheadAssemblyPosition,
+         tigl::CCPACSWingCell,
+         tigl::CCPACSWingRibsDefinition,
+         tigl::CCPACSWingSparSegment
 );
 
 namespace tigl
