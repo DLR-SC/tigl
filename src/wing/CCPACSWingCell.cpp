@@ -47,7 +47,6 @@
 #include "CCPACSWingRibsDefinition.h"
 #include "CCPACSWingRibsDefinitions.h"
 #include "CCPACSWingRibsPositioning.h"
-#include "CCPACSWingShell.h"
 #include "CCPACSWingSpars.h"
 #include "CCPACSWingSparSegments.h"
 #include "CCPACSWingSparSegment.h"
@@ -609,6 +608,10 @@ void CCPACSWingCell::BuildSkinGeometry() const
     cutPlaneOB   = gp_Pln(refAxOB);
     planeShapeOB = BRepBuilderAPI_MakeFace(cutPlaneOB).Face();
 
+    if (!m_uidMgr) {
+        throw CTiglError("No uid manager in CCPACSWingCell::BuildSkinGeometry");
+    }
+    
     // If any border is defined by a rib or a spar, the cutting plane is changed
     if (m_positioningLeadingEdge.GetInputType() == CCPACSWingCellPositionChordwise::InputType::Spar) {
         planeShapeLE = m_uidMgr->ResolveObject<CCPACSWingSparSegment>(m_positioningLeadingEdge.GetSparUId())
@@ -693,7 +696,7 @@ void CCPACSWingCell::BuildSkinGeometry() const
         bool sparTest = false, plainTest = false;
 
         if (m_positioningLeadingEdge.GetInputType() == CCPACSWingCellPositionChordwise::InputType::Spar) {
-            sparTest = CCPACSWingShell::SparSegmentsTest(cutPlaneLE.Axis(), pTest, sparShapeLE);
+            sparTest = PointIsInfrontSparGeometry(cutPlaneLE.Axis(), pTest, sparShapeLE);
         }
         else {
             plainTest = a1Test.Angle(cutPlaneLE.Axis()) < M_PI_2;
@@ -708,7 +711,7 @@ void CCPACSWingCell::BuildSkinGeometry() const
             sparTest  = false;
             plainTest = false;
             if (m_positioningTrailingEdge.GetInputType() == CCPACSWingCellPositionChordwise::InputType::Spar) {
-                sparTest = CCPACSWingShell::SparSegmentsTest(cutPlaneTE.Axis(), pTest, sparShapeTE);
+                sparTest = PointIsInfrontSparGeometry(cutPlaneTE.Axis(), pTest, sparShapeTE);
             }
             else {
                 plainTest = a1Test.Angle(cutPlaneTE.Axis()) < M_PI_2;
@@ -787,7 +790,7 @@ bool CCPACSWingCell::IsPartOfCellImpl(T t)
     bool sparTest = false, plainTest = false;
 
     if (m_positioningLeadingEdge.GetInputType() == CCPACSWingCellPositionChordwise::InputType::Spar) {
-        sparTest = CCPACSWingShell::SparSegmentsTest(m_geometryCache.value().cutPlaneLE.Axis(), pTest, m_geometryCache.value().sparShapeLE);
+        sparTest = PointIsInfrontSparGeometry(m_geometryCache.value().cutPlaneLE.Axis(), pTest, m_geometryCache.value().sparShapeLE);
     }
     else {
         plainTest = a1Test.Angle(m_geometryCache.value().cutPlaneLE.Axis()) < M_PI_2;
@@ -802,7 +805,7 @@ bool CCPACSWingCell::IsPartOfCellImpl(T t)
         sparTest  = false;
         plainTest = false;
         if (m_positioningTrailingEdge.GetInputType() == CCPACSWingCellPositionChordwise::InputType::Spar) {
-            sparTest = CCPACSWingShell::SparSegmentsTest(m_geometryCache.value().cutPlaneTE.Axis(), pTest, m_geometryCache.value().sparShapeTE);
+            sparTest = PointIsInfrontSparGeometry(m_geometryCache.value().cutPlaneTE.Axis(), pTest, m_geometryCache.value().sparShapeTE);
         }
         else {
             plainTest = a1Test.Angle(m_geometryCache.value().cutPlaneTE.Axis()) < M_PI_2;

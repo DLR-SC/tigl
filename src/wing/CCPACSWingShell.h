@@ -60,13 +60,6 @@ public:
     TIGL_EXPORT void Update() const;
 
     TIGL_EXPORT TiglLoftSide GetLoftSide() const;
-
-    /** 
-     * Tests whether the test point is in front of the spar segment geometry or behind.
-     * 
-     * The reference axis is given in nNormal.
-     */
-    TIGL_EXPORT static bool SparSegmentsTest(gp_Ax1 nNormal, gp_Pnt nTestPoint, TopoDS_Shape nSparSegments);
 private:
     //@todo stringers
 
