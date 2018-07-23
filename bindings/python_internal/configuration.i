@@ -190,6 +190,7 @@ class CCPACSWingRibsPositioning;
 %include "CCPACSWingCellPositionSpanwise.h"
 %include "generated/CPACSCellPositioningChordwise.h"
 %include "CCPACSWingCellPositionChordwise.h"
+%include "EtaXsi.h"
 %include "generated/CPACSWingCell.h"
 %include "CCPACSWingCell.h"
 %include "generated/CPACSWingShell.h"

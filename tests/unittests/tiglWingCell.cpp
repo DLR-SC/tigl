@@ -216,33 +216,32 @@ TEST_F(WingCellSpar, sparCellXsi) {
         double xsi2Exp = it->second;
 
         tigl::CCPACSWingCell& cell = componentSegment.GetStructure()->GetUpperShell().GetCell(cellIndex++);
-        double xsi1, xsi2, dummy;
-        cell.GetLeadingEdgeInnerPoint(&dummy, &xsi1);
-        cell.GetLeadingEdgeOuterPoint(&dummy, &xsi2);
-        ASSERT_NEAR(xsi1, xsi1Exp, 1e-7);
-        ASSERT_NEAR(xsi2, xsi2Exp, 1e-7);
+        tigl::EtaXsi etaxsi1 = cell.GetLeadingEdgeInnerPoint();
+        tigl::EtaXsi etaxsi2 = cell.GetLeadingEdgeOuterPoint();
+        ASSERT_NEAR(etaxsi1.xsi, xsi1Exp, 1e-7);
+        ASSERT_NEAR(etaxsi2.xsi, xsi2Exp, 1e-7);
     }
 }
 
 namespace {
     void checkCellEtaXsis(const tigl::CCPACSWingCell& cell, const std::vector< std::pair<double, double> >& expectedEtaXsi, double precision = 1e-7) {
-        double eta, xsi;
-        int etaXsiIndex = 0;
-        cell.GetLeadingEdgeInnerPoint(&eta, &xsi);
-        ASSERT_NEAR(eta, expectedEtaXsi[etaXsiIndex].first, precision);
-        ASSERT_NEAR(xsi, expectedEtaXsi[etaXsiIndex].second, precision);
+        tigl::EtaXsi etaxsi;
+        unsigned int etaXsiIndex = 0;
+        etaxsi = cell.GetLeadingEdgeInnerPoint();
+        ASSERT_NEAR(etaxsi.eta, expectedEtaXsi[etaXsiIndex].first, precision);
+        ASSERT_NEAR(etaxsi.xsi, expectedEtaXsi[etaXsiIndex].second, precision);
         ++etaXsiIndex;
-        cell.GetLeadingEdgeOuterPoint(&eta, &xsi);
-        ASSERT_NEAR(eta, expectedEtaXsi[etaXsiIndex].first, precision);
-        ASSERT_NEAR(xsi, expectedEtaXsi[etaXsiIndex].second, precision);
+        etaxsi = cell.GetLeadingEdgeOuterPoint();
+        ASSERT_NEAR(etaxsi.eta, expectedEtaXsi[etaXsiIndex].first, precision);
+        ASSERT_NEAR(etaxsi.xsi, expectedEtaXsi[etaXsiIndex].second, precision);
         ++etaXsiIndex;
-        cell.GetTrailingEdgeInnerPoint(&eta, &xsi);
-        ASSERT_NEAR(eta, expectedEtaXsi[etaXsiIndex].first, precision);
-        ASSERT_NEAR(xsi, expectedEtaXsi[etaXsiIndex].second, precision);
+        etaxsi = cell.GetTrailingEdgeInnerPoint();
+        ASSERT_NEAR(etaxsi.eta, expectedEtaXsi[etaXsiIndex].first, precision);
+        ASSERT_NEAR(etaxsi.xsi, expectedEtaXsi[etaXsiIndex].second, precision);
         ++etaXsiIndex;
-        cell.GetTrailingEdgeOuterPoint(&eta, &xsi);
-        ASSERT_NEAR(eta, expectedEtaXsi[etaXsiIndex].first, precision);
-        ASSERT_NEAR(xsi, expectedEtaXsi[etaXsiIndex].second, precision);
+        etaxsi = cell.GetTrailingEdgeOuterPoint();
+        ASSERT_NEAR(etaxsi.eta, expectedEtaXsi[etaXsiIndex].first, precision);
+        ASSERT_NEAR(etaxsi.xsi, expectedEtaXsi[etaXsiIndex].second, precision);
     }
 }
 

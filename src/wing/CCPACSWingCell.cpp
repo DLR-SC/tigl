@@ -104,6 +104,14 @@ namespace WingCellInternal
     {
         return GetCentralFacePoint(face);
     }
+
+    Point2D toPoint2D(EtaXsi etaXsi)
+    {
+        Point2D p;
+        p.x = etaXsi.eta;
+        p.y = etaXsi.xsi;
+        return p;
+    }
 }
 
 using namespace WingCellInternal;
@@ -134,12 +142,11 @@ void CCPACSWingCell::Reset()
 bool CCPACSWingCell::IsConvex() const
 {
     Point2D p1, p2, p3, p4;
-
     // calculate for all 4 edges the relative position of eta/xsi
-    GetTrailingEdgeInnerPoint(&p1.x, &p1.y);
-    GetTrailingEdgeOuterPoint(&p2.x, &p2.y);
-    GetLeadingEdgeOuterPoint(&p3.x, &p3.y);
-    GetLeadingEdgeInnerPoint(&p4.x, &p4.y);
+    p1 = toPoint2D(GetTrailingEdgeInnerPoint());
+    p2 = toPoint2D(GetTrailingEdgeOuterPoint());
+    p3 = toPoint2D(GetLeadingEdgeOuterPoint());
+    p4 = toPoint2D(GetLeadingEdgeInnerPoint());
 
     // trailing edge
     bool s1 = sign(p3, p1, p2) > 0.;
@@ -159,10 +166,10 @@ bool CCPACSWingCell::IsInside(double eta, double xsi) const
     p.x = eta;
     p.y = xsi;
 
-    GetTrailingEdgeInnerPoint(&p1.x, &p1.y);
-    GetTrailingEdgeOuterPoint(&p2.x, &p2.y);
-    GetLeadingEdgeOuterPoint(&p3.x, &p3.y);
-    GetLeadingEdgeInnerPoint(&p4.x, &p4.y);
+    p1 = toPoint2D(GetTrailingEdgeInnerPoint());
+    p2 = toPoint2D(GetTrailingEdgeOuterPoint());
+    p3 = toPoint2D(GetLeadingEdgeOuterPoint());
+    p4 = toPoint2D(GetLeadingEdgeInnerPoint());
 
     if (IsConvex()) {
         // calculate for all 4 edges the relative position of eta/xsi
@@ -213,32 +220,32 @@ void CCPACSWingCell::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::
     generated::CPACSWingCell::ReadCPACS(tixiHandle, cellXPath);
 }
 
-void CCPACSWingCell::GetLeadingEdgeInnerPoint(double* eta, double* xsi) const
+EtaXsi CCPACSWingCell::GetLeadingEdgeInnerPoint() const
 {
     UpdateEtaXsiValues();
-    *eta = m_etaXsiCache.value().innerLeadingEdgePoint.eta;
-    *xsi = m_etaXsiCache.value().innerLeadingEdgePoint.xsi;
+    return EtaXsi(m_etaXsiCache.value().innerLeadingEdgePoint.eta,
+                  m_etaXsiCache.value().innerLeadingEdgePoint.xsi);
 }
 
-void CCPACSWingCell::GetLeadingEdgeOuterPoint(double* eta, double* xsi) const
+EtaXsi CCPACSWingCell::GetLeadingEdgeOuterPoint() const
 {
     UpdateEtaXsiValues();
-    *eta = m_etaXsiCache.value().outerLeadingEdgePoint.eta;
-    *xsi = m_etaXsiCache.value().outerLeadingEdgePoint.xsi;
+    return EtaXsi(m_etaXsiCache.value().outerLeadingEdgePoint.eta,
+                  m_etaXsiCache.value().outerLeadingEdgePoint.xsi);
 }
 
-void CCPACSWingCell::GetTrailingEdgeInnerPoint(double* eta, double* xsi) const
+EtaXsi CCPACSWingCell::GetTrailingEdgeInnerPoint() const
 {
     UpdateEtaXsiValues();
-    *eta = m_etaXsiCache.value().innerTrailingEdgePoint.eta;
-    *xsi = m_etaXsiCache.value().innerTrailingEdgePoint.xsi;
+    return EtaXsi(m_etaXsiCache.value().innerTrailingEdgePoint.eta,
+                  m_etaXsiCache.value().innerTrailingEdgePoint.xsi);
 }
 
-void CCPACSWingCell::GetTrailingEdgeOuterPoint(double* eta, double* xsi) const
+EtaXsi CCPACSWingCell::GetTrailingEdgeOuterPoint() const
 {
     UpdateEtaXsiValues();
-    *eta = m_etaXsiCache.value().outerTrailingEdgePoint.eta;
-    *xsi = m_etaXsiCache.value().outerTrailingEdgePoint.xsi;
+    return EtaXsi(m_etaXsiCache.value().outerTrailingEdgePoint.eta,
+                  m_etaXsiCache.value().outerTrailingEdgePoint.xsi);
 }
 
 void CCPACSWingCell::SetLeadingEdgeInnerPoint(double eta1, double xsi1)

@@ -59,10 +59,10 @@ public:
     TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& cellXPath) OVERRIDE;
 
     // get corner coordinates of cell
-    TIGL_EXPORT void GetLeadingEdgeInnerPoint(double* eta, double* xsi) const;
-    TIGL_EXPORT void GetLeadingEdgeOuterPoint(double* eta, double* xsi) const;
-    TIGL_EXPORT void GetTrailingEdgeInnerPoint(double* eta, double* xsi) const;
-    TIGL_EXPORT void GetTrailingEdgeOuterPoint(double* eta, double* xsi) const;
+    TIGL_EXPORT EtaXsi GetLeadingEdgeInnerPoint() const;
+    TIGL_EXPORT EtaXsi GetLeadingEdgeOuterPoint() const;
+    TIGL_EXPORT EtaXsi GetTrailingEdgeInnerPoint() const;
+    TIGL_EXPORT EtaXsi GetTrailingEdgeOuterPoint() const;
 
     // sets corner coordinates of cell
     TIGL_EXPORT void SetLeadingEdgeInnerPoint(double eta, double xsi);
