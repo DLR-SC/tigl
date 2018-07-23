@@ -91,6 +91,20 @@ namespace WingCellInternal
         bool s3 = sign(p, p3, p1) > 0.;
         return (s1 == s2) && (s2 == s3);
     }
+
+    gp_Pnt pointOnShape(TopoDS_Edge edge)
+    {
+        BRepAdaptor_Curve curve(edge);
+        double u_min = curve.FirstParameter();
+        double u_max = curve.LastParameter();
+
+        return curve.Value(u_min + ((u_max - u_min) / 2.));
+    }
+
+    gp_Pnt pointOnShape(TopoDS_Face face)
+    {
+        return GetCentralFacePoint(face);
+    }
 }
 
 using namespace WingCellInternal;
@@ -755,80 +769,8 @@ TopoDS_Shape CCPACSWingCell::GetRibCutGeometry(std::pair<std::string, int> ribUi
     return cutGeometry.shape;
 }
 
-bool CCPACSWingCell::IsPartOfCell(TopoDS_Face f)
-{
-    Update();
-
-    Bnd_Box bBox1, bBox2;
-    BRepBndLib::Add(m_geometryCache.value().cellSkinGeometry, bBox1);
-    TopoDS_Face face = TopoDS::Face(m_parent->GetParentElement()
-                                        ->GetStructure()
-                                        .GetWingStructureReference()
-                                        .GetWingComponentSegment()
-                                        .GetWing()
-                                        .GetTransformationMatrix()
-                                        .Inverted()
-                                        .Transform(f));
-    BRepBndLib::Add(face, bBox2);
-
-    if (bBox1.IsOut(bBox2)) {
-        return false;
-    }
-
-    double u_min = 0., u_max = 0., v_min = 0., v_max = 0.;
-    Handle(Geom_Surface) surf = BRep_Tool::Surface(face);
-    BRepTools::UVBounds(face, u_min, u_max, v_min, v_max);
-    gp_Pnt pTest = surf->Value(u_min + ((u_max - u_min) / 2), v_min + ((v_max - v_min) / 2));
-
-    gp_Pnt midPnt = (m_geometryCache.value().pC1.XYZ() + m_geometryCache.value().pC2.XYZ()) / 2;
-    gp_Vec vTest(midPnt, pTest);
-    gp_Ax1 a1Test(midPnt, vTest);
-
-    bool sparTest = false, plainTest = false;
-
-    if (m_positioningLeadingEdge.GetInputType() == CCPACSWingCellPositionChordwise::InputType::Spar) {
-        sparTest = CCPACSWingShell::SparSegmentsTest(m_geometryCache.value().cutPlaneLE.Axis(), pTest, m_geometryCache.value().sparShapeLE);
-    }
-    else {
-        plainTest = a1Test.Angle(m_geometryCache.value().cutPlaneLE.Axis()) < M_PI_2;
-    }
-
-    if (plainTest || sparTest) {
-        // create an Ax1 from the trailing edge plane origin to the midpoint of the current face
-        midPnt = (m_geometryCache.value().pC3.XYZ() + m_geometryCache.value().pC4.XYZ()) / 2;
-        vTest  = gp_Vec(midPnt, pTest);
-        a1Test = gp_Ax1(midPnt, vTest);
-
-        sparTest  = false;
-        plainTest = false;
-        if (m_positioningTrailingEdge.GetInputType() == CCPACSWingCellPositionChordwise::InputType::Spar) {
-            sparTest = CCPACSWingShell::SparSegmentsTest(m_geometryCache.value().cutPlaneTE.Axis(), pTest, m_geometryCache.value().sparShapeTE);
-        }
-        else {
-            plainTest = a1Test.Angle(m_geometryCache.value().cutPlaneTE.Axis()) < M_PI_2;
-        }
-
-        if (plainTest || sparTest) {
-            // create an Ax1 from the inner border plane origin to the midpoint of the current face
-            midPnt = (m_geometryCache.value().pC1.XYZ() + m_geometryCache.value().pC3.XYZ()) / 2.;
-            vTest  = gp_Vec(midPnt, pTest);
-            a1Test = gp_Ax1(midPnt, vTest);
-            if (a1Test.Angle(m_geometryCache.value().cutPlaneIB.Axis()) < M_PI_2) {
-                // create an Ax1 from the outer border plane origin to the midpoint of the current face
-                midPnt = (m_geometryCache.value().pC2.XYZ() + m_geometryCache.value().pC4.XYZ()) / 2.;
-                vTest  = gp_Vec(midPnt, pTest);
-                a1Test = gp_Ax1(midPnt, vTest);
-                if (a1Test.Angle(m_geometryCache.value().cutPlaneOB.Axis()) < M_PI_2) {
-                    return true;
-                }
-            }
-        }
-    }
-
-    return false;
-}
-
-bool CCPACSWingCell::IsPartOfCell(TopoDS_Edge e)
+template<class T>
+bool CCPACSWingCell::IsPartOfCellImpl(T t)
 {
     Update();
 
@@ -841,20 +783,14 @@ bool CCPACSWingCell::IsPartOfCell(TopoDS_Edge e)
                                         .GetWing()
                                         .GetTransformationMatrix()
                                         .Inverted()
-                                        .Transform(e));
+                                        .Transform(t));
     BRepBndLib::Add(edge, bBox2);
 
     if (bBox1.IsOut(bBox2)) {
         return false;
     }
 
-    double u_min = 0., u_max = 0.;
-
-    BRepAdaptor_Curve curve(edge);
-    u_min = curve.FirstParameter();
-    u_max = curve.LastParameter();
-
-    gp_Pnt pTest = curve.Value(u_min + ((u_max - u_min) / 2));
+    gp_Pnt pTest = WingCellInternal::pointOnShape(t);
 
     gp_Pnt midPnt = (m_geometryCache.value().pC1.XYZ() + m_geometryCache.value().pC2.XYZ()) / 2;
     gp_Vec vTest(midPnt, pTest);
@@ -902,6 +838,17 @@ bool CCPACSWingCell::IsPartOfCell(TopoDS_Edge e)
     }
 
     return false;
+}
+
+bool CCPACSWingCell::IsPartOfCell(TopoDS_Face f)
+{
+    return IsPartOfCellImpl(f);
+}
+
+
+bool CCPACSWingCell::IsPartOfCell(TopoDS_Edge e)
+{
+    return IsPartOfCellImpl(e);
 }
 
 std::string CCPACSWingCell::GetDefaultedUID() const

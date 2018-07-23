@@ -91,6 +91,9 @@ public:
     TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE;
 
 private:
+    template<class T>
+    bool IsPartOfCellImpl(T t);
+    
     std::pair<double, double> computePositioningEtaXsi(const CCPACSWingCellPositionSpanwise& spanwisePos,
                                                        const CCPACSWingCellPositionChordwise& chordwisePos, bool inner,
                                                        bool front) const;
