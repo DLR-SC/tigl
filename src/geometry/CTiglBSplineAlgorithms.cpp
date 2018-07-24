@@ -564,8 +564,8 @@ void CTiglBSplineAlgorithms::matchParameterRange(std::vector<Handle(Geom_BSpline
     Standard_Real umax = bsplines[0]->LastParameter();
     for (unsigned iP=1; iP<bsplines.size(); ++iP) {
         Handle(Geom_BSplineCurve) bspl = bsplines[iP];
-        if (    abs(bspl->FirstParameter() - umin) > Precision::Confusion()
-             || abs(bspl->LastParameter() - umax) > Precision::Confusion() ) {
+        if (fabs(bspl->FirstParameter() - umin) > Precision::Confusion() ||
+            fabs(bspl->LastParameter() - umax) > Precision::Confusion() ) {
             tigl::CTiglBSplineAlgorithms::reparametrizeBSpline(*bspl, umin, umax);
         }
     }
