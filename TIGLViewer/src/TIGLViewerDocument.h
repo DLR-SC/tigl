@@ -153,9 +153,6 @@ private slots:
     QString dlgGetFuselageSegmentSelection();
     QString dlgGetFuselageProfileSelection();
 
-    // Other selection dialogs
-    QString dlgGetComponentSelection();
-
 private: 
     TiglCPACSConfigurationHandle            m_cpacsHandle;
     TIGLViewerWindow*                       app;

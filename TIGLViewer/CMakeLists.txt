@@ -105,6 +105,7 @@ set(tv_src
     TIGLViewerVTKExportDialog.cpp
     TIGLSliderDialog.cpp
     TIGLViewerApp.cpp
+    TIGLGeometryChoserDialog.cpp
 )
 	
 # normal header files
@@ -148,6 +149,7 @@ set(tv_hdr_qobj
 	TIGLViewerVTKExportDialog.h
 	TIGLSliderDialog.h
 	TIGLViewerApp.h
+	TIGLGeometryChoserDialog.h
 )
 
 set(tv_ui_comp
@@ -161,6 +163,7 @@ set(tv_ui_comp
 	src/TIGLViewerDrawVectorDialog.ui
 	src/TIGLViewerVTKExportDialog.ui
 	src/TIGLSliderDialog.ui
+	src/TIGLGeometryChoserDialog.ui
 )
 
 foreach ( _fname ${tv_src})

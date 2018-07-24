@@ -83,6 +83,7 @@
 #include "CCPACSWingSparSegment.h"
 #include "CCPACSWingRibsDefinition.h"
 #include "CTiglAttachedRotorBlade.h"
+#include "TIGLGeometryChoserDialog.h"
 
 #define max(a,b) ((a) > (b) ? (a) : (b))
 
@@ -650,30 +651,6 @@ QString TIGLViewerDocument::dlgGetFuselageProfileSelection()
     }
 
     QString choice = QInputDialog::getItem(app, tr("Select Fuselage Profile"), tr("Available Fuselage Profiles:"), fuselageProfiles, 0, false, &ok);
-    if (ok) {
-        return choice;
-    }
-    else {
-        return "";
-    }
-}
-
-QString TIGLViewerDocument::dlgGetComponentSelection()
-{
-    QStringList componentUIDs;
-
-    // fill combo boxes
-    const tigl::ShapeContainerType& uids = GetConfiguration().GetUIDManager().GetShapeContainer();
-
-    for (tigl::ShapeContainerType::const_iterator it = uids.begin(); it != uids.end(); ++it) {
-        componentUIDs.append(it->first.c_str());
-    }
-
-    // sort uids
-    componentUIDs.sort();
-
-    bool ok;
-    QString choice = QInputDialog::getItem(app, tr("Select Component"), tr("Available Components:"), componentUIDs, 0, false, &ok);
     if (ok) {
         return choice;
     }
@@ -2054,12 +2031,14 @@ void TIGLViewerDocument::drawComponent()
     tigl::CCPACSConfiguration& config = GetConfiguration();
     tigl::CTiglUIDManager& uidManager = config.GetUIDManager();
 
-    QString componentUID = dlgGetComponentSelection();
+    TIGLGeometryChoserDialog dialog(GetConfiguration().GetUIDManager(), app);
+    if (dialog.exec() != QDialog::Accepted) {
+        return;
+    }
 
-    if (!componentUID.isEmpty()) {
-        START_COMMAND();
-
+    foreach (QString componentUID, dialog.GetSelectedUids()) {
         try {
+            START_COMMAND();
             tigl::ITiglGeometricComponent& component = uidManager.GetGeometricComponent(componentUID.toStdString());
             app->getScene()->displayShape(component.GetLoft(), true);
         }
