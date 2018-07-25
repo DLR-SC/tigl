@@ -953,9 +953,9 @@ void CCPACSWingSegment::MakeSurfaces(SurfaceCache& cache) const
 
     // compute total surface area
     GProp_GProps sprops;
-    BRepGProp::SurfaceProperties(GetUpperShape(WING_COORDINATE_SYSTEM), sprops);
+    BRepGProp::SurfaceProperties(cache.bluntTE ? cache.upperShapeBlunt : cache.upperShapeSharp, sprops);
     const double upperArea = sprops.Mass();
-    BRepGProp::SurfaceProperties(GetLowerShape(WING_COORDINATE_SYSTEM), sprops);
+    BRepGProp::SurfaceProperties(cache.bluntTE ? cache.lowerShapeBlunt : cache.lowerShapeSharp, sprops);
     const double lowerArea = sprops.Mass();
     cache.mySurfaceArea = upperArea + lowerArea;
 }
