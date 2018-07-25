@@ -34,6 +34,7 @@
 #include "CCPACSGuideCurve.h"
 #include "CTiglPoint.h"
 #include "CTiglAbstractSegment.h"
+#include "Cache.h"
 #include "CCPACSTransformation.h"
 #include "math/CTiglPointTranslator.h"
 
@@ -221,14 +222,31 @@ protected:
     PNamedShape BuildLoft() OVERRIDE;
 
 private:
+    struct SurfaceCache
+    {
+        bool bluntTE;                        ///< Information whether trailing edge is blunt
+        double mySurfaceArea;                ///< Surface area of this segment
+        TopoDS_Face upperShapeSharp;        ///< Upper shape of this segment with sharp trailing edge
+        TopoDS_Face upperShapeBlunt;        ///< Upper shape of this segment with blunt trailing edge
+        TopoDS_Face lowerShapeSharp;        ///< Lower shape of this segment with sharp trailing edge
+        TopoDS_Face lowerShapeBlunt;        ///< Lower shape of this segment with blunt trailing edge
+        TopoDS_Face trailingEdgeShapeBlunt; ///< Shape of blunt trailing edge
+    };
+
+    struct SurfaceCoordCache
+    {
+        CTiglPointTranslator cordSurface;
+        Handle(Geom_Surface) cordFace;
+    };
+
     // get short name for loft
     std::string GetShortShapeName ();
 
     // Builds upper and lower surfaces
-    void MakeSurfaces() const;
+    void MakeSurfaces(SurfaceCache& cache) const;
 
     // Builds the chord surface
-    void MakeChordSurface() const;
+    void MakeChordSurface(SurfaceCoordCache& cache) const;
 
     // Returns the chord surface (and builds it if required)
     const CTiglPointTranslator& ChordFace() const;
@@ -242,24 +260,8 @@ private:
     CCPACSWing*          wing;                 /**< Parent wing                             */
     double               myVolume;             /**< Volume of this segment                  */
 
-    struct SurfaceCache
-    {
-        bool bluntTE;                        ///< Information whether trailing edge is blunt
-        double mySurfaceArea;                ///< Surface area of this segment
-        TopoDS_Face upperShapeSharp;        ///< Upper shape of this segment with sharp trailing edge
-        TopoDS_Face upperShapeBlunt;        ///< Upper shape of this segment with blunt trailing edge
-        TopoDS_Face lowerShapeSharp;        ///< Lower shape of this segment with sharp trailing edge
-        TopoDS_Face lowerShapeBlunt;        ///< Lower shape of this segment with blunt trailing edge
-        TopoDS_Face trailingEdgeShapeBlunt; ///< Shape of blunt trailing edge
-    };
-    mutable boost::optional<SurfaceCache> surfaceCache;
-
-    struct SurfaceCoordCache
-    {
-        CTiglPointTranslator cordSurface;
-        Handle(Geom_Surface) cordFace;
-    };
-    mutable boost::optional<SurfaceCoordCache> surfaceCoordCache;
+    Cache<SurfaceCache, CCPACSWingSegment> surfaceCache;
+    Cache<SurfaceCoordCache, CCPACSWingSegment> surfaceCoordCache;
 
     unique_ptr<IGuideCurveBuilder> m_guideCurveBuilder;
 };
