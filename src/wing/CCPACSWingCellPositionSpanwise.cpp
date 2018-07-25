@@ -30,7 +30,7 @@ CCPACSWingCellPositionSpanwise::InputType CCPACSWingCellPositionSpanwise::GetInp
         return Eta;
     if (m_ribDefinitionUID_choice2 && m_ribNumber_choice2)
         return Rib;
-    return None;
+    throw CTiglError("Invalid spanwise cell positioning", TIGL_XML_ERROR);
 }
 
 // get and set Eta definition

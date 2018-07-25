@@ -381,6 +381,8 @@ EtaXsi CCPACSWingCell::computePositioningEtaXsi(const CCPACSWingCellPositionSpan
         eta                 = result.eta;
         xsi                 = result.xsi;
     }
+    else
+        throw CTiglError("Unrecognized combination of chordwise and spanwise positionings");
 
     return EtaXsi(eta, xsi);
 }

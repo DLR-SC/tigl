@@ -35,8 +35,7 @@ public:
     enum InputType
     {
         Eta,
-        Rib,
-        None
+        Rib
     };
 
     TIGL_EXPORT CCPACSWingCellPositionSpanwise(CCPACSWingCell* parent);

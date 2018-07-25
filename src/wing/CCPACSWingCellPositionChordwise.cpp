@@ -32,7 +32,7 @@ CCPACSWingCellPositionChordwise::InputType CCPACSWingCellPositionChordwise::GetI
         return Xsi;
     if (m_sparUID_choice1)
         return Spar;
-    return None;
+    throw CTiglError("Invalid chordwise cell positioning", TIGL_XML_ERROR);
 }
 
 void CCPACSWingCellPositionChordwise::SetXsi(double xsi1, double xsi2)
