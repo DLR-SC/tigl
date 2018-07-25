@@ -941,7 +941,7 @@ void CCPACSWingSegment::MakeChordSurface() const
     surfaceCoordCache->cordFace = GeomFill::Surface(innerEdge, outerEdge);
 }
 
-CTiglPointTranslator& CCPACSWingSegment::ChordFace() const
+const CTiglPointTranslator& CCPACSWingSegment::ChordFace() const
 {
     if (!surfaceCoordCache) {
         MakeChordSurface();

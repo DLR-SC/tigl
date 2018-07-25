@@ -231,7 +231,7 @@ private:
     void MakeChordSurface() const;
 
     // Returns the chord surface (and builds it if required)
-    CTiglPointTranslator& ChordFace() const;
+    const CTiglPointTranslator& ChordFace() const;
 
 
     // converts segment eta xsi coordinates to face uv koordinates

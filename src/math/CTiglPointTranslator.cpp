@@ -40,12 +40,12 @@ void CTiglPointTranslator::SegmentProjection::setProjectionPoint(const CTiglPoin
     _x = p;
 }
 
-CTiglPointTranslator::CTiglPointTranslator() : projector(*this, a,b,c,d)
+CTiglPointTranslator::CTiglPointTranslator()
 { 
     initialized = false;
 }
 
-CTiglPointTranslator::CTiglPointTranslator(const CTiglPoint& x1, const CTiglPoint& x2, const CTiglPoint& x3, const CTiglPoint& x4) : projector(*this, a,b,c,d) 
+CTiglPointTranslator::CTiglPointTranslator(const CTiglPoint& x1, const CTiglPoint& x2, const CTiglPoint& x3, const CTiglPoint& x4)
 {
     setQuadriangle(x1, x2, x3, x4);
 }
@@ -138,7 +138,7 @@ void CTiglPointTranslator::SegmentProjection::getHessian(const double * x, doubl
     TIGL_MATRIX2D(hess,2,1,0) = TIGL_MATRIX2D(hess,2,0,1);
 }
 
-TiglReturnCode CTiglPointTranslator::translate(const CTiglPoint& p, double* eta, double * xsi)
+TiglReturnCode CTiglPointTranslator::translate(const CTiglPoint& p, double* eta, double * xsi) const
 {
     if (!eta || !xsi) {
         LOG(ERROR) << "Error in CTiglPointTranslator::translate(): eta and xsi may not be NULL Pointers!" << std::endl;
@@ -161,6 +161,7 @@ TiglReturnCode CTiglPointTranslator::translate(const CTiglPoint& p, double* eta,
     }
     
     assert(initialized);
+    SegmentProjection projector(*this, a, b, c, d);
     projector.setProjectionPoint(p);
 
     // Scale of the whole problem. Must be

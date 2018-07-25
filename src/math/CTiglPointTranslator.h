@@ -61,7 +61,7 @@ public:
     /// Finds an eta-xsi coordinate that minimizes the distance to point p.
     /// The function is not reentrant. If you want to parallelize it, use 
     /// multiple instances of CTiglPointTranslator.
-    TIGL_EXPORT TiglReturnCode translate(const CTiglPoint& p, double* eta, double* xsi);
+    TIGL_EXPORT TiglReturnCode translate(const CTiglPoint& p, double* eta, double* xsi) const;
     
     /// Converts from eta-xsi to spatial coordinates. Reentrant.
     TIGL_EXPORT TiglReturnCode translate(double eta, double xsi, CTiglPoint* p) const;
@@ -77,8 +77,8 @@ private:
     class SegmentProjection : public tigl::ITiglObjectiveFunction 
     {
     public:
-        TIGL_EXPORT SegmentProjection(CTiglPointTranslator& t, CTiglPoint & a, CTiglPoint& b, CTiglPoint& c, CTiglPoint& d)
-          : ITiglObjectiveFunction(), _t(t), _a(a), _b(b), _c(c), _x(0,0,0)
+        TIGL_EXPORT SegmentProjection(const CTiglPointTranslator& t, const CTiglPoint & a, const CTiglPoint& b, const CTiglPoint& c, const CTiglPoint& d)
+          : _t(t), _a(a), _b(b), _c(c), _x(0,0,0)
         {
         }
 
@@ -96,17 +96,14 @@ private:
         TIGL_EXPORT bool hasAnalyticHessian () const OVERRIDE { return true; }
 
     private:
-        CTiglPointTranslator& _t;
-        CTiglPoint &_a, &_b, &_c;
+        const CTiglPointTranslator& _t;
+        const CTiglPoint &_a, &_b, &_c;
         CTiglPoint _x;
     };
 
-    void   calcPoint(double eta, double xsi, CTiglPoint& p) const;
+    void calcPoint(double eta, double xsi, CTiglPoint& p) const;
 
-
-    SegmentProjection projector;
     CTiglPoint a, b, c, d;
-
     bool initialized;
 };
 
