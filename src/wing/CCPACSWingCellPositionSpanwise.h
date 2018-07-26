@@ -44,10 +44,14 @@ public:
 
     TIGL_EXPORT void GetEta(double& eta1, double& eta2) const;
     TIGL_EXPORT std::pair<double, double> GetEta() const;
+    TIGL_EXPORT void SetEta1(double eta1);
+    TIGL_EXPORT void SetEta2(double eta2);
     TIGL_EXPORT void SetEta(double eta1, double eta2);
 
     TIGL_EXPORT void GetRib(std::string& ribUid, int& ribNumber) const;
     TIGL_EXPORT std::pair<std::string, int> GetRib() const;
+    TIGL_EXPORT void SetRibDefinitionUID(const std::string& ribUid);
+    TIGL_EXPORT void SetRibNumber(int ribNumber);
     TIGL_EXPORT void SetRib(const std::string& ribUid, int ribNumber);
 
 protected:

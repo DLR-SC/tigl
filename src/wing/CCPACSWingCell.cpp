@@ -250,38 +250,26 @@ EtaXsi CCPACSWingCell::GetTrailingEdgeOuterPoint() const
 
 void CCPACSWingCell::SetLeadingEdgeInnerPoint(double eta1, double xsi1)
 {
-    UpdateEtaXsiValues();
-    const double eta2 = m_etaXsiCache.value().innerTrailingEdgePoint.eta;
-    const double xsi2 = m_etaXsiCache.value().outerLeadingEdgePoint.xsi;
-    m_positioningInnerBorder.SetEta(eta1, eta2);
-    m_positioningLeadingEdge.SetXsi(xsi1, xsi2);
+    m_positioningInnerBorder.SetEta1_choice1(eta1);
+    m_positioningLeadingEdge.SetXsi1(xsi1);
 }
 
 void CCPACSWingCell::SetLeadingEdgeOuterPoint(double eta1, double xsi2)
 {
-    UpdateEtaXsiValues();
-    const double eta2 = m_etaXsiCache.value().outerTrailingEdgePoint.eta;
-    const double xsi1 = m_etaXsiCache.value().innerLeadingEdgePoint.xsi;
-    m_positioningOuterBorder.SetEta(eta1, eta2);
-    m_positioningLeadingEdge.SetXsi(xsi1, xsi2);
+    m_positioningOuterBorder.SetEta1(eta1);
+    m_positioningLeadingEdge.SetXsi2(xsi2);
 }
 
 void CCPACSWingCell::SetTrailingEdgeInnerPoint(double eta2, double xsi1)
 {
-    UpdateEtaXsiValues();
-    const double eta1 = m_etaXsiCache.value().innerLeadingEdgePoint.eta;
-    const double xsi2 = m_etaXsiCache.value().outerTrailingEdgePoint.xsi;
-    m_positioningInnerBorder.SetEta(eta1, eta2);
-    m_positioningTrailingEdge.SetXsi(xsi1, xsi2);
+    m_positioningInnerBorder.SetEta2(eta2);
+    m_positioningTrailingEdge.SetXsi1(xsi1);
 }
 
 void CCPACSWingCell::SetTrailingEdgeOuterPoint(double eta2, double xsi2)
 {
-    UpdateEtaXsiValues();
-    const double eta1 = m_etaXsiCache.value().outerLeadingEdgePoint.eta;
-    const double xsi1 = m_etaXsiCache.value().innerTrailingEdgePoint.xsi;
-    m_positioningOuterBorder.SetEta(eta1, eta2);
-    m_positioningTrailingEdge.SetXsi(xsi1, xsi2);
+    m_positioningOuterBorder.SetEta2(eta2);
+    m_positioningTrailingEdge.SetXsi2(xsi2);
 }
 
 void CCPACSWingCell::SetLeadingEdgeSpar(const std::string& sparUID)
