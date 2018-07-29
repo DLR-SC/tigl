@@ -234,6 +234,12 @@ public:
 
     /// Checks, whether the point matrix points is closed in u direction
     TIGL_EXPORT static bool isVDirClosed(const TColgp_Array2OfPnt& points, double tolerance);
+
+    /**
+     * Computes the knot vector for curve interpolation using parameter averaging
+     * This is required to prevent singular systems during interpolation.
+     */
+    TIGL_EXPORT static std::vector<double> knotsFromCurveParameters(const std::vector<double>& params, unsigned int degree, unsigned int n_continuity=0);
 };
 } // namespace tigl
 

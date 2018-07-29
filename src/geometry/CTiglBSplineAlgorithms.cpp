@@ -376,6 +376,37 @@ bool CTiglBSplineAlgorithms::isVDirClosed(const TColgp_Array2OfPnt& points, doub
     return vDirClosed;
 }
 
+std::vector<double> CTiglBSplineAlgorithms::knotsFromCurveParameters(const std::vector<double> &params, unsigned int degree, unsigned int n_continuity)
+{
+    if (params.size() < 2) {
+        throw CTiglError("Parameters must contain two or more elements.");
+    }
+
+    size_t nknots = params.size() + degree + 1 + n_continuity;
+
+    std::vector<double> knots(nknots);
+
+    for (size_t j = 0; j <= degree; ++j) {
+        knots[j] = params.front();
+    }
+
+
+    for (size_t j = 1; j < params.size() + n_continuity - degree; ++j) {
+        double sum = 0.;
+        // average
+        for (size_t i = j; i <= j + degree - n_continuity - 1; ++i) {
+            sum += params[i];
+        }
+
+        knots[j + degree] = sum / static_cast<double>(degree - n_continuity);
+    }
+
+    for (size_t j = params.size() + n_continuity; j < nknots; ++j) {
+        knots[j] = params.back();
+    }
+    return knots;
+}
+
 double CTiglBSplineAlgorithms::scale(const TColgp_Array2OfPnt& points)
 {
     double theScale = 0.;

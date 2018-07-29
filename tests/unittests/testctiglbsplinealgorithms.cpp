@@ -1275,6 +1275,42 @@ TEST(TiglBSplineAlgorithms, findKinks)
 }
 
 
+TEST(TiglBSplineAlgorithms, knotsFromParams)
+{
+    std::vector<double> params;
+    params.push_back(0.);
+    params.push_back(0.25);
+    params.push_back(0.5);
+    params.push_back(0.75);
+    params.push_back(1.0);
+
+    unsigned int degree = 2;
+    std::vector<double> knots = tigl::CTiglBSplineAlgorithms::knotsFromCurveParameters(params, degree);
+    ASSERT_EQ(8, knots.size());
+    EXPECT_NEAR(0., knots[0], 1e-10);
+    EXPECT_NEAR(0., knots[1], 1e-10);
+    EXPECT_NEAR(0., knots[2], 1e-10);
+    EXPECT_NEAR(0.375, knots[3], 1e-10);
+    EXPECT_NEAR(0.625, knots[4], 1e-10);
+    EXPECT_NEAR(1., knots[5], 1e-10);
+    EXPECT_NEAR(1., knots[6], 1e-10);
+    EXPECT_NEAR(1., knots[7], 1e-10);
+
+    degree = 3;
+    knots = tigl::CTiglBSplineAlgorithms::knotsFromCurveParameters(params, degree);
+    ASSERT_EQ(9, knots.size());
+    EXPECT_NEAR(0., knots[0], 1e-10);
+    EXPECT_NEAR(0., knots[1], 1e-10);
+    EXPECT_NEAR(0., knots[2], 1e-10);
+    EXPECT_NEAR(0., knots[3], 1e-10);
+    EXPECT_NEAR(0.5, knots[4], 1e-10);
+    EXPECT_NEAR(1., knots[5], 1e-10);
+    EXPECT_NEAR(1., knots[6], 1e-10);
+    EXPECT_NEAR(1., knots[7], 1e-10);
+    EXPECT_NEAR(1., knots[8], 1e-10);
+
+}
+
 class GordonSurface: public ::testing::TestWithParam<std::string>
 {
 protected:

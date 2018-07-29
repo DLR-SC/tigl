@@ -36,6 +36,7 @@
 #include <cmath>
 #include <math_Matrix.hxx>
 #include "CTiglBSplineFit.h"
+#include "CTiglPointsToBSplineInterpolation.h"
 
 TEST(BSplines, pointsToLinear)
 {
@@ -596,6 +597,23 @@ TEST_F(BSplineInterpolation, tipKink2)
     tigl::CTiglApproxResult result = app.FitCurve(parms2);
 
     StoreResult("TestData/analysis/BSplineInterpolation-tipKink2.brep", result.curve, pnt2);
+}
+
+TEST_F(BSplineInterpolation, interpolationContinousDegree2)
+{
+
+    Handle(TColgp_HArray1OfPnt) pnt2 = new TColgp_HArray1OfPnt(1, 5);
+    pnt2->SetValue(1, gp_Pnt(0., 0., -0.5));
+    pnt2->SetValue(2, gp_Pnt(0.5, 0., 0.));
+    pnt2->SetValue(3, gp_Pnt(0., 0., 0.5));
+    pnt2->SetValue(4, gp_Pnt(-0.5, 0., 0.));
+    pnt2->SetValue(5, gp_Pnt(0., 0., -0.5));
+
+
+    tigl::CTiglPointsToBSplineInterpolation app(pnt2, 3, true);
+    Handle(Geom_BSplineCurve) result = app.Curve();
+
+    StoreResult("TestData/analysis/BSplineInterpolation-interpolationContinousDegree2.brep", result, pnt2->Array1());
 }
 
 /*
