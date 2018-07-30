@@ -36,8 +36,7 @@ public:
     enum InputType
     {
         Xsi,
-        Spar,
-        None
+        Spar
     };
 
     TIGL_EXPORT CCPACSWingCellPositionChordwise(CCPACSWingCell* parent);
@@ -46,6 +45,8 @@ public:
 
     TIGL_EXPORT void GetXsi(double& xsi1, double& xsi2) const;
     TIGL_EXPORT std::pair<double, double> GetXsi() const;
+    TIGL_EXPORT void SetXsi1(double xsi1);
+    TIGL_EXPORT void SetXsi2(double xsi2);
     TIGL_EXPORT void SetXsi(double xsi1, double xsi2);
 
     TIGL_EXPORT const std::string& GetSparUId() const;

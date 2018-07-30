@@ -30,10 +30,25 @@ CCPACSWingCellPositionSpanwise::InputType CCPACSWingCellPositionSpanwise::GetInp
         return Eta;
     if (m_ribDefinitionUID_choice2 && m_ribNumber_choice2)
         return Rib;
-    return None;
+    throw CTiglError("Invalid spanwise cell positioning", TIGL_XML_ERROR);
 }
 
-// get and set Eta definition
+void CCPACSWingCellPositionSpanwise::SetEta1(double eta1) {
+    m_eta1_choice1 = eta1;
+    m_ribNumber_choice2 = boost::none;
+    m_ribDefinitionUID_choice2 = boost::none;
+
+    InvalidateParent();
+}
+
+void CCPACSWingCellPositionSpanwise::SetEta2(double eta2) {
+    m_eta2_choice1 = eta2;
+    m_ribNumber_choice2 = boost::none;
+    m_ribDefinitionUID_choice2 = boost::none;
+
+    InvalidateParent();
+}
+
 void CCPACSWingCellPositionSpanwise::SetEta(double eta1, double eta2) {
     m_eta1_choice1 = eta1;
     m_eta2_choice1 = eta2;
@@ -61,9 +76,24 @@ std::pair<double, double> CCPACSWingCellPositionSpanwise::GetEta() const {
 void CCPACSWingCellPositionSpanwise::SetRib(const std::string& ribUId, int nRib) {
     m_eta1_choice1 = boost::none;
     m_eta2_choice1 = boost::none;
-
     m_ribNumber_choice2 = nRib;
     m_ribDefinitionUID_choice2 = ribUId;
+
+    InvalidateParent();
+}
+
+void CCPACSWingCellPositionSpanwise::SetRibDefinitionUID(const std::string& ribUId) {
+    m_eta1_choice1 = boost::none;
+    m_eta2_choice1 = boost::none;
+    m_ribDefinitionUID_choice2 = ribUId;
+
+    InvalidateParent();
+}
+
+void CCPACSWingCellPositionSpanwise::SetRibNumber(int nRib) {
+    m_eta1_choice1 = boost::none;
+    m_eta2_choice1 = boost::none;
+    m_ribNumber_choice2 = nRib;
 
     InvalidateParent();
 }
