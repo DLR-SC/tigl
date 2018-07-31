@@ -46,23 +46,22 @@ namespace tigl
 {
 CCPACSFrame::CCPACSFrame(CCPACSFramesAssembly* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSFrame(parent, uidMgr)
+    , m_geomCache1D(*this, &CCPACSFrame::BuildGeometry1D)
+    , m_geomCache3D(*this, &CCPACSFrame::BuildGeometry3D)
+    , m_cutGeomCache(*this, &CCPACSFrame::BuildCutGeometry)
 {
 }
 
 void CCPACSFrame::Invalidate()
 {
-    for (int i = 0; i < 2; ++i) {
-        m_geomCache[i] = boost::none;
-    }
-    m_cutGeomCache = boost::none;
+    m_geomCache1D.clear();
+    m_geomCache3D.clear();
+    m_cutGeomCache.clear();
 }
 
-TopoDS_Shape CCPACSFrame::GetGeometry(bool just1DElements, TiglCoordinateSystem cs)
+TopoDS_Shape CCPACSFrame::GetGeometry(bool just1DElements, TiglCoordinateSystem cs) const
 {
-    if (!m_geomCache[just1DElements])
-        BuildGeometry(just1DElements);
-
-    const TopoDS_Shape shape = m_geomCache[just1DElements].value();
+    TopoDS_Shape shape = just1DElements ? *m_geomCache1D : *m_geomCache3D;
     if (cs == GLOBAL_COORDINATE_SYSTEM) {
         CTiglTransformation trafo = m_parent->GetParent()->GetParent()->GetTransformationMatrix();
         return trafo.Transform(shape);
@@ -71,12 +70,9 @@ TopoDS_Shape CCPACSFrame::GetGeometry(bool just1DElements, TiglCoordinateSystem 
         return shape;
 }
 
-TopoDS_Shape CCPACSFrame::GetCutGeometry(TiglCoordinateSystem cs)
+TopoDS_Shape CCPACSFrame::GetCutGeometry(TiglCoordinateSystem cs) const
 {
-    if (!m_cutGeomCache)
-        BuildCutGeometry();
-
-    TopoDS_Shape shape = m_cutGeomCache.value();
+    TopoDS_Shape shape = *m_cutGeomCache;
     if (cs == TiglCoordinateSystem::GLOBAL_COORDINATE_SYSTEM) {
         CTiglTransformation trafo = m_parent->GetParent()->GetParent()->GetTransformationMatrix();
         return trafo.Transform(shape);
@@ -85,7 +81,19 @@ TopoDS_Shape CCPACSFrame::GetCutGeometry(TiglCoordinateSystem cs)
         return shape;
 }
 
-void CCPACSFrame::BuildGeometry(bool just1DElements)
+
+void CCPACSFrame::BuildGeometry1D(TopoDS_Shape& cache) const
+{
+    BuildGeometry(cache, true);
+}
+
+void CCPACSFrame::BuildGeometry3D(TopoDS_Shape& cache) const
+{
+    BuildGeometry(cache, false);
+}
+
+
+void CCPACSFrame::BuildGeometry(TopoDS_Shape& cache, bool just1DElements) const
 {
     if (m_framePositions.empty())
         throw CTiglError("Cannot build frame geometry, no frame positions defined in XML", TIGL_XML_ERROR);
@@ -171,16 +179,16 @@ void CCPACSFrame::BuildGeometry(bool just1DElements)
     }
 
     if (just1DElements) {
-        m_geomCache[true] = path;
+        cache = path;
     }
     else {
         const CCPACSProfileBasedStructuralElement& pbse = m_uidMgr->ResolveObject<CCPACSProfileBasedStructuralElement>(
             m_framePositions.front()->GetStructuralElementUID());
-        m_geomCache[false] = pbse.makeFromWire(path, profilePlane);
+        cache = pbse.makeFromWire(path, profilePlane);
     }
 }
 
-void CCPACSFrame::BuildCutGeometry()
+void CCPACSFrame::BuildCutGeometry(TopoDS_Shape& cache) const
 {
     TopoDS_Shape fuselageLoft = m_parent->GetParent()->GetParent()->GetLoft(FUSELAGE_COORDINATE_SYSTEM)->Shape();
     Bnd_Box fuselageBox;
@@ -188,7 +196,7 @@ void CCPACSFrame::BuildCutGeometry()
     double bbSize = fuselageBox.SquareExtent();
 
     if (m_framePositions.size() == 1)
-        m_cutGeomCache = BRepBuilderAPI_MakeFace(gp_Pln(m_framePositions[0]->GetRefPoint(), gp_Dir(1, 0, 0)), -bbSize, bbSize, -bbSize, bbSize);
+        cache = BRepBuilderAPI_MakeFace(gp_Pln(m_framePositions[0]->GetRefPoint(), gp_Dir(1, 0, 0)), -bbSize, bbSize, -bbSize, bbSize);
     else {
         TopoDS_Compound compound;
         TopoDS_Builder builder;
@@ -249,7 +257,7 @@ void CCPACSFrame::BuildCutGeometry()
             }
         }
 
-        m_cutGeomCache = compound;
+        cache = compound;
     }
 }
 } // namespace tigl
