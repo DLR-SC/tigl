@@ -23,6 +23,7 @@
 #include "generated/CPACSWingCell.h"
 #include "generated/UniquePtr.h"
 #include "tigletaxsifunctions.h"
+#include "Cache.h"
 
 #include <gp_Pln.hxx>
 #include <TopoDS_Shape.hxx>
@@ -79,8 +80,6 @@ public:
     TIGL_EXPORT CCPACSMaterialDefinition& GetMaterial();
     TIGL_EXPORT const CCPACSMaterialDefinition& GetMaterial() const;
 
-    TIGL_EXPORT void Update() const;
-
     TIGL_EXPORT TopoDS_Shape GetCellSkinGeometry(TiglCoordinateSystem cs = GLOBAL_COORDINATE_SYSTEM) const;
 
     TIGL_EXPORT bool IsPartOfCell(TopoDS_Face);
@@ -91,6 +90,24 @@ public:
     TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE;
 
 private:
+    struct EtaXsiCache
+    {
+        EtaXsi innerLeadingEdgePoint;
+        EtaXsi innerTrailingEdgePoint;
+        EtaXsi outerLeadingEdgePoint;
+        EtaXsi outerTrailingEdgePoint;
+    };
+
+    struct GeometryCache
+    {
+        TopoDS_Shape cellSkinGeometry;
+
+        gp_Pln cutPlaneLE, cutPlaneTE, cutPlaneIB, cutPlaneOB;
+        TopoDS_Shape planeShapeLE, planeShapeTE, planeShapeIB, planeShapeOB;
+        TopoDS_Shape sparShapeLE, sparShapeTE;
+        gp_Pnt pC1, pC2, pC3, pC4;
+    };
+
     template<class T>
     bool IsPartOfCellImpl(T t);
     
@@ -100,35 +117,16 @@ private:
 
     // calculates the Eta/Xsi values of the the cell's corner points and stores
     // them in the cache
-    void UpdateEtaXsiValues() const;
+    void UpdateEtaXsiValues(EtaXsiCache& cache) const;
 
     void Reset();
 
-    void BuildSkinGeometry() const;
+    void BuildSkinGeometry(GeometryCache& cache) const;
 
     TopoDS_Shape GetRibCutGeometry(std::pair<std::string, int> ribUidAndIndex) const;
 
-    struct EtaXsiCache
-    {
-        EtaXsi innerLeadingEdgePoint;
-        EtaXsi innerTrailingEdgePoint;
-        EtaXsi outerLeadingEdgePoint;
-        EtaXsi outerTrailingEdgePoint;
-    };
-
-    mutable boost::optional<EtaXsiCache> m_etaXsiCache;
-
-    struct GeometryCache
-    {
-        TopoDS_Shape cellSkinGeometry;
-        
-        gp_Pln cutPlaneLE, cutPlaneTE, cutPlaneIB, cutPlaneOB;
-        TopoDS_Shape planeShapeLE, planeShapeTE, planeShapeIB, planeShapeOB;
-        TopoDS_Shape sparShapeLE, sparShapeTE;
-        gp_Pnt pC1, pC2, pC3, pC4;
-    };
-    mutable boost::optional<GeometryCache> m_geometryCache;
-
+    Cache<EtaXsiCache, CCPACSWingCell> m_etaXsiCache;
+    Cache<GeometryCache, CCPACSWingCell> m_geometryCache;
 };
 
 namespace WingCellInternal
