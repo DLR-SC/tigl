@@ -16,11 +16,11 @@
 
 #pragma once
 
-#include <boost/optional.hpp>
 #include <TopoDS_Shape.hxx>
 
 #include "generated/CPACSCrossBeamStrutAssemblyPosition.h"
 #include "ITiglGeometricComponent.h"
+#include "Cache.h"
 
 namespace tigl
 {
@@ -36,13 +36,16 @@ public:
 
     TIGL_EXPORT void Invalidate();
 
-    TIGL_EXPORT TopoDS_Shape GetGeometry(bool just1DElements, TiglCoordinateSystem cs = GLOBAL_COORDINATE_SYSTEM);
+    TIGL_EXPORT TopoDS_Shape GetGeometry(bool just1DElements, TiglCoordinateSystem cs = GLOBAL_COORDINATE_SYSTEM) const;
 
 private:
-    void BuildGeometry(bool just1DElements);
+    void BuildGeometry1D(TopoDS_Shape& cache) const;
+    void BuildGeometry3D(TopoDS_Shape& cache) const;
+    void BuildGeometry(TopoDS_Shape& cache, bool just1DElements) const;
 
 private:
-    boost::optional<TopoDS_Shape> m_geometry[2]; // [0] is 3D, [1] is 1D
+    Cache<TopoDS_Shape, CCPACSCrossBeamStrutAssemblyPosition> m_geometry1D;
+    Cache<TopoDS_Shape, CCPACSCrossBeamStrutAssemblyPosition> m_geometry3D;
 };
 
 } // namespace tigl
