@@ -44,6 +44,9 @@ namespace tigl
 CCPACSCrossBeamAssemblyPosition::CCPACSCrossBeamAssemblyPosition(CCPACSCargoCrossBeamsAssembly* parent,
                                                                  CTiglUIDManager* uidMgr)
     : generated::CPACSCrossBeamAssemblyPosition(parent, uidMgr)
+    , m_geometry1D(*this, &CCPACSCrossBeamAssemblyPosition::BuildGeometry1D)
+    , m_geometry3D(*this, &CCPACSCrossBeamAssemblyPosition::BuildGeometry3D)
+    , m_cutGeometry(*this, &CCPACSCrossBeamAssemblyPosition::BuildCutGeometry)
 {
 }
 
@@ -64,19 +67,14 @@ TiglGeometricComponentType CCPACSCrossBeamAssemblyPosition::GetComponentType() c
 
 void CCPACSCrossBeamAssemblyPosition::Invalidate()
 {
-    for (size_t i=0; i<2; i++) {
-        m_geometry[i] = boost::none;
-    }
-    m_cutGeometry = boost::none;
+    m_geometry1D.clear();
+    m_geometry3D.clear();
+    m_cutGeometry.clear();
 }
 
-TopoDS_Shape CCPACSCrossBeamAssemblyPosition::GetGeometry(bool just1DElements, TiglCoordinateSystem cs)
+TopoDS_Shape CCPACSCrossBeamAssemblyPosition::GetGeometry(bool just1DElements, TiglCoordinateSystem cs) const
 {
-    if (!m_geometry[just1DElements]) {
-        BuildGeometry(just1DElements);
-    }
-
-    TopoDS_Shape shape = m_geometry[just1DElements].value();
+    TopoDS_Shape shape = just1DElements ? *m_geometry1D : *m_geometry3D;
     if (cs == GLOBAL_COORDINATE_SYSTEM) {
         CTiglTransformation trafo = m_parent->GetParent()->GetParent()->GetTransformationMatrix();
         return trafo.Transform(shape);
@@ -86,13 +84,9 @@ TopoDS_Shape CCPACSCrossBeamAssemblyPosition::GetGeometry(bool just1DElements, T
     }
 }
 
-TopoDS_Shape CCPACSCrossBeamAssemblyPosition::GetCutGeometry(TiglCoordinateSystem cs)
+TopoDS_Shape CCPACSCrossBeamAssemblyPosition::GetCutGeometry(TiglCoordinateSystem cs) const
 {
-    if (!m_cutGeometry) {
-        BuildCutGeometry();
-    }
-
-    TopoDS_Shape shape = m_cutGeometry.value();
+    TopoDS_Shape shape = *m_cutGeometry;
     if (cs == GLOBAL_COORDINATE_SYSTEM) {
         CTiglTransformation trafo = m_parent->GetParent()->GetParent()->GetTransformationMatrix();
         return trafo.Transform(shape);
@@ -102,7 +96,17 @@ TopoDS_Shape CCPACSCrossBeamAssemblyPosition::GetCutGeometry(TiglCoordinateSyste
     }
 }
 
-void CCPACSCrossBeamAssemblyPosition::BuildGeometry(bool just1DElements)
+void CCPACSCrossBeamAssemblyPosition::BuildGeometry1D(TopoDS_Shape& cache) const
+{
+    BuildGeometry(cache, true);
+}
+
+void CCPACSCrossBeamAssemblyPosition::BuildGeometry3D(TopoDS_Shape& cache) const
+{
+    BuildGeometry(cache, false);
+}
+
+void CCPACSCrossBeamAssemblyPosition::BuildGeometry(TopoDS_Shape& cache, bool just1DElements) const
 {
     if (just1DElements) {
         //DEBUG_SCOPE(debug);
@@ -133,7 +137,7 @@ void CCPACSCrossBeamAssemblyPosition::BuildGeometry(bool just1DElements)
         const TopoDS_Wire wire = BuildWireFromEdges(cutResult);
         //debug.addShape(wire, "wire");
 
-        m_geometry[just1DElements] = wire;
+        cache = wire;
     }
     else {
         // get the profile based structural element for the first position
@@ -177,14 +181,14 @@ void CCPACSCrossBeamAssemblyPosition::BuildGeometry(bool just1DElements)
             }
             builder.Add(compound, frameShell.Shape());
         }
-        m_geometry[just1DElements] = compound;
+        cache = compound;
     }
 }
 
-void CCPACSCrossBeamAssemblyPosition::BuildCutGeometry()
+void CCPACSCrossBeamAssemblyPosition::BuildCutGeometry(TopoDS_Shape& cache) const
 {
     gp_Ax3 cutAxis(gp_Pnt(0., 0., m_positionZ), gp_Vec(0., 0., 1.), gp_Vec(1., 0., 0.));
-    m_cutGeometry = BRepBuilderAPI_MakeFace(gp_Pln(cutAxis));
+    cache = BRepBuilderAPI_MakeFace(gp_Pln(cutAxis));
 }
 
 } // namespace tigl
