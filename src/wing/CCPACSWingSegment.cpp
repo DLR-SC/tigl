@@ -181,6 +181,8 @@ namespace
 CCPACSWingSegment::CCPACSWingSegment(CCPACSWingSegments* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSWingSegment(parent, uidMgr)
     , CTiglAbstractSegment<CCPACSWingSegment>(parent->GetSegments(), parent->GetParent()->m_symmetry)
+    , innerConnection(this)
+    , outerConnection(this)
     , wing(parent->GetParent())
     , surfaceCoordCache(*this, &CCPACSWingSegment::MakeChordSurface)
     , areaCache(*this, &CCPACSWingSegment::ComputeArea)
