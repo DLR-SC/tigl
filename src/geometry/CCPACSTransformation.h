@@ -23,6 +23,7 @@
 
 #include "CTiglTransformation.h"
 #include "ECPACSTranslationType.h"
+#include "Cache.h"
 
 namespace tigl
 {
@@ -55,11 +56,10 @@ public:
     TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& transformationXPath) OVERRIDE;
 
 private:
-    void updateMatrix() const;
+    void updateMatrix(CTiglTransformation& cache) const;
 
     // caches the transformation created from scaling, rotation and translation
-    mutable bool invalidated;
-    mutable CTiglTransformation _transformationMatrix;
+    Cache<CTiglTransformation, CCPACSTransformation> _transformationMatrix;
 };
 
 } // namespace tigl

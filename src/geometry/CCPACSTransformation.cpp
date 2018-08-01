@@ -23,9 +23,9 @@ namespace tigl
 {
 
 CCPACSTransformation::CCPACSTransformation(CTiglUIDManager* uidMgr)
-    : generated::CPACSTransformation(uidMgr), invalidated(true)
+    : generated::CPACSTransformation(uidMgr)
+    , _transformationMatrix(*this, &CCPACSTransformation::updateMatrix)
 {
-    _transformationMatrix.SetIdentity();
 }
 
 void CCPACSTransformation::reset()
@@ -40,14 +40,13 @@ void CCPACSTransformation::reset()
         m_translation->SetAsPoint(CTiglPoint(0, 0, 0));
         m_translation->SetRefType(boost::optional<ECPACSTranslationType>());
     }
-    _transformationMatrix.SetIdentity();
-    invalidated = false;
+    _transformationMatrix.clear();
 }
 
 void CCPACSTransformation::setTranslation(const CTiglPoint & translation)
 {
     GetTranslation(CreateIfNotExists).SetAsPoint(translation);
-    invalidated = true;
+    _transformationMatrix.clear();
 }
 
 void CCPACSTransformation::setTranslation(const CTiglPoint& translation, ECPACSTranslationType type)
@@ -55,7 +54,7 @@ void CCPACSTransformation::setTranslation(const CTiglPoint& translation, ECPACST
     CCPACSPointAbsRel& t = GetTranslation(CreateIfNotExists);
     t.SetAsPoint(translation);
     t.SetRefType(type);
-    invalidated = true;
+    _transformationMatrix.clear();
 }
 
 void CCPACSTransformation::setRotation(const CTiglPoint& rotation)
@@ -64,7 +63,7 @@ void CCPACSTransformation::setRotation(const CTiglPoint& rotation)
         m_rotation = boost::in_place(m_uidMgr);
     }
     m_rotation->SetAsPoint(rotation);
-    invalidated = true;
+    _transformationMatrix.clear();
 }
 
 void CCPACSTransformation::setScaling(const CTiglPoint& scale)
@@ -73,34 +72,32 @@ void CCPACSTransformation::setScaling(const CTiglPoint& scale)
         m_scaling = boost::in_place(m_uidMgr);
     }
     m_scaling->SetAsPoint(scale);
-    invalidated = true;
+    _transformationMatrix.clear();
 }
 
 void CCPACSTransformation::setTransformationMatrix(const CTiglTransformation& matrix)
 {
     // TODO(bgruber): implement matrix decomposition into m_rotation, m_scaling and m_translation
-    _transformationMatrix = matrix;
-    invalidated = false;
+    *_transformationMatrix.writeAccess() = matrix;
 }
 
-void CCPACSTransformation::updateMatrix() const
+void CCPACSTransformation::updateMatrix(CTiglTransformation& cache) const
 {
-    _transformationMatrix.SetIdentity();
+    cache.SetIdentity();
     if (m_scaling) {
         const CTiglPoint& s = m_scaling->AsPoint();
-        _transformationMatrix.AddScaling(s.x, s.y, s.z);
+        cache.AddScaling(s.x, s.y, s.z);
     }
     if (m_rotation) {
         const CTiglPoint& r = m_rotation->AsPoint();
-        _transformationMatrix.AddRotationZ(r.z);
-        _transformationMatrix.AddRotationY(r.y);
-        _transformationMatrix.AddRotationX(r.x);
+        cache.AddRotationZ(r.z);
+        cache.AddRotationY(r.y);
+        cache.AddRotationX(r.x);
     }
     if (m_translation) {
         const CTiglPoint& t = m_translation->AsPoint();
-        _transformationMatrix.AddTranslation(t.x, t.y, t.z);
+        cache.AddTranslation(t.x, t.y, t.z);
     }
-    invalidated = false;
 }
 
 CTiglPoint CCPACSTransformation::getTranslationVector() const
@@ -130,16 +127,12 @@ ECPACSTranslationType CCPACSTransformation::getTranslationType() const
 
 CTiglTransformation CCPACSTransformation::getTransformationMatrix() const
 {
-    if (invalidated) {
-        updateMatrix();
-    }
-    return _transformationMatrix;
+    return *_transformationMatrix;
 }
 
 void CCPACSTransformation::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& transformationXPath)
 {
     generated::CPACSTransformation::ReadCPACS(tixiHandle, transformationXPath);
-    updateMatrix();
 }
 
 } // namespace tigl
