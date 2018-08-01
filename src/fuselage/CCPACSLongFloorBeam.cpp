@@ -32,6 +32,8 @@ namespace tigl
 {
 CCPACSLongFloorBeam::CCPACSLongFloorBeam(CCPACSLongFloorBeamsAssembly* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSLongFloorBeam(parent, uidMgr)
+    , m_geometry1D(*this, &CCPACSLongFloorBeam::BuildGeometry1D)
+    , m_geometry3D(*this, &CCPACSLongFloorBeam::BuildGeometry3D)
 {
 }
 
@@ -52,18 +54,13 @@ TiglGeometricComponentType CCPACSLongFloorBeam::GetComponentType() const
 
 void CCPACSLongFloorBeam::Invalidate()
 {
-    for (size_t igeom = 0; igeom < sizeof(m_geometry) / sizeof(m_geometry[0]); ++igeom) {
-        m_geometry[igeom] = boost::none;
-    }
+    m_geometry1D.clear();
+    m_geometry3D.clear();
 }
 
-TopoDS_Shape CCPACSLongFloorBeam::GetGeometry(bool just1DElements, TiglCoordinateSystem cs)
+TopoDS_Shape CCPACSLongFloorBeam::GetGeometry(bool just1DElements, TiglCoordinateSystem cs) const
 {
-    if (!m_geometry[just1DElements]) {
-        BuildGeometry(just1DElements);
-    }
-
-    TopoDS_Shape shape = m_geometry[just1DElements].value();
+    TopoDS_Shape shape = just1DElements ? *m_geometry1D : *m_geometry3D;
     if (cs == TiglCoordinateSystem::GLOBAL_COORDINATE_SYSTEM) {
         return m_parent->GetParent()->GetParent()->GetTransformationMatrix().Transform(shape);
     }
@@ -72,7 +69,17 @@ TopoDS_Shape CCPACSLongFloorBeam::GetGeometry(bool just1DElements, TiglCoordinat
     }
 }
 
-void CCPACSLongFloorBeam::BuildGeometry(bool just1DElements)
+void CCPACSLongFloorBeam::BuildGeometry1D(TopoDS_Shape& cache) const
+{
+    BuildGeometry(cache, true);
+}
+
+void CCPACSLongFloorBeam::BuildGeometry3D(TopoDS_Shape& cache) const
+{
+    BuildGeometry(cache, false);
+}
+
+void CCPACSLongFloorBeam::BuildGeometry(TopoDS_Shape& cache, bool just1DElements) const
 {
     // get long floor beam position points on the cross beams
     std::vector<gp_Pnt> points;
@@ -87,7 +94,7 @@ void CCPACSLongFloorBeam::BuildGeometry(bool just1DElements)
     }
 
     if (just1DElements) {
-        m_geometry[just1DElements] = wire;
+        cache = wire;
     }
     else {
         TopoDS_Compound compound;
@@ -116,7 +123,7 @@ void CCPACSLongFloorBeam::BuildGeometry(bool just1DElements)
             }
             builder.Add(compound, frameShell.Shape());
         }
-        m_geometry[just1DElements] = compound;
+        cache = compound;
     }
 }
 
