@@ -36,10 +36,16 @@ namespace tigl{
 // if absolute positions are set, the cache is invalidated
 
 CCPACSFuselageStringerFramePosition::CCPACSFuselageStringerFramePosition(CCPACSFrame* parent, CTiglUIDManager* uidMgr)
-    : generated::CPACSStringerFramePosition(parent, uidMgr) {}
+    : generated::CPACSStringerFramePosition(parent, uidMgr)
+    , m_relCache(*this, &CCPACSFuselageStringerFramePosition::UpdateRelativePositioning)
+{
+}
 
 CCPACSFuselageStringerFramePosition::CCPACSFuselageStringerFramePosition(CCPACSFuselageStringer* parent, CTiglUIDManager* uidMgr)
-    : generated::CPACSStringerFramePosition(parent, uidMgr) {}
+    : generated::CPACSStringerFramePosition(parent, uidMgr)
+    , m_relCache(*this, &CCPACSFuselageStringerFramePosition::UpdateRelativePositioning)
+{
+}
 
 gp_Pnt CCPACSFuselageStringerFramePosition::GetRefPoint() const
 {
@@ -65,82 +71,67 @@ void CCPACSFuselageStringerFramePosition::SetReferenceZ(const double& value)
 }
 
 double CCPACSFuselageStringerFramePosition::GetPositionXRel() const {
-    if(!m_relCache)
-        UpdateRelativePositioning();
     return m_relCache->positionXRel;
 }
 
 double CCPACSFuselageStringerFramePosition::GetReferenceYRel() const {
-    if (!m_relCache)
-        UpdateRelativePositioning();
     return m_relCache->referenceYRel;
 }
 
 double CCPACSFuselageStringerFramePosition::GetReferenceZRel() const {
-    if (!m_relCache)
-        UpdateRelativePositioning();
     return m_relCache->referenceZRel;
 }
 
 void CCPACSFuselageStringerFramePosition::SetPositionXRel(double positionXRel)
 {
-    if (!m_relCache)
-        UpdateRelativePositioning();
-    m_relCache->positionXRel = positionXRel;
+    //m_relCache->positionXRel = positionXRel;
     m_positionX = m_relCache->xmin + (m_relCache->xmax - m_relCache->xmin) * positionXRel;
     if (fabs(m_positionX) < 1e-6)
         m_positionX = 0.;
+    Invalidate();
 }
 
 void CCPACSFuselageStringerFramePosition::SetReferenceYRel(double referenceYRel)
 {
-    if (!m_relCache)
-        UpdateRelativePositioning();
-    m_relCache->referenceYRel = referenceYRel;
+    //m_relCache->referenceYRel = referenceYRel;
     m_referenceY = m_relCache->ymin + (m_relCache->ymax - m_relCache->ymin) * referenceYRel;
     if (fabs(m_referenceY) < 1e-6)
         m_referenceY = 0.;
+    Invalidate();
 }
 
 void CCPACSFuselageStringerFramePosition::SetReferenceZRel(double referenceZRel)
 {
-    if (!m_relCache)
-        UpdateRelativePositioning();
-    m_relCache->referenceZRel = referenceZRel;
+    //m_relCache->referenceZRel = referenceZRel;
     m_referenceZ = m_relCache->zmin + (m_relCache->zmax - m_relCache->zmin) * referenceZRel;
     if (fabs(m_referenceZ) < 1e-6)
         m_referenceZ = 0.;
+    Invalidate();
 }
 
 void CCPACSFuselageStringerFramePosition::Invalidate() {
-    m_relCache = boost::none;
+    m_relCache.clear();
 }
 
 void CCPACSFuselageStringerFramePosition::GetXBorders(double& xmin, double& xmax)
 {
-    if (!m_relCache)
-        UpdateRelativePositioning();
     xmin = m_relCache->xmin;
     xmax = m_relCache->xmax;
 }
 
 void CCPACSFuselageStringerFramePosition::GetYBorders(double& ymin, double& ymax)
 {
-    if(!m_relCache)
-        UpdateRelativePositioning();
     ymin = m_relCache->ymin;
     ymax = m_relCache->ymax;
 }
     
 void CCPACSFuselageStringerFramePosition::GetZBorders(double& zmin, double& zmax)
 {
-    if(!m_relCache)
-        UpdateRelativePositioning();
     zmin = m_relCache->zmin;
     zmax = m_relCache->zmax;
 }
 
-void CCPACSFuselageStringerFramePosition::UpdateRelativePositioning() const
+void CCPACSFuselageStringerFramePosition::UpdateRelativePositioning(RelativePositionCache& cache) const
 {
     CCPACSFuselageStructure* structure = NULL;
     if (IsParent<CCPACSFuselageStringer>())
@@ -198,16 +189,15 @@ void CCPACSFuselageStringerFramePosition::UpdateRelativePositioning() const
     if (referenceZRel > 1. || referenceZRel < 0.) {
         throw CTiglError("Error during relative fuselage structure Z positioning calculation");
     }
-        
-    m_relCache = RelativePositionCache();
-    m_relCache->xmin = xmin;
-    m_relCache->xmax = xmax;
-    m_relCache->ymin = ymin;
-    m_relCache->ymax = ymax;
-    m_relCache->zmin = zmin;
-    m_relCache->zmax = zmax;
-    m_relCache->positionXRel = positionXRel;
-    m_relCache->referenceYRel = referenceYRel;
-    m_relCache->referenceZRel = referenceZRel;
+
+    cache.xmin = xmin;
+    cache.xmax = xmax;
+    cache.ymin = ymin;
+    cache.ymax = ymax;
+    cache.zmin = zmin;
+    cache.zmax = zmax;
+    cache.positionXRel = positionXRel;
+    cache.referenceYRel = referenceYRel;
+    cache.referenceZRel = referenceZRel;
 }
 } // namespace tigl

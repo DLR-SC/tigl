@@ -22,6 +22,7 @@
 #include <gp_Pnt.hxx>
 
 #include "generated/CPACSStringerFramePosition.h"
+#include "Cache.h"
 
 namespace tigl
 {
@@ -52,10 +53,6 @@ public:
     TIGL_EXPORT void GetZBorders(double& zmin, double& zmax);
 
 private:
-    void Invalidate();
-    void UpdateRelativePositioning() const;
-
-private:
     struct RelativePositionCache {
         double positionXRel;
         double xmin;
@@ -69,6 +66,10 @@ private:
         double zmin;
         double zmax;
     };
-    mutable boost::optional<RelativePositionCache> m_relCache;
+
+    void Invalidate();
+    void UpdateRelativePositioning(RelativePositionCache& cache) const;
+
+    Cache<RelativePositionCache, CCPACSFuselageStringerFramePosition> m_relCache;
 };
 } // namespace tigl
