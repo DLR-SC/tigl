@@ -32,6 +32,7 @@ namespace tigl
 {
 CCPACSLongFloorBeamPosition::CCPACSLongFloorBeamPosition(CCPACSLongFloorBeam* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSLongFloorBeamPosition(parent, uidMgr)
+    , m_cutGeometryForCrossBeam(*this, &CCPACSLongFloorBeamPosition::BuildCutGeometryForCrossBeam)
 {
 }
 
@@ -42,11 +43,11 @@ void CCPACSLongFloorBeamPosition::SetPositionY(const double& value) {
 
 void CCPACSLongFloorBeamPosition::Invalidate()
 {
-    m_cutGeometryForCrossBeam = boost::none;
+    m_cutGeometryForCrossBeam.clear();
     m_parent->Invalidate();
 }
 
-gp_Pnt CCPACSLongFloorBeamPosition::GetCrossBeamIntersection(TiglCoordinateSystem cs) {
+gp_Pnt CCPACSLongFloorBeamPosition::GetCrossBeamIntersection(TiglCoordinateSystem cs) const {
     CCPACSCrossBeamAssemblyPosition& crossBeam =
         m_uidMgr->ResolveObject<CCPACSCrossBeamAssemblyPosition>(m_crossBeamUID);
 
@@ -63,21 +64,18 @@ gp_Pnt CCPACSLongFloorBeamPosition::GetCrossBeamIntersection(TiglCoordinateSyste
         return intersection;
 }
 
-TopoDS_Face CCPACSLongFloorBeamPosition::GetCutGeometryForCrossBeam(TiglCoordinateSystem cs)
+TopoDS_Face CCPACSLongFloorBeamPosition::GetCutGeometryForCrossBeam(TiglCoordinateSystem cs) const
 {
-    if (!m_cutGeometryForCrossBeam)
-        BuildCutGeometryForCrossBeam();
-
-    const TopoDS_Face face = m_cutGeometryForCrossBeam.value();
+    const TopoDS_Face face = *m_cutGeometryForCrossBeam;
     if (cs == GLOBAL_COORDINATE_SYSTEM)
         return TopoDS::Face(m_parent->GetParent()->GetParent()->GetParent()->GetTransformationMatrix().Transform(face));
     else
         return face;
 }
 
-void CCPACSLongFloorBeamPosition::BuildCutGeometryForCrossBeam()
+void CCPACSLongFloorBeamPosition::BuildCutGeometryForCrossBeam(TopoDS_Face& cache) const
 {
     const gp_Pln yCutPlane(gp_Ax3(gp_Pnt(0., m_positionY, 0.), gp_Vec(0., -1., 0.), gp_Vec(1., 0., 0.)));
-    m_cutGeometryForCrossBeam = BRepBuilderAPI_MakeFace(yCutPlane).Face();
+    cache = BRepBuilderAPI_MakeFace(yCutPlane).Face();
 }
 } // namespace tigl
