@@ -376,34 +376,93 @@ bool CTiglBSplineAlgorithms::isVDirClosed(const TColgp_Array2OfPnt& points, doub
     return vDirClosed;
 }
 
-std::vector<double> CTiglBSplineAlgorithms::knotsFromCurveParameters(const std::vector<double> &params, unsigned int degree, unsigned int n_continuity)
+std::vector<double> CTiglBSplineAlgorithms::knotsFromCurveParameters(std::vector<double> &params, unsigned int degree, bool closedCurve)
 {
     if (params.size() < 2) {
         throw CTiglError("Parameters must contain two or more elements.");
     }
 
-    size_t nknots = params.size() + degree + 1 + n_continuity;
-
-    std::vector<double> knots(nknots);
-
-    for (size_t j = 0; j <= degree; ++j) {
-        knots[j] = params.front();
+    size_t nCP = params.size();
+    if (closedCurve) {
+        // For each continuity condition, we have to add one control point
+        nCP += degree - 1;
     }
+    size_t nInnerKnots = nCP - degree + 1;
+    size_t nknots = nInnerKnots + 2*degree;
 
+    std::vector<double> innerKnots(nInnerKnots);
+    innerKnots.front() = params.front();
+    innerKnots.back() = params.back();
 
-    for (size_t j = 1; j < params.size() + n_continuity - degree; ++j) {
-        double sum = 0.;
-        // average
-        for (size_t i = j; i <= j + degree - n_continuity - 1; ++i) {
-            sum += params[i];
+    std::vector<double> knots;
+
+    if (closedCurve && degree % 2 == 0) {
+        size_t m = params.size() - 2;
+
+        // build difference vector
+        std::vector<double> dparm(m + 1, 0.);
+        for (size_t iparm = 0; iparm <= m; ++iparm) {
+            dparm[iparm] = (params[iparm+1] - params[iparm]);
         }
 
-        knots[j + degree] = sum / static_cast<double>(degree - n_continuity);
+        innerKnots[1] = innerKnots[0] + 0.5 * (dparm[0] + dparm[m]);
+        for (size_t iparm = 1; iparm < m; ++iparm) {
+            innerKnots[iparm + 1] = innerKnots[iparm] + 0.5 * (dparm[iparm-1] + dparm[iparm]);
+        }
+
+        // shift parameters
+        for (size_t iparm = 0; iparm < params.size(); ++iparm) {
+            params[iparm] += dparm[m] / 2.;
+        }
+
+    }
+    else if (closedCurve) {
+        assert(innerKnots.size() == params.size());
+        innerKnots = params;
+    }
+    else {
+        // averaging
+        for (size_t j = 1; j < params.size() - degree; ++j) {
+            double sum = 0.;
+            // average
+            for (size_t i = j; i <= j + degree - 1; ++i) {
+                sum += params[i];
+            }
+
+            innerKnots[j] = sum / static_cast<double>(degree);
+        }
     }
 
-    for (size_t j = params.size() + n_continuity; j < nknots; ++j) {
-        knots[j] = params.back();
+    if (closedCurve) {
+        double offset = innerKnots[0] - innerKnots[nInnerKnots -1];
+        for (size_t iknot = 0; iknot < degree; ++iknot) {
+            knots.push_back(offset + innerKnots[nInnerKnots - degree -1 + iknot]);
+        }
+        for (size_t iknot = 0; iknot < nInnerKnots; ++iknot) {
+            knots.push_back(innerKnots[iknot]);
+        }
+        for (size_t iknot = 0; iknot < degree; ++iknot) {
+            knots.push_back(-offset + innerKnots[iknot + 1]);
+        }
     }
+    else {
+        for (size_t iknot = 0; iknot < degree; ++iknot) {
+            knots.push_back(innerKnots[0]);
+        }
+        for (size_t iknot = 0; iknot < nInnerKnots; ++iknot) {
+            knots.push_back(innerKnots[iknot]);
+        }
+        for (size_t iknot = 0; iknot < degree; ++iknot) {
+            knots.push_back(innerKnots[nInnerKnots - 1]);
+        }
+    }
+
+    if (closedCurve && degree <= 1) {
+        size_t nKnots = knots.size();
+        knots[0] = knots[1];
+        knots[nKnots - 1] = knots[nKnots - 2];
+    }
+
     return knots;
 }
 

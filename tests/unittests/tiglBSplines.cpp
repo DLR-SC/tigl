@@ -599,21 +599,76 @@ TEST_F(BSplineInterpolation, tipKink2)
     StoreResult("TestData/analysis/BSplineInterpolation-tipKink2.brep", result.curve, pnt2);
 }
 
-TEST_F(BSplineInterpolation, interpolationContinousDegree2)
+TEST_F(BSplineInterpolation, interpolationContinous)
 {
 
-    Handle(TColgp_HArray1OfPnt) pnt2 = new TColgp_HArray1OfPnt(1, 5);
-    pnt2->SetValue(1, gp_Pnt(0., 0., -0.5));
-    pnt2->SetValue(2, gp_Pnt(0.5, 0., 0.));
-    pnt2->SetValue(3, gp_Pnt(0., 0., 0.5));
-    pnt2->SetValue(4, gp_Pnt(-0.5, 0., 0.));
-    pnt2->SetValue(5, gp_Pnt(0., 0., -0.5));
+    Handle(TColgp_HArray1OfPnt) pnt2 = new TColgp_HArray1OfPnt(1, 13);
+    pnt2->SetValue(1, gp_Pnt(-0.5, 0., 0.5));
+    pnt2->SetValue(2, gp_Pnt(-0.5, 0., 1.5));
+    pnt2->SetValue(3, gp_Pnt(0.5, 0., 1.5));
+    pnt2->SetValue(4, gp_Pnt(0.5, 0., 0.5));
+    pnt2->SetValue(5, gp_Pnt(1.5, 0., 0.5));
+    pnt2->SetValue(6, gp_Pnt(1.5, 0., -0.5));
+    pnt2->SetValue(7, gp_Pnt(0.5, 0., -0.5));
+    pnt2->SetValue(8, gp_Pnt(0.5, 0., -3.5));
+    pnt2->SetValue(9, gp_Pnt(-0.5, 0., -3.5));
+    pnt2->SetValue(10, gp_Pnt(-0.5, 0., -0.5));
+    pnt2->SetValue(11, gp_Pnt(-1.5, 0., -0.5));
+    pnt2->SetValue(12, gp_Pnt(-1.5, 0., 0.5));
+    pnt2->SetValue(13, gp_Pnt(-0.5, 0., 0.5));
+
+    for (int degree = 1; degree <= 4; ++degree) {
+
+        tigl::CTiglPointsToBSplineInterpolation app(pnt2, degree, true);
+        Handle(Geom_BSplineCurve) result = app.Curve();
+
+        // test interpolation accuracy
+        const std::vector<double>& params = app.Parameters();
+        for (int iparm = 0; iparm < params.size(); ++iparm) {
+            gp_Pnt p = result->Value(params[iparm]);
+            EXPECT_NEAR(0., p.Distance(pnt2->Value(iparm + 1)), 1e-10);
+        }
+
+        std::stringstream str;
+        str << "TestData/analysis/BSplineInterpolation-interpolationContinousDegree" << degree << ".brep";
+        StoreResult(str.str(), result, pnt2->Array1());
+    }
+}
+
+TEST_F(BSplineInterpolation, interpolationDiscontinous)
+{
+
+    Handle(TColgp_HArray1OfPnt) pnt2 = new TColgp_HArray1OfPnt(1, 12);
+    pnt2->SetValue(1, gp_Pnt(-0.5, 0., 0.5));
+    pnt2->SetValue(2, gp_Pnt(-0.5, 0., 1.5));
+    pnt2->SetValue(3, gp_Pnt(0.5, 0., 1.5));
+    pnt2->SetValue(4, gp_Pnt(0.5, 0., 0.5));
+    pnt2->SetValue(5, gp_Pnt(1.5, 0., 0.5));
+    pnt2->SetValue(6, gp_Pnt(1.5, 0., -0.5));
+    pnt2->SetValue(7, gp_Pnt(0.5, 0., -0.5));
+    pnt2->SetValue(8, gp_Pnt(0.5, 0., -3.5));
+    pnt2->SetValue(9, gp_Pnt(-0.5, 0., -3.5));
+    pnt2->SetValue(10, gp_Pnt(-0.5, 0., -0.5));
+    pnt2->SetValue(11, gp_Pnt(-1.5, 0., -0.5));
+    pnt2->SetValue(12, gp_Pnt(-1.5, 0., 0.5));
 
 
-    tigl::CTiglPointsToBSplineInterpolation app(pnt2, 3, true);
-    Handle(Geom_BSplineCurve) result = app.Curve();
+    for (int degree = 1; degree <= 4; ++degree) {
 
-    StoreResult("TestData/analysis/BSplineInterpolation-interpolationContinousDegree2.brep", result, pnt2->Array1());
+        tigl::CTiglPointsToBSplineInterpolation app(pnt2, degree, true);
+        Handle(Geom_BSplineCurve) result = app.Curve();
+
+        // test interpolation accuracy
+        const std::vector<double>& params = app.Parameters();
+        for (int iparm = 0; iparm < params.size(); ++iparm) {
+            gp_Pnt p = result->Value(params[iparm]);
+            EXPECT_NEAR(0., p.Distance(pnt2->Value(iparm + 1)), 1e-10);
+        }
+
+        std::stringstream str;
+        str << "TestData/analysis/BSplineInterpolation-interpolationDiscontinousDegree" << degree << ".brep";
+        StoreResult(str.str(), result, pnt2->Array1());
+    }
 }
 
 /*
