@@ -75,11 +75,11 @@ CTiglPointsToBSplineInterpolation::CTiglPointsToBSplineInterpolation(const Handl
 
 Handle(Geom_BSplineCurve) CTiglPointsToBSplineInterpolation::Curve() const
 {
-    unsigned int degree = Degree();
+    int degree = static_cast<int>(Degree());
 
     std::vector<double> params = m_params;
 
-    std::vector<double> knots = CTiglBSplineAlgorithms::knotsFromCurveParameters(params, degree, isClosed());
+    std::vector<double> knots = CTiglBSplineAlgorithms::knotsFromCurveParameters(params, static_cast<unsigned int>(degree), isClosed());
 
     if (isClosed()) {
         // we remove the last parameter, since it is implicitly
@@ -90,7 +90,7 @@ Handle(Geom_BSplineCurve) CTiglPointsToBSplineInterpolation::Curve() const
     math_Matrix bsplMat = CTiglBSplineAlgorithms::bsplineBasisMat(degree, toArray(knots)->Array1(), toArray(params)->Array1());
 
     // build left hand side of the linear system
-    int nParams = params.size();
+    int nParams = static_cast<int>(params.size());
     math_Matrix lhs(1, nParams, 1, nParams, 0.);
     for (int iCol = 1; iCol <= nParams; ++iCol) {
         lhs.SetCol(iCol, bsplMat.Col(iCol));
@@ -137,7 +137,7 @@ Handle(Geom_BSplineCurve) CTiglPointsToBSplineInterpolation::Curve() const
         throw CTiglError("Singular Matrix", TIGL_MATH_ERROR);
     }
 
-    int nCtrPnts = m_params.size();
+    int nCtrPnts = static_cast<int>(m_params.size());
     if (isClosed()) {
         nCtrPnts += degree - 1;
     }
