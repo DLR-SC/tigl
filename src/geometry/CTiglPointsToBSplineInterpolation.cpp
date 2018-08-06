@@ -31,30 +31,31 @@
 namespace
 {
 
-    Handle(TColStd_HArray1OfReal) toArray(const std::vector<double>& vector)
-    {
-        Handle(TColStd_HArray1OfReal) array = new TColStd_HArray1OfReal(1, static_cast<int>(vector.size()));
-        int ipos = 1;
-        for (std::vector<double>::const_iterator it = vector.begin(); it != vector.end(); ++it, ipos++) {
-            array->SetValue(ipos, *it);
-        }
-
-        return array;
+Handle(TColStd_HArray1OfReal) toArray(const std::vector<double>& vector)
+{
+    Handle(TColStd_HArray1OfReal) array = new TColStd_HArray1OfReal(1, static_cast<int>(vector.size()));
+    int ipos                            = 1;
+    for (std::vector<double>::const_iterator it = vector.begin(); it != vector.end(); ++it, ipos++) {
+        array->SetValue(ipos, *it);
     }
 
-    void clamp(Handle(Geom_BSplineCurve)& curve, double min, double max)
-    {
+    return array;
+}
 
-        Handle(Geom_Curve) c = new Geom_TrimmedCurve(curve, min, max);
-        curve = GeomConvert::CurveToBSplineCurve(c);
-    }
+void clamp(Handle(Geom_BSplineCurve) & curve, double min, double max)
+{
+
+    Handle(Geom_Curve) c = new Geom_TrimmedCurve(curve, min, max);
+    curve                = GeomConvert::CurveToBSplineCurve(c);
+}
 
 } // namespace
 
 namespace tigl
 {
 
-CTiglPointsToBSplineInterpolation::CTiglPointsToBSplineInterpolation(const Handle(TColgp_HArray1OfPnt)& points, unsigned int maxDegree, bool continuousIfClosed)
+CTiglPointsToBSplineInterpolation::CTiglPointsToBSplineInterpolation(const Handle(TColgp_HArray1OfPnt) & points,
+                                                                     unsigned int maxDegree, bool continuousIfClosed)
     : m_pnts(points)
     , m_degree(maxDegree)
     , m_C2Continuous(continuousIfClosed)
@@ -62,7 +63,9 @@ CTiglPointsToBSplineInterpolation::CTiglPointsToBSplineInterpolation(const Handl
     m_params = CTiglBSplineAlgorithms::computeParamsBSplineCurve(points);
 }
 
-CTiglPointsToBSplineInterpolation::CTiglPointsToBSplineInterpolation(const Handle(TColgp_HArray1OfPnt)& points, const std::vector<double> &parameters, unsigned int maxDegree, bool continuousIfClosed)
+CTiglPointsToBSplineInterpolation::CTiglPointsToBSplineInterpolation(const Handle(TColgp_HArray1OfPnt) & points,
+                                                                     const std::vector<double>& parameters,
+                                                                     unsigned int maxDegree, bool continuousIfClosed)
     : m_pnts(points)
     , m_params(parameters)
     , m_degree(maxDegree)
@@ -79,7 +82,8 @@ Handle(Geom_BSplineCurve) CTiglPointsToBSplineInterpolation::Curve() const
 
     std::vector<double> params = m_params;
 
-    std::vector<double> knots = CTiglBSplineAlgorithms::knotsFromCurveParameters(params, static_cast<unsigned int>(degree), isClosed());
+    std::vector<double> knots =
+        CTiglBSplineAlgorithms::knotsFromCurveParameters(params, static_cast<unsigned int>(degree), isClosed());
 
     if (isClosed()) {
         // we remove the last parameter, since it is implicitly
@@ -87,7 +91,8 @@ Handle(Geom_BSplineCurve) CTiglPointsToBSplineInterpolation::Curve() const
         params.pop_back();
     }
 
-    math_Matrix bsplMat = CTiglBSplineAlgorithms::bsplineBasisMat(degree, toArray(knots)->Array1(), toArray(params)->Array1());
+    math_Matrix bsplMat =
+        CTiglBSplineAlgorithms::bsplineBasisMat(degree, toArray(knots)->Array1(), toArray(params)->Array1());
 
     // build left hand side of the linear system
     int nParams = static_cast<int>(params.size());
@@ -111,9 +116,9 @@ Handle(Geom_BSplineCurve) CTiglPointsToBSplineInterpolation::Curve() const
     math_Vector rhsz(1, nParams, 0.);
     for (int i = 1; i <= nParams; ++i) {
         const gp_Pnt& p = m_pnts->Value(i);
-        rhsx(i) = p.X();
-        rhsy(i) = p.Y();
-        rhsz(i) = p.Z();
+        rhsx(i)         = p.X();
+        rhsy(i)         = p.Y();
+        rhsz(i)         = p.Z();
     }
 
     math_Gauss solver(lhs);
@@ -159,8 +164,8 @@ Handle(Geom_BSplineCurve) CTiglPointsToBSplineInterpolation::Curve() const
     }
     if (needsShifting()) {
         // add a new control point and knot
-        knots.push_back(knots.back() + knots[2*degree+1] - knots[2*degree]);
-        poles.SetValue(nParams + degree + 1, poles.Value(degree+1));
+        knots.push_back(knots.back() + knots[2 * degree + 1] - knots[2 * degree]);
+        poles.SetValue(nParams + degree + 1, poles.Value(degree + 1));
 
         // shift back the knots
         for (size_t iknot = 0; iknot < knots.size(); ++iknot) {
@@ -169,7 +174,7 @@ Handle(Geom_BSplineCurve) CTiglPointsToBSplineInterpolation::Curve() const
     }
 
     Handle(TColStd_HArray1OfReal) occFlatKnots = toArray(knots);
-    int knotsLen = BSplCLib::KnotsLength(occFlatKnots->Array1());
+    int knotsLen                               = BSplCLib::KnotsLength(occFlatKnots->Array1());
 
     TColStd_Array1OfReal occKnots(1, knotsLen);
     TColStd_Array1OfInteger occMults(1, knotsLen);
@@ -191,7 +196,7 @@ double CTiglPointsToBSplineInterpolation::maxDistanceOfBoundingBox(const TColgp_
     double maxDistance = 0.;
     for (int i = points.Lower(); i <= points.Upper(); ++i) {
         for (int j = points.Lower(); j <= points.Upper(); ++j) {
-            distance = std::max( distance, points.Value(i).Distance(points.Value(j)));
+            distance = std::max(distance, points.Value(i).Distance(points.Value(j)));
         }
     }
     return maxDistance;
@@ -200,7 +205,7 @@ double CTiglPointsToBSplineInterpolation::maxDistanceOfBoundingBox(const TColgp_
 bool CTiglPointsToBSplineInterpolation::isClosed() const
 {
     double maxDistance = maxDistanceOfBoundingBox(m_pnts->Array1());
-    double error = 1e-12*maxDistance;
+    double error       = 1e-12 * maxDistance;
     return m_pnts->Value(m_pnts->Lower()).IsEqual(m_pnts->Value(m_pnts->Upper()), error) && m_C2Continuous;
 }
 

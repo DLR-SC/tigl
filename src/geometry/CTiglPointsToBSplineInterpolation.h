@@ -36,9 +36,12 @@ namespace tigl
 class CTiglPointsToBSplineInterpolation
 {
 public:
-    TIGL_EXPORT CTiglPointsToBSplineInterpolation(const Handle(TColgp_HArray1OfPnt)& points, unsigned int maxDegree = 3, bool continuousIfClosed = false);
+    TIGL_EXPORT CTiglPointsToBSplineInterpolation(const Handle(TColgp_HArray1OfPnt) & points,
+                                                  unsigned int maxDegree = 3, bool continuousIfClosed = false);
 
-    TIGL_EXPORT CTiglPointsToBSplineInterpolation(const Handle(TColgp_HArray1OfPnt)& points, const std::vector<double>& parameters, unsigned int maxDegree = 3, bool continuousIfClosed = false);
+    TIGL_EXPORT CTiglPointsToBSplineInterpolation(const Handle(TColgp_HArray1OfPnt) & points,
+                                                  const std::vector<double>& parameters, unsigned int maxDegree = 3,
+                                                  bool continuousIfClosed = false);
 
     /// Returns the interpolation curve
     TIGL_EXPORT Handle(Geom_BSplineCurve) Curve() const;
@@ -61,7 +64,7 @@ private:
     bool needsShifting() const;
 
     /// curve coordinates to be fitted by the B-spline
-    const Handle(TColgp_HArray1OfPnt)& m_pnts;
+    const Handle(TColgp_HArray1OfPnt) & m_pnts;
 
     std::vector<double> m_params;
 
@@ -69,7 +72,7 @@ private:
     int m_degree;
 
     /// determines the continuous closing of curve
-    bool  m_C2Continuous;
+    bool m_C2Continuous;
 };
 
 } // namespace tigl
