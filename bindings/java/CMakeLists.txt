@@ -2,6 +2,7 @@ if (TIGL_BINDINGS_JAVA)
 	set(TIGLJAVA_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 	configure_file(${CMAKE_CURRENT_SOURCE_DIR}/build.gradle.in ${CMAKE_CURRENT_BINARY_DIR}/build.gradle)
+	configure_file(${CMAKE_CURRENT_SOURCE_DIR}/gradle.properties ${CMAKE_CURRENT_BINARY_DIR}/gradle.properties COPYONLY )
 
 	file(GLOB_RECURSE TIGL_JAVA_SRC "*.java")
 
