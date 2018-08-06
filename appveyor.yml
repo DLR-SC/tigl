@@ -83,6 +83,7 @@ install:
 before_build:
   # Setup compiler paths #
   - call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" %ARCH%
+  - (if not exist "%USERPROFILE%/.gradle" mkdir "%USERPROFILE%/.gradle") && (echo org.gradle.daemon=false >> "%USERPROFILE%/.gradle/gradle.properties")
 
 build_script:
 - ps: |
