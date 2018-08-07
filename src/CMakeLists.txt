@@ -25,7 +25,15 @@ include_directories(${OpenCASCADE_INCLUDE_DIR}
 # boost
 include_directories(${PROJECT_SOURCE_DIR}/thirdparty/boost_1_67_0)
 file(GLOB_RECURSE BOOST_SRC ${PROJECT_SOURCE_DIR}/thirdparty/boost_1_67_0/libs/*)
-
+add_definitions(-DBOOST_THREAD_BUILD_LIB)
+if(WIN32)
+    add_definitions(-DBOOST_THREAD_WIN32)
+    list(FILTER BOOST_SRC EXCLUDE REGEX thread/src/pthread/*)
+else()
+    add_definitions(-DBOOST_THREAD_POSIX)
+    list(FILTER BOOST_SRC EXCLUDE REGEX thread/src/win32/*)
+    list(FILTER BOOST_SRC EXCLUDE REGEX thread/src/pthread/once_atomic.cpp)
+endif()
 
 file(GLOB_RECURSE TIGL_SRC
     "*.h"
@@ -65,10 +73,10 @@ endif(TIGL_CONCAT_GENERATED_FILES)
 
 # group sources as on filesystem
 foreach(source ${TIGL_SRC})
-	get_filename_component(sourcePath "${source}" DIRECTORY)
-	file(RELATIVE_PATH sourcePath ${CMAKE_CURRENT_SOURCE_DIR} ${sourcePath})
-	string(REPLACE "/" "\\" sourcePathNoBS "${sourcePath}")
-	source_group("${sourcePathNoBS}" FILES "${source}")
+    get_filename_component(sourcePath "${source}" DIRECTORY)
+    file(RELATIVE_PATH sourcePath ${CMAKE_CURRENT_SOURCE_DIR} ${sourcePath})
+    string(REPLACE "/" "\\" sourcePathNoBS "${sourcePath}")
+    source_group("${sourcePathNoBS}" FILES "${source}")
 endforeach()
 
 if(MSVC)
@@ -108,17 +116,17 @@ set_target_properties( tigl3 PROPERTIES VERSION ${TIGL_VERSION_MINOR}.${TIGL_VER
 set_target_properties( tigl3 PROPERTIES SOVERSION "${TIGL_VERSION_MINOR}")
 
 install (TARGETS tigl3
-		 EXPORT tigl-targets
-		 RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-		 LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-		 ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-		 )
-		 
+         EXPORT tigl-targets
+         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+         )
+         
 install (EXPORT tigl-targets DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/tigl3)
-		 
+         
 install (FILES api/tigl.h ${CMAKE_CURRENT_BINARY_DIR}/api/tigl_version.h
-		 DESTINATION include/tigl3
-		 COMPONENT headers)
+         DESTINATION include/tigl3
+         COMPONENT headers)
 
 # static lib for tiglviewer 
 add_library(tigl3_static ${TIGL_SRC})
@@ -137,8 +145,8 @@ write_basic_package_version_file(
 
 configure_package_config_file (${PROJECT_SOURCE_DIR}/cmake/tigl-config.cmake.in 
     "${CMAKE_CURRENT_BINARY_DIR}/tigl-config.cmake"
-	INSTALL_DESTINATION ${CONFIG_INSTALL_DIR}
-	PATH_VARS CMAKE_INSTALL_INCLUDE_DIR CONFIG_INSTALL_DIR
+    INSTALL_DESTINATION ${CONFIG_INSTALL_DIR}
+    PATH_VARS CMAKE_INSTALL_INCLUDE_DIR CONFIG_INSTALL_DIR
 )
 install (FILES
   "${CMAKE_CURRENT_BINARY_DIR}/tigl-config.cmake"

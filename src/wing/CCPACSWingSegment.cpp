@@ -228,6 +228,8 @@ CCPACSWingSegment::CCPACSWingSegment(CCPACSWingSegments* parent, CTiglUIDManager
     : generated::CPACSWingSegment(parent, uidMgr)
     , CTiglAbstractSegment<CCPACSWingSegment>(parent->GetSegments(), parent->GetParent()->m_symmetry)
     , wing(parent->GetParent())
+    , surfaceCache(*this, &CCPACSWingSegment::MakeSurfaces)
+    , surfaceCoordCache(*this, &CCPACSWingSegment::MakeChordSurface)
     , m_guideCurveBuilder(make_unique<CTiglWingSegmentGuidecurveBuilder>(*this))
 {
     Cleanup();
@@ -243,13 +245,13 @@ CCPACSWingSegment::~CCPACSWingSegment()
 void CCPACSWingSegment::Invalidate()
 {
     CTiglAbstractSegment<CCPACSWingSegment>::Reset();
-    surfaceCache = boost::none;
+    surfaceCache.clear();
 }
 
 // Cleanup routine
 void CCPACSWingSegment::Cleanup()
 {
-    surfaceCache = boost::none;
+    surfaceCache.clear();
     CTiglAbstractSegment<CCPACSWingSegment>::Reset();
 }
 
@@ -563,8 +565,7 @@ double CCPACSWingSegment::GetVolume()
 // Returns the surface area of this segment
 double CCPACSWingSegment::GetSurfaceArea() const
 {
-    MakeSurfaces();
-    return(surfaceCache.value().mySurfaceArea);
+    return surfaceCache->mySurfaceArea;
 }
 
 void CCPACSWingSegment::etaXsiToUV(bool isFromUpper, double eta, double xsi, double& u, double& v) const
@@ -605,8 +606,6 @@ double CCPACSWingSegment::GetSurfaceArea(bool fromUpper,
                                          double eta3, double xsi3,
                                          double eta4, double xsi4) const
 {
-    MakeSurfaces();
-    
     TopoDS_Face face;
     if (fromUpper) {
         face = TopoDS::Face(GetUpperShape());
@@ -786,10 +785,6 @@ gp_Pnt CCPACSWingSegment::GetPointDirection(double eta, double xsi, double dirx,
         throw CTiglError("Direction must not be a null vector in CCPACSWingSegment::GetPointDirection.", TIGL_MATH_ERROR);
     }
 
-    if (!surfaceCache) {
-        MakeSurfaces();
-    }
-
     CTiglPoint tiglPoint;
     ChordFace().translate(eta, xsi, &tiglPoint);
 
@@ -879,11 +874,9 @@ bool CCPACSWingSegment::GetIsOn(const gp_Pnt& pnt)
         return true;
     }
 
-    MakeChordSurface();
-
     // check if point on chord surface
     double tolerance = 0.03;
-    GeomAPI_ProjectPointOnSurf Proj(pnt, surfaceCoordCache.value().cordFace);
+    GeomAPI_ProjectPointOnSurf Proj(pnt, surfaceCoordCache->cordFace);
     if (Proj.NbPoints() > 0 && Proj.LowerDistance() < tolerance) {
         return true;
     }
@@ -912,13 +905,8 @@ gp_Pnt CCPACSWingSegment::GetOuterProfilePoint(double xsi) const
     return transformProfilePoint(wing->GetTransformationMatrix(), outerConnection, untransformed);
 }
 
-void CCPACSWingSegment::MakeChordSurface() const
+void CCPACSWingSegment::MakeChordSurface(SurfaceCoordCache& cache) const
 {
-    if (surfaceCoordCache) {
-        return;
-    }
-    surfaceCoordCache.emplace();
-    
     CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
     CCPACSWingProfile& outerProfile = outerConnection.GetProfile();
 
@@ -934,51 +922,42 @@ void CCPACSWingSegment::MakeChordSurface() const
     outer_lep = transformProfilePoint(wing->GetTransformationMatrix(), outerConnection, outer_lep);
     outer_tep = transformProfilePoint(wing->GetTransformationMatrix(), outerConnection, outer_tep);
 
-    surfaceCoordCache->cordSurface.setQuadriangle(inner_lep.XYZ(), outer_lep.XYZ(), inner_tep.XYZ(), outer_tep.XYZ());
+    cache.cordSurface.setQuadriangle(inner_lep.XYZ(), outer_lep.XYZ(), inner_tep.XYZ(), outer_tep.XYZ());
 
     Handle(Geom_TrimmedCurve) innerEdge = GC_MakeSegment(inner_lep, inner_tep).Value();
     Handle(Geom_TrimmedCurve) outerEdge = GC_MakeSegment(outer_lep, outer_tep).Value();
-    surfaceCoordCache->cordFace = GeomFill::Surface(innerEdge, outerEdge);
+    cache.cordFace = GeomFill::Surface(innerEdge, outerEdge);
 }
 
-CTiglPointTranslator& CCPACSWingSegment::ChordFace() const
+const CTiglPointTranslator& CCPACSWingSegment::ChordFace() const
 {
-    if (!surfaceCoordCache) {
-        MakeChordSurface();
-    }
-
-    return surfaceCoordCache.value().cordSurface;
+    return surfaceCoordCache->cordSurface;
 }
 
 // Builds upper/lower surfaces as shapes
 // we split the wing profile into upper and lower wire.
 // To do so, we have to determine, what is up
-void CCPACSWingSegment::MakeSurfaces() const
+void CCPACSWingSegment::MakeSurfaces(SurfaceCache& cache) const
 {
-    if (surfaceCache) {
-        return;
-    }
-
     CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
     CCPACSWingProfile& outerProfile = outerConnection.GetProfile();
 
-    surfaceCache.emplace();
-    surfaceCache->upperShapeSharp        = buildLoftFace(innerConnection, outerConnection, Upper, SHARP_TRAILINGEDGE);
-    surfaceCache->upperShapeBlunt        = buildLoftFace(innerConnection, outerConnection, Upper, BLUNT_TRAILINGEDGE);
-    surfaceCache->lowerShapeSharp        = buildLoftFace(innerConnection, outerConnection, Lower, SHARP_TRAILINGEDGE);
-    surfaceCache->lowerShapeBlunt        = buildLoftFace(innerConnection, outerConnection, Lower, BLUNT_TRAILINGEDGE);
-    surfaceCache->trailingEdgeShapeBlunt = buildLoftFace(innerConnection, outerConnection, TrailingEdge, BLUNT_TRAILINGEDGE);
+    cache.upperShapeSharp        = buildLoftFace(innerConnection, outerConnection, Upper, SHARP_TRAILINGEDGE);
+    cache.upperShapeBlunt        = buildLoftFace(innerConnection, outerConnection, Upper, BLUNT_TRAILINGEDGE);
+    cache.lowerShapeSharp        = buildLoftFace(innerConnection, outerConnection, Lower, SHARP_TRAILINGEDGE);
+    cache.lowerShapeBlunt        = buildLoftFace(innerConnection, outerConnection, Lower, BLUNT_TRAILINGEDGE);
+    cache.trailingEdgeShapeBlunt = buildLoftFace(innerConnection, outerConnection, TrailingEdge, BLUNT_TRAILINGEDGE);
 
     // store whether trailing edge is sharp or blunt by definition
-    surfaceCache->bluntTE = innerProfile.HasBluntTE() || outerProfile.HasBluntTE();
+    cache.bluntTE = innerProfile.HasBluntTE() || outerProfile.HasBluntTE();
 
     // compute total surface area
     GProp_GProps sprops;
-    BRepGProp::SurfaceProperties(GetUpperShape(WING_COORDINATE_SYSTEM), sprops);
+    BRepGProp::SurfaceProperties(cache.bluntTE ? cache.upperShapeBlunt : cache.upperShapeSharp, sprops);
     const double upperArea = sprops.Mass();
-    BRepGProp::SurfaceProperties(GetLowerShape(WING_COORDINATE_SYSTEM), sprops);
+    BRepGProp::SurfaceProperties(cache.bluntTE ? cache.lowerShapeBlunt : cache.lowerShapeSharp, sprops);
     const double lowerArea = sprops.Mass();
-    surfaceCache->mySurfaceArea = upperArea + lowerArea;
+    cache.mySurfaceArea = upperArea + lowerArea;
 }
 
 
@@ -1036,8 +1015,6 @@ Handle(Geom_Surface) CCPACSWingSegment::GetUpperSurface(TiglCoordinateSystem ref
 // Returns the upper wing shape of this Segment
 TopoDS_Shape CCPACSWingSegment::GetUpperShape(TiglCoordinateSystem referenceCS, TiglShapeModifier mod) const
 {
-    MakeSurfaces();
-
     if (mod == UNMODIFIED_SHAPE) {
         mod = surfaceCache.value().bluntTE ? BLUNT_TRAILINGEDGE : SHARP_TRAILINGEDGE;
     }
@@ -1060,8 +1037,6 @@ TopoDS_Shape CCPACSWingSegment::GetUpperShape(TiglCoordinateSystem referenceCS, 
 // Returns the lower wing shape of this Segment
 TopoDS_Shape CCPACSWingSegment::GetLowerShape(TiglCoordinateSystem referenceCS, TiglShapeModifier mod) const
 {
-    MakeSurfaces();
-
     if (mod == UNMODIFIED_SHAPE) {
         mod = surfaceCache.value().bluntTE ? BLUNT_TRAILINGEDGE : SHARP_TRAILINGEDGE;
     }
@@ -1084,8 +1059,6 @@ TopoDS_Shape CCPACSWingSegment::GetLowerShape(TiglCoordinateSystem referenceCS, 
 TIGL_EXPORT TopoDS_Shape CCPACSWingSegment::GetTrailingEdgeShape(TiglCoordinateSystem referenceCS,
                                                                  TiglShapeModifier mod) const
 {
-    MakeSurfaces();
-
     if (mod == UNMODIFIED_SHAPE) {
         mod = surfaceCache.value().bluntTE ? BLUNT_TRAILINGEDGE : SHARP_TRAILINGEDGE;
     }
