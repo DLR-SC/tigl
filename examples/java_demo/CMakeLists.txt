@@ -13,6 +13,7 @@ if (TIGL_BINDINGS_JAVA)
 	set(TIGL_LIB_PATH ${PROJECT_BINARY_DIR}/lib)
 	
 	configure_file(${CMAKE_CURRENT_SOURCE_DIR}/build.gradle.in ${CMAKE_CURRENT_BINARY_DIR}/build.gradle)
+	configure_file(${CMAKE_CURRENT_SOURCE_DIR}/gradle.properties ${CMAKE_CURRENT_BINARY_DIR}/gradle.properties COPYONLY )
 	
 	ADD_CUSTOM_TARGET(
 		tigl-java-demo 
