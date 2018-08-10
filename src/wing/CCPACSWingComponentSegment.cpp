@@ -161,6 +161,7 @@ CCPACSWingComponentSegment::CCPACSWingComponentSegment(CCPACSWingComponentSegmen
     , upperShape(make_unique<CTiglShapeGeomComponentAdaptor>(this, m_uidMgr))
     , lowerShape(make_unique<CTiglShapeGeomComponentAdaptor>(this, m_uidMgr))
     , chordFace(make_unique<CTiglWingChordface>(*this, uidMgr))
+    , wingSegments(*this, &CCPACSWingComponentSegment::BuildWingSegments)
 {
     assert(wing != NULL);
     Cleanup();
@@ -542,31 +543,9 @@ const std::string& CCPACSWingComponentSegment::GetOuterSegmentUID() const
     return GetSegmentList().back()->GetUID();
 }
 
-SegmentList& CCPACSWingComponentSegment::GetSegmentList() const
+const SegmentList& CCPACSWingComponentSegment::GetSegmentList() const
 {
-    if (wingSegments.size() == 0) {
-        std::vector<int> path;
-        path = findPath(m_fromElementUID, m_toElementUID, path, true);
-
-        if (path.size() == 0) {
-            // could not find path from fromUID to toUID
-            // try the other way around
-            path = findPath(m_toElementUID, m_fromElementUID, path, true);
-        }
-
-        if (path.size() == 0) {
-            LOG(WARNING) << "Could not determine segment list to component segment from \""
-                            << GetFromElementUID() << "\" to \"" << GetToElementUID() << "\"!";
-        }
-
-        std::vector<int>::iterator it;
-        for (it = path.begin(); it != path.end(); ++it) {
-            CCPACSWingSegment* pSeg = static_cast<CCPACSWingSegment*>(&(GetWing().GetSegment(*it)));
-            wingSegments.push_back(pSeg);
-        }
-    }
-
-    return wingSegments;
+    return *wingSegments;
 }
 
 // Determines, which segments belong to the component segment
@@ -818,6 +797,29 @@ PNamedShape CCPACSWingComponentSegment::BuildLoft()
     PNamedShape loft (new CNamedShape(loftShape, loftName.c_str(), loftShortName));
     SetFaceTraits(loft, static_cast<unsigned int>(segments.size()));
     return loft;
+}
+
+void CCPACSWingComponentSegment::BuildWingSegments(SegmentList& cache) const
+{
+    std::vector<int> path;
+    path = findPath(m_fromElementUID, m_toElementUID, path, true);
+
+    if (path.size() == 0) {
+        // could not find path from fromUID to toUID
+        // try the other way around
+        path = findPath(m_toElementUID, m_fromElementUID, path, true);
+    }
+
+    if (path.size() == 0) {
+        LOG(WARNING) << "Could not determine segment list to component segment from \""
+            << GetFromElementUID() << "\" to \"" << GetToElementUID() << "\"!";
+    }
+
+    std::vector<int>::iterator it;
+    for (it = path.begin(); it != path.end(); ++it) {
+        CCPACSWingSegment* pSeg = static_cast<CCPACSWingSegment*>(&(GetWing().GetSegment(*it)));
+        cache.push_back(pSeg);
+    }
 }
 
 // Method for building wires for eta-, leading edge-, trailing edge-lines

@@ -42,6 +42,7 @@
 #include "CTiglPoint.h"
 #include "CTiglPointTranslator.h"
 #include "CCPACSTransformation.h"
+#include "Cache.h"
 
 namespace tigl
 {
@@ -130,8 +131,7 @@ public:
     TIGL_EXPORT MaterialList GetMaterials(double eta, double xsi, TiglStructureType);
 
     // returns a list of segments that belong to this component segment
-    // TODO: return const-reference to avoid potential harmful modification of wingSegments member
-    TIGL_EXPORT SegmentList& GetSegmentList() const;
+    TIGL_EXPORT const SegmentList& GetSegmentList() const;
         
     // creates an (iso) component segment line 
     TIGL_EXPORT TopoDS_Wire GetCSLine(double eta1, double xsi1, double eta2, double xsi2, int NSTEPS=101);
@@ -194,6 +194,8 @@ protected:
     // Builds the loft between the two segment sections
     PNamedShape BuildLoft() OVERRIDE;
 
+    void BuildWingSegments(SegmentList& cache) const;
+
     // Method for building wires for eta-, leading edge-, trailing edge-lines
     void BuildLines() const;
 
@@ -218,7 +220,7 @@ private:
     double               mySurfaceArea;        /**< Surface area of this segment            */
     unique_ptr<CTiglShapeGeomComponentAdaptor> upperShape; /**< Upper shape of this componentSegment */
     unique_ptr<CTiglShapeGeomComponentAdaptor> lowerShape; /**< Lower shape of this componentSegment */
-    mutable SegmentList  wingSegments;         /**< List of segments belonging to the component segment */
+    Cache<SegmentList, CCPACSWingComponentSegment> wingSegments; ///< List of segments belonging to the component segment
     TopoDS_Face          innerFace;            /**< [[CAS_AES]] added inner segment face    */
     TopoDS_Face          outerFace;            /**< [[CAS_AES]] added outer segment face    */
     mutable unique_ptr<CTiglWingChordface> chordFace;
