@@ -95,7 +95,7 @@ TiglGeometricComponentType CCPACSExternalObject::GetComponentType() const
     return TIGL_COMPONENT_PHYSICAL;
 }
 
-PNamedShape CCPACSExternalObject::BuildLoft()
+PNamedShape CCPACSExternalObject::BuildLoft() const
 {
     if (m_linkToFile.GetFormat()) {
         const std::string& fileType = CPACSLinkToFileType_formatToString(*m_linkToFile.GetFormat());

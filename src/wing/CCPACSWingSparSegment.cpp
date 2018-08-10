@@ -571,7 +571,7 @@ gp_Vec CCPACSWingSparSegment::GetUpVector(const std::string& positionUID, gp_Pnt
     return upVec;
 }
 
-PNamedShape CCPACSWingSparSegment::BuildLoft()
+PNamedShape CCPACSWingSparSegment::BuildLoft() const
 {
     return PNamedShape(new CNamedShape(GetSparGeometry(GLOBAL_COORDINATE_SYSTEM), GetDefaultedUID()));
 }

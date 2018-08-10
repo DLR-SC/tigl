@@ -158,7 +158,7 @@ PNamedShape CCPACSRotor::GetRotorDisk()
 }
 
 // Returns the geometry of the whole rotor (assembly of all rotor blades)
-PNamedShape CCPACSRotor::BuildLoft()
+PNamedShape CCPACSRotor::BuildLoft() const
 {
     // Create rotor assembly
     TopoDS_Compound rotorGeometry;

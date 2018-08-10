@@ -102,7 +102,7 @@ public:
     TIGL_EXPORT virtual TiglGeometricComponentType GetComponentType() const OVERRIDE;
 
 protected:
-    PNamedShape BuildLoft() OVERRIDE;
+    PNamedShape BuildLoft() const OVERRIDE;
 
 private:
     // Structure containing data relevant when ribs are defined via 

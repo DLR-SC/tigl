@@ -916,7 +916,7 @@ TiglGeometricComponentType CCPACSWingRibsDefinition::GetComponentType() const
 }
 
 
-PNamedShape CCPACSWingRibsDefinition::BuildLoft()
+PNamedShape CCPACSWingRibsDefinition::BuildLoft() const
 {
     return PNamedShape(new CNamedShape(GetRibsGeometry(GLOBAL_COORDINATE_SYSTEM), GetDefaultedUID()));
 }

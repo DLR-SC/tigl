@@ -42,7 +42,7 @@ public:
 
 private:
     /// reads in the CAD file
-    PNamedShape BuildLoft() OVERRIDE;
+    PNamedShape BuildLoft() const OVERRIDE;
 
     std::string _filePath;
 };

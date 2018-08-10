@@ -34,11 +34,13 @@
 
 namespace tigl
 {
-CTiglAbstractGeometricComponent::CTiglAbstractGeometricComponent() {}
-
+CTiglAbstractGeometricComponent::CTiglAbstractGeometricComponent()
+    : loft(*this, &CTiglAbstractGeometricComponent::BuildLoft)
+{
+}
 
 void CTiglAbstractGeometricComponent::Reset() {
-    loft.reset();
+    loft.clear();
 }
 
 TiglSymmetryAxis CTiglAbstractGeometricComponent::GetSymmetryAxis() const
@@ -46,12 +48,9 @@ TiglSymmetryAxis CTiglAbstractGeometricComponent::GetSymmetryAxis() const
     return TIGL_NO_SYMMETRY;
 }
 
-PNamedShape CTiglAbstractGeometricComponent::GetLoft()
+PNamedShape CTiglAbstractGeometricComponent::GetLoft() const
 {
-    if (!loft) {
-        loft = BuildLoft();
-    }
-    return loft;
+    return *loft;
 }
 
 PNamedShape CTiglAbstractGeometricComponent::GetMirroredLoft()
@@ -139,6 +138,11 @@ bool CTiglAbstractGeometricComponent::GetIsOnMirrored(const gp_Pnt& pnt)
     }
     
     return GetIsOn(mirroredPnt);
+}
+
+void CTiglAbstractGeometricComponent::BuildLoft(PNamedShape& cache) const
+{
+    cache = BuildLoft();
 }
 
 } // end namespace tigl

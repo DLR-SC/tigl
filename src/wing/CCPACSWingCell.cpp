@@ -816,7 +816,7 @@ std::string CCPACSWingCell::GetDefaultedUID() const
     return GetUID();
 }
 
-PNamedShape CCPACSWingCell::GetLoft()
+PNamedShape CCPACSWingCell::GetLoft() const
 {
     return PNamedShape(new CNamedShape(GetCellSkinGeometry(GLOBAL_COORDINATE_SYSTEM), GetUID()));
 }

@@ -45,10 +45,9 @@ TiglGeometricComponentType CCPACSAircraftModel::GetComponentType() const
     return (TIGL_COMPONENT_PHYSICAL | TIGL_COMPONENT_PLANE);
 }
 
-PNamedShape CCPACSAircraftModel::BuildLoft()
+PNamedShape CCPACSAircraftModel::BuildLoft() const
 {
-    // return empty loft
-    return loft;
+    return PNamedShape();
 }
 
 void CCPACSAircraftModel::Invalidate() {

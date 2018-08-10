@@ -209,7 +209,7 @@ private:
     void Update();
 
     // Builds the loft between the two segment sections
-    PNamedShape BuildLoft() OVERRIDE;
+    PNamedShape BuildLoft() const OVERRIDE;
 
     void BuildWingSegments(SegmentList& cache) const;
     void BuildGeometry(GeometryCache& cache) const;

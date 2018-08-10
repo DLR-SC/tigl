@@ -45,7 +45,7 @@ CCPACSFarField::CCPACSFarField() {
 void CCPACSFarField::init()
 {
     SetType(NONE);
-    loft.reset();
+    loft.clear();
 }
 
 void CCPACSFarField::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
@@ -58,12 +58,11 @@ std::string CCPACSFarField::GetDefaultedUID() const {
     return "FarField";
 }
 
-PNamedShape CCPACSFarField::BuildLoft()
+PNamedShape CCPACSFarField::BuildLoft() const
 {
     const double fieldSize = m_referenceLength * m_multiplier;
 
     TopoDS_Shape shape;
-    shape.Nullify();
     gp_Pnt center(0,0,0);
 
     switch (GetType()) {

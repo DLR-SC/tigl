@@ -129,7 +129,7 @@ protected:
 
     // Returns the geometry of the whole rotor (assembly of all rotor blades).
     // Implementation for abstract base class CTiglAbstractGeometricComponent
-    PNamedShape BuildLoft() OVERRIDE;
+    PNamedShape BuildLoft() const OVERRIDE;
 
 private:
     bool                   invalidated;                 /**< Internal state flag  */

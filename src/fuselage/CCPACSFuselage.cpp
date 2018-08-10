@@ -83,7 +83,7 @@ CCPACSFuselage::~CCPACSFuselage()
 // Invalidates internal state
 void CCPACSFuselage::Invalidate()
 {
-    loft.reset();
+    loft.clear();
     guideCurves.clear();
     m_segments.Invalidate();
     if (m_positionings)
@@ -236,7 +236,7 @@ void CCPACSFuselage::SetFaceTraits (PNamedShape loft) const
 }
 
 // Builds a fused shape of all fuselage segments
-PNamedShape CCPACSFuselage::BuildLoft()
+PNamedShape CCPACSFuselage::BuildLoft() const
 {
     TiglContinuity cont = m_segments.GetSegment(1).GetContinuity();
     Standard_Boolean smooth = (cont == ::C0? false : true);

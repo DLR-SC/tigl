@@ -116,7 +116,7 @@ private:
 
     gp_Vec GetUpVector(const std::string& positionUID, gp_Pnt midplanePnt) const;
 
-    PNamedShape BuildLoft() OVERRIDE;
+    PNamedShape BuildLoft() const OVERRIDE;
 
 private:
     CCPACSWingSparSegment(const CCPACSWingSparSegment&);

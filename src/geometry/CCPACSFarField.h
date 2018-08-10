@@ -42,7 +42,7 @@ public:
     TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE;
 
 protected:
-    PNamedShape BuildLoft() OVERRIDE;
+    PNamedShape BuildLoft() const OVERRIDE;
 
 private:
     void init();

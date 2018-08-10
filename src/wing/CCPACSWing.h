@@ -170,7 +170,7 @@ protected:
     // Adds all Segments of this wing to one shape
     PNamedShape BuildFusedSegments(bool splitWingInUpperAndLower) const;
         
-    PNamedShape BuildLoft() OVERRIDE;
+    PNamedShape BuildLoft() const OVERRIDE;
         
     void BuildUpperLowerShells();
 

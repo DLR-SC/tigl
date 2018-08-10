@@ -37,7 +37,7 @@ public:
     TIGL_EXPORT virtual std::string GetDefaultedUID() const = 0;
 
     // Gets the loft of a geometric component
-    TIGL_EXPORT virtual PNamedShape GetLoft() = 0;
+    TIGL_EXPORT virtual PNamedShape GetLoft() const = 0;
 
     // Returns the Geometric type of this component, e.g. Wing or Fuselage
     TIGL_EXPORT virtual TiglGeometricComponentType GetComponentType() const = 0;

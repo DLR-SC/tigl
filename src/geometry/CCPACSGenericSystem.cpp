@@ -139,7 +139,7 @@ CCPACSConfiguration& CCPACSGenericSystem::GetConfiguration() const
 }
 
 // build loft
-PNamedShape CCPACSGenericSystem::BuildLoft()
+PNamedShape CCPACSGenericSystem::BuildLoft() const
 {
     TopoDS_Shape sysShape;
     if (geometricBaseType == "cylinder") {

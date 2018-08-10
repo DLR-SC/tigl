@@ -110,7 +110,7 @@ protected:
     void BuildMatrix();
 
     // Create the rotor blade geometry by copying and transforming the original unattached rotor blade geometry
-    PNamedShape BuildLoft() OVERRIDE;
+    PNamedShape BuildLoft() const OVERRIDE;
 
 private:
     // Copy constructor

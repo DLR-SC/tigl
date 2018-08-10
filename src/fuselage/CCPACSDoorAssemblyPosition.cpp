@@ -32,7 +32,7 @@ std::string CCPACSDoorAssemblyPosition::GetDefaultedUID() const
     return GetUID();
 }
 
-PNamedShape CCPACSDoorAssemblyPosition::GetLoft()
+PNamedShape CCPACSDoorAssemblyPosition::GetLoft() const
 {
     return PNamedShape(new CNamedShape(GetGeometry(), GetUID()));
 }

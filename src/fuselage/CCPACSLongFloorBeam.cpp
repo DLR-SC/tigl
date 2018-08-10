@@ -42,7 +42,7 @@ std::string CCPACSLongFloorBeam::GetDefaultedUID() const
     return GetUID();
 }
 
-PNamedShape CCPACSLongFloorBeam::GetLoft()
+PNamedShape CCPACSLongFloorBeam::GetLoft() const
 {
     return PNamedShape(new CNamedShape(GetGeometry(true), GetUID()));
 }

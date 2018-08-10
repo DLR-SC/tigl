@@ -280,7 +280,7 @@ double CTiglAttachedRotorBlade::GetLocalTwistAngle(const int& segmentIndex, cons
 
 
 // Create the rotor blade geometry by copying and transforming the original unattached rotor blade geometry
-PNamedShape CTiglAttachedRotorBlade::BuildLoft()
+PNamedShape CTiglAttachedRotorBlade::BuildLoft() const
 {
     // Create a new instance of the referenced unattached rotor blade and apply the transformations to it
     PNamedShape rotorBladeCopy = rotorBlade->GetLoft()->DeepCopy();

@@ -65,7 +65,7 @@ public:
     TIGL_EXPORT const Handle(Geom_BSplineSurface) GetSurface() const;
 
 protected:
-    PNamedShape BuildLoft() OVERRIDE;
+    PNamedShape BuildLoft() const OVERRIDE;
 
 private:
     struct ChordfaceCache {

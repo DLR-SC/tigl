@@ -65,7 +65,7 @@ std::string CCPACSPressureBulkheadAssemblyPosition::GetDefaultedUID() const
     return m_uID;
 }
 
-PNamedShape CCPACSPressureBulkheadAssemblyPosition::GetLoft()
+PNamedShape CCPACSPressureBulkheadAssemblyPosition::GetLoft() const
 {
     return PNamedShape(new CNamedShape(GetGeometry(GLOBAL_COORDINATE_SYSTEM), GetDefaultedUID()));
 }
