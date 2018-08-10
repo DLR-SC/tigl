@@ -16,7 +16,8 @@
 
 #include "CCPACSPointListXYZ.h"
 
-#include <stdexcept>
+#include "CTiglLogging.h"
+#include "CTiglError.h"
 
 namespace tigl
 {
@@ -36,6 +37,8 @@ void CCPACSPointListXYZ::ReadCPACS(const TixiDocumentHandle& tixiHandle, const s
     for (std::size_t i = 0; i < xs.size(); i++) {
         m_vec.push_back(CTiglPoint(xs[i], ys[i], zs[i]));
     }
+
+    OrderPoints();
 }
 
 void CCPACSPointListXYZ::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
@@ -66,6 +69,31 @@ const std::vector<CTiglPoint>& CCPACSPointListXYZ::AsVector() const
 std::vector<CTiglPoint>& CCPACSPointListXYZ::AsVector()
 {
     return m_vec;
+}
+
+void CCPACSPointListXYZ::OrderPoints()
+{
+    // points with maximal/minimal y-component
+    std::size_t minZIndex = 0;
+    std::size_t maxZIndex = 0;
+    for (std::size_t i = 1; i < m_vec.size(); i++) {
+        if (m_vec[i].z < m_vec[minZIndex].z) {
+            minZIndex = i;
+        }
+        if (m_vec[i].z > m_vec[maxZIndex].z) {
+            maxZIndex = i;
+        }
+    }
+
+    // check if points with maximal/minimal z-component were calculated correctly
+    if (maxZIndex == minZIndex) {
+        throw CTiglError("CCPACSPointListXYZ::OrderPoints: Unable to separate upper and lower wing profile from point list", TIGL_XML_ERROR);
+    }
+    // force order of points to run through the lower profile first and then through the upper profile
+    if (minZIndex > maxZIndex) {
+        LOG(WARNING) << "The points don't seem to be ordered in a mathematical positive sense.";
+        std::reverse(m_vec.begin(), m_vec.end());
+    }
 }
 
 } // namespace tigl
