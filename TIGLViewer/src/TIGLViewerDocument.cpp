@@ -870,8 +870,8 @@ void TIGLViewerDocument::drawFuselageGuideCurves()
     }
     
     START_COMMAND();
-    tigl::CCPACSFuselage& fuselage = GetConfiguration().GetFuselage(fuselageUid.toStdString());
-    TopoDS_Compound& guideCurves = fuselage.GetGuideCurveWires();
+    const tigl::CCPACSFuselage& fuselage = GetConfiguration().GetFuselage(fuselageUid.toStdString());
+    const TopoDS_Compound& guideCurves = fuselage.GetGuideCurveWires();
 
     TopoDS_Iterator anIter(guideCurves);
     if (!anIter.More()) {
@@ -886,7 +886,7 @@ void TIGLViewerDocument::drawFuselageGuideCurves()
 
     //display guide curve points (TODO: these points are not sorted and
     // there are probably duplicates)
-    std::vector<gp_Pnt> points = fuselage.GetGuideCurvePoints();
+    const std::vector<gp_Pnt>& points = fuselage.GetGuideCurvePoints();
     for (size_t i=0; i < points.size(); i++) {
         app->getScene()->displayPoint(points[i], "", Standard_False, 0, 0, 0, 1.);
     }

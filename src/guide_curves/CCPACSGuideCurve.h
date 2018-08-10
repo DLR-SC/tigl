@@ -26,16 +26,15 @@
 #include "tigl_internal.h"
 #include "tixi.h"
 #include "CSharedPtr.h"
-
 #include "generated/CPACSGuideCurve.h"
+#include "generated/UniquePtr.h"
+#include "Cache.h"
 
 #include <gp_Pnt.hxx>
 #include <TopoDS_Edge.hxx>
 
 #include <vector>
 #include <string>
-
-#include "generated/UniquePtr.h"
 
 namespace tigl
 {
@@ -67,12 +66,12 @@ public:
 
     TIGL_EXPORT FromDefinition GetFromDefinition() const;
 
-    TIGL_EXPORT const std::vector<gp_Pnt> GetCurvePoints();
-    TIGL_EXPORT const TopoDS_Edge& GetCurve();
+    TIGL_EXPORT std::vector<gp_Pnt> GetCurvePoints() const;
+    TIGL_EXPORT TopoDS_Edge GetCurve() const;
 
     // Connects the current guide curve segment with another segment guide
     // This implies, that guide.fromGuideCurveUID == this.uid
-    TIGL_EXPORT void ConnectToCurve(CCPACSGuideCurve* guide);
+    //TIGL_EXPORT void ConnectToCurve(CCPACSGuideCurve* guide);
 
     TIGL_EXPORT CCPACSGuideCurve* GetConnectedCurve() const;
 
@@ -88,18 +87,19 @@ private:
     // Assignment operator
     void operator=(const CCPACSGuideCurve&);
 
-    TopoDS_Edge guideCurveTopo;           /**< Actual topological entity of the curve */
-    CCPACSGuideCurve* nextGuideSegment;   /**< Pointer to a guide curve segment that is connected to this segment */
+    void BuildCurve(TopoDS_Edge& cache) const;
+
+    Cache<TopoDS_Edge, CCPACSGuideCurve> guideCurveTopo; /**< Actual topological entity of the curve */
+    //CCPACSGuideCurve* nextGuideSegment;   /**< Pointer to a guide curve segment that is connected to this segment */
 
     IGuideCurveBuilder* m_builder;
-    bool isBuild;                         /**< Checks whether the guide curve is already built */
 
 };
 
 class IGuideCurveBuilder
 {
 public:
-    virtual std::vector<gp_Pnt> BuildGuideCurvePnts(CCPACSGuideCurve*) = 0;
+    virtual std::vector<gp_Pnt> BuildGuideCurvePnts(const CCPACSGuideCurve*) const = 0;
 };
 
 } // end namespace tigl

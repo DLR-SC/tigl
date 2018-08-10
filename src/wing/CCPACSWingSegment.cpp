@@ -542,10 +542,20 @@ CTiglWingConnection& CCPACSWingSegment::GetInnerConnection()
     return( innerConnection );
 }
 
+const CTiglWingConnection& CCPACSWingSegment::GetInnerConnection() const
+{
+    return(innerConnection);
+}
+
 // Returns the end section element index of this segment
 CTiglWingConnection& CCPACSWingSegment::GetOuterConnection()
 {
     return( outerConnection );
+}
+
+const CTiglWingConnection& CCPACSWingSegment::GetOuterConnection() const
+{
+    return(outerConnection);
 }
 
 // Returns the volume of this segment

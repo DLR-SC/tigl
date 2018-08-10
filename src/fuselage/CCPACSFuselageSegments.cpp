@@ -52,6 +52,11 @@ CCPACSFuselageSegment & CCPACSFuselageSegments::GetSegment(int index)
     return *m_segments[index];
 }
 
+const CCPACSFuselageSegment & CCPACSFuselageSegments::GetSegment(int index) const
+{
+    return const_cast<CCPACSFuselageSegments&>(*this).GetSegment(index);
+}
+
 // Gets a segment by uid. 
 CCPACSFuselageSegment & CCPACSFuselageSegments::GetSegment(const std::string& segmentUID)
 {

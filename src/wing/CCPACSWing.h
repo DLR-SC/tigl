@@ -34,6 +34,7 @@
 #include "CCPACSPositionings.h"
 #include "CTiglAbstractSegment.h"
 #include "CCPACSGuideCurve.h"
+#include "Cache.h"
 
 #include "TopoDS_Shape.hxx"
 #include "TopoDS_Compound.hxx"
@@ -153,10 +154,10 @@ public:
     TIGL_EXPORT std::vector<gp_Pnt> GetGuideCurvePoints();
 
     // Returns all guide curve wires as a compound
-    TIGL_EXPORT TopoDS_Compound& GetGuideCurveWires();
+    TIGL_EXPORT TopoDS_Compound GetGuideCurveWires() const;
 
 protected:
-    void BuildGuideCurveWires();
+    void BuildGuideCurveWires(TopoDS_Compound& cache) const;
 
     // Cleanup routine
     void Cleanup();
@@ -183,7 +184,7 @@ private:
     TopoDS_Shape                   fusedSegmentWithEdge;     /**< All Segments in one shape plus modelled leading edge */ 
     TopoDS_Shape                   upperShape;
     TopoDS_Shape                   lowerShape;
-    TopoDS_Compound                guideCurves;
+    Cache<TopoDS_Compound, CCPACSWing> guideCurves;
     bool                           invalidated;              /**< Internal state flag */
     bool                           rebuildFusedSegments;     /**< Indicates if segmentation fusing need rebuild */
     bool                           rebuildFusedSegWEdge;     /**< Indicates if segmentation fusing need rebuild */

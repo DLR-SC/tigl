@@ -35,6 +35,7 @@ namespace tigl
 // Constructor
 CCPACSGuideCurve::CCPACSGuideCurve(CTiglUIDManager* uidMgr)
     : generated::CPACSGuideCurve(uidMgr)
+    , guideCurveTopo(*this, &CCPACSGuideCurve::BuildCurve)
 {
     Cleanup();
 }
@@ -58,26 +59,17 @@ CCPACSGuideCurve::FromDefinition CCPACSGuideCurve::GetFromDefinition() const {
 // Cleanup routine
 void CCPACSGuideCurve::Cleanup(void)
 {
-    nextGuideSegment = NULL;
-    guideCurveTopo.Nullify();
+    //nextGuideSegment = NULL;
+    guideCurveTopo.clear();
     m_builder = NULL;
-    isBuild = false;
 }
 
-const TopoDS_Edge& CCPACSGuideCurve::GetCurve()
+TopoDS_Edge CCPACSGuideCurve::GetCurve() const
 {
-    if (m_builder && !isBuild) {
-
-        // interpolate B-Spline curve through guide curve points
-        std::vector<gp_Pnt> guideCurvePnts = GetCurvePoints();
-        guideCurveTopo = EdgeSplineFromPoints(guideCurvePnts);
-
-        isBuild = true;
-    }
-    return guideCurveTopo;
+    return *guideCurveTopo;
 }
 
-const std::vector<gp_Pnt> CCPACSGuideCurve::GetCurvePoints()
+std::vector<gp_Pnt> CCPACSGuideCurve::GetCurvePoints() const
 {
     if (!m_builder) {
         throw CTiglError("Cannot get Guide Curve Points: Null pointer to guide curve builder", TIGL_NULL_POINTER);
@@ -86,27 +78,39 @@ const std::vector<gp_Pnt> CCPACSGuideCurve::GetCurvePoints()
     return guideCurvePnts;
 }
 
-void CCPACSGuideCurve::ConnectToCurve(CCPACSGuideCurve *guide)
-{
-    if (!guide) {
-        throw CTiglError("Null pointer guide curve in CCPACSGuideCurve::ConnectToCurve", TIGL_ERROR);
-    }
-    
-    if (!guide->GetFromGuideCurveUID_choice1() || *(guide->GetFromGuideCurveUID_choice1()) != m_uID) {
-        throw CTiglError("Guide curves cannot be connected. Mismatching uids.", TIGL_ERROR);
-    }
-    
-    nextGuideSegment = guide;
-}
+//void CCPACSGuideCurve::ConnectToCurve(CCPACSGuideCurve *guide)
+//{
+//    if (!guide) {
+//        throw CTiglError("Null pointer guide curve in CCPACSGuideCurve::ConnectToCurve", TIGL_ERROR);
+//    }
+//    
+//    if (guide->GetFromGuideCurveUID_choice1() != m_uID) {
+//        throw CTiglError("Guide curves cannot be connected. Mismatching uids.", TIGL_ERROR);
+//    }
+//    
+//    nextGuideSegment = guide;
+//}
 
 CCPACSGuideCurve* CCPACSGuideCurve::GetConnectedCurve() const
 {
-    return nextGuideSegment;
+    auto curves = m_uidMgr->ResolveObjects<CCPACSGuideCurve>();
+    for (auto& c : curves)
+        if (c->GetFromGuideCurveUID_choice1() == m_uID)
+            return c;
+    return nullptr;
 }
 
 void CCPACSGuideCurve::SetGuideCurveBuilder(IGuideCurveBuilder& b)
 {
     m_builder = &b;
+}
+
+void CCPACSGuideCurve::BuildCurve(TopoDS_Edge& cache) const
+{
+    if (m_builder) {
+        // interpolate B-Spline curve through guide curve points
+        cache = EdgeSplineFromPoints(GetCurvePoints());
+    }
 }
 
 } // end namespace tigl

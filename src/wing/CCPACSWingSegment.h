@@ -121,9 +121,11 @@ public:
 
     // Returns the starting(inner) Segment Connection
     TIGL_EXPORT CTiglWingConnection& GetInnerConnection();
+    TIGL_EXPORT const CTiglWingConnection& GetInnerConnection() const;
 
     // Return the end(outer) Segment Connection
     TIGL_EXPORT CTiglWingConnection& GetOuterConnection();
+    TIGL_EXPORT const CTiglWingConnection& GetOuterConnection() const;
 
     // Gets the count of segments connected to the inner section of this segment
     TIGL_EXPORT int GetInnerConnectedSegmentCount() const;

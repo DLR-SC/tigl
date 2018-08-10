@@ -65,7 +65,8 @@ namespace tigl
 
 CCPACSFuselage::CCPACSFuselage(CCPACSFuselages* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSFuselage(parent, uidMgr)
-    , CTiglRelativelyPositionedComponent(&m_parentUID, &m_transformation, &m_symmetry) {
+    , CTiglRelativelyPositionedComponent(&m_parentUID, &m_transformation, &m_symmetry)
+    , guideCurves(*this, &CCPACSFuselage::BuildGuideCurves) {
     Cleanup();
     if (parent->IsParent<CCPACSAircraftModel>())
         configuration = &parent->GetParent<CCPACSAircraftModel>()->GetConfiguration();
@@ -83,6 +84,7 @@ CCPACSFuselage::~CCPACSFuselage()
 void CCPACSFuselage::Invalidate()
 {
     loft.reset();
+    guideCurves.clear();
     m_segments.Invalidate();
     if (m_positionings)
         m_positionings->Invalidate();
@@ -374,27 +376,31 @@ CCPACSGuideCurve& CCPACSFuselage::GetGuideCurveSegment(std::string uid)
     throw tigl::CTiglError("Guide Curve with UID " + uid + " does not exists", TIGL_ERROR);
 }
 
-TopoDS_Compound &CCPACSFuselage::GetGuideCurveWires()
+const CCPACSGuideCurve& CCPACSFuselage::GetGuideCurveSegment(std::string uid) const
 {
-    BuildGuideCurves();
-    return guideCurves;
+    return const_cast<CCPACSFuselage&>(*this).GetGuideCurveSegment(uid);
 }
 
-std::vector<gp_Pnt> CCPACSFuselage::GetGuideCurvePoints()
+const TopoDS_Compound &CCPACSFuselage::GetGuideCurveWires() const
+{
+    return *guideCurves;
+}
+
+std::vector<gp_Pnt> CCPACSFuselage::GetGuideCurvePoints() const
 {
     std::vector<gp_Pnt> points;
 
     // connect the belonging guide curve segments
     for (int isegment = 1; isegment <= GetSegmentCount(); ++isegment) {
-        CCPACSFuselageSegment& segment = m_segments.GetSegment(isegment);
+        const CCPACSFuselageSegment& segment = m_segments.GetSegment(isegment);
 
         if (!segment.GetGuideCurves()) {
             continue;
         }
 
-        CCPACSGuideCurves& segmentCurves = *segment.GetGuideCurves();
+        const CCPACSGuideCurves& segmentCurves = *segment.GetGuideCurves();
         for (int iguide = 1; iguide <=  segmentCurves.GetGuideCurveCount(); ++iguide) {
-            CCPACSGuideCurve& curve = segmentCurves.GetGuideCurve(iguide);
+            const CCPACSGuideCurve& curve = segmentCurves.GetGuideCurve(iguide);
             std::vector<gp_Pnt> curPoints = curve.GetCurvePoints();
             points.insert(points.end(), curPoints.begin(), curPoints.end());
         }
@@ -520,25 +526,20 @@ TopoDS_Wire CCPACSFuselage::projectParallel(TopoDS_Shape wireOrEdge, gp_Dir dire
     return project(wireOrEdge, proj, debug);
 }
 
-void CCPACSFuselage::BuildGuideCurves()
+void CCPACSFuselage::BuildGuideCurves(TopoDS_Compound& cache) const
 {
-    if (!guideCurves.IsNull()) {
-        return;
-    }
-    
-    guideCurves.Nullify();
-    std::map<double, CCPACSGuideCurve*> roots;
+    std::map<double, const CCPACSGuideCurve*> roots;
 
     // get section centers for the centripetal parametrization
     std::vector<gp_Pnt> sectionCenters(GetSegmentCount()+1);
 
     // get center of inner section of first segment
-    CCPACSFuselageSegment& innerSegment = m_segments.GetSegment(1);
+    const CCPACSFuselageSegment& innerSegment = m_segments.GetSegment(1);
     sectionCenters[0] = innerSegment.GetTransformedProfileOriginStart();
     
     // find roots and connect the belonging guide curve segments
     for (int isegment = 1; isegment <= GetSegmentCount(); ++isegment) {
-        CCPACSFuselageSegment& segment = m_segments.GetSegment(isegment);
+        const CCPACSFuselageSegment& segment = m_segments.GetSegment(isegment);
 
         if (!segment.GetGuideCurves()) {
             continue;
@@ -547,9 +548,9 @@ void CCPACSFuselage::BuildGuideCurves()
         // get center of outer section
         sectionCenters[isegment] = segment.GetTransformedProfileOriginEnd();
 
-        CCPACSGuideCurves& segmentCurves = *segment.GetGuideCurves();
+        const CCPACSGuideCurves& segmentCurves = *segment.GetGuideCurves();
         for (int iguide = 1; iguide <=  segmentCurves.GetGuideCurveCount(); ++iguide) {
-            CCPACSGuideCurve& curve = segmentCurves.GetGuideCurve(iguide);
+            const CCPACSGuideCurve& curve = segmentCurves.GetGuideCurve(iguide);
             if (!curve.GetFromGuideCurveUID_choice1()) {
                 // this is a root curve
                 double relCirc= *curve.GetFromRelativeCircumference_choice2();
@@ -557,10 +558,10 @@ void CCPACSFuselage::BuildGuideCurves()
                 //the guide curve at relCirc=1 should be inserted at relCirc=0
                 roots.insert(std::make_pair(relCirc, &curve));
             }
-            else {
-                CCPACSGuideCurve& fromCurve = GetGuideCurveSegment(*curve.GetFromGuideCurveUID_choice1());
-                fromCurve.ConnectToCurve(&curve);
-            }
+            //else {
+            //    const CCPACSGuideCurve& fromCurve = GetGuideCurveSegment(*curve.GetFromGuideCurveUID_choice1());
+            //    fromCurve.ConnectToCurve(&curve);
+            //}
         }
     }
 
@@ -569,7 +570,7 @@ void CCPACSFuselage::BuildGuideCurves()
 
     // connect guide curve segments to a spline with given continuity conditions and tangents
     CTiglCurveConnector connector(roots, sectionParams);
-    guideCurves = connector.GetConnectedGuideCurves();
+    cache = connector.GetConnectedGuideCurves();
 }
 
 void CCPACSFuselage::ConnectGuideCurveSegments(void)

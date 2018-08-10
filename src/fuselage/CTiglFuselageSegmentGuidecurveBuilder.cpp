@@ -39,7 +39,7 @@ CTiglFuselageSegmentGuidecurveBuilder::~CTiglFuselageSegmentGuidecurveBuilder()
 {
 }
 
-std::vector<gp_Pnt> CTiglFuselageSegmentGuidecurveBuilder::BuildGuideCurvePnts(CCPACSGuideCurve * guideCurve)
+std::vector<gp_Pnt> CTiglFuselageSegmentGuidecurveBuilder::BuildGuideCurvePnts(const CCPACSGuideCurve * guideCurve) const
 {
     assert(guideCurve);
 
