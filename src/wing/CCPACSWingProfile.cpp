@@ -124,7 +124,7 @@ bool CCPACSWingProfile::IsRotorProfile() const
 // Invalidates internal wing profile state
 void CCPACSWingProfile::Invalidate()
 {
-    GetProfileAlgo()->Invalidate();
+    GetProfileAlgo()->Update();
 }
 
 // Returns the wing profile upper wire
