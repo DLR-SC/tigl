@@ -124,6 +124,11 @@ CTiglTransformation CTiglWingConnection::GetSectionElementTransformation() const
     return transformation;
 }
 
+void CTiglWingConnection::SetElementUID(const std::string & uid)
+{
+    elementUID = uid;
+    m_resolved.clear();
+}
 
 void CTiglWingConnection::resolve(ResolvedIndices& cache) const
 {

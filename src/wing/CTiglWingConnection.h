@@ -71,6 +71,8 @@ public:
     // Returns the section element matrix referenced by this connection
     TIGL_EXPORT CTiglTransformation GetSectionElementTransformation() const;
 
+    TIGL_EXPORT void SetElementUID(const std::string& uid);
+
 private:
     struct ResolvedIndices {
         int sectionIndex;

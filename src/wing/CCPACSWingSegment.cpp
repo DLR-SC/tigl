@@ -256,12 +256,12 @@ std::string CCPACSWingSegment::GetDefaultedUID() const {
 
 void CCPACSWingSegment::SetFromElementUID(const std::string& value) {
     generated::CPACSWingSegment::SetFromElementUID(value);
-    innerConnection = CTiglWingConnection(m_fromElementUID, this);
+    innerConnection.SetElementUID(value);
 }
 
 void CCPACSWingSegment::SetToElementUID(const std::string& value) {
     generated::CPACSWingSegment::SetToElementUID(value);
-    outerConnection = CTiglWingConnection(m_toElementUID, this);
+    outerConnection.SetElementUID(value);
 }
 
 // Returns the wing this segment belongs to
@@ -273,7 +273,7 @@ CCPACSWing& CCPACSWingSegment::GetWing() const
 // helper function to get the inner transformed chord line wire
 TopoDS_Wire CCPACSWingSegment::GetInnerWire(TiglCoordinateSystem referenceCS, TiglShapeModifier mod) const
 {
-    CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
+    const CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
     TopoDS_Wire w;
 
     /*
@@ -306,7 +306,7 @@ TopoDS_Wire CCPACSWingSegment::GetInnerWire(TiglCoordinateSystem referenceCS, Ti
 // helper function to get the outer transformed chord line wire
 TopoDS_Wire CCPACSWingSegment::GetOuterWire(TiglCoordinateSystem referenceCS, TiglShapeModifier mod) const
 {
-    CCPACSWingProfile& outerProfile = outerConnection.GetProfile();
+    const CCPACSWingProfile& outerProfile = outerConnection.GetProfile();
     TopoDS_Wire w;
 
     /*
@@ -729,8 +729,8 @@ gp_Pnt CCPACSWingSegment::GetPoint(double eta, double xsi, bool fromUpper, TiglC
         throw CTiglError("Parameter eta not in the range 0.0 <= eta <= 1.0 in CCPACSWingSegment::GetPoint", TIGL_ERROR);
     }
 
-    CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
-    CCPACSWingProfile& outerProfile = outerConnection.GetProfile();
+    const CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
+    const CCPACSWingProfile& outerProfile = outerConnection.GetProfile();
 
     // Compute points on wing profiles for the given xsi
     gp_Pnt innerProfilePoint;
@@ -902,8 +902,8 @@ gp_Pnt CCPACSWingSegment::GetOuterProfilePoint(double xsi) const
 
 void CCPACSWingSegment::MakeChordSurface(SurfaceCoordCache& cache) const
 {
-    CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
-    CCPACSWingProfile& outerProfile = outerConnection.GetProfile();
+    const CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
+    const CCPACSWingProfile& outerProfile = outerConnection.GetProfile();
 
     // Compute points on wing profiles for the given xsi
     gp_Pnt inner_lep = innerProfile.GetChordPoint(0.);
