@@ -183,7 +183,7 @@ public:
     // computes the xsi coordinate on a straight line in global space, given an eta coordinate
     TIGL_EXPORT void InterpolateOnLine(double csEta1, double csXsi1, double csEta2, double csXsi2, double eta, double &xsi, double &errorDistance);
 
-    TIGL_EXPORT CTiglWingChordface& GetChordface() const;
+    TIGL_EXPORT const CTiglWingChordface& GetChordface() const;
 
 private:
     struct GeometryCache {
@@ -227,13 +227,13 @@ private:
     // Returns the trailing edge direction of the segment with the passed UID
     gp_Vec GetTrailingEdgeDirection(const std::string& segmentUID) const;
 
-    void UpdateChordFace() const;
+    void UpdateChordFace(unique_ptr<CTiglWingChordface>& cache) const;
 
 
 private:
     CCPACSWing*          wing;                 /**< Parent wing                             */
     Cache<SegmentList, CCPACSWingComponentSegment> wingSegments; ///< List of segments belonging to the component segment
-    unique_ptr<CTiglWingChordface> chordFace;
+    Cache<unique_ptr<CTiglWingChordface>, CCPACSWingComponentSegment> chordFace;
     Cache<GeometryCache, CCPACSWingComponentSegment> geomCache;
     Cache<LinesCache, CCPACSWingComponentSegment> linesCache;
 };
