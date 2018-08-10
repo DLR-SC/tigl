@@ -243,6 +243,8 @@ private:
     // Builds the chord surface
     void MakeChordSurface(SurfaceCoordCache& cache) const;
 
+    void ComputeVolume(double& cache) const;
+
     // Returns the chord surface (and builds it if required)
     const CTiglPointTranslator& ChordFace() const;
 
@@ -253,7 +255,6 @@ private:
     CTiglWingConnection  innerConnection;      /**< Inner segment connection (root)         */
     CTiglWingConnection  outerConnection;      /**< Outer segment connection (tip)          */
     CCPACSWing*          wing;                 /**< Parent wing                             */
-    double               myVolume;             /**< Volume of this segment                  */
 
     bool                 loftLinearly = false; /**< Set to true to speed up lofting of the
                                                  * segment. This removes the dependency on
@@ -262,6 +263,7 @@ private:
 
     Cache<SurfaceCoordCache, CCPACSWingSegment> surfaceCoordCache;
     Cache<double, CCPACSWingSegment>            areaCache;
+    Cache<double, CCPACSWingSegment> volumeCache;
 
     unique_ptr<IGuideCurveBuilder> m_guideCurveBuilder;
 };
