@@ -671,6 +671,32 @@ TEST_F(BSplineInterpolation, interpolationDiscontinous)
     }
 }
 
+TEST_F(BSplineInterpolation, interpolationLinear)
+{
+
+    Handle(TColgp_HArray1OfPnt) pnt2 = new TColgp_HArray1OfPnt(1, 2);
+    pnt2->SetValue(1, gp_Pnt(-0.5, 0., 0.5));
+    pnt2->SetValue(2, gp_Pnt(-0.5, 0., 1.5));
+
+
+    int degree = 3;
+
+    tigl::CTiglPointsToBSplineInterpolation app(pnt2, degree, true);
+    Handle(Geom_BSplineCurve) result = app.Curve();
+
+    // test interpolation accuracy
+    const std::vector<double>& params = app.Parameters();
+    for (int iparm = 0; iparm < params.size(); ++iparm) {
+        gp_Pnt p = result->Value(params[iparm]);
+        EXPECT_NEAR(0., p.Distance(pnt2->Value(iparm + 1)), 1e-10);
+    }
+
+    std::stringstream str;
+    str << "TestData/analysis/BSplineInterpolation-interpolationLinear.brep";
+    StoreResult(str.str(), result, pnt2->Array1());
+
+}
+
 /*
  * A test case for issue #440
  */

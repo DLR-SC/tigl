@@ -226,7 +226,7 @@ const std::vector<double>& CTiglPointsToBSplineInterpolation::Parameters() const
 
 unsigned int CTiglPointsToBSplineInterpolation::Degree() const
 {
-    return std::min(m_pnts->Length(), m_degree);
+    return std::min(m_pnts->Length() - 1, m_degree);
 }
 
 } // namespace tigl
