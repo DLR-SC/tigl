@@ -697,6 +697,41 @@ TEST_F(BSplineInterpolation, interpolationLinear)
 
 }
 
+TEST_F(BSplineInterpolation, interpolationClosedIssue1)
+{
+
+    Handle(TColgp_HArray1OfPnt) pnt2 = new TColgp_HArray1OfPnt(1, 5);
+
+    pnt2->SetValue(1, gp_Pnt(-428.410051, 0.000000, 869.975281));
+    pnt2->SetValue(2, gp_Pnt(-310.053449, -937.418377, -247.074247));
+    pnt2->SetValue(3, gp_Pnt(-224.887685, -28.428971, -1041.352947));
+    pnt2->SetValue(4, gp_Pnt(-358.904397, 904.415830, 218.280826));
+    pnt2->SetValue(5, gp_Pnt(-428.410051, -0.000000, 869.975291));
+
+    std::vector<double> params;
+    params.push_back(0.);
+    params.push_back(0.28329579);
+    params.push_back(0.49656342);
+    params.push_back(0.80054936);
+    params.push_back(1.0);
+
+    unsigned int degree = 3;
+
+    tigl::CTiglPointsToBSplineInterpolation app(pnt2, params, degree, true);
+    Handle(Geom_BSplineCurve) curve = app.Curve();
+
+    EXPECT_EQ(5, curve->NbKnots());
+    EXPECT_EQ(3, curve->Degree());
+
+    // check first and second derivative
+    EXPECT_NEAR(0., (curve->DN(0., 1) - curve->DN(1., 1)).Magnitude(), 1e-10);
+    EXPECT_NEAR(0., (curve->DN(0., 2) - curve->DN(1., 2)).Magnitude(), 1e-10);
+
+    std::stringstream str;
+    str << "TestData/analysis/BSplineInterpolation-interpolationClosedIssue1.brep";
+    StoreResult(str.str(), curve, pnt2->Array1());
+}
+
 /*
  * A test case for issue #440
  */

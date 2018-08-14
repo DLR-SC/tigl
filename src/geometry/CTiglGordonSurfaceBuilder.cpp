@@ -166,7 +166,6 @@ void CTiglGordonSurfaceBuilder::CreateGordonSurface(const std::vector<Handle(Geo
     Handle(Geom_BSplineSurface) tensorProdSurf = CTiglBSplineAlgorithms::pointsToSurface(intersection_pnts,
                                                                                          intersection_params_spline_u, intersection_params_spline_v,
                                                                                          makeUClosed, makeVClosed);
-
     // match degree of all three surfaces
     Standard_Integer degreeU = std::max(std::max(surfGuides->UDegree(),
                                                  surfProfiles->UDegree()),

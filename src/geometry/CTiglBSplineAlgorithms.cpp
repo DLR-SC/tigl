@@ -21,6 +21,7 @@
 #include "CTiglError.h"
 #include "CSharedPtr.h"
 #include "CTiglBSplineApproxInterp.h"
+#include "CTiglPointsToBSplineInterpolation.h"
 #include "to_string.h"
 #include "tiglcommonfunctions.h"
 
@@ -31,7 +32,6 @@
 #include <Geom_TrimmedCurve.hxx>
 #include <GeomConvert.hxx>
 #include <Geom2dAPI_Interpolate.hxx>
-#include <GeomAPI_Interpolate.hxx>
 #include <GeomAPI_ExtremaCurveCurve.hxx>
 #include <TColStd_Array2OfReal.hxx>
 #include <TColStd_HArray1OfReal.hxx>
@@ -51,7 +51,6 @@
 #include <stdexcept>
 #include <algorithm>
 #include <cassert>
-
 
 namespace
 {
@@ -321,17 +320,6 @@ namespace
     {
         return array2GetRow<TColgp_Array2OfPnt, TColgp_HArray1OfPnt, Handle_TColgp_HArray1OfPnt>(matrix, rowIndex);
     }
-
-    void clampBSpline(Handle(Geom_BSplineCurve)& curve)
-    {
-        if (!curve->IsPeriodic()) {
-            return;
-        }
-        curve->SetNotPeriodic();
-
-        Handle(Geom_Curve) c = new Geom_TrimmedCurve(curve, curve->FirstParameter(), curve->LastParameter());
-        curve = GeomConvert::CurveToBSplineCurve(c);
-    }
     
     Handle(TColStd_HArray1OfReal) toArray(const std::vector<double>& vector)
     {
@@ -594,30 +582,18 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::curvesToSurface(const std::v
     Handle(TColStd_HArray1OfReal) knotsV;
     Handle(TColStd_HArray1OfInteger) multsV;
 
-    size_t nPointsAdapt = makeClosed ? nCurves - 1 : nCurves;
-
     // create matrix of new control points with size which is possibly DIFFERENT from the size of controlPoints
     Handle(TColgp_HArray2OfPnt) cpSurf;
-    Handle(TColgp_HArray1OfPnt) interpPointsVDir = new TColgp_HArray1OfPnt(1, static_cast<Standard_Integer>(nPointsAdapt));
+    Handle(TColgp_HArray1OfPnt) interpPointsVDir = new TColgp_HArray1OfPnt(1, static_cast<Standard_Integer>(nCurves));
 
     // now continue to create new control points by interpolating the remaining columns of controlPoints in Skinning direction (here v-direction) by B-splines
     for (int cpUIdx = 1; cpUIdx <= numControlPointsU; ++cpUIdx) {
-        for (int cpVIdx = 1; cpVIdx <= nPointsAdapt; ++cpVIdx) {
+        for (int cpVIdx = 1; cpVIdx <= nCurves; ++cpVIdx) {
             interpPointsVDir->SetValue(cpVIdx, compatSplines[cpVIdx - 1]->Pole(cpUIdx));
         }
-        GeomAPI_Interpolate interpolationObject(interpPointsVDir, toArray(vParameters), makeClosed, 1e-5);
-        interpolationObject.Perform();
-
-        // check that interpolation was successful
-        if (!interpolationObject.IsDone()) {
-            throw CTiglError("Error computing skinning surface", TIGL_MATH_ERROR);
-        }
+        CTiglPointsToBSplineInterpolation interpolationObject(interpPointsVDir, vParameters, 3, makeClosed);
 
         Handle(Geom_BSplineCurve) interpSpline = interpolationObject.Curve();
-
-        if (makeClosed) {
-            clampBSpline(interpSpline);
-        }
 
         if (cpUIdx == 1) {
             degreeV = interpSpline->Degree();
@@ -814,31 +790,13 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::pointsToSurface(const TColgp
     bool makeVDirClosed = vContinousIfClosed & isVDirClosed(points, tolerance);
     bool makeUDirClosed = uContinousIfClosed & isUDirClosed(points, tolerance);
 
-    // GeomAPI_Interpolate does not want to have the last point,
-    // if the curve should be closed. It internally uses the first point
-    // as the last point
-    int nPointsUpper = makeUDirClosed ? points.UpperRow() -1 : points.UpperRow();
-
     // first interpolate all points by B-splines in u-direction
     std::vector<Handle(Geom_BSplineCurve)> uSplines;
     for (int cpVIdx = points.LowerCol(); cpVIdx <= points.UpperCol(); ++cpVIdx) {
-        Handle_TColgp_HArray1OfPnt points_u = new TColgp_HArray1OfPnt(points.LowerRow(), nPointsUpper);
-        for (int iPointU = points_u->Lower(); iPointU <= points_u->Upper(); ++iPointU) {
-            points_u->SetValue(iPointU, points.Value(iPointU, cpVIdx));
-        }
-
-        GeomAPI_Interpolate interpolationObject(points_u, toArray(uParams), makeUDirClosed, 1e-15);
-        interpolationObject.Perform();
-
-        // check that interpolation was successful
-        assert(interpolationObject.IsDone());
+        Handle_TColgp_HArray1OfPnt points_u = pntArray2GetColumn(points, cpVIdx);
+        CTiglPointsToBSplineInterpolation interpolationObject(points_u, uParams, 3, makeUDirClosed);
 
         Handle(Geom_BSplineCurve) curve = interpolationObject.Curve();
-
-        // for further processing, we have to unperiodise / clamp the curve
-        if (makeUDirClosed) {
-            clampBSpline(curve);
-        }
         uSplines.push_back(curve);
     }
 

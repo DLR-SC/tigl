@@ -27,6 +27,7 @@
 #include <Geom_TrimmedCurve.hxx>
 
 #include <algorithm>
+#include <cassert>
 
 namespace
 {
@@ -192,11 +193,11 @@ Handle(Geom_BSplineCurve) CTiglPointsToBSplineInterpolation::Curve() const
 
 double CTiglPointsToBSplineInterpolation::maxDistanceOfBoundingBox(const TColgp_Array1OfPnt& points) const
 {
-    double distance;
     double maxDistance = 0.;
     for (int i = points.Lower(); i <= points.Upper(); ++i) {
         for (int j = points.Lower(); j <= points.Upper(); ++j) {
-            distance = std::max(distance, points.Value(i).Distance(points.Value(j)));
+            double dist = points.Value(i).Distance(points.Value(j));
+            maxDistance = std::max(maxDistance, dist);
         }
     }
     return maxDistance;
@@ -205,7 +206,7 @@ double CTiglPointsToBSplineInterpolation::maxDistanceOfBoundingBox(const TColgp_
 bool CTiglPointsToBSplineInterpolation::isClosed() const
 {
     double maxDistance = maxDistanceOfBoundingBox(m_pnts->Array1());
-    double error       = 1e-12 * maxDistance;
+    double error       = 1e-6 * maxDistance;
     return m_pnts->Value(m_pnts->Lower()).IsEqual(m_pnts->Value(m_pnts->Upper()), error) && m_C2Continuous;
 }
 
@@ -226,7 +227,13 @@ const std::vector<double>& CTiglPointsToBSplineInterpolation::Parameters() const
 
 unsigned int CTiglPointsToBSplineInterpolation::Degree() const
 {
-    return std::min(m_pnts->Length() - 1, m_degree);
+    int maxDegree = m_pnts->Length() - 1;
+    if (isClosed()) {
+        maxDegree -= 1;
+    }
+    int degree = std::min(maxDegree, m_degree);
+    assert(degree > 0);
+    return static_cast<unsigned int>(degree);
 }
 
 } // namespace tigl
