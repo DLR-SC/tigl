@@ -46,9 +46,9 @@ public:
     TIGL_EXPORT void Invalidate();
     TIGL_EXPORT TopoDS_Shape GetGeometry(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
 
-    TIGL_EXPORT bool Contains(const TopoDS_Face& face) const;
-    TIGL_EXPORT bool Contains(const TopoDS_Edge& edge) const;
-    TIGL_EXPORT bool Contains(const gp_Pnt& point) const;
+    TIGL_EXPORT bool Contains(const TopoDS_Face& face) const; // in global coords
+    TIGL_EXPORT bool Contains(const TopoDS_Edge& edge) const; // in global coords
+    TIGL_EXPORT bool Contains(const gp_Pnt& point) const; // in global coords
 
 private:
     struct BorderCache {
