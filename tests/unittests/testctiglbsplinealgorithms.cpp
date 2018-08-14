@@ -907,6 +907,7 @@ TEST(TiglBSplineAlgorithms, testCreateGordonSurface)
     Handle(Geom_BSplineSurface) gordonSurface = CTiglGordonSurfaceBuilder(compatible_splines_u_vector, compatible_splines_v_vector,
                                                                           intersection_params_u, intersection_params_v, 1e-6).SurfaceGordon();
 
+    double tolerance = 1e-12;
     // after creating the test surface above, now test it:
     for (int u_idx = 0; u_idx <= 100; ++u_idx) {
         for (int v_idx = 0; v_idx <= 100; ++v_idx) {
@@ -918,9 +919,9 @@ TEST(TiglBSplineAlgorithms, testCreateGordonSurface)
             gp_Pnt point_curve2 = spline_u4->Value(u_value);  // represents y(z) = (z - 0.5)^2 with offset 2 in x-direction
             gp_Pnt right_point(point_curve1.X() * (1. - v_value) + point_curve2.X() * v_value, point_curve1.Y() * (1. - v_value) + point_curve2.Y() * v_value, point_curve1.Z() * (1. - v_value) + point_curve2.Z() * v_value);
 
-            ASSERT_NEAR(surface_point.X(), right_point.X(), 2e-15);
-            ASSERT_NEAR(surface_point.Y(), right_point.Y(), 2e-15);
-            ASSERT_NEAR(surface_point.Z(), right_point.Z(), 2e-15);
+            ASSERT_NEAR(surface_point.X(), right_point.X(), tolerance);
+            ASSERT_NEAR(surface_point.Y(), right_point.Y(), tolerance);
+            ASSERT_NEAR(surface_point.Z(), right_point.Z(), tolerance);
         }
     }
 
