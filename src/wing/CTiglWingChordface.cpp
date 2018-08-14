@@ -43,7 +43,7 @@ CTiglWingChordface::CTiglWingChordface(const CTiglWingSegmentList& segments,
     : _segments(segments)
     , _uid("chordface")
     , _uidManager(uidMgr)
-    , _surfaceCache(*this, &CTiglWingChordface::BuildChordSurface)
+    , _cache(*this, &CTiglWingChordface::BuildChordSurface)
 {
 }
 
@@ -54,12 +54,12 @@ CTiglWingChordface::~CTiglWingChordface()
 
 gp_Pnt CTiglWingChordface::GetPoint(double eta, double xsi) const
 {
-    return _surfaceCache->chordSurface->Value(xsi, eta);
+    return _cache->chordSurface->Value(xsi, eta);
 }
 
 void CTiglWingChordface::GetEtaXsi(gp_Pnt point, double &eta, double &xsi) const
 {
-    GeomAPI_ProjectPointOnSurf projector(point, _surfaceCache->chordSurface, 0., 1., 0., 1.);
+    GeomAPI_ProjectPointOnSurf projector(point, _cache->chordSurface, 0., 1., 0., 1.);
     projector.Perform(point);
 
     projector.LowerDistanceParameters(xsi, eta);
@@ -79,7 +79,7 @@ void CTiglWingChordface::SetUID(const std::string &uid)
 
 void CTiglWingChordface::Reset()
 {
-    _surfaceCache.clear();
+    _cache.clear();
     CTiglAbstractGeometricComponent::Reset();
 }
 
@@ -90,7 +90,7 @@ std::string CTiglWingChordface::GetDefaultedUID() const
 
 PNamedShape CTiglWingChordface::BuildLoft() const
 {
-    TopoDS_Face face = BRepBuilderAPI_MakeFace(_surfaceCache->chordSurface, Precision::Confusion());
+    TopoDS_Face face = BRepBuilderAPI_MakeFace(_cache->chordSurface, Precision::Confusion());
 
     PNamedShape chordFace( new CNamedShape(face, GetDefaultedUID().c_str()));
 
@@ -104,7 +104,7 @@ void CTiglWingChordface::unregisterShape()
     }
 }
 
-void CTiglWingChordface::BuildChordSurface(CTiglWingChordface::ChordfaceCache& cache) const
+void CTiglWingChordface::BuildChordSurface(ChordSurfaceCache& cache) const
 {
     std::vector<CCPACSWingSegment*> segmentsList = getSortedSegments(_segments);
 
@@ -176,12 +176,12 @@ void CTiglWingChordface::BuildChordSurface(CTiglWingChordface::ChordfaceCache& c
 
 const std::vector<double>& CTiglWingChordface::GetElementEtas() const
 {
-    return _surfaceCache->elementEtas;
+    return _cache->elementEtas;
 }
 
 const Handle(Geom_BSplineSurface) CTiglWingChordface::GetSurface() const
 {
-    return _surfaceCache->chordSurface;
+    return _cache->chordSurface;
 }
 
 
