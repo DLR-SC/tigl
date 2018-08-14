@@ -58,10 +58,22 @@ namespace tigl
 CTiglPointsToBSplineInterpolation::CTiglPointsToBSplineInterpolation(const Handle(TColgp_HArray1OfPnt) & points,
                                                                      unsigned int maxDegree, bool continuousIfClosed)
     : m_pnts(points)
-    , m_degree(maxDegree)
+    , m_degree(static_cast<int>(maxDegree))
     , m_C2Continuous(continuousIfClosed)
 {
     m_params = CTiglBSplineAlgorithms::computeParamsBSplineCurve(points);
+
+    if (maxDegree < 1) {
+        throw CTiglError("Degree must be larger than 1 in CTiglPointsToBSplineInterpolation!");
+    }
+
+    if (points.IsNull()) {
+        throw CTiglError("No points given in CTiglPointsToBSplineInterpolation", TIGL_NULL_POINTER);
+    }
+
+    if (points->Length() < 2) {
+        throw CTiglError("Too few points in CTiglPointsToBSplineInterpolation", TIGL_MATH_ERROR);
+    }
 }
 
 CTiglPointsToBSplineInterpolation::CTiglPointsToBSplineInterpolation(const Handle(TColgp_HArray1OfPnt) & points,
@@ -69,11 +81,23 @@ CTiglPointsToBSplineInterpolation::CTiglPointsToBSplineInterpolation(const Handl
                                                                      unsigned int maxDegree, bool continuousIfClosed)
     : m_pnts(points)
     , m_params(parameters)
-    , m_degree(maxDegree)
+    , m_degree(static_cast<int>(maxDegree))
     , m_C2Continuous(continuousIfClosed)
 {
-    if (m_params.size() != m_pnts->Length()) {
+    if (static_cast<int>(m_params.size()) != m_pnts->Length()) {
         throw CTiglError("Number of parameters and points don't match in CTiglPointsToBSplineInterpolation");
+    }
+
+    if (maxDegree < 1) {
+        throw CTiglError("Degree must be larger than 1 in CTiglPointsToBSplineInterpolation!");
+    }
+
+    if (points.IsNull()) {
+        throw CTiglError("No points given in CTiglPointsToBSplineInterpolation", TIGL_NULL_POINTER);
+    }
+
+    if (points->Length() < 2) {
+        throw CTiglError("Too few points in CTiglPointsToBSplineInterpolation", TIGL_MATH_ERROR);
     }
 }
 
@@ -165,7 +189,8 @@ Handle(Geom_BSplineCurve) CTiglPointsToBSplineInterpolation::Curve() const
     }
     if (needsShifting()) {
         // add a new control point and knot
-        knots.push_back(knots.back() + knots[2 * degree + 1] - knots[2 * degree]);
+        size_t deg = static_cast<size_t>(degree);
+        knots.push_back(knots.back() + knots[2 * deg + 1] - knots[2 * deg]);
         poles.SetValue(nParams + degree + 1, poles.Value(degree + 1));
 
         // shift back the knots
