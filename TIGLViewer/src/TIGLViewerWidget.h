@@ -124,6 +124,7 @@ public slots:
     void zoom();
     void zoomIn();
     void zoomOut();
+    void zoom(double scale);
     void pan();
     void globalPan();
     void rotation();
@@ -144,7 +145,9 @@ public slots:
     void viewGrid();
     void viewReset();
     void setLookAtPosition(double x, double y, double z);
+    void setCameraPosition(double x, double y, double z);
     void setCameraPosition(double elevationAngleDegree, double azimuthAngleDegree);
+    void setCameraUpVector(double x, double y, double z);
     void setReset();
     void setTransparency();
     void setTransparency(int);

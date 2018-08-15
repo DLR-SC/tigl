@@ -439,6 +439,13 @@ void TIGLViewerWidget::zoomOut()
     }
 }
 
+void TIGLViewerWidget::zoom(double scale)
+{
+    if ( !myView.IsNull() ) {
+       myView->SetScale( scale);
+    }
+}
+
 void TIGLViewerWidget::pan( void )
 {
     setMode( CurAction3d_DynamicPanning );
@@ -563,6 +570,13 @@ void TIGLViewerWidget::setLookAtPosition(double x, double y, double z)
     }
 }
 
+void TIGLViewerWidget::setCameraPosition(double x, double y, double z)
+{
+    if (!myView.IsNull()) {
+        myView->SetEye(x, y, z);
+    }
+}
+
 void TIGLViewerWidget::setCameraPosition(double elevationAngleDegree, double azimuthAngleDegree)
 {
     if (!myView.IsNull()) {
@@ -586,6 +600,13 @@ void TIGLViewerWidget::setCameraPosition(double elevationAngleDegree, double azi
             dist * cos(elevationAngle) * sin(azimuthAngle) + yl,
             dist * sin(elevationAngle) + zl
         );
+    }
+}
+
+void TIGLViewerWidget::setCameraUpVector(double x, double y, double z)
+{
+    if (!myView.IsNull()) {
+        myView->SetUp(x, y, z);
     }
 }
 
