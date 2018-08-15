@@ -27,6 +27,7 @@
 #include <Geom_TrimmedCurve.hxx>
 
 #include <algorithm>
+#include <cassert>
 
 namespace
 {
@@ -57,10 +58,22 @@ namespace tigl
 CTiglPointsToBSplineInterpolation::CTiglPointsToBSplineInterpolation(const Handle(TColgp_HArray1OfPnt) & points,
                                                                      unsigned int maxDegree, bool continuousIfClosed)
     : m_pnts(points)
-    , m_degree(maxDegree)
+    , m_degree(static_cast<int>(maxDegree))
     , m_C2Continuous(continuousIfClosed)
 {
     m_params = CTiglBSplineAlgorithms::computeParamsBSplineCurve(points);
+
+    if (maxDegree < 1) {
+        throw CTiglError("Degree must be larger than 1 in CTiglPointsToBSplineInterpolation!");
+    }
+
+    if (points.IsNull()) {
+        throw CTiglError("No points given in CTiglPointsToBSplineInterpolation", TIGL_NULL_POINTER);
+    }
+
+    if (points->Length() < 2) {
+        throw CTiglError("Too few points in CTiglPointsToBSplineInterpolation", TIGL_MATH_ERROR);
+    }
 }
 
 CTiglPointsToBSplineInterpolation::CTiglPointsToBSplineInterpolation(const Handle(TColgp_HArray1OfPnt) & points,
@@ -68,11 +81,23 @@ CTiglPointsToBSplineInterpolation::CTiglPointsToBSplineInterpolation(const Handl
                                                                      unsigned int maxDegree, bool continuousIfClosed)
     : m_pnts(points)
     , m_params(parameters)
-    , m_degree(maxDegree)
+    , m_degree(static_cast<int>(maxDegree))
     , m_C2Continuous(continuousIfClosed)
 {
-    if (m_params.size() != m_pnts->Length()) {
+    if (static_cast<int>(m_params.size()) != m_pnts->Length()) {
         throw CTiglError("Number of parameters and points don't match in CTiglPointsToBSplineInterpolation");
+    }
+
+    if (maxDegree < 1) {
+        throw CTiglError("Degree must be larger than 1 in CTiglPointsToBSplineInterpolation!");
+    }
+
+    if (points.IsNull()) {
+        throw CTiglError("No points given in CTiglPointsToBSplineInterpolation", TIGL_NULL_POINTER);
+    }
+
+    if (points->Length() < 2) {
+        throw CTiglError("Too few points in CTiglPointsToBSplineInterpolation", TIGL_MATH_ERROR);
     }
 }
 
@@ -164,7 +189,8 @@ Handle(Geom_BSplineCurve) CTiglPointsToBSplineInterpolation::Curve() const
     }
     if (needsShifting()) {
         // add a new control point and knot
-        knots.push_back(knots.back() + knots[2 * degree + 1] - knots[2 * degree]);
+        size_t deg = static_cast<size_t>(degree);
+        knots.push_back(knots.back() + knots[2 * deg + 1] - knots[2 * deg]);
         poles.SetValue(nParams + degree + 1, poles.Value(degree + 1));
 
         // shift back the knots
@@ -192,11 +218,11 @@ Handle(Geom_BSplineCurve) CTiglPointsToBSplineInterpolation::Curve() const
 
 double CTiglPointsToBSplineInterpolation::maxDistanceOfBoundingBox(const TColgp_Array1OfPnt& points) const
 {
-    double distance;
     double maxDistance = 0.;
     for (int i = points.Lower(); i <= points.Upper(); ++i) {
         for (int j = points.Lower(); j <= points.Upper(); ++j) {
-            distance = std::max(distance, points.Value(i).Distance(points.Value(j)));
+            double dist = points.Value(i).Distance(points.Value(j));
+            maxDistance = std::max(maxDistance, dist);
         }
     }
     return maxDistance;
@@ -205,7 +231,7 @@ double CTiglPointsToBSplineInterpolation::maxDistanceOfBoundingBox(const TColgp_
 bool CTiglPointsToBSplineInterpolation::isClosed() const
 {
     double maxDistance = maxDistanceOfBoundingBox(m_pnts->Array1());
-    double error       = 1e-12 * maxDistance;
+    double error       = 1e-6 * maxDistance;
     return m_pnts->Value(m_pnts->Lower()).IsEqual(m_pnts->Value(m_pnts->Upper()), error) && m_C2Continuous;
 }
 
@@ -226,7 +252,13 @@ const std::vector<double>& CTiglPointsToBSplineInterpolation::Parameters() const
 
 unsigned int CTiglPointsToBSplineInterpolation::Degree() const
 {
-    return std::min(m_pnts->Length() - 1, m_degree);
+    int maxDegree = m_pnts->Length() - 1;
+    if (isClosed()) {
+        maxDegree -= 1;
+    }
+    int degree = std::min(maxDegree, m_degree);
+    assert(degree > 0);
+    return static_cast<unsigned int>(degree);
 }
 
 } // namespace tigl

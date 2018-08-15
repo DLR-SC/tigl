@@ -109,21 +109,26 @@ void CTiglBSplineApproxInterp::InterpolatePoint(size_t pointIndex, bool withKink
 
 double CTiglBSplineApproxInterp::maxDistanceOfBoundingBox(const TColgp_Array1OfPnt& points) const
 {
-    double distance;
-    double maxDistance = 0.;
+    gp_Pnt max(-DBL_MAX, -DBL_MAX, -DBL_MAX);
+    gp_Pnt min(DBL_MAX, DBL_MAX, DBL_MAX);
     for (int i = points.Lower(); i <= points.Upper(); ++i) {
-        for (int j = points.Lower(); j <= points.Upper(); ++j) {
-            distance = points.Value(i).Distance(points.Value(j));
-            if (maxDistance < distance) {
-                maxDistance = distance;
-            }
-        }
+        const gp_Pnt& p = points.Value(i);
+        max.SetX(std::max(max.X(), p.X()));
+        max.SetY(std::max(max.Y(), p.Y()));
+        max.SetZ(std::max(max.Z(), p.Z()));
+
+        min.SetX(std::min(min.X(), p.X()));
+        min.SetY(std::min(min.Y(), p.Y()));
+        min.SetZ(std::min(min.Z(), p.Z()));
     }
-    return maxDistance;
+    return max.Distance(min);
 }
 
 bool CTiglBSplineApproxInterp::isClosed() const
 {
+    if (!m_C2Continuous) {
+        return false;
+    }
     double maxDistance = maxDistanceOfBoundingBox(m_pnts);
     double error = 1e-12*maxDistance;
     return m_pnts.Value(m_pnts.Lower()).IsEqual(m_pnts.Value(m_pnts.Upper()), error);
@@ -361,7 +366,10 @@ CTiglApproxResult CTiglBSplineApproxInterp::solve(const std::vector<double>& par
     Standard_Integer n_apprxmated = static_cast<Standard_Integer>(m_indexOfApproximated.size());
     Standard_Integer n_intpolated = static_cast<Standard_Integer>(m_indexOfInterpolated.size());
     Standard_Integer n_continuityConditions = 0;
-    if (isClosed() && m_C2Continuous) {
+    
+    bool makeClosed = isClosed();
+    
+    if (makeClosed) {
         // C0, C1, C2
         n_continuityConditions = 3;
         if (firstAndLastInterpolated()) {
@@ -448,7 +456,7 @@ CTiglApproxResult CTiglBSplineApproxInterp::solve(const std::vector<double>& par
         }
 
         // sets the C2 continuity constraints for closed curves on the left hand side if requested
-        if (isClosed() && m_C2Continuous) {
+        if (makeClosed) {
             math_Matrix continuity_entries = getContinuityMatrix(nCtrPnts, n_continuityConditions, params, flatKnots);
             lhs.Set(nCtrPnts + n_intpolated + 1, nCtrPnts + n_intpolated + n_continuityConditions, 1, nCtrPnts, continuity_entries);
             lhs.Set(1, nCtrPnts, nCtrPnts + n_intpolated + 1, nCtrPnts + n_intpolated + n_continuityConditions, continuity_entries.Transposed());

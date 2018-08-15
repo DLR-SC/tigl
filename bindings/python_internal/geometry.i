@@ -66,6 +66,7 @@
 #include "CTiglMakeLoft.h"
 #include "CTiglProjectOnLinearSpline.h"
 #include "CTiglInterpolateCurveNetwork.h"
+#include "CTiglPointsToBSplineInterpolation.h"
 %}
 
 
@@ -86,6 +87,7 @@
 %boost_optional(tigl::generated::CPACSPointXYZ)
 %boost_optional(tigl::CCPACSPointListXYZ)
 
+%include "CTiglPointsToBSplineInterpolation.h"
 %include "CTiglInterpolateCurveNetwork.h"
 %include "tiglcommonfunctions.h"
 %include "CTiglProjectOnLinearSpline.h"
