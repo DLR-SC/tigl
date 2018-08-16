@@ -43,16 +43,26 @@ class CCPACSWingRibsDefinition;
 class CCPACSWingCSStructure;
 //class CCPACSTrailingEdgeDevice;
 class CCPACSWingComponentSegment;
+class CCPACSWingStructure;
 
+// TODO(bgruber): rename to WingStructureParent, this class is NOT a reference to a WingStructure
 // this is a set type, encapsulating a reference to either a CCPACSTrailingEdgeDevice or a CCPACSWingComponentSegment
 class CTiglWingStructureReference
 {
 public:
-//    TIGL_EXPORT CTiglWingStructureReference(CCPACSTrailingEdgeDevice& parent);
-    TIGL_EXPORT CTiglWingStructureReference(CCPACSWingComponentSegment& parent);
+    // Enumeration for stored object type
+    enum Type
+    {
+        ComponentSegmentType,
+        TrailingEdgeDeviceType
+    };
 
-    TIGL_EXPORT CCPACSWing& GetWing() const;
-    TIGL_EXPORT boost::optional<CCPACSWingCSStructure>& GetStructure();
+//    TIGL_EXPORT CTiglWingStructureReference(const CCPACSTrailingEdgeDevice& parent);
+    TIGL_EXPORT CTiglWingStructureReference(const CCPACSWingComponentSegment& parent);
+    TIGL_EXPORT CTiglWingStructureReference(const CCPACSWingCSStructure& structure);
+
+    TIGL_EXPORT Type GetType() const;
+    TIGL_EXPORT const CCPACSWing& GetWing() const;
     TIGL_EXPORT const boost::optional<CCPACSWingCSStructure>& GetStructure() const;
     TIGL_EXPORT PNamedShape GetLoft(TiglCoordinateSystem reference = WING_COORDINATE_SYSTEM) const;
     TIGL_EXPORT gp_Pnt GetPoint(double eta, double xsi, TiglCoordinateSystem reference) const;
@@ -75,23 +85,17 @@ public:
     TIGL_EXPORT TopoDS_Wire GetMidplaneLine(const gp_Pnt& startPoint, const gp_Pnt& endPoint) const;
     TIGL_EXPORT const std::string& GetUID() const;
 
-    TIGL_EXPORT CCPACSWingComponentSegment& GetWingComponentSegment() const;
-//    TIGL_EXPORT CCPACSTrailingEdgeDevice& GetTrailingEdgeDevice() const;
+    TIGL_EXPORT const CCPACSWingComponentSegment& GetWingComponentSegment() const;
+//    TIGL_EXPORT const CCPACSTrailingEdgeDevice& GetTrailingEdgeDevice() const;
 
 private:
-    // Enumeration for stored object type
-    enum Type
-    {
-        ComponentSegmentType,
-//        TrailingEdgeDeviceType
-    };
     Type type;
 
     // pointer to target object
     union
     {
-        CCPACSWingComponentSegment* componentSegment;
-//        CCPACSTrailingEdgeDevice* trailingEdgeDevice;
+        const CCPACSWingComponentSegment* componentSegment;
+//        const CCPACSTrailingEdgeDevice* trailingEdgeDevice;
     };
 };
 

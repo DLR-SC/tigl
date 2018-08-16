@@ -243,13 +243,13 @@ PNamedShape CCPACSWingComponentSegment::GetLowerShape() const
 }
 
 // Getter for inner segment face
-TopoDS_Face CCPACSWingComponentSegment::GetInnerFace()
+TopoDS_Face CCPACSWingComponentSegment::GetInnerFace() const
 {
     return geomCache->innerFace;
 }
 
 // Getter for outer segment face
-TopoDS_Face CCPACSWingComponentSegment::GetOuterFace()
+TopoDS_Face CCPACSWingComponentSegment::GetOuterFace() const
 {
     return geomCache->outerFace;
 }

@@ -18,6 +18,7 @@
 #include "CTiglLogging.h"
 //#include "CCPACSTrailingEdgeDevice.h"
 #include "CCPACSWingComponentSegment.h"
+#include "CCPACSWingCSStructure.h"
 #include "CCPACSWing.h"
 #include "CNamedShape.h"
 #include <BRepTools.hxx>
@@ -25,27 +26,48 @@
 
 namespace tigl
 {
-//CTiglWingStructureReference::CTiglWingStructureReference(CCPACSTrailingEdgeDevice& parent)
-//: type(TrailingEdgeDeviceType), trailingEdgeDevice(&parent) { }
+//CTiglWingStructureReference::CTiglWingStructureReference(const CCPACSTrailingEdgeDevice& parent)
+//: type(TrailingEdgeDeviceType), trailingEdgeDevice(&parent)
+//{
+//}
 
-CTiglWingStructureReference::CTiglWingStructureReference(CCPACSWingComponentSegment& parent)
-: type(ComponentSegmentType), componentSegment(&parent) { }
-
-#define DISPATCH(call) \
-    switch (type) { \
-        case ComponentSegmentType: return componentSegment->call; \
-/*        case TrailingEdgeDeviceType: return trailingEdgeDevice->call; */ \
-        default: throw CTiglError("Internal Error in CTiglWingStructureReference: unknown type passed to DISPATCH macro!"); \
-    }
-
-CCPACSWing& CTiglWingStructureReference::GetWing() const
+CTiglWingStructureReference::CTiglWingStructureReference(const CCPACSWingComponentSegment& parent)
+: type(ComponentSegmentType), componentSegment(&parent)
 {
-    DISPATCH(GetWing())
 }
 
-boost::optional<CCPACSWingCSStructure>& CTiglWingStructureReference::GetStructure()
+CTiglWingStructureReference::CTiglWingStructureReference(const CCPACSWingCSStructure& structure)
 {
-    DISPATCH(GetStructure())
+    //if (structure.IsParent<CCPACSWingComponentSegment>()) {
+        type = ComponentSegmentType;
+        componentSegment = structure.GetParent();
+        //componentSegment = structure.GetParent<CCPACSWingComponentSegment>();
+    //} else if (structure.IsParent<CCPACSTrailingEdgeDevice>()) {
+    //    type = TrailingEdgeDeviceType;
+    //    trailingEdgeDevice = structure.GetParent<CCPACSTrailingEdgeDevice>();
+    //} else {
+    //    throw CTiglError("Unrecognized parent of CCPACSWingCSStructure");
+    //}
+}
+
+#define DISPATCH(call)                                                                                                 \
+    switch (type) {                                                                                                    \
+    case ComponentSegmentType:                                                                                         \
+        return componentSegment->call;                                                                                 \
+    /*case TrailingEdgeDeviceType:                                                                                       \
+        return trailingEdgeDevice->call;*/                                                                               \
+    default:                                                                                                           \
+        throw CTiglError("Internal Error in CTiglWingStructureReference: unknown type passed to DISPATCH macro!");     \
+    }
+
+CTiglWingStructureReference::Type CTiglWingStructureReference::GetType() const
+{
+    return type;
+}
+
+const CCPACSWing& CTiglWingStructureReference::GetWing() const
+{
+    DISPATCH(GetWing())
 }
 
 const boost::optional<CCPACSWingCSStructure>& CTiglWingStructureReference::GetStructure() const
@@ -86,42 +108,42 @@ PNamedShape CTiglWingStructureReference::GetLoft(TiglCoordinateSystem reference)
 
 gp_Pnt CTiglWingStructureReference::GetPoint(double eta, double xsi, TiglCoordinateSystem reference) const
 {
-    DISPATCH(GetPoint(eta, xsi, reference))
+    DISPATCH(GetPoint(eta, xsi, reference));
 }
 
 double CTiglWingStructureReference::GetLeadingEdgeLength() const
 {
-    DISPATCH(GetLeadingEdgeLength())
+    DISPATCH(GetLeadingEdgeLength());
 }
 
 double CTiglWingStructureReference::GetTrailingEdgeLength() const
 {
-    DISPATCH(GetTrailingEdgeLength())
+    DISPATCH(GetTrailingEdgeLength());
 }
 
 gp_Pnt CTiglWingStructureReference::GetLeadingEdgePoint(double eta) const
 {
-    DISPATCH(GetLeadingEdgePoint(eta))
+    DISPATCH(GetLeadingEdgePoint(eta));
 }
 
 gp_Pnt CTiglWingStructureReference::GetTrailingEdgePoint(double eta) const
 {
-    DISPATCH(GetTrailingEdgePoint(eta))
+    DISPATCH(GetTrailingEdgePoint(eta));
 }
 
 gp_Vec CTiglWingStructureReference::GetLeadingEdgeDirection(const gp_Pnt& point, const std::string& defaultSegmentUID) const
 {
-    DISPATCH(GetLeadingEdgeDirection(point, defaultSegmentUID))
+    DISPATCH(GetLeadingEdgeDirection(point, defaultSegmentUID));
 }
 
 gp_Vec CTiglWingStructureReference::GetTrailingEdgeDirection(const gp_Pnt& point, const std::string& defaultSegmentUID) const
 {
-    DISPATCH(GetTrailingEdgeDirection(point, defaultSegmentUID))
+    DISPATCH(GetTrailingEdgeDirection(point, defaultSegmentUID));
 }
 
 TopoDS_Wire CTiglWingStructureReference::GetLeadingEdgeLine() const
 {
-    DISPATCH(GetLeadingEdgeLine())
+    DISPATCH(GetLeadingEdgeLine());
 }
 
 TopoDS_Wire CTiglWingStructureReference::GetTrailingEdgeLine() const
@@ -136,17 +158,17 @@ void CTiglWingStructureReference::GetEtaXsiLocal(const gp_Pnt& p, double& eta, d
 
 gp_Vec CTiglWingStructureReference::GetMidplaneEtaDir(double eta) const
 {
-    DISPATCH(GetMidplaneEtaDir(eta))
+    DISPATCH(GetMidplaneEtaDir(eta));
 }
 
 gp_Vec CTiglWingStructureReference::GetMidplaneNormal(double eta) const
 {
-    DISPATCH(GetMidplaneNormal(eta))
+    DISPATCH(GetMidplaneNormal(eta));
 }
 
 TopoDS_Shape CTiglWingStructureReference::GetMidplaneShape() const
 {
-    DISPATCH(GetMidplaneShape())
+    DISPATCH(GetMidplaneShape());
 }
 
 TopoDS_Shape CTiglWingStructureReference::GetUpperShape(TiglCoordinateSystem reference) const
@@ -211,12 +233,12 @@ TopoDS_Shape CTiglWingStructureReference::GetLowerShape(TiglCoordinateSystem ref
 
 TopoDS_Face CTiglWingStructureReference::GetInnerFace() const
 {
-    DISPATCH(GetInnerFace())
+    DISPATCH(GetInnerFace());
 }
 
 TopoDS_Face CTiglWingStructureReference::GetOuterFace() const
 {
-    DISPATCH(GetOuterFace())
+    DISPATCH(GetOuterFace());
 }
 
 TopoDS_Wire CTiglWingStructureReference::GetMidplaneLine(const gp_Pnt& startPoint, const gp_Pnt& endPoint) const
@@ -226,10 +248,10 @@ TopoDS_Wire CTiglWingStructureReference::GetMidplaneLine(const gp_Pnt& startPoin
 
 const std::string& CTiglWingStructureReference::GetUID() const
 {
-    DISPATCH(GetUID())
+    DISPATCH(GetUID());
 }
 
-CCPACSWingComponentSegment& CTiglWingStructureReference::GetWingComponentSegment() const
+const CCPACSWingComponentSegment& CTiglWingStructureReference::GetWingComponentSegment() const
 {
     if (type != ComponentSegmentType) {
         LOG(ERROR) << "CTiglWingStructureReference is not a CCPACSWingComponentSegment";
@@ -238,7 +260,7 @@ CCPACSWingComponentSegment& CTiglWingStructureReference::GetWingComponentSegment
     return *componentSegment;
 }
 
-//CCPACSTrailingEdgeDevice& CTiglWingStructureReference::GetTrailingEdgeDevice() const
+//const CCPACSTrailingEdgeDevice& CTiglWingStructureReference::GetTrailingEdgeDevice() const
 //{
 //    if (type != TrailingEdgeDeviceType) {
 //        LOG(ERROR) << "CTiglWingStructureReference is not a CCPACSTrailingEdgeDevice";
