@@ -134,6 +134,11 @@ void CTiglMakeLoft::setMakeSolid(bool enabled)
     _makeSolid = enabled;
 }
 
+void CTiglMakeLoft::setMakeSmooth(bool enabled)
+{
+    _makeSmooth = enabled;
+}
+
 /**
  * @brief Builds the loft using profiles and guide curves
  */
@@ -259,8 +264,11 @@ void CTiglMakeLoft::makeLoftWithoutGuides()
 
         // skin the curves
         tigl::CTiglCurvesToSurface surfaceSkinner(profileCurves);
+        if (!_makeSmooth) {
+            surfaceSkinner.SetMaxDegree(1);
+        }
         Handle(Geom_BSplineSurface) surface = surfaceSkinner.Surface();
-        BRepBuilderAPI_MakeFace faceMaker(surface, Precision::Confusion());
+        BRepBuilderAPI_MakeFace faceMaker(surface, 1e-10);
         builder.Add(faces, faceMaker.Face());
     }
     FinalizeShape(faces);

@@ -258,6 +258,7 @@ inline double Radians(double degree)
 
 // Calculate centripetal parameters for a sequence of points. This can be used
 // to influence the parametrization in the interpolation algorithm
+//  TODO: Possibly code duplication, see CTiglBSplineAlgorithms::computeParamsBSplineCurve
 TIGL_EXPORT std::vector<double> GetCentripetalParameters(const std::vector<gp_Pnt>& points,
                                                          double startParam = 0,
                                                          double endParam = 1,

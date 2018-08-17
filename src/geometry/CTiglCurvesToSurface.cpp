@@ -30,6 +30,7 @@
 #include <TColgp_HArray2OfPnt.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 
+#include "CTiglPointsToBSplineInterpolation.h"
 
 //TODO anonymous helper functions duplicated from CTiglBSplineAlgorithms.cpp
 namespace {
@@ -63,19 +64,27 @@ namespace tigl {
 TIGL_EXPORT CTiglCurvesToSurface::CTiglCurvesToSurface(std::vector<Handle(Geom_BSplineCurve) > const& splines_vector,
                                                        bool continuousIfClosed)
     : _continuousIfClosed(continuousIfClosed)
+    , _inputCurves(splines_vector)
 {
     CTiglBSplineAlgorithms::matchDegree(splines_vector);
-    CalculateParameters(splines_vector);
-    Perform(splines_vector);
+    CalculateParameters(splines_vector); //TODO this is only really needed if maxDegree > 1
 }
 
 TIGL_EXPORT CTiglCurvesToSurface::CTiglCurvesToSurface(std::vector<Handle(Geom_BSplineCurve) > const& splines_vector,
-                                                       std::vector<double> const& parameters, bool continuousIfClosed)
+                                                       std::vector<double> const& parameters,
+                                                       bool continuousIfClosed)
     : _parameters(parameters)
+    , _inputCurves(splines_vector)
     , _continuousIfClosed(continuousIfClosed)
 {
     CTiglBSplineAlgorithms::matchDegree(splines_vector);
-    Perform(splines_vector);
+}
+
+TIGL_EXPORT void CTiglCurvesToSurface::SetMaxDegree(int degree)
+{
+    assert( degree > 0 );
+    _maxDegree = degree;
+    Invalidate();
 }
 
 TIGL_EXPORT void CTiglCurvesToSurface::CalculateParameters(std::vector<Handle(Geom_BSplineCurve)> const& splines_vector)
@@ -102,22 +111,22 @@ TIGL_EXPORT void CTiglCurvesToSurface::CalculateParameters(std::vector<Handle(Ge
     _parameters = parameters.second;
 }
 
-TIGL_EXPORT void CTiglCurvesToSurface::Perform(std::vector<Handle(Geom_BSplineCurve) > const& curves)
+TIGL_EXPORT void CTiglCurvesToSurface::Perform()
 {
     // check amount of given parameters
-    if (_parameters.size() != curves.size()) {
+    if (_parameters.size() != _inputCurves.size()) {
         throw CTiglError("The amount of given parameters has to be equal to the amount of given B-splines!", TIGL_MATH_ERROR);
     }
 
     // check if all curves are closed
-    double tolerance = CTiglBSplineAlgorithms::scale(curves) * CTiglBSplineAlgorithms::REL_TOL_CLOSED;
-    bool makeClosed = _continuousIfClosed & curves.front()->IsEqual(curves.back(), tolerance);
+    double tolerance = CTiglBSplineAlgorithms::scale(_inputCurves) * CTiglBSplineAlgorithms::REL_TOL_CLOSED;
+    bool makeClosed = _continuousIfClosed & _inputCurves.front()->IsEqual(_inputCurves.back(), tolerance);
 
-    size_t nCurves = curves.size();
+    size_t nCurves = _inputCurves.size();
 
     // create a common knot vector for all splines
     if ( _compatibleSplines.size() == 0 ) {
-        _compatibleSplines = CTiglBSplineAlgorithms::createCommonKnotsVectorCurve(curves, 1e-10);
+        _compatibleSplines = CTiglBSplineAlgorithms::createCommonKnotsVectorCurve(_inputCurves, 1e-10);
     }
 
     const Handle(Geom_BSplineCurve)& firstCurve = _compatibleSplines[0];
@@ -128,26 +137,18 @@ TIGL_EXPORT void CTiglCurvesToSurface::Perform(std::vector<Handle(Geom_BSplineCu
     Handle(TColStd_HArray1OfReal) knotsV;
     Handle(TColStd_HArray1OfInteger) multsV;
 
-    size_t nPointsAdapt = makeClosed ? nCurves - 1 : nCurves;
-
     // create matrix of new control points with size which is possibly DIFFERENT from the size of controlPoints
     Handle(TColgp_HArray2OfPnt) cpSurf;
-    Handle(TColgp_HArray1OfPnt) interpPointsVDir = new TColgp_HArray1OfPnt(1, static_cast<Standard_Integer>(nPointsAdapt));
+    Handle(TColgp_HArray1OfPnt) interpPointsVDir = new TColgp_HArray1OfPnt(1, static_cast<Standard_Integer>(nCurves));
 
     // now continue to create new control points by interpolating the remaining columns of controlPoints in Skinning direction (here v-direction) by B-splines
     for (int cpUIdx = 1; cpUIdx <= numControlPointsU; ++cpUIdx) {
-        for (int cpVIdx = 1; cpVIdx <= nPointsAdapt; ++cpVIdx) {
+        for (int cpVIdx = 1; cpVIdx <= nCurves; ++cpVIdx) {
             interpPointsVDir->SetValue(cpVIdx, _compatibleSplines[cpVIdx - 1]->Pole(cpUIdx));
         }
-        GeomAPI_Interpolate interpolationObject(interpPointsVDir, toArray(_parameters), makeClosed, 1e-5);
-        interpolationObject.Perform();
 
-        // check that interpolation was successful
-        if (!interpolationObject.IsDone()) {
-            throw CTiglError("Error computing skinning surface", TIGL_MATH_ERROR);
-        }
-
-        Handle(Geom_BSplineCurve) interpSpline = interpolationObject.Curve();
+        CTiglPointsToBSplineInterpolation interpol(interpPointsVDir, _parameters, _maxDegree, makeClosed);
+        Handle(Geom_BSplineCurve) interpSpline = interpol.Curve();
 
         if (makeClosed) {
             clampBSpline(interpSpline);

@@ -240,6 +240,7 @@ PNamedShape CCPACSFuselage::BuildLoft()
     lofter.addGuides(GetGuideCurveWires());
 
     lofter.setMakeSolid(true);
+    lofter.setMakeSmooth(smooth);
 
     TopoDS_Shape loftShape =  lofter.Shape();
 

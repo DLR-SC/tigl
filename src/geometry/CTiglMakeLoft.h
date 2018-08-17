@@ -58,6 +58,14 @@ public:
      * @param enabled If true, a solid is built.
      */
     TIGL_EXPORT void setMakeSolid(bool enabled);
+
+    /**
+     * @brief setMakeSmooth switches, wether the resulting loft will be ruled
+     * or smoothed. This switch only applies, if no guide curves are applied.
+     *
+     * @param enabled Set to true, if smoothing should be enabled.
+     */
+    TIGL_EXPORT void setMakeSmooth(bool enabled);
     
     TIGL_EXPORT TopoDS_Shape& Shape();
     
@@ -96,6 +104,7 @@ private:
     double _mySameKnotTolerance;
     std::vector<TopoDS_Wire> guides, profiles;
     bool _hasPerformed, _makeSolid;
+    bool _makeSmooth = false;
     
     TopoDS_Shape _result;
 };
