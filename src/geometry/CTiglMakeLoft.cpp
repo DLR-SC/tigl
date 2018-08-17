@@ -54,7 +54,7 @@ namespace
                            const TopoDS_Wire& wire2, const Standard_Real presPln,
                            TopoDS_Face& face1, TopoDS_Face& face2);
     
-    TopoDS_Shape MakeShells(TopoDS_Shape& shell, const Standard_Real presPln);
+    TopoDS_Shell MakeShells(TopoDS_Shape& shell, const Standard_Real presPln);
 } // namespace
 
 CTiglMakeLoft::CTiglMakeLoft(double tolerance, double sameKnotTolerance)
@@ -282,12 +282,27 @@ void CTiglMakeLoft::FinalizeShape(TopoDS_Shape& faces)
         // check if the first wire is the same as the last
         Standard_Boolean vClosed = (profiles[0].IsSame(profiles[profiles.size()-1]));
 
+        // check if the start and end wires are points
+        if (!vClosed) {
+            GProp_GProps LProps;
+            BRepGProp::LinearProperties(profiles[0], LProps);
+            bool startWireIsPoint = ( LProps.Mass() < 1e-10 );
+            BRepGProp::LinearProperties(profiles.back(), LProps);
+            bool endWireIsPoint = ( LProps.Mass() < 1e-10 );
+
+            if ( startWireIsPoint && endWireIsPoint ) {
+                vClosed = true;
+                //TODO handle case where we need only one
+                // side cap, i.e. only one wire is a point
+            }
+        }
+
         if (vClosed) {
             // we dont need side caps, just make shell and close it
-            TopoDS_Shape shell = MakeShells(faces, _myTolerance);
+            TopoDS_Shell shell = MakeShells(faces, _myTolerance);
 
-            TopoDS_Solid solid;
             BRep_Builder B;
+            TopoDS_Solid solid;
             B.MakeSolid(solid);
             B.Add(solid, shell);
 
@@ -296,7 +311,7 @@ void CTiglMakeLoft::FinalizeShape(TopoDS_Shape& faces)
             clas3d.PerformInfinitePoint(Precision::Confusion());
             if (clas3d.State() == TopAbs_IN) {
                 B.MakeSolid(solid);
-                TopoDS_Shape aLocalShape = faces.Reversed();
+                TopoDS_Shape aLocalShape = shell.Reversed();
                 B.Add(solid, TopoDS::Shell(aLocalShape));
             }
             _result = solid;
@@ -332,16 +347,6 @@ namespace
                 isDegen = Standard_False;
             }
         }
-
-        // why is this necessary??
-        if (!isDegen) {
-            GProp_GProps LProps;
-            BRepGProp::LinearProperties(W, LProps);
-            if ( LProps.Mass() < 1e-10 ) {
-                isDegen = true;
-            }
-        }
-
         if (isDegen)
             return Standard_True;
         
@@ -420,7 +425,7 @@ namespace
         return solid;
     }
     
-    TopoDS_Shape MakeShells(TopoDS_Shape& shell, const Standard_Real presPln)
+    TopoDS_Shell MakeShells(TopoDS_Shape& shell, const Standard_Real presPln)
     {
         if (shell.IsNull()) {
             StdFail_NotDone::Raise("Thrusections is not build");
@@ -431,7 +436,19 @@ namespace
         BB.Perform();
         
         TopoDS_Shape shellClosed  = BB.SewedShape();
-        return shellClosed;
+
+        //TODO this is way to ugly...
+        try {
+            BRep_Builder B;
+            TopoDS_Shell shellFinal;
+            B.MakeShell(shellFinal);
+            B.Add(shellFinal, shellClosed);
+
+            return shellFinal;
+        }
+        catch ( ... ) {
+            return TopoDS::Shell(shellClosed);
+        }
     }
 
 } // namespace
