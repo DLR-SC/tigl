@@ -43,6 +43,7 @@ public:
         Set("ApplySymmetries", false);
         Set("IncludeFarfield", true);
         Set("ShapeGroupMode", NAMED_COMPOUNDS);
+        AddOption("IGES5.3", true);
     }
 };
 

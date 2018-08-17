@@ -231,6 +231,10 @@ namespace
         WriteIGESShapeNames(writer, shape, level);
     }
 
+    int GetBRepMode(const tigl::CTiglExportIges& writer) {
+        return writer.GlobalExportOptions().HasOption("IGES5.3") ? writer.GlobalExportOptions().Get<bool>("IGES5.3") : 1;
+    }
+    
 } //namespace
 
 namespace tigl
@@ -270,7 +274,7 @@ void CTiglExportIges::SetTranslationParameters() const
      * However, in order to fix Issue #182, BRep entities are
      * necessary.
      */
-    Interface_Static::SetIVal("write.iges.brep.mode", 1);
+    Interface_Static::SetIVal("write.iges.brep.mode", GetBRepMode(*this));
     Interface_Static::SetCVal("write.iges.header.author", "TiGL");
     Interface_Static::SetCVal("write.iges.header.company", "German Aerospace Center (DLR), SC");
 }
@@ -323,9 +327,8 @@ bool CTiglExportIges::WriteImpl(const std::string& filename) const
         iLevel++;
     }
 
+    IGESControl_Writer igesWriter("MM", GetBRepMode(*this));
     SetTranslationParameters();
-
-    IGESControl_Writer igesWriter("MM", 1);
     igesWriter.Model()->ApplyStatic();
 
     for (size_t i = 0; i < list.size(); ++i) {

@@ -3364,6 +3364,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetCurveParameter (TiglCPACSConfigurationH
 *      To avoid duplicate vertices, normals should be disabled.
 *    - MultiplePieces (Values: "true", "false"): Whether to export the shapes into multiple vtk pieces.
 *    - WriteMetaData (Values: "true", "false"): Whether to add meta data (e.g. wing segments etc...)
+*  - IGES:
+*    - IGES5.3 (Values: "true", "false"): Whether to use IGES 5.3 format, that supports shells and solids.
+*      Note: Some software do not yet implement this standard. E.g. Catia might only load this, when set to false!
 *
 * Example: The IGES export normally does only write half-models. It does not apply symmetries.
 * to change this, just call 
