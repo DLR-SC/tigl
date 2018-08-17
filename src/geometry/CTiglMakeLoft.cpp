@@ -45,6 +45,8 @@
 #include <Geom_TrimmedCurve.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <GeomConvert.hxx>
+#include <BRepGProp.hxx>
+#include <GProp_GProps.hxx>
 
 namespace 
 {
@@ -326,9 +328,20 @@ namespace
         for (; iter.More(); iter.Next())
         {
             const TopoDS_Edge& anEdge = TopoDS::Edge(iter.Value());
-            if (!BRep_Tool::Degenerated(anEdge))
+            if (!BRep_Tool::Degenerated(anEdge)) {
                 isDegen = Standard_False;
+            }
         }
+
+        // why is this necessary??
+        if (!isDegen) {
+            GProp_GProps LProps;
+            BRepGProp::LinearProperties(W, LProps);
+            if ( LProps.Mass() < 1e-10 ) {
+                isDegen = true;
+            }
+        }
+
         if (isDegen)
             return Standard_True;
         
