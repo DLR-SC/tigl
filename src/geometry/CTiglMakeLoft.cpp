@@ -428,7 +428,7 @@ namespace
     TopoDS_Shell MakeShells(TopoDS_Shape& shell, const Standard_Real presPln)
     {
         if (shell.IsNull()) {
-            StdFail_NotDone::Raise("Thrusections is not build");
+            StdFail_NotDone::Raise("Loft is not build");
         }
 
         BRepBuilderAPI_Sewing BB(presPln);
@@ -437,16 +437,17 @@ namespace
         
         TopoDS_Shape shellClosed  = BB.SewedShape();
 
-        //TODO this is way to ugly...
-        try {
+        if ( shellClosed.ShapeType() != TopAbs_SHELL ) {
+
+            assert(shellClosed.ShapeType() == TopAbs_FACE);
+
             BRep_Builder B;
             TopoDS_Shell shellFinal;
             B.MakeShell(shellFinal);
             B.Add(shellFinal, shellClosed);
-
             return shellFinal;
         }
-        catch ( ... ) {
+        else {
             return TopoDS::Shell(shellClosed);
         }
     }
