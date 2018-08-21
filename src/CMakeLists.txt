@@ -43,7 +43,7 @@ file(GLOB_RECURSE TIGL_SRC
 )
 set(TIGL_SRC ${TIGL_SRC} ${BOOST_SRC})
 
-option(TIGL_CONCAT_GENERATED_FILES "Concatenate all generated files into one. This should speed up compiliation" OFF)
+option(TIGL_CONCAT_GENERATED_FILES "Concatenate all generated files into one. This speeds up compilation." ON)
 if (TIGL_CONCAT_GENERATED_FILES)
     # Building the generated source files takes a lot of time
     # Since they are normally not changed, we concatenate all
