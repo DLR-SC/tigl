@@ -2,23 +2,12 @@ from __future__ import print_function
 
 from tixi3 import tixi3wrapper
 from tigl3 import tigl3wrapper
-from tigl3.exports import CTiglExportIges
 from tigl3.configuration import CCPACSConfigurationManager_get_instance
 from tigl3.geometry import CNamedShape
+from tigl3.import_export_helper import export_shapes
 from OCC.BRepPrimAPI import BRepPrimAPI_MakeBox
 import os
 
-
-def export_iges(named_shapes, filename):
-    """
-    Exports the named shapes array to igs
-    """
-
-    # write iges file
-    iges_writer = CTiglExportIges()
-    for shape in named_shapes:
-        iges_writer.add_shape(shape)
-    iges_writer.write(filename)
 
 
 def create_box():
@@ -75,7 +64,7 @@ def main():
     # cpacs indexing starts at 1
     wing_shape = get_wing_shape(tigl_handle, 1)
     box_shape = create_box()
-    export_iges([wing_shape, box_shape], "simpletest.igs")
+    export_shapes([wing_shape, box_shape], "simpletest.igs")
 
 if __name__ == '__main__':
     main()

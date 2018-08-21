@@ -44,7 +44,7 @@ if(PYTHONINTERP_FOUND AND NOT PYTHON_VERSION_STRING VERSION_LESS "2.5" )
 		)
 		
 		install(FILES ${LIBRARY_OUTPUT_PATH}/tigl3wrapper.py
-				DESTINATION share/tigl3/python
+				DESTINATION share/tigl3/python/tigl3
 				COMPONENT interfaces)
 else()
     message(ERROR "Python could not be found or the python installation is too old ( < 2.5). Python bindings can not be build!")

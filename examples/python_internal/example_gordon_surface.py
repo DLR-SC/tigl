@@ -1,52 +1,23 @@
-from OCC.BRepTools import breptools_Read
-from OCC.BRep import BRep_Builder, BRep_Tool_Curve
-from OCC.TopoDS import TopoDS_Shape, topods_Edge
-from OCC.TopExp import TopExp_Explorer
-from OCC.TopAbs import TopAbs_EDGE
-from tigl3.geometry import curve_network_to_surface
-from pathlib import Path
-
+from OCC.BRep import BRep_Tool_Curve
 from OCC.Display.SimpleGui import init_display
+from tigl3.geometry import curve_network_to_surface
 
-
-def read_brep(filename):
-    """
-    Reads in a brep file
-    """
-    if not Path(filename).is_file():
-        print ("File not found: " + filename)
-        raise FileNotFoundError(filename)
-
-    b = BRep_Builder()
-    shape = TopoDS_Shape()
-    breptools_Read(shape, filename, b)
-    return shape
-
-
-
-def get_edges(shape):
-    """
-    Returns the edges of the shape
-    """
-
-    exp = TopExp_Explorer(shape, TopAbs_EDGE)
-    while exp.More():
-        yield topods_Edge(exp.Current())
-        exp.Next()
+from tigl3.occ_helpers.topology import read_brep, iter_edges
 
 
 def main():
+    # load curves from files
     guides_shape = read_brep("data/wing_guides.brep")
     profiles_shape = read_brep("data/wing_profiles.brep")
 
     # Create array of curves
     guide_curves = []
-    for edge in get_edges(guides_shape):
+    for edge in iter_edges(guides_shape):
         curve, _, _ = BRep_Tool_Curve(edge)
         guide_curves.append(curve)
 
     profile_curves = []
-    for edge in get_edges(profiles_shape):
+    for edge in iter_edges(profiles_shape):
         curve, _, _ = BRep_Tool_Curve(edge)
         profile_curves.append(curve)
 

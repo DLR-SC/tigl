@@ -86,12 +86,17 @@ if (TIGL_BINDINGS_PYTHON_INTERNAL)
         endif(UNIX)
 
         install(TARGETS _${MODULE}
-                DESTINATION share/tigl3/python/internal
+                DESTINATION share/tigl3/python/tigl3
                 COMPONENT interfaces
         )
 
         install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${MODULE}.py
-                DESTINATION share/tigl3/python/internal
+                DESTINATION share/tigl3/python/tigl3
+                COMPONENT interfaces
+        )
+
+        install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tigl3
+                DESTINATION share/tigl3/python
                 COMPONENT interfaces
         )
 
