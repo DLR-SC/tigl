@@ -25,6 +25,8 @@
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
 
+#include <Geom_RectangularTrimmedSurface.hxx>
+
 namespace tigl {
 
 class CTiglCurvesToSurface
@@ -65,6 +67,14 @@ public:
      * @param maxDegree maximum degree of the splines in skinning direction
      */
     TIGL_EXPORT void SetMaxDegree(int degree);
+
+    /**
+     * @brief returns the parameters at the profile curves
+     */
+    TIGL_EXPORT std::vector<double> GetParameters() const
+    {
+        return _parameters;
+    }
 
     /**
       * @brief returns the skinned surface

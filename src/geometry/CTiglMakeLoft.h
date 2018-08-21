@@ -85,7 +85,7 @@ private:
      * @brief transform the shape to a solid if the correspondig flag is set,
      * transform it to a shell otherwise
      */
-    void FinalizeShape(TopoDS_Shape& faces);
+    void CloseShape(TopoDS_Shape& faces);
     
     /**
      * \brief Tolerance for the MakeSolid, MakeShells, BRepOffsetAPI_ThruSections
@@ -103,6 +103,7 @@ private:
      */
     double _mySameKnotTolerance;
     std::vector<TopoDS_Wire> guides, profiles;
+    std::vector<Standard_Real> uparams, vparams;
     bool _hasPerformed, _makeSolid;
     bool _makeSmooth = false;
     

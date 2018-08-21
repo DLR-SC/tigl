@@ -200,7 +200,7 @@ void CCPACSFuselage::SetFaceTraits (PNamedShape loft, bool hasSymmetryPlane, boo
     names.push_back("Rear");
 
     // if we have a smooth surface, the whole fuslage is treatet as one segment
-    int nSegments = smoothSurface ? 1 : this->GetSegmentCount();
+    int nSegments = this->GetSegmentCount();
 
     int facesPerSegment = hasSymmetryPlane ? 2 : 1;
     int remainingFaces = nFaces - facesPerSegment * nSegments;
@@ -210,8 +210,8 @@ void CCPACSFuselage::SetFaceTraits (PNamedShape loft, bool hasSymmetryPlane, boo
     }
 
     int iFaceTotal = 0;
-    for (int iSegment = 0; iSegment < nSegments; ++iSegment) {
-        for (int iFace = 0; iFace < facesPerSegment; ++iFace) {
+    for (int iFace = 0; iFace < facesPerSegment; ++iFace) {
+        for (int iSegment = 0; iSegment < nSegments; ++iSegment) {
             loft->FaceTraits(iFaceTotal++).SetName(names[iFace].c_str());
         }
     }

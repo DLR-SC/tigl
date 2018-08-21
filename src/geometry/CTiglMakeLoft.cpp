@@ -47,6 +47,7 @@
 #include <GeomConvert.hxx>
 #include <BRepGProp.hxx>
 #include <GProp_GProps.hxx>
+#include <BRep_Tool.hxx>
 
 namespace 
 {
@@ -55,6 +56,9 @@ namespace
                            TopoDS_Face& face1, TopoDS_Face& face2);
     
     TopoDS_Shell MakeShells(TopoDS_Shape& shell, const Standard_Real presPln);
+
+    TopoDS_Shape CutShapeAtUVParameters(TopoDS_Shape const& shape, std::vector<double> uparams, std::vector<double> vparams);
+
 } // namespace
 
 CTiglMakeLoft::CTiglMakeLoft(double tolerance, double sameKnotTolerance)
@@ -230,14 +234,14 @@ void CTiglMakeLoft::makeLoftWithGuides()
     BRepTools::Write(_result, spatches.str().c_str());
 #endif
     
-    FinalizeShape(_result);
+    CloseShape(_result);
 }
 
 void CTiglMakeLoft::makeLoftWithoutGuides()
 {
-    TopoDS_Compound faces;
+    TopoDS_Shell faces;
     BRep_Builder builder;
-    builder.MakeCompound(faces);
+    builder.MakeShell(faces);
 
     // get number of edges per profile wire
     // --> should be the same for all profiles
@@ -270,32 +274,22 @@ void CTiglMakeLoft::makeLoftWithoutGuides()
             surfaceSkinner.SetMaxDegree(1);
         }
         Handle(Geom_BSplineSurface) surface = surfaceSkinner.Surface();
+
+        // remember the profile parameters used for the skinning
+        vparams = surfaceSkinner.GetParameters();
+
         BRepBuilderAPI_MakeFace faceMaker(surface, 1e-10);
         builder.Add(faces, faceMaker.Face());
     }
-    FinalizeShape(faces);
+    TopoDS_Shape finalResult = CutShapeAtUVParameters(faces, uparams, vparams);
+    CloseShape(finalResult);
 }
 
-void CTiglMakeLoft::FinalizeShape(TopoDS_Shape& faces)
+void CTiglMakeLoft::CloseShape(TopoDS_Shape& faces)
 {
     if (_makeSolid) {
         // check if the first wire is the same as the last
         Standard_Boolean vClosed = (profiles[0].IsSame(profiles[profiles.size()-1]));
-
-        // check if the start and end wires are points
-        if (!vClosed) {
-            GProp_GProps LProps;
-            BRepGProp::LinearProperties(profiles[0], LProps);
-            bool startWireIsPoint = ( LProps.Mass() < 1e-10 );
-            BRepGProp::LinearProperties(profiles.back(), LProps);
-            bool endWireIsPoint = ( LProps.Mass() < 1e-10 );
-
-            if ( startWireIsPoint && endWireIsPoint ) {
-                vClosed = true;
-                //TODO handle case where we need only one
-                // side cap, i.e. only one wire is a point
-            }
-        }
 
         if (vClosed) {
             // we dont need side caps, just make shell and close it
@@ -381,7 +375,7 @@ namespace
             StdFail_NotDone::Raise("Thrusections is not build");
         }
         Standard_Boolean B = shell.Closed();
-        
+
         BRepBuilderAPI_Sewing sewingAlgo;
         sewingAlgo.Add(shell);
 
@@ -450,6 +444,80 @@ namespace
         else {
             return TopoDS::Shell(shellClosed);
         }
+    }
+
+    TopoDS_Shape CutShapeAtUVParameters(TopoDS_Shape const& shape, std::vector<double> uparams, std::vector<double> vparams)
+    {
+
+        bool cutInUDirection = (uparams.size() > 0);
+        bool cutInVDirection = (vparams.size() > 0);
+
+        if ( !cutInUDirection && !cutInVDirection ) {
+            //nothing to do
+            return shape;
+        }
+
+        // sort parameter vectors if they are not sorted
+        if (cutInUDirection && !std::is_sorted(uparams.begin(), uparams.end()) ) {
+            std::sort(uparams.begin(), uparams.end());
+        }
+        if (cutInVDirection && !std::is_sorted(vparams.begin(), vparams.end()) ) {
+            std::sort(vparams.begin(), vparams.end());
+        }
+
+
+
+        TopoDS_Shell cutShape;
+        BRep_Builder builder;
+        builder.MakeShell(cutShape);
+
+        for(TopExp_Explorer faces(shape, TopAbs_FACE); faces.More(); faces.Next()) {
+
+            // trim each face/surface of the compound at the uv paramters in the paramter vectors
+
+            Handle(Geom_Surface) surface = BRep_Tool::Surface(TopoDS::Face(faces.Current()));
+            Standard_Real u1, u2, v1, v2;
+            surface->Bounds(u1, u2, v1, v2);
+
+            if ( !cutInUDirection ) {
+                uparams.clear();
+                uparams.push_back(u1);
+                uparams.push_back(u2);
+            }
+
+            if ( !cutInVDirection ) {
+                vparams.clear();
+                vparams.push_back(v1);
+                vparams.push_back(v2);
+            }
+
+            unsigned uidx = 0;
+            while ( uparams[uidx] < u1 ) {
+                ++uidx;
+            }
+
+            unsigned vidx = 0;
+            while ( vparams[vidx] < v1 ) {
+                ++vidx;
+            }
+
+            unsigned ustart = uidx;
+            while ( vidx+1 < vparams.size() && vparams[vidx+1] <= v2 ) {
+                uidx = ustart;
+                while ( uidx+1 < uparams.size() && uparams[uidx+1] <= u2 ) {
+
+                    Handle(Geom_RectangularTrimmedSurface) trimmedSurface =
+                            new Geom_RectangularTrimmedSurface(surface, uparams[uidx], uparams[uidx+1], vparams[vidx], vparams[vidx+1]);
+                    BRepBuilderAPI_MakeFace faceMaker(trimmedSurface, 1e-10);
+
+                    builder.Add(cutShape, faceMaker.Face());
+
+                    ++uidx;
+                }
+                ++vidx;
+            }
+        }
+        return cutShape;
     }
 
 } // namespace
