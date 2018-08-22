@@ -33,6 +33,7 @@
 #include "TopoDS_Wire.hxx"
 #include "TopoDS_Edge.hxx"
 #include "PTiglWingProfileAlgo.h"
+#include "Cache.h"
 
 #include <gp_Pnt.hxx>
 
@@ -120,6 +121,8 @@ protected:
     // Helper function to determine the chord line between leading and trailing edge in the profile plane
     Handle(Geom2d_TrimmedCurve) GetChordLine() const;
 
+    void buildPointListAlgo(unique_ptr<CTiglWingProfilePointList>& cache) const;
+
 private:
     // Copy constructor
     CCPACSWingProfile(const CCPACSWingProfile& );
@@ -129,7 +132,7 @@ private:
 
 private:
     bool                                  isRotorProfile; /**< Indicates if this profile is a rotor profile */
-    unique_ptr<CTiglWingProfilePointList> pointListAlgo;  // is created in case the wing profile alg is a point list, otherwise cst2d constructed in the base class is used
+    Cache<unique_ptr<CTiglWingProfilePointList>, CCPACSWingProfile> pointListAlgo;  // is created in case the wing profile alg is a point list, otherwise cst2d constructed in the base class is used
 
 }; // class CCPACSWingProfile
 
