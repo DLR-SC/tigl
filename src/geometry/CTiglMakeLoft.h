@@ -76,16 +76,16 @@ public:
      * manually.
      */
     TIGL_EXPORT void Perform();
-    
+
 private:
     void makeLoftWithGuides();
     void makeLoftWithoutGuides();
 
     /**
      * @brief transform the shape to a solid if the correspondig flag is set,
-     * transform it to a shell otherwise
+     * transform it to a shell otherwise (wrapper for CTiglPatchShell)
      */
-    void CloseShape(TopoDS_Shape& faces);
+    void CloseShape();
     
     /**
      * \brief Tolerance for the MakeSolid, MakeShells, BRepOffsetAPI_ThruSections
