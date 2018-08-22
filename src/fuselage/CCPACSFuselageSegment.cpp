@@ -212,7 +212,7 @@ CCPACSFuselage& CCPACSFuselageSegment::GetFuselage() const
 // helper function to get the wire of the start section
 TopoDS_Wire CCPACSFuselageSegment::GetStartWire(TiglCoordinateSystem referenceCS) const
 {
-    CCPACSFuselageProfile& startProfile = startConnection.GetProfile();
+    const CCPACSFuselageProfile& startProfile = startConnection.GetProfile();
     TopoDS_Wire startWire = startProfile.GetWire(true);
     if (referenceCS == GLOBAL_COORDINATE_SYSTEM)
         return TopoDS::Wire(transformFuselageProfileGeometry(GetFuselage().GetTransformationMatrix(), startConnection, startWire));
@@ -223,7 +223,7 @@ TopoDS_Wire CCPACSFuselageSegment::GetStartWire(TiglCoordinateSystem referenceCS
 // helper function to get the wire of the end section
 TopoDS_Wire CCPACSFuselageSegment::GetEndWire(TiglCoordinateSystem referenceCS) const
 {
-    CCPACSFuselageProfile& endProfile = endConnection.GetProfile();
+    const CCPACSFuselageProfile& endProfile = endConnection.GetProfile();
     TopoDS_Wire endWire = endProfile.GetWire(true);
     if (referenceCS == GLOBAL_COORDINATE_SYSTEM)
         return TopoDS::Wire(transformFuselageProfileGeometry(GetFuselage().GetTransformationMatrix(), endConnection, endWire));

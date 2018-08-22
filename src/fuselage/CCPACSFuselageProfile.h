@@ -28,6 +28,7 @@
 #include "tigl_internal.h"
 #include "tixi.h"
 #include "TopoDS_Wire.hxx"
+#include "Cache.h"
 
 #include <gp_Pnt.hxx>
 
@@ -64,26 +65,33 @@ public:
 
     // Returns the fuselage profile wire. The wire is already transformed by the
     // fuselage profile element transformation.
-    TIGL_EXPORT TopoDS_Wire GetWire(bool forceClosed = false);
+    TIGL_EXPORT TopoDS_Wire GetWire(bool forceClosed = false) const;
 
     // Gets a point on the fuselage profile wire in dependence of a parameter zeta with
     // 0.0 <= zeta <= 1.0. For zeta = 0.0 this is the wire start point,
     // for zeta = 1.0 the last wire point.
-    TIGL_EXPORT gp_Pnt GetPoint(double zeta);
+    TIGL_EXPORT gp_Pnt GetPoint(double zeta) const;
 
     // Returns the "diameter" line as a wire
-    TIGL_EXPORT TopoDS_Wire GetDiameterWire();
+    TIGL_EXPORT TopoDS_Wire GetDiameterWire() const;
 
-protected:
-    // Update the internal state, i.g. recalculates wire
-    void Update();
+private:
+    struct WireCache {
+        TopoDS_Wire original;
+        TopoDS_Wire closed;
+    };
+
+    struct DiameterPointsCache {
+        gp_Pnt start;
+        gp_Pnt end;
+    };
 
     // Transforms a point by the fuselage profile transformation
     gp_Pnt TransformPoint(const gp_Pnt& aPoint) const;
 
     // Builds the fuselage profile wires. The wires are already transformed by the
     // fuselage profile transformation.
-    void BuildWires();
+    void BuildWires(WireCache& cache) const;
 
     // Helper function to determine the "diameter" (the wing profile chord line equivalent) 
     // which is defined as the line intersecting Point1 and Point2
@@ -95,20 +103,17 @@ protected:
     // In the case of a mirror symmetric profile we have
     // Point1: First point in the profile point list
     // Point2: Last point in the profile point list
-    void BuildDiameterPoints();
+    void BuildDiameterPoints(DiameterPointsCache& cache) const;
 
 private:
     // Checks is two point are the same, or nearly the same.
-    bool checkSamePoints(gp_Pnt pointA, gp_Pnt pointB);
+    bool checkSamePoints(gp_Pnt pointA, gp_Pnt pointB) const;
 
 private:
-    bool                             mirrorSymmetry; /**< Mirror symmetry with repect to the x-z plane */
-    bool                             invalidated;    /**< Flag if element is invalid */
-    TopoDS_Wire                      wireOriginal;   /**< Original fuselage profile wire */
-    TopoDS_Wire                      wireClosed;     /**< Forced closed fuselage profile wire */
-    unique_ptr<ITiglWireAlgorithm>   profileWireAlgo;
-    gp_Pnt                           startDiameterPoint;
-    gp_Pnt                           endDiameterPoint;
+    bool mirrorSymmetry; /**< Mirror symmetry with repect to the x-z plane */
+    Cache<WireCache, CCPACSFuselageProfile> wireCache;   /**< Original and force closed fuselage profile wire */
+    Cache<DiameterPointsCache, CCPACSFuselageProfile> diameterPointsCache;
+    unique_ptr<ITiglWireAlgorithm> profileWireAlgo;
 
 };
 
