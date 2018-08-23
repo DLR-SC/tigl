@@ -261,14 +261,16 @@ void CTiglMakeLoft::makeLoftWithoutGuides()
         }
 
         // skin the curves
-        tigl::CTiglCurvesToSurface surfaceSkinner(profileCurves);
+        tigl::CTiglCurvesToSurface surfaceSkinner(profileCurves, vparams);
         if (!_makeSmooth) {
             surfaceSkinner.SetMaxDegree(1);
         }
         Handle(Geom_BSplineSurface) surface = surfaceSkinner.Surface();
 
         // remember the profile parameters used for the skinning
-        vparams = surfaceSkinner.GetParameters();
+        if (vparams.size()==0) {
+            vparams = surfaceSkinner.GetParameters();
+        }
 
         BRepBuilderAPI_MakeFace faceMaker(surface, 1e-10);
         builder.Add(faces, faceMaker.Face());
@@ -355,7 +357,6 @@ namespace
                     Handle(Geom_RectangularTrimmedSurface) trimmedSurface =
                             new Geom_RectangularTrimmedSurface(surface, uparams[uidx], uparams[uidx+1], vparams[vidx], vparams[vidx+1]);
                     BRepBuilderAPI_MakeFace faceMaker(trimmedSurface, 1e-10);
-
                     builder.Add(cutShape, faceMaker.Face());
 
                     ++uidx;

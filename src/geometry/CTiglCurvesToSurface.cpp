@@ -77,6 +77,9 @@ TIGL_EXPORT CTiglCurvesToSurface::CTiglCurvesToSurface(std::vector<Handle(Geom_B
     , _inputCurves(splines_vector)
     , _continuousIfClosed(continuousIfClosed)
 {
+    if( parameters.size() == 0) {
+        CalculateParameters(splines_vector);
+    }
     CTiglBSplineAlgorithms::matchDegree(splines_vector);
 }
 

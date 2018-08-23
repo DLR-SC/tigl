@@ -40,7 +40,7 @@
 
 #include <cassert>
 
-#undef NO_EXPLICIT_TE_MODELING
+#define NO_EXPLICIT_TE_MODELING
 
 namespace tigl
 {
@@ -214,7 +214,7 @@ PNamedShape CTiglWingBuilder::BuildShape()
 #else
 PNamedShape CTiglWingBuilder::BuildShape()
 {
-    CCPACSWingSegments& segments = _wing.segments;
+    CCPACSWingSegments& segments = _wing.GetSegments();
     CCPACSWingProfile& innerProfile = segments.GetSegment(1).GetInnerConnection().GetProfile();
 
     // we assume, that all profiles of one wing are either blunt or not
@@ -239,7 +239,7 @@ PNamedShape CTiglWingBuilder::BuildShape()
     std::string loftName = _wing.GetUID();
     std::string loftShortName = _wing.GetShortShapeName();
     PNamedShape loft(new CNamedShape(loftShape, loftName.c_str(), loftShortName.c_str()));
-    SetFaceTraits(loft, hasBluntTE);
+    SetFaceTraits(_wing.GetUID(), loft, hasBluntTE);
     return loft;
 }
 #endif
@@ -297,14 +297,16 @@ void CTiglWingBuilder::SetFaceTraits (const std::string& wingUID, PNamedShape lo
     }
 #else
     // remove trailing edge name if there is no trailing edge
-    if (hasBluntTE) {
+    if (!hasBluntTE) {
         names.pop_back();
     }
     // assign "Top" and "Bottom" to face traits
-    for (unsigned int i = 0; i < nFaces-2; i++) {
-        CFaceTraits traits = loft->GetFaceTraits(i);
-        traits.SetName(names[i%names.size()].c_str());
-        loft->SetFaceTraits(i, traits);
+    for(unsigned part = 0; part < names.size(); ++part) {
+        for (unsigned i = 0; i < nSegments; ++ i) {
+            CFaceTraits traits = loft->GetFaceTraits(i);
+            traits.SetName(names[part].c_str());
+            loft->SetFaceTraits(part*nSegments + i, traits);
+        }
     }
 #endif
 

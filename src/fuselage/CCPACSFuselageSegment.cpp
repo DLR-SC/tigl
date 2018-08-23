@@ -320,14 +320,13 @@ PNamedShape CCPACSFuselageSegment::BuildLoft()
 
         // determine index of segment to retrieve the correct subshapes of the wing
         // Here we explicitly require the subshapes to be ordered consistently
-        bool foundSegmentIdx = false;
         for (int j = 1; j <= nSegments; j++) {
             CCPACSFuselageSegment& fs = fuselage.GetSegment(j);
             if (GetUID() == fs.GetUID()) {
-                foundSegmentIdx = true;
                 for (int i = 1; i <= nFacesPerSegment; ++i) {
                     BB.Add(loftShell, TopoDS::Face(faceMap(nFacesPerSegment*(j-1) + i)));
                 }
+                break;
             }
         }
 

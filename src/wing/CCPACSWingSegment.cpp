@@ -38,6 +38,7 @@
 #include "CCPACSConfiguration.h"
 #include "CTiglError.h"
 #include "CTiglMakeLoft.h"
+#include "CTiglPatchShell.h"
 #include "tiglcommonfunctions.h"
 #include "tigl_config.h"
 #include "math/tiglmathfunctions.h"
@@ -424,49 +425,89 @@ std::string CCPACSWingSegment::GetShortShapeName ()
 // build loft out of faces (for compatibility with component segmen loft)
 PNamedShape CCPACSWingSegment::BuildLoft()
 {
-    TopoDS_Wire innerWire = GetInnerWire();
-    TopoDS_Wire outerWire = GetOuterWire();
+    TopoDS_Shape loftShape;
+    if ( loftLinearly ) {
+        // build loft using inner and outer wires and possibly guidecurves
+        TopoDS_Wire innerWire = GetInnerWire();
+        TopoDS_Wire outerWire = GetOuterWire();
 
-    // Build loft
-    CTiglMakeLoft lofter;
-    lofter.addProfiles(innerWire);
-    lofter.addProfiles(outerWire);
-    
+        // Build loft
+        CTiglMakeLoft lofter;
+        lofter.addProfiles(innerWire);
+        lofter.addProfiles(outerWire);
 
-    if (m_guideCurves) {
-        CCPACSGuideCurves& curves = *m_guideCurves;
-        bool hasTrailingEdge = !innerConnection.GetProfile().GetTrailingEdge().IsNull();
-        
-        // order guide curves according to fromRelativeCircumeference
-        std::multimap<double, CCPACSGuideCurve*> guideMap;
-        for (int iguide = 1; iguide <= curves.GetGuideCurveCount(); ++iguide) {
-            CCPACSGuideCurve* curve = &curves.GetGuideCurve(iguide);
-            double value = *(curve->GetFromRelativeCircumference_choice2());
-            if (value >= 1. && !hasTrailingEdge) {
-                // this is a trailing edge profile, we should add it first
-                value = -1.;
+
+        if (m_guideCurves) {
+            CCPACSGuideCurves& curves = *m_guideCurves;
+            bool hasTrailingEdge = !innerConnection.GetProfile().GetTrailingEdge().IsNull();
+
+            // order guide curves according to fromRelativeCircumeference
+            std::multimap<double, CCPACSGuideCurve*> guideMap;
+            for (int iguide = 1; iguide <= curves.GetGuideCurveCount(); ++iguide) {
+                CCPACSGuideCurve* curve = &curves.GetGuideCurve(iguide);
+                double value = *(curve->GetFromRelativeCircumference_choice2());
+                if (value >= 1. && !hasTrailingEdge) {
+                    // this is a trailing edge profile, we should add it first
+                    value = -1.;
+                }
+                guideMap.insert(std::make_pair(value, curve));
             }
-            guideMap.insert(std::make_pair(value, curve));
+
+            std::multimap<double, CCPACSGuideCurve*>::iterator it;
+            for (it = guideMap.begin(); it != guideMap.end(); ++it) {
+                CCPACSGuideCurve* curve = it->second;
+                BRepBuilderAPI_MakeWire wireMaker(curve->GetCurve());
+                lofter.addGuides(wireMaker.Wire());
+            }
         }
-        
-        std::multimap<double, CCPACSGuideCurve*>::iterator it;
-        for (it = guideMap.begin(); it != guideMap.end(); ++it) {
-            CCPACSGuideCurve* curve = it->second;
-            BRepBuilderAPI_MakeWire wireMaker(curve->GetCurve());
-            lofter.addGuides(wireMaker.Wire());
+
+        loftShape = lofter.Shape();
+        if (loftShape.IsNull()) {
+            LOG(ERROR) << "Cannot compute wing segment loft " << GetUID();
+            return PNamedShape();
         }
+
+        Handle(ShapeFix_Shape) sfs = new ShapeFix_Shape;
+        sfs->Init ( loftShape );
+        sfs->Perform();
+        loftShape = sfs->Shape();
     }
-    
-    TopoDS_Shape loftShape = lofter.Shape();
-    if (loftShape.IsNull()) {
-        LOG(ERROR) << "Cannot compute wing segment loft " << GetUID();
-        return PNamedShape();
+    else {
+        // build loft as a subshape of the wing
+        CCPACSWing& wing = GetWing();
+        PNamedShape wingLoft = wing.GetLoft();
+
+        TopoDS_Shell loftShell;
+        BRep_Builder BB;
+        BB.MakeShell(loftShell);
+
+        TopTools_IndexedMapOfShape faceMap;
+        TopExp::MapShapes(wingLoft->Shape(), TopAbs_FACE, faceMap);
+        int nFaces = faceMap.Extent();
+        int nSegments = wing.GetSegmentCount();
+        int nFacesPerSegment = (nFaces - 2)/nSegments;
+
+        // determine index of segment to retrieve the correct subshapes of the wing
+        // Here we explicitly require the subshapes to be ordered consistently
+        for (int j = 1; j <= wing.GetSegmentCount(); j++) {
+            CCPACSWingSegment& ws = wing.GetSegment(j);
+            if (GetUID() == ws.GetUID()) {
+                for(int i=0; i<nFacesPerSegment; ++i) {
+                    BB.Add(loftShell, TopoDS::Face(faceMap(j + i*nSegments)));
+                }
+                break;
+            }
+        }
+
+        //TODO close the shell with sidecaps and make them a solid
+        TopoDS_Wire innerWire = GetInnerWire();
+        TopoDS_Wire outerWire = GetOuterWire();
+
+        CTiglPatchShell patcher(loftShell);
+        patcher.AddSideCap(innerWire);
+        patcher.AddSideCap(outerWire);
+        loftShape = patcher.PatchedShape();
     }
-    
-    Handle(ShapeFix_Shape) sfs = new ShapeFix_Shape;
-    sfs->Init ( loftShape );
-    sfs->Perform();
-    loftShape = sfs->Shape();
 
     // Calculate volume
     GProp_GProps System;

@@ -255,10 +255,15 @@ private:
     // converts segment eta xsi coordinates to face uv koordinates
     void etaXsiToUV(bool isFromUpper, double eta, double xsi, double& u, double& v) const;
 
-    CTiglWingConnection innerConnection;      /**< Inner segment connection (root)         */
-    CTiglWingConnection outerConnection;      /**< Outer segment connection (tip)          */
+    CTiglWingConnection  innerConnection;      /**< Inner segment connection (root)         */
+    CTiglWingConnection  outerConnection;      /**< Outer segment connection (tip)          */
     CCPACSWing*          wing;                 /**< Parent wing                             */
     double               myVolume;             /**< Volume of this segment                  */
+
+    bool                 loftLinearly = false; /**< Set to true to speed up lofting of the
+                                                 * segment. This removes the dependency on
+                                                 * the fuselage loft at the price of a
+                                                 * nonsmooth fuselage                       */
 
     Cache<SurfaceCache, CCPACSWingSegment> surfaceCache;
     Cache<SurfaceCoordCache, CCPACSWingSegment> surfaceCoordCache;
