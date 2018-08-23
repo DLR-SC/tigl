@@ -671,19 +671,10 @@ void TIGLViewerDocument::drawAllFuselagesAndWings( )
                 continue;
             }
 
-            for (int i = 1; i <= wing.GetSegmentCount(); i++) {
-                tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
-                app->getScene()->displayShape(segment.GetLoft(), false);
-            }
-            app->getScene()->updateViewer();
+            app->getScene()->displayShape(wing.GetLoft(), false);
 
-            if (wing.GetSymmetryAxis() == TIGL_NO_SYMMETRY) {
-                continue;
-            }
-
-            for (int i = 1; i <= wing.GetSegmentCount(); i++) {
-                tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
-                app->getScene()->displayShape(segment.GetMirroredLoft(), false, Quantity_NOC_MirrShapeCol);
+            if ( !(wing.GetSymmetryAxis() == TIGL_NO_SYMMETRY)) {
+                app->getScene()->displayShape(wing.GetMirroredLoft(), false, Quantity_NOC_MirrShapeCol);
             }
 
             app->getScene()->updateViewer();
@@ -693,19 +684,10 @@ void TIGLViewerDocument::drawAllFuselagesAndWings( )
         for (int f = 1; f <= GetConfiguration().GetFuselageCount(); f++) {
             tigl::CCPACSFuselage& fuselage = GetConfiguration().GetFuselage(f);
 
-            for (int i = 1; i <= fuselage.GetSegmentCount(); i++) {
-                tigl::CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(i);
-                app->getScene()->displayShape(segment.GetLoft(), false);
-            }
-            app->getScene()->updateViewer();
+            app->getScene()->displayShape(fuselage.GetLoft(), false);
 
-            if (fuselage.GetSymmetryAxis() == TIGL_NO_SYMMETRY) {
-                continue;
-            }
-
-            for (int i = 1; i <= fuselage.GetSegmentCount(); i++) {
-                tigl::CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(i);
-                app->getScene()->displayShape(segment.GetMirroredLoft(), false, Quantity_NOC_MirrShapeCol);
+            if ( !(fuselage.GetSymmetryAxis() == TIGL_NO_SYMMETRY) ) {
+                app->getScene()->displayShape(fuselage.GetMirroredLoft(), false, Quantity_NOC_MirrShapeCol);
             }
             app->getScene()->updateViewer();
         }
