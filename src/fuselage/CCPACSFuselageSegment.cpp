@@ -36,6 +36,8 @@
 #include "CCPACSConfiguration.h"
 #include "tiglcommonfunctions.h"
 #include "CNamedShape.h"
+#include "CTiglMakeLoft.h"
+#include "CTiglPatchShell.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "TopExp_Explorer.hxx"
@@ -80,6 +82,8 @@
 #include "BRepBuilderAPI_Transform.hxx"
 #include "ShapeAnalysis_Surface.hxx"
 #include "BRepLib_FindSurface.hxx"
+#include <TopExp.hxx>
+#include "TopTools_IndexedMapOfShape.hxx"
 
 namespace
 {
@@ -285,13 +289,57 @@ void CCPACSFuselageSegment::SetFaceTraits (PNamedShape loft, bool hasSymmetryPla
 PNamedShape CCPACSFuselageSegment::BuildLoft()
 {
     // Build loft
-    //BRepOffsetAPI_ThruSections generator(Standard_False, Standard_False, Precision::Confusion());
-    BRepOffsetAPI_ThruSections generator(Standard_True, Standard_False, Precision::Confusion());
-    generator.AddWire(GetStartWire());
-    generator.AddWire(GetEndWire());
-    generator.CheckCompatibility(Standard_False);
-    generator.Build();
-    TopoDS_Shape loftShape = generator.Shape();
+    TopoDS_Shape loftShape;
+    if( loftLinearly ) {
+        CTiglMakeLoft lofter;
+        lofter.addProfiles(GetStartWire());
+        lofter.addProfiles(GetEndWire());
+        loftShape = lofter.Shape();
+    }
+    else {
+        // retrieve segment loft as subshape of the fuselage loft
+        CCPACSFuselage& fuselage = GetFuselage();
+        PNamedShape fuselageLoft = fuselage.GetLoft();
+
+        TopoDS_Shell loftShell;
+        BRep_Builder BB;
+        BB.MakeShell(loftShell);
+
+        // get subshapes of the fuselage
+        TopTools_IndexedMapOfShape faceMap;
+        TopExp::MapShapes(fuselageLoft->Shape(), TopAbs_FACE, faceMap);
+
+        //determine the number of faces per segment
+        int nFaces = faceMap.Extent();
+        int nSegments = fuselage.GetSegmentCount();
+        int nCaps = 0;
+        if (fuselageLoft->GetFaceTraits(fuselageLoft->GetFaceCount()-1).Name() == "Rear" ) {
+            nCaps = 2;
+        }
+        int nFacesPerSegment = (nFaces - nCaps)/nSegments; // remove front and back sidecap
+
+        // determine index of segment to retrieve the correct subshapes of the wing
+        // Here we explicitly require the subshapes to be ordered consistently
+        bool foundSegmentIdx = false;
+        for (int j = 1; j <= nSegments; j++) {
+            CCPACSFuselageSegment& fs = fuselage.GetSegment(j);
+            if (GetUID() == fs.GetUID()) {
+                foundSegmentIdx = true;
+                for (int i = 1; i <= nFacesPerSegment; ++i) {
+                    BB.Add(loftShell, TopoDS::Face(faceMap(nFacesPerSegment*(j-1) + i)));
+                }
+            }
+        }
+
+        //TODO close the shell with sidecaps and make them a solid
+        TopoDS_Wire startWire = GetStartWire();
+        TopoDS_Wire endWire  = GetEndWire();
+
+        CTiglPatchShell patcher(loftShell);
+        patcher.AddSideCap(startWire);
+        patcher.AddSideCap(endWire);
+        loftShape = patcher.PatchedShape();
+    }
 
     // Calculate volume
     GProp_GProps System;

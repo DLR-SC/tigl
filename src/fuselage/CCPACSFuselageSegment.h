@@ -173,11 +173,15 @@ private:
     // get short name for loft
     std::string GetShortShapeName();
 
-    CTiglFuselageConnection startConnection;       /**< Start segment connection                */
-    CTiglFuselageConnection endConnection;         /**< End segment connection                  */
+    CTiglFuselageConnection startConnection;      /**< Start segment connection                */
+    CTiglFuselageConnection endConnection;        /**< End segment connection                  */
     CCPACSFuselage*         fuselage;             /**< Parent fuselage                         */
     double                  myVolume;             /**< Volume of this segment                  */
     double                  mySurfaceArea;        /**< Surface Area of this segment            */
+    bool                    loftLinearly = false; /**< Set to true to speed up lofting of the
+                                                    * segment. This removes the dependency on
+                                                    * the fuselage loft at the price of a
+                                                    * nonsmooth fuselage                       */
 
     unique_ptr<IGuideCurveBuilder> m_guideCurveBuilder;
 };
