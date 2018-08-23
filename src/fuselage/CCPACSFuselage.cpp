@@ -210,8 +210,8 @@ void CCPACSFuselage::SetFaceTraits (PNamedShape loft, bool hasSymmetryPlane, boo
     }
 
     int iFaceTotal = 0;
-    for (int iFace = 0; iFace < facesPerSegment; ++iFace) {
-        for (int iSegment = 0; iSegment < nSegments; ++iSegment) {
+    for (int iSegment = 0; iSegment < nSegments; ++iSegment) {
+        for (int iFace = 0; iFace < facesPerSegment; ++iFace) {
             loft->FaceTraits(iFaceTotal++).SetName(names[iFace].c_str());
         }
     }

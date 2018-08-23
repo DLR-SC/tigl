@@ -493,7 +493,7 @@ PNamedShape CCPACSWingSegment::BuildLoft()
             CCPACSWingSegment& ws = wing.GetSegment(j);
             if (GetUID() == ws.GetUID()) {
                 for(int i=0; i<nFacesPerSegment; ++i) {
-                    BB.Add(loftShell, TopoDS::Face(faceMap(j + i*nSegments)));
+                    BB.Add(loftShell, TopoDS::Face(faceMap((j-1)*nFacesPerSegment + i + 1))); // guides
                 }
                 break;
             }

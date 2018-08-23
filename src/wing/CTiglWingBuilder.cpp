@@ -301,12 +301,10 @@ void CTiglWingBuilder::SetFaceTraits (const std::string& wingUID, PNamedShape lo
         names.pop_back();
     }
     // assign "Top" and "Bottom" to face traits
-    for(unsigned part = 0; part < names.size(); ++part) {
-        for (unsigned i = 0; i < nSegments; ++ i) {
-            CFaceTraits traits = loft->GetFaceTraits(i);
-            traits.SetName(names[part].c_str());
-            loft->SetFaceTraits(part*nSegments + i, traits);
-        }
+    for (unsigned int i = 0; i < nFaces-2; i++) {
+        CFaceTraits traits = loft->GetFaceTraits(i);
+        traits.SetName(names[i%names.size()].c_str());
+        loft->SetFaceTraits(i, traits);
     }
 #endif
 

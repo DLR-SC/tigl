@@ -52,6 +52,7 @@
 
 namespace {
     TopoDS_Shape CutShellAtUVParameters(TopoDS_Shape const& shape, std::vector<double> uparams, std::vector<double> vparams);
+    TopoDS_Shape ResortFaces(TopoDS_Shape const& shape, int nu, int nv, bool umajor2vmajor = true);
 }
 
 CTiglMakeLoft::CTiglMakeLoft(double tolerance, double sameKnotTolerance)
@@ -276,6 +277,9 @@ void CTiglMakeLoft::makeLoftWithoutGuides()
         builder.Add(faces, faceMaker.Face());
     }
     _result = CutShellAtUVParameters(faces, uparams, vparams);
+
+    // make sure the order is the same as for the COONS Patch algorithm
+    _result = ResortFaces(_result, nEdgesPerProfile, vparams.size()-1);
     CloseShape();
 }
 
@@ -367,4 +371,37 @@ namespace
         return cutShape;
     }
 
+    TopoDS_Shape ResortFaces(TopoDS_Shape const& shape, int nu, int nv, bool umajor2vmajor)
+    {
+        nu = (nu < 1)? 1 : nu;
+        nv = (nv < 1)? 1 : nv;
+
+        // map of in faces
+        TopTools_IndexedMapOfShape map;
+        TopExp::MapShapes(shape, TopAbs_FACE, map);
+        int n = map.Extent();
+
+        assert(nu*nv == n);
+
+        TopoDS_Shell sorted;
+        BRep_Builder B;
+        B.MakeShell(sorted);
+        if ( umajor2vmajor ) {
+            for(int v = 1; v <= nv; v++) {
+                for (int u = 1; u <= nu; u++) {
+                    B.Add(sorted,TopoDS::Face(map((u-1)*nv + v)));
+                }
+            }
+        }
+        else
+        {
+            for(int u = 1; u <= nu; u++) {
+                for (int v = 1; v <= nv; v++) {
+                    B.Add(sorted,TopoDS::Face(map((v-1)*nu + u)));
+                }
+            }
+        }
+
+        return sorted;
+    }
 } // namespace
