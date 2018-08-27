@@ -24,6 +24,7 @@
 #include "CCPACSWingSparPositionUIDs.h"
 #include "tigl.h"
 #include "CTiglAbstractGeometricComponent.h"
+#include "Cache.h"
 
 // forward declarations
 class gp_Pnt;
@@ -83,27 +84,7 @@ public:
     // Returns the Geometric type of this component, e.g. Wing or Fuselage
     TIGL_EXPORT virtual TiglGeometricComponentType GetComponentType() const OVERRIDE;
 
-protected:
-    // Builds the cutting geometry for the spar as well as the midplane line
-    void BuildAuxiliaryGeometry() const;
-
-    void BuildGeometry() const;
-
-    // Builds the spar geometry splitted with the ribs
-    void BuildSplittedSparGeometry() const;
-
-    void BuildSparCapsGeometry() const;
-
-    gp_Pnt GetMidplanePoint(const std::string& positionUID) const;
-
-    gp_Vec GetUpVector(const std::string& positionUID, gp_Pnt midplanePnt) const;
-
-    PNamedShape BuildLoft() OVERRIDE;
-
 private:
-    CCPACSWingSparSegment(const CCPACSWingSparSegment&);
-    void operator=(const CCPACSWingSparSegment&);
-
     struct AuxiliaryGeomCache
     {
         TopoDS_Wire sparMidplaneLine;
@@ -126,13 +107,28 @@ private:
         TopoDS_Shape lowerCapsShape;
     };
 
+    void BuildAuxiliaryGeometry(AuxiliaryGeomCache& cache) const; // Builds the cutting geometry for the spar as well as the midplane line
+    void BuildGeometry(GeometryCache& cache) const;
+    void BuildSplittedSparGeometry(SplittedGeomCache& cache) const; // Builds the spar geometry splitted with the ribs
+    void BuildSparCapsGeometry(SparCapsCache& cache) const;
+
+    gp_Pnt GetMidplanePoint(const std::string& positionUID) const;
+
+    gp_Vec GetUpVector(const std::string& positionUID, gp_Pnt midplanePnt) const;
+
+    PNamedShape BuildLoft() OVERRIDE;
+
+private:
+    CCPACSWingSparSegment(const CCPACSWingSparSegment&);
+    void operator=(const CCPACSWingSparSegment&);
+
 private:
     CCPACSWingSpars& sparsNode;
 
-    mutable boost::optional<AuxiliaryGeomCache> auxGeomCache;
-    mutable boost::optional<GeometryCache> geometryCache;
-    mutable boost::optional<SplittedGeomCache> splittedGeomCache;
-    mutable boost::optional<SparCapsCache> sparCapsCache;
+    Cache<AuxiliaryGeomCache, CCPACSWingSparSegment> auxGeomCache;
+    Cache<GeometryCache, CCPACSWingSparSegment> geometryCache;
+    Cache<SplittedGeomCache, CCPACSWingSparSegment> splittedGeomCache;
+    Cache<SparCapsCache, CCPACSWingSparSegment> sparCapsCache;
 };
 
 /** 
