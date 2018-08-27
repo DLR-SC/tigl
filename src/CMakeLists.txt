@@ -23,16 +23,46 @@ include_directories(${OpenCASCADE_INCLUDE_DIR}
 )
 
 # boost
-include_directories(${PROJECT_SOURCE_DIR}/thirdparty/boost_1_67_0)
-file(GLOB_RECURSE BOOST_SRC ${PROJECT_SOURCE_DIR}/thirdparty/boost_1_67_0/libs/*)
+set  (BOOST_DIR ${PROJECT_SOURCE_DIR}/thirdparty/boost_1_67_0)
+include_directories(${BOOST_DIR})
+set (BOOST_SRC
+    ${BOOST_DIR}/libs/atomic/src/lockpool.cpp
+    ${BOOST_DIR}/libs/chrono/src/chrono.cpp
+    ${BOOST_DIR}/libs/chrono/src/process_cpu_clocks.cpp
+    ${BOOST_DIR}/libs/chrono/src/thread_clock.cpp
+    ${BOOST_DIR}/libs/date_time/src/gregorian/date_generators.cpp
+    ${BOOST_DIR}/libs/date_time/src/gregorian/gregorian_types.cpp
+    ${BOOST_DIR}/libs/date_time/src/gregorian/greg_month.cpp
+    ${BOOST_DIR}/libs/date_time/src/gregorian/greg_weekday.cpp
+    ${BOOST_DIR}/libs/date_time/src/posix_time/posix_time_types.cpp
+    ${BOOST_DIR}/libs/exception/src/clone_current_exception_non_intrusive.cpp
+    ${BOOST_DIR}/libs/filesystem/src/codecvt_error_category.cpp
+    ${BOOST_DIR}/libs/filesystem/src/operations.cpp
+    ${BOOST_DIR}/libs/filesystem/src/path.cpp
+    ${BOOST_DIR}/libs/filesystem/src/path_traits.cpp
+    ${BOOST_DIR}/libs/filesystem/src/portability.cpp
+    ${BOOST_DIR}/libs/filesystem/src/unique_path.cpp
+    ${BOOST_DIR}/libs/filesystem/src/utf8_codecvt_facet.cpp
+    ${BOOST_DIR}/libs/filesystem/src/windows_file_codecvt.cpp
+    ${BOOST_DIR}/libs/system/src/error_code.cpp
+    ${BOOST_DIR}/libs/thread/src/future.cpp
+)
+
 add_definitions(-DBOOST_THREAD_BUILD_LIB)
 if(WIN32)
     add_definitions(-DBOOST_THREAD_WIN32)
-    list(FILTER BOOST_SRC EXCLUDE REGEX thread/src/pthread/*)
+    set (BOOST_SRC ${BOOST_SRC}
+        ${BOOST_DIR}/libs/thread/src/win32/thread.cpp
+        ${BOOST_DIR}/libs/thread/src/win32/thread_primitives.cpp
+        ${BOOST_DIR}/libs/thread/src/win32/tss_dll.cpp
+        ${BOOST_DIR}/libs/thread/src/win32/tss_pe.cpp
+    )
 else()
     add_definitions(-DBOOST_THREAD_POSIX)
-    list(FILTER BOOST_SRC EXCLUDE REGEX thread/src/win32/*)
-    list(FILTER BOOST_SRC EXCLUDE REGEX thread/src/pthread/once_atomic.cpp)
+    set (BOOST_SRC ${BOOST_SRC}
+        ${BOOST_DIR}/libs/thread/src/pthread/once.cpp
+        ${BOOST_DIR}/libs/thread/src/pthread/thread.cpp
+    )
 endif()
 
 file(GLOB_RECURSE TIGL_SRC
