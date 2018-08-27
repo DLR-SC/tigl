@@ -26,6 +26,7 @@
 
 #include "generated/CPACSWingRibsDefinition.h"
 #include "CTiglAbstractGeometricComponent.h"
+#include "Cache.h"
 
 namespace tigl
 {
@@ -104,6 +105,16 @@ protected:
     PNamedShape BuildLoft() OVERRIDE;
 
 private:
+    // Structure containing data relevant when ribs are defined via 
+    // ribsPositioning (defining a set or ribs)
+    struct RibSetDataCache
+    {
+        int numberOfRibs;
+        double referenceEtaStart;
+        double referenceEtaEnd;
+        double referenceEtaOffset;
+    };
+
     // Structure for storing the start and end point of a single rib in the 
     // midplane
     struct RibMidplanePoints
@@ -113,20 +124,45 @@ private:
         gp_Pnt endPnt;
     };
 
-    void UpdateRibSetDataCache() const;
+    // Structure for storing the start and end points of all ribs and the cut
+    // shapes for the single ribs
+    struct AuxiliaryGeomCache
+    {
+        std::vector<RibMidplanePoints> midplanePoints;
+        std::vector<CutGeometry> cutGeometries;
+    };
 
-    void BuildAuxiliaryGeometry() const;
-    void BuildAuxGeomRibsPositioning() const;
-    void BuildAuxGeomExplicitRibPositioning() const;
+    struct RibGeometryCache
+    {
+        TopoDS_Shape shape;
+        std::vector<TopoDS_Face> ribFaces;
+    };
 
-    void BuildGeometry() const;
+    struct SplittedRibGeometryCache
+    {
+        TopoDS_Shape shape;
+    };
 
-    void BuildSplittedRibsGeometry() const;
+    struct RibCapsGeometryCache
+    {
+        TopoDS_Shape upperCapsShape;
+        TopoDS_Shape lowerCapsShape;
+    };
 
-    void BuildRibCapsGeometry() const;
+    void UpdateRibSetDataCache(RibSetDataCache& cache) const;
+
+    void BuildAuxiliaryGeometry(AuxiliaryGeomCache& cache) const;
+    void BuildAuxGeomRibsPositioning(AuxiliaryGeomCache& cache) const;
+    void BuildAuxGeomExplicitRibPositioning(AuxiliaryGeomCache& cache) const;
+
+    void BuildGeometry(RibGeometryCache& cache) const;
+
+    void BuildSplittedRibsGeometry(SplittedRibGeometryCache& cache) const;
+
+    void BuildRibCapsGeometry(RibCapsGeometryCache& cache) const;
 
     // Generates the cut shape for the rib at the passed eta position, or at the passed element or spar position
-    CutGeometry BuildRibCutGeometry(double currentEta, const std::string& elementUID, const std::string& sparPositionUID) const;
+    CutGeometry BuildRibCutGeometry(double currentEta, const std::string& elementUID, const std::string& sparPositionUID, AuxiliaryGeomCache& cache) const;
 
     // Returns the wire of the rib reference line (either leadingEdge, 
     // trailingEdge, or spar midplane line)
@@ -182,48 +218,12 @@ private:
     CCPACSWingRibsDefinition(const CCPACSWingRibsDefinition&); // = delete;
     void operator=(const CCPACSWingRibsDefinition& ); // = delete;
 
-    // Structure containing data relevant when ribs are defined via 
-    // ribsPositioning (defining a set or ribs)
-    struct RibSetDataCache
-    {
-        int numberOfRibs;
-        double referenceEtaStart;
-        double referenceEtaEnd;
-        double referenceEtaOffset;
-    };
-
-    // Structure for storing the start and end points of all ribs and the cut
-    // shapes for the single ribs
-    struct AuxiliaryGeomCache
-    {
-        std::vector<RibMidplanePoints> midplanePoints;
-        std::vector<CutGeometry> cutGeometries;
-    };
-
-    struct RibGeometryCache
-    {
-        TopoDS_Shape shape;
-        std::vector<TopoDS_Face> ribFaces;
-    };
-
-    struct SplittedRibGeometryCache
-    {
-        TopoDS_Shape shape;
-    };
-
-    struct RibCapsGeometryCache
-    {
-        TopoDS_Shape upperCapsShape;
-        TopoDS_Shape lowerCapsShape;
-    };
-
 private:
-    mutable boost::optional<RibSetDataCache> ribSetDataCache;
-
-    mutable boost::optional<AuxiliaryGeomCache> auxGeomCache;
-    mutable boost::optional<RibGeometryCache> ribGeometryCache;
-    mutable boost::optional<SplittedRibGeometryCache> splittedRibGeomCache;
-    mutable boost::optional<RibCapsGeometryCache> ribCapsCache;
+    Cache<RibSetDataCache, CCPACSWingRibsDefinition> ribSetDataCache;
+    Cache<AuxiliaryGeomCache, CCPACSWingRibsDefinition> auxGeomCache;
+    Cache<RibGeometryCache, CCPACSWingRibsDefinition> ribGeometryCache;
+    Cache<SplittedRibGeometryCache, CCPACSWingRibsDefinition> splittedRibGeomCache;
+    Cache<RibCapsGeometryCache, CCPACSWingRibsDefinition> ribCapsCache;
 };
 
 } // end namespace tigl

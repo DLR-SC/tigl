@@ -61,17 +61,23 @@ namespace tigl
 {
 
 CCPACSWingRibsDefinition::CCPACSWingRibsDefinition(CCPACSWingRibsDefinitions* parent, CTiglUIDManager* uidMgr)
-    : generated::CPACSWingRibsDefinition(parent, uidMgr) {
+    : generated::CPACSWingRibsDefinition(parent, uidMgr)
+    , ribSetDataCache(*this, &CCPACSWingRibsDefinition::UpdateRibSetDataCache)
+    , auxGeomCache(*this, &CCPACSWingRibsDefinition::BuildAuxiliaryGeometry)
+    , ribGeometryCache(*this, &CCPACSWingRibsDefinition::BuildGeometry)
+    , splittedRibGeomCache(*this, &CCPACSWingRibsDefinition::BuildSplittedRibsGeometry)
+    , ribCapsCache(*this, &CCPACSWingRibsDefinition::BuildRibCapsGeometry)
+{
     Invalidate();
 }
 
 void CCPACSWingRibsDefinition::Invalidate()
 {
-    ribSetDataCache = boost::none;
-    auxGeomCache = boost::none;
-    ribGeometryCache = boost::none;
-    splittedRibGeomCache = boost::none;
-    ribCapsCache = boost::none;
+    ribSetDataCache.clear();
+    auxGeomCache.clear();
+    ribGeometryCache.clear();
+    splittedRibGeomCache.clear();
+    ribCapsCache.clear();
 }
 
 CCPACSWingRibsDefinition::RibPositioningType CCPACSWingRibsDefinition::GetRibPositioningType() const
@@ -92,11 +98,7 @@ int CCPACSWingRibsDefinition::GetNumberOfRibs() const
         numberOfRibs = 1;
         break;
     case RIBS_POSITIONING:
-        if (!ribSetDataCache) {
-            UpdateRibSetDataCache();
-        }
-        assert(ribSetDataCache);
-        numberOfRibs = ribSetDataCache.value().numberOfRibs;
+        numberOfRibs = ribSetDataCache->numberOfRibs;
         break;
     default:
         throw CTiglError("Unknown ribPositioningType found in CCPACSWingRibsDefinition::GetNumberOfRibs()!");
@@ -106,32 +108,22 @@ int CCPACSWingRibsDefinition::GetNumberOfRibs() const
 
 void CCPACSWingRibsDefinition::GetRibMidplanePoints(int ribNumber, gp_Pnt& startPoint, gp_Pnt& endPoint) const
 {
-    if (!auxGeomCache) {
-        BuildAuxiliaryGeometry();
-    }
-    assert(auxGeomCache);
-
     int index = ribNumber - 1;
     if (index < 0 || index >= GetNumberOfRibs()) {
         throw CTiglError("Invalid rib number requested in ribs definition \"" + m_uID.value_or("") + "\"");
     }
-    startPoint = auxGeomCache.value().midplanePoints[index].startPnt;
-    endPoint = auxGeomCache.value().midplanePoints[index].endPnt;
+    startPoint = auxGeomCache->midplanePoints[index].startPnt;
+    endPoint = auxGeomCache->midplanePoints[index].endPnt;
 }
 
 TopoDS_Shape CCPACSWingRibsDefinition::GetRibsGeometry(TiglCoordinateSystem referenceCS) const
 {
-    if (!ribGeometryCache) {
-        BuildGeometry();
-    }
-    assert(ribGeometryCache);
-
     switch (referenceCS) {
     case WING_COORDINATE_SYSTEM:
-        return ribGeometryCache.value().shape;
+        return ribGeometryCache->shape;
         break;
     case GLOBAL_COORDINATE_SYSTEM:
-        return ApplyWingTransformation(getStructure(), ribGeometryCache.value().shape);
+        return ApplyWingTransformation(getStructure(), ribGeometryCache->shape);
         break;
     default:
         throw CTiglError("Invalid coordinateSystem passed to CCPACSWingRibsDefinition::GetRibsGeometry");
@@ -140,17 +132,12 @@ TopoDS_Shape CCPACSWingRibsDefinition::GetRibsGeometry(TiglCoordinateSystem refe
 
 const CCPACSWingRibsDefinition::CutGeometry& CCPACSWingRibsDefinition::GetRibCutGeometry(int ribNumber) const
 {
-    if (!auxGeomCache) {
-        BuildAuxiliaryGeometry();
-    }
-    assert(auxGeomCache);
-
     int index = ribNumber - 1;
     if (index < 0 || index >= GetNumberOfRibs()) {
         LOG(ERROR) << "invalid rib number passed to CCPACSWingRibsDefinition::GetRibCutGeometry!";
         throw CTiglError("invalid rib number passed to CCPACSWingRibsDefinition::GetRibCutGeometry!");
     }
-    return auxGeomCache.value().cutGeometries[index];
+    return auxGeomCache->cutGeometries[index];
 }
 
 TopoDS_Face CCPACSWingRibsDefinition::GetRibFace(int ribNumber, TiglCoordinateSystem referenceCS) const
@@ -163,18 +150,12 @@ TopoDS_Face CCPACSWingRibsDefinition::GetRibFace(int ribNumber, TiglCoordinateSy
         throw CTiglError(ss.str());
     }
 
-    // build rib geometries
-    if (!ribGeometryCache) {
-        BuildGeometry();
-    }
-    assert(ribGeometryCache);
-
     switch (referenceCS) {
     case WING_COORDINATE_SYSTEM:
-        return ribGeometryCache.value().ribFaces[index];
+        return ribGeometryCache->ribFaces[index];
         break;
     case GLOBAL_COORDINATE_SYSTEM:
-        return TopoDS::Face(ApplyWingTransformation(getStructure(), ribGeometryCache.value().ribFaces[index]));
+        return TopoDS::Face(ApplyWingTransformation(getStructure(), ribGeometryCache->ribFaces[index]));
         break;
     default:
         throw CTiglError("Invalid coordinate system passed to CCPACSWingRibsDefinition::GetRibFace");
@@ -183,13 +164,7 @@ TopoDS_Face CCPACSWingRibsDefinition::GetRibFace(int ribNumber, TiglCoordinateSy
 
 TopoDS_Shape CCPACSWingRibsDefinition::GetSplittedRibsGeometry(TiglCoordinateSystem referenceCS) const
 {
-    if (!splittedRibGeomCache) {
-        BuildSplittedRibsGeometry();
-    }
-    assert(splittedRibGeomCache);
-
-    TopoDS_Shape splittedRibShape;
-    splittedRibShape = splittedRibGeomCache.value().shape;
+    TopoDS_Shape splittedRibShape = splittedRibGeomCache->shape;
 
     switch (referenceCS) {
     case WING_COORDINATE_SYSTEM:
@@ -215,17 +190,12 @@ TopoDS_Shape CCPACSWingRibsDefinition::GetRibCapsGeometry(RibCapSide side, TiglC
         throw CTiglError("Error in CCPACSWingRibsDefinition::GetRibCapsGeometry(): No rib caps are defined for ribs definition " + m_uID.value_or("") + "!");
     }
 
-    if (!ribCapsCache) {
-        BuildRibCapsGeometry();
-    }
-    assert(ribCapsCache);
-
     TopoDS_Shape capsShape;
     if (side == UPPER) {
-        capsShape = ribCapsCache.value().upperCapsShape;
+        capsShape = ribCapsCache->upperCapsShape;
     }
     else { // side == LOWER
-        capsShape = ribCapsCache.value().lowerCapsShape;
+        capsShape = ribCapsCache->lowerCapsShape;
     }
 
     switch (referenceCS) {
@@ -240,32 +210,30 @@ TopoDS_Shape CCPACSWingRibsDefinition::GetRibCapsGeometry(RibCapSide side, TiglC
     }
 }
 
-void CCPACSWingRibsDefinition::UpdateRibSetDataCache() const
+void CCPACSWingRibsDefinition::UpdateRibSetDataCache(RibSetDataCache& cache) const
 {
     // ensure that this is only called when m_ribsPositioning_choice1 is used!!!
     assert(GetRibPositioningType() == RIBS_POSITIONING);
 
-    ribSetDataCache.emplace();
-
     // compute eta/xsi values of ribs definition
-    ribSetDataCache->referenceEtaStart = ComputeReferenceEtaStart();
-    ribSetDataCache->referenceEtaEnd = ComputeReferenceEtaEnd();
+    cache.referenceEtaStart = ComputeReferenceEtaStart();
+    cache.referenceEtaEnd = ComputeReferenceEtaEnd();
 
     // compute the offset between the ribs
-    ribSetDataCache->referenceEtaOffset = ComputeEtaOffset(ribSetDataCache->referenceEtaStart, ribSetDataCache->referenceEtaEnd);
+    cache.referenceEtaOffset = ComputeEtaOffset(cache.referenceEtaStart, cache.referenceEtaEnd);
 
     // compute number of ribs
-    ribSetDataCache->numberOfRibs = ComputeNumberOfRibs(ribSetDataCache->referenceEtaStart, ribSetDataCache->referenceEtaEnd);
+    cache.numberOfRibs = ComputeNumberOfRibs(cache.referenceEtaStart, cache.referenceEtaEnd);
 }
 
-void CCPACSWingRibsDefinition::BuildAuxiliaryGeometry() const
+void CCPACSWingRibsDefinition::BuildAuxiliaryGeometry(AuxiliaryGeomCache& cache) const
 {
     switch (GetRibPositioningType()) {
     case RIBS_POSITIONING:
-        BuildAuxGeomRibsPositioning();
+        BuildAuxGeomRibsPositioning(cache);
         break;
     case RIB_EXPLICIT_POSITIONING:
-        BuildAuxGeomExplicitRibPositioning();
+        BuildAuxGeomExplicitRibPositioning(cache);
         break;
     default:
         LOG(ERROR) << "Invalid ribPositioningType found in CCPACSWingRibsDefinition::BuildAuxiliaryGeometry!";
@@ -273,19 +241,13 @@ void CCPACSWingRibsDefinition::BuildAuxiliaryGeometry() const
     }
 }
 
-void CCPACSWingRibsDefinition::BuildAuxGeomRibsPositioning() const
+void CCPACSWingRibsDefinition::BuildAuxGeomRibsPositioning(AuxiliaryGeomCache& cache) const
 {
-    if (!ribSetDataCache) {
-        UpdateRibSetDataCache();
-    }
-    assert(ribSetDataCache);
-
-    auxGeomCache.emplace();
     // STEP 1: iterate over all ribs for this rib definition
-    for (int i = 0; i < ribSetDataCache.value().numberOfRibs; i++) {
+    for (int i = 0; i < ribSetDataCache->numberOfRibs; i++) {
 
         // STEP 2: compute the current eta value
-        double currentEta = ribSetDataCache.value().referenceEtaStart + ribSetDataCache.value().referenceEtaOffset * i;
+        double currentEta = ribSetDataCache->referenceEtaStart + ribSetDataCache->referenceEtaOffset * i;
 
         // STEP 3: determine elementUID or sparPositionUID where rib should be placed
         std::string elementUID = "";
@@ -293,7 +255,7 @@ void CCPACSWingRibsDefinition::BuildAuxGeomRibsPositioning() const
             elementUID = *m_ribsPositioning_choice1->GetElementStartUID_choice2();
         }
         // NOTE: we have to check the eta difference here (instead of the index) to support spacing definitions
-        else if (fabs(ribSetDataCache.value().referenceEtaEnd - currentEta) <= Precision::Confusion() && m_ribsPositioning_choice1->GetEndDefinitionType() == CCPACSWingRibsPositioning::ELEMENT_END) {
+        else if (fabs(ribSetDataCache->referenceEtaEnd - currentEta) <= Precision::Confusion() && m_ribsPositioning_choice1->GetEndDefinitionType() == CCPACSWingRibsPositioning::ELEMENT_END) {
             elementUID = *m_ribsPositioning_choice1->GetElementEndUID_choice2();
         }
 
@@ -302,31 +264,29 @@ void CCPACSWingRibsDefinition::BuildAuxGeomRibsPositioning() const
             sparPositionUID = m_ribsPositioning_choice1.value().GetSparPositionStartUID_choice3().value();
         }
         // NOTE: we have to check the eta difference here (instead of the index) to support spacing definitions
-        else if (fabs(ribSetDataCache.value().referenceEtaEnd - currentEta) <= Precision::Confusion() && m_ribsPositioning_choice1->GetEndDefinitionType() == CCPACSWingRibsPositioning::SPARPOSITION_END) {
+        else if (fabs(ribSetDataCache->referenceEtaEnd - currentEta) <= Precision::Confusion() && m_ribsPositioning_choice1->GetEndDefinitionType() == CCPACSWingRibsPositioning::SPARPOSITION_END) {
             sparPositionUID = m_ribsPositioning_choice1.value().GetSparPositionEndUID_choice3().value();
         }
 
         // STEP 4: build the rib cut geometry based on the current eta value
         //         and the element UID (if defined)
-        CutGeometry cutGeom = BuildRibCutGeometry(currentEta, elementUID, sparPositionUID);
-        auxGeomCache.value().cutGeometries.push_back(cutGeom);
+        CutGeometry cutGeom = BuildRibCutGeometry(currentEta, elementUID, sparPositionUID, cache);
+        cache.cutGeometries.push_back(cutGeom);
     }
 }
 
-CCPACSWingRibsDefinition::CutGeometry CCPACSWingRibsDefinition::BuildRibCutGeometry(double currentEta, const std::string& elementUID, const std::string& sparPositionUID) const
+CCPACSWingRibsDefinition::CutGeometry CCPACSWingRibsDefinition::BuildRibCutGeometry(double currentEta, const std::string& elementUID, const std::string& sparPositionUID, AuxiliaryGeomCache& cache) const
 {
     std::string ribStart = m_ribsPositioning_choice1.value().GetRibStart();
     std::string ribEnd = m_ribsPositioning_choice1.value().GetRibEnd();
     std::string ribReference = m_ribsPositioning_choice1.value().GetRibReference();
-
-    assert(auxGeomCache);
 
     // handle case when rib lies within a section element (elementUID defined)
     if (!elementUID.empty()) {
         TopoDS_Face ribFace = GetSectionRibGeometry(elementUID, currentEta, ribStart, ribEnd);
         // Compute rib start and end point for the cell definition
         RibMidplanePoints midplanePoints = ComputeRibDefinitionPoints(ribStart, ribEnd, ribFace);
-        auxGeomCache.value().midplanePoints.push_back(midplanePoints);
+        cache.midplanePoints.push_back(midplanePoints);
         return CutGeometry(ribFace, true);
     }
 
@@ -336,7 +296,7 @@ CCPACSWingRibsDefinition::CutGeometry CCPACSWingRibsDefinition::BuildRibCutGeome
             TopoDS_Face ribFace = GetSectionRibGeometry("", currentEta, ribStart, ribEnd);
             // Compute rib start and end point for the cell definition
             RibMidplanePoints midplanePoints = ComputeRibDefinitionPoints(ribStart, ribEnd, ribFace);
-            auxGeomCache.value().midplanePoints.push_back(midplanePoints);
+            cache.midplanePoints.push_back(midplanePoints);
             return CutGeometry(ribFace, true);
         }
     }
@@ -360,13 +320,13 @@ CCPACSWingRibsDefinition::CutGeometry CCPACSWingRibsDefinition::BuildRibCutGeome
     // STEP 6: compute the start and end point for the rib by intersection of the rib
     //         cut face with the according line (required for cell definition)
     RibMidplanePoints midplanePoints = ComputeRibDefinitionPoints(ribStart, ribEnd, ribCutFace);
-    auxGeomCache.value().midplanePoints.push_back(midplanePoints);
+    cache.midplanePoints.push_back(midplanePoints);
 
     // finally return resulting rib cut face
     return CutGeometry(ribCutFace, false);
 }
 
-void CCPACSWingRibsDefinition::BuildAuxGeomExplicitRibPositioning() const
+void CCPACSWingRibsDefinition::BuildAuxGeomExplicitRibPositioning(AuxiliaryGeomCache& cache) const
 {
     gp_Pnt startPnt, endPnt;
     const CTiglWingStructureReference& wingStructureReference = getStructure().GetWingStructureReference();
@@ -377,14 +337,12 @@ void CCPACSWingRibsDefinition::BuildAuxGeomExplicitRibPositioning() const
     double startEta = m_ribExplicitPositioning_choice2.value().GetEtaStart();
     double endEta = m_ribExplicitPositioning_choice2.value().GetEtaEnd();
 
-    auxGeomCache.emplace();
-
     // Step 1: get start point of rib on midplane
     startPnt = GetReferencePoint(getStructure(), startReference, startEta);
     endPnt = GetReferencePoint(getStructure(), endReference, endEta);
 
     // Step 2: Save the Rib start and end point (required for cells)
-    auxGeomCache.value().midplanePoints.push_back(RibMidplanePoints(startPnt, endPnt));
+    cache.midplanePoints.push_back(RibMidplanePoints(startPnt, endPnt));
 
     // Step 3: check whether rib lies within section
     //         (use section face as rib geometry)
@@ -394,7 +352,7 @@ void CCPACSWingRibsDefinition::BuildAuxGeomExplicitRibPositioning() const
             (endReference == "leadingEdge" || endReference == "trailingEdge" || IsOuterSparPointInSection(endReference, endEta, getStructure()))) {
             TopoDS_Face ribFace = GetSectionRibGeometry("", startEta, startReference, endReference);
             CutGeometry cutGeom(ribFace, true);
-            auxGeomCache.value().cutGeometries.push_back(cutGeom);
+            cache.cutGeometries.push_back(cutGeom);
             return;
         }
     }
@@ -487,13 +445,11 @@ void CCPACSWingRibsDefinition::BuildAuxGeomExplicitRibPositioning() const
 
     // Step 8: add resulting rib cut face to cut geometries
     CutGeometry cutGeom(ribCutFace, false);
-    auxGeomCache.value().cutGeometries.push_back(cutGeom);
+    cache.cutGeometries.push_back(cutGeom);
 }
 
-void CCPACSWingRibsDefinition::BuildGeometry() const
+void CCPACSWingRibsDefinition::BuildGeometry(RibGeometryCache& cache) const
 {
-    ribGeometryCache.emplace();
-
     // build target compound for ribs
     TopoDS_Compound compound;
     BRep_Builder compoundBuilder;
@@ -507,7 +463,7 @@ void CCPACSWingRibsDefinition::BuildGeometry() const
         // handle case when ribCutFace is identical with target rib face
         if (cutGeometry.isTargetFace) {
             compoundBuilder.Add(compound, cutGeometry.shape);
-            ribGeometryCache.value().ribFaces.push_back(cutGeometry.shape);
+            cache.ribFaces.push_back(cutGeometry.shape);
         }
         else {
             // intersect rib cut face with loft
@@ -546,31 +502,22 @@ void CCPACSWingRibsDefinition::BuildGeometry() const
 
             // add rib face to compound
             compoundBuilder.Add(compound, ribFace);
-            ribGeometryCache.value().ribFaces.push_back(ribFace);
+            cache.ribFaces.push_back(ribFace);
         }
     }
 
-    ribGeometryCache->shape = compound;
+    cache.shape = compound;
 }
 
 // Builds the ribs geometry splitted with the spars
-void CCPACSWingRibsDefinition::BuildSplittedRibsGeometry() const
+void CCPACSWingRibsDefinition::BuildSplittedRibsGeometry(SplittedRibGeometryCache& cache) const
 {
-    // ensure that the rib geometry is built
-    if (!ribGeometryCache) {
-        BuildGeometry();
-    }
-    assert(ribGeometryCache);
-
     // split the ribs geometry with the spar split geometry
-    splittedRibGeomCache.emplace();
-    splittedRibGeomCache.value().shape = CutShapeWithSpars(ribGeometryCache.value().shape, getStructure());
+    cache.shape = CutShapeWithSpars(cache.shape, getStructure());
 }
 
-void CCPACSWingRibsDefinition::BuildRibCapsGeometry() const
+void CCPACSWingRibsDefinition::BuildRibCapsGeometry(RibCapsGeometryCache& cache) const
 {
-    ribCapsCache.emplace();
-
     // build up single compound of all rib cut shapes
     BRep_Builder builder;
     TopoDS_Compound ribCuttingCompound;
@@ -590,7 +537,7 @@ void CCPACSWingRibsDefinition::BuildRibCapsGeometry() const
         for (explorer.Init(cutResult, TopAbs_EDGE); explorer.More(); explorer.Next()) {
             builder.Add(capEdges, TopoDS::Edge(explorer.Current()));
         }
-        ribCapsCache.value().upperCapsShape = capEdges;
+        cache.upperCapsShape = capEdges;
     }
     // build caps shape for lower cap
     if (m_ribCrossSection.GetLowerCap()) {
@@ -603,7 +550,7 @@ void CCPACSWingRibsDefinition::BuildRibCapsGeometry() const
         for (explorer.Init(cutResult, TopAbs_EDGE); explorer.More(); explorer.Next()) {
             builder.Add(capEdges, TopoDS::Edge(explorer.Current()));
         }
-        ribCapsCache.value().lowerCapsShape = capEdges;
+        cache.lowerCapsShape = capEdges;
     }
 }
 
@@ -960,12 +907,7 @@ const CCPACSWingCSStructure & CCPACSWingRibsDefinition::getStructure() const
 
 std::string CCPACSWingRibsDefinition::GetDefaultedUID() const
 {
-    if (GetUID().is_initialized()) {
-        return GetUID().value();
-    }
-    else {
-        return "Unknown_Ribs_Definition";
-    }
+    return GetUID().value_or("Unknown_Ribs_Definition");
 }
 
 TiglGeometricComponentType CCPACSWingRibsDefinition::GetComponentType() const

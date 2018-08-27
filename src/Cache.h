@@ -20,6 +20,8 @@
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/lock_guard.hpp>
 
+#include "CheckedMutex.h"
+
 namespace tigl
 {
     template <typename CacheStruct, typename CpacsClass>
@@ -35,6 +37,7 @@ namespace tigl
 
         const CacheStruct& value() const
         {
+            //boost::lock_guard<CheckedMutex> guard(m_mutex);
             boost::lock_guard<boost::mutex> guard(m_mutex);
             if (!m_cache) {
                 m_cache.emplace();
@@ -48,6 +51,7 @@ namespace tigl
 
         void clear()
         {
+            //boost::lock_guard<CheckedMutex> guard(m_mutex);
             boost::lock_guard<boost::mutex> guard(m_mutex);
             m_cache = boost::none;
         }
@@ -55,6 +59,7 @@ namespace tigl
     private:
         CpacsClass& m_instance;
         BuildFunc m_buildFunc;
+        //mutable CheckedMutex m_mutex;
         mutable boost::mutex m_mutex;
         mutable boost::optional<CacheStruct> m_cache;
     };
