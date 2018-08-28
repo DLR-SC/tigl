@@ -16,11 +16,11 @@
 
 #pragma once
 
-#include <boost/optional.hpp>
 #include <TopoDS_Shape.hxx>
 
 #include "ITiglGeometricComponent.h"
 #include "generated/CPACSCrossBeamAssemblyPosition.h"
+#include "Cache.h"
 
 namespace tigl
 {
@@ -35,15 +35,18 @@ public:
 
     TIGL_EXPORT void Invalidate();
 
-    TIGL_EXPORT TopoDS_Shape GetGeometry(bool just1DElements, TiglCoordinateSystem cs = GLOBAL_COORDINATE_SYSTEM);
-    TIGL_EXPORT TopoDS_Shape GetCutGeometry(TiglCoordinateSystem cs = GLOBAL_COORDINATE_SYSTEM);
+    TIGL_EXPORT TopoDS_Shape GetGeometry(bool just1DElements, TiglCoordinateSystem cs = GLOBAL_COORDINATE_SYSTEM) const;
+    TIGL_EXPORT TopoDS_Shape GetCutGeometry(TiglCoordinateSystem cs = GLOBAL_COORDINATE_SYSTEM) const;
 
 private:
-    void BuildCutGeometry();
-    void BuildGeometry(bool just1DElements);
+    void BuildCutGeometry(TopoDS_Shape& cache) const;
+    void BuildGeometry1D(TopoDS_Shape& cache) const;
+    void BuildGeometry3D(TopoDS_Shape& cache) const;
+    void BuildGeometry(TopoDS_Shape& cache, bool just1DElements) const;
 private:
-    boost::optional<TopoDS_Shape> m_geometry[2]; // [0] is 3D, [1] is 1D
-    boost::optional<TopoDS_Shape> m_cutGeometry;
+    Cache<TopoDS_Shape, CCPACSCrossBeamAssemblyPosition> m_geometry1D;
+    Cache<TopoDS_Shape, CCPACSCrossBeamAssemblyPosition> m_geometry3D;
+    Cache<TopoDS_Shape, CCPACSCrossBeamAssemblyPosition> m_cutGeometry;
 };
 
 } // namespace tigl
