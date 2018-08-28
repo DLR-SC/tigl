@@ -91,6 +91,7 @@ endif(CMAKE_COMPILER_IS_GNUCC)
 # object library containing just the compiled sources
 add_library(tigl3_objects OBJECT ${TIGL_SRC})
 set_property(TARGET tigl3_objects PROPERTY POSITION_INDEPENDENT_CODE ON) # needed for shared libraries
+target_compile_definitions(tigl3_objects PRIVATE -Dtigl3_EXPORTS)
 
 # tigl dll/so library
 add_library(tigl3 SHARED $<TARGET_OBJECTS:tigl3_objects>)
