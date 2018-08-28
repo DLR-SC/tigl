@@ -43,6 +43,7 @@
 #include "TopoDS_Wire.hxx"
 #include "TopTools_SequenceOfShape.hxx"
 #include "Geom_BSplineSurface.hxx"
+#include "Cache.h"
 
 
 namespace tigl
@@ -173,6 +174,9 @@ public:
     // by projecting the wing segment into the plane defined by the user
     TIGL_EXPORT double GetReferenceArea(TiglSymmetryAxis symPlane) const;
 
+    using CTiglAbstractSegment<CCPACSWingSegment>::GetLoft;
+    TIGL_EXPORT PNamedShape GetLoft(TiglShapeModifier mod) const;
+
     // Returns the lower Surface of this Segment
     TIGL_EXPORT Handle(Geom_Surface) GetLowerSurface(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM,
                                                      TiglShapeModifier mod            = UNMODIFIED_SHAPE) const;
@@ -222,17 +226,6 @@ protected:
     PNamedShape BuildLoft() OVERRIDE;
 
 private:
-    struct SurfaceCache
-    {
-        bool bluntTE;                        ///< Information whether trailing edge is blunt
-        double mySurfaceArea;                ///< Surface area of this segment
-        TopoDS_Face upperShapeSharp;        ///< Upper shape of this segment with sharp trailing edge
-        TopoDS_Face upperShapeBlunt;        ///< Upper shape of this segment with blunt trailing edge
-        TopoDS_Face lowerShapeSharp;        ///< Lower shape of this segment with sharp trailing edge
-        TopoDS_Face lowerShapeBlunt;        ///< Lower shape of this segment with blunt trailing edge
-        TopoDS_Face trailingEdgeShapeBlunt; ///< Shape of blunt trailing edge
-    };
-
     struct SurfaceCoordCache
     {
         CTiglPointTranslator cordSurface;
@@ -243,7 +236,7 @@ private:
     std::string GetShortShapeName ();
 
     // Builds upper and lower surfaces
-    void MakeSurfaces(SurfaceCache& cache) const;
+    void ComputeArea(double& cache) const;
 
     // Builds the chord surface
     void MakeChordSurface(SurfaceCoordCache& cache) const;
@@ -265,8 +258,8 @@ private:
                                                  * the fuselage loft at the price of a
                                                  * nonsmooth fuselage                       */
 
-    Cache<SurfaceCache, CCPACSWingSegment> surfaceCache;
     Cache<SurfaceCoordCache, CCPACSWingSegment> surfaceCoordCache;
+    Cache<double, CCPACSWingSegment>            areaCache;
 
     unique_ptr<IGuideCurveBuilder> m_guideCurveBuilder;
 };
