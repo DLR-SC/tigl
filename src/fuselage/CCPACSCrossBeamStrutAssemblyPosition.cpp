@@ -45,6 +45,8 @@ namespace tigl
 CCPACSCrossBeamStrutAssemblyPosition::CCPACSCrossBeamStrutAssemblyPosition(CCPACSCargoCrossBeamStrutsAssembly* parent,
                                                                            CTiglUIDManager* uidMgr)
     : generated::CPACSCrossBeamStrutAssemblyPosition(parent, uidMgr)
+    , m_geometry1D(*this, &CCPACSCrossBeamStrutAssemblyPosition::BuildGeometry1D)
+    , m_geometry3D(*this, &CCPACSCrossBeamStrutAssemblyPosition::BuildGeometry3D)
 {
 }
 
@@ -65,25 +67,28 @@ TiglGeometricComponentType CCPACSCrossBeamStrutAssemblyPosition::GetComponentTyp
 
 void CCPACSCrossBeamStrutAssemblyPosition::Invalidate()
 {
-    for (size_t i = 0; i<2; i++) {
-        m_geometry[i] = boost::none;
-    }
+    m_geometry1D.clear();
+    m_geometry3D.clear();
 }
 
-TopoDS_Shape CCPACSCrossBeamStrutAssemblyPosition::GetGeometry(bool just1DElements, TiglCoordinateSystem cs)
+TopoDS_Shape CCPACSCrossBeamStrutAssemblyPosition::GetGeometry(bool just1DElements, TiglCoordinateSystem cs) const
 {
-    if (!m_geometry[just1DElements])
-        BuildGeometry(just1DElements);
-
-    TopoDS_Shape shape = m_geometry[just1DElements].value();
+    TopoDS_Shape shape = just1DElements ? *m_geometry1D : *m_geometry3D;
     if (cs == GLOBAL_COORDINATE_SYSTEM)
         return m_parent->GetParent()->GetParent()->GetTransformationMatrix().Transform(shape);
     else
         return shape;
 }
 
+void CCPACSCrossBeamStrutAssemblyPosition::BuildGeometry1D(TopoDS_Shape& cache) const {
+    BuildGeometry(cache, true);
+}
 
-void CCPACSCrossBeamStrutAssemblyPosition::BuildGeometry(bool just1DElements)
+void CCPACSCrossBeamStrutAssemblyPosition::BuildGeometry3D(TopoDS_Shape& cache) const {
+    BuildGeometry(cache, false);
+}
+
+void CCPACSCrossBeamStrutAssemblyPosition::BuildGeometry(TopoDS_Shape& cache, bool just1DElements) const
 {
     // get the frame geometry
     CCPACSFrame& frame = m_uidMgr->ResolveObject<CCPACSFrame>(m_frameUID);
@@ -123,7 +128,7 @@ void CCPACSCrossBeamStrutAssemblyPosition::BuildGeometry(bool just1DElements)
     const gp_Pnt pointOnFrame = BRep_Tool::Pnt(TopoDS::Vertex(vertices[0]));
 
     if (just1DElements)
-        m_geometry[just1DElements] = BRepBuilderAPI_MakeEdge(pointOnCrossBeam, pointOnFrame).Shape();
+        cache = BRepBuilderAPI_MakeEdge(pointOnCrossBeam, pointOnFrame).Shape();
     else {
         CCPACSProfileBasedStructuralElement& structuralElement =
             m_uidMgr->ResolveObject<CCPACSProfileBasedStructuralElement>(GetStructuralElementUID());
@@ -141,7 +146,7 @@ void CCPACSCrossBeamStrutAssemblyPosition::BuildGeometry(bool just1DElements)
         if (!frameShell.IsDone())
             throw CTiglError("Failed to sweep cross beam");
 
-        m_geometry[just1DElements] = frameShell.Shape();
+        cache = frameShell.Shape();
     }
 }
 } // namespace tigl
