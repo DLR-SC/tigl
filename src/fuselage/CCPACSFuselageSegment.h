@@ -157,6 +157,9 @@ public:
 
     TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE { return TIGL_COMPONENT_FUSELSEGMENT | TIGL_COMPONENT_SEGMENT | TIGL_COMPONENT_LOGICAL; }
 
+    // Returns the number of faces in the loft. This depends on the number of guide curves as well as if the fuselage has a symmetry plane.
+    TIGL_EXPORT int GetNumberOfLoftFaces() const;
+
 protected:
     // Cleanup routine
     void Cleanup();
@@ -167,7 +170,7 @@ protected:
     // Builds the loft between the two segment sections
     PNamedShape BuildLoft() OVERRIDE;
 
-    void SetFaceTraits(PNamedShape loft, bool hasSymmetryPlane);
+    void SetFaceTraits(PNamedShape loft);
 
 private:
     // get short name for loft

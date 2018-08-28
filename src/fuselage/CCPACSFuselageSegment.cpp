@@ -252,12 +252,11 @@ std::string CCPACSFuselageSegment::GetShortShapeName()
     return "UNKNOWN";
 }
 
-void CCPACSFuselageSegment::SetFaceTraits (PNamedShape loft, bool hasSymmetryPlane)
+void CCPACSFuselageSegment::SetFaceTraits (PNamedShape loft)
 {
-    // TODO: Face traits with guides must be made
-    // this is currently only valid without guides
 
     int nFaces = GetNumberOfFaces(loft->Shape());
+    bool hasSymmetryPlane = GetNumberOfEdges(GetEndWire()) > 1;
 
     std::vector<std::string> names;
     names.push_back(loft->Name());
@@ -266,16 +265,20 @@ void CCPACSFuselageSegment::SetFaceTraits (PNamedShape loft, bool hasSymmetryPla
     names.push_back("Rear");
 
 
-    int facesPerSegment = hasSymmetryPlane ? 2 : 1;
+    int facesPerSegment = GetNumberOfLoftFaces();
     int remainingFaces = nFaces - facesPerSegment;
-    if (remainingFaces < 0 || remainingFaces > 2) {
+    if (facesPerSegment == 0 || remainingFaces < 0 || remainingFaces > 2) {
         LOG(WARNING) << "Fuselage segment faces cannot be names properly (maybe due to Guide Curves?)";
         return;
     }
 
     int iFaceTotal = 0;
-    for (int iFace = 0; iFace < facesPerSegment; ++iFace) {
-        loft->FaceTraits(iFaceTotal++).SetName(names[iFace].c_str());
+    int nSymmetryFaces = (int) hasSymmetryPlane;
+    for (int iFace = 0; iFace < facesPerSegment - nSymmetryFaces; ++iFace) {
+        loft->FaceTraits(iFaceTotal++).SetName(names[0].c_str());
+    }
+    for (int iFace = 0; iFace < nSymmetryFaces; ++iFace) {
+        loft->FaceTraits(iFaceTotal++).SetName(names[1].c_str());
     }
 
     // set the caps
@@ -310,13 +313,8 @@ PNamedShape CCPACSFuselageSegment::BuildLoft()
         TopExp::MapShapes(fuselageLoft->Shape(), TopAbs_FACE, faceMap);
 
         //determine the number of faces per segment
-        int nFaces = faceMap.Extent();
         int nSegments = fuselage.GetSegmentCount();
-        int nCaps = 0;
-        if (fuselageLoft->GetFaceTraits(fuselageLoft->GetFaceCount()-1).Name() == "Rear" ) {
-            nCaps = 2;
-        }
-        int nFacesPerSegment = (nFaces - nCaps)/nSegments; // remove front and back sidecap
+        int nFacesPerSegment = GetNumberOfLoftFaces();
 
         // determine index of segment to retrieve the correct subshapes of the wing
         // Here we explicitly require the subshapes to be ordered consistently
@@ -330,7 +328,7 @@ PNamedShape CCPACSFuselageSegment::BuildLoft()
             }
         }
 
-        //TODO close the shell with sidecaps and make them a solid
+        //close the shell with sidecaps and make them a solid
         TopoDS_Wire startWire = GetStartWire();
         TopoDS_Wire endWire  = GetEndWire();
 
@@ -362,8 +360,7 @@ PNamedShape CCPACSFuselageSegment::BuildLoft()
     std::string loftShortName = GetShortShapeName();
     PNamedShape loft(new CNamedShape(loftShape, loftName.c_str(), loftShortName.c_str()));
 
-    bool hasSymmetryPlane = GetNumberOfEdges(GetEndWire()) > 1;
-    SetFaceTraits(loft, hasSymmetryPlane);
+    SetFaceTraits(loft);
 
     return loft;
 }
@@ -830,5 +827,20 @@ double CCPACSFuselageSegment::GetCircumference(const double eta)
     GProp_GProps System;
     BRepGProp::LinearProperties(intersectionWire,System);
     return System.Mass();
+}
+
+// Returns the number of faces in the loft. This depends on the number of guide curves as well as if the fuselage has a symmetry plane.
+TIGL_EXPORT int CCPACSFuselageSegment::GetNumberOfLoftFaces() const
+{
+    int facesPerSegment = 0;
+    if ( GetGuideCurves() ) {
+        facesPerSegment = GetGuideCurves()->GetGuideCurveCount();
+    }
+    else {
+        // no guide curves, therefore we either have one or two faces, depending on the symmetry plane
+        bool hasSymmetryPlane = GetNumberOfEdges(GetEndWire()) > 1;
+        facesPerSegment = hasSymmetryPlane? 2 : 1;
+    }
+    return facesPerSegment;
 }
 } // end namespace tigl

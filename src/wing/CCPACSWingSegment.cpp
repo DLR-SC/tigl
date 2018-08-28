@@ -499,7 +499,7 @@ PNamedShape CCPACSWingSegment::BuildLoft()
             }
         }
 
-        //TODO close the shell with sidecaps and make them a solid
+        //close the shell with sidecaps and make them a solid
         TopoDS_Wire innerWire = GetInnerWire();
         TopoDS_Wire outerWire = GetOuterWire();
 

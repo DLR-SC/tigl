@@ -186,12 +186,10 @@ std::string CCPACSFuselage::GetShortShapeName ()
     return "UNKNOWN";
 }
 
-void CCPACSFuselage::SetFaceTraits (PNamedShape loft, bool hasSymmetryPlane, bool smoothSurface)
+void CCPACSFuselage::SetFaceTraits (PNamedShape loft)
 {
-    // TODO: Face traits with guides must be made
-    // this is currently only valid without guides
-
     int nFaces = GetNumberOfFaces(loft->Shape());
+    bool hasSymmetryPlane = GetNumberOfEdges(m_segments.GetSegment(1).GetEndWire()) > 1;
 
     std::vector<std::string> names;
     names.push_back(loft->Name());
@@ -202,17 +200,22 @@ void CCPACSFuselage::SetFaceTraits (PNamedShape loft, bool hasSymmetryPlane, boo
     // if we have a smooth surface, the whole fuslage is treatet as one segment
     int nSegments = this->GetSegmentCount();
 
-    int facesPerSegment = hasSymmetryPlane ? 2 : 1;
+    // the number of faces per segment depends on the number of guide curves and the existence of the symmetry plane
+    int facesPerSegment = GetSegment(1).GetNumberOfLoftFaces();
     int remainingFaces = nFaces - facesPerSegment * nSegments;
-    if (remainingFaces < 0 || remainingFaces > 2) {
-        LOG(WARNING) << "Fuselage faces cannot be names properly (maybe due to Guide Curves?)";
+    if (facesPerSegment == 0 || remainingFaces < 0 || remainingFaces > 2) {
+        LOG(WARNING) << "Fuselage faces cannot be names properly";
         return;
     }
 
     int iFaceTotal = 0;
+    int nSymmetryFaces = (int) hasSymmetryPlane;
     for (int iSegment = 0; iSegment < nSegments; ++iSegment) {
-        for (int iFace = 0; iFace < facesPerSegment; ++iFace) {
-            loft->FaceTraits(iFaceTotal++).SetName(names[iFace].c_str());
+        for (int iFace = 0; iFace < facesPerSegment - nSymmetryFaces; ++iFace) {
+            loft->FaceTraits(iFaceTotal++).SetName(names[0].c_str());
+        }
+        for (int iFace = 0; iFace < nSymmetryFaces; ++iFace) {
+            loft->FaceTraits(iFaceTotal++).SetName(names[1].c_str());
         }
     }
 
@@ -247,10 +250,7 @@ PNamedShape CCPACSFuselage::BuildLoft()
     std::string loftName = GetUID();
     std::string loftShortName = GetShortShapeName();
     PNamedShape loft(new CNamedShape(loftShape, loftName.c_str(), loftShortName.c_str()));
-
-    bool hasSymmetryPlane = GetNumberOfEdges(m_segments.GetSegment(1).GetEndWire()) > 1;
-
-    SetFaceTraits(loft, hasSymmetryPlane, smooth);
+    SetFaceTraits(loft);
 
     return loft;
 }

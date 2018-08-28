@@ -135,7 +135,7 @@ protected:
     // Adds all segments of this fuselage to one shape
     PNamedShape BuildLoft() OVERRIDE;
 
-    void SetFaceTraits(PNamedShape loft, bool hasSymmetryPlane, bool smoothSurface);
+    void SetFaceTraits(PNamedShape loft);
 
 private:
     // get short name for loft
