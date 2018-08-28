@@ -88,8 +88,12 @@ if(CMAKE_COMPILER_IS_GNUCC)
     SET_SOURCE_FILES_PROPERTIES(CTiglIntersectionCalculation.cpp PROPERTIES COMPILE_FLAGS -O0)
 endif(CMAKE_COMPILER_IS_GNUCC)
 
+# object library containing just the compiled sources
+add_library(tigl3_objects OBJECT ${TIGL_SRC})
+set_property(TARGET tigl3_objects PROPERTY POSITION_INDEPENDENT_CODE ON) # needed for shared libraries
+
 # tigl dll/so library
-add_library(tigl3 SHARED ${TIGL_SRC})
+add_library(tigl3 SHARED $<TARGET_OBJECTS:tigl3_objects>)
 
 if(GLOG_FOUND)
   include_directories(${GLOG_INCLUDE_DIR})
@@ -129,7 +133,7 @@ install (FILES api/tigl.h ${CMAKE_CURRENT_BINARY_DIR}/api/tigl_version.h
          COMPONENT headers)
 
 # static lib for tiglviewer 
-add_library(tigl3_static ${TIGL_SRC})
+add_library(tigl3_static $<TARGET_OBJECTS:tigl3_objects>)
 # this does no actual linking but keeps track of the dependencies
 target_link_libraries (tigl3_static ${TIGL_LIBRARIES})
 
