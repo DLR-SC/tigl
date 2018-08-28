@@ -31,6 +31,7 @@
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <StdFail_NotDone.hxx>
 #include <BRepBuilderAPI_Sewing.hxx>
+#include <Geom_Plane.hxx>
 
 namespace
 {
