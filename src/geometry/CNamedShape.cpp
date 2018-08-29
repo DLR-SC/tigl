@@ -24,6 +24,8 @@
 #include <TopExp.hxx>
 #include <BRepBuilderAPI_Copy.hxx>
 
+#include "tiglcommonfunctions.h"
+
 CNamedShape::CNamedShape()
 {
     Clear();
@@ -133,6 +135,28 @@ const CFaceTraits& CNamedShape::GetFaceTraits(int iFace) const
 CFaceTraits& CNamedShape::FaceTraits(int iFace)
 {
     return  _myfaceTraits.at(iFace);
+}
+
+TopoDS_Shape CNamedShape::GetFacesByName(const std::string& name) const
+{
+    std::vector<TopoDS_Face> faces;
+    for (unsigned int i = 0; i < GetFaceCount(); i++) {
+        if (GetFaceTraits(i).Name() == name) {
+            faces.push_back(GetFace(Shape(), i));
+        }
+    }
+
+    if (faces.empty())
+        throw tigl::CTiglError("Could not find faces named " + name);
+    if (faces.size() == 1)
+        return faces[0];
+
+    TopoDS_Compound c;
+    TopoDS_Builder b;
+    b.MakeCompound(c);
+    for (std::size_t i = 0; i < faces.size(); i++)
+        b.Add(c, faces[i]);
+    return c;
 }
 
 void CNamedShape::SetFaceTraits(int iFace, const CFaceTraits &traits)
