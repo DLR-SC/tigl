@@ -1004,19 +1004,28 @@ Handle(Geom_Surface) CCPACSWingSegment::GetUpperSurface(TiglCoordinateSystem ref
 // Returns the upper wing shape of this Segment
 TopoDS_Shape CCPACSWingSegment::GetUpperShape(TiglCoordinateSystem referenceCS, TiglShapeModifier mod) const
 {
-    return GetLoft(mod)->GetFacesByName("Top");
+    TopoDS_Shape s = GetLoft(mod)->GetFacesByName("Top");
+    if (referenceCS == GLOBAL_COORDINATE_SYSTEM)
+        return s;
+    return GetParent()->GetParent()->GetTransformationMatrix().Inverted().Transform(s);
 }
 
 // Returns the lower wing shape of this Segment
 TopoDS_Shape CCPACSWingSegment::GetLowerShape(TiglCoordinateSystem referenceCS, TiglShapeModifier mod) const
 {
-    return GetLoft(mod)->GetFacesByName("Bottom");
+    TopoDS_Shape s = GetLoft(mod)->GetFacesByName("Bottom");
+    if (referenceCS == GLOBAL_COORDINATE_SYSTEM)
+        return s;
+    return GetParent()->GetParent()->GetTransformationMatrix().Inverted().Transform(s);
 }
 
-TIGL_EXPORT TopoDS_Shape CCPACSWingSegment::GetTrailingEdgeShape(TiglCoordinateSystem referenceCS,
+TopoDS_Shape CCPACSWingSegment::GetTrailingEdgeShape(TiglCoordinateSystem referenceCS,
                                                                  TiglShapeModifier mod) const
 {
-    return GetLoft(mod)->GetFacesByName("TrailingEdge");
+    TopoDS_Shape s = GetLoft(mod)->GetFacesByName("TrailingEdge");
+    if (referenceCS == GLOBAL_COORDINATE_SYSTEM)
+        return s;
+    return GetParent()->GetParent()->GetTransformationMatrix().Inverted().Transform(s);
 }
 
 } // end namespace tigl
