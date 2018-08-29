@@ -983,11 +983,10 @@ double CCPACSWingSegment::GetReferenceArea(TiglSymmetryAxis symPlane) const
 
 PNamedShape CCPACSWingSegment::GetLoft(TiglShapeModifier mod) const
 {
-    // TODO
-    //const bool hasBluntTE = innerConnection.GetProfile().HasBluntTE();
-    //if (mod == UNMODIFIED_SHAPE || (mod == BLUNT_TRAILINGEDGE) == hasBluntTE)
-        return const_cast<CCPACSWingSegment&>(*this).GetLoft();
-    //return *loft2;
+    if (mod != UNMODIFIED_SHAPE)
+        throw CTiglError("TiglShapeModifier is not yet supported for CCPACSWingSegment::GetLoft");
+
+    return const_cast<CCPACSWingSegment&>(*this).GetLoft();
 }
 
 // Returns the lower Surface of this Segment
