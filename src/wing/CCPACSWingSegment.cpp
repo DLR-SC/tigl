@@ -1005,49 +1005,19 @@ Handle(Geom_Surface) CCPACSWingSegment::GetUpperSurface(TiglCoordinateSystem ref
 // Returns the upper wing shape of this Segment
 TopoDS_Shape CCPACSWingSegment::GetUpperShape(TiglCoordinateSystem referenceCS, TiglShapeModifier mod) const
 {
-    const PNamedShape loft = GetLoft(mod);
-    for (unsigned int i = 0; i < loft->GetFaceCount(); i++) {
-        if (loft->GetFaceTraits(i).Name() == "Top") {
-            const TopoDS_Face f = GetFace(loft->Shape(), i);
-            if (referenceCS == GLOBAL_COORDINATE_SYSTEM)
-                return f;
-            return GetParent()->GetParent()->GetTransformationMatrix().Inverted().Transform(f);
-        }
-    }
-
-    throw CTiglError("Could not identify upper shape in loft. Maybe face traits are wrong?");
+    return GetLoft(mod)->GetFacesByName("Top");
 }
 
 // Returns the lower wing shape of this Segment
 TopoDS_Shape CCPACSWingSegment::GetLowerShape(TiglCoordinateSystem referenceCS, TiglShapeModifier mod) const
 {
-    const PNamedShape loft = GetLoft(mod);
-    for (unsigned int i = 0; i < loft->GetFaceCount(); i++) {
-        if (loft->GetFaceTraits(i).Name() == "Bottom") {
-            const TopoDS_Face f = GetFace(loft->Shape(), i);
-            if (referenceCS == GLOBAL_COORDINATE_SYSTEM)
-                return f;
-            return GetParent()->GetParent()->GetTransformationMatrix().Inverted().Transform(f);
-        }
-    }
-
-    throw CTiglError("Could not identify upper shape in loft. Maybe face traits are wrong?");
+    return GetLoft(mod)->GetFacesByName("Bottom");
 }
 
 TIGL_EXPORT TopoDS_Shape CCPACSWingSegment::GetTrailingEdgeShape(TiglCoordinateSystem referenceCS,
                                                                  TiglShapeModifier mod) const
 {
-    const PNamedShape loft = GetLoft(mod);
-    for (unsigned int i = 0; i < loft->GetFaceCount(); i++) {
-        if (loft->GetFaceTraits(i).Name() == "TrailingEdge") {
-            const TopoDS_Face f = GetFace(loft->Shape(), i);
-            if (referenceCS == GLOBAL_COORDINATE_SYSTEM)
-                return f;
-            return GetParent()->GetParent()->GetTransformationMatrix().Inverted().Transform(f);
-        }
-    }
-
-    throw CTiglError("Could not identify upper shape in loft. Maybe face traits are wrong?");
+    return GetLoft(mod)->GetFacesByName("TrailingEdge");
 }
 
 } // end namespace tigl
