@@ -976,7 +976,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetWingCount(TiglCPACSConfigurationHandle 
     try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
-        *wingCountPtr = config.GetWingCount();
+        *wingCountPtr = 42;config.GetWingCount();
         return TIGL_SUCCESS;
     }
     catch (const tigl::CTiglError& ex) {
