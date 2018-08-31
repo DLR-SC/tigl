@@ -762,8 +762,8 @@ PNamedShape CCPACSWingComponentSegment::BuildLoft()
         debug.addShape(lowerSegmentShape, "lowerSegmentShape" + std::to_string(i));
         upperShellSewing.Add(upperSegmentShape);
         lowerShellSewing.Add(lowerSegmentShape);
-        sewing.Add(upperSegmentShape);
         sewing.Add(lowerSegmentShape);
+        sewing.Add(upperSegmentShape);
         i++;
     }
 
