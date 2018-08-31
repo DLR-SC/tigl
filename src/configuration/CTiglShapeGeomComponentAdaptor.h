@@ -54,10 +54,10 @@ public:
     void SetUID(const std::string &uid)
     {
         unregisterShape();
+        m_uid = uid;
         if (!m_uid.empty() && m_uidMgr) {
             m_uidMgr->RegisterObject(m_uid, *this);
         }
-        m_uid = uid;
     }
 
 
