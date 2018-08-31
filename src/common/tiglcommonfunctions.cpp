@@ -1586,4 +1586,24 @@ TopoDS_Shape TransformedShape(const tigl::CTiglRelativelyPositionedComponent& co
     return TransformedShape(component.GetTransformationMatrix(), cs, shape);
 }
 
-
+TopoDS_Shape GetFacesByName(const PNamedShape shape, const std::string &name)
+{
+    std::vector<TopoDS_Face> faces;
+    for (int i = 0; i < static_cast<int>(shape->GetFaceCount()); i++) {
+        if (shape->GetFaceTraits(i).Name() == name) {
+            faces.push_back(GetFace(shape->Shape(), i));
+        }
+    }
+    
+    if (faces.empty())
+        throw tigl::CTiglError("Could not find faces named " + name);
+    if (faces.size() == 1)
+        return faces[0];
+    
+    TopoDS_Compound c;
+    TopoDS_Builder b;
+    b.MakeCompound(c);
+    for (std::size_t i = 0; i < faces.size(); i++)
+        b.Add(c, faces[i]);
+    return c;
+}
