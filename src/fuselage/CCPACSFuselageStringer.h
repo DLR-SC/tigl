@@ -16,11 +16,11 @@
 
 #pragma once
 
-#include <boost/optional.hpp>
 #include <TopoDS_Shape.hxx>
 
 #include "generated/CPACSStringer.h"
 #include "tigl.h"
+#include "Cache.h"
 
 namespace tigl
 {
@@ -31,16 +31,19 @@ public:
 
     TIGL_EXPORT void Invalidate();
 
-    TIGL_EXPORT TopoDS_Shape GetGeometry(bool just1DElements, TiglCoordinateSystem cs = GLOBAL_COORDINATE_SYSTEM);
-    TIGL_EXPORT TopoDS_Shape GetCutGeometry(TiglCoordinateSystem cs = GLOBAL_COORDINATE_SYSTEM);
+    TIGL_EXPORT TopoDS_Shape GetGeometry(bool just1DElements, TiglCoordinateSystem cs = GLOBAL_COORDINATE_SYSTEM) const;
+    TIGL_EXPORT TopoDS_Shape GetCutGeometry(TiglCoordinateSystem cs = GLOBAL_COORDINATE_SYSTEM) const;
 
 private:
-    void BuildGeometry(bool just1DElements);
-    void BuildCutGeometry();
+    void BuildGeometry1D(TopoDS_Shape& cache) const;
+    void BuildGeometry3D(TopoDS_Shape& cache) const;
+    void BuildGeometry(TopoDS_Shape& cache, bool just1DElements) const;
+    void BuildCutGeometry(TopoDS_Shape& cache) const;
 
 private:
-    boost::optional<TopoDS_Shape> m_geomCache[2];      // [0] is 3D, [1] is 1D
-    boost::optional<TopoDS_Shape> m_cutGeomCache;
+    Cache<TopoDS_Shape, CCPACSFuselageStringer> m_geomCache1D;
+    Cache<TopoDS_Shape, CCPACSFuselageStringer> m_geomCache3D;
+    Cache<TopoDS_Shape, CCPACSFuselageStringer> m_cutGeomCache;
 };
 
 } // namespace tigl

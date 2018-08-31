@@ -44,6 +44,7 @@ namespace tigl
 CCPACSPressureBulkheadAssemblyPosition::CCPACSPressureBulkheadAssemblyPosition(CCPACSPressureBulkheadAssembly* parent,
                                                                                CTiglUIDManager* uidMgr)
     : generated::CPACSPressureBulkheadAssemblyPosition(parent, uidMgr)
+    , m_geometry(*this, &CCPACSPressureBulkheadAssemblyPosition::BuildGeometry)
 {
 }
 
@@ -76,24 +77,21 @@ TiglGeometricComponentType CCPACSPressureBulkheadAssemblyPosition::GetComponentT
 
 void CCPACSPressureBulkheadAssemblyPosition::Invalidate()
 {
-    m_geometry = boost::none;
+    m_geometry.clear();
 }
 
-TopoDS_Shape CCPACSPressureBulkheadAssemblyPosition::GetGeometry(TiglCoordinateSystem cs)
+TopoDS_Shape CCPACSPressureBulkheadAssemblyPosition::GetGeometry(TiglCoordinateSystem cs) const
 {
-    if (!m_geometry) {
-        BuildGeometry();
-    }
     if (cs == GLOBAL_COORDINATE_SYSTEM) {
         CTiglTransformation trafo = m_parent->GetParent()->GetParent()->GetTransformationMatrix();
-        return trafo.Transform(m_geometry.value());
+        return trafo.Transform(*m_geometry);
     }
     else {
-        return m_geometry.value();
+        return *m_geometry;
     }
 }
 
-void CCPACSPressureBulkheadAssemblyPosition::BuildGeometry()
+void CCPACSPressureBulkheadAssemblyPosition::BuildGeometry(TopoDS_Shape& cache) const
 {
     CCPACSFrame& frame = m_uidMgr->ResolveObject<CCPACSFrame>(m_frameUID);
 
@@ -105,7 +103,7 @@ void CCPACSPressureBulkheadAssemblyPosition::BuildGeometry()
             throw CTiglError("1D frame geometry should have exactly one wire");
         }
 
-        m_geometry = BRepBuilderAPI_MakeFace(TopoDS::Wire(wireMap(1)));
+        cache = BRepBuilderAPI_MakeFace(TopoDS::Wire(wireMap(1)));
     }
     else if (frame.GetFramePositions().size() >= 2) {
         CCPACSFuselage& fuselage = *m_parent->GetParent()->GetParent();
@@ -162,7 +160,7 @@ void CCPACSPressureBulkheadAssemblyPosition::BuildGeometry()
         // causing subsequent boolean operations to fail (self intersections)
         ShapeFix_ShapeTolerance().SetTolerance(face, Precision::Confusion());
 
-        m_geometry = face;
+        cache = face;
     }
 }
 

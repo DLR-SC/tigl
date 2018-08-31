@@ -38,24 +38,22 @@ namespace tigl
 {
 CCPACSFuselageStringer::CCPACSFuselageStringer(CCPACSStringersAssembly* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSStringer(parent, uidMgr)
+    , m_geomCache1D(*this, &CCPACSFuselageStringer::BuildGeometry1D)
+    , m_geomCache3D(*this, &CCPACSFuselageStringer::BuildGeometry3D)
+    , m_cutGeomCache(*this, &CCPACSFuselageStringer::BuildCutGeometry)
 {
 }
 
 void CCPACSFuselageStringer::Invalidate()
 {
-    for (int i = 0; i < 2; ++i) {
-        m_geomCache[i] = boost::none;
-    }
-    m_cutGeomCache = boost::none;
+    m_geomCache1D.clear();
+    m_geomCache3D.clear();
+    m_cutGeomCache.clear();
 }
 
-TopoDS_Shape CCPACSFuselageStringer::GetGeometry(bool just1DElements, TiglCoordinateSystem cs)
+TopoDS_Shape CCPACSFuselageStringer::GetGeometry(bool just1DElements, TiglCoordinateSystem cs) const
 {
-    if (!m_geomCache[just1DElements]) {
-        BuildGeometry(just1DElements);
-    }
-
-    const TopoDS_Shape shape = m_geomCache[just1DElements].value();
+    const TopoDS_Shape shape = just1DElements ? *m_geomCache1D : *m_geomCache3D;
     if (cs == GLOBAL_COORDINATE_SYSTEM) {
         CTiglTransformation trafo = m_parent->GetParent()->GetParent()->GetTransformationMatrix();
         return trafo.Transform(shape);
@@ -64,12 +62,9 @@ TopoDS_Shape CCPACSFuselageStringer::GetGeometry(bool just1DElements, TiglCoordi
         return shape;
 }
 
-TopoDS_Shape CCPACSFuselageStringer::GetCutGeometry(TiglCoordinateSystem cs)
+TopoDS_Shape CCPACSFuselageStringer::GetCutGeometry(TiglCoordinateSystem cs) const
 {
-    if (!m_cutGeomCache)
-        BuildCutGeometry();
-
-    TopoDS_Shape shape = m_cutGeomCache.value();
+    TopoDS_Shape shape = *m_cutGeomCache;
     if (cs == TiglCoordinateSystem::GLOBAL_COORDINATE_SYSTEM) {
         CTiglTransformation trafo = m_parent->GetParent()->GetParent()->GetTransformationMatrix();
         return trafo.Transform(shape);
@@ -78,7 +73,18 @@ TopoDS_Shape CCPACSFuselageStringer::GetCutGeometry(TiglCoordinateSystem cs)
         return shape;
 }
 
-void CCPACSFuselageStringer::BuildGeometry(bool just1DElements)
+
+void CCPACSFuselageStringer::BuildGeometry1D(TopoDS_Shape& cache) const
+{
+    BuildGeometry(cache, true);
+}
+
+void CCPACSFuselageStringer::BuildGeometry3D(TopoDS_Shape& cache) const
+{
+    BuildGeometry(cache, false);
+}
+
+void CCPACSFuselageStringer::BuildGeometry(TopoDS_Shape& cache, bool just1DElements) const
 {
     if (m_stringerPositions.size() < 2)
         throw CTiglError("Cannot build stringer geometry, less than 2 stringer positions defined in XML",
@@ -132,12 +138,12 @@ void CCPACSFuselageStringer::BuildGeometry(bool just1DElements)
     }
 
     if (just1DElements)
-        m_geomCache[just1DElements] = BuildWireFromEdges(compound); // make sure the geometry is a single wire
+        cache = BuildWireFromEdges(compound); // make sure the geometry is a single wire
     else
-        m_geomCache[just1DElements] = compound;
+        cache = compound;
 }
 
-void CCPACSFuselageStringer::BuildCutGeometry()
+void CCPACSFuselageStringer::BuildCutGeometry(TopoDS_Shape& cache) const
 {
     const TopoDS_Shape fuselageLoft = m_parent->GetParent()->GetParent()->GetLoft(FUSELAGE_COORDINATE_SYSTEM)->Shape();
 
@@ -203,13 +209,13 @@ void CCPACSFuselageStringer::BuildCutGeometry()
         frameShell.Build();
         if (!frameShell.IsDone())
             throw CTiglError("Error during the frame cut geometry sweeping");
-        m_cutGeomCache = frameShell.Shape();
+        cache = frameShell.Shape();
     }
     else {
         TopoDS_Compound empty;
         TopoDS_Builder builder;
         builder.MakeCompound(empty);
-        m_cutGeomCache = empty;
+        cache = empty;
     }
 }
 } // namespace tigl
