@@ -93,9 +93,6 @@ public:
     TIGL_EXPORT const CFaceTraits& GetFaceTraits(int iFace) const;
     TIGL_EXPORT CFaceTraits& FaceTraits(int iFace);
 
-    // returns the subface or a compound of faces with the specified name, throws if no face could be found
-    TIGL_EXPORT TopoDS_Shape GetFacesByName(const std::string& name) const;
-    
     // setters
     TIGL_EXPORT void SetShape(const TopoDS_Shape&);
     TIGL_EXPORT void SetName(const std::string&);

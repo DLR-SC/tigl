@@ -118,6 +118,8 @@ TIGL_EXPORT gp_Pnt GetCentralFacePoint(const class TopoDS_Face& face);
 // Maps all compounds with its name in the map
 TIGL_EXPORT ListPNamedShape GroupFaces(const PNamedShape shape, tigl::ShapeGroupMode groupType);
 
+TIGL_EXPORT TopoDS_Shape GetFacesByName(const PNamedShape shape, const std::string& name);
+
 // Returns the coordinates of the bounding box of the shape
 TIGL_EXPORT void GetShapeExtension(const TopoDS_Shape& shape,
                                    double& minx, double& maxx,
