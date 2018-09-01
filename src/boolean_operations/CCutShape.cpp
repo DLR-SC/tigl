@@ -20,6 +20,7 @@
 
 #include <cassert>
 
+#include <Standard_Version.hxx>
 #include <BOPAlgo_PaveFiller.hxx>
 #include <BRepAlgoAPI_Cut.hxx>
 
@@ -65,7 +66,11 @@ void CCutShape::PrepareFiller()
     }
 
     if (!_dsfiller) {
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,3,0)
+        TopTools_ListOfShape aLS;
+#else
         BOPCol_ListOfShape aLS;
+#endif
         aLS.Append(_tool->Shape());
         aLS.Append(_source->Shape());
 

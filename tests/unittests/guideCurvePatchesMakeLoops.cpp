@@ -27,7 +27,6 @@
 #include <GeomFill_FillingStyle.hxx>
 
 #include <BRepAlgoAPI_Fuse.hxx>
-#include <BOPCol_ListOfShape.hxx>
 #include <BOPAlgo_PaveFiller.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
@@ -124,7 +123,11 @@ protected:
         // *******************************************************************
         BRepAlgoAPI_Fuse* Fuser;
 
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,3,0)
+        TopTools_ListOfShape aLC;
+#else
         BOPCol_ListOfShape aLC;
+#endif
         aLC.Append(guides);
         aLC.Append(profiles);
 

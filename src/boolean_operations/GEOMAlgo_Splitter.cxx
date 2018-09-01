@@ -35,18 +35,28 @@
 #include <TopoDS_Iterator.hxx>
 
 #include <BRep_Builder.hxx>
+#include <Standard_Version.hxx>
 
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,3,0)
+#include <TopTools_MapOfShape.hxx>
+#include <TopTools_ListOfShape.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
+#include <TopExp.hxx>
+#else
 #include <BOPCol_MapOfShape.hxx>
 #include <BOPCol_ListOfShape.hxx>
-
+#include <BOPCol_IndexedMapOfShape.hxx>
 #include <BOPTools.hxx>
-
-#include <Standard_Version.hxx>
+#endif
 
 
 static 
   void TreatCompound(const TopoDS_Shape& aC, 
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,3,0)
+                     TopTools_ListOfShape& aLSX);
+#else
                      BOPCol_ListOfShape& aLSX);
+#endif
 
 //=======================================================================
 //function : 
@@ -98,7 +108,11 @@ void GEOMAlgo_Splitter::AddTool(const TopoDS_Shape& theShape)
 //function : Tools
 //purpose  : 
 //=======================================================================
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,3,0)
+const TopTools_ListOfShape& GEOMAlgo_Splitter::Tools()const
+#else
 const BOPCol_ListOfShape& GEOMAlgo_Splitter::Tools()const
+#endif
 {
   return myTools;
 }
@@ -159,8 +173,13 @@ void GEOMAlgo_Splitter::BuildResult(const TopAbs_ShapeEnum theType)
   //
   TopAbs_ShapeEnum aType;
   BRep_Builder aBB;
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,3,0)
+  TopTools_MapOfShape aM;
+  TopTools_ListIteratorOfListOfShape aIt, aItIm;
+#else
   BOPCol_MapOfShape aM;
   BOPCol_ListIteratorOfListOfShape aIt, aItIm;
+#endif
   //
   aIt.Initialize(myArguments);
   for (; aIt.More(); aIt.Next()) {
@@ -168,7 +187,11 @@ void GEOMAlgo_Splitter::BuildResult(const TopAbs_ShapeEnum theType)
     aType=aS.ShapeType();
     if (aType==theType && !myMapTools.Contains(aS)) {
       if (myImages.IsBound(aS)) {
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,3,0)
+        const TopTools_ListOfShape& aLSIm=myImages.Find(aS);
+#else
         const BOPCol_ListOfShape& aLSIm=myImages.Find(aS);
+#endif
         aItIm.Initialize(aLSIm);
         for (; aItIm.More(); aItIm.Next()) {
           const TopoDS_Shape& aSIm=aItIm.Value();
@@ -195,11 +218,19 @@ void GEOMAlgo_Splitter::PostTreat()
     Standard_Integer i, aNbS;
     BRep_Builder aBB;
     TopoDS_Compound aC;
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,3,0)
+    TopTools_IndexedMapOfShape aMx;
+#else
     BOPCol_IndexedMapOfShape aMx;
+#endif
     //
     aBB.MakeCompound(aC);
     //
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,3,0)
+    TopExp::MapShapes(myShape, myLimit, aMx);
+#else
     BOPTools::MapShapes(myShape, myLimit, aMx);
+#endif
     aNbS=aMx.Extent();
     for (i=1; i<=aNbS; ++i) {
       const TopoDS_Shape& aS=aMx(i);
@@ -208,9 +239,15 @@ void GEOMAlgo_Splitter::PostTreat()
     if (myLimitMode) {
       Standard_Integer iType, iLimit, iTypeX;
       TopAbs_ShapeEnum aType, aTypeX;
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,3,0)
+      TopTools_ListOfShape aLSP, aLSX;
+      TopTools_ListIteratorOfListOfShape aIt, aItX, aItIm;
+      TopTools_MapOfShape  aM;
+#else
       BOPCol_ListOfShape aLSP, aLSX;
       BOPCol_ListIteratorOfListOfShape aIt, aItX, aItIm;
       BOPCol_MapOfShape  aM;
+#endif
       //
       iLimit=(Standard_Integer)myLimit; 
       //
@@ -248,13 +285,21 @@ void GEOMAlgo_Splitter::PostTreat()
       }// for (; aIt.More(); aIt.Next()) {
       //
       aMx.Clear();
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,3,0)
+      TopExp::MapShapes(aC, aMx);
+#else
       BOPTools::MapShapes(aC, aMx);
+#endif
        // 2. Add them to aC
       aIt.Initialize(aLSP);
       for (; aIt.More(); aIt.Next()) {
         const TopoDS_Shape& aS=aIt.Value();
         if (myImages.IsBound(aS)) {
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,3,0)
+          const TopTools_ListOfShape& aLSIm=myImages.Find(aS);
+#else
           const BOPCol_ListOfShape& aLSIm=myImages.Find(aS);
+#endif
           aItIm.Initialize(aLSIm);
           for (; aItIm.More(); aItIm.Next()) {
             const TopoDS_Shape& aSIm=aItIm.Value();
@@ -279,7 +324,11 @@ void GEOMAlgo_Splitter::PostTreat()
   //
   Standard_Integer aNbS;
   TopoDS_Iterator aIt;
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,3,0)
+  TopTools_ListOfShape aLS;
+#else
   BOPCol_ListOfShape aLS;
+#endif
   //
   aIt.Initialize(myShape);
   for (; aIt.More(); aIt.Next()) {
@@ -298,12 +347,21 @@ void GEOMAlgo_Splitter::PostTreat()
 //purpose  : 
 //=======================================================================
 void TreatCompound(const TopoDS_Shape& aC1, 
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,3,0)
+                   TopTools_ListOfShape& aLSX)
+#else
                    BOPCol_ListOfShape& aLSX)
+#endif
 {
   Standard_Integer aNbC1;
   TopAbs_ShapeEnum aType;
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,3,0)
+  TopTools_ListOfShape aLC, aLC1;
+  TopTools_ListIteratorOfListOfShape aIt, aIt1;
+#else
   BOPCol_ListOfShape aLC, aLC1;
   BOPCol_ListIteratorOfListOfShape aIt, aIt1;
+#endif
   TopoDS_Iterator aItC;
   //
   aLC.Append (aC1);

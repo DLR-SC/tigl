@@ -30,6 +30,7 @@
 #include "tigl_internal.h"
 
 #include <Standard.hxx>
+#include <Standard_Version.hxx>
 #include <Standard_Macro.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
@@ -40,8 +41,13 @@
 
 #include <TopoDS_Shape.hxx>
 
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,3,0)
+#include <TopTools_ListOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
+#else
 #include <BOPCol_ListOfShape.hxx>
 #include <BOPCol_MapOfShape.hxx>
+#endif
 
 #include <BOPAlgo_Builder.hxx>
 
@@ -65,8 +71,13 @@ public:
   TIGL_EXPORT
     void AddTool(const TopoDS_Shape& theShape);
 
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,3,0)
+  TIGL_EXPORT
+    const TopTools_ListOfShape& Tools()const;
+#else
   TIGL_EXPORT
     const BOPCol_ListOfShape& Tools()const;
+#endif
 
   TIGL_EXPORT
     void SetLimit(const TopAbs_ShapeEnum aLimit);
@@ -91,8 +102,13 @@ public:
     void PostTreat() OVERRIDE;
   
  protected:
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,3,0)
+  TopTools_ListOfShape myTools;
+  TopTools_MapOfShape myMapTools;
+#else
   BOPCol_ListOfShape myTools;
   BOPCol_MapOfShape myMapTools;
+#endif
   TopAbs_ShapeEnum myLimit;
   Standard_Integer myLimitMode;
 };

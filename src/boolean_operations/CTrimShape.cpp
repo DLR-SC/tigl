@@ -29,7 +29,6 @@
 #include <string>
 
 #include <BOPAlgo_PaveFiller.hxx>
-#include <BOPCol_ListOfShape.hxx>
 
 #include <Precision.hxx>
 
@@ -48,6 +47,9 @@
 #include <Geom_Surface.hxx>
 #include <BRepBuilderAPI_MakeShape.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
+#if OCC_VERSION_HEX < VERSION_HEX_CODE(7,3,0)
+#include <BOPCol_ListOfShape.hxx>
+#endif
 
 namespace
 {
@@ -194,7 +196,11 @@ void CTrimShape::PrepareFiller()
     }
 
     if (!_dsfiller) {
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,3,0)
+        TopTools_ListOfShape aLS;
+#else
         BOPCol_ListOfShape aLS;
+#endif
         aLS.Append(_tool->Shape());
         aLS.Append(_source->Shape());
 
