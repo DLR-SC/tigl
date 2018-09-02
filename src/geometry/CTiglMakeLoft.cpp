@@ -358,8 +358,7 @@ namespace
                 uidx = ustart;
                 while ( uidx+1 < uparams.size() && uparams[uidx+1] <= u2 ) {
 
-                    Handle(Geom_RectangularTrimmedSurface) trimmedSurface =
-                            new Geom_RectangularTrimmedSurface(surface, uparams[uidx], uparams[uidx+1], vparams[vidx], vparams[vidx+1]);
+                    Handle(Geom_BSplineSurface) trimmedSurface = tigl::CTiglBSplineAlgorithms::trimSurface(surface, uparams[uidx], uparams[uidx+1], vparams[vidx], vparams[vidx+1]);
                     BRepBuilderAPI_MakeFace faceMaker(trimmedSurface, 1e-10);
                     builder.Add(cutShape, faceMaker.Face());
 

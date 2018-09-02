@@ -219,6 +219,9 @@ public:
      * This is required to prevent singular systems during interpolation.
      */
     TIGL_EXPORT static std::vector<double> knotsFromCurveParameters(std::vector<double>& params, unsigned int degree, bool closedCurve);
+
+    /// Trims a bspline surface
+    TIGL_EXPORT static Handle(Geom_BSplineSurface) trimSurface(const Handle(Geom_Surface)& surface, double umin, double umax, double vmin, double vmax);
 };
 } // namespace tigl
 

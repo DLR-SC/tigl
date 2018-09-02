@@ -294,7 +294,7 @@ size_t IndexFromUid(const std::vector<tigl::unique_ptr<T> >& vectorOfPointers, c
         std::string m_uid;
     }; 
     
-    std::vector<tigl::unique_ptr<T> >::const_iterator found = std::find_if(vectorOfPointers.begin(), vectorOfPointers.end(), is_uid(uid));
+    typename std::vector<tigl::unique_ptr<T> >::const_iterator found = std::find_if(vectorOfPointers.begin(), vectorOfPointers.end(), is_uid(uid));
     return found - vectorOfPointers.begin();
 }
 

@@ -864,4 +864,12 @@ std::vector<double> CTiglBSplineAlgorithms::getKinkParameters(const Handle(Geom_
     return kinks;
 }
 
+Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::trimSurface(const Handle(Geom_Surface)& surface, double umin, double umax, double vmin, double vmax)
+{
+    Handle(Geom_BSplineSurface) trimmedSurface = GeomConvert::SurfaceToBSplineSurface(
+            new Geom_RectangularTrimmedSurface(surface, umin, umax, vmin, vmax)
+    );
+    return trimmedSurface;
+}
+
 } // namespace tigl
