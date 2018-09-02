@@ -313,19 +313,11 @@ PNamedShape CCPACSFuselageSegment::BuildLoft()
         TopExp::MapShapes(fuselageLoft->Shape(), TopAbs_FACE, faceMap);
 
         //determine the number of faces per segment
-        int nSegments = fuselage.GetSegmentCount();
         int nFacesPerSegment = GetNumberOfLoftFaces();
 
-        // determine index of segment to retrieve the correct subshapes of the wing
-        // Here we explicitly require the subshapes to be ordered consistently
-        for (int j = 1; j <= nSegments; j++) {
-            CCPACSFuselageSegment& fs = fuselage.GetSegment(j);
-            if (GetUID() == fs.GetUID()) {
-                for (int i = 1; i <= nFacesPerSegment; ++i) {
-                    BB.Add(loftShell, TopoDS::Face(faceMap(nFacesPerSegment*(j-1) + i)));
-                }
-                break;
-            }
+        const int mySegmentIndex = GetSegmentIndex();
+        for (int i = 1; i <= nFacesPerSegment; ++i) {
+            BB.Add(loftShell, TopoDS::Face(faceMap(nFacesPerSegment*(mySegmentIndex-1) + i)));
         }
 
         //close the shell with sidecaps and make them a solid

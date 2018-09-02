@@ -38,6 +38,8 @@
 
 #include <map>
 #include <string>
+#include <algorithm>
+#include "UniquePtr.h"
 
 typedef std::map<std::string, PNamedShape> ShapeMap;
 
@@ -279,5 +281,21 @@ TIGL_EXPORT std::vector<double> LinspaceWithBreaks(double umin, double umax, siz
 // Transforms a shape accourding to the given coordinate transformation
 TIGL_EXPORT TopoDS_Shape TransformedShape(const tigl::CTiglTransformation& transformationToGlobal, TiglCoordinateSystem cs, const TopoDS_Shape& shape);
 TIGL_EXPORT TopoDS_Shape TransformedShape(const tigl::CTiglRelativelyPositionedComponent& component, TiglCoordinateSystem cs, const TopoDS_Shape& shape);
+
+template <typename T>
+size_t IndexFromUid(const std::vector<tigl::unique_ptr<T> >& vectorOfPointers, const std::string& uid)
+{
+    struct is_uid { 
+        is_uid(const std::string& uid) : m_uid(uid){}
+        bool operator()(const tigl::unique_ptr<T>& ptr)
+        { 
+            return ptr->GetUID() == m_uid;
+        }
+        std::string m_uid;
+    }; 
+    
+    std::vector<tigl::unique_ptr<T> >::const_iterator found = std::find_if(vectorOfPointers.begin(), vectorOfPointers.end(), is_uid(uid));
+    return found - vectorOfPointers.begin();
+}
 
 #endif // TIGLCOMMONFUNCTIONS_H
