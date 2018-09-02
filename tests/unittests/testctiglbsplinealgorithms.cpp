@@ -240,7 +240,7 @@ TEST(TiglBSplineAlgorithms, testCreateCommonKnotsVectorTolerance)
     TColgp_Array1OfPnt controlPoints1(1, 4);
 
     TColStd_Array1OfReal Knots1(1, 3);
-    Knots1(1) = 0.;
+    Knots1(1) = 0.009;
     Knots1(2) = 0.5;
     Knots1(3) = 1;
 
@@ -275,7 +275,7 @@ TEST(TiglBSplineAlgorithms, testCreateCommonKnotsVectorTolerance)
     ASSERT_EQ(4, curves[0]->NbKnots());
     ASSERT_EQ(4, curves[1]->NbKnots());
 
-    EXPECT_NEAR(0.000, curves[0]->Knot(1), 1e-10);
+    EXPECT_NEAR(0.009, curves[0]->Knot(1), 1e-10);
     EXPECT_NEAR(0.500, curves[0]->Knot(2), 1e-10);
     EXPECT_NEAR(0.800, curves[0]->Knot(3), 1e-10);
     EXPECT_NEAR(1.000, curves[0]->Knot(4), 1e-10);

@@ -83,7 +83,7 @@ public:
      *
      * @param bsplines The splines to be matched (in/out)
      */
-    TIGL_EXPORT static void matchParameterRange(const std::vector<Handle(Geom_BSplineCurve) >& bsplines);
+    TIGL_EXPORT static void matchParameterRange(const std::vector<Handle(Geom_BSplineCurve) >& bsplines, double tolerance=1e-15);
 
     /**
      * @brief Matches the degree of all b-splines by raising the degree to the maximum degree
