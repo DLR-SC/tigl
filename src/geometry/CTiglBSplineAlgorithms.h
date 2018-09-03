@@ -52,11 +52,23 @@ public:
      *          Given points where new parameters are computed at
      * @param alpha:
      *          Exponent for the computation of the parameters; alpha=0.5 means, that this method uses the centripetal method
-     * @param parameters
-     *          reference of the TColStd_Array1OfReal parameters, that is created beforehand
      */
     TIGL_EXPORT static std::vector<double> computeParamsBSplineCurve(const Handle(TColgp_HArray1OfPnt)& points, double alpha=0.5);
 
+    /**
+     * @brief computeParamsBSplineCurve:
+     *          Computes the parameters of a Geom_BSplineCurve at the given points
+     * @param points:
+     *          Given points where new parameters are computed at
+     * @param alpha:
+     *          Exponent for the computation of the parameters; alpha=0.5 means, that this method uses the centripetal method
+     * @param umin:
+     *          First parameter of the curve
+     * @param umax:
+     *          Last parameter of the curve
+     */
+    TIGL_EXPORT static std::vector<double> computeParamsBSplineCurve(const Handle(TColgp_HArray1OfPnt)& points, double umin, double umax, double alpha=0.5);
+    
     /**
      * @brief Computes a full blown bspline basis matrix of size (params.Length(), flatKnots.Length() + degree + 1)
      * @param degree    Degree of the bspline

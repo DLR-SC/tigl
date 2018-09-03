@@ -35,9 +35,11 @@
 #include <TopoDS_Edge.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <TopTools_ListOfShape.hxx>
+#include "TColgp_HArray1OfPnt.hxx"
 
 #include <map>
 #include <string>
+#include <vector>
 #include <algorithm>
 #include "UniquePtr.h"
 
@@ -260,14 +262,6 @@ inline double Radians(double degree)
     return degree / 180. * M_PI;
 }
 
-// Calculate centripetal parameters for a sequence of points. This can be used
-// to influence the parametrization in the interpolation algorithm
-//  TODO: Possibly code duplication, see CTiglBSplineAlgorithms::computeParamsBSplineCurve
-TIGL_EXPORT std::vector<double> GetCentripetalParameters(const std::vector<gp_Pnt>& points,
-                                                         double startParam = 0,
-                                                         double endParam = 1,
-                                                         double exponent = 1);
-
 // Clamps val between min and max
 TIGL_EXPORT int Clamp(int val, int min, int max);
 TIGL_EXPORT double Clamp(double val, double min, double max);
@@ -281,6 +275,8 @@ TIGL_EXPORT std::vector<double> LinspaceWithBreaks(double umin, double umax, siz
 // Transforms a shape accourding to the given coordinate transformation
 TIGL_EXPORT TopoDS_Shape TransformedShape(const tigl::CTiglTransformation& transformationToGlobal, TiglCoordinateSystem cs, const TopoDS_Shape& shape);
 TIGL_EXPORT TopoDS_Shape TransformedShape(const tigl::CTiglRelativelyPositionedComponent& component, TiglCoordinateSystem cs, const TopoDS_Shape& shape);
+
+TIGL_EXPORT Handle(TColgp_HArray1OfPnt) OccArray(const std::vector<gp_Pnt>& pnts);
 
 template <typename T>
 size_t IndexFromUid(const std::vector<tigl::unique_ptr<T> >& vectorOfPointers, const std::string& uid)

@@ -31,6 +31,9 @@
 #include "tiglcommonfunctions.h"
 #include "CNamedShape.h"
 #include "Debugging.h"
+#include "CTiglCurveConnector.h"
+#include "CTiglMakeLoft.h"
+#include "CTiglBSplineAlgorithms.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "BRepAlgoAPI_Fuse.hxx"
@@ -48,7 +51,6 @@
 #include "GC_MakeSegment.hxx"
 #include "BRepExtrema_DistShapeShape.hxx"
 #include "ShapeFix_Wire.hxx"
-#include "CTiglMakeLoft.h"
 #include "TopExp.hxx"
 #include "TopTools_IndexedMapOfShape.hxx"
 #include <TopExp_Explorer.hxx>
@@ -56,7 +58,7 @@
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepProj_Projection.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <CTiglCurveConnector.h>
+
 
 namespace tigl
 {
@@ -563,7 +565,7 @@ void CCPACSFuselage::BuildGuideCurves()
     }
 
     // get the parameters at the section centers
-    std::vector<double> sectionParams = GetCentripetalParameters(sectionCenters, 0., 1., 0.5);
+    std::vector<double> sectionParams = CTiglBSplineAlgorithms::computeParamsBSplineCurve(OccArray(sectionCenters), 0., 1., 0.5);
 
     // connect guide curve segments to a spline with given continuity conditions and tangents
     CTiglCurveConnector connector(roots, sectionParams);

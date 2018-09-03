@@ -470,7 +470,16 @@ double CTiglBSplineAlgorithms::scale(const TColgp_Array2OfPnt& points)
 
 std::vector<double> CTiglBSplineAlgorithms::computeParamsBSplineCurve(const Handle(TColgp_HArray1OfPnt)& points, const double alpha)
 {
-    std::vector<double> parameters(points->Length());
+    return computeParamsBSplineCurve(points, 0., 1., alpha);
+}
+
+std::vector<double> CTiglBSplineAlgorithms::computeParamsBSplineCurve(const Handle(TColgp_HArray1OfPnt)& points, double umin, double umax, const double alpha)
+{
+    if ( umax <= umin ) {
+        throw tigl::CTiglError("The specified start parameter is larger than the specified end parameter");
+    }
+    
+    std::vector<double> parameters(static_cast<size_t>(points->Length()));
 
     parameters[0] = 0.;
 
@@ -481,8 +490,17 @@ std::vector<double> CTiglBSplineAlgorithms::computeParamsBSplineCurve(const Hand
     }
 
     double totalLength = parameters.back();
+
+
     for (size_t i = 0; i < parameters.size(); ++i) {
-        parameters[i] /= totalLength;
+        double ratio = 0.;
+        if (totalLength < 1e-10) {
+            ratio = static_cast<double>(i) / static_cast<double>(parameters.size()-1);
+        }
+        else {
+            ratio = parameters[i] / totalLength;
+        }
+        parameters[i] = (umax - umin) * ratio + umin;
     }
 
     return parameters;
