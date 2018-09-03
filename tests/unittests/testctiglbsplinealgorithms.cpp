@@ -1391,7 +1391,8 @@ INSTANTIATE_TEST_CASE_P(TiglBSplineAlgorithms, GordonSurface, ::testing::Values(
                             "wing3",
                             "bellyfairing",
                             "helibody",
-                            "fuselage1"
+                            "fuselage1",
+                            "fuselage2"
                             ));
 
 } // namespace tigl
