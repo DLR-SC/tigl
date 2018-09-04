@@ -37,7 +37,6 @@
 #include <BRepLib.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_Sewing.hxx>
-#include <BOPCol_ListOfShape.hxx>
 #include <BOPAlgo_PaveFiller.hxx>
 #include <BRepAlgoAPI_Fuse.hxx>
 #include <Precision.hxx>
