@@ -1090,13 +1090,13 @@ TEST(TiglBSplineAlgorithms, testCreateGordonSurfaceGeneral)
     Handle(Geom_BSplineCurve) spline_v5 = new Geom_BSplineCurve(controlPoints_v5, knots, mults, degree);
 
     // u- and v-directional B-splines are already compatible in B-spline sense (common knot vector, same parametrization)
-    std::vector<Handle(Geom_BSplineCurve)> splines_u_vector;
+    std::vector<Handle(Geom_Curve)> splines_u_vector;
     splines_u_vector.push_back(spline_u3);
     splines_u_vector.push_back(spline_u1);
     splines_u_vector.push_back(spline_u2);
     splines_u_vector.push_back(spline_u4);
 
-    std::vector<Handle(Geom_BSplineCurve)> splines_v_vector;
+    std::vector<Handle(Geom_Curve)> splines_v_vector;
     splines_v_vector.push_back(spline_v5);
     splines_v_vector.push_back(spline_v4);
     splines_v_vector.push_back(spline_v2);
@@ -1344,7 +1344,7 @@ TEST_P(GordonSurface, testFromBRep)
 
     TopExp_Explorer Explorer;
     // get the splines in u-direction from the Edges
-    std::vector<Handle(Geom_BSplineCurve)> splines_u_vector;
+    std::vector<Handle(Geom_Curve)> splines_u_vector;
     for (Explorer.Init(shape_u, TopAbs_EDGE); Explorer.More(); Explorer.Next()) {
         TopoDS_Edge curve_edge = TopoDS::Edge(Explorer.Current());
         double beginning = 0;
@@ -1367,7 +1367,7 @@ TEST_P(GordonSurface, testFromBRep)
     TopExp::MapShapes(shape_v, TopAbs_EDGE, mapEdges_v);
 
     // get the splines in v-direction from the Edges
-    std::vector<Handle(Geom_BSplineCurve)> splines_v_vector;
+    std::vector<Handle(Geom_Curve)> splines_v_vector;
     for (Explorer.Init(shape_v, TopAbs_EDGE); Explorer.More(); Explorer.Next()) {
         TopoDS_Edge curve_edge = TopoDS::Edge(Explorer.Current());
         double beginning = 0;

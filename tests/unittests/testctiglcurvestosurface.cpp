@@ -54,7 +54,7 @@ TEST(CTiglCurvesToSurface, testSkinnedBSplineSurface)
 
     Handle(Geom_BSplineCurve) curve2 = new Geom_BSplineCurve(controlPoints2, knots, mults, degree_u);
 
-    std::vector<Handle(Geom_BSplineCurve) > splines_vector;
+    std::vector<Handle(Geom_Curve) > splines_vector;
     splines_vector.push_back(curve1);
     splines_vector.push_back(curve2);
 
@@ -90,7 +90,7 @@ TEST(TiglBSplineAlgorithms, curvesToSurfaceContinous)
     BRepTools::Read(shape_u, "TestData/CurveNetworks/fuselage1/guides.brep", builder_u);
 
     // get the splines in u-direction from the Edges
-    std::vector<Handle(Geom_BSplineCurve)> curves;
+    std::vector<Handle(Geom_Curve)> curves;
     for (TopExp_Explorer exp(shape_u, TopAbs_EDGE); exp.More(); exp.Next()) {
         TopoDS_Edge curve_edge = TopoDS::Edge(exp.Current());
         double beginning = 0;

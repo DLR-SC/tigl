@@ -78,7 +78,7 @@
 
 %template(CPointContainer) std::vector<gp_Pnt>;
 %template(BSplineCurveList) std::vector<Handle_Geom_BSplineCurve>;
-
+%template(CurveList) std::vector<Handle_Geom_Curve>;
 
 %boost_optional(tigl::CCPACSPointAbsRel)
 %boost_optional(tigl::CCPACSPoint)
