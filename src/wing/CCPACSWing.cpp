@@ -38,6 +38,7 @@
 #include "tiglmathfunctions.h"
 #include "CNamedShape.h"
 #include "CTiglCurveConnector.h"
+#include "CTiglBSplineAlgorithms.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "BRepAlgoAPI_Fuse.hxx"
@@ -807,7 +808,7 @@ void CCPACSWing::BuildGuideCurveWires()
     }
 
     // get the parameters at the section centers
-    std::vector<double> sectionParams = GetCentripetalParameters(sectionCenters, 0., 1., 0.5);
+    std::vector<double> sectionParams = CTiglBSplineAlgorithms::computeParamsBSplineCurve(OccArray(sectionCenters), 0., 1., 0.5);
 
     // connect guide curve segments to a spline with given continuity conditions and tangents
     CTiglCurveConnector connector(roots, sectionParams);

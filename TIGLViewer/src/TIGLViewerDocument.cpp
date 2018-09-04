@@ -670,7 +670,7 @@ void TIGLViewerDocument::drawAllFuselagesAndWings( )
             if (wing.IsRotorBlade()) {
                 continue;
             }
-            
+
             app->getScene()->displayShape(wing.GetLoft(), false);
 
             if ( !(wing.GetSymmetryAxis() == TIGL_NO_SYMMETRY)) {
@@ -685,11 +685,10 @@ void TIGLViewerDocument::drawAllFuselagesAndWings( )
             tigl::CCPACSFuselage& fuselage = GetConfiguration().GetFuselage(f);
 
             app->getScene()->displayShape(fuselage.GetLoft(), false);
-    
+
             if ( !(fuselage.GetSymmetryAxis() == TIGL_NO_SYMMETRY) ) {
                 app->getScene()->displayShape(fuselage.GetMirroredLoft(), false, Quantity_NOC_MirrShapeCol);
             }
-
             app->getScene()->updateViewer();
         }
         

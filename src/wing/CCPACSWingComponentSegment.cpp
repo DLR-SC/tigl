@@ -43,6 +43,7 @@
 #include "CTiglWingChordface.h"
 #include "CTiglShapeGeomComponentAdaptor.h"
 #include "CNamedShape.h"
+#include "Debugging.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "TopoDS_Edge.hxx"
@@ -740,6 +741,7 @@ std::string CCPACSWingComponentSegment::GetShortShapeName()
 PNamedShape CCPACSWingComponentSegment::BuildLoft()
 {
     loft.reset();
+    DEBUG_SCOPE(debug);
 
     // use sewing for full loft
     BRepBuilderAPI_Sewing sewing;
@@ -751,14 +753,18 @@ PNamedShape CCPACSWingComponentSegment::BuildLoft()
         throw CTiglError("Could not find segments in CCPACSWingComponentSegment::BuildLoft", TIGL_ERROR);
     }
 
+    int i = 0;
     for (SegmentList::const_iterator it = segments.begin(); it != segments.end(); ++it) {
         CCPACSWingSegment& segment = **it;
-        TopoDS_Face lowerSegmentFace = GetSingleFace(segment.GetLowerShape(WING_COORDINATE_SYSTEM));
-        TopoDS_Face upperSegmentFace = GetSingleFace(segment.GetUpperShape(WING_COORDINATE_SYSTEM));
-        upperShellSewing.Add(upperSegmentFace);
-        lowerShellSewing.Add(lowerSegmentFace);
-        sewing.Add(lowerSegmentFace);
-        sewing.Add(upperSegmentFace);
+        TopoDS_Shape upperSegmentShape = segment.GetUpperShape(WING_COORDINATE_SYSTEM);
+        TopoDS_Shape lowerSegmentShape = segment.GetLowerShape(WING_COORDINATE_SYSTEM);
+        debug.addShape(upperSegmentShape, "upperSegmentShape" + std::to_string(i));
+        debug.addShape(lowerSegmentShape, "lowerSegmentShape" + std::to_string(i));
+        upperShellSewing.Add(upperSegmentShape);
+        lowerShellSewing.Add(lowerSegmentShape);
+        sewing.Add(lowerSegmentShape);
+        sewing.Add(upperSegmentShape);
+        i++;
     }
 
 
@@ -772,6 +778,7 @@ PNamedShape CCPACSWingComponentSegment::BuildLoft()
 
     sewing.Perform();
     TopoDS_Shape loftShape = sewing.SewedShape();
+    debug.addShape(loftShape, "sewedShape");
     // convert loft to solid for correct normals
     if (loftShape.ShapeType() == TopAbs_SHELL) {
         BRepBuilderAPI_MakeSolid ms;

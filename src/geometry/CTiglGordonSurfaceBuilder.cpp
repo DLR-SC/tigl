@@ -21,6 +21,7 @@
 
 #include "CTiglError.h"
 #include "CTiglBSplineAlgorithms.h"
+#include "CTiglCurvesToSurface.h"
 #include "tiglcommonfunctions.h"
 #include <TColgp_Array2OfPnt.hxx>
 
@@ -151,11 +152,13 @@ void CTiglGordonSurfaceBuilder::CreateGordonSurface(const std::vector<Handle(Geo
     bool makeVClosed = CTiglBSplineAlgorithms::isVDirClosed(intersection_pnts, tp_tolerance) && profiles.front()->IsEqual(profiles.back(), curve_v_tolerance);
 
     // Skinning in v-direction with u directional B-Splines
-    Handle(Geom_BSplineSurface) surfProfiles = CTiglBSplineAlgorithms::curvesToSurface(profiles, intersection_params_spline_v, makeVClosed);
+    CTiglCurvesToSurface surfProfilesSkinner(profiles, intersection_params_spline_v, makeVClosed);
+    Handle(Geom_BSplineSurface) surfProfiles = surfProfilesSkinner.Surface();
     // therefore reparametrization before this method
 
     // Skinning in u-direction with v directional B-Splines
-    Handle(Geom_BSplineSurface) surfGuides = CTiglBSplineAlgorithms::curvesToSurface(guides, intersection_params_spline_u, makeUClosed);
+    CTiglCurvesToSurface surfGuidesSkinner(guides, intersection_params_spline_u, makeUClosed);
+    Handle(Geom_BSplineSurface) surfGuides = surfGuidesSkinner.Surface();
 
     // flipping of the surface in v-direction; flipping is redundant here, therefore the next line is a comment!
     surfGuides = CTiglBSplineAlgorithms::flipSurface(surfGuides);

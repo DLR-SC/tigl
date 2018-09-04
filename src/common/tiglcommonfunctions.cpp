@@ -1471,42 +1471,6 @@ bool IsPointInsideShape(const TopoDS_Shape &solid, gp_Pnt point)
     return ((algo.State() == TopAbs_IN) != shapeIsReversed ) || (algo.State() == TopAbs_ON);
 }
 
-std::vector<double> GetCentripetalParameters(const std::vector<gp_Pnt>& points,
-                                             double startParam,
-                                             double endParam,
-                                             double exponent)
-{
-    if ( endParam <= startParam ) {
-        throw tigl::CTiglError("The specified start parameter is larger than the specified end parameter");
-    }
-
-    std::vector<double> params(points.size());
-
-    params[0]=0;
-    for (int i = 1; i<points.size(); i++) {
-        params[i]=params[i-1] + pow(points[i].Distance(points[i-1]), exponent);
-    }
-
-    bool equidistant = false;
-    if (params.back()<1e-10) {
-        // the total length is almost zero. Falling back to equidistant parametrization
-        equidistant = true;
-    }
-
-    for (int i = 0; i<points.size(); i++) {
-        double ratio;
-        if (equidistant) {
-            ratio=(double)i/(params.size()-1);
-        }
-        else {
-            ratio = params[i]/params.back();
-        }
-        params[i] = startParam + ratio*(endParam - startParam);
-    }
-
-    return params;
-}
-
 std::vector<double> LinspaceWithBreaks(double umin, double umax, size_t n_values, const std::vector<double>& breaks)
 {
     double du = (umax - umin) / static_cast<double>(n_values - 1);
@@ -1586,4 +1550,34 @@ TopoDS_Shape TransformedShape(const tigl::CTiglRelativelyPositionedComponent& co
     return TransformedShape(component.GetTransformationMatrix(), cs, shape);
 }
 
+TopoDS_Shape GetFacesByName(const PNamedShape shape, const std::string &name)
+{
+    std::vector<TopoDS_Face> faces;
+    for (int i = 0; i < static_cast<int>(shape->GetFaceCount()); i++) {
+        if (shape->GetFaceTraits(i).Name() == name) {
+            faces.push_back(GetFace(shape->Shape(), i));
+        }
+    }
+    
+    if (faces.empty())
+        throw tigl::CTiglError("Could not find faces named " + name);
+    if (faces.size() == 1)
+        return faces[0];
+    
+    TopoDS_Compound c;
+    TopoDS_Builder b;
+    b.MakeCompound(c);
+    for (std::size_t i = 0; i < faces.size(); i++)
+        b.Add(c, faces[i]);
+    return c;
+}
 
+TIGL_EXPORT Handle(TColgp_HArray1OfPnt) OccArray(const std::vector<gp_Pnt>& pnts)
+{
+    Handle(TColgp_HArray1OfPnt) result = new TColgp_HArray1OfPnt(1, static_cast<int>(pnts.size()));
+    int idx = 1;
+    for (std::vector<gp_Pnt>::const_iterator it = pnts.begin(); it != pnts.end(); ++it, ++idx) {
+        result->SetValue(idx, *it);
+    }
+    return result;
+}

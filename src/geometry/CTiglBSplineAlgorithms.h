@@ -52,11 +52,23 @@ public:
      *          Given points where new parameters are computed at
      * @param alpha:
      *          Exponent for the computation of the parameters; alpha=0.5 means, that this method uses the centripetal method
-     * @param parameters
-     *          reference of the TColStd_Array1OfReal parameters, that is created beforehand
      */
     TIGL_EXPORT static std::vector<double> computeParamsBSplineCurve(const Handle(TColgp_HArray1OfPnt)& points, double alpha=0.5);
 
+    /**
+     * @brief computeParamsBSplineCurve:
+     *          Computes the parameters of a Geom_BSplineCurve at the given points
+     * @param points:
+     *          Given points where new parameters are computed at
+     * @param alpha:
+     *          Exponent for the computation of the parameters; alpha=0.5 means, that this method uses the centripetal method
+     * @param umin:
+     *          First parameter of the curve
+     * @param umax:
+     *          Last parameter of the curve
+     */
+    TIGL_EXPORT static std::vector<double> computeParamsBSplineCurve(const Handle(TColgp_HArray1OfPnt)& points, double umin, double umax, double alpha=0.5);
+    
     /**
      * @brief Computes a full blown bspline basis matrix of size (params.Length(), flatKnots.Length() + degree + 1)
      * @param degree    Degree of the bspline
@@ -78,6 +90,12 @@ public:
     TIGL_EXPORT static std::pair<std::vector<double>, std::vector<double> >
     computeParamsBSplineSurf(const TColgp_Array2OfPnt& points, double alpha=0.5);
 
+    /**
+     * @brief Matches the parameter range of all b-splines to the parameter range of the first b-spline
+     *
+     * @param bsplines The splines to be matched (in/out)
+     */
+    TIGL_EXPORT static void matchParameterRange(const std::vector<Handle(Geom_BSplineCurve) >& bsplines, double tolerance=1e-15);
 
     /**
      * @brief Matches the degree of all b-splines by raising the degree to the maximum degree
@@ -108,33 +126,6 @@ public:
      *          The B-spline surface geometry remains the same.
      */
     TIGL_EXPORT static std::vector<Handle(Geom_BSplineSurface) > createCommonKnotsVectorSurface(const std::vector<Handle(Geom_BSplineSurface)>& old_surfaces_vector);
-
-    /**
-     * @brief Surface skinning algorithm
-     * 
-     * Creates a surface by interpolation of B-spline curves. The direction of the input curves
-     * is treated as u direction. The skinning will be performed in v direction.
-     *
-     * @param splines_vector Curves to be interpolated.
-     * @param parameters Parameters of v-direction at which the resulting surface should interpolate the input curves.
-     * @param continuousIfClosed Make a C2 continous surface at the start/end junction if the first and last curve are the same
-     * @return The interpolation b-spline surface.
-     */
-    TIGL_EXPORT static Handle(Geom_BSplineSurface) curvesToSurface(const std::vector<Handle(Geom_BSplineCurve) >& splines_vector,
-                                                                   const std::vector<double>& parameters, bool continuousIfClosed = false);
-
-    /**
-     * @brief Surface skinning algorithm
-     * 
-     * Creates a surface by interpolation of B-spline curves. The direction of the input curves
-     * is treated as u direction. The skinning will be performed in v direction. The interpolation
-     * parameters will be determined automatically.
-     *
-     * @param splines_vector Curves to be interpolated.
-     * @param continuousIfClosed Make a C2 continous surface at the start/end junction if the first and last curve are the same
-     * @return The interpolation b-spline surface.
-     */
-    TIGL_EXPORT static Handle(Geom_BSplineSurface) curvesToSurface(const std::vector<Handle(Geom_BSplineCurve) >& splines_vector, bool continuousIfClosed = false);
 
     /**
      */
@@ -240,6 +231,9 @@ public:
      * This is required to prevent singular systems during interpolation.
      */
     TIGL_EXPORT static std::vector<double> knotsFromCurveParameters(std::vector<double>& params, unsigned int degree, bool closedCurve);
+
+    /// Trims a bspline surface
+    TIGL_EXPORT static Handle(Geom_BSplineSurface) trimSurface(const Handle(Geom_Surface)& surface, double umin, double umax, double vmin, double vmax);
 };
 } // namespace tigl
 

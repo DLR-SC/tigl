@@ -109,6 +109,43 @@ protected:
 TixiDocumentHandle tiglExportSimple::tixiSimpleHandle = 0;
 TiglCPACSConfigurationHandle tiglExportSimple::tiglSimpleHandle = 0;
 
+class tiglExportD150WGuides : public ::testing::Test
+{
+protected:
+    static void SetUpTestCase()
+    {
+        const char* filename = "TestData/D150_n_guides_m_profiles/D150_8_guides_8_profiles.xml";
+        ReturnCode tixiRet;
+        TiglReturnCode tiglRet;
+
+        tiglD150WGuidesHandle = -1;
+        tixiD150WGuidesHandle = -1;
+
+        tixiRet = tixiOpenDocument(filename, &tixiD150WGuidesHandle);
+        ASSERT_TRUE (tixiRet == SUCCESS);
+        tiglRet = tiglOpenCPACSConfiguration(tixiD150WGuidesHandle, "", &tiglD150WGuidesHandle);
+        ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
+    }
+
+    static void TearDownTestCase()
+    {
+        ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglD150WGuidesHandle) == TIGL_SUCCESS);
+        ASSERT_TRUE(tixiCloseDocument(tixiD150WGuidesHandle) == SUCCESS);
+        tiglD150WGuidesHandle = -1;
+        tixiD150WGuidesHandle = -1;
+    }
+
+    void SetUp() OVERRIDE {}
+    void TearDown() OVERRIDE {}
+
+
+    static TixiDocumentHandle           tixiD150WGuidesHandle;
+    static TiglCPACSConfigurationHandle tiglD150WGuidesHandle;
+};
+
+TixiDocumentHandle tiglExportD150WGuides::tixiD150WGuidesHandle = 0;
+TiglCPACSConfigurationHandle tiglExportD150WGuides::tiglD150WGuidesHandle = 0;
+
 
 class tiglExportRectangularWing : public ::testing::Test
 {
@@ -361,6 +398,14 @@ TEST_F(tiglExportSimple, exportFusedBRep)
 {
     ASSERT_EQ(TIGL_SUCCESS, tiglExportFusedBREP(tiglSimpleHandle,"TestData/export/simpletest.brep"));
     ASSERT_EQ(TIGL_SUCCESS, tiglExportConfiguration(tiglSimpleHandle,"TestData/export/simpletest2.brep", TIGL_TRUE, 0.));
+}
+
+
+// check if face names were set correctly in the case with a guide curves
+TEST_F(tiglExportD150WGuides, check_face_traits)
+{
+    ASSERT_EQ(TIGL_SUCCESS, tiglExportIGES(tiglD150WGuidesHandle,"TestData/export/D150_guide_curves.iges"));
+    ASSERT_EQ(TIGL_SUCCESS, tiglExportFusedWingFuselageIGES(tiglD150WGuidesHandle,"TestData/export/D150_fused.iges"));
 }
 
 // check if face names were set correctly in the case without a trailing edge
