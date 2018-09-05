@@ -70,7 +70,7 @@ CCPACSWingProfile::~CCPACSWingProfile() {}
 void CCPACSWingProfile::Cleanup()
 {
     isRotorProfile = false;
-    Invalidate();
+    pointListAlgo.reset();
 }
 
 // Read wing profile file
