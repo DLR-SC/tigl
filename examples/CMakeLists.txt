@@ -1,6 +1,6 @@
 add_subdirectory(c_demo)
 add_subdirectory(matlab_demo)
-add_subdirectory(python_demo)
+add_subdirectory(python)
 add_subdirectory(java_demo)
 
 install(FILES 
