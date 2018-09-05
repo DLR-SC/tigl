@@ -354,16 +354,16 @@ TopoDS_Shape CCPACSWingSegment::GetOuterClosure(TiglCoordinateSystem referenceCS
 }
 
 // get short name for loft
-std::string CCPACSWingSegment::GetShortShapeName () 
+std::string CCPACSWingSegment::GetShortShapeName () const
 {
     unsigned int windex = 0;
     unsigned int wsindex = 0;
     for (int i = 1; i <= wing->GetConfiguration().GetWingCount(); ++i) {
-        tigl::CCPACSWing& w = wing->GetConfiguration().GetWing(i);
+        const CCPACSWing& w = wing->GetConfiguration().GetWing(i);
         if (wing->GetUID() == w.GetUID()) {
             windex = i;
             for (int j = 1; j <= w.GetSegmentCount(); j++) {
-                CCPACSWingSegment& ws = w.GetSegment(j);
+                const CCPACSWingSegment& ws = w.GetSegment(j);
                 if (GetUID() == ws.GetUID()) {
                     wsindex = j;
                     std::stringstream shortName;
@@ -930,7 +930,7 @@ void CCPACSWingSegment::MakeChordSurface(SurfaceCoordCache& cache) const
 
 void CCPACSWingSegment::ComputeVolume(double& cache) const
 {
-    const TopoDS_Shape loft = GetLoft()->Shape();
+    const TopoDS_Shape loft = const_cast<CCPACSWingSegment&>(*this).GetLoft()->Shape();
     GProp_GProps gprops;
     BRepGProp::VolumeProperties(loft, gprops);
     cache = gprops.Mass();

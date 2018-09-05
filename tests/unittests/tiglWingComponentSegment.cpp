@@ -545,12 +545,12 @@ TEST_F(WingComponentSegmentSimple, determine_segments)
 {
     int compseg = 1;
     // now we have do use the internal interface as we currently have no public api for this
-    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
-    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
-    tigl::CCPACSWing& wing = config.GetWing(1);
-    tigl::CCPACSWingComponentSegment& segment = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(compseg);
-    
-    tigl::SegmentList& list = segment.GetSegmentList();
+    const tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+    const tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
+    const tigl::CCPACSWing& wing = config.GetWing(1);
+    const tigl::CCPACSWingComponentSegment& segment = wing.GetComponentSegment(compseg);
+
+    const tigl::SegmentList& list = segment.GetSegmentList();
     ASSERT_EQ(2, list.size());
     ASSERT_STREQ("Cpacs2Test_Wing_Seg_1_2", list.at(0)->GetUID().c_str());
     ASSERT_STREQ("Cpacs2Test_Wing_Seg_2_3", list.at(1)->GetUID().c_str());
@@ -735,12 +735,12 @@ TEST_F(WingComponentSegmentSimple, IntersectEta_cinterface)
 /// Tests the math of the new component segment definition
 TEST_F(WingComponentSegmentSimple, wingChordFace)
 {
-    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
-    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
-    tigl::CCPACSWing& wing = config.GetWing(1);
-    tigl::CCPACSWingComponentSegment& compSegment = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(1);
+    const tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+    const tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
+    const tigl::CCPACSWing& wing = config.GetWing(1);
+    const tigl::CCPACSWingComponentSegment& compSegment = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(1);
 
-    tigl::CTiglWingChordface& chordFace = compSegment.GetChordface();
+    const tigl::CTiglWingChordface& chordFace = compSegment.GetChordface();
 
     std::vector<double> etas = chordFace.GetElementEtas();
 

@@ -175,7 +175,7 @@ private:
     // Builds the loft between the two segment sections
     PNamedShape BuildLoft() OVERRIDE;
 
-    void SetFaceTraits(PNamedShape loft);
+    void SetFaceTraits(PNamedShape loft) const;
 
     void UpdateSurfaceProperties(SurfacePropertiesCache& cache) const;
 

@@ -698,7 +698,6 @@ PNamedShape CCPACSWingComponentSegment::BuildLoft()
     SetFaceTraits(loft, static_cast<unsigned int>(wingSegments->size()));
     return loft;
 }
-    DEBUG_SCOPE(debug);
 
 void CCPACSWingComponentSegment::BuildWingSegments(SegmentList& cache) const
 {
@@ -725,6 +724,8 @@ void CCPACSWingComponentSegment::BuildWingSegments(SegmentList& cache) const
 
 void CCPACSWingComponentSegment::BuildGeometry(GeometryCache& cache) const
 {
+    DEBUG_SCOPE(debug);
+
     // use sewing for full loft
     BRepBuilderAPI_Sewing sewing;
     BRepBuilderAPI_Sewing upperShellSewing;
@@ -778,15 +779,14 @@ void CCPACSWingComponentSegment::BuildGeometry(GeometryCache& cache) const
     // transform all shapes
     CTiglTransformation trafo = wing->GetTransformation().getTransformationMatrix();
 
-    cache.upperShape = make_unique<CTiglShapeGeomComponentAdaptor>(this, m_uidMgr);
-    cache.lowerShape = make_unique<CTiglShapeGeomComponentAdaptor>(this, m_uidMgr);
+    cache.upperShape = make_unique<CTiglShapeGeomComponentAdaptor>(const_cast<CCPACSWingComponentSegment*>(this), m_uidMgr);
+    cache.lowerShape = make_unique<CTiglShapeGeomComponentAdaptor>(const_cast<CCPACSWingComponentSegment*>(this), m_uidMgr);
     PNamedShape upperShell(new CNamedShape(trafo.Transform(upperShellSewing.SewedShape()), GetDefaultedUID() + "_upper"));
     PNamedShape lowerShell(new CNamedShape(trafo.Transform(lowerShellSewing.SewedShape()), GetDefaultedUID() + "_lower"));
     cache.upperShape->SetShape(upperShell);
     cache.lowerShape->SetShape(lowerShell);
 
     loftShape = trafo.Transform(loftShape);
-
 
     cache.myVolume = 0;
     cache.mySurfaceArea = 0;

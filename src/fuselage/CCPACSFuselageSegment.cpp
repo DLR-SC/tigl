@@ -254,7 +254,6 @@ std::string CCPACSFuselageSegment::GetShortShapeName() const
 
 void CCPACSFuselageSegment::SetFaceTraits (PNamedShape loft) const
 {
-
     int nFaces = GetNumberOfFaces(loft->Shape());
     bool hasSymmetryPlane = GetNumberOfEdges(GetEndWire()) > 1;
 
@@ -341,7 +340,7 @@ PNamedShape CCPACSFuselageSegment::BuildLoft()
 
 void CCPACSFuselageSegment::UpdateSurfaceProperties(SurfacePropertiesCache& cache) const
 {
-    const TopoDS_Shape loftShape = GetLoft()->Shape();
+    const TopoDS_Shape loftShape = const_cast<CCPACSFuselageSegment&>(*this).GetLoft()->Shape();
 
     // Calculate volume
     GProp_GProps System;
