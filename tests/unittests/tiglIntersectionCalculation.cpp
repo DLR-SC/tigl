@@ -185,6 +185,9 @@ TEST_F(TiglIntersectionCalculation, tiglGetCurveIntersection)
     double eta2;
     ASSERT_EQ(TIGL_SUCCESS, tiglGetCurveParameter (tiglHandle, id2, 1, p1x, p1y, p1z,  &eta2) );
 
+    double eta3;
+    ASSERT_EQ(TIGL_SUCCESS, tiglGetCurveParameter (tiglHandle, id2, 1, 0., 0., 0.,  &eta3) );
+
 
     // check errorcodes of tiglGetCurveIntersection
     ASSERT_EQ(TIGL_NOT_FOUND,    tiglGetCurveIntersection(-1, id1, 1, id2, 1, tol, &id_result) );
