@@ -24,28 +24,49 @@
 #include <CCPACSWingSpars.h>
 #include <string>
 #include <tixi.h>
+#include <typeinfo>
 #include "CreateIfNotExists.h"
+#include "CTiglError.h"
 #include "tigl_internal.h"
 
 namespace tigl
 {
 class CTiglUIDManager;
 class CCPACSWingComponentSegment;
+class CCPACSTrailingEdgeDevice;
 
 namespace generated
 {
     // This class is used in:
     // CPACSComponentSegment
+    // CPACSTrailingEdgeDevice
 
     // generated from /xsd:schema/xsd:complexType[928]
     class CPACSWingComponentSegmentStructure
     {
     public:
         TIGL_EXPORT CPACSWingComponentSegmentStructure(CCPACSWingComponentSegment* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSWingComponentSegmentStructure(CCPACSTrailingEdgeDevice* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSWingComponentSegmentStructure();
 
-        TIGL_EXPORT CCPACSWingComponentSegment* GetParent() const;
+        template<typename P>
+        bool IsParent() const
+        {
+            return m_parentType != NULL && *m_parentType == typeid(P);
+        }
+
+        template<typename P>
+        P* GetParent() const
+        {
+#ifdef HAVE_STDIS_SAME
+            static_assert(std::is_same<P, CCPACSWingComponentSegment>::value || std::is_same<P, CCPACSTrailingEdgeDevice>::value, "template argument for P is not a parent class of CPACSWingComponentSegmentStructure");
+#endif
+            if (!IsParent<P>()) {
+                throw CTiglError("bad parent");
+            }
+            return static_cast<P*>(m_parent);
+        }
 
         TIGL_EXPORT CTiglUIDManager& GetUIDManager();
         TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
@@ -72,7 +93,8 @@ namespace generated
         TIGL_EXPORT virtual void RemoveSpars();
 
     protected:
-        CCPACSWingComponentSegment* m_parent;
+        void* m_parent;
+        const std::type_info* m_parentType;
 
         CTiglUIDManager* m_uidMgr;
 

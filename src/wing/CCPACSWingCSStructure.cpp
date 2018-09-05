@@ -34,13 +34,12 @@ namespace tigl
 CCPACSWingCSStructure::CCPACSWingCSStructure(CCPACSWingComponentSegment* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSWingComponentSegmentStructure(parent, uidMgr) {}
 
-//CCPACSWingCSStructure::CCPACSWingCSStructure(CPACSTrailingEdgeDevice* parent, CTiglUIDManager* uidMgr)
-//    : generated::CPACSWingComponentSegmentStructure(parent, uidMgr) {}
+CCPACSWingCSStructure::CCPACSWingCSStructure(CCPACSTrailingEdgeDevice* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSWingComponentSegmentStructure(parent, uidMgr) {}
 
 CTiglWingStructureReference CCPACSWingCSStructure::GetWingStructureReference() {
-    //if (IsParent<CCPACSWingComponentSegment>()) return CTiglWingStructureReference(*GetParent<CCPACSWingComponentSegment>());
-    //throw CTiglError("Unknown parent type of CCPACSWingCSStructure when retrieving CTiglWingStructureReference");
-    return CTiglWingStructureReference(*GetParent());
+    if (IsParent<CCPACSWingComponentSegment>()) return CTiglWingStructureReference(*GetParent<CCPACSWingComponentSegment>());
+    throw CTiglError("Trailing edge devices are not yet supported by CTiglWingStructureReference");
 }
 
 const CTiglWingStructureReference CCPACSWingCSStructure::GetWingStructureReference() const {
