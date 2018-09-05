@@ -58,6 +58,33 @@
 
 namespace tigl 
 {
+    namespace
+    {
+        void OrderPoints(std::vector<CTiglPoint>& vec)
+        {
+            // points with maximal/minimal y-component
+            std::size_t minZIndex = 0;
+            std::size_t maxZIndex = 0;
+            for (std::size_t i = 1; i < vec.size(); i++) {
+                if (vec[i].z < vec[minZIndex].z) {
+                    minZIndex = i;
+                }
+                if (vec[i].z > vec[maxZIndex].z) {
+                    maxZIndex = i;
+                }
+            }
+
+            // check if points with maximal/minimal z-component were calculated correctly
+            if (maxZIndex == minZIndex) {
+                throw CTiglError("CCPACSPointListXYZ::OrderPoints: Unable to separate upper and lower wing profile from point list", TIGL_XML_ERROR);
+            }
+            // force order of points to run through the lower profile first and then through the upper profile
+            if (minZIndex > maxZIndex) {
+                LOG(WARNING) << "The points don't seem to be ordered in a mathematical positive sense.";
+                std::reverse(vec.begin(), vec.end());
+            }
+        }
+    }
 
 // Constructor
 CCPACSWingProfile::CCPACSWingProfile(CTiglUIDManager* uidMgr)
@@ -82,6 +109,10 @@ void CCPACSWingProfile::ReadCPACS(const TixiDocumentHandle& tixiHandle, const st
         isRotorProfile = true;
     }
     generated::CPACSProfileGeometry::ReadCPACS(tixiHandle, xpath);
+
+    if (m_pointList_choice1) {
+        OrderPoints(m_pointList_choice1->AsVector());
+    }
 }
 
 // Returns whether the profile is a rotor profile

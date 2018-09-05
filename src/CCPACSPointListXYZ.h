@@ -31,9 +31,7 @@ public:
     TIGL_EXPORT void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const OVERRIDE;
 
     TIGL_EXPORT const std::vector<CTiglPoint>& AsVector() const;
-    TIGL_EXPORT std::vector<CTiglPoint>& AsVector(); // WARN: if you modify the point list, make sure, the points are ordered
-
-    TIGL_EXPORT void OrderPoints();
+    TIGL_EXPORT std::vector<CTiglPoint>& AsVector();
 
 private:
     // cache
