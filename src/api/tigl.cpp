@@ -4976,18 +4976,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetCurveParameter (TiglCPACSConfigurationH
         LOG(ERROR) << "Null pointer for argument eta in tiglGetCurveParameter .";
         return TIGL_NULL_POINTER;
     }
-    if (!pointX) {
-        LOG(ERROR) << "Null pointer for argument pointX in tiglGetCurveParameter .";
-        return TIGL_NULL_POINTER;
-    }
-    if (!pointY) {
-        LOG(ERROR) << "Null pointer for argument pointY in tiglGetCurveParameter .";
-        return TIGL_NULL_POINTER;
-    }
-    if (!pointZ) {
-        LOG(ERROR) << "Null pointer for argument pointZ in tiglGetCurveParameter .";
-        return TIGL_NULL_POINTER;
-    }
     if (!curveID) {
         LOG(ERROR) << "Null pointer for argument curveID in tiglGetCurveParameter .";
         return TIGL_NULL_POINTER;
