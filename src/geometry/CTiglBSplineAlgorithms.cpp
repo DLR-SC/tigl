@@ -730,12 +730,12 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::pointsToSurface(const TColgp
     bool makeUDirClosed = uContinousIfClosed & isUDirClosed(points, tolerance);
 
     // first interpolate all points by B-splines in u-direction
-    std::vector<Handle(Geom_BSplineCurve)> uSplines;
+    std::vector<Handle(Geom_Curve)> uSplines;
     for (int cpVIdx = points.LowerCol(); cpVIdx <= points.UpperCol(); ++cpVIdx) {
         Handle_TColgp_HArray1OfPnt points_u = pntArray2GetColumn(points, cpVIdx);
         CTiglPointsToBSplineInterpolation interpolationObject(points_u, uParams, 3, makeUDirClosed);
 
-        Handle(Geom_BSplineCurve) curve = interpolationObject.Curve();
+        Handle(Geom_Curve) curve = interpolationObject.Curve();
         uSplines.push_back(curve);
     }
 

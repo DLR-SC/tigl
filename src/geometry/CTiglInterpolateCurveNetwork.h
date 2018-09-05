@@ -50,8 +50,8 @@ public:
      * @param guides   The guides curves to be interpolated
      * @param spatialTolerance Maximum allowed distance between each guide and profile (in theory they must intersect)
      */
-    TIGL_EXPORT CTiglInterpolateCurveNetwork(const std::vector<Handle(Geom_BSplineCurve)>& profiles,
-                                             const std::vector<Handle(Geom_BSplineCurve)>& guides,
+    TIGL_EXPORT CTiglInterpolateCurveNetwork(const std::vector<Handle(Geom_Curve)>& profiles,
+                                             const std::vector<Handle(Geom_Curve)>& guides,
                                              double spatialTolerance);
 
     TIGL_EXPORT operator Handle(Geom_BSplineSurface) ();
@@ -102,8 +102,8 @@ private:
 };
 
 /// Convenience function calling CTiglInterpolateCurveNetwork
-TIGL_EXPORT Handle(Geom_BSplineSurface) curveNetworkToSurface(const std::vector<Handle(Geom_BSplineCurve)>& profiles,
-                                                              const std::vector<Handle(Geom_BSplineCurve)>& guides,
+TIGL_EXPORT Handle(Geom_BSplineSurface) curveNetworkToSurface(const std::vector<Handle(Geom_Curve)>& profiles,
+                                                              const std::vector<Handle(Geom_Curve)>& guides,
                                                               double spatialTol = 3e-4);
 
 } // namespace tigl

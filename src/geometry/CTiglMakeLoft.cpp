@@ -246,10 +246,10 @@ void CTiglMakeLoft::makeLoftWithoutGuides()
     // CAUTION: Here it is assumed that the edges are ordered
     // in the same way along each profile (e.g. lower edge,
     // upper edge, trailing edge for a wing)
-    for ( unsigned iE = 1; iE<=nEdgesPerProfile; ++iE ) {
+    for ( int iE = 1; iE <= nEdgesPerProfile; ++iE ) {
 
         // get the curves
-        std::vector<Handle(Geom_BSplineCurve)> profileCurves;
+        std::vector<Handle(Geom_Curve)> profileCurves;
         profileCurves.reserve(profiles.size());
         for (unsigned iP=0; iP<profiles.size(); ++iP ) {
 

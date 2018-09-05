@@ -45,7 +45,7 @@ public:
      * @param splines_vector Curves to be interpolated.
      * @param continuousIfClosed Make a C2 continous surface at the start/end junction if the first and last curve are the same
      */
-    TIGL_EXPORT explicit CTiglCurvesToSurface(const std::vector<Handle(Geom_BSplineCurve) >& splines_vector,
+    TIGL_EXPORT explicit CTiglCurvesToSurface(const std::vector<Handle(Geom_Curve) >& splines_vector,
                                               bool continuousIfClosed = false);
 
     /**
@@ -58,7 +58,7 @@ public:
      * @param parameters Parameters of v-direction at which the resulting surface should interpolate the input curves.
      * @param continuousIfClosed Make a C2 continous surface at the start/end junction if the first and last curve are the same
      */
-    TIGL_EXPORT explicit CTiglCurvesToSurface(const std::vector<Handle(Geom_BSplineCurve) >& splines_vector,
+    TIGL_EXPORT explicit CTiglCurvesToSurface(const std::vector<Handle(Geom_Curve) >& splines_vector,
                                               const std::vector<double>& parameters,
                                               bool continuousIfClosed = false);
     /**

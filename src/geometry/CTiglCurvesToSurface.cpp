@@ -61,26 +61,34 @@ Handle(TColStd_HArray1OfReal) toArray(const std::vector<double>& vector)
 
 namespace tigl {
 
-TIGL_EXPORT CTiglCurvesToSurface::CTiglCurvesToSurface(std::vector<Handle(Geom_BSplineCurve) > const& splines_vector,
+TIGL_EXPORT CTiglCurvesToSurface::CTiglCurvesToSurface(std::vector<Handle(Geom_Curve) > const& splines_vector,
                                                        bool continuousIfClosed)
     : _continuousIfClosed(continuousIfClosed)
-    , _inputCurves(splines_vector)
 {
-    CTiglBSplineAlgorithms::matchDegree(splines_vector);
-    CalculateParameters(splines_vector); //TODO this is only really needed if maxDegree > 1
+    // convert all curves to bspline curves
+    for (std::vector<Handle(Geom_Curve) >::const_iterator curve_iter = splines_vector.begin(); curve_iter != splines_vector.end(); ++curve_iter) {
+        _inputCurves.push_back(GeomConvert::CurveToBSplineCurve(*curve_iter));
+    }
+
+    CTiglBSplineAlgorithms::matchDegree(_inputCurves);
+    CalculateParameters(_inputCurves); //TODO this is only really needed if maxDegree > 1
 }
 
-TIGL_EXPORT CTiglCurvesToSurface::CTiglCurvesToSurface(std::vector<Handle(Geom_BSplineCurve) > const& splines_vector,
+TIGL_EXPORT CTiglCurvesToSurface::CTiglCurvesToSurface(std::vector<Handle(Geom_Curve) > const& splines_vector,
                                                        std::vector<double> const& parameters,
                                                        bool continuousIfClosed)
     : _parameters(parameters)
-    , _inputCurves(splines_vector)
     , _continuousIfClosed(continuousIfClosed)
 {
-    if( parameters.size() == 0) {
-        CalculateParameters(splines_vector);
+    // convert all curves to bspline curves
+    for (std::vector<Handle(Geom_Curve) >::const_iterator curve_iter = splines_vector.begin(); curve_iter != splines_vector.end(); ++curve_iter) {
+        _inputCurves.push_back(GeomConvert::CurveToBSplineCurve(*curve_iter));
     }
-    CTiglBSplineAlgorithms::matchDegree(splines_vector);
+
+    if( parameters.size() == 0) {
+        CalculateParameters(_inputCurves);
+    }
+    CTiglBSplineAlgorithms::matchDegree(_inputCurves);
 }
 
 TIGL_EXPORT void CTiglCurvesToSurface::SetMaxDegree(int degree)

@@ -29,12 +29,13 @@
 
 #include <math_Matrix.hxx>
 #include <TColStd_HArray1OfReal.hxx>
+#include <GeomConvert.hxx>
 
 namespace tigl
 {
 
-CTiglInterpolateCurveNetwork::CTiglInterpolateCurveNetwork(const std::vector<Handle (Geom_BSplineCurve)> &profiles,
-                                                           const std::vector<Handle (Geom_BSplineCurve)> &guides,
+CTiglInterpolateCurveNetwork::CTiglInterpolateCurveNetwork(const std::vector<Handle (Geom_Curve)> &profiles,
+                                                           const std::vector<Handle (Geom_Curve)> &guides,
                                                            double spatialTol)
     : m_hasPerformed(false)
     , m_spatialTol(spatialTol)
@@ -52,11 +53,11 @@ CTiglInterpolateCurveNetwork::CTiglInterpolateCurveNetwork(const std::vector<Han
     m_guides.reserve(guides.size());
 
     // Copy the curves
-    for (CurveArray::const_iterator it = profiles.begin(); it != profiles.end(); ++it) {
-        m_profiles.push_back(Handle_Geom_BSplineCurve::DownCast((*it)->Copy()));
+    for (std::vector<Handle (Geom_Curve)>::const_iterator it = profiles.begin(); it != profiles.end(); ++it) {
+        m_profiles.push_back(GeomConvert::CurveToBSplineCurve(*it));
     }
-    for (CurveArray::const_iterator it = guides.begin(); it != guides.end(); ++it) {
-        m_guides.push_back(Handle_Geom_BSplineCurve::DownCast((*it)->Copy()));
+    for (std::vector<Handle (Geom_Curve)>::const_iterator it = guides.begin(); it != guides.end(); ++it) {
+        m_guides.push_back(GeomConvert::CurveToBSplineCurve(*it));
     }
 }
 
@@ -400,7 +401,7 @@ void CTiglInterpolateCurveNetwork::Perform()
     m_hasPerformed = true;
 }
 
-Handle(Geom_BSplineSurface) curveNetworkToSurface(const std::vector<Handle (Geom_BSplineCurve)> &profiles, const std::vector<Handle (Geom_BSplineCurve)> &guides, double tol)
+Handle(Geom_BSplineSurface) curveNetworkToSurface(const std::vector<Handle (Geom_Curve)> &profiles, const std::vector<Handle (Geom_Curve)> &guides, double tol)
 {
     return CTiglInterpolateCurveNetwork(profiles, guides, tol).Surface();
 }
