@@ -160,7 +160,12 @@ public:
     // Returns the number of faces in the loft. This depends on the number of guide curves as well as if the fuselage has a symmetry plane.
     TIGL_EXPORT int GetNumberOfLoftFaces() const;
 
-protected:
+private:
+    struct SurfacePropertiesCache {
+        double myVolume;      ///< Volume of this segment
+        double mySurfaceArea; ///< Surface Area of this segment
+    };
+
     // Cleanup routine
     void Cleanup();
 
@@ -172,15 +177,16 @@ protected:
 
     void SetFaceTraits(PNamedShape loft);
 
+    void UpdateSurfaceProperties(SurfacePropertiesCache& cache) const;
+
 private:
     // get short name for loft
-    std::string GetShortShapeName();
+    std::string GetShortShapeName() const;
 
     CTiglFuselageConnection startConnection;      /**< Start segment connection                */
     CTiglFuselageConnection endConnection;        /**< End segment connection                  */
     CCPACSFuselage*         fuselage;             /**< Parent fuselage                         */
-    double                  myVolume;             /**< Volume of this segment                  */
-    double                  mySurfaceArea;        /**< Surface Area of this segment            */
+    Cache<SurfacePropertiesCache, CCPACSFuselageSegment> surfacePropertiesCache;
     bool                    loftLinearly = false; /**< Set to true to speed up lofting of the
                                                     * segment. This removes the dependency on
                                                     * the fuselage loft at the price of a

@@ -141,6 +141,7 @@ CCPACSFuselageSegment::CCPACSFuselageSegment(CCPACSFuselageSegments* parent, CTi
     , CTiglAbstractSegment<CCPACSFuselageSegment>(parent->GetSegments(), parent->GetParent()->m_symmetry)
     , fuselage(parent->GetParent())
     , m_guideCurveBuilder(make_unique<CTiglFuselageSegmentGuidecurveBuilder>(*this))
+    , surfacePropertiesCache(*this, &CCPACSFuselageSegment::UpdateSurfaceProperties)
 {
     Cleanup();
 }
@@ -155,8 +156,7 @@ CCPACSFuselageSegment::~CCPACSFuselageSegment()
 void CCPACSFuselageSegment::Cleanup()
 {
     m_name = "";
-    myVolume      = 0.;
-    mySurfaceArea = 0.;
+    surfacePropertiesCache.clear();
     _continuity    = C2;
     CTiglAbstractGeometricComponent::Reset();
 }
@@ -230,7 +230,7 @@ TopoDS_Wire CCPACSFuselageSegment::GetEndWire(TiglCoordinateSystem referenceCS) 
 }
 
 // get short name for loft
-std::string CCPACSFuselageSegment::GetShortShapeName()
+std::string CCPACSFuselageSegment::GetShortShapeName() const
 {
     unsigned int findex = 0;
     unsigned int fsindex = 0;
@@ -252,7 +252,7 @@ std::string CCPACSFuselageSegment::GetShortShapeName()
     return "UNKNOWN";
 }
 
-void CCPACSFuselageSegment::SetFaceTraits (PNamedShape loft)
+void CCPACSFuselageSegment::SetFaceTraits (PNamedShape loft) const
 {
 
     int nFaces = GetNumberOfFaces(loft->Shape());
@@ -330,10 +330,23 @@ PNamedShape CCPACSFuselageSegment::BuildLoft()
         loftShape = patcher.PatchedShape();
     }
 
+    std::string loftName = GetUID();
+    std::string loftShortName = GetShortShapeName();
+    PNamedShape loft(new CNamedShape(loftShape, loftName.c_str(), loftShortName.c_str()));
+
+    SetFaceTraits(loft);
+
+    return loft;
+}
+
+void CCPACSFuselageSegment::UpdateSurfaceProperties(SurfacePropertiesCache& cache) const
+{
+    const TopoDS_Shape loftShape = GetLoft()->Shape();
+
     // Calculate volume
     GProp_GProps System;
     BRepGProp::VolumeProperties(loftShape, System);
-    myVolume = System.Mass();
+    cache.myVolume = System.Mass();
 
     // Calculate surface area
     TopExp_Explorer faceExplorer(loftShape, TopAbs_FACE);
@@ -346,17 +359,8 @@ PNamedShape CCPACSFuselageSegment::BuildLoft()
 
     // The first face is the outer hull. We ignore symmetry planes and the front / back caps
     BRepGProp::SurfaceProperties(faceExplorer.Current(), AreaSystem);
-    mySurfaceArea = AreaSystem.Mass();
-        
-    std::string loftName = GetUID();
-    std::string loftShortName = GetShortShapeName();
-    PNamedShape loft(new CNamedShape(loftShape, loftName.c_str(), loftShortName.c_str()));
-
-    SetFaceTraits(loft);
-
-    return loft;
+    cache.mySurfaceArea = AreaSystem.Mass();
 }
-
 
 // Returns the start section UID of this segment
 const std::string& CCPACSFuselageSegment::GetStartSectionUID()
@@ -421,21 +425,14 @@ CTiglFuselageConnection& CCPACSFuselageSegment::GetEndConnection()
 // Returns the volume of this segment
 double CCPACSFuselageSegment::GetVolume()
 {
-    // we have to trigger the build of the shape
-    GetLoft();
-
-    return( myVolume );
+    return surfacePropertiesCache->myVolume;
 }
 
 // Returns the surface area of this segment
 double CCPACSFuselageSegment::GetSurfaceArea()
 {
-    // we have to trigger the build of the shape
-    GetLoft();
-
-    return( mySurfaceArea );
+    return surfacePropertiesCache->mySurfaceArea;
 }
-
 
 // Gets the count of segments connected to the start section of this segment
 int CCPACSFuselageSegment::GetStartConnectedSegmentCount()
