@@ -1,4 +1,4 @@
-from tigl3.geometry import CTiglCurvesToSurface
+from tigl3.geometry import CTiglCurvesToSurface, CTiglInterpolateCurveNetwork
 
 
 def interpolate_curves(curve_list, params=None, degree=3, close_continuous=False):
@@ -25,3 +25,23 @@ def interpolate_curves(curve_list, params=None, degree=3, close_continuous=False
     surface_builder.set_max_degree(degree)
     surface = surface_builder.surface()
     return surface
+
+
+def interpolate_curve_network(profiles, guides, tolerance=1e-4):
+    """
+    Interpolates a network of curves with a B-spline surface.
+    Internally, this is done with a Gordon surface.
+
+    Gordon surfaces normally require the input curves to have
+    compatible intersections (i.e. intersections at the same parameter).
+    Here, we overcome this limitation by re-parametrization of the
+    input curves.
+
+    :param profiles: List of profiles (List of Geom_Curves)
+    :param guides: List of guides (List of Geom_Curves)
+    :param tolerance: Maximum allowed distance between each guide and profile
+                     (in theory they must intersect and the distance is zero)
+    :return: The final surface (Handle to Geom_BSplineSurface)
+    """
+    interpolator = CTiglInterpolateCurveNetwork(profiles, guides, tolerance)
+    return interpolator.surface()
