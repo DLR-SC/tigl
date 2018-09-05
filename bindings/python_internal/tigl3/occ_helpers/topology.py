@@ -1,5 +1,5 @@
 from OCC.TopExp import TopExp_Explorer
-from OCC.BRepTools import BRepTools_WireExplorer, breptools_Read
+from OCC.BRepTools import BRepTools_WireExplorer, breptools_Read, breptools_Write
 from OCC.TopoDS import topods_Edge, topods_Wire, TopoDS_Compound, TopoDS_Shape
 from OCC.BRep import BRep_Builder
 from OCC.TopAbs import TopAbs_EDGE, TopAbs_WIRE
@@ -72,3 +72,13 @@ def read_brep(filename):
     if not breptools_Read(shape, filename, b):
         raise RuntimeError("Cannot read brep file: " + filename)
     return shape
+
+
+def write_brep(shape, filename):
+    """
+    Writes a TopoDS_Shape to a brep file
+    :param shape: The shape given as a PythonOCC TopoDS_Shape
+    :param filename: Filename to be written
+    """
+    if not breptools_Write(shape, filename):
+        raise RuntimeError("Cannot write brep file: " + filename)

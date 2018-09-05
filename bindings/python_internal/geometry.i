@@ -67,6 +67,7 @@
 #include "CTiglProjectOnLinearSpline.h"
 #include "CTiglInterpolateCurveNetwork.h"
 #include "CTiglPointsToBSplineInterpolation.h"
+#include "CTiglCurvesToSurface.h"
 %}
 
 
@@ -89,6 +90,7 @@
 
 %include "CTiglPointsToBSplineInterpolation.h"
 %include "CTiglInterpolateCurveNetwork.h"
+%include "CTiglCurvesToSurface.h"
 %include "tiglcommonfunctions.h"
 %include "CTiglProjectOnLinearSpline.h"
 %include "CTiglMakeLoft.h"
