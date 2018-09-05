@@ -19,6 +19,7 @@
 
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
+#include <CCPACSControlSurfaces.h>
 #include <CCPACSWingCSStructure.h>
 #include <string>
 #include <tixi.h>
@@ -69,8 +70,14 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CCPACSWingCSStructure>& GetStructure() const;
         TIGL_EXPORT virtual boost::optional<CCPACSWingCSStructure>& GetStructure();
 
+        TIGL_EXPORT virtual const boost::optional<CCPACSControlSurfaces>& GetControlSurfaces() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSControlSurfaces>& GetControlSurfaces();
+
         TIGL_EXPORT virtual CCPACSWingCSStructure& GetStructure(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveStructure();
+
+        TIGL_EXPORT virtual CCPACSControlSurfaces& GetControlSurfaces(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveControlSurfaces();
 
     protected:
         CCPACSWingComponentSegments* m_parent;
@@ -83,6 +90,7 @@ namespace generated
         std::string                            m_fromElementUID;
         std::string                            m_toElementUID;
         boost::optional<CCPACSWingCSStructure> m_structure;
+        boost::optional<CCPACSControlSurfaces> m_controlSurfaces;
 
     private:
 #ifdef HAVE_CPP11

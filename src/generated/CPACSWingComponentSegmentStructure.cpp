@@ -16,6 +16,7 @@
 // limitations under the License.
 
 #include <cassert>
+#include "CCPACSTrailingEdgeDevice.h"
 #include "CCPACSWingComponentSegment.h"
 #include "CPACSWingComponentSegmentStructure.h"
 #include "CTiglError.h"
@@ -34,15 +35,21 @@ namespace generated
     {
         //assert(parent != NULL);
         m_parent = parent;
+        m_parentType = &typeid(CCPACSWingComponentSegment);
+    }
+
+    CPACSWingComponentSegmentStructure::CPACSWingComponentSegmentStructure(CCPACSTrailingEdgeDevice* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+        , m_upperShell(reinterpret_cast<CCPACSWingCSStructure*>(this), m_uidMgr)
+        , m_lowerShell(reinterpret_cast<CCPACSWingCSStructure*>(this), m_uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CCPACSTrailingEdgeDevice);
     }
 
     CPACSWingComponentSegmentStructure::~CPACSWingComponentSegmentStructure()
     {
-    }
-
-    CCPACSWingComponentSegment* CPACSWingComponentSegmentStructure::GetParent() const
-    {
-        return m_parent;
     }
 
     CTiglUIDManager& CPACSWingComponentSegmentStructure::GetUIDManager()

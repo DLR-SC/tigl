@@ -119,6 +119,17 @@ namespace generated
             }
         }
 
+        // read element controlSurfaces
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/controlSurfaces")) {
+            m_controlSurfaces = boost::in_place(reinterpret_cast<CCPACSWingComponentSegment*>(this), m_uidMgr);
+            try {
+                m_controlSurfaces->ReadCPACS(tixiHandle, xpath + "/controlSurfaces");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read controlSurfaces at xpath " << xpath << ": " << e.what();
+                m_controlSurfaces = boost::none;
+            }
+        }
+
         if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
     }
 
@@ -158,6 +169,17 @@ namespace generated
         else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/structure")) {
                 tixi::TixiRemoveElement(tixiHandle, xpath + "/structure");
+            }
+        }
+
+        // write element controlSurfaces
+        if (m_controlSurfaces) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/controlSurfaces");
+            m_controlSurfaces->WriteCPACS(tixiHandle, xpath + "/controlSurfaces");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/controlSurfaces")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/controlSurfaces");
             }
         }
 
@@ -227,6 +249,16 @@ namespace generated
         return m_structure;
     }
 
+    const boost::optional<CCPACSControlSurfaces>& CPACSComponentSegment::GetControlSurfaces() const
+    {
+        return m_controlSurfaces;
+    }
+
+    boost::optional<CCPACSControlSurfaces>& CPACSComponentSegment::GetControlSurfaces()
+    {
+        return m_controlSurfaces;
+    }
+
     CCPACSWingCSStructure& CPACSComponentSegment::GetStructure(CreateIfNotExistsTag)
     {
         if (!m_structure)
@@ -237,6 +269,18 @@ namespace generated
     void CPACSComponentSegment::RemoveStructure()
     {
         m_structure = boost::none;
+    }
+
+    CCPACSControlSurfaces& CPACSComponentSegment::GetControlSurfaces(CreateIfNotExistsTag)
+    {
+        if (!m_controlSurfaces)
+            m_controlSurfaces = boost::in_place(reinterpret_cast<CCPACSWingComponentSegment*>(this), m_uidMgr);
+        return *m_controlSurfaces;
+    }
+
+    void CPACSComponentSegment::RemoveControlSurfaces()
+    {
+        m_controlSurfaces = boost::none;
     }
 
 } // namespace generated

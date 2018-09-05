@@ -32,6 +32,7 @@ class CTiglUIDManager;
 namespace generated
 {
     // This class is used in:
+    // CPACSControlSurfaceStep
     // CPACSPointList
     // CPACSSeatModule
     // CPACSTransformation

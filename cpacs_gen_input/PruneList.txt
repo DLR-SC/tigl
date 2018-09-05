@@ -89,7 +89,6 @@ CPACSDynamicAircraftModel
 
 // in component segment
 CPACSComponentSegmentPath
-CPACSControlSurfaces
 CPACSWingFuelTanks
 CPACSWingFuselageAttachments
 CPACSWingStructuralMounts
@@ -97,6 +96,16 @@ CPACSWingWingAttachments
 
 // in component segment structure
 CPACSWingIntermediateStructureCells
+
+// in control surfaces
+CPACSLeadingEdgeDevices
+CPACSSpoilers
+
+// in trailing edge device
+CPACSControlSurfaceActuators
+CPACSCruiseRollers
+CPACSInterconnectionStruts
+CPACSZCouplings
 
 // in component segment structure shell/cell
 CPACSWingStringer
