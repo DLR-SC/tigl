@@ -6,6 +6,8 @@ Build-Status: [![Build Status](https://travis-ci.org/DLR-SC/tigl.svg?branch=mast
 
 [![Anaconda-Server Badge](https://anaconda.org/dlr-sc/tigl/badges/installer/conda.svg)](https://conda.anaconda.org/dlr-sc)
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1117860.svg)](https://doi.org/10.5281/zenodo.1117860)
+
  - Binary Downloads:  https://github.com/DLR-SC/tigl/wiki/Downloads
  - API Documentation: http://tigl.sourceforge.net/Doc/index.html
  - Issue Tracker:     https://github.com/DLR-SC/tigl/issues
