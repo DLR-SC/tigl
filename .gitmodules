@@ -1,4 +1,4 @@
 [submodule "thirdparty/cpacs_gen"]
 	path = thirdparty/cpacs_gen
-	url = https://github.com/RlanderRISCSW/cpacs_tigl_gen
+	url = https://github.com/RISCSoftware/cpacs_tigl_gen.git
 	ignore = dirty
