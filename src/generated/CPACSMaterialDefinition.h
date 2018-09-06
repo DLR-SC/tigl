@@ -32,6 +32,12 @@ namespace generated
     // This class is used in:
     // CPACSCap
     // CPACSSheetBasedStructuralElement
+    // CPACSTrackActuator
+    // CPACSTrackCar
+    // CPACSTrackFairing
+    // CPACSTrackStructure
+    // CPACSTrackStrut1
+    // CPACSTrackStrut2
     // CPACSWeb
     // CPACSWingRibCell
     // CPACSWingRibCrossSection
