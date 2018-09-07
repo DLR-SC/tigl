@@ -108,6 +108,8 @@
 #include <cassert>
 #include <limits>
 
+#include "Debugging.h"
+
 namespace
 {
     struct IsSame
@@ -548,7 +550,7 @@ Handle(Geom_BSplineCurve) GetBSplineCurve(const TopoDS_Edge& e)
     return bspl;
 }
 
-bool GetIntersectionPoint(const TopoDS_Face& face, const TopoDS_Edge& edge, gp_Pnt& dst)
+bool GetIntersectionPoint_impl(const TopoDS_Face& face, const TopoDS_Edge& edge, gp_Pnt& dst)
 {
     BRepIntCurveSurface_Inter faceCurveInter;
 
@@ -569,21 +571,32 @@ bool GetIntersectionPoint(const TopoDS_Face& face, const TopoDS_Edge& edge, gp_P
         }
         return true;
     }
-    else {
-        LOG(WARNING) << "No Intersections found in GetIntersectionPoint";
-    }
     return false;
 }
 
+bool GetIntersectionPoint(const TopoDS_Face& face, const TopoDS_Edge& edge, gp_Pnt& dst)
+{
+    bool intersection = GetIntersectionPoint_impl(face, edge, dst);
+    if (!intersection) {
+        LOG(WARNING) << "No Intersections found in GetIntersectionPoint(face, edge)";
+    }
+    return intersection;
+}
+
+
 bool GetIntersectionPoint(const TopoDS_Face& face, const TopoDS_Wire& wire, gp_Pnt& dst)
 {
+    DEBUG_SCOPE(debug);
+    debug.addShape(face, "face");
+    debug.addShape(wire, "wire");
     BRepTools_WireExplorer wireExp;
     for (wireExp.Init(wire); wireExp.More(); wireExp.Next()) {
         const TopoDS_Edge& edge = wireExp.Current();
-        if (GetIntersectionPoint(face, edge, dst)) {
+        if (GetIntersectionPoint_impl(face, edge, dst)) {
             return true;
         }
     }
+    LOG(WARNING) << "No Intersections found in GetIntersectionPoint(face, wire)";
     return false;
 }
 
