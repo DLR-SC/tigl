@@ -65,6 +65,15 @@
 #include <TopoDS_HShape.hxx>
 #include <TopLoc_IndexedMapNodeOfIndexedMapOfLocation.hxx>
 #include <TopLoc_StdMapNodeOfMapOfLocation.hxx>
+#include "generated/CPACSControlSurfaceOuterShapeTrailingEdge.h"
+#include "generated/CPACSControlSurfacePath.h"
+#include "generated/CPACSCutOutControlPoints.h"
+#include "generated/CPACSControlSurfaceWingCutOut.h"
+#include "generated/CPACSControlSurfaceSkinCutOutBorder.h"
+#include "generated/CPACSControlSurfaceTracks.h"
+#include "CCPACSControlSurfaceTrackType.h"
+#include "generated/CPACSTrailingEdgeDevice.h"
+#include "CCPACSTrailingEdgeDevice.h"
 %}
 
 %feature("autodoc", "3");
@@ -109,8 +118,87 @@
 %boost_optional(tigl::generated::CPACSAlignmentCrossBeam)
 %boost_optional(tigl::generated::CPACSDoorAssemblyPosition_doorType)
 
-%apply double *OUTPUT { double* eta, double* xsi };
 
+// ---------------- Other ------------------------------//
+%boost_optional(tigl::generated::CPACSEtaIsoLine)
+%boost_optional(tigl::CCPACSMaterialDefinition)
+%include "generated/CPACSXsiIsoLine.h"
+%include "generated/CPACSEtaIsoLine.h"
+
+%include "generated/CPACSMaterialDefinition.h"
+%include "CCPACSMaterialDefinition.h"
+
+// ---------------- Control surfaces ------------------ //
+%boost_optional(tigl::generated::CPACSControlSurfaceTrackType_trackSubType)
+%boost_optional(tigl::generated::CPACSTrackFairing)
+%boost_optional(tigl::generated::CPACSTrackStrut2)
+%boost_optional(tigl::generated::CPACSTrackStrut1)
+%boost_optional(tigl::generated::CPACSTrackCar)
+%boost_optional(tigl::generated::CPACSTrackStructure)
+%boost_optional(tigl::generated::CPACSTrackActuator)
+%boost_optional(tigl::generated::CPACSControlSurfaceWingCutOut)
+%boost_optional(tigl::generated::CPACSControlSurfaceContours)
+%boost_optional(tigl::generated::CPACSCutOutProfiles)
+%boost_optional(tigl::generated::CPACSContourReference)
+%boost_optional(tigl::generated::CPACSLeadingEdgeShape)
+%boost_optional(tigl::generated::CPACSLeadingEdgeHollow)
+%boost_optional(tigl::generated::CPACSCutOutControlPoints)
+%boost_optional(tigl::CCPACSControlSurfaceSkinCutOutBorder)
+%boost_optional(tigl::CCPACSTrailingEdgeDevices)
+%boost_optional(tigl::CCPACSControlSurfaces)
+%boost_optional(tigl::CPACSControlSurfaceWingCutOut)
+%boost_optional(tigl::generated::CPACSControlSurfaceTracks)
+%boost_optional(tigl::generated::CPACSCutOutControlPoints)
+
+namespace tigl
+{
+    class CCPACSWingCSStructure;
+}
+%include "generated/CPACSTrackFairing.h"
+%include "generated/CPACSTrackStrut2.h"
+%include "generated/CPACSTrackStrut1.h"
+%include "generated/CPACSTrackCar.h"
+%include "generated/CPACSTrackStructure.h"
+%include "generated/CPACSTrackActuator.h"
+%include "generated/CPACSControlSurfaceTrackType_trackSubType.h"
+%include "generated/CPACSControlSurfaceTrackType_trackType.h"
+%include "generated/CPACSControlSurfaceTrackType.h"
+%include "CCPACSControlSurfaceTrackType.h"
+%include "generated/CPACSOuterCutOutProfile.h"
+%include "generated/CPACSCutOutProfiles.h"
+%include "generated/CPACSControlSurfaceSkinCutout.h"
+%include "CCPACSControlSurfaceSkinCutout.h"
+%include "generated/CPACSControlSurfaceTracks.h"
+%include "generated/CPACSControlSurfaceContours.h"
+%include "generated/CPACSContourReference.h"
+%include "generated/CPACSLeadingEdgeShape.h"
+%include "generated/CPACSLeadingEdgeHollow.h"
+%include "generated/CPACSCutOutControlPoint.h"
+%include "generated/CPACSCutOutControlPoints.h"
+%include "generated/CPACSControlSurfaceSteps.h"
+%include "CCPACSControlSurfaceSteps.h"
+%include "generated/CPACSControlSurfaceHingePoint.h"
+%include "CCPACSControlSurfaceHingePoint.h"
+%include "generated/CPACSControlSurfaceSkinCutOutBorder.h"
+%include "CCPACSControlSurfaceSkinCutOutBorder.h"
+%include "generated/CPACSCutOutControlPoints.h"
+%include "generated/CPACSControlSurfacePath.h"
+%include "generated/CPACSControlSurfaceBorderTrailingEdge.h"
+%include "CCPACSControlSurfaceBorderTrailingEdge.h"
+%include "generated/CPACSControlSurfaceOuterShapeTrailingEdge.h"
+%include "generated/CPACSControlSurfacePath.h"
+%include "generated/CPACSControlSurfaceTracks.h"
+%include "CPACSControlSurfaceWingCutOut.h"
+%include "generated/CPACSTrailingEdgeDevice.h"
+%include "CCPACSTrailingEdgeDevice.h"
+%include "generated/CPACSTrailingEdgeDevices.h"
+%include "CCPACSTrailingEdgeDevices.h"
+%include "generated/CPACSControlSurfaces.h"
+%include "CCPACSControlSurfaces.h"
+
+// --------------- Fuselage structure -----------------//
+
+%apply double *OUTPUT { double* eta, double* xsi };
 %ignore tigl::CTiglStringerFrameBorderedObject;
 %include "CTiglStringerFrameBorderedObject.h"
 %include "generated/CPACSSkinSegment.h"
@@ -139,14 +227,16 @@
 %include "generated/CPACSSkin.h"
 %include "generated/CPACSFuselageStructure.h"
 %include "CCPACSFuselageStructure.h"
-%include "generated/CPACSMaterialDefinition.h"
-%include "CCPACSMaterialDefinition.h"
+
+
 %include "generated/CPACSWingSkin.h"
 %include "CPACSRotor_type.h"
 %include "TiglRotorHubType.h"
 %include "CTiglRelativelyPositionedComponent.h"
 %include "CTiglAttachedRotorBlade.h"
 %include "CPACSRotorHubHinge_type.h"
+
+// -------------------- Wing Structure -------------------//
 
 namespace tigl {
 class CCPACSWingCSStructure;
@@ -204,6 +294,9 @@ class CCPACSWingRibsPositioning;
 
 %include "generated/CPACSWingComponentSegmentStructure.h"
 %include "CCPACSWingCSStructure.h"
+
+// -------------------- Wing -------------------//
+
 %include "generated/CPACSComponentSegments.h"
 %include "CCPACSWingComponentSegments.h"
 %include "generated/CPACSPositionings.h"

@@ -6,4 +6,4 @@ TIGL_HOME=<tigl install folder>
 TIXI_HOME=<tixi install folder>
 
 c_demo.exe: c_demo.c
-	cl.exe /nologo c_demo.c -I $(TIGL_HOME)\include\tigl3 -I $(TIXI_HOME)\include $(TIGL_HOME)\lib\tigl3.lib $(TIXI_HOME)\lib\TIXI.lib 
+	cl.exe /nologo c_demo.c -I $(TIGL_HOME)\include\tigl3 -I $(TIXI_HOME)\include $(TIGL_HOME)\lib\tigl3.lib $(TIXI_HOME)\lib\tixi3.lib 

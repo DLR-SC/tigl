@@ -27,10 +27,15 @@
 #include "CTrimShape.h"
 #include "tiglcommonfunctions.h"
 
-#include <BOPCol_ListOfShape.hxx>
 #include <BOPAlgo_PaveFiller.hxx>
 #include <BRepAlgoAPI_Cut.hxx>
 #include <BRepAlgoAPI_Common.hxx>
+#include <Standard_Version.hxx>
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,3,0)
+#include <TopTools_ListOfShape.hxx>
+#else
+#include <BOPCol_ListOfShape.hxx>
+#endif
 
 
 #include <string>
@@ -160,7 +165,11 @@ void CTiglFusePlane::Perform()
         PNamedShape ff = farfield.GetLoft();
         assert(_result);
 
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,3,0)
+        TopTools_ListOfShape aLS;
+#else
         BOPCol_ListOfShape aLS;
+#endif
         aLS.Append(_result->Shape());
         aLS.Append(ff->Shape());
 

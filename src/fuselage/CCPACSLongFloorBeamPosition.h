@@ -21,6 +21,7 @@
 
 #include "generated/CPACSLongFloorBeamPosition.h"
 #include "tigl.h"
+#include "Cache.h"
 
 namespace tigl
 {
@@ -34,14 +35,14 @@ public:
 
     TIGL_EXPORT void Invalidate();
 
-    TIGL_EXPORT gp_Pnt GetCrossBeamIntersection(TiglCoordinateSystem cs = GLOBAL_COORDINATE_SYSTEM);
-    TIGL_EXPORT TopoDS_Face GetCutGeometryForCrossBeam(TiglCoordinateSystem cs = GLOBAL_COORDINATE_SYSTEM);
+    TIGL_EXPORT gp_Pnt GetCrossBeamIntersection(TiglCoordinateSystem cs = GLOBAL_COORDINATE_SYSTEM) const;
+    TIGL_EXPORT TopoDS_Face GetCutGeometryForCrossBeam(TiglCoordinateSystem cs = GLOBAL_COORDINATE_SYSTEM) const;
 
 private:
-    void BuildCutGeometryForCrossBeam();
+    void BuildCutGeometryForCrossBeam(TopoDS_Face& cache) const;
 
 private:
-    boost::optional<TopoDS_Face> m_cutGeometryForCrossBeam;
+    Cache<TopoDS_Face, CCPACSLongFloorBeamPosition> m_cutGeometryForCrossBeam;
 };
 
 } // namespace tigl

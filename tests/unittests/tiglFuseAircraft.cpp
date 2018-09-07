@@ -31,7 +31,6 @@
 #include <BRepTools.hxx>
 #include <BRepBuilderAPI_Sewing.hxx>
 #include <BRepBuilderAPI_Copy.hxx>
-#include <BOPCol_ListOfShape.hxx>
 #include <BOPAlgo_PaveFiller.hxx>
 #include <BRepAlgoAPI_Section.hxx>
 #include <BRepCheck_Analyzer.hxx>

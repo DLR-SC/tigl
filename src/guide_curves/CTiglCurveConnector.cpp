@@ -18,6 +18,7 @@
 
 #include "CTiglCurveConnector.h"
 #include "tiglcommonfunctions.h"
+#include "CTiglBSplineAlgorithms.h"
 
 #include <algorithm>
 #include <stack>
@@ -268,7 +269,7 @@ void CTiglCurveConnector::InterpolateGuideCurvePart(guideCurveConnected& connect
         // get the parameters for the current points
         double p1 = curvePart.sectionParameters[isegment  ];
         double p2 = curvePart.sectionParameters[isegment+1];
-        std::vector<double> curParams = GetCentripetalParameters(curPoints, p1, p2, 0.5);
+        std::vector<double> curParams = CTiglBSplineAlgorithms::computeParamsBSplineCurve(OccArray(curPoints), p1, p2, 0.5);
         params.insert( params.end(), curParams.begin()+1, curParams.end() );
 
         // no tangents given for the points by default

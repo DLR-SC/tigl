@@ -24,6 +24,8 @@
 #include <TopExp.hxx>
 #include <BRepBuilderAPI_Copy.hxx>
 
+#include "tiglcommonfunctions.h"
+
 CNamedShape::CNamedShape()
 {
     Clear();

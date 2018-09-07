@@ -471,104 +471,6 @@ TEST(TiglBSplineAlgorithms, testCreateCommonKnotsVectorSurface)
     ASSERT_NEAR(computed_mults_v(6), right_mult_v(6), 1e-15);
 }
 
-TEST(TiglBSplineAlgorithms, testSkinnedBSplineSurface)
-{
-    /*
-     * Tests the method skinning_bspline_surface(spline_list, degree_v_direction, parameters) by creating a skinned
-     * surface by two B-splines (argument u), Skinning direction is v, so:
-     * surface(u, v) = curve1(u) * (1 - v) + curve2(u) * v
-     */
-
-    // degree of both B-splines
-    unsigned int degree_u = 2;
-
-    // create first B-spline that represents the parabola f(x) = (x - 0.5)^2 in order to being able to test it afterwards
-    TColgp_Array1OfPnt controlPoints1(1, 3);
-    controlPoints1(1) = gp_Pnt(0., 6., 0.25);
-    controlPoints1(2) = gp_Pnt(0.5, 6., - 0.25);
-    controlPoints1(3) = gp_Pnt(1., 6., 0.25);
-
-    TColStd_Array1OfReal knots(1, 2);
-    knots(1) = 0.;
-    knots(2) = 1.;
-
-    TColStd_Array1OfInteger mults(1, 2);
-    mults(1) = 3;
-    mults(2) = 3;
-
-    Handle(Geom_BSplineCurve) curve1 = new Geom_BSplineCurve(controlPoints1, knots, mults, degree_u);
-
-    // create second B-spline that represents the parabola g(x) = - (x - 0.5)^2 in order to being able to test it afterwards
-    TColgp_Array1OfPnt controlPoints2(1, 3);
-    controlPoints2(1) = gp_Pnt(0., 0., - 0.25);
-    controlPoints2(2) = gp_Pnt(0.5, 0., 0.25);
-    controlPoints2(3) = gp_Pnt(1., 0., - 0.25);
-
-    Handle(Geom_BSplineCurve) curve2 = new Geom_BSplineCurve(controlPoints2, knots, mults, degree_u);
-
-    std::vector<Handle(Geom_BSplineCurve) > splines_vector;
-    splines_vector.push_back(curve1);
-    splines_vector.push_back(curve2);
-
-    Handle(Geom_BSplineSurface) skinnedSurface = CTiglBSplineAlgorithms::curvesToSurface(splines_vector);
-
-
-    // now test the skinned surface
-    for (int u_idx = 0; u_idx < 100; ++u_idx) {
-        for (int v_idx = 0; v_idx < 100; ++v_idx) {
-            double u_value = u_idx / 100.;
-            double v_value = v_idx / 100.;
-
-            gp_Pnt surface_point = skinnedSurface->Value(u_value, v_value);
-            gp_Pnt point_curve1 = curve1->Value(u_value);
-            gp_Pnt point_curve2 = curve2->Value(u_value);
-            gp_Pnt right_point(point_curve1.X() * (1 - v_value) + point_curve2.X() * v_value, point_curve1.Y() * (1 - v_value) + point_curve2.Y() * v_value, point_curve1.Z() * (1 - v_value) + point_curve2.Z() * v_value);
-
-            ASSERT_NEAR(surface_point.X(), right_point.X(), 1e-15);
-            ASSERT_NEAR(surface_point.Y(), right_point.Y(), 1e-15);
-            ASSERT_NEAR(surface_point.Z(), right_point.Z(), 1e-15);
-        }
-    }
-}
-
-TEST(TiglBSplineAlgorithms, curvesToSurfaceContinous)
-{
-    // Read in nacelle data from BRep
-    TopoDS_Shape shape_u;
-
-    BRep_Builder builder_u;
-
-    BRepTools::Read(shape_u, "TestData/CurveNetworks/fuselage1/guides.brep", builder_u);
-
-    // get the splines in u-direction from the Edges
-    std::vector<Handle(Geom_BSplineCurve)> curves;
-    for (TopExp_Explorer exp(shape_u, TopAbs_EDGE); exp.More(); exp.Next()) {
-        TopoDS_Edge curve_edge = TopoDS::Edge(exp.Current());
-        double beginning = 0;
-        double end = 1;
-        Handle(Geom_Curve) curve = BRep_Tool::Curve(curve_edge, beginning, end);
-        Handle(Geom_BSplineCurve) spline = GeomConvert::CurveToBSplineCurve(curve);
-        curves.push_back(spline);
-    }
-
-    Handle(Geom_BSplineSurface) surface = tigl::CTiglBSplineAlgorithms::curvesToSurface(curves, true);
-
-    double umin, umax, vmin, vmax;
-    surface->Bounds(umin, umax, vmin, vmax);
-    EXPECT_TRUE(surface->DN(umin, vmin, 0, 0).IsEqual(surface->DN(umin, vmax, 0, 0), 1e-10, 1e-6));
-    EXPECT_TRUE(surface->DN(umin, vmin, 0, 1).IsEqual(surface->DN(umin, vmax, 0, 1), 1e-10, 1e-6));
-
-    double umean = 0.5 * (umin + umax);
-    EXPECT_TRUE(surface->DN(umean, vmin, 0, 0).IsEqual(surface->DN(umean, vmax, 0, 0), 1e-10, 1e-6));
-    EXPECT_TRUE(surface->DN(umean, vmin, 0, 1).IsEqual(surface->DN(umean, vmax, 0, 1), 1e-10, 1e-6));
-
-    EXPECT_TRUE(surface->DN(umax, vmin, 0, 0).IsEqual(surface->DN(umax, vmax, 0, 0), 1e-10, 1e-6));
-    EXPECT_TRUE(surface->DN(umax, vmin, 0, 1).IsEqual(surface->DN(umax, vmax, 0, 1), 1e-10, 1e-6));
-    
-    // Write surface
-    BRepTools::Write(BRepBuilderAPI_MakeFace(surface, Precision::Confusion()).Face(), "TestData/curvesToSurfaceContinous.brep");
-}
-
 TEST(TiglBSplineAlgorithms, testReparametrizeBSplineContinuouslyApprox)
 {
     /*
@@ -655,6 +557,41 @@ TEST(TiglBSplineAlgorithms, testReparametrizeBSplineContinuouslyApprox)
     }
 }
 
+TEST(TiglBSplineAlgorithms, reparametrizeBSpline)
+{
+    // create B-spline
+    unsigned int degree = 3;
+
+    TColgp_Array1OfPnt controlPoints(1, 8);
+    controlPoints(1) = gp_Pnt(0., -1., 0.);
+    controlPoints(2) = gp_Pnt(2., 3., 1.);
+    controlPoints(3) = gp_Pnt(1., 5., -2.);
+    controlPoints(4) = gp_Pnt(2., 8., -1.);
+    controlPoints(5) = gp_Pnt(0., 10., 2.);
+    controlPoints(6) = gp_Pnt(-1., 12., 4.);
+    controlPoints(7) = gp_Pnt(-2., 16., 5.);
+    controlPoints(8) = gp_Pnt(0., 17., 0.);
+
+    TColStd_Array1OfReal knots(1, 5);
+    knots(1) = 0.;
+    knots(2) = 0.1;
+    knots(3) = 0.3;
+    knots(4) = 0.8;
+    knots(5) = 1.;
+
+    TColStd_Array1OfInteger mults(1, 5);
+    mults(1) = 4;
+    mults(2) = 1;
+    mults(3) = 2;
+    mults(4) = 1;
+    mults(5) = 4;
+
+    Handle(Geom_BSplineCurve) spline = new Geom_BSplineCurve(controlPoints, knots, mults, degree);
+
+    CTiglBSplineAlgorithms::reparametrizeBSpline(*spline, -5, 5);
+    ASSERT_NEAR(spline->FirstParameter(), -5, 1e-10);
+    ASSERT_NEAR(spline->LastParameter(),  5, 1e-10);
+}
 
 TEST(TiglBSplineAlgorithms, testFlipSurface)
 {
@@ -1153,13 +1090,13 @@ TEST(TiglBSplineAlgorithms, testCreateGordonSurfaceGeneral)
     Handle(Geom_BSplineCurve) spline_v5 = new Geom_BSplineCurve(controlPoints_v5, knots, mults, degree);
 
     // u- and v-directional B-splines are already compatible in B-spline sense (common knot vector, same parametrization)
-    std::vector<Handle(Geom_BSplineCurve)> splines_u_vector;
+    std::vector<Handle(Geom_Curve)> splines_u_vector;
     splines_u_vector.push_back(spline_u3);
     splines_u_vector.push_back(spline_u1);
     splines_u_vector.push_back(spline_u2);
     splines_u_vector.push_back(spline_u4);
 
-    std::vector<Handle(Geom_BSplineCurve)> splines_v_vector;
+    std::vector<Handle(Geom_Curve)> splines_v_vector;
     splines_v_vector.push_back(spline_v5);
     splines_v_vector.push_back(spline_v4);
     splines_v_vector.push_back(spline_v2);
@@ -1407,7 +1344,7 @@ TEST_P(GordonSurface, testFromBRep)
 
     TopExp_Explorer Explorer;
     // get the splines in u-direction from the Edges
-    std::vector<Handle(Geom_BSplineCurve)> splines_u_vector;
+    std::vector<Handle(Geom_Curve)> splines_u_vector;
     for (Explorer.Init(shape_u, TopAbs_EDGE); Explorer.More(); Explorer.Next()) {
         TopoDS_Edge curve_edge = TopoDS::Edge(Explorer.Current());
         double beginning = 0;
@@ -1430,7 +1367,7 @@ TEST_P(GordonSurface, testFromBRep)
     TopExp::MapShapes(shape_v, TopAbs_EDGE, mapEdges_v);
 
     // get the splines in v-direction from the Edges
-    std::vector<Handle(Geom_BSplineCurve)> splines_v_vector;
+    std::vector<Handle(Geom_Curve)> splines_v_vector;
     for (Explorer.Init(shape_v, TopAbs_EDGE); Explorer.More(); Explorer.Next()) {
         TopoDS_Edge curve_edge = TopoDS::Edge(Explorer.Current());
         double beginning = 0;
@@ -1454,7 +1391,8 @@ INSTANTIATE_TEST_CASE_P(TiglBSplineAlgorithms, GordonSurface, ::testing::Values(
                             "wing3",
                             "bellyfairing",
                             "helibody",
-                            "fuselage1"
+                            "fuselage1",
+                            "fuselage2"
                             ));
 
 } // namespace tigl

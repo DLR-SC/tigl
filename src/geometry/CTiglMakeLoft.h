@@ -58,11 +58,11 @@ public:
      * @param enabled If true, a solid is built.
      */
     TIGL_EXPORT void setMakeSolid(bool enabled);
-    
+
     /**
      * @brief setMakeSmooth switches, wether the resulting loft will be ruled
      * or smoothed. This switch only applies, if no guide curves are applied.
-     * 
+     *
      * @param enabled Set to true, if smoothing should be enabled.
      */
     TIGL_EXPORT void setMakeSmooth(bool enabled);
@@ -76,10 +76,16 @@ public:
      * manually.
      */
     TIGL_EXPORT void Perform();
-    
+
 private:
     void makeLoftWithGuides();
     void makeLoftWithoutGuides();
+
+    /**
+     * @brief transform the shape to a solid if the correspondig flag is set,
+     * transform it to a shell otherwise (wrapper for CTiglPatchShell)
+     */
+    void CloseShape();
     
     /**
      * \brief Tolerance for the MakeSolid, MakeShells, BRepOffsetAPI_ThruSections
@@ -97,7 +103,9 @@ private:
      */
     double _mySameKnotTolerance;
     std::vector<TopoDS_Wire> guides, profiles;
-    bool _hasPerformed, _makeSolid, _makeSmooth;
+    std::vector<Standard_Real> uparams, vparams;
+    bool _hasPerformed, _makeSolid;
+    bool _makeSmooth = false;
     
     TopoDS_Shape _result;
 };

@@ -2,8 +2,9 @@
 # author: Martin Siggel
 
 install(FILES 
-    python_demo.py
+    api_basic_demo.py
     DESTINATION share/doc/tigl3/examples
+    RENAME python_demo.py
     COMPONENT docu
 )
 

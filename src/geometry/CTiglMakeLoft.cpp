@@ -21,6 +21,11 @@
 #include "tiglcommonfunctions.h"
 #include "CTiglLogging.h"
 
+
+#include "CTiglBSplineAlgorithms.h"
+#include "CTiglCurvesToSurface.h"
+#include "CTiglPatchShell.h"
+
 #include "contrib/MakePatches.hxx"
 
 #include <TopoDS.hxx>
@@ -38,15 +43,17 @@
 #include <Geom_Plane.hxx>
 #include <StdFail_NotDone.hxx>
 #include <Precision.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <BRepAdaptor_Curve.hxx>
+#include <GeomConvert.hxx>
+#include <BRepGProp.hxx>
+#include <GProp_GProps.hxx>
+#include <BRep_Tool.hxx>
 
-namespace 
-{
-    TopoDS_Solid MakeSolid(TopoDS_Shape& shell, const TopoDS_Wire& wire1,
-                           const TopoDS_Wire& wire2, const Standard_Real presPln,
-                           TopoDS_Face& face1, TopoDS_Face& face2);
-    
-    TopoDS_Shape MakeShells(TopoDS_Shape& shell, const Standard_Real presPln);
-} // namespace
+namespace {
+    TopoDS_Shape CutShellAtUVParameters(TopoDS_Shape const& shape, std::vector<double> uparams, std::vector<double> vparams);
+    TopoDS_Shape ResortFaces(TopoDS_Shape const& shape, int nu, int nv, bool umajor2vmajor = true);
+}
 
 CTiglMakeLoft::CTiglMakeLoft(double tolerance, double sameKnotTolerance)
 {
@@ -55,7 +62,6 @@ CTiglMakeLoft::CTiglMakeLoft(double tolerance, double sameKnotTolerance)
     _result.Nullify();
     _myTolerance = tolerance;
     _mySameKnotTolerance = sameKnotTolerance;
-    _makeSmooth = false;
 }
 
 CTiglMakeLoft::CTiglMakeLoft(const TopoDS_Shape& profiles, const TopoDS_Shape& guides, double tolerance, double sameKnotTolerance)
@@ -209,7 +215,7 @@ void CTiglMakeLoft::makeLoftWithGuides()
     GeomFill_FillingStyle style = GeomFill_CoonsStyle;
 #endif
     SurfMaker.Perform(_myTolerance, _mySameKnotTolerance, style, Standard_True);
-    TopoDS_Shape faces = SurfMaker.Patches();
+    _result = SurfMaker.Patches();
     if (SurfMaker.GetStatus() > 0) {
         LOG(ERROR) << "Could not create loft with guide curves. " << "Error code = " << SurfMaker.GetStatus();
         return;
@@ -219,179 +225,182 @@ void CTiglMakeLoft::makeLoftWithGuides()
     // store intermediate result
     std::stringstream spatches;
     spatches << "patches" << iLoft << ".brep";
-    BRepTools::Write(faces, spatches.str().c_str());
+    BRepTools::Write(_result, spatches.str().c_str());
 #endif
-    
-    if (_makeSolid) {
-        // check if the first wire is the same as the last
-        Standard_Boolean vClosed = (profiles[0].IsSame(profiles[profiles.size()-1]));
-        
-        if (vClosed) {
-            // we dont need side caps, just make shell and close it
-            TopoDS_Shape shell = MakeShells(faces, _myTolerance);
-            
-            TopoDS_Solid solid;
-            BRep_Builder B;
-            B.MakeSolid(solid); 
-            B.Add(solid, shell);
-            
-            // verify the orientation of the solid
-            BRepClass3d_SolidClassifier clas3d(solid);
-            clas3d.PerformInfinitePoint(Precision::Confusion());
-            if (clas3d.State() == TopAbs_IN) {
-                B.MakeSolid(solid); 
-                TopoDS_Shape aLocalShape = faces.Reversed();
-                B.Add(solid, TopoDS::Shell(aLocalShape));
-            }
-            _result = solid;
-        }
-        else {
-            // make solid by adding side caps
-            TopoDS_Wire wire1 = TopoDS::Wire(profiles[0]);
-            TopoDS_Wire wire2 = TopoDS::Wire(profiles[profiles.size()-1]);
-            TopoDS_Face innerCap, outerCap;
-            _result = faces;
-            _result = MakeSolid(faces, wire1, wire2, 1e-6, innerCap, outerCap);
-            
-#ifdef DEBUG
-            // store solid result
-            std::stringstream ssolid;
-            ssolid << "solid" << iLoft << ".brep";
-            BRepTools::Write(_result, ssolid.str().c_str());
-#endif
-        }
-    }
-    else {
-        // don't make solid
-        _result = MakeShells(faces, _myTolerance);
-    }
-    BRepLib::EncodeRegularity(_result);
+    CloseShape();
 }
 
 void CTiglMakeLoft::makeLoftWithoutGuides()
 {
-    bool isRuled = !_makeSmooth;
-    BRepOffsetAPI_ThruSections lofter(_makeSolid, isRuled, _myTolerance);
-    for (unsigned int i = 0; i < profiles.size(); ++i) {
-        TopoDS_Wire& profile =  profiles[i];
-        lofter.AddWire(profile);
-    }
-    lofter.CheckCompatibility(Standard_False);
+    TopoDS_Shell faces;
+    BRep_Builder builder;
+    builder.MakeShell(faces);
 
-    if (_makeSmooth) {
-        lofter.SetMaxDegree(2); //surfaces will be C1-continuous
-        lofter.SetParType(Approx_Centripetal);
-    }
+    // get number of edges per profile wire
+    // --> should be the same for all profiles
+    TopTools_IndexedMapOfShape firstProfileMap;
+    TopExp::MapShapes(profiles[0], TopAbs_EDGE, firstProfileMap);
+    int const nEdgesPerProfile = firstProfileMap.Extent();
 
-    _result = lofter.Shape();
+    // skin the surface edge by adge
+    // CAUTION: Here it is assumed that the edges are ordered
+    // in the same way along each profile (e.g. lower edge,
+    // upper edge, trailing edge for a wing)
+    for ( int iE = 1; iE <= nEdgesPerProfile; ++iE ) {
+
+        // get the curves
+        std::vector<Handle(Geom_Curve)> profileCurves;
+        profileCurves.reserve(profiles.size());
+        for (unsigned iP=0; iP<profiles.size(); ++iP ) {
+
+            TopTools_IndexedMapOfShape profileMap;
+            TopExp::MapShapes(profiles[iP], TopAbs_EDGE, profileMap);
+            assert( profileMap.Extent() >= iE );
+
+            TopoDS_Edge edge = TopoDS::Edge(profileMap(iE));
+            profileCurves.push_back(GetBSplineCurve(edge));
+        }
+
+        // skin the curves
+        tigl::CTiglCurvesToSurface surfaceSkinner(profileCurves, vparams);
+        if (!_makeSmooth) {
+            surfaceSkinner.SetMaxDegree(1);
+        }
+        Handle(Geom_BSplineSurface) surface = surfaceSkinner.Surface();
+
+        // remember the profile parameters used for the skinning
+        if (vparams.size()==0) {
+            vparams = surfaceSkinner.GetParameters();
+        }
+
+        BRepBuilderAPI_MakeFace faceMaker(surface, 1e-10);
+        builder.Add(faces, faceMaker.Face());
+    }
+    _result = CutShellAtUVParameters(faces, uparams, vparams);
+
+    // make sure the order is the same as for the COONS Patch algorithm
+    _result = ResortFaces(_result, nEdgesPerProfile, vparams.size()-1);
+    CloseShape();
+}
+
+void CTiglMakeLoft::CloseShape()
+{
+    tigl::CTiglPatchShell patcher(_result, _myTolerance);
+    Standard_Boolean vClosed = (profiles[0].IsSame(profiles.back()));
+    if ( !vClosed && _makeSolid ) {
+        patcher.AddSideCap(TopoDS::Wire(profiles[0]));
+        patcher.AddSideCap(TopoDS::Wire(profiles.back()));
+    }
+    patcher.SetMakeSolid(_makeSolid);
+    _result = patcher.PatchedShape();
 }
 
 namespace
 {
-    // Creates a face to close a profile
-    // Code taken from opencascade, BRepOffsetAPI_ThruSections
-    Standard_Boolean CreateSideCap(const TopoDS_Wire& W,
-                                   const Standard_Real presPln,
-                                   TopoDS_Face& theFace)
+
+    TopoDS_Shape CutShellAtUVParameters(TopoDS_Shape const& shape, std::vector<double> uparams, std::vector<double> vparams)
     {
-        Standard_Boolean isDegen = Standard_True;
-        TopoDS_Iterator iter(W);
-        for (; iter.More(); iter.Next())
+
+        bool cutInUDirection = (uparams.size() > 0);
+        bool cutInVDirection = (vparams.size() > 0);
+
+        if ( !cutInUDirection && !cutInVDirection ) {
+            //nothing to do
+            return shape;
+        }
+
+        // sort parameter vectors if they are not sorted
+        if (cutInUDirection && !std::is_sorted(uparams.begin(), uparams.end()) ) {
+            std::sort(uparams.begin(), uparams.end());
+        }
+        if (cutInVDirection && !std::is_sorted(vparams.begin(), vparams.end()) ) {
+            std::sort(vparams.begin(), vparams.end());
+        }
+
+
+
+        TopoDS_Shell cutShape;
+        BRep_Builder builder;
+        builder.MakeShell(cutShape);
+
+        for(TopExp_Explorer faces(shape, TopAbs_FACE); faces.More(); faces.Next()) {
+
+            // trim each face/surface of the compound at the uv paramters in the paramter vectors
+
+            Handle(Geom_Surface) surface = BRep_Tool::Surface(TopoDS::Face(faces.Current()));
+            Standard_Real u1, u2, v1, v2;
+            surface->Bounds(u1, u2, v1, v2);
+
+            if ( !cutInUDirection ) {
+                uparams.clear();
+                uparams.push_back(u1);
+                uparams.push_back(u2);
+            }
+
+            if ( !cutInVDirection ) {
+                vparams.clear();
+                vparams.push_back(v1);
+                vparams.push_back(v2);
+            }
+
+            unsigned uidx = 0;
+            while ( uparams[uidx] < u1 ) {
+                ++uidx;
+            }
+
+            unsigned vidx = 0;
+            while ( vparams[vidx] < v1 ) {
+                ++vidx;
+            }
+
+            unsigned ustart = uidx;
+            while ( vidx+1 < vparams.size() && vparams[vidx+1] <= v2 ) {
+                uidx = ustart;
+                while ( uidx+1 < uparams.size() && uparams[uidx+1] <= u2 ) {
+
+                    Handle(Geom_BSplineSurface) trimmedSurface = tigl::CTiglBSplineAlgorithms::trimSurface(surface, uparams[uidx], uparams[uidx+1], vparams[vidx], vparams[vidx+1]);
+                    BRepBuilderAPI_MakeFace faceMaker(trimmedSurface, 1e-10);
+                    builder.Add(cutShape, faceMaker.Face());
+
+                    ++uidx;
+                }
+                ++vidx;
+            }
+        }
+        return cutShape;
+    }
+
+    TopoDS_Shape ResortFaces(TopoDS_Shape const& shape, int nu, int nv, bool umajor2vmajor)
+    {
+        nu = (nu < 1)? 1 : nu;
+        nv = (nv < 1)? 1 : nv;
+
+        // map of in faces
+        TopTools_IndexedMapOfShape map;
+        TopExp::MapShapes(shape, TopAbs_FACE, map);
+        int n = map.Extent();
+
+        assert(nu*nv == n);
+
+        TopoDS_Shell sorted;
+        BRep_Builder B;
+        B.MakeShell(sorted);
+        if ( umajor2vmajor ) {
+            for(int v = 1; v <= nv; v++) {
+                for (int u = 1; u <= nu; u++) {
+                    B.Add(sorted,TopoDS::Face(map((u-1)*nv + v)));
+                }
+            }
+        }
+        else
         {
-            const TopoDS_Edge& anEdge = TopoDS::Edge(iter.Value());
-            if (!BRep_Tool::Degenerated(anEdge))
-                isDegen = Standard_False;
-        }
-        if (isDegen)
-            return Standard_True;
-        
-        Standard_Boolean Ok = Standard_False;
-        if (!W.IsNull()) {
-            BRepBuilderAPI_FindPlane Searcher( W, presPln );
-            if (Searcher.Found()) {
-                theFace = BRepBuilderAPI_MakeFace(Searcher.Plane(), W);
-                Ok = Standard_True;
-            }
-            else {
-                // try to find another surface
-                BRepBuilderAPI_MakeFace MF( W );
-                if (MF.IsDone())
-                {
-                    theFace = MF.Face();
-                    Ok = Standard_True;
+            for(int u = 1; u <= nu; u++) {
+                for (int v = 1; v <= nv; v++) {
+                    B.Add(sorted,TopoDS::Face(map((v-1)*nu + u)));
                 }
             }
         }
-        
-        return Ok;
+
+        return sorted;
     }
-
-    // Code adapted from opencascade, BRepOffsetAPI_ThruSections
-    TopoDS_Solid MakeSolid(TopoDS_Shape& shell, 
-                           const TopoDS_Wire& wire1, const TopoDS_Wire& wire2, 
-                           const Standard_Real presPln,
-                           TopoDS_Face& face1, TopoDS_Face& face2)
-    {
-        if (shell.IsNull()) {
-            StdFail_NotDone::Raise("Thrusections is not build");
-        }
-        Standard_Boolean B = shell.Closed();
-        
-        BRepBuilderAPI_Sewing sewingAlgo;
-        sewingAlgo.Add(shell);
-
-        
-        if (!B) {
-            // It is necessary to close the extremities 
-            B =  CreateSideCap(wire1, presPln, face1);
-            if (B) {
-                B =  CreateSideCap(wire2, presPln, face2);
-                if (B) {
-                    if (!face1.IsNull()) {
-                        sewingAlgo.Add(face1);
-                    }
-                    if (!face2.IsNull()) {
-                        sewingAlgo.Add(face2);
-                    }
-                }
-            }
-        }
-        
-        sewingAlgo.Perform();
-        TopoDS_Shape shellClosed  = sewingAlgo.SewedShape();
-        shellClosed.Closed(Standard_True);
-
-        // make solid from shell
-        TopoDS_Solid solid;
-        BRep_Builder solidMaker;
-        solidMaker.MakeSolid(solid); 
-        solidMaker.Add(solid, shellClosed);
-        
-        // verify the orientation the solid
-        BRepClass3d_SolidClassifier clas3d(solid);
-        clas3d.PerformInfinitePoint(Precision::Confusion());
-        if (clas3d.State() == TopAbs_IN) {
-            solidMaker.MakeSolid(solid); 
-            TopoDS_Shape aLocalShape = shellClosed.Reversed();
-            solidMaker.Add(solid, TopoDS::Shell(aLocalShape));
-        }
-        
-        solid.Closed(Standard_True);
-        return solid;
-    }
-    
-    TopoDS_Shape MakeShells(TopoDS_Shape& shell, const Standard_Real presPln)
-    {
-        if (shell.IsNull()) {
-            StdFail_NotDone::Raise("Thrusections is not build");
-        }
-
-        BRepBuilderAPI_Sewing BB(presPln);
-        BB.Add(shell);
-        BB.Perform();
-        
-        TopoDS_Shape shellClosed  = BB.SewedShape();
-        return shellClosed;
-    }
-
 } // namespace

@@ -35,8 +35,14 @@
 #include <BRepBuilderAPI_MakeSolid.hxx>
 
 #include <BOPAlgo_PaveFiller.hxx>
-#include <BOPCol_ListOfShape.hxx>
 #include <BRepAlgoAPI_Section.hxx>
+#include <Standard_Version.hxx>
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,3,0)
+#include <TopTools_ListOfShape.hxx>
+#else
+#include <BOPCol_ListOfShape.hxx>
+#endif
+
 
 //#define DEBUG_BOP
 
@@ -136,7 +142,11 @@ void CFuseShapes::DoFuse()
             clock_t start, stop;
             start = clock();
 #endif
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,3,0)
+            TopTools_ListOfShape aLS;
+#else
             BOPCol_ListOfShape aLS;
+#endif
             aLS.Append(_trimmedParent->Shape());
             aLS.Append(child->Shape());
             BOPAlgo_PaveFiller DSFill;

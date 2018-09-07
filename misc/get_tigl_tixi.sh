@@ -41,8 +41,8 @@ function printUsage {
     echo "usage: get_tigl.sh <distro> <arch> <version>(default=2)"
     echo
     echo "Valid distributions:"
-    echo "    SLE_12_SP1     Suse Linux Enterprise 12 SP1"
     echo "    SLE_12_SP2     Suse Linux Enterprise 12 SP2"
+    echo "    SLE_12_SP3     Suse Linux Enterprise 12 SP3"
     echo "    openSUSE_13.1  openSUSE 13.1"
     echo "    ubuntu_14.04   Ubuntu 14.04"
     echo "    ubuntu_16.04   Ubuntu 16.04"
@@ -90,8 +90,8 @@ function checkArguments {
     LIBDIR=lib
 
     #check dist
-    if [[ $tmp_dist == SLE_12_SP1 ]]; then
-    	DIST=SLE_12_SP1
+    if [[ $tmp_dist == SLE_12_SP3 ]]; then
+    	DIST=SLE_12_SP3
     	PACK_TYPE=rpm
     	if [[  $tmp_arch == i386 ]]; then
     	    echo "Error: x86 architecture not available on SLED 12"

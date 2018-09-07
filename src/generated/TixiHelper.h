@@ -160,8 +160,6 @@ namespace tixi
     template<typename T, typename WriteChildFunc>
     void TixiSaveElements(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::vector<T>& children, WriteChildFunc writeChild)
     {
-        const internal::SplitXPath& sp = internal::splitXPath(xpath);
-
         // get number of children
         const int childCount = TixiGetNamedChildrenCount(tixiHandle, xpath);
 

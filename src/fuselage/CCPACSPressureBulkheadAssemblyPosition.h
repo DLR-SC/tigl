@@ -21,6 +21,7 @@
 
 #include "generated/CPACSPressureBulkheadAssemblyPosition.h"
 #include "ITiglGeometricComponent.h"
+#include "Cache.h"
 
 namespace tigl
 {
@@ -39,13 +40,13 @@ public:
 
     TIGL_EXPORT void Invalidate();
 
-    TIGL_EXPORT TopoDS_Shape GetGeometry(TiglCoordinateSystem cs = GLOBAL_COORDINATE_SYSTEM);
+    TIGL_EXPORT TopoDS_Shape GetGeometry(TiglCoordinateSystem cs = GLOBAL_COORDINATE_SYSTEM) const;
 
 private:
-    void BuildGeometry();
+    void BuildGeometry(TopoDS_Shape& cache) const;
 
 private:
-    boost::optional<TopoDS_Shape> m_geometry;
+    Cache<TopoDS_Shape, CCPACSPressureBulkheadAssemblyPosition> m_geometry;
 };
 
 } // namespace tigl

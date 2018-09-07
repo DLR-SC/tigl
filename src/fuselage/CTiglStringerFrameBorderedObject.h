@@ -25,6 +25,7 @@
 
 #include "tigl.h"
 #include "tigl_internal.h"
+#include "Cache.h"
 
 class TopoDS_Face;
 class TopoDS_Edge;
@@ -43,16 +44,23 @@ public:
                                                  boost::variant<std::string&, boost::optional<std::string>&> endStringerUID);
 
     TIGL_EXPORT void Invalidate();
-    TIGL_EXPORT TopoDS_Shape GetGeometry(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM);
+    TIGL_EXPORT TopoDS_Shape GetGeometry(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
 
-    TIGL_EXPORT bool Contains(const TopoDS_Face& face);
-    TIGL_EXPORT bool Contains(const TopoDS_Edge& edge);
-    TIGL_EXPORT bool Contains(const gp_Pnt& point);
+    TIGL_EXPORT bool Contains(const TopoDS_Face& face) const;
+    TIGL_EXPORT bool Contains(const TopoDS_Edge& edge) const;
+    TIGL_EXPORT bool Contains(const gp_Pnt& point) const;
 
 private:
-    void BuildGeometry();
-    void UpdateBorders();
-    void UpdateBorder(gp_Ax1& b, TopoDS_Shape s1, TopoDS_Shape s2);
+    struct BorderCache {
+        gp_Ax1 sFrame_sStringer;
+        gp_Ax1 sFrame_eStringer;
+        gp_Ax1 eFrame_sStringer;
+        gp_Ax1 eFrame_eStringer;
+    };
+
+    void BuildGeometry(TopoDS_Shape& cache) const;
+    void UpdateBorders(BorderCache& cache) const;
+    void UpdateBorder(gp_Ax1& b, TopoDS_Shape s1, TopoDS_Shape s2) const;
     std::string GetEndStringerUid() const;
 
 private:
@@ -63,16 +71,8 @@ private:
     std::string& m_startStringerUID;
     boost::variant<std::string&, boost::optional<std::string>&> m_endStringerUID;
 
-    struct BorderCache {
-        gp_Ax1 sFrame_sStringer;
-        gp_Ax1 sFrame_eStringer;
-        gp_Ax1 eFrame_sStringer;
-        gp_Ax1 eFrame_eStringer;
-    };
-    BorderCache& GetBorderCache();
-
-    boost::optional<BorderCache> m_borderCache;
-    boost::optional<TopoDS_Shape> m_geometry;
+    Cache<BorderCache, CTiglStringerFrameBorderedObject> m_borderCache;
+    Cache<TopoDS_Shape, CTiglStringerFrameBorderedObject> m_geometry;
 };
 
 } // namespace tigl

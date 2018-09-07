@@ -67,6 +67,7 @@
 #include "CTiglProjectOnLinearSpline.h"
 #include "CTiglInterpolateCurveNetwork.h"
 #include "CTiglPointsToBSplineInterpolation.h"
+#include "CTiglCurvesToSurface.h"
 %}
 
 
@@ -78,7 +79,7 @@
 
 %template(CPointContainer) std::vector<gp_Pnt>;
 %template(BSplineCurveList) std::vector<Handle_Geom_BSplineCurve>;
-
+%template(CurveList) std::vector<Handle_Geom_Curve>;
 
 %boost_optional(tigl::CCPACSPointAbsRel)
 %boost_optional(tigl::CCPACSPoint)
@@ -89,6 +90,7 @@
 
 %include "CTiglPointsToBSplineInterpolation.h"
 %include "CTiglInterpolateCurveNetwork.h"
+%include "CTiglCurvesToSurface.h"
 %include "tiglcommonfunctions.h"
 %include "CTiglProjectOnLinearSpline.h"
 %include "CTiglMakeLoft.h"
