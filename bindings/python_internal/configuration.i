@@ -166,7 +166,7 @@ namespace tigl
 %include "CCPACSControlSurfaceTrackType.h"
 %include "generated/CPACSOuterCutOutProfile.h"
 %include "generated/CPACSCutOutProfiles.h"
-%include "generated/CPACSControlSurfaceSkinCutout.h"
+%include "generated/CPACSControlSurfaceSkinCutOut.h"
 %include "CCPACSControlSurfaceSkinCutout.h"
 %include "generated/CPACSControlSurfaceTracks.h"
 %include "generated/CPACSControlSurfaceContours.h"
