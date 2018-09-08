@@ -58,10 +58,37 @@
 
 namespace tigl 
 {
+    namespace
+    {
+        void OrderPoints(std::vector<CTiglPoint>& vec)
+        {
+            // points with maximal/minimal y-component
+            std::size_t minZIndex = 0;
+            std::size_t maxZIndex = 0;
+            for (std::size_t i = 1; i < vec.size(); i++) {
+                if (vec[i].z < vec[minZIndex].z) {
+                    minZIndex = i;
+                }
+                if (vec[i].z > vec[maxZIndex].z) {
+                    maxZIndex = i;
+                }
+            }
+
+            // check if points with maximal/minimal z-component were calculated correctly
+            if (maxZIndex == minZIndex) {
+                throw CTiglError("CCPACSPointListXYZ::OrderPoints: Unable to separate upper and lower wing profile from point list", TIGL_XML_ERROR);
+            }
+            // force order of points to run through the lower profile first and then through the upper profile
+            if (minZIndex > maxZIndex) {
+                LOG(WARNING) << "The points don't seem to be ordered in a mathematical positive sense.";
+                std::reverse(vec.begin(), vec.end());
+            }
+        }
+    }
 
 // Constructor
 CCPACSWingProfile::CCPACSWingProfile(CTiglUIDManager* uidMgr)
-    : generated::CPACSProfileGeometry(uidMgr), invalidated(true), isRotorProfile(false) {}
+    : generated::CPACSProfileGeometry(uidMgr), isRotorProfile(false) {}
 
 
 CCPACSWingProfile::~CCPACSWingProfile() {}
@@ -70,7 +97,7 @@ CCPACSWingProfile::~CCPACSWingProfile() {}
 void CCPACSWingProfile::Cleanup()
 {
     isRotorProfile = false;
-    Invalidate();
+    pointListAlgo.reset();
 }
 
 // Read wing profile file
@@ -82,6 +109,10 @@ void CCPACSWingProfile::ReadCPACS(const TixiDocumentHandle& tixiHandle, const st
         isRotorProfile = true;
     }
     generated::CPACSProfileGeometry::ReadCPACS(tixiHandle, xpath);
+
+    if (m_pointList_choice1) {
+        OrderPoints(m_pointList_choice1->AsVector());
+    }
 }
 
 // Returns whether the profile is a rotor profile
@@ -93,47 +124,31 @@ bool CCPACSWingProfile::IsRotorProfile() const
 // Invalidates internal wing profile state
 void CCPACSWingProfile::Invalidate()
 {
-    invalidated = true;
-}
-
-// Update the internal state, i.g. recalculates wire and le, te points
-void CCPACSWingProfile::Update()
-{
-    if (!invalidated) {
-        return;
-    }
-
-    // build wires
-    GetProfileAlgo()->Update();
-    invalidated = false;
+    GetProfileAlgo()->Invalidate();
 }
 
 // Returns the wing profile upper wire
-TopoDS_Edge CCPACSWingProfile::GetUpperWire(TiglShapeModifier mod)
+TopoDS_Edge CCPACSWingProfile::GetUpperWire(TiglShapeModifier mod) const
 {
-    Update();
     return GetProfileAlgo()->GetUpperWire(mod);
 }
 
 // Returns the wing profile lower wire
-TopoDS_Edge CCPACSWingProfile::GetLowerWire(TiglShapeModifier mod)
+TopoDS_Edge CCPACSWingProfile::GetLowerWire(TiglShapeModifier mod) const
 {
-    Update();
     return GetProfileAlgo()->GetLowerWire(mod);
 }
 
 // Returns the wing profile trailing edge
-TopoDS_Edge CCPACSWingProfile::GetTrailingEdge(TiglShapeModifier mod)
+TopoDS_Edge CCPACSWingProfile::GetTrailingEdge(TiglShapeModifier mod) const
 {
-    Update();
     return GetProfileAlgo()->GetTrailingEdge(mod);
 }
 
 // Returns the wing profile lower and upper wire fused
-TopoDS_Wire CCPACSWingProfile::GetSplitWire(TiglShapeModifier mod)
+TopoDS_Wire CCPACSWingProfile::GetSplitWire(TiglShapeModifier mod) const
 {
-    Update();
-    ITiglWingProfileAlgo* profileAlgo = GetProfileAlgo();
+    const ITiglWingProfileAlgo* profileAlgo = GetProfileAlgo();
 
     // rebuild closed wire
     BRepBuilderAPI_MakeWire closedWireBuilder;
@@ -151,10 +166,9 @@ TopoDS_Wire CCPACSWingProfile::GetSplitWire(TiglShapeModifier mod)
     return closedWireBuilder.Wire();
 }
 
-TopoDS_Wire CCPACSWingProfile::GetWire(TiglShapeModifier mod)
+TopoDS_Wire CCPACSWingProfile::GetWire(TiglShapeModifier mod) const
 {
-    Update();
-    ITiglWingProfileAlgo* profileAlgo = GetProfileAlgo();
+    const ITiglWingProfileAlgo* profileAlgo = GetProfileAlgo();
 
     // rebuild closed wire
     BRepBuilderAPI_MakeWire closedWireBuilder;
@@ -168,17 +182,15 @@ TopoDS_Wire CCPACSWingProfile::GetWire(TiglShapeModifier mod)
 
 // Returns the leading edge point of the wing profile wire. The leading edge point
 // is already transformed by the wing profile transformation.
-gp_Pnt CCPACSWingProfile::GetLEPoint()
+gp_Pnt CCPACSWingProfile::GetLEPoint() const
 {
-    Update();
     return GetProfileAlgo()->GetLEPoint();
 }
 
 // Returns the trailing edge point of the wing profile wire. The trailing edge point
 // is already transformed by the wing profile transformation.
-gp_Pnt CCPACSWingProfile::GetTEPoint()
+gp_Pnt CCPACSWingProfile::GetTEPoint() const
 {
-    Update();
     return GetProfileAlgo()->GetTEPoint();
 }
 
@@ -186,7 +198,7 @@ gp_Pnt CCPACSWingProfile::GetTEPoint()
 // edge as function of parameter xsi, which ranges from 0.0 to 1.0.
 // For xsi = 0.0 chord point is equal to leading edge, for xsi = 1.0
 // chord point is equal to trailing edge.
-gp_Pnt CCPACSWingProfile::GetChordPoint(double xsi)
+gp_Pnt CCPACSWingProfile::GetChordPoint(double xsi) const
 {
     if (xsi < 0.0 || xsi > 1.0) {
         throw CTiglError("Parameter xsi not in the range 0.0 <= xsi <= 1.0 in CCPACSWingProfile::GetChordPoint", TIGL_ERROR);
@@ -203,7 +215,7 @@ gp_Pnt CCPACSWingProfile::GetChordPoint(double xsi)
 }
 
 // Returns the chord line as a wire
-TopoDS_Wire CCPACSWingProfile::GetChordLineWire() 
+TopoDS_Wire CCPACSWingProfile::GetChordLineWire() const
 {
     // convert 2d chordline to 3d
     Handle(Geom2d_TrimmedCurve) chordLine = GetChordLine();
@@ -220,7 +232,7 @@ TopoDS_Wire CCPACSWingProfile::GetChordLineWire()
 // parameter xsi, which ranges from 0.0 to 1.0.
 // For xsi = 0.0 point is equal to leading edge, for xsi = 1.0
 // point is equal to trailing edge.
-gp_Pnt CCPACSWingProfile::GetUpperPoint(double xsi)
+gp_Pnt CCPACSWingProfile::GetUpperPoint(double xsi) const
 {
     return GetPoint(xsi, true);
 }
@@ -229,7 +241,7 @@ gp_Pnt CCPACSWingProfile::GetUpperPoint(double xsi)
 // parameter xsi, which ranges from 0.0 to 1.0.
 // For xsi = 0.0 point is equal to leading edge, for xsi = 1.0
 // point is equal to trailing edge.
-gp_Pnt CCPACSWingProfile::GetLowerPoint(double xsi)
+gp_Pnt CCPACSWingProfile::GetLowerPoint(double xsi) const
 {
     return GetPoint(xsi, false);
 }
@@ -239,10 +251,8 @@ gp_Pnt CCPACSWingProfile::GetLowerPoint(double xsi)
 // For xsi = 0.0 point is equal to leading edge, for xsi = 1.0
 // point is equal to trailing edge. If fromUpper is true, a point
 // on the upper profile is returned, otherwise from the lower.
-gp_Pnt CCPACSWingProfile::GetPoint(double xsi, bool fromUpper)
+gp_Pnt CCPACSWingProfile::GetPoint(double xsi, bool fromUpper) const
 {
-    Update();
-
     if (xsi < 0.0 || xsi > 1.0) {
         throw CTiglError("Parameter xsi not in the range 0.0 <= xsi <= 1.0 in CCPACSWingProfile::GetPoint", TIGL_ERROR);
     }
@@ -326,9 +336,8 @@ gp_Pnt CCPACSWingProfile::GetPoint(double xsi, bool fromUpper)
 }
 
 // Helper function to determine the chord line between leading and trailing edge in the profile plane
-Handle(Geom2d_TrimmedCurve) CCPACSWingProfile::GetChordLine()
+Handle(Geom2d_TrimmedCurve) CCPACSWingProfile::GetChordLine() const
 {
-    Update();
     gp_Pnt le3d = GetLEPoint();
     gp_Pnt te3d = GetTEPoint();
 

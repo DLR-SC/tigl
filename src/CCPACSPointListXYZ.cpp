@@ -16,7 +16,8 @@
 
 #include "CCPACSPointListXYZ.h"
 
-#include <stdexcept>
+#include "CTiglLogging.h"
+#include "CTiglError.h"
 
 namespace tigl
 {

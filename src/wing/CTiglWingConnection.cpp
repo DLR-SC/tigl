@@ -34,17 +34,23 @@
 
 namespace tigl
 {
-CTiglWingConnection::CTiglWingConnection() {}
+CTiglWingConnection::CTiglWingConnection(CCPACSWingSegment* aSegment)
+    : segment(aSegment)
+    , m_resolved(*this, &CTiglWingConnection::resolve)
+{
+}
 
 // Constructor
 CTiglWingConnection::CTiglWingConnection(const std::string& elementUID, CCPACSWingSegment* aSegment)
-    : elementUID(elementUID), segment(aSegment) {}
+    : elementUID(elementUID), segment(aSegment)
+    , m_resolved(*this, &CTiglWingConnection::resolve)
+{
+}
 
 // Returns the section UID of this connection
 const std::string& CTiglWingConnection::GetSectionUID() const
 {
-    resolve();
-    return *m_resolved.sectionUidPtr;
+    return *m_resolved->sectionUidPtr;
 }
 
 // Returns the section element UID of this connection
@@ -56,23 +62,25 @@ const std::string& CTiglWingConnection::GetSectionElementUID() const
 // Returns the section index of this connection
 int CTiglWingConnection::GetSectionIndex() const
 {
-    resolve();
-    return m_resolved.sectionIndex;
+    return m_resolved->sectionIndex;
 }
 
 
 // Returns the section element index of this connection
 int CTiglWingConnection::GetSectionElementIndex() const
 {
-    resolve();
-    return m_resolved.elementIndex;
+    return m_resolved->elementIndex;
 }
 
 // Returns the wing profile referenced by this connection
-CCPACSWingProfile& CTiglWingConnection::GetProfile() const
+CCPACSWingProfile& CTiglWingConnection::GetProfile()
 {
-    resolve();
-    return segment->GetWing().GetConfiguration().GetWingProfile(*m_resolved.profileUIDPtr);
+    return segment->GetWing().GetConfiguration().GetWingProfile(*m_resolved->profileUIDPtr);
+}
+
+const CCPACSWingProfile& CTiglWingConnection::GetProfile() const
+{
+    return segment->GetWing().GetConfiguration().GetWingProfile(*m_resolved->profileUIDPtr);
 }
 
 // Returns the positioning transformation (segment transformation) for the referenced section
@@ -116,8 +124,13 @@ CTiglTransformation CTiglWingConnection::GetSectionElementTransformation() const
     return transformation;
 }
 
+void CTiglWingConnection::SetElementUID(const std::string & uid)
+{
+    elementUID = uid;
+    m_resolved.clear();
+}
 
-void CTiglWingConnection::resolve() const
+void CTiglWingConnection::resolve(ResolvedIndices& cache) const
 {
     CCPACSWing& wing = segment->GetWing();
     for (int i = 1; i <= wing.GetSectionCount(); i++) {
@@ -125,10 +138,10 @@ void CTiglWingConnection::resolve() const
         for (int j = 1; j <= section.GetSectionElementCount(); j++) {
             const CCPACSWingSectionElement& element = section.GetSectionElement(j);
             if (element.GetUID() == elementUID) {
-                m_resolved.sectionUidPtr = &section.GetUID();
-                m_resolved.sectionIndex = i;
-                m_resolved.elementIndex = j;
-                m_resolved.profileUIDPtr = &element.GetAirfoilUID();
+                cache.sectionUidPtr = &section.GetUID();
+                cache.sectionIndex = i;
+                cache.elementIndex = j;
+                cache.profileUIDPtr = &element.GetAirfoilUID();
                 return;
             }
         }

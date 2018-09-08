@@ -32,6 +32,7 @@
 #include "tigl_internal.h"
 #include "CCPACSWingProfile.h"
 #include "CTiglTransformation.h"
+#include "Cache.h"
 
 namespace tigl
 {
@@ -42,7 +43,7 @@ class CTiglWingConnection
 {
 public:
     // Constructor
-    TIGL_EXPORT CTiglWingConnection();
+    TIGL_EXPORT CTiglWingConnection(CCPACSWingSegment* aSegment);
     TIGL_EXPORT CTiglWingConnection(const std::string& elementUID, CCPACSWingSegment* aSegment);
 
     // Returns the section uid of this connection
@@ -58,7 +59,8 @@ public:
     TIGL_EXPORT int GetSectionElementIndex() const;
 
     // Returns the wing profile referenced by this connection
-    TIGL_EXPORT CCPACSWingProfile& GetProfile() const;
+    TIGL_EXPORT CCPACSWingProfile& GetProfile();
+    TIGL_EXPORT const CCPACSWingProfile& GetProfile() const;
 
     // Returns the positioning transformation (segment transformation) for the referenced section
     TIGL_EXPORT CTiglTransformation GetPositioningTransformation() const;
@@ -69,6 +71,8 @@ public:
     // Returns the section element matrix referenced by this connection
     TIGL_EXPORT CTiglTransformation GetSectionElementTransformation() const;
 
+    TIGL_EXPORT void SetElementUID(const std::string& uid);
+
 private:
     struct ResolvedIndices {
         int sectionIndex;
@@ -77,10 +81,10 @@ private:
         const std::string* profileUIDPtr;
     };
 
-    void resolve() const;
+    void resolve(ResolvedIndices& cache) const;
 
 private:
-    mutable ResolvedIndices m_resolved;
+    Cache<ResolvedIndices, CTiglWingConnection> m_resolved;
     std::string           elementUID;    /**< UID of the connection-section/-elements */
     CCPACSWingSegment*    segment;       /**< Parent segment */
 

@@ -60,44 +60,44 @@ public:
     TIGL_EXPORT void Invalidate();
 
     // Returns the wing profile wire, splitted at the leading edge
-    TIGL_EXPORT TopoDS_Wire GetSplitWire(TiglShapeModifier mod = UNMODIFIED_SHAPE);
+    TIGL_EXPORT TopoDS_Wire GetSplitWire(TiglShapeModifier mod = UNMODIFIED_SHAPE) const;
 
     // Returns the wing profile wire
-    TIGL_EXPORT TopoDS_Wire GetWire(TiglShapeModifier mod = UNMODIFIED_SHAPE);
+    TIGL_EXPORT TopoDS_Wire GetWire(TiglShapeModifier mod = UNMODIFIED_SHAPE) const;
 
     // Returns ths wing upper and lower profile wire
-    TIGL_EXPORT TopoDS_Edge GetUpperWire(TiglShapeModifier mod = UNMODIFIED_SHAPE);
-    TIGL_EXPORT TopoDS_Edge GetLowerWire(TiglShapeModifier mod = UNMODIFIED_SHAPE);
-    TIGL_EXPORT TopoDS_Edge GetTrailingEdge(TiglShapeModifier mod = UNMODIFIED_SHAPE);
+    TIGL_EXPORT TopoDS_Edge GetUpperWire(TiglShapeModifier mod = UNMODIFIED_SHAPE) const;
+    TIGL_EXPORT TopoDS_Edge GetLowerWire(TiglShapeModifier mod = UNMODIFIED_SHAPE) const;
+    TIGL_EXPORT TopoDS_Edge GetTrailingEdge(TiglShapeModifier mod = UNMODIFIED_SHAPE) const;
 
     // Returns the leading edge point of the wing profile wire. The leading edge point
     // is already transformed by the wing profile element transformation.
-    TIGL_EXPORT gp_Pnt GetLEPoint();
+    TIGL_EXPORT gp_Pnt GetLEPoint() const;
 
     // Returns the trailing edge point of the wing profile wire. The trailing edge point
     // is already transformed by the wing profile element transformation.
-    TIGL_EXPORT gp_Pnt GetTEPoint();
+    TIGL_EXPORT gp_Pnt GetTEPoint() const;
 
     // Returns the chord line as a wire
-    TIGL_EXPORT TopoDS_Wire GetChordLineWire();
+    TIGL_EXPORT TopoDS_Wire GetChordLineWire() const;
 
     // Returns a point on the chord line between leading and trailing
     // edge as function of parameter xsi, which ranges from 0.0 to 1.0.
     // For xsi = 0.0 chord point is equal to leading edge, for xsi = 1.0
     // chord point is equal to trailing edge.
-    TIGL_EXPORT gp_Pnt GetChordPoint(double xsi);
+    TIGL_EXPORT gp_Pnt GetChordPoint(double xsi) const;
 
     // Returns a point on the upper wing profile as function of
     // parameter xsi, which ranges from 0.0 to 1.0.
     // For xsi = 0.0 point is equal to leading edge, for xsi = 1.0
     // point is equal to trailing edge.
-    TIGL_EXPORT gp_Pnt GetUpperPoint(double xsi);
+    TIGL_EXPORT gp_Pnt GetUpperPoint(double xsi) const;
 
     // Returns a point on the lower wing profile as function of
     // parameter xsi, which ranges from 0.0 to 1.0.
     // For xsi = 0.0 point is equal to leading edge, for xsi = 1.0
     // point is equal to trailing edge.
-    TIGL_EXPORT gp_Pnt GetLowerPoint(double xsi);
+    TIGL_EXPORT gp_Pnt GetLowerPoint(double xsi) const;
 
     // get profile algorithm type
     TIGL_EXPORT ITiglWingProfileAlgo* GetProfileAlgo();
@@ -110,18 +110,15 @@ protected:
     // Cleanup routine
     void Cleanup();
 
-    // Update the internal state, i.g. recalculates wire and le, te points
-    void Update();
-
     // Returns an upper or lower point on the wing profile in
     // dependence of parameter xsi, which ranges from 0.0 to 1.0.
     // For xsi = 0.0 point is equal to leading edge, for xsi = 1.0
     // point is equal to trailing edge. If fromUpper is true, a point
     // on the upper profile is returned, otherwise from the lower.
-    gp_Pnt GetPoint(double xsi, bool fromUpper);
+    gp_Pnt GetPoint(double xsi, bool fromUpper) const;
 
     // Helper function to determine the chord line between leading and trailing edge in the profile plane
-    Handle(Geom2d_TrimmedCurve) GetChordLine();
+    Handle(Geom2d_TrimmedCurve) GetChordLine() const;
 
 private:
     // Copy constructor
@@ -132,7 +129,6 @@ private:
 
 private:
     bool                                  isRotorProfile; /**< Indicates if this profile is a rotor profile */
-    bool                                  invalidated;    /**< Flag if element is invalid */
     unique_ptr<CTiglWingProfilePointList> pointListAlgo;  // is created in case the wing profile alg is a point list, otherwise cst2d constructed in the base class is used
 
 }; // class CCPACSWingProfile
