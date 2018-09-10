@@ -21,6 +21,8 @@ requirements:
     - patch             # [win]
     - python
     - doxygen =1.8.10
+
+  host:
     - curl-static ==7.50.3
     - libxml2-static ==2.9.3
     - libxslt-static ==1.1.29

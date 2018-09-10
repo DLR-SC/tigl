@@ -7,18 +7,16 @@ package:
 source:
   fn: freetype-{{ version }}.tar.gz
   url: http://download.savannah.gnu.org/releases/freetype/freetype-{{ version }}.tar.gz
+  md5: 1d733ea6c1b7b3df38169fbdbec47d2b
 
 build:
-  number: 0
-  features:
-    - vc9              # [win and py27]
-    - vc10             # [win and py34]
-    - vc14             # [win and py35]
+  number: 1
 
 requirements:
   build:
+    - {{ compiler('c') }}
     - cmake
-    - ninja ==1.7.1
+    - ninja
     - python
 
 
