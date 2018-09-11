@@ -45,29 +45,18 @@ namespace tigl
 {
 // Constructor
 CCPACSWingProfileCST::CCPACSWingProfileCST()
-{
-    trailingEdge.Nullify();
-}
-
-// Destructor
-CCPACSWingProfileCST::~CCPACSWingProfileCST()
+    : wireCache(*this, &CCPACSWingProfileCST::BuildWires)
 {
 }
 
-// Cleanup routine
-void CCPACSWingProfileCST::Cleanup()
+void CCPACSWingProfileCST::Invalidate()
 {
-    trailingEdge.Nullify();
-}
-
-void CCPACSWingProfileCST::Update()
-{
-    BuildWires();
+    wireCache.clear();
 }
 
 // Builds the wing profile wire. The returned wire is already transformed by the
 // wing profile element transformation.
-void CCPACSWingProfileCST::BuildWires()
+void CCPACSWingProfileCST::BuildWires(WireCache& cache) const
 {
     gp_Trsf yzSwitch;
     yzSwitch.SetMirror(gp_Ax2(gp_Pnt(0.,0.,0.), gp_Dir(0.,-1.,1.)));
@@ -76,7 +65,7 @@ void CCPACSWingProfileCST::BuildWires()
     CCSTCurveBuilder upperBuilder(m_upperN1, m_upperN2, m_upperB.AsVector());
     Handle(Geom_BSplineCurve) upperCurve = upperBuilder.Curve();
     upperCurve->Transform(yzSwitch);
-    upperWire = BRepBuilderAPI_MakeEdge(upperCurve);
+    cache.upperWire = BRepBuilderAPI_MakeEdge(upperCurve);
     
     // Build lower curve
     std::vector<double> binv = m_lowerB.AsVector();
@@ -88,17 +77,17 @@ void CCPACSWingProfileCST::BuildWires()
     Handle(Geom_BSplineCurve) lowerCurve = lowerBuilder.Curve();
     lowerCurve->Transform(yzSwitch);
     lowerCurve->Reverse();
-    lowerWire = BRepBuilderAPI_MakeEdge(lowerCurve);
+    cache.lowerWire = BRepBuilderAPI_MakeEdge(lowerCurve);
     
-    BRepBuilderAPI_MakeWire upperLowerWireMaker(lowerWire, upperWire);
+    BRepBuilderAPI_MakeWire upperLowerWireMaker(cache.lowerWire, cache.upperWire);
     TopoDS_Wire upperLowerWire = upperLowerWireMaker.Wire();
     
     // conatenate wire
     Handle(Geom_Curve) upperLowerCurve = CWireToCurve(upperLowerWire).curve();
-    upperLowerEdge = BRepBuilderAPI_MakeEdge(upperLowerCurve);
+    cache.upperLowerEdge = BRepBuilderAPI_MakeEdge(upperLowerCurve);
     
-    tePoint = gp_Pnt(1,0,0);
-    lePoint = gp_Pnt(0,0,0);
+    cache.tePoint = gp_Pnt(1,0,0);
+    cache.lePoint = gp_Pnt(0,0,0);
 }
 
 // Returns sample points
@@ -117,8 +106,7 @@ const TopoDS_Edge& CCPACSWingProfileCST::GetUpperWire(TiglShapeModifier mod) con
 {
     switch (mod) {
     case UNMODIFIED_SHAPE:
-        return upperWire;
-        break;
+        return wireCache->upperWire;
     default:
         throw CTiglError("GetUpperWire with profile modifications not implemented for CCPACSWingProfileCST yet!");
     }
@@ -129,8 +117,7 @@ const TopoDS_Edge& CCPACSWingProfileCST::GetLowerWire(TiglShapeModifier mod) con
 {
     switch (mod) {
     case UNMODIFIED_SHAPE:
-        return lowerWire;
-        break;
+        return wireCache->lowerWire;
     default:
         throw CTiglError("GetLowerWire with profile modifications not implemented for CCPACSWingProfileCST yet!");
     }
@@ -141,8 +128,7 @@ const TopoDS_Edge& CCPACSWingProfileCST::GetUpperLowerWire(TiglShapeModifier mod
 {
     switch (mod) {
     case UNMODIFIED_SHAPE:
-        return upperLowerEdge;
-        break;
+        return wireCache->upperLowerEdge;
     default:
         throw CTiglError("GetUpperLowerWire with profile modifications not implemented for CCPACSWingProfileCST yet!");
     }
@@ -153,8 +139,7 @@ const TopoDS_Edge& CCPACSWingProfileCST::GetTrailingEdge(TiglShapeModifier mod) 
 {
     switch (mod) {
     case UNMODIFIED_SHAPE:
-        return trailingEdge;
-        break;
+        return wireCache->trailingEdge;
     default:
         throw CTiglError("GetTrailingEdge with profile modifications not implemented for CCPACSWingProfileCST yet!");
     }
@@ -163,13 +148,13 @@ const TopoDS_Edge& CCPACSWingProfileCST::GetTrailingEdge(TiglShapeModifier mod) 
 // get leading edge point();
 const gp_Pnt & CCPACSWingProfileCST::GetLEPoint() const
 {
-    return lePoint;
+    return wireCache->lePoint;
 }
         
 // get trailing edge point();
 const gp_Pnt & CCPACSWingProfileCST::GetTEPoint() const
 {
-    return tePoint;
+    return wireCache->tePoint;
 }
 
 } // end namespace tigl

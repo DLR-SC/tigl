@@ -26,6 +26,7 @@
 #include "generated/CPACSCst2D.h"
 #include "tigl_internal.h"
 #include "ITiglWingProfileAlgo.h"
+#include "Cache.h"
 
 #include <vector>
 #include <TopoDS_Edge.hxx>
@@ -43,14 +44,8 @@ public:
     // Constructor
     TIGL_EXPORT CCPACSWingProfileCST();
 
-    // Destructor
-    TIGL_EXPORT ~CCPACSWingProfileCST() OVERRIDE;
-
-    // Cleanup routine
-    TIGL_EXPORT void Cleanup();
-
     // Update of wire points ...
-    TIGL_EXPORT void Update() OVERRIDE;
+    TIGL_EXPORT void Invalidate() OVERRIDE;
 
     // Returns the profile points as read from TIXI.
     TIGL_EXPORT std::vector<CTiglPoint>& GetSamplePoints() OVERRIDE; // TODO: why do we need those anyway, they just return an empty vector?
@@ -77,17 +72,21 @@ public:
     // CST profiles have always sharp trailing edges
     TIGL_EXPORT bool HasBluntTE() const OVERRIDE { return false;}
 
-protected:
+private:
+    struct WireCache {
+        TopoDS_Edge               upperWire;          /**< wire of the upper wing profile */
+        TopoDS_Edge               lowerWire;          /**< wire of the lower wing profile */
+        TopoDS_Edge               upperLowerEdge;     /**< edge consisting of upper and lower wing profile */
+        TopoDS_Edge               trailingEdge;       /**< edge of the trailing edge */
+        gp_Pnt                    lePoint;            /**< Leading edge point */
+        gp_Pnt                    tePoint;            /**< Trailing edge point */
+    };
+
     // Builds the wing profile wires.
-    void BuildWires();
+    void BuildWires(WireCache& cache) const;
 
 private:
-    TopoDS_Edge               upperWire;          /**< wire of the upper wing profile */
-    TopoDS_Edge               lowerWire;          /**< wire of the lower wing profile */
-    TopoDS_Edge               upperLowerEdge;     /**< edge consisting of upper and lower wing profile */
-    TopoDS_Edge               trailingEdge;       /**< edge of the trailing edge */
-    gp_Pnt                    lePoint;            /**< Leading edge point */
-    gp_Pnt                    tePoint;            /**< Trailing edge point */
+    Cache<WireCache, CCPACSWingProfileCST> wireCache;
 };
 
 } // end namespace tigl

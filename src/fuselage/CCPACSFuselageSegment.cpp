@@ -38,6 +38,7 @@
 #include "CNamedShape.h"
 #include "CTiglMakeLoft.h"
 #include "CTiglPatchShell.h"
+#include "Debugging.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "TopExp_Explorer.hxx"
@@ -84,6 +85,7 @@
 #include "BRepLib_FindSurface.hxx"
 #include <TopExp.hxx>
 #include "TopTools_IndexedMapOfShape.hxx"
+#include "BRepBuilderAPI_MakeVertex.hxx"
 
 namespace
 {
@@ -672,25 +674,20 @@ gp_Pnt CCPACSFuselageSegment::GetPointOnXPlane(double eta, double xpos, int poin
 // Gets the wire on the loft at a given eta
 TopoDS_Shape CCPACSFuselageSegment::getWireOnLoft(double eta)
 {
-    const TopoDS_Shape& loft = GetLoft()->Shape();
 
-    TopExp_Explorer faceExplorer(loft, TopAbs_FACE);
+    TopoDS_Shape s = GetFacesByName(GetLoft(), GetUID());
 
-    if (!faceExplorer.More()) {
-        throw CTiglError("Internal error: invalid topology of fuselage segment shape.", TIGL_ERROR);
-    }
+    BRepBuilderAPI_MakeWire wireMaker;
+    for(TopExp_Explorer faceExplorer(s, TopAbs_FACE); faceExplorer.More(); faceExplorer.Next()) {
 
-    const TopoDS_Face& face = TopoDS::Face(faceExplorer.Current());
-    Handle(Geom_Surface) surf = BRep_Tool::Surface(face);
+        const TopoDS_Face& face = TopoDS::Face(faceExplorer.Current());
+        Handle(Geom_Surface) surf = BRep_Tool::Surface(face);
 
-    // we need to extract a iso-v curve
-    Standard_Real umin = 0, vmin = 0, umax = 1., vmax = 1.;
-    surf->Bounds(umin, umax, vmin, vmax);
-    Handle(Geom_Curve) curve = surf->VIso(vmin * (1. - eta) + vmax * eta);
-
-    BRepBuilderAPI_MakeWire wireMaker(BRepBuilderAPI_MakeEdge(curve).Edge());
-    if (!curve->IsClosed()) {
-        wireMaker.Add(BRepBuilderAPI_MakeEdge(curve->Value(curve->LastParameter()), curve->Value(curve->FirstParameter())));
+        // we need to extract a iso-v curve
+        Standard_Real umin = 0, vmin = 0, umax = 1., vmax = 1.;
+        surf->Bounds(umin, umax, vmin, vmax);
+        Handle(Geom_Curve) curve = surf->VIso(vmin * (1. - eta) + vmax * eta);
+        wireMaker.Add(BRepBuilderAPI_MakeEdge(curve).Edge());
     }
 
     return wireMaker.Wire();
@@ -805,7 +802,9 @@ gp_Pnt CCPACSFuselageSegment::GetPointAngle(double eta, double alpha, double y_c
     BRepBuilderAPI_MakeFace FaceMaker(rectangleWire);
 
     gp_Pnt result;
-    GetIntersectionPoint( FaceMaker.Face(), TopoDS::Wire(intersectionWire), result);
+    if (!GetIntersectionPoint( FaceMaker.Face(), TopoDS::Wire(intersectionWire), result)) {
+        throw CTiglError("Cannot compute fuselage point at angle");
+    }
     return result;
 }
 

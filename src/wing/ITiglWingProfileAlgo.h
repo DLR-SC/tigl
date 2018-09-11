@@ -36,7 +36,7 @@ namespace tigl
 class ITiglWingProfileAlgo
 {
 public:
-    virtual void Update()   = 0;
+    virtual void Invalidate()   = 0;
 
     // Returns points on profile.
 
