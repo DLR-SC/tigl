@@ -797,7 +797,7 @@ void TIGLViewerDocument::drawWingGuideCurves(tigl::CCPACSWing& wing)
 {
     START_COMMAND();
 
-    TopoDS_Compound& guideCurves = wing.GetGuideCurveWires();
+    TopoDS_Compound guideCurves = wing.GetGuideCurveWires();
     TopoDS_Iterator anIter(guideCurves);
     if (!anIter.More()) {
         displayError("There are no guide curves defined for this wing.", "Cannot compute guide curves.");
