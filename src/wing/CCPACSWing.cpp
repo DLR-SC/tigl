@@ -798,10 +798,6 @@ void CCPACSWing::BuildGuideCurveWires(TopoDS_Compound& cache) const
                 }
                 roots.insert(std::make_pair(fromRef, &curve));
             }
-            //else {
-            //    const CCPACSGuideCurve& fromCurve = m_uidMgr->ResolveObject<CCPACSGuideCurve>(*curve.GetFromGuideCurveUID_choice1());
-            //    fromCurve.ConnectToCurve(&curve);
-            //}
         }
     }
 

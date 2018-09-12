@@ -59,7 +59,6 @@ CCPACSGuideCurve::FromDefinition CCPACSGuideCurve::GetFromDefinition() const {
 // Cleanup routine
 void CCPACSGuideCurve::Cleanup(void)
 {
-    //nextGuideSegment = NULL;
     guideCurveTopo.clear();
     m_builder = NULL;
 }
@@ -78,26 +77,15 @@ std::vector<gp_Pnt> CCPACSGuideCurve::GetCurvePoints() const
     return guideCurvePnts;
 }
 
-//void CCPACSGuideCurve::ConnectToCurve(CCPACSGuideCurve *guide)
-//{
-//    if (!guide) {
-//        throw CTiglError("Null pointer guide curve in CCPACSGuideCurve::ConnectToCurve", TIGL_ERROR);
-//    }
-//    
-//    if (guide->GetFromGuideCurveUID_choice1() != m_uID) {
-//        throw CTiglError("Guide curves cannot be connected. Mismatching uids.", TIGL_ERROR);
-//    }
-//    
-//    nextGuideSegment = guide;
-//}
-
 CCPACSGuideCurve* CCPACSGuideCurve::GetConnectedCurve() const
 {
-    auto curves = m_uidMgr->ResolveObjects<CCPACSGuideCurve>();
-    for (auto& c : curves)
-        if (c->GetFromGuideCurveUID_choice1() == m_uID)
-            return c;
-    return nullptr;
+    std::vector<CCPACSGuideCurve*> curves = m_uidMgr->ResolveObjects<CCPACSGuideCurve>();
+    for (std::size_t i = 0; i < curves.size(); i++) {
+        if (curves[i]->GetFromGuideCurveUID_choice1() == m_uID) {
+            return curves[i];
+        }
+    }
+    return NULL;
 }
 
 void CCPACSGuideCurve::SetGuideCurveBuilder(IGuideCurveBuilder& b)

@@ -69,10 +69,6 @@ public:
     TIGL_EXPORT std::vector<gp_Pnt> GetCurvePoints() const;
     TIGL_EXPORT TopoDS_Edge GetCurve() const;
 
-    // Connects the current guide curve segment with another segment guide
-    // This implies, that guide.fromGuideCurveUID == this.uid
-    //TIGL_EXPORT void ConnectToCurve(CCPACSGuideCurve* guide);
-
     TIGL_EXPORT CCPACSGuideCurve* GetConnectedCurve() const;
 
     TIGL_EXPORT void SetGuideCurveBuilder(IGuideCurveBuilder& b);
@@ -90,7 +86,6 @@ private:
     void BuildCurve(TopoDS_Edge& cache) const;
 
     Cache<TopoDS_Edge, CCPACSGuideCurve> guideCurveTopo; /**< Actual topological entity of the curve */
-    //CCPACSGuideCurve* nextGuideSegment;   /**< Pointer to a guide curve segment that is connected to this segment */
 
     IGuideCurveBuilder* m_builder;
 

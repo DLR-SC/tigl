@@ -362,8 +362,13 @@ gp_Pnt CCPACSFuselage::GetMinumumDistanceToGround(gp_Ax1 RAxis, double angle)
 // Get the guide curve with a given UID
 CCPACSGuideCurve& CCPACSFuselage::GetGuideCurveSegment(std::string uid)
 {
-    for (int i=1; i <= m_segments.GetSegmentCount(); i++) {
-        CCPACSFuselageSegment& segment = m_segments.GetSegment(i);
+    return const_cast<CCPACSGuideCurve&>(static_cast<const CCPACSFuselage&>(*this).GetGuideCurveSegment(uid));
+}
+
+const CCPACSGuideCurve& CCPACSFuselage::GetGuideCurveSegment(std::string uid) const
+{
+    for (int i = 1; i <= m_segments.GetSegmentCount(); i++) {
+        const CCPACSFuselageSegment& segment = m_segments.GetSegment(i);
 
         if (!segment.GetGuideCurves()) {
             continue;
@@ -374,11 +379,6 @@ CCPACSGuideCurve& CCPACSFuselage::GetGuideCurveSegment(std::string uid)
         }
     }
     throw tigl::CTiglError("Guide Curve with UID " + uid + " does not exists", TIGL_ERROR);
-}
-
-const CCPACSGuideCurve& CCPACSFuselage::GetGuideCurveSegment(std::string uid) const
-{
-    return const_cast<CCPACSFuselage&>(*this).GetGuideCurveSegment(uid);
 }
 
 const TopoDS_Compound &CCPACSFuselage::GetGuideCurveWires() const
@@ -558,10 +558,6 @@ void CCPACSFuselage::BuildGuideCurves(TopoDS_Compound& cache) const
                 //the guide curve at relCirc=1 should be inserted at relCirc=0
                 roots.insert(std::make_pair(relCirc, &curve));
             }
-            //else {
-            //    const CCPACSGuideCurve& fromCurve = GetGuideCurveSegment(*curve.GetFromGuideCurveUID_choice1());
-            //    fromCurve.ConnectToCurve(&curve);
-            //}
         }
     }
 
