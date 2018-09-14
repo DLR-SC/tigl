@@ -6,7 +6,7 @@ package:
 
 source:
   fn: libxslt-{{ version }}.tar.gz
-  url: ftp://xmlsoft.org/libxslt/libxslt-{{ version }}.tar.gz
+  url: http://xmlsoft.org/sources/libxslt-{{ version }}.tar.gz
 
 
 build:
