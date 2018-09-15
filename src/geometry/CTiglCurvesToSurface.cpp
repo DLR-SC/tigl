@@ -29,6 +29,7 @@
 #include <TColgp_HArray1OfPnt.hxx>
 #include <TColgp_HArray2OfPnt.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
+#include <Precision.hxx>
 
 #include "CTiglPointsToBSplineInterpolation.h"
 
@@ -104,7 +105,7 @@ TIGL_EXPORT void CTiglCurvesToSurface::CalculateParameters(std::vector<Handle(Ge
 
     // create a common knot vector for all splines
     if ( _compatibleSplines.size() == 0 ) {
-         _compatibleSplines = CTiglBSplineAlgorithms::createCommonKnotsVectorCurve(splines_vector, 1e-10);
+         _compatibleSplines = CTiglBSplineAlgorithms::createCommonKnotsVectorCurve(splines_vector, 1e-14);
     }
 
     // create a matrix of control points of all B-splines (splines do have the same amount of control points now)
