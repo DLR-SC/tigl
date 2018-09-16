@@ -47,7 +47,7 @@ class CTiglCurveConnector
         {
         }
         
-        std::vector<CCPACSGuideCurve*> localGuides;
+        std::vector<const CCPACSGuideCurve*> localGuides;
 
         std::vector<double> sectionParameters;
         dependencyType dependency;
@@ -70,7 +70,7 @@ public:
      * The algorithm interpolates the guide curves for all segments,
      * respecting prescribed tangents and continuity conditions
      */
-    TIGL_EXPORT CTiglCurveConnector(std::map<double, CCPACSGuideCurve*>& roots,
+    TIGL_EXPORT CTiglCurveConnector(std::map<double, const CCPACSGuideCurve*>& roots,
                                     const std::vector<double>& params);
 
     /**
@@ -84,7 +84,7 @@ private:
      * @brief Verifies that all connected guide curves intersect the same
      * number of segments
      */
-    void VerifyNumberOfSegments (std::map<double, CCPACSGuideCurve*>& roots, int shouldBeThisMany = -1);
+    void VerifyNumberOfSegments (std::map<double, const CCPACSGuideCurve*>& roots, int shouldBeThisMany = -1);
 
     /**
      * @brief Creates the list of partial curves for every connected guide
@@ -96,7 +96,7 @@ private:
      *
      */
     void CreatePartialCurves (guideCurveConnected& connectedCurve,
-                              CCPACSGuideCurve* current);
+                              const CCPACSGuideCurve* current);
 
     /**
      * @brief Creates the interpolation order for the partial curves,

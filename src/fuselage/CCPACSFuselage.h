@@ -34,6 +34,7 @@
 #include "CTiglRelativelyPositionedComponent.h"
 #include "CCPACSGuideCurve.h"
 #include "CTiglFuselageConnection.h"
+#include "Cache.h"
 
 #include "TopoDS_Shape.hxx"
 #include "TopoDS_Compound.hxx"
@@ -109,12 +110,13 @@ public:
 
     // Get the guide curve segment(partial guide curve) with a given UID
     TIGL_EXPORT CCPACSGuideCurve& GetGuideCurveSegment(std::string uid);
+    TIGL_EXPORT const CCPACSGuideCurve& GetGuideCurveSegment(std::string uid) const;
 
     // Returns all guide curve wires as a compound
-    TIGL_EXPORT TopoDS_Compound& GetGuideCurveWires();
+    TIGL_EXPORT const TopoDS_Compound& GetGuideCurveWires() const;
 
     // Returns all guide curve points
-    TIGL_EXPORT std::vector<gp_Pnt> GetGuideCurvePoints();
+    TIGL_EXPORT std::vector<gp_Pnt> GetGuideCurvePoints() const;
 
     // create the line intersecting the fuselage for the stringer/frame profile
     TIGL_EXPORT gp_Lin Intersection(gp_Pnt pRef, double angleRef);
@@ -125,7 +127,7 @@ public:
     TIGL_EXPORT TopoDS_Wire projectParallel(TopoDS_Shape wireOrEdge, gp_Dir direction);
 
 protected:
-    void BuildGuideCurves();
+    void BuildGuideCurves(TopoDS_Compound& cache) const;
 
     void ConnectGuideCurveSegments();
 
@@ -146,7 +148,7 @@ private:
     FusedElementsContainerType fusedElements;        /**< Stores already fused segments */
 
     TopoDS_Compound            aCompound;
-    TopoDS_Compound            guideCurves;
+    Cache<TopoDS_Compound, CCPACSFuselage> guideCurves;
     BRep_Builder               aBuilder;
     double                     myVolume;             /**< Volume of this fuselage              */
 

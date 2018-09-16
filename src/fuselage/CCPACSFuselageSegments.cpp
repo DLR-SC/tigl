@@ -45,6 +45,11 @@ void CCPACSFuselageSegments::Invalidate()
 // Gets a segment by index. 
 CCPACSFuselageSegment & CCPACSFuselageSegments::GetSegment(int index)
 {
+    return const_cast<CCPACSFuselageSegment&>(static_cast<const CCPACSFuselageSegments&>(*this).GetSegment(index));
+}
+
+const CCPACSFuselageSegment & CCPACSFuselageSegments::GetSegment(int index) const
+{
     index--;
     if (index < 0 || index >= GetSegmentCount()) {
         throw CTiglError("Invalid index value in CCPACSFuselageSegments::GetSegment", TIGL_INDEX_ERROR);

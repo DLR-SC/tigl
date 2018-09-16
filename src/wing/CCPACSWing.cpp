@@ -92,8 +92,9 @@ CCPACSWing::CCPACSWing(CCPACSWings* parent, CTiglUIDManager* uidMgr)
     , CTiglRelativelyPositionedComponent(&m_parentUID, &m_transformation, &m_symmetry)
     , rebuildFusedSegments(true)
     , rebuildFusedSegWEdge(true)
-    , rebuildShells(true) {
-
+    , rebuildShells(true)
+    , guideCurves(*this, &CCPACSWing::BuildGuideCurveWires)
+{
     if (parent->IsParent<CCPACSAircraftModel>())
         configuration = &parent->GetParent<CCPACSAircraftModel>()->GetConfiguration();
     else if (parent->IsParent<CCPACSRotorcraftModel>())
@@ -109,7 +110,9 @@ CCPACSWing::CCPACSWing(CCPACSRotorBlades* parent, CTiglUIDManager* uidMgr)
     , configuration(&parent->GetConfiguration())
     , rebuildFusedSegments(true)
     , rebuildFusedSegWEdge(true)
-    , rebuildShells(true) {
+    , rebuildShells(true)
+    , guideCurves(*this, &CCPACSWing::BuildGuideCurveWires)
+{
     Cleanup();
 }
 
@@ -721,10 +724,9 @@ CCPACSGuideCurve& CCPACSWing::GetGuideCurveSegment(std::string uid)
     throw tigl::CTiglError("Guide Curve with UID " + uid + " does not exists", TIGL_ERROR);
 }
 
-TopoDS_Compound& CCPACSWing::GetGuideCurveWires()
+TopoDS_Compound CCPACSWing::GetGuideCurveWires() const
 {
-    BuildGuideCurveWires();
-    return guideCurves;
+    return *guideCurves;
 }
 
 std::vector<gp_Pnt> CCPACSWing::GetGuideCurvePoints()
@@ -750,35 +752,31 @@ std::vector<gp_Pnt> CCPACSWing::GetGuideCurvePoints()
 }
 
 
-void CCPACSWing::BuildGuideCurveWires()
+void CCPACSWing::BuildGuideCurveWires(TopoDS_Compound& cache) const
 {
-    if (!guideCurves.IsNull()) {
-        return;
-    }
-    
     // check, if the wing has a blunt trailing edge
     bool hasBluntTE = true;
     if (GetSectionCount() > 0) {
-        CCPACSWingSegment& segment = m_segments.GetSegment(1);
+        const CCPACSWingSegment& segment = m_segments.GetSegment(1);
         hasBluntTE = !segment.GetInnerConnection().GetProfile().GetTrailingEdge().IsNull();
     }
     
     // the guide curves will be sorted according to the inner
     // from relativeCircumference
-    std::map<double, CCPACSGuideCurve*> roots;
+    std::map<double, const CCPACSGuideCurve*> roots;
 
     // get chord centers on each section for the centripetal parametrization
     std::vector<gp_Pnt> sectionCenters(GetSegmentCount()+1);
 
     // get inner chord face center of first segment
-    CCPACSWingSegment& innerSegment = m_segments.GetSegment(1);
+    const CCPACSWingSegment& innerSegment = m_segments.GetSegment(1);
     sectionCenters[0] = innerSegment.GetInnerProfilePoint(0.);  // inner front
     gp_Pnt back       = innerSegment.GetInnerProfilePoint(1.);  // inner back
     back.BaryCenter(0.5, sectionCenters[0], 0.5);               // inner chord center
     
     // connect the belonging guide curve segments
     for (int isegment = 1; isegment <= GetSegmentCount(); ++isegment) {
-        CCPACSWingSegment& segment = m_segments.GetSegment(isegment);
+        const CCPACSWingSegment& segment = m_segments.GetSegment(isegment);
 
         if (!segment.GetGuideCurves()) {
             continue;
@@ -789,9 +787,9 @@ void CCPACSWing::BuildGuideCurveWires()
         back                     = segment.GetOuterProfilePoint(1.);   // outer back
         back.BaryCenter(0.5, sectionCenters[isegment], 0.5);           // outer chord center
 
-        CCPACSGuideCurves& segmentCurves = *segment.GetGuideCurves();
+        const CCPACSGuideCurves& segmentCurves = *segment.GetGuideCurves();
         for (int iguide = 1; iguide <=  segmentCurves.GetGuideCurveCount(); ++iguide) {
-            CCPACSGuideCurve& curve = segmentCurves.GetGuideCurve(iguide);
+            const CCPACSGuideCurve& curve = segmentCurves.GetGuideCurve(iguide);
             if (!curve.GetFromGuideCurveUID_choice1()) {
                 // this is a root curve
                 double fromRef = *curve.GetFromRelativeCircumference_choice2();
@@ -799,10 +797,6 @@ void CCPACSWing::BuildGuideCurveWires()
                     fromRef = -1.;
                 }
                 roots.insert(std::make_pair(fromRef, &curve));
-            }
-            else {
-                CCPACSGuideCurve& fromCurve = GetGuideCurveSegment(*curve.GetFromGuideCurveUID_choice1());
-                fromCurve.ConnectToCurve(&curve);
             }
         }
     }
@@ -812,7 +806,7 @@ void CCPACSWing::BuildGuideCurveWires()
 
     // connect guide curve segments to a spline with given continuity conditions and tangents
     CTiglCurveConnector connector(roots, sectionParams);
-    guideCurves = connector.GetConnectedGuideCurves();
+    cache = connector.GetConnectedGuideCurves();
 }
 
 TopoDS_Shape transformWingProfileGeometry(const CTiglTransformation& wingTransform, const CTiglWingConnection& connection, const TopoDS_Shape& wire)

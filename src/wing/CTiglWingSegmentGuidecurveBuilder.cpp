@@ -39,7 +39,7 @@ CTiglWingSegmentGuidecurveBuilder::~CTiglWingSegmentGuidecurveBuilder()
 {
 }
 
-std::vector<gp_Pnt> CTiglWingSegmentGuidecurveBuilder::BuildGuideCurvePnts(CCPACSGuideCurve * guideCurve)
+std::vector<gp_Pnt> CTiglWingSegmentGuidecurveBuilder::BuildGuideCurvePnts(const CCPACSGuideCurve * guideCurve) const
 {
     assert(guideCurve);
 

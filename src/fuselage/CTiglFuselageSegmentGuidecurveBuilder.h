@@ -38,7 +38,7 @@ public:
 
     // IGuideCurveBuilder interface
 public:
-    std::vector<gp_Pnt> BuildGuideCurvePnts(CCPACSGuideCurve *) OVERRIDE;
+    std::vector<gp_Pnt> BuildGuideCurvePnts(const CCPACSGuideCurve *) const OVERRIDE;
 
 private:
     class CCPACSFuselageSegment& m_segment;
