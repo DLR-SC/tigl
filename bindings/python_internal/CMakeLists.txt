@@ -2,6 +2,11 @@ option(TIGL_BINDINGS_PYTHON_INTERNAL "Builds the python interface to the interna
 mark_as_advanced(TIGL_BINDINGS_PYTHON_INTERNAL)
 
 if (TIGL_BINDINGS_PYTHON_INTERNAL)
+
+    if (MSVC)
+      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /bigobj")
+    endif()
+
     include(tiglmacros)
 
     find_package(PythonInterp)
