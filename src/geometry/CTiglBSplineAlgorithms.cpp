@@ -47,6 +47,7 @@
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <Precision.hxx>
+#include <Geom2dAPI_ProjectPointOnCurve.hxx>
 
 #include <cmath>
 #include <stdexcept>
@@ -645,6 +646,13 @@ Handle(Geom_BSplineCurve) CTiglBSplineAlgorithms::reparametrizeBSplineContinuous
 #ifdef MODEL_KINKS
     // remove kinks from breaks
     std::vector<double> kinks = CTiglBSplineAlgorithms::getKinkParameters(spline);
+    // convert kink parameters into reparamtetrized parameter using the
+    // inverse reparametrization function
+    for (size_t ikink = 0; ikink < kinks.size(); ++ikink) {
+        kinks[ikink] = Geom2dAPI_ProjectPointOnCurve(gp_Pnt2d(kinks[ikink], 0.), reparametrizing_spline)
+                           .LowerDistanceParameter();
+    }
+
     for (size_t ikink = 0; ikink < kinks.size(); ++ikink) {
         double kink = kinks[ikink];
         std::vector<double>::iterator it = std::find_if(breaks.begin(), breaks.end(), IsInsideTolerance(kink, par_tol));
