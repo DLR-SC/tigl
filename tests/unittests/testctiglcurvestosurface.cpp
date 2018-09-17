@@ -125,7 +125,8 @@ TEST(TiglBSplineAlgorithms, curvesToSurfaceContinous)
     BRepTools::Write(BRepBuilderAPI_MakeFace(surface, Precision::Confusion()).Face(), "TestData/curvesToSurfaceContinous.brep");
 }
 
-TEST(TiglBSplineAlgorithms, curvesToSurfaceBug) {
+TEST(TiglBSplineAlgorithms, curvesToSurfaceBug)
+{
 
     std::vector<Handle(Geom_Curve)> profileCurves;
     double xmin=1e6;

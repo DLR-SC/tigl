@@ -138,7 +138,7 @@ TIGL_EXPORT void CTiglCurvesToSurface::Perform()
 
     // create a common knot vector for all splines
     if ( _compatibleSplines.size() == 0 ) {
-        _compatibleSplines = CTiglBSplineAlgorithms::createCommonKnotsVectorCurve(_inputCurves, 1e-10);
+        _compatibleSplines = CTiglBSplineAlgorithms::createCommonKnotsVectorCurve(_inputCurves, 1e-14);
     }
 
     const Handle(Geom_BSplineCurve)& firstCurve = _compatibleSplines[0];

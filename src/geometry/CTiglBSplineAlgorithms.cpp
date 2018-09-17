@@ -286,6 +286,9 @@ namespace
                 spline.insertKnot(resultKnots[knotIdx], resultMults[knotIdx], par_tolerance);
             }
         }
+
+
+
     } // makeGeometryCompatibleImpl
     
     template <class OccMatrix, class OccVector, class OccHandleVector>
