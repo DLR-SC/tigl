@@ -47,7 +47,7 @@ void showHelp(QString appName)
 
 }
 
-TIGLViewerApp::TIGLViewerApp(int argc, char* argv[])
+TIGLViewerApp::TIGLViewerApp(int& argc, char* argv[])
     : QApplication(argc, argv)
 {
     for (int iarg = 0; iarg < argc; ++iarg) {
