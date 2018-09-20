@@ -44,6 +44,7 @@ file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/test_logging.py DESTINATION ${CMAKE_CURREN
 #create directory to avoid crash in unit tests
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/TestData/export)
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/TestData/analysis)
+file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/TestData/bugs/505)
 
 configure_file (
   "${CMAKE_CURRENT_SOURCE_DIR}/runtests.sh.in"

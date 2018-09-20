@@ -557,6 +557,46 @@ TEST(TiglBSplineAlgorithms, testReparametrizeBSplineContinuouslyApprox)
     }
 }
 
+TEST(TiglBSplineAlgorithms, testReparametrizeBSplineContinuouslyApproxWithKink)
+{
+    int degree = 3;
+
+    TColgp_Array1OfPnt controlPoints(1, 7);
+    controlPoints(1) = gp_Pnt(0., 0, 0.);
+    controlPoints(2) = gp_Pnt(0., 2., 0.);
+    controlPoints(3) = gp_Pnt(2.5, 2.5, 0.);
+    controlPoints(4) = gp_Pnt(-3.5, 4., 0.);
+    controlPoints(5) = gp_Pnt(4., 5., 0.);
+    controlPoints(6) = gp_Pnt(-1., 7., 0.);
+    controlPoints(7) = gp_Pnt(-1., 8., 0.);
+
+    TColStd_Array1OfReal knots(1, 3);
+    knots(1) = 0.;
+    knots(2) = 0.5;
+    knots(3) = 1.;
+
+    TColStd_Array1OfInteger mults(1, 3);
+    mults(1) = 4;
+    mults(2) = 3;
+    mults(3) = 4;
+
+    Handle(Geom_BSplineCurve) spline = new Geom_BSplineCurve(controlPoints, knots, mults, degree);
+    std::vector<double> oldParms;
+    oldParms.push_back(0.);
+    oldParms.push_back(0.5);
+    oldParms.push_back(1.0);
+
+    std::vector<double> newParms = oldParms;
+    newParms[1] = 0.6;
+    Handle(Geom_BSplineCurve) splineRepar = tigl::CTiglBSplineAlgorithms::reparametrizeBSplineContinuouslyApprox(spline, oldParms, newParms, 5);
+    BRepTools::Write(BRepBuilderAPI_MakeEdge(spline).Edge(), "TestData/bugs/505/original_spline.brep");
+    BRepTools::Write(BRepBuilderAPI_MakeEdge(splineRepar).Edge(), "TestData/bugs/505/reparm_spline.brep");
+
+    EXPECT_NEAR(0.6, splineRepar->Knot(3), 1e-10);
+    EXPECT_EQ(3, splineRepar->Multiplicity(3));
+}
+
+
 TEST(TiglBSplineAlgorithms, reparametrizeBSpline)
 {
     // create B-spline
