@@ -219,17 +219,6 @@ namespace
         }
         return true;
     }
-    
-    template <class SplineAdapter>
-    int findKnot(const SplineAdapter& spline, double knot, double tolerance=1e-15)
-    {
-        for (int curSplineKnotIdx = 1; curSplineKnotIdx <= spline.getNKnots(); ++curSplineKnotIdx) {
-            if (std::abs(spline.getKnot(curSplineKnotIdx) - knot) < tolerance) {
-                return curSplineKnotIdx;
-            }
-        }
-        return -1;
-    }
 
     /**
      * @brief createCommonKnotsVectorImpl:
