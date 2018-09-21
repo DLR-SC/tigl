@@ -665,79 +665,101 @@ void TIGLViewerDocument::drawAllFuselagesAndWings( )
         START_COMMAND();
         // Draw all wings
         for (int w = 1; w <= GetConfiguration().GetWingCount(); w++) {
-            tigl::CCPACSWing& wing = GetConfiguration().GetWing(w);
-    
-            if (wing.IsRotorBlade()) {
-                continue;
+
+            try {
+                tigl::CCPACSWing& wing = GetConfiguration().GetWing(w);
+
+                if (wing.IsRotorBlade()) {
+                    continue;
+                }
+                
+                app->getScene()->displayShape(wing.GetLoft(), false);
+
+                if ( !(wing.GetSymmetryAxis() == TIGL_NO_SYMMETRY)) {
+                    app->getScene()->displayShape(wing.GetMirroredLoft(), false, Quantity_NOC_MirrShapeCol);
+                }
+
+                app->getScene()->updateViewer();
             }
-
-            app->getScene()->displayShape(wing.GetLoft(), false);
-
-            if ( !(wing.GetSymmetryAxis() == TIGL_NO_SYMMETRY)) {
-                app->getScene()->displayShape(wing.GetMirroredLoft(), false, Quantity_NOC_MirrShapeCol);
+            catch(tigl::CTiglError& err) {
+                displayError(err.what());
             }
-
-            app->getScene()->updateViewer();
+            
         }
     
         // Draw all fuselages
         for (int f = 1; f <= GetConfiguration().GetFuselageCount(); f++) {
-            tigl::CCPACSFuselage& fuselage = GetConfiguration().GetFuselage(f);
+            try {
+                tigl::CCPACSFuselage& fuselage = GetConfiguration().GetFuselage(f);
 
-            app->getScene()->displayShape(fuselage.GetLoft(), false);
+                app->getScene()->displayShape(fuselage.GetLoft(), false);
 
-            if ( !(fuselage.GetSymmetryAxis() == TIGL_NO_SYMMETRY) ) {
-                app->getScene()->displayShape(fuselage.GetMirroredLoft(), false, Quantity_NOC_MirrShapeCol);
+                if ( !(fuselage.GetSymmetryAxis() == TIGL_NO_SYMMETRY) ) {
+                    app->getScene()->displayShape(fuselage.GetMirroredLoft(), false, Quantity_NOC_MirrShapeCol);
+                }
+                app->getScene()->updateViewer();
             }
-            app->getScene()->updateViewer();
+            catch(tigl::CTiglError& err) {
+                displayError(err.what());
+            }
         }
         
         // Draw all external objects
         for (int eo = 1; eo <= GetConfiguration().GetExternalObjectCount(); eo++) {
-            tigl::CCPACSExternalObject& obj = GetConfiguration().GetExternalObject(eo);
-    
-            app->getScene()->displayShape(obj.GetLoft(), true);
-    
-            if (obj.GetSymmetryAxis() == TIGL_NO_SYMMETRY) {
-                continue;
+            try {
+                tigl::CCPACSExternalObject& obj = GetConfiguration().GetExternalObject(eo);
+
+                app->getScene()->displayShape(obj.GetLoft(), true);
+
+                if (obj.GetSymmetryAxis() == TIGL_NO_SYMMETRY) {
+                    continue;
+                }
+
+                app->getScene()->displayShape(obj.GetMirroredLoft()->Shape(), true, Quantity_NOC_MirrShapeCol);
             }
-    
-            app->getScene()->displayShape(obj.GetMirroredLoft()->Shape(), true, Quantity_NOC_MirrShapeCol);
+            catch(tigl::CTiglError& err) {
+                displayError(err.what());
+            }
         }
         
         // Draw rotors
         for (int i=1; i <= GetConfiguration().GetRotorCount(); ++i) {
-            tigl::CCPACSRotor& rotor = GetConfiguration().GetRotor(i);
-            // Draw rotor
-            app->getScene()->displayShape(rotor.GetLoft(), false, Quantity_NOC_RotorCol);
-            // Draw rotor disk
-            TopoDS_Shape rotorDisk = rotor.GetRotorDisk()->Shape();
-            app->getScene()->displayShape(rotorDisk, false, Quantity_NOC_RotorCol, 0.9);
-    
-            app->getScene()->updateViewer();
+            try {
+                tigl::CCPACSRotor& rotor = GetConfiguration().GetRotor(i);
+                // Draw rotor
+                app->getScene()->displayShape(rotor.GetLoft(), false, Quantity_NOC_RotorCol);
+                // Draw rotor disk
+                TopoDS_Shape rotorDisk = rotor.GetRotorDisk()->Shape();
+                app->getScene()->displayShape(rotorDisk, false, Quantity_NOC_RotorCol, 0.9);
 
-            if (rotor.GetSymmetryAxis() == TIGL_NO_SYMMETRY) {
-                continue;
+                app->getScene()->updateViewer();
+
+                if (rotor.GetSymmetryAxis() == TIGL_NO_SYMMETRY) {
+                    continue;
+                }
+
+                // Draw mirrored rotor
+                app->getScene()->displayShape(rotor.GetMirroredLoft()->Shape(), false, Quantity_NOC_MirrRotorCol);
+                // Draw mirrored rotor disk
+                gp_Ax2 mirrorPlane;
+                if (rotor.GetSymmetryAxis() == TIGL_X_Z_PLANE) {
+                    mirrorPlane = gp_Ax2(gp_Pnt(0,0,0),gp_Dir(0.,1.,0.));
+                }
+                else if (rotor.GetSymmetryAxis() == TIGL_X_Y_PLANE) {
+                    mirrorPlane = gp_Ax2(gp_Pnt(0,0,0),gp_Dir(0.,0.,1.));
+                }
+                else if (rotor.GetSymmetryAxis() == TIGL_Y_Z_PLANE) {
+                    mirrorPlane = gp_Ax2(gp_Pnt(0,0,0),gp_Dir(1.,0.,0.));
+                }
+                gp_Trsf theTransformation;
+                theTransformation.SetMirror(mirrorPlane);
+                BRepBuilderAPI_Transform myBRepTransformation(rotorDisk, theTransformation);
+                const TopoDS_Shape& mirrRotorDisk = myBRepTransformation.Shape();
+                app->getScene()->displayShape(mirrRotorDisk, true, Quantity_NOC_MirrRotorCol, 0.9);
             }
-    
-            // Draw mirrored rotor
-            app->getScene()->displayShape(rotor.GetMirroredLoft()->Shape(), false, Quantity_NOC_MirrRotorCol);
-            // Draw mirrored rotor disk
-            gp_Ax2 mirrorPlane;
-            if (rotor.GetSymmetryAxis() == TIGL_X_Z_PLANE) {
-                mirrorPlane = gp_Ax2(gp_Pnt(0,0,0),gp_Dir(0.,1.,0.));
+            catch(tigl::CTiglError& err) {
+                displayError(err.what());
             }
-            else if (rotor.GetSymmetryAxis() == TIGL_X_Y_PLANE) {
-                mirrorPlane = gp_Ax2(gp_Pnt(0,0,0),gp_Dir(0.,0.,1.));
-            }
-            else if (rotor.GetSymmetryAxis() == TIGL_Y_Z_PLANE) {
-                mirrorPlane = gp_Ax2(gp_Pnt(0,0,0),gp_Dir(1.,0.,0.));
-            }
-            gp_Trsf theTransformation;
-            theTransformation.SetMirror(mirrorPlane);
-            BRepBuilderAPI_Transform myBRepTransformation(rotorDisk, theTransformation);
-            const TopoDS_Shape& mirrRotorDisk = myBRepTransformation.Shape();
-            app->getScene()->displayShape(mirrRotorDisk, true, Quantity_NOC_MirrRotorCol, 0.9);
         }
     }
     catch(tigl::CTiglError& err) {

@@ -270,7 +270,7 @@ namespace
                 spline.insertKnot(knot, mult, par_tolerance);
             }
             if (spline.getNKnots() != firstSpline.getNKnots()) {
-                throw tigl::CTiglError("Unexpected error in Algorithm makeGeometryCompatibleImpl");
+                throw tigl::CTiglError("Unexpected error in Algorithm makeGeometryCompatibleImpl.\nPlease contact the developers.");
             }
         }
 
