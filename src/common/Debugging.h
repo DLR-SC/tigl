@@ -44,7 +44,7 @@ private:
 #define TRACE_POINT_OUTPUT_DIR(variableName, outputDir) static tigl::TracePoint variableName(outputDir); variableName++
 
 // uses the function inside which the macro is expanded as output directory, __FUNCTION__ may not be supported by each compiler
-#define TRACE_POINT(variableName) TRACE_POINT_OUTPUT_DIR(variableName, __FUNCTION__)
+#define TRACE_POINT(variableName) TRACE_POINT_OUTPUT_DIR(variableName, std::string("CrashInfo/") + __FUNCTION__)
 
 // allows dumping shapes in case an object of this class is destroyed by an exception
 class DebugScope

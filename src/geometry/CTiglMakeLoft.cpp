@@ -25,6 +25,8 @@
 #include "CTiglBSplineAlgorithms.h"
 #include "CTiglCurvesToSurface.h"
 #include "CTiglPatchShell.h"
+#include "Debugging.h"
+#include "to_string.h"
 
 #include "contrib/MakePatches.hxx"
 
@@ -119,7 +121,16 @@ void CTiglMakeLoft::Perform()
         return;
     }
     
+    DEBUG_SCOPE(debug);
+    for (size_t i = 0; i < profiles.size(); ++i) {
+        debug.addShape(profiles[i], "profile_" + tigl::std_to_string(i));
+    }
+
     if (guides.size() > 0) {
+        for (size_t i = 0; i < guides.size(); ++i) {
+            debug.addShape(guides[i], "guide_" + tigl::std_to_string(i));
+        }
+
         // to the loft with guides
         makeLoftWithGuides();
     }

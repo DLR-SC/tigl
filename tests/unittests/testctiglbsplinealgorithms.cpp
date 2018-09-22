@@ -294,6 +294,70 @@ TEST(TiglBSplineAlgorithms, testCreateCommonKnotsVectorTolerance)
     EXPECT_EQ(3, curves[1]->Multiplicity(4));
 }
 
+
+TEST(TiglBSplineAlgorithms, testCreateCommonKnotsVectorToleranceBug)
+{
+
+    int degree = 3;
+
+    TColgp_Array1OfPnt controlPoints1(1, 6);
+
+    TColStd_Array1OfReal Knots1(1, 4);
+    Knots1(1) = 0.;
+    Knots1(2) = 0.49;
+    Knots1(3) = 0.61;
+    Knots1(4) = 1.0;
+
+    TColStd_Array1OfInteger Multiplicities1(1, 4);
+    Multiplicities1(1) = 4;
+    Multiplicities1(2) = 1;
+    Multiplicities1(3) = 1;
+    Multiplicities1(4) = 4;
+
+    Handle(Geom_BSplineCurve) bspline1 = new Geom_BSplineCurve(controlPoints1,  Knots1, Multiplicities1, degree);
+
+    TColgp_Array1OfPnt controlPoints2(1, 6);
+
+    TColStd_Array1OfReal Knots2(1, 3);
+    Knots2(1) = 0.;
+    Knots2(2) = 0.57;
+    Knots2(3) = 1;
+
+    TColStd_Array1OfInteger Multiplicities2(1, 3);
+    Multiplicities2(1) = 4;
+    Multiplicities2(2) = 2;
+    Multiplicities2(3) = 4;
+
+    Handle(Geom_BSplineCurve) bspline2 = new Geom_BSplineCurve(controlPoints2,  Knots2, Multiplicities2, degree);
+
+    std::vector<Handle(Geom_BSplineCurve)> curves;
+    curves.push_back(bspline1);
+    curves.push_back(bspline2);
+
+    curves = tigl::CTiglBSplineAlgorithms::createCommonKnotsVectorCurve(curves, 0.1);
+    ASSERT_EQ(4, curves[0]->NbKnots());
+    ASSERT_EQ(4, curves[1]->NbKnots());
+
+    EXPECT_NEAR(0.00, curves[0]->Knot(1), 1e-10);
+    EXPECT_NEAR(0.49, curves[0]->Knot(2), 1e-10);
+    EXPECT_NEAR(0.61, curves[0]->Knot(3), 1e-10);
+    EXPECT_NEAR(1.00, curves[0]->Knot(4), 1e-10);
+    EXPECT_EQ(4, curves[0]->Multiplicity(1));
+    EXPECT_EQ(1, curves[0]->Multiplicity(2));
+    EXPECT_EQ(2, curves[0]->Multiplicity(3));
+    EXPECT_EQ(4, curves[0]->Multiplicity(4));
+
+
+    EXPECT_NEAR(0.00, curves[1]->Knot(1), 1e-10);
+    EXPECT_NEAR(0.49, curves[1]->Knot(2), 1e-10);
+    EXPECT_NEAR(0.57, curves[1]->Knot(3), 1e-10);
+    EXPECT_NEAR(1.00, curves[1]->Knot(4), 1e-10);
+    EXPECT_EQ(4, curves[1]->Multiplicity(1));
+    EXPECT_EQ(1, curves[1]->Multiplicity(2));
+    EXPECT_EQ(2, curves[1]->Multiplicity(3));
+    EXPECT_EQ(4, curves[1]->Multiplicity(4));
+}
+
 TEST(TiglBSplineAlgorithms, testCreateCommonKnotsVectorSurface)
 {
     // tests the method createCommonKnotsVectorSurface
