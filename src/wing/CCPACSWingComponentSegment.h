@@ -227,13 +227,11 @@ private:
     // Returns the trailing edge direction of the segment with the passed UID
     gp_Vec GetTrailingEdgeDirection(const std::string& segmentUID) const;
 
-    void UpdateChordFace(unique_ptr<CTiglWingChordface>& cache) const;
-
 
 private:
     CCPACSWing*          wing;                 /**< Parent wing                             */
+    unique_ptr<CTiglWingChordface> chordFace;
     Cache<SegmentList, CCPACSWingComponentSegment> wingSegments; ///< List of segments belonging to the component segment
-    Cache<unique_ptr<CTiglWingChordface>, CCPACSWingComponentSegment> chordFace;
     Cache<GeometryCache, CCPACSWingComponentSegment> geomCache;
     Cache<LinesCache, CCPACSWingComponentSegment> linesCache;
 };

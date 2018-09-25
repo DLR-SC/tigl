@@ -159,9 +159,9 @@ CCPACSWingComponentSegment::CCPACSWingComponentSegment(CCPACSWingComponentSegmen
     , CTiglAbstractSegment<CCPACSWingComponentSegment>(parent->GetComponentSegments(), parent->GetParent()->m_symmetry)
     , wing(parent->GetParent())
     , wingSegments(*this, &CCPACSWingComponentSegment::BuildWingSegments)
-    , chordFace(*this, &CCPACSWingComponentSegment::UpdateChordFace)
     , geomCache(*this, &CCPACSWingComponentSegment::BuildGeometry)
     , linesCache(*this, &CCPACSWingComponentSegment::BuildLines)
+    , chordFace(make_unique<CTiglWingChordface>(*this, uidMgr))
 {
     assert(wing != NULL);
     Cleanup();
@@ -184,7 +184,7 @@ void CCPACSWingComponentSegment::Invalidate()
     }
     geomCache.clear();
     linesCache.clear();
-    chordFace.clear();
+    chordFace->Reset();
 }
 
 // Cleanup routine
@@ -203,6 +203,8 @@ void CCPACSWingComponentSegment::Cleanup()
 void CCPACSWingComponentSegment::Update()
 {
     Invalidate();
+
+    chordFace->SetUID(GetDefaultedUID() + "_chordface");
 }
 
 // Read CPACS segment elements
@@ -641,7 +643,7 @@ void CCPACSWingComponentSegment::InterpolateOnLine(double csEta1, double csXsi1,
     gp_Pnt p1 = GetPoint(csEta1, csXsi1);
     gp_Pnt p2 = GetPoint(csEta2, csXsi2);
 
-    const Handle(Geom_Curve) etaCurve = (*chordFace)->GetSurface()->VIso(eta);
+    const Handle(Geom_Curve) etaCurve = chordFace->GetSurface()->VIso(eta);
     const Handle(Geom_Curve) line = new Geom_Line(p1, p2.XYZ() - p1.XYZ());
 
     GeomAPI_ExtremaCurveCurve algo(etaCurve, line, 0., 1., 0., p1.Distance(p2));
@@ -662,7 +664,7 @@ void CCPACSWingComponentSegment::InterpolateOnLine(double csEta1, double csXsi1,
 
 const CTiglWingChordface &CCPACSWingComponentSegment::GetChordface() const
 {
-    return **chordFace;
+    return *chordFace;
 }
 
 // get short name for loft
@@ -846,14 +848,6 @@ void CCPACSWingComponentSegment::BuildLines(LinesCache& cache) const
     cache.trailingEdgeLine = wbTe.Wire();
 }
 
-void CCPACSWingComponentSegment::UpdateChordFace(unique_ptr<CTiglWingChordface>& cache) const
-{
-    // update creation of segment list
-    cache = make_unique<CTiglWingChordface>(*this, m_uidMgr);
-    cache->BuildChordSurface();
-    cache->SetUID(GetDefaultedUID() + "_chordface");
-}
-
 // Gets a point in relative wing coordinates for a given eta and xsi
 gp_Pnt CCPACSWingComponentSegment::GetPoint(double eta, double xsi, TiglCoordinateSystem referenceCS) const
 {
@@ -868,13 +862,13 @@ gp_Pnt CCPACSWingComponentSegment::GetPoint(double eta, double xsi, TiglCoordina
     gp_Pnt result;
 
     if (eta < Precision::Confusion()) {
-        result = (*chordFace)->GetPoint(0., xsi);
+        result = chordFace->GetPoint(0., xsi);
     }
     else if (1. - eta < Precision::Confusion()) {
-        result = (*chordFace)->GetPoint(1., xsi);
+        result = chordFace->GetPoint(1., xsi);
     }
     else {
-        result = (*chordFace)->GetPoint(eta, xsi);
+        result = chordFace->GetPoint(eta, xsi);
     }
 
     switch (referenceCS) {
@@ -895,7 +889,7 @@ void CCPACSWingComponentSegment::GetEtaXsi(const gp_Pnt& globalPoint, double& et
 {
     // TODO (siggel): check that point is part of component segment
 
-    (*chordFace)->GetEtaXsi(globalPoint, eta, xsi);
+    chordFace->GetEtaXsi(globalPoint, eta, xsi);
 }
 
 void CCPACSWingComponentSegment::GetEtaXsiLocal(const gp_Pnt& localPoint, double& eta, double& xsi) const
@@ -955,7 +949,7 @@ void CCPACSWingComponentSegment::GetEtaXsiFromSegmentEtaXsi(const std::string& s
         throw CTiglError("Segment does not belong to component segment in CCPACSWingComponentSegment::GetEtaXsiFromSegmentEtaXsi", TIGL_ERROR);
     }
 
-    const std::vector<double>& etas = (*chordFace)->GetElementEtas();
+    const std::vector<double>& etas = chordFace->GetElementEtas();
     eta = (1. - seta) * etas[segmentIndex] + seta * etas[segmentIndex + 1];
     xsi = sxsi;
 }
@@ -970,7 +964,7 @@ void CCPACSWingComponentSegment::GetSegmentEtaXsi(double csEta, double csXsi, st
     }
 
     const SegmentList& segments = GetSegmentList();
-    const std::vector<double>& etas = (*chordFace)->GetElementEtas();
+    const std::vector<double>& etas = chordFace->GetElementEtas();
 
     // find index such that etas[index] <= csEta < etas[index+1]
     unsigned int index = 0;
