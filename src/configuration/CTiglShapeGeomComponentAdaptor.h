@@ -29,11 +29,15 @@ namespace tigl
 
 class CTiglUIDManager;
 
+template <typename T>
 class CTiglShapeGeomComponentAdaptor : public ITiglGeometricComponent
 {
 public:
-    CTiglShapeGeomComponentAdaptor(ITiglGeometricComponent* parent, CTiglUIDManager* uidMgr)
+    typedef PNamedShape(T::* GetShapeFunc)() const;
+
+    CTiglShapeGeomComponentAdaptor(T* parent, GetShapeFunc getShapeFunc, CTiglUIDManager* uidMgr)
         : m_parent(parent)
+        , m_getShapeFunc(getShapeFunc)
         , m_uid("")
         , m_uidMgr(uidMgr)
     {
@@ -48,7 +52,6 @@ public:
     {
         unregisterShape();
         m_uid = "";
-        m_shape.reset();
     }
 
     void SetUID(const std::string &uid)
@@ -60,13 +63,6 @@ public:
         }
     }
 
-
-    void SetShape(PNamedShape shape)
-    {
-
-        m_shape = shape;
-    }
-
     // Returns the unique id of this component or an empty string if the component does not have a uid
     std::string GetDefaultedUID() const OVERRIDE
     {
@@ -76,12 +72,10 @@ public:
     PNamedShape GetLoft() OVERRIDE
     {
         if (m_parent) {
-            // The shape has to be build somewhere
-            // This is the parent's tasl
-            m_parent->GetLoft();
+            return (m_parent->*m_getShapeFunc)();
         }
-
-        return m_shape;
+        // support for testing of class without parent
+        return PNamedShape();
     }
 
     TiglGeometricComponentType GetComponentType() const OVERRIDE
@@ -97,11 +91,10 @@ private:
         }
     }
 
-    ITiglGeometricComponent* m_parent;
-    PNamedShape m_shape;
+    T* m_parent;
+    GetShapeFunc m_getShapeFunc;
     std::string m_uid;
     CTiglUIDManager* m_uidMgr;
-
 };
 
 } // namespace tigl

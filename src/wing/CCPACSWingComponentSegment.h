@@ -42,6 +42,7 @@
 #include "CTiglPoint.h"
 #include "CTiglPointTranslator.h"
 #include "CCPACSTransformation.h"
+#include "CTiglShapeGeomComponentAdaptor.h"
 #include "Cache.h"
 
 namespace tigl
@@ -50,7 +51,6 @@ namespace tigl
 class CCPACSWing;
 class CCPACSWingSegment;
 class CTiglWingChordface;
-class CTiglShapeGeomComponentAdaptor;
 
 typedef std::vector<const CCPACSMaterialDefinition*> MaterialList;
 typedef std::vector<CCPACSWingSegment*>              SegmentList;
@@ -75,10 +75,10 @@ public:
     TIGL_EXPORT CCPACSWing& GetWing() const;
 
     // Getter for upper Shape
-    TIGL_EXPORT TopoDS_Shape GetUpperShape();
+    TIGL_EXPORT PNamedShape GetUpperShape() const;
 
     // Getter for lower Shape
-    TIGL_EXPORT TopoDS_Shape GetLowerShape();
+    TIGL_EXPORT PNamedShape GetLowerShape() const;
 
     // Getter for inner segment face
     TIGL_EXPORT TopoDS_Face GetInnerFace();
@@ -190,8 +190,8 @@ private:
         TopoDS_Shape loftShape;
         TopoDS_Face innerFace;     ///< [[CAS_AES]] added inner segment face
         TopoDS_Face outerFace;     ///< [[CAS_AES]] added outer segment face
-        unique_ptr<CTiglShapeGeomComponentAdaptor> upperShape; /**< Upper shape of this componentSegment */
-        unique_ptr<CTiglShapeGeomComponentAdaptor> lowerShape; /**< Lower shape of this componentSegment */
+        PNamedShape upperShape;
+        PNamedShape lowerShape;
         double      myVolume;      ///< Volume of this segment
         double      mySurfaceArea; ///< Surface area of this segment
     };
@@ -229,7 +229,10 @@ private:
 
 
 private:
-    CCPACSWing*          wing;                 /**< Parent wing                             */
+    typedef CTiglShapeGeomComponentAdaptor<CCPACSWingComponentSegment> ShapeAdaptor;
+    CCPACSWing*          wing;           /**< Parent wing                             */
+    unique_ptr<ShapeAdaptor> upperShape; /**< Upper shape of this componentSegment */
+    unique_ptr<ShapeAdaptor> lowerShape; /**< Lower shape of this componentSegment */
     unique_ptr<CTiglWingChordface> chordFace;
     Cache<SegmentList, CCPACSWingComponentSegment> wingSegments; ///< List of segments belonging to the component segment
     Cache<GeometryCache, CCPACSWingComponentSegment> geomCache;

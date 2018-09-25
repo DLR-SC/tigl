@@ -161,6 +161,8 @@ CCPACSWingComponentSegment::CCPACSWingComponentSegment(CCPACSWingComponentSegmen
     , wingSegments(*this, &CCPACSWingComponentSegment::BuildWingSegments)
     , geomCache(*this, &CCPACSWingComponentSegment::BuildGeometry)
     , linesCache(*this, &CCPACSWingComponentSegment::BuildLines)
+    , upperShape(tigl::make_unique<ShapeAdaptor>(this, &CCPACSWingComponentSegment::GetUpperShape, m_uidMgr))
+    , lowerShape(tigl::make_unique<ShapeAdaptor>(this, &CCPACSWingComponentSegment::GetLowerShape, m_uidMgr))
     , chordFace(make_unique<CTiglWingChordface>(*this, uidMgr))
 {
     assert(wing != NULL);
@@ -185,6 +187,8 @@ void CCPACSWingComponentSegment::Invalidate()
     geomCache.clear();
     linesCache.clear();
     chordFace->Reset();
+    upperShape->Reset();
+    lowerShape->Reset();
 }
 
 // Cleanup routine
@@ -205,6 +209,8 @@ void CCPACSWingComponentSegment::Update()
     Invalidate();
 
     chordFace->SetUID(GetDefaultedUID() + "_chordface");
+    lowerShape->SetUID(GetDefaultedUID() + "_lower");
+    upperShape->SetUID(GetDefaultedUID() + "_upper");
 }
 
 // Read CPACS segment elements
@@ -225,15 +231,15 @@ CCPACSWing& CCPACSWingComponentSegment::GetWing() const {
 }
 
 // Getter for upper Shape
-TopoDS_Shape CCPACSWingComponentSegment::GetUpperShape()
+PNamedShape CCPACSWingComponentSegment::GetUpperShape() const
 {
-    return geomCache->upperShape->GetLoft()->Shape();
+    return geomCache->upperShape;
 }
 
 // Getter for lower Shape
-TopoDS_Shape CCPACSWingComponentSegment::GetLowerShape()
+PNamedShape CCPACSWingComponentSegment::GetLowerShape() const
 {
-    return geomCache->lowerShape->GetLoft()->Shape();
+    return geomCache->lowerShape;
 }
 
 // Getter for inner segment face
@@ -781,12 +787,10 @@ void CCPACSWingComponentSegment::BuildGeometry(GeometryCache& cache) const
     // transform all shapes
     CTiglTransformation trafo = wing->GetTransformation().getTransformationMatrix();
 
-    cache.upperShape = make_unique<CTiglShapeGeomComponentAdaptor>(const_cast<CCPACSWingComponentSegment*>(this), m_uidMgr);
-    cache.lowerShape = make_unique<CTiglShapeGeomComponentAdaptor>(const_cast<CCPACSWingComponentSegment*>(this), m_uidMgr);
-    PNamedShape upperShell(new CNamedShape(trafo.Transform(upperShellSewing.SewedShape()), GetDefaultedUID() + "_upper"));
-    PNamedShape lowerShell(new CNamedShape(trafo.Transform(lowerShellSewing.SewedShape()), GetDefaultedUID() + "_lower"));
-    cache.upperShape->SetShape(upperShell);
-    cache.lowerShape->SetShape(lowerShell);
+    PNamedShape upperShell(new CNamedShape(trafo.Transform(upperShellSewing.SewedShape()), upperShape->GetDefaultedUID()));
+    PNamedShape lowerShell(new CNamedShape(trafo.Transform(lowerShellSewing.SewedShape()), lowerShape->GetDefaultedUID()));
+    cache.upperShape = upperShell;
+    cache.lowerShape = lowerShell;
 
     loftShape = trafo.Transform(loftShape);
 

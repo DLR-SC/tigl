@@ -154,7 +154,7 @@ TopoDS_Shape CTiglWingStructureReference::GetUpperShape(TiglCoordinateSystem ref
     TopoDS_Shape loft;
     switch (type) {
         case ComponentSegmentType:
-            loft = componentSegment->GetUpperShape();
+            loft = componentSegment->GetUpperShape()->Shape();
             break;
 /*        case TrailingEdgeDeviceType:
             loft = trailingEdgeDevice->GetUpperShape();
@@ -184,7 +184,7 @@ TopoDS_Shape CTiglWingStructureReference::GetLowerShape(TiglCoordinateSystem ref
     TopoDS_Shape loft;
     switch (type) {
         case ComponentSegmentType:
-            loft = componentSegment->GetLowerShape();
+            loft = componentSegment->GetLowerShape()->Shape();
             break;
 /*        case TrailingEdgeDeviceType:
             loft = trailingEdgeDevice->GetLowerShape();
