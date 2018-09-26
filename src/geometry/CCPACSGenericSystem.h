@@ -72,7 +72,7 @@ protected:
 
 private:
     // get short name for loft
-    std::string GetShortShapeName();
+    std::string GetShortShapeName() const;
 
     // Copy constructor
     CCPACSGenericSystem(const CCPACSGenericSystem & );

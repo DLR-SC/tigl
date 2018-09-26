@@ -180,11 +180,11 @@ PNamedShape CCPACSGenericSystem::BuildLoft()
 }
 
 // get short name for loft
-std::string CCPACSGenericSystem::GetShortShapeName()
+std::string CCPACSGenericSystem::GetShortShapeName() const
 {
     unsigned int gsindex = 0;
     for (int i = 1; i <= GetConfiguration().GetGenericSystemCount(); ++i) {
-        tigl::CCPACSGenericSystem& gs = GetConfiguration().GetGenericSystem(i);
+        const tigl::CCPACSGenericSystem& gs = GetConfiguration().GetGenericSystem(i);
         if (GetUID() == gs.GetUID()) {
             gsindex = i;
             std::stringstream shortName;

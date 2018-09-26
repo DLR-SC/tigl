@@ -79,6 +79,7 @@ public:
 
     // Returns the segment for a given index
     TIGL_EXPORT CCPACSFuselageSegment& GetSegment(const int index);
+    TIGL_EXPORT const CCPACSFuselageSegment& GetSegment(const int index) const;
 
     // Returns the segment for a given UID
     TIGL_EXPORT CCPACSFuselageSegment& GetSegment(std::string uid);
@@ -137,11 +138,11 @@ protected:
     // Adds all segments of this fuselage to one shape
     PNamedShape BuildLoft() OVERRIDE;
 
-    void SetFaceTraits(PNamedShape loft);
+    void SetFaceTraits(PNamedShape loft) const;
 
 private:
     // get short name for loft
-    std::string GetShortShapeName();
+    std::string GetShortShapeName() const;
 
 private:
     CCPACSConfiguration*       configuration;        /**< Parent configuration    */

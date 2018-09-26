@@ -24,6 +24,7 @@
 #include "CTiglAbstractGeometricComponent.h"
 #include "PNamedShape.h"
 #include "CTiglWingSegmentList.h"
+#include "Cache.h"
 
 #include <Geom_BSplineSurface.hxx>
 
@@ -55,7 +56,6 @@ public:
         return TIGL_COMPONENT_PHYSICAL;
     }
 
-    TIGL_EXPORT void BuildChordSurface() const;
 
     /**
      * @brief Returns the Eta coordinate of each element
@@ -68,6 +68,14 @@ protected:
     PNamedShape BuildLoft() OVERRIDE;
 
 private:
+    struct ChordfaceCache {
+        Handle(Geom_BSplineSurface) chordSurface;
+        std::vector<double> elementEtas;
+    };
+
+    void BuildChordSurface(ChordfaceCache& cache) const;
+
+private:
     CTiglWingChordface(const CTiglWingChordface&); // disabled copy constructor
 
     void unregisterShape();
@@ -77,8 +85,7 @@ private:
 
     CTiglUIDManager* _uidManager;
 
-    mutable Handle(Geom_BSplineSurface) _chordSurface;
-    mutable std::vector<double> _elementEtas;
+    Cache<ChordfaceCache, CTiglWingChordface> _surfaceCache;
 };
 
 }

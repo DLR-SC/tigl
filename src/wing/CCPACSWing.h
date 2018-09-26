@@ -168,7 +168,7 @@ protected:
     void Update();
 
     // Adds all Segments of this wing to one shape
-    PNamedShape BuildFusedSegments(bool splitWingInUpperAndLower);
+    PNamedShape BuildFusedSegments(bool splitWingInUpperAndLower) const;
         
     PNamedShape BuildLoft() OVERRIDE;
         
@@ -176,7 +176,7 @@ protected:
 
 private:
     // get short name for loft
-    std::string GetShortShapeName();
+    std::string GetShortShapeName() const;
 
 private:
     bool                           isRotorBlade;             /**< Indicates if this wing is a rotor blade */

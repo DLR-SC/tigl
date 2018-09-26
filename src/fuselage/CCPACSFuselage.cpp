@@ -168,6 +168,11 @@ CCPACSFuselageSegment& CCPACSFuselage::GetSegment(const int index)
     return m_segments.GetSegment(index);
 }
 
+const CCPACSFuselageSegment& CCPACSFuselage::GetSegment(const int index) const
+{
+    return m_segments.GetSegment(index);
+}
+
 // Returns the segment for a given uid
 CCPACSFuselageSegment& CCPACSFuselage::GetSegment(std::string uid)
 {
@@ -175,7 +180,7 @@ CCPACSFuselageSegment& CCPACSFuselage::GetSegment(std::string uid)
 }
 
 // get short name for loft
-std::string CCPACSFuselage::GetShortShapeName ()
+std::string CCPACSFuselage::GetShortShapeName () const
 {
     unsigned int findex = 0;
     for (int i = 1; i <= GetConfiguration().GetFuselageCount(); ++i) {
@@ -190,7 +195,7 @@ std::string CCPACSFuselage::GetShortShapeName ()
     return "UNKNOWN";
 }
 
-void CCPACSFuselage::SetFaceTraits (PNamedShape loft)
+void CCPACSFuselage::SetFaceTraits (PNamedShape loft) const
 {
     int nFaces = GetNumberOfFaces(loft->Shape());
     bool hasSymmetryPlane = GetNumberOfEdges(m_segments.GetSegment(1).GetEndWire()) > 1;

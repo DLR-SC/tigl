@@ -186,6 +186,7 @@ CCPACSWingSegment::CCPACSWingSegment(CCPACSWingSegments* parent, CTiglUIDManager
     , wing(parent->GetParent())
     , surfaceCoordCache(*this, &CCPACSWingSegment::MakeChordSurface)
     , areaCache(*this, &CCPACSWingSegment::ComputeArea)
+    , volumeCache(*this, &CCPACSWingSegment::ComputeVolume)
     , m_guideCurveBuilder(make_unique<CTiglWingSegmentGuidecurveBuilder>(*this))
 {
     Cleanup();
@@ -353,16 +354,16 @@ TopoDS_Shape CCPACSWingSegment::GetOuterClosure(TiglCoordinateSystem referenceCS
 }
 
 // get short name for loft
-std::string CCPACSWingSegment::GetShortShapeName () 
+std::string CCPACSWingSegment::GetShortShapeName () const
 {
     unsigned int windex = 0;
     unsigned int wsindex = 0;
     for (int i = 1; i <= wing->GetConfiguration().GetWingCount(); ++i) {
-        tigl::CCPACSWing& w = wing->GetConfiguration().GetWing(i);
+        const CCPACSWing& w = wing->GetConfiguration().GetWing(i);
         if (wing->GetUID() == w.GetUID()) {
             windex = i;
             for (int j = 1; j <= w.GetSegmentCount(); j++) {
-                CCPACSWingSegment& ws = w.GetSegment(j);
+                const CCPACSWingSegment& ws = w.GetSegment(j);
                 if (GetUID() == ws.GetUID()) {
                     wsindex = j;
                     std::stringstream shortName;
@@ -463,11 +464,6 @@ PNamedShape CCPACSWingSegment::BuildLoft()
         loftShape = patcher.PatchedShape();
     }
 
-    // Calculate volume
-    GProp_GProps System;
-    BRepGProp::VolumeProperties(loftShape, System);
-    myVolume = System.Mass();
-
     // Set Names
     std::string loftName = GetUID();
     std::string loftShortName = GetShortShapeName();
@@ -561,10 +557,7 @@ const CTiglWingConnection& CCPACSWingSegment::GetOuterConnection() const
 // Returns the volume of this segment
 double CCPACSWingSegment::GetVolume()
 {
-    // Trigger shape building
-    GetLoft();
-
-    return( myVolume );
+    return *volumeCache;
 }
 
 // Returns the surface area of this segment
@@ -932,6 +925,15 @@ void CCPACSWingSegment::MakeChordSurface(SurfaceCoordCache& cache) const
     Handle(Geom_TrimmedCurve) innerEdge = GC_MakeSegment(inner_lep, inner_tep).Value();
     Handle(Geom_TrimmedCurve) outerEdge = GC_MakeSegment(outer_lep, outer_tep).Value();
     cache.cordFace = GeomFill::Surface(innerEdge, outerEdge);
+}
+
+
+void CCPACSWingSegment::ComputeVolume(double& cache) const
+{
+    const TopoDS_Shape loft = const_cast<CCPACSWingSegment&>(*this).GetLoft()->Shape();
+    GProp_GProps gprops;
+    BRepGProp::VolumeProperties(loft, gprops);
+    cache = gprops.Mass();
 }
 
 const CTiglPointTranslator& CCPACSWingSegment::ChordFace() const
