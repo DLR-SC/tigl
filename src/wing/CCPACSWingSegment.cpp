@@ -378,7 +378,7 @@ std::string CCPACSWingSegment::GetShortShapeName () const
 
 // Builds the loft between the two segment sections
 // build loft out of faces (for compatibility with component segmen loft)
-PNamedShape CCPACSWingSegment::BuildLoft()
+PNamedShape CCPACSWingSegment::BuildLoft() const
 {
     TopoDS_Shape loftShape;
     if ( loftLinearly ) {
@@ -393,13 +393,13 @@ PNamedShape CCPACSWingSegment::BuildLoft()
 
 
         if (m_guideCurves) {
-            CCPACSGuideCurves& curves = *m_guideCurves;
+            const CCPACSGuideCurves& curves = *m_guideCurves;
             bool hasTrailingEdge = !innerConnection.GetProfile().GetTrailingEdge().IsNull();
 
             // order guide curves according to fromRelativeCircumeference
-            std::multimap<double, CCPACSGuideCurve*> guideMap;
+            std::multimap<double, const CCPACSGuideCurve*> guideMap;
             for (int iguide = 1; iguide <= curves.GetGuideCurveCount(); ++iguide) {
-                CCPACSGuideCurve* curve = &curves.GetGuideCurve(iguide);
+                const CCPACSGuideCurve* curve = &curves.GetGuideCurve(iguide);
                 double value = *(curve->GetFromRelativeCircumference_choice2());
                 if (value >= 1. && !hasTrailingEdge) {
                     // this is a trailing edge profile, we should add it first
@@ -408,9 +408,9 @@ PNamedShape CCPACSWingSegment::BuildLoft()
                 guideMap.insert(std::make_pair(value, curve));
             }
 
-            std::multimap<double, CCPACSGuideCurve*>::iterator it;
+            std::multimap<double, const CCPACSGuideCurve*>::iterator it;
             for (it = guideMap.begin(); it != guideMap.end(); ++it) {
-                CCPACSGuideCurve* curve = it->second;
+                const CCPACSGuideCurve* curve = it->second;
                 BRepBuilderAPI_MakeWire wireMaker(curve->GetCurve());
                 lofter.addGuides(wireMaker.Wire());
             }

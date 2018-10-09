@@ -31,7 +31,7 @@ public:
                                                      CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT std::string GetDefaultedUID() const OVERRIDE;
-    TIGL_EXPORT PNamedShape GetLoft() OVERRIDE;
+    TIGL_EXPORT PNamedShape GetLoft() const OVERRIDE;
     TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE;
 
     TIGL_EXPORT void Invalidate();

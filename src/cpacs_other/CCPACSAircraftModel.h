@@ -50,7 +50,7 @@ public:
     void Invalidate();
 
 protected:
-    PNamedShape BuildLoft() OVERRIDE;
+    PNamedShape BuildLoft() const OVERRIDE;
 
     CCPACSConfiguration* config;
 };

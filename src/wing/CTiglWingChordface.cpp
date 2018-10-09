@@ -88,7 +88,7 @@ std::string CTiglWingChordface::GetDefaultedUID() const
     return _uid;
 }
 
-PNamedShape CTiglWingChordface::BuildLoft()
+PNamedShape CTiglWingChordface::BuildLoft() const
 {
     TopoDS_Face face = BRepBuilderAPI_MakeFace(_surfaceCache->chordSurface, Precision::Confusion());
 

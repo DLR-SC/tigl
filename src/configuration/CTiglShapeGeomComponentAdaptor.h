@@ -35,7 +35,7 @@ class CTiglShapeGeomComponentAdaptor : public ITiglGeometricComponent
 public:
     typedef PNamedShape(T::* GetShapeFunc)() const;
 
-    CTiglShapeGeomComponentAdaptor(T* parent, GetShapeFunc getShapeFunc, CTiglUIDManager* uidMgr)
+    CTiglShapeGeomComponentAdaptor(const T* parent, GetShapeFunc getShapeFunc, CTiglUIDManager* uidMgr)
         : m_parent(parent)
         , m_getShapeFunc(getShapeFunc)
         , m_uid("")
@@ -69,7 +69,7 @@ public:
         return m_uid;
     }
 
-    PNamedShape GetLoft() OVERRIDE
+    PNamedShape GetLoft() const OVERRIDE
     {
         if (m_parent) {
             return (m_parent->*m_getShapeFunc)();
@@ -91,7 +91,7 @@ private:
         }
     }
 
-    T* m_parent;
+    const T* m_parent;
     GetShapeFunc m_getShapeFunc;
     std::string m_uid;
     CTiglUIDManager* m_uidMgr;

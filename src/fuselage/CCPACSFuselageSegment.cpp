@@ -290,7 +290,7 @@ void CCPACSFuselageSegment::SetFaceTraits (PNamedShape loft) const
 }
 
 // Builds the loft between the two segment sections
-PNamedShape CCPACSFuselageSegment::BuildLoft()
+PNamedShape CCPACSFuselageSegment::BuildLoft() const
 {
     // Build loft
     TopoDS_Shape loftShape;

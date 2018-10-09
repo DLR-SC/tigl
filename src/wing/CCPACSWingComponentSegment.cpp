@@ -418,7 +418,7 @@ TopoDS_Wire CCPACSWingComponentSegment::GetMidplaneLine(const gp_Pnt& startPoint
 
     BRepBuilderAPI_MakeWire wireBuilder;
 
-    TopoDS_Shape localLoft = GetWing().GetTransformationMatrix().Inverted().Transform(loft->Shape());
+    TopoDS_Shape localLoft = GetWing().GetTransformationMatrix().Inverted().Transform(GetLoft()->Shape());
 
     // get minimum and maximum z-value of bounding box
     Bnd_Box bbox;
@@ -697,7 +697,7 @@ std::string CCPACSWingComponentSegment::GetShortShapeName() const
 }
 
 // Builds the loft between the two segment sections
-PNamedShape CCPACSWingComponentSegment::BuildLoft()
+PNamedShape CCPACSWingComponentSegment::BuildLoft() const
 {
     // Set Names
     std::string loftName = m_uID;

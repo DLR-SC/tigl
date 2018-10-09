@@ -35,7 +35,7 @@ public:
     TIGL_EXPORT virtual void SetPressureBulkheadElementUID(const std::string& value) OVERRIDE;
 
     TIGL_EXPORT std::string GetDefaultedUID() const OVERRIDE;
-    TIGL_EXPORT PNamedShape GetLoft() OVERRIDE;
+    TIGL_EXPORT PNamedShape GetLoft() const OVERRIDE;
     TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE;
 
     TIGL_EXPORT void Invalidate();
