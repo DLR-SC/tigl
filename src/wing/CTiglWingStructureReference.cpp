@@ -36,20 +36,6 @@ CTiglWingStructureReference::CTiglWingStructureReference(const CCPACSWingCompone
 {
 }
 
-CTiglWingStructureReference::CTiglWingStructureReference(const CCPACSWingCSStructure& structure)
-{
-    //if (structure.IsParent<CCPACSWingComponentSegment>()) {
-        type = ComponentSegmentType;
-        componentSegment = structure.GetParent();
-        //componentSegment = structure.GetParent<CCPACSWingComponentSegment>();
-    //} else if (structure.IsParent<CCPACSTrailingEdgeDevice>()) {
-    //    type = TrailingEdgeDeviceType;
-    //    trailingEdgeDevice = structure.GetParent<CCPACSTrailingEdgeDevice>();
-    //} else {
-    //    throw CTiglError("Unrecognized parent of CCPACSWingCSStructure");
-    //}
-}
-
 #define DISPATCH(call)                                                                                                 \
     switch (type) {                                                                                                    \
     case ComponentSegmentType:                                                                                         \

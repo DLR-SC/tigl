@@ -59,8 +59,7 @@ public:
 
 //    TIGL_EXPORT CTiglWingStructureReference(const CCPACSTrailingEdgeDevice& parent);
     TIGL_EXPORT CTiglWingStructureReference(const CCPACSWingComponentSegment& parent);
-    TIGL_EXPORT CTiglWingStructureReference(const CCPACSWingCSStructure& structure);
-
+    
     TIGL_EXPORT Type GetType() const;
     TIGL_EXPORT const CCPACSWing& GetWing() const;
     TIGL_EXPORT const boost::optional<CCPACSWingCSStructure>& GetStructure() const;
