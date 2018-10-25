@@ -353,7 +353,7 @@ Handle(Geom2d_TrimmedCurve) CCPACSWingProfile::GetChordLine() const
 
 void CCPACSWingProfile::buildPointListAlgo(unique_ptr<CTiglWingProfilePointList>& cache) const
 {
-    cache.reset(new CTiglWingProfilePointList(*this, const_cast<CCPACSPointListXYZ&>(*m_pointList_choice1))); // FIXME(bgruber)
+    cache.reset(new CTiglWingProfilePointList(*this, *m_pointList_choice1));
 }
 
 ITiglWingProfileAlgo* CCPACSWingProfile::GetProfileAlgo()

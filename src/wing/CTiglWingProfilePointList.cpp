@@ -83,7 +83,7 @@ const double CTiglWingProfilePointList::c_trailingEdgeRelGap = 1E-2;
 const double CTiglWingProfilePointList::c_blendingDistance = 0.1;
 
 // Constructor
-CTiglWingProfilePointList::CTiglWingProfilePointList(const CCPACSWingProfile& profile, CCPACSPointListXYZ& cpacsPointList)
+CTiglWingProfilePointList::CTiglWingProfilePointList(const CCPACSWingProfile& profile, const CCPACSPointListXYZ& cpacsPointList)
     : profileRef(profile)
     , coordinates(cpacsPointList.AsVector())
     , profileWireAlgo(new CTiglInterpolateBsplineWire)
@@ -247,10 +247,6 @@ void CTiglWingProfilePointList::BuildLETEPoints(WireCache& cache) const
     double alphaLast  = vlast  * vchord / vchord.SquareMagnitude();
     double alphamin = std::min(alphaFirst, alphaLast);
     cache.tePoint = cache.lePoint.XYZ() + alphamin*(vchord.XYZ());
-}
-
-std::vector<CTiglPoint>& CTiglWingProfilePointList::GetSamplePoints() {
-    return coordinates;
 }
 
 const std::vector<CTiglPoint>& CTiglWingProfilePointList::GetSamplePoints() const {

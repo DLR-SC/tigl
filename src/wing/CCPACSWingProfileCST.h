@@ -48,7 +48,6 @@ public:
     TIGL_EXPORT void Invalidate() OVERRIDE;
 
     // Returns the profile points as read from TIXI.
-    TIGL_EXPORT std::vector<CTiglPoint>& GetSamplePoints() OVERRIDE; // TODO: why do we need those anyway, they just return an empty vector?
     TIGL_EXPORT const std::vector<CTiglPoint>& GetSamplePoints() const OVERRIDE; // TODO: why do we need those anyway, they just return an empty vector?
 
     // get upper wing profile wire
