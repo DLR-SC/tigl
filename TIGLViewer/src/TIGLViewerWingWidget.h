@@ -30,10 +30,11 @@
 //#include "CPACSCreatorLib/CPACSTreeItem.h"
 #include "QCheckBox"
 
-class TIGLViewerWingWidget : public ModificatorWidget {
+class TIGLViewerWingWidget : public ModificatorWidget
+{
 
     Q_OBJECT
-/*
+    /*
 
 public slots:
 
@@ -55,10 +56,8 @@ public slots:
 
 */
 public:
-
-
-    TIGLViewerWingWidget(QWidget * parent = 0);
-/*
+    TIGLViewerWingWidget(QWidget* parent = 0);
+    /*
     void init(ModificatorManager * associate ) override ;
     void apply() override ;
     void reset() override ;
@@ -177,8 +176,6 @@ private:
     // internal airfoil
     QString internalAirfoilUID;
 */
-
 };
-
 
 #endif //TIGL_TIGLVIEWERWINGWIDGET_H

@@ -32,11 +32,10 @@ class TIGLViewerTransformationWidget : public ModificatorWidget
 {
     Q_OBJECT
 
-
 public:
-    TIGLViewerTransformationWidget(QWidget * parent = 0);
+    TIGLViewerTransformationWidget(QWidget* parent = 0);
 
-/*
+    /*
     // Initialize the linked objects
     void init(ModificatorManager* associate) override ;
 
@@ -69,9 +68,6 @@ private:
     cpcr::CPACSTransformation transformation;
 
 */
-
 };
-
-
 
 #endif //TIGL_TIGLVIEWERTRANSFORMATIONWIDGET_H

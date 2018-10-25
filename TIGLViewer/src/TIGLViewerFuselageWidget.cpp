@@ -6,8 +6,9 @@
 #include "TIGLViewerFuselageWidget.h"
 //#include "ModificatorManager.h"
 
-TIGLViewerFuselageWidget::TIGLViewerFuselageWidget(QWidget *parent) : ModificatorWidget(parent) {
-
+TIGLViewerFuselageWidget::TIGLViewerFuselageWidget(QWidget* parent)
+    : ModificatorWidget(parent)
+{
 }
 
 /*

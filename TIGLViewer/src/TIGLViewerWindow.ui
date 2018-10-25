@@ -419,7 +419,7 @@
              </size>
             </property>
             <property name="text">
-             <string>Anchors</string>
+             <string>Anchor</string>
             </property>
            </widget>
           </item>

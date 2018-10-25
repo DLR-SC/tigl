@@ -22,24 +22,20 @@
 #ifndef TIGL_MODIFICATORWIDGET_H
 #define TIGL_MODIFICATORWIDGET_H
 
-
 #include <QWidget>
 
+// class ModificatorManager; // forward delcaration
 
-
-//class ModificatorManager; // forward delcaration
-
-
-class ModificatorWidget: public QWidget {
+class ModificatorWidget : public QWidget
+{
 
     Q_OBJECT
 
 public:
-
-    ModificatorWidget(QWidget * parent = 0);
+    ModificatorWidget(QWidget* parent = 0);
 
     // init the associate manager and the coorespendance between GUI interface and the object
-//    virtual void init(ModificatorManager * associate);
+    //    virtual void init(ModificatorManager * associate);
 
     // reset the dispay value from the value of cpacs file (called when cancel button is pressed)
     virtual void reset();
@@ -49,16 +45,12 @@ public:
     // call when commit button is pressed
     virtual void apply();
 
-
 protected:
-
-
     double precision;
     // return true if the abs(a-b) < precision
     bool isApprox(double a, double b);
 
-//    ModificatorManager * associateManager;
+    //    ModificatorManager * associateManager;
 };
 
-
-#endif //TIGL_MODIFICATORWIDGET_H
+#endif // TIGL_MODIFICATORWIDGET_H

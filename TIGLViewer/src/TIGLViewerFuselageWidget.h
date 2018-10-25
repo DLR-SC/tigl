@@ -11,11 +11,11 @@
 #include <QPushButton>
 #include <QComboBox>
 
-class TIGLViewerFuselageWidget : public ModificatorWidget {
+class TIGLViewerFuselageWidget : public ModificatorWidget
+{
 
-
-Q_OBJECT
-/*
+    Q_OBJECT
+    /*
 public slots:
 
     void expendLengthDetails(bool checked);
@@ -29,9 +29,9 @@ public slots:
 */
 
 public:
-    TIGLViewerFuselageWidget(QWidget * parent = 0);
+    TIGLViewerFuselageWidget(QWidget* parent = 0);
 
-/*
+    /*
     // Initialize the linked objects
     void init(ModificatorManager* associate) override ;
 
@@ -67,10 +67,6 @@ private:
 
 
 */
-
-
-
 };
-
 
 #endif //TIGL_TIGLVIEWERFUSELAGEWIDGET_H

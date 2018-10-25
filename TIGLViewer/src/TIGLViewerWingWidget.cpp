@@ -23,8 +23,9 @@
 #include "TIGLViewerWingWidget.h"
 //#include "ModificatorManager.h"
 
-TIGLViewerWingWidget::TIGLViewerWingWidget(QWidget *parent) : ModificatorWidget(parent){
-
+TIGLViewerWingWidget::TIGLViewerWingWidget(QWidget* parent)
+    : ModificatorWidget(parent)
+{
 }
 /*
 

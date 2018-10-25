@@ -33,16 +33,14 @@
 #include <QScrollArea>
 #include <QSpacerItem>
 
-class TIGLViewerPositioningsWidget : public ModificatorWidget  {
+class TIGLViewerPositioningsWidget : public ModificatorWidget
+{
 
     Q_OBJECT
 
-
-
 public:
-
-    TIGLViewerPositioningsWidget(QWidget * parent = 0);
-/*
+    TIGLViewerPositioningsWidget(QWidget* parent = 0);
+    /*
     void init(ModificatorManager * associate ) override ;
     void apply() override ;
 
@@ -74,8 +72,6 @@ private:
 
     int precision; // set the precision of the qdoublespinbox and is use to detect false change
 */
-
 };
-
 
 #endif //TIGL_TIGLVIEWERPOSITIONINGSWIDGET_H

@@ -25,8 +25,9 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 
-TIGLViewerPositioningsWidget::TIGLViewerPositioningsWidget(QWidget *parent) : ModificatorWidget(parent) {
-
+TIGLViewerPositioningsWidget::TIGLViewerPositioningsWidget(QWidget* parent)
+    : ModificatorWidget(parent)
+{
 }
 /*
 void TIGLViewerPositioningsWidget::init(ModificatorManager *associate) {
