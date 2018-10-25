@@ -8,3 +8,4 @@ examples/python_internal/.idea/
 /.vs
 /cmake-build-debug
 .idea
+CMakeLists.txt.user
