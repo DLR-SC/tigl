@@ -106,6 +106,13 @@ set(tv_src
     TIGLSliderDialog.cpp
     TIGLViewerApp.cpp
     TIGLGeometryChoserDialog.cpp
+    # files for CPACSCreator
+    ModificatorWidget.cpp
+    TIGLViewerFuselageWidget.cpp
+    TIGLViewerPositioningsWidget.cpp
+    TIGLViewerTransformationWidget.cpp
+    TIGLViewerWingWidget.cpp
+
 )
 	
 # normal header files
@@ -150,6 +157,12 @@ set(tv_hdr_qobj
 	TIGLSliderDialog.h
 	TIGLViewerApp.h
 	TIGLGeometryChoserDialog.h
+    # files for CPACSCreator
+    ModificatorWidget.h
+    TIGLViewerFuselageWidget.h
+    TIGLViewerPositioningsWidget.h
+    TIGLViewerTransformationWidget.h
+    TIGLViewerWingWidget.h
 )
 
 set(tv_ui_comp
