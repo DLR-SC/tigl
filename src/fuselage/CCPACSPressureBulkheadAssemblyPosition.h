@@ -16,7 +16,6 @@
 
 #pragma once
 
-#include <boost/optional.hpp>
 #include <TopoDS_Shape.hxx>
 
 #include "generated/CPACSPressureBulkheadAssemblyPosition.h"

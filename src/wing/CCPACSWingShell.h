@@ -23,6 +23,7 @@
 #include "tigl_internal.h"
 #include "CCPACSWingCells.h"
 #include "CCPACSMaterialDefinition.h"
+#include "Cache.h"
 
 #include "tigl.h"
 
@@ -55,18 +56,19 @@ public:
     TIGL_EXPORT CCPACSWingCSStructure& GetStructure();
 
     TIGL_EXPORT void Invalidate();
-    TIGL_EXPORT bool IsValid() const;
-
-    TIGL_EXPORT void Update() const;
 
     TIGL_EXPORT TiglLoftSide GetLoftSide() const;
+
 private:
     //@todo stringers
 
     struct GeometryCache
     {
     };
-    mutable boost::optional<GeometryCache> geometryCache;
+
+    void BuildGeometry(GeometryCache& cache) const;
+
+    Cache<GeometryCache, CCPACSWingShell> m_geometryCache;
 };
 
 } // namespace tigl

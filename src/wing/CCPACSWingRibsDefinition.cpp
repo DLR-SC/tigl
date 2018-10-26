@@ -614,7 +614,7 @@ double CCPACSWingRibsDefinition::ComputeReferenceEtaEnd() const
 double CCPACSWingRibsDefinition::ComputeSectionElementEta(const std::string& sectionElementUID) const
 {
     // get componentSegment required for getting section element face
-    CCPACSWingComponentSegment& componentSegment = getStructure().GetWingStructureReference().GetWingComponentSegment();
+    const CCPACSWingComponentSegment& componentSegment = getStructure().GetWingStructureReference().GetWingComponentSegment();
 
     // get the section element face
     TopoDS_Face sectionFace = componentSegment.GetSectionElementFace(sectionElementUID);
@@ -730,7 +730,7 @@ TopoDS_Face CCPACSWingRibsDefinition::GetSectionRibGeometry(const std::string& e
     const CTiglWingStructureReference& wingStructureReference = getStructure().GetWingStructureReference();
     TopoDS_Face ribFace;
     if (!elementUID.empty()) {
-        CCPACSWingComponentSegment& componentSegment = wingStructureReference.GetWingComponentSegment();
+        const CCPACSWingComponentSegment& componentSegment = wingStructureReference.GetWingComponentSegment();
         ribFace = componentSegment.GetSectionElementFace(elementUID);
     }
     else {

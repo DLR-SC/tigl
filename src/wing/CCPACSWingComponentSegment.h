@@ -81,10 +81,10 @@ public:
     TIGL_EXPORT PNamedShape GetLowerShape() const;
 
     // Getter for inner segment face
-    TIGL_EXPORT TopoDS_Face GetInnerFace();
+    TIGL_EXPORT TopoDS_Face GetInnerFace() const;
 
     // Getter for outer segment face
-    TIGL_EXPORT TopoDS_Face GetOuterFace();
+    TIGL_EXPORT TopoDS_Face GetOuterFace() const;
 
     // Gets a point in relative wing coordinates for a given eta and xsi
     TIGL_EXPORT gp_Pnt GetPoint(double eta, double xsi, TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;

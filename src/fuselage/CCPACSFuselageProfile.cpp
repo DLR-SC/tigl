@@ -66,7 +66,13 @@ namespace tigl
 {
 // Constructor
 CCPACSFuselageProfile::CCPACSFuselageProfile(CTiglUIDManager* uidMgr)
-    : generated::CPACSProfileGeometry(uidMgr), invalidated(true), profileWireAlgo(new CTiglInterpolateBsplineWire), mirrorSymmetry(false) {}
+    : generated::CPACSProfileGeometry(uidMgr)
+    , mirrorSymmetry(false)
+    , wireCache(*this, &CCPACSFuselageProfile::BuildWires)
+    , diameterPointsCache(*this, &CCPACSFuselageProfile::BuildDiameterPoints)
+    , profileWireAlgo(new CTiglInterpolateBsplineWire)
+{
+}
 
 CCPACSFuselageProfile::~CCPACSFuselageProfile() {}
 
@@ -98,30 +104,19 @@ bool CCPACSFuselageProfile::GetMirrorSymmetry() const
 // Invalidates internal fuselage profile state
 void CCPACSFuselageProfile::Invalidate()
 {
-    invalidated = true;
-}
-
-// Update the internal state, i.g. recalculates wire
-void CCPACSFuselageProfile::Update()
-{
-    if (!invalidated) {
-        return;
-    }
-
-    BuildWires();
-    invalidated = false;
+    wireCache.clear();
+    diameterPointsCache.clear();
 }
 
 // Returns the fuselage profile wire
-TopoDS_Wire CCPACSFuselageProfile::GetWire(bool forceClosed)
+TopoDS_Wire CCPACSFuselageProfile::GetWire(bool forceClosed) const
 {
-    Update();
-    return (forceClosed ? wireClosed : wireOriginal);
+    return forceClosed ? wireCache->closed : wireCache->original;
 }
 
 // check if the distance between two points are below a fixed value, so that
 // these point could be imaged as "equal".
-bool CCPACSFuselageProfile::checkSamePoints(gp_Pnt pointA, gp_Pnt pointB)
+bool CCPACSFuselageProfile::checkSamePoints(gp_Pnt pointA, gp_Pnt pointB) const
 {
     Standard_Real distance;
     distance = pointA.Distance(pointB);
@@ -136,7 +131,7 @@ bool CCPACSFuselageProfile::checkSamePoints(gp_Pnt pointA, gp_Pnt pointB)
 
 // Builds the fuselage profile wire. The returned wire is already transformed by the
 // fuselage profile element transformation.
-void CCPACSFuselageProfile::BuildWires()
+void CCPACSFuselageProfile::BuildWires(WireCache& cache) const
 {
     if (!m_pointList_choice1)
         throw CTiglError("No pointlist specified");
@@ -216,8 +211,8 @@ void CCPACSFuselageProfile::BuildWires()
         }
     }
 
-    wireClosed   = tempWireClosed;
-    wireOriginal = tempWireOriginal;
+    cache.closed   = tempWireClosed;
+    cache.original = tempWireOriginal;
 }
 
 // Transforms a point by the fuselage profile transformation
@@ -230,16 +225,14 @@ gp_Pnt CCPACSFuselageProfile::TransformPoint(const gp_Pnt& aPoint) const
 // Gets a point on the fuselage profile wire in dependence of a parameter zeta with
 // 0.0 <= zeta <= 1.0. For zeta = 0.0 this is the wire start point,
 // for zeta = 1.0 the last wire point.
-gp_Pnt CCPACSFuselageProfile::GetPoint(double zeta)
+gp_Pnt CCPACSFuselageProfile::GetPoint(double zeta) const
 {
-    Update();
-
     if (zeta < 0.0 || zeta > 1.0) {
         throw CTiglError("Parameter zeta not in the range 0.0 <= zeta <= 1.0 in CCPACSFuselageProfile::GetPoint", TIGL_ERROR);
     }
 
     // Get the first edge of the wire
-    BRepTools_WireExplorer wireExplorer(wireOriginal);
+    BRepTools_WireExplorer wireExplorer(wireCache->original);
     if (!wireExplorer.More()) {
         throw CTiglError("Not enough edges found in CCPACSFuselageProfile::GetPoint", TIGL_ERROR);
     }
@@ -254,17 +247,15 @@ gp_Pnt CCPACSFuselageProfile::GetPoint(double zeta)
 }
 
 
-void CCPACSFuselageProfile::BuildDiameterPoints()
+void CCPACSFuselageProfile::BuildDiameterPoints(DiameterPointsCache& cache) const
 {
-    Update();
-
     if (!m_pointList_choice1)
         throw CTiglError("No pointlist specified");
     const std::vector<CTiglPoint>& coordinates = m_pointList_choice1->AsVector();
 
     if (mirrorSymmetry) {
-        startDiameterPoint = coordinates[0].Get_gp_Pnt();
-        endDiameterPoint = coordinates[coordinates.size() - 1].Get_gp_Pnt();
+        cache.start = coordinates[0].Get_gp_Pnt();
+        cache.end = coordinates[coordinates.size() - 1].Get_gp_Pnt();
     }
     else {
         // compute starting diameter point
@@ -273,26 +264,25 @@ void CCPACSFuselageProfile::BuildDiameterPoints()
         double x = (firstPnt.X() + lastPnt.X())/2.;
         double y = (firstPnt.Y() + lastPnt.Y())/2.;
         double z = (firstPnt.Z() + lastPnt.Z())/2.;
-        startDiameterPoint = gp_Pnt(x,y,z);
+        cache.start = gp_Pnt(x,y,z);
 
         // find the point with the max dist to starting point
-        endDiameterPoint = startDiameterPoint;
+        cache.end = cache.start;
         for (std::vector<CTiglPoint>::const_iterator it = coordinates.begin(); it != coordinates.end(); ++it) {
             gp_Pnt point = it->Get_gp_Pnt();
-            if (startDiameterPoint.Distance(point) > startDiameterPoint.Distance(endDiameterPoint)) {
-                endDiameterPoint = point;
+            if (cache.start.Distance(point) > cache.start.Distance(cache.end)) {
+                cache.end = point;
             }
         }
         // project into x-z plane
-        endDiameterPoint.SetY(0.);
-        startDiameterPoint.SetY(0.);
+        cache.end.SetY(0.);
+        cache.start.SetY(0.);
     }
 }
 
-TopoDS_Wire CCPACSFuselageProfile::GetDiameterWire()
+TopoDS_Wire CCPACSFuselageProfile::GetDiameterWire() const
 {
-    BuildDiameterPoints();
-    Handle(Geom_TrimmedCurve) diameterCurve = GC_MakeSegment(startDiameterPoint, endDiameterPoint);
+    Handle(Geom_TrimmedCurve) diameterCurve = GC_MakeSegment(diameterPointsCache->start, diameterPointsCache->end);
     TopoDS_Edge diameterEdge = BRepBuilderAPI_MakeEdge(diameterCurve);
     TopoDS_Wire diameterWire = BRepBuilderAPI_MakeWire(diameterEdge);
     return diameterWire;

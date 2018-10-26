@@ -52,12 +52,11 @@ class CTiglWingProfilePointList : public ITiglWingProfileAlgo
 
 public:
     // Constructor
-    TIGL_EXPORT CTiglWingProfilePointList(const CCPACSWingProfile& profile, CCPACSPointListXYZ& cpacsPointlist);
+    TIGL_EXPORT CTiglWingProfilePointList(const CCPACSWingProfile& profile, const CCPACSPointListXYZ& cpacsPointlist);
 
     TIGL_EXPORT void Invalidate() OVERRIDE;
 
     // Returns the profile points as read from TIXI.
-    TIGL_EXPORT std::vector<CTiglPoint>& GetSamplePoints() OVERRIDE;
     TIGL_EXPORT const std::vector<CTiglPoint>& GetSamplePoints() const OVERRIDE;
 
     // get upper wing profile wire
@@ -125,7 +124,7 @@ private:
     // constant blending distance for opening/closing trailing edge
     static const double       c_blendingDistance;
 
-    std::vector<CTiglPoint>&            coordinates;    /**< Coordinates of a wing profile element */
+    const std::vector<CTiglPoint>& coordinates;    /**< Coordinates of a wing profile element */
     unique_ptr<ITiglWireAlgorithm> profileWireAlgo;/**< Pointer to wire algorithm (e.g. CTiglInterpolateBsplineWire) */
     const CCPACSWingProfile&            profileRef;     /**< Reference to the wing profile */
 

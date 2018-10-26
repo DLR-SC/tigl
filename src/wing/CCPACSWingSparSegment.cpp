@@ -479,7 +479,7 @@ gp_Pnt CCPACSWingSparSegment::GetMidplanePoint(const std::string& positionUID) c
     CTiglWingStructureReference wingStructureReference = sparsNode.GetParent()->GetWingStructureReference();
 
     if (position.GetInputType() == CCPACSWingSparPosition::ElementUID) {
-        CCPACSWingComponentSegment& componentSegment = wingStructureReference.GetWingComponentSegment();
+        const CCPACSWingComponentSegment& componentSegment = wingStructureReference.GetWingComponentSegment();
         midplanePoint = getSectionElementChordlinePoint(componentSegment, position.GetElementUID(), position.GetXsi());
     }
     else if (position.GetInputType() == CCPACSWingSparPosition::Eta) {
@@ -499,7 +499,7 @@ gp_Vec CCPACSWingSparSegment::GetUpVector(const std::string& positionUID, gp_Pnt
 
     if (position.GetInputType() == CCPACSWingSparPosition::ElementUID) {
         // get componentSegment required for getting chordline points of sections
-        CCPACSWingComponentSegment& componentSegment = wingStructureReference.GetWingComponentSegment();
+        const CCPACSWingComponentSegment& componentSegment = wingStructureReference.GetWingComponentSegment();
 
         // compute bounding box of section element face
         TopoDS_Shape sectionFace = componentSegment.GetSectionElementFace(position.GetElementUID());

@@ -375,25 +375,11 @@ EtaXsi CCPACSWingCell::computePositioningEtaXsi(const CCPACSWingCellPositionSpan
 
 void CCPACSWingCell::UpdateEtaXsiValues(EtaXsiCache& cache) const
 {
-    EtaXsi innerLePoint =
-        computePositioningEtaXsi(m_positioningInnerBorder, m_positioningLeadingEdge, true, true);
-    cache.innerLeadingEdgePoint.eta = innerLePoint.eta;
-    cache.innerLeadingEdgePoint.xsi = innerLePoint.xsi;
+    cache.innerLeadingEdgePoint = computePositioningEtaXsi(m_positioningInnerBorder, m_positioningLeadingEdge, true, true);
+    cache.outerLeadingEdgePoint = computePositioningEtaXsi(m_positioningOuterBorder, m_positioningLeadingEdge, false, true);
+    cache.innerTrailingEdgePoint = computePositioningEtaXsi(m_positioningInnerBorder, m_positioningTrailingEdge, true, false);
+    cache.outerTrailingEdgePoint = computePositioningEtaXsi(m_positioningOuterBorder, m_positioningTrailingEdge, false, false);
 
-    EtaXsi outerLePoint =
-        computePositioningEtaXsi(m_positioningOuterBorder, m_positioningLeadingEdge, false, true);
-    cache.outerLeadingEdgePoint.eta = outerLePoint.eta;
-    cache.outerLeadingEdgePoint.xsi = outerLePoint.xsi;
-
-    EtaXsi innerTePoint =
-        computePositioningEtaXsi(m_positioningInnerBorder, m_positioningTrailingEdge, true, false);
-    cache.innerTrailingEdgePoint.eta = innerTePoint.eta;
-    cache.innerTrailingEdgePoint.xsi = innerTePoint.xsi;
-
-    EtaXsi outerTePoint =
-        computePositioningEtaXsi(m_positioningOuterBorder, m_positioningTrailingEdge, false, false);
-    cache.outerTrailingEdgePoint.eta = outerTePoint.eta;
-    cache.outerTrailingEdgePoint.xsi = outerTePoint.xsi;
 }
 
 TopoDS_Shape CCPACSWingCell::GetCellSkinGeometry(TiglCoordinateSystem cs) const
