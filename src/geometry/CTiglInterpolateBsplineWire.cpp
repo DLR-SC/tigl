@@ -26,7 +26,7 @@
 #include "BRepBuilderAPI_MakeEdge.hxx"
 #include "TopoDS_Edge.hxx"
 #include "TColgp_HArray1OfPnt.hxx"
-#include "GeomAPI_Interpolate.hxx"
+#include "CTiglPointsToBSplineInterpolation.h"
 #include "Precision.hxx"
 #include "math.h"
 #include <algorithm>
@@ -94,23 +94,8 @@ TopoDS_Wire CTiglInterpolateBsplineWire::BuildWire(const CPointContainer& points
         hpoints->SetValue(j + 1, usedPoints[j]);
     }
 
-    GeomAPI_Interpolate interPol(hpoints, false, Precision::Confusion());
-    if (forceClosed && endTangency) {
-        gp_Vec tangent(usedPoints[usedPoints.size()-2], usedPoints[1]);
-        tangent *= 0.5;
-        interPol.Load(tangent, tangent, false);
-    }
-    
-    interPol.Perform();
-    Handle(Geom_BSplineCurve) hcurve = interPol.Curve();
-
-    // This one works around a bug in OpenCascade if a curve is closed and
-    // periodic. After calling this method, the curve is still closed but
-    // no longer periodic, which leads to errors when creating the 3d-lofts
-    // from the curves.
-    // @todo: the line is uncommented due to a bug in OCC. Please check in future 
-    // future release! 
-    // hcurve->SetNotPeriodic();
+    CTiglPointsToBSplineInterpolation interpol(hpoints, 3, endTangency);
+    Handle(Geom_BSplineCurve) hcurve = interpol.Curve();
 
     TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(hcurve);
     BRepBuilderAPI_MakeWire wireBuilder(edge);
