@@ -50,7 +50,7 @@ CCPACSWingCell& CCPACSWingCells::GetCell(int index) const
 // Get parent wing shell element
 CCPACSWingShell* CCPACSWingCells::GetParentElement() const
 {
-    return GetParent();
+    return m_parent; // WARN(bgruber): breaks const propagation
 }
 
 CCPACSWingCell &CCPACSWingCells::GetCell(const std::string &UID) const

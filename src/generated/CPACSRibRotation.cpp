@@ -37,7 +37,12 @@ namespace generated
     {
     }
 
-    CCPACSWingRibsPositioning* CPACSRibRotation::GetParent() const
+    const CCPACSWingRibsPositioning* CPACSRibRotation::GetParent() const
+    {
+        return m_parent;
+    }
+
+    CCPACSWingRibsPositioning* CPACSRibRotation::GetParent()
     {
         return m_parent;
     }

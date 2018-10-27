@@ -33,26 +33,26 @@ namespace generated
     // generated from /xsd:schema/xsd:complexType[801]/xsd:complexContent/xsd:extension/xsd:all/xsd:element[4]/xsd:complexType/xsd:simpleContent
     enum CPACSContinuityAtP
     {
-        CPACSContinuityAtP_0,
+        _0,
         CPACSContinuityAtP_1,
-        CPACSContinuityAtP_2
+        _2
     };
 
     inline std::string CPACSContinuityAtPToString(const CPACSContinuityAtP& value)
     {
         switch(value) {
-        case CPACSContinuityAtP_0: return "0";
+        case _0: return "0";
         case CPACSContinuityAtP_1: return "1";
-        case CPACSContinuityAtP_2: return "2";
+        case _2: return "2";
         default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSContinuityAtP");
         }
     }
     inline CPACSContinuityAtP stringToCPACSContinuityAtP(const std::string& value)
     {
         struct ToLower { std::string operator()(std::string str) { for (std::size_t i = 0; i < str.length(); i++) { str[i] = std::tolower(str[i]); } return str; } } toLower;
-        if (toLower(value) == "0") { return CPACSContinuityAtP_0; }
+        if (toLower(value) == "0") { return _0; }
         if (toLower(value) == "1") { return CPACSContinuityAtP_1; }
-        if (toLower(value) == "2") { return CPACSContinuityAtP_2; }
+        if (toLower(value) == "2") { return _2; }
         throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSContinuityAtP");
     }
 } // namespace generated
@@ -63,7 +63,7 @@ using ECPACSContinuityAtP = generated::CPACSContinuityAtP;
 #else
 typedef generated::CPACSContinuityAtP ECPACSContinuityAtP;
 #endif
-using generated::CPACSContinuityAtP_0;
+using generated::_0;
 using generated::CPACSContinuityAtP_1;
-using generated::CPACSContinuityAtP_2;
+using generated::_2;
 } // namespace tigl

@@ -31,26 +31,26 @@ namespace generated
     // CPACSLongFloorBeamPosition
     // CPACSStringerFramePosition
 
-    // generated from /xsd:schema/xsd:complexType[838]/xsd:complexContent/xsd:extension/xsd:all/xsd:element[8]/xsd:complexType/xsd:simpleContent
+    // generated from /xsd:schema/xsd:complexType[391]/xsd:complexContent/xsd:extension/xsd:all/xsd:element[13]/xsd:complexType/xsd:simpleContent
     enum CPACSInterpolation
     {
-        _0,
-        CPACSInterpolation_1
+        CPACSInterpolation_0,
+        _1
     };
 
     inline std::string CPACSInterpolationToString(const CPACSInterpolation& value)
     {
         switch(value) {
-        case _0: return "0";
-        case CPACSInterpolation_1: return "1";
+        case CPACSInterpolation_0: return "0";
+        case _1: return "1";
         default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSInterpolation");
         }
     }
     inline CPACSInterpolation stringToCPACSInterpolation(const std::string& value)
     {
         struct ToLower { std::string operator()(std::string str) { for (std::size_t i = 0; i < str.length(); i++) { str[i] = std::tolower(str[i]); } return str; } } toLower;
-        if (toLower(value) == "0") { return _0; }
-        if (toLower(value) == "1") { return CPACSInterpolation_1; }
+        if (toLower(value) == "0") { return CPACSInterpolation_0; }
+        if (toLower(value) == "1") { return _1; }
         throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSInterpolation");
     }
 } // namespace generated
@@ -61,6 +61,6 @@ using ECPACSInterpolation = generated::CPACSInterpolation;
 #else
 typedef generated::CPACSInterpolation ECPACSInterpolation;
 #endif
-using generated::_0;
-using generated::CPACSInterpolation_1;
+using generated::CPACSInterpolation_0;
+using generated::_1;
 } // namespace tigl

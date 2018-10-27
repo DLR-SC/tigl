@@ -40,7 +40,7 @@ public:
     TIGL_EXPORT CCPACSWingCell& GetCell(int index) const;
 
     // Get parent wing shell element
-    TIGL_EXPORT CCPACSWingShell* GetParentElement() const;
+    DEPRECATED TIGL_EXPORT CCPACSWingShell* GetParentElement() const;
 
     TIGL_EXPORT CCPACSWingCell& GetCell(const std::string& UID) const;
 };

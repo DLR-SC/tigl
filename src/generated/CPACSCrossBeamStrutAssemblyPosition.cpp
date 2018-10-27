@@ -40,7 +40,12 @@ namespace generated
         if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
     }
 
-    CCPACSCargoCrossBeamStrutsAssembly* CPACSCrossBeamStrutAssemblyPosition::GetParent() const
+    const CCPACSCargoCrossBeamStrutsAssembly* CPACSCrossBeamStrutAssemblyPosition::GetParent() const
+    {
+        return m_parent;
+    }
+
+    CCPACSCargoCrossBeamStrutsAssembly* CPACSCrossBeamStrutAssemblyPosition::GetParent()
     {
         return m_parent;
     }

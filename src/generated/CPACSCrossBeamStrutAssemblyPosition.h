@@ -43,7 +43,9 @@ namespace generated
 
         TIGL_EXPORT virtual ~CPACSCrossBeamStrutAssemblyPosition();
 
-        TIGL_EXPORT CCPACSCargoCrossBeamStrutsAssembly* GetParent() const;
+        TIGL_EXPORT CCPACSCargoCrossBeamStrutsAssembly* GetParent();
+
+        TIGL_EXPORT const CCPACSCargoCrossBeamStrutsAssembly* GetParent() const;
 
         TIGL_EXPORT CTiglUIDManager& GetUIDManager();
         TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;

@@ -42,7 +42,9 @@ namespace generated
 
         TIGL_EXPORT virtual ~CPACSControlSurfaceSkinCutOutBorder();
 
-        TIGL_EXPORT CPACSControlSurfaceWingCutOut* GetParent() const;
+        TIGL_EXPORT CPACSControlSurfaceWingCutOut* GetParent();
+
+        TIGL_EXPORT const CPACSControlSurfaceWingCutOut* GetParent() const;
 
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;

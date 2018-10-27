@@ -38,7 +38,12 @@ namespace generated
     {
     }
 
-    CCPACSWingComponentSegment* CPACSControlSurfaces::GetParent() const
+    const CCPACSWingComponentSegment* CPACSControlSurfaces::GetParent() const
+    {
+        return m_parent;
+    }
+
+    CCPACSWingComponentSegment* CPACSControlSurfaces::GetParent()
     {
         return m_parent;
     }

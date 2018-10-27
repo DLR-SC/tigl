@@ -36,7 +36,12 @@ namespace generated
     {
     }
 
-    CCPACSWingCell* CPACSCellPositioningSpanwise::GetParent() const
+    const CCPACSWingCell* CPACSCellPositioningSpanwise::GetParent() const
+    {
+        return m_parent;
+    }
+
+    CCPACSWingCell* CPACSCellPositioningSpanwise::GetParent()
     {
         return m_parent;
     }

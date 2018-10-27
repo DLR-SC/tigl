@@ -39,7 +39,12 @@ namespace generated
         if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
     }
 
-    CCPACSPressureBulkheads* CPACSPressureBulkhead::GetParent() const
+    const CCPACSPressureBulkheads* CPACSPressureBulkhead::GetParent() const
+    {
+        return m_parent;
+    }
+
+    CCPACSPressureBulkheads* CPACSPressureBulkhead::GetParent()
     {
         return m_parent;
     }

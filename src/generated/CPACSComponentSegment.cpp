@@ -39,7 +39,12 @@ namespace generated
         if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
     }
 
-    CCPACSWingComponentSegments* CPACSComponentSegment::GetParent() const
+    const CCPACSWingComponentSegments* CPACSComponentSegment::GetParent() const
+    {
+        return m_parent;
+    }
+
+    CCPACSWingComponentSegments* CPACSComponentSegment::GetParent()
     {
         return m_parent;
     }

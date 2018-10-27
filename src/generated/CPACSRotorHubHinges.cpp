@@ -39,7 +39,12 @@ namespace generated
     {
     }
 
-    CCPACSRotorBladeAttachment* CPACSRotorHubHinges::GetParent() const
+    const CCPACSRotorBladeAttachment* CPACSRotorHubHinges::GetParent() const
+    {
+        return m_parent;
+    }
+
+    CCPACSRotorBladeAttachment* CPACSRotorHubHinges::GetParent()
     {
         return m_parent;
     }

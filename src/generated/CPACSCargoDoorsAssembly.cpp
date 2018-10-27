@@ -39,7 +39,12 @@ namespace generated
     {
     }
 
-    CCPACSFuselageStructure* CPACSCargoDoorsAssembly::GetParent() const
+    const CCPACSFuselageStructure* CPACSCargoDoorsAssembly::GetParent() const
+    {
+        return m_parent;
+    }
+
+    CCPACSFuselageStructure* CPACSCargoDoorsAssembly::GetParent()
     {
         return m_parent;
     }

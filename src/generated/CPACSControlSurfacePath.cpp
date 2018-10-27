@@ -41,7 +41,12 @@ namespace generated
     {
     }
 
-    CCPACSTrailingEdgeDevice* CPACSControlSurfacePath::GetParent() const
+    const CCPACSTrailingEdgeDevice* CPACSControlSurfacePath::GetParent() const
+    {
+        return m_parent;
+    }
+
+    CCPACSTrailingEdgeDevice* CPACSControlSurfacePath::GetParent()
     {
         return m_parent;
     }

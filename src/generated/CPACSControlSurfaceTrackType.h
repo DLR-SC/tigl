@@ -48,7 +48,9 @@ namespace generated
 
         TIGL_EXPORT virtual ~CPACSControlSurfaceTrackType();
 
-        TIGL_EXPORT CPACSControlSurfaceTracks* GetParent() const;
+        TIGL_EXPORT CPACSControlSurfaceTracks* GetParent();
+
+        TIGL_EXPORT const CPACSControlSurfaceTracks* GetParent() const;
 
         TIGL_EXPORT CTiglUIDManager& GetUIDManager();
         TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;

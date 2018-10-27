@@ -40,7 +40,12 @@ namespace generated
         if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
     }
 
-    CCPACSRotor* CPACSRotorHub::GetParent() const
+    const CCPACSRotor* CPACSRotorHub::GetParent() const
+    {
+        return m_parent;
+    }
+
+    CCPACSRotor* CPACSRotorHub::GetParent()
     {
         return m_parent;
     }

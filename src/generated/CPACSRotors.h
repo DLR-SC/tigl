@@ -42,7 +42,9 @@ namespace generated
 
         TIGL_EXPORT virtual ~CPACSRotors();
 
-        TIGL_EXPORT CCPACSRotorcraftModel* GetParent() const;
+        TIGL_EXPORT CCPACSRotorcraftModel* GetParent();
+
+        TIGL_EXPORT const CCPACSRotorcraftModel* GetParent() const;
 
         TIGL_EXPORT CTiglUIDManager& GetUIDManager();
         TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;

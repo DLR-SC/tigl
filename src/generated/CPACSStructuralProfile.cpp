@@ -41,7 +41,12 @@ namespace generated
         if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
     }
 
-    CCPACSStructuralProfiles* CPACSStructuralProfile::GetParent() const
+    const CCPACSStructuralProfiles* CPACSStructuralProfile::GetParent() const
+    {
+        return m_parent;
+    }
+
+    CCPACSStructuralProfiles* CPACSStructuralProfile::GetParent()
     {
         return m_parent;
     }

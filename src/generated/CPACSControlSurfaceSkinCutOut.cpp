@@ -36,7 +36,12 @@ namespace generated
     {
     }
 
-    CPACSControlSurfaceWingCutOut* CPACSControlSurfaceSkinCutOut::GetParent() const
+    const CPACSControlSurfaceWingCutOut* CPACSControlSurfaceSkinCutOut::GetParent() const
+    {
+        return m_parent;
+    }
+
+    CPACSControlSurfaceWingCutOut* CPACSControlSurfaceSkinCutOut::GetParent()
     {
         return m_parent;
     }

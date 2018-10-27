@@ -39,7 +39,12 @@ namespace generated
     {
     }
 
-    CCPACSWingSpars* CPACSSparPositions::GetParent() const
+    const CCPACSWingSpars* CPACSSparPositions::GetParent() const
+    {
+        return m_parent;
+    }
+
+    CCPACSWingSpars* CPACSSparPositions::GetParent()
     {
         return m_parent;
     }

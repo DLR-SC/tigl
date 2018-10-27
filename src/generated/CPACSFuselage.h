@@ -48,7 +48,9 @@ namespace generated
 
         TIGL_EXPORT virtual ~CPACSFuselage();
 
-        TIGL_EXPORT CCPACSFuselages* GetParent() const;
+        TIGL_EXPORT CCPACSFuselages* GetParent();
+
+        TIGL_EXPORT const CCPACSFuselages* GetParent() const;
 
         TIGL_EXPORT CTiglUIDManager& GetUIDManager();
         TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;

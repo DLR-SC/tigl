@@ -39,7 +39,12 @@ namespace generated
         if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
     }
 
-    CPACSCargoDoorsAssembly* CPACSDoorAssemblyPosition::GetParent() const
+    const CPACSCargoDoorsAssembly* CPACSDoorAssemblyPosition::GetParent() const
+    {
+        return m_parent;
+    }
+
+    CPACSCargoDoorsAssembly* CPACSDoorAssemblyPosition::GetParent()
     {
         return m_parent;
     }

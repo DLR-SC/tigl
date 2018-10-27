@@ -38,7 +38,12 @@ namespace generated
     {
     }
 
-    CCPACSWingRibsDefinition* CPACSWingRibCrossSection::GetParent() const
+    const CCPACSWingRibsDefinition* CPACSWingRibCrossSection::GetParent() const
+    {
+        return m_parent;
+    }
+
+    CCPACSWingRibsDefinition* CPACSWingRibCrossSection::GetParent()
     {
         return m_parent;
     }

@@ -125,7 +125,7 @@ std::string CCPACSFuselage::GetDefaultedUID() const
     return generated::CPACSFuselage::GetUID();
 }
 
-PNamedShape CCPACSFuselage::GetLoft(TiglCoordinateSystem cs)
+PNamedShape CCPACSFuselage::GetLoft(TiglCoordinateSystem cs) const
 {
     PNamedShape loft = CTiglRelativelyPositionedComponent::GetLoft();
     if (!loft) {

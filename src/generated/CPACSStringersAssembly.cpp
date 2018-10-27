@@ -39,7 +39,12 @@ namespace generated
     {
     }
 
-    CCPACSFuselageStructure* CPACSStringersAssembly::GetParent() const
+    const CCPACSFuselageStructure* CPACSStringersAssembly::GetParent() const
+    {
+        return m_parent;
+    }
+
+    CCPACSFuselageStructure* CPACSStringersAssembly::GetParent()
     {
         return m_parent;
     }

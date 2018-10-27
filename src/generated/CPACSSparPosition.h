@@ -41,7 +41,9 @@ namespace generated
 
         TIGL_EXPORT virtual ~CPACSSparPosition();
 
-        TIGL_EXPORT CCPACSWingSparPositions* GetParent() const;
+        TIGL_EXPORT CCPACSWingSparPositions* GetParent();
+
+        TIGL_EXPORT const CCPACSWingSparPositions* GetParent() const;
 
         TIGL_EXPORT CTiglUIDManager& GetUIDManager();
         TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;

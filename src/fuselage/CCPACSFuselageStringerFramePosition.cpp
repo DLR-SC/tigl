@@ -133,7 +133,7 @@ void CCPACSFuselageStringerFramePosition::GetZBorders(double& zmin, double& zmax
 
 void CCPACSFuselageStringerFramePosition::UpdateRelativePositioning(RelativePositionCache& cache) const
 {
-    CCPACSFuselageStructure* structure = NULL;
+    const CCPACSFuselageStructure* structure = NULL;
     if (IsParent<CCPACSFuselageStringer>())
         structure = GetParent<CCPACSFuselageStringer>()->GetParent()->GetParent();
     else if (IsParent<CCPACSFrame>())

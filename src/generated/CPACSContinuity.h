@@ -31,7 +31,7 @@ namespace generated
     // CPACSLongFloorBeamPosition
     // CPACSStringerFramePosition
 
-    // generated from /xsd:schema/xsd:complexType[516]/xsd:complexContent/xsd:extension/xsd:all/xsd:element[5]/xsd:complexType/xsd:simpleContent
+    // generated from /xsd:schema/xsd:complexType[391]/xsd:complexContent/xsd:extension/xsd:all/xsd:element[12]/xsd:complexType/xsd:simpleContent
     enum CPACSContinuity
     {
         CPACSContinuity_0,

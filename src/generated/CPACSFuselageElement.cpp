@@ -40,7 +40,12 @@ namespace generated
         if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
     }
 
-    CCPACSFuselageSectionElements* CPACSFuselageElement::GetParent() const
+    const CCPACSFuselageSectionElements* CPACSFuselageElement::GetParent() const
+    {
+        return m_parent;
+    }
+
+    CCPACSFuselageSectionElements* CPACSFuselageElement::GetParent()
     {
         return m_parent;
     }

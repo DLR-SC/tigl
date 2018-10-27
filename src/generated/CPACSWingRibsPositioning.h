@@ -42,7 +42,9 @@ namespace generated
 
         TIGL_EXPORT virtual ~CPACSWingRibsPositioning();
 
-        TIGL_EXPORT CCPACSWingRibsDefinition* GetParent() const;
+        TIGL_EXPORT CCPACSWingRibsDefinition* GetParent();
+
+        TIGL_EXPORT const CCPACSWingRibsDefinition* GetParent() const;
 
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;

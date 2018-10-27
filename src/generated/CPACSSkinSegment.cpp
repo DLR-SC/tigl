@@ -39,7 +39,12 @@ namespace generated
         if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
     }
 
-    CPACSSkinSegments* CPACSSkinSegment::GetParent() const
+    const CPACSSkinSegments* CPACSSkinSegment::GetParent() const
+    {
+        return m_parent;
+    }
+
+    CPACSSkinSegments* CPACSSkinSegment::GetParent()
     {
         return m_parent;
     }

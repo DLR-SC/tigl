@@ -39,7 +39,12 @@ namespace generated
     {
     }
 
-    CCPACSFuselage* CPACSFuselageSegments::GetParent() const
+    const CCPACSFuselage* CPACSFuselageSegments::GetParent() const
+    {
+        return m_parent;
+    }
+
+    CCPACSFuselage* CPACSFuselageSegments::GetParent()
     {
         return m_parent;
     }

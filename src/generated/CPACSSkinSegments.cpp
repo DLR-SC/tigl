@@ -39,7 +39,12 @@ namespace generated
     {
     }
 
-    CPACSSkin* CPACSSkinSegments::GetParent() const
+    const CPACSSkin* CPACSSkinSegments::GetParent() const
+    {
+        return m_parent;
+    }
+
+    CPACSSkin* CPACSSkinSegments::GetParent()
     {
         return m_parent;
     }

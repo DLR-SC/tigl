@@ -39,7 +39,12 @@ namespace generated
     {
     }
 
-    CCPACSWingShell* CPACSWingCells::GetParent() const
+    const CCPACSWingShell* CPACSWingCells::GetParent() const
+    {
+        return m_parent;
+    }
+
+    CCPACSWingShell* CPACSWingCells::GetParent()
     {
         return m_parent;
     }

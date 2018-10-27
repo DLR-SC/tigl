@@ -45,7 +45,9 @@ namespace generated
 
         TIGL_EXPORT virtual ~CPACSWingRibsDefinition();
 
-        TIGL_EXPORT CCPACSWingRibsDefinitions* GetParent() const;
+        TIGL_EXPORT CCPACSWingRibsDefinitions* GetParent();
+
+        TIGL_EXPORT const CCPACSWingRibsDefinitions* GetParent() const;
 
         TIGL_EXPORT CTiglUIDManager& GetUIDManager();
         TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
