@@ -39,7 +39,12 @@ namespace generated
         if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
     }
 
-    CPACSControlSurfaceTracks* CPACSControlSurfaceTrackType::GetParent() const
+    const CPACSControlSurfaceTracks* CPACSControlSurfaceTrackType::GetParent() const
+    {
+        return m_parent;
+    }
+
+    CPACSControlSurfaceTracks* CPACSControlSurfaceTrackType::GetParent()
     {
         return m_parent;
     }

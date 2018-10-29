@@ -38,7 +38,12 @@ namespace generated
     {
     }
 
-    CPACSControlSurfacePath* CPACSControlSurfaceHingePoint::GetParent() const
+    const CPACSControlSurfacePath* CPACSControlSurfaceHingePoint::GetParent() const
+    {
+        return m_parent;
+    }
+
+    CPACSControlSurfacePath* CPACSControlSurfaceHingePoint::GetParent()
     {
         return m_parent;
     }

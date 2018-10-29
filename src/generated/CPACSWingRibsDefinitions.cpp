@@ -39,7 +39,12 @@ namespace generated
     {
     }
 
-    CCPACSWingCSStructure* CPACSWingRibsDefinitions::GetParent() const
+    const CCPACSWingCSStructure* CPACSWingRibsDefinitions::GetParent() const
+    {
+        return m_parent;
+    }
+
+    CCPACSWingCSStructure* CPACSWingRibsDefinitions::GetParent()
     {
         return m_parent;
     }

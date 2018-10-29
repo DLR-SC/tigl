@@ -44,7 +44,9 @@ namespace generated
 
         TIGL_EXPORT virtual ~CPACSGenericGeometricComponent();
 
-        TIGL_EXPORT CCPACSExternalObjects* GetParent() const;
+        TIGL_EXPORT CCPACSExternalObjects* GetParent();
+
+        TIGL_EXPORT const CCPACSExternalObjects* GetParent() const;
 
         TIGL_EXPORT CTiglUIDManager& GetUIDManager();
         TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;

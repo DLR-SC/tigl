@@ -42,7 +42,9 @@ namespace generated
 
         TIGL_EXPORT virtual ~CPACSWingCells();
 
-        TIGL_EXPORT CCPACSWingShell* GetParent() const;
+        TIGL_EXPORT CCPACSWingShell* GetParent();
+
+        TIGL_EXPORT const CCPACSWingShell* GetParent() const;
 
         TIGL_EXPORT CTiglUIDManager& GetUIDManager();
         TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;

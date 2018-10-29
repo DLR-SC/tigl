@@ -43,7 +43,9 @@ namespace generated
 
         TIGL_EXPORT virtual ~CPACSSheetList();
 
-        TIGL_EXPORT CPACSStructuralProfile* GetParent() const;
+        TIGL_EXPORT CPACSStructuralProfile* GetParent();
+
+        TIGL_EXPORT const CPACSStructuralProfile* GetParent() const;
 
         TIGL_EXPORT CTiglUIDManager& GetUIDManager();
         TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;

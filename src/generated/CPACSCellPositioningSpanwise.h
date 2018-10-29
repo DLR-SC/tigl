@@ -40,7 +40,9 @@ namespace generated
 
         TIGL_EXPORT virtual ~CPACSCellPositioningSpanwise();
 
-        TIGL_EXPORT CCPACSWingCell* GetParent() const;
+        TIGL_EXPORT CCPACSWingCell* GetParent();
+
+        TIGL_EXPORT const CCPACSWingCell* GetParent() const;
 
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;

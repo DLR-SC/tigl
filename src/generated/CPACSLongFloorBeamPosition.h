@@ -45,7 +45,9 @@ namespace generated
 
         TIGL_EXPORT virtual ~CPACSLongFloorBeamPosition();
 
-        TIGL_EXPORT CCPACSLongFloorBeam* GetParent() const;
+        TIGL_EXPORT CCPACSLongFloorBeam* GetParent();
+
+        TIGL_EXPORT const CCPACSLongFloorBeam* GetParent() const;
 
         TIGL_EXPORT CTiglUIDManager& GetUIDManager();
         TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;

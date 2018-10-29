@@ -40,7 +40,12 @@ namespace generated
         if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
     }
 
-    CCPACSLongFloorBeamsAssembly* CPACSLongFloorBeam::GetParent() const
+    const CCPACSLongFloorBeamsAssembly* CPACSLongFloorBeam::GetParent() const
+    {
+        return m_parent;
+    }
+
+    CCPACSLongFloorBeamsAssembly* CPACSLongFloorBeam::GetParent()
     {
         return m_parent;
     }

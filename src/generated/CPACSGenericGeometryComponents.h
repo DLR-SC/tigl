@@ -42,7 +42,9 @@ namespace generated
 
         TIGL_EXPORT virtual ~CPACSGenericGeometryComponents();
 
-        TIGL_EXPORT CCPACSAircraftModel* GetParent() const;
+        TIGL_EXPORT CCPACSAircraftModel* GetParent();
+
+        TIGL_EXPORT const CCPACSAircraftModel* GetParent() const;
 
         TIGL_EXPORT CTiglUIDManager& GetUIDManager();
         TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;

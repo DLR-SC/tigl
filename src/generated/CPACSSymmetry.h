@@ -35,7 +35,7 @@ namespace generated
     // CPACSRotor
     // CPACSWing
 
-    // generated from /xsd:schema/xsd:complexType[631]/xsd:complexContent/xsd:extension/xsd:attribute[2]/xsd:simpleType
+    // generated from /xsd:schema/xsd:complexType[309]/xsd:complexContent/xsd:extension/xsd:attribute[2]/xsd:simpleType
     enum CPACSSymmetry
     {
         x_y_plane,

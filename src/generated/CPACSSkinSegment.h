@@ -42,7 +42,9 @@ namespace generated
 
         TIGL_EXPORT virtual ~CPACSSkinSegment();
 
-        TIGL_EXPORT CPACSSkinSegments* GetParent() const;
+        TIGL_EXPORT CPACSSkinSegments* GetParent();
+
+        TIGL_EXPORT const CPACSSkinSegments* GetParent() const;
 
         TIGL_EXPORT CTiglUIDManager& GetUIDManager();
         TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;

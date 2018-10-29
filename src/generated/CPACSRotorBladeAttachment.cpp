@@ -39,7 +39,12 @@ namespace generated
         if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
     }
 
-    CCPACSRotorBladeAttachments* CPACSRotorBladeAttachment::GetParent() const
+    const CCPACSRotorBladeAttachments* CPACSRotorBladeAttachment::GetParent() const
+    {
+        return m_parent;
+    }
+
+    CCPACSRotorBladeAttachments* CPACSRotorBladeAttachment::GetParent()
     {
         return m_parent;
     }

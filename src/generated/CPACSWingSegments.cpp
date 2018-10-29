@@ -39,7 +39,12 @@ namespace generated
     {
     }
 
-    CCPACSWing* CPACSWingSegments::GetParent() const
+    const CCPACSWing* CPACSWingSegments::GetParent() const
+    {
+        return m_parent;
+    }
+
+    CCPACSWing* CPACSWingSegments::GetParent()
     {
         return m_parent;
     }

@@ -40,7 +40,12 @@ namespace generated
         if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
     }
 
-    CCPACSFramesAssembly* CPACSFrame::GetParent() const
+    const CCPACSFramesAssembly* CPACSFrame::GetParent() const
+    {
+        return m_parent;
+    }
+
+    CCPACSFramesAssembly* CPACSFrame::GetParent()
     {
         return m_parent;
     }

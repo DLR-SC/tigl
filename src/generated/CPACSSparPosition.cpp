@@ -40,7 +40,12 @@ namespace generated
         if (m_uidMgr && m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
     }
 
-    CCPACSWingSparPositions* CPACSSparPosition::GetParent() const
+    const CCPACSWingSparPositions* CPACSSparPosition::GetParent() const
+    {
+        return m_parent;
+    }
+
+    CCPACSWingSparPositions* CPACSSparPosition::GetParent()
     {
         return m_parent;
     }

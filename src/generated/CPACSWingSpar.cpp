@@ -40,7 +40,12 @@ namespace generated
     {
     }
 
-    CCPACSWingCSStructure* CPACSWingSpar::GetParent() const
+    const CCPACSWingCSStructure* CPACSWingSpar::GetParent() const
+    {
+        return m_parent;
+    }
+
+    CCPACSWingCSStructure* CPACSWingSpar::GetParent()
     {
         return m_parent;
     }

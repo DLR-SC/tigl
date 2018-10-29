@@ -39,7 +39,12 @@ namespace generated
     {
     }
 
-    CPACSStructuralProfile* CPACSSheetList::GetParent() const
+    const CPACSStructuralProfile* CPACSSheetList::GetParent() const
+    {
+        return m_parent;
+    }
+
+    CPACSStructuralProfile* CPACSSheetList::GetParent()
     {
         return m_parent;
     }

@@ -40,7 +40,12 @@ namespace generated
         if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
     }
 
-    CCPACSExternalObjects* CPACSGenericGeometricComponent::GetParent() const
+    const CCPACSExternalObjects* CPACSGenericGeometricComponent::GetParent() const
+    {
+        return m_parent;
+    }
+
+    CCPACSExternalObjects* CPACSGenericGeometricComponent::GetParent()
     {
         return m_parent;
     }

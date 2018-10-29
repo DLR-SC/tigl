@@ -39,7 +39,12 @@ namespace generated
     {
     }
 
-    CCPACSAircraftModel* CPACSGenericGeometryComponents::GetParent() const
+    const CCPACSAircraftModel* CPACSGenericGeometryComponents::GetParent() const
+    {
+        return m_parent;
+    }
+
+    CCPACSAircraftModel* CPACSGenericGeometryComponents::GetParent()
     {
         return m_parent;
     }

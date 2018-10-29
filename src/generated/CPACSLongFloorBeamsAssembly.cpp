@@ -39,7 +39,12 @@ namespace generated
     {
     }
 
-    CCPACSFuselageStructure* CPACSLongFloorBeamsAssembly::GetParent() const
+    const CCPACSFuselageStructure* CPACSLongFloorBeamsAssembly::GetParent() const
+    {
+        return m_parent;
+    }
+
+    CCPACSFuselageStructure* CPACSLongFloorBeamsAssembly::GetParent()
     {
         return m_parent;
     }

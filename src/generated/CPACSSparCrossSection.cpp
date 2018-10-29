@@ -39,7 +39,12 @@ namespace generated
     {
     }
 
-    CCPACSWingSparSegment* CPACSSparCrossSection::GetParent() const
+    const CCPACSWingSparSegment* CPACSSparCrossSection::GetParent() const
+    {
+        return m_parent;
+    }
+
+    CCPACSWingSparSegment* CPACSSparCrossSection::GetParent()
     {
         return m_parent;
     }

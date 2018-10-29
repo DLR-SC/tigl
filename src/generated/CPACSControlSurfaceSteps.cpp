@@ -39,7 +39,12 @@ namespace generated
     {
     }
 
-    CPACSControlSurfacePath* CPACSControlSurfaceSteps::GetParent() const
+    const CPACSControlSurfacePath* CPACSControlSurfaceSteps::GetParent() const
+    {
+        return m_parent;
+    }
+
+    CPACSControlSurfacePath* CPACSControlSurfaceSteps::GetParent()
     {
         return m_parent;
     }

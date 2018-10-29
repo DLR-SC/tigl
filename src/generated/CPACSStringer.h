@@ -42,7 +42,9 @@ namespace generated
 
         TIGL_EXPORT virtual ~CPACSStringer();
 
-        TIGL_EXPORT CCPACSStringersAssembly* GetParent() const;
+        TIGL_EXPORT CCPACSStringersAssembly* GetParent();
+
+        TIGL_EXPORT const CCPACSStringersAssembly* GetParent() const;
 
         TIGL_EXPORT CTiglUIDManager& GetUIDManager();
         TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;

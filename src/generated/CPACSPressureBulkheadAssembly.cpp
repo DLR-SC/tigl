@@ -39,7 +39,12 @@ namespace generated
     {
     }
 
-    CCPACSFuselageStructure* CPACSPressureBulkheadAssembly::GetParent() const
+    const CCPACSFuselageStructure* CPACSPressureBulkheadAssembly::GetParent() const
+    {
+        return m_parent;
+    }
+
+    CCPACSFuselageStructure* CPACSPressureBulkheadAssembly::GetParent()
     {
         return m_parent;
     }

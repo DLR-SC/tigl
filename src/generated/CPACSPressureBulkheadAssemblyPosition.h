@@ -39,7 +39,9 @@ namespace generated
 
         TIGL_EXPORT virtual ~CPACSPressureBulkheadAssemblyPosition();
 
-        TIGL_EXPORT CCPACSPressureBulkheadAssembly* GetParent() const;
+        TIGL_EXPORT CCPACSPressureBulkheadAssembly* GetParent();
+
+        TIGL_EXPORT const CCPACSPressureBulkheadAssembly* GetParent() const;
 
         TIGL_EXPORT CTiglUIDManager& GetUIDManager();
         TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;

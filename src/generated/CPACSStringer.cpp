@@ -40,7 +40,12 @@ namespace generated
         if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
     }
 
-    CCPACSStringersAssembly* CPACSStringer::GetParent() const
+    const CCPACSStringersAssembly* CPACSStringer::GetParent() const
+    {
+        return m_parent;
+    }
+
+    CCPACSStringersAssembly* CPACSStringer::GetParent()
     {
         return m_parent;
     }

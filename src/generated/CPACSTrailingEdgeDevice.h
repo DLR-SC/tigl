@@ -47,7 +47,9 @@ namespace generated
 
         TIGL_EXPORT virtual ~CPACSTrailingEdgeDevice();
 
-        TIGL_EXPORT CCPACSTrailingEdgeDevices* GetParent() const;
+        TIGL_EXPORT CCPACSTrailingEdgeDevices* GetParent();
+
+        TIGL_EXPORT const CCPACSTrailingEdgeDevices* GetParent() const;
 
         TIGL_EXPORT CTiglUIDManager& GetUIDManager();
         TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;

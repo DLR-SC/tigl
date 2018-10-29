@@ -39,7 +39,12 @@ namespace generated
     {
     }
 
-    CCPACSRotorcraftModel* CPACSRotors::GetParent() const
+    const CCPACSRotorcraftModel* CPACSRotors::GetParent() const
+    {
+        return m_parent;
+    }
+
+    CCPACSRotorcraftModel* CPACSRotors::GetParent()
     {
         return m_parent;
     }

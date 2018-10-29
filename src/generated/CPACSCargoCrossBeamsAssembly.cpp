@@ -39,7 +39,12 @@ namespace generated
     {
     }
 
-    CCPACSFuselageStructure* CPACSCargoCrossBeamsAssembly::GetParent() const
+    const CCPACSFuselageStructure* CPACSCargoCrossBeamsAssembly::GetParent() const
+    {
+        return m_parent;
+    }
+
+    CCPACSFuselageStructure* CPACSCargoCrossBeamsAssembly::GetParent()
     {
         return m_parent;
     }

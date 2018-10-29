@@ -38,7 +38,9 @@ namespace generated
 
         TIGL_EXPORT virtual ~CPACSControlSurfaceHingePoint();
 
-        TIGL_EXPORT CPACSControlSurfacePath* GetParent() const;
+        TIGL_EXPORT CPACSControlSurfacePath* GetParent();
+
+        TIGL_EXPORT const CPACSControlSurfacePath* GetParent() const;
 
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;

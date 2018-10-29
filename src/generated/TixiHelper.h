@@ -25,6 +25,9 @@
 #include <ctime>
 
 #include "UniquePtr.h"
+#ifndef CPACS_GEN
+#include "CTiglLogging.h"
+#endif
 
 // some extensions to tixi
 namespace tixi
@@ -76,7 +79,16 @@ namespace tixi
 
         // read child nodes
         for (int i = 0; i < childCount; i++) {
-            children.push_back(readChild(tixiHandle, xpath + "[" + internal::to_string(i + 1) + "]"));
+            const std::string childXPath = xpath + "[" + internal::to_string(i + 1) + "]";
+            try {
+                children.push_back(readChild(tixiHandle, childXPath));
+            } catch (const std::exception& e) {
+#ifdef CPACS_GEN
+                throw;
+#else
+                LOG(ERROR) << "Failed to read element at xpath " << childXPath << ": " << e.what();
+#endif
+            }
         }
     }
 
