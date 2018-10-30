@@ -797,6 +797,11 @@ gp_Vec CCPACSWingRibsDefinition::GetRibDirection(double currentEta, const gp_Pnt
         // rotate y-axis around z-axis by zRotation in order to get rib direction
         ribDir = gp_Vec(0, 1, 0);
     }
+    else if (ribRotationReference == globalX) {
+        // rotate x-axis around z-axis by zRotation in order to get rib direction
+        // The -1 compensates for the following multiplocation with -1
+        ribDir = gp_Vec(-1, 0, 0);
+    }
     else {
         // rotation computation only implemented for ribs which have the
         // reference point in the same spar, otherwise computation could
@@ -812,7 +817,7 @@ gp_Vec CCPACSWingRibsDefinition::GetRibDirection(double currentEta, const gp_Pnt
 
     // rotate rib direction by z rotation around up vector
     // special handling for globalY, by default the zRotation defines the rotation around the up-vector
-    if (ribRotationReference == globalY) {
+    if (ribRotationReference == globalY || ribRotationReference == globalX) {
         ribDir.Rotate(gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), zRotation);
     }
     else {
