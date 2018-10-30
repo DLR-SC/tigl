@@ -6531,7 +6531,7 @@
                         <ribCrossingBehaviour>end</ribCrossingBehaviour>
                         <ribRotation uID="HTP_R1_ribRotation1">
                           <ribRotationReference>globalY</ribRotationReference>
-                          <z>0.0</z>
+                          <z>90.0</z>
                         </ribRotation>
                       </ribsPositioning>
                       <ribCrossSection>
@@ -6554,7 +6554,7 @@
                         <ribCrossingBehaviour>end</ribCrossingBehaviour>
                         <ribRotation uID="HTP_R2_ribRotation1">
                           <ribRotationReference>globalY</ribRotationReference>
-                          <z>-23.5</z>
+                          <z>66.5</z>
                         </ribRotation>
                       </ribsPositioning>
                       <ribCrossSection>
@@ -6577,7 +6577,7 @@
                         <ribCrossingBehaviour>end</ribCrossingBehaviour>
                         <ribRotation uID="HTP_R3_ribRotation1">
                           <ribRotationReference>globalY</ribRotationReference>
-                          <z>0.0</z>
+                          <z>90.0</z>
                         </ribRotation>
                       </ribsPositioning>
                       <ribCrossSection>
@@ -6600,7 +6600,7 @@
                         <ribCrossingBehaviour>end</ribCrossingBehaviour>
                         <ribRotation uID="HTP_R4_ribRotation1">
                           <ribRotationReference>globalY</ribRotationReference>
-                          <z>-23.5</z>
+                          <z>66.5</z>
                         </ribRotation>
                       </ribsPositioning>
                       <ribCrossSection>
@@ -6623,7 +6623,7 @@
                         <ribCrossingBehaviour>end</ribCrossingBehaviour>
                         <ribRotation uID="HTP_R5_ribRotation1">
                           <ribRotationReference>globalY</ribRotationReference>
-                          <z>-23.5</z>
+                          <z>66.5</z>
                         </ribRotation>
                       </ribsPositioning>
                       <ribCrossSection>
@@ -6646,7 +6646,7 @@
                         <ribCrossingBehaviour>end</ribCrossingBehaviour>
                         <ribRotation uID="HTP_R6_ribRotation1">
                           <ribRotationReference>globalY</ribRotationReference>
-                          <z>-23.5</z>
+                          <z>66.5</z>
                         </ribRotation>
                       </ribsPositioning>
                       <ribCrossSection>
@@ -6669,7 +6669,7 @@
                         <ribCrossingBehaviour>end</ribCrossingBehaviour>
                         <ribRotation uID="HTP_R7_ribRotation1">
                           <ribRotationReference>globalY</ribRotationReference>
-                          <z>-23.5</z>
+                          <z>66.5</z>
                         </ribRotation>
                       </ribsPositioning>
                       <ribCrossSection>
@@ -6692,7 +6692,7 @@
                         <ribCrossingBehaviour>end</ribCrossingBehaviour>
                         <ribRotation uID="HTP_R8_ribRotation1">
                           <ribRotationReference>globalY</ribRotationReference>
-                          <z>-23.5</z>
+                          <z>66.5</z>
                         </ribRotation>
                       </ribsPositioning>
                       <ribCrossSection>
@@ -6715,7 +6715,7 @@
                         <ribCrossingBehaviour>end</ribCrossingBehaviour>
                         <ribRotation uID="HTP_R9_ribRotation1">
                           <ribRotationReference>globalY</ribRotationReference>
-                          <z>-23.5</z>
+                          <z>66.5</z>
                         </ribRotation>
                       </ribsPositioning>
                       <ribCrossSection>
@@ -6738,7 +6738,7 @@
                         <ribCrossingBehaviour>end</ribCrossingBehaviour>
                         <ribRotation uID="HTP_R10_ribRotation1">
                           <ribRotationReference>globalY</ribRotationReference>
-                          <z>-23.5</z>
+                          <z>66.5</z>
                         </ribRotation>
                       </ribsPositioning>
                       <ribCrossSection>
@@ -6761,7 +6761,7 @@
                         <ribCrossingBehaviour>end</ribCrossingBehaviour>
                         <ribRotation uID="HTP_R11_ribRotation1">
                           <ribRotationReference>globalY</ribRotationReference>
-                          <z>-23.5</z>
+                          <z>66.5</z>
                         </ribRotation>
                       </ribsPositioning>
                       <ribCrossSection>
@@ -6784,7 +6784,7 @@
                         <ribCrossingBehaviour>end</ribCrossingBehaviour>
                         <ribRotation uID="HTP_R12_ribRotation1">
                           <ribRotationReference>globalY</ribRotationReference>
-                          <z>-23.5</z>
+                          <z>66.5</z>
                         </ribRotation>
                       </ribsPositioning>
                       <ribCrossSection>
@@ -6807,7 +6807,7 @@
                         <ribCrossingBehaviour>end</ribCrossingBehaviour>
                         <ribRotation uID="HTP_R13_ribRotation1">
                           <ribRotationReference>globalY</ribRotationReference>
-                          <z>-23.5</z>
+                          <z>66.5</z>
                         </ribRotation>
                       </ribsPositioning>
                       <ribCrossSection>
@@ -6830,7 +6830,7 @@
                         <ribCrossingBehaviour>end</ribCrossingBehaviour>
                         <ribRotation uID="HTP_R14_ribRotation1">
                           <ribRotationReference>globalY</ribRotationReference>
-                          <z>0.0</z>
+                          <z>90.0</z>
                         </ribRotation>
                       </ribsPositioning>
                       <ribCrossSection>
@@ -7223,7 +7223,7 @@
                         <ribCrossingBehaviour>end</ribCrossingBehaviour>
                         <ribRotation uID="VTP_R1_ribRotation1">
                           <ribRotationReference>globalY</ribRotationReference>
-                          <z>0.0</z>
+                          <z>90.0</z>
                         </ribRotation>
                       </ribsPositioning>
                       <ribCrossSection>
@@ -7246,7 +7246,7 @@
                         <ribCrossingBehaviour>end</ribCrossingBehaviour>
                         <ribRotation uID="VTP_R2_ribRotation1">
                           <ribRotationReference>globalY</ribRotationReference>
-                          <z>-17.0</z>
+                          <z>73.0</z>
                         </ribRotation>
                       </ribsPositioning>
                       <ribCrossSection>
@@ -7269,7 +7269,7 @@
                         <ribCrossingBehaviour>end</ribCrossingBehaviour>
                         <ribRotation uID="VTP_R3_ribRotation1">
                           <ribRotationReference>globalY</ribRotationReference>
-                          <z>-27.7</z>
+                          <z>62.3</z>
                         </ribRotation>
                       </ribsPositioning>
                       <ribCrossSection>
@@ -7292,7 +7292,7 @@
                         <ribCrossingBehaviour>end</ribCrossingBehaviour>
                         <ribRotation uID="VTP_R4_ribRotation1">
                           <ribRotationReference>globalY</ribRotationReference>
-                          <z>-27.7</z>
+                          <z>62.3</z>
                         </ribRotation>
                       </ribsPositioning>
                       <ribCrossSection>
@@ -7315,7 +7315,7 @@
                         <ribCrossingBehaviour>end</ribCrossingBehaviour>
                         <ribRotation uID="VTP_R5_ribRotation1">
                           <ribRotationReference>globalY</ribRotationReference>
-                          <z>-27.7</z>
+                          <z>62.3</z>
                         </ribRotation>
                       </ribsPositioning>
                       <ribCrossSection>
@@ -7338,7 +7338,7 @@
                         <ribCrossingBehaviour>end</ribCrossingBehaviour>
                         <ribRotation uID="VTP_R6_ribRotation1">
                           <ribRotationReference>globalY</ribRotationReference>
-                          <z>-27.7</z>
+                          <z>62.3</z>
                         </ribRotation>
                       </ribsPositioning>
                       <ribCrossSection>
@@ -7361,7 +7361,7 @@
                         <ribCrossingBehaviour>end</ribCrossingBehaviour>
                         <ribRotation uID="VTP_R7_ribRotation1">
                           <ribRotationReference>globalY</ribRotationReference>
-                          <z>-27.7</z>
+                          <z>62.3</z>
                         </ribRotation>
                       </ribsPositioning>
                       <ribCrossSection>
@@ -7384,7 +7384,7 @@
                         <ribCrossingBehaviour>end</ribCrossingBehaviour>
                         <ribRotation uID="VTP_R8_ribRotation1">
                           <ribRotationReference>globalY</ribRotationReference>
-                          <z>-27.7</z>
+                          <z>62.3</z>
                         </ribRotation>
                       </ribsPositioning>
                       <ribCrossSection>
@@ -7407,7 +7407,7 @@
                         <ribCrossingBehaviour>end</ribCrossingBehaviour>
                         <ribRotation uID="VTP_R9_ribRotation1">
                           <ribRotationReference>globalY</ribRotationReference>
-                          <z>-27.7</z>
+                          <z>62.3</z>
                         </ribRotation>
                       </ribsPositioning>
                       <ribCrossSection>
@@ -7430,7 +7430,7 @@
                         <ribCrossingBehaviour>end</ribCrossingBehaviour>
                         <ribRotation uID="VTP_R10_ribRotation1">
                           <ribRotationReference>globalY</ribRotationReference>
-                          <z>-27.7</z>
+                          <z>62.3</z>
                         </ribRotation>
                       </ribsPositioning>
                       <ribCrossSection>
@@ -7453,7 +7453,7 @@
                         <ribCrossingBehaviour>end</ribCrossingBehaviour>
                         <ribRotation uID="VTP_R11_ribRotation1">
                           <ribRotationReference>globalY</ribRotationReference>
-                          <z>0.0</z>
+                          <z>90.0</z>
                         </ribRotation>
                       </ribsPositioning>
                       <ribCrossSection>
