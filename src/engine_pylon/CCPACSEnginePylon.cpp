@@ -23,6 +23,7 @@ namespace tigl
 
 CCPACSEnginePylon::CCPACSEnginePylon(CCPACSEnginePylons* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSEnginePylon(parent, uidMgr)
+    , CTiglRelativelyPositionedComponent(&m_parentUID, &m_transformation)
 {
 }
 

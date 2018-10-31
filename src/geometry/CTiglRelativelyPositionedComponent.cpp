@@ -35,6 +35,9 @@
 
 namespace tigl
 {
+CTiglRelativelyPositionedComponent::CTiglRelativelyPositionedComponent(std::string* parentUid, CCPACSTransformation* trans)
+    : _transformation(trans), _symmetryAxis(static_cast<TiglSymmetryAxis*>(NULL)), _parentUID(parentUid), _parent(NULL) {}
+
 CTiglRelativelyPositionedComponent::CTiglRelativelyPositionedComponent(boost::optional<std::string>* parentUid, CCPACSTransformation* trans)
     : _transformation(trans), _symmetryAxis(static_cast<TiglSymmetryAxis*>(NULL)), _parentUID(parentUid), _parent(NULL) {}
 
@@ -52,7 +55,8 @@ void CTiglRelativelyPositionedComponent::Reset()
         _transformation->reset();
 }
 
-namespace {
+TiglSymmetryAxis CTiglRelativelyPositionedComponent::GetSymmetryAxis() const
+{
     struct GetSymmetryVisitor : boost::static_visitor<TiglSymmetryAxis> {
         GetSymmetryVisitor(CTiglRelativelyPositionedComponent* parent)
             : _parent(parent) {}
@@ -77,14 +81,12 @@ namespace {
     private:
         CTiglRelativelyPositionedComponent* _parent;
     };
+
+    return _symmetryAxis.apply_visitor(GetSymmetryVisitor(_parent));
 }
 
-TiglSymmetryAxis CTiglRelativelyPositionedComponent::GetSymmetryAxis() const {
-    GetSymmetryVisitor visitor(_parent);
-    return _symmetryAxis.apply_visitor(visitor);
-}
-
-namespace {
+void CTiglRelativelyPositionedComponent::SetSymmetryAxis(const TiglSymmetryAxis& axis)
+{
     struct SetSymmetryVisitor : boost::static_visitor<> {
         SetSymmetryVisitor(const TiglSymmetryAxis& axis)
             : axis(axis) {}
@@ -103,11 +105,8 @@ namespace {
     private:
         const TiglSymmetryAxis& axis;
     };
-}
 
-void CTiglRelativelyPositionedComponent::SetSymmetryAxis(const TiglSymmetryAxis& axis) {
-    SetSymmetryVisitor visitor(axis);
-    _symmetryAxis.apply_visitor(visitor);
+    _symmetryAxis.apply_visitor(SetSymmetryVisitor(axis));
 }
 
 CTiglTransformation CTiglRelativelyPositionedComponent::GetTransformationMatrix() const
@@ -124,7 +123,8 @@ CTiglTransformation CTiglRelativelyPositionedComponent::GetTransformationMatrix(
             parentTransformation.GetValue(2, 3)
         );
         return parentTranslation * thisTransformation;
-    } else
+    }
+    else
         return thisTransformation;
 }
 
@@ -180,17 +180,51 @@ CTiglRelativelyPositionedComponent::ChildContainerType CTiglRelativelyPositioned
 // Returns the parent unique id
 boost::optional<const std::string&> CTiglRelativelyPositionedComponent::GetParentUID() const
 {
-    if (!_parentUID || !*_parentUID)
-        return boost::optional<const std::string&>();
-    return **_parentUID;
+    struct GetParentUIDVisitor : boost::static_visitor<boost::optional<const std::string&> > {
+        GetParentUIDVisitor() {}
+
+        boost::optional<const std::string&> operator()(const std::string* parentUID) {
+            if (!parentUID) {
+                return boost::optional<const std::string&>();
+            }
+            else {
+                return boost::optional<const std::string&>(*parentUID);
+            }
+        }
+
+        boost::optional<const std::string&> operator()(const boost::optional<std::string>* parentUID) {
+            if (!parentUID || !*parentUID)
+                return boost::optional<const std::string&>();
+            return **parentUID;
+        }
+    };
+    
+    return _parentUID.apply_visitor(GetParentUIDVisitor());
 }
 
 // Sets the parent uid.
 void CTiglRelativelyPositionedComponent::SetParentUID(const std::string& parentUID)
 {
-    if (!_parentUID)
-        throw CTiglError("Derived type does not have a parentUID field");
-    **_parentUID = parentUID;
+    struct SetParentUIDVisitor : boost::static_visitor<> {
+        SetParentUIDVisitor(const std::string& parentUID)
+            : parentUID(parentUID) {}
+        void operator()(std::string* p) {
+            if (p)
+                *p = parentUID;
+            else
+                throw CTiglError("Derived type does not have a parentUID field");
+        }
+        void operator()(boost::optional<std::string>* p) {
+            if (p)
+                *p = parentUID;
+            else
+                throw CTiglError("Derived type does not have a parentUID field");
+        }
+    private:
+        const std::string& parentUID;
+    };
+    
+    _parentUID.apply_visitor(SetParentUIDVisitor(parentUID));
 }
 
 void CTiglRelativelyPositionedComponent::SetParent(CTiglRelativelyPositionedComponent& parent)

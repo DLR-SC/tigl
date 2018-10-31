@@ -25,19 +25,19 @@
 namespace tigl
 {
 
-class CCPACSEnginePylon : public generated::CPACSEnginePylon /*, public CTiglRelativelyPositionedComponent */
+class CCPACSEnginePylon : public generated::CPACSEnginePylon, public CTiglRelativelyPositionedComponent
 {
 public:
     TIGL_EXPORT CCPACSEnginePylon(CCPACSEnginePylons* parent, CTiglUIDManager* uidMgr);
 
-    TIGL_EXPORT std::string GetDefaultedUID() const /* OVERRIDE */;
+    TIGL_EXPORT std::string GetDefaultedUID() const OVERRIDE;
 
-    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const /* OVERRIDE */ { return TIGL_COMPONENT_ENGINE_PYLON | TIGL_COMPONENT_PHYSICAL; }
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE { return TIGL_COMPONENT_ENGINE_PYLON | TIGL_COMPONENT_PHYSICAL; }
 
     TIGL_EXPORT void Invalidate();
 
 protected:
-    virtual PNamedShape BuildLoft() const /* OVERRIDE */;
+    virtual PNamedShape BuildLoft() const OVERRIDE;
 };
 
 } // end namespace tigl
