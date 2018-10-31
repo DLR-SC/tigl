@@ -31,6 +31,7 @@
 namespace tigl
 {
 class CTiglUIDManager;
+class CCPACSEnginePylons;
 
 namespace generated
 {
@@ -41,8 +42,13 @@ namespace generated
     class CPACSEnginePylon
     {
     public:
-        TIGL_EXPORT CPACSEnginePylon(CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSEnginePylon(CCPACSEnginePylons* parent, CTiglUIDManager* uidMgr);
+
         TIGL_EXPORT virtual ~CPACSEnginePylon();
+
+        TIGL_EXPORT CCPACSEnginePylons* GetParent();
+
+        TIGL_EXPORT const CCPACSEnginePylons* GetParent() const;
 
         TIGL_EXPORT CTiglUIDManager& GetUIDManager();
         TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
@@ -50,8 +56,8 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const boost::optional<std::string>& GetUID() const;
-        TIGL_EXPORT virtual void SetUID(const boost::optional<std::string>& value);
+        TIGL_EXPORT virtual const std::string& GetUID() const;
+        TIGL_EXPORT virtual void SetUID(const std::string& value);
 
         TIGL_EXPORT virtual const boost::optional<std::string>& GetName() const;
         TIGL_EXPORT virtual void SetName(const boost::optional<std::string>& value);
@@ -84,9 +90,11 @@ namespace generated
         TIGL_EXPORT virtual void RemovePositionings();
 
     protected:
+        CCPACSEnginePylons* m_parent;
+
         CTiglUIDManager* m_uidMgr;
 
-        boost::optional<std::string>        m_uID;
+        std::string                         m_uID;
         boost::optional<std::string>        m_name;
         boost::optional<std::string>        m_description;
         std::string                         m_parentUID;

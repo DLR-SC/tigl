@@ -101,7 +101,7 @@ namespace generated
 
         // read element enginePylons
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/enginePylons")) {
-            m_enginePylons = boost::in_place(m_uidMgr);
+            m_enginePylons = boost::in_place(reinterpret_cast<CCPACSAircraftModel*>(this), m_uidMgr);
             try {
                 m_enginePylons->ReadCPACS(tixiHandle, xpath + "/enginePylons");
             } catch(const std::exception& e) {
@@ -291,7 +291,7 @@ namespace generated
     CCPACSEnginePylons& CPACSAircraftModel::GetEnginePylons(CreateIfNotExistsTag)
     {
         if (!m_enginePylons)
-            m_enginePylons = boost::in_place(m_uidMgr);
+            m_enginePylons = boost::in_place(reinterpret_cast<CCPACSAircraftModel*>(this), m_uidMgr);
         return *m_enginePylons;
     }
 

@@ -21,13 +21,23 @@
 namespace tigl
 {
 
-CCPACSEnginePylon::CCPACSEnginePylon(CTiglUIDManager* uidMgr)
-    : generated::CPACSEnginePylon(uidMgr)
+CCPACSEnginePylon::CCPACSEnginePylon(CCPACSEnginePylons* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSEnginePylon(parent, uidMgr)
 {
+}
+
+std::string CCPACSEnginePylon::GetDefaultedUID() const
+{
+    return generated::CPACSEnginePylon::GetUID();
 }
 
 void CCPACSEnginePylon::Invalidate()
 {
+}
+
+PNamedShape CCPACSEnginePylon::BuildLoft() const
+{
+    throw CTiglError("Pylon geometry building not yet implemented");
 }
 
 } // namespace tigl

@@ -13593,7 +13593,7 @@ jonas.jepsen@dlr.de
 					<xsd:element minOccurs="0" name="positionings" type="positioningsType"/>
 					<xsd:element minOccurs="0" name="loadCarryingStructure" type="pylonStructureType"/>
 				</xsd:sequence>
-				<xsd:attribute name="uID" type="xsd:string">
+				<xsd:attribute name="uID" type="xsd:string" use="required">
 					<xsd:annotation>
 						<xsd:documentation>UID of the engine pylon.</xsd:documentation>
 					</xsd:annotation>

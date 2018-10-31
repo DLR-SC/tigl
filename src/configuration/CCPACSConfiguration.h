@@ -162,6 +162,10 @@ public:
     TIGL_EXPORT CCPACSFuselages& GetFuselages();
     TIGL_EXPORT const CCPACSFuselages& GetFuselages() const;
 
+    // Returns list of engine pylons
+    TIGL_EXPORT CCPACSEnginePylons& GetEnginePylons();
+    TIGL_EXPORT const CCPACSEnginePylons& GetEnginePylons() const;
+
     // Returns the farfield
     TIGL_EXPORT CCPACSFarField& GetFarField();
 

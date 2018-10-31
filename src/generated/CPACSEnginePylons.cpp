@@ -15,7 +15,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <cassert>
 #include <CCPACSEnginePylon.h>
+#include "CCPACSAircraftModel.h"
 #include "CPACSEnginePylons.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -26,13 +28,25 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSEnginePylons::CPACSEnginePylons(CTiglUIDManager* uidMgr)
+    CPACSEnginePylons::CPACSEnginePylons(CCPACSAircraftModel* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
+        //assert(parent != NULL);
+        m_parent = parent;
     }
 
     CPACSEnginePylons::~CPACSEnginePylons()
     {
+    }
+
+    const CCPACSAircraftModel* CPACSEnginePylons::GetParent() const
+    {
+        return m_parent;
+    }
+
+    CCPACSAircraftModel* CPACSEnginePylons::GetParent()
+    {
+        return m_parent;
     }
 
     CTiglUIDManager& CPACSEnginePylons::GetUIDManager()
@@ -49,7 +63,7 @@ namespace generated
     {
         // read element enginePylon
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/enginePylon")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/enginePylon", m_enginePylons, m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/enginePylon", m_enginePylons, reinterpret_cast<CCPACSEnginePylons*>(this), m_uidMgr);
         }
 
     }
@@ -73,7 +87,7 @@ namespace generated
 
     CCPACSEnginePylon& CPACSEnginePylons::AddEnginePylon()
     {
-        m_enginePylons.push_back(make_unique<CCPACSEnginePylon>(m_uidMgr));
+        m_enginePylons.push_back(make_unique<CCPACSEnginePylon>(reinterpret_cast<CCPACSEnginePylons*>(this), m_uidMgr));
         return *m_enginePylons.back();
     }
 

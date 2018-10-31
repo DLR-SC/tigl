@@ -24,8 +24,8 @@
 namespace tigl
 {
 
-CCPACSEnginePylons::CCPACSEnginePylons(CTiglUIDManager* uidMgr)
-    : generated::CPACSEnginePylons(uidMgr)
+CCPACSEnginePylons::CCPACSEnginePylons(CCPACSAircraftModel* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSEnginePylons(parent, uidMgr)
 {
 }
 

@@ -89,3 +89,6 @@ CPACSSkin
 CPACSSkinSegment
 CPACSSkinSegments
 
+CPACSEnginePylon
+CPACSEnginePylons
+

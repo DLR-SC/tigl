@@ -27,6 +27,7 @@ namespace tigl
 {
 class CTiglUIDManager;
 class CCPACSEnginePylon;
+class CCPACSAircraftModel;
 
 namespace generated
 {
@@ -37,8 +38,13 @@ namespace generated
     class CPACSEnginePylons
     {
     public:
-        TIGL_EXPORT CPACSEnginePylons(CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSEnginePylons(CCPACSAircraftModel* parent, CTiglUIDManager* uidMgr);
+
         TIGL_EXPORT virtual ~CPACSEnginePylons();
+
+        TIGL_EXPORT CCPACSAircraftModel* GetParent();
+
+        TIGL_EXPORT const CCPACSAircraftModel* GetParent() const;
 
         TIGL_EXPORT CTiglUIDManager& GetUIDManager();
         TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
@@ -53,6 +59,8 @@ namespace generated
         TIGL_EXPORT virtual void RemoveEnginePylon(CCPACSEnginePylon& ref);
 
     protected:
+        CCPACSAircraftModel* m_parent;
+
         CTiglUIDManager* m_uidMgr;
 
         std::vector<unique_ptr<CCPACSEnginePylon> > m_enginePylons;

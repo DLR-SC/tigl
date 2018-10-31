@@ -28,7 +28,7 @@ class CCPACSEnginePylons : public generated::CPACSEnginePylons
 {
 public:
     // Constructor
-    TIGL_EXPORT CCPACSEnginePylons(CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSEnginePylons(CCPACSAircraftModel* parent, CTiglUIDManager* uidMgr);
 
     // Invalidates internal state
     TIGL_EXPORT void Invalidate();

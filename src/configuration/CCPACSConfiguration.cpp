@@ -504,6 +504,26 @@ const CCPACSFuselages& CCPACSConfiguration::GetFuselages() const
     }
 }
 
+CCPACSEnginePylons& CCPACSConfiguration::GetEnginePylons()
+{
+    if (aircraftModel) {
+        return *aircraftModel->GetEnginePylons();
+    }
+    else {
+        throw CTiglError("No aircraft loaded");
+    }
+}
+
+const CCPACSEnginePylons& CCPACSConfiguration::GetEnginePylons() const
+{
+    if (aircraftModel) {
+        return *aircraftModel->GetEnginePylons();
+    }
+    else {
+        throw CTiglError("No aircraft loaded");
+    }
+}
+
 CCPACSFarField& CCPACSConfiguration::GetFarField()
 {
     return farField;
