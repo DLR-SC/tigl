@@ -62,7 +62,7 @@ void CCPACSWingProfileCST::BuildWires(WireCache& cache) const
     yzSwitch.SetMirror(gp_Ax2(gp_Pnt(0.,0.,0.), gp_Dir(0.,-1.,1.)));
     
     // Build upper wire
-    CCSTCurveBuilder upperBuilder(m_upperN1, m_upperN2, m_upperB.AsVector());
+    CCSTCurveBuilder upperBuilder(m_upperN1, m_upperN2, m_upperB.AsVector(), m_trailingEdgeThickness ? *m_trailingEdgeThickness/2. : 0.);
     Handle(Geom_BSplineCurve) upperCurve = upperBuilder.Curve();
     upperCurve->Transform(yzSwitch);
     cache.upperWire = BRepBuilderAPI_MakeEdge(upperCurve);
@@ -73,7 +73,7 @@ void CCPACSWingProfileCST::BuildWires(WireCache& cache) const
         binv[i] = -binv[i];
     }
     
-    CCSTCurveBuilder lowerBuilder(m_lowerN1, m_lowerN2, binv);
+    CCSTCurveBuilder lowerBuilder(m_lowerN1, m_lowerN2, binv, m_trailingEdgeThickness ? *m_trailingEdgeThickness/2. : 0.);
     Handle(Geom_BSplineCurve) lowerCurve = lowerBuilder.Curve();
     lowerCurve->Transform(yzSwitch);
     lowerCurve->Reverse();

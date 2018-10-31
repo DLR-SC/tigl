@@ -139,19 +139,19 @@ TEST(TiglMath, CSTCurve)
     ASSERT_NEAR(1.0, tigl::shape_function(B1, 1.0), 1e-7);
 
     // check cst curve at some points
-    ASSERT_NEAR(0.0, tigl::cstcurve(N1, N2, Br, 0.0), 1e-7);
-    ASSERT_NEAR(0.568964089203402, tigl::cstcurve(N1, N2, Br, 0.2), 1e-7);
-    ASSERT_NEAR(2.325867218509732, tigl::cstcurve(N1, N2, Br, 0.75), 1e-7);
-    ASSERT_NEAR(0.0, tigl::cstcurve(N1, N2, Br, 1.0), 1e-7);
+    ASSERT_NEAR(0.0, tigl::cstcurve(N1, N2, Br, 0.0, 0.0), 1e-7);
+    ASSERT_NEAR(0.568964089203402, tigl::cstcurve(N1, N2, Br, 0., 0.2), 1e-7);
+    ASSERT_NEAR(2.325867218509732, tigl::cstcurve(N1, N2, Br, 0., 0.75), 1e-7);
+    ASSERT_NEAR(0.0, tigl::cstcurve(N1, N2, Br, 0., 1.0), 1e-7);
 
     // Sample exponents >1 for derivative 
     N1=1.1;
     N2=4.5;
     // check 1st derivative of cst curve at some points
-    ASSERT_NEAR(0.0, tigl::cstcurve_deriv(N1, N2, Br, 1, 0.0), 1e-7);
-    ASSERT_NEAR(0.0, tigl::cstcurve_deriv(N1, N2, Br, 1, 1.0), 1e-7);
+    ASSERT_NEAR(0.0, tigl::cstcurve_deriv(N1, N2, Br, 0., 1, 0.0), 1e-7);
+    ASSERT_NEAR(0.0, tigl::cstcurve_deriv(N1, N2, Br, 0., 1, 1.0), 1e-7);
     // check 1st derivative of cst curve at maximum of cstcurve (found numerically)
-    ASSERT_NEAR(0.0, tigl::cstcurve_deriv(N1, N2, Br, 1, 0.322954559162619), 1e-7);
+    ASSERT_NEAR(0.0, tigl::cstcurve_deriv(N1, N2, Br, 0., 1, 0.322954559162619), 1e-7);
 }
 
 TEST(TiglMath, Tchebycheff2Bezier_N3)

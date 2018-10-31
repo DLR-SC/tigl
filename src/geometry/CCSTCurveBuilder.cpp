@@ -67,7 +67,7 @@ namespace
             double x = valueX(t);
 
 
-            return tigl::cstcurve(builder->N1(), builder->N2(), builder->B(), x);
+            return tigl::cstcurve(builder->N1(), builder->N2(), builder->B(), builder->T(), x);
         }
 
         double valueZ(double /*t*/) OVERRIDE
@@ -83,9 +83,9 @@ namespace
 namespace tigl
 {
 
-CCSTCurveBuilder::CCSTCurveBuilder(double N1, double N2, const std::vector<double>& B)
+CCSTCurveBuilder::CCSTCurveBuilder(double N1, double N2, const std::vector<double>& B, double T)
 {
-    _n1 = N1; _n2 = N2; _b = B;
+    _n1 = N1; _n2 = N2; _b = B; _t = T;
 }
 
 double CCSTCurveBuilder::N1() const
@@ -96,6 +96,11 @@ double CCSTCurveBuilder::N1() const
 double CCSTCurveBuilder::N2() const
 {
     return _n2;
+}
+
+double CCSTCurveBuilder::T() const
+{
+    return _t;
 }
 
 std::vector<double> CCSTCurveBuilder::B() const
