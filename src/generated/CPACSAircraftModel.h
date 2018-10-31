@@ -24,6 +24,7 @@
 #include <CCPACSWings.h>
 #include <string>
 #include <tixi.h>
+#include "CPACSEnginePylons.h"
 #include "CreateIfNotExists.h"
 #include "tigl_internal.h"
 
@@ -64,6 +65,9 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CCPACSWings>& GetWings() const;
         TIGL_EXPORT virtual boost::optional<CCPACSWings>& GetWings();
 
+        TIGL_EXPORT virtual const boost::optional<CPACSEnginePylons>& GetEnginePylons() const;
+        TIGL_EXPORT virtual boost::optional<CPACSEnginePylons>& GetEnginePylons();
+
         TIGL_EXPORT virtual const boost::optional<CCPACSExternalObjects>& GetGenericGeometryComponents() const;
         TIGL_EXPORT virtual boost::optional<CCPACSExternalObjects>& GetGenericGeometryComponents();
 
@@ -72,6 +76,9 @@ namespace generated
 
         TIGL_EXPORT virtual CCPACSWings& GetWings(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveWings();
+
+        TIGL_EXPORT virtual CPACSEnginePylons& GetEnginePylons(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveEnginePylons();
 
         TIGL_EXPORT virtual CCPACSExternalObjects& GetGenericGeometryComponents(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveGenericGeometryComponents();
@@ -84,6 +91,7 @@ namespace generated
         boost::optional<std::string>           m_description;
         boost::optional<CCPACSFuselages>       m_fuselages;
         boost::optional<CCPACSWings>           m_wings;
+        boost::optional<CPACSEnginePylons>     m_enginePylons;
         boost::optional<CCPACSExternalObjects> m_genericGeometryComponents;
 
     private:

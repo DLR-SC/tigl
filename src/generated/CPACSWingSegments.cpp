@@ -18,6 +18,7 @@
 #include <cassert>
 #include <CCPACSWingSegment.h>
 #include "CCPACSWing.h"
+#include "CPACSEnginePylon.h"
 #include "CPACSWingSegments.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -28,25 +29,24 @@ namespace tigl
 {
 namespace generated
 {
+    CPACSWingSegments::CPACSWingSegments(CPACSEnginePylon* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSEnginePylon);
+    }
+
     CPACSWingSegments::CPACSWingSegments(CCPACSWing* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
+        m_parentType = &typeid(CCPACSWing);
     }
 
     CPACSWingSegments::~CPACSWingSegments()
     {
-    }
-
-    const CCPACSWing* CPACSWingSegments::GetParent() const
-    {
-        return m_parent;
-    }
-
-    CCPACSWing* CPACSWingSegments::GetParent()
-    {
-        return m_parent;
     }
 
     CTiglUIDManager& CPACSWingSegments::GetUIDManager()

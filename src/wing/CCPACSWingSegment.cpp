@@ -180,10 +180,10 @@ namespace
 
 CCPACSWingSegment::CCPACSWingSegment(CCPACSWingSegments* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSWingSegment(parent, uidMgr)
-    , CTiglAbstractSegment<CCPACSWingSegment>(parent->GetSegments(), parent->GetParent()->m_symmetry)
+    , CTiglAbstractSegment<CCPACSWingSegment>(parent->GetSegments(), parent->GetParent<CCPACSWing>()->m_symmetry)
     , innerConnection(this)
     , outerConnection(this)
-    , wing(parent->GetParent())
+    , wing(parent->GetParent<CCPACSWing>())
     , surfaceCoordCache(*this, &CCPACSWingSegment::MakeChordSurface)
     , areaCache(*this, &CCPACSWingSegment::ComputeArea)
     , volumeCache(*this, &CCPACSWingSegment::ComputeVolume)
@@ -1021,7 +1021,7 @@ TopoDS_Shape CCPACSWingSegment::GetUpperShape(TiglCoordinateSystem referenceCS, 
     TopoDS_Shape s = GetFacesByName(GetLoft(mod), "Top");
     if (referenceCS == GLOBAL_COORDINATE_SYSTEM)
         return s;
-    return GetParent()->GetParent()->GetTransformationMatrix().Inverted().Transform(s);
+    return GetParent()->GetParent<CCPACSWing>()->GetTransformationMatrix().Inverted().Transform(s);
 }
 
 // Returns the lower wing shape of this Segment
@@ -1030,7 +1030,7 @@ TopoDS_Shape CCPACSWingSegment::GetLowerShape(TiglCoordinateSystem referenceCS, 
     TopoDS_Shape s = GetFacesByName(GetLoft(mod), "Bottom");
     if (referenceCS == GLOBAL_COORDINATE_SYSTEM)
         return s;
-    return GetParent()->GetParent()->GetTransformationMatrix().Inverted().Transform(s);
+    return GetParent()->GetParent<CCPACSWing>()->GetTransformationMatrix().Inverted().Transform(s);
 }
 
 TopoDS_Shape CCPACSWingSegment::GetTrailingEdgeShape(TiglCoordinateSystem referenceCS,
@@ -1039,7 +1039,7 @@ TopoDS_Shape CCPACSWingSegment::GetTrailingEdgeShape(TiglCoordinateSystem refere
     TopoDS_Shape s = GetFacesByName(GetLoft(mod), "TrailingEdge");
     if (referenceCS == GLOBAL_COORDINATE_SYSTEM)
         return s;
-    return GetParent()->GetParent()->GetTransformationMatrix().Inverted().Transform(s);
+    return GetParent()->GetParent<CCPACSWing>()->GetTransformationMatrix().Inverted().Transform(s);
 }
 
 } // end namespace tigl

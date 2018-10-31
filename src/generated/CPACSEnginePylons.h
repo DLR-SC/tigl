@@ -19,30 +19,27 @@
 
 #include <string>
 #include <tixi.h>
-#include <typeinfo>
 #include <vector>
-#include "CTiglError.h"
 #include "tigl_internal.h"
 #include "UniquePtr.h"
 
 namespace tigl
 {
 class CTiglUIDManager;
-class CCPACSPositioning;
 
 namespace generated
 {
-    // This class is used in:
-    // CPACSEnginePylon
-    // CPACSFuselage
-    // CPACSWing
+    class CPACSEnginePylon;
 
-    // generated from /xsd:schema/xsd:complexType[726]
-    class CPACSPositionings
+    // This class is used in:
+    // CPACSAircraftModel
+
+    // generated from /xsd:schema/xsd:complexType[312]
+    class CPACSEnginePylons
     {
     public:
-        TIGL_EXPORT CPACSPositionings(CTiglUIDManager* uidMgr);
-        TIGL_EXPORT virtual ~CPACSPositionings();
+        TIGL_EXPORT CPACSEnginePylons(CTiglUIDManager* uidMgr);
+        TIGL_EXPORT virtual ~CPACSEnginePylons();
 
         TIGL_EXPORT CTiglUIDManager& GetUIDManager();
         TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
@@ -50,30 +47,37 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSPositioning> >& GetPositionings() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSPositioning> >& GetPositionings();
+        TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSEnginePylon> >& GetEnginePylons() const;
+        TIGL_EXPORT virtual std::vector<unique_ptr<CPACSEnginePylon> >& GetEnginePylons();
 
-        TIGL_EXPORT virtual CCPACSPositioning& AddPositioning();
-        TIGL_EXPORT virtual void RemovePositioning(CCPACSPositioning& ref);
+        TIGL_EXPORT virtual CPACSEnginePylon& AddEnginePylon();
+        TIGL_EXPORT virtual void RemoveEnginePylon(CPACSEnginePylon& ref);
 
     protected:
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<unique_ptr<CCPACSPositioning> > m_positionings;
+        std::vector<unique_ptr<CPACSEnginePylon> > m_enginePylons;
 
     private:
 #ifdef HAVE_CPP11
-        CPACSPositionings(const CPACSPositionings&) = delete;
-        CPACSPositionings& operator=(const CPACSPositionings&) = delete;
+        CPACSEnginePylons(const CPACSEnginePylons&) = delete;
+        CPACSEnginePylons& operator=(const CPACSEnginePylons&) = delete;
 
-        CPACSPositionings(CPACSPositionings&&) = delete;
-        CPACSPositionings& operator=(CPACSPositionings&&) = delete;
+        CPACSEnginePylons(CPACSEnginePylons&&) = delete;
+        CPACSEnginePylons& operator=(CPACSEnginePylons&&) = delete;
 #else
-        CPACSPositionings(const CPACSPositionings&);
-        CPACSPositionings& operator=(const CPACSPositionings&);
+        CPACSEnginePylons(const CPACSEnginePylons&);
+        CPACSEnginePylons& operator=(const CPACSEnginePylons&);
 #endif
     };
 } // namespace generated
 
-// CPACSPositionings is customized, use type CCPACSPositionings directly
+// Aliases in tigl namespace
+#ifdef HAVE_CPP11
+using CCPACSEnginePylons = generated::CPACSEnginePylons;
+using CCPACSEnginePylon = generated::CPACSEnginePylon;
+#else
+typedef generated::CPACSEnginePylons CCPACSEnginePylons;
+typedef generated::CPACSEnginePylon CCPACSEnginePylon;
+#endif
 } // namespace tigl

@@ -32,7 +32,7 @@ CCPACSWingSectionElement::CCPACSWingSectionElement(CCPACSWingSectionElements* pa
 void CCPACSWingSectionElement::SetAirfoilUID(const std::string& value) {
     generated::CPACSWingElement::SetAirfoilUID(value);
     // invalidate wing as we affect wing segments and component segments
-    m_parent->GetParent()->GetParent()->GetParent()->Invalidate();
+    m_parent->GetParent()->GetParent()->GetParent<CCPACSWing>()->Invalidate();
 }
 
 // Gets the section element transformation

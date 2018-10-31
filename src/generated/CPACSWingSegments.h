@@ -19,7 +19,9 @@
 
 #include <string>
 #include <tixi.h>
+#include <typeinfo>
 #include <vector>
+#include "CTiglError.h"
 #include "tigl_internal.h"
 #include "UniquePtr.h"
 
@@ -31,20 +33,50 @@ class CCPACSWing;
 
 namespace generated
 {
+    class CPACSEnginePylon;
+
     // This class is used in:
+    // CPACSEnginePylon
     // CPACSWing
 
     // generated from /xsd:schema/xsd:complexType[956]
     class CPACSWingSegments
     {
     public:
+        TIGL_EXPORT CPACSWingSegments(CPACSEnginePylon* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSWingSegments(CCPACSWing* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSWingSegments();
 
-        TIGL_EXPORT CCPACSWing* GetParent();
+        template<typename P>
+        bool IsParent() const
+        {
+            return m_parentType != NULL && *m_parentType == typeid(P);
+        }
 
-        TIGL_EXPORT const CCPACSWing* GetParent() const;
+        template<typename P>
+        P* GetParent()
+        {
+#ifdef HAVE_STDIS_SAME
+            static_assert(std::is_same<P, CPACSEnginePylon>::value || std::is_same<P, CCPACSWing>::value, "template argument for P is not a parent class of CPACSWingSegments");
+#endif
+            if (!IsParent<P>()) {
+                throw CTiglError("bad parent");
+            }
+            return static_cast<P*>(m_parent);
+        }
+
+        template<typename P>
+        const P* GetParent() const
+        {
+#ifdef HAVE_STDIS_SAME
+            static_assert(std::is_same<P, CPACSEnginePylon>::value || std::is_same<P, CCPACSWing>::value, "template argument for P is not a parent class of CPACSWingSegments");
+#endif
+            if (!IsParent<P>()) {
+                throw CTiglError("bad parent");
+            }
+            return static_cast<P*>(m_parent);
+        }
 
         TIGL_EXPORT CTiglUIDManager& GetUIDManager();
         TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
@@ -59,7 +91,8 @@ namespace generated
         TIGL_EXPORT virtual void RemoveSegment(CCPACSWingSegment& ref);
 
     protected:
-        CCPACSWing* m_parent;
+        void* m_parent;
+        const std::type_info* m_parentType;
 
         CTiglUIDManager* m_uidMgr;
 
@@ -80,4 +113,11 @@ namespace generated
 } // namespace generated
 
 // CPACSWingSegments is customized, use type CCPACSWingSegments directly
+
+// Aliases in tigl namespace
+#ifdef HAVE_CPP11
+using CCPACSEnginePylon = generated::CPACSEnginePylon;
+#else
+typedef generated::CPACSEnginePylon CCPACSEnginePylon;
+#endif
 } // namespace tigl
