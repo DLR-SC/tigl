@@ -29,12 +29,11 @@ namespace tigl
 {
 class CTiglUIDManager;
 class CCPACSWingSegment;
+class CCPACSEnginePylon;
 class CCPACSWing;
 
 namespace generated
 {
-    class CPACSEnginePylon;
-
     // This class is used in:
     // CPACSEnginePylon
     // CPACSWing
@@ -43,7 +42,7 @@ namespace generated
     class CPACSWingSegments
     {
     public:
-        TIGL_EXPORT CPACSWingSegments(CPACSEnginePylon* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSWingSegments(CCPACSEnginePylon* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSWingSegments(CCPACSWing* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSWingSegments();
@@ -58,7 +57,7 @@ namespace generated
         P* GetParent()
         {
 #ifdef HAVE_STDIS_SAME
-            static_assert(std::is_same<P, CPACSEnginePylon>::value || std::is_same<P, CCPACSWing>::value, "template argument for P is not a parent class of CPACSWingSegments");
+            static_assert(std::is_same<P, CCPACSEnginePylon>::value || std::is_same<P, CCPACSWing>::value, "template argument for P is not a parent class of CPACSWingSegments");
 #endif
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
@@ -70,7 +69,7 @@ namespace generated
         const P* GetParent() const
         {
 #ifdef HAVE_STDIS_SAME
-            static_assert(std::is_same<P, CPACSEnginePylon>::value || std::is_same<P, CCPACSWing>::value, "template argument for P is not a parent class of CPACSWingSegments");
+            static_assert(std::is_same<P, CCPACSEnginePylon>::value || std::is_same<P, CCPACSWing>::value, "template argument for P is not a parent class of CPACSWingSegments");
 #endif
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
@@ -113,11 +112,4 @@ namespace generated
 } // namespace generated
 
 // CPACSWingSegments is customized, use type CCPACSWingSegments directly
-
-// Aliases in tigl namespace
-#ifdef HAVE_CPP11
-using CCPACSEnginePylon = generated::CPACSEnginePylon;
-#else
-typedef generated::CPACSEnginePylon CCPACSEnginePylon;
-#endif
 } // namespace tigl

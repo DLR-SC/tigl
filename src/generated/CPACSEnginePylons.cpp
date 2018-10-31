@@ -15,7 +15,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "CPACSEnginePylon.h"
+#include <CCPACSEnginePylon.h>
 #include "CPACSEnginePylons.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -61,23 +61,23 @@ namespace generated
 
     }
 
-    const std::vector<unique_ptr<CPACSEnginePylon> >& CPACSEnginePylons::GetEnginePylons() const
+    const std::vector<unique_ptr<CCPACSEnginePylon> >& CPACSEnginePylons::GetEnginePylons() const
     {
         return m_enginePylons;
     }
 
-    std::vector<unique_ptr<CPACSEnginePylon> >& CPACSEnginePylons::GetEnginePylons()
+    std::vector<unique_ptr<CCPACSEnginePylon> >& CPACSEnginePylons::GetEnginePylons()
     {
         return m_enginePylons;
     }
 
-    CPACSEnginePylon& CPACSEnginePylons::AddEnginePylon()
+    CCPACSEnginePylon& CPACSEnginePylons::AddEnginePylon()
     {
-        m_enginePylons.push_back(make_unique<CPACSEnginePylon>(m_uidMgr));
+        m_enginePylons.push_back(make_unique<CCPACSEnginePylon>(m_uidMgr));
         return *m_enginePylons.back();
     }
 
-    void CPACSEnginePylons::RemoveEnginePylon(CPACSEnginePylon& ref)
+    void CPACSEnginePylons::RemoveEnginePylon(CCPACSEnginePylon& ref)
     {
         for (std::size_t i = 0; i < m_enginePylons.size(); i++) {
             if (m_enginePylons[i].get() == &ref) {

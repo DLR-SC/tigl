@@ -26,11 +26,10 @@
 namespace tigl
 {
 class CTiglUIDManager;
+class CCPACSEnginePylon;
 
 namespace generated
 {
-    class CPACSEnginePylon;
-
     // This class is used in:
     // CPACSAircraftModel
 
@@ -47,16 +46,16 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSEnginePylon> >& GetEnginePylons() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CPACSEnginePylon> >& GetEnginePylons();
+        TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSEnginePylon> >& GetEnginePylons() const;
+        TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSEnginePylon> >& GetEnginePylons();
 
-        TIGL_EXPORT virtual CPACSEnginePylon& AddEnginePylon();
-        TIGL_EXPORT virtual void RemoveEnginePylon(CPACSEnginePylon& ref);
+        TIGL_EXPORT virtual CCPACSEnginePylon& AddEnginePylon();
+        TIGL_EXPORT virtual void RemoveEnginePylon(CCPACSEnginePylon& ref);
 
     protected:
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<unique_ptr<CPACSEnginePylon> > m_enginePylons;
+        std::vector<unique_ptr<CCPACSEnginePylon> > m_enginePylons;
 
     private:
 #ifdef HAVE_CPP11
@@ -72,12 +71,5 @@ namespace generated
     };
 } // namespace generated
 
-// Aliases in tigl namespace
-#ifdef HAVE_CPP11
-using CCPACSEnginePylons = generated::CPACSEnginePylons;
-using CCPACSEnginePylon = generated::CPACSEnginePylon;
-#else
-typedef generated::CPACSEnginePylons CCPACSEnginePylons;
-typedef generated::CPACSEnginePylon CCPACSEnginePylon;
-#endif
+// CPACSEnginePylons is customized, use type CCPACSEnginePylons directly
 } // namespace tigl

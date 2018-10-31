@@ -32,7 +32,7 @@ namespace tigl
 CCPACSWingSegments::CCPACSWingSegments(CCPACSWing* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSWingSegments(parent, uidMgr) {}
 
-CCPACSWingSegments::CCPACSWingSegments(generated::CPACSEnginePylon* parent, CTiglUIDManager* uidMgr)
+CCPACSWingSegments::CCPACSWingSegments(CCPACSEnginePylon* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSWingSegments(parent, uidMgr) {}
 
 // Invalidates internal state

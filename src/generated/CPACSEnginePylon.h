@@ -109,10 +109,5 @@ namespace generated
     };
 } // namespace generated
 
-// Aliases in tigl namespace
-#ifdef HAVE_CPP11
-using CCPACSEnginePylon = generated::CPACSEnginePylon;
-#else
-typedef generated::CPACSEnginePylon CCPACSEnginePylon;
-#endif
+// CPACSEnginePylon is customized, use type CCPACSEnginePylon directly
 } // namespace tigl

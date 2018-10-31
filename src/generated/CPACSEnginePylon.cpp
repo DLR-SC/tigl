@@ -93,7 +93,7 @@ namespace generated
 
         // read element sections
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/sections")) {
-            m_sections = boost::in_place(this, m_uidMgr);
+            m_sections = boost::in_place(reinterpret_cast<CCPACSEnginePylon*>(this), m_uidMgr);
             try {
                 m_sections->ReadCPACS(tixiHandle, xpath + "/sections");
             } catch(const std::exception& e) {
@@ -104,7 +104,7 @@ namespace generated
 
         // read element segments
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/segments")) {
-            m_segments = boost::in_place(this, m_uidMgr);
+            m_segments = boost::in_place(reinterpret_cast<CCPACSEnginePylon*>(this), m_uidMgr);
             try {
                 m_segments->ReadCPACS(tixiHandle, xpath + "/segments");
             } catch(const std::exception& e) {
@@ -291,7 +291,7 @@ namespace generated
     CCPACSWingSections& CPACSEnginePylon::GetSections(CreateIfNotExistsTag)
     {
         if (!m_sections)
-            m_sections = boost::in_place(this, m_uidMgr);
+            m_sections = boost::in_place(reinterpret_cast<CCPACSEnginePylon*>(this), m_uidMgr);
         return *m_sections;
     }
 
@@ -303,7 +303,7 @@ namespace generated
     CCPACSWingSegments& CPACSEnginePylon::GetSegments(CreateIfNotExistsTag)
     {
         if (!m_segments)
-            m_segments = boost::in_place(this, m_uidMgr);
+            m_segments = boost::in_place(reinterpret_cast<CCPACSEnginePylon*>(this), m_uidMgr);
         return *m_segments;
     }
 

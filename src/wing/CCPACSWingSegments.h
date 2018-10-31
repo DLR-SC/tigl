@@ -34,7 +34,7 @@ class CCPACSWingSegments : public generated::CPACSWingSegments
 public:
     // Constructor
     TIGL_EXPORT CCPACSWingSegments(CCPACSWing* parent, CTiglUIDManager* uidMgr);
-    TIGL_EXPORT CCPACSWingSegments(generated::CPACSEnginePylon* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSWingSegments(CCPACSEnginePylon* parent, CTiglUIDManager* uidMgr);
 
     // Invalidates internal state
     TIGL_EXPORT void Invalidate();
