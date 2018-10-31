@@ -82,7 +82,8 @@ TiglSymmetryAxis CTiglRelativelyPositionedComponent::GetSymmetryAxis() const
         CTiglRelativelyPositionedComponent* _parent;
     };
 
-    return _symmetryAxis.apply_visitor(GetSymmetryVisitor(_parent));
+    GetSymmetryVisitor v(_parent);
+    return _symmetryAxis.apply_visitor(v);
 }
 
 void CTiglRelativelyPositionedComponent::SetSymmetryAxis(const TiglSymmetryAxis& axis)
@@ -106,7 +107,8 @@ void CTiglRelativelyPositionedComponent::SetSymmetryAxis(const TiglSymmetryAxis&
         const TiglSymmetryAxis& axis;
     };
 
-    _symmetryAxis.apply_visitor(SetSymmetryVisitor(axis));
+    SetSymmetryVisitor v(axis);
+    _symmetryAxis.apply_visitor(v);
 }
 
 CTiglTransformation CTiglRelativelyPositionedComponent::GetTransformationMatrix() const
@@ -199,7 +201,8 @@ boost::optional<const std::string&> CTiglRelativelyPositionedComponent::GetParen
         }
     };
     
-    return _parentUID.apply_visitor(GetParentUIDVisitor());
+    GetParentUIDVisitor v;
+    return _parentUID.apply_visitor(v);
 }
 
 // Sets the parent uid.
@@ -224,7 +227,8 @@ void CTiglRelativelyPositionedComponent::SetParentUID(const std::string& parentU
         const std::string& parentUID;
     };
     
-    _parentUID.apply_visitor(SetParentUIDVisitor(parentUID));
+    SetParentUIDVisitor v(parentUID);
+    _parentUID.apply_visitor(v);
 }
 
 void CTiglRelativelyPositionedComponent::SetParent(CTiglRelativelyPositionedComponent& parent)
