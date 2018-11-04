@@ -33,6 +33,11 @@ namespace generated
     // CPACSCpacs
 
     // generated from /xsd:schema/xsd:complexType[861]
+    /// @brief toolspecificType
+    /// 
+    /// Toolspecific type, containing specific data for the
+    /// analysis tools
+    /// 
     class CPACSToolspecific
     {
     public:

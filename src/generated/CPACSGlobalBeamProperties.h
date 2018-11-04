@@ -37,6 +37,11 @@ namespace generated
     // CPACSProfileBasedStructuralElement
 
     // generated from /xsd:schema/xsd:complexType[430]
+    /// @brief globalBeamPropertiesType
+    /// 
+    /// globalBeamPropertiesType, containing the global beam
+    /// properties such as EA, EI, mass
+    /// 
     class CPACSGlobalBeamProperties
     {
     public:

@@ -35,6 +35,10 @@ namespace generated
     // CPACSAircraftModel
 
     // generated from /xsd:schema/xsd:complexType[398]
+    /// @brief genericGeometryComponentsType
+    /// 
+    /// 
+    /// 
     class CPACSGenericGeometryComponents
     {
     public:

@@ -38,6 +38,10 @@ namespace generated
     // CPACSTransformation
 
     // generated from /xsd:schema/xsd:complexType[717]
+    /// @brief pointType
+    /// 
+    /// Point type, containing an xyz data triplet.
+    /// 
     class CPACSPoint
     {
     public:
@@ -66,8 +70,14 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string             m_uID;
+
+        /// X-Component
         boost::optional<double> m_x;
+
+        /// Y-Component
         boost::optional<double> m_y;
+
+        /// Z-Component
         boost::optional<double> m_z;
 
     private:

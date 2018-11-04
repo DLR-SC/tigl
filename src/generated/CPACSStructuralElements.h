@@ -42,6 +42,11 @@ namespace generated
     // CPACSVehicles
 
     // generated from /xsd:schema/xsd:complexType[841]
+    /// @brief structuralElementsType
+    /// 
+    /// structuralElements Type, containing the different structural
+    /// elements
+    /// 
     class CPACSStructuralElements
     {
     public:

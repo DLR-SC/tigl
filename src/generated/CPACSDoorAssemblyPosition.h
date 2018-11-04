@@ -36,6 +36,11 @@ namespace generated
     // CPACSCargoDoorsAssembly
 
     // generated from /xsd:schema/xsd:complexType[284]
+    /// @brief doorAssemblyPositionType
+    /// 
+    /// DoorAssemblyPosition type, containing the position of a door
+    /// assembly
+    /// 
     class CPACSDoorAssemblyPosition
     {
     public:
@@ -98,17 +103,51 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string                                         m_uID;
+
         boost::optional<std::string>                        m_name;
+
         boost::optional<std::string>                        m_description;
+
+        /// optional definition of door type (restricted to pax,
+        /// service, emergency, cargo)
         boost::optional<CPACSDoorAssemblyPosition_doorType> m_doorType;
+
+        /// UID of the door element
+        /// description
         std::string                                         m_doorElementUID;
+
+        /// UID of the forward door frame
         std::string                                         m_startFrameUID;
+
+        /// UID of the backward door frame
         std::string                                         m_endFrameUID;
+
+        /// UID of the stringer at the upper door
+        /// edge
         std::string                                         m_startStringerUID;
+
+        /// UID of the stringer at the lower door
+        /// edge
         std::string                                         m_endStringerUID;
+
+        /// Lower height of the door with respect to the floor.
+        /// (Information necessary for boarding and evacuation analysis not
+        /// necessarily linked to structures)
         boost::optional<double>                             m_zBase;
+
+        /// Minimum widh of the door element. (Information
+        /// necessary for boarding and evacuation analysis not necessarily
+        /// linked to structures)
         boost::optional<double>                             m_minWidth;
+
+        /// Minimum height of the door element. (Information
+        /// necessary for boarding and evacuation analysis not necessarily
+        /// linked to structures)
         boost::optional<double>                             m_minHeight;
+
+        /// Door on right side of the fuselage = 1; on the left =
+        /// -1. (Information necessary for boarding and evacuation analysis not
+        /// necessarily linked to structures)
         boost::optional<int>                                m_ySign;
 
     private:

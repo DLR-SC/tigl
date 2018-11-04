@@ -31,6 +31,13 @@ namespace generated
     // CPACSProfileBasedStructuralElement
 
     // generated from /xsd:schema/xsd:complexType[654]
+    /// @brief Definition of the material properties of the structural
+    /// profile sheet.
+    /// 
+    /// MaterialDefinitionForProfileBased type, containing a
+    /// material definition (Reference to material and thickness) for
+    /// profile based objects.
+    /// 
     class CPACSMaterialDefinitionForProfileBased
     {
     public:
@@ -61,11 +68,23 @@ namespace generated
         TIGL_EXPORT virtual void SetThickness_choice2(const boost::optional<double>& value);
 
     protected:
+        /// uID of the sheet to which the material
+        /// properties shall be applied.
         std::string                  m_sheetUID;
+
+        /// uID of a composite definition.
         boost::optional<std::string> m_compositeUID_choice1;
+
+        /// Orthoropy direction of the composite.
         boost::optional<double>      m_orthotropyDirection_choice1;
+
+        /// Scaling factor of the composite thickness.
         boost::optional<double>      m_thicknessScaling_choice1;
+
+        /// uID of a material definition.
         boost::optional<std::string> m_materialUID_choice2;
+
+        /// Absolute thickness of the material.
         boost::optional<double>      m_thickness_choice2;
 
     private:

@@ -30,6 +30,12 @@ namespace generated
     // CPACSMaterial
 
     // generated from /xsd:schema/xsd:complexType[297]
+    /// @brief Emissivity map, containing the diffuse emissivity of a material at different spectral lengths.
+    /// 
+    /// The emissivity of a material can vary with the spectral wave length. 
+    /// The vectors diffuseEmissivity and waveLength must have the same size to be valid. 
+    /// The data should be linearly interpolated.
+    /// 
     class CPACSEmissivityMap
     {
     public:
@@ -46,7 +52,10 @@ namespace generated
         TIGL_EXPORT virtual CCPACSStringVector& GetDiffuseEmissivity();
 
     protected:
+        /// Wave length in [m]
         CCPACSStringVector m_waveLength;
+
+        /// Diffuse emissivity of the material
         CCPACSStringVector m_diffuseEmissivity;
 
     private:

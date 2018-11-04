@@ -42,6 +42,11 @@ namespace generated
     // CPACSTrailingEdgeDevice
 
     // generated from /xsd:schema/xsd:complexType[928]
+    /// @brief Structure of the wing
+    /// 
+    /// wingComponentSegmentStructure type, containing the
+    /// whole structue (skins, ribs, spars...) of the wing.
+    /// 
     class CPACSWingComponentSegmentStructure
     {
     public:

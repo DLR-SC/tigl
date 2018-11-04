@@ -45,6 +45,38 @@ namespace generated
     // CPACSWings
 
     // generated from /xsd:schema/xsd:complexType[962]
+    /// @brief Wing type, containing all a lifting surface (wing, HTP,
+    /// VTP, canard...) of an aircraft model.
+    /// 
+    /// Wing type, containing all a lifting surface (wing,
+    /// HTP, VTP, canard...) of an aircraft model.
+    /// Position of the wing: The position of the wing is
+    /// defined using the transformation parameters. Using those
+    /// parameters, the wing coordinate system is translated, rotated
+    /// and scaled.
+    /// Definition of the wings outer shape: The outer shape
+    /// of the wing is defined by airfoils that are placed within the 3D
+    /// space. Two airfoils are combined to one wing segment within the
+    /// segments. For the definition of the positions of the airfoils,
+    /// differnt sections are defined. Within each section one or more
+    /// elements are defined. The airfoil shape is defined within the
+    /// elements. If the wings outer shape should e.g. have a step it is
+    /// possible to define two different airfoils in one section by
+    /// using two elements. In most cases each section will only include
+    /// one element. Positionings are vectors that are used for an
+    /// additional translation of the sections by using 'user friendly
+    /// paramaters' as e.g. sweep and dihedral. Please note, the first
+    /// positioning may be non-zero. Often it will be zero just to
+    /// locate the wing at the position stated by the translation, but
+    /// this is not necessary. Finally the wing segments are defined by
+    /// combining two consecutive elements. A more detailed description
+    /// is given within the different parameters.
+    /// Definition of control surfaces, wing structures, wing
+    /// fuel tank and wing fuselage attachment: those parts are defined
+    /// within componentSegments. Please refer to the documentation
+    /// there.
+    /// @see geomBlock
+    /// 
     class CPACSWing
     {
     public:
@@ -132,14 +164,29 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string                                  m_uID;
+
         boost::optional<TiglSymmetryAxis>            m_symmetry;
+
+        /// Name of the wing.
         std::string                                  m_name;
+
+        /// Description of the wing.
         boost::optional<std::string>                 m_description;
+
+        /// UID of part to which the wing is mounted (if
+        /// any). The parent of the wing can e.g. be the fuselage. In each
+        /// aircraft model, there is exactly one part without a parent part
+        /// (The root of the connection hierarchy).
         boost::optional<std::string>                 m_parentUID;
+
         CCPACSTransformation                         m_transformation;
+
         CCPACSWingSections                           m_sections;
+
         boost::optional<CCPACSPositionings>          m_positionings;
+
         CCPACSWingSegments                           m_segments;
+
         boost::optional<CCPACSWingComponentSegments> m_componentSegments;
 
     private:

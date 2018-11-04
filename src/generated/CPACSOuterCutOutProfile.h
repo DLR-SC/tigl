@@ -29,6 +29,10 @@ namespace generated
     // CPACSCutOutProfiles
 
     // generated from /xsd:schema/xsd:complexType[691]
+    /// @brief outerCutOutProfileType
+    /// 
+    /// 
+    /// 
     class CPACSOuterCutOutProfile
     {
     public:

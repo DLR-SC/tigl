@@ -39,6 +39,11 @@ namespace generated
     // CPACSWing
 
     // generated from /xsd:schema/xsd:complexType[951]
+    /// @brief Sections of the wing.
+    /// 
+    /// WingSections type, containing all the sections of the
+    /// wing.
+    /// 
     class CPACSWingSections
     {
     public:

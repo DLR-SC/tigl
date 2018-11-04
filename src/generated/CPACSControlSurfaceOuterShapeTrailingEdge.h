@@ -36,6 +36,19 @@ namespace generated
     // CPACSTrailingEdgeDevice
 
     // generated from /xsd:schema/xsd:complexType[181]
+    /// @brief Outer shape definition of the control surface.
+    /// 
+    /// Definition of the outer shape of the trailing Edge
+    /// control surface.
+    /// The position on the planform of the control surface is
+    /// defined by defining the eta/xsi coordinates of the inner/outer
+    /// and forward/rear border. The eta/xsi coordinates refer to the
+    /// parent.
+    /// Please find below an example for the definition of the
+    /// planform of a trailing edge device. Other controlsurfaces are
+    /// similar.
+    /// @see outerShape1
+    /// 
     class CPACSControlSurfaceOuterShapeTrailingEdge
     {
     public:

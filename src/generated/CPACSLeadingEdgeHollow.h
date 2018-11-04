@@ -29,6 +29,14 @@ namespace generated
     // CPACSControlSurfaceBorderTrailingEdge
 
     // generated from /xsd:schema/xsd:complexType[484]
+    /// @brief Optional definition of the airfoil inner shape of
+    /// leading edge devices (LED).
+    /// 
+    /// All parameters are optional. For the definition of the
+    /// parameters, please refer to the picture below. Parameters from
+    /// the outer border default to the parameters of the inner border.
+    /// @see led
+    /// 
     class CPACSLeadingEdgeHollow
     {
     public:
@@ -45,7 +53,14 @@ namespace generated
         TIGL_EXPORT virtual void SetXsiTE(const double& value);
 
     protected:
+        /// Relative height of the most forward point of
+        /// the LED's rear part, based on the airfoil height of the parent
+        /// at this position. Optional.
         double m_relHeightTE;
+
+        /// Relative chordwise position of the most
+        /// forward point of the LED's rear part, based on the chord of the
+        /// parent at this position. Optional.
         double m_xsiTE;
 
     private:

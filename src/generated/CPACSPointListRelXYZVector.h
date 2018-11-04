@@ -30,6 +30,17 @@ namespace generated
     // CPACSGuideCurveProfileGeometry
 
     // generated from /xsd:schema/xsd:complexType[708]
+    /// @brief List of 3D points, kept in three relative coordinate
+    /// vecors (rX, rY, rZ)
+    /// 
+    /// This set of vectors contains an ordered list of points
+    /// for rX, rY, and rZ coordinates in the form of stringBased
+    /// Vectors. The x, y and z vector elements with the same index
+    /// specify a 3D point relative to a geometric segment.
+    /// @see guideProfileWing
+    /// @see guideProfileFuselage
+    /// @see guideProfileLong
+    /// 
     class CPACSPointListRelXYZVector
     {
     public:
@@ -49,8 +60,17 @@ namespace generated
         TIGL_EXPORT virtual CCPACSStringVector& GetRZ();
 
     protected:
+        /// Vector of rX coordinates. Relative
+        /// circumferential coordinate on wing / fuselage profile
         CCPACSStringVector m_rX;
+
+        /// Vector of rY coordinates. Relative span
+        /// coordinate along a segment
         CCPACSStringVector m_rY;
+
+        /// Vector of rZ coordinates. Relative coordinate
+        /// normal to the linear strake (normalised with chordlength /
+        /// diameter c*)
         CCPACSStringVector m_rZ;
 
     private:

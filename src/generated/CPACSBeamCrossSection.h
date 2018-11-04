@@ -31,6 +31,11 @@ namespace generated
     // CPACSGlobalBeamProperties
 
     // generated from /xsd:schema/xsd:complexType[77]
+    /// @brief beamCrossSectionType
+    /// 
+    /// beamCrossSectionType, containing the beam geometrical
+    /// properties
+    /// 
     class CPACSBeamCrossSection
     {
     public:

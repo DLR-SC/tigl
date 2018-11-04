@@ -35,6 +35,11 @@ namespace generated
     // CPACSStringersAssembly
 
     // generated from /xsd:schema/xsd:complexType[839]
+    /// @brief arbitraryStringerType
+    /// 
+    /// ArbitraryStringer type, containing stringer definition
+    /// (CPACS V1.5+)
+    /// 
     class CPACSStringer
     {
     public:

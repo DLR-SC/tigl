@@ -44,6 +44,11 @@ namespace generated
     // CPACSWingSkin
 
     // generated from /xsd:schema/xsd:complexType[655]
+    /// @brief materialDefinitionType
+    /// 
+    /// MaterialDefinition type, containing a material
+    /// definition (Reference to material and thickness)
+    /// 
     class CPACSMaterialDefinition
     {
     public:
@@ -71,10 +76,21 @@ namespace generated
         TIGL_EXPORT virtual void SetThickness_choice2(const boost::optional<double>& value);
 
     protected:
+        /// uID of a composite definition.
         boost::optional<std::string> m_compositeUID_choice1;
+
+        /// Orthotropy direction of the composite.
         boost::optional<double>      m_orthotropyDirection_choice1;
+
+        /// Scaling factor of the composite thickness.
+        /// Absolute thicknesses are defined in each composite material
+        /// seperatly
         boost::optional<double>      m_thicknessScaling_choice1;
+
+        /// uID of a material definition.
         boost::optional<std::string> m_materialUID_choice2;
+
+        /// Absolute thickness of the material.
         boost::optional<double>      m_thickness_choice2;
 
     private:

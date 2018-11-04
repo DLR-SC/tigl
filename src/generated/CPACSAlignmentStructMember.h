@@ -33,6 +33,10 @@ namespace generated
     // CPACSLongFloorBeamPosition
 
     // generated from /xsd:schema/xsd:complexType[67]
+    /// @brief alignmentStructMemberType
+    /// 
+    /// 
+    /// 
     class CPACSAlignmentStructMember
     {
     public:
@@ -64,9 +68,20 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string             m_uID;
+
+        /// Offset in direction of extrusion (absolute
+        /// value)
         boost::optional<double> m_offsetLocX;
+
+        /// Rotation around local x axis (extrusion axis)
         boost::optional<double> m_rotationLocX;
+
+        /// Translation along local y axis (perpendicular
+        /// to extrusion axis)
         boost::optional<double> m_translationLocY;
+
+        /// Translation along local z axis (perpendicular
+        /// to x ynd y axes)
         boost::optional<double> m_translationLocZ;
 
     private:

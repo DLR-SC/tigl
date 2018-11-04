@@ -37,6 +37,11 @@ namespace generated
     // CPACSRotorBladeAttachments
 
     // generated from /xsd:schema/xsd:complexType[765]
+    /// @brief rotorBladeAttachmentType
+    /// 
+    /// RotorBladeAttachment type, defining the elements used
+    /// to attach one or more rotor blades to the rotor head.
+    /// 
     class CPACSRotorBladeAttachment
     {
     public:
@@ -89,11 +94,37 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string                         m_uID;
+
+        /// Name of the blade attachment.
         boost::optional<std::string>        m_name;
+
+        /// Description of the blade attachment.
         boost::optional<std::string>        m_description;
+
+        /// Definition of all hinges used to attach the
+        /// rotor blade.
         boost::optional<CCPACSRotorHinges>  m_hinges;
+
+        /// UID of the rotorBlade which should be attached
+        /// to the rotor hub.
         std::string                         m_rotorBladeUID;
+
+        /// The azimuthAngles element is used to specify
+        /// a list of discrete azimuth angles (in deg) at which instances
+        /// of attached blades are to be created. The number of blades will
+        /// equal to the number of elements of the vector. E.g.
+        /// &lt;azimuthAngles&gt;0;90;180;270&lt;/azimuthAngles&gt; for a
+        /// four blade rotor with equal equiangularly distributed blades.
+        /// The transformation of the respective rotor blade corresponds to
+        /// a rotation by azimuthAngle around the z axis of the rotor
+        /// coordinate system in mathematically positive sense of rotation.
         boost::optional<CCPACSStringVector> m_azimuthAngles_choice1;
+
+        /// If only the number of blades is specified,
+        /// the attached blades will be distributed equiangularly and the
+        /// first blade will be attached at azimuth angle 0. (Formula:
+        /// azimuthAngle[i] = i*360deg/numberOfBlades,
+        /// i=0..numberOfBlades-1)
         boost::optional<int>                m_numberOfBlades_choice2;
 
     private:

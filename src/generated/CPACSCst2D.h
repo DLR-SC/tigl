@@ -32,6 +32,10 @@ namespace generated
     // CPACSProfileGeometry
 
     // generated from /xsd:schema/xsd:complexType[236]
+    /// @brief cst2DType
+    /// 
+    /// 
+    /// 
     class CPACSCst2D
     {
     public:
@@ -66,13 +70,37 @@ namespace generated
         TIGL_EXPORT virtual void SetTrailingEdgeThickness(const boost::optional<double>& value);
 
     protected:
+        /// The psi vector for definition of the class and
+        /// shape function, i.e. the points at which the CST functions will
+        /// be evaluated
         CCPACSStringVector      m_psi;
+
+        /// N1 for the class function for the upper side
+        /// of the profile
         double                  m_upperN1;
+
+        /// N2 for the class function for the upper side
+        /// of the profile
         double                  m_upperN2;
+
+        /// B Coefficients for the Bernstein polynominal
+        /// on the upper side
         CCPACSStringVector      m_upperB;
+
+        /// N1 for the class function for the lower side
+        /// of the profile
         double                  m_lowerN1;
+
+        /// N2 for the class function for the lower side
+        /// of the profile
         double                  m_lowerN2;
+
+        /// B Coefficients for the Bernstein polynominal
+        /// on the lower side
         CCPACSStringVector      m_lowerB;
+
+        /// Optionally, the trailingEdgeThickness of the
+        /// profile
         boost::optional<double> m_trailingEdgeThickness;
 
     private:

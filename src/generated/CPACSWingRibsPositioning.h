@@ -35,6 +35,22 @@ namespace generated
     // CPACSWingRibsDefinition
 
     // generated from /xsd:schema/xsd:complexType[949]
+    /// @brief wingRibsPositioningType
+    /// 
+    /// Within the ribsPositioing type the position and the
+    /// orientaion of the ribs of the rib set are difend.
+    /// The positions of the ribs are defined by placing the
+    /// ribs on a reference line on the wing (ribReference). The inner
+    /// and the outer beginning of the rib set is defined using etaStart
+    /// and etaEnd. The position of the forward and rear end of the ribs
+    /// is defiend by ribStart and ribEnd. The orientation of the ribs
+    /// is defined in ribRotaton. The number of ribs of the current rib
+    /// set is either defined by ribNumber or by spacing.
+    /// Three examples how ribs can be placed on the wing can
+    /// be found in the picture below. For more detailed information,
+    /// pleas refer to the descripion of each parameter.
+    /// @see ribs
+    /// 
     class CPACSWingRibsPositioning
     {
     public:
@@ -93,18 +109,62 @@ namespace generated
     protected:
         CCPACSWingRibsDefinition* m_parent;
 
+        /// The ribReference is the reference line for the geometrical rib
+        /// placement. It can either
+        /// be a sparUID or "trailingEdge" or "leadingEdge"
         std::string                  m_ribReference;
+
+        /// RibStart defines the forward beginning of the ribs. It can either be a
+        /// sparUID or
+        /// "trailingEdge" or "leadingEdge".
         std::string                  m_ribStart;
+
+        /// RibEnd defines the backward ending of the ribs. It can either be a
+        /// sparUID or
+        /// "trailingEdge" or "leadingEdge".
         std::string                  m_ribEnd;
+
         CPACSRibCrossingBehaviour    m_ribCrossingBehaviour;
+
         CCPACSWingRibRotation        m_ribRotation;
+
+        /// EtaStart defines the innerBorder location of the beginning of the rib
+        /// set on the
+        /// ribReference line. Please note, the eta is relative to wing eta coordinate!
         boost::optional<double>      m_etaStart_choice1;
+
+        /// elementStartUID defines the innerBorder location of the beginning of the rib
+        /// set on the
+        /// ribReference line. It is relative to a section element and hence linked to
+        /// the outer shape.
         boost::optional<std::string> m_elementStartUID_choice2;
+
+        /// TIGL extension
         boost::optional<std::string> m_sparPositionStartUID_choice3;
+
+        /// EtaEnd defines the outerBorder location of the end of the rib set on
+        /// the
+        /// ribReference line. Please note, the eta is relative to wing eta coordinate!
         boost::optional<double>      m_etaEnd_choice1;
+
+        /// elementEndUID defines the innerBorder location of the beginning of the rib
+        /// set on the
+        /// ribReference line. It is relative to a section element and hence linked to
+        /// the outer shape.
         boost::optional<std::string> m_elementEndUID_choice2;
+
+        /// TIGL extension
         boost::optional<std::string> m_sparPositionEndUID_choice3;
+
+        /// The spacing of the ribs defines the distance between two ribs,
+        /// measured on the
+        /// ribReferenceLine. First rib is placed at etaStart.
         boost::optional<double>      m_spacing_choice1;
+
+        /// RibNumber defines the number of ribs in this ribSet. First rib is at
+        /// etaStart on the
+        /// referenceLine, last rib is at etaEnd. The spacing is constant on the
+        /// ribReferenceLine.
         boost::optional<int>         m_numberOfRibs_choice2;
 
     private:

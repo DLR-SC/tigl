@@ -35,6 +35,13 @@ namespace generated
     // CPACSControlSurfaceWingCutOut
 
     // generated from /xsd:schema/xsd:complexType[185]
+    /// @brief Border type for the inner and outer border of a wing
+    /// cut out
+    /// 
+    /// Maybe applied to specifiy inner and outer border of
+    /// the cutout either via eta or rib references
+    /// @see wingCutOut
+    /// 
     class CPACSControlSurfaceSkinCutOutBorder
     {
     public:
@@ -72,9 +79,19 @@ namespace generated
     protected:
         CPACSControlSurfaceWingCutOut* m_parent;
 
+        /// Link to a rib definition
         boost::optional<std::string>     m_ribDefinitionUID_choice1;
+
+        /// Rib number in the corresponding
+        /// ribDefinitionUID
         boost::optional<int>             m_ribNumber_choice1;
+
+        /// Spanwise location of the border at the
+        /// leading edge of the cut out
         boost::optional<CPACSEtaIsoLine> m_etaLE_choice2;
+
+        /// Spanwise location of the border at the
+        /// trailing edge of the cut out
         boost::optional<CPACSEtaIsoLine> m_etaTE_choice2;
 
     private:

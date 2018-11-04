@@ -35,6 +35,10 @@ namespace generated
     // CPACSStructuralProfiles
 
     // generated from /xsd:schema/xsd:complexType[843]
+    /// @brief structuralProfile3DType
+    /// 
+    /// 
+    /// 
     class CPACSStructuralProfile3D
     {
     public:

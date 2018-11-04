@@ -34,6 +34,10 @@ namespace generated
     // CPACSStructuralProfile
 
     // generated from /xsd:schema/xsd:complexType[710]
+    /// @brief Points, only x and y.
+    /// 
+    /// PointList type, containing an ordered list of points
+    /// 
     class CPACSPointListXY
     {
     public:
@@ -55,6 +59,7 @@ namespace generated
     protected:
         CTiglUIDManager* m_uidMgr;
 
+        /// Data points in x-y-space.
         std::vector<unique_ptr<CCPACSPointXY> > m_points;
 
     private:

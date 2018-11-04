@@ -29,6 +29,11 @@ namespace generated
     // CPACSControlSurfaceBorderTrailingEdge
 
     // generated from /xsd:schema/xsd:complexType[971]
+    /// @brief xsiIsoLineType
+    /// 
+    /// Iso line described by point of same xsi coordinate.
+    /// Can be either segment or component segment coordinates.
+    /// 
     class CPACSXsiIsoLine
     {
     public:
@@ -45,7 +50,13 @@ namespace generated
         TIGL_EXPORT virtual void SetReferenceUID(const std::string& value);
 
     protected:
+        /// Relative spanwise position. Xsi refers to the segment or componentSegment depending on the referenced uID.
         double      m_xsi;
+
+        /// This reference uID determines the reference coordinate system.
+        /// If it points to a segment, then the eta value is considered to be in segment
+        /// eta coordinate; if it points to a componentSegment,
+        /// then componentSegment eta coordinate is used.
         std::string m_referenceUID;
 
     private:

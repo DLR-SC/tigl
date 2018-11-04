@@ -35,6 +35,33 @@ namespace generated
     // CPACSMaterial
 
     // generated from /xsd:schema/xsd:complexType[727]
+    /// @brief This type describes the post failure behaviour of the
+    /// material.
+    /// 
+    /// There are 2 options for post failure description:
+    /// Plastification curve incl. element elimination
+    /// (isotropic materials) Composite damage law (UD bi-phase model (PLY 0),
+    /// PAM-CRASH) Option 1: Plastification curve incl. element
+    /// elimination (isotropic materials) The data may be used to
+    /// describe the plastic behavior of isotropic materials in
+    /// non-linear analysis, such as crash simulations. The input is
+    /// defined according to the needs of Material 103 (single stress
+    /// strain option) in the PAM-CRASH explicit Finite Element code,
+    /// but can also be used for equivalent material laws in alternative
+    /// simulation environment (see PAM-CRASH Solver Reference Manual.,
+    /// Material 103)
+    /// @see material_postFailureOption1
+    /// Source: PAM-CRASH V2010 - Reference Manual
+    /// Option 2: Composite damage law (UD bi-phase model (PLY
+    /// 0), PAM-CRASH) The data may be used to describe the failure and
+    /// post failure behavior of composite ply materials according to
+    /// the so-called UD bi-phase ply model implemented in the explicit
+    /// FE code PAM-CRASH. The data describe the shear damage behavior
+    /// in the matrix phase (degenerated bi-phase model, see PAM-CRASH
+    /// Solver Reference Manual., PLY type 0)
+    /// @see material_postFailureOption2
+    /// Source: PAM-CRASH V2010 - Notes Manual
+    /// 
     class CPACSPostFailure
     {
     public:
@@ -80,15 +107,29 @@ namespace generated
         TIGL_EXPORT virtual void RemovePlasticityCurvePoint_choice1(CPACSPlasticityCurvePoint& ref);
 
     protected:
+        /// name of the post failure definition
         boost::optional<std::string>                        m_name;
+
+        /// description of the post failure definition
         boost::optional<std::string>                        m_description;
+
+        /// name of material law
         boost::optional<std::string>                        m_materialLaw;
+
+        /// plasticEliminationStrain [-] Plastic strain
+        /// for element elimination during the non-linear analysis
         boost::optional<double>                             m_plasticEliminationStrain_choice1;
+
         std::vector<unique_ptr<CPACSPlasticityCurvePoint> > m_plasticityCurvePoints_choice1;
+
         boost::optional<double>                             m_initialEquivalentShearStrain_choice2;
+
         boost::optional<double>                             m_intermediateEquivalentShearStrain_choice2;
+
         boost::optional<double>                             m_ultimateEquivalentShearStrain_choice2;
+
         boost::optional<double>                             m_intermediateDamage_choice2;
+
         boost::optional<double>                             m_ultimateDamage_choice2;
 
     private:

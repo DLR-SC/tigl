@@ -30,6 +30,10 @@ namespace generated
     // CPACSSheet3D
 
     // generated from /xsd:schema/xsd:complexType[800]
+    /// @brief sheetPointsType
+    /// 
+    /// 
+    /// 
     class CPACSSheetPoints
     {
     public:

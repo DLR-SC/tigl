@@ -35,6 +35,28 @@ namespace generated
     // CPACSGuideCurveProfiles
 
     // generated from /xsd:schema/xsd:complexType[433]
+    /// @brief guideCurveProfileGeometryType
+    /// 
+    /// A guide curve profile is defined by a profile name, an
+    /// optional description and a 3-dimensional relative pointlist with
+    /// all three coordinates mandatory. For typical profiles, one of
+    /// the coordinate vectors contains only "0" entries. All point
+    /// coordinates are transferred to the global coordinate system.
+    /// First and last point may, but need not to, be identical.
+    /// The points have to be ordered in a mathematical
+    /// positive sense.
+    /// A profile can be symmetric. In that case the profile
+    /// is interpreted as being not closed and will be closed by
+    /// mirroring it on the symmetry plane.
+    /// Curves have to go continuously over the whole wing or
+    /// fuselage
+    /// Connection of guide curves from segment to segment
+    /// @see guideProfileWing
+    /// @see guideProfileFuselage
+    /// Please note, currently it is not possible to apply any
+    /// means of class based transformation in the description. However,
+    /// this may be an addition for the future.
+    /// 
     class CPACSGuideCurveProfileGeometry
     {
     public:
@@ -66,9 +88,15 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         boost::optional<TiglSymmetryAxis> m_symmetry;
+
         std::string                       m_uID;
+
+        /// Name of profile
         std::string                       m_name;
+
+        /// Description of profile
         boost::optional<std::string>      m_description;
+
         CCPACSPointListRelXYZ             m_pointList;
 
     private:

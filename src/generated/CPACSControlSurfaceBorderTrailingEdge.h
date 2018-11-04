@@ -39,6 +39,26 @@ namespace generated
     // CPACSControlSurfaceOuterShapeTrailingEdge
 
     // generated from /xsd:schema/xsd:complexType[170]
+    /// @brief Inner/outer border of the control surface.
+    /// 
+    /// Definition of the inner/outer border of the control
+    /// surface.
+    /// The position on the planform of the control surface is
+    /// defined by defining the eta/xsi coordinates of the inner/outer
+    /// and forward/rear border. The eta/xsi coordinates refer to the
+    /// parent.
+    /// In addition, optionally, the airfoil shape of the
+    /// control surface can be defined closer. For the trailing edge
+    /// device this is done at 'leadingEdgeShape', for the spoiler
+    /// 'relHeightLE' is used and for the leading edge devices 'hollow'.
+    /// If an exact control surface airfoil definition should be used,
+    /// outerShape-&gt;airfoils can be used.
+    /// Please find below an example for the definition of the
+    /// planform of a trailing edge device. Other controlsurfaces are
+    /// similar.
+    /// @see outerShape1
+    /// @see spoiler1
+    /// 
     class CPACSControlSurfaceBorderTrailingEdge
     {
     public:
@@ -86,11 +106,25 @@ namespace generated
     protected:
         CPACSControlSurfaceOuterShapeTrailingEdge* m_parent;
 
+        /// Relative spanwise inner/outer position of the
+        /// leading edge of the control surface. Reference is eta/xsi from
+        /// the parent.
         CPACSEtaIsoLine                         m_etaLE;
+
+        /// Relative spanwise inner/outer position of the
+        /// trailing edge of the control surface. Reference is eta/xsi from
+        /// the parent. Defaults to 'etaLE'.
         boost::optional<CPACSEtaIsoLine>        m_etaTE;
+
+        /// Relative chordwise inner/outer position of the
+        /// leading edge of the control surface. Reference is eta/xsi from
+        /// the parent.
         CPACSXsiIsoLine                         m_xsiLE;
+
         boost::optional<CPACSLeadingEdgeHollow> m_innerShape;
+
         boost::optional<CPACSLeadingEdgeShape>  m_leadingEdgeShape;
+
         boost::optional<CPACSContourReference>  m_airfoil;
 
     private:

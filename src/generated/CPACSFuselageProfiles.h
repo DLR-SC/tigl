@@ -35,6 +35,11 @@ namespace generated
     // CPACSProfiles
 
     // generated from /xsd:schema/xsd:complexType[375]
+    /// @brief fuselageProfilesType
+    /// 
+    /// FuselageProfiles type, containing fuselage profile
+    /// geometries. See profileGeometryType for further documentation
+    /// 
     class CPACSFuselageProfiles
     {
     public:

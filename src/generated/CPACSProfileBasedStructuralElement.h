@@ -42,6 +42,27 @@ namespace generated
     // CPACSProfileBasedStructuralElements
 
     // generated from /xsd:schema/xsd:complexType[732]
+    /// @brief Profiles of the aircraft.
+    /// 
+    /// ProfileBasedStructuralElement Type, containing the
+    /// data of a structural element, that are based on 2-dimensional
+    /// profiles.
+    /// The parameter 'structuralProfileUID' refers to the
+    /// definition of the 2-dimensinal profile. This profile is defined
+    /// by several points in the x-y-space. Allways two points are
+    /// combined two one sheet. The properties of each sheet are defined
+    /// in the 'sheetProperties' section by referencing on the sheetUID
+    /// and the material properties. The orthotropy direction of
+    /// composite materials equals the x-sheet axis. The orthotropy
+    /// direction angle equals a positive rotation around the z-sheet
+    /// axis as indicated in the picture below (part 3.), where a wing
+    /// stringer is defined as an example:
+    /// @see stringer2
+    /// In the section 'globalBeamProperties' the properties
+    /// of the structural profile in an equivalent beam representation
+    /// are defined.
+    /// @see standard_profile
+    /// 
     class CPACSProfileBasedStructuralElement
     {
     public:
@@ -102,14 +123,32 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string                                                             m_uID;
+
+        /// Name of the profile based structural element
         boost::optional<std::string>                                            m_name;
+
+        /// Description of the profile based structural
+        /// element
         boost::optional<std::string>                                            m_description;
+
         std::vector<unique_ptr<CPACSMaterialDefinitionForProfileBased> >        m_sheetProperties;
+
         boost::optional<CPACSTransformation2D>                                  m_transformation;
+
         boost::optional<CPACSGlobalBeamProperties>                              m_globalBeamProperties;
+
+        /// Reference to the structural profile profile
+        /// uID.
         boost::optional<std::string>                                            m_structuralProfileUID_choice1;
+
         std::vector<unique_ptr<CPACSMaterialDefinitionForProfileBasedPoint> >   m_pointProperties_choice1;
+
+        /// Reference point in structural profile
+        /// definition for structural element definition
         boost::optional<std::string>                                            m_referencePointUID_choice1;
+
+        /// Standard Profile Type, see picture below for
+        /// further information.
         boost::optional<CPACSProfileBasedStructuralElement_standardProfileType> m_standardProfileType_choice2;
 
     private:

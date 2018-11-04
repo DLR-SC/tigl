@@ -33,6 +33,39 @@ namespace generated
     // CPACSPositionings
 
     // generated from /xsd:schema/xsd:complexType[725]
+    /// @brief Positioning of the wing section
+    /// 
+    /// The positionings describe an additional translation of
+    /// sections. Basically, the positioning is a vector having the
+    /// length 'length' and an orientation that is described by the
+    /// parameters 'sweepAngle' and 'dihedralAngle'. If the 'sweepAngle'
+    /// and the 'dihedralAngle' are set to zero (or left blank) the
+    /// positioning vector equals the positive y-axis of the coordinate
+    /// system (in case of a positive 'length').
+    /// If the parameter 'fromSectionUID' is set, the
+    /// positioning describes the translation between the 'from' towards
+    /// the 'to' section. If the parameter 'fromSectionUID' is left
+    /// blank the orgin of the positioning vector is the origin of the
+    /// parent coordinate syste.
+    /// The orgin of the section coordinate system is the
+    /// position which is described by the positioning vector PLUS the
+    /// translation which is described in the section.
+    /// Please note: If the orgin of the positioning vector is
+    /// defined by using another section, i.e. fromSection is defined,
+    /// the orgin of this vector equals the end of the positioning
+    /// vector of the previous section. This means that the section
+    /// translation of the from-section has no influence on the
+    /// positioning of the to-section. Therefore the total translation,
+    /// which is described by positionings, is the sum of the current
+    /// positioning and all positionings that are defined 'before'.
+    /// An example for this is given at positioning 3 and 4 at
+    /// the picture below. Please note, that any other combination of
+    /// positionings would be possible.
+    /// Application of the sweepangle does not lead to a
+    /// rotation of the section. Application of the dihedral does not
+    /// lead to a rotation of the section.
+    /// @see wingpositionings
+    /// 
     class CPACSPositioning
     {
     public:
@@ -73,12 +106,34 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string                  m_uID;
+
+        /// Name of the positioning.
         std::string                  m_name;
+
+        /// Description of the positioning.
         boost::optional<std::string> m_description;
+
+        /// Distance between inner and outer section
+        /// (length of the positioning vector).
         double                       m_length;
+
+        /// Sweepangle between inner and outer section.
+        /// This angle equals a positive rotation of the positioing vector
+        /// around the z-axis of the wing coordinate system.
         double                       m_sweepAngle;
+
+        /// Dihedralangle between inner and outer section.
+        /// This angle equals a positive rotation of the positioing vector
+        /// around the x-axis of the wing coordinate system
         double                       m_dihedralAngle;
+
+        /// Reference to starting section of the
+        /// positioning vector. If missing, the positioning is made from the
+        /// orgin of the wing coordinate system.
         boost::optional<std::string> m_fromSectionUID;
+
+        /// Reference to ending section (section to be
+        /// positioned) of the positioning vector.
         std::string                  m_toSectionUID;
 
     private:

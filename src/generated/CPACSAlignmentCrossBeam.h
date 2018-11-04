@@ -36,6 +36,10 @@ namespace generated
     // CPACSCrossBeamStrutAssemblyPosition
 
     // generated from /xsd:schema/xsd:complexType[64]
+    /// @brief alignmentCrossBeamType
+    /// 
+    /// 
+    /// 
     class CPACSAlignmentCrossBeam
     {
     public:
@@ -70,10 +74,24 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string             m_uID;
+
+        /// Offset in direction of extrusion, first side
+        /// (absolute value)
         boost::optional<double> m_offset1LocX;
+
+        /// Offset in direction of extrusion, second side
+        /// (absolute value)
         boost::optional<double> m_offset2LocX;
+
+        /// Rotation around local x axis (extrusion axis)
         boost::optional<double> m_rotationLocX;
+
+        /// Translation along local y axis (perpendicular
+        /// to extrusion axis)
         boost::optional<double> m_translationLocY;
+
+        /// Translation along local z axis (perpendicular
+        /// to x ynd y axes)
         boost::optional<double> m_translationLocZ;
 
     private:

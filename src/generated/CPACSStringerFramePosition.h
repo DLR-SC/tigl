@@ -42,6 +42,11 @@ namespace generated
     // CPACSStringer
 
     // generated from /xsd:schema/xsd:complexType[838]
+    /// @brief stringerFramePositionType
+    /// 
+    /// stringerFramePosition type, containing individual
+    /// stringer / frame postion definition (CPACS V2.1+)
+    /// 
     class CPACSStringerFramePosition
     {
     public:
@@ -123,13 +128,33 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string                                m_uID;
+
+        /// UID of profile based structural element
         std::string                                m_structuralElementUID;
+
+        /// x position in absolute value
         double                                     m_positionX;
+
+        /// y coordinate of reference system
         double                                     m_referenceY;
+
+        /// z coordinate of reference system
         double                                     m_referenceZ;
+
+        /// angle definition to calculate intersection
+        /// with loft
         double                                     m_referenceAngle;
+
         boost::optional<CPACSAlignmentStringFrame> m_alignment;
+
+        /// Continuity definition for profile extrusion:
+        /// 0= C0 (allows sharp edges, default), 2= C2 (defines curvature
+        /// continuity)
         boost::optional<CPACSContinuity>           m_continuity;
+
+        /// Definition of interpolation between different
+        /// profiles: 0= no interpolation 1= interpolation of strcutural
+        /// profile
         boost::optional<CPACSInterpolation>        m_interpolation;
 
     private:

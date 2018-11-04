@@ -34,6 +34,10 @@ namespace generated
     // CPACSCpacs
 
     // generated from /xsd:schema/xsd:complexType[457]
+    /// @brief headerType
+    /// 
+    /// Header type, containing CPACS dataset description
+    /// 
     class CPACSHeader
     {
     public:
@@ -68,12 +72,24 @@ namespace generated
         TIGL_EXPORT virtual void RemoveUpdates();
 
     protected:
+        /// Name of CPACS dataset
         std::string                   m_name;
+
+        /// Description of CPACS dataset
         boost::optional<std::string>  m_description;
+
+        /// Creator of initial CPACS dataset
         std::string                   m_creator;
+
+        /// Timestamp of initial CPACS dataset creation
         std::time_t                   m_timestamp;
+
+        /// Version of initial CPACS dataset
         std::string                   m_version;
+
+        /// CPACS version that the dataset is valid to
         std::string                   m_cpacsVersion;
+
         boost::optional<CPACSUpdates> m_updates;
 
     private:

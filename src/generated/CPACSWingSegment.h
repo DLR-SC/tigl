@@ -36,6 +36,14 @@ namespace generated
     // CPACSWingSegments
 
     // generated from /xsd:schema/xsd:complexType[954]
+    /// @brief Segment of the wing.
+    /// 
+    /// A segment defines which two wing elements (=cross
+    /// sections) are linked to one wing segment.
+    /// An example for wing segments can be found in the
+    /// picture below:
+    /// @see wingsegments
+    /// 
     class CPACSWingSegment
     {
     public:
@@ -80,10 +88,23 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string                        m_uID;
+
+        /// Name of wing the wing segment.
         std::string                        m_name;
+
+        /// Description of the wing segment.
         boost::optional<std::string>       m_description;
+
+        /// Reference to the element from which the
+        /// segment shall start.
         std::string                        m_fromElementUID;
+
+        /// Reference to the element at which the segment
+        /// shall end.
         std::string                        m_toElementUID;
+
+        /// Optional and additional guidecurves to shape
+        /// the outer geometry.
         boost::optional<CCPACSGuideCurves> m_guideCurves;
 
     private:

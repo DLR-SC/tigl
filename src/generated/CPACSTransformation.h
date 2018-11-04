@@ -47,6 +47,19 @@ namespace generated
     // CPACSWingSection
 
     // generated from /xsd:schema/xsd:complexType[882]
+    /// @brief transformationType
+    /// 
+    /// Transformation type, containing a set of
+    /// transformations. The order of the transformations is scaling
+    /// -&gt; rotation -&gt; translation, and they are executed in this
+    /// order. Any of them can be omitted; it will be replaced by its
+    /// defaults.
+    /// Transformations are always executed relative to the
+    /// child not the parent. I.e. a scaling does not have an influence
+    /// on the parent item. For example in the outer geometry of a wing
+    /// the element scaling does not influence the section. Scaling does
+    /// also not effect rotation and translation.
+    /// 
     class CPACSTransformation
     {
     public:
@@ -84,8 +97,24 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string                        m_uID;
+
+        /// Scaling data default: 1,1,1. Those parameters
+        /// describe the scaling of the x-, y-, and z-axis.
         boost::optional<CCPACSPoint>       m_scaling;
+
+        /// Rotation data default: 0,0,0. The rotation
+        /// angles are the three Euler angles to describe the orientation of
+        /// the coordinate system. The order is allways xyz in CPACS.
+        /// Therefore the first rotation is around the x-axis, the second
+        /// rotation is around the rotated y-axis (y') and the third
+        /// rotation is around the two times rotated z-axis (z'').
         boost::optional<CCPACSPoint>       m_rotation;
+
+        /// Translation data default: 0,0,0. Translations
+        /// can either be made absolute in the global coordinate system
+        /// (absGlobal), absolute in the local Coordinate system (absLocal)
+        /// or relative (relative), normalized with the maximum dimensions
+        /// of the parent.
         boost::optional<CCPACSPointAbsRel> m_translation;
 
     private:

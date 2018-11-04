@@ -31,6 +31,18 @@ namespace generated
     // CPACSControlSurfacePath
 
     // generated from /xsd:schema/xsd:complexType[178]
+    /// @brief controlSurfaceHingePointType
+    /// 
+    /// The deflection path of a control surface is described
+    /// with respect to two hinge points - one at the inner border of
+    /// the control surface and one at the outer border of the control
+    /// surface. Those two points are defined using the xsi and relative
+    /// height coordinates of the parent. Therefore those points can also
+    /// lay outbound of the control surface. Those two points defined
+    /// the hinge line, which is a straight line between the two points.
+    /// An example can be found below:
+    /// @see path
+    /// 
     class CPACSControlSurfaceHingePoint
     {
     public:
@@ -54,7 +66,12 @@ namespace generated
     protected:
         CPACSControlSurfacePath* m_parent;
 
+        /// Relative chordwise coordinate (xsi) of the
+        /// hinge line point. Reference is the parent chord.
         double m_hingeXsi;
+
+        /// Relative height of the hinge line point.
+        /// Reference is the parent airfoil height.
         double m_hingeRelHeight;
 
     private:

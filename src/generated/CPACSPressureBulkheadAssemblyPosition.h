@@ -32,6 +32,11 @@ namespace generated
     // CPACSPressureBulkheadAssembly
 
     // generated from /xsd:schema/xsd:complexType[728]
+    /// @brief pressureBulkheadAssemblyPositionType
+    /// 
+    /// PressureBulkheadAssemblyPosition type, containing a
+    /// pressure bulkhead assembly position
+    /// 
     class CPACSPressureBulkheadAssemblyPosition
     {
     public:
@@ -64,7 +69,11 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string m_uID;
+
+        /// Frame to which bulkhead is attached to
         std::string m_frameUID;
+
+        /// UID of bulkhead element desription
         std::string m_pressureBulkheadElementUID;
 
     private:

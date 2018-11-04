@@ -35,6 +35,11 @@ namespace generated
     // CPACSSkinSegments
 
     // generated from /xsd:schema/xsd:complexType[807]
+    /// @brief fuselagePanelType
+    /// 
+    /// FuselagePanel type, panel of the fuselage between
+    /// stringers/ frames (new in V1.5)
+    /// 
     class CPACSSkinSegment
     {
     public:
@@ -76,10 +81,21 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string                  m_uID;
+
+        /// UID of sheetBasedStructuralElement used for
+        /// the panel
         std::string                  m_sheetElementUID;
+
+        /// UID of frame at start of the skin segment
         std::string                  m_startFrameUID;
+
+        /// UID of frame at end of the skin segment
         std::string                  m_endFrameUID;
+
+        /// UID of stringer at start of the skin segment
         std::string                  m_startStringerUID;
+
+        /// UID of stringer at end of the skin segment
         boost::optional<std::string> m_endStringerUID;
 
     private:

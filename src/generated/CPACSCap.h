@@ -35,6 +35,15 @@ namespace generated
     // CPACSWingRibCrossSection
 
     // generated from /xsd:schema/xsd:complexType[111]
+    /// @brief capType
+    /// 
+    /// SparCap type, containing the cross section area of the
+    /// spar cap and the material properties.
+    /// Pleas find below a picture where all spar cross
+    /// section parameters as well as the orientation refereneces for
+    /// the material definition can be found:
+    /// @see spars2
+    /// 
     class CPACSCap
     {
     public:
@@ -51,7 +60,10 @@ namespace generated
         TIGL_EXPORT virtual CCPACSMaterialDefinition& GetMaterial();
 
     protected:
+        /// Area of the cap.
         double                   m_area;
+
+        /// Material properties.
         CCPACSMaterialDefinition m_material;
 
     private:

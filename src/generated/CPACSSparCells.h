@@ -35,6 +35,12 @@ namespace generated
     // CPACSSparCrossSection
 
     // generated from /xsd:schema/xsd:complexType[811]
+    /// @brief SparCells of current spar.
+    /// 
+    /// sparCells are an optional Element. They are defined via
+    /// the etaCoordinates and define a region of special cross section
+    /// and material properties.
+    /// 
     class CPACSSparCells
     {
     public:

@@ -35,6 +35,11 @@ namespace generated
     // CPACSTrailingEdgeDevice
 
     // generated from /xsd:schema/xsd:complexType[190]
+    /// @brief Control surface tracks (mechnaical link between control
+    /// surface and parent).
+    /// 
+    /// 
+    /// 
     class CPACSControlSurfaceTracks
     {
     public:

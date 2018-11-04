@@ -36,6 +36,12 @@ namespace generated
     // CPACSRotorHubHinges
 
     // generated from /xsd:schema/xsd:complexType[768]
+    /// @brief rotorHubHinge type, containing a rotor hub hinge
+    /// (flap/leadLag/pitch).
+    /// 
+    /// RotorHubHinge type, containing a rotor hub hinge
+    /// (flap/leadLag/pitch) of a rotorcraft model.
+    /// 
     class CPACSRotorHubHinge
     {
     public:
@@ -86,13 +92,38 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string                  m_uID;
+
+        /// Name of the hinge.
         boost::optional<std::string> m_name;
+
+        /// Description of the hinge.
         boost::optional<std::string> m_description;
+
         CCPACSTransformation         m_transformation;
+
+        /// Hinge type. Possible values: "flap", "pitch"
+        /// "leadLag". This is used to define the rotation axis of the hinge
+        /// (flap = y-axis in blade cs, pitch = x-axis in blade cs, lead-lag
+        /// = z-axis in blade cs).
         CPACSRotorHubHinge_type      m_type;
+
+        /// The angle (in deg) at which the hinge is in
+        /// neutral position. This element is normally used to define
+        /// precone or prelag angles of the attached blade. Defaults to 0.
         boost::optional<double>      m_neutralPosition;
+
+        /// Static stiffness of the hinge in (N/m) for
+        /// linear hinges and (N.m/deg) for angular hinges. Default value:
+        /// +inf (statically rigid hinge)
         boost::optional<double>      m_staticStiffness;
+
+        /// Dynamic stiffness of the hinge in (N/m) for
+        /// linear hinges and (N.m/deg) for angular hinges. Default value:
+        /// +inf (statically rigid hinge)
         boost::optional<double>      m_dynamicStiffness;
+
+        /// Damping of the hinge in (N/(m/s)) for linear
+        /// hinges and (N.m/(deg/s)) for angular hinges. Default value: +inf
         boost::optional<double>      m_damping;
 
     private:

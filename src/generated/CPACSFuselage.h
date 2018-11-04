@@ -41,6 +41,12 @@ namespace generated
     // CPACSFuselages
 
     // generated from /xsd:schema/xsd:complexType[384]
+    /// @brief fuselageType
+    /// 
+    /// Fuselage type, containing all data related to a
+    /// fuselage
+    /// @see geomBlock
+    /// 
     class CPACSFuselage
     {
     public:
@@ -100,14 +106,27 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string                              m_uID;
+
         boost::optional<TiglSymmetryAxis>        m_symmetry;
+
+        /// Name of fuselage
         std::string                              m_name;
+
+        /// Description of fuselage
         boost::optional<std::string>             m_description;
+
+        /// UID of part to which the fuselage is
+        /// mounted (if any)
         boost::optional<std::string>             m_parentUID;
+
         CCPACSTransformation                     m_transformation;
+
         CCPACSFuselageSections                   m_sections;
+
         boost::optional<CCPACSPositionings>      m_positionings;
+
         CCPACSFuselageSegments                   m_segments;
+
         boost::optional<CCPACSFuselageStructure> m_structure;
 
     private:

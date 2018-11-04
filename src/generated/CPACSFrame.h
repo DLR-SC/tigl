@@ -35,6 +35,10 @@ namespace generated
     // CPACSFramesAssembly
 
     // generated from /xsd:schema/xsd:complexType[361]
+    /// @brief frameType
+    /// 
+    /// frame type, containing frame definition (V1.5+)
+    /// 
     class CPACSFrame
     {
     public:

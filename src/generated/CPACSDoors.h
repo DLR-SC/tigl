@@ -35,6 +35,10 @@ namespace generated
     // CPACSStructuralElements
 
     // generated from /xsd:schema/xsd:complexType[288]
+    /// @brief doorsType
+    /// 
+    /// Doors type, containing doors
+    /// 
     class CPACSDoors
     {
     public:

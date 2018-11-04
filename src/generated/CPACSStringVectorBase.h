@@ -38,6 +38,23 @@ namespace generated
     // CPACSSpecificHeatMap
 
     // generated from /xsd:schema/xsd:complexType[837]
+    /// @brief stringVectorBaseType
+    /// 
+    /// Base type for string vector nodes (including maptype
+    /// vector attribute)
+    /// The vector base type can include optional uncertainty
+    /// information. The description of uncertainties is placed in
+    /// addtional attributes. First, it is described by an attribute that
+    /// describes the type of uncertainty function called functionName.
+    /// The functionName attribute includes the tag name of the
+    /// distribution function which is listened in the table shown below.
+    /// Each uncertainty function is further describes by a set of
+    /// parameters that are described in the table below.
+    /// If the uncertainty values change for the elements of
+    /// the vector than the attribute may be written as a list of values
+    /// separated by semicolons
+    /// @see uncertaintyFunctions
+    /// 
     class CPACSStringVectorBase
     {
     public:
