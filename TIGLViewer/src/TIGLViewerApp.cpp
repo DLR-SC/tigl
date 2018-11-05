@@ -156,6 +156,9 @@ int TIGLViewerApp::run()
     }
 
     connect(&mainwindow, SIGNAL(windowInitialized()), this, SLOT(onWindowInitalized()));
+    if (!config.windowTitle.isEmpty()) {
+        mainwindow.setTiglWindowTitle(config.windowTitle, true);
+    }
     mainwindow.show();
     
     retval = exec();

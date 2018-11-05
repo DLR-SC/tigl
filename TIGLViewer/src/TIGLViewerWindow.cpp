@@ -68,7 +68,7 @@ TIGLViewerWindow::TIGLViewerWindow()
 {
     setupUi(this);
 
-    setWindowTitle(QString("TiGL Viewer %1").arg(TIGL_MAJOR_VERSION));
+    setTiglWindowTitle(QString("TiGL Viewer %1").arg(TIGL_MAJOR_VERSION));
 
     tiglViewerSettings = &TIGLViewerSettings::Instance();
     settingsDialog = new TIGLViewerSettingsDialog(*tiglViewerSettings, this);
@@ -238,7 +238,18 @@ void TIGLViewerWindow::closeConfiguration()
         delete cpacsConfiguration;
         cpacsConfiguration = NULL;
     }
-    setWindowTitle(QString("TiGL Viewer %1").arg(TIGL_MAJOR_VERSION));
+    setTiglWindowTitle(QString("TiGL Viewer %1").arg(TIGL_MAJOR_VERSION));
+}
+
+void TIGLViewerWindow::setTiglWindowTitle(const QString &title, bool forceTitle)
+{
+    if (forceTitle) {
+        QMainWindow::setWindowTitle(title);
+        preferredTitle = title;
+    }
+    else if (preferredTitle.isEmpty()) {
+        QMainWindow::setWindowTitle(title);
+    }
 }
 
 void TIGLViewerWindow::openRecentFile()
@@ -340,7 +351,7 @@ void TIGLViewerWindow::reopenFile()
 
 void TIGLViewerWindow::setCurrentFile(const QString &fileName)
 {
-    setWindowTitle(QString("%2 - TiGL Viewer %1")
+    setTiglWindowTitle(QString("%2 - TiGL Viewer %1")
                    .arg(TIGL_MAJOR_VERSION)
                    .arg(QDir::toNativeSeparators(QFileInfo(fileName).absoluteFilePath())));
 

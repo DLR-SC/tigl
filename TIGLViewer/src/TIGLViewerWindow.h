@@ -73,6 +73,7 @@ public slots:
     void openScript(const QString& scriptFileName);
     bool saveFile(const QString& fileName);
     void closeConfiguration();
+    void setTiglWindowTitle(const QString& title, bool forceTitle=false);
     
     TIGLViewerWidget*   getViewer();
     TIGLViewerContext*  getScene() { return myScene; }
@@ -121,6 +122,7 @@ private:
     TIGLViewerDocument* cpacsConfiguration;
     QString currentFile;
     QString controlFileName;
+    QString preferredTitle;
     QFileSystemWatcher *watcher;
     class QDebugStream * stdoutStream, * errorStream;
     CSharedPtr<TIGLViewerLogHistory> logHistory;
