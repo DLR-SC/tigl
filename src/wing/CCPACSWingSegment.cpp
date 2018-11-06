@@ -203,6 +203,7 @@ void CCPACSWingSegment::Invalidate()
 {
     CTiglAbstractSegment<CCPACSWingSegment>::Reset();
     areaCache.clear();
+    volumeCache.clear();
 }
 
 // Cleanup routine
@@ -930,7 +931,7 @@ void CCPACSWingSegment::MakeChordSurface(SurfaceCoordCache& cache) const
 
 void CCPACSWingSegment::ComputeVolume(double& cache) const
 {
-    const TopoDS_Shape loft = const_cast<CCPACSWingSegment&>(*this).GetLoft()->Shape();
+    const TopoDS_Shape loft = GetLoft()->Shape();
     GProp_GProps gprops;
     BRepGProp::VolumeProperties(loft, gprops);
     cache = gprops.Mass();
@@ -1000,7 +1001,7 @@ PNamedShape CCPACSWingSegment::GetLoft(TiglShapeModifier mod) const
     if (mod != UNMODIFIED_SHAPE)
         throw CTiglError("TiglShapeModifier is not yet supported for CCPACSWingSegment::GetLoft");
 
-    return const_cast<CCPACSWingSegment&>(*this).GetLoft();
+    return GetLoft();
 }
 
 // Returns the lower Surface of this Segment
