@@ -140,7 +140,7 @@ namespace tigl
 
 CCPACSFuselageSegment::CCPACSFuselageSegment(CCPACSFuselageSegments* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSFuselageSegment(parent, uidMgr)
-    , CTiglAbstractSegment<CCPACSFuselageSegment>(parent->GetSegments(), parent->GetParent()->m_symmetry)
+    , CTiglAbstractSegment<CCPACSFuselageSegment>(parent->GetSegments(), parent->GetParent())
     , fuselage(parent->GetParent())
     , m_guideCurveBuilder(make_unique<CTiglFuselageSegmentGuidecurveBuilder>(*this))
     , surfacePropertiesCache(*this, &CCPACSFuselageSegment::UpdateSurfaceProperties)

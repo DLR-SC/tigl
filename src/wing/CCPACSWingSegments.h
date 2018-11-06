@@ -28,6 +28,7 @@
 namespace tigl
 {
 class CCPACSWing;
+class CTiglRelativelyPositionedComponent;
 
 class CCPACSWingSegments : public generated::CPACSWingSegments
 {
@@ -47,6 +48,14 @@ public:
 
     // Gets total segment count
     TIGL_EXPORT int GetSegmentCount() const;
+
+    const CTiglRelativelyPositionedComponent* GetParentComponent() const
+    {
+        return m_parentVariant;
+    }
+
+private:
+    CTiglRelativelyPositionedComponent* m_parentVariant;
 };
 
 } // end namespace tigl

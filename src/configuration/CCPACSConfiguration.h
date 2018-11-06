@@ -76,9 +76,6 @@ public:
     // Returns whether this configuration is a rotorcraft
     TIGL_EXPORT bool IsRotorcraft() const;
 
-    // Returns the total count of wing and rotor profiles in this configuration
-    TIGL_EXPORT int GetWingProfileCount() const;
-
     // Returns true if a wing or rotor profile with the given uid exists
     TIGL_EXPORT bool HasWingProfile(std::string uid) const;
 
@@ -90,9 +87,6 @@ public:
 
     // Returns the class which holds all wing profiles
     TIGL_EXPORT CCPACSFuselageProfiles& GetFuselageProfiles();
-
-    // Returns the wing or rotor profile for a given index
-    DEPRECATED TIGL_EXPORT CCPACSWingProfile& GetWingProfile(int index) const;
 
     // Returns the wing or rotor profile for a given uid.
     TIGL_EXPORT CCPACSWingProfile& GetWingProfile(std::string uid) const;

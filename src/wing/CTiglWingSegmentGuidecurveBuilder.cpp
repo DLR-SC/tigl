@@ -24,6 +24,7 @@
 #include "CCPACSConfiguration.h"
 #include "CCPACSGuideCurveAlgo.h"
 #include "CCPACSWingProfileGetPointAlgo.h"
+#include "CTiglRelativelyPositionedComponent.h"
 
 #include "tiglcommonfunctions.h"
 
@@ -43,7 +44,11 @@ std::vector<gp_Pnt> CTiglWingSegmentGuidecurveBuilder::BuildGuideCurvePnts(const
 {
     assert(guideCurve);
 
-    const tigl::CTiglTransformation& wingTransform = m_segment.GetWing().GetTransformationMatrix();
+    if (!m_segment.GetGuideCurves()) {
+        throw CTiglError("No guide curves defined for segment \"" + m_segment.GetUID() + "\".");
+    }
+
+    const tigl::CTiglTransformation& wingTransform = m_segment.GetParentTransformation();
 
     // get upper and lower part of inner profile in world coordinates
     CTiglWingConnection& innerConnection = m_segment.GetInnerConnection();
@@ -84,7 +89,7 @@ std::vector<gp_Pnt> CTiglWingSegmentGuidecurveBuilder::BuildGuideCurvePnts(const
         // get neighboring guide curve UID
         std::string neighborGuideCurveUID = *guideCurve->GetFromGuideCurveUID_choice1();
         // get neighboring guide curve
-        const CCPACSGuideCurve& neighborGuideCurve = m_segment.GetWing().GetGuideCurveSegment(neighborGuideCurveUID);
+        const CCPACSGuideCurve& neighborGuideCurve = m_segment.GetGuideCurves()->GetGuideCurve(neighborGuideCurveUID);
         // get relative circumference from neighboring guide curve
         fromRelativeCircumference = neighborGuideCurve.GetToRelativeCircumference();
     }
@@ -96,8 +101,7 @@ std::vector<gp_Pnt> CTiglWingSegmentGuidecurveBuilder::BuildGuideCurvePnts(const
     // get relative circumference of inner profile
 
     // get guide curve profile
-    CCPACSConfiguration& config = m_segment.GetWing().GetConfiguration();
-    CCPACSGuideCurveProfile& guideCurveProfile = config.GetGuideCurveProfile(guideCurveProfileUID);
+    CCPACSGuideCurveProfile& guideCurveProfile = m_segment.GetUIDManager().ResolveObject<CCPACSGuideCurveProfile>(guideCurveProfileUID);
 
     // get local x-direction for the guide curve
     gp_Dir rxDir = gp_Dir(1., 0., 0.);

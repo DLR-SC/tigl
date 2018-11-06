@@ -18,6 +18,8 @@
 
 #include "CCPACSEnginePylon.h"
 
+#include "CTiglEnginePylonBuilder.h"
+
 namespace tigl
 {
 
@@ -38,7 +40,18 @@ void CCPACSEnginePylon::Invalidate()
 
 PNamedShape CCPACSEnginePylon::BuildLoft() const
 {
-    throw CTiglError("Pylon geometry building not yet implemented");
+    CTiglEnginePylonBuilder builder(*this);
+
+    return builder.BuildShape();
+}
+
+// Get the positioning transformation for a given section-uid
+CTiglTransformation CCPACSEnginePylon::GetPositioningTransformation(std::string sectionUID)
+{
+    if (m_positionings)
+        return m_positionings->GetPositioningTransformation(sectionUID);
+    else
+        return CTiglTransformation(); // return identity if no positioning transformation is given
 }
 
 } // namespace tigl

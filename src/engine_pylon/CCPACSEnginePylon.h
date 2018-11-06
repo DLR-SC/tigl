@@ -36,6 +36,8 @@ public:
 
     TIGL_EXPORT void Invalidate();
 
+    TIGL_EXPORT CTiglTransformation GetPositioningTransformation(std::string sectionUID);
+
 protected:
     virtual PNamedShape BuildLoft() const OVERRIDE;
 };
