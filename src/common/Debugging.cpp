@@ -71,6 +71,11 @@ TracePoint::TracePoint(const std::string& outputDir)
     }
 }
 
+int TracePoint::hitCount() const
+{
+    return m_counter;
+}
+
 void TracePoint::operator++(int)
 {
     m_counter++;
