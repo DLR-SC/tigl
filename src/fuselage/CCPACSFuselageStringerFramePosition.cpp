@@ -133,14 +133,7 @@ void CCPACSFuselageStringerFramePosition::GetZBorders(double& zmin, double& zmax
 
 void CCPACSFuselageStringerFramePosition::UpdateRelativePositioning(RelativePositionCache& cache) const
 {
-    const CCPACSFuselageStructure* structure = NULL;
-    if (IsParent<CCPACSFuselageStringer>())
-        structure = GetParent<CCPACSFuselageStringer>()->GetParent()->GetParent();
-    else if (IsParent<CCPACSFrame>())
-        structure = GetParent<CCPACSFrame>()->GetParent()->GetParent();
-    else
-        throw CTiglError("invalid parent");
-    const TopoDS_Shape& fuselageLoft = structure->GetParent()->GetLoft()->Shape();
+    const TopoDS_Shape fuselageLoft = GetFuselage().GetLoft(FUSELAGE_COORDINATE_SYSTEM)->Shape();
         
     Bnd_Box bBox1;
     BRepBndLib::Add(fuselageLoft, bBox1);
@@ -200,4 +193,16 @@ void CCPACSFuselageStringerFramePosition::UpdateRelativePositioning(RelativePosi
     cache.referenceYRel = referenceYRel;
     cache.referenceZRel = referenceZRel;
 }
+
+const CCPACSFuselage& CCPACSFuselageStringerFramePosition::GetFuselage() const {
+    const CCPACSFuselageStructure* s = nullptr;
+    if (IsParent<CCPACSFrame>())
+        s = GetParent<CCPACSFrame>()->GetParent()->GetParent();
+    else if (IsParent<CCPACSFuselageStringer>())
+        s = GetParent<CCPACSFuselageStringer>()->GetParent()->GetParent();
+    else
+        throw CTiglError("Invalid parent");
+    return *s->GetParent();
+}
+
 } // namespace tigl

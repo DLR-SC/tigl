@@ -286,7 +286,7 @@ gp_Pnt CCPACSFuselage::GetPoint(int segmentIndex, double eta, double zeta)
 // Returns the volume of this fuselage
 double CCPACSFuselage::GetVolume()
 {
-    const TopoDS_Shape& fusedSegments = GetLoft()->Shape();
+    const TopoDS_Shape fusedSegments = GetLoft()->Shape();
 
     // Calculate volume
     GProp_GProps System;

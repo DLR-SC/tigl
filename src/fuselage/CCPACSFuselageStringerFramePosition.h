@@ -51,8 +51,9 @@ public:
     TIGL_EXPORT void GetXBorders(double& ymin, double& ymax);
     TIGL_EXPORT void GetYBorders(double& ymin, double& ymax);
     TIGL_EXPORT void GetZBorders(double& zmin, double& zmax);
-
 private:
+    const CCPACSFuselage& GetFuselage() const;
+
     struct RelativePositionCache {
         double positionXRel;
         double xmin;
