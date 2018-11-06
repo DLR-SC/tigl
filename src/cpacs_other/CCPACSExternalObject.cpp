@@ -81,6 +81,7 @@ void CCPACSExternalObject::ReadCPACS(const TixiDocumentHandle& tixiHandle, const
 
     // test if file can be read
     if (!IsFileReadable(_filePath)) {
+        if (m_uidMgr && !m_uID.empty()) m_uidMgr->UnregisterObject(m_uID);
         throw tigl::CTiglError("File " + _filePath + " can not be read!", TIGL_OPEN_FAILED);
     }
 }
@@ -104,8 +105,8 @@ PNamedShape CCPACSExternalObject::BuildLoft() const
             ListPNamedShape shapes = importer->Read(_filePath);
             PNamedShape shapeGroup = CGroupShapes(shapes);
             if (shapeGroup) {
-                shapeGroup->SetName(GetUID().c_str());
-                shapeGroup->SetShortName(GetUID().c_str());
+                shapeGroup->SetName(GetUID());
+                shapeGroup->SetShortName(GetUID());
 
                 // Apply transformation
                 TopoDS_Shape sh = GetTransformationMatrix().Transform(shapeGroup->Shape());
@@ -119,7 +120,7 @@ PNamedShape CCPACSExternalObject::BuildLoft() const
         }
     }
     else {
-        throw CTiglError("Cannot open externalComponent. No file format given");
+        throw CTiglError("Cannot open externalComponent. No file format given", TIGL_XML_ERROR);
     }
 }
 
