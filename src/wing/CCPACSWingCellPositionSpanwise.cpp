@@ -27,6 +27,17 @@
 namespace tigl
 {
 
+namespace {
+    // return uid of wing structure reference, or the empty string when not all parents are defined
+    std::string tryGetWingStructureReferenceUID(CCPACSWingCell* parent) 
+    {
+        if (!parent || !parent->GetParent() || !parent->GetParent()->GetParent() || !parent->GetParent()->GetParent()->GetParent()) {
+            return "";
+        }
+        return CTiglWingStructureReference(*parent->GetParent()->GetParent()->GetParent()).GetUID();
+    }
+}
+
 CCPACSWingCellPositionSpanwise::CCPACSWingCellPositionSpanwise(CCPACSWingCell* parent)
     : generated::CPACSCellPositioningSpanwise(parent) {}
 
@@ -39,7 +50,7 @@ CCPACSWingCellPositionSpanwise::InputType CCPACSWingCellPositionSpanwise::GetInp
 }
 
 void CCPACSWingCellPositionSpanwise::SetEta1(double eta1) {
-    const std::string& uid = CTiglWingStructureReference(*m_parent->GetParent()->GetParent()->GetParent()).GetUID();
+    const std::string& uid = tryGetWingStructureReferenceUID(m_parent);
     GetEta1_choice1(CreateIfNotExists).SetEta(eta1);
     GetEta1_choice1(CreateIfNotExists).SetReferenceUID(uid);
     m_ribNumber_choice2 = boost::none;
@@ -49,7 +60,7 @@ void CCPACSWingCellPositionSpanwise::SetEta1(double eta1) {
 }
 
 void CCPACSWingCellPositionSpanwise::SetEta2(double eta2) {
-    const std::string& uid = CTiglWingStructureReference(*m_parent->GetParent()->GetParent()->GetParent()).GetUID();
+    const std::string& uid = tryGetWingStructureReferenceUID(m_parent);
     GetEta2_choice1(CreateIfNotExists).SetEta(eta2);
     GetEta2_choice1(CreateIfNotExists).SetReferenceUID(uid);
     m_ribNumber_choice2 = boost::none;
@@ -61,7 +72,7 @@ void CCPACSWingCellPositionSpanwise::SetEta2(double eta2) {
 // get and set Eta definition
 void CCPACSWingCellPositionSpanwise::SetEta(double eta1, double eta2)
 {
-    const std::string& uid = CTiglWingStructureReference(*m_parent->GetParent()->GetParent()->GetParent()).GetUID();
+    const std::string& uid = tryGetWingStructureReferenceUID(m_parent);
     SetEta(eta1, uid, eta2, uid);
 }
 
@@ -91,9 +102,14 @@ std::pair<double, double> CCPACSWingCellPositionSpanwise::GetEta() const {
         throw CTiglError("CCPACSWingCellPositionSpanwise::GetEta method called, but position is defined via ribDefinitionUID!");
     }
 
-    const double eta1 = transformEtaToCSOrTed(m_eta1_choice1.value(), m_parent->GetUIDManager());
-    const double eta2 = transformEtaToCSOrTed(m_eta2_choice1.value(), m_parent->GetUIDManager());
-
+    const CCPACSEtaIsoLine& etaIso1 = m_eta1_choice1.value();
+    const CCPACSEtaIsoLine& etaIso2 = m_eta2_choice1.value();
+    // special handling for testing
+    if (etaIso1.GetReferenceUID().empty() && etaIso2.GetReferenceUID().empty()) {
+        return std::make_pair(etaIso1.GetEta(), etaIso2.GetEta());
+    }
+    const double eta1 = transformEtaToCSOrTed(etaIso1, m_parent->GetUIDManager());
+    const double eta2 = transformEtaToCSOrTed(etaIso2, m_parent->GetUIDManager());
     return std::make_pair(eta1, eta2);
 }
 
@@ -138,7 +154,9 @@ std::pair<std::string, int> CCPACSWingCellPositionSpanwise::GetRib() const {
 
 void CCPACSWingCellPositionSpanwise::InvalidateParent()
 {
-    GetParent()->Invalidate();
+    if (GetParent()) {
+        GetParent()->Invalidate();
+    }
 }
 
 }
