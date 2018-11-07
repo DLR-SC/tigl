@@ -184,6 +184,8 @@ PNamedShape CTiglWingBuilder::BuildShape()
 
     sewingAlgo.Perform();
     TopoDS_Shape shellClosed  = sewingAlgo.SewedShape();
+    if (shellClosed.ShapeType() != TopAbs_SHELL)
+        throw CTiglError("Expected sewing algo to construct a shell when building wing loft");
     shellClosed.Closed(Standard_True);
 
     // make solid from shell
