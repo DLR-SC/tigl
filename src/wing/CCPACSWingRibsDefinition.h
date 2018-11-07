@@ -43,7 +43,7 @@ public:
         CutGeometry(const TopoDS_Face& face, bool targetFace) : shape(face), isTargetFace(targetFace) {};
 
         TopoDS_Face shape;
-        bool isTargetFace;
+        bool isTargetFace; // if this is false, shape is a trimmed plane larger than the loft
     };
 
     enum RibCapSide
@@ -209,7 +209,7 @@ private:
 
     // Computes the start and end point of the ribs definition
     RibMidplanePoints ComputeRibDefinitionPoints(const std::string& ribStart, const std::string& ribEnd, 
-                                                 const TopoDS_Face& ribCutFace) const;
+                                                 const TopoDS_Face& ribFaceOrCutFace) const;
 
     CCPACSWingCSStructure& getStructure();
     const CCPACSWingCSStructure& getStructure() const;

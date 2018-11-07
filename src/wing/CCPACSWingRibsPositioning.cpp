@@ -48,40 +48,28 @@ CCPACSWingRibsPositioning::StartDefinitionType CCPACSWingRibsPositioning::GetSta
 {
     if (m_etaStart_choice1)
         return ETA_START;
-    if (m_elementStartUID_choice2)
-        return ELEMENT_START;
-    if (m_sparPositionStartUID_choice3)
+
+    if (m_sparPositionStartUID_choice2)
         return SPARPOSITION_START;
     throw CTiglError("Invalid start definition");
 }
 
-void CCPACSWingRibsPositioning::SetEtaStart(double value)
+void CCPACSWingRibsPositioning::SetEtaStart(double eta, const std::string& referenceUid)
 {
-    generated::CPACSWingRibsPositioning::SetEtaStart_choice1(value);
+    generated::CPACSWingRibsPositioning::GetEtaStart_choice1(tigl::CreateIfNotExists).SetEta(eta);
+    generated::CPACSWingRibsPositioning::GetEtaStart_choice1(tigl::CreateIfNotExists).SetReferenceUID(referenceUid);
 
-    m_elementStartUID_choice2 = boost::none;
-    m_sparPositionStartUID_choice3 = boost::none;
+    m_sparPositionStartUID_choice2 = boost::none;
 
     // invalidate whole component segment structure, since cells could reference the ribs
     invalidateStructure();
 }
 
-void CCPACSWingRibsPositioning::SetElementStartUID(const std::string& uid)
-{
-    generated::CPACSWingRibsPositioning::SetElementStartUID_choice2(uid);
-
-    m_etaStart_choice1 = boost::none;
-    m_sparPositionStartUID_choice3 = boost::none;
-
-    invalidateStructure();
-}
-
 void CCPACSWingRibsPositioning::SetSparPositionStartUID(const std::string& uid)
 {
-    generated::CPACSWingRibsPositioning::SetSparPositionStartUID_choice3(uid);
+    generated::CPACSWingRibsPositioning::SetSparPositionStartUID_choice2(uid);
 
     m_etaStart_choice1 = boost::none;
-    m_elementStartUID_choice2 = boost::none;
 
     invalidateStructure();
 }
@@ -90,39 +78,26 @@ CCPACSWingRibsPositioning::EndDefinitionType CCPACSWingRibsPositioning::GetEndDe
 {
     if (m_etaEnd_choice1)
         return ETA_END;
-    if (m_elementEndUID_choice2)
-        return ELEMENT_END;
-    if (m_sparPositionEndUID_choice3)
+    if (m_sparPositionEndUID_choice2)
         return SPARPOSITION_END;
     throw CTiglError("Invalid end definition");
 }
 
-void CCPACSWingRibsPositioning::SetEtaEnd(double value)
+void CCPACSWingRibsPositioning::SetEtaEnd(double eta, const std::string& referenceUid)
 {
-    generated::CPACSWingRibsPositioning::SetEtaEnd_choice1(value);
+    generated::CPACSWingRibsPositioning::GetEtaEnd_choice1(tigl::CreateIfNotExists).SetEta(eta);
+    generated::CPACSWingRibsPositioning::GetEtaEnd_choice1(tigl::CreateIfNotExists).SetReferenceUID(referenceUid);
 
-    m_elementEndUID_choice2 = boost::none;
-    m_sparPositionEndUID_choice3 = boost::none;
-
-    invalidateStructure();
-}
-
-void CCPACSWingRibsPositioning::SetElementEndUID(const std::string& uid)
-{
-    generated::CPACSWingRibsPositioning::SetElementEndUID_choice2(uid);
-
-    m_etaEnd_choice1 = boost::none;
-    m_sparPositionEndUID_choice3 = boost::none;
+    m_sparPositionEndUID_choice2 = boost::none;
 
     invalidateStructure();
 }
 
 void CCPACSWingRibsPositioning::SetSparPositionEndUID(const std::string& uid)
 {
-    generated::CPACSWingRibsPositioning::SetSparPositionEndUID_choice3(uid);
+    generated::CPACSWingRibsPositioning::SetSparPositionEndUID_choice2(uid);
 
     m_etaEnd_choice1 = boost::none;
-    m_elementEndUID_choice2 = boost::none;
 
     invalidateStructure();
 }
@@ -162,6 +137,11 @@ void CCPACSWingRibsPositioning::invalidateStructure()
 void CCPACSWingRibsPositioning::SetRibCrossingBehaviour(const generated::CPACSRibCrossingBehaviour& value)
 {
     generated::CPACSWingRibsPositioning::SetRibCrossingBehaviour(value);
+    invalidateStructure();
+}
+
+void CCPACSWingRibsPositioning::Invalidate()
+{
     invalidateStructure();
 }
 

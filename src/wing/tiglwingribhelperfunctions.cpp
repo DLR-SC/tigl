@@ -27,6 +27,8 @@
 #include <TopoDS_Compound.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
+#include <Geom_Plane.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
 
 #include "CCPACSWing.h"
 #include "CCPACSWingCSStructure.h"
@@ -78,37 +80,32 @@ TopoDS_Shape CutShapeWithSpars(const TopoDS_Shape& shape, const CCPACSWingCSStru
 gp_Pnt GetReferencePoint(const CCPACSWingCSStructure& structure, const std::string& reference, double currentEta)
 {
     const CTiglWingStructureReference wsr(structure);
-    gp_Pnt referencePnt;
     if (reference == "leadingEdge") {
-        referencePnt = wsr.GetLeadingEdgePoint(currentEta);
+        return wsr.GetLeadingEdgePoint(currentEta);
     }
     else if (reference == "trailingEdge") {
-        referencePnt = wsr.GetTrailingEdgePoint(currentEta);
+        return wsr.GetTrailingEdgePoint(currentEta);
     }
     else {
         // find spar with uid
         const CCPACSWingSparSegment& sparSegment = structure.GetSparSegment(reference);
-        referencePnt = sparSegment.GetPoint(currentEta);
+        return sparSegment.GetPoint(currentEta);
     }
-    return referencePnt;
 }
 
 double GetRibReferenceLength(const std::string& reference, const CCPACSWingCSStructure& structure)
 {
     const CTiglWingStructureReference wsr(structure);
-    double referenceLength;
     if (reference == "leadingEdge") {
-        referenceLength = wsr.GetLeadingEdgeLength();
+        return wsr.GetLeadingEdgeLength();
     }
     else if (reference == "trailingEdge") {
-        referenceLength = wsr.GetTrailingEdgeLength();
+        return wsr.GetTrailingEdgeLength();
     }
     else {
         // find spar with uid
-        const CCPACSWingSparSegment& sparSegment = structure.GetSparSegment(reference);
-        referenceLength = sparSegment.GetSparLength();
+        return structure.GetSparSegment(reference).GetSparLength();
     }
-    return referenceLength;
 }
 
 // NOTE: method works only for eta==0 or eta==1, eta values in the mid of a spar
@@ -127,15 +124,10 @@ bool IsOuterSparPointInSection(const std::string& sparUid, double eta, const CCP
     else {
         return false;
     }
-    const CCPACSWingSparPosition& pos = sparSegment.GetSparPosition(sparSegment.GetSparPositionUIDs().GetSparPositionUID(sparPositionIndex));
-    if (pos.GetInputType() == CCPACSWingSparPosition::ElementUID) {
-        return true;
-    }
-    else if (pos.GetInputType() == CCPACSWingSparPosition::Eta &&
-             (pos.GetEta() < Precision::Confusion() || pos.GetEta() > 1 - Precision::Confusion())) {
-        return true;
-    }
-    return false;
+    const CCPACSWingSparPosition& pos =
+        sparSegment.GetSparPosition(sparSegment.GetSparPositionUIDs().GetSparPositionUID(sparPositionIndex));
+
+    return pos.isOnSectionElement();
 }
 
 gp_Vec GetUpVectorWithoutXRotation(const std::string& ribReference, double currentEta, const gp_Pnt& startPnt, 
@@ -180,9 +172,9 @@ TopoDS_Wire CutFaceWithSpar(TopoDS_Shape& ribCutFace, const TopoDS_Shape& sparGe
     // split rib face with spar geometry
     TopoDS_Shape cutEdges = CutShapes(sparGeometry, ribCutFace);
     // remove duplicate edges from result (may occur when two edges overlap in sparGeometry and ribCutFace)
-    cutEdges = RemoveDuplicateEdges(cutEdges);
+    TopoDS_Shape cutEdgesNoDup = RemoveDuplicateEdges(cutEdges);
     // get a single wire out of the edges
-    TopoDS_Wire cutWire = BuildWireFromEdges(cutEdges);
+    TopoDS_Wire cutWire = BuildWireFromEdges(cutEdgesNoDup);
 
     // get end vertices of wire
     TopTools_ListOfShape endVertices;
@@ -246,52 +238,42 @@ TopoDS_Wire CutFaceWithSpar(TopoDS_Shape& ribCutFace, const TopoDS_Shape& sparGe
     return cutWire;
 }
 
-gp_Pnt GetRibDefinitionPoint(const std::string& definition, const TopoDS_Face& ribCutFace, const CCPACSWingCSStructure& structure)
+gp_Pnt GetRibDefinitionPoint(const std::string& definition, const TopoDS_Face& ribFaceOrCutFace, const CCPACSWingCSStructure& structure)
 {
+    // when we cut the ribStart and ribEnd wires, we can use the underlying plane
+    const Handle(Geom_Surface) surface = BRep_Tool::Surface(ribFaceOrCutFace);
+    if (Handle(Geom_Plane)::DownCast(surface).IsNull())
+        throw CTiglError("Expected underlying surface of rib face to be a plane");
+
     const CTiglWingStructureReference wsr(structure);
-    gp_Pnt definitionPoint;
+    TopoDS_Wire referenceLine;
     if (definition == "leadingEdge") {
-        TopoDS_Wire leadingEdgeLine = wsr.GetLeadingEdgeLine();
-        if (!GetIntersectionPoint(ribCutFace, leadingEdgeLine, definitionPoint)) {
-            LOG(ERROR) << "Unable to determine rib definition point!";
-            throw CTiglError("Unable to determine rib definition point in CCPACSWingRibsDefinition::GetRibDefinitionPoint!");
-        }
+        referenceLine = wsr.GetLeadingEdgeLine();
     }
     else if (definition == "trailingEdge") {
-        TopoDS_Wire trailingEdgeLine = wsr.GetTrailingEdgeLine();
-        if (!GetIntersectionPoint(ribCutFace, trailingEdgeLine, definitionPoint)) {
-            LOG(ERROR) << "Unable to determine rib definition point!";
-            throw CTiglError("Unable to determine rib definition point in CCPACSWingRibsDefinition::GetRibDefinitionPoint!");
-        }
+        referenceLine = wsr.GetTrailingEdgeLine();
     }
     else {
-        // get spar
-        std::string sparUid = definition;
-        const CCPACSWingSparSegment& sparSegment = structure.GetSparSegment(sparUid);
-        TopoDS_Wire sparMidplaneLine = sparSegment.GetSparMidplaneLine();
-        if (!GetIntersectionPoint(ribCutFace, sparMidplaneLine, definitionPoint)) {
-            LOG(ERROR) << "Unable to determine rib definition point!";
-            throw CTiglError("Unable to determine rib definition point in CCPACSWingRibsDefinition::GetRibDefinitionPoint!");
-        }
+        referenceLine = structure.GetSparSegment(definition).GetSparMidplaneLine();
     }
+
+    gp_Pnt definitionPoint;
+    if (!GetIntersectionPoint(BRepBuilderAPI_MakeFace(surface, Precision::Confusion()).Face(), referenceLine, definitionPoint)) {
+        LOG(ERROR) << "Unable to determine rib definition point!";
+        throw CTiglError("Unable to determine rib definition point in GetRibDefinitionPoint!");
+    }
+
     return definitionPoint;
 }
 
 gp_Pnt GetSparMidplanePoint(const CCPACSWingSparPosition& sparPos, const CCPACSWingCSStructure& structure)
 {
     const CTiglWingStructureReference wsr(structure);
-    gp_Pnt midplanePoint;
-    if (sparPos.GetInputType() == CCPACSWingSparPosition::ElementUID) {
-        const CCPACSWingComponentSegment& componentSegment = wsr.GetWingComponentSegment();
-        midplanePoint = getSectionElementChordlinePoint(componentSegment, sparPos.GetElementUID(), sparPos.GetXsi());
-    }
-    else if (sparPos.GetInputType() == CCPACSWingSparPosition::Eta) {
-        midplanePoint = wsr.GetPoint(sparPos.GetEta(), sparPos.GetXsi(), WING_COORDINATE_SYSTEM);
-    }
-    else {
-        throw CTiglError("Unknown SparPosition InputType found in CCPACSWingRibsDefinition::GetSparMidplanePoint");
-    }
-    return midplanePoint;
+    const EtaXsi etaXsi = transformEtaXsiToCSOrTed(sparPos.GetSparPoint(), sparPos.GetUIDManager());
+    if (sparPos.isOnSectionElement() && wsr.GetType() == CTiglWingStructureReference::ComponentSegmentType)
+        return getSectionElementChordlinePoint(wsr.GetWingComponentSegment(), sparPos.GetElementUID(), etaXsi.xsi);
+    else
+        return wsr.GetPoint(etaXsi.eta, etaXsi.xsi, WING_COORDINATE_SYSTEM);
 }
 
 void CheckSparPositionOnReference(const std::string& sparPositionUID, const std::string& ribReference,

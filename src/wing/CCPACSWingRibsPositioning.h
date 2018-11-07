@@ -28,16 +28,13 @@ class CCPACSWingRibsDefinition;
 class CCPACSWingRibsPositioning : public generated::CPACSWingRibsPositioning
 {
 public:
-    // NOTE: definition of start/end of rib via spar position not conform with CPACS format (v2.3)
     enum StartDefinitionType
     {
-        ELEMENT_START,
         ETA_START,
         SPARPOSITION_START
     };
     enum EndDefinitionType
     {
-        ELEMENT_END,
         ETA_END,
         SPARPOSITION_END
     };
@@ -55,13 +52,11 @@ public:
     TIGL_EXPORT void SetRibEnd(const std::string& value) OVERRIDE;
 
     TIGL_EXPORT StartDefinitionType GetStartDefinitionType() const;
-    TIGL_EXPORT void SetEtaStart(double);
-    TIGL_EXPORT void SetElementStartUID(const std::string&);
+    TIGL_EXPORT void SetEtaStart(double eta, const std::string& referenceUid);
     TIGL_EXPORT void SetSparPositionStartUID(const std::string&); // NOTE: definition via spar position not conform with CPACS format (v2.3)
 
     TIGL_EXPORT EndDefinitionType GetEndDefinitionType() const;
-    TIGL_EXPORT void SetEtaEnd(double);
-    TIGL_EXPORT void SetElementEndUID(const std::string&);
+    TIGL_EXPORT void SetEtaEnd(double eta, const std::string& referenceUid);
     TIGL_EXPORT void SetSparPositionEndUID(const std::string&); // NOTE: definition via spar position not conform with CPACS format (v2.3)
 
     TIGL_EXPORT RibCountDefinitionType GetRibCountDefinitionType() const;
@@ -69,6 +64,8 @@ public:
     TIGL_EXPORT void SetSpacing(double);
 
     TIGL_EXPORT void SetRibCrossingBehaviour(const generated::CPACSRibCrossingBehaviour& value) OVERRIDE;
+
+    TIGL_EXPORT void Invalidate();
 
 private:
     friend class CCPACSWingRibRotation;

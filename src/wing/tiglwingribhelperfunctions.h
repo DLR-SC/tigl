@@ -68,8 +68,8 @@ TopoDS_Wire CutFaceWithSpar(TopoDS_Shape& ribCutFace, const TopoDS_Shape& sparGe
                             double bboxSize, TopoDS_Wire& changedWire, const TopoDS_Wire& wire2,
                             const gp_Vec& upVec);
 
-// returns the intersection point of the definition line and the untrimmed rib cut face
-gp_Pnt GetRibDefinitionPoint(const std::string& definition, const TopoDS_Face& ribCutFace,
+// returns the intersection point of the definition line and the rib cut face or trimmed rib face
+gp_Pnt GetRibDefinitionPoint(const std::string& definition, const TopoDS_Face& ribFaceOrCutFace,
                              const CCPACSWingCSStructure& structure);
 
 // returns the midplane point of the passed spar position

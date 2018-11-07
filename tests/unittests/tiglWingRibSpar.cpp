@@ -156,7 +156,7 @@ TEST_F(WingCellRibSpar2, computeRibEta) {
     tigl::CCPACSWingRibsDefinition& ribsDefinition = structure.GetRibsDefinition(1);
     // now we change the rib definition for testing
     // TODO: create a cpacs file which already contains this modified rib definition
-    ribsDefinition.GetRibsPositioning_choice1()->SetEtaEnd(0.8);
+    ribsDefinition.GetRibsPositioning_choice1()->SetEtaEnd(0.8, componentSegment.GetUID());
     ribsDefinition.GetRibsPositioning_choice1()->GetRibRotation().SetZ(75);
 
     // measured from geometry
@@ -183,7 +183,7 @@ TEST_F(WingCellRibSpar2, computeSparIntersectionEtaXsi) {
     const tigl::CCPACSWingSparSegment& spar = structure.GetSparSegment(1);
     // now we change the rib definition for testing
     // TODO: create a cpacs file which already contains this modified rib definition
-    ribsDefinition.GetRibsPositioning_choice1()->SetEtaEnd(0.8);
+    ribsDefinition.GetRibsPositioning_choice1()->SetEtaEnd(0.8, componentSegment.GetUID());
     ribsDefinition.GetRibsPositioning_choice1()->GetRibRotation().SetZ(75);
 
     // measured from geometry
