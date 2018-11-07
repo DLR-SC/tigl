@@ -136,7 +136,7 @@ private:
  * 
  * The reference axis is given in normal.
  */
-TIGL_EXPORT bool PointIsInfrontSparGeometry(gp_Ax1 normal, gp_Pnt point, TopoDS_Shape sparGeometry);
+TIGL_EXPORT bool PointIsInfrontSparGeometry(gp_Dir normal, gp_Pnt point, TopoDS_Shape sparGeometry);
 
 } // end namespace tigl
 
