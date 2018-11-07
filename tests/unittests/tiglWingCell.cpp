@@ -292,6 +292,6 @@ TEST_F(WingCellRibSpar, computeGeometry) {
     tigl::CCPACSWingCSStructure& structure = *componentSegment.GetStructure();
 
     tigl::CCPACSWingCell& cell = componentSegment.GetStructure()->GetUpperShell().GetCell(1);
-    TopoDS_Shape cellGeom = cell.GetCellSkinGeometry();
+    TopoDS_Shape cellGeom = cell.GetSkinGeometry();
     BRepTools::Write(cellGeom, "TestData/export/WingCellRibSpar_CellGeometry.brep");
 }
