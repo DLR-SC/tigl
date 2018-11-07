@@ -15,6 +15,13 @@
         <version>0.0</version>
         <cpacsVersion>3.0</cpacsVersion>
       </update>
+      <update>
+        <modification>Converted to cpacs 3.0 using cpacs2to3</modification>
+        <creator>cpacs2to3</creator>
+        <timestamp>2018-11-07T14:57:56</timestamp>
+        <version>ver1</version>
+        <cpacsVersion>3.0</cpacsVersion>
+      </update>
     </updates>
   </header>
   <vehicles>
@@ -24,7 +31,7 @@
         <reference>
           <area>1</area>
           <length>1</length>
-          <point>
+          <point uID="Cpacs2Test_point1">
             <x>0</x>
             <y>0</y>
             <z>0</z>
@@ -626,12 +633,24 @@
                           <xsi2>1.0</xsi2>
                         </positioningTrailingEdge>
                         <positioningInnerBorder>
-                          <eta1>0.0</eta1>
-                          <eta2>0.0</eta2>
+                          <eta1>
+                            <eta>0</eta>
+                            <referenceUID>WING_CS1</referenceUID>
+                          </eta1>
+                          <eta2>
+                            <eta>0</eta>
+                            <referenceUID>WING_CS1</referenceUID>
+                          </eta2>
                         </positioningInnerBorder>
                         <positioningOuterBorder>
-                          <eta1>0.5</eta1>
-                          <eta2>0.5</eta2>
+                          <eta1>
+                            <eta>0.5</eta>
+                            <referenceUID>WING_CS1</referenceUID>
+                          </eta1>
+                          <eta2>
+                            <eta>0.5</eta>
+                            <referenceUID>WING_CS1</referenceUID>
+                          </eta2>
                         </positioningOuterBorder>
                       </cell>
                     </cells>

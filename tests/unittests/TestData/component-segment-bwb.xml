@@ -15,6 +15,13 @@
         <version>0.2r1</version>
         <cpacsVersion>3.0</cpacsVersion>
       </update>
+      <update>
+        <modification>Converted to cpacs 3.0 using cpacs2to3</modification>
+        <creator>cpacs2to3</creator>
+        <timestamp>2018-11-07T14:57:58</timestamp>
+        <version>ver1</version>
+        <cpacsVersion>3.0</cpacsVersion>
+      </update>
     </updates>
   </header>
   <vehicles>

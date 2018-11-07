@@ -15,6 +15,13 @@
         <version>1.1</version>
         <cpacsVersion>3.0</cpacsVersion>
       </update>
+      <update>
+        <modification>Converted to cpacs 3.0 using cpacs2to3</modification>
+        <creator>cpacs2to3</creator>
+        <timestamp>2018-11-07T14:58:42</timestamp>
+        <version>ver1</version>
+        <cpacsVersion>3.0</cpacsVersion>
+      </update>
     </updates>
   </header>
   <vehicles>
@@ -25,7 +32,7 @@
         <reference>
           <area>1</area>
           <length>1</length>
-          <point>
+          <point uID="RotorTestModel_point1">
             <x>0.0</x>
             <y>0.0</y>
             <z>0.0</z>
