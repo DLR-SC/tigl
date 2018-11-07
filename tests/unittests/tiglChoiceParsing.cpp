@@ -55,8 +55,14 @@ namespace {
         ReadAndValidateMaterial(
             "<ribsPositioning>"
             "    <ribReference>trailingEdge</ribReference>"
-            "    <elementStartUID>start</elementStartUID>" // choice 1
-            "    <elementEndUID>start</elementEndUID>" // choice 1
+            "    <etaStart>" // choice 1
+            "        <eta>0.0</eta>"
+            "        <referenceUID>componentsegment</referenceUID>"
+            "    </etaStart>"
+            "    <etaEnd>" // choice 1
+            "        <eta>1.0</eta>"
+            "        <referenceUID>componentsegment</referenceUID>"
+            "    </etaEnd>"
             "    <ribStart>leadingEdge</ribStart>"
             "    <ribEnd>trailingEdge</ribEnd>"
             "    <numberOfRibs>42</numberOfRibs>" // choice 1
@@ -73,8 +79,14 @@ namespace {
         ReadAndValidateMaterial(
             "<ribsPositioning>"
             "    <ribReference>trailingEdge</ribReference>"
-            "    <elementStartUID>start</elementStartUID>" // choice 1
-            "    <elementEndUID>start</elementEndUID>" // choice 1
+            "    <etaStart>" // choice 1
+            "        <eta>0.0</eta>"
+            "        <referenceUID>componentsegment</referenceUID>"
+            "    </etaStart>"
+            "    <etaEnd>" // choice 1
+            "        <eta>1.0</eta>"
+            "        <referenceUID>componentsegment</referenceUID>"
+            "    </etaEnd>"
             "    <ribStart>leadingEdge</ribStart>"
             "    <ribEnd>trailingEdge</ribEnd>"
             "    <spacing>2.4</spacing>" // choice 2
@@ -91,8 +103,11 @@ namespace {
         ReadAndValidateMaterial(
             "<ribsPositioning>"
             "    <ribReference>trailingEdge</ribReference>"
-            "    <elementStartUID>start</elementStartUID>" // choice 1
-            "    <etaEnd>3.7</etaEnd>" // choice 2
+            "    <etaStart>" // choice 1
+            "        <eta>0.0</eta>"
+            "        <referenceUID>componentsegment</referenceUID>"
+            "    </etaStart>"
+            "    <sparPositionEndUID>spar</sparPositionEndUID>" // choice 2
             "    <ribStart>leadingEdge</ribStart>"
             "    <ribEnd>trailingEdge</ribEnd>"
             "    <numberOfRibs>42</numberOfRibs>" // choice 1
@@ -109,8 +124,11 @@ namespace {
         ReadAndValidateMaterial(
             "<ribsPositioning>"
             "    <ribReference>trailingEdge</ribReference>"
-            "    <elementStartUID>start</elementStartUID>" // choice 1
-            "    <etaEnd>3.7</etaEnd>" // choice 2
+            "    <etaStart>" // choice 1
+            "        <eta>0.0</eta>"
+            "        <referenceUID>componentsegment</referenceUID>"
+            "    </etaStart>"
+            "    <sparPositionEndUID>spar</sparPositionEndUID>" // choice 2
             "    <ribStart>leadingEdge</ribStart>"
             "    <ribEnd>trailingEdge</ribEnd>"
             "    <spacing>2.4</spacing>" // choice 2
@@ -127,8 +145,11 @@ namespace {
         ReadAndValidateMaterial(
             "<ribsPositioning>"
             "    <ribReference>trailingEdge</ribReference>"
-            "    <etaStart>0.4</etaStart>" // choice 2
-            "    <elementEndUID>start</elementEndUID>" // choice 1
+            "    <sparPositionStartUID>spar</sparPositionStartUID>" // choice 2
+            "    <etaEnd>" // choice 1
+            "        <eta>1.0</eta>"
+            "        <referenceUID>componentsegment</referenceUID>"
+            "    </etaEnd>"
             "    <ribStart>leadingEdge</ribStart>"
             "    <ribEnd>trailingEdge</ribEnd>"
             "    <numberOfRibs>42</numberOfRibs>" // choice 1
@@ -145,8 +166,11 @@ namespace {
         ReadAndValidateMaterial(
             "<ribsPositioning>"
             "    <ribReference>trailingEdge</ribReference>"
-            "    <etaStart>0.4</etaStart>" // choice 2
-            "    <elementEndUID>start</elementEndUID>" // choice 1
+            "    <sparPositionStartUID>spar</sparPositionStartUID>" // choice 2
+            "    <etaEnd>" // choice 1
+            "        <eta>1.0</eta>"
+            "        <referenceUID>componentsegment</referenceUID>"
+            "    </etaEnd>"
             "    <ribStart>leadingEdge</ribStart>"
             "    <ribEnd>trailingEdge</ribEnd>"
             "    <spacing>2.4</spacing>" // choice 2
@@ -163,8 +187,8 @@ namespace {
         ReadAndValidateMaterial(
             "<ribsPositioning>"
             "    <ribReference>trailingEdge</ribReference>"
-            "    <etaStart>0.4</etaStart>" // choice 2
-            "    <etaEnd>3.7</etaEnd>" // choice 2
+            "    <sparPositionStartUID>spar</sparPositionStartUID>" // choice 2
+            "    <sparPositionEndUID>spar</sparPositionEndUID>" // choice 2
             "    <ribStart>leadingEdge</ribStart>"
             "    <ribEnd>trailingEdge</ribEnd>"
             "    <numberOfRibs>42</numberOfRibs>" // choice 1
@@ -181,8 +205,8 @@ namespace {
         ReadAndValidateMaterial(
             "<ribsPositioning>"
             "    <ribReference>trailingEdge</ribReference>"
-            "    <etaStart>0.4</etaStart>" // choice 2
-            "    <etaEnd>3.7</etaEnd>" // choice 2
+            "    <sparPositionStartUID>spar</sparPositionStartUID>" // choice 2
+            "    <sparPositionEndUID>spar</sparPositionEndUID>" // choice 2
             "    <ribStart>leadingEdge</ribStart>"
             "    <ribEnd>trailingEdge</ribEnd>"
             "    <spacing>2.4</spacing>" // choice 2
@@ -199,9 +223,15 @@ namespace {
         ReadAndValidateMaterial(
             "<ribsPositioning>"
             "    <ribReference>trailingEdge</ribReference>"
-            "    <elementStartUID>start</elementStartUID>" // choice 1
-            "    <etaStart>0.4</etaStart>" // choice 2
-            "    <elementEndUID>start</elementEndUID>" // choice 1
+            "    <etaStart>" // choice 1
+            "        <eta>0.0</eta>"
+            "        <referenceUID>componentsegment</referenceUID>"
+            "    </etaStart>"
+            "    <sparPositionStartUID>spar</sparPositionStartUID>" // choice 2
+            "    <etaEnd>" // choice 1
+            "        <eta>1.0</eta>"
+            "        <referenceUID>componentsegment</referenceUID>"
+            "    </etaEnd>"
             "    <ribStart>leadingEdge</ribStart>"
             "    <ribEnd>trailingEdge</ribEnd>"
             "    <numberOfRibs>42</numberOfRibs>" // choice 1
@@ -218,9 +248,15 @@ namespace {
         ReadAndValidateMaterial(
             "<ribsPositioning>"
             "    <ribReference>trailingEdge</ribReference>"
-            "    <elementStartUID>start</elementStartUID>" // choice 1
-            "    <elementEndUID>start</elementEndUID>" // choice 1
-            "    <etaEnd>3.7</etaEnd>" // choice 2
+            "    <etaStart>" // choice 1
+            "        <eta>0.0</eta>"
+            "        <referenceUID>componentsegment</referenceUID>"
+            "    </etaStart>"
+            "    <etaEnd>" // choice 1
+            "        <eta>1.0</eta>"
+            "        <referenceUID>componentsegment</referenceUID>"
+            "    </etaEnd>"
+            "    <sparPositionEndUID>spar</sparPositionEndUID>" // choice 2
             "    <ribStart>leadingEdge</ribStart>"
             "    <ribEnd>trailingEdge</ribEnd>"
             "    <numberOfRibs>42</numberOfRibs>" // choice 1
@@ -237,8 +273,14 @@ namespace {
         ReadAndValidateMaterial(
             "<ribsPositioning>"
             "    <ribReference>trailingEdge</ribReference>"
-            "    <elementStartUID>start</elementStartUID>" // choice 1
-            "    <elementEndUID>start</elementEndUID>" // choice 1
+            "    <etaStart>" // choice 1
+            "        <eta>0.0</eta>"
+            "        <referenceUID>componentsegment</referenceUID>"
+            "    </etaStart>"
+            "    <etaEnd>" // choice 1
+            "        <eta>1.0</eta>"
+            "        <referenceUID>componentsegment</referenceUID>"
+            "    </etaEnd>"
             "    <ribStart>leadingEdge</ribStart>"
             "    <ribEnd>trailingEdge</ribEnd>"
             "    <numberOfRibs>42</numberOfRibs>" // choice 1
