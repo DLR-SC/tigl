@@ -17,6 +17,9 @@
 #include "CCPACSWingSparPosition.h"
 
 #include "CCPACSWingCSStructure.h"
+#include "CCPACSWing.h"
+#include "CCPACSWingSegment.h"
+#include "CCPACSWingComponentSegment.h"
 #include "CCPACSWingSpars.h"
 #include "CTiglError.h"
 
@@ -27,54 +30,39 @@ namespace tigl
 CCPACSWingSparPosition::CCPACSWingSparPosition(CCPACSWingSparPositions* sparPositions, CTiglUIDManager* uidMgr)
 : generated::CPACSSparPosition(sparPositions, uidMgr) {}
 
-CCPACSWingSparPosition::InputType CCPACSWingSparPosition::GetInputType() const
+bool CCPACSWingSparPosition::isOnInnerSectionElement() const
 {
-    if (m_eta_choice1)
-        return Eta;
-    if (m_elementUID_choice2)
-        return ElementUID;
-    throw CTiglError("Invalid input type");
+    return GetSparPoint().GetEta() < 1.E-6;
 }
 
-const std::string& CCPACSWingSparPosition::GetElementUID() const
+bool CCPACSWingSparPosition::isOnOuterSectionElement() const
 {
-    if (!m_elementUID_choice2) {
-        throw CTiglError("SparPosition is not defined via elementUID. Please check InputType first before calling CCPACSWingSparPosition::GetElementUID()");
+    return (1 - GetSparPoint().GetEta()) < 1.E-6;
+}
+
+bool CCPACSWingSparPosition::isOnSectionElement() const
+{
+    return isOnInnerSectionElement() || isOnOuterSectionElement();
+}
+
+std::string CCPACSWingSparPosition::GetElementUID() const
+{
+    CTiglWingStructureReference wsr(*m_parent->GetParent()->GetParent());
+    if (GetSparPoint().GetReferenceUID() == wsr.GetUID()) {
+        if (isOnInnerSectionElement() && wsr.GetType() == CTiglWingStructureReference::ComponentSegmentType)
+            return wsr.GetWingComponentSegment().GetFromElementUID();
+        if (isOnOuterSectionElement() && wsr.GetType() == CTiglWingStructureReference::ComponentSegmentType)
+            return wsr.GetWingComponentSegment().GetToElementUID();
     }
-    return *m_elementUID_choice2;
-}
-
-void CCPACSWingSparPosition::SetElementUID(const std::string& uid)
-{
-    m_elementUID_choice2 = uid;
-    m_eta_choice1 = boost::none;
-
-    // invalidate whole component segment structure, since ribs or cells could reference the spar
-    GetParent()->GetParent()->GetParent()->Invalidate();
-}
-
-double CCPACSWingSparPosition::GetEta() const
-{
-    if (!m_eta_choice1) {
-        throw CTiglError("SparPosition is not defined via eta. Please check InputType first before calling CCPACSWingSparPosition::GetEta()");
+    else if (wsr.GetType() == CTiglWingStructureReference::ComponentSegmentType &&
+        wsr.GetWingComponentSegment().IsSegmentContained(wsr.GetWing().GetSegment(GetSparPoint().GetReferenceUID()))) {
+        if (isOnInnerSectionElement())
+            return wsr.GetWing().GetSegment(GetSparPoint().GetReferenceUID()).GetFromElementUID();
+        else if (isOnOuterSectionElement())
+            return wsr.GetWing().GetSegment(GetSparPoint().GetReferenceUID()).GetToElementUID();
     }
-    return *m_eta_choice1;
-}
 
-void CCPACSWingSparPosition::SetEta(double value)
-{
-    m_eta_choice1 = value;
-    m_elementUID_choice2 = boost::none;
-
-    // invalidate whole component segment structure, since ribs or cells could reference the spar
-    GetParent()->GetParent()->GetParent()->Invalidate();
-}
-
-void CCPACSWingSparPosition::SetXsi(const double& value) {
-    generated::CPACSSparPosition::SetXsi(value);
-
-    // invalidate whole component segment structure, since ribs or cells could reference the spar
-    GetParent()->GetParent()->GetParent()->Invalidate();
+    throw CTiglError("Requested section element UID was not found for spar position '" + m_uID + "'.");
 }
 
 } // end namespace tigl

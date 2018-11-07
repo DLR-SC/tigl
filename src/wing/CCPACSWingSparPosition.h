@@ -28,24 +28,13 @@ class CCPACSWingSpars;
 class CCPACSWingSparPosition : public generated::CPACSSparPosition
 {
 public:
-    enum InputType
-    {
-        ElementUID,
-        Eta,
-        None
-    };
-
     TIGL_EXPORT CCPACSWingSparPosition(CCPACSWingSparPositions* sparPositions, CTiglUIDManager* uidMgr);
 
-    TIGL_EXPORT InputType GetInputType() const;
+    TIGL_EXPORT bool isOnInnerSectionElement() const;
+    TIGL_EXPORT bool isOnOuterSectionElement() const;
+    TIGL_EXPORT bool isOnSectionElement() const;
 
-    TIGL_EXPORT const std::string& GetElementUID() const;
-    TIGL_EXPORT void SetElementUID(const std::string&);
-
-    TIGL_EXPORT double GetEta() const;
-    TIGL_EXPORT void SetEta(double value);
-
-    TIGL_EXPORT void SetXsi(const double& value) OVERRIDE;
+    TIGL_EXPORT std::string GetElementUID() const;
 };
 
 } // end namespace tigl
