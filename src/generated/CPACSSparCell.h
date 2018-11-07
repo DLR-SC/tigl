@@ -19,10 +19,10 @@
 
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
+#include <CCPACSEtaIsoLine.h>
 #include <string>
 #include <tixi.h>
 #include "CPACSCap.h"
-#include "CPACSEtaIsoLine.h"
 #include "CPACSWeb.h"
 #include "CreateIfNotExists.h"
 #include "tigl_internal.h"
@@ -52,11 +52,11 @@ namespace generated
         TIGL_EXPORT virtual const std::string& GetUID() const;
         TIGL_EXPORT virtual void SetUID(const std::string& value);
 
-        TIGL_EXPORT virtual const CPACSEtaIsoLine& GetFromEta() const;
-        TIGL_EXPORT virtual CPACSEtaIsoLine& GetFromEta();
+        TIGL_EXPORT virtual const CCPACSEtaIsoLine& GetFromEta() const;
+        TIGL_EXPORT virtual CCPACSEtaIsoLine& GetFromEta();
 
-        TIGL_EXPORT virtual const CPACSEtaIsoLine& GetToEta() const;
-        TIGL_EXPORT virtual CPACSEtaIsoLine& GetToEta();
+        TIGL_EXPORT virtual const CCPACSEtaIsoLine& GetToEta() const;
+        TIGL_EXPORT virtual CCPACSEtaIsoLine& GetToEta();
 
         TIGL_EXPORT virtual const CPACSCap& GetUpperCap() const;
         TIGL_EXPORT virtual CPACSCap& GetUpperCap();
@@ -80,8 +80,8 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string               m_uID;
-        CPACSEtaIsoLine           m_fromEta;
-        CPACSEtaIsoLine           m_toEta;
+        CCPACSEtaIsoLine          m_fromEta;
+        CCPACSEtaIsoLine          m_toEta;
         CPACSCap                  m_upperCap;
         CPACSCap                  m_lowerCap;
         CPACSWeb                  m_web1;

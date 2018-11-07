@@ -23,6 +23,8 @@
 
 namespace tigl
 {
+class CCPACSControlSurfaceBorderTrailingEdge;
+
 namespace generated
 {
     // This class is used in:
@@ -32,8 +34,13 @@ namespace generated
     class CPACSXsiIsoLine
     {
     public:
-        TIGL_EXPORT CPACSXsiIsoLine();
+        TIGL_EXPORT CPACSXsiIsoLine(CCPACSControlSurfaceBorderTrailingEdge* parent);
+
         TIGL_EXPORT virtual ~CPACSXsiIsoLine();
+
+        TIGL_EXPORT CCPACSControlSurfaceBorderTrailingEdge* GetParent();
+
+        TIGL_EXPORT const CCPACSControlSurfaceBorderTrailingEdge* GetParent() const;
 
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
@@ -45,6 +52,8 @@ namespace generated
         TIGL_EXPORT virtual void SetReferenceUID(const std::string& value);
 
     protected:
+        CCPACSControlSurfaceBorderTrailingEdge* m_parent;
+
         double      m_xsi;
         std::string m_referenceUID;
 
@@ -62,10 +71,5 @@ namespace generated
     };
 } // namespace generated
 
-// Aliases in tigl namespace
-#ifdef HAVE_CPP11
-using CCPACSXsiIsoLine = generated::CPACSXsiIsoLine;
-#else
-typedef generated::CPACSXsiIsoLine CCPACSXsiIsoLine;
-#endif
+// CPACSXsiIsoLine is customized, use type CCPACSXsiIsoLine directly
 } // namespace tigl

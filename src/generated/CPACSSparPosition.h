@@ -17,8 +17,7 @@
 
 #pragma once
 
-#include <boost/optional.hpp>
-#include <boost/utility/in_place_factory.hpp>
+#include <CCPACSEtaXsiRelHeightPoint.h>
 #include <string>
 #include <tixi.h>
 #include "tigl_internal.h"
@@ -51,29 +50,19 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT bool ValidateChoices() const;
+        TIGL_EXPORT virtual const std::string& GetUID() const;
+        TIGL_EXPORT virtual void SetUID(const std::string& value);
 
-        TIGL_EXPORT virtual const boost::optional<std::string>& GetUID() const;
-        TIGL_EXPORT virtual void SetUID(const boost::optional<std::string>& value);
-
-        TIGL_EXPORT virtual const double& GetXsi() const;
-        TIGL_EXPORT virtual void SetXsi(const double& value);
-
-        TIGL_EXPORT virtual const boost::optional<double>& GetEta_choice1() const;
-        TIGL_EXPORT virtual void SetEta_choice1(const boost::optional<double>& value);
-
-        TIGL_EXPORT virtual const boost::optional<std::string>& GetElementUID_choice2() const;
-        TIGL_EXPORT virtual void SetElementUID_choice2(const boost::optional<std::string>& value);
+        TIGL_EXPORT virtual const CCPACSEtaXsiRelHeightPoint& GetSparPoint() const;
+        TIGL_EXPORT virtual CCPACSEtaXsiRelHeightPoint& GetSparPoint();
 
     protected:
         CCPACSWingSparPositions* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
-        boost::optional<std::string> m_uID;
-        double                       m_xsi;
-        boost::optional<double>      m_eta_choice1;
-        boost::optional<std::string> m_elementUID_choice2;
+        std::string                m_uID;
+        CCPACSEtaXsiRelHeightPoint m_sparPoint;
 
     private:
 #ifdef HAVE_CPP11

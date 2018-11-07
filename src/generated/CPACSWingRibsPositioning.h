@@ -19,10 +19,12 @@
 
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
+#include <CCPACSEtaIsoLine.h>
 #include <CCPACSWingRibRotation.h>
 #include <string>
 #include <tixi.h>
 #include "CPACSRibCrossingBehaviour.h"
+#include "CreateIfNotExists.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -66,23 +68,17 @@ namespace generated
         TIGL_EXPORT virtual const CCPACSWingRibRotation& GetRibRotation() const;
         TIGL_EXPORT virtual CCPACSWingRibRotation& GetRibRotation();
 
-        TIGL_EXPORT virtual const boost::optional<double>& GetEtaStart_choice1() const;
-        TIGL_EXPORT virtual void SetEtaStart_choice1(const boost::optional<double>& value);
+        TIGL_EXPORT virtual const boost::optional<CCPACSEtaIsoLine>& GetEtaStart_choice1() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSEtaIsoLine>& GetEtaStart_choice1();
 
-        TIGL_EXPORT virtual const boost::optional<std::string>& GetElementStartUID_choice2() const;
-        TIGL_EXPORT virtual void SetElementStartUID_choice2(const boost::optional<std::string>& value);
+        TIGL_EXPORT virtual const boost::optional<std::string>& GetSparPositionStartUID_choice2() const;
+        TIGL_EXPORT virtual void SetSparPositionStartUID_choice2(const boost::optional<std::string>& value);
 
-        TIGL_EXPORT virtual const boost::optional<std::string>& GetSparPositionStartUID_choice3() const;
-        TIGL_EXPORT virtual void SetSparPositionStartUID_choice3(const boost::optional<std::string>& value);
+        TIGL_EXPORT virtual const boost::optional<CCPACSEtaIsoLine>& GetEtaEnd_choice1() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSEtaIsoLine>& GetEtaEnd_choice1();
 
-        TIGL_EXPORT virtual const boost::optional<double>& GetEtaEnd_choice1() const;
-        TIGL_EXPORT virtual void SetEtaEnd_choice1(const boost::optional<double>& value);
-
-        TIGL_EXPORT virtual const boost::optional<std::string>& GetElementEndUID_choice2() const;
-        TIGL_EXPORT virtual void SetElementEndUID_choice2(const boost::optional<std::string>& value);
-
-        TIGL_EXPORT virtual const boost::optional<std::string>& GetSparPositionEndUID_choice3() const;
-        TIGL_EXPORT virtual void SetSparPositionEndUID_choice3(const boost::optional<std::string>& value);
+        TIGL_EXPORT virtual const boost::optional<std::string>& GetSparPositionEndUID_choice2() const;
+        TIGL_EXPORT virtual void SetSparPositionEndUID_choice2(const boost::optional<std::string>& value);
 
         TIGL_EXPORT virtual const boost::optional<double>& GetSpacing_choice1() const;
         TIGL_EXPORT virtual void SetSpacing_choice1(const boost::optional<double>& value);
@@ -90,22 +86,26 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<int>& GetNumberOfRibs_choice2() const;
         TIGL_EXPORT virtual void SetNumberOfRibs_choice2(const boost::optional<int>& value);
 
+        TIGL_EXPORT virtual CCPACSEtaIsoLine& GetEtaStart_choice1(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveEtaStart_choice1();
+
+        TIGL_EXPORT virtual CCPACSEtaIsoLine& GetEtaEnd_choice1(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveEtaEnd_choice1();
+
     protected:
         CCPACSWingRibsDefinition* m_parent;
 
-        std::string                  m_ribReference;
-        std::string                  m_ribStart;
-        std::string                  m_ribEnd;
-        CPACSRibCrossingBehaviour    m_ribCrossingBehaviour;
-        CCPACSWingRibRotation        m_ribRotation;
-        boost::optional<double>      m_etaStart_choice1;
-        boost::optional<std::string> m_elementStartUID_choice2;
-        boost::optional<std::string> m_sparPositionStartUID_choice3;
-        boost::optional<double>      m_etaEnd_choice1;
-        boost::optional<std::string> m_elementEndUID_choice2;
-        boost::optional<std::string> m_sparPositionEndUID_choice3;
-        boost::optional<double>      m_spacing_choice1;
-        boost::optional<int>         m_numberOfRibs_choice2;
+        std::string                       m_ribReference;
+        std::string                       m_ribStart;
+        std::string                       m_ribEnd;
+        CPACSRibCrossingBehaviour         m_ribCrossingBehaviour;
+        CCPACSWingRibRotation             m_ribRotation;
+        boost::optional<CCPACSEtaIsoLine> m_etaStart_choice1;
+        boost::optional<std::string>      m_sparPositionStartUID_choice2;
+        boost::optional<CCPACSEtaIsoLine> m_etaEnd_choice1;
+        boost::optional<std::string>      m_sparPositionEndUID_choice2;
+        boost::optional<double>           m_spacing_choice1;
+        boost::optional<int>              m_numberOfRibs_choice2;
 
     private:
 #ifdef HAVE_CPP11

@@ -100,42 +100,38 @@ namespace generated
 
         // read element etaStart
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/etaStart")) {
-            m_etaStart_choice1 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/etaStart");
-        }
-
-        // read element elementStartUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/elementStartUID")) {
-            m_elementStartUID_choice2 = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/elementStartUID");
-            if (m_elementStartUID_choice2->empty()) {
-                LOG(WARNING) << "Optional element elementStartUID is present but empty at xpath " << xpath;
+            m_etaStart_choice1 = boost::in_place(reinterpret_cast<CCPACSWingRibsPositioning*>(this));
+            try {
+                m_etaStart_choice1->ReadCPACS(tixiHandle, xpath + "/etaStart");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read etaStart at xpath " << xpath << ": " << e.what();
+                m_etaStart_choice1 = boost::none;
             }
         }
 
         // read element sparPositionStartUID
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/sparPositionStartUID")) {
-            m_sparPositionStartUID_choice3 = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/sparPositionStartUID");
-            if (m_sparPositionStartUID_choice3->empty()) {
+            m_sparPositionStartUID_choice2 = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/sparPositionStartUID");
+            if (m_sparPositionStartUID_choice2->empty()) {
                 LOG(WARNING) << "Optional element sparPositionStartUID is present but empty at xpath " << xpath;
             }
         }
 
         // read element etaEnd
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/etaEnd")) {
-            m_etaEnd_choice1 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/etaEnd");
-        }
-
-        // read element elementEndUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/elementEndUID")) {
-            m_elementEndUID_choice2 = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/elementEndUID");
-            if (m_elementEndUID_choice2->empty()) {
-                LOG(WARNING) << "Optional element elementEndUID is present but empty at xpath " << xpath;
+            m_etaEnd_choice1 = boost::in_place(reinterpret_cast<CCPACSWingRibsPositioning*>(this));
+            try {
+                m_etaEnd_choice1->ReadCPACS(tixiHandle, xpath + "/etaEnd");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read etaEnd at xpath " << xpath << ": " << e.what();
+                m_etaEnd_choice1 = boost::none;
             }
         }
 
         // read element sparPositionEndUID
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/sparPositionEndUID")) {
-            m_sparPositionEndUID_choice3 = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/sparPositionEndUID");
-            if (m_sparPositionEndUID_choice3->empty()) {
+            m_sparPositionEndUID_choice2 = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/sparPositionEndUID");
+            if (m_sparPositionEndUID_choice2->empty()) {
                 LOG(WARNING) << "Optional element sparPositionEndUID is present but empty at xpath " << xpath;
             }
         }
@@ -180,7 +176,7 @@ namespace generated
         // write element etaStart
         if (m_etaStart_choice1) {
             tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/etaStart");
-            tixi::TixiSaveElement(tixiHandle, xpath + "/etaStart", *m_etaStart_choice1);
+            m_etaStart_choice1->WriteCPACS(tixiHandle, xpath + "/etaStart");
         }
         else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/etaStart")) {
@@ -188,21 +184,10 @@ namespace generated
             }
         }
 
-        // write element elementStartUID
-        if (m_elementStartUID_choice2) {
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/elementStartUID");
-            tixi::TixiSaveElement(tixiHandle, xpath + "/elementStartUID", *m_elementStartUID_choice2);
-        }
-        else {
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/elementStartUID")) {
-                tixi::TixiRemoveElement(tixiHandle, xpath + "/elementStartUID");
-            }
-        }
-
         // write element sparPositionStartUID
-        if (m_sparPositionStartUID_choice3) {
+        if (m_sparPositionStartUID_choice2) {
             tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/sparPositionStartUID");
-            tixi::TixiSaveElement(tixiHandle, xpath + "/sparPositionStartUID", *m_sparPositionStartUID_choice3);
+            tixi::TixiSaveElement(tixiHandle, xpath + "/sparPositionStartUID", *m_sparPositionStartUID_choice2);
         }
         else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/sparPositionStartUID")) {
@@ -213,7 +198,7 @@ namespace generated
         // write element etaEnd
         if (m_etaEnd_choice1) {
             tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/etaEnd");
-            tixi::TixiSaveElement(tixiHandle, xpath + "/etaEnd", *m_etaEnd_choice1);
+            m_etaEnd_choice1->WriteCPACS(tixiHandle, xpath + "/etaEnd");
         }
         else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/etaEnd")) {
@@ -221,21 +206,10 @@ namespace generated
             }
         }
 
-        // write element elementEndUID
-        if (m_elementEndUID_choice2) {
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/elementEndUID");
-            tixi::TixiSaveElement(tixiHandle, xpath + "/elementEndUID", *m_elementEndUID_choice2);
-        }
-        else {
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/elementEndUID")) {
-                tixi::TixiRemoveElement(tixiHandle, xpath + "/elementEndUID");
-            }
-        }
-
         // write element sparPositionEndUID
-        if (m_sparPositionEndUID_choice3) {
+        if (m_sparPositionEndUID_choice2) {
             tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/sparPositionEndUID");
-            tixi::TixiSaveElement(tixiHandle, xpath + "/sparPositionEndUID", *m_sparPositionEndUID_choice3);
+            tixi::TixiSaveElement(tixiHandle, xpath + "/sparPositionEndUID", *m_sparPositionEndUID_choice2);
         }
         else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/sparPositionEndUID")) {
@@ -278,33 +252,17 @@ namespace generated
                     &&
                     // elements of other choices must not be there
                     !(
-                        m_elementStartUID_choice2.is_initialized()
-                        ||
-                        m_sparPositionStartUID_choice3.is_initialized()
+                        m_sparPositionStartUID_choice2.is_initialized()
                     )
                 )
                 +
                 (
                     // mandatory elements of this choice must be there
-                    m_elementStartUID_choice2.is_initialized()
+                    m_sparPositionStartUID_choice2.is_initialized()
                     &&
                     // elements of other choices must not be there
                     !(
                         m_etaStart_choice1.is_initialized()
-                        ||
-                        m_sparPositionStartUID_choice3.is_initialized()
-                    )
-                )
-                +
-                (
-                    // mandatory elements of this choice must be there
-                    m_sparPositionStartUID_choice3.is_initialized()
-                    &&
-                    // elements of other choices must not be there
-                    !(
-                        m_etaStart_choice1.is_initialized()
-                        ||
-                        m_elementStartUID_choice2.is_initialized()
                     )
                 )
                 == 1
@@ -317,33 +275,17 @@ namespace generated
                     &&
                     // elements of other choices must not be there
                     !(
-                        m_elementEndUID_choice2.is_initialized()
-                        ||
-                        m_sparPositionEndUID_choice3.is_initialized()
+                        m_sparPositionEndUID_choice2.is_initialized()
                     )
                 )
                 +
                 (
                     // mandatory elements of this choice must be there
-                    m_elementEndUID_choice2.is_initialized()
+                    m_sparPositionEndUID_choice2.is_initialized()
                     &&
                     // elements of other choices must not be there
                     !(
                         m_etaEnd_choice1.is_initialized()
-                        ||
-                        m_sparPositionEndUID_choice3.is_initialized()
-                    )
-                )
-                +
-                (
-                    // mandatory elements of this choice must be there
-                    m_sparPositionEndUID_choice3.is_initialized()
-                    &&
-                    // elements of other choices must not be there
-                    !(
-                        m_etaEnd_choice1.is_initialized()
-                        ||
-                        m_elementEndUID_choice2.is_initialized()
                     )
                 )
                 == 1
@@ -425,64 +367,44 @@ namespace generated
         return m_ribRotation;
     }
 
-    const boost::optional<double>& CPACSWingRibsPositioning::GetEtaStart_choice1() const
+    const boost::optional<CCPACSEtaIsoLine>& CPACSWingRibsPositioning::GetEtaStart_choice1() const
     {
         return m_etaStart_choice1;
     }
 
-    void CPACSWingRibsPositioning::SetEtaStart_choice1(const boost::optional<double>& value)
+    boost::optional<CCPACSEtaIsoLine>& CPACSWingRibsPositioning::GetEtaStart_choice1()
     {
-        m_etaStart_choice1 = value;
+        return m_etaStart_choice1;
     }
 
-    const boost::optional<std::string>& CPACSWingRibsPositioning::GetElementStartUID_choice2() const
+    const boost::optional<std::string>& CPACSWingRibsPositioning::GetSparPositionStartUID_choice2() const
     {
-        return m_elementStartUID_choice2;
+        return m_sparPositionStartUID_choice2;
     }
 
-    void CPACSWingRibsPositioning::SetElementStartUID_choice2(const boost::optional<std::string>& value)
+    void CPACSWingRibsPositioning::SetSparPositionStartUID_choice2(const boost::optional<std::string>& value)
     {
-        m_elementStartUID_choice2 = value;
+        m_sparPositionStartUID_choice2 = value;
     }
 
-    const boost::optional<std::string>& CPACSWingRibsPositioning::GetSparPositionStartUID_choice3() const
-    {
-        return m_sparPositionStartUID_choice3;
-    }
-
-    void CPACSWingRibsPositioning::SetSparPositionStartUID_choice3(const boost::optional<std::string>& value)
-    {
-        m_sparPositionStartUID_choice3 = value;
-    }
-
-    const boost::optional<double>& CPACSWingRibsPositioning::GetEtaEnd_choice1() const
+    const boost::optional<CCPACSEtaIsoLine>& CPACSWingRibsPositioning::GetEtaEnd_choice1() const
     {
         return m_etaEnd_choice1;
     }
 
-    void CPACSWingRibsPositioning::SetEtaEnd_choice1(const boost::optional<double>& value)
+    boost::optional<CCPACSEtaIsoLine>& CPACSWingRibsPositioning::GetEtaEnd_choice1()
     {
-        m_etaEnd_choice1 = value;
+        return m_etaEnd_choice1;
     }
 
-    const boost::optional<std::string>& CPACSWingRibsPositioning::GetElementEndUID_choice2() const
+    const boost::optional<std::string>& CPACSWingRibsPositioning::GetSparPositionEndUID_choice2() const
     {
-        return m_elementEndUID_choice2;
+        return m_sparPositionEndUID_choice2;
     }
 
-    void CPACSWingRibsPositioning::SetElementEndUID_choice2(const boost::optional<std::string>& value)
+    void CPACSWingRibsPositioning::SetSparPositionEndUID_choice2(const boost::optional<std::string>& value)
     {
-        m_elementEndUID_choice2 = value;
-    }
-
-    const boost::optional<std::string>& CPACSWingRibsPositioning::GetSparPositionEndUID_choice3() const
-    {
-        return m_sparPositionEndUID_choice3;
-    }
-
-    void CPACSWingRibsPositioning::SetSparPositionEndUID_choice3(const boost::optional<std::string>& value)
-    {
-        m_sparPositionEndUID_choice3 = value;
+        m_sparPositionEndUID_choice2 = value;
     }
 
     const boost::optional<double>& CPACSWingRibsPositioning::GetSpacing_choice1() const
@@ -503,6 +425,30 @@ namespace generated
     void CPACSWingRibsPositioning::SetNumberOfRibs_choice2(const boost::optional<int>& value)
     {
         m_numberOfRibs_choice2 = value;
+    }
+
+    CCPACSEtaIsoLine& CPACSWingRibsPositioning::GetEtaStart_choice1(CreateIfNotExistsTag)
+    {
+        if (!m_etaStart_choice1)
+            m_etaStart_choice1 = boost::in_place(reinterpret_cast<CCPACSWingRibsPositioning*>(this));
+        return *m_etaStart_choice1;
+    }
+
+    void CPACSWingRibsPositioning::RemoveEtaStart_choice1()
+    {
+        m_etaStart_choice1 = boost::none;
+    }
+
+    CCPACSEtaIsoLine& CPACSWingRibsPositioning::GetEtaEnd_choice1(CreateIfNotExistsTag)
+    {
+        if (!m_etaEnd_choice1)
+            m_etaEnd_choice1 = boost::in_place(reinterpret_cast<CCPACSWingRibsPositioning*>(this));
+        return *m_etaEnd_choice1;
+    }
+
+    void CPACSWingRibsPositioning::RemoveEtaEnd_choice1()
+    {
+        m_etaEnd_choice1 = boost::none;
     }
 
 } // namespace generated

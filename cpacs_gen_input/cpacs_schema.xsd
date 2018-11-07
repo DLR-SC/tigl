@@ -5667,13 +5667,13 @@ jonas.jepsen@dlr.de
                             <xsd:sequence>
                                     <xsd:choice>
                                             <xsd:sequence>
-                                                    <xsd:element name="eta1" type="doubleBaseType">
+                                                    <xsd:element name="eta1" type="etaIsoLineType">
                                                             <xsd:annotation>
                                                                     <xsd:documentation>Relative spanwise position of the forward
                                                                             end.</xsd:documentation>
                                                             </xsd:annotation>
                                                     </xsd:element>
-                                                    <xsd:element name="eta2" type="doubleBaseType">
+                                                    <xsd:element name="eta2" type="etaIsoLineType">
                                                             <xsd:annotation>
                                                                     <xsd:documentation>Relative spanwise position of the rear end.
                                                                     </xsd:documentation>
@@ -33211,31 +33211,18 @@ jonas.jepsen@dlr.de
 		<xsd:complexContent>
 			<xsd:extension base="complexBaseType">
 				<xsd:sequence>
-					<xsd:element minOccurs="0" name="ribRotationReference">
-						<xsd:complexType>
-							<xsd:annotation>
-								<xsd:documentation>RotationReference defines the reference for
-									the z-rotation it is either sparUID or„LeadingEdge“ or
-									„TrailingEdge“. If it is not defined the rotation reference is
-									the eta-axis (=leading edge, that is projected on the wings
-									y-z-plane). A z-rotation angle of 90 degrees means, that the rib
-									is perpendicular on the ribRotationReference (e.g. spar, leading
-									edge...). The rib itself is allways straight, and the rotation
-									is defined with respect of the intersection point of the rib
-									with the ribRotationReference.</xsd:documentation>
-							</xsd:annotation>
-							<xsd:simpleContent>
-								<xsd:restriction base="stringBaseType">
-									<xsd:enumeration value="LeadingEdge"/>
-									<xsd:enumeration value="TrailingEdge"/>
-									<xsd:enumeration value="FrontSpar"/>
-									<xsd:enumeration value="RearSpar"/>
-									<xsd:enumeration value="globalX"/>
-									<xsd:enumeration value="globalY"/>
-									<xsd:enumeration value="globalZ"/>
-								</xsd:restriction>
-							</xsd:simpleContent>
-						</xsd:complexType>
+					<xsd:element minOccurs="0" name="ribRotationReference" type="stringBaseType">
+						<xsd:annotation>
+							<xsd:documentation>RotationReference defines the reference for
+								the z-rotation it is either sparUID or„LeadingEdge“ or
+								„TrailingEdge“. If it is not defined the rotation reference is
+								the eta-axis (=leading edge, that is projected on the wings
+								y-z-plane). A z-rotation angle of 90 degrees means, that the rib
+								is perpendicular on the ribRotationReference (e.g. spar, leading
+								edge...). The rib itself is allways straight, and the rotation
+								is defined with respect of the intersection point of the rib
+								with the ribRotationReference.</xsd:documentation>
+						</xsd:annotation>
 					</xsd:element>
 					<xsd:element name="z" type="doubleBaseType">
 						<xsd:annotation>
@@ -35456,29 +35443,10 @@ jonas.jepsen@dlr.de
                 </xsd:annotation>
                 <xsd:complexContent>
                         <xsd:extension base="complexBaseType">
-                                <xsd:sequence>
-                                        <xsd:choice>
-                                                <xsd:element name="eta" type="doubleBaseType">
-                                                        <xsd:annotation>
-                                                                <xsd:documentation>Eta coordinate of the spar definition point.
-                                                                </xsd:documentation>
-                                                        </xsd:annotation>
-                                                </xsd:element>
-                                                <xsd:element name="elementUID" type="stringUIDBaseType">
-                                                        <xsd:annotation>
-                                                                <xsd:documentation>Link to a section element.
-                                                                </xsd:documentation>
-                                                        </xsd:annotation>
-                                                </xsd:element>
-                                        </xsd:choice>
-                                        <xsd:element name="xsi" type="doubleBaseType">
-                                                <xsd:annotation>
-                                                        <xsd:documentation>Xsi coordinate of the spar definition point.
-                                                        </xsd:documentation>
-                                                </xsd:annotation>
-                                        </xsd:element>
-                                </xsd:sequence>
-                                <xsd:attribute name="uID" type="xsd:string"/>
+                                <xsd:all>
+                                        <xsd:element name="sparPoint" type="etaXsiRelHeightPointType"/>
+                                </xsd:all>
+                                <xsd:attribute name="uID" type="xsd:string" use="required"/>
                         </xsd:extension>
                 </xsd:complexContent>
 	</xsd:complexType>
@@ -35589,7 +35557,7 @@ jonas.jepsen@dlr.de
                                         <xsd:element name="sparPositionUIDs" type="sparPositionUIDsType"/>
                                         <xsd:element name="sparCrossSection" type="sparCrossSectionType"/>
                                 </xsd:all>
-                                <xsd:attribute name="uID" type="xsd:string"/>
+                                <xsd:attribute name="uID" type="xsd:string" use="required"/>
                         </xsd:extension>
                 </xsd:complexContent>
         </xsd:complexType>
@@ -41192,7 +41160,7 @@ jonas.jepsen@dlr.de
                                                         </xsd:documentation>
                                                 </xsd:annotation>
                                         </xsd:element>
-                                        <xsd:element name="etaStart" type="doubleBaseType">
+                                        <xsd:element name="etaStart" type="etaIsoLineType">
                                                 <xsd:annotation>
                                                         <xsd:documentation>
                                                                 etaStart defines the start of the rib defined by the startReference and
@@ -41209,7 +41177,7 @@ jonas.jepsen@dlr.de
                                                         </xsd:documentation>
                                                 </xsd:annotation>
                                         </xsd:element>
-                                        <xsd:element name="etaEnd" type="doubleBaseType">
+                                        <xsd:element name="etaEnd" type="etaIsoLineType">
                                                 <xsd:annotation>
                                                         <xsd:documentation>
                                                                 etaEnd defines the end of the rib defined by the endReference and the
@@ -41263,7 +41231,7 @@ jonas.jepsen@dlr.de
                                         </xsd:choice>
                                         <xsd:element name="ribCrossSection" type="wingRibCrossSectionType"/>
                                 </xsd:sequence>
-                                <xsd:attribute name="uID" type="xsd:string"/>
+                                <xsd:attribute name="uID" type="xsd:string" use="required"/>
                         </xsd:extension>
                 </xsd:complexContent>
         </xsd:complexType>
@@ -41336,22 +41304,11 @@ jonas.jepsen@dlr.de
                                                 </xsd:annotation>
                                         </xsd:element>
                                         <xsd:choice>
-                                                <xsd:element name="etaStart" type="doubleBaseType">
+                                                <xsd:element name="etaStart" type="etaIsoLineType">
                                                         <xsd:annotation>
                                                                 <xsd:documentation>
                                                                         EtaStart defines the innerBorder location of the beginning of the rib
-                                                                        set on the
-                                                                        ribReference line. Please note, the eta is relative to wing eta coordinate!
-                                                                </xsd:documentation>
-                                                        </xsd:annotation>
-                                                </xsd:element>
-                                                <xsd:element name="elementStartUID" type="stringUIDBaseType">
-                                                        <xsd:annotation>
-                                                                <xsd:documentation>
-                                                                        elementStartUID defines the innerBorder location of the beginning of the rib
-                                                                        set on the
-                                                                        ribReference line. It is relative to a section element and hence linked to
-                                                                        the outer shape.
+                                                                        set on the ribReference line.
                                                                 </xsd:documentation>
                                                         </xsd:annotation>
                                                 </xsd:element>
@@ -41364,22 +41321,12 @@ jonas.jepsen@dlr.de
                                                 </xsd:element>
                                         </xsd:choice>
                                         <xsd:choice>
-                                                <xsd:element name="etaEnd" type="doubleBaseType">
+                                                <xsd:element name="etaEnd" type="etaIsoLineType">
                                                         <xsd:annotation>
                                                                 <xsd:documentation>
                                                                         EtaEnd defines the outerBorder location of the end of the rib set on
                                                                         the
                                                                         ribReference line. Please note, the eta is relative to wing eta coordinate!
-                                                                </xsd:documentation>
-                                                        </xsd:annotation>
-                                                </xsd:element>
-                                                <xsd:element name="elementEndUID" type="stringUIDBaseType">
-                                                        <xsd:annotation>
-                                                                <xsd:documentation>
-                                                                        elementEndUID defines the innerBorder location of the beginning of the rib
-                                                                        set on the
-                                                                        ribReference line. It is relative to a section element and hence linked to
-                                                                        the outer shape.
                                                                 </xsd:documentation>
                                                         </xsd:annotation>
                                                 </xsd:element>

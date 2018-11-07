@@ -28,6 +28,9 @@ CPACSSparSegment
 CPACSSparSegments
 CPACSComponentSegment
 CPACSComponentSegments
+CPACSEtaIsoLine
+CPACSXsiIsoLine
+CPACSEtaXsiRelHeightPoint
 
 CPACSFuselage
 CPACSFuselages

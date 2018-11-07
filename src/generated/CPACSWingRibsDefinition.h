@@ -20,10 +20,10 @@
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
 #include <CCPACSWingRibCrossSection.h>
+#include <CCPACSWingRibExplicitPositioning.h>
 #include <CCPACSWingRibsPositioning.h>
 #include <string>
 #include <tixi.h>
-#include "CPACSWingRibExplicitPositioning.h"
 #include "CreateIfNotExists.h"
 #include "tigl_internal.h"
 
@@ -57,8 +57,8 @@ namespace generated
 
         TIGL_EXPORT bool ValidateChoices() const;
 
-        TIGL_EXPORT virtual const boost::optional<std::string>& GetUID() const;
-        TIGL_EXPORT virtual void SetUID(const boost::optional<std::string>& value);
+        TIGL_EXPORT virtual const std::string& GetUID() const;
+        TIGL_EXPORT virtual void SetUID(const std::string& value);
 
         TIGL_EXPORT virtual const std::string& GetName() const;
         TIGL_EXPORT virtual void SetName(const std::string& value);
@@ -72,13 +72,13 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CCPACSWingRibsPositioning>& GetRibsPositioning_choice1() const;
         TIGL_EXPORT virtual boost::optional<CCPACSWingRibsPositioning>& GetRibsPositioning_choice1();
 
-        TIGL_EXPORT virtual const boost::optional<CPACSWingRibExplicitPositioning>& GetRibExplicitPositioning_choice2() const;
-        TIGL_EXPORT virtual boost::optional<CPACSWingRibExplicitPositioning>& GetRibExplicitPositioning_choice2();
+        TIGL_EXPORT virtual const boost::optional<CCPACSWingRibExplicitPositioning>& GetRibExplicitPositioning_choice2() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSWingRibExplicitPositioning>& GetRibExplicitPositioning_choice2();
 
         TIGL_EXPORT virtual CCPACSWingRibsPositioning& GetRibsPositioning_choice1(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveRibsPositioning_choice1();
 
-        TIGL_EXPORT virtual CPACSWingRibExplicitPositioning& GetRibExplicitPositioning_choice2(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual CCPACSWingRibExplicitPositioning& GetRibExplicitPositioning_choice2(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveRibExplicitPositioning_choice2();
 
     protected:
@@ -86,12 +86,12 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        boost::optional<std::string>                     m_uID;
-        std::string                                      m_name;
-        boost::optional<std::string>                     m_description;
-        CCPACSWingRibCrossSection                        m_ribCrossSection;
-        boost::optional<CCPACSWingRibsPositioning>       m_ribsPositioning_choice1;
-        boost::optional<CPACSWingRibExplicitPositioning> m_ribExplicitPositioning_choice2;
+        std::string                                       m_uID;
+        std::string                                       m_name;
+        boost::optional<std::string>                      m_description;
+        CCPACSWingRibCrossSection                         m_ribCrossSection;
+        boost::optional<CCPACSWingRibsPositioning>        m_ribsPositioning_choice1;
+        boost::optional<CCPACSWingRibExplicitPositioning> m_ribExplicitPositioning_choice2;
 
     private:
 #ifdef HAVE_CPP11

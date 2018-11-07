@@ -51,7 +51,10 @@ namespace generated
     {
         // read element ribRotationReference
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/ribRotationReference")) {
-            m_ribRotationReference = stringToCPACSRibRotation_ribRotationReference(tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/ribRotationReference"));
+            m_ribRotationReference = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/ribRotationReference");
+            if (m_ribRotationReference->empty()) {
+                LOG(WARNING) << "Optional element ribRotationReference is present but empty at xpath " << xpath;
+            }
         }
 
         // read element z
@@ -69,7 +72,7 @@ namespace generated
         // write element ribRotationReference
         if (m_ribRotationReference) {
             tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ribRotationReference");
-            tixi::TixiSaveElement(tixiHandle, xpath + "/ribRotationReference", CPACSRibRotation_ribRotationReferenceToString(*m_ribRotationReference));
+            tixi::TixiSaveElement(tixiHandle, xpath + "/ribRotationReference", *m_ribRotationReference);
         }
         else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/ribRotationReference")) {
@@ -83,12 +86,12 @@ namespace generated
 
     }
 
-    const boost::optional<CPACSRibRotation_ribRotationReference>& CPACSRibRotation::GetRibRotationReference() const
+    const boost::optional<std::string>& CPACSRibRotation::GetRibRotationReference() const
     {
         return m_ribRotationReference;
     }
 
-    void CPACSRibRotation::SetRibRotationReference(const boost::optional<CPACSRibRotation_ribRotationReference>& value)
+    void CPACSRibRotation::SetRibRotationReference(const boost::optional<std::string>& value)
     {
         m_ribRotationReference = value;
     }

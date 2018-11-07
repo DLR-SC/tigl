@@ -27,8 +27,8 @@ namespace tigl
 namespace generated
 {
     CPACSWingRibExplicitPositioning::CPACSWingRibExplicitPositioning(CCPACSWingRibsDefinition* parent)
-        : m_etaStart(0)
-        , m_etaEnd(0)
+        : m_etaStart(reinterpret_cast<CCPACSWingRibExplicitPositioning*>(this))
+        , m_etaEnd(reinterpret_cast<CCPACSWingRibExplicitPositioning*>(this))
     {
         //assert(parent != NULL);
         m_parent = parent;
@@ -63,7 +63,7 @@ namespace generated
 
         // read element etaStart
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/etaStart")) {
-            m_etaStart = tixi::TixiGetElement<double>(tixiHandle, xpath + "/etaStart");
+            m_etaStart.ReadCPACS(tixiHandle, xpath + "/etaStart");
         }
         else {
             LOG(ERROR) << "Required element etaStart is missing at xpath " << xpath;
@@ -82,7 +82,7 @@ namespace generated
 
         // read element etaEnd
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/etaEnd")) {
-            m_etaEnd = tixi::TixiGetElement<double>(tixiHandle, xpath + "/etaEnd");
+            m_etaEnd.ReadCPACS(tixiHandle, xpath + "/etaEnd");
         }
         else {
             LOG(ERROR) << "Required element etaEnd is missing at xpath " << xpath;
@@ -98,7 +98,7 @@ namespace generated
 
         // write element etaStart
         tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/etaStart");
-        tixi::TixiSaveElement(tixiHandle, xpath + "/etaStart", m_etaStart);
+        m_etaStart.WriteCPACS(tixiHandle, xpath + "/etaStart");
 
         // write element endReference
         tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/endReference");
@@ -106,7 +106,7 @@ namespace generated
 
         // write element etaEnd
         tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/etaEnd");
-        tixi::TixiSaveElement(tixiHandle, xpath + "/etaEnd", m_etaEnd);
+        m_etaEnd.WriteCPACS(tixiHandle, xpath + "/etaEnd");
 
     }
 
@@ -120,14 +120,14 @@ namespace generated
         m_startReference = value;
     }
 
-    const double& CPACSWingRibExplicitPositioning::GetEtaStart() const
+    const CCPACSEtaIsoLine& CPACSWingRibExplicitPositioning::GetEtaStart() const
     {
         return m_etaStart;
     }
 
-    void CPACSWingRibExplicitPositioning::SetEtaStart(const double& value)
+    CCPACSEtaIsoLine& CPACSWingRibExplicitPositioning::GetEtaStart()
     {
-        m_etaStart = value;
+        return m_etaStart;
     }
 
     const std::string& CPACSWingRibExplicitPositioning::GetEndReference() const
@@ -140,14 +140,14 @@ namespace generated
         m_endReference = value;
     }
 
-    const double& CPACSWingRibExplicitPositioning::GetEtaEnd() const
+    const CCPACSEtaIsoLine& CPACSWingRibExplicitPositioning::GetEtaEnd() const
     {
         return m_etaEnd;
     }
 
-    void CPACSWingRibExplicitPositioning::SetEtaEnd(const double& value)
+    CCPACSEtaIsoLine& CPACSWingRibExplicitPositioning::GetEtaEnd()
     {
-        m_etaEnd = value;
+        return m_etaEnd;
     }
 
 } // namespace generated
