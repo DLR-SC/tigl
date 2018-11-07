@@ -54,15 +54,14 @@
 #include "tigletaxsifunctions.h"
 #include "CNamedShape.h"
 
+namespace tigl
+{
 
 // TODO: const sparsNode
 TopoDS_Shape ApplyWingTransformation(tigl::CCPACSWingSpars& sparsNode, const TopoDS_Shape& shape)
 {
     return CTiglWingStructureReference(*sparsNode.GetParent()).GetWing().GetTransformationMatrix().Transform(shape);
 }
-
-namespace tigl
-{
 
 CCPACSWingSparSegment::CCPACSWingSparSegment(CCPACSWingSparSegments* sparSegments, CTiglUIDManager* uidMgr)
     : generated::CPACSSparSegment(sparSegments, uidMgr), sparsNode(*sparSegments->GetParent())
@@ -152,7 +151,7 @@ void CCPACSWingSparSegment::GetEtaXsi(int positionIndex, double& eta, double& xs
     else if (sparPosition.GetInputType() == CCPACSWingSparPosition::ElementUID) {
         gp_Pnt sparPositionPoint = GetMidplanePoint(sparPositionUID);
         double dummy;
-        sparsNode.GetParent()->GetWingStructureReference().GetEtaXsiLocal(sparPositionPoint, eta, dummy);
+        CTiglWingStructureReference(*sparsNode.GetParent()).GetEtaXsiLocal(sparPositionPoint, eta, dummy);
         assert(fabs(dummy - xsi) < 1.E-6);
     }
     else {
