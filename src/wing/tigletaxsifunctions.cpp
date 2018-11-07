@@ -206,17 +206,18 @@ EtaXsi transformEtaXsiToCSOrTed(EtaXsi etaXsi, const std::string& referenceUid, 
 {
     const CTiglUIDManager::TypedPtr tp = uidMgr.ResolveObject(referenceUid);
     if (tp.type == &typeid(CCPACSWingSegment)) {
-        const auto& segment = *reinterpret_cast<CCPACSWingSegment*>(tp.ptr);
-        if (const auto& css = segment.GetParent()->GetParent()->GetComponentSegments()) {
-            for (const auto& cs : css->GetComponentSegments()) {
-                if (cs->IsSegmentContained(segment)) {
+        const CCPACSWingSegment& segment = *reinterpret_cast<CCPACSWingSegment*>(tp.ptr);
+        const boost::optional<CCPACSWingComponentSegments>& css = segment.GetParent()->GetParent()->GetComponentSegments();
+        if (css) {
+            std::vector<unique_ptr<CCPACSWingComponentSegment>>::const_iterator it;
+            for (it = css->GetComponentSegments().begin(); it != css->GetComponentSegments().end(); ++it) {
+                if ((*it)->IsSegmentContained(segment)) {
                     EtaXsi r;
-                    cs->GetEtaXsiFromSegmentEtaXsi(referenceUid, etaXsi.eta, etaXsi.xsi, r.eta, r.xsi);
+                    (*it)->GetEtaXsiFromSegmentEtaXsi(referenceUid, etaXsi.eta, etaXsi.xsi, r.eta, r.xsi);
                     return r;
                 }
             }
         }
-
         throw CTiglError("Wing of segment referenced by UID " + referenceUid + " has no component segments");
     }
     if (tp.type == &typeid(CCPACSWingComponentSegment))
