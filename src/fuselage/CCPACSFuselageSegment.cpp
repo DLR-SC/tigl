@@ -214,10 +214,17 @@ TopoDS_Wire CCPACSFuselageSegment::GetStartWire(TiglCoordinateSystem referenceCS
 {
     const CCPACSFuselageProfile& startProfile = startConnection.GetProfile();
     TopoDS_Wire startWire = startProfile.GetWire(true);
-    if (referenceCS == GLOBAL_COORDINATE_SYSTEM)
-        return TopoDS::Wire(transformFuselageProfileGeometry(GetFuselage().GetTransformationMatrix(), startConnection, startWire));
-    else
-        return startWire;
+
+    CTiglTransformation identity;
+    switch (referenceCS) {
+    case FUSELAGE_COORDINATE_SYSTEM:
+        return transformProfileWire(identity, startConnection, startWire);
+    case GLOBAL_COORDINATE_SYSTEM:
+        return TopoDS::Wire(
+            transformFuselageProfileGeometry(GetFuselage().GetTransformationMatrix(), startConnection, startWire));
+    default:
+        throw CTiglError("Invalid coordinate system passed to CCPACSFuselageSegment::GetStartWire");
+    }
 }
 
 // helper function to get the wire of the end section
@@ -225,10 +232,17 @@ TopoDS_Wire CCPACSFuselageSegment::GetEndWire(TiglCoordinateSystem referenceCS) 
 {
     const CCPACSFuselageProfile& endProfile = endConnection.GetProfile();
     TopoDS_Wire endWire = endProfile.GetWire(true);
-    if (referenceCS == GLOBAL_COORDINATE_SYSTEM)
-        return TopoDS::Wire(transformFuselageProfileGeometry(GetFuselage().GetTransformationMatrix(), endConnection, endWire));
-    else
-        return endWire;
+
+    CTiglTransformation identity;
+    switch (referenceCS) {
+    case FUSELAGE_COORDINATE_SYSTEM:
+        return transformProfileWire(identity, endConnection, endWire);
+    case GLOBAL_COORDINATE_SYSTEM:
+        return TopoDS::Wire(
+            transformFuselageProfileGeometry(GetFuselage().GetTransformationMatrix(), endConnection, endWire));
+    default:
+        throw CTiglError("Invalid coordinate system passed to CCPACSFuselageSegment::GetEndWire");
+    }
 }
 
 // get short name for loft
@@ -342,7 +356,7 @@ PNamedShape CCPACSFuselageSegment::BuildLoft() const
 
 void CCPACSFuselageSegment::UpdateSurfaceProperties(SurfacePropertiesCache& cache) const
 {
-    const TopoDS_Shape loftShape = const_cast<CCPACSFuselageSegment&>(*this).GetLoft()->Shape();
+    const TopoDS_Shape loftShape = GetLoft()->Shape();
 
     // Calculate volume
     GProp_GProps System;
