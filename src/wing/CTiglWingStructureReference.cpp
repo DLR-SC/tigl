@@ -36,6 +36,19 @@ CTiglWingStructureReference::CTiglWingStructureReference(const CCPACSWingCompone
 {
 }
 
+CTiglWingStructureReference::CTiglWingStructureReference(const CCPACSWingCSStructure& structure)
+{
+    if (structure.IsParent<CCPACSWingComponentSegment>()) {
+        type = ComponentSegmentType;
+        componentSegment = structure.GetParent<CCPACSWingComponentSegment>();
+    //} else if (structure.IsParent<CCPACSTrailingEdgeDevice>()) {
+    //    type = TrailingEdgeDeviceType;
+    //    trailingEdgeDevice = structure.GetParent<CCPACSTrailingEdgeDevice>();
+    } else {
+        throw CTiglError("Unrecognized parent of CCPACSWingCSStructure");
+    }
+}
+
 #define DISPATCH(call)                                                                                                 \
     switch (type) {                                                                                                    \
     case ComponentSegmentType:                                                                                         \
@@ -167,7 +180,8 @@ TopoDS_Shape CTiglWingStructureReference::GetUpperShape(TiglCoordinateSystem ref
 /*        case TrailingEdgeDeviceType:
             loft = trailingEdgeDevice->GetUpperShape();
             break;*/
-        default: throw CTiglError("Internal Error in CTiglWingStructureReference: unknown type passed to GetUpperShape method!");
+        default:
+            throw CTiglError("Internal Error in CTiglWingStructureReference: unknown type passed to GetUpperShape method!");
     }
 
     CTiglTransformation transform;
@@ -197,7 +211,8 @@ TopoDS_Shape CTiglWingStructureReference::GetLowerShape(TiglCoordinateSystem ref
 /*        case TrailingEdgeDeviceType:
             loft = trailingEdgeDevice->GetLowerShape();
             break;*/
-        default: throw CTiglError("Internal Error in CTiglWingStructureReference: unknown type passed to GetLowerShape method!");
+        default:
+            throw CTiglError("Internal Error in CTiglWingStructureReference: unknown type passed to GetLowerShape method!");
     }
 
     CTiglTransformation transform;

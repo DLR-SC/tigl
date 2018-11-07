@@ -333,7 +333,7 @@ EtaXsi CCPACSWingCell::computePositioningEtaXsi(const CCPACSWingCellPositionSpan
         // get the spar from the wing structure
         const CCPACSWingCSStructure& structure = m_parent->GetParent()->GetStructure();
         const CCPACSWingSparSegment& spar      = structure.GetSparSegment(chordwisePos.GetSparUId());
-        xsi                                    = computeSparXsiValue(structure.GetWingStructureReference(), spar, eta);
+        xsi                                    = computeSparXsiValue(CTiglWingStructureReference(structure), spar, eta);
     }
     else if (spanwisePos.GetInputType() == CCPACSWingCellPositionSpanwise::Rib &&
              chordwisePos.GetInputType() == CCPACSWingCellPositionChordwise::Xsi) {
@@ -349,13 +349,12 @@ EtaXsi CCPACSWingCell::computePositioningEtaXsi(const CCPACSWingCellPositionSpan
         else {
             xsi = chordwisePos.GetXsi().second;
         }
-        eta = computeRibEtaValue(structure.GetWingStructureReference(), ribsDefinition, ribIndex, xsi);
+        eta = computeRibEtaValue(CTiglWingStructureReference(structure), ribsDefinition, ribIndex, xsi);
     }
     else if (spanwisePos.GetInputType() == CCPACSWingCellPositionSpanwise::Rib &&
              chordwisePos.GetInputType() == CCPACSWingCellPositionChordwise::Spar) {
         // get the spar from the wing structure reference
         const CCPACSWingCSStructure& structure = m_parent->GetParent()->GetStructure();
-        CTiglWingStructureReference wsr        = structure.GetWingStructureReference();
         const CCPACSWingSparSegment& spar      = structure.GetSparSegment(chordwisePos.GetSparUId());
         // get the ribs definition from the wing structure reference
         std::string ribUid;
@@ -363,7 +362,7 @@ EtaXsi CCPACSWingCell::computePositioningEtaXsi(const CCPACSWingCellPositionSpan
         spanwisePos.GetRib(ribUid, ribIndex);
         const CCPACSWingRibsDefinition& ribsDefinition = structure.GetRibsDefinition(ribUid);
 
-        tigl::EtaXsi result = computeRibSparIntersectionEtaXsi(wsr, ribsDefinition, ribIndex, spar);
+        tigl::EtaXsi result = computeRibSparIntersectionEtaXsi(CTiglWingStructureReference(structure), ribsDefinition, ribIndex, spar);
         eta                 = result.eta;
         xsi                 = result.xsi;
     }
@@ -385,10 +384,7 @@ void CCPACSWingCell::UpdateEtaXsiValues(EtaXsiCache& cache) const
 TopoDS_Shape CCPACSWingCell::GetCellSkinGeometry(TiglCoordinateSystem cs) const
 {
     if (cs == GLOBAL_COORDINATE_SYSTEM) {
-        return m_parent->GetParent()
-            ->GetStructure()
-            .GetWingStructureReference()
-            .GetWingComponentSegment()
+        return CTiglWingStructureReference(m_parent->GetParent()->GetStructure())
             .GetWing()
             .GetTransformationMatrix()
             .Transform(m_geometryCache->cellSkinGeometry);
@@ -406,7 +402,7 @@ void CCPACSWingCell::BuildSkinGeometry(GeometryCache& cache) const
 
     BRep_Builder builder;
 
-    const CTiglWingStructureReference& wsr = m_parent->GetParent()->GetStructure().GetWingStructureReference();
+    const CTiglWingStructureReference wsr(m_parent->GetParent()->GetStructure());
     gp_Pnt p1                              = wsr.GetLeadingEdgePoint(0);
     gp_Pnt p2                              = wsr.GetLeadingEdgePoint(1);
     gp_Vec yRefDir(p1, p2);
@@ -722,10 +718,7 @@ bool CCPACSWingCell::IsPartOfCellImpl(T t)
 {
     Bnd_Box bBox1, bBox2;
     BRepBndLib::Add(m_geometryCache->cellSkinGeometry, bBox1);
-    TopoDS_Shape t_transformed = m_parent->GetParent()
-                                        ->GetStructure()
-                                        .GetWingStructureReference()
-                                        .GetWingComponentSegment()
+    TopoDS_Shape t_transformed = CTiglWingStructureReference(m_parent->GetParent()->GetStructure())
                                         .GetWing()
                                         .GetTransformationMatrix()
                                         .Inverted()

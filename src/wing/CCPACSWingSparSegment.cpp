@@ -58,7 +58,7 @@
 // TODO: const sparsNode
 TopoDS_Shape ApplyWingTransformation(tigl::CCPACSWingSpars& sparsNode, const TopoDS_Shape& shape)
 {
-    return sparsNode.GetParent()->GetWingStructureReference().GetWing().GetTransformationMatrix().Transform(shape);
+    return CTiglWingStructureReference(*sparsNode.GetParent()).GetWing().GetTransformationMatrix().Transform(shape);
 }
 
 namespace tigl
@@ -266,13 +266,13 @@ TiglGeometricComponentType CCPACSWingSparSegment::GetComponentType() const
 void CCPACSWingSparSegment::BuildAuxiliaryGeometry(AuxiliaryGeomCache& cache) const
 {
     // get assigned componentsegment
-    CTiglWingStructureReference wingStructureReference = sparsNode.GetParent()->GetWingStructureReference();
+    const CTiglWingStructureReference wsr(*sparsNode.GetParent());
 
     // build compound for cut geometry
     BRepBuilderAPI_Sewing cutGeomSewer;
 
     // get bounding box of loft
-    TopoDS_Shape loft = wingStructureReference.GetLoft()->Shape();
+    TopoDS_Shape loft = wsr.GetLoft()->Shape();
     Bnd_Box bbox;
     BRepBndLib::Add(loft, bbox);
     double bboxSize = sqrt(bbox.SquareExtent());
@@ -343,7 +343,7 @@ void CCPACSWingSparSegment::BuildAuxiliaryGeometry(AuxiliaryGeomCache& cache) co
         cutGeomSewer.Add(sparCutFace);
 
         // STEP 5: compute part of midplane line (required by rib definition)
-        TopoDS_Wire sparMidplaneLinePart = wingStructureReference.GetMidplaneLine(innerPoint, outerPoint);
+        TopoDS_Wire sparMidplaneLinePart = wsr.GetMidplaneLine(innerPoint, outerPoint);
         sparMidplaneLineBuilder.Add(sparMidplaneLinePart);
     }
 
@@ -356,13 +356,13 @@ void CCPACSWingSparSegment::BuildAuxiliaryGeometry(AuxiliaryGeomCache& cache) co
 
 void CCPACSWingSparSegment::BuildGeometry(GeometryCache& cache) const
 {
-    CTiglWingStructureReference wingStructureReference = sparsNode.GetParent()->GetWingStructureReference();
+    CTiglWingStructureReference wsr(*sparsNode.GetParent());
 
     // build compound for spar geometry
     BRepBuilderAPI_Sewing sewing;
 
     // get bounding box of loft
-    TopoDS_Shape loft = wingStructureReference.GetLoft()->Shape();
+    TopoDS_Shape loft = wsr.GetLoft()->Shape();
     Bnd_Box bbox;
     BRepBndLib::Add(loft, bbox);
     double bboxSize = sqrt(bbox.SquareExtent());
@@ -430,7 +430,7 @@ void CCPACSWingSparSegment::BuildSplittedSparGeometry(SplittedGeomCache& cache) 
 
 void CCPACSWingSparSegment::BuildSparCapsGeometry(SparCapsCache& cache) const
 {
-    CTiglWingStructureReference wingStructureReference = sparsNode.GetParent()->GetWingStructureReference();
+    const CTiglWingStructureReference wsr(*sparsNode.GetParent());
     TopoDS_Compound upperCompound;
     TopoDS_Compound lowerCompound;
     BRep_Builder builder;
@@ -440,7 +440,7 @@ void CCPACSWingSparSegment::BuildSparCapsGeometry(SparCapsCache& cache) const
     TopoDS_Shape sparCutting = GetSparCutGeometry(WING_COORDINATE_SYSTEM);
 
     if (m_sparCrossSection.GetUpperCap()) {
-        TopoDS_Shape loft = wingStructureReference.GetUpperShape();
+        TopoDS_Shape loft = wsr.GetUpperShape();
 
         // Get the cutting edge of the spar cutting plane and the loft
         TopExp_Explorer ExpEdges;
@@ -454,7 +454,7 @@ void CCPACSWingSparSegment::BuildSparCapsGeometry(SparCapsCache& cache) const
     }
 
     if (m_sparCrossSection.GetLowerCap()) {
-        TopoDS_Shape loft = wingStructureReference.GetLowerShape();
+        TopoDS_Shape loft = wsr.GetLowerShape();
 
         // Get the cutting edge of the spar cutting plane and the loft
         TopExp_Explorer ExpEdges;
@@ -476,14 +476,14 @@ gp_Pnt CCPACSWingSparSegment::GetMidplanePoint(const std::string& positionUID) c
 {
     gp_Pnt midplanePoint;
     CCPACSWingSparPosition& position = sparsNode.GetSparPositions().GetSparPosition(positionUID);
-    CTiglWingStructureReference wingStructureReference = sparsNode.GetParent()->GetWingStructureReference();
+    CTiglWingStructureReference wsr(*sparsNode.GetParent());
 
     if (position.GetInputType() == CCPACSWingSparPosition::ElementUID) {
-        const CCPACSWingComponentSegment& componentSegment = wingStructureReference.GetWingComponentSegment();
+            const CCPACSWingComponentSegment& componentSegment = wsr.GetWingComponentSegment();
         midplanePoint = getSectionElementChordlinePoint(componentSegment, position.GetElementUID(), position.GetXsi());
     }
     else if (position.GetInputType() == CCPACSWingSparPosition::Eta) {
-        midplanePoint = wingStructureReference.GetPoint(position.GetEta(), position.GetXsi(), WING_COORDINATE_SYSTEM);
+        midplanePoint = wsr.GetPoint(position.GetEta(), position.GetXsi(), WING_COORDINATE_SYSTEM);
     }
     else {
         throw CTiglError("Unkwnonw SparPosition InputType found in CCPACSWingSparSegment::GetMidplanePoint");
@@ -495,11 +495,11 @@ gp_Vec CCPACSWingSparSegment::GetUpVector(const std::string& positionUID, gp_Pnt
 {
     gp_Vec upVec;
     CCPACSWingSparPosition& position = sparsNode.GetSparPositions().GetSparPosition(positionUID);
-    CTiglWingStructureReference wingStructureReference = sparsNode.GetParent()->GetWingStructureReference();
+    const CTiglWingStructureReference wsr(*sparsNode.GetParent());
 
     if (position.GetInputType() == CCPACSWingSparPosition::ElementUID) {
         // get componentSegment required for getting chordline points of sections
-        const CCPACSWingComponentSegment& componentSegment = wingStructureReference.GetWingComponentSegment();
+        const CCPACSWingComponentSegment& componentSegment = wsr.GetWingComponentSegment();
 
         // compute bounding box of section element face
         TopoDS_Shape sectionFace = componentSegment.GetSectionElementFace(position.GetElementUID());
