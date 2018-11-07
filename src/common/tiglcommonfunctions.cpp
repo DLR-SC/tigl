@@ -1270,7 +1270,9 @@ TopoDS_Shape SplitShape(const TopoDS_Shape& src, const TopoDS_Shape& tool)
         GEOMAlgo_Splitter splitter;
         splitter.AddArgument(src);
         splitter.AddTool(tool);
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(6,9,0)
         splitter.SetFuzzyValue(fuzzyValue);
+#endif
         try {
             splitter.Perform();
         }
@@ -1294,7 +1296,7 @@ TopoDS_Shape SplitShape(const TopoDS_Shape& src, const TopoDS_Shape& tool)
             LOG(ERROR) << "unable to split passed shapes: " << oss.str();
             throw tigl::CTiglError("unable to split passed shapes: " + oss.str());
         }
-#else
+#elif OCC_VERSION_HEX >= VERSION_HEX_CODE(6,9,0)
         if (splitter.ErrorStatus() != 0) {
             if (i < c_tries - 1) {
                 fuzzyValue *= 10;
@@ -1302,6 +1304,11 @@ TopoDS_Shape SplitShape(const TopoDS_Shape& src, const TopoDS_Shape& tool)
                 continue;
             }
 
+            LOG(ERROR) << "unable to split passed shapes!";
+            throw tigl::CTiglError("unable to split passed shapes!");
+        }
+#else
+        if (splitter.ErrorStatus() != 0) {
             LOG(ERROR) << "unable to split passed shapes!";
             throw tigl::CTiglError("unable to split passed shapes!");
         }
