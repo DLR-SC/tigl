@@ -10,21 +10,12 @@ source:
   md5: 870e16fd88a88b52e26a4f04dfc161db
 
 build:
-  number: 1
-  features:
-    - vc9              # [win and py27]
-    - vc14             # [win and (py35 or py36)]
+  number: 2
 
 requirements:
   build:
-    - python           # [win]
-    - vc 9             # [win and py27]
-    - vc 14            # [win and (py35 or py36)]
-    - gcc              # [linux]
+    - {{ compiler('c') }}
 
-  run:
-    - vc 9  # [win and py27]
-    - vc 14  # [win and (py35 or py36)]
 
 test:
   commands:

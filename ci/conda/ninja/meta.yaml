@@ -1,22 +1,18 @@
 ﻿package:
   name: ninja
-  version: 1.7.1
+  version: 1.8.2
 
 source:
-  fn: ninja-1.7.1.tar.gz
-  url: https://github.com/ninja-build/ninja/archive/v1.7.1.tar.gz
+  fn: ninja-1.8.2.tar.gz
+  url: https://github.com/ninja-build/ninja/archive/v1.8.2.tar.gz
 
 build:
   number: 0
-  features:
-    - vc9              # [win and py27]
-    - vc10             # [win and py34]
-    - vc14             # [win and py35]
 
 requirements:
   build:
+    - {{ compiler('cxx') }}
     - python
-    - gcc [linux]
 
 about:
   home: https://ninja-build.org/

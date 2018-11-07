@@ -6,6 +6,8 @@ else
     EXTRA_LIBS=""
 fi
 
-CFLAGS=-fPIC CXXFLAGS=-fPIC ./configure  "$EXTRA_LIBS"" --enable-shared=no --without-zlib --disable-ldap --prefix=$PREFIX
+export CFLAGS="-fPIC $CFLAGS"
+export CXXFLAGS="-fPIC $CXXFLAGS"
+./configure  "$EXTRA_LIBS" --enable-shared=no --without-zlib --disable-ldap --prefix=$PREFIX
 make -j $CPU_COUNT
 make install

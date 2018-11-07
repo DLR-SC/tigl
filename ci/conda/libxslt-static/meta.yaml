@@ -6,25 +6,20 @@ package:
 
 source:
   fn: libxslt-{{ version }}.tar.gz
-  url: ftp://xmlsoft.org/libxslt/libxslt-{{ version }}.tar.gz
+  url: http://xmlsoft.org/sources/libxslt-{{ version }}.tar.gz
 
 
 build:
-  number: 4
-  features:
-    - vc9  # [win and py27]
-    - vc14  # [win and (py35 or py36)]
+  number: 5
 
 requirements:
   build:
-    - python  # [win]
-    - vc 9  # [win and py27]
-    - vc 14  # [win and (py35 or py36)]
+    - {{ compiler('c') }}
+
+  host:
     - libxml2-static ==2.9.3
 
   run:
-    - vc 9  # [win and py27]
-    - vc 14  # [win and (py35 or py36)]
     - libxml2-static ==2.9.3
 
 about:

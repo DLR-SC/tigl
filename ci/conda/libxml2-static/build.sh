@@ -1,6 +1,8 @@
 #!/bin/bash
 
-CFLAGS=-fPIC CXXFLAGS=-fPIC ./configure --without-zlib --without-lzma --enable-shared=no --without-python --prefix=$PREFIX
+export CFLAGS="-fPIC $CFLAGS"
+export CXXFLAGS="-fPIC $CXXFLAGS"
+./configure --without-zlib --without-lzma --enable-shared=no --without-python --prefix=$PREFIX
 make -j $CPU_COUNT
 make install
 

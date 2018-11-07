@@ -6,21 +6,19 @@ mkdir build
 cd build
 
 if [ `uname` == Darwin ]; then
-    EXTRA_LIBS="-lm -liconv -framework Foundation -lz -framework Security"
+    EXTRA_LIBS="-lm -liconv -framework Foundation -lz -framework Security $LDFLAGS"
 else
-    EXTRA_LIBS="-lm -lrt"
+    EXTRA_LIBS="-lm -lrt $LDFLAGS"
 fi
+
+export CXXFLAGS="$CXXFLAGS -DGTEST_USE_OWN_TR1_TUPLE=1"
 
 # Configure step
 cmake -DCMAKE_INSTALL_PREFIX=$PREFIX \
- -DCMAKE_BUILD_TYPE=Release \
- -DCMAKE_PREFIX_PATH=$PREFIX \
- -DCMAKE_SYSTEM_PREFIX_PATH=$PREFIX \
+ -DCMAKE_PREFIX_PATH=$CONDA_PREFIX \
  -DCMAKE_SHARED_LINKER_FLAGS="$EXTRA_LIBS" \
  -DCMAKE_EXE_LINKER_FLAGS="$EXTRA_LIBS" \
  -DTIXI_BUILD_TESTS=ON \
- -DCMAKE_CXX_FLAGS="-DGTEST_USE_OWN_TR1_TUPLE=1" \
- -DPYTHON_EXECUTABLE:FILEPATH=$PYTHON \
  ..
 
 # Build step
@@ -41,7 +39,7 @@ make package
 cp *.tar.gz $RECIPE_DIR/
 
 # install python packages
-mkdir $SP_DIR/tixi3
+mkdir -p $SP_DIR/tixi3
 touch $SP_DIR/tixi3/__init__.py
 cp lib/tixi3wrapper.py $SP_DIR/tixi3/
 python $RECIPE_DIR/fixosxload.py $SP_DIR/tixi3/tixi3wrapper.py libTIXI

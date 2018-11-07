@@ -12,27 +12,23 @@ source:
     - remove_hard_links.patch
 
 build:
-  number: 2
-  features:
-    - vc9              # [win and py27]
-    - vc14             # [win and (py35 or py36)]
+  number: 3
 
 requirements:
   build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
     - patch             # [win]
     - python
-    - vc 9              # [win and py27]
-    - vc 14             # [win and (py35 or py36)]
-    - doxygen ==1.8.10
+    - doxygen =1.8.10
+
+  host:
     - curl-static ==7.50.3
     - libxml2-static ==2.9.3
     - libxslt-static ==1.1.29
-    - gcc               # [linux]
 
   run:
     - python
-    - vc 9              # [win and py27]
-    - vc 14             # [win and (py35 or py36)]
 
 test:
     commands:
