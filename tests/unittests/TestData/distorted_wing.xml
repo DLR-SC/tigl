@@ -309,7 +309,7 @@
                       </sparPosition>
                       <sparPosition uID="Wing_FrontSpar_Pos3">
                         <sparPoint>
-                          <eta>0.441444</eta>
+                          <eta>0.46953191</eta>
                           <xsi>0.2</xsi>
                           <referenceUID>Wing_CS</referenceUID>
                         </sparPoint>
