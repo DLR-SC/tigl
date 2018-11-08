@@ -84,6 +84,7 @@
 #include "CCPACSWingRibsDefinition.h"
 #include "CTiglAttachedRotorBlade.h"
 #include "TIGLGeometryChoserDialog.h"
+#include "CCPACSEnginePylon.h"
 
 #define max(a,b) ((a) > (b) ? (a) : (b))
 
@@ -211,7 +212,7 @@ TiglReturnCode TIGLViewerDocument::openCpacsConfiguration(const QString fileName
         displayError(QString("<u>tiglOpenCPACSConfiguration</u> returned %1").arg(tiglGetErrorString(tiglRet)), "Error while reading in CPACS configuration");
         return tiglRet;
     }
-    drawAllFuselagesAndWings();
+    drawConfiguration();
     loadedConfigurationFileName = fileName;
     return TIGL_SUCCESS;
 }
@@ -659,7 +660,7 @@ QString TIGLViewerDocument::dlgGetFuselageProfileSelection()
     }
 }
 
-void TIGLViewerDocument::drawAllFuselagesAndWings( )
+void TIGLViewerDocument::drawConfiguration( )
 {
     try {
         START_COMMAND();
@@ -756,6 +757,25 @@ void TIGLViewerDocument::drawAllFuselagesAndWings( )
                 BRepBuilderAPI_Transform myBRepTransformation(rotorDisk, theTransformation);
                 const TopoDS_Shape& mirrRotorDisk = myBRepTransformation.Shape();
                 app->getScene()->displayShape(mirrRotorDisk, true, Quantity_NOC_MirrRotorCol, 0.9);
+            }
+            catch(tigl::CTiglError& err) {
+                displayError(err.what());
+            }
+        }
+
+        // draw pylons
+        int nPylons = GetConfiguration().GetEnginePylons().GetEnginePylons().size();
+        for (int i=1; i <= nPylons; ++i) {
+            try {
+                tigl::CCPACSEnginePylon& obj = GetConfiguration().GetEnginePylons().GetEnginePylon(i);
+                app->getScene()->displayShape(obj.GetLoft(), true);
+
+                if (obj.GetSymmetryAxis() == TIGL_NO_SYMMETRY) {
+                    continue;
+                }
+
+                app->getScene()->displayShape(obj.GetMirroredLoft()->Shape(), true, Quantity_NOC_MirrShapeCol);
+
             }
             catch(tigl::CTiglError& err) {
                 displayError(err.what());

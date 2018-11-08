@@ -54,4 +54,9 @@ CTiglTransformation CCPACSEnginePylon::GetPositioningTransformation(std::string 
         return CTiglTransformation(); // return identity if no positioning transformation is given
 }
 
+bool CCPACSEnginePylon::HasLoft() const
+{
+    return m_segments.is_initialized() && m_segments->GetSegmentCount() > 0;
+}
+
 } // namespace tigl

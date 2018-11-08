@@ -38,6 +38,8 @@ public:
 
     TIGL_EXPORT CTiglTransformation GetPositioningTransformation(std::string sectionUID);
 
+    TIGL_EXPORT bool HasLoft() const;
+
 protected:
     virtual PNamedShape BuildLoft() const OVERRIDE;
 };
