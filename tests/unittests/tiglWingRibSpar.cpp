@@ -133,10 +133,10 @@ TEST_F(DistortedWing, computeSparXsi) {
     tigl::CCPACSWingComponentSegment& componentSegment = static_cast<tigl::CCPACSWingComponentSegment&>(wing.GetComponentSegment(1));
     const tigl::CCPACSWingSparSegment& spar = componentSegment.GetStructure()->GetSparSegment(1);
 
-    const std::pair<double, double> arr[] = { DP(0, 0.2), DP(0.33, 0.29), DP(0.46953191, 0.2), DP(0.9, 0.33) };
+    const std::pair<double, double> arr[] = { DP(0, 0.2), DP(0.1, 0.21564526), DP(0.290635, 0.3), DP(0.441444, 0.2), DP(0.595224, 0.334944), DP(1, 0.3) };
     std::vector< std::pair<double, double> > expectedEtaXsis (arr, arr + sizeof(arr) / sizeof(arr[0])); 
     // low precision because expected xsi values are measured from model
-    const double precision = 1E-2;
+    const double precision = 1E-6;
     std::vector< std::pair<double, double> >::const_iterator it;
     for (it = expectedEtaXsis.begin(); it != expectedEtaXsis.end(); ++it) {
         double eta = it->first;
