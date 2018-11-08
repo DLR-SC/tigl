@@ -30,6 +30,7 @@
 #include "CCPACSWingSegment.h"
 #include "CTiglWingSegmentGuidecurveBuilder.h"
 #include "CCPACSWing.h"
+#include "CCPACSWings.h"
 #include "CCPACSEnginePylon.h"
 #include "CCPACSWingSegments.h"
 #include "CCPACSWingProfiles.h"
@@ -351,27 +352,35 @@ TopoDS_Shape CCPACSWingSegment::GetOuterClosure(TiglCoordinateSystem referenceCS
 // get short name for loft
 std::string CCPACSWingSegment::GetShortShapeName () const
 {
-    unsigned int windex = 0;
-    unsigned int wsindex = GetSegmentIndex();
+    size_t windex = 0;
+    int wsindex = GetSegmentIndex();
 
-    // TODO: reenable!!!
+    std::stringstream shortName;
 
-    /*for (int i = 1; i <= wing->GetConfiguration().GetWingCount(); ++i) {
-        const CCPACSWing& w = wing->GetConfiguration().GetWing(i);
-        if (wing->GetUID() == w.GetUID()) {
-            windex = i;
-            for (int j = 1; j <= w.GetSegmentCount(); j++) {
-                const CCPACSWingSegment& ws = w.GetSegment(j);
-                if (GetUID() == ws.GetUID()) {
-                    wsindex = j;
-                    std::stringstream shortName;
-                    shortName << "W" << windex << "S" << wsindex;
-                    return shortName.str();
-                }
-            }
+    if (GetParent()->IsParent<CCPACSWing>()) {
+        const CCPACSWing* wing = GetParent()->GetParent<CCPACSWing>();
+        if (wing->IsParent<CCPACSRotorBlades>()) {
+            windex = IndexFromUid(wing->GetParent<CCPACSRotorBlades>()->GetRotorBlades(), wing->GetUID());
+            shortName << "R";
         }
-    }*/
-    return "UNKNOWN";
+        else {
+            windex = IndexFromUid(wing->GetParent<CCPACSWings>()->GetWings(), wing->GetUID());
+            shortName << "W";
+        }
+
+    }
+    else if (GetParent()->IsParent<CCPACSEnginePylon>()) {
+        const CCPACSEnginePylon* pylon = GetParent()->GetParent<CCPACSEnginePylon>();
+        windex = IndexFromUid(pylon->GetParent()->GetEnginePylons(), pylon->GetUID());
+        shortName << "P";
+    }
+    else {
+        LOG(WARNING) << "Cannot create short shape name for component \"" + GetUID() + "\"";
+        return "UNKNOWN";
+    }
+
+    shortName << windex+1 << "S" << wsindex;
+    return shortName.str();
 }
 
 // Builds the loft between the two segment sections

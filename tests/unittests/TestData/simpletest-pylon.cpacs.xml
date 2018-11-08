@@ -469,11 +469,33 @@
         <enginePylons>
           <enginePylon uID="Pylon">
             <parentUID>Wing</parentUID>
-            <transformation uID="PYL1_transformation1"/>
+            <transformation uID="PYL1_transformation1">
+              <rotation uID="PYL1_transformation1_rotation">
+                <x>90</x>
+                <y>0</y>
+                <z>-90</z>
+              </rotation>
+              <translation refType="absLocal" uID="PYL1_transformation1_translation">
+                <x>-0.45</x>
+                <y>1</y>
+                <z>-0.12</z>
+              </translation>
+              <scaling uID="PYL1_transformation1_scaling">
+                <x>0.7</x>
+                <y>1.</y>
+                <z>1.</z>
+              </scaling>
+            </transformation>
             <sections>
               <section uID="Pylon_Sec1">
                 <name>Pylon Section 1</name>
-                <transformation uID="Pylon_Sec1_transformation1"/>
+                <transformation uID="Pylon_Sec1_transformation1">
+                    <scaling uID="Pylon_Sec1_transformation1_scaling1">
+                        <x>0.25</x>
+                        <y>0.25</y>
+                        <z>0.20</z>
+                    </scaling>
+                </transformation>
                 <elements>
                   <element uID="Pylon_Sec1_El1">
                     <name>Cpacs2Test - Wing Section 1 Main Element</name>
@@ -484,7 +506,13 @@
               </section>
               <section uID="Pylon_Sec2">
                 <name>Pylon Section 2</name>
-                <transformation uID="Pylon_Sec2_transformation1"/>
+                <transformation uID="Pylon_Sec2_transformation1">
+                    <scaling uID="Pylon_Sec2_transformation1_scaling1">
+                        <x>0.45</x>
+                        <y>0.35</y>
+                        <z>0.25</z>
+                    </scaling>
+                </transformation>
                 <elements>
                   <element uID="Pylon_Sec2_El1">
                     <name>Cpacs2Test - Wing Section 1 Main Element</name>
@@ -497,9 +525,9 @@
                 <name>Pylon Section 3</name>
                 <transformation uID="Pylon_Sec3_transformation1">
                     <scaling uID="Pylon_Sec3_transformation1_scaling1">
-                        <x>0.5</x>
-                        <y>0.5</y>
-                        <z>0.5</z>
+                        <x>0.1</x>
+                        <y>0.1</y>
+                        <z>0.05</z>
                     </scaling>
                 </transformation>
                 <elements>
@@ -521,15 +549,15 @@
               </positioning>
               <positioning uID="Pylon_position2">
                 <name>Pylon Position 2</name>
-                <length>1</length>
-                <sweepAngle>0</sweepAngle>
+                <length>0.5</length>
+                <sweepAngle>-20</sweepAngle>
                 <dihedralAngle>0</dihedralAngle>
                 <fromSectionUID>Pylon_Sec1</fromSectionUID>
                 <toSectionUID>Pylon_Sec2</toSectionUID>
               </positioning>
               <positioning uID="Pylon_position3">
                 <name>Pylon Position 3</name>
-                <length>3</length>
+                <length>0.9</length>
                 <sweepAngle>0</sweepAngle>
                 <dihedralAngle>0</dihedralAngle>
                 <fromSectionUID>Pylon_Sec2</fromSectionUID>
@@ -538,10 +566,12 @@
             </positionings>
             <segments>
               <segment uID="Pylon_Seg1">
+                <name>Pylon Segment 1</name>
                 <fromElementUID>Pylon_Sec1_El1</fromElementUID>
                 <toElementUID>Pylon_Sec2_El1</toElementUID>
               </segment>
               <segment uID="Pylon_Seg2">
+                <name>Pylon Segment 2</name>
                 <fromElementUID>Pylon_Sec2_El1</fromElementUID>
                 <toElementUID>Pylon_Sec3_El1</toElementUID>
               </segment>

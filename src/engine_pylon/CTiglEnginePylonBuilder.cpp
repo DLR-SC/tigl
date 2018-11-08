@@ -26,6 +26,7 @@ PNamedShape CTiglEnginePylonBuilder::BuildShape()
 
     CTiglMakeLoft lofter;
     lofter.setMakeSolid(true);
+    lofter.setMakeSmooth(true);
 
     for (int i=1; i <= segments->GetSegmentCount(); i++) {
         const TopoDS_Shape& startWire = segments->GetSegment(i).GetInnerWire();
