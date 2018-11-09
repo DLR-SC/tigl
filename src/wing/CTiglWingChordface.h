@@ -53,9 +53,13 @@ public:
 
     TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE
     {
-        return TIGL_COMPONENT_PHYSICAL;
+        return TIGL_COMPONENT_OTHER;
     }
 
+     TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const OVERRIDE
+     {
+         return TIGL_INTENT_LOGICAL;
+     }
 
     /**
      * @brief Returns the Eta coordinate of each element

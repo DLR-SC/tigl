@@ -107,8 +107,14 @@ PNamedShape CCPACSFarField::BuildLoft() const
 
 TiglGeometricComponentType CCPACSFarField::GetComponentType() const
 {
-    return TIGL_COMPONENT_LOGICAL;
+    return TIGL_COMPONENT_FARFIELD;
 }
+
+TiglGeometricComponentIntent CCPACSFarField::GetComponentIntent() const
+{
+    return TIGL_INTENT_LOGICAL;
+}
+
 
 } // namespace tigl
 

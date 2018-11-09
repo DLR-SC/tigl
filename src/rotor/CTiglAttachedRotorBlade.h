@@ -57,7 +57,12 @@ public:
     // Returns the Component Type TIGL_COMPONENT_ROTORBLADE
     TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE
     {
-        return TIGL_COMPONENT_ROTORBLADE;
+        return TIGL_COMPONENT_ATTACHED_ROTORBLADE;
+    }
+
+    TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const OVERRIDE
+    {
+        return TIGL_INTENT_PHYSICAL;
     }
 
     // Returns the original unattached rotor blade

@@ -113,7 +113,7 @@ void CTiglTriangularizer::writeFaceDummyMeta(unsigned long iPolyLower, unsigned 
 
 bool CTiglTriangularizer::writeWingMeta(ITiglGeometricComponent& wingComponent, gp_Pnt centralP, unsigned long iPolyLower, unsigned long iPolyUpper)
 {
-    if (wingComponent.GetComponentType() & TIGL_COMPONENT_WING) {
+    if (wingComponent.GetComponentType() == TIGL_COMPONENT_WING) {
         CCPACSWing& wing = dynamic_cast<CCPACSWing&>(wingComponent);
         for (int iSegment = 1 ; iSegment <= wing.GetSegmentCount(); ++iSegment) {
             CCPACSWingSegment& segment = (CCPACSWingSegment&) wing.GetSegment(iSegment);
@@ -206,7 +206,7 @@ int CTiglTriangularizer::triangularizeComponent(const CTiglUIDManager* uidMgr, P
  */
 bool CTiglTriangularizer::writeWingSegmentMeta(tigl::ITiglGeometricComponent &segmentComponent, gp_Pnt pointOnSegmentFace, unsigned long iPolyLower, unsigned long iPolyUpper)
 {
-    if (!(segmentComponent.GetComponentType() & TIGL_COMPONENT_WINGSEGMENT)) {
+    if (!(segmentComponent.GetComponentType() == TIGL_COMPONENT_WINGSEGMENT)) {
         return false;
     }
     

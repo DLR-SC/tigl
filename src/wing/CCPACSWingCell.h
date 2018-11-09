@@ -88,6 +88,7 @@ public:
     TIGL_EXPORT std::string GetDefaultedUID() const OVERRIDE;
     TIGL_EXPORT PNamedShape GetLoft() const OVERRIDE;
     TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE;
+    TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const OVERRIDE;
 
 private:
     struct EtaXsiCache

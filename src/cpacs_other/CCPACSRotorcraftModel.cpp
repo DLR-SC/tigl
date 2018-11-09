@@ -35,8 +35,14 @@ std::string CCPACSRotorcraftModel::GetDefaultedUID() const {
 // Returns the Geometric type of this component, e.g. Wing or Fuselage
 TiglGeometricComponentType CCPACSRotorcraftModel::GetComponentType() const
 {
-    return (TIGL_COMPONENT_PHYSICAL | TIGL_COMPONENT_PLANE);
+    return TIGL_COMPONENT_PLANE;
 }
+
+TiglGeometricComponentIntent CCPACSRotorcraftModel::GetComponentIntent() const
+{
+    return TIGL_INTENT_PHYSICAL;
+}
+
 
 PNamedShape CCPACSRotorcraftModel::BuildLoft() const
 {
