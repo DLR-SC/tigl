@@ -40,7 +40,7 @@ namespace generated
     // CPACSRotorAirfoils
     // CPACSWingAirfoils
 
-    // generated from /xsd:schema/xsd:complexType[735]
+    // generated from /xsd:schema/xsd:complexType[746]
     class CPACSProfileGeometry
     {
     public:

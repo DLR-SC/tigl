@@ -31,7 +31,7 @@ namespace generated
     // This class is used in:
     // CPACSSheetBasedStructuralElements
 
-    // generated from /xsd:schema/xsd:complexType[796]
+    // generated from /xsd:schema/xsd:complexType[808]
     class CPACSSheetBasedStructuralElement
     {
     public:

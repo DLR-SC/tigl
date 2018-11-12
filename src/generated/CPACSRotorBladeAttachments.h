@@ -34,7 +34,7 @@ namespace generated
     // This class is used in:
     // CPACSRotorHub
 
-    // generated from /xsd:schema/xsd:complexType[766]
+    // generated from /xsd:schema/xsd:complexType[778]
     class CPACSRotorBladeAttachments
     {
     public:

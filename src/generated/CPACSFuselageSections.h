@@ -34,7 +34,7 @@ namespace generated
     // This class is used in:
     // CPACSFuselage
 
-    // generated from /xsd:schema/xsd:complexType[377]
+    // generated from /xsd:schema/xsd:complexType[383]
     class CPACSFuselageSections
     {
     public:

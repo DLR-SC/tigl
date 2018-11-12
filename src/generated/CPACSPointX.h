@@ -33,7 +33,7 @@ namespace generated
     // CPACSWingRibCell
     // CPACSWingRibCrossSection
 
-    // generated from /xsd:schema/xsd:complexType[718]
+    // generated from /xsd:schema/xsd:complexType[729]
     class CPACSPointX
     {
     public:

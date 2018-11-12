@@ -35,7 +35,7 @@ namespace generated
     // This class is used in:
     // CPACSProfiles
 
-    // generated from /xsd:schema/xsd:complexType[845]
+    // generated from /xsd:schema/xsd:complexType[859]
     class CPACSStructuralProfiles
     {
     public:

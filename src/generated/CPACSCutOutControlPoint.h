@@ -28,7 +28,7 @@ namespace generated
     // This class is used in:
     // CPACSCutOutControlPoints
 
-    // generated from /xsd:schema/xsd:complexType[241]
+    // generated from /xsd:schema/xsd:complexType[246]
     class CPACSCutOutControlPoint
     {
     public:

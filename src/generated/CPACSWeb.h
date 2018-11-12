@@ -32,7 +32,7 @@ namespace generated
     // CPACSSparCell
     // CPACSSparCrossSection
 
-    // generated from /xsd:schema/xsd:complexType[909]
+    // generated from /xsd:schema/xsd:complexType[925]
     class CPACSWeb
     {
     public:

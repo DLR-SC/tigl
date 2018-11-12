@@ -36,7 +36,7 @@ namespace generated
     // CPACSFuselageSegment
     // CPACSWingSegment
 
-    // generated from /xsd:schema/xsd:complexType[436]
+    // generated from /xsd:schema/xsd:complexType[442]
     class CPACSGuideCurves
     {
     public:

@@ -38,7 +38,7 @@ namespace generated
     // CPACSAircraftModel
     // CPACSRotorcraftModel
 
-    // generated from /xsd:schema/xsd:complexType[387]
+    // generated from /xsd:schema/xsd:complexType[393]
     class CPACSFuselages
     {
     public:

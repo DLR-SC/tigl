@@ -38,7 +38,7 @@ namespace generated
     // This class is used in:
     // CPACSWingRibsDefinition
 
-    // generated from /xsd:schema/xsd:complexType[945]
+    // generated from /xsd:schema/xsd:complexType[961]
     class CPACSWingRibCrossSection
     {
     public:

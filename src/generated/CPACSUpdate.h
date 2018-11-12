@@ -29,7 +29,7 @@ namespace generated
     // This class is used in:
     // CPACSUpdates
 
-    // generated from /xsd:schema/xsd:complexType[891]
+    // generated from /xsd:schema/xsd:complexType[905]
     class CPACSUpdate
     {
     public:

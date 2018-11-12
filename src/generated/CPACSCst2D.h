@@ -22,6 +22,8 @@
 #include <CCPACSStringVector.h>
 #include <string>
 #include <tixi.h>
+#include <typeinfo>
+#include "CTiglError.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -30,8 +32,9 @@ namespace generated
 {
     // This class is used in:
     // CPACSProfileGeometry
+    // CPACSProfileGeometry2D
 
-    // generated from /xsd:schema/xsd:complexType[236]
+    // generated from /xsd:schema/xsd:complexType[239]
     class CPACSCst2D
     {
     public:

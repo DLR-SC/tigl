@@ -68,6 +68,17 @@ namespace generated
             }
         }
 
+        // read element engines
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/engines")) {
+            m_engines = boost::in_place(m_uidMgr);
+            try {
+                m_engines->ReadCPACS(tixiHandle, xpath + "/engines");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read engines at xpath " << xpath << ": " << e.what();
+                m_engines = boost::none;
+            }
+        }
+
         // read element profiles
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/profiles")) {
             m_profiles = boost::in_place(m_uidMgr);
@@ -127,6 +138,17 @@ namespace generated
             }
         }
 
+        // write element engines
+        if (m_engines) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/engines");
+            m_engines->WriteCPACS(tixiHandle, xpath + "/engines");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/engines")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/engines");
+            }
+        }
+
         // write element profiles
         if (m_profiles) {
             tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/profiles");
@@ -182,6 +204,16 @@ namespace generated
         return m_rotorcraft;
     }
 
+    const boost::optional<CPACSEngines>& CPACSVehicles::GetEngines() const
+    {
+        return m_engines;
+    }
+
+    boost::optional<CPACSEngines>& CPACSVehicles::GetEngines()
+    {
+        return m_engines;
+    }
+
     const boost::optional<CCPACSProfiles>& CPACSVehicles::GetProfiles() const
     {
         return m_profiles;
@@ -234,6 +266,18 @@ namespace generated
     void CPACSVehicles::RemoveRotorcraft()
     {
         m_rotorcraft = boost::none;
+    }
+
+    CPACSEngines& CPACSVehicles::GetEngines(CreateIfNotExistsTag)
+    {
+        if (!m_engines)
+            m_engines = boost::in_place(m_uidMgr);
+        return *m_engines;
+    }
+
+    void CPACSVehicles::RemoveEngines()
+    {
+        m_engines = boost::none;
     }
 
     CCPACSProfiles& CPACSVehicles::GetProfiles(CreateIfNotExistsTag)

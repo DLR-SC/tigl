@@ -30,7 +30,7 @@ namespace generated
     // This class is used in:
     // CPACSGuideCurve
 
-    // generated from /xsd:schema/xsd:complexType[720]
+    // generated from /xsd:schema/xsd:complexType[731]
     class CPACSPointXYZ
     {
     public:

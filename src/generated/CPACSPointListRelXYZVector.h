@@ -29,7 +29,7 @@ namespace generated
     // This class is used in:
     // CPACSGuideCurveProfileGeometry
 
-    // generated from /xsd:schema/xsd:complexType[708]
+    // generated from /xsd:schema/xsd:complexType[718]
     class CPACSPointListRelXYZVector
     {
     public:

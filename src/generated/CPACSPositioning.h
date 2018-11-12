@@ -32,7 +32,7 @@ namespace generated
     // This class is used in:
     // CPACSPositionings
 
-    // generated from /xsd:schema/xsd:complexType[725]
+    // generated from /xsd:schema/xsd:complexType[736]
     class CPACSPositioning
     {
     public:

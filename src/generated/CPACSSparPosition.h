@@ -33,7 +33,7 @@ namespace generated
     // This class is used in:
     // CPACSSparPositions
 
-    // generated from /xsd:schema/xsd:complexType[813]
+    // generated from /xsd:schema/xsd:complexType[825]
     class CPACSSparPosition
     {
     public:

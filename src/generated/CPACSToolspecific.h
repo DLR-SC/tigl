@@ -32,7 +32,7 @@ namespace generated
     // This class is used in:
     // CPACSCpacs
 
-    // generated from /xsd:schema/xsd:complexType[861]
+    // generated from /xsd:schema/xsd:complexType[875]
     class CPACSToolspecific
     {
     public:

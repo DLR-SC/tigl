@@ -29,7 +29,7 @@ namespace generated
     // This class is used in:
     // CPACSProfileGeometry
 
-    // generated from /xsd:schema/xsd:complexType[711]
+    // generated from /xsd:schema/xsd:complexType[721]
     class CPACSPointListXYZVector
     {
     public:

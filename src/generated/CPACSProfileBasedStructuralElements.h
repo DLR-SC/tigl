@@ -33,7 +33,7 @@ namespace generated
     // This class is used in:
     // CPACSStructuralElements
 
-    // generated from /xsd:schema/xsd:complexType[734]
+    // generated from /xsd:schema/xsd:complexType[745]
     class CPACSProfileBasedStructuralElements
     {
     public:

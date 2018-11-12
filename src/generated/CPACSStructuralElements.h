@@ -41,7 +41,7 @@ namespace generated
     // This class is used in:
     // CPACSVehicles
 
-    // generated from /xsd:schema/xsd:complexType[841]
+    // generated from /xsd:schema/xsd:complexType[855]
     class CPACSStructuralElements
     {
     public:

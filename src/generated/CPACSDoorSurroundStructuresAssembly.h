@@ -34,7 +34,7 @@ namespace generated
     // This class is used in:
     // CPACSStructuralElements
 
-    // generated from /xsd:schema/xsd:complexType[287]
+    // generated from /xsd:schema/xsd:complexType[292]
     class CPACSDoorSurroundStructuresAssembly
     {
     public:

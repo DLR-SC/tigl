@@ -76,11 +76,6 @@ namespace generated
             }
         }
 
-        // read element sheetProperties
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/sheetProperties")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/sheetProperties", m_sheetProperties);
-        }
-
         // read element transformation
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/transformation")) {
             m_transformation = boost::in_place(m_uidMgr);
@@ -94,39 +89,44 @@ namespace generated
 
         // read element globalBeamProperties
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/globalBeamProperties")) {
-            m_globalBeamProperties = boost::in_place(m_uidMgr);
+            m_globalBeamProperties_choice1 = boost::in_place(m_uidMgr);
             try {
-                m_globalBeamProperties->ReadCPACS(tixiHandle, xpath + "/globalBeamProperties");
+                m_globalBeamProperties_choice1->ReadCPACS(tixiHandle, xpath + "/globalBeamProperties");
             } catch(const std::exception& e) {
                 LOG(ERROR) << "Failed to read globalBeamProperties at xpath " << xpath << ": " << e.what();
-                m_globalBeamProperties = boost::none;
+                m_globalBeamProperties_choice1 = boost::none;
             }
+        }
+
+        // read element sheetProperties
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/sheetProperties")) {
+            tixi::TixiReadElements(tixiHandle, xpath + "/sheetProperties", m_sheetProperties_choice2);
+        }
+
+        // read element standardProfileType
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/standardProfileType")) {
+            m_standardProfileType_choice2_1 = stringToCPACSProfileBasedStructuralElement_standardProfileType(tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/standardProfileType"));
         }
 
         // read element structuralProfileUID
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/structuralProfileUID")) {
-            m_structuralProfileUID_choice1 = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/structuralProfileUID");
-            if (m_structuralProfileUID_choice1->empty()) {
+            m_structuralProfileUID_choice2_2 = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/structuralProfileUID");
+            if (m_structuralProfileUID_choice2_2->empty()) {
                 LOG(WARNING) << "Optional element structuralProfileUID is present but empty at xpath " << xpath;
             }
         }
 
         // read element pointProperties
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/pointProperties")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/pointProperties", m_pointProperties_choice1);
+            tixi::TixiReadElements(tixiHandle, xpath + "/pointProperties", m_pointProperties_choice2_2);
         }
 
         // read element referencePointUID
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/referencePointUID")) {
-            m_referencePointUID_choice1 = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/referencePointUID");
-            if (m_referencePointUID_choice1->empty()) {
+            m_referencePointUID_choice2_2 = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/referencePointUID");
+            if (m_referencePointUID_choice2_2->empty()) {
                 LOG(WARNING) << "Optional element referencePointUID is present but empty at xpath " << xpath;
             }
-        }
-
-        // read element standardProfileType
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/standardProfileType")) {
-            m_standardProfileType_choice2 = stringToCPACSProfileBasedStructuralElement_standardProfileType(tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/standardProfileType"));
         }
 
         if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
@@ -162,9 +162,6 @@ namespace generated
             }
         }
 
-        // write element sheetProperties
-        tixi::TixiSaveElements(tixiHandle, xpath + "/sheetProperties", m_sheetProperties);
-
         // write element transformation
         if (m_transformation) {
             tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/transformation");
@@ -177,9 +174,9 @@ namespace generated
         }
 
         // write element globalBeamProperties
-        if (m_globalBeamProperties) {
+        if (m_globalBeamProperties_choice1) {
             tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/globalBeamProperties");
-            m_globalBeamProperties->WriteCPACS(tixiHandle, xpath + "/globalBeamProperties");
+            m_globalBeamProperties_choice1->WriteCPACS(tixiHandle, xpath + "/globalBeamProperties");
         }
         else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/globalBeamProperties")) {
@@ -187,10 +184,24 @@ namespace generated
             }
         }
 
+        // write element sheetProperties
+        tixi::TixiSaveElements(tixiHandle, xpath + "/sheetProperties", m_sheetProperties_choice2);
+
+        // write element standardProfileType
+        if (m_standardProfileType_choice2_1) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/standardProfileType");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/standardProfileType", CPACSProfileBasedStructuralElement_standardProfileTypeToString(*m_standardProfileType_choice2_1));
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/standardProfileType")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/standardProfileType");
+            }
+        }
+
         // write element structuralProfileUID
-        if (m_structuralProfileUID_choice1) {
+        if (m_structuralProfileUID_choice2_2) {
             tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/structuralProfileUID");
-            tixi::TixiSaveElement(tixiHandle, xpath + "/structuralProfileUID", *m_structuralProfileUID_choice1);
+            tixi::TixiSaveElement(tixiHandle, xpath + "/structuralProfileUID", *m_structuralProfileUID_choice2_2);
         }
         else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/structuralProfileUID")) {
@@ -199,27 +210,16 @@ namespace generated
         }
 
         // write element pointProperties
-        tixi::TixiSaveElements(tixiHandle, xpath + "/pointProperties", m_pointProperties_choice1);
+        tixi::TixiSaveElements(tixiHandle, xpath + "/pointProperties", m_pointProperties_choice2_2);
 
         // write element referencePointUID
-        if (m_referencePointUID_choice1) {
+        if (m_referencePointUID_choice2_2) {
             tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/referencePointUID");
-            tixi::TixiSaveElement(tixiHandle, xpath + "/referencePointUID", *m_referencePointUID_choice1);
+            tixi::TixiSaveElement(tixiHandle, xpath + "/referencePointUID", *m_referencePointUID_choice2_2);
         }
         else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/referencePointUID")) {
                 tixi::TixiRemoveElement(tixiHandle, xpath + "/referencePointUID");
-            }
-        }
-
-        // write element standardProfileType
-        if (m_standardProfileType_choice2) {
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/standardProfileType");
-            tixi::TixiSaveElement(tixiHandle, xpath + "/standardProfileType", CPACSProfileBasedStructuralElement_standardProfileTypeToString(*m_standardProfileType_choice2));
-        }
-        else {
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/standardProfileType")) {
-                tixi::TixiRemoveElement(tixiHandle, xpath + "/standardProfileType");
             }
         }
 
@@ -232,29 +232,60 @@ namespace generated
             (
                 (
                     // mandatory elements of this choice must be there
-                    m_structuralProfileUID_choice1.is_initialized()
-                    &&
-                    true // m_pointProperties_choice1 is optional in choice
-                    &&
-                    true // m_referencePointUID_choice1 is optional in choice
+                    true // m_globalBeamProperties_choice1 is optional in choice
                     &&
                     // elements of other choices must not be there
                     !(
-                        m_standardProfileType_choice2.is_initialized()
+                        !m_sheetProperties_choice2.empty()
+                        ||
+                        m_standardProfileType_choice2_1.is_initialized()
+                        ||
+                        m_structuralProfileUID_choice2_2.is_initialized()
+                        ||
+                        !m_pointProperties_choice2_2.empty()
+                        ||
+                        m_referencePointUID_choice2_2.is_initialized()
                     )
                 )
                 +
                 (
                     // mandatory elements of this choice must be there
-                    m_standardProfileType_choice2.is_initialized()
+                    !m_sheetProperties_choice2.empty()
+                    &&
+                    (
+                        (
+                            // mandatory elements of this choice must be there
+                            m_standardProfileType_choice2_1.is_initialized()
+                            &&
+                            // elements of other choices must not be there
+                            !(
+                                m_structuralProfileUID_choice2_2.is_initialized()
+                                ||
+                                !m_pointProperties_choice2_2.empty()
+                                ||
+                                m_referencePointUID_choice2_2.is_initialized()
+                            )
+                        )
+                        +
+                        (
+                            // mandatory elements of this choice must be there
+                            m_structuralProfileUID_choice2_2.is_initialized()
+                            &&
+                            true // m_pointProperties_choice2_2 is optional in choice
+                            &&
+                            true // m_referencePointUID_choice2_2 is optional in choice
+                            &&
+                            // elements of other choices must not be there
+                            !(
+                                m_standardProfileType_choice2_1.is_initialized()
+                            )
+                        )
+                        == 1
+                    )
                     &&
                     // elements of other choices must not be there
                     !(
-                        m_structuralProfileUID_choice1.is_initialized()
-                        ||
-                        !m_pointProperties_choice1.empty()
-                        ||
-                        m_referencePointUID_choice1.is_initialized()
+                        m_globalBeamProperties_choice1.is_initialized()
                     )
                 )
                 == 1
@@ -297,16 +328,6 @@ namespace generated
         m_description = value;
     }
 
-    const std::vector<unique_ptr<CPACSMaterialDefinitionForProfileBased> >& CPACSProfileBasedStructuralElement::GetSheetProperties() const
-    {
-        return m_sheetProperties;
-    }
-
-    std::vector<unique_ptr<CPACSMaterialDefinitionForProfileBased> >& CPACSProfileBasedStructuralElement::GetSheetProperties()
-    {
-        return m_sheetProperties;
-    }
-
     const boost::optional<CPACSTransformation2D>& CPACSProfileBasedStructuralElement::GetTransformation() const
     {
         return m_transformation;
@@ -317,71 +338,64 @@ namespace generated
         return m_transformation;
     }
 
-    const boost::optional<CPACSGlobalBeamProperties>& CPACSProfileBasedStructuralElement::GetGlobalBeamProperties() const
+    const boost::optional<CPACSGlobalBeamProperties>& CPACSProfileBasedStructuralElement::GetGlobalBeamProperties_choice1() const
     {
-        return m_globalBeamProperties;
+        return m_globalBeamProperties_choice1;
     }
 
-    boost::optional<CPACSGlobalBeamProperties>& CPACSProfileBasedStructuralElement::GetGlobalBeamProperties()
+    boost::optional<CPACSGlobalBeamProperties>& CPACSProfileBasedStructuralElement::GetGlobalBeamProperties_choice1()
     {
-        return m_globalBeamProperties;
+        return m_globalBeamProperties_choice1;
     }
 
-    const boost::optional<std::string>& CPACSProfileBasedStructuralElement::GetStructuralProfileUID_choice1() const
+    const std::vector<unique_ptr<CPACSMaterialDefinitionForProfileBased> >& CPACSProfileBasedStructuralElement::GetSheetProperties_choice2() const
     {
-        return m_structuralProfileUID_choice1;
+        return m_sheetProperties_choice2;
     }
 
-    void CPACSProfileBasedStructuralElement::SetStructuralProfileUID_choice1(const boost::optional<std::string>& value)
+    std::vector<unique_ptr<CPACSMaterialDefinitionForProfileBased> >& CPACSProfileBasedStructuralElement::GetSheetProperties_choice2()
     {
-        m_structuralProfileUID_choice1 = value;
+        return m_sheetProperties_choice2;
     }
 
-    const std::vector<unique_ptr<CPACSMaterialDefinitionForProfileBasedPoint> >& CPACSProfileBasedStructuralElement::GetPointProperties_choice1() const
+    const boost::optional<CPACSProfileBasedStructuralElement_standardProfileType>& CPACSProfileBasedStructuralElement::GetStandardProfileType_choice2_1() const
     {
-        return m_pointProperties_choice1;
+        return m_standardProfileType_choice2_1;
     }
 
-    std::vector<unique_ptr<CPACSMaterialDefinitionForProfileBasedPoint> >& CPACSProfileBasedStructuralElement::GetPointProperties_choice1()
+    void CPACSProfileBasedStructuralElement::SetStandardProfileType_choice2_1(const boost::optional<CPACSProfileBasedStructuralElement_standardProfileType>& value)
     {
-        return m_pointProperties_choice1;
+        m_standardProfileType_choice2_1 = value;
     }
 
-    const boost::optional<std::string>& CPACSProfileBasedStructuralElement::GetReferencePointUID_choice1() const
+    const boost::optional<std::string>& CPACSProfileBasedStructuralElement::GetStructuralProfileUID_choice2_2() const
     {
-        return m_referencePointUID_choice1;
+        return m_structuralProfileUID_choice2_2;
     }
 
-    void CPACSProfileBasedStructuralElement::SetReferencePointUID_choice1(const boost::optional<std::string>& value)
+    void CPACSProfileBasedStructuralElement::SetStructuralProfileUID_choice2_2(const boost::optional<std::string>& value)
     {
-        m_referencePointUID_choice1 = value;
+        m_structuralProfileUID_choice2_2 = value;
     }
 
-    const boost::optional<CPACSProfileBasedStructuralElement_standardProfileType>& CPACSProfileBasedStructuralElement::GetStandardProfileType_choice2() const
+    const std::vector<unique_ptr<CPACSMaterialDefinitionForProfileBasedPoint> >& CPACSProfileBasedStructuralElement::GetPointProperties_choice2_2() const
     {
-        return m_standardProfileType_choice2;
+        return m_pointProperties_choice2_2;
     }
 
-    void CPACSProfileBasedStructuralElement::SetStandardProfileType_choice2(const boost::optional<CPACSProfileBasedStructuralElement_standardProfileType>& value)
+    std::vector<unique_ptr<CPACSMaterialDefinitionForProfileBasedPoint> >& CPACSProfileBasedStructuralElement::GetPointProperties_choice2_2()
     {
-        m_standardProfileType_choice2 = value;
+        return m_pointProperties_choice2_2;
     }
 
-    CPACSMaterialDefinitionForProfileBased& CPACSProfileBasedStructuralElement::AddSheetProperties()
+    const boost::optional<std::string>& CPACSProfileBasedStructuralElement::GetReferencePointUID_choice2_2() const
     {
-        m_sheetProperties.push_back(make_unique<CPACSMaterialDefinitionForProfileBased>());
-        return *m_sheetProperties.back();
+        return m_referencePointUID_choice2_2;
     }
 
-    void CPACSProfileBasedStructuralElement::RemoveSheetProperties(CPACSMaterialDefinitionForProfileBased& ref)
+    void CPACSProfileBasedStructuralElement::SetReferencePointUID_choice2_2(const boost::optional<std::string>& value)
     {
-        for (std::size_t i = 0; i < m_sheetProperties.size(); i++) {
-            if (m_sheetProperties[i].get() == &ref) {
-                m_sheetProperties.erase(m_sheetProperties.begin() + i);
-                return;
-            }
-        }
-        throw CTiglError("Element not found");
+        m_referencePointUID_choice2_2 = value;
     }
 
     CPACSTransformation2D& CPACSProfileBasedStructuralElement::GetTransformation(CreateIfNotExistsTag)
@@ -396,29 +410,46 @@ namespace generated
         m_transformation = boost::none;
     }
 
-    CPACSGlobalBeamProperties& CPACSProfileBasedStructuralElement::GetGlobalBeamProperties(CreateIfNotExistsTag)
+    CPACSGlobalBeamProperties& CPACSProfileBasedStructuralElement::GetGlobalBeamProperties_choice1(CreateIfNotExistsTag)
     {
-        if (!m_globalBeamProperties)
-            m_globalBeamProperties = boost::in_place(m_uidMgr);
-        return *m_globalBeamProperties;
+        if (!m_globalBeamProperties_choice1)
+            m_globalBeamProperties_choice1 = boost::in_place(m_uidMgr);
+        return *m_globalBeamProperties_choice1;
     }
 
-    void CPACSProfileBasedStructuralElement::RemoveGlobalBeamProperties()
+    void CPACSProfileBasedStructuralElement::RemoveGlobalBeamProperties_choice1()
     {
-        m_globalBeamProperties = boost::none;
+        m_globalBeamProperties_choice1 = boost::none;
     }
 
-    CPACSMaterialDefinitionForProfileBasedPoint& CPACSProfileBasedStructuralElement::AddPointProperties_choice1()
+    CPACSMaterialDefinitionForProfileBased& CPACSProfileBasedStructuralElement::AddSheetProperties_choice2()
     {
-        m_pointProperties_choice1.push_back(make_unique<CPACSMaterialDefinitionForProfileBasedPoint>());
-        return *m_pointProperties_choice1.back();
+        m_sheetProperties_choice2.push_back(make_unique<CPACSMaterialDefinitionForProfileBased>());
+        return *m_sheetProperties_choice2.back();
     }
 
-    void CPACSProfileBasedStructuralElement::RemovePointProperties_choice1(CPACSMaterialDefinitionForProfileBasedPoint& ref)
+    void CPACSProfileBasedStructuralElement::RemoveSheetProperties_choice2(CPACSMaterialDefinitionForProfileBased& ref)
     {
-        for (std::size_t i = 0; i < m_pointProperties_choice1.size(); i++) {
-            if (m_pointProperties_choice1[i].get() == &ref) {
-                m_pointProperties_choice1.erase(m_pointProperties_choice1.begin() + i);
+        for (std::size_t i = 0; i < m_sheetProperties_choice2.size(); i++) {
+            if (m_sheetProperties_choice2[i].get() == &ref) {
+                m_sheetProperties_choice2.erase(m_sheetProperties_choice2.begin() + i);
+                return;
+            }
+        }
+        throw CTiglError("Element not found");
+    }
+
+    CPACSMaterialDefinitionForProfileBasedPoint& CPACSProfileBasedStructuralElement::AddPointProperties_choice2_2()
+    {
+        m_pointProperties_choice2_2.push_back(make_unique<CPACSMaterialDefinitionForProfileBasedPoint>());
+        return *m_pointProperties_choice2_2.back();
+    }
+
+    void CPACSProfileBasedStructuralElement::RemovePointProperties_choice2_2(CPACSMaterialDefinitionForProfileBasedPoint& ref)
+    {
+        for (std::size_t i = 0; i < m_pointProperties_choice2_2.size(); i++) {
+            if (m_pointProperties_choice2_2[i].get() == &ref) {
+                m_pointProperties_choice2_2.erase(m_pointProperties_choice2_2.begin() + i);
                 return;
             }
         }

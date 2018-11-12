@@ -29,7 +29,7 @@ namespace generated
     // This class is used in:
     // CPACSControlSurfaceContours
 
-    // generated from /xsd:schema/xsd:complexType[167]
+    // generated from /xsd:schema/xsd:complexType[170]
     class CPACSControlSurfaceAirfoil
     {
     public:

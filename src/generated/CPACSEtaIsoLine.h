@@ -35,7 +35,7 @@ namespace generated
     // CPACSCutOutProfile
     // CPACSSparCell
 
-    // generated from /xsd:schema/xsd:complexType[317]
+    // generated from /xsd:schema/xsd:complexType[322]
     class CPACSEtaIsoLine
     {
     public:

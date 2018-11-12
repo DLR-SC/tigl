@@ -36,7 +36,7 @@ namespace generated
     // This class is used in:
     // CPACSAircraft
 
-    // generated from /xsd:schema/xsd:complexType[53]
+    // generated from /xsd:schema/xsd:complexType[55]
     class CPACSAircraftModel
     {
     public:

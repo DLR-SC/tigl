@@ -43,7 +43,7 @@ namespace generated
     // CPACSWingRibCrossSection
     // CPACSWingSkin
 
-    // generated from /xsd:schema/xsd:complexType[655]
+    // generated from /xsd:schema/xsd:complexType[661]
     class CPACSMaterialDefinition
     {
     public:

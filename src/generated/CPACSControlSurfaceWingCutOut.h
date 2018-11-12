@@ -37,7 +37,7 @@ namespace generated
     // This class is used in:
     // CPACSTrailingEdgeDevice
 
-    // generated from /xsd:schema/xsd:complexType[191]
+    // generated from /xsd:schema/xsd:complexType[194]
     class CPACSControlSurfaceWingCutOut
     {
     public:

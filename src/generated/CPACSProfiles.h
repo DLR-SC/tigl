@@ -26,6 +26,8 @@
 #include <CCPACSWingProfiles.h>
 #include <string>
 #include <tixi.h>
+#include "CPACSCurveProfiles.h"
+#include "CPACSNacelleProfiles.h"
 #include "CreateIfNotExists.h"
 #include "tigl_internal.h"
 
@@ -38,7 +40,7 @@ namespace generated
     // This class is used in:
     // CPACSVehicles
 
-    // generated from /xsd:schema/xsd:complexType[736]
+    // generated from /xsd:schema/xsd:complexType[748]
     class CPACSProfiles
     {
     public:
@@ -66,6 +68,12 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CCPACSStructuralProfiles>& GetStructuralProfiles() const;
         TIGL_EXPORT virtual boost::optional<CCPACSStructuralProfiles>& GetStructuralProfiles();
 
+        TIGL_EXPORT virtual const boost::optional<CPACSNacelleProfiles>& GetNacelleProfiles() const;
+        TIGL_EXPORT virtual boost::optional<CPACSNacelleProfiles>& GetNacelleProfiles();
+
+        TIGL_EXPORT virtual const boost::optional<CPACSCurveProfiles>& GetCurveProfiles() const;
+        TIGL_EXPORT virtual boost::optional<CPACSCurveProfiles>& GetCurveProfiles();
+
         TIGL_EXPORT virtual CCPACSFuselageProfiles& GetFuselageProfiles(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveFuselageProfiles();
 
@@ -81,6 +89,12 @@ namespace generated
         TIGL_EXPORT virtual CCPACSStructuralProfiles& GetStructuralProfiles(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveStructuralProfiles();
 
+        TIGL_EXPORT virtual CPACSNacelleProfiles& GetNacelleProfiles(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveNacelleProfiles();
+
+        TIGL_EXPORT virtual CPACSCurveProfiles& GetCurveProfiles(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveCurveProfiles();
+
     protected:
         CTiglUIDManager* m_uidMgr;
 
@@ -89,6 +103,8 @@ namespace generated
         boost::optional<CCPACSGuideCurveProfiles> m_guideCurves;
         boost::optional<CCPACSRotorProfiles>      m_rotorAirfoils;
         boost::optional<CCPACSStructuralProfiles> m_structuralProfiles;
+        boost::optional<CPACSNacelleProfiles>     m_nacelleProfiles;
+        boost::optional<CPACSCurveProfiles>       m_curveProfiles;
 
     private:
 #ifdef HAVE_CPP11

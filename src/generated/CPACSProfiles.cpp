@@ -101,6 +101,28 @@ namespace generated
             }
         }
 
+        // read element nacelleProfiles
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/nacelleProfiles")) {
+            m_nacelleProfiles = boost::in_place(m_uidMgr);
+            try {
+                m_nacelleProfiles->ReadCPACS(tixiHandle, xpath + "/nacelleProfiles");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read nacelleProfiles at xpath " << xpath << ": " << e.what();
+                m_nacelleProfiles = boost::none;
+            }
+        }
+
+        // read element curveProfiles
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/curveProfiles")) {
+            m_curveProfiles = boost::in_place(m_uidMgr);
+            try {
+                m_curveProfiles->ReadCPACS(tixiHandle, xpath + "/curveProfiles");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read curveProfiles at xpath " << xpath << ": " << e.what();
+                m_curveProfiles = boost::none;
+            }
+        }
+
     }
 
     void CPACSProfiles::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
@@ -160,6 +182,28 @@ namespace generated
             }
         }
 
+        // write element nacelleProfiles
+        if (m_nacelleProfiles) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/nacelleProfiles");
+            m_nacelleProfiles->WriteCPACS(tixiHandle, xpath + "/nacelleProfiles");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/nacelleProfiles")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/nacelleProfiles");
+            }
+        }
+
+        // write element curveProfiles
+        if (m_curveProfiles) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/curveProfiles");
+            m_curveProfiles->WriteCPACS(tixiHandle, xpath + "/curveProfiles");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/curveProfiles")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/curveProfiles");
+            }
+        }
+
     }
 
     const boost::optional<CCPACSFuselageProfiles>& CPACSProfiles::GetFuselageProfiles() const
@@ -210,6 +254,26 @@ namespace generated
     boost::optional<CCPACSStructuralProfiles>& CPACSProfiles::GetStructuralProfiles()
     {
         return m_structuralProfiles;
+    }
+
+    const boost::optional<CPACSNacelleProfiles>& CPACSProfiles::GetNacelleProfiles() const
+    {
+        return m_nacelleProfiles;
+    }
+
+    boost::optional<CPACSNacelleProfiles>& CPACSProfiles::GetNacelleProfiles()
+    {
+        return m_nacelleProfiles;
+    }
+
+    const boost::optional<CPACSCurveProfiles>& CPACSProfiles::GetCurveProfiles() const
+    {
+        return m_curveProfiles;
+    }
+
+    boost::optional<CPACSCurveProfiles>& CPACSProfiles::GetCurveProfiles()
+    {
+        return m_curveProfiles;
     }
 
     CCPACSFuselageProfiles& CPACSProfiles::GetFuselageProfiles(CreateIfNotExistsTag)
@@ -270,6 +334,30 @@ namespace generated
     void CPACSProfiles::RemoveStructuralProfiles()
     {
         m_structuralProfiles = boost::none;
+    }
+
+    CPACSNacelleProfiles& CPACSProfiles::GetNacelleProfiles(CreateIfNotExistsTag)
+    {
+        if (!m_nacelleProfiles)
+            m_nacelleProfiles = boost::in_place(m_uidMgr);
+        return *m_nacelleProfiles;
+    }
+
+    void CPACSProfiles::RemoveNacelleProfiles()
+    {
+        m_nacelleProfiles = boost::none;
+    }
+
+    CPACSCurveProfiles& CPACSProfiles::GetCurveProfiles(CreateIfNotExistsTag)
+    {
+        if (!m_curveProfiles)
+            m_curveProfiles = boost::in_place(m_uidMgr);
+        return *m_curveProfiles;
+    }
+
+    void CPACSProfiles::RemoveCurveProfiles()
+    {
+        m_curveProfiles = boost::none;
     }
 
 } // namespace generated

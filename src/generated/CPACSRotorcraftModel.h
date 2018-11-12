@@ -37,7 +37,7 @@ namespace generated
     // This class is used in:
     // CPACSRotorcraft
 
-    // generated from /xsd:schema/xsd:complexType[779]
+    // generated from /xsd:schema/xsd:complexType[791]
     class CPACSRotorcraftModel
     {
     public:

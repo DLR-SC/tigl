@@ -31,7 +31,7 @@ namespace generated
     // This class is used in:
     // CPACSGenericGeometricComponent
 
-    // generated from /xsd:schema/xsd:complexType[497]
+    // generated from /xsd:schema/xsd:complexType[503]
     class CPACSLinkToFile
     {
     public:
@@ -41,15 +41,15 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::string& GetBase() const;
-        TIGL_EXPORT virtual void SetBase(const std::string& value);
-
         TIGL_EXPORT virtual const boost::optional<CPACSLinkToFileType_format>& GetFormat() const;
         TIGL_EXPORT virtual void SetFormat(const boost::optional<CPACSLinkToFileType_format>& value);
 
+        TIGL_EXPORT virtual const std::string& GetSimpleContent() const;
+        TIGL_EXPORT virtual void SetSimpleContent(const std::string& value);
+
     protected:
-        std::string                                 m_base;
         boost::optional<CPACSLinkToFileType_format> m_format;
+        std::string                                 m_simpleContent;
 
     private:
 #ifdef HAVE_CPP11

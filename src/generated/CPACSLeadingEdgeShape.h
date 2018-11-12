@@ -28,7 +28,7 @@ namespace generated
     // This class is used in:
     // CPACSControlSurfaceBorderTrailingEdge
 
-    // generated from /xsd:schema/xsd:complexType[485]
+    // generated from /xsd:schema/xsd:complexType[491]
     class CPACSLeadingEdgeShape
     {
     public:

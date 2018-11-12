@@ -36,7 +36,7 @@ namespace generated
     // This class is used in:
     // CPACSComposites
 
-    // generated from /xsd:schema/xsd:complexType[145]
+    // generated from /xsd:schema/xsd:complexType[147]
     class CPACSComposite
     {
     public:

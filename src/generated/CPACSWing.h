@@ -44,7 +44,7 @@ namespace generated
     // CPACSRotorBlades
     // CPACSWings
 
-    // generated from /xsd:schema/xsd:complexType[962]
+    // generated from /xsd:schema/xsd:complexType[978]
     class CPACSWing
     {
     public:

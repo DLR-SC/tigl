@@ -33,7 +33,7 @@ namespace generated
     // This class is used in:
     // CPACSWingRibsPositioning
 
-    // generated from /xsd:schema/xsd:complexType[758]
+    // generated from /xsd:schema/xsd:complexType[770]
     class CPACSRibRotation
     {
     public:

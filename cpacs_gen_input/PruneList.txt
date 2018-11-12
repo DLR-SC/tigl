@@ -43,10 +43,16 @@ CPACSTrafumoTool
 CPACSTWDatTool
 CPACSVampZeroTool
 CPACSVSAeroTool
+CPACSParadiseTool
 
 // in vehicles
-CPACSEngines
 CPACSFuels
+
+// in engines
+CPACSEngineAnalysis
+CPACSEngineDescription
+CPACSEngineGeometry
+CPACSEngineGlobal
 
 // in aircraft model
 CPACSAircraftAnalyses
@@ -86,6 +92,7 @@ CPACSWindowsAssembly
 
 // in wing
 CPACSDynamicAircraftModel
+CPACSWingExplicitStringers
 
 // in component segment
 CPACSComponentSegmentPath

@@ -36,7 +36,7 @@ namespace generated
     // CPACSFuselage
     // CPACSWing
 
-    // generated from /xsd:schema/xsd:complexType[726]
+    // generated from /xsd:schema/xsd:complexType[737]
     class CPACSPositionings
     {
     public:

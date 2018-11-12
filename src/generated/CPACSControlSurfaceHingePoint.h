@@ -30,7 +30,7 @@ namespace generated
     // This class is used in:
     // CPACSControlSurfacePath
 
-    // generated from /xsd:schema/xsd:complexType[178]
+    // generated from /xsd:schema/xsd:complexType[181]
     class CPACSControlSurfaceHingePoint
     {
     public:

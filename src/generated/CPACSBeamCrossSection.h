@@ -30,7 +30,7 @@ namespace generated
     // This class is used in:
     // CPACSGlobalBeamProperties
 
-    // generated from /xsd:schema/xsd:complexType[77]
+    // generated from /xsd:schema/xsd:complexType[79]
     class CPACSBeamCrossSection
     {
     public:

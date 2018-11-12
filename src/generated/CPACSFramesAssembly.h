@@ -34,7 +34,7 @@ namespace generated
     // This class is used in:
     // CPACSFuselageStructure
 
-    // generated from /xsd:schema/xsd:complexType[362]
+    // generated from /xsd:schema/xsd:complexType[368]
     class CPACSFramesAssembly
     {
     public:

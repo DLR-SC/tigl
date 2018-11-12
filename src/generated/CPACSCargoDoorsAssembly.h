@@ -34,7 +34,7 @@ namespace generated
     // This class is used in:
     // CPACSFuselageStructure
 
-    // generated from /xsd:schema/xsd:complexType[114]
+    // generated from /xsd:schema/xsd:complexType[116]
     class CPACSCargoDoorsAssembly
     {
     public:

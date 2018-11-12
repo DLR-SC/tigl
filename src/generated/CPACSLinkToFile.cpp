@@ -34,29 +34,26 @@ namespace generated
 
     void CPACSLinkToFile::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
-        // read fundamental type base class 
+        // read attribute format
+        if (tixi::TixiCheckAttribute(tixiHandle, xpath, "format")) {
+            m_format = stringToCPACSLinkToFileType_format(tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "format"));
+        }
+
+        // read simpleContent 
         if (tixi::TixiCheckElement(tixiHandle, xpath)) {
-            m_base = tixi::TixiGetElement<std::string>(tixiHandle, xpath);
-            if (m_base.empty()) {
+            m_simpleContent = tixi::TixiGetElement<std::string>(tixiHandle, xpath);
+            if (m_simpleContent.empty()) {
                 LOG(WARNING) << "Required element  is empty at xpath " << xpath;
             }
         }
         else {
-            LOG(ERROR) << "Required fundamental type base class  is missing at xpath " << xpath;
-        }
-
-        // read attribute format
-        if (tixi::TixiCheckAttribute(tixiHandle, xpath, "format")) {
-            m_format = stringToCPACSLinkToFileType_format(tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "format"));
+            LOG(ERROR) << "Required simpleContent  is missing at xpath " << xpath;
         }
 
     }
 
     void CPACSLinkToFile::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        // write fundamental type base class 
-        tixi::TixiSaveElement(tixiHandle, xpath, m_base);
-
         // write attribute format
         if (m_format) {
             tixi::TixiSaveAttribute(tixiHandle, xpath, "format", CPACSLinkToFileType_formatToString(*m_format));
@@ -67,16 +64,9 @@ namespace generated
             }
         }
 
-    }
+        // write simpleContent 
+        tixi::TixiSaveElement(tixiHandle, xpath, m_simpleContent);
 
-    const std::string& CPACSLinkToFile::GetBase() const
-    {
-        return m_base;
-    }
-
-    void CPACSLinkToFile::SetBase(const std::string& value)
-    {
-        m_base = value;
     }
 
     const boost::optional<CPACSLinkToFileType_format>& CPACSLinkToFile::GetFormat() const
@@ -87,6 +77,16 @@ namespace generated
     void CPACSLinkToFile::SetFormat(const boost::optional<CPACSLinkToFileType_format>& value)
     {
         m_format = value;
+    }
+
+    const std::string& CPACSLinkToFile::GetSimpleContent() const
+    {
+        return m_simpleContent;
+    }
+
+    void CPACSLinkToFile::SetSimpleContent(const std::string& value)
+    {
+        m_simpleContent = value;
     }
 
 } // namespace generated

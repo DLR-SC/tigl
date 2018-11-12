@@ -34,7 +34,7 @@ namespace generated
     // CPACSWingRibCell
     // CPACSWingRibCrossSection
 
-    // generated from /xsd:schema/xsd:complexType[111]
+    // generated from /xsd:schema/xsd:complexType[113]
     class CPACSCap
     {
     public:

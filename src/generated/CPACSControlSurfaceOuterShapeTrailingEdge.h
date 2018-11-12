@@ -35,7 +35,7 @@ namespace generated
     // This class is used in:
     // CPACSTrailingEdgeDevice
 
-    // generated from /xsd:schema/xsd:complexType[181]
+    // generated from /xsd:schema/xsd:complexType[184]
     class CPACSControlSurfaceOuterShapeTrailingEdge
     {
     public:

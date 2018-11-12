@@ -33,7 +33,7 @@ namespace generated
     // This class is used in:
     // CPACSProfiles
 
-    // generated from /xsd:schema/xsd:complexType[434]
+    // generated from /xsd:schema/xsd:complexType[440]
     class CPACSGuideCurveProfiles
     {
     public:

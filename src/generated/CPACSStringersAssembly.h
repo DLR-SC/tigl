@@ -34,7 +34,7 @@ namespace generated
     // This class is used in:
     // CPACSFuselageStructure
 
-    // generated from /xsd:schema/xsd:complexType[840]
+    // generated from /xsd:schema/xsd:complexType[854]
     class CPACSStringersAssembly
     {
     public:

@@ -34,7 +34,7 @@ namespace generated
     // This class is used in:
     // CPACSWingShell
 
-    // generated from /xsd:schema/xsd:complexType[926]
+    // generated from /xsd:schema/xsd:complexType[942]
     class CPACSWingCells
     {
     public:

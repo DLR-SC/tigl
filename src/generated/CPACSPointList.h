@@ -33,7 +33,7 @@ namespace generated
     // This class is used in:
     // CPACSStructuralProfile3D
 
-    // generated from /xsd:schema/xsd:complexType[709]
+    // generated from /xsd:schema/xsd:complexType[719]
     class CPACSPointList
     {
     public:

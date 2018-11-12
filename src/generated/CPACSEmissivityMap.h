@@ -29,7 +29,7 @@ namespace generated
     // This class is used in:
     // CPACSMaterial
 
-    // generated from /xsd:schema/xsd:complexType[297]
+    // generated from /xsd:schema/xsd:complexType[302]
     class CPACSEmissivityMap
     {
     public:

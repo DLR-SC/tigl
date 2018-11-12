@@ -35,7 +35,7 @@ namespace generated
     // CPACSSheet
     // CPACSTransformation2D
 
-    // generated from /xsd:schema/xsd:complexType[719]
+    // generated from /xsd:schema/xsd:complexType[730]
     class CPACSPointXY
     {
     public:

@@ -35,7 +35,7 @@ namespace generated
     // This class is used in:
     // CPACSWingSegments
 
-    // generated from /xsd:schema/xsd:complexType[954]
+    // generated from /xsd:schema/xsd:complexType[970]
     class CPACSWingSegment
     {
     public:

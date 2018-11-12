@@ -33,7 +33,7 @@ namespace generated
     // This class is used in:
     // CPACSCpacs
 
-    // generated from /xsd:schema/xsd:complexType[457]
+    // generated from /xsd:schema/xsd:complexType[463]
     class CPACSHeader
     {
     public:

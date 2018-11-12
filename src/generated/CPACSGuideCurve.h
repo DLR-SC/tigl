@@ -35,7 +35,7 @@ namespace generated
     // This class is used in:
     // CPACSGuideCurves
 
-    // generated from /xsd:schema/xsd:complexType[435]
+    // generated from /xsd:schema/xsd:complexType[441]
     class CPACSGuideCurve
     {
     public:

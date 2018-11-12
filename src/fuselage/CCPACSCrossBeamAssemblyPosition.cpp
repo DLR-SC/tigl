@@ -144,7 +144,7 @@ void CCPACSCrossBeamAssemblyPosition::BuildGeometry(TopoDS_Shape& cache, bool ju
         CCPACSProfileBasedStructuralElement& structuralElement =
             m_uidMgr->ResolveObject<CCPACSProfileBasedStructuralElement>(GetStructuralElementUID());
         CCPACSStructuralProfile& structuralProfile = m_uidMgr->ResolveObject<CCPACSStructuralProfile>(
-                                                         structuralElement.GetStructuralProfileUID_choice1().value());
+                                                         structuralElement.GetStructuralProfileUID_choice2_2().value());
 
         TopoDS_Compound compound;
         TopoDS_Builder builder;

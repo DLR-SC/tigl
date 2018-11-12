@@ -35,7 +35,7 @@ namespace generated
     // This class is used in:
     // CPACSSparSegments
 
-    // generated from /xsd:schema/xsd:complexType[816]
+    // generated from /xsd:schema/xsd:complexType[828]
     class CPACSSparSegment
     {
     public:

@@ -41,7 +41,7 @@ namespace generated
     // CPACSComponentSegment
     // CPACSTrailingEdgeDevice
 
-    // generated from /xsd:schema/xsd:complexType[928]
+    // generated from /xsd:schema/xsd:complexType[944]
     class CPACSWingComponentSegmentStructure
     {
     public:

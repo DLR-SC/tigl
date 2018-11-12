@@ -28,7 +28,7 @@ namespace generated
     // This class is used in:
     // CPACSControlSurfaceBorderTrailingEdge
 
-    // generated from /xsd:schema/xsd:complexType[153]
+    // generated from /xsd:schema/xsd:complexType[156]
     class CPACSContourReference
     {
     public:

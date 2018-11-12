@@ -35,7 +35,7 @@ namespace generated
     // This class is used in:
     // CPACSRotorHubHinges
 
-    // generated from /xsd:schema/xsd:complexType[768]
+    // generated from /xsd:schema/xsd:complexType[780]
     class CPACSRotorHubHinge
     {
     public:

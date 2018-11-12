@@ -34,7 +34,7 @@ namespace generated
     // This class is used in:
     // CPACSSkinSegments
 
-    // generated from /xsd:schema/xsd:complexType[807]
+    // generated from /xsd:schema/xsd:complexType[819]
     class CPACSSkinSegment
     {
     public:

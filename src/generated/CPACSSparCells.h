@@ -34,7 +34,7 @@ namespace generated
     // This class is used in:
     // CPACSSparCrossSection
 
-    // generated from /xsd:schema/xsd:complexType[811]
+    // generated from /xsd:schema/xsd:complexType[823]
     class CPACSSparCells
     {
     public:

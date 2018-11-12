@@ -28,7 +28,7 @@ namespace generated
     // This class is used in:
     // CPACSControlSurfaceBorderTrailingEdge
 
-    // generated from /xsd:schema/xsd:complexType[971]
+    // generated from /xsd:schema/xsd:complexType[987]
     class CPACSXsiIsoLine
     {
     public:

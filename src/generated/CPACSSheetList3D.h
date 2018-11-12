@@ -34,7 +34,7 @@ namespace generated
     // This class is used in:
     // CPACSStructuralProfile3D
 
-    // generated from /xsd:schema/xsd:complexType[798]
+    // generated from /xsd:schema/xsd:complexType[810]
     class CPACSSheetList3D
     {
     public:

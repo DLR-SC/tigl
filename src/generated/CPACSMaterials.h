@@ -38,7 +38,7 @@ namespace generated
     // This class is used in:
     // CPACSVehicles
 
-    // generated from /xsd:schema/xsd:complexType[657]
+    // generated from /xsd:schema/xsd:complexType[663]
     class CPACSMaterials
     {
     public:

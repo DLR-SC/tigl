@@ -32,7 +32,7 @@ namespace generated
     // This class is used in:
     // CPACSWindows
 
-    // generated from /xsd:schema/xsd:complexType[245]
+    // generated from /xsd:schema/xsd:complexType[250]
     class CPACSCutOut
     {
     public:

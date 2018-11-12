@@ -34,7 +34,7 @@ namespace generated
     // This class is used in:
     // CPACSStringersAssembly
 
-    // generated from /xsd:schema/xsd:complexType[839]
+    // generated from /xsd:schema/xsd:complexType[853]
     class CPACSStringer
     {
     public:

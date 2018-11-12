@@ -38,7 +38,7 @@ namespace generated
     // This class is used in:
     // CPACSControlSurfaceOuterShapeTrailingEdge
 
-    // generated from /xsd:schema/xsd:complexType[170]
+    // generated from /xsd:schema/xsd:complexType[173]
     class CPACSControlSurfaceBorderTrailingEdge
     {
     public:

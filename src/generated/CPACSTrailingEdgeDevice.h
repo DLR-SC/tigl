@@ -39,7 +39,7 @@ namespace generated
     // This class is used in:
     // CPACSTrailingEdgeDevices
 
-    // generated from /xsd:schema/xsd:complexType[875]
+    // generated from /xsd:schema/xsd:complexType[889]
     class CPACSTrailingEdgeDevice
     {
     public:

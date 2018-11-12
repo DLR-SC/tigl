@@ -32,7 +32,7 @@ namespace generated
     // This class is used in:
     // CPACSWingCell
 
-    // generated from /xsd:schema/xsd:complexType[115]
+    // generated from /xsd:schema/xsd:complexType[117]
     class CPACSCellPositioningChordwise
     {
     public:

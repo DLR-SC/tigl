@@ -36,7 +36,7 @@ namespace generated
     // This class is used in:
     // CPACSControlSurfaceSteps
 
-    // generated from /xsd:schema/xsd:complexType[187]
+    // generated from /xsd:schema/xsd:complexType[190]
     class CPACSControlSurfaceStep
     {
     public:

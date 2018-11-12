@@ -28,7 +28,7 @@ namespace generated
     // This class is used in:
     // CPACSCutOutProfiles
 
-    // generated from /xsd:schema/xsd:complexType[691]
+    // generated from /xsd:schema/xsd:complexType[699]
     class CPACSOuterCutOutProfile
     {
     public:

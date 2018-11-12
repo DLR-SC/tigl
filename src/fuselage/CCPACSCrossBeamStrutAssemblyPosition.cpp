@@ -133,7 +133,7 @@ void CCPACSCrossBeamStrutAssemblyPosition::BuildGeometry(TopoDS_Shape& cache, bo
         CCPACSProfileBasedStructuralElement& structuralElement =
             m_uidMgr->ResolveObject<CCPACSProfileBasedStructuralElement>(GetStructuralElementUID());
         CCPACSStructuralProfile& structuralProfile =
-            m_uidMgr->ResolveObject<CCPACSStructuralProfile>(*structuralElement.GetStructuralProfileUID_choice1());
+            m_uidMgr->ResolveObject<CCPACSStructuralProfile>(*structuralElement.GetStructuralProfileUID_choice2_2());
 
         // create profile plane
         const gp_Vec vector(pointOnCrossBeam, pointOnFrame);

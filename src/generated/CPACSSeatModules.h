@@ -34,7 +34,7 @@ namespace generated
     // This class is used in:
     // CPACSStructuralElements
 
-    // generated from /xsd:schema/xsd:complexType[791]
+    // generated from /xsd:schema/xsd:complexType[803]
     class CPACSSeatModules
     {
     public:
