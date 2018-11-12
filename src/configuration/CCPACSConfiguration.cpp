@@ -477,20 +477,20 @@ const CCPACSFuselages& CCPACSConfiguration::GetFuselages() const
     }
 }
 
-CCPACSEnginePylons& CCPACSConfiguration::GetEnginePylons()
+boost::optional<CCPACSEnginePylons>& CCPACSConfiguration::GetEnginePylons()
 {
     if (aircraftModel) {
-        return *aircraftModel->GetEnginePylons();
+        return aircraftModel->GetEnginePylons();
     }
     else {
         throw CTiglError("No aircraft loaded");
     }
 }
 
-const CCPACSEnginePylons& CCPACSConfiguration::GetEnginePylons() const
+const boost::optional<CCPACSEnginePylons>& CCPACSConfiguration::GetEnginePylons() const
 {
     if (aircraftModel) {
-        return *aircraftModel->GetEnginePylons();
+        return aircraftModel->GetEnginePylons();
     }
     else {
         throw CTiglError("No aircraft loaded");

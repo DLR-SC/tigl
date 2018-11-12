@@ -764,10 +764,11 @@ void TIGLViewerDocument::drawConfiguration( )
         }
 
         // draw pylons
-        int nPylons = GetConfiguration().GetEnginePylons().GetEnginePylons().size();
+        boost::optional<tigl::CCPACSEnginePylons>& pylons = GetConfiguration().GetEnginePylons();
+        int nPylons = pylons ? pylons->GetEnginePylons().size() : 0;
         for (int i=1; i <= nPylons; ++i) {
             try {
-                tigl::CCPACSEnginePylon& obj = GetConfiguration().GetEnginePylons().GetEnginePylon(i);
+                tigl::CCPACSEnginePylon& obj = pylons->GetEnginePylon(i);
                 app->getScene()->displayShape(obj.GetLoft(), true);
 
                 if (obj.GetSymmetryAxis() == TIGL_NO_SYMMETRY) {
