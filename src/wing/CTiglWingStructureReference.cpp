@@ -16,7 +16,7 @@
 #include "CTiglWingStructureReference.h"
 
 #include "CTiglLogging.h"
-//#include "CCPACSTrailingEdgeDevice.h"
+#include "CCPACSTrailingEdgeDevice.h"
 #include "CCPACSWingComponentSegment.h"
 #include "CCPACSWingCSStructure.h"
 #include "CCPACSWing.h"
@@ -41,10 +41,13 @@ CTiglWingStructureReference::CTiglWingStructureReference(const CCPACSWingCSStruc
     if (structure.IsParent<CCPACSWingComponentSegment>()) {
         type = ComponentSegmentType;
         componentSegment = structure.GetParent<CCPACSWingComponentSegment>();
-    //} else if (structure.IsParent<CCPACSTrailingEdgeDevice>()) {
-    //    type = TrailingEdgeDeviceType;
-    //    trailingEdgeDevice = structure.GetParent<CCPACSTrailingEdgeDevice>();
-    } else {
+    }
+    else if (structure.IsParent<CCPACSTrailingEdgeDevice>()) {
+        throw CTiglError("Trailing edge devices are not yet supported by CTiglWingStructureReference");
+        //type = TrailingEdgeDeviceType;
+        //trailingEdgeDevice = structure.GetParent<CCPACSTrailingEdgeDevice>();
+    }
+    else {
         throw CTiglError("Unrecognized parent of CCPACSWingCSStructure");
     }
 }
