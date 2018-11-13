@@ -16,7 +16,7 @@
 #include "CTiglWingStructureReference.h"
 
 #include "CTiglLogging.h"
-//#include "CCPACSTrailingEdgeDevice.h"
+#include "CCPACSTrailingEdgeDevice.h"
 #include "CCPACSWingComponentSegment.h"
 #include "CCPACSWingCSStructure.h"
 #include "CCPACSWing.h"
@@ -34,6 +34,22 @@ namespace tigl
 CTiglWingStructureReference::CTiglWingStructureReference(const CCPACSWingComponentSegment& parent)
 : type(ComponentSegmentType), componentSegment(&parent)
 {
+}
+
+CTiglWingStructureReference::CTiglWingStructureReference(const CCPACSWingCSStructure& structure)
+{
+    if (structure.IsParent<CCPACSWingComponentSegment>()) {
+        type = ComponentSegmentType;
+        componentSegment = structure.GetParent<CCPACSWingComponentSegment>();
+    }
+    else if (structure.IsParent<CCPACSTrailingEdgeDevice>()) {
+        throw CTiglError("Trailing edge devices are not yet supported by CTiglWingStructureReference");
+        //type = TrailingEdgeDeviceType;
+        //trailingEdgeDevice = structure.GetParent<CCPACSTrailingEdgeDevice>();
+    }
+    else {
+        throw CTiglError("Unrecognized parent of CCPACSWingCSStructure");
+    }
 }
 
 #define DISPATCH(call)                                                                                                 \
@@ -167,7 +183,8 @@ TopoDS_Shape CTiglWingStructureReference::GetUpperShape(TiglCoordinateSystem ref
 /*        case TrailingEdgeDeviceType:
             loft = trailingEdgeDevice->GetUpperShape();
             break;*/
-        default: throw CTiglError("Internal Error in CTiglWingStructureReference: unknown type passed to GetUpperShape method!");
+        default:
+            throw CTiglError("Internal Error in CTiglWingStructureReference: unknown type passed to GetUpperShape method!");
     }
 
     CTiglTransformation transform;
@@ -197,7 +214,8 @@ TopoDS_Shape CTiglWingStructureReference::GetLowerShape(TiglCoordinateSystem ref
 /*        case TrailingEdgeDeviceType:
             loft = trailingEdgeDevice->GetLowerShape();
             break;*/
-        default: throw CTiglError("Internal Error in CTiglWingStructureReference: unknown type passed to GetLowerShape method!");
+        default:
+            throw CTiglError("Internal Error in CTiglWingStructureReference: unknown type passed to GetLowerShape method!");
     }
 
     CTiglTransformation transform;

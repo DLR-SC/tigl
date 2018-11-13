@@ -58,7 +58,7 @@ CCPACSWingSparSegment& CCPACSWingSparSegments::GetSparSegment(const std::string&
             return sparSegment;
         }
     }
-    std::string referenceUID = GetParent()->GetParent()->GetWingStructureReference().GetUID();
+    const std::string& referenceUID = CTiglWingStructureReference(*GetParent()->GetParent()).GetUID();
     LOG(ERROR) << "Spar Segment \"" << uid << "\" not found in component segment or trailing edge device with UID \"" << referenceUID << "\"";
     throw CTiglError("Spar Segment \"" + uid + "\" not found in component segment or trailing edge device with UID \"" + referenceUID + "\". Please check the CPACS document!", TIGL_ERROR);
 }

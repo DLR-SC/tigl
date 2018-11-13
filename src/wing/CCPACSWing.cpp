@@ -405,7 +405,7 @@ gp_Pnt CCPACSWing::GetChordPoint(int segmentIndex, double eta, double xsi)
 // Returns the volume of this wing
 double CCPACSWing::GetVolume()
 {
-    const TopoDS_Shape& fusedSegments = GetLoft()->Shape();
+    const TopoDS_Shape fusedSegments = GetLoft()->Shape();
 
     // Calculate volume
     GProp_GProps System;
@@ -417,7 +417,7 @@ double CCPACSWing::GetVolume()
 // Returns the surface area of this wing
 double CCPACSWing::GetSurfaceArea()
 {
-    const TopoDS_Shape& fusedSegments = GetLoft()->Shape();
+    const TopoDS_Shape fusedSegments = GetLoft()->Shape();
 
     // Calculate surface area
     GProp_GProps System;
@@ -441,7 +441,7 @@ double CCPACSWing::GetReferenceArea(TiglSymmetryAxis symPlane)
 
 double CCPACSWing::GetWettedArea(TopoDS_Shape parent)
 {
-    const TopoDS_Shape& loft = GetLoft()->Shape();
+    const TopoDS_Shape loft = GetLoft()->Shape();
 
     TopoDS_Shape wettedLoft = BRepAlgoAPI_Cut(loft, parent); 
 
@@ -483,7 +483,7 @@ double CCPACSWing::GetWingspan()
         gp_XYZ cumulatedDepthDirection(0, 0, 0);
         for (int i = 1; i <= GetSegmentCount(); ++i) {
             CCPACSWingSegment& segment = m_segments.GetSegment(i);
-            const TopoDS_Shape& segmentShape = segment.GetLoft()->Shape();
+            const TopoDS_Shape segmentShape = segment.GetLoft()->Shape();
             BRepBndLib::Add(segmentShape, boundingBox);
 
             gp_XYZ dirSpan  = segment.GetChordPoint(1,0).XYZ() - segment.GetChordPoint(0,0).XYZ();

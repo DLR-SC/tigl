@@ -420,14 +420,15 @@ QString TIGLViewerDocument::dlgGetWingProfileSelection()
 
     // Initialize wing list
     tigl::CCPACSConfiguration& config = GetConfiguration();
-    std::vector<tigl::unique_ptr<tigl::generated::CPACSProfileGeometry> >& airfoils = config.GetWingProfiles().GetWingAirfoils();
-    for (int i = 0; i < airfoils.size(); i++) {
-        tigl::generated::CPACSProfileGeometry* profile = airfoils.at(i).get();
+    if (config.GetWingProfiles()) {
+        std::vector<tigl::unique_ptr<tigl::generated::CPACSProfileGeometry> >& airfoils = config.GetWingProfiles()->GetWingAirfoils();
+        for (int i = 0; i < airfoils.size(); i++) {
+            tigl::generated::CPACSProfileGeometry* profile = airfoils.at(i).get();
 
-        std::string profileUID = profile->GetUID();
-        wingProfiles << profileUID.c_str();
+            std::string profileUID = profile->GetUID();
+            wingProfiles << profileUID.c_str();
+        }
     }
-
     QString choice = QInputDialog::getItem(app, tr("Select Wing Profile"), tr("Available Wing Profiles:"), wingProfiles, 0, false, &ok);
     if (ok) {
         return choice;
@@ -562,10 +563,12 @@ QString TIGLViewerDocument::dlgGetRotorProfileSelection()
 
     // Initialize wing list
     tigl::CCPACSConfiguration& config = GetConfiguration();
-    std::vector<tigl::unique_ptr<tigl::generated::CPACSProfileGeometry> >& airfoils = config.GetRotorProfiles().GetRotorAirfoils();
-    for (int i = 0; i < airfoils.size(); i++) {
-        tigl::generated::CPACSProfileGeometry* profile = airfoils.at(i).get();
-        wingProfiles << profile->GetUID().c_str();
+    if (config.GetRotorProfiles()) {
+        std::vector<tigl::unique_ptr<tigl::generated::CPACSProfileGeometry> >& airfoils = config.GetRotorProfiles()->GetRotorAirfoils();
+        for (int i = 0; i < airfoils.size(); i++) {
+            tigl::generated::CPACSProfileGeometry* profile = airfoils.at(i).get();
+            wingProfiles << profile->GetUID().c_str();
+        }
     }
 
     QString choice = QInputDialog::getItem(app, tr("Select Rotor Profile"), tr("Available Rotor Profiles:"), wingProfiles, 0, false, &ok);

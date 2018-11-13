@@ -6812,7 +6812,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglCheckPointInside(TiglCPACSConfigurationHan
         // get component
         tigl::ITiglGeometricComponent& component = config.GetUIDManager().GetGeometricComponent(componentUID);
 
-        const TopoDS_Shape& shape = component.GetLoft()->Shape();
+        const TopoDS_Shape shape = component.GetLoft()->Shape();
         *isInside = IsPointInsideShape(shape, gp_Pnt(px, py, pz)) ? TIGL_TRUE : TIGL_FALSE;
 
         return TIGL_SUCCESS;

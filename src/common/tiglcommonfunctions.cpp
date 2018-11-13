@@ -100,7 +100,7 @@
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <Standard_Version.hxx>
 
-#include "ShapeAnalysis_FreeBounds.hxx"
+#include <ShapeAnalysis_FreeBounds.hxx>
 
 
 #include <list>
@@ -550,41 +550,44 @@ Handle(Geom_BSplineCurve) GetBSplineCurve(const TopoDS_Edge& e)
     return bspl;
 }
 
-bool GetIntersectionPoint_impl(const TopoDS_Face& face, const TopoDS_Edge& edge, gp_Pnt& dst)
-{
-    BRepIntCurveSurface_Inter faceCurveInter;
+namespace {
+    bool GetIntersectionPoint_impl(const TopoDS_Face& face, const TopoDS_Edge& edge, gp_Pnt& dst, double tolerance)
+    {
+        BRepIntCurveSurface_Inter faceCurveInter;
 
-    double umin = 0., umax = 0.;
-    const Handle(Geom_Curve)& curve = BRep_Tool::Curve(edge, umin, umax);
+        double umin = 0., umax = 0.;
+        const Handle(Geom_Curve)& curve = BRep_Tool::Curve(edge, umin, umax);
 
-    faceCurveInter.Init(face, GeomAdaptor_Curve(curve, umin, umax), Precision::Confusion());
+        faceCurveInter.Init(face, GeomAdaptor_Curve(curve, umin, umax), tolerance);
 
 
-    if ( faceCurveInter.More() ) {
-        dst = faceCurveInter.Pnt();
-        faceCurveInter.Next();
-        while (faceCurveInter.More()) {
-           if ( !dst.IsEqual(faceCurveInter.Pnt(), Precision::Confusion()) ) {
-               LOG(WARNING) << "Multiple Intersections found in GetIntersectionPoint";
-           }
-           faceCurveInter.Next();
+        if (faceCurveInter.More()) {
+            dst = faceCurveInter.Pnt();
+            faceCurveInter.Next();
+            while (faceCurveInter.More()) {
+                if (!dst.IsEqual(faceCurveInter.Pnt(), Precision::Confusion())) {
+                    LOG(WARNING) << "Multiple Intersections found in GetIntersectionPoint";
+                }
+                faceCurveInter.Next();
+            }
+            return true;
         }
-        return true;
+
+        return false;
     }
-    return false;
 }
 
-bool GetIntersectionPoint(const TopoDS_Face& face, const TopoDS_Edge& edge, gp_Pnt& dst)
+bool GetIntersectionPoint(const TopoDS_Face& face, const TopoDS_Edge& edge, gp_Pnt& dst, double tolerance)
 {
-    bool intersection = GetIntersectionPoint_impl(face, edge, dst);
+    const bool intersection = GetIntersectionPoint_impl(face, edge, dst, tolerance);
     if (!intersection) {
-        LOG(WARNING) << "No Intersections found in GetIntersectionPoint(face, edge)";
+        LOG(WARNING) << "No Intersections found in GetIntersectionPoint";
     }
     return intersection;
 }
 
 
-bool GetIntersectionPoint(const TopoDS_Face& face, const TopoDS_Wire& wire, gp_Pnt& dst)
+bool GetIntersectionPoint(const TopoDS_Face& face, const TopoDS_Wire& wire, gp_Pnt& dst, double tolerance)
 {
     DEBUG_SCOPE(debug);
     debug.addShape(face, "face");
@@ -592,10 +595,11 @@ bool GetIntersectionPoint(const TopoDS_Face& face, const TopoDS_Wire& wire, gp_P
     BRepTools_WireExplorer wireExp;
     for (wireExp.Init(wire); wireExp.More(); wireExp.Next()) {
         const TopoDS_Edge& edge = wireExp.Current();
-        if (GetIntersectionPoint_impl(face, edge, dst)) {
+        if (GetIntersectionPoint_impl(face, edge, dst, tolerance)) {
             return true;
         }
     }
+
     LOG(WARNING) << "No Intersections found in GetIntersectionPoint(face, wire)";
     return false;
 }
@@ -1259,27 +1263,58 @@ TopoDS_Shape CutShapes(const TopoDS_Shape& shape1, const TopoDS_Shape& shape2)
 
 TopoDS_Shape SplitShape(const TopoDS_Shape& src, const TopoDS_Shape& tool)
 {
-    GEOMAlgo_Splitter splitter;
-    splitter.AddArgument(src);
-    splitter.AddTool(tool);
-    try {
-        splitter.Perform();
-    }
-    catch (const Standard_Failure& f) {
-        std::stringstream ss;
-        ss << "ERROR: splitting of shapes failed: " << f.GetMessageString();
-        LOG(ERROR) << ss.str();
-        throw tigl::CTiglError(ss.str());
-    }
-#if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,2,0)
-    if (splitter.HasErrors()) {
-#else
-    if (splitter.ErrorStatus() != 0) {
+    double fuzzyValue = Precision::Confusion();
+
+    const int c_tries = 3;
+    for (int i = 0;; i++) {
+        GEOMAlgo_Splitter splitter;
+        splitter.AddArgument(src);
+        splitter.AddTool(tool);
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(6,9,0)
+        splitter.SetFuzzyValue(fuzzyValue);
 #endif
-        LOG(ERROR) << "unable to split passed shapes!";
-        throw tigl::CTiglError("unable to split passed shapes!");
+        try {
+            splitter.Perform();
+        }
+        catch (const Standard_Failure& f) {
+            std::stringstream ss;
+            ss << "ERROR: splitting of shapes failed: " << f.GetMessageString();
+            LOG(ERROR) << ss.str();
+            throw tigl::CTiglError(ss.str());
+        }
+
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,2,0)
+        if (splitter.HasErrors()) {
+            if (i < c_tries - 1) {
+                fuzzyValue *= 10;
+                LOG(WARNING) << "SplitShape failed, retrying with fuzzyValue: " << fuzzyValue;
+                continue;
+            }
+
+            std::ostringstream oss;
+            splitter.GetReport()->Dump(oss);
+            LOG(ERROR) << "unable to split passed shapes: " << oss.str();
+            throw tigl::CTiglError("unable to split passed shapes: " + oss.str());
+        }
+#elif OCC_VERSION_HEX >= VERSION_HEX_CODE(6,9,0)
+        if (splitter.ErrorStatus() != 0) {
+            if (i < c_tries - 1) {
+                fuzzyValue *= 10;
+                LOG(WARNING) << "SplitShape failed, retrying with fuzzyValue: " << fuzzyValue;
+                continue;
+            }
+
+            LOG(ERROR) << "unable to split passed shapes!";
+            throw tigl::CTiglError("unable to split passed shapes!");
+        }
+#else
+        if (splitter.ErrorStatus() != 0) {
+            LOG(ERROR) << "unable to split passed shapes!";
+            throw tigl::CTiglError("unable to split passed shapes!");
+        }
+#endif
+        return splitter.Shape();
     }
-    return splitter.Shape();
 }
 
 void FindAllConnectedEdges(const TopoDS_Edge& edge, TopTools_ListOfShape& edgeList, TopTools_ListOfShape& targetList)

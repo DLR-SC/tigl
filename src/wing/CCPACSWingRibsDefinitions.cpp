@@ -64,7 +64,7 @@ const CCPACSWingRibsDefinition& CCPACSWingRibsDefinitions::GetRibsDefinition(con
         }
     }
 
-    const std::string referenceUID = GetParent()->GetWingStructureReference().GetUID();
+    const std::string& referenceUID = CTiglWingStructureReference(*GetParent()).GetUID();
     LOG(ERROR) << "Ribs Definition \"" << uid << "\" not found in component segment or trailing edge device with UID \"" << referenceUID << "\"";
     throw CTiglError("Ribs Definition \"" + uid + "\" not found in component segment or trailing edge device with UID \"" + referenceUID + "\". Please check the CPACS document!", TIGL_ERROR);
 }
