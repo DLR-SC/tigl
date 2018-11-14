@@ -1,0 +1,514 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cpacs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="CPACS_21_Schema.xsd">
+  <header xsi:type="headerType">
+    <name>CPACS 2.1 simplest CST curve</name>
+    <description>Wing Segment with CST Airfoils</description>
+    <creator>Tobias Stollenwerk, DLR, SC-VSS</creator>
+    <timestamp>2013-12-19T12:51:00</timestamp>
+    <version>0.2</version>
+    <cpacsVersion>3.0</cpacsVersion>
+    <updates>
+      <update>
+        <modification>Converted to cpacs 3.0 using cpacs2to3 - does not include structure update</modification>
+        <creator>cpacs2to3</creator>
+        <timestamp>2018-01-15T09:02:09</timestamp>
+        <version>0.2</version>
+        <cpacsVersion>3.0</cpacsVersion>
+      </update>
+    </updates>
+  </header>
+  <vehicles>
+    <aircraft>
+      <model uID="CSTExampleModel">
+        <name>CSTExample</name>
+        <description>CST Example</description>
+        <wings xsi:type="wingsType">
+          <wing symmetry="x-z-plane" uID="CSTExample_W1" xsi:type="wingType">
+            <name>D150_wing_1</name>
+            <description>Wing</description>
+            <transformation xsi:type="transformationType" uID="CSTExample_W1_transformation1">
+              <scaling xsi:type="pointType" uID="CSTExample_W1_transformation1_scaling1">
+                <x>1.0</x>
+                <y>1.0</y>
+                <z>1.0</z>
+              </scaling>
+              <rotation xsi:type="pointType" uID="CSTExample_W1_transformation1_rotation1">
+                <x>0.0</x>
+                <y>2.0</y>
+                <z>0.0</z>
+              </rotation>
+              <translation refType="absGlobal" xsi:type="pointAbsRelType" uID="CSTExample_W1_transformation1_translation1">
+                <x>12.7455945822</x>
+                <y>0.0</y>
+                <z>-1.13628021843</z>
+              </translation>
+            </transformation>
+            <sections xsi:type="wingSectionsType">
+              <section uID="CSTExample_W1_Sec1" xsi:type="wingSectionType">
+                <name>Wing_Sec1</name>
+                <description>Wing_Sec1</description>
+                <transformation xsi:type="transformationType" uID="CSTExample_W1_Sec1_transformation1">
+                  <scaling xsi:type="pointType" uID="CSTExample_W1_Sec1_transformation1_scaling1">
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation xsi:type="pointType" uID="CSTExample_W1_Sec1_transformation1_rotation1">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal" xsi:type="pointAbsRelType" uID="CSTExample_W1_Sec1_transformation1_translation1">
+                    <x>-0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </translation>
+                </transformation>
+                <elements xsi:type="wingElementsType">
+                  <element uID="CSTExample_W1_Sec1_Elem1" xsi:type="wingElementType">
+                    <name>Wing_Sec1_Elem1</name>
+                    <description>Wing_Sec1_Element1</description>
+                    <airfoilUID>CSTExampleAirfoil1</airfoilUID>
+                    <transformation xsi:type="transformationType" uID="CSTExample_W1_Sec1_Elem1_transformation1">
+                      <scaling xsi:type="pointType" uID="CSTExample_W1_Sec1_Elem1_transformation1_scaling1">
+                        <x>6.07571980042</x>
+                        <y>1.0</y>
+                        <z>6.06091755952</z>
+                      </scaling>
+                      <rotation xsi:type="pointType" uID="CSTExample_W1_Sec1_Elem1_transformation1_rotation1">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal" xsi:type="pointAbsRelType" uID="CSTExample_W1_Sec1_Elem1_transformation1_translation1">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="CSTExample_W1_Sec2" xsi:type="wingSectionType">
+                <name>Wing_Sec2</name>
+                <description>Wing_Sec2</description>
+                <transformation xsi:type="transformationType" uID="CSTExample_W1_Sec2_transformation1">
+                  <scaling xsi:type="pointType" uID="CSTExample_W1_Sec2_transformation1_scaling1">
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation xsi:type="pointType" uID="CSTExample_W1_Sec2_transformation1_rotation1">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal" xsi:type="pointAbsRelType" uID="CSTExample_W1_Sec2_transformation1_translation1">
+                    <x>-0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </translation>
+                </transformation>
+                <elements xsi:type="wingElementsType">
+                  <element uID="CSTExample_W1_Sec2_Elem1" xsi:type="wingElementType">
+                    <name>Wing_Sec2_Elem1</name>
+                    <description>Wing_Sec2_Element1</description>
+                    <airfoilUID>CSTExampleAirfoil2</airfoilUID>
+                    <transformation xsi:type="transformationType" uID="CSTExample_W1_Sec2_Elem1_transformation1">
+                      <scaling xsi:type="pointType" uID="CSTExample_W1_Sec2_Elem1_transformation1_scaling1">
+                        <x>6.07571980042</x>
+                        <y>1.0</y>
+                        <z>6.06091755952</z>
+                      </scaling>
+                      <rotation xsi:type="pointType" uID="CSTExample_W1_Sec2_Elem1_transformation1_rotation1">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal" xsi:type="pointAbsRelType" uID="CSTExample_W1_Sec2_Elem1_transformation1_translation1">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+            </sections>
+            <positionings xsi:type="positioningsType">
+              <positioning uID="CSTExample_W1_Pos1" xsi:type="positioningType">
+                <name>Wing_Position1</name>
+                <length>0.0</length>
+                <sweepAngle>0.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <toSectionUID>CSTExample_W1_Sec1</toSectionUID>
+              </positioning>
+              <positioning uID="CSTExample_W1_Pos2" xsi:type="positioningType">
+                <name>Wing_Position2</name>
+                <length>1.85623036491</length>
+                <sweepAngle>0.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID>CSTExample_W1_Sec1</fromSectionUID>
+                <toSectionUID>CSTExample_W1_Sec2</toSectionUID>
+              </positioning>
+            </positionings>
+            <segments xsi:type="wingSegmentsType">
+              <segment uID="CSTExample_W1_Seg1" xsi:type="wingSegmentType">
+                <name>CSTExample_W1_Seg1</name>
+                <description>CSTExample_W1_Seg1</description>
+                <fromElementUID>CSTExample_W1_Sec1_Elem1</fromElementUID>
+                <toElementUID>CSTExample_W1_Sec2_Elem1</toElementUID>
+              </segment>
+            </segments>
+            <componentSegments xsi:type="componentSegmentsType">
+              <componentSegment uID="CSTExample_W1_CompSeg1" xsi:type="componentSegmentType">
+                <name>CSTExample_W1_CompSeg1</name>
+                <description>CSTExample_W1_CompSeg1</description>
+                <fromElementUID>CSTExample_W1_Sec1_Elem1</fromElementUID>
+                <toElementUID>CSTExample_W1_Sec4_Elem1</toElementUID>
+                <structure>
+                  <upperShell uID="CSTExample_W1_CompSeg1_upperShell1">
+                    <skin>
+                      <material>
+                        <materialUID>aluminium2024</materialUID>
+                        <thickness>0.003</thickness>
+                      </material>
+                    </skin>
+                    <stringer>
+                      <stringerStructureUID>Stringertype1</stringerStructureUID>
+                      <angle>0</angle>
+                      <pitch>0.14</pitch>
+                    </stringer>
+                  </upperShell>
+                  <lowerShell uID="CSTExample_W1_CompSeg1_lowerShell1">
+                    <skin>
+                      <material>
+                        <materialUID>aluminium2024</materialUID>
+                        <thickness>0.003</thickness>
+                      </material>
+                    </skin>
+                    <stringer>
+                      <stringerStructureUID>Stringertype1</stringerStructureUID>
+                      <angle>0.0</angle>
+                      <pitch>0.14</pitch>
+                    </stringer>
+                  </lowerShell>
+                  <ribsDefinitions>
+                    <ribsDefinition uID="ribs_CWB">
+                      <name>ribs_CWB</name>
+                      <description>ribs in center wing box</description>
+                      <ribsPositioning>
+                        <ribReference>frontSpar</ribReference>
+                        <etaStart>0.01516</etaStart>
+                        <etaEnd>0.07515</etaEnd>
+                        <ribStart>frontSpar</ribStart>
+                        <ribEnd>rearSpar</ribEnd>
+                        <numberOfRibs>3</numberOfRibs>
+                        <ribCrossingBehaviour>end</ribCrossingBehaviour>
+                        <ribRotation>
+                          <ribRotationReference>globalY</ribRotationReference>
+                          <z>90</z>
+                        </ribRotation>
+                      </ribsPositioning>
+                      <ribCrossSection>
+                        <material>
+                          <materialUID>aluminium2024</materialUID>
+                          <thickness>0.003</thickness>
+                        </material>
+                      </ribCrossSection>
+                    </ribsDefinition>
+                    <ribsDefinition uID="ribs_IW">
+                      <name>ribs_IW</name>
+                      <description>ribs at the inner part of the wing</description>
+                      <ribsPositioning>
+                        <ribReference>frontSpar</ribReference>
+                        <etaStart>0.11015</etaStart>
+                        <etaEnd>0.29036</etaEnd>
+                        <ribStart>frontSpar</ribStart>
+                        <ribEnd>rearSpar</ribEnd>
+                        <numberOfRibs>6</numberOfRibs>
+                        <ribCrossingBehaviour>end</ribCrossingBehaviour>
+                        <ribRotation>
+                          <ribRotationReference>globalY</ribRotationReference>
+                          <z>90</z>
+                        </ribRotation>
+                      </ribsPositioning>
+                      <ribCrossSection>
+                        <material>
+                          <materialUID>aluminium2024</materialUID>
+                          <thickness>0.003</thickness>
+                        </material>
+                      </ribCrossSection>
+                    </ribsDefinition>
+                    <ribsDefinition uID="ribs_EM">
+                      <name>ribs_EM</name>
+                      <description>ribs for the Enginge Mount</description>
+                      <ribsPositioning>
+                        <ribReference>frontSpar</ribReference>
+                        <etaStart>0.33172</etaStart>
+                        <etaEnd>0.3499</etaEnd>
+                        <ribStart>frontSpar</ribStart>
+                        <ribEnd>rearSpar</ribEnd>
+                        <numberOfRibs>2</numberOfRibs>
+                        <ribCrossingBehaviour>end</ribCrossingBehaviour>
+                        <ribRotation>
+                          <ribRotationReference>globalY</ribRotationReference>
+                          <z>90</z>
+                        </ribRotation>
+                      </ribsPositioning>
+                      <ribCrossSection>
+                        <material>
+                          <materialUID>aluminium2024</materialUID>
+                          <thickness>0.002</thickness>
+                        </material>
+                      </ribCrossSection>
+                    </ribsDefinition>
+                    <ribsDefinition uID="ribs_12">
+                      <name>ribs_12</name>
+                      <description>rib 12</description>
+                      <ribsPositioning>
+                        <ribReference>frontSpar</ribReference>
+                        <etaStart>0.39564</etaStart>
+                        <etaEnd>0.39564</etaEnd>
+                        <ribStart>frontSpar</ribStart>
+                        <ribEnd>rearSpar</ribEnd>
+                        <numberOfRibs>1</numberOfRibs>
+                        <ribCrossingBehaviour>end</ribCrossingBehaviour>
+                        <ribRotation>
+                          <ribRotationReference>globalY</ribRotationReference>
+                          <z>82.8</z>
+                        </ribRotation>
+                      </ribsPositioning>
+                      <ribCrossSection>
+                        <material>
+                          <materialUID>aluminium2024</materialUID>
+                          <thickness>0.002</thickness>
+                        </material>
+                      </ribCrossSection>
+                    </ribsDefinition>
+                    <ribsDefinition uID="ribs_13">
+                      <name>ribs_13</name>
+                      <description>rib 13</description>
+                      <ribsPositioning>
+                        <ribReference>frontSpar</ribReference>
+                        <etaStart>0.43449</etaStart>
+                        <etaEnd>0.43449</etaEnd>
+                        <ribStart>frontSpar</ribStart>
+                        <ribEnd>rearSpar</ribEnd>
+                        <numberOfRibs>1</numberOfRibs>
+                        <ribCrossingBehaviour>end</ribCrossingBehaviour>
+                        <ribRotation>
+                          <ribRotationReference>globalY</ribRotationReference>
+                          <z>76.9</z>
+                        </ribRotation>
+                      </ribsPositioning>
+                      <ribCrossSection>
+                        <material>
+                          <materialUID>aluminium2024</materialUID>
+                          <thickness>0.002</thickness>
+                        </material>
+                      </ribCrossSection>
+                    </ribsDefinition>
+                    <ribsDefinition uID="ribs_OW">
+                      <name>ribs_OW</name>
+                      <description>rib at the outer wing</description>
+                      <ribsPositioning>
+                        <ribReference>frontSpar</ribReference>
+                        <etaStart>0.47082</etaStart>
+                        <etaEnd>0.93700</etaEnd>
+                        <ribStart>frontSpar</ribStart>
+                        <ribEnd>rearSpar</ribEnd>
+                        <numberOfRibs>16</numberOfRibs>
+                        <ribCrossingBehaviour>end</ribCrossingBehaviour>
+                        <ribRotation>
+                          <ribRotationReference>globalY</ribRotationReference>
+                          <z>69.6</z>
+                        </ribRotation>
+                      </ribsPositioning>
+                      <ribCrossSection>
+                        <material>
+                          <materialUID>aluminium2024</materialUID>
+                          <thickness>0.002</thickness>
+                        </material>
+                      </ribCrossSection>
+                    </ribsDefinition>
+                    <ribsDefinition uID="ribs_Tip">
+                      <name>ribs_Tip</name>
+                      <description>Tip Rib</description>
+                      <ribsPositioning>
+                        <ribReference>frontSpar</ribReference>
+                        <etaStart>0.95955</etaStart>
+                        <etaEnd>0.95955</etaEnd>
+                        <ribStart>frontSpar</ribStart>
+                        <ribEnd>rearSpar</ribEnd>
+                        <numberOfRibs>1</numberOfRibs>
+                        <ribCrossingBehaviour>end</ribCrossingBehaviour>
+                        <ribRotation>
+                          <ribRotationReference>globalY</ribRotationReference>
+                          <z>90</z>
+                        </ribRotation>
+                      </ribsPositioning>
+                      <ribCrossSection>
+                        <material>
+                          <materialUID>aluminium2024</materialUID>
+                          <thickness>0.002</thickness>
+                        </material>
+                      </ribCrossSection>
+                    </ribsDefinition>
+                  </ribsDefinitions>
+                  <spars>
+                    <sparPositions>
+                      <sparPosition uID="FS_P1">
+                        <eta>0.0</eta>
+                        <xsi>0.10142</xsi>
+                      </sparPosition>
+                      <sparPosition uID="FS_P2">
+                        <eta>0.11015</eta>
+                        <xsi>0.10142</xsi>
+                      </sparPosition>
+                      <sparPosition uID="FS_P3">
+                        <eta>1.0</eta>
+                        <xsi>0.33692</xsi>
+                      </sparPosition>
+                      <sparPosition uID="RS_P1">
+                        <eta>0.0</eta>
+                        <xsi>0.56059</xsi>
+                      </sparPosition>
+                      <sparPosition uID="RS_P2">
+                        <eta>0.11015</eta>
+                        <xsi>0.56059</xsi>
+                      </sparPosition>
+                      <sparPosition uID="RS_P3">
+                        <eta>0.28976</eta>
+                        <xsi>0.59347</xsi>
+                      </sparPosition>
+                      <sparPosition uID="RS_P4">
+                        <eta>0.78059</eta>
+                        <xsi>0.58808</xsi>
+                      </sparPosition>
+                      <sparPosition uID="RS_P5">
+                        <eta>1.0</eta>
+                        <xsi>0.59200</xsi>
+                      </sparPosition>
+                    </sparPositions>
+                    <sparSegments>
+                      <sparSegment uID="frontSpar">
+                        <name>Front Spar</name>
+                        <description>Front Spar</description>
+                        <sparPositionUIDs>
+                          <sparPositionUID>FS_P1</sparPositionUID>
+                          <sparPositionUID>FS_P2</sparPositionUID>
+                          <sparPositionUID>FS_P3</sparPositionUID>
+                        </sparPositionUIDs>
+                        <sparCrossSection>
+                          <upperCap>
+                            <area>0.0003</area>
+                            <material>
+                              <materialUID>aluminium2024</materialUID>
+                              <thickness>0.003</thickness>
+                            </material>
+                          </upperCap>
+                          <lowerCap>
+                            <area>0.0003</area>
+                            <material>
+                              <materialUID>aluminium2024</materialUID>
+                              <thickness>0.003</thickness>
+                            </material>
+                          </lowerCap>
+                          <web1>
+                            <material>
+                              <materialUID>aluminium2024</materialUID>
+                              <thickness>0.003</thickness>
+                            </material>
+                            <relPos>0.0</relPos>
+                          </web1>
+                          <rotation>90</rotation>
+                        </sparCrossSection>
+                      </sparSegment>
+                      <sparSegment uID="rearSpar">
+                        <name>Rear Spar</name>
+                        <description>Rear Spar</description>
+                        <sparPositionUIDs>
+                          <sparPositionUID>RS_P1</sparPositionUID>
+                          <sparPositionUID>RS_P2</sparPositionUID>
+                          <sparPositionUID>RS_P3</sparPositionUID>
+                          <sparPositionUID>RS_P4</sparPositionUID>
+                          <sparPositionUID>RS_P5</sparPositionUID>
+                        </sparPositionUIDs>
+                        <sparCrossSection>
+                          <upperCap>
+                            <area>0.0003</area>
+                            <material>
+                              <materialUID>aluminium2024</materialUID>
+                              <thickness>0.003</thickness>
+                            </material>
+                          </upperCap>
+                          <lowerCap>
+                            <area>0.0003</area>
+                            <material>
+                              <materialUID>aluminium2024</materialUID>
+                              <thickness>0.003</thickness>
+                            </material>
+                          </lowerCap>
+                          <web1>
+                            <material>
+                              <materialUID>aluminium2024</materialUID>
+                              <thickness>0.003</thickness>
+                            </material>
+                            <relPos>1.0</relPos>
+                          </web1>
+                          <rotation>90</rotation>
+                        </sparCrossSection>
+                      </sparSegment>
+                    </sparSegments>
+                  </spars>
+                </structure>
+              </componentSegment>
+            </componentSegments>
+          </wing>
+        </wings>
+      </model>
+    </aircraft>
+    <profiles>
+      <wingAirfoils xsi:type="wingAirfoilsType">
+        <wingAirfoil uID="PointListExampleAirfoil">
+          <name>PointListExample</name>
+          <description>Point list example profile</description>
+          <pointList>
+            <x mapType="vector">1.0;0.9875;0.975;0.9625;0.95;0.9375;0.925;0.9125;0.9;0.8875;0.875;0.8625;0.85;0.8375;0.825;0.8125;0.8;0.7875;0.775;0.7625;0.75;0.7375;0.725;0.7125;0.7;0.6875;0.675;0.6625;0.65;0.6375;0.625;0.6125;0.6;0.5875;0.575;0.5625;0.55;0.5375;0.525;0.5125;0.5;0.4875;0.475;0.4625;0.45;0.4375;0.425;0.4125;0.4;0.3875;0.375;0.3625;0.35;0.3375;0.325;0.3125;0.3;0.2875;0.275;0.2625;0.25;0.2375;0.225;0.2125;0.2;0.1875;0.175;0.1625;0.15;0.1375;0.125;0.1125;0.1;0.0875;0.075;0.0625;0.05;0.0375;0.025;0.0125;0.0;0.0125;0.025;0.0375;0.05;0.0625;0.075;0.0875;0.1;0.1125;0.125;0.1375;0.15;0.1625;0.175;0.1875;0.2;0.2125;0.225;0.2375;0.25;0.2625;0.275;0.2875;0.3;0.3125;0.325;0.3375;0.35;0.3625;0.375;0.3875;0.4;0.4125;0.425;0.4375;0.45;0.4625;0.475;0.4875;0.5;0.5125;0.525;0.5375;0.55;0.5625;0.575;0.5875;0.6;0.6125;0.625;0.6375;0.65;0.6625;0.675;0.6875;0.7;0.7125;0.725;0.7375;0.75;0.7625;0.775;0.7875;0.8;0.8125;0.825;0.8375;0.85;0.8625;0.875;0.8875;0.9;0.9125;0.925;0.9375;0.95;0.9625;0.975;0.9875</x>
+            <y mapType="vector">0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0</y>
+            <z mapType="vector">0.00126;0.0030004180415;0.00471438572941;0.00640256842113;0.00806559133343;0.00970403933653;0.0113184567357;0.0129093470398;0.0144771727147;0.0160223549226;0.0175452732434;0.0190462653789;0.0205256268372;0.0219836105968;0.0234204267471;0.024836242105;0.0262311798047;0.0276053188583;0.0289586936852;0.0302912936071;0.0316030623052;0.0328938972373;0.0341636490097;0.0354121207001;0.0366390671268;0.0378441940595;0.0390271573644;0.0401875620783;0.0413249614032;0.042438855614;0.043528690869;0.0445938579126;0.0456336906587;0.04664746464;0.0476343953088;0.0485936361694;0.0495242767241;0.0504253402064;0.0512957810767;0.0521344822472;0.0529402520006;0.0537118205596;0.0544478362583;0.0551468612564;0.0558073667285;0.0564277274483;0.0570062156697;0.0575409941929;0.0580301084765;0.0584714776309;0.0588628840933;0.059201961739;0.0594861821311;0.0597128385384;0.059879027262;0.0599816256958;0.060017266394;0.059982306219;0.05987278938;0.0596844028137;0.059412421875;0.059051643633;0.0585963041308;0.0580399746271;0.0573754299024;0.0565944788455;0.0556877432118;0.054644363746;0.0534516022043;0.0520942903127;0.0505540468987;0.0488081315259;0.0468277042382;0.0445750655553;0.0419990347204;0.0390266537476;0.0355468568262;0.0313738751622;0.0261471986426;0.0189390266528;0.0;-0.0189390266528;-0.0261471986426;-0.0313738751622;-0.0355468568262;-0.0390266537476;-0.0419990347204;-0.0445750655553;-0.0468277042382;-0.0488081315259;-0.0505540468987;-0.0520942903127;-0.0534516022043;-0.054644363746;-0.0556877432118;-0.0565944788455;-0.0573754299024;-0.0580399746271;-0.0585963041308;-0.059051643633;-0.059412421875;-0.0596844028137;-0.05987278938;-0.059982306219;-0.060017266394;-0.0599816256958;-0.059879027262;-0.0597128385384;-0.0594861821311;-0.059201961739;-0.0588628840933;-0.0584714776309;-0.0580301084765;-0.0575409941929;-0.0570062156697;-0.0564277274483;-0.0558073667285;-0.0551468612564;-0.0544478362583;-0.0537118205596;-0.0529402520006;-0.0521344822472;-0.0512957810767;-0.0504253402064;-0.0495242767241;-0.0485936361694;-0.0476343953088;-0.04664746464;-0.0456336906587;-0.0445938579126;-0.043528690869;-0.042438855614;-0.0413249614032;-0.0401875620783;-0.0390271573644;-0.0378441940595;-0.0366390671268;-0.0354121207001;-0.0341636490097;-0.0328938972373;-0.0316030623052;-0.0302912936071;-0.0289586936852;-0.0276053188583;-0.0262311798047;-0.024836242105;-0.0234204267471;-0.0219836105968;-0.0205256268372;-0.0190462653789;-0.0175452732434;-0.0160223549226;-0.0144771727147;-0.0129093470398;-0.0113184567357;-0.00970403933653;-0.00806559133343;-0.00640256842113;-0.00471438572941;-0.0030004180415</z>
+          </pointList>
+        </wingAirfoil>
+        <wingAirfoil uID="CSTExampleAirfoil1">
+          <name>CSTExample1</name>
+          <description>CST example profile1</description>
+          <cst2D>
+            <psi mapType="vector">0;0.005;0.010;0.015;0.020;0.025;0.030;0.035;0.040;0.045;0.05;0.1;0.15;0.2;0.25;0.3;0.35;0.4;0.45;0.5;0.55;0.6;0.65;0.7;0.75;0.8;0.85;0.9;0.95;1.0</psi>
+            <upperN1>0.5</upperN1>
+            <upperN2>1.0</upperN2>
+            <upperB mapType="vector">0.2;0.5;0.2;0.1</upperB>
+            <lowerN1>0.5</lowerN1>
+            <lowerN2>1.0</lowerN2>
+            <lowerB mapType="vector">0.5;0.1;0.0;-0.11;0.0;0.1;0.2</lowerB>
+            <trailingEdgeThickness>0.02</trailingEdgeThickness>
+          </cst2D>
+        </wingAirfoil>
+        <wingAirfoil uID="CSTExampleAirfoil2">
+          <name>CSTExample2</name>
+          <description>CST example profile 2</description>
+          <cst2D>
+            <psi mapType="vector">0.0;0.1;0.2;0.3;0.4;0.5;0.6;0.7;0.8;0.9;1.0</psi>
+            <upperN1>0.5</upperN1>
+            <upperN2>1.0</upperN2>
+            <upperB mapType="vector">0.5;0.5;0.2;0.1</upperB>
+            <lowerN1>0.5</lowerN1>
+            <lowerN2>1.0</lowerN2>
+            <lowerB mapType="vector">0.3;0.1;0.0;-0.11;0.0;0.1;0.2</lowerB>
+            <trailingEdgeThickness>0.02</trailingEdgeThickness>
+          </cst2D>
+        </wingAirfoil>
+      </wingAirfoils>
+    </profiles>
+  </vehicles>
+</cpacs>
