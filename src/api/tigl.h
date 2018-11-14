@@ -210,6 +210,7 @@ typedef unsigned int TiglGeometricComponentType;
 #define  TIGL_COMPONENT_CARGO_DOOR        32768    /**< The Component is a cargo door */
 
 #define  TIGL_COMPONENT_LONG_FLOOR_BEAM   65536    /**< The Component is a long floor beam */
+#define  TIGL_COMPONENT_ENGINE_PYLON      131072   /**< The Component is a engine pylon */
 
 enum TiglStructureType 
 {

@@ -63,7 +63,6 @@ CPACSDriveSystems
 CPACSLandingGear
 
 // in rotorcraft and aircraft model
-CPACSEnginePylons
 CPACSEnginePositions
 CPACSSystems
 CPACSReference
@@ -112,3 +111,6 @@ CPACSWingStringer
 
 // in basic types
 CPACSUncertaintyFunction
+
+// in pylon
+CPACSPylonStructure

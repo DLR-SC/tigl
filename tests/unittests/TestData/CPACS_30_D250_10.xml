@@ -7445,7 +7445,7 @@
 				</analyses>
         <enginePylons>
           <enginePylon uID="PYL1">
-            <parentUID>D250_wing_CS</parentUID>
+            <parentUID>D250_wing</parentUID>
             <transformation uID="PYL1_transformation1"/>
             <loadCarryingStructure>
               <pylonBox uID="EP01PB1">

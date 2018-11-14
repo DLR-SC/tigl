@@ -156,7 +156,7 @@ namespace
 
 CCPACSWingComponentSegment::CCPACSWingComponentSegment(CCPACSWingComponentSegments* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSComponentSegment(parent, uidMgr)
-    , CTiglAbstractSegment<CCPACSWingComponentSegment>(parent->GetComponentSegments(), parent->GetParent()->m_symmetry)
+    , CTiglAbstractSegment<CCPACSWingComponentSegment>(parent->GetComponentSegments(), parent->GetParent())
     , wing(parent->GetParent())
     , wingSegments(*this, &CCPACSWingComponentSegment::BuildWingSegments)
     , geomCache(*this, &CCPACSWingComponentSegment::BuildGeometry)
