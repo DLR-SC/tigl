@@ -61,11 +61,18 @@ void CCPACSWingProfileCST::BuildWires(WireCache& cache) const
     gp_Trsf yzSwitch;
     yzSwitch.SetMirror(gp_Ax2(gp_Pnt(0.,0.,0.), gp_Dir(0.,-1.,1.)));
     
+    double teThickness = HasBluntTE() ? *m_trailingEdgeThickness : 0.;
+    
     // Build upper wire
-    CCSTCurveBuilder upperBuilder(m_upperN1, m_upperN2, m_upperB.AsVector());
-    Handle(Geom_BSplineCurve) upperCurve = upperBuilder.Curve();
+    CCSTCurveBuilder upperBuilderOpened(m_upperN1, m_upperN2, m_upperB.AsVector(), teThickness/2.);
+    Handle(Geom_BSplineCurve) upperCurve = upperBuilderOpened.Curve();
     upperCurve->Transform(yzSwitch);
-    cache.upperWire = BRepBuilderAPI_MakeEdge(upperCurve);
+    cache.upperWireOpened = BRepBuilderAPI_MakeEdge(upperCurve);
+    
+    CCSTCurveBuilder upperBuilderClosed(m_upperN1, m_upperN2, m_upperB.AsVector(), 0.); 
+    Handle(Geom_BSplineCurve) upperCurveClosed = upperBuilderClosed.Curve();
+    upperCurveClosed->Transform(yzSwitch);
+    cache.upperWireClosed = BRepBuilderAPI_MakeEdge(upperCurveClosed);
     
     // Build lower curve
     std::vector<double> binv = m_lowerB.AsVector();
@@ -73,21 +80,45 @@ void CCPACSWingProfileCST::BuildWires(WireCache& cache) const
         binv[i] = -binv[i];
     }
     
-    CCSTCurveBuilder lowerBuilder(m_lowerN1, m_lowerN2, binv);
-    Handle(Geom_BSplineCurve) lowerCurve = lowerBuilder.Curve();
+    CCSTCurveBuilder lowerBuilderOpened(m_lowerN1, m_lowerN2, binv, -teThickness/2.);
+    Handle(Geom_BSplineCurve) lowerCurve = lowerBuilderOpened.Curve();
     lowerCurve->Transform(yzSwitch);
     lowerCurve->Reverse();
-    cache.lowerWire = BRepBuilderAPI_MakeEdge(lowerCurve);
-    
-    BRepBuilderAPI_MakeWire upperLowerWireMaker(cache.lowerWire, cache.upperWire);
+    cache.lowerWireOpened = BRepBuilderAPI_MakeEdge(lowerCurve);
+
+    CCSTCurveBuilder lowerBuilderClosed(m_lowerN1, m_lowerN2, binv, 0.);
+    Handle(Geom_BSplineCurve) lowerCurveClosed = lowerBuilderClosed.Curve();
+    lowerCurveClosed->Transform(yzSwitch);
+    lowerCurveClosed->Reverse();
+    cache.lowerWireClosed = BRepBuilderAPI_MakeEdge(lowerCurveClosed);
+
+    BRepBuilderAPI_MakeWire upperLowerWireMaker(cache.lowerWireOpened, cache.upperWireOpened);
     TopoDS_Wire upperLowerWire = upperLowerWireMaker.Wire();
+    
+    BRepBuilderAPI_MakeWire upperLowerWireMakerClosed(cache.lowerWireClosed, cache.upperWireClosed);
+    TopoDS_Wire upperLowerWireClosed = upperLowerWireMaker.Wire();
     
     // conatenate wire
     Handle(Geom_Curve) upperLowerCurve = CWireToCurve(upperLowerWire).curve();
-    cache.upperLowerEdge = BRepBuilderAPI_MakeEdge(upperLowerCurve);
+    cache.upperLowerEdgeOpened = BRepBuilderAPI_MakeEdge(upperLowerCurve);
+
+    Handle(Geom_Curve) upperLowerCurveClosed = CWireToCurve(upperLowerWireClosed).curve();
+    cache.upperLowerEdgeClosed = BRepBuilderAPI_MakeEdge(upperLowerCurveClosed);
     
     cache.tePoint = gp_Pnt(1,0,0);
     cache.lePoint = gp_Pnt(0,0,0);
+    
+    if (teThickness > 0) {
+        gp_Pnt te_up, te_down;
+        te_up = upperCurve->EndPoint();
+        te_down = lowerCurve->StartPoint();
+        cache.trailingEdgeOpened = BRepBuilderAPI_MakeEdge(te_up,te_down);
+    }
+    else {
+        cache.trailingEdgeOpened.Nullify();
+    }
+
+    cache.trailingEdgeClosed.Nullify();
 }
 
 const std::vector<CTiglPoint>& CCPACSWingProfileCST::GetSamplePoints() const {
@@ -100,10 +131,18 @@ const TopoDS_Edge& CCPACSWingProfileCST::GetUpperWire(TiglShapeModifier mod) con
 {
     switch (mod) {
     case UNMODIFIED_SHAPE:
-        return wireCache->upperWire;
-    default:
-        throw CTiglError("GetUpperWire with profile modifications not implemented for CCPACSWingProfileCST yet!");
+        if (!HasBluntTE()) {
+            return wireCache->upperWireClosed;
+        }
+        else {
+            return wireCache->upperWireOpened;
+        }
+    case SHARP_TRAILINGEDGE:
+        return wireCache->upperWireClosed;
+    case BLUNT_TRAILINGEDGE:
+        return wireCache->upperWireOpened;
     }
+    throw CTiglError("Unknown TiglShapeModifier passed to CCPACSWingProfileCST::GetUpperWire");
 }
 
 // get lower wing profile wire
@@ -111,10 +150,18 @@ const TopoDS_Edge& CCPACSWingProfileCST::GetLowerWire(TiglShapeModifier mod) con
 {
     switch (mod) {
     case UNMODIFIED_SHAPE:
-        return wireCache->lowerWire;
-    default:
-        throw CTiglError("GetLowerWire with profile modifications not implemented for CCPACSWingProfileCST yet!");
+        if (!HasBluntTE()) {
+            return wireCache->lowerWireClosed;
+        }
+        else {
+            return wireCache->lowerWireOpened;
+        }
+    case SHARP_TRAILINGEDGE:
+        return wireCache->lowerWireClosed;
+    case BLUNT_TRAILINGEDGE:
+        return wireCache->lowerWireOpened;
     }
+    throw CTiglError("Unknown TiglShapeModifier passed to CCPACSWingProfileCST::GetLowerWire");
 }
 
 // gets the upper and lower wing profile into on edge
@@ -122,10 +169,19 @@ const TopoDS_Edge& CCPACSWingProfileCST::GetUpperLowerWire(TiglShapeModifier mod
 {
     switch (mod) {
     case UNMODIFIED_SHAPE:
-        return wireCache->upperLowerEdge;
-    default:
-        throw CTiglError("GetUpperLowerWire with profile modifications not implemented for CCPACSWingProfileCST yet!");
+        if (!HasBluntTE()) {
+            return wireCache->upperLowerEdgeClosed;
+        }
+        else {
+            return wireCache->upperLowerEdgeOpened;
+        }
+        break;
+    case SHARP_TRAILINGEDGE:
+        return wireCache->upperLowerEdgeClosed;
+    case BLUNT_TRAILINGEDGE:
+        return wireCache->upperLowerEdgeOpened;
     }
+    throw CTiglError("Unknown TiglShapeModifier passed to CCPACSWingProfileCST::GetUpperLowerWire");
 }
 
 // get trailing edge
@@ -133,10 +189,18 @@ const TopoDS_Edge& CCPACSWingProfileCST::GetTrailingEdge(TiglShapeModifier mod) 
 {
     switch (mod) {
     case UNMODIFIED_SHAPE:
-        return wireCache->trailingEdge;
-    default:
-        throw CTiglError("GetTrailingEdge with profile modifications not implemented for CCPACSWingProfileCST yet!");
+        if (!HasBluntTE()) {
+            return wireCache->trailingEdgeClosed;
+        }
+        else {
+            return wireCache->trailingEdgeOpened;
+        }
+    case SHARP_TRAILINGEDGE:
+        return wireCache->trailingEdgeClosed;
+    case BLUNT_TRAILINGEDGE:
+        return wireCache->trailingEdgeOpened;
     }
+    throw CTiglError("Unknown TiglShapeModifier passed to CCPACSWingProfileCST::GetTrailingEdge");
 }
 
 // get leading edge point();
@@ -144,11 +208,16 @@ const gp_Pnt & CCPACSWingProfileCST::GetLEPoint() const
 {
     return wireCache->lePoint;
 }
-        
+
 // get trailing edge point();
 const gp_Pnt & CCPACSWingProfileCST::GetTEPoint() const
 {
     return wireCache->tePoint;
+}
+
+bool CCPACSWingProfileCST::HasBluntTE() const
+{
+    return m_trailingEdgeThickness && *m_trailingEdgeThickness > 0 ? true : false;
 }
 
 } // end namespace tigl

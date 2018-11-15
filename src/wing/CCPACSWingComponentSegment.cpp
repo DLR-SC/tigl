@@ -156,7 +156,7 @@ namespace
 
 CCPACSWingComponentSegment::CCPACSWingComponentSegment(CCPACSWingComponentSegments* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSComponentSegment(parent, uidMgr)
-    , CTiglAbstractSegment<CCPACSWingComponentSegment>(parent->GetComponentSegments(), parent->GetParent()->m_symmetry)
+    , CTiglAbstractSegment<CCPACSWingComponentSegment>(parent->GetComponentSegments(), parent->GetParent())
     , wing(parent->GetParent())
     , wingSegments(*this, &CCPACSWingComponentSegment::BuildWingSegments)
     , geomCache(*this, &CCPACSWingComponentSegment::BuildGeometry)
@@ -375,18 +375,15 @@ double CCPACSWingComponentSegment::GetTrailingEdgeLength() const
 }
 
 // Getter for the midplane line between two eta-xsi points
-TopoDS_Wire CCPACSWingComponentSegment::GetMidplaneLine(const gp_Pnt& startPoint, const gp_Pnt& endPoint) const
+TopoDS_Wire CCPACSWingComponentSegment::GetMidplaneLine(const gp_Pnt& localStartPoint, const gp_Pnt& localEndPoint) const
 {
     // TODO: this method creates a straight line between the start- and end-point within the single
     // segments, while the real line could be a curve (depending on the twist and the position of
     // the points)
 
     // determine start and end point
-    // copy of variables because we have to modify them in case the points lie within a section
-    gp_Pnt startPnt = startPoint;
-    gp_Pnt endPnt = endPoint;
-    gp_Pnt globalStartPnt = wing->GetTransformationMatrix().Transform(startPnt);
-    gp_Pnt globalEndPnt = wing->GetTransformationMatrix().Transform(endPnt);
+    const gp_Pnt globalStartPnt = wing->GetTransformationMatrix().Transform(localStartPoint);
+    const gp_Pnt globalEndPnt   = wing->GetTransformationMatrix().Transform(localEndPoint);
 
     // determine wing segments containing the start and end points
     std::string startSegmentUID, endSegmentUID;
@@ -427,10 +424,10 @@ TopoDS_Wire CCPACSWingComponentSegment::GetMidplaneLine(const gp_Pnt& startPoint
     const double zmax = bbox.CornerMax().Z();
 
     // build cut face
-    gp_Pnt p0 = startPnt;
-    gp_Pnt p1 = startPnt;
-    gp_Pnt p2 = endPnt;
-    gp_Pnt p3 = endPnt;
+    gp_Pnt p0 = localStartPoint;
+    gp_Pnt p1 = localStartPoint;
+    gp_Pnt p2 = localEndPoint;
+    gp_Pnt p3 = localEndPoint;
     p0.SetZ(zmin);
     p1.SetZ(zmax);
     p2.SetZ(zmin);
@@ -439,6 +436,8 @@ TopoDS_Wire CCPACSWingComponentSegment::GetMidplaneLine(const gp_Pnt& startPoint
 
     // compute start and end point from intersection with inner/outer section in
     // case the points lie outside of the segments
+    gp_Pnt startPnt       = localStartPoint;
+    gp_Pnt endPnt         = localEndPoint;
     if (startPntInSection) {
         CCPACSWingSegment& segment = (CCPACSWingSegment&)wing->GetSegment(startSegmentUID);
         gp_Pnt pl = segment.GetPoint(0, 0, true, WING_COORDINATE_SYSTEM);
@@ -497,8 +496,10 @@ TopoDS_Wire CCPACSWingComponentSegment::GetMidplaneLine(const gp_Pnt& startPoint
             }
         }
         else {
-            TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(prevPnt, endPnt);
-            wireBuilder.Add(edge);
+            if (!prevPnt.IsEqual(endPnt, Precision::Confusion())) {
+                TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(prevPnt, endPnt);
+                wireBuilder.Add(edge);
+            }
             break;
         }
     }
@@ -997,7 +998,7 @@ double CCPACSWingComponentSegment::GetSurfaceArea()
 
 // Returns the segment to a given point on the componentSegment. 
 // Returns null if the point is not an that wing!
-const CCPACSWingSegment* CCPACSWingComponentSegment::findSegment(double x, double y, double z, gp_Pnt& nearestPoint, double& deviation) const
+const CCPACSWingSegment* CCPACSWingComponentSegment::findSegment(double x, double y, double z, gp_Pnt& nearestPoint, double& deviation, double maxDeviation) const
 {
     CCPACSWingSegment* result = NULL;
     gp_Pnt pnt(x, y, z);
@@ -1005,7 +1006,7 @@ const CCPACSWingSegment* CCPACSWingComponentSegment::findSegment(double x, doubl
 
     const SegmentList& segments = GetSegmentList();
 
-    double minDist = std::numeric_limits<double>::max();
+    deviation = std::numeric_limits<double>::max();
     // now discover to which segment the point belongs
     for (SegmentList::const_iterator segit = segments.begin(); segit != segments.end(); ++segit) {
         try {
@@ -1019,10 +1020,10 @@ const CCPACSWingSegment* CCPACSWingComponentSegment::findSegment(double x, doubl
             gp_Pnt currentPoint = (*segit)->GetChordPoint(nextEta, nextXsi);
 
             double currentDist = currentPoint.Distance(pointProjected);
-            if (currentDist < minDist) {
-                minDist = currentDist;
+            if (currentDist < deviation) {
+                deviation    = currentDist;
                 nearestPoint = currentPoint;
-                result = *segit;
+                result       = *segit;
             }
         }
         catch (...) {
@@ -1030,7 +1031,10 @@ const CCPACSWingSegment* CCPACSWingComponentSegment::findSegment(double x, doubl
         }
     }
 
-    deviation = minDist;
+    // check if pnt lies on component segment shape with maxDeviation tolerance (default 1cm)
+    if (deviation > maxDeviation) {
+        return NULL;
+    }
 
     return result;
 }

@@ -90,7 +90,7 @@ PNamedShape CTiglAbstractGeometricComponent::GetMirroredLoft()
 
 bool CTiglAbstractGeometricComponent::GetIsOn(const gp_Pnt& pnt) 
 {
-    const TopoDS_Shape& segmentShape = GetLoft()->Shape();
+    const TopoDS_Shape segmentShape = GetLoft()->Shape();
 
     // fast check with bounding box
     Bnd_Box boundingBox;

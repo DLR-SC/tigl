@@ -23,6 +23,7 @@
 
 #include "CTiglError.h"
 #include "CCPACSWing.h"
+#include "CCPACSEnginePylon.h"
 #include "CCPACSWingSegment.h"
 
 namespace tigl
@@ -30,7 +31,16 @@ namespace tigl
 
 // Constructor
 CCPACSWingSegments::CCPACSWingSegments(CCPACSWing* parent, CTiglUIDManager* uidMgr)
-    : generated::CPACSWingSegments(parent, uidMgr) {}
+    : generated::CPACSWingSegments(parent, uidMgr)
+    , m_parentVariant(parent)
+{
+}
+
+CCPACSWingSegments::CCPACSWingSegments(CCPACSEnginePylon* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSWingSegments(parent, uidMgr)
+    , m_parentVariant(parent)
+{
+}
 
 // Invalidates internal state
 void CCPACSWingSegments::Invalidate()

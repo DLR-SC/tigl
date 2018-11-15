@@ -124,7 +124,7 @@ public:
 
     // Returns the segment to a given point on the componentSegment and the nearest point projected onto the loft.
     // Returns null if the point is not an that wing, i.e. deviates more than 1 cm from the wing
-    TIGL_EXPORT const CCPACSWingSegment* findSegment(double x, double y, double z, gp_Pnt& nearestPoint, double& deviation) const;
+    TIGL_EXPORT const CCPACSWingSegment* findSegment(double x, double y, double z, gp_Pnt& nearestPoint, double& deviation, double maxDeviation = 1.e-2) const;
 
     TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE { return TIGL_COMPONENT_WINGCOMPSEGMENT | TIGL_COMPONENT_SEGMENT | TIGL_COMPONENT_LOGICAL; }
 

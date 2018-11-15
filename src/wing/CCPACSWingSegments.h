@@ -28,12 +28,14 @@
 namespace tigl
 {
 class CCPACSWing;
+class CTiglRelativelyPositionedComponent;
 
 class CCPACSWingSegments : public generated::CPACSWingSegments
 {
 public:
     // Constructor
     TIGL_EXPORT CCPACSWingSegments(CCPACSWing* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSWingSegments(CCPACSEnginePylon* parent, CTiglUIDManager* uidMgr);
 
     // Invalidates internal state
     TIGL_EXPORT void Invalidate();
@@ -46,6 +48,14 @@ public:
 
     // Gets total segment count
     TIGL_EXPORT int GetSegmentCount() const;
+
+    const CTiglRelativelyPositionedComponent* GetParentComponent() const
+    {
+        return m_parentVariant;
+    }
+
+private:
+    CTiglRelativelyPositionedComponent* m_parentVariant;
 };
 
 } // end namespace tigl

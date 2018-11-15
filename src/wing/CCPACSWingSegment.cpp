@@ -30,6 +30,8 @@
 #include "CCPACSWingSegment.h"
 #include "CTiglWingSegmentGuidecurveBuilder.h"
 #include "CCPACSWing.h"
+#include "CCPACSWings.h"
+#include "CCPACSEnginePylon.h"
 #include "CCPACSWingSegments.h"
 #include "CCPACSWingProfiles.h"
 #include "CCPACSGuideCurveProfiles.h"
@@ -180,10 +182,9 @@ namespace
 
 CCPACSWingSegment::CCPACSWingSegment(CCPACSWingSegments* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSWingSegment(parent, uidMgr)
-    , CTiglAbstractSegment<CCPACSWingSegment>(parent->GetSegments(), parent->GetParent()->m_symmetry)
+    , CTiglAbstractSegment<CCPACSWingSegment>(parent->GetSegments(), parent->GetParentComponent())
     , innerConnection(this)
     , outerConnection(this)
-    , wing(parent->GetParent())
     , surfaceCoordCache(*this, &CCPACSWingSegment::MakeChordSurface)
     , areaCache(*this, &CCPACSWingSegment::ComputeArea)
     , volumeCache(*this, &CCPACSWingSegment::ComputeVolume)
@@ -203,6 +204,7 @@ void CCPACSWingSegment::Invalidate()
 {
     CTiglAbstractSegment<CCPACSWingSegment>::Reset();
     areaCache.clear();
+    volumeCache.clear();
 }
 
 // Cleanup routine
@@ -265,11 +267,6 @@ void CCPACSWingSegment::SetToElementUID(const std::string& value) {
     outerConnection.SetElementUID(value);
 }
 
-// Returns the wing this segment belongs to
-CCPACSWing& CCPACSWingSegment::GetWing() const
-{
-    return *wing;
-}
 
 // helper function to get the inner transformed chord line wire
 TopoDS_Wire CCPACSWingSegment::GetInnerWire(TiglCoordinateSystem referenceCS, TiglShapeModifier mod) const
@@ -297,7 +294,7 @@ TopoDS_Wire CCPACSWingSegment::GetInnerWire(TiglCoordinateSystem referenceCS, Ti
         return TopoDS::Wire(transformWingProfileGeometry(identity, innerConnection, w));
         break;
     case GLOBAL_COORDINATE_SYSTEM:
-        return TopoDS::Wire(transformWingProfileGeometry(GetWing().GetTransformationMatrix(), innerConnection, w));
+        return TopoDS::Wire(transformWingProfileGeometry(GetParentTransformation(), innerConnection, w));
         break;
     default:
         throw CTiglError("Invalid coordinate system passed to CCPACSWingSegment::GetInnerWire");
@@ -330,7 +327,7 @@ TopoDS_Wire CCPACSWingSegment::GetOuterWire(TiglCoordinateSystem referenceCS, Ti
         return TopoDS::Wire(transformWingProfileGeometry(identity, outerConnection, w));
         break;
     case GLOBAL_COORDINATE_SYSTEM:
-        return TopoDS::Wire(transformWingProfileGeometry(GetWing().GetTransformationMatrix(), outerConnection, w));
+        return TopoDS::Wire(transformWingProfileGeometry(GetParentTransformation(), outerConnection, w));
         break;
     default:
         throw CTiglError("Invalid coordinate system passed to CCPACSWingSegment::GetOuterWire");
@@ -356,24 +353,35 @@ TopoDS_Shape CCPACSWingSegment::GetOuterClosure(TiglCoordinateSystem referenceCS
 // get short name for loft
 std::string CCPACSWingSegment::GetShortShapeName () const
 {
-    unsigned int windex = 0;
-    unsigned int wsindex = 0;
-    for (int i = 1; i <= wing->GetConfiguration().GetWingCount(); ++i) {
-        const CCPACSWing& w = wing->GetConfiguration().GetWing(i);
-        if (wing->GetUID() == w.GetUID()) {
-            windex = i;
-            for (int j = 1; j <= w.GetSegmentCount(); j++) {
-                const CCPACSWingSegment& ws = w.GetSegment(j);
-                if (GetUID() == ws.GetUID()) {
-                    wsindex = j;
-                    std::stringstream shortName;
-                    shortName << "W" << windex << "S" << wsindex;
-                    return shortName.str();
-                }
-            }
+    size_t windex = 0;
+    int wsindex = GetSegmentIndex();
+
+    std::stringstream shortName;
+
+    if (GetParent()->IsParent<CCPACSWing>()) {
+        const CCPACSWing* wing = GetParent()->GetParent<CCPACSWing>();
+        if (wing->IsParent<CCPACSRotorBlades>()) {
+            windex = IndexFromUid(wing->GetParent<CCPACSRotorBlades>()->GetRotorBlades(), wing->GetUID());
+            shortName << "R";
         }
+        else {
+            windex = IndexFromUid(wing->GetParent<CCPACSWings>()->GetWings(), wing->GetUID());
+            shortName << "W";
+        }
+
     }
-    return "UNKNOWN";
+    else if (GetParent()->IsParent<CCPACSEnginePylon>()) {
+        const CCPACSEnginePylon* pylon = GetParent()->GetParent<CCPACSEnginePylon>();
+        windex = IndexFromUid(pylon->GetParent()->GetEnginePylons(), pylon->GetUID());
+        shortName << "P";
+    }
+    else {
+        LOG(WARNING) << "Cannot create short shape name for component \"" + GetUID() + "\"";
+        return "UNKNOWN";
+    }
+
+    shortName << windex+1 << "S" << wsindex;
+    return shortName.str();
 }
 
 // Builds the loft between the two segment sections
@@ -428,9 +436,9 @@ PNamedShape CCPACSWingSegment::BuildLoft() const
         loftShape = sfs->Shape();
     }
     else {
-        // build loft as a subshape of the wing
-        CCPACSWing& wing = GetWing();
-        PNamedShape wingLoft = wing.GetLoft();
+        const CCPACSWingSegments* segments = GetParent();
+        PNamedShape wingLoft = segments->GetParentComponent()->GetLoft();
+
 
         TopoDS_Shell loftShell;
         BRep_Builder BB;
@@ -439,13 +447,13 @@ PNamedShape CCPACSWingSegment::BuildLoft() const
         TopTools_IndexedMapOfShape faceMap;
         TopExp::MapShapes(wingLoft->Shape(), TopAbs_FACE, faceMap);
         int nFaces = faceMap.Extent();
-        int nSegments = wing.GetSegmentCount();
+        int nSegments = segments->GetSegmentCount();
         int nFacesPerSegment = (nFaces - 2)/nSegments;
 
         // determine index of segment to retrieve the correct subshapes of the wing
         // Here we explicitly require the subshapes to be ordered consistently
-        for (int j = 1; j <= wing.GetSegmentCount(); j++) {
-            CCPACSWingSegment& ws = wing.GetSegment(j);
+        for (int j = 1; j <= segments->GetSegmentCount(); j++) {
+            const CCPACSWingSegment& ws = segments->GetSegment(j);
             if (GetUID() == ws.GetUID()) {
                 for(int i=0; i<nFacesPerSegment; ++i) {
                     BB.Add(loftShell, TopoDS::Face(faceMap((j-1)*nFacesPerSegment + i + 1))); // guides
@@ -637,9 +645,15 @@ double CCPACSWingSegment::GetSurfaceArea(bool fromUpper,
 // Gets the count of segments connected to the inner section of this segment // TODO can this be optimized instead of iterating over all segments?
 int CCPACSWingSegment::GetInnerConnectedSegmentCount() const
 {
+    const CCPACSWingSegments* segments = GetParent();
+    if (!segments) {
+        return 0;
+    }
+
+
     int count = 0;
-    for (int i = 1; i <= GetWing().GetSegmentCount(); i++) {
-        CCPACSWingSegment& nextSegment = (CCPACSWingSegment&) GetWing().GetSegment(i);
+    for (int i = 1; i <= segments->GetSegmentCount(); i++) {
+        const CCPACSWingSegment& nextSegment = segments->GetSegment(i);
         if (nextSegment.GetSegmentIndex() == GetSegmentIndex()) {
             continue;
         }
@@ -656,8 +670,13 @@ int CCPACSWingSegment::GetInnerConnectedSegmentCount() const
 int CCPACSWingSegment::GetOuterConnectedSegmentCount() const
 {
     int count = 0;
-    for (int i = 1; i <= GetWing().GetSegmentCount(); i++) {
-        CCPACSWingSegment& nextSegment = (CCPACSWingSegment&) GetWing().GetSegment(i);
+    const CCPACSWingSegments* segments = GetParent();
+    if (!segments) {
+        return 0;
+    }
+
+    for (int i = 1; i <= segments->GetSegmentCount(); i++) {
+        const CCPACSWingSegment& nextSegment = segments->GetSegment(i);
         if (nextSegment.GetSegmentIndex() == GetSegmentIndex()) {
             continue;
         }
@@ -678,8 +697,13 @@ int CCPACSWingSegment::GetInnerConnectedSegmentIndex(int n) const
         throw CTiglError("Invalid value for parameter n in CCPACSWingSegment::GetInnerConnectedSegmentIndex", TIGL_INDEX_ERROR);
     }
 
-    for (int i = 1, count = 0; i <= GetWing().GetSegmentCount(); i++) {
-        CCPACSWingSegment& nextSegment = (CCPACSWingSegment&) GetWing().GetSegment(i);
+    const CCPACSWingSegments* segments = GetParent();
+    if (!segments) {
+        throw CTiglError("No connected segment found in CCPACSWingSegment::GetInnerConnectedSegmentIndex", TIGL_NOT_FOUND);
+    }
+
+    for (int i = 1, count = 0; i <= segments->GetSegmentCount(); i++) {
+        const CCPACSWingSegment& nextSegment = segments->GetSegment(i);
         if (nextSegment.GetSegmentIndex() == GetSegmentIndex()) {
             continue;
         }
@@ -703,8 +727,13 @@ int CCPACSWingSegment::GetOuterConnectedSegmentIndex(int n) const
         throw CTiglError("Invalid value for parameter n in CCPACSWingSegment::GetOuterConnectedSegmentIndex", TIGL_INDEX_ERROR);
     }
 
-    for (int i = 1, count = 0; i <= GetWing().GetSegmentCount(); i++) {
-        CCPACSWingSegment& nextSegment = (CCPACSWingSegment&) GetWing().GetSegment(i);
+    const CCPACSWingSegments* segments = GetParent();
+    if (!segments) {
+        throw CTiglError("No connected segment found in CCPACSWingSegment::GetOuterConnectedSegmentIndex", TIGL_NOT_FOUND);
+    }
+
+    for (int i = 1, count = 0; i <= segments->GetSegmentCount(); i++) {
+        const CCPACSWingSegment& nextSegment = segments->GetSegment(i);
         if (nextSegment.GetSegmentIndex() == GetSegmentIndex()) {
             continue;
         }
@@ -754,8 +783,8 @@ gp_Pnt CCPACSWingSegment::GetPoint(double eta, double xsi, bool fromUpper, TiglC
         outerProfilePoint = transformProfilePoint(identity, outerConnection, outerProfilePoint);
         break;
     case GLOBAL_COORDINATE_SYSTEM:
-        innerProfilePoint = transformProfilePoint(GetWing().GetTransformationMatrix(), innerConnection, innerProfilePoint);
-        outerProfilePoint = transformProfilePoint(GetWing().GetTransformationMatrix(), outerConnection, outerProfilePoint);
+        innerProfilePoint = transformProfilePoint(GetParentTransformation(), innerConnection, innerProfilePoint);
+        outerProfilePoint = transformProfilePoint(GetParentTransformation(), outerConnection, outerProfilePoint);
         break;
     default:
         throw CTiglError("Invalid coordinate system passed to CCPACSWingSegment::GetPoint");
@@ -774,6 +803,12 @@ gp_Pnt CCPACSWingSegment::GetPoint(double eta, double xsi, bool fromUpper, TiglC
 
 gp_Pnt CCPACSWingSegment::GetPointDirection(double eta, double xsi, double dirx, double diry, double dirz, bool fromUpper, double& deviation) const
 {
+    if (!GetParent()->IsParent<CCPACSWing>()) {
+        throw ("GetPointDirection not implemented for \"" + GetUID() + "\".");
+    }
+
+    CCPACSWing* wing = const_cast<CCPACSWing*>(GetParent()->GetParent<CCPACSWing>());
+
     if (eta < 0.0 || eta > 1.0) {
         throw CTiglError("Parameter eta not in the range 0.0 <= eta <= 1.0 in CCPACSWingSegment::GetPoint", TIGL_ERROR);
     }
@@ -822,6 +857,11 @@ gp_Pnt CCPACSWingSegment::GetPointDirection(double eta, double xsi, double dirx,
         deviation = p1.Distance(p2);
         return p2;
     }
+}
+
+CTiglTransformation CCPACSWingSegment::GetParentTransformation() const
+{
+    return GetParent()->GetParentComponent()->GetTransformationMatrix();
 }
 
 gp_Pnt CCPACSWingSegment::GetChordPoint(double eta, double xsi) const
@@ -890,7 +930,7 @@ gp_Pnt CCPACSWingSegment::GetInnerProfilePoint(double xsi)  const
     }
 
     gp_Pnt untransformed = innerConnection.GetProfile().GetChordPoint(xsi);
-    return transformProfilePoint(wing->GetTransformationMatrix(), innerConnection, untransformed);
+    return transformProfilePoint(GetParentTransformation(), innerConnection, untransformed);
 }
 
 gp_Pnt CCPACSWingSegment::GetOuterProfilePoint(double xsi) const
@@ -900,7 +940,7 @@ gp_Pnt CCPACSWingSegment::GetOuterProfilePoint(double xsi) const
     }
 
     gp_Pnt untransformed = outerConnection.GetProfile().GetChordPoint(xsi);
-    return transformProfilePoint(wing->GetTransformationMatrix(), outerConnection, untransformed);
+    return transformProfilePoint(GetParentTransformation(), outerConnection, untransformed);
 }
 
 void CCPACSWingSegment::MakeChordSurface(SurfaceCoordCache& cache) const
@@ -915,10 +955,10 @@ void CCPACSWingSegment::MakeChordSurface(SurfaceCoordCache& cache) const
     gp_Pnt outer_tep = outerProfile.GetChordPoint(1.);
 
     // Do section element transformation on points
-    inner_lep = transformProfilePoint(wing->GetTransformationMatrix(), innerConnection, inner_lep);
-    inner_tep = transformProfilePoint(wing->GetTransformationMatrix(), innerConnection, inner_tep);
-    outer_lep = transformProfilePoint(wing->GetTransformationMatrix(), outerConnection, outer_lep);
-    outer_tep = transformProfilePoint(wing->GetTransformationMatrix(), outerConnection, outer_tep);
+    inner_lep = transformProfilePoint(GetParentTransformation(), innerConnection, inner_lep);
+    inner_tep = transformProfilePoint(GetParentTransformation(), innerConnection, inner_tep);
+    outer_lep = transformProfilePoint(GetParentTransformation(), outerConnection, outer_lep);
+    outer_tep = transformProfilePoint(GetParentTransformation(), outerConnection, outer_tep);
 
     cache.cordSurface.setQuadriangle(inner_lep.XYZ(), outer_lep.XYZ(), inner_tep.XYZ(), outer_tep.XYZ());
 
@@ -930,7 +970,7 @@ void CCPACSWingSegment::MakeChordSurface(SurfaceCoordCache& cache) const
 
 void CCPACSWingSegment::ComputeVolume(double& cache) const
 {
-    const TopoDS_Shape loft = const_cast<CCPACSWingSegment&>(*this).GetLoft()->Shape();
+    const TopoDS_Shape loft = GetLoft()->Shape();
     GProp_GProps gprops;
     BRepGProp::VolumeProperties(loft, gprops);
     cache = gprops.Mass();
@@ -1000,7 +1040,7 @@ PNamedShape CCPACSWingSegment::GetLoft(TiglShapeModifier mod) const
     if (mod != UNMODIFIED_SHAPE)
         throw CTiglError("TiglShapeModifier is not yet supported for CCPACSWingSegment::GetLoft");
 
-    return const_cast<CCPACSWingSegment&>(*this).GetLoft();
+    return GetLoft();
 }
 
 // Returns the lower Surface of this Segment
@@ -1021,7 +1061,7 @@ TopoDS_Shape CCPACSWingSegment::GetUpperShape(TiglCoordinateSystem referenceCS, 
     TopoDS_Shape s = GetFacesByName(GetLoft(mod), "Top");
     if (referenceCS == GLOBAL_COORDINATE_SYSTEM)
         return s;
-    return GetParent()->GetParent()->GetTransformationMatrix().Inverted().Transform(s);
+    return GetParent()->GetParent<CCPACSWing>()->GetTransformationMatrix().Inverted().Transform(s);
 }
 
 // Returns the lower wing shape of this Segment
@@ -1030,7 +1070,7 @@ TopoDS_Shape CCPACSWingSegment::GetLowerShape(TiglCoordinateSystem referenceCS, 
     TopoDS_Shape s = GetFacesByName(GetLoft(mod), "Bottom");
     if (referenceCS == GLOBAL_COORDINATE_SYSTEM)
         return s;
-    return GetParent()->GetParent()->GetTransformationMatrix().Inverted().Transform(s);
+    return GetParent()->GetParent<CCPACSWing>()->GetTransformationMatrix().Inverted().Transform(s);
 }
 
 TopoDS_Shape CCPACSWingSegment::GetTrailingEdgeShape(TiglCoordinateSystem referenceCS,
@@ -1039,7 +1079,7 @@ TopoDS_Shape CCPACSWingSegment::GetTrailingEdgeShape(TiglCoordinateSystem refere
     TopoDS_Shape s = GetFacesByName(GetLoft(mod), "TrailingEdge");
     if (referenceCS == GLOBAL_COORDINATE_SYSTEM)
         return s;
-    return GetParent()->GetParent()->GetTransformationMatrix().Inverted().Transform(s);
+    return GetParent()->GetParent<CCPACSWing>()->GetTransformationMatrix().Inverted().Transform(s);
 }
 
 } // end namespace tigl

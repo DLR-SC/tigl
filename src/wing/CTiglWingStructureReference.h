@@ -59,7 +59,8 @@ public:
 
 //    TIGL_EXPORT CTiglWingStructureReference(const CCPACSTrailingEdgeDevice& parent);
     TIGL_EXPORT CTiglWingStructureReference(const CCPACSWingComponentSegment& parent);
-    
+    TIGL_EXPORT CTiglWingStructureReference(const CCPACSWingCSStructure& structure);
+
     TIGL_EXPORT Type GetType() const;
     TIGL_EXPORT const CCPACSWing& GetWing() const;
     TIGL_EXPORT const boost::optional<CCPACSWingCSStructure>& GetStructure() const;
@@ -84,7 +85,7 @@ public:
     TIGL_EXPORT TopoDS_Wire GetMidplaneLine(const gp_Pnt& startPoint, const gp_Pnt& endPoint) const;
     TIGL_EXPORT const std::string& GetUID() const;
 
-    TIGL_EXPORT const CCPACSWingComponentSegment& GetWingComponentSegment() const;
+    TIGL_EXPORT const CCPACSWingComponentSegment& GetWingComponentSegment() const; // throws if not a component segment
 //    TIGL_EXPORT const CCPACSTrailingEdgeDevice& GetTrailingEdgeDevice() const;
 
 private:

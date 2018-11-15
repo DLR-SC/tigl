@@ -232,17 +232,18 @@ double shape_function_deriv(const std::vector<double>& B, const int& n, const do
  *
  * N1, N2 are the paramters of the class function C(psi) = psi^N1 * (1-psi)^N2
  * B is the vector of coefficients for the bernstein polynomials P_i^n(psi) 
+ * T is the trailing edge thickness
  * inside the shape function S(psi)=sum_i=1^N B_i * p_i^n(psi)
  * The order of the Bernstein polynomials N is defined by the length of the B vector
  */
-double cstcurve(const double& N1, const double& N2, const std::vector<double>& B, const double& x)
+double cstcurve(const double& N1, const double& N2, const std::vector<double>& B, const double& T, const double& x)
 {
-        return class_function(N1, N2, x) * shape_function(B, x);
+        return class_function(N1, N2, x) * shape_function(B, x) + x*T;
 }
 /** @brief defines the derivative of the CST air profile curve 
  * CST(psi)=C(psi)*S(psi)
  */
-double cstcurve_deriv(const double& N1, const double& N2, const std::vector<double>& B, const int& n, const double& x)
+double cstcurve_deriv(const double& N1, const double& N2, const std::vector<double>& B, const double& T, const int& n, const double& x)
 {
     double res = 0.;
     for (int i= 0; i<= n; i++) {
@@ -250,6 +251,10 @@ double cstcurve_deriv(const double& N1, const double& N2, const std::vector<doub
              * class_function_deriv(N1, N2, i, x)
              * shape_function_deriv(B, n-i, x);
     }
+    if (n == 1) {
+        res += T;
+    }
+    
     return res;
 }
 

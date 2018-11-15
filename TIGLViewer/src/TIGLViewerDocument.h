@@ -56,7 +56,7 @@ signals:
 
 public slots:
     // Aircraft slots
-    void drawAllFuselagesAndWings();
+    void drawConfiguration();
     void drawAllFuselagesAndWingsSurfacePoints();
     void drawFusedAircraft();
     void drawFusedAircraftTriangulation();

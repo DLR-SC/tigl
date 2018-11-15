@@ -23,10 +23,10 @@
 namespace tigl
 {
 CCPACSRotorcraftModel::CCPACSRotorcraftModel(CCPACSConfiguration* config)
-    : generated::CPACSRotorcraftModel(config ? &config->GetUIDManager() : NULL), CTiglRelativelyPositionedComponent(NULL, NULL), config(config) {}
+    : generated::CPACSRotorcraftModel(config ? &config->GetUIDManager() : NULL), CTiglRelativelyPositionedComponent(static_cast<std::string*>(NULL), NULL), config(config) {}
 
 CCPACSRotorcraftModel::CCPACSRotorcraftModel(CTiglUIDManager* uidMgr)
-    : generated::CPACSRotorcraftModel(uidMgr), CTiglRelativelyPositionedComponent(NULL, NULL), config(NULL) {}
+    : generated::CPACSRotorcraftModel(uidMgr), CTiglRelativelyPositionedComponent(static_cast<std::string*>(NULL), NULL), config(NULL) {}
 
 std::string CCPACSRotorcraftModel::GetDefaultedUID() const {
     return generated::CPACSRotorcraftModel::GetUID();

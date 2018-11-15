@@ -99,6 +99,17 @@ namespace generated
             }
         }
 
+        // read element enginePylons
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/enginePylons")) {
+            m_enginePylons = boost::in_place(reinterpret_cast<CCPACSAircraftModel*>(this), m_uidMgr);
+            try {
+                m_enginePylons->ReadCPACS(tixiHandle, xpath + "/enginePylons");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read enginePylons at xpath " << xpath << ": " << e.what();
+                m_enginePylons = boost::none;
+            }
+        }
+
         // read element genericGeometryComponents
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/genericGeometryComponents")) {
             m_genericGeometryComponents = boost::in_place(reinterpret_cast<CCPACSAircraftModel*>(this), m_uidMgr);
@@ -152,6 +163,17 @@ namespace generated
         else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/wings")) {
                 tixi::TixiRemoveElement(tixiHandle, xpath + "/wings");
+            }
+        }
+
+        // write element enginePylons
+        if (m_enginePylons) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/enginePylons");
+            m_enginePylons->WriteCPACS(tixiHandle, xpath + "/enginePylons");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/enginePylons")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/enginePylons");
             }
         }
 
@@ -222,6 +244,16 @@ namespace generated
         return m_wings;
     }
 
+    const boost::optional<CCPACSEnginePylons>& CPACSAircraftModel::GetEnginePylons() const
+    {
+        return m_enginePylons;
+    }
+
+    boost::optional<CCPACSEnginePylons>& CPACSAircraftModel::GetEnginePylons()
+    {
+        return m_enginePylons;
+    }
+
     const boost::optional<CCPACSExternalObjects>& CPACSAircraftModel::GetGenericGeometryComponents() const
     {
         return m_genericGeometryComponents;
@@ -254,6 +286,18 @@ namespace generated
     void CPACSAircraftModel::RemoveWings()
     {
         m_wings = boost::none;
+    }
+
+    CCPACSEnginePylons& CPACSAircraftModel::GetEnginePylons(CreateIfNotExistsTag)
+    {
+        if (!m_enginePylons)
+            m_enginePylons = boost::in_place(reinterpret_cast<CCPACSAircraftModel*>(this), m_uidMgr);
+        return *m_enginePylons;
+    }
+
+    void CPACSAircraftModel::RemoveEnginePylons()
+    {
+        m_enginePylons = boost::none;
     }
 
     CCPACSExternalObjects& CPACSAircraftModel::GetGenericGeometryComponents(CreateIfNotExistsTag)

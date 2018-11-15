@@ -27,6 +27,9 @@ namespace tigl
 CCPACSWingSections::CCPACSWingSections(CCPACSWing* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSWingSections(parent, uidMgr) {}
 
+CCPACSWingSections::CCPACSWingSections(CCPACSEnginePylon* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSWingSections(parent, uidMgr) {}
+
 // Get section count
 int CCPACSWingSections::GetSectionCount() const
 {

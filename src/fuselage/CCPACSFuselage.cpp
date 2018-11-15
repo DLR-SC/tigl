@@ -286,7 +286,7 @@ gp_Pnt CCPACSFuselage::GetPoint(int segmentIndex, double eta, double zeta)
 // Returns the volume of this fuselage
 double CCPACSFuselage::GetVolume()
 {
-    const TopoDS_Shape& fusedSegments = GetLoft()->Shape();
+    const TopoDS_Shape fusedSegments = GetLoft()->Shape();
 
     // Calculate volume
     GProp_GProps System;
@@ -413,7 +413,7 @@ std::vector<gp_Pnt> CCPACSFuselage::GetGuideCurvePoints() const
     return points;
 }
 
-gp_Lin CCPACSFuselage::Intersection(gp_Pnt pRef, double angleRef)
+gp_Lin CCPACSFuselage::Intersection(gp_Pnt pRef, double angleRef) const
 {
     // to have a left-handed coordinates system for the intersection computation (see documentation)
     const gp_Ax1 xAxe(pRef, gp_Dir(1, 0, 0));
@@ -445,7 +445,7 @@ gp_Lin CCPACSFuselage::Intersection(gp_Pnt pRef, double angleRef)
     throw std::logic_error("Error computing intersection line");
 }
 
-gp_Lin CCPACSFuselage::Intersection(const CCPACSFuselageStringerFramePosition& pos)
+gp_Lin CCPACSFuselage::Intersection(const CCPACSFuselageStringerFramePosition& pos) const
 {
     const gp_Pnt pRef        = pos.GetRefPoint();
     const double angleRefRad = (M_PI / 180.) * pos.GetReferenceAngle();
@@ -500,7 +500,7 @@ namespace
     }
 }
 
-TopoDS_Wire CCPACSFuselage::projectConic(TopoDS_Shape wireOrEdge, gp_Pnt origin)
+TopoDS_Wire CCPACSFuselage::projectConic(TopoDS_Shape wireOrEdge, gp_Pnt origin) const
 {
     const TopoDS_Shape loft = GetLoft(FUSELAGE_COORDINATE_SYSTEM)->Shape();
 
@@ -513,7 +513,7 @@ TopoDS_Wire CCPACSFuselage::projectConic(TopoDS_Shape wireOrEdge, gp_Pnt origin)
     return project(wireOrEdge, proj, debug);
 }
 
-TopoDS_Wire CCPACSFuselage::projectParallel(TopoDS_Shape wireOrEdge, gp_Dir direction)
+TopoDS_Wire CCPACSFuselage::projectParallel(TopoDS_Shape wireOrEdge, gp_Dir direction) const
 {
     const TopoDS_Shape loft = GetLoft(FUSELAGE_COORDINATE_SYSTEM)->Shape();
 

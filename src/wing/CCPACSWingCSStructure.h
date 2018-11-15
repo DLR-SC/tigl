@@ -37,9 +37,6 @@ public:
     TIGL_EXPORT CCPACSWingCSStructure(CCPACSWingComponentSegment* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSWingCSStructure(CCPACSTrailingEdgeDevice* parent, CTiglUIDManager* uidMgr);
 
-    TIGL_EXPORT CTiglWingStructureReference GetWingStructureReference();
-    TIGL_EXPORT const CTiglWingStructureReference GetWingStructureReference() const;
-
     // Returns number of spar segments
     TIGL_EXPORT int GetSparSegmentCount() const;
 

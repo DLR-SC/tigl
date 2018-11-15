@@ -103,7 +103,7 @@ TEST_F(WingCSTProfile, tiglWingCSTProfile_samplePoints)
 {
     // project sample points on curve and check distance
     for (unsigned int i = 0; i < psi.size(); ++i) {
-        gp_Pnt samplePoint(Standard_Real(psi[i]), Standard_Real(0.0), Standard_Real(tigl::cstcurve(upperN1, upperN2, upperB, psi[i])));
+        gp_Pnt samplePoint(Standard_Real(psi[i]), Standard_Real(0.0), Standard_Real(tigl::cstcurve(upperN1, upperN2, upperB, 0., psi[i])));
         GeomAPI_ProjectPointOnCurve projection(samplePoint, upperCurve);
         gp_Pnt projectedPoint=projection.NearestPoint();
         outputXY(i, samplePoint.X(), samplePoint.Z(), "./TestData/analysis/tiglWingCSTProfile_samplePoints_cst.dat");
@@ -129,7 +129,7 @@ TEST_F(WingCSTProfile, tiglWingCSTProfile_approximation)
         x.push_back(double(i)/1000.0);
     }
     for (unsigned int i = 0; i < x.size(); ++i) {
-        gp_Pnt samplePoint(Standard_Real(x[i]), Standard_Real(0.0), Standard_Real(tigl::cstcurve(upperN1, upperN2, upperB, x[i])));
+        gp_Pnt samplePoint(Standard_Real(x[i]), Standard_Real(0.0), Standard_Real(tigl::cstcurve(upperN1, upperN2, upperB, 0., x[i])));
         GeomAPI_ProjectPointOnCurve projection(samplePoint, upperCurve);
         gp_Pnt projectedPoint=projection.NearestPoint();
         double deviation=samplePoint.Distance(projectedPoint);
@@ -161,7 +161,7 @@ TEST(CSTApprox, simpleAirfoil)
     B.push_back(1.0);
     B.push_back(1.0);
     
-    tigl::CCSTCurveBuilder builder(N1, N2, B);
+    tigl::CCSTCurveBuilder builder(N1, N2, B, 0.);
     Handle(Geom_BSplineCurve) curve = builder.Curve();
 
     double devmax=0.0;
@@ -172,7 +172,7 @@ TEST(CSTApprox, simpleAirfoil)
     }
 
     for (unsigned int i = 0; i < x.size(); ++i) {
-        gp_Pnt samplePoint(x[i], Standard_Real(tigl::cstcurve(N1, N2, B, x[i])), 0);
+        gp_Pnt samplePoint(x[i], Standard_Real(tigl::cstcurve(N1, N2, B, 0., x[i])), 0);
         GeomAPI_ProjectPointOnCurve projection(samplePoint, curve);
         gp_Pnt projectedPoint=projection.NearestPoint();
         double deviation=samplePoint.Distance(projectedPoint);
@@ -192,7 +192,7 @@ TEST(CSTApprox, ellipticBody)
     B.push_back(1.0);
     B.push_back(1.0);
     
-    tigl::CCSTCurveBuilder builder(N1, N2, B);
+    tigl::CCSTCurveBuilder builder(N1, N2, B, 0.);
     Handle(Geom_BSplineCurve) curve = builder.Curve();
 
     double devmax=0.0;
@@ -203,7 +203,7 @@ TEST(CSTApprox, ellipticBody)
     }
 
     for (unsigned int i = 0; i < x.size(); ++i) {
-        gp_Pnt samplePoint(x[i], Standard_Real(tigl::cstcurve(N1, N2, B, x[i])), 0);
+        gp_Pnt samplePoint(x[i], Standard_Real(tigl::cstcurve(N1, N2, B, 0., x[i])), 0);
         GeomAPI_ProjectPointOnCurve projection(samplePoint, curve);
         gp_Pnt projectedPoint=projection.NearestPoint();
         double deviation=samplePoint.Distance(projectedPoint);
@@ -223,7 +223,7 @@ TEST(CSTApprox, hypersonicAirfoil)
     B.push_back(1.0);
     B.push_back(1.0);
     
-    tigl::CCSTCurveBuilder builder(N1, N2, B);
+    tigl::CCSTCurveBuilder builder(N1, N2, B, 0.);
     Handle(Geom_BSplineCurve) curve = builder.Curve();
 
     double devmax=0.0;
@@ -234,7 +234,7 @@ TEST(CSTApprox, hypersonicAirfoil)
     }
 
     for (unsigned int i = 0; i < x.size(); ++i) {
-        gp_Pnt samplePoint(x[i], Standard_Real(tigl::cstcurve(N1, N2, B, x[i])), 0.);
+        gp_Pnt samplePoint(x[i], Standard_Real(tigl::cstcurve(N1, N2, B, 0., x[i])), 0.);
         GeomAPI_ProjectPointOnCurve projection(samplePoint, curve);
         gp_Pnt projectedPoint=projection.NearestPoint();
         double deviation=samplePoint.Distance(projectedPoint);

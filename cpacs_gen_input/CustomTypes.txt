@@ -118,3 +118,6 @@ CPACSControlSurfaceSkinCutOutBorder       CCPACSControlSurfaceSkinCutOutBorder
 CPACSTrailingEdgeDevice                   CCPACSTrailingEdgeDevice
 CPACSTrailingEdgeDevices                  CCPACSTrailingEdgeDevices
 
+// Pylons
+CPACSEnginePylon                         CCPACSEnginePylon
+CPACSEnginePylons                        CCPACSEnginePylons

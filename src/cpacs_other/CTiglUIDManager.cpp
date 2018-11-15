@@ -169,6 +169,12 @@ bool CTiglUIDManager::TryRemoveGeometricComponent(const std::string & uid)
         return false;
     }
     allShapes.erase(it);
+
+    const RelativeComponentContainerType::iterator it2 = relativeComponents.find(uid);
+    if (it2 != relativeComponents.end()) {
+        relativeComponents.erase(it2);
+    }
+
     return true;
 }
 
