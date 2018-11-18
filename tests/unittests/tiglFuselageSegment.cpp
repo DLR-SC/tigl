@@ -648,8 +648,8 @@ TEST_F(TiglFuselageSegmentSimple, getSectionCenter)
     ASSERT_NE(TIGL_NULL_POINTER, tiglFuselageGetSectionCenter(tiglHandle, "segmentD150_Fuselage_1Segment2ID", eta, &pointX, &pointY, &pointZ));
     ASSERT_EQ(TIGL_SUCCESS, tiglFuselageGetSectionCenter(tiglHandle, "segmentD150_Fuselage_1Segment2ID", eta, &pointX, &pointY, &pointZ));
     EXPECT_NEAR(-0.5, pointX, 1e-15);
-    EXPECT_NEAR(0, pointY, 1e-2);
-    EXPECT_NEAR(0, pointZ, 1e-2);
+    EXPECT_NEAR(0, pointY, 1e-6);
+    EXPECT_NEAR(0, pointZ, 1e-6);
 
     eta = 0.5;
 
