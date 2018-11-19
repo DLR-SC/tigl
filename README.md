@@ -1,7 +1,3 @@
-# News
- - First __TiGL Workshop__ on __11. + 12. September__: https://www.dlr.de/sc/en/desktopdefault.aspx/tabid-12921/
----------------------------------------------------------------------------------------------------------------
-
 Build-Status: [![Build Status](https://travis-ci.org/DLR-SC/tigl.svg?branch=master)](https://travis-ci.org/DLR-SC/tigl) [![Build status](https://ci.appveyor.com/api/projects/status/twbrx01mbb043uj5/branch/master?svg=true)](https://ci.appveyor.com/project/rainman110/tigl/branch/master)
 
 [![Anaconda-Server Badge](https://anaconda.org/dlr-sc/tigl/badges/installer/conda.svg)](https://conda.anaconda.org/dlr-sc)
