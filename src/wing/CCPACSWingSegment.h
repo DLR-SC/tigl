@@ -216,7 +216,7 @@ public:
 
     TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const OVERRIDE
     {
-        return TIGL_COMPONENT_SEGMENT | TIGL_INTENT_LOGICAL;
+        return TIGL_INTENT_LOGICAL;
     }
 
     TIGL_EXPORT CTiglTransformation GetParentTransformation() const;

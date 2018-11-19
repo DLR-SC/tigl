@@ -67,7 +67,7 @@ TiglGeometricComponentType CCPACSCrossBeamStrutAssemblyPosition::GetComponentTyp
 
 TiglGeometricComponentIntent CCPACSCrossBeamStrutAssemblyPosition::GetComponentIntent() const
 {
-    return TIGL_INTENT_PHYSICAL;
+    return TIGL_INTENT_PHYSICAL | TIGL_INTENT_INNER_STRUCTURE;
 }
 
 

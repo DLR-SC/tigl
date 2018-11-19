@@ -218,9 +218,15 @@ TIGL_COMPONENT_OTHER
 
 typedef enum TiglGeometricComponentType TiglGeometricComponentType;
 
-#define TIGL_INTENT_PHYSICAL           1 << 0   /**< A phyisical component like a fuselage, wing, nacelle, something you could touch */
-#define TIGL_INTENT_LOGICAL            1 << 1   /**< A logical component, like a wing segment */
-#define TIGL_INTENT_INNER_STRUCTURE    1 << 2   /**< A logical component, like a wing segment */
+enum TiglGeometricComponentIntentFlags
+{
+    TIGL_INTENT_PHYSICAL           = 1,   /**< A phyisical component like a fuselage, wing, nacelle, something you could touch */
+    TIGL_INTENT_LOGICAL            = 2,   /**< A logical component, like a wing segment */
+    TIGL_INTENT_INNER_STRUCTURE    = 4,   /**< Part of  the aircrafts structure geometry */
+    TIGL_INTENT_OUTER_AERO_SURFACE = 8    /**< Part of the outer aircraft (wing, fuselage, nacelle)  */
+};
+
+typedef enum TiglGeometricComponentIntentFlags TiglGeometricComponentIntentFlags;
 
 typedef unsigned long TiglGeometricComponentIntent;
 

@@ -54,7 +54,7 @@ TiglGeometricComponentType CCPACSLongFloorBeam::GetComponentType() const
 
 TiglGeometricComponentIntent CCPACSLongFloorBeam::GetComponentIntent() const
 {
-    return TIGL_INTENT_PHYSICAL;
+    return TIGL_INTENT_PHYSICAL | TIGL_INTENT_INNER_STRUCTURE;
 }
 
 void CCPACSLongFloorBeam::Invalidate()
