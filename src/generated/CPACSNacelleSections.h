@@ -26,11 +26,10 @@
 namespace tigl
 {
 class CTiglUIDManager;
+class CCPACSNacelleSection;
 
 namespace generated
 {
-    class CPACSNacelleSection;
-
     // This class is used in:
     // CPACSNacelleCowl
 
@@ -47,16 +46,16 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSNacelleSection> >& GetSections() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CPACSNacelleSection> >& GetSections();
+        TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSNacelleSection> >& GetSections() const;
+        TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSNacelleSection> >& GetSections();
 
-        TIGL_EXPORT virtual CPACSNacelleSection& AddSection();
-        TIGL_EXPORT virtual void RemoveSection(CPACSNacelleSection& ref);
+        TIGL_EXPORT virtual CCPACSNacelleSection& AddSection();
+        TIGL_EXPORT virtual void RemoveSection(CCPACSNacelleSection& ref);
 
     protected:
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<unique_ptr<CPACSNacelleSection> > m_sections;
+        std::vector<unique_ptr<CCPACSNacelleSection> > m_sections;
 
     private:
 #ifdef HAVE_CPP11
@@ -72,12 +71,5 @@ namespace generated
     };
 } // namespace generated
 
-// Aliases in tigl namespace
-#ifdef HAVE_CPP11
-using CCPACSNacelleSections = generated::CPACSNacelleSections;
-using CCPACSNacelleSection = generated::CPACSNacelleSection;
-#else
-typedef generated::CPACSNacelleSections CCPACSNacelleSections;
-typedef generated::CPACSNacelleSection CCPACSNacelleSection;
-#endif
+// CPACSNacelleSections is customized, use type CCPACSNacelleSections directly
 } // namespace tigl

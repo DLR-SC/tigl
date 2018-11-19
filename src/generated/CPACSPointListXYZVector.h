@@ -67,5 +67,5 @@ namespace generated
     };
 } // namespace generated
 
-// CPACSPointListXYZVector is customized, use type CCPACSPointListXYZ directly
+// CPACSPointListXYZVector is customized, use type CCPACSPointListXYZVector directly
 } // namespace tigl

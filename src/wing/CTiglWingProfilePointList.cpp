@@ -35,6 +35,7 @@
 #include "CTiglTransformation.h"
 #include "math.h"
 #include "CCPACSWingProfile.h"
+#include "CCPACSNacelleProfile.h"
 #include "tiglcommonfunctions.h"
 
 #include "gp_Pnt2d.hxx"
@@ -83,8 +84,16 @@ const double CTiglWingProfilePointList::c_trailingEdgeRelGap = 1E-2;
 const double CTiglWingProfilePointList::c_blendingDistance = 0.1;
 
 // Constructor
-CTiglWingProfilePointList::CTiglWingProfilePointList(const CCPACSWingProfile& profile, const CCPACSPointListXYZ& cpacsPointList)
-    : profileRef(profile)
+CTiglWingProfilePointList::CTiglWingProfilePointList(const CCPACSWingProfile& profile, const CCPACSPointListXYZVector& cpacsPointList)
+    : profileUID(profile.GetUID())
+    , coordinates(cpacsPointList.AsVector())
+    , profileWireAlgo(new CTiglInterpolateBsplineWire)
+    , wireCache(*this, &CTiglWingProfilePointList::BuildWires)
+{
+}
+
+CTiglWingProfilePointList::CTiglWingProfilePointList(const CCPACSNacelleProfile& profile, const CCPACSPointListXYVector& cpacsPointList)
+    : profileUID(profile.GetUID())
     , coordinates(cpacsPointList.AsVector())
     , profileWireAlgo(new CTiglInterpolateBsplineWire)
     , wireCache(*this, &CTiglWingProfilePointList::BuildWires)
@@ -444,7 +453,7 @@ void CTiglWingProfilePointList::trimUpperLowerCurve(WireCache& cache, Handle(Geo
         if (w > lowerCurve->FirstParameter() + Precision::Confusion() && w < lowerCurve->LastParameter()) {
             double relDist = lowerCurve->Value(w).Distance(firstPnt) / cache.tePoint.Distance(cache.lePoint);
             if (relDist > tolerance) {
-                LOG(WARNING) << "The wing profile " << profileRef.GetUID() << " will be trimmed"
+                LOG(WARNING) << "The wing profile " << profileUID << " will be trimmed"
                     << " to avoid a skewed trailing edge."
                     << " The lower part is trimmed about " << relDist*100. << " % w.r.t. the chord length."
                     << " Please correct the wing profile!";
@@ -460,7 +469,7 @@ void CTiglWingProfilePointList::trimUpperLowerCurve(WireCache& cache, Handle(Geo
         if (w < upperCurve->LastParameter() - Precision::Confusion() && w > upperCurve->FirstParameter()) {
             double relDist = upperCurve->Value(w).Distance(lastPnt) / cache.tePoint.Distance(cache.lePoint);
             if (relDist > tolerance) {
-                LOG(WARNING) << "The wing profile " << profileRef.GetUID() << " will be trimmed"
+                LOG(WARNING) << "The wing profile " << profileUID << " will be trimmed"
                     << " to avoid a skewed trailing edge."
                     << " The upper part is trimmed about " << relDist*100. << " % w.r.t. the chord length."
                     << " Please correct the wing profile!";

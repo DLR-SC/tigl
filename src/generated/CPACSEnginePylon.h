@@ -24,6 +24,7 @@
 #include <CCPACSWingSections.h>
 #include <CCPACSWingSegments.h>
 #include <string>
+#include <TiglSymmetryAxis.h>
 #include <tixi.h>
 #include "CreateIfNotExists.h"
 #include "tigl_internal.h"
@@ -38,7 +39,7 @@ namespace generated
     // This class is used in:
     // CPACSEnginePylons
 
-    // generated from /xsd:schema/xsd:complexType[311]
+    // generated from /xsd:schema/xsd:complexType[316]
     class CPACSEnginePylon
     {
     public:
@@ -58,6 +59,9 @@ namespace generated
 
         TIGL_EXPORT virtual const std::string& GetUID() const;
         TIGL_EXPORT virtual void SetUID(const std::string& value);
+
+        TIGL_EXPORT virtual const boost::optional<TiglSymmetryAxis>& GetSymmetry() const;
+        TIGL_EXPORT virtual void SetSymmetry(const boost::optional<TiglSymmetryAxis>& value);
 
         TIGL_EXPORT virtual const boost::optional<std::string>& GetName() const;
         TIGL_EXPORT virtual void SetName(const boost::optional<std::string>& value);
@@ -95,6 +99,7 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string                         m_uID;
+        boost::optional<TiglSymmetryAxis>   m_symmetry;
         boost::optional<std::string>        m_name;
         boost::optional<std::string>        m_description;
         std::string                         m_parentUID;

@@ -92,3 +92,4 @@ CPACSSkinSegments
 CPACSEnginePylon
 CPACSEnginePylons
 
+CPACSNacelleCowl

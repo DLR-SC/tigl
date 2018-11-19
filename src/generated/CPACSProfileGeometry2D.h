@@ -19,11 +19,11 @@
 
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
+#include <CCPACSPointListXYVector.h>
 #include <CCPACSWingProfileCST.h>
 #include <string>
 #include <tixi.h>
 #include <typeinfo>
-#include "CPACSPointListXYVector.h"
 #include "CPACSProfileGeometry2DType_symmetry.h"
 #include "CreateIfNotExists.h"
 #include "CTiglError.h"
@@ -66,13 +66,13 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
         TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
 
-        TIGL_EXPORT virtual const boost::optional<CPACSPointListXYVector>& GetPointList_choice1() const;
-        TIGL_EXPORT virtual boost::optional<CPACSPointListXYVector>& GetPointList_choice1();
+        TIGL_EXPORT virtual const boost::optional<CCPACSPointListXYVector>& GetPointList_choice1() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSPointListXYVector>& GetPointList_choice1();
 
         TIGL_EXPORT virtual const boost::optional<CCPACSWingProfileCST>& GetCst2D_choice2() const;
         TIGL_EXPORT virtual boost::optional<CCPACSWingProfileCST>& GetCst2D_choice2();
 
-        TIGL_EXPORT virtual CPACSPointListXYVector& GetPointList_choice1(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual CCPACSPointListXYVector& GetPointList_choice1(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemovePointList_choice1();
 
         TIGL_EXPORT virtual CCPACSWingProfileCST& GetCst2D_choice2(CreateIfNotExistsTag);
@@ -85,7 +85,7 @@ namespace generated
         std::string                                          m_uID;
         std::string                                          m_name;
         boost::optional<std::string>                         m_description;
-        boost::optional<CPACSPointListXYVector>              m_pointList_choice1;
+        boost::optional<CCPACSPointListXYVector>             m_pointList_choice1;
         boost::optional<CCPACSWingProfileCST>                m_cst2D_choice2;
 
     private:

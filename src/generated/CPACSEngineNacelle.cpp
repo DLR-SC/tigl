@@ -27,13 +27,13 @@ namespace generated
 {
     CPACSEngineNacelle::CPACSEngineNacelle(CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
-        , m_fanCowl(m_uidMgr)
-        , m_coreCowl(m_uidMgr)
+        , m_fanCowl(this, m_uidMgr)
     {
     }
 
     CPACSEngineNacelle::~CPACSEngineNacelle()
     {
+        if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
     }
 
     CTiglUIDManager& CPACSEngineNacelle::GetUIDManager()
@@ -48,6 +48,22 @@ namespace generated
 
     void CPACSEngineNacelle::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
+        // read attribute uID
+        if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+            m_uID = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
+            if (m_uID.empty()) {
+                LOG(WARNING) << "Required attribute uID is empty at xpath " << xpath;
+            }
+        }
+        else {
+            LOG(ERROR) << "Required attribute uID is missing at xpath " << xpath;
+        }
+
+        // read attribute symmetry
+        if (tixi::TixiCheckAttribute(tixiHandle, xpath, "symmetry")) {
+            m_symmetry = stringToTiglSymmetryAxis(tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "symmetry"));
+        }
+
         // read element fanCowl
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/fanCowl")) {
             m_fanCowl.ReadCPACS(tixiHandle, xpath + "/fanCowl");
@@ -58,66 +74,104 @@ namespace generated
 
         // read element coreCowl
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/coreCowl")) {
-            m_coreCowl.ReadCPACS(tixiHandle, xpath + "/coreCowl");
-        }
-        else {
-            LOG(ERROR) << "Required element coreCowl is missing at xpath " << xpath;
-        }
-
-        // read element centerCowl
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/centerCowl")) {
-            m_centerCowl.ReadCPACS(tixiHandle, xpath + "/centerCowl");
-        }
-        else {
-            LOG(ERROR) << "Required element centerCowl is missing at xpath " << xpath;
+            m_coreCowl = boost::in_place(this, m_uidMgr);
+            try {
+                m_coreCowl->ReadCPACS(tixiHandle, xpath + "/coreCowl");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read coreCowl at xpath " << xpath << ": " << e.what();
+                m_coreCowl = boost::none;
+            }
         }
 
+        if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
     }
 
     void CPACSEngineNacelle::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
+        // write attribute uID
+        tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
+
+        // write attribute symmetry
+        if (m_symmetry) {
+            tixi::TixiSaveAttribute(tixiHandle, xpath, "symmetry", TiglSymmetryAxisToString(*m_symmetry));
+        }
+        else {
+            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "symmetry")) {
+                tixi::TixiRemoveAttribute(tixiHandle, xpath, "symmetry");
+            }
+        }
+
         // write element fanCowl
         tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/fanCowl");
         m_fanCowl.WriteCPACS(tixiHandle, xpath + "/fanCowl");
 
         // write element coreCowl
-        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/coreCowl");
-        m_coreCowl.WriteCPACS(tixiHandle, xpath + "/coreCowl");
-
-        // write element centerCowl
-        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/centerCowl");
-        m_centerCowl.WriteCPACS(tixiHandle, xpath + "/centerCowl");
+        if (m_coreCowl) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/coreCowl");
+            m_coreCowl->WriteCPACS(tixiHandle, xpath + "/coreCowl");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/coreCowl")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/coreCowl");
+            }
+        }
 
     }
 
-    const CPACSNacelleCowl& CPACSEngineNacelle::GetFanCowl() const
+    const std::string& CPACSEngineNacelle::GetUID() const
+    {
+        return m_uID;
+    }
+
+    void CPACSEngineNacelle::SetUID(const std::string& value)
+    {
+        if (m_uidMgr) {
+            m_uidMgr->TryUnregisterObject(m_uID);
+            m_uidMgr->RegisterObject(value, *this);
+        }
+        m_uID = value;
+    }
+
+    const boost::optional<TiglSymmetryAxis>& CPACSEngineNacelle::GetSymmetry() const
+    {
+        return m_symmetry;
+    }
+
+    void CPACSEngineNacelle::SetSymmetry(const boost::optional<TiglSymmetryAxis>& value)
+    {
+        m_symmetry = value;
+    }
+
+    const CCPACSNacelleCowl& CPACSEngineNacelle::GetFanCowl() const
     {
         return m_fanCowl;
     }
 
-    CPACSNacelleCowl& CPACSEngineNacelle::GetFanCowl()
+    CCPACSNacelleCowl& CPACSEngineNacelle::GetFanCowl()
     {
         return m_fanCowl;
     }
 
-    const CPACSNacelleCowl& CPACSEngineNacelle::GetCoreCowl() const
+    const boost::optional<CCPACSNacelleCowl>& CPACSEngineNacelle::GetCoreCowl() const
     {
         return m_coreCowl;
     }
 
-    CPACSNacelleCowl& CPACSEngineNacelle::GetCoreCowl()
+    boost::optional<CCPACSNacelleCowl>& CPACSEngineNacelle::GetCoreCowl()
     {
         return m_coreCowl;
     }
 
-    const CPACSNacelleCenterCowl& CPACSEngineNacelle::GetCenterCowl() const
+    CCPACSNacelleCowl& CPACSEngineNacelle::GetCoreCowl(CreateIfNotExistsTag)
     {
-        return m_centerCowl;
+        if (!m_coreCowl)
+            m_coreCowl = boost::in_place(this, m_uidMgr);
+        return *m_coreCowl;
     }
 
-    CPACSNacelleCenterCowl& CPACSEngineNacelle::GetCenterCowl()
+    void CPACSEngineNacelle::RemoveCoreCowl()
     {
-        return m_centerCowl;
+        m_coreCowl = boost::none;
     }
 
 } // namespace generated

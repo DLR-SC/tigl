@@ -238,12 +238,12 @@ namespace generated
         m_description = value;
     }
 
-    const boost::optional<CPACSPointListXYVector>& CPACSProfileGeometry2D::GetPointList_choice1() const
+    const boost::optional<CCPACSPointListXYVector>& CPACSProfileGeometry2D::GetPointList_choice1() const
     {
         return m_pointList_choice1;
     }
 
-    boost::optional<CPACSPointListXYVector>& CPACSProfileGeometry2D::GetPointList_choice1()
+    boost::optional<CCPACSPointListXYVector>& CPACSProfileGeometry2D::GetPointList_choice1()
     {
         return m_pointList_choice1;
     }
@@ -258,7 +258,7 @@ namespace generated
         return m_cst2D_choice2;
     }
 
-    CPACSPointListXYVector& CPACSProfileGeometry2D::GetPointList_choice1(CreateIfNotExistsTag)
+    CCPACSPointListXYVector& CPACSProfileGeometry2D::GetPointList_choice1(CreateIfNotExistsTag)
     {
         if (!m_pointList_choice1)
             m_pointList_choice1 = boost::in_place();

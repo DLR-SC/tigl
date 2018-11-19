@@ -15,6 +15,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <cassert>
+#include "CPACSEngineNacelle.h"
 #include "CPACSNacelleCowl.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -25,15 +27,28 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSNacelleCowl::CPACSNacelleCowl(CTiglUIDManager* uidMgr)
+    CPACSNacelleCowl::CPACSNacelleCowl(CPACSEngineNacelle* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
         , m_transformation(m_uidMgr)
         , m_sections(m_uidMgr)
     {
+        //assert(parent != NULL);
+        m_parent = parent;
     }
 
     CPACSNacelleCowl::~CPACSNacelleCowl()
     {
+        if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
+    }
+
+    const CPACSEngineNacelle* CPACSNacelleCowl::GetParent() const
+    {
+        return m_parent;
+    }
+
+    CPACSEngineNacelle* CPACSNacelleCowl::GetParent()
+    {
+        return m_parent;
     }
 
     CTiglUIDManager& CPACSNacelleCowl::GetUIDManager()
@@ -48,6 +63,17 @@ namespace generated
 
     void CPACSNacelleCowl::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
+        // read attribute uID
+        if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+            m_uID = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
+            if (m_uID.empty()) {
+                LOG(WARNING) << "Required attribute uID is empty at xpath " << xpath;
+            }
+        }
+        else {
+            LOG(ERROR) << "Required attribute uID is missing at xpath " << xpath;
+        }
+
         // read element transformation
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/transformation")) {
             m_transformation.ReadCPACS(tixiHandle, xpath + "/transformation");
@@ -80,10 +106,14 @@ namespace generated
             LOG(ERROR) << "Required element rotationCurve is missing at xpath " << xpath;
         }
 
+        if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
     }
 
     void CPACSNacelleCowl::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
+        // write attribute uID
+        tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
+
         // write element transformation
         tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/transformation");
         m_transformation.WriteCPACS(tixiHandle, xpath + "/transformation");
@@ -102,6 +132,20 @@ namespace generated
 
     }
 
+    const std::string& CPACSNacelleCowl::GetUID() const
+    {
+        return m_uID;
+    }
+
+    void CPACSNacelleCowl::SetUID(const std::string& value)
+    {
+        if (m_uidMgr) {
+            m_uidMgr->TryUnregisterObject(m_uID);
+            m_uidMgr->RegisterObject(value, *this);
+        }
+        m_uID = value;
+    }
+
     const CCPACSTransformation& CPACSNacelleCowl::GetTransformation() const
     {
         return m_transformation;
@@ -112,12 +156,12 @@ namespace generated
         return m_transformation;
     }
 
-    const CPACSNacelleSections& CPACSNacelleCowl::GetSections() const
+    const CCPACSNacelleSections& CPACSNacelleCowl::GetSections() const
     {
         return m_sections;
     }
 
-    CPACSNacelleSections& CPACSNacelleCowl::GetSections()
+    CCPACSNacelleSections& CPACSNacelleCowl::GetSections()
     {
         return m_sections;
     }

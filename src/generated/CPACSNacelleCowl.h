@@ -17,11 +17,11 @@
 
 #pragma once
 
+#include <CCPACSNacelleSections.h>
 #include <CCPACSTransformation.h>
 #include <string>
 #include <tixi.h>
 #include "CPACSNacelleGuideCurves.h"
-#include "CPACSNacelleSections.h"
 #include "CPACSRotationCurve.h"
 #include "tigl_internal.h"
 
@@ -31,6 +31,8 @@ class CTiglUIDManager;
 
 namespace generated
 {
+    class CPACSEngineNacelle;
+
     // This class is used in:
     // CPACSEngineNacelle
 
@@ -38,8 +40,13 @@ namespace generated
     class CPACSNacelleCowl
     {
     public:
-        TIGL_EXPORT CPACSNacelleCowl(CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSNacelleCowl(CPACSEngineNacelle* parent, CTiglUIDManager* uidMgr);
+
         TIGL_EXPORT virtual ~CPACSNacelleCowl();
+
+        TIGL_EXPORT CPACSEngineNacelle* GetParent();
+
+        TIGL_EXPORT const CPACSEngineNacelle* GetParent() const;
 
         TIGL_EXPORT CTiglUIDManager& GetUIDManager();
         TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
@@ -47,11 +54,14 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
+        TIGL_EXPORT virtual const std::string& GetUID() const;
+        TIGL_EXPORT virtual void SetUID(const std::string& value);
+
         TIGL_EXPORT virtual const CCPACSTransformation& GetTransformation() const;
         TIGL_EXPORT virtual CCPACSTransformation& GetTransformation();
 
-        TIGL_EXPORT virtual const CPACSNacelleSections& GetSections() const;
-        TIGL_EXPORT virtual CPACSNacelleSections& GetSections();
+        TIGL_EXPORT virtual const CCPACSNacelleSections& GetSections() const;
+        TIGL_EXPORT virtual CCPACSNacelleSections& GetSections();
 
         TIGL_EXPORT virtual const CPACSNacelleGuideCurves& GetGuideCurves() const;
         TIGL_EXPORT virtual CPACSNacelleGuideCurves& GetGuideCurves();
@@ -60,10 +70,13 @@ namespace generated
         TIGL_EXPORT virtual CPACSRotationCurve& GetRotationCurve();
 
     protected:
+        CPACSEngineNacelle* m_parent;
+
         CTiglUIDManager* m_uidMgr;
 
+        std::string             m_uID;
         CCPACSTransformation    m_transformation;
-        CPACSNacelleSections    m_sections;
+        CCPACSNacelleSections   m_sections;
         CPACSNacelleGuideCurves m_guideCurves;
         CPACSRotationCurve      m_rotationCurve;
 
@@ -81,10 +94,12 @@ namespace generated
     };
 } // namespace generated
 
+// CPACSNacelleCowl is customized, use type CCPACSNacelleCowl directly
+
 // Aliases in tigl namespace
 #ifdef HAVE_CPP11
-using CCPACSNacelleCowl = generated::CPACSNacelleCowl;
+using CCPACSEngineNacelle = generated::CPACSEngineNacelle;
 #else
-typedef generated::CPACSNacelleCowl CCPACSNacelleCowl;
+typedef generated::CPACSEngineNacelle CCPACSEngineNacelle;
 #endif
 } // namespace tigl

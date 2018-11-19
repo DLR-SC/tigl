@@ -17,10 +17,13 @@
 
 #pragma once
 
+#include <boost/optional.hpp>
+#include <boost/utility/in_place_factory.hpp>
+#include <CCPACSNacelleCowl.h>
 #include <string>
+#include <TiglSymmetryAxis.h>
 #include <tixi.h>
-#include "CPACSNacelleCenterCowl.h"
-#include "CPACSNacelleCowl.h"
+#include "CreateIfNotExists.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -45,21 +48,28 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const CPACSNacelleCowl& GetFanCowl() const;
-        TIGL_EXPORT virtual CPACSNacelleCowl& GetFanCowl();
+        TIGL_EXPORT virtual const std::string& GetUID() const;
+        TIGL_EXPORT virtual void SetUID(const std::string& value);
 
-        TIGL_EXPORT virtual const CPACSNacelleCowl& GetCoreCowl() const;
-        TIGL_EXPORT virtual CPACSNacelleCowl& GetCoreCowl();
+        TIGL_EXPORT virtual const boost::optional<TiglSymmetryAxis>& GetSymmetry() const;
+        TIGL_EXPORT virtual void SetSymmetry(const boost::optional<TiglSymmetryAxis>& value);
 
-        TIGL_EXPORT virtual const CPACSNacelleCenterCowl& GetCenterCowl() const;
-        TIGL_EXPORT virtual CPACSNacelleCenterCowl& GetCenterCowl();
+        TIGL_EXPORT virtual const CCPACSNacelleCowl& GetFanCowl() const;
+        TIGL_EXPORT virtual CCPACSNacelleCowl& GetFanCowl();
+
+        TIGL_EXPORT virtual const boost::optional<CCPACSNacelleCowl>& GetCoreCowl() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSNacelleCowl>& GetCoreCowl();
+
+        TIGL_EXPORT virtual CCPACSNacelleCowl& GetCoreCowl(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveCoreCowl();
 
     protected:
         CTiglUIDManager* m_uidMgr;
 
-        CPACSNacelleCowl       m_fanCowl;
-        CPACSNacelleCowl       m_coreCowl;
-        CPACSNacelleCenterCowl m_centerCowl;
+        std::string                        m_uID;
+        boost::optional<TiglSymmetryAxis>  m_symmetry;
+        CCPACSNacelleCowl                  m_fanCowl;
+        boost::optional<CCPACSNacelleCowl> m_coreCowl;
 
     private:
 #ifdef HAVE_CPP11

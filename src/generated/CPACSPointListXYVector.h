@@ -63,10 +63,5 @@ namespace generated
     };
 } // namespace generated
 
-// Aliases in tigl namespace
-#ifdef HAVE_CPP11
-using CCPACSPointListXYVector = generated::CPACSPointListXYVector;
-#else
-typedef generated::CPACSPointListXYVector CCPACSPointListXYVector;
-#endif
+// CPACSPointListXYVector is customized, use type CCPACSPointListXYVector directly
 } // namespace tigl

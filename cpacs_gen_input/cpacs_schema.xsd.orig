@@ -13544,11 +13544,21 @@ jonas.jepsen@dlr.de
                 	<xsd:element name="fanCowl"
                 		type="nacelleCowlType">
                 	</xsd:element>
-                	<xsd:element name="coreCowl"
+                	<xsd:element minOccurs="0" name="coreCowl"
                 		type="nacelleCowlType">
                 	</xsd:element>
-                	<xsd:element name="centerCowl" type="nacelleCenterCowlType"></xsd:element>
+                	<xsd:element minOccurs="0" name="centerCowl" type="nacelleCenterCowlType"></xsd:element>
                 </xsd:all>
+				<xsd:attribute name="uID" type="xsd:string" use="required"/>
+				<xsd:attribute name="symmetry">
+					<xsd:simpleType>
+						<xsd:restriction base="xsd:string">
+							<xsd:enumeration value="x-y-plane"/>
+							<xsd:enumeration value="x-z-plane"/>
+							<xsd:enumeration value="y-z-plane"/>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:attribute>
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>
@@ -43707,6 +43717,7 @@ jonas.jepsen@dlr.de
                 	</xsd:element>
                 	<xsd:element name="rotationCurve" type="rotationCurveType"></xsd:element>
                 </xsd:all>
+				<xsd:attribute name="uID" type="xsd:string" use="required"/>
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>
@@ -43748,6 +43759,7 @@ jonas.jepsen@dlr.de
 					<xsd:element name="xOffset" type="doubleBaseType"></xsd:element>
 					<xsd:element name="curveUID" type="stringUIDBaseType"></xsd:element>
 				</xsd:all>
+				<xsd:attribute name="uID" type="xsd:string" use="required"/>
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>

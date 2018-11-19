@@ -211,6 +211,7 @@ typedef unsigned int TiglGeometricComponentType;
 
 #define  TIGL_COMPONENT_LONG_FLOOR_BEAM   65536    /**< The Component is a long floor beam */
 #define  TIGL_COMPONENT_ENGINE_PYLON      131072   /**< The Component is a engine pylon */
+#define  TIGL_COMPONENT_ENGINE_NACELLE    262144   /**< The Component is a engine nacelle */
 
 enum TiglStructureType 
 {

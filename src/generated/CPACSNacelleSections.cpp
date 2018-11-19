@@ -15,7 +15,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "CPACSNacelleSection.h"
+#include <CCPACSNacelleSection.h>
 #include "CPACSNacelleSections.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -61,23 +61,23 @@ namespace generated
 
     }
 
-    const std::vector<unique_ptr<CPACSNacelleSection> >& CPACSNacelleSections::GetSections() const
+    const std::vector<unique_ptr<CCPACSNacelleSection> >& CPACSNacelleSections::GetSections() const
     {
         return m_sections;
     }
 
-    std::vector<unique_ptr<CPACSNacelleSection> >& CPACSNacelleSections::GetSections()
+    std::vector<unique_ptr<CCPACSNacelleSection> >& CPACSNacelleSections::GetSections()
     {
         return m_sections;
     }
 
-    CPACSNacelleSection& CPACSNacelleSections::AddSection()
+    CCPACSNacelleSection& CPACSNacelleSections::AddSection()
     {
-        m_sections.push_back(make_unique<CPACSNacelleSection>(m_uidMgr));
+        m_sections.push_back(make_unique<CCPACSNacelleSection>(m_uidMgr));
         return *m_sections.back();
     }
 
-    void CPACSNacelleSections::RemoveSection(CPACSNacelleSection& ref)
+    void CPACSNacelleSections::RemoveSection(CCPACSNacelleSection& ref)
     {
         for (std::size_t i = 0; i < m_sections.size(); i++) {
             if (m_sections[i].get() == &ref) {

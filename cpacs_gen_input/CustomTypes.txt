@@ -23,8 +23,10 @@ CPACSPoint                         CCPACSPoint
 CPACSPointAbsRel                   CCPACSPointAbsRel
 CPACSTransformation                CCPACSTransformation
 CPACSStringVectorBase              CCPACSStringVector
-CPACSPointListXYZVector            CCPACSPointListXYZ
-CPACSPointListRelXYZVector         CCPACSPointListRelXYZ
+CPACSPointListXYZVector            CCPACSPointListXYZVector
+CPACSPointListRelXYZVector         CCPACSPointListRelXYZVector
+CPACSPointListXYVector			   CCPACSPointListXYVector
+CPACSPointListXY                   CCPACSPointListXY
 CPACSGenericGeometricComponent     CCPACSExternalObject
 CPACSGenericGeometryComponents     CCPACSExternalObjects
 
@@ -98,7 +100,6 @@ CPACSFramesAssembly                       CCPACSFramesAssembly
 CPACSLongFloorBeam                        CCPACSLongFloorBeam
 CPACSLongFloorBeamPosition                CCPACSLongFloorBeamPosition
 CPACSLongFloorBeamsAssembly               CCPACSLongFloorBeamsAssembly
-CPACSPointListXY                          CCPACSPointListXY
 CPACSStringersAssembly                    CCPACSStringersAssembly
 CPACSFuselageStructure                    CCPACSFuselageStructure
 CPACSStringer                             CCPACSFuselageStringer
@@ -121,3 +122,8 @@ CPACSTrailingEdgeDevices                  CCPACSTrailingEdgeDevices
 // Pylons
 CPACSEnginePylon                         CCPACSEnginePylon
 CPACSEnginePylons                        CCPACSEnginePylons
+
+// Engines
+CPACSNacelleCowl						 CCPACSNacelleCowl
+CPACSNacelleSections					 CCPACSNacelleSections
+CPACSNacelleSection 					 CCPACSNacelleSection

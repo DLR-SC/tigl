@@ -84,10 +84,5 @@ namespace generated
     };
 } // namespace generated
 
-// Aliases in tigl namespace
-#ifdef HAVE_CPP11
-using CCPACSNacelleSection = generated::CPACSNacelleSection;
-#else
-typedef generated::CPACSNacelleSection CCPACSNacelleSection;
-#endif
+// CPACSNacelleSection is customized, use type CCPACSNacelleSection directly
 } // namespace tigl
