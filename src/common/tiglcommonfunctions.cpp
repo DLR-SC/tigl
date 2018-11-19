@@ -1629,3 +1629,16 @@ TIGL_EXPORT Handle(TColgp_HArray1OfPnt) OccArray(const std::vector<gp_Pnt>& pnts
     }
     return result;
 }
+
+
+TIGL_EXPORT tigl::CTiglTransformation GetTransformationMatrix(const tigl::CCPACSTransformation& trans)
+{
+    return trans.getTransformationMatrix();
+}
+
+TIGL_EXPORT tigl::CTiglTransformation GetTransformationMatrix(const tigl::CCPACSTransformationPolar& trans)
+{
+    tigl::CTiglTransformation out;
+    //TODO
+    return out;
+}

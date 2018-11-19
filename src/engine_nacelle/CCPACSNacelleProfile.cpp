@@ -16,6 +16,7 @@
 */
 
 #include "CCPACSNacelleProfile.h"
+#include "BRepBuilderAPI_MakeWire.hxx"
 
 namespace tigl {
 
@@ -44,6 +45,29 @@ ITiglWingProfileAlgo* CCPACSNacelleProfile::GetProfileAlgo()
 const ITiglWingProfileAlgo* CCPACSNacelleProfile::GetProfileAlgo() const
 {
     return const_cast<CCPACSNacelleProfile&>(*this).GetProfileAlgo();
+}
+
+bool CCPACSNacelleProfile::HasBluntTE() const
+{
+    const ITiglWingProfileAlgo* algo = GetProfileAlgo();
+    if (!algo) {
+        throw CTiglError("No wing profile algorithm regsitered in CCPACSNacelleProfile::HasBluntTE()!");
+    }
+    return algo->HasBluntTE();
+}
+
+TopoDS_Wire CCPACSNacelleProfile::GetWire(TiglShapeModifier mod) const
+{
+    const ITiglWingProfileAlgo* profileAlgo = GetProfileAlgo();
+
+    // rebuild closed wire
+    BRepBuilderAPI_MakeWire closedWireBuilder;
+    closedWireBuilder.Add(profileAlgo->GetUpperLowerWire(mod));
+    if (!profileAlgo->GetTrailingEdge(mod).IsNull()) {
+        closedWireBuilder.Add(profileAlgo->GetTrailingEdge(mod));
+    }
+
+    return closedWireBuilder.Wire();
 }
 
 } //namepsace tigl

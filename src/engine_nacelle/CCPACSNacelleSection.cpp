@@ -18,6 +18,7 @@
 #include "CCPACSNacelleSection.h"
 #include "CCPACSNacelleProfile.h"
 #include "CTiglUIDManager.h"
+#include "tiglcommonfunctions.h"
 
 namespace tigl {
 
@@ -27,9 +28,15 @@ TIGL_EXPORT CCPACSNacelleSection::CCPACSNacelleSection(CTiglUIDManager* uidMgr)
 
 TIGL_EXPORT TopoDS_Wire CCPACSNacelleSection::GetTransformedWire()
 {
-    CCPACSNacelleProfile& profile = m_uidMgr->ResolveObject<CCPACSNacelleProfile>(m_profileUID);
+    // get untransformed profile wire
+    const CCPACSNacelleProfile& profile = m_uidMgr->ResolveObject<CCPACSNacelleProfile>(m_profileUID);
+    TopoDS_Shape transformedShape(profile.GetWire());
 
-    return TopoDS_Wire();
+    // apply polar transformation
+    CTiglTransformation trafo = GetTransformationMatrix(m_transformation);
+    transformedShape = trafo.Transform(transformedShape);
+
+    return TopoDS::Wire(transformedShape);
 }
 
 } //namepsace tigl

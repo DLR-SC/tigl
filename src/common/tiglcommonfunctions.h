@@ -36,6 +36,7 @@
 #include <Geom_BSplineCurve.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include "TColgp_HArray1OfPnt.hxx"
+#include "generated/CPACSTransformationPolar.h"
 
 #include <map>
 #include <string>
@@ -261,6 +262,12 @@ inline double Radians(double degree)
 {
     return degree / 180. * M_PI;
 }
+
+// Get a CTiglTransformation from a CPACS transformation
+TIGL_EXPORT tigl::CTiglTransformation GetTransformationMatrix(const tigl::CCPACSTransformation& trans);
+
+// Get a CTiglTransformation from a CPACS polar transformation
+TIGL_EXPORT tigl::CTiglTransformation GetTransformationMatrix(const tigl::CCPACSTransformationPolar& trans);
 
 // Clamps val between min and max
 TIGL_EXPORT int Clamp(int val, int min, int max);

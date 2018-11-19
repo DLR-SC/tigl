@@ -31,9 +31,6 @@ public:
 
     TIGL_EXPORT TopoDS_Wire GetTransformedWire();
 
-private:
-    //cache
-    TopoDS_Wire transformedWire;
 };
 
 } //namespace tigl

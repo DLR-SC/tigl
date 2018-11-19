@@ -36,6 +36,9 @@ public:
     TIGL_EXPORT ITiglWingProfileAlgo* GetProfileAlgo();
     TIGL_EXPORT const ITiglWingProfileAlgo* GetProfileAlgo() const;
 
+    // Returns the nacelle profile wire
+    TIGL_EXPORT TopoDS_Wire GetWire(TiglShapeModifier mod = UNMODIFIED_SHAPE) const;
+
     // Checks, whether the trailing edge is blunt or not
     TIGL_EXPORT bool HasBluntTE() const;
 

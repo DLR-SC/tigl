@@ -16,6 +16,7 @@
 */
 
 #include "CCPACSNacelleCowl.h"
+#include "CCPACSNacelleSection.h"
 
 namespace tigl
 {
@@ -32,7 +33,27 @@ std::string CCPACSNacelleCowl::GetDefaultedUID() const
 
 PNamedShape CCPACSNacelleCowl::BuildLoft() const
 {
-    //TODO
+    // get profile curves
+    std::vector<TopoDS_Wire> profiles;
+    for(size_t i = 1; i <= m_sections.GetSectionCount(); ++i ) {
+        CCPACSNacelleSection& section = m_sections.GetSection(i);
+        profiles.push_back(section.GetTransformedWire());
+    }
+
+//    // get guide curves
+//    CCPACSNacelleGuideCurves& guides = cowl.GetGuideCurves();
+//    if(!guides) {
+//        // make custom guide curves
+//    }
+
+    // remove blending part for rotationally symmetric interior
+
+    // get rotation curve and generate rotationally symmetric interior
+
+    // blend the surfaces
+
+    // interpolate curve network
+
     return PNamedShape();
 }
 

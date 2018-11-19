@@ -16,9 +16,10 @@
 */
 
 #include "CTiglEngineNacelleBuilder.h"
-#include "generated/CPACSNacelleSections.h"
-#include "CCPACSNacelleSection.h"
 #include "UniquePtr.h"
+#include "CNamedShape.h"
+#include "TopoDS_Compound.hxx"
+#include "TopoDS_Builder.hxx"
 
 namespace tigl {
 
@@ -28,35 +29,24 @@ CTiglEngineNacelleBuilder::CTiglEngineNacelleBuilder(const generated::CPACSEngin
 
 PNamedShape CTiglEngineNacelleBuilder::BuildShape()
 {
-    TopoDS_Shape fanCowlShape = BuildNacelleCowl(m_nacelle.GetFanCowl());
-    //TODO
-    // If coreCowl exists, build coreCowl
-    // Add both to PNamedShape();
-    return PNamedShape();
+    PNamedShape fanshape = m_nacelle.GetFanCowl().GetLoft();
 
-};
+    TopoDS_Compound c;
+    TopoDS_Builder b;
+    b.MakeCompound(c);
+    b.Add(c, fanshape->Shape());
 
-TopoDS_Shape CTiglEngineNacelleBuilder::BuildNacelleCowl(const CCPACSNacelleCowl& cowl)
-{
-    // get profile curves
-    std::vector<TopoDS_Wire> profiles;
-    for(size_t i = 1; i <= cowl.GetSections().GetSectionCount(); ++i ) {
-        CCPACSNacelleSection& section = cowl.GetSections().GetSection(i);
-        profiles.push_back(section.GetTransformedWire());
+    if ( m_nacelle.GetCoreCowl() ) {
+        PNamedShape coreshape = m_nacelle.GetCoreCowl()->GetLoft();
+        b.Add(c, coreshape->Shape());
     }
-
-//    // get guide curves
-//    CCPACSNacelleGuideCurves& guides = cowl.GetGuideCurves();
-//    if(!guides) {
-//        // make custom guide curves
-//    }
-
-    return TopoDS_Shape();
-}
-
-CTiglEngineNacelleBuilder::operator PNamedShape()
-{
-    return BuildShape();
+    PNamedShape compoundShape( new CNamedShape(c, m_nacelle.GetUID().c_str()) );
+    return compoundShape;
 };
 
-} //namespace tigl
+    CTiglEngineNacelleBuilder::operator PNamedShape()
+    {
+        return BuildShape();
+    };
+
+    } //namespace tigl
