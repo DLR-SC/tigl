@@ -38,6 +38,43 @@ namespace generated
     // CPACSRotors
 
     // generated from /xsd:schema/xsd:complexType[771]
+    /// @brief Rotor type, containing a rotor (main rotor, tail rotor,
+    /// fenestron, propeller,...) of an rotorcraft model.
+    /// 
+    /// Rotor type, containing a rotor (e.g. main rotor, tail
+    /// rotor, fenestron, propeller,...) definition of a rotorcraft
+    /// model.
+    /// The position and attitude of the rotor is defined
+    /// using the transformation element. The following image shows the
+    /// CPACS conventions for the orientation of rotors and rotor axis
+    /// systems:
+    /// @see rotor_cs01
+    /// The origin coincides with the center of rotation. The z-axis corresponds to the axis of rotation
+    /// and thus coincides with the rotor shaft centerline. It Points
+    /// in the main thrust direction of the rotor (usually upwards for
+    /// a main rotor, forwards for a propeller). The x-axis points from nose to tail (usually
+    /// rearwards for main and tail rotors, upwards for a propeller). The y-axis completes the right-handed orthogonal
+    /// coordinate system. Rotor hub attributes, hinges and references to
+    /// attached rotor blades are defined in the rotorHub element.
+    /// Note that rotor blade geometries are only referenced and not
+    /// defined in the child nodes of the rotor element. Refer to the
+    /// documentation of rotorBladesType (
+    /// ) and wingType (
+    /// ) for information on the definition of rotor blade geometries. Note that rotor blade geometries are only referenced and not
+    /// defined in the child nodes of the rotor element. Refer to the
+    /// documentation of rotorBladesType (
+    /// ) and wingType (
+    /// ) for information on the definition of rotor blade geometries. Note that rotor blade geometries are only referenced and not
+    /// defined in the child nodes of the rotor element. Refer to the
+    /// documentation of rotorBladesType (
+    /// ) and wingType (
+    /// ) for information on the definition of rotor blade geometries.
+    /// The following figure shows the transformations to be
+    /// applied to rotorBlade geometries to visualize them in the rotor
+    /// frames for a given state (each rotor: rotorAzimuth given, each
+    /// hinge: hingeDeflection given):
+    /// @see rotor_transformation
+    /// 
     class CPACSRotor
     {
     public:
@@ -88,13 +125,41 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string                       m_uID;
+
         boost::optional<TiglSymmetryAxis> m_symmetry;
+
+        /// Name of the rotor.
         std::string                       m_name;
+
+        /// Description of the rotor.
         boost::optional<std::string>      m_description;
+
+        /// UID of the part to which the rotor is mounted
+        /// (if any). The parent of the rotor can e.g. be the fuselage. In
+        /// each rotorcraft model, there is exactly one part without a
+        /// parent part (The root of the connection hierarchy).
         boost::optional<std::string>      m_parentUID;
+
+        /// Rotor type. Possible values: "mainRotor"
+        /// (default), "tailRotor", "fenestron" or "propeller"..
         boost::optional<CPACSRotor_type>  m_type;
+
+        /// Nominal value of the angular rotation speed in
+        /// rotations per minute (rpm).
         boost::optional<double>           m_nominalRotationsPerMinute;
+
+        /// Transformation (scaling, rotation,
+        /// translation). This element is used to define the position and
+        /// attitude of the rotor relative to the global or the parent
+        /// component's axis system. Note that an anisotropical scaling
+        /// transformation should not be applied to the rotor.
         CCPACSTransformation              m_transformation;
+
+        /// The rotorHub element contains the definition
+        /// of the rotor hub type and number and azimuth angles of the
+        /// attached blades and their hinges. The rotor hub position and
+        /// attitude coincides with the rotor axis system's origin and z
+        /// axis.
         CCPACSRotorHub                    m_rotorHub;
 
     private:

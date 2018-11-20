@@ -34,6 +34,11 @@ namespace generated
     // CPACSPressureBulkheads
 
     // generated from /xsd:schema/xsd:complexType[730]
+    /// @brief pressureBulkheadType
+    /// 
+    /// PressureBulkhead type, containing data of a pressure
+    /// bulkhead
+    /// 
     class CPACSPressureBulkhead
     {
     public:
@@ -95,16 +100,49 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string                  m_uID;
+
+        /// Name of the pressure bulkhead structural
+        /// element
         boost::optional<std::string> m_name;
+
+        /// Description of the pressure bulkhead
+        /// structural element
         boost::optional<std::string> m_description;
+
+        /// UID of structural sheet element used for the
+        /// bulkhead
         std::string                  m_sheetElementUID;
+
+        /// Number of vertical reinforcements on flat
+        /// bulhhead
         boost::optional<int>         m_reinforcementNumberVertical_choice1;
+
+        /// UID of structural elements used as vertical
+        /// reinforcements
         boost::optional<std::string> m_structuralElementVerticalUID_choice1;
+
+        /// Number of horizontal reinforcements on flat
+        /// bulhhead
         boost::optional<int>         m_reinforcementNumberHorizontal_choice1;
+
+        /// UID of structural elements used as
+        /// horizontal reinforcements
         boost::optional<std::string> m_structuralElementHorizontalUID_choice1;
+
+        /// Radius of bulkhead calotte in the plane of
+        /// the adjacent frame
         boost::optional<double>      m_bulkheadCalotteRadiusAtFrame_choice2;
+
+        /// maximum flection of the pressure bulkhaed
+        /// calotte
         boost::optional<double>      m_maxFlectionDepth_choice2;
+
+        /// Number of radial reinforcements (equally
+        /// distributed) on curved bulhhead
         boost::optional<int>         m_reinforcementNumberRadial_choice2;
+
+        /// UID of structural elements used as radial
+        /// reinforcements on curved bulkheads
         boost::optional<std::string> m_structuralElementRadialUID_choice2;
 
     private:

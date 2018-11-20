@@ -33,6 +33,10 @@ namespace generated
     // CPACSWindows
 
     // generated from /xsd:schema/xsd:complexType[245]
+    /// @brief cutOutType
+    /// 
+    /// CutOut type, containing cut-outs
+    /// 
     class CPACSCutOut
     {
     public:
@@ -70,11 +74,25 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string                  m_uID;
+
+        /// Name of the cut out element
         boost::optional<std::string> m_name;
+
+        /// Description of the cut out element
         boost::optional<std::string> m_description;
+
+        /// Width of the cut element (absolute value)
         double                       m_width;
+
+        /// Height of the cut element (absolute value)
         double                       m_height;
+
+        /// Fillet radius of the cut element (absolute
+        /// value)
         double                       m_filletRadius;
+
+        /// UID of a structural element that reinforces
+        /// the cut out
         boost::optional<std::string> m_reinforcementElementUID;
 
     private:

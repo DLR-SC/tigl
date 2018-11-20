@@ -39,6 +39,12 @@ namespace generated
     // CPACSVehicles
 
     // generated from /xsd:schema/xsd:complexType[657]
+    /// @brief materialsType
+    /// 
+    /// Materials type, containing material and composite data.
+    /// A material describes the properties of a certain material.
+    /// Several materials can be combined within one composite.
+    /// 
     class CPACSMaterials
     {
     public:

@@ -33,6 +33,10 @@ namespace generated
     // CPACSStringerFramePosition
 
     // generated from /xsd:schema/xsd:complexType[66]
+    /// @brief alignmentStringFrameType
+    /// 
+    /// 
+    /// 
     class CPACSAlignmentStringFrame
     {
     public:
@@ -61,8 +65,16 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string             m_uID;
+
+        /// Rotation around local x axis (extrusion axis)
         boost::optional<double> m_rotationLocX;
+
+        /// Translation along local y axis (perpendicular
+        /// to extrusion axis)
         boost::optional<double> m_translationLocY;
+
+        /// Translation along local z axis (perpendicular
+        /// to x ynd y axes)
         boost::optional<double> m_translationLocZ;
 
     private:

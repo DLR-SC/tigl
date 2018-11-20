@@ -38,6 +38,11 @@ namespace generated
     // CPACSLongFloorBeam
 
     // generated from /xsd:schema/xsd:complexType[516]
+    /// @brief logFloorBeamPositionType
+    /// 
+    /// longFloorBeamPosition type, containing individual
+    /// position definition
+    /// 
     class CPACSLongFloorBeamPosition
     {
     public:
@@ -85,11 +90,27 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string                                 m_uID;
+
+        /// UID of structural element
         std::string                                 m_structuralElementUID;
+
+        /// UID of crossbeam to which the long. beam is
+        /// attached
         std::string                                 m_crossBeamUID;
+
+        /// y position of long. beam
         double                                      m_positionY;
+
         boost::optional<CPACSAlignmentStructMember> m_alignment;
+
+        /// Continuity definition for profile extrusion:
+        /// 0= C0 (allows sharp edges, default), 2= C2 (defines curvature
+        /// continuity)
         boost::optional<CPACSContinuity>            m_continuity;
+
+        /// Definition of interpolation between different
+        /// profiles: 0= no interpolation 1= interpolation of strcutural
+        /// profile
         boost::optional<CPACSInterpolation>         m_interpolation;
 
     private:

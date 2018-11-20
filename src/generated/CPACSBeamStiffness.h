@@ -31,6 +31,11 @@ namespace generated
     // CPACSGlobalBeamProperties
 
     // generated from /xsd:schema/xsd:complexType[78]
+    /// @brief beamStiffnessType
+    /// 
+    /// globalBeamStiffnessType, containing the beam
+    /// stiffnesses such as EA, EI
+    /// 
     class CPACSBeamStiffness
     {
     public:

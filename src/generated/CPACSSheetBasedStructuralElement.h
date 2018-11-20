@@ -32,6 +32,11 @@ namespace generated
     // CPACSSheetBasedStructuralElements
 
     // generated from /xsd:schema/xsd:complexType[796]
+    /// @brief sheetBasedStructuralElementType
+    /// 
+    /// sheetBasedStructuralElementType type, sheet definition
+    /// for use in fuselage/structure
+    /// 
     class CPACSSheetBasedStructuralElement
     {
     public:
@@ -54,6 +59,9 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string              m_uID;
+
+        /// Material definition of the skin segment
+        /// (Material, thickness, (lay-up))
         CCPACSMaterialDefinition m_materialDefinition;
 
     private:

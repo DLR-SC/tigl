@@ -36,6 +36,10 @@ namespace generated
     // CPACSProfileBasedStructuralElement
 
     // generated from /xsd:schema/xsd:complexType[880]
+    /// @brief transformation2DType
+    /// 
+    /// 
+    /// 
     class CPACSTransformation2D
     {
     public:
@@ -73,8 +77,14 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string                    m_uID;
+
+        /// Scaling of the structural profile
         boost::optional<CCPACSPointXY> m_scaling;
+
+        /// rotation around z-axis of profile definition
         boost::optional<CPACSPointZ>   m_rotation;
+
+        /// translation of profile definition
         boost::optional<CCPACSPointXY> m_translation;
 
     private:

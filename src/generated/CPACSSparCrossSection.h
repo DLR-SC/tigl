@@ -38,6 +38,17 @@ namespace generated
     // CPACSSparSegment
 
     // generated from /xsd:schema/xsd:complexType[812]
+    /// @brief Definition of the spar cross section.
+    /// 
+    /// Spar type, containing the cross section definition of
+    /// a spar. The spar middle point is defined by the intersection of
+    /// the wing middle plane and web1. This equals the coordinate
+    /// defined within the sparPosition.
+    /// Please find below a picture where all spar cross
+    /// section parameters as well as the orientation refereneces for
+    /// the material definition can be found:
+    /// @see spars2
+    /// 
     class CPACSSparCrossSection
     {
     public:
@@ -91,10 +102,20 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         boost::optional<CPACSCap>       m_upperCap;
+
         boost::optional<CPACSCap>       m_lowerCap;
+
         CPACSWeb                        m_web1;
+
         boost::optional<CPACSWeb>       m_web2;
+
         boost::optional<CPACSSparCells> m_sparCells;
+
+        /// The angle between the wing middle plane and
+        /// web1. Default is 90 degrees. Positive rotation is around the
+        /// intersection axis of the spar and the wing middle plane. The
+        /// positive heading of this axis is inline with the positive
+        /// heading of the componentSegment eta-axis.
         double                          m_rotation;
 
     private:

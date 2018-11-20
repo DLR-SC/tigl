@@ -40,6 +40,25 @@ namespace generated
     // CPACSTrailingEdgeDevices
 
     // generated from /xsd:schema/xsd:complexType[875]
+    /// @brief Trailing edge device of the wing.
+    /// 
+    /// A trailingEdgeDevice (TED) is defined via its
+    /// outerShape relative to the componentSegment. The WingCutOut
+    /// defines the area of the skin that is removed by the TED.
+    /// Structure is similar to the wing structure. The mechanical links
+    /// between the TED and the parrent are defined in tracks. The
+    /// deflection path is described in path. Additional actuators, that
+    /// are not included into a track, can be defined in actuators.
+    /// Leading and trailing edge are defined by the outer
+    /// shape of the wing segments, i.e. the trailing edge of a
+    /// trailingEdgeDevice is the trailing edge of the wing. This is also
+    /// valid for kinks that are present in the wing but not explicitly
+    /// modeled in the control surface.
+    /// The edges of the control surface within the wing are a
+    /// straight line in absolute coordinates! Hence, there needs to be a
+    /// straight connection between the eta-wise outer and inner points
+    /// of the edge that is within the wing in absolute coordinates.
+    /// 
     class CPACSTrailingEdgeDevice
     {
     public:
@@ -99,13 +118,28 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string                                    m_uID;
+
+        /// Name of the trailing edge device.
         std::string                                    m_name;
+
+        /// Description of the trailing edge device.
         boost::optional<std::string>                   m_description;
+
+        /// UID of the parent of the TED. The parent can
+        /// either be the uID of the componentSegment of the wing, or the
+        /// uID of another TED. In the second case this TED is placed within
+        /// the other TED (double slotted flap). In this way n-slotted TEDs
+        /// can be created.
         std::string                                    m_parentUID;
+
         CPACSControlSurfaceOuterShapeTrailingEdge      m_outerShape;
+
         boost::optional<CPACSControlSurfaceWingCutOut> m_wingCutOut;
+
         boost::optional<CCPACSWingCSStructure>         m_structure;
+
         CPACSControlSurfacePath                        m_path;
+
         boost::optional<CPACSControlSurfaceTracks>     m_tracks;
 
     private:

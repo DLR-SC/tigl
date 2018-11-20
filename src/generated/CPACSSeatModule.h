@@ -35,6 +35,10 @@ namespace generated
     // CPACSSeatModules
 
     // generated from /xsd:schema/xsd:complexType[790]
+    /// @brief seatModuleType
+    /// 
+    /// SeatModule type, containing data of a seat module
+    /// 
     class CPACSSeatModule
     {
     public:
@@ -75,11 +79,26 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string                  m_uID;
+
+        /// Name of the seat module
         boost::optional<std::string> m_name;
+
+        /// Description of the seat module
         boost::optional<std::string> m_description;
+
+        /// Number of seats in the seat module, e.g 1, 2
+        /// or 3
         int                          m_numberOfSeats;
+
+        /// Total width of the seat module
         double                       m_widthOfSeatModule;
+
+        /// seat module mass (optional, use of data to be
+        /// clarified)
         boost::optional<double>      m_moduleMass;
+
+        /// seat module mass CoG (optional, use of data to
+        /// be clarified)
         boost::optional<CCPACSPoint> m_moduleCoG;
 
     private:

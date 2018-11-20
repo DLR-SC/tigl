@@ -36,6 +36,11 @@ namespace generated
     // CPACSProfiles
 
     // generated from /xsd:schema/xsd:complexType[845]
+    /// @brief Definition cross sections of structural profiles.
+    /// 
+    /// Structuralprofiles type, containing cross section
+    /// information of structural profiles.
+    /// 
     class CPACSStructuralProfiles
     {
     public:

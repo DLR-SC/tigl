@@ -39,6 +39,10 @@ namespace generated
     // CPACSEnginePylons
 
     // generated from /xsd:schema/xsd:complexType[311]
+    /// @brief Definition of one engine pylon.
+    /// 
+    /// 
+    /// 
     class CPACSEnginePylon
     {
     public:
@@ -94,13 +98,24 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID of the engine pylon.
         std::string                         m_uID;
+
+        /// Name of the engine pylon.
         boost::optional<std::string>        m_name;
+
+        /// Description of the engine pylon.
         boost::optional<std::string>        m_description;
+
+        /// UID of the parent (normaly wing or fuselage).
         std::string                         m_parentUID;
+
         CCPACSTransformation                m_transformation;
+
         boost::optional<CCPACSWingSections> m_sections;
+
         boost::optional<CCPACSWingSegments> m_segments;
+
         boost::optional<CCPACSPositionings> m_positionings;
 
     private:

@@ -34,6 +34,10 @@ namespace generated
     // CPACSWingRibCrossSection
 
     // generated from /xsd:schema/xsd:complexType[718]
+    /// @brief pointXType
+    /// 
+    /// Point type, containing a x data.
+    /// 
     class CPACSPointX
     {
     public:
@@ -56,6 +60,8 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string m_uID;
+
+        /// X-Component
         double      m_x;
 
     private:

@@ -36,6 +36,11 @@ namespace generated
     // CPACSFuselageSections
 
     // generated from /xsd:schema/xsd:complexType[376]
+    /// @brief fuselageSectionType
+    /// 
+    /// FuselageSection type, containing fusleage section and
+    /// element data
+    /// 
     class CPACSFuselageSection
     {
     public:
@@ -74,9 +79,15 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string                   m_uID;
+
+        /// Name of fuselage section
         std::string                   m_name;
+
+        /// Description of fuselage section
         boost::optional<std::string>  m_description;
+
         CCPACSTransformation          m_transformation;
+
         CCPACSFuselageSectionElements m_elements;
 
     private:

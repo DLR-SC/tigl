@@ -31,6 +31,10 @@ namespace generated
     // CPACSToolspecific
 
     // generated from /xsd:schema/xsd:complexType[98]
+    /// @brief cFDToolType
+    /// 
+    /// 
+    /// 
     class CPACSCFDTool
     {
     public:

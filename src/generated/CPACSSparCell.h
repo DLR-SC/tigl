@@ -37,6 +37,16 @@ namespace generated
     // CPACSSparCells
 
     // generated from /xsd:schema/xsd:complexType[810]
+    /// @brief Spar cell of the spar.
+    /// 
+    /// Within spar cells a special area of the spar is
+    /// defined where different cross section and material properties
+    /// shall be defined.
+    /// The area of the spar is defined by using the
+    /// parameters 'fromEta' and 'toEta'. The definition of the caps,
+    /// webs and rotation is equivalent to the cross section definition
+    /// of the complete spar.
+    /// 
     class CPACSSparCell
     {
     public:
@@ -80,12 +90,24 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string               m_uID;
+
+        /// Beginning (= inner border) of the spar cell.
         CPACSEtaIsoLine           m_fromEta;
+
+        /// Ending (= outer border) of the spar cell.
         CPACSEtaIsoLine           m_toEta;
+
         CPACSCap                  m_upperCap;
+
         CPACSCap                  m_lowerCap;
+
         CPACSWeb                  m_web1;
+
         boost::optional<CPACSWeb> m_web2;
+
+        /// The angle between the wing middle plane and
+        /// web1. Default is 90 degrees. Positive rotation is around the
+        /// spar axis heading along with the positive eta-axis.
         double                    m_rotation;
 
     private:

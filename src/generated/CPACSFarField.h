@@ -30,6 +30,10 @@ namespace generated
     // CPACSCFDTool
 
     // generated from /xsd:schema/xsd:complexType[325]
+    /// @brief farFieldType
+    /// 
+    /// 
+    /// 
     class CPACSFarField
     {
     public:

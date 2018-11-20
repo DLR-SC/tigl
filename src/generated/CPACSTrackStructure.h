@@ -37,6 +37,11 @@ namespace generated
     // CPACSControlSurfaceTrackType
 
     // generated from /xsd:schema/xsd:complexType[871]
+    /// @brief wingSparsType
+    /// 
+    /// Spars type, a spar is defined by sparSegments that
+    /// stretch between multiple sparPositions
+    /// 
     class CPACSTrackStructure
     {
     public:

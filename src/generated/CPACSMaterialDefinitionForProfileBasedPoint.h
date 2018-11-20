@@ -31,6 +31,12 @@ namespace generated
     // CPACSProfileBasedStructuralElement
 
     // generated from /xsd:schema/xsd:complexType[653]
+    /// @brief materialDefinitionForProfileBasedPointType
+    /// 
+    /// MaterialDefinitionForProfileBased type, containing a
+    /// material definition (Reference to material and thickness) for
+    /// profile based objects, addition point reinforcements
+    /// 
     class CPACSMaterialDefinitionForProfileBasedPoint
     {
     public:
@@ -56,10 +62,23 @@ namespace generated
         TIGL_EXPORT virtual void SetOptionalAux2(const boost::optional<double>& value);
 
     protected:
+        /// uID of the profile point to which the
+        /// additional stiffness shall be applied.
         boost::optional<std::string> m_pointUID;
+
+        /// uID of a material definition.
         std::string                  m_materialUID;
+
+        /// cross sectional area of additional long.
+        /// stiffener at strctural element point
         double                       m_crossSectionArea;
+
+        /// optional auxiliary parameter for special use
+        /// (no physical meaning)
         boost::optional<double>      m_optionalAux1;
+
+        /// optional auxiliary parameter for special use
+        /// (no physical meaning)
         boost::optional<double>      m_optionalAux2;
 
     private:

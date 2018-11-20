@@ -41,6 +41,40 @@ namespace generated
     // CPACSWingAirfoils
 
     // generated from /xsd:schema/xsd:complexType[735]
+    /// @brief profileGeometryType
+    /// 
+    /// A profile is defined by a profile name, an optional
+    /// description and a 3-dimensional pointlist with all three
+    /// coordinates mandatory. For typical profiles, one of the
+    /// coordinate vectors contains only "0" entries. All point
+    /// coordinates are transferred to the global coordinate system. The
+    /// points have to be ordered in a mathematical positive sense.
+    /// Normalized coordinates are not required. First and last point
+    /// may, but need not to, be identical. Hence, it is possible to
+    /// include "open" profiles. However, the trailing edge position of
+    /// the upper and lower point need to be identical. No crooked
+    /// trailing edges are possible.
+    /// Example 1: For a conventional wing, the airfoil
+    /// coordinates are defined in x and z with all the y-coordinates
+    /// set to "0". The points have to be ordered from the trailing edge
+    /// along the lower side to the leading edge and then along the
+    /// upper side back to the trailing edge.
+    /// Example 2: For a fuselage, the coordinates are
+    /// typically given in y and z with x set to "0". Starting point of
+    /// the profile sould be the lowest point (typically in the symmetry
+    /// plane), then upwards on the positive y-side up to the highest
+    /// point (again, typically in the symmetry plane). Depending on,
+    /// whether the fuselage shall be specified with symmetry condition
+    /// or not, the profile either ends there, or continues on the
+    /// negative y-side back down to the lowest point.
+    /// Alternatively, it is possible to specify the
+    /// coordinates of a profile via the CST (class function /shape
+    /// function transformation technique) notation. Please see the
+    /// cst2DType for further information.
+    /// A profile can be symmetric. In that case the profile
+    /// is interpreted as being not closed and will be closed by
+    /// mirroring it on the symmetry plane.
+    /// 
     class CPACSProfileGeometry
     {
     public:
@@ -83,10 +117,17 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         boost::optional<TiglSymmetryAxis>     m_symmetry;
+
         std::string                           m_uID;
+
+        /// Name of profile
         std::string                           m_name;
+
+        /// Description of profile
         boost::optional<std::string>          m_description;
+
         boost::optional<CCPACSPointListXYZ>   m_pointList_choice1;
+
         boost::optional<CCPACSWingProfileCST> m_cst2D_choice2;
 
     private:

@@ -39,6 +39,11 @@ namespace generated
     // CPACSWingRibsDefinition
 
     // generated from /xsd:schema/xsd:complexType[945]
+    /// @brief wingRibCrossSectionType
+    /// 
+    /// wingRibCrossSectionType, containing the definition of
+    /// ribsCrossSection
+    /// 
     class CPACSWingRibCrossSection
     {
     public:
@@ -88,10 +93,32 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// The orthotropyDirection is defined as rotation
+        /// around the ribs z-axis. The rib coordinate system is defined as
+        /// follows: x-axis is from leading to trailingeEdge of the
+        /// componentSegment in the direction of the rib elongation. z-axis
+        /// is normal to the rib in the direction of positive eta. y is
+        /// defined by right hand rule. Rotation is around the z-axis. Zero
+        /// degrees are at the x-axis positive direction.
         CCPACSMaterialDefinition          m_material;
+
+        /// WING: The Rotation along the x describes a
+        /// rotation around a line, that is defined by the intersection of
+        /// the rib with the wing middle plane (orientated from leading to
+        /// trailing edge). This angle defaults to 90° which means, that the
+        /// rib is perpendicular on the wings middle plane. The rotation
+        /// angle is defined at the intersection point of the rib with the
+        /// ribReference line. The rib itself is allways straight and not
+        /// twisted. PYLON: The Rotation along the z describes a rotation
+        /// around the pylons z-axis (= rotation in top view). This angle
+        /// defaults to 90° which means, that the rib is perpendicular to
+        /// the pylons x-axis.
         boost::optional<CPACSPointX>      m_ribRotation;
+
         boost::optional<CPACSWingRibCell> m_ribCell;
+
         boost::optional<CPACSCap>         m_upperCap;
+
         boost::optional<CPACSCap>         m_lowerCap;
 
     private:

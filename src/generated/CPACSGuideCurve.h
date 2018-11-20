@@ -36,6 +36,11 @@ namespace generated
     // CPACSGuideCurves
 
     // generated from /xsd:schema/xsd:complexType[435]
+    /// @brief Guide Curve Type
+    /// 
+    /// A guide curve may be used to alter the shape of the
+    /// outer geometry and "guide" the loft.
+    /// 
     class CPACSGuideCurve
     {
     public:
@@ -96,15 +101,44 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string                                 m_uID;
+
+        /// Name of guide curve
         std::string                                 m_name;
+
+        /// Description of guide curve
         boost::optional<std::string>                m_description;
+
+        /// Reference to a guide curve profile
         std::string                                 m_guideCurveProfileUID;
+
+        /// Local direction along which the relative x-coordinates of
+        /// the guide curve points are defined. For the wing the default is
+        /// the wing's local x-axis, for the fuselage its the fuselage's local z-axis.
         boost::optional<CPACSPointXYZ>              m_rXDirection;
+
+        /// Reference to the previous guide curve from
+        /// which this guide curve shall start.
         boost::optional<std::string>                m_fromGuideCurveUID_choice1;
+
+        /// Continuity definition for geometry
+        /// generation. Possible options: C0, C1 from previous, C2 from
+        /// previous, C1 to previous, C2 to previous
         boost::optional<CPACSGuideCurve_continuity> m_continuity_choice1;
+
+        /// Reference to the relative circumference
+        /// position from which the guide curve shall start. Valid values
+        /// are in the interval -1.0...1.0.
         boost::optional<double>                     m_fromRelativeCircumference_choice2;
+
+        /// Tangent at first point
         boost::optional<CPACSPointXYZ>              m_tangent_choice2;
+
+        /// The relative circumference
+        /// position at which the guide curve shall end. Valid values
+        /// are in the interval -1.0...1.0.
         double                                      m_toRelativeCircumference;
+
+        /// Tangent at last point
         boost::optional<CPACSPointXYZ>              m_tangent;
 
     private:

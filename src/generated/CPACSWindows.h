@@ -35,6 +35,10 @@ namespace generated
     // CPACSStructuralElements
 
     // generated from /xsd:schema/xsd:complexType[922]
+    /// @brief windowsType
+    /// 
+    /// Windows type, containing windows
+    /// 
     class CPACSWindows
     {
     public:

@@ -29,6 +29,10 @@ namespace generated
     // CPACSPostFailure
 
     // generated from /xsd:schema/xsd:complexType[705]
+    /// @brief plasticityCurvePointType
+    /// 
+    /// 
+    /// 
     class CPACSPlasticityCurvePoint
     {
     public:
@@ -45,7 +49,10 @@ namespace generated
         TIGL_EXPORT virtual void SetTrueStress(const double& value);
 
     protected:
+        /// tangent modulus [Pa]
         double m_tangentModulus;
+
+        /// true stress [Pa]
         double m_trueStress;
 
     private:

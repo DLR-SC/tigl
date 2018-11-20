@@ -35,6 +35,11 @@ namespace generated
     // CPACSFuselageStructure
 
     // generated from /xsd:schema/xsd:complexType[114]
+    /// @brief cargoDoorsAssemblyType
+    /// 
+    /// CargoDoorsAssembly type, containing cargo door
+    /// assemblys
+    /// 
     class CPACSCargoDoorsAssembly
     {
     public:

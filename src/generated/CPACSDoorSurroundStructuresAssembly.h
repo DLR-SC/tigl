@@ -35,6 +35,11 @@ namespace generated
     // CPACSStructuralElements
 
     // generated from /xsd:schema/xsd:complexType[287]
+    /// @brief doorSurroundStructuresAssemblyType
+    /// 
+    /// doorSurroundStructuresAssembly type, containing
+    /// dorrSurroundStructure definitions
+    /// 
     class CPACSDoorSurroundStructuresAssembly
     {
     public:

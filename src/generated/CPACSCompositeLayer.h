@@ -31,6 +31,11 @@ namespace generated
     // CPACSComposite
 
     // generated from /xsd:schema/xsd:complexType[144]
+    /// @brief compositeLayerType
+    /// 
+    /// CompositeLayer type, conatining data of a composite
+    /// layer
+    /// 
     class CPACSCompositeLayer
     {
     public:
@@ -56,10 +61,19 @@ namespace generated
         TIGL_EXPORT virtual void SetMaterialUID(const std::string& value);
 
     protected:
+        /// Name of layer
         boost::optional<std::string> m_name;
+
+        /// Description of layer
         boost::optional<std::string> m_description;
+
+        /// Thickness of layer
         double                       m_thickness;
+
+        /// Angle of layer in degree
         double                       m_phi;
+
+        /// Material UID of the layer
         std::string                  m_materialUID;
 
     private:

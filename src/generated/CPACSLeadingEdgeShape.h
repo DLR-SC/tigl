@@ -29,6 +29,14 @@ namespace generated
     // CPACSControlSurfaceBorderTrailingEdge
 
     // generated from /xsd:schema/xsd:complexType[485]
+    /// @brief Optional definition of the leading edge shape of
+    /// trailing edge devices (TED).
+    /// 
+    /// All parameters are optional. For the definition of the
+    /// parameters, please refer to the picture below. Parameters from
+    /// the outer border default to the parameters of the inner border.
+    /// @see outerShape2
+    /// 
     class CPACSLeadingEdgeShape
     {
     public:
@@ -48,8 +56,23 @@ namespace generated
         TIGL_EXPORT virtual void SetXsiLowerSkin(const double& value);
 
     protected:
+        /// Relative height of the leading edge of the TED,
+        /// based on the airfoil height of the parent at this position.
+        /// Optional.
         double m_relHeightLE;
+
+        /// Relative chordwise upper skin position, of the
+        /// border, where the airfoil of the TED is equivalent of the
+        /// airfoil from the parent. Measured from the rear to the front (0
+        /// = TED trailing edge; 1 = TED leading edge). Values form the
+        /// outer border default to the value of the inner border. Optional.
         double m_xsiUpperSkin;
+
+        /// Relative chordwise lower skin position, of the
+        /// border, where the airfoil of the TED is equivalent of the
+        /// airfoil from the parent. Measured from the rear to the front (0
+        /// = TED trailing edge; 1 = TED leading edge). Values form the
+        /// outer border default to the value of the inner border. Optional.
         double m_xsiLowerSkin;
 
     private:

@@ -43,6 +43,11 @@ namespace generated
     // CPACSFuselage
 
     // generated from /xsd:schema/xsd:complexType[383]
+    /// @brief fuselageStructureType
+    /// 
+    /// FuselageStructure type, containing data of the fuselage's
+    /// structure
+    /// 
     class CPACSFuselageStructure
     {
     public:

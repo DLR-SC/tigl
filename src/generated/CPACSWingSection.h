@@ -36,6 +36,26 @@ namespace generated
     // CPACSWingSections
 
     // generated from /xsd:schema/xsd:complexType[950]
+    /// @brief Section of the wing.
+    /// 
+    /// WingSection type, containing a wing section. The
+    /// sections contains elements, where the airfoils are defined. For
+    /// the definition of a wing at least two sections (root and tip)
+    /// have to be defined, but any number greater than 2 is also
+    /// possible.
+    /// Mathematically spoken a section is a coordinate system
+    /// that is translated, rotated and scaled relative to the wing
+    /// coordinate system. This transformation parameters are defined
+    /// withing the transformation section.
+    /// In addition to the translation, which is defined in
+    /// the transformation part, the section can be translated by using
+    /// the positionings vectors (wing-&gt;positiongs). Translation of
+    /// the positionings vectors is added to the translation of the
+    /// section.
+    /// An example for wing sections can be found in the
+    /// picture below:
+    /// @see wingsections
+    /// 
     class CPACSWingSection
     {
     public:
@@ -74,9 +94,15 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string                  m_uID;
+
+        /// Name of wing the wing section.
         std::string                  m_name;
+
+        /// Description of the wing section.
         boost::optional<std::string> m_description;
+
         CCPACSTransformation         m_transformation;
+
         CCPACSWingSectionElements    m_elements;
 
     private:

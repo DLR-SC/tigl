@@ -36,6 +36,10 @@ namespace generated
     // CPACSSheetList
 
     // generated from /xsd:schema/xsd:complexType[801]
+    /// @brief sheetType
+    /// 
+    /// Sheet type, containing connection data of a sheet
+    /// 
     class CPACSSheet
     {
     public:
@@ -85,13 +89,37 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string                         m_uID;
+
+        /// Name of sheet within the profile definition
         boost::optional<std::string>        m_name;
+
+        /// Description of sheet within the profile
+        /// definition
         boost::optional<std::string>        m_description;
+
+        /// Point from which the sheet definition starts
+        /// start
         std::string                         m_fromPointUID;
+
+        /// Continuity definition for profile geometry
+        /// generation. 0= C0 (allows sharp edges, deafault), 1= C1 (defines
+        /// tangential continuity), 2= C2 (defines curvature continuity)
+        /// 2=all
         boost::optional<CPACSContinuityAtP> m_continuityAtP1;
+
+        /// Definition of an orientation vector at P1
         boost::optional<CCPACSPointXY>      m_orientationAtP1;
+
+        /// Point at which the sheet definition ends
         std::string                         m_toPointUID;
+
+        /// Continuity definition for profile geometry
+        /// generation. 0= C0 (allows sharp edges, deafault), 1= C1 (defines
+        /// tangential continuity), 2= C2 (defines curvature continuity)
+        /// 2=all
         boost::optional<CPACSContinuityAtP> m_continuityAtP2;
+
+        /// Definition of an orientation vector at P2
         boost::optional<CCPACSPointXY>      m_orientationAtP2;
 
     private:
