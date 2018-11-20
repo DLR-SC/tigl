@@ -755,7 +755,13 @@ PNamedShape CCPACSWingCell::GetLoft() const
 
 TiglGeometricComponentType CCPACSWingCell::GetComponentType() const
 {
-    return TIGL_COMPONENT_LOGICAL;
+    return TIGL_COMPONENT_WINGCELL;
 }
+
+TiglGeometricComponentIntent CCPACSWingCell::GetComponentIntent() const
+{
+    return TIGL_INTENT_LOGICAL;
+}
+
 
 } // namespace tigl

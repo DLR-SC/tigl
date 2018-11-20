@@ -80,7 +80,12 @@ public:
 
     TiglGeometricComponentType GetComponentType() const OVERRIDE
     {
-        return TIGL_COMPONENT_PHYSICAL;
+        return TIGL_COMPONENT_OTHER;
+    }
+
+    TiglGeometricComponentIntent GetComponentIntent() const OVERRIDE
+    {
+        return TIGL_INTENT_PHYSICAL;
     }
 
 private:

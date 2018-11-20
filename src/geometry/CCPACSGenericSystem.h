@@ -60,8 +60,8 @@ public:
     TIGL_EXPORT CCPACSConfiguration & GetConfiguration() const;
 
     // Returns the Component Type TIGL_COMPONENT_GENERICSYSTEM.
-    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE {return TIGL_COMPONENT_GENERICSYSTEM | TIGL_COMPONENT_PHYSICAL;}
-
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE {return TIGL_COMPONENT_GENERICSYSTEM;}
+    TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const OVERRIDE {return TIGL_INTENT_PHYSICAL;}
 
 protected:
     // Cleanup routine

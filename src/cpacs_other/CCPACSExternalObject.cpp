@@ -93,7 +93,12 @@ const std::string& CCPACSExternalObject::GetFilePath() const
 
 TiglGeometricComponentType CCPACSExternalObject::GetComponentType() const
 {
-    return TIGL_COMPONENT_PHYSICAL;
+    return TIGL_COMPONENT_EXTERNAL_OBJECT;
+}
+
+TiglGeometricComponentIntent CCPACSExternalObject::GetComponentIntent() const
+{
+    return TIGL_INTENT_PHYSICAL;
 }
 
 PNamedShape CCPACSExternalObject::BuildLoft() const

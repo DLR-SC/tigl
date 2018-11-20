@@ -32,7 +32,8 @@ public:
 
     TIGL_EXPORT std::string GetDefaultedUID() const OVERRIDE;
 
-    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE { return TIGL_COMPONENT_ENGINE_PYLON | TIGL_COMPONENT_PHYSICAL; }
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE { return TIGL_COMPONENT_ENGINE_PYLON; }
+    TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const OVERRIDE { return TIGL_INTENT_PHYSICAL; }
 
     TIGL_EXPORT void Invalidate();
 

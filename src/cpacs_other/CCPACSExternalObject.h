@@ -39,6 +39,7 @@ public:
     TIGL_EXPORT const std::string& GetFilePath() const;
     
     TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE;
+    TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const OVERRIDE;
 
 private:
     /// reads in the CAD file

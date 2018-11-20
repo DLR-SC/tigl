@@ -211,7 +211,12 @@ public:
 
     TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE
     {
-        return TIGL_COMPONENT_WINGSEGMENT | TIGL_COMPONENT_SEGMENT | TIGL_COMPONENT_LOGICAL;
+        return TIGL_COMPONENT_WINGSEGMENT;
+    }
+
+    TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const OVERRIDE
+    {
+        return TIGL_INTENT_LOGICAL;
     }
 
     TIGL_EXPORT CTiglTransformation GetParentTransformation() const;

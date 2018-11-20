@@ -41,6 +41,9 @@ public:
 
     // Returns the Geometric type of this component, e.g. Wing or Fuselage
     TIGL_EXPORT virtual TiglGeometricComponentType GetComponentType() const = 0;
+
+    // Returns the Geometric type of this component, e.g. Wing or Fuselage
+    TIGL_EXPORT virtual TiglGeometricComponentIntent GetComponentIntent() const = 0;
 };
 
 } // end namespace tigl

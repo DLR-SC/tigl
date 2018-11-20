@@ -49,7 +49,12 @@ PNamedShape CCPACSLongFloorBeam::GetLoft() const
 
 TiglGeometricComponentType CCPACSLongFloorBeam::GetComponentType() const
 {
-    return TIGL_COMPONENT_LONG_FLOOR_BEAM | TIGL_COMPONENT_PHYSICAL;
+    return TIGL_COMPONENT_LONG_FLOOR_BEAM;
+}
+
+TiglGeometricComponentIntent CCPACSLongFloorBeam::GetComponentIntent() const
+{
+    return TIGL_INTENT_PHYSICAL | TIGL_INTENT_INNER_STRUCTURE;
 }
 
 void CCPACSLongFloorBeam::Invalidate()

@@ -126,7 +126,8 @@ public:
     // Returns null if the point is not an that wing, i.e. deviates more than 1 cm from the wing
     TIGL_EXPORT const CCPACSWingSegment* findSegment(double x, double y, double z, gp_Pnt& nearestPoint, double& deviation, double maxDeviation = 1.e-2) const;
 
-    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE { return TIGL_COMPONENT_WINGCOMPSEGMENT | TIGL_COMPONENT_SEGMENT | TIGL_COMPONENT_LOGICAL; }
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE { return TIGL_COMPONENT_WINGCOMPSEGMENT; }
+    TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const OVERRIDE {return TIGL_INTENT_LOGICAL; }
 
     TIGL_EXPORT MaterialList GetMaterials(double eta, double xsi, TiglStructureType);
 

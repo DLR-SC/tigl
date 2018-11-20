@@ -83,6 +83,7 @@ public:
 
     // Returns the Geometric type of this component, e.g. Wing or Fuselage
     TIGL_EXPORT virtual TiglGeometricComponentType GetComponentType() const OVERRIDE;
+    TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const OVERRIDE;
 
 private:
     struct AuxiliaryGeomCache

@@ -189,28 +189,46 @@ enum TiglAlgorithmCode
   Definition of possible types for geometric components. Used for calculations where
   the type if the component changes the way of behavior.
 */
-typedef unsigned int TiglGeometricComponentType;
+enum TiglGeometricComponentType
+{
+TIGL_COMPONENT_PLANE,            /**< The whole aircraft */
+TIGL_COMPONENT_FUSELAGE,         /**< The Component is a fuselage */
+TIGL_COMPONENT_WING,             /**< The Component is a wing */
+TIGL_COMPONENT_SEGMENT,          /**< The Component is a general segment */
+TIGL_COMPONENT_WINGSEGMENT,      /**< The Component is a wing segment */
+TIGL_COMPONENT_FUSELSEGMENT,     /**< The Component is a fuselage segment */
+TIGL_COMPONENT_WINGCOMPSEGMENT,  /**< The Component is a wing component segment */
+TIGL_COMPONENT_WINGSHELL,        /**< The Component is a face of the wing (e.g. upper wing surface) */
+TIGL_COMPONENT_WINGRIB,
+TIGL_COMPONENT_WINGSPAR,
+TIGL_COMPONENT_WINGCELL,
+TIGL_COMPONENT_GENERICSYSTEM,    /**< The Component is a generic system */
+TIGL_COMPONENT_ROTOR,            /**< The Component is a rotor */
+TIGL_COMPONENT_ROTORBLADE,       /**< The Component is a rotor blade */
+TIGL_COMPONENT_ATTACHED_ROTORBLADE, /**< The Component is a attached rotor blade */
+TIGL_COMPONENT_PRESSURE_BULKHEAD,/**< The Component is a pressure bulkhead */
+TIGL_COMPONENT_CROSS_BEAM_STRUT, /**< The Component is a cross beam strut */
+TIGL_COMPONENT_CARGO_DOOR,       /**< The Component is a cargo door */
+TIGL_COMPONENT_LONG_FLOOR_BEAM,  /**< The Component is a long floor beam */
+TIGL_COMPONENT_EXTERNAL_OBJECT,  /**< The Component is a long floor beam */
+TIGL_COMPONENT_FARFIELD,         /**< The Component is a far field */
+TIGL_COMPONENT_ENGINE_PYLON,     /**< The Component is a engine pylon */
+TIGL_COMPONENT_OTHER
+};
 
-#define  TIGL_COMPONENT_PHYSICAL          1        /**< A phyisical component like a fuselage, wing, nacelle, something you could touch */
-#define  TIGL_COMPONENT_LOGICAL           2        /**< A logical component, like a wing segment */
-#define  TIGL_COMPONENT_PLANE             4        /**< The whole aircraft */
-#define  TIGL_COMPONENT_FUSELAGE          8        /**< The Component is a fuselage */
-#define  TIGL_COMPONENT_WING              16       /**< The Component is a wing */
-#define  TIGL_COMPONENT_SEGMENT           32       /**< The Component is a general segment */
-#define  TIGL_COMPONENT_WINGSEGMENT       64       /**< The Component is a wing segment */
-#define  TIGL_COMPONENT_FUSELSEGMENT      128      /**< The Component is a fuselage segment */
-#define  TIGL_COMPONENT_WINGCOMPSEGMENT   256      /**< The Component is a wing component segment */
-#define  TIGL_COMPONENT_WINGSHELL         512      /**< The Component is a face of the wing (e.g. upper wing surface) */
-#define  TIGL_COMPONENT_GENERICSYSTEM     1024     /**< The Component is a generic system */
-#define  TIGL_COMPONENT_ROTOR             2048     /**< The Component is a rotor */
-#define  TIGL_COMPONENT_ROTORBLADE        4096     /**< The Component is a rotor blade */
-#define  TIGL_COMPONENT_PRESSURE_BULKHEAD 8192     /**< The Component is a pressure bulkhead */
-#define  TIGL_COMPONENT_CROSS_BEAM_STRUT  16384    /**< The Component is a cross beam strut */
+typedef enum TiglGeometricComponentType TiglGeometricComponentType;
 
-#define  TIGL_COMPONENT_CARGO_DOOR        32768    /**< The Component is a cargo door */
+enum TiglGeometricComponentIntentFlags
+{
+    TIGL_INTENT_PHYSICAL           = 1,   /**< A phyisical component like a fuselage, wing, nacelle, something you could touch */
+    TIGL_INTENT_LOGICAL            = 2,   /**< A logical component, like a wing segment */
+    TIGL_INTENT_INNER_STRUCTURE    = 4,   /**< Part of  the aircrafts structure geometry */
+    TIGL_INTENT_OUTER_AERO_SURFACE = 8    /**< Part of the outer aircraft (wing, fuselage, nacelle)  */
+};
 
-#define  TIGL_COMPONENT_LONG_FLOOR_BEAM   65536    /**< The Component is a long floor beam */
-#define  TIGL_COMPONENT_ENGINE_PYLON      131072   /**< The Component is a engine pylon */
+typedef enum TiglGeometricComponentIntentFlags TiglGeometricComponentIntentFlags;
+
+typedef unsigned long TiglGeometricComponentIntent;
 
 enum TiglStructureType 
 {
