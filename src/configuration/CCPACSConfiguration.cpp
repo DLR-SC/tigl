@@ -48,6 +48,7 @@
 #include "generated/TixiHelper.h"
 
 #include <cfloat>
+#include <limits>
 
 namespace tigl
 {
@@ -582,40 +583,9 @@ const CTiglUIDManager& CCPACSConfiguration::GetUIDManager() const
 
 double CCPACSConfiguration::GetAirplaneLenth()
 {
-    Bnd_Box boundingBox;
-
-    // Draw all wings
-    for (int w = 1; w <= GetWingCount(); w++) {
-        tigl::CCPACSWing& wing = GetWing(w);
-
-        for (int i = 1; i <= wing.GetSegmentCount(); i++) {
-            tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment&) wing.GetSegment(i);
-            BRepBndLib::Add(segment.GetLoft()->Shape(), boundingBox);
-
-        }
-
-        if (wing.GetSymmetryAxis() == TIGL_NO_SYMMETRY) {
-            continue;
-        }
-
-        for (int i = 1; i <= wing.GetSegmentCount(); i++) {
-            tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment&) wing.GetSegment(i);
-            BRepBndLib::Add(segment.GetLoft()->Shape(), boundingBox);
-        }
-    }
-
-    for (int f = 1; f <= GetFuselageCount(); f++) {
-        tigl::CCPACSFuselage& fuselage = GetFuselage(f);
-
-        for (int i = 1; i <= fuselage.GetSegmentCount(); i++) {
-            tigl::CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment&) fuselage.GetSegment(i);
-            BRepBndLib::Add(segment.GetLoft()->Shape(), boundingBox);
-        }
-    }
-    Standard_Real xmin, xmax, ymin, ymax, zmin, zmax;
-    boundingBox.Get(xmin, ymin, zmin, xmax, ymax, zmax);
-
-    return xmax-xmin;
+    CTiglPoint min, max;
+    ConfigurationGetBoundingBox(*this, min, max);
+    return max.x - min.x;
 }
 
 // Returns the uid manager
@@ -698,5 +668,71 @@ const CCPACSWings& CCPACSConfiguration::GetWings() const
         throw CTiglError("No configuration loaded");
     }
 }
+
+void ConfigurationGetBoundingBox(const CCPACSConfiguration &config, CTiglPoint &min, CTiglPoint &max)
+{
+    std::vector<TiglGeometricComponentType> shapesToDraw;
+    shapesToDraw.push_back(TIGL_COMPONENT_FUSELAGE);
+    shapesToDraw.push_back(TIGL_COMPONENT_WING);
+    shapesToDraw.push_back(TIGL_COMPONENT_ROTOR);
+    shapesToDraw.push_back(TIGL_COMPONENT_ENGINE_PYLON);
+    shapesToDraw.push_back(TIGL_COMPONENT_EXTERNAL_OBJECT);
+
+    CTiglPoint globalMin(std::numeric_limits<double>::max(),
+                         std::numeric_limits<double>::max(),
+                         std::numeric_limits<double>::max());
+
+    CTiglPoint globalMax(-std::numeric_limits<double>::max(),
+                         -std::numeric_limits<double>::max(),
+                         -std::numeric_limits<double>::max());
+
+    const tigl::CTiglUIDManager& uidMgr = config.GetUIDManager();
+    const tigl::ShapeContainerType& container = uidMgr.GetShapeContainer();
+
+    for (tigl::ShapeContainerType::const_iterator it = container.begin(); it != container.end(); ++it) {
+        tigl::ITiglGeometricComponent* component = it->second;
+
+        if (!component) {
+            continue;
+        }
+
+        if (std::find(shapesToDraw.begin(), shapesToDraw.end(), component->GetComponentType()) != shapesToDraw.end()) {
+            CTiglPoint curMin(globalMin), curMax(globalMax);
+            ComponentGetBoundingBox(config, component->GetDefaultedUID(), curMin, curMax);
+            globalMin.x = std::min(curMin.x, globalMin.x);
+            globalMin.y = std::min(curMin.y, globalMin.y);
+            globalMin.z = std::min(curMin.z, globalMin.z);
+
+            globalMax.x = std::max(curMax.x, globalMax.x);
+            globalMax.y = std::max(curMax.y, globalMax.y);
+            globalMax.z = std::max(curMax.z, globalMax.z);
+        }
+
+    }
+
+    min = globalMin;
+    max = globalMax;
+}
+
+void ComponentGetBoundingBox(const CCPACSConfiguration &config, const std::string &uid, CTiglPoint &min, CTiglPoint &max)
+{
+    Bnd_Box boundingBox;
+
+
+    ITiglGeometricComponent& component = config.GetUIDManager().GetGeometricComponent(uid);
+
+    PNamedShape loft = component.GetLoft();
+    if (loft) BRepBndLib::Add(loft->Shape(), boundingBox);
+
+    tigl::CTiglAbstractGeometricComponent* geometricComp = dynamic_cast<tigl::CTiglAbstractGeometricComponent*>(&component);
+
+    if (geometricComp) {
+        PNamedShape mirroredLoft = geometricComp->GetMirroredLoft();
+        if (mirroredLoft) BRepBndLib::Add(mirroredLoft->Shape(), boundingBox);;
+    }
+
+    boundingBox.Get(min.x, min.y, min.z, max.x, max.y, max.z);
+}
+
 } // end namespace tigl
 
