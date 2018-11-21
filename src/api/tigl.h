@@ -4614,6 +4614,8 @@ TIGL_COMMON_EXPORT const char * tiglGetErrorString(TiglReturnCode errorCode);
 * into a bounding box. The length of the plane is returned as the length of the box
 * in x-direction.
 *
+* Note, that this resulting value is a fast but very rough approximation!
+*
 *
 * @param[in]  cpacsHandle Handle for the CPACS configuration
 * @param[out] pLength     Length of plane
@@ -4621,6 +4623,27 @@ TIGL_COMMON_EXPORT const char * tiglGetErrorString(TiglReturnCode errorCode);
 * @returns Error code
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglConfigurationGetLength(TiglCPACSConfigurationHandle cpacsHandle, double * pLength);
+
+
+/**
+ * @brief Computes the bounding box coordinates of the configuration
+ *
+ * Note, that the resulting values are a fast but very rough approximation!
+ *
+ * @param[in]  cpacsHandle Handle for the CPACS configuration
+ * @param[out] minX        Minimum x value
+ * @param[out] minY        Minimum y value
+ * @param[out] minZ        Minimum z value
+ * @param[out] maxX        Maximum x value
+ * @param[out] maxY        Maximum y value
+ * @param[out] maxZ        Maximum z value
+ *
+ * @returns Error code
+ */
+TIGL_COMMON_EXPORT TiglReturnCode tiglConfigurationGetBoundingBox(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                  double* minX, double* minY, double* minZ,
+                                                                  double* maxX, double* maxY, double* maxZ);
+
 
 /**
 * @brief Returns the span of a wing. 
