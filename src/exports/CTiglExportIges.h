@@ -35,6 +35,14 @@ namespace tigl
 
 class CCPACSConfiguration;
 
+enum FaceNameSettings
+{
+    UIDOnly,
+    FaceNameOnly,
+    UIDandFaceName,
+    None
+};
+
 class IgesOptions : public ExporterOptions
 {
 public:
@@ -44,6 +52,7 @@ public:
         Set("IncludeFarfield", true);
         Set("ShapeGroupMode", NAMED_COMPOUNDS);
         AddOption("IGES5.3", true);
+        AddOption("FaceNames", FaceNameOnly);
     }
 };
 
@@ -91,6 +100,27 @@ private:
 
     void SetTranslationParameters() const;
 };
+
+template <>
+inline void from_string<FaceNameSettings>(const std::string &s, FaceNameSettings &t)
+{
+    std::string value = tigl::to_upper(s);
+    if (value == "UIDONLY") {
+        t = UIDOnly;
+    }
+    else if (value == "FACENAMEONLY") {
+        t = FaceNameOnly;
+    }
+    else if (value == "UIDANDFACENAME") {
+        t = UIDandFaceName;
+    }
+    else if (value == "NONE") {
+        t = None;
+    }
+    else {
+        throw CTiglError("Cannot convert string to FaceNameSettings");
+    }
+}
 
 } // end namespace tigl
 
