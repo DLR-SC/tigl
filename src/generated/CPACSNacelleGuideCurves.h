@@ -42,14 +42,14 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSNacelleGuideCurve> >& GetNacelleGuideCurveTypes() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSNacelleGuideCurve> >& GetNacelleGuideCurveTypes();
+        TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSNacelleGuideCurve> >& GetNacelleGuideCurves() const;
+        TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSNacelleGuideCurve> >& GetNacelleGuideCurves();
 
-        TIGL_EXPORT virtual CCPACSNacelleGuideCurve& AddNacelleGuideCurveType();
-        TIGL_EXPORT virtual void RemoveNacelleGuideCurveType(CCPACSNacelleGuideCurve& ref);
+        TIGL_EXPORT virtual CCPACSNacelleGuideCurve& AddNacelleGuideCurve();
+        TIGL_EXPORT virtual void RemoveNacelleGuideCurve(CCPACSNacelleGuideCurve& ref);
 
     protected:
-        std::vector<unique_ptr<CCPACSNacelleGuideCurve> > m_nacelleGuideCurveTypes;
+        std::vector<unique_ptr<CCPACSNacelleGuideCurve> > m_nacelleGuideCurves;
 
     private:
 #ifdef HAVE_CPP11

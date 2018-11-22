@@ -30122,7 +30122,7 @@ jonas.jepsen@dlr.de
 		<xsd:complexContent>
 			<xsd:extension base="complexBaseType">
 				<xsd:sequence>
-					<xsd:element name="nacelleGuideCurveType" type="nacelleGuideCurveType" maxOccurs="unbounded"></xsd:element>
+					<xsd:element name="nacelleGuideCurve" type="nacelleGuideCurveType" maxOccurs="unbounded"></xsd:element>
 				</xsd:sequence>
 			</xsd:extension>
 		</xsd:complexContent>

@@ -23,7 +23,7 @@ namespace tigl {
 
 TIGL_EXPORT size_t CCPACSNacelleGuideCurves::GetGuideCurveCount() const
 {
-    return GetNacelleGuideCurveTypes().size();
+    return GetNacelleGuideCurves().size();
 }
 
 TIGL_EXPORT CCPACSNacelleGuideCurve& CCPACSNacelleGuideCurves::GetGuideCurve(size_t index) const
@@ -32,7 +32,7 @@ TIGL_EXPORT CCPACSNacelleGuideCurve& CCPACSNacelleGuideCurves::GetGuideCurve(siz
     if (index < 0 || index >= GetGuideCurveCount()) {
         throw CTiglError("Invalid index in CCPACSNacelleGuideCurves::GetGuideCurve", TIGL_INDEX_ERROR);
     }
-    return *m_nacelleGuideCurveTypes[index];
+    return *m_nacelleGuideCurves[index];
 }
 
 } //namepsace tigl

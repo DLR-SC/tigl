@@ -35,41 +35,41 @@ namespace generated
 
     void CPACSNacelleGuideCurves::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
-        // read element nacelleGuideCurveType
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/nacelleGuideCurveType")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/nacelleGuideCurveType", m_nacelleGuideCurveTypes);
+        // read element nacelleGuideCurve
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/nacelleGuideCurve")) {
+            tixi::TixiReadElements(tixiHandle, xpath + "/nacelleGuideCurve", m_nacelleGuideCurves);
         }
 
     }
 
     void CPACSNacelleGuideCurves::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        // write element nacelleGuideCurveType
-        tixi::TixiSaveElements(tixiHandle, xpath + "/nacelleGuideCurveType", m_nacelleGuideCurveTypes);
+        // write element nacelleGuideCurve
+        tixi::TixiSaveElements(tixiHandle, xpath + "/nacelleGuideCurve", m_nacelleGuideCurves);
 
     }
 
-    const std::vector<unique_ptr<CCPACSNacelleGuideCurve> >& CPACSNacelleGuideCurves::GetNacelleGuideCurveTypes() const
+    const std::vector<unique_ptr<CCPACSNacelleGuideCurve> >& CPACSNacelleGuideCurves::GetNacelleGuideCurves() const
     {
-        return m_nacelleGuideCurveTypes;
+        return m_nacelleGuideCurves;
     }
 
-    std::vector<unique_ptr<CCPACSNacelleGuideCurve> >& CPACSNacelleGuideCurves::GetNacelleGuideCurveTypes()
+    std::vector<unique_ptr<CCPACSNacelleGuideCurve> >& CPACSNacelleGuideCurves::GetNacelleGuideCurves()
     {
-        return m_nacelleGuideCurveTypes;
+        return m_nacelleGuideCurves;
     }
 
-    CCPACSNacelleGuideCurve& CPACSNacelleGuideCurves::AddNacelleGuideCurveType()
+    CCPACSNacelleGuideCurve& CPACSNacelleGuideCurves::AddNacelleGuideCurve()
     {
-        m_nacelleGuideCurveTypes.push_back(make_unique<CCPACSNacelleGuideCurve>());
-        return *m_nacelleGuideCurveTypes.back();
+        m_nacelleGuideCurves.push_back(make_unique<CCPACSNacelleGuideCurve>());
+        return *m_nacelleGuideCurves.back();
     }
 
-    void CPACSNacelleGuideCurves::RemoveNacelleGuideCurveType(CCPACSNacelleGuideCurve& ref)
+    void CPACSNacelleGuideCurves::RemoveNacelleGuideCurve(CCPACSNacelleGuideCurve& ref)
     {
-        for (std::size_t i = 0; i < m_nacelleGuideCurveTypes.size(); i++) {
-            if (m_nacelleGuideCurveTypes[i].get() == &ref) {
-                m_nacelleGuideCurveTypes.erase(m_nacelleGuideCurveTypes.begin() + i);
+        for (std::size_t i = 0; i < m_nacelleGuideCurves.size(); i++) {
+            if (m_nacelleGuideCurves[i].get() == &ref) {
+                m_nacelleGuideCurves.erase(m_nacelleGuideCurves.begin() + i);
                 return;
             }
         }
