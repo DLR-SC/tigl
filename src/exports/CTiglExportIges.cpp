@@ -74,7 +74,7 @@ namespace
     {
         return options.HasOption("FaceNames")
                 ? options.Get<tigl::FaceNameSettings>("FaceNames")
-                : tigl::FaceNameOnly;
+                : tigl::IgesOptions().Get<tigl::FaceNameSettings>("FaceNames");
     }
 
     void AssignLevelToAllEntities(Handle(IGESData_IGESEntity) ent, int level)
@@ -256,8 +256,11 @@ namespace
         WriteIGESShapeNames(writer, shape, level);
     }
 
-    int GetBRepMode(const tigl::CTiglExportIges& writer) {
-        return writer.GlobalExportOptions().HasOption("IGES5.3") ? writer.GlobalExportOptions().Get<bool>("IGES5.3") : 1;
+    int GetBRepMode(const tigl::CTiglExportIges& writer)
+    {
+        return writer.GlobalExportOptions().HasOption("IGES5.3")
+                ? writer.GlobalExportOptions().Get<bool>("IGES5.3")
+                : tigl::IgesOptions().Get<bool>("IGES5.3");
     }
     
 } //namespace
