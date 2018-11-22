@@ -15,7 +15,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "CPACSNacelleGuideCurve.h"
+#include <CCPACSNacelleGuideCurve.h>
 #include "CPACSNacelleGuideCurves.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -49,23 +49,23 @@ namespace generated
 
     }
 
-    const std::vector<unique_ptr<CPACSNacelleGuideCurve> >& CPACSNacelleGuideCurves::GetNacelleGuideCurveTypes() const
+    const std::vector<unique_ptr<CCPACSNacelleGuideCurve> >& CPACSNacelleGuideCurves::GetNacelleGuideCurveTypes() const
     {
         return m_nacelleGuideCurveTypes;
     }
 
-    std::vector<unique_ptr<CPACSNacelleGuideCurve> >& CPACSNacelleGuideCurves::GetNacelleGuideCurveTypes()
+    std::vector<unique_ptr<CCPACSNacelleGuideCurve> >& CPACSNacelleGuideCurves::GetNacelleGuideCurveTypes()
     {
         return m_nacelleGuideCurveTypes;
     }
 
-    CPACSNacelleGuideCurve& CPACSNacelleGuideCurves::AddNacelleGuideCurveType()
+    CCPACSNacelleGuideCurve& CPACSNacelleGuideCurves::AddNacelleGuideCurveType()
     {
-        m_nacelleGuideCurveTypes.push_back(make_unique<CPACSNacelleGuideCurve>());
+        m_nacelleGuideCurveTypes.push_back(make_unique<CCPACSNacelleGuideCurve>());
         return *m_nacelleGuideCurveTypes.back();
     }
 
-    void CPACSNacelleGuideCurves::RemoveNacelleGuideCurveType(CPACSNacelleGuideCurve& ref)
+    void CPACSNacelleGuideCurves::RemoveNacelleGuideCurveType(CCPACSNacelleGuideCurve& ref)
     {
         for (std::size_t i = 0; i < m_nacelleGuideCurveTypes.size(); i++) {
             if (m_nacelleGuideCurveTypes[i].get() == &ref) {

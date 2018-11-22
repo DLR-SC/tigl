@@ -263,12 +263,6 @@ inline double Radians(double degree)
     return degree / 180. * M_PI;
 }
 
-// Get a CTiglTransformation from a CPACS transformation
-TIGL_EXPORT tigl::CTiglTransformation GetTransformationMatrix(const tigl::CCPACSTransformation& trans);
-
-// Get a CTiglTransformation from a CPACS polar transformation
-TIGL_EXPORT tigl::CTiglTransformation GetTransformationMatrix(const tigl::CCPACSTransformationPolar& trans);
-
 // Clamps val between min and max
 TIGL_EXPORT int Clamp(int val, int min, int max);
 TIGL_EXPORT double Clamp(double val, double min, double max);

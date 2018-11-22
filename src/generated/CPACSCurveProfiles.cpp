@@ -15,8 +15,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <CCPACSNacelleProfile.h>
 #include "CPACSCurveProfiles.h"
-#include "CPACSProfileGeometry2D.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -61,23 +61,23 @@ namespace generated
 
     }
 
-    const std::vector<unique_ptr<CPACSProfileGeometry2D> >& CPACSCurveProfiles::GetCurveProfiles() const
+    const std::vector<unique_ptr<CCPACSNacelleProfile> >& CPACSCurveProfiles::GetCurveProfiles() const
     {
         return m_curveProfiles;
     }
 
-    std::vector<unique_ptr<CPACSProfileGeometry2D> >& CPACSCurveProfiles::GetCurveProfiles()
+    std::vector<unique_ptr<CCPACSNacelleProfile> >& CPACSCurveProfiles::GetCurveProfiles()
     {
         return m_curveProfiles;
     }
 
-    CPACSProfileGeometry2D& CPACSCurveProfiles::AddCurveProfile()
+    CCPACSNacelleProfile& CPACSCurveProfiles::AddCurveProfile()
     {
-        m_curveProfiles.push_back(make_unique<CPACSProfileGeometry2D>(m_uidMgr));
+        m_curveProfiles.push_back(make_unique<CCPACSNacelleProfile>(m_uidMgr));
         return *m_curveProfiles.back();
     }
 
-    void CPACSCurveProfiles::RemoveCurveProfile(CPACSProfileGeometry2D& ref)
+    void CPACSCurveProfiles::RemoveCurveProfile(CCPACSNacelleProfile& ref)
     {
         for (std::size_t i = 0; i < m_curveProfiles.size(); i++) {
             if (m_curveProfiles[i].get() == &ref) {

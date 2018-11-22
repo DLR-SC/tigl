@@ -148,19 +148,12 @@ void CTiglWingProfilePointList::BuildWires(WireCache& cache) const
         throw CTiglError("Linear Wing Profiles are currently not supported",TIGL_ERROR);
     }
 
-    TopoDS_Wire tempWireOpened = wireBuilder.BuildWire(openPoints, false);
-    TopoDS_Wire tempWireClosed = wireBuilder.BuildWire(closedPoints, true);
-    if (tempWireOpened.IsNull() || tempWireClosed.IsNull()) {
+    TopoDS_Wire tempShapeOpened = wireBuilder.BuildWire(openPoints, false);
+    TopoDS_Wire tempShapeClosed = wireBuilder.BuildWire(closedPoints, true);
+    if (tempShapeOpened.IsNull() || tempShapeClosed.IsNull()) {
         throw CTiglError("TopoDS_Wire is null in CTiglWingProfilePointList::BuildWire", TIGL_ERROR);
     }
 
-    //@todo: do we really want to remove all y information? this has to be a bug
-    // Apply wing profile transformation to wires
-    CTiglTransformation transformation;
-    transformation.AddProjectionOnXZPlane();
-
-    TopoDS_Wire tempShapeOpened = TopoDS::Wire(transformation.Transform(tempWireOpened));
-    TopoDS_Wire tempShapeClosed = TopoDS::Wire(transformation.Transform(tempWireClosed));
     // the open wire should consist of only 1 edge - lets check
     if (GetNumberOfEdges(tempShapeOpened) != 1 || GetNumberOfEdges(tempShapeClosed) != 1) {
         throw CTiglError("Number of Wing Profile Edges is not 1. Please contact the developers");

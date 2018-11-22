@@ -15,8 +15,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <CCPACSNacelleProfile.h>
 #include "CPACSNacelleProfiles.h"
-#include "CPACSProfileGeometry2D.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -61,23 +61,23 @@ namespace generated
 
     }
 
-    const std::vector<unique_ptr<CPACSProfileGeometry2D> >& CPACSNacelleProfiles::GetNacelleProfiles() const
+    const std::vector<unique_ptr<CCPACSNacelleProfile> >& CPACSNacelleProfiles::GetNacelleProfiles() const
     {
         return m_nacelleProfiles;
     }
 
-    std::vector<unique_ptr<CPACSProfileGeometry2D> >& CPACSNacelleProfiles::GetNacelleProfiles()
+    std::vector<unique_ptr<CCPACSNacelleProfile> >& CPACSNacelleProfiles::GetNacelleProfiles()
     {
         return m_nacelleProfiles;
     }
 
-    CPACSProfileGeometry2D& CPACSNacelleProfiles::AddNacelleProfile()
+    CCPACSNacelleProfile& CPACSNacelleProfiles::AddNacelleProfile()
     {
-        m_nacelleProfiles.push_back(make_unique<CPACSProfileGeometry2D>(m_uidMgr));
+        m_nacelleProfiles.push_back(make_unique<CCPACSNacelleProfile>(m_uidMgr));
         return *m_nacelleProfiles.back();
     }
 
-    void CPACSNacelleProfiles::RemoveNacelleProfile(CPACSProfileGeometry2D& ref)
+    void CPACSNacelleProfiles::RemoveNacelleProfile(CCPACSNacelleProfile& ref)
     {
         for (std::size_t i = 0; i < m_nacelleProfiles.size(); i++) {
             if (m_nacelleProfiles[i].get() == &ref) {

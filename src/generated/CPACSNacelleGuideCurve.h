@@ -78,10 +78,5 @@ namespace generated
     };
 } // namespace generated
 
-// Aliases in tigl namespace
-#ifdef HAVE_CPP11
-using CCPACSNacelleGuideCurve = generated::CPACSNacelleGuideCurve;
-#else
-typedef generated::CPACSNacelleGuideCurve CCPACSNacelleGuideCurve;
-#endif
+// CPACSNacelleGuideCurve is customized, use type CCPACSNacelleGuideCurve directly
 } // namespace tigl

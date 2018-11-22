@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2018 German Aerospace Center (DLR/SC)
 *
-* Created: 2018-11-16 Jan Kleinert <jan.kleinert@dlr.de>
+* Created: 2018-11-22 Jan Kleinert <jan.kleinert@dlr.de>
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
@@ -15,25 +15,26 @@
 * limitations under the License.
 */
 
-#include <CCPACSEngineNacelle.h>
-#include "tigl_internal.h"
-
-#pragma once
+#include "CCPACSEngineNacelle.h"
+#include "CTiglEngineNacelleBuilder.h"
 
 namespace tigl
 {
-    class CTiglEngineNacelleBuilder
-    {
-    public:
-        explicit CTiglEngineNacelleBuilder(const CCPACSEngineNacelle& nacelle);
 
-        TIGL_EXPORT operator PNamedShape();
+CCPACSEngineNacelle::CCPACSEngineNacelle(CTiglUIDManager* uidMgr)
+    : generated::CPACSEngineNacelle(uidMgr)
+    , CTiglAbstractGeometricComponent()
+{}
 
-        TIGL_EXPORT PNamedShape BuildShape();
+std::string CCPACSEngineNacelle::GetDefaultedUID() const
+{
+    return generated::CPACSEngineNacelle::GetUID();
+}
 
-    private:
-        const CCPACSEngineNacelle& m_nacelle;
-
-    };
+PNamedShape CCPACSEngineNacelle::BuildLoft() const
+{
+    CTiglEngineNacelleBuilder builder(*this);
+    return builder.BuildShape();
+}
 
 } //namespace tigl

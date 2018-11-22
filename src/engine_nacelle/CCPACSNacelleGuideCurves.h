@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2018 German Aerospace Center (DLR/SC)
 *
-* Created: 2018-11-16 Jan Kleinert <jan.kleinert@dlr.de>
+* Created: 2018-11-22 Jan Kleinert <jan.kleinert@dlr.de>
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
@@ -15,25 +15,20 @@
 * limitations under the License.
 */
 
-#include <CCPACSEngineNacelle.h>
-#include "tigl_internal.h"
-
 #pragma once
+
+#include "generated/CPACSNacelleGuideCurves.h"
+#include "tigl.h"
+#include "tigl_internal.h"
 
 namespace tigl
 {
-    class CTiglEngineNacelleBuilder
-    {
-    public:
-        explicit CTiglEngineNacelleBuilder(const CCPACSEngineNacelle& nacelle);
 
-        TIGL_EXPORT operator PNamedShape();
-
-        TIGL_EXPORT PNamedShape BuildShape();
-
-    private:
-        const CCPACSEngineNacelle& m_nacelle;
-
-    };
+class CCPACSNacelleGuideCurves : public generated::CPACSNacelleGuideCurves
+{
+public:
+    TIGL_EXPORT size_t GetGuideCurveCount() const;
+    TIGL_EXPORT CCPACSNacelleGuideCurve& GetGuideCurve(size_t index) const;
+};
 
 } //namespace tigl

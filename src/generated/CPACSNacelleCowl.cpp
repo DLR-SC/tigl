@@ -15,8 +15,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <cassert>
-#include "CPACSEngineNacelle.h"
 #include "CPACSNacelleCowl.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -27,28 +25,16 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSNacelleCowl::CPACSNacelleCowl(CPACSEngineNacelle* parent, CTiglUIDManager* uidMgr)
+    CPACSNacelleCowl::CPACSNacelleCowl(CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
         , m_transformation(m_uidMgr)
         , m_sections(m_uidMgr)
     {
-        //assert(parent != NULL);
-        m_parent = parent;
     }
 
     CPACSNacelleCowl::~CPACSNacelleCowl()
     {
         if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
-    }
-
-    const CPACSEngineNacelle* CPACSNacelleCowl::GetParent() const
-    {
-        return m_parent;
-    }
-
-    CPACSEngineNacelle* CPACSNacelleCowl::GetParent()
-    {
-        return m_parent;
     }
 
     CTiglUIDManager& CPACSNacelleCowl::GetUIDManager()
@@ -166,12 +152,12 @@ namespace generated
         return m_sections;
     }
 
-    const CPACSNacelleGuideCurves& CPACSNacelleCowl::GetGuideCurves() const
+    const CCPACSNacelleGuideCurves& CPACSNacelleCowl::GetGuideCurves() const
     {
         return m_guideCurves;
     }
 
-    CPACSNacelleGuideCurves& CPACSNacelleCowl::GetGuideCurves()
+    CCPACSNacelleGuideCurves& CPACSNacelleCowl::GetGuideCurves()
     {
         return m_guideCurves;
     }

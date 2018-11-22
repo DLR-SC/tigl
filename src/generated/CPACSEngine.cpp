@@ -184,17 +184,17 @@ namespace generated
         m_thrust00Scaling = value;
     }
 
-    const boost::optional<CPACSEngineNacelle>& CPACSEngine::GetNacelle() const
+    const boost::optional<CCPACSEngineNacelle>& CPACSEngine::GetNacelle() const
     {
         return m_nacelle;
     }
 
-    boost::optional<CPACSEngineNacelle>& CPACSEngine::GetNacelle()
+    boost::optional<CCPACSEngineNacelle>& CPACSEngine::GetNacelle()
     {
         return m_nacelle;
     }
 
-    CPACSEngineNacelle& CPACSEngine::GetNacelle(CreateIfNotExistsTag)
+    CCPACSEngineNacelle& CPACSEngine::GetNacelle(CreateIfNotExistsTag)
     {
         if (!m_nacelle)
             m_nacelle = boost::in_place(m_uidMgr);

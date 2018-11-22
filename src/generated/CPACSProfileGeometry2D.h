@@ -102,10 +102,5 @@ namespace generated
     };
 } // namespace generated
 
-// Aliases in tigl namespace
-#ifdef HAVE_CPP11
-using CCPACSProfileGeometry2D = generated::CPACSProfileGeometry2D;
-#else
-typedef generated::CPACSProfileGeometry2D CCPACSProfileGeometry2D;
-#endif
+// CPACSProfileGeometry2D is customized, use type CCPACSNacelleProfile directly
 } // namespace tigl

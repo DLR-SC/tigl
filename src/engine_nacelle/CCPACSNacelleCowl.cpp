@@ -17,12 +17,16 @@
 
 #include "CCPACSNacelleCowl.h"
 #include "CCPACSNacelleSection.h"
+#include "CCPACSNacelleGuideCurve.h"
+#include "CTiglMakeLoft.h"
+
+#include "BRepTools.hxx"
 
 namespace tigl
 {
 
-CCPACSNacelleCowl::CCPACSNacelleCowl(CCPACSEngineNacelle* parent, CTiglUIDManager* uidMgr)
-    : generated::CPACSNacelleCowl(parent, uidMgr)
+CCPACSNacelleCowl::CCPACSNacelleCowl(CTiglUIDManager* uidMgr)
+    : generated::CPACSNacelleCowl(uidMgr)
     , CTiglAbstractGeometricComponent()
 {}
 
@@ -33,20 +37,41 @@ std::string CCPACSNacelleCowl::GetDefaultedUID() const
 
 PNamedShape CCPACSNacelleCowl::BuildLoft() const
 {
+    \
+    CTiglMakeLoft lofter;
+
     // get profile curves
-    std::vector<TopoDS_Wire> profiles;
     for(size_t i = 1; i <= m_sections.GetSectionCount(); ++i ) {
         CCPACSNacelleSection& section = m_sections.GetSection(i);
-        profiles.push_back(section.GetTransformedWire());
+        TopoDS_Wire profileWire = section.GetTransformedWire();
+
+        // remove blending part for rotationally symmetric interior
+        // TODO
+
+#ifdef DEBUG
+        std::stringstream ss;
+        ss << "D:/tmp/nacelleProfile_"<<i<<".brep";
+        BRepTools::Write(profileWire, ss.str().c_str());
+#endif
+        lofter.addProfiles(profileWire);
     }
 
-//    // get guide curves
-//    CCPACSNacelleGuideCurves& guides = cowl.GetGuideCurves();
-//    if(!guides) {
-//        // make custom guide curves
-//    }
+    // get guide curves
+    std::vector<TopoDS_Wire> guides;
+    for(size_t i = 1; i <= m_guideCurves.GetGuideCurveCount(); ++i ) {
+        CCPACSNacelleGuideCurve& guide = m_guideCurves.GetGuideCurve(i);
+        guides.push_back(guide.GetWire());
+    }
 
-    // remove blending part for rotationally symmetric interior
+    // Check if we have enough guide curves, otherwise add at LE, TE (two for blunt TE) and at rotation curves'
+    // statZetaBlending and endZetaBlendig values.
+    //TODO
+
+    for(size_t i=0; i<guides.size(); ++i) {
+        lofter.addGuides(guides[i]);
+    }
+
+
 
     // get rotation curve and generate rotationally symmetric interior
 

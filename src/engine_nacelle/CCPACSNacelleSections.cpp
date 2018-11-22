@@ -30,7 +30,7 @@ TIGL_EXPORT size_t CCPACSNacelleSections::GetSectionCount() const
     return GetSections().size();
 }
 
-TIGL_EXPORT CCPACSNacelleSection& CCPACSNacelleSections::GetSection(int index) const
+TIGL_EXPORT CCPACSNacelleSection& CCPACSNacelleSections::GetSection(size_t index) const
 {
     index--;
     if (index < 0 || index >= GetSectionCount()) {

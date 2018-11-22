@@ -23,14 +23,14 @@
 
 namespace tigl {
 
-CTiglEngineNacelleBuilder::CTiglEngineNacelleBuilder(const generated::CPACSEngineNacelle& nacelle)
+CTiglEngineNacelleBuilder::CTiglEngineNacelleBuilder(const CCPACSEngineNacelle& nacelle)
     : m_nacelle(nacelle)
 {};
 
 PNamedShape CTiglEngineNacelleBuilder::BuildShape()
 {
     PNamedShape fanshape = m_nacelle.GetFanCowl().GetLoft();
-
+/*
     TopoDS_Compound c;
     TopoDS_Builder b;
     b.MakeCompound(c);
@@ -40,7 +40,10 @@ PNamedShape CTiglEngineNacelleBuilder::BuildShape()
         PNamedShape coreshape = m_nacelle.GetCoreCowl()->GetLoft();
         b.Add(c, coreshape->Shape());
     }
+
     PNamedShape compoundShape( new CNamedShape(c, m_nacelle.GetUID().c_str()) );
+*/
+    PNamedShape compoundShape( new CNamedShape(fanshape->Shape(), m_nacelle.GetUID().c_str()) );
     return compoundShape;
 };
 

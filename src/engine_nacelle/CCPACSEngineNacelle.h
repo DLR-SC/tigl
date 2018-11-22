@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2018 German Aerospace Center (DLR/SC)
 *
-* Created: 2018-11-16 Jan Kleinert <jan.kleinert@dlr.de>
+* Created: 2018-11-22 Jan Kleinert <jan.kleinert@dlr.de>
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
@@ -17,18 +17,18 @@
 
 #pragma once
 
-#include "generated/CPACSNacelleCowl.h"
+#include "generated/CPACSEngineNacelle.h"
 #include "CTiglAbstractGeometricComponent.h"
 #include "tigl_internal.h"
 
 namespace tigl
 {
 
-class CCPACSNacelleCowl : public generated::CPACSNacelleCowl, public CTiglAbstractGeometricComponent
+class CCPACSEngineNacelle : public generated::CPACSEngineNacelle, public CTiglAbstractGeometricComponent
 {
 public:
     // Constructor
-    TIGL_EXPORT CCPACSNacelleCowl(CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSEngineNacelle(CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT std::string GetDefaultedUID() const OVERRIDE;
 

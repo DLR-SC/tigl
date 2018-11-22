@@ -27,7 +27,7 @@ namespace generated
 {
     CPACSEngineNacelle::CPACSEngineNacelle(CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
-        , m_fanCowl(this, m_uidMgr)
+        , m_fanCowl(m_uidMgr)
     {
     }
 
@@ -74,7 +74,7 @@ namespace generated
 
         // read element coreCowl
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/coreCowl")) {
-            m_coreCowl = boost::in_place(this, m_uidMgr);
+            m_coreCowl = boost::in_place(m_uidMgr);
             try {
                 m_coreCowl->ReadCPACS(tixiHandle, xpath + "/coreCowl");
             } catch(const std::exception& e) {
@@ -165,7 +165,7 @@ namespace generated
     CCPACSNacelleCowl& CPACSEngineNacelle::GetCoreCowl(CreateIfNotExistsTag)
     {
         if (!m_coreCowl)
-            m_coreCowl = boost::in_place(this, m_uidMgr);
+            m_coreCowl = boost::in_place(m_uidMgr);
         return *m_coreCowl;
     }
 

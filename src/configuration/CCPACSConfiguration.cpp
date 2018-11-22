@@ -82,6 +82,7 @@ void CCPACSConfiguration::Invalidate()
 
 namespace {
     const std::string headerXPath   = "/cpacs/header";
+    const std::string enginesXPath  = "/cpacs/vehicles/engines";
     const std::string profilesXPath = "/cpacs/vehicles/profiles";
     const std::string farFieldXPath = "/cpacs/toolspecific/cFD/farField";
 }
@@ -104,6 +105,10 @@ void CCPACSConfiguration::ReadCPACS(const std::string& configurationUID)
     }
     if (tixi::TixiCheckElement(tixiDocumentHandle, farFieldXPath)) {
         farField.ReadCPACS(tixiDocumentHandle, farFieldXPath);
+    }
+    if (tixi::TixiCheckElement(tixiDocumentHandle, enginesXPath)) {
+        engines = boost::in_place(&uidManager);
+        engines->ReadCPACS(tixiDocumentHandle, enginesXPath);
     }
 
     // create new root component for CTiglUIDManager

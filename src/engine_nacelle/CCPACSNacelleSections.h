@@ -30,7 +30,7 @@ public:
     CCPACSNacelleSections(CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT size_t GetSectionCount() const;
-    TIGL_EXPORT CCPACSNacelleSection& GetSection(int index) const;
+    TIGL_EXPORT CCPACSNacelleSection& GetSection(size_t index) const;
 };
 
 } //namespace tigl

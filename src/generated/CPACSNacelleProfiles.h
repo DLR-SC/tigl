@@ -26,11 +26,10 @@
 namespace tigl
 {
 class CTiglUIDManager;
+class CCPACSNacelleProfile;
 
 namespace generated
 {
-    class CPACSProfileGeometry2D;
-
     // This class is used in:
     // CPACSProfiles
 
@@ -47,16 +46,16 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSProfileGeometry2D> >& GetNacelleProfiles() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CPACSProfileGeometry2D> >& GetNacelleProfiles();
+        TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSNacelleProfile> >& GetNacelleProfiles() const;
+        TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSNacelleProfile> >& GetNacelleProfiles();
 
-        TIGL_EXPORT virtual CPACSProfileGeometry2D& AddNacelleProfile();
-        TIGL_EXPORT virtual void RemoveNacelleProfile(CPACSProfileGeometry2D& ref);
+        TIGL_EXPORT virtual CCPACSNacelleProfile& AddNacelleProfile();
+        TIGL_EXPORT virtual void RemoveNacelleProfile(CCPACSNacelleProfile& ref);
 
     protected:
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<unique_ptr<CPACSProfileGeometry2D> > m_nacelleProfiles;
+        std::vector<unique_ptr<CCPACSNacelleProfile> > m_nacelleProfiles;
 
     private:
 #ifdef HAVE_CPP11
@@ -75,9 +74,7 @@ namespace generated
 // Aliases in tigl namespace
 #ifdef HAVE_CPP11
 using CCPACSNacelleProfiles = generated::CPACSNacelleProfiles;
-using CCPACSProfileGeometry2D = generated::CPACSProfileGeometry2D;
 #else
 typedef generated::CPACSNacelleProfiles CCPACSNacelleProfiles;
-typedef generated::CPACSProfileGeometry2D CCPACSProfileGeometry2D;
 #endif
 } // namespace tigl
