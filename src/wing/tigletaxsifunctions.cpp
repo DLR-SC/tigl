@@ -122,10 +122,6 @@ EtaXsi computeRibSparIntersectionEtaXsi(const CTiglWingStructureReference& wsr, 
     gp_Pnt ribStartPoint, ribEndPoint;
     rib.GetRibMidplanePoints(ribIndex, ribStartPoint, ribEndPoint);
 
-    EtaXsi ribStart, ribEnd;
-    wsr.GetEtaXsiLocal(ribStartPoint, ribStart.eta, ribStart.xsi);
-    wsr.GetEtaXsiLocal(ribEndPoint, ribEnd.eta, ribEnd.xsi);
-
     // determine number of spar positions
     int numSparPositions = spar.GetSparPositionUIDs().GetSparPositionUIDCount();
 
@@ -134,15 +130,22 @@ EtaXsi computeRibSparIntersectionEtaXsi(const CTiglWingStructureReference& wsr, 
     EtaXsi sparInner, sparOuter;
     spar.GetEtaXsi(1, sparInner.eta, sparInner.xsi);
     for (int i = 2; i <= numSparPositions; ++i) {
-        // check if requested eta lies in current spar line segment
         spar.GetEtaXsi(i, sparOuter.eta, sparOuter.xsi);
 
-        // 2d line intersection, taken from http://stackoverflow.com/questions/563198/how-do-you-detect-where-two-line-segments-intersect
-        gp_Pnt2d p(ribStart.eta, ribStart.xsi);
-        gp_Vec2d r(p, gp_Pnt2d(ribEnd.eta, ribEnd.xsi));
+        // compute start and end point of spar segment part
+        gp_Pnt sparStartPoint = wsr.GetPoint(sparInner.eta, sparInner.xsi, WING_COORDINATE_SYSTEM);
+        gp_Pnt sparEndPoint = wsr.GetPoint(sparOuter.eta, sparOuter.xsi, WING_COORDINATE_SYSTEM);
 
-        gp_Pnt2d q(sparInner.eta, sparInner.xsi);
-        gp_Vec2d s(q, gp_Pnt2d(sparOuter.eta, sparOuter.xsi));
+        // compute the intersection in 2D
+        // NOTE: only possible because currently all spars are aligned along the
+        //       global z-axis
+
+        // 2d line intersection, taken from http://stackoverflow.com/questions/563198/how-do-you-detect-where-two-line-segments-intersect
+        gp_Pnt2d p(ribStartPoint.X(), ribStartPoint.Y());
+        gp_Vec2d r(p, gp_Pnt2d(ribEndPoint.X(), ribEndPoint.Y()));
+
+        gp_Pnt2d q(sparStartPoint.X(), sparStartPoint.Y());
+        gp_Vec2d s(q, gp_Pnt2d(sparEndPoint.X(), sparEndPoint.Y()));
 
         double rxs = r.Crossed(s);
         // ignore parallel or colinear lines
@@ -150,7 +153,12 @@ EtaXsi computeRibSparIntersectionEtaXsi(const CTiglWingStructureReference& wsr, 
             double t = gp_Vec2d(p, q).Crossed(s) / rxs;
             double u = gp_Vec2d(p, q).Crossed(r) / rxs;
             if (t >= zeroMin && t <= (1 + precision) && u >= zeroMin && u <= (1 + precision)) {
-                return EtaXsi(p.X() + t * r.X(), p.Y() + t * r.Y());
+                // Intersection Point =  p + t * r
+                // apply the relative offset t to the rib points
+                gp_Pnt intersectionPoint = ribStartPoint.Translated(t * gp_Vec(ribStartPoint, ribEndPoint));
+                EtaXsi result;
+                wsr.GetEtaXsiLocal(intersectionPoint, result.eta, result.xsi);
+                return result;
             }
         }
 
