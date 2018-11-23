@@ -28,6 +28,20 @@
 #include "CCPACSFuselageSegment.h"
 #include "CCPACSFuselage.h"
 #include "CTiglError.h"
+#include "sorting.h"
+#include "CTiglLogging.h"
+
+namespace
+{
+    bool segment_follows(const tigl::unique_ptr<tigl::CCPACSFuselageSegment>& s2, const tigl::unique_ptr<tigl::CCPACSFuselageSegment>& s1)
+    {
+        if (!s2 || !s1) {
+            return false;
+        }
+
+        return s2->GetFromElementUID() == s1->GetToElementUID();
+    }
+}
 
 namespace tigl
 {
@@ -72,6 +86,41 @@ CCPACSFuselageSegment & CCPACSFuselageSegments::GetSegment(const std::string& se
 int CCPACSFuselageSegments::GetSegmentCount() const
 {
     return static_cast<int>(m_segments.size());
+}
+
+void tigl::CCPACSFuselageSegments::ReadCPACS(const TixiDocumentHandle &tixiHandle, const std::string &xpath)
+{
+    tigl::generated::CPACSFuselageSegments::ReadCPACS(tixiHandle, xpath);
+
+    if (GetSegmentCount() <= 0) {
+        return;
+    }
+
+    // check order of segments - each segment must start with the element of the previous segment
+    bool mustReorderSegments = false;
+    std::string prevElementUID = GetSegment(1).GetToElementUID();
+    for (int i = 2; i <= GetSegmentCount(); ++i) {
+        CCPACSFuselageSegment& segment = GetSegment(i);
+        if (prevElementUID != segment.GetFromElementUID()) {
+            mustReorderSegments = true;
+        }
+        prevElementUID = segment.GetToElementUID();
+    }
+
+    if (mustReorderSegments) {
+        LOG(WARNING) << "Fuselage segments in wrong order! Trying to reorder.";
+        ReorderSegments();
+    }
+
+}
+
+void CCPACSFuselageSegments::ReorderSegments()
+{
+    try {
+        tigl::follow_sort(GetSegments().begin(), GetSegments().end(), segment_follows);
+    } catch (std::invalid_argument) {
+        throw CTiglError("Fuselage segments not continous.");
+    }
 }
 
 } // end namespace tigl

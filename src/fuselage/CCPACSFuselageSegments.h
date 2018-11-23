@@ -45,6 +45,13 @@ public:
 
     // Gets total segment count
     TIGL_EXPORT int GetSegmentCount() const;
+
+    // CPACSFuselageSegments interface
+public:
+    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle &tixiHandle, const std::string &xpath) OVERRIDE;
+
+private:
+    void ReorderSegments();
 };
 
 } // end namespace tigl
