@@ -40,8 +40,8 @@ namespace generated
     /// 
     /// StructureProfile type, containing data of a structure
     /// profile cross sections. The cross section profile is defined by
-    /// several points (-&gt;pointList) in the x-y-space. Two points are
-    /// combined to one sheet (-&gt;sheetList) by using the pointUIDs.
+    /// several points (->pointList) in the x-y-space. Two points are
+    /// combined to one sheet (->sheetList) by using the pointUIDs.
     /// This profile is defined by several points in the
     /// x-y-space. Allways two points are combined to one sheet. The
     /// properties of each sheet are defined in the 'sheetProperties'

@@ -43,7 +43,7 @@ namespace generated
     /// control surfaces, the wing fuel tanks and the
     /// wingFuselageAttachment is defined by using relative coordinates.
     /// A componentSegment is defined in the same way as
-    /// segments: from one cross section (sections-&gt;elements) to
+    /// segments: from one cross section (sections->elements) to
     /// another. Compared to segments one componentSegment can can start
     /// and end at elements that are not consecutive. Therefore that one
     /// componentSegment can be the combination of several segments.

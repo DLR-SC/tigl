@@ -113,7 +113,7 @@ namespace generated
         /// a list of discrete azimuth angles (in deg) at which instances
         /// of attached blades are to be created. The number of blades will
         /// equal to the number of elements of the vector. E.g.
-        /// &lt;azimuthAngles&gt;0;90;180;270&lt;/azimuthAngles&gt; for a
+        /// <azimuthAngles>0;90;180;270</azimuthAngles> for a
         /// four blade rotor with equal equiangularly distributed blades.
         /// The transformation of the respective rotor blade corresponds to
         /// a rotation by azimuthAngle around the z axis of the rotor

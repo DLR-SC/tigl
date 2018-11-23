@@ -51,7 +51,7 @@ namespace generated
     /// 
     /// Transformation type, containing a set of
     /// transformations. The order of the transformations is scaling
-    /// -&gt; rotation -&gt; translation, and they are executed in this
+    /// -> rotation -> translation, and they are executed in this
     /// order. Any of them can be omitted; it will be replaced by its
     /// defaults.
     /// Transformations are always executed relative to the

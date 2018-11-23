@@ -49,7 +49,7 @@ namespace generated
     /// withing the transformation section.
     /// In addition to the translation, which is defined in
     /// the transformation part, the section can be translated by using
-    /// the positionings vectors (wing-&gt;positiongs). Translation of
+    /// the positionings vectors (wing->positiongs). Translation of
     /// the positionings vectors is added to the translation of the
     /// section.
     /// An example for wing sections can be found in the

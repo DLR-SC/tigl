@@ -41,12 +41,12 @@ namespace generated
     /// very flexibal in CPACS. Spars can start and end at any position
     /// of the wing, spars can have kinks at any position of the wing
     /// and spars can cross each other or merge.
-    /// At first the spar points (-&gt;sparPositions) have to
+    /// At first the spar points (->sparPositions) have to
     /// be defined. Spar points are defined using the relative
     /// coordinates eta and xsi. Spar points do lay on wing middle
     /// plane.
     /// Two or more spar points are connected to on spar
-    /// segment (-&gt;sparSegments). Each spar segment can be seen as
+    /// segment (->sparSegments). Each spar segment can be seen as
     /// one spar. One spar point can be used by more than one spar, if
     /// e.g. two spars are merging. The detailed cross section of the
     /// spar is also defined with sparSegments.

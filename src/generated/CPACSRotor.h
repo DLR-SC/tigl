@@ -58,17 +58,7 @@ namespace generated
     /// attached rotor blades are defined in the rotorHub element.
     /// Note that rotor blade geometries are only referenced and not
     /// defined in the child nodes of the rotor element. Refer to the
-    /// documentation of rotorBladesType (
-    /// ) and wingType (
-    /// ) for information on the definition of rotor blade geometries. Note that rotor blade geometries are only referenced and not
-    /// defined in the child nodes of the rotor element. Refer to the
-    /// documentation of rotorBladesType (
-    /// ) and wingType (
-    /// ) for information on the definition of rotor blade geometries. Note that rotor blade geometries are only referenced and not
-    /// defined in the child nodes of the rotor element. Refer to the
-    /// documentation of rotorBladesType (
-    /// ) and wingType (
-    /// ) for information on the definition of rotor blade geometries.
+    /// documentation of rotorBladesType ( Empty#T/rotorBladesType ) and wingType ( Empty#T/wingType ) for information on the definition of rotor blade geometries.
     /// The following figure shows the transformations to be
     /// applied to rotorBlade geometries to visualize them in the rotor
     /// frames for a given state (each rotor: rotorAzimuth given, each
