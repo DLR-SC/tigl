@@ -3386,6 +3386,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetCurveParameter (TiglCPACSConfigurationH
 *  - IGES:
 *    - IGES5.3 (Values: "true", "false"): Whether to use IGES 5.3 format, that supports shells and solids.
 *      Note: Some software do not yet implement this standard. E.g. Catia might only load this, when set to false!
+*    - FaceNames (Values: "UIDOnly", "FaceNameOnly", "UIDandFaceName", "None"): Defines, how to write the names of the
+*      faces to the IGES files. The most versatile is probably "UIDandFaceName". (Default: "FaceNameOnly")
 *
 * Example: The IGES export normally does only write half-models. It does not apply symmetries.
 * to change this, just call 
