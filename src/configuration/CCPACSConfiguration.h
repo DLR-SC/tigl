@@ -227,10 +227,10 @@ private:
 };
 
 /// Computes the bounding box coordinates of the specified component
-void ComponentGetBoundingBox(const CCPACSConfiguration& config, const std::string& uid, CTiglPoint& min, CTiglPoint& max);
+TIGL_EXPORT void ComponentGetBoundingBox(const CCPACSConfiguration& config, const std::string& uid, CTiglPoint& min, CTiglPoint& max);
 
 /// Computes the bounding box of the whole aircraft
-void ConfigurationGetBoundingBox(const CCPACSConfiguration& config, CTiglPoint& min, CTiglPoint& max);
+TIGL_EXPORT void ConfigurationGetBoundingBox(const CCPACSConfiguration& config, CTiglPoint& min, CTiglPoint& max);
 
 } // end namespace tigl
 
