@@ -30,7 +30,23 @@
 						<nacelleGuideCurve>
 							<description>guidecurve add leading edge of nacelle</description>
 							<name>Nacelle_LE</name>
-							<startSectionUID>fanCowl_section_upper</startSectionUID>
+							<startSectionUID>fanCowl_section_1</startSectionUID>
+							<guideCurveProfileUID>fanCowlLeadingEdgeProfile</guideCurveProfileUID>
+							<fromZeta>0.0</fromZeta>
+							<toZeta>0.0</toZeta>
+						</nacelleGuideCurve>
+						<nacelleGuideCurve>
+							<description>guidecurve add leading edge of nacelle</description>
+							<name>Nacelle_LE</name>
+							<startSectionUID>fanCowl_section_2</startSectionUID>
+							<guideCurveProfileUID>fanCowlLeadingEdgeProfile</guideCurveProfileUID>
+							<fromZeta>0.0</fromZeta>
+							<toZeta>0.0</toZeta>
+						</nacelleGuideCurve>
+						<nacelleGuideCurve>
+							<description>guidecurve add leading edge of nacelle</description>
+							<name>Nacelle_LE</name>
+							<startSectionUID>fanCowl_section_3</startSectionUID>
 							<guideCurveProfileUID>fanCowlLeadingEdgeProfile</guideCurveProfileUID>
 							<fromZeta>0.0</fromZeta>
 							<toZeta>0.0</toZeta>
@@ -45,7 +61,7 @@
 						<endZetaBlending>-0.2</endZetaBlending>
 					</rotationCurve>
 					<sections>
-						<section uID="fanCowl_section_upper">
+						<section uID="fanCowl_section_1">
 							<description>First Section containing the profile curve in flow direction of the nacelle</description>
 							<name>upperSection</name>
 							<profileUID>fanCowlUpperSectionProfile</profileUID>
@@ -66,7 +82,7 @@
 								</translation>
 							</transformation>
 						</section>
-						<section uID="fanCowl_section_left">
+						<section uID="fanCowl_section_2">
 							<description>First Section containing the profile curve in flow direction of the nacelle</description>
 							<name>upperSection</name>
 							<profileUID>fanCowlUpperSectionProfile</profileUID>
@@ -87,7 +103,7 @@
 								</translation>
 							</transformation>
 						</section>
-						<section uID="fanCowl_section_right">
+						<section uID="fanCowl_section_3">
 							<description>First Section containing the profile curve in flow direction of the nacelle</description>
 							<name>upperSection</name>
 							<profileUID>fanCowlUpperSectionProfile</profileUID>
@@ -759,9 +775,9 @@
 			<name>simpleguidecurve</name>
 			<description>simple guide curve for testing nacelle modelling</description>
 			<pointList>
-				<rX mapType="vector">0.0,0.5,1.0</rX>
-				<rY mapType="vector">0.0,0.0,0.0</rY>
-				<rZ mapType="vector">0.0,0.0,0.0</rZ>
+				<rX mapType="vector">0.5</rX>
+				<rY mapType="vector">0.0</rY>
+				<rZ mapType="vector">0.0</rZ>
 			</pointList>
 		</guideCurveProfile>
 	  </guideCurves>

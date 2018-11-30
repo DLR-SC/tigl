@@ -80,30 +80,33 @@ TopoDS_Wire CTiglNacelleGuideCurveBuilder::GetWire()
     std::vector<gp_Pnt> cartesianPoints;
     double phi = parameters.startPhi;
     double endPhi = parameters.endPhi;
-    if ( fabs( endPhi - parameters.startPhi ) < Precision::Confusion() ) {
+    if (  endPhi - parameters.startPhi  < Precision::Confusion() ) {
         endPhi += 360.;
     }
 
-    bool done = false;
-    while( phi <= endPhi && !done ) {
+    while( phi <= endPhi ) {
         double u = (phi- parameters.startPhi)/(parameters.endPhi - parameters.startPhi);
         gp_Pnt sampledPoint;
         spline->D0(u, sampledPoint);
 
-        // linear interpolation of angles
+        // linear interpolation of angles (actually it should hold phi = phii)
         double phii = (1-u)*parameters.startPhi + u*parameters.endPhi;
 
         // add linear interpolation as "baseline" for relative x coordinate (y-component of sampled point)
         double xi   = (1-u)*parameters.startX   + u*parameters.endX + sampledPoint.Y();
 
         // add cubic step function as "baseline" to sampled relative radius (z-component of sampled point)
-        double ri   = (parameters.endR + 2*parameters.startR)*pow(phii,3) - 3*parameters.startR*pow(phii,2) + parameters.startR + sampledPoint.Z();
+        double dr = parameters.endR - parameters.startR;
+        double ri   = -2*dr*u*u*u + 3*dr*u*u + parameters.startR + sampledPoint.Z();
 
         // transform to cartesian coordinates
         cartesianPoints.push_back(gp_Pnt( xi, -ri*sin(Radians(phii)), ri*cos(Radians(phii)) ) );
 
-        if( phi + dPhi > endPhi ) {
-            done = true;
+        if ( fabs(phi -endPhi) < Precision::Confusion() ) {
+            break;
+        }
+
+        if( phi + dPhi >= endPhi ) {
             phi += (endPhi - phi);
         }
         else {
@@ -112,8 +115,8 @@ TopoDS_Wire CTiglNacelleGuideCurveBuilder::GetWire()
     }
 
     // interpolate with prescribed tangents [cos(startPhi),-sin(startPhi)], [cos(endPhi),-sin(endPhi)]
-    gp_Vec startTangent(0., cos(Radians(parameters.startPhi)), -sin(Radians(parameters.startPhi)));
-    gp_Vec endTangent  (0., cos(Radians(parameters.endPhi  )), -sin(Radians(parameters.endPhi  )));
+    gp_Vec startTangent(0., -cos(Radians(parameters.startPhi)), -sin(Radians(parameters.startPhi)));
+    gp_Vec endTangent  (0., -cos(Radians(parameters.endPhi  )), -sin(Radians(parameters.endPhi  )));
     Handle(TColgp_HArray1OfPnt) interpAbsoluteCartesian = new TColgp_HArray1OfPnt(1, cartesianPoints.size());
     for( size_t i = 1; i<= cartesianPoints.size(); ++i ) {
         interpAbsoluteCartesian->SetValue(i, cartesianPoints[i-1]);
@@ -123,6 +126,7 @@ TopoDS_Wire CTiglNacelleGuideCurveBuilder::GetWire()
     }
     GeomAPI_Interpolate interPol(interpAbsoluteCartesian, false, Precision::Confusion());
     interPol.Load(startTangent, endTangent);
+    interPol.Perform();
     Handle(Geom_BSplineCurve) hcurve = interPol.Curve();
 
     TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(hcurve);
@@ -172,8 +176,8 @@ tigl::NacelleGuideCurveParameters GetGuideCurveParametersFromCPACS(const tigl::C
     double z = point_start_cartesian.Z();
     params.startR   = sqrt(z*z + y*y);
     if ( fabs(params.startR) > Precision::Confusion() ) {
-        if ( params.startX > 0 ) { params.startPhi =  acos(z/params.startR); }
-        else                     { params.startPhi = -acos(z/params.startR); }
+        if ( y > 0 ) { params.startPhi = -acos(z/params.startR); }
+        else         { params.startPhi =  acos(z/params.startR); }
         params.startPhi *= 180/M_PI;
     }
 
@@ -200,8 +204,8 @@ tigl::NacelleGuideCurveParameters GetGuideCurveParametersFromCPACS(const tigl::C
     z = point_end_cartesian.Z();
     params.endR   = sqrt(z*z + y*y);
     if ( fabs(params.endR) > 1e-10 ) {
-        if ( params.endX > 0 ) { params.endPhi =  acos(z/params.endR); }
-        else                   { params.endPhi = -acos(z/params.endR); }
+        if ( y > 0 ) { params.endPhi = -acos(z/params.endR); }
+        else         { params.endPhi =  acos(z/params.endR); }
         params.endPhi *= 180/M_PI;
     }
 
