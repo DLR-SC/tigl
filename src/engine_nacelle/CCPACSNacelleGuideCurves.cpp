@@ -20,13 +20,16 @@
 
 namespace tigl {
 
+CCPACSNacelleGuideCurves::CCPACSNacelleGuideCurves(CCPACSNacelleCowl* parent)
+   : generated::CPACSNacelleGuideCurves (parent)
+{}
 
-TIGL_EXPORT size_t CCPACSNacelleGuideCurves::GetGuideCurveCount() const
+size_t CCPACSNacelleGuideCurves::GetGuideCurveCount() const
 {
     return GetNacelleGuideCurves().size();
 }
 
-TIGL_EXPORT CCPACSNacelleGuideCurve& CCPACSNacelleGuideCurves::GetGuideCurve(size_t index) const
+CCPACSNacelleGuideCurve& CCPACSNacelleGuideCurves::GetGuideCurve(size_t index) const
 {
     index--;
     if (index < 0 || index >= GetGuideCurveCount()) {

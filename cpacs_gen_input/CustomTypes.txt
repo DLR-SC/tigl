@@ -130,4 +130,3 @@ CPACSNacelleSections					 CCPACSNacelleSections
 CPACSNacelleSection 					 CCPACSNacelleSection
 CPACSProfileGeometry2D                   CCPACSNacelleProfile
 CPACSNacelleGuideCurves					 CCPACSNacelleGuideCurves
-CPACSNacelleGuideCurve					 CCPACSNacelleGuideCurve

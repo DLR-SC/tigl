@@ -16,6 +16,7 @@
 */
 
 #include "CCPACSNacelleSections.h"
+#include "CCPACSNacelleSection.h"
 #include "CTiglUIDManager.h"
 #include "cassert"
 
@@ -37,6 +38,26 @@ TIGL_EXPORT CCPACSNacelleSection& CCPACSNacelleSections::GetSection(size_t index
         throw CTiglError("Invalid index in CCPACSNacelleSections::GetSection", TIGL_INDEX_ERROR);
     }
     return *m_sections[index];
+}
+
+TIGL_EXPORT CCPACSNacelleSection& CCPACSNacelleSections::GetSection(std::string const uid) const
+{
+    for (std::size_t i = 0; i < m_sections.size(); ++i) {
+        if (m_sections[i]->GetUID() == uid) {
+            return *m_sections[i];
+        }
+    }
+    throw CTiglError("CCPACSNacelleSection::GetSection: Section \"" + uid + "\" not found in CPACS file!", TIGL_UID_ERROR);
+}
+
+size_t CCPACSNacelleSections::GetSectionIndex(std::string const uid) const
+{
+    for (std::size_t i = 0; i < m_sections.size(); ++i) {
+        if (m_sections[i]->GetUID() == uid) {
+            return i+1;
+        }
+    }
+    throw CTiglError("CCPACSNacelleSection::GetSectionIndex: Section \"" + uid + "\" not found in CPACS file!", TIGL_UID_ERROR);
 }
 
 } //namepsace tigl

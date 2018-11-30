@@ -62,12 +62,23 @@ TopoDS_Wire CCPACSNacelleProfile::GetWire(TiglShapeModifier mod) const
 
     // rebuild closed wire
     BRepBuilderAPI_MakeWire closedWireBuilder;
-    closedWireBuilder.Add(profileAlgo->GetUpperLowerWire(mod));
+    closedWireBuilder.Add(profileAlgo->GetLowerWire(mod));
+    closedWireBuilder.Add(profileAlgo->GetUpperWire(mod));
     if (!profileAlgo->GetTrailingEdge(mod).IsNull()) {
         closedWireBuilder.Add(profileAlgo->GetTrailingEdge(mod));
     }
 
     return closedWireBuilder.Wire();
+}
+
+TopoDS_Edge CCPACSNacelleProfile::GetUpperWire(TiglShapeModifier mod) const
+{
+    return GetProfileAlgo()->GetUpperWire();
+}
+
+TopoDS_Edge CCPACSNacelleProfile::GetLowerWire(TiglShapeModifier mod) const
+{
+    return GetProfileAlgo()->GetLowerWire();
 }
 
 } //namepsace tigl

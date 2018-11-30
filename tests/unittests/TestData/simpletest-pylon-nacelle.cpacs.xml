@@ -27,14 +27,14 @@
 				</centerCowl>
 				<fanCowl>
 					<guideCurves>
-						<guideCurve>
+						<nacelleGuideCurve>
 							<description>guidecurve add leading edge of nacelle</description>
 							<name>Nacelle_LE</name>
 							<startSectionUID>fanCowl_section_upper</startSectionUID>
 							<guideCurveProfileUID>fanCowlLeadingEdgeProfile</guideCurveProfileUID>
 							<fromZeta>0.0</fromZeta>
 							<toZeta>0.0</toZeta>
-						</guideCurve>
+						</nacelleGuideCurve>
 					</guideCurves>
 					<rotationCurve>
 					    <referenceSectionUID>fanCowl_section_upper</referenceSectionUID>

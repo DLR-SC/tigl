@@ -15,7 +15,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <CCPACSNacelleGuideCurve.h>
+#include <cassert>
+#include "CCPACSNacelleCowl.h"
+#include "CPACSNacelleGuideCurve.h"
 #include "CPACSNacelleGuideCurves.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -25,19 +27,31 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSNacelleGuideCurves::CPACSNacelleGuideCurves()
+    CPACSNacelleGuideCurves::CPACSNacelleGuideCurves(CCPACSNacelleCowl* parent)
     {
+        //assert(parent != NULL);
+        m_parent = parent;
     }
 
     CPACSNacelleGuideCurves::~CPACSNacelleGuideCurves()
     {
     }
 
+    const CCPACSNacelleCowl* CPACSNacelleGuideCurves::GetParent() const
+    {
+        return m_parent;
+    }
+
+    CCPACSNacelleCowl* CPACSNacelleGuideCurves::GetParent()
+    {
+        return m_parent;
+    }
+
     void CPACSNacelleGuideCurves::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element nacelleGuideCurve
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/nacelleGuideCurve")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/nacelleGuideCurve", m_nacelleGuideCurves);
+            tixi::TixiReadElements(tixiHandle, xpath + "/nacelleGuideCurve", m_nacelleGuideCurves, reinterpret_cast<CCPACSNacelleGuideCurves*>(this));
         }
 
     }
@@ -49,23 +63,23 @@ namespace generated
 
     }
 
-    const std::vector<unique_ptr<CCPACSNacelleGuideCurve> >& CPACSNacelleGuideCurves::GetNacelleGuideCurves() const
+    const std::vector<unique_ptr<CPACSNacelleGuideCurve> >& CPACSNacelleGuideCurves::GetNacelleGuideCurves() const
     {
         return m_nacelleGuideCurves;
     }
 
-    std::vector<unique_ptr<CCPACSNacelleGuideCurve> >& CPACSNacelleGuideCurves::GetNacelleGuideCurves()
+    std::vector<unique_ptr<CPACSNacelleGuideCurve> >& CPACSNacelleGuideCurves::GetNacelleGuideCurves()
     {
         return m_nacelleGuideCurves;
     }
 
-    CCPACSNacelleGuideCurve& CPACSNacelleGuideCurves::AddNacelleGuideCurve()
+    CPACSNacelleGuideCurve& CPACSNacelleGuideCurves::AddNacelleGuideCurve()
     {
-        m_nacelleGuideCurves.push_back(make_unique<CCPACSNacelleGuideCurve>());
+        m_nacelleGuideCurves.push_back(make_unique<CPACSNacelleGuideCurve>(reinterpret_cast<CCPACSNacelleGuideCurves*>(this)));
         return *m_nacelleGuideCurves.back();
     }
 
-    void CPACSNacelleGuideCurves::RemoveNacelleGuideCurve(CCPACSNacelleGuideCurve& ref)
+    void CPACSNacelleGuideCurves::RemoveNacelleGuideCurve(CPACSNacelleGuideCurve& ref)
     {
         for (std::size_t i = 0; i < m_nacelleGuideCurves.size(); i++) {
             if (m_nacelleGuideCurves[i].get() == &ref) {

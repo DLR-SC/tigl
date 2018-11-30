@@ -47,9 +47,9 @@ PNamedShape CTiglEngineNacelleBuilder::BuildShape()
     return compoundShape;
 };
 
-    CTiglEngineNacelleBuilder::operator PNamedShape()
-    {
-        return BuildShape();
-    };
+CTiglEngineNacelleBuilder::operator PNamedShape()
+{
+    return BuildShape();
+};
 
-    } //namespace tigl
+} //namespace tigl

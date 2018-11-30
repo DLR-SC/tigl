@@ -17,7 +17,8 @@
 
 #include "CCPACSNacelleCowl.h"
 #include "CCPACSNacelleSection.h"
-#include "CCPACSNacelleGuideCurve.h"
+#include "generated/CPACSNacelleGuideCurve.h"
+#include "CTiglNacelleGuideCurveBuilder.h"
 #include "CTiglMakeLoft.h"
 
 #include "BRepTools.hxx"
@@ -37,7 +38,6 @@ std::string CCPACSNacelleCowl::GetDefaultedUID() const
 
 PNamedShape CCPACSNacelleCowl::BuildLoft() const
 {
-    \
     CTiglMakeLoft lofter;
 
     // get profile curves
@@ -59,8 +59,17 @@ PNamedShape CCPACSNacelleCowl::BuildLoft() const
     // get guide curves
     std::vector<TopoDS_Wire> guides;
     for(size_t i = 1; i <= m_guideCurves.GetGuideCurveCount(); ++i ) {
-        CCPACSNacelleGuideCurve& guide = m_guideCurves.GetGuideCurve(i);
-        guides.push_back(guide.GetWire());
+        const CCPACSNacelleGuideCurve& guide = m_guideCurves.GetGuideCurve(i);
+
+        CTiglNacelleGuideCurveBuilder gcbuilder(guide);
+        TopoDS_Wire guideWire = gcbuilder.GetWire();
+        guides.push_back(guideWire);
+
+#ifdef DEBUG
+        std::stringstream ss;
+        ss << "D:/tmp/nacelleGuide_"<<i<<".brep";
+        BRepTools::Write(guideWire, ss.str().c_str());
+#endif
     }
 
     // Check if we have enough guide curves, otherwise add at LE, TE (two for blunt TE) and at rotation curves'

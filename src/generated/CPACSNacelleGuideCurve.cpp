@@ -15,6 +15,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <cassert>
+#include "CCPACSNacelleGuideCurves.h"
 #include "CPACSNacelleGuideCurve.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -24,14 +26,26 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSNacelleGuideCurve::CPACSNacelleGuideCurve()
+    CPACSNacelleGuideCurve::CPACSNacelleGuideCurve(CCPACSNacelleGuideCurves* parent)
         : m_fromZeta(0)
         , m_toZeta(0)
     {
+        //assert(parent != NULL);
+        m_parent = parent;
     }
 
     CPACSNacelleGuideCurve::~CPACSNacelleGuideCurve()
     {
+    }
+
+    const CCPACSNacelleGuideCurves* CPACSNacelleGuideCurve::GetParent() const
+    {
+        return m_parent;
+    }
+
+    CCPACSNacelleGuideCurves* CPACSNacelleGuideCurve::GetParent()
+    {
+        return m_parent;
     }
 
     void CPACSNacelleGuideCurve::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)

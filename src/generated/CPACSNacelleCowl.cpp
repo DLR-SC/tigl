@@ -29,6 +29,7 @@ namespace generated
         : m_uidMgr(uidMgr)
         , m_transformation(m_uidMgr)
         , m_sections(m_uidMgr)
+        , m_guideCurves(reinterpret_cast<CCPACSNacelleCowl*>(this))
     {
     }
 

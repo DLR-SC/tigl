@@ -30,16 +30,36 @@ TIGL_EXPORT CCPACSNacelleSection::CCPACSNacelleSection(CTiglUIDManager* uidMgr)
    : generated::CPACSNacelleSection(uidMgr)
 {};
 
-TIGL_EXPORT TopoDS_Wire CCPACSNacelleSection::GetTransformedWire()
+TIGL_EXPORT const CCPACSNacelleProfile& CCPACSNacelleSection::GetProfile() const
 {
-    // get untransformed profile wire
-    const CCPACSNacelleProfile& profile = m_uidMgr->ResolveObject<CCPACSNacelleProfile>(m_profileUID);
+    return m_uidMgr->ResolveObject<CCPACSNacelleProfile>(m_profileUID);
+}
 
+TIGL_EXPORT TopoDS_Wire CCPACSNacelleSection::GetTransformedWire() const
+{
     // apply polar transformation
-    TopoDS_Shape transformedShape(profile.GetWire());
+    TopoDS_Shape transformedShape(GetProfile().GetWire());
     CTiglTransformation trafo = GetTransformationMatrix(m_transformation);
     transformedShape = trafo.Transform(transformedShape);
     return TopoDS::Wire(transformedShape);
+}
+
+TIGL_EXPORT TopoDS_Edge CCPACSNacelleSection::GetTransformedUpperWire() const
+{
+    // apply polar transformation
+    TopoDS_Shape transformedShape(GetProfile().GetUpperWire());
+    CTiglTransformation trafo = GetTransformationMatrix(m_transformation);
+    transformedShape = trafo.Transform(transformedShape);
+    return TopoDS::Edge(transformedShape);
+}
+
+TIGL_EXPORT TopoDS_Edge CCPACSNacelleSection::GetTransformedLowerWire() const
+{
+    // apply polar transformation
+    TopoDS_Shape transformedShape(GetProfile().GetLowerWire());
+    CTiglTransformation trafo = GetTransformationMatrix(m_transformation);
+    transformedShape = trafo.Transform(transformedShape);
+    return TopoDS::Edge(transformedShape);
 }
 
 } //namepsace tigl

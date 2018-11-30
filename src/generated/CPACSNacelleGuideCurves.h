@@ -25,10 +25,12 @@
 
 namespace tigl
 {
-class CCPACSNacelleGuideCurve;
+class CCPACSNacelleCowl;
 
 namespace generated
 {
+    class CPACSNacelleGuideCurve;
+
     // This class is used in:
     // CPACSNacelleCowl
 
@@ -36,20 +38,27 @@ namespace generated
     class CPACSNacelleGuideCurves
     {
     public:
-        TIGL_EXPORT CPACSNacelleGuideCurves();
+        TIGL_EXPORT CPACSNacelleGuideCurves(CCPACSNacelleCowl* parent);
+
         TIGL_EXPORT virtual ~CPACSNacelleGuideCurves();
+
+        TIGL_EXPORT CCPACSNacelleCowl* GetParent();
+
+        TIGL_EXPORT const CCPACSNacelleCowl* GetParent() const;
 
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSNacelleGuideCurve> >& GetNacelleGuideCurves() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSNacelleGuideCurve> >& GetNacelleGuideCurves();
+        TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSNacelleGuideCurve> >& GetNacelleGuideCurves() const;
+        TIGL_EXPORT virtual std::vector<unique_ptr<CPACSNacelleGuideCurve> >& GetNacelleGuideCurves();
 
-        TIGL_EXPORT virtual CCPACSNacelleGuideCurve& AddNacelleGuideCurve();
-        TIGL_EXPORT virtual void RemoveNacelleGuideCurve(CCPACSNacelleGuideCurve& ref);
+        TIGL_EXPORT virtual CPACSNacelleGuideCurve& AddNacelleGuideCurve();
+        TIGL_EXPORT virtual void RemoveNacelleGuideCurve(CPACSNacelleGuideCurve& ref);
 
     protected:
-        std::vector<unique_ptr<CCPACSNacelleGuideCurve> > m_nacelleGuideCurves;
+        CCPACSNacelleCowl* m_parent;
+
+        std::vector<unique_ptr<CPACSNacelleGuideCurve> > m_nacelleGuideCurves;
 
     private:
 #ifdef HAVE_CPP11
@@ -66,4 +75,11 @@ namespace generated
 } // namespace generated
 
 // CPACSNacelleGuideCurves is customized, use type CCPACSNacelleGuideCurves directly
+
+// Aliases in tigl namespace
+#ifdef HAVE_CPP11
+using CCPACSNacelleGuideCurve = generated::CPACSNacelleGuideCurve;
+#else
+typedef generated::CPACSNacelleGuideCurve CCPACSNacelleGuideCurve;
+#endif
 } // namespace tigl

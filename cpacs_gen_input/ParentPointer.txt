@@ -91,3 +91,6 @@ CPACSSkinSegments
 
 CPACSEnginePylon
 CPACSEnginePylons
+
+CPACSNacelleGuideCurve
+CPACSNacelleGuideCurves

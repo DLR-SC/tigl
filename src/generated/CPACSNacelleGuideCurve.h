@@ -23,6 +23,8 @@
 
 namespace tigl
 {
+class CCPACSNacelleGuideCurves;
+
 namespace generated
 {
     // This class is used in:
@@ -32,8 +34,13 @@ namespace generated
     class CPACSNacelleGuideCurve
     {
     public:
-        TIGL_EXPORT CPACSNacelleGuideCurve();
+        TIGL_EXPORT CPACSNacelleGuideCurve(CCPACSNacelleGuideCurves* parent);
+
         TIGL_EXPORT virtual ~CPACSNacelleGuideCurve();
+
+        TIGL_EXPORT CCPACSNacelleGuideCurves* GetParent();
+
+        TIGL_EXPORT const CCPACSNacelleGuideCurves* GetParent() const;
 
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
@@ -57,6 +64,8 @@ namespace generated
         TIGL_EXPORT virtual void SetToZeta(const double& value);
 
     protected:
+        CCPACSNacelleGuideCurves* m_parent;
+
         std::string m_name;
         std::string m_description;
         std::string m_guideCurveProfileUID;
@@ -78,5 +87,10 @@ namespace generated
     };
 } // namespace generated
 
-// CPACSNacelleGuideCurve is customized, use type CCPACSNacelleGuideCurve directly
+// Aliases in tigl namespace
+#ifdef HAVE_CPP11
+using CCPACSNacelleGuideCurve = generated::CPACSNacelleGuideCurve;
+#else
+typedef generated::CPACSNacelleGuideCurve CCPACSNacelleGuideCurve;
+#endif
 } // namespace tigl

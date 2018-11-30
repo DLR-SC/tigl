@@ -18,6 +18,7 @@
 #pragma once
 
 #include "generated/CPACSNacelleSection.h"
+#include "CCPACSNacelleProfile.h"
 #include "TopoDS_Wire.hxx"
 #include "tigl_internal.h"
 
@@ -29,7 +30,12 @@ class CCPACSNacelleSection : public generated::CPACSNacelleSection
 public:
     TIGL_EXPORT CCPACSNacelleSection(CTiglUIDManager* uidMgr);
 
-    TIGL_EXPORT TopoDS_Wire GetTransformedWire();
+    TIGL_EXPORT const CCPACSNacelleProfile& GetProfile() const;
+
+    //TODO this seems like unneccessary code duplication
+    TIGL_EXPORT TopoDS_Wire GetTransformedWire() const;
+    TIGL_EXPORT TopoDS_Edge GetTransformedUpperWire() const;
+    TIGL_EXPORT TopoDS_Edge GetTransformedLowerWire() const;
 
 };
 
