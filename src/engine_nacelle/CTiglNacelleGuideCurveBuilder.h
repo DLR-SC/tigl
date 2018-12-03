@@ -22,6 +22,7 @@
 #include "tigl_internal.h"
 #include "CTiglPoint.h"
 #include <generated/CPACSNacelleGuideCurve.h>
+#include "CCPACSNacelleSection.h"
 
 #include <TopoDS_Wire.hxx>
 
@@ -32,13 +33,12 @@ namespace tigl
 {
 
     struct NacelleGuideCurveParameters {
-        double startPhi = 0;
-        double startR   = 0;
-        double startX   = 0;
 
-        double endPhi = 0;
-        double endR   = 0;
-        double endX   = 0;
+        double fromZeta = 0.0;
+        double toZeta   = 0.0;
+
+        CCPACSNacelleSection const * fromSection = nullptr;
+        CCPACSNacelleSection const * toSection   = nullptr;
 
         std::vector<CTiglPoint> profilePoints;
     };

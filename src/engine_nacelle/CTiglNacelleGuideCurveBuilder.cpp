@@ -48,12 +48,56 @@ CTiglNacelleGuideCurveBuilder::CTiglNacelleGuideCurveBuilder(const NacelleGuideC
 
 TopoDS_Wire CTiglNacelleGuideCurveBuilder::GetWire()
 {
+    // get first point of guide curve in cartesian coordinates
+    TopTools_SequenceOfShape startWire;
+    startWire.Append(parameters.fromSection->GetTransformedLowerWire());
+    startWire.Append(parameters.fromSection->GetTransformedUpperWire());
+    tigl::CCPACSWingProfileGetPointAlgo pointAlgo1(startWire);
+    gp_Pnt point_start_cartesian;
+    gp_Vec tangent;
+    pointAlgo1.GetPointTangent(parameters.fromZeta, point_start_cartesian, tangent);
 
-    // get all relative polar points of guide curve
+    // radius and angle in YZ-plane
+    double y = point_start_cartesian.Y();
+    double z = point_start_cartesian.Z();
+
+    double startX   = point_start_cartesian.X();
+    double startR   = sqrt(z*z + y*y);
+    double startPhi = 0.;
+
+    if ( fabs(startR) > Precision::Confusion() ) {
+        if ( y > 0 ) { startPhi = -acos(z/startR); }
+        else         { startPhi =  acos(z/startR); }
+        startPhi *= 180/M_PI;
+    }
+
+    // get last point of guide curve in cartesian coordinates
+    TopTools_SequenceOfShape endWire;
+    endWire.Append(parameters.toSection->GetTransformedLowerWire());
+    endWire.Append(parameters.toSection->GetTransformedUpperWire());
+    tigl::CCPACSWingProfileGetPointAlgo pointAlgo2(endWire);
+    gp_Pnt point_end_cartesian;
+    pointAlgo2.GetPointTangent(parameters.toZeta, point_end_cartesian, tangent);
+
+    // radius and angle in YZ-plane
+    y = point_end_cartesian.Y();
+    z = point_end_cartesian.Z();
+
+    double endX   = point_end_cartesian.X();
+    double endR   = sqrt(z*z + y*y);
+    double endPhi = 0.;
+
+    if ( fabs(endR) > 1e-10 ) {
+        if ( y > 0 ) { endPhi = -acos(z/endR); }
+        else         { endPhi =  acos(z/endR); }
+        endPhi *= 180/M_PI;
+    }
+
+    // get all relative polar points of guide curve as gp_Pnt
     std::vector<gp_Pnt> points;
 
     // add first point, if it is not in the list already (it is assumed that the profile points are sorted)
-    if ( parameters.profilePoints.size() > 0 && fabs( parameters.profilePoints[0].x ) > Precision::Confusion() ) {
+    if ( parameters.profilePoints.size() == 0 || fabs( parameters.profilePoints[0].x ) > Precision::Confusion() ) {
         points.push_back(gp_Pnt(0., 0., 0.));
     }
 
@@ -63,7 +107,7 @@ TopoDS_Wire CTiglNacelleGuideCurveBuilder::GetWire()
     }
 
     // add last point, if it is not in the list already (it is assumed that the profile points are sorted)
-    if ( parameters.profilePoints.size() > 0 && fabs( 1. - parameters.profilePoints.back().x ) > Precision::Confusion() ) {
+    if ( parameters.profilePoints.size() ==0 || fabs( 1. - parameters.profilePoints.back().x ) > Precision::Confusion() ) {
         points.push_back(gp_Pnt(1., 0., 0.));
     }
 
@@ -78,26 +122,26 @@ TopoDS_Wire CTiglNacelleGuideCurveBuilder::GetWire()
 
     // sample profile points on interpolated curve
     std::vector<gp_Pnt> cartesianPoints;
-    double phi = parameters.startPhi;
-    double endPhi = parameters.endPhi;
-    if (  endPhi - parameters.startPhi  < Precision::Confusion() ) {
+    double phi = startPhi;
+    if (  endPhi - startPhi  < Precision::Confusion() ) {
         endPhi += 360.;
     }
 
     while( phi <= endPhi ) {
-        double u = (phi- parameters.startPhi)/(parameters.endPhi - parameters.startPhi);
+        double u = (phi- startPhi)/(endPhi - startPhi);
         gp_Pnt sampledPoint;
         spline->D0(u, sampledPoint);
 
         // linear interpolation of angles (actually it should hold phi = phii)
-        double phii = (1-u)*parameters.startPhi + u*parameters.endPhi;
+        double phii = (1-u)*startPhi + u*endPhi;
 
-        // add linear interpolation as "baseline" for relative x coordinate (y-component of sampled point)
-        double xi   = (1-u)*parameters.startX   + u*parameters.endX + sampledPoint.Y();
+        // add cubic step function as "baseline" for relative x coordinate (y-component of sampled point)
+        double dx = endX - startX;
+        double xi   = -2*dx*u*u*u + 3*dx*u*u + startX + sampledPoint.Y();
 
         // add cubic step function as "baseline" to sampled relative radius (z-component of sampled point)
-        double dr = parameters.endR - parameters.startR;
-        double ri   = -2*dr*u*u*u + 3*dr*u*u + parameters.startR + sampledPoint.Z();
+        double dr = endR - startR;
+        double ri   = -2*dr*u*u*u + 3*dr*u*u + startR + sampledPoint.Z();
 
         // transform to cartesian coordinates
         cartesianPoints.push_back(gp_Pnt( xi, -ri*sin(Radians(phii)), ri*cos(Radians(phii)) ) );
@@ -105,7 +149,6 @@ TopoDS_Wire CTiglNacelleGuideCurveBuilder::GetWire()
         if ( fabs(phi -endPhi) < Precision::Confusion() ) {
             break;
         }
-
         if( phi + dPhi >= endPhi ) {
             phi += (endPhi - phi);
         }
@@ -115,14 +158,11 @@ TopoDS_Wire CTiglNacelleGuideCurveBuilder::GetWire()
     }
 
     // interpolate with prescribed tangents [cos(startPhi),-sin(startPhi)], [cos(endPhi),-sin(endPhi)]
-    gp_Vec startTangent(0., -cos(Radians(parameters.startPhi)), -sin(Radians(parameters.startPhi)));
-    gp_Vec endTangent  (0., -cos(Radians(parameters.endPhi  )), -sin(Radians(parameters.endPhi  )));
+    gp_Vec startTangent(0., -cos(Radians(startPhi)), -sin(Radians(startPhi)));
+    gp_Vec endTangent  (0., -cos(Radians(endPhi  )), -sin(Radians(endPhi  )));
     Handle(TColgp_HArray1OfPnt) interpAbsoluteCartesian = new TColgp_HArray1OfPnt(1, cartesianPoints.size());
     for( size_t i = 1; i<= cartesianPoints.size(); ++i ) {
         interpAbsoluteCartesian->SetValue(i, cartesianPoints[i-1]);
-        std::cout<<"("<<cartesianPoints[i-1].X()<<", "<<
-                        cartesianPoints[i-1].Y()<<", "<<
-                        cartesianPoints[i-1].Z()<<")\n";
     }
     GeomAPI_Interpolate interPol(interpAbsoluteCartesian, false, Precision::Confusion());
     interPol.Load(startTangent, endTangent);
@@ -159,55 +199,17 @@ tigl::NacelleGuideCurveParameters GetGuideCurveParametersFromCPACS(const tigl::C
 
     // get phi,x,r of start point
     const tigl::CCPACSNacelleSections& sections = curve.GetParent()->GetParent()->GetSections();
-    const tigl::CCPACSNacelleSection& startSection = sections.GetSection(curve.GetStartSectionUID());
 
-    TopTools_SequenceOfShape startWire;
-    startWire.Append(startSection.GetTransformedLowerWire());
-    startWire.Append(startSection.GetTransformedUpperWire());
-    tigl::CCPACSWingProfileGetPointAlgo pointAlgo1(startWire);
-    gp_Pnt point_start_cartesian;
-    gp_Vec tangent;
-    pointAlgo1.GetPointTangent(curve.GetFromZeta(), point_start_cartesian, tangent);
+    params.fromSection = &sections.GetSection(curve.GetStartSectionUID());
+    params.fromZeta = curve.GetFromZeta();
 
-    params.startX   = point_start_cartesian.X();
-
-    // radius and angle in YZ-plane
-    double y = point_start_cartesian.Y();
-    double z = point_start_cartesian.Z();
-    params.startR   = sqrt(z*z + y*y);
-    if ( fabs(params.startR) > Precision::Confusion() ) {
-        if ( y > 0 ) { params.startPhi = -acos(z/params.startR); }
-        else         { params.startPhi =  acos(z/params.startR); }
-        params.startPhi *= 180/M_PI;
-    }
-
-    // get phi,x,r of end point
     size_t startSectionIdx = sections.GetSectionIndex(curve.GetStartSectionUID());
     size_t endSectionIdx = startSectionIdx + 1;
     if ( endSectionIdx > sections.GetSectionCount() ) {
         endSectionIdx = 1;
     }
-    const tigl::CCPACSNacelleSection& endSection = sections.GetSection(endSectionIdx);
-
-    TopTools_SequenceOfShape endWire;
-    endWire.Append(endSection.GetTransformedLowerWire());
-    endWire.Append(endSection.GetTransformedUpperWire());
-    tigl::CCPACSWingProfileGetPointAlgo pointAlgo2(endWire);
-    gp_Pnt point_end_cartesian;
-    pointAlgo2.GetPointTangent(curve.GetToZeta(), point_end_cartesian, tangent);
-
-
-    params.endX = point_end_cartesian.X();
-
-    // radius and angle in YZ-plane
-    y = point_end_cartesian.Y();
-    z = point_end_cartesian.Z();
-    params.endR   = sqrt(z*z + y*y);
-    if ( fabs(params.endR) > 1e-10 ) {
-        if ( y > 0 ) { params.endPhi = -acos(z/params.endR); }
-        else         { params.endPhi =  acos(z/params.endR); }
-        params.endPhi *= 180/M_PI;
-    }
+    params.toSection = &sections.GetSection(endSectionIdx);
+    params.toZeta = curve.GetToZeta();
 
     return params;
 }
