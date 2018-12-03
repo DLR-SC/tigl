@@ -62,6 +62,15 @@ TIGL_EXPORT TopoDS_Edge CCPACSNacelleSection::GetTransformedLowerWire() const
     return TopoDS::Edge(transformedShape);
 }
 
+TIGL_EXPORT TopoDS_Edge CCPACSNacelleSection::GetTransformedTrailingEdge() const
+{
+    // apply polar transformation
+    TopoDS_Shape transformedShape(GetProfile().GetTrailingEdge());
+    CTiglTransformation trafo = GetTransformationMatrix(m_transformation);
+    transformedShape = trafo.Transform(transformedShape);
+    return TopoDS::Edge(transformedShape);
+}
+
 } //namepsace tigl
 
 namespace {

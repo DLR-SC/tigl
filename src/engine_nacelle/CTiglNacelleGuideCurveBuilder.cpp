@@ -165,7 +165,7 @@ TopoDS_Wire CTiglNacelleGuideCurveBuilder::GetWire()
         interpAbsoluteCartesian->SetValue(i, cartesianPoints[i-1]);
     }
     GeomAPI_Interpolate interPol(interpAbsoluteCartesian, false, Precision::Confusion());
-    interPol.Load(startTangent, endTangent);
+    interPol.Load(startTangent, endTangent, false);
     interPol.Perform();
     Handle(Geom_BSplineCurve) hcurve = interPol.Curve();
 

@@ -36,6 +36,7 @@ public:
     TIGL_EXPORT TopoDS_Wire GetTransformedWire() const;
     TIGL_EXPORT TopoDS_Edge GetTransformedUpperWire() const;
     TIGL_EXPORT TopoDS_Edge GetTransformedLowerWire() const;
+    TIGL_EXPORT TopoDS_Edge GetTransformedTrailingEdge() const;
 
 };
 

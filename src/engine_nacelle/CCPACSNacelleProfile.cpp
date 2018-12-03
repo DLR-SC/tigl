@@ -81,4 +81,9 @@ TopoDS_Edge CCPACSNacelleProfile::GetLowerWire(TiglShapeModifier mod) const
     return GetProfileAlgo()->GetLowerWire();
 }
 
+TopoDS_Edge CCPACSNacelleProfile::GetTrailingEdge(TiglShapeModifier mod) const
+{
+    return GetProfileAlgo()->GetTrailingEdge();
+}
+
 } //namepsace tigl
