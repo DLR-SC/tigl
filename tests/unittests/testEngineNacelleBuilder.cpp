@@ -64,11 +64,10 @@ protected:
 
 /******************************************************************************/
 
-/**
-* Tests for greeting planets
-*/
+
 TEST_F(EngineNacelleBuilder, integrationTest)
 {
+    tigl::CCPACSEngineNacelle& nacelle = uidMgr->ResolveObject<tigl::CCPACSEngineNacelle>("SimpleNacelle");
     tigl::CTiglEngineNacelleBuilder builder(nacelle);
     PNamedShape shape = builder.BuildShape();
 }
