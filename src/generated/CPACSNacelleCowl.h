@@ -19,10 +19,10 @@
 
 #include <CCPACSNacelleGuideCurves.h>
 #include <CCPACSNacelleSections.h>
+#include <CCPACSRotationCurve.h>
 #include <CCPACSTransformation.h>
 #include <string>
 #include <tixi.h>
-#include "CPACSRotationCurve.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -59,8 +59,8 @@ namespace generated
         TIGL_EXPORT virtual const CCPACSNacelleGuideCurves& GetGuideCurves() const;
         TIGL_EXPORT virtual CCPACSNacelleGuideCurves& GetGuideCurves();
 
-        TIGL_EXPORT virtual const CPACSRotationCurve& GetRotationCurve() const;
-        TIGL_EXPORT virtual CPACSRotationCurve& GetRotationCurve();
+        TIGL_EXPORT virtual const CCPACSRotationCurve& GetRotationCurve() const;
+        TIGL_EXPORT virtual CCPACSRotationCurve& GetRotationCurve();
 
     protected:
         CTiglUIDManager* m_uidMgr;
@@ -69,7 +69,7 @@ namespace generated
         CCPACSTransformation     m_transformation;
         CCPACSNacelleSections    m_sections;
         CCPACSNacelleGuideCurves m_guideCurves;
-        CPACSRotationCurve       m_rotationCurve;
+        CCPACSRotationCurve      m_rotationCurve;
 
     private:
 #ifdef HAVE_CPP11

@@ -36,6 +36,9 @@ public:
 
 protected:
     virtual PNamedShape BuildLoft() const OVERRIDE;
+
+private:
+    TopoDS_Shape BuildOuterShape() const;
 };
 
 } //namespae tigl

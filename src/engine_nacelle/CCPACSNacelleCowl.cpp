@@ -53,7 +53,7 @@ std::string CCPACSNacelleCowl::GetDefaultedUID() const
     return generated::CPACSNacelleCowl::GetUID();
 }
 
-PNamedShape CCPACSNacelleCowl::BuildLoft() const
+TopoDS_Shape CCPACSNacelleCowl::BuildOuterShape() const
 {
     CTiglMakeLoft lofter;
     lofter.setMakeSmooth(true);
@@ -155,18 +155,27 @@ PNamedShape CCPACSNacelleCowl::BuildLoft() const
         ss << "D:/tmp/nacelleGuide_"<<i<<".brep";
         BRepTools::Write(connectedZetaGuides[i].second, ss.str().c_str());
 #endif
-        std::cout<<" zeta = "<<connectedZetaGuides[i].first<<"\n";
         lofter.addGuides(connectedZetaGuides[i].second);
     }
 
-    // interpolate curve network
-    TopoDS_Shape outerShape = lofter.Shape();
+    return  lofter.Shape();
+}
+
+PNamedShape CCPACSNacelleCowl::BuildLoft() const
+{
+    // get outer shape
+    TopoDS_Shape outerShape = BuildOuterShape();
 
 #ifdef DEBUG
     BRepTools::Write(outerShape,"D:/tmp/outerShape.brep");
 #endif
 
     // get rotation curve and generate rotationally symmetric interior
+    TopoDS_Face innerShape = m_rotationCurve.GetRotationSurface();
+
+#ifdef DEBUG
+    BRepTools::Write(innerShape,"D:/tmp/innerShape.brep");
+#endif
 
     // blend the surfaces
 

@@ -23,6 +23,8 @@
 
 namespace tigl
 {
+class CTiglUIDManager;
+
 namespace generated
 {
     // This class is used in:
@@ -32,11 +34,17 @@ namespace generated
     class CPACSRotationCurve
     {
     public:
-        TIGL_EXPORT CPACSRotationCurve();
+        TIGL_EXPORT CPACSRotationCurve(CTiglUIDManager* uidMgr);
         TIGL_EXPORT virtual ~CPACSRotationCurve();
+
+        TIGL_EXPORT CTiglUIDManager& GetUIDManager();
+        TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
 
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
+
+        TIGL_EXPORT virtual const std::string& GetUID() const;
+        TIGL_EXPORT virtual void SetUID(const std::string& value);
 
         TIGL_EXPORT virtual const std::string& GetReferenceSectionUID() const;
         TIGL_EXPORT virtual void SetReferenceSectionUID(const std::string& value);
@@ -57,6 +65,9 @@ namespace generated
         TIGL_EXPORT virtual void SetCurveProfileUID(const std::string& value);
 
     protected:
+        CTiglUIDManager* m_uidMgr;
+
+        std::string m_uID;
         std::string m_referenceSectionUID;
         double      m_startZeta;
         double      m_endZeta;
@@ -78,10 +89,5 @@ namespace generated
     };
 } // namespace generated
 
-// Aliases in tigl namespace
-#ifdef HAVE_CPP11
-using CCPACSRotationCurve = generated::CPACSRotationCurve;
-#else
-typedef generated::CPACSRotationCurve CCPACSRotationCurve;
-#endif
+// CPACSRotationCurve is customized, use type CCPACSRotationCurve directly
 } // namespace tigl

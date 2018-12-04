@@ -18,14 +18,16 @@
 #include "CPACSRotationCurve.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "TixiHelper.h"
 
 namespace tigl
 {
 namespace generated
 {
-    CPACSRotationCurve::CPACSRotationCurve()
-        : m_startZeta(0)
+    CPACSRotationCurve::CPACSRotationCurve(CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+        , m_startZeta(0)
         , m_endZeta(0)
         , m_startZetaBlending(0)
         , m_endZetaBlending(0)
@@ -34,10 +36,32 @@ namespace generated
 
     CPACSRotationCurve::~CPACSRotationCurve()
     {
+        if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
+    }
+
+    CTiglUIDManager& CPACSRotationCurve::GetUIDManager()
+    {
+        return *m_uidMgr;
+    }
+
+    const CTiglUIDManager& CPACSRotationCurve::GetUIDManager() const
+    {
+        return *m_uidMgr;
     }
 
     void CPACSRotationCurve::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
+        // read attribute uID
+        if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+            m_uID = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
+            if (m_uID.empty()) {
+                LOG(WARNING) << "Required attribute uID is empty at xpath " << xpath;
+            }
+        }
+        else {
+            LOG(ERROR) << "Required attribute uID is missing at xpath " << xpath;
+        }
+
         // read element referenceSectionUID
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/referenceSectionUID")) {
             m_referenceSectionUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/referenceSectionUID");
@@ -92,10 +116,14 @@ namespace generated
             LOG(ERROR) << "Required element curveProfileUID is missing at xpath " << xpath;
         }
 
+        if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
     }
 
     void CPACSRotationCurve::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
+        // write attribute uID
+        tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
+
         // write element referenceSectionUID
         tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/referenceSectionUID");
         tixi::TixiSaveElement(tixiHandle, xpath + "/referenceSectionUID", m_referenceSectionUID);
@@ -120,6 +148,20 @@ namespace generated
         tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/curveProfileUID");
         tixi::TixiSaveElement(tixiHandle, xpath + "/curveProfileUID", m_curveProfileUID);
 
+    }
+
+    const std::string& CPACSRotationCurve::GetUID() const
+    {
+        return m_uID;
+    }
+
+    void CPACSRotationCurve::SetUID(const std::string& value)
+    {
+        if (m_uidMgr) {
+            m_uidMgr->TryUnregisterObject(m_uID);
+            m_uidMgr->RegisterObject(value, *this);
+        }
+        m_uID = value;
     }
 
     const std::string& CPACSRotationCurve::GetReferenceSectionUID() const

@@ -43736,6 +43736,7 @@ jonas.jepsen@dlr.de
 			<xsd:element name="endZetaBlending" type="doubleBaseType"></xsd:element>
 			<xsd:element name="curveProfileUID" type="stringUIDBaseType"></xsd:element>
 		</xsd:all>
+		<xsd:attribute name="uID" type="xsd:string" use="required"/>
 	</xsd:complexType>
 
 	<xsd:complexType name="nacelleCenterCowlType">

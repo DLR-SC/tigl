@@ -30,6 +30,7 @@ namespace generated
         , m_transformation(m_uidMgr)
         , m_sections(m_uidMgr)
         , m_guideCurves(reinterpret_cast<CCPACSNacelleCowl*>(this))
+        , m_rotationCurve(m_uidMgr)
     {
     }
 
@@ -163,12 +164,12 @@ namespace generated
         return m_guideCurves;
     }
 
-    const CPACSRotationCurve& CPACSNacelleCowl::GetRotationCurve() const
+    const CCPACSRotationCurve& CPACSNacelleCowl::GetRotationCurve() const
     {
         return m_rotationCurve;
     }
 
-    CPACSRotationCurve& CPACSNacelleCowl::GetRotationCurve()
+    CCPACSRotationCurve& CPACSNacelleCowl::GetRotationCurve()
     {
         return m_rotationCurve;
     }
