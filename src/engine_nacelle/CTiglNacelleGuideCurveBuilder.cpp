@@ -24,6 +24,7 @@
 #include "CCPACSWingProfileGetPointAlgo.h"
 #include "CCPACSGuideCurveProfile.h"
 #include "CTiglBSplineAlgorithms.h"
+#include "CTiglInterpolateBsplineWire.h"
 #include "CTiglPointsToBSplineInterpolation.h"
 #include "CTiglUIDManager.h"
 
@@ -116,8 +117,11 @@ TopoDS_Wire CTiglNacelleGuideCurveBuilder::GetWire()
     for( size_t i = 1; i<= points.size(); ++i ) {
         interpRelativePolar->SetValue(i, points[i-1]);
     }
-    CTiglPointsToBSplineInterpolation interp(interpRelativePolar);
+    GeomAPI_Interpolate interp(interpRelativePolar, false, Precision::Confusion());
+    interp.Load(gp_Vec(1., 0., 0.), gp_Vec(1., 0., 0.), false);
+    interp.Perform();
     Handle(Geom_BSplineCurve) spline = interp.Curve();
+
     CTiglBSplineAlgorithms::reparametrizeBSpline(*spline, 0., 1.);
 
     // sample profile points on interpolated curve
@@ -168,6 +172,7 @@ TopoDS_Wire CTiglNacelleGuideCurveBuilder::GetWire()
     interPol.Load(startTangent, endTangent, false);
     interPol.Perform();
     Handle(Geom_BSplineCurve) hcurve = interPol.Curve();
+
 
     TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(hcurve);
     BRepBuilderAPI_MakeWire wireBuilder(edge);

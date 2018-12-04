@@ -35,6 +35,9 @@ void RemoveBlendingPart(TopoDS_Edge const lowerEdge,
                         double zeta2,
                         TopoDS_Edge& edge1,
                         TopoDS_Edge& edge2);
+
+std::vector<std::pair<double,TopoDS_Wire>> connectNacelleGuideCurves(std::vector<std::pair<double,TopoDS_Wire>> const&,
+                                                                     double tol);
 }
 
 namespace tigl
@@ -53,6 +56,8 @@ std::string CCPACSNacelleCowl::GetDefaultedUID() const
 PNamedShape CCPACSNacelleCowl::BuildLoft() const
 {
     CTiglMakeLoft lofter;
+    lofter.setMakeSmooth(true);
+    lofter.setMakeSolid(false);
 
     double startZetaBlending = m_rotationCurve.GetStartZetaBlending();
     double endZetaBlending   = m_rotationCurve.GetEndZetaBlending();
@@ -82,8 +87,6 @@ PNamedShape CCPACSNacelleCowl::BuildLoft() const
 
         profiles.push_back(profileWire);
     }
-    // first and last profile must be the same
-    profiles.push_back(profiles[0]);
 
     for ( size_t i = 0; i<profiles.size(); ++i) {
 
@@ -97,16 +100,16 @@ PNamedShape CCPACSNacelleCowl::BuildLoft() const
     }
 
     // guide curves for some zeta values MUST be present, even if not defined via CPACS
-    double requiredZeta[5] =      {-1,startZetaBlending, endZetaBlending, 0, 1};
+    double requiredZeta[5] =      {endZetaBlending, 0, 1, -1, startZetaBlending};
     bool   buildRequiredZeta[5] = {true, true, true, true, true};
     if ( m_sections.GetSectionCount()>0 && !m_sections.GetSection(1).GetProfile().HasBluntTE() ) {
         // upper trailing edge guide curve not needed for sharp profiles
         // Here it is assumed that either ALL profiles are sharp or ALL profiles are blunt
-        buildRequiredZeta[4] = false;
+        buildRequiredZeta[2] = false;
     }
 
     // get CPACS guide curves
-    std::vector<TopoDS_Wire> guides;
+    std::vector<std::pair<double,TopoDS_Wire>> zetaGuides;
     for(size_t i = 1; i <= m_guideCurves.GetGuideCurveCount(); ++i ) {
         const CCPACSNacelleGuideCurve& guide = m_guideCurves.GetGuideCurve(i);
 
@@ -119,7 +122,8 @@ PNamedShape CCPACSNacelleCowl::BuildLoft() const
         }
 
         CTiglNacelleGuideCurveBuilder gcbuilder(guide);
-        guides.push_back(gcbuilder.GetWire());
+        std::pair<double,TopoDS_Wire> zetaGuidePair(guide.GetFromZeta(), gcbuilder.GetWire());
+        zetaGuides.push_back(zetaGuidePair);
     }
 
     // explicitly built the guide curves for the required zeta values, that are not defined in CPACS
@@ -138,18 +142,21 @@ PNamedShape CCPACSNacelleCowl::BuildLoft() const
                 params.toSection = &m_sections.GetSection(k);
 
                 CTiglNacelleGuideCurveBuilder gcbuilder(params);
-                guides.push_back(gcbuilder.GetWire());
+                std::pair<double,TopoDS_Wire> zetaGuidePair(params.fromZeta, gcbuilder.GetWire());
+                zetaGuides.push_back(zetaGuidePair);
             }
         }
     }
+    std::vector<std::pair<double,TopoDS_Wire>> connectedZetaGuides = connectNacelleGuideCurves(zetaGuides, Precision::Confusion());
 
-    for(size_t i=0; i<guides.size(); ++i) {
+    for(size_t i=0; i<connectedZetaGuides.size(); ++i) {
 #ifdef DEBUG
         std::stringstream ss;
         ss << "D:/tmp/nacelleGuide_"<<i<<".brep";
-        BRepTools::Write(guides[i], ss.str().c_str());
+        BRepTools::Write(connectedZetaGuides[i].second, ss.str().c_str());
 #endif
-        lofter.addGuides(guides[i]);
+        std::cout<<" zeta = "<<connectedZetaGuides[i].first<<"\n";
+        lofter.addGuides(connectedZetaGuides[i].second);
     }
 
     // interpolate curve network
@@ -203,5 +210,31 @@ void RemoveBlendingPart(TopoDS_Edge const lowerEdge,
     curve = new Geom_TrimmedCurve(curve, par2,  umax);
     edge2 = BRepBuilderAPI_MakeEdge(curve);
 }
+
+std::vector<std::pair<double,TopoDS_Wire>> connectNacelleGuideCurves(std::vector<std::pair<double,TopoDS_Wire>> const& zetaGuides,
+                                                                     double tol)
+{
+    // connect guide curves of same zeta parameters
+    std::vector<std::pair<double,TopoDS_Wire>> connectedZetaWires;
+
+    std::vector<bool> used(zetaGuides.size(), false);
+    for(size_t i = 0; i<zetaGuides.size(); i++) {
+        if( !used[i] ) {
+            BRepBuilderAPI_MakeWire builder;
+            builder.Add(zetaGuides[i].second);
+            for(size_t j=0; j != zetaGuides.size(); j++) {
+                if (j != i && !used[j] && fabs(zetaGuides[j].first-zetaGuides[i].first) < tol ) {
+                    builder.Add(zetaGuides[j].second);
+                    used[j] = true;
+                }
+            }
+            used[i] = true;
+            std::pair<double,TopoDS_Wire> current(zetaGuides[i].first, builder.Wire());
+            connectedZetaWires.push_back(current);
+        }
+    }
+
+    return connectedZetaWires;
+};
 
 } //anonymous namespace
