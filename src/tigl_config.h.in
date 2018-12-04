@@ -30,6 +30,6 @@
 #cmakedefine GLOG_FOUND
 
 // Default off: Activate, if OpenCASCADE is patched to provide the C2 coons algorithm
-#cmakedefine TIGL_OCE_COONS_PATCHED
+#cmakedefine HAVE_OCE_COONS_PATCHED
 
 #endif // CONFIG_H
