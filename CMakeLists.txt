@@ -130,6 +130,7 @@ endif(OCE_FOUND)
 set(TIXI_PATH "" CACHE PATH "TiXI installation prefix")
 set(CMAKE_PREFIX_PATH "${TIXI_PATH};${CMAKE_PREFIX_PATH}")
 find_package( tixi3 3.0.3 REQUIRED CONFIG)
+get_target_property(TIXI_INCLUDE_DIRS tixi3 INTERFACE_INCLUDE_DIRECTORIES)
 get_target_property(TIXI_LIBRARY ${TIXI_LIBRARIES} LOCATION)
 get_filename_component(TIXI_LIB_PATH ${TIXI_LIBRARY} PATH)
 
