@@ -17,6 +17,7 @@
 */
 
 #include "CCPACSTransformation.h"
+#include "tiglcommonfunctions.h"
 #include "CTiglError.h"
 
 namespace tigl
@@ -118,10 +119,10 @@ void CCPACSTransformation::setTransformationMatrix(const CTiglTransformation& ma
     }
     double rot[3] = {0., 0., 0.};
     if( fabs( fabs(m_rot[2][0]) - 1) > 1e-10 ){
-        rot[2] = -asin(m_rot[2][0]);
+        rot[1] = -asin(m_rot[2][0]);
         double cosTheta = cos(rot[2]);
         rot[0] = atan2(m_rot[2][1]/cosTheta, m_rot[2][2]/cosTheta);
-        rot[1] = atan2(m_rot[1][0]/cosTheta, m_rot[0][0]/cosTheta);
+        rot[2] = atan2(m_rot[1][0]/cosTheta, m_rot[0][0]/cosTheta);
     }
     else {
         if ( fabs(m_rot[2][0] + 1) > 1e-10 ) {
@@ -136,9 +137,9 @@ void CCPACSTransformation::setTransformationMatrix(const CTiglTransformation& ma
     if (!m_rotation) {
         m_rotation = boost::in_place(m_uidMgr);
     }
-    m_rotation->SetX(rot[0]);
-    m_rotation->SetY(rot[1]);
-    m_rotation->SetZ(rot[2]);
+    m_rotation->SetX(Degrees(rot[0]));
+    m_rotation->SetY(Degrees(rot[1]));
+    m_rotation->SetZ(Degrees(rot[2]));
 }
 
 void CCPACSTransformation::updateMatrix(CTiglTransformation& cache) const

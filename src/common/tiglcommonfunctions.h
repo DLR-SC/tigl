@@ -262,6 +262,11 @@ inline double Radians(double degree)
     return degree / 180. * M_PI;
 }
 
+inline double Degrees(double radians)
+{
+    return 180.*radians / M_PI;
+}
+
 // Clamps val between min and max
 TIGL_EXPORT int Clamp(int val, int min, int max);
 TIGL_EXPORT double Clamp(double val, double min, double max);
