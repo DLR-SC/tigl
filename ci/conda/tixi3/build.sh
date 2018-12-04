@@ -19,6 +19,7 @@ cmake -DCMAKE_INSTALL_PREFIX=$PREFIX \
  -DCMAKE_SHARED_LINKER_FLAGS="$EXTRA_LIBS" \
  -DCMAKE_EXE_LINKER_FLAGS="$EXTRA_LIBS" \
  -DTIXI_BUILD_TESTS=ON \
+ -DBUILD_SHARED_LIBS=ON \
  ..
 
 # Build step
@@ -36,7 +37,7 @@ make install
 
 # create the binary package
 make package
-cp *.tar.gz $RECIPE_DIR/
+cp *.tar.gz $RECIPE_DIR/../
 
 # install python packages
 mkdir -p $SP_DIR/tixi3

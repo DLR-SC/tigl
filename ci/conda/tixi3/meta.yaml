@@ -1,4 +1,4 @@
-{% set version = "3.0.2" %}
+{% set version = "3.0.3" %}
 
 package:
   name: tixi3
@@ -7,22 +7,22 @@ package:
 source:
   fn: tixi-{{ version }}.tar.gz
   url: https://github.com/DLR-SC/tixi/archive/v{{ version }}.tar.gz
-  md5: 35425b46939ffa84c87dc4cab007161b
+  md5: 62befb444108b6db6e89b7ebd865b5a7
   patches:
-    - remove_hard_links.patch
+    - fixvs2008.patch
 
 build:
-  number: 3
+  number: 0
 
 requirements:
   build:
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
     - patch             # [win]
-    - python
     - doxygen =1.8.10
 
   host:
+    - python {{ python }}
     - curl-static ==7.50.3
     - libxml2-static ==2.9.3
     - libxslt-static ==1.1.29
