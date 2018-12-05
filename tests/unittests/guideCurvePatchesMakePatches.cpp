@@ -26,7 +26,7 @@
 #include <Precision.hxx>
 #include <GeomFill_FillingStyle.hxx>
 
-#ifdef TIGL_OCE_COONS_PATCHED
+#ifdef HAVE_OCE_COONS_PATCHED
 #define COONS_FILLING_STYLE GeomFill_CoonsC2Style
 #else
 #define COONS_FILLING_STYLE GeomFill_CoonsStyle

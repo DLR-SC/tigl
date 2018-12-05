@@ -188,7 +188,7 @@ void CTiglMakeLoft::makeLoftWithGuides()
     
     MakePatches SurfMaker(cguid, cprof);
     // Don't sew yet. We do it later in solid creation
-#ifdef TIGL_OCE_COONS_PATCHED
+#ifdef HAVE_OCE_COONS_PATCHED
     GeomFill_FillingStyle style = GeomFill_CoonsC2Style;
 
     char* c_cont = getenv("TIGL_COONS_CONTINUITY");
