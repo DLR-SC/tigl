@@ -28,10 +28,11 @@
 
 namespace tigl {
 
-TopoDS_Edge CCPACSRotationCurve::GetCurve() const
+TopoDS_Wire CCPACSRotationCurve::GetCurve() const
 {
     CCPACSNacelleProfile& profile = m_uidMgr->ResolveObject<CCPACSNacelleProfile>(GetCurveProfileUID());
-    return profile.GetUpperWire();
+    profile.SetPointListAlgoType(CCPACSNacelleProfile::Simple);
+    return profile.GetWire();
 }
 
 TopoDS_Face CCPACSRotationCurve::GetRotationSurface(axis dir) const
@@ -45,7 +46,14 @@ TopoDS_Face CCPACSRotationCurve::GetRotationSurface(axis dir) const
 
     gp_Ax1 ax = gp_Ax1(gp_Pnt(0., 0., 0.), axis_vec);
 
-    TopoDS_Edge edge = GetCurve();
+    TopoDS_Wire wire = GetCurve();
+
+    TopTools_IndexedMapOfShape map;
+    TopExp::MapShapes(wire, TopAbs_EDGE, map);
+    if ( map.Extent() ==0 || map.Extent() > 1 ) {
+        CTiglError("CCPACSRotationCurve::GetRotationSurface: Rotation Curve is currently only supported for a single edge.\n", TIGL_ERROR);
+    }
+    TopoDS_Edge edge = TopoDS::Edge(map(1));
 
 #ifdef DEBUG
     BRepTools::Write(edge,"D:/tmp/rotationalcurve.brep");

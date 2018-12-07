@@ -25,6 +25,11 @@ CCPACSNacelleProfile::CCPACSNacelleProfile(CTiglUIDManager* uidMgr)
     , pointListAlgo(*this,&CCPACSNacelleProfile::buildPointListAlgo)
 {}
 
+void CCPACSNacelleProfile::SetPointListAlgoType(enum pointListAlgoType type)
+{
+    algoType = type;
+}
+
 void CCPACSNacelleProfile::buildPointListAlgo(unique_ptr<CTiglWingProfilePointList>& cache) const
 {
     cache.reset(new CTiglWingProfilePointList(*this, *m_pointList_choice1));

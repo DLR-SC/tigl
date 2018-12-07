@@ -19,7 +19,7 @@
 
 #include "generated/CPACSRotationCurve.h"
 #include "TopoDS_Face.hxx"
-#include "TopoDS_Edge.hxx"
+#include "TopoDS_Wire.hxx"
 
 namespace tigl {
 
@@ -36,7 +36,7 @@ public:
       z
     };
 
-    TopoDS_Edge GetCurve() const;
+    TopoDS_Wire GetCurve() const;
     TopoDS_Face GetRotationSurface(axis dir=x) const;
 };
 

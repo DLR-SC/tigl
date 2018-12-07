@@ -30,11 +30,20 @@ namespace tigl
 class CCPACSNacelleProfile : public generated::CPACSProfileGeometry2D
 {
 public:
+
+    enum pointListAlgoType {
+        Simple,
+        Airfoil
+    };
+
     CCPACSNacelleProfile(CTiglUIDManager* uidMgr);
 
     // get profile algorithm type
     TIGL_EXPORT ITiglWingProfileAlgo* GetProfileAlgo();
     TIGL_EXPORT const ITiglWingProfileAlgo* GetProfileAlgo() const;
+
+    // Set Option for pointlist algo (CCPACSRotationCurve of Nacelle uses Simple)
+    TIGL_EXPORT void SetPointListAlgoType(enum pointListAlgoType type);
 
     // Returns the nacelle profile wire
     TIGL_EXPORT TopoDS_Edge GetUpperWire   (TiglShapeModifier mod = UNMODIFIED_SHAPE) const;
@@ -50,6 +59,8 @@ protected:
 
 private:
     Cache<unique_ptr<CTiglWingProfilePointList>, CCPACSNacelleProfile> pointListAlgo;  // is created in case the wing profile alg is a point list, otherwise cst2d constructed in the base class is used
+
+    enum pointListAlgoType algoType = Airfoil;
 };
 
 } //namespace tigl
