@@ -57,6 +57,7 @@ public:
     TIGL_EXPORT virtual void SetSymmetryAxis(const TiglSymmetryAxis& axis);
 
     TIGL_EXPORT virtual CTiglTransformation GetTransformationMatrix() const;
+    TIGL_EXPORT virtual void SetTransformation(const CCPACSTransformation& transform);
 
     TIGL_EXPORT virtual CTiglPoint GetRotation() const;
     TIGL_EXPORT virtual CTiglPoint GetScaling() const;

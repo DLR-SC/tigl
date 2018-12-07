@@ -36,16 +36,16 @@
 namespace tigl
 {
 CTiglRelativelyPositionedComponent::CTiglRelativelyPositionedComponent(std::string* parentUid, CCPACSTransformation* trans)
-    : _transformation(trans), _symmetryAxis(static_cast<TiglSymmetryAxis*>(NULL)), _parentUID(parentUid), _parent(NULL) {}
+    : _parent(NULL), _parentUID(parentUid), _transformation(trans), _symmetryAxis(static_cast<TiglSymmetryAxis*>(NULL)) {}
 
 CTiglRelativelyPositionedComponent::CTiglRelativelyPositionedComponent(boost::optional<std::string>* parentUid, CCPACSTransformation* trans)
-    : _transformation(trans), _symmetryAxis(static_cast<TiglSymmetryAxis*>(NULL)), _parentUID(parentUid), _parent(NULL) {}
+    : _parent(NULL), _parentUID(parentUid), _transformation(trans), _symmetryAxis(static_cast<TiglSymmetryAxis*>(NULL)) {}
 
 CTiglRelativelyPositionedComponent::CTiglRelativelyPositionedComponent(boost::optional<std::string>* parentUid, CCPACSTransformation* trans, TiglSymmetryAxis* symmetryAxis)
-    : _transformation(trans), _symmetryAxis(symmetryAxis), _parentUID(parentUid), _parent(NULL) {}
+    : _parent(NULL), _parentUID(parentUid), _transformation(trans), _symmetryAxis(symmetryAxis) {}
 
 CTiglRelativelyPositionedComponent::CTiglRelativelyPositionedComponent(boost::optional<std::string>* parentUid, CCPACSTransformation* trans, boost::optional<TiglSymmetryAxis>* symmetryAxis)
-    : _transformation(trans), _symmetryAxis(symmetryAxis), _parentUID(parentUid), _parent(NULL) {}
+    : _parent(NULL), _parentUID(parentUid), _transformation(trans), _symmetryAxis(symmetryAxis){}
 
 
 void CTiglRelativelyPositionedComponent::Reset()
@@ -128,6 +128,19 @@ CTiglTransformation CTiglRelativelyPositionedComponent::GetTransformationMatrix(
     }
     else
         return thisTransformation;
+}
+
+void CTiglRelativelyPositionedComponent::SetTransformation(const CCPACSTransformation &transform)
+{
+    if (!_transformation) {
+        throw CTiglError("Cannot set Transformation for component \"" + GetDefaultedUID() + "\". The component has not transformation");
+    }
+
+    *_transformation = transform;
+
+    // the component's geometry must be invalidated
+    CTiglAbstractGeometricComponent::Reset();
+
 }
 
 CTiglPoint CTiglRelativelyPositionedComponent::GetRotation() const

@@ -26,6 +26,27 @@ CCPACSPointAbsRel::CCPACSPointAbsRel(CTiglUIDManager* uidMgr)
 {
 }
 
+CCPACSPointAbsRel::CCPACSPointAbsRel(const CCPACSPointAbsRel &p)
+    : generated::CPACSPointAbsRel (p.m_uidMgr)
+{
+    m_x = p.m_x;
+    m_y = p.m_y;
+    m_z = p.m_z;
+    m_refType = p.m_refType;
+    m_uID = p.m_uID;
+}
+
+CCPACSPointAbsRel &CCPACSPointAbsRel::operator =(const CCPACSPointAbsRel &p)
+{
+    // For now, we don't replace the uid, just the values
+    m_x = p.m_x;
+    m_y = p.m_y;
+    m_z = p.m_z;
+    m_refType = p.m_refType;
+
+    return *this;
+}
+
 CTiglPoint CCPACSPointAbsRel::AsPoint() const
 {
     CTiglPoint point;
