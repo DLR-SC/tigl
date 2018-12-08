@@ -40,8 +40,8 @@ namespace generated
     /// Version V2.3.1
     /// Date 2016-07-29T16:47:00
     /// 1. Overview
-    /// The ommon arametric ircraft onfiguration cheme  is an XML-based data format for describing aircraft configurations and their corresponding data. This XML-Schema document provides a description of the  data structure that can be used for automatic validation as well as for documentation purposes. In this Schema, type declarations and element definitions are seperated. This means, there is e.g. a pointType class, containing x, y and z components. This class is then used in different places under different names (e.g. the "translation" node in "transformation" is made of pointType, meaning it has x, y and z subnodes.) C The ommon arametric ircraft onfiguration cheme  is an XML-based data format for describing aircraft configurations and their corresponding data. This XML-Schema document provides a description of the  data structure that can be used for automatic validation as well as for documentation purposes. In this Schema, type declarations and element definitions are seperated. This means, there is e.g. a pointType class, containing x, y and z components. This class is then used in different places under different names (e.g. the "translation" node in "transformation" is made of pointType, meaning it has x, y and z subnodes.) P The ommon arametric ircraft onfiguration cheme  is an XML-based data format for describing aircraft configurations and their corresponding data. This XML-Schema document provides a description of the  data structure that can be used for automatic validation as well as for documentation purposes. In this Schema, type declarations and element definitions are seperated. This means, there is e.g. a pointType class, containing x, y and z components. This class is then used in different places under different names (e.g. the "translation" node in "transformation" is made of pointType, meaning it has x, y and z subnodes.) A The ommon arametric ircraft onfiguration cheme  is an XML-based data format for describing aircraft configurations and their corresponding data. This XML-Schema document provides a description of the  data structure that can be used for automatic validation as well as for documentation purposes. In this Schema, type declarations and element definitions are seperated. This means, there is e.g. a pointType class, containing x, y and z components. This class is then used in different places under different names (e.g. the "translation" node in "transformation" is made of pointType, meaning it has x, y and z subnodes.) C The ommon arametric ircraft onfiguration cheme  is an XML-based data format for describing aircraft configurations and their corresponding data. This XML-Schema document provides a description of the  data structure that can be used for automatic validation as well as for documentation purposes. In this Schema, type declarations and element definitions are seperated. This means, there is e.g. a pointType class, containing x, y and z components. This class is then used in different places under different names (e.g. the "translation" node in "transformation" is made of pointType, meaning it has x, y and z subnodes.) S The ommon arametric ircraft onfiguration cheme  is an XML-based data format for describing aircraft configurations and their corresponding data. This XML-Schema document provides a description of the  data structure that can be used for automatic validation as well as for documentation purposes. In this Schema, type declarations and element definitions are seperated. This means, there is e.g. a pointType class, containing x, y and z components. This class is then used in different places under different names (e.g. the "translation" node in "transformation" is made of pointType, meaning it has x, y and z subnodes.) (CPACS) The ommon arametric ircraft onfiguration cheme  is an XML-based data format for describing aircraft configurations and their corresponding data. This XML-Schema document provides a description of the  data structure that can be used for automatic validation as well as for documentation purposes. In this Schema, type declarations and element definitions are seperated. This means, there is e.g. a pointType class, containing x, y and z components. This class is then used in different places under different names (e.g. the "translation" node in "transformation" is made of pointType, meaning it has x, y and z subnodes.)
-    /// The ommon arametric ircraft onfiguration cheme  is an XML-based data format for describing aircraft configurations and their corresponding data. This XML-Schema document provides a description of the  data structure that can be used for automatic validation as well as for documentation purposes. In this Schema, type declarations and element definitions are seperated. This means, there is e.g. a pointType class, containing x, y and z components. This class is then used in different places under different names (e.g. the "translation" node in "transformation" is made of pointType, meaning it has x, y and z subnodes.) CPACS The ommon arametric ircraft onfiguration cheme  is an XML-based data format for describing aircraft configurations and their corresponding data. This XML-Schema document provides a description of the  data structure that can be used for automatic validation as well as for documentation purposes. In this Schema, type declarations and element definitions are seperated. This means, there is e.g. a pointType class, containing x, y and z components. This class is then used in different places under different names (e.g. the "translation" node in "transformation" is made of pointType, meaning it has x, y and z subnodes.)
+    /// The C ommon P arametric A ircraft C onfiguration S cheme (CPACS) is an XML-based data format for describing aircraft configurations and their corresponding data.
+    /// This XML-Schema document provides a description of the CPACS data structure that can be used for automatic validation as well as for documentation purposes. In this Schema, type declarations and element definitions are seperated. This means, there is e.g. a pointType class, containing x, y and z components. This class is then used in different places under different names (e.g. the "translation" node in "transformation" is made of pointType, meaning it has x, y and z subnodes.)
     /// CPACS is an open source project published by the German Aerospace Center (DLR e.V.). For further information please go to http://software.dlr.de/p/cpacs/home/
     /// You can display the text based version of CPACS in every text editor. Further tools are for example www.eclipse.org
     /// 2. Coordinate Systems
@@ -61,88 +61,88 @@ namespace generated
     /// Again, the aerodynamic analysis is relative to the CPACS coordinate system. That is, the angle of attack is represented by the dashed orange line. Results of the aerodynamic calculation are given in the CPACS coordinate system.
     /// 3. Units
     /// There are no explicit attributes describing units in CPACS. The general convention is that all values must be given in the following SI-units:
-    /// [m] Position, Distance [m] [m] Area [m] [m] Volume [kg] Mass [s] Time [K] Temperature [°] Angle or in derived units, e.g.:
+    /// [m] Position, Distance [m 2 ] Area [m 3 ] Volume [kg] Mass [s] Time [K] Temperature [°] Angle or in derived units, e.g.:
     /// [N] Force [Nm] Moment [W] Power [J] Energy 4. Splitting up a CPACS dataset into several files
-    /// To provide a better overview, it is possible to split up a  dataset into several files. This can be done by inserting an  node at an arbitrary position into the datatset. This node contains a  node with a URI to the external file(s), followed by one or more  nodes, containing each a name of a file to be included at that position. Below, an example of such external data is given: CPACS To provide a better overview, it is possible to split up a  dataset into several files. This can be done by inserting an  node at an arbitrary position into the datatset. This node contains a  node with a URI to the external file(s), followed by one or more  nodes, containing each a name of a file to be included at that position. Below, an example of such external data is given: &lt;externaldata&gt; To provide a better overview, it is possible to split up a  dataset into several files. This can be done by inserting an  node at an arbitrary position into the datatset. This node contains a  node with a URI to the external file(s), followed by one or more  nodes, containing each a name of a file to be included at that position. Below, an example of such external data is given: &lt;path&gt; To provide a better overview, it is possible to split up a  dataset into several files. This can be done by inserting an  node at an arbitrary position into the datatset. This node contains a  node with a URI to the external file(s), followed by one or more  nodes, containing each a name of a file to be included at that position. Below, an example of such external data is given: &lt;filename&gt; To provide a better overview, it is possible to split up a  dataset into several files. This can be done by inserting an  node at an arbitrary position into the datatset. This node contains a  node with a URI to the external file(s), followed by one or more  nodes, containing each a name of a file to be included at that position. Below, an example of such external data is given:
-    /// &lt;?xml version="1.0" encoding="utf-8"?&gt;
-    /// &lt;cpacs xsi:noNamespaceSchemaLocation="cpacs_schema.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
-    /// &lt;vehicles&gt;
-    /// &lt;profiles&gt;
-    /// &lt;wingAirfoils&gt;
-    /// &lt;externaldata&gt;
-    /// &lt;path&gt;file:://airfoils&lt;/path&gt;
-    /// &lt;filename&gt;NACA0010.xml&lt;/filename&gt;
-    /// &lt;filename&gt;NACA2412.xml&lt;/filename&gt;
-    /// &lt;/externaldata&gt;
-    /// &lt;airfoil uID="NACA0012"&gt;
-    /// &lt;name&gt;NACA 0012 Airfoil&lt;/name&gt;
-    /// &lt;pointList&gt;...&lt;/pointList&gt;
-    /// &lt;/airfoil&gt;
-    /// &lt;/wingAirfoils&gt;
-    /// &lt;/profiles&gt;
-    /// &lt;/vehicles&gt;
-    /// &lt;cpacs&gt; Such an external file would look like:
-    /// &lt;?xml version="1.0" encoding="utf-8"?&gt;
-    /// &lt;airfoil uID="NACA0010"&gt;
-    /// &lt;name&gt;NACA 0010 Airfoil&lt;/name&gt;
-    /// &lt;pointList&gt;...&lt;/pointList&gt;
-    /// &lt;/airfoil&gt; The file would be included completely, except for its title line  . This concept can also be used recursively (external files of external files), then it is important to prevent circle connections (file "A" loading file "B" loading file "C" loading again file "A" ...). &lt;?xml version="1.0" encoding="utf-8"?&gt; The file would be included completely, except for its title line  . This concept can also be used recursively (external files of external files), then it is important to prevent circle connections (file "A" loading file "B" loading file "C" loading again file "A" ...).
+    /// To provide a better overview, it is possible to split up a CPACS dataset into several files. This can be done by inserting an <externaldata> node at an arbitrary position into the datatset. This node contains a <path> node with a URI to the external file(s), followed by one or more <filename> nodes, containing each a name of a file to be included at that position. Below, an example of such external data is given:
+    /// <?xml version="1.0" encoding="utf-8"?>
+    /// <cpacs xsi:noNamespaceSchemaLocation="cpacs_schema.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    /// <vehicles>
+    /// <profiles>
+    /// <wingAirfoils>
+    /// <externaldata>
+    /// <path>file:://airfoils</path>
+    /// <filename>NACA0010.xml</filename>
+    /// <filename>NACA2412.xml</filename>
+    /// </externaldata>
+    /// <airfoil uID="NACA0012">
+    /// <name>NACA 0012 Airfoil</name>
+    /// <pointList>...</pointList>
+    /// </airfoil>
+    /// </wingAirfoils>
+    /// </profiles>
+    /// </vehicles>
+    /// <cpacs> Such an external file would look like:
+    /// <?xml version="1.0" encoding="utf-8"?>
+    /// <airfoil uID="NACA0010">
+    /// <name>NACA 0010 Airfoil</name>
+    /// <pointList>...</pointList>
+    /// </airfoil> The file would be included completely, except for its title line <?xml version="1.0" encoding="utf-8"?> . This concept can also be used recursively (external files of external files), then it is important to prevent circle connections (file "A" loading file "B" loading file "C" loading again file "A" ...).
     /// For path URI adresses, the trailing file separator "/" may be omitted. Below, some examples for path URIs are given:
-    /// Absolute local path: "file:///tmp" or "file:///c:/windows/tmp" Relative local direcotry: "file://relativeDirectory" or "file://../anotherRelativeDirectory" Remote net ressource: "http://www.someurl.de" A  dataset with external files, being loaded by a special library like the VA ML nterface , shall collect all its external datafiles and build up a single tree from them. A validation against this schema is only possible for such a single tree file; the &lt;externaldata&gt;nodes are not recognized by it. To preserve the information, necessary to split the file up into external files again later, externaldata information is maintained within three attributes of the former external top node: CPACS A  dataset with external files, being loaded by a special library like the VA ML nterface , shall collect all its external datafiles and build up a single tree from them. A validation against this schema is only possible for such a single tree file; the &lt;externaldata&gt;nodes are not recognized by it. To preserve the information, necessary to split the file up into external files again later, externaldata information is maintained within three attributes of the former external top node: TI A  dataset with external files, being loaded by a special library like the VA ML nterface , shall collect all its external datafiles and build up a single tree from them. A validation against this schema is only possible for such a single tree file; the &lt;externaldata&gt;nodes are not recognized by it. To preserve the information, necessary to split the file up into external files again later, externaldata information is maintained within three attributes of the former external top node: X A  dataset with external files, being loaded by a special library like the VA ML nterface , shall collect all its external datafiles and build up a single tree from them. A validation against this schema is only possible for such a single tree file; the &lt;externaldata&gt;nodes are not recognized by it. To preserve the information, necessary to split the file up into external files again later, externaldata information is maintained within three attributes of the former external top node: I A  dataset with external files, being loaded by a special library like the VA ML nterface , shall collect all its external datafiles and build up a single tree from them. A validation against this schema is only possible for such a single tree file; the &lt;externaldata&gt;nodes are not recognized by it. To preserve the information, necessary to split the file up into external files again later, externaldata information is maintained within three attributes of the former external top node: TIXI A  dataset with external files, being loaded by a special library like the VA ML nterface , shall collect all its external datafiles and build up a single tree from them. A validation against this schema is only possible for such a single tree file; the &lt;externaldata&gt;nodes are not recognized by it. To preserve the information, necessary to split the file up into external files again later, externaldata information is maintained within three attributes of the former external top node:
-    /// externalFileName - Name of the file where the external data shall be saved externalDataDirectory - Directory of the external data file. Its content is analogous to the &lt;externaldata&gt;'s &lt;path&gt;node described above. externalDataNodePath - XPATH of the node which is replaced with the content of the external file. In case that it is an external file of an external file, then it is the XPATH in the outer external file. If, e.g., in the example above the &lt;pointList&gt;node would have also been loaded from an external file, then the entry would just be: externalDataNodePath="/airfoil". This is used primarily for loop-detection. The single tree for the example above would look like:
-    /// &lt;?xml version="1.0" encoding="utf-8"?&gt;
-    /// &lt;cpacs xsi:noNamespaceSchemaLocation="cpacs_schema.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
-    /// &lt;vehicles&gt;
-    /// &lt;profiles&gt;
-    /// &lt;wingAirfoils&gt;
-    /// &lt;airfoil uID="NACA0010" externalFileName="NACA0010.xml" externalDataDirectory="file://airfoils" externalDataNodePath="/cpacs/vehicles/profiles/wingAirfoils"&gt;
-    /// &lt;name&gt;NACA 0010 Airfoil&lt;/name&gt;
-    /// &lt;pointList"&gt;...&lt;/pointList"&gt;
-    /// &lt;/airfoil&gt;
+    /// Absolute local path: "file:///tmp" or "file:///c:/windows/tmp" Relative local direcotry: "file://relativeDirectory" or "file://../anotherRelativeDirectory" Remote net ressource: "http://www.someurl.de" A CPACS dataset with external files, being loaded by a special library like the TI VA X ML I nterface TIXI , shall collect all its external datafiles and build up a single tree from them. A validation against this schema is only possible for such a single tree file; the <externaldata>nodes are not recognized by it. To preserve the information, necessary to split the file up into external files again later, externaldata information is maintained within three attributes of the former external top node:
+    /// externalFileName - Name of the file where the external data shall be saved externalDataDirectory - Directory of the external data file. Its content is analogous to the <externaldata>'s <path>node described above. externalDataNodePath - XPATH of the node which is replaced with the content of the external file. In case that it is an external file of an external file, then it is the XPATH in the outer external file. If, e.g., in the example above the <pointList>node would have also been loaded from an external file, then the entry would just be: externalDataNodePath="/airfoil". This is used primarily for loop-detection. The single tree for the example above would look like:
+    /// <?xml version="1.0" encoding="utf-8"?>
+    /// <cpacs xsi:noNamespaceSchemaLocation="cpacs_schema.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    /// <vehicles>
+    /// <profiles>
+    /// <wingAirfoils>
+    /// <airfoil uID="NACA0010" externalFileName="NACA0010.xml" externalDataDirectory="file://airfoils" externalDataNodePath="/cpacs/vehicles/profiles/wingAirfoils">
+    /// <name>NACA 0010 Airfoil</name>
+    /// <pointList">...</pointList">
+    /// </airfoil>
     /// ...
-    /// &lt;airfoil uID="NACA0012"&gt;
-    /// &lt;name&gt;NACA 0012 Airfoil&lt;/name&gt;
-    /// &lt;pointList&gt;...&lt;/pointList&gt;
-    /// &lt;/airfoil&gt;
-    /// &lt;/wingAirfoils&gt;
-    /// &lt;/profiles&gt;
-    /// &lt;/vehicles&gt;
-    /// &lt;cpacs&gt; 5. UIDs and references
-    /// The -dataset often uses references between nodes. Typically, these references define connections between parts that are located somewhere else in the dataset (e.g. a wing is connected to a fuselage, a specific engine from the "engines"-section is used, ...). These connections are made, using UID attributes. This means, that a node, that shall be referenced (e.g. an engine type, an airfoil geometry, a mission definition, ...), gets an additional UID attribute, consisting of a unique (in the scope of the whole  dataset) text, like: CPACS The -dataset often uses references between nodes. Typically, these references define connections between parts that are located somewhere else in the dataset (e.g. a wing is connected to a fuselage, a specific engine from the "engines"-section is used, ...). These connections are made, using UID attributes. This means, that a node, that shall be referenced (e.g. an engine type, an airfoil geometry, a mission definition, ...), gets an additional UID attribute, consisting of a unique (in the scope of the whole  dataset) text, like: CPACS The -dataset often uses references between nodes. Typically, these references define connections between parts that are located somewhere else in the dataset (e.g. a wing is connected to a fuselage, a specific engine from the "engines"-section is used, ...). These connections are made, using UID attributes. This means, that a node, that shall be referenced (e.g. an engine type, an airfoil geometry, a mission definition, ...), gets an additional UID attribute, consisting of a unique (in the scope of the whole  dataset) text, like:
-    /// &lt;fuselage uID="ATTAS fuselage"&gt;... Such a node with a UID is then typically referred to by a subnode, like:
-    /// &lt;wing&gt;
-    /// &lt;name&gt;ATTAS main wing&lt;/name&gt;
-    /// &lt;parentUID isLink="True"&gt;ATTAS fuselage&lt;/parentUID&gt;
+    /// <airfoil uID="NACA0012">
+    /// <name>NACA 0012 Airfoil</name>
+    /// <pointList>...</pointList>
+    /// </airfoil>
+    /// </wingAirfoils>
+    /// </profiles>
+    /// </vehicles>
+    /// <cpacs> 5. UIDs and references
+    /// The CPACS -dataset often uses references between nodes. Typically, these references define connections between parts that are located somewhere else in the dataset (e.g. a wing is connected to a fuselage, a specific engine from the "engines"-section is used, ...). These connections are made, using UID attributes. This means, that a node, that shall be referenced (e.g. an engine type, an airfoil geometry, a mission definition, ...), gets an additional UID attribute, consisting of a unique (in the scope of the whole CPACS dataset) text, like:
+    /// <fuselage uID="ATTAS fuselage">... Such a node with a UID is then typically referred to by a subnode, like:
+    /// <wing>
+    /// <name>ATTAS main wing</name>
+    /// <parentUID isLink="True">ATTAS fuselage</parentUID>
     /// ... It is absolutely essential to ensure that a UID attribute is unique within the whole dataset, as searching for this name is the only way to resolve the reference!
     /// This is also important for testing. All nodes that refer to an UID like e.g. parentUID carry an additional attribute "isLink". If this attribute is true the dataset can be tested for valid UIDs.
     /// UID can either be named according to their appearance in the hierarchy e.g. uid=""mainWingKinkSection" or by automatically placing identifiers e.g. via processor runtime dates
     /// 6. Symmetry
     /// Sometimes it might be useful to specify a part of the aircraft as symmetric instead of holding all the data twice in nearly identical form in the dataset (e.g. left and right wing are usually identical, except for the sign of the y-coordinate). Hence, some parts offer the option to set a symmetry attribute for them, like:
-    /// &lt;wing symmetry="x-z-plane"&gt;... This attribute explains that the whole part with all its subnodes is symmetric to the given plane. Possible planes are: x-y-plane x-z-plane y-z-plane This attribute explains that the whole part with all its subnodes is symmetric to the given plane. Possible planes are:
+    /// <wing symmetry="x-z-plane">... This attribute explains that the whole part with all its subnodes is symmetric to the given plane. Possible planes are: x-y-plane x-z-plane y-z-plane 
     /// UIDs, references and symmetry All nodes, e.g. parentUID, in CPACS that refer to a component that holds symmetry attribute, e.g. wing, have to carry the symmetry attribute as well.
-    /// The symmetry attribute may take three values: symm, def, full: def: The element refers to the geometric component that has a symmetry attribute and refers only to the defined side of the geometric component. symm: The element refers to the geometric component that has a symmetry attribute and refers only to the symmetric side of the geometric component. (Similar to the previous _symm solution) full: The element refers to the geometric component that has a symmetry attribute and refers to the complete component. (This is the default behaviour) The symmetry attribute may take three values: symm, def, full:
-    /// &lt;wing uID="ATTAS main wing" symmetry="x-z-plane"&gt;
+    /// The symmetry attribute may take three values: symm, def, full: def: The element refers to the geometric component that has a symmetry attribute and refers only to the defined side of the geometric component. symm: The element refers to the geometric component that has a symmetry attribute and refers only to the symmetric side of the geometric component. (Similar to the previous _symm solution) full: The element refers to the geometric component that has a symmetry attribute and refers to the complete component. (This is the default behaviour) 
+    /// <wing uID="ATTAS main wing" symmetry="x-z-plane">
     /// ...
-    /// &lt;segments&gt;
-    /// &lt;segment uID="ATTAS main wing innersegment"&gt;
+    /// <segments>
+    /// <segment uID="ATTAS main wing innersegment">
     /// ... In the example above, to refer to the "other" side of the wing on must use the definition as such:
-    /// &lt;loadcase&gt;
+    /// <loadcase>
     /// ...
-    /// &lt;segments&gt;
-    /// &lt;segment&gt;
-    /// &lt;segmentUID isLink="True" symmetry="symm"&gt;ATTAS main wing inner segment&lt;/segmentUID&gt;
-    /// &lt;strip&gt;... 7. Arrays and vectors
-    /// For bigger datasets (e.g. aerodynamic or engine performance maps), it is better to insert a vector or an array of values instead of providing a single node for each data value. In , there are  and  for this purpose. CPACS For bigger datasets (e.g. aerodynamic or engine performance maps), it is better to insert a vector or an array of values instead of providing a single node for each data value. In , there are  and  for this purpose. vectors For bigger datasets (e.g. aerodynamic or engine performance maps), it is better to insert a vector or an array of values instead of providing a single node for each data value. In , there are  and  for this purpose. arrays For bigger datasets (e.g. aerodynamic or engine performance maps), it is better to insert a vector or an array of values instead of providing a single node for each data value. In , there are  and  for this purpose.
-    /// The  attribute specifies the type of data. It can have the following value: mapType The  attribute specifies the type of data. It can have the following value: mapType="vector" The vector is meant as a one-dimensional-array. In such a node, the values are contained in a semicolon separated list:
-    /// mapType="vector" &lt;angleOfAttack mapType="vector"&gt;0.;1.5;3.;4.5;6;7.5;9.&lt;/angleOfAttack&gt; mapType="vector" mapType="array" The array is meant for multi-dimensional-arrays. Again, the values are contained in a semicolon separated list. An array is always preceded by a sequence of vectors, containing the dimensions and index values of it:
-    /// mapType="array" &lt;machNumber mapType="vector"&gt;0.5&lt;/machNumber&gt;
-    /// &lt;altitude mapType="vector"&gt;1000.;2000.&lt;/altitude&gt;
-    /// &lt;angleOfSideslip mapType="vector"&gt;-5.;0.;5.&lt;/angleOfSideslip&gt;
-    /// &lt;angleOfAttack mapType="vector"&gt;1.;2.;3.;4.&lt;/angleOfAttack&gt;
-    /// &lt;cfx mapType="array"&gt;1.;2.;3.;4.;11.;12.;13.;14.;21.;22.;23.;24.;101.;102.;103.;104.;111.;112.;113.;114.;121.;122.;123.;124.&lt;/cfx&gt; mapType="array" In this example, the values for "cfx" are given in a way to indicate the array order: The last parameter is always varied first, then the pre-last, and then further. The array above is also shown in the following tables:
-    /// mapType="array" Value for cfx, Mach number: 0.5, Altitude: 1000m
-    /// Angle of attack = 1.° Angle of attack = 2.° Angle of attack = 3.° Angle of attack = 4.° Angle of Sideslip = -5.° 1. 2. 3. 4. Angle of Sideslip = 0.° 11. 12. 13. 14. Angle of Sideslip = 5.° 21. 22. 23. 24. mapType="array" Value for cfx, Mach number: 0.5, Altitude: 2000m
-    /// Angle of attack = 1.° Angle of attack = 2.° Angle of attack = 3.° Angle of attack = 4.° Angle of Sideslip = -5.° 101. 102. 103. 104. Angle of Sideslip = 0.° 111. 112. 113. 114. Angle of Sideslip = 5.° 121. 122. 123. 124. mapType="array" The  attribute specifies the type of data. It can have the following value:
+    /// <segments>
+    /// <segment>
+    /// <segmentUID isLink="True" symmetry="symm">ATTAS main wing inner segment</segmentUID>
+    /// <strip>... 7. Arrays and vectors
+    /// For bigger datasets (e.g. aerodynamic or engine performance maps), it is better to insert a vector or an array of values instead of providing a single node for each data value. In CPACS , there are vectors and arrays for this purpose.
+    /// The mapType attribute specifies the type of data. It can have the following value: mapType="vector" The vector is meant as a one-dimensional-array. In such a node, the values are contained in a semicolon separated list:
+    /// <angleOfAttack mapType="vector">0.;1.5;3.;4.5;6;7.5;9.</angleOfAttack>  mapType="array" The array is meant for multi-dimensional-arrays. Again, the values are contained in a semicolon separated list. An array is always preceded by a sequence of vectors, containing the dimensions and index values of it:
+    /// <machNumber mapType="vector">0.5</machNumber>
+    /// <altitude mapType="vector">1000.;2000.</altitude>
+    /// <angleOfSideslip mapType="vector">-5.;0.;5.</angleOfSideslip>
+    /// <angleOfAttack mapType="vector">1.;2.;3.;4.</angleOfAttack>
+    /// <cfx mapType="array">1.;2.;3.;4.;11.;12.;13.;14.;21.;22.;23.;24.;101.;102.;103.;104.;111.;112.;113.;114.;121.;122.;123.;124.</cfx>  In this example, the values for "cfx" are given in a way to indicate the array order: The last parameter is always varied first, then the pre-last, and then further. The array above is also shown in the following tables:
+    /// Value for cfx, Mach number: 0.5, Altitude: 1000m
+    /// Angle of attack = 1.° Angle of attack = 2.° Angle of attack = 3.° Angle of attack = 4.° Angle of Sideslip = -5.° 1. 2. 3. 4. Angle of Sideslip = 0.° 11. 12. 13. 14. Angle of Sideslip = 5.° 21. 22. 23. 24.  Value for cfx, Mach number: 0.5, Altitude: 2000m
+    /// Angle of attack = 1.° Angle of attack = 2.° Angle of attack = 3.° Angle of attack = 4.° Angle of Sideslip = -5.° 101. 102. 103. 104. Angle of Sideslip = 0.° 111. 112. 113. 114. Angle of Sideslip = 5.° 121. 122. 123. 124.  
     /// 
     /// 8. Atmosphere
     /// At some places in CPACS, an atmosphere has to be selected (e.g. for connecting an altitude with a certain pressure or density).
@@ -179,7 +179,7 @@ namespace generated
     /// Release in Aug 2010
     /// Fuel definition added Introduced component segments for the wing structure Mission definition was updated VSAero toolspecific data updated CPACS 1.2
     /// Release in May 2010
-    /// Fuselage Structure Elements are updated following the input from BK stringers&gt;arbitrary additional parameters: yBezugAtStartX, zBezugAtStartX, yBezugAtEndX, zBezugAtEndX paxCrossBeams additional parameters: startX, endX cargoCrossBeams additional parameters: startX, endX paxCrossBeamStruts additional parameters: startX, endX cargoCrossBeamStruts additional parameters: startX, endX structure&gt;pressureBulkhead: positionX instead of positionZ reinforcementNumberVertical: number of vertical reinforcements reinforcementNumberHorizontal: number of horizontal reinforcements maxFlectionDepth: max camber of pressure bulkhead reinforcementNumber: number of reinforcements rear pressure bulkhead sheetProperties: definition of sheet properties innerRadius: inner radius of the pressure bulkhead Dummy Wingbox element is included. This definition needs further enhancements cpacs&gt;vehicles&gt;aircraft&gt;model&gt;fuselage&gt;fuselage&gt;structure Wingbox: xStart: start of the wingbox area xEnd: end of the wingbox area zStart: upper limit of the wingbox area Damping Derivaties are added in the form of dcfxdp, dcfxdq, dcfxdr, dcfydp, etc. The data will be stored in the model/global/aeroperformaneMap under a new dampingDerivatives element. Unit is deg/sec. StructureProfiles are defined in the profiles element. They are referenced in structuralElements for several entities such as stringer, frame etc. Currently they are referenced via 'structuralProfileUID' for name consistency it should be either only 'structure' or only 'structural' Control Commmands. The chain between pilot inputs and controlsurface deflections is now closed. Parameters located at cpacs\vehicles\aircraft\model\systems cockpitControl: links from pilotInput to commandCase commandCase: links from commandCase to controlDistributor or controlFunction controlDistributor links to the controlSurface controlLaws includes controlModes automatic and manual controlModes contain controlFunctions TraFuMo toolspecific data added CPACS 1.1
+    /// Fuselage Structure Elements are updated following the input from BK stringers>arbitrary additional parameters: yBezugAtStartX, zBezugAtStartX, yBezugAtEndX, zBezugAtEndX paxCrossBeams additional parameters: startX, endX cargoCrossBeams additional parameters: startX, endX paxCrossBeamStruts additional parameters: startX, endX cargoCrossBeamStruts additional parameters: startX, endX structure>pressureBulkhead: positionX instead of positionZ reinforcementNumberVertical: number of vertical reinforcements reinforcementNumberHorizontal: number of horizontal reinforcements maxFlectionDepth: max camber of pressure bulkhead reinforcementNumber: number of reinforcements rear pressure bulkhead sheetProperties: definition of sheet properties innerRadius: inner radius of the pressure bulkhead Dummy Wingbox element is included. This definition needs further enhancements cpacs>vehicles>aircraft>model>fuselage>fuselage>structure Wingbox: xStart: start of the wingbox area xEnd: end of the wingbox area zStart: upper limit of the wingbox area Damping Derivaties are added in the form of dcfxdp, dcfxdq, dcfxdr, dcfydp, etc. The data will be stored in the model/global/aeroperformaneMap under a new dampingDerivatives element. Unit is deg/sec. StructureProfiles are defined in the profiles element. They are referenced in structuralElements for several entities such as stringer, frame etc. Currently they are referenced via 'structuralProfileUID' for name consistency it should be either only 'structure' or only 'structural' Control Commmands. The chain between pilot inputs and controlsurface deflections is now closed. Parameters located at cpacs\vehicles\aircraft\model\systems cockpitControl: links from pilotInput to commandCase commandCase: links from commandCase to controlDistributor or controlFunction controlDistributor links to the controlSurface controlLaws includes controlModes automatic and manual controlModes contain controlFunctions TraFuMo toolspecific data added CPACS 1.1
     /// Release in Feb 2010
     /// Fleets model added. The fleets modeling from CATS is introduced to CPACS 1.1 Reference changed. The reference type in wingSegmentStripCoefficientsType was changed from referenceType to pointType
     class CPACSCpacs

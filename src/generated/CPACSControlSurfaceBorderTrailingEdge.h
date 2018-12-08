@@ -52,7 +52,7 @@ namespace generated
     /// device this is done at 'leadingEdgeShape', for the spoiler
     /// 'relHeightLE' is used and for the leading edge devices 'hollow'.
     /// If an exact control surface airfoil definition should be used,
-    /// outerShape-&gt;airfoils can be used.
+    /// outerShape->airfoils can be used.
     /// Please find below an example for the definition of the
     /// planform of a trailing edge device. Other controlsurfaces are
     /// similar.

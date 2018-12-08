@@ -51,10 +51,10 @@ namespace generated
     /// corners.
     /// The cell leading and trailing edge (= forward and rear
     /// border) can either be defined by referencing to a spar
-    /// (-&gt;sparUID) or by the defining the xsi (=relative chord)
+    /// (->sparUID) or by the defining the xsi (=relative chord)
     /// coordinates of the border (xsi1 = inner end; xsi2 = outer end).
     /// The cell inner and outer border can either be defined
-    /// by referencing to a rib (-&gt;ribDefinitionUID and ribNumber) or
+    /// by referencing to a rib (->ribDefinitionUID and ribNumber) or
     /// by the defining the eta (=relative spanwise) coordinates of the
     /// border (eta1 = forward end; eta2 = rear end).
     /// Some examples for wing cells can be found in the
