@@ -35,6 +35,8 @@ public:
     TIGL_EXPORT CCPACSTransformation(CTiglUIDManager* uidMgr);
     
     TIGL_EXPORT void reset();
+
+    TIGL_EXPORT CCPACSTransformation &operator = (const CCPACSTransformation& trafo);
     
     TIGL_EXPORT void setTranslation(const CTiglPoint& translation);
     TIGL_EXPORT void setTranslation(const CTiglPoint& translation, ECPACSTranslationType);

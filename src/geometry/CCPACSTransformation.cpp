@@ -44,6 +44,17 @@ void CCPACSTransformation::reset()
     _transformationMatrix.clear();
 }
 
+CCPACSTransformation &CCPACSTransformation::operator =(const CCPACSTransformation &trafo)
+{
+    m_scaling = trafo.m_scaling;
+    m_rotation = trafo.m_rotation;
+    m_translation = trafo.m_translation;
+
+    _transformationMatrix.clear();
+
+    return *this;
+}
+
 void CCPACSTransformation::setTranslation(const CTiglPoint & translation)
 {
     GetTranslation(CreateIfNotExists).SetAsPoint(translation);
