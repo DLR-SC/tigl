@@ -39,18 +39,16 @@ void CCPACSWingRibExplicitPositioning::SetEndReference(const std::string& ref)
     m_parent->GetParent()->Invalidate();
 }
 
-void CCPACSWingRibExplicitPositioning::SetStartEta(double eta, const std::string& referenceUid)
+void CCPACSWingRibExplicitPositioning::SetStartEta(double eta)
 {
-    generated::CPACSWingRibExplicitPositioning::GetEtaStart().SetEta(eta);
-    generated::CPACSWingRibExplicitPositioning::GetEtaStart().SetReferenceUID(referenceUid);
+    generated::CPACSWingRibExplicitPositioning::SetEtaStart(eta);
     // invalidate whole component segment structure since rib could be referenced anywhere
     m_parent->GetParent()->Invalidate();
 }
 
-void CCPACSWingRibExplicitPositioning::SetEndEta(double eta, const std::string& referenceUid)
+void CCPACSWingRibExplicitPositioning::SetEndEta(double eta)
 {
-    generated::CPACSWingRibExplicitPositioning::GetEtaEnd().SetEta(eta);
-    generated::CPACSWingRibExplicitPositioning::GetEtaEnd().SetReferenceUID(referenceUid);
+    generated::CPACSWingRibExplicitPositioning::SetEtaEnd(eta);
     // invalidate whole component segment structure since rib could be referenced anywhere
     m_parent->GetParent()->Invalidate();
 }

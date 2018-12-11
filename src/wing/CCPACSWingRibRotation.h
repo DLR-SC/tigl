@@ -25,7 +25,7 @@ class CCPACSWingRibRotation : public generated::CPACSRibRotation
 public:
     TIGL_EXPORT CCPACSWingRibRotation(CCPACSWingRibsPositioning* parent);
 
-    TIGL_EXPORT void SetRibRotationReference(const boost::optional<ECPACSRibRotation_ribRotationReference>& value) OVERRIDE;
+    TIGL_EXPORT void SetRibRotationReference(const boost::optional<std::string>& value) OVERRIDE;
 
     TIGL_EXPORT void SetZ(const double& value) OVERRIDE;
 };

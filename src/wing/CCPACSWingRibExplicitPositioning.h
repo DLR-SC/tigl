@@ -27,8 +27,8 @@ public:
 
     TIGL_EXPORT void SetStartReference(const std::string&);
     TIGL_EXPORT void SetEndReference(const std::string&);
-    TIGL_EXPORT void SetStartEta(double eta, const std::string& referenceUid);
-    TIGL_EXPORT void SetEndEta(double eta, const std::string& referenceUid);
+    TIGL_EXPORT void SetStartEta(double eta);
+    TIGL_EXPORT void SetEndEta(double eta);
     TIGL_EXPORT void Invalidate();
 };
 }
