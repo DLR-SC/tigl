@@ -21,7 +21,6 @@
 #include <boost/utility/in_place_factory.hpp>
 #include <string>
 #include <tixi.h>
-#include "CPACSRibRotation_ribRotationReference.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -55,8 +54,8 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const boost::optional<CPACSRibRotation_ribRotationReference>& GetRibRotationReference() const;
-        TIGL_EXPORT virtual void SetRibRotationReference(const boost::optional<CPACSRibRotation_ribRotationReference>& value);
+        TIGL_EXPORT virtual const boost::optional<std::string>& GetRibRotationReference() const;
+        TIGL_EXPORT virtual void SetRibRotationReference(const boost::optional<std::string>& value);
 
         TIGL_EXPORT virtual const double& GetZ() const;
         TIGL_EXPORT virtual void SetZ(const double& value);
@@ -64,13 +63,22 @@ namespace generated
     protected:
         CCPACSWingRibsPositioning* m_parent;
 
-        boost::optional<CPACSRibRotation_ribRotationReference> m_ribRotationReference;
+        /// RotationReference defines the reference for
+        /// the z-rotation it is either sparUID or„LeadingEdge“ or
+        /// „TrailingEdge“. If it is not defined the rotation reference is
+        /// the eta-axis (=leading edge, that is projected on the wings
+        /// y-z-plane). A z-rotation angle of 90 degrees means, that the rib
+        /// is perpendicular on the ribRotationReference (e.g. spar, leading
+        /// edge...). The rib itself is allways straight, and the rotation
+        /// is defined with respect of the intersection point of the rib
+        /// with the ribRotationReference.
+        boost::optional<std::string> m_ribRotationReference;
 
         /// The rotation around z describes the rotation
         /// around the wings midplane normal axis. The defaults to 90°. The
         /// reference for the 'zero-angle' of the z-rotation is defined in
         /// ribRotationReference.
-        double                                                 m_z;
+        double                       m_z;
 
     private:
 #ifdef HAVE_CPP11

@@ -19,13 +19,13 @@
 
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
+#include <CCPACSEtaIsoLine.h>
+#include <CCPACSXsiIsoLine.h>
 #include <string>
 #include <tixi.h>
 #include "CPACSContourReference.h"
-#include "CPACSEtaIsoLine.h"
 #include "CPACSLeadingEdgeHollow.h"
 #include "CPACSLeadingEdgeShape.h"
-#include "CPACSXsiIsoLine.h"
 #include "CreateIfNotExists.h"
 #include "tigl_internal.h"
 
@@ -73,14 +73,14 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const CPACSEtaIsoLine& GetEtaLE() const;
-        TIGL_EXPORT virtual CPACSEtaIsoLine& GetEtaLE();
+        TIGL_EXPORT virtual const CCPACSEtaIsoLine& GetEtaLE() const;
+        TIGL_EXPORT virtual CCPACSEtaIsoLine& GetEtaLE();
 
-        TIGL_EXPORT virtual const boost::optional<CPACSEtaIsoLine>& GetEtaTE() const;
-        TIGL_EXPORT virtual boost::optional<CPACSEtaIsoLine>& GetEtaTE();
+        TIGL_EXPORT virtual const boost::optional<CCPACSEtaIsoLine>& GetEtaTE() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSEtaIsoLine>& GetEtaTE();
 
-        TIGL_EXPORT virtual const CPACSXsiIsoLine& GetXsiLE() const;
-        TIGL_EXPORT virtual CPACSXsiIsoLine& GetXsiLE();
+        TIGL_EXPORT virtual const CCPACSXsiIsoLine& GetXsiLE() const;
+        TIGL_EXPORT virtual CCPACSXsiIsoLine& GetXsiLE();
 
         TIGL_EXPORT virtual const boost::optional<CPACSLeadingEdgeHollow>& GetInnerShape() const;
         TIGL_EXPORT virtual boost::optional<CPACSLeadingEdgeHollow>& GetInnerShape();
@@ -91,7 +91,7 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CPACSContourReference>& GetAirfoil() const;
         TIGL_EXPORT virtual boost::optional<CPACSContourReference>& GetAirfoil();
 
-        TIGL_EXPORT virtual CPACSEtaIsoLine& GetEtaTE(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual CCPACSEtaIsoLine& GetEtaTE(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveEtaTE();
 
         TIGL_EXPORT virtual CPACSLeadingEdgeHollow& GetInnerShape(CreateIfNotExistsTag);
@@ -109,17 +109,17 @@ namespace generated
         /// Relative spanwise inner/outer position of the
         /// leading edge of the control surface. Reference is eta/xsi from
         /// the parent.
-        CPACSEtaIsoLine                         m_etaLE;
+        CCPACSEtaIsoLine                        m_etaLE;
 
         /// Relative spanwise inner/outer position of the
         /// trailing edge of the control surface. Reference is eta/xsi from
         /// the parent. Defaults to 'etaLE'.
-        boost::optional<CPACSEtaIsoLine>        m_etaTE;
+        boost::optional<CCPACSEtaIsoLine>       m_etaTE;
 
         /// Relative chordwise inner/outer position of the
         /// leading edge of the control surface. Reference is eta/xsi from
         /// the parent.
-        CPACSXsiIsoLine                         m_xsiLE;
+        CCPACSXsiIsoLine                        m_xsiLE;
 
         boost::optional<CPACSLeadingEdgeHollow> m_innerShape;
 

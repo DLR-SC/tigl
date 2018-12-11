@@ -25,7 +25,8 @@ namespace tigl
 namespace generated
 {
     CPACSControlSurfaceAirfoil::CPACSControlSurfaceAirfoil()
-        : m_rotX(0)
+        : m_eta(this)
+        , m_rotX(0)
         , m_rotZ(0)
         , m_scalY(0)
         , m_scalZ(0)
@@ -119,12 +120,12 @@ namespace generated
 
     }
 
-    const CPACSEtaIsoLine& CPACSControlSurfaceAirfoil::GetEta() const
+    const CCPACSEtaIsoLine& CPACSControlSurfaceAirfoil::GetEta() const
     {
         return m_eta;
     }
 
-    CPACSEtaIsoLine& CPACSControlSurfaceAirfoil::GetEta()
+    CCPACSEtaIsoLine& CPACSControlSurfaceAirfoil::GetEta()
     {
         return m_eta;
     }

@@ -19,8 +19,10 @@
 
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
+#include <CCPACSEtaIsoLine.h>
 #include <string>
 #include <tixi.h>
+#include "CreateIfNotExists.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -55,11 +57,11 @@ namespace generated
 
         TIGL_EXPORT bool ValidateChoices() const;
 
-        TIGL_EXPORT virtual const boost::optional<double>& GetEta1_choice1() const;
-        TIGL_EXPORT virtual void SetEta1_choice1(const boost::optional<double>& value);
+        TIGL_EXPORT virtual const boost::optional<CCPACSEtaIsoLine>& GetEta1_choice1() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSEtaIsoLine>& GetEta1_choice1();
 
-        TIGL_EXPORT virtual const boost::optional<double>& GetEta2_choice1() const;
-        TIGL_EXPORT virtual void SetEta2_choice1(const boost::optional<double>& value);
+        TIGL_EXPORT virtual const boost::optional<CCPACSEtaIsoLine>& GetEta2_choice1() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSEtaIsoLine>& GetEta2_choice1();
 
         TIGL_EXPORT virtual const boost::optional<int>& GetRibNumber_choice2() const;
         TIGL_EXPORT virtual void SetRibNumber_choice2(const boost::optional<int>& value);
@@ -67,23 +69,29 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<std::string>& GetRibDefinitionUID_choice2() const;
         TIGL_EXPORT virtual void SetRibDefinitionUID_choice2(const boost::optional<std::string>& value);
 
+        TIGL_EXPORT virtual CCPACSEtaIsoLine& GetEta1_choice1(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveEta1_choice1();
+
+        TIGL_EXPORT virtual CCPACSEtaIsoLine& GetEta2_choice1(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveEta2_choice1();
+
     protected:
         CCPACSWingCell* m_parent;
 
         /// Relative spanwise position of the forward
         /// end.
-        boost::optional<double>      m_eta1_choice1;
+        boost::optional<CCPACSEtaIsoLine> m_eta1_choice1;
 
         /// Relative spanwise position of the rear end.
-        boost::optional<double>      m_eta2_choice1;
+        boost::optional<CCPACSEtaIsoLine> m_eta2_choice1;
 
         /// RibNumber is the reference to the rib number
         /// of the rib set which is referenced by 'ribDefinitionUID'.
-        boost::optional<int>         m_ribNumber_choice2;
+        boost::optional<int>              m_ribNumber_choice2;
 
         /// Reference to a ribDefinition set. The single
         /// rib of this ribDefinition set is defined by using 'ribNumber'.
-        boost::optional<std::string> m_ribDefinitionUID_choice2;
+        boost::optional<std::string>      m_ribDefinitionUID_choice2;
 
     private:
 #ifdef HAVE_CPP11

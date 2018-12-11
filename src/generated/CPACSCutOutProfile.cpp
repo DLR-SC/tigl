@@ -25,7 +25,8 @@ namespace tigl
 namespace generated
 {
     CPACSCutOutProfile::CPACSCutOutProfile()
-        : m_rotZ(0)
+        : m_eta(this)
+        , m_rotZ(0)
     {
     }
 
@@ -90,12 +91,12 @@ namespace generated
         m_profileUID = value;
     }
 
-    const CPACSEtaIsoLine& CPACSCutOutProfile::GetEta() const
+    const CCPACSEtaIsoLine& CPACSCutOutProfile::GetEta() const
     {
         return m_eta;
     }
 
-    CPACSEtaIsoLine& CPACSCutOutProfile::GetEta()
+    CCPACSEtaIsoLine& CPACSCutOutProfile::GetEta()
     {
         return m_eta;
     }

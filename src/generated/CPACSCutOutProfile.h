@@ -17,9 +17,9 @@
 
 #pragma once
 
+#include <CCPACSEtaIsoLine.h>
 #include <string>
 #include <tixi.h>
-#include "CPACSEtaIsoLine.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -54,8 +54,8 @@ namespace generated
         TIGL_EXPORT virtual const std::string& GetProfileUID() const;
         TIGL_EXPORT virtual void SetProfileUID(const std::string& value);
 
-        TIGL_EXPORT virtual const CPACSEtaIsoLine& GetEta() const;
-        TIGL_EXPORT virtual CPACSEtaIsoLine& GetEta();
+        TIGL_EXPORT virtual const CCPACSEtaIsoLine& GetEta() const;
+        TIGL_EXPORT virtual CCPACSEtaIsoLine& GetEta();
 
         TIGL_EXPORT virtual const double& GetRotZ() const;
         TIGL_EXPORT virtual void SetRotZ(const double& value);
@@ -63,20 +63,20 @@ namespace generated
     protected:
         /// Reference to the profile uID. Profiles should
         /// be linked in profiles/structuralProfiles
-        std::string     m_profileUID;
+        std::string      m_profileUID;
 
         /// Relative spanwise position of the cut out
         /// profile. The eta coordinate refers to the control surface and
         /// desribes the cut out profile at the leading edge of the control
         /// surface.
-        CPACSEtaIsoLine m_eta;
+        CCPACSEtaIsoLine m_eta;
 
         /// Rotation of the airfoil around the control
         /// surface middle plane normal direciotn. Reference point is the
         /// most forward point of the airfoil. Defaults to 90°, which is
         /// equivalent to the airfoilplacement in flight direction (along
         /// wings-x axis).
-        double          m_rotZ;
+        double           m_rotZ;
 
     private:
 #ifdef HAVE_CPP11

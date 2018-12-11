@@ -5667,13 +5667,13 @@ jonas.jepsen@dlr.de
                             <xsd:sequence>
                                     <xsd:choice>
                                             <xsd:sequence>
-                                                    <xsd:element name="eta1" type="doubleBaseType">
+                                                    <xsd:element name="eta1" type="etaIsoLineType">
                                                             <xsd:annotation>
                                                                     <xsd:documentation>Relative spanwise position of the forward
                                                                             end.</xsd:documentation>
                                                             </xsd:annotation>
                                                     </xsd:element>
-                                                    <xsd:element name="eta2" type="doubleBaseType">
+                                                    <xsd:element name="eta2" type="etaIsoLineType">
                                                             <xsd:annotation>
                                                                     <xsd:documentation>Relative spanwise position of the rear end.
                                                                     </xsd:documentation>
@@ -33211,31 +33211,18 @@ jonas.jepsen@dlr.de
 		<xsd:complexContent>
 			<xsd:extension base="complexBaseType">
 				<xsd:sequence>
-					<xsd:element minOccurs="0" name="ribRotationReference">
-						<xsd:complexType>
-							<xsd:annotation>
-								<xsd:documentation>RotationReference defines the reference for
-									the z-rotation it is either sparUID or„LeadingEdge“ or
-									„TrailingEdge“. If it is not defined the rotation reference is
-									the eta-axis (=leading edge, that is projected on the wings
-									y-z-plane). A z-rotation angle of 90 degrees means, that the rib
-									is perpendicular on the ribRotationReference (e.g. spar, leading
-									edge...). The rib itself is allways straight, and the rotation
-									is defined with respect of the intersection point of the rib
-									with the ribRotationReference.</xsd:documentation>
-							</xsd:annotation>
-							<xsd:simpleContent>
-								<xsd:restriction base="stringBaseType">
-									<xsd:enumeration value="LeadingEdge"/>
-									<xsd:enumeration value="TrailingEdge"/>
-									<xsd:enumeration value="FrontSpar"/>
-									<xsd:enumeration value="RearSpar"/>
-									<xsd:enumeration value="globalX"/>
-									<xsd:enumeration value="globalY"/>
-									<xsd:enumeration value="globalZ"/>
-								</xsd:restriction>
-							</xsd:simpleContent>
-						</xsd:complexType>
+					<xsd:element minOccurs="0" name="ribRotationReference" type="stringBaseType">
+						<xsd:annotation>
+							<xsd:documentation>RotationReference defines the reference for
+								the z-rotation it is either sparUID or„LeadingEdge“ or
+								„TrailingEdge“. If it is not defined the rotation reference is
+								the eta-axis (=leading edge, that is projected on the wings
+								y-z-plane). A z-rotation angle of 90 degrees means, that the rib
+								is perpendicular on the ribRotationReference (e.g. spar, leading
+								edge...). The rib itself is allways straight, and the rotation
+								is defined with respect of the intersection point of the rib
+								with the ribRotationReference.</xsd:documentation>
+						</xsd:annotation>
 					</xsd:element>
 					<xsd:element name="z" type="doubleBaseType">
 						<xsd:annotation>

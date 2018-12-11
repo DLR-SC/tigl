@@ -19,9 +19,9 @@
 
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
+#include <CCPACSEtaIsoLine.h>
 #include <string>
 #include <tixi.h>
-#include "CPACSEtaIsoLine.h"
 #include "CreateIfNotExists.h"
 #include "tigl_internal.h"
 
@@ -64,35 +64,35 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<int>& GetRibNumber_choice1() const;
         TIGL_EXPORT virtual void SetRibNumber_choice1(const boost::optional<int>& value);
 
-        TIGL_EXPORT virtual const boost::optional<CPACSEtaIsoLine>& GetEtaLE_choice2() const;
-        TIGL_EXPORT virtual boost::optional<CPACSEtaIsoLine>& GetEtaLE_choice2();
+        TIGL_EXPORT virtual const boost::optional<CCPACSEtaIsoLine>& GetEtaLE_choice2() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSEtaIsoLine>& GetEtaLE_choice2();
 
-        TIGL_EXPORT virtual const boost::optional<CPACSEtaIsoLine>& GetEtaTE_choice2() const;
-        TIGL_EXPORT virtual boost::optional<CPACSEtaIsoLine>& GetEtaTE_choice2();
+        TIGL_EXPORT virtual const boost::optional<CCPACSEtaIsoLine>& GetEtaTE_choice2() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSEtaIsoLine>& GetEtaTE_choice2();
 
-        TIGL_EXPORT virtual CPACSEtaIsoLine& GetEtaLE_choice2(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual CCPACSEtaIsoLine& GetEtaLE_choice2(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveEtaLE_choice2();
 
-        TIGL_EXPORT virtual CPACSEtaIsoLine& GetEtaTE_choice2(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual CCPACSEtaIsoLine& GetEtaTE_choice2(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveEtaTE_choice2();
 
     protected:
         CPACSControlSurfaceWingCutOut* m_parent;
 
         /// Link to a rib definition
-        boost::optional<std::string>     m_ribDefinitionUID_choice1;
+        boost::optional<std::string>      m_ribDefinitionUID_choice1;
 
         /// Rib number in the corresponding
         /// ribDefinitionUID
-        boost::optional<int>             m_ribNumber_choice1;
+        boost::optional<int>              m_ribNumber_choice1;
 
         /// Spanwise location of the border at the
         /// leading edge of the cut out
-        boost::optional<CPACSEtaIsoLine> m_etaLE_choice2;
+        boost::optional<CCPACSEtaIsoLine> m_etaLE_choice2;
 
         /// Spanwise location of the border at the
         /// trailing edge of the cut out
-        boost::optional<CPACSEtaIsoLine> m_etaTE_choice2;
+        boost::optional<CCPACSEtaIsoLine> m_etaTE_choice2;
 
     private:
 #ifdef HAVE_CPP11

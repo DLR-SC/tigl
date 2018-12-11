@@ -27,6 +27,8 @@ namespace generated
 {
     CPACSSparCell::CPACSSparCell(CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
+        , m_fromEta(this)
+        , m_toEta(this)
         , m_rotation(0)
     {
     }
@@ -177,22 +179,22 @@ namespace generated
         m_uID = value;
     }
 
-    const CPACSEtaIsoLine& CPACSSparCell::GetFromEta() const
+    const CCPACSEtaIsoLine& CPACSSparCell::GetFromEta() const
     {
         return m_fromEta;
     }
 
-    CPACSEtaIsoLine& CPACSSparCell::GetFromEta()
+    CCPACSEtaIsoLine& CPACSSparCell::GetFromEta()
     {
         return m_fromEta;
     }
 
-    const CPACSEtaIsoLine& CPACSSparCell::GetToEta() const
+    const CCPACSEtaIsoLine& CPACSSparCell::GetToEta() const
     {
         return m_toEta;
     }
 
-    CPACSEtaIsoLine& CPACSSparCell::GetToEta()
+    CCPACSEtaIsoLine& CPACSSparCell::GetToEta()
     {
         return m_toEta;
     }
