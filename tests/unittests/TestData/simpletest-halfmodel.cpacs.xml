@@ -444,12 +444,24 @@
                           <xsi2>1.0</xsi2>
                         </positioningTrailingEdge>
                         <positioningInnerBorder>
-                          <eta1>0.0</eta1>
-                          <eta2>0.0</eta2>
+                          <eta1>
+                            <eta>0</eta>
+                            <referenceUID>WING_CS1</referenceUID>
+                          </eta1>
+                          <eta2>
+                            <eta>0</eta>
+                            <referenceUID>WING_CS1</referenceUID>
+                          </eta2>
                         </positioningInnerBorder>
                         <positioningOuterBorder>
-                          <eta1>0.5</eta1>
-                          <eta2>0.5</eta2>
+                          <eta1>
+                            <eta>0.5</eta>
+                            <referenceUID>WING_CS1</referenceUID>
+                          </eta1>
+                          <eta2>
+                            <eta>0.5</eta>
+                            <referenceUID>WING_CS1</referenceUID>
+                          </eta2>
                         </positioningOuterBorder>
                       </cell>
                     </cells>
