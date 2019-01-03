@@ -16,11 +16,13 @@
 */
 
 #include "CCPACSNacelleProfile.h"
+#include "CCPACSNacelleSection.h"
 #include "CCPACSRotationCurve.h"
 #include "CTiglUIDManager.h"
 
 #include "TopExp.hxx"
 #include "TopTools_IndexedMapOfShape.hxx"
+#include "BRepPrimAPI_MakeRevol.hxx"
 #include "BRep_Tool.hxx"
 #include "BRepTools.hxx"
 #include "Geom_SurfaceOfRevolution.hxx"
@@ -32,7 +34,15 @@ TopoDS_Wire CCPACSRotationCurve::GetCurve() const
 {
     CCPACSNacelleProfile& profile = m_uidMgr->ResolveObject<CCPACSNacelleProfile>(GetCurveProfileUID());
     profile.SetPointListAlgoType(CCPACSNacelleProfile::Simple);
-    return profile.GetWire();
+
+
+    // apply transform of reference section
+    CCPACSNacelleSection& section = m_uidMgr->ResolveObject<CCPACSNacelleSection>(GetReferenceSectionUID());
+    TopoDS_Shape transformedShape(profile.GetWire());
+    CTiglTransformation trafo = section.GetTransformationMatrix();
+    transformedShape = trafo.Transform(transformedShape);
+
+    return TopoDS::Wire(transformedShape);
 }
 
 TopoDS_Face CCPACSRotationCurve::GetRotationSurface(axis dir) const
@@ -60,14 +70,7 @@ TopoDS_Face CCPACSRotationCurve::GetRotationSurface(axis dir) const
 #endif
 
 
-    Standard_Real umin, umax;
-    Handle(Geom_Curve)   curve = BRep_Tool::Curve(edge, umin, umax);
-    Handle(Geom_Surface) rotationalsurface = new Geom_SurfaceOfRevolution(curve, ax);
-
-    TopoDS_Face result;
-    BRep_Builder b;
-    b.MakeFace(result, rotationalsurface, Precision::Confusion());
-    return result;
+    return TopoDS::Face(BRepPrimAPI_MakeRevol(edge, ax));
 }
 
 }

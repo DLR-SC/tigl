@@ -16,6 +16,7 @@
 */
 
 #include "CCPACSNacelleProfile.h"
+#include "CTiglInterpolateBsplineWire.h"
 #include "BRepBuilderAPI_MakeWire.hxx"
 
 namespace tigl {
@@ -54,41 +55,83 @@ const ITiglWingProfileAlgo* CCPACSNacelleProfile::GetProfileAlgo() const
 
 bool CCPACSNacelleProfile::HasBluntTE() const
 {
-    const ITiglWingProfileAlgo* algo = GetProfileAlgo();
-    if (!algo) {
-        throw CTiglError("No wing profile algorithm regsitered in CCPACSNacelleProfile::HasBluntTE()!");
+    if ( algoType == Airfoil ) {
+        const ITiglWingProfileAlgo* algo = GetProfileAlgo();
+        if (!algo) {
+            throw CTiglError("No wing profile algorithm regsitered in CCPACSNacelleProfile::HasBluntTE()!");
+        }
+        return algo->HasBluntTE();
     }
-    return algo->HasBluntTE();
+    else {
+        throw CTiglError("CCPACSNacelleProfile::HasBluntTE() only supported in conjunction with an Airfoil point list algorithm!");
+        return false;
+    }
 }
 
 TopoDS_Wire CCPACSNacelleProfile::GetWire(TiglShapeModifier mod) const
 {
-    const ITiglWingProfileAlgo* profileAlgo = GetProfileAlgo();
+    TopoDS_Wire wire;
+    if ( algoType == Airfoil ) {
+        const ITiglWingProfileAlgo* profileAlgo = GetProfileAlgo();
 
-    // rebuild closed wire
-    BRepBuilderAPI_MakeWire closedWireBuilder;
-    closedWireBuilder.Add(profileAlgo->GetLowerWire(mod));
-    closedWireBuilder.Add(profileAlgo->GetUpperWire(mod));
-    if (!profileAlgo->GetTrailingEdge(mod).IsNull()) {
-        closedWireBuilder.Add(profileAlgo->GetTrailingEdge(mod));
+        // rebuild closed wire
+        BRepBuilderAPI_MakeWire closedWireBuilder;
+        closedWireBuilder.Add(profileAlgo->GetLowerWire(mod));
+        closedWireBuilder.Add(profileAlgo->GetUpperWire(mod));
+        if (!profileAlgo->GetTrailingEdge(mod).IsNull()) {
+            closedWireBuilder.Add(profileAlgo->GetTrailingEdge(mod));
+        }
+
+        wire = closedWireBuilder.Wire();
     }
+    else if ( algoType == Simple ) {
+        // TODO
+        if ( !GetPointList_choice1() ) {
+            throw CTiglError("CCPACSNacelleProfile::GetWire() uses point list algorithm type \"Simple\", but the CPACSProfileGeometry2D type is not defined using a list of points (Maybe CST type?)");
+        }
+        const std::vector<CTiglPoint>& tiglpoints = GetPointList_choice1()->AsVector();
+        ITiglWireAlgorithm::CPointContainer points;
+        for ( size_t i = 0; i<tiglpoints.size(); ++i) {
+            points.push_back(gp_Pnt(tiglpoints[i].x, tiglpoints[i].y, tiglpoints[i].z) );
+        }
 
-    return closedWireBuilder.Wire();
+        CTiglInterpolateBsplineWire wireBuilder;
+        wire = wireBuilder.BuildWire(points);
+    }
+    else {
+        throw CTiglError("Unsupported point list algorithm type in CCPACSNacelleProfile::GetWire()!");
+    }
+    return wire;
 }
 
 TopoDS_Edge CCPACSNacelleProfile::GetUpperWire(TiglShapeModifier mod) const
 {
-    return GetProfileAlgo()->GetUpperWire();
+    if ( algoType == Airfoil ) {
+        return GetProfileAlgo()->GetUpperWire(mod);
+    }
+    else {
+        throw CTiglError("CCPACSNacelleProfile::GetUpperWire() only supported in conjunction with an Airfoil point list algorithm!");
+    }
 }
 
 TopoDS_Edge CCPACSNacelleProfile::GetLowerWire(TiglShapeModifier mod) const
 {
-    return GetProfileAlgo()->GetLowerWire();
+    if ( algoType == Airfoil ) {
+        return GetProfileAlgo()->GetLowerWire(mod);
+    }
+    else {
+        throw CTiglError("CCPACSNacelleProfile::GetLowerWire() only supported in conjunction with an Airfoil point list algorithm!");
+    }
 }
 
 TopoDS_Edge CCPACSNacelleProfile::GetTrailingEdge(TiglShapeModifier mod) const
 {
-    return GetProfileAlgo()->GetTrailingEdge();
+    if ( algoType == Airfoil ) {
+        return GetProfileAlgo()->GetTrailingEdge(mod);
+    }
+    else {
+        throw CTiglError("CCPACSNacelleProfile::GetTrailingEdge() only supported in conjunction with an Airfoil point list algorithm!");
+    }
 }
 
 } //namepsace tigl

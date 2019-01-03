@@ -53,7 +53,7 @@
 						</nacelleGuideCurve>
 					</guideCurves>
 					<rotationCurve>
-					    <referenceSectionUID>fanCowl_section_upper</referenceSectionUID>
+					    <referenceSectionUID>fanCowl_section_1</referenceSectionUID>
 						<curveProfileUID>fanCowlRotationCurve</curveProfileUID>
 						<startZeta>-0.6</startZeta>
 						<endZeta>-0.3</endZeta>
@@ -90,7 +90,7 @@
 								<scaling uID="fanCowl_section_left_scale">
 									<x>2.0</x>
 									<y>2.0</y>
-									<z>1.0</z>
+									<z>2.0</z>
 								</scaling>
 								<rotation uID="fanCowl_section_left_rotate">
 									<x>0.0</x>
@@ -98,7 +98,7 @@
 									<z>0.0</z>
 								</rotation>
 								<translation uID="fanCowl_section_left_translate">
-									<r>0.75</r>
+									<r>0.5</r>
 									<phi>120</phi>
 								</translation>
 							</transformation>
@@ -111,7 +111,7 @@
 								<scaling uID="fanCowl_section_right_scale">
 									<x>2.0</x>
 									<y>2.0</y>
-									<z>1.0</z>
+									<z>2.0</z>
 								</scaling>
 								<rotation uID="fanCowl_section_right_rotate">
 									<x>0.0</x>
@@ -119,7 +119,7 @@
 									<z>0.0</z>
 								</rotation>
 								<translation uID="fanCowl_section_right_translate">
-									<r>0.75</r>
+									<r>0.5</r>
 									<phi>240</phi>
 								</translation>
 							</transformation>
@@ -717,7 +717,7 @@
 				<x mapType="vector">
 				0.6;0.3</x>
 				<y mapType="vector">
-				0.2;0.2;</y>
+				-0.06;-0.06;</y>
 			</pointList>
 		</curveProfile>
 		<curveProfile uID="centerCowlRotationCurve">

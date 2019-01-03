@@ -19,6 +19,7 @@
 
 #include "generated/CPACSNacelleSection.h"
 #include "CCPACSNacelleProfile.h"
+#include "CTiglTransformation.h"
 #include "TopoDS_Wire.hxx"
 #include "tigl_internal.h"
 
@@ -37,6 +38,8 @@ public:
     TIGL_EXPORT TopoDS_Edge GetTransformedUpperWire() const;
     TIGL_EXPORT TopoDS_Edge GetTransformedLowerWire() const;
     TIGL_EXPORT TopoDS_Edge GetTransformedTrailingEdge() const;
+
+    TIGL_EXPORT CTiglTransformation GetTransformationMatrix() const;
 
 };
 

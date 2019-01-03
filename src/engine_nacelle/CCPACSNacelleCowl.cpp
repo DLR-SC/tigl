@@ -178,6 +178,7 @@ PNamedShape CCPACSNacelleCowl::BuildLoft() const
 #endif
 
     // blend the surfaces
+    // TODO
 
     return PNamedShape();
 }

@@ -20,10 +20,6 @@
 #include "CTiglUIDManager.h"
 #include "tiglcommonfunctions.h"
 
-namespace{
-tigl::CTiglTransformation GetTransformationMatrix(const tigl::CCPACSTransformationPolar& trans);
-}
-
 namespace tigl {
 
 TIGL_EXPORT CCPACSNacelleSection::CCPACSNacelleSection(CTiglUIDManager* uidMgr)
@@ -39,7 +35,7 @@ TIGL_EXPORT TopoDS_Wire CCPACSNacelleSection::GetTransformedWire() const
 {
     // apply polar transformation
     TopoDS_Shape transformedShape(GetProfile().GetWire());
-    CTiglTransformation trafo = GetTransformationMatrix(m_transformation);
+    CTiglTransformation trafo = GetTransformationMatrix();
     transformedShape = trafo.Transform(transformedShape);
     return TopoDS::Wire(transformedShape);
 }
@@ -48,7 +44,7 @@ TIGL_EXPORT TopoDS_Edge CCPACSNacelleSection::GetTransformedUpperWire() const
 {
     // apply polar transformation
     TopoDS_Shape transformedShape(GetProfile().GetUpperWire());
-    CTiglTransformation trafo = GetTransformationMatrix(m_transformation);
+    CTiglTransformation trafo = GetTransformationMatrix();
     transformedShape = trafo.Transform(transformedShape);
     return TopoDS::Edge(transformedShape);
 }
@@ -57,7 +53,7 @@ TIGL_EXPORT TopoDS_Edge CCPACSNacelleSection::GetTransformedLowerWire() const
 {
     // apply polar transformation
     TopoDS_Shape transformedShape(GetProfile().GetLowerWire());
-    CTiglTransformation trafo = GetTransformationMatrix(m_transformation);
+    CTiglTransformation trafo = GetTransformationMatrix();
     transformedShape = trafo.Transform(transformedShape);
     return TopoDS::Edge(transformedShape);
 }
@@ -66,41 +62,37 @@ TIGL_EXPORT TopoDS_Edge CCPACSNacelleSection::GetTransformedTrailingEdge() const
 {
     // apply polar transformation
     TopoDS_Shape transformedShape(GetProfile().GetTrailingEdge());
-    CTiglTransformation trafo = GetTransformationMatrix(m_transformation);
+    CTiglTransformation trafo = GetTransformationMatrix();
     transformedShape = trafo.Transform(transformedShape);
     return TopoDS::Edge(transformedShape);
 }
 
-} //namepsace tigl
-
-namespace {
-
 // TODO: 2D Polar coordinates cannot be used to place things in 3D space. CCPACSTransformationPolar
 // should not be used anywhere but here.
-tigl::CTiglTransformation GetTransformationMatrix(const tigl::CCPACSTransformationPolar& trans)
+TIGL_EXPORT CTiglTransformation CCPACSNacelleSection::GetTransformationMatrix() const
 {
-    tigl::CTiglTransformation out;
+    CTiglTransformation out;
 
     // get r and phi from translation
     double radius = 0;
     double phi    = 0;
-    if ( trans.GetTranslation() ) {
-        if (trans.GetTranslation()->GetR()) { radius = trans.GetTranslation()->GetR().get();   }
-        if (trans.GetTranslation()->GetR()) { phi    = trans.GetTranslation()->GetPhi().get(); }
+    if ( m_transformation.GetTranslation() ) {
+        if (m_transformation.GetTranslation()->GetR()) { radius = m_transformation.GetTranslation()->GetR().get();   }
+        if (m_transformation.GetTranslation()->GetR()) { phi    = m_transformation.GetTranslation()->GetPhi().get(); }
     }
 
     // rotate from XY-plane to XZ-plane
     out.AddRotationX(90.);
 
     // apply scaling
-    if ( trans.GetScaling() ) {
-        tigl::CTiglPoint scale = trans.GetScaling()->AsPoint();
+    if ( m_transformation.GetScaling() ) {
+        tigl::CTiglPoint scale = m_transformation.GetScaling()->AsPoint();
         out.AddScaling(scale.x, scale.y, scale.z);
     }
 
     // apply rotation
-    if ( trans.GetRotation() ) {
-        tigl::CTiglPoint rotation = trans.GetRotation()->AsPoint();
+    if ( m_transformation.GetRotation() ) {
+        tigl::CTiglPoint rotation = m_transformation.GetRotation()->AsPoint();
         out.AddRotationX(rotation.x);
         out.AddRotationY(rotation.y);
         out.AddRotationZ(rotation.z);
@@ -113,4 +105,4 @@ tigl::CTiglTransformation GetTransformationMatrix(const tigl::CCPACSTransformati
     return out;
 }
 
-}
+} //namepsace tigl
