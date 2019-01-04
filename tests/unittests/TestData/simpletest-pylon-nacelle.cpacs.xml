@@ -20,7 +20,7 @@
   <vehicles>
     <engines>
 		<engine uID="SimpleEngine">
-			<nacelle uID="SimpleNacelle">
+			<nacelle uID="SimpleNacelle" symmetry="x-z-plane">
 				<centerCowl>
 					<curveUID>"centerCowlRotationCurve"</curveUID>
 					<xOffset>0.0</xOffset>

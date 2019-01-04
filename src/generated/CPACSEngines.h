@@ -72,12 +72,12 @@ namespace generated
     };
 } // namespace generated
 
+// CPACSEngines is customized, use type CCPACSEngines directly
+
 // Aliases in tigl namespace
 #ifdef HAVE_CPP11
-using CCPACSEngines = generated::CPACSEngines;
 using CCPACSEngine = generated::CPACSEngine;
 #else
-typedef generated::CPACSEngines CCPACSEngines;
 typedef generated::CPACSEngine CCPACSEngine;
 #endif
 } // namespace tigl

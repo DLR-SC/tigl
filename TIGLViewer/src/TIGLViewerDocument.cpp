@@ -785,6 +785,28 @@ void TIGLViewerDocument::drawConfiguration( )
                 displayError(err.what());
             }
         }
+
+        // draw engine nacelles
+        boost::optional<tigl::CCPACSEngines>& engines = GetConfiguration().GetEngines();
+        int nEngines = engines? engines->GetEngines().size() : 0;
+        for (int i=1; i<= nEngines; ++i) {
+            boost::optional<tigl::CCPACSEngineNacelle>& nacelle = engines->GetEngine(i).GetNacelle();
+            if (!nacelle) {
+                continue;
+            }
+            try {
+                app->getScene()->displayShape(nacelle->GetLoft(), true);
+
+                if (nacelle->GetSymmetryAxis() == TIGL_NO_SYMMETRY) {
+                    continue;
+                }
+
+                app->getScene()->displayShape(nacelle->GetMirroredLoft()->Shape(), true, Quantity_NOC_MirrShapeCol);
+            }
+            catch(tigl::CTiglError& err) {
+                displayError(err.what());
+            }
+        }
     }
     catch(tigl::CTiglError& err) {
         displayError(err.what());

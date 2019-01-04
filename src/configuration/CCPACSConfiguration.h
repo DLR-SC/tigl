@@ -32,7 +32,7 @@
 #include "generated/CPACSHeader.h"
 #include "CCPACSWings.h"
 #include "CCPACSRotors.h"
-#include "generated/CPACSEngines.h"
+#include "CCPACSEngines.h"
 #include "CCPACSFuselages.h"
 #include "CCPACSACSystems.h"
 #include "CCPACSFarField.h"
@@ -161,6 +161,10 @@ public:
     // Returns list of engine pylons
     TIGL_EXPORT boost::optional<CCPACSEnginePylons>& GetEnginePylons();
     TIGL_EXPORT const boost::optional<CCPACSEnginePylons>& GetEnginePylons() const;
+
+    // Returns list of engines
+    TIGL_EXPORT boost::optional<CCPACSEngines>& GetEngines();
+    TIGL_EXPORT const boost::optional<CCPACSEngines>& GetEngines() const;
 
     // Returns the farfield
     TIGL_EXPORT CCPACSFarField& GetFarField();

@@ -523,6 +523,16 @@ const boost::optional<CCPACSEnginePylons>& CCPACSConfiguration::GetEnginePylons(
     }
 }
 
+boost::optional<CCPACSEngines>& CCPACSConfiguration::GetEngines()
+{
+    return engines;
+}
+
+const boost::optional<CCPACSEngines>& CCPACSConfiguration::GetEngines() const
+{
+    return engines;
+}
+
 CCPACSFarField& CCPACSConfiguration::GetFarField()
 {
     return farField;

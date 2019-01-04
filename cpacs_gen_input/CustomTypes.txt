@@ -124,6 +124,7 @@ CPACSEnginePylon                         CCPACSEnginePylon
 CPACSEnginePylons                        CCPACSEnginePylons
 
 // Engines
+CPACSEngines                             CCPACSEngines
 CPACSEngineNacelle                       CCPACSEngineNacelle
 CPACSNacelleCowl						 CCPACSNacelleCowl
 CPACSNacelleSections					 CCPACSNacelleSections
