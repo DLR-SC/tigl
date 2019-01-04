@@ -47,8 +47,6 @@ TopoDS_Wire CCPACSRotationCurve::GetCurve() const
 
 TopoDS_Face CCPACSRotationCurve::GetRotationSurface(axis dir) const
 {
-
-
     gp_Vec axis_vec;
     if      ( dir == x ) { axis_vec = gp_Vec(1., 0., 0.); }
     else if ( dir == y ) { axis_vec = gp_Vec(0., 1., 0.); }

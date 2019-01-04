@@ -20,6 +20,7 @@
 #include "generated/CPACSNacelleCowl.h"
 #include "CTiglAbstractGeometricComponent.h"
 #include "tigl_internal.h"
+#include "Geom_Curve.hxx"
 
 namespace tigl
 {
@@ -38,6 +39,16 @@ protected:
     virtual PNamedShape BuildLoft() const OVERRIDE;
 
 private:
+    struct WireCache {
+        std::vector<TopoDS_Wire> profiles;
+        std::vector<std::pair<double,TopoDS_Wire>> guideCurves;
+    };
+    Cache<WireCache, CCPACSNacelleCowl> wireCache;
+
+    void BuildOuterShapeWires(WireCache& cache) const;
+    Handle(Geom_Curve) GetGuideCurve(double zeta) const;
+    TopoDS_Face GetStartZetaBlendingSurface(TopoDS_Face& innerShape) const;
+    TopoDS_Face GetEndZetaBlendingSurface(TopoDS_Face& innerShape) const;
     TopoDS_Shape BuildOuterShape() const;
 };
 

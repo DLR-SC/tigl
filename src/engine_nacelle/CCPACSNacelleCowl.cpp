@@ -20,14 +20,24 @@
 #include "generated/CPACSNacelleGuideCurve.h"
 #include "CTiglNacelleGuideCurveBuilder.h"
 #include "CTiglMakeLoft.h"
+#include "CNamedShape.h"
 
 #include "BRepTools.hxx"
 #include "BRepTools_WireExplorer.hxx"
+#include "BRep_Builder.hxx"
 #include "BRepBuilderAPI_MakeWire.hxx"
 #include "BRepBuilderAPI_MakeEdge.hxx"
+#include "BRepClass3d_SolidClassifier.hxx"
 #include "GeomAdaptor_Curve.hxx"
 #include "GCPnts_AbscissaPoint.hxx"
 #include "BRep_Tool.hxx"
+
+#include "TopTools_IndexedMapOfShape.hxx"
+#include "TopExp.hxx"
+#include "CWireToCurve.h"
+#include "BRepBuilderAPI_MakeFace.hxx"
+#include "GeomFill.hxx"
+
 
 namespace {
 void RemoveBlendingPart(TopoDS_Edge const lowerEdge,
@@ -46,6 +56,7 @@ namespace tigl
 CCPACSNacelleCowl::CCPACSNacelleCowl(CTiglUIDManager* uidMgr)
     : generated::CPACSNacelleCowl(uidMgr)
     , CTiglAbstractGeometricComponent()
+    , wireCache(*this, &CCPACSNacelleCowl::BuildOuterShapeWires)
 {}
 
 std::string CCPACSNacelleCowl::GetDefaultedUID() const
@@ -53,17 +64,12 @@ std::string CCPACSNacelleCowl::GetDefaultedUID() const
     return generated::CPACSNacelleCowl::GetUID();
 }
 
-TopoDS_Shape CCPACSNacelleCowl::BuildOuterShape() const
+void CCPACSNacelleCowl::BuildOuterShapeWires(WireCache& cache) const
 {
-    CTiglMakeLoft lofter;
-    lofter.setMakeSmooth(true);
-    lofter.setMakeSolid(false);
-
     double startZetaBlending = m_rotationCurve.GetStartZetaBlending();
     double endZetaBlending   = m_rotationCurve.GetEndZetaBlending();
 
-    // get profile curves
-    std::vector<TopoDS_Wire> profiles;
+    // build profile wires
     for(size_t i = 1; i <= m_sections.GetSectionCount(); ++i ) {
 
         CCPACSNacelleSection& section = m_sections.GetSection(i);
@@ -85,20 +91,10 @@ TopoDS_Shape CCPACSNacelleCowl::BuildOuterShape() const
         builder.Add(lower1);
         TopoDS_Wire profileWire = builder.Wire();
 
-        profiles.push_back(profileWire);
+        cache.profiles.push_back(profileWire);
     }
 
-    for ( size_t i = 0; i<profiles.size(); ++i) {
-
-#ifdef DEBUG
-        std::stringstream ss;
-        ss << "D:/tmp/nacelleProfile_"<<i<<".brep";
-        BRepTools::Write(profiles[i], ss.str().c_str());
-#endif
-
-        lofter.addProfiles(profiles[i]);
-    }
-
+    // build guide curve wires
     // guide curves for some zeta values MUST be present, even if not defined via CPACS
     double requiredZeta[5] =      {endZetaBlending, 0, 1, -1, startZetaBlending};
     bool   buildRequiredZeta[5] = {true, true, true, true, true};
@@ -147,15 +143,36 @@ TopoDS_Shape CCPACSNacelleCowl::BuildOuterShape() const
             }
         }
     }
-    std::vector<std::pair<double,TopoDS_Wire>> connectedZetaGuides = connectNacelleGuideCurves(zetaGuides, Precision::Confusion());
+    cache.guideCurves = connectNacelleGuideCurves(zetaGuides, Precision::Confusion());
 
-    for(size_t i=0; i<connectedZetaGuides.size(); ++i) {
+}
+
+TopoDS_Shape CCPACSNacelleCowl::BuildOuterShape() const
+{
+    CTiglMakeLoft lofter;
+    lofter.setMakeSmooth(true);
+    lofter.setMakeSolid(false);
+
+    // get profile curves
+    for ( size_t i = 0; i<wireCache->profiles.size(); ++i) {
+
+#ifdef DEBUG
+        std::stringstream ss;
+        ss << "D:/tmp/nacelleProfile_"<<i<<".brep";
+        BRepTools::Write(wireCache->profiles[i], ss.str().c_str());
+#endif
+
+        lofter.addProfiles(wireCache->profiles[i]);
+    }
+
+    // get guide curves
+    for(size_t i=0; i<wireCache->guideCurves.size(); ++i) {
 #ifdef DEBUG
         std::stringstream ss;
         ss << "D:/tmp/nacelleGuide_"<<i<<".brep";
-        BRepTools::Write(connectedZetaGuides[i].second, ss.str().c_str());
+        BRepTools::Write(wireCache->guideCurves[i].second, ss.str().c_str());
 #endif
-        lofter.addGuides(connectedZetaGuides[i].second);
+        lofter.addGuides(wireCache->guideCurves[i].second);
     }
 
     return  lofter.Shape();
@@ -163,24 +180,117 @@ TopoDS_Shape CCPACSNacelleCowl::BuildOuterShape() const
 
 PNamedShape CCPACSNacelleCowl::BuildLoft() const
 {
-    // get outer shape
-    TopoDS_Shape outerShape = BuildOuterShape();
+    TopoDS_Shell shell;
+    BRep_Builder shellBuilder;
+    shellBuilder.MakeShell(shell);
+
+    // get shapes of nacelle cowls
+    TopoDS_Shape outerShape    = BuildOuterShape();
+    TopoDS_Face  innerShape    = m_rotationCurve.GetRotationSurface();
+    TopoDS_Face  blendingSurf1 = GetStartZetaBlendingSurface(innerShape);
+    TopoDS_Face  blendingSurf2 = GetEndZetaBlendingSurface(innerShape);
+
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
+
+
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
 
 #ifdef DEBUG
     BRepTools::Write(outerShape,"D:/tmp/outerShape.brep");
-#endif
-
-    // get rotation curve and generate rotationally symmetric interior
-    TopoDS_Face innerShape = m_rotationCurve.GetRotationSurface();
-
-#ifdef DEBUG
     BRepTools::Write(innerShape,"D:/tmp/innerShape.brep");
+    BRepTools::Write(blendingSurf1,"D:/tmp/blendingSurf1.brep");
+    BRepTools::Write(blendingSurf2,"D:/tmp/blendingSurf2.brep");
 #endif
 
-    // blend the surfaces
-    // TODO
+    // add subshapes of outerShape to shell
+    for(TopExp_Explorer e(outerShape, TopAbs_FACE); e.More(); e.Next()) {
+        shellBuilder.Add(shell, TopoDS::Face( e.Current() ) );
+    }
 
-    return PNamedShape();
+    // add blending surfaces
+    shellBuilder.Add(shell, blendingSurf1);
+    shellBuilder.Add(shell, blendingSurf2);
+
+    // add rotationally symmetric interior
+    shellBuilder.Add(shell, innerShape);
+
+    // create a solid from the shell
+    BRep_Builder solidBuilder;
+    TopoDS_Solid solid;
+    solidBuilder.MakeSolid(solid);
+    try {
+        solidBuilder.Add(solid, shell);
+    }
+    catch ( ... ) {
+        throw CTiglError("Cannot make a solid out of the shell. Is the base type correct?", TIGL_ERROR);
+    }
+
+    // verify the orientation of the solid
+    BRepClass3d_SolidClassifier clas3d(solid);
+    clas3d.PerformInfinitePoint(Precision::Confusion());
+    if (clas3d.State() == TopAbs_IN) {
+        solidBuilder.MakeSolid(solid);
+        TopoDS_Shape aLocalShape = shell.Reversed();
+        solidBuilder.Add(solid, TopoDS::Shell(aLocalShape));
+    }
+
+    PNamedShape nacelleShape(new CNamedShape(solid, GetUID().c_str()));
+    return nacelleShape;
+}
+
+TopoDS_Face CCPACSNacelleCowl::GetStartZetaBlendingSurface(TopoDS_Face& innerShape) const
+{
+
+    double zeta   = m_rotationCurve.GetStartZetaBlending();
+
+    Handle(Geom_Curve) curve1 = GetGuideCurve(zeta);
+
+    // get second curve on surface
+    TopoDS_Wire outerWire = BRepTools::OuterWire(innerShape);
+    TopTools_IndexedMapOfShape map;
+    TopExp::MapShapes(outerWire, TopAbs_EDGE, map);
+    Standard_Real umin, umax;
+    Handle(Geom_Curve) curve2 = BRep_Tool::Curve(TopoDS::Edge(map(1)), umin, umax);
+
+    // create the filling
+    Handle(Geom_Surface) surface = GeomFill::Surface(curve1, curve2);
+    BRepBuilderAPI_MakeFace faceMaker(surface, 1e-10);
+
+    return faceMaker.Face();
+}
+
+TopoDS_Face CCPACSNacelleCowl::GetEndZetaBlendingSurface(TopoDS_Face& innerShape) const
+{
+
+    double zeta   = m_rotationCurve.GetEndZetaBlending();
+    Handle(Geom_Curve) curve1 = GetGuideCurve(zeta);
+
+    // get second curve on surface
+    TopoDS_Wire outerWire = BRepTools::OuterWire(innerShape);
+    TopTools_IndexedMapOfShape map;
+    TopExp::MapShapes(outerWire, TopAbs_EDGE, map);
+    Standard_Real umin, umax;
+    Handle(Geom_Curve) curve2 = BRep_Tool::Curve(TopoDS::Edge(map(2)), umin, umax);
+
+    // create the filling
+    Handle(Geom_Surface) surface = GeomFill::Surface(curve1, curve2);
+    BRepBuilderAPI_MakeFace faceMaker(surface, 1e-10);
+
+    return faceMaker.Face();
+}
+
+Handle(Geom_Curve) CCPACSNacelleCowl::GetGuideCurve(double zeta) const
+{
+    size_t i = 0;
+    while (    i<wireCache->guideCurves.size()
+            && fabs(wireCache->guideCurves[i].first - zeta) > Precision::Confusion() ) {
+        ++i;
+    }
+    if ( i == wireCache->guideCurves.size() ) {
+        throw CTiglError("Something went wrong: There is no guide curve at endZetaBlending parameter!");
+    }
+
+    return CWireToCurve(wireCache->guideCurves[i].second);
 }
 
 } //namespace tigl
