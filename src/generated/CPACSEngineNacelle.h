@@ -20,6 +20,7 @@
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
 #include <CCPACSNacelleCowl.h>
+#include <CCPACSTransformation.h>
 #include <string>
 #include <TiglSymmetryAxis.h>
 #include <tixi.h>
@@ -54,6 +55,12 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<TiglSymmetryAxis>& GetSymmetry() const;
         TIGL_EXPORT virtual void SetSymmetry(const boost::optional<TiglSymmetryAxis>& value);
 
+        TIGL_EXPORT virtual const boost::optional<std::string>& GetParentUID() const;
+        TIGL_EXPORT virtual void SetParentUID(const boost::optional<std::string>& value);
+
+        TIGL_EXPORT virtual const CCPACSTransformation& GetTransformation() const;
+        TIGL_EXPORT virtual CCPACSTransformation& GetTransformation();
+
         TIGL_EXPORT virtual const CCPACSNacelleCowl& GetFanCowl() const;
         TIGL_EXPORT virtual CCPACSNacelleCowl& GetFanCowl();
 
@@ -68,6 +75,8 @@ namespace generated
 
         std::string                        m_uID;
         boost::optional<TiglSymmetryAxis>  m_symmetry;
+        boost::optional<std::string>       m_parentUID;
+        CCPACSTransformation               m_transformation;
         CCPACSNacelleCowl                  m_fanCowl;
         boost::optional<CCPACSNacelleCowl> m_coreCowl;
 

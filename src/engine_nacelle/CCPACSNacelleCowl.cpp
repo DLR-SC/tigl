@@ -53,9 +53,9 @@ std::vector<std::pair<double,TopoDS_Wire>> connectNacelleGuideCurves(std::vector
 namespace tigl
 {
 
-CCPACSNacelleCowl::CCPACSNacelleCowl(CTiglUIDManager* uidMgr)
-    : generated::CPACSNacelleCowl(uidMgr)
-    , CTiglAbstractGeometricComponent()
+CCPACSNacelleCowl::CCPACSNacelleCowl(CCPACSEngineNacelle* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSNacelleCowl(parent, uidMgr)
+    , CTiglRelativelyPositionedComponent(&m_parentUID, &m_transformation)
     , wireCache(*this, &CCPACSNacelleCowl::BuildOuterShapeWires)
 {}
 
@@ -137,6 +137,9 @@ void CCPACSNacelleCowl::BuildOuterShapeWires(WireCache& cache) const
                 }
                 params.toSection = &m_sections.GetSection(k);
 
+                CTiglTransformation trans = GetTransformationMatrix();
+                params.origin = CTiglPoint( trans.GetValue(0,3), trans.GetValue(1,3), trans.GetValue(2,3)  );
+
                 CTiglNacelleGuideCurveBuilder gcbuilder(params);
                 std::pair<double,TopoDS_Wire> zetaGuidePair(params.fromZeta, gcbuilder.GetWire());
                 zetaGuides.push_back(zetaGuidePair);
@@ -184,9 +187,13 @@ PNamedShape CCPACSNacelleCowl::BuildLoft() const
     BRep_Builder shellBuilder;
     shellBuilder.MakeShell(shell);
 
+    // get nacelle origin
+    CTiglTransformation trans = GetTransformationMatrix();
+    gp_Pnt origin = gp_Pnt(trans.GetValue(0,3), trans.GetValue(1,3), trans.GetValue(2,3));
+
     // get shapes of nacelle cowls
     TopoDS_Shape outerShape    = BuildOuterShape();
-    TopoDS_Face  innerShape    = m_rotationCurve.GetRotationSurface();
+    TopoDS_Face  innerShape    = m_rotationCurve.GetRotationSurface(origin);
     TopoDS_Face  blendingSurf1 = GetStartZetaBlendingSurface(innerShape);
     TopoDS_Face  blendingSurf2 = GetEndZetaBlendingSurface(innerShape);
 
@@ -291,7 +298,7 @@ Handle(Geom_Curve) CCPACSNacelleCowl::GetGuideCurve(double zeta) const
     }
 
     return CWireToCurve(wireCache->guideCurves[i].second);
-}
+}   
 
 } //namespace tigl
 

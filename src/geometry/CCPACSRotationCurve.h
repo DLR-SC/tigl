@@ -18,6 +18,7 @@
 #pragma once
 
 #include "generated/CPACSRotationCurve.h"
+#include "CCPACSTransformation.h"
 #include "TopoDS_Face.hxx"
 #include "TopoDS_Wire.hxx"
 
@@ -37,7 +38,7 @@ public:
     };
 
     TopoDS_Wire GetCurve() const;
-    TopoDS_Face GetRotationSurface(axis dir=x) const;
+    TopoDS_Face GetRotationSurface(gp_Pnt origin = {0., 0., 0.},axis dir=x) const;
 };
 
 

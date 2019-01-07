@@ -15,6 +15,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <cassert>
+#include "CCPACSNacelleSections.h"
 #include "CPACSNacelleSection.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -25,15 +27,27 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSNacelleSection::CPACSNacelleSection(CTiglUIDManager* uidMgr)
+    CPACSNacelleSection::CPACSNacelleSection(CCPACSNacelleSections* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
         , m_transformation(m_uidMgr)
     {
+        //assert(parent != NULL);
+        m_parent = parent;
     }
 
     CPACSNacelleSection::~CPACSNacelleSection()
     {
         if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
+    }
+
+    const CCPACSNacelleSections* CPACSNacelleSection::GetParent() const
+    {
+        return m_parent;
+    }
+
+    CCPACSNacelleSections* CPACSNacelleSection::GetParent()
+    {
+        return m_parent;
     }
 
     CTiglUIDManager& CPACSNacelleSection::GetUIDManager()

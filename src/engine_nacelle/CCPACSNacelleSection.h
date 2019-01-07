@@ -29,7 +29,7 @@ namespace tigl
 class CCPACSNacelleSection : public generated::CPACSNacelleSection
 {
 public:
-    TIGL_EXPORT CCPACSNacelleSection(CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSNacelleSection(CCPACSNacelleSections* parent, CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT const CCPACSNacelleProfile& GetProfile() const;
 

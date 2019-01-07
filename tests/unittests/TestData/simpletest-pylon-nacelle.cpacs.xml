@@ -20,12 +20,31 @@
   <vehicles>
     <engines>
 		<engine uID="SimpleEngine">
+			<name>SimpleEngine</name>
 			<nacelle uID="SimpleNacelle" symmetry="x-z-plane">
-				<centerCowl>
+				<parentUID>Pylon</parentUID>
+				<transformation uID="nacelle_transformation">
+					<scaling uID="SimpleNacelle_scale">
+						<x>0.5</x>
+						<y>0.5</y>
+						<z>0.5</z>
+					</scaling>
+					<rotation uID="SimpleNacelle_rotate">
+						<x>0.0</x>
+						<y>0.0</y>
+						<z>0.0</z>
+					</rotation>
+					<translation refType="absLocal" uID="SimpleNacelle_translation">
+						<x>0.0</x>
+						<y>0.0</y>
+						<z>-0.5</z>
+					</translation>
+				</transformation>
+				<centerCowl uID="SimpleNacelle_centerCowl">
 					<curveUID>"centerCowlRotationCurve"</curveUID>
 					<xOffset>0.0</xOffset>
 				</centerCowl>
-				<fanCowl>
+				<fanCowl uID="SimpleNacelle_fanCowl">
 					<guideCurves>
 						<nacelleGuideCurve>
 							<description>guidecurve add leading edge of nacelle</description>
@@ -52,7 +71,7 @@
 							<toZeta>0.0</toZeta>
 						</nacelleGuideCurve>
 					</guideCurves>
-					<rotationCurve>
+					<rotationCurve uID="fanCowl_rotationCurve">
 					    <referenceSectionUID>fanCowl_section_1</referenceSectionUID>
 						<curveProfileUID>fanCowlRotationCurve</curveProfileUID>
 						<startZeta>-0.6</startZeta>
@@ -65,7 +84,7 @@
 							<description>First Section containing the profile curve in flow direction of the nacelle</description>
 							<name>upperSection</name>
 							<profileUID>fanCowlUpperSectionProfile</profileUID>
-							<transformation>
+							<transformation uID = "fanCowl_section_upper_transform">
 								<scaling uID="fanCowl_section_upper_scale">
 									<x>2.0</x>
 									<y>2.0</y>
@@ -86,7 +105,7 @@
 							<description>First Section containing the profile curve in flow direction of the nacelle</description>
 							<name>upperSection</name>
 							<profileUID>fanCowlUpperSectionProfile</profileUID>
-							<transformation>
+							<transformation uID = "fanCowl_section_left_transform">
 								<scaling uID="fanCowl_section_left_scale">
 									<x>2.0</x>
 									<y>2.0</y>
@@ -107,7 +126,7 @@
 							<description>First Section containing the profile curve in flow direction of the nacelle</description>
 							<name>upperSection</name>
 							<profileUID>fanCowlUpperSectionProfile</profileUID>
-							<transformation>
+							<transformation uID = "fanCowl_section_right_transform">
 								<scaling uID="fanCowl_section_right_scale">
 									<x>2.0</x>
 									<y>2.0</y>
@@ -125,23 +144,24 @@
 							</transformation>
 						</section>
 					</sections>
-					<transformation>
-						<scaling>
+					<transformation uID="fanCowl_transformation">
+						<scaling uID="fanCowl_scaling">
 							<x>1.0</x>
 							<y>1.0</y>
 							<z>1.0</z>
 						</scaling>
-						<rotation>
+						<rotation uID="fanCowl_rotation">
 							<x>0.0</x>
 							<y>0.0</y>
 							<z>0.0</z>
 						</rotation>
-						<translation>
+						<translation  uID="fanCowl_translation">
 							<x>0.0</x>
 							<y>0.0</y>
 							<z>0.0</z>
 						</translation>
 					</transformation>
+					<parentUID>SimpleNacelle</parentUID>
 				</fanCowl>
 			</nacelle>
 		</engine>

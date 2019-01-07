@@ -27,6 +27,7 @@
 namespace tigl
 {
 class CTiglUIDManager;
+class CCPACSNacelleSections;
 
 namespace generated
 {
@@ -37,8 +38,13 @@ namespace generated
     class CPACSNacelleSection
     {
     public:
-        TIGL_EXPORT CPACSNacelleSection(CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSNacelleSection(CCPACSNacelleSections* parent, CTiglUIDManager* uidMgr);
+
         TIGL_EXPORT virtual ~CPACSNacelleSection();
+
+        TIGL_EXPORT CCPACSNacelleSections* GetParent();
+
+        TIGL_EXPORT const CCPACSNacelleSections* GetParent() const;
 
         TIGL_EXPORT CTiglUIDManager& GetUIDManager();
         TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
@@ -62,6 +68,8 @@ namespace generated
         TIGL_EXPORT virtual void SetProfileUID(const std::string& value);
 
     protected:
+        CCPACSNacelleSections* m_parent;
+
         CTiglUIDManager* m_uidMgr;
 
         std::string                  m_uID;

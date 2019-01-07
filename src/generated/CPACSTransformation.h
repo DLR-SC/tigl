@@ -35,6 +35,7 @@ class CTiglUIDManager;
 namespace generated
 {
     // This class is used in:
+    // CPACSEngineNacelle
     // CPACSEnginePylon
     // CPACSFuselage
     // CPACSFuselageElement

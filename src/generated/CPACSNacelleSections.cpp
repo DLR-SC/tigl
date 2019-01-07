@@ -15,7 +15,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <cassert>
 #include <CCPACSNacelleSection.h>
+#include "CCPACSNacelleCowl.h"
 #include "CPACSNacelleSections.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -26,13 +28,25 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSNacelleSections::CPACSNacelleSections(CTiglUIDManager* uidMgr)
+    CPACSNacelleSections::CPACSNacelleSections(CCPACSNacelleCowl* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
+        //assert(parent != NULL);
+        m_parent = parent;
     }
 
     CPACSNacelleSections::~CPACSNacelleSections()
     {
+    }
+
+    const CCPACSNacelleCowl* CPACSNacelleSections::GetParent() const
+    {
+        return m_parent;
+    }
+
+    CCPACSNacelleCowl* CPACSNacelleSections::GetParent()
+    {
+        return m_parent;
     }
 
     CTiglUIDManager& CPACSNacelleSections::GetUIDManager()
@@ -49,7 +63,7 @@ namespace generated
     {
         // read element section
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/section")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/section", m_sections, m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/section", m_sections, reinterpret_cast<CCPACSNacelleSections*>(this), m_uidMgr);
         }
 
     }
@@ -73,7 +87,7 @@ namespace generated
 
     CCPACSNacelleSection& CPACSNacelleSections::AddSection()
     {
-        m_sections.push_back(make_unique<CCPACSNacelleSection>(m_uidMgr));
+        m_sections.push_back(make_unique<CCPACSNacelleSection>(reinterpret_cast<CCPACSNacelleSections*>(this), m_uidMgr));
         return *m_sections.back();
     }
 

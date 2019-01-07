@@ -26,6 +26,7 @@
 #include "CTiglBSplineAlgorithms.h"
 #include "CTiglInterpolateBsplineWire.h"
 #include "CTiglPointsToBSplineInterpolation.h"
+#include "CTiglTransformation.h"
 #include "CTiglUIDManager.h"
 
 #include "GeomAPI_Interpolate.hxx"
@@ -49,6 +50,7 @@ CTiglNacelleGuideCurveBuilder::CTiglNacelleGuideCurveBuilder(const NacelleGuideC
 
 TopoDS_Wire CTiglNacelleGuideCurveBuilder::GetWire()
 {
+
     // get first point of guide curve in cartesian coordinates
     TopTools_SequenceOfShape startWire;
     startWire.Append(parameters.fromSection->GetTransformedLowerWire());
@@ -59,10 +61,10 @@ TopoDS_Wire CTiglNacelleGuideCurveBuilder::GetWire()
     pointAlgo1.GetPointTangent(parameters.fromZeta, point_start_cartesian, tangent);
 
     // radius and angle in YZ-plane
-    double y = point_start_cartesian.Y();
-    double z = point_start_cartesian.Z();
+    double y = point_start_cartesian.Y() - parameters.origin.y;
+    double z = point_start_cartesian.Z() - parameters.origin.z;
 
-    double startX   = point_start_cartesian.X();
+    double startX   = point_start_cartesian.X()  - parameters.origin.x;
     double startR   = sqrt(z*z + y*y);
     double startPhi = 0.;
 
@@ -81,10 +83,10 @@ TopoDS_Wire CTiglNacelleGuideCurveBuilder::GetWire()
     pointAlgo2.GetPointTangent(parameters.toZeta, point_end_cartesian, tangent);
 
     // radius and angle in YZ-plane
-    y = point_end_cartesian.Y();
-    z = point_end_cartesian.Z();
+    y = point_end_cartesian.Y() - parameters.origin.y;
+    z = point_end_cartesian.Z() - parameters.origin.z;
 
-    double endX   = point_end_cartesian.X();
+    double endX   = point_end_cartesian.X()  - parameters.origin.x;
     double endR   = sqrt(z*z + y*y);
     double endPhi = 0.;
 
@@ -148,7 +150,9 @@ TopoDS_Wire CTiglNacelleGuideCurveBuilder::GetWire()
         double ri   = -2*dr*u*u*u + 3*dr*u*u + startR + sampledPoint.Z();
 
         // transform to cartesian coordinates
-        cartesianPoints.push_back(gp_Pnt( xi, -ri*sin(Radians(phii)), ri*cos(Radians(phii)) ) );
+        cartesianPoints.push_back(gp_Pnt(  xi                    + parameters.origin.x,
+                                          -ri*sin(Radians(phii)) + parameters.origin.y,
+                                           ri*cos(Radians(phii)) + parameters.origin.z) );
 
         if ( fabs(phi -endPhi) < Precision::Confusion() ) {
             break;
@@ -215,6 +219,10 @@ tigl::NacelleGuideCurveParameters GetGuideCurveParametersFromCPACS(const tigl::C
     }
     params.toSection = &sections.GetSection(endSectionIdx);
     params.toZeta = curve.GetToZeta();
+
+    // get origin of nacelle cowl (inheritence: curve --> guidecurves --> nacelleCowl )
+    tigl::CTiglTransformation trans = curve.GetParent()->GetParent()->GetTransformationMatrix();
+    params.origin = tigl::CTiglPoint( trans.GetValue(0,3), trans.GetValue(1,3), trans.GetValue(2,3)  );
 
     return params;
 }

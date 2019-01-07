@@ -18,18 +18,18 @@
 #pragma once
 
 #include "generated/CPACSNacelleCowl.h"
-#include "CTiglAbstractGeometricComponent.h"
+#include "CTiglRelativelyPositionedComponent.h"
 #include "tigl_internal.h"
 #include "Geom_Curve.hxx"
 
 namespace tigl
 {
 
-class CCPACSNacelleCowl : public generated::CPACSNacelleCowl, public CTiglAbstractGeometricComponent
+class CCPACSNacelleCowl : public generated::CPACSNacelleCowl, public CTiglRelativelyPositionedComponent
 {
 public:
     // Constructor
-    TIGL_EXPORT CCPACSNacelleCowl(CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSNacelleCowl(CCPACSEngineNacelle* parent, CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT std::string GetDefaultedUID() const OVERRIDE;
 

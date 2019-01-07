@@ -17,6 +17,8 @@
 
 #pragma once
 
+#include <boost/optional.hpp>
+#include <boost/utility/in_place_factory.hpp>
 #include <CCPACSNacelleGuideCurves.h>
 #include <CCPACSNacelleSections.h>
 #include <CCPACSRotationCurve.h>
@@ -28,6 +30,7 @@
 namespace tigl
 {
 class CTiglUIDManager;
+class CCPACSEngineNacelle;
 
 namespace generated
 {
@@ -38,8 +41,13 @@ namespace generated
     class CPACSNacelleCowl
     {
     public:
-        TIGL_EXPORT CPACSNacelleCowl(CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSNacelleCowl(CCPACSEngineNacelle* parent, CTiglUIDManager* uidMgr);
+
         TIGL_EXPORT virtual ~CPACSNacelleCowl();
+
+        TIGL_EXPORT CCPACSEngineNacelle* GetParent();
+
+        TIGL_EXPORT const CCPACSEngineNacelle* GetParent() const;
 
         TIGL_EXPORT CTiglUIDManager& GetUIDManager();
         TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
@@ -53,6 +61,9 @@ namespace generated
         TIGL_EXPORT virtual const CCPACSTransformation& GetTransformation() const;
         TIGL_EXPORT virtual CCPACSTransformation& GetTransformation();
 
+        TIGL_EXPORT virtual const boost::optional<std::string>& GetParentUID() const;
+        TIGL_EXPORT virtual void SetParentUID(const boost::optional<std::string>& value);
+
         TIGL_EXPORT virtual const CCPACSNacelleSections& GetSections() const;
         TIGL_EXPORT virtual CCPACSNacelleSections& GetSections();
 
@@ -63,13 +74,16 @@ namespace generated
         TIGL_EXPORT virtual CCPACSRotationCurve& GetRotationCurve();
 
     protected:
+        CCPACSEngineNacelle* m_parent;
+
         CTiglUIDManager* m_uidMgr;
 
-        std::string              m_uID;
-        CCPACSTransformation     m_transformation;
-        CCPACSNacelleSections    m_sections;
-        CCPACSNacelleGuideCurves m_guideCurves;
-        CCPACSRotationCurve      m_rotationCurve;
+        std::string                  m_uID;
+        CCPACSTransformation         m_transformation;
+        boost::optional<std::string> m_parentUID;
+        CCPACSNacelleSections        m_sections;
+        CCPACSNacelleGuideCurves     m_guideCurves;
+        CCPACSRotationCurve          m_rotationCurve;
 
     private:
 #ifdef HAVE_CPP11

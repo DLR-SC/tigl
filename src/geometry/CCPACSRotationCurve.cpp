@@ -39,20 +39,21 @@ TopoDS_Wire CCPACSRotationCurve::GetCurve() const
     // apply transform of reference section
     CCPACSNacelleSection& section = m_uidMgr->ResolveObject<CCPACSNacelleSection>(GetReferenceSectionUID());
     TopoDS_Shape transformedShape(profile.GetWire());
+
     CTiglTransformation trafo = section.GetTransformationMatrix();
     transformedShape = trafo.Transform(transformedShape);
 
     return TopoDS::Wire(transformedShape);
 }
 
-TopoDS_Face CCPACSRotationCurve::GetRotationSurface(axis dir) const
+TopoDS_Face CCPACSRotationCurve::GetRotationSurface(gp_Pnt origin, axis dir) const
 {
     gp_Vec axis_vec;
     if      ( dir == x ) { axis_vec = gp_Vec(1., 0., 0.); }
     else if ( dir == y ) { axis_vec = gp_Vec(0., 1., 0.); }
     else                 { axis_vec = gp_Vec(0., 0., 1.); }
 
-    gp_Ax1 ax = gp_Ax1(gp_Pnt(0., 0., 0.), axis_vec);
+    gp_Ax1 ax = gp_Ax1(origin, axis_vec);
 
     TopoDS_Wire wire = GetCurve();
 

@@ -37,6 +37,8 @@ namespace tigl
         double fromZeta = 0.0;
         double toZeta   = 0.0;
 
+        CTiglPoint origin = {0., 0., 0.};
+
         CCPACSNacelleSection const * fromSection = nullptr;
         CCPACSNacelleSection const * toSection   = nullptr;
 

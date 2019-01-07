@@ -67,13 +67,6 @@ CTiglPoint CCPACSWingSection::GetScaling() const
     return m_transformation.getScaling();
 }
 
-// Setter for translation
-void CCPACSWingSection::SetTranslation(const CTiglPoint& trans)
-{
-    m_transformation.setTranslation(trans, ABS_LOCAL);
-
-}
-
 // Setter for rotation
 void CCPACSWingSection::SetRotation(const CTiglPoint& rot)
 {

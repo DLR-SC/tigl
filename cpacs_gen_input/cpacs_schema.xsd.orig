@@ -13541,6 +13541,15 @@ jonas.jepsen@dlr.de
 		<xsd:complexContent>
 			<xsd:extension base="complexBaseType">
                 <xsd:all>
+					<xsd:element minOccurs="0"  name="parentUID" type="stringUIDBaseType">
+						<xsd:annotation>
+							<xsd:documentation>UID of the parent (normaly pylon or wing).
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="transformation"
+                		type="transformationType">
+                	</xsd:element>
                 	<xsd:element name="fanCowl"
                 		type="nacelleCowlType">
                 	</xsd:element>
@@ -43709,6 +43718,12 @@ jonas.jepsen@dlr.de
                 	<xsd:element name="transformation"
                 		type="transformationType">
                 	</xsd:element>
+					<xsd:element minOccurs="0" name="parentUID" type="stringUIDBaseType">
+						<xsd:annotation>
+							<xsd:documentation>UID of part to which the cowl is mounted (if
+								any). This is usually the engine nacelle.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
                 	<xsd:element name="sections"
                 		type="nacelleSectionsType">
                 	</xsd:element>

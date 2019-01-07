@@ -18,13 +18,13 @@
 #pragma once
 
 #include "generated/CPACSEngineNacelle.h"
-#include "CTiglAbstractGeometricComponent.h"
+#include "CTiglRelativelyPositionedComponent.h"
 #include "tigl_internal.h"
 
 namespace tigl
 {
 
-class CCPACSEngineNacelle : public generated::CPACSEngineNacelle, public CTiglAbstractGeometricComponent
+class CCPACSEngineNacelle : public generated::CPACSEngineNacelle, public CTiglRelativelyPositionedComponent
 {
 public:
     // Constructor

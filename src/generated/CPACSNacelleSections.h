@@ -27,6 +27,7 @@ namespace tigl
 {
 class CTiglUIDManager;
 class CCPACSNacelleSection;
+class CCPACSNacelleCowl;
 
 namespace generated
 {
@@ -37,8 +38,13 @@ namespace generated
     class CPACSNacelleSections
     {
     public:
-        TIGL_EXPORT CPACSNacelleSections(CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSNacelleSections(CCPACSNacelleCowl* parent, CTiglUIDManager* uidMgr);
+
         TIGL_EXPORT virtual ~CPACSNacelleSections();
+
+        TIGL_EXPORT CCPACSNacelleCowl* GetParent();
+
+        TIGL_EXPORT const CCPACSNacelleCowl* GetParent() const;
 
         TIGL_EXPORT CTiglUIDManager& GetUIDManager();
         TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
@@ -53,6 +59,8 @@ namespace generated
         TIGL_EXPORT virtual void RemoveSection(CCPACSNacelleSection& ref);
 
     protected:
+        CCPACSNacelleCowl* m_parent;
+
         CTiglUIDManager* m_uidMgr;
 
         std::vector<unique_ptr<CCPACSNacelleSection> > m_sections;

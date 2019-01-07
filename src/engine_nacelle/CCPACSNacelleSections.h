@@ -27,7 +27,7 @@ namespace tigl
 class CCPACSNacelleSections : public generated::CPACSNacelleSections
 {
 public:
-    CCPACSNacelleSections(CTiglUIDManager* uidMgr);
+    CCPACSNacelleSections(CCPACSNacelleCowl* parent, CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT size_t GetSectionCount() const;
     TIGL_EXPORT CCPACSNacelleSection& GetSection(size_t index) const;

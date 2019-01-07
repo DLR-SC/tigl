@@ -22,8 +22,8 @@
 
 namespace tigl {
 
-TIGL_EXPORT CCPACSNacelleSection::CCPACSNacelleSection(CTiglUIDManager* uidMgr)
-   : generated::CPACSNacelleSection(uidMgr)
+TIGL_EXPORT CCPACSNacelleSection::CCPACSNacelleSection(CCPACSNacelleSections* parent, CTiglUIDManager* uidMgr)
+   : generated::CPACSNacelleSection(parent, uidMgr)
 {};
 
 TIGL_EXPORT const CCPACSNacelleProfile& CCPACSNacelleSection::GetProfile() const
@@ -71,6 +71,7 @@ TIGL_EXPORT TopoDS_Edge CCPACSNacelleSection::GetTransformedTrailingEdge() const
 // should not be used anywhere but here.
 TIGL_EXPORT CTiglTransformation CCPACSNacelleSection::GetTransformationMatrix() const
 {
+
     CTiglTransformation out;
 
     // get r and phi from translation
@@ -101,6 +102,11 @@ TIGL_EXPORT CTiglTransformation CCPACSNacelleSection::GetTransformationMatrix() 
     // apply translation (and rotate the profile accordingly)
     out.AddRotationX(phi);
     out.AddTranslation(0,-radius*sin(Radians(phi)),radius*cos(Radians(phi)));
+
+    // get transformation of nacelle and premultiply?
+    // inheritence: ->sections->cowl->nacelle
+    CTiglTransformation nacelleTransform = GetParent()->GetParent()->GetTransformationMatrix();
+    out.PreMultiply(nacelleTransform);
 
     return out;
 }
