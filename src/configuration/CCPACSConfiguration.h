@@ -232,6 +232,12 @@ private:
     CTiglMemoryPool                        memoryPool;
 };
 
+/// Computes the bounding box coordinates of the specified component
+TIGL_EXPORT void ComponentGetBoundingBox(const CCPACSConfiguration& config, const std::string& uid, CTiglPoint& min, CTiglPoint& max);
+
+/// Computes the bounding box of the whole aircraft
+TIGL_EXPORT void ConfigurationGetBoundingBox(const CCPACSConfiguration& config, CTiglPoint& min, CTiglPoint& max);
+
 } // end namespace tigl
 
 #endif // CCPACSCONFIGURATION_H

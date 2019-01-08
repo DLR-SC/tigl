@@ -29,6 +29,7 @@
 #include "CTiglError.h"
 #include "CTiglWingStructureReference.h"
 #include "tiglcommonfunctions.h"
+#include "Debugging.h"
 
 
 namespace tigl
@@ -118,46 +119,25 @@ double computeRibEtaValue(const CTiglWingStructureReference& wsr, const CCPACSWi
 
 EtaXsi computeRibSparIntersectionEtaXsi(const CTiglWingStructureReference& wsr, const CCPACSWingRibsDefinition& rib, int ribIndex, const CCPACSWingSparSegment& spar)
 {
-    // determine rib eta/xsi values
-    gp_Pnt ribStartPoint, ribEndPoint;
-    rib.GetRibMidplanePoints(ribIndex, ribStartPoint, ribEndPoint);
+    TopoDS_Face ribShape = rib.GetRibFace(ribIndex, WING_COORDINATE_SYSTEM);
 
-    EtaXsi ribStart, ribEnd;
-    wsr.GetEtaXsiLocal(ribStartPoint, ribStart.eta, ribStart.xsi);
-    wsr.GetEtaXsiLocal(ribEndPoint, ribEnd.eta, ribEnd.xsi);
+    DEBUG_SCOPE(a);
+    TopoDS_Wire w = spar.GetSparMidplaneLine();
+    a.addShape(w, "SparMidLine");
+    a.addShape(ribShape, "RibFace");
 
-    // determine number of spar positions
-    int numSparPositions = spar.GetSparPositionUIDs().GetSparPositionUIDCount();
+    const double precision = 1E-6;
 
-    const double precision = 1E-8;
-    const double zeroMin = 0 - precision;
-    EtaXsi sparInner, sparOuter;
-    spar.GetEtaXsi(1, sparInner.eta, sparInner.xsi);
-    for (int i = 2; i <= numSparPositions; ++i) {
-        // check if requested eta lies in current spar line segment
-        spar.GetEtaXsi(i, sparOuter.eta, sparOuter.xsi);
-
-        // 2d line intersection, taken from http://stackoverflow.com/questions/563198/how-do-you-detect-where-two-line-segments-intersect
-        gp_Pnt2d p(ribStart.eta, ribStart.xsi);
-        gp_Vec2d r(p, gp_Pnt2d(ribEnd.eta, ribEnd.xsi));
-
-        gp_Pnt2d q(sparInner.eta, sparInner.xsi);
-        gp_Vec2d s(q, gp_Pnt2d(sparOuter.eta, sparOuter.xsi));
-
-        double rxs = r.Crossed(s);
-        // ignore parallel or colinear lines
-        if (fabs(rxs) > precision) {
-            double t = gp_Vec2d(p, q).Crossed(s) / rxs;
-            double u = gp_Vec2d(p, q).Crossed(r) / rxs;
-            if (t >= zeroMin && t <= (1 + precision) && u >= zeroMin && u <= (1 + precision)) {
-                return EtaXsi(p.X() + t * r.X(), p.Y() + t * r.Y());
-            }
-        }
-
-        sparInner = sparOuter;
+    gp_Pnt pIntersect;
+    if (!GetIntersectionPoint(ribShape, w, pIntersect, precision)) {
+        throw CTiglError("Error in computeRibSparIntersectionEtaXsi: intersection of rib and spar not found!");
     }
 
-    throw CTiglError("Error in computeRibSparIntersectionEtaXsi: intersection of rib and spar not found!");
+    // Get Eta Xsi coordinates of the point
+    EtaXsi result;
+    wsr.GetEtaXsiLocal(pIntersect, result.eta, result.xsi);
+
+    return result;
 }
 
 }

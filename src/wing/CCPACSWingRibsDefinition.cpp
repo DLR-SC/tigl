@@ -924,9 +924,13 @@ std::string CCPACSWingRibsDefinition::GetDefaultedUID() const
 
 TiglGeometricComponentType CCPACSWingRibsDefinition::GetComponentType() const
 {
-    return TIGL_COMPONENT_PHYSICAL;
+    return TIGL_COMPONENT_WINGRIB;
 }
 
+TiglGeometricComponentIntent CCPACSWingRibsDefinition::GetComponentIntent() const
+{
+    return TIGL_INTENT_PHYSICAL | TIGL_INTENT_INNER_STRUCTURE;
+}
 
 PNamedShape CCPACSWingRibsDefinition::BuildLoft() const
 {

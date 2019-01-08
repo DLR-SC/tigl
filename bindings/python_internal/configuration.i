@@ -74,6 +74,8 @@
 #include "CCPACSControlSurfaceTrackType.h"
 #include "generated/CPACSTrailingEdgeDevice.h"
 #include "CCPACSTrailingEdgeDevice.h"
+#include "CCPACSEnginePylons.h"
+#include "CCPACSEnginePylon.h"
 %}
 
 %feature("autodoc", "3");
@@ -117,6 +119,9 @@
 %boost_optional(tigl::CCPACSWingCells)
 %boost_optional(tigl::generated::CPACSAlignmentCrossBeam)
 %boost_optional(tigl::generated::CPACSDoorAssemblyPosition_doorType)
+%boost_optional(tigl::CCPACSWingSections)
+%boost_optional(tigl::CCPACSWingSegments)
+%boost_optional(tigl::CCPACSPositionings)
 
 
 // ---------------- Other ------------------------------//
@@ -401,6 +406,12 @@ class CCPACSWingRibsPositioning;
 %include "CTiglWingSegmentList.h"
 %include "CTiglWingChordface.h"
 
+// ---- Engine Pylon -- //
+%include "generated/CPACSEnginePylon.h"
+%include "CCPACSEnginePylon.h"
+%include "generated/CPACSEnginePylons.h"
+%include "CCPACSEnginePylons.h"
+
 // CTiglUIDManager::GetGeometricComponent returns the interface type ITiglGeometricComponent
 // In the target language, we want to get the concrete type back
 %factory(tigl::ITiglGeometricComponent& tigl::CTiglUIDManager::GetGeometricComponent,
@@ -421,7 +432,8 @@ class CCPACSWingRibsPositioning;
          tigl::CCPACSPressureBulkheadAssemblyPosition,
          tigl::CCPACSWingCell,
          tigl::CCPACSWingRibsDefinition,
-         tigl::CCPACSWingSparSegment
+         tigl::CCPACSWingSparSegment,
+         tigl::CCPACSEnginePylon
 );
 
 namespace tigl

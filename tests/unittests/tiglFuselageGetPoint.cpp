@@ -186,10 +186,10 @@ TEST(TiglFuselageGetPointBugs, getPointAngleTranslated)
 
     // this always worked
     ASSERT_EQ(TIGL_SUCCESS, tiglFuselageGetPointAngleTranslated(tiglHandle, 1, 29, 0.5,  8.1795,  0.19097, 0.027451, &x, &y, &z));
-    ASSERT_NEAR(-0.088553, y, 1e-5);
+    ASSERT_NEAR(-0.088661, y, 1e-5);
 
     // this was buggy
     ASSERT_EQ(TIGL_SUCCESS, tiglFuselageGetPointAngleTranslated(tiglHandle, 1, 29, 0.5, -8.1795, -0.19097, 0.027451, &x, &y, &z));
-    ASSERT_NEAR(0.088553, y, 1e-5);
+    ASSERT_NEAR(0.088661, y, 1e-5);
 }
 

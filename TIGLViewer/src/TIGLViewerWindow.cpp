@@ -619,7 +619,6 @@ void TIGLViewerWindow::connectConfiguration()
 
     // CPACS Rotorcraft Actions
     connect(drawRotorsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawRotor()));
-    connect(drawRotorDisksAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawRotorDisk()));
     connect(showRotorPropertiesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(showRotorProperties()));
 
     // Export functions
@@ -823,7 +822,6 @@ void TIGLViewerWindow::updateMenus()
     drawFarFieldAction->setEnabled(hasFarField);
     drawSystemsAction->setEnabled(hasACSystems);
     drawRotorsAction->setEnabled(nRotors > 0);
-    drawRotorDisksAction->setEnabled(nRotors > 0);
     menuRotorcraft->setEnabled((nRotors > 0) || (nRotorBlades > 0));
     menuRotorBlades->setEnabled(nRotorBlades > 0);
     menuWings->setEnabled(nWings - nRotorBlades > 0);

@@ -33,7 +33,8 @@ public:
 
     TIGL_EXPORT std::string GetDefaultedUID() const OVERRIDE;
 
-    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE { return TIGL_COMPONENT_ENGINE_NACELLE | TIGL_COMPONENT_PHYSICAL; }
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE { return TIGL_COMPONENT_ENGINE_NACELLE; }
+    TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const OVERRIDE { return TIGL_INTENT_PHYSICAL; }
 
 protected:
     virtual PNamedShape BuildLoft() const OVERRIDE;

@@ -117,7 +117,12 @@ public:
     // Returns the Component Type TIGL_COMPONENT_ROTOR.
     TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE
     {
-        return TIGL_COMPONENT_ROTOR | TIGL_COMPONENT_PHYSICAL;
+        return TIGL_COMPONENT_ROTOR;
+    }
+
+    TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const OVERRIDE
+    {
+        return TIGL_INTENT_PHYSICAL;
     }
 
 protected:

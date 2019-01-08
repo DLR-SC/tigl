@@ -70,6 +70,13 @@ namespace
         return !!v;
     }
 
+    tigl::FaceNameSettings GetFaceNameMode(const tigl::ExporterOptions& options)
+    {
+        return options.HasOption("FaceNames")
+                ? options.Get<tigl::FaceNameSettings>("FaceNames")
+                : tigl::IgesOptions().Get<tigl::FaceNameSettings>("FaceNames");
+    }
+
     void AssignLevelToAllEntities(Handle(IGESData_IGESEntity) ent, int level)
     {
         // assign level in case of trimmed surfaces type
@@ -115,16 +122,34 @@ namespace
      */
     void SetLongEntityName(IGESControl_Writer& writer, Handle(IGESData_IGESEntity) entity, const std::string& name)
     {
+        if (name.empty()) {
+            return;
+        }
+
         Handle(IGESBasic_Name) nameEntity = new IGESBasic_Name;
         nameEntity->Init(1, new TCollection_HAsciiString(name.c_str()));
         entity->AddProperty(nameEntity);
         writer.AddEntity(nameEntity);
     }
 
+    std::string ExportedLongFaceName(const std::string& shapeName, const std::string& faceName, tigl::FaceNameSettings settings)
+    {
+        switch (settings) {
+        case tigl::UIDOnly:
+            return shapeName;
+        case tigl::FaceNameOnly:
+            return faceName;
+        case tigl::UIDandFaceName:
+            return shapeName + "::" + faceName;
+        case tigl::None:
+            return "";
+        }
+    }
+
     /**
      * @brief WriteIGESFaceNames takes the names of each face and writes it into the IGES model.
      */
-    void WriteIGESFaceNames(IGESControl_Writer& writer, const PNamedShape shape, int level)
+    void WriteIGESFaceNames(IGESControl_Writer& writer, const PNamedShape shape, const tigl::ExporterOptions& globalOptions, int level)
     {
         if (!shape) {
             return;
@@ -160,7 +185,7 @@ namespace
             if ( FP->FindTypedTransient ( mapper, STANDARD_TYPE(IGESData_IGESEntity), entity ) ) {
                 Handle(TCollection_HAsciiString) str = new TCollection_HAsciiString(shortFaceName.c_str());
                 entity->SetLabel(str);
-                SetLongEntityName(writer, entity, faceName);
+                SetLongEntityName(writer, entity, ExportedLongFaceName(shape->Name(), faceName, GetFaceNameMode(globalOptions)));
                 AssignLevelToAllEntities(entity, level);
             }
         }
@@ -225,14 +250,17 @@ namespace
         }
     }
     
-    void WriteIgesNames(IGESControl_Writer& writer, const PNamedShape shape, int level)
+    void WriteIgesNames(IGESControl_Writer& writer, const PNamedShape shape, const tigl::ExporterOptions& globalOptions, int level)
     {
-        WriteIGESFaceNames(writer, shape, level);
+        WriteIGESFaceNames(writer, shape, globalOptions, level);
         WriteIGESShapeNames(writer, shape, level);
     }
 
-    int GetBRepMode(const tigl::CTiglExportIges& writer) {
-        return writer.GlobalExportOptions().HasOption("IGES5.3") ? writer.GlobalExportOptions().Get<bool>("IGES5.3") : 1;
+    int GetBRepMode(const tigl::CTiglExportIges& writer)
+    {
+        return writer.GlobalExportOptions().HasOption("IGES5.3")
+                ? writer.GlobalExportOptions().Get<bool>("IGES5.3")
+                : tigl::IgesOptions().Get<bool>("IGES5.3");
     }
     
 } //namespace
@@ -364,7 +392,7 @@ void CTiglExportIges::AddToIges(PNamedShape shape, IGESControl_Writer& writer, i
             throw CTiglError("Export to IGES file failed in CTiglExportStep. Could not translate shape " 
                              + shapeName + " to iges entity,", TIGL_ERROR);
         }
-        WriteIgesNames(writer, shape, level);
+        WriteIgesNames(writer, shape, GlobalExportOptions(), level);
     }
     else {
         // no faces, export edges as wires

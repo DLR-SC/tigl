@@ -129,7 +129,8 @@ endif(OCE_FOUND)
 # search TiXI
 set(TIXI_PATH "" CACHE PATH "TiXI installation prefix")
 set(CMAKE_PREFIX_PATH "${TIXI_PATH};${CMAKE_PREFIX_PATH}")
-find_package( TIXI 3.0.0 REQUIRED)
+find_package( tixi3 3.0.3 REQUIRED CONFIG)
+get_target_property(TIXI_INCLUDE_DIRS tixi3 INTERFACE_INCLUDE_DIRECTORIES)
 get_target_property(TIXI_LIBRARY ${TIXI_LIBRARIES} LOCATION)
 get_filename_component(TIXI_LIB_PATH ${TIXI_LIBRARY} PATH)
 
@@ -143,8 +144,6 @@ if(TIGL_USE_GLOG)
       message(STATUS "Google GLOG not found. Advanced logging disabled.")
     endif()
 endif(TIGL_USE_GLOG)
-
-OPTION(TIGL_OCE_COONS_PATCHED "Check, if you have the OCCT source patched with the C2 coons algorithm" OFF)
 
 # enable C++11 support if available
 include(CheckCXXCompilerFlag)
@@ -176,6 +175,19 @@ CHECK_CXX_SOURCE_COMPILES(${src_make_unqiue} HAVE_STDMAKE_UNIQUE)
 
 set(src_is_same "#include <typeinfo>\n#include <type_traits>\nint main(){\n bool issame = std::is_same<int, int>::value\;\n return 0\;\n}\n")
 CHECK_CXX_SOURCE_COMPILES(${src_is_same} HAVE_STDIS_SAME)
+
+# check if opencascade has patched coons feature
+SET(src_patched_occ "
+#include <GeomFill_FillingStyle.hxx>
+void test(){
+  GeomFill_FillingStyle style = GeomFill_CoonsC2Style\;
+}\n")
+
+set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
+set(CMAKE_REQUIRED_INCLUDES ${OpenCASCADE_INCLUDE_DIR})
+CHECK_CXX_SOURCE_COMPILES(${src_patched_occ} HAVE_OCE_COONS_PATCHED)
+unset(CMAKE_TRY_COMPILE_TARGET_TYPE)
+unset(CMAKE_REQUIRED_INCLUDES)
 
 # enable parallel builds in Visual Studio
 if (MSVC)

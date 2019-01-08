@@ -103,7 +103,8 @@ public:
     TIGL_EXPORT double GetCircumference(int segmentIndex, double eta);
 
     // Returns the Component Type TIGL_COMPONENT_FUSELAGE
-    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE {return TIGL_COMPONENT_FUSELAGE | TIGL_COMPONENT_PHYSICAL;}
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE {return TIGL_COMPONENT_FUSELAGE; }
+    TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const OVERRIDE {return TIGL_INTENT_PHYSICAL;}
 
     // Returns the point where the distance between the selected fuselage and the ground is at minimum.
     // The Fuselage could be turned with a given angle at at given axis, specified by a point and a direction.

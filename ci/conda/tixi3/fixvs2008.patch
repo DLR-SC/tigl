@@ -1,0 +1,21 @@
+diff --git a/src/tixiImpl.c b/src/tixiImpl.c
+index e4d2e32..52a3a79 100644
+--- a/src/tixiImpl.c
++++ b/src/tixiImpl.c
+@@ -1980,7 +1980,6 @@ DLL_EXPORT ReturnCode tixiAddPoint(const TixiDocumentHandle handle, const char *
+   error = checkElement(document->xpathContext, parentPath, &parent);
+ 
+   if (!error) {
+-    XPathClearCache(document->xpathCache);
+     /* create node containing the point coordinates */
+ 
+     xmlNodePtr pointNode = parent;
+@@ -1988,7 +1987,7 @@ DLL_EXPORT ReturnCode tixiAddPoint(const TixiDocumentHandle handle, const char *
+ 
+     /* add x coordinate */
+     char *textBuffer = buildString(format, x);
+-
++    XPathClearCache(document->xpathCache);
+     if (textBuffer) {
+ 
+       child = xmlNewTextChild(pointNode, nameSpace, (xmlChar *) "x", (xmlChar *) textBuffer);

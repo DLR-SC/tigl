@@ -62,8 +62,15 @@ PNamedShape CCPACSCrossBeamAssemblyPosition::GetLoft() const
 
 TiglGeometricComponentType CCPACSCrossBeamAssemblyPosition::GetComponentType() const
 {
-    return TIGL_COMPONENT_GENERICSYSTEM | TIGL_COMPONENT_PHYSICAL;
+    return TIGL_COMPONENT_GENERICSYSTEM;
 }
+
+TiglGeometricComponentIntent CCPACSCrossBeamAssemblyPosition::GetComponentIntent() const
+{
+    return TIGL_INTENT_PHYSICAL | TIGL_INTENT_INNER_STRUCTURE;
+}
+
+
 
 void CCPACSCrossBeamAssemblyPosition::Invalidate()
 {

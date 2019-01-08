@@ -42,11 +42,11 @@ before_install:
   - '[ "$TRAVIS_OS_NAME" != osx ] || /usr/bin/curl -o sshpass-macOS.tar.gz -L https://sourceforge.net/projects/tigl/files/Thirdparty/sshpass-macOS.tar.gz'
   - '[ "$TRAVIS_OS_NAME" != osx ] || /usr/bin/curl -o doxygen-macOS.tar.gz -L https://sourceforge.net/projects/tigl/files/Thirdparty/doxygen-macOS.tar.gz'
   - '[ "$TRAVIS_OS_NAME" != osx ] || /usr/bin/curl -o oce.0.17.2.macos_static.tar.gz -L https://sourceforge.net/projects/tigl/files/Thirdparty/oce.0.17.2-1.macos_static.tar.gz'
-  - '[ "$TRAVIS_OS_NAME" != osx ] || /usr/bin/curl -O -L https://github.com/DLR-SC/tixi/releases/download/v3.0.0/TIXI-3.0.0-Darwin.tar.gz '
+  - '[ "$TRAVIS_OS_NAME" != osx ] || /usr/bin/curl -O -L https://github.com/DLR-SC/tixi/releases/download/v3.0.3/TIXI-3.0.3-Darwin.tar.gz '
   - '[ "$TRAVIS_OS_NAME" != osx ] || tar xf sshpass-macOS.tar.gz -C /tmp && export PATH=$PATH:/tmp'
   - '[ "$TRAVIS_OS_NAME" != osx ] || tar xf doxygen-macOS.tar.gz -C /tmp && export PATH=$PATH:/tmp/doxygen'
   - '[ "$TRAVIS_OS_NAME" != osx ] || tar xf oce.0.17.2.macos_static.tar.gz'
-  - '[ "$TRAVIS_OS_NAME" != osx ] || tar xf TIXI-3.0.0-Darwin.tar.gz '
+  - '[ "$TRAVIS_OS_NAME" != osx ] || tar xf TIXI-3.0.3-Darwin.tar.gz '
   - '[ "$TRAVIS_OS_NAME" != osx ] || brew install ccache '
   - '[ "$TRAVIS_OS_NAME" != osx ] || export PATH="/usr/local/opt/ccache/libexec:$PATH" '
   # If a tag/release is build, disable the nighty build flag
@@ -57,14 +57,14 @@ before_script:
   - cd build
 
 script:
-  - '[ "$TRAVIS_OS_NAME" != osx ] || export CMAKE_PREFIX_PATH=`pwd`/../TIXI-3.0.0-Darwin:`pwd`/../oce.0.17.2.macos_static:`pwd`/../Qt5.4_clang64_macOS'
+  - '[ "$TRAVIS_OS_NAME" != osx ] || export CMAKE_PREFIX_PATH=`pwd`/../TIXI-3.0.3-Darwin:`pwd`/../oce.0.17.2.macos_static:`pwd`/../Qt5.4_clang64_macOS'
   - '[ "$TRAVIS_OS_NAME" != linux ] || jdk_switcher use oraclejdk8'
-  - cmake -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DTIGL_BUILD_TESTS=ON -DTIGL_OCE_COONS_PATCHED=ON -DTIGL_CONCAT_GENERATED_FILES=ON -DTIGL_NIGHTLY=$TIGL_NIGHTLY -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON -DCMAKE_INSTALL_PREFIX=`pwd`/install ..
+  - cmake -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DTIGL_BUILD_TESTS=ON -DTIGL_CONCAT_GENERATED_FILES=ON -DTIGL_NIGHTLY=$TIGL_NIGHTLY -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON -DCMAKE_INSTALL_PREFIX=`pwd`/install ..
   - make -j 4
   - make doc
   - make install
   - '[ "$TRAVIS_OS_NAME" != osx ] || make package'
-  - '[ "$TRAVIS_OS_NAME" != osx ] || export DYLD_LIBRARY_PATH=`pwd`/../TIXI-3.0.0-Darwin/lib '
+  - '[ "$TRAVIS_OS_NAME" != osx ] || export DYLD_LIBRARY_PATH=`pwd`/../TIXI-3.0.3-Darwin/lib '
   - cd tests/unittests
   - ./TiGL-unittests --gtest_output=xml
   - cd ../..

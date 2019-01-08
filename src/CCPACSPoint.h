@@ -25,9 +25,12 @@ class CCPACSPoint : public generated::CPACSPoint
 {
 public:
     TIGL_EXPORT CCPACSPoint(CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSPoint(const CCPACSPoint& p);
 
     TIGL_EXPORT CTiglPoint AsPoint() const; // missing coordinates default to zero
     TIGL_EXPORT void SetAsPoint(const CTiglPoint& point);
+
+    TIGL_EXPORT CCPACSPoint& operator=(const CCPACSPoint&);
 };
 
 } // namespace tigl

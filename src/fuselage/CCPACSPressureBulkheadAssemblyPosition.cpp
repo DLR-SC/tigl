@@ -72,7 +72,12 @@ PNamedShape CCPACSPressureBulkheadAssemblyPosition::GetLoft() const
 
 TiglGeometricComponentType CCPACSPressureBulkheadAssemblyPosition::GetComponentType() const
 {
-    return TIGL_COMPONENT_PHYSICAL | TIGL_COMPONENT_PRESSURE_BULKHEAD;
+    return TIGL_COMPONENT_PRESSURE_BULKHEAD;
+}
+
+TiglGeometricComponentIntent CCPACSPressureBulkheadAssemblyPosition::GetComponentIntent() const
+{
+    return TIGL_INTENT_PHYSICAL | TIGL_INTENT_INNER_STRUCTURE;
 }
 
 void CCPACSPressureBulkheadAssemblyPosition::Invalidate()

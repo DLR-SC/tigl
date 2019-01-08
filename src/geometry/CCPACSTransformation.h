@@ -35,12 +35,14 @@ public:
     TIGL_EXPORT CCPACSTransformation(CTiglUIDManager* uidMgr);
     
     TIGL_EXPORT void reset();
+
+    TIGL_EXPORT CCPACSTransformation &operator = (const CCPACSTransformation& trafo);
     
     TIGL_EXPORT void setTranslation(const CTiglPoint& translation);
     TIGL_EXPORT void setTranslation(const CTiglPoint& translation, ECPACSTranslationType);
     TIGL_EXPORT void setRotation(const CTiglPoint& rotation);
     TIGL_EXPORT void setScaling(const CTiglPoint& scale);
-    TIGL_EXPORT void setTransformationMatrix(const CTiglTransformation& matrix); // sets only the current matrix, does not update rotation, scaling and translation, changes are lost when updateMatrix() is called
+    TIGL_EXPORT void setTransformationMatrix(const CTiglTransformation& matrix);
     
     TIGL_EXPORT CTiglPoint getTranslationVector() const;
     TIGL_EXPORT CTiglPoint getRotation() const;

@@ -261,8 +261,14 @@ std::string CCPACSWingSparSegment::GetDefaultedUID() const
 
 TiglGeometricComponentType CCPACSWingSparSegment::GetComponentType() const
 {
-    return TIGL_COMPONENT_PHYSICAL;
+    return TIGL_COMPONENT_WINGSPAR;
 }
+
+TiglGeometricComponentIntent CCPACSWingSparSegment::GetComponentIntent() const
+{
+    return TIGL_INTENT_PHYSICAL | TIGL_INTENT_INNER_STRUCTURE;
+}
+
 
 // Builds the cutting geometry for the spar as well as the midplane line
 void CCPACSWingSparSegment::BuildAuxiliaryGeometry(AuxiliaryGeomCache& cache) const

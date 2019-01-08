@@ -39,7 +39,12 @@ PNamedShape CCPACSDoorAssemblyPosition::GetLoft() const
 
 TiglGeometricComponentType CCPACSDoorAssemblyPosition::GetComponentType() const
 {
-    return TIGL_COMPONENT_CARGO_DOOR | TIGL_COMPONENT_PHYSICAL;
+    return TIGL_COMPONENT_CARGO_DOOR ;
+}
+
+TiglGeometricComponentIntent CCPACSDoorAssemblyPosition::GetComponentIntent() const
+{
+    return TIGL_INTENT_PHYSICAL;
 }
 
 } // namespace tigl

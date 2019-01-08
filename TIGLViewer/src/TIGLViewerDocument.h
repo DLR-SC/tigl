@@ -64,6 +64,7 @@ public slots:
     void drawFarField();
     void drawSystems();
     void drawComponent();
+    void drawComponentByUID(const QString& uid);
 
     // Wing slots
     void drawWingProfiles();
@@ -100,6 +101,7 @@ public slots:
     void drawRotorBladeShells();
 
     // Rotorcraft slots
+    void drawRotorByUID(const QString& uid);
     void drawRotor();
     void drawRotorDisk();
     void showRotorProperties();
@@ -129,6 +131,7 @@ public slots:
 
     // General slots
     void updateConfiguration();
+
 
 private slots:
 

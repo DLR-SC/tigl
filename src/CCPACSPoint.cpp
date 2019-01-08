@@ -24,6 +24,15 @@ CCPACSPoint::CCPACSPoint(CTiglUIDManager* uidMgr)
 {
 }
 
+CCPACSPoint::CCPACSPoint(const CCPACSPoint &p)
+    : generated::CPACSPoint (p.m_uidMgr)
+{
+    m_x = p.m_x;
+    m_y = p.m_y;
+    m_z = p.m_z;
+    m_uID = p.m_uID;
+}
+
 CTiglPoint CCPACSPoint::AsPoint() const
 {
     CTiglPoint point;
@@ -38,6 +47,15 @@ void CCPACSPoint::SetAsPoint(const CTiglPoint& point)
     m_x = point.x;
     m_y = point.y;
     m_z = point.z;
+}
+
+CCPACSPoint &CCPACSPoint::operator=(const CCPACSPoint & p)
+{
+    // For now, we don't replace the uid, just the values
+    m_x = p.m_x;
+    m_y = p.m_y;
+    m_z = p.m_z;
+    return *this;
 }
 
 } // namespace tigl
