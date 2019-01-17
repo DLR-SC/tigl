@@ -23,6 +23,7 @@
 #define CTIGLTRANSFORMATION_H
 
 #include "tigl_internal.h"
+#include "CTiglLogging.h"
 #include "CTiglPoint.h"
 #include "gp_GTrsf.hxx"
 #include "gp_Pnt.hxx"
@@ -109,6 +110,11 @@ public:
     
     // Returns the inverted Transformation
     TIGL_EXPORT CTiglTransformation Inverted() const;
+
+    // Decompose the Transformation into the three operations
+    // scale first, rotate second (extr. Euler as defined in CPACS),
+    // translate third
+    TIGL_EXPORT void Decompose(double scale[3], double rotation[3], double translation[3]) const;
 
     // Default copy constructor and assignment operator are correct
     // since memberwise copy is enough for this class.
