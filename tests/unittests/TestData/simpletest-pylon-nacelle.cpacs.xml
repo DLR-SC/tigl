@@ -21,25 +21,7 @@
     <engines>
 		<engine uID="SimpleEngine">
 			<name>SimpleEngine</name>
-			<nacelle uID="SimpleNacelle" symmetry="x-z-plane">
-				<parentUID>Pylon</parentUID>
-				<transformation uID="nacelle_transformation">
-					<scaling uID="SimpleNacelle_scale">
-						<x>1.</x>
-						<y>1.</y>
-						<z>1.</z>
-					</scaling>
-					<rotation uID="SimpleNacelle_rotate">
-						<x>0.0</x>
-						<y>0.0</y>
-						<z>0.0</z>
-					</rotation>
-					<translation refType="absLocal" uID="SimpleNacelle_translation">
-						<x>-0.1</x>
-						<y>0.0</y>
-						<z>-0.41</z>
-					</translation>
-				</transformation>
+			<nacelle uID="SimpleNacelle">
 				<centerCowl uID="SimpleNacelle_centerCowl">
 					<curveUID>"centerCowlRotationCurve"</curveUID>
 					<xOffset>0.0</xOffset>
@@ -47,7 +29,7 @@
 				<fanCowl uID="SimpleNacelle_fanCowl">
 					<guideCurves>
 						<nacelleGuideCurve>
-							<description>guidecurve add leading edge of nacelle</description>
+							<description>guidecurve at leading edge of nacelle</description>
 							<name>Nacelle_LE</name>
 							<startSectionUID>fanCowl_section_1</startSectionUID>
 							<guideCurveProfileUID>fanCowlLeadingEdgeProfile</guideCurveProfileUID>
@@ -55,7 +37,7 @@
 							<toZeta>0.0</toZeta>
 						</nacelleGuideCurve>
 						<nacelleGuideCurve>
-							<description>guidecurve add leading edge of nacelle</description>
+							<description>guidecurve at leading edge of nacelle</description>
 							<name>Nacelle_LE</name>
 							<startSectionUID>fanCowl_section_2</startSectionUID>
 							<guideCurveProfileUID>fanCowlLeadingEdgeProfile</guideCurveProfileUID>
@@ -63,22 +45,62 @@
 							<toZeta>0.0</toZeta>
 						</nacelleGuideCurve>
 						<nacelleGuideCurve>
-							<description>guidecurve add leading edge of nacelle</description>
+							<description>guidecurve at leading edge of nacelle</description>
 							<name>Nacelle_LE</name>
 							<startSectionUID>fanCowl_section_3</startSectionUID>
 							<guideCurveProfileUID>fanCowlLeadingEdgeProfile</guideCurveProfileUID>
 							<fromZeta>0.0</fromZeta>
 							<toZeta>0.0</toZeta>
 						</nacelleGuideCurve>
+						<nacelleGuideCurve>
+							<description>guidecurve at trailing edge of nacelle</description>
+							<name>Nacelle_TE</name>
+							<startSectionUID>fanCowl_section_1</startSectionUID>
+							<guideCurveProfileUID>fanCowlTrailingEdgeProfile</guideCurveProfileUID>
+							<fromZeta>-1</fromZeta>
+							<toZeta>-1</toZeta>
+						</nacelleGuideCurve>
+						<nacelleGuideCurve>
+							<description>guidecurve at trailing edge of nacelle</description>
+							<name>Nacelle_TE</name>
+							<startSectionUID>fanCowl_section_2</startSectionUID>
+							<guideCurveProfileUID>fanCowlTrailingEdgeProfile</guideCurveProfileUID>
+							<fromZeta>-1</fromZeta>
+							<toZeta>-1</toZeta>
+						</nacelleGuideCurve>
+						<nacelleGuideCurve>
+							<description>guidecurve at trailing edge of nacelle</description>
+							<name>Nacelle_TE</name>
+							<startSectionUID>fanCowl_section_3</startSectionUID>
+							<guideCurveProfileUID>fanCowlTrailingEdgeProfile</guideCurveProfileUID>
+							<fromZeta>-1</fromZeta>
+							<toZeta>-1</toZeta>
+						</nacelleGuideCurve>
+						<nacelleGuideCurve>
+							<description>guidecurve at trailing edge of nacelle</description>
+							<name>Nacelle_TE</name>
+							<startSectionUID>fanCowl_section_1</startSectionUID>
+							<guideCurveProfileUID>fanCowlTrailingEdgeProfile</guideCurveProfileUID>
+							<fromZeta>1</fromZeta>
+							<toZeta>1</toZeta>
+						</nacelleGuideCurve>
+						<nacelleGuideCurve>
+							<description>guidecurve at trailing edge of nacelle</description>
+							<name>Nacelle_TE</name>
+							<startSectionUID>fanCowl_section_2</startSectionUID>
+							<guideCurveProfileUID>fanCowlTrailingEdgeProfile</guideCurveProfileUID>
+							<fromZeta>1</fromZeta>
+							<toZeta>1</toZeta>
+						</nacelleGuideCurve>
+						<nacelleGuideCurve>
+							<description>guidecurve at trailing edge of nacelle</description>
+							<name>Nacelle_TE</name>
+							<startSectionUID>fanCowl_section_3</startSectionUID>
+							<guideCurveProfileUID>fanCowlTrailingEdgeProfile</guideCurveProfileUID>
+							<fromZeta>1</fromZeta>
+							<toZeta>1</toZeta>
+						</nacelleGuideCurve>
 					</guideCurves>
-					<rotationCurve uID="fanCowl_rotationCurve">
-					    <referenceSectionUID>fanCowl_section_1</referenceSectionUID>
-						<curveProfileUID>fanCowlRotationCurve</curveProfileUID>
-						<startZeta>-0.6</startZeta>
-						<endZeta>-0.3</endZeta>
-						<startZetaBlending>-0.7</startZetaBlending>
-						<endZetaBlending>-0.2</endZetaBlending>
-					</rotationCurve>
 					<sections>
 						<section uID="fanCowl_section_1">
 							<description>First Section containing the profile curve in flow direction of the nacelle</description>
@@ -144,24 +166,14 @@
 							</transformation>
 						</section>
 					</sections>
-					<transformation uID="fanCowl_transformation">
-						<scaling uID="fanCowl_scaling">
-							<x>0.75</x>
-							<y>0.75</y>
-							<z>0.75</z>
-						</scaling>
-						<rotation uID="fanCowl_rotation">
-							<x>0.0</x>
-							<y>0.0</y>
-							<z>0.0</z>
-						</rotation>
-						<translation  uID="fanCowl_translation">
-							<x>0.0</x>
-							<y>0.0</y>
-							<z>0.0</z>
-						</translation>
-					</transformation>
-					<parentUID>SimpleNacelle</parentUID>
+					<rotationCurve uID="fanCowl_rotationCurve">
+					    <referenceSectionUID>fanCowl_section_1</referenceSectionUID>
+						<curveProfileUID>fanCowlRotationCurve</curveProfileUID>
+						<startZeta>-0.6</startZeta>
+						<endZeta>-0.3</endZeta>
+						<startZetaBlending>-0.7</startZetaBlending>
+						<endZetaBlending>-0.2</endZetaBlending>
+					</rotationCurve>
 				</fanCowl>
 			</nacelle>
 		</engine>
@@ -726,6 +738,31 @@
             </segments>
           </enginePylon>
         </enginePylons>
+		<engines>
+			<engine uID="SimpleEnginePositioning">
+				<description>SimpleEngine positioned relative to aircraft pylon</description>
+				<name>BuzzLightyear</name>
+				<engineUID>SimpleEngine</engineUID>
+				<parentUID>Pylon</parentUID>
+				<transformation uID="SimpleEngine_transformation">
+					<scaling uID="SimpleEngine_scale">
+						<x>1.</x>
+						<y>1.</y>
+						<z>1.</z>
+					</scaling>
+					<rotation uID="SimpleEngine_rotate">
+						<x>0.0</x>
+						<y>0.0</y>
+						<z>0.0</z>
+					</rotation>
+					<translation refType="absLocal" uID="SimpleEngine_translation">
+						<x>-0.1</x>
+						<y>0.0</y>
+						<z>-0.41</z>
+					</translation>
+				</transformation>
+			</engine>
+		</engines>
       </model>
     </aircraft>
     <profiles>
@@ -792,6 +829,15 @@
       </fuselageProfiles>
 	  <guideCurves>
 		<guideCurveProfile uID="fanCowlLeadingEdgeProfile">
+			<name>simpleguidecurve</name>
+			<description>simple guide curve for testing nacelle modelling</description>
+			<pointList>
+				<rX mapType="vector">0.25;0.5;0.75</rX>
+				<rY mapType="vector">-0.05;-0.05;-0.05</rY>
+				<rZ mapType="vector">0.25;-0.0;0.25</rZ>
+			</pointList>
+		</guideCurveProfile>
+		<guideCurveProfile uID="fanCowlTrailingEdgeProfile">
 			<name>simpleguidecurve</name>
 			<description>simple guide curve for testing nacelle modelling</description>
 			<pointList>

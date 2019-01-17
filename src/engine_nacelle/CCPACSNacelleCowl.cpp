@@ -55,7 +55,7 @@ namespace tigl
 
 CCPACSNacelleCowl::CCPACSNacelleCowl(CCPACSEngineNacelle* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSNacelleCowl(parent, uidMgr)
-    , CTiglRelativelyPositionedComponent(&m_parentUID, &m_transformation)
+    , CTiglAbstractGeometricComponent()
     , wireCache(*this, &CCPACSNacelleCowl::BuildOuterShapeWires)
 {}
 
@@ -137,8 +137,8 @@ void CCPACSNacelleCowl::BuildOuterShapeWires(WireCache& cache) const
                 }
                 params.toSection = &m_sections.GetSection(k);
 
-                CTiglTransformation trans = GetTransformationMatrix();
-                params.origin = CTiglPoint( trans.GetValue(0,3), trans.GetValue(1,3), trans.GetValue(2,3)  );
+//                CTiglTransformation trans = GetTransformationMatrix();
+//                params.origin = CTiglPoint( trans.GetValue(0,3), trans.GetValue(1,3), trans.GetValue(2,3)  );
 
                 CTiglNacelleGuideCurveBuilder gcbuilder(params);
                 std::pair<double,TopoDS_Wire> zetaGuidePair(params.fromZeta, gcbuilder.GetWire());
@@ -188,8 +188,9 @@ PNamedShape CCPACSNacelleCowl::BuildLoft() const
     shellBuilder.MakeShell(shell);
 
     // get nacelle origin
-    CTiglTransformation trans = GetTransformationMatrix();
-    gp_Pnt origin = gp_Pnt(trans.GetValue(0,3), trans.GetValue(1,3), trans.GetValue(2,3));
+//    CTiglTransformation trans = GetTransformationMatrix();
+//    gp_Pnt origin = gp_Pnt(trans.GetValue(0,3), trans.GetValue(1,3), trans.GetValue(2,3));
+    gp_Pnt origin(0., 0., 0.);
 
     // get shapes of nacelle cowls
     TopoDS_Shape outerShape    = BuildOuterShape();

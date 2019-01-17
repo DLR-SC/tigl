@@ -69,7 +69,6 @@ CPACSDriveSystems
 CPACSLandingGear
 
 // in rotorcraft and aircraft model
-CPACSEnginePositions
 CPACSSystems
 CPACSReference
 

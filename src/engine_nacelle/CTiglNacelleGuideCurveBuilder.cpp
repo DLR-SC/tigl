@@ -221,8 +221,8 @@ tigl::NacelleGuideCurveParameters GetGuideCurveParametersFromCPACS(const tigl::C
     params.toZeta = curve.GetToZeta();
 
     // get origin of nacelle cowl (inheritence: curve --> guidecurves --> nacelleCowl )
-    tigl::CTiglTransformation trans = curve.GetParent()->GetParent()->GetTransformationMatrix();
-    params.origin = tigl::CTiglPoint( trans.GetValue(0,3), trans.GetValue(1,3), trans.GetValue(2,3)  );
+//    tigl::CTiglTransformation trans = curve.GetParent()->GetParent()->GetTransformationMatrix();
+//    params.origin = tigl::CTiglPoint( trans.GetValue(0,3), trans.GetValue(1,3), trans.GetValue(2,3)  );
 
     return params;
 }

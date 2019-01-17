@@ -17,12 +17,9 @@
 
 #pragma once
 
-#include <boost/optional.hpp>
-#include <boost/utility/in_place_factory.hpp>
 #include <CCPACSNacelleGuideCurves.h>
 #include <CCPACSNacelleSections.h>
 #include <CCPACSRotationCurve.h>
-#include <CCPACSTransformation.h>
 #include <string>
 #include <tixi.h>
 #include "tigl_internal.h"
@@ -58,12 +55,6 @@ namespace generated
         TIGL_EXPORT virtual const std::string& GetUID() const;
         TIGL_EXPORT virtual void SetUID(const std::string& value);
 
-        TIGL_EXPORT virtual const CCPACSTransformation& GetTransformation() const;
-        TIGL_EXPORT virtual CCPACSTransformation& GetTransformation();
-
-        TIGL_EXPORT virtual const boost::optional<std::string>& GetParentUID() const;
-        TIGL_EXPORT virtual void SetParentUID(const boost::optional<std::string>& value);
-
         TIGL_EXPORT virtual const CCPACSNacelleSections& GetSections() const;
         TIGL_EXPORT virtual CCPACSNacelleSections& GetSections();
 
@@ -78,12 +69,10 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        std::string                  m_uID;
-        CCPACSTransformation         m_transformation;
-        boost::optional<std::string> m_parentUID;
-        CCPACSNacelleSections        m_sections;
-        CCPACSNacelleGuideCurves     m_guideCurves;
-        CCPACSRotationCurve          m_rotationCurve;
+        std::string              m_uID;
+        CCPACSNacelleSections    m_sections;
+        CCPACSNacelleGuideCurves m_guideCurves;
+        CCPACSRotationCurve      m_rotationCurve;
 
     private:
 #ifdef HAVE_CPP11

@@ -23,7 +23,7 @@ namespace tigl
 
 CCPACSEngineNacelle::CCPACSEngineNacelle(CTiglUIDManager* uidMgr)
     : generated::CPACSEngineNacelle(uidMgr)
-    , CTiglRelativelyPositionedComponent(&m_parentUID, &m_transformation)
+    , CTiglAbstractGeometricComponent()
 {}
 
 std::string CCPACSEngineNacelle::GetDefaultedUID() const

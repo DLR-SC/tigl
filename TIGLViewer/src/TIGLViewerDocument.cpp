@@ -719,6 +719,7 @@ void TIGLViewerDocument::drawConfiguration( )
     shapesToDraw.push_back(TIGL_COMPONENT_WING);
     shapesToDraw.push_back(TIGL_COMPONENT_ROTOR);
     shapesToDraw.push_back(TIGL_COMPONENT_ENGINE_PYLON);
+    shapesToDraw.push_back(TIGL_COMPONENT_ENGINE_NACELLE);
     shapesToDraw.push_back(TIGL_COMPONENT_EXTERNAL_OBJECT);
 
     try {

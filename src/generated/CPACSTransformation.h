@@ -35,13 +35,12 @@ class CTiglUIDManager;
 namespace generated
 {
     // This class is used in:
-    // CPACSEngineNacelle
+    // CPACSEnginePosition
     // CPACSEnginePylon
     // CPACSFuselage
     // CPACSFuselageElement
     // CPACSFuselageSection
     // CPACSGenericGeometricComponent
-    // CPACSNacelleCowl
     // CPACSRotor
     // CPACSRotorHubHinge
     // CPACSWing

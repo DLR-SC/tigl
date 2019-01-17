@@ -18,14 +18,14 @@
 #pragma once
 
 #include "generated/CPACSNacelleCowl.h"
-#include "CTiglRelativelyPositionedComponent.h"
+#include "CTiglAbstractGeometricComponent.h"
 #include "tigl_internal.h"
 #include "Geom_Curve.hxx"
 
 namespace tigl
 {
 
-class CCPACSNacelleCowl : public generated::CPACSNacelleCowl, public CTiglRelativelyPositionedComponent
+class CCPACSNacelleCowl : public generated::CPACSNacelleCowl, public CTiglAbstractGeometricComponent
 {
 public:
     // Constructor
@@ -35,6 +35,7 @@ public:
 
     TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE { return TIGL_COMPONENT_ENGINE_NACELLE; }
     TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const OVERRIDE { return TIGL_INTENT_PHYSICAL; }
+
 
 protected:
     virtual PNamedShape BuildLoft() const OVERRIDE;

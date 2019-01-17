@@ -28,7 +28,7 @@ namespace tigl
 namespace generated
 {
     // This enum is used in:
-    // CPACSEngineNacelle
+    // CPACSEnginePosition
     // CPACSEnginePylon
     // CPACSFuselage
     // CPACSGenericGeometricComponent
@@ -37,7 +37,7 @@ namespace generated
     // CPACSRotor
     // CPACSWing
 
-    // generated from /xsd:schema/xsd:complexType[311]/xsd:complexContent/xsd:extension/xsd:attribute[2]/xsd:simpleType
+    // generated from /xsd:schema/xsd:complexType[314]/xsd:complexContent/xsd:extension/xsd:attribute[2]/xsd:simpleType
     enum CPACSSymmetry
     {
         x_y_plane,

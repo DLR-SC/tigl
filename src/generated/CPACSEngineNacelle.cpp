@@ -27,7 +27,6 @@ namespace generated
 {
     CPACSEngineNacelle::CPACSEngineNacelle(CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
-        , m_transformation(m_uidMgr)
         , m_fanCowl(reinterpret_cast<CCPACSEngineNacelle*>(this), m_uidMgr)
     {
     }
@@ -60,27 +59,6 @@ namespace generated
             LOG(ERROR) << "Required attribute uID is missing at xpath " << xpath;
         }
 
-        // read attribute symmetry
-        if (tixi::TixiCheckAttribute(tixiHandle, xpath, "symmetry")) {
-            m_symmetry = stringToTiglSymmetryAxis(tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "symmetry"));
-        }
-
-        // read element parentUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/parentUID")) {
-            m_parentUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/parentUID");
-            if (m_parentUID->empty()) {
-                LOG(WARNING) << "Optional element parentUID is present but empty at xpath " << xpath;
-            }
-        }
-
-        // read element transformation
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/transformation")) {
-            m_transformation.ReadCPACS(tixiHandle, xpath + "/transformation");
-        }
-        else {
-            LOG(ERROR) << "Required element transformation is missing at xpath " << xpath;
-        }
-
         // read element fanCowl
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/fanCowl")) {
             m_fanCowl.ReadCPACS(tixiHandle, xpath + "/fanCowl");
@@ -107,31 +85,6 @@ namespace generated
     {
         // write attribute uID
         tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
-
-        // write attribute symmetry
-        if (m_symmetry) {
-            tixi::TixiSaveAttribute(tixiHandle, xpath, "symmetry", TiglSymmetryAxisToString(*m_symmetry));
-        }
-        else {
-            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "symmetry")) {
-                tixi::TixiRemoveAttribute(tixiHandle, xpath, "symmetry");
-            }
-        }
-
-        // write element parentUID
-        if (m_parentUID) {
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/parentUID");
-            tixi::TixiSaveElement(tixiHandle, xpath + "/parentUID", *m_parentUID);
-        }
-        else {
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/parentUID")) {
-                tixi::TixiRemoveElement(tixiHandle, xpath + "/parentUID");
-            }
-        }
-
-        // write element transformation
-        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/transformation");
-        m_transformation.WriteCPACS(tixiHandle, xpath + "/transformation");
 
         // write element fanCowl
         tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/fanCowl");
@@ -162,36 +115,6 @@ namespace generated
             m_uidMgr->RegisterObject(value, *this);
         }
         m_uID = value;
-    }
-
-    const boost::optional<TiglSymmetryAxis>& CPACSEngineNacelle::GetSymmetry() const
-    {
-        return m_symmetry;
-    }
-
-    void CPACSEngineNacelle::SetSymmetry(const boost::optional<TiglSymmetryAxis>& value)
-    {
-        m_symmetry = value;
-    }
-
-    const boost::optional<std::string>& CPACSEngineNacelle::GetParentUID() const
-    {
-        return m_parentUID;
-    }
-
-    void CPACSEngineNacelle::SetParentUID(const boost::optional<std::string>& value)
-    {
-        m_parentUID = value;
-    }
-
-    const CCPACSTransformation& CPACSEngineNacelle::GetTransformation() const
-    {
-        return m_transformation;
-    }
-
-    CCPACSTransformation& CPACSEngineNacelle::GetTransformation()
-    {
-        return m_transformation;
     }
 
     const CCPACSNacelleCowl& CPACSEngineNacelle::GetFanCowl() const

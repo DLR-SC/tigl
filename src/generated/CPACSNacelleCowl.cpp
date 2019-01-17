@@ -29,7 +29,6 @@ namespace generated
 {
     CPACSNacelleCowl::CPACSNacelleCowl(CCPACSEngineNacelle* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
-        , m_transformation(m_uidMgr)
         , m_sections(reinterpret_cast<CCPACSNacelleCowl*>(this), m_uidMgr)
         , m_guideCurves(reinterpret_cast<CCPACSNacelleCowl*>(this))
         , m_rotationCurve(m_uidMgr)
@@ -76,22 +75,6 @@ namespace generated
             LOG(ERROR) << "Required attribute uID is missing at xpath " << xpath;
         }
 
-        // read element transformation
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/transformation")) {
-            m_transformation.ReadCPACS(tixiHandle, xpath + "/transformation");
-        }
-        else {
-            LOG(ERROR) << "Required element transformation is missing at xpath " << xpath;
-        }
-
-        // read element parentUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/parentUID")) {
-            m_parentUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/parentUID");
-            if (m_parentUID->empty()) {
-                LOG(WARNING) << "Optional element parentUID is present but empty at xpath " << xpath;
-            }
-        }
-
         // read element sections
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/sections")) {
             m_sections.ReadCPACS(tixiHandle, xpath + "/sections");
@@ -124,21 +107,6 @@ namespace generated
         // write attribute uID
         tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
 
-        // write element transformation
-        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/transformation");
-        m_transformation.WriteCPACS(tixiHandle, xpath + "/transformation");
-
-        // write element parentUID
-        if (m_parentUID) {
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/parentUID");
-            tixi::TixiSaveElement(tixiHandle, xpath + "/parentUID", *m_parentUID);
-        }
-        else {
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/parentUID")) {
-                tixi::TixiRemoveElement(tixiHandle, xpath + "/parentUID");
-            }
-        }
-
         // write element sections
         tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/sections");
         m_sections.WriteCPACS(tixiHandle, xpath + "/sections");
@@ -165,26 +133,6 @@ namespace generated
             m_uidMgr->RegisterObject(value, *this);
         }
         m_uID = value;
-    }
-
-    const CCPACSTransformation& CPACSNacelleCowl::GetTransformation() const
-    {
-        return m_transformation;
-    }
-
-    CCPACSTransformation& CPACSNacelleCowl::GetTransformation()
-    {
-        return m_transformation;
-    }
-
-    const boost::optional<std::string>& CPACSNacelleCowl::GetParentUID() const
-    {
-        return m_parentUID;
-    }
-
-    void CPACSNacelleCowl::SetParentUID(const boost::optional<std::string>& value)
-    {
-        m_parentUID = value;
     }
 
     const CCPACSNacelleSections& CPACSNacelleCowl::GetSections() const

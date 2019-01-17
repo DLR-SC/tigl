@@ -105,8 +105,8 @@ TIGL_EXPORT CTiglTransformation CCPACSNacelleSection::GetTransformationMatrix() 
 
     // get transformation of nacelle and premultiply?
     // inheritence: ->sections->cowl->nacelle
-    CTiglTransformation nacelleTransform = GetParent()->GetParent()->GetTransformationMatrix();
-    out.PreMultiply(nacelleTransform);
+//    CTiglTransformation nacelleTransform = GetParent()->GetParent()->GetTransformationMatrix();
+//    out.PreMultiply(nacelleTransform);
 
     return out;
 }
