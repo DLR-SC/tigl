@@ -14,15 +14,6 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-/**
-* @file
-* @brief  A function that calculates the polar decomposition of a 3x3 matrix A.
-*
-* PolarDecomposition(A,U,P) calculates the polar decomposition U,P of the input
-* matrix A, such that A = U x P, where U is a unitary matrix and P is a positive
-* semi-definite Hermitian matrix. U can be interpreted as a rotation and P as a
-* spatial scaling, possibly including off-diaogonal shearing terms
-*/
 
 #pragma once
 
@@ -30,7 +21,6 @@
 
 namespace tigl
 {
-
 typedef math_Matrix tiglMatrix;
-
+typedef math_Vector tiglVector;
 }

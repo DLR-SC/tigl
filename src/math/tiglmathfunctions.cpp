@@ -367,7 +367,7 @@ void PolarDecomposition(tiglMatrix const&A, tiglMatrix& U, tiglMatrix& P)
 void SVD(tiglMatrix const& A, tiglMatrix& U, tiglMatrix& S, tiglMatrix& V)
 {
 
-    math_Vector Sv(1,3);
+    tiglVector Sv(1,3);
     U = A;
 
     SVD_Decompose(U, Sv, V);
