@@ -29,6 +29,10 @@
 #include <gp_Vec.hxx>
 #include <math_Matrix.hxx>
 
+#include "tiglMatrix.h"
+
+#include <math_Recipes.hxx>
+
 namespace tigl 
 {
 
@@ -343,6 +347,42 @@ math_Matrix monimial_to_bezier(int N)
     }
     
     return matrix;
+}
+
+void PolarDecomposition(tiglMatrix const&A, tiglMatrix& U, tiglMatrix& P)
+{
+    // calculate SVD
+    tiglMatrix u(1, 3, 1, 3);
+    tiglMatrix s(1, 3, 1, 3);
+    tiglMatrix v(1, 3, 1, 3);
+    SVD(A, u, s, v);
+
+    // U = uv*
+    U = u*v.Transposed();
+
+    // P = vsv*
+    P = v*s*v.Transposed();
+}
+
+void SVD(tiglMatrix const& A, tiglMatrix& U, tiglMatrix& S, tiglMatrix& V)
+{
+
+    math_Vector Sv(1,3);
+    U = A;
+
+    SVD_Decompose(U, Sv, V);
+
+    S(1,1) = Sv(1);
+    S(1,2) = 0.;
+    S(1,3) = 0.;
+
+    S(2,1) = 0.;
+    S(2,2) = Sv(2);
+    S(2,3) = 0.;
+
+    S(3,1) = 0.;
+    S(3,2) = 0.;
+    S(3,3) = Sv(3);
 }
 
 } // namespace tigl
