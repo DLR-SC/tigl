@@ -23,6 +23,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QUndoStack>
 
 #include "TIGLViewerContext.h"
 #include "TIGLViewerDocument.h"
@@ -131,6 +132,7 @@ private:
     class TIGLViewerSettingsDialog * settingsDialog;
     class TIGLViewerSettings * tiglViewerSettings;
     class QTimer * openTimer;
+    class QUndoStack* undoStack;
 
 };
 

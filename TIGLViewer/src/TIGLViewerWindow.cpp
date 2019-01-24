@@ -70,10 +70,12 @@ TIGLViewerWindow::TIGLViewerWindow()
 
     setTiglWindowTitle(QString("TiGL Viewer %1").arg(TIGL_MAJOR_VERSION));
 
+    undoStack = new QUndoStack(this);
+
     tiglViewerSettings = &TIGLViewerSettings::Instance();
     settingsDialog = new TIGLViewerSettingsDialog(*tiglViewerSettings, this);
 
-    myScene  = new TIGLViewerContext();
+    myScene  = new TIGLViewerContext(undoStack);
     myOCC->setContext(myScene);
 
     // we create a timer to workaround QFileSystemWatcher bug,
@@ -739,6 +741,15 @@ void TIGLViewerWindow::connectSignals()
     connect(console, SIGNAL(onCommand(QString)), scriptEngine, SLOT(eval(QString)));
 
     connect(settingsAction, SIGNAL(triggered()), this, SLOT(changeSettings()));
+
+    QAction* undoAction = undoStack->createUndoAction(this, tr("Undo"));
+    undoAction->setShortcuts(QKeySequence::Undo);
+    menuEdit->addAction(undoAction);
+
+    QAction* redoAction = undoStack->createRedoAction(this, tr("Redo"));
+    redoAction->setShortcuts(QKeySequence::Redo);
+    menuEdit->addAction(redoAction);
+
 }
 
 void TIGLViewerWindow::createMenus()
