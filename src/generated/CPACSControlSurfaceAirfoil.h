@@ -17,9 +17,9 @@
 
 #pragma once
 
+#include <CCPACSEtaIsoLine.h>
 #include <string>
 #include <tixi.h>
-#include "CPACSEtaIsoLine.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -53,8 +53,8 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const CPACSEtaIsoLine& GetEta() const;
-        TIGL_EXPORT virtual CPACSEtaIsoLine& GetEta();
+        TIGL_EXPORT virtual const CCPACSEtaIsoLine& GetEta() const;
+        TIGL_EXPORT virtual CCPACSEtaIsoLine& GetEta();
 
         TIGL_EXPORT virtual const std::string& GetAirfoilUID() const;
         TIGL_EXPORT virtual void SetAirfoilUID(const std::string& value);
@@ -75,30 +75,30 @@ namespace generated
         /// Relative spanwise coordinate (eta) of the
         /// control surface, where the leading edge of the airfoil is
         /// placed.
-        CPACSEtaIsoLine m_eta;
+        CCPACSEtaIsoLine m_eta;
 
         /// Reference to the airfoil uID.
-        std::string     m_airfoilUID;
+        std::string      m_airfoilUID;
 
         /// Rotation around an axis, going from the
         /// leading edge point to the trailing edge point of the control
         /// surface. Defaults to 90°, which is equivalent to perpendicular
         /// on the control surface middle plane.
-        double          m_rotX;
+        double           m_rotX;
 
         /// Rotation of the airfoil around the control
         /// surface middle plane normal direciotn. Reference point is the
         /// most forward point of the airfoil. Defaults to 90°, which is
         /// equivalent to the airfoilplacement in flight direction (along
         /// wings-x axis).
-        double          m_rotZ;
+        double           m_rotZ;
 
         /// Scaling of the airfoil in spanwise direction
         /// (not used for 2D airfoils).
-        double          m_scalY;
+        double           m_scalY;
 
         /// Scaling in thickness direction of the airfoil.
-        double          m_scalZ;
+        double           m_scalZ;
 
     private:
 #ifdef HAVE_CPP11

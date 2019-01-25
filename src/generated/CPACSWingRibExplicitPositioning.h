@@ -97,10 +97,5 @@ namespace generated
     };
 } // namespace generated
 
-// Aliases in tigl namespace
-#ifdef HAVE_CPP11
-using CCPACSWingRibExplicitPositioning = generated::CPACSWingRibExplicitPositioning;
-#else
-typedef generated::CPACSWingRibExplicitPositioning CCPACSWingRibExplicitPositioning;
-#endif
+// CPACSWingRibExplicitPositioning is customized, use type CCPACSWingRibExplicitPositioning directly
 } // namespace tigl

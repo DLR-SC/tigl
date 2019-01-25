@@ -25,9 +25,19 @@
 
 namespace tigl
 {
+class CCPACSWingCellPositionSpanwise;
+class CCPACSControlSurfaceBorderTrailingEdge;
+class CCPACSControlSurfaceSkinCutOutBorder;
+class CCPACSControlSurfaceTrackType;
+
 namespace generated
 {
+    class CPACSControlSurfaceAirfoil;
+    class CPACSCutOutProfile;
+    class CPACSSparCell;
+
     // This class is used in:
+    // CPACSCellPositioningSpanwise
     // CPACSControlSurfaceAirfoil
     // CPACSControlSurfaceBorderTrailingEdge
     // CPACSControlSurfaceSkinCutOutBorder
@@ -44,8 +54,45 @@ namespace generated
     class CPACSEtaIsoLine
     {
     public:
-        TIGL_EXPORT CPACSEtaIsoLine();
+        TIGL_EXPORT CPACSEtaIsoLine(CCPACSWingCellPositionSpanwise* parent);
+        TIGL_EXPORT CPACSEtaIsoLine(CPACSControlSurfaceAirfoil* parent);
+        TIGL_EXPORT CPACSEtaIsoLine(CCPACSControlSurfaceBorderTrailingEdge* parent);
+        TIGL_EXPORT CPACSEtaIsoLine(CCPACSControlSurfaceSkinCutOutBorder* parent);
+        TIGL_EXPORT CPACSEtaIsoLine(CCPACSControlSurfaceTrackType* parent);
+        TIGL_EXPORT CPACSEtaIsoLine(CPACSCutOutProfile* parent);
+        TIGL_EXPORT CPACSEtaIsoLine(CPACSSparCell* parent);
+
         TIGL_EXPORT virtual ~CPACSEtaIsoLine();
+
+        template<typename P>
+        bool IsParent() const
+        {
+            return m_parentType != NULL && *m_parentType == typeid(P);
+        }
+
+        template<typename P>
+        P* GetParent()
+        {
+#ifdef HAVE_STDIS_SAME
+            static_assert(std::is_same<P, CCPACSWingCellPositionSpanwise>::value || std::is_same<P, CPACSControlSurfaceAirfoil>::value || std::is_same<P, CCPACSControlSurfaceBorderTrailingEdge>::value || std::is_same<P, CCPACSControlSurfaceSkinCutOutBorder>::value || std::is_same<P, CCPACSControlSurfaceTrackType>::value || std::is_same<P, CPACSCutOutProfile>::value || std::is_same<P, CPACSSparCell>::value, "template argument for P is not a parent class of CPACSEtaIsoLine");
+#endif
+            if (!IsParent<P>()) {
+                throw CTiglError("bad parent");
+            }
+            return static_cast<P*>(m_parent);
+        }
+
+        template<typename P>
+        const P* GetParent() const
+        {
+#ifdef HAVE_STDIS_SAME
+            static_assert(std::is_same<P, CCPACSWingCellPositionSpanwise>::value || std::is_same<P, CPACSControlSurfaceAirfoil>::value || std::is_same<P, CCPACSControlSurfaceBorderTrailingEdge>::value || std::is_same<P, CCPACSControlSurfaceSkinCutOutBorder>::value || std::is_same<P, CCPACSControlSurfaceTrackType>::value || std::is_same<P, CPACSCutOutProfile>::value || std::is_same<P, CPACSSparCell>::value, "template argument for P is not a parent class of CPACSEtaIsoLine");
+#endif
+            if (!IsParent<P>()) {
+                throw CTiglError("bad parent");
+            }
+            return static_cast<P*>(m_parent);
+        }
 
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
@@ -57,6 +104,9 @@ namespace generated
         TIGL_EXPORT virtual void SetReferenceUID(const std::string& value);
 
     protected:
+        void* m_parent;
+        const std::type_info* m_parentType;
+
         /// Relative spanwise position. Eta refers to the segment or componentSegment depending on the referenced uID.
         double      m_eta;
 
@@ -80,10 +130,16 @@ namespace generated
     };
 } // namespace generated
 
+// CPACSEtaIsoLine is customized, use type CCPACSEtaIsoLine directly
+
 // Aliases in tigl namespace
 #ifdef HAVE_CPP11
-using CCPACSEtaIsoLine = generated::CPACSEtaIsoLine;
+using CCPACSControlSurfaceAirfoil = generated::CPACSControlSurfaceAirfoil;
+using CCPACSCutOutProfile = generated::CPACSCutOutProfile;
+using CCPACSSparCell = generated::CPACSSparCell;
 #else
-typedef generated::CPACSEtaIsoLine CCPACSEtaIsoLine;
+typedef generated::CPACSControlSurfaceAirfoil CCPACSControlSurfaceAirfoil;
+typedef generated::CPACSCutOutProfile CCPACSCutOutProfile;
+typedef generated::CPACSSparCell CCPACSSparCell;
 #endif
 } // namespace tigl

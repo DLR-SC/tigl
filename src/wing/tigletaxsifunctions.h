@@ -32,6 +32,9 @@ class CCPACSWingComponentSegment;
 class CCPACSWingRibsDefinition;
 class CCPACSWingSparSegment;
 class CTiglWingStructureReference;
+class CTiglUIDManager;
+class CCPACSEtaIsoLine;
+class CCPACSXsiIsoLine;
 
 /**
 * @brief Returns the chordline point of the section element at the passed xsi value
@@ -53,6 +56,15 @@ TIGL_EXPORT double computeRibEtaValue(const CTiglWingStructureReference& wsr, co
 */
 TIGL_EXPORT EtaXsi computeRibSparIntersectionEtaXsi(const CTiglWingStructureReference& wsr, const CCPACSWingRibsDefinition& rib, int ribIndex, const CCPACSWingSparSegment& spar);
 
+/**
+ * Following are routines, that transform e.g. segment eta/xsi coordinates into the CS system or into TED system
+ */
+TIGL_EXPORT double transformEtaToCSOrTed(const CCPACSEtaIsoLine& eta, const CTiglUIDManager& uidMgr);
+TIGL_EXPORT double transformXsiToCSOrTed(const CCPACSXsiIsoLine& xsi, const CTiglUIDManager& uidMgr);
+TIGL_EXPORT double transformEtaToCSOrTed(double eta, const std::string& referenceUid, const CTiglUIDManager& uidMgr);
+TIGL_EXPORT double transformXsiToCSOrTed(double xsi, const std::string& referenceUid, const CTiglUIDManager& uidMgr);
+
+TIGL_EXPORT EtaXsi transformEtaXsiToCSOrTed(EtaXsi etaXsi, const std::string& referenceUid, const CTiglUIDManager& uidMgr);
 
 }
 

@@ -27,6 +27,8 @@ CPACSPointListXYZVector            CCPACSPointListXYZ
 CPACSPointListRelXYZVector         CCPACSPointListRelXYZ
 CPACSGenericGeometricComponent     CCPACSExternalObject
 CPACSGenericGeometryComponents     CCPACSExternalObjects
+CPACSEtaIsoLine                    CCPACSEtaIsoLine
+CPACSXsiIsoLine                    CCPACSXsiIsoLine
 
 CPACSFuselage                      CCPACSFuselage
 CPACSFuselages                     CCPACSFuselages
@@ -49,6 +51,7 @@ CPACSWingRibCrossSection           CCPACSWingRibCrossSection
 CPACSRibRotation                   CCPACSWingRibRotation
 CPACSWingRibsDefinition            CCPACSWingRibsDefinition
 CPACSWingRibsDefinitions           CCPACSWingRibsDefinitions
+CPACSWingRibExplicitPositioning    CCPACSWingRibExplicitPositioning
 CPACSWingRibsPositioning           CCPACSWingRibsPositioning
 CPACSWingElement                   CCPACSWingSectionElement
 CPACSWingElements                  CCPACSWingSectionElements

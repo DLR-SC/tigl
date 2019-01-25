@@ -15,6 +15,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <cassert>
+#include "CCPACSControlSurfaceBorderTrailingEdge.h"
 #include "CPACSXsiIsoLine.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -24,13 +26,25 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSXsiIsoLine::CPACSXsiIsoLine()
+    CPACSXsiIsoLine::CPACSXsiIsoLine(CCPACSControlSurfaceBorderTrailingEdge* parent)
         : m_xsi(0)
     {
+        //assert(parent != NULL);
+        m_parent = parent;
     }
 
     CPACSXsiIsoLine::~CPACSXsiIsoLine()
     {
+    }
+
+    const CCPACSControlSurfaceBorderTrailingEdge* CPACSXsiIsoLine::GetParent() const
+    {
+        return m_parent;
+    }
+
+    CCPACSControlSurfaceBorderTrailingEdge* CPACSXsiIsoLine::GetParent()
+    {
+        return m_parent;
     }
 
     void CPACSXsiIsoLine::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)

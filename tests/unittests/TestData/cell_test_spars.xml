@@ -167,12 +167,24 @@
                           <xsi2>0.8</xsi2>
                         </positioningTrailingEdge>
                         <positioningInnerBorder>
-                          <eta1>0.0</eta1>
-                          <eta2>0.0</eta2>
+                          <eta1>
+                            <eta>0</eta>
+                            <referenceUID>CS1</referenceUID>
+                          </eta1>
+                          <eta2>
+                            <eta>0</eta>
+                            <referenceUID>CS1</referenceUID>
+                          </eta2>
                         </positioningInnerBorder>
                         <positioningOuterBorder>
-                          <eta1>0.1</eta1>
-                          <eta2>0.1</eta2>
+                          <eta1>
+                            <eta>0.1</eta>
+                            <referenceUID>CS1</referenceUID>
+                          </eta1>
+                          <eta2>
+                            <eta>0.1</eta>
+                            <referenceUID>CS1</referenceUID>
+                          </eta2>
                         </positioningOuterBorder>
                       </cell>
                       <cell uID="Wing_CS_upperShell_Cell2">
@@ -189,12 +201,24 @@
                           <xsi2>0.7</xsi2>
                         </positioningTrailingEdge>
                         <positioningInnerBorder>
-                          <eta1>0.3</eta1>
-                          <eta2>0.3</eta2>
+                          <eta1>
+                            <eta>0.3</eta>
+                            <referenceUID>CS1</referenceUID>
+                          </eta1>
+                          <eta2>
+                            <eta>0.3</eta>
+                            <referenceUID>CS1</referenceUID>
+                          </eta2>
                         </positioningInnerBorder>
                         <positioningOuterBorder>
-                          <eta1>0.4</eta1>
-                          <eta2>0.45</eta2>
+                          <eta1>
+                            <eta>0.4</eta>
+                            <referenceUID>CS1</referenceUID>
+                          </eta1>
+                          <eta2>
+                            <eta>0.45</eta>
+                            <referenceUID>CS1</referenceUID>
+                          </eta2>
                         </positioningOuterBorder>
                       </cell>
                       <cell uID="Wing_CS_upperShell_Cell3">
@@ -211,12 +235,24 @@
                           <xsi2>0.8</xsi2>
                         </positioningTrailingEdge>
                         <positioningInnerBorder>
-                          <eta1>0.2</eta1>
-                          <eta2>0.2</eta2>
+                          <eta1>
+                            <eta>0.2</eta>
+                            <referenceUID>CS1</referenceUID>
+                          </eta1>
+                          <eta2>
+                            <eta>0.2</eta>
+                            <referenceUID>CS1</referenceUID>
+                          </eta2>
                         </positioningInnerBorder>
                         <positioningOuterBorder>
-                          <eta1>0.55</eta1>
-                          <eta2>0.55</eta2>
+                          <eta1>
+                            <eta>0.55</eta>
+                            <referenceUID>CS1</referenceUID>
+                          </eta1>
+                          <eta2>
+                            <eta>0.55</eta>
+                            <referenceUID>CS1</referenceUID>
+                          </eta2>
                         </positioningOuterBorder>
                       </cell>
                       <cell uID="Wing_CS_upperShell_Cell4">
@@ -233,12 +269,24 @@
                           <xsi2>0.9</xsi2>
                         </positioningTrailingEdge>
                         <positioningInnerBorder>
-                          <eta1>0.15</eta1>
-                          <eta2>0.15</eta2>
+                          <eta1>
+                            <eta>0.15</eta>
+                            <referenceUID>CS1</referenceUID>
+                          </eta1>
+                          <eta2>
+                            <eta>0.15</eta>
+                            <referenceUID>CS1</referenceUID>
+                          </eta2>
                         </positioningInnerBorder>
                         <positioningOuterBorder>
-                          <eta1>0.95</eta1>
-                          <eta2>0.95</eta2>
+                          <eta1>
+                            <eta>0.95</eta>
+                            <referenceUID>CS1</referenceUID>
+                          </eta1>
+                          <eta2>
+                            <eta>0.95</eta>
+                            <referenceUID>CS1</referenceUID>
+                          </eta2>
                         </positioningOuterBorder>
                       </cell>
                       <cell uID="Wing_CS_upperShell_Cell5">
@@ -255,12 +303,24 @@
                           <xsi2>0.8</xsi2>
                         </positioningTrailingEdge>
                         <positioningInnerBorder>
-                          <eta1>0.75</eta1>
-                          <eta2>0.75</eta2>
+                          <eta1>
+                            <eta>0.75</eta>
+                            <referenceUID>CS1</referenceUID>
+                          </eta1>
+                          <eta2>
+                            <eta>0.75</eta>
+                            <referenceUID>CS1</referenceUID>
+                          </eta2>
                         </positioningInnerBorder>
                         <positioningOuterBorder>
-                          <eta1>0.95</eta1>
-                          <eta2>0.9</eta2>
+                          <eta1>
+                            <eta>0.95</eta>
+                            <referenceUID>CS1</referenceUID>
+                          </eta1>
+                          <eta2>
+                            <eta>0.9</eta>
+                            <referenceUID>CS1</referenceUID>
+                          </eta2>
                         </positioningOuterBorder>
                       </cell>
                       <cell uID="Wing_CS_upperShell_Cell6">
@@ -277,12 +337,24 @@
                           <xsi2>0.7</xsi2>
                         </positioningTrailingEdge>
                         <positioningInnerBorder>
-                          <eta1>0.9</eta1>
-                          <eta2>0.9</eta2>
+                          <eta1>
+                            <eta>0.9</eta>
+                            <referenceUID>CS1</referenceUID>
+                          </eta1>
+                          <eta2>
+                            <eta>0.9</eta>
+                            <referenceUID>CS1</referenceUID>
+                          </eta2>
                         </positioningInnerBorder>
                         <positioningOuterBorder>
-                          <eta1>1.0</eta1>
-                          <eta2>1.0</eta2>
+                          <eta1>
+                            <eta>1</eta>
+                            <referenceUID>CS1</referenceUID>
+                          </eta1>
+                          <eta2>
+                            <eta>1</eta>
+                            <referenceUID>CS1</referenceUID>
+                          </eta2>
                         </positioningOuterBorder>
                       </cell>
                     </cells>

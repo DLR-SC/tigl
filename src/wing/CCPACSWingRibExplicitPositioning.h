@@ -1,4 +1,4 @@
-/* 
+/*
 * Copyright (C) 2016 Airbus Defence and Space
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,23 +13,22 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-#ifndef CCPACSWINGRIBROTATION_H
-#define CCPACSWINGRIBROTATION_H
 
-#include "generated/CPACSRibRotation.h"
+#pragma once
+
+#include "generated/CPACSWingRibExplicitPositioning.h"
 
 namespace tigl
 {
-class CCPACSWingRibRotation : public generated::CPACSRibRotation
+class CCPACSWingRibExplicitPositioning : public generated::CPACSWingRibExplicitPositioning
 {
 public:
-    TIGL_EXPORT CCPACSWingRibRotation(CCPACSWingRibsPositioning* parent);
+    TIGL_EXPORT CCPACSWingRibExplicitPositioning(CCPACSWingRibsDefinition* parent);
 
-    TIGL_EXPORT void SetRibRotationReference(const boost::optional<std::string>& value) OVERRIDE;
-
-    TIGL_EXPORT void SetZ(const double& value) OVERRIDE;
+    TIGL_EXPORT void SetStartReference(const std::string&);
+    TIGL_EXPORT void SetEndReference(const std::string&);
+    TIGL_EXPORT void SetStartEta(double eta);
+    TIGL_EXPORT void SetEndEta(double eta);
+    TIGL_EXPORT void Invalidate();
 };
-
-} // end namespace tigl
-
-#endif // CCPACSWINGRIBROTATION_H
+}

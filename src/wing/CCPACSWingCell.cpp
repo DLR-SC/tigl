@@ -259,7 +259,7 @@ EtaXsi CCPACSWingCell::GetTrailingEdgeOuterPoint() const
 
 void CCPACSWingCell::SetLeadingEdgeInnerPoint(double eta1, double xsi1)
 {
-    m_positioningInnerBorder.SetEta1_choice1(eta1);
+    m_positioningInnerBorder.SetEta1(eta1);
     m_positioningLeadingEdge.SetXsi1(xsi1);
 }
 
