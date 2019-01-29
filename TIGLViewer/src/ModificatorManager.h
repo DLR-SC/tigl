@@ -26,7 +26,8 @@
 #include "ModificatorTransformationWidget.h"
 #include "ModificatorWidget.h"
 #include "ModificatorWingWidget.h"
-#include "CreatorWidget.h"
+#include "EditorWidget.h"
+#include "CPACSTreeWidget.h"
 #include <QPushButton>
 
 class TIGLViewerWindow;
@@ -45,7 +46,7 @@ public slots:
     void applyCurrentCancellation();
 
 public:
-    ModificatorManager(CreatorWidget* creatorWidget);
+    ModificatorManager(CPACSTreeWidget* treeWidget, EditorWidget*  editorWidget);
 
     void setCPACSConfiguration(tigl::CCPACSConfiguration* newConfig);
 
@@ -70,6 +71,9 @@ private:
     ModificatorFuselageWidget* fuselageModificator;
 
     ModificatorWidget* currentModificator;
+
+    // info for the user
+    QWidget* noInterfaceWidget;
 
     // cancel/apply interface
     QWidget* widgetApply;

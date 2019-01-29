@@ -19,22 +19,24 @@
 #include "ModificatorManager.h"
 #include "CTiglUIDManager.h"
 
-ModificatorManager::ModificatorManager(CreatorWidget* creatorWidget)
+ModificatorManager::ModificatorManager(CPACSTreeWidget* treeWidget, EditorWidget*  editorWidget)
 {
 
     currentModificator = nullptr;
     config             = nullptr;
-    treeViewManager    = new CPACSTreeView(creatorWidget->getQTreeView());
+    treeViewManager    = new CPACSTreeView(treeWidget->getQTreeView());
 
-    this->widgetApply  = creatorWidget->getApplyWidget() ;
+    this->widgetApply  = editorWidget->getApplyWidget() ;
     this->commitButton = widgetApply->findChild<QPushButton*>("commitButton");
     this->cancelButton = widgetApply->findChild<QPushButton*>("cancelButton");
 
-    this->transformationModificator = creatorWidget->getTransformationWidget();
-    this->wingModificator           = creatorWidget->getWingWidget();
-    this->fuselageModificator       = creatorWidget->getFuselageWidget();
+    this->transformationModificator = editorWidget->getTransformationWidget();
+    this->wingModificator           = editorWidget->getWingWidget();
+    this->fuselageModificator       = editorWidget->getFuselageWidget();
+    this->noInterfaceWidget         = editorWidget->getNoInterfaceWidget();
 
     this->hideAll();
+    this->noInterfaceWidget->setVisible(true);
 
     // signals:
     connect(treeViewManager, SIGNAL(newSelectedTreeItem(cpcr::CPACSTreeItem*)), this,
@@ -54,11 +56,13 @@ void ModificatorManager::setCPACSConfiguration(tigl::CCPACSConfiguration* newCon
         treeViewManager->displayNewTree(newConfig->GetTixiDocumentHandle(), rootXPath);
         currentModificator = nullptr;
         hideAll();
+        noInterfaceWidget->setVisible(true);
     }
     else {
         currentModificator = nullptr;
-        hideAll();
         treeViewManager->clear();
+        hideAll();
+        noInterfaceWidget->setVisible(true);
     }
 }
 
@@ -112,6 +116,7 @@ void ModificatorManager::dispatch(cpcr::CPACSTreeItem* item)
     else {
         currentModificator = nullptr;
         hideAll();
+        noInterfaceWidget->setVisible(true);
         LOG(INFO) << "MODIFICATOR MANAGER: item not suported";
     }
 }
@@ -123,6 +128,7 @@ void ModificatorManager::hideAll()
     wingModificator->setVisible(visible);
     fuselageModificator->setVisible(visible);
     widgetApply->setVisible(visible);
+    noInterfaceWidget->setVisible(visible);
 }
 
 void ModificatorManager::setFuselageModificator(cpcr::CPACSTreeItem* item)
