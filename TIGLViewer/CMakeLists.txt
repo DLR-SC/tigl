@@ -100,6 +100,18 @@ set(tv_src
   src/TIGLViewerUndoCommands.cpp
   src/TIGLInteractiveShapeManager.cpp
   src/TIGLViewerSelectWingAndFlapStatusDialog.cpp
+  # files for CPACSCreator
+  src/ModificatorWidget.cpp
+  src/ModificatorFuselageWidget.cpp
+  src/ModificatorTransformationWidget.cpp
+  src/ModificatorWingWidget.cpp
+  src/ModificatorManager.cpp
+  src/CPACSTreeView.cpp
+  src/CPACSAbstractModel.cpp
+  src/CPACSTreeItem.cpp
+  src/CPACSTree.cpp
+  src/XPathParser.cpp
+  src/TIGLViewerException.cpp
 )
 	
 # header files
@@ -143,6 +155,18 @@ set(tv_hdr
   src/TIGLGeometryChoserDialog.h
   src/TIGLInteractiveShapeManager.h
   src/TIGLViewerSelectWingAndFlapStatusDialog.h
+  # files for CPACSCreator
+  src/CPACSTreeItem.h
+  src/CPACSTree.h
+  src/XPathParser.h
+  src/TIGLViewerException.h
+  src/ModificatorWidget.h
+  src/ModificatorFuselageWidget.h
+  src/ModificatorTransformationWidget.h
+  src/ModificatorWingWidget.h
+  src/ModificatorManager.h
+  src/CPACSAbstractModel.h
+  src/CPACSTreeView.h
 )
 
 set(tv_ui

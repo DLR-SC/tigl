@@ -24,13 +24,14 @@
 
 #include <QMainWindow>
 #include <QUndoStack>
-
 #include "TIGLViewerContext.h"
 #include "TIGLViewerDocument.h"
 #include "tigl.h"
 #include "CSharedPtr.h"
 
 #include "ui_TIGLViewerWindow.h"
+
+#include "ModificatorManager.h"
 
 class QAction;
 class QLabel;
@@ -82,6 +83,9 @@ public slots:
     TIGLViewerContext*  getScene() { return myScene; }
     TIGLViewerSettings*  getViewerSettings() { return tiglViewerSettings; }
     TIGLViewerDocument* getDocument() { return cpacsConfiguration; }
+
+    //update function for modificator
+    void updateScene();
 
 private slots:
     void updateMenus();
@@ -138,6 +142,8 @@ private:
     class QUndoStack* undoStack;
 
     bool suppressErrors{false};
+
+    ModificatorManager* modificatorManager;
 
 };
 

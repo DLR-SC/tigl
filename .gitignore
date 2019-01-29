@@ -7,3 +7,6 @@ examples/python_internal/.idea/
 *.patch
 /.vs
 *CrashInfo*
+.idea
+*.txt.user
+
