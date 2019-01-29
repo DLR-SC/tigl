@@ -76,6 +76,7 @@ TIGLViewerWindow::TIGLViewerWindow()
     settingsDialog = new TIGLViewerSettingsDialog(*tiglViewerSettings, this);
 
     myScene  = new TIGLViewerContext(undoStack);
+
     myOCC->setContext(myScene);
 
     // we create a timer to workaround QFileSystemWatcher bug,
@@ -93,6 +94,7 @@ TIGLViewerWindow::TIGLViewerWindow()
     stdoutStream = new QDebugStream(std::cout);
     errorStream  = new QDebugStream(std::cerr);
     errorStream->setMarkup("<b><font color=\"red\">","</font></b>");
+
 
     // insert two loggers, one for the log history and one for the console
     CSharedPtr<tigl::CTiglLogSplitter> splitter(new tigl::CTiglLogSplitter);
@@ -114,8 +116,19 @@ TIGLViewerWindow::TIGLViewerWindow()
 
     //cpacsConfiguration = new TIGLViewerDocument(this);
     scriptEngine = new TIGLScriptEngine(this);
-    
+
     setAcceptDrops(true);
+
+    // creator init
+    fuselageModificator->init();
+    transforamtionModificator->init();
+    wingModificator->init();
+    modificatorManager = new ModificatorManager(treeView,
+                                                widgetApply,
+                                                transforamtionModificator,
+                                                wingModificator,
+                                                fuselageModificator);
+
 
     connectSignals();
     createMenus();
@@ -126,7 +139,10 @@ TIGLViewerWindow::TIGLViewerWindow()
     statusBar()->showMessage(tr("A context menu is available by right-clicking"));
 
     setMinimumSize(160, 160);
+
+
 }
+
 
 TIGLViewerWindow::~TIGLViewerWindow()
 {
@@ -235,6 +251,7 @@ void TIGLViewerWindow::openScript(const QString& fileName)
 
 void TIGLViewerWindow::closeConfiguration()
 {
+    modificatorManager->setCPACSConfiguration(nullptr); // it will also reset the treeview
     if (cpacsConfiguration) {
         getScene()->deleteAllObjects();
         delete cpacsConfiguration;
@@ -289,7 +306,9 @@ void TIGLViewerWindow::openFile(const QString& fileName)
             }
             delete cpacsConfiguration;
             cpacsConfiguration = config;
-            
+
+            modificatorManager->setCPACSConfiguration(&(cpacsConfiguration->GetConfiguration()));
+
             connectConfiguration();
             updateMenus();
             success = true;
@@ -378,11 +397,14 @@ void TIGLViewerWindow::loadSettings()
     QSettings settings("DLR SC-HPC", "TiGLViewer3");
 
     bool showConsole = settings.value("show_console",QVariant(true)).toBool();
-
+    bool showCreator = settings.value("show_creator",QVariant(true)).toBool();
     restoreGeometry(settings.value("MainWindowGeom").toByteArray());
     restoreState(settings.value("MainWindowState").toByteArray());
     consoleDockWidget->setVisible(showConsole);
     showConsoleAction->setChecked(showConsole);
+
+    creatorDockWidget->setVisible(showCreator);
+    showCreatorAction->setChecked(showCreator);
 
     tiglViewerSettings->loadSettings();
     settingsDialog->updateEntries();
@@ -395,6 +417,9 @@ void TIGLViewerWindow::saveSettings()
 
     bool showConsole = consoleDockWidget->isVisible();
     settings.setValue("show_console", showConsole);
+
+    bool showCreator = creatorDockWidget->isVisible();
+    settings.setValue("show_creator", showCreator);
 
     settings.setValue("MainWindowGeom", saveGeometry());
     settings.setValue("MainWindowState", saveState());
@@ -710,6 +735,14 @@ void TIGLViewerWindow::connectSignals()
     connect(viewZoomOutAction, SIGNAL(triggered()), myOCC, SLOT(zoomOut()));
     connect(showConsoleAction, SIGNAL(toggled(bool)), consoleDockWidget, SLOT(setVisible(bool)));
     connect(consoleDockWidget, SIGNAL(visibilityChanged(bool)), showConsoleAction, SLOT(setChecked(bool)));
+
+    // Addition for creator
+
+    // modificatorManager will emit a configurationEdited when he modifie the tigl configuration
+    connect(modificatorManager, SIGNAL(configurationEdited()), this, SLOT(updateScene()));
+    connect(showCreatorAction, SIGNAL(toggled(bool)), creatorDockWidget, SLOT(setVisible(bool)));
+    connect(creatorDockWidget, SIGNAL(visibilityChanged(bool)), showCreatorAction, SLOT(setChecked(bool)));
+
     connect(showWireframeAction, SIGNAL(toggled(bool)), myScene, SLOT(wireFrame(bool)));
 #if OCC_VERSION_HEX >= VERSION_HEX_CODE(6,7,0)
     connect(showReflectionLinesAction, SIGNAL(toggled(bool)), myScene, SLOT(setReflectionlinesEnabled(bool)));
@@ -749,7 +782,6 @@ void TIGLViewerWindow::connectSignals()
     QAction* redoAction = undoStack->createRedoAction(this, tr("Redo"));
     redoAction->setShortcuts(QKeySequence::Redo);
     menuEdit->addAction(redoAction);
-
 }
 
 void TIGLViewerWindow::createMenus()
@@ -906,6 +938,13 @@ void TIGLViewerWindow::drawVector()
     stream << "(" << point.X() << ", " << point.Y() << ", " << point.Z() << ")";
     getScene()->displayVector(point, dir, stream.str().c_str(), Standard_True, 0,0,0, 1.);
 }
+
+
+void TIGLViewerWindow::updateScene() {
+    myScene->deleteAllObjects();
+    cpacsConfiguration->drawConfiguration();
+}
+
 
 /// This function is copied from QtCoreLib (>5.1)
 /// and is not available in qt4

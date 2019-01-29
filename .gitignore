@@ -6,3 +6,8 @@ examples/python_internal/.idea/
 .vscode
 *.patch
 /.vs
+.idea
+/cmake-build-debug
+*.txt.user
+filefilter.txt
+
