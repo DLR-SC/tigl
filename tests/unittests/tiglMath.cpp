@@ -23,7 +23,8 @@
 #include "CTiglPoint.h"
 #include "CTiglTransformation.h"
 
-#include <math_Matrix.hxx>
+#include "CCPACSTransformation.h"
+
 
 TEST(TiglMath, factorial)
 {
@@ -338,4 +339,100 @@ TEST(TiglMath, CTiglTransformation_Multiply)
     EXPECT_NEAR(0.0, c.GetValue(3, 1), 1e-10);
     EXPECT_NEAR(0.0, c.GetValue(3, 2), 1e-10);
     EXPECT_NEAR(1.0, c.GetValue(3, 3), 1e-10);
+}
+
+TEST(TiglMath, CTiglTransform_Decompose)
+{
+    // trivial test
+    tigl::CTiglTransformation transformation;
+
+    double S[3] = {0., 0., 0.};
+    double R[3] = {0., 0., 0.};
+    double T[3] = {0., 0., 0.};
+    transformation.Decompose(S, R, T);
+
+    EXPECT_NEAR(S[0], 1., 1e-8);
+    EXPECT_NEAR(S[0], 1., 1e-8);
+    EXPECT_NEAR(S[0], 1., 1e-8);
+    EXPECT_NEAR(R[0], 0., 1e-8);
+    EXPECT_NEAR(R[0], 0., 1e-8);
+    EXPECT_NEAR(R[0], 0., 1e-8);
+    EXPECT_NEAR(T[0], 0., 1e-8);
+    EXPECT_NEAR(T[0], 0., 1e-8);
+    EXPECT_NEAR(T[0], 0., 1e-8);
+}
+
+TEST(TiglMath, CTiglTransform_setTransformationMatrix)
+{
+    double scale[3] = {2., 4., 8.};
+    double rot[3]   = {50., 70., 10.};
+    double trans[3] = {1., 2., 3.};
+
+    // create CPACS-conform tigl-transformation (i.e. scaling -> euler-xyz-Rotation -> translation)
+    tigl::CTiglTransformation tiglTrafo;
+    tiglTrafo.AddScaling(scale[0], scale[1], scale[2]);
+    tiglTrafo.AddRotationX(rot[0]);
+    tiglTrafo.AddRotationY(rot[1]);
+    tiglTrafo.AddRotationZ(rot[2]);
+    tiglTrafo.AddTranslation(trans[0], trans[1], trans[2]);
+
+    tigl::CCPACSTransformation cpacsTrafo(NULL);
+    cpacsTrafo.setTransformationMatrix(tiglTrafo);
+
+    EXPECT_NEAR(*cpacsTrafo.GetScaling()->GetX(), scale[0], 1e-8);
+    EXPECT_NEAR(*cpacsTrafo.GetScaling()->GetY(), scale[1], 1e-8);
+    EXPECT_NEAR(*cpacsTrafo.GetScaling()->GetZ(), scale[2], 1e-8);
+
+    EXPECT_NEAR(*cpacsTrafo.GetRotation()->GetX(), rot[0], 1e-8);
+    EXPECT_NEAR(*cpacsTrafo.GetRotation()->GetY(), rot[1], 1e-8);
+    EXPECT_NEAR(*cpacsTrafo.GetRotation()->GetZ(), rot[2], 1e-8);
+
+    EXPECT_NEAR(*cpacsTrafo.GetTranslation()->GetX(), trans[0], 1e-8);
+    EXPECT_NEAR(*cpacsTrafo.GetTranslation()->GetY(), trans[1], 1e-8);
+    EXPECT_NEAR(*cpacsTrafo.GetTranslation()->GetZ(), trans[2], 1e-8);
+}
+
+TEST(TiglMath, SVD)
+{
+    tigl::tiglMatrix A(1, 3, 1, 3);
+    tigl::tiglMatrix U(1, 3, 1, 3);
+    tigl::tiglMatrix S(1, 3, 1, 3);
+    tigl::tiglMatrix V(1, 3, 1, 3);
+    tigl::tiglMatrix USVt(1, 3, 1, 3);
+
+    // trivial test
+    A(1,1)=1.; A(1,2) = 0.; A(1,3) = 0.;
+    A(2,1)=0.; A(2,2) = 1.; A(2,3) = 0.;
+    A(3,1)=0.; A(3,2) = 0.; A(3,3) = 1.;
+
+    tigl::SVD(A, U, S, V);
+    USVt = U*S*V.Transposed();
+    EXPECT_NEAR(USVt(1,1), A(1,1), 1e-8);
+    EXPECT_NEAR(USVt(1,2), A(1,2), 1e-8);
+    EXPECT_NEAR(USVt(1,3), A(1,3), 1e-8);
+    EXPECT_NEAR(USVt(2,1), A(2,1), 1e-8);
+    EXPECT_NEAR(USVt(2,2), A(2,2), 1e-8);
+    EXPECT_NEAR(USVt(2,3), A(2,3), 1e-8);
+    EXPECT_NEAR(USVt(3,1), A(3,1), 1e-8);
+    EXPECT_NEAR(USVt(3,2), A(3,2), 1e-8);
+    EXPECT_NEAR(USVt(3,3), A(3,3), 1e-8);
+
+    // nontrivial test
+    A(1,1)=1.; A(1,2) = 2.; A(1,3) = 3.;
+    A(2,1)=4.; A(2,2) = 5.; A(2,3) = 6.;
+    A(3,1)=7.; A(3,2) = 8.; A(3,3) = 9.;
+
+    tigl::SVD(A, U, S, V);
+    USVt = U*S*V.Transposed();
+    EXPECT_NEAR(USVt(1,1), A(1,1), 1e-8);
+    EXPECT_NEAR(USVt(1,2), A(1,2), 1e-8);
+    EXPECT_NEAR(USVt(1,3), A(1,3), 1e-8);
+    EXPECT_NEAR(USVt(2,1), A(2,1), 1e-8);
+    EXPECT_NEAR(USVt(2,2), A(2,2), 1e-8);
+    EXPECT_NEAR(USVt(2,3), A(2,3), 1e-8);
+    EXPECT_NEAR(USVt(3,1), A(3,1), 1e-8);
+    EXPECT_NEAR(USVt(3,2), A(3,2), 1e-8);
+    EXPECT_NEAR(USVt(3,3), A(3,3), 1e-8);
+
+
 }

@@ -27,6 +27,8 @@
 #include "gp_XYZ.hxx"
 #include "Standard_Version.hxx"
 
+#include "tiglmathfunctions.h"
+
 namespace tigl 
 {
 
@@ -510,6 +512,60 @@ bool CTiglTransformation::IsUniform() const
 CTiglTransformation CTiglTransformation::Inverted() const
 {
     return Get_gp_GTrsf().Inverted();
+}
+
+void CTiglTransformation::Decompose(double scale[3], double rotation[3], double translation[3]) const
+{
+    // compute polar decomposition of upper 3x3 part
+    tiglMatrix A(1, 3, 1, 3);
+    tiglMatrix P(1, 3, 1, 3);
+    tiglMatrix U(1, 3, 1, 3);
+    for( int i=0; i<3; ++i) {
+        for ( int j=0; j<3; ++j) {
+            A(i+1,j+1)= GetValue(i,j);
+        }
+    }
+    PolarDecomposition(A, U, P);
+
+    // scale is diagonal of P
+    scale[0] = P(1,1);
+    scale[1] = P(2,2);
+    scale[2] = P(3,3);
+
+    // check for shearing
+    double aveAbsOffDiag = (fabs(P(1,2)) + fabs(P(1,3)) + fabs(P(2,3)))/3;
+    if (aveAbsOffDiag > Precision::Confusion() ) {
+        LOG(WARNING) << "CTiglTransformation::Decompose: The Transformation contains a Shearing, that will be discarded in the decomposition!";
+    }
+
+    // calculate extrinsic Euler angles from rotation matrix U
+    // This implementation is based on http://www.gregslabaugh.net/publications/euler.pdf
+    if( fabs( fabs(U(3,1)) - 1) > 1e-10 ){
+        rotation[1] = -asin(U(3,1));
+        double cosTheta = cos(rotation[1]);
+        rotation[0] = atan2(U(3,2)/cosTheta, U(3,3)/cosTheta);
+        rotation[2] = atan2(U(2,1)/cosTheta, U(1,1)/cosTheta);
+    }
+    else {
+        if ( fabs(U(3,1) + 1) > 1e-10 ) {
+            rotation[0] = rotation[2] + atan2(U(1,2), U(1,3));
+            rotation[1] = M_PI/2;
+        }
+        else{
+            rotation[0] = -rotation[2] + atan2(-U(1,2), -U(1,3));
+            rotation[1] = -M_PI/2;
+        }
+    }
+
+    rotation[0] = RadianToDegree(rotation[0]);
+    rotation[1] = RadianToDegree(rotation[1]);
+    rotation[2] = RadianToDegree(rotation[2]);
+
+    // translation is last column of transformation
+    translation[0] = GetValue(0,3);
+    translation[1] = GetValue(1,3);
+    translation[2] = GetValue(2,3);
+
 }
 
 // Getter for matrix values
