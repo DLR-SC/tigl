@@ -32,7 +32,6 @@
 #include "generated/CPACSHeader.h"
 #include "CCPACSWings.h"
 #include "CCPACSRotors.h"
-#include "CCPACSEngines.h"
 #include "CCPACSFuselages.h"
 #include "CCPACSACSystems.h"
 #include "CCPACSFarField.h"
@@ -162,10 +161,6 @@ public:
     TIGL_EXPORT boost::optional<CCPACSEnginePylons>& GetEnginePylons();
     TIGL_EXPORT const boost::optional<CCPACSEnginePylons>& GetEnginePylons() const;
 
-    // Returns list of engines
-    TIGL_EXPORT boost::optional<CCPACSEngines>& GetEngines();
-    TIGL_EXPORT const boost::optional<CCPACSEngines>& GetEngines() const;
-
     // Returns the farfield
     TIGL_EXPORT CCPACSFarField& GetFarField();
 
@@ -221,7 +216,6 @@ private:
     CTiglUIDManager                        uidManager;           /**< Stores the unique ids of the components. */ // list as first member, has to be created first and destroyed last
     boost::optional<CCPACSAircraftModel>   aircraftModel;
     boost::optional<CCPACSRotorcraftModel> rotorcraftModel;
-    boost::optional<CCPACSEngines>         engines;
     boost::optional<CCPACSProfiles>        profiles;             /**< Wing airfoils, fuselage profiles, rotor airfoils, guide curve profiles */
     TixiDocumentHandle                     tixiDocumentHandle;   /**< Handle for internal TixiDocument */
     CCPACSHeader                           header;               /**< Configuration header element */
