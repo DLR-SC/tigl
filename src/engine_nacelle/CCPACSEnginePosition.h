@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2018 German Aerospace Center (DLR/SC)
 *
-* Created: 2018-11-22 Jan Kleinert <jan.kleinert@dlr.de>
+* Created: 2019-01-31 Jan Kleinert <jan.kleinert@dlr.de>
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
@@ -17,26 +17,28 @@
 
 #pragma once
 
-#include "generated/CPACSEngineNacelle.h"
-#include "CTiglAbstractGeometricComponent.h"
-#include "tigl_internal.h"
+#include "generated/CPACSEnginePosition.h"
+#include "CTiglRelativelyPositionedComponent.h"
 
-namespace tigl
-{
+namespace tigl {
 
-class CCPACSEngineNacelle : public generated::CPACSEngineNacelle, public CTiglAbstractGeometricComponent
+class CCPACSEnginePosition : public generated::CPACSEnginePosition, public CTiglRelativelyPositionedComponent
 {
 public:
-    // Constructor
-    TIGL_EXPORT CCPACSEngineNacelle(CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSEnginePosition(CCPACSEnginePositions* parent, CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT std::string GetDefaultedUID() const OVERRIDE;
 
     TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE { return TIGL_COMPONENT_ENGINE_NACELLE; }
     TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const OVERRIDE { return TIGL_INTENT_PHYSICAL; }
 
+    TIGL_EXPORT void Invalidate();
+
+    TIGL_EXPORT bool HasLoft() const;
+
 protected:
     virtual PNamedShape BuildLoft() const OVERRIDE;
+
 };
 
-} //namespae tigl
+} // namespace tigl

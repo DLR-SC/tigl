@@ -16,7 +16,7 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CCPACSEngineNacelle.h"
+#include "CPACSEngineNacelle.h"
 #include "CPACSNacelleCowl.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -27,7 +27,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSNacelleCowl::CPACSNacelleCowl(CCPACSEngineNacelle* parent, CTiglUIDManager* uidMgr)
+    CPACSNacelleCowl::CPACSNacelleCowl(CPACSEngineNacelle* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
         , m_sections(reinterpret_cast<CCPACSNacelleCowl*>(this), m_uidMgr)
         , m_guideCurves(reinterpret_cast<CCPACSNacelleCowl*>(this))
@@ -42,12 +42,12 @@ namespace generated
         if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
     }
 
-    const CCPACSEngineNacelle* CPACSNacelleCowl::GetParent() const
+    const CPACSEngineNacelle* CPACSNacelleCowl::GetParent() const
     {
         return m_parent;
     }
 
-    CCPACSEngineNacelle* CPACSNacelleCowl::GetParent()
+    CPACSEngineNacelle* CPACSNacelleCowl::GetParent()
     {
         return m_parent;
     }

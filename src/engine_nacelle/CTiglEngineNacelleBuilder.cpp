@@ -20,6 +20,7 @@
 #include "CNamedShape.h"
 #include "TopoDS_Compound.hxx"
 #include "TopoDS_Builder.hxx"
+#include "BRepBuilderAPI_Transform.hxx"
 
 namespace tigl {
 
@@ -27,23 +28,42 @@ CTiglEngineNacelleBuilder::CTiglEngineNacelleBuilder(const CCPACSEngineNacelle& 
     : m_nacelle(nacelle)
 {};
 
+CTiglEngineNacelleBuilder::CTiglEngineNacelleBuilder(const CCPACSEngineNacelle& nacelle, const CTiglTransformation& transformation)
+    : m_nacelle(nacelle)
+    , m_transformation(&transformation)
+{};
+
 PNamedShape CTiglEngineNacelleBuilder::BuildShape()
 {
-    PNamedShape fanshape = m_nacelle.GetFanCowl().GetLoft();
-/*
-    TopoDS_Compound c;
-    TopoDS_Builder b;
-    b.MakeCompound(c);
-    b.Add(c, fanshape->Shape());
+    std::vector<PNamedShape> shapes;
 
+    // add fan
+    shapes.push_back(m_nacelle.GetFanCowl().BuildLoft());
+
+    // add core cowl
     if ( m_nacelle.GetCoreCowl() ) {
-        PNamedShape coreshape = m_nacelle.GetCoreCowl()->GetLoft();
-        b.Add(c, coreshape->Shape());
+        shapes.push_back(m_nacelle.GetCoreCowl()->BuildLoft());
     }
 
-    PNamedShape compoundShape( new CNamedShape(c, m_nacelle.GetUID().c_str()) );
-*/
-    PNamedShape compoundShape( new CNamedShape(fanshape->Shape(), m_nacelle.GetUID().c_str()) );
+    //TODO add center cowl
+
+
+
+    // add shapes to compound
+    TopoDS_Compound compound;
+    TopoDS_Builder builder;
+    builder.MakeCompound(compound);
+    for(size_t i = 0; i< shapes.size(); ++i) {
+        // if we have a transformation, apply it.
+        if (m_transformation) {
+            builder.Add(compound, m_transformation->Transform(shapes[i]->Shape()));
+        }
+        else {
+            builder.Add(compound, shapes[i]->Shape());
+        }
+    }
+
+    PNamedShape compoundShape( new CNamedShape(compound, m_nacelle.GetUID().c_str()) );
     return compoundShape;
 };
 

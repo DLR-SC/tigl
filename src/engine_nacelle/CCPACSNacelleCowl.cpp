@@ -55,14 +55,8 @@ namespace tigl
 
 CCPACSNacelleCowl::CCPACSNacelleCowl(CCPACSEngineNacelle* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSNacelleCowl(parent, uidMgr)
-    , CTiglAbstractGeometricComponent()
     , wireCache(*this, &CCPACSNacelleCowl::BuildOuterShapeWires)
 {}
-
-std::string CCPACSNacelleCowl::GetDefaultedUID() const
-{
-    return generated::CPACSNacelleCowl::GetUID();
-}
 
 void CCPACSNacelleCowl::BuildOuterShapeWires(WireCache& cache) const
 {

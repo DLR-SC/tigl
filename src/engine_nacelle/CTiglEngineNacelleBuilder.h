@@ -15,7 +15,7 @@
 * limitations under the License.
 */
 
-#include <CCPACSEngineNacelle.h>
+#include <generated/CPACSEngineNacelle.h>
 #include "tigl_internal.h"
 
 #pragma once
@@ -26,6 +26,7 @@ namespace tigl
     {
     public:
         explicit CTiglEngineNacelleBuilder(const CCPACSEngineNacelle& nacelle);
+        explicit CTiglEngineNacelleBuilder(const CCPACSEngineNacelle& nacelle, const CTiglTransformation& transformation);
 
         TIGL_EXPORT operator PNamedShape();
 
@@ -33,6 +34,7 @@ namespace tigl
 
     private:
         const CCPACSEngineNacelle& m_nacelle;
+        CTiglTransformation const* m_transformation = nullptr;
 
     };
 

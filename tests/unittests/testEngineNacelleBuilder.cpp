@@ -25,6 +25,7 @@
 #include "CCPACSConfigurationManager.h"
 #include "CTiglUIDManager.h"
 #include "CTiglEngineNacelleBuilder.h"
+#include "generated/CPACSEngine.h"
 
 /******************************************************************************/
 
@@ -67,8 +68,10 @@ protected:
 
 TEST_F(EngineNacelleBuilder, integrationTest)
 {
-    tigl::CCPACSEngineNacelle& nacelle = uidMgr->ResolveObject<tigl::CCPACSEngineNacelle>("SimpleNacelle");
-    tigl::CTiglEngineNacelleBuilder builder(nacelle);
+    tigl::CCPACSConfiguration& config = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(tiglHandle);
+    tigl::CCPACSEngine& engine = config.GetEngine("SimpleEngine");
+    boost::optional<tigl::CCPACSEngineNacelle>& nacelle = engine.GetNacelle();
+    tigl::CTiglEngineNacelleBuilder builder(*nacelle);
     PNamedShape shape = builder.BuildShape();
 }
 

@@ -27,10 +27,11 @@
 namespace tigl
 {
 class CTiglUIDManager;
-class CCPACSEngineNacelle;
 
 namespace generated
 {
+    class CPACSEngineNacelle;
+
     // This class is used in:
     // CPACSEngineNacelle
 
@@ -38,13 +39,13 @@ namespace generated
     class CPACSNacelleCowl
     {
     public:
-        TIGL_EXPORT CPACSNacelleCowl(CCPACSEngineNacelle* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSNacelleCowl(CPACSEngineNacelle* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSNacelleCowl();
 
-        TIGL_EXPORT CCPACSEngineNacelle* GetParent();
+        TIGL_EXPORT CPACSEngineNacelle* GetParent();
 
-        TIGL_EXPORT const CCPACSEngineNacelle* GetParent() const;
+        TIGL_EXPORT const CPACSEngineNacelle* GetParent() const;
 
         TIGL_EXPORT CTiglUIDManager& GetUIDManager();
         TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
@@ -65,7 +66,7 @@ namespace generated
         TIGL_EXPORT virtual CCPACSRotationCurve& GetRotationCurve();
 
     protected:
-        CCPACSEngineNacelle* m_parent;
+        CPACSEngineNacelle* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
@@ -89,4 +90,11 @@ namespace generated
 } // namespace generated
 
 // CPACSNacelleCowl is customized, use type CCPACSNacelleCowl directly
+
+// Aliases in tigl namespace
+#ifdef HAVE_CPP11
+using CCPACSEngineNacelle = generated::CPACSEngineNacelle;
+#else
+typedef generated::CPACSEngineNacelle CCPACSEngineNacelle;
+#endif
 } // namespace tigl

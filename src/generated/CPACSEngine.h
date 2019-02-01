@@ -19,9 +19,9 @@
 
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
-#include <CCPACSEngineNacelle.h>
 #include <string>
 #include <tixi.h>
+#include "CPACSEngineNacelle.h"
 #include "CreateIfNotExists.h"
 #include "tigl_internal.h"
 
@@ -59,20 +59,20 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<double>& GetThrust00Scaling() const;
         TIGL_EXPORT virtual void SetThrust00Scaling(const boost::optional<double>& value);
 
-        TIGL_EXPORT virtual const boost::optional<CCPACSEngineNacelle>& GetNacelle() const;
-        TIGL_EXPORT virtual boost::optional<CCPACSEngineNacelle>& GetNacelle();
+        TIGL_EXPORT virtual const boost::optional<CPACSEngineNacelle>& GetNacelle() const;
+        TIGL_EXPORT virtual boost::optional<CPACSEngineNacelle>& GetNacelle();
 
-        TIGL_EXPORT virtual CCPACSEngineNacelle& GetNacelle(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual CPACSEngineNacelle& GetNacelle(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveNacelle();
 
     protected:
         CTiglUIDManager* m_uidMgr;
 
-        std::string                          m_uID;
-        std::string                          m_name;
-        boost::optional<std::string>         m_description;
-        boost::optional<double>              m_thrust00Scaling;
-        boost::optional<CCPACSEngineNacelle> m_nacelle;
+        std::string                         m_uID;
+        std::string                         m_name;
+        boost::optional<std::string>        m_description;
+        boost::optional<double>             m_thrust00Scaling;
+        boost::optional<CPACSEngineNacelle> m_nacelle;
 
     private:
 #ifdef HAVE_CPP11
