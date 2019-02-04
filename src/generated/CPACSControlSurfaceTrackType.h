@@ -19,11 +19,11 @@
 
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
+#include <CCPACSEtaIsoLine.h>
 #include <string>
 #include <tixi.h>
 #include "CPACSControlSurfaceTrackType_trackSubType.h"
 #include "CPACSControlSurfaceTrackType_trackType.h"
-#include "CPACSEtaIsoLine.h"
 #include "CPACSTrackActuator.h"
 #include "CPACSTrackStructure.h"
 #include "CreateIfNotExists.h"
@@ -61,8 +61,8 @@ namespace generated
         TIGL_EXPORT virtual const std::string& GetUID() const;
         TIGL_EXPORT virtual void SetUID(const std::string& value);
 
-        TIGL_EXPORT virtual const CPACSEtaIsoLine& GetEta() const;
-        TIGL_EXPORT virtual CPACSEtaIsoLine& GetEta();
+        TIGL_EXPORT virtual const CCPACSEtaIsoLine& GetEta() const;
+        TIGL_EXPORT virtual CCPACSEtaIsoLine& GetEta();
 
         TIGL_EXPORT virtual const CPACSControlSurfaceTrackType_trackType& GetTrackType() const;
         TIGL_EXPORT virtual void SetTrackType(const CPACSControlSurfaceTrackType_trackType& value);
@@ -88,7 +88,7 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string                                                m_uID;
-        CPACSEtaIsoLine                                            m_eta;
+        CCPACSEtaIsoLine                                           m_eta;
         CPACSControlSurfaceTrackType_trackType                     m_trackType;
         boost::optional<CPACSControlSurfaceTrackType_trackSubType> m_trackSubType;
         boost::optional<CPACSTrackActuator>                        m_actuator;

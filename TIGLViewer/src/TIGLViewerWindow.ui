@@ -195,7 +195,6 @@
      <addaction name="drawFuselageGuideCurvesAction"/>
      <addaction name="drawFuselageTriangulationAction"/>
      <addaction name="drawFuselageSamplePointsAction"/>
-     <addaction name="drawFuselageSamplePointsAngleAction"/>
      <addaction name="drawFusedFuselageAction"/>
     </widget>
     <widget class="QMenu" name="menuRotorcraft">
@@ -295,7 +294,13 @@
     <addaction name="aboutAction"/>
     <addaction name="aboutQtAction"/>
    </widget>
+   <widget class="QMenu" name="menuEdit">
+    <property name="title">
+     <string>&amp;Edit</string>
+    </property>
+   </widget>
    <addaction name="fileMenu"/>
+   <addaction name="menuEdit"/>
    <addaction name="cpacsMenu"/>
    <addaction name="viewMenu"/>
    <addaction name="helpMenu"/>
@@ -458,28 +463,6 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Q</string>
-   </property>
-  </action>
-  <action name="undoAction">
-   <property name="text">
-    <string>&amp;Undo</string>
-   </property>
-   <property name="toolTip">
-    <string>Undo the last operation</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Z</string>
-   </property>
-  </action>
-  <action name="redoAction">
-   <property name="text">
-    <string>&amp;Redo</string>
-   </property>
-   <property name="toolTip">
-    <string>Redo the last operation</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Y</string>
    </property>
   </action>
   <action name="cutAction">
@@ -1422,6 +1405,16 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+A</string>
+   </property>
+  </action>
+  <action name="undoAction_2">
+   <property name="text">
+    <string>Undo</string>
+   </property>
+  </action>
+  <action name="blaAction">
+   <property name="text">
+    <string>Redo</string>
    </property>
   </action>
  </widget>

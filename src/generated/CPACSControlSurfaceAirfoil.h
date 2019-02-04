@@ -17,9 +17,9 @@
 
 #pragma once
 
+#include <CCPACSEtaIsoLine.h>
 #include <string>
 #include <tixi.h>
-#include "CPACSEtaIsoLine.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -39,8 +39,8 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const CPACSEtaIsoLine& GetEta() const;
-        TIGL_EXPORT virtual CPACSEtaIsoLine& GetEta();
+        TIGL_EXPORT virtual const CCPACSEtaIsoLine& GetEta() const;
+        TIGL_EXPORT virtual CCPACSEtaIsoLine& GetEta();
 
         TIGL_EXPORT virtual const std::string& GetAirfoilUID() const;
         TIGL_EXPORT virtual void SetAirfoilUID(const std::string& value);
@@ -58,12 +58,12 @@ namespace generated
         TIGL_EXPORT virtual void SetScalZ(const double& value);
 
     protected:
-        CPACSEtaIsoLine m_eta;
-        std::string     m_airfoilUID;
-        double          m_rotX;
-        double          m_rotZ;
-        double          m_scalY;
-        double          m_scalZ;
+        CCPACSEtaIsoLine m_eta;
+        std::string      m_airfoilUID;
+        double           m_rotX;
+        double           m_rotZ;
+        double           m_scalY;
+        double           m_scalZ;
 
     private:
 #ifdef HAVE_CPP11

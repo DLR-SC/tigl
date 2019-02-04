@@ -3745,12 +3745,24 @@
                           <xsi2>0.20</xsi2>
                         </positioningTrailingEdge>
                         <positioningInnerBorder>
-                          <eta1>0.19230</eta1>
-                          <eta2>0.19230</eta2>
+                          <eta1>
+                            <eta>0.1923</eta>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </eta1>
+                          <eta2>
+                            <eta>0.1923</eta>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </eta2>
                         </positioningInnerBorder>
                         <positioningOuterBorder>
-                          <eta1>1.00</eta1>
-                          <eta2>1.00</eta2>
+                          <eta1>
+                            <eta>1</eta>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </eta1>
+                          <eta2>
+                            <eta>1</eta>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </eta2>
                         </positioningOuterBorder>
                       </cell>
                       <!--cell uID="cell_us_cap">
@@ -3793,12 +3805,24 @@
                           <xsi2>0.90</xsi2>
                         </positioningTrailingEdge>
                         <positioningInnerBorder>
-                          <eta1>0.19230</eta1>
-                          <eta2>0.19230</eta2>
+                          <eta1>
+                            <eta>0.1923</eta>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </eta1>
+                          <eta2>
+                            <eta>0.1923</eta>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </eta2>
                         </positioningInnerBorder>
                         <positioningOuterBorder>
-                          <eta1>1.00</eta1>
-                          <eta2>1.00</eta2>
+                          <eta1>
+                            <eta>1</eta>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </eta1>
+                          <eta2>
+                            <eta>1</eta>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </eta2>
                         </positioningOuterBorder>
                       </cell>
                       <cell uID="cell_us_te">
@@ -3817,12 +3841,24 @@
                           <xsi2>1.0</xsi2>
                         </positioningTrailingEdge>
                         <positioningInnerBorder>
-                          <eta1>0.19230</eta1>
-                          <eta2>0.19230</eta2>
+                          <eta1>
+                            <eta>0.1923</eta>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </eta1>
+                          <eta2>
+                            <eta>0.1923</eta>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </eta2>
                         </positioningInnerBorder>
                         <positioningOuterBorder>
-                          <eta1>1.00</eta1>
-                          <eta2>1.00</eta2>
+                          <eta1>
+                            <eta>1</eta>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </eta1>
+                          <eta2>
+                            <eta>1</eta>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </eta2>
                         </positioningOuterBorder>
                       </cell>
                     </cells>
@@ -5156,12 +5192,24 @@
                               <xsi2>1</xsi2>
                             </positioningTrailingEdge>
                             <positioningInnerBorder>
-                              <eta1>0.0</eta1>
-                              <eta2>0.0</eta2>
+                              <eta1>
+                                <eta>0</eta>
+                                <referenceUID>D150_wing_CS</referenceUID>
+                              </eta1>
+                              <eta2>
+                                <eta>0</eta>
+                                <referenceUID>D150_wing_CS</referenceUID>
+                              </eta2>
                             </positioningInnerBorder>
                             <positioningOuterBorder>
-                              <eta1>1</eta1>
-                              <eta2>1</eta2>
+                              <eta1>
+                                <eta>1</eta>
+                                <referenceUID>D150_wing_CS</referenceUID>
+                              </eta1>
+                              <eta2>
+                                <eta>1</eta>
+                                <referenceUID>D150_wing_CS</referenceUID>
+                              </eta2>
                             </positioningOuterBorder>
                             <material>
                               <materialUID>aluminium 2024</materialUID>
@@ -5389,12 +5437,24 @@
                               <xsi2>1</xsi2>
                             </positioningTrailingEdge>
                             <positioningInnerBorder>
-                              <eta1>0.0</eta1>
-                              <eta2>0.0</eta2>
+                              <eta1>
+                                <eta>0</eta>
+                                <referenceUID>D150_wing_CS</referenceUID>
+                              </eta1>
+                              <eta2>
+                                <eta>0</eta>
+                                <referenceUID>D150_wing_CS</referenceUID>
+                              </eta2>
                             </positioningInnerBorder>
                             <positioningOuterBorder>
-                              <eta1>1</eta1>
-                              <eta2>1</eta2>
+                              <eta1>
+                                <eta>1</eta>
+                                <referenceUID>D150_wing_CS</referenceUID>
+                              </eta1>
+                              <eta2>
+                                <eta>1</eta>
+                                <referenceUID>D150_wing_CS</referenceUID>
+                              </eta2>
                             </positioningOuterBorder>
                             <material>
                               <materialUID>aluminium 2024</materialUID>
@@ -5622,12 +5682,24 @@
                               <xsi2>1</xsi2>
                             </positioningTrailingEdge>
                             <positioningInnerBorder>
-                              <eta1>0.0</eta1>
-                              <eta2>0.0</eta2>
+                              <eta1>
+                                <eta>0</eta>
+                                <referenceUID>D150_wing_CS</referenceUID>
+                              </eta1>
+                              <eta2>
+                                <eta>0</eta>
+                                <referenceUID>D150_wing_CS</referenceUID>
+                              </eta2>
                             </positioningInnerBorder>
                             <positioningOuterBorder>
-                              <eta1>1</eta1>
-                              <eta2>1</eta2>
+                              <eta1>
+                                <eta>1</eta>
+                                <referenceUID>D150_wing_CS</referenceUID>
+                              </eta1>
+                              <eta2>
+                                <eta>1</eta>
+                                <referenceUID>D150_wing_CS</referenceUID>
+                              </eta2>
                             </positioningOuterBorder>
                             <material>
                               <materialUID>aluminium 2024</materialUID>
@@ -5855,12 +5927,24 @@
                               <xsi2>1</xsi2>
                             </positioningTrailingEdge>
                             <positioningInnerBorder>
-                              <eta1>0.0</eta1>
-                              <eta2>0.0</eta2>
+                              <eta1>
+                                <eta>0</eta>
+                                <referenceUID>D150_wing_CS</referenceUID>
+                              </eta1>
+                              <eta2>
+                                <eta>0</eta>
+                                <referenceUID>D150_wing_CS</referenceUID>
+                              </eta2>
                             </positioningInnerBorder>
                             <positioningOuterBorder>
-                              <eta1>1</eta1>
-                              <eta2>1</eta2>
+                              <eta1>
+                                <eta>1</eta>
+                                <referenceUID>D150_wing_CS</referenceUID>
+                              </eta1>
+                              <eta2>
+                                <eta>1</eta>
+                                <referenceUID>D150_wing_CS</referenceUID>
+                              </eta2>
                             </positioningOuterBorder>
                             <material>
                               <materialUID>aluminium 2024</materialUID>
@@ -6088,12 +6172,24 @@
                               <xsi2>1</xsi2>
                             </positioningTrailingEdge>
                             <positioningInnerBorder>
-                              <eta1>0.0</eta1>
-                              <eta2>0.0</eta2>
+                              <eta1>
+                                <eta>0</eta>
+                                <referenceUID>D150_wing_CS</referenceUID>
+                              </eta1>
+                              <eta2>
+                                <eta>0</eta>
+                                <referenceUID>D150_wing_CS</referenceUID>
+                              </eta2>
                             </positioningInnerBorder>
                             <positioningOuterBorder>
-                              <eta1>1</eta1>
-                              <eta2>1</eta2>
+                              <eta1>
+                                <eta>1</eta>
+                                <referenceUID>D150_wing_CS</referenceUID>
+                              </eta1>
+                              <eta2>
+                                <eta>1</eta>
+                                <referenceUID>D150_wing_CS</referenceUID>
+                              </eta2>
                             </positioningOuterBorder>
                             <material>
                               <materialUID>aluminium 2024</materialUID>

@@ -28,7 +28,7 @@ CCPACSWingRibRotation::CCPACSWingRibRotation(CCPACSWingRibsPositioning* parent)
     m_z = 90;
 }
 
-void CCPACSWingRibRotation::SetRibRotationReference(const boost::optional<ECPACSRibRotation_ribRotationReference>& value)
+void CCPACSWingRibRotation::SetRibRotationReference(const boost::optional<std::string>& value)
 {
     generated::CPACSRibRotation::SetRibRotationReference(value);
     m_parent->invalidateStructure();

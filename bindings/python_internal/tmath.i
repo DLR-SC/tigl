@@ -42,9 +42,12 @@
 // rename file methods to python pep8 style
 %rename("%(undercase)s", %$isfunction) "";
 
+// We want to inherit from these functions from python
+// Hence, we need directors.
 %feature("director") MathFunc3d;
 %feature("director") MathFunc1d;
 
+%include "tiglMatrix.h"
 %include "tiglmathfunctions.h"
 %include "ITiglObjectiveFunction.h"
 %include "CTiglOptimizer.h"

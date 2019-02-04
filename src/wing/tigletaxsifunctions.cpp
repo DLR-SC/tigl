@@ -26,6 +26,8 @@
 #include "CCPACSWingRibsDefinition.h"
 #include "CCPACSWingSegment.h"
 #include "CCPACSWingSparSegment.h"
+#include "CCPACSEtaIsoLine.h"
+#include "CCPACSXsiIsoLine.h"
 #include "CTiglError.h"
 #include "CTiglWingStructureReference.h"
 #include "tiglcommonfunctions.h"
@@ -37,31 +39,25 @@ namespace tigl
 
 gp_Pnt getSectionElementChordlinePoint(const CCPACSWingComponentSegment& cs, const std::string& sectionElementUID, double xsi)
 {
-    gp_Pnt chordlinePoint;
-    CCPACSWing& wing = cs.GetWing();
-    // find section element
-    const CCPACSWingSegment& segment = static_cast<const CCPACSWingSegment&>(wing.GetSegment(1));
-    if (sectionElementUID == segment.GetInnerSectionElementUID()) {
-        // convert into wing coordinate system
-        CTiglTransformation wingTrans = wing.GetTransformationMatrix();
-        chordlinePoint = wingTrans.Inverted().Transform(segment.GetChordPoint(0, xsi));
-    }
-    else {
-        int i;
-        for (i = 1; i <= wing.GetSegmentCount(); ++i) {
-            const CCPACSWingSegment& segment = static_cast<const CCPACSWingSegment&>(wing.GetSegment(i));
-            if (sectionElementUID == segment.GetOuterSectionElementUID()) {
-                // convert into wing coordinate system
-                CTiglTransformation wingTrans = wing.GetTransformationMatrix();
-                chordlinePoint = wingTrans.Inverted().Transform(segment.GetChordPoint(1, xsi));
-                break;
-            }
+    const CCPACSWing& wing = cs.GetWing();
+    for (int i = 1; i <= wing.GetSegmentCount(); ++i) {
+        const CCPACSWingSegment& segment = wing.GetSegment(i);
+
+        double eta = -1;
+        if (sectionElementUID == segment.GetInnerSectionElementUID()) {
+            eta = 0;
         }
-        if (i > wing.GetSegmentCount()) {
-            throw CTiglError("Error in getSectionElementChordlinePoint: section element not found!");
+        if (sectionElementUID == segment.GetOuterSectionElementUID()) {
+            eta = 1;
+        }
+
+        if (eta != -1) {
+            // convert into wing coordinate system
+            return wing.GetTransformationMatrix().Inverted().Transform(segment.GetChordPoint(eta, xsi));
         }
     }
-    return chordlinePoint;
+
+    throw CTiglError("Error in getSectionElementChordlinePoint: section element not found!");
 }
 
 TopoDS_Face buildEtaCutFace(const CTiglWingStructureReference& wsr, double eta)
@@ -140,4 +136,54 @@ EtaXsi computeRibSparIntersectionEtaXsi(const CTiglWingStructureReference& wsr, 
     return result;
 }
 
+double transformEtaToCSOrTed(const CCPACSEtaIsoLine& eta, const CTiglUIDManager& uidMgr)
+{
+    return transformEtaToCSOrTed(eta.GetEta(), eta.GetReferenceUID(), uidMgr);
 }
+
+double transformXsiToCSOrTed(const CCPACSXsiIsoLine& xsi, const CTiglUIDManager& uidMgr)
+{
+    // xsi does not depend on whether it is defined in a segment or a CS
+    return xsi.GetXsi();
+    //return transformXsiToCSOrTed(xsi.GetXsi(), xsi.GetReferenceUID(), uidMgr);
+}
+double transformEtaToCSOrTed(double eta, const std::string& referenceUid, const CTiglUIDManager& uidMgr)
+{
+    return transformEtaXsiToCSOrTed({eta, 0}, referenceUid, uidMgr).eta;
+}
+
+double transformXsiToCSOrTed(double xsi, const std::string& referenceUid, const CTiglUIDManager& uidMgr)
+{
+    // xsi does not depend on whether it is defined in a segment or a CS
+    return xsi;
+    //return transformEtaXsiToCSOrTed({0, xsi}, referenceUid, uidMgr).xsi;
+}
+
+EtaXsi transformEtaXsiToCSOrTed(EtaXsi etaXsi, const std::string& referenceUid, const CTiglUIDManager& uidMgr)
+{
+    const CTiglUIDManager::TypedPtr tp = uidMgr.ResolveObject(referenceUid);
+    if (tp.type == &typeid(CCPACSWingSegment)) {
+        const CCPACSWingSegment& segment = *reinterpret_cast<CCPACSWingSegment*>(tp.ptr);
+        const boost::optional<CCPACSWingComponentSegments>& css = segment.GetParent()->GetParent<CCPACSWing>()->GetComponentSegments();
+        if (css) {
+            std::vector<unique_ptr<CCPACSWingComponentSegment>>::const_iterator it;
+            for (it = css->GetComponentSegments().begin(); it != css->GetComponentSegments().end(); ++it) {
+                if ((*it)->IsSegmentContained(segment)) {
+                    EtaXsi r;
+                    (*it)->GetEtaXsiFromSegmentEtaXsi(referenceUid, etaXsi.eta, etaXsi.xsi, r.eta, r.xsi);
+                    return r;
+                }
+            }
+        }
+
+        throw CTiglError("Wing of segment referenced by UID " + referenceUid + " has no component segments");
+    }
+    if (tp.type == &typeid(CCPACSWingComponentSegment))
+        return etaXsi;
+    //if (tp.type == &typeid(CCPACSTrailingEdgeDevice))
+    //    return etaXsi;
+
+    throw CTiglError("Unsupported type for iso line transformation referenced by UID " + referenceUid);
+}
+
+} // namespace tigl

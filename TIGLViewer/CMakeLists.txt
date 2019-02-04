@@ -106,6 +106,7 @@ set(tv_src
     TIGLSliderDialog.cpp
     TIGLViewerApp.cpp
     TIGLGeometryChoserDialog.cpp
+    TIGLViewerUndoCommands.cpp
 )
 	
 # normal header files
@@ -123,6 +124,7 @@ set(tv_hdr
     TIGLViewerLoggerHTMLDecorator.h
     TIGLViewerScopedCommand.h
     TIGLQAspectWindow.h
+    TIGLViewerUndoCommands.h
 )
 
 # qobject header files that have to be moced

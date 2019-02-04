@@ -47,6 +47,7 @@ public:
     TIGL_EXPORT void SetEta1(double eta1);
     TIGL_EXPORT void SetEta2(double eta2);
     TIGL_EXPORT void SetEta(double eta1, double eta2);
+    TIGL_EXPORT void SetEta(double eta1, const std::string& eta1RefUid, double eta2, const std::string& eta2RefUid);
 
     TIGL_EXPORT void GetRib(std::string& ribUid, int& ribNumber) const;
     TIGL_EXPORT std::pair<std::string, int> GetRib() const;
@@ -56,6 +57,8 @@ public:
 
 protected:
     void InvalidateParent();
+
+    friend class CCPACSEtaIsoLine;
 };
 
 } // end namespace tigl

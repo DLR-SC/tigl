@@ -15,7 +15,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <cassert>
+#include "CCPACSControlSurfaceBorderTrailingEdge.h"
+#include "CCPACSControlSurfaceSkinCutOutBorder.h"
+#include "CCPACSControlSurfaceTrackType.h"
+#include "CCPACSWingCellPositionSpanwise.h"
+#include "CPACSControlSurfaceAirfoil.h"
+#include "CPACSCutOutProfile.h"
 #include "CPACSEtaIsoLine.h"
+#include "CPACSSparCell.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "TixiHelper.h"
@@ -24,9 +32,60 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSEtaIsoLine::CPACSEtaIsoLine()
+    CPACSEtaIsoLine::CPACSEtaIsoLine(CCPACSWingCellPositionSpanwise* parent)
         : m_eta(0)
     {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CCPACSWingCellPositionSpanwise);
+    }
+
+    CPACSEtaIsoLine::CPACSEtaIsoLine(CPACSControlSurfaceAirfoil* parent)
+        : m_eta(0)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSControlSurfaceAirfoil);
+    }
+
+    CPACSEtaIsoLine::CPACSEtaIsoLine(CCPACSControlSurfaceBorderTrailingEdge* parent)
+        : m_eta(0)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CCPACSControlSurfaceBorderTrailingEdge);
+    }
+
+    CPACSEtaIsoLine::CPACSEtaIsoLine(CCPACSControlSurfaceSkinCutOutBorder* parent)
+        : m_eta(0)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CCPACSControlSurfaceSkinCutOutBorder);
+    }
+
+    CPACSEtaIsoLine::CPACSEtaIsoLine(CCPACSControlSurfaceTrackType* parent)
+        : m_eta(0)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CCPACSControlSurfaceTrackType);
+    }
+
+    CPACSEtaIsoLine::CPACSEtaIsoLine(CPACSCutOutProfile* parent)
+        : m_eta(0)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSCutOutProfile);
+    }
+
+    CPACSEtaIsoLine::CPACSEtaIsoLine(CPACSSparCell* parent)
+        : m_eta(0)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSSparCell);
     }
 
     CPACSEtaIsoLine::~CPACSEtaIsoLine()

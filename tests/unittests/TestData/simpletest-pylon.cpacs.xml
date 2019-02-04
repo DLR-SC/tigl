@@ -444,12 +444,24 @@
                           <xsi2>1.0</xsi2>
                         </positioningTrailingEdge>
                         <positioningInnerBorder>
-                          <eta1>0.0</eta1>
-                          <eta2>0.0</eta2>
+                          <eta1>
+                            <eta>0</eta>
+                            <referenceUID>WING_CS1</referenceUID>
+                          </eta1>
+                          <eta2>
+                            <eta>0</eta>
+                            <referenceUID>WING_CS1</referenceUID>
+                          </eta2>
                         </positioningInnerBorder>
                         <positioningOuterBorder>
-                          <eta1>0.5</eta1>
-                          <eta2>0.5</eta2>
+                          <eta1>
+                            <eta>0.5</eta>
+                            <referenceUID>WING_CS1</referenceUID>
+                          </eta1>
+                          <eta2>
+                            <eta>0.5</eta>
+                            <referenceUID>WING_CS1</referenceUID>
+                          </eta2>
                         </positioningOuterBorder>
                       </cell>
                     </cells>
@@ -490,11 +502,11 @@
               <section uID="Pylon_Sec1">
                 <name>Pylon Section 1</name>
                 <transformation uID="Pylon_Sec1_transformation1">
-                    <scaling uID="Pylon_Sec1_transformation1_scaling1">
-                        <x>0.25</x>
-                        <y>0.25</y>
-                        <z>0.20</z>
-                    </scaling>
+                  <scaling uID="Pylon_Sec1_transformation1_scaling1">
+                    <x>0.25</x>
+                    <y>0.25</y>
+                    <z>0.20</z>
+                  </scaling>
                 </transformation>
                 <elements>
                   <element uID="Pylon_Sec1_El1">
@@ -507,11 +519,11 @@
               <section uID="Pylon_Sec2">
                 <name>Pylon Section 2</name>
                 <transformation uID="Pylon_Sec2_transformation1">
-                    <scaling uID="Pylon_Sec2_transformation1_scaling1">
-                        <x>0.45</x>
-                        <y>0.35</y>
-                        <z>0.25</z>
-                    </scaling>
+                  <scaling uID="Pylon_Sec2_transformation1_scaling1">
+                    <x>0.45</x>
+                    <y>0.35</y>
+                    <z>0.25</z>
+                  </scaling>
                 </transformation>
                 <elements>
                   <element uID="Pylon_Sec2_El1">
@@ -524,11 +536,11 @@
               <section uID="Pylon_Sec3">
                 <name>Pylon Section 3</name>
                 <transformation uID="Pylon_Sec3_transformation1">
-                    <scaling uID="Pylon_Sec3_transformation1_scaling1">
-                        <x>0.1</x>
-                        <y>0.1</y>
-                        <z>0.05</z>
-                    </scaling>
+                  <scaling uID="Pylon_Sec3_transformation1_scaling1">
+                    <x>0.1</x>
+                    <y>0.1</y>
+                    <z>0.05</z>
+                  </scaling>
                 </transformation>
                 <elements>
                   <element uID="Pylon_Sec3_El1">

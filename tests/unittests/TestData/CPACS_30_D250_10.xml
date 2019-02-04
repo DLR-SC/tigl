@@ -2114,8 +2114,14 @@
                           <sparUID>rearSpar</sparUID>
                         </positioningTrailingEdge>
                         <positioningInnerBorder>
-                          <eta1>0.0</eta1>
-                          <eta2>0.0</eta2>
+                          <eta1>
+                            <eta>0</eta>
+                            <referenceUID>D250_wing_CS</referenceUID>
+                          </eta1>
+                          <eta2>
+                            <eta>0</eta>
+                            <referenceUID>D250_wing_CS</referenceUID>
+                          </eta2>
                         </positioningInnerBorder>
                         <positioningOuterBorder>
                           <ribNumber>27</ribNumber>
@@ -2151,8 +2157,14 @@
                           <sparUID>rearSpar</sparUID>
                         </positioningTrailingEdge>
                         <positioningInnerBorder>
-                          <eta1>0.0</eta1>
-                          <eta2>0.0</eta2>
+                          <eta1>
+                            <eta>0</eta>
+                            <referenceUID>D250_wing_CS</referenceUID>
+                          </eta1>
+                          <eta2>
+                            <eta>0</eta>
+                            <referenceUID>D250_wing_CS</referenceUID>
+                          </eta2>
                         </positioningInnerBorder>
                         <positioningOuterBorder>
                           <ribNumber>27</ribNumber>
@@ -3030,12 +3042,24 @@
                                 <sparUID>T1Spar2_IF</sparUID>
                               </positioningTrailingEdge>
                               <positioningInnerBorder>
-                                <eta1>0.0</eta1>
-                                <eta2>0.0</eta2>
+                                <eta1>
+                                  <eta>0</eta>
+                                  <referenceUID>D250_InnerFlap</referenceUID>
+                                </eta1>
+                                <eta2>
+                                  <eta>0</eta>
+                                  <referenceUID>D250_InnerFlap</referenceUID>
+                                </eta2>
                               </positioningInnerBorder>
                               <positioningOuterBorder>
-                                <eta1>1.0</eta1>
-                                <eta2>1.0</eta2>
+                                <eta1>
+                                  <eta>1</eta>
+                                  <referenceUID>D250_InnerFlap</referenceUID>
+                                </eta1>
+                                <eta2>
+                                  <eta>1</eta>
+                                  <referenceUID>D250_InnerFlap</referenceUID>
+                                </eta2>
                               </positioningOuterBorder>
                             </cell>
                           </cells>
@@ -3067,12 +3091,24 @@
                                 <sparUID>T1Spar2_IF</sparUID>
                               </positioningTrailingEdge>
                               <positioningInnerBorder>
-                                <eta1>0.0</eta1>
-                                <eta2>0.0</eta2>
+                                <eta1>
+                                  <eta>0</eta>
+                                  <referenceUID>D250_InnerFlap</referenceUID>
+                                </eta1>
+                                <eta2>
+                                  <eta>0</eta>
+                                  <referenceUID>D250_InnerFlap</referenceUID>
+                                </eta2>
                               </positioningInnerBorder>
                               <positioningOuterBorder>
-                                <eta1>1.0</eta1>
-                                <eta2>1.0</eta2>
+                                <eta1>
+                                  <eta>1</eta>
+                                  <referenceUID>D250_InnerFlap</referenceUID>
+                                </eta1>
+                                <eta2>
+                                  <eta>1</eta>
+                                  <referenceUID>D250_InnerFlap</referenceUID>
+                                </eta2>
                               </positioningOuterBorder>
                             </cell>
                           </cells>
@@ -3431,12 +3467,24 @@
                                 <sparUID>T1Spar2_OF</sparUID>
                               </positioningTrailingEdge>
                               <positioningInnerBorder>
-                                <eta1>0.0</eta1>
-                                <eta2>0.0</eta2>
+                                <eta1>
+                                  <eta>0</eta>
+                                  <referenceUID>D250_OuterFlap</referenceUID>
+                                </eta1>
+                                <eta2>
+                                  <eta>0</eta>
+                                  <referenceUID>D250_OuterFlap</referenceUID>
+                                </eta2>
                               </positioningInnerBorder>
                               <positioningOuterBorder>
-                                <eta1>1.0</eta1>
-                                <eta2>1.0</eta2>
+                                <eta1>
+                                  <eta>1</eta>
+                                  <referenceUID>D250_OuterFlap</referenceUID>
+                                </eta1>
+                                <eta2>
+                                  <eta>1</eta>
+                                  <referenceUID>D250_OuterFlap</referenceUID>
+                                </eta2>
                               </positioningOuterBorder>
                             </cell>
                           </cells>
@@ -3468,12 +3516,24 @@
                                 <sparUID>T1Spar2_OF</sparUID>
                               </positioningTrailingEdge>
                               <positioningInnerBorder>
-                                <eta1>0.0</eta1>
-                                <eta2>0.0</eta2>
+                                <eta1>
+                                  <eta>0</eta>
+                                  <referenceUID>D250_OuterFlap</referenceUID>
+                                </eta1>
+                                <eta2>
+                                  <eta>0</eta>
+                                  <referenceUID>D250_OuterFlap</referenceUID>
+                                </eta2>
                               </positioningInnerBorder>
                               <positioningOuterBorder>
-                                <eta1>1.0</eta1>
-                                <eta2>1.0</eta2>
+                                <eta1>
+                                  <eta>1</eta>
+                                  <referenceUID>D250_OuterFlap</referenceUID>
+                                </eta1>
+                                <eta2>
+                                  <eta>1</eta>
+                                  <referenceUID>D250_OuterFlap</referenceUID>
+                                </eta2>
                               </positioningOuterBorder>
                             </cell>
                           </cells>
@@ -4005,12 +4065,24 @@
                                 <sparUID>T1Spar2_IA</sparUID>
                               </positioningTrailingEdge>
                               <positioningInnerBorder>
-                                <eta1>0.0</eta1>
-                                <eta2>0.0</eta2>
+                                <eta1>
+                                  <eta>0</eta>
+                                  <referenceUID>D250_InnerAileron</referenceUID>
+                                </eta1>
+                                <eta2>
+                                  <eta>0</eta>
+                                  <referenceUID>D250_InnerAileron</referenceUID>
+                                </eta2>
                               </positioningInnerBorder>
                               <positioningOuterBorder>
-                                <eta1>1.0</eta1>
-                                <eta2>1.0</eta2>
+                                <eta1>
+                                  <eta>1</eta>
+                                  <referenceUID>D250_InnerAileron</referenceUID>
+                                </eta1>
+                                <eta2>
+                                  <eta>1</eta>
+                                  <referenceUID>D250_InnerAileron</referenceUID>
+                                </eta2>
                               </positioningOuterBorder>
                             </cell>
                           </cells>
@@ -4042,12 +4114,24 @@
                                 <sparUID>T1Spar2_IA</sparUID>
                               </positioningTrailingEdge>
                               <positioningInnerBorder>
-                                <eta1>0.0</eta1>
-                                <eta2>0.0</eta2>
+                                <eta1>
+                                  <eta>0</eta>
+                                  <referenceUID>D250_InnerAileron</referenceUID>
+                                </eta1>
+                                <eta2>
+                                  <eta>0</eta>
+                                  <referenceUID>D250_InnerAileron</referenceUID>
+                                </eta2>
                               </positioningInnerBorder>
                               <positioningOuterBorder>
-                                <eta1>1.0</eta1>
-                                <eta2>1.0</eta2>
+                                <eta1>
+                                  <eta>1</eta>
+                                  <referenceUID>D250_InnerAileron</referenceUID>
+                                </eta1>
+                                <eta2>
+                                  <eta>1</eta>
+                                  <referenceUID>D250_InnerAileron</referenceUID>
+                                </eta2>
                               </positioningOuterBorder>
                             </cell>
                           </cells>
@@ -4328,12 +4412,24 @@
                                 <sparUID>T1Spar2_OA</sparUID>
                               </positioningTrailingEdge>
                               <positioningInnerBorder>
-                                <eta1>0.0</eta1>
-                                <eta2>0.0</eta2>
+                                <eta1>
+                                  <eta>0</eta>
+                                  <referenceUID>D250_OuterAileron</referenceUID>
+                                </eta1>
+                                <eta2>
+                                  <eta>0</eta>
+                                  <referenceUID>D250_OuterAileron</referenceUID>
+                                </eta2>
                               </positioningInnerBorder>
                               <positioningOuterBorder>
-                                <eta1>1.0</eta1>
-                                <eta2>1.0</eta2>
+                                <eta1>
+                                  <eta>1</eta>
+                                  <referenceUID>D250_OuterAileron</referenceUID>
+                                </eta1>
+                                <eta2>
+                                  <eta>1</eta>
+                                  <referenceUID>D250_OuterAileron</referenceUID>
+                                </eta2>
                               </positioningOuterBorder>
                             </cell>
                           </cells>
@@ -4365,12 +4461,24 @@
                                 <sparUID>T1Spar2_OA</sparUID>
                               </positioningTrailingEdge>
                               <positioningInnerBorder>
-                                <eta1>0.0</eta1>
-                                <eta2>0.0</eta2>
+                                <eta1>
+                                  <eta>0</eta>
+                                  <referenceUID>D250_OuterAileron</referenceUID>
+                                </eta1>
+                                <eta2>
+                                  <eta>0</eta>
+                                  <referenceUID>D250_OuterAileron</referenceUID>
+                                </eta2>
                               </positioningInnerBorder>
                               <positioningOuterBorder>
-                                <eta1>1.0</eta1>
-                                <eta2>1.0</eta2>
+                                <eta1>
+                                  <eta>1</eta>
+                                  <referenceUID>D250_OuterAileron</referenceUID>
+                                </eta1>
+                                <eta2>
+                                  <eta>1</eta>
+                                  <referenceUID>D250_OuterAileron</referenceUID>
+                                </eta2>
                               </positioningOuterBorder>
                             </cell>
                           </cells>
@@ -4672,12 +4780,24 @@
                               <xsi2>1</xsi2>
                             </positioningTrailingEdge>
                             <positioningInnerBorder>
-                              <eta1>0.0</eta1>
-                              <eta2>0.0</eta2>
+                              <eta1>
+                                <eta>0</eta>
+                                <referenceUID>D250_wing_CS</referenceUID>
+                              </eta1>
+                              <eta2>
+                                <eta>0</eta>
+                                <referenceUID>D250_wing_CS</referenceUID>
+                              </eta2>
                             </positioningInnerBorder>
                             <positioningOuterBorder>
-                              <eta1>1</eta1>
-                              <eta2>1</eta2>
+                              <eta1>
+                                <eta>1</eta>
+                                <referenceUID>D250_wing_CS</referenceUID>
+                              </eta1>
+                              <eta2>
+                                <eta>1</eta>
+                                <referenceUID>D250_wing_CS</referenceUID>
+                              </eta2>
                             </positioningOuterBorder>
                             <material>
                               <materialUID>aluminium 2024</materialUID>
@@ -4894,12 +5014,24 @@
                               <xsi2>1</xsi2>
                             </positioningTrailingEdge>
                             <positioningInnerBorder>
-                              <eta1>0.0</eta1>
-                              <eta2>0.0</eta2>
+                              <eta1>
+                                <eta>0</eta>
+                                <referenceUID>D250_wing_CS</referenceUID>
+                              </eta1>
+                              <eta2>
+                                <eta>0</eta>
+                                <referenceUID>D250_wing_CS</referenceUID>
+                              </eta2>
                             </positioningInnerBorder>
                             <positioningOuterBorder>
-                              <eta1>1</eta1>
-                              <eta2>1</eta2>
+                              <eta1>
+                                <eta>1</eta>
+                                <referenceUID>D250_wing_CS</referenceUID>
+                              </eta1>
+                              <eta2>
+                                <eta>1</eta>
+                                <referenceUID>D250_wing_CS</referenceUID>
+                              </eta2>
                             </positioningOuterBorder>
                             <material>
                               <materialUID>aluminium 2024</materialUID>
@@ -5116,12 +5248,24 @@
                               <xsi2>1</xsi2>
                             </positioningTrailingEdge>
                             <positioningInnerBorder>
-                              <eta1>0.0</eta1>
-                              <eta2>0.0</eta2>
+                              <eta1>
+                                <eta>0</eta>
+                                <referenceUID>D250_wing_CS</referenceUID>
+                              </eta1>
+                              <eta2>
+                                <eta>0</eta>
+                                <referenceUID>D250_wing_CS</referenceUID>
+                              </eta2>
                             </positioningInnerBorder>
                             <positioningOuterBorder>
-                              <eta1>1</eta1>
-                              <eta2>1</eta2>
+                              <eta1>
+                                <eta>1</eta>
+                                <referenceUID>D250_wing_CS</referenceUID>
+                              </eta1>
+                              <eta2>
+                                <eta>1</eta>
+                                <referenceUID>D250_wing_CS</referenceUID>
+                              </eta2>
                             </positioningOuterBorder>
                             <material>
                               <materialUID>aluminium 2024</materialUID>
@@ -5338,12 +5482,24 @@
                               <xsi2>1</xsi2>
                             </positioningTrailingEdge>
                             <positioningInnerBorder>
-                              <eta1>0.0</eta1>
-                              <eta2>0.0</eta2>
+                              <eta1>
+                                <eta>0</eta>
+                                <referenceUID>D250_wing_CS</referenceUID>
+                              </eta1>
+                              <eta2>
+                                <eta>0</eta>
+                                <referenceUID>D250_wing_CS</referenceUID>
+                              </eta2>
                             </positioningInnerBorder>
                             <positioningOuterBorder>
-                              <eta1>1</eta1>
-                              <eta2>1</eta2>
+                              <eta1>
+                                <eta>1</eta>
+                                <referenceUID>D250_wing_CS</referenceUID>
+                              </eta1>
+                              <eta2>
+                                <eta>1</eta>
+                                <referenceUID>D250_wing_CS</referenceUID>
+                              </eta2>
                             </positioningOuterBorder>
                             <material>
                               <materialUID>aluminium 2024</materialUID>
@@ -5560,12 +5716,24 @@
                               <xsi2>1</xsi2>
                             </positioningTrailingEdge>
                             <positioningInnerBorder>
-                              <eta1>0.0</eta1>
-                              <eta2>0.0</eta2>
+                              <eta1>
+                                <eta>0</eta>
+                                <referenceUID>D250_wing_CS</referenceUID>
+                              </eta1>
+                              <eta2>
+                                <eta>0</eta>
+                                <referenceUID>D250_wing_CS</referenceUID>
+                              </eta2>
                             </positioningInnerBorder>
                             <positioningOuterBorder>
-                              <eta1>1</eta1>
-                              <eta2>1</eta2>
+                              <eta1>
+                                <eta>1</eta>
+                                <referenceUID>D250_wing_CS</referenceUID>
+                              </eta1>
+                              <eta2>
+                                <eta>1</eta>
+                                <referenceUID>D250_wing_CS</referenceUID>
+                              </eta2>
                             </positioningOuterBorder>
                             <material>
                               <materialUID>aluminium 2024</materialUID>
@@ -5782,12 +5950,24 @@
                               <xsi2>1</xsi2>
                             </positioningTrailingEdge>
                             <positioningInnerBorder>
-                              <eta1>0.0</eta1>
-                              <eta2>0.0</eta2>
+                              <eta1>
+                                <eta>0</eta>
+                                <referenceUID>D250_wing_CS</referenceUID>
+                              </eta1>
+                              <eta2>
+                                <eta>0</eta>
+                                <referenceUID>D250_wing_CS</referenceUID>
+                              </eta2>
                             </positioningInnerBorder>
                             <positioningOuterBorder>
-                              <eta1>1</eta1>
-                              <eta2>1</eta2>
+                              <eta1>
+                                <eta>1</eta>
+                                <referenceUID>D250_wing_CS</referenceUID>
+                              </eta1>
+                              <eta2>
+                                <eta>1</eta>
+                                <referenceUID>D250_wing_CS</referenceUID>
+                              </eta2>
                             </positioningOuterBorder>
                             <material>
                               <materialUID>aluminium 2024</materialUID>

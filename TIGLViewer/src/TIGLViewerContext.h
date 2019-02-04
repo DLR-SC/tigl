@@ -30,6 +30,7 @@
 #include "TIGLViewer.h"
 #include "TIGLViewerColors.h"
 #include <QMetaType>
+#include <QUndoStack>
 #include <Standard_Version.hxx>
 #if OCC_VERSION_HEX >= VERSION_HEX_CODE(6,7,0)
   #include <Graphic3d_ShaderProgram.hxx>
@@ -47,7 +48,7 @@ class QOCC_DECLSPEC TIGLViewerContext : public QObject
 
 public:
 
-    TIGLViewerContext();
+    TIGLViewerContext(QUndoStack*);
     ~TIGLViewerContext() OVERRIDE;
 
     Handle(V3d_Viewer)&              getViewer();
@@ -111,6 +112,7 @@ signals:
     void error (int errorCode, QString& errorDescription);
 
 private:
+    std::vector<Handle(AIS_InteractiveObject)> selected();
 
     Handle_V3d_Viewer               myViewer;
     Handle_AIS_InteractiveContext   myContext;
@@ -121,6 +123,7 @@ private:
 #if OCC_VERSION_HEX >= VERSION_HEX_CODE(6,7,0)
     Handle(Graphic3d_ShaderProgram) myShader;
 #endif
+    QUndoStack* myUndoStack;
 
     void initShaders();
 };

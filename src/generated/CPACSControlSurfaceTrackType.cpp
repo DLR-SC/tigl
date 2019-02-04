@@ -29,6 +29,7 @@ namespace generated
 {
     CPACSControlSurfaceTrackType::CPACSControlSurfaceTrackType(CPACSControlSurfaceTracks* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
+        , m_eta(reinterpret_cast<CCPACSControlSurfaceTrackType*>(this))
     {
         //assert(parent != NULL);
         m_parent = parent;
@@ -180,12 +181,12 @@ namespace generated
         m_uID = value;
     }
 
-    const CPACSEtaIsoLine& CPACSControlSurfaceTrackType::GetEta() const
+    const CCPACSEtaIsoLine& CPACSControlSurfaceTrackType::GetEta() const
     {
         return m_eta;
     }
 
-    CPACSEtaIsoLine& CPACSControlSurfaceTrackType::GetEta()
+    CCPACSEtaIsoLine& CPACSControlSurfaceTrackType::GetEta()
     {
         return m_eta;
     }

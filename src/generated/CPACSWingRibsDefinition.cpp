@@ -264,12 +264,12 @@ namespace generated
         return m_ribsPositioning_choice1;
     }
 
-    const boost::optional<CPACSWingRibExplicitPositioning>& CPACSWingRibsDefinition::GetRibExplicitPositioning_choice2() const
+    const boost::optional<CCPACSWingRibExplicitPositioning>& CPACSWingRibsDefinition::GetRibExplicitPositioning_choice2() const
     {
         return m_ribExplicitPositioning_choice2;
     }
 
-    boost::optional<CPACSWingRibExplicitPositioning>& CPACSWingRibsDefinition::GetRibExplicitPositioning_choice2()
+    boost::optional<CCPACSWingRibExplicitPositioning>& CPACSWingRibsDefinition::GetRibExplicitPositioning_choice2()
     {
         return m_ribExplicitPositioning_choice2;
     }
@@ -286,7 +286,7 @@ namespace generated
         m_ribsPositioning_choice1 = boost::none;
     }
 
-    CPACSWingRibExplicitPositioning& CPACSWingRibsDefinition::GetRibExplicitPositioning_choice2(CreateIfNotExistsTag)
+    CCPACSWingRibExplicitPositioning& CPACSWingRibsDefinition::GetRibExplicitPositioning_choice2(CreateIfNotExistsTag)
     {
         if (!m_ribExplicitPositioning_choice2)
             m_ribExplicitPositioning_choice2 = boost::in_place(reinterpret_cast<CCPACSWingRibsDefinition*>(this));

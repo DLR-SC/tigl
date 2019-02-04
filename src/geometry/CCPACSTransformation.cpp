@@ -92,26 +92,20 @@ void CCPACSTransformation::setTransformationMatrix(const CTiglTransformation& ma
     *_transformationMatrix.writeAccess() = matrix;
 
     // decompose matrix into scaling, rotation and translation
+    double scale[3];
+    double rotation[3];
+    double translation[3];
+    matrix.Decompose(&scale[0], &rotation[0], &translation[0]);
+
+
     if (!m_translation) {
         m_translation = boost::in_place(m_uidMgr);
     }
-    m_translation->SetX(matrix.GetValue(0,3));
-    m_translation->SetY(matrix.GetValue(1,3));
-    m_translation->SetZ(matrix.GetValue(2,3));
+    m_translation->SetX(translation[0]);
+    m_translation->SetY(translation[1]);
+    m_translation->SetZ(translation[2]);
 
-    // CPACS transformation order is scale before translate, this means scale
-    // is length of the columns in matrices upper 3x3 block
-    double m_rot[3][3];
-    double scale[3] = {0., 0., 0.};
-    for (int i = 0; i<3; ++i ) {
-        for (int j=0; j<3; ++j ) {
-            m_rot[i][j] = matrix.GetValue(i,j);
-            scale[j] += m_rot[i][j]*m_rot[i][j];
-        }
-    }
-    for (int i=0; i<3; ++i) {
-        scale[i] = sqrt(scale[i]);
-    }
+
     if (!m_scaling) {
         m_scaling = boost::in_place(m_uidMgr);
     }
@@ -119,38 +113,12 @@ void CCPACSTransformation::setTransformationMatrix(const CTiglTransformation& ma
     m_scaling->SetY(scale[1]);
     m_scaling->SetZ(scale[2]);
 
-    // CPACS rotation is Euler xyz.
-    // This implementation is based on http://www.gregslabaugh.net/publications/euler.pdf
-
-    // remove scaling from upper 3x3 block to obtain orthonormal matrix
-    for (int i = 0; i<3; ++i ) {
-        for (int j=0; j<3; ++j ) {
-            m_rot[i][j] /= scale[j];
-        }
-    }
-    double rot[3] = {0., 0., 0.};
-    if( fabs( fabs(m_rot[2][0]) - 1) > 1e-10 ){
-        rot[1] = -asin(m_rot[2][0]);
-        double cosTheta = cos(rot[2]);
-        rot[0] = atan2(m_rot[2][1]/cosTheta, m_rot[2][2]/cosTheta);
-        rot[2] = atan2(m_rot[1][0]/cosTheta, m_rot[0][0]/cosTheta);
-    }
-    else {
-        if ( fabs(m_rot[2][0] + 1) > 1e-10 ) {
-            rot[0] = rot[2] + atan2(m_rot[0][1], m_rot[0][2]);
-            rot[1] = M_PI/2;
-        }
-        else{
-            rot[0] = -rot[2] + atan2(-m_rot[0][1], -m_rot[0][2]);
-            rot[1] = -M_PI/2;
-        }
-    }
     if (!m_rotation) {
         m_rotation = boost::in_place(m_uidMgr);
     }
-    m_rotation->SetX(Degrees(rot[0]));
-    m_rotation->SetY(Degrees(rot[1]));
-    m_rotation->SetZ(Degrees(rot[2]));
+    m_rotation->SetX(rotation[0]);
+    m_rotation->SetY(rotation[1]);
+    m_rotation->SetZ(rotation[2]);
 }
 
 void CCPACSTransformation::updateMatrix(CTiglTransformation& cache) const

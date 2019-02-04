@@ -17,9 +17,9 @@
 
 #pragma once
 
+#include <CCPACSEtaIsoLine.h>
 #include <string>
 #include <tixi.h>
-#include "CPACSEtaIsoLine.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -42,16 +42,16 @@ namespace generated
         TIGL_EXPORT virtual const std::string& GetProfileUID() const;
         TIGL_EXPORT virtual void SetProfileUID(const std::string& value);
 
-        TIGL_EXPORT virtual const CPACSEtaIsoLine& GetEta() const;
-        TIGL_EXPORT virtual CPACSEtaIsoLine& GetEta();
+        TIGL_EXPORT virtual const CCPACSEtaIsoLine& GetEta() const;
+        TIGL_EXPORT virtual CCPACSEtaIsoLine& GetEta();
 
         TIGL_EXPORT virtual const double& GetRotZ() const;
         TIGL_EXPORT virtual void SetRotZ(const double& value);
 
     protected:
-        std::string     m_profileUID;
-        CPACSEtaIsoLine m_eta;
-        double          m_rotZ;
+        std::string      m_profileUID;
+        CCPACSEtaIsoLine m_eta;
+        double           m_rotZ;
 
     private:
 #ifdef HAVE_CPP11

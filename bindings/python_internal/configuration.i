@@ -76,6 +76,7 @@
 #include "CCPACSTrailingEdgeDevice.h"
 #include "CCPACSEnginePylons.h"
 #include "CCPACSEnginePylon.h"
+#include "generated/CPACSRibRotation_ribRotationReference.h"
 %}
 
 %feature("autodoc", "3");
@@ -99,7 +100,7 @@
 %boost_optional(tigl::generated::CPACSWingRibCell)
 %boost_optional(tigl::generated::CPACSCap)
 %boost_optional(tigl::CCPACSWingRibsPositioning)
-%boost_optional(tigl::generated::CPACSWingRibExplicitPositioning)
+%boost_optional(tigl::CCPACSWingRibExplicitPositioning)
 %boost_optional(tigl::generated::CPACSWeb)
 %boost_optional(tigl::generated::CPACSSparCells)
 %boost_optional(tigl::CCPACSGuideCurves)
@@ -122,13 +123,18 @@
 %boost_optional(tigl::CCPACSWingSections)
 %boost_optional(tigl::CCPACSWingSegments)
 %boost_optional(tigl::CCPACSPositionings)
-
+%boost_optional(tigl::CCPACSEnginePylons)
+%boost_optional(tigl::CCPACSWingProfiles)
+%boost_optional(tigl::CCPACSFuselageProfiles)
+%boost_optional(tigl::CCPACSRotorProfiles)
 
 // ---------------- Other ------------------------------//
-%boost_optional(tigl::generated::CPACSEtaIsoLine)
+%boost_optional(tigl::CCPACSEtaIsoLine)
 %boost_optional(tigl::CCPACSMaterialDefinition)
 %include "generated/CPACSXsiIsoLine.h"
 %include "generated/CPACSEtaIsoLine.h"
+%include "CCPACSEtaIsoLine.h"
+%include "CCPACSXsiIsoLine.h"
 
 %include "generated/CPACSMaterialDefinition.h"
 %include "CCPACSMaterialDefinition.h"
@@ -250,6 +256,7 @@ class CCPACSWingRibsPositioning;
 }
 %include "generated/CPACSRibRotation_ribRotationReference.h"
 %include "generated/CPACSWingRibExplicitPositioning.h"
+%include "CCPACSWingRibExplicitPositioning.h"
 %include "generated/CPACSRibRotation.h"
 %include "CCPACSWingRibRotation.h"
 %include "generated/CPACSRibCrossingBehaviour.h"

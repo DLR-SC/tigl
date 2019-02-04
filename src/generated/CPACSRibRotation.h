@@ -21,7 +21,6 @@
 #include <boost/utility/in_place_factory.hpp>
 #include <string>
 #include <tixi.h>
-#include "CPACSRibRotation_ribRotationReference.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -48,8 +47,8 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const boost::optional<CPACSRibRotation_ribRotationReference>& GetRibRotationReference() const;
-        TIGL_EXPORT virtual void SetRibRotationReference(const boost::optional<CPACSRibRotation_ribRotationReference>& value);
+        TIGL_EXPORT virtual const boost::optional<std::string>& GetRibRotationReference() const;
+        TIGL_EXPORT virtual void SetRibRotationReference(const boost::optional<std::string>& value);
 
         TIGL_EXPORT virtual const double& GetZ() const;
         TIGL_EXPORT virtual void SetZ(const double& value);
@@ -57,8 +56,8 @@ namespace generated
     protected:
         CCPACSWingRibsPositioning* m_parent;
 
-        boost::optional<CPACSRibRotation_ribRotationReference> m_ribRotationReference;
-        double                                                 m_z;
+        boost::optional<std::string> m_ribRotationReference;
+        double                       m_z;
 
     private:
 #ifdef HAVE_CPP11

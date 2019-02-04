@@ -27,6 +27,8 @@ namespace tigl
 namespace generated
 {
     CPACSControlSurfaceBorderTrailingEdge::CPACSControlSurfaceBorderTrailingEdge(CPACSControlSurfaceOuterShapeTrailingEdge* parent)
+        : m_etaLE(reinterpret_cast<CCPACSControlSurfaceBorderTrailingEdge*>(this))
+        , m_xsiLE(reinterpret_cast<CCPACSControlSurfaceBorderTrailingEdge*>(this))
     {
         //assert(parent != NULL);
         m_parent = parent;
@@ -58,7 +60,7 @@ namespace generated
 
         // read element etaTE
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/etaTE")) {
-            m_etaTE = boost::in_place();
+            m_etaTE = boost::in_place(reinterpret_cast<CCPACSControlSurfaceBorderTrailingEdge*>(this));
             try {
                 m_etaTE->ReadCPACS(tixiHandle, xpath + "/etaTE");
             } catch(const std::exception& e) {
@@ -166,32 +168,32 @@ namespace generated
 
     }
 
-    const CPACSEtaIsoLine& CPACSControlSurfaceBorderTrailingEdge::GetEtaLE() const
+    const CCPACSEtaIsoLine& CPACSControlSurfaceBorderTrailingEdge::GetEtaLE() const
     {
         return m_etaLE;
     }
 
-    CPACSEtaIsoLine& CPACSControlSurfaceBorderTrailingEdge::GetEtaLE()
+    CCPACSEtaIsoLine& CPACSControlSurfaceBorderTrailingEdge::GetEtaLE()
     {
         return m_etaLE;
     }
 
-    const boost::optional<CPACSEtaIsoLine>& CPACSControlSurfaceBorderTrailingEdge::GetEtaTE() const
+    const boost::optional<CCPACSEtaIsoLine>& CPACSControlSurfaceBorderTrailingEdge::GetEtaTE() const
     {
         return m_etaTE;
     }
 
-    boost::optional<CPACSEtaIsoLine>& CPACSControlSurfaceBorderTrailingEdge::GetEtaTE()
+    boost::optional<CCPACSEtaIsoLine>& CPACSControlSurfaceBorderTrailingEdge::GetEtaTE()
     {
         return m_etaTE;
     }
 
-    const CPACSXsiIsoLine& CPACSControlSurfaceBorderTrailingEdge::GetXsiLE() const
+    const CCPACSXsiIsoLine& CPACSControlSurfaceBorderTrailingEdge::GetXsiLE() const
     {
         return m_xsiLE;
     }
 
-    CPACSXsiIsoLine& CPACSControlSurfaceBorderTrailingEdge::GetXsiLE()
+    CCPACSXsiIsoLine& CPACSControlSurfaceBorderTrailingEdge::GetXsiLE()
     {
         return m_xsiLE;
     }
@@ -226,10 +228,10 @@ namespace generated
         return m_airfoil;
     }
 
-    CPACSEtaIsoLine& CPACSControlSurfaceBorderTrailingEdge::GetEtaTE(CreateIfNotExistsTag)
+    CCPACSEtaIsoLine& CPACSControlSurfaceBorderTrailingEdge::GetEtaTE(CreateIfNotExistsTag)
     {
         if (!m_etaTE)
-            m_etaTE = boost::in_place();
+            m_etaTE = boost::in_place(reinterpret_cast<CCPACSControlSurfaceBorderTrailingEdge*>(this));
         return *m_etaTE;
     }
 

@@ -1,6 +1,7 @@
-/* 
-* Copyright (C) 2016 Airbus Defence and Space
+/*
+* Copyright (C) 2007-2019 German Aerospace Center (DLR/SC)
 *
+* Created: 2019-01-17 Jan Kleinert <Jan.Kleinert@dlr.de>
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
@@ -13,23 +14,13 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-#ifndef CCPACSWINGRIBROTATION_H
-#define CCPACSWINGRIBROTATION_H
 
-#include "generated/CPACSRibRotation.h"
+#pragma once
+
+#include <math_Matrix.hxx>
 
 namespace tigl
 {
-class CCPACSWingRibRotation : public generated::CPACSRibRotation
-{
-public:
-    TIGL_EXPORT CCPACSWingRibRotation(CCPACSWingRibsPositioning* parent);
-
-    TIGL_EXPORT void SetRibRotationReference(const boost::optional<std::string>& value) OVERRIDE;
-
-    TIGL_EXPORT void SetZ(const double& value) OVERRIDE;
-};
-
-} // end namespace tigl
-
-#endif // CCPACSWINGRIBROTATION_H
+typedef math_Matrix tiglMatrix;
+typedef math_Vector tiglVector;
+}
