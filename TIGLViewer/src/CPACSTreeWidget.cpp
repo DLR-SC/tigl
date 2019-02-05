@@ -26,13 +26,18 @@ CPACSTreeWidget::CPACSTreeWidget(QWidget* parent)
 {
     ui->setupUi(this);
 
-    model = new CPACSAbstractModel(nullptr);
-    ui->treeView->setModel(model);
+    filterModel = new CPACSFilterModel(nullptr);
+    ui->treeView->setModel(filterModel);
     selectionModel = ui->treeView->selectionModel();
-    // backupSelectedUID = "";
+    filterModel->setExpertView(ui->expertViewCheckBox->isChecked());
 
     connect(selectionModel, SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)), this,
             SLOT(onSelectionChanged(const QItemSelection&, const QItemSelection&)));
+
+    // connect the expert check box to its effect
+    connect(ui->expertViewCheckBox, SIGNAL(toggled(bool)), this, SLOT(setExpertView(bool)));
+
+    connect(ui->searchLineEdit, SIGNAL(textEdited(const QString)), this, SLOT(setNewSearch(const QString)));
 }
 
 CPACSTreeWidget::~CPACSTreeWidget()
@@ -42,31 +47,66 @@ CPACSTreeWidget::~CPACSTreeWidget()
 
 void CPACSTreeWidget::onSelectionChanged(const QItemSelection& newSelection, const QItemSelection& oldSelection)
 {
+    // to avoid that the tree is transformed during selection of item
+    bool blockValue1 = ui->searchLineEdit->signalsBlocked();
+    ui->searchLineEdit->blockSignals(true);
+    bool blockValue2 = ui->expertViewCheckBox->signalsBlocked();
+    ui->expertViewCheckBox->blockSignals(true);
 
-    if (model->isValid()) {
-        cpcr::CPACSTreeItem* newSelectedItem = model->getItemFromSelection(newSelection);
+    if (filterModel->isValid()) {
+        cpcr::CPACSTreeItem* newSelectedItem = filterModel->getItemFromSelection(newSelection);
         emit newSelectedTreeItem(newSelectedItem);
     }
     else {
         LOG(WARNING) << "CPACSTreeWidget: onSelectionChanged called but no valid model is set" << std::endl;
     }
+
+    ui->searchLineEdit->blockSignals(blockValue1);
+    ui->expertViewCheckBox->blockSignals(blockValue2);
+}
+
+void CPACSTreeWidget::setNewSearch(const QString newText)
+{
+
+    // to avoid that on selectionChanged is called during the transformation of the tree
+    bool blockValue = selectionModel->signalsBlocked();
+    selectionModel->blockSignals(true);
+
+    filterModel->setSearchPattern(newText);
+
+    selectionModel->blockSignals(blockValue);
+
+    if (!newText.isEmpty()) {
+        ui->treeView->expandAll();
+    }
+}
+
+void CPACSTreeWidget::setExpertView(bool value)
+{
+    // to avoid that on selectionChanged is called during the transformation of the tree
+    bool blockValue = selectionModel->signalsBlocked();
+    selectionModel->blockSignals(true);
+
+    filterModel->setExpertView(value);
+
+    selectionModel->blockSignals(blockValue);
 }
 
 void CPACSTreeWidget::clear()
 {
-    model->disconnectInternalTree();
+    filterModel->disconnectInternalTree();
     tree.clean();
 }
 
 void CPACSTreeWidget::displayNewTree(TixiDocumentHandle handle, std::string root)
 {
     tree.build(handle, root);
-    model->resetInternalTree(&tree);
+    filterModel->resetInternalTree(&tree);
 }
 
 void CPACSTreeWidget::refresh()
 {
-    model->disconnectInternalTree();
+    filterModel->disconnectInternalTree();
     tree.reload();
-    model->resetInternalTree(&tree);
+    filterModel->resetInternalTree(&tree);
 }

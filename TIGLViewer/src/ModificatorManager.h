@@ -21,13 +21,8 @@
 
 #include "CCPACSConfiguration.h"
 #include "CPACSTreeItem.h"
-#include "ModificatorFuselageWidget.h"
-#include "ModificatorTransformationWidget.h"
-#include "ModificatorWidget.h"
-#include "ModificatorWingWidget.h"
 #include "ModificatorContainerWidget.h"
 #include "CPACSTreeWidget.h"
-#include <QPushButton>
 
 class TIGLViewerWindow;
 
