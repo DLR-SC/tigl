@@ -155,7 +155,7 @@ TopoDS_Shape CCPACSNacelleCowl::BuildOuterShape() const
 
 #ifdef DEBUG
         std::stringstream ss;
-        ss << "D:/tmp/nacelleProfile_"<<i<<".brep";
+        ss << "nacelleProfile_"<<i<<".brep";
         BRepTools::Write(wireCache->profiles[i], ss.str().c_str());
 #endif
 
@@ -166,7 +166,7 @@ TopoDS_Shape CCPACSNacelleCowl::BuildOuterShape() const
     for(size_t i=0; i<wireCache->guideCurves.size(); ++i) {
 #ifdef DEBUG
         std::stringstream ss;
-        ss << "D:/tmp/nacelleGuide_"<<i<<".brep";
+        ss << "nacelleGuide_"<<i<<".brep";
         BRepTools::Write(wireCache->guideCurves[i].second, ss.str().c_str());
 #endif
         lofter.addGuides(wireCache->guideCurves[i].second);
@@ -182,8 +182,6 @@ PNamedShape CCPACSNacelleCowl::BuildLoft() const
     shellBuilder.MakeShell(shell);
 
     // get nacelle origin
-//    CTiglTransformation trans = GetTransformationMatrix();
-//    gp_Pnt origin = gp_Pnt(trans.GetValue(0,3), trans.GetValue(1,3), trans.GetValue(2,3));
     gp_Pnt origin(0., 0., 0.);
 
     // get shapes of nacelle cowls
@@ -198,10 +196,10 @@ PNamedShape CCPACSNacelleCowl::BuildLoft() const
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
 
 #ifdef DEBUG
-    BRepTools::Write(outerShape,"D:/tmp/outerShape.brep");
-    BRepTools::Write(innerShape,"D:/tmp/innerShape.brep");
-    BRepTools::Write(blendingSurf1,"D:/tmp/blendingSurf1.brep");
-    BRepTools::Write(blendingSurf2,"D:/tmp/blendingSurf2.brep");
+    BRepTools::Write(outerShape,"outerShape.brep");
+    BRepTools::Write(innerShape,"innerShape.brep");
+    BRepTools::Write(blendingSurf1,"blendingSurf1.brep");
+    BRepTools::Write(blendingSurf2,"blendingSurf2.brep");
 #endif
 
     // add subshapes of outerShape to shell

@@ -41,13 +41,14 @@ namespace generated
     // CPACSFuselageElement
     // CPACSFuselageSection
     // CPACSGenericGeometricComponent
+    // CPACSNacelleSection
     // CPACSRotor
     // CPACSRotorHubHinge
     // CPACSWing
     // CPACSWingElement
     // CPACSWingSection
 
-    // generated from /xsd:schema/xsd:complexType[896]
+    // generated from /xsd:schema/xsd:complexType[895]
     class CPACSTransformation
     {
     public:

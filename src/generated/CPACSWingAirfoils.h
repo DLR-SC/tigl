@@ -34,7 +34,7 @@ namespace generated
     // This class is used in:
     // CPACSProfiles
 
-    // generated from /xsd:schema/xsd:complexType[940]
+    // generated from /xsd:schema/xsd:complexType[939]
     class CPACSWingAirfoils
     {
     public:

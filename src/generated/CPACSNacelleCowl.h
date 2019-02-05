@@ -35,7 +35,7 @@ namespace generated
     // This class is used in:
     // CPACSEngineNacelle
 
-    // generated from /xsd:schema/xsd:complexType[996]
+    // generated from /xsd:schema/xsd:complexType[995]
     class CPACSNacelleCowl
     {
     public:

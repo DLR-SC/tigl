@@ -33,7 +33,7 @@ namespace generated
     // This class is used in:
     // CPACSWingComponentSegmentStructure
 
-    // generated from /xsd:schema/xsd:complexType[975]
+    // generated from /xsd:schema/xsd:complexType[974]
     class CPACSWingSpar
     {
     public:

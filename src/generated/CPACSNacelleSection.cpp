@@ -178,12 +178,12 @@ namespace generated
         m_description = value;
     }
 
-    const CPACSTransformationPolar& CPACSNacelleSection::GetTransformation() const
+    const CCPACSTransformation& CPACSNacelleSection::GetTransformation() const
     {
         return m_transformation;
     }
 
-    CPACSTransformationPolar& CPACSNacelleSection::GetTransformation()
+    CCPACSTransformation& CPACSNacelleSection::GetTransformation()
     {
         return m_transformation;
     }

@@ -38,7 +38,7 @@ namespace generated
     // CPACSAircraftModel
     // CPACSRotorcraftModel
 
-    // generated from /xsd:schema/xsd:complexType[986]
+    // generated from /xsd:schema/xsd:complexType[985]
     class CPACSWings
     {
     public:

@@ -37,7 +37,7 @@ namespace generated
     // This class is used in:
     // CPACSWingRibsDefinitions
 
-    // generated from /xsd:schema/xsd:complexType[963]
+    // generated from /xsd:schema/xsd:complexType[962]
     class CPACSWingRibsDefinition
     {
     public:

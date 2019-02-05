@@ -19,9 +19,9 @@
 
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
+#include <CCPACSTransformation.h>
 #include <string>
 #include <tixi.h>
-#include "CPACSTransformationPolar.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -61,8 +61,8 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
         TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
 
-        TIGL_EXPORT virtual const CPACSTransformationPolar& GetTransformation() const;
-        TIGL_EXPORT virtual CPACSTransformationPolar& GetTransformation();
+        TIGL_EXPORT virtual const CCPACSTransformation& GetTransformation() const;
+        TIGL_EXPORT virtual CCPACSTransformation& GetTransformation();
 
         TIGL_EXPORT virtual const std::string& GetProfileUID() const;
         TIGL_EXPORT virtual void SetProfileUID(const std::string& value);
@@ -75,7 +75,7 @@ namespace generated
         std::string                  m_uID;
         std::string                  m_name;
         boost::optional<std::string> m_description;
-        CPACSTransformationPolar     m_transformation;
+        CCPACSTransformation         m_transformation;
         std::string                  m_profileUID;
 
     private:

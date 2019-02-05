@@ -67,19 +67,23 @@ TIGL_EXPORT TopoDS_Edge CCPACSNacelleSection::GetTransformedTrailingEdge() const
     return TopoDS::Edge(transformedShape);
 }
 
-// TODO: 2D Polar coordinates cannot be used to place things in 3D space. CCPACSTransformationPolar
-// should not be used anywhere but here.
+// Calculate CTiglTransformation from CCPACSTransformation, where translation is interpreted as
+// cylindrical coordinates (phi,x,r).
+// Also, sections are defined using (x,y)-coordinates, but angle is given around x-axis with phi=0/180
+// being in the (x,z)-plane. Therefore add a 90 degree rotation around x.
 TIGL_EXPORT CTiglTransformation CCPACSNacelleSection::GetTransformationMatrix() const
 {
 
     CTiglTransformation out;
 
-    // get r and phi from translation
-    double radius = 0;
+    // get (phi,x,r) from translation
     double phi    = 0;
+    double x      = 0;
+    double radius = 0;
     if ( m_transformation.GetTranslation() ) {
-        if (m_transformation.GetTranslation()->GetR()) { radius = m_transformation.GetTranslation()->GetR().get();   }
-        if (m_transformation.GetTranslation()->GetR()) { phi    = m_transformation.GetTranslation()->GetPhi().get(); }
+        if (m_transformation.GetTranslation()->GetX()) { phi    = m_transformation.GetTranslation()->GetX().get(); }
+        if (m_transformation.GetTranslation()->GetY()) { x      = m_transformation.GetTranslation()->GetY().get(); }
+        if (m_transformation.GetTranslation()->GetZ()) { radius = m_transformation.GetTranslation()->GetZ().get(); }
     }
 
     // rotate from XY-plane to XZ-plane
@@ -101,12 +105,7 @@ TIGL_EXPORT CTiglTransformation CCPACSNacelleSection::GetTransformationMatrix() 
 
     // apply translation (and rotate the profile accordingly)
     out.AddRotationX(phi);
-    out.AddTranslation(0,-radius*sin(Radians(phi)),radius*cos(Radians(phi)));
-
-    // get transformation of nacelle and premultiply?
-    // inheritence: ->sections->cowl->nacelle
-//    CTiglTransformation nacelleTransform = GetParent()->GetParent()->GetTransformationMatrix();
-//    out.PreMultiply(nacelleTransform);
+    out.AddTranslation(x, -radius*sin(Radians(phi)), radius*cos(Radians(phi)));
 
     return out;
 }

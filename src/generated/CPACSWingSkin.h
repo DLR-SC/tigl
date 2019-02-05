@@ -32,7 +32,7 @@ namespace generated
     // CPACSWingCell
     // CPACSWingShell
 
-    // generated from /xsd:schema/xsd:complexType[974]
+    // generated from /xsd:schema/xsd:complexType[973]
     class CPACSWingSkin
     {
     public:

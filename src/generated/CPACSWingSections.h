@@ -38,7 +38,7 @@ namespace generated
     // CPACSEnginePylon
     // CPACSWing
 
-    // generated from /xsd:schema/xsd:complexType[967]
+    // generated from /xsd:schema/xsd:complexType[966]
     class CPACSWingSections
     {
     public:

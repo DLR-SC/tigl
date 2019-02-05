@@ -36,7 +36,7 @@ namespace generated
     // This class is used in:
     // CPACSWingComponentSegmentStructure
 
-    // generated from /xsd:schema/xsd:complexType[973]
+    // generated from /xsd:schema/xsd:complexType[972]
     class CPACSWingShell
     {
     public:

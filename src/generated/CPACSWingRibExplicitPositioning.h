@@ -30,7 +30,7 @@ namespace generated
     // This class is used in:
     // CPACSWingRibsDefinition
 
-    // generated from /xsd:schema/xsd:complexType[962]
+    // generated from /xsd:schema/xsd:complexType[961]
     class CPACSWingRibExplicitPositioning
     {
     public:

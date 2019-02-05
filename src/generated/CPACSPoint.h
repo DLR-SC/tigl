@@ -36,7 +36,6 @@ namespace generated
     // CPACSPointList
     // CPACSSeatModule
     // CPACSTransformation
-    // CPACSTransformationPolar
 
     // generated from /xsd:schema/xsd:complexType[728]
     class CPACSPoint

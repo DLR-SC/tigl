@@ -30186,7 +30186,7 @@ jonas.jepsen@dlr.de
 				<xsd:all>
 					<xsd:element name="name" type="stringBaseType"/>
 					<xsd:element minOccurs="0" name="description" type="stringBaseType"/>
-					<xsd:element name="transformation" type="transformationPolarType"/>
+					<xsd:element name="transformation" type="transformationType"/>
 					<xsd:element name="profileUID" type="stringUIDBaseType"/>
 				</xsd:all>
 				<xsd:attribute name="uID" type="xsd:string" use="required"/>
@@ -38639,67 +38639,6 @@ jonas.jepsen@dlr.de
 					<xsd:element minOccurs="0" name="translation" type="pointXYType">
 						<xsd:annotation>
 							<xsd:documentation>translation of profile definition
-							</xsd:documentation>
-						</xsd:annotation>
-					</xsd:element>
-				</xsd:sequence>
-				<xsd:attribute name="uID" type="xsd:string" use="required"/>
-			</xsd:extension>
-		</xsd:complexContent>
-	</xsd:complexType>
-
-
-	<xsd:complexType name="transformationPolarType">
-
-		<xsd:annotation>
-			<xsd:appinfo>
-				<sd:schemaDoc>
-					<ddue:summary>
-						<ddue:para>transformationPolarType</ddue:para>
-					</ddue:summary>
-					<ddue:remarks>
-						<ddue:para>Transformation type, containing a set of
-							transformations. The order of the transformations is scaling
-							-&gt; rotation -&gt; translation, and they are executed in this
-							order. Any of them can be omitted; it will be replaced by its
-							defaults.</ddue:para>
-						<ddue:para>Transformations are always executed relative to the
-							child not the parent. I.e. a scaling does not have an influence
-							on the parent item. For example in the outer geometry of a wing
-							the element scaling does not influence the section. Scaling does
-							also not effect rotation and translation.</ddue:para>
-						<ddue:para>For the polar transformation the translation is
-							executed in polar coordinates, relative to the parent element.
-						</ddue:para>
-					</ddue:remarks>
-				</sd:schemaDoc>
-			</xsd:appinfo>
-		</xsd:annotation>
-		<xsd:complexContent>
-			<xsd:extension base="complexBaseType">
-				<xsd:sequence>
-					<xsd:element minOccurs="0" name="scaling" type="pointType">
-						<xsd:annotation>
-							<xsd:documentation>Scaling data default: 1,1,1. Those parameters
-								describe the scaling of the x-, y-, and z-axis.
-							</xsd:documentation>
-						</xsd:annotation>
-					</xsd:element>
-					<xsd:element minOccurs="0" name="rotation" type="pointType">
-						<xsd:annotation>
-							<xsd:documentation>Rotation data default: 0,0,0. The rotation
-								angles are the three Euler angles to describe the orientation of
-								the coordinate system. The order is allways xyz in CPACS.
-								Therefore the first rotation is around the x-axis, the second
-								rotation is around the rotated y-axis (y') and the third
-								rotation is around the two times rotated z-axis (z'').
-							</xsd:documentation>
-						</xsd:annotation>
-					</xsd:element>
-					<xsd:element minOccurs="0" name="translation" type="pointPolarType">
-						<xsd:annotation>
-							<xsd:documentation>Translation data default: 0,0. Please note
-								that this translation is executed in polar coordinates.
 							</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>

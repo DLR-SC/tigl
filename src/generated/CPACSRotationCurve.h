@@ -30,7 +30,7 @@ namespace generated
     // This class is used in:
     // CPACSNacelleCowl
 
-    // generated from /xsd:schema/xsd:complexType[997]
+    // generated from /xsd:schema/xsd:complexType[996]
     class CPACSRotationCurve
     {
     public:

@@ -118,8 +118,9 @@
 									<z>0.0</z>
 								</rotation>
 								<translation uID="fanCowl_section_upper_translate">
-									<r>0.5</r>
-									<phi>0.0</phi>
+									<x>0.0</x>
+									<y>0.0</y>
+									<z>0.5</z>
 								</translation>
 							</transformation>
 						</section>
@@ -139,8 +140,9 @@
 									<z>0.0</z>
 								</rotation>
 								<translation uID="fanCowl_section_left_translate">
-									<r>0.66</r>
-									<phi>120</phi>
+									<x>120</x>
+									<y>0.0</y>
+									<z>0.66</z>
 								</translation>
 							</transformation>
 						</section>
@@ -160,8 +162,9 @@
 									<z>0.0</z>
 								</rotation>
 								<translation uID="fanCowl_section_right_translate">
-									<r>0.66</r>
-									<phi>240</phi>
+									<x>240</x>
+									<y>0.0</y>
+									<z>0.66</z>
 								</translation>
 							</transformation>
 						</section>
@@ -169,8 +172,8 @@
 					<rotationCurve uID="fanCowl_rotationCurve">
 					    <referenceSectionUID>fanCowl_section_1</referenceSectionUID>
 						<curveProfileUID>fanCowlRotationCurve</curveProfileUID>
-						<startZeta>-0.6</startZeta>
-						<endZeta>-0.3</endZeta>
+						<startZeta>-0.3</startZeta>
+						<endZeta>-0.6</endZeta>
 						<startZetaBlending>-0.7</startZetaBlending>
 						<endZetaBlending>-0.2</endZetaBlending>
 					</rotationCurve>

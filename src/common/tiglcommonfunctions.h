@@ -36,7 +36,6 @@
 #include <Geom_BSplineCurve.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include "TColgp_HArray1OfPnt.hxx"
-#include "generated/CPACSTransformationPolar.h"
 
 #include <map>
 #include <string>

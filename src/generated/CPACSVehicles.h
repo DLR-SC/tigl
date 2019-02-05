@@ -39,7 +39,7 @@ namespace generated
     // This class is used in:
     // CPACSCpacs
 
-    // generated from /xsd:schema/xsd:complexType[922]
+    // generated from /xsd:schema/xsd:complexType[921]
     class CPACSVehicles
     {
     public:

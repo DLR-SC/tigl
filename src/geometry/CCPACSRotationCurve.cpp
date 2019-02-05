@@ -65,7 +65,7 @@ TopoDS_Face CCPACSRotationCurve::GetRotationSurface(gp_Pnt origin, axis dir) con
     TopoDS_Edge edge = TopoDS::Edge(map(1));
 
 #ifdef DEBUG
-    BRepTools::Write(edge,"D:/tmp/rotationalcurve.brep");
+    BRepTools::Write(edge,"rotationalcurve.brep");
 #endif
 
 
