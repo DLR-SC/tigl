@@ -38,7 +38,7 @@ ModificatorContainerWidget::~ModificatorContainerWidget()
     delete ui;
 }
 
-void ModificatorContainerWidget::hideAllSpecializedWidgets()
+void ModificatorContainerWidget::hideAllSecializedWidgets()
 {
     bool visible = false;
     ui->transformationModificator->setVisible(visible);
@@ -46,14 +46,12 @@ void ModificatorContainerWidget::hideAllSpecializedWidgets()
     ui->fuselageModificator->setVisible(visible);
     ui->applyWidget->setVisible(visible);
     ui->noInterfaceWidget->setVisible(visible);
-    ui->elementModificator->setVisible(visible);
-    ui->sectionModificator->setVisible(visible);
     currentModificator = nullptr;
 }
 
 void ModificatorContainerWidget::setTransformationModificator(tigl::CCPACSTransformation& transformation)
 {
-    hideAllSpecializedWidgets();
+    hideAllSecializedWidgets();
     ui->transformationModificator->setTransformation(transformation);
     ui->transformationModificator->setVisible(true);
     ui->applyWidget->setVisible(true);
@@ -62,7 +60,7 @@ void ModificatorContainerWidget::setTransformationModificator(tigl::CCPACSTransf
 
 void ModificatorContainerWidget::setWingModificator(tigl::CCPACSWing& wing)
 {
-    hideAllSpecializedWidgets();
+    hideAllSecializedWidgets();
     ui->wingModificator->setWing(wing);
     ui->wingModificator->setVisible(true);
     ui->applyWidget->setVisible(true);
@@ -71,34 +69,16 @@ void ModificatorContainerWidget::setWingModificator(tigl::CCPACSWing& wing)
 
 void ModificatorContainerWidget::setFuselageModificator(tigl::CCPACSFuselage& fuselage)
 {
-    hideAllSpecializedWidgets();
+    hideAllSecializedWidgets();
     ui->fuselageModificator->setFuselage(fuselage);
     ui->fuselageModificator->setVisible(true);
     ui->applyWidget->setVisible(true);
     currentModificator = ui->fuselageModificator;
 }
 
-void ModificatorContainerWidget::setElementModificator(tigl::CTiglSectionElement& element)
-{
-    hideAllSpecializedWidgets();
-    ui->elementModificator->setElement(element);
-    ui->elementModificator->setVisible(true);
-    ui->applyWidget->setVisible(true);
-    currentModificator = ui->elementModificator;
-}
-
-void ModificatorContainerWidget::setSectionModificator(QList<tigl::CTiglSectionElement*> elements)
-{
-    hideAllSpecializedWidgets();
-    ui->sectionModificator->setAssociatedElements(elements);
-    ui->sectionModificator->setVisible(true);
-    ui->applyWidget->setVisible(true);
-    currentModificator = ui->sectionModificator;
-}
-
 void ModificatorContainerWidget::setNoInterfaceWidget()
 {
-    hideAllSpecializedWidgets();
+    hideAllSecializedWidgets();
     ui->noInterfaceWidget->setVisible(true);
     currentModificator = nullptr;
 }
@@ -107,10 +87,9 @@ void ModificatorContainerWidget::applyCurrentModifications()
 {
 
     if (currentModificator != nullptr) {
-        if ( currentModificator->apply() ) {
-            // will create the undoCommand in modificator manager (only called if there was some modifications)
-            emit undoCommandRequired();
-        }
+        currentModificator->apply(); //
+        // todo save in tixi memory, here ? or in apply function ?
+        emit configurationEdited();
     }
     else {
         LOG(WARNING) << "ModificatorManager::applyCurrentModifications() called "

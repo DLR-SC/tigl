@@ -122,12 +122,9 @@ public:
     // QUndoCommand interface
 
 public:
-    void redo() OVERRIDE;
-    void undo() OVERRIDE;
-    int id() const OVERRIDE
-    {
-        return 1003;
-    }
+    void redo() override;
+    void undo() override;
+    int id() const override {return 1003;}
 
 private:
     void initialize();

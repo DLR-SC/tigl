@@ -26,7 +26,7 @@ CPACSFilterModel::CPACSFilterModel(cpcr::CPACSTree* tree, QObject* parent)
 
     basicTreeRegExp.setPatternSyntax(QRegExp::RegExp2);
     basicTreeRegExp.setCaseSensitivity(Qt::CaseInsensitive);
-    basicTreeRegExp.setPattern("^(aircraft|model|wings|wing|sections|section|segments|segment|fuselages|fuselage)$");
+    basicTreeRegExp.setPattern("^(model|wings|wing|sections|section|segments|segment|fuselages|fuselage)$");
 
     searchPattern.setPatternSyntax(QRegExp::FixedString);
     searchPattern.setCaseSensitivity(Qt::CaseInsensitive);
@@ -57,8 +57,8 @@ bool CPACSFilterModel::filterAcceptsRow(int sourceRow, const QModelIndex& source
     else {
         // if the row itself match the pattern
         if (sourceModel()->data(typeIndex).toString().contains(searchPattern) ||
-            (matchingOnUID && sourceModel()->data(uidIndex).toString().contains(searchPattern))) {
-                return true;
+            sourceModel()->data(uidIndex).toString().contains(searchPattern)) {
+            return true;
         }
         // check if one of its child match the pattern (recursive call)
         else {
@@ -83,27 +83,4 @@ void CPACSFilterModel::setSearchPattern(const QString newText)
 {
     searchPattern.setPattern(newText);
     invalidateFilter();
-}
-
-void CPACSFilterModel::enableMatchOnUID(bool value)
-{
-    matchingOnUID = value;
-    invalidateFilter();
-}
-
-QModelIndex CPACSFilterModel::getAircraftModelRoot()
-{
-    return mapFromSource(cpacsModel->getAircraftModelIndex());
-}
-
-QModelIndex CPACSFilterModel::getIdxForUID(const QString& uid)
-{
-    QModelIndex sourceIdx = cpacsModel->getIdxForUID(uid.toStdString());
-    QModelIndex idx       = mapFromSource(sourceIdx);
-    return idx;
-}
-
-QString CPACSFilterModel::getUidForIdx(QModelIndex idx)
-{
-    return QString(cpacsModel->getUidForIdx(mapToSource(idx)).c_str());
 }

@@ -62,9 +62,7 @@ private slots:
 
     void setNewSearch(const QString newText);
 
-    void setExpertView();
-
-    void setShowUID();
+    void setExpertView(bool value);
 
 public:
     explicit CPACSTreeWidget(QWidget* parent = nullptr);
@@ -88,10 +86,6 @@ public:
    * @remark: the internal tixi handle remain the same
    */
     void refresh();
-
-    void setSelectedUID(const QString & uid);
-
-    QString getSelectedUID();
 
 private:
     Ui::CPACSTreeWidget* ui;

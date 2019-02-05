@@ -119,6 +119,7 @@ set(tv_src
   src/TIGLViewerNewFileDialog.cpp
   src/CTiglPointWidget.cpp
   src/TIGLViewerCommonFunctions.cpp
+  src/CPACSFilterModel.cpp
 )
 	
 # header files
@@ -181,6 +182,7 @@ set(tv_hdr
   src/TIGLViewerNewFileDialog.h
   src/CTiglPointWidget.h
   src/TIGLViewerCommonFunctions.h
+  src/CPACSFilterModel.h
 )
 
 set(tv_ui

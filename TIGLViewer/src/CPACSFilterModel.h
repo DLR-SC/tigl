@@ -32,7 +32,6 @@
  * model should be display.
  * The default filtering on the mode can be avoided by setting the expertView mode using
  * the setExpertView() function.
- * We can also enable or not the match on uid using the enableMatchOnUID() function.
  *
  * @author Malo Drougard
  */
@@ -44,12 +43,6 @@ class CPACSFilterModel : public QSortFilterProxyModel
 public slots:
 
     void setExpertView(bool value);
-
-    /**
-     * enable the match on uid for the search pattern
-     * @param value
-     */
-    void enableMatchOnUID(bool value);
 
     void setSearchPattern(const QString newText);
 
@@ -75,16 +68,6 @@ public:
 
     cpcr::CPACSTreeItem* getItemFromSelection(const QItemSelection& newSelection);
 
-    /**
-     * @return Return the index of the first cpacs element that is of the "model" type
-     */
-    QModelIndex getAircraftModelRoot();
-
-    QModelIndex getIdxForUID(const QString& uid);
-
-    QString getUidForIdx(QModelIndex idx);
-
-
 protected:
     bool filterAcceptsRow(int sourceRow, const QModelIndex& sourceParent) const override;
 
@@ -92,7 +75,6 @@ private:
     CPACSAbstractModel* cpacsModel;
     QRegExp basicTreeRegExp;
     QRegExp searchPattern;
-    bool matchingOnUID;
     bool expertView;
 };
 

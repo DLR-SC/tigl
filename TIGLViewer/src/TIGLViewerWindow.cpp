@@ -124,7 +124,7 @@ TIGLViewerWindow::TIGLViewerWindow()
     setAcceptDrops(true);
 
     // creator init
-    modificatorManager = new ModificatorManager(treeWidget, modificatorContainerWidget, undoStack) ;
+    modificatorManager = new ModificatorManager(treeWidget, modificatorContainerWidget) ;
 
     connectSignals();
     createMenus();
@@ -312,7 +312,7 @@ void TIGLViewerWindow::openFile(const QString& fileName)
             delete cpacsConfiguration;
             cpacsConfiguration = config;
 
-            modificatorManager->setCPACSConfiguration(cpacsConfiguration);
+            modificatorManager->setCPACSConfiguration(&(cpacsConfiguration->GetConfiguration()));
 
             connectConfiguration();
             updateMenus();
