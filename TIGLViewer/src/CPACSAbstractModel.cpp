@@ -42,16 +42,10 @@ QVariant CPACSAbstractModel::headerData(int section, Qt::Orientation orientation
     if (isValid() && orientation == Qt::Horizontal && role == Qt::DisplayRole) {
 
         if (section == 0) {
-            return "index";
-        }
-        else if (section == 1) {
             return "type";
         }
-        else if (section == 2) {
+        else if (section == 1) {
             return "UID";
-        }
-        else if (section == 3) {
-            return "XPath";
         }
         else {
             return "invalid";
@@ -63,25 +57,20 @@ QVariant CPACSAbstractModel::headerData(int section, Qt::Orientation orientation
 
 QVariant CPACSAbstractModel::data(const QModelIndex& index, int role) const
 {
-    if (!index.isValid() || !isValid())
+    if (!index.isValid() || !isValid()) {
         return QVariant();
+    }
 
-    if (role != Qt::DisplayRole)
+    if (role != Qt::DisplayRole) {
         return QVariant();
-
+    }
     cpcr::CPACSTreeItem* item = getItem(index);
     QVariant data;
     if (index.column() == 0) {
-        data = item->getTixiIndex();
-    }
-    else if (index.column() == 1) {
         data = QString(item->getType().c_str());
     }
-    else if (index.column() == 2) {
+    else if (index.column() == 1) {
         data = QString(item->getUid().c_str());
-    }
-    else if (index.column() == 3) {
-        data = QString(item->getXPath().c_str());
     }
     else {
         data = QVariant();
@@ -93,9 +82,9 @@ QVariant CPACSAbstractModel::data(const QModelIndex& index, int role) const
 // return the index of the parent
 QModelIndex CPACSAbstractModel::parent(const QModelIndex& index) const
 {
-    if (!isValid())
+    if (!isValid()) {
         return QModelIndex();
-
+    }
     cpcr::CPACSTreeItem* childItem  = getItem(index);
     cpcr::CPACSTreeItem* parentItem = childItem->getParent();
 
@@ -105,8 +94,9 @@ QModelIndex CPACSAbstractModel::parent(const QModelIndex& index) const
 // Count the number of children of this item
 int CPACSAbstractModel::rowCount(const QModelIndex& idx) const
 {
-    if (!isValid())
+    if (!isValid()) {
         return 0;
+    }
 
     cpcr::CPACSTreeItem* item = getItem(idx);
     return item->getChildren().size();
@@ -115,26 +105,28 @@ int CPACSAbstractModel::rowCount(const QModelIndex& idx) const
 int CPACSAbstractModel::columnCount(const QModelIndex& idx) const
 {
 
-    if (!isValid())
+    if (!isValid()) {
         return 0;
+    }
 
-    cpcr::CPACSTreeItem* item = getItem(idx);
-    return 4; // we have for values in a tree item
+    return 2; // we have for values in a tree item
 }
 
 // return the QModelindex from a parent and row and column information
 QModelIndex CPACSAbstractModel::index(int row, int column, const QModelIndex& parent) const
 {
-    if (!isValid())
+    if (!isValid()) {
         return QModelIndex();
-
+    }
     cpcr::CPACSTreeItem* parentItem = getItem(parent); // return root if parent is empty or invalid
     cpcr::CPACSTreeItem* childItem  = parentItem->getChildren()[row];
 
-    if (childItem) // case where the child is not a null pointer
+    if (childItem) { // case where the child is not a null pointer
         return createIndex(row, column, childItem);
-    else
+    }
+    else {
         return QModelIndex();
+    }
 }
 
 QModelIndex CPACSAbstractModel::getIdxForUID(std::string uid)
@@ -176,8 +168,9 @@ cpcr::CPACSTreeItem* CPACSAbstractModel::getItem(QModelIndex index) const
     // Internal identifier is the item pointer
     if (index.isValid()) {
         cpcr::CPACSTreeItem* item = static_cast<cpcr::CPACSTreeItem*>(index.internalPointer());
-        if (item)
+        if (item) {
             return item;
+        }
     }
     return tree->getRoot(); // empty index is the root
 }

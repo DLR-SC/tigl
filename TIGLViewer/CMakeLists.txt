@@ -113,6 +113,7 @@ set(tv_src
   src/TIGLViewerException.cpp
   src/ModificatorContainerWidget.cpp
   src/CPACSTreeWidget.cpp
+  src/CPACSFilterModel.cpp
 )
 	
 # header files
@@ -169,6 +170,7 @@ set(tv_hdr
   src/CPACSAbstractModel.h
   src/ModificatorContainerWidget.h
   src/CPACSTreeWidget.h
+  src/CPACSFilterModel.h
 )
 
 set(tv_ui
