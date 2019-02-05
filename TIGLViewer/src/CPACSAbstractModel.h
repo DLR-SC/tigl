@@ -20,8 +20,7 @@
 #define TIGL_CPACSABSTRACTMODEL_H
 
 #include <QAbstractItemModel>
-#include <QMutex>
-#include <QtCore/QItemSelection>
+#include <QItemSelection>
 #include <Quantity_Color.hxx>
 
 #include "CPACSTree.h"

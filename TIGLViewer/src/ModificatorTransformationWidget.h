@@ -21,7 +21,7 @@
 
 #include "ModificatorWidget.h"
 #include "CCPACSTransformation.h"
-#include "geometry/CTiglTransformation.h"
+#include "CTiglTransformation.h"
 #include <QDoubleSpinBox>
 
 class ModificatorTransformationWidget : public ModificatorWidget
