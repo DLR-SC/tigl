@@ -22,9 +22,9 @@
 
 #include <QtGui>
 #include <QFileDialog>
-#include <QtCore/QTextStream>
-#include <QtCore/QFileInfo>
-#include <QtCore/QString>
+#include <QTextStream>
+#include <QFileInfo>
+#include <QString>
 #include <QShortcut>
 #include <QTimer>
 #include <QProcessEnvironment>

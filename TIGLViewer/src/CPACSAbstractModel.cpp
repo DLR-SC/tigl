@@ -22,7 +22,6 @@
 #include "CCPACSWingSectionElement.h"
 #include "CCPACSWings.h"
 #include "TIGLViewerWindow.h"
-#include <QtCore/QItemSelection>
 
 #include "CCPACSWingSegment.h"
 #include "TIGLViewerException.h"
