@@ -22,7 +22,6 @@
 #include "CPACSTree.h"
 #include "CTiglLogging.h"
 
-
 namespace cpcr
 {
 
@@ -112,12 +111,12 @@ int CPACSTreeItem::positionRelativelyToParent() const
 bool CPACSTreeItem::hasChildOfType(std::string type)
 {
     for (std::vector<CPACSTreeItem*>::iterator it = children.begin(); it != children.end(); ++it) {
-        if ((*it)->getType() == type)
+        if ((*it)->getType() == type) {
             return true;
+        }
     }
     return false;
 }
-
 
 CPACSTree* CPACSTreeItem::getTree() const
 {
@@ -156,8 +155,9 @@ CPACSTreeItem* CPACSTreeItem::getChildByUid(std::string searchedUid)
     if (r == nullptr) {
         for (auto p : children) {
             r = p->getChildByUid(searchedUid);
-            if (r != nullptr)
+            if (r != nullptr) {
                 return r;
+            }
         }
     }
 
@@ -181,7 +181,6 @@ CPACSTreeItem* CPACSTreeItem::getParentOfType(std::string type, bool withoutWarn
     // else recursive call
     return parent->getParentOfType(type, withoutWarning);
 }
-
 
 bool CPACSTreeItem::hasParentOfType(std::string type)
 {

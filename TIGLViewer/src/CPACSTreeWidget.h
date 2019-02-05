@@ -22,7 +22,7 @@
 #include <QWidget>
 #include <QTreeView>
 #include "CPACSTree.h"
-#include "CPACSAbstractModel.h"
+#include "CPACSFilterModel.h"
 
 namespace Ui
 {
@@ -34,15 +34,17 @@ class CPACSTreeWidget;
  *
  * It holds the cpcr::CPACSTree that contains the cpacs structure of the open
  * file . It holds the QTreeView that display the tree in the GUI. It holds the
- * CPACSAbstractModel that prepare the CPACSTree for the QTreeView. It holds the
+ * CPACSFilterModel that prepare the CPACSTree for the QTreeView. It holds the
  * QItemSelectionModel that emit a signal when a new element is selected in the
- * QTreeView.
+ * QTreeView. It holds QLineEdit and QCheckBox to filter and search in the tree.
  *
  * The goal of this class is to articulate all the previous components together.
  * It has one function to display a new tree based on a TixiHandle.
  * It has one function to clear the tree.
  * It has one function to update the tree based on current TixiHandle.
- * It emit a signal when a new element in the tree is selected.
+ * It emits a signal when a new element in the tree is selected.
+ * It connect the filter option of the cpacsFilterModel
+ *
  *
  * @author Malo Drougard
  */
@@ -57,6 +59,10 @@ signals:
 private slots:
 
     void onSelectionChanged(const QItemSelection& newSelection, const QItemSelection& oldSelection);
+
+    void setNewSearch(const QString newText);
+
+    void setExpertView(bool value);
 
 public:
     explicit CPACSTreeWidget(QWidget* parent = nullptr);
@@ -85,7 +91,7 @@ private:
     Ui::CPACSTreeWidget* ui;
 
     cpcr::CPACSTree tree;
-    CPACSAbstractModel* model;
+    CPACSFilterModel* filterModel;
     QItemSelectionModel* selectionModel;
 };
 

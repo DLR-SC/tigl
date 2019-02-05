@@ -120,6 +120,7 @@ set(tv_src
     TIGLViewerException.cpp
     ModificatorContainerWidget.cpp
     CPACSTreeWidget.cpp
+    CPACSFilterModel.cpp
 )
 	
 # normal header files
@@ -179,6 +180,7 @@ set(tv_hdr_qobj
 	CPACSAbstractModel.h
     ModificatorContainerWidget.h
     CPACSTreeWidget.h
+    CPACSFilterModel.h
 )
 
 set(tv_ui_comp
