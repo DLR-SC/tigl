@@ -130,10 +130,6 @@ void CCPACSNacelleCowl::BuildOuterShapeWires(WireCache& cache) const
                     k = 1;
                 }
                 params.toSection = &m_sections.GetSection(k);
-
-//                CTiglTransformation trans = GetTransformationMatrix();
-//                params.origin = CTiglPoint( trans.GetValue(0,3), trans.GetValue(1,3), trans.GetValue(2,3)  );
-
                 CTiglNacelleGuideCurveBuilder gcbuilder(params);
                 std::pair<double,TopoDS_Wire> zetaGuidePair(params.fromZeta, gcbuilder.GetWire());
                 zetaGuides.push_back(zetaGuidePair);

@@ -39,6 +39,8 @@ public:
     TIGL_EXPORT TopoDS_Edge GetTransformedLowerWire() const;
     TIGL_EXPORT TopoDS_Edge GetTransformedTrailingEdge() const;
 
+    TIGL_EXPORT double GetChordLength() const;
+
     TIGL_EXPORT CTiglTransformation GetTransformationMatrix() const;
 
 };

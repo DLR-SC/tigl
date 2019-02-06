@@ -60,6 +60,20 @@ TopoDS_Wire CTiglNacelleGuideCurveBuilder::GetWire()
     gp_Vec tangent;
     pointAlgo1.GetPointTangent(parameters.fromZeta, point_start_cartesian, tangent);
 
+    // r-values are scaled by r-values of the start and end profile,
+    // x-values are scaled by the chord lengths of the start and end profiles
+    double xscale_start = parameters.fromSection->GetChordLength();
+    double xscale_end   = parameters.toSection->GetChordLength();
+    double rscale_start = 1.;
+    double rscale_end = 1.;
+    try {
+        rscale_start = *(parameters.fromSection->GetTransformation().GetTranslation()->GetZ());
+        rscale_end   = *(parameters.toSection->GetTransformation().GetTranslation()->GetZ());
+    }
+    catch(...) {
+        throw CTiglError("CTiglNacelleGuideCurveBuilder::GetWire(): Can't get radial displacement of nacelle sections.");
+    }
+
     // radius and angle in YZ-plane
     double y = point_start_cartesian.Y() - parameters.origin.y;
     double z = point_start_cartesian.Z() - parameters.origin.z;
@@ -141,13 +155,17 @@ TopoDS_Wire CTiglNacelleGuideCurveBuilder::GetWire()
         // linear interpolation of angles (actually it should hold phi = phii)
         double phii = (1-u)*startPhi + u*endPhi;
 
+        // linear interpolation of scales
+        double xscale = (1-u)*xscale_start + u*xscale_end;
+        double rscale = (1-u)*rscale_start + u*rscale_end;
+
         // add cubic step function as "baseline" for relative x coordinate (y-component of sampled point)
         double dx = endX - startX;
-        double xi   = -2*dx*u*u*u + 3*dx*u*u + startX + sampledPoint.Y();
+        double xi   = -2*dx*u*u*u + 3*dx*u*u + startX + xscale*sampledPoint.Y();
 
         // add cubic step function as "baseline" to sampled relative radius (z-component of sampled point)
         double dr = endR - startR;
-        double ri   = -2*dr*u*u*u + 3*dr*u*u + startR + sampledPoint.Z();
+        double ri   = -2*dr*u*u*u + 3*dr*u*u + startR + rscale*sampledPoint.Z();
 
         // transform to cartesian coordinates
         cartesianPoints.push_back(gp_Pnt(  xi                    + parameters.origin.x,
@@ -176,7 +194,6 @@ TopoDS_Wire CTiglNacelleGuideCurveBuilder::GetWire()
     interPol.Load(startTangent, endTangent, false);
     interPol.Perform();
     Handle(Geom_BSplineCurve) hcurve = interPol.Curve();
-
 
     TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(hcurve);
     BRepBuilderAPI_MakeWire wireBuilder(edge);

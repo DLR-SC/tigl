@@ -134,4 +134,16 @@ TopoDS_Edge CCPACSNacelleProfile::GetTrailingEdge(TiglShapeModifier mod) const
     }
 }
 
+gp_Pnt CCPACSNacelleProfile::GetLEPoint() const
+{
+    return GetProfileAlgo()->GetLEPoint();
+}
+
+// Returns the trailing edge point of the wing profile wire. The trailing edge point
+// is already transformed by the wing profile transformation.
+gp_Pnt CCPACSNacelleProfile::GetTEPoint() const
+{
+    return GetProfileAlgo()->GetTEPoint();
+}
+
 } //namepsace tigl

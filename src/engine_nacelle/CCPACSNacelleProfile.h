@@ -51,6 +51,9 @@ public:
     TIGL_EXPORT TopoDS_Edge GetTrailingEdge(TiglShapeModifier mod = UNMODIFIED_SHAPE) const;
     TIGL_EXPORT TopoDS_Wire GetWire        (TiglShapeModifier mod = UNMODIFIED_SHAPE) const;
 
+    gp_Pnt GetLEPoint() const;
+    gp_Pnt GetTEPoint() const;
+
     // Checks, whether the trailing edge is blunt or not
     TIGL_EXPORT bool HasBluntTE() const;
 

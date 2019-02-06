@@ -110,4 +110,13 @@ TIGL_EXPORT CTiglTransformation CCPACSNacelleSection::GetTransformationMatrix() 
     return out;
 }
 
+double CCPACSNacelleSection::GetChordLength() const
+{
+    gp_Pnt p1 = GetProfile().GetLEPoint();
+    gp_Pnt p2 = GetProfile().GetTEPoint();
+    CTiglTransformation T = GetTransformationMatrix();
+    return T.Transform(p1).Distance(T.Transform(p2));
+}
+
+
 } //namepsace tigl
