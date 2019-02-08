@@ -37,6 +37,7 @@
 #include "CWireToCurve.h"
 #include "BRepBuilderAPI_MakeFace.hxx"
 #include "GeomFill.hxx"
+#include "BRepPrimAPI_MakeRevol.hxx"
 
 
 namespace {
@@ -48,6 +49,9 @@ void RemoveBlendingPart(TopoDS_Edge const lowerEdge,
 
 std::vector<std::pair<double,TopoDS_Wire>> connectNacelleGuideCurves(std::vector<std::pair<double,TopoDS_Wire>> const&,
                                                                      double tol);
+
+Handle(Geom_Curve) GetBoundaryCurveByIndex(TopoDS_Shape& face, int edgeIndex);
+
 }
 
 namespace tigl
@@ -86,6 +90,12 @@ void CCPACSNacelleCowl::BuildOuterShapeWires(WireCache& cache) const
         TopoDS_Wire profileWire = builder.Wire();
 
         cache.profiles.push_back(profileWire);
+    }
+
+    if ( cache.profiles.size() == 1 ) {
+        // there is only one profile. No need to build guide curves, nacelle will
+        // be a rotation surface
+        return;
     }
 
     // build guide curve wires
@@ -142,6 +152,25 @@ void CCPACSNacelleCowl::BuildOuterShapeWires(WireCache& cache) const
 
 TopoDS_Shape CCPACSNacelleCowl::BuildOuterShape() const
 {
+
+    if ( wireCache->profiles.size() == 1 ) {
+        // there is only one profile. nacelle will be rotation curve.
+        gp_Ax1 ax = gp_Ax1(gp_Pnt(0., 0., 0.), gp_Vec(1., 0., 0.));
+
+        TopoDS_Shell shell;
+        BRep_Builder shellBuilder;
+        shellBuilder.MakeShell(shell);
+
+        TopTools_IndexedMapOfShape edgeMap;
+        TopExp::MapShapes(wireCache->profiles[0], TopAbs_EDGE, edgeMap);
+        for (int e = 1; e <= edgeMap.Extent(); e++) {
+            TopoDS_Edge edge = TopoDS::Edge(edgeMap(e));
+            TopoDS_Face current = TopoDS::Face(BRepPrimAPI_MakeRevol(edge, ax));
+            shellBuilder.Add(shell, current);
+        }
+        return shell;
+    }
+
     CTiglMakeLoft lofter;
     lofter.setMakeSmooth(true);
     lofter.setMakeSolid(false);
@@ -183,17 +212,16 @@ PNamedShape CCPACSNacelleCowl::BuildLoft() const
     // get shapes of nacelle cowls
     TopoDS_Shape outerShape    = BuildOuterShape();
     TopoDS_Face  innerShape    = m_rotationCurve.GetRotationSurface(origin);
-    TopoDS_Face  blendingSurf1 = GetStartZetaBlendingSurface(innerShape);
-    TopoDS_Face  blendingSurf2 = GetEndZetaBlendingSurface(innerShape);
-
-//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
-
-
-//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
 
 #ifdef DEBUG
     BRepTools::Write(outerShape,"outerShape.brep");
     BRepTools::Write(innerShape,"innerShape.brep");
+#endif
+
+    TopoDS_Face  blendingSurf1 = GetStartZetaBlendingSurface(innerShape, outerShape);
+    TopoDS_Face  blendingSurf2 = GetEndZetaBlendingSurface(innerShape, outerShape);
+
+#ifdef DEBUG
     BRepTools::Write(blendingSurf1,"blendingSurf1.brep");
     BRepTools::Write(blendingSurf2,"blendingSurf2.brep");
 #endif
@@ -234,19 +262,23 @@ PNamedShape CCPACSNacelleCowl::BuildLoft() const
     return nacelleShape;
 }
 
-TopoDS_Face CCPACSNacelleCowl::GetStartZetaBlendingSurface(TopoDS_Face& innerShape) const
+TopoDS_Face CCPACSNacelleCowl::GetStartZetaBlendingSurface(TopoDS_Face& innerShape, TopoDS_Shape& outerShape) const
 {
+    // get curve on outer shape
+    Handle(Geom_Curve) curve1;
+    if ( wireCache->profiles.size()==1 ){
+        TopTools_IndexedMapOfShape map;
+        TopExp::MapShapes(outerShape, TopAbs_EDGE, map);
+        assert(map.Extent()-1>0);
+        curve1 = GetBoundaryCurveByIndex(outerShape, map.Extent()-1);
+    }
+    else {
+        double zeta   = m_rotationCurve.GetStartZetaBlending();
+        curve1 = GetGuideCurve(zeta);
+    }
 
-    double zeta   = m_rotationCurve.GetStartZetaBlending();
-
-    Handle(Geom_Curve) curve1 = GetGuideCurve(zeta);
-
-    // get second curve on surface
-    TopoDS_Wire outerWire = BRepTools::OuterWire(innerShape);
-    TopTools_IndexedMapOfShape map;
-    TopExp::MapShapes(outerWire, TopAbs_EDGE, map);
-    Standard_Real umin, umax;
-    Handle(Geom_Curve) curve2 = BRep_Tool::Curve(TopoDS::Edge(map(1)), umin, umax);
+    // get curve on inner shape
+    Handle(Geom_Curve) curve2 = GetBoundaryCurveByIndex(innerShape, 1);
 
     // create the filling
     Handle(Geom_Surface) surface = GeomFill::Surface(curve1, curve2);
@@ -255,18 +287,20 @@ TopoDS_Face CCPACSNacelleCowl::GetStartZetaBlendingSurface(TopoDS_Face& innerSha
     return faceMaker.Face();
 }
 
-TopoDS_Face CCPACSNacelleCowl::GetEndZetaBlendingSurface(TopoDS_Face& innerShape) const
+TopoDS_Face CCPACSNacelleCowl::GetEndZetaBlendingSurface(TopoDS_Face& innerShape, TopoDS_Shape& outerShape) const
 {
+    // get curve on outer shape
+    Handle(Geom_Curve) curve1;
+    if ( wireCache->profiles.size()==1 ){
+        curve1 = GetBoundaryCurveByIndex(outerShape, 1);
+    }
+    else {
+        double zeta   = m_rotationCurve.GetEndZetaBlending();
+        curve1 = GetGuideCurve(zeta);
+    }
 
-    double zeta   = m_rotationCurve.GetEndZetaBlending();
-    Handle(Geom_Curve) curve1 = GetGuideCurve(zeta);
-
-    // get second curve on surface
-    TopoDS_Wire outerWire = BRepTools::OuterWire(innerShape);
-    TopTools_IndexedMapOfShape map;
-    TopExp::MapShapes(outerWire, TopAbs_EDGE, map);
-    Standard_Real umin, umax;
-    Handle(Geom_Curve) curve2 = BRep_Tool::Curve(TopoDS::Edge(map(2)), umin, umax);
+    // get curve on inner shape
+    Handle(Geom_Curve) curve2 = GetBoundaryCurveByIndex(innerShape, 2);
 
     // create the filling
     Handle(Geom_Surface) surface = GeomFill::Surface(curve1, curve2);
@@ -351,6 +385,15 @@ std::vector<std::pair<double,TopoDS_Wire>> connectNacelleGuideCurves(std::vector
     }
 
     return connectedZetaWires;
+};
+
+Handle(Geom_Curve) GetBoundaryCurveByIndex(TopoDS_Shape& face, int edgeIndex)
+{
+    TopTools_IndexedMapOfShape map;
+    TopExp::MapShapes(face, TopAbs_EDGE, map);
+    Standard_Real umin, umax;
+
+    return BRep_Tool::Curve(TopoDS::Edge(map(edgeIndex)), umin, umax);
 };
 
 } //anonymous namespace

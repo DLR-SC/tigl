@@ -42,8 +42,8 @@ private:
 
     void BuildOuterShapeWires(WireCache& cache) const;
     Handle(Geom_Curve) GetGuideCurve(double zeta) const;
-    TopoDS_Face GetStartZetaBlendingSurface(TopoDS_Face& innerShape) const;
-    TopoDS_Face GetEndZetaBlendingSurface(TopoDS_Face& innerShape) const;
+    TopoDS_Face GetStartZetaBlendingSurface(TopoDS_Face& innerShape, TopoDS_Shape& outerShape) const;
+    TopoDS_Face GetEndZetaBlendingSurface(TopoDS_Face& innerShape, TopoDS_Shape& outerShape) const;
     TopoDS_Shape BuildOuterShape() const;
 };
 
