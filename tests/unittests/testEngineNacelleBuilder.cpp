@@ -62,12 +62,55 @@ protected:
     tigl::CTiglUIDManager*       uidMgr;
 };
 
+class EngineNacelleBuilderSimple : public ::testing::Test
+{
+protected:
+    void SetUp() OVERRIDE
+    {
+        const char* filename = "TestData/simpletest-simplenacelle.cpacs.xml";
+        ReturnCode tixiRet;
+        TiglReturnCode tiglRet;
+
+        tiglHandle = -1;
+        tixiHandle = -1;
+
+        tixiRet = tixiOpenDocument(filename, &tixiHandle);
+        ASSERT_EQ(tixiRet, SUCCESS);
+        tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "SimpleTest", &tiglHandle);
+        ASSERT_EQ(tiglRet, TIGL_SUCCESS);
+
+        uidMgr = &tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(tiglHandle).GetUIDManager();
+    }
+
+    void TearDown() OVERRIDE
+    {
+        ASSERT_EQ(tiglCloseCPACSConfiguration(tiglHandle), TIGL_SUCCESS);
+        ASSERT_EQ(tixiCloseDocument(tixiHandle), SUCCESS);
+        tiglHandle = -1;
+        tixiHandle = -1;
+    }
+
+    TixiDocumentHandle           tixiHandle;
+    TiglCPACSConfigurationHandle tiglHandle;
+    tigl::CTiglUIDManager*       uidMgr;
+};
+
 
 /******************************************************************************/
 
 
 TEST_F(EngineNacelleBuilder, integrationTest)
 {
+    tigl::CCPACSConfiguration& config = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(tiglHandle);
+    tigl::CCPACSEngine& engine = config.GetEngine("SimpleEngine");
+    boost::optional<tigl::CCPACSEngineNacelle>& nacelle = engine.GetNacelle();
+    tigl::CTiglEngineNacelleBuilder builder(*nacelle);
+    PNamedShape shape = builder.BuildShape();
+}
+
+TEST_F(EngineNacelleBuilderSimple, integrationTest)
+{
+    // check if a nacelle with just one profile can be built
     tigl::CCPACSConfiguration& config = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(tiglHandle);
     tigl::CCPACSEngine& engine = config.GetEngine("SimpleEngine");
     boost::optional<tigl::CCPACSEngineNacelle>& nacelle = engine.GetNacelle();
