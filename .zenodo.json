@@ -1,0 +1,25 @@
+{
+    "description": "The TiGL Geometry Library to process aircraft geometries in pre-design.", 
+    "license": "Apache 2.0", 
+    "title": "TiGL - The TiGL Geometry Library",  
+    "upload_type": "software",  
+    "creators": [
+        {
+            "affiliation": "German Aerospace Center (DLR)", 
+            "name": "Martin Siggel"
+        }, 
+        {
+            "affiliation": "German Aerospace Center (DLR)", 
+            "name": "Tobias Stollenwerk"
+        }, 
+        {
+            "affiliation": "RISC Software GmbH", 
+            "name": "Bernhard Manfred Gruber"
+        }, 
+        {
+            "affiliation": "German Aerospace Center (DLR)", 
+            "name": "Jan Kleinert"
+        }
+    ], 
+    "access_right": "open"
+}
