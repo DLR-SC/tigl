@@ -1,6 +1,6 @@
 {
     "description": "The TiGL Geometry Library to process aircraft geometries in pre-design.", 
-    "license": "Apache 2.0", 
+    "license": "apache", 
     "title": "TiGL - The TiGL Geometry Library",  
     "upload_type": "software",  
     "creators": [
