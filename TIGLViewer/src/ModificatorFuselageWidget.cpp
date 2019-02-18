@@ -17,11 +17,31 @@
  */
 
 #include "ModificatorFuselageWidget.h"
-#include "ModificatorManager.h"
+#include "ui_ModificatorFuselageWidget.h"
 
 ModificatorFuselageWidget::ModificatorFuselageWidget(QWidget* parent)
     : ModificatorWidget(parent)
+    , ui(new Ui::ModificatorFuselageWidget)
 {
+    ui->setupUi(this);
+
+    ui->widgetLengthDetails->hide();
+    ui->widgetRadiusDetails->hide();
+
+    // connect the extend buttons with their slot
+    connect(ui->btnExpendLengthDetails, SIGNAL(clicked(bool)), this, SLOT(expendLengthDetails(bool)));
+    connect(ui->comboBoxLengthE1, SIGNAL(currentIndexChanged(int)), this, SLOT(setPartialLengthFromComboBoxes()));
+    connect(ui->comboBoxLengthE2, SIGNAL(currentIndexChanged(int)), this, SLOT(setPartialLengthFromComboBoxes()));
+    connect(ui->spinBoxPartialLength, SIGNAL(valueChanged(double)), this, SLOT(recomputeTotalLength(double)));
+
+    connect(ui->btnExpendRadiusDetails, SIGNAL(clicked(bool)), this, SLOT(expendRadiusDetails(bool)));
+    connect(ui->comboBoxRadiusBE1, SIGNAL(currentIndexChanged(int)), this, SLOT(setRadiusBetweenFromComboBoxes()));
+    connect(ui->comboBoxRadiusBE2, SIGNAL(currentIndexChanged(int)), this, SLOT(setRadiusBetweenFromComboBoxes()));
+}
+
+ModificatorFuselageWidget::~ModificatorFuselageWidget()
+{
+    delete ui;
 }
 
 void ModificatorFuselageWidget::setFuselage(tigl::CCPACSFuselage& newFuselage)
@@ -76,42 +96,11 @@ void ModificatorFuselageWidget::setFuselage(tigl::CCPACSFuselage& newFuselage)
      */
 }
 
-void ModificatorFuselageWidget::init()
-{
-
-    spinBoxLength          = this->findChild<QDoubleSpinBox*>("spinBoxLength");
-    widgetLengthDetails    = this->findChild<QWidget*>("widgetLengthDetails");
-    btnExpendLengthDetails = this->findChild<QPushButton*>("btnExpendLengthDetails");
-    comboBoxLengthE1       = this->findChild<QComboBox*>("comboBoxLengthE1");
-    comboBoxLengthE2       = this->findChild<QComboBox*>("comboBoxLengthE2");
-    spinBoxPartialLength   = this->findChild<QDoubleSpinBox*>("spinBoxPartialLength");
-
-    spinBoxRadius          = this->findChild<QDoubleSpinBox*>("spinBoxRadius");
-    spinBoxRadiusBetween   = this->findChild<QDoubleSpinBox*>("spinBoxRadiusBetween");
-    btnExpendRadiusDetails = this->findChild<QPushButton*>("btnExpendRadiusDetails");
-    comboBoxRadiusBE1      = this->findChild<QComboBox*>("comboBoxRadiusBE1");
-    comboBoxRadiusBE2      = this->findChild<QComboBox*>("comboBoxRadiusBE2");
-    widgetRadiusDetails    = this->findChild<QWidget*>("widgetRadiusDetails");
-
-    widgetLengthDetails->hide();
-    widgetRadiusDetails->hide();
-
-    // connect the extend buttons with their slot
-    connect(btnExpendLengthDetails, SIGNAL(clicked(bool)), this, SLOT(expendLengthDetails(bool)));
-    connect(comboBoxLengthE1, SIGNAL(currentIndexChanged(int)), this, SLOT(setPartialLengthFromComboBoxes()));
-    connect(comboBoxLengthE2, SIGNAL(currentIndexChanged(int)), this, SLOT(setPartialLengthFromComboBoxes()));
-    connect(spinBoxPartialLength, SIGNAL(valueChanged(double)), this, SLOT(recomputeTotalLength(double)));
-
-    connect(btnExpendRadiusDetails, SIGNAL(clicked(bool)), this, SLOT(expendRadiusDetails(bool)));
-    connect(comboBoxRadiusBE1, SIGNAL(currentIndexChanged(int)), this, SLOT(setRadiusBetweenFromComboBoxes()));
-    connect(comboBoxRadiusBE2, SIGNAL(currentIndexChanged(int)), this, SLOT(setRadiusBetweenFromComboBoxes()));
-}
-
 // inverse the visibility
 void ModificatorFuselageWidget::expendRadiusDetails(bool checked)
 {
 
-    widgetRadiusDetails->setVisible(!(widgetRadiusDetails->isVisible()));
+    ui->widgetRadiusDetails->setVisible(!(ui->widgetRadiusDetails->isVisible()));
     /*
      if (widgetRadiusDetails->isVisible()) {
          // Reset the values to the file values, avoid modifying from details and main at the same time
@@ -134,7 +123,7 @@ void ModificatorFuselageWidget::expendRadiusDetails(bool checked)
 void ModificatorFuselageWidget::expendLengthDetails(bool checked)
 {
 
-    widgetLengthDetails->setVisible(!(widgetLengthDetails->isVisible()));
+    ui->widgetLengthDetails->setVisible(!(ui->widgetLengthDetails->isVisible()));
     /*
     if (widgetLengthDetails->isVisible()) {
         // Reset the values to the file values, avoid modifying from details and main at the same time

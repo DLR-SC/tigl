@@ -17,151 +17,122 @@
  */
 
 #include "ModificatorWingWidget.h"
+#include "ui_ModificatorWingWidget.h"
 #include "CTiglLogging.h"
 
 ModificatorWingWidget::ModificatorWingWidget(QWidget* parent)
     : ModificatorWidget(parent)
+    , ui(new Ui::ModificatorWingWidget)
 {
+    ui->setupUi(this);
+    tiglWing = nullptr;
+    this->init();
+}
+
+ModificatorWingWidget::~ModificatorWingWidget()
+{
+    delete ui;
 }
 
 void ModificatorWingWidget::init()
 {
-
-    // Retrieve component of the anchor interface
-    spinBoxAnchorX = this->findChild<QDoubleSpinBox*>("spinBoxAnchorX");
-    spinBoxAnchorY = this->findChild<QDoubleSpinBox*>("spinBoxAnchorY");
-    spinBoxAnchorZ = this->findChild<QDoubleSpinBox*>("spinBoxAnchorZ");
-
-    // orientation interface
-    comboBoxSymmetry = this->findChild<QComboBox*>("comboBoxSymmetry");
-
-    // Retrieve component of the sweep interface
-    btnExpendSweepDetails = this->findChild<QPushButton*>("btnExpendSweepDetails");
-    spinBoxSweep          = this->findChild<QDoubleSpinBox*>("spinBoxSweep");
-    widgetSweepDetails    = this->findChild<QWidget*>("widgetSweepDetails");
-    spinBoxSweepChord     = this->findChild<QDoubleSpinBox*>("spinBoxSweepChord");
-    comboBoxSweepMethod   = this->findChild<QComboBox*>("comboBoxSweepMethod");
-
-    // Retrieve component of the dihedral interface
-    btnExpendDihedralDetails = this->findChild<QPushButton*>("btnExpendDihedralDetails");
-    spinBoxDihedral          = this->findChild<QDoubleSpinBox*>("spinBoxDihedral");
-    widgetDihedralDetails    = this->findChild<QWidget*>("widgetDihedralDetails");
-    spinBoxDihedralChord     = this->findChild<QDoubleSpinBox*>("spinBoxDihedralChord");
-
-    // Retrieve component of the area interface
-    btnExpendAreaDetails   = this->findChild<QPushButton*>("btnExpendAreaDetails");
-    spinBoxAreaXY          = this->findChild<QDoubleSpinBox*>("spinBoxAreaXY");
-    widgetAreaDetails      = this->findChild<QWidget*>("widgetAreaDetails");
-    spinBoxAreaXZ          = this->findChild<QDoubleSpinBox*>("spinBoxAreaXZ");
-    spinBoxAreaYZ          = this->findChild<QDoubleSpinBox*>("spinBoxAreaYZ");
-    spinBoxAreaT           = this->findChild<QDoubleSpinBox*>("spinBoxAreaT");
-    checkBoxIsAreaConstant = this->findChild<QCheckBox*>("checkBoxIsAreaConstant");
-
-    // Retrieve component of the span interface
-    spinBoxSpan            = this->findChild<QDoubleSpinBox*>("spinBoxSpan");
-    checkBoxIsSpanConstant = this->findChild<QCheckBox*>("checkBoxIsSpanConstant");
-
-    // Retrieve component of the span interface
-    spinBoxAR            = this->findChild<QDoubleSpinBox*>("spinBoxAR");
-    checkBoxIsARConstant = this->findChild<QCheckBox*>("checkBoxIsARConstant");
-
-    // set the initials values of the display interface (should be overwritten
+    // set the initials values of the display interface (will be overwritten
     // when the wingItem is set)
-    spinBoxSweep->setValue(-1.0);
-    spinBoxSweepChord->setValue(0);
-    comboBoxSweepMethod->addItem("Translation");
-    comboBoxSweepMethod->addItem("Shearing");
-    comboBoxSweepMethod->setCurrentIndex(0);
+    ui->spinBoxSweep->setValue(-1.0);
+    ui->spinBoxSweepChord->setValue(0);
+    ui->comboBoxSweepMethod->addItem("Translation");
+    ui->comboBoxSweepMethod->addItem("Shearing");
+    ui->comboBoxSweepMethod->setCurrentIndex(0);
 
-    spinBoxSweep->setValue(-1.0);
-    spinBoxDihedralChord->setValue(0);
+    ui->spinBoxSweep->setValue(-1.0);
+    ui->spinBoxDihedralChord->setValue(0);
 
-    spinBoxAreaXY->setValue(-1.0);
-    spinBoxAreaXZ->setValue(-1);
-    spinBoxAreaYZ->setValue(-1);
-    spinBoxAreaT->setValue(-1);
+    ui->spinBoxAreaXY->setValue(-1.0);
+    ui->spinBoxAreaXZ->setValue(-1);
+    ui->spinBoxAreaYZ->setValue(-1);
+    ui->spinBoxAreaT->setValue(-1);
 
-    spinBoxAreaXZ->setReadOnly(true);
-    spinBoxAreaYZ->setReadOnly(true);
-    spinBoxAreaT->setReadOnly(true);
+    ui->spinBoxAreaXZ->setReadOnly(true);
+    ui->spinBoxAreaYZ->setReadOnly(true);
+    ui->spinBoxAreaT->setReadOnly(true);
 
-    spinBoxAR->setValue(-1);
+    ui->spinBoxAR->setValue(-1);
 
-    spinBoxSpan->setValue(-1);
+    ui->spinBoxSpan->setValue(-1);
 
-    comboBoxSymmetry->addItem("x-y-plane");
-    comboBoxSymmetry->addItem("x-z-plane");
-    comboBoxSymmetry->addItem("y-z-plane");
-    comboBoxSymmetry->addItem("no-symmetry");
+    ui->comboBoxSymmetry->addItem("x-y-plane");
+    ui->comboBoxSymmetry->addItem("x-z-plane");
+    ui->comboBoxSymmetry->addItem("y-z-plane");
+    ui->comboBoxSymmetry->addItem("no-symmetry");
 
     // alterable span area ar
-    checkBoxIsAreaConstant->setChecked(false);
-    checkBoxIsSpanConstant->setChecked(false);
-    checkBoxIsARConstant->setChecked(true);
+    ui->checkBoxIsAreaConstant->setChecked(false);
+    ui->checkBoxIsSpanConstant->setChecked(false);
+    ui->checkBoxIsARConstant->setChecked(true);
 
     // hide the advanced options
-    widgetAreaDetails->hide();
-    widgetDihedralDetails->hide();
-    widgetSweepDetails->hide();
+    ui->widgetAreaDetails->hide();
+    ui->widgetDihedralDetails->hide();
+    ui->widgetSweepDetails->hide();
 
     // connect the extend buttons with their slot
-    connect(btnExpendAreaDetails, SIGNAL(clicked(bool)), this, SLOT(expendAreaDetails(bool)));
-    connect(btnExpendDihedralDetails, SIGNAL(clicked(bool)), this, SLOT(expendDihedralDetails(bool)));
-    connect(btnExpendSweepDetails, SIGNAL(clicked(bool)), this, SLOT(expendSweepDetails(bool)));
+    connect(ui->btnExpendAreaDetails, SIGNAL(clicked(bool)), this, SLOT(expendAreaDetails(bool)));
+    connect(ui->btnExpendDihedralDetails, SIGNAL(clicked(bool)), this, SLOT(expendDihedralDetails(bool)));
+    connect(ui->btnExpendSweepDetails, SIGNAL(clicked(bool)), this, SLOT(expendSweepDetails(bool)));
 
     // connect change alterable
-    connect(checkBoxIsAreaConstant, SIGNAL(clicked(bool)), this, SLOT(setAreaConstant(bool)));
-    connect(checkBoxIsSpanConstant, SIGNAL(clicked(bool)), this, SLOT(setSpanConstant(bool)));
-    connect(checkBoxIsARConstant, SIGNAL(clicked(bool)), this, SLOT(setARConstant(bool)));
+    connect(ui->checkBoxIsAreaConstant, SIGNAL(clicked(bool)), this, SLOT(setAreaConstant(bool)));
+    connect(ui->checkBoxIsSpanConstant, SIGNAL(clicked(bool)), this, SLOT(setSpanConstant(bool)));
+    connect(ui->checkBoxIsARConstant, SIGNAL(clicked(bool)), this, SLOT(setARConstant(bool)));
 }
 
 // inverse the visibility
 void ModificatorWingWidget::expendAreaDetails(bool checked)
 {
-    widgetAreaDetails->setVisible(!(widgetAreaDetails->isVisible()));
+    ui->widgetAreaDetails->setVisible(!(ui->widgetAreaDetails->isVisible()));
 }
 
 // inverse the visibility
 void ModificatorWingWidget::expendDihedralDetails(bool checked)
 {
-    widgetDihedralDetails->setVisible(!(widgetDihedralDetails->isVisible()));
+    ui->widgetDihedralDetails->setVisible(!(ui->widgetDihedralDetails->isVisible()));
 }
 
 // inverse the visibility
 void ModificatorWingWidget::expendSweepDetails(bool checked)
 {
-    widgetSweepDetails->setVisible(!(widgetSweepDetails->isVisible()));
+    ui->widgetSweepDetails->setVisible(!(ui->widgetSweepDetails->isVisible()));
 }
 
 void ModificatorWingWidget::setAreaConstant(bool checked)
 {
-    checkBoxIsARConstant->setChecked(false);
-    spinBoxAR->setReadOnly(false);
-    checkBoxIsSpanConstant->setChecked(false);
-    spinBoxSpan->setReadOnly(false);
-    checkBoxIsAreaConstant->setChecked(true);
-    spinBoxAreaXY->setReadOnly(true);
+    ui->checkBoxIsARConstant->setChecked(false);
+    ui->spinBoxAR->setReadOnly(false);
+    ui->checkBoxIsSpanConstant->setChecked(false);
+    ui->spinBoxSpan->setReadOnly(false);
+    ui->checkBoxIsAreaConstant->setChecked(true);
+    ui->spinBoxAreaXY->setReadOnly(true);
 }
 
 void ModificatorWingWidget::setSpanConstant(bool checked)
 {
 
-    checkBoxIsARConstant->setChecked(false);
-    spinBoxAR->setReadOnly(false);
-    checkBoxIsAreaConstant->setChecked(false);
-    spinBoxAreaXY->setReadOnly(false);
-    checkBoxIsSpanConstant->setChecked(true);
-    spinBoxSpan->setReadOnly(true);
+    ui->checkBoxIsARConstant->setChecked(false);
+    ui->spinBoxAR->setReadOnly(false);
+    ui->checkBoxIsAreaConstant->setChecked(false);
+    ui->spinBoxAreaXY->setReadOnly(false);
+    ui->checkBoxIsSpanConstant->setChecked(true);
+    ui->spinBoxSpan->setReadOnly(true);
 }
 
 void ModificatorWingWidget::setARConstant(bool checked)
 {
-    checkBoxIsAreaConstant->setChecked(false);
-    spinBoxAreaXY->setReadOnly(false);
-    checkBoxIsSpanConstant->setChecked(false);
-    spinBoxSpan->setReadOnly(false);
-    checkBoxIsARConstant->setChecked(true);
-    spinBoxAR->setReadOnly(true);
+    ui->checkBoxIsAreaConstant->setChecked(false);
+    ui->spinBoxAreaXY->setReadOnly(false);
+    ui->checkBoxIsSpanConstant->setChecked(false);
+    ui->spinBoxSpan->setReadOnly(false);
+    ui->checkBoxIsARConstant->setChecked(true);
+    ui->spinBoxAR->setReadOnly(true);
 }
 
 void ModificatorWingWidget::setWing(tigl::CCPACSWing& wing)
@@ -187,61 +158,61 @@ void ModificatorWingWidget::reset()
 void ModificatorWingWidget::apply()
 {
 
-    bool anchorHasChanged = ((!isApprox(internalAnchorX, spinBoxAnchorX->value())) ||
-                             (!isApprox(internalAnchorY, spinBoxAnchorY->value())) ||
-                             (!isApprox(internalAnchorZ, spinBoxAnchorZ->value())));
+    bool anchorHasChanged = ((!isApprox(internalAnchorX, ui->spinBoxAnchorX->value())) ||
+                             (!isApprox(internalAnchorY, ui->spinBoxAnchorY->value())) ||
+                             (!isApprox(internalAnchorZ, ui->spinBoxAnchorZ->value())));
 
-    bool symmetryHasChanged = (internalSymmetry != comboBoxSymmetry->currentText());
+    bool symmetryHasChanged = (internalSymmetry != ui->comboBoxSymmetry->currentText());
 
-    bool sweepHasChanged = ((!isApprox(internalSweep, spinBoxSweep->value())) ||
-                            (!isApprox(internalSweepChord, spinBoxSweepChord->value())) ||
-                            internalMethod != comboBoxSweepMethod->currentText());
+    bool sweepHasChanged = ((!isApprox(internalSweep, ui->spinBoxSweep->value())) ||
+                            (!isApprox(internalSweepChord, ui->spinBoxSweepChord->value())) ||
+                            internalMethod != ui->comboBoxSweepMethod->currentText());
 
-    bool dihedralHasChanged = ((!isApprox(internalDihedral, spinBoxDihedral->value())) ||
-                               (!isApprox(internalDihedralChord, spinBoxDihedralChord->value())));
+    bool dihedralHasChanged = ((!isApprox(internalDihedral, ui->spinBoxDihedral->value())) ||
+                               (!isApprox(internalDihedralChord, ui->spinBoxDihedralChord->value())));
 
-    bool spanHasChanged = (!isApprox(internalSpan, spinBoxSpan->value()));
+    bool spanHasChanged = (!isApprox(internalSpan, ui->spinBoxSpan->value()));
 
-    bool aRHasChanged = (!isApprox(internalAR, spinBoxAR->value()));
+    bool aRHasChanged = (!isApprox(internalAR, ui->spinBoxAR->value()));
 
-    bool areaXYHasChanged = (!isApprox(internalAreaXY, spinBoxAreaXY->value()));
+    bool areaXYHasChanged = (!isApprox(internalAreaXY, ui->spinBoxAreaXY->value()));
 
     if (anchorHasChanged) {
-        internalAnchorX = spinBoxAnchorX->value();
-        internalAnchorY = spinBoxAnchorY->value();
-        internalAnchorZ = spinBoxAnchorZ->value();
+        internalAnchorX = ui->spinBoxAnchorX->value();
+        internalAnchorY = ui->spinBoxAnchorY->value();
+        internalAnchorZ = ui->spinBoxAnchorZ->value();
 
         // todo
     }
 
     if (symmetryHasChanged) {
-        internalSymmetry = comboBoxSymmetry->currentText();
+        internalSymmetry = ui->comboBoxSymmetry->currentText();
 
         // todo
     }
 
     if (sweepHasChanged) { // TODO do not change if the change is to small
-        internalSweep      = spinBoxSweep->value();
-        internalMethod     = comboBoxSweepMethod->currentText();
-        internalSweepChord = spinBoxSweepChord->value();
+        internalSweep      = ui->spinBoxSweep->value();
+        internalMethod     = ui->comboBoxSweepMethod->currentText();
+        internalSweepChord = ui->spinBoxSweepChord->value();
 
         // todo
     }
 
     if (dihedralHasChanged) {
-        internalDihedral      = spinBoxDihedral->value();
-        internalDihedralChord = spinBoxDihedralChord->value();
+        internalDihedral      = ui->spinBoxDihedral->value();
+        internalDihedralChord = ui->spinBoxDihedralChord->value();
 
         // todo
     }
 
     if (areaXYHasChanged) {
-        internalAreaXY = spinBoxAreaXY->value();
-        if (checkBoxIsSpanConstant->isChecked()) {
+        internalAreaXY = ui->spinBoxAreaXY->value();
+        if (ui->checkBoxIsSpanConstant->isChecked()) {
 
             // todo
         }
-        else if (checkBoxIsARConstant->isChecked()) {
+        else if (ui->checkBoxIsARConstant->isChecked()) {
 
             // todo
         }
@@ -252,12 +223,12 @@ void ModificatorWingWidget::apply()
     }
 
     if (spanHasChanged) {
-        internalSpan = spinBoxSpan->value();
-        if (checkBoxIsAreaConstant->isChecked()) {
+        internalSpan = ui->spinBoxSpan->value();
+        if (ui->checkBoxIsAreaConstant->isChecked()) {
 
             // todo
         }
-        else if (checkBoxIsARConstant->isChecked()) {
+        else if (ui->checkBoxIsARConstant->isChecked()) {
 
             // todo
         }
@@ -268,12 +239,12 @@ void ModificatorWingWidget::apply()
     }
 
     if (aRHasChanged) {
-        internalAR = spinBoxAR->value();
-        if (checkBoxIsAreaConstant->isChecked()) {
+        internalAR = ui->spinBoxAR->value();
+        if (ui->checkBoxIsAreaConstant->isChecked()) {
 
             // todo
         }
-        else if (checkBoxIsSpanConstant->isChecked()) {
+        else if (ui->checkBoxIsSpanConstant->isChecked()) {
 
             // todo
         }

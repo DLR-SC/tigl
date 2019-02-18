@@ -192,6 +192,9 @@ set(tv_ui_comp
 	src/TIGLViewerVTKExportDialog.ui
 	src/TIGLSliderDialog.ui
 	src/TIGLGeometryChoserDialog.ui
+    src/ModificatorTransformationWidget.ui
+    src/ModificatorWingWidget.ui
+    src/ModificatorFuselageWidget.ui
 )
 
 foreach ( _fname ${tv_src})

@@ -16,19 +16,19 @@
  * limitations under the License.
  */
 
-#ifndef TIGL_MODIFICATORFUSELAGEWIDGET_H
-#define TIGL_MODIFICATORFUSELAGEWIDGET_H
+#ifndef MODIFICATORFUSELAGEWIDGET_H
+#define MODIFICATORFUSELAGEWIDGET_H
 
-#include "CCPACSFuselage.h"
-#include "CPACSTreeItem.h"
 #include "ModificatorWidget.h"
-#include <QComboBox>
-#include <QDoubleSpinBox>
-#include <QPushButton>
+#include "CCPACSFuselage.h"
+
+namespace Ui
+{
+class ModificatorFuselageWidget;
+}
 
 class ModificatorFuselageWidget : public ModificatorWidget
 {
-
     Q_OBJECT
 
 public slots:
@@ -43,44 +43,27 @@ public slots:
     void expendRadiusDetails(bool checked);
 
 public:
-    ModificatorFuselageWidget(QWidget* parent = 0);
+    explicit ModificatorFuselageWidget(QWidget* parent = nullptr);
+    ~ModificatorFuselageWidget();
 
     void setFuselage(tigl::CCPACSFuselage& fuselage);
-
-    // Initialize the linked objects
-    void init();
 
     void apply() override;
 
     void reset() override;
 
 private:
-    // Length parameters
-    QDoubleSpinBox* spinBoxLength;
-    QPushButton* btnExpendLengthDetails;
-    QWidget* widgetLengthDetails;
-    QComboBox* comboBoxLengthE1;
-    QComboBox* comboBoxLengthE2;
-    QDoubleSpinBox* spinBoxPartialLength;
+    Ui::ModificatorFuselageWidget* ui;
+
+    tigl::CCPACSFuselage* fuselage;
 
     // Internal length parameters
     double internalLength;
     double internalPartialLength;
 
-    // Circumference parameters:
-    QDoubleSpinBox* spinBoxRadius;
-    QPushButton* btnExpendRadiusDetails;
-    QWidget* widgetRadiusDetails;
-    QComboBox* comboBoxRadiusBE1;
-    QComboBox* comboBoxRadiusBE2;
-    QDoubleSpinBox* spinBoxRadiusBetween;
-
     // Internal circumference parameters:
     double internalRadius;
     double internalRadiusBetween;
-
-private:
-    tigl::CCPACSFuselage* fuselage;
 };
 
-#endif // TIGL_TIGLVIEWERFUSELAGEWIDGET_H
+#endif // MODIFICATORFUSELAGEWIDGET_H

@@ -17,37 +17,36 @@
  */
 
 #include "ModificatorTransformationWidget.h"
-//#include "ModificatorManager.h"
+#include "ui_ModificatorTransformationWidget.h"
 #include <iostream>
 
 ModificatorTransformationWidget::ModificatorTransformationWidget(QWidget* parent)
     : ModificatorWidget(parent)
+    , ui(new Ui::ModificatorTransformationWidget)
 {
+    ui->setupUi(this);
+
+    tiglTransformation = nullptr;
+    setSpinBoxesFromInternal();
+}
+
+ModificatorTransformationWidget::~ModificatorTransformationWidget()
+{
+    delete ui;
 }
 
 void ModificatorTransformationWidget::apply()
 {
-    setInternalFromSpinBoxes();
+    // todo check if there are relevent changes
+    // setInternalFromSpinBoxes();
     // TODO: save in tigl object
     // Not done yet because we first need to have  a working
     // setSpinBoxesFromInternal
     // tiglTransformation->setTransformationMatrix(transformation);
 }
-void ModificatorTransformationWidget::init()
+
+void ModificatorTransformationWidget::reset()
 {
-    boxSX = this->findChild<QDoubleSpinBox*>("spinBoxSX");
-    boxSY = this->findChild<QDoubleSpinBox*>("spinBoxSY");
-    boxSZ = this->findChild<QDoubleSpinBox*>("spinBoxSZ");
-
-    boxRX = this->findChild<QDoubleSpinBox*>("spinBoxRX");
-    boxRY = this->findChild<QDoubleSpinBox*>("spinBoxRY");
-    boxRZ = this->findChild<QDoubleSpinBox*>("spinBoxRZ");
-
-    boxTX = this->findChild<QDoubleSpinBox*>("spinBoxTX");
-    boxTY = this->findChild<QDoubleSpinBox*>("spinBoxTY");
-    boxTZ = this->findChild<QDoubleSpinBox*>("spinBoxTZ");
-
-    internalTransformation.SetIdentity();
     setSpinBoxesFromInternal();
 }
 
@@ -55,34 +54,45 @@ void ModificatorTransformationWidget::setTransformation(tigl::CCPACSTransformati
 {
 
     this->tiglTransformation = &newTiglTransformation;
-    internalTransformation   = tiglTransformation->getTransformationMatrix();
     setSpinBoxesFromInternal();
 }
 
 void ModificatorTransformationWidget::setSpinBoxesFromInternal()
 {
-    // TODO set from transformation -> need new CTigl functionalities
-    boxSX->setValue(3);
-    boxSY->setValue(3);
-    boxSZ->setValue(3);
+    if (tiglTransformation == nullptr) {
+        return;
+    }
 
-    boxRX->setValue(-1);
-    boxRY->setValue(-1);
-    boxRZ->setValue(-1);
+    tigl::CTiglPoint scaling = tiglTransformation->getScaling();
+    ui->spinBoxSX->setValue(scaling.x);
+    ui->spinBoxSY->setValue(scaling.y);
 
-    boxTX->setValue(internalTransformation.GetValue(0, 3));
-    boxTY->setValue(internalTransformation.GetValue(1, 3));
-    boxTZ->setValue(internalTransformation.GetValue(2, 3));
+    ui->spinBoxSZ->setValue(scaling.z);
+
+    tigl::CTiglPoint rotation = tiglTransformation->getRotation();
+    ui->spinBoxRX->setValue(rotation.x);
+    ui->spinBoxRY->setValue(rotation.y);
+    ui->spinBoxRZ->setValue(rotation.z);
+
+    tigl::CTiglPoint translation = tiglTransformation->getTranslationVector();
+    ui->spinBoxTX->setValue(translation.x);
+    ui->spinBoxTY->setValue(translation.y);
+    ui->spinBoxTZ->setValue(translation.z);
 }
 
 void ModificatorTransformationWidget::setInternalFromSpinBoxes()
 {
+    if (tiglTransformation == nullptr) {
+        return;
+    }
     // apply the transformation in cpacs order: scale, rotation euler (XYZ),
     // translation
-    internalTransformation.SetIdentity();
-    internalTransformation.AddScaling(boxSX->value(), boxSY->value(), boxSZ->value());
-    internalTransformation.AddRotationX(boxRX->value());
-    internalTransformation.AddRotationY(boxRY->value());
-    internalTransformation.AddRotationZ(boxRZ->value());
-    internalTransformation.AddTranslation(boxTX->value(), boxTY->value(), boxTZ->value());
+    // todo verifiy the behavior how to save into tigl and then into the xml
+    tiglTransformation->reset();
+    tiglTransformation->setScaling(
+        tigl::CTiglPoint(ui->spinBoxSX->value(), ui->spinBoxSY->value(), ui->spinBoxSZ->value()));
+    tiglTransformation->setRotation(
+        tigl::CTiglPoint(ui->spinBoxRX->value(), ui->spinBoxRY->value(), ui->spinBoxRZ->value()));
+    tiglTransformation->setTranslation(
+        tigl::CTiglPoint(ui->spinBoxTX->value(), ui->spinBoxTY->value(), ui->spinBoxTZ->value()));
 }
