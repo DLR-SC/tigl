@@ -16,46 +16,38 @@
  * limitations under the License.
  */
 
-#ifndef TIGL_TIGLVIEWERTRANSFORMATIONWIDGET_H
-#define TIGL_TIGLVIEWERTRANSFORMATIONWIDGET_H
+#ifndef MODIFICATORTRANSFORMATIONWIDGET_H
+#define MODIFICATORTRANSFORMATIONWIDGET_H
 
 #include "ModificatorWidget.h"
 #include "CCPACSTransformation.h"
-#include "CTiglTransformation.h"
-#include <QDoubleSpinBox>
+
+namespace Ui
+{
+class ModificatorTransformationWidget;
+}
 
 class ModificatorTransformationWidget : public ModificatorWidget
 {
     Q_OBJECT
 
 public:
-    ModificatorTransformationWidget(QWidget* parent = 0);
-
-    // Initialize the linked objects
-    void init();
+    explicit ModificatorTransformationWidget(QWidget* parent = nullptr);
+    ~ModificatorTransformationWidget();
 
     void setTransformation(tigl::CCPACSTransformation& transformationItem);
     void setSpinBoxesFromInternal();
     void setInternalFromSpinBoxes();
 
     void apply() override;
+    void reset() override;
 
 private:
+    Ui::ModificatorTransformationWidget* ui;
+
+public:
+private:
     tigl::CCPACSTransformation* tiglTransformation;
-
-    QDoubleSpinBox* boxSX;
-    QDoubleSpinBox* boxSY;
-    QDoubleSpinBox* boxSZ;
-
-    QDoubleSpinBox* boxRX;
-    QDoubleSpinBox* boxRY;
-    QDoubleSpinBox* boxRZ;
-
-    QDoubleSpinBox* boxTX;
-    QDoubleSpinBox* boxTY;
-    QDoubleSpinBox* boxTZ;
-
-    tigl::CTiglTransformation internalTransformation;
 };
 
-#endif // TIGL_TIGLVIEWERTRANSFORMATIONWIDGET_H
+#endif // MODIFICATORTRANSFORMATIONWIDGET_H

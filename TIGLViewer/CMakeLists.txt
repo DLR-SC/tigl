@@ -182,6 +182,10 @@ set(tv_ui
   src/TIGLSliderDialog.ui
   src/TIGLGeometryChoserDialog.ui
   src/TIGLViewerSelectWingAndFlapStatusDialog.ui
+  # files for CPACSCreator
+  src/ModificatorTransformationWidget.ui
+  src/ModificatorWingWidget.ui
+  src/ModificatorFuselageWidget.ui
 )
 
 # compile icons

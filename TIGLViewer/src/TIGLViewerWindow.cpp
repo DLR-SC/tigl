@@ -120,12 +120,9 @@ TIGLViewerWindow::TIGLViewerWindow()
     setAcceptDrops(true);
 
     // creator init
-    fuselageModificator->init();
-    transforamtionModificator->init();
-    wingModificator->init();
     modificatorManager = new ModificatorManager(treeView,
                                                 widgetApply,
-                                                transforamtionModificator,
+                                                transformationModificator,
                                                 wingModificator,
                                                 fuselageModificator);
 

@@ -16,24 +16,22 @@
  * limitations under the License.
  */
 
-#ifndef TIGL_TIGLVIEWERWINGWIDGET_H
-#define TIGL_TIGLVIEWERWINGWIDGET_H
+#ifndef MODIFICATORWINGWIDGET_H
+#define MODIFICATORWINGWIDGET_H
 
-#include "CCPACSWing.h"
 #include "ModificatorWidget.h"
-#include "QCheckBox"
-#include "QComboBox"
-#include "QDoubleSpinBox"
-#include "QPushButton"
-#include "QWidget"
+#include "CCPACSWing.h"
+
+namespace Ui
+{
+class ModificatorWingWidget;
+}
 
 class ModificatorWingWidget : public ModificatorWidget
 {
-
     Q_OBJECT
 
 public slots:
-
     void expendAreaDetails(bool checked);
     void expendDihedralDetails(bool checked);
     void expendSweepDetails(bool checked);
@@ -43,53 +41,20 @@ public slots:
     void setARConstant(bool checked);
 
 public:
-    ModificatorWingWidget(QWidget* parent = 0);
+    explicit ModificatorWingWidget(QWidget* parent = nullptr);
+    ~ModificatorWingWidget();
 
-    void init();
     void apply() override;
     void reset() override;
 
     void setWing(tigl::CCPACSWing& wing);
 
 private:
+    void init();
+
+    Ui::ModificatorWingWidget* ui;
+
     tigl::CCPACSWing* tiglWing;
-
-    // anchor interface
-    QDoubleSpinBox* spinBoxAnchorX;
-    QDoubleSpinBox* spinBoxAnchorY;
-    QDoubleSpinBox* spinBoxAnchorZ;
-
-    QComboBox* comboBoxSymmetry;
-
-    // sweep interface
-    QDoubleSpinBox* spinBoxSweep;
-    QPushButton* btnExpendSweepDetails;
-    QWidget* widgetSweepDetails;
-    QDoubleSpinBox* spinBoxSweepChord;
-    QComboBox* comboBoxSweepMethod;
-
-    // dihedral interface
-    QDoubleSpinBox* spinBoxDihedral;
-    QPushButton* btnExpendDihedralDetails;
-    QWidget* widgetDihedralDetails;
-    QDoubleSpinBox* spinBoxDihedralChord;
-
-    // area interface
-    QPushButton* btnExpendAreaDetails;
-    QWidget* widgetAreaDetails;
-    QDoubleSpinBox* spinBoxAreaXY;
-    QDoubleSpinBox* spinBoxAreaXZ;
-    QDoubleSpinBox* spinBoxAreaYZ;
-    QDoubleSpinBox* spinBoxAreaT;
-    QCheckBox* checkBoxIsAreaConstant;
-
-    // span interface;
-    QDoubleSpinBox* spinBoxSpan;
-    QCheckBox* checkBoxIsSpanConstant;
-
-    // AR interface;
-    QDoubleSpinBox* spinBoxAR;
-    QCheckBox* checkBoxIsARConstant;
 
     // internal anchor
     double internalAnchorX;
@@ -121,4 +86,4 @@ private:
     double internalAR;
 };
 
-#endif // TIGL_TIGLVIEWERWINGWIDGET_H
+#endif // MODIFICATORWINGWIDGET_H
