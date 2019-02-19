@@ -74,9 +74,20 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string                       m_uID;
+
+        /// Name of the rotor hub.
         boost::optional<std::string>      m_name;
+
+        /// Description of the rotor hub.
         boost::optional<std::string>      m_description;
+
+        /// Rotor head type. Possible values: "semiRigid",
+        /// "rigid", "articulated", "hingeless"
         boost::optional<TiglRotorHubType> m_type;
+
+        /// Rotor blade attachments are used to define how
+        /// many rotor blades are attached at which azimuth positions of the
+        /// rotor hub and the used hinges.
         CCPACSRotorBladeAttachments       m_rotorBladeAttachments;
 
     private:

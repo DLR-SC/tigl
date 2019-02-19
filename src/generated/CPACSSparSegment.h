@@ -74,9 +74,15 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         boost::optional<std::string> m_uID;
+
+        /// Name of the spar segment (=spar).
         std::string                  m_name;
+
+        /// Description of the spar segment (spar).
         std::string                  m_description;
+
         CCPACSWingSparPositionUIDs   m_sparPositionUIDs;
+
         CPACSSparCrossSection        m_sparCrossSection;
 
     private:

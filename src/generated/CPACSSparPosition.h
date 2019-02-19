@@ -71,8 +71,14 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         boost::optional<std::string> m_uID;
+
+        /// Xsi coordinate of the spar definition point.
         double                       m_xsi;
+
+        /// Eta coordinate of the spar definition point.
         boost::optional<double>      m_eta_choice1;
+
+        /// Link to a section element.
         boost::optional<std::string> m_elementUID_choice2;
 
     private:

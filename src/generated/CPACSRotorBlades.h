@@ -63,6 +63,12 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Rotor blade geometries are defined using the
+        /// same data structure as wings (wingType). But in order to be
+        /// compatible with the other rotor blade related types (e.g.
+        /// rotorType, rotorHubType, rotorHubHingeType) there are some
+        /// additional conventions/requirements regarding the definition and
+        /// orientation of rotorBlade geometries: see remarks.
         std::vector<unique_ptr<CCPACSWing> > m_rotorBlades;
 
     private:

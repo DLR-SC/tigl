@@ -54,7 +54,13 @@ namespace generated
     protected:
         CCPACSControlSurfaceBorderTrailingEdge* m_parent;
 
+        /// Relative spanwise position. Xsi refers to the segment or componentSegment depending on the referenced uID.
         double      m_xsi;
+
+        /// This reference uID determines the reference coordinate system.
+        /// If it points to a segment, then the eta value is considered to be in segment
+        /// eta coordinate; if it points to a componentSegment,
+        /// then componentSegment eta coordinate is used.
         std::string m_referenceUID;
 
     private:

@@ -63,6 +63,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Definition of a flap, lead-lag or pitch hinge.
         std::vector<unique_ptr<CCPACSRotorHinge> > m_hinges;
 
     private:

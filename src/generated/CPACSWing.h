@@ -132,14 +132,29 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string                                  m_uID;
+
         boost::optional<TiglSymmetryAxis>            m_symmetry;
+
+        /// Name of the wing.
         std::string                                  m_name;
+
+        /// Description of the wing.
         boost::optional<std::string>                 m_description;
+
+        /// UID of part to which the wing is mounted (if
+        /// any). The parent of the wing can e.g. be the fuselage. In each
+        /// aircraft model, there is exactly one part without a parent part
+        /// (The root of the connection hierarchy).
         boost::optional<std::string>                 m_parentUID;
+
         CCPACSTransformation                         m_transformation;
+
         CCPACSWingSections                           m_sections;
+
         boost::optional<CCPACSPositionings>          m_positionings;
+
         CCPACSWingSegments                           m_segments;
+
         boost::optional<CCPACSWingComponentSegments> m_componentSegments;
 
     private:

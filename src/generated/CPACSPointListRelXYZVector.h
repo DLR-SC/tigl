@@ -49,8 +49,17 @@ namespace generated
         TIGL_EXPORT virtual CCPACSStringVector& GetRZ();
 
     protected:
+        /// Vector of rX coordinates. Relative
+        /// circumferential coordinate on wing / fuselage profile
         CCPACSStringVector m_rX;
+
+        /// Vector of rY coordinates. Relative span
+        /// coordinate along a segment
         CCPACSStringVector m_rY;
+
+        /// Vector of rZ coordinates. Relative coordinate
+        /// normal to the linear strake (normalised with chordlength /
+        /// diameter c*)
         CCPACSStringVector m_rZ;
 
     private:

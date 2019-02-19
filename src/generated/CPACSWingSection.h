@@ -74,9 +74,15 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string                  m_uID;
+
+        /// Name of wing the wing section.
         std::string                  m_name;
+
+        /// Description of the wing section.
         boost::optional<std::string> m_description;
+
         CCPACSTransformation         m_transformation;
+
         CCPACSWingSectionElements    m_elements;
 
     private:

@@ -49,7 +49,11 @@ namespace generated
         TIGL_EXPORT virtual void SetRelPos(const double& value);
 
     protected:
+        /// Material definition of the spar web.
         CCPACSMaterialDefinition m_material;
+
+        /// relPos ranges from 0 to 1 It defines the
+        /// position of the web relative to the caps (see picture below)..
         double                   m_relPos;
 
     private:

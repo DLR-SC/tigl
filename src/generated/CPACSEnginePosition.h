@@ -81,11 +81,21 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string                       m_uID;
+
         boost::optional<TiglSymmetryAxis> m_symmetry;
+
+        /// Name of the engine
         std::string                       m_name;
+
+        /// Description of the engine
         boost::optional<std::string>      m_description;
+
+        /// Reference to the used engine
         std::string                       m_engineUID;
+
+        /// Component, to which the engine is mounted
         std::string                       m_parentUID;
+
         CCPACSTransformation              m_transformation;
 
     private:

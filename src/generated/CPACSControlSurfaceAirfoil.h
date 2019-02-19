@@ -58,11 +58,32 @@ namespace generated
         TIGL_EXPORT virtual void SetScalZ(const double& value);
 
     protected:
+        /// Relative spanwise coordinate (eta) of the
+        /// control surface, where the leading edge of the airfoil is
+        /// placed.
         CCPACSEtaIsoLine m_eta;
+
+        /// Reference to the airfoil uID.
         std::string      m_airfoilUID;
+
+        /// Rotation around an axis, going from the
+        /// leading edge point to the trailing edge point of the control
+        /// surface. Defaults to 90°, which is equivalent to perpendicular
+        /// on the control surface middle plane.
         double           m_rotX;
+
+        /// Rotation of the airfoil around the control
+        /// surface middle plane normal direciotn. Reference point is the
+        /// most forward point of the airfoil. Defaults to 90°, which is
+        /// equivalent to the airfoilplacement in flight direction (along
+        /// wings-x axis).
         double           m_rotZ;
+
+        /// Scaling of the airfoil in spanwise direction
+        /// (not used for 2D airfoils).
         double           m_scalY;
+
+        /// Scaling in thickness direction of the airfoil.
         double           m_scalZ;
 
     private:

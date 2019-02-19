@@ -77,9 +77,27 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Relative deflection. This value is an double
+        /// value and must be unique with all steps. Can be seen as a kind
+        /// of 'uID' of the step. The value can have any range and is not
+        /// limited from 0 to 1. 0 means no deflection. The values of
+        /// relDeflection define the order of the different steps (0 to the
+        /// highest relDeflection for the positive deflection; 0 to the
+        /// lowest (negative) value for the negative deflection (if any).
         double                        m_relDeflection;
+
+        /// Translation of the inner hinge line point
+        /// within the hinge line coordinate system. Defaults to zero. Not
+        /// allowed for spoilers!
         boost::optional<CCPACSPoint>  m_innerHingeTranslation;
+
+        /// Translation of the outer hinge line point
+        /// within the hinge line coordinate system. Defaults to the values
+        /// of the inner hinge line point. Not allowed for spoilers!
         boost::optional<CPACSPointXZ> m_outerHingeTranslation;
+
+        /// Positve rotation around the hinge line,
+        /// heading from the inner to the outer border. Defaults to zero.
         boost::optional<double>       m_hingeLineRotation;
 
     private:

@@ -54,7 +54,12 @@ namespace generated
     protected:
         CPACSControlSurfacePath* m_parent;
 
+        /// Relative chordwise coordinate (xsi) of the
+        /// hinge line point. Reference is the parent chord.
         double m_hingeXsi;
+
+        /// Relative height of the hinge line point.
+        /// Reference is the parent airfoil height.
         double m_hingeRelHeight;
 
     private:

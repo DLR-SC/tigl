@@ -66,9 +66,15 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         boost::optional<TiglSymmetryAxis> m_symmetry;
+
         std::string                       m_uID;
+
+        /// Name of profile
         std::string                       m_name;
+
+        /// Description of profile
         boost::optional<std::string>      m_description;
+
         CCPACSPointListRelXYZVector       m_pointList;
 
     private:

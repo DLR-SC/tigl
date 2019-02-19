@@ -86,11 +86,25 @@ namespace generated
     protected:
         CPACSControlSurfaceOuterShapeTrailingEdge* m_parent;
 
+        /// Relative spanwise inner/outer position of the
+        /// leading edge of the control surface. Reference is eta/xsi from
+        /// the parent.
         CCPACSEtaIsoLine                        m_etaLE;
+
+        /// Relative spanwise inner/outer position of the
+        /// trailing edge of the control surface. Reference is eta/xsi from
+        /// the parent. Defaults to 'etaLE'.
         boost::optional<CCPACSEtaIsoLine>       m_etaTE;
+
+        /// Relative chordwise inner/outer position of the
+        /// leading edge of the control surface. Reference is eta/xsi from
+        /// the parent.
         CCPACSXsiIsoLine                        m_xsiLE;
+
         boost::optional<CPACSLeadingEdgeHollow> m_innerShape;
+
         boost::optional<CPACSLeadingEdgeShape>  m_leadingEdgeShape;
+
         boost::optional<CPACSContourReference>  m_airfoil;
 
     private:

@@ -59,8 +59,14 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string m_uID;
+
+        /// X-Component
         double      m_x;
+
+        /// Y-Component
         double      m_y;
+
+        /// Z-Component
         double      m_z;
 
     private:

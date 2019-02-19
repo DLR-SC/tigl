@@ -49,8 +49,21 @@ namespace generated
         TIGL_EXPORT virtual void SetRotZ(const double& value);
 
     protected:
+        /// Reference to the profile uID. Profiles should
+        /// be linked in profiles/structuralProfiles
         std::string      m_profileUID;
+
+        /// Relative spanwise position of the cut out
+        /// profile. The eta coordinate refers to the control surface and
+        /// desribes the cut out profile at the leading edge of the control
+        /// surface.
         CCPACSEtaIsoLine m_eta;
+
+        /// Rotation of the airfoil around the control
+        /// surface middle plane normal direciotn. Reference point is the
+        /// most forward point of the airfoil. Defaults to 90°, which is
+        /// equivalent to the airfoilplacement in flight direction (along
+        /// wings-x axis).
         double           m_rotZ;
 
     private:

@@ -80,10 +80,23 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string                        m_uID;
+
+        /// Name of fuselage segment
         std::string                        m_name;
+
+        /// Description of fuselage segment
         boost::optional<std::string>       m_description;
+
+        /// Reference to element from which the segment
+        /// shall start
         std::string                        m_fromElementUID;
+
+        /// Reference to element at which the segment
+        /// shall end
         std::string                        m_toElementUID;
+
+        /// Optional and additional guidecurves to shape
+        /// the outer geometry.
         boost::optional<CCPACSGuideCurves> m_guideCurves;
 
     private:

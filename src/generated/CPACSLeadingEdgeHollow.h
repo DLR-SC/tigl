@@ -45,7 +45,14 @@ namespace generated
         TIGL_EXPORT virtual void SetXsiTE(const double& value);
 
     protected:
+        /// Relative height of the most forward point of
+        /// the LED's rear part, based on the airfoil height of the parent
+        /// at this position. Optional.
         double m_relHeightTE;
+
+        /// Relative chordwise position of the most
+        /// forward point of the LED's rear part, based on the chord of the
+        /// parent at this position. Optional.
         double m_xsiTE;
 
     private:

@@ -51,7 +51,10 @@ namespace generated
         TIGL_EXPORT virtual CCPACSMaterialDefinition& GetMaterial();
 
     protected:
+        /// Area of the cap.
         double                   m_area;
+
+        /// Material properties.
         CCPACSMaterialDefinition m_material;
 
     private:

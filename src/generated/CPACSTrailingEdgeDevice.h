@@ -99,13 +99,28 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string                                    m_uID;
+
+        /// Name of the trailing edge device.
         std::string                                    m_name;
+
+        /// Description of the trailing edge device.
         boost::optional<std::string>                   m_description;
+
+        /// UID of the parent of the TED. The parent can
+        /// either be the uID of the componentSegment of the wing, or the
+        /// uID of another TED. In the second case this TED is placed within
+        /// the other TED (double slotted flap). In this way n-slotted TEDs
+        /// can be created.
         std::string                                    m_parentUID;
+
         CPACSControlSurfaceOuterShapeTrailingEdge      m_outerShape;
+
         boost::optional<CPACSControlSurfaceWingCutOut> m_wingCutOut;
+
         boost::optional<CCPACSWingCSStructure>         m_structure;
+
         CPACSControlSurfacePath                        m_path;
+
         boost::optional<CPACSControlSurfaceTracks>     m_tracks;
 
     private:

@@ -45,7 +45,10 @@ namespace generated
         TIGL_EXPORT virtual void SetTrueStress(const double& value);
 
     protected:
+        /// tangent modulus [Pa]
         double m_tangentModulus;
+
+        /// true stress [Pa]
         double m_trueStress;
 
     private:

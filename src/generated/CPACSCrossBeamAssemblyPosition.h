@@ -77,9 +77,18 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string                              m_uID;
+
+        /// UID of profile based structural element to be
+        /// used as crossbeam
         std::string                              m_structuralElementUID;
+
+        /// UID of the frame to which the crossbeam is
+        /// attached
         std::string                              m_frameUID;
+
+        /// Referenze z position of the crossbeam
         double                                   m_positionZ;
+
         boost::optional<CPACSAlignmentCrossBeam> m_alignment;
 
     private:

@@ -48,8 +48,23 @@ namespace generated
         TIGL_EXPORT virtual void SetXsiLowerSkin(const double& value);
 
     protected:
+        /// Relative height of the leading edge of the TED,
+        /// based on the airfoil height of the parent at this position.
+        /// Optional.
         double m_relHeightLE;
+
+        /// Relative chordwise upper skin position, of the
+        /// border, where the airfoil of the TED is equivalent of the
+        /// airfoil from the parent. Measured from the rear to the front (0
+        /// = TED trailing edge; 1 = TED leading edge). Values form the
+        /// outer border default to the value of the inner border. Optional.
         double m_xsiUpperSkin;
+
+        /// Relative chordwise lower skin position, of the
+        /// border, where the airfoil of the TED is equivalent of the
+        /// airfoil from the parent. Measured from the rear to the front (0
+        /// = TED trailing edge; 1 = TED leading edge). Values form the
+        /// outer border default to the value of the inner border. Optional.
         double m_xsiLowerSkin;
 
     private:

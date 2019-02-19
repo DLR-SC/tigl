@@ -91,10 +91,20 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         boost::optional<CPACSCap>       m_upperCap;
+
         boost::optional<CPACSCap>       m_lowerCap;
+
         CPACSWeb                        m_web1;
+
         boost::optional<CPACSWeb>       m_web2;
+
         boost::optional<CPACSSparCells> m_sparCells;
+
+        /// The angle between the wing middle plane and
+        /// web1. Default is 90 degrees. Positive rotation is around the
+        /// intersection axis of the spar and the wing middle plane. The
+        /// positive heading of this axis is inline with the positive
+        /// heading of the componentSegment eta-axis.
         double                          m_rotation;
 
     private:

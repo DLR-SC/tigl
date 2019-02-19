@@ -82,10 +82,17 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         boost::optional<CPACSProfileGeometry2DType_symmetry> m_symmetry;
+
         std::string                                          m_uID;
+
+        /// Name of profile
         std::string                                          m_name;
+
+        /// Description of profile
         boost::optional<std::string>                         m_description;
+
         boost::optional<CCPACSPointListXYVector>             m_pointList_choice1;
+
         boost::optional<CCPACSWingProfileCST>                m_cst2D_choice2;
 
     private:

@@ -93,18 +93,62 @@ namespace generated
     protected:
         CCPACSWingRibsDefinition* m_parent;
 
+        /// The ribReference is the reference line for the geometrical rib
+        /// placement. It can either
+        /// be a sparUID or "trailingEdge" or "leadingEdge"
         std::string                  m_ribReference;
+
+        /// RibStart defines the forward beginning of the ribs. It can either be a
+        /// sparUID or
+        /// "trailingEdge" or "leadingEdge".
         std::string                  m_ribStart;
+
+        /// RibEnd defines the backward ending of the ribs. It can either be a
+        /// sparUID or
+        /// "trailingEdge" or "leadingEdge".
         std::string                  m_ribEnd;
+
         CPACSRibCrossingBehaviour    m_ribCrossingBehaviour;
+
         CCPACSWingRibRotation        m_ribRotation;
+
+        /// EtaStart defines the innerBorder location of the beginning of the rib
+        /// set on the
+        /// ribReference line. Please note, the eta is relative to wing eta coordinate!
         boost::optional<double>      m_etaStart_choice1;
+
+        /// elementStartUID defines the innerBorder location of the beginning of the rib
+        /// set on the
+        /// ribReference line. It is relative to a section element and hence linked to
+        /// the outer shape.
         boost::optional<std::string> m_elementStartUID_choice2;
+
+        /// TIGL extension
         boost::optional<std::string> m_sparPositionStartUID_choice3;
+
+        /// EtaEnd defines the outerBorder location of the end of the rib set on
+        /// the
+        /// ribReference line. Please note, the eta is relative to wing eta coordinate!
         boost::optional<double>      m_etaEnd_choice1;
+
+        /// elementEndUID defines the innerBorder location of the beginning of the rib
+        /// set on the
+        /// ribReference line. It is relative to a section element and hence linked to
+        /// the outer shape.
         boost::optional<std::string> m_elementEndUID_choice2;
+
+        /// TIGL extension
         boost::optional<std::string> m_sparPositionEndUID_choice3;
+
+        /// The spacing of the ribs defines the distance between two ribs,
+        /// measured on the
+        /// ribReferenceLine. First rib is placed at etaStart.
         boost::optional<double>      m_spacing_choice1;
+
+        /// RibNumber defines the number of ribs in this ribSet. First rib is at
+        /// etaStart on the
+        /// referenceLine, last rib is at etaEnd. The spacing is constant on the
+        /// ribReferenceLine.
         boost::optional<int>         m_numberOfRibs_choice2;
 
     private:

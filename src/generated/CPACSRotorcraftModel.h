@@ -94,12 +94,21 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string                           m_uID;
+
+        /// Name of rotorcraft model
         std::string                           m_name;
+
+        /// Description of rotorcraft model
         boost::optional<std::string>          m_description;
+
         boost::optional<CCPACSFuselages>      m_fuselages;
+
         boost::optional<CCPACSWings>          m_wings;
+
         boost::optional<CCPACSRotors>         m_rotors;
+
         boost::optional<CCPACSRotorBlades>    m_rotorBlades;
+
         boost::optional<CPACSEnginePositions> m_engines;
 
     private:

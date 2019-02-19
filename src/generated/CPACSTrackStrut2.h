@@ -43,6 +43,7 @@ namespace generated
         TIGL_EXPORT virtual CCPACSMaterialDefinition& GetMaterial();
 
     protected:
+        /// Definition of the material properties.
         CCPACSMaterialDefinition m_material;
 
     private:

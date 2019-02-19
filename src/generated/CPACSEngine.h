@@ -69,9 +69,16 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string                         m_uID;
+
+        /// Name of engine
         std::string                         m_name;
+
+        /// Description of engine
         boost::optional<std::string>        m_description;
+
+        /// Scaling of engine take-off thrust
         boost::optional<double>             m_thrust00Scaling;
+
         boost::optional<CPACSEngineNacelle> m_nacelle;
 
     private:

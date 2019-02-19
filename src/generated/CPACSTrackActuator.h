@@ -57,7 +57,13 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string              m_uID;
+
+        /// Reference to the uID of the actuator of the
+        /// track.
         std::string              m_actuatorUID;
+
+        /// Definition of the material properties of the
+        /// actuator to track attachment.
         CCPACSMaterialDefinition m_material;
 
     private:

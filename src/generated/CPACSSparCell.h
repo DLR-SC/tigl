@@ -80,12 +80,24 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string               m_uID;
+
+        /// Beginning (= inner border) of the spar cell.
         CCPACSEtaIsoLine          m_fromEta;
+
+        /// Ending (= outer border) of the spar cell.
         CCPACSEtaIsoLine          m_toEta;
+
         CPACSCap                  m_upperCap;
+
         CPACSCap                  m_lowerCap;
+
         CPACSWeb                  m_web1;
+
         boost::optional<CPACSWeb> m_web2;
+
+        /// The angle between the wing middle plane and
+        /// web1. Default is 90 degrees. Positive rotation is around the
+        /// spar axis heading along with the positive eta-axis.
         double                    m_rotation;
 
     private:

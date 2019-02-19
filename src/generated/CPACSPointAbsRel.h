@@ -65,9 +65,16 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string                            m_uID;
+
         boost::optional<ECPACSTranslationType> m_refType;
+
+        /// X-Component
         boost::optional<double>                m_x;
+
+        /// Y-Component
         boost::optional<double>                m_y;
+
+        /// Z-Component
         boost::optional<double>                m_z;
 
     private:

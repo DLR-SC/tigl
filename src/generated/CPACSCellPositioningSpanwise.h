@@ -72,9 +72,19 @@ namespace generated
     protected:
         CCPACSWingCell* m_parent;
 
+        /// Relative spanwise position of the forward
+        /// end.
         boost::optional<CCPACSEtaIsoLine> m_eta1_choice1;
+
+        /// Relative spanwise position of the rear end.
         boost::optional<CCPACSEtaIsoLine> m_eta2_choice1;
+
+        /// RibNumber is the reference to the rib number
+        /// of the rib set which is referenced by 'ribDefinitionUID'.
         boost::optional<int>              m_ribNumber_choice2;
+
+        /// Reference to a ribDefinition set. The single
+        /// rib of this ribDefinition set is defined by using 'ribNumber'.
         boost::optional<std::string>      m_ribDefinitionUID_choice2;
 
     private:

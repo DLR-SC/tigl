@@ -43,6 +43,7 @@ namespace generated
         TIGL_EXPORT virtual std::vector<std::string>& GetSparPositionUIDs();
 
     protected:
+        /// List of spar position uIDs.
         std::vector<std::string> m_sparPositionUIDs;
 
     private:

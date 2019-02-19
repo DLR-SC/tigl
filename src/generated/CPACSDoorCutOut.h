@@ -64,9 +64,20 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string                  m_uID;
+
+        /// Name of door cutout element
         boost::optional<std::string> m_name;
+
+        /// Description of door cutout
+        /// element
         boost::optional<std::string> m_description;
+
+        /// Fillet radius of door cutout
+        /// element
         boost::optional<double>      m_filletRadius;
+
+        /// Reference UID to the description of a DSS (door
+        /// surround structure)
         boost::optional<std::string> m_dssDesignUID;
 
     private:

@@ -45,7 +45,10 @@ namespace generated
         TIGL_EXPORT virtual void SetVersion(const std::string& value);
 
     protected:
+        /// Name of the tool
         std::string m_name;
+
+        /// Version of the tool
         std::string m_version;
 
     private:

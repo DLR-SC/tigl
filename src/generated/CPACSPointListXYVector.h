@@ -46,7 +46,10 @@ namespace generated
         TIGL_EXPORT virtual CCPACSStringVector& GetY();
 
     protected:
+        /// Vector of x coordinates
         CCPACSStringVector m_x;
+
+        /// Vector of y coordinates
         CCPACSStringVector m_y;
 
     private:

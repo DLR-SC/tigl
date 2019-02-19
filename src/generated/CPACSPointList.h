@@ -55,6 +55,7 @@ namespace generated
     protected:
         CTiglUIDManager* m_uidMgr;
 
+        /// Data point
         std::vector<unique_ptr<CCPACSPoint> > m_points;
 
     private:

@@ -46,7 +46,10 @@ namespace generated
         TIGL_EXPORT virtual CCPACSStringVector& GetDiffuseEmissivity();
 
     protected:
+        /// Wave length in [m]
         CCPACSStringVector m_waveLength;
+
+        /// Diffuse emissivity of the material
         CCPACSStringVector m_diffuseEmissivity;
 
     private:

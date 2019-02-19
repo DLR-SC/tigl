@@ -54,6 +54,9 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string              m_uID;
+
+        /// Material definition of the skin segment
+        /// (Material, thickness, (lay-up))
         CCPACSMaterialDefinition m_materialDefinition;
 
     private:

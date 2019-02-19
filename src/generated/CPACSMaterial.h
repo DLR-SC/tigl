@@ -190,45 +190,131 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string                                m_uID;
+
+        /// Name of material
         std::string                                m_name;
+
+        /// description of material
         boost::optional<std::string>               m_description;
+
+        /// Density of material in [kg/m^3]
         double                                     m_rho;
+
+        /// stiffness component in 11-direction in [N/m]
         double                                     m_k11;
+
+        /// stiffness component in 12-direction in [N/m]
         double                                     m_k12;
+
+        /// Maximum strain of the material. This value is
+        /// intended for layerd material. Thus no orientation is given.
         boost::optional<double>                    m_maxStrain;
+
+        /// optional knockdown factor for fatiuqe
+        /// (defaults to 1)
         boost::optional<double>                    m_fatigueFactor;
+
         std::vector<unique_ptr<CPACSPostFailure> > m_postFailures;
+
+        /// thermal conductivity of the material in [W/(m*K)]
         boost::optional<double>                    m_thermalConductivity;
+
         boost::optional<CPACSSpecificHeatMap>      m_specificHeatMap;
+
         boost::optional<CPACSEmissivityMap>        m_emissivityMap;
+
+        /// tensile strength in 11 direction in [N/m^2]
         boost::optional<double>                    m_sig11_choice1;
+
+        /// shear strength in 12 direction in [N/m^2]
         boost::optional<double>                    m_tau12_choice1;
+
+        /// tensile yield strength in 11 direction in
+        /// [N/m^2]
         boost::optional<double>                    m_sig11yieldT_choice1;
+
+        /// compressive yield strength in 11 direction
+        /// in [N/m^2]
         boost::optional<double>                    m_sig11yieldC_choice1;
+
+        /// stiffness component in 22-direction
         boost::optional<double>                    m_k22_choice2;
+
+        /// stiffness component in 23-direction
         boost::optional<double>                    m_k23_choice2;
+
+        /// stiffness component in 66-direction
         boost::optional<double>                    m_k66_choice2;
+
+        /// tensile strength in 11 direction in [N/m^2]
         boost::optional<double>                    m_sig11t_choice2;
+
+        /// compressive strength in 11 direction in
+        /// [N/m^2]
         boost::optional<double>                    m_sig11c_choice2;
+
+        /// tensile strength in 22 direction in [N/m^2]
         boost::optional<double>                    m_sig22t_choice2;
+
+        /// compressive strength in 22 direction in
+        /// [N/m^2]
         boost::optional<double>                    m_sig22c_choice2;
+
+        /// shear strength in 12 direction in [N/m^2]
         boost::optional<double>                    m_tau12_choice2;
+
+        /// shear strength in 23 direction in [N/m^2]
         boost::optional<double>                    m_tau23_choice2;
+
+        /// stiffness component in 13-direction
         boost::optional<double>                    m_k13_choice3;
+
+        /// stiffness component in 22-direction
         boost::optional<double>                    m_k22_choice3;
+
+        /// stiffness component in 23-direction
         boost::optional<double>                    m_k23_choice3;
+
+        /// stiffness component in 33-direction
         boost::optional<double>                    m_k33_choice3;
+
+        /// stiffness component in 44-direction
         boost::optional<double>                    m_k44_choice3;
+
+        /// stiffness component in 55-direction
         boost::optional<double>                    m_k55_choice3;
+
+        /// stiffness component in 66-direction
         boost::optional<double>                    m_k66_choice3;
+
+        /// tensile strength in 11 direction in [N/m^2]
         boost::optional<double>                    m_sig11t_choice3;
+
+        /// compressive strength in 11 direction in
+        /// [N/m^2]
         boost::optional<double>                    m_sig11c_choice3;
+
+        /// tensile strength in 22 direction in [N/m^2]
         boost::optional<double>                    m_sig22t_choice3;
+
+        /// compressive strength in 22 direction in
+        /// [N/m^2]
         boost::optional<double>                    m_sig22c_choice3;
+
+        /// tensile strength in 33 direction in [N/m^2]
         boost::optional<double>                    m_sig33t_choice3;
+
+        /// compressive strength in 33 direction in
+        /// [N/m^2]
         boost::optional<double>                    m_sig33c_choice3;
+
+        /// shear strength in 12 direction in [N/m^2]
         boost::optional<double>                    m_tau12_choice3;
+
+        /// shear strength in 13 direction in [N/m^2]
         boost::optional<double>                    m_tau13_choice3;
+
+        /// shear strength in 23 direction in [N/m^2]
         boost::optional<double>                    m_tau23_choice3;
 
     private:

@@ -61,8 +61,15 @@ namespace generated
     protected:
         CCPACSWingCell* m_parent;
 
+        /// Reference to a spar as chordwise border.
         boost::optional<std::string> m_sparUID_choice1;
+
+        /// Relative chordwise position of the inner
+        /// end.
         boost::optional<double>      m_xsi1_choice2;
+
+        /// Relative chordwise position of the outer
+        /// end.
         boost::optional<double>      m_xsi2_choice2;
 
     private:

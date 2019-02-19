@@ -81,11 +81,21 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string                       m_uID;
+
         boost::optional<TiglSymmetryAxis> m_symmetry;
+
+        /// Name of genericGeometricComponent
         std::string                       m_name;
+
+        /// Description of genericGeometricComponent
         boost::optional<std::string>      m_description;
+
+        /// UID of part to which the component is mounted
+        /// (if any)
         boost::optional<std::string>      m_parentUID;
+
         CCPACSTransformation              m_transformation;
+
         CPACSLinkToFile                   m_linkToFile;
 
     private:

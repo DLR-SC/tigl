@@ -74,9 +74,17 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string                  m_uID;
+
+        /// Name of the structure profile.
         std::string                  m_name;
+
+        /// Description of the structure profile.
         boost::optional<std::string> m_description;
+
+        /// List of structural profile points, only x and
+        /// y.
         CCPACSPointListXY            m_pointList;
+
         CCPACSSheetList              m_sheetList;
 
     private:

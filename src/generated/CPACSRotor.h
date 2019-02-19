@@ -88,13 +88,41 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string                       m_uID;
+
         boost::optional<TiglSymmetryAxis> m_symmetry;
+
+        /// Name of the rotor.
         std::string                       m_name;
+
+        /// Description of the rotor.
         boost::optional<std::string>      m_description;
+
+        /// UID of the part to which the rotor is mounted
+        /// (if any). The parent of the rotor can e.g. be the fuselage. In
+        /// each rotorcraft model, there is exactly one part without a
+        /// parent part (The root of the connection hierarchy).
         boost::optional<std::string>      m_parentUID;
+
+        /// Rotor type. Possible values: "mainRotor"
+        /// (default), "tailRotor", "fenestron" or "propeller"..
         boost::optional<CPACSRotor_type>  m_type;
+
+        /// Nominal value of the angular rotation speed in
+        /// rotations per minute (rpm).
         boost::optional<double>           m_nominalRotationsPerMinute;
+
+        /// Transformation (scaling, rotation,
+        /// translation). This element is used to define the position and
+        /// attitude of the rotor relative to the global or the parent
+        /// component's axis system. Note that an anisotropical scaling
+        /// transformation should not be applied to the rotor.
         CCPACSTransformation              m_transformation;
+
+        /// The rotorHub element contains the definition
+        /// of the rotor hub type and number and azimuth angles of the
+        /// attached blades and their hinges. The rotor hub position and
+        /// attitude coincides with the rotor axis system's origin and z
+        /// axis.
         CCPACSRotorHub                    m_rotorHub;
 
     private:

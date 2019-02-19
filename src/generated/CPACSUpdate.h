@@ -55,10 +55,20 @@ namespace generated
         TIGL_EXPORT virtual void SetCpacsVersion(const std::string& value);
 
     protected:
+        /// Description of Modification of CPACS data
         std::string m_modification;
+
+        /// Creator of CPACS modification
         std::string m_creator;
+
+        /// Timestamp of CPACS modification
         std::time_t m_timestamp;
+
+        /// New version number of CPACS dataset after
+        /// modification
         std::string m_version;
+
+        /// CPACS version that the dataset is valid to
         std::string m_cpacsVersion;
 
     private:

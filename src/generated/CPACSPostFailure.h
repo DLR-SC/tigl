@@ -80,15 +80,29 @@ namespace generated
         TIGL_EXPORT virtual void RemovePlasticityCurvePoint_choice1(CPACSPlasticityCurvePoint& ref);
 
     protected:
+        /// name of the post failure definition
         boost::optional<std::string>                        m_name;
+
+        /// description of the post failure definition
         boost::optional<std::string>                        m_description;
+
+        /// name of material law
         boost::optional<std::string>                        m_materialLaw;
+
+        /// plasticEliminationStrain [-] Plastic strain
+        /// for element elimination during the non-linear analysis
         boost::optional<double>                             m_plasticEliminationStrain_choice1;
+
         std::vector<unique_ptr<CPACSPlasticityCurvePoint> > m_plasticityCurvePoints_choice1;
+
         boost::optional<double>                             m_initialEquivalentShearStrain_choice2;
+
         boost::optional<double>                             m_intermediateEquivalentShearStrain_choice2;
+
         boost::optional<double>                             m_ultimateEquivalentShearStrain_choice2;
+
         boost::optional<double>                             m_intermediateDamage_choice2;
+
         boost::optional<double>                             m_ultimateDamage_choice2;
 
     private:

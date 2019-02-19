@@ -46,7 +46,10 @@ namespace generated
         TIGL_EXPORT virtual CCPACSStringVector& GetSpecificHeat();
 
     protected:
+        /// temperature in [K]
         CCPACSStringVector m_temperature;
+
+        /// specific heat capacity of the material in [J/(kg*K)]
         CCPACSStringVector m_specificHeat;
 
     private:

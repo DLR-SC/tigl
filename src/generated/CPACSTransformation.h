@@ -86,8 +86,24 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string                        m_uID;
+
+        /// Scaling data default: 1,1,1. Those parameters
+        /// describe the scaling of the x-, y-, and z-axis.
         boost::optional<CCPACSPoint>       m_scaling;
+
+        /// Rotation data default: 0,0,0. The rotation
+        /// angles are the three Euler angles to describe the orientation of
+        /// the coordinate system. The order is allways xyz in CPACS.
+        /// Therefore the first rotation is around the x-axis, the second
+        /// rotation is around the rotated y-axis (y') and the third
+        /// rotation is around the two times rotated z-axis (z'').
         boost::optional<CCPACSPoint>       m_rotation;
+
+        /// Translation data default: 0,0,0. Translations
+        /// can either be made absolute in the global coordinate system
+        /// (absGlobal), absolute in the local Coordinate system (absLocal)
+        /// or relative (relative), normalized with the maximum dimensions
+        /// of the parent.
         boost::optional<CCPACSPointAbsRel> m_translation;
 
     private:

@@ -45,7 +45,14 @@ namespace generated
         TIGL_EXPORT virtual void SetXsi(const double& value);
 
     protected:
+        /// Relative height of the most forward position of
+        /// the parents leading edge, relative to the airfoil height without
+        /// cut out.
         double m_relHeight;
+
+        /// Relative chordwise position of the most
+        /// forward position of the parents leading edge, relative to the
+        /// parents chord without cut out.
         double m_xsi;
 
     private:

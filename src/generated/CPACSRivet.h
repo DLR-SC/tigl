@@ -64,9 +64,17 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string                  m_uID;
+
+        /// Name of the rivet type
         boost::optional<std::string> m_name;
+
+        /// Description of the rivet type
         boost::optional<std::string> m_description;
+
+        /// Tensile Strength of the rivet type
         double                       m_tensileStrength;
+
+        /// Shear Strength of the rivet type
         double                       m_shearStrength;
 
     private:

@@ -46,6 +46,7 @@ namespace generated
         TIGL_EXPORT virtual CCPACSMaterialDefinition& GetMaterial();
 
     protected:
+        /// Material properties of the wing skin.
         CCPACSMaterialDefinition m_material;
 
     private:

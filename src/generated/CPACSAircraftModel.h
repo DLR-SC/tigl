@@ -94,12 +94,21 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string                            m_uID;
+
+        /// Name of the aircraft model.
         std::string                            m_name;
+
+        /// Description of the aircraft model.
         boost::optional<std::string>           m_description;
+
         boost::optional<CCPACSFuselages>       m_fuselages;
+
         boost::optional<CCPACSWings>           m_wings;
+
         boost::optional<CPACSEnginePositions>  m_engines;
+
         boost::optional<CCPACSEnginePylons>    m_enginePylons;
+
         boost::optional<CCPACSExternalObjects> m_genericGeometryComponents;
 
     private:

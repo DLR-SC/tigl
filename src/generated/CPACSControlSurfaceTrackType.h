@@ -88,10 +88,21 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string                                                m_uID;
+
+        /// Relative chordwise position of the track. Eta
+        /// refers to the control surface.
         CCPACSEtaIsoLine                                           m_eta;
+
+        /// Type of the track. Please refer to the remarks
+        /// of the controlSrufaceTrackTypeType for details.
         CPACSControlSurfaceTrackType_trackType                     m_trackType;
+
+        /// Type of the track. Please refer to the remarks
+        /// of the controlSrufaceTrackTypeType for details.
         boost::optional<CPACSControlSurfaceTrackType_trackSubType> m_trackSubType;
+
         boost::optional<CPACSTrackActuator>                        m_actuator;
+
         boost::optional<CPACSTrackStructure>                       m_trackStructure;
 
     private:

@@ -55,6 +55,7 @@ namespace generated
     protected:
         CTiglUIDManager* m_uidMgr;
 
+        /// Data points in x-y-space.
         std::vector<unique_ptr<CCPACSPointXY> > m_points;
 
     private:

@@ -71,9 +71,17 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string                                   m_uID;
+
+        /// Name of composite
         std::string                                   m_name;
+
+        /// Description of composite
         boost::optional<std::string>                  m_description;
+
+        /// offset of the laminate. The reference plane of
+        /// the laminate is the arithmetic mean of the laminate thickness.
         boost::optional<double>                       m_offset;
+
         std::vector<unique_ptr<CPACSCompositeLayer> > m_compositeLayers;
 
     private:

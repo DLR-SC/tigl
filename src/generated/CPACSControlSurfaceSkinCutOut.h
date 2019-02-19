@@ -61,8 +61,16 @@ namespace generated
     protected:
         CPACSControlSurfaceWingCutOut* m_parent;
 
+        /// Reference to a spar, defining the skin cut
+        /// out.
         boost::optional<std::string> m_sparUID_choice1;
+
+        /// Xsi value of the inner border, where the cut
+        /// out begins.
         boost::optional<double>      m_xsiInnerBorder_choice2;
+
+        /// Xsi value of the outer border, where the cut
+        /// out begins.
         boost::optional<double>      m_xsiOuterBorder_choice2;
 
     private:
