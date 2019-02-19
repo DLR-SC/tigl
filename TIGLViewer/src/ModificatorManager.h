@@ -26,35 +26,12 @@
 #include "ModificatorTransformationWidget.h"
 #include "ModificatorWidget.h"
 #include "ModificatorWingWidget.h"
-
+#include "CreatorWidget.h"
 #include <QPushButton>
 
 class TIGLViewerWindow;
 
-/**
- * @brief Main class to articulate the modification interface.
- *
- * This class holds four main components:
- * CCPACSConfiguration: that is the main tigl object to work with.
- * CPACSTreeView: that is the manage the tree interface.
- * ModificatorWidgetS: that are the interfaces for particular tigl object.
- * ApllyWidget: that contains the commit and cancel button
- *
- * To work with this class, first we need to set the CCPACSConfiguration. The
- * CPACSTreeView will be updated and the correct tree will be build and
- * displayed. Oncethe CPACSConfiguration is set, it will wait for a
- * "newSelectedTreeItem" signal. If a "newSelectedTreeItem" signal is emit, the
- * "dispatch" function will be called. The dispatch function will look at the
- * new selected element and if the element has a associate ModificatorWidget, it
- * will set this particular ModificatorWidget and display it. Then if the user,
- * click on the "apply" function, the modificator manager will apply the change
- * onto the CPACSConfiguration though the ModificatorWidget. When the scene new
- * to be update because the CCPACSConfiguration was modify, the signal
- * "configurationEdited" is emit.
- *
- * @author Malo Drougard
- *
- */
+
 class ModificatorManager : public QObject
 {
     Q_OBJECT
@@ -68,9 +45,7 @@ public slots:
     void applyCurrentCancellation();
 
 public:
-    ModificatorManager(QTreeView* qView, QWidget* applyInterface,
-                       ModificatorTransformationWidget* transformationModificator,
-                       ModificatorWingWidget* wingModificator, ModificatorFuselageWidget* fuselageModificator);
+    ModificatorManager(CreatorWidget* creatorWidget);
 
     void setCPACSConfiguration(tigl::CCPACSConfiguration* newConfig);
 
