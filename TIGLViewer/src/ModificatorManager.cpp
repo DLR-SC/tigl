@@ -19,23 +19,20 @@
 #include "ModificatorManager.h"
 #include "CTiglUIDManager.h"
 
-ModificatorManager::ModificatorManager(QTreeView* qView, QWidget* applyInterface,
-                                       ModificatorTransformationWidget* transformationModificator,
-                                       ModificatorWingWidget* wingModificator,
-                                       ModificatorFuselageWidget* fuselageModificator)
+ModificatorManager::ModificatorManager(CreatorWidget* creatorWidget)
 {
 
     currentModificator = nullptr;
     config             = nullptr;
-    treeViewManager    = new CPACSTreeView(qView);
+    treeViewManager    = new CPACSTreeView(creatorWidget->getQTreeView());
 
-    this->widgetApply  = applyInterface;
+    this->widgetApply  = creatorWidget->getApplyWidget() ;
     this->commitButton = widgetApply->findChild<QPushButton*>("commitButton");
     this->cancelButton = widgetApply->findChild<QPushButton*>("cancelButton");
 
-    this->transformationModificator = transformationModificator;
-    this->wingModificator           = wingModificator;
-    this->fuselageModificator       = fuselageModificator;
+    this->transformationModificator = creatorWidget->getTransformationWidget();
+    this->wingModificator           = creatorWidget->getWingWidget();
+    this->fuselageModificator       = creatorWidget->getFuselageWidget();
 
     this->hideAll();
 

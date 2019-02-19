@@ -112,6 +112,7 @@ set(tv_src
   src/CPACSTree.cpp
   src/XPathParser.cpp
   src/TIGLViewerException.cpp
+  src/CreatorWidget.ui
 )
 	
 # header files
@@ -167,6 +168,7 @@ set(tv_hdr
   src/ModificatorManager.h
   src/CPACSAbstractModel.h
   src/CPACSTreeView.h
+  src/CreatorWidget.h
 )
 
 set(tv_ui
@@ -186,6 +188,7 @@ set(tv_ui
   src/ModificatorTransformationWidget.ui
   src/ModificatorWingWidget.ui
   src/ModificatorFuselageWidget.ui
+  src/CreatorWidget.ui
 )
 
 # compile icons
