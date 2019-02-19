@@ -30,6 +30,14 @@ namespace generated
     // CPACSProfileGeometry
 
     // generated from /xsd:schema/xsd:complexType[721]
+    /// @brief List of 3D points, kept in three coordinate vecors (x,
+    /// y, z)
+    /// 
+    /// This set of vectors contains an ordered list of points
+    /// for x, y and z coordinates in the form of stringBased Vectors.
+    /// The x, y and z vector elements with the same index specify a 3D
+    /// point.
+    /// 
     class CPACSPointListXYZVector
     {
     public:

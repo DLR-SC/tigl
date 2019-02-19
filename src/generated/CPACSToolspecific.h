@@ -33,6 +33,11 @@ namespace generated
     // CPACSCpacs
 
     // generated from /xsd:schema/xsd:complexType[875]
+    /// @brief toolspecificType
+    /// 
+    /// Toolspecific type, containing specific data for the
+    /// analysis tools. All types defined under this node will be removed from the schema with the next release. Toolspecifics can still be used but should be defined in their own namespaces. This way an update of toolspecific types is no longer depending on CPACS releases.
+    /// 
     class CPACSToolspecific
     {
     public:

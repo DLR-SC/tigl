@@ -34,6 +34,10 @@ namespace generated
     // CPACSStructuralProfile3D
 
     // generated from /xsd:schema/xsd:complexType[719]
+    /// @brief pointListType
+    /// 
+    /// PointList type, containing an ordered list of points
+    /// 
     class CPACSPointList
     {
     public:

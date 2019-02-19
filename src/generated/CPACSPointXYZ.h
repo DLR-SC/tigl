@@ -31,6 +31,10 @@ namespace generated
     // CPACSGuideCurve
 
     // generated from /xsd:schema/xsd:complexType[731]
+    /// @brief pointXYZType
+    /// 
+    /// Point type, containing an xyz data triplet.
+    /// 
     class CPACSPointXYZ
     {
     public:

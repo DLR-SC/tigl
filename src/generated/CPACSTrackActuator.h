@@ -32,6 +32,10 @@ namespace generated
     // CPACSControlSurfaceTrackType
 
     // generated from /xsd:schema/xsd:complexType[882]
+    /// @brief trackActuatorType
+    /// 
+    /// 
+    /// 
     class CPACSTrackActuator
     {
     public:

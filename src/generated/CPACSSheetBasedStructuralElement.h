@@ -32,6 +32,11 @@ namespace generated
     // CPACSSheetBasedStructuralElements
 
     // generated from /xsd:schema/xsd:complexType[808]
+    /// @brief sheetBasedStructuralElementType
+    /// 
+    /// sheetBasedStructuralElementType type, sheet definition
+    /// for use in fuselage/structure
+    /// 
     class CPACSSheetBasedStructuralElement
     {
     public:

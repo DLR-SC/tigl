@@ -37,6 +37,17 @@ namespace generated
     // CPACSGenericGeometryComponents
 
     // generated from /xsd:schema/xsd:complexType[403]
+    /// @brief genericGeometricComponentType
+    /// 
+    /// In some cases additional geometric components need to
+    /// be linked to a CPACS, but these components are not yet handled by
+    /// CPACS explicitly. For example, a belly fairing and/or external
+    /// tanks.
+    /// A generic geometric component may be applied to include
+    /// such a geometry from an external file (preferably STEP) in the
+    /// context of the overall aircraft.
+    /// @see geomBlock
+    /// 
     class CPACSGenericGeometricComponent
     {
     public:

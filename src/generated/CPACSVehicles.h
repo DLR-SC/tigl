@@ -40,6 +40,12 @@ namespace generated
     // CPACSCpacs
 
     // generated from /xsd:schema/xsd:complexType[921]
+    /// @brief vehiclesType
+    /// 
+    /// Vehicles node, containing all the vehicle-specific
+    /// data. This includes the vehicles themselves, as well as
+    /// components that are used as parts of the vehicles.
+    /// 
     class CPACSVehicles
     {
     public:

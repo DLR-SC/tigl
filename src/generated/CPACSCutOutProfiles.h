@@ -34,6 +34,10 @@ namespace generated
     // CPACSControlSurfaceWingCutOut
 
     // generated from /xsd:schema/xsd:complexType[249]
+    /// @brief Definition of cut out profiles.
+    /// 
+    /// 
+    /// 
     class CPACSCutOutProfiles
     {
     public:

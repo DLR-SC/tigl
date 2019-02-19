@@ -31,6 +31,10 @@ namespace generated
     // CPACSTransformation2D
 
     // generated from /xsd:schema/xsd:complexType[735]
+    /// @brief pointZType
+    /// 
+    /// Point type, containing a z data.
+    /// 
     class CPACSPointZ
     {
     public:

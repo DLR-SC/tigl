@@ -35,6 +35,22 @@ namespace generated
     // CPACSWingRibsDefinition
 
     // generated from /xsd:schema/xsd:complexType[964]
+    /// @brief wingRibsPositioningType
+    /// 
+    /// Within the ribsPositioing type the position and the
+    /// orientaion of the ribs of the rib set are difend.
+    /// The positions of the ribs are defined by placing the
+    /// ribs on a reference line on the wing (ribReference). The inner
+    /// and the outer beginning of the rib set is defined using etaStart
+    /// and etaEnd. The position of the forward and rear end of the ribs
+    /// is defiend by ribStart and ribEnd. The orientation of the ribs
+    /// is defined in ribRotaton. The number of ribs of the current rib
+    /// set is either defined by ribNumber or by spacing.
+    /// Three examples how ribs can be placed on the wing can
+    /// be found in the picture below. For more detailed information,
+    /// pleas refer to the descripion of each parameter.
+    /// @see ribs
+    /// 
     class CPACSWingRibsPositioning
     {
     public:

@@ -35,6 +35,11 @@ namespace generated
     // CPACSProfiles
 
     // generated from /xsd:schema/xsd:complexType[939]
+    /// @brief wingAirfoilsType
+    /// 
+    /// WingAirfoils type, containing wing airfoil geometries.
+    /// See profileGeometryType for further documentation
+    /// 
     class CPACSWingAirfoils
     {
     public:

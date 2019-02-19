@@ -31,6 +31,10 @@ namespace generated
     // CPACSControlSurfaceStep
 
     // generated from /xsd:schema/xsd:complexType[732]
+    /// @brief pointXZType
+    /// 
+    /// Point type, containing an xz data doublet.
+    /// 
     class CPACSPointXZ
     {
     public:

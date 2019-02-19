@@ -33,6 +33,10 @@ namespace generated
     // CPACSWindows
 
     // generated from /xsd:schema/xsd:complexType[250]
+    /// @brief cutOutType
+    /// 
+    /// CutOut type, containing cut-outs
+    /// 
     class CPACSCutOut
     {
     public:

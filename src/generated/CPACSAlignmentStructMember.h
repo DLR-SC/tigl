@@ -33,6 +33,10 @@ namespace generated
     // CPACSLongFloorBeamPosition
 
     // generated from /xsd:schema/xsd:complexType[69]
+    /// @brief alignmentStructMemberType
+    /// 
+    /// 
+    /// 
     class CPACSAlignmentStructMember
     {
     public:

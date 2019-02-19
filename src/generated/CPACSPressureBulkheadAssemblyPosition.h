@@ -32,6 +32,11 @@ namespace generated
     // CPACSPressureBulkheadAssembly
 
     // generated from /xsd:schema/xsd:complexType[739]
+    /// @brief pressureBulkheadAssemblyPositionType
+    /// 
+    /// PressureBulkheadAssemblyPosition type, containing a
+    /// pressure bulkhead assembly position
+    /// 
     class CPACSPressureBulkheadAssemblyPosition
     {
     public:

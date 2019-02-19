@@ -35,6 +35,11 @@ namespace generated
     // CPACSFuselageStructure
 
     // generated from /xsd:schema/xsd:complexType[854]
+    /// @brief stringersAssemblyType
+    /// 
+    /// StringersAssembly type, containing an assembly of
+    /// stringers (new V1.5)
+    /// 
     class CPACSStringersAssembly
     {
     public:

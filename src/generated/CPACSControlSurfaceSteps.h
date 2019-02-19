@@ -36,6 +36,11 @@ namespace generated
     // CPACSControlSurfacePath
 
     // generated from /xsd:schema/xsd:complexType[191]
+    /// @brief Definition of the steps of the control surface
+    /// deflection path.
+    /// 
+    /// List of steps.
+    /// 
     class CPACSControlSurfaceSteps
     {
     public:

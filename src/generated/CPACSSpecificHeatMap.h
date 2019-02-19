@@ -30,6 +30,11 @@ namespace generated
     // CPACSMaterial
 
     // generated from /xsd:schema/xsd:complexType[830]
+    /// @brief Specific heat map, containing the specific heat capacity of a material at different temperatures.
+    /// 
+    /// The specific heat of a material can vary with the temperature. The vectors specificHeat and temperature
+    /// must have the same size to be valid. The data should be linearly interpolated.
+    /// 
     class CPACSSpecificHeatMap
     {
     public:

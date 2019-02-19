@@ -36,6 +36,10 @@ namespace generated
     // CPACSSheetList
 
     // generated from /xsd:schema/xsd:complexType[813]
+    /// @brief sheetType
+    /// 
+    /// Sheet type, containing connection data of a sheet
+    /// 
     class CPACSSheet
     {
     public:

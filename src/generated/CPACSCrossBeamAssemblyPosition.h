@@ -36,6 +36,11 @@ namespace generated
     // CPACSCargoCrossBeamsAssembly
 
     // generated from /xsd:schema/xsd:complexType[235]
+    /// @brief crossBeamAssemblyPositionType
+    /// 
+    /// CrossBeamAssemblyPosition type, containing the position
+    /// of a crossBeam assembly
+    /// 
     class CPACSCrossBeamAssemblyPosition
     {
     public:

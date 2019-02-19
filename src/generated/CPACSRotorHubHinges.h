@@ -35,6 +35,11 @@ namespace generated
     // CPACSRotorBladeAttachment
 
     // generated from /xsd:schema/xsd:complexType[781]
+    /// @brief rotorHubHingesType
+    /// 
+    /// RotorHubHinges type, defining hinges used to attach a
+    /// rotor blade to the rotor head.
+    /// 
     class CPACSRotorHubHinges
     {
     public:

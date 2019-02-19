@@ -29,6 +29,19 @@ namespace generated
     // CPACSControlSurfaceBorderTrailingEdge
 
     // generated from /xsd:schema/xsd:complexType[156]
+    /// @brief Airfoil definition of an control surface at the
+    /// inner/outer border.
+    /// 
+    /// Optional definition of the exact airfoil shape at the
+    /// inner/outer border of the control surface.
+    /// The airfoil shape is defined via referencing to the
+    /// airfoilUID. As the leading and trailing edge point is fix due to
+    /// the outer shape definition of the control surface the airfoil
+    /// can only be rotated around the x-axis (axis going from leading
+    /// to trailing edge of the inner/outer border of the control
+    /// surface). Scaling in x-direction is also defined by the outer
+    /// shape, wherefore only scaling in y and z direction is allowed.
+    /// 
     class CPACSContourReference
     {
     public:

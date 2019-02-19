@@ -29,6 +29,11 @@ namespace generated
     // CPACSCFDTool
 
     // generated from /xsd:schema/xsd:complexType[874]
+    /// @brief Tool identification
+    /// 
+    /// Tool identification, containing name and version of a
+    /// tool
+    /// 
     class CPACSTool
     {
     public:

@@ -36,6 +36,10 @@ namespace generated
     // CPACSFuselageStructure
 
     // generated from /xsd:schema/xsd:complexType[821]
+    /// @brief skinType
+    /// 
+    /// Containing data defining the skin
+    /// 
     class CPACSSkin
     {
     public:

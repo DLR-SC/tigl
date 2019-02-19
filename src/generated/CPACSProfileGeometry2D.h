@@ -40,6 +40,43 @@ namespace generated
     // CPACSNacelleProfiles
 
     // generated from /xsd:schema/xsd:complexType[747]
+    /// @brief profileGeometry2DType
+    /// 
+    /// A profile is defined by a profile name, an optional
+    /// description and a 2-dimensional pointlist with both
+    /// coordinates mandatory. All point coordinates are transferred 
+    /// to the global coordinate system depending on the context they
+    /// are used in. The points have to be ordered in a mathematical
+    /// positive sense. The x-coordinates of the profile has to be
+    /// normalized between 0 and 1. First and last point
+    /// may, but need not to, be identical. Hence, it is possible to
+    /// include "open" profiles. However, the trailing edge position of
+    /// the upper and lower point need to be identical. No crooked
+    /// trailing edges are possible.
+    /// Example 1: For a conventional nacelle profile, the airfoil
+    /// coordinates are defined in x and y. The points have to be ordered 
+    /// from the trailing edge along the lower side to the leading
+    /// edge and then along the upper side back to the trailing edge.
+    /// When used for a nacelle the profile axis align
+    /// with the global axes as follows:
+    /// +x_profile -> +x_global;
+    /// +y-profile -> -z_global
+    /// Example 2: For a fuselage, the coordinates are
+    /// also given in x and z with x as the normalized fuselage height.
+    /// Starting point of the profile sould be the lowest point
+    /// (typically in the symmetry plane), then upwards on the positive x-side up to the highest
+    /// point (again, typically in the symmetry plane). Depending on,
+    /// whether the fuselage shall be specified with symmetry condition
+    /// or not, the profile either ends there, or continues on the
+    /// negative x-side back down to the lowest point.
+    /// Alternatively, it is possible to specify the
+    /// coordinates of a profile via the CST (class function /shape
+    /// function transformation technique) notation. Please see the
+    /// cst2DType for further information.
+    /// A profile can be symmetric. In that case the profile
+    /// is interpreted as being not closed and will be closed by
+    /// mirroring it on the symmetry plane.
+    /// 
     class CPACSProfileGeometry2D
     {
     public:

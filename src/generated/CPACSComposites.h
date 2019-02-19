@@ -35,6 +35,10 @@ namespace generated
     // CPACSMaterials
 
     // generated from /xsd:schema/xsd:complexType[148]
+    /// @brief compositesType
+    /// 
+    /// 
+    /// 
     class CPACSComposites
     {
     public:

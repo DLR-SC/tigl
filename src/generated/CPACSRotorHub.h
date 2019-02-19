@@ -36,6 +36,11 @@ namespace generated
     // CPACSRotor
 
     // generated from /xsd:schema/xsd:complexType[782]
+    /// @brief rotorHubType
+    /// 
+    /// RotorHub type, containing definitions for the rotor hub
+    /// and attached hinges and blades.
+    /// 
     class CPACSRotorHub
     {
     public:

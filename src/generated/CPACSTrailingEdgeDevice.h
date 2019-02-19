@@ -40,6 +40,25 @@ namespace generated
     // CPACSTrailingEdgeDevices
 
     // generated from /xsd:schema/xsd:complexType[889]
+    /// @brief Trailing edge device of the wing.
+    /// 
+    /// A trailingEdgeDevice (TED) is defined via its
+    /// outerShape relative to the componentSegment. The WingCutOut
+    /// defines the area of the skin that is removed by the TED.
+    /// Structure is similar to the wing structure. The mechanical links
+    /// between the TED and the parrent are defined in tracks. The
+    /// deflection path is described in path. Additional actuators, that
+    /// are not included into a track, can be defined in actuators.
+    /// Leading and trailing edge are defined by the outer
+    /// shape of the wing segments, i.e. the trailing edge of a
+    /// trailingEdgeDevice is the trailing edge of the wing. This is also
+    /// valid for kinks that are present in the wing but not explicitly
+    /// modeled in the control surface.
+    /// The edges of the control surface within the wing are a
+    /// straight line in absolute coordinates! Hence, there needs to be a
+    /// straight connection between the eta-wise outer and inner points
+    /// of the edge that is within the wing in absolute coordinates.
+    /// 
     class CPACSTrailingEdgeDevice
     {
     public:

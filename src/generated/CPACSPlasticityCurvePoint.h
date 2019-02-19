@@ -29,6 +29,10 @@ namespace generated
     // CPACSPostFailure
 
     // generated from /xsd:schema/xsd:complexType[715]
+    /// @brief plasticityCurvePointType
+    /// 
+    /// 
+    /// 
     class CPACSPlasticityCurvePoint
     {
     public:

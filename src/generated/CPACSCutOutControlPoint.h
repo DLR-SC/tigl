@@ -29,6 +29,14 @@ namespace generated
     // CPACSCutOutControlPoints
 
     // generated from /xsd:schema/xsd:complexType[246]
+    /// @brief Additional definition of the leading edge cut out.
+    /// 
+    /// Optional. Definition of additional parameters,
+    /// describing the shape of the parents leading edge of the cut out
+    /// due to leading edge devices.
+    /// The parameters are described in the picture below:
+    /// @see led_cutout
+    /// 
     class CPACSCutOutControlPoint
     {
     public:

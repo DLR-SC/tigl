@@ -31,6 +31,11 @@ namespace generated
     // CPACSControlSurfaceBorderTrailingEdge
 
     // generated from /xsd:schema/xsd:complexType[986]
+    /// @brief xsiIsoLineType
+    /// 
+    /// Iso line described by point of same xsi coordinate.
+    /// Can be either segment or component segment coordinates.
+    /// 
     class CPACSXsiIsoLine
     {
     public:

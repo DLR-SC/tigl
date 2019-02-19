@@ -35,6 +35,11 @@ namespace generated
     // CPACSLongFloorBeamsAssembly
 
     // generated from /xsd:schema/xsd:complexType[523]
+    /// @brief longFloorBeamType
+    /// 
+    /// longFloorBeam type, containing a long. floor beam
+    /// definition
+    /// 
     class CPACSLongFloorBeam
     {
     public:

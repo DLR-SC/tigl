@@ -30,6 +30,11 @@ namespace generated
     // CPACSUpdates
 
     // generated from /xsd:schema/xsd:complexType[904]
+    /// @brief updateType
+    /// 
+    /// Update type, containing a datablock for each update of
+    /// the CPACS dataset
+    /// 
     class CPACSUpdate
     {
     public:

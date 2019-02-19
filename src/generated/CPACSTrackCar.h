@@ -30,6 +30,10 @@ namespace generated
     // CPACSTrackStructure
 
     // generated from /xsd:schema/xsd:complexType[883]
+    /// @brief trackCarType
+    /// 
+    /// 
+    /// 
     class CPACSTrackCar
     {
     public:

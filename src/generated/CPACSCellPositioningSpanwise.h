@@ -35,6 +35,12 @@ namespace generated
     // CPACSWingCell
 
     // generated from /xsd:schema/xsd:complexType[118]
+    /// @brief Spanwise positioning of wing cells.
+    /// 
+    /// CellPositioningSpanwise defines the chordwise direction
+    /// of a wing cell either in two eta (eta1 at leadingEdge and eta2 at
+    /// trailingEdge) coordinates or via referencing to a rib.
+    /// 
     class CPACSCellPositioningSpanwise
     {
     public:

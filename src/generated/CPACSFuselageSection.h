@@ -36,6 +36,11 @@ namespace generated
     // CPACSFuselageSections
 
     // generated from /xsd:schema/xsd:complexType[382]
+    /// @brief fuselageSectionType
+    /// 
+    /// FuselageSection type, containing fusleage section and
+    /// element data
+    /// 
     class CPACSFuselageSection
     {
     public:

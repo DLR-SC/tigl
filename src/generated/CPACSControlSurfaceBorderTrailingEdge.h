@@ -39,6 +39,26 @@ namespace generated
     // CPACSControlSurfaceOuterShapeTrailingEdge
 
     // generated from /xsd:schema/xsd:complexType[173]
+    /// @brief Inner/outer border of the control surface.
+    /// 
+    /// Definition of the inner/outer border of the control
+    /// surface.
+    /// The position on the planform of the control surface is
+    /// defined by defining the eta/xsi coordinates of the inner/outer
+    /// and forward/rear border. The eta/xsi coordinates refer to the
+    /// parent.
+    /// In addition, optionally, the airfoil shape of the
+    /// control surface can be defined closer. For the trailing edge
+    /// device this is done at 'leadingEdgeShape', for the spoiler
+    /// 'relHeightLE' is used and for the leading edge devices 'hollow'.
+    /// If an exact control surface airfoil definition should be used,
+    /// outerShape->airfoils can be used.
+    /// Please find below an example for the definition of the
+    /// planform of a trailing edge device. Other controlsurfaces are
+    /// similar.
+    /// @see outerShape1
+    /// @see spoiler1
+    /// 
     class CPACSControlSurfaceBorderTrailingEdge
     {
     public:

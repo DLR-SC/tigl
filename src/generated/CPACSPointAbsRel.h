@@ -34,6 +34,15 @@ namespace generated
     // CPACSTransformation
 
     // generated from /xsd:schema/xsd:complexType[716]
+    /// @brief pointAbsRelType
+    /// 
+    /// PointAbsRel type, containing an xyz data triplet. Each
+    /// of the components is optional. The refType attribute defines,
+    /// whether coordinates are absolute in the global ccordinate system
+    /// [absGlobal], absolute in the parent element's local coordinate
+    /// system [absLocal]. If the object does not have a
+    /// parent, only [absGlobal] is permitted.
+    /// 
     class CPACSPointAbsRel
     {
     public:

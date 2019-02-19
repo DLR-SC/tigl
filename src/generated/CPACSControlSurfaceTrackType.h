@@ -41,6 +41,34 @@ namespace generated
     // CPACSControlSurfaceTracks
 
     // generated from /xsd:schema/xsd:complexType[192]
+    /// @brief Control surface tracks (mechnaical link between control
+    /// surface and parent).
+    /// 
+    /// A track in general describes the structural link
+    /// between the control suface and the parent. Tracks are e.g. the
+    /// flap tracks, the revolute joints, where the aileron or spoiler
+    /// is attached, or the kinematics, attaching slats to the wing.
+    /// The spanwise position of the track is defined by
+    /// 'eta', which refers to the control surface dimensions.
+    /// The structural properties of the track (e.g.
+    /// materials) are defined in 'trackStructure'.
+    /// If an actuator is included into the the track, a
+    /// reference is given in 'actuator'.
+    /// The principal kinematic of the track is defined by
+    /// setting the 'trackType' and 'trackSubType'. Please refer to the
+    /// tables below for setting the 'trackType' and 'trackSubType'
+    /// parameter. Note, those tables are not final - they are extended
+    /// continuously.
+    /// For trailing edge devices (TED), the 'trackType' and
+    /// 'trackSubType' parameter are defined as follows:
+    /// @see tracks_ted
+    /// For spoiler, the 'trackType' and 'trackSubType'
+    /// parameter are defined as follows:
+    /// @see tracks_spoiler
+    /// For leading edge devices (LED), the 'trackType' and
+    /// 'trackSubType' parameter are defined as follows: Currently no
+    /// definition available.
+    /// 
     class CPACSControlSurfaceTrackType
     {
     public:

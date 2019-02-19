@@ -36,6 +36,10 @@ namespace generated
     // CPACSProfileBasedStructuralElement
 
     // generated from /xsd:schema/xsd:complexType[894]
+    /// @brief transformation2DType
+    /// 
+    /// 
+    /// 
     class CPACSTransformation2D
     {
     public:

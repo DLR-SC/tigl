@@ -35,6 +35,18 @@ namespace generated
     // CPACSEngine
 
     // generated from /xsd:schema/xsd:complexType[311]
+    /// @brief Definition of the engine nacelle type.
+    /// 
+    /// The engine nacelle is currently located together with
+    /// the engine. It gives a simple description of the outer shell of
+    /// the engine. All values are defined according to the base area,
+    /// center point of the fan(i.e. negative values can occur in the
+    /// definition) In most cases there will be a bypass engine. For
+    /// non-bypass or mixed engines ignore the bypass nozzle. For further
+    /// information on the geometric setup, please refer to the picture
+    /// below.
+    /// @see engineNacelle
+    /// 
     class CPACSEngineNacelle
     {
     public:

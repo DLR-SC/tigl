@@ -39,6 +39,11 @@ namespace generated
     // CPACSWingRibsDefinition
 
     // generated from /xsd:schema/xsd:complexType[960]
+    /// @brief wingRibCrossSectionType
+    /// 
+    /// wingRibCrossSectionType, containing the definition of
+    /// ribsCrossSection
+    /// 
     class CPACSWingRibCrossSection
     {
     public:

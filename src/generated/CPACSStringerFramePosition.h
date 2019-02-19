@@ -42,6 +42,11 @@ namespace generated
     // CPACSStringer
 
     // generated from /xsd:schema/xsd:complexType[852]
+    /// @brief stringerFramePositionType
+    /// 
+    /// stringerFramePosition type, containing individual
+    /// stringer / frame postion definition (CPACS V2.1+)
+    /// 
     class CPACSStringerFramePosition
     {
     public:

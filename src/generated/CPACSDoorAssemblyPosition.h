@@ -36,6 +36,11 @@ namespace generated
     // CPACSCargoDoorsAssembly
 
     // generated from /xsd:schema/xsd:complexType[289]
+    /// @brief doorAssemblyPositionType
+    /// 
+    /// DoorAssemblyPosition type, containing the position of a door
+    /// assembly
+    /// 
     class CPACSDoorAssemblyPosition
     {
     public:

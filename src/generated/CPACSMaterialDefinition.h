@@ -44,6 +44,11 @@ namespace generated
     // CPACSWingSkin
 
     // generated from /xsd:schema/xsd:complexType[661]
+    /// @brief materialDefinitionType
+    /// 
+    /// MaterialDefinition type, containing a material
+    /// definition (Reference to material and thickness)
+    /// 
     class CPACSMaterialDefinition
     {
     public:

@@ -38,6 +38,17 @@ namespace generated
     // CPACSSparSegment
 
     // generated from /xsd:schema/xsd:complexType[824]
+    /// @brief Definition of the spar cross section.
+    /// 
+    /// Spar type, containing the cross section definition of
+    /// a spar. The spar middle point is defined by the intersection of
+    /// the wing middle plane and web1. This equals the coordinate
+    /// defined within the sparPosition.
+    /// Please find below a picture where all spar cross
+    /// section parameters as well as the orientation refereneces for
+    /// the material definition can be found:
+    /// @see spars2
+    /// 
     class CPACSSparCrossSection
     {
     public:

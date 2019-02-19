@@ -33,6 +33,10 @@ namespace generated
     // CPACSRivets
 
     // generated from /xsd:schema/xsd:complexType[773]
+    /// @brief rivetType
+    /// 
+    /// Rivet type, containing a rivet
+    /// 
     class CPACSRivet
     {
     public:

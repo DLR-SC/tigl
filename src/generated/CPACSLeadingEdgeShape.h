@@ -29,6 +29,14 @@ namespace generated
     // CPACSControlSurfaceBorderTrailingEdge
 
     // generated from /xsd:schema/xsd:complexType[491]
+    /// @brief Optional definition of the leading edge shape of
+    /// trailing edge devices (TED).
+    /// 
+    /// All parameters are optional. For the definition of the
+    /// parameters, please refer to the picture below. Parameters from
+    /// the outer border default to the parameters of the inner border.
+    /// @see outerShape2
+    /// 
     class CPACSLeadingEdgeShape
     {
     public:

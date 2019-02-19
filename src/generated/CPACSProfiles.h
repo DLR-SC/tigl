@@ -41,6 +41,10 @@ namespace generated
     // CPACSVehicles
 
     // generated from /xsd:schema/xsd:complexType[748]
+    /// @brief profilesType
+    /// 
+    /// Profiles type, containing profile geometries
+    /// 
     class CPACSProfiles
     {
     public:

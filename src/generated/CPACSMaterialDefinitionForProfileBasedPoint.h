@@ -31,6 +31,12 @@ namespace generated
     // CPACSProfileBasedStructuralElement
 
     // generated from /xsd:schema/xsd:complexType[659]
+    /// @brief materialDefinitionForProfileBasedPointType
+    /// 
+    /// MaterialDefinitionForProfileBased type, containing a
+    /// material definition (Reference to material and thickness) for
+    /// profile based objects, addition point reinforcements
+    /// 
     class CPACSMaterialDefinitionForProfileBasedPoint
     {
     public:

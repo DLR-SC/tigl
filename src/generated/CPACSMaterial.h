@@ -40,6 +40,22 @@ namespace generated
     // CPACSMaterials
 
     // generated from /xsd:schema/xsd:complexType[662]
+    /// @brief materialType
+    /// 
+    /// Material type, conatining data of a material Material
+    /// orientation: 1: orientation in first preferred direction 2:
+    /// orientation in second preferred direction 3: remaining orthogonal
+    /// direction other stiffness components are dependent on the given
+    /// ones by symmetry relationships. 3 different material behaviours
+    /// can be defined which is carried out by the 3 branches of the
+    /// definition.
+    /// isotropic material like aluminium and steel may be
+    /// defined transversal isotropic material like
+    /// uni-directional layers of CFRP may be defined orthotrop material like several layers of CFRP may
+    /// be defined For each material behaviour the minimum number of
+    /// stiffness parameters are requested. All other stiffness
+    /// components are dependent by material symmetry relationships.
+    /// 
     class CPACSMaterial
     {
     public:

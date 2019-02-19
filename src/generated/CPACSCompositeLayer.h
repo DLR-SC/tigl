@@ -31,6 +31,11 @@ namespace generated
     // CPACSComposite
 
     // generated from /xsd:schema/xsd:complexType[146]
+    /// @brief compositeLayerType
+    /// 
+    /// CompositeLayer type, conatining data of a composite
+    /// layer
+    /// 
     class CPACSCompositeLayer
     {
     public:

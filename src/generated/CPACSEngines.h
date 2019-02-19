@@ -35,6 +35,10 @@ namespace generated
     // CPACSVehicles
 
     // generated from /xsd:schema/xsd:complexType[321]
+    /// @brief enginesType
+    /// 
+    /// Engines type, containing complete engine configurations
+    /// 
     class CPACSEngines
     {
     public:

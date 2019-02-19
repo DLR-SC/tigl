@@ -34,6 +34,10 @@ namespace generated
     // CPACSCpacs
 
     // generated from /xsd:schema/xsd:complexType[463]
+    /// @brief headerType
+    /// 
+    /// Header type, containing CPACS dataset description
+    /// 
     class CPACSHeader
     {
     public:

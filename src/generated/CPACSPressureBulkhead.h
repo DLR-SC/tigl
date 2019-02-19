@@ -34,6 +34,11 @@ namespace generated
     // CPACSPressureBulkheads
 
     // generated from /xsd:schema/xsd:complexType[741]
+    /// @brief pressureBulkheadType
+    /// 
+    /// PressureBulkhead type, containing data of a pressure
+    /// bulkhead
+    /// 
     class CPACSPressureBulkhead
     {
     public:

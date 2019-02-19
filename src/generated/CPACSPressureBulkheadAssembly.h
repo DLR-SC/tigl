@@ -35,6 +35,11 @@ namespace generated
     // CPACSFuselageStructure
 
     // generated from /xsd:schema/xsd:complexType[740]
+    /// @brief pressureBulkheadAssemblyType
+    /// 
+    /// PressureBulkheadAssembly type, containing pressure
+    /// bulkhead assemblys
+    /// 
     class CPACSPressureBulkheadAssembly
     {
     public:

@@ -42,6 +42,27 @@ namespace generated
     // CPACSProfileBasedStructuralElements
 
     // generated from /xsd:schema/xsd:complexType[743]
+    /// @brief Profiles of the aircraft.
+    /// 
+    /// ProfileBasedStructuralElement Type, containing the
+    /// data of a structural element, that are based on 2-dimensional
+    /// profiles.
+    /// The parameter 'structuralProfileUID' refers to the
+    /// definition of the 2-dimensional profile. This profile is defined
+    /// by several points in the x-y-space. Always two points are
+    /// combined two one sheet. The properties of each sheet are defined
+    /// in the 'sheetProperties' section by referencing on the sheetUID
+    /// and the material properties. The orthotropy direction of
+    /// composite materials equals the x-sheet axis. The orthotropy
+    /// direction angle equals a positive rotation around the z-sheet
+    /// axis as indicated in the picture below (part 3.), where a wing
+    /// stringer is defined as an example:
+    /// @see stringer2
+    /// In the section 'globalBeamProperties' the properties
+    /// of the structural profile in an equivalent beam representation
+    /// are defined.
+    /// @see standard_profile
+    /// 
     class CPACSProfileBasedStructuralElement
     {
     public:

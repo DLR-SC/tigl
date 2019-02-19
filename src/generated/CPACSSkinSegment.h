@@ -35,6 +35,11 @@ namespace generated
     // CPACSSkinSegments
 
     // generated from /xsd:schema/xsd:complexType[819]
+    /// @brief fuselagePanelType
+    /// 
+    /// FuselagePanel type, panel of the fuselage between
+    /// stringers/ frames (new in V1.5)
+    /// 
     class CPACSSkinSegment
     {
     public:

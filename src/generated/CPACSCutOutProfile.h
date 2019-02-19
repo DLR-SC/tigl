@@ -30,6 +30,18 @@ namespace generated
     // CPACSCutOutProfiles
 
     // generated from /xsd:schema/xsd:complexType[248]
+    /// @brief Definition of cut out profiles.
+    /// 
+    /// Optional, the exact shape between the upper and lower
+    /// skin cut out can be given by using cutOutProfiles. In general
+    /// cut out profiles are open profiles and not closed profiles as
+    /// e.g. wing airfoils. The placement, scaling and (partly) rotation
+    /// of the cut out profiles is fixed as the beginning and ending
+    /// point of the profile is fixed as can be seen in the two pictures
+    /// below.
+    /// @see wingCutOut
+    /// @see wingCutOut2
+    /// 
     class CPACSCutOutProfile
     {
     public:

@@ -33,6 +33,10 @@ namespace generated
     // CPACSStringerFramePosition
 
     // generated from /xsd:schema/xsd:complexType[68]
+    /// @brief alignmentStringFrameType
+    /// 
+    /// 
+    /// 
     class CPACSAlignmentStringFrame
     {
     public:

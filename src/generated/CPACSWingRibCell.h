@@ -34,6 +34,12 @@ namespace generated
     // CPACSWingRibCrossSection
 
     // generated from /xsd:schema/xsd:complexType[959]
+    /// @brief Definition of a ribCell
+    /// 
+    /// RibCells are optional elements. They are defined via a
+    /// fromRib and a toRib. The enumeration is within the ribSet.
+    /// RibNumber 1 starts at etaStart.
+    /// 
     class CPACSWingRibCell
     {
     public:

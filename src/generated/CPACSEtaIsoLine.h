@@ -46,6 +46,11 @@ namespace generated
     // CPACSSparCell
 
     // generated from /xsd:schema/xsd:complexType[322]
+    /// @brief etaIsoLineType
+    /// 
+    /// Iso line described by point of the same eta coordinate.
+    /// Can be either segment or component segment coordinates.
+    /// 
     class CPACSEtaIsoLine
     {
     public:

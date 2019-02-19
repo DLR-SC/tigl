@@ -36,6 +36,12 @@ namespace generated
     // CPACSEngineNacelle
 
     // generated from /xsd:schema/xsd:complexType[995]
+    /// @brief nacelleCowlType
+    /// 
+    /// Describes the cowl geometry for nacelles
+    /// using sections positioned around the
+    /// rotational center of the engine.
+    /// 
     class CPACSNacelleCowl
     {
     public:

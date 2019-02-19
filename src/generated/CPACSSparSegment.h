@@ -36,6 +36,12 @@ namespace generated
     // CPACSSparSegments
 
     // generated from /xsd:schema/xsd:complexType[828]
+    /// @brief SparSegments (=spars) of the wing.
+    /// 
+    /// SparSegmentType, each spar is defined by multiple
+    /// sparPositions that are referenced via their uID. The spar cross
+    /// section is defined in 'sparCrossSection'.
+    /// 
     class CPACSSparSegment
     {
     public:

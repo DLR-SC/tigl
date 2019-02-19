@@ -39,6 +39,11 @@ namespace generated
     // CPACSAircraft
 
     // generated from /xsd:schema/xsd:complexType[55]
+    /// @brief aircraftModelType
+    /// 
+    /// AircraftModel type, containing a complete aircraft
+    /// model (Geometry and all specific data).
+    /// 
     class CPACSAircraftModel
     {
     public:

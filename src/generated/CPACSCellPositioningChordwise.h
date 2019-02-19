@@ -33,6 +33,12 @@ namespace generated
     // CPACSWingCell
 
     // generated from /xsd:schema/xsd:complexType[117]
+    /// @brief Chordwise positioning of wing cells.
+    /// 
+    /// CellPositioningChordwise defines the chordwise
+    /// direction of a wing cell either in two xsi (xsi1 at innerBorder
+    /// and xsi2 at outerBorder) coordinates or via a sparUID.
+    /// 
     class CPACSCellPositioningChordwise
     {
     public:

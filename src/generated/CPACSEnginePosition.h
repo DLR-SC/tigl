@@ -37,6 +37,11 @@ namespace generated
     // CPACSEnginePositions
 
     // generated from /xsd:schema/xsd:complexType[314]
+    /// @brief enginePositionType
+    /// 
+    /// EnginePosition type, containing data for a single
+    /// engine
+    /// 
     class CPACSEnginePosition
     {
     public:

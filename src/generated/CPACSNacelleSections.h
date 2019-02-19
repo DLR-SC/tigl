@@ -35,6 +35,10 @@ namespace generated
     // CPACSNacelleCowl
 
     // generated from /xsd:schema/xsd:complexType[686]
+    /// @brief nacelleSectionsType
+    /// 
+    /// 
+    /// 
     class CPACSNacelleSections
     {
     public:

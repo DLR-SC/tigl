@@ -33,6 +33,10 @@ namespace generated
     // CPACSDoors
 
     // generated from /xsd:schema/xsd:complexType[290]
+    /// @brief doorCutOutType
+    /// 
+    /// CutOut type, containing cut-outs
+    /// 
     class CPACSDoorCutOut
     {
     public:

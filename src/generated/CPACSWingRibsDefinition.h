@@ -38,6 +38,14 @@ namespace generated
     // CPACSWingRibsDefinitions
 
     // generated from /xsd:schema/xsd:complexType[962]
+    /// @brief Definition of an rib set.
+    /// 
+    /// RibDefinitionType, containing the definition for ribs.
+    /// Ribs are defined in sets of one or more ribs. The positions of
+    /// the rib, as well as the orientation of the ribs are defined in
+    /// 'ribPositioing'. The cross section properties, as e.g.
+    /// materials, are defined in 'ribCrossSection'.
+    /// 
     class CPACSWingRibsDefinition
     {
     public:

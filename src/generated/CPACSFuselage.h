@@ -41,6 +41,12 @@ namespace generated
     // CPACSFuselages
 
     // generated from /xsd:schema/xsd:complexType[390]
+    /// @brief fuselageType
+    /// 
+    /// Fuselage type, containing all data related to a
+    /// fuselage
+    /// @see geomBlock
+    /// 
     class CPACSFuselage
     {
     public:

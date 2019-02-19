@@ -40,6 +40,10 @@ namespace generated
     // CPACSEnginePylons
 
     // generated from /xsd:schema/xsd:complexType[316]
+    /// @brief Definition of one engine pylon.
+    /// 
+    /// 
+    /// 
     class CPACSEnginePylon
     {
     public:

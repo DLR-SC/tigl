@@ -35,6 +35,10 @@ namespace generated
     // CPACSProfileGeometry2D
 
     // generated from /xsd:schema/xsd:complexType[239]
+    /// @brief cst2DType
+    /// 
+    /// 
+    /// 
     class CPACSCst2D
     {
     public:

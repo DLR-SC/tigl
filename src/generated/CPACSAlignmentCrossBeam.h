@@ -36,6 +36,10 @@ namespace generated
     // CPACSCrossBeamStrutAssemblyPosition
 
     // generated from /xsd:schema/xsd:complexType[66]
+    /// @brief alignmentCrossBeamType
+    /// 
+    /// 
+    /// 
     class CPACSAlignmentCrossBeam
     {
     public:

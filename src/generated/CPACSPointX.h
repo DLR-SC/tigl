@@ -34,6 +34,10 @@ namespace generated
     // CPACSWingRibCrossSection
 
     // generated from /xsd:schema/xsd:complexType[729]
+    /// @brief pointXType
+    /// 
+    /// Point type, containing a x data.
+    /// 
     class CPACSPointX
     {
     public:

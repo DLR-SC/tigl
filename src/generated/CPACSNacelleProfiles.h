@@ -34,6 +34,11 @@ namespace generated
     // CPACSProfiles
 
     // generated from /xsd:schema/xsd:complexType[684]
+    /// @brief nacelleProfilesType
+    /// 
+    /// Nacelle profiles type, containing nacelle profile geometries.
+    /// See profileGeometryType for further documentation
+    /// 
     class CPACSNacelleProfiles
     {
     public:

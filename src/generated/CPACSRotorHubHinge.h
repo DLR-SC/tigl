@@ -36,6 +36,12 @@ namespace generated
     // CPACSRotorHubHinges
 
     // generated from /xsd:schema/xsd:complexType[780]
+    /// @brief rotorHubHinge type, containing a rotor hub hinge
+    /// (flap/leadLag/pitch).
+    /// 
+    /// RotorHubHinge type, containing a rotor hub hinge
+    /// (flap/leadLag/pitch) of a rotorcraft model.
+    /// 
     class CPACSRotorHubHinge
     {
     public:

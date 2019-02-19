@@ -35,6 +35,13 @@ namespace generated
     // CPACSControlSurfaceWingCutOut
 
     // generated from /xsd:schema/xsd:complexType[188]
+    /// @brief Border type for the inner and outer border of a wing
+    /// cut out
+    /// 
+    /// Maybe applied to specifiy inner and outer border of
+    /// the cutout either via eta or rib references
+    /// @see wingCutOut
+    /// 
     class CPACSControlSurfaceSkinCutOutBorder
     {
     public:

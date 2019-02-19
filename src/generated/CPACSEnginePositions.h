@@ -37,6 +37,11 @@ namespace generated
     // CPACSRotorcraftModel
 
     // generated from /xsd:schema/xsd:complexType[315]
+    /// @brief enginePositionsType
+    /// 
+    /// EnginePositions type, containing a reference to the
+    /// used engines and their positions at the configuration
+    /// 
     class CPACSEnginePositions
     {
     public:

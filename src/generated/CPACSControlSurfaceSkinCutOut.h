@@ -33,6 +33,19 @@ namespace generated
     // CPACSControlSurfaceWingCutOut
 
     // generated from /xsd:schema/xsd:complexType[189]
+    /// @brief Cut out of the parents upper/lower skin due to a
+    /// control surface.
+    /// 
+    /// Optional. Definition of the skin cut out due to a
+    /// control surface. The cut out of the skin can either be defined
+    /// by referencing to a spar uID or by defining the relative chord
+    /// values (xsi) of the cut at the inner and outer border of the
+    /// control surface. The xsi value is based on the parents chord.
+    /// For leading edge devices additional parameters can be defined.
+    /// An example for wing cut outs can be found in the
+    /// picture below:
+    /// @see wingCutOut
+    /// 
     class CPACSControlSurfaceSkinCutOut
     {
     public:

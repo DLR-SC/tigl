@@ -37,6 +37,16 @@ namespace generated
     // CPACSSparCells
 
     // generated from /xsd:schema/xsd:complexType[822]
+    /// @brief Spar cell of the spar.
+    /// 
+    /// Within spar cells a special area of the spar is
+    /// defined where different cross section and material properties
+    /// shall be defined.
+    /// The area of the spar is defined by using the
+    /// parameters 'fromEta' and 'toEta'. The definition of the caps,
+    /// webs and rotation is equivalent to the cross section definition
+    /// of the complete spar.
+    /// 
     class CPACSSparCell
     {
     public:

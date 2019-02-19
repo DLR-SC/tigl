@@ -38,6 +38,10 @@ namespace generated
     // CPACSTransformation
 
     // generated from /xsd:schema/xsd:complexType[728]
+    /// @brief pointType
+    /// 
+    /// Point type, containing an xyz data triplet.
+    /// 
     class CPACSPoint
     {
     public:

@@ -36,6 +36,14 @@ namespace generated
     // CPACSGuideCurves
 
     // generated from /xsd:schema/xsd:complexType[441]
+    /// @brief Guide Curve Type
+    /// 
+    /// A guide curve may be used to alter the shape of the
+    /// outer geometry and "guide" the loft.
+    /// The guide curve profiles are defined in the guideCurveProfileGeometryType.
+    /// Their use on wing and fuselage components is illustrated in the image below.
+    /// @see guideCurveIllustration
+    /// 
     class CPACSGuideCurve
     {
     public:

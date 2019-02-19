@@ -34,6 +34,11 @@ namespace generated
     // CPACSStructuralElements
 
     // generated from /xsd:schema/xsd:complexType[745]
+    /// @brief structuralElementType
+    /// 
+    /// profileBasedStructuralElement type, containing a list
+    /// of profile based structural elements
+    /// 
     class CPACSProfileBasedStructuralElements
     {
     public:

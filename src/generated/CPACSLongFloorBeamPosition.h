@@ -38,6 +38,11 @@ namespace generated
     // CPACSLongFloorBeam
 
     // generated from /xsd:schema/xsd:complexType[522]
+    /// @brief logFloorBeamPositionType
+    /// 
+    /// longFloorBeamPosition type, containing individual
+    /// position definition
+    /// 
     class CPACSLongFloorBeamPosition
     {
     public:

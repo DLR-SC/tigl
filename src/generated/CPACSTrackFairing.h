@@ -30,6 +30,10 @@ namespace generated
     // CPACSTrackStructure
 
     // generated from /xsd:schema/xsd:complexType[884]
+    /// @brief trackFairingType
+    /// 
+    /// 
+    /// 
     class CPACSTrackFairing
     {
     public:

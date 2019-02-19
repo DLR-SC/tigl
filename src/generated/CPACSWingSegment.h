@@ -36,6 +36,14 @@ namespace generated
     // CPACSWingSegments
 
     // generated from /xsd:schema/xsd:complexType[969]
+    /// @brief Segment of the wing.
+    /// 
+    /// A segment defines which two wing elements (=cross
+    /// sections) are linked to one wing segment.
+    /// An example for wing segments can be found in the
+    /// picture below:
+    /// @see wingsegments
+    /// 
     class CPACSWingSegment
     {
     public:

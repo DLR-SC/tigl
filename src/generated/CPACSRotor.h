@@ -38,6 +38,33 @@ namespace generated
     // CPACSRotors
 
     // generated from /xsd:schema/xsd:complexType[783]
+    /// @brief Rotor type, containing a rotor (main rotor, tail rotor,
+    /// fenestron, propeller,...) of an rotorcraft model.
+    /// 
+    /// Rotor type, containing a rotor (e.g. main rotor, tail
+    /// rotor, fenestron, propeller,...) definition of a rotorcraft
+    /// model.
+    /// The position and attitude of the rotor is defined
+    /// using the transformation element. The following image shows the
+    /// CPACS conventions for the orientation of rotors and rotor axis
+    /// systems:
+    /// @see rotor_cs01
+    /// The origin coincides with the center of rotation. The z-axis corresponds to the axis of rotation
+    /// and thus coincides with the rotor shaft centerline. It Points
+    /// in the main thrust direction of the rotor (usually upwards for
+    /// a main rotor, forwards for a propeller). The x-axis points from nose to tail (usually
+    /// rearwards for main and tail rotors, upwards for a propeller). The y-axis completes the right-handed orthogonal
+    /// coordinate system. Rotor hub attributes, hinges and references to
+    /// attached rotor blades are defined in the rotorHub element.
+    /// Note that rotor blade geometries are only referenced and not
+    /// defined in the child nodes of the rotor element. Refer to the
+    /// documentation of rotorBladesType ( Empty#T/rotorBladesType ) and wingType ( Empty#T/wingType ) for information on the definition of rotor blade geometries.
+    /// The following figure shows the transformations to be
+    /// applied to rotorBlade geometries to visualize them in the rotor
+    /// frames for a given state (each rotor: rotorAzimuth given, each
+    /// hinge: hingeDeflection given):
+    /// @see rotor_transformation
+    /// 
     class CPACSRotor
     {
     public:
