@@ -14,18 +14,17 @@
 * limitations under the License.
 */
 
-
 #pragma once
 
 #include <vector>
 
-#include "generated/CPACSPointListRelXYZVector.h"
+#include "generated/CPACSPointListXYVector.h"
 #include "CTiglPoint.h"
 
 namespace tigl
 {
 
-class CCPACSPointListRelXYZ : public generated::CPACSPointListRelXYZVector
+class CCPACSPointListXYVector : public generated::CPACSPointListXYVector
 {
 public:
     TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) OVERRIDE;

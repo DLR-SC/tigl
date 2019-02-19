@@ -36,7 +36,7 @@ namespace generated
     // This class is used in:
     // CPACSRotorBladeAttachments
 
-    // generated from /xsd:schema/xsd:complexType[765]
+    // generated from /xsd:schema/xsd:complexType[777]
     /// @brief rotorBladeAttachmentType
     /// 
     /// RotorBladeAttachment type, defining the elements used

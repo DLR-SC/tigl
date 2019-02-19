@@ -28,7 +28,7 @@ namespace generated
     // This class is used in:
     // CPACSPostFailure
 
-    // generated from /xsd:schema/xsd:complexType[705]
+    // generated from /xsd:schema/xsd:complexType[715]
     /// @brief plasticityCurvePointType
     /// 
     /// 

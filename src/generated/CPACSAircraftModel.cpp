@@ -99,6 +99,17 @@ namespace generated
             }
         }
 
+        // read element engines
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/engines")) {
+            m_engines = boost::in_place(m_uidMgr);
+            try {
+                m_engines->ReadCPACS(tixiHandle, xpath + "/engines");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read engines at xpath " << xpath << ": " << e.what();
+                m_engines = boost::none;
+            }
+        }
+
         // read element enginePylons
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/enginePylons")) {
             m_enginePylons = boost::in_place(reinterpret_cast<CCPACSAircraftModel*>(this), m_uidMgr);
@@ -163,6 +174,17 @@ namespace generated
         else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/wings")) {
                 tixi::TixiRemoveElement(tixiHandle, xpath + "/wings");
+            }
+        }
+
+        // write element engines
+        if (m_engines) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/engines");
+            m_engines->WriteCPACS(tixiHandle, xpath + "/engines");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/engines")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/engines");
             }
         }
 
@@ -244,6 +266,16 @@ namespace generated
         return m_wings;
     }
 
+    const boost::optional<CPACSEnginePositions>& CPACSAircraftModel::GetEngines() const
+    {
+        return m_engines;
+    }
+
+    boost::optional<CPACSEnginePositions>& CPACSAircraftModel::GetEngines()
+    {
+        return m_engines;
+    }
+
     const boost::optional<CCPACSEnginePylons>& CPACSAircraftModel::GetEnginePylons() const
     {
         return m_enginePylons;
@@ -286,6 +318,18 @@ namespace generated
     void CPACSAircraftModel::RemoveWings()
     {
         m_wings = boost::none;
+    }
+
+    CPACSEnginePositions& CPACSAircraftModel::GetEngines(CreateIfNotExistsTag)
+    {
+        if (!m_engines)
+            m_engines = boost::in_place(m_uidMgr);
+        return *m_engines;
+    }
+
+    void CPACSAircraftModel::RemoveEngines()
+    {
+        m_engines = boost::none;
     }
 
     CCPACSEnginePylons& CPACSAircraftModel::GetEnginePylons(CreateIfNotExistsTag)

@@ -28,7 +28,7 @@ namespace generated
     // This class is used in:
     // CPACSCFDTool
 
-    // generated from /xsd:schema/xsd:complexType[860]
+    // generated from /xsd:schema/xsd:complexType[874]
     /// @brief Tool identification
     /// 
     /// Tool identification, containing name and version of a

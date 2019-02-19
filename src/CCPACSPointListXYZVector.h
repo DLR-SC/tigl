@@ -24,7 +24,7 @@
 namespace tigl
 {
 
-class CCPACSPointListXYZ : public generated::CPACSPointListXYZVector
+class CCPACSPointListXYZVector : public generated::CPACSPointListXYZVector
 {
 public:
     TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) OVERRIDE;

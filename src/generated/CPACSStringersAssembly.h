@@ -34,7 +34,7 @@ namespace generated
     // This class is used in:
     // CPACSFuselageStructure
 
-    // generated from /xsd:schema/xsd:complexType[840]
+    // generated from /xsd:schema/xsd:complexType[854]
     /// @brief stringersAssemblyType
     /// 
     /// StringersAssembly type, containing an assembly of

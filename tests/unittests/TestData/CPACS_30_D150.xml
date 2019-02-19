@@ -5270,31 +5270,6 @@
             </componentSegments>
           </wing>
         </wings>
-        <engines>
-          <engine symmetry="x-z-plane" uID="4CM036_D150">
-            <name>CFM56-5A5</name>
-            <description>Engine for the D150 taken from TWDat</description>
-            <engineUID>4CM036</engineUID>
-            <parentUID>D150_Pylon</parentUID>
-            <transformation uID="4CM036_D150_transformation1">
-              <scaling uID="4CM036_D150_transformation1_scaling1">
-                <x>1.0</x>
-                <y>1.0</y>
-                <z>1.0</z>
-              </scaling>
-              <rotation uID="4CM036_D150_transformation1_rotation1">
-                <x>0.0</x>
-                <y>0.0</y>
-                <z>0.0</z>
-              </rotation>
-              <translation refType="absLocal" uID="4CM036_D150_transformation1_translation1">
-                <x>13.6765</x>
-                <y>5.7482</y>
-                <z>-2.33895</z>
-              </translation>
-            </transformation>
-          </engine>
-        </engines>
       </model>
     </aircraft>
     <profiles>

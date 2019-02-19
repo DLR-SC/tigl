@@ -31,7 +31,7 @@ namespace generated
     // This class is used in:
     // CPACSPressureBulkheadAssembly
 
-    // generated from /xsd:schema/xsd:complexType[728]
+    // generated from /xsd:schema/xsd:complexType[739]
     /// @brief pressureBulkheadAssemblyPositionType
     /// 
     /// PressureBulkheadAssemblyPosition type, containing a

@@ -30,7 +30,7 @@ namespace generated
     // This class is used in:
     // CPACSTransformation2D
 
-    // generated from /xsd:schema/xsd:complexType[724]
+    // generated from /xsd:schema/xsd:complexType[735]
     /// @brief pointZType
     /// 
     /// Point type, containing a z data.

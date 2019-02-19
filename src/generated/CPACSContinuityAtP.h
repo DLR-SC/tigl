@@ -30,7 +30,7 @@ namespace generated
     // This enum is used in:
     // CPACSSheet
 
-    // generated from /xsd:schema/xsd:complexType[801]/xsd:complexContent/xsd:extension/xsd:all/xsd:element[4]/xsd:complexType/xsd:simpleContent
+    // generated from /xsd:schema/xsd:complexType[813]/xsd:complexContent/xsd:extension/xsd:all/xsd:element[4]/xsd:complexType/xsd:simpleContent
     enum CPACSContinuityAtP
     {
         _0,

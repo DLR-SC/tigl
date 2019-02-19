@@ -25,6 +25,7 @@
 #include <CCPACSWings.h>
 #include <string>
 #include <tixi.h>
+#include "CPACSEnginePositions.h"
 #include "CreateIfNotExists.h"
 #include "tigl_internal.h"
 
@@ -37,7 +38,7 @@ namespace generated
     // This class is used in:
     // CPACSAircraft
 
-    // generated from /xsd:schema/xsd:complexType[53]
+    // generated from /xsd:schema/xsd:complexType[55]
     /// @brief aircraftModelType
     /// 
     /// AircraftModel type, containing a complete aircraft
@@ -70,6 +71,9 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CCPACSWings>& GetWings() const;
         TIGL_EXPORT virtual boost::optional<CCPACSWings>& GetWings();
 
+        TIGL_EXPORT virtual const boost::optional<CPACSEnginePositions>& GetEngines() const;
+        TIGL_EXPORT virtual boost::optional<CPACSEnginePositions>& GetEngines();
+
         TIGL_EXPORT virtual const boost::optional<CCPACSEnginePylons>& GetEnginePylons() const;
         TIGL_EXPORT virtual boost::optional<CCPACSEnginePylons>& GetEnginePylons();
 
@@ -81,6 +85,9 @@ namespace generated
 
         TIGL_EXPORT virtual CCPACSWings& GetWings(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveWings();
+
+        TIGL_EXPORT virtual CPACSEnginePositions& GetEngines(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveEngines();
 
         TIGL_EXPORT virtual CCPACSEnginePylons& GetEnginePylons(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveEnginePylons();
@@ -102,6 +109,8 @@ namespace generated
         boost::optional<CCPACSFuselages>       m_fuselages;
 
         boost::optional<CCPACSWings>           m_wings;
+
+        boost::optional<CPACSEnginePositions>  m_engines;
 
         boost::optional<CCPACSEnginePylons>    m_enginePylons;
 

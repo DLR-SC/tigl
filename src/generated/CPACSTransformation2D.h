@@ -35,7 +35,7 @@ namespace generated
     // This class is used in:
     // CPACSProfileBasedStructuralElement
 
-    // generated from /xsd:schema/xsd:complexType[880]
+    // generated from /xsd:schema/xsd:complexType[894]
     /// @brief transformation2DType
     /// 
     /// 

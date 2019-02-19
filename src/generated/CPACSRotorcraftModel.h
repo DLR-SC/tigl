@@ -25,6 +25,7 @@
 #include <CCPACSWings.h>
 #include <string>
 #include <tixi.h>
+#include "CPACSEnginePositions.h"
 #include "CreateIfNotExists.h"
 #include "tigl_internal.h"
 
@@ -37,7 +38,7 @@ namespace generated
     // This class is used in:
     // CPACSRotorcraft
 
-    // generated from /xsd:schema/xsd:complexType[779]
+    // generated from /xsd:schema/xsd:complexType[791]
     /// @brief rotorcraftModelType
     /// 
     /// RotorCraftModel type, containing a complete rotorcraft
@@ -81,6 +82,9 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CCPACSRotorBlades>& GetRotorBlades() const;
         TIGL_EXPORT virtual boost::optional<CCPACSRotorBlades>& GetRotorBlades();
 
+        TIGL_EXPORT virtual const boost::optional<CPACSEnginePositions>& GetEngines() const;
+        TIGL_EXPORT virtual boost::optional<CPACSEnginePositions>& GetEngines();
+
         TIGL_EXPORT virtual CCPACSFuselages& GetFuselages(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveFuselages();
 
@@ -93,24 +97,29 @@ namespace generated
         TIGL_EXPORT virtual CCPACSRotorBlades& GetRotorBlades(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveRotorBlades();
 
+        TIGL_EXPORT virtual CPACSEnginePositions& GetEngines(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveEngines();
+
     protected:
         CTiglUIDManager* m_uidMgr;
 
-        std::string                        m_uID;
+        std::string                           m_uID;
 
         /// Name of rotorcraft model
-        std::string                        m_name;
+        std::string                           m_name;
 
         /// Description of rotorcraft model
-        boost::optional<std::string>       m_description;
+        boost::optional<std::string>          m_description;
 
-        boost::optional<CCPACSFuselages>   m_fuselages;
+        boost::optional<CCPACSFuselages>      m_fuselages;
 
-        boost::optional<CCPACSWings>       m_wings;
+        boost::optional<CCPACSWings>          m_wings;
 
-        boost::optional<CCPACSRotors>      m_rotors;
+        boost::optional<CCPACSRotors>         m_rotors;
 
-        boost::optional<CCPACSRotorBlades> m_rotorBlades;
+        boost::optional<CCPACSRotorBlades>    m_rotorBlades;
+
+        boost::optional<CPACSEnginePositions> m_engines;
 
     private:
 #ifdef HAVE_CPP11

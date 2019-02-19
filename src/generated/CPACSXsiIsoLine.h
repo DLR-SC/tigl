@@ -30,7 +30,7 @@ namespace generated
     // This class is used in:
     // CPACSControlSurfaceBorderTrailingEdge
 
-    // generated from /xsd:schema/xsd:complexType[971]
+    // generated from /xsd:schema/xsd:complexType[986]
     /// @brief xsiIsoLineType
     /// 
     /// Iso line described by point of same xsi coordinate.

@@ -41,7 +41,7 @@ namespace generated
     // CPACSFrame
     // CPACSStringer
 
-    // generated from /xsd:schema/xsd:complexType[838]
+    // generated from /xsd:schema/xsd:complexType[852]
     /// @brief stringerFramePositionType
     /// 
     /// stringerFramePosition type, containing individual

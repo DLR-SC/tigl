@@ -36,7 +36,7 @@ namespace generated
     // This class is used in:
     // CPACSProfileBasedStructuralElement
 
-    // generated from /xsd:schema/xsd:complexType[430]
+    // generated from /xsd:schema/xsd:complexType[436]
     /// @brief globalBeamPropertiesType
     /// 
     /// globalBeamPropertiesType, containing the global beam
@@ -56,6 +56,9 @@ namespace generated
 
         TIGL_EXPORT virtual const std::string& GetUID() const;
         TIGL_EXPORT virtual void SetUID(const std::string& value);
+
+        TIGL_EXPORT virtual const std::string& GetMaterialUID() const;
+        TIGL_EXPORT virtual void SetMaterialUID(const std::string& value);
 
         TIGL_EXPORT virtual const std::string& GetSource() const;
         TIGL_EXPORT virtual void SetSource(const std::string& value);
@@ -88,6 +91,7 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string                         m_uID;
+        std::string                         m_materialUID;
         std::string                         m_source;
         bool                                m_consistancy;
         CPACSBeamCrossSection               m_beamCrossSection;

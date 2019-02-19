@@ -39,7 +39,7 @@ namespace generated
     // This class is used in:
     // CPACSMaterials
 
-    // generated from /xsd:schema/xsd:complexType[656]
+    // generated from /xsd:schema/xsd:complexType[662]
     /// @brief materialType
     /// 
     /// Material type, conatining data of a material Material

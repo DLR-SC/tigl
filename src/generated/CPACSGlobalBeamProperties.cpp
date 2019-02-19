@@ -61,6 +61,17 @@ namespace generated
             LOG(ERROR) << "Required attribute uID is missing at xpath " << xpath;
         }
 
+        // read element materialUID
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/materialUID")) {
+            m_materialUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/materialUID");
+            if (m_materialUID.empty()) {
+                LOG(WARNING) << "Required element materialUID is empty at xpath " << xpath;
+            }
+        }
+        else {
+            LOG(ERROR) << "Required element materialUID is missing at xpath " << xpath;
+        }
+
         // read element source
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/source")) {
             m_source = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/source");
@@ -131,6 +142,10 @@ namespace generated
         // write attribute uID
         tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
 
+        // write element materialUID
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/materialUID");
+        tixi::TixiSaveElement(tixiHandle, xpath + "/materialUID", m_materialUID);
+
         // write element source
         tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/source");
         tixi::TixiSaveElement(tixiHandle, xpath + "/source", m_source);
@@ -194,6 +209,16 @@ namespace generated
             m_uidMgr->RegisterObject(value, *this);
         }
         m_uID = value;
+    }
+
+    const std::string& CPACSGlobalBeamProperties::GetMaterialUID() const
+    {
+        return m_materialUID;
+    }
+
+    void CPACSGlobalBeamProperties::SetMaterialUID(const std::string& value)
+    {
+        m_materialUID = value;
     }
 
     const std::string& CPACSGlobalBeamProperties::GetSource() const

@@ -112,7 +112,7 @@ void CCPACSLongFloorBeam::BuildGeometry(TopoDS_Shape& cache, bool just1DElements
                 m_uidMgr->ResolveObject<CCPACSProfileBasedStructuralElement>(
                     m_longFloorBeamPositions[i - 1]->GetStructuralElementUID());
             const CCPACSSheetList& sheetList =
-                m_uidMgr->ResolveObject<CCPACSStructuralProfile>(pbse.GetStructuralProfileUID_choice1().value())
+                m_uidMgr->ResolveObject<CCPACSStructuralProfile>(pbse.GetStructuralProfileUID_choice2_2().value())
                     .GetSheetList();
 
             const gp_Pnt& pnt1 = points[i - 1];

@@ -28,7 +28,7 @@ namespace generated
     // This class is used in:
     // CPACSControlSurfaceBorderTrailingEdge
 
-    // generated from /xsd:schema/xsd:complexType[485]
+    // generated from /xsd:schema/xsd:complexType[491]
     /// @brief Optional definition of the leading edge shape of
     /// trailing edge devices (TED).
     /// 

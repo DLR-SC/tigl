@@ -30,7 +30,7 @@ namespace generated
     // This enum is used in:
     // CPACSControlSurfaceTrackType
 
-    // generated from /xsd:schema/xsd:complexType[189]/xsd:complexContent/xsd:extension/xsd:sequence/xsd:element[2]/xsd:complexType/xsd:simpleContent
+    // generated from /xsd:schema/xsd:complexType[192]/xsd:complexContent/xsd:extension/xsd:sequence/xsd:element[2]/xsd:complexType/xsd:simpleContent
     enum CPACSControlSurfaceTrackType_trackType
     {
         trackType1,
