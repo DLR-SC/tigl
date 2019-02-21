@@ -207,3 +207,29 @@ void CPACSAbstractModel::disconnectInternalTree()
     tree = nullptr;
     QAbstractItemModel::endResetModel();
 }
+
+QModelIndex CPACSAbstractModel::getAircraftModelIndex()
+{
+    if (!isValid()) {
+        return QModelIndex();
+    }
+    else {
+        cpcr::CPACSTreeItem* model               = nullptr;
+        std::vector<cpcr::CPACSTreeItem*> models = tree->getRoot()->findAllChildrenOfTypeRecursively("model");
+        if (models.size() == 1) {
+            model = models[0];
+        }
+        else if (models.size() > 1) {
+            LOG(WARNING) << "CPACSAbstractModel::getAircraftModelIndex() There was multiple models found in the "
+                            "aircraft, the first one was chosen."
+                         << std::endl;
+            model = models[0];
+        }
+        else if (models.size() == 0) {
+            LOG(WARNING) << "CPACSAbstractModel::getAircraftModelIndex() There was no models found in the "
+                            "aircraft."
+                         << std::endl;
+        }
+        return getIndex(model, 0);
+    }
+}
