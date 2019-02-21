@@ -19,21 +19,21 @@
 #include "ModificatorManager.h"
 #include "CTiglUIDManager.h"
 
-ModificatorManager::ModificatorManager(CPACSTreeWidget* treeWidget, EditorWidget*  editorWidget)
+ModificatorManager::ModificatorManager(CPACSTreeWidget* treeWidget, ModificatorContainerWidget*  modificatorContainerWidget)
 {
 
     currentModificator = nullptr;
     config             = nullptr;
     treeViewManager    = new CPACSTreeView(treeWidget->getQTreeView());
 
-    this->widgetApply  = editorWidget->getApplyWidget() ;
-    this->commitButton = widgetApply->findChild<QPushButton*>("commitButton");
-    this->cancelButton = widgetApply->findChild<QPushButton*>("cancelButton");
+    this->widgetApply  = modificatorContainerWidget->getApplyWidget() ;
+    this->commitButton = modificatorContainerWidget->getCommitButton();
+    this->cancelButton = modificatorContainerWidget->getCancelButton();
 
-    this->transformationModificator = editorWidget->getTransformationWidget();
-    this->wingModificator           = editorWidget->getWingWidget();
-    this->fuselageModificator       = editorWidget->getFuselageWidget();
-    this->noInterfaceWidget         = editorWidget->getNoInterfaceWidget();
+    this->transformationModificator = modificatorContainerWidget->getTransformationWidget();
+    this->wingModificator           = modificatorContainerWidget->getWingWidget();
+    this->fuselageModificator       = modificatorContainerWidget->getFuselageWidget();
+    this->noInterfaceWidget         = modificatorContainerWidget->getNoInterfaceWidget();
 
     this->hideAll();
     this->noInterfaceWidget->setVisible(true);

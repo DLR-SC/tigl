@@ -112,7 +112,7 @@ set(tv_src
   src/CPACSTree.cpp
   src/XPathParser.cpp
   src/TIGLViewerException.cpp
-  src/EditorWidget.cpp
+  src/ModificatorContainerWidget.cpp
   src/CPACSTreeWidget.cpp
 )
 	
@@ -169,7 +169,7 @@ set(tv_hdr
   src/ModificatorManager.h
   src/CPACSAbstractModel.h
   src/CPACSTreeView.h
-  src/EditorWidget.h
+  src/ModificatorContainerWidget.h
   src/CPACSTreeWidget.h
 )
 
@@ -190,7 +190,7 @@ set(tv_ui
   src/ModificatorTransformationWidget.ui
   src/ModificatorWingWidget.ui
   src/ModificatorFuselageWidget.ui
-  src/EditorWidget.ui
+  src/ModificatorContainerWidget.ui
   src/CPACSTreeWidget.ui
 )
 

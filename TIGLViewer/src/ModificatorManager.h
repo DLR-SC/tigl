@@ -26,7 +26,7 @@
 #include "ModificatorTransformationWidget.h"
 #include "ModificatorWidget.h"
 #include "ModificatorWingWidget.h"
-#include "EditorWidget.h"
+#include "ModificatorContainerWidget.h"
 #include "CPACSTreeWidget.h"
 #include <QPushButton>
 
@@ -46,7 +46,7 @@ public slots:
     void applyCurrentCancellation();
 
 public:
-    ModificatorManager(CPACSTreeWidget* treeWidget, EditorWidget*  editorWidget);
+    ModificatorManager(CPACSTreeWidget* treeWidget, ModificatorContainerWidget*  modificatorContainerWidget);
 
     void setCPACSConfiguration(tigl::CCPACSConfiguration* newConfig);
 
