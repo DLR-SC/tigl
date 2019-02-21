@@ -77,6 +77,9 @@ public:
 
     cpcr::CPACSTreeItem* getItemFromSelection(const QItemSelection& newSelection);
 
+    // Return the index of the first cpacs element that is of the "model" type
+    QModelIndex getAircraftModelIndex();
+
 protected:
     // return the item for the given index
     // empty index is considered as the root index!

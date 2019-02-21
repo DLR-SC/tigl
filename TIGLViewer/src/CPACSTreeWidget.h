@@ -62,7 +62,7 @@ private slots:
 
     void setNewSearch(const QString newText);
 
-    void setExpertView(bool value);
+    void setExpertView();
 
 public:
     explicit CPACSTreeWidget(QWidget* parent = nullptr);

@@ -29,13 +29,13 @@ CPACSTreeWidget::CPACSTreeWidget(QWidget* parent)
     filterModel = new CPACSFilterModel(nullptr);
     ui->treeView->setModel(filterModel);
     selectionModel = ui->treeView->selectionModel();
-    filterModel->setExpertView(ui->expertViewCheckBox->isChecked());
+    setExpertView();
 
     connect(selectionModel, SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)), this,
             SLOT(onSelectionChanged(const QItemSelection&, const QItemSelection&)));
 
     // connect the expert check box to its effect
-    connect(ui->expertViewCheckBox, SIGNAL(toggled(bool)), this, SLOT(setExpertView(bool)));
+    connect(ui->expertViewCheckBox, SIGNAL(toggled(bool)), this, SLOT(setExpertView()));
 
     connect(ui->searchLineEdit, SIGNAL(textEdited(const QString)), this, SLOT(setNewSearch(const QString)));
 }
@@ -74,6 +74,11 @@ void CPACSTreeWidget::setNewSearch(const QString newText)
 
     filterModel->setSearchPattern(newText);
 
+    // Dirty trick to get always the correct display mode.
+    // The issue is if we do not put this line, once we get a empty match
+    // -> the tree change the root index
+    setExpertView();
+
     selectionModel->blockSignals(blockValue);
 
     if (!newText.isEmpty()) {
@@ -81,13 +86,22 @@ void CPACSTreeWidget::setNewSearch(const QString newText)
     }
 }
 
-void CPACSTreeWidget::setExpertView(bool value)
+void CPACSTreeWidget::setExpertView()
 {
+    bool expertMode = ui->expertViewCheckBox->isChecked();
+
     // to avoid that on selectionChanged is called during the transformation of the tree
     bool blockValue = selectionModel->signalsBlocked();
     selectionModel->blockSignals(true);
 
-    filterModel->setExpertView(value);
+    filterModel->setExpertView(expertMode);
+    // we change the root of the qtree view depending the view mode (expert view show also profiles)
+    if (expertMode == false) {
+        ui->treeView->setRootIndex(filterModel->getAircraftModelRoot());
+    }
+    else {
+        ui->treeView->setRootIndex(QModelIndex()); // the empty index is the root by default.
+    }
 
     selectionModel->blockSignals(blockValue);
 }
@@ -102,6 +116,7 @@ void CPACSTreeWidget::displayNewTree(TixiDocumentHandle handle, std::string root
 {
     tree.build(handle, root);
     filterModel->resetInternalTree(&tree);
+    setExpertView();
 }
 
 void CPACSTreeWidget::refresh()
@@ -109,4 +124,5 @@ void CPACSTreeWidget::refresh()
     filterModel->disconnectInternalTree();
     tree.reload();
     filterModel->resetInternalTree(&tree);
+    setExpertView();
 }
