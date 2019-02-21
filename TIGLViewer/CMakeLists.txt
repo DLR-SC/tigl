@@ -113,7 +113,6 @@ set(tv_src
     ModificatorTransformationWidget.cpp
     ModificatorWingWidget.cpp
     ModificatorManager.cpp
-    CPACSTreeView.cpp
     CPACSAbstractModel.cpp
     CPACSTreeItem.cpp
     CPACSTree.cpp
@@ -178,7 +177,6 @@ set(tv_hdr_qobj
 	ModificatorWingWidget.h
 	ModificatorManager.h
 	CPACSAbstractModel.h
-	CPACSTreeView.h
     ModificatorContainerWidget.h
     CPACSTreeWidget.h
 )

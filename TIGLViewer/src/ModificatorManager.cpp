@@ -24,12 +24,11 @@ ModificatorManager::ModificatorManager(CPACSTreeWidget* treeWidget,
 {
 
     config          = nullptr;
-    treeViewManager = new CPACSTreeView(treeWidget->getQTreeView());
-
+    this->treeWidget = treeWidget;
     this->modificatorContainerWidget = modificatorContainerWidget;
 
     // signals:
-    connect(treeViewManager, SIGNAL(newSelectedTreeItem(cpcr::CPACSTreeItem*)), this,
+    connect(treeWidget, SIGNAL(newSelectedTreeItem(cpcr::CPACSTreeItem*)), this,
             SLOT(dispatch(cpcr::CPACSTreeItem*)));
 }
 
@@ -39,10 +38,10 @@ void ModificatorManager::setCPACSConfiguration(tigl::CCPACSConfiguration* newCon
     if (configurationIsSet()) {
         // TODO allow to chose different model
         std::string rootXPath = "/cpacs/vehicles/aircraft/model[1]";
-        treeViewManager->displayNewTree(newConfig->GetTixiDocumentHandle(), rootXPath);
+        treeWidget->displayNewTree(newConfig->GetTixiDocumentHandle(), rootXPath);
     }
     else {
-        treeViewManager->clear();
+        treeWidget->clear();
     }
     modificatorContainerWidget->setNoInterfaceWidget();
 }
