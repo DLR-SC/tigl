@@ -21,7 +21,6 @@
 
 #include "CCPACSConfiguration.h"
 #include "CPACSTreeItem.h"
-#include "CPACSTreeView.h"
 #include "ModificatorFuselageWidget.h"
 #include "ModificatorTransformationWidget.h"
 #include "ModificatorWidget.h"
@@ -37,7 +36,7 @@ class TIGLViewerWindow;
  *
  * This class holds three main components:
  * CCPACSConfiguration: that is the main tigl object to work with.
- * CPACSTreeView: that is the manage the tree interface.
+ * CPACSTreeWidget: that manage the tree interface.
  * ModificatorContainerWidget: that is the interface that holds the specialized modificator for
  * particular tigl object.
  *
@@ -73,7 +72,7 @@ protected:
 private:
     tigl::CCPACSConfiguration* config;
 
-    CPACSTreeView* treeViewManager;
+    CPACSTreeWidget* treeWidget;
     ModificatorContainerWidget* modificatorContainerWidget;
 };
 

@@ -106,7 +106,6 @@ set(tv_src
   src/ModificatorTransformationWidget.cpp
   src/ModificatorWingWidget.cpp
   src/ModificatorManager.cpp
-  src/CPACSTreeView.cpp
   src/CPACSAbstractModel.cpp
   src/CPACSTreeItem.cpp
   src/CPACSTree.cpp
@@ -168,7 +167,6 @@ set(tv_hdr
   src/ModificatorWingWidget.h
   src/ModificatorManager.h
   src/CPACSAbstractModel.h
-  src/CPACSTreeView.h
   src/ModificatorContainerWidget.h
   src/CPACSTreeWidget.h
 )
