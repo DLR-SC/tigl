@@ -379,7 +379,7 @@
    <attribute name="dockWidgetArea">
     <number>2</number>
    </attribute>
-   <widget class="EditorWidget" name="editorWidget"/>
+   <widget class="ModificatorContainerWidget" name="modificatorContainerWidget"/>
   </widget>
   <widget class="QDockWidget" name="treeDockWidget">
    <attribute name="dockWidgetArea">
@@ -1473,15 +1473,15 @@
    <header>TiglViewerConsole.h</header>
   </customwidget>
   <customwidget>
-   <class>EditorWidget</class>
-   <extends>QWidget</extends>
-   <header>EditorWidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>CPACSTreeWidget</class>
    <extends>QWidget</extends>
    <header>CPACSTreeWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ModificatorContainerWidget</class>
+   <extends>QWidget</extends>
+   <header>ModificatorContainerWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

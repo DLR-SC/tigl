@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>EditorWidget</class>
- <widget class="QWidget" name="EditorWidget">
+ <class>ModificatorContainerWidget</class>
+ <widget class="QWidget" name="ModificatorContainerWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>337</width>
-    <height>150</height>
+    <width>393</width>
+    <height>239</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -82,7 +82,7 @@
      <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
-       <height>40</height>
+       <height>80</height>
       </size>
      </property>
     </spacer>

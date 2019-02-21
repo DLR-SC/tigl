@@ -119,7 +119,7 @@ set(tv_src
     CPACSTree.cpp
     XPathParser.cpp
     TIGLViewerException.cpp
-    EditorWidget.cpp
+    ModificatorContainerWidget.cpp
     CPACSTreeWidget.cpp
 )
 	
@@ -179,7 +179,7 @@ set(tv_hdr_qobj
 	ModificatorManager.h
 	CPACSAbstractModel.h
 	CPACSTreeView.h
-    EditorWidget.h
+    ModificatorContainerWidget.h
     CPACSTreeWidget.h
 )
 
@@ -198,7 +198,7 @@ set(tv_ui_comp
     src/ModificatorTransformationWidget.ui
     src/ModificatorWingWidget.ui
     src/ModificatorFuselageWidget.ui
-    src/EditorWidget.ui
+    src/ModificatorContainerWidget.ui
     src/CPACSTreeWidget.ui
 )
 
