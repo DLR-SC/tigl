@@ -68,6 +68,11 @@ public:
 
     cpcr::CPACSTreeItem* getItemFromSelection(const QItemSelection& newSelection);
 
+    /**
+     * @return Return the index of the first cpacs element that is of the "model" type
+     */
+    QModelIndex getAircraftModelRoot();
+
 protected:
     bool filterAcceptsRow(int sourceRow, const QModelIndex& sourceParent) const override;
 
