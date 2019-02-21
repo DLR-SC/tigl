@@ -17,12 +17,19 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QLineEdit" name="searchLineEdit"/>
+      <widget class="QLineEdit" name="searchLineEdit">
+       <property name="toolTip">
+        <string>The tree is filtered by the expression typed in this bar. The expression is check against the type of the element and the uid of the element. </string>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QCheckBox" name="expertViewCheckBox">
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the view mode of the tree. In expert mode, you have every element of the cpacs tree starting form /cpacs/vehicles/. In basic mode you have a simplify cpacs tree starting from /cpacs/vehicles/aircraft/model/. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
        <property name="text">
-        <string>CheckBox</string>
+        <string>Expert View</string>
        </property>
       </widget>
      </item>

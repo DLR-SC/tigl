@@ -37,7 +37,7 @@ void ModificatorManager::setCPACSConfiguration(tigl::CCPACSConfiguration* newCon
     this->config = newConfig;
     if (configurationIsSet()) {
         // TODO allow to chose different model
-        std::string rootXPath = "/cpacs/vehicles/aircraft/model[1]";
+        std::string rootXPath = "/cpacs/vehicles";
         treeWidget->displayNewTree(newConfig->GetTixiDocumentHandle(), rootXPath);
     }
     else {
