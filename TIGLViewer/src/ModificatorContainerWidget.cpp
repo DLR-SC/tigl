@@ -18,12 +18,19 @@
 
 #include "ModificatorContainerWidget.h"
 #include "ui_ModificatorContainerWidget.h"
+#include "CTiglLogging.h"
 
 ModificatorContainerWidget::ModificatorContainerWidget(QWidget* parent)
     : QWidget(parent)
     , ui(new Ui::ModificatorContainerWidget)
 {
     ui->setupUi(this);
+
+    setNoInterfaceWidget();
+
+    connect(ui->commitButton, SIGNAL(pressed()), this, SLOT(applyCurrentModifications()));
+
+    connect(ui->cancelButton, SIGNAL(pressed()), this, SLOT(applyCurrentCancellation()));
 }
 
 ModificatorContainerWidget::~ModificatorContainerWidget()
@@ -31,38 +38,74 @@ ModificatorContainerWidget::~ModificatorContainerWidget()
     delete ui;
 }
 
-ModificatorWingWidget* ModificatorContainerWidget::getWingWidget()
+void ModificatorContainerWidget::hideAllSecializedWidgets()
 {
-    return ui->wingModificator;
+    bool visible = false;
+    ui->transformationModificator->setVisible(visible);
+    ui->wingModificator->setVisible(visible);
+    ui->fuselageModificator->setVisible(visible);
+    ui->applyWidget->setVisible(visible);
+    ui->noInterfaceWidget->setVisible(visible);
+    currentModificator = nullptr;
 }
 
-ModificatorFuselageWidget* ModificatorContainerWidget::getFuselageWidget()
+void ModificatorContainerWidget::setTransformationModificator(tigl::CCPACSTransformation& transformation)
 {
-    return ui->fuselageModificator;
+    hideAllSecializedWidgets();
+    ui->transformationModificator->setTransformation(transformation);
+    ui->transformationModificator->setVisible(true);
+    ui->applyWidget->setVisible(true);
+    currentModificator = ui->transformationModificator;
 }
 
-ModificatorTransformationWidget* ModificatorContainerWidget::getTransformationWidget()
+void ModificatorContainerWidget::setWingModificator(tigl::CCPACSWing& wing)
 {
-
-    return ui->transformationModificator;
+    hideAllSecializedWidgets();
+    ui->wingModificator->setWing(wing);
+    ui->wingModificator->setVisible(true);
+    ui->applyWidget->setVisible(true);
+    currentModificator = ui->wingModificator;
 }
 
-QWidget* ModificatorContainerWidget::getApplyWidget()
+void ModificatorContainerWidget::setFuselageModificator(tigl::CCPACSFuselage& fuselage)
 {
-    return ui->applyWidget;
+    hideAllSecializedWidgets();
+    ui->fuselageModificator->setFuselage(fuselage);
+    ui->fuselageModificator->setVisible(true);
+    ui->applyWidget->setVisible(true);
+    currentModificator = ui->fuselageModificator;
 }
 
-QWidget* ModificatorContainerWidget::getNoInterfaceWidget()
+void ModificatorContainerWidget::setNoInterfaceWidget()
 {
-    return ui->noInterfaceWidget;
+    hideAllSecializedWidgets();
+    ui->noInterfaceWidget->setVisible(true);
+    currentModificator = nullptr;
 }
 
-QPushButton* ModificatorContainerWidget::getCancelButton()
+void ModificatorContainerWidget::applyCurrentModifications()
 {
-    return ui->cancelButton;
+
+    if (currentModificator != nullptr) {
+        currentModificator->apply(); //
+        // todo save in tixi memory, here ? or in apply function ?
+        emit configurationEdited();
+    }
+    else {
+        LOG(WARNING) << "ModificatorManager::applyCurrentModifications() called "
+                        "but current modificator is null"
+                     << std::endl;
+    }
 }
 
-QPushButton* ModificatorContainerWidget::getCommitButton()
+void ModificatorContainerWidget::applyCurrentCancellation()
 {
-    return ui->commitButton;
+    if (currentModificator != nullptr) {
+        currentModificator->reset();
+    }
+    else {
+        LOG(WARNING) << "ModificatorManager::applyCurrentCancellation() called but "
+                        "current modificator is null"
+                     << std::endl;
+    }
 }
