@@ -24,31 +24,55 @@
 #include "ModificatorWingWidget.h"
 #include "ModificatorFuselageWidget.h"
 #include "ModificatorTransformationWidget.h"
+#include "CPACSFuselages.h"
+#include "CPACSWing.h"
+#include "CPACSTransformation.h"
 
 namespace Ui
 {
 class ModificatorContainerWidget;
 }
 
+/**
+ * @brief Container for the the spezialized modificator widgets.
+ *
+ * This class holds the specialized modificator widget as the Transformation widget,
+ * the Wing widget, the Fuselage widget ...
+ * Every moment there is only one modificator widget displayed based on the element
+ * selected in the CPACS tree.
+ * This class has function to set a particular modificator widget and to connect the
+ * commit and cancel button to this particular widget.
+ * For example, the function "setWingModificator" will set the wing modificator
+ * with the value passed as argument and display the wing widget. Then, when the commit
+ * or cancel button is pressed, the correct function will be called on the wing widget.
+ *
+ */
 class ModificatorContainerWidget : public QWidget
 {
     Q_OBJECT
+
+signals:
+    void configurationEdited();
+
+public slots:
+    void applyCurrentModifications();
+    void applyCurrentCancellation();
 
 public:
     explicit ModificatorContainerWidget(QWidget* parent = nullptr);
     ~ModificatorContainerWidget();
 
-    // getter for specialized modificator
-    ModificatorWingWidget* getWingWidget();
-    ModificatorFuselageWidget* getFuselageWidget();
-    ModificatorTransformationWidget* getTransformationWidget();
-    QWidget* getNoInterfaceWidget();
-    QWidget* getApplyWidget();
-    QPushButton* getCommitButton();
-    QPushButton* getCancelButton();
+    void setTransformationModificator(tigl::CCPACSTransformation& transformation);
+    void setWingModificator(tigl::CCPACSWing& wing);
+    void setFuselageModificator(tigl::CCPACSFuselage& fuselage);
+    void setNoInterfaceWidget();
+
+    void hideAllSecializedWidgets();
 
 private:
     Ui::ModificatorContainerWidget* ui;
+
+    ModificatorWidget* currentModificator;
 };
 
 #endif // MODIFICATORCONTAINERWIDGET_H
