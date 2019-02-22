@@ -27,6 +27,10 @@
 
 #include "TIGLViewerMaterials.h"
 
+#include <QFileDialog>
+#include <QMessageBox>
+#include "TIGLViewerSettingsDialog.h"
+
 #define WORST_TESSELATION 0.01
 #define BEST_TESSELATION 0.00001
 
@@ -62,6 +66,7 @@ TIGLViewerSettingsDialog::TIGLViewerSettingsDialog(TIGLViewerSettings& settings,
     connect(buttonShapeSymmetryColorChoser, SIGNAL(clicked()), this, SLOT(onShapeSymmetryColorChoserPushed()));
     connect(settingsList, SIGNAL(currentRowChanged(int)), this, SLOT(onSettingsListChanged(int)));
     connect(btnRestoreDefaults, SIGNAL(clicked(bool)), this, SLOT(restoreDefaults()));
+    connect(browseTemplateDirButton, SIGNAL(clicked(bool)), this, SLOT(onBrowseTemplateDir()));
 }
 
 void TIGLViewerSettingsDialog::onComboBoxIndexChanged(const QString& index)
@@ -110,6 +115,8 @@ void TIGLViewerSettingsDialog::onSettingsAccepted()
     _settings.setNumberOfUIsolinesPerFace(numUIsoLinesSB->value());
     _settings.setNumberOfVIsolinesPerFace(numVIsoLinesSB->value());
     _settings.setDrawFaceBoundariesEnabled(cbDrawFaceBoundaries->isChecked());
+
+    _settings.setTemplateDir(templateLineEdit->text());
 }
 
 void TIGLViewerSettingsDialog::updateEntries()
@@ -163,6 +170,8 @@ void TIGLViewerSettingsDialog::updateEntries()
         idx++;
     }
     comboBoxShapeMaterial->setCurrentIndex(activeItem);
+
+    templateLineEdit->setText(_settings.templateDir().absolutePath());
 }
 
 void TIGLViewerSettingsDialog::onSliderTesselationChanged(int val)
@@ -231,3 +240,8 @@ void TIGLViewerSettingsDialog::restoreDefaults()
     updateEntries();
 }
 
+void TIGLViewerSettingsDialog::onBrowseTemplateDir()
+{
+    QDir newDir = QFileDialog::getExistingDirectory(this);
+    templateLineEdit->setText(newDir.absolutePath());
+}

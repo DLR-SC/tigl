@@ -18,6 +18,7 @@
 
 #include <TIGLViewerSettings.h>
 #include <QSettings>
+#include "TIGLViewerSettings.h"
 
 #include <iostream>
 #include <algorithm>
@@ -32,6 +33,7 @@ const bool DEFAULT_DEBUG_BOPS = false;
 const bool DEFAULT_ENUM_FACES = false;
 const bool DEFAULT_DRAW_FACE_BOUNDARIES = true;
 const int DEFAULT_NISO_FACES = 0;
+const QString DEFAULT_TEMPLATE_DIR_PATH = "./data/templates";
 
 
 TIGLViewerSettings& TIGLViewerSettings::Instance()
@@ -191,6 +193,8 @@ void TIGLViewerSettings::loadSettings()
     _nUIsosPerFace = settings.value("number_uisolines_per_face", 0).toInt();
     _nVIsosPerFace = settings.value("number_visolines_per_face", 0).toInt();
     _drawFaceBoundaries = settings.value("draw_face_boundaries", true).toBool();
+
+    setTemplateDir(settings.value("template_dir_path", "./data/templates" ).toString());
 }
 
 void TIGLViewerSettings::storeSettings()
@@ -209,6 +213,8 @@ void TIGLViewerSettings::storeSettings()
     settings.setValue("number_uisolines_per_face", _nUIsosPerFace);
     settings.setValue("number_visolines_per_face", _nVIsosPerFace);
     settings.setValue("draw_face_boundaries", _drawFaceBoundaries);
+
+    settings.setValue("template_dir_path", _templateDir.absolutePath());
 }
 
 void TIGLViewerSettings::restoreDefaults()
@@ -224,5 +230,24 @@ void TIGLViewerSettings::restoreDefaults()
     _nVIsosPerFace = DEFAULT_NISO_FACES;
     _drawFaceBoundaries = DEFAULT_DRAW_FACE_BOUNDARIES;
     _defaultMaterial = Graphic3d_NOM_METALIZED;
+
+    // Possible issue:
+    // restoreDefaults() is called in the constructor
+    // -> the dir will be always create at start up of the application
+    // even if the user has set another dir
+    setTemplateDir(DEFAULT_TEMPLATE_DIR_PATH) ;
 }
 
+QDir TIGLViewerSettings::templateDir() const
+{
+    return _templateDir;
+}
+
+void TIGLViewerSettings::setTemplateDir(QString path)
+{
+    _templateDir = QDir(path);
+    // create the directory if not exist
+    if (!_templateDir.exists()) {
+        _templateDir.mkpath(_templateDir.absolutePath());
+    }
+}
