@@ -24,6 +24,16 @@
       </widget>
      </item>
      <item>
+      <widget class="QCheckBox" name="showUIDCheckBox">
+       <property name="toolTip">
+        <string>Set the display of the uid column in the tree, remark that if the uid column is enable the search pattern match also the uid. </string>
+       </property>
+       <property name="text">
+        <string>Show UID</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QCheckBox" name="expertViewCheckBox">
        <property name="toolTip">
         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the view mode of the tree. In expert mode, you have every element of the cpacs tree starting form /cpacs/vehicles/. In basic mode you have a simplify cpacs tree starting from /cpacs/vehicles/aircraft/model/. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>

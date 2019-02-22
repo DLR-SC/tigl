@@ -57,8 +57,8 @@ bool CPACSFilterModel::filterAcceptsRow(int sourceRow, const QModelIndex& source
     else {
         // if the row itself match the pattern
         if (sourceModel()->data(typeIndex).toString().contains(searchPattern) ||
-            sourceModel()->data(uidIndex).toString().contains(searchPattern)) {
-            return true;
+            (matchingOnUID && sourceModel()->data(uidIndex).toString().contains(searchPattern))) {
+                return true;
         }
         // check if one of its child match the pattern (recursive call)
         else {
@@ -82,6 +82,12 @@ void CPACSFilterModel::setExpertView(bool value)
 void CPACSFilterModel::setSearchPattern(const QString newText)
 {
     searchPattern.setPattern(newText);
+    invalidateFilter();
+}
+
+void CPACSFilterModel::enableMatchOnUID(bool value)
+{
+    matchingOnUID = value;
     invalidateFilter();
 }
 
