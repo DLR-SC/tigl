@@ -281,6 +281,23 @@ if(GLOG_FOUND)
   target_link_libraries (${PROGNAME} ${GLOG_LIBRARIES})
 endif(GLOG_FOUND)
 
+
+#--------------------------------------------------------------------------------
+# Now the data stuff below (templates files)
+#--------------------------------------------------------------------------------
+
+# Copy the templates directory to the executable dir
+# TODO Set the correct data directory for each OS
+add_custom_command(
+        TARGET ${PROGNAME}
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_CURRENT_SOURCE_DIR}/data/templates
+        "$<TARGET_FILE_DIR:${PROGNAME}>/data/templates"
+        COMMENT "Copy templates data into $<TARGET_FILE_DIR:${PROGNAME}>/data/templates"
+)
+
+
 #--------------------------------------------------------------------------------
 # Now the installation stuff below
 #--------------------------------------------------------------------------------
