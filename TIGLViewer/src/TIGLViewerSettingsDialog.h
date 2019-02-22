@@ -42,6 +42,7 @@ private slots:
     void onColorChoserPushed();
     void onSettingsListChanged(int);
     void restoreDefaults();
+    void onBrowseTemplateDir();
 
 private:
     double calcTesselationAccu(int value);

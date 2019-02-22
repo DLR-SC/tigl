@@ -20,6 +20,7 @@
 #define TIGLVIEWERSETTINGS_H_
 
 #include <QColor>
+#include <QDir>
 
 class TIGLViewerSettings
 {
@@ -38,6 +39,10 @@ public:
     double triangulationAccuracy() const;
 
     const QColor& BGColor() const;
+
+    QDir templateDir() const;
+    void setTemplateDir(QString path);
+
 
     // Debugging Tab
     void setDebugBooleanOperationsEnabled(bool);
@@ -64,6 +69,8 @@ private:
     bool _enumFaces;
     int  _nUIsosPerFace;
     int  _nVIsosPerFace;
+
+    QDir _templateDir;
 };
 
 #endif /* TIGLVIEWERSETTINGS_H_ */
