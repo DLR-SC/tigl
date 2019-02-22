@@ -64,6 +64,8 @@ private slots:
 
     void setExpertView();
 
+    void setShowUID();
+
 public:
     explicit CPACSTreeWidget(QWidget* parent = nullptr);
     ~CPACSTreeWidget();

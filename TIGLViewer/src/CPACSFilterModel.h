@@ -32,6 +32,7 @@
  * model should be display.
  * The default filtering on the mode can be avoided by setting the expertView mode using
  * the setExpertView() function.
+ * We can also enable or not the match on uid using the enableMatchOnUID() function.
  *
  * @author Malo Drougard
  */
@@ -43,6 +44,12 @@ class CPACSFilterModel : public QSortFilterProxyModel
 public slots:
 
     void setExpertView(bool value);
+
+    /**
+     * enable the match on uid for the search pattern
+     * @param value
+     */
+    void enableMatchOnUID(bool value);
 
     void setSearchPattern(const QString newText);
 
@@ -80,6 +87,7 @@ private:
     CPACSAbstractModel* cpacsModel;
     QRegExp basicTreeRegExp;
     QRegExp searchPattern;
+    bool matchingOnUID;
     bool expertView;
 };
 
