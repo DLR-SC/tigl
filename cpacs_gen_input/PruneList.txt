@@ -120,6 +120,3 @@ CPACSUncertaintyFunction
 
 // in pylon
 CPACSPylonStructure
-
-// in nacelle
-CPACSNacelleCenterCowl

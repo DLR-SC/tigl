@@ -135,3 +135,4 @@ CPACSNacelleSection 					 CCPACSNacelleSection
 CPACSProfileGeometry2D                   CCPACSNacelleProfile
 CPACSNacelleGuideCurves					 CCPACSNacelleGuideCurves
 CPACSRotationCurve                       CCPACSRotationCurve
+CPACSNacelleCenterCowl                   CCPACSNacelleCenterCowl
