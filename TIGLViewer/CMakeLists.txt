@@ -121,6 +121,7 @@ set(tv_src
     ModificatorContainerWidget.cpp
     CPACSTreeWidget.cpp
     CPACSFilterModel.cpp
+    TIGLViewerNewFileDialog.cpp
 )
 	
 # normal header files
@@ -181,6 +182,7 @@ set(tv_hdr_qobj
     ModificatorContainerWidget.h
     CPACSTreeWidget.h
     CPACSFilterModel.h
+    TIGLViewerNewFileDialog.h
 )
 
 set(tv_ui_comp
@@ -200,6 +202,7 @@ set(tv_ui_comp
     src/ModificatorFuselageWidget.ui
     src/ModificatorContainerWidget.ui
     src/CPACSTreeWidget.ui
+    src/TIGLViewerNewFileDialog.ui
 )
 
 foreach ( _fname ${tv_src})
