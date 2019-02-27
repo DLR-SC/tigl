@@ -114,6 +114,7 @@ set(tv_src
   src/ModificatorContainerWidget.cpp
   src/CPACSTreeWidget.cpp
   src/CPACSFilterModel.cpp
+  src/TIGLViewerNewFileDialog.cpp
 )
 	
 # header files
@@ -171,6 +172,7 @@ set(tv_hdr
   src/ModificatorContainerWidget.h
   src/CPACSTreeWidget.h
   src/CPACSFilterModel.h
+  src/TIGLViewerNewFileDialog.h
 )
 
 set(tv_ui
@@ -192,6 +194,7 @@ set(tv_ui
   src/ModificatorFuselageWidget.ui
   src/ModificatorContainerWidget.ui
   src/CPACSTreeWidget.ui
+  src/TIGLViewerNewFileDialog.ui
 )
 
 # compile icons

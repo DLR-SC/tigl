@@ -52,6 +52,7 @@
 #include "tigl_config.h"
 #include "api/tigl_version.h"
 #include "CCPACSConfigurationManager.h"
+#include "TIGLViewerNewFileDialog.h"
 
 #include <cstdlib>
 
@@ -201,6 +202,11 @@ void TIGLViewerWindow::newFile()
     statusBar()->showMessage(tr("Invoked File|New"));
     //myOCC->getView()->ColorScaleErase();
     myScene->deleteAllObjects();
+    TIGLViewerNewFileDialog newFileDialog( this );
+    if ( newFileDialog.exec() == QDialog::Accepted ){
+        openFile(newFileDialog.getNewFileName());
+    }
+
 }
 
 void TIGLViewerWindow::open()
@@ -289,7 +295,7 @@ void TIGLViewerWindow::openFile(const QString& fileName)
         fileInfo.setFile(fileName);
         fileType = fileInfo.suffix();
         
-        if (fileType.toLower() == tr("xml")) {
+        if (fileType.toLower() == tr("xml") || fileType.toLower() == tr("temp")  ) {
             TIGLViewerDocument* config = new TIGLViewerDocument(this);
             TiglReturnCode tiglRet = config->openCpacsConfiguration(fileInfo.absoluteFilePath());
             if (tiglRet != TIGL_SUCCESS) {
