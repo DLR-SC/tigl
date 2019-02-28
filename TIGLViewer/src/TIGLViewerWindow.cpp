@@ -120,8 +120,7 @@ TIGLViewerWindow::TIGLViewerWindow()
     setAcceptDrops(true);
 
     // creator init
-    modificatorManager = new ModificatorManager(creatorWidget) ;
-
+    modificatorManager = new ModificatorManager(treeWidget, modificatorContainerWidget) ;
 
     connectSignals();
     createMenus();
@@ -390,14 +389,19 @@ void TIGLViewerWindow::loadSettings()
     QSettings settings("DLR SC-HPC", "TiGLViewer3");
 
     bool showConsole = settings.value("show_console",QVariant(true)).toBool();
-    bool showCreator = settings.value("show_creator",QVariant(true)).toBool();
+    bool showTree = settings.value("show_tree",QVariant(true)).toBool();
+    bool showModificator = settings.value("show_modificator",QVariant(true)).toBool();
+
     restoreGeometry(settings.value("MainWindowGeom").toByteArray());
     restoreState(settings.value("MainWindowState").toByteArray());
     consoleDockWidget->setVisible(showConsole);
     showConsoleAction->setChecked(showConsole);
 
-    creatorDockWidget->setVisible(showCreator);
-    showCreatorAction->setChecked(showCreator);
+    editorDockWidget->setVisible(showModificator);
+    showModificatorAction->setChecked(showModificator);
+
+    treeDockWidget->setVisible(showTree);
+    showTreeAction->setChecked(showTree);
 
     tiglViewerSettings->loadSettings();
     settingsDialog->updateEntries();
@@ -411,8 +415,11 @@ void TIGLViewerWindow::saveSettings()
     bool showConsole = consoleDockWidget->isVisible();
     settings.setValue("show_console", showConsole);
 
-    bool showCreator = creatorDockWidget->isVisible();
-    settings.setValue("show_creator", showCreator);
+    bool showModificator = editorDockWidget->isVisible();
+    settings.setValue("show_modificator", showModificator);
+
+    bool showTree = treeDockWidget->isVisible();
+    settings.setValue("show_tree", showTree);
 
     settings.setValue("MainWindowGeom", saveGeometry());
     settings.setValue("MainWindowState", saveState());
@@ -733,8 +740,12 @@ void TIGLViewerWindow::connectSignals()
 
     // modificatorManager will emit a configurationEdited when he modifie the tigl configuration
     connect(modificatorManager, SIGNAL(configurationEdited()), this, SLOT(updateScene()));
-    connect(showCreatorAction, SIGNAL(toggled(bool)), creatorDockWidget, SLOT(setVisible(bool)));
-    connect(creatorDockWidget, SIGNAL(visibilityChanged(bool)), showCreatorAction, SLOT(setChecked(bool)));
+    // creator view
+    connect(showModificatorAction, SIGNAL(toggled(bool)), editorDockWidget, SLOT(setVisible(bool)));
+    connect(editorDockWidget, SIGNAL(visibilityChanged(bool)), showModificatorAction, SLOT(setChecked(bool)));
+    connect(showTreeAction, SIGNAL(toggled(bool)), treeDockWidget, SLOT(setVisible(bool)));
+    connect(treeDockWidget, SIGNAL(visibilityChanged(bool)), showTreeAction, SLOT(setChecked(bool)));
+
 
     connect(showWireframeAction, SIGNAL(toggled(bool)), myScene, SLOT(wireFrame(bool)));
 #if OCC_VERSION_HEX >= VERSION_HEX_CODE(6,7,0)

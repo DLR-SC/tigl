@@ -19,30 +19,17 @@
 #include "ModificatorManager.h"
 #include "CTiglUIDManager.h"
 
-ModificatorManager::ModificatorManager(CreatorWidget* creatorWidget)
+ModificatorManager::ModificatorManager(CPACSTreeWidget* treeWidget,
+                                       ModificatorContainerWidget* modificatorContainerWidget)
 {
 
-    currentModificator = nullptr;
-    config             = nullptr;
-    treeViewManager    = new CPACSTreeView(creatorWidget->getQTreeView());
-
-    this->widgetApply  = creatorWidget->getApplyWidget() ;
-    this->commitButton = widgetApply->findChild<QPushButton*>("commitButton");
-    this->cancelButton = widgetApply->findChild<QPushButton*>("cancelButton");
-
-    this->transformationModificator = creatorWidget->getTransformationWidget();
-    this->wingModificator           = creatorWidget->getWingWidget();
-    this->fuselageModificator       = creatorWidget->getFuselageWidget();
-
-    this->hideAll();
+    config          = nullptr;
+    this->treeWidget = treeWidget;
+    this->modificatorContainerWidget = modificatorContainerWidget;
 
     // signals:
-    connect(treeViewManager, SIGNAL(newSelectedTreeItem(cpcr::CPACSTreeItem*)), this,
+    connect(treeWidget, SIGNAL(newSelectedTreeItem(cpcr::CPACSTreeItem*)), this,
             SLOT(dispatch(cpcr::CPACSTreeItem*)));
-
-    connect(commitButton, SIGNAL(pressed()), this, SLOT(applyCurrentModifications()));
-
-    connect(cancelButton, SIGNAL(pressed()), this, SLOT(applyCurrentCancellation()));
 }
 
 void ModificatorManager::setCPACSConfiguration(tigl::CCPACSConfiguration* newConfig)
@@ -51,107 +38,40 @@ void ModificatorManager::setCPACSConfiguration(tigl::CCPACSConfiguration* newCon
     if (configurationIsSet()) {
         // TODO allow to chose different model
         std::string rootXPath = "/cpacs/vehicles/aircraft/model[1]";
-        treeViewManager->displayNewTree(newConfig->GetTixiDocumentHandle(), rootXPath);
-        currentModificator = nullptr;
-        hideAll();
+        treeWidget->displayNewTree(newConfig->GetTixiDocumentHandle(), rootXPath);
     }
     else {
-        currentModificator = nullptr;
-        hideAll();
-        treeViewManager->clear();
+        treeWidget->clear();
     }
-}
-
-void ModificatorManager::applyCurrentModifications()
-{
-
-    if (currentModificator != nullptr) {
-        currentModificator->apply(); //
-        // todo save in tixi memory, here ? or in apply function ?
-        emit configurationEdited();
-    }
-    else {
-        LOG(WARNING) << "ModificatorManager::applyCurrentModifications() called "
-                        "but current modificator is null"
-                     << std::endl;
-    }
-}
-
-void ModificatorManager::applyCurrentCancellation()
-{
-    if (currentModificator != nullptr) {
-        currentModificator->reset();
-    }
-    else {
-        LOG(WARNING) << "ModificatorManager::applyCurrentCancellation() called but "
-                        "current modificator is null"
-                     << std::endl;
-    }
+    modificatorContainerWidget->setNoInterfaceWidget();
 }
 
 void ModificatorManager::dispatch(cpcr::CPACSTreeItem* item)
 {
 
     if ((!configurationIsSet()) || (!item->isInitialized())) {
-        currentModificator = nullptr;
-        hideAll();
+
+        modificatorContainerWidget->hideAllSecializedWidgets();
         LOG(ERROR) << "MODIFICATOR MANAGER IS NOT READY";
     }
     else if (item->getType() == "transformation") {
-        currentModificator = transformationModificator;
-        this->setTransformationModificator(item);
+        tigl::CTiglUIDManager& uidManager = config->GetUIDManager();
+        tigl::CCPACSTransformation& transformation =
+            uidManager.ResolveObject<tigl::CCPACSTransformation>(item->getUid());
+        modificatorContainerWidget->setTransformationModificator(transformation);
     }
     else if (item->getType() == "fuselage") {
-        currentModificator = fuselageModificator;
-        this->setFuselageModificator(item);
+        tigl::CTiglUIDManager& uidManager = config->GetUIDManager();
+        tigl::CCPACSFuselage& fuselage    = uidManager.ResolveObject<tigl::CCPACSFuselage>(item->getUid());
+        modificatorContainerWidget->setFuselageModificator(fuselage);
     }
     else if (item->getType() == "wing") {
-        currentModificator = wingModificator;
-        this->setWingModificator(item);
+        tigl::CTiglUIDManager& uidManager = config->GetUIDManager();
+        tigl::CCPACSWing& wing            = uidManager.ResolveObject<tigl::CCPACSWing>(item->getUid());
+        modificatorContainerWidget->setWingModificator(wing);
     }
     else {
-        currentModificator = nullptr;
-        hideAll();
+        modificatorContainerWidget->setNoInterfaceWidget();
         LOG(INFO) << "MODIFICATOR MANAGER: item not suported";
     }
-}
-
-void ModificatorManager::hideAll()
-{
-    bool visible = false;
-    transformationModificator->setVisible(visible);
-    wingModificator->setVisible(visible);
-    fuselageModificator->setVisible(visible);
-    widgetApply->setVisible(visible);
-}
-
-void ModificatorManager::setFuselageModificator(cpcr::CPACSTreeItem* item)
-{
-    hideAll();
-    tigl::CTiglUIDManager& uidManager = config->GetUIDManager();
-    tigl::CCPACSFuselage& fuselage    = uidManager.ResolveObject<tigl::CCPACSFuselage>(item->getUid());
-    fuselageModificator->setFuselage(fuselage);
-    fuselageModificator->setVisible(true);
-    widgetApply->setVisible(true);
-}
-
-void ModificatorManager::setTransformationModificator(cpcr::CPACSTreeItem* item)
-{
-
-    hideAll();
-    tigl::CTiglUIDManager& uidManager          = config->GetUIDManager();
-    tigl::CCPACSTransformation& transformation = uidManager.ResolveObject<tigl::CCPACSTransformation>(item->getUid());
-    transformationModificator->setTransformation(transformation);
-    transformationModificator->setVisible(true);
-    widgetApply->setVisible(true);
-}
-
-void ModificatorManager::setWingModificator(cpcr::CPACSTreeItem* item)
-{
-    hideAll();
-    tigl::CTiglUIDManager& uidManager = config->GetUIDManager();
-    tigl::CCPACSWing& wing            = uidManager.ResolveObject<tigl::CCPACSWing>(item->getUid());
-    wingModificator->setWing(wing);
-    wingModificator->setVisible(true);
-    widgetApply->setVisible(true);
 }

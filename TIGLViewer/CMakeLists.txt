@@ -113,13 +113,13 @@ set(tv_src
     ModificatorTransformationWidget.cpp
     ModificatorWingWidget.cpp
     ModificatorManager.cpp
-    CPACSTreeView.cpp
     CPACSAbstractModel.cpp
     CPACSTreeItem.cpp
     CPACSTree.cpp
     XPathParser.cpp
     TIGLViewerException.cpp
-    CreatorWidget.cpp
+    ModificatorContainerWidget.cpp
+    CPACSTreeWidget.cpp
 )
 	
 # normal header files
@@ -177,9 +177,8 @@ set(tv_hdr_qobj
 	ModificatorWingWidget.h
 	ModificatorManager.h
 	CPACSAbstractModel.h
-	CPACSTreeView.h
-    CreatorWidget.h
-
+    ModificatorContainerWidget.h
+    CPACSTreeWidget.h
 )
 
 set(tv_ui_comp
@@ -197,7 +196,8 @@ set(tv_ui_comp
     src/ModificatorTransformationWidget.ui
     src/ModificatorWingWidget.ui
     src/ModificatorFuselageWidget.ui
-    src/CreatorWidget.ui
+    src/ModificatorContainerWidget.ui
+    src/CPACSTreeWidget.ui
 )
 
 foreach ( _fname ${tv_src})

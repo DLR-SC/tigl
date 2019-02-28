@@ -21,38 +21,47 @@
 
 #include "CCPACSConfiguration.h"
 #include "CPACSTreeItem.h"
-#include "CPACSTreeView.h"
 #include "ModificatorFuselageWidget.h"
 #include "ModificatorTransformationWidget.h"
 #include "ModificatorWidget.h"
 #include "ModificatorWingWidget.h"
-#include "CreatorWidget.h"
+#include "ModificatorContainerWidget.h"
+#include "CPACSTreeWidget.h"
 #include <QPushButton>
 
 class TIGLViewerWindow;
 
-
+/**
+ * @brief Main class to articulate the modification interface and the tree view.
+ *
+ * This class holds three main components:
+ * CCPACSConfiguration: that is the main tigl object to work with.
+ * CPACSTreeWidget: that manage the tree interface.
+ * ModificatorContainerWidget: that is the interface that holds the specialized modificator for
+ * particular tigl object.
+ *
+ * To work with this class, first we need to set the CCPACSConfiguration. The
+ * CPACSTreeView will be updated and the correct tree will be build and
+ * displayed. Once the CPACSConfiguration is set, it will wait for a
+ * "newSelectedTreeItem" signal. If a "newSelectedTreeItem" signal is emit, the
+ * "dispatch" function will be called. The dispatch function will look at the
+ * new selected element and if the element has a associate ModificatorWidget, it
+ * will set this particular ModificatorWidget by a call on the modificatorContainerWidget.
+ *
+ * @author Malo Drougard
+ *
+ */
 class ModificatorManager : public QObject
 {
     Q_OBJECT
 
-signals:
-    void configurationEdited();
-
 public slots:
     void dispatch(cpcr::CPACSTreeItem* item);
-    void applyCurrentModifications();
-    void applyCurrentCancellation();
 
 public:
-    ModificatorManager(CreatorWidget* creatorWidget);
+    ModificatorManager(CPACSTreeWidget* treeWidget, ModificatorContainerWidget* modificatorContainerWidget);
 
     void setCPACSConfiguration(tigl::CCPACSConfiguration* newConfig);
-
-    void setTransformationModificator(cpcr::CPACSTreeItem* item);
-    void setWingModificator(cpcr::CPACSTreeItem* item);
-    void setFuselageModificator(cpcr::CPACSTreeItem* item);
-    void hideAll();
 
 protected:
     inline bool configurationIsSet()
@@ -63,18 +72,8 @@ protected:
 private:
     tigl::CCPACSConfiguration* config;
 
-    CPACSTreeView* treeViewManager;
-
-    ModificatorTransformationWidget* transformationModificator;
-    ModificatorWingWidget* wingModificator;
-    ModificatorFuselageWidget* fuselageModificator;
-
-    ModificatorWidget* currentModificator;
-
-    // cancel/apply interface
-    QWidget* widgetApply;
-    QPushButton* commitButton;
-    QPushButton* cancelButton;
+    CPACSTreeWidget* treeWidget;
+    ModificatorContainerWidget* modificatorContainerWidget;
 };
 
 #endif // TIGL_MODIFICATORMANAGER_H

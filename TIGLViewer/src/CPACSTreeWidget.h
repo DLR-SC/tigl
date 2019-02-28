@@ -1,7 +1,7 @@
 /*
- * Copyright (C) 2018 CFS Engineering
+ * Copyright (C) 2019 CFS Engineering
  *
- * Created: 2018 Malo Drougard <malo.drougard@protonmail.com>
+ * Created: 2019 Malo Drougard <malo.drougard@protonmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,18 @@
  * limitations under the License.
  */
 
-#ifndef TIGL_CPACSTREEVIEW_H
-#define TIGL_CPACSTREEVIEW_H
+#ifndef CPACSTREEWIDGET_H
+#define CPACSTREEWIDGET_H
 
-#include "CPACSAbstractModel.h"
-#include "CPACSTree.h"
-#include <QObject>
+#include <QWidget>
 #include <QTreeView>
+#include "CPACSTree.h"
+#include "CPACSAbstractModel.h"
+
+namespace Ui
+{
+class CPACSTreeWidget;
+}
 
 /**
  * @brief Main class to manage the tree view interface.
@@ -41,9 +46,8 @@
  *
  * @author Malo Drougard
  */
-class CPACSTreeView : public QObject
+class CPACSTreeWidget : public QWidget
 {
-
     Q_OBJECT
 
 signals:
@@ -55,7 +59,8 @@ private slots:
     void onSelectionChanged(const QItemSelection& newSelection, const QItemSelection& oldSelection);
 
 public:
-    CPACSTreeView(QTreeView* view);
+    explicit CPACSTreeWidget(QWidget* parent = nullptr);
+    ~CPACSTreeWidget();
 
     /**
    * Clear the displayed tree and delete the CPACSTree data
@@ -77,10 +82,11 @@ public:
     void refresh();
 
 private:
+    Ui::CPACSTreeWidget* ui;
+
     cpcr::CPACSTree tree;
     CPACSAbstractModel* model;
-    QTreeView* treeView;
     QItemSelectionModel* selectionModel;
 };
 
-#endif // TIGL_CPACSTREEVIEW_H
+#endif // CPACSTREEWIDGET_H
