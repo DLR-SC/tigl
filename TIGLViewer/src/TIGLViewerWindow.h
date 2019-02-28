@@ -73,7 +73,8 @@ signals:
 public slots:
     void openFile(const QString& fileName);
     void openScript(const QString& scriptFileName);
-    bool saveFile(const QString& fileName);
+    bool exportFile(const QString &fileName);
+    bool saveFile(QString fileName);
     void closeConfiguration();
     void setTiglWindowTitle(const QString& title, bool forceTitle=false);
     
@@ -82,7 +83,6 @@ public slots:
     TIGLViewerDocument* getDocument() { return cpacsConfiguration; }
 
     //update function for modificator
-    void updateScene();
 
 private slots:
     void updateMenus();
@@ -91,7 +91,9 @@ private slots:
     void reopenFile();
     void openScript();
     void openRecentFile();
+    void exportDialog();
     void save();
+    void saveAs();
     void setBackgroundImage();
     void about();
     void aboutQt();
@@ -125,7 +127,7 @@ private:
     QString                 myLastFolder;
 
     TIGLViewerDocument* cpacsConfiguration;
-    QString currentFile;
+    QFileInfo currentFile;
     QString controlFileName;
     QString preferredTitle;
     QFileSystemWatcher *watcher;
