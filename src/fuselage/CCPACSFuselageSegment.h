@@ -118,7 +118,9 @@ public:
     // 0.0 <= eta <= 1.0 and 0.0 <= zeta <= 1.0. For eta = 0.0 the point lies on the start
     // profile of the segment, for eta = 1.0 on the end profile of the segment. For zeta = 0.0
     // the point is the start point of the profile wire, for zeta = 1.0 the last profile wire point.
-    TIGL_EXPORT gp_Pnt GetPoint(double eta, double zeta);
+    // if onLinearLoft = true the point will lie on the straight line segment connecting the start and
+    // end points on the profile
+    TIGL_EXPORT gp_Pnt GetPoint(double eta, double zeta, bool onLinearLoft = false);
 
     // Gets the origin (0, 0, 0) of the inner & outer profiles after trafo
     // These should be a good approximation for the center point
