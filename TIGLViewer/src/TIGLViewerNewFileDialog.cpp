@@ -67,10 +67,10 @@ void TIGLViewerNewFileDialog::templateIsSelected(const QModelIndex& index)
     QString originalFile     = settings.templateDir().absolutePath() + "/" + selectedTemplate;
     QString newFilePath      = originalFile + ".temp";
     int prefix               = 1;
-    bool check               = QFile::exists(newFilePath);
     while (QFile::exists(newFilePath)) {
         newFilePath =
             settings.templateDir().absolutePath() + "/" + QString::number(prefix) + "_" + selectedTemplate + ".temp";
+        prefix = prefix + 1;
     }
 
     // Copy the file
