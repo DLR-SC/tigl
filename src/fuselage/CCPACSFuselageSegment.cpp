@@ -573,7 +573,10 @@ gp_Pnt CCPACSFuselageSegment::GetPoint(double eta, double zeta, bool onLinearLof
         TopExp::MapShapes(fuselageLoft->Shape(), TopAbs_FACE, faceMap);
 
         // get the index of the first face that belongs to the current segment.
-        int faceIdx = (GetSegmentIndex()-1)*GetNumberOfLoftFaces();
+        int faceIdx = (GetSegmentIndex()-1)*GetNumberOfLoftFaces() + 1;
+
+        assert (faceIdx > 0);
+        assert (faceIdx <= faceMap.Extent() );
 
         // get the start and end zeta coordinates of the subfaces and the index of the face at zeta.
         // By construction, we can use the guide curves for this. If there are no guide curves,
