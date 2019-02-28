@@ -53,6 +53,7 @@
 #include "api/tigl_version.h"
 #include "CCPACSConfigurationManager.h"
 #include "TIGLViewerNewFileDialog.h"
+#include <tixicpp.h>
 
 #include <cstdlib>
 
@@ -90,6 +91,8 @@ TIGLViewerWindow::TIGLViewerWindow()
     // the timeout of 200ms is a bit arbitrary but should be conservative enough
     // to catch all events
     openTimer->setInterval(200);
+
+    watcher = nullptr;
 
     //redirect everything to TIGL console, let error messages be printed in red
     stdoutStream = new QDebugStream(std::cout);
@@ -201,7 +204,6 @@ void TIGLViewerWindow::newFile()
 {
     statusBar()->showMessage(tr("Invoked File|New"));
     //myOCC->getView()->ColorScaleErase();
-    myScene->deleteAllObjects();
     TIGLViewerNewFileDialog newFileDialog( this );
     if ( newFileDialog.exec() == QDialog::Accepted ){
         openFile(newFileDialog.getNewFileName());
@@ -224,7 +226,8 @@ void TIGLViewerWindow::open()
                                                     "STEP (*.step *.stp);;"
                                                     "IGES (*.iges *.igs);;"
                                                     "STL  (*.stl);;"
-                                                    "Hotsose Mesh (*.mesh)") );
+                                                    "Hotsose Mesh (*.mesh);;"
+                                                    "All (*)") );
     openFile(fileName);
 }
 
@@ -255,7 +258,10 @@ void TIGLViewerWindow::closeConfiguration()
         delete cpacsConfiguration;
         cpacsConfiguration = NULL;
     }
-    setTiglWindowTitle(QString("TiGL Viewer %1").arg(TIGL_MAJOR_VERSION));
+    if ( currentFile.suffix().toLower() == "temp" ){
+        QFile(currentFile.absoluteFilePath()).remove();
+    }
+    setCurrentFile("");
 }
 
 void TIGLViewerWindow::setTiglWindowTitle(const QString &title, bool forceTitle)
@@ -289,7 +295,7 @@ void TIGLViewerWindow::openFile(const QString& fileName)
 
     TIGLViewerScopedCommand command(getConsole());
     Q_UNUSED(command);
-    statusBar()->showMessage(tr("Invoked File|Open"));
+    statusMessage(tr("Invoked File|Open"));
 
     if (!fileName.isEmpty()) {
         fileInfo.setFile(fileName);
@@ -336,10 +342,7 @@ void TIGLViewerWindow::openFile(const QString& fileName)
                 success = reader.importModel ( fileInfo.absoluteFilePath(), format, *getScene() );
             }
         }
-        watcher = new QFileSystemWatcher();
-        watcher->addPath(fileInfo.absoluteFilePath());
-        QObject::connect(watcher, SIGNAL(fileChanged(QString)), openTimer, SLOT(start()));
-        myLastFolder = fileInfo.absolutePath();
+
         if (success) {
             setCurrentFile(fileName);
             myOCC->viewAxo();
@@ -353,41 +356,48 @@ void TIGLViewerWindow::openFile(const QString& fileName)
 
 void TIGLViewerWindow::reopenFile()
 {
-    QString      fileType;
-    QFileInfo    fileInfo;
-
-    fileInfo.setFile(currentFile);
-    fileType = fileInfo.suffix();
-
-    if (fileType.toLower() == tr("xml")){
+    if (currentFile.suffix().toLower() == tr("xml")){
         cpacsConfiguration->updateConfiguration();
+        modificatorManager->setCPACSConfiguration(&(cpacsConfiguration->GetConfiguration()));
     }
     else {
         myScene->getContext()->EraseAll(Standard_False);
-        openFile(currentFile);
+        openFile(currentFile.absoluteFilePath());
     }
 }
 
-void TIGLViewerWindow::setCurrentFile(const QString &fileName)
+void TIGLViewerWindow::setCurrentFile(const QString& fileName)
 {
-    setTiglWindowTitle(QString("%2 - TiGL Viewer %1")
-                   .arg(TIGL_MAJOR_VERSION)
-                   .arg(QDir::toNativeSeparators(QFileInfo(fileName).absoluteFilePath())));
+    currentFile.setFile(fileName);
+    delete watcher;
+    watcher = new QFileSystemWatcher();
 
-    currentFile = fileName;
+    if (currentFile.fileName() != "") {
 
-    QSettings settings("DLR SC-HPC", "TiGLViewer3");
-    QStringList files = settings.value("recentFileList").toStringList();
-    files.removeAll(fileName);
-    files.prepend(fileName);
-    while (files.size() > MaxRecentFiles) {
-        files.removeLast();
+        setTiglWindowTitle(QString("%2 - TiGL Viewer %1")
+                               .arg(TIGL_MAJOR_VERSION)
+                               .arg(QDir::toNativeSeparators(currentFile.absoluteFilePath())));
+
+        watcher->addPath(currentFile.absoluteFilePath());
+        QObject::connect(watcher, SIGNAL(fileChanged(QString)), openTimer, SLOT(start()));
+        if (currentFile.suffix().toLower() != "temp") { // to avoid inserting temp files as recent opened files
+            QSettings settings("DLR SC-HPC", "TiGLViewer3");
+            QStringList files = settings.value("recentFileList").toStringList();
+            files.removeAll(fileName);
+            files.prepend(fileName);
+            while (files.size() > MaxRecentFiles) {
+                files.removeLast();
+            }
+
+            settings.setValue("recentFileList", files);
+            settings.setValue("lastFolder", myLastFolder);
+            updateRecentFileActions();
+            myLastFolder = currentFile.absolutePath();
+        }
     }
-
-    settings.setValue("recentFileList", files);
-    settings.setValue("lastFolder", myLastFolder);
-
-    updateRecentFileActions();
+    else {
+        setTiglWindowTitle(QString("TiGL Viewer %1").arg(TIGL_MAJOR_VERSION));
+    }
 }
 
 void TIGLViewerWindow::loadSettings()
@@ -462,21 +472,22 @@ TIGLViewerWidget* TIGLViewerWindow::getViewer()
 }
 
 
-void TIGLViewerWindow::save()
+void TIGLViewerWindow::exportDialog()
 {
     QString     fileName;
 
-    statusBar()->showMessage(tr("Invoked File|Save"));
-    fileName = QFileDialog::getSaveFileName(this, tr("Save as..."), myLastFolder,
+    statusBar()->showMessage(tr("Invoked File|Export"));
+    fileName = QFileDialog::getSaveFileName(this, tr("Export as..."), myLastFolder,
                                             tr("IGES Geometry (*.igs);;") +
                                             tr("STEP Geometry (*.stp);;") +
                                             tr("STL Triangulation (*.stl);;") +
-                                            tr("BRep Geometry (*.brep)"));
+                                            tr("BRep Geometry (*.brep);;") +
+                                            tr("All (*)") );
 
     if (!fileName.isEmpty()) {
         TIGLViewerScopedCommand command(getConsole());
         Q_UNUSED(command);
-        saveFile(fileName);
+        exportFile(fileName);
         
         QFileInfo fileInfo;
         fileInfo.setFile(fileName);
@@ -484,7 +495,7 @@ void TIGLViewerWindow::save()
     }
 }
 
-bool TIGLViewerWindow::saveFile(const QString &fileName)
+bool TIGLViewerWindow::exportFile(const QString &fileName)
 {
     TIGLViewerInputOutput::FileFormat format;
     QFileInfo fileInfo;
@@ -504,12 +515,108 @@ bool TIGLViewerWindow::saveFile(const QString &fileName)
         format = TIGLViewerInputOutput::FormatSTL;
     }
     else {
-        LOG(ERROR) << "Unknown file format " << fileType.toStdString();
+        QString errorMsg = "Unknown export file format: \"" + fileType + "\"";
+        LOG(ERROR) << errorMsg.toStdString() ;
+        displayErrorMessage(errorMsg, "Export Error");
         return false;
     }
 
     TIGLViewerInputOutput writer;
     return writer.exportModel ( fileInfo.absoluteFilePath(), format, getScene()->getContext());
+}
+
+void TIGLViewerWindow::save()
+{
+
+    statusMessage(tr("Invoked File|Save"));
+
+    if (currentFile.suffix().toLower() == "xml") {
+        saveFile(currentFile.absoluteFilePath());
+    }
+    else if (currentFile.suffix().toLower() == "temp") { // if the file was generated from a template
+        saveAs();
+    }
+    else {
+        QString errorMsg = " TIGLViewerWindow::save(): Saving format is unsupported.";
+        LOG(ERROR) << errorMsg.toStdString();
+        displayErrorMessage(errorMsg, "Save Error");
+    }
+}
+
+void TIGLViewerWindow::saveAs()
+{
+
+    statusMessage(tr("Invoked File|Save As"));
+    QString fileName =
+        QFileDialog::getSaveFileName(this, tr("Save as..."), myLastFolder, tr("CPACS (*.xml);;") + tr("All (*)"));
+
+    if (!fileName.isEmpty()) {
+
+        QFileInfo fileInfo;
+        fileInfo.setFile(fileName);
+
+        if (fileInfo.suffix() != "xml") {
+            QMessageBox msgBox;
+            msgBox.setText("The extension of the given file name is not the CPACS standard extension type \".xml\".");
+            msgBox.setInformativeText("Do you want to continue?");
+            msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+            msgBox.setDefaultButton(QMessageBox::No);
+            if (msgBox.exec() == QMessageBox::No) {
+                return;
+            }
+        }
+
+        TIGLViewerScopedCommand command(getConsole()); // what is it for?
+        Q_UNUSED(command);
+
+        QFileInfo oldFilenameInfo = currentFile;
+        bool fileSaved            = saveFile(fileName);
+
+        if (fileSaved && oldFilenameInfo.suffix() == "temp") { // clear the temporary file
+            QFile(oldFilenameInfo.absoluteFilePath()).remove();
+        }
+    }
+    return;
+}
+
+bool TIGLViewerWindow::saveFile(QString fileName)
+{
+
+    if (!cpacsConfiguration || fileName == "") {
+        LOG(WARNING) << " TIGLViewerWindow::saveFile(): Nothing to save. " << std::endl;
+        return false;
+    }
+    // retrieve the content of the current tixi handle
+    TixiDocumentHandle tixiHandle = cpacsConfiguration->GetConfiguration().GetTixiDocumentHandle();
+    std::string tixiContent;
+    try {
+        tixiContent = tixi::TixiExportDocumentAsString(tixiHandle);
+    }
+    catch (const tixi::TixiError& e) {
+        QString errMsg = "TIGLViewerWindow::saveFile() Something go wrong during exporting the file from tixi handler. "
+                         "Tixi error message: \"" +
+                         QString(e.what()) + "\". The file is not saved!";
+        displayErrorMessage(errMsg, "Tixi error");
+        return false;
+    }
+
+    // save the content into the current file
+    QFile file(fileName);
+    if (file.open(QFile::WriteOnly)) { // if file does not exist, open() try to create it
+        delete watcher ; // to remove the current watcher and not call it this time
+        watcher = nullptr;
+        file.resize(0); // delete the content of the file
+        QTextStream out(&file);
+        out << tixiContent.c_str();
+        file.close();
+        setCurrentFile(fileName); // will reset the watcher
+        return true;
+    }
+    else {
+        QString errMsg = "TIGLViewerWindow::saveFile(): Error: Unable to write into the file \"" + fileName + "\"";
+        displayErrorMessage(errMsg, "TiGL Error");
+        return false;
+    }
 }
 
 void TIGLViewerWindow::setBackgroundImage()
@@ -695,6 +802,8 @@ void TIGLViewerWindow::connectSignals()
     }
 
     connect(saveAction, SIGNAL(triggered()), this, SLOT(save()));
+    connect(saveAsAction, SIGNAL(triggered()), this, SLOT(saveAs()));
+    connect(exportAction, SIGNAL(triggered()), this, SLOT(exportDialog()));
     connect(saveScreenshotAction, SIGNAL(triggered()), this, SLOT(makeScreenShot()));
     connect(setBackgroundAction, SIGNAL(triggered()), this, SLOT(setBackgroundImage()));
     connect(exitAction, SIGNAL(triggered()), this, SLOT(close()));
@@ -744,8 +853,8 @@ void TIGLViewerWindow::connectSignals()
 
     // Addition for creator
 
-    // modificatorManager will emit a configurationEdited when he modifie the tigl configuration
-    connect(modificatorManager, SIGNAL(configurationEdited()), this, SLOT(updateScene()));
+    // modificatorManager will emit a configurationEdited when he modifies the tigl configuration (for later)
+    // connect(modificatorManager, SIGNAL(configurationEdited()), this, SLOT(updateScene()));
     // creator view
     connect(showModificatorAction, SIGNAL(toggled(bool)), editorDockWidget, SLOT(setVisible(bool)));
     connect(editorDockWidget, SIGNAL(visibilityChanged(bool)), showModificatorAction, SLOT(setChecked(bool)));
@@ -826,6 +935,7 @@ void TIGLViewerWindow::updateRecentFileActions()
 
 void TIGLViewerWindow::updateMenus()
 {
+    // todo set this settings correctly for save and after .igs is opened
     int nWings = 0;
     int nFuselages = 0;
     int hand = 0;
@@ -947,12 +1057,6 @@ void TIGLViewerWindow::drawVector()
     std::stringstream stream;
     stream << "(" << point.X() << ", " << point.Y() << ", " << point.Z() << ")";
     getScene()->displayVector(point, dir, stream.str().c_str(), Standard_True, 0,0,0, 1.);
-}
-
-
-void TIGLViewerWindow::updateScene() {
-    myScene->deleteAllObjects();
-    cpacsConfiguration->drawConfiguration();
 }
 
 
