@@ -544,6 +544,9 @@ gp_Pnt CCPACSFuselageSegment::GetPoint(double eta, double zeta, bool onLinearLof
     if (eta < 0.0 || eta > 1.0) {
         throw CTiglError("Parameter eta not in the range 0.0 <= eta <= 1.0 in CCPACSFuselageSegment::GetPoint", TIGL_ERROR);
     }
+    if (zeta < 0.0 || zeta > 1.0) {
+        throw CTiglError("Parameter eta not in the range 0.0 <= eta <= 1.0 in CCPACSFuselageSegment::GetPoint", TIGL_ERROR);
+    }
 
     gp_Pnt profilePoint;
     if ( onLinearLoft ) {
