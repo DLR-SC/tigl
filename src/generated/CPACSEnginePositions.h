@@ -79,10 +79,5 @@ namespace generated
     };
 } // namespace generated
 
-// Aliases in tigl namespace
-#ifdef HAVE_CPP11
-using CCPACSEnginePositions = generated::CPACSEnginePositions;
-#else
-typedef generated::CPACSEnginePositions CCPACSEnginePositions;
-#endif
+// CPACSEnginePositions is customized, use type CCPACSEnginePositions directly
 } // namespace tigl

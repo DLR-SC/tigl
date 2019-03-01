@@ -24,6 +24,8 @@
 #include "CCPACSFuselageSegment.h"
 #include "CCPACSExternalObject.h"
 #include "CCPACSEnginePylon.h"
+#include "CCPACSEnginePositions.h"
+#include "CCPACSEnginePosition.h"
 
 #include <string>
 #include <algorithm>
@@ -76,7 +78,7 @@ void CTiglCADExporter::AddConfiguration(CCPACSConfiguration& config, const Shape
 
     if (config.GetEnginePylons()) {
         CCPACSEnginePylons& pylons = config.GetEnginePylons().value();
-        
+
         for (int p = 1; p <= pylons.GetPylonCount(); ++p) {
             CCPACSEnginePylon& pylon = pylons.GetEnginePylon(p);
 
@@ -89,6 +91,21 @@ void CTiglCADExporter::AddConfiguration(CCPACSConfiguration& config, const Shape
 
             if (GlobalExportOptions().Get<bool>("ApplySymmetries") && pylon.GetSymmetryAxis() != TIGL_NO_SYMMETRY) {
                 AddShape(pylon.GetMirroredLoft(), &config, options);
+            }
+        }
+    }
+
+    if (config.GetEnginePositions()) {
+        CCPACSEnginePositions& positions = config.GetEnginePositions().value();
+
+        for (int p = 1; p <= positions.GetEnginePositionCount(); ++p) {
+            CCPACSEnginePosition& engine = positions.GetEnginePosition(p);
+
+            PNamedShape loft = engine.GetLoft();
+            AddShape(loft, &config, options);
+
+            if (GlobalExportOptions().Get<bool>("ApplySymmetries") && engine.GetSymmetryAxis() != TIGL_NO_SYMMETRY) {
+                AddShape(engine.GetMirroredLoft(), &config, options);
             }
         }
     }

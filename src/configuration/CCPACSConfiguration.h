@@ -166,6 +166,10 @@ public:
     TIGL_EXPORT boost::optional<CCPACSEngines>& GetEngines();
     TIGL_EXPORT const boost::optional<CCPACSEngines>& GetEngines() const;
 
+    // Returns list of engine positions
+    TIGL_EXPORT boost::optional<CCPACSEnginePositions>& GetEnginePositions();
+    TIGL_EXPORT const boost::optional<CCPACSEnginePositions>& GetEnginePositions() const;
+
     TIGL_EXPORT CCPACSEngine& GetEngine(const std::string& UID) const;
 
     // Returns the farfield

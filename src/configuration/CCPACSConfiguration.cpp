@@ -534,7 +534,27 @@ const boost::optional<CCPACSEngines>& CCPACSConfiguration::GetEngines() const
     return engines;
 }
 
-// Returns the wing profile for a given uid.
+boost::optional<CCPACSEnginePositions>& CCPACSConfiguration::GetEnginePositions()
+{
+    if (aircraftModel) {
+        return aircraftModel->GetEngines();
+    }
+    else {
+        throw CTiglError("No aircraft loaded");
+    }
+}
+
+const boost::optional<CCPACSEnginePositions>& CCPACSConfiguration::GetEnginePositions() const
+{
+    if (aircraftModel) {
+        return aircraftModel->GetEngines();
+    }
+    else {
+        throw CTiglError("No aircraft loaded");
+    }
+}
+
+// Returns the engine for a given uid.
 CCPACSEngine& CCPACSConfiguration::GetEngine(const std::string& uid) const
 {
     try {
