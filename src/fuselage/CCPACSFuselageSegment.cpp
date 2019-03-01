@@ -584,20 +584,10 @@ gp_Pnt CCPACSFuselageSegment::GetPoint(double eta, double zeta, bool onLinearLof
         double startZeta = 0.;
         double endZeta = 1.;
         if ( GetGuideCurves() ) {
+            int idx = 0;
             const CCPACSGuideCurves& segmentCurves = *GetGuideCurves();
-            for (int iguide = 1; iguide <=  segmentCurves.GetGuideCurveCount(); ++iguide) {
-                const CCPACSGuideCurve& curve = segmentCurves.GetGuideCurve(iguide);
-                if (!curve.GetFromGuideCurveUID_choice1()) {
-                    // this is a root curve and we can get the zeta-coordinate from cpacs
-                    double currentZeta = *curve.GetFromRelativeCircumference_choice2();
-                    if ( currentZeta > zeta ) {
-                        endZeta = currentZeta;
-                        break;
-                    }
-                    startZeta = currentZeta;
-                    ++faceIdx;
-                }
-            }
+            segmentCurves.GetRelativeCircumferenceRange(zeta, startZeta, endZeta, idx);
+            faceIdx += idx;
         }
 
         // get uv coordinates and 3d point on the face
