@@ -1296,7 +1296,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentFindSegment(TiglCPACSC
 
 
 /**
-* @brief Returns x,y,z koordinates for a given eta and xsi on a componentSegment.
+* @brief Returns x,y,z coordinates for a given eta and xsi on a componentSegment.
 *
 *
 * @param[in]  cpacsHandle               Handle for the CPACS configuration

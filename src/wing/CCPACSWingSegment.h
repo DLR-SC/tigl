@@ -205,7 +205,7 @@ public:
     // inner wing profile. For eta = 1.0, xsi = 1.0 point is equal to the trailing
     // edge on the outer wing profile. If fromUpper is true, a point
     // on the upper surface is returned, otherwise from the lower.
-    // The intersection is with the wing surface is computed with a line
+    // The intersection with the wing surface is computed with a line
     // starting at a point on the chord face with the given direction dir.
     TIGL_EXPORT gp_Pnt GetPointDirection(double eta, double xsi, double dirx, double diry, double dirz, bool fromUpper, double& deviation) const;
 
