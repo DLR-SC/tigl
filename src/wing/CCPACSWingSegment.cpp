@@ -763,37 +763,39 @@ gp_Pnt CCPACSWingSegment::GetPoint(double eta, double xsi,
         throw CTiglError("Parameter eta not in the range 0.0 <= eta <= 1.0 in CCPACSWingSegment::GetPoint", TIGL_ERROR);
     }
 
-    const CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
-    const CCPACSWingProfile& outerProfile = outerConnection.GetProfile();
-
-    // Compute points on wing profiles for the given xsi
-    gp_Pnt innerProfilePoint;
-    gp_Pnt outerProfilePoint;
-    if (fromUpper == true) {
-        innerProfilePoint = innerProfile.GetUpperPoint(xsi);
-        outerProfilePoint = outerProfile.GetUpperPoint(xsi);
-    }
-    else {
-        innerProfilePoint = innerProfile.GetLowerPoint(xsi);
-        outerProfilePoint = outerProfile.GetLowerPoint(xsi);
-    }
-
-    CTiglTransformation identity;
-    switch (referenceCS) {
-    case WING_COORDINATE_SYSTEM:
-        innerProfilePoint = transformProfilePoint(identity, innerConnection, innerProfilePoint);
-        outerProfilePoint = transformProfilePoint(identity, outerConnection, outerProfilePoint);
-        break;
-    case GLOBAL_COORDINATE_SYSTEM:
-        innerProfilePoint = transformProfilePoint(GetParentTransformation(), innerConnection, innerProfilePoint);
-        outerProfilePoint = transformProfilePoint(GetParentTransformation(), outerConnection, outerProfilePoint);
-        break;
-    default:
-        throw CTiglError("Invalid coordinate system passed to CCPACSWingSegment::GetPoint");
-    }
 
     gp_Pnt profilePoint;
     if ( onLinearLoft ) {
+
+        const CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
+        const CCPACSWingProfile& outerProfile = outerConnection.GetProfile();
+
+        // Compute points on wing profiles for the given xsi
+        gp_Pnt innerProfilePoint;
+        gp_Pnt outerProfilePoint;
+        if (fromUpper == true) {
+            innerProfilePoint = innerProfile.GetUpperPoint(xsi);
+            outerProfilePoint = outerProfile.GetUpperPoint(xsi);
+        }
+        else {
+            innerProfilePoint = innerProfile.GetLowerPoint(xsi);
+            outerProfilePoint = outerProfile.GetLowerPoint(xsi);
+        }
+
+        CTiglTransformation identity;
+        switch (referenceCS) {
+        case WING_COORDINATE_SYSTEM:
+            innerProfilePoint = transformProfilePoint(identity, innerConnection, innerProfilePoint);
+            outerProfilePoint = transformProfilePoint(identity, outerConnection, outerProfilePoint);
+            break;
+        case GLOBAL_COORDINATE_SYSTEM:
+            innerProfilePoint = transformProfilePoint(GetParentTransformation(), innerConnection, innerProfilePoint);
+            outerProfilePoint = transformProfilePoint(GetParentTransformation(), outerConnection, outerProfilePoint);
+            break;
+        default:
+            throw CTiglError("Invalid coordinate system passed to CCPACSWingSegment::GetPoint");
+        }
+
         // Get point on wing segment in dependence of eta by linear interpolation
         Handle(Geom_TrimmedCurve) profileLine = GC_MakeSegment(innerProfilePoint, outerProfilePoint);
         Standard_Real firstParam = profileLine->FirstParameter();
