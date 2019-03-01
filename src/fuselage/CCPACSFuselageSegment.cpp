@@ -545,17 +545,18 @@ gp_Pnt CCPACSFuselageSegment::GetPoint(double eta, double zeta, bool onLinearLof
         throw CTiglError("Parameter eta not in the range 0.0 <= eta <= 1.0 in CCPACSFuselageSegment::GetPoint", TIGL_ERROR);
     }
 
-    CCPACSFuselageProfile& startProfile = startConnection.GetProfile();
-    CCPACSFuselageProfile& endProfile   = endConnection.GetProfile();
-
-    gp_Pnt startProfilePoint = startProfile.GetPoint(zeta);
-    gp_Pnt endProfilePoint   = endProfile.GetPoint(zeta);
-    
-    startProfilePoint = transformProfilePoint(GetFuselage().GetTransformationMatrix(), startConnection, startProfilePoint);
-    endProfilePoint   = transformProfilePoint(GetFuselage().GetTransformationMatrix(), endConnection,   endProfilePoint);
-
     gp_Pnt profilePoint;
     if ( onLinearLoft ) {
+
+        CCPACSFuselageProfile& startProfile = startConnection.GetProfile();
+        CCPACSFuselageProfile& endProfile   = endConnection.GetProfile();
+
+        gp_Pnt startProfilePoint = startProfile.GetPoint(zeta);
+        gp_Pnt endProfilePoint   = endProfile.GetPoint(zeta);
+
+        startProfilePoint = transformProfilePoint(GetFuselage().GetTransformationMatrix(), startConnection, startProfilePoint);
+        endProfilePoint   = transformProfilePoint(GetFuselage().GetTransformationMatrix(), endConnection,   endProfilePoint);
+
         // Get point on fuselage segment in dependence of eta by linear interpolation
         Handle(Geom_TrimmedCurve) profileLine = GC_MakeSegment(startProfilePoint, endProfilePoint);
         Standard_Real firstParam = profileLine->FirstParameter();
