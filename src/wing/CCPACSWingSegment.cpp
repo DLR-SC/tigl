@@ -845,8 +845,8 @@ gp_Pnt CCPACSWingSegment::GetPoint(double eta, double xsi,
         Handle_Geom_Surface surface = BRep_Tool::Surface(face);
         double umin, umax, vmin, vmax;
         surface->Bounds(umin, umax, vmin, vmax);
-        double u = umin + (zeta - startZeta)/(endZeta-startZeta)*(umax - umin);
-        double v = vmin + xsi*(vmax - vmin);
+        double u = umin + xsi*(umax - umin);
+        double v = vmin + (zeta - startZeta)/(endZeta-startZeta)*(vmax - vmin);
         surface->D0(u, v, profilePoint);
 
 
