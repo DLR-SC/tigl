@@ -755,7 +755,9 @@ int CCPACSWingSegment::GetOuterConnectedSegmentIndex(int n) const
 // inner wing profile. For eta = 1.0, xsi = 1.0 point is equal to the trailing
 // edge on the outer wing profile. If fromUpper is true, a point
 // on the upper surface is returned, otherwise from the lower.
-gp_Pnt CCPACSWingSegment::GetPoint(double eta, double xsi, bool fromUpper, TiglCoordinateSystem referenceCS) const
+gp_Pnt CCPACSWingSegment::GetPoint(double eta, double xsi,
+                                   bool fromUpper, TiglCoordinateSystem referenceCS,
+                                   bool onLinearLoft) const
 {
     if (eta < 0.0 || eta > 1.0) {
         throw CTiglError("Parameter eta not in the range 0.0 <= eta <= 1.0 in CCPACSWingSegment::GetPoint", TIGL_ERROR);
@@ -790,13 +792,65 @@ gp_Pnt CCPACSWingSegment::GetPoint(double eta, double xsi, bool fromUpper, TiglC
         throw CTiglError("Invalid coordinate system passed to CCPACSWingSegment::GetPoint");
     }
 
-    // Get point on wing segment in dependence of eta by linear interpolation
-    Handle(Geom_TrimmedCurve) profileLine = GC_MakeSegment(innerProfilePoint, outerProfilePoint);
-    Standard_Real firstParam = profileLine->FirstParameter();
-    Standard_Real lastParam  = profileLine->LastParameter();
-    Standard_Real param = firstParam + (lastParam - firstParam) * eta;
     gp_Pnt profilePoint;
-    profileLine->D0(param, profilePoint);
+    if ( onLinearLoft ) {
+        // Get point on wing segment in dependence of eta by linear interpolation
+        Handle(Geom_TrimmedCurve) profileLine = GC_MakeSegment(innerProfilePoint, outerProfilePoint);
+        Standard_Real firstParam = profileLine->FirstParameter();
+        Standard_Real lastParam  = profileLine->LastParameter();
+        Standard_Real param = firstParam + (lastParam - firstParam) * eta;
+        profileLine->D0(param, profilePoint);
+    }
+    else {
+        const CCPACSWingSegments* segments = GetParent();
+        PNamedShape wingLoft = segments->GetParentComponent()->GetLoft();
+
+        TopTools_IndexedMapOfShape faceMap;
+        TopExp::MapShapes(wingLoft->Shape(), TopAbs_FACE, faceMap);
+
+        // get the index of the first face that belongs to the current segment.
+        int nSegments = segments->GetSegmentCount();
+        int nFacesPerSegment = (faceMap.Extent() - 2)/nSegments;
+        int faceIdx = (GetSegmentIndex()-1)*nFacesPerSegment + 1;
+
+        assert (faceIdx > 0);
+        assert (faceIdx <= faceMap.Extent() );
+
+        double zeta = eta;
+        double startZeta = 0.;
+        double endZeta = 1.;
+        if ( !fromUpper ) {
+            zeta = -eta;
+            startZeta = -1.;
+            endZeta = 0.;
+        }
+        // get the start and end zeta coordinates of the subfaces and the index of the face at zeta.
+        // By construction, we can use the guide curves for this. If there are no guide curves,
+        // there should be only one face spanning the entire zeta range
+        if ( GetGuideCurves() ) {
+            const CCPACSGuideCurves& segmentCurves = *GetGuideCurves();
+            int idx = 0;
+            segmentCurves.GetRelativeCircumferenceRange(zeta, startZeta, endZeta, idx);
+            faceIdx += idx;
+        }
+        else {
+            //without guides, there should be two or three faces per segment:
+            // face1 = lower, face2 = upper, face3 = te
+            faceIdx += int(fromUpper);
+        }
+        assert (faceIdx <= faceMap.Extent() );
+
+        // get uv coordinates and 3d point on the face
+        TopoDS_Face face = TopoDS::Face(faceMap(faceIdx));
+        Handle_Geom_Surface surface = BRep_Tool::Surface(face);
+        double umin, umax, vmin, vmax;
+        surface->Bounds(umin, umax, vmin, vmax);
+        double u = umin + (zeta - startZeta)/(endZeta-startZeta)*(umax - umin);
+        double v = vmin + xsi*(vmax - vmin);
+        surface->D0(u, v, profilePoint);
+
+
+    }
 
     return profilePoint;
 }

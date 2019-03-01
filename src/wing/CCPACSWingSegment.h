@@ -197,7 +197,11 @@ public:
     // inner wing profile. For eta = 1.0, xsi = 1.0 point is equal to the trailing
     // edge on the outer wing profile. If fromUpper is true, a point
     // on the upper surface is returned, otherwise from the lower.
-    TIGL_EXPORT gp_Pnt GetPoint(double eta, double xsi, bool fromUpper, TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
+    // If onLinearLoft = true, the linearly lofted surface between the inner and outer
+    // profile is used instead of the true shape.
+    TIGL_EXPORT gp_Pnt GetPoint(double eta, double xsi, bool fromUpper,
+                                TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM,
+                                bool onLinearLoft = false) const;
 
     // Returns an upper or lower point on the segment surface in
     // dependence of parameters eta and xsi, which range from 0.0 to 1.0.
@@ -253,7 +257,7 @@ private:
     const CTiglPointTranslator& ChordFace() const;
 
 
-    // converts segment eta xsi coordinates to face uv koordinates
+    // converts segment eta xsi coordinates to face uv coordinates
     void etaXsiToUV(bool isFromUpper, double eta, double xsi, double& u, double& v) const;
 
     CTiglWingConnection  innerConnection;      /**< Inner segment connection (root)         */

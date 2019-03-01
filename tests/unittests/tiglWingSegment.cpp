@@ -676,14 +676,14 @@ TEST_F(WingSegmentSimple, getPoint_accuracy)
 {
     double x = 0., y = 0., z = 0.;
     ASSERT_TRUE(tiglWingGetUpperPoint(tiglSimpleHandle, 1, 1, 0.5, 0.5, &x, &y, &z) == TIGL_SUCCESS);
-    ASSERT_NEAR(y, 0.5, 1e-7);
-    ASSERT_NEAR(x, 0.5, 1e-7);
+    EXPECT_NEAR(y, 0.5, 1e-7);
+    EXPECT_NEAR(x, 0.5, 1e-7);
     //z value read from profile data
-    ASSERT_NEAR(z, 0.0529402520006, 1e-7);
+    EXPECT_NEAR(z, 0.0529402520006, 1e-7);
 
     ASSERT_TRUE(tiglWingGetUpperPoint(tiglSimpleHandle, 1, 2, 0.5, 0.5, &x, &y, &z) == TIGL_SUCCESS);
-    ASSERT_NEAR(y, 1.5, 1e-7);
-    ASSERT_NEAR(x, 0.625, 1e-7);
+    EXPECT_NEAR(y, 1.5, 1e-7);
+    EXPECT_NEAR(x, 0.625, 1e-7);
 }
 
 TEST_F(WingSegmentSimple, getChordPointInternal_accuracy)
