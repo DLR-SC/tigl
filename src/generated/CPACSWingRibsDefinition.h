@@ -37,7 +37,7 @@ namespace generated
     // This class is used in:
     // CPACSWingRibsDefinitions
 
-    // generated from /xsd:schema/xsd:complexType[962]
+    // generated from /xsd:schema/xsd:complexType[966]
     /// @brief Definition of an rib set.
     /// 
     /// RibDefinitionType, containing the definition for ribs.

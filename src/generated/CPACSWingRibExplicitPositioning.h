@@ -30,7 +30,7 @@ namespace generated
     // This class is used in:
     // CPACSWingRibsDefinition
 
-    // generated from /xsd:schema/xsd:complexType[961]
+    // generated from /xsd:schema/xsd:complexType[964]
     /// @brief wingRibExplicitPositioningType
     /// 
     /// Use this type for an explicit positioning of every

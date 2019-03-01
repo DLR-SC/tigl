@@ -33818,12 +33818,13 @@ jonas.jepsen@dlr.de
 					<xsd:element minOccurs="0" name="ribRotationReference" type="stringBaseType">
 						<xsd:annotation>
 							<xsd:documentation>RotationReference defines the reference for
-								the z-rotation it is either sparUID or„LeadingEdge“ or
-								„TrailingEdge“. If it is not defined the rotation reference is
+								the z-rotation it is either sparUID, „LeadingEdge“, 
+								„TrailingEdge“, "globalX", "globalY" or "globalZ".
+								If it is not defined the rotation reference is
 								the eta-axis (=leading edge, that is projected on the wings
 								y-z-plane). A z-rotation angle of 90 degrees means, that the rib
 								is perpendicular on the ribRotationReference (e.g. spar, leading
-								edge...). The rib itself is allways straight, and the rotation
+								edge...). The rib itself is always straight, and the rotation
 								is defined with respect of the intersection point of the rib
 								with the ribRotationReference.</xsd:documentation>
 						</xsd:annotation>
@@ -36047,29 +36048,11 @@ jonas.jepsen@dlr.de
                 </xsd:annotation>
                 <xsd:complexContent>
                         <xsd:extension base="complexBaseType">
-                                <xsd:sequence>
-                                        <xsd:choice>
-                                                <xsd:element name="eta" type="doubleBaseType">
-                                                        <xsd:annotation>
-                                                                <xsd:documentation>Eta coordinate of the spar definition point.
-                                                                </xsd:documentation>
-                                                        </xsd:annotation>
-                                                </xsd:element>
-                                                <xsd:element name="elementUID" type="stringUIDBaseType">
-                                                        <xsd:annotation>
-                                                                <xsd:documentation>Link to a section element.
-                                                                </xsd:documentation>
-                                                        </xsd:annotation>
-                                                </xsd:element>
-                                        </xsd:choice>
-                                        <xsd:element name="xsi" type="doubleBaseType">
-                                                <xsd:annotation>
-                                                        <xsd:documentation>Xsi coordinate of the spar definition point.
-                                                        </xsd:documentation>
-                                                </xsd:annotation>
-                                        </xsd:element>
-                                </xsd:sequence>
-                                <xsd:attribute name="uID" type="xsd:string"/>
+                <xsd:choice minOccurs="1" maxOccurs="1">
+                    <xsd:element name="sparPositionRib" type="wingRibPointType"/>
+                    <xsd:element name="sparPositionEtaXsi" type="etaXsiPointType"/>
+                </xsd:choice>
+				<xsd:attribute name="uID" type="xsd:string" use="required"/>
                         </xsd:extension>
                 </xsd:complexContent>
 	</xsd:complexType>
@@ -36130,8 +36113,17 @@ jonas.jepsen@dlr.de
 						<ddue:para>Spar definition points on the wing.</ddue:para>
 					</ddue:summary>
 					<ddue:remarks>
-						<ddue:para>sparPositionsType, containing multiple sparPositions.
-						</ddue:para>
+						<ddue:content>
+							<ddue:para>sparPositionType, a sparPostion defines a location
+								within the componentSegment where a spar in mounted. Eta and xsi
+								are relative to the componentSegment.</ddue:para>
+							<ddue:para>Please find below a picture for an example definition
+								of 3 spars in one wing, by using spar position points and spar
+								segments:</ddue:para>
+							<ddue:mediaLink>
+								<ddue:image width="500" xlink:href="spars1"/>
+							</ddue:mediaLink>
+						</ddue:content>
 					</ddue:remarks>
 				</sd:schemaDoc>
 			</xsd:appinfo>
@@ -36139,7 +36131,7 @@ jonas.jepsen@dlr.de
 		<xsd:complexContent>
 			<xsd:extension base="complexBaseType">
 				<xsd:sequence>
-					<xsd:element maxOccurs="unbounded" minOccurs="2" name="sparPosition" type="sparPositionType"/>
+					<xsd:element name="sparPosition" type="sparPositionType" minOccurs="2" maxOccurs="unbounded"/>
 				</xsd:sequence>
 			</xsd:extension>
 		</xsd:complexContent>
@@ -41192,6 +41184,189 @@ jonas.jepsen@dlr.de
 	</xsd:complexType>
 
 
+	<xsd:complexType name="wingExplicitStringerSetType">
+
+		<xsd:annotation>
+			<xsd:appinfo>
+				<sd:schemaDoc>
+					<ddue:summary>
+						<ddue:para>Definition of explicit wing stringer sets.</ddue:para>
+					</ddue:summary>
+					<ddue:remarks>
+						<ddue:content>
+							<ddue:para>Within the wingExplicitStringerSetType individual wing stringers sets are
+								defined. The stringer sets are defined by referencing on the
+								stringerStructureUID, where the shape and material settings of
+								each stringer is defined. Explicit stringer sets can be defined by
+								choosing exactly two options from the choice element. Although not restricted by the schema, 
+								using same option twice does not give a valid stringer set definition.</ddue:para>
+								<ddue:mediaLink>
+									<ddue:image xlink:href="wingexplicitstringer"/>
+								</ddue:mediaLink>
+						</ddue:content>
+					</ddue:remarks>
+				</sd:schemaDoc>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="complexBaseType">
+				<xsd:sequence>
+					<xsd:element name="stringerStructureUID" type="stringUIDBaseType"/>
+					<xsd:element name="numberOfStringers" type="integerBaseType">
+						<xsd:annotation>
+							<xsd:documentation>The number of stringers</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:choice minOccurs="2" maxOccurs="2">
+						<xsd:sequence>
+							<xsd:element name="xsiInnerBorderStart" type="xsiIsoLineType">
+								<xsd:annotation>
+									<xsd:documentation>Xsi coordinate of the beginning of the stringer set 
+									at the inner border.
+									</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+							<xsd:element name="xsiInnerBorderEnd" type="xsiIsoLineType">
+								<xsd:annotation>
+									<xsd:documentation>Xsi coordinate of the end of the stringer set 
+									at the inner border.
+									</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+						</xsd:sequence>
+						<xsd:sequence>
+							<xsd:element name="xsiOuterBorderStart" type="xsiIsoLineType">
+								<xsd:annotation>
+									<xsd:documentation>Xsi coordinate of the beginning of the stringer set 
+									at the outer border.
+									</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+							<xsd:element name="xsiOuterBorderEnd" type="xsiIsoLineType">
+								<xsd:annotation>
+									<xsd:documentation>Xsi coordinate of the end of the stringer set 
+									at the outer border.
+									</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+						</xsd:sequence>
+						<xsd:sequence>
+							<xsd:element name="angle" type="doubleBaseType">
+								<xsd:annotation>
+									<xsd:documentation>The angle between the stringers and 
+									the reference line as given by angleReference.
+									All stringers are be parallel to each other.
+									</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+							<xsd:element name="angleReference" type="stringBaseType">
+								<xsd:annotation>
+									<xsd:documentation>If the reference of the stringer angle shall
+										be different from the default implementation then this
+										parameter may be set. Allowed values include: leadingEdge,
+										trailingEdge and globalY. Furthermore, it is possible to
+										provide the UID of a spar.</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+						</xsd:sequence>
+					</xsd:choice>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+
+	<xsd:complexType name="wingExplicitStringerType">
+
+		<xsd:annotation>
+			<xsd:appinfo>
+				<sd:schemaDoc>
+					<ddue:summary>
+						<ddue:para>Definition of explicit wing stringers.</ddue:para>
+					</ddue:summary>
+					<ddue:remarks>
+						<ddue:content>
+							<ddue:para>Within the wingExplicitStringerType individual wing stringers are
+								defined. The stringer are defined by referencing on the
+								stringerStructureUID, where the shape and material settings of
+								one single stringer is defined. Explicit stringers can be defined by
+								choosing exactly two options from the choice element. Although not restricted by the schema, 
+								using same option twice does not give a valid stringer definition.</ddue:para>
+						</ddue:content>
+					</ddue:remarks>
+				</sd:schemaDoc>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="complexBaseType">
+				<xsd:sequence>
+					<xsd:element name="stringerStructureUID" type="stringUIDBaseType"/>
+					<xsd:choice minOccurs="2" maxOccurs="2">
+						<xsd:element name="xsiInnerBorder" type="xsiIsoLineType">
+							<xsd:annotation>
+								<xsd:documentation>Xsi coordinate of the stringer 
+									at the inner border.
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="xsiOuterBorder" type="xsiIsoLineType">
+							<xsd:annotation>
+								<xsd:documentation>Xsi coordinate of the stringer 
+									at the outer border.
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:sequence>
+							<xsd:element name="angle" type="doubleBaseType">
+								<xsd:annotation>
+									<xsd:documentation>The angle between the stringer and 
+									the reference line as given by angleReference.
+									</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+							<xsd:element name="angleReference" type="stringBaseType">
+								<xsd:annotation>
+									<xsd:documentation>If the reference of the stringer angle shall
+										be different from the default implementation then this
+										parameter may be set. Allowed values include: leadingEdge,
+										trailingEdge and globalY. Furthermore, it is possible to
+										provide the UID of a spar.</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+						</xsd:sequence>
+					</xsd:choice>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+
+    <xsd:complexType name="wingExplicitStringersType">
+
+		<xsd:annotation>
+			<xsd:appinfo>
+				<sd:schemaDoc>
+					<ddue:summary>
+						<ddue:para>Explicit wing stringers definition.</ddue:para>
+					</ddue:summary>
+					<ddue:remarks>
+						<ddue:para>wingExplicitStringersType contains an arbitrary number of explicit stringer definitions.
+						</ddue:para>
+					</ddue:remarks>
+				</sd:schemaDoc>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="complexBaseType">
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element name="explicitStringer" type="wingExplicitStringerType"/>
+					<xsd:element name="explicitStringerSet" type="wingExplicitStringerSetType"/>
+				</xsd:choice>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+
 	<xsd:complexType name="wingFuelTankBorderType">
 
 		<xsd:annotation>
@@ -41879,6 +42054,57 @@ jonas.jepsen@dlr.de
                         </xsd:extension>
                 </xsd:complexContent>
         </xsd:complexType>
+
+
+	<xsd:complexType name="wingRibPointType">
+
+		<xsd:annotation>
+			<xsd:appinfo>
+				<sd:schemaDoc>
+					<ddue:summary>
+						<ddue:para>wingRibPointType</ddue:para>
+					</ddue:summary>
+					<ddue:remarks>
+						<ddue:content>
+							<ddue:para>The wingRibPointType is used to define reference points on ribs.
+								It can be used for rib set definitions (wingRibsPositioningType) as 
+								well as explicit rib definitions (wingRibExplicitPositioningType).</ddue:para>
+						</ddue:content>
+					</ddue:remarks>
+				</sd:schemaDoc>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="complexBaseType">
+				<xsd:all>
+					<xsd:element name="ribDefinitionUID" type="stringUIDBaseType">
+							<xsd:annotation>
+								<xsd:documentation>
+									The UID of the rib definition. Can be a reference to nodes 
+									of either wingRibsPositioningType or wingRibExplicitPositioningType.
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+					<xsd:element minOccurs="0" name="ribNumber" type="integerBaseType">
+						<xsd:annotation>
+							<xsd:documentation>
+								For references of type wingRibsPositioningType this node indicates the rib number of the rib set. 
+								If not given it defaults to 1.
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="xsi" type="doubleBaseType">
+						<xsd:annotation>
+							<xsd:documentation>
+								Normalized xsi coordinate of the rib point which is measured along the rib 
+								from the start point [0] towards the end point [1].
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:all>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
 
 
 	<xsd:complexType name="wingRibsDefinitionType">
