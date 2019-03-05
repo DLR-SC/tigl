@@ -236,10 +236,12 @@ protected:
     PNamedShape BuildLoft() const OVERRIDE;
 
 private:
-    struct SurfaceCoordCache
+    struct SurfaceCache
     {
         CTiglPointTranslator cordSurface;
         Handle(Geom_Surface) cordFace;
+        Handle(Geom_Surface) upperSurface;
+        Handle(Geom_Surface) lowerSurface;
     };
 
     // get short name for loft
@@ -249,7 +251,7 @@ private:
     void ComputeArea(double& cache) const;
 
     // Builds the chord surface
-    void MakeChordSurface(SurfaceCoordCache& cache) const;
+    void MakeSurfaces(SurfaceCache& cache) const;
 
     void ComputeVolume(double& cache) const;
 
@@ -268,9 +270,9 @@ private:
                                                  * the fuselage loft at the price of a
                                                  * nonsmooth fuselage                       */
 
-    Cache<SurfaceCoordCache, CCPACSWingSegment> surfaceCoordCache;
+    Cache<SurfaceCache, CCPACSWingSegment> surfaceCache;
     Cache<double, CCPACSWingSegment>            areaCache;
-    Cache<double, CCPACSWingSegment> volumeCache;
+    Cache<double, CCPACSWingSegment>            volumeCache;
 
     unique_ptr<IGuideCurveBuilder> m_guideCurveBuilder;
 };

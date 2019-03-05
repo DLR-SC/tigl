@@ -185,7 +185,7 @@ CCPACSWingSegment::CCPACSWingSegment(CCPACSWingSegments* parent, CTiglUIDManager
     , CTiglAbstractSegment<CCPACSWingSegment>(parent->GetSegments(), parent->GetParentComponent())
     , innerConnection(this)
     , outerConnection(this)
-    , surfaceCoordCache(*this, &CCPACSWingSegment::MakeChordSurface)
+    , surfaceCache(*this, &CCPACSWingSegment::MakeSurfaces)
     , areaCache(*this, &CCPACSWingSegment::ComputeArea)
     , volumeCache(*this, &CCPACSWingSegment::ComputeVolume)
     , m_guideCurveBuilder(make_unique<CTiglWingSegmentGuidecurveBuilder>(*this))
@@ -576,8 +576,6 @@ double CCPACSWingSegment::GetSurfaceArea() const
 
 void CCPACSWingSegment::etaXsiToUV(bool isFromUpper, double eta, double xsi, double& u, double& v) const
 {
-    gp_Pnt pnt = GetPoint(eta,xsi, isFromUpper);
-
     Handle(Geom_Surface) surf;
     if (isFromUpper) {
         surf = GetUpperSurface();
@@ -586,23 +584,15 @@ void CCPACSWingSegment::etaXsiToUV(bool isFromUpper, double eta, double xsi, dou
         surf = GetLowerSurface();
     }
 
-    GeomAPI_ProjectPointOnSurf Proj(pnt, surf);
-    if (Proj.NbPoints() > 0) {
-        Proj.LowerDistanceParameters(u,v);
+    double umin, umax, vmin, vmax;
+    surf->Bounds(umin,umax,vmin, vmax);
+    if (isFromUpper) {
+        u = umin*(1-xsi) + umax*xsi;
+        v = vmin*(1-eta) + vmax*eta;
     }
     else {
-        LOG(WARNING) << "Could not project point on wing segment surface in CCPACSWingSegment::etaXsiToUV";
-
-        double umin, umax, vmin, vmax;
-        surf->Bounds(umin,umax,vmin, vmax);
-        if (isFromUpper) {
-            u = umin*(1-xsi) + umax;
-            v = vmin*(1-eta) + vmax;
-        }
-        else {
-            u = umin*xsi + umax*(1-xsi);
-            v = vmin*eta + vmax*(1-eta);
-        }
+        u = umin*xsi + umax*(1-xsi);
+        v = vmin*(1-eta) + vmax*eta;
     }
 }
 
@@ -804,54 +794,17 @@ gp_Pnt CCPACSWingSegment::GetPoint(double eta, double xsi,
         profileLine->D0(param, profilePoint);
     }
     else {
-        const CCPACSWingSegments* segments = GetParent();
-        PNamedShape wingLoft = segments->GetParentComponent()->GetLoft();
 
-        TopTools_IndexedMapOfShape faceMap;
-        TopExp::MapShapes(wingLoft->Shape(), TopAbs_FACE, faceMap);
-
-        // get the index of the first face that belongs to the current segment.
-        int nSegments = segments->GetSegmentCount();
-        int nFacesPerSegment = (faceMap.Extent() - 2)/nSegments;
-        int faceIdx = (GetSegmentIndex()-1)*nFacesPerSegment + 1;
-
-        assert (faceIdx > 0);
-        assert (faceIdx <= faceMap.Extent() );
-
-        double zeta = eta;
-        double startZeta = 0.;
-        double endZeta = 1.;
-        if ( !fromUpper ) {
-            zeta = -eta;
-            startZeta = -1.;
-            endZeta = 0.;
+        Handle(Geom_Surface) surface = nullptr;
+        if (fromUpper) {
+            surface = GetUpperSurface();
+        } else {
+            surface = GetLowerSurface();
         }
-        // get the start and end zeta coordinates of the subfaces and the index of the face at zeta.
-        // By construction, we can use the guide curves for this. If there are no guide curves,
-        // there should be only one face spanning the entire zeta range
-        if ( GetGuideCurves() ) {
-            const CCPACSGuideCurves& segmentCurves = *GetGuideCurves();
-            int idx = 0;
-            segmentCurves.GetRelativeCircumferenceRange(zeta, startZeta, endZeta, idx);
-            faceIdx += idx;
-        }
-        else {
-            //without guides, there should be two or three faces per segment:
-            // face1 = lower, face2 = upper, face3 = te
-            faceIdx += int(fromUpper);
-        }
-        assert (faceIdx <= faceMap.Extent() );
 
-        // get uv coordinates and 3d point on the face
-        TopoDS_Face face = TopoDS::Face(faceMap(faceIdx));
-        Handle_Geom_Surface surface = BRep_Tool::Surface(face);
-        double umin, umax, vmin, vmax;
-        surface->Bounds(umin, umax, vmin, vmax);
-        double u = umin + xsi*(umax - umin);
-        double v = vmin + (zeta - startZeta)/(endZeta-startZeta)*(vmax - vmin);
+        double u,v;
+        etaXsiToUV(fromUpper, eta, xsi, u, v);
         surface->D0(u, v, profilePoint);
-
-
     }
 
     return profilePoint;
@@ -970,7 +923,7 @@ bool CCPACSWingSegment::GetIsOn(const gp_Pnt& pnt)
 
     // check if point on chord surface
     double tolerance = 0.03;
-    GeomAPI_ProjectPointOnSurf Proj(pnt, surfaceCoordCache->cordFace);
+    GeomAPI_ProjectPointOnSurf Proj(pnt, surfaceCache->cordFace);
     if (Proj.NbPoints() > 0 && Proj.LowerDistance() < tolerance) {
         return true;
     }
@@ -999,8 +952,14 @@ gp_Pnt CCPACSWingSegment::GetOuterProfilePoint(double xsi) const
     return transformProfilePoint(GetParentTransformation(), outerConnection, untransformed);
 }
 
-void CCPACSWingSegment::MakeChordSurface(SurfaceCoordCache& cache) const
+void CCPACSWingSegment::MakeSurfaces(SurfaceCache& cache) const
 {
+    // make upper and lower surface
+    cache.lowerSurface = BRep_Tool::Surface(TopoDS::Face(GetLowerShape()));
+    cache.upperSurface = BRep_Tool::Surface(TopoDS::Face(GetUpperShape()));
+
+    // make cordface
+
     const CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
     const CCPACSWingProfile& outerProfile = outerConnection.GetProfile();
 
@@ -1034,7 +993,7 @@ void CCPACSWingSegment::ComputeVolume(double& cache) const
 
 const CTiglPointTranslator& CCPACSWingSegment::ChordFace() const
 {
-    return surfaceCoordCache->cordSurface;
+    return surfaceCache->cordSurface;
 }
 
 // Builds upper/lower surfaces as shapes
@@ -1102,13 +1061,13 @@ PNamedShape CCPACSWingSegment::GetLoft(TiglShapeModifier mod) const
 // Returns the lower Surface of this Segment
 Handle(Geom_Surface) CCPACSWingSegment::GetLowerSurface(TiglCoordinateSystem referenceCS, TiglShapeModifier mod) const
 {
-    return BRep_Tool::Surface(TopoDS::Face(GetLowerShape(referenceCS, mod)));
+    return surfaceCache->lowerSurface;
 }
 
 // Returns the upper Surface of this Segment
 Handle(Geom_Surface) CCPACSWingSegment::GetUpperSurface(TiglCoordinateSystem referenceCS, TiglShapeModifier mod) const
 {
-    return BRep_Tool::Surface(TopoDS::Face(GetUpperShape(referenceCS, mod)));
+    return surfaceCache->upperSurface;
 }
 
 // Returns the upper wing shape of this Segment
