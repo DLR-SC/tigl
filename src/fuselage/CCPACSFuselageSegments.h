@@ -43,6 +43,9 @@ public:
     // Gets a segment by uid 
     TIGL_EXPORT CCPACSFuselageSegment & GetSegment(const std::string& segmentUID);
 
+    // Return the the first segement that contains the given element uid;
+    TIGL_EXPORT CCPACSFuselageSegment & GetSegmentByElement(const std::string& elementUID);
+
     // Gets total segment count
     TIGL_EXPORT int GetSegmentCount() const;
 

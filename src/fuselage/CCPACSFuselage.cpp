@@ -615,4 +615,29 @@ TopoDS_Shape transformFuselageProfileGeometry(const CTiglTransformation& fuselTr
 
 }
 
+double CCPACSFuselage::GetLength()
+{
+    // todo need to take care of the case where not segment are there?
+    std::string noiseUID                      = GetSegment(1).GetStartSectionElementUID();
+    std::string tailUID                       = GetSegment(GetSegmentCount()).GetEndSectionElementUID();
+    return GetLengthBetween(noiseUID, tailUID);
+}
+
+double CCPACSFuselage::GetLengthBetween(const std::string& startElementUID, const std::string& endElementUID)
+{
+    TopoDS_Shape curve;
+    // get the center of the profile in fuselage coordinate system for the start element
+    CCPACSFuselageSegment& seg1 = m_segments.GetSegmentByElement(startElementUID);
+    curve                       = seg1.GetWire(startElementUID);
+    CTiglPoint startCenter = CTiglPoint(GetCenterOfMass(curve).XYZ());
+
+    // get the center of the profile in fuselage coordinate system for the end element
+    CCPACSFuselageSegment& seg2 = m_segments.GetSegmentByElement(endElementUID);
+    curve                       = seg2.GetWire(endElementUID);
+    CTiglPoint endCenter  = CTiglPoint(GetCenterOfMass(curve).XYZ());
+    CTiglPoint delta            = endCenter - startCenter;
+
+    return delta.norm2();
+}
+
 } // end namespace tigl

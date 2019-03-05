@@ -128,6 +128,13 @@ public:
     TIGL_EXPORT TopoDS_Wire projectConic(TopoDS_Shape wireOrEdge, gp_Pnt origin) const;
     TIGL_EXPORT TopoDS_Wire projectParallel(TopoDS_Shape wireOrEdge, gp_Dir direction) const;
 
+    // Gets the total length of this fuselage
+    TIGL_EXPORT double GetLength();
+
+    // Gets the length between the two fuselage elements given as arguments
+    TIGL_EXPORT double GetLengthBetween(const std::string& startElementUID, const std::string& endElementUID );
+
+
 protected:
     void BuildGuideCurves(TopoDS_Compound& cache) const;
 
