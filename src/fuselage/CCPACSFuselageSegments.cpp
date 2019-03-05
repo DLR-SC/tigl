@@ -123,4 +123,17 @@ void CCPACSFuselageSegments::ReorderSegments()
     }
 }
 
+CCPACSFuselageSegment& CCPACSFuselageSegments::GetSegmentByElement(const std::string& elementUID)
+{
+
+    for (std::size_t i = 0; i < m_segments.size(); i++) {
+        if (m_segments[i]->GetStartSectionElementUID() == elementUID ||
+            m_segments[i]->GetEndSectionElementUID() == elementUID) {
+            return *m_segments[i];
+        }
+    }
+
+    throw CTiglError("Invalid uid in CCPACSFuselageSegments::GetSegmentByElement", TIGL_UID_ERROR);
+}
+
 } // end namespace tigl
