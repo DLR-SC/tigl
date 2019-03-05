@@ -576,6 +576,13 @@ double CCPACSWingSegment::GetSurfaceArea() const
 
 void CCPACSWingSegment::etaXsiToUV(bool isFromUpper, double eta, double xsi, double& u, double& v) const
 {
+    if (eta < 0.0 || eta > 1.0) {
+        throw CTiglError("Parameter eta not in the range 0.0 <= eta <= 1.0 in CCPACSWingSegment::etaXsiToUV", TIGL_ERROR);
+    }
+    if (xsi < 0.0 || xsi > 1.0) {
+        throw CTiglError("Parameter xsi not in the range 0.0 <= xsi <= 1.0 in CCPACSWingSegment::etaXsiToUV", TIGL_ERROR);
+    }
+
     Handle(Geom_Surface) surf;
     if (isFromUpper) {
         surf = GetUpperSurface();
@@ -749,13 +756,12 @@ gp_Pnt CCPACSWingSegment::GetPoint(double eta, double xsi,
                                    bool fromUpper, TiglCoordinateSystem referenceCS,
                                    bool onLinearLoft) const
 {
-    if (eta < 0.0 || eta > 1.0) {
-        throw CTiglError("Parameter eta not in the range 0.0 <= eta <= 1.0 in CCPACSWingSegment::GetPoint", TIGL_ERROR);
-    }
-
-
     gp_Pnt profilePoint;
     if ( onLinearLoft ) {
+
+        if (eta < 0.0 || eta > 1.0) {
+            throw CTiglError("Parameter eta not in the range 0.0 <= eta <= 1.0 in CCPACSWingSegment::GetPoint", TIGL_ERROR);
+        }
 
         const CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
         const CCPACSWingProfile& outerProfile = outerConnection.GetProfile();
