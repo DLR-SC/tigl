@@ -70,6 +70,7 @@ public:
     TIGL_EXPORT TopoDS_Edge GetCurve() const;
 
     TIGL_EXPORT CCPACSGuideCurve* GetConnectedCurve() const;
+    TIGL_EXPORT CCPACSGuideCurve const* GetRootCurve() const;
 
     TIGL_EXPORT void SetGuideCurveBuilder(IGuideCurveBuilder& b);
 protected:

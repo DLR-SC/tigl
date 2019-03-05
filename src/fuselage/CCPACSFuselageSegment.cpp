@@ -571,13 +571,12 @@ gp_Pnt CCPACSFuselageSegment::GetPoint(double eta, double zeta, bool onLinearLof
         // extract faces of the fuselage segment. By construction, the faces span the entire eta range of the segment,
         // while the zeta range is split at the guide curves or because of the symmetry.
 
-        CCPACSFuselage& fuselage = GetFuselage();
-        PNamedShape fuselageLoft = fuselage.GetLoft();
         TopTools_IndexedMapOfShape faceMap;
-        TopExp::MapShapes(fuselageLoft->Shape(), TopAbs_FACE, faceMap);
+        TopoDS_Shape s = GetFacesByName(GetLoft(), GetUID());
+        TopExp::MapShapes(s, TopAbs_FACE, faceMap);
 
         // get the index of the first face that belongs to the current segment.
-        int faceIdx = (GetSegmentIndex()-1)*GetNumberOfLoftFaces() + 1;
+        int faceIdx = 1;
 
         assert (faceIdx > 0);
         assert (faceIdx <= faceMap.Extent() );
