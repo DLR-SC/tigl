@@ -36,7 +36,7 @@ namespace generated
     // This class is used in:
     // CPACSGenericGeometryComponents
 
-    // generated from /xsd:schema/xsd:complexType[397]
+    // generated from /xsd:schema/xsd:complexType[403]
     /// @brief genericGeometricComponentType
     /// 
     /// In some cases additional geometric components need to

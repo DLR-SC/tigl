@@ -33,11 +33,12 @@ namespace generated
     // CPACSCst2D
     // CPACSEmissivityMap
     // CPACSPointListRelXYZVector
+    // CPACSPointListXYVector
     // CPACSPointListXYZVector
     // CPACSRotorBladeAttachment
     // CPACSSpecificHeatMap
 
-    // generated from /xsd:schema/xsd:complexType[837]
+    // generated from /xsd:schema/xsd:complexType[851]
     /// @brief stringVectorBaseType
     /// 
     /// Base type for string vector nodes (including maptype

@@ -34,7 +34,7 @@ namespace generated
     // This class is used in:
     // CPACSProfiles
 
-    // generated from /xsd:schema/xsd:complexType[375]
+    // generated from /xsd:schema/xsd:complexType[381]
     /// @brief fuselageProfilesType
     /// 
     /// FuselageProfiles type, containing fuselage profile

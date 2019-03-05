@@ -34,7 +34,7 @@ namespace generated
     // This class is used in:
     // CPACSWingCells
 
-    // generated from /xsd:schema/xsd:complexType[925]
+    // generated from /xsd:schema/xsd:complexType[940]
     /// @brief Cell of the wing
     /// 
     /// A cell defines a special region of the wing. Within

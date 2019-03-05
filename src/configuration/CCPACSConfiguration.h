@@ -42,6 +42,7 @@
 #include "CTiglMemoryPool.h"
 #include "CSharedPtr.h"
 #include "CCPACSProfiles.h"
+#include "CCPACSEngines.h"
 
 
 namespace tigl
@@ -161,6 +162,16 @@ public:
     TIGL_EXPORT boost::optional<CCPACSEnginePylons>& GetEnginePylons();
     TIGL_EXPORT const boost::optional<CCPACSEnginePylons>& GetEnginePylons() const;
 
+    // Returns list of engines
+    TIGL_EXPORT boost::optional<CCPACSEngines>& GetEngines();
+    TIGL_EXPORT const boost::optional<CCPACSEngines>& GetEngines() const;
+
+    // Returns list of engine positions
+    TIGL_EXPORT boost::optional<CCPACSEnginePositions>& GetEnginePositions();
+    TIGL_EXPORT const boost::optional<CCPACSEnginePositions>& GetEnginePositions() const;
+
+    TIGL_EXPORT CCPACSEngine& GetEngine(const std::string& UID) const;
+
     // Returns the farfield
     TIGL_EXPORT CCPACSFarField& GetFarField();
 
@@ -217,6 +228,7 @@ private:
     boost::optional<CCPACSAircraftModel>   aircraftModel;
     boost::optional<CCPACSRotorcraftModel> rotorcraftModel;
     boost::optional<CCPACSProfiles>        profiles;             /**< Wing airfoils, fuselage profiles, rotor airfoils, guide curve profiles */
+    boost::optional<CCPACSEngines>         engines;              /**< Engines under vehicle node */
     TixiDocumentHandle                     tixiDocumentHandle;   /**< Handle for internal TixiDocument */
     CCPACSHeader                           header;               /**< Configuration header element */
     CCPACSACSystems                        acSystems;            /**< Configuration aircraft systems element */

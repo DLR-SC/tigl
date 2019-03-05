@@ -34,7 +34,7 @@ namespace generated
     // This class is used in:
     // CPACSRotorcraftModel
 
-    // generated from /xsd:schema/xsd:complexType[781]
+    // generated from /xsd:schema/xsd:complexType[793]
     /// @brief rotorsType
     /// 
     /// Rotors type, containing all the rotors (mainRotors,

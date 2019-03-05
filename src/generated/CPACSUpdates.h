@@ -32,7 +32,7 @@ namespace generated
     // This class is used in:
     // CPACSHeader
 
-    // generated from /xsd:schema/xsd:complexType[892]
+    // generated from /xsd:schema/xsd:complexType[905]
     /// @brief updatesType
     /// 
     /// Updates type, containing update data for the CPACS

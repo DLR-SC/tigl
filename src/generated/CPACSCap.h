@@ -34,7 +34,7 @@ namespace generated
     // CPACSWingRibCell
     // CPACSWingRibCrossSection
 
-    // generated from /xsd:schema/xsd:complexType[111]
+    // generated from /xsd:schema/xsd:complexType[113]
     /// @brief capType
     /// 
     /// SparCap type, containing the cross section area of the

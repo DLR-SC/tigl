@@ -35,6 +35,7 @@
 #include "CTiglTransformation.h"
 #include "math.h"
 #include "CCPACSWingProfile.h"
+#include "CCPACSNacelleProfile.h"
 #include "tiglcommonfunctions.h"
 
 #include "gp_Pnt2d.hxx"
@@ -83,8 +84,16 @@ const double CTiglWingProfilePointList::c_trailingEdgeRelGap = 1E-2;
 const double CTiglWingProfilePointList::c_blendingDistance = 0.1;
 
 // Constructor
-CTiglWingProfilePointList::CTiglWingProfilePointList(const CCPACSWingProfile& profile, const CCPACSPointListXYZ& cpacsPointList)
-    : profileRef(profile)
+CTiglWingProfilePointList::CTiglWingProfilePointList(const CCPACSWingProfile& profile, const CCPACSPointListXYZVector& cpacsPointList)
+    : profileUID(profile.GetUID())
+    , coordinates(cpacsPointList.AsVector())
+    , profileWireAlgo(new CTiglInterpolateBsplineWire)
+    , wireCache(*this, &CTiglWingProfilePointList::BuildWires)
+{
+}
+
+CTiglWingProfilePointList::CTiglWingProfilePointList(const CCPACSNacelleProfile& profile, const CCPACSPointListXYVector& cpacsPointList)
+    : profileUID(profile.GetUID())
     , coordinates(cpacsPointList.AsVector())
     , profileWireAlgo(new CTiglInterpolateBsplineWire)
     , wireCache(*this, &CTiglWingProfilePointList::BuildWires)
@@ -139,19 +148,12 @@ void CTiglWingProfilePointList::BuildWires(WireCache& cache) const
         throw CTiglError("Linear Wing Profiles are currently not supported",TIGL_ERROR);
     }
 
-    TopoDS_Wire tempWireOpened = wireBuilder.BuildWire(openPoints, false);
-    TopoDS_Wire tempWireClosed = wireBuilder.BuildWire(closedPoints, true);
-    if (tempWireOpened.IsNull() || tempWireClosed.IsNull()) {
+    TopoDS_Wire tempShapeOpened = wireBuilder.BuildWire(openPoints, false);
+    TopoDS_Wire tempShapeClosed = wireBuilder.BuildWire(closedPoints, true);
+    if (tempShapeOpened.IsNull() || tempShapeClosed.IsNull()) {
         throw CTiglError("TopoDS_Wire is null in CTiglWingProfilePointList::BuildWire", TIGL_ERROR);
     }
 
-    //@todo: do we really want to remove all y information? this has to be a bug
-    // Apply wing profile transformation to wires
-    CTiglTransformation transformation;
-    transformation.AddProjectionOnXZPlane();
-
-    TopoDS_Wire tempShapeOpened = TopoDS::Wire(transformation.Transform(tempWireOpened));
-    TopoDS_Wire tempShapeClosed = TopoDS::Wire(transformation.Transform(tempWireClosed));
     // the open wire should consist of only 1 edge - lets check
     if (GetNumberOfEdges(tempShapeOpened) != 1 || GetNumberOfEdges(tempShapeClosed) != 1) {
         throw CTiglError("Number of Wing Profile Edges is not 1. Please contact the developers");
@@ -444,7 +446,7 @@ void CTiglWingProfilePointList::trimUpperLowerCurve(WireCache& cache, Handle(Geo
         if (w > lowerCurve->FirstParameter() + Precision::Confusion() && w < lowerCurve->LastParameter()) {
             double relDist = lowerCurve->Value(w).Distance(firstPnt) / cache.tePoint.Distance(cache.lePoint);
             if (relDist > tolerance) {
-                LOG(WARNING) << "The wing profile " << profileRef.GetUID() << " will be trimmed"
+                LOG(WARNING) << "The wing profile " << profileUID << " will be trimmed"
                     << " to avoid a skewed trailing edge."
                     << " The lower part is trimmed about " << relDist*100. << " % w.r.t. the chord length."
                     << " Please correct the wing profile!";
@@ -460,7 +462,7 @@ void CTiglWingProfilePointList::trimUpperLowerCurve(WireCache& cache, Handle(Geo
         if (w < upperCurve->LastParameter() - Precision::Confusion() && w > upperCurve->FirstParameter()) {
             double relDist = upperCurve->Value(w).Distance(lastPnt) / cache.tePoint.Distance(cache.lePoint);
             if (relDist > tolerance) {
-                LOG(WARNING) << "The wing profile " << profileRef.GetUID() << " will be trimmed"
+                LOG(WARNING) << "The wing profile " << profileUID << " will be trimmed"
                     << " to avoid a skewed trailing edge."
                     << " The upper part is trimmed about " << relDist*100. << " % w.r.t. the chord length."
                     << " Please correct the wing profile!";

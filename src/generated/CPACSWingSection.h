@@ -35,7 +35,7 @@ namespace generated
     // This class is used in:
     // CPACSWingSections
 
-    // generated from /xsd:schema/xsd:complexType[950]
+    // generated from /xsd:schema/xsd:complexType[965]
     /// @brief Section of the wing.
     /// 
     /// WingSection type, containing a wing section. The

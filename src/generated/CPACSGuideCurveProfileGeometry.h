@@ -19,7 +19,7 @@
 
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
-#include <CCPACSPointListRelXYZ.h>
+#include <CCPACSPointListRelXYZVector.h>
 #include <string>
 #include <TiglSymmetryAxis.h>
 #include <tixi.h>
@@ -34,7 +34,7 @@ namespace generated
     // This class is used in:
     // CPACSGuideCurveProfiles
 
-    // generated from /xsd:schema/xsd:complexType[433]
+    // generated from /xsd:schema/xsd:complexType[439]
     /// @brief guideCurveProfileGeometryType
     /// 
     /// A guide curve profile is defined by a profile name, an
@@ -81,8 +81,8 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
         TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
 
-        TIGL_EXPORT virtual const CCPACSPointListRelXYZ& GetPointList() const;
-        TIGL_EXPORT virtual CCPACSPointListRelXYZ& GetPointList();
+        TIGL_EXPORT virtual const CCPACSPointListRelXYZVector& GetPointList() const;
+        TIGL_EXPORT virtual CCPACSPointListRelXYZVector& GetPointList();
 
     protected:
         CTiglUIDManager* m_uidMgr;
@@ -97,7 +97,7 @@ namespace generated
         /// Description of profile
         boost::optional<std::string>      m_description;
 
-        CCPACSPointListRelXYZ             m_pointList;
+        CCPACSPointListRelXYZVector       m_pointList;
 
     private:
 #ifdef HAVE_CPP11

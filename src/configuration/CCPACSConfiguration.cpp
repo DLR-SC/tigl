@@ -85,6 +85,7 @@ namespace {
     const std::string headerXPath   = "/cpacs/header";
     const std::string profilesXPath = "/cpacs/vehicles/profiles";
     const std::string farFieldXPath = "/cpacs/toolspecific/cFD/farField";
+    const std::string enginesXPath = "/cpacs/vehicles/engines";
 }
 
 // Build up memory structure for whole CPACS file
@@ -102,6 +103,10 @@ void CCPACSConfiguration::ReadCPACS(const std::string& configurationUID)
         profiles = boost::in_place(&uidManager);
         // read wing airfoils, fuselage profiles, rotor airfoils and guide curve profiles
         profiles->ReadCPACS(tixiDocumentHandle, profilesXPath);
+    }
+    if (tixi::TixiCheckElement(tixiDocumentHandle, enginesXPath)) {
+        engines = boost::in_place(&uidManager);
+        engines->ReadCPACS(tixiDocumentHandle, enginesXPath);
     }
     if (tixi::TixiCheckElement(tixiDocumentHandle, farFieldXPath)) {
         farField.ReadCPACS(tixiDocumentHandle, farFieldXPath);
@@ -518,6 +523,50 @@ const boost::optional<CCPACSEnginePylons>& CCPACSConfiguration::GetEnginePylons(
         throw CTiglError("No aircraft loaded");
     }
 }
+
+boost::optional<CCPACSEngines>& CCPACSConfiguration::GetEngines()
+{
+    return engines;
+}
+
+const boost::optional<CCPACSEngines>& CCPACSConfiguration::GetEngines() const
+{
+    return engines;
+}
+
+boost::optional<CCPACSEnginePositions>& CCPACSConfiguration::GetEnginePositions()
+{
+    if (aircraftModel) {
+        return aircraftModel->GetEngines();
+    }
+    else {
+        throw CTiglError("No aircraft loaded");
+    }
+}
+
+const boost::optional<CCPACSEnginePositions>& CCPACSConfiguration::GetEnginePositions() const
+{
+    if (aircraftModel) {
+        return aircraftModel->GetEngines();
+    }
+    else {
+        throw CTiglError("No aircraft loaded");
+    }
+}
+
+// Returns the engine for a given uid.
+CCPACSEngine& CCPACSConfiguration::GetEngine(const std::string& uid) const
+{
+    try {
+        if (GetEngines()) {
+            return GetEngines()->GetEngine(uid);
+        }
+    }
+    catch(...) {
+        throw CTiglError("Could not find engine with uID" + uid, TIGL_NOT_FOUND);
+    }
+}
+
 
 CCPACSFarField& CCPACSConfiguration::GetFarField()
 {

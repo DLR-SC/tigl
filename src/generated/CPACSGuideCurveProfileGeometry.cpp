@@ -173,12 +173,12 @@ namespace generated
         m_description = value;
     }
 
-    const CCPACSPointListRelXYZ& CPACSGuideCurveProfileGeometry::GetPointList() const
+    const CCPACSPointListRelXYZVector& CPACSGuideCurveProfileGeometry::GetPointList() const
     {
         return m_pointList;
     }
 
-    CCPACSPointListRelXYZ& CPACSGuideCurveProfileGeometry::GetPointList()
+    CCPACSPointListRelXYZVector& CPACSGuideCurveProfileGeometry::GetPointList()
     {
         return m_pointList;
     }

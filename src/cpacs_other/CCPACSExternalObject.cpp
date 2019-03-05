@@ -77,7 +77,7 @@ void CCPACSExternalObject::ReadCPACS(const TixiDocumentHandle& tixiHandle, const
 
     char* cCPACSPath = NULL;
     tixiGetDocumentPath(tixiHandle, &cCPACSPath);
-    _filePath = getPathRelativeToApp(cCPACSPath ? cCPACSPath : "", m_linkToFile.GetBase());
+    _filePath = getPathRelativeToApp(cCPACSPath ? cCPACSPath : "", m_linkToFile.GetSimpleContent());
 
     // test if file can be read
     if (!IsFileReadable(_filePath)) {

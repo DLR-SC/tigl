@@ -34,7 +34,7 @@ namespace generated
     // This class is used in:
     // CPACSFuselageStructure
 
-    // generated from /xsd:schema/xsd:complexType[112]
+    // generated from /xsd:schema/xsd:complexType[114]
     /// @brief cargoCrossBeamStrutsAssemblyType
     /// 
     /// CargoCrossBeamStrutsAssembly type, containing cargo

@@ -39,20 +39,23 @@
 #include "Geom_TrimmedCurve.hxx"
 #include "TopoDS_Wire.hxx"
 #include "TopoDS_Edge.hxx"
-#include "CCPACSPointListXYZ.h"
+#include "CCPACSPointListXYZVector.h"
+#include "CCPACSPointListXYVector.h"
 #include "Cache.h"
 
 namespace tigl
 {
 
 class CCPACSWingProfile;
+class CCPACSNacelleProfile;
 
 class CTiglWingProfilePointList : public ITiglWingProfileAlgo
 {
 
 public:
     // Constructor
-    TIGL_EXPORT CTiglWingProfilePointList(const CCPACSWingProfile& profile, const CCPACSPointListXYZ& cpacsPointlist);
+    TIGL_EXPORT CTiglWingProfilePointList(const CCPACSWingProfile& profile, const CCPACSPointListXYZVector& cpacsPointlist);
+    TIGL_EXPORT CTiglWingProfilePointList(const CCPACSNacelleProfile& profile, const CCPACSPointListXYVector& cpacsPointlist);
 
     TIGL_EXPORT void Invalidate() OVERRIDE;
 
@@ -126,7 +129,7 @@ private:
 
     const std::vector<CTiglPoint>& coordinates;    /**< Coordinates of a wing profile element */
     unique_ptr<ITiglWireAlgorithm> profileWireAlgo;/**< Pointer to wire algorithm (e.g. CTiglInterpolateBsplineWire) */
-    const CCPACSWingProfile&            profileRef;     /**< Reference to the wing profile */
+    const std::string              profileUID;     /**< Reference to the wing profile */
 
     Cache<WireCache, CTiglWingProfilePointList> wireCache;
 };

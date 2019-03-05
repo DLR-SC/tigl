@@ -30,7 +30,7 @@ namespace generated
     // This class is used in:
     // CPACSComposite
 
-    // generated from /xsd:schema/xsd:complexType[144]
+    // generated from /xsd:schema/xsd:complexType[146]
     /// @brief compositeLayerType
     /// 
     /// CompositeLayer type, conatining data of a composite

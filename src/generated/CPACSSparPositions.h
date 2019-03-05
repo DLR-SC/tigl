@@ -34,7 +34,7 @@ namespace generated
     // This class is used in:
     // CPACSWingSpar
 
-    // generated from /xsd:schema/xsd:complexType[815]
+    // generated from /xsd:schema/xsd:complexType[827]
     /// @brief Spar definition points on the wing.
     /// 
     /// sparPositionsType, containing multiple sparPositions.

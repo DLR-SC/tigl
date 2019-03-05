@@ -29,7 +29,7 @@ namespace generated
     // This class is used in:
     // CPACSProfileGeometry
 
-    // generated from /xsd:schema/xsd:complexType[711]
+    // generated from /xsd:schema/xsd:complexType[721]
     /// @brief List of 3D points, kept in three coordinate vecors (x,
     /// y, z)
     /// 
@@ -80,5 +80,5 @@ namespace generated
     };
 } // namespace generated
 
-// CPACSPointListXYZVector is customized, use type CCPACSPointListXYZ directly
+// CPACSPointListXYZVector is customized, use type CCPACSPointListXYZVector directly
 } // namespace tigl

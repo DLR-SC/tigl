@@ -35,18 +35,20 @@ class CTiglUIDManager;
 namespace generated
 {
     // This class is used in:
+    // CPACSEnginePosition
     // CPACSEnginePylon
     // CPACSFuselage
     // CPACSFuselageElement
     // CPACSFuselageSection
     // CPACSGenericGeometricComponent
+    // CPACSNacelleSection
     // CPACSRotor
     // CPACSRotorHubHinge
     // CPACSWing
     // CPACSWingElement
     // CPACSWingSection
 
-    // generated from /xsd:schema/xsd:complexType[882]
+    // generated from /xsd:schema/xsd:complexType[895]
     /// @brief transformationType
     /// 
     /// Transformation type, containing a set of

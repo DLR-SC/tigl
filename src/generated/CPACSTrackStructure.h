@@ -36,7 +36,7 @@ namespace generated
     // This class is used in:
     // CPACSControlSurfaceTrackType
 
-    // generated from /xsd:schema/xsd:complexType[871]
+    // generated from /xsd:schema/xsd:complexType[885]
     /// @brief wingSparsType
     /// 
     /// Spars type, a spar is defined by sparSegments that

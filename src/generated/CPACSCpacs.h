@@ -37,15 +37,15 @@ namespace generated
     // generated from /xsd:schema/xsd:complexType[1]
     /// @brief CPACS root element
     /// 
-    /// Version V2.3.1
-    /// Date 2016-07-29T16:47:00
+    /// Version V3.0
+    /// Date 2018-07-31T18:47:00
     /// 1. Overview
     /// The C ommon P arametric A ircraft C onfiguration S cheme (CPACS) is an XML-based data format for describing aircraft configurations and their corresponding data.
     /// This XML-Schema document provides a description of the CPACS data structure that can be used for automatic validation as well as for documentation purposes. In this Schema, type declarations and element definitions are seperated. This means, there is e.g. a pointType class, containing x, y and z components. This class is then used in different places under different names (e.g. the "translation" node in "transformation" is made of pointType, meaning it has x, y and z subnodes.)
     /// CPACS is an open source project published by the German Aerospace Center (DLR e.V.). For further information please go to http://software.dlr.de/p/cpacs/home/
     /// You can display the text based version of CPACS in every text editor. Further tools are for example www.eclipse.org
     /// 2. Coordinate Systems
-    /// Coordinate systems are a regular cause for ambiguous interpretation of data. In CPACS only the CPACS-coordinate system is valid. The following paragraphs outline the determination to known coordinate systems.
+    /// Coordinate systems are a regular cause for ambiguous interpretation of data. In CPACS, the reference coordinate system is the CPACS-coordinate system. This coordinate system is used for most of the data. A single exception is made in order to keep aerodynamic data in an aerodynamic coordinate system. The following paragraphs outline the determination to known coordinate systems.
     /// The CPACS coordinate system is the coordinate system identified by TIGL, CPACS's geometric library. It is a right-handed coordinate system. If an aircraft is defined in the CPACS coordinate system it will usually follow the directions listed in the table below.
     /// Therefore, the CPACS coordinate system can be confused with the body-fixed coordinate system. While often the CPACS coordinate system and the body-fixed coordinate system overlap, this must not always be true. Several definitions for body-fixed coordinate systems exist (x-axis through nose and tail, x-axis perpendicular to nose plane). For non-symmetric aircraft, body-fixed coordinate systems become even more complicated. Hence, analysis tools should stick to the CPACS-Coordinate system. It remains to the designer to model the geometry accordingly.
     /// The CPACS coordinate system does not rotate with flow. Hence, aerodynamic calculations do rotate their flow relative to the CPACS-coordinate system. If not stated explicitly different, e.g. for target lift-coefficients, results are returned in the CPACS coordinate system, i.e. the cfx-coefficient is parrallel to the CPACS x-Coordinate, regardless of the way the geometry is defined.
@@ -61,8 +61,10 @@ namespace generated
     /// Again, the aerodynamic analysis is relative to the CPACS coordinate system. That is, the angle of attack is represented by the dashed orange line. Results of the aerodynamic calculation are given in the CPACS coordinate system.
     /// 3. Units
     /// There are no explicit attributes describing units in CPACS. The general convention is that all values must be given in the following SI-units:
-    /// [m] Position, Distance [m 2 ] Area [m 3 ] Volume [kg] Mass [s] Time [K] Temperature [°] Angle or in derived units, e.g.:
-    /// [N] Force [Nm] Moment [W] Power [J] Energy 4. Splitting up a CPACS dataset into several files
+    /// [m] Position, Distance [m 2 ] Area [m 3 ] Volume [kg] Mass [s] Time [K] Temperature or in derived units, e.g.:
+    /// [N] Force [Nm] Moment [W] Power [J] Energy The only non SI unit used throughout CPACS is the angle in degrees [°]. 
+    /// For the sake of an intuitive use the angles are given in degrees rather than in radian [rad].
+    /// [°] Angle 4. Splitting up a CPACS dataset into several files
     /// To provide a better overview, it is possible to split up a CPACS dataset into several files. This can be done by inserting an <externaldata> node at an arbitrary position into the datatset. This node contains a <path> node with a URI to the external file(s), followed by one or more <filename> nodes, containing each a name of a file to be included at that position. Below, an example of such external data is given:
     /// <?xml version="1.0" encoding="utf-8"?>
     /// <cpacs xsi:noNamespaceSchemaLocation="cpacs_schema.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -154,7 +156,9 @@ namespace generated
     /// Temperature offsets are introduced on top of the definitions in the ISA manual (which does not cover such variations). The offset model
     /// is based upon the idea that the pressure at a fixed geopotential altitude is independent from temperature offset (pressure altitude).
     /// The temperature offset changes only the density (following rho = p / Gas Constant / T) (and viscosity, of course)
-    /// CPACS 2.3.1
+    /// CPACS 3.0
+    /// Release in Jul 2018
+    /// New component segment definition; this is affecting all structural components of wings Renamed angleOfYaw into angleOfSideslip Fixes in documentation Made all uID attributes required Minor fixes in choices and typos Added nodes for the geometry of generic system components Added performance requirements for aircraft models Redefined the whole mission definition including point performances Made link to missionUID in trajectory optional Added new parameters to enginePerformanceMap Relocated mFixedLeadingEdge and mFixedTrailingEdge within the massBReakdown structure Changed aeroPerformanceMap to use altitude and standard atmosphere instead of reynolds number Added an optional local direction for guide curves and an illustration image Announced toolspecifics definitions as deprecated; will be removed from CPACS in next release and should be managed in separate namespace by tool maintainers Added an option for aerodynamic performance maps of elastic aircraft Enabled the definition of multiple aeroPerformanceMaps Enabled the use of spar points for rib placement and rib points for spar placement Added explicit stringer definitions for wing cells All issues for this release can be found online https://github.com/DLR-LY/CPACS/issues CPACS 2.3.1
     /// Release in Jul 2016
     /// CPACS 2.3.1 is a beta release, all parameters may be subject to change. Added a branch for the definition of design studies. Added thermal properties for materials. Revised the definition of flights/flightplans. Added an airline definition. Added structure for skid gear components. Changed the units for material density to SI units. Revised the top level fleets node and put it into the new airline node. All issues for this release can be found online https://github.com/DLR-LY/CPACS/issues CPACS 2.3
     /// Release in Nov 2015

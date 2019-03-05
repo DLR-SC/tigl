@@ -32,7 +32,7 @@ namespace generated
     // CPACSSparCell
     // CPACSSparCrossSection
 
-    // generated from /xsd:schema/xsd:complexType[909]
+    // generated from /xsd:schema/xsd:complexType[924]
     /// @brief webType
     /// 
     /// SparWeb type, containing the cross section area of the
