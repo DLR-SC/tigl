@@ -290,6 +290,11 @@ gp_Pnt GetSparMidplanePoint(const CCPACSWingSparPosition& sparPos, const CCPACSW
         int ribNumber = WingRibPointGetRibNumber(*sparPos.GetSparPositionRib_choice1());
         return GetRibChordlinePoint(structure, sparPos.GetReferenceUID(), ribNumber, sparPos.GetXsi());
     }
+    else if (sparPos.isOnSectionElement()) {
+        std::string elementUID = WingSparPosGetElementUID(sparPos);
+        const CCPACSWingComponentSegment& componentSegment = wsr.GetWingComponentSegment();
+        return getSectionElementChordlinePoint(componentSegment, elementUID, sparPos.GetXsi());
+    }
     else if (sparPos.GetSparPositionEtaXsi_choice2()) {
         return wsr.GetPoint(sparPos.GetEta(), sparPos.GetXsi(), sparPos.GetReferenceUID(), WING_COORDINATE_SYSTEM);
     }

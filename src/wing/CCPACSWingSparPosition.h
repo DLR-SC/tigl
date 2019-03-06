@@ -51,6 +51,9 @@ public:
 
 TIGL_EXPORT int WingRibPointGetRibNumber(const generated::CPACSWingRibPoint&);
 
+/// If the spar position is on a section element, the element uid is returned
+TIGL_EXPORT std::string WingSparPosGetElementUID(const CCPACSWingSparPosition&);
+
 } // end namespace tigl
 
 #endif // CCPACSWINGSPARPOSITION_H

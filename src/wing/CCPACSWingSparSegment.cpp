@@ -331,15 +331,17 @@ void CCPACSWingSparSegment::BuildAuxiliaryGeometry(AuxiliaryGeomCache& cache) co
         gp_Pnt p3 = outerPoint.Translated(bboxSize * outerUpVec);
         gp_Pnt p4 = outerPoint.Translated(-bboxSize * outerUpVec);
 
-        // enlarge cut face for inner and outer sections
-        // only extend in case the definition is not inside a section
-        if (sparsNode.GetSparPositions().GetSparPosition(innerPositionUID).isOnInnerSectionElement()) {
+        // enlarge cut face for inner and outer component segment sections
+        double eta, xsi;
+        GetEtaXsi(i, eta, xsi);
+        if (i == 1 && (eta < 1.E-6 || 1 - eta < 1.E-6)) {
             gp_Vec sparDir(outerPoint, innerPoint);
             p1.Translate(bboxSize * sparDir.Normalized());
             p2.Translate(bboxSize * sparDir.Normalized());
         }
-        // only extend in case the definition is not inside a section
-        if (sparsNode.GetSparPositions().GetSparPosition(outerPositionUID).isOnOuterSectionElement()) {
+
+        GetEtaXsi(i + 1, eta, xsi);
+        if (i == m_sparPositionUIDs.GetSparPositionUIDCount() - 1 && (eta < 1.E-6 || 1 - eta < 1.E-6)) {
             gp_Vec sparDir(innerPoint, outerPoint);
             p3.Translate(bboxSize * sparDir.Normalized());
             p4.Translate(bboxSize * sparDir.Normalized());

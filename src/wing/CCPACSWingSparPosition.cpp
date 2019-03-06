@@ -17,10 +17,13 @@
 #include "CCPACSWingSparPosition.h"
 
 #include "CCPACSWingCSStructure.h"
+#include "CCPACSWingSegment.h"
+#include "CCPACSWingComponentSegment.h"
 #include "CCPACSWingSpars.h"
 #include "CTiglError.h"
 #include "CPACSWingRibPoint.h"
 #include "CPACSEtaXsiPoint.h"
+#include "CTiglUIDManager.h"
 
 
 namespace tigl
@@ -115,5 +118,35 @@ int WingRibPointGetRibNumber(const generated::CPACSWingRibPoint& ribPoint)
     return ribPoint.GetRibNumber().value_or(1);
 }
 
+std::string WingSparPosGetElementUID(const CCPACSWingSparPosition & pos)
+{
+    if (!pos.isOnSectionElement()) {
+        throw CTiglError("Spar Postitiong is not on section element");
+    }
+
+    const CTiglUIDManager::TypedPtr tp = pos.GetUIDManager().ResolveObject(pos.GetEtaXsiPoint().GetReferenceUID());
+    if (tp.type == &typeid(CCPACSWingComponentSegment)) {
+        const CCPACSWingComponentSegment& cs = *reinterpret_cast<CCPACSWingComponentSegment*>(tp.ptr);
+        const SegmentList& segments = cs.GetSegmentList();
+        if (pos.isOnInnerSectionElement()) {
+            return segments.front()->GetInnerSectionElementUID();
+        }
+        else {
+            return segments.back()->GetOuterSectionElementUID();
+        }
+    }
+    else if (tp.type == &typeid(CCPACSWingSegment)) {
+        const CCPACSWingSegment& segment = *reinterpret_cast<CCPACSWingSegment*>(tp.ptr);
+        if (pos.isOnInnerSectionElement()) {
+            return segment.GetInnerSectionElementUID();
+        }
+        else {
+            return segment.GetOuterSectionElementUID();
+        }
+    }
+    else {
+        throw CTiglError("'" + pos.GetEtaXsiPoint().GetReferenceUID() + "' in not a wing segment or a component segment.");
+    }
+}
 
 } // end namespace tigl
