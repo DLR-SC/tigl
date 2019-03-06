@@ -50,8 +50,12 @@ class ModificatorManager : public QObject
 {
     Q_OBJECT
 
+signals:
+    void configurationEdited();
+
 public slots:
     void dispatch(cpcr::CPACSTreeItem* item);
+    void forwardConfigurationEdited();
 
 public:
     ModificatorManager(CPACSTreeWidget* treeWidget, ModificatorContainerWidget* modificatorContainerWidget);

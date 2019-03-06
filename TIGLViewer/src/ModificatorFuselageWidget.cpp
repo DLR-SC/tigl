@@ -18,6 +18,7 @@
 
 #include "ModificatorFuselageWidget.h"
 #include "ui_ModificatorFuselageWidget.h"
+#include "CCPACSConfiguration.h"
 
 ModificatorFuselageWidget::ModificatorFuselageWidget(QWidget* parent)
     : ModificatorWidget(parent)
@@ -46,36 +47,38 @@ ModificatorFuselageWidget::~ModificatorFuselageWidget()
 
 void ModificatorFuselageWidget::setFuselage(tigl::CCPACSFuselage& newFuselage)
 {
-    /*
+    
     this->fuselage = &newFuselage;
 
     // we disconnect signals from comboboxes because we do not want to call this routine when we set the combobox item
-    disconnect(comboBoxLengthE1, SIGNAL(currentIndexChanged(int)), this, SLOT(setPartialLengthFromComboBoxes()));
-    disconnect(comboBoxLengthE2, SIGNAL(currentIndexChanged(int)), this, SLOT(setPartialLengthFromComboBoxes()));
-    disconnect(spinBoxPartialLength, SIGNAL(valueChanged(double)), this, SLOT(recomputeTotalLength(double)));
-    disconnect(comboBoxRadiusBE1, SIGNAL(currentIndexChanged(int)), this, SLOT(setRadiusBetweenFromComboBoxes()));
-    disconnect(comboBoxRadiusBE2, SIGNAL(currentIndexChanged(int)), this, SLOT(setRadiusBetweenFromComboBoxes()));
+    disconnect(ui->comboBoxLengthE1, SIGNAL(currentIndexChanged(int)), this, SLOT(setPartialLengthFromComboBoxes()));
+    disconnect(ui->comboBoxLengthE2, SIGNAL(currentIndexChanged(int)), this, SLOT(setPartialLengthFromComboBoxes()));
+    disconnect(ui->spinBoxPartialLength, SIGNAL(valueChanged(double)), this, SLOT(recomputeTotalLength(double)));
+    disconnect(ui->comboBoxRadiusBE1, SIGNAL(currentIndexChanged(int)), this, SLOT(setRadiusBetweenFromComboBoxes()));
+    disconnect(ui->comboBoxRadiusBE2, SIGNAL(currentIndexChanged(int)), this, SLOT(setRadiusBetweenFromComboBoxes()));
 
     internalLength = fuselage->GetLength();
-    spinBoxLength->setValue(internalLength);
+    ui->spinBoxLength->setValue(internalLength);
 
-    std::vector<std::string> fusleageGraph = fuselage->GetCreatorGraph().getGraphAsVector();
+
+    std::vector<std::string> connectionElementUIDs = fuselage->GetConnectionElementUIDs();
     QStringList elementsUids;
-    for (int i = 0; i < fusleageGraph.size(); i++) {
-        elementsUids.push_back(QString(fusleageGraph[i].c_str()));
+    for (int i = 0; i < connectionElementUIDs.size(); i++) {
+        elementsUids.push_back(QString(connectionElementUIDs[i].c_str()));
     }
-
-    comboBoxLengthE1->clear();
-    comboBoxLengthE1->addItems(elementsUids);
-    comboBoxLengthE2->clear();
-    comboBoxLengthE2->addItems(elementsUids);
-    comboBoxLengthE2->setCurrentIndex(elementsUids.size() - 1); // set the last element of the list
+     
+    ui->comboBoxLengthE1->clear();
+    ui->comboBoxLengthE1->addItems(elementsUids);
+    ui->comboBoxLengthE2->clear();
+    ui->comboBoxLengthE2->addItems(elementsUids);
+    ui->comboBoxLengthE2->setCurrentIndex(elementsUids.size() - 1); // set the last element of the list
     setPartialLengthFromComboBoxes();
     // do total length after partial length, because changing partial can change total
     internalLength = fuselage->GetLength();
-    spinBoxLength->setValue(internalLength);
+    ui->spinBoxLength->setValue(internalLength);
     //widgetLengthDetails->setVisible(false);
 
+    /*
     // radius & circumference
     comboBoxRadiusBE1->clear();
     comboBoxRadiusBE1->addItems(elementsUids);
@@ -87,13 +90,14 @@ void ModificatorFuselageWidget::setFuselage(tigl::CCPACSFuselage& newFuselage)
     internalRadius = (fuselage->GetMaximalCircumferenceOfElements()) / M_PI;
     spinBoxRadius->setValue(internalRadius);
     //widgetRadiusDetails->setVisible(false);
-
-    connect(comboBoxLengthE1, SIGNAL(currentIndexChanged(int)), this, SLOT(setPartialLengthFromComboBoxes()));
-    connect(comboBoxLengthE2, SIGNAL(currentIndexChanged(int)), this, SLOT(setPartialLengthFromComboBoxes()));
-    connect(spinBoxPartialLength, SIGNAL(valueChanged(double)), this, SLOT(recomputeTotalLength(double)));
-    connect(comboBoxRadiusBE1, SIGNAL(currentIndexChanged(int)), this, SLOT(setRadiusBetweenFromComboBoxes()));
-    connect(comboBoxRadiusBE2, SIGNAL(currentIndexChanged(int)), this, SLOT(setRadiusBetweenFromComboBoxes()));
-     */
+    */
+     
+    connect(ui->comboBoxLengthE1, SIGNAL(currentIndexChanged(int)), this, SLOT(setPartialLengthFromComboBoxes()));
+    connect(ui->comboBoxLengthE2, SIGNAL(currentIndexChanged(int)), this, SLOT(setPartialLengthFromComboBoxes()));
+    connect(ui->spinBoxPartialLength, SIGNAL(valueChanged(double)), this, SLOT(recomputeTotalLength(double)));
+    connect(ui->comboBoxRadiusBE1, SIGNAL(currentIndexChanged(int)), this, SLOT(setRadiusBetweenFromComboBoxes()));
+    connect(ui->comboBoxRadiusBE2, SIGNAL(currentIndexChanged(int)), this, SLOT(setRadiusBetweenFromComboBoxes()));
+    
 }
 
 // inverse the visibility
@@ -124,22 +128,22 @@ void ModificatorFuselageWidget::expendLengthDetails(bool checked)
 {
 
     ui->widgetLengthDetails->setVisible(!(ui->widgetLengthDetails->isVisible()));
-    /*
-    if (widgetLengthDetails->isVisible()) {
+
+    if (ui->widgetLengthDetails->isVisible()) {
         // Reset the values to the file values, avoid modifying from details and main at the same time
         internalLength = fuselage->GetLength();
-        spinBoxLength->setValue(internalLength);
+        ui->spinBoxLength->setValue(internalLength);
         setPartialLengthFromComboBoxes();
-        spinBoxLength->setReadOnly(true);
+        ui->spinBoxLength->setReadOnly(true);
     }
     else {
         // Reset the values to the file values, avoid modifying from details and main at the same time
         internalLength = fuselage->GetLength();
-        spinBoxLength->setValue(internalLength);
+        ui->spinBoxLength->setValue(internalLength);
         setPartialLengthFromComboBoxes();
-        spinBoxLength->setReadOnly(false);
+        ui->spinBoxLength->setReadOnly(false);
     }
-     */
+
 }
 
 void ModificatorFuselageWidget::setRadiusBetweenFromComboBoxes()
@@ -153,51 +157,54 @@ void ModificatorFuselageWidget::setRadiusBetweenFromComboBoxes()
 
 void ModificatorFuselageWidget::setPartialLengthFromComboBoxes()
 {
-    /*
-    QString uid1          = comboBoxLengthE1->currentText();
-    QString uid2          = comboBoxLengthE2->currentText();
+
+    QString uid1          = ui->comboBoxLengthE1->currentText();
+    QString uid2          = ui->comboBoxLengthE2->currentText();
     internalPartialLength = fuselage->GetLengthBetween(uid1.toStdString(), uid2.toStdString());
     // we reset the display value of total length, because the old displayed value can be have modified by recomputeTotalLength
-    spinBoxLength->setValue(internalLength);
-    spinBoxPartialLength->setValue(internalPartialLength);*/
+    ui->spinBoxLength->setValue(internalLength);
+    ui->spinBoxPartialLength->setValue(internalPartialLength);
 }
 
 // call when a new partial length is set
 void ModificatorFuselageWidget::recomputeTotalLength(double newPartialLength)
 {
 
-    /*    if (!(isApprox(newPartialLength, internalPartialLength))) { // avoid diff between spin box implementation and double
+    if (!(isApprox(newPartialLength, internalPartialLength))) { // avoid diff between spin box implementation and double
         double diff = newPartialLength - internalPartialLength;
-        spinBoxLength->setValue(internalLength + diff);
-    }*/
+        ui->spinBoxLength->setValue(internalLength + diff);
+    }
 }
 
 void ModificatorFuselageWidget::apply()
 {
 
-    /*   bool lengthHasChanged        = ((!isApprox(internalLength, spinBoxLength->value())));
-    bool partialLengthHasChanged = (!isApprox(internalPartialLength, spinBoxPartialLength->value()));
+    bool lengthHasChanged = ((!isApprox(internalLength, ui->spinBoxLength->value())));
+
+    bool partialLengthHasChanged = (!isApprox(internalPartialLength, ui->spinBoxPartialLength->value()));
     // if expend length details is shown, the details modifications prime on the main modif interface
-    bool isPartialLengthCase = widgetLengthDetails->isVisible();
+    bool isPartialLengthCase = ui->widgetLengthDetails->isVisible();
+    /*
     bool radiusHasChanged = ( ! isApprox(internalRadius, spinBoxRadius->value()) );
     bool radiusBetweenHasChanged = ( ! isApprox(internalRadiusBetween, spinBoxRadiusBetween->value()));
     bool isRadiusBetweenCase = widgetRadiusDetails->isVisible();
-
+*/
     bool wasModified = false;
 
     if (lengthHasChanged && (!isPartialLengthCase)) {
-        internalLength = spinBoxLength->value();
+        internalLength = ui->spinBoxLength->value();
         fuselage->SetLength(internalLength);
         wasModified = true;
     }
+
     if (partialLengthHasChanged && isPartialLengthCase) {
-        internalPartialLength = spinBoxPartialLength->value();
-        QString uid1          = comboBoxLengthE1->currentText();
-        QString uid2          = comboBoxLengthE2->currentText();
+        internalPartialLength = ui->spinBoxPartialLength->value();
+        QString uid1          = ui->comboBoxLengthE1->currentText();
+        QString uid2          = ui->comboBoxLengthE2->currentText();
         fuselage->SetLengthBetween(uid1.toStdString(), uid2.toStdString(), internalPartialLength);
         wasModified = true;
     }
-
+    /*
     if(radiusHasChanged && (!isRadiusBetweenCase)){
         internalRadius = spinBoxRadius->value();
         fuselage->SetMaximalCircumferenceOfElements(internalRadius * M_PI);
@@ -212,25 +219,24 @@ void ModificatorFuselageWidget::apply()
         wasModified = true;
     }
 
-    if(wasModified){
-        // we reset to be sure that each internal values is coorectly set
+     */
+    if (wasModified) {
+        // we reset to be sure that each internal values is correctly set
         reset();
-    }*/
+    }
 
-    //Todo: what we need to do XD
-    /*
-   if(lengthHasChanged || partialLengthHasChanged || circumferenceHasChanged ){
-       associateManager->adapter->writeToFile();
-   }
-   */
+    if (lengthHasChanged) {
+        // write in tixi memory
+        fuselage->GetConfiguration().WriteCPACS(fuselage->GetConfiguration().GetUID());
+    }
 }
 
 void ModificatorFuselageWidget::reset()
 {
-    /* if (fuselage != nullptr) {
+    if (fuselage != nullptr) {
         this->setFuselage(*fuselage);
     }
     else {
         LOG(WARNING) << "ModificatorWingWidget: reset call but wing is not set!";
-    }*/
+    }
 }

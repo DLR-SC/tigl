@@ -84,6 +84,8 @@ public slots:
 
     //update function for modificator
 
+    void updateScene(); 
+    
 private slots:
     void updateMenus();
     void newFile();
