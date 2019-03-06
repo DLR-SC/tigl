@@ -541,6 +541,7 @@ CCPACSEngine& CCPACSConfiguration::GetEngine(const std::string& uid) const
         if (GetEngines()) {
             return GetEngines()->GetEngine(uid);
         }
+        throw CTiglError("Could not find engine with uID" + uid, TIGL_NOT_FOUND);
     }
     catch(...) {
         throw CTiglError("Could not find engine with uID" + uid, TIGL_NOT_FOUND);
