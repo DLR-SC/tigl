@@ -30,6 +30,7 @@
 #include "CCPACSFuselageSegment.h"
 #include "CCPACSConfiguration.h"
 #include <iostream>
+#include "tiglcommonfunctions.h"
 
 namespace tigl
 {
@@ -149,6 +150,65 @@ CTiglTransformation CTiglFuselageConnection::GetSectionElementTransformation() c
         }  
     }
     return transformation;
+}
+
+CTiglTransformation CTiglFuselageConnection::GetFuselageTransformation() const
+{
+    CCPACSFuselage& fuselage           = segment->GetFuselage();
+    CTiglTransformation transformation = fuselage.GetTransformationMatrix();
+    return transformation;
+}
+
+CTiglTransformation CTiglFuselageConnection::GetTotalTransformation(TiglCoordinateSystem referenceCS) const
+{
+    // Do section element transformation on points
+    tigl::CTiglTransformation totalTransformation = GetSectionElementTransformation();
+
+    // Do section transformations
+    totalTransformation.PreMultiply(GetSectionTransformation());
+
+    // Do positioning transformations
+    boost::optional<tigl::CTiglTransformation> positioningTransformation = GetPositioningTransformation();
+    if (positioningTransformation) {
+        totalTransformation.PreMultiply(*positioningTransformation);
+    }
+
+    switch (referenceCS) {
+    case FUSELAGE_COORDINATE_SYSTEM:
+        return totalTransformation;
+    case GLOBAL_COORDINATE_SYSTEM:
+        totalTransformation.PreMultiply(GetFuselageTransformation());
+        return totalTransformation;
+    default:
+        throw CTiglError("Invalid coordinate system passed to CCPACSFuselageSegment::GetStartWire");
+    }
+}
+
+TopoDS_Wire CTiglFuselageConnection::GetWire(TiglCoordinateSystem referenceCS) const
+{
+    const CCPACSFuselageProfile& profile = GetProfile();
+    TopoDS_Wire wire                     = profile.GetWire(true);
+
+    TopoDS_Shape transformedWire = GetTotalTransformation(referenceCS).Transform(wire);
+
+    // Cast shapes to wires, see OpenCascade documentation
+    if (transformedWire.ShapeType() != TopAbs_WIRE) {
+        throw tigl::CTiglError("Wrong shape type in CCPACSFuselageSegment::transformProfileWire", TIGL_ERROR);
+    }
+
+    return TopoDS::Wire(transformedWire);
+}
+
+CTiglPoint CTiglFuselageConnection::GetOrigin(TiglCoordinateSystem referenceCS) const
+{
+    CTiglPoint origin(0, 0, 0);
+    return GetTotalTransformation() * origin;
+}
+
+CTiglPoint CTiglFuselageConnection::GetCenterOfProfile(TiglCoordinateSystem referenceCS) const
+{
+    TopoDS_Wire wire = GetWire(referenceCS);
+    return CTiglPoint(GetCenterOfMass(wire).XYZ());
 }
 
 } // end namespace tigl

@@ -67,6 +67,17 @@ public:
     // Returns the section element matrix referenced by this connection
     TIGL_EXPORT CTiglTransformation GetSectionElementTransformation() const;
 
+    TIGL_EXPORT CTiglTransformation GetFuselageTransformation() const;
+
+    TIGL_EXPORT CTiglTransformation GetTotalTransformation(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM ) const;
+
+    TIGL_EXPORT TopoDS_Wire GetWire(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM ) const;
+
+    TIGL_EXPORT CTiglPoint GetOrigin(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
+
+    TIGL_EXPORT CTiglPoint GetCenterOfProfile( TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
+
+
 private:
     const std::string*             elementUID;   /**< UID in section/elements */
 
