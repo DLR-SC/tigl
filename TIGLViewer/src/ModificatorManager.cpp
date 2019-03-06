@@ -30,6 +30,8 @@ ModificatorManager::ModificatorManager(CPACSTreeWidget* treeWidget,
     // signals:
     connect(treeWidget, SIGNAL(newSelectedTreeItem(cpcr::CPACSTreeItem*)), this,
             SLOT(dispatch(cpcr::CPACSTreeItem*)));
+
+    connect(modificatorContainerWidget, SIGNAL(configurationEdited() ), this, SLOT(forwardConfigurationEdited()) );
 }
 
 void ModificatorManager::setCPACSConfiguration(tigl::CCPACSConfiguration* newConfig)
@@ -74,4 +76,9 @@ void ModificatorManager::dispatch(cpcr::CPACSTreeItem* item)
         modificatorContainerWidget->setNoInterfaceWidget();
         LOG(INFO) << "MODIFICATOR MANAGER: item not suported";
     }
+}
+
+void ModificatorManager::forwardConfigurationEdited()
+{
+    emit configurationEdited();
 }

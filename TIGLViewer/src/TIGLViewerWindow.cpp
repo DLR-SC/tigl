@@ -862,7 +862,7 @@ void TIGLViewerWindow::connectSignals()
     // Addition for creator
 
     // modificatorManager will emit a configurationEdited when he modifies the tigl configuration (for later)
-    // connect(modificatorManager, SIGNAL(configurationEdited()), this, SLOT(updateScene()));
+    connect(modificatorManager, SIGNAL(configurationEdited()), this, SLOT(updateScene()));
     // creator view
     connect(showModificatorAction, SIGNAL(toggled(bool)), editorDockWidget, SLOT(setVisible(bool)));
     connect(editorDockWidget, SIGNAL(visibilityChanged(bool)), showModificatorAction, SLOT(setChecked(bool)));
@@ -1067,6 +1067,11 @@ void TIGLViewerWindow::drawVector()
     getScene()->displayVector(point, dir, stream.str().c_str(), Standard_True, 0,0,0, 1.);
 }
 
+
+void TIGLViewerWindow::updateScene() {
+    myScene->deleteAllObjects();
+    cpacsConfiguration->drawConfiguration();
+}
 
 /// This function is copied from QtCoreLib (>5.1)
 /// and is not available in qt4
