@@ -4050,36 +4050,60 @@
                   <spars>
                     <sparPositions>
                       <sparPosition uID="FS_P1">
-                        <eta>0.0</eta>
-                        <xsi>0.10142</xsi>
+                        <sparPositionEtaXsi>
+                          <eta>0.0</eta>
+                          <xsi>0.10142</xsi>
+                          <referenceUID>D150_VAMP_W1_CompSeg1</referenceUID>
+                        </sparPositionEtaXsi>
                       </sparPosition>
                       <sparPosition uID="FS_P2">
-                        <eta>0.11015</eta>
-                        <xsi>0.10142</xsi>
+                        <sparPositionEtaXsi>
+                          <eta>0.11015</eta>
+                          <xsi>0.10142</xsi>
+                          <referenceUID>D150_VAMP_W1_CompSeg1</referenceUID>
+                        </sparPositionEtaXsi>
                       </sparPosition>
                       <sparPosition uID="FS_P3">
-                        <eta>1.0</eta>
-                        <xsi>0.33692</xsi>
+                        <sparPositionEtaXsi>
+                           <eta>1.0</eta>
+                          <xsi>0.33692</xsi>
+                          <referenceUID>D150_VAMP_W1_CompSeg1</referenceUID>
+                        </sparPositionEtaXsi>
                       </sparPosition>
                       <sparPosition uID="RS_P1">
-                        <eta>0.0</eta>
-                        <xsi>0.56059</xsi>
+                        <sparPositionEtaXsi>
+                          <eta>0.0</eta>
+                          <xsi>0.56059</xsi>
+                          <referenceUID>D150_VAMP_W1_CompSeg1</referenceUID>
+                        </sparPositionEtaXsi>
                       </sparPosition>
                       <sparPosition uID="RS_P2">
-                        <eta>0.11015</eta>
-                        <xsi>0.56059</xsi>
+                        <sparPositionEtaXsi>
+                          <eta>0.11015</eta>
+                          <xsi>0.56059</xsi>
+                          <referenceUID>D150_VAMP_W1_CompSeg1</referenceUID>
+                        </sparPositionEtaXsi>
                       </sparPosition>
                       <sparPosition uID="RS_P3">
-                        <eta>0.28976</eta>
-                        <xsi>0.59347</xsi>
+                        <sparPositionEtaXsi>
+                          <eta>0.28976</eta>
+                          <xsi>0.59347</xsi>
+                          <referenceUID>D150_VAMP_W1_CompSeg1</referenceUID>
+                        </sparPositionEtaXsi>
                       </sparPosition>
                       <sparPosition uID="RS_P4">
-                        <eta>0.78059</eta>
-                        <xsi>0.58808</xsi>
+                        <sparPositionEtaXsi>
+                          <eta>0.78059</eta>
+                          <xsi>0.58808</xsi>
+                          <referenceUID>D150_VAMP_W1_CompSeg1</referenceUID>
+                        </sparPositionEtaXsi>
                       </sparPosition>
                       <sparPosition uID="RS_P5">
-                        <eta>1.0</eta>
-                        <xsi>0.59200</xsi>
+                        <sparPositionEtaXsi>
+                          <eta>1.0</eta>
+                          <xsi>0.59200</xsi>
+                          <referenceUID>D150_VAMP_W1_CompSeg1</referenceUID>
+                        </sparPositionEtaXsi>
                       </sparPosition>
                     </sparPositions>
                     <sparSegments>
