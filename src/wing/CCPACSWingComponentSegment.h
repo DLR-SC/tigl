@@ -88,6 +88,8 @@ public:
 
     // Gets a point in relative wing coordinates for a given eta and xsi
     TIGL_EXPORT gp_Pnt GetPoint(double eta, double xsi, TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
+    TIGL_EXPORT gp_Pnt GetPoint(double eta, double xsi, const std::string& referenceUID,
+                                TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
 
     // Returns the eta xsi coordinates of a points projected onto the midplane / chordface
     TIGL_EXPORT void GetEtaXsi(const gp_Pnt& globalPoint, double& eta, double& xsi) const;
@@ -133,6 +135,8 @@ public:
 
     // returns a list of segments that belong to this component segment
     TIGL_EXPORT const SegmentList& GetSegmentList() const;
+    
+    TIGL_EXPORT const CCPACSWingSegment& GetBelongingSegment(const std::string& segmentUID) const;
         
     // creates an (iso) component segment line 
     TIGL_EXPORT TopoDS_Wire GetCSLine(double eta1, double xsi1, double eta2, double xsi2, int NSTEPS=101);

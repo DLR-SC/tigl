@@ -30,6 +30,8 @@
 
 #include "CCPACSWing.h"
 #include "CCPACSWingCSStructure.h"
+#include "generated/CPACSWingRibPoint.h"
+#include "CCPACSWingRibsDefinition.h"
 #include "CCPACSWingSparPosition.h"
 #include "CCPACSWingSparSegment.h"
 #include "CTiglWingStructureReference.h"
@@ -128,14 +130,7 @@ bool IsOuterSparPointInSection(const std::string& sparUid, double eta, const CCP
         return false;
     }
     const CCPACSWingSparPosition& pos = sparSegment.GetSparPosition(sparSegment.GetSparPositionUIDs().GetSparPositionUID(sparPositionIndex));
-    if (pos.GetInputType() == CCPACSWingSparPosition::ElementUID) {
-        return true;
-    }
-    else if (pos.GetInputType() == CCPACSWingSparPosition::Eta &&
-             (pos.GetEta() < Precision::Confusion() || pos.GetEta() > 1 - Precision::Confusion())) {
-        return true;
-    }
-    return false;
+    return pos.isOnSectionElement();
 }
 
 gp_Vec GetUpVectorWithoutXRotation(const std::string& ribReference, double currentEta, const gp_Pnt& startPnt, 
@@ -277,21 +272,30 @@ gp_Pnt GetRibDefinitionPoint(const std::string& definition, const TopoDS_Face& r
     return definitionPoint;
 }
 
+gp_Pnt GetRibChordlinePoint(const tigl::CCPACSWingCSStructure& structure, const std::string& ribUID, int ribNumber, double xsi)
+{
+
+    const tigl::CCPACSWingRibsDefinition& ribs = structure.GetRibsDefinition(ribUID);
+    gp_Pnt pStart, pEnd;
+    ribs.GetRibMidplanePoints(ribNumber, pStart, pEnd);
+    
+    // linear interpolate between start and endpoint of rib
+    return pStart.XYZ() * (1. - xsi) + pEnd.XYZ() * xsi;
+}
+
 gp_Pnt GetSparMidplanePoint(const CCPACSWingSparPosition& sparPos, const CCPACSWingCSStructure& structure)
 {
     const CTiglWingStructureReference wsr(structure);
-    gp_Pnt midplanePoint;
-    if (sparPos.GetInputType() == CCPACSWingSparPosition::ElementUID) {
-        const CCPACSWingComponentSegment& componentSegment = wsr.GetWingComponentSegment();
-        midplanePoint = getSectionElementChordlinePoint(componentSegment, sparPos.GetElementUID(), sparPos.GetXsi());
+    if (sparPos.GetSparPositionRib_choice1()) {
+        int ribNumber = WingRibPointGetRibNumber(*sparPos.GetSparPositionRib_choice1());
+        return GetRibChordlinePoint(structure, sparPos.GetReferenceUID(), ribNumber, sparPos.GetXsi());
     }
-    else if (sparPos.GetInputType() == CCPACSWingSparPosition::Eta) {
-        midplanePoint = wsr.GetPoint(sparPos.GetEta(), sparPos.GetXsi(), WING_COORDINATE_SYSTEM);
+    else if (sparPos.GetSparPositionEtaXsi_choice2()) {
+        return wsr.GetPoint(sparPos.GetEta(), sparPos.GetXsi(), sparPos.GetReferenceUID(), WING_COORDINATE_SYSTEM);
     }
     else {
         throw CTiglError("Unknown SparPosition InputType found in CCPACSWingRibsDefinition::GetSparMidplanePoint");
     }
-    return midplanePoint;
 }
 
 void CheckSparPositionOnReference(const std::string& sparPositionUID, const std::string& ribReference,

@@ -211,20 +211,32 @@
                   <spars>
                     <sparPositions>
                       <sparPosition uID="Wing_CS_spar1_Pos1">
-                        <eta>0.0</eta>
-                        <xsi>0.2</xsi>
+                        <sparPositionEtaXsi>
+                          <eta>0.0</eta>
+                          <xsi>0.2</xsi>
+                          <referenceUID>Wing_segment1</referenceUID>
+                        </sparPositionEtaXsi>
                       </sparPosition>
                       <sparPosition uID="Wing_CS_spar1_Pos2">
-                        <eta>0.4</eta>
-                        <xsi>0.4</xsi>
+                        <sparPositionEtaXsi>
+                          <eta>0.4</eta>
+                          <xsi>0.4</xsi>
+                          <referenceUID>CS1</referenceUID>
+                        </sparPositionEtaXsi>
                       </sparPosition>
                       <sparPosition uID="Wing_CS_spar1_Pos3">
-                        <eta>0.9</eta>
-                        <xsi>0.5</xsi>
+                         <sparPositionEtaXsi>
+                          <eta>0.9</eta>
+                          <xsi>0.5</xsi>
+                          <referenceUID>Wing_segment1</referenceUID>
+                        </sparPositionEtaXsi>
                       </sparPosition>
                       <sparPosition uID="Wing_CS_spar1_Pos4">
-                        <eta>1.0</eta>
-                        <xsi>0.3</xsi>
+                        <sparPositionEtaXsi>
+                          <eta>1.0</eta>
+                          <xsi>0.3</xsi>
+                          <referenceUID>CS1</referenceUID>
+                        </sparPositionEtaXsi>
                       </sparPosition>
                     </sparPositions>
                     <sparSegments>

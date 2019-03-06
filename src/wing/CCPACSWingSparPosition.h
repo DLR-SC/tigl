@@ -22,31 +22,34 @@ namespace tigl
 {
 
 // forward declarations
-class CCPACSWingSpars;
-
+namespace generated
+{
+  class CPACSWingRibPoint;
+  class CPACSEtaXsiPoint;
+}
 
 class CCPACSWingSparPosition : public generated::CPACSSparPosition
 {
 public:
-    enum InputType
-    {
-        ElementUID,
-        Eta,
-        None
-    };
-
     TIGL_EXPORT CCPACSWingSparPosition(CCPACSWingSparPositions* sparPositions, CTiglUIDManager* uidMgr);
 
-    TIGL_EXPORT InputType GetInputType() const;
+    TIGL_EXPORT bool isOnInnerSectionElement() const;
+    TIGL_EXPORT bool isOnOuterSectionElement() const;
+    TIGL_EXPORT bool isOnSectionElement() const;
+    TIGL_EXPORT bool isOnRib() const;
 
-    TIGL_EXPORT const std::string& GetElementUID() const;
-    TIGL_EXPORT void SetElementUID(const std::string&);
+    //TIGL_EXPORT InputType GetInputType() const;
+    
+    TIGL_EXPORT const std::string& GetReferenceUID() const;
 
     TIGL_EXPORT double GetEta() const;
-    TIGL_EXPORT void SetEta(double value);
-
-    TIGL_EXPORT void SetXsi(const double& value) OVERRIDE;
+    TIGL_EXPORT double GetXsi() const;
+    
+    TIGL_EXPORT const generated::CPACSWingRibPoint& GetRibPoint() const;
+    TIGL_EXPORT const generated::CPACSEtaXsiPoint &GetEtaXsiPoint() const;
 };
+
+TIGL_EXPORT int WingRibPointGetRibNumber(const generated::CPACSWingRibPoint&);
 
 } // end namespace tigl
 
