@@ -128,12 +128,31 @@ public:
     TIGL_EXPORT TopoDS_Wire projectConic(TopoDS_Shape wireOrEdge, gp_Pnt origin) const;
     TIGL_EXPORT TopoDS_Wire projectParallel(TopoDS_Shape wireOrEdge, gp_Dir direction) const;
 
+    /*
+     * Creator functions
+     */
+
+    // return the element uid that is considered as the noise element
+    TIGL_EXPORT std::string GetNoiseUID();
+
+    // return the element uid that is considered as the tail element
+    TIGL_EXPORT std::string GetTailUID();
+
+    // Return the elements that form the connections in this fuselage
+    TIGL_EXPORT std::vector<std::string> GetConnectionElementUIDs();
+
     // Gets the total length of this fuselage
     TIGL_EXPORT double GetLength();
 
     // Gets the length between the two fuselage elements given as arguments
-    TIGL_EXPORT double GetLengthBetween(const std::string& startElementUID, const std::string& endElementUID );
+    TIGL_EXPORT double GetLengthBetween(const std::string& startElementUID, const std::string& endElementUID);
 
+    // Sets the total length of this fuselage. (The noise keeps its position.)
+    TIGL_EXPORT void SetLength(double newLength);
+
+    // Sets the total length of this fuselage. (The noise keeps its position.)
+    TIGL_EXPORT void SetLengthBetween(const std::string& startElementUID, const std::string& endElementUID,
+                                      double newPartialLength);
 
 protected:
     void BuildGuideCurves(TopoDS_Compound& cache) const;

@@ -123,17 +123,43 @@ void CCPACSFuselageSegments::ReorderSegments()
     }
 }
 
-CCPACSFuselageSegment& CCPACSFuselageSegments::GetSegmentByElement(const std::string& elementUID)
+CTiglFuselageConnection& CCPACSFuselageSegments::GetConnection(const std::string& elementUID) const
 {
-
     for (std::size_t i = 0; i < m_segments.size(); i++) {
-        if (m_segments[i]->GetStartSectionElementUID() == elementUID ||
-            m_segments[i]->GetEndSectionElementUID() == elementUID) {
-            return *m_segments[i];
+        CTiglFuselageConnection& startConnection = m_segments[i]->GetStartConnection();
+        CTiglFuselageConnection& endConnection   = m_segments[i]->GetEndConnection();
+        if (startConnection.GetSectionElementUID() == elementUID) {
+            return startConnection;
+        }
+        if (endConnection.GetSectionElementUID() == elementUID) {
+            return endConnection;
         }
     }
 
-    throw CTiglError("Invalid uid in CCPACSFuselageSegments::GetSegmentByElement", TIGL_UID_ERROR);
+    throw CTiglError("Invalid uid in CCPACSFuselageSegments::GetConnection", TIGL_UID_ERROR);
+}
+
+std::vector<CTiglFuselageConnection*> CCPACSFuselageSegments::GetConnections() const
+{
+    std::vector<CTiglFuselageConnection*> connections;
+    std::vector<std::string> insertedUID;
+
+    for (std::size_t i = 0; i < m_segments.size(); i++) {
+        CTiglFuselageConnection& startConnection = m_segments[i]->GetStartConnection();
+        CTiglFuselageConnection& endConnection   = m_segments[i]->GetEndConnection();
+        // check if the connection is allready contains in the list
+        if (std::find(insertedUID.begin(), insertedUID.end(), startConnection.GetSectionElementUID()) ==
+            insertedUID.end()) {
+            connections.push_back(&startConnection);
+            insertedUID.push_back(startConnection.GetSectionElementUID());
+        }
+        if (std::find(insertedUID.begin(), insertedUID.end(), endConnection.GetSectionElementUID()) ==
+            insertedUID.end()) {
+            connections.push_back(&endConnection);
+            insertedUID.push_back(endConnection.GetSectionElementUID());
+        }
+    }
+    return connections;
 }
 
 } // end namespace tigl

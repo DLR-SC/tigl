@@ -133,6 +133,9 @@ private:
 
 TIGL_EXPORT CTiglTransformation operator*(const CTiglTransformation& a, const CTiglTransformation& b);
 
+// multiply the CTiglPoint by the CTiglTransformation matrix (taking care of to augment the CTiglPoint)  and return the result
+TIGL_EXPORT CTiglPoint operator*(const CTiglTransformation& m, const CTiglPoint& p);
+
 } // end namespace tigl
 
 #endif // CTIGLTRANSFORMATION_H

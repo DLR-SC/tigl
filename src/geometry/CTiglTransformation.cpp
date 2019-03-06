@@ -596,4 +596,25 @@ CTiglTransformation operator*(const CTiglTransformation & a, const CTiglTransfor
     return result;
 }
 
+CTiglPoint operator*(const CTiglTransformation& m, const CTiglPoint& p)
+{
+
+    double augmented_pnt[4] = {p.x, p.y, p.z, 1.0};
+    double res_matrix[4]    = {
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+    };
+
+    for (int row = 0; row < 4; row++) {
+        for (int col = 0; col < 4; col++) {
+            res_matrix[row] += (m.GetValue(row, col) * augmented_pnt[col]);
+        }
+    }
+
+    CTiglPoint result(res_matrix[0], res_matrix[1], res_matrix[2]);
+    return result;
+}
+
 } // end namespace tigl

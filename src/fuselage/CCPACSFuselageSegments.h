@@ -23,6 +23,7 @@
 #define CCPACSFUSELAGESEGMENTS_H
 
 #include "generated/CPACSFuselageSegments.h"
+#include "CTiglFuselageConnection.h"
 
 namespace tigl
 {
@@ -43,11 +44,13 @@ public:
     // Gets a segment by uid 
     TIGL_EXPORT CCPACSFuselageSegment & GetSegment(const std::string& segmentUID);
 
-    // Return the the first segement that contains the given element uid;
-    TIGL_EXPORT CCPACSFuselageSegment & GetSegmentByElement(const std::string& elementUID);
-
     // Gets total segment count
     TIGL_EXPORT int GetSegmentCount() const;
+
+    TIGL_EXPORT CTiglFuselageConnection& GetConnection(const std::string& elementUID) const;
+
+    // return once all connections that create the fuselage
+    TIGL_EXPORT std::vector<CTiglFuselageConnection*> GetConnections() const;
 
     // CPACSFuselageSegments interface
 public:
