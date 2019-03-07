@@ -21,6 +21,7 @@
 #include "CNamedShape.h"
 #include "CTiglUIDManager.h"
 #include "CTiglPatchShell.h"
+#include "Debugging.h"
 
 #include <BRep_Builder.hxx>
 #include <Precision.hxx>
@@ -57,7 +58,7 @@ PNamedShape CCPACSNacelleCenterCowl::BuildLoft() const
     TopoDS_Edge edge = TopoDS::Edge(curvemap(1));
 
 #ifdef DEBUG
-    BRepTools::Write(edge,"nacelleCenterCowlCurve.brep");
+    dumpShape(edge, "debugShapes", "nacelleCenterCowlCurve");
 #endif
 
     TopoDS_Face face = TopoDS::Face(BRepPrimAPI_MakeRevol(edge, ax));
