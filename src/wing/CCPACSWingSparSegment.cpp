@@ -705,4 +705,41 @@ bool PointIsInfrontSparGeometry(gp_Dir nNormal, gp_Pnt nTestPoint, TopoDS_Shape 
     return false;
 }
 
+bool HasRecursiveSparPositionDefined(const CCPACSWingSparPosition& position, const std::string& sparUID)
+{
+    // check, that in case of rib positioning, the rib does not reference the spar itself
+    if (position.isOnRib()) {
+        std::string ribUID = position.GetReferenceUID();
+        const CCPACSWingRibsDefinition& ribs = position.GetUIDManager().ResolveObject<CCPACSWingRibsDefinition>(ribUID);
+        if (ribs.GetRibsPositioning_choice1()) {
+            const CCPACSWingRibsPositioning& pos = ribs .GetRibsPositioning_choice1().value();
+            if (pos.GetRibEnd() == sparUID|| pos.GetRibStart() == sparUID) {
+                LOG(ERROR) << "Recursive reference of spar positioning '" << position.GetUID() << "' and ribs definition '" << ribs.GetDefaultedUID() << "'.";
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+void CCPACSWingSparSegment::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
+{
+    generated::CPACSSparSegment::ReadCPACS(tixiHandle, xpath);
+
+    // The spar positioning on a rib works, as long as the referenced rib does not reference the spar
+    // as the leading or trailing edge of the rib. We must test this case and throw an error otherwise
+    bool hasError = false;
+    for (std::string sparPositionUID : GetSparPositionUIDs().GetSparPositionUIDs()) {
+        const CCPACSWingSparPosition& position = m_uidMgr->ResolveObject<CCPACSWingSparPosition>(sparPositionUID);
+        if (HasRecursiveSparPositionDefined(position, GetDefaultedUID())) {
+            hasError = true;
+        }
+    }
+
+    if (hasError) {
+        throw CTiglError("Recursive spar/rib definition. Spar '" + GetDefaultedUID() + "' will be skipped.", TIGL_XML_ERROR);
+    }
+}
+
+
 } // end namespace tigl
