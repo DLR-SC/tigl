@@ -139,6 +139,26 @@
 %include "generated/CPACSMaterialDefinition.h"
 %include "CCPACSMaterialDefinition.h"
 
+// ----------------- Engines ---------------------------//
+%boost_optional(tigl::CCPACSEngines)
+%boost_optional(tigl::generated::CPACSEngineNacelle)
+%boost_optional(tigl::CCPACSNacelleCowl)
+%include "generated/CPACSNacelleSections.h"
+%include "CCPACSNacelleSections.h"
+%include "generated/CPACSRotationCurve.h"
+%include "CCPACSRotationCurve.h"
+%include "generated/CPACSNacelleGuideCurves.h"
+%include "CCPACSNacelleGuideCurves.h"
+namespace tigl {
+    class CCPACSNacelleCowl;
+}
+%include "generated/CPACSEngineNacelle.h"
+%include "generated/CPACSNacelleCowl.h"
+%include "CCPACSNacelleCowl.h"
+%include "generated/CPACSEngine.h"
+%include "generated/CPACSEngines.h"
+%include "CCPACSEngines.h"
+
 // ---------------- Control surfaces ------------------ //
 %boost_optional(tigl::generated::CPACSControlSurfaceTrackType_trackSubType)
 %boost_optional(tigl::generated::CPACSTrackFairing)

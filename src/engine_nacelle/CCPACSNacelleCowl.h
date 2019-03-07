@@ -30,8 +30,7 @@ class CCPACSNacelleCowl : public generated::CPACSNacelleCowl
 public:
     // Constructor
     TIGL_EXPORT CCPACSNacelleCowl(CCPACSEngineNacelle* parent, CTiglUIDManager* uidMgr);
-
-    PNamedShape BuildLoft() const;
+    TIGL_EXPORT PNamedShape BuildLoft() const;
 
 private:
     struct WireCache {
