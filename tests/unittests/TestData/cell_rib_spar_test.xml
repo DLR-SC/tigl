@@ -238,6 +238,20 @@
                           <referenceUID>CS1</referenceUID>
                         </sparPositionEtaXsi>
                       </sparPosition>
+                      <sparPosition uID="Wing_CS_spar2_Pos1">
+                        <sparPositionRib>
+                          <ribDefinitionUID>Wing_CS_RibDef1</ribDefinitionUID>
+                          <ribNumber>1</ribNumber>
+                          <xsi>0.6</xsi>
+                        </sparPositionRib>
+                      </sparPosition>
+                      <sparPosition uID="Wing_CS_spar2_Pos2">
+                        <sparPositionRib>
+                          <ribDefinitionUID>Wing_CS_RibDef1</ribDefinitionUID>
+                          <ribNumber>2</ribNumber>
+                          <xsi>0.6</xsi>
+                        </sparPositionRib>
+                      </sparPosition>
                     </sparPositions>
                     <sparSegments>
                       <sparSegment uID="Wing_CS_spar1">
@@ -257,6 +271,23 @@
                               <materialUID>
             										materialUID
             									</materialUID>
+                            </material>
+                            <relPos>0.0</relPos>
+                          </web1>
+                          <rotation>0.0</rotation>
+                        </sparCrossSection>
+                      </sparSegment>
+                      <sparSegment uID="Wing_CS_spar2">
+                        <name>Wing_CS_spar2</name>
+                        <description>description</description>
+                        <sparPositionUIDs>
+                          <sparPositionUID>Wing_CS_spar2_Pos1</sparPositionUID>
+                          <sparPositionUID>Wing_CS_spar2_Pos2</sparPositionUID>
+                        </sparPositionUIDs>
+                        <sparCrossSection>
+                          <web1>
+                            <material>
+                              <materialUID>materialUID</materialUID>
                             </material>
                             <relPos>0.0</relPos>
                           </web1>
