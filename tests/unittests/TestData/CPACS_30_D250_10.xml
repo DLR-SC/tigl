@@ -7821,12 +7821,6 @@
           <length>4.65</length>
           <diameter>2.67</diameter>
         </geometry>
-        <nacelle>
-          <diameterMax>
-            <x>3.03</x>
-            <y>3.03</y>
-          </diameterMax>
-        </nacelle>
       </engine>
     </engines>
     <profiles>
