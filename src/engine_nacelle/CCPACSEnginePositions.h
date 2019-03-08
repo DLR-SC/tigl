@@ -27,7 +27,7 @@ namespace tigl
 class CCPACSEnginePositions : public generated::CPACSEnginePositions
 {
 public:
-    CCPACSEnginePositions(CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSEnginePositions(CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT size_t GetEnginePositionCount() const;
     TIGL_EXPORT CCPACSEnginePosition& GetEnginePosition(size_t index) const;

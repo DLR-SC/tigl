@@ -31,7 +31,7 @@ public:
     // Constructor
     TIGL_EXPORT CCPACSNacelleCenterCowl(CCPACSEngineNacelle* parent, CTiglUIDManager* uidMgr);
 
-    PNamedShape BuildLoft() const;
+    TIGL_EXPORT PNamedShape BuildLoft() const;
 
 private:
     TopoDS_Wire GetCurve() const;

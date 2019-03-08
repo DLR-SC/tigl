@@ -143,6 +143,12 @@
 %boost_optional(tigl::CCPACSEngines)
 %boost_optional(tigl::generated::CPACSEngineNacelle)
 %boost_optional(tigl::CCPACSNacelleCowl)
+%boost_optional(tigl::CCPACSNacelleCenterCowl)
+%boost_optional(tigl::CCPACSEnginePositions)
+%include "generated/CPACSEnginePositions.h"
+%include "CCPACSEnginePositions.h"
+%include "generated/CPACSNacelleCenterCowl.h"
+%include "CCPACSNacelleCenterCowl.h"
 %include "generated/CPACSNacelleSections.h"
 %include "CCPACSNacelleSections.h"
 %include "generated/CPACSRotationCurve.h"
