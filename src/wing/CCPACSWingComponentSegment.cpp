@@ -1133,34 +1133,6 @@ bool CCPACSWingComponentSegment::IsSegmentContained(const CCPACSWingSegment& seg
     return isSegmentContained;
 }
 
-const CCPACSWingShell& CCPACSWingComponentSegment::GetUpperShell() const
-{
-    if (!m_structure) {
-        throw CTiglError("no structure existing in CCPACSWingComponentSegment::GetUpperShell!");
-    }
-    return m_structure->GetUpperShell();
-}
-
-CCPACSWingShell& CCPACSWingComponentSegment::GetUpperShell()
-{
-    // forward call to const method
-    return const_cast<CCPACSWingShell&>(static_cast<const CCPACSWingComponentSegment&>(*this).GetUpperShell());
-}
-
-const CCPACSWingShell& CCPACSWingComponentSegment::GetLowerShell() const
-{
-    if (!m_structure) {
-        throw CTiglError("no structure existing in CCPACSWingComponentSegment::GetLowerShell!");
-    }
-    return m_structure->GetLowerShell();
-}
-
-CCPACSWingShell& CCPACSWingComponentSegment::GetLowerShell()
-{
-    // forward call to const method
-    return const_cast<CCPACSWingShell&>(static_cast<const CCPACSWingComponentSegment&>(*this).GetLowerShell());
-}
-
 TopoDS_Shape CCPACSWingComponentSegment::GetMidplaneShape() const
 {
     BRep_Builder builder;
