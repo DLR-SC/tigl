@@ -5325,12 +5325,24 @@
                           <xsi2>0.20</xsi2>
                         </positioningTrailingEdge>
                         <positioningInnerBorder>
-                          <eta1>0.19230</eta1>
-                          <eta2>0.19230</eta2>
+                          <eta1>
+                            <eta>0.1923</eta>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </eta1>
+                          <eta2>
+                            <eta>0.1923</eta>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </eta2>
                         </positioningInnerBorder>
                         <positioningOuterBorder>
-                          <eta1>1.00</eta1>
-                          <eta2>1.00</eta2>
+                          <eta1>
+                            <eta>1</eta>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </eta1>
+                          <eta2>
+                            <eta>1</eta>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </eta2>
                         </positioningOuterBorder>
                       </cell>
                       <!--cell uID="cell_us_cap">
@@ -5373,12 +5385,24 @@
                           <xsi2>0.90</xsi2>
                         </positioningTrailingEdge>
                         <positioningInnerBorder>
-                          <eta1>0.19230</eta1>
-                          <eta2>0.19230</eta2>
+                          <eta1>
+                            <eta>0.1923</eta>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </eta1>
+                          <eta2>
+                            <eta>0.1923</eta>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </eta2>
                         </positioningInnerBorder>
                         <positioningOuterBorder>
-                          <eta1>1.00</eta1>
-                          <eta2>1.00</eta2>
+                          <eta1>
+                            <eta>1</eta>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </eta1>
+                          <eta2>
+                            <eta>1</eta>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </eta2>
                         </positioningOuterBorder>
                       </cell>
                       <cell uID="cell_us_te">
@@ -5397,12 +5421,24 @@
                           <xsi2>1.0</xsi2>
                         </positioningTrailingEdge>
                         <positioningInnerBorder>
-                          <eta1>0.19230</eta1>
-                          <eta2>0.19230</eta2>
+                          <eta1>
+                            <eta>0.1923</eta>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </eta1>
+                          <eta2>
+                            <eta>0.1923</eta>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </eta2>
                         </positioningInnerBorder>
                         <positioningOuterBorder>
-                          <eta1>1.00</eta1>
-                          <eta2>1.00</eta2>
+                          <eta1>
+                            <eta>1</eta>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </eta1>
+                          <eta2>
+                            <eta>1</eta>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </eta2>
                         </positioningOuterBorder>
                       </cell>
                     </cells>
@@ -5722,9 +5758,18 @@
                       <parentUID>D150_wing_CS</parentUID>
                       <outerShape>
                         <innerBorder>
-                          <etaLE>0.11015</etaLE>
-                          <etaTE>0.11015</etaTE>
-                          <xsiLE>0.828</xsiLE>
+                          <etaLE>
+                            <eta>0.11015</eta>
+                            <referenceUID>D150_InnerFlap</referenceUID>
+                          </etaLE>
+                          <etaTE>
+                            <eta>0.11015</eta>
+                            <referenceUID>D150_InnerFlap</referenceUID>
+                          </etaTE>
+                          <xsiLE>
+                            <xsi>0.828</xsi>
+                            <referenceUID>D150_InnerFlap</referenceUID>
+                          </xsiLE>
                           <leadingEdgeShape>
                             <relHeightLE>0.211</relHeightLE>
                             <xsiUpperSkin>0.5</xsiUpperSkin>
@@ -5732,9 +5777,18 @@
                           </leadingEdgeShape>
                         </innerBorder>
                         <outerBorder>
-                          <etaLE>0.3735</etaLE>
-                          <etaTE>0.3735</etaTE>
-                          <xsiLE>0.730</xsiLE>
+                          <etaLE>
+                            <eta>0.3735</eta>
+                            <referenceUID>D150_InnerFlap</referenceUID>
+                          </etaLE>
+                          <etaTE>
+                            <eta>0.3735</eta>
+                            <referenceUID>D150_InnerFlap</referenceUID>
+                          </etaTE>
+                          <xsiLE>
+                            <xsi>0.73</xsi>
+                            <referenceUID>D150_InnerFlap</referenceUID>
+                          </xsiLE>
                           <leadingEdgeShape>
                             <relHeightLE>0.211</relHeightLE>
                             <xsiUpperSkin>0.5</xsiUpperSkin>
@@ -6028,7 +6082,10 @@
                       </path>
                       <tracks>
                         <track uID="TED1FT1">
-                          <eta>0</eta>
+                          <eta>
+                            <eta>0</eta>
+                            <referenceUID>D150_InnerFlap</referenceUID>
+                          </eta>
                           <trackType>trackType3</trackType>
                           <trackSubType>trackSubType2</trackSubType>
                           <actuator uID="TED1_Act_FT1">
@@ -6060,7 +6117,10 @@
                           </trackStructure>
                         </track>
                         <track uID="TED1FT2">
-                          <eta>0.663</eta>
+                          <eta>
+                            <eta>0.663</eta>
+                            <referenceUID>D150_InnerFlap</referenceUID>
+                          </eta>
                           <trackType>trackType3</trackType>
                           <actuator uID="TED1_Act_FT1">
                             <actuatorUID>Act_FT</actuatorUID>
@@ -6098,9 +6158,18 @@
                       <parentUID>D150_wing_CS</parentUID>
                       <outerShape>
                         <innerBorder>
-                          <etaLE>0.3735</etaLE>
-                          <etaTE>0.3735</etaTE>
-                          <xsiLE>0.730</xsiLE>
+                          <etaLE>
+                            <eta>0.3735</eta>
+                            <referenceUID>D150_OuterFlap</referenceUID>
+                          </etaLE>
+                          <etaTE>
+                            <eta>0.3735</eta>
+                            <referenceUID>D150_OuterFlap</referenceUID>
+                          </etaTE>
+                          <xsiLE>
+                            <xsi>0.73</xsi>
+                            <referenceUID>D150_OuterFlap</referenceUID>
+                          </xsiLE>
                           <leadingEdgeShape>
                             <relHeightLE>0.211</relHeightLE>
                             <xsiUpperSkin>0.5</xsiUpperSkin>
@@ -6108,9 +6177,18 @@
                           </leadingEdgeShape>
                         </innerBorder>
                         <outerBorder>
-                          <etaLE>0.779</etaLE>
-                          <etaTE>0.779</etaTE>
-                          <xsiLE>0.723</xsiLE>
+                          <etaLE>
+                            <eta>0.779</eta>
+                            <referenceUID>D150_OuterFlap</referenceUID>
+                          </etaLE>
+                          <etaTE>
+                            <eta>0.779</eta>
+                            <referenceUID>D150_OuterFlap</referenceUID>
+                          </etaTE>
+                          <xsiLE>
+                            <xsi>0.723</xsi>
+                            <referenceUID>D150_OuterFlap</referenceUID>
+                          </xsiLE>
                           <leadingEdgeShape>
                             <relHeightLE>0.211</relHeightLE>
                             <xsiUpperSkin>0.27</xsiUpperSkin>
@@ -6358,7 +6436,10 @@
                       </path>
                       <tracks>
                         <track uID="FT3">
-                          <eta>0.280</eta>
+                          <eta>
+                            <eta>0.28</eta>
+                            <referenceUID>D150_OuterFlap</referenceUID>
+                          </eta>
                           <trackType>trackType3</trackType>
                           <actuator uID="Act_FT1">
                             <actuatorUID>Act_FT</actuatorUID>
@@ -6401,7 +6482,10 @@
                           </trackStructure>
                         </track>
                         <track uID="FT4">
-                          <eta>0.808</eta>
+                          <eta>
+                            <eta>0.808</eta>
+                            <referenceUID>D150_OuterFlap</referenceUID>
+                          </eta>
                           <trackType>trackType3</trackType>
                           <actuator uID="Act_FT1">
                             <actuatorUID>Act_FT</actuatorUID>
@@ -6451,9 +6535,18 @@
                       <parentUID>D150_wing_CS</parentUID>
                       <outerShape>
                         <innerBorder>
-                          <etaLE>0.81268</etaLE>
-                          <etaTE>0.81268</etaTE>
-                          <xsiLE>0.721</xsiLE>
+                          <etaLE>
+                            <eta>0.81268</eta>
+                            <referenceUID>D150_AllSpeedAileron</referenceUID>
+                          </etaLE>
+                          <etaTE>
+                            <eta>0.81268</eta>
+                            <referenceUID>D150_AllSpeedAileron</referenceUID>
+                          </etaTE>
+                          <xsiLE>
+                            <xsi>0.721</xsi>
+                            <referenceUID>D150_AllSpeedAileron</referenceUID>
+                          </xsiLE>
                           <leadingEdgeShape>
                             <relHeightLE>0.5</relHeightLE>
                             <xsiUpperSkin>0.85</xsiUpperSkin>
@@ -6461,9 +6554,18 @@
                           </leadingEdgeShape>
                         </innerBorder>
                         <outerBorder>
-                          <etaLE>0.96</etaLE>
-                          <etaTE>0.96</etaTE>
-                          <xsiLE>0.697</xsiLE>
+                          <etaLE>
+                            <eta>0.96</eta>
+                            <referenceUID>D150_AllSpeedAileron</referenceUID>
+                          </etaLE>
+                          <etaTE>
+                            <eta>0.96</eta>
+                            <referenceUID>D150_AllSpeedAileron</referenceUID>
+                          </etaTE>
+                          <xsiLE>
+                            <xsi>0.697</xsi>
+                            <referenceUID>D150_AllSpeedAileron</referenceUID>
+                          </xsiLE>
                           <leadingEdgeShape>
                             <relHeightLE>0.5</relHeightLE>
                             <xsiUpperSkin>0.85</xsiUpperSkin>
@@ -6665,7 +6767,10 @@
                       </path>
                       <tracks>
                         <track uID="Aileron_Hinge1">
-                          <eta>0.25</eta>
+                          <eta>
+                            <eta>0.25</eta>
+                            <referenceUID>D150_AllSpeedAileron</referenceUID>
+                          </eta>
                           <trackType>trackType1</trackType>
                           <trackStructure>
                             <fixedWingAttachment>
@@ -6683,7 +6788,10 @@
                           </trackStructure>
                         </track>
                         <track uID="Aileron_Hinge2">
-                          <eta>0.75</eta>
+                          <eta>
+                            <eta>0.75</eta>
+                            <referenceUID>D150_AllSpeedAileron</referenceUID>
+                          </eta>
                           <trackType>trackType1</trackType>
                           <trackStructure>
                             <fixedWingAttachment>
@@ -6754,17 +6862,41 @@
                       <parentUID>D150_wing_CS</parentUID>
                       <outerShape>
                         <innerBorder>
-                          <etaLE>0.22</etaLE>
-                          <etaTE>0.22</etaTE>
-                          <xsiLE>0.7667</xsiLE>
-                          <xsiTE>0.896</xsiTE>
+                          <etaLE>
+                            <eta>0.22</eta>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </etaLE>
+                          <etaTE>
+                            <eta>0.22</eta>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </etaTE>
+                          <xsiLE>
+                            <xsi>0.7667</xsi>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </xsiLE>
+                          <xsiTE>
+                            <xsi>0.896</xsi>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </xsiTE>
                           <relHeightLE>0.4</relHeightLE>
                         </innerBorder>
                         <outerBorder>
-                          <etaLE>0.3735</etaLE>
-                          <etaTE>0.3735</etaTE>
-                          <xsiLE>0.689</xsiLE>
-                          <xsiTE>0.865</xsiTE>
+                          <etaLE>
+                            <eta>0.3735</eta>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </etaLE>
+                          <etaTE>
+                            <eta>0.3735</eta>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </etaTE>
+                          <xsiLE>
+                            <xsi>0.689</xsi>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </xsiLE>
+                          <xsiTE>
+                            <xsi>0.865</xsi>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </xsiTE>
                           <relHeightLE>0.4</relHeightLE>
                         </outerBorder>
                       </outerShape>
@@ -6796,12 +6928,24 @@
                               <xsi2>1</xsi2>
                             </positioningTrailingEdge>
                             <positioningInnerBorder>
-                              <eta1>0.0</eta1>
-                              <eta2>0.0</eta2>
+                              <eta1>
+                                <eta>0</eta>
+                                <referenceUID>D150_wing_CS</referenceUID>
+                              </eta1>
+                              <eta2>
+                                <eta>0</eta>
+                                <referenceUID>D150_wing_CS</referenceUID>
+                              </eta2>
                             </positioningInnerBorder>
                             <positioningOuterBorder>
-                              <eta1>1</eta1>
-                              <eta2>1</eta2>
+                              <eta1>
+                                <eta>1</eta>
+                                <referenceUID>D150_wing_CS</referenceUID>
+                              </eta1>
+                              <eta2>
+                                <eta>1</eta>
+                                <referenceUID>D150_wing_CS</referenceUID>
+                              </eta2>
                             </positioningOuterBorder>
                             <material>
                               <materialUID>aluminium 2024</materialUID>
@@ -6928,7 +7072,10 @@
                       </path>
                       <tracks>
                         <track uID="spoilerHinge1">
-                          <eta>0.25</eta>
+                          <eta>
+                            <eta>0.25</eta>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </eta>
                           <trackType>trackType1</trackType>
                           <trackStructure>
                             <fixedWingAttachment>
@@ -6946,7 +7093,10 @@
                           </trackStructure>
                         </track>
                         <track uID="SpoilerHinge2">
-                          <eta>0.75</eta>
+                          <eta>
+                            <eta>0.75</eta>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </eta>
                           <trackType>trackType1</trackType>
                           <trackStructure>
                             <fixedWingAttachment>
@@ -6993,17 +7143,41 @@
                       <parentUID>D150_wing_CS</parentUID>
                       <outerShape>
                         <innerBorder>
-                          <etaLE>0.4035</etaLE>
-                          <etaTE>0.3911</etaTE>
-                          <xsiLE>0.676</xsiLE>
-                          <xsiTE>0.87</xsiTE>
+                          <etaLE>
+                            <eta>0.4035</eta>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </etaLE>
+                          <etaTE>
+                            <eta>0.3911</eta>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </etaTE>
+                          <xsiLE>
+                            <xsi>0.676</xsi>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </xsiLE>
+                          <xsiTE>
+                            <xsi>0.87</xsi>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </xsiTE>
                           <relHeightLE>0.4</relHeightLE>
                         </innerBorder>
                         <outerBorder>
-                          <etaLE>0.4997</etaLE>
-                          <etaTE>0.4873</etaTE>
-                          <xsiLE>0.6805</xsiLE>
-                          <xsiTE>0.8758</xsiTE>
+                          <etaLE>
+                            <eta>0.4997</eta>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </etaLE>
+                          <etaTE>
+                            <eta>0.4873</eta>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </etaTE>
+                          <xsiLE>
+                            <xsi>0.6805</xsi>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </xsiLE>
+                          <xsiTE>
+                            <xsi>0.8758</xsi>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </xsiTE>
                           <relHeightLE>0.4</relHeightLE>
                         </outerBorder>
                       </outerShape>
@@ -7035,12 +7209,24 @@
                               <xsi2>1</xsi2>
                             </positioningTrailingEdge>
                             <positioningInnerBorder>
-                              <eta1>0.0</eta1>
-                              <eta2>0.0</eta2>
+                              <eta1>
+                                <eta>0</eta>
+                                <referenceUID>D150_wing_CS</referenceUID>
+                              </eta1>
+                              <eta2>
+                                <eta>0</eta>
+                                <referenceUID>D150_wing_CS</referenceUID>
+                              </eta2>
                             </positioningInnerBorder>
                             <positioningOuterBorder>
-                              <eta1>1</eta1>
-                              <eta2>1</eta2>
+                              <eta1>
+                                <eta>1</eta>
+                                <referenceUID>D150_wing_CS</referenceUID>
+                              </eta1>
+                              <eta2>
+                                <eta>1</eta>
+                                <referenceUID>D150_wing_CS</referenceUID>
+                              </eta2>
                             </positioningOuterBorder>
                             <material>
                               <materialUID>aluminium 2024</materialUID>
@@ -7167,7 +7353,10 @@
                       </path>
                       <tracks>
                         <track uID="spoilerHinge1">
-                          <eta>0.25</eta>
+                          <eta>
+                            <eta>0.25</eta>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </eta>
                           <trackType>trackType1</trackType>
                           <trackStructure>
                             <fixedWingAttachment>
@@ -7185,7 +7374,10 @@
                           </trackStructure>
                         </track>
                         <track uID="SpoilerHinge2">
-                          <eta>0.75</eta>
+                          <eta>
+                            <eta>0.75</eta>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </eta>
                           <trackType>trackType1</trackType>
                           <trackStructure>
                             <fixedWingAttachment>
@@ -7232,17 +7424,41 @@
                       <parentUID>D150_wing_CS</parentUID>
                       <outerShape>
                         <innerBorder>
-                          <etaLE>0.4997</etaLE>
-                          <etaTE>0.4873</etaTE>
-                          <xsiLE>0.6805</xsiLE>
-                          <xsiTE>0.8758</xsiTE>
+                          <etaLE>
+                            <eta>0.4997</eta>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </etaLE>
+                          <etaTE>
+                            <eta>0.4873</eta>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </etaTE>
+                          <xsiLE>
+                            <xsi>0.6805</xsi>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </xsiLE>
+                          <xsiTE>
+                            <xsi>0.8758</xsi>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </xsiTE>
                           <relHeightLE>0.4</relHeightLE>
                         </innerBorder>
                         <outerBorder>
-                          <etaLE>0.5965</etaLE>
-                          <etaTE>0.5841</etaTE>
-                          <xsiLE>0.6714</xsiLE>
-                          <xsiTE>0.8896</xsiTE>
+                          <etaLE>
+                            <eta>0.5965</eta>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </etaLE>
+                          <etaTE>
+                            <eta>0.5841</eta>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </etaTE>
+                          <xsiLE>
+                            <xsi>0.6714</xsi>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </xsiLE>
+                          <xsiTE>
+                            <xsi>0.8896</xsi>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </xsiTE>
                           <relHeightLE>0.4</relHeightLE>
                         </outerBorder>
                       </outerShape>
@@ -7274,12 +7490,24 @@
                               <xsi2>1</xsi2>
                             </positioningTrailingEdge>
                             <positioningInnerBorder>
-                              <eta1>0.0</eta1>
-                              <eta2>0.0</eta2>
+                              <eta1>
+                                <eta>0</eta>
+                                <referenceUID>D150_wing_CS</referenceUID>
+                              </eta1>
+                              <eta2>
+                                <eta>0</eta>
+                                <referenceUID>D150_wing_CS</referenceUID>
+                              </eta2>
                             </positioningInnerBorder>
                             <positioningOuterBorder>
-                              <eta1>1</eta1>
-                              <eta2>1</eta2>
+                              <eta1>
+                                <eta>1</eta>
+                                <referenceUID>D150_wing_CS</referenceUID>
+                              </eta1>
+                              <eta2>
+                                <eta>1</eta>
+                                <referenceUID>D150_wing_CS</referenceUID>
+                              </eta2>
                             </positioningOuterBorder>
                             <material>
                               <materialUID>aluminium 2024</materialUID>
@@ -7406,7 +7634,10 @@
                       </path>
                       <tracks>
                         <track uID="spoilerHinge1">
-                          <eta>0.25</eta>
+                          <eta>
+                            <eta>0.25</eta>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </eta>
                           <trackType>trackType1</trackType>
                           <trackStructure>
                             <fixedWingAttachment>
@@ -7424,7 +7655,10 @@
                           </trackStructure>
                         </track>
                         <track uID="SpoilerHinge2">
-                          <eta>0.75</eta>
+                          <eta>
+                            <eta>0.75</eta>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </eta>
                           <trackType>trackType1</trackType>
                           <trackStructure>
                             <fixedWingAttachment>
@@ -7471,17 +7705,41 @@
                       <parentUID>D150_wing_CS</parentUID>
                       <outerShape>
                         <innerBorder>
-                          <etaLE>0.5965</etaLE>
-                          <etaTE>0.5841</etaTE>
-                          <xsiLE>0.6714</xsiLE>
-                          <xsiTE>0.8896</xsiTE>
+                          <etaLE>
+                            <eta>0.5965</eta>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </etaLE>
+                          <etaTE>
+                            <eta>0.5841</eta>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </etaTE>
+                          <xsiLE>
+                            <xsi>0.6714</xsi>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </xsiLE>
+                          <xsiTE>
+                            <xsi>0.8896</xsi>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </xsiTE>
                           <relHeightLE>0.4</relHeightLE>
                         </innerBorder>
                         <outerBorder>
-                          <etaLE>0.6809</etaLE>
-                          <etaTE>0.6710</etaTE>
-                          <xsiLE>0.664</xsiLE>
-                          <xsiTE>0.9038</xsiTE>
+                          <etaLE>
+                            <eta>0.6809</eta>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </etaLE>
+                          <etaTE>
+                            <eta>0.671</eta>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </etaTE>
+                          <xsiLE>
+                            <xsi>0.664</xsi>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </xsiLE>
+                          <xsiTE>
+                            <xsi>0.9038</xsi>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </xsiTE>
                           <relHeightLE>0.4</relHeightLE>
                         </outerBorder>
                       </outerShape>
@@ -7513,12 +7771,24 @@
                               <xsi2>1</xsi2>
                             </positioningTrailingEdge>
                             <positioningInnerBorder>
-                              <eta1>0.0</eta1>
-                              <eta2>0.0</eta2>
+                              <eta1>
+                                <eta>0</eta>
+                                <referenceUID>D150_wing_CS</referenceUID>
+                              </eta1>
+                              <eta2>
+                                <eta>0</eta>
+                                <referenceUID>D150_wing_CS</referenceUID>
+                              </eta2>
                             </positioningInnerBorder>
                             <positioningOuterBorder>
-                              <eta1>1</eta1>
-                              <eta2>1</eta2>
+                              <eta1>
+                                <eta>1</eta>
+                                <referenceUID>D150_wing_CS</referenceUID>
+                              </eta1>
+                              <eta2>
+                                <eta>1</eta>
+                                <referenceUID>D150_wing_CS</referenceUID>
+                              </eta2>
                             </positioningOuterBorder>
                             <material>
                               <materialUID>aluminium 2024</materialUID>
@@ -7645,7 +7915,10 @@
                       </path>
                       <tracks>
                         <track uID="spoilerHinge1">
-                          <eta>0.25</eta>
+                          <eta>
+                            <eta>0.25</eta>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </eta>
                           <trackType>trackType1</trackType>
                           <trackStructure>
                             <fixedWingAttachment>
@@ -7663,7 +7936,10 @@
                           </trackStructure>
                         </track>
                         <track uID="SpoilerHinge2">
-                          <eta>0.75</eta>
+                          <eta>
+                            <eta>0.75</eta>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </eta>
                           <trackType>trackType1</trackType>
                           <trackStructure>
                             <fixedWingAttachment>
@@ -7710,17 +7986,41 @@
                       <parentUID>D150_wing_CS</parentUID>
                       <outerShape>
                         <innerBorder>
-                          <etaLE>0.6809</etaLE>
-                          <etaTE>0.6710</etaTE>
-                          <xsiLE>0.664</xsiLE>
-                          <xsiTE>0.9038</xsiTE>
+                          <etaLE>
+                            <eta>0.6809</eta>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </etaLE>
+                          <etaTE>
+                            <eta>0.671</eta>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </etaTE>
+                          <xsiLE>
+                            <xsi>0.664</xsi>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </xsiLE>
+                          <xsiTE>
+                            <xsi>0.9038</xsi>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </xsiTE>
                           <relHeightLE>0.4</relHeightLE>
                         </innerBorder>
                         <outerBorder>
-                          <etaLE>0.7697</etaLE>
-                          <etaTE>0.7542</etaTE>
-                          <xsiLE>0.65</xsiLE>
-                          <xsiTE>0.9298</xsiTE>
+                          <etaLE>
+                            <eta>0.7697</eta>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </etaLE>
+                          <etaTE>
+                            <eta>0.7542</eta>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </etaTE>
+                          <xsiLE>
+                            <xsi>0.65</xsi>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </xsiLE>
+                          <xsiTE>
+                            <xsi>0.9298</xsi>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </xsiTE>
                           <relHeightLE>0.4</relHeightLE>
                         </outerBorder>
                       </outerShape>
@@ -7752,12 +8052,24 @@
                               <xsi2>1</xsi2>
                             </positioningTrailingEdge>
                             <positioningInnerBorder>
-                              <eta1>0.0</eta1>
-                              <eta2>0.0</eta2>
+                              <eta1>
+                                <eta>0</eta>
+                                <referenceUID>D150_wing_CS</referenceUID>
+                              </eta1>
+                              <eta2>
+                                <eta>0</eta>
+                                <referenceUID>D150_wing_CS</referenceUID>
+                              </eta2>
                             </positioningInnerBorder>
                             <positioningOuterBorder>
-                              <eta1>1</eta1>
-                              <eta2>1</eta2>
+                              <eta1>
+                                <eta>1</eta>
+                                <referenceUID>D150_wing_CS</referenceUID>
+                              </eta1>
+                              <eta2>
+                                <eta>1</eta>
+                                <referenceUID>D150_wing_CS</referenceUID>
+                              </eta2>
                             </positioningOuterBorder>
                             <material>
                               <materialUID>aluminium 2024</materialUID>
@@ -7884,7 +8196,10 @@
                       </path>
                       <tracks>
                         <track uID="spoilerHinge1">
-                          <eta>0.25</eta>
+                          <eta>
+                            <eta>0.25</eta>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </eta>
                           <trackType>trackType1</trackType>
                           <trackStructure>
                             <fixedWingAttachment>
@@ -7902,7 +8217,10 @@
                           </trackStructure>
                         </track>
                         <track uID="SpoilerHinge2">
-                          <eta>0.75</eta>
+                          <eta>
+                            <eta>0.75</eta>
+                            <referenceUID>D150_wing_CS</referenceUID>
+                          </eta>
                           <trackType>trackType1</trackType>
                           <trackStructure>
                             <fixedWingAttachment>
@@ -8632,13 +8950,28 @@
                       <parentUID>D150_wing_CS</parentUID>
                       <outerShape>
                         <innerBorder>
-                          <etaLE>0.2</etaLE>
-                          <etaTE>0.2</etaTE>
-                          <xsiLE>0.7</xsiLE>
+                          <etaLE>
+                            <eta>0.2</eta>
+                            <referenceUID>D150_Elevator</referenceUID>
+                          </etaLE>
+                          <etaTE>
+                            <eta>0.2</eta>
+                            <referenceUID>D150_Elevator</referenceUID>
+                          </etaTE>
+                          <xsiLE>
+                            <xsi>0.7</xsi>
+                            <referenceUID>D150_Elevator</referenceUID>
+                          </xsiLE>
                         </innerBorder>
                         <outerBorder>
-                          <etaLE>0.96</etaLE>
-                          <xsiLE>0.7</xsiLE>
+                          <etaLE>
+                            <eta>0.96</eta>
+                            <referenceUID>D150_Elevator</referenceUID>
+                          </etaLE>
+                          <xsiLE>
+                            <xsi>0.7</xsi>
+                            <referenceUID>D150_Elevator</referenceUID>
+                          </xsiLE>
                         </outerBorder>
                       </outerShape>
                       <path>
@@ -9281,13 +9614,28 @@
                       <parentUID>D150_VTP_CS</parentUID>
                       <outerShape>
                         <innerBorder>
-                          <etaLE>0.2</etaLE>
-                          <etaTE>0.2</etaTE>
-                          <xsiLE>0.7</xsiLE>
+                          <etaLE>
+                            <eta>0.2</eta>
+                            <referenceUID>D150_Rudder</referenceUID>
+                          </etaLE>
+                          <etaTE>
+                            <eta>0.2</eta>
+                            <referenceUID>D150_Rudder</referenceUID>
+                          </etaTE>
+                          <xsiLE>
+                            <xsi>0.7</xsi>
+                            <referenceUID>D150_Rudder</referenceUID>
+                          </xsiLE>
                         </innerBorder>
                         <outerBorder>
-                          <etaLE>0.96</etaLE>
-                          <xsiLE>0.7</xsiLE>
+                          <etaLE>
+                            <eta>0.96</eta>
+                            <referenceUID>D150_Rudder</referenceUID>
+                          </etaLE>
+                          <xsiLE>
+                            <xsi>0.7</xsi>
+                            <referenceUID>D150_Rudder</referenceUID>
+                          </xsiLE>
                         </outerBorder>
                       </outerShape>
                       <path>
