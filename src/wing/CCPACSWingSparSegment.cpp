@@ -527,23 +527,7 @@ gp_Vec CCPACSWingSparSegment::GetUpVector(const std::string& positionUID, gp_Pnt
 
         TopoDS_Shape sectionFace;
         if (position.isOnSectionElement()) {
-            std::string sectionElemUID;
-            // figure out section element uid
-            if (position.GetReferenceUID() == componentSegment.GetDefaultedUID() && position.isOnInnerSectionElement()) {
-                sectionElemUID = componentSegment.GetFromElementUID();
-            }
-            else if (position.GetReferenceUID() == componentSegment.GetDefaultedUID() && position.isOnOuterSectionElement()) {
-                sectionElemUID = componentSegment.GetToElementUID();
-            }
-            else {
-                const CCPACSWingSegment& segment = componentSegment.GetBelongingSegment(position.GetEtaXsiPoint().GetReferenceUID());
-                if (position.isOnInnerSectionElement()) {
-                    sectionElemUID = segment.GetFromElementUID();
-                }
-                else {
-                    sectionElemUID = segment.GetToElementUID();
-                }
-            }
+            const std::string sectionElemUID = WingSparPosGetElementUID(position);
             sectionFace = componentSegment.GetSectionElementFace(sectionElemUID);
         }
         else if(position.isOnRib()) {
@@ -712,7 +696,7 @@ bool HasRecursiveSparPositionDefined(const CCPACSWingSparPosition& position, con
         std::string ribUID = position.GetReferenceUID();
         const CCPACSWingRibsDefinition& ribs = position.GetUIDManager().ResolveObject<CCPACSWingRibsDefinition>(ribUID);
         if (ribs.GetRibsPositioning_choice1()) {
-            const CCPACSWingRibsPositioning& pos = ribs .GetRibsPositioning_choice1().value();
+            const CCPACSWingRibsPositioning& pos = ribs.GetRibsPositioning_choice1().value();
             if (pos.GetRibEnd() == sparUID|| pos.GetRibStart() == sparUID) {
                 LOG(ERROR) << "Recursive reference of spar positioning '" << position.GetUID() << "' and ribs definition '" << ribs.GetDefaultedUID() << "'.";
                 return true;
@@ -729,7 +713,7 @@ void CCPACSWingSparSegment::ReadCPACS(const TixiDocumentHandle& tixiHandle, cons
     // The spar positioning on a rib works, as long as the referenced rib does not reference the spar
     // as the leading or trailing edge of the rib. We must test this case and throw an error otherwise
     bool hasError = false;
-    for (std::string sparPositionUID : GetSparPositionUIDs().GetSparPositionUIDs()) {
+    for (const std::string sparPositionUID : GetSparPositionUIDs().GetSparPositionUIDs()) {
         const CCPACSWingSparPosition& position = m_uidMgr->ResolveObject<CCPACSWingSparPosition>(sparPositionUID);
         if (HasRecursiveSparPositionDefined(position, GetDefaultedUID())) {
             hasError = true;
