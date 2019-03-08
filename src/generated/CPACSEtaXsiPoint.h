@@ -23,32 +23,28 @@
 
 namespace tigl
 {
-class CCPACSControlSurfaceBorderTrailingEdge;
-
 namespace generated
 {
     // This class is used in:
-    // CPACSControlSurfaceBorderTrailingEdge
+    // CPACSSparPosition
 
-    // generated from /xsd:schema/xsd:complexType[990]
-    /// @brief xsiIsoLineType
+    // generated from /xsd:schema/xsd:complexType[323]
+    /// @brief etaXsiPointType
     /// 
-    /// Iso line described by point of same xsi coordinate.
+    /// Point described by eta-xsi coordinates.
     /// Can be either segment or component segment coordinates.
     /// 
-    class CPACSXsiIsoLine
+    class CPACSEtaXsiPoint
     {
     public:
-        TIGL_EXPORT CPACSXsiIsoLine(CCPACSControlSurfaceBorderTrailingEdge* parent);
-
-        TIGL_EXPORT virtual ~CPACSXsiIsoLine();
-
-        TIGL_EXPORT CCPACSControlSurfaceBorderTrailingEdge* GetParent();
-
-        TIGL_EXPORT const CCPACSControlSurfaceBorderTrailingEdge* GetParent() const;
+        TIGL_EXPORT CPACSEtaXsiPoint();
+        TIGL_EXPORT virtual ~CPACSEtaXsiPoint();
 
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
+
+        TIGL_EXPORT virtual const double& GetEta() const;
+        TIGL_EXPORT virtual void SetEta(const double& value);
 
         TIGL_EXPORT virtual const double& GetXsi() const;
         TIGL_EXPORT virtual void SetXsi(const double& value);
@@ -57,30 +53,36 @@ namespace generated
         TIGL_EXPORT virtual void SetReferenceUID(const std::string& value);
 
     protected:
-        CCPACSControlSurfaceBorderTrailingEdge* m_parent;
+        /// Relative spanwise position. Eta refers to the segment or componentSegment depending on the referenced uID.
+        double      m_eta;
 
-        /// Relative spanwise position. Xsi refers to the segment or componentSegment depending on the referenced uID.
+        /// Relative chordwise position. Xsi refers to the segment or componentSegment depending on the referenced uID.
         double      m_xsi;
 
         /// This reference uID determines the reference coordinate system.
-        /// If it points to a segment, then the eta value is considered to be in segment
-        /// eta coordinate; if it points to a componentSegment,
-        /// then componentSegment eta coordinate is used.
+        /// If it points to a segment, then the eta-xsi values are considered to be in segment
+        /// eta-xsi coordinates; if it points to a componentSegment,
+        /// then componentSegment eta-xsi coordinates are used.
         std::string m_referenceUID;
 
     private:
 #ifdef HAVE_CPP11
-        CPACSXsiIsoLine(const CPACSXsiIsoLine&) = delete;
-        CPACSXsiIsoLine& operator=(const CPACSXsiIsoLine&) = delete;
+        CPACSEtaXsiPoint(const CPACSEtaXsiPoint&) = delete;
+        CPACSEtaXsiPoint& operator=(const CPACSEtaXsiPoint&) = delete;
 
-        CPACSXsiIsoLine(CPACSXsiIsoLine&&) = delete;
-        CPACSXsiIsoLine& operator=(CPACSXsiIsoLine&&) = delete;
+        CPACSEtaXsiPoint(CPACSEtaXsiPoint&&) = delete;
+        CPACSEtaXsiPoint& operator=(CPACSEtaXsiPoint&&) = delete;
 #else
-        CPACSXsiIsoLine(const CPACSXsiIsoLine&);
-        CPACSXsiIsoLine& operator=(const CPACSXsiIsoLine&);
+        CPACSEtaXsiPoint(const CPACSEtaXsiPoint&);
+        CPACSEtaXsiPoint& operator=(const CPACSEtaXsiPoint&);
 #endif
     };
 } // namespace generated
 
-// CPACSXsiIsoLine is customized, use type CCPACSXsiIsoLine directly
+// Aliases in tigl namespace
+#ifdef HAVE_CPP11
+using CCPACSEtaXsiPoint = generated::CPACSEtaXsiPoint;
+#else
+typedef generated::CPACSEtaXsiPoint CCPACSEtaXsiPoint;
+#endif
 } // namespace tigl

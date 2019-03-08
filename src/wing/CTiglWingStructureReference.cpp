@@ -113,6 +113,12 @@ gp_Pnt CTiglWingStructureReference::GetPoint(double eta, double xsi, TiglCoordin
     DISPATCH(GetPoint(eta, xsi, reference));
 }
 
+gp_Pnt CTiglWingStructureReference::GetPoint(double eta, double xsi, const std::string& referenceUID, TiglCoordinateSystem reference) const
+{
+    DISPATCH(GetPoint(eta, xsi, referenceUID, reference));
+}
+
+
 double CTiglWingStructureReference::GetLeadingEdgeLength() const
 {
     DISPATCH(GetLeadingEdgeLength());

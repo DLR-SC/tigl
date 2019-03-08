@@ -2362,52 +2362,88 @@
                     <sparPositions>
                       <!-- [EM]: Removed LG_SP1, LG support spar -->
                       <sparPosition uID="MS_P1">
-                        <eta>0.0</eta>
-                        <xsi>0.3711</xsi>
+                        <sparPositionEtaXsi>
+                          <eta>0.0</eta>
+                          <xsi>0.3711</xsi>
+                          <referenceUID>D250_wing_CS</referenceUID>
+                        </sparPositionEtaXsi>
                       </sparPosition>
                       <sparPosition uID="MS_P2">
-                        <eta>0.0970</eta>
-                        <xsi>0.3711</xsi>
+                        <sparPositionEtaXsi>
+                          <eta>0.0970</eta>
+                          <xsi>0.3711</xsi>
+                          <referenceUID>D250_wing_CS</referenceUID>
+                        </sparPositionEtaXsi>
                       </sparPosition>
                       <sparPosition uID="MS_P3">
-                        <eta>0.3345</eta>
-                        <xsi>0.4077</xsi>
+                        <sparPositionEtaXsi>
+                          <eta>0.3345</eta>
+                          <xsi>0.4077</xsi>
+                          <referenceUID>D250_wing_CS</referenceUID>
+                        </sparPositionEtaXsi>
                       </sparPosition>
                       <sparPosition uID="FS_P1_1">
-                        <eta>0.0</eta>
-                        <xsi>0.1157</xsi>
+                        <sparPositionEtaXsi>
+                          <eta>0.0</eta>
+                          <xsi>0.1157</xsi>
+                          <referenceUID>D250_wing_CS</referenceUID>
+                        </sparPositionEtaXsi>
                       </sparPosition>
                       <sparPosition uID="FS_P2_1">
-                        <eta>0.0970</eta>
-                        <xsi>0.1157</xsi>
+                        <sparPositionEtaXsi>
+                          <eta>0.0970</eta>
+                          <xsi>0.1157</xsi>
+                          <referenceUID>D250_wing_CS</referenceUID>
+                        </sparPositionEtaXsi>
                       </sparPosition>
                       <sparPosition uID="FS_P3">
-                        <eta>0.9799</eta>
-                        <xsi>0.25</xsi>
+                        <sparPositionEtaXsi>
+                          <eta>0.9799</eta>
+                          <xsi>0.25</xsi>
+                          <referenceUID>D250_wing_CS</referenceUID>
+                        </sparPositionEtaXsi>
                       </sparPosition>
                       <sparPosition uID="FS_P4">
-                        <eta>1.0</eta>
-                        <xsi>0.306</xsi>
+                        <sparPositionEtaXsi>
+                          <eta>1.0</eta>
+                          <xsi>0.306</xsi>
+                          <referenceUID>D250_wing_CS</referenceUID>
+                        </sparPositionEtaXsi>
                       </sparPosition>
                       <sparPosition uID="RS_P1_1">
-                        <eta>0.0</eta>
-                        <xsi>0.6169</xsi>
+                        <sparPositionEtaXsi>
+                          <eta>0.0</eta>
+                          <xsi>0.6169</xsi>
+                          <referenceUID>D250_wing_CS</referenceUID>
+                        </sparPositionEtaXsi>
                       </sparPosition>
                       <sparPosition uID="RS_P2_1">
-                        <eta>0.0970</eta>
-                        <xsi>0.6169</xsi>
+                        <sparPositionEtaXsi>
+                          <eta>0.0970</eta>
+                          <xsi>0.6169</xsi>
+                          <referenceUID>D250_wing_CS</referenceUID>
+                        </sparPositionEtaXsi>
                       </sparPosition>
                       <sparPosition uID="RS_P3">
-                        <eta>0.3170</eta>
-                        <xsi>0.6769</xsi>
+                        <sparPositionEtaXsi>
+                          <eta>0.3170</eta>
+                          <xsi>0.6769</xsi>
+                          <referenceUID>D250_wing_CS</referenceUID>
+                        </sparPositionEtaXsi>
                       </sparPosition>
                       <sparPosition uID="RS_P4">
-                        <eta>0.6909</eta>
-                        <xsi>0.5739</xsi>
+                        <sparPositionEtaXsi>
+                          <eta>0.6909</eta>
+                          <xsi>0.5739</xsi>
+                          <referenceUID>D250_wing_CS</referenceUID>
+                        </sparPositionEtaXsi>
                       </sparPosition>
                       <sparPosition uID="RS_P5">
-                        <eta>1.0000</eta>
-                        <xsi>0.6770</xsi>
+                        <sparPositionEtaXsi>
+                          <eta>1.0000</eta>
+                          <xsi>0.6770</xsi>
+                          <referenceUID>D250_wing_CS</referenceUID>
+                        </sparPositionEtaXsi>
                       </sparPosition>
                     </sparPositions>
                     <sparSegments>
@@ -3170,20 +3206,32 @@
                         <spars>
                           <sparPositions>
                             <sparPosition uID="T11_IF">
-                              <eta>0</eta>
-                              <xsi>0.2</xsi>
+                              <sparPositionEtaXsi>
+                                <eta>0</eta>
+                                <xsi>0.2</xsi>
+                                <referenceUID>D250_wing_CS</referenceUID>
+                              </sparPositionEtaXsi>
                             </sparPosition>
                             <sparPosition uID="T12_IF">
-                              <eta>0</eta>
-                              <xsi>0.7</xsi>
+                              <sparPositionEtaXsi>
+                                <eta>0</eta>
+                                <xsi>0.7</xsi>
+                                <referenceUID>D250_wing_CS</referenceUID>
+                              </sparPositionEtaXsi>
                             </sparPosition>
                             <sparPosition uID="T13_IF">
-                              <eta>1</eta>
-                              <xsi>0.178</xsi>
+                              <sparPositionEtaXsi>
+                                <eta>1</eta>
+                                <xsi>0.178</xsi>
+                                <referenceUID>D250_wing_CS</referenceUID>
+                              </sparPositionEtaXsi>
                             </sparPosition>
                             <sparPosition uID="T14_IF">
-                              <eta>1</eta>
-                              <xsi>0.623</xsi>
+                              <sparPositionEtaXsi>
+                                <eta>1</eta>
+                                <xsi>0.623</xsi>
+                                <referenceUID>D250_wing_CS</referenceUID>
+                              </sparPositionEtaXsi>
                             </sparPosition>
                           </sparPositions>
                           <sparSegments>
@@ -3647,20 +3695,32 @@
                         <spars>
                           <sparPositions>
                             <sparPosition uID="T11_OF">
-                              <eta>0</eta>
-                              <xsi>0.2</xsi>
+                              <sparPositionEtaXsi>
+                                <eta>0</eta>
+                                <xsi>0.2</xsi>
+                                <referenceUID>D250_wing_CS</referenceUID>
+                              </sparPositionEtaXsi>
                             </sparPosition>
                             <sparPosition uID="T12_OF">
-                              <eta>0</eta>
-                              <xsi>0.7</xsi>
+                              <sparPositionEtaXsi>
+                                <eta>0</eta>
+                                <xsi>0.7</xsi>
+                                <referenceUID>D250_wing_CS</referenceUID>
+                              </sparPositionEtaXsi>
                             </sparPosition>
                             <sparPosition uID="T13_OF">
-                              <eta>1</eta>
-                              <xsi>0.2</xsi>
+                              <sparPositionEtaXsi>
+                                <eta>1</eta>
+                                <xsi>0.2</xsi>
+                                <referenceUID>D250_wing_CS</referenceUID>
+                              </sparPositionEtaXsi>
                             </sparPosition>
                             <sparPosition uID="T14_OF">
-                              <eta>1</eta>
-                              <xsi>0.7</xsi>
+                              <sparPositionEtaXsi>
+                                <eta>1</eta>
+                                <xsi>0.7</xsi>
+                                <referenceUID>D250_wing_CS</referenceUID>
+                              </sparPositionEtaXsi>
                             </sparPosition>
                           </sparPositions>
                           <sparSegments>
@@ -4167,20 +4227,32 @@
                         <spars>
                           <sparPositions>
                             <sparPosition uID="T11_IA">
-                              <eta>0</eta>
-                              <xsi>0.2</xsi>
+                              <sparPositionEtaXsi>
+                                <eta>0</eta>
+                                <xsi>0.2</xsi>
+                                <referenceUID>D250_wing_CS</referenceUID>
+                              </sparPositionEtaXsi>
                             </sparPosition>
                             <sparPosition uID="T12_IA">
-                              <eta>0</eta>
-                              <xsi>0.7</xsi>
+                              <sparPositionEtaXsi>
+                                <eta>0</eta>
+                                <xsi>0.7</xsi>
+                                <referenceUID>D250_wing_CS</referenceUID>
+                              </sparPositionEtaXsi>
                             </sparPosition>
                             <sparPosition uID="T13_IA">
-                              <eta>1</eta>
-                              <xsi>0.2</xsi>
+                              <sparPositionEtaXsi>
+                                <eta>1</eta>
+                                <xsi>0.2</xsi>
+                                <referenceUID>D250_wing_CS</referenceUID>
+                              </sparPositionEtaXsi>
                             </sparPosition>
                             <sparPosition uID="T14_IA">
-                              <eta>1</eta>
-                              <xsi>0.7</xsi>
+                              <sparPositionEtaXsi>
+                                <eta>1</eta>
+                                <xsi>0.7</xsi>
+                                <referenceUID>D250_wing_CS</referenceUID>
+                              </sparPositionEtaXsi>
                             </sparPosition>
                           </sparPositions>
                           <sparSegments>
@@ -4540,20 +4612,32 @@
                         <spars>
                           <sparPositions>
                             <sparPosition uID="T11_OA">
-                              <eta>0</eta>
-                              <xsi>0.2</xsi>
+                              <sparPositionEtaXsi>
+                                <eta>0</eta>
+                                <xsi>0.2</xsi>
+                                <referenceUID>D250_wing_CS</referenceUID>
+                              </sparPositionEtaXsi>
                             </sparPosition>
                             <sparPosition uID="T12_OA">
-                              <eta>0</eta>
-                              <xsi>0.7</xsi>
+                              <sparPositionEtaXsi>
+                                <eta>0</eta>
+                                <xsi>0.7</xsi>
+                                <referenceUID>D250_wing_CS</referenceUID>
+                              </sparPositionEtaXsi>
                             </sparPosition>
                             <sparPosition uID="T13_OA">
-                              <eta>1</eta>
-                              <xsi>0.2</xsi>
+                              <sparPositionEtaXsi>
+                                <eta>1</eta>
+                                <xsi>0.2</xsi>
+                                <referenceUID>D250_wing_CS</referenceUID>
+                              </sparPositionEtaXsi>
                             </sparPosition>
                             <sparPosition uID="T14_OA">
-                              <eta>1</eta>
-                              <xsi>0.7</xsi>
+                              <sparPositionEtaXsi>
+                                <eta>1</eta>
+                                <xsi>0.7</xsi>
+                                <referenceUID>D250_wing_CS</referenceUID>
+                              </sparPositionEtaXsi>
                             </sparPosition>
                           </sparPositions>
                           <sparSegments>
@@ -4837,12 +4921,18 @@
                         <spars>
                           <sparPositions>
                             <sparPosition uID="SP01P1">
-                              <eta>0</eta>
-                              <xsi>0</xsi>
+                              <sparPositionEtaXsi>
+                                <eta>0</eta>
+                                <xsi>0</xsi>
+                                <referenceUID>D250_wing_CS</referenceUID>
+                              </sparPositionEtaXsi>
                             </sparPosition>
                             <sparPosition uID="SP01P2">
-                              <eta>1</eta>
-                              <xsi>0</xsi>
+                              <sparPositionEtaXsi>
+                                <eta>1</eta>
+                                <xsi>0</xsi>
+                                <referenceUID>D250_wing_CS</referenceUID>
+                              </sparPositionEtaXsi>
                             </sparPosition>
                           </sparPositions>
                           <sparSegments>
@@ -5071,12 +5161,18 @@
                         <spars>
                           <sparPositions>
                             <sparPosition uID="SP02P1">
-                              <eta>0</eta>
-                              <xsi>0</xsi>
+                              <sparPositionEtaXsi>
+                                <eta>0</eta>
+                                <xsi>0</xsi>
+                                <referenceUID>D250_wing_CS</referenceUID>
+                              </sparPositionEtaXsi>
                             </sparPosition>
                             <sparPosition uID="SP02P2">
-                              <eta>1</eta>
-                              <xsi>0</xsi>
+                              <sparPositionEtaXsi>
+                                <eta>1</eta>
+                                <xsi>0</xsi>
+                                <referenceUID>D250_wing_CS</referenceUID>
+                              </sparPositionEtaXsi>
                             </sparPosition>
                           </sparPositions>
                           <sparSegments>
@@ -5305,12 +5401,18 @@
                         <spars>
                           <sparPositions>
                             <sparPosition uID="SP03P1">
-                              <eta>0</eta>
-                              <xsi>0</xsi>
+                              <sparPositionEtaXsi>
+                                <eta>0</eta>
+                                <xsi>0</xsi>
+                                <referenceUID>D250_wing_CS</referenceUID>
+                              </sparPositionEtaXsi>
                             </sparPosition>
                             <sparPosition uID="SP03P2">
-                              <eta>1</eta>
-                              <xsi>0</xsi>
+                              <sparPositionEtaXsi>
+                                <eta>1</eta>
+                                <xsi>0</xsi>
+                                <referenceUID>D250_wing_CS</referenceUID>
+                              </sparPositionEtaXsi>
                             </sparPosition>
                           </sparPositions>
                           <sparSegments>
@@ -5539,12 +5641,18 @@
                         <spars>
                           <sparPositions>
                             <sparPosition uID="SP04P1">
-                              <eta>0</eta>
-                              <xsi>0</xsi>
+                              <sparPositionEtaXsi>
+                                <eta>0</eta>
+                                <xsi>0</xsi>
+                                <referenceUID>D250_wing_CS</referenceUID>
+                              </sparPositionEtaXsi>
                             </sparPosition>
                             <sparPosition uID="SP04P2">
-                              <eta>1</eta>
-                              <xsi>0</xsi>
+                              <sparPositionEtaXsi>
+                                <eta>1</eta>
+                                <xsi>0</xsi>
+                                <referenceUID>D250_wing_CS</referenceUID>
+                              </sparPositionEtaXsi>
                             </sparPosition>
                           </sparPositions>
                           <sparSegments>
@@ -5773,12 +5881,18 @@
                         <spars>
                           <sparPositions>
                             <sparPosition uID="SP05P1">
-                              <eta>0</eta>
-                              <xsi>0</xsi>
+                              <sparPositionEtaXsi>
+                                <eta>0</eta>
+                                <xsi>0</xsi>
+                                <referenceUID>D250_wing_CS</referenceUID>
+                              </sparPositionEtaXsi>
                             </sparPosition>
                             <sparPosition uID="SP05P2">
-                              <eta>1</eta>
-                              <xsi>0</xsi>
+                              <sparPositionEtaXsi>
+                                <eta>1</eta>
+                                <xsi>0</xsi>
+                                <referenceUID>D250_wing_CS</referenceUID>
+                              </sparPositionEtaXsi>
                             </sparPosition>
                           </sparPositions>
                           <sparSegments>
@@ -6007,12 +6121,18 @@
                         <spars>
                           <sparPositions>
                             <sparPosition uID="SP06P1">
-                              <eta>0</eta>
-                              <xsi>0</xsi>
+                              <sparPositionEtaXsi>
+                                <eta>0</eta>
+                                <xsi>0</xsi>
+                                <referenceUID>D250_wing_CS</referenceUID>
+                              </sparPositionEtaXsi>
                             </sparPosition>
                             <sparPosition uID="SP06P2">
-                              <eta>1</eta>
-                              <xsi>0</xsi>
+                              <sparPositionEtaXsi>
+                                <eta>1</eta>
+                                <xsi>0</xsi>
+                                <referenceUID>D250_wing_CS</referenceUID>
+                              </sparPositionEtaXsi>
                             </sparPosition>
                           </sparPositions>
                           <sparSegments>
@@ -6331,20 +6451,32 @@
                   <spars>
                     <sparPositions>
                       <sparPosition uID="winglet_up_SP1">
-                        <eta>0</eta>
-                        <xsi>0.2</xsi>
+                        <sparPositionEtaXsi>
+                          <eta>0</eta>
+                          <xsi>0.2</xsi>
+                          <referenceUID>D250_wing_winglet</referenceUID>
+                        </sparPositionEtaXsi>
                       </sparPosition>
                       <sparPosition uID="winglet_up_SP2">
-                        <eta>0</eta>
-                        <xsi>0.6276</xsi>
+                        <sparPositionEtaXsi>
+                          <eta>0</eta>
+                          <xsi>0.6276</xsi>
+                          <referenceUID>D250_wing_winglet</referenceUID>
+                        </sparPositionEtaXsi>
                       </sparPosition>
                       <sparPosition uID="winglet_up_SP3">
-                        <eta>1</eta>
-                        <xsi>0.2</xsi>
+                        <sparPositionEtaXsi>
+                          <eta>1</eta>
+                          <xsi>0.2</xsi>
+                          <referenceUID>D250_wing_winglet</referenceUID>
+                        </sparPositionEtaXsi>
                       </sparPosition>
                       <sparPosition uID="winglet_up_SP4">
-                        <eta>1</eta>
-                        <xsi>0.7</xsi>
+                        <sparPositionEtaXsi>
+                          <eta>1</eta>
+                          <xsi>0.7</xsi>
+                          <referenceUID>D250_wing_winglet</referenceUID>
+                        </sparPositionEtaXsi>
                       </sparPosition>
                     </sparPositions>
                     <sparSegments>
@@ -6779,20 +6911,32 @@
                   <spars>
                     <sparPositions>
                       <sparPosition uID="FS_P1_2">
-                        <eta>0.0</eta>
-                        <xsi>0.19</xsi>
+                        <sparPositionEtaXsi>
+                          <eta>0.0</eta>
+                          <xsi>0.19</xsi>
+                          <referenceUID>CS_HTP</referenceUID>
+                        </sparPositionEtaXsi>
                       </sparPosition>
                       <sparPosition uID="FS_P2_2">
-                        <eta>1</eta>
-                        <xsi>0.25</xsi>
+                        <sparPositionEtaXsi>
+                          <eta>1</eta>
+                          <xsi>0.25</xsi>
+                          <referenceUID>CS_HTP</referenceUID>
+                        </sparPositionEtaXsi>
                       </sparPosition>
                       <sparPosition uID="RS_P1_2">
-                        <eta>0.0</eta>
-                        <xsi>0.57</xsi>
+                        <sparPositionEtaXsi>
+                          <eta>0.0</eta>
+                          <xsi>0.57</xsi>
+                          <referenceUID>CS_HTP</referenceUID>
+                        </sparPositionEtaXsi>
                       </sparPosition>
                       <sparPosition uID="RS_P2_2">
-                        <eta>1</eta>
-                        <xsi>0.64</xsi>
+                        <sparPositionEtaXsi>
+                          <eta>1</eta>
+                          <xsi>0.64</xsi>
+                          <referenceUID>CS_HTP</referenceUID>
+                        </sparPositionEtaXsi>
                       </sparPosition>
                     </sparPositions>
                     <sparSegments>
@@ -7272,20 +7416,32 @@
                   <spars>
                     <sparPositions>
                       <sparPosition uID="FS_P1_3">
-                        <eta>0.0</eta>
-                        <xsi>0.167</xsi>
+                        <sparPositionEtaXsi>
+                          <eta>0.0</eta>
+                          <xsi>0.167</xsi>
+                          <referenceUID>CS_VTP</referenceUID>
+                        </sparPositionEtaXsi>
                       </sparPosition>
                       <sparPosition uID="FS_P2_3">
-                        <eta>1</eta>
-                        <xsi>0.111</xsi>
+                        <sparPositionEtaXsi>
+                          <eta>1</eta>
+                          <xsi>0.111</xsi>
+                          <referenceUID>CS_VTP</referenceUID>
+                        </sparPositionEtaXsi>
                       </sparPosition>
                       <sparPosition uID="RS_P1_3">
-                        <eta>0.0</eta>
-                        <xsi>0.633</xsi>
+                        <sparPositionEtaXsi>
+                          <eta>0.0</eta>
+                          <xsi>0.633</xsi>
+                          <referenceUID>CS_VTP</referenceUID>
+                        </sparPositionEtaXsi>
                       </sparPosition>
                       <sparPosition uID="RS_P2_3">
-                        <eta>1</eta>
-                        <xsi>0.667</xsi>
+                        <sparPositionEtaXsi>
+                          <eta>1</eta>
+                          <xsi>0.667</xsi>
+                          <referenceUID>CS_VTP</referenceUID>
+                        </sparPositionEtaXsi>
                       </sparPosition>
                     </sparPositions>
                     <sparSegments>

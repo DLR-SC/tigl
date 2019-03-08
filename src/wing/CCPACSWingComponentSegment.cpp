@@ -533,6 +533,20 @@ const SegmentList& CCPACSWingComponentSegment::GetSegmentList() const
     return *wingSegments;
 }
 
+const CCPACSWingSegment& CCPACSWingComponentSegment::GetBelongingSegment(const std::string& segmentUID) const
+{
+    const SegmentList& segments = GetSegmentList();
+    SegmentList::const_iterator it = std::find_if(segments.begin(), segments.end(), [&](const CCPACSWingSegment* segment) {
+        return segment->GetUID() == segmentUID;
+    });
+    
+    if (it == segments.end()) {
+        throw CTiglError("Segment '" + segmentUID + "' does not belong to component segment '" + GetDefaultedUID() + "'");
+    }
+    
+    return *(*it);
+}
+
 // Determines, which segments belong to the component segment
 std::vector<int> CCPACSWingComponentSegment::findPath(const std::string& fromUID, const::std::string& toUID, const std::vector<int>& curPath, bool forward) const
 {
@@ -888,6 +902,25 @@ gp_Pnt CCPACSWingComponentSegment::GetPoint(double eta, double xsi, TiglCoordina
     }
 
     return result;
+}
+
+// Gets a point in relative wing coordinates for a given eta and xsi
+gp_Pnt CCPACSWingComponentSegment::GetPoint(double eta, double xsi, const std::string& referenceUID, TiglCoordinateSystem referenceCS) const
+{
+    // search for ETA coordinate
+    if (eta < 0.0 || eta > 1.0) {
+        throw CTiglError("Parameter eta not in the range 0.0 <= eta <= 1.0 in CCPACSWingComponentSegment::GetPoint", TIGL_ERROR);
+    }
+    if (xsi < 0.0 || xsi > 1.0) {
+        throw CTiglError("Parameter xsi not in the range 0.0 <= xsi <= 1.0 in CCPACSWingComponentSegment::GetPoint", TIGL_ERROR);
+    }
+
+    if (referenceUID == GetDefaultedUID()) {
+        return GetPoint(eta, xsi, referenceCS);
+    }
+    else {
+        return GetBelongingSegment(referenceUID).GetPoint(eta, xsi, referenceCS);
+    }
 }
 
 void CCPACSWingComponentSegment::GetEtaXsi(const gp_Pnt& globalPoint, double& eta, double& xsi) const

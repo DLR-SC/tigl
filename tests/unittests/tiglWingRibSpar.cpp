@@ -24,6 +24,7 @@
 #include "CCPACSWingRibsDefinition.h"
 #include "CCPACSWingRibsPositioning.h"
 #include "CCPACSWingSegment.h"
+#include "CCPACSWingSparSegment.h"
 
 using namespace tigl;
 
@@ -66,6 +67,42 @@ protected:
 
 TixiDocumentHandle WingCellRibSpar2::tixiHandle = 0;
 TiglCPACSConfigurationHandle WingCellRibSpar2::tiglHandle = 0;
+
+class WingCellRibSparBugs: public ::testing::Test
+{
+protected:
+    static void SetUpTestCase()
+    {
+        const char* filename = "TestData/cell_rib_spar_test-bugs.xml";
+        ReturnCode tixiRet;
+        TiglReturnCode tiglRet;
+
+        tiglHandle = -1;
+        tixiHandle = -1;
+
+        tixiRet = tixiOpenDocument(filename, &tixiHandle);
+        ASSERT_EQ(SUCCESS, tixiRet);
+        tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "model", &tiglHandle);
+        ASSERT_EQ(TIGL_SUCCESS, tiglRet);
+    }
+
+    static void TearDownTestCase()
+    {
+        ASSERT_EQ(TIGL_SUCCESS, tiglCloseCPACSConfiguration(tiglHandle));
+        ASSERT_EQ(SUCCESS, tixiCloseDocument(tixiHandle));
+        tiglHandle = -1;
+        tixiHandle = -1;
+    }
+
+    void SetUp() OVERRIDE {}
+    void TearDown() OVERRIDE {}
+
+    static TixiDocumentHandle           tixiHandle;
+    static TiglCPACSConfigurationHandle tiglHandle;
+};
+
+TixiDocumentHandle WingCellRibSparBugs::tixiHandle = 0;
+TiglCPACSConfigurationHandle WingCellRibSparBugs::tiglHandle = 0;
 
 class DistortedWing : public ::testing::Test
 {
@@ -198,4 +235,30 @@ TEST_F(WingCellRibSpar2, computeSparIntersectionEtaXsi) {
         ASSERT_NEAR(got.xsi, it->xsi, 1e-6);
         ribIndex++;
     }
+}
+
+TEST_F(WingCellRibSparBugs, checkSpar2Missing) {
+    // get Component Segment
+    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
+    tigl::CCPACSWing& wing = config.GetWing(1);
+    tigl::CCPACSWingComponentSegment& componentSegment = static_cast<tigl::CCPACSWingComponentSegment&>(wing.GetComponentSegment(1));
+    const tigl::CCPACSWingSparSegment& spar = componentSegment.GetStructure()->GetSparSegment(1);
+
+    EXPECT_EQ(1, componentSegment.GetStructure()->GetSparSegmentCount());
+    EXPECT_STREQ("Wing_CS_spar1", componentSegment.GetStructure()->GetSparSegment(1).GetDefaultedUID().c_str());
+}
+
+TEST_F(WingCellRibSparBugs, getRibGeometry) {
+    // get Component Segment
+    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
+    tigl::CCPACSWing& wing = config.GetWing(1);
+    tigl::CCPACSWingComponentSegment& componentSegment = static_cast<tigl::CCPACSWingComponentSegment&>(wing.GetComponentSegment(1));
+    ASSERT_TRUE(componentSegment.GetStructure()->GetRibsDefinitions().is_initialized());
+
+    // Cannot build rib, as is references an invalid spar as the trailing edge
+    CCPACSWingRibsDefinition& ribs = componentSegment.GetStructure()->GetRibsDefinition(1);
+    EXPECT_THROW(ribs.GetLoft(), tigl::CTiglError);
+
 }
