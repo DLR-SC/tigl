@@ -121,7 +121,7 @@ int WingRibPointGetRibNumber(const generated::CPACSWingRibPoint& ribPoint)
 std::string WingSparPosGetElementUID(const CCPACSWingSparPosition & pos)
 {
     if (!pos.isOnSectionElement()) {
-        throw CTiglError("Spar Postitiong is not on section element");
+        throw CTiglError("Spar positioning is not on section element");
     }
 
     const CTiglUIDManager::TypedPtr tp = pos.GetUIDManager().ResolveObject(pos.GetEtaXsiPoint().GetReferenceUID());
