@@ -134,8 +134,8 @@ double CCPACSWingSparSegment::GetSparLength() const
 gp_Pnt CCPACSWingSparSegment::GetMidplanePoint(int positionIndex) const
 {
     if (positionIndex > m_sparPositionUIDs.GetSparPositionUIDCount()) {
-        LOG(ERROR) << "Invalid spar position index " << positionIndex << " requested from spar segment \"" << m_uID.value_or("") << "\"!";
-        throw CTiglError("Invalid spar position index requested from spar segment \"" + m_uID.value_or("") + "\"!");
+        LOG(ERROR) << "Invalid spar position index " << positionIndex << " requested from spar segment \"" << m_uID << "\"!";
+        throw CTiglError("Invalid spar position index requested from spar segment \"" + m_uID + "\"!");
     }
 
     return GetMidplanePoint(m_sparPositionUIDs.GetSparPositionUID(positionIndex));
@@ -144,8 +144,8 @@ gp_Pnt CCPACSWingSparSegment::GetMidplanePoint(int positionIndex) const
 void CCPACSWingSparSegment::GetEtaXsi(int positionIndex, double& eta, double& xsi) const
 {
     if (positionIndex < 1 || positionIndex > m_sparPositionUIDs.GetSparPositionUIDCount()) {
-        LOG(ERROR) << "Invalid spar position index " << positionIndex << " requested from spar segment \"" << m_uID.value_or("") << "\"!";
-        throw CTiglError("Invalid spar position index requested from spar segment \"" + m_uID.value_or("") + "\"!");
+        LOG(ERROR) << "Invalid spar position index " << positionIndex << " requested from spar segment \"" << m_uID << "\"!";
+        throw CTiglError("Invalid spar position index requested from spar segment \"" + m_uID + "\"!");
     }
 
     const std::string& sparPositionUID = m_sparPositionUIDs.GetSparPositionUID(positionIndex);
@@ -254,12 +254,7 @@ TopoDS_Shape CCPACSWingSparSegment::GetSparCapsGeometry(SparCapSide side, TiglCo
 
 std::string CCPACSWingSparSegment::GetDefaultedUID() const
 {
-    if (GetUID().is_initialized()) {
-        return GetUID().value();
-    }
-    else {
-        return "Unknown_Spar_Segment";
-    }
+    return GetUID();
 }
 
 TiglGeometricComponentType CCPACSWingSparSegment::GetComponentType() const
@@ -297,7 +292,7 @@ void CCPACSWingSparSegment::BuildAuxiliaryGeometry(AuxiliaryGeomCache& cache) co
     // check for defined rotation and print warning since it is not used in geometry code
     double rotation = m_sparCrossSection.GetRotation();
     if (fabs(rotation - 90.0) > Precision::Confusion()) {
-        LOG(WARNING) << "Spar \"" << m_uID.value_or("") << "\" has a cross section rotation defined which is not supported by the geometry code right now! The angle will be ignored and the wing's z-axis is used as up-vector of the spar!";
+        LOG(WARNING) << "Spar \"" << m_uID << "\" has a cross section rotation defined which is not supported by the geometry code right now! The angle will be ignored and the wing's z-axis is used as up-vector of the spar!";
     }
 
     // corner points for spar cut faces

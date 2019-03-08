@@ -110,7 +110,7 @@ void CCPACSWingRibsDefinition::GetRibMidplanePoints(int ribNumber, gp_Pnt& start
 {
     int index = ribNumber - 1;
     if (index < 0 || index >= GetNumberOfRibs()) {
-        throw CTiglError("Invalid rib number requested in ribs definition \"" + m_uID.value_or("") + "\"");
+        throw CTiglError("Invalid rib number requested in ribs definition \"" + m_uID + "\"");
     }
     startPoint = auxGeomCache->midplanePoints[index].startPnt;
     endPoint = auxGeomCache->midplanePoints[index].endPnt;
@@ -186,8 +186,8 @@ bool CCPACSWingRibsDefinition::HasCaps() const
 TopoDS_Shape CCPACSWingRibsDefinition::GetRibCapsGeometry(RibCapSide side, TiglCoordinateSystem referenceCS) const
 {
     if (!HasCaps()) {
-        LOG(ERROR) << "No rib caps are defined for ribs definition " << m_uID.value_or("");
-        throw CTiglError("Error in CCPACSWingRibsDefinition::GetRibCapsGeometry(): No rib caps are defined for ribs definition " + m_uID.value_or("") + "!");
+        LOG(ERROR) << "No rib caps are defined for ribs definition " << m_uID;
+        throw CTiglError("Error in CCPACSWingRibsDefinition::GetRibCapsGeometry(): No rib caps are defined for ribs definition " + m_uID + "!");
     }
 
     TopoDS_Shape capsShape;
@@ -481,8 +481,8 @@ void CCPACSWingRibsDefinition::BuildGeometry(RibGeometryCache& cache) const
                     ribFace = BRepBuilderAPI_MakeFace(ribWire);
                 }
                 catch (const CTiglError&) {
-                    LOG(ERROR) << "unable to generate rib face for rib definition: " << m_uID.value_or("");
-                    throw CTiglError("unable to generate rib face for rib definition \"" + m_uID.value_or("") + "\"! Please check for a correct rib definition!");
+                    LOG(ERROR) << "unable to generate rib face for rib definition: " << m_uID;
+                    throw CTiglError("unable to generate rib face for rib definition \"" + m_uID + "\"! Please check for a correct rib definition!");
                 }
             }
             else if (wireList.Extent() == 2) {
@@ -494,9 +494,9 @@ void CCPACSWingRibsDefinition::BuildGeometry(RibGeometryCache& cache) const
             }
 
             if (ribFace.IsNull()) {
-                LOG(ERROR) << "unable to generate rib face for rib definition: " << m_uID.value_or("");
+                LOG(ERROR) << "unable to generate rib face for rib definition: " << m_uID;
                 std::stringstream ss;
-                ss << "Error: unable to generate rib face for rib definition: " << m_uID.value_or("");
+                ss << "Error: unable to generate rib face for rib definition: " << m_uID;
                 throw CTiglError(ss.str());
             }
 
@@ -874,7 +874,7 @@ TopoDS_Face CCPACSWingRibsDefinition::BuildRibCutFace(const gp_Pnt& startPnt, co
             CutFaceWithSpar(ribCutFace, sparGeometry, bboxSize, cutFaceFrontWire, cutFaceBackWire, upVecStart.Multiplied(-1));
         }
         catch (const CTiglError&) {
-            throw CTiglError("Geometric intersection of Rib \"" + m_uID.value_or("") + "\" with Spar \"" + sparUid + "\" failed! Please check for correct definition!");
+            throw CTiglError("Geometric intersection of Rib \"" + m_uID + "\" with Spar \"" + sparUid + "\" failed! Please check for correct definition!");
         }
     }
     if (ribEnd != "leadingEdge" && ribEnd != "trailingEdge") {
@@ -889,7 +889,7 @@ TopoDS_Face CCPACSWingRibsDefinition::BuildRibCutFace(const gp_Pnt& startPnt, co
             CutFaceWithSpar(ribCutFace, sparGeometry, bboxSize, cutFaceBackWire, cutFaceFrontWire, upVecEnd);
         }
         catch (const CTiglError&) {
-            throw CTiglError("Geometric intersection of Rib \"" + m_uID.value_or("") + "\" with Spar \"" + sparUid + "\" failed! Please check for correct definition!");
+            throw CTiglError("Geometric intersection of Rib \"" + m_uID + "\" with Spar \"" + sparUid + "\" failed! Please check for correct definition!");
         }
     }
 
@@ -918,7 +918,7 @@ const CCPACSWingCSStructure & CCPACSWingRibsDefinition::getStructure() const
 
 std::string CCPACSWingRibsDefinition::GetDefaultedUID() const
 {
-    return GetUID().value_or("Unknown_Ribs_Definition");
+    return GetUID();
 }
 
 TiglGeometricComponentType CCPACSWingRibsDefinition::GetComponentType() const

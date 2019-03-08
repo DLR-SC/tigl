@@ -36163,7 +36163,7 @@ jonas.jepsen@dlr.de
                                                         </xsd:documentation>
                                                 </xsd:annotation>
                                         </xsd:element>
-                                        <xsd:element name="description" type="stringBaseType">
+                                        <xsd:element minOccurs="0" name="description" type="stringBaseType">
                                                 <xsd:annotation>
                                                         <xsd:documentation>Description of the spar segment (spar).
                                                         </xsd:documentation>
@@ -36172,7 +36172,7 @@ jonas.jepsen@dlr.de
                                         <xsd:element name="sparPositionUIDs" type="sparPositionUIDsType"/>
                                         <xsd:element name="sparCrossSection" type="sparCrossSectionType"/>
                                 </xsd:all>
-                                <xsd:attribute name="uID" type="xsd:string"/>
+                                <xsd:attribute name="uID" type="xsd:string" use="required"/>
                         </xsd:extension>
                 </xsd:complexContent>
         </xsd:complexType>
@@ -42147,7 +42147,7 @@ jonas.jepsen@dlr.de
                                         </xsd:choice>
                                         <xsd:element name="ribCrossSection" type="wingRibCrossSectionType"/>
                                 </xsd:sequence>
-                                <xsd:attribute name="uID" type="xsd:string"/>
+                                <xsd:attribute name="uID" type="xsd:string" use="required"/>
                         </xsd:extension>
                 </xsd:complexContent>
         </xsd:complexType>
