@@ -78,6 +78,17 @@ namespace generated
             }
         }
 
+        // read element centerCowl
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/centerCowl")) {
+            m_centerCowl = boost::in_place(this, m_uidMgr);
+            try {
+                m_centerCowl->ReadCPACS(tixiHandle, xpath + "/centerCowl");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read centerCowl at xpath " << xpath << ": " << e.what();
+                m_centerCowl = boost::none;
+            }
+        }
+
         if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
     }
 
@@ -98,6 +109,17 @@ namespace generated
         else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/coreCowl")) {
                 tixi::TixiRemoveElement(tixiHandle, xpath + "/coreCowl");
+            }
+        }
+
+        // write element centerCowl
+        if (m_centerCowl) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/centerCowl");
+            m_centerCowl->WriteCPACS(tixiHandle, xpath + "/centerCowl");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/centerCowl")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/centerCowl");
             }
         }
 
@@ -137,6 +159,16 @@ namespace generated
         return m_coreCowl;
     }
 
+    const boost::optional<CCPACSNacelleCenterCowl>& CPACSEngineNacelle::GetCenterCowl() const
+    {
+        return m_centerCowl;
+    }
+
+    boost::optional<CCPACSNacelleCenterCowl>& CPACSEngineNacelle::GetCenterCowl()
+    {
+        return m_centerCowl;
+    }
+
     CCPACSNacelleCowl& CPACSEngineNacelle::GetCoreCowl(CreateIfNotExistsTag)
     {
         if (!m_coreCowl)
@@ -147,6 +179,18 @@ namespace generated
     void CPACSEngineNacelle::RemoveCoreCowl()
     {
         m_coreCowl = boost::none;
+    }
+
+    CCPACSNacelleCenterCowl& CPACSEngineNacelle::GetCenterCowl(CreateIfNotExistsTag)
+    {
+        if (!m_centerCowl)
+            m_centerCowl = boost::in_place(this, m_uidMgr);
+        return *m_centerCowl;
+    }
+
+    void CPACSEngineNacelle::RemoveCenterCowl()
+    {
+        m_centerCowl = boost::none;
     }
 
 } // namespace generated

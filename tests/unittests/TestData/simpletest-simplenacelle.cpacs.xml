@@ -23,7 +23,7 @@
 			<name>SimpleEngine</name>
 			<nacelle uID="SimpleNacelle">
 				<centerCowl uID="SimpleNacelle_centerCowl">
-					<curveUID>"centerCowlRotationCurve"</curveUID>
+					<curveUID>centerCowlRotationCurve</curveUID>
 					<xOffset>0.0</xOffset>
 				</centerCowl>
 				<fanCowl uID="SimpleNacelle_fanCowl">

@@ -19,6 +19,7 @@
 #include "CCPACSNacelleSection.h"
 #include "CCPACSRotationCurve.h"
 #include "CTiglUIDManager.h"
+#include "Debugging.h"
 
 #include "TopExp.hxx"
 #include "TopTools_IndexedMapOfShape.hxx"
@@ -65,7 +66,7 @@ TopoDS_Face CCPACSRotationCurve::GetRotationSurface(gp_Pnt origin, axis dir) con
     TopoDS_Edge edge = TopoDS::Edge(map(1));
 
 #ifdef DEBUG
-    BRepTools::Write(edge,"rotationalcurve.brep");
+    dumpShape(edge, "debugShapes", "rotationalcurve");
 #endif
 
 

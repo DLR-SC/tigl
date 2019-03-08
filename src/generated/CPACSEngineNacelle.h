@@ -19,6 +19,7 @@
 
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
+#include <CCPACSNacelleCenterCowl.h>
 #include <CCPACSNacelleCowl.h>
 #include <string>
 #include <tixi.h>
@@ -68,15 +69,22 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CCPACSNacelleCowl>& GetCoreCowl() const;
         TIGL_EXPORT virtual boost::optional<CCPACSNacelleCowl>& GetCoreCowl();
 
+        TIGL_EXPORT virtual const boost::optional<CCPACSNacelleCenterCowl>& GetCenterCowl() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSNacelleCenterCowl>& GetCenterCowl();
+
         TIGL_EXPORT virtual CCPACSNacelleCowl& GetCoreCowl(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveCoreCowl();
+
+        TIGL_EXPORT virtual CCPACSNacelleCenterCowl& GetCenterCowl(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveCenterCowl();
 
     protected:
         CTiglUIDManager* m_uidMgr;
 
-        std::string                        m_uID;
-        CCPACSNacelleCowl                  m_fanCowl;
-        boost::optional<CCPACSNacelleCowl> m_coreCowl;
+        std::string                              m_uID;
+        CCPACSNacelleCowl                        m_fanCowl;
+        boost::optional<CCPACSNacelleCowl>       m_coreCowl;
+        boost::optional<CCPACSNacelleCenterCowl> m_centerCowl;
 
     private:
 #ifdef HAVE_CPP11

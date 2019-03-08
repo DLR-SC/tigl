@@ -21,6 +21,7 @@
 #include "CTiglNacelleGuideCurveBuilder.h"
 #include "CTiglMakeLoft.h"
 #include "CNamedShape.h"
+#include "Debugging.h"
 
 #include "BRepTools.hxx"
 #include "BRepTools_WireExplorer.hxx"
@@ -182,9 +183,7 @@ TopoDS_Shape CCPACSNacelleCowl::BuildOuterShape() const
     for ( size_t i = 0; i<wireCache->profiles.size(); ++i) {
 
 #ifdef DEBUG
-        std::stringstream ss;
-        ss << "nacelleProfile_"<<i<<".brep";
-        BRepTools::Write(wireCache->profiles[i], ss.str().c_str());
+        dumpShape(wireCache->profiles[i], "debugShapes", "nacelleProfile", i);
 #endif
 
         lofter.addProfiles(wireCache->profiles[i]);
@@ -193,9 +192,7 @@ TopoDS_Shape CCPACSNacelleCowl::BuildOuterShape() const
     // get guide curves
     for(size_t i=0; i<wireCache->guideCurves.size(); ++i) {
 #ifdef DEBUG
-        std::stringstream ss;
-        ss << "nacelleGuide_"<<i<<".brep";
-        BRepTools::Write(wireCache->guideCurves[i].second, ss.str().c_str());
+        dumpShape(wireCache->guideCurves[i].second, "debugShapes", "nacelleGuide", i);
 #endif
         lofter.addGuides(wireCache->guideCurves[i].second);
     }
@@ -217,16 +214,16 @@ PNamedShape CCPACSNacelleCowl::BuildLoft() const
     TopoDS_Face  innerShape    = m_rotationCurve.GetRotationSurface(origin);
 
 #ifdef DEBUG
-    BRepTools::Write(outerShape,"outerShape.brep");
-    BRepTools::Write(innerShape,"innerShape.brep");
+    dumpShape(outerShape, "debugShapes", "outerShape");
+    dumpShape(innerShape, "debugShapes", "innerShape");
 #endif
 
     TopoDS_Face  blendingSurf1 = GetStartZetaBlendingSurface(innerShape, outerShape);
     TopoDS_Face  blendingSurf2 = GetEndZetaBlendingSurface(innerShape, outerShape);
 
 #ifdef DEBUG
-    BRepTools::Write(blendingSurf1,"blendingSurf1.brep");
-    BRepTools::Write(blendingSurf2,"blendingSurf2.brep");
+    dumpShape(blendingSurf1, "debugShapes", "blendingSurf1");
+    dumpShape(blendingSurf1, "debugShapes", "blendingSurf2");
 #endif
 
     // add subshapes of outerShape to shell
