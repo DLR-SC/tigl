@@ -41,9 +41,14 @@ PNamedShape CCPACSEnginePosition::BuildLoft() const
 {
     try {
         CCPACSEngine& engine = m_uidMgr->ResolveObject<CCPACSEngine>(m_engineUID);
-        boost::optional<CCPACSEngineNacelle>& nacelle = engine.GetNacelle();
-        CTiglEngineNacelleBuilder builder(*nacelle, CTiglRelativelyPositionedComponent::GetTransformationMatrix());
-        return builder.BuildShape();
+        if (engine.GetNacelle()) {
+            boost::optional<CCPACSEngineNacelle>& nacelle = engine.GetNacelle();
+            CTiglEngineNacelleBuilder builder(*nacelle, CTiglRelativelyPositionedComponent::GetTransformationMatrix());
+            return builder.BuildShape();
+        }
+        else {
+            throw CTiglError("Cannot build geometry of engine " + m_engineUID + " without a nacelle definition.");
+        }
     }
     catch(...) {
         throw(CTiglError("CCPACSEnginePosition: Unable to build nacelle for the engine with UID " + m_engineUID + ".", TIGL_ERROR));

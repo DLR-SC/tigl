@@ -152,6 +152,9 @@ void CCPACSNacelleCowl::BuildOuterShapeWires(WireCache& cache) const
 
 TopoDS_Shape CCPACSNacelleCowl::BuildOuterShape() const
 {
+    if ( wireCache->profiles.size()< 1 ) {
+        throw CTiglError("CCPACSNacelleCowl::BuildOuterShape: Unable to create nacelle geometry for nacelle without any profile curves.");
+    }
 
     if ( wireCache->profiles.size() == 1 ) {
         // there is only one profile. nacelle will be rotation curve.
