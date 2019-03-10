@@ -285,7 +285,7 @@ void CTiglMakeLoft::makeLoftWithoutGuides()
     _result = CutShellAtUVParameters(faces, uparams, vparams);
 
     // make sure the order is the same as for the COONS Patch algorithm
-    _result = ResortFaces(_result, nEdgesPerProfile, vparams.size()-1);
+    _result = ResortFaces(_result, nEdgesPerProfile, static_cast<int>(vparams.size()-1));
     CloseShape();
 }
 

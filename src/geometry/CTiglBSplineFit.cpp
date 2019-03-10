@@ -84,10 +84,10 @@ void BSplineFit::initSystem(math_Matrix& A, math_Vector& rhsx, math_Vector& rhsy
 
     math_Matrix bspl_basis(1, 1, 1, order);
 
-    unsigned int nPoints = _px.size();
+    const size_t nPoints = _px.size();
 
     // loop over all curve points which have to be fitted
-    for (unsigned int k=0; k<nPoints; ++k ) {
+    for (size_t k=0; k<nPoints; ++k ) {
 
         // set curve parameter
         double tk = t[k];
@@ -210,10 +210,10 @@ void BSplineFit::computeKnots()
 
      double max_error = 0.;
 
-     unsigned int nPoints = _px.size();
+     const size_t nPoints = _px.size();
 
      // optimize each inner parameter t_k
-     for (unsigned int k=1; k<nPoints-2;  k++) {
+     for (size_t k=1; k<nPoints-2;  k++) {
          double f = 0;
 
          // get old curve parameter value
@@ -270,10 +270,10 @@ double BSplineFit::GetMaxError()
 {
     double max_error = 0.0;
 
-    unsigned int nPoints = _px.size();
+    const size_t nPoints = _px.size();
 
     // loop over all fitted curve points
-    for (unsigned int k=0; k<nPoints; k++ ) {
+    for (size_t k=0; k<nPoints; k++ ) {
 
         // get curve parameter
         double tk = t[k];
