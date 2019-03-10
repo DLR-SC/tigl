@@ -132,8 +132,8 @@ void CTiglWingConnection::resolve(ResolvedIndices& cache) const
     size_t sectionIndex = IndexFromUid(section->GetParent()->GetSections(), section->GetUID()) + 1;
 
     cache.sectionUidPtr = &section->GetUID();
-    cache.sectionIndex = sectionIndex;
-    cache.elementIndex = elementIndex;
+    cache.sectionIndex = static_cast<int>(sectionIndex);
+    cache.elementIndex = static_cast<int>(elementIndex);
     cache.profileUIDPtr = &element.GetAirfoilUID();
 }
 
