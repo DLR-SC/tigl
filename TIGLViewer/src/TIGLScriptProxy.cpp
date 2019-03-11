@@ -209,6 +209,18 @@ QScriptValue TIGLScriptProxy::fuselageGetUID(int fuselageIndex)
     }
 }
 
+QScriptValue TIGLScriptProxy::fuselageGetCenterLineLength(QString fuselageUID)
+{
+    double length;
+    TiglReturnCode ret = ::tiglFuselageGetCenterLineLength (getTiglHandle(), qString2char(fuselageUID), &length);
+    if (ret != TIGL_SUCCESS) {
+        return context()->throwError(tiglGetErrorString(ret));
+    }
+    else {
+        return length;
+    }
+}
+
 
 QScriptValue TIGLScriptProxy::fuselageGetCircumference (int fuselageIndex, int segmentIndex, double eta)
 {
