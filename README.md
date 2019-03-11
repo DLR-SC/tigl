@@ -10,6 +10,10 @@
  - Issue Tracker:     https://github.com/DLR-SC/tigl/issues
  - Wiki:              https://github.com/DLR-SC/tigl/wiki
 
+# News
+
+Please head over to our TiGL website: https://dlr-sc.github.io/tigl/#news
+
 # About TiGL
 
 The **Ti**GL **G**eometry **L**ibrary can be used for the computation and processing of aircraft geometries 
