@@ -36018,41 +36018,41 @@ jonas.jepsen@dlr.de
 
 	<xsd:complexType name="sparPositionType">
 
-                <xsd:annotation>
-                        <xsd:appinfo>
-                                <sd:schemaDoc>
-                                        <ddue:summary>
-                                                <ddue:para>Spar position on the wing</ddue:para>
-                                        </ddue:summary>
-                                        <ddue:remarks>
-                                                <ddue:content>
-                                                        <ddue:para>sparPositionType, a sparPostion defines a location
-                                                                within the componentSegment where a spar in mounted. Eta and xsi
-                                                                are relative to the componentSegment.</ddue:para>
-                                                        <ddue:para>Please find below a picture for an example definition
-                                                                of 3 spars in one wing, by using spar position points and spar
-                                                                segments:</ddue:para>
-                                                        <ddue:mediaLink>
-                                                                <ddue:image width="500" xlink:href="spars1"/>
-                                                        </ddue:mediaLink>
-                                                        <ddue:para>As an alternative to the relative eta coordinate it is
-                                                                possible to specify an elementUID so that the spar position is
-                                                                relative to the outer geometry, e.g. kink, of the wing.
-                                                        </ddue:para>
-                                                </ddue:content>
-                                        </ddue:remarks>
-                                </sd:schemaDoc>
-                        </xsd:appinfo>
-                </xsd:annotation>
-                <xsd:complexContent>
-                        <xsd:extension base="complexBaseType">
-                <xsd:choice minOccurs="1" maxOccurs="1">
-                    <xsd:element name="sparPositionRib" type="wingRibPointType"/>
-                    <xsd:element name="sparPositionEtaXsi" type="etaXsiPointType"/>
-                </xsd:choice>
+		<xsd:annotation>
+			<xsd:appinfo>
+				<sd:schemaDoc>
+					<ddue:summary>
+						<ddue:para>Spar position on the wing</ddue:para>
+					</ddue:summary>
+					<ddue:remarks>
+						<ddue:content>
+							<ddue:para>sparPositionType, a sparPostion defines a location
+								within the componentSegment where a spar in mounted. Eta and xsi
+								are relative to the componentSegment.</ddue:para>
+							<ddue:para>Please find below a picture for an example definition
+								of 3 spars in one wing, by using spar position points and spar
+								segments:</ddue:para>
+							<ddue:mediaLink>
+								<ddue:image width="500" xlink:href="spars1"/>
+							</ddue:mediaLink>
+							<ddue:para>As an alternative to the relative eta coordinate it is
+								possible to specify an elementUID so that the spar position is
+								relative to the outer geometry, e.g. kink, of the wing.
+							</ddue:para>
+						</ddue:content>
+					</ddue:remarks>
+				</sd:schemaDoc>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="complexBaseType">
+				<xsd:choice minOccurs="1" maxOccurs="1">
+					<xsd:element name="sparPositionRib" type="wingRibPointType"/>
+					<xsd:element name="sparPositionEtaXsi" type="etaXsiPointType"/>
+				</xsd:choice>
 				<xsd:attribute name="uID" type="xsd:string" use="required"/>
-                        </xsd:extension>
-                </xsd:complexContent>
+			</xsd:extension>
+		</xsd:complexContent>
 	</xsd:complexType>
 
 
@@ -36138,42 +36138,42 @@ jonas.jepsen@dlr.de
 
 	<xsd:complexType name="sparSegmentType">
 
-                <xsd:annotation>
-                        <xsd:appinfo>
-                                <sd:schemaDoc>
-                                        <ddue:summary>
-                                                <ddue:para>SparSegments (=spars) of the wing.</ddue:para>
-                                        </ddue:summary>
-                                        <ddue:remarks>
-                                                <ddue:para>SparSegmentType, each spar is defined by multiple
-                                                        sparPositions that are referenced via their uID. The spar cross
-                                                        section is defined in 'sparCrossSection'.</ddue:para>
-                                        </ddue:remarks>
-                                </sd:schemaDoc>
-                        </xsd:appinfo>
-                </xsd:annotation>
-                <xsd:complexContent>
-                        <xsd:extension base="complexBaseType">
-                                <xsd:all>
-                                        <xsd:element name="name" type="stringBaseType">
-                                                <xsd:annotation>
-                                                        <xsd:documentation>Name of the spar segment (=spar).
-                                                        </xsd:documentation>
-                                                </xsd:annotation>
-                                        </xsd:element>
-                                        <xsd:element minOccurs="0" name="description" type="stringBaseType">
-                                                <xsd:annotation>
-                                                        <xsd:documentation>Description of the spar segment (spar).
-                                                        </xsd:documentation>
-                                                </xsd:annotation>
-                                        </xsd:element>
-                                        <xsd:element name="sparPositionUIDs" type="sparPositionUIDsType"/>
-                                        <xsd:element name="sparCrossSection" type="sparCrossSectionType"/>
-                                </xsd:all>
-                                <xsd:attribute name="uID" type="xsd:string" use="required"/>
-                        </xsd:extension>
-                </xsd:complexContent>
-        </xsd:complexType>
+		<xsd:annotation>
+			<xsd:appinfo>
+				<sd:schemaDoc>
+					<ddue:summary>
+						<ddue:para>SparSegments (=spars) of the wing.</ddue:para>
+					</ddue:summary>
+					<ddue:remarks>
+						<ddue:para>SparSegmentType, each spar is defined by multiple
+							sparPositions that are referenced via their uID. The spar cross
+							section is defined in 'sparCrossSection'.</ddue:para>
+					</ddue:remarks>
+				</sd:schemaDoc>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="complexBaseType">
+				<xsd:all>
+					<xsd:element name="name" type="stringBaseType">
+						<xsd:annotation>
+							<xsd:documentation>Name of the spar segment (=spar).
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0" name="description" type="stringBaseType">
+						<xsd:annotation>
+							<xsd:documentation>Description of the spar segment (spar).
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="sparPositionUIDs" type="sparPositionUIDsType"/>
+					<xsd:element name="sparCrossSection" type="sparCrossSectionType"/>
+				</xsd:all>
+				<xsd:attribute name="uID" type="xsd:string" use="required"/>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
 
 
 	<xsd:complexType name="sparSegmentsType">
@@ -41996,24 +41996,24 @@ jonas.jepsen@dlr.de
 
 	<xsd:complexType name="wingRibExplicitPositioningType">
 
-                <xsd:annotation>
-                        <xsd:appinfo>
-                                <sd:schemaDoc>
-                                        <ddue:summary>
-                                                <ddue:para>wingRibExplicitPositioningType</ddue:para>
-                                        </ddue:summary>
-                                        <ddue:remarks>
-                                                <ddue:content>
-                                                        <ddue:para>Use this type for an explicit positioning of every
-                                                                single rib.</ddue:para>
-                                                </ddue:content>
-                                        </ddue:remarks>
-                                </sd:schemaDoc>
-                        </xsd:appinfo>
-                </xsd:annotation>
-                <xsd:complexContent>
-                        <xsd:extension base="complexBaseType">
-                                <xsd:sequence>
+		<xsd:annotation>
+			<xsd:appinfo>
+				<sd:schemaDoc>
+					<ddue:summary>
+						<ddue:para>wingRibExplicitPositioningType</ddue:para>
+					</ddue:summary>
+					<ddue:remarks>
+						<ddue:content>
+							<ddue:para>Use this type for an explicit positioning of every
+								single rib.</ddue:para>
+						</ddue:content>
+					</ddue:remarks>
+				</sd:schemaDoc>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="complexBaseType">
+				<xsd:sequence>
                                         <xsd:element name="startReference" type="stringBaseType">
                                                 <xsd:annotation>
                                                         <xsd:documentation>
@@ -42048,10 +42048,10 @@ jonas.jepsen@dlr.de
                                                         </xsd:documentation>
                                                 </xsd:annotation>
                                         </xsd:element>
-                                </xsd:sequence>
-                        </xsd:extension>
-                </xsd:complexContent>
-        </xsd:complexType>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
 
 
 	<xsd:complexType name="wingRibPointType">
@@ -42107,48 +42107,48 @@ jonas.jepsen@dlr.de
 
 	<xsd:complexType name="wingRibsDefinitionType">
 
-                <xsd:annotation>
-                        <xsd:appinfo>
-                                <sd:schemaDoc>
-                                        <ddue:summary>
-                                                <ddue:para>Definition of an rib set.</ddue:para>
-                                        </ddue:summary>
-                                        <ddue:remarks>
-                                                <ddue:content>
-                                                        <ddue:para>RibDefinitionType, containing the definition for ribs.
-                                                                Ribs are defined in sets of one or more ribs. The positions of
-                                                                the rib, as well as the orientation of the ribs are defined in
-                                                                'ribPositioing'. The cross section properties, as e.g.
-                                                                materials, are defined in 'ribCrossSection'.</ddue:para>
-                                                </ddue:content>
-                                        </ddue:remarks>
-                                </sd:schemaDoc>
-                        </xsd:appinfo>
-                </xsd:annotation>
-                <xsd:complexContent>
-                        <xsd:extension base="complexBaseType">
-                                <xsd:sequence>
-                                        <xsd:element name="name" type="stringBaseType">
-                                                <xsd:annotation>
-                                                        <xsd:documentation>Name of the rib set.</xsd:documentation>
-                                                </xsd:annotation>
-                                        </xsd:element>
-                                        <xsd:element minOccurs="0" name="description" type="stringBaseType">
-                                                <xsd:annotation>
-                                                        <xsd:documentation>Description of the rib set.
-                                                        </xsd:documentation>
-                                                </xsd:annotation>
-                                        </xsd:element>
-                                        <xsd:choice>
-                                                <xsd:element name="ribsPositioning" type="wingRibsPositioningType"/>
-                                                <xsd:element name="ribExplicitPositioning" type="wingRibExplicitPositioningType"/>
-                                        </xsd:choice>
-                                        <xsd:element name="ribCrossSection" type="wingRibCrossSectionType"/>
-                                </xsd:sequence>
-                                <xsd:attribute name="uID" type="xsd:string" use="required"/>
-                        </xsd:extension>
-                </xsd:complexContent>
-        </xsd:complexType>
+		<xsd:annotation>
+			<xsd:appinfo>
+				<sd:schemaDoc>
+					<ddue:summary>
+						<ddue:para>Definition of an rib set.</ddue:para>
+					</ddue:summary>
+					<ddue:remarks>
+						<ddue:content>
+							<ddue:para>RibDefinitionType, containing the definition for ribs.
+								Ribs are defined in sets of one or more ribs. The positions of
+								the rib, as well as the orientation of the ribs are defined in
+								'ribPositioing'. The cross section properties, as e.g.
+								materials, are defined in 'ribCrossSection'.</ddue:para>
+						</ddue:content>
+					</ddue:remarks>
+				</sd:schemaDoc>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="complexBaseType">
+				<xsd:sequence>
+					<xsd:element name="name" type="stringBaseType">
+						<xsd:annotation>
+							<xsd:documentation>Name of the rib set.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0" name="description" type="stringBaseType">
+						<xsd:annotation>
+							<xsd:documentation>Description of the rib set.
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:choice>
+						<xsd:element name="ribsPositioning" type="wingRibsPositioningType"/>
+						<xsd:element name="ribExplicitPositioning" type="wingRibExplicitPositioningType"/>
+					</xsd:choice>
+					<xsd:element name="ribCrossSection" type="wingRibCrossSectionType"/>
+				</xsd:sequence>
+				<xsd:attribute name="uID" type="xsd:string" use="required"/>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
 
 
 	<xsd:complexType name="wingRibsDefinitionsType">
