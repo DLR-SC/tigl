@@ -47,9 +47,12 @@ public:
     // Gets total segment count
     TIGL_EXPORT int GetSegmentCount() const;
 
+    // Returns a connection associate with the uid element.
+    // If no associated connection was found, the function will throw a error.
+    // Remark that the connection is not always unique.
     TIGL_EXPORT CTiglFuselageConnection& GetConnection(const std::string& elementUID) const;
 
-    // return once all connections that create the fuselage
+    // Return a connection for each element that create the fuselage
     TIGL_EXPORT std::vector<CTiglFuselageConnection*> GetConnections() const;
 
     // CPACSFuselageSegments interface

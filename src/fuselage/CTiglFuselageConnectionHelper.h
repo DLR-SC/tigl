@@ -25,11 +25,17 @@
 namespace tigl
 {
 
+/**
+ * This class is a helper class for the CTiglFuselageConnection.
+ * It's goal is to provide some usual operations performed on CTiglFuselageConnection class.
+ */
 class CTiglFuselageConnectionHelper
 {
 public:
     /**
-     * This fucntion return the transfromation that the element of the given connection to have its origin at the given position
+     * This function return the transformation that the cpacs element of the given connection needs to have
+     * its origin at the given position.
+     * @remark the position is obtain by translation, so the scale or the normal of the profile does not change.
      */
     static CTiglTransformation
     GetTransformToPlaceConnectionOriginByTranslationAt(const CTiglFuselageConnection& connection,
