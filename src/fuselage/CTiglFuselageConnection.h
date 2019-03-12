@@ -67,14 +67,23 @@ public:
     // Returns the section element matrix referenced by this connection
     TIGL_EXPORT CTiglTransformation GetSectionElementTransformation() const;
 
+    // Returns the fuselage matrix referenced by this connection
     TIGL_EXPORT CTiglTransformation GetFuselageTransformation() const;
 
+    // Return the matrix transformation composed by every transformations apply to this connection.
+    // If referenceCS==GLOBAL_COORDINATE_SYSTEM: -> fuselageMatrix*positoningMatrix*sectionMatrix*elementMatrix
+    // If referenceCS==FUSELAGE_COORDINATE_SYSTEM: -> positoningMatrix*sectionMatrix*elementMatrix
     TIGL_EXPORT CTiglTransformation GetTotalTransformation(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM ) const;
 
+    // Get the wire associate with the profile of this connection in global coordinate or in fuselage coordinate.
     TIGL_EXPORT TopoDS_Wire GetWire(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM ) const;
 
+    // Get the coordinate of the origin of the coordinate system element in global coordinate or in fuselage coordinate.
+    // Remark if the profile is not center on the coordinate system of the element, the origin do not correspond to
+    // the center of the profile
     TIGL_EXPORT CTiglPoint GetOrigin(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
 
+    // Get the center of the profile of this connection in global coordinate or in fuselage coordinate.
     TIGL_EXPORT CTiglPoint GetCenterOfProfile( TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
 
 
