@@ -81,10 +81,10 @@ gp_Pnt GetReferencePoint(const CCPACSWingCSStructure& structure, const std::stri
 {
     const CTiglWingStructureReference wsr(structure);
     gp_Pnt referencePnt;
-    if (reference == "leadingEdge") {
+    if (to_lower(reference) == to_lower("leadingEdge")) {
         referencePnt = wsr.GetLeadingEdgePoint(currentEta);
     }
-    else if (reference == "trailingEdge") {
+    else if (to_lower(reference) == to_lower("trailingEdge")) {
         referencePnt = wsr.GetTrailingEdgePoint(currentEta);
     }
     else {
@@ -99,10 +99,10 @@ double GetRibReferenceLength(const std::string& reference, const CCPACSWingCSStr
 {
     const CTiglWingStructureReference wsr(structure);
     double referenceLength;
-    if (reference == "leadingEdge") {
+    if (to_lower(reference) == to_lower("leadingEdge")) {
         referenceLength = wsr.GetLeadingEdgeLength();
     }
-    else if (reference == "trailingEdge") {
+    else if (to_lower(reference) == to_lower("trailingEdge")) {
         referenceLength = wsr.GetTrailingEdgeLength();
     }
     else {
@@ -144,7 +144,7 @@ gp_Vec GetUpVectorWithoutXRotation(const std::string& ribReference, double curre
     gp_Vec upVec = wsr.GetMidplaneNormal(midplaneEta);
 
     // Bug #408: special handling in case the rib is defined at the spar position or start or end point of a spar
-    if (!sparPositionUID.empty() || (ribReference != "leadingEdge" && ribReference != "trailingEdge" &&
+    if (!sparPositionUID.empty() || (to_lower(ribReference) != to_lower("leadingEdge") && to_lower(ribReference) != to_lower("trailingEdge") &&
         (currentEta < Precision::Confusion() || currentEta >(1 - Precision::Confusion())))) {
         // TODO: here it is expected that the up vector of the spars is always (0,0,1) !!!
         upVec = gp_Vec(0, 0, 1);
@@ -245,14 +245,14 @@ gp_Pnt GetRibDefinitionPoint(const std::string& definition, const TopoDS_Face& r
 {
     const CTiglWingStructureReference wsr(structure);
     gp_Pnt definitionPoint;
-    if (definition == "leadingEdge") {
+    if (to_lower(definition) == to_lower("leadingEdge")) {
         TopoDS_Wire leadingEdgeLine = wsr.GetLeadingEdgeLine();
         if (!GetIntersectionPoint(ribCutFace, leadingEdgeLine, definitionPoint)) {
             LOG(ERROR) << "Unable to determine rib definition point!";
             throw CTiglError("Unable to determine rib definition point in CCPACSWingRibsDefinition::GetRibDefinitionPoint!");
         }
     }
-    else if (definition == "trailingEdge") {
+    else if (to_lower(definition) == to_lower("trailingEdge")) {
         TopoDS_Wire trailingEdgeLine = wsr.GetTrailingEdgeLine();
         if (!GetIntersectionPoint(ribCutFace, trailingEdgeLine, definitionPoint)) {
             LOG(ERROR) << "Unable to determine rib definition point!";
