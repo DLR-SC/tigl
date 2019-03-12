@@ -2613,6 +2613,38 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetCenterLineLength(TiglCPACSConfi
     return TIGL_SUCCESS;
 }
 
+TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageSetGetPointBehavior(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                  TiglGetPointBehavior behavior)
+{
+    if ( behavior < 0 || behavior >= numGetPointBehaviors ) {
+        LOG(ERROR) << "Cannot determine behavior in tiglFuselageSetGetPointBehavior\n";
+        return TIGL_ERROR;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        for(int fuselageIndex = 1; fuselageIndex <= config.GetFuselageCount(); ++fuselageIndex ) {
+            tigl::CCPACSFuselage& fuselage = config.GetFuselage(fuselageIndex);
+            fuselage.SetGetPointBehavior(behavior);
+        }
+
+        return TIGL_SUCCESS;
+    }
+    catch (const tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.what();
+        return ex.getCode();
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglFuselageSetGetPointBehavior!";
+        return TIGL_ERROR;
+    }
+}
+
 TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetPoint(TiglCPACSConfigurationHandle cpacsHandle,
                                                        int fuselageIndex,
                                                        int segmentIndex,
