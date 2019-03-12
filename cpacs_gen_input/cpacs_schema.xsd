@@ -11775,7 +11775,6 @@ jonas.jepsen@dlr.de
 								should be performed. In this case, DELiS
 								creates only wings and the ansys
 								components for coupling with Trafuma. If
-                    <!--
 								False, also a DELiS fuselage will be
 								created, if given and requested and
 								coupled with the DELiS wings.
@@ -11800,7 +11799,6 @@ jonas.jepsen@dlr.de
 								Optional list of ComponentIDs of the
 								component(wing or fuselage) that should
 								be modeled. If not set all components
-                    -->
 								are modeled.
 							</xsd:documentation>
 						</xsd:annotation>
