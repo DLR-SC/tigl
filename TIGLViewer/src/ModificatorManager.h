@@ -19,10 +19,11 @@
 #ifndef TIGL_MODIFICATORMANAGER_H
 #define TIGL_MODIFICATORMANAGER_H
 
-#include "CCPACSConfiguration.h"
+#include "TIGLViewerDocument.h"
 #include "CPACSTreeItem.h"
 #include "ModificatorContainerWidget.h"
 #include "CPACSTreeWidget.h"
+#include <QUndoStack>
 
 class TIGLViewerWindow;
 
@@ -55,24 +56,26 @@ signals:
 
 public slots:
     void dispatch(cpcr::CPACSTreeItem* item);
-    void forwardConfigurationEdited();
+    void createUndoCommand();
+    void updateTree();
 
 public:
-    ModificatorManager(CPACSTreeWidget* treeWidget, ModificatorContainerWidget* modificatorContainerWidget);
+    ModificatorManager(CPACSTreeWidget* treeWidget, ModificatorContainerWidget* modificatorContainerWidget, QUndoStack* undoStack);
 
-    void setCPACSConfiguration(tigl::CCPACSConfiguration* newConfig);
+    void setCPACSConfiguration(TIGLViewerDocument* newDoc);
 
 protected:
     inline bool configurationIsSet()
     {
-        return (config != nullptr);
+        return (doc != nullptr);
     }
 
 private:
-    tigl::CCPACSConfiguration* config;
+    TIGLViewerDocument* doc;
 
     CPACSTreeWidget* treeWidget;
     ModificatorContainerWidget* modificatorContainerWidget;
+    QUndoStack* myUndoStack;
 };
 
 #endif // TIGL_MODIFICATORMANAGER_H

@@ -52,7 +52,7 @@ class ModificatorContainerWidget : public QWidget
     Q_OBJECT
 
 signals:
-    void configurationEdited();
+    void undoCommandRequired();
 
 public slots:
     void applyCurrentModifications();
@@ -67,7 +67,7 @@ public:
     void setFuselageModificator(tigl::CCPACSFuselage& fuselage);
     void setNoInterfaceWidget();
 
-    void hideAllSecializedWidgets();
+    void hideAllSpecializedWidgets();
 
 private:
     Ui::ModificatorContainerWidget* ui;

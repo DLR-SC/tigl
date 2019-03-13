@@ -18,34 +18,35 @@
 
 #include "ModificatorManager.h"
 #include "CTiglUIDManager.h"
+#include "TIGLViewerUndoCommands.h"
 
 ModificatorManager::ModificatorManager(CPACSTreeWidget* treeWidget,
-                                       ModificatorContainerWidget* modificatorContainerWidget)
+                                       ModificatorContainerWidget* modificatorContainerWidget,
+                                       QUndoStack* undoStack)
 {
 
-    config          = nullptr;
+    doc          = nullptr;
     this->treeWidget = treeWidget;
     this->modificatorContainerWidget = modificatorContainerWidget;
+    this->myUndoStack = undoStack;
 
     // signals:
     connect(treeWidget, SIGNAL(newSelectedTreeItem(cpcr::CPACSTreeItem*)), this,
             SLOT(dispatch(cpcr::CPACSTreeItem*)));
 
-    connect(modificatorContainerWidget, SIGNAL(configurationEdited() ), this, SLOT(forwardConfigurationEdited()) );
+    connect(modificatorContainerWidget, SIGNAL(undoCommandRequired()), this, SLOT(createUndoCommand()) );
 }
 
-void ModificatorManager::setCPACSConfiguration(tigl::CCPACSConfiguration* newConfig)
+void ModificatorManager::setCPACSConfiguration(TIGLViewerDocument* newDoc)
 {
-    this->config = newConfig;
-    if (configurationIsSet()) {
-        // TODO allow to chose different model
-        std::string rootXPath = "/cpacs/vehicles";
-        treeWidget->displayNewTree(newConfig->GetTixiDocumentHandle(), rootXPath);
-    }
-    else {
-        treeWidget->clear();
-    }
+
+    doc = newDoc;
+    updateTree();
     modificatorContainerWidget->setNoInterfaceWidget();
+    if (configurationIsSet()) {
+        // when doc is destroy this connection is also destroy
+        connect(doc, SIGNAL(documentUpdated(TiglCPACSConfigurationHandle)), this, SLOT(updateTree()));
+    }
 }
 
 void ModificatorManager::dispatch(cpcr::CPACSTreeItem* item)
@@ -53,22 +54,22 @@ void ModificatorManager::dispatch(cpcr::CPACSTreeItem* item)
 
     if ((!configurationIsSet()) || (!item->isInitialized())) {
 
-        modificatorContainerWidget->hideAllSecializedWidgets();
+        modificatorContainerWidget->hideAllSpecializedWidgets();
         LOG(ERROR) << "MODIFICATOR MANAGER IS NOT READY";
     }
     else if (item->getType() == "transformation") {
-        tigl::CTiglUIDManager& uidManager = config->GetUIDManager();
+        tigl::CTiglUIDManager& uidManager = doc->GetConfiguration().GetUIDManager();
         tigl::CCPACSTransformation& transformation =
             uidManager.ResolveObject<tigl::CCPACSTransformation>(item->getUid());
         modificatorContainerWidget->setTransformationModificator(transformation);
     }
     else if (item->getType() == "fuselage") {
-        tigl::CTiglUIDManager& uidManager = config->GetUIDManager();
+        tigl::CTiglUIDManager& uidManager = doc->GetConfiguration().GetUIDManager();
         tigl::CCPACSFuselage& fuselage    = uidManager.ResolveObject<tigl::CCPACSFuselage>(item->getUid());
         modificatorContainerWidget->setFuselageModificator(fuselage);
     }
     else if (item->getType() == "wing") {
-        tigl::CTiglUIDManager& uidManager = config->GetUIDManager();
+        tigl::CTiglUIDManager& uidManager = doc->GetConfiguration().GetUIDManager();
         tigl::CCPACSWing& wing            = uidManager.ResolveObject<tigl::CCPACSWing>(item->getUid());
         modificatorContainerWidget->setWingModificator(wing);
     }
@@ -78,7 +79,28 @@ void ModificatorManager::dispatch(cpcr::CPACSTreeItem* item)
     }
 }
 
-void ModificatorManager::forwardConfigurationEdited()
+void ModificatorManager::createUndoCommand()
 {
+    if (configurationIsSet()) {
+        QUndoCommand* command = new TiGLViewer::ModifyTiglObject((*doc));
+        myUndoStack->push(command);
+    }
+    else {
+        LOG(ERROR) << "ModificatorManager::createUndoCommand: Called but no document is set!" << std::endl;
+    }
     emit configurationEdited();
+}
+
+void ModificatorManager::updateTree()
+{
+    QString selectedUID = treeWidget->getSelectedUID();
+    if (configurationIsSet()) {
+        // TODO multiple model in file case
+        std::string rootXPath = "/cpacs/vehicles";
+        treeWidget->displayNewTree(doc->GetConfiguration().GetTixiDocumentHandle(), rootXPath);
+        treeWidget->setSelectedUID(selectedUID); // to reset the display in a similar state as before the tree update
+    }
+    else {
+        treeWidget->clear();
+    }
 }

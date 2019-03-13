@@ -95,3 +95,15 @@ QModelIndex CPACSFilterModel::getAircraftModelRoot()
 {
     return mapFromSource(cpacsModel->getAircraftModelIndex());
 }
+
+QModelIndex CPACSFilterModel::getIdxForUID(const QString& uid)
+{
+    QModelIndex sourceIdx = cpacsModel->getIdxForUID(uid.toStdString());
+    QModelIndex idx       = mapFromSource(sourceIdx);
+    return idx;
+}
+
+QString CPACSFilterModel::getUidForIdx(QModelIndex idx)
+{
+    return QString(cpacsModel->getUidForIdx(mapToSource(idx)).c_str());
+}

@@ -125,7 +125,7 @@ void CPACSTreeWidget::setShowUID()
     filterModel->enableMatchOnUID(showUID);
     // resize the type column
     ui->treeView->resizeColumnToContents(0);
-    if(ui->treeView->columnWidth(0) < 200){
+    if (ui->treeView->columnWidth(0) < 200) {
         ui->treeView->setColumnWidth(0, 200);
     }
     // as for the setNewSearch, the root of the treeView can change during this operation (I dont know why)
@@ -155,4 +155,16 @@ void CPACSTreeWidget::refresh()
     filterModel->resetInternalTree(&tree);
     setExpertView();
     setShowUID();
+}
+
+void CPACSTreeWidget::setSelectedUID(const QString& uid)
+{
+    QModelIndex idxToSelect = filterModel->getIdxForUID(uid);
+    selectionModel->setCurrentIndex(idxToSelect, QItemSelectionModel::Select);
+}
+
+QString CPACSTreeWidget::getSelectedUID()
+{
+    QModelIndex currentIdx = selectionModel->currentIndex();
+    return filterModel->getUidForIdx(currentIdx);
 }

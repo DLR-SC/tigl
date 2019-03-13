@@ -124,7 +124,7 @@ TIGLViewerWindow::TIGLViewerWindow()
     setAcceptDrops(true);
 
     // creator init
-    modificatorManager = new ModificatorManager(treeWidget, modificatorContainerWidget) ;
+    modificatorManager = new ModificatorManager(treeWidget, modificatorContainerWidget, undoStack) ;
 
     connectSignals();
     createMenus();
@@ -262,6 +262,7 @@ void TIGLViewerWindow::closeConfiguration()
         QFile(currentFile.absoluteFilePath()).remove();
     }
     setCurrentFile("");
+    undoStack->clear(); // when the document is closed, we remove all undo
 }
 
 void TIGLViewerWindow::setTiglWindowTitle(const QString &title, bool forceTitle)
@@ -311,7 +312,7 @@ void TIGLViewerWindow::openFile(const QString& fileName)
             delete cpacsConfiguration;
             cpacsConfiguration = config;
 
-            modificatorManager->setCPACSConfiguration(&(cpacsConfiguration->GetConfiguration()));
+            modificatorManager->setCPACSConfiguration(cpacsConfiguration);
 
             connectConfiguration();
             updateMenus();
@@ -358,7 +359,6 @@ void TIGLViewerWindow::reopenFile()
 {
     if (currentFile.suffix().toLower() == tr("xml")){
         cpacsConfiguration->updateConfiguration();
-        modificatorManager->setCPACSConfiguration(&(cpacsConfiguration->GetConfiguration()));
     }
     else {
         myScene->getContext()->EraseAll(Standard_False);

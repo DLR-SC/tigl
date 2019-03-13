@@ -89,6 +89,10 @@ public:
    */
     void refresh();
 
+    void setSelectedUID(const QString & uid);
+
+    QString getSelectedUID();
+
 private:
     Ui::CPACSTreeWidget* ui;
 
