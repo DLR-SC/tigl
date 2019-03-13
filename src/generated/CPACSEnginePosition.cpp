@@ -16,8 +16,8 @@
 // limitations under the License.
 
 #include <cassert>
+#include "CCPACSEnginePositions.h"
 #include "CPACSEnginePosition.h"
-#include "CPACSEnginePositions.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -27,7 +27,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSEnginePosition::CPACSEnginePosition(CPACSEnginePositions* parent, CTiglUIDManager* uidMgr)
+    CPACSEnginePosition::CPACSEnginePosition(CCPACSEnginePositions* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
         , m_transformation(m_uidMgr)
     {
@@ -40,12 +40,12 @@ namespace generated
         if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
     }
 
-    const CPACSEnginePositions* CPACSEnginePosition::GetParent() const
+    const CCPACSEnginePositions* CPACSEnginePosition::GetParent() const
     {
         return m_parent;
     }
 
-    CPACSEnginePositions* CPACSEnginePosition::GetParent()
+    CCPACSEnginePositions* CPACSEnginePosition::GetParent()
     {
         return m_parent;
     }

@@ -33,7 +33,7 @@ namespace generated
     // This class is used in:
     // CPACSWingRibCrossSection
 
-    // generated from /xsd:schema/xsd:complexType[959]
+    // generated from /xsd:schema/xsd:complexType[962]
     /// @brief Definition of a ribCell
     /// 
     /// RibCells are optional elements. They are defined via a

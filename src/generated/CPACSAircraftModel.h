@@ -19,13 +19,13 @@
 
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
+#include <CCPACSEnginePositions.h>
 #include <CCPACSEnginePylons.h>
 #include <CCPACSExternalObjects.h>
 #include <CCPACSFuselages.h>
 #include <CCPACSWings.h>
 #include <string>
 #include <tixi.h>
-#include "CPACSEnginePositions.h"
 #include "CreateIfNotExists.h"
 #include "tigl_internal.h"
 
@@ -71,8 +71,8 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CCPACSWings>& GetWings() const;
         TIGL_EXPORT virtual boost::optional<CCPACSWings>& GetWings();
 
-        TIGL_EXPORT virtual const boost::optional<CPACSEnginePositions>& GetEngines() const;
-        TIGL_EXPORT virtual boost::optional<CPACSEnginePositions>& GetEngines();
+        TIGL_EXPORT virtual const boost::optional<CCPACSEnginePositions>& GetEngines() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSEnginePositions>& GetEngines();
 
         TIGL_EXPORT virtual const boost::optional<CCPACSEnginePylons>& GetEnginePylons() const;
         TIGL_EXPORT virtual boost::optional<CCPACSEnginePylons>& GetEnginePylons();
@@ -86,7 +86,7 @@ namespace generated
         TIGL_EXPORT virtual CCPACSWings& GetWings(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveWings();
 
-        TIGL_EXPORT virtual CPACSEnginePositions& GetEngines(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual CCPACSEnginePositions& GetEngines(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveEngines();
 
         TIGL_EXPORT virtual CCPACSEnginePylons& GetEnginePylons(CreateIfNotExistsTag);
@@ -110,7 +110,7 @@ namespace generated
 
         boost::optional<CCPACSWings>           m_wings;
 
-        boost::optional<CPACSEnginePositions>  m_engines;
+        boost::optional<CCPACSEnginePositions> m_engines;
 
         boost::optional<CCPACSEnginePylons>    m_enginePylons;
 

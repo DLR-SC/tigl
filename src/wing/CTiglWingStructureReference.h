@@ -66,6 +66,7 @@ public:
     TIGL_EXPORT const boost::optional<CCPACSWingCSStructure>& GetStructure() const;
     TIGL_EXPORT PNamedShape GetLoft(TiglCoordinateSystem reference = WING_COORDINATE_SYSTEM) const;
     TIGL_EXPORT gp_Pnt GetPoint(double eta, double xsi, TiglCoordinateSystem reference) const;
+    TIGL_EXPORT gp_Pnt GetPoint(double eta, double xsi, const std::string& referenceUID, TiglCoordinateSystem reference) const;
     TIGL_EXPORT double GetLeadingEdgeLength() const;
     TIGL_EXPORT double GetTrailingEdgeLength() const;
     TIGL_EXPORT gp_Pnt GetLeadingEdgePoint(double relativePos) const;

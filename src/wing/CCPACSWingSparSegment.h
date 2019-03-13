@@ -85,6 +85,8 @@ public:
     TIGL_EXPORT virtual TiglGeometricComponentType GetComponentType() const OVERRIDE;
     TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const OVERRIDE;
 
+    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) OVERRIDE;
+
 private:
     struct AuxiliaryGeomCache
     {

@@ -34,7 +34,7 @@ namespace generated
     // This class is used in:
     // CPACSWingRibsDefinition
 
-    // generated from /xsd:schema/xsd:complexType[964]
+    // generated from /xsd:schema/xsd:complexType[968]
     /// @brief wingRibsPositioningType
     /// 
     /// Within the ribsPositioing type the position and the

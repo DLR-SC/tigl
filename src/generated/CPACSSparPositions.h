@@ -37,7 +37,13 @@ namespace generated
     // generated from /xsd:schema/xsd:complexType[827]
     /// @brief Spar definition points on the wing.
     /// 
-    /// sparPositionsType, containing multiple sparPositions.
+    /// sparPositionType, a sparPostion defines a location
+    /// within the componentSegment where a spar in mounted. Eta and xsi
+    /// are relative to the componentSegment.
+    /// Please find below a picture for an example definition
+    /// of 3 spars in one wing, by using spar position points and spar
+    /// segments:
+    /// @see spars1
     /// 
     class CPACSSparPositions
     {

@@ -778,3 +778,25 @@ TEST_F(TiglFuselageSegmentSimple, getCenterLineLength)
     ASSERT_EQ(TIGL_NOT_FOUND, tiglFuselageGetCenterLineLength(-1, "SimpleFuselage", &centerLineLength));
 }
 
+TEST(TiglFuselageSegmentBugs, getCenterLineLength_551)
+{
+    const char* filename = "TestData/bugs/551/zerosection.xml";
+
+    TiglCPACSConfigurationHandle tiglHandle = -1;
+    TixiDocumentHandle tixiHandle = -1;
+
+    ReturnCode tixiRet = tixiOpenDocument(filename, &tixiHandle);
+    ASSERT_TRUE (tixiRet == SUCCESS);
+    TiglReturnCode tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "", &tiglHandle);
+    ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
+
+    double centerLineLength = 0.;
+
+    // test value of the result
+    ASSERT_EQ(TIGL_SUCCESS, tiglFuselageGetCenterLineLength(tiglHandle, "fuselage", &centerLineLength));
+    EXPECT_NEAR(centerLineLength, 1., 1e-15);
+
+    tiglCloseCPACSConfiguration(tiglHandle);
+    tixiCloseDocument(tixiHandle);
+}
+

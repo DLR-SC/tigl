@@ -45,8 +45,10 @@ PNamedShape CTiglEngineNacelleBuilder::BuildShape()
         shapes.push_back(m_nacelle.GetCoreCowl()->BuildLoft());
     }
 
-    //TODO add center cowl
-
+    //add center cowl
+    if ( m_nacelle.GetCenterCowl() ) {
+        shapes.push_back(m_nacelle.GetCenterCowl()->BuildLoft());
+    }
 
 
     // add shapes to compound

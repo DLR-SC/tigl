@@ -127,11 +127,13 @@ CPACSEnginePylon                         CCPACSEnginePylon
 CPACSEnginePylons                        CCPACSEnginePylons
 
 // Engines
-CPACSEnginePosition					     CCPACSEnginePosition
-CPACSEngines							 CCPACSEngines
-CPACSNacelleCowl						 CCPACSNacelleCowl
-CPACSNacelleSections					 CCPACSNacelleSections
-CPACSNacelleSection 					 CCPACSNacelleSection
+CPACSEnginePositions                     CCPACSEnginePositions
+CPACSEnginePosition                      CCPACSEnginePosition
+CPACSEngines                             CCPACSEngines
+CPACSNacelleCowl                         CCPACSNacelleCowl
+CPACSNacelleSections                     CCPACSNacelleSections
+CPACSNacelleSection                      CCPACSNacelleSection
 CPACSProfileGeometry2D                   CCPACSNacelleProfile
-CPACSNacelleGuideCurves					 CCPACSNacelleGuideCurves
+CPACSNacelleGuideCurves					         CCPACSNacelleGuideCurves
 CPACSRotationCurve                       CCPACSRotationCurve
+CPACSNacelleCenterCowl                   CCPACSNacelleCenterCowl

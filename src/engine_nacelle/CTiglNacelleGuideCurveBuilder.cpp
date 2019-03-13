@@ -129,9 +129,9 @@ TopoDS_Wire CTiglNacelleGuideCurveBuilder::GetWire()
     }
 
     // Interpolate profile (relative and polar) points
-    Handle(TColgp_HArray1OfPnt) interpRelativePolar = new TColgp_HArray1OfPnt(1, points.size());
+    Handle(TColgp_HArray1OfPnt) interpRelativePolar = new TColgp_HArray1OfPnt(1, static_cast<Standard_Integer>(points.size()));
     for( size_t i = 1; i<= points.size(); ++i ) {
-        interpRelativePolar->SetValue(i, points[i-1]);
+        interpRelativePolar->SetValue(static_cast<Standard_Integer>(i), points[i-1]);
     }
     GeomAPI_Interpolate interp(interpRelativePolar, false, Precision::Confusion());
     interp.Load(gp_Vec(1., 0., 0.), gp_Vec(1., 0., 0.), false);
@@ -186,9 +186,9 @@ TopoDS_Wire CTiglNacelleGuideCurveBuilder::GetWire()
     // interpolate with prescribed tangents [cos(startPhi),-sin(startPhi)], [cos(endPhi),-sin(endPhi)]
     gp_Vec startTangent(0., -cos(Radians(startPhi)), -sin(Radians(startPhi)));
     gp_Vec endTangent  (0., -cos(Radians(endPhi  )), -sin(Radians(endPhi  )));
-    Handle(TColgp_HArray1OfPnt) interpAbsoluteCartesian = new TColgp_HArray1OfPnt(1, cartesianPoints.size());
+    Handle(TColgp_HArray1OfPnt) interpAbsoluteCartesian = new TColgp_HArray1OfPnt(1, static_cast<Standard_Integer>(cartesianPoints.size()));
     for( size_t i = 1; i<= cartesianPoints.size(); ++i ) {
-        interpAbsoluteCartesian->SetValue(i, cartesianPoints[i-1]);
+        interpAbsoluteCartesian->SetValue(static_cast<Standard_Integer>(i), cartesianPoints[i-1]);
     }
     GeomAPI_Interpolate interPol(interpAbsoluteCartesian, false, Precision::Confusion());
     interPol.Load(startTangent, endTangent, false);

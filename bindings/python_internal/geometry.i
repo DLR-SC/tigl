@@ -53,8 +53,8 @@
 #include "ECPACSTranslationType.h"
 #include "CTiglAbstractGeometricComponent.h"
 #include "CTiglAbstractSegment.h"
-#include "CCPACSPointListXYZ.h"
-#include "CCPACSPointListRelXYZ.h"
+#include "CCPACSPointListXYZVector.h"
+#include "CCPACSPointListRelXYZVector.h"
 #include "generated/CPACSPointXYZ.h"
 #include "generated/CPACSPointX.h"
 #include "tiglcommonfunctions.h"
@@ -86,7 +86,7 @@
 %boost_optional(tigl::ECPACSTranslationType)
 %boost_optional(tigl::generated::CPACSPointX)
 %boost_optional(tigl::generated::CPACSPointXYZ)
-%boost_optional(tigl::CCPACSPointListXYZ)
+%boost_optional(tigl::CCPACSPointListXYZVector)
 
 %include "CTiglPointsToBSplineInterpolation.h"
 %include "CTiglInterpolateCurveNetwork.h"
@@ -124,8 +124,8 @@
 %include "generated/CPACSPointXYZ.h"
 %include "generated/CPACSPointListXYZVector.h"
 %include "generated/CPACSPointListRelXYZVector.h"
-%include "CCPACSPointListRelXYZ.h"
-%include "CCPACSPointListXYZ.h"
+%include "CCPACSPointListRelXYZVector.h"
+%include "CCPACSPointListXYZVector.h"
 %include "CFunctionToBspline.h"
 %include "generated/CPACSTransformation.h"
 %include "CCPACSTransformation.h"

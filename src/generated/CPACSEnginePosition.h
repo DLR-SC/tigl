@@ -28,11 +28,10 @@
 namespace tigl
 {
 class CTiglUIDManager;
+class CCPACSEnginePositions;
 
 namespace generated
 {
-    class CPACSEnginePositions;
-
     // This class is used in:
     // CPACSEnginePositions
 
@@ -45,13 +44,13 @@ namespace generated
     class CPACSEnginePosition
     {
     public:
-        TIGL_EXPORT CPACSEnginePosition(CPACSEnginePositions* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSEnginePosition(CCPACSEnginePositions* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSEnginePosition();
 
-        TIGL_EXPORT CPACSEnginePositions* GetParent();
+        TIGL_EXPORT CCPACSEnginePositions* GetParent();
 
-        TIGL_EXPORT const CPACSEnginePositions* GetParent() const;
+        TIGL_EXPORT const CCPACSEnginePositions* GetParent() const;
 
         TIGL_EXPORT CTiglUIDManager& GetUIDManager();
         TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
@@ -81,7 +80,7 @@ namespace generated
         TIGL_EXPORT virtual CCPACSTransformation& GetTransformation();
 
     protected:
-        CPACSEnginePositions* m_parent;
+        CCPACSEnginePositions* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
@@ -118,11 +117,4 @@ namespace generated
 } // namespace generated
 
 // CPACSEnginePosition is customized, use type CCPACSEnginePosition directly
-
-// Aliases in tigl namespace
-#ifdef HAVE_CPP11
-using CCPACSEnginePositions = generated::CPACSEnginePositions;
-#else
-typedef generated::CPACSEnginePositions CCPACSEnginePositions;
-#endif
 } // namespace tigl

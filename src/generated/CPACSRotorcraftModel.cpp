@@ -286,12 +286,12 @@ namespace generated
         return m_rotorBlades;
     }
 
-    const boost::optional<CPACSEnginePositions>& CPACSRotorcraftModel::GetEngines() const
+    const boost::optional<CCPACSEnginePositions>& CPACSRotorcraftModel::GetEngines() const
     {
         return m_engines;
     }
 
-    boost::optional<CPACSEnginePositions>& CPACSRotorcraftModel::GetEngines()
+    boost::optional<CCPACSEnginePositions>& CPACSRotorcraftModel::GetEngines()
     {
         return m_engines;
     }
@@ -344,7 +344,7 @@ namespace generated
         m_rotorBlades = boost::none;
     }
 
-    CPACSEnginePositions& CPACSRotorcraftModel::GetEngines(CreateIfNotExistsTag)
+    CCPACSEnginePositions& CPACSRotorcraftModel::GetEngines(CreateIfNotExistsTag)
     {
         if (!m_engines)
             m_engines = boost::in_place(m_uidMgr);

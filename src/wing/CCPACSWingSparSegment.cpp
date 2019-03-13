@@ -48,12 +48,15 @@
 #include "CCPACSWingRibsPositioning.h"
 #include "CCPACSWingSparPosition.h"
 #include "CCPACSWingSpars.h"
+#include "CCPACSWingCSStructure.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglWingStructureReference.h"
 #include "tiglcommonfunctions.h"
+#include "tiglwingribhelperfunctions.h"
 #include "tigletaxsifunctions.h"
 #include "CNamedShape.h"
+
 
 namespace tigl
 {
@@ -131,8 +134,8 @@ double CCPACSWingSparSegment::GetSparLength() const
 gp_Pnt CCPACSWingSparSegment::GetMidplanePoint(int positionIndex) const
 {
     if (positionIndex > m_sparPositionUIDs.GetSparPositionUIDCount()) {
-        LOG(ERROR) << "Invalid spar position index " << positionIndex << " requested from spar segment \"" << m_uID.value_or("") << "\"!";
-        throw CTiglError("Invalid spar position index requested from spar segment \"" + m_uID.value_or("") + "\"!");
+        LOG(ERROR) << "Invalid spar position index " << positionIndex << " requested from spar segment \"" << m_uID << "\"!";
+        throw CTiglError("Invalid spar position index requested from spar segment \"" + m_uID + "\"!");
     }
 
     return GetMidplanePoint(m_sparPositionUIDs.GetSparPositionUID(positionIndex));
@@ -141,26 +144,26 @@ gp_Pnt CCPACSWingSparSegment::GetMidplanePoint(int positionIndex) const
 void CCPACSWingSparSegment::GetEtaXsi(int positionIndex, double& eta, double& xsi) const
 {
     if (positionIndex < 1 || positionIndex > m_sparPositionUIDs.GetSparPositionUIDCount()) {
-        LOG(ERROR) << "Invalid spar position index " << positionIndex << " requested from spar segment \"" << m_uID.value_or("") << "\"!";
-        throw CTiglError("Invalid spar position index requested from spar segment \"" + m_uID.value_or("") + "\"!");
+        LOG(ERROR) << "Invalid spar position index " << positionIndex << " requested from spar segment \"" << m_uID << "\"!";
+        throw CTiglError("Invalid spar position index requested from spar segment \"" + m_uID + "\"!");
     }
 
     const std::string& sparPositionUID = m_sparPositionUIDs.GetSparPositionUID(positionIndex);
     const CCPACSWingSparPosition& sparPosition = sparsNode.GetSparPositions().GetSparPosition(sparPositionUID);
 
-    if (sparPosition.GetInputType() == CCPACSWingSparPosition::Eta) {
-        eta = sparPosition.GetEta();
-    }
-    else if (sparPosition.GetInputType() == CCPACSWingSparPosition::ElementUID) {
+    CTiglWingStructureReference refCS(*sparsNode.GetParent());
+
+    if (sparPosition.isOnRib() || sparPosition.GetReferenceUID() != refCS.GetUID()) {
         gp_Pnt sparPositionPoint = GetMidplanePoint(sparPositionUID);
-        double dummy;
-        CTiglWingStructureReference(*sparsNode.GetParent()).GetEtaXsiLocal(sparPositionPoint, eta, dummy);
-        assert(fabs(dummy - xsi) < 1.E-6);
+        refCS.GetEtaXsiLocal(sparPositionPoint, eta, xsi);
+    }
+    else if (sparPosition.GetReferenceUID() == refCS.GetUID()) {
+        eta = sparPosition.GetEta();
+        xsi = sparPosition.GetXsi();
     }
     else {
         throw CTiglError("Unknown SparPosition-InputType found in CCPACSWingSparSegment::GetEtaXsi");
     }
-    xsi = sparPosition.GetXsi();
 }
 
 TopoDS_Wire CCPACSWingSparSegment::GetSparMidplaneLine() const
@@ -251,12 +254,7 @@ TopoDS_Shape CCPACSWingSparSegment::GetSparCapsGeometry(SparCapSide side, TiglCo
 
 std::string CCPACSWingSparSegment::GetDefaultedUID() const
 {
-    if (GetUID().is_initialized()) {
-        return GetUID().value();
-    }
-    else {
-        return "Unknown_Spar_Segment";
-    }
+    return GetUID();
 }
 
 TiglGeometricComponentType CCPACSWingSparSegment::GetComponentType() const
@@ -294,7 +292,7 @@ void CCPACSWingSparSegment::BuildAuxiliaryGeometry(AuxiliaryGeomCache& cache) co
     // check for defined rotation and print warning since it is not used in geometry code
     double rotation = m_sparCrossSection.GetRotation();
     if (fabs(rotation - 90.0) > Precision::Confusion()) {
-        LOG(WARNING) << "Spar \"" << m_uID.value_or("") << "\" has a cross section rotation defined which is not supported by the geometry code right now! The angle will be ignored and the wing's z-axis is used as up-vector of the spar!";
+        LOG(WARNING) << "Spar \"" << m_uID << "\" has a cross section rotation defined which is not supported by the geometry code right now! The angle will be ignored and the wing's z-axis is used as up-vector of the spar!";
     }
 
     // corner points for spar cut faces
@@ -328,17 +326,17 @@ void CCPACSWingSparSegment::BuildAuxiliaryGeometry(AuxiliaryGeomCache& cache) co
         gp_Pnt p3 = outerPoint.Translated(bboxSize * outerUpVec);
         gp_Pnt p4 = outerPoint.Translated(-bboxSize * outerUpVec);
 
-        // enlarge cut face for inner and outer sections
-        // only extend in case the definition is not inside a section
-        if (sparsNode.GetSparPositions().GetSparPosition(innerPositionUID).GetInputType() == CCPACSWingSparPosition::Eta &&
-            sparsNode.GetSparPositions().GetSparPosition(innerPositionUID).GetEta() <= Precision::Confusion()) {
+        // enlarge cut face for inner and outer component segment sections
+        double eta, xsi;
+        GetEtaXsi(i, eta, xsi);
+        if (i == 1 && (eta < 1.E-6 || 1 - eta < 1.E-6)) {
             gp_Vec sparDir(outerPoint, innerPoint);
             p1.Translate(bboxSize * sparDir.Normalized());
             p2.Translate(bboxSize * sparDir.Normalized());
         }
-        // only extend in case the definition is not inside a section
-        if (sparsNode.GetSparPositions().GetSparPosition(outerPositionUID).GetInputType() == CCPACSWingSparPosition::Eta &&
-            sparsNode.GetSparPositions().GetSparPosition(outerPositionUID).GetEta() >= (1 - Precision::Confusion())) {
+
+        GetEtaXsi(i + 1, eta, xsi);
+        if (i == m_sparPositionUIDs.GetSparPositionUIDCount() - 1 && (eta < 1.E-6 || 1 - eta < 1.E-6)) {
             gp_Vec sparDir(innerPoint, outerPoint);
             p3.Translate(bboxSize * sparDir.Normalized());
             p4.Translate(bboxSize * sparDir.Normalized());
@@ -508,21 +506,9 @@ void CCPACSWingSparSegment::BuildSparCapsGeometry(SparCapsCache& cache) const
 // Builds the cutting geometry for the spar as well as the midplane line
 gp_Pnt CCPACSWingSparSegment::GetMidplanePoint(const std::string& positionUID) const
 {
-    gp_Pnt midplanePoint;
-    CCPACSWingSparPosition& sparPosition               = sparsNode.GetSparPositions().GetSparPosition(positionUID);
-    CTiglWingStructureReference wsr(*sparsNode.GetParent());
+    CCPACSWingSparPosition& sparPosition = sparsNode.GetSparPositions().GetSparPosition(positionUID);
 
-    if (sparPosition.GetInputType() == CCPACSWingSparPosition::ElementUID) {
-            const CCPACSWingComponentSegment& componentSegment = wsr.GetWingComponentSegment();
-        midplanePoint = getSectionElementChordlinePoint(componentSegment, sparPosition.GetElementUID(), sparPosition.GetXsi());
-    }
-    else if (sparPosition.GetInputType() == CCPACSWingSparPosition::Eta) {
-        midplanePoint = wsr.GetPoint(sparPosition.GetEta(), sparPosition.GetXsi(), WING_COORDINATE_SYSTEM);
-    }
-    else {
-        throw CTiglError("Unkwnonw SparPosition InputType found in CCPACSWingSparSegment::GetMidplanePoint");
-    }
-    return midplanePoint;
+    return GetSparMidplanePoint(sparPosition, *sparsNode.GetParent());
 }
 
 gp_Vec CCPACSWingSparSegment::GetUpVector(const std::string& positionUID, gp_Pnt midplanePnt) const
@@ -530,12 +516,26 @@ gp_Vec CCPACSWingSparSegment::GetUpVector(const std::string& positionUID, gp_Pnt
     const CCPACSWingSparPosition& position = sparsNode.GetSparPositions().GetSparPosition(positionUID);
     const CTiglWingStructureReference wsr(*sparsNode.GetParent());
 
-    if (position.GetInputType() == CCPACSWingSparPosition::ElementUID) {
+    if ((position.isOnSectionElement() || position.isOnRib()) && wsr.GetType() == CTiglWingStructureReference::ComponentSegmentType) {
         // get componentSegment required for getting chordline points of sections
         const CCPACSWingComponentSegment& componentSegment = wsr.GetWingComponentSegment();
 
+        TopoDS_Shape sectionFace;
+        if (position.isOnSectionElement()) {
+            const std::string sectionElemUID = WingSparPosGetElementUID(position);
+            sectionFace = componentSegment.GetSectionElementFace(sectionElemUID);
+        }
+        else if(position.isOnRib()) {
+            const CCPACSWingRibsDefinition& ribs = sparsNode.GetParent()->GetRibsDefinition(position.GetRibPoint().GetRibDefinitionUID());
+            int ribNumber = WingRibPointGetRibNumber(*position.GetSparPositionRib_choice1());
+            sectionFace = ribs.GetRibFace(ribNumber, WING_COORDINATE_SYSTEM);
+        }
+        else {
+            // this should actually not happen
+            throw CTiglError("A fatal error as occured");
+        }
+        
         // compute bounding box of section element face
-        const TopoDS_Shape sectionFace = componentSegment.GetSectionElementFace(position.GetElementUID());
         Bnd_Box bbox;
         BRepBndLib::Add(sectionFace, bbox);
         double sectionFaceSize = sqrt(bbox.SquareExtent());
@@ -683,5 +683,42 @@ bool PointIsInfrontSparGeometry(gp_Dir nNormal, gp_Pnt nTestPoint, TopoDS_Shape 
 
     return false;
 }
+
+bool HasRecursiveSparPositionDefined(const CCPACSWingSparPosition& position, const std::string& sparUID)
+{
+    // check, that in case of rib positioning, the rib does not reference the spar itself
+    if (position.isOnRib()) {
+        std::string ribUID = position.GetReferenceUID();
+        const CCPACSWingRibsDefinition& ribs = position.GetUIDManager().ResolveObject<CCPACSWingRibsDefinition>(ribUID);
+        if (ribs.GetRibsPositioning_choice1()) {
+            const CCPACSWingRibsPositioning& pos = ribs.GetRibsPositioning_choice1().value();
+            if (pos.GetRibEnd() == sparUID|| pos.GetRibStart() == sparUID) {
+                LOG(ERROR) << "Recursive reference of spar positioning '" << position.GetUID() << "' and ribs definition '" << ribs.GetDefaultedUID() << "'.";
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+void CCPACSWingSparSegment::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
+{
+    generated::CPACSSparSegment::ReadCPACS(tixiHandle, xpath);
+
+    // The spar positioning on a rib works, as long as the referenced rib does not reference the spar
+    // as the leading or trailing edge of the rib. We must test this case and throw an error otherwise
+    bool hasError = false;
+    for (const std::string sparPositionUID : GetSparPositionUIDs().GetSparPositionUIDs()) {
+        const CCPACSWingSparPosition& position = m_uidMgr->ResolveObject<CCPACSWingSparPosition>(sparPositionUID);
+        if (HasRecursiveSparPositionDefined(position, GetDefaultedUID())) {
+            hasError = true;
+        }
+    }
+
+    if (hasError) {
+        throw CTiglError("Recursive spar/rib definition. Spar '" + GetDefaultedUID() + "' will be skipped.", TIGL_XML_ERROR);
+    }
+}
+
 
 } // end namespace tigl
