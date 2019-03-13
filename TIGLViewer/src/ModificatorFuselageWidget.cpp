@@ -176,7 +176,7 @@ void ModificatorFuselageWidget::recomputeTotalLength(double newPartialLength)
     }
 }
 
-void ModificatorFuselageWidget::apply()
+bool ModificatorFuselageWidget::apply()
 {
 
     bool lengthHasChanged = ((!isApprox(internalLength, ui->spinBoxLength->value())));
@@ -225,10 +225,9 @@ void ModificatorFuselageWidget::apply()
         reset();
     }
 
-    if (lengthHasChanged) {
-        // write in tixi memory
-        fuselage->GetConfiguration().WriteCPACS(fuselage->GetConfiguration().GetUID());
-    }
+    return wasModified;
+
+
 }
 
 void ModificatorFuselageWidget::reset()

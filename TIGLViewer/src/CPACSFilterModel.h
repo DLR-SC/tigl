@@ -80,6 +80,11 @@ public:
      */
     QModelIndex getAircraftModelRoot();
 
+    QModelIndex getIdxForUID(const QString& uid);
+
+    QString getUidForIdx(QModelIndex idx);
+
+
 protected:
     bool filterAcceptsRow(int sourceRow, const QModelIndex& sourceParent) const override;
 

@@ -39,7 +39,7 @@ public:
     void setSpinBoxesFromInternal();
     void setInternalFromSpinBoxes();
 
-    void apply() override;
+    bool apply() override;
     void reset() override;
 
 private:

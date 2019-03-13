@@ -53,6 +53,14 @@ public:
 
     void updateFlapTransform(const std::string& controlUID);
 
+    // Reload the TIGLViewerDocument form a string that content the tixi content.
+    // This function needs that a configuration (model) is open. Otherwise it will do nothing.
+    // It try to reopen the same model from the content string.
+    // If there is no model with the same uid it will have a unexpected behavior.
+    // The loadedFileName will not change.
+    // Remark, the tiglConfiguration will change.
+    void updateCpacsConfigurationFromString(const std::string &tixiContent);
+
 signals:
     void documentUpdated(TiglCPACSConfigurationHandle);
 

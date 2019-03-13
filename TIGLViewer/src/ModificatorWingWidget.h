@@ -44,7 +44,7 @@ public:
     explicit ModificatorWingWidget(QWidget* parent = nullptr);
     ~ModificatorWingWidget();
 
-    void apply() override;
+    bool apply() override;
     void reset() override;
 
     void setWing(tigl::CCPACSWing& wing);

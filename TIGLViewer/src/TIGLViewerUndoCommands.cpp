@@ -1,4 +1,5 @@
 #include "TIGLViewerUndoCommands.h"
+#include "tixicpp.h"
 
 namespace TiGLViewer
 {
@@ -56,6 +57,63 @@ void ChangeObjectsColor::undo()
     }
     myContext->UpdateCurrentViewer();
 
+}
+
+ModifyTiglObject::ModifyTiglObject(TIGLViewerDocument& doc)
+    : tiglViewerDoc(doc)
+{
+    newConfig     = "";
+    oldConfig     = "";
+    isInitialized = false;
+    setText("Creator edition");
+}
+
+void ModifyTiglObject::redo()
+{
+    if (!isInitialized) {
+        initialize();
+        isInitialized = true;
+    }
+    else {
+        tiglViewerDoc.updateCpacsConfigurationFromString(newConfig);
+    }
+}
+
+void ModifyTiglObject::undo()
+{
+    tiglViewerDoc.updateCpacsConfigurationFromString(oldConfig);
+}
+
+void ModifyTiglObject::initialize()
+{
+    TixiDocumentHandle tixiHandle = tiglViewerDoc.GetConfiguration().GetTixiDocumentHandle();
+
+    // save the old version
+    try {
+        oldConfig = tixi::TixiExportDocumentAsString(tixiHandle);
+    }
+    catch (const tixi::TixiError& e) {
+        QString errMsg =
+            "ModifyTiglObject::initialize() Something go wrong during exporting the file from tixi handler. "
+            "Tixi error message: \"" +
+            QString(e.what()) + "\". The file is not saved!";
+        throw tigl::CTiglError(errMsg.toStdString());
+    }
+
+    // write the new version
+    tiglViewerDoc.GetConfiguration().WriteCPACS(tiglViewerDoc.GetConfiguration().GetUID());
+
+    // save the new version
+    try {
+        newConfig = tixi::TixiExportDocumentAsString(tixiHandle);
+    }
+    catch (const tixi::TixiError& e) {
+        QString errMsg =
+            "ModifyTiglObject::initialize() Something go wrong during exporting the file from tixi handler. "
+            "Tixi error message: \"" +
+            QString(e.what()) + "\". The file is not saved!";
+        throw tigl::CTiglError(errMsg.toStdString());
+    }
 }
 
 } // namespace TiGLViewer

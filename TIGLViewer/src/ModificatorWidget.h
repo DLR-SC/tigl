@@ -49,11 +49,13 @@ public:
    */
     virtual void reset();
 
-    /**
-   *  Should check if modification was performed , if yes -> apply it on the
-   * tigl object. (called when commit button is pressed)
-   */
-    virtual void apply();
+   /**
+    * Check if some modifications was performed:
+    * if yes -> apply it on the tigl object (need to write in tixi memory)
+    * if no -> the value are reset from the tigl object
+    * @return true if some modification was done -> need to write in tixi memory, otherwise return false
+    */
+    virtual bool apply();
 
 protected:
     double precision;

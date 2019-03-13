@@ -155,7 +155,7 @@ void ModificatorWingWidget::reset()
     }
 }
 
-void ModificatorWingWidget::apply()
+bool ModificatorWingWidget::apply()
 {
 
     bool anchorHasChanged = ((!isApprox(internalAnchorX, ui->spinBoxAnchorX->value())) ||
@@ -253,4 +253,6 @@ void ModificatorWingWidget::apply()
                           "constant checkbox set";
         }
     }
+
+    return false;
 }

@@ -48,7 +48,7 @@ public:
 
     void setFuselage(tigl::CCPACSFuselage& fuselage);
 
-    void apply() override;
+    bool apply() override;
 
     void reset() override;
 

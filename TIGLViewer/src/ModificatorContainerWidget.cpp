@@ -38,7 +38,7 @@ ModificatorContainerWidget::~ModificatorContainerWidget()
     delete ui;
 }
 
-void ModificatorContainerWidget::hideAllSecializedWidgets()
+void ModificatorContainerWidget::hideAllSpecializedWidgets()
 {
     bool visible = false;
     ui->transformationModificator->setVisible(visible);
@@ -51,7 +51,7 @@ void ModificatorContainerWidget::hideAllSecializedWidgets()
 
 void ModificatorContainerWidget::setTransformationModificator(tigl::CCPACSTransformation& transformation)
 {
-    hideAllSecializedWidgets();
+    hideAllSpecializedWidgets();
     ui->transformationModificator->setTransformation(transformation);
     ui->transformationModificator->setVisible(true);
     ui->applyWidget->setVisible(true);
@@ -60,7 +60,7 @@ void ModificatorContainerWidget::setTransformationModificator(tigl::CCPACSTransf
 
 void ModificatorContainerWidget::setWingModificator(tigl::CCPACSWing& wing)
 {
-    hideAllSecializedWidgets();
+    hideAllSpecializedWidgets();
     ui->wingModificator->setWing(wing);
     ui->wingModificator->setVisible(true);
     ui->applyWidget->setVisible(true);
@@ -69,7 +69,7 @@ void ModificatorContainerWidget::setWingModificator(tigl::CCPACSWing& wing)
 
 void ModificatorContainerWidget::setFuselageModificator(tigl::CCPACSFuselage& fuselage)
 {
-    hideAllSecializedWidgets();
+    hideAllSpecializedWidgets();
     ui->fuselageModificator->setFuselage(fuselage);
     ui->fuselageModificator->setVisible(true);
     ui->applyWidget->setVisible(true);
@@ -78,7 +78,7 @@ void ModificatorContainerWidget::setFuselageModificator(tigl::CCPACSFuselage& fu
 
 void ModificatorContainerWidget::setNoInterfaceWidget()
 {
-    hideAllSecializedWidgets();
+    hideAllSpecializedWidgets();
     ui->noInterfaceWidget->setVisible(true);
     currentModificator = nullptr;
 }
@@ -87,9 +87,10 @@ void ModificatorContainerWidget::applyCurrentModifications()
 {
 
     if (currentModificator != nullptr) {
-        currentModificator->apply(); //
-        // todo save in tixi memory, here ? or in apply function ?
-        emit configurationEdited();
+        if ( currentModificator->apply() ) {
+            // will create the undoCommand in modificator manager (only called if there was some modifications)
+            emit undoCommandRequired();
+        }
     }
     else {
         LOG(WARNING) << "ModificatorManager::applyCurrentModifications() called "
