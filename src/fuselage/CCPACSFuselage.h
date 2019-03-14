@@ -154,6 +154,17 @@ public:
     TIGL_EXPORT void SetLengthBetween(const std::string& startElementUID, const std::string& endElementUID,
                                       double newPartialLength);
 
+    //
+    TIGL_EXPORT double GetMaximalCircumference();
+
+    TIGL_EXPORT double GetMaximalCircumferenceBetween(const std::string& startElementUID,
+                                                      const std::string& endElementUID);
+
+    TIGL_EXPORT void SetMaximalCircumference(double newMaximalCircumference);
+
+    TIGL_EXPORT void SetMaximalCircumferenceBetween(const std::string& startElementUID,
+                                                    const std::string& endElementUID, double newMaximalCircumference);
+
 protected:
     void BuildGuideCurves(TopoDS_Compound& cache) const;
 
@@ -166,6 +177,8 @@ protected:
     PNamedShape BuildLoft() const OVERRIDE;
 
     void SetFaceTraits(PNamedShape loft) const;
+
+    void ScaleCircumferences(std::vector<std::string> uidsToScale, double scaleFactor);
 
 private:
     // get short name for loft

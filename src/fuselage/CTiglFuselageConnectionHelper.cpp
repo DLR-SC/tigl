@@ -38,11 +38,7 @@ tigl::CTiglTransformation tigl::CTiglFuselageConnectionHelper::GetTransformToPla
 
     CTiglTransformation elementT = connection.GetSectionElementTransformation();
     CTiglTransformation sectionT = connection.GetSectionTransformation();
-    CTiglTransformation positioningT;
-    positioningT.SetIdentity();
-    if (connection.GetPositioningTransformation()) {
-        positioningT = *(connection.GetPositioningTransformation());
-    }
+    CTiglTransformation positioningT = connection.GetPositioningTransformation();
     CTiglTransformation fuselageT = connection.GetFuselageTransformation();
 
     CTiglTransformation a = sectionT.Inverted() * positioningT.Inverted() * fuselageT.Inverted();

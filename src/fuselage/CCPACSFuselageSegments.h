@@ -24,6 +24,7 @@
 
 #include "generated/CPACSFuselageSegments.h"
 #include "CTiglFuselageConnection.h"
+#include <map>
 
 namespace tigl
 {
@@ -47,13 +48,17 @@ public:
     // Gets total segment count
     TIGL_EXPORT int GetSegmentCount() const;
 
+    // return the elements uids in order from noise to tail
+    // It assume that the element are already order in m_segments !
+    TIGL_EXPORT std::vector<std::string> GetElementUIDsInOrder() const;
+
     // Returns a connection associate with the uid element.
     // If no associated connection was found, the function will throw a error.
     // Remark that the connection is not always unique.
     TIGL_EXPORT CTiglFuselageConnection& GetConnection(const std::string& elementUID) const;
 
-    // Return a connection for each element that create the fuselage
-    TIGL_EXPORT std::vector<CTiglFuselageConnection*> GetConnections() const;
+    // Returns a map that map each SectionElement to one of this connection
+    TIGL_EXPORT std::map<std::string, CTiglFuselageConnection*> GetConnectionsMap() const;
 
     // CPACSFuselageSegments interface
 public:

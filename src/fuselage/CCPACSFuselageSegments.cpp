@@ -139,27 +139,36 @@ CTiglFuselageConnection& CCPACSFuselageSegments::GetConnection(const std::string
     throw CTiglError("Invalid uid in CCPACSFuselageSegments::GetConnection", TIGL_UID_ERROR);
 }
 
-std::vector<CTiglFuselageConnection*> CCPACSFuselageSegments::GetConnections() const
+std::vector<std::string> CCPACSFuselageSegments::GetElementUIDsInOrder() const
 {
-    std::vector<CTiglFuselageConnection*> connections;
-    std::vector<std::string> insertedUID;
-
-    for (std::size_t i = 0; i < m_segments.size(); i++) {
-        CTiglFuselageConnection& startConnection = m_segments[i]->GetStartConnection();
-        CTiglFuselageConnection& endConnection   = m_segments[i]->GetEndConnection();
-        // check if the connection is allready contains in the list
-        if (std::find(insertedUID.begin(), insertedUID.end(), startConnection.GetSectionElementUID()) ==
-            insertedUID.end()) {
-            connections.push_back(&startConnection);
-            insertedUID.push_back(startConnection.GetSectionElementUID());
+    std::vector<std::string> elementUIDs;
+    std::string tempStartUID;
+    std::string tempEndUID;
+    for (int i = 0; i < m_segments.size(); i++) {
+        tempStartUID = m_segments[i]->GetStartSectionElementUID();
+        tempEndUID   = m_segments[i]->GetEndSectionElementUID();
+        if (std::find(elementUIDs.begin(), elementUIDs.end(), tempStartUID) == elementUIDs.end()) {
+            elementUIDs.push_back(tempStartUID);
         }
-        if (std::find(insertedUID.begin(), insertedUID.end(), endConnection.GetSectionElementUID()) ==
-            insertedUID.end()) {
-            connections.push_back(&endConnection);
-            insertedUID.push_back(endConnection.GetSectionElementUID());
+        if (std::find(elementUIDs.begin(), elementUIDs.end(), tempEndUID) == elementUIDs.end()) {
+            elementUIDs.push_back(tempEndUID);
         }
     }
-    return connections;
+    return elementUIDs;
+}
+
+std::map<std::string, CTiglFuselageConnection*> CCPACSFuselageSegments::GetConnectionsMap() const
+{
+    std::map<std::string, CTiglFuselageConnection*> connectionsMap;
+
+    for (std::size_t i = 0; i < m_segments.size(); i++) {
+        CTiglFuselageConnection& startConnection               = m_segments[i]->GetStartConnection();
+        CTiglFuselageConnection& endConnection                 = m_segments[i]->GetEndConnection();
+        connectionsMap[startConnection.GetSectionElementUID()] = &startConnection; // create or replace
+        connectionsMap[endConnection.GetSectionElementUID()]   = &endConnection; // create or replace
+    }
+
+    return connectionsMap;
 }
 
 } // end namespace tigl
