@@ -76,21 +76,18 @@ void ModificatorFuselageWidget::setFuselage(tigl::CCPACSFuselage& newFuselage)
     // do total length after partial length, because changing partial can change total
     internalLength = fuselage->GetLength();
     ui->spinBoxLength->setValue(internalLength);
-    //widgetLengthDetails->setVisible(false);
 
-    /*
     // radius & circumference
-    comboBoxRadiusBE1->clear();
-    comboBoxRadiusBE1->addItems(elementsUids);
-    comboBoxRadiusBE2->clear();
-    comboBoxRadiusBE2->addItems(elementsUids);
-    comboBoxRadiusBE2->setCurrentIndex(elementsUids.size() - 1); // set the last element of the list
+    ui->comboBoxRadiusBE1->clear();
+    ui->comboBoxRadiusBE1->addItems(elementsUids);
+    ui->comboBoxRadiusBE2->clear();
+    ui->comboBoxRadiusBE2->addItems(elementsUids);
+    ui->comboBoxRadiusBE2->setCurrentIndex(elementsUids.size() - 1); // set the last element of the list
     setRadiusBetweenFromComboBoxes();
 
-    internalRadius = (fuselage->GetMaximalCircumferenceOfElements()) / M_PI;
-    spinBoxRadius->setValue(internalRadius);
-    //widgetRadiusDetails->setVisible(false);
-    */
+    internalRadius = (fuselage->GetMaximalCircumference()) / M_PI;
+    ui->spinBoxRadius->setValue(internalRadius);
+
      
     connect(ui->comboBoxLengthE1, SIGNAL(currentIndexChanged(int)), this, SLOT(setPartialLengthFromComboBoxes()));
     connect(ui->comboBoxLengthE2, SIGNAL(currentIndexChanged(int)), this, SLOT(setPartialLengthFromComboBoxes()));
@@ -105,22 +102,21 @@ void ModificatorFuselageWidget::expendRadiusDetails(bool checked)
 {
 
     ui->widgetRadiusDetails->setVisible(!(ui->widgetRadiusDetails->isVisible()));
-    /*
-     if (widgetRadiusDetails->isVisible()) {
-         // Reset the values to the file values, avoid modifying from details and main at the same time
-         internalRadius = fuselage->GetMaximalCircumferenceOfElements() / M_PI;
-         spinBoxRadius->setValue(internalRadius);
-         setRadiusBetweenFromComboBoxes();
-         spinBoxRadius->setReadOnly(true);
-     }
-     else {
-         // Reset the values to the file values, avoid modifying from details and main at the same time
-         internalRadius = fuselage->GetMaximalCircumferenceOfElements() / M_PI;
-         spinBoxRadius->setValue(internalRadius);
-         setRadiusBetweenFromComboBoxes();
-         spinBoxRadius->setReadOnly(false);
-     }
- */
+
+    if (ui->widgetRadiusDetails->isVisible()) {
+        // Reset the values to the file values, avoid modifying from details and main at the same time
+        internalRadius = fuselage->GetMaximalCircumference() / M_PI;
+        ui->spinBoxRadius->setValue(internalRadius);
+        setRadiusBetweenFromComboBoxes();
+        ui->spinBoxRadius->setReadOnly(true);
+    }
+    else {
+        // Reset the values to the file values, avoid modifying from details and main at the same time
+        internalRadius = fuselage->GetMaximalCircumference() / M_PI;
+        ui->spinBoxRadius->setValue(internalRadius);
+        setRadiusBetweenFromComboBoxes();
+        ui->spinBoxRadius->setReadOnly(false);
+    }
 }
 
 // inverse the visibility
@@ -148,11 +144,10 @@ void ModificatorFuselageWidget::expendLengthDetails(bool checked)
 
 void ModificatorFuselageWidget::setRadiusBetweenFromComboBoxes()
 {
-    /*
-    QString uid1          = comboBoxRadiusBE1->currentText();
-    QString uid2          = comboBoxRadiusBE2->currentText();
-    internalRadiusBetween = (fuselage->GetMaximalCircumferenceOfElementsBetween(uid1.toStdString(), uid2.toStdString())) / M_PI;
-    spinBoxRadiusBetween->setValue(internalRadiusBetween);*/
+    QString uid1          = ui->comboBoxRadiusBE1->currentText();
+    QString uid2          = ui->comboBoxRadiusBE2->currentText();
+    internalRadiusBetween = (fuselage->GetMaximalCircumferenceBetween(uid1.toStdString(), uid2.toStdString())) / M_PI;
+    ui->spinBoxRadiusBetween->setValue(internalRadiusBetween);
 }
 
 void ModificatorFuselageWidget::setPartialLengthFromComboBoxes()
@@ -184,11 +179,11 @@ bool ModificatorFuselageWidget::apply()
     bool partialLengthHasChanged = (!isApprox(internalPartialLength, ui->spinBoxPartialLength->value()));
     // if expend length details is shown, the details modifications prime on the main modif interface
     bool isPartialLengthCase = ui->widgetLengthDetails->isVisible();
-    /*
-    bool radiusHasChanged = ( ! isApprox(internalRadius, spinBoxRadius->value()) );
-    bool radiusBetweenHasChanged = ( ! isApprox(internalRadiusBetween, spinBoxRadiusBetween->value()));
-    bool isRadiusBetweenCase = widgetRadiusDetails->isVisible();
-*/
+
+    bool radiusHasChanged = ( ! isApprox(internalRadius, ui->spinBoxRadius->value()) );
+    bool radiusBetweenHasChanged = ( ! isApprox(internalRadiusBetween, ui->spinBoxRadiusBetween->value()));
+    bool isRadiusBetweenCase = ui->widgetRadiusDetails->isVisible();
+
     bool wasModified = false;
 
     if (lengthHasChanged && (!isPartialLengthCase)) {
@@ -204,30 +199,27 @@ bool ModificatorFuselageWidget::apply()
         fuselage->SetLengthBetween(uid1.toStdString(), uid2.toStdString(), internalPartialLength);
         wasModified = true;
     }
-    /*
+
     if(radiusHasChanged && (!isRadiusBetweenCase)){
-        internalRadius = spinBoxRadius->value();
-        fuselage->SetMaximalCircumferenceOfElements(internalRadius * M_PI);
+        internalRadius = ui->spinBoxRadius->value();
+        fuselage->SetMaximalCircumference(internalRadius * M_PI);
         wasModified = true;
     }
 
     if(radiusBetweenHasChanged && isRadiusBetweenCase){
-        internalRadiusBetween = spinBoxRadiusBetween->value();
-        QString uid1          = comboBoxRadiusBE1->currentText();
-        QString uid2          = comboBoxRadiusBE2->currentText();
-        fuselage->SetMaximalCircumferenceOfElementsBetween(uid1.toStdString(), uid2.toStdString(), internalRadiusBetween * M_PI);
+        internalRadiusBetween = ui->spinBoxRadiusBetween->value();
+        QString uid1          = ui->comboBoxRadiusBE1->currentText();
+        QString uid2          = ui->comboBoxRadiusBE2->currentText();
+        fuselage->SetMaximalCircumferenceBetween(uid1.toStdString(), uid2.toStdString(), internalRadiusBetween * M_PI);
         wasModified = true;
     }
 
-     */
     if (wasModified) {
         // we reset to be sure that each internal values is correctly set
         reset();
     }
 
     return wasModified;
-
-
 }
 
 void ModificatorFuselageWidget::reset()
