@@ -31,6 +31,8 @@
 #include "CCPACSConfiguration.h"
 #include <iostream>
 #include "tiglcommonfunctions.h"
+#include "GProp_GProps.hxx"
+#include "BRepGProp.hxx"
 
 namespace tigl
 {
@@ -107,14 +109,22 @@ CCPACSFuselageProfile& CTiglFuselageConnection::GetProfile()
     return (config.GetFuselageProfile(profileUID));
 }
 
-const CCPACSFuselageProfile& CTiglFuselageConnection::GetProfile() const {
+const CCPACSFuselageProfile& CTiglFuselageConnection::GetProfile() const
+{
     return const_cast<CTiglFuselageConnection&>(*this).GetProfile();
 }
 
 // Returns the positioning transformation for the referenced section
-boost::optional<CTiglTransformation> CTiglFuselageConnection::GetPositioningTransformation() const
+CTiglTransformation CTiglFuselageConnection::GetPositioningTransformation() const
 {
-    return (segment->GetFuselage().GetPositioningTransformation(sectionUID));
+    boost::optional<CTiglTransformation> transformation =
+        segment->GetFuselage().GetPositioningTransformation(sectionUID);
+    if (transformation) {
+        return transformation.value();
+    }
+    else {
+        return CTiglTransformation();
+    }
 }
 
 // Returns the section matrix referenced by this connection
@@ -168,10 +178,8 @@ CTiglTransformation CTiglFuselageConnection::GetTotalTransformation(TiglCoordina
     totalTransformation.PreMultiply(GetSectionTransformation());
 
     // Do positioning transformations
-    boost::optional<tigl::CTiglTransformation> positioningTransformation = GetPositioningTransformation();
-    if (positioningTransformation) {
-        totalTransformation.PreMultiply(*positioningTransformation);
-    }
+    totalTransformation.PreMultiply(GetPositioningTransformation());
+
 
     switch (referenceCS) {
     case FUSELAGE_COORDINATE_SYSTEM:
@@ -209,6 +217,14 @@ CTiglPoint CTiglFuselageConnection::GetCenterOfProfile(TiglCoordinateSystem refe
 {
     TopoDS_Wire wire = GetWire(referenceCS);
     return CTiglPoint(GetCenterOfMass(wire).XYZ());
+}
+
+double CTiglFuselageConnection::GetCircumferenceOfProfile(TiglCoordinateSystem referenceCS) const
+{
+    TopoDS_Wire wire = GetWire(referenceCS);
+    GProp_GProps System;
+    BRepGProp::LinearProperties(wire,System);
+    return  System.Mass();
 }
 
 } // end namespace tigl

@@ -59,7 +59,8 @@ public:
     TIGL_EXPORT const CCPACSFuselageProfile& GetProfile() const;
 
     // Returns the positioning transformation (segment transformation) for the referenced section
-    TIGL_EXPORT boost::optional<CTiglTransformation> GetPositioningTransformation() const;
+    // If there are no positioning will return a trivial transformation
+    TIGL_EXPORT CTiglTransformation GetPositioningTransformation() const;
 
     // Returns the section matrix referenced by this connection
     TIGL_EXPORT CTiglTransformation GetSectionTransformation() const;
@@ -86,6 +87,7 @@ public:
     // Get the center of the profile of this connection in global coordinate or in fuselage coordinate.
     TIGL_EXPORT CTiglPoint GetCenterOfProfile( TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
 
+    TIGL_EXPORT double GetCircumferenceOfProfile(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
 
 private:
     const std::string*             elementUID;   /**< UID in section/elements */
