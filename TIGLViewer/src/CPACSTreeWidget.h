@@ -64,8 +64,6 @@ private slots:
 
     void setExpertView();
 
-    void setShowUID();
-
 public:
     explicit CPACSTreeWidget(QWidget* parent = nullptr);
     ~CPACSTreeWidget();
@@ -90,6 +88,9 @@ public:
     void refresh();
 
 private:
+
+    void setTreeViewColumnsDisplay();
+
     Ui::CPACSTreeWidget* ui;
 
     cpcr::CPACSTree tree;
