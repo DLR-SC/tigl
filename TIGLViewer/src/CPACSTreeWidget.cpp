@@ -29,8 +29,13 @@ CPACSTreeWidget::CPACSTreeWidget(QWidget* parent)
     filterModel = new CPACSFilterModel(nullptr);
     ui->treeView->setModel(filterModel);
     selectionModel = ui->treeView->selectionModel();
+
+    // set the search to search also in uid
+    filterModel->enableMatchOnUID(true);
+
+    setTreeViewColumnsDisplay();
     setExpertView();
-    setShowUID();
+
 
     connect(selectionModel, SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)), this,
             SLOT(onSelectionChanged(const QItemSelection&, const QItemSelection&)));
@@ -39,8 +44,6 @@ CPACSTreeWidget::CPACSTreeWidget(QWidget* parent)
     connect(ui->expertViewCheckBox, SIGNAL(toggled(bool)), this, SLOT(setExpertView()));
 
     connect(ui->searchLineEdit, SIGNAL(textEdited(const QString)), this, SLOT(setNewSearch(const QString)));
-
-    connect(ui->showUIDCheckBox, SIGNAL(toggled(bool)), this, SLOT(setShowUID()));
 
 }
 
@@ -56,8 +59,6 @@ void CPACSTreeWidget::onSelectionChanged(const QItemSelection& newSelection, con
     ui->searchLineEdit->blockSignals(true);
     bool blockValue2 = ui->expertViewCheckBox->signalsBlocked();
     ui->expertViewCheckBox->blockSignals(true);
-    bool blockValue3 = ui->showUIDCheckBox->signalsBlocked();
-    ui->showUIDCheckBox->blockSignals(true);
 
     if (filterModel->isValid()) {
         cpcr::CPACSTreeItem* newSelectedItem = filterModel->getItemFromSelection(newSelection);
@@ -69,8 +70,6 @@ void CPACSTreeWidget::onSelectionChanged(const QItemSelection& newSelection, con
 
     ui->searchLineEdit->blockSignals(blockValue1);
     ui->expertViewCheckBox->blockSignals(blockValue2);
-    ui->showUIDCheckBox->blockSignals(blockValue3);
-
 }
 
 void CPACSTreeWidget::setNewSearch(const QString newText)
@@ -113,25 +112,12 @@ void CPACSTreeWidget::setExpertView()
     selectionModel->blockSignals(blockValue);
 }
 
-void CPACSTreeWidget::setShowUID()
+void CPACSTreeWidget::setTreeViewColumnsDisplay()
 {
-    // to avoid that on selectionChanged is called during the transformation of the tree
-    bool blockValue = selectionModel->signalsBlocked();
-    selectionModel->blockSignals(true);
-
-    bool showUID = ui->showUIDCheckBox->isChecked();
-    ui->treeView->setColumnHidden(1, !showUID);
-    // set the search to search also in uid iff they are visible
-    filterModel->enableMatchOnUID(showUID);
-    // resize the type column
-    ui->treeView->resizeColumnToContents(0);
-    if(ui->treeView->columnWidth(0) < 200){
-        ui->treeView->setColumnWidth(0, 200);
-    }
-    // as for the setNewSearch, the root of the treeView can change during this operation (I dont know why)
-    setExpertView();
-
-    selectionModel->blockSignals(blockValue);
+    // hide uid column
+    ui->treeView->setColumnHidden(1, true);
+    // hide type column
+    ui->treeView->setColumnHidden(2, true);
 }
 
 void CPACSTreeWidget::clear()
@@ -144,8 +130,8 @@ void CPACSTreeWidget::displayNewTree(TixiDocumentHandle handle, std::string root
 {
     tree.build(handle, root);
     filterModel->resetInternalTree(&tree);
+    setTreeViewColumnsDisplay();
     setExpertView();
-    setShowUID();
 }
 
 void CPACSTreeWidget::refresh()
@@ -153,6 +139,6 @@ void CPACSTreeWidget::refresh()
     filterModel->disconnectInternalTree();
     tree.reload();
     filterModel->resetInternalTree(&tree);
+    setTreeViewColumnsDisplay();
     setExpertView();
-    setShowUID();
 }
