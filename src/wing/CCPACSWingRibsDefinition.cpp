@@ -823,7 +823,7 @@ gp_Vec CCPACSWingRibsDefinition::GetRibDirection(double currentEta, const gp_Pnt
 
     // rotate rib direction by z rotation around up vector
     // special handling for globalY, by default the zRotation defines the rotation around the up-vector
-    if (to_lower(ribRotationReference.value()) == to_lower("globalY") || to_lower(ribRotationReference.value()) == to_lower("globalX")) {
+    if (ribRotationReference && (to_lower(ribRotationReference.value()) == to_lower("globalY") || to_lower(ribRotationReference.value()) == to_lower("globalX"))) {
         ribDir.Rotate(gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), zRotation);
     }
     else {
