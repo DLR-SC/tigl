@@ -29,18 +29,13 @@ class CCPACSWingRibsPositioning : public generated::CPACSWingRibsPositioning
 {
 public:
     // NOTE: definition of start/end of rib via spar position not conform with CPACS format (v2.3)
-    enum StartDefinitionType
+    enum StartEndDefinitionType
     {
-        ELEMENT_START,
-        ETA_START,
-        SPARPOSITION_START
+        CURVEPOINT_STARTEND,
+        ETAXSI_STARTEND,
+        SPARPOSITION_STARTEND
     };
-    enum EndDefinitionType
-    {
-        ELEMENT_END,
-        ETA_END,
-        SPARPOSITION_END
-    };
+
     enum RibCountDefinitionType
     {
         NUMBER_OF_RIBS,
@@ -50,19 +45,10 @@ public:
 public:
     TIGL_EXPORT CCPACSWingRibsPositioning(CCPACSWingRibsDefinition* parent);
 
-    TIGL_EXPORT void SetRibReference(const std::string& value) OVERRIDE;
-    TIGL_EXPORT void SetRibStart(const std::string& value) OVERRIDE;
-    TIGL_EXPORT void SetRibEnd(const std::string& value) OVERRIDE;
 
-    TIGL_EXPORT StartDefinitionType GetStartDefinitionType() const;
-    TIGL_EXPORT void SetEtaStart(double);
-    TIGL_EXPORT void SetElementStartUID(const std::string&);
-    TIGL_EXPORT void SetSparPositionStartUID(const std::string&); // NOTE: definition via spar position not conform with CPACS format (v2.3)
+    TIGL_EXPORT StartEndDefinitionType GetStartDefinitionType() const;
 
-    TIGL_EXPORT EndDefinitionType GetEndDefinitionType() const;
-    TIGL_EXPORT void SetEtaEnd(double);
-    TIGL_EXPORT void SetElementEndUID(const std::string&);
-    TIGL_EXPORT void SetSparPositionEndUID(const std::string&); // NOTE: definition via spar position not conform with CPACS format (v2.3)
+    TIGL_EXPORT StartEndDefinitionType GetEndDefinitionType() const;
 
     TIGL_EXPORT RibCountDefinitionType GetRibCountDefinitionType() const;
     TIGL_EXPORT void SetNumberOfRibs(int);

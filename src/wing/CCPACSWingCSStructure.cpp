@@ -81,6 +81,22 @@ const CCPACSWingSparSegment& CCPACSWingCSStructure::GetSparSegment(const std::st
     return m_spars->GetSparSegments().GetSparSegment(uid);
 }
 
+CCPACSWingSparPosition& CCPACSWingCSStructure::GetSparPosition(const std::string& uid)
+{
+    if (!m_spars) {
+        throw CTiglError("no spars existing in CCPACSWingCSStructure::GetSparPosition!");
+    }
+    return m_spars->GetSparPositions().GetSparPosition(uid);
+}
+
+const CCPACSWingSparPosition& CCPACSWingCSStructure::GetSparPosition(const std::string& uid) const
+{
+    if (!m_spars) {
+        throw CTiglError("no spars existing in CCPACSWingCSStructure::GetSparPosition!");
+    }
+    return m_spars->GetSparPositions().GetSparPosition(uid);
+}
+
 int CCPACSWingCSStructure::GetRibsDefinitionCount() const
 {
     if (m_ribsDefinitions) {

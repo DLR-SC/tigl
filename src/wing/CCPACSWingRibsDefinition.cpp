@@ -584,8 +584,8 @@ double CCPACSWingRibsDefinition::ComputeReferenceEtaStart() const
     else if (m_ribsPositioning_choice1->GetStartDefinitionType() == CCPACSWingRibsPositioning::ELEMENT_START) {
         return ComputeSectionElementEta(m_ribsPositioning_choice1.value().GetElementStartUID_choice2().value());
     }
-    else if (m_ribsPositioning_choice1.value().GetStartDefinitionType() == CCPACSWingRibsPositioning::SPARPOSITION_START) {
-        return ComputeSparPositionEta(m_ribsPositioning_choice1.value().GetSparPositionStartUID_choice3().value());
+    else if (m_ribsPositioning_choice1.value().GetStartDefinitionType() == CCPACSWingRibsPositioning::SPARPOSITION_STARTEND) {
+        return ComputeSparPositionEta(m_ribsPositioning_choice1.value().GetStartSparPositionUID_choice3().value());
     }
     else {
         throw CTiglError("Unknown StartDefinitionType found for RibsPositioning in CCPACSWingRibsDefinition::GetEtaStart");
