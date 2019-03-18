@@ -100,6 +100,9 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<int>& GetNumberOfRibs_choice2() const;
         TIGL_EXPORT virtual void SetNumberOfRibs_choice2(const boost::optional<int>& value);
 
+        TIGL_EXPORT virtual const std::string& GetRibReference() const;
+        TIGL_EXPORT virtual void SetRibReference(const std::string& value);
+
         TIGL_EXPORT virtual const CPACSRibCrossingBehaviour& GetRibCrossingBehaviour() const;
         TIGL_EXPORT virtual void SetRibCrossingBehaviour(const CPACSRibCrossingBehaviour& value);
 
@@ -161,6 +164,11 @@ namespace generated
         /// referenceLine, last rib is at etaEnd. The spacing is constant on the
         /// ribReferenceLine.
         boost::optional<int>              m_numberOfRibs_choice2;
+
+        /// The ribReference is the reference line for the geometrical rib
+        /// placement. It can either
+        /// be a sparUID or "trailingEdge" or "leadingEdge"
+        std::string                       m_ribReference;
 
         CPACSRibCrossingBehaviour         m_ribCrossingBehaviour;
 

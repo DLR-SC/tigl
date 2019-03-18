@@ -141,6 +141,17 @@ namespace generated
             m_numberOfRibs_choice2 = tixi::TixiGetElement<int>(tixiHandle, xpath + "/numberOfRibs");
         }
 
+        // read element ribReference
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/ribReference")) {
+            m_ribReference = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/ribReference");
+            if (m_ribReference.empty()) {
+                LOG(WARNING) << "Required element ribReference is empty at xpath " << xpath;
+            }
+        }
+        else {
+            LOG(ERROR) << "Required element ribReference is missing at xpath " << xpath;
+        }
+
         // read element ribCrossingBehaviour
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/ribCrossingBehaviour")) {
             m_ribCrossingBehaviour = stringToCPACSRibCrossingBehaviour(tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/ribCrossingBehaviour"));
@@ -259,6 +270,10 @@ namespace generated
                 tixi::TixiRemoveElement(tixiHandle, xpath + "/numberOfRibs");
             }
         }
+
+        // write element ribReference
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ribReference");
+        tixi::TixiSaveElement(tixiHandle, xpath + "/ribReference", m_ribReference);
 
         // write element ribCrossingBehaviour
         tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ribCrossingBehaviour");
@@ -476,6 +491,16 @@ namespace generated
     void CPACSWingRibsPositioning::SetNumberOfRibs_choice2(const boost::optional<int>& value)
     {
         m_numberOfRibs_choice2 = value;
+    }
+
+    const std::string& CPACSWingRibsPositioning::GetRibReference() const
+    {
+        return m_ribReference;
+    }
+
+    void CPACSWingRibsPositioning::SetRibReference(const std::string& value)
+    {
+        m_ribReference = value;
     }
 
     const CPACSRibCrossingBehaviour& CPACSWingRibsPositioning::GetRibCrossingBehaviour() const

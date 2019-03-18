@@ -42295,6 +42295,15 @@ jonas.jepsen@dlr.de
 							</xsd:annotation>
 						</xsd:element>
 					</xsd:choice>
+					<xsd:element name="ribReference" type="stringBaseType">
+						<xsd:annotation>
+							<xsd:documentation>
+								The ribReference is the reference line for the geometrical rib
+								placement. It can either
+								be a sparUID or "trailingEdge" or "leadingEdge"
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
 					<xsd:element name="ribCrossingBehaviour">
 						<xsd:complexType>
 							<xsd:annotation>
