@@ -175,4 +175,18 @@ void CCPACSTransformation::ReadCPACS(const TixiDocumentHandle& tixiHandle, const
     generated::CPACSTransformation::ReadCPACS(tixiHandle, transformationXPath);
 }
 
+void CCPACSTransformation::Init(const std::string& baseUID)
+{
+    if (GetUIDManager().IsUIDRegistered(baseUID)) {
+        throw CTiglError(" CCPACSTransformation::Init: Impossible to initialize this transformation with the uid \"" +
+                         baseUID + "\". This uid is already present in the file. Choose another uid.");
+    }
+
+    SetUID(baseUID);
+    setTransformationMatrix(CTiglTransformation());
+    GetTranslation(CreateIfNotExists).SetUID(GetUIDManager().MakeUIDUnique(baseUID + "Transl"));
+    GetRotation(CreateIfNotExists).SetUID(GetUIDManager().MakeUIDUnique(baseUID + "Rot"));
+    GetScaling(CreateIfNotExists).SetUID(GetUIDManager().MakeUIDUnique(baseUID + "Scal"));
+}
+
 } // namespace tigl
