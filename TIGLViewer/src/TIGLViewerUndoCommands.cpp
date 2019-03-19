@@ -6,7 +6,7 @@ namespace TiGLViewer
 void DeleteObjects::redo()
 {
     for(Handle(AIS_InteractiveObject) obj : myObjects) {
-        myContext->Clear(obj, Standard_False);
+        myContext->Remove(obj, Standard_False);
     }
     myContext->UpdateCurrentViewer();
 
