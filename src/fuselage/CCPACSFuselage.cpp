@@ -835,6 +835,7 @@ void CCPACSFuselage::SetMaximalCircumferenceBetween(const std::string& startElem
 
     double oldMaximalCircumference = GetMaximalCircumferenceBetween(startElementUID, endElementUID);
 
+    // todo manage the 0 scale case
     double scaleFactor = newMaximalCircumference / oldMaximalCircumference;
 
     std::vector<std::string> elementsBetween =

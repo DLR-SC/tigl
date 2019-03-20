@@ -154,14 +154,19 @@ public:
     TIGL_EXPORT void SetLengthBetween(const std::string& startElementUID, const std::string& endElementUID,
                                       double newPartialLength);
 
-    //
+    // Get the biggest section element circumference of the fuselage
     TIGL_EXPORT double GetMaximalCircumference();
 
+    // Get the biggest section element circumference between two section element of the fuselage
     TIGL_EXPORT double GetMaximalCircumferenceBetween(const std::string& startElementUID,
                                                       const std::string& endElementUID);
 
+    // Set the biggest circumference of the fuselage to the given value,
+    // the other circumferences are proportionally scaled
     TIGL_EXPORT void SetMaximalCircumference(double newMaximalCircumference);
 
+    // Set the biggest circumference of the fuselage between two given section elements to the given value,
+    // the other circumferences are proportionally scaled
     TIGL_EXPORT void SetMaximalCircumferenceBetween(const std::string& startElementUID,
                                                     const std::string& endElementUID, double newMaximalCircumference);
 
