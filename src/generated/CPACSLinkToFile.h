@@ -60,23 +60,14 @@ namespace generated
         std::string                                 m_simpleContent;
 
     private:
-#ifdef HAVE_CPP11
         CPACSLinkToFile(const CPACSLinkToFile&) = delete;
         CPACSLinkToFile& operator=(const CPACSLinkToFile&) = delete;
 
         CPACSLinkToFile(CPACSLinkToFile&&) = delete;
         CPACSLinkToFile& operator=(CPACSLinkToFile&&) = delete;
-#else
-        CPACSLinkToFile(const CPACSLinkToFile&);
-        CPACSLinkToFile& operator=(const CPACSLinkToFile&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSLinkToFile = generated::CPACSLinkToFile;
-#else
-typedef generated::CPACSLinkToFile CCPACSLinkToFile;
-#endif
 } // namespace tigl

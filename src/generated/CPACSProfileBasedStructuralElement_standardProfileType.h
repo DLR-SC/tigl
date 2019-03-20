@@ -31,7 +31,7 @@ namespace generated
     // CPACSProfileBasedStructuralElement
 
     // generated from /xsd:schema/xsd:complexType[743]/xsd:complexContent/xsd:extension/xsd:sequence/xsd:choice[1]/xsd:sequence[1]/xsd:choice[1]/xsd:element[1]/xsd:complexType/xsd:simpleContent
-    enum CPACSProfileBasedStructuralElement_standardProfileType
+    enum class CPACSProfileBasedStructuralElement_standardProfileType
     {
         C,
         T,
@@ -47,47 +47,34 @@ namespace generated
     inline std::string CPACSProfileBasedStructuralElement_standardProfileTypeToString(const CPACSProfileBasedStructuralElement_standardProfileType& value)
     {
         switch(value) {
-        case C: return "C";
-        case T: return "T";
-        case Z: return "Z";
-        case L: return "L";
-        case HAT: return "HAT";
-        case ROD: return "ROD";
-        case TUBE: return "TUBE";
-        case BAR: return "BAR";
-        case BOX: return "BOX";
+        case CPACSProfileBasedStructuralElement_standardProfileType::C: return "C";
+        case CPACSProfileBasedStructuralElement_standardProfileType::T: return "T";
+        case CPACSProfileBasedStructuralElement_standardProfileType::Z: return "Z";
+        case CPACSProfileBasedStructuralElement_standardProfileType::L: return "L";
+        case CPACSProfileBasedStructuralElement_standardProfileType::HAT: return "HAT";
+        case CPACSProfileBasedStructuralElement_standardProfileType::ROD: return "ROD";
+        case CPACSProfileBasedStructuralElement_standardProfileType::TUBE: return "TUBE";
+        case CPACSProfileBasedStructuralElement_standardProfileType::BAR: return "BAR";
+        case CPACSProfileBasedStructuralElement_standardProfileType::BOX: return "BOX";
         default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSProfileBasedStructuralElement_standardProfileType");
         }
     }
     inline CPACSProfileBasedStructuralElement_standardProfileType stringToCPACSProfileBasedStructuralElement_standardProfileType(const std::string& value)
     {
-        struct ToLower { std::string operator()(std::string str) { for (std::size_t i = 0; i < str.length(); i++) { str[i] = std::tolower(str[i]); } return str; } } toLower;
-        if (toLower(value) == "c") { return C; }
-        if (toLower(value) == "t") { return T; }
-        if (toLower(value) == "z") { return Z; }
-        if (toLower(value) == "l") { return L; }
-        if (toLower(value) == "hat") { return HAT; }
-        if (toLower(value) == "rod") { return ROD; }
-        if (toLower(value) == "tube") { return TUBE; }
-        if (toLower(value) == "bar") { return BAR; }
-        if (toLower(value) == "box") { return BOX; }
+        auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
+        if (toLower(value) == "c") { return CPACSProfileBasedStructuralElement_standardProfileType::C; }
+        if (toLower(value) == "t") { return CPACSProfileBasedStructuralElement_standardProfileType::T; }
+        if (toLower(value) == "z") { return CPACSProfileBasedStructuralElement_standardProfileType::Z; }
+        if (toLower(value) == "l") { return CPACSProfileBasedStructuralElement_standardProfileType::L; }
+        if (toLower(value) == "hat") { return CPACSProfileBasedStructuralElement_standardProfileType::HAT; }
+        if (toLower(value) == "rod") { return CPACSProfileBasedStructuralElement_standardProfileType::ROD; }
+        if (toLower(value) == "tube") { return CPACSProfileBasedStructuralElement_standardProfileType::TUBE; }
+        if (toLower(value) == "bar") { return CPACSProfileBasedStructuralElement_standardProfileType::BAR; }
+        if (toLower(value) == "box") { return CPACSProfileBasedStructuralElement_standardProfileType::BOX; }
         throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSProfileBasedStructuralElement_standardProfileType");
     }
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using ECPACSProfileBasedStructuralElement_standardProfileType = generated::CPACSProfileBasedStructuralElement_standardProfileType;
-#else
-typedef generated::CPACSProfileBasedStructuralElement_standardProfileType ECPACSProfileBasedStructuralElement_standardProfileType;
-#endif
-using generated::C;
-using generated::T;
-using generated::Z;
-using generated::L;
-using generated::HAT;
-using generated::ROD;
-using generated::TUBE;
-using generated::BAR;
-using generated::BOX;
 } // namespace tigl

@@ -49,7 +49,7 @@ namespace generated
     {
         // read element wingAirfoil
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/wingAirfoil")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/wingAirfoil", m_wingAirfoils, m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/wingAirfoil", m_wingAirfoils, 1, 2147483647, m_uidMgr);
         }
 
     }
@@ -61,12 +61,12 @@ namespace generated
 
     }
 
-    const std::vector<unique_ptr<CPACSProfileGeometry> >& CPACSWingAirfoils::GetWingAirfoils() const
+    const std::vector<std::unique_ptr<CPACSProfileGeometry>>& CPACSWingAirfoils::GetWingAirfoils() const
     {
         return m_wingAirfoils;
     }
 
-    std::vector<unique_ptr<CPACSProfileGeometry> >& CPACSWingAirfoils::GetWingAirfoils()
+    std::vector<std::unique_ptr<CPACSProfileGeometry>>& CPACSWingAirfoils::GetWingAirfoils()
     {
         return m_wingAirfoils;
     }

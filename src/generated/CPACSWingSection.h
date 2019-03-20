@@ -106,16 +106,11 @@ namespace generated
         CCPACSWingSectionElements    m_elements;
 
     private:
-#ifdef HAVE_CPP11
         CPACSWingSection(const CPACSWingSection&) = delete;
         CPACSWingSection& operator=(const CPACSWingSection&) = delete;
 
         CPACSWingSection(CPACSWingSection&&) = delete;
         CPACSWingSection& operator=(CPACSWingSection&&) = delete;
-#else
-        CPACSWingSection(const CPACSWingSection&);
-        CPACSWingSection& operator=(const CPACSWingSection&);
-#endif
     };
 } // namespace generated
 

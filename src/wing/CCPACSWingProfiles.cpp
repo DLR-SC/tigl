@@ -58,7 +58,11 @@ void CCPACSWingProfiles::ImportCPACS(const TixiDocumentHandle& tixiHandle, const
     // we replace generated::CPACSWingAirfoils::ReadCPACS and not call it to allow instantiation of CCPACSWingProfile instead of generated::CPACSProfileGeometry
     // read element wingAirfoil
     if (tixi::TixiCheckElement(tixiHandle, xpath + "/wingAirfoil")) {
-        tixi::TixiReadElements(tixiHandle, xpath + "/wingAirfoil", m_wingAirfoils, tixi::ChildWithArgsReader1<CCPACSWingProfile, CTiglUIDManager>(m_uidMgr));
+        tixi::TixiReadElementsInternal(tixiHandle, xpath + "/wingAirfoil", m_wingAirfoils, -1, -1, [&](const std::string& childXPath) {
+            auto child = tigl::make_unique<CCPACSWingProfile>(m_uidMgr);
+            child->ReadCPACS(tixiHandle, childXPath);
+            return child;
+        });
     }
 }
 

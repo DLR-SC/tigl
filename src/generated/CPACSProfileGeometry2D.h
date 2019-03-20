@@ -133,16 +133,11 @@ namespace generated
         boost::optional<CCPACSWingProfileCST>                m_cst2D_choice2;
 
     private:
-#ifdef HAVE_CPP11
         CPACSProfileGeometry2D(const CPACSProfileGeometry2D&) = delete;
         CPACSProfileGeometry2D& operator=(const CPACSProfileGeometry2D&) = delete;
 
         CPACSProfileGeometry2D(CPACSProfileGeometry2D&&) = delete;
         CPACSProfileGeometry2D& operator=(CPACSProfileGeometry2D&&) = delete;
-#else
-        CPACSProfileGeometry2D(const CPACSProfileGeometry2D&);
-        CPACSProfileGeometry2D& operator=(const CPACSProfileGeometry2D&);
-#endif
     };
 } // namespace generated
 

@@ -56,8 +56,8 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSFuselageSection> >& GetSections() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSFuselageSection> >& GetSections();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSFuselageSection>>& GetSections() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSFuselageSection>>& GetSections();
 
         TIGL_EXPORT virtual CCPACSFuselageSection& AddSection();
         TIGL_EXPORT virtual void RemoveSection(CCPACSFuselageSection& ref);
@@ -67,19 +67,14 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<unique_ptr<CCPACSFuselageSection> > m_sections;
+        std::vector<std::unique_ptr<CCPACSFuselageSection>> m_sections;
 
     private:
-#ifdef HAVE_CPP11
         CPACSFuselageSections(const CPACSFuselageSections&) = delete;
         CPACSFuselageSections& operator=(const CPACSFuselageSections&) = delete;
 
         CPACSFuselageSections(CPACSFuselageSections&&) = delete;
         CPACSFuselageSections& operator=(CPACSFuselageSections&&) = delete;
-#else
-        CPACSFuselageSections(const CPACSFuselageSections&);
-        CPACSFuselageSections& operator=(const CPACSFuselageSections&);
-#endif
     };
 } // namespace generated
 

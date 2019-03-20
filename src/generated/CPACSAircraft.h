@@ -50,8 +50,8 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSAircraftModel> >& GetModels() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSAircraftModel> >& GetModels();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSAircraftModel>>& GetModels() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSAircraftModel>>& GetModels();
 
         TIGL_EXPORT virtual CCPACSAircraftModel& AddModel();
         TIGL_EXPORT virtual void RemoveModel(CCPACSAircraftModel& ref);
@@ -59,26 +59,17 @@ namespace generated
     protected:
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<unique_ptr<CCPACSAircraftModel> > m_models;
+        std::vector<std::unique_ptr<CCPACSAircraftModel>> m_models;
 
     private:
-#ifdef HAVE_CPP11
         CPACSAircraft(const CPACSAircraft&) = delete;
         CPACSAircraft& operator=(const CPACSAircraft&) = delete;
 
         CPACSAircraft(CPACSAircraft&&) = delete;
         CPACSAircraft& operator=(CPACSAircraft&&) = delete;
-#else
-        CPACSAircraft(const CPACSAircraft&);
-        CPACSAircraft& operator=(const CPACSAircraft&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSAircraft = generated::CPACSAircraft;
-#else
-typedef generated::CPACSAircraft CCPACSAircraft;
-#endif
 } // namespace tigl

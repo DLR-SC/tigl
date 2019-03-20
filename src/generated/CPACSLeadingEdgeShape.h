@@ -76,23 +76,14 @@ namespace generated
         double m_xsiLowerSkin;
 
     private:
-#ifdef HAVE_CPP11
         CPACSLeadingEdgeShape(const CPACSLeadingEdgeShape&) = delete;
         CPACSLeadingEdgeShape& operator=(const CPACSLeadingEdgeShape&) = delete;
 
         CPACSLeadingEdgeShape(CPACSLeadingEdgeShape&&) = delete;
         CPACSLeadingEdgeShape& operator=(CPACSLeadingEdgeShape&&) = delete;
-#else
-        CPACSLeadingEdgeShape(const CPACSLeadingEdgeShape&);
-        CPACSLeadingEdgeShape& operator=(const CPACSLeadingEdgeShape&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSLeadingEdgeShape = generated::CPACSLeadingEdgeShape;
-#else
-typedef generated::CPACSLeadingEdgeShape CCPACSLeadingEdgeShape;
-#endif
 } // namespace tigl

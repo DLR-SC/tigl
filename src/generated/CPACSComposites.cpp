@@ -49,7 +49,7 @@ namespace generated
     {
         // read element composite
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/composite")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/composite", m_composites, m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/composite", m_composites, 1, 2147483647, m_uidMgr);
         }
 
     }
@@ -61,12 +61,12 @@ namespace generated
 
     }
 
-    const std::vector<unique_ptr<CPACSComposite> >& CPACSComposites::GetComposites() const
+    const std::vector<std::unique_ptr<CPACSComposite>>& CPACSComposites::GetComposites() const
     {
         return m_composites;
     }
 
-    std::vector<unique_ptr<CPACSComposite> >& CPACSComposites::GetComposites()
+    std::vector<std::unique_ptr<CPACSComposite>>& CPACSComposites::GetComposites()
     {
         return m_composites;
     }

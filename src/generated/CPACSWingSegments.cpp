@@ -63,7 +63,7 @@ namespace generated
     {
         // read element segment
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/segment")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/segment", m_segments, reinterpret_cast<CCPACSWingSegments*>(this), m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/segment", m_segments, 1, 2147483647, reinterpret_cast<CCPACSWingSegments*>(this), m_uidMgr);
         }
 
     }
@@ -75,12 +75,12 @@ namespace generated
 
     }
 
-    const std::vector<unique_ptr<CCPACSWingSegment> >& CPACSWingSegments::GetSegments() const
+    const std::vector<std::unique_ptr<CCPACSWingSegment>>& CPACSWingSegments::GetSegments() const
     {
         return m_segments;
     }
 
-    std::vector<unique_ptr<CCPACSWingSegment> >& CPACSWingSegments::GetSegments()
+    std::vector<std::unique_ptr<CCPACSWingSegment>>& CPACSWingSegments::GetSegments()
     {
         return m_segments;
     }

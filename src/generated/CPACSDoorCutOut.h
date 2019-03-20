@@ -85,23 +85,14 @@ namespace generated
         boost::optional<std::string> m_dssDesignUID;
 
     private:
-#ifdef HAVE_CPP11
         CPACSDoorCutOut(const CPACSDoorCutOut&) = delete;
         CPACSDoorCutOut& operator=(const CPACSDoorCutOut&) = delete;
 
         CPACSDoorCutOut(CPACSDoorCutOut&&) = delete;
         CPACSDoorCutOut& operator=(CPACSDoorCutOut&&) = delete;
-#else
-        CPACSDoorCutOut(const CPACSDoorCutOut&);
-        CPACSDoorCutOut& operator=(const CPACSDoorCutOut&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSDoorCutOut = generated::CPACSDoorCutOut;
-#else
-typedef generated::CPACSDoorCutOut CCPACSDoorCutOut;
-#endif
 } // namespace tigl

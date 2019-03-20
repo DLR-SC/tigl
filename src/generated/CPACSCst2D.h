@@ -107,16 +107,11 @@ namespace generated
         boost::optional<double> m_trailingEdgeThickness;
 
     private:
-#ifdef HAVE_CPP11
         CPACSCst2D(const CPACSCst2D&) = delete;
         CPACSCst2D& operator=(const CPACSCst2D&) = delete;
 
         CPACSCst2D(CPACSCst2D&&) = delete;
         CPACSCst2D& operator=(CPACSCst2D&&) = delete;
-#else
-        CPACSCst2D(const CPACSCst2D&);
-        CPACSCst2D& operator=(const CPACSCst2D&);
-#endif
     };
 } // namespace generated
 

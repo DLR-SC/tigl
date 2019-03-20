@@ -71,23 +71,14 @@ namespace generated
         CPACSSheetPoints             m_sheetPoints;
 
     private:
-#ifdef HAVE_CPP11
         CPACSSheet3D(const CPACSSheet3D&) = delete;
         CPACSSheet3D& operator=(const CPACSSheet3D&) = delete;
 
         CPACSSheet3D(CPACSSheet3D&&) = delete;
         CPACSSheet3D& operator=(CPACSSheet3D&&) = delete;
-#else
-        CPACSSheet3D(const CPACSSheet3D&);
-        CPACSSheet3D& operator=(const CPACSSheet3D&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSSheet3D = generated::CPACSSheet3D;
-#else
-typedef generated::CPACSSheet3D CCPACSSheet3D;
-#endif
 } // namespace tigl

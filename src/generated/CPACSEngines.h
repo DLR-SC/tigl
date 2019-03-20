@@ -51,8 +51,8 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSEngine> >& GetEngines() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CPACSEngine> >& GetEngines();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSEngine>>& GetEngines() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSEngine>>& GetEngines();
 
         TIGL_EXPORT virtual CPACSEngine& AddEngine();
         TIGL_EXPORT virtual void RemoveEngine(CPACSEngine& ref);
@@ -60,28 +60,19 @@ namespace generated
     protected:
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<unique_ptr<CPACSEngine> > m_engines;
+        std::vector<std::unique_ptr<CPACSEngine>> m_engines;
 
     private:
-#ifdef HAVE_CPP11
         CPACSEngines(const CPACSEngines&) = delete;
         CPACSEngines& operator=(const CPACSEngines&) = delete;
 
         CPACSEngines(CPACSEngines&&) = delete;
         CPACSEngines& operator=(CPACSEngines&&) = delete;
-#else
-        CPACSEngines(const CPACSEngines&);
-        CPACSEngines& operator=(const CPACSEngines&);
-#endif
     };
 } // namespace generated
 
 // CPACSEngines is customized, use type CCPACSEngines directly
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSEngine = generated::CPACSEngine;
-#else
-typedef generated::CPACSEngine CCPACSEngine;
-#endif
 } // namespace tigl

@@ -69,23 +69,14 @@ namespace generated
         double               m_xsi;
 
     private:
-#ifdef HAVE_CPP11
         CPACSWingRibPoint(const CPACSWingRibPoint&) = delete;
         CPACSWingRibPoint& operator=(const CPACSWingRibPoint&) = delete;
 
         CPACSWingRibPoint(CPACSWingRibPoint&&) = delete;
         CPACSWingRibPoint& operator=(CPACSWingRibPoint&&) = delete;
-#else
-        CPACSWingRibPoint(const CPACSWingRibPoint&);
-        CPACSWingRibPoint& operator=(const CPACSWingRibPoint&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSWingRibPoint = generated::CPACSWingRibPoint;
-#else
-typedef generated::CPACSWingRibPoint CCPACSWingRibPoint;
-#endif
 } // namespace tigl

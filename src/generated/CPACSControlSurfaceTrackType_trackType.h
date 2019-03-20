@@ -31,7 +31,7 @@ namespace generated
     // CPACSControlSurfaceTrackType
 
     // generated from /xsd:schema/xsd:complexType[192]/xsd:complexContent/xsd:extension/xsd:sequence/xsd:element[2]/xsd:complexType/xsd:simpleContent
-    enum CPACSControlSurfaceTrackType_trackType
+    enum class CPACSControlSurfaceTrackType_trackType
     {
         trackType1,
         trackType2,
@@ -45,41 +45,30 @@ namespace generated
     inline std::string CPACSControlSurfaceTrackType_trackTypeToString(const CPACSControlSurfaceTrackType_trackType& value)
     {
         switch(value) {
-        case trackType1: return "trackType1";
-        case trackType2: return "trackType2";
-        case trackType3: return "trackType3";
-        case trackType4: return "trackType4";
-        case trackType5: return "trackType5";
-        case trackType6: return "trackType6";
-        case trackType7: return "trackType7";
+        case CPACSControlSurfaceTrackType_trackType::trackType1: return "trackType1";
+        case CPACSControlSurfaceTrackType_trackType::trackType2: return "trackType2";
+        case CPACSControlSurfaceTrackType_trackType::trackType3: return "trackType3";
+        case CPACSControlSurfaceTrackType_trackType::trackType4: return "trackType4";
+        case CPACSControlSurfaceTrackType_trackType::trackType5: return "trackType5";
+        case CPACSControlSurfaceTrackType_trackType::trackType6: return "trackType6";
+        case CPACSControlSurfaceTrackType_trackType::trackType7: return "trackType7";
         default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSControlSurfaceTrackType_trackType");
         }
     }
     inline CPACSControlSurfaceTrackType_trackType stringToCPACSControlSurfaceTrackType_trackType(const std::string& value)
     {
-        struct ToLower { std::string operator()(std::string str) { for (std::size_t i = 0; i < str.length(); i++) { str[i] = std::tolower(str[i]); } return str; } } toLower;
-        if (toLower(value) == "tracktype1") { return trackType1; }
-        if (toLower(value) == "tracktype2") { return trackType2; }
-        if (toLower(value) == "tracktype3") { return trackType3; }
-        if (toLower(value) == "tracktype4") { return trackType4; }
-        if (toLower(value) == "tracktype5") { return trackType5; }
-        if (toLower(value) == "tracktype6") { return trackType6; }
-        if (toLower(value) == "tracktype7") { return trackType7; }
+        auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
+        if (toLower(value) == "tracktype1") { return CPACSControlSurfaceTrackType_trackType::trackType1; }
+        if (toLower(value) == "tracktype2") { return CPACSControlSurfaceTrackType_trackType::trackType2; }
+        if (toLower(value) == "tracktype3") { return CPACSControlSurfaceTrackType_trackType::trackType3; }
+        if (toLower(value) == "tracktype4") { return CPACSControlSurfaceTrackType_trackType::trackType4; }
+        if (toLower(value) == "tracktype5") { return CPACSControlSurfaceTrackType_trackType::trackType5; }
+        if (toLower(value) == "tracktype6") { return CPACSControlSurfaceTrackType_trackType::trackType6; }
+        if (toLower(value) == "tracktype7") { return CPACSControlSurfaceTrackType_trackType::trackType7; }
         throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSControlSurfaceTrackType_trackType");
     }
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using ECPACSControlSurfaceTrackType_trackType = generated::CPACSControlSurfaceTrackType_trackType;
-#else
-typedef generated::CPACSControlSurfaceTrackType_trackType ECPACSControlSurfaceTrackType_trackType;
-#endif
-using generated::trackType1;
-using generated::trackType2;
-using generated::trackType3;
-using generated::trackType4;
-using generated::trackType5;
-using generated::trackType6;
-using generated::trackType7;
 } // namespace tigl

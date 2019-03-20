@@ -69,16 +69,11 @@ namespace generated
         std::string m_referenceUID;
 
     private:
-#ifdef HAVE_CPP11
         CPACSXsiIsoLine(const CPACSXsiIsoLine&) = delete;
         CPACSXsiIsoLine& operator=(const CPACSXsiIsoLine&) = delete;
 
         CPACSXsiIsoLine(CPACSXsiIsoLine&&) = delete;
         CPACSXsiIsoLine& operator=(CPACSXsiIsoLine&&) = delete;
-#else
-        CPACSXsiIsoLine(const CPACSXsiIsoLine&);
-        CPACSXsiIsoLine& operator=(const CPACSXsiIsoLine&);
-#endif
     };
 } // namespace generated
 

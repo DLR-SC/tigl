@@ -77,23 +77,14 @@ namespace generated
         std::string                  m_materialUID;
 
     private:
-#ifdef HAVE_CPP11
         CPACSCompositeLayer(const CPACSCompositeLayer&) = delete;
         CPACSCompositeLayer& operator=(const CPACSCompositeLayer&) = delete;
 
         CPACSCompositeLayer(CPACSCompositeLayer&&) = delete;
         CPACSCompositeLayer& operator=(CPACSCompositeLayer&&) = delete;
-#else
-        CPACSCompositeLayer(const CPACSCompositeLayer&);
-        CPACSCompositeLayer& operator=(const CPACSCompositeLayer&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSCompositeLayer = generated::CPACSCompositeLayer;
-#else
-typedef generated::CPACSCompositeLayer CCPACSCompositeLayer;
-#endif
 } // namespace tigl

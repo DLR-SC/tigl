@@ -61,7 +61,7 @@ namespace generated
 
         // read element window
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/window")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/window", m_windows, m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/window", m_windows, 1, 2147483647, m_uidMgr);
         }
 
         if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
@@ -91,12 +91,12 @@ namespace generated
         m_uID = value;
     }
 
-    const std::vector<unique_ptr<CPACSCutOut> >& CPACSWindows::GetWindows() const
+    const std::vector<std::unique_ptr<CPACSCutOut>>& CPACSWindows::GetWindows() const
     {
         return m_windows;
     }
 
-    std::vector<unique_ptr<CPACSCutOut> >& CPACSWindows::GetWindows()
+    std::vector<std::unique_ptr<CPACSCutOut>>& CPACSWindows::GetWindows()
     {
         return m_windows;
     }

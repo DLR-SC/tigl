@@ -31,7 +31,7 @@ namespace generated
     // CPACSRotor
 
     // generated from /xsd:schema/xsd:complexType[783]/xsd:complexContent/xsd:extension/xsd:all/xsd:element[4]/xsd:simpleType
-    enum CPACSRotor_type
+    enum class CPACSRotor_type
     {
         mainRotor,
         tailRotor,
@@ -42,32 +42,24 @@ namespace generated
     inline std::string CPACSRotor_typeToString(const CPACSRotor_type& value)
     {
         switch(value) {
-        case mainRotor: return "mainRotor";
-        case tailRotor: return "tailRotor";
-        case fenestron: return "fenestron";
-        case propeller: return "propeller";
+        case CPACSRotor_type::mainRotor: return "mainRotor";
+        case CPACSRotor_type::tailRotor: return "tailRotor";
+        case CPACSRotor_type::fenestron: return "fenestron";
+        case CPACSRotor_type::propeller: return "propeller";
         default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSRotor_type");
         }
     }
     inline CPACSRotor_type stringToCPACSRotor_type(const std::string& value)
     {
-        struct ToLower { std::string operator()(std::string str) { for (std::size_t i = 0; i < str.length(); i++) { str[i] = std::tolower(str[i]); } return str; } } toLower;
-        if (toLower(value) == "mainrotor") { return mainRotor; }
-        if (toLower(value) == "tailrotor") { return tailRotor; }
-        if (toLower(value) == "fenestron") { return fenestron; }
-        if (toLower(value) == "propeller") { return propeller; }
+        auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
+        if (toLower(value) == "mainrotor") { return CPACSRotor_type::mainRotor; }
+        if (toLower(value) == "tailrotor") { return CPACSRotor_type::tailRotor; }
+        if (toLower(value) == "fenestron") { return CPACSRotor_type::fenestron; }
+        if (toLower(value) == "propeller") { return CPACSRotor_type::propeller; }
         throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSRotor_type");
     }
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using ECPACSRotor_type = generated::CPACSRotor_type;
-#else
-typedef generated::CPACSRotor_type ECPACSRotor_type;
-#endif
-using generated::mainRotor;
-using generated::tailRotor;
-using generated::fenestron;
-using generated::propeller;
 } // namespace tigl

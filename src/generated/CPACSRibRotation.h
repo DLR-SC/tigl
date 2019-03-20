@@ -82,16 +82,11 @@ namespace generated
         double                       m_z;
 
     private:
-#ifdef HAVE_CPP11
         CPACSRibRotation(const CPACSRibRotation&) = delete;
         CPACSRibRotation& operator=(const CPACSRibRotation&) = delete;
 
         CPACSRibRotation(CPACSRibRotation&&) = delete;
         CPACSRibRotation& operator=(CPACSRibRotation&&) = delete;
-#else
-        CPACSRibRotation(const CPACSRibRotation&);
-        CPACSRibRotation& operator=(const CPACSRibRotation&);
-#endif
     };
 } // namespace generated
 

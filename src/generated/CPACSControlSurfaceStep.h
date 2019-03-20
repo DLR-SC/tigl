@@ -122,16 +122,11 @@ namespace generated
         boost::optional<double>       m_hingeLineRotation;
 
     private:
-#ifdef HAVE_CPP11
         CPACSControlSurfaceStep(const CPACSControlSurfaceStep&) = delete;
         CPACSControlSurfaceStep& operator=(const CPACSControlSurfaceStep&) = delete;
 
         CPACSControlSurfaceStep(CPACSControlSurfaceStep&&) = delete;
         CPACSControlSurfaceStep& operator=(CPACSControlSurfaceStep&&) = delete;
-#else
-        CPACSControlSurfaceStep(const CPACSControlSurfaceStep&);
-        CPACSControlSurfaceStep& operator=(const CPACSControlSurfaceStep&);
-#endif
     };
 } // namespace generated
 

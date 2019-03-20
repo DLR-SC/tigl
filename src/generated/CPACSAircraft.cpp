@@ -49,7 +49,7 @@ namespace generated
     {
         // read element model
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/model")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/model", m_models, m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/model", m_models, 1, 2147483647, m_uidMgr);
         }
 
     }
@@ -61,12 +61,12 @@ namespace generated
 
     }
 
-    const std::vector<unique_ptr<CCPACSAircraftModel> >& CPACSAircraft::GetModels() const
+    const std::vector<std::unique_ptr<CCPACSAircraftModel>>& CPACSAircraft::GetModels() const
     {
         return m_models;
     }
 
-    std::vector<unique_ptr<CCPACSAircraftModel> >& CPACSAircraft::GetModels()
+    std::vector<std::unique_ptr<CCPACSAircraftModel>>& CPACSAircraft::GetModels()
     {
         return m_models;
     }

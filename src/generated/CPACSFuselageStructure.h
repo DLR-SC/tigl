@@ -128,16 +128,11 @@ namespace generated
         boost::optional<CPACSCargoDoorsAssembly>            m_cargoDoors;
 
     private:
-#ifdef HAVE_CPP11
         CPACSFuselageStructure(const CPACSFuselageStructure&) = delete;
         CPACSFuselageStructure& operator=(const CPACSFuselageStructure&) = delete;
 
         CPACSFuselageStructure(CPACSFuselageStructure&&) = delete;
         CPACSFuselageStructure& operator=(CPACSFuselageStructure&&) = delete;
-#else
-        CPACSFuselageStructure(const CPACSFuselageStructure&);
-        CPACSFuselageStructure& operator=(const CPACSFuselageStructure&);
-#endif
     };
 } // namespace generated
 

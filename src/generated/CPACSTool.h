@@ -57,23 +57,14 @@ namespace generated
         std::string m_version;
 
     private:
-#ifdef HAVE_CPP11
         CPACSTool(const CPACSTool&) = delete;
         CPACSTool& operator=(const CPACSTool&) = delete;
 
         CPACSTool(CPACSTool&&) = delete;
         CPACSTool& operator=(CPACSTool&&) = delete;
-#else
-        CPACSTool(const CPACSTool&);
-        CPACSTool& operator=(const CPACSTool&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSTool = generated::CPACSTool;
-#else
-typedef generated::CPACSTool CCPACSTool;
-#endif
 } // namespace tigl

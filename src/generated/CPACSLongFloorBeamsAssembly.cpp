@@ -63,7 +63,7 @@ namespace generated
     {
         // read element longFloorBeam
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/longFloorBeam")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/longFloorBeam", m_longFloorBeams, reinterpret_cast<CCPACSLongFloorBeamsAssembly*>(this), m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/longFloorBeam", m_longFloorBeams, 1, 2147483647, reinterpret_cast<CCPACSLongFloorBeamsAssembly*>(this), m_uidMgr);
         }
 
     }
@@ -75,12 +75,12 @@ namespace generated
 
     }
 
-    const std::vector<unique_ptr<CCPACSLongFloorBeam> >& CPACSLongFloorBeamsAssembly::GetLongFloorBeams() const
+    const std::vector<std::unique_ptr<CCPACSLongFloorBeam>>& CPACSLongFloorBeamsAssembly::GetLongFloorBeams() const
     {
         return m_longFloorBeams;
     }
 
-    std::vector<unique_ptr<CCPACSLongFloorBeam> >& CPACSLongFloorBeamsAssembly::GetLongFloorBeams()
+    std::vector<std::unique_ptr<CCPACSLongFloorBeam>>& CPACSLongFloorBeamsAssembly::GetLongFloorBeams()
     {
         return m_longFloorBeams;
     }

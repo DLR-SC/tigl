@@ -56,8 +56,8 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSTrailingEdgeDevice> >& GetTrailingEdgeDevices() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSTrailingEdgeDevice> >& GetTrailingEdgeDevices();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSTrailingEdgeDevice>>& GetTrailingEdgeDevices() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSTrailingEdgeDevice>>& GetTrailingEdgeDevices();
 
         TIGL_EXPORT virtual CCPACSTrailingEdgeDevice& AddTrailingEdgeDevice();
         TIGL_EXPORT virtual void RemoveTrailingEdgeDevice(CCPACSTrailingEdgeDevice& ref);
@@ -67,19 +67,14 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<unique_ptr<CCPACSTrailingEdgeDevice> > m_trailingEdgeDevices;
+        std::vector<std::unique_ptr<CCPACSTrailingEdgeDevice>> m_trailingEdgeDevices;
 
     private:
-#ifdef HAVE_CPP11
         CPACSTrailingEdgeDevices(const CPACSTrailingEdgeDevices&) = delete;
         CPACSTrailingEdgeDevices& operator=(const CPACSTrailingEdgeDevices&) = delete;
 
         CPACSTrailingEdgeDevices(CPACSTrailingEdgeDevices&&) = delete;
         CPACSTrailingEdgeDevices& operator=(CPACSTrailingEdgeDevices&&) = delete;
-#else
-        CPACSTrailingEdgeDevices(const CPACSTrailingEdgeDevices&);
-        CPACSTrailingEdgeDevices& operator=(const CPACSTrailingEdgeDevices&);
-#endif
     };
 } // namespace generated
 

@@ -49,7 +49,7 @@ namespace generated
     {
         // read element point
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/point")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/point", m_points, m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/point", m_points, 2, 2147483647, m_uidMgr);
         }
 
     }
@@ -61,12 +61,12 @@ namespace generated
 
     }
 
-    const std::vector<unique_ptr<CCPACSPoint> >& CPACSPointList::GetPoints() const
+    const std::vector<std::unique_ptr<CCPACSPoint>>& CPACSPointList::GetPoints() const
     {
         return m_points;
     }
 
-    std::vector<unique_ptr<CCPACSPoint> >& CPACSPointList::GetPoints()
+    std::vector<std::unique_ptr<CCPACSPoint>>& CPACSPointList::GetPoints()
     {
         return m_points;
     }

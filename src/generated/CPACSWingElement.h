@@ -105,16 +105,11 @@ namespace generated
         CCPACSTransformation         m_transformation;
 
     private:
-#ifdef HAVE_CPP11
         CPACSWingElement(const CPACSWingElement&) = delete;
         CPACSWingElement& operator=(const CPACSWingElement&) = delete;
 
         CPACSWingElement(CPACSWingElement&&) = delete;
         CPACSWingElement& operator=(CPACSWingElement&&) = delete;
-#else
-        CPACSWingElement(const CPACSWingElement&);
-        CPACSWingElement& operator=(const CPACSWingElement&);
-#endif
     };
 } // namespace generated
 

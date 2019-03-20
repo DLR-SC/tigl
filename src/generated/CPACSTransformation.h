@@ -120,16 +120,11 @@ namespace generated
         boost::optional<CCPACSPointAbsRel> m_translation;
 
     private:
-#ifdef HAVE_CPP11
         CPACSTransformation(const CPACSTransformation&) = delete;
         CPACSTransformation& operator=(const CPACSTransformation&) = delete;
 
         CPACSTransformation(CPACSTransformation&&) = delete;
         CPACSTransformation& operator=(CPACSTransformation&&) = delete;
-#else
-        CPACSTransformation(const CPACSTransformation&);
-        CPACSTransformation& operator=(const CPACSTransformation&);
-#endif
     };
 } // namespace generated
 

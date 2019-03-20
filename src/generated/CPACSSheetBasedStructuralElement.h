@@ -65,23 +65,14 @@ namespace generated
         CCPACSMaterialDefinition m_materialDefinition;
 
     private:
-#ifdef HAVE_CPP11
         CPACSSheetBasedStructuralElement(const CPACSSheetBasedStructuralElement&) = delete;
         CPACSSheetBasedStructuralElement& operator=(const CPACSSheetBasedStructuralElement&) = delete;
 
         CPACSSheetBasedStructuralElement(CPACSSheetBasedStructuralElement&&) = delete;
         CPACSSheetBasedStructuralElement& operator=(CPACSSheetBasedStructuralElement&&) = delete;
-#else
-        CPACSSheetBasedStructuralElement(const CPACSSheetBasedStructuralElement&);
-        CPACSSheetBasedStructuralElement& operator=(const CPACSSheetBasedStructuralElement&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSSheetBasedStructuralElement = generated::CPACSSheetBasedStructuralElement;
-#else
-typedef generated::CPACSSheetBasedStructuralElement CCPACSSheetBasedStructuralElement;
-#endif
 } // namespace tigl

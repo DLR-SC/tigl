@@ -87,25 +87,16 @@ namespace generated
         boost::optional<double>      m_xsiOuterBorder_choice2;
 
     private:
-#ifdef HAVE_CPP11
         CPACSControlSurfaceSkinCutOut(const CPACSControlSurfaceSkinCutOut&) = delete;
         CPACSControlSurfaceSkinCutOut& operator=(const CPACSControlSurfaceSkinCutOut&) = delete;
 
         CPACSControlSurfaceSkinCutOut(CPACSControlSurfaceSkinCutOut&&) = delete;
         CPACSControlSurfaceSkinCutOut& operator=(CPACSControlSurfaceSkinCutOut&&) = delete;
-#else
-        CPACSControlSurfaceSkinCutOut(const CPACSControlSurfaceSkinCutOut&);
-        CPACSControlSurfaceSkinCutOut& operator=(const CPACSControlSurfaceSkinCutOut&);
-#endif
     };
 } // namespace generated
 
 // CPACSControlSurfaceSkinCutOut is customized, use type CCPACSControlSurfaceSkinCutout directly
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSControlSurfaceWingCutOut = generated::CPACSControlSurfaceWingCutOut;
-#else
-typedef generated::CPACSControlSurfaceWingCutOut CCPACSControlSurfaceWingCutOut;
-#endif
 } // namespace tigl

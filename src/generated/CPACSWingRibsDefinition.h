@@ -74,14 +74,14 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
         TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
 
-        TIGL_EXPORT virtual const CCPACSWingRibCrossSection& GetRibCrossSection() const;
-        TIGL_EXPORT virtual CCPACSWingRibCrossSection& GetRibCrossSection();
-
         TIGL_EXPORT virtual const boost::optional<CCPACSWingRibsPositioning>& GetRibsPositioning_choice1() const;
         TIGL_EXPORT virtual boost::optional<CCPACSWingRibsPositioning>& GetRibsPositioning_choice1();
 
         TIGL_EXPORT virtual const boost::optional<CCPACSWingRibExplicitPositioning>& GetRibExplicitPositioning_choice2() const;
         TIGL_EXPORT virtual boost::optional<CCPACSWingRibExplicitPositioning>& GetRibExplicitPositioning_choice2();
+
+        TIGL_EXPORT virtual const CCPACSWingRibCrossSection& GetRibCrossSection() const;
+        TIGL_EXPORT virtual CCPACSWingRibCrossSection& GetRibCrossSection();
 
         TIGL_EXPORT virtual CCPACSWingRibsPositioning& GetRibsPositioning_choice1(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveRibsPositioning_choice1();
@@ -102,23 +102,18 @@ namespace generated
         /// Description of the rib set.
         boost::optional<std::string>                      m_description;
 
-        CCPACSWingRibCrossSection                         m_ribCrossSection;
-
         boost::optional<CCPACSWingRibsPositioning>        m_ribsPositioning_choice1;
 
         boost::optional<CCPACSWingRibExplicitPositioning> m_ribExplicitPositioning_choice2;
 
+        CCPACSWingRibCrossSection                         m_ribCrossSection;
+
     private:
-#ifdef HAVE_CPP11
         CPACSWingRibsDefinition(const CPACSWingRibsDefinition&) = delete;
         CPACSWingRibsDefinition& operator=(const CPACSWingRibsDefinition&) = delete;
 
         CPACSWingRibsDefinition(CPACSWingRibsDefinition&&) = delete;
         CPACSWingRibsDefinition& operator=(CPACSWingRibsDefinition&&) = delete;
-#else
-        CPACSWingRibsDefinition(const CPACSWingRibsDefinition&);
-        CPACSWingRibsDefinition& operator=(const CPACSWingRibsDefinition&);
-#endif
     };
 } // namespace generated
 

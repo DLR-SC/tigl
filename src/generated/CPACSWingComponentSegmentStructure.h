@@ -121,16 +121,11 @@ namespace generated
         boost::optional<CCPACSWingSpars>           m_spars;
 
     private:
-#ifdef HAVE_CPP11
         CPACSWingComponentSegmentStructure(const CPACSWingComponentSegmentStructure&) = delete;
         CPACSWingComponentSegmentStructure& operator=(const CPACSWingComponentSegmentStructure&) = delete;
 
         CPACSWingComponentSegmentStructure(CPACSWingComponentSegmentStructure&&) = delete;
         CPACSWingComponentSegmentStructure& operator=(CPACSWingComponentSegmentStructure&&) = delete;
-#else
-        CPACSWingComponentSegmentStructure(const CPACSWingComponentSegmentStructure&);
-        CPACSWingComponentSegmentStructure& operator=(const CPACSWingComponentSegmentStructure&);
-#endif
     };
 } // namespace generated
 

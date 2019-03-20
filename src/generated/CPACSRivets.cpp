@@ -49,7 +49,7 @@ namespace generated
     {
         // read element rivet
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/rivet")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/rivet", m_rivets, m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/rivet", m_rivets, 1, 2147483647, m_uidMgr);
         }
 
     }
@@ -61,12 +61,12 @@ namespace generated
 
     }
 
-    const std::vector<unique_ptr<CPACSRivet> >& CPACSRivets::GetRivets() const
+    const std::vector<std::unique_ptr<CPACSRivet>>& CPACSRivets::GetRivets() const
     {
         return m_rivets;
     }
 
-    std::vector<unique_ptr<CPACSRivet> >& CPACSRivets::GetRivets()
+    std::vector<std::unique_ptr<CPACSRivet>>& CPACSRivets::GetRivets()
     {
         return m_rivets;
     }

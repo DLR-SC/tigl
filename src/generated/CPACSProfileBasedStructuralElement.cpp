@@ -76,17 +76,6 @@ namespace generated
             }
         }
 
-        // read element transformation
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/transformation")) {
-            m_transformation = boost::in_place(m_uidMgr);
-            try {
-                m_transformation->ReadCPACS(tixiHandle, xpath + "/transformation");
-            } catch(const std::exception& e) {
-                LOG(ERROR) << "Failed to read transformation at xpath " << xpath << ": " << e.what();
-                m_transformation = boost::none;
-            }
-        }
-
         // read element globalBeamProperties
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/globalBeamProperties")) {
             m_globalBeamProperties_choice1 = boost::in_place(m_uidMgr);
@@ -100,7 +89,7 @@ namespace generated
 
         // read element sheetProperties
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/sheetProperties")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/sheetProperties", m_sheetProperties_choice2);
+            tixi::TixiReadElements(tixiHandle, xpath + "/sheetProperties", m_sheetProperties_choice2, 0, 2147483647);
         }
 
         // read element standardProfileType
@@ -118,7 +107,7 @@ namespace generated
 
         // read element pointProperties
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/pointProperties")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/pointProperties", m_pointProperties_choice2_2);
+            tixi::TixiReadElements(tixiHandle, xpath + "/pointProperties", m_pointProperties_choice2_2, 0, 2147483647);
         }
 
         // read element referencePointUID
@@ -126,6 +115,17 @@ namespace generated
             m_referencePointUID_choice2_2 = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/referencePointUID");
             if (m_referencePointUID_choice2_2->empty()) {
                 LOG(WARNING) << "Optional element referencePointUID is present but empty at xpath " << xpath;
+            }
+        }
+
+        // read element transformation
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/transformation")) {
+            m_transformation = boost::in_place(m_uidMgr);
+            try {
+                m_transformation->ReadCPACS(tixiHandle, xpath + "/transformation");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read transformation at xpath " << xpath << ": " << e.what();
+                m_transformation = boost::none;
             }
         }
 
@@ -159,17 +159,6 @@ namespace generated
         else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
                 tixi::TixiRemoveElement(tixiHandle, xpath + "/description");
-            }
-        }
-
-        // write element transformation
-        if (m_transformation) {
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/transformation");
-            m_transformation->WriteCPACS(tixiHandle, xpath + "/transformation");
-        }
-        else {
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/transformation")) {
-                tixi::TixiRemoveElement(tixiHandle, xpath + "/transformation");
             }
         }
 
@@ -220,6 +209,17 @@ namespace generated
         else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/referencePointUID")) {
                 tixi::TixiRemoveElement(tixiHandle, xpath + "/referencePointUID");
+            }
+        }
+
+        // write element transformation
+        if (m_transformation) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/transformation");
+            m_transformation->WriteCPACS(tixiHandle, xpath + "/transformation");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/transformation")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/transformation");
             }
         }
 
@@ -328,16 +328,6 @@ namespace generated
         m_description = value;
     }
 
-    const boost::optional<CPACSTransformation2D>& CPACSProfileBasedStructuralElement::GetTransformation() const
-    {
-        return m_transformation;
-    }
-
-    boost::optional<CPACSTransformation2D>& CPACSProfileBasedStructuralElement::GetTransformation()
-    {
-        return m_transformation;
-    }
-
     const boost::optional<CPACSGlobalBeamProperties>& CPACSProfileBasedStructuralElement::GetGlobalBeamProperties_choice1() const
     {
         return m_globalBeamProperties_choice1;
@@ -348,12 +338,12 @@ namespace generated
         return m_globalBeamProperties_choice1;
     }
 
-    const std::vector<unique_ptr<CPACSMaterialDefinitionForProfileBased> >& CPACSProfileBasedStructuralElement::GetSheetProperties_choice2() const
+    const std::vector<std::unique_ptr<CPACSMaterialDefinitionForProfileBased>>& CPACSProfileBasedStructuralElement::GetSheetProperties_choice2() const
     {
         return m_sheetProperties_choice2;
     }
 
-    std::vector<unique_ptr<CPACSMaterialDefinitionForProfileBased> >& CPACSProfileBasedStructuralElement::GetSheetProperties_choice2()
+    std::vector<std::unique_ptr<CPACSMaterialDefinitionForProfileBased>>& CPACSProfileBasedStructuralElement::GetSheetProperties_choice2()
     {
         return m_sheetProperties_choice2;
     }
@@ -378,12 +368,12 @@ namespace generated
         m_structuralProfileUID_choice2_2 = value;
     }
 
-    const std::vector<unique_ptr<CPACSMaterialDefinitionForProfileBasedPoint> >& CPACSProfileBasedStructuralElement::GetPointProperties_choice2_2() const
+    const std::vector<std::unique_ptr<CPACSMaterialDefinitionForProfileBasedPoint>>& CPACSProfileBasedStructuralElement::GetPointProperties_choice2_2() const
     {
         return m_pointProperties_choice2_2;
     }
 
-    std::vector<unique_ptr<CPACSMaterialDefinitionForProfileBasedPoint> >& CPACSProfileBasedStructuralElement::GetPointProperties_choice2_2()
+    std::vector<std::unique_ptr<CPACSMaterialDefinitionForProfileBasedPoint>>& CPACSProfileBasedStructuralElement::GetPointProperties_choice2_2()
     {
         return m_pointProperties_choice2_2;
     }
@@ -398,16 +388,14 @@ namespace generated
         m_referencePointUID_choice2_2 = value;
     }
 
-    CPACSTransformation2D& CPACSProfileBasedStructuralElement::GetTransformation(CreateIfNotExistsTag)
+    const boost::optional<CPACSTransformation2D>& CPACSProfileBasedStructuralElement::GetTransformation() const
     {
-        if (!m_transformation)
-            m_transformation = boost::in_place(m_uidMgr);
-        return *m_transformation;
+        return m_transformation;
     }
 
-    void CPACSProfileBasedStructuralElement::RemoveTransformation()
+    boost::optional<CPACSTransformation2D>& CPACSProfileBasedStructuralElement::GetTransformation()
     {
-        m_transformation = boost::none;
+        return m_transformation;
     }
 
     CPACSGlobalBeamProperties& CPACSProfileBasedStructuralElement::GetGlobalBeamProperties_choice1(CreateIfNotExistsTag)
@@ -454,6 +442,18 @@ namespace generated
             }
         }
         throw CTiglError("Element not found");
+    }
+
+    CPACSTransformation2D& CPACSProfileBasedStructuralElement::GetTransformation(CreateIfNotExistsTag)
+    {
+        if (!m_transformation)
+            m_transformation = boost::in_place(m_uidMgr);
+        return *m_transformation;
+    }
+
+    void CPACSProfileBasedStructuralElement::RemoveTransformation()
+    {
+        m_transformation = boost::none;
     }
 
 } // namespace generated

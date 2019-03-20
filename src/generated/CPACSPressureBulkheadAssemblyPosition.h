@@ -77,16 +77,11 @@ namespace generated
         std::string m_pressureBulkheadElementUID;
 
     private:
-#ifdef HAVE_CPP11
         CPACSPressureBulkheadAssemblyPosition(const CPACSPressureBulkheadAssemblyPosition&) = delete;
         CPACSPressureBulkheadAssemblyPosition& operator=(const CPACSPressureBulkheadAssemblyPosition&) = delete;
 
         CPACSPressureBulkheadAssemblyPosition(CPACSPressureBulkheadAssemblyPosition&&) = delete;
         CPACSPressureBulkheadAssemblyPosition& operator=(CPACSPressureBulkheadAssemblyPosition&&) = delete;
-#else
-        CPACSPressureBulkheadAssemblyPosition(const CPACSPressureBulkheadAssemblyPosition&);
-        CPACSPressureBulkheadAssemblyPosition& operator=(const CPACSPressureBulkheadAssemblyPosition&);
-#endif
     };
 } // namespace generated
 

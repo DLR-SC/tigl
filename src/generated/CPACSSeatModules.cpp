@@ -49,7 +49,7 @@ namespace generated
     {
         // read element seatModule
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/seatModule")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/seatModule", m_seatModules, m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/seatModule", m_seatModules, 1, 2147483647, m_uidMgr);
         }
 
     }
@@ -61,12 +61,12 @@ namespace generated
 
     }
 
-    const std::vector<unique_ptr<CPACSSeatModule> >& CPACSSeatModules::GetSeatModules() const
+    const std::vector<std::unique_ptr<CPACSSeatModule>>& CPACSSeatModules::GetSeatModules() const
     {
         return m_seatModules;
     }
 
-    std::vector<unique_ptr<CPACSSeatModule> >& CPACSSeatModules::GetSeatModules()
+    std::vector<std::unique_ptr<CPACSSeatModule>>& CPACSSeatModules::GetSeatModules()
     {
         return m_seatModules;
     }

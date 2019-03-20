@@ -49,7 +49,7 @@ namespace generated
     {
         // read element pressureBulkhead
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/pressureBulkhead")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/pressureBulkhead", m_pressureBulkheads, reinterpret_cast<CCPACSPressureBulkheads*>(this), m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/pressureBulkhead", m_pressureBulkheads, 1, 2147483647, reinterpret_cast<CCPACSPressureBulkheads*>(this), m_uidMgr);
         }
 
     }
@@ -61,12 +61,12 @@ namespace generated
 
     }
 
-    const std::vector<unique_ptr<CCPACSPressureBulkhead> >& CPACSPressureBulkheads::GetPressureBulkheads() const
+    const std::vector<std::unique_ptr<CCPACSPressureBulkhead>>& CPACSPressureBulkheads::GetPressureBulkheads() const
     {
         return m_pressureBulkheads;
     }
 
-    std::vector<unique_ptr<CCPACSPressureBulkhead> >& CPACSPressureBulkheads::GetPressureBulkheads()
+    std::vector<std::unique_ptr<CCPACSPressureBulkhead>>& CPACSPressureBulkheads::GetPressureBulkheads()
     {
         return m_pressureBulkheads;
     }

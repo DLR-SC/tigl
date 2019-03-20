@@ -63,7 +63,7 @@ namespace generated
     {
         // read element cargoCrossBeam
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/cargoCrossBeam")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/cargoCrossBeam", m_cargoCrossBeams, reinterpret_cast<CCPACSCargoCrossBeamsAssembly*>(this), m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/cargoCrossBeam", m_cargoCrossBeams, 1, 2147483647, reinterpret_cast<CCPACSCargoCrossBeamsAssembly*>(this), m_uidMgr);
         }
 
     }
@@ -75,12 +75,12 @@ namespace generated
 
     }
 
-    const std::vector<unique_ptr<CCPACSCrossBeamAssemblyPosition> >& CPACSCargoCrossBeamsAssembly::GetCargoCrossBeams() const
+    const std::vector<std::unique_ptr<CCPACSCrossBeamAssemblyPosition>>& CPACSCargoCrossBeamsAssembly::GetCargoCrossBeams() const
     {
         return m_cargoCrossBeams;
     }
 
-    std::vector<unique_ptr<CCPACSCrossBeamAssemblyPosition> >& CPACSCargoCrossBeamsAssembly::GetCargoCrossBeams()
+    std::vector<std::unique_ptr<CCPACSCrossBeamAssemblyPosition>>& CPACSCargoCrossBeamsAssembly::GetCargoCrossBeams()
     {
         return m_cargoCrossBeams;
     }

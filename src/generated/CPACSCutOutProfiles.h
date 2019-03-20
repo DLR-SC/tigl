@@ -53,37 +53,27 @@ namespace generated
         TIGL_EXPORT virtual const CPACSOuterCutOutProfile& GetInnerCutOutProfile() const;
         TIGL_EXPORT virtual CPACSOuterCutOutProfile& GetInnerCutOutProfile();
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSCutOutProfile> >& GetCutOutProfiles() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CPACSCutOutProfile> >& GetCutOutProfiles();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSCutOutProfile>>& GetCutOutProfiles() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSCutOutProfile>>& GetCutOutProfiles();
 
         TIGL_EXPORT virtual CPACSCutOutProfile& AddCutOutProfile();
         TIGL_EXPORT virtual void RemoveCutOutProfile(CPACSCutOutProfile& ref);
 
     protected:
-        CPACSOuterCutOutProfile                      m_outerCutOutProfile;
-        CPACSOuterCutOutProfile                      m_innerCutOutProfile;
-        std::vector<unique_ptr<CPACSCutOutProfile> > m_cutOutProfiles;
+        CPACSOuterCutOutProfile                          m_outerCutOutProfile;
+        CPACSOuterCutOutProfile                          m_innerCutOutProfile;
+        std::vector<std::unique_ptr<CPACSCutOutProfile>> m_cutOutProfiles;
 
     private:
-#ifdef HAVE_CPP11
         CPACSCutOutProfiles(const CPACSCutOutProfiles&) = delete;
         CPACSCutOutProfiles& operator=(const CPACSCutOutProfiles&) = delete;
 
         CPACSCutOutProfiles(CPACSCutOutProfiles&&) = delete;
         CPACSCutOutProfiles& operator=(CPACSCutOutProfiles&&) = delete;
-#else
-        CPACSCutOutProfiles(const CPACSCutOutProfiles&);
-        CPACSCutOutProfiles& operator=(const CPACSCutOutProfiles&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSCutOutProfiles = generated::CPACSCutOutProfiles;
 using CCPACSCutOutProfile = generated::CPACSCutOutProfile;
-#else
-typedef generated::CPACSCutOutProfiles CCPACSCutOutProfiles;
-typedef generated::CPACSCutOutProfile CCPACSCutOutProfile;
-#endif
 } // namespace tigl

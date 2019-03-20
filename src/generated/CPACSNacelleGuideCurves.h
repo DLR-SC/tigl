@@ -49,8 +49,8 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSNacelleGuideCurve> >& GetNacelleGuideCurves() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CPACSNacelleGuideCurve> >& GetNacelleGuideCurves();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSNacelleGuideCurve>>& GetNacelleGuideCurves() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSNacelleGuideCurve>>& GetNacelleGuideCurves();
 
         TIGL_EXPORT virtual CPACSNacelleGuideCurve& AddNacelleGuideCurve();
         TIGL_EXPORT virtual void RemoveNacelleGuideCurve(CPACSNacelleGuideCurve& ref);
@@ -58,28 +58,19 @@ namespace generated
     protected:
         CCPACSNacelleCowl* m_parent;
 
-        std::vector<unique_ptr<CPACSNacelleGuideCurve> > m_nacelleGuideCurves;
+        std::vector<std::unique_ptr<CPACSNacelleGuideCurve>> m_nacelleGuideCurves;
 
     private:
-#ifdef HAVE_CPP11
         CPACSNacelleGuideCurves(const CPACSNacelleGuideCurves&) = delete;
         CPACSNacelleGuideCurves& operator=(const CPACSNacelleGuideCurves&) = delete;
 
         CPACSNacelleGuideCurves(CPACSNacelleGuideCurves&&) = delete;
         CPACSNacelleGuideCurves& operator=(CPACSNacelleGuideCurves&&) = delete;
-#else
-        CPACSNacelleGuideCurves(const CPACSNacelleGuideCurves&);
-        CPACSNacelleGuideCurves& operator=(const CPACSNacelleGuideCurves&);
-#endif
     };
 } // namespace generated
 
 // CPACSNacelleGuideCurves is customized, use type CCPACSNacelleGuideCurves directly
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSNacelleGuideCurve = generated::CPACSNacelleGuideCurve;
-#else
-typedef generated::CPACSNacelleGuideCurve CCPACSNacelleGuideCurve;
-#endif
 } // namespace tigl

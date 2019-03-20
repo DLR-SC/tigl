@@ -63,7 +63,7 @@ namespace generated
     {
         // read element rotorBladeAttachment
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/rotorBladeAttachment")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/rotorBladeAttachment", m_rotorBladeAttachments, reinterpret_cast<CCPACSRotorBladeAttachments*>(this), m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/rotorBladeAttachment", m_rotorBladeAttachments, 1, 2147483647, reinterpret_cast<CCPACSRotorBladeAttachments*>(this), m_uidMgr);
         }
 
     }
@@ -75,12 +75,12 @@ namespace generated
 
     }
 
-    const std::vector<unique_ptr<CCPACSRotorBladeAttachment> >& CPACSRotorBladeAttachments::GetRotorBladeAttachments() const
+    const std::vector<std::unique_ptr<CCPACSRotorBladeAttachment>>& CPACSRotorBladeAttachments::GetRotorBladeAttachments() const
     {
         return m_rotorBladeAttachments;
     }
 
-    std::vector<unique_ptr<CCPACSRotorBladeAttachment> >& CPACSRotorBladeAttachments::GetRotorBladeAttachments()
+    std::vector<std::unique_ptr<CCPACSRotorBladeAttachment>>& CPACSRotorBladeAttachments::GetRotorBladeAttachments()
     {
         return m_rotorBladeAttachments;
     }

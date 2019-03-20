@@ -75,7 +75,7 @@ namespace generated
 
         // read element longFloorBeamPosition
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/longFloorBeamPosition")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/longFloorBeamPosition", m_longFloorBeamPositions, reinterpret_cast<CCPACSLongFloorBeam*>(this), m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/longFloorBeamPosition", m_longFloorBeamPositions, 2, 2147483647, reinterpret_cast<CCPACSLongFloorBeam*>(this), m_uidMgr);
         }
 
         if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
@@ -105,12 +105,12 @@ namespace generated
         m_uID = value;
     }
 
-    const std::vector<unique_ptr<CCPACSLongFloorBeamPosition> >& CPACSLongFloorBeam::GetLongFloorBeamPositions() const
+    const std::vector<std::unique_ptr<CCPACSLongFloorBeamPosition>>& CPACSLongFloorBeam::GetLongFloorBeamPositions() const
     {
         return m_longFloorBeamPositions;
     }
 
-    std::vector<unique_ptr<CCPACSLongFloorBeamPosition> >& CPACSLongFloorBeam::GetLongFloorBeamPositions()
+    std::vector<std::unique_ptr<CCPACSLongFloorBeamPosition>>& CPACSLongFloorBeam::GetLongFloorBeamPositions()
     {
         return m_longFloorBeamPositions;
     }

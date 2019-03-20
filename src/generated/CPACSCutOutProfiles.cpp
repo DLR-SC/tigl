@@ -53,7 +53,7 @@ namespace generated
 
         // read element cutOutProfile
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/cutOutProfile")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/cutOutProfile", m_cutOutProfiles);
+            tixi::TixiReadElements(tixiHandle, xpath + "/cutOutProfile", m_cutOutProfiles, 0, 2147483647);
         }
 
     }
@@ -93,12 +93,12 @@ namespace generated
         return m_innerCutOutProfile;
     }
 
-    const std::vector<unique_ptr<CPACSCutOutProfile> >& CPACSCutOutProfiles::GetCutOutProfiles() const
+    const std::vector<std::unique_ptr<CPACSCutOutProfile>>& CPACSCutOutProfiles::GetCutOutProfiles() const
     {
         return m_cutOutProfiles;
     }
 
-    std::vector<unique_ptr<CPACSCutOutProfile> >& CPACSCutOutProfiles::GetCutOutProfiles()
+    std::vector<std::unique_ptr<CPACSCutOutProfile>>& CPACSCutOutProfiles::GetCutOutProfiles()
     {
         return m_cutOutProfiles;
     }

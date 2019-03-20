@@ -81,16 +81,11 @@ namespace generated
         boost::optional<double> m_z;
 
     private:
-#ifdef HAVE_CPP11
         CPACSPoint(const CPACSPoint&) = delete;
         CPACSPoint& operator=(const CPACSPoint&) = delete;
 
         CPACSPoint(CPACSPoint&&) = delete;
         CPACSPoint& operator=(CPACSPoint&&) = delete;
-#else
-        CPACSPoint(const CPACSPoint&);
-        CPACSPoint& operator=(const CPACSPoint&);
-#endif
     };
 } // namespace generated
 

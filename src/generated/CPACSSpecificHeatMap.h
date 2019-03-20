@@ -58,23 +58,14 @@ namespace generated
         CCPACSStringVector m_specificHeat;
 
     private:
-#ifdef HAVE_CPP11
         CPACSSpecificHeatMap(const CPACSSpecificHeatMap&) = delete;
         CPACSSpecificHeatMap& operator=(const CPACSSpecificHeatMap&) = delete;
 
         CPACSSpecificHeatMap(CPACSSpecificHeatMap&&) = delete;
         CPACSSpecificHeatMap& operator=(CPACSSpecificHeatMap&&) = delete;
-#else
-        CPACSSpecificHeatMap(const CPACSSpecificHeatMap&);
-        CPACSSpecificHeatMap& operator=(const CPACSSpecificHeatMap&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSSpecificHeatMap = generated::CPACSSpecificHeatMap;
-#else
-typedef generated::CPACSSpecificHeatMap CCPACSSpecificHeatMap;
-#endif
 } // namespace tigl

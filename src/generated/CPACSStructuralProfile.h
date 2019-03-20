@@ -104,23 +104,14 @@ namespace generated
         CCPACSSheetList              m_sheetList;
 
     private:
-#ifdef HAVE_CPP11
         CPACSStructuralProfile(const CPACSStructuralProfile&) = delete;
         CPACSStructuralProfile& operator=(const CPACSStructuralProfile&) = delete;
 
         CPACSStructuralProfile(CPACSStructuralProfile&&) = delete;
         CPACSStructuralProfile& operator=(CPACSStructuralProfile&&) = delete;
-#else
-        CPACSStructuralProfile(const CPACSStructuralProfile&);
-        CPACSStructuralProfile& operator=(const CPACSStructuralProfile&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSStructuralProfile = generated::CPACSStructuralProfile;
-#else
-typedef generated::CPACSStructuralProfile CCPACSStructuralProfile;
-#endif
 } // namespace tigl

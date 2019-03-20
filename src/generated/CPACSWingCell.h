@@ -109,16 +109,11 @@ namespace generated
         CCPACSWingCellPositionSpanwise  m_positioningOuterBorder;
 
     private:
-#ifdef HAVE_CPP11
         CPACSWingCell(const CPACSWingCell&) = delete;
         CPACSWingCell& operator=(const CPACSWingCell&) = delete;
 
         CPACSWingCell(CPACSWingCell&&) = delete;
         CPACSWingCell& operator=(CPACSWingCell&&) = delete;
-#else
-        CPACSWingCell(const CPACSWingCell&);
-        CPACSWingCell& operator=(const CPACSWingCell&);
-#endif
     };
 } // namespace generated
 

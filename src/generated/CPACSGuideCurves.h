@@ -55,8 +55,8 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSGuideCurve> >& GetGuideCurves() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSGuideCurve> >& GetGuideCurves();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSGuideCurve>>& GetGuideCurves() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSGuideCurve>>& GetGuideCurves();
 
         TIGL_EXPORT virtual CCPACSGuideCurve& AddGuideCurve();
         TIGL_EXPORT virtual void RemoveGuideCurve(CCPACSGuideCurve& ref);
@@ -64,19 +64,14 @@ namespace generated
     protected:
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<unique_ptr<CCPACSGuideCurve> > m_guideCurves;
+        std::vector<std::unique_ptr<CCPACSGuideCurve>> m_guideCurves;
 
     private:
-#ifdef HAVE_CPP11
         CPACSGuideCurves(const CPACSGuideCurves&) = delete;
         CPACSGuideCurves& operator=(const CPACSGuideCurves&) = delete;
 
         CPACSGuideCurves(CPACSGuideCurves&&) = delete;
         CPACSGuideCurves& operator=(CPACSGuideCurves&&) = delete;
-#else
-        CPACSGuideCurves(const CPACSGuideCurves&);
-        CPACSGuideCurves& operator=(const CPACSGuideCurves&);
-#endif
     };
 } // namespace generated
 

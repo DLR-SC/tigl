@@ -56,8 +56,8 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSExternalObject> >& GetGenericGeometryComponents() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSExternalObject> >& GetGenericGeometryComponents();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSExternalObject>>& GetGenericGeometryComponents() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSExternalObject>>& GetGenericGeometryComponents();
 
         TIGL_EXPORT virtual CCPACSExternalObject& AddGenericGeometryComponent();
         TIGL_EXPORT virtual void RemoveGenericGeometryComponent(CCPACSExternalObject& ref);
@@ -67,19 +67,14 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<unique_ptr<CCPACSExternalObject> > m_genericGeometryComponents;
+        std::vector<std::unique_ptr<CCPACSExternalObject>> m_genericGeometryComponents;
 
     private:
-#ifdef HAVE_CPP11
         CPACSGenericGeometryComponents(const CPACSGenericGeometryComponents&) = delete;
         CPACSGenericGeometryComponents& operator=(const CPACSGenericGeometryComponents&) = delete;
 
         CPACSGenericGeometryComponents(CPACSGenericGeometryComponents&&) = delete;
         CPACSGenericGeometryComponents& operator=(CPACSGenericGeometryComponents&&) = delete;
-#else
-        CPACSGenericGeometryComponents(const CPACSGenericGeometryComponents&);
-        CPACSGenericGeometryComponents& operator=(const CPACSGenericGeometryComponents&);
-#endif
     };
 } // namespace generated
 

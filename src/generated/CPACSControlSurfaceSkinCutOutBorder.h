@@ -95,25 +95,16 @@ namespace generated
         boost::optional<CCPACSEtaIsoLine> m_etaTE_choice2;
 
     private:
-#ifdef HAVE_CPP11
         CPACSControlSurfaceSkinCutOutBorder(const CPACSControlSurfaceSkinCutOutBorder&) = delete;
         CPACSControlSurfaceSkinCutOutBorder& operator=(const CPACSControlSurfaceSkinCutOutBorder&) = delete;
 
         CPACSControlSurfaceSkinCutOutBorder(CPACSControlSurfaceSkinCutOutBorder&&) = delete;
         CPACSControlSurfaceSkinCutOutBorder& operator=(CPACSControlSurfaceSkinCutOutBorder&&) = delete;
-#else
-        CPACSControlSurfaceSkinCutOutBorder(const CPACSControlSurfaceSkinCutOutBorder&);
-        CPACSControlSurfaceSkinCutOutBorder& operator=(const CPACSControlSurfaceSkinCutOutBorder&);
-#endif
     };
 } // namespace generated
 
 // CPACSControlSurfaceSkinCutOutBorder is customized, use type CCPACSControlSurfaceSkinCutOutBorder directly
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSControlSurfaceWingCutOut = generated::CPACSControlSurfaceWingCutOut;
-#else
-typedef generated::CPACSControlSurfaceWingCutOut CCPACSControlSurfaceWingCutOut;
-#endif
 } // namespace tigl

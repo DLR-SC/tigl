@@ -31,7 +31,7 @@ namespace generated
     // CPACSLinkToFile
 
     // generated from /xsd:schema/xsd:complexType[503]/xsd:simpleContent/xsd:extension/xsd:attribute[1]/xsd:simpleType
-    enum CPACSLinkToFileType_format
+    enum class CPACSLinkToFileType_format
     {
         Step,
         Iges,
@@ -41,29 +41,22 @@ namespace generated
     inline std::string CPACSLinkToFileType_formatToString(const CPACSLinkToFileType_format& value)
     {
         switch(value) {
-        case Step: return "Step";
-        case Iges: return "Iges";
-        case Stl: return "Stl";
+        case CPACSLinkToFileType_format::Step: return "Step";
+        case CPACSLinkToFileType_format::Iges: return "Iges";
+        case CPACSLinkToFileType_format::Stl: return "Stl";
         default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSLinkToFileType_format");
         }
     }
     inline CPACSLinkToFileType_format stringToCPACSLinkToFileType_format(const std::string& value)
     {
-        struct ToLower { std::string operator()(std::string str) { for (std::size_t i = 0; i < str.length(); i++) { str[i] = std::tolower(str[i]); } return str; } } toLower;
-        if (toLower(value) == "step") { return Step; }
-        if (toLower(value) == "iges") { return Iges; }
-        if (toLower(value) == "stl") { return Stl; }
+        auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
+        if (toLower(value) == "step") { return CPACSLinkToFileType_format::Step; }
+        if (toLower(value) == "iges") { return CPACSLinkToFileType_format::Iges; }
+        if (toLower(value) == "stl") { return CPACSLinkToFileType_format::Stl; }
         throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSLinkToFileType_format");
     }
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using ECPACSLinkToFileType_format = generated::CPACSLinkToFileType_format;
-#else
-typedef generated::CPACSLinkToFileType_format ECPACSLinkToFileType_format;
-#endif
-using generated::Step;
-using generated::Iges;
-using generated::Stl;
 } // namespace tigl

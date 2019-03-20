@@ -101,23 +101,14 @@ namespace generated
         boost::optional<double>             m_beamSpecificMass;
 
     private:
-#ifdef HAVE_CPP11
         CPACSGlobalBeamProperties(const CPACSGlobalBeamProperties&) = delete;
         CPACSGlobalBeamProperties& operator=(const CPACSGlobalBeamProperties&) = delete;
 
         CPACSGlobalBeamProperties(CPACSGlobalBeamProperties&&) = delete;
         CPACSGlobalBeamProperties& operator=(CPACSGlobalBeamProperties&&) = delete;
-#else
-        CPACSGlobalBeamProperties(const CPACSGlobalBeamProperties&);
-        CPACSGlobalBeamProperties& operator=(const CPACSGlobalBeamProperties&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSGlobalBeamProperties = generated::CPACSGlobalBeamProperties;
-#else
-typedef generated::CPACSGlobalBeamProperties CCPACSGlobalBeamProperties;
-#endif
 } // namespace tigl

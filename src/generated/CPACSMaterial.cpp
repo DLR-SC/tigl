@@ -105,48 +105,6 @@ namespace generated
             LOG(ERROR) << "Required element k12 is missing at xpath " << xpath;
         }
 
-        // read element maxStrain
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/maxStrain")) {
-            m_maxStrain = tixi::TixiGetElement<double>(tixiHandle, xpath + "/maxStrain");
-        }
-
-        // read element fatigueFactor
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/fatigueFactor")) {
-            m_fatigueFactor = tixi::TixiGetElement<double>(tixiHandle, xpath + "/fatigueFactor");
-        }
-
-        // read element postFailure
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/postFailure")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/postFailure", m_postFailures);
-        }
-
-        // read element thermalConductivity
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/thermalConductivity")) {
-            m_thermalConductivity = tixi::TixiGetElement<double>(tixiHandle, xpath + "/thermalConductivity");
-        }
-
-        // read element specificHeatMap
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/specificHeatMap")) {
-            m_specificHeatMap = boost::in_place();
-            try {
-                m_specificHeatMap->ReadCPACS(tixiHandle, xpath + "/specificHeatMap");
-            } catch(const std::exception& e) {
-                LOG(ERROR) << "Failed to read specificHeatMap at xpath " << xpath << ": " << e.what();
-                m_specificHeatMap = boost::none;
-            }
-        }
-
-        // read element emissivityMap
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/emissivityMap")) {
-            m_emissivityMap = boost::in_place();
-            try {
-                m_emissivityMap->ReadCPACS(tixiHandle, xpath + "/emissivityMap");
-            } catch(const std::exception& e) {
-                LOG(ERROR) << "Failed to read emissivityMap at xpath " << xpath << ": " << e.what();
-                m_emissivityMap = boost::none;
-            }
-        }
-
         // read element sig11
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/sig11")) {
             m_sig11_choice1 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/sig11");
@@ -292,6 +250,48 @@ namespace generated
             m_tau23_choice3 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/tau23");
         }
 
+        // read element maxStrain
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/maxStrain")) {
+            m_maxStrain = tixi::TixiGetElement<double>(tixiHandle, xpath + "/maxStrain");
+        }
+
+        // read element fatigueFactor
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/fatigueFactor")) {
+            m_fatigueFactor = tixi::TixiGetElement<double>(tixiHandle, xpath + "/fatigueFactor");
+        }
+
+        // read element postFailure
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/postFailure")) {
+            tixi::TixiReadElements(tixiHandle, xpath + "/postFailure", m_postFailures, 0, 2147483647);
+        }
+
+        // read element thermalConductivity
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/thermalConductivity")) {
+            m_thermalConductivity = tixi::TixiGetElement<double>(tixiHandle, xpath + "/thermalConductivity");
+        }
+
+        // read element specificHeatMap
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/specificHeatMap")) {
+            m_specificHeatMap = boost::in_place();
+            try {
+                m_specificHeatMap->ReadCPACS(tixiHandle, xpath + "/specificHeatMap");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read specificHeatMap at xpath " << xpath << ": " << e.what();
+                m_specificHeatMap = boost::none;
+            }
+        }
+
+        // read element emissivityMap
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/emissivityMap")) {
+            m_emissivityMap = boost::in_place();
+            try {
+                m_emissivityMap->ReadCPACS(tixiHandle, xpath + "/emissivityMap");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read emissivityMap at xpath " << xpath << ": " << e.what();
+                m_emissivityMap = boost::none;
+            }
+        }
+
         if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
         if (!ValidateChoices()) {
             LOG(ERROR) << "Invalid choice configuration at xpath " << xpath;
@@ -329,64 +329,6 @@ namespace generated
         // write element k12
         tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/k12");
         tixi::TixiSaveElement(tixiHandle, xpath + "/k12", m_k12);
-
-        // write element maxStrain
-        if (m_maxStrain) {
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/maxStrain");
-            tixi::TixiSaveElement(tixiHandle, xpath + "/maxStrain", *m_maxStrain);
-        }
-        else {
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/maxStrain")) {
-                tixi::TixiRemoveElement(tixiHandle, xpath + "/maxStrain");
-            }
-        }
-
-        // write element fatigueFactor
-        if (m_fatigueFactor) {
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/fatigueFactor");
-            tixi::TixiSaveElement(tixiHandle, xpath + "/fatigueFactor", *m_fatigueFactor);
-        }
-        else {
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/fatigueFactor")) {
-                tixi::TixiRemoveElement(tixiHandle, xpath + "/fatigueFactor");
-            }
-        }
-
-        // write element postFailure
-        tixi::TixiSaveElements(tixiHandle, xpath + "/postFailure", m_postFailures);
-
-        // write element thermalConductivity
-        if (m_thermalConductivity) {
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/thermalConductivity");
-            tixi::TixiSaveElement(tixiHandle, xpath + "/thermalConductivity", *m_thermalConductivity);
-        }
-        else {
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/thermalConductivity")) {
-                tixi::TixiRemoveElement(tixiHandle, xpath + "/thermalConductivity");
-            }
-        }
-
-        // write element specificHeatMap
-        if (m_specificHeatMap) {
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/specificHeatMap");
-            m_specificHeatMap->WriteCPACS(tixiHandle, xpath + "/specificHeatMap");
-        }
-        else {
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/specificHeatMap")) {
-                tixi::TixiRemoveElement(tixiHandle, xpath + "/specificHeatMap");
-            }
-        }
-
-        // write element emissivityMap
-        if (m_emissivityMap) {
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/emissivityMap");
-            m_emissivityMap->WriteCPACS(tixiHandle, xpath + "/emissivityMap");
-        }
-        else {
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/emissivityMap")) {
-                tixi::TixiRemoveElement(tixiHandle, xpath + "/emissivityMap");
-            }
-        }
 
         // write element sig11
         if (m_sig11_choice1) {
@@ -707,6 +649,64 @@ namespace generated
             }
         }
 
+        // write element maxStrain
+        if (m_maxStrain) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/maxStrain");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/maxStrain", *m_maxStrain);
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/maxStrain")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/maxStrain");
+            }
+        }
+
+        // write element fatigueFactor
+        if (m_fatigueFactor) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/fatigueFactor");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/fatigueFactor", *m_fatigueFactor);
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/fatigueFactor")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/fatigueFactor");
+            }
+        }
+
+        // write element postFailure
+        tixi::TixiSaveElements(tixiHandle, xpath + "/postFailure", m_postFailures);
+
+        // write element thermalConductivity
+        if (m_thermalConductivity) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/thermalConductivity");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/thermalConductivity", *m_thermalConductivity);
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/thermalConductivity")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/thermalConductivity");
+            }
+        }
+
+        // write element specificHeatMap
+        if (m_specificHeatMap) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/specificHeatMap");
+            m_specificHeatMap->WriteCPACS(tixiHandle, xpath + "/specificHeatMap");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/specificHeatMap")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/specificHeatMap");
+            }
+        }
+
+        // write element emissivityMap
+        if (m_emissivityMap) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/emissivityMap");
+            m_emissivityMap->WriteCPACS(tixiHandle, xpath + "/emissivityMap");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/emissivityMap")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/emissivityMap");
+            }
+        }
+
     }
 
     bool CPACSMaterial::ValidateChoices() const
@@ -929,66 +929,6 @@ namespace generated
     void CPACSMaterial::SetK12(const double& value)
     {
         m_k12 = value;
-    }
-
-    const boost::optional<double>& CPACSMaterial::GetMaxStrain() const
-    {
-        return m_maxStrain;
-    }
-
-    void CPACSMaterial::SetMaxStrain(const boost::optional<double>& value)
-    {
-        m_maxStrain = value;
-    }
-
-    const boost::optional<double>& CPACSMaterial::GetFatigueFactor() const
-    {
-        return m_fatigueFactor;
-    }
-
-    void CPACSMaterial::SetFatigueFactor(const boost::optional<double>& value)
-    {
-        m_fatigueFactor = value;
-    }
-
-    const std::vector<unique_ptr<CPACSPostFailure> >& CPACSMaterial::GetPostFailures() const
-    {
-        return m_postFailures;
-    }
-
-    std::vector<unique_ptr<CPACSPostFailure> >& CPACSMaterial::GetPostFailures()
-    {
-        return m_postFailures;
-    }
-
-    const boost::optional<double>& CPACSMaterial::GetThermalConductivity() const
-    {
-        return m_thermalConductivity;
-    }
-
-    void CPACSMaterial::SetThermalConductivity(const boost::optional<double>& value)
-    {
-        m_thermalConductivity = value;
-    }
-
-    const boost::optional<CPACSSpecificHeatMap>& CPACSMaterial::GetSpecificHeatMap() const
-    {
-        return m_specificHeatMap;
-    }
-
-    boost::optional<CPACSSpecificHeatMap>& CPACSMaterial::GetSpecificHeatMap()
-    {
-        return m_specificHeatMap;
-    }
-
-    const boost::optional<CPACSEmissivityMap>& CPACSMaterial::GetEmissivityMap() const
-    {
-        return m_emissivityMap;
-    }
-
-    boost::optional<CPACSEmissivityMap>& CPACSMaterial::GetEmissivityMap()
-    {
-        return m_emissivityMap;
     }
 
     const boost::optional<double>& CPACSMaterial::GetSig11_choice1() const
@@ -1279,6 +1219,66 @@ namespace generated
     void CPACSMaterial::SetTau23_choice3(const boost::optional<double>& value)
     {
         m_tau23_choice3 = value;
+    }
+
+    const boost::optional<double>& CPACSMaterial::GetMaxStrain() const
+    {
+        return m_maxStrain;
+    }
+
+    void CPACSMaterial::SetMaxStrain(const boost::optional<double>& value)
+    {
+        m_maxStrain = value;
+    }
+
+    const boost::optional<double>& CPACSMaterial::GetFatigueFactor() const
+    {
+        return m_fatigueFactor;
+    }
+
+    void CPACSMaterial::SetFatigueFactor(const boost::optional<double>& value)
+    {
+        m_fatigueFactor = value;
+    }
+
+    const std::vector<std::unique_ptr<CPACSPostFailure>>& CPACSMaterial::GetPostFailures() const
+    {
+        return m_postFailures;
+    }
+
+    std::vector<std::unique_ptr<CPACSPostFailure>>& CPACSMaterial::GetPostFailures()
+    {
+        return m_postFailures;
+    }
+
+    const boost::optional<double>& CPACSMaterial::GetThermalConductivity() const
+    {
+        return m_thermalConductivity;
+    }
+
+    void CPACSMaterial::SetThermalConductivity(const boost::optional<double>& value)
+    {
+        m_thermalConductivity = value;
+    }
+
+    const boost::optional<CPACSSpecificHeatMap>& CPACSMaterial::GetSpecificHeatMap() const
+    {
+        return m_specificHeatMap;
+    }
+
+    boost::optional<CPACSSpecificHeatMap>& CPACSMaterial::GetSpecificHeatMap()
+    {
+        return m_specificHeatMap;
+    }
+
+    const boost::optional<CPACSEmissivityMap>& CPACSMaterial::GetEmissivityMap() const
+    {
+        return m_emissivityMap;
+    }
+
+    boost::optional<CPACSEmissivityMap>& CPACSMaterial::GetEmissivityMap()
+    {
+        return m_emissivityMap;
     }
 
     CPACSPostFailure& CPACSMaterial::AddPostFailure()

@@ -31,7 +31,7 @@ namespace generated
     // CPACSDoorAssemblyPosition
 
     // generated from /xsd:schema/xsd:complexType[289]/xsd:complexContent/xsd:extension/xsd:all/xsd:element[3]/xsd:complexType/xsd:simpleContent
-    enum CPACSDoorAssemblyPosition_doorType
+    enum class CPACSDoorAssemblyPosition_doorType
     {
         pax,
         service,
@@ -42,32 +42,24 @@ namespace generated
     inline std::string CPACSDoorAssemblyPosition_doorTypeToString(const CPACSDoorAssemblyPosition_doorType& value)
     {
         switch(value) {
-        case pax: return "pax";
-        case service: return "service";
-        case emergency: return "emergency";
-        case cargo: return "cargo";
+        case CPACSDoorAssemblyPosition_doorType::pax: return "pax";
+        case CPACSDoorAssemblyPosition_doorType::service: return "service";
+        case CPACSDoorAssemblyPosition_doorType::emergency: return "emergency";
+        case CPACSDoorAssemblyPosition_doorType::cargo: return "cargo";
         default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSDoorAssemblyPosition_doorType");
         }
     }
     inline CPACSDoorAssemblyPosition_doorType stringToCPACSDoorAssemblyPosition_doorType(const std::string& value)
     {
-        struct ToLower { std::string operator()(std::string str) { for (std::size_t i = 0; i < str.length(); i++) { str[i] = std::tolower(str[i]); } return str; } } toLower;
-        if (toLower(value) == "pax") { return pax; }
-        if (toLower(value) == "service") { return service; }
-        if (toLower(value) == "emergency") { return emergency; }
-        if (toLower(value) == "cargo") { return cargo; }
+        auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
+        if (toLower(value) == "pax") { return CPACSDoorAssemblyPosition_doorType::pax; }
+        if (toLower(value) == "service") { return CPACSDoorAssemblyPosition_doorType::service; }
+        if (toLower(value) == "emergency") { return CPACSDoorAssemblyPosition_doorType::emergency; }
+        if (toLower(value) == "cargo") { return CPACSDoorAssemblyPosition_doorType::cargo; }
         throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSDoorAssemblyPosition_doorType");
     }
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using ECPACSDoorAssemblyPosition_doorType = generated::CPACSDoorAssemblyPosition_doorType;
-#else
-typedef generated::CPACSDoorAssemblyPosition_doorType ECPACSDoorAssemblyPosition_doorType;
-#endif
-using generated::pax;
-using generated::service;
-using generated::emergency;
-using generated::cargo;
 } // namespace tigl

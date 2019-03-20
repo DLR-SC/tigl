@@ -83,16 +83,11 @@ namespace generated
         std::string                  m_profileUID;
 
     private:
-#ifdef HAVE_CPP11
         CPACSNacelleSection(const CPACSNacelleSection&) = delete;
         CPACSNacelleSection& operator=(const CPACSNacelleSection&) = delete;
 
         CPACSNacelleSection(CPACSNacelleSection&&) = delete;
         CPACSNacelleSection& operator=(CPACSNacelleSection&&) = delete;
-#else
-        CPACSNacelleSection(const CPACSNacelleSection&);
-        CPACSNacelleSection& operator=(const CPACSNacelleSection&);
-#endif
     };
 } // namespace generated
 

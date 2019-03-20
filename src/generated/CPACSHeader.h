@@ -93,23 +93,14 @@ namespace generated
         boost::optional<CPACSUpdates> m_updates;
 
     private:
-#ifdef HAVE_CPP11
         CPACSHeader(const CPACSHeader&) = delete;
         CPACSHeader& operator=(const CPACSHeader&) = delete;
 
         CPACSHeader(CPACSHeader&&) = delete;
         CPACSHeader& operator=(CPACSHeader&&) = delete;
-#else
-        CPACSHeader(const CPACSHeader&);
-        CPACSHeader& operator=(const CPACSHeader&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSHeader = generated::CPACSHeader;
-#else
-typedef generated::CPACSHeader CCPACSHeader;
-#endif
 } // namespace tigl

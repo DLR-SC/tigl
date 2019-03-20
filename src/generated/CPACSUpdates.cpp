@@ -37,7 +37,7 @@ namespace generated
     {
         // read element update
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/update")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/update", m_updates);
+            tixi::TixiReadElements(tixiHandle, xpath + "/update", m_updates, 1, 2147483647);
         }
 
     }
@@ -49,12 +49,12 @@ namespace generated
 
     }
 
-    const std::vector<unique_ptr<CPACSUpdate> >& CPACSUpdates::GetUpdates() const
+    const std::vector<std::unique_ptr<CPACSUpdate>>& CPACSUpdates::GetUpdates() const
     {
         return m_updates;
     }
 
-    std::vector<unique_ptr<CPACSUpdate> >& CPACSUpdates::GetUpdates()
+    std::vector<std::unique_ptr<CPACSUpdate>>& CPACSUpdates::GetUpdates()
     {
         return m_updates;
     }

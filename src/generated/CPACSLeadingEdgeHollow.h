@@ -64,23 +64,14 @@ namespace generated
         double m_xsiTE;
 
     private:
-#ifdef HAVE_CPP11
         CPACSLeadingEdgeHollow(const CPACSLeadingEdgeHollow&) = delete;
         CPACSLeadingEdgeHollow& operator=(const CPACSLeadingEdgeHollow&) = delete;
 
         CPACSLeadingEdgeHollow(CPACSLeadingEdgeHollow&&) = delete;
         CPACSLeadingEdgeHollow& operator=(CPACSLeadingEdgeHollow&&) = delete;
-#else
-        CPACSLeadingEdgeHollow(const CPACSLeadingEdgeHollow&);
-        CPACSLeadingEdgeHollow& operator=(const CPACSLeadingEdgeHollow&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSLeadingEdgeHollow = generated::CPACSLeadingEdgeHollow;
-#else
-typedef generated::CPACSLeadingEdgeHollow CCPACSLeadingEdgeHollow;
-#endif
 } // namespace tigl

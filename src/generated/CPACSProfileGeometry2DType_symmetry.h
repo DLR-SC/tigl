@@ -31,7 +31,7 @@ namespace generated
     // CPACSProfileGeometry2D
 
     // generated from /xsd:schema/xsd:complexType[747]/xsd:complexContent/xsd:extension/xsd:attribute[1]/xsd:simpleType
-    enum CPACSProfileGeometry2DType_symmetry
+    enum class CPACSProfileGeometry2DType_symmetry
     {
         x_axis,
         y_axis
@@ -40,26 +40,20 @@ namespace generated
     inline std::string CPACSProfileGeometry2DType_symmetryToString(const CPACSProfileGeometry2DType_symmetry& value)
     {
         switch(value) {
-        case x_axis: return "x-axis";
-        case y_axis: return "y-axis";
+        case CPACSProfileGeometry2DType_symmetry::x_axis: return "x-axis";
+        case CPACSProfileGeometry2DType_symmetry::y_axis: return "y-axis";
         default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSProfileGeometry2DType_symmetry");
         }
     }
     inline CPACSProfileGeometry2DType_symmetry stringToCPACSProfileGeometry2DType_symmetry(const std::string& value)
     {
-        struct ToLower { std::string operator()(std::string str) { for (std::size_t i = 0; i < str.length(); i++) { str[i] = std::tolower(str[i]); } return str; } } toLower;
-        if (toLower(value) == "x-axis") { return x_axis; }
-        if (toLower(value) == "y-axis") { return y_axis; }
+        auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
+        if (toLower(value) == "x-axis") { return CPACSProfileGeometry2DType_symmetry::x_axis; }
+        if (toLower(value) == "y-axis") { return CPACSProfileGeometry2DType_symmetry::y_axis; }
         throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSProfileGeometry2DType_symmetry");
     }
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using ECPACSProfileGeometry2DType_symmetry = generated::CPACSProfileGeometry2DType_symmetry;
-#else
-typedef generated::CPACSProfileGeometry2DType_symmetry ECPACSProfileGeometry2DType_symmetry;
-#endif
-using generated::x_axis;
-using generated::y_axis;
 } // namespace tigl

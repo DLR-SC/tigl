@@ -81,23 +81,14 @@ namespace generated
         double      m_scalZ;
 
     private:
-#ifdef HAVE_CPP11
         CPACSContourReference(const CPACSContourReference&) = delete;
         CPACSContourReference& operator=(const CPACSContourReference&) = delete;
 
         CPACSContourReference(CPACSContourReference&&) = delete;
         CPACSContourReference& operator=(CPACSContourReference&&) = delete;
-#else
-        CPACSContourReference(const CPACSContourReference&);
-        CPACSContourReference& operator=(const CPACSContourReference&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSContourReference = generated::CPACSContourReference;
-#else
-typedef generated::CPACSContourReference CCPACSContourReference;
-#endif
 } // namespace tigl

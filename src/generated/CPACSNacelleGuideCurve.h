@@ -74,23 +74,14 @@ namespace generated
         double      m_toZeta;
 
     private:
-#ifdef HAVE_CPP11
         CPACSNacelleGuideCurve(const CPACSNacelleGuideCurve&) = delete;
         CPACSNacelleGuideCurve& operator=(const CPACSNacelleGuideCurve&) = delete;
 
         CPACSNacelleGuideCurve(CPACSNacelleGuideCurve&&) = delete;
         CPACSNacelleGuideCurve& operator=(CPACSNacelleGuideCurve&&) = delete;
-#else
-        CPACSNacelleGuideCurve(const CPACSNacelleGuideCurve&);
-        CPACSNacelleGuideCurve& operator=(const CPACSNacelleGuideCurve&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSNacelleGuideCurve = generated::CPACSNacelleGuideCurve;
-#else
-typedef generated::CPACSNacelleGuideCurve CCPACSNacelleGuideCurve;
-#endif
 } // namespace tigl

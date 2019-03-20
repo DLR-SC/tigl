@@ -158,16 +158,11 @@ namespace generated
         boost::optional<CPACSInterpolation>        m_interpolation;
 
     private:
-#ifdef HAVE_CPP11
         CPACSStringerFramePosition(const CPACSStringerFramePosition&) = delete;
         CPACSStringerFramePosition& operator=(const CPACSStringerFramePosition&) = delete;
 
         CPACSStringerFramePosition(CPACSStringerFramePosition&&) = delete;
         CPACSStringerFramePosition& operator=(CPACSStringerFramePosition&&) = delete;
-#else
-        CPACSStringerFramePosition(const CPACSStringerFramePosition&);
-        CPACSStringerFramePosition& operator=(const CPACSStringerFramePosition&);
-#endif
     };
 } // namespace generated
 

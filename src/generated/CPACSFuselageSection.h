@@ -91,16 +91,11 @@ namespace generated
         CCPACSFuselageSectionElements m_elements;
 
     private:
-#ifdef HAVE_CPP11
         CPACSFuselageSection(const CPACSFuselageSection&) = delete;
         CPACSFuselageSection& operator=(const CPACSFuselageSection&) = delete;
 
         CPACSFuselageSection(CPACSFuselageSection&&) = delete;
         CPACSFuselageSection& operator=(CPACSFuselageSection&&) = delete;
-#else
-        CPACSFuselageSection(const CPACSFuselageSection&);
-        CPACSFuselageSection& operator=(const CPACSFuselageSection&);
-#endif
     };
 } // namespace generated
 

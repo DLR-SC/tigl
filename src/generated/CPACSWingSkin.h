@@ -64,23 +64,14 @@ namespace generated
         CCPACSMaterialDefinition m_material;
 
     private:
-#ifdef HAVE_CPP11
         CPACSWingSkin(const CPACSWingSkin&) = delete;
         CPACSWingSkin& operator=(const CPACSWingSkin&) = delete;
 
         CPACSWingSkin(CPACSWingSkin&&) = delete;
         CPACSWingSkin& operator=(CPACSWingSkin&&) = delete;
-#else
-        CPACSWingSkin(const CPACSWingSkin&);
-        CPACSWingSkin& operator=(const CPACSWingSkin&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSWingSkin = generated::CPACSWingSkin;
-#else
-typedef generated::CPACSWingSkin CCPACSWingSkin;
-#endif
 } // namespace tigl

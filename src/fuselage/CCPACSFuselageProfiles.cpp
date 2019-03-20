@@ -45,7 +45,11 @@ void CCPACSFuselageProfiles::ReadCPACS(const TixiDocumentHandle& tixiHandle, con
 
     // read element fuselageProfile
     if (tixi::TixiCheckElement(tixiHandle, xpath + "/fuselageProfile")) {
-        tixi::TixiReadElements(tixiHandle, xpath + "/fuselageProfile", m_fuselageProfiles, tixi::ChildWithArgsReader1<CCPACSFuselageProfile, CTiglUIDManager>(m_uidMgr));
+        tixi::TixiReadElementsInternal(tixiHandle, xpath + "/fuselageProfile", m_fuselageProfiles, -1, -1, [&](const std::string& childXPath) {
+            auto child = tigl::make_unique<CCPACSFuselageProfile>(m_uidMgr);
+            child->ReadCPACS(tixiHandle, childXPath);
+            return child;
+        });
     }
 }
 

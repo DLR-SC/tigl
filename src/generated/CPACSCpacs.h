@@ -221,23 +221,14 @@ namespace generated
         boost::optional<CPACSToolspecific> m_toolspecific;
 
     private:
-#ifdef HAVE_CPP11
         CPACSCpacs(const CPACSCpacs&) = delete;
         CPACSCpacs& operator=(const CPACSCpacs&) = delete;
 
         CPACSCpacs(CPACSCpacs&&) = delete;
         CPACSCpacs& operator=(CPACSCpacs&&) = delete;
-#else
-        CPACSCpacs(const CPACSCpacs&);
-        CPACSCpacs& operator=(const CPACSCpacs&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSCpacs = generated::CPACSCpacs;
-#else
-typedef generated::CPACSCpacs CCPACSCpacs;
-#endif
 } // namespace tigl

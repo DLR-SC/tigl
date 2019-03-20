@@ -57,8 +57,8 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSMaterial> >& GetMaterials() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CPACSMaterial> >& GetMaterials();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSMaterial>>& GetMaterials() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSMaterial>>& GetMaterials();
 
         TIGL_EXPORT virtual const boost::optional<CPACSComposites>& GetComposites() const;
         TIGL_EXPORT virtual boost::optional<CPACSComposites>& GetComposites();
@@ -72,29 +72,19 @@ namespace generated
     protected:
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<unique_ptr<CPACSMaterial> > m_materials;
-        boost::optional<CPACSComposites>        m_composites;
+        std::vector<std::unique_ptr<CPACSMaterial>> m_materials;
+        boost::optional<CPACSComposites>            m_composites;
 
     private:
-#ifdef HAVE_CPP11
         CPACSMaterials(const CPACSMaterials&) = delete;
         CPACSMaterials& operator=(const CPACSMaterials&) = delete;
 
         CPACSMaterials(CPACSMaterials&&) = delete;
         CPACSMaterials& operator=(CPACSMaterials&&) = delete;
-#else
-        CPACSMaterials(const CPACSMaterials&);
-        CPACSMaterials& operator=(const CPACSMaterials&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSMaterials = generated::CPACSMaterials;
 using CCPACSMaterial = generated::CPACSMaterial;
-#else
-typedef generated::CPACSMaterials CCPACSMaterials;
-typedef generated::CPACSMaterial CCPACSMaterial;
-#endif
 } // namespace tigl

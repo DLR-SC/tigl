@@ -56,8 +56,8 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSEnginePylon> >& GetEnginePylons() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSEnginePylon> >& GetEnginePylons();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSEnginePylon>>& GetEnginePylons() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSEnginePylon>>& GetEnginePylons();
 
         TIGL_EXPORT virtual CCPACSEnginePylon& AddEnginePylon();
         TIGL_EXPORT virtual void RemoveEnginePylon(CCPACSEnginePylon& ref);
@@ -67,19 +67,14 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<unique_ptr<CCPACSEnginePylon> > m_enginePylons;
+        std::vector<std::unique_ptr<CCPACSEnginePylon>> m_enginePylons;
 
     private:
-#ifdef HAVE_CPP11
         CPACSEnginePylons(const CPACSEnginePylons&) = delete;
         CPACSEnginePylons& operator=(const CPACSEnginePylons&) = delete;
 
         CPACSEnginePylons(CPACSEnginePylons&&) = delete;
         CPACSEnginePylons& operator=(CPACSEnginePylons&&) = delete;
-#else
-        CPACSEnginePylons(const CPACSEnginePylons&);
-        CPACSEnginePylons& operator=(const CPACSEnginePylons&);
-#endif
     };
 } // namespace generated
 

@@ -63,7 +63,7 @@ namespace generated
     {
         // read element frame
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/frame")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/frame", m_frames, reinterpret_cast<CCPACSFramesAssembly*>(this), m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/frame", m_frames, 1, 2147483647, reinterpret_cast<CCPACSFramesAssembly*>(this), m_uidMgr);
         }
 
     }
@@ -75,12 +75,12 @@ namespace generated
 
     }
 
-    const std::vector<unique_ptr<CCPACSFrame> >& CPACSFramesAssembly::GetFrames() const
+    const std::vector<std::unique_ptr<CCPACSFrame>>& CPACSFramesAssembly::GetFrames() const
     {
         return m_frames;
     }
 
-    std::vector<unique_ptr<CCPACSFrame> >& CPACSFramesAssembly::GetFrames()
+    std::vector<std::unique_ptr<CCPACSFrame>>& CPACSFramesAssembly::GetFrames()
     {
         return m_frames;
     }

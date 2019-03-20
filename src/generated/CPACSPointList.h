@@ -50,8 +50,8 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSPoint> >& GetPoints() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSPoint> >& GetPoints();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSPoint>>& GetPoints() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSPoint>>& GetPoints();
 
         TIGL_EXPORT virtual CCPACSPoint& AddPoint();
         TIGL_EXPORT virtual void RemovePoint(CCPACSPoint& ref);
@@ -60,26 +60,17 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         /// Data point
-        std::vector<unique_ptr<CCPACSPoint> > m_points;
+        std::vector<std::unique_ptr<CCPACSPoint>> m_points;
 
     private:
-#ifdef HAVE_CPP11
         CPACSPointList(const CPACSPointList&) = delete;
         CPACSPointList& operator=(const CPACSPointList&) = delete;
 
         CPACSPointList(CPACSPointList&&) = delete;
         CPACSPointList& operator=(CPACSPointList&&) = delete;
-#else
-        CPACSPointList(const CPACSPointList&);
-        CPACSPointList& operator=(const CPACSPointList&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSPointList = generated::CPACSPointList;
-#else
-typedef generated::CPACSPointList CCPACSPointList;
-#endif
 } // namespace tigl

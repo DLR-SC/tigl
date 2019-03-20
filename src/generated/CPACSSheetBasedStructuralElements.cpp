@@ -49,7 +49,7 @@ namespace generated
     {
         // read element sheetBasedStructuralElement
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/sheetBasedStructuralElement")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/sheetBasedStructuralElement", m_sheetBasedStructuralElements, m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/sheetBasedStructuralElement", m_sheetBasedStructuralElements, 1, 2147483647, m_uidMgr);
         }
 
     }
@@ -61,12 +61,12 @@ namespace generated
 
     }
 
-    const std::vector<unique_ptr<CPACSSheetBasedStructuralElement> >& CPACSSheetBasedStructuralElements::GetSheetBasedStructuralElements() const
+    const std::vector<std::unique_ptr<CPACSSheetBasedStructuralElement>>& CPACSSheetBasedStructuralElements::GetSheetBasedStructuralElements() const
     {
         return m_sheetBasedStructuralElements;
     }
 
-    std::vector<unique_ptr<CPACSSheetBasedStructuralElement> >& CPACSSheetBasedStructuralElements::GetSheetBasedStructuralElements()
+    std::vector<std::unique_ptr<CPACSSheetBasedStructuralElement>>& CPACSSheetBasedStructuralElements::GetSheetBasedStructuralElements()
     {
         return m_sheetBasedStructuralElements;
     }

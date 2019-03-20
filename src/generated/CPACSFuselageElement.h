@@ -90,16 +90,11 @@ namespace generated
         CCPACSTransformation         m_transformation;
 
     private:
-#ifdef HAVE_CPP11
         CPACSFuselageElement(const CPACSFuselageElement&) = delete;
         CPACSFuselageElement& operator=(const CPACSFuselageElement&) = delete;
 
         CPACSFuselageElement(CPACSFuselageElement&&) = delete;
         CPACSFuselageElement& operator=(CPACSFuselageElement&&) = delete;
-#else
-        CPACSFuselageElement(const CPACSFuselageElement&);
-        CPACSFuselageElement& operator=(const CPACSFuselageElement&);
-#endif
     };
 } // namespace generated
 

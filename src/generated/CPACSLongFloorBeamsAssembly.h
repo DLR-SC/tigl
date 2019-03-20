@@ -57,8 +57,8 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSLongFloorBeam> >& GetLongFloorBeams() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSLongFloorBeam> >& GetLongFloorBeams();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSLongFloorBeam>>& GetLongFloorBeams() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSLongFloorBeam>>& GetLongFloorBeams();
 
         TIGL_EXPORT virtual CCPACSLongFloorBeam& AddLongFloorBeam();
         TIGL_EXPORT virtual void RemoveLongFloorBeam(CCPACSLongFloorBeam& ref);
@@ -68,19 +68,14 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<unique_ptr<CCPACSLongFloorBeam> > m_longFloorBeams;
+        std::vector<std::unique_ptr<CCPACSLongFloorBeam>> m_longFloorBeams;
 
     private:
-#ifdef HAVE_CPP11
         CPACSLongFloorBeamsAssembly(const CPACSLongFloorBeamsAssembly&) = delete;
         CPACSLongFloorBeamsAssembly& operator=(const CPACSLongFloorBeamsAssembly&) = delete;
 
         CPACSLongFloorBeamsAssembly(CPACSLongFloorBeamsAssembly&&) = delete;
         CPACSLongFloorBeamsAssembly& operator=(CPACSLongFloorBeamsAssembly&&) = delete;
-#else
-        CPACSLongFloorBeamsAssembly(const CPACSLongFloorBeamsAssembly&);
-        CPACSLongFloorBeamsAssembly& operator=(const CPACSLongFloorBeamsAssembly&);
-#endif
     };
 } // namespace generated
 

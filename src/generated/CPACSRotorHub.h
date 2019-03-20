@@ -96,16 +96,11 @@ namespace generated
         CCPACSRotorBladeAttachments       m_rotorBladeAttachments;
 
     private:
-#ifdef HAVE_CPP11
         CPACSRotorHub(const CPACSRotorHub&) = delete;
         CPACSRotorHub& operator=(const CPACSRotorHub&) = delete;
 
         CPACSRotorHub(CPACSRotorHub&&) = delete;
         CPACSRotorHub& operator=(CPACSRotorHub&&) = delete;
-#else
-        CPACSRotorHub(const CPACSRotorHub&);
-        CPACSRotorHub& operator=(const CPACSRotorHub&);
-#endif
     };
 } // namespace generated
 

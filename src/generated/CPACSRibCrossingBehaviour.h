@@ -31,7 +31,7 @@ namespace generated
     // CPACSWingRibsPositioning
 
     // generated from /xsd:schema/xsd:complexType[756]/xsd:complexContent/xsd:extension/xsd:sequence/xsd:element[4]/xsd:complexType/xsd:simpleContent
-    enum CPACSRibCrossingBehaviour
+    enum class CPACSRibCrossingBehaviour
     {
         cross,
         end
@@ -40,26 +40,20 @@ namespace generated
     inline std::string CPACSRibCrossingBehaviourToString(const CPACSRibCrossingBehaviour& value)
     {
         switch(value) {
-        case cross: return "cross";
-        case end: return "end";
+        case CPACSRibCrossingBehaviour::cross: return "cross";
+        case CPACSRibCrossingBehaviour::end: return "end";
         default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSRibCrossingBehaviour");
         }
     }
     inline CPACSRibCrossingBehaviour stringToCPACSRibCrossingBehaviour(const std::string& value)
     {
-        struct ToLower { std::string operator()(std::string str) { for (std::size_t i = 0; i < str.length(); i++) { str[i] = std::tolower(str[i]); } return str; } } toLower;
-        if (toLower(value) == "cross") { return cross; }
-        if (toLower(value) == "end") { return end; }
+        auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
+        if (toLower(value) == "cross") { return CPACSRibCrossingBehaviour::cross; }
+        if (toLower(value) == "end") { return CPACSRibCrossingBehaviour::end; }
         throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSRibCrossingBehaviour");
     }
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using ECPACSRibCrossingBehaviour = generated::CPACSRibCrossingBehaviour;
-#else
-typedef generated::CPACSRibCrossingBehaviour ECPACSRibCrossingBehaviour;
-#endif
-using generated::cross;
-using generated::end;
 } // namespace tigl
