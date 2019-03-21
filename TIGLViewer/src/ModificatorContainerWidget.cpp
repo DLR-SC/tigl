@@ -46,6 +46,7 @@ void ModificatorContainerWidget::hideAllSpecializedWidgets()
     ui->fuselageModificator->setVisible(visible);
     ui->applyWidget->setVisible(visible);
     ui->noInterfaceWidget->setVisible(visible);
+    ui->elementModificator->setVisible(visible);
     currentModificator = nullptr;
 }
 
@@ -74,6 +75,15 @@ void ModificatorContainerWidget::setFuselageModificator(tigl::CCPACSFuselage& fu
     ui->fuselageModificator->setVisible(true);
     ui->applyWidget->setVisible(true);
     currentModificator = ui->fuselageModificator;
+}
+
+void ModificatorContainerWidget::setElementModificator(tigl::CTiglSectionElement& element)
+{
+    hideAllSpecializedWidgets();
+    ui->elementModificator->setElement(element);
+    ui->elementModificator->setVisible(true);
+    ui->applyWidget->setVisible(true);
+    currentModificator = ui->elementModificator;
 }
 
 void ModificatorContainerWidget::setNoInterfaceWidget()

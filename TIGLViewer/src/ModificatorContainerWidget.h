@@ -27,6 +27,7 @@
 #include "CPACSFuselages.h"
 #include "CPACSWing.h"
 #include "CPACSTransformation.h"
+#include "CTiglSectionElement.h"
 
 namespace Ui
 {
@@ -65,6 +66,8 @@ public:
     void setTransformationModificator(tigl::CCPACSTransformation& transformation);
     void setWingModificator(tigl::CCPACSWing& wing);
     void setFuselageModificator(tigl::CCPACSFuselage& fuselage);
+    void setElementModificator(tigl::CTiglSectionElement& element);
+
     void setNoInterfaceWidget();
 
     void hideAllSpecializedWidgets();
