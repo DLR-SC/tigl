@@ -31,7 +31,10 @@ namespace tigl
 
 // Constructor
 CCPACSFuselageSectionElement::CCPACSFuselageSectionElement(CCPACSFuselageSectionElements* parent, CTiglUIDManager* uidMgr)
-    : generated::CPACSFuselageElement(parent, uidMgr) {}
+    : generated::CPACSFuselageElement(parent, uidMgr) {
+
+    ctilgElement = CTiglFuselageSectionElement(this);
+}
 
 void CCPACSFuselageSectionElement::SetProfileUID(const std::string& value) {
     generated::CPACSFuselageElement::SetProfileUID(value);

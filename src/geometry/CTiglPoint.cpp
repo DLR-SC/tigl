@@ -177,4 +177,23 @@ void CTiglPoint::getMinMax(double & min, double & max) const
     }
 }
 
+bool CTiglPoint::operator==(const CTiglPoint& aPoint) const
+{
+    if (x == aPoint.x && y == aPoint.y && z == aPoint.z) {
+        return true;
+    }
+    return false;
+}
+
+bool CTiglPoint::isNear(const CTiglPoint& aPoint, double epsilon) const
+{
+    double d2 = distance2(aPoint);
+    double d = sqrt(d2);
+    if( d < epsilon) {
+        return true;
+    }
+    return false;
+
+}
+
 } // end namespace tigl
