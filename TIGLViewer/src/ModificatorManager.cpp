@@ -19,6 +19,9 @@
 #include "ModificatorManager.h"
 #include "CTiglUIDManager.h"
 #include "TIGLViewerUndoCommands.h"
+#include "CCPACSFuselageSectionElement.h"
+#include "CCPACSWingSectionElement.h"
+#include "CTiglSectionElement.h"
 
 ModificatorManager::ModificatorManager(CPACSTreeWidget* treeWidget,
                                        ModificatorContainerWidget* modificatorContainerWidget,
@@ -72,6 +75,21 @@ void ModificatorManager::dispatch(cpcr::CPACSTreeItem* item)
         tigl::CTiglUIDManager& uidManager = doc->GetConfiguration().GetUIDManager();
         tigl::CCPACSWing& wing            = uidManager.ResolveObject<tigl::CCPACSWing>(item->getUid());
         modificatorContainerWidget->setWingModificator(wing);
+    }
+    else if (item->getType() == "element") {
+        // we need first to determine if this is a section element or a fuselage element
+        // the we can retrieve the CTiglElement interface that manage the both case.
+        tigl::CTiglUIDManager& uidManager       = doc->GetConfiguration().GetUIDManager();
+        tigl::CTiglUIDManager::TypedPtr typePtr = uidManager.ResolveObject(item->getUid());
+        if (typePtr.type == &typeid(tigl::CCPACSFuselageSectionElement)) {
+            tigl::CCPACSFuselageSectionElement& fuselageElement =
+                *reinterpret_cast<tigl::CCPACSFuselageSectionElement*>(typePtr.ptr);
+            modificatorContainerWidget->setElementModificator(*(fuselageElement.GetCTiglSectionElement()));
+        }
+        else if (typePtr.type == &typeid(tigl::CCPACSWingSectionElement)) {
+            tigl::CCPACSWingSectionElement& wingElement =
+                *reinterpret_cast<tigl::CCPACSWingSectionElement*>(typePtr.ptr);
+        }
     }
     else {
         modificatorContainerWidget->setNoInterfaceWidget();

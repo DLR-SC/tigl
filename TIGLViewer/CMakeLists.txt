@@ -102,6 +102,7 @@ set(tv_src
   src/TIGLViewerSelectWingAndFlapStatusDialog.cpp
   # files for CPACSCreator
   src/ModificatorWidget.cpp
+  src/ModificatorElementWidget.cpp
   src/ModificatorFuselageWidget.cpp
   src/ModificatorTransformationWidget.cpp
   src/ModificatorWingWidget.cpp
@@ -115,6 +116,8 @@ set(tv_src
   src/CPACSTreeWidget.cpp
   src/CPACSFilterModel.cpp
   src/TIGLViewerNewFileDialog.cpp
+  src/CTiglPointWidget.cpp
+  src/TIGLViewerCommonFunctions.cpp
 )
 	
 # header files
@@ -164,6 +167,7 @@ set(tv_hdr
   src/XPathParser.h
   src/TIGLViewerException.h
   src/ModificatorWidget.h
+  src/ModificatorElementWidget.h
   src/ModificatorFuselageWidget.h
   src/ModificatorTransformationWidget.h
   src/ModificatorWingWidget.h
@@ -173,6 +177,8 @@ set(tv_hdr
   src/CPACSTreeWidget.h
   src/CPACSFilterModel.h
   src/TIGLViewerNewFileDialog.h
+  src/CTiglPointWidget.h
+  src/TIGLViewerCommonFunctions.h
 )
 
 set(tv_ui
@@ -190,6 +196,8 @@ set(tv_ui
   src/TIGLViewerSelectWingAndFlapStatusDialog.ui
   # files for CPACSCreator
   src/ModificatorTransformationWidget.ui
+  src/ModificatorElementWidget.ui
+  src/CTiglPointWidget.ui
   src/ModificatorWingWidget.ui
   src/ModificatorFuselageWidget.ui
   src/ModificatorContainerWidget.ui

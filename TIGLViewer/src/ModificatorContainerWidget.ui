@@ -24,6 +24,9 @@
     <widget class="ModificatorWingWidget" name="wingModificator" native="true"/>
    </item>
    <item>
+    <widget class="ModificatorElementWidget" name="elementModificator" native="true"/>
+   </item>
+   <item>
     <widget class="QWidget" name="applyWidget" native="true">
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <item>
@@ -106,6 +109,12 @@
    <class>ModificatorFuselageWidget</class>
    <extends>QWidget</extends>
    <header>ModificatorFuselageWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ModificatorElementWidget</class>
+   <extends>QWidget</extends>
+   <header>ModificatorElementWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
